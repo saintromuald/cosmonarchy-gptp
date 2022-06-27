@@ -399,8 +399,8 @@ namespace hooks
 									jump_to_77C78 = true;
 								}
 								else
-									if (weapons_dat::MinRange[current_unit_weaponId] != 0
-										&& current_unit->is_target_within_min_range(target, weapons_dat::MinRange[current_unit_weaponId]))
+									if (weapons_dat::min_range[current_unit_weaponId] != 0
+										&& current_unit->is_target_within_min_range(target, weapons_dat::min_range[current_unit_weaponId]))
 									{
 										jump_to_77C78 = true;
 									}

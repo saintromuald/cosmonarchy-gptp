@@ -6,18 +6,18 @@ u16*,		label,				weaponsDat[0].address);  // 006572E0
 u32*,		FlingyId,			weaponsDat[1].address);  // 00656CA8
 u8*,		SpecialAttack,		weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
 TargetFlag*,TargetFlags,		weaponsDat[3].address);  // 00657998
-u32*,		MinRange,			weaponsDat[4].address);  // 00656A18
-u32*,		MaxRange,			weaponsDat[5].address);  // 00657470
+u32*,		min_range,			weaponsDat[4].address);  // 00656A18
+u32*,		max_range,			weaponsDat[5].address);  // 00657470
 u8*,		DamageUpgrade,		weaponsDat[6].address);  // 006571D0
-u8*,		DamageType,			weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with DamageType::Enum.
+u8*,		damage_type,			weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
 u8*,		Behavior,			weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
 u8*,		RemoveAfter,		weaponsDat[9].address);  // 00657040
 u8*,		ExplosionType,		weaponsDat[10].address); // 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
 u16*,		InnerSplashRadius,	weaponsDat[11].address); // 00656888
 u16*,		MediumSplashRadius, weaponsDat[12].address); // 006570C8
 u16*,		OuterSplashRadius,	weaponsDat[13].address); // 00657780
-u16*,		DamageAmount,		weaponsDat[14].address); // 00656EB0
-u16*,		DamageBonus,		weaponsDat[15].address); // 00657678
+u16*,		damage_amount,		weaponsDat[14].address); // 00656EB0
+u16*,		armor_pen,		weaponsDat[15].address); // 00657678
 u8*,		Cooldown,			weaponsDat[16].address); // 00656FB8
 u8*,		DamageFactor,		weaponsDat[17].address); // 006564E0
 u8*,		AttackAngle,		weaponsDat[18].address); // 00656990
@@ -59,18 +59,18 @@ namespace weapons_dat
 	u32			FlingyId[MAX_WEAPONS];			
 	u8			SpecialAttack[MAX_WEAPONS];	
 	TargetFlag	TargetFlags[MAX_WEAPONS];		
-	u32			MinRange[MAX_WEAPONS];			
-	u32			MaxRange[MAX_WEAPONS];			
+	u32			min_range[MAX_WEAPONS];			
+	u32			max_range[MAX_WEAPONS];			
 	u8			DamageUpgrade[MAX_WEAPONS];		
-	u8			DamageType[MAX_WEAPONS];			
+	u8			damage_type[MAX_WEAPONS];			
 	u8			Behavior[MAX_WEAPONS];			
 	u8			RemoveAfter[MAX_WEAPONS];		
 	u8			ExplosionType[MAX_WEAPONS];		
 	u16			InnerSplashRadius[MAX_WEAPONS];	
 	u16			MediumSplashRadius[MAX_WEAPONS]; 
 	u16			OuterSplashRadius[MAX_WEAPONS];	
-	u16			DamageAmount[MAX_WEAPONS];		
-	u16			DamageBonus[MAX_WEAPONS];		
+	u16			damage_amount[MAX_WEAPONS];		
+	u16			armor_pen[MAX_WEAPONS];		
 	u8			Cooldown[MAX_WEAPONS];			
 	u8			DamageFactor[MAX_WEAPONS];		
 	u8			AttackAngle[MAX_WEAPONS];		
@@ -120,18 +120,18 @@ static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
 		weapons_dat::FlingyId,			
 		weapons_dat::SpecialAttack,		
 		weapons_dat::TargetFlags,		
-		weapons_dat::MinRange,			
-		weapons_dat::MaxRange,			
+		weapons_dat::min_range,			
+		weapons_dat::max_range,			
 		weapons_dat::DamageUpgrade,		
-		weapons_dat::DamageType,			
+		weapons_dat::damage_type,			
 		weapons_dat::Behavior,			
 		weapons_dat::RemoveAfter,		
 		weapons_dat::ExplosionType,		
 		weapons_dat::InnerSplashRadius,	
 		weapons_dat::MediumSplashRadius, 
 		weapons_dat::OuterSplashRadius,	
-		weapons_dat::DamageAmount,		
-		weapons_dat::DamageBonus,		
+		weapons_dat::damage_amount,		
+		weapons_dat::armor_pen,		
 		weapons_dat::Cooldown,			
 		weapons_dat::DamageFactor,		
 		weapons_dat::AttackAngle,		

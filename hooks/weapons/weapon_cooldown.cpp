@@ -7,6 +7,16 @@
 
 namespace hooks
 {
+	u32 get_modified_armor_pen(Unit* unit, u8 weapon_id) {
+		u32 armor_pen = weapons_dat::armor_pen[weapon_id];
+		if (!unit) {
+			return armor_pen;
+		}
+
+		// TODO: Insert your armor pen modifications here and remove this comment
+
+		return armor_pen;
+	}
 
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 	/// @return	the modified cooldown value.
@@ -130,7 +140,7 @@ namespace hooks
 	}
 
 	f32 get_current_dps(Unit* unit, u8 weapon_id) {
-		return weapons_dat::DamageAmount[weapon_id] / get_weapon_cooldwon_float(unit, weapon_id);
+		return weapons_dat::damage_amount[weapon_id] / get_weapon_cooldwon_float(unit, weapon_id);
 	}
 
 	f32 get_current_dps_from_damage(Unit* unit, u8 weapon_id, u32 damage) {

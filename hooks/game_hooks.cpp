@@ -694,7 +694,7 @@ namespace hooks
 							auto target_unit = unit->order_target.unit;
 							auto target_pos = unit->order_target.pt;
 							auto offset_direction = -40 + arc * 16;
-							auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
+							auto maxRange = weapons_dat::max_range[WeaponId::StarSovereignInterventionMissiles];
 							auto polar_x = unit->get_x() + scbw::get_polar_x(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							auto polar_y = unit->get_y() + scbw::get_polar_y(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							unit->order_target.unit = nullptr;

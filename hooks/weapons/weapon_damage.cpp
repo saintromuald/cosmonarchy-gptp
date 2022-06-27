@@ -7,12 +7,13 @@
 #include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "logger.h"
+#include "hooks/weapons/weapon_cooldown.h"
 
 #include "SCBW\UnitFinder.h"
 
 bool darkswarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
 	return scbw::is_under_dark_swarm(target)
-		&& weapons_dat::MaxRange[weapon_id] > 32
+		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
 		&& weapon_id != WeaponId::HarakanFlameThrower
 		&& weapon_id != WeaponId::LakiziliskSubterraneanSpines
@@ -54,7 +55,7 @@ namespace hooks
 			damage,
 			damage,
 			0,
-			weapons_dat::DamageType[weapon_id],
+			weapons_dat::damage_type[weapon_id],
 			damage_divisor,
 			weapon_id,
 			direction,
@@ -186,24 +187,50 @@ namespace hooks
 
 		// Cliff Advantage - Armor | Disabled 10 Jan 2022
 		/*
-		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor)
+		if (data.damage_type != damage_type::IgnoreArmor && !data.ignore_flat_armor)
 		{
 			data.final_damage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
 		*/
 
-		// Reduce Plasma Shields
-		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256)
-		{
-			if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor)
-			{
-				s32 plasmaShieldUpg = scbw::get_upgrade_level(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
-				if (data.final_damage > plasmaShieldUpg)
-				{
-					data.final_damage -= plasmaShieldUpg;
+		// Apply armor
+		bool shield_overlay = false;
+		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
+			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id);
+
+			s32 armor_total = (data.target->getArmor() - armor_pen) * 256;
+			if (data.attacker != nullptr) {
+				armor_total += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
+
+				if (data.target->id == UnitId::TerranMinotaur) {
+					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y,
+						data.attacker->position.x, data.attacker->position.y);
+					u16 unit_angle = data.target->velocity_direction_1;
+					s32 arc = (f64)45 / 1.40625; // 90 degrees
+					s32 delta = unit_angle - angle;
+					delta = abs((delta + 128) % 256 - 128);
+					if (delta <= arc) {
+						armor_total += 512;
+						shield_overlay = true;
+					}
 				}
-				else
-				{
+			}
+
+			// Autocrat Controlled Opposition
+			if (targetExt->values[ValueControlledOpposition]) {
+				armor_total = std::max(armor_total - (s32)targetExt->values[ValueControlledOpposition] * 256, 0);
+			}
+			armor_total = std::max(armor_total, 0);
+			data.final_damage -= std::min(data.final_damage, armor_total);
+		}
+
+		// Reduce Plasma Shields
+		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
+			if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
+				s32 plasma_shield_upgrade = scbw::get_upgrade_level(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
+				if (data.final_damage > plasma_shield_upgrade) {
+					data.final_damage -= plasma_shield_upgrade;
+				} else {
 					data.final_damage = 128;
 				}
 			}
@@ -211,59 +238,8 @@ namespace hooks
 			data.final_damage -= data.shield_reduce_amount;
 		}
 
-		// Apply armor
-		bool shield_overlay = false;
-		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor)
-		{
-			s32 armorTotal = data.target->getArmor() * 256;
-			if (data.attacker != nullptr)
-			{
-				armorTotal += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
-				if (data.target->id == UnitId::TerranMinotaur)
-				{
-					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y,
-						data.attacker->position.x, data.attacker->position.y);
-					u16 unit_angle = data.target->velocity_direction_1;
-					s32 arc = (f64)45 / 1.40625; // 90 degrees
-					s32 delta = unit_angle - angle;
-					delta = abs((delta + 128) % 256 - 128);
-					if (delta <= arc)
-					{
-						armorTotal += 512;
-						shield_overlay = true;
-					}
-				}
-			}
-
-			// Autocrat Controlled Opposition
-			if (targetExt->values[ValueControlledOpposition])
-			{
-				armorTotal = std::max(armorTotal - (s32)targetExt->values[ValueControlledOpposition] * 256, 0);
-			}
-
-			data.final_damage -= std::min(data.final_damage, armorTotal);
-		}
-
-		// Apply damage type/unit count factor
-		s32 damage_factor = damage_factors[data.damage_type].unit_size_factor[units_dat::SizeType[data.target->id]];
-		if (data.attacker != nullptr)
-		{
-			switch (data.attacker->id)
-			{
-				case UnitId::TerranHarakan:
-				{
-					// Harakan Apollyoid Adhesive - Full damage to structures
-					if (units_dat::base_property[data.target->id] & UnitProperty::Building)
-					{
-						damage_factor = 256;
-					}
-				} break;
-			}
-		}
-
-		data.final_damage = (data.final_damage * damage_factor) / 256;
-		if (data.shield_reduce_amount == 0 && data.final_damage < 128)
-		{
+		// Set min damage
+		if (data.shield_reduce_amount == 0 && data.final_damage < 128) {
 			data.final_damage = 128;
 		}
 

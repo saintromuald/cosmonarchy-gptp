@@ -16,13 +16,13 @@ namespace hooks
 		}
 		if (target->status & UnitStatus::InAir)
 		{
-			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->get_air_weapon()])
-			&&		attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_air_weapon()]);
+			return !attacker->is_target_within_min_range(target, weapons_dat::min_range[attacker->get_air_weapon()])
+			&&		attacker->is_target_within_min_range(target, weapons_dat::max_range[attacker->get_air_weapon()]);
 		}
 		else
 		{
-			return !attacker->is_target_within_min_range(target, weapons_dat::MinRange[attacker->get_ground_weapon()])
-			&&		attacker->is_target_within_min_range(target, weapons_dat::MaxRange[attacker->get_ground_weapon()]);
+			return !attacker->is_target_within_min_range(target, weapons_dat::min_range[attacker->get_ground_weapon()])
+			&&		attacker->is_target_within_min_range(target, weapons_dat::max_range[attacker->get_ground_weapon()]);
 		}
 	}
 

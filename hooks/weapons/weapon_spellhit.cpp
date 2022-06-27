@@ -240,7 +240,7 @@ namespace hooks
 				if (attacker != nullptr)
 				{
 					u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
-					damage = ((u16)damage + weapons_dat::DamageAmount[weapon_id]) * 256;
+					damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
 					if (attackerExt->values[ValueDeconstruction])
 					{
 						scbw::do_deconstruction_damage(attacker, weapon_id);
@@ -261,7 +261,7 @@ namespace hooks
 			else
 			{
 				u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
-				damage = ((u16)damage + weapons_dat::DamageAmount[weapon_id]) * 256;
+				damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
 				if (attackerExt->values[ValueDeconstruction])
 				{
 					scbw::do_deconstruction_damage(attacker, weapon_id);

@@ -22,7 +22,7 @@ void irradiate_proc(Unit* unit, Unit* target)
 	if (unit->status & UnitStatus::InTransport
 		|| unit->get_distance_to_target(target) <= 32)
 	{
-		// const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
+		// const s32 damage = weapons_dat::damage_amount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
 		s32 damage = (125 * 256) / 24;
 		if (unit != nullptr)
 		{
@@ -323,10 +323,10 @@ namespace hooks
 
 			if (!(unit->status & UnitStatus::Invincible))
 			{
-				s32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
+				s32 damage = (weapons_dat::damage_amount[WeaponId::Plague] * 256) / 30;
 				if (!unit->plague_timer)
 				{
-					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
+					damage += (weapons_dat::damage_amount[WeaponId::Plague] * 256) % 30;
 				}
 				if (damage > 0)
 				{
