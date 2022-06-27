@@ -191,9 +191,9 @@ namespace hooks
 					}
 					building->set_hitpoints(hpAfterMorph);
 					building->remaining_build_time = 0;
-				} else if (building->create_origin == UnitId::ZergGosvileth && building->previous_hitpoints >= 50) {
+				} else if (building->create_origin == UnitId::ZergGosvileth) {
 					Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
-					worker->set_hitpoints((building->previous_hitpoints - 50) * 256);
+					worker->set_hitpoints(building->previous_hitpoints);
 				}
 				// 0045D6CD
 				helper::update_unit_stats_and_finish_building(building);
