@@ -3,14 +3,14 @@
 
 namespace
 {
-	void __declspec(naked) CMDRECV_ReaverStopWrapper()
+	void __declspec(naked) cmdrecv_reaver_stop_wrapper()
 	{
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSHAD
 		}
-		hooks::CMDRECV_ReaverStop();
+		hooks::cmdrecv_reaver_stop();
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -19,14 +19,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CMDRECV_CarrierStopWrapper()
+	void __declspec(naked) cmdrecv_carrier_stop_wrapper()
 	{
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSHAD
 		}
-		hooks::CMDRECV_CarrierStop();
+		hooks::cmdrecv_carrier_stop();
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -35,7 +35,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CMDRECV_StopWrapper()
+	void __declspec(naked) cmdrecv_stop_wrapper()
 	{
 		static u8 bCommandType;
 		__asm {
@@ -43,7 +43,7 @@ namespace
 			MOV bCommandType, AL
 			PUSHAD
 		}
-		hooks::CMDRECV_Stop(bCommandType);
+		hooks::cmdrecv_stop(bCommandType);
 		__asm {
 			POPAD
 			RETN
@@ -55,8 +55,8 @@ namespace hooks
 {
 	void inject_cmdrecv_stop_hooks()
 	{
-		jump_patch(CMDRECV_ReaverStopWrapper,	0x004C1240, 1);
-		jump_patch(CMDRECV_CarrierStopWrapper,	0x004C1430, 1);
-		jump_patch(CMDRECV_StopWrapper,			0x004C2190, 3);
+		jump_patch(cmdrecv_reaver_stop_wrapper,		0x004C1240, 1);
+		jump_patch(cmdrecv_carrier_stop_wrapper,	0x004C1430, 1);
+		jump_patch(cmdrecv_stop_wrapper,			0x004C2190, 3);
 	}
 }

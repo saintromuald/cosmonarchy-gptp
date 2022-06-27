@@ -425,7 +425,7 @@ namespace helper
 	//// CMDRECV_MergeArchon
 	Unit* templar_merge_partner(Unit* unit, Unit** units_list, u32 units_list_length);												// 004BFA80
 
-	//// CMDRECV_Stop
+	//// cmdrecv_stop
 	void parse_orders_dat_requirements();																							// 0046D450
 	u16* parse_tech_dat_requirements();																								// 0046D4C0
 	s32 parse_requirement_opcodes(Unit* unit, u32 order_id, u32 player, u16* address, u32 req_offset);								// 0046D610
@@ -434,7 +434,7 @@ namespace helper
 	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370
 	void recheck_attacks(Unit* unit);																								// 00476D30
 	void increment_unit_scores(Unit* unit, s32 unkScore);																			// 00488BF0
-	void create_unit_selection(Unit* unit, u32 selection_index);																		// 004E6180
+	void create_unit_selection(Unit* unit, u32 selection_index);																	// 004E6180
 	void destroy_unit_selection(Unit* unit);																						// 004E6290
 	void drop_powerup(Unit* powerup);																								// 004F3B70
 
