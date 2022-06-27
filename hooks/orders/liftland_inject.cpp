@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_BuildingLandWrapper() // 00464360
+	void __declspec(naked) orders_building_land_wrapper() // 00464360
 	{
 		static Unit* unit;
 		__asm {
@@ -22,7 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_BuildingLiftoffWrapper()
+	void __declspec(naked) orders_building_liftoff_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -46,7 +46,7 @@ namespace hooks
 {
 	void inject_lift_land_hooks()
 	{
-		jump_patch(orders_BuildingLandWrapper,		0x00464360, 1);
-		jump_patch(orders_BuildingLiftoffWrapper,	0x004649B0, 1);
+		jump_patch(orders_building_land_wrapper,	0x00464360, 1);
+		jump_patch(orders_building_liftoff_wrapper,	0x004649B0, 1);
 	}
 }

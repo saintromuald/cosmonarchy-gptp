@@ -414,7 +414,7 @@ namespace hooks
 		*is_unit_in_point_y_pos = y_pos;
 		u8 idle_order = helper::get_generic_unit_idle_order(order_unit_id, unit);
 		Unit* unit_in_point = helper::iterate_units_at_location_target_proc_in_point(&location, (void*)0x00487A90, target);
-		u8 right_click_order = helper::get_right_click_order(idle_order, unit_in_point, x_pos, y_pos, &unit_in_point, UnitId::None);
+		u8 right_click_order = helper::get_right_click_order(idle_order, unit, x_pos, y_pos, &unit_in_point, UnitId::None);
 		if (right_click_order == OrderId::Nothing2) {
 			helper::set_resource_target(unit);
 			u32 x_move_target = unit->move_target.pt.x;

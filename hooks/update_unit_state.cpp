@@ -231,15 +231,17 @@ namespace hooks
 		}
 
 		// Add mining status, decrease the regeneration rate
-		if (unit->main_order_id == OrderId::MiningMinerals ||
-			unit->main_order_id == OrderId::HarvestGas3)
+		/*
+		if (unit->main_order_id == OrderId::MiningMinerals
+		||	unit->main_order_id == OrderId::HarvestGas3)
 		{
 			if (unit->order_target.unit)
 			{
 				unit->order_target.unit->cmbw_resource_regen_mining_delay = 5 * 24;
 			}
 		}
-
+		*/
+		
 		// Cowardice slow flag
 		if (unit->new_flags_3 & 0x10)
 		{
@@ -302,6 +304,7 @@ namespace hooks
 			scbw::refresh_console();
 		}
 
+		/*
 		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)
 		{
 			// Decrement resource regen timers
@@ -335,13 +338,14 @@ namespace hooks
 					{
 						if (unit->building.resource.resource_amount < 2500) {
 							unit->building.resource.resource_amount++;
-							helper::updateMineralPatchImage(unit);
+							helper::update_mineral_patch_image(unit);
 							scbw::refresh_console();
 						}
 					}
 				}
 			}
 		}
+		*/
 
 		// Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id] != 0)

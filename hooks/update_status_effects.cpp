@@ -137,6 +137,8 @@ namespace hooks
 		}
 
 		// Quarry, Iroleth, Pennant resource regeneration aura
+		// REMOVED as of 26 June 2022. We will revisit this when the concepts of node yield and node upgrading are vetted. -Pr0nogo
+		/*
 		u32 unit_id = unit->id;
 		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
 			unit_id = unit->building.addon->id;
@@ -193,6 +195,7 @@ namespace hooks
 				}
 			});
 		}
+		*/
 
 		// Sire Ectomorphic Accelerant - egg morph speed aura
 		if (unit->id == UnitId::ZergSire)

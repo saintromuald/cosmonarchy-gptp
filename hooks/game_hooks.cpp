@@ -1851,11 +1851,6 @@ namespace hooks
 			}
 		}
 
-		// Luminary - Wax Wings Clear
-		if (unitExt->timers[TimerWaxWingsDebuff] == 1) {
-			unit->update_speed();
-		}
-
 		// Luminary - Aural Assault
 		if (unitExt->timers[TimerAuralAssaultBlind] > 1) {
 			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
