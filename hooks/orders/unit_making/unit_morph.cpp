@@ -236,26 +236,42 @@ namespace hooks
 					unit->main_order_state = 1;
 					auto origin = unit->create_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
-					if (origin == UnitId::ZergDroleth) {
-						animation = IscriptAnimation::AirAttkInit;
-					}
-					else if (origin == UnitId::ZergZethrokor
-					||		 origin == UnitId::ZergNathrokor)
+					switch (origin)
 					{
-						animation = IscriptAnimation::Unused1;
-					}
-					else if (origin == UnitId::ZergUltrokor
-					||		 origin == UnitId::ZergOvileth)
-					{
-						animation = IscriptAnimation::AlmostBuilt;
-					}
-					else if (origin == UnitId::ZergQuazilisk)
-					{
-						animation = IscriptAnimation::GndAttkToIdle;
-					}
-					else if (origin == UnitId::ZergLarva)
-					{
-						animation = IscriptAnimation::Walking;
+						case UnitId::ZergLarva:
+						{
+							animation = IscriptAnimation::Walking;
+						} break;
+						case UnitId::ZergDroleth:
+						{
+							animation = IscriptAnimation::AirAttkInit;
+						} break;
+						case UnitId::ZergZethrokor:
+						case UnitId::ZergNathrokor:
+						{
+							animation = IscriptAnimation::Unused1;
+						} break;
+						case UnitId::ZergQuazilisk:
+						{
+							animation = IscriptAnimation::GndAttkToIdle;
+						} break;
+						case UnitId::ZergZoryusthaleth:
+						{
+							animation = IscriptAnimation::Built;
+						} break;
+						case UnitId::ZergUltrokor:
+						case UnitId::ZergOvileth:
+						{
+							animation = IscriptAnimation::AlmostBuilt;
+						} break;
+						case UnitId::ZergKonvilisk:
+						{
+							animation = IscriptAnimation::Landing;
+						} break;
+						default:
+						{
+							animation = IscriptAnimation::Init;
+						} break;
 					}
 					unit->sprite->play_iscript_animation(animation, true);
 				}

@@ -1201,6 +1201,9 @@ namespace SoundId
 		CohortRevive02						= 1887,
 
 		LazarusAgentProc					= 1905,
+
+		SwarmingOmenProc01					= 1907,
+		SwarmingOmenProc02					= 1908,
 	};
 }
 

@@ -566,8 +566,21 @@ namespace hooks
 				// Zoryusthaleth - Swarming Omen
 				if (unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
 				{
-					unitExt->timers[TimerSwarmingOmen] = 15 * 24;
+					unitExt->timers[TimerSwarmingOmen] = 5 * 24;
+					if (unitExt->timers[TimerSwarmingOmenSFX] == 0) {
+						unitExt->timers[TimerSwarmingOmenSFX] = 10 * 24;
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
+					}
+					if (!unit->sprite->get_overlay(ImageId::EnsnaringBroodOverlay)) {
+						unit->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
+					}
 				}
+				else {
+					if (unit->sprite->get_overlay(ImageId::EnsnaringBroodOverlay) && unitExt->timers[TimerSwarmingOmen] == 0) {
+						unit->sprite->remove_overlay(ImageId::EnsnaringBroodOverlay);
+					}
+				}
+
 				// Zoryusthaleth - Reconstitution
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
