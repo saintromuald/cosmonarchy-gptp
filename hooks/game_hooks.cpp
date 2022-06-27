@@ -327,13 +327,12 @@ namespace hooks
 			scbw::refresh_screen();
 
 			// Needed for extended tooltips
-			static bool lastShift = 0;
-			bool newShift = GetAsyncKeyState(VK_SHIFT) & 0x1;
-			if (lastShift != newShift)
-			{
+			static bool last_shift = 0;
+			bool new_shift = *g_is_holding_shift;
+			if (last_shift != new_shift) {
 				scbw::refresh_console();
 			}
-			lastShift = newShift;
+			last_shift = new_shift;
 
 			globals.frame_hook();
 			update_search_index_effects();

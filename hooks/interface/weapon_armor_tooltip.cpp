@@ -73,7 +73,7 @@ static std::string formatStringVector(std::vector<std::string> strings)
 
 const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 {
-	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
+	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
 	// Get game strings
 	const char* entryName = statTxtTblNew->get_string(entryStrIndex);
@@ -389,7 +389,7 @@ namespace hooks
 	{
 		UnitExt* unit_ext = globals.get_unit_ext(unit);
 
-		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
+		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
 		const u16 label_id = upgrades_dat::label[units_dat::ArmorUpgrade[unit->id]];
 		const char* armor_upgrade_name = statTxtTblNew->get_string(label_id);
