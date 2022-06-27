@@ -505,7 +505,7 @@ C_ASSERT(sizeof(TargetFlag) == 2);
 
 struct UnitFinderData
 {
-	s32 unitIndex;
+	s32 unit_index;
 	s32 position;
 	bool operator < (const UnitFinderData& rhs) const {
 		return this->position < rhs.position;

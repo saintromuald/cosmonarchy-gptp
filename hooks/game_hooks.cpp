@@ -1767,7 +1767,7 @@ namespace hooks
 					return false;
 				}
 				return true;
-			}).getAllUnits();
+			}).get_all_units();
 
 			if (!seraphs.empty())
 			{

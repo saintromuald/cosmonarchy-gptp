@@ -428,8 +428,8 @@ namespace hooks
 								// It is the code below that is causing the
 								// deselection to fail where simple shift+click would
 								// continue to deselect.
-								u32 unitIndex = helper::unit_to_unit_id(local_temp_array_1[0]);
-								if (helper::select_single_unit_from_id(unitIndex) != 0)
+								u32 unit_index = helper::unit_to_unit_id(local_temp_array_1[0]);
+								if (helper::select_single_unit_from_id(unit_index) != 0)
 								{
 									bUpdateSelection = false;
 								}

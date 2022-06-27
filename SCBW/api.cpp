@@ -246,7 +246,7 @@ namespace scbw
 		static UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom());
 
-		Unit* darkSwarm = darkSwarmFinder.getFirst(is_dark_swarm);
+		Unit* darkSwarm = darkSwarmFinder.get_first(is_dark_swarm);
 		return darkSwarm;
 	}
 
@@ -254,7 +254,7 @@ namespace scbw
 	{
 		UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
-		Unit* darkSwarm = darkSwarmFinder.getFirst(is_dark_swarm);
+		Unit* darkSwarm = darkSwarmFinder.get_first(is_dark_swarm);
 		return darkSwarm;
 	}
 
@@ -863,7 +863,7 @@ namespace scbw
 				unit->get_top(),
 				unit->get_right(),
 				unit->get_bottom()
-			).getFirst(cosmonarchy_finder_match(unit, Flags::NotSelf | Flags::NoAir, {}));
+			).get_first(cosmonarchy_finder_match(unit, Flags::NotSelf | Flags::NoAir, {}));
 
 			if (collision)
 			{
