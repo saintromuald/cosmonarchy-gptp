@@ -670,18 +670,18 @@ namespace weapons_dat {
 	SCBW_DATA(u32*, FlingyId, weaponsDat[1].address);  // 00656CA8
 	SCBW_DATA(u8*, SpecialAttack, weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
 	SCBW_DATA(TargetFlag*, TargetFlags, weaponsDat[3].address);  // 00657998
-	SCBW_DATA(u32*, MinRange, weaponsDat[4].address);  // 00656A18
-	SCBW_DATA(u32*, MaxRange, weaponsDat[5].address);  // 00657470
+	SCBW_DATA(u32*, min_range, weaponsDat[4].address);  // 00656A18
+	SCBW_DATA(u32*, max_range, weaponsDat[5].address);  // 00657470
 	SCBW_DATA(u8*, DamageUpgrade, weaponsDat[6].address);  // 006571D0
-	SCBW_DATA(u8*, DamageType, weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with DamageType::Enum.
+	SCBW_DATA(u8*, damage_type, weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
 	SCBW_DATA(u8*, Behavior, weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
 	SCBW_DATA(u8*, RemoveAfter, weaponsDat[9].address);  // 00657040
 	SCBW_DATA(u8*, ExplosionType, weaponsDat[10].address); // 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
 	SCBW_DATA(u16*, InnerSplashRadius, weaponsDat[11].address); // 00656888
 	SCBW_DATA(u16*, MediumSplashRadius, weaponsDat[12].address); // 006570C8
 	SCBW_DATA(u16*, OuterSplashRadius, weaponsDat[13].address); // 00657780
-	SCBW_DATA(u16*, DamageAmount, weaponsDat[14].address); // 00656EB0
-	SCBW_DATA(u16*, DamageBonus, weaponsDat[15].address); // 00657678
+	SCBW_DATA(u16*, damage_amount, weaponsDat[14].address); // 00656EB0
+	SCBW_DATA(u16*, armor_pen, weaponsDat[15].address); // 00657678
 	SCBW_DATA(u8*, Cooldown, weaponsDat[16].address); // 00656FB8
 	SCBW_DATA(u8*, DamageFactor, weaponsDat[17].address); // 006564E0
 	SCBW_DATA(u8*, AttackAngle, weaponsDat[18].address); // 00656990
@@ -700,18 +700,18 @@ namespace weapons_dat
 	extern	u32			FlingyId[MAX_WEAPONS];			
 	extern	u8			SpecialAttack[MAX_WEAPONS];	
 	extern	TargetFlag	TargetFlags[MAX_WEAPONS];		
-	extern	u32			MinRange[MAX_WEAPONS];			
-	extern	u32			MaxRange[MAX_WEAPONS];			
+	extern	u32			min_range[MAX_WEAPONS];			
+	extern	u32			max_range[MAX_WEAPONS];			
 	extern	u8			DamageUpgrade[MAX_WEAPONS];		
-	extern	u8			DamageType[MAX_WEAPONS];			
+	extern	u8			damage_type[MAX_WEAPONS];			
 	extern	u8			Behavior[MAX_WEAPONS];			
 	extern	u8			RemoveAfter[MAX_WEAPONS];		
 	extern	u8			ExplosionType[MAX_WEAPONS];		
 	extern	u16			InnerSplashRadius[MAX_WEAPONS];	
 	extern	u16			MediumSplashRadius[MAX_WEAPONS]; 
 	extern	u16			OuterSplashRadius[MAX_WEAPONS];	
-	extern	u16			DamageAmount[MAX_WEAPONS];		
-	extern	u16			DamageBonus[MAX_WEAPONS];		
+	extern	u16			damage_amount[MAX_WEAPONS];		
+	extern	u16			armor_pen[MAX_WEAPONS];		
 	extern	u8			Cooldown[MAX_WEAPONS];			
 	extern	u8			DamageFactor[MAX_WEAPONS];		
 	extern	u8			AttackAngle[MAX_WEAPONS];		

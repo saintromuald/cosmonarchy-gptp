@@ -1402,7 +1402,7 @@ namespace scbw
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 
 		// Deconstruction - Pazuzu passive
-		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::DamageAmount[weapon_id] * 256.0));
+		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
 		{

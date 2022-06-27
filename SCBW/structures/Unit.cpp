@@ -85,11 +85,11 @@ u8 Unit::get_air_weapon() const
 u8 Unit::getArmor() const
 {
 	assert(this);
-	return units_dat::ArmorAmount[this->id] + this->getArmorBonus();
+	return units_dat::ArmorAmount[this->id] + this->get_armor_bonus();
 }
 
 extern const u32 Func_GetArmorBonus = 0x00453FC0;
-u8 Unit::getArmorBonus() const
+u8 Unit::get_armor_bonus() const
 {
 	assert(this);
 
@@ -555,7 +555,7 @@ void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPla
 //	assert(damage_divisor != 0);
 	if (damage < 0)
 	{
-		damage = weapons_dat::DamageAmount[weapon_id] * 256;
+		damage = weapons_dat::damage_amount[weapon_id] * 256;
 	}
 	__asm
 	{

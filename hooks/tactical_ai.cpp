@@ -101,10 +101,10 @@ static u32 get_max_range(u32 unit_id) {
 	}
 
 	u32 ground_weapon = units_dat::GroundWeapon[unit_id];
-	u32 ground_range = ground_weapon != WeaponId::None ? weapons_dat::MaxRange[ground_weapon] : 0;
+	u32 ground_range = ground_weapon != WeaponId::None ? weapons_dat::max_range[ground_weapon] : 0;
 
 	u32 air_weapon = units_dat::AirWeapon[unit_id];
-	u32 air_range = air_weapon != WeaponId::None ? weapons_dat::MaxRange[air_weapon] : 0;
+	u32 air_range = air_weapon != WeaponId::None ? weapons_dat::max_range[air_weapon] : 0;
 
 	return std::max(ground_range, air_range);
 }
@@ -139,7 +139,7 @@ static bool unit_has_min_range(Unit* unit) {
 		} else {
 			weapon_id = context->get_ground_weapon();
 		}
-		if (weapons_dat::MinRange[weapon_id] || weapons_dat::ExplosionType[weapon_id] == WeaponEffect::SplashRadial) {
+		if (weapons_dat::min_range[weapon_id] || weapons_dat::ExplosionType[weapon_id] == WeaponEffect::SplashRadial) {
 			return true;
 		}
 	}
@@ -200,14 +200,12 @@ static bool is_channeling(Unit* unit) {
 	return false;
 }
 
-static u32 get_damage_against(u32 weapon_id, Unit* target) {
+static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
 	if (target) {
-		u32 type = weapons_dat::DamageType[weapon_id];
+		u32 type = weapons_dat::damage_type[weapon_id];
 		u32 size = units_dat::SizeType[target->id];
-		f32 factor = damage_factors[type].unit_size_factor[size] / 256.0f;
-
-		u32 damage = weapons_dat::DamageAmount[weapon_id] * factor;
-		damage = std::max(damage - target->getArmor(), 1u);
+		u32 armor_pen = hooks::get_modified_armor_pen(unit, weapon_id);
+		return std::max(weapons_dat::damage_amount[weapon_id] - std::max(target->getArmor() - armor_pen, 0u), 1u);
 	}
 	return 0;
 }
@@ -215,11 +213,11 @@ static u32 get_damage_against(u32 weapon_id, Unit* target) {
 static u32 get_dps_against(Unit* source, Unit* target) {
 	if (target->id == UnitId::ProtossAccantor) {
 		if (!(target->status & UnitStatus::InAir)) {
-			return (get_damage_against(WeaponId::Scarab, target) /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
+			return (get_damage_against(source, WeaponId::Scarab, target) /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
 				* 1.5; // aoe multiplier
 		}
 	} else if (target->id == UnitId::ProtossSolarion) {
-		return (get_damage_against(WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+		return (get_damage_against(source, WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
 			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
 			* 1.5; // additional bias to encourage targeting solarions more
 	} else if (units_dat::base_property[target->id] & UnitProperty::Spellcaster
@@ -230,7 +228,7 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 		Unit* context = source->subunit ? source->subunit : source;
 		u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
 		f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
-		return hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(weapon_id, target)) * multiplier;
+		return hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(source, weapon_id, target)) * multiplier;
 	}
 	return 0;
 }
@@ -1029,7 +1027,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				UnitExt* target_ext = globals.get_unit_ext(unit->order_target.unit);
 				furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 			}
-			f32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
+			f32 dirgeDamagePotential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
 
 			if (furiaDamagePotential > dirgeDamagePotential) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 0);
@@ -1038,7 +1036,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0) {
-				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite], Flags::NotSelf, {}, [&](Unit* u) {
+				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::Parasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
 					s32 supply = 0;
 					cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
@@ -1051,7 +1049,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 						auto weapon = u->get_ground_weapon();
 						if (weapon != WeaponId::None)
 						{
-							if (weapons_dat::MaxRange[weapon] >= 64)
+							if (weapons_dat::max_range[weapon] >= 64)
 							{
 								priority /= 2;
 							}
@@ -1216,13 +1214,13 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 		else if (unit->id == UnitId::TerranPaladin) {
 			if (unit->main_order_id != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;
-				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
+				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::Skyfall],
 					CFlags::Enemy, {}, [&](Unit* u) {
 
 					// scbw::print("Loop");
 					Unit* tryTarget = u;
 					s32 innerCount = 0;
-					cosmonarchyFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
+					cosmonarchyFinderLoop(u, u->position, weapons_dat::max_range[WeaponId::Skyfall] , CFlags::Ally, {},
 						[&](Unit* internalUnit) {
 						innerCount++;
 					});

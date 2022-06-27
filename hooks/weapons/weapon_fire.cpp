@@ -183,7 +183,7 @@ namespace hooks
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
-				auto range = weapons_dat::MaxRange[weapon_id] + 16;
+				auto range = weapons_dat::max_range[weapon_id] + 16;
 				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
 				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
 				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
@@ -700,8 +700,8 @@ namespace hooks
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
 					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					collisionTarget->damage_with_custom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
-						weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid],
+					collisionTarget->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
+						weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid],
 						bullet->source_unit, bullet->srcPlayer, 0, 1, false);
 
 					if (count >= 4)
@@ -1251,7 +1251,7 @@ namespace hooks
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 bulletDirection = bullet->direction1;
-				s32 maxRangeVar = (weapons_dat::MaxRange[bullet->weapon_id] + 20) << 8;
+				s32 maxRangeVar = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
 				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
 				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);

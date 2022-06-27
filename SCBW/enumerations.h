@@ -17,9 +17,9 @@ namespace UnitSize
 	enum
 	{
 		Independent,
-		Small,
+		Light,
 		Medium,
-		Large,
+		Heavy,
 		Titanic,
 	};
 }

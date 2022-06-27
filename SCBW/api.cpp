@@ -1133,7 +1133,7 @@ namespace scbw
 	{
 		return !(unit->status & UnitStatus::InAir)
 		&&		 unit->id != UnitId::ProtossPlasmaShell
-		&&	   (!weapon || weapons_dat::MaxRange[weapon] > 32)
+		&&	   (!weapon || weapons_dat::max_range[weapon] > 32)
 		&&		 unit->id != UnitId::TerranHarakan;
 	}
 
@@ -1223,8 +1223,8 @@ namespace scbw
 	s32 get_final_damage(Unit* unit, u16 weapon_id)
 	{
 		s32 upgType = get_upgrade_type(unit);
-		s32 baseDamage = weapons_dat::DamageAmount[weapon_id];
-		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgType);
+		s32 baseDamage = weapons_dat::damage_amount[weapon_id];
+		f64 bonusDamage = (f64)weapons_dat::armor_pen[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgType);
 		f64 final_damage = baseDamage;
 		if (bonusDamage)
 		{
@@ -1343,7 +1343,7 @@ namespace scbw
 		}
 		if (groundWeaponId != WeaponId::None)
 		{
-			if (weapons_dat::MaxRange[groundWeaponId] > 32)
+			if (weapons_dat::max_range[groundWeaponId] > 32)
 			{
 				return true;
 			}
@@ -1355,7 +1355,7 @@ namespace scbw
 		}
 		if (airWeaponId != WeaponId::None)
 		{
-			if (weapons_dat::MaxRange[airWeaponId] > 32)
+			if (weapons_dat::max_range[airWeaponId] > 32)
 			{
 				return true;
 			}

@@ -71,7 +71,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the bonus armor amount of this unit (from upgrades).
 	/// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].
-	u8 getArmorBonus() const;
+	u8 get_armor_bonus() const;
 
 	/// Returns the maximum energy amount of this unit (with upgrades).
 	u16 get_max_energy() const;

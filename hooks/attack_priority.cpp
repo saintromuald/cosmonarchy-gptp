@@ -420,18 +420,18 @@ namespace
 			}
 			else
 			{
-				return weapons_dat::MinRange[airWeapon];
+				return weapons_dat::min_range[airWeapon];
 			}
 		}
 		else
 		{
 			if (airWeapon == WeaponId::None)
 			{
-				return weapons_dat::MinRange[groundWeapon];
+				return weapons_dat::min_range[groundWeapon];
 			}
 			else
 			{
-				return std::min(weapons_dat::MinRange[groundWeapon], weapons_dat::MinRange[airWeapon]);
+				return std::min(weapons_dat::min_range[groundWeapon], weapons_dat::min_range[airWeapon]);
 			}
 		}
 	}

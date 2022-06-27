@@ -69,7 +69,7 @@ namespace hooks
 		else
 			v5 = helper::distanceFromDboxCorner(a1, a1->order_target.pt.x, a1->order_target.pt.y);
 		v7 = v5;
-		v6 = weapons_dat::MinRange[a2];
+		v6 = weapons_dat::min_range[a2];
 		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathing_flags & 2)
 			return 0;
 		v8 = v2->next_target_waypoint.x;
@@ -117,7 +117,7 @@ namespace hooks
 		}
 		if (v5 >= (unsigned __int8)0x82)
 			return 0;
-		v7 = weapons_dat::MinRange[v5];
+		v7 = weapons_dat::min_range[v5];
 		if (v7)
 		{
 			if (helper::is_target_within_min_range(v4, v7, v2))
@@ -227,7 +227,7 @@ namespace hooks
 				}
 			}
 			if (v6 >= (unsigned __int8)0x82
-				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
+				|| (v8 = weapons_dat::min_range[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
 				|| (v9 = helper::get_unit_max_weapon_range(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
 LABEL_23:
@@ -304,7 +304,7 @@ LABEL_22:
 						v12 = 0x82;
 				}
 				if (v12 >= (unsigned __int8)0x82
-					|| (v14 = weapons_dat::MinRange[v12]) != 0 && helper::is_target_within_min_range(v11, v14, target)
+					|| (v14 = weapons_dat::min_range[v12]) != 0 && helper::is_target_within_min_range(v11, v14, target)
 					|| (v15 = helper::get_unit_max_weapon_range(v1, v12), ByteOperations::SetLowByte(v16, (helper::is_target_within_min_movement_range(target, v11, v15), !v16))))
 				{
 LABEL_63:
@@ -339,7 +339,7 @@ LABEL_62:
 				}
 				if (v6 < (unsigned __int8)0x82)
 				{
-					v8 = weapons_dat::MinRange[v6];
+					v8 = weapons_dat::min_range[v6];
 					if (!v8 || !helper::is_target_within_min_range(v5, v8, target))
 					{
 						v9 = helper::get_unit_max_weapon_range(v1, v6);
@@ -862,7 +862,7 @@ LABEL_34:
 				}
 				if (v17 < WeaponId::None)
 				{
-					v19 = weapons_dat::MinRange[v17];
+					v19 = weapons_dat::min_range[v17];
 					if (!v19 || !helper::is_target_within_min_range(v16, v19, targeta))
 					{
 						v20 = helper::get_unit_max_weapon_range(v2, v17);
@@ -1006,10 +1006,10 @@ LABEL_65:
 								}
 								if (airWeapon < WeaponId::None)
 								{
-									u32 airWeaponMinRange = weapons_dat::MinRange[airWeapon];
+									u32 airWeaponMinRange = weapons_dat::min_range[airWeapon];
 									if (!airWeaponMinRange || !(helper::is_target_within_min_range(subunit, airWeaponMinRange, unitTarget)))
 									{
-										s32 airWeaponMaxRange = weapons_dat::MaxRange[airWeapon];
+										s32 airWeaponMaxRange = weapons_dat::max_range[airWeapon];
 										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))
 										{
 											if (helper::tech_use_allowed(unit, 0, unit->player) == 1

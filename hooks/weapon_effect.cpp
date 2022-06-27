@@ -30,8 +30,8 @@ namespace hooks
 		Unit* dsw = scbw::get_dark_swarm_from_position(x, y, r);
 		if (dsw != nullptr)
 		{
-			u32 damage = (weapons_dat::DamageAmount[weapon_id] * 256) +
-				(weapons_dat::DamageBonus[weapon_id] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::DamageUpgrade[weapon_id]));
+			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
+				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::DamageUpgrade[weapon_id]));
 			if (bullet->hit_flags & 2)
 			{
 				damage /= 2;
@@ -387,7 +387,7 @@ namespace hooks
 			{
 				return;
 			}
-			target->damage_with_custom((weapons_dat::DamageAmount[WeaponId::KalkaliskViscousAcid] - count) * 256, weapons_dat::DamageType[WeaponId::KalkaliskViscousAcid], bullet->source_unit, bullet->srcPlayer, 0, 1, false);
+			target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid], bullet->source_unit, bullet->srcPlayer, 0, 1, false);
 			return;
 		}
 

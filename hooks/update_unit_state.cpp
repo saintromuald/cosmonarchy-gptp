@@ -95,7 +95,7 @@ namespace hooks
 	{
 		const u32 unitOffset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
 		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon] + unitOffset
+			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unitOffset
 			&& unit->can_attack_target(target);
 	}
 
@@ -139,7 +139,7 @@ namespace hooks
 		if (unit->id == UnitId::TerranWyvern
 			&& unitExt->timers[TimerWyvernAttackCooldown] == 0)
 		{
-			auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+			auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
 			auto x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
 			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1);

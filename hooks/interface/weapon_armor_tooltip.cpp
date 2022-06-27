@@ -13,13 +13,13 @@
 #include "player_color.h"
 
 // Text colors	TODO: Move to other file
-#define BWTC_Reset		"\002"
-#define BWTC_Teal		"\017"
-#define BWTC_Green		"\007"
-#define BWTC_Yellow		"\003"
-#define BWTC_Orange		"\021"
-#define BWTC_Red		"\006"
-#define BWTC_White		"\004"
+#define BWTC_RESET		"\002"
+#define BWTC_TEAL		"\017"
+#define BWTC_GREEN		"\007"
+#define BWTC_YELLOW		"\003"
+#define BWTC_ORANGE		"\021"
+#define BWTC_RED		"\006"
+#define BWTC_WHITE		"\004"
 
 char buffer[256];
 
@@ -81,20 +81,25 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 //	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
 	const char* type_name = "";
 
-	u8 damageFactor = getDamageFactorForTooltip(weapon_id, unit);
+	u8 damage_factor = getDamageFactorForTooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weapon_id]);
-	u8 damage_type = weapons_dat::DamageType[weapon_id];
-	u32 baseDamage = weapons_dat::DamageAmount[weapon_id];
-	u32 bonusDamage = weapons_dat::DamageBonus[weapon_id] * upgrade_level;
+	u8 damage_type = weapons_dat::damage_type[weapon_id];
+	u32 base_damage = weapons_dat::damage_amount[weapon_id];
+	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
+	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, weapon_id);
+	if (bonus_armor_pen < 0) {
+		bonus_armor_pen = 0;
+	}
+	bonus_armor_pen -= armor_pen;
 
-	f32 minRange = weapons_dat::MinRange[weapon_id] / 32.0;
-	f32 range = weapons_dat::MaxRange[weapon_id] / 32.0;
-	f32 bonusRange = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit) / 32.0 - range;
-	bonusRange -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id);
+	f32 min_range = weapons_dat::min_range[weapon_id] / 32.0;
+	f32 range = weapons_dat::max_range[weapon_id] / 32.0;
+	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit) / 32.0 - range;
+	bonus_range -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id);
 
 	std::string damage_modifiers = "";
-	f64 attackCd = (f64)weapons_dat::Cooldown[weapon_id] / 24;
-	f64 attackCdModifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attackCd;
+	f64 attack_cooldown = (f64)weapons_dat::Cooldown[weapon_id] / 24;
+	f64 attack_cooldown_modifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attack_cooldown;
 
 	s32 splashInner = weapons_dat::InnerSplashRadius[weapon_id];
 	s32 splashMedium = weapons_dat::MediumSplashRadius[weapon_id];
@@ -105,49 +110,51 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 
 	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
 
+	/*
 	switch (damage_type) {
 		case DamageType::Concussive: {
-			type_name = BWTC_Teal "Concussive" BWTC_Reset;
-			damage_modifiers = BWTC_Teal "100" BWTC_Reset "/" BWTC_Yellow "75" BWTC_Reset "/" BWTC_Orange "50" BWTC_Reset "/" BWTC_Red "25" BWTC_Reset;
+			type_name = BWTC_TEAL "Concussive" BWTC_RESET;
+			damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "75" BWTC_RESET "/" BWTC_ORANGE "50" BWTC_RESET "/" BWTC_RED "25" BWTC_RESET;
 		} break;
 		case DamageType::Impact: {
-			type_name = BWTC_Yellow "Impact" BWTC_Reset;
-			damage_modifiers = BWTC_Teal "100" BWTC_Reset "/" BWTC_Yellow "100" BWTC_Reset "/" BWTC_Orange "75" BWTC_Reset "/" BWTC_Red "50" BWTC_Reset;
+			type_name = BWTC_YELLOW "Impact" BWTC_RESET;
+			damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "100" BWTC_RESET "/" BWTC_ORANGE "75" BWTC_RESET "/" BWTC_RED "50" BWTC_RESET;
 		} break;
 		case DamageType::Explosive: {
-			type_name = BWTC_Orange "Explosive" BWTC_Reset;
-			damage_modifiers = BWTC_Teal "50" BWTC_Reset "/" BWTC_Yellow "75" BWTC_Reset "/" BWTC_Orange "100" BWTC_Reset "/" BWTC_Red "75" BWTC_Reset;
+			type_name = BWTC_ORANGE "Explosive" BWTC_RESET;
+			damage_modifiers = BWTC_TEAL "50" BWTC_RESET "/" BWTC_YELLOW "75" BWTC_RESET "/" BWTC_ORANGE "100" BWTC_RESET "/" BWTC_RED "75" BWTC_RESET;
 		} break;
 		case DamageType::Chronal: {
-			type_name = BWTC_White "Chronal" BWTC_Reset;
-			damage_modifiers = BWTC_Teal "100" BWTC_Reset "/" BWTC_Yellow "100" BWTC_Reset "/" BWTC_Orange "100" BWTC_Reset "/" BWTC_Red "100" BWTC_Reset;
+			type_name = BWTC_WHITE "Chronal" BWTC_RESET;
+			damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "100" BWTC_RESET "/" BWTC_ORANGE "100" BWTC_RESET "/" BWTC_RED "100" BWTC_RESET;
 		} break;
 		case DamageType::Independent: {
-			type_name = BWTC_White "Independent" BWTC_Reset;
+			type_name = BWTC_WHITE "Independent" BWTC_RESET;
 		} break;
 		case DamageType::IgnoreArmor: {
-			type_name = BWTC_White "Ignores Armor" BWTC_Reset;
+			type_name = BWTC_WHITE "Ignores Armor" BWTC_RESET;
 		} break;
 		default: {
 			type_name = "None";
 		} break;
 	};
+	*/
 
 	switch (splash_type) {
 		case WeaponEffect::SplashRadial: {
-			splash_type_value = BWTC_Red "Unsafe" BWTC_Reset;
+			splash_type_value = BWTC_RED "Unsafe" BWTC_RESET;
 		} break;
 		case WeaponEffect::SplashEnemy: {
-			splash_type_value = BWTC_Green "Safe" BWTC_Reset;
+			splash_type_value = BWTC_GREEN "Safe" BWTC_RESET;
 		} break;
 		case WeaponEffect::Unknown_Crash: {
-			splash_type_value = BWTC_Green "Ally Safe" BWTC_Reset; 
+			splash_type_value = BWTC_GREEN "Ally Safe" BWTC_RESET; 
 		} break;
 		case WeaponEffect::SplashAir: {	
-			splash_type_value = BWTC_Yellow "Air Only" BWTC_Reset;
+			splash_type_value = BWTC_YELLOW "Air Only" BWTC_RESET;
 		} break;
 		default: {
-			splash_type_value = BWTC_White "Normal Hit" BWTC_Reset;
+			splash_type_value = BWTC_WHITE "Normal Hit" BWTC_RESET;
 		} break;
 	};
 
@@ -189,14 +196,12 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	// Damage
 	if (extended)
 	{
-		text += std::string(damageStr) + " " + std::to_string(damageFactor) + "x(" + std::to_string(baseDamage);
-		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
+		text += std::string(damageStr) + " " + std::to_string(damage_factor) + "x(" + std::to_string(base_damage);
 		text += ")";
 	}
 	else
 	{
-		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
-		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
+		text += std::string(damageStr) + " " + std::to_string(damage_factor * base_damage);
 
 		/*
 		if (weapon_id == WeaponId::ValkyrieHaloRockets)
@@ -206,25 +211,36 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 		*/
 	}
 
+	// Armor Pen
+	if (armor_pen > 0) {
+		text += "\nArmor Pen: ";
+
+		std::stringstream ss;
+		ss << armor_pen;
+		if (bonus_armor_pen > 0)      text += BWTC_GREEN "(+" + ss.str() + BWTC_RESET ")";
+		else if (bonus_armor_pen < 0) text += BWTC_RED   "("  + ss.str() + BWTC_RESET ")";
+		text += ss.str();
+	}
+
 	// Cooldown
-	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\007" : "\002";
-	std::stringstream ss;
-	ss << std::setprecision(4);
+	std::string modifier_color = attack_cooldown_modifier > 0 ? "\006" : attack_cooldown_modifier < 0 ? "\007" : "\002";
+	std::stringstream string_builder; // TODO: replace with something not gay
+	string_builder << std::setprecision(4);
 	if (!isSuicideUnit)
 	{
-		if (extended) ss << attackCd;
-		else ss << (attackCd + attackCdModifier);
+		if (extended) string_builder << attack_cooldown;
+		else string_builder << (attack_cooldown + attack_cooldown_modifier);
 		text += "\nCooldown: ";
-		text += modifierColor;
-		text += ss.str() + "s";
-		if (extended && attackCdModifier != 0)
+		text += modifier_color;
+		text += string_builder.str() + "s";
+		if (extended && attack_cooldown_modifier != 0)
 		{
-			ss.str("");
-			ss << abs(attackCdModifier);
+			string_builder.str("");
+			string_builder << abs(attack_cooldown_modifier);
 
-			if (attackCdModifier > 0) text += " + ";
+			if (attack_cooldown_modifier > 0) text += " + ";
 			else text += " - ";
-			text += modifierColor + ss.str() + "s";
+			text += modifier_color + string_builder.str() + "s";
 		}
 		text += "\002";
 	}
@@ -232,27 +248,27 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	// DPS
 	if (!isSuicideUnit && extended)
 	{
-		ss.str("");
-		f64 cd = (attackCd + attackCdModifier);
-		ss << ((f64)damageFactor * (baseDamage + bonusDamage) / cd);
-		text += "\nDPS: " + modifierColor + ss.str() + "\002";
+		string_builder.str("");
+		f64 cd = (attack_cooldown + attack_cooldown_modifier);
+		string_builder << ((f64)damage_factor * base_damage / cd);
+		text += "\nDPS: " + modifier_color + string_builder.str() + "\002";
 	}
 
 	// Range
 	text += "\nRange: ";
 	if (range > 1)
 	{
-		ss.str("");
-		if (minRange > 0)
+		string_builder.str("");
+		if (min_range > 0)
 		{
-			ss << minRange << "-";
+			string_builder << min_range << "-";
 		}
-		ss << range;
-		if (bonusRange > 0)
+		string_builder << range;
+		if (bonus_range > 0)
 		{
-			ss << "+" << bonusRange;
+			string_builder << "+" << bonus_range;
 		}
-		text += ss.str();
+		text += string_builder.str();
 	}
 	else
 	{
@@ -263,11 +279,13 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	text += "\nTargets: " + targetFlagsText;
 
 	// Type
+	/*
 	text += "\nType: " + std::string(type_name);
 	if (extended && damage_modifiers != "")
 	{
 		text += " (" + damage_modifiers + ")";
 	}
+	*/
 
 	// Splash
 	if (hasSplash)
@@ -326,7 +344,7 @@ namespace hooks
 	// 0  - unlimited stacks		x
 	// 1  - binary true / false
 	// >1 - limited stacks			x/max
-	static void addStatus(std::vector<std::string>& vec, std::string name, s32 value = -1, s32 maxValue = 0, s32 timer = -1, TimerType timerType = TimerType::Vanilla)
+	static void add_status(std::vector<std::string>& vec, std::string name, s32 value = -1, s32 maxValue = 0, s32 timer = -1, TimerType timerType = TimerType::Vanilla)
 	{
 		if (timer > 0 || value > 0)
 		{
@@ -369,54 +387,49 @@ namespace hooks
 
 	const char* get_armor_tooltip_string(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
 
 		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
-		const u16 labelId = upgrades_dat::label[units_dat::ArmorUpgrade[unit->id]];
-		const char* armorUpgradeName = statTxtTblNew->get_string(labelId);
+		const u16 label_id = upgrades_dat::label[units_dat::ArmorUpgrade[unit->id]];
+		const char* armor_upgrade_name = statTxtTblNew->get_string(label_id);
 		const char* armorStr = statTxtTblNew->get_string(778); // "Armor:"
 
-		const u8 baseArmor = units_dat::ArmorAmount[unit->id];
-		const u8 unitSize = units_dat::SizeType[unit->id];
-		const char* sizeLabel = "Size:";
-		const char* sizeText = "";
-		f32 bonusArmor = unit->getArmorBonus();
+		const u8 base_armor = units_dat::ArmorAmount[unit->id];
+		const u8 unit_size = units_dat::SizeType[unit->id];
+		const char* size_label = "Size:";
+		const char* size_text = "";
 
-		bonusArmor -= std::min(unitExt->values[ValueControlledOpposition], (u32)baseArmor);
-		bonusArmor -= unitExt->values[ValueObservanceRend];
+		f32 bonus_armor = base_armor + unit->get_armor_bonus();
+		bonus_armor -= unit_ext->values[ValueControlledOpposition];
+		bonus_armor -= unit_ext->values[ValueObservanceRend];
+		if (bonus_armor < 0) {
+			bonus_armor = 0;
+		}
+		bonus_armor -= base_armor;
 
-		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
-		const s32 sightRange = units_dat::SightRange[unit->id];
-
-		switch (unitSize)
-		{
-			case 1:
-			{
-				// Teal
-				sizeText = "\017Light\002";
+		const u8 transport_space = units_dat::SpaceRequired[unit->id];
+		const s32 sight_range = units_dat::SightRange[unit->id];
+		
+		/*
+		switch (unit_size) {
+			case UnitSize::Light: {
+				size_text = BWTC_TEAL "Light" BWTC_RESET;
 			} break;
-			case 2:
-			{
-				// Yellow
-				sizeText = "\003Medium\002";
+			case UnitSize::Medium: {
+				size_text = BWTC_YELLOW "Medium" BWTC_RESET;
 			} break;
-			case 3:
-			{
-				// Orange
-				sizeText = "\021Heavy\002";
+			case UnitSize::Heavy: {
+				size_text = BWTC_ORANGE "Heavy" BWTC_RESET;
 			} break;
-			case 4:
-			{
-				// Red
-				sizeText = "\006Titanic\002";
+			case UnitSize::Titanic: {
+				size_text = BWTC_RED "Titanic" BWTC_RESET;
 			} break;
-			default:
-			{
-				// White
-				sizeText = "\004Unknown\002";
+			default: {
+				size_text = BWTC_WHITE "Unknown" BWTC_RESET;
 			} break;
 		}
+		*/
 
 		std::stringstream ss;
 		ss << std::setprecision(4);
@@ -447,141 +460,141 @@ namespace hooks
 		}
 
 		// Gptp Timer + Value
-		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
-			unitExt->timers[TimerAdrenal], TimerType::Gptp);
-		addStatus(statuses, "Captivating ZethrokorClaws", captivating_claws_get_stacks(unit), 4,
+		add_status(statuses, "Adrenal Glands", unit_ext->values[ValueAdrenalStacks], 4,
+			unit_ext->timers[TimerAdrenal], TimerType::Gptp);
+		add_status(statuses, "Captivating ZethrokorClaws", captivating_claws_get_stacks(unit), 4,
 			captivating_claws_get_timer(unit), TimerType::Gptp);
-		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
-			unitExt->timers[TimerSwarmingOmen], TimerType::Gptp);
-		addStatus(statuses, "Observance", unitExt->values[ValueObservanceRend], 0,
-			unitExt->timers[TimerObservanceDebuff], TimerType::Gptp);
-		addStatus(statuses, "Corrosive Spores", unitExt->values[ValueCorrosiveTouchStacks], 0,
-			unitExt->timers[TimerCorrosiveTouch], TimerType::Gptp);
-		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
-			unitExt->timers[TimerDirgeFuse], TimerType::Gptp);
-		addStatus(statuses, "Petrification", unitExt->values[ValuePetrificationStacks], 0,
-			unitExt->timers[TimerPetrification], TimerType::Gptp);
+		add_status(statuses, "Swarming Omen Aura", unit_ext->values[ValueSwarmingOmenAbility], 1,
+			unit_ext->timers[TimerSwarmingOmen], TimerType::Gptp);
+		add_status(statuses, "Observance", unit_ext->values[ValueObservanceRend], 0,
+			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
+		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
+			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
+		add_status(statuses, "Dirge Fuse", unit_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
+			unit_ext->timers[TimerDirgeFuse], TimerType::Gptp);
+		add_status(statuses, "Petrification", unit_ext->values[ValuePetrificationStacks], 0,
+			unit_ext->timers[TimerPetrification], TimerType::Gptp);
 
-		if (unitExt->values[ValueSignifyStacks] < 5)
+		if (unit_ext->values[ValueSignifyStacks] < 5)
 		{
-			addStatus(statuses, "Cowardice", unitExt->values[ValueSignifyStacks], 5,
-				unitExt->timers[TimerSignify], TimerType::Gptp);
+			add_status(statuses, "Cowardice", unit_ext->values[ValueSignifyStacks], 5,
+				unit_ext->timers[TimerSignify], TimerType::Gptp);
 		}
 		else
 		{
-			addStatus(statuses, "Malice", unitExt->values[ValueSignifyStacks], 1,
-				unitExt->timers[TimerSignify], TimerType::Gptp);
+			add_status(statuses, "Malice", unit_ext->values[ValueSignifyStacks], 1,
+				unit_ext->timers[TimerSignify], TimerType::Gptp);
 		}
 
 		// Gptp Timer
 		// TODO: Add mineral and egg boost timers eventually (currently can't read tooltips from eggs nor mineral fields)
-		addStatus(statuses, "Ensnaring Brood", -1, 1,
-			unitExt->timers[TimerEnsnaringBrood], TimerType::Gptp);
-		addStatus(statuses, "Kaiser Rampage", -1, 1,
-			unitExt->timers[TimerKaiserRampage], TimerType::Gptp);
-		addStatus(statuses, "Hallucinating", -1, 1,
-			unitExt->timers[TimerHallucinating], TimerType::Gptp);
-		addStatus(statuses, "Controlled Demolition", -1, 1,
-			unitExt->timers[TimerControlledDemolition], TimerType::Gptp);
-		addStatus(statuses, "Emergency Detonation", -1, 1,
-			unitExt->timers[TimerEmergencyDetonation], TimerType::Gptp);
-		addStatus(statuses, "Binding Grip", -1, 1,
-			unitExt->timers[TimerBindingGrip], TimerType::Gptp);
-		addStatus(statuses, "Autovitality", -1, 1,
-			unitExt->timers[TimerSimulacrumClone], TimerType::Gptp);
-		addStatus(statuses, "Caustic Discharge", -1, 1,
-			unitExt->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
-		addStatus(statuses, "Ion Field", -1, 1,
-			unitExt->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
+		add_status(statuses, "Ensnaring Brood", -1, 1,
+			unit_ext->timers[TimerEnsnaringBrood], TimerType::Gptp);
+		add_status(statuses, "Kaiser Rampage", -1, 1,
+			unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
+		add_status(statuses, "Hallucinating", -1, 1,
+			unit_ext->timers[TimerHallucinating], TimerType::Gptp);
+		add_status(statuses, "Controlled Demolition", -1, 1,
+			unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
+		add_status(statuses, "Emergency Detonation", -1, 1,
+			unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
+		add_status(statuses, "Binding Grip", -1, 1,
+			unit_ext->timers[TimerBindingGrip], TimerType::Gptp);
+		add_status(statuses, "Autovitality", -1, 1,
+			unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
+		add_status(statuses, "Caustic Discharge", -1, 1,
+			unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
+		add_status(statuses, "Ion Field", -1, 1,
+			unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
 
 		// Gptp Value
-		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
-		addStatus(statuses, "Nemean Reactors", unitExt->values[ValueNemeanReactorsStack], 0);
-		addStatus(statuses, "Sublime Shepherd", unitExt->values[ValueSublimeShepherd], 0);
-		addStatus(statuses, "Lazarus Agent", unitExt->values[ValueLazarusAgent], 0);
-		addStatus(statuses, "Stonewall Protocol", unitExt->values[ValueIsSelfReviving], 0);
-		addStatus(statuses, "Expanded Storage", unitExt->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs
-		addStatus(statuses, "Reconstitution", unitExt->values[ValueReconstitution], 1);
-		addStatus(statuses, "Repentent Chorus", unitExt->values[ValueRepententChorus], 0);
-		addStatus(statuses, "Stellar Enforcement", unitExt->values[ValueStellarEnforcement], 1);
-		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
-		addStatus(statuses, "Controlled Opposition", unitExt->values[ValueControlledOpposition], 0);
-		addStatus(statuses, "Anodyne Annex", unitExt->values[ValueEmpressPassiveStacks], 0);
-		addStatus(statuses, "Counter-Proposal", unitExt->values[ValueAnticthonStacks], 0);
-		addStatus(statuses, "Fragmentary Shells", unitExt->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
-		addStatus(statuses, "Energy Decay", unitExt->values[ValueEntropyGauntlets], 0);
-		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction], 0);
-		addStatus(statuses, "Khaydarin Charge", unitExt->unit_vectors[UnitVectorCrucibles].size(), 0);
+		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
+		add_status(statuses, "Nemean Reactors", unit_ext->values[ValueNemeanReactorsStack], 0);
+		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueSublimeShepherd], 0);
+		add_status(statuses, "Lazarus Agent", unit_ext->values[ValueLazarusAgent], 0);
+		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueIsSelfReviving], 0);
+		add_status(statuses, "Expanded Storage", unit_ext->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs
+		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
+		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
+		add_status(statuses, "Stellar Enforcement", unit_ext->values[ValueStellarEnforcement], 1);
+		add_status(statuses, "Terminal Surge", unit_ext->values[ValueTerminalSurge], 0);
+		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueControlledOpposition], 0);
+		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressPassiveStacks], 0);
+		add_status(statuses, "Counter-Proposal", unit_ext->values[ValueAnticthonStacks], 0);
+		add_status(statuses, "Fragmentary Shells", unit_ext->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
+		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
+		add_status(statuses, "Deconstructing", unit_ext->values[ValueDeconstruction], 0);
+		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
 
 		// Gptp Value - Gimmicked
-		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
-		addStatus(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
-		addStatus(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
-		addStatus(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
-		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
-		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
-		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
-		addStatus(statuses, "Blissful Embrace", unitExt->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
-		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
-		addStatus(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
+		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
+		add_status(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
+		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
+		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
+		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenStatus] > 0, 1);
+		add_status(statuses, "Protective Instincts", unit_ext->values[ValueProtectiveInstinctsStatus] > 0, 1);
+		add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
+		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
+		add_status(statuses, "Kelvin Munitions", unit_ext->values[ValueKelvinMunitionsSlow] > 0, 1);
+		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 
-		if (unitExt->units[UnitMindController])
+		if (unit_ext->units[UnitMindController])
 		{
-			switch (unitExt->units[UnitMindController]->id)
+			switch (unit_ext->units[UnitMindController]->id)
 			{
 				case UnitId::ProtossMindTyrant:
 				{
-					addStatus(statuses, "Tyranny", 1, 1);
+					add_status(statuses, "Tyranny", 1, 1);
 				} break;
 				case UnitId::ProtossDemiurge:
 				{
-					addStatus(statuses, "Worshiping", 1, 1);
+					add_status(statuses, "Worshiping", 1, 1);
 				} break;
 			}
 		}
 
 		// Gptp Timers - Gimmicked
-		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
-		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
-		addStatus(statuses, "Counter-Proposal Active", unitExt->timers[TimerAnticthonRevive] > 0, 1);
-		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
+		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
+		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
+		add_status(statuses, "Counter-Proposal Active", unit_ext->timers[TimerAnticthonRevive] > 0, 1);
+		add_status(statuses, "Godlike", unit_ext->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
-		addStatus(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 200, unit->defensive_matrix_timer);
+		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 200, unit->defensive_matrix_timer);
 
 		// Vanilla Timers
-		addStatus(statuses, "Stimpack", -1, 1, unit->stim_timer);
-		addStatus(statuses, "Irradiated", -1, 1, unit->irradiate_timer);
-		addStatus(statuses, "Ensnared", -1, 1, unit->ensnare_timer);
-		addStatus(statuses, "Lobotomized", -1, 1, unit->lockdown_timer);
-		addStatus(statuses, "Maelstromed", -1, 1, unit->maelstrom_timer);
-		addStatus(statuses, "Plagued", -1, 1, unit->plague_timer);
-		addStatus(statuses, "Stasis", -1, 1, unit->stasis_timer);
-		addStatus(statuses, "Timed Life", -1, 1, unit->remove_timer, TimerType::RemoveTimer);
+		add_status(statuses, "Stimpack", -1, 1, unit->stim_timer);
+		add_status(statuses, "Irradiated", -1, 1, unit->irradiate_timer);
+		add_status(statuses, "Ensnared", -1, 1, unit->ensnare_timer);
+		add_status(statuses, "Lobotomized", -1, 1, unit->lockdown_timer);
+		add_status(statuses, "Maelstromed", -1, 1, unit->maelstrom_timer);
+		add_status(statuses, "Plagued", -1, 1, unit->plague_timer);
+		add_status(statuses, "Stasis", -1, 1, unit->stasis_timer);
+		add_status(statuses, "Timed Life", -1, 1, unit->remove_timer, TimerType::RemoveTimer);
 
 		u32 parasite_spawn_count = 0;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			parasite_spawn_count += unitExt->parasite_spawn_count[i];
+			parasite_spawn_count += unit_ext->parasite_spawn_count[i];
 		}
 
 		// Vanilla Value
-		addStatus(statuses, "Parasited", parasite_spawn_count, 0);
-		addStatus(statuses, "Blinded", unit->is_blind != 0, 1);
-		addStatus(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
-		addStatus(statuses, "Cannot Attack", unitExt->timers[TimerUnderDisruptionField] > 0, 1);
+		add_status(statuses, "Parasited", parasite_spawn_count, 0);
+		add_status(statuses, "Blinded", unit->is_blind != 0, 1);
+		add_status(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
+		add_status(statuses, "Cannot Attack", unit_ext->timers[TimerUnderDisruptionField] > 0, 1);
 
 		// Case Specific
-		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
+		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
 		if (scbw::is_under_dark_swarm(unit))
 		{
 			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
-			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
+			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 
 		/* // Can't see armor icons on eggs yet
 		if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
 			if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep) {
-				addStatus(statuses, "Biogenesis");
+				add_status(statuses, "Biogenesis");
 			}
 		}
 		*/
@@ -592,7 +605,7 @@ namespace hooks
 		// mind control on target, last orders
 		// color code source player if possible
 
-		std::vector<std::string> flags;
+		std::vector<std::string> flags; // TODO: replace with something not gay
 		if (units_dat::base_property[unit->id] & UnitProperty::Building)
 		{
 			flags.push_back("Structure");
@@ -641,14 +654,15 @@ namespace hooks
 
 		std::string flag = formatStringVector(flags);
 
-		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
-		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
-		ss.str("");
-		ss << bonusArmor;
-		if (bonusArmor > 0) text += "+" + ss.str();
-		else if (bonusArmor < 0) text += ss.str();
+		std::string text = "\004" + std::string(armor_upgrade_name) + "\002";
+		text += "\n" + std::string(armorStr) + " " + std::to_string(base_armor);
 
-		text += "\nSize: " + std::string(sizeText);
+		ss.str("");
+		ss << bonus_armor;
+		if (bonus_armor > 0) text += BWTC_GREEN "(+" + ss.str() + BWTC_RESET ")";
+		else if (bonus_armor < 0) text += BWTC_RED "(" + ss.str() + BWTC_RESET ")";
+
+		// text += "\nSize: " + std::string(size_text);
 		text += "\nPlane: " + plane;
 		text += "\nMove Speed: " + movementSpeed;
 		text += "\nStatus: " + status;
@@ -662,10 +676,10 @@ namespace hooks
 				text += "\nAcceleration: " + acceleration;
 			}
 			text += "\nTurn Rate: " + turnRate;
-			text += "\nSight Range: " + std::to_string(sightRange);
-			if (transportSpace != 255)
+			text += "\nSight Range: " + std::to_string(sight_range);
+			if (transport_space != 255)
 			{
-				text += "\nTransport Space: " + std::to_string(transportSpace);
+				text += "\nTransport Space: " + std::to_string(transport_space);
 			}
 		}
 		else

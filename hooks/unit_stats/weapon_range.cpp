@@ -42,7 +42,7 @@ namespace hooks
 		}
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::MaxRange[unit->get_ground_weapon()] <= 32)
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32)
 		{
 			bonusAmount = 0;
 		}
@@ -101,7 +101,7 @@ namespace hooks
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->order_target.unit
-			&& weapons_dat::MaxRange[weapon_id] > 32)
+			&& weapons_dat::max_range[weapon_id] > 32)
 		{
 			UnitExt* orderUnitExt = globals.get_unit_ext(unit->order_target.unit);
 			if (orderUnitExt->values[ValueStellarEnforcement])
@@ -123,6 +123,6 @@ namespace hooks
 		// Height advantage
 		bonusAmount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
 
-		return weapons_dat::MaxRange[weapon_id] * scale + bonusAmount;
+		return weapons_dat::max_range[weapon_id] * scale + bonusAmount;
 	}
 }

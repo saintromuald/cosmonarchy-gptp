@@ -394,7 +394,7 @@ LABEL_55:
 		{
 			v4 = (u8)weapons_dat::DamageFactor[a2];
 			v5 = weapons_dat::Cooldown[a2];
-			v6 = weapons_dat::DamageAmount[a2];
+			v6 = weapons_dat::damage_amount[a2];
 			if (a2 == -126)
 			{
 				v7 = 0;
@@ -403,7 +403,7 @@ LABEL_55:
 			{
 				v7 = (v6 * v4 << 11) / (s32)v5;
 			}
-			v3 = (unsigned _int64)(sqrt((f64)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
+			v3 = (unsigned _int64)(sqrt((f64)(v6 * v4 * (weapons_dat::max_range[a2] / v5)
 				+ ((u32)(totalHits * v7) >> 8)))
 				* 7.58);
 		}
@@ -521,7 +521,7 @@ LABEL_55:
 					if (v5->shields >= 256)
 					{
 						*v4 = a3;
-						if (weapons_dat::DamageType[a3])
+						if (weapons_dat::damage_type[a3])
 						{
 							returnValue = (char)helper::create_shield_overlay(a4, v5);
 						}
@@ -786,13 +786,13 @@ LABEL_32:
 		{
 			v5 = (u8)bullet->weapon_id;
 			v6 = weapons_dat::DamageUpgrade[v5];
-			v7 = weapons_dat::DamageAmount[v5];
+			v7 = weapons_dat::damage_amount[v5];
 			v4 = (u8)bullet->srcPlayer;
 			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
 				/*v8 = g_upgrades_level_bw[v4][v6];
 			else
 				v8 = g_upgrades_level_sc[v4][v6];*/
-				result = (v7 + v8 * weapons_dat::DamageBonus[v2]) << 8;
+				result = (v7 + v8 * weapons_dat::armor_pen[v2]) << 8;
 		}
 		return result;
 	}
