@@ -1146,6 +1146,8 @@ enum Enum {
 	SporeColonyCopy								= 1523,
 	FusionCutterHitDamageless					= 1524,
 
+	SimulacrumAutovitalityProc					= 1547,
+
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
 	LastMinorDamageOverlay						= 471,
