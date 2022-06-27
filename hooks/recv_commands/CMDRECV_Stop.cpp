@@ -43,11 +43,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if ((current_unit->id == UnitId::TerranEidolon
-			||		  current_unit->id == UnitId::Hero_SarahKerrigan
-			||		  current_unit->id == UnitId::Hero_AlexeiStukov
-			||		  current_unit->id == UnitId::Hero_SamirDuran
-			||		  current_unit->id == UnitId::Hero_InfestedDuran)
+			else if (scbw::unit_can_nuke(current_unit)
 			&&		  current_unit->main_order_id == OrderId::NukeTrack)
 			{
 				*u32_0066FF60 = 0x08;
@@ -131,11 +127,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if ((current_unit->id == UnitId::TerranEidolon
-			||		  current_unit->id == UnitId::Hero_SarahKerrigan
-			||		  current_unit->id == UnitId::Hero_AlexeiStukov
-			||		  current_unit->id == UnitId::Hero_SamirDuran
-			||		  current_unit->id == UnitId::Hero_InfestedDuran)
+			else if (scbw::unit_can_nuke(current_unit)
 			&&		  current_unit->main_order_id == OrderId::NukeTrack)
 			{
 				*u32_0066FF60 = 0x08;
@@ -213,11 +205,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x0B;
 			}
-			else if ((current_unit->id == UnitId::TerranEidolon
-			||		  current_unit->id == UnitId::Hero_SarahKerrigan
-			||		  current_unit->id == UnitId::Hero_AlexeiStukov
-			||		  current_unit->id == UnitId::Hero_SamirDuran
-			||		  current_unit->id == UnitId::Hero_InfestedDuran)
+			else if (scbw::unit_can_nuke(current_unit)
 			&&		  current_unit->main_order_id == OrderId::NukeTrack)
 			{
 				*u32_0066FF60 = 0x08;
