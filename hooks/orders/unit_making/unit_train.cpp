@@ -18,7 +18,7 @@ namespace hooks
 		return unit->build_queue[(slot + unit->build_queue_slot) % 5] < UnitId::None;
 	}
 
-	void secondaryOrd_TrainFighter(Unit* unit) {
+	void secondary_order_train_fighter(Unit* unit) {
 		if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
 			if (unit->secondary_order_state == 0 || unit->secondary_order_state == 1) {
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
@@ -27,9 +27,9 @@ namespace hooks
 				} else {
 					Unit* built_unit = 0;
 					if (unit->secondary_order_state == 0) {
-						built_unit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
+						built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 1);
 					} else {
-						built_unit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
+						built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
 					unit->current_build_unit = built_unit;
 					if (!built_unit) {
@@ -42,7 +42,7 @@ namespace hooks
 			} else if (unit->secondary_order_state == 2) {
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit) {
-					u32 hpGain = helper::getHPGainForRepair(built_unit);
+					u32 hpGain = helper::get_hp_gain_for_repair(built_unit);
 					helper::progress_build(built_unit, hpGain, FALSE);
 					if (built_unit->status & UnitStatus::Completed) {
 						helper::add_hangar_unit(unit, built_unit);
@@ -85,7 +85,7 @@ namespace hooks
 	}
 
 	// generic unit training function
-	void orderTrain(Unit* unit)
+	void order_train(Unit* unit)
 	{
 		UnitExt* unitExt = globals.get_unit_ext(unit);
 		if (!(unit->status & UnitStatus::Frozen)
@@ -104,11 +104,11 @@ namespace hooks
 					Unit* builtUnit;
 					if (unit->secondary_order_state == 0)
 					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 1);
+						builtUnit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 1);
 					}
 					else
 					{
-						builtUnit = helper::attemptTrainHatchUnit(unit, unit->build_queue[unit->build_queue_slot], 0);
+						builtUnit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 0);
 					}
 					unit->current_build_unit = builtUnit;
 					if (builtUnit == nullptr)
@@ -129,7 +129,7 @@ namespace hooks
 					UnitExt* builtUnitExt = globals.get_unit_ext(built_unit);
 					bool extraBuild = false;
 					BuildingModifier modifier = get_building_modifier(unit, 0, false);
-					u32 hpGain = helper::getHPGainForRepair(built_unit) * modifier.multiplier;
+					u32 hpGain = helper::get_hp_gain_for_repair(built_unit) * modifier.multiplier;
 					if (modifier.decrease) {
 						if (built_unit->remaining_build_time > modifier.decrease) {
 							built_unit->remaining_build_time -= modifier.decrease;
@@ -230,7 +230,7 @@ namespace hooks
 		}
 	}
 
-	char getMaxHangerSpace(Unit* unit) { // 0x004653D0
+	char get_max_hangar_space(Unit* unit) { // 004653D0
 		if (unit->id == UnitId::ProtossSolarion) {
 			return 12;
 		}
@@ -240,7 +240,7 @@ namespace hooks
 		return 0;
 	}
 
-	b32 _stdcall ButtonIsTraining(Unit* unit) {
+	b32 _stdcall button_is_training(Unit* unit) {
 		return unit->build_queue[unit->build_queue_slot % 5] != UnitId::None;
 	}
 }

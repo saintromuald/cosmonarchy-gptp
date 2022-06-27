@@ -11,7 +11,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::secondaryOrd_TrainFighter(unit);
+		hooks::secondary_order_train_fighter(unit);
 		__asm
 		{
 			POPAD
@@ -27,7 +27,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orderTrain(unit);
+		hooks::order_train(unit);
 		__asm
 		{
 			POPAD
@@ -64,7 +64,7 @@ namespace
 			MOV a1, ECX
 			PUSHAD
 		}
-		result = hooks::getMaxHangerSpace(a1);
+		result = hooks::get_max_hangar_space(a1);
 		__asm
 		{
 			POPAD
@@ -132,8 +132,8 @@ namespace hooks
 		jump_patch(secondaryOrd_TrainFighterWrapper,	0x00466790, 2);
 		jump_patch(function_00468420Wrapper,			0x00468420, 4);
 		jump_patch(getMaxHangarSpace_Wrapper,			0x004653D0, 3);
-		jump_patch(ButtonIsTraining,					0x00428530, 0);
-		jump_patch(isLiftedOff_Wrapper,					0x00046D832, 3);
+		jump_patch(button_is_training,					0x00428530, 0);
+		jump_patch(isLiftedOff_Wrapper,					0x0046D832, 3);
 		jump_patch(isNotLiftedOff_Wrapper,				0x0046D845, 2);
 	}
 }

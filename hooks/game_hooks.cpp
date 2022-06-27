@@ -1657,7 +1657,7 @@ namespace hooks
 			unitExt->values[ValuePetrificationStacks] = 0;
 		}
 
-		// Solarion - Auto Train
+		// Solarion - auto train
 		if (unit->id == UnitId::ProtossSolarion && unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12) {
 			unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
 			unit->set_secondary_order(OrderId::TrainFighter);
