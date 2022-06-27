@@ -211,7 +211,7 @@ namespace hooks
 					// Solarion - start with 12 interceptors
 					if (built_unit && built_unit->id == UnitId::ProtossSolarion)
 					{
-						scbw::create_hangar_units(built_unit, 20, UnitId::ProtossSteward);
+						scbw::create_hangar_units(built_unit, 12, UnitId::ProtossSteward);
 						
 						// s32 interceptors = 12;
 						// u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
