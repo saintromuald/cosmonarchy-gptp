@@ -224,14 +224,6 @@ namespace hooks
 
 		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
-			if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
-				s32 plasma_shield_upgrade = scbw::get_upgrade_level(data.target->player, UpgradeId::ProtossPlasmaShields) * 256;
-				if (data.final_damage > plasma_shield_upgrade) {
-					data.final_damage -= plasma_shield_upgrade;
-				} else {
-					data.final_damage = 128;
-				}
-			}
 			data.shield_reduce_amount = std::min(data.final_damage, data.target->shields);
 			data.final_damage -= data.shield_reduce_amount;
 		}

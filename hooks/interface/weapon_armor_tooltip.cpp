@@ -216,6 +216,7 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 		text += "\nArmor Pen: ";
 
 		std::stringstream ss;
+		ss << std::setprecision(4);
 		ss << armor_pen;
 		if (bonus_armor_pen > 0)      text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
 		else if (bonus_armor_pen < 0) text += " (" BWTC_RED   ""  + ss.str() + BWTC_RESET ")";
@@ -315,6 +316,7 @@ namespace hooks
 	static std::string timerToString(s32 timer)
 	{
 		std::stringstream ss;
+		ss << std::setprecision(4);
 		ss << ceil(timer * 0.042 * 8.0) << "s";
 		return ss.str();
 	}
@@ -322,6 +324,7 @@ namespace hooks
 	static std::string gptpTimerToString(s32 timer)
 	{
 		std::stringstream ss;
+		ss << std::setprecision(4);
 		ss << ceil((timer - 1) / 24.0) << "s";
 		return ss.str();
 	}
@@ -329,6 +332,7 @@ namespace hooks
 	static std::string removeTimerToString(s32 timer)
 	{
 		std::stringstream ss;
+		ss << std::setprecision(4);
 		ss << ceil(timer / 24.0) << "s";
 		return ss.str();
 	}
@@ -385,6 +389,18 @@ namespace hooks
 		}
 	}
 
+	static f32 get_bonus_armor(Unit* unit, u8 base_armor) {
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		f32 bonus_armor = base_armor + unit->get_armor_bonus();
+		bonus_armor -= unit_ext->values[ValueControlledOpposition];
+		bonus_armor -= unit_ext->values[ValueObservanceRend];
+		if (bonus_armor < 0) {
+			bonus_armor = 0;
+		}
+		bonus_armor -= base_armor;
+		return bonus_armor;
+	}
+
 	const char* get_armor_tooltip_string(Unit* unit)
 	{
 		UnitExt* unit_ext = globals.get_unit_ext(unit);
@@ -393,20 +409,14 @@ namespace hooks
 
 		const u16 label_id = upgrades_dat::label[units_dat::ArmorUpgrade[unit->id]];
 		const char* armor_upgrade_name = statTxtTblNew->get_string(label_id);
-		const char* armorStr = statTxtTblNew->get_string(778); // "Armor:"
+		const char* armor_text = statTxtTblNew->get_string(778); // "Armor:"
 
-		const u8 base_armor = units_dat::ArmorAmount[unit->id];
 		const u8 unit_size = units_dat::SizeType[unit->id];
 		const char* size_label = "Size:";
 		const char* size_text = "";
 
-		f32 bonus_armor = base_armor + unit->get_armor_bonus();
-		bonus_armor -= unit_ext->values[ValueControlledOpposition];
-		bonus_armor -= unit_ext->values[ValueObservanceRend];
-		if (bonus_armor < 0) {
-			bonus_armor = 0;
-		}
-		bonus_armor -= base_armor;
+		const u8 base_armor = units_dat::ArmorAmount[unit->id];
+		f32 bonus_armor = get_bonus_armor(unit, base_armor);
 
 		const u8 transport_space = units_dat::SpaceRequired[unit->id];
 		const s32 sight_range = units_dat::SightRange[unit->id];
@@ -655,7 +665,7 @@ namespace hooks
 		std::string flag = formatStringVector(flags);
 
 		std::string text = "\004" + std::string(armor_upgrade_name) + "\002";
-		text += "\n" + std::string(armorStr) + " " + std::to_string(base_armor);
+		text += "\n" + std::string(armor_text) + " " + std::to_string(base_armor);
 
 		ss.str("");
 		ss << bonus_armor;
@@ -693,17 +703,23 @@ namespace hooks
 	}
 
 	// Returns the C-string for the tooltip text of the plasma shield icon.
-	const char* get_shield_tooltip_string(Unit* unit)
-	{
-		const u16 labelId = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
-		const char* shieldUpgradeName = statTxtTblNew->get_string(labelId);
-		const char* shieldStr = statTxtTblNew->get_string(779); // "Shields:"
+	const char* get_shield_tooltip_string(Unit* unit) {
+		const u16 label_id = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
+		const char* shield_upgrade_name = statTxtTblNew->get_string(label_id);
+		//const char* shields_text = statTxtTblNew->get_string(779); // "Shields:"
+		const char* armor_text = statTxtTblNew->get_string(778); // "Armor:"
 
-		u8 shieldUpgradeLevel = scbw::get_upgrade_level(unit->player, UpgradeId::ProtossPlasmaShields);
+		const u8 base_armor = units_dat::ArmorAmount[unit->id];
+		f32 bonus_armor = get_bonus_armor(unit, base_armor);
 
-		std::string text = "\004" + std::string(shieldUpgradeName) + "\002";
-		text += "\n" + std::string(shieldStr) + " 0";
-		if (shieldUpgradeLevel > 0) text += "+" + std::to_string(shieldUpgradeLevel);
+		std::string text = "\004" + std::string(shield_upgrade_name) + "\002";
+		text += "\n" + std::string(armor_text) + " " + std::to_string(base_armor);
+
+		std::stringstream ss;
+		ss << std::setprecision(4);
+		ss << bonus_armor;
+		if (bonus_armor > 0)	  text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
+		else if (bonus_armor < 0) text += " (" BWTC_RED       + ss.str() + BWTC_RESET ")";
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
 		buffer[sizeof(buffer) - 1] = 0;
