@@ -364,7 +364,8 @@ namespace hooks
 				{
 					overlay = ImageId::RechargeShields_Large;
 				} break;
-				case 4: {
+				case 4:
+				{
 					overlay = ImageId::RechargeShieldsCustom_XLarge;
 				} break;
 			}
