@@ -389,7 +389,11 @@ namespace hooks
 				}
 			} else if (unit->sprite->get_overlay(overlay)) {
 				unit->sprite->remove_overlay(overlay);
-				helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+				if (unit->shields >= max_shields) {
+					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+				} else {
+					helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
+				}
 			}
 		}
 

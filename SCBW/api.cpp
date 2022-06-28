@@ -2085,8 +2085,8 @@ namespace scbw
 					ai_region->defense_priority_add = priority;
 				}
 				ai_region->defend_timeout = 0;
-				if (ai_region->ground_strength_needed) ai_region->ground_strength_needed = 200;
-				if (ai_region->air_strength_needed)    ai_region->air_strength_needed    = 200;
+				ai_region->ground_strength_needed = 200;
+				ai_region->air_strength_needed    = 200;
 			} break;
 		}
 		if (recurse) {
