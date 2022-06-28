@@ -1207,6 +1207,7 @@ namespace SoundId
 
 		FlashShieldingStart					= 1922,
 		FlashShieldingEnd					= 1923,
+		FlashShieldingInterrupt				= 1924,
 	};
 }
 
