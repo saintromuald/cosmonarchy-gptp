@@ -1147,6 +1147,8 @@ enum Enum {
 	FusionCutterHitDamageless					= 1524,
 
 	SimulacrumAutovitalityProc					= 1547,
+	RechargeShieldsCustom_Medium				= 1548,
+	RechargeShieldsCustom_XLarge				= 1549,
 
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
