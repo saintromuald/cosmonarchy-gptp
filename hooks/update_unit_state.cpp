@@ -350,7 +350,24 @@ namespace hooks
 		// Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id]) {
 			s32 max_shields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
-			u32 overlay = ImageId::RechargeShields_Small + scbw::get_overlay_offset(unit->id);
+
+			u32 overlay = ImageId::RechargeShields_Small;
+			switch (scbw::get_overlay_offset(unit->id, true)) {
+				case 1:
+				{
+				} break;
+				case 2:
+				{
+					overlay = ImageId::RechargeShieldsCustom_Medium;
+				} break;
+				case 3:
+				{
+					overlay = ImageId::RechargeShields_Large;
+				} break;
+				case 4: {
+					overlay = ImageId::RechargeShieldsCustom_XLarge;
+				} break;
+			}
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
 			} else if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
@@ -380,7 +397,7 @@ namespace hooks
 			}
 		}
 
-		// supposedly, allows Zerglings to attack after unburrowing without delay
+		// Supposedly, allows Zethrokors to attack after unburrowing without delay
 		if (unit->id == UnitId::ZergZethrokor)
 		{
 			if (unit->ground_weapon_cooldown == 0)
