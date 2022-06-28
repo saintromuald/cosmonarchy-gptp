@@ -217,8 +217,8 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 
 		std::stringstream ss;
 		ss << armor_pen;
-		if (bonus_armor_pen > 0)      text += BWTC_GREEN "(+" + ss.str() + BWTC_RESET ")";
-		else if (bonus_armor_pen < 0) text += BWTC_RED   "("  + ss.str() + BWTC_RESET ")";
+		if (bonus_armor_pen > 0)      text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
+		else if (bonus_armor_pen < 0) text += " (" BWTC_RED   ""  + ss.str() + BWTC_RESET ")";
 		text += ss.str();
 	}
 
@@ -659,8 +659,8 @@ namespace hooks
 
 		ss.str("");
 		ss << bonus_armor;
-		if (bonus_armor > 0) text += BWTC_GREEN "(+" + ss.str() + BWTC_RESET ")";
-		else if (bonus_armor < 0) text += BWTC_RED "(" + ss.str() + BWTC_RESET ")";
+		if (bonus_armor > 0)	  text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
+		else if (bonus_armor < 0) text += " (" BWTC_RED       + ss.str() + BWTC_RESET ")";
 
 		// text += "\nSize: " + std::string(size_text);
 		text += "\nPlane: " + plane;
