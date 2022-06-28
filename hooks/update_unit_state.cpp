@@ -380,11 +380,6 @@ namespace hooks
 					if (unit->sprite->flags & SpriteFlags::Selected) { // If the unit is currently selected, redraw its graphics
 						helper::set_all_image_group_flags_palette_11(unit->sprite);
 					}
-					
-					if (unit->sprite->get_overlay(overlay)) {
-						unit->sprite->remove_overlay(overlay);
-						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-					}
 				}
 
 				if (!unit->get_overlay(overlay)) {
