@@ -353,18 +353,18 @@ namespace hooks
 
 			u32 overlay = ImageId::RechargeShields_Small;
 			switch (scbw::get_overlay_offset(unit->id, true)) {
-				case 1:
+				case 0:
 				{
 				} break;
-				case 2:
+				case 1:
 				{
 					overlay = ImageId::RechargeShieldsCustom_Medium;
 				} break;
-				case 3:
+				case 2:
 				{
 					overlay = ImageId::RechargeShields_Large;
 				} break;
-				case 4:
+				case 3:
 				{
 					overlay = ImageId::RechargeShieldsCustom_XLarge;
 				} break;
