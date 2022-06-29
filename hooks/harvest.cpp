@@ -218,7 +218,7 @@ namespace hooks
 				}
 			} else {
 				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
-				u32 timer = 30;
+				u32 timer = 17;
 				if (node && (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser)) {
 					timer = 75;
 					unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
