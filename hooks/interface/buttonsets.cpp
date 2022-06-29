@@ -1409,11 +1409,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ProtossPennant &&  // Pennant Prismatic Surge passive
-								current_button->icon_id == IconId::KhaydarinCore)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 
 							// ZERG \\
 							

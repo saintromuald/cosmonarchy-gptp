@@ -2130,7 +2130,6 @@ namespace scbw
 			|| unit_id == UnitId::ProtossPylon
 			|| unit_id == UnitId::ProtossPhotonCannon
 			|| unit_id == UnitId::ProtossShieldBattery
-			|| unit_id == UnitId::ProtossPennant
 			|| unit_id == UnitId::ZergCreepColony
 			|| unit_id == UnitId::ZergSunkenColony
 			|| unit_id == UnitId::ZergSporeColony

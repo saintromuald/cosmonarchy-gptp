@@ -12,6 +12,7 @@ namespace UnitId
 
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
+		VespeneRidge										= 221,		// Mineral Cluster Type 2
 
 	// Shared-Unit
 		SharedCohort										= 50,		// Infested Terran
@@ -104,7 +105,6 @@ namespace UnitId
 		ProtossCrucible										= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
 		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap		| Star Sovereign requirement
 		ProtossRoboticsAuthority							= 220,		// Mineral Chunk Type 1			| Advanced Robotics production
-		ProtossPennant										= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
 		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2		| Anthelion requirement
 		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
 		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
