@@ -348,7 +348,7 @@ namespace hooks
 		*/
 
 		// Shield regeneration
-		if (units_dat::ShieldsEnabled[unit->id]) {
+		if (units_dat::ShieldsEnabled[unit->id] && unit->status & UnitStatus::Completed) {
 			s32 max_shields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 
 			u32 overlay = ImageId::RechargeShields_Small;
@@ -369,9 +369,11 @@ namespace hooks
 					overlay = ImageId::RechargeShieldsCustom_XLarge;
 				} break;
 			}
-			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
+
+			if (unit->id == UnitId::ProtossAugur) {
 				unit->shields -= std::min(14, unit->shields);
-			} else if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
+			}
+			else if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
 				unit->heal_shields(11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size()), 0, false);
 				if (unit->shields > max_shields) {
 					if (unit->shields > max_shields) {
@@ -387,11 +389,13 @@ namespace hooks
 					unit->sprite->create_top_overlay(overlay);
 					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 				}
-			} else if (unit->sprite->get_overlay(overlay)) {
+			}
+			else if (unit->sprite->get_overlay(overlay)) {
 				unit->sprite->remove_overlay(overlay);
 				if (unit->shields >= max_shields) {
 					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-				} else {
+				}
+				else {
 					helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 				}
 			}
