@@ -148,7 +148,7 @@ namespace hooks
 
 	u32 get_flingy_halt_distance(Flingy* flingy)
 	{
-		auto speed = flingy->current_speed2;
+		auto speed = flingy->current_speed_2;
 		if (speed == 0 || flingy->flingy_movement_type != 0)
 		{
 			return 0;
@@ -572,5 +572,27 @@ namespace hooks
 				}
 			}
 		} while (index);
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	void turn_unit(Unit* unit, char direction) // 00495F20
+	{
+		unit->velocity_direction_1 = direction;
+		unit->current_direction_1 = direction;
+		unit->current_direction_2 = direction;
+		unit->current_velocity.x = unit->current_speed_1 * g_angle_distance[direction].x >> 8;
+		unit->current_velocity.y = unit->current_speed_1 * g_angle_distance[direction].y >> 8;
+		Sprite* sprite = unit->sprite;
+		u32 pos_x = sprite->position.x;
+		u32 pos_y = sprite->position.y;
+		if (pos_x != unit->next_target_waypoint.x || pos_y != unit->next_target_waypoint.y)
+		{
+			unit->next_target_waypoint.x = pos_x;
+			unit->next_target_waypoint.y = pos_y;
+		}
+		for (Image* i = sprite->images.head; i; i = i->link.next)
+		{
+			helper::set_image_direction(i, direction);
+		}
 	}
 }

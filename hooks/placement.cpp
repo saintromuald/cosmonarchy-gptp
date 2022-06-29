@@ -88,10 +88,10 @@ namespace hooks
                 continue;
             }
 
-            if (unitOrderingX[other_unit->finder_index.left  ].position < 32 * x_tile + 32
-            &&  unitOrderingX[other_unit->finder_index.right ].position > 32 * x_tile
-            &&  unitOrderingY[other_unit->finder_index.top   ].position < 32 * y_tile + 32
-            &&  unitOrderingY[other_unit->finder_index.bottom].position > 32 * y_tile) {
+            if (g_unit_ordering_x[other_unit->finder_index.left  ].position < 32 * x_tile + 32
+            &&  g_unit_ordering_x[other_unit->finder_index.right ].position > 32 * x_tile
+            &&  g_unit_ordering_y[other_unit->finder_index.top   ].position < 32 * y_tile + 32
+            &&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile) {
                 return needs_detection ? 1 : 4;
             }
         }

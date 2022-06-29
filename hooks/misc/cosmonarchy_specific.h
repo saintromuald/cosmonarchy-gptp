@@ -26,6 +26,7 @@ namespace hooks
 	void transform_unit_main(Unit* unit, u32 unit_id);												// 0049F170
 	char ignore_iscript_and_go_to_idle(Unit* unit);													// 00476550
 	void init_damage_overlay_counts();																// 004D5C20
+	void turn_unit(Unit* unit, char direction);														// 00495F20
 }
 
 namespace hooks

@@ -173,8 +173,8 @@ namespace hooks
 					helper::set_resource_target(unit);
 					helper::set_secondary_waypoint(unit, (unit->order_target.unit)->sprite->position.x, (unit->order_target.unit)->sprite->position.y);
 					angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
-					unit->order_target.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
-					unit->order_target.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
+					unit->order_target.pt.x = (g_angle_distance[angle].x * 20) / 256 + unit->sprite->position.x;
+					unit->order_target.pt.y = (g_angle_distance[angle].y * 20) / 256 + unit->sprite->position.y;
 					unit->main_order_state = 7;
 					jump_to_switch_1 = true;
 				}

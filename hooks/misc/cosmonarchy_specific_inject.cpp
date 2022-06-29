@@ -725,6 +725,21 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) turn_unit_wrapper() { // 00495F20
+		static Unit* unit;
+		static char direction;
+		__asm {
+			MOV direction, BL
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::turn_unit(unit, direction);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void inject_cosmonarchy_specific()
 	{
 		flingy_speed_patches();
@@ -750,5 +765,6 @@ namespace hooks
 		jump_patch(transform_unit_main_wrapper,				0x0049F170, 1);
 		jump_patch(ignore_iscript_and_go_to_idle_wrapper,	0x00476550, 1);
 	//	jump_patch(init_damage_overlay_counts_wrapper,		0x004D5C20, 3);
+		jump_patch(turn_unit_wrapper,						0x00495F20, 1);
 	}
 }

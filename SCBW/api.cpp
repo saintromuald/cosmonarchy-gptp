@@ -373,12 +373,12 @@ namespace scbw
 
 	s32 get_polar_x(s32 distance, u8 angle)
 	{
-		return distance * angleDistance[angle].x >> 8;
+		return distance * g_angle_distance[angle].x >> 8;
 	}
 
 	s32 get_polar_y(s32 distance, u8 angle)
 	{
-		return distance * angleDistance[angle].y >> 8;
+		return distance * g_angle_distance[angle].y >> 8;
 	}
 
 	//-------- Player information --------//

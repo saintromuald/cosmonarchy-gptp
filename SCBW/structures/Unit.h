@@ -27,8 +27,8 @@ struct Flingy
 	/*0x028*/ Point16   position;
 	/*0x02C*/ Vector32  halt;
 	/*0x034*/ u32       flingy_top_speed;
-	/*0x038*/ u32       current_speed1;
-	/*0x03C*/ u32       current_speed2;
+	/*0x038*/ u32       current_speed_1;
+	/*0x03C*/ u32       current_speed_2;
 	/*0x040*/ Vector32  current_velocity;
 	/*0x048*/ u16       flingy_acceleration;
 	/*0x04A*/ u8        current_direction_2;

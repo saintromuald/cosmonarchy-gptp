@@ -42,7 +42,7 @@ namespace scbw
 		{
 			return new_unit_table.orderingX;
 		}
-		return unitOrderingX;
+		return g_unit_ordering_x;
 	}
 
 	UnitFinderData* UnitFinder::get_start_y()
@@ -51,25 +51,25 @@ namespace scbw
 		{
 			return new_unit_table.orderingY;
 		}
-		return unitOrderingY;
+		return g_unit_ordering_y;
 	}
 
 	UnitFinderData* UnitFinder::get_end_x()
 	{
 		if (globals.extended_unit_table)
 		{
-			return new_unit_table.orderingX + *unitOrderingCount;
+			return new_unit_table.orderingX + *g_unit_ordering_count;
 		}
-		return unitOrderingX + *unitOrderingCount;
+		return g_unit_ordering_x + *g_unit_ordering_count;
 	}
 
 	UnitFinderData* UnitFinder::get_end_y()
 	{
 		if (globals.extended_unit_table)
 		{
-			return new_unit_table.orderingY + *unitOrderingCount;
+			return new_unit_table.orderingY + *g_unit_ordering_count;
 		}
-		return unitOrderingY + *unitOrderingCount;
+		return g_unit_ordering_y + *g_unit_ordering_count;
 	}
 
 	// The heart and core of StarCraft's unit search engine.

@@ -1252,8 +1252,8 @@ namespace hooks
 			{
 				s32 bulletDirection = bullet->direction1;
 				s32 maxRangeVar = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
-				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * angleDistance[bulletDirection].x) >> 16);
-				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * angleDistance[bulletDirection].y) >> 16);
+				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].x) >> 16);
+				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
 				return 1;
 			}

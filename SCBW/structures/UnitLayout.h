@@ -510,8 +510,8 @@ struct UnitLayout
 	/*0x028*/ Point16   position;						// Current position of the unit
 	/*0x02C*/ Vector32  halt;
 	/*0x034*/ u32       flingy_top_speed;				// top speed
-	/*0x038*/ u32       current_speed1;					// ++current speed
-	/*0x03C*/ u32       current_speed2;					// ++not sure if there are any differences with these 2 variables, they always have the same value
+	/*0x038*/ u32       current_speed_1;				// current speed
+	/*0x03C*/ u32       current_speed_2;				// not sure if there are any differences with these 2 variables, they always have the same value
 	/*0x040*/ Vector32  current_velocity;
 	/*0x048*/ u16       flingy_acceleration;
 	/*0x04A*/ u8        current_direction_2;			// ?

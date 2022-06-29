@@ -841,12 +841,13 @@ SCBW_DATA(u16**, megatileArray, 0x00628494);
 //SCBW_DATA(u16**, megatileExtArrayFlags, 0x00628494+0x20000);//extender only
 
 // Stores an ordered list of all units currently in the game.
-SCBW_DATA(UnitFinderData*, unitOrderingX, 0x0066FF78);
-SCBW_DATA(UnitFinderData*, unitOrderingY, 0x006769B8);
-SCBW_DATA(const u32*, unitOrderingCount, 0x0066FF74);
+SCBW_DATA(UnitFinderData*,	g_unit_ordering_x,		0x0066FF78);
+SCBW_DATA(UnitFinderData*,	g_unit_ordering_y,		0x006769B8);
+SCBW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
-SCBW_DATA(const Vector32*, angleDistance, 0x00512D28);
-SCBW_DATA(u16*, megatileCount, 0x005998E0);
+SCBW_DATA(Vector32*,		g_angle_distance,	0x00512D28);
+SCBW_DATA(u16*,				g_megatile_count,	0x005998E0);
+
 //Used internally by Starcraft to manage temporary units lists
 SCBW_DATA(Unit***, tempUnitsListsArray, 0x006BB938);
 SCBW_DATA(u32*, tempUnitsListCurrentArrayCount, 0x006BEE64);
