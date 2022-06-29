@@ -85,7 +85,7 @@ namespace
 			MOV id, CX
 			PUSHAD
 		}
-		result = hooks::CreateUnitXY(player_id, id, x, y, false);
+		result = hooks::create_unit_xy(player_id, id, x, y, false);
 		__asm
 		{
 			POPAD
@@ -106,7 +106,7 @@ namespace
 			MOV chkunit, ESI
 			PUSHAD
 		}
-		result = hooks::CreatePreplacedUnit(chkunit);
+		result = hooks::create_preplaced_unit(chkunit);
 		__asm
 		{
 			POPAD

@@ -7,8 +7,8 @@ namespace hooks
 	void CreateInitialMeleeUnits();												 // 0049DA40
 	void CreateInitialOverlord(u8 player);									 // 0049D6C0
 
-	Unit* CreateUnitXY(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep); // 004CD360
-	Unit* CreatePreplacedUnit(CHKUnit* chkunit);								 // 004CD740
+	Unit* create_unit_xy(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep); // 004CD360
+	Unit* create_preplaced_unit(CHKUnit* chkunit);								 // 004CD740
 
 	void inject_create_initial_units_hooks();
 }

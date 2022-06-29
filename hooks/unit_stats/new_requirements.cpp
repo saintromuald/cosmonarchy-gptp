@@ -594,7 +594,6 @@ namespace hooks {
 				case UnitId::ProtossStargate:
 				case UnitId::ProtossAstralOmen:
 				case UnitId::ProtossCrucible:
-				case UnitId::ProtossPennant:
 				case UnitId::ProtossGrandLibrary:
 				case UnitId::ProtossRoboticsAuthority:
 				case UnitId::ProtossSyntheticSynod:
@@ -1846,7 +1845,6 @@ namespace hooks {
 					case UnitId::ProtossStargate:
 					case UnitId::ProtossAstralOmen:
 					case UnitId::ProtossCrucible:
-					case UnitId::ProtossPennant:
 					case UnitId::ProtossGrandLibrary:
 					case UnitId::ProtossRoboticsAuthority:
 					case UnitId::ProtossSyntheticSynod:

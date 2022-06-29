@@ -1906,7 +1906,6 @@ LABEL_37:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
 			case UnitId::ProtossPylon:
-			case UnitId::ProtossPennant:
 			case UnitId::ProtossShieldBattery:
 			case UnitId::ProtossPhotonCannon:
 			case UnitId::TerranWatchdog:

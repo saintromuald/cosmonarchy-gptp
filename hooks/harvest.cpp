@@ -87,7 +87,8 @@ namespace hooks
 		{
 			chunk_image_id = ImageId::TerranGasTankType1;
 		}
-		else if (resource->id == UnitId::ResourceVespeneGeyser)
+		else if (resource->id == UnitId::ResourceVespeneRidge
+			|| resource->id == UnitId::ResourceVespeneGeyser)
 		{
 			chunk_image_id = ImageId::GasRaw;
 		}
@@ -163,6 +164,7 @@ namespace hooks
 	bool unit_is_geyser_ex(Unit* node, Unit* worker, bool ignore_completed) // 00468930
 	{
 		switch (node->id) {
+			case UnitId::ResourceVespeneRidge:
 			case UnitId::ResourceVespeneGeyser: {
 				return true;
 			} break;
@@ -217,7 +219,7 @@ namespace hooks
 			} else {
 				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
 				u32 timer = 30;
-				if (node && node->id == UnitId::ResourceVespeneGeyser) {
+				if (node && (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser)) {
 					timer = 75;
 					unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
@@ -245,7 +247,7 @@ namespace hooks
 
 		bool valid_structure = false;
 		if (node) {
-			if (node->id == UnitId::ResourceVespeneGeyser) {
+			if (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser) {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant)
 				&& node->player == unit->player) {
@@ -288,7 +290,7 @@ namespace hooks
 				ignore_completed = false;
 			}
 
-			if (unit_is_geyser_ex(node, worker, ignore_completed) || node_id == UnitId::ResourceVespeneGeyser) {
+			if (unit_is_geyser_ex(node, worker, ignore_completed) || node_id == UnitId::ResourceVespeneRidge || node_id == UnitId::ResourceVespeneGeyser) {
 				worker_resource_type = worker->resource_type;
 				if (!worker_resource_type || worker_resource_type & ResourceType::Either) {
 					result = OrderId::HarvestGas1;

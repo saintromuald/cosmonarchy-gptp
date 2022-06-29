@@ -12,7 +12,7 @@ namespace UnitId
 
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
-		VespeneRidge										= 221,		// Mineral Cluster Type 2
+		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
 
 	// Shared-Unit
 		SharedCohort										= 50,		// Infested Terran

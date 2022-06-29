@@ -304,7 +304,7 @@ namespace hooks
 		}
 	}
 
-	Unit* CreateUnitXY(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep) {
+	Unit* create_unit_xy(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep) {
 		if (units_dat::StarEditAvailFlags[id] & 0x200 && !*g_is_brood_war) {
 			return 0;
 		}
@@ -336,18 +336,19 @@ namespace hooks
 		return 0;
 	}
 
-	Unit* CreatePreplacedUnit(CHKUnit* chkunit) {
+	Unit* create_preplaced_unit(CHKUnit* chkunit) {
 		if (chk_cache_size < ChkCacheLimit) {
 			chk_cache[chk_cache_size++] = *chkunit;
 		}
 		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
-			Unit* unit = CreateUnitXY(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
+			Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				if (unit->id != UnitId::ResourceMineralField
 				&&  unit->id != UnitId::ResourceMineralFieldType2
 				&&  unit->id != UnitId::ResourceMineralFieldType3
+				&&  unit->id != UnitId::ResourceVespeneRidge
 				&&  unit->id != UnitId::ResourceVespeneGeyser) {
 					unit->hitpoints = unit->get_max_hp_raw();
 					unit->shields = unit->get_max_shields_raw();

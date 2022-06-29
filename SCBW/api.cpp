@@ -2119,7 +2119,7 @@ namespace scbw
 	}
 
 	bool unit_id_is_gas_structure(u16 unit_id) {
-		return unit_id_is_capped_gas_structure(unit_id) || unit_id == UnitId::ResourceVespeneGeyser;
+		return unit_id_is_capped_gas_structure(unit_id) || unit_id == UnitId::ResourceVespeneRidge || unit_id == UnitId::ResourceVespeneGeyser;
 	}
 
 	bool unit_id_is_smaller_building(u16 unit_id) {
