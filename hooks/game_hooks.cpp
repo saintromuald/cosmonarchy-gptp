@@ -382,8 +382,7 @@ namespace hooks
 						x_count++;
 						if (x_count > 4) {
 							pos.x = start_pos.x;
-							//pos.y += 15;
-							pos.y -= 15;
+							pos.y -= 15; // += 15;
 						}
 					}
 				}
