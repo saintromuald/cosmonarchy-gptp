@@ -219,7 +219,7 @@ namespace FlingyId
 		// Cosmonarchy BW \\
 
 		TerranQuarry = 211,
-		ProtossPennant = 212,
+		VespeneRidge = 212,
 		ZergIroleth = 213,
 		ZergMutationPit = 214, // unused
 		TerranPaladin = 215,

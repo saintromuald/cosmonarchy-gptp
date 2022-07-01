@@ -144,7 +144,7 @@ namespace hooks
 			unit_id = unit->building.addon->id;
 		}
 		if (unit->sprite && unit->main_order_id != OrderId::Die
-			&& (unit_id == UnitId::TerranQuarry || unit_id == UnitId::ZergIroleth || unit_id == UnitId::ProtossPennant))
+			&& (unit_id == UnitId::TerranQuarry || unit_id == UnitId::ZergIroleth))
 		{
 			u32 radius = 0;
 			switch (unit_id) {
@@ -155,10 +155,6 @@ namespace hooks
 				case UnitId::ZergIroleth:
 				{
 					radius = 224;
-				} break;
-				case UnitId::ProtossPennant:
-				{
-					radius = 160;
 				} break;
 			}
 
