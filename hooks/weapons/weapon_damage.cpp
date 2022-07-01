@@ -583,6 +583,7 @@ namespace hooks
 						u32 target_offset = scbw::get_overlay_offset(data.target->id);
 						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 							// Power Siphon
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), data.attacker, 1, 0);
 							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
 								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
 								if (energy) {
@@ -591,8 +592,10 @@ namespace hooks
 									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset, data.target->position.x, data.target->position.y, data.attackingPlayerId);
 								}
 							}
-						} else {
+						}
+						else {
 							// Entropy Gauntlet
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), data.attacker, 1, 0);
 							u32 energy = std::min(data.attacker->energy, (u16)(15 * 256));
 							if (energy) {
 								data.attacker->energy -= energy;

@@ -1153,6 +1153,12 @@ namespace SoundId
 
 		TalosSalvageLoop					= 55,
 
+		SavantSiphonFire01					= 694,
+		SavantSiphonFire02					= 695,
+		SavantSiphonFire03					= 696,
+		SavantSiphonFire04					= 697,
+		SavantSiphonFire05					= 698,
+
 		WyvernAttack01						= 1118,
 		WyvernAttack02						= 1119,
 		AugurDeath01						= 1235,
@@ -1208,6 +1214,12 @@ namespace SoundId
 		FlashShieldingStart					= 1922,
 		FlashShieldingEnd					= 1923,
 		FlashShieldingInterrupt				= 1924,
+
+		SavantEntropyFire01					= 1929,
+		SavantEntropyFire02					= 1930,
+		SavantEntropyFire03					= 1931,
+		SavantEntropyFire04					= 1932,
+		SavantEntropyFire05					= 1933,
 	};
 }
 
