@@ -44,4 +44,5 @@ struct LayoutsTown {
 };
 
 u32 ai_get_next_custom_expo(AiTown* main_town);
-void tick_layouts();
+void init_layouts();
+void update_layouts();

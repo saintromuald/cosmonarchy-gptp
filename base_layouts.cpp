@@ -185,7 +185,7 @@ static void sort_layouts(Layouts* layouts) {
 	qsort(layouts->placeholders, layouts->placeholders_count, sizeof(Placeholder), compare_base_layout);
 }
 
-static void init_layouts() {
+void init_layouts() {
 	memset(log_placeholder_requests, 0, sizeof(log_placeholder_requests));
 	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
 	memset(player_layouts, 0, sizeof(player_layouts));
@@ -422,7 +422,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	return best_resarea;
 }
 
-void tick_layouts() {
+void update_layouts() {
 	if (*g_elapsed_time_frames == 0) {
 		init_layouts();
 	}

@@ -254,6 +254,7 @@
     <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="base_layouts.cpp" />
     <ClCompile Include="color_palette.cpp" />
+    <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
     <ClCompile Include="direct_sound.cpp" />
     <ClCompile Include="token_parser.cpp" />
@@ -582,6 +583,7 @@
     <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="base_layouts.h" />
     <ClInclude Include="color_palette.h" />
+    <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />
     <ClInclude Include="direct_sound.h" />
     <ClInclude Include="token_parser.h" />

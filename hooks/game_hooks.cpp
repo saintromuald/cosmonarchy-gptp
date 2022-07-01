@@ -31,6 +31,7 @@
 #include "data_ext.h"
 #include "config.h"
 #include "color_palette.h"
+#include "custom_ai.h"
 
 
 #include "SCBW\UnitFinder.h"
@@ -191,7 +192,7 @@ namespace hooks
 			disable_quickbuilding--;
 		}
 		tick_trigger_system(true);
-		tick_layouts();
+
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0)
 		{
@@ -209,6 +210,16 @@ namespace hooks
 				scbw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
 			}
 		}
+
+		// Extended Features
+		scbw::set_ingame_loop_state(true);
+		if (*g_elapsed_time_frames == 0) {
+			init_custom_ai();
+			init_layouts();
+		}
+		update_custom_ai();
+		update_layouts();
+		scbw::set_ingame_loop_state(false);
 
 		if (*g_elapsed_time_frames % 2 == 0)
 		{
