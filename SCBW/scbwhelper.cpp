@@ -9017,14 +9017,14 @@ namespace helper
 		}
 	}
 
-	s8 create_unit_allowed(u16 unit_id, Unit* unit, s32 playerID)
+	s8 create_unit_allowed(u16 unit_id, Unit* unit, s32 player)
 	{
 		const u32 Func_createUnitAllowed = 0x0046E1C0;
 		static s8 result;
 		__asm
 		{
 			PUSHAD
-			PUSH playerID
+			PUSH player
 			MOV ESI, unit
 			MOV AX, unit_id
 			CALL Func_createUnitAllowed

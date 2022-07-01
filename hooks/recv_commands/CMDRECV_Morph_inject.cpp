@@ -97,8 +97,8 @@ namespace
 		static u16 fow_unit_id;
 		__asm {
 			PUSH EBP
-			PUSH EAX
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV y_pos, AX
 			MOV EAX, [EBP + 0x0C]
@@ -119,6 +119,32 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) btnscond_silo_has_no_nuke_wrapper() { // 00428960
+		static s32 result;
+		static u16 unit_id;
+		static u32 player;
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			MOV player, EDX
+			MOV unit_id, CX
+			PUSHAD
+		}
+		result = hooks::btnscond_silo_has_no_nuke(unit_id, player, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -131,5 +157,6 @@ namespace hooks
 		jump_patch(cmdrecv_liftoff_wrapper,									0x004C1620, 6);
 	//	jump_patch(btnsact_rally_point_wrapper,								0x004244A0, 2);
 	//	jump_patch(order_acquire_generic_right_click_unit_proc_wrapper,		0x00455CC0, 2);
+		jump_patch(btnscond_silo_has_no_nuke_wrapper,						0x00428960, 0);
 	}
 }
