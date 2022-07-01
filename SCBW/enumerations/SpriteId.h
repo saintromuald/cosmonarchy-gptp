@@ -539,7 +539,7 @@ namespace SpriteId
 		TerranGallery = 529, // unused
 		ZergGorgrokor = 530,
 		TerranQuarry = 531,
-		ProtossPennant = 532,
+		VespeneRidge = 532,
 		ZergGorgrokApiary = 533,
 		ProtossAurora = 534,
 		ProtossPanoptus = 535,
