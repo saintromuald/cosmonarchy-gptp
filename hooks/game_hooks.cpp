@@ -350,16 +350,20 @@ namespace hooks
 			update_ext_variables();
 
 			// Draw transport UI
-			Unit* selected = *g_active_portrait_unit;
-			if (selected && *g_client_selection_count == 1) {
+			{
 				Point16 start_pos = {169, 353}; // {441, 203};
 				Point16 pos = start_pos;
 
 				u32 cargo_count[UnitId::Count] = {};
-				for (u32 i = 0; i < TransportCap; ++i) {
-					Unit* cargo_unit = selected->get_loaded_unit(i);
-					if (cargo_unit) {
-						cargo_count[cargo_unit->id]++;
+				for (u32 i = 0; i < *g_client_selection_count; ++i) {
+					Unit* transport = g_client_selection_group->unit[i];
+					if ((scbw::is_allied_to(transport->player, *g_local_nation_id) || helper::get_detecting_players(transport) & (1 << *g_local_nation_id))) {
+						for (u32 j = 0; j < TransportCap; ++j) {
+							Unit* cargo_unit = transport->get_loaded_unit(j);
+							if (cargo_unit) {
+								cargo_count[cargo_unit->id]++;
+							}
+						}
 					}
 				}
 
@@ -378,8 +382,7 @@ namespace hooks
 						x_count++;
 						if (x_count > 4) {
 							pos.x = start_pos.x;
-							//pos.y += 15;
-							pos.y -= 15;
+							pos.y -= 15; // += 15;
 						}
 					}
 				}

@@ -18,8 +18,8 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 	if (custom_ai_town->gas_cooldown) {
 		custom_ai_town->gas_cooldown--;
 	} else if (g_game_minerals[ai_town->player] >= mineral_threshold) {
-		for (u32 i = custom_ai_town->gas_requested; i < 3; ++i) {
-			if (ai_town->gas_buildings[i]->id != UnitId::None) {
+		for (u32 i = 0; i < 3; ++i) {
+			if (ai_town->gas_buildings[i] && ai_town->gas_buildings[i]->id == UnitId::ResourceVespeneGeyser) {
 				u32 capped_id = UnitId::None;
 				u32 race = g_player_table[ai_town->player].race;
 				switch (race) {
