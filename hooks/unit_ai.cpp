@@ -229,7 +229,7 @@ namespace hooks
 					}
 				}
 			}
-		} else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser) ||
+		} else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneRidge && unit->id != UnitId::ResourceVespeneGeyser) ||
 				unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
 			BuildingAi* ai = 0;
 			if (town && town->free_buildings) {
@@ -303,7 +303,7 @@ namespace hooks
 					}
 				} else {
 					u32 refinery_id = helper::get_default_refinery_type(unit->player);
-					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneGeyser) {
+					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	 || unit->id == UnitId::ResourceVespeneGeyser) {
 						if (!town->gas_buildings[0]) {
 							town->gas_buildings[0] = unit;
 						} else if (!town->gas_buildings[1]) {
