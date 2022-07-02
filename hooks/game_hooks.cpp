@@ -425,8 +425,12 @@ namespace hooks
 
 		if (*g_active_portrait_unit)
 		{
-			// Unit* selected = *g_active_portrait_unit;
-			// scbw::printf("%u", selected->main_order_id);
+			Unit* selected = *g_active_portrait_unit;
+			//if (selected->sprite && selected->sprite->main_graphic) {
+			//	scbw::printf("%u", selected->sprite->main_graphic->animation);
+			//}
+			//scbw::printf("%u", selected->main_order_id);
+			//scbw::printf("0x%X", selected->status);
 
  			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {
