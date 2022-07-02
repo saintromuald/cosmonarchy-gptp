@@ -339,7 +339,7 @@ namespace hooks
                 child = child->next;
             }
 
-            helper::drawArmor(dialog, unit->id, 0);
+            helper::draw_armor(dialog, unit->id, 0);
 			if (units_dat::ShieldsEnabled[unit->id]) {
 				helper::draw_shield_upgrade(dialog, 1);
 			}

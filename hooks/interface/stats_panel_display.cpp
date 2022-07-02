@@ -312,94 +312,116 @@ namespace hooks
 
 	// TODO: Fix progress bar drawing during addon construction, unit training
 	// Hooked to draw armor icons to buildings. - Pr0nogo
-	void draw_building_info(BinDlg* dialog) // 00427890
-	{
-		Unit* activeUnit = *g_active_portrait_unit;
-		g_selection_group_hp[0] = (*g_active_portrait_unit)->hitpoints;
-		s32 shields = (*g_active_portrait_unit)->shields >> 8;
+	void draw_building_info(BinDlg* dialog) { // 00427890
+		Unit* unit = *g_active_portrait_unit;
+		s32 shields = (*g_active_portrait_unit)->shields / 256;
+		g_selection_group_hp[0] = unit->hitpoints;
 		*g_ui_energy = (*g_active_portrait_unit)->energy;
 		*g_ui_shields = shields;
 		*g_redraw_transport_ui = helper::ui_needs_redraw();
 		helper::generic_status_update_drawn_values();
-		s32 unit_id = activeUnit->id;
-		if (unit_id == UnitId::ResourceMineralField 
-			|| unit_id == UnitId::ResourceMineralFieldType2
-			|| unit_id == UnitId::ResourceMineralFieldType3
-			|| unit_id == UnitId::ResourceVespeneGeyser)
-		{
-			goto LABEL_35;
-		}
-		if (!*g_is_in_replay && activeUnit->player != *g_local_nation_id)
-		{
-			goto LABEL_6;
-		}
-		if (!(activeUnit->status & UnitStatus::Completed))
-		{
-			scbw::print("draw_progress_bar");
-			helper::draw_progress_bar(dialog);
-			goto LABEL_32;
-		}
-		if (unit_id == UnitId::TerranMissileSilo)
-		{
-			scbw::print("draw_nuke_silo_info");
-			helper::draw_nuke_silo_info(dialog);
-			goto LABEL_32;
-		}
-		if (helper::unit_is_active_transport(activeUnit))
-		{
-			scbw::print("unitIsActiveTransport");
-			goto LABEL_6;
-		}
-		if (helper::is_queue_slot_active(activeUnit, 0))
-		{
-			scbw::print("draw_training_progress");
-			helper::draw_training_progress(dialog);
-			goto LABEL_32;
-		}
-		if (helper::is_constructing_addon(activeUnit) || helper::is_attempting_protoss_build(activeUnit))
-		{
-			scbw::print("draw_addon_progress");
-			helper::draw_addon_progress(dialog);
-			goto LABEL_32;
-		}
-		if (activeUnit->building.tech_id != 44)
-		{
-			scbw::print("draw_tech_progress");
-			helper::draw_tech_progress(dialog);
-			goto LABEL_32;
-		}
-		if (activeUnit->building.upgrade_id != 61)
-		{
-			scbw::print("draw_upgrade_progress");
-			helper::draw_upgrade_progress(dialog);
-			goto LABEL_32;
-		}
-		if (units_dat::SupplyProvided[unit_id])
-		{
-			scbw::print("draw_supply_unit_info");
-			helper::draw_supply_unit_info(dialog);
-			goto LABEL_32;
-		}
-		if (helper::unit_is_geyser(activeUnit))
-		{
-		LABEL_35:
-			scbw::print("draw_gas_quantity");
+		if (unit->id == UnitId::ResourceMineralField 
+			|| unit->id == UnitId::ResourceMineralFieldType2
+			|| unit->id == UnitId::ResourceMineralFieldType3
+			|| unit->id == UnitId::ResourceVespeneRidge
+			|| unit->id == UnitId::ResourceVespeneGeyser) {
 			helper::draw_gas_quantity(dialog);
-			goto LABEL_32;
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
 		}
-		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(activeUnit)] == -126
-			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(activeUnit)] == -126
-			&& units_dat::AirWeapon[activeUnit->id]
-			&& units_dat::GroundWeapon[activeUnit->id]
-			&& !units_dat::ShieldsEnabled[unit_id])
-		{
-		LABEL_6:
+		//if (!*g_is_in_replay && unit->player != *g_local_nation_id) {
+		//	if (*g_status_screen_func != 4) {
+		//		helper::hide_optional_status_screen_controls(dialog);
+		//		*g_status_screen_func = 4;
+		//	}
+		//	helper::set_text_string(dialog);
+		//	helper::set_unit_status_string_text(dialog);
+		//	helper::add_text_to_dialog(dialog, -5, unit->get_name());
+		//	return;
+		//}
+		if (!(unit->status & UnitStatus::Completed)) {
+			helper::draw_progress_bar(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (unit->id == UnitId::TerranMissileSilo) {
+			helper::draw_nuke_silo_info(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (helper::unit_is_active_transport(unit)) {
 			if (*g_status_screen_func != 4)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;
 			}
-			goto LABEL_32;
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (helper::is_queue_slot_active(unit, 0)) {
+			helper::draw_training_progress(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (helper::is_constructing_addon(unit) || helper::is_attempting_protoss_build(unit)) {
+			helper::draw_addon_progress(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (unit->building.tech_id != TechId::None) {
+			helper::draw_tech_progress(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (unit->building.upgrade_id != UpgradeId::None) {
+			helper::draw_upgrade_progress(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		//if (units_dat::SupplyProvided[unit->id]) {
+		//	helper::draw_supply_unit_info(dialog);
+		//	helper::set_text_string(dialog);
+		//	helper::set_unit_status_string_text(dialog);
+		//	helper::add_text_to_dialog(dialog, -5, unit->get_name());
+		//	return;
+		//}
+		if (helper::unit_is_geyser(unit)) {
+			helper::draw_gas_quantity(dialog);
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
+		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(unit)] == -126
+			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(unit)] == -126
+			&& units_dat::AirWeapon[unit->id]
+			&& units_dat::GroundWeapon[unit->id]
+			&& !units_dat::ShieldsEnabled[unit->id]) {
+			if (*g_status_screen_func != 4)
+			{
+				helper::hide_optional_status_screen_controls(dialog);
+				*g_status_screen_func = 4;
+			}
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
 		}
 		if (*g_status_screen_func != 3)
 		{
@@ -409,10 +431,9 @@ namespace hooks
 		}
 		helper::draw_display_buttons(dialog);
 		helper::hide_dialog(helper::get_control_from_index(dialog, -21));
-	LABEL_32:
 		helper::set_text_string(dialog);
 		helper::set_unit_status_string_text(dialog);
-		helper::add_text_to_dialog(dialog, -5, get_unit_name(*g_active_portrait_unit));
+		helper::add_text_to_dialog(dialog, -5, unit->get_name());
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
