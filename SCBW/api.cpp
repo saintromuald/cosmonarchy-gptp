@@ -2528,4 +2528,14 @@ namespace scbw
 		}
 		return UnitId::None;
 	}
+
+	bool unit_is_allied_or_detected(Unit* unit, u32 player) {
+		if (scbw::is_allied_to(unit->player, player)) {
+			 return true;
+		}
+		if (helper::get_detecting_players(unit) & (1 << player)) {
+			return true;
+		}
+		return false;
+	}
 }

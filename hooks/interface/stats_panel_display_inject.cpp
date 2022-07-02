@@ -344,6 +344,10 @@ namespace hooks
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
+
+		// Disable player checks for progress bar functions
+		nops(0x0042690C, 2);
+		nops(0x00426918, 6);
 		
 	//	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1);
 	}

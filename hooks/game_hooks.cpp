@@ -365,7 +365,7 @@ namespace hooks
 				u32 cargo_count[UnitId::Count] = {};
 				for (u32 i = 0; i < *g_client_selection_count; ++i) {
 					Unit* transport = g_client_selection_group->unit[i];
-					if ((scbw::is_allied_to(transport->player, *g_local_nation_id) || helper::get_detecting_players(transport) & (1 << *g_local_nation_id))) {
+					if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
 						for (u32 j = 0; j < TransportCap; ++j) {
 							Unit* cargo_unit = transport->get_loaded_unit(j);
 							if (cargo_unit) {
