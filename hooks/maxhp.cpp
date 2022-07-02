@@ -339,7 +339,7 @@ LABEL_55:
 			}
 			else
 			{
-				helper::drawArmor(v1, v18, 0);
+				helper::draw_armor(v1, v18, 0);
 			}
 		}
 		else

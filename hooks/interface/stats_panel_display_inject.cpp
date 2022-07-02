@@ -330,7 +330,7 @@ namespace hooks
 		jump_patch(stats_panel_display_wrapper,						0x00426C60, 1);
 		jump_patch(get_unit_rank_string_wrapper,					0x0042F370, 2);
 		jump_patch(draw_unit_kills_string_wrapper,					0x00425DD0, 2);
-	//	jump_patch(draw_building_info_wrapper,						0x00427890, 3);
+		jump_patch(draw_building_info_wrapper,						0x00427890, 3);
 	//	jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
 	//	jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
 		jump_patch(get_unit_name_wrapper,							0x0047B5A0, 2);

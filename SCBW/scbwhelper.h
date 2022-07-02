@@ -8,8 +8,16 @@
 typedef return_and_convention name##_func(__VA_ARGS__); \
 name##_func* const name = (name##_func*) address;
 
-namespace helper
-{
+namespace helper {
+	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
+	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, b32 unit_was_killed);
+	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
+	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
+	SCBW_FUNC(0x0040ABBE, void __fastcall, image_render_fxn_0_0, u32 g_screen_x, u32 g_screen_y, void* frame, Box32* rect, u32 colorData);
+	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
+	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
+	SCBW_FUNC(0x00425B50, void __stdcall, draw_unit_status_string, BinDlg* dialog);
+
 	bool has_money_can_make(Unit* builder, u32 unitToBuild);
 
 	// For loadRaceUI
@@ -943,7 +951,7 @@ namespace helper
 
 	// For draw_supply_unit_status
 	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex);										// 00425510
-	void drawArmor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);										// 00425600
+	void draw_armor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);										// 00425600
 
 	// For progressBulletFrame
 	void bullet_behavior_fly(Bullet* bullet);																// 0048B3B0
@@ -1258,12 +1266,6 @@ namespace helper
 
 	u32 ai_find_expansion(u32 player, u32 resarea, u32 amount);												// 004453E0
 
-	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
-	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, b32 unit_was_killed);
-	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
-	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
-	SCBW_FUNC(0x0040ABBE, void __fastcall, image_render_fxn_0_0, u32 g_screen_x, u32 g_screen_y, void* frame, Box32* rect, u32 colorData);
-
 	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
 
 	char get_target_acquisition_range_upgrade(Unit* unit);													// 00476000
@@ -1325,10 +1327,8 @@ namespace helper
 	void do_targeted_order(u32 x, u32 y, Unit* target, u32 fow_unit_id);									// 004A55F0
 	void minimap_game_target_order(Event* event);															// 004A55F0
 	char input_target_order_left_mouse_click(Event* event);													// 004BD500
-	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
 
 	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position);					// 0048E5D0
-	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
 
 	void initialize_input_procs();																			// 004D2FF0
 

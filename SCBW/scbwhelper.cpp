@@ -158,12 +158,11 @@ namespace helper
 	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text)
 	{
 		const u32 Func_addTextToDialog = 0x004258B0;
-		static s32 _a3 = (s32)text;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
-			MOVZX CX, index
-			PUSH _a3
+			MOV CX, index
+			PUSH text
 			CALL Func_addTextToDialog
 			POPAD
 		}
@@ -8770,7 +8769,7 @@ namespace helper
 		}
 	}
 
-	void drawArmor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex)
+	void draw_armor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex)
 	{
 		const u32 Func_drawArmor = 0x00425600;
 		u32 statusScreenIndexArg = statusScreenIndex;
