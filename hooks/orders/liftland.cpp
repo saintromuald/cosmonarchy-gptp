@@ -203,13 +203,11 @@ namespace hooks
 				if (addon) {
 					helper::complete_addon(unit, addon);
 				}
-				if (*g_is_placing_building)
-				{
+				if (*g_is_placing_building) {
 					helper::place_building_proc();
 
 					// Add the last minute occupation info of landing building to update an ongoing attempt to choose a building or landing location?
-					if (!helper::can_still_place_building())
-					{
+					if (!helper::can_still_place_building()) {
 						helper::refresh_layers_3_and_4();
 						helper::end_building_placement();
 					}
@@ -218,13 +216,11 @@ namespace hooks
 		}
 	}
 
-	void orders_building_liftoff(Unit* unit) // 004649B0
-	{
+	void orders_building_liftoff(Unit* unit) { // 004649B0
 		if ((unit->status & UnitStatus::GroundedBuilding)
 		&& (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
 		{
-			if (unit->building.addon != nullptr)
-			{
+			if (unit->building.addon) {
 				helper::disconnect_from_addon(unit);
 			}
 			if (unit->is_factory()) {
@@ -239,35 +235,28 @@ namespace hooks
 			helper::set_unit_pathing(unit, 1);
 			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings,and  some others things?
 
-			if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
-			{
+			if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW) {
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 
 			scbw::refresh_console();
 			if (unit->sprite->position.x != unit->next_target_waypoint.x
-			||	unit->sprite->position.y - 42 != unit->next_target_waypoint.y)
-			{
+			||	unit->sprite->position.y - 42 != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = unit->sprite->position.x;
 				unit->next_target_waypoint.y = unit->sprite->position.y - 42;
 			}
 
-			if (unit->id == UnitId::ZergInfestedCommandCenter)
-			{
+			if (unit->id == UnitId::ZergInfestedCommandCenter) {
 				helper::update_creep_disappearance_unit(unit);
 			}
 			scbw::update_custom_creep_disappearance(unit);
 
-			if (*g_is_placing_building)
-			{
+			if (*g_is_placing_building) {
 				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;
-		}
-		else
-		{
-			if (unit->order_queue_head == nullptr)
-			{
+		} else {
+			if (!unit->order_queue_head) {
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
 			}
 			helper::force_order_done(unit);
