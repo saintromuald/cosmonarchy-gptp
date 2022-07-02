@@ -194,8 +194,7 @@ namespace hooks
 		tick_trigger_system(true);
 
 		// This block is executed once every game
-		if (*g_elapsed_time_frames == 0)
-		{
+		if (*g_elapsed_time_frames == 0) {
 #ifdef CM_DEBUG
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
@@ -205,9 +204,18 @@ namespace hooks
 			globals.reset();
 			reset_ext_variables();
 
-			for (s32 i = 0; i < 8; i++)
-			{
+			for (s32 i = 0; i < 8; i++) {
 				scbw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
+			}
+
+			// Connect addons
+			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->building.addon) {
+					Unit* addon = helper::connect_addon_check(unit);
+					if (addon) {
+						helper::complete_addon(unit, addon);
+					}
+				}
 			}
 		}
 

@@ -200,8 +200,7 @@ namespace hooks
 				}
 
 				Unit* addon = helper::connect_addon_check(unit);
-				if (addon != nullptr)
-				{
+				if (addon) {
 					helper::complete_addon(unit, addon);
 				}
 				if (*g_is_placing_building)

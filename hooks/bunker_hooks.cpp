@@ -27,53 +27,38 @@ namespace hooks
 	}
 
 	// Checks whether the unit can attack from inside a bunker.
-	void unit_attacks_from_inside_bunker(Unit* unit) // 004790A0
-	{
-	//	if (unit->connected_unit
-	//	&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
-	//	{
+	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
+	//	if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranBunker
+	//	&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 	//		return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
-					// This is BUGGED! It often stops units from firing even when the bunker is not in transport. Maybe connected_unit is wrong? -Pr0nogo
+	//				// This is BUGGED! It often stops units from firing even when the bunker is not in transport. Maybe connected_unit is wrong? -Pr0nogo
 	//	}
-		if (scbw::unit_is_ranged_attacker(unit))
-		{
-			b32 resultApplyCooldown;
+		if (scbw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::HoldingPosition;
-			if (unit->subunit != nullptr)
-			{
-				(unit->subunit)->status |= UnitStatus::HoldingPosition;
+			if (unit->subunit) {
+				unit->subunit->status |= UnitStatus::HoldingPosition;
 			}
-			resultApplyCooldown = helper::attack_apply_cooldown(unit);
-			if (resultApplyCooldown != 0)
-			{
+			if (helper::attack_apply_cooldown(unit)) {
 				if (unit->order_target.pt.x != unit->next_target_waypoint.x
-				||  unit->order_target.pt.y != unit->next_target_waypoint.y)
-				{
+				||  unit->order_target.pt.y != unit->next_target_waypoint.y) {
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
-			}
-			else
-			{
-				if (unit->main_order_timer == 0)
-				{
+			} else {
+				if (unit->main_order_timer == 0) {
 					unit->main_order_timer = 15;
 					
 					Unit* target = unit->order_target.unit;
-					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target))
-					{
-						if (unit->connected_unit)
-						{
+					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
+						if (unit->connected_unit) {
 							UnitExt* bunkerExt = globals.get_unit_ext(unit->connected_unit);
 							Unit* target = bunkerExt->units[UnitBunkerLockOn];
-							if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target))
-							{
+							if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
 								unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
 							}
 						}
 
-						if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target))
-						{
+						if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
 							unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
 								unit->get_x() - radius,
@@ -81,12 +66,10 @@ namespace hooks
 								unit->get_x() + radius,
 								unit->get_y() + radius,
 								unit,
-								[&](Unit* target)
-							{
+								[&](Unit* target) {
 								if (scbw::is_allied_to(unit->player, target->player)
 								|| !unit->can_attack_target(target)
-								|| !is_within_attack_range(unit, target))
-								{
+								|| !is_within_attack_range(unit, target)) {
 									return false;
 								}
 								return true;
@@ -94,8 +77,7 @@ namespace hooks
 						}
 					}
 
-					if (target != nullptr)
-					{
+					if (target) {
 						unit->order_queue_timer = 0;
 					}
 				}

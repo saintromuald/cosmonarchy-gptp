@@ -189,12 +189,13 @@ namespace hooks
 	}
 
 	// Hooked for multi-building select. -Pr0nogo
-	s32 btnscond_silo_has_no_nuke(u16 unit_id, u32 player, Unit* silo) // 00428960
-	{
-		if (*g_client_selection_count == 1)
-		{
-			return helper::create_unit_allowed(unit_id, silo, player);
+	s32 btnscond_silo_has_no_nuke(u16 unit_id, u32 player, Unit* silo) { // 00428960
+		for (u32 i = 0; i < *g_client_selection_count; ++i) {
+			Unit* unit = g_client_selection_group->unit[i];
+			if (unit && unit->id == UnitId::TerranMissileSilo && helper::create_unit_allowed(unit_id, unit, player)) {
+				return true;
+			}
 		}
-		return 0;
+		return helper::create_unit_allowed(unit_id, silo, player);
 	}
 }
