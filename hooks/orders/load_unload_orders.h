@@ -3,7 +3,6 @@
 
 namespace hooks
 {
-
 	void orders_pickup1(Unit* unit);				// 004E7300
 	void orders_pickup3_0(Unit* unit);				// 004E73B0
 	void orders_pickup2(Unit* unit);				// 004E75D0
@@ -14,5 +13,4 @@ namespace hooks
 	bool can_enter_transport(Unit* a1, Unit* a2);	// 004E6E00
 
 	void inject_load_unload_orders_hooks();
-
-} //hooks
+}

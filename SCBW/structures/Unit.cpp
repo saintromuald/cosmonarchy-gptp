@@ -1111,7 +1111,7 @@ graphics::ColorId Unit::get_color(Unit* unit)
 				MOV return_value, AL
 				POPAD
 			}
-			return_value = player_minimap_colors[return_value];
+			return_value = g_player_minimap_colors[return_value];
 		}
 		else {
 			return_value = graphics::BLACK; // will return 0/black if abnormal player

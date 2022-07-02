@@ -11,14 +11,14 @@
 graphics::ColorId Player::get_color()
 {
 	assert(this);
-	return player_minimap_colors[(u8)this->id];
+	return g_player_minimap_colors[(u8)this->id];
 }
 
 graphics::ColorId Player::get_color(u8 player)
 {
 	if (player < PLAYER_COUNT)
 	{
-		return player_minimap_colors[player];
+		return g_player_minimap_colors[player];
 	}
 	else
 	{

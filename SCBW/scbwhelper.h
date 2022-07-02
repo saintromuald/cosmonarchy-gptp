@@ -1388,4 +1388,6 @@ namespace helper {
 	Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point);							// 004379B0
 
 	void create_bunker_attack_overlay(Unit* unit);															// 00477FD0
+
+	u32 draw_unit_box(u32 x_pos, char color, u32 y_pos, u8 x_dims, u8 y_dims, char draw_in_fog);			// 004A3FD0
 }

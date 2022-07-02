@@ -2,8 +2,8 @@
 
 namespace hooks
 {
-	void load_unit_proc(Unit* unit, Unit* unitToLoad);							// 004E78E0
-	b32 unload_unit_proc(Unit* unit);											// 004E7F70
+	void load_unit_proc(Unit* unit, Unit* unitToLoad);												// 004E78E0
+	b32 unload_unit_proc(Unit* unit);																// 004E7F70
 
 	// Transport extender
 	char update_unit_transport_data(Unit* cargo, Unit* unused);										// 00401EA0

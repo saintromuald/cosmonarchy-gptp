@@ -114,8 +114,8 @@ namespace hooks
 		{
 			if (*g_first_hidden_unit == v1)
 				*g_first_hidden_unit = v1->link.next;
-			if (*last_hidden_unit == v1)
-				*last_hidden_unit = v1->link.prev;
+			if (*g_last_hidden_unit == v1)
+				*g_last_hidden_unit = v1->link.prev;
 			if (v1->link.prev)
 				v1->link.prev->link.next = v1->link.next;
 			v9 = v1->link.next;
