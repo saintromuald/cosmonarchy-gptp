@@ -311,4 +311,93 @@ LABEL_15:
 		}
 		return 0;
 	}
+
+	// Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
+	char draw_minimap_unit_box(u32 player) // 004A4650
+	{
+		u32 xd = *g_minimap_state;
+		u32 unit_id = UnitId::None;
+		char color_mod = 0;
+		char index_ref = 0;
+		if (*g_minimap_state)
+		{
+			xd = 3 * *g_local_nation_id;
+			if (scbw::is_allied_to(*g_local_nation_id, player))
+			{
+				xd = g_palette_index_reference[17];
+				index_ref = g_palette_index_reference[17];
+				goto DrawMore;
+			}
+			color_mod = g_palette_index_reference[20];
+		}
+		else
+		{
+			color_mod = g_player_minimap_colors[player];
+		}
+		index_ref = color_mod;
+	DrawMore:
+		Unit* first_unit = *(first_player_unit[player].unit);
+		if (first_unit)
+		{
+			u32 checksum = *g_minimap_box_checksum;
+			while (1)
+			{
+				unit_id = first_unit->id;
+				xd = first_unit->id;
+				if (units_dat::base_property[unit_id] & UnitProperty::Subunit || unit_id == UnitId::Spell_DarkSwarm)
+				{
+					goto DrawBox;
+				}
+
+				xd = first_unit->sprite->visibility_flags;
+				u32 unit_status = first_unit->status;
+				if (unit_status & 0x300)
+				{
+					xd &= first_unit->visibility_status;
+				}
+				checksum ^= xd;
+				if (*g_minimap_draw_neutrals)
+				{
+					break;
+				}
+
+				u32 vision = 0;
+				if (g_is_in_replay)
+				{
+					if (xd & *g_replay_visions)
+					{
+						break;
+					}
+					xd = *g_replay_reveal_all;
+					vision = *g_replay_reveal_all == 0;
+				}
+				else
+				{
+					vision = (xd & *g_player_visions) == 0;
+				}
+				if (!vision)
+				{
+					break;
+				}
+			DrawBox:
+				first_unit = first_unit->player_link.next;
+				if (!first_unit)
+				{
+					*g_minimap_box_checksum = checksum;
+					return xd;
+				}
+			}
+			u32 color = g_palette_index_reference[25];
+			if (!(units_dat::base_property[unit_id] & UnitProperty::ResourceContainer))
+			{
+				color = index_ref;
+			}
+			xd = helper::draw_unit_box(first_unit->sprite->position.x, color, first_unit->sprite->position.y,
+									   units_dat::building_dimensions[first_unit->id].x, units_dat::building_dimensions[first_unit->id].y,
+									   units_dat::base_property[first_unit->id] & UnitProperty::Building);
+
+			goto DrawBox;
+		}
+		return xd;
+	}
 }

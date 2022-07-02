@@ -12530,4 +12530,22 @@ namespace helper
 			POPAD
 		}
 	}
+
+	u32 draw_unit_box(u32 x_pos, char color, u32 y_pos, u8 x_dims, u8 y_dims, char draw_in_fog) {
+		static u32 result;
+		const u32 func_address = 0x004A3FD0;
+		__asm {
+			PUSHAD
+			PUSH draw_in_fog
+			PUSH y_dims
+			PUSH x_dims
+			PUSH y_pos
+			MOV CL, color
+			MOV EAX, x_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

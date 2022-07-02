@@ -18,8 +18,8 @@
 SCBW_DATA(Unit**, g_first_visible_unit, 0x00628430);
 /// Includes units in transports/bunkers, worker inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
-SCBW_DATA(Unit**,		g_first_hidden_unit,			0x006283EC);
-SCBW_DATA(Unit**,		last_hidden_unit,			0x00628428);
+SCBW_DATA(Unit**,		g_first_hidden_unit,		0x006283EC);
+SCBW_DATA(Unit**,		g_last_hidden_unit,			0x00628428);
 SCBW_DATA(Unit**,		first_scanner_sweep,		0x006283F4);
 SCBW_DATA(Unit**,		last_scanner_sweep,			0x00628434);
 SCBW_DATA(Unit**,		first_psi_field_provider,	0x0063FF54);
@@ -27,7 +27,7 @@ SCBW_DATA(u32*,			psi_field_grp_width,		0x0063FF4C);
 SCBW_DATA(u32*,			psi_field_grp_height,		0x0063FF58);
 SCBW_DATA(u8**,			psi_field_mask,				0x006D5BD8);
 SCBW_DATA(u32*,			psi_unknown,				0x0063FF48);
-SCBW_DATA(u32*,			psi_vision_filter,			0x0057F0B0);
+SCBW_DATA(u32*,			g_player_visions,			0x0057F0B0);
 SCBW_DATA(Bullet**,		first_bullet,				0x0064DEC4);
 SCBW_DATA(Bullet**,		last_bullet,				0x0064DEAC);
 SCBW_DATA(Bullet**,		first_free_bullet,			0x0064EED8);
@@ -243,9 +243,9 @@ SCBW_DATA(u32*,			elapsed_time_modified,		0x006D5BCC);
 SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
 SCBW_DATA(Options*,		options_list,				0x006CDFD4);
 SCBW_DATA(ReplayData*,	replay_data,				0x00596BBC);
-SCBW_DATA(u32*,			replay_visions,				0x006D0F18);
+SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
-SCBW_DATA(u32*,			replay_show_entire_map,		0x006D0F1C);
+SCBW_DATA(u32*,			g_replay_reveal_all,		0x006D0F1C);
 SCBW_DATA(u32*,			next_replay_command_frame,	0x005136C8);
 SCBW_DATA(u32*,			player_explored_visions,	0x0057EEB8);
 SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
@@ -876,9 +876,8 @@ SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
 ///standard versions from graphics.h
 ///This is the PlayerColors from BWAPI
 ///Max index is PLAYER_COUNT-1
-SCBW_DATA(u8*, player_minimap_colors, 0x00581DD6);
-
-SCBW_DATA(u8*, player_in_game_colors, 0x00581D76);
+SCBW_DATA(u8*, g_player_minimap_colors,	0x00581DD6);
+SCBW_DATA(u8*, g_player_in_game_colors, 0x00581D76);
 
 const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
 SCBW_DATA(List<Sprite>*, unusedSprites, 0x0063FE30);
@@ -989,7 +988,7 @@ SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
 SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 
 // For do_attack_notify_unit
-SCBW_DATA(char*,	palette_index_reference,	0x006CEB20); // sizeof at least 20
+SCBW_DATA(char*,	g_palette_index_reference,	0x006CEB20); // sizeof at least 20
 SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
 //SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
 SCBW_DATA(u8*,		sound_duration_msecs,		0x006D1278);
@@ -1053,6 +1052,10 @@ SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);
 SCBW_DATA(char*,			g_is_executing_wait,		0x006509B8);
 SCBW_DATA(TriggerVector**,	g_current_trigger_node,		0x006509AC);
 SCBW_DATA(u32*,				g_trigger_wait,				0x00650980);
+
+SCBW_DATA(char*,			g_minimap_state,			0x006D5BBE);
+SCBW_DATA(u32*,				g_minimap_box_checksum,		0x0059C1A8);
+SCBW_DATA(u32*,				g_minimap_draw_neutrals,	0x005993AC);
 
 //////////////////////////////////////////////////////////////// @}
 

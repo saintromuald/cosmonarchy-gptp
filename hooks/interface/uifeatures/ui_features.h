@@ -18,6 +18,7 @@ namespace hooks {
 	b32 check_hotkey_char(BinDlg* dialog, char hotkey);
 	char create_upgrade_level_tooltip(char* text);
 	s32 trigact_transmission(TriggerAction* trigger, char* a2);													// 004C7890
+	char draw_minimap_unit_box(u32 player);																		// 004A4650
 
 	void inject_ui_features_hooks();
 

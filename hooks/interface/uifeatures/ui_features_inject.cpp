@@ -145,7 +145,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) trigact_transmission_wrapper()
+	void __declspec(naked) trigact_transmission_wrapper() // 004C7890
 	{
 		static u32 result;
 		static TriggerAction* trigger;
@@ -164,6 +164,21 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) draw_minimap_unit_box_wrapper() { // 004A4650
+		static char result;
+		static u32 player;
+		__asm {
+			MOV player, ECX
+			PUSHAD
+		}
+		result = hooks::draw_minimap_unit_box(player);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -177,5 +192,6 @@ namespace hooks
 		jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
 	//	jump_patch(create_upgrade_level_tooltip_wrapper,	0x00459150, 3);
 	//	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
+		jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
 	}
 }

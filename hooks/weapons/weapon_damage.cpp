@@ -1113,7 +1113,7 @@ namespace hooks
 	{
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
 		{
-			unit->last_event_color = palette_index_reference[20];
+			unit->last_event_color = g_palette_index_reference[20];
 			bool cooldown = *notify_cooldown == 0;
 			unit->last_event_timer = 20;
 			if (cooldown)

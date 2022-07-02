@@ -255,9 +255,9 @@ namespace UnitProperty
 		AnimatedIdle = 0x00000100,
 		Cloakable = 0x00000200,
 		TwoUnitsIn1Egg = 0x00000400,
-		NeutralAccessories = 0x00000800, //AKA "Single entity" (prevents multi-select, set on all pickup items)
-		ResourceDepot = 0x00001000,	//Place where resources are brought back
-		ResourceContainer = 0x00002000,	//Resource Source
+		NeutralAccessories = 0x00000800,	// AKA "Single entity" (prevents multi-select, set on all pickup items)
+		ResourceDepot = 0x00001000,			// Drop-off point
+		ResourceContainer = 0x00002000,		// Node
 		RoboticUnit = 0x00004000,
 		Detector = 0x00008000,
 		Organic = 0x00010000,
@@ -267,15 +267,15 @@ namespace UnitProperty
 		Burrowable = 0x00100000,
 		Spellcaster = 0x00200000,
 		PermanentCloak = 0x00400000,
-		NPCOrAccessories = 0x00800000, //AKA "Pickup item" (data disc, crystals, mineral chunks, gas tanks, etc.)
+		NPCOrAccessories = 0x00800000,		// AKA "Pickup item" (data disc, crystals, mineral chunks, gas tanks, etc.)
 		MorphFromOtherUnit = 0x01000000,
-		MediumOverlay = 0x02000000, //Used to determine overlay for various spells and effects
-		LargeOverlay = 0x04000000, //Used to determine overlay for various spells and effects
+		MediumOverlay = 0x02000000,
+		LargeOverlay = 0x04000000,
 		AutoAttackAndMove = 0x08000000,
-		Attack = 0x10000000, /**< Can attack */	
+		Attack = 0x10000000,				// Full Auto-Attack
 		Invincible = 0x20000000,
 		Mechanical = 0x40000000,
-		ProducesUnits = 0x80000000, /**< It can produce units directly (making buildings doesn't count) */
+		ProducesUnits = 0x80000000,			// It can produce units directly (making buildings doesn't count)
 	};
 }
 

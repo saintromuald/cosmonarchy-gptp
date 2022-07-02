@@ -133,7 +133,7 @@ static void match_color_of(u32 player) {
 	for (u32 color = 0; color < ColorSetCount; ++color) {
 		bool match = true;
 		for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; ++i) {
-			if (player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] != tunit_colors[color * PLAYABLE_PLAYER_COUNT + i]) {
+			if (g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] != tunit_colors[color * PLAYABLE_PLAYER_COUNT + i]) {
 				match = false;
 				break;
 			}
@@ -147,9 +147,9 @@ static void match_color_of(u32 player) {
 
 void set_player_color(u32 player, u32 color) {
 	player_color_list[player] = color;
-	player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
+	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
+		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
 	}
 }
 

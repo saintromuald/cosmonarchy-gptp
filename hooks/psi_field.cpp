@@ -61,7 +61,7 @@ namespace hooks
             return true;
         }
         if (*psi_unknown) {
-            helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *psi_vision_filter);
+            helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *g_player_visions);
             return true;
         }
         if (!(unit->sprite->flags & SpriteFlags::Selected) ) {
@@ -78,7 +78,7 @@ namespace hooks
         for (Unit* unit = *first_psi_field_provider; unit; unit = unit->psi_link.next) {
             if (!*g_is_in_replay && unit_can_show_power_for(unit, *g_local_nation_id) && (unit->building.pylon_aura || show_power_sprite(unit))) {
                 unit->building.pylon_aura->flags &= ~SpriteFlags::Hidden;
-                helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *psi_vision_filter);
+                helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *g_player_visions);
             }
         }
     }
