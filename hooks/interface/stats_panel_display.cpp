@@ -310,6 +310,12 @@ namespace hooks
 		*/
 	}
 
+	static void draw_new_building_info(BinDlg* dialog, Unit* unit) {
+		helper::draw_armor(dialog, unit->id, 0);
+		draw_unit_kills_string(dialog);
+		helper::add_text_to_dialog(dialog, -20, get_unit_rank_string(unit));
+	}
+
 	// TODO: Fix progress bar drawing during addon construction, unit training
 	// Hooked to draw armor icons to buildings. - Pr0nogo
 	void draw_building_info(BinDlg* dialog) { // 00427890
@@ -338,6 +344,7 @@ namespace hooks
 		//	}
 		//	helper::set_text_string(dialog);
 		//	helper::set_unit_status_string_text(dialog);
+		//	draw_new_building_info(dialog, unit);
 		//	helper::add_text_to_dialog(dialog, -5, unit->get_name());
 		//	return;
 		//}
@@ -352,6 +359,7 @@ namespace hooks
 			helper::draw_nuke_silo_info(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
+			draw_new_building_info(dialog, unit);
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
@@ -363,6 +371,7 @@ namespace hooks
 			}
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
+			draw_new_building_info(dialog, unit); // for now we show this, but later when we have the real transport ui we won't
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
@@ -398,6 +407,7 @@ namespace hooks
 		//	helper::draw_supply_unit_info(dialog);
 		//	helper::set_text_string(dialog);
 		//	helper::set_unit_status_string_text(dialog);
+		//	draw_new_building_info(dialog, unit);
 		//	helper::add_text_to_dialog(dialog, -5, unit->get_name());
 		//	return;
 		//}
@@ -405,26 +415,24 @@ namespace hooks
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
+			helper::draw_armor(dialog, unit->id, 0); // this was added -Veeq7
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(unit)] == -126
-			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(unit)] == -126
-			&& units_dat::AirWeapon[unit->id]
-			&& units_dat::GroundWeapon[unit->id]
+		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
+			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
 			&& !units_dat::ShieldsEnabled[unit->id]) {
-			if (*g_status_screen_func != 4)
-			{
+			if (*g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;
 			}
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
+			draw_new_building_info(dialog, unit);
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (*g_status_screen_func != 3)
-		{
+		if (*g_status_screen_func != 3) {
 			helper::hide_optional_status_screen_controls(dialog);
 			helper::show_control_group(dialog, -20, 12);
 			*g_status_screen_func = 3;
@@ -433,6 +441,7 @@ namespace hooks
 		helper::hide_dialog(helper::get_control_from_index(dialog, -21));
 		helper::set_text_string(dialog);
 		helper::set_unit_status_string_text(dialog);
+		draw_new_building_info(dialog, unit);
 		helper::add_text_to_dialog(dialog, -5, unit->get_name());
 	}
 
