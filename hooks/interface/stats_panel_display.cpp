@@ -325,6 +325,7 @@ namespace hooks
 		*g_ui_energy = (*g_active_portrait_unit)->energy;
 		*g_ui_shields = shields;
 		*g_redraw_transport_ui = helper::ui_needs_redraw();
+
 		helper::generic_status_update_drawn_values();
 		if (unit->id == UnitId::ResourceMineralField 
 			|| unit->id == UnitId::ResourceMineralFieldType2
@@ -337,17 +338,17 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		//if (!*g_is_in_replay && unit->player != *g_local_nation_id) {
-		//	if (*g_status_screen_func != 4) {
-		//		helper::hide_optional_status_screen_controls(dialog);
-		//		*g_status_screen_func = 4;
-		//	}
-		//	helper::set_text_string(dialog);
-		//	helper::set_unit_status_string_text(dialog);
-		//	draw_new_building_info(dialog, unit);
-		//	helper::add_text_to_dialog(dialog, -5, unit->get_name());
-		//	return;
-		//}
+		if (!*g_is_in_replay && unit->player != *g_local_nation_id) {
+			if (*g_status_screen_func != 4) {
+				helper::hide_optional_status_screen_controls(dialog);
+				*g_status_screen_func = 4;
+			}
+			helper::set_text_string(dialog);
+			helper::set_unit_status_string_text(dialog);
+			draw_new_building_info(dialog, unit);
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			return;
+		}
 		if (!(unit->status & UnitStatus::Completed)) {
 			helper::draw_progress_bar(dialog);
 			helper::set_text_string(dialog);
