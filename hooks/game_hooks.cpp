@@ -446,7 +446,10 @@ namespace hooks
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
 			Unit* transport = unit->connected_unit;
-			scbw::set_unit_position(unit, transport->position.x, transport->position.y);
+
+			if (unit->position.x != transport->position.x || unit->position.y != transport->position.y) {
+				scbw::set_unit_position(unit, transport->position.x, transport->position.y);
+			}
 
 			if (unit_is_hidden) {
 				overlay_unit = transport;

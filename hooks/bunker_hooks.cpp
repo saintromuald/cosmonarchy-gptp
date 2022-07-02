@@ -28,11 +28,10 @@ namespace hooks
 
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
-	//	if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranBunker
-	//	&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
-	//		return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
-	//				// This is BUGGED! It often stops units from firing even when the bunker is not in transport. Maybe connected_unit is wrong? -Pr0nogo
-	//	}
+		if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranBunker
+		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
+			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
+		}
 		if (scbw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::HoldingPosition;
 			if (unit->subunit) {
@@ -85,12 +84,10 @@ namespace hooks
 		}
 	}
 
-	void create_bunker_attack_overlay(Unit* unit) // 00477FD0
-	{
+	void create_bunker_attack_overlay(Unit* unit) { // 00477FD0
 		// Fixes units with subunits not attacking
 		Unit* unitVar = unit;
-		if (unit->subunit)
-		{
+		if (unit->subunit) {
 			unitVar = unit->subunit;
 		}
 
@@ -99,38 +96,27 @@ namespace hooks
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->get_offset(bunkerImage->frame_index, frameDirection);
 
-		if (bunkerImage->flags & ImageFlags::Mirrored) // Is inverted
-		{
+		if (bunkerImage->flags & ImageFlags::Mirrored) { // Is inverted
 			offset.x = -offset.x;
 		}
 
-		u8 frameAngle;
-		u16 spriteId;
-		if (unitVar->id == UnitId::TerranHarakan)
-		{
+		u8 frameAngle = frameDirection * 32;
+		u16 spriteId = 377; // Bunker attack overlay
+		if (unitVar->id == UnitId::TerranHarakan) {
 			frameAngle = ((unitVar->current_direction_1 + 8) / 16 % 16) * 16;
 			spriteId = 378; // Firebat flamethrower graphics
-		}
-		else
-		{
-			frameAngle = frameDirection * 32;
-			spriteId = 377; // Bunker attack overlay
 		}
 
 		scbw::decloak_proc(unitVar->connected_unit);
 
 		// TODO: Fix effect nonsense with subunits
 		Thingy* bunkerAttackEffect = helper::create_thingy(spriteId, offset.x + unitVar->get_x(), offset.y + unitVar->get_y(), unitVar->player);
-		if (!bunkerAttackEffect)
-		{
+		if (!bunkerAttackEffect) {
 			return;
 		}
 
 		bunkerAttackEffect->sprite->elevation_level = unitVar->sprite->elevation_level + 1;
-		for (Image* image = bunkerAttackEffect->sprite->images.head;
-			image != nullptr;
-			image = image->link.next)
-		{
+		for (Image* image = bunkerAttackEffect->sprite->images.head; image; image = image->link.next) {
 			helper::set_image_direction(image, frameAngle);
 		}
 		helper::set_thingy_visibility_flags(bunkerAttackEffect);
@@ -159,13 +145,12 @@ namespace hooks
 		}
 
 		u32 weapon_id = units_dat::GroundWeapon[unit->id];
-		u32 weapon_type = 1;
+		u8 timer = unit->ground_weapon_cooldown;
 		if (target->status & UnitStatus::InAir) {
 			weapon_id = units_dat::AirWeapon[unit->id];
-			weapon_type = 2;
+			timer = unit->air_weapon_cooldown;
 		}
 
-		u8 timer = unit->main_order_timer + weapon_type;
 		if (timer) {
 			if (unit->order_queue_timer > timer - 1) {
 				unit->order_queue_timer = timer - 1;
@@ -182,13 +167,13 @@ namespace hooks
 			return false;
 		}
 
-		u32 direction = unit->current_direction_1 - helper::get_direction_from_points(unit->order_target.pt.y, unit->sprite->position.x, unit->order_target.pt.x, unit->sprite->position.y);
-		u32 angle = direction + (-(direction < 0) & 0x100);
+		s32 direction = unit->current_direction_1 - helper::get_direction_from_points(unit->order_target.pt.y, unit->sprite->position.x, unit->order_target.pt.x, unit->sprite->position.y);
+		s32 angle = direction + (-(direction < 0) & 0x100);
 		if (angle > 128) {
-			angle = 256 - angle;
+			angle -= 256;
 		}
 		if (angle > weapons_dat::attack_angle[weapon_id]) {
-			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
+			if (!(unit->status & UnitStatus::CanTurnAroundToAttack)) {
 				unit->order_queue_timer = 0;
 				return true;
 			}
@@ -203,12 +188,11 @@ namespace hooks
 		unit->movement_flags |= MovementFlags::StartingAttack;
 		*g_last_bullet_creator = 0;
 		u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
-		u32 random_cooldown = cooldown + (helper::randomize_short(13) & 3) - 1;
-		unit->ground_weapon_cooldown = random_cooldown;
-		unit->air_weapon_cooldown = random_cooldown;
+		unit->ground_weapon_cooldown = cooldown;
+		unit->air_weapon_cooldown = cooldown;
 
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
-			helper::play_image_iscript(image, weapon_type + 4);
+			helper::play_image_iscript(image, target->status & UnitStatus::InAir ? IscriptAnimation::AirAttkRpt : IscriptAnimation::GndAttkRpt);
 		}
 		return true;
 	}
