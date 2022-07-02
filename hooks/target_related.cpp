@@ -5,6 +5,7 @@
 #include <hooks/unit_stats/weapon_range.h>
 #include <globals.h>
 #include "byte_operations_utils.h"
+#include <limits.h>
 
 namespace hooks
 {
@@ -641,32 +642,26 @@ LABEL_42:
 			|| !target->sprite // new
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & SpriteFlags::Hidden
-			|| checkVisibility && helper::unit_can_see_cloaked_target(target, unit))
-		{
-			return 0;
+			|| checkVisibility && helper::unit_can_see_cloaked_target(target, unit)) {
+			return false;
 		}
 
-		Unit* unitWithWeapon = unit->subunit;
-		if (!helper::unit_is_subunit(unit->subunit))
-		{
-			unitWithWeapon = unit;
+		Unit* context = unit;
+		if (helper::unit_is_subunit(unit->subunit)) {
+			context = unit->subunit;
 		}
 
-		if (helper::unit_is_carrier(unit))
-		{
-			return 1;
+		if (helper::unit_is_carrier(unit)) {
+			return true;
 		}
 
-		if (helper::unit_is_reaver(unit))
-		{
-			if (!(target->status & UnitStatus::InAir))
-			{
-				if (helper::unitHasPathToUnit(unit, target))
-				{
-					return 1;
+		if (helper::unit_is_reaver(unit)) {
+			if (!(target->status & UnitStatus::InAir)) {
+				if (helper::unitHasPathToUnit(unit, target)) {
+					return true;
 				}
 			}
-			return 0;
+			return false;
 		}
 
 		// Originally had code related to infestation
@@ -676,14 +671,32 @@ LABEL_42:
 		// GAME RULE: Ground titanic units can be targeted by air-only weapons
 		// Doesn't work currently.
 		/*
-		if (units_dat::SizeType[target->id] == UnitSize::Titanic)
-		{
-			return units_dat::AirWeapon[unitWithWeapon->id] != WeaponId::None
-				|| units_dat::GroundWeapon[unitWithWeapon->id] != WeaponId::None;
+		if (units_dat::SizeType[target->id] == UnitSize::Titanic) {
+			return units_dat::AirWeapon[context->id] != WeaponId::None
+				|| units_dat::GroundWeapon[context->id] != WeaponId::None;
 		}
 		*/
 
-		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[unitWithWeapon->id] : units_dat::GroundWeapon[unitWithWeapon->id];
+		if (unit->id == UnitId::TerranBunker) {
+			u32 max_range = 0;
+			for (u32 i = 0; i < TransportCap; ++i) {
+				Unit* cargo_unit = unit->get_loaded_unit(i);
+				if (cargo_unit) {
+					u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[cargo_unit->id] : units_dat::GroundWeapon[cargo_unit->id];
+					u32 range = hooks::get_max_weapon_range(unit, weapon, target);
+					if (range > max_range) {
+						max_range = range;
+					}
+				}
+			}
+
+			if (unit->is_target_within_min_range(target, max_range)) {
+				return true;
+			}
+			return false;
+		}
+
+		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[context->id] : units_dat::GroundWeapon[context->id];
 
 		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
 			if (!unit->is_target_within_min_range(target, hooks::get_max_weapon_range(unit, weapon, target))) {
