@@ -101,6 +101,9 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	f64 attack_cooldown = (f64)weapons_dat::Cooldown[weapon_id] / 24;
 	f64 attack_cooldown_modifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attack_cooldown;
 
+	f64 attack_speed = 1.0 / attack_cooldown;
+	f64 attack_speed_modifier = (1.0 / ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24)) - attack_speed;
+
 	s32 splashInner = weapons_dat::InnerSplashRadius[weapon_id];
 	s32 splashMedium = weapons_dat::MediumSplashRadius[weapon_id];
 	s32 splashOuter = weapons_dat::OuterSplashRadius[weapon_id];
@@ -108,7 +111,7 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	s32 splash_type = weapons_dat::ExplosionType[weapon_id];
 	std::string splash_type_value = "";
 
-	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
+	bool is_suicide_unit = unit->id == UnitId::ZergSkryling;
 
 	/*
 	switch (damage_type) {
@@ -224,35 +227,66 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	}
 
 	// Cooldown
-	std::string modifier_color = attack_cooldown_modifier > 0 ? "\006" : attack_cooldown_modifier < 0 ? "\007" : "\002";
 	std::stringstream string_builder; // TODO: replace with something not gay
 	string_builder << std::setprecision(4);
-	if (!isSuicideUnit)
-	{
-		if (extended) string_builder << attack_cooldown;
-		else string_builder << (attack_cooldown + attack_cooldown_modifier);
-		text += "\nCooldown: ";
+	std::string modifier_color = attack_cooldown_modifier > 0 ? BWTC_RED : attack_cooldown_modifier < 0 ? BWTC_GREEN : BWTC_RESET;
+	if (!is_suicide_unit) {
+		string_builder.str("");
+		string_builder << (attack_speed + attack_speed_modifier);
+		text += "\nAttack Speed: ";
 		text += modifier_color;
-		text += string_builder.str() + "s";
-		if (extended && attack_cooldown_modifier != 0)
+		text += string_builder.str();
+		if (extended && attack_speed_modifier != 0)
 		{
 			string_builder.str("");
-			string_builder << abs(attack_cooldown_modifier);
+			string_builder << attack_speed;
 
-			if (attack_cooldown_modifier > 0) text += " + ";
+			text += " (" + string_builder.str();
+
+			string_builder.str("");
+			string_builder << abs(attack_speed_modifier);
+
+			if (attack_speed_modifier > 0) text += " + ";
 			else text += " - ";
-			text += modifier_color + string_builder.str() + "s";
+			text += string_builder.str();
+
+			text += ")";
 		}
-		text += "\002";
+		text += BWTC_RESET;
+
+		if (extended) {
+			string_builder.str("");
+			string_builder << (attack_cooldown + attack_cooldown_modifier);
+			text += "\nCooldown: ";
+			text += modifier_color;
+			text += string_builder.str() + "s";
+			if (extended && attack_cooldown_modifier != 0)
+			{
+				string_builder.str("");
+				string_builder << attack_cooldown;
+
+				text += " (" + string_builder.str() + "s";
+
+				string_builder.str("");
+				string_builder << abs(attack_cooldown_modifier);
+
+				if (attack_cooldown_modifier > 0) text += " + ";
+				else text += " - ";
+				text += string_builder.str() + "s";
+
+				text += ")";
+			}
+			text += BWTC_RESET;
+		}
 	}
 
 	// DPS
-	if (!isSuicideUnit && extended)
+	if (!is_suicide_unit && extended)
 	{
 		string_builder.str("");
 		f64 cd = (attack_cooldown + attack_cooldown_modifier);
 		string_builder << ((f64)damage_factor * base_damage / cd);
-		text += "\nDPS: " + modifier_color + string_builder.str() + "\002";
+		text += "\nDPS: " + modifier_color + string_builder.str() + BWTC_RESET;
 	}
 
 	// Range
