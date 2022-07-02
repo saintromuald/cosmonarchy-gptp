@@ -3,8 +3,8 @@
 
 namespace hooks
 {
-	void unit_attacks_from_inside_bunker(Unit* unit);
-	void create_bunker_attack_overlay(Unit* unit);
+	void unit_attacks_from_inside_bunker(Unit* unit);	// 004790A0
+	void create_bunker_attack_overlay(Unit* unit);		// 00477FD0
 
 	void inject_bunker_hooks();
 }

@@ -1138,4 +1138,11 @@ struct TriggerVector {
 	Trigger*	trigger;	// 0x8
 };
 
+struct PaletteEntry {
+	u8			red;		// 0x0
+	u8			green;		// 0x1
+	u8			blue;		// 0x2
+	u8			flags;		// 0x3
+};
+
 #pragma pack()
