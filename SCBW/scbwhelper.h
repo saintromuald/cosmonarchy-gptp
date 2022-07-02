@@ -914,14 +914,14 @@ namespace helper
 	s32 getTickCount();																						// 004FE0C4
 
 	// For initialize_bullet
-	Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);			// 00496360
+	Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);		// 00496360
 	void bullet_behavior_reassign(Bullet* bullet);															// 0048BD50
-	s32 weapon_behavior_can_hit_target_check(Unit* target, Unit* attacker);										// 004765B0
-	void appear_on_target(Bullet* bullet, s16 x, s16 y);														// 004955C0
+	s32 weapon_behavior_can_hit_target_check(Unit* target, Unit* attacker);									// 004765B0
+	void appear_on_target(Bullet* bullet, s16 x, s16 y);													// 004955C0
 	Bullet* attack_fly_to_target(Bullet* bullet, s32 x, s32 y);												// 00494B70
 
 	// For ai_progress_build
-	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId);						// 0048EE30
+	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId);							// 0048EE30
 
 	// For ai_manage_building_placement
 	s32 get_bunker_placement_position(s32 placementId, s32* regionId);										// 004442E0
@@ -946,15 +946,15 @@ namespace helper
 	void drawArmor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);										// 00425600
 
 	// For progressBulletFrame
-	void bullet_behavior_fly(Bullet* bullet);																	// 0048B3B0
-	void bullet_behavior_follow(Bullet* bullet);																// 0048B500
-	void bullet_behavior_bounce(Bullet* bullet);																// 0048B2D0
-	void bullet_behavior_persist(Bullet* bullet);																// 0048BC70
-	void bullet_behavior_instant(Bullet* bullet);																// 0048A560
+	void bullet_behavior_fly(Bullet* bullet);																// 0048B3B0
+	void bullet_behavior_follow(Bullet* bullet);															// 0048B500
+	void bullet_behavior_bounce(Bullet* bullet);															// 0048B2D0
+	void bullet_behavior_persist(Bullet* bullet);															// 0048BC70
+	void bullet_behavior_instant(Bullet* bullet);															// 0048A560
 	void bullet_behavior_area(Bullet* bullet);																// 0048B440
 
 	// For giveUnitToPlayer
-	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 player);											// 0047C9F0
+	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 player);												// 0047C9F0
 	Unit* getHiddenMiner(Unit* unit);																		// 00468A60
 	bool unitHasHanger(Unit* unit);																			// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
@@ -1007,7 +1007,7 @@ namespace helper
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	// For ai_get_build_location
-	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 player, Point16 desiredPos);		// 00445D60
+	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 player, Point16 desiredPos);			// 00445D60
 	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos);												// 00443900
 	u32 ai_remove_dangerous_regions(u32 unit_id, char* placementData, u32 placementId, Point16 desiredPos);						// 00443870
 	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange);												// 00444E20
@@ -1060,7 +1060,7 @@ namespace helper
 	void ai_overlord_behavior(Unit* unit);																						// 00434DF0
 	void ai_nuke_silo_behavior(Unit* unit);																						// 00434D50
 	bool ai_unit_construction_behavior(s32 player, Unit* unit, s32 someBool);													// 00433890
-	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 someBool);														// 00435F10
+	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 someBool);															// 00435F10
 	s32 ai_morph_behavior(s32 player, Unit* unit, void* unit_ai);																// 00434FF0
 	void ai_train_behavior(Unit* unit, void* unit_ai, s32 player);																// 00434720
 	void ai_upgrade_behavior(Unit* unit, s32 player);																			// 00434670
