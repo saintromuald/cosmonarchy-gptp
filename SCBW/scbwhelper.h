@@ -439,7 +439,7 @@ namespace helper
 	void drop_powerup(Unit* powerup);																								// 004F3B70
 
 	//// cast_order
-	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weapon_id);																		// 00475DC0
+	u32 get_weapon_cooldown(Unit* unit, u8 weapon_id);																		// 00475DC0
 	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
 	u32 get_stat_txt_string(Unit* unit, u32 player, char* message);																	// 0048EF30
 	bool can_cast_spell(Unit* unit);																								// 00492140
@@ -499,9 +499,9 @@ namespace helper
 	s32 get_unit_max_weapon_range(Unit* a1, unsigned __int8 a2);
 
 	// for isReadyToAttack
-	u32 getDistanceToUnit(Unit* a1, Unit* a2);
-	u32 distanceFromDboxCorner(Unit* a1, __int16 a2, __int16 a3);
-	bool isAngleInAttackAngle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
+	u32 get_distance_to_unit(Unit* a1, Unit* a2);
+	u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3);
+	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
 	// for canCastOrderedSpellNow
 	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target);
@@ -1386,4 +1386,6 @@ namespace helper
 	void delete_guard_ai(GuardAi* guard_ai, GuardAiList* guard_ai_list);									// 00403030
 	u32 ai_request_guard(GuardAi* guard_ai, u32 player);													// 00448630
 	Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point);							// 004379B0
+
+	void create_bunker_attack_overlay(Unit* unit);															// 00477FD0
 }

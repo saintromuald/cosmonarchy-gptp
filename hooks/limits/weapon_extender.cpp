@@ -20,7 +20,7 @@ u16*,		damage_amount,		weaponsDat[14].address); // 00656EB0
 u16*,		armor_pen,		weaponsDat[15].address); // 00657678
 u8*,		Cooldown,			weaponsDat[16].address); // 00656FB8
 u8*,		DamageFactor,		weaponsDat[17].address); // 006564E0
-u8*,		AttackAngle,		weaponsDat[18].address); // 00656990
+u8*,		attack_angle,		weaponsDat[18].address); // 00656990
 u8*,		LaunchSpin,			weaponsDat[19].address); // 00657888
 u8*,		ForwardOffset,		weaponsDat[20].address); // 00657910
 u8*,		VerticalOffset,		weaponsDat[21].address); // 00656C20
@@ -73,7 +73,7 @@ namespace weapons_dat
 	u16			armor_pen[MAX_WEAPONS];		
 	u8			Cooldown[MAX_WEAPONS];			
 	u8			DamageFactor[MAX_WEAPONS];		
-	u8			AttackAngle[MAX_WEAPONS];		
+	u8			attack_angle[MAX_WEAPONS];		
 	u8			LaunchSpin[MAX_WEAPONS];			
 	u8			ForwardOffset[MAX_WEAPONS];		
 	u8			VerticalOffset[MAX_WEAPONS];		
@@ -134,7 +134,7 @@ static inline void patchWeaponDat(u32 opcodeSize, u32 address, u32 patchType)
 		weapons_dat::armor_pen,		
 		weapons_dat::Cooldown,			
 		weapons_dat::DamageFactor,		
-		weapons_dat::AttackAngle,		
+		weapons_dat::attack_angle,		
 		weapons_dat::LaunchSpin,			
 		weapons_dat::ForwardOffset,		
 		weapons_dat::VerticalOffset,		

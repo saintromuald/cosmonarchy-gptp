@@ -189,7 +189,7 @@ namespace hooks
 					{
 						angle += 256;
 					}
-					if (angle > weapons_dat::AttackAngle[unit->get_ground_weapon()])
+					if (angle > weapons_dat::attack_angle[unit->get_ground_weapon()])
 					{
 						jump_to_switch_1 = true;
 					}

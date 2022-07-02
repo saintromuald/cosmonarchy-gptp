@@ -336,12 +336,12 @@ namespace hooks
 							u8 weapon_id = unit->get_ground_weapon();
 							if (weapon_id != WeaponId::None)
 							{
-								unit->ground_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weapon_id);
+								unit->ground_weapon_cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 							}
 							weapon_id = unit->get_air_weapon();
 							if (weapon_id != WeaponId::None)
 							{
-								unit->air_weapon_cooldown = helper::get_upgraded_weapon_cooldown(unit, weapon_id);
+								unit->air_weapon_cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 							}
 							unit->spell_cooldown = 30;
 						}

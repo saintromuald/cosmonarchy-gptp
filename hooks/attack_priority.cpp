@@ -372,7 +372,7 @@ namespace
 			angleDiff += 128;
 		if (angleDiff > 128)
 			angleDiff = 256 - angleDiff;
-		return angleDiff <= weapons_dat::AttackAngle[weapon_id];
+		return angleDiff <= weapons_dat::attack_angle[weapon_id];
 	}
 
 	const u32 Func_CannotChaseTarget = 0x004A1140;

@@ -65,16 +65,16 @@ namespace hooks
 			return 0;
 		v4 = a1->order_target.unit;
 		if (v4)
-			v5 = helper::getDistanceToUnit(a1, v4);
+			v5 = helper::get_distance_to_unit(a1, v4);
 		else
-			v5 = helper::distanceFromDboxCorner(a1, a1->order_target.pt.x, a1->order_target.pt.y);
+			v5 = helper::distance_from_dbox_corner(a1, a1->order_target.pt.x, a1->order_target.pt.y);
 		v7 = v5;
 		v6 = weapons_dat::min_range[a2];
 		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathing_flags & 2)
 			return 0;
 		v8 = v2->next_target_waypoint.x;
 		if ((v8 != v2->position.x || v2->next_target_waypoint.y != v2->position.y)
-			&& !helper::isAngleInAttackAngle(v2->next_target_waypoint.y, v8, v2, a2))
+			&& !helper::is_angle_in_attack_angle(v2->next_target_waypoint.y, v8, v2, a2))
 		{
 			v2->order_queue_timer = 0;
 			return 0;

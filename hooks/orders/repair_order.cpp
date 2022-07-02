@@ -80,7 +80,7 @@ namespace hooks
 							current_angle = 256 - current_angle;
 						}
 						u8 weapon = unit->get_ground_weapon();
-						if (current_angle <= weapons_dat::AttackAngle[weapon]) {
+						if (current_angle <= weapons_dat::attack_angle[weapon]) {
 							unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 							unit->main_order_state = 8;
 						}

@@ -3,8 +3,8 @@
 
 namespace
 {
-	const u32 Hook_UnitCanAttackInsideBunkerYes = 0x004790DC;
-	void __declspec(naked) unit_attacks_from_inside_bunker_wrapper()
+	const u32 Hook_UnitCanAttackInsideBunkerYes = 0x004790DC; // ???
+	void __declspec(naked) unit_attacks_from_inside_bunker_wrapper() // 004790A0
 	{
 		static Unit* unit;
 		__asm
@@ -20,7 +20,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) create_bunker_attack_overlay_wrapper()
+	void __declspec(naked) create_bunker_attack_overlay_wrapper() // 00477FD0
 	{
 		static Unit* unit;
 		__asm
@@ -35,6 +35,23 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) attack_apply_cooldown_wrapper() { // 00478B40
+		static u32 result;
+		static Unit* unit;
+		static u32 holdpos_status;
+		__asm {
+			MOV holdpos_status, ECX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::attack_apply_cooldown(unit, holdpos_status);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -43,5 +60,6 @@ namespace hooks
 	{
 		jump_patch(unit_attacks_from_inside_bunker_wrapper,		0x004790A0, 2);
 		jump_patch(create_bunker_attack_overlay_wrapper,		0x00477FD0, 3);
+		jump_patch(attack_apply_cooldown_wrapper,				0x00478B40, 1);
 	}
 }

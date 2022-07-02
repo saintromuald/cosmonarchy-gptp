@@ -684,7 +684,7 @@ namespace weapons_dat {
 	SCBW_DATA(u16*, armor_pen, weaponsDat[15].address); // 00657678
 	SCBW_DATA(u8*, Cooldown, weaponsDat[16].address); // 00656FB8
 	SCBW_DATA(u8*, DamageFactor, weaponsDat[17].address); // 006564E0
-	SCBW_DATA(u8*, AttackAngle, weaponsDat[18].address); // 00656990
+	SCBW_DATA(u8*, attack_angle, weaponsDat[18].address); // 00656990
 	SCBW_DATA(u8*, LaunchSpin, weaponsDat[19].address); // 00657888
 	SCBW_DATA(u8*, ForwardOffset, weaponsDat[20].address); // 00657910
 	SCBW_DATA(u8*, VerticalOffset, weaponsDat[21].address); // 00656C20
@@ -714,7 +714,7 @@ namespace weapons_dat
 	extern	u16			armor_pen[MAX_WEAPONS];		
 	extern	u8			Cooldown[MAX_WEAPONS];			
 	extern	u8			DamageFactor[MAX_WEAPONS];		
-	extern	u8			AttackAngle[MAX_WEAPONS];		
+	extern	u8			attack_angle[MAX_WEAPONS];		
 	extern	u8			LaunchSpin[MAX_WEAPONS];			
 	extern	u8			ForwardOffset[MAX_WEAPONS];		
 	extern	u8			VerticalOffset[MAX_WEAPONS];		

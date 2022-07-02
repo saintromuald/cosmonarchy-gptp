@@ -3962,7 +3962,7 @@ namespace helper
 		}
 	}
 
-	u32 get_upgraded_weapon_cooldown(Unit* unit, u8 weapon_id)
+	u32 get_weapon_cooldown(Unit* unit, u8 weapon_id)
 	{
 		const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
 		static u32 return_value;
@@ -4431,8 +4431,7 @@ namespace helper
 	}
 
 	// for isReadyToAttack
-
-	u32 getDistanceToUnit(Unit* a1, Unit* a2)
+	u32 get_distance_to_unit(Unit* a1, Unit* a2)
 	{
 		const u32 Func_getDistanceToUnit = 0x00430D30;
 		static u32 result;
@@ -4447,7 +4446,7 @@ namespace helper
 		return result;
 	}
 
-	u32 distanceFromDboxCorner(Unit* a1, __int16 a2, __int16 a3)
+	u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3)
 	{
 		const u32 Func_distanceFromDboxCorner = 0x0043E50;
 		static u32 result;
@@ -4463,7 +4462,7 @@ namespace helper
 		return result;
 	}
 
-	bool isAngleInAttackAngle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4)
+	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4)
 	{
 		const u32 Func_isAngleInAttackAngle = 0x00475BE0;
 		static s32 result;
@@ -12519,5 +12518,16 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	void create_bunker_attack_overlay(Unit* unit)
+	{
+		const u32 func_address = 0x00477FD0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

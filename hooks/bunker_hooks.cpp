@@ -153,4 +153,91 @@ namespace hooks
 		}
 		helper::set_thingy_visibility_flags(bunkerAttackEffect);
 	}
+
+	// Hooked to investigate Bunker issues. -Pr0nogo
+	u32 attack_apply_cooldown(Unit* unit, u32 holdpos_status) // 00478B40
+	{
+		if (!unit->order_target.unit || (helper::pick_new_target_if_needed(unit), !helper::is_unit_visible(unit))) // pick_new_target_if_needed originally used holdpos_status arg, but it seems to be completely unused. -Pr0nogo
+		{
+			return 0;
+		}
+		if (!helper::unit_can_attack_target(unit->order_target.unit, unit, 1))
+		{
+			return 0;
+		}
+
+		Unit* target = unit->order_target.unit;
+		unit->order_target.pt.x = target->sprite->position.x;
+		unit->order_target.pt.y = target->sprite->position.y;
+		Unit* subunit = unit->subunit;
+		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit)
+		{
+			return 1;
+		}
+
+		u32 weapon_id = units_dat::GroundWeapon[unit->id];
+		u32 weapon_type = 1;
+		if (target->status & UnitStatus::InAir)
+		{
+			weapon_id = units_dat::AirWeapon[unit->id];
+			weapon_type = 2;
+		}
+
+		u8 timer = unit->main_order_timer + weapon_type;
+		if (timer)
+		{
+			if (unit->order_queue_timer > timer - 1)
+			{
+				unit->order_queue_timer = timer - 1;
+			}
+			return 1;
+		}
+		if (unit->movement_flags & 8)
+		{
+			return 1;
+		}
+
+		u32 distance = helper::get_distance_to_unit(unit, target);
+		u32 min_range = weapons_dat::min_range[weapon_id];
+		if (min_range && distance < min_range || distance > helper::get_unit_max_weapon_range(unit, weapon_id))
+		{
+			return 0;
+		}
+
+		u32 direction = unit->current_direction_1 - helper::get_direction_from_points(unit->order_target.pt.y, unit->sprite->position.x, unit->order_target.pt.x, unit->sprite->position.y);
+		u32 angle = direction + (-(direction < 0) & 0x100);
+		if (angle > 128)
+		{
+			angle = 256 - angle;
+		}
+		if (angle > weapons_dat::attack_angle[weapon_id])
+		{
+			if (unit->status & UnitStatus::CanTurnAroundToAttack)
+			{
+				unit->order_queue_timer = 0;
+				return 1;
+			}
+			return 0;
+		}
+		if ((unit->status & UnitStatus::CanNotAttack))
+		{
+			return 0;
+		}
+		if (unit->status & UnitStatus::InBuilding)
+		{
+			helper::create_bunker_attack_overlay(unit);
+		}
+		unit->movement_flags |= 8u;
+		*g_last_bullet_creator = 0;
+		u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+		u32 random_result = (helper::randomize_short(13) & 3) - 1 + cooldown;
+		unit->ground_weapon_cooldown = random_result;
+		unit->air_weapon_cooldown = random_result;
+
+		for (Image* i = unit->sprite->main_graphic; i; i = i->link.next) // main_graphic might be images.head. -Pr0nogo
+		{
+			helper::play_image_iscript(i, weapon_type + 4);
+		}
+		return 1;
+	}
 }

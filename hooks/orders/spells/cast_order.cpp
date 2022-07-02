@@ -27,7 +27,7 @@ namespace hooks
 					}
 					helper::set_move_target_xy(caster->position.x, caster->position.y, caster);
 
-					if (!helper::isAngleInAttackAngle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
+					if (!helper::is_angle_in_attack_angle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
 						helper::turn_unit(caster, scbw::get_angle(caster->position, target_pos));
 						return 0;
 					}
@@ -358,7 +358,7 @@ namespace hooks
 								u32 random_value;
 								unit->spend_unit_energy(spellCost);
 
-								cooldown = helper::get_upgraded_weapon_cooldown(unit, orderWeaponId);
+								cooldown = helper::get_weapon_cooldown(unit, orderWeaponId);
 								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern)
 								{
