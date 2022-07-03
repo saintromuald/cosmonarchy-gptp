@@ -225,7 +225,7 @@ namespace hooks
 		if (unit->connected_unit != nullptr)
 		{
 			Unit* transport = unit->connected_unit;
-			if ((transport->main_order_timer == 0 || transport->status & UnitStatus::GroundedBuilding)
+			if ((transport->main_order_timer == 0 || units_dat::base_property[transport->id] & UnitProperty::Building)
 			&& !(transport->status & UnitStatus::Frozen)
 			&&   transport->lockdown_timer == 0
 			&&   transport->stasis_timer == 0
@@ -302,7 +302,7 @@ namespace hooks
 
 					scbw::refresh_console();
 					return_value = 1;
-					if (transport->status & UnitStatus::GroundedBuilding)
+					if (units_dat::base_property[transport->id] & UnitProperty::Building)
 					{
 						if (unit->id != UnitId::ProtossAccantor)
 						{
