@@ -1390,4 +1390,9 @@ namespace helper {
 	void create_bunker_attack_overlay(Unit* unit);															// 00477FD0
 
 	u32 draw_unit_box(u32 x_pos, char color, u32 y_pos, u8 x_dims, u8 y_dims, char draw_in_fog);			// 004A3FD0
+
+	void draw_minimap_unit_box_2(u32 player);																// 004A47B0
+	char draw_minimap_unit_box(u32 player);																	// 004A4650
+	void draw_all_minimap_unit_boxes(u32 player);															// 004A48E0
+	u32 thingy_is_visible(u32 some_bool, Thingy* thingy);													// 00487CF0
 }

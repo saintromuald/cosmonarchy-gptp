@@ -12519,8 +12519,7 @@ namespace helper
 		return result;
 	}
 
-	void create_bunker_attack_overlay(Unit* unit)
-	{
+	void create_bunker_attack_overlay(Unit* unit) {
 		const u32 func_address = 0x00477FD0;
 		__asm {
 			PUSHAD
@@ -12541,6 +12540,53 @@ namespace helper
 			PUSH y_pos
 			MOV CL, color
 			MOV EAX, x_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void draw_minimap_unit_box_2(u32 player) {
+		const u32 func_address = 0x004A47B0;
+		__asm {
+			PUSHAD
+			MOV ECX, player
+			CALL func_address
+			POPAD
+		}
+	}
+
+	char draw_minimap_unit_box(u32 player) {
+		static char result;
+		const u32 func_address = 0x004A4650;
+		__asm {
+			PUSHAD
+			MOV ECX, player
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void draw_all_minimap_unit_boxes(u32 player) {
+		const u32 func_address = 0x004A48E0;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 thingy_is_visible(u32 some_bool, Thingy* thingy) {
+		static u32 result;
+		const u32 func_address = 0x00487CF0;
+		__asm {
+			PUSHAD
+			MOV ECX, thingy
+			MOV EAX, some_bool
 			CALL func_address
 			MOV result, EAX
 			POPAD

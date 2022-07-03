@@ -26,7 +26,7 @@ namespace hooks
     }
 
     // Hooked to allow allies to benefit from power -Veeq7
-    bool unit_has_power(u32 unit_id, s32 x, s32 y, u32 player) {
+    bool unit_has_power(u32 unit_id, s32 x, s32 y, u32 player) { // 004936B0
         if (!(units_dat::base_property[unit_id] & UnitProperty::RequiredPsi)) {
             return true;
         }
@@ -48,7 +48,7 @@ namespace hooks
     }
 
     // Hooked to show allied power fields -Veeq7
-    b32 show_power_sprite(Unit* unit) {
+    b32 show_power_sprite(Unit* unit) { // 00493BF0
         Sprite* sprite = helper::create_sprite(SpriteId::PsiFieldRightUpper, unit->sprite->position.x, unit->sprite->position.y, unit->player); // Originally player was 0
         unit->building.pylon_aura = sprite;
         if (!sprite) {
@@ -74,7 +74,7 @@ namespace hooks
     }
 
     // Hooked to show allied power fields -Veeq7
-    void __cdecl create_pylon_aura() {
+    void __cdecl create_pylon_aura() { // 00493640
         for (Unit* unit = *first_psi_field_provider; unit; unit = unit->psi_link.next) {
             if (!*g_is_in_replay && unit_can_show_power_for(unit, *g_local_nation_id) && (unit->building.pylon_aura || show_power_sprite(unit))) {
                 unit->building.pylon_aura->flags &= ~SpriteFlags::Hidden;

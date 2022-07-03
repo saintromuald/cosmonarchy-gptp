@@ -217,8 +217,8 @@ SCBW_DATA(char*,		selected_singleplayer_race,	0x0057F266);
 SCBW_DATA(char*,		custom_singleplayer,		0x0057F1E3);
 
 // For Lobotomy Mine
-SCBW_DATA(char**,		statusscreen_infobtn,		0x00519F40);
-SCBW_DATA(GrpHead**,	cmdicons_grp,				0x0068C1E0);
+SCBW_DATA(char**,		g_status_screen_info_button_unk,		0x00519F40);
+SCBW_DATA(GrpHead**,	g_cmdicons_grp,							0x0068C1E0);
 
 // For init_game_load
 SCBW_DATA(void*,		scenario_chk,				0x006D0F24);
@@ -1053,9 +1053,18 @@ SCBW_DATA(char*,			g_is_executing_wait,		0x006509B8);
 SCBW_DATA(TriggerVector**,	g_current_trigger_node,		0x006509AC);
 SCBW_DATA(u32*,				g_trigger_wait,				0x00650980);
 
+// For draw_minimap_box
 SCBW_DATA(char*,			g_minimap_state,			0x006D5BBE);
 SCBW_DATA(u32*,				g_minimap_box_checksum,		0x0059C1A8);
 SCBW_DATA(u32*,				g_minimap_draw_neutrals,	0x005993AC);
+
+// For draw_train_progress
+SCBW_DATA(void**,			g_cmdbtns_handle,			0x0068C1C0);
+
+// For draw_all_minimap_boxes
+SCBW_DATA(Bitmap**,			g_current_surface,			0x006CF4A8);
+SCBW_DATA(Bitmap*,			g_minimap_surface_2,		0x0059C194);
+SCBW_DATA(u32*,				g_minimap_unit_box_count,	0x0059C2B8);
 
 //////////////////////////////////////////////////////////////// @}
 
