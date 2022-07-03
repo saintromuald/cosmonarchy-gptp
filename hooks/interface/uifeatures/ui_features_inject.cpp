@@ -203,6 +203,9 @@ namespace
 	void __declspec(naked) show_fow_unit_check_wrapper() {
 		static const u32 jmp_success = 0x004EBEA1;
 		static const u32 jmp_fail = 0x004EBEC2;
+		__asm { // Let's always jump success, since we seem to desync otherwise
+			JMP jmp_success
+		}
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI
