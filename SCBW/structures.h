@@ -539,7 +539,6 @@ struct BinDlg
 		StatusScreenState*	stat_button_user; // from Neiv's list
 		/*0x26*/  u32		non_user_value;
 		GrpHead*			grp_head_user;
-		void*				void_user;
 	};
 
 	/*0x2A*/  void*			fxn_interact;

@@ -323,7 +323,7 @@ namespace
 	}
 
 	void __declspec(naked) unit_stat_act_egg_wrapper() { // 00427260
-		static void* dialog;
+		static BinDlg* dialog;
 		__asm {
 			MOV dialog, ECX
 			PUSHAD

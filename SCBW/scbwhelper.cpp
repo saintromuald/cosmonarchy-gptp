@@ -10795,7 +10795,7 @@ namespace helper
 		return result;
 	}
 
-	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value) {
+	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s32 value) {
 		static s32 result;
 		const u32 func_address = 0x00457200;
 		__asm {
