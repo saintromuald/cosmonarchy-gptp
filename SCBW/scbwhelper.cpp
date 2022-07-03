@@ -6752,7 +6752,6 @@ namespace helper
 	}
 
 	// For update_burrowing_cloaking_units
-
 	s32 is_unit_cloaking(Unit* unit)
 	{
 		const u32 Func_isUnitCloaking = 0x004916E0;
