@@ -4,9 +4,32 @@
 
 namespace hooks
 {
+	static s32 compare_selection_unit(const void* a, const void* b) {
+		Unit* ua = *(Unit**)a;
+		Unit* ub = *(Unit**)b;
+
+		Point16 mouse_pos = {};
+		mouse_pos.x = *g_move_to_x + mouse->x;
+		mouse_pos.y = *g_move_to_y + mouse->y;
+
+		s32 distance_a = scbw::get_distance_fast(ua->position, mouse_pos);
+		s32 distance_b = scbw::get_distance_fast(ub->position, mouse_pos);
+		return distance_a - distance_b;
+	}
+
+	static void sort_unit_selection(Unit** unit_array) {
+		u32 size = 0;
+		for (Unit** it = unit_array; *it; ++it) {
+			size++;
+		}
+		qsort(unit_array, size, sizeof(Unit*), compare_selection_unit);
+	}
+
 	/// Function used by Ctrl+Click (select all units of same type)
 	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
 	{
+		sort_unit_selection(units_in_bounds);
+
 		const u32* VISIBILITY_CHECK_0057F0B0 = (u32*)0x0057F0B0;
 		Unit* current_unit;
 		Unit* backup_current_unit;
@@ -185,7 +208,9 @@ namespace hooks
 								// 0x0046F208 (use of SelectionCap)
 								if (current_index_in_unit_list >= SelectionCap) // action when unit_list is full
 								{
-									helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
+									bStopBigLoop = true; // This was added, so sorting by cursor is respected, not sure what was the role of the original call
+
+									// helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 								}
 								else
 								{
