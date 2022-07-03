@@ -1411,13 +1411,13 @@ namespace hooks
 			} break;
 			case UnitId::ZergDroleth:
 			{
-			//	// Temporary? fix for order queue insanity. -Pr0nogo
-			//	if (unit->main_order_id == OrderId::Morph1
-			//	&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
-			//	&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
-			//	{
-			//		unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
-			//	}
+				// Temporary? fix for order queue insanity. -Pr0nogo
+				if (unit->main_order_id == OrderId::Morph1
+				&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
+				&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
+				{
+					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
+				}
 			} break;
 		}
 
