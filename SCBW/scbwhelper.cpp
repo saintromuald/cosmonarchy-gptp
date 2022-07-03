@@ -5257,7 +5257,6 @@ namespace helper
 	}
 
 	// for create_hallucination
-
 	void apply_hallucination_stats(Unit* halUnit)
 	{
 		const u32 Func_applyHallucinationStats = 0x004F6180;

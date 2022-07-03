@@ -60,6 +60,6 @@ namespace hooks
 	{
 		jump_patch(unit_attacks_from_inside_bunker_wrapper,		0x004790A0, 2);
 		jump_patch(create_bunker_attack_overlay_wrapper,		0x00477FD0, 3);
-		jump_patch(attack_apply_cooldown_wrapper,				0x00478B40, 1);
+	//	jump_patch(attack_apply_cooldown_wrapper,				0x00478B40, 1);
 	}
 }

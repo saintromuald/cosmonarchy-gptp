@@ -122,6 +122,7 @@ namespace hooks
 		helper::set_thingy_visibility_flags(bunkerAttackEffect);
 	}
 
+	// TODO: Fix holdpos bug; units do not turn to face hostiles
 	// Hooked to investigate Bunker issues. -Pr0nogo
 	u32 attack_apply_cooldown(Unit* unit, u32 holdpos_status) { // 00478B40
 		if (!unit->order_target.unit) {
