@@ -186,6 +186,7 @@ namespace
 		hooks::draw_all_minimap_boxes();
 		__asm {
 			POPAD
+			RETN
 		}
 	}
 }
