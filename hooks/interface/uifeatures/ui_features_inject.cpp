@@ -189,6 +189,36 @@ namespace
 			RETN
 		}
 	}
+
+	bool show_fow_unit_check(Unit* unit) {
+		if (unit->status & (UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree)) {
+			if (helper::get_detecting_players(unit) & *g_player_visions) {
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
+
+	void __declspec(naked) show_fow_unit_check_wrapper() {
+		static const u32 jmp_success = 0x004EBEA1;
+		static const u32 jmp_fail = 0x004EBEC2;
+		static Unit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		if (show_fow_unit_check(unit)) {
+			__asm {
+				POPAD
+				JMP jmp_success
+			}
+		}
+		__asm {
+			POPAD
+			JMP jmp_fail
+		}
+	}
 }
 
 namespace hooks
@@ -206,6 +236,6 @@ namespace hooks
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
 
 		// Allow units in fow
-		jump_patch((void*)0x004EBEA1, 0x004EBE88, 2);
+		jump_patch(show_fow_unit_check_wrapper, 0x004EBE88, 2);
 	}
 }
