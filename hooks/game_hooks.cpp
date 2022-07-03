@@ -322,7 +322,8 @@ namespace hooks
 		options_list->speed = 6; // Lock game speed at fastest
 		if (!scbw::is_game_paused()) // If the game is not paused
 		{
-			*g_ai_update_cooldown = 0;
+			*g_ai_update_cooldown = 0; // We don't want AI to be handicaped with request handling and whatnot
+			*g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
 			for (u32 i = 0; i < 8; ++i) {
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
@@ -365,7 +366,7 @@ namespace hooks
 				u32 cargo_count[UnitId::Count] = {};
 				for (u32 i = 0; i < *g_client_selection_count; ++i) {
 					Unit* transport = g_client_selection_group->unit[i];
-					if ((scbw::is_allied_to(transport->player, *g_local_nation_id) || helper::get_detecting_players(transport) & (1 << *g_local_nation_id))) {
+					if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
 						for (u32 j = 0; j < TransportCap; ++j) {
 							Unit* cargo_unit = transport->get_loaded_unit(j);
 							if (cargo_unit) {

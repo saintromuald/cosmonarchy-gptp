@@ -172,10 +172,9 @@ namespace
 			MOV player, ECX
 			PUSHAD
 		}
-		result = hooks::draw_minimap_unit_box(player);
+		hooks::draw_minimap_unit_box(player);
 		__asm {
 			POPAD
-			MOV AL, result
 			RETN
 		}
 	}
