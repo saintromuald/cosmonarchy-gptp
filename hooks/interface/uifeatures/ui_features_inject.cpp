@@ -204,5 +204,8 @@ namespace hooks
 	//	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
 		jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
+
+		// Allow units in fow
+		jump_patch((void*)0x004EBEA1, 0x004EBE88, 2);
 	}
 }
