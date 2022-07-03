@@ -321,6 +321,19 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) unit_stat_act_egg_wrapper() { // 00427260
+		static void* dialog;
+		__asm {
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::unit_stat_act_egg(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -344,6 +357,7 @@ namespace hooks
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
+		jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
 
 		// Disable player checks for progress bar functions
 		nops(0x0042690C, 2);

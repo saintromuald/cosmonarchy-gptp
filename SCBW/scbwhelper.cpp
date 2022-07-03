@@ -10803,7 +10803,7 @@ namespace helper
 			PUSH value
 			MOV CX, index
 			MOV EAX, dialog
-			call func_address
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -12589,6 +12589,19 @@ namespace helper
 			MOV EAX, some_bool
 			CALL func_address
 			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u16 get_remaining_build_time_percentage(Unit* unit) {
+		static u16 result;
+		const u32 func_address = 0x004669E0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			MOV result, AX
 			POPAD
 		}
 		return result;

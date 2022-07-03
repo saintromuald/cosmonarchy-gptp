@@ -783,4 +783,88 @@ namespace hooks
 			helper::unit_stat_act_standard(dialog);
 		}
 	}
+
+	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
+	void unit_stat_act_egg(void* dialog) // 00427260
+	{
+		Unit* unit = *g_active_portrait_unit;
+		BinDlg* dlg_var = (BinDlg*)dialog;
+		if (!*g_is_in_replay && unit->player != *g_local_nation_id || unit->status & UnitStatus::IsHallucination)
+		{
+			helper::unit_stat_act_standard(dialog);
+		}
+		else
+		{
+			if (*g_status_screen_func != 10)
+			{
+				helper::hide_optional_status_screen_controls(dlg_var);
+				helper::show_control_group(dlg_var, -40, 17);
+				unit = *g_active_portrait_unit;
+				*g_status_screen_func = 10;
+			}
+			u16 build_time = helper::get_remaining_build_time_percentage(unit);
+			helper::dialog_set_progress_bar_value(dlg_var, 16, build_time);
+			BinDlg* dlg_var_2 = dlg_var;
+			if (dlg_var->control_type)
+			{
+				dlg_var_2 = dlg_var->parent;
+			}
+			BinDlg* child = dlg_var_2->child_dialog;
+			if (child)
+			{
+				while (child->index != 17)
+				{
+					child = child->next;
+					if (!child)
+					{
+						goto LABEL_11;
+					}
+				}
+			}
+			else
+			{
+			LABEL_11:
+				child = 0;
+			}
+			char* user = (char*)child->void_user;
+			GrpHead* icons_grp = *g_cmdicons_grp;
+			child->graphic = 2;
+			*(GrpHead**)(user + 0) = icons_grp;
+			Unit* unit_2 = *g_active_portrait_unit;
+			*(u16*)(user + 4) = unit_2->build_queue[unit_2->build_queue_slot];
+			*(u16*)(user + 6) = 3;
+			*(u16*)(user + 8) = unit_2->build_queue[unit_2->build_queue_slot];
+
+			u32 flags = child->flags;
+			if (!(flags & 1))
+			{
+				child->flags = flags | 1;
+				helper::update_dialog(child);
+				unit_2 = *g_active_portrait_unit;
+			}
+			u8 race = unit_2->get_race();
+			u32 race_string_1 = race + 771;
+			u32 race_string_2 = race + 770;
+			char* text_fin = "";
+			if (race_string_1)
+			{
+				if (race_string_2 < *g_stat_txt_tbl)
+				{
+					text_fin = (char*)(*g_stat_txt_tbl + g_stat_txt_tbl[race_string_2 + 1]);
+				}
+				else
+				{
+					text_fin = "";
+				}
+			}
+			else
+			{
+				text_fin = 0;
+			}
+			helper::add_text_to_dialog(dlg_var, -40, text_fin);
+			helper::set_text_string(dlg_var);
+			char* name = (char*)(*g_active_portrait_unit)->get_name();
+			helper::add_text_to_dialog(dlg_var, -5, name);
+		}
+	}
 }
