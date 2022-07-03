@@ -684,7 +684,7 @@ namespace hooks {
 		for (u32 i = 0; i < current_buttonset->buttons_in_set; ++i) {
 			Button* button = &current_buttonset->first_button[i];
 			if (button->icon_id == IconId::Cancel) {
-				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergEgg) {
+				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon) {
 					button->position = 6;
 				} else if (units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 					button->position = 6;
