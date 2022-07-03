@@ -203,9 +203,6 @@ namespace
 	void __declspec(naked) show_fow_unit_check_wrapper() {
 		static const u32 jmp_success = 0x004EBEA1;
 		static const u32 jmp_fail = 0x004EBEC2;
-		__asm { // Let's always jump success, since we seem to desync otherwise
-			JMP jmp_success
-		}
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI
@@ -238,7 +235,7 @@ namespace hooks
 		jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
 
-		// Allow units in fow
-		jump_patch(show_fow_unit_check_wrapper, 0x004EBE88, 2);
+		// Allow units in fow (seems to desync)
+		//jump_patch(show_fow_unit_check_wrapper, 0x004EBE88, 2);
 	}
 }
