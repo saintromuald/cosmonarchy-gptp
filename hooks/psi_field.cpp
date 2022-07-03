@@ -34,6 +34,9 @@ namespace hooks
         u32 w = *psi_field_grp_width;
         u32 h = *psi_field_grp_height;
         for (Unit* unit = *first_psi_field_provider; unit; unit = unit->psi_link.next) {
+            if (unit->status & UnitStatus::InTransport) {
+                continue;
+            }
             if (!unit_can_show_power_for(unit, player)) {
                 continue;
             }

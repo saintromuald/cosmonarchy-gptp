@@ -9,19 +9,6 @@ namespace hooks
 		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
 			helper::update_creep_disappearance_unit(unit);
 		}
-
-		if (unit->id == UnitId::ProtossPylon || units_dat::base_property[unit->id] & UnitProperty::RequiredPsi) {
-			*g_can_update_powered_status = true; // does this work?
-		}
-		
-		if (unit->id == UnitId::TerranBunker) {
-			for (s32 i = 0; i < TransportCap; i++) {
-				Unit* bunker_unit = unit->get_loaded_unit(i);
-				if (bunker_unit) {
-					// disable unit somehow
-				}
-			}
-		}
 	}
 
 	static void special_unload_unit(Unit* unit, Unit* transport, Point16* pos) {
@@ -34,20 +21,6 @@ namespace hooks
 		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
 			scbw::spawn_custom_creep_at(*pos, unit->id, false);
 			helper::set_secondary_order(unit, OrderId::SpreadCreep);
-		}
-		
-		if (unit->id == UnitId::ProtossPylon || units_dat::base_property[unit->id] & UnitProperty::RequiredPsi) {
-			*g_can_update_powered_status = true; // does this work?
-		}
-		
-		if (unit->id == UnitId::TerranBunker) {
-			for (s32 i = 0; i < TransportCap; i++) {
-				Unit* bunker_unit = unit->get_loaded_unit(i);
-				if (bunker_unit) {
-					scbw::set_unit_position(bunker_unit, pos->x, pos->y);
-					// reenable unit somehow
-				}
-			}
 		}
 	}
 
