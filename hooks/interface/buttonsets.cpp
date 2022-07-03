@@ -312,7 +312,7 @@ namespace hooks {
 
 		currentUnitMainOrderId = *BUTTONSET_UNIT_MAINORDERID;
 		currentUnitButtonIcon = orders_dat::ButtonIcon[currentUnitMainOrderId];
-		currentButtonDlg = (*BUTTONSET_DIALOG)->children_dialog;
+		currentButtonDlg = (*BUTTONSET_DIALOG)->child_dialog;
 		currentSubUnitMainOrderId = *BUTTONSET_SUBUNIT_MAINORDERID;
 
 		// if the subunit holds the weapon, get the icon from it
@@ -703,7 +703,7 @@ namespace hooks {
 			current_dialog = current_dialog->parent;
 		}
 		// 00459203:
-		current_dialog = current_dialog->children_dialog;
+		current_dialog = current_dialog->child_dialog;
 		while (current_dialog && current_dialog->index != 1)
 		{
 			current_dialog = current_dialog->next;

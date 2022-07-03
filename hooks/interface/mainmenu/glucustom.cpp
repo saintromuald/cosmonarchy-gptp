@@ -52,7 +52,7 @@ namespace hooks
 			{
 				control = control->parent;
 			}
-			BinDlg* child = control->children_dialog;
+			BinDlg* child = control->child_dialog;
 			if (child)
 			{
 				while (child->index != 1)

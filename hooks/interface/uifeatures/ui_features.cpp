@@ -372,10 +372,93 @@ LABEL_15:
 
 			Point16 pos = unit->sprite->position;
 			Point16 dims = units_dat::building_dimensions[unit->id];
-			helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color,
-				units_dat::base_property[unit->id] & UnitProperty::Building);
+			helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, units_dat::base_property[unit->id] & UnitProperty::Building);
 
 			goto next;
+		}
+	}
+
+	// Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
+	void draw_all_minimap_boxes() // 004A4AC0
+	{
+		Bitmap* surface = *g_current_surface;
+		Bitmap* surface_2 = *g_current_surface;
+		u32 player = *g_local_nation_id;
+		*g_current_surface = g_minimap_surface_2;
+		*g_minimap_unit_box_count = 0;
+		*g_minimap_box_checksum = 0;
+		u32 btw = 12;
+		do
+		{
+			if (--btw < 8)
+			{
+				if (player != btw || *g_is_in_replay)
+				{
+					helper::draw_minimap_unit_box_2(btw);
+				}
+			}
+			else
+			{
+				helper::draw_minimap_unit_box(btw);
+			}
+		} while (btw);
+		if (!*g_is_in_replay)
+		{
+			helper::draw_all_minimap_unit_boxes(player);
+		}
+		Thingy* thingy = *first_used_thingy;
+		if (*first_used_thingy)
+		{
+			do
+			{
+				u32 unit_id = thingy->unit_id;
+				if (unit_id != UnitId::Spell_DarkSwarm)
+				{
+					u32 is_visible = helper::thingy_is_visible(1, thingy);
+					player = *g_local_nation_id;
+					if (!*g_is_in_replay || !is_visible)
+					{
+						Sprite* sprite = thingy->sprite;
+						u32 sprite_id = sprite->sprite_id;
+						char ref = 0;
+
+						if (sprite_id != SpriteId::Vespene_Geyser
+						&&  sprite_id != SpriteId::Mineral_Field_Type1
+						&&  sprite_id != SpriteId::Mineral_Field_Type2
+						&&  sprite_id != SpriteId::Mineral_Field_Type3
+						&&  sprite_id != SpriteId::VespeneRidge)
+						{
+							if (*g_minimap_state)
+							{
+								if (scbw::is_allied_to(player, sprite->player))
+								{
+									ref = g_palette_index_reference[17];
+								}
+								else
+								{
+									ref = g_palette_index_reference[20];
+								}
+							}
+							else
+							{
+								ref = g_player_minimap_colors[(unsigned __int8)sprite->player];
+							}
+						}
+						else
+						{
+							ref = g_palette_index_reference[25];
+						}
+						helper::draw_unit_box(thingy->sprite->position.x, ref, thingy->sprite->position.y, units_dat::building_dimensions[(thingy->unit_id)].x, units_dat::building_dimensions[(thingy->unit_id)].y, 1);
+						--*g_minimap_unit_box_count;
+					}
+				}
+				thingy = thingy->next;
+			} while (thingy);
+			*g_current_surface = surface_2;
+		}
+		else
+		{
+			*g_current_surface = surface;
 		}
 	}
 }

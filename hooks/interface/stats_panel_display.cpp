@@ -212,9 +212,9 @@ namespace hooks
 		{
 			current_dialog = dialog->parent;
 		}
-		if (current_dialog->children_dialog != nullptr)
+		if (current_dialog->child_dialog != nullptr)
 		{
-			current_dialog = current_dialog->children_dialog;
+			current_dialog = current_dialog->child_dialog;
 			while (current_dialog != nullptr && current_dialog->index != index + 9)
 			{
 				current_dialog = current_dialog->next;
@@ -280,7 +280,7 @@ namespace hooks
 		&& !*is_in_replay)
 		{
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
-			BinDlg* child = actual_dialog->children_dialog;
+			BinDlg* child = actual_dialog->child_dialog;
 			while (child && child->index != 65515)
 			{
 				child = child->next;
@@ -463,12 +463,12 @@ namespace hooks
 
 		v3 = dialog;
 		v13 = helper::getArmorCount(*g_active_portrait_unit, unused);
-		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
+		sprintf_s(g_status_screen_info_button_unk[buttonRelated], 8, "%d ", v13);
 		if (v3->control_type)
 		{
 			v3 = *(BinDlg**)&v3->parent;
 		}
-		v4 = *(BinDlg**)&v3->children_dialog;
+		v4 = *(BinDlg**)&v3->child_dialog;
 		if (v4)
 		{
 			while (v4->index != buttonRelated + 9)
@@ -485,7 +485,7 @@ namespace hooks
 		}
 		helper::show_dialog(v4);
 		helper::disable_dialog(v4);
-		v5 = cmdicons_grp;
+		v5 = g_cmdicons_grp;
 		v6 = *v4->user;
 		v7 = *g_active_portrait_unit;
 		v4->graphic = 12;
@@ -512,7 +512,7 @@ namespace hooks
 			v11 = v7->build_queue[(u8)v7->build_queue_slot];
 		}
 		*(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
-		v4->psz_text = statusscreen_infobtn[buttonRelated];
+		v4->psz_text = g_status_screen_info_button_unk[buttonRelated];
 		v12 = v4->flags;
 		if (!(v12 & UnitStatus::Completed))
 		{
@@ -545,12 +545,12 @@ namespace hooks
 //			v5 = *g_upgrades_level_sc[v4][weapons_dat::DamageUpgrade[weapon_id]];
 		}
 		v10 = v5;
-		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v5);
+		sprintf_s(g_status_screen_info_button_unk[buttonRelated], 8, "%d ", v5);
 		if (v3->control_type)
 		{
 			v3 = v3->parent;
 		}
-		v6 = v3->children_dialog;
+		v6 = v3->child_dialog;
 		if (v6)
 		{
 			while (v6->index != buttonRelated + 9)
@@ -570,14 +570,14 @@ namespace hooks
 		helper::show_dialog(v6);
 		helper::disable_dialog(v6);
 	//	v7 = v6->user;
-		v8 = cmdicons_grp;
+		v8 = g_cmdicons_grp;
 		v6->graphic = 12;
 	//	*(s32*)v7 = v8;
 		*(s16*)(v7 + 4) = weapons_dat::Icon[weapon_id];
 		*(s16*)(v7 + 6) = 0;
 		*(s16*)(v7 + 8) = weapon_id;
 		v9 = v6->flags;
-		v6->psz_text = statusscreen_infobtn[buttonRelated];
+		v6->psz_text = g_status_screen_info_button_unk[buttonRelated];
 		if (!(v9 & 1))
 		{
 			v6->flags = v9 | 1;

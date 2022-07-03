@@ -126,7 +126,7 @@ namespace hooks
         {
             dialog = dialog->parent;
         }
-        BinDlg* dialogVar = dialog->children_dialog;
+        BinDlg* dialogVar = dialog->child_dialog;
         if (dialogVar)
         {
             while (dialogVar->index != 1)
@@ -333,7 +333,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -13, g_supply_max_buffer);
             */
 
-            BinDlg* child = dialog->control_type ? dialog->parent->children_dialog : dialog->children_dialog;
+            BinDlg* child = dialog->control_type ? dialog->parent->child_dialog : dialog->child_dialog;
             while (child) {
                 helper::hide_dialog(child);
                 child = child->next;

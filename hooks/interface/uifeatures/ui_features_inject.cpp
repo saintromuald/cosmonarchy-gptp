@@ -178,6 +178,16 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) draw_all_minimap_boxes_wrapper() { // 004A4AC0
+		__asm {
+			PUSHAD
+		}
+		hooks::draw_all_minimap_boxes();
+		__asm {
+			POPAD
+		}
+	}
 }
 
 namespace hooks
@@ -192,5 +202,6 @@ namespace hooks
 	//	jump_patch(create_upgrade_level_tooltip_wrapper,	0x00459150, 3);
 	//	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
 		jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
+		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 3);
 	}
 }

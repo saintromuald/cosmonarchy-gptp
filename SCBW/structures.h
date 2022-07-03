@@ -538,6 +538,7 @@ struct BinDlg
 		/*0x26*/  Button*	button_user;
 		StatusScreenState*	stat_button_user; // from Neiv's list
 		/*0x26*/  u32		non_user_value;
+		GrpHead*			grp_head_user;
 	};
 
 	/*0x2A*/  void*			fxn_interact;
@@ -588,8 +589,8 @@ struct BinDlg
 	};
 
 	union {
-		/*0x42*/  void*			children_smk;
-		/*0x42*/  BinDlg*		children_dialog;
+		/*0x42*/  void*			child_smk;
+		/*0x42*/  BinDlg*		child_dialog;
 	};
 
 	union {
@@ -1143,6 +1144,12 @@ struct PaletteEntry {
 	u8			green;		// 0x1
 	u8			blue;		// 0x2
 	u8			flags;		// 0x3
+};
+
+struct Bitmap {
+	u16			width;		// 0x0
+	u16			height;		// 0x2
+	u32			buffer;		// 0x4
 };
 
 #pragma pack()
