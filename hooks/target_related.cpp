@@ -646,6 +646,12 @@ LABEL_42:
 			return false;
 		}
 
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			if (!(unit->status & UnitStatus::GroundedBuilding)) {
+				return false;
+			}
+		}
+
 		Unit* context = unit;
 		if (helper::unit_is_subunit(unit->subunit)) {
 			context = unit->subunit;
