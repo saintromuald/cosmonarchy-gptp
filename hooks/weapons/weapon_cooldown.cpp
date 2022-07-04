@@ -79,13 +79,6 @@ namespace hooks
 			}
 		}
 
-		// Atreus Stalwart Stance behavior: gains 125% attack speed while shields remain intact
-		if (unit->id == UnitId::ProtossAtreus
-			&& unit->getCurrentShieldsInGame() > 1)
-		{ // Leaving it at 1 so incidental regen doesn't give the bonus
-			cooldown /= 1.25;
-		}
-
 		// Ion Cannon Ion Field: Attack Speed Buff
 		if (unitExt->timers[TimerIonFieldAttackSpeed] > 0)
 		{

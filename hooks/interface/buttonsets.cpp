@@ -843,6 +843,14 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
+					if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building && unit->status & UnitStatus::InAir) {
+						current_button_state = Button_State::Invisible;
+					}
+
+					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Attacking_Building && unit->status & UnitStatus::InAir) {
+						current_button_state = Button_State::Invisible;
+					}
+
 					if (current_button->icon_id == IconId::Land && *g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}

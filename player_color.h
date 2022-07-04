@@ -510,7 +510,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Slow, Fat, Victorious",
 			"StuckInMudDuringWinter.jpeg",
 			"Foreign Dogwalkers",
-			"Somehow, Still Viable!",
+			"Somehow Still Viable",
 		},
 		// Raider
 		{
