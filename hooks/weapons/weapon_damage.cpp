@@ -225,12 +225,18 @@ namespace hooks
 		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
 			data.shield_reduce_amount = std::min(data.final_damage, data.target->shields);
+			if (data.shield_reduce_amount < 256) {
+				data.shield_reduce_amount = 256;
+			}
 			data.final_damage -= data.shield_reduce_amount;
+			if (data.final_damage < 0) {
+				data.final_damage = 0;
+			}
 		}
 
 		// Set min damage
-		if (data.shield_reduce_amount == 0 && data.final_damage < 128) {
-			data.final_damage = 128;
+		if (data.shield_reduce_amount == 0 && data.final_damage < 256) {
+			data.final_damage = 256;
 		}
 
 		// Olympian Mythical Might - execute enemies below 10% HP
