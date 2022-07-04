@@ -332,7 +332,6 @@ enum ExtTimerId
 enum ExtUnitId
 {
 	UnitBroodlingMother,			// is this still really used?
-	UnitHallucinationPointer,
 	UnitDecaySavant,
 	UnitMindController,
 	UnitWyvernTargetLock,

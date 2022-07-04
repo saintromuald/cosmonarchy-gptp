@@ -405,31 +405,24 @@ namespace hooks
 			}
 
 			// Cantavis - Hallucinating
-			if (targetExt->timers[TimerHallucinating] >= 1)
-			{
-				Unit* haluAttacker = data.attacker;
-				if ((haluAttacker->id == UnitId::ProtossSteward
-					|| haluAttacker->id == UnitId::ProtossPlasmaShell)
-					&& data.attacker->hangar_unit.parent != nullptr)
+			if (targetExt->timers[TimerHallucinating] >= 1) {
+				Unit* halu_attacker = data.attacker;
+				if ((halu_attacker->id == UnitId::ProtossSteward || halu_attacker->id == UnitId::ProtossPlasmaShell)
+					&& data.attacker->hangar_unit.parent)
 				{
-					haluAttacker = data.attacker->hangar_unit.parent;
+					halu_attacker = data.attacker->hangar_unit.parent;
 				}
-				UnitExt* haluAttackerExt = globals.get_unit_ext(haluAttacker);
-				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
-					&& !(haluAttacker->status & UnitStatus::IsHallucination))
-				{
-					if (scbw::is_allied_to(haluAttacker->player, data.target->player))
-					{
+				UnitExt* halu_attacker_ext = globals.get_unit_ext(halu_attacker);
+				if (!(halu_attacker->status & UnitStatus::IsHallucination)) {
+					if (scbw::is_allied_to(halu_attacker->player, data.target->player)) {
 						return;
 					}
-					Unit* hal_unit = helper::create_hallucination(haluAttacker, haluAttacker->player);
-					if (hal_unit != nullptr)
-					{
+					Unit* hal_unit = helper::create_hallucination(halu_attacker, halu_attacker->player);
+					if (hal_unit) {
 						hal_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
-						haluAttackerExt->units[UnitHallucinationPointer] = hal_unit;
-
-						if (!helper::place_hallucination(hal_unit))
-						{
+						if (helper::place_hallucination(hal_unit)) {
+							targetExt->timers[TimerHallucinating] = 0;
+						} else {
 							helper::UnitDestructor(hal_unit);
 						}
 					}
