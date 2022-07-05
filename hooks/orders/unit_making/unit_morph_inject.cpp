@@ -509,14 +509,14 @@ namespace hooks
 	{
 		jump_patch(orders_zerg_birth_wrapper,					0x0045DD60, 1);
 		jump_patch(orders_morph_1_wrapper,						0x0045DEA0, 0);
-		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,			0x00486B50, 0);		// jmp 004C1990  cmdrecv_unit_morph
-		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,		0x00428E60);		// 00428E60  BTNSCOND_CanBuildUnit
-		jump_patch(unitMorphWrapper_Orders_Morph1_Check,		0x0045DFB0);		// 0045DEA0  orders_morph_1 within	
-		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,		0x0045E019);		// 0045DEA0  orders_morph_1 within
-		jump_patch(cancel_unit_wrapper,							0x00468280);		// 00468280  ai_cancel_structure EXACT
-		jump_patch(get_remaining_build_time_pct_wrapper,		0x004669E0);		// 004669E0  sub_4669E0 EXACT
-		jump_patch(get_unit_vertical_offset_on_birth_wrapper,	0x0045DE00);		// 0045DD60  orders_zerg_birth within
-		//jump_patch(is_rallyable_unit_egg_wrapper,				0x0045DE57);		// 0045DD60  orders_zerg_birth within
+		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,			0x00486B50, 0);		// jmp	004C1990  cmdrecv_unit_morph
+		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,		0x00428E60);		//		00428E60  BTNSCOND_CanBuildUnit
+		jump_patch(unitMorphWrapper_Orders_Morph1_Check,		0x0045DFB0);		//		0045DEA0  orders_morph_1 within	
+		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,		0x0045E019);		//		0045DEA0  orders_morph_1 within
+		jump_patch(cancel_unit_wrapper,							0x00468280);		//		00468280  ai_cancel_structure EXACT
+		jump_patch(get_remaining_build_time_pct_wrapper,		0x004669E0);		//		004669E0  sub_4669E0 EXACT
+		jump_patch(get_unit_vertical_offset_on_birth_wrapper,	0x0045DE00);		//		0045DD60  orders_zerg_birth within
+		//jump_patch(is_rallyable_unit_egg_wrapper,				0x0045DE57);		//		0045DD60  orders_zerg_birth within
 		
 		jump_patch(begin_train_wrapper,							0x00468200);
 		jump_patch(detach_unit_task_egg_jump_wrapper,			0x00434CD0, 1);

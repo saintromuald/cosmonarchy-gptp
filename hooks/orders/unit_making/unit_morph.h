@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void orders_zerg_birth(Unit* unit);													// 0045DD60
+	void orders_zerg_birth(Unit* unit);														// 0045DD60
 	void orders_morph_1(Unit* unit);														// 0045DEA0
 	bool unit_can_morph(Unit* unit, u16 morphUnitId);
 	bool is_rallyable_egg_unit(u16 unit_id);

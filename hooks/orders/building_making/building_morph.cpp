@@ -369,7 +369,6 @@ namespace hooks
 	// Note: This hook affects the behavior of Unit::isRemorphingBuilding().
 	bool is_morphed_building(u16 unit_id)
 	{
-		//Default StarCraft behavior
 		if (scbw::is_zerg_building_morph_result(unit_id))
 		{
 			return true;

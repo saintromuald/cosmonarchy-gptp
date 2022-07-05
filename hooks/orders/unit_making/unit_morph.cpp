@@ -191,6 +191,7 @@ namespace hooks
 					{
 						unitExt->values[ValuePreMorphEnergy] = 100 * 256; // New starting amount
 					}
+					/*
 					if (unit->id == UnitId::ProtossCantavis)
 					{
 						helper::replace_unit_with_id(unit, UnitId::ProtossAugur);
@@ -213,8 +214,9 @@ namespace hooks
 						return;
 					}
 					else
+					*/
 					{
-						unit->create_origin = unit->id;		
+						unit->create_origin = unit->id;
 						unitExt->units[UnitMorphConnectedUnit] = 0;
 						if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
 							AiTown* town = unit->unit_ai->worker_ai.town;

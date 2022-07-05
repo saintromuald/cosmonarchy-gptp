@@ -546,8 +546,7 @@ namespace scbw
 			case UnitId::ZergAkistrokor:
 			case UnitId::ZergAlmaksalisk:
 			case UnitId::ZergUltrokor:
-			case UnitId::ZergAlkajelisk:
-			case UnitId::ProtossAugur: {
+			case UnitId::ZergAlkajelisk: {
 				return true;
 			}
 		}
