@@ -370,10 +370,7 @@ namespace hooks
 				} break;
 			}
 
-			if (unit->id == UnitId::ProtossAugur) {
-				unit->shields -= std::min(14, unit->shields);
-			}
-			else if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
+			if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
 				unit->heal_shields(11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size()), 0, false);
 				if (unit->shields > max_shields) {
 					if (unit->shields > max_shields) {
