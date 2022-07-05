@@ -102,14 +102,12 @@ namespace hooks
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
 		// The unit must neither be already dead nor invincible
-		if (data.target == nullptr || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible)
-		{
+		if (data.target == nullptr || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible) {
 			return;
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (targetExt->timers[TimerGodsMadeFlesh])
-		{
+		if (targetExt->timers[TimerGodsMadeFlesh]) {
 			data.final_damage = 0;
 			data.damage_type = DamageType::Independent;
 		}
@@ -387,21 +385,27 @@ namespace hooks
 	{
 		UnitExt* targetExt = globals.get_unit_ext(data.target);
 
-		if (data.attacker != nullptr)
+		if (data.attacker)
 		{
 			UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
 
 			// Ignore dark swarm!
 			// START
 
-			// Cabalist - Decloak, Silent Kill
-			if (data.attacker->id == UnitId::ProtossCabalist)
-			{
-				if (data.final_damage < data.target->hitpoints) {
-					scbw::decloak_proc(data.attacker);
-				} else if (targetExt->timers[TimerDecloak] > 1) {
-					targetExt->timers[TimerDecloak] = 1;
-				}
+			switch (data.attacker->id) {
+				case UnitId::ProtossCabalist: {
+					// Cabalist - Decloak, Silent Kill
+					if (data.final_damage < data.target->hitpoints) {
+						scbw::decloak_proc(data.attacker);
+					} else if (targetExt->timers[TimerDecloak] > 1) {
+						targetExt->timers[TimerDecloak] = 1;
+					}
+				} break;
+				case UnitId::ProtossAugur: {
+					// Augur spend shields on attack
+					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
+					attackerExt->shield_regen_timer = 0;
+				} break;
 			}
 
 			// Cantavis - Hallucinating

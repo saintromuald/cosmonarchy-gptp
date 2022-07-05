@@ -453,7 +453,7 @@ namespace hooks
 			Unit* transport = unit->connected_unit;
 
 			if (unit->position.x != transport->position.x || unit->position.y != transport->position.y) {
-				scbw::set_unit_position(unit, transport->position.x, transport->position.y);
+				scbw::move_unit_force(unit, transport->position.x, transport->position.y);
 			}
 
 			if (unit_is_hidden) {
