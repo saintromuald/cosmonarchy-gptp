@@ -409,6 +409,7 @@ namespace hooks {
 					return true;
 				} break;
 				case UnitId::ProtossArchon:
+				case UnitId::ProtossAugur:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
 					{
@@ -506,6 +507,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
+				case UnitId::ProtossShieldBattery:
 				case UnitId::ProtossCabalist:
 				case UnitId::ProtossBarghest:
 				{
@@ -551,16 +553,6 @@ namespace hooks {
 		}
 
 		// Morphs and subunits
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossCantavis))
-		{
-			if (unit_id == UnitId::ProtossAugur)
-			{
-				if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
-				{
-					return true;
-				}
-			}
-		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantor))
 		{
 			if (unit_id == UnitId::ProtossPlasmaShell)
@@ -1621,6 +1613,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::ProtossArchon:
+					case UnitId::ProtossAugur:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
 						{
@@ -1729,6 +1722,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
+					case UnitId::ProtossShieldBattery:
 					case UnitId::ProtossCabalist:
 					case UnitId::ProtossBarghest:
 					{
@@ -1779,18 +1773,6 @@ namespace hooks {
 			}
 
 			// Morphs and subunits
-			case UnitId::ProtossCantavis:
-			{
-				if (unit_id == UnitId::ProtossAugur)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
-				}
-				return TECH_HIDDEN;
-			}
 			case UnitId::ProtossAccantor:
 			{
 				if (unit_id == UnitId::ProtossPlasmaShell)
