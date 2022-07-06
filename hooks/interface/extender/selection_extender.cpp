@@ -97,11 +97,11 @@ namespace hooks {
 								{
 									Sprite* previous_sprite = previous_unit->sprite;
 									u32 sprite_flags = previous_sprite->flags >> 1;
-									if (sprite_flags & 3)
+									if (sprite_flags & (SpriteFlags::DrawSelCircle | SpriteFlags::Flag01))
 									{
 										u32 sprite_flags_2 = previous_sprite->flags ^ (previous_sprite->flags ^ 2 * (sprite_flags - 1)) & 6;
 										previous_sprite->flags = sprite_flags_2;
-										if (!(sprite_flags_2 & 6))
+										if (!(sprite_flags_2 & (SpriteFlags::Flag01 | SpriteFlags::Flag02)))
 										{
 											Image* underlay = previous_sprite->images.tail;
 											if (underlay)
@@ -127,11 +127,11 @@ namespace hooks {
 									u32 previous_player = previous_unit->player;
 									Sprite* previous_sprite_2 = previous_unit->sprite;
 									u32 sprite_flags_3 = previous_sprite_2->flags;
-									if (((sprite_flags_3 >> 1) & 3) != helper::illegal_team_check(player_selection) - 1)
+									if (((sprite_flags_3 >> 1) & (SpriteFlags::DrawSelCircle | SpriteFlags::Flag01)) != helper::illegal_team_check(player_selection) - 1)
 									{
 										u32 sprite_flags_4 = sprite_flags_3 ^ (sprite_flags_3 ^ ((sprite_flags_3 & 0xFE) + 2)) & 6;
 										previous_sprite_2->flags = sprite_flags_4;
-										if ((sprite_flags_4 & 6u) <= 2
+										if ((sprite_flags_4 & (SpriteFlags::Flag01 | SpriteFlags::Flag02)) <= 2
 											&& !helper::create_selection_circle(previous_sprite_2, g_selection_circle_color[previous_player], ImageId::SelectionCircleDashed_22pixels))
 										{
 											previous_sprite_2->flags &= 0xF9u;
