@@ -151,4 +151,98 @@ namespace hooks {
 		}
 		return result;
 	}
+
+	char create_all_selection_circles() // 00499A60
+	{
+		for (s32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit_from_selection = active_player_selection->unit[i];
+			if (!unit_from_selection)
+			{
+				break;
+			}
+			if (units_dat::base_property[unit_from_selection->id] & UnitProperty::Subunit)
+			{
+				helper::create_unit_selection(unit_from_selection->subunit, i);
+				active_player_selection->unit[i] = unit_from_selection->subunit;
+			}
+			else
+			{
+				helper::create_unit_selection(unit_from_selection, i);
+			}
+		}
+
+		u32 player_zeroed = 0;
+		if (*multiplayer_mode)
+		{
+			if (game_data->teams_enabled)
+			{
+				u32 local_player = *g_local_human_id;
+				u32 local_force = g_player_table[*g_local_human_id].force;
+				u32 player_iterator = 8;
+				char* game_result_text_var = *game_result_text; // Actually a unit var
+				u8 last_player_force = g_player_table[8].force;
+				while (1)
+				{
+					Player* player_from_force = 0;						// Avoids compiler errors, obviously not final
+				//	Player* player_from_force = last_player_force - 36; // Some struct nonsense
+					Player* player_from_force_2 = player_from_force;
+					Unit** selection = players_selections->unit[0];
+					Unit** selection_2 = selection;
+					player_zeroed = player_iterator - 1;
+					if (player_zeroed != local_player)
+					{
+						player_zeroed = player_from_force->id;
+						bool iterations_2 = 0;
+						bool iterations_3 = 0;
+						if (player_zeroed == local_force)
+						{
+							/*
+							for (u32 i = 0; iterations_2 ^ iterations_3; ++i) {
+
+							}
+							*/
+
+							bool iterations = 0;
+							do
+							{
+								Unit* unit_from_selection = *selection;
+								if (!*selection)
+								{
+									break;
+								}
+								Sprite* sprite = unit_from_selection->sprite;
+								u8 sprite_flags = sprite->flags;
+								u8 color = g_selection_circle_color[unit_from_selection->player];
+								if (((sprite_flags >> 1) & 3) != helper::illegal_team_check(*selection) - 1)
+								{
+									u8 sprite_flags_2 = sprite_flags ^ (sprite_flags ^ ((sprite_flags & 0xFE) + 2)) & 6; // xd
+									sprite->flags = sprite_flags_2;
+									if ((sprite_flags_2 & 6u) <= 2
+										&& !helper::create_selection_circle(sprite, color, ImageId::SelectionCircleDashed_22pixels))
+									{
+										sprite->flags &= 0xF9u;
+									}
+								}
+								player_zeroed = iterations + 1;
+								++selection;
+								iterations_3 = helper::OFSUB(iterations + 1, 12);
+								iterations_2 = iterations++ - 11 < 0;
+							} while (iterations_2 ^ iterations_3);
+						}
+					}
+					/*
+					last_player_force = player_from_force_2;
+					if (player_from_force_2 == g_player_table[0].force)
+					{
+						break;
+					}
+					local_player = *g_local_human_id;
+					game_result_text_var = selection_2;
+					player_iterator = player_zeroed;
+					*/
+				}
+			}
+		}
+		return player_zeroed;
+	}
 }

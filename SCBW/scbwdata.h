@@ -1040,7 +1040,7 @@ SCBW_DATA(char*,		leaderboard_type,				0x0058D70C);
 SCBW_DATA(char*,		unk_sprite_related,				0x006D5BE4);
 
 // For create_all_selection_circles
-SCBW_DATA(char*,		game_result_text,				0x00628668);
+SCBW_DATA(char**,		game_result_text,				0x00628668);
 
 // For find_fow_target
 SCBW_DATA(Thingy**,		first_used_thingy,				0x00654868);
