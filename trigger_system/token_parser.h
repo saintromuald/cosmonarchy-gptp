@@ -38,7 +38,7 @@ s32 parser_get_s32(Parser* parser, u32 radix = 10);
 f32 parser_get_f32(Parser* parser);
 f32 parser_get_time(Parser* parser);
 
-Box32 parser_get_location(Parser* parser);
+Box32 parser_get_area(Parser* parser);
 Point16 parser_get_position(Parser* parser);
 
 u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);

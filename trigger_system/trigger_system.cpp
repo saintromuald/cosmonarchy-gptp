@@ -151,7 +151,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					}
 					return false;
 				} else if (parser_eq(&parser, "local_camera")) {
-					Box32 area = parser_get_location(&parser);
+					Box32 area = parser_get_area(&parser);
 					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&
 						*g_move_to_y + 200 >= area.y && *g_move_to_y + 200 <= area.y + area.h) {
 						return true;
@@ -373,7 +373,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		// Gameplay Actions
 		} else if (parser_eq(&parser, "clear_creep")) {
-			Box32 location = parser_get_location(&parser);
+			Box32 location = parser_get_area(&parser);
 			scbw::clear_creep(location);
 		} else if (parser_eq(&parser, "spawn")) {
 			SpawnSequence sequence = {};
@@ -389,6 +389,86 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (spawn_sequence_count < SpawnSequenceCap) {
 				spawn_sequences[spawn_sequence_count++] = sequence;
 			}
+		} else if (parser_eq(&parser, "placeholders_enable")) {
+			Box32 area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset units_ids = parser_get_unit_id_bitset(&parser);
+			s32 enable = parser_get_s32(&parser);
+
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (!players.set[i]) {
+					continue;
+				}
+				Layouts* layouts = &player_layouts[i];
+				for (u32 j = 0; j < PlaceholderLimit; ++j) {
+					Placeholder* placeholder = &layouts->placeholders[j];
+					if (!units_ids.set[placeholder->unit_id]) {
+						continue;
+					}
+					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
+						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
+						continue;
+					}
+					placeholder->disabled = !enable;
+				}
+			}
+		} else if (parser_eq(&parser, "placeholders_priority_add")) {
+			Box32 area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset units_ids = parser_get_unit_id_bitset(&parser);
+			s32 priority = parser_get_s32(&parser);
+
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (!players.set[i]) {
+					continue;
+				}
+				Layouts* layouts = &player_layouts[i];
+				bool changed = false;
+				for (u32 j = 0; j < PlaceholderLimit; ++j) {
+					Placeholder* placeholder = &layouts->placeholders[j];
+					if (!units_ids.set[placeholder->unit_id]) {
+						continue;
+					}
+					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
+						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
+						continue;
+					}
+					placeholder->priority = CLAMP(placeholder->priority + priority, 0, 255);
+					changed = true;
+				}
+				if (changed) {
+					sort_layouts(layouts);
+				}
+			}
+		} else if (parser_eq(&parser, "placeholders_priority_set")) {
+			Box32 area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset units_ids = parser_get_unit_id_bitset(&parser);
+			s32 priority = parser_get_s32(&parser);
+
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (!players.set[i]) {
+					continue;
+				}
+				Layouts* layouts = &player_layouts[i];
+				bool changed = false;
+				for (u32 j = 0; j < PlaceholderLimit; ++j) {
+					Placeholder* placeholder = &layouts->placeholders[j];
+					if (!units_ids.set[placeholder->unit_id]) {
+						continue;
+					}
+					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
+						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
+						continue;
+					}
+					placeholder->priority = CLAMP(priority, 0, 255);
+					changed = true;
+				}
+				if (changed) {
+					sort_layouts(layouts);
+				}
+			}
+
 		}
 	}
 

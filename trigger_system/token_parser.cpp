@@ -216,7 +216,7 @@ f32 parser_get_time(Parser* parser) {
 	return total_time;
 }
 
-Box32 parser_get_location(Parser* parser) {
+Box32 parser_get_area(Parser* parser) {
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return {};
