@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include "SCBW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
+#include "trigger_system/trigger_system.h"
 
 namespace hooks
 {
@@ -335,7 +336,7 @@ namespace hooks
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (!*g_is_in_replay && !scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
@@ -346,14 +347,14 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
 			draw_new_building_info(dialog, unit);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (!(unit->status & UnitStatus::Completed)) {
 			helper::draw_progress_bar(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (unit->id == UnitId::TerranMissileSilo) {
@@ -361,7 +362,7 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
 			draw_new_building_info(dialog, unit);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (helper::unit_is_active_transport(unit)) {
@@ -373,35 +374,35 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
 			draw_new_building_info(dialog, unit); // for now we show this, but later when we have the real transport ui we won't
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (helper::is_queue_slot_active(unit, 0)) {
 			helper::draw_training_progress(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (helper::is_constructing_addon(unit) || helper::is_attempting_protoss_build(unit)) {
 			helper::draw_addon_progress(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (unit->building.tech_id != TechId::None) {
 			helper::draw_tech_progress(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (unit->building.upgrade_id != UpgradeId::None) {
 			helper::draw_upgrade_progress(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		//if (units_dat::SupplyProvided[unit->id]) {
@@ -409,7 +410,7 @@ namespace hooks
 		//	helper::set_text_string(dialog);
 		//	helper::set_unit_status_string_text(dialog);
 		//	draw_new_building_info(dialog, unit);
-		//	helper::add_text_to_dialog(dialog, -5, unit->get_name());
+		//	helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 		//	return;
 		//}
 		if (helper::unit_is_geyser(unit)) {
@@ -417,7 +418,7 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
 			helper::draw_armor(dialog, unit->id, 0); // this was added -Veeq7
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
@@ -430,7 +431,7 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
 			draw_new_building_info(dialog, unit);
-			helper::add_text_to_dialog(dialog, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 			return;
 		}
 		if (*g_status_screen_func != 3) {
@@ -443,7 +444,7 @@ namespace hooks
 		helper::set_text_string(dialog);
 		helper::set_unit_status_string_text(dialog);
 		draw_new_building_info(dialog, unit);
-		helper::add_text_to_dialog(dialog, -5, unit->get_name());
+		helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
@@ -587,8 +588,12 @@ namespace hooks
 	}
 
 	// Hooked to change the name of new building morphs. - Pr0nogo
-	const char* get_unit_name(Unit* unit)
-	{
+	const char* get_unit_name(Unit* unit) {
+		if (unit->player < PlayerLimit && unit->id < UnitId::Count &&
+			custom_unit_names[unit->player][unit->id].size) {
+			return custom_unit_names[unit->player][unit->id].data;
+		}
+
 		u16 queue = unit->build_queue[unit->build_queue_slot];
 		if (unit->status & UnitStatus::Completed
 			|| !scbw::is_zerg_building_morph_result(queue)) // Fixes lardcode
@@ -837,7 +842,7 @@ namespace hooks
 			}
 			helper::add_text_to_dialog(dialog_context, -40, text);
 			helper::set_text_string(dialog_context);
-			helper::add_text_to_dialog(dialog_context, -5, unit->get_name());
+			helper::add_text_to_dialog(dialog_context, -5, get_unit_name(unit));
 		}
 	}
 }

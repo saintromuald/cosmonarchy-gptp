@@ -174,7 +174,7 @@ void load_player_colors() {
 }
 
 static bool can_get_player_name(u32 player) {
-	if (!has_custom_name[player]
+	if (!has_custom_player_name[player]
 	&&   g_player_table[player].type == PlayerType::Computer)
 	{
 		return true;
@@ -209,7 +209,7 @@ static u32 get_name_count(u32 race, u32 personality) {
 }
 
 void set_player_name(u32 player, char* name) {
-	has_custom_name[player] = true;
+	has_custom_player_name[player] = true;
 	strncpy(g_player_name_list->player[player].player_name, name, 24);
 	g_player_name_list->player[player].player_name[24] = 0;
 }
@@ -237,7 +237,7 @@ static void update_player_name(u32 player) {
 		}
 	}
 	set_player_name(player, "Computer");
-	has_custom_name[player] = false; // Here is where we want to remove this
+	has_custom_player_name[player] = false; // Here is where we want to remove this
 }
 
 void load_player_names() {

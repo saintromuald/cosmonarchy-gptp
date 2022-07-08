@@ -13,21 +13,23 @@ bool trigger_game_paused;
 bool trigger_system_init;
 bool trigger_system_in_game;
 
-bool has_custom_name[PlayerLimit];
-u32 trigger_kills[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
+bool has_custom_player_name[PlayerLimit];
+Token custom_unit_names[PlayerLimit][UnitId::Count];
 u32 trigger_combat[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
+u32 trigger_kills[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 
 static void init_trigger_system() {
 	trigger_system_init = true;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
-	memset(has_custom_name, 0, sizeof(has_custom_name));
+	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
+	memset(custom_unit_names, 0, sizeof(custom_unit_names));
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		for (u32 j = 0; j < UnitId::Count; ++j) {
 			for (u32 k = 0; k < PlayerLimit; ++k) {
 				for (u32 l = 0; l < UnitId::Count; ++l) {
-					trigger_kills [i][j][k][l] = 0;
 					trigger_combat[i][j][k][l] = UINT_MAX;
+					trigger_kills [i][j][k][l] = 0;
 				}
 			}
 		}
@@ -212,10 +214,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
 			current_playlist.shuffle = do_shuffle;
 		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
-			s32 player = parser_get_s32(&parser);
+			s32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
 			if (player >= 0 && player < 8) {
-				has_custom_name[player] = true;
+				has_custom_player_name[player] = true;
 				if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
 					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
 						"%s (%s)", name.data, g_player_table[player].name);
@@ -225,7 +227,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
-			s32 player = parser_get_s32(&parser);
+			s32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
 			if (player >= 0 && player < 8) {
 				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
@@ -326,9 +328,39 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "objectives_clear") && is_local_player) {
 			memset(&objectives, 0, sizeof(objectives));
 		} else if (parser_eq(&parser, "log_placeholder_requests") && is_local_player) {
-			s32 player = parser_get_s32(&parser);
+			s32 player = parser_get_player(&parser);
 			s32 value = parser_get_s32(&parser);
 			log_placeholder_requests[player] = value;
+		} else if (parser_eq(&parser, "set_player_unit_name") && is_local_player) {
+			u32 player = parser_get_player(&parser);
+			u32 unit_id = parser_get_unit_id(&parser);
+			Token name = parser_get_string(&parser);
+			if (unit_id != UnitId::None) {
+				custom_unit_names[player][unit_id] = name;
+			}
+		} else if (parser_eq(&parser, "set_player_race_name") && is_local_player) {
+			u32 player = parser_get_player(&parser);
+			Token old_race = parser_get_string(&parser);
+			Token new_race = parser_get_string(&parser);
+
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (!custom_unit_names[player][i].size) {
+					const char* default_name = Unit::get_name(i);
+					u32 len = strlen(default_name);
+					if (len > MaxToken) {
+						len = MaxToken;
+					}
+					custom_unit_names[player][i].size = len;
+					memset(custom_unit_names[player][i].data, 0, MaxToken);
+					strncpy(custom_unit_names[player][i].data, default_name, len);
+				}
+
+				if (old_race.size <= custom_unit_names[player][i].size && strncmp(custom_unit_names[player][i].data, old_race.data, old_race.size) == 0) {
+					Token copy = custom_unit_names[player][i];
+					snprintf(custom_unit_names[player][i].data, MaxToken, "%s%s", new_race.data, copy.data + old_race.size);
+					custom_unit_names[player][i].size = strlen(custom_unit_names[player][i].data);
+				}
+			}
 		// Gameplay Actions
 		} else if (parser_eq(&parser, "clear_creep")) {
 			Box32 location = parser_get_location(&parser);

@@ -4,8 +4,9 @@
 extern bool trigger_game_paused;
 extern bool trigger_system_init;
 extern bool trigger_system_in_game;
-extern bool has_custom_name[PlayerLimit];
 
+extern bool has_custom_player_name[PlayerLimit];
+extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 extern u32 trigger_kills[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 extern u32 trigger_combat[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 

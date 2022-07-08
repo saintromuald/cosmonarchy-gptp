@@ -95,6 +95,9 @@ Token parser_get_string(Parser* parser) {
 			}
 			++parser->at;
 		}
+		if (*parser->at == '"') {
+			++parser->at;
+		}
 	} else {
 		while (*parser->at) {
 			if (is_any_space(*parser->at) || is_separator(*parser->at)) {
