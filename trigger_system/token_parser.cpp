@@ -124,31 +124,96 @@ f32 parser_get_f32(Parser* parser) {
 	return strtof(parser->token.data, 0);
 }
 
-bool parser_get_negation(Parser* parser) {
+enum TimeType {
+	TimeType_Hours,
+	TimeType_Minutes,
+	TimeType_Seconds,
+	TimeType_Miliseconds,
+	TimeType_Ticks,
+	TimeType_Count,
+};
+
+f32 parser_get_time(Parser* parser) {
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return false;
 	}
 
-	if (*parser->at == '!') {
-		++parser->at;
-		return true;
-	}
-	return false;
-}
+	bool add_to_total = false;
+	f32 total_time = 0;
 
-char parser_get_separator(Parser* parser) {
-	parser_push(parser);
-	if (!parser_skip_whitespace(parser)) {
-		return 0;
+	f32 time = 0;
+	u32 time_type = TimeType_Seconds;
+
+	u32 buffer_index = 0;
+	char buffer[MaxToken] = {};
+
+	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
+		if (isdigit(*parser->at) || *parser->at == '.') {
+			if (buffer_index < MaxToken - 1) {
+				buffer[buffer_index++] = *parser->at;
+			}
+		} else if (*parser->at == 'h') {
+			time_type = TimeType_Hours;
+			add_to_total = true;
+		} else if (*parser->at == 'm') {
+			if (parser->at[1] == 's') {
+				time_type = TimeType_Miliseconds;
+				add_to_total = true;
+
+				if (parser->token.size < MaxToken - 1) {
+					parser->token.data[parser->token.size++] = *parser->at;
+				}
+				++parser->at;
+			} else {
+				time_type = TimeType_Minutes;
+				add_to_total = true;
+			}
+		} else if (*parser->at == 's') {
+			time_type = TimeType_Seconds;
+			add_to_total = true;
+		} else if (*parser->at == 't') {
+			time_type = TimeType_Ticks;
+			add_to_total = true;
+		}
+
+		if (add_to_total) {
+			add_to_total = false;
+			time = strtof(buffer, 0);
+			switch (time_type) {
+				case TimeType_Hours: {
+					total_time += time * 60 * 60;
+				} break;
+				case TimeType_Minutes: {
+					total_time += time * 60;
+				} break;
+				case TimeType_Seconds: {
+					total_time += time;
+				} break;
+				case TimeType_Miliseconds: {
+					total_time += time / 1000;
+				} break;
+				case TimeType_Ticks: {
+					total_time += time / 24;
+				} break;
+			}
+			buffer_index = 0;
+			memset(buffer, 0, sizeof(buffer));
+			time = 0;
+		}
+
+		if (parser->token.size < MaxToken - 1) {
+			parser->token.data[parser->token.size++] = *parser->at;
+		}
+		++parser->at;
 	}
 
-	if (is_separator(*parser->at)) {
-		char separator = *parser->at;
-		++parser->at;
-		return separator;
+	// add seconds by default if anything without type was left
+	if (buffer_index) {
+		time = strtof(buffer, 0);
+		total_time += time;
 	}
-	return 0;
+	return total_time;
 }
 
 Box32 parser_get_location(Parser* parser) {
@@ -274,7 +339,7 @@ static Token get_short_unit_name(u32 unit_id) {
 	bool after_space = false;
 	for (const char* c = name; *c; ++c) {
 		if (after_space) {
-			if (token.size < MaxToken) {
+			if (token.size < MaxToken - 1) {
 				token.data[token.size++] = *c;
 			} else {
 				break;
@@ -286,6 +351,33 @@ static Token get_short_unit_name(u32 unit_id) {
 	}
 
 	return token;
+}
+
+bool parser_get_negation(Parser* parser) {
+	parser_push(parser);
+	if (!parser_skip_whitespace(parser)) {
+		return false;
+	}
+
+	if (*parser->at == '!') {
+		++parser->at;
+		return true;
+	}
+	return false;
+}
+
+char parser_get_separator(Parser* parser) {
+	parser_push(parser);
+	if (!parser_skip_whitespace(parser)) {
+		return 0;
+	}
+
+	if (is_separator(*parser->at)) {
+		char separator = *parser->at;
+		++parser->at;
+		return separator;
+	}
+	return 0;
 }
 
 u32 parser_get_player(Parser* parser) {

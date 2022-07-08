@@ -36,17 +36,19 @@ Token parser_get_string(Parser* parser);
 
 s32 parser_get_s32(Parser* parser, u32 radix = 10);
 f32 parser_get_f32(Parser* parser);
-
-bool parser_get_negation(Parser* parser);
-char parser_get_separator(Parser* parser);
+f32 parser_get_time(Parser* parser);
 
 Box32 parser_get_location(Parser* parser);
 Point16 parser_get_position(Parser* parser);
 
 u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);
 
+bool parser_get_negation(Parser* parser);
+char parser_get_separator(Parser* parser);
+
 u32 parser_get_player(Parser* parser);
 PlayerBitset parser_get_player_bitset(Parser* parser);
+
 u32 parser_get_unit_id(Parser* parser);
 UnitIdBitset parser_get_unit_id_bitset(Parser* parser);
 

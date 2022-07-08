@@ -90,7 +90,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
-					f32 time = parser_get_f32(&parser);
+					f32 time = parser_get_time(&parser);
 
 					for (u32 i = 0; i < PlayerLimit; ++i) {
 						if (!source_players.set[i]) {
@@ -185,14 +185,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			playback.paused = false;
 			resume_music();
 		} else if (parser_eq(&parser, "fade_in") && is_local_player) {
-			f32 fade_in = parser_get_f32(&parser);
+			f32 fade_in = parser_get_time(&parser);
 			playback.fade_in = fade_in;
 		} else if (parser_eq(&parser, "fade_out") && is_local_player) {
-			f32 fade_out = parser_get_f32(&parser);
+			f32 fade_out = parser_get_time(&parser);
 			playback.fade_out = fade_out;
 		} else if (parser_eq(&parser, "volume") && is_local_player) {
 			f32 volume = parser_get_f32(&parser);
-			f32 time = parser_get_f32(&parser);
+			f32 time = parser_get_time(&parser);
 			if (time == 0) {
 				playback.volume = 0;
 			}
@@ -236,7 +236,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "recolor") && is_local_player) {
 			TimedRecolor recolor = {};
 			recolor.set  = parser_get_recolor_set(&parser);
-			recolor.time = parser_get_f32(&parser);
+			recolor.time = parser_get_time(&parser);
 
 			recolor_system.recolor_time = 0;
 			recolor_system.source_recolor = recolor_system.current_recolor;
@@ -248,7 +248,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "recolor_loop_add") && is_local_player) {
 			TimedRecolor recolor = {};
 			recolor.set  = parser_get_recolor_set(&parser);
-			recolor.time = parser_get_f32(&parser);
+			recolor.time = parser_get_time(&parser);
 
 			if (recolor_system.recolor_list.count < MaxRecolors) {
 				recolor_system.recolor_list.recolors[recolor_system.recolor_list.count++] = recolor;
@@ -381,8 +381,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			sequence.unit_id = parser_get_unit_id(&parser);
 			sequence.player = parser_get_player(&parser);
 			sequence.type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
-			sequence.delay = parser_get_f32(&parser) * 24;
-			sequence.stagger = parser_get_f32(&parser) * 24;
+			sequence.delay = parser_get_time(&parser) * 24;
+			sequence.stagger = parser_get_time(&parser) * 24;
 			sequence.source_pos = parser_get_position(&parser);
 			sequence.move_pos = parser_get_position(&parser);
 			
