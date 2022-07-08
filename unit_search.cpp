@@ -18,6 +18,7 @@ struct SearchIndex {
 };
 
 static SearchIndex unit_index;
+static SearchIndex seen_unit_index[PlayerLimit];
 static SearchIndex corpse_index;
 static SearchIndex effect_index;
 
@@ -162,6 +163,18 @@ EntryArray unit_search_radial(Point16 center, u32 radius) {
 	return filter_unit_array(index_search_radial(&unit_index, center, radius));
 }
 
+EntryArray seen_unit_search_rect(u32 player, Box32 rect) {
+	return filter_unit_array(index_search_rect(&seen_unit_index[player], rect));
+}
+
+EntryArray seen_unit_search_square(u32 player, Point16 center, u32 radius) {
+	return filter_unit_array(index_search_square(&seen_unit_index[player], center, radius));
+}
+
+EntryArray seen_unit_search_radial(u32 player, Point16 center, u32 radius) {
+	return filter_unit_array(index_search_radial(&seen_unit_index[player], center, radius));
+}
+
 inline EntryArray filter_corpse_array(EntryArray entry_array) {
 	for (u32 i = 0; i < entry_array.count; ++i) {
 		Thingy* corpse = entry_array.corpses[i];
@@ -273,6 +286,13 @@ void update_search_index() {
 	search_index_reset(&unit_index);
 	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		search_index_add(&unit_index, unit->position, unit);
+
+		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		for (u32 i = 0; i < 8; ++i) {
+			if (unit_ext->seen_by_flags & (1 << i)) {
+				search_index_add(&seen_unit_index[i], unit->position, unit);
+			}
+		}
 	}
 
 	// Add corpses

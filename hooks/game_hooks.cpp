@@ -461,6 +461,15 @@ namespace hooks
 		}
 
 		UnitExt* unitExt = globals.get_unit_ext(unit);
+		if (!unit_is_hidden) {
+			unitExt->seen_by_flags |= unit->visibility_status;
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (unit->is_visible_to(i)) {
+					unitExt->last_seen_position[i] = unit->position;
+				}
+			}
+		}
+
 		tactical_ai(unit, unitExt);
 
 		u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);

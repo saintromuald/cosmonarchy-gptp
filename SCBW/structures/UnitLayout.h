@@ -394,6 +394,9 @@ struct UnitExt
 	Point16					ai_kiting_origin;
 //	Target					rally;
 
+	u8						seen_by_flags;
+	Point16					last_seen_position[PlayerLimit];
+
 	f32						building_tick_progress;
 	f32						building_tick_last_progress;
 	u32						building_tick_last_update;
