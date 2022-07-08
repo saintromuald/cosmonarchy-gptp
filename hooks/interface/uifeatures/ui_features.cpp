@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <Windows.h>
 #include "config.h"
-#include "trigger_system.h"
+#include "trigger_system/trigger_objectives.h"
 
 u64 total_client_actions;
 
@@ -74,8 +74,8 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		for (u32 i = 0; i < objectives.count; ++i) {
-			Objective* objective = &objectives.entries[i];
+		for (u32 i = 0; i < objectives_count; ++i) {
+			Objective* objective = &objectives[i];
 			if (objective->show) {
 				char buffer[256] = {};
 				if (objective->max_score == 1) {

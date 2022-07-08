@@ -33,6 +33,7 @@ f32 parser_get_f32(Parser* parser);
 Box32 parser_get_location(Parser* parser);
 Point16 parser_get_position(Parser* parser);
 u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);
+u32 parser_get_player(Parser* parser);
 u32 parser_get_unit_id(Parser* parser);
 UnitIdBitset parser_get_unit_id_bitset(Parser* parser);
 bool parser_has_recolor(Parser* parser);

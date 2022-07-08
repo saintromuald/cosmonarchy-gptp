@@ -257,7 +257,7 @@
     <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
     <ClCompile Include="direct_sound.cpp" />
-    <ClCompile Include="token_parser.cpp" />
+    <ClCompile Include="trigger_system\token_parser.cpp" />
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
@@ -574,7 +574,13 @@
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
     <ClCompile Include="direct_sound_inject.cpp" />
-    <ClCompile Include="trigger_system.cpp" />
+    <ClCompile Include="trigger_system\trigger_hooks.cpp" />
+    <ClCompile Include="trigger_system\trigger_music.cpp" />
+    <ClCompile Include="trigger_system\trigger_objectives.cpp" />
+    <ClCompile Include="trigger_system\trigger_recolor.cpp" />
+    <ClCompile Include="trigger_system\trigger_spawn.cpp" />
+    <ClCompile Include="trigger_system\trigger_system.cpp" />
+    <ClCompile Include="trigger_system\utils.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
@@ -586,7 +592,7 @@
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />
     <ClInclude Include="direct_sound.h" />
-    <ClInclude Include="token_parser.h" />
+    <ClInclude Include="trigger_system\token_parser.h" />
     <ClInclude Include="scenario.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
@@ -681,7 +687,13 @@
     <ClInclude Include="SCBW\scbwhelper.h" />
     <ClInclude Include="SCBW\SFileReader.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
-    <ClInclude Include="trigger_system.h" />
+    <ClInclude Include="trigger_system\trigger_hooks.h" />
+    <ClInclude Include="trigger_system\trigger_music.h" />
+    <ClInclude Include="trigger_system\trigger_objectives.h" />
+    <ClInclude Include="trigger_system\trigger_recolor.h" />
+    <ClInclude Include="trigger_system\trigger_spawn.h" />
+    <ClInclude Include="trigger_system\trigger_system.h" />
+    <ClInclude Include="trigger_system\utils.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />
     <ClInclude Include="Utils\captivating_claws.h" />

@@ -23,9 +23,8 @@
 #include "unit_ai.h"
 #include "tactical_ai.h"
 #include "scenario.h"
-#include "trigger_system.h"
 #include "base_layouts.h"
-#include "token_parser.h"
+#include "trigger_system/trigger_system.h"
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
@@ -74,7 +73,7 @@ namespace hooks
 			}
 			*/
 		}
-		tick_trigger_system(false);
+		update_trigger_system(false);
 	}
 
 	void ui_button_click(BinDlg* dialog) {
@@ -191,7 +190,7 @@ namespace hooks
 		if (disable_quickbuilding && !*g_is_placing_building) {
 			disable_quickbuilding--;
 		}
-		tick_trigger_system(true);
+		update_trigger_system(true);
 
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {

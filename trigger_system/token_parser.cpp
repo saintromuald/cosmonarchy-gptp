@@ -260,6 +260,14 @@ static Token get_short_unit_name(u32 unit_id) {
 	return token;
 }
 
+u32 parser_get_player(Parser* parser) {
+	u32 player = parser_get_s32(parser);
+	if (player < 8) {
+		return player;
+	}
+	return *g_current_trigger_player_id;
+}
+
 u32 parser_get_unit_id(Parser* parser) {
 	Token token = parser_get_string(parser, false);
 	for (u32 i = 0; i < UnitId::Count; ++i) {

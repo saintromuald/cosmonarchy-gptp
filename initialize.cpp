@@ -114,7 +114,7 @@
 	#include "SCBW/ExtendSightLimit.h"
 //	#include "hooks/requirements/requirements.h"
 	#include "hooks/interface/extender/selection_extender.h"
-	#include "trigger_system.h"
+	#include "trigger_system/trigger_hooks.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.

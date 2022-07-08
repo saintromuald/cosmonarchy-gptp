@@ -1,5 +1,5 @@
 #include "player_color.h"
-#include "trigger_system.h"
+#include "trigger_system/trigger_system.h"
 
 static bool loaded_colors;
 static bool can_randomize_player_colors;
