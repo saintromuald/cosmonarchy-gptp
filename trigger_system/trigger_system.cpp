@@ -91,7 +91,6 @@ b32 parse_comment_condition(TriggerAction* action) {
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
 					f32 time = parser_get_time(&parser);
-					u32 player = parser_get_player(&parser);
 
 					for (u32 i = 0; i < PlayerLimit; ++i) {
 						if (!source_players.set[i]) {
@@ -217,7 +216,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
 			s32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
-			if (player >= 0 && player < 8) {
+			if (player) {
+				player -= 1;
 				has_custom_player_name[player] = true;
 				if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
 					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
@@ -230,7 +230,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
 			s32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
-			if (player >= 0 && player < 8) {
+			if (player) {
+				player -= 1;
 				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
 					"%s", name.data);
 			}
@@ -331,12 +332,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "log_placeholder_requests") && is_local_player) {
 			s32 player = parser_get_player(&parser);
 			s32 value = parser_get_s32(&parser);
-			log_placeholder_requests[player] = value;
+			if (player) {
+				player -= 1;
+				log_placeholder_requests[player] = value;
+			}
 		} else if (parser_eq(&parser, "set_player_unit_name") && is_local_player) {
 			u32 player = parser_get_player(&parser);
 			u32 unit_id = parser_get_unit_id(&parser);
 			Token name = parser_get_string(&parser);
-			if (unit_id != UnitId::None) {
+			if (player && unit_id != UnitId::None) {
+				player -= 1;
 				custom_unit_names[player][unit_id] = name;
 			}
 		} else if (parser_eq(&parser, "set_player_race_name") && is_local_player) {
@@ -345,32 +350,37 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token new_race = parser_get_string(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (!unit_ids.set[i]) {
-					continue;
-				}
-				if (!custom_unit_names[player][i].size) {
-					const char* default_name = Unit::get_name(i);
-					u32 len = strlen(default_name);
-					if (len > MaxToken) {
-						len = MaxToken;
+			if (player) {
+				player -= 1;
+				for (u32 i = 0; i < UnitId::Count; ++i) {
+					if (!unit_ids.set[i]) {
+						continue;
 					}
-					custom_unit_names[player][i].size = len;
-					memset(custom_unit_names[player][i].data, 0, MaxToken);
-					strncpy(custom_unit_names[player][i].data, default_name, len);
-				}
+					if (!custom_unit_names[player][i].size) {
+						const char* default_name = Unit::get_name(i);
+						u32 len = strlen(default_name);
+						if (len > MaxToken) {
+							len = MaxToken;
+						}
+						custom_unit_names[player][i].size = len;
+						memset(custom_unit_names[player][i].data, 0, MaxToken);
+						strncpy(custom_unit_names[player][i].data, default_name, len);
+					}
 
-				if (old_race.size <= custom_unit_names[player][i].size && strncmp(custom_unit_names[player][i].data, old_race.data, old_race.size) == 0) {
-					Token copy = custom_unit_names[player][i];
-					snprintf(custom_unit_names[player][i].data, MaxToken, "%s%s", new_race.data, copy.data + old_race.size);
-					custom_unit_names[player][i].size = strlen(custom_unit_names[player][i].data);
+					if (old_race.size <= custom_unit_names[player][i].size && strncmp(custom_unit_names[player][i].data, old_race.data, old_race.size) == 0) {
+						Token copy = custom_unit_names[player][i];
+						snprintf(custom_unit_names[player][i].data, MaxToken, "%s%s", new_race.data, copy.data + old_race.size);
+						custom_unit_names[player][i].size = strlen(custom_unit_names[player][i].data);
+					}
 				}
 			}
 		} else if (parser_eq(&parser, "reset_player_unit_names") && is_local_player) {
 			u32 player = parser_get_player(&parser);
-
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				custom_unit_names[player][i] = {};
+			if (player) {
+				player -= 1;
+				for (u32 i = 0; i < UnitId::Count; ++i) {
+					custom_unit_names[player][i] = {};
+				}
 			}
 		// Gameplay Actions
 		} else if (parser_eq(&parser, "clear_creep")) {
@@ -387,8 +397,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			sequence.source_pos = parser_get_position(&parser);
 			sequence.move_pos = parser_get_position(&parser);
 			
-			if (spawn_sequence_count < SpawnSequenceCap) {
-				spawn_sequences[spawn_sequence_count++] = sequence;
+			if (sequence.player) {
+				sequence.player -= 1;
+				if (spawn_sequence_count < SpawnSequenceCap) {
+					spawn_sequences[spawn_sequence_count++] = sequence;
+				}
 			}
 		} else if (parser_eq(&parser, "placeholders_enable")) {
 			Box32 area = parser_get_area(&parser);

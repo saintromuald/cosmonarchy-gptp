@@ -454,8 +454,9 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
 		} else if (player) {
+			player -= 1;
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, i == player - 1, mask, negate);
+				player_bitset_set(&current_bitset, i, i == player, mask, negate);
 			}
 		}
 
