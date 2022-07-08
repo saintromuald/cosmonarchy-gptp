@@ -293,7 +293,7 @@ void update_search_index() {
 		UnitExt* unit_ext = globals.get_unit_ext(unit);
 		for (u32 i = 0; i < 8; ++i) {
 			if (unit_ext->seen_by_flags & (1 << i)) {
-				search_index_add(&seen_unit_index[i], unit->position, unit);
+				search_index_add(&seen_unit_index[i], unit_ext->last_seen_position[i], unit);
 			}
 		}
 	}
