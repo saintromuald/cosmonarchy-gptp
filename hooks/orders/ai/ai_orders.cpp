@@ -1496,7 +1496,7 @@ LABEL_37:
 			for (u32 i = 0; i < 3; ++i) {
 				Unit* gas = town->gas_buildings[i];
 				if (gas && gas->status & UnitStatus::Completed) {
-					if (gas->id == UnitId::ResourceVespeneGeyser) {
+					if (gas->id == UnitId::ResourceVespeneRidge || gas->id == UnitId::ResourceVespeneGeyser) {
 						max_worker_count += 2;
 					} else {
 						max_worker_count += 3;
@@ -1508,26 +1508,23 @@ LABEL_37:
 				gas_count = max_worker_count;
 			}
 
-			u32 node_worker_count = 0;
+			u32 total_node_worker_count = 0;
+			u8 node_worker_count[3] = {};
+			for (u32 i = 0; i < 3; ++i) {
+				Unit* gas = town->gas_buildings[i];
+				if (gas && gas->status & UnitStatus::Completed) {
+					if (gas->id == UnitId::ResourceVespeneRidge || gas->id == UnitId::ResourceVespeneGeyser) {
+						node_worker_count[i] = 2;
+					} else {
+						node_worker_count[i] = 3;
+					}
+					total_node_worker_count += node_worker_count[i];
+				}
+			}
+
 			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
 			{
 				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
-				while (*target_resource_type != 1 && !node_worker_count) {
-					Unit* gas = town->gas_buildings[*target_resource_type - 2];
-					if (gas && gas->status & UnitStatus::Completed) {
-						if (gas->id == UnitId::ResourceVespeneGeyser) {
-							node_worker_count = 2;
-						} else {
-							node_worker_count = 3;
-						}
-					}
-					if (!node_worker_count) {
-						*target_resource_type += 1;
-						if (*target_resource_type > 4) {
-							*target_resource_type = 1;
-						}
-					}
-				}
 
 				Unit* worker = worker_ai->parent;
 				u8 unit_order = worker->main_order_id;
@@ -1585,14 +1582,21 @@ LABEL_37:
 				result = *target_resource_type;
 
 				if (*target_resource_type != 1) {
-					if (node_worker_count) {
-						--node_worker_count;
+					if (node_worker_count[*target_resource_type - 1]) {
+						--node_worker_count[*target_resource_type - 1];
 					}
-					if (!node_worker_count) {
+
+					for (u32 i = 0; i < 3; ++i) {
 						*target_resource_type += 1;
 						if (*target_resource_type > 4) {
 							*target_resource_type = 1;
 						}
+						if (node_worker_count[*target_resource_type - 1]) {
+							break;
+						}
+					}
+					if (!node_worker_count[*target_resource_type - 1]) {
+						*target_resource_type = 0;
 					}
 				}
 			}
