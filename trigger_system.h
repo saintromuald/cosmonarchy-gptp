@@ -33,3 +33,5 @@ const char* spawn_type_names[SpawnType_Count] = {
 };
 
 void tick_trigger_system(bool in_game);
+
+void inject_trigger_system_hooks();

@@ -6,6 +6,8 @@
 #include "color_palette.h"
 #include "base_layouts.h"
 
+#include <hook_tools.h>
+
 // TODO: Move dsound handling to music file
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
@@ -403,191 +405,220 @@ static void remove_objective(Objective* objective) {
 	}
 }
 
-static b32 __fastcall parse_comment_action(Action* action) {
-	if (*g_current_trigger_player_id == *g_local_nation_id) {
-		char* comment = helper::get_chk_string(action->string);
+static b32 parse_comment_condition(TriggerAction* action) {
+	bool is_local_player = *g_current_trigger_player_id == *g_local_nation_id;
+	Parser parser = {};
+	parser.at = helper::get_chk_string(action->text_string);
+	while (parser_get_command(&parser)) {
+		if (parser_eq(&parser, "condition")) {
+			if (parser_get_word(&parser)) {
+				if (parser_eq(&parser, "player_combat")) {
 
-		Parser parser = {};
-		parser.at = comment;
-		while (parser_get_command(&parser)) {
-			if (parser_eq(&parser, "play_music")) {
-				Token filename = parser_get_string(&parser, true);
-				trigger_system.next_music = get_music(filename.data);
-				trigger_system.music_target_fade = 0;
-			} else if (parser_eq(&parser, "stop_music")) {
-				trigger_system.music_target_fade = 0;
-			} else if (parser_eq(&parser, "pause_music")) {
-				trigger_system.music_target_fade = 0;
-				trigger_system.music_paused = true;
-			} else if (parser_eq(&parser, "resume_music")) {
-				trigger_system.music_target_fade = 1;
-				trigger_system.music_paused = false;
-				if (ds_buffer) {
-					ds_buffer->Play(0, 0, 0);
-				}
-			} else if (parser_eq(&parser, "fade_in")) {
-				f32 fade_in = parser_get_f32(&parser);
-				trigger_system.music_fade_in = fade_in;
-			} else if (parser_eq(&parser, "fade_out")) {
-				f32 fade_out = parser_get_f32(&parser);
-				trigger_system.music_fade_out = fade_out;
-			} else if (parser_eq(&parser, "volume")) {
-				f32 volume = parser_get_f32(&parser);
-				f32 time = parser_get_f32(&parser);
-				if (time == 0) {
-					trigger_system.music_volume = 0;
-				}
-				trigger_system.music_target_volume = volume;
-				trigger_system.music_volume_time = time;
-			} else if (parser_eq(&parser, "playlist_clear")) {
-				trigger_system.playlist_size = 0;
-			} else if (parser_eq(&parser, "playlist_add")) {
-				Token filename = parser_get_string(&parser, true);
-				if (trigger_system.playlist_size < MaxMusic) {
-					Music* music = get_music(filename.data);
-					if (music) {
-						trigger_system.playlist_tracks[trigger_system.playlist_size++] = music;
-					}
-				} else {
-					scbw::printf("Error: Playlist already full! (%s)", filename.data);
-				}
-			} else if (parser_eq(&parser, "playlist_shuffle")) {
-				s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
-				trigger_system.playlist_shuffle = do_shuffle;
-			} else if (parser_eq(&parser, "clear_creep")) {
-				Box32 location = parser_get_location(&parser);
-				scbw::clear_creep(location);
-			} else if (parser_eq(&parser, "set_player_name")) {
-				s32 player = parser_get_s32(&parser);
-				Token name = parser_get_string(&parser, true);
-				if (player >= 0 && player < 8) {
-					has_custom_name[player] = true;
-					if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
-						snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
-							"%s (%s)", name.data, g_player_table[player].name);
+				} else if (parser_eq(&parser, "player_kills")) {
+					
+				} else if (parser_eq(&parser, "player_deaths")) {
+					
+				} else if (parser_eq(&parser, "local_camera")) {
+					Box32 area = parser_get_location(&parser);
+					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&
+						*g_move_to_y + 200 >= area.y && *g_move_to_y + 200 <= area.y + area.h) {
+						return true;
 					} else {
-						snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
-							"%s", name.data);
+						return false;
 					}
 				}
-			} else if (parser_eq(&parser, "set_force_name")) {
-				s32 player = parser_get_s32(&parser);
-				Token name = parser_get_string(&parser, true);
-				if (player >= 0 && player < 8) {
-					snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
-						"%s", name.data);
-				}
-			} else if (parser_eq(&parser, "recolor")) {
-				TimedRecolor recolor = {};
-				recolor.set  = parser_get_recolor_set(&parser);
-				recolor.time = parser_get_f32(&parser);
-
-				trigger_system.recolor_time = 0;
-				trigger_system.source_recolor = trigger_system.current_recolor;
-				trigger_system.target_recolor = recolor;
-				if (!recolor.time) {
-					trigger_system.current_recolor = recolor;
-					set_palette_recolor(recolor.set);
-				}
-			} else if (parser_eq(&parser, "recolor_loop_add")) {
-				TimedRecolor recolor = {};
-				recolor.set  = parser_get_recolor_set(&parser);
-				recolor.time = parser_get_f32(&parser);
-
-				if (trigger_system.recolor_list.count < MaxRecolors) {
-					trigger_system.recolor_list.recolors[trigger_system.recolor_list.count++] = recolor;
-				}
-			} else if (parser_eq(&parser, "recolor_loop_clear")) {
-				memset(&trigger_system.recolor_list, 0, sizeof(trigger_system.recolor_list));
-			} else if (parser_eq(&parser, "objective_set")) {
-				s32 key = parser_get_s32(&parser);
-				Token text = parser_get_string(&parser, true);
-
-				Objective* objective = find_or_create_objective(key);
-				if (objective) {
-					sprintf_s(objective->text, "%s", text.data);
-					objective->show = true;
-				}
-			} else if (parser_eq(&parser, "objective_text")) {
-				s32 key = parser_get_s32(&parser);
-				Token text = parser_get_string(&parser, true);
-
-				Objective* objective = find_or_create_objective(key);
-				if (objective) {
-					sprintf_s(objective->text, "%s", text.data);
-				}
-			} else if (parser_eq(&parser, "objective_desc")) {
-				s32 key = parser_get_s32(&parser);
-				Token text = parser_get_string(&parser, true);
-
-				// TODO: set objective description
-			} else if (parser_eq(&parser, "objective_show")) {
-				s32 key = parser_get_s32(&parser);
-				s32 show = parser_get_s32(&parser);
-
-				Objective* objective = find_or_create_objective(key);
-				if (objective) {
-					objective->show = show;
-				}
-			} else if (parser_eq(&parser, "objective_score")) {
-				s32 key = parser_get_s32(&parser);
-				s32 score = parser_get_s32(&parser);
-				s32 max_score = parser_get_s32(&parser);
-
-				Objective* objective = find_or_create_objective(key);
-				if (objective) {
-					objective->score = score;
-					objective->max_score = max_score;
-					if (objective->score < 0) {
-						objective->score = 0;
-					}
-					if (objective->score > objective->max_score) {
-						objective->score = objective->max_score;
-					}
-				}
-			} else if (parser_eq(&parser, "objective_score_add")) {
-				s32 key = parser_get_s32(&parser);
-				s32 score = parser_get_s32(&parser);
-				s32 max_score = parser_get_s32(&parser);
-
-				Objective* objective = find_or_create_objective(key);
-				if (objective) {
-					objective->score += score;
-					objective->max_score += max_score;
-					if (objective->score < 0) {
-						objective->score = 0;
-					}
-					if (objective->score > objective->max_score) {
-						objective->score = objective->max_score;
-					}
-				}
-			} else if (parser_eq(&parser, "objective_remove")) {
-				s32 key = parser_get_s32(&parser);
-				Objective* objective = find_objective(key);
-				if (objective) {
-					remove_objective(objective);
-				}
-			} else if (parser_eq(&parser, "objectives_sync")) {
-				// TODO: sync objectives to mission objectives menu
-			} else if (parser_eq(&parser, "objectives_clear")) {
-				memset(&objectives, 0, sizeof(objectives));
-			} else if (parser_eq(&parser, "log_placeholder_requests")) {
-				s32 player = parser_get_s32(&parser);
-				s32 value = parser_get_s32(&parser);
-				log_placeholder_requests[player] = value;
-			} else if (parser_eq(&parser, "spawn")) {
-				s32 count = parser_get_s32(&parser);
-				s32 unit_id = parser_get_s32(&parser);
-				s32 player = parser_get_s32(&parser);
-				u32 type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
-				f32 delay = parser_get_f32(&parser);
-				f32 stagger = parser_get_f32(&parser);
-				Point16 source_pos = parser_get_position(&parser);
-				Point16 move_pos = parser_get_position(&parser);
 			}
 		}
 	}
-	return 1;
+
+	return true;
+}
+
+static b32 __fastcall parse_comment_action(TriggerAction* action) {
+	bool is_local_player = *g_current_trigger_player_id == *g_local_nation_id;
+	Parser parser = {};
+	parser.at = helper::get_chk_string(action->text_string);
+	while (parser_get_command(&parser)) {
+		// Local Only Triggers
+		if (parser_eq(&parser, "play_music") && is_local_player) {
+			Token filename = parser_get_string(&parser, true);
+			trigger_system.next_music = get_music(filename.data);
+			trigger_system.music_target_fade = 0;
+		} else if (parser_eq(&parser, "stop_music") && is_local_player) {
+			trigger_system.music_target_fade = 0;
+		} else if (parser_eq(&parser, "pause_music") && is_local_player) {
+			trigger_system.music_target_fade = 0;
+			trigger_system.music_paused = true;
+		} else if (parser_eq(&parser, "resume_music") && is_local_player) {
+			trigger_system.music_target_fade = 1;
+			trigger_system.music_paused = false;
+			if (ds_buffer) {
+				ds_buffer->Play(0, 0, 0);
+			}
+		} else if (parser_eq(&parser, "fade_in") && is_local_player) {
+			f32 fade_in = parser_get_f32(&parser);
+			trigger_system.music_fade_in = fade_in;
+		} else if (parser_eq(&parser, "fade_out") && is_local_player) {
+			f32 fade_out = parser_get_f32(&parser);
+			trigger_system.music_fade_out = fade_out;
+		} else if (parser_eq(&parser, "volume") && is_local_player) {
+			f32 volume = parser_get_f32(&parser);
+			f32 time = parser_get_f32(&parser);
+			if (time == 0) {
+				trigger_system.music_volume = 0;
+			}
+			trigger_system.music_target_volume = volume;
+			trigger_system.music_volume_time = time;
+		} else if (parser_eq(&parser, "playlist_clear") && is_local_player) {
+			trigger_system.playlist_size = 0;
+		} else if (parser_eq(&parser, "playlist_add") && is_local_player) {
+			Token filename = parser_get_string(&parser, true);
+			if (trigger_system.playlist_size < MaxMusic) {
+				Music* music = get_music(filename.data);
+				if (music) {
+					trigger_system.playlist_tracks[trigger_system.playlist_size++] = music;
+				}
+			} else {
+				scbw::printf("Error: Playlist already full! (%s)", filename.data);
+			}
+		} else if (parser_eq(&parser, "playlist_shuffle") && is_local_player) {
+			s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
+			trigger_system.playlist_shuffle = do_shuffle;
+		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
+			s32 player = parser_get_s32(&parser);
+			Token name = parser_get_string(&parser, true);
+			if (player >= 0 && player < 8) {
+				has_custom_name[player] = true;
+				if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
+					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
+						"%s (%s)", name.data, g_player_table[player].name);
+				} else {
+					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
+						"%s", name.data);
+				}
+			}
+		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
+			s32 player = parser_get_s32(&parser);
+			Token name = parser_get_string(&parser, true);
+			if (player >= 0 && player < 8) {
+				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
+					"%s", name.data);
+			}
+		} else if (parser_eq(&parser, "recolor") && is_local_player) {
+			TimedRecolor recolor = {};
+			recolor.set  = parser_get_recolor_set(&parser);
+			recolor.time = parser_get_f32(&parser);
+
+			trigger_system.recolor_time = 0;
+			trigger_system.source_recolor = trigger_system.current_recolor;
+			trigger_system.target_recolor = recolor;
+			if (!recolor.time) {
+				trigger_system.current_recolor = recolor;
+				set_palette_recolor(recolor.set);
+			}
+		} else if (parser_eq(&parser, "recolor_loop_add") && is_local_player) {
+			TimedRecolor recolor = {};
+			recolor.set  = parser_get_recolor_set(&parser);
+			recolor.time = parser_get_f32(&parser);
+
+			if (trigger_system.recolor_list.count < MaxRecolors) {
+				trigger_system.recolor_list.recolors[trigger_system.recolor_list.count++] = recolor;
+			}
+		} else if (parser_eq(&parser, "recolor_loop_clear") && is_local_player) {
+			memset(&trigger_system.recolor_list, 0, sizeof(trigger_system.recolor_list));
+		} else if (parser_eq(&parser, "objective_set")) {
+			s32 key = parser_get_s32(&parser);
+			Token text = parser_get_string(&parser, true);
+
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				sprintf_s(objective->text, "%s", text.data);
+				objective->show = true;
+			}
+		} else if (parser_eq(&parser, "objective_text") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			Token text = parser_get_string(&parser, true);
+
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				sprintf_s(objective->text, "%s", text.data);
+			}
+		} else if (parser_eq(&parser, "objective_desc") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			Token text = parser_get_string(&parser, true);
+
+			// TODO: set objective description
+		} else if (parser_eq(&parser, "objective_show") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			s32 show = parser_get_s32(&parser);
+
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				objective->show = show;
+			}
+		} else if (parser_eq(&parser, "objective_score") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			s32 score = parser_get_s32(&parser);
+			s32 max_score = parser_get_s32(&parser);
+
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				objective->score = score;
+				objective->max_score = max_score;
+				if (objective->score < 0) {
+					objective->score = 0;
+				}
+				if (objective->score > objective->max_score) {
+					objective->score = objective->max_score;
+				}
+			}
+		} else if (parser_eq(&parser, "objective_score_add") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			s32 score = parser_get_s32(&parser);
+			s32 max_score = parser_get_s32(&parser);
+
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				objective->score += score;
+				objective->max_score += max_score;
+				if (objective->score < 0) {
+					objective->score = 0;
+				}
+				if (objective->score > objective->max_score) {
+					objective->score = objective->max_score;
+				}
+			}
+		} else if (parser_eq(&parser, "objective_remove") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			Objective* objective = find_objective(key);
+			if (objective) {
+				remove_objective(objective);
+			}
+		} else if (parser_eq(&parser, "objectives_sync") && is_local_player) {
+			// TODO: sync objectives to mission objectives menu
+		} else if (parser_eq(&parser, "objectives_clear") && is_local_player) {
+			memset(&objectives, 0, sizeof(objectives));
+		} else if (parser_eq(&parser, "log_placeholder_requests") && is_local_player) {
+			s32 player = parser_get_s32(&parser);
+			s32 value = parser_get_s32(&parser);
+			log_placeholder_requests[player] = value;
+		// Gameplay Actions
+		} else if (parser_eq(&parser, "clear_creep")) {
+			Box32 location = parser_get_location(&parser);
+			scbw::clear_creep(location);
+		} else if (parser_eq(&parser, "spawn")) {
+			s32 count = parser_get_s32(&parser);
+			u32 unit_id = parser_get_unit_id(&parser);
+			s32 player = parser_get_s32(&parser);
+			u32 type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
+			f32 delay = parser_get_f32(&parser);
+			f32 stagger = parser_get_f32(&parser);
+			Point16 source_pos = parser_get_position(&parser);
+			Point16 move_pos = parser_get_position(&parser);
+		}
+	}
+
+	return true;
 }
 
 static void init_trigger_system() {
@@ -601,7 +632,7 @@ static void init_trigger_system() {
 		ds_buffer->Release();
 		ds_buffer = 0;
 	}
-	g_action_table[47] = parse_comment_action;
+	g_action_table[47] = (ActionPointer)parse_comment_action;
 
 	memset(has_custom_name, 0, sizeof(has_custom_name));
 	memset(&objectives, 0, sizeof(objectives));
@@ -758,4 +789,68 @@ void tick_trigger_system(bool in_game) {
 		handle_recolor();
 	}
 	trigger_system.game_paused = paused;
+}
+
+// HOOKS \\
+
+static bool execute_trigger_condition(TriggerCondition* condition) {
+	static b32 result;
+	const void* address = g_trigger_condition_list[condition->condition_type];
+	__asm {
+		PUSHAD
+		MOV ECX, condition
+		CALL address
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+// Hooked to check custom conditions. -Pr0nogo
+s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
+	for (u32 i = 0; i < 64; ++i) {
+		TriggerAction* action = &trigger_vector->trigger.actions[i];
+		if (!(action->flags & 2)) {
+			if (action->action_type == 47) {
+				if (!parse_comment_condition(action)) {
+					return false;
+				}
+			}
+		}
+	}
+
+	for (u32 i = 0; i < 16; ++i) {
+		TriggerCondition* condition = &trigger_vector->trigger.conditions[i];
+		if (!(condition->flags & 2)) {
+			if (!condition->condition_type) {
+				return true;
+			}
+
+			if (!execute_trigger_condition(condition)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+// HOOK INJECTION \\
+
+void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
+	static b32 result;
+	static TriggerVector* trigger_vector;
+	__asm {
+		MOV trigger_vector, EAX
+		PUSHAD
+	}
+	result = execute_trigger_conditions(trigger_vector);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+
+void inject_trigger_system_hooks() {
+	jump_patch(execute_trigger_conditions_wrapper, 0x00489200, 1);
 }

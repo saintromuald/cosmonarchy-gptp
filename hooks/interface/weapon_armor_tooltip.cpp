@@ -25,7 +25,7 @@ char buffer[256];
 
 // Returns the special damage multiplier factor for units that don't use the
 // "Damage Factor" property in weapons.dat.
-u8 getDamageFactorForTooltip(u8 weapon_id, Unit* unit)
+u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
 {
 	if (weapon_id == WeaponId::CohortGaussPistols
 	||  weapon_id == WeaponId::HarakanFlameThrower
@@ -52,7 +52,7 @@ u8 getDamageFactorForTooltip(u8 weapon_id, Unit* unit)
 #include "SCBW/stat_txt_spec.h"
 #include <iomanip>
 
-static std::string formatStringVector(std::vector<std::string> strings)
+static std::string format_string_vector(std::vector<std::string> strings)
 {
 	std::string result = "";
 	if (strings.size() == 0)
@@ -71,7 +71,7 @@ static std::string formatStringVector(std::vector<std::string> strings)
 	return result;
 }
 
-const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
+const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 {
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
@@ -81,7 +81,7 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 //	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
 	const char* type_name = "";
 
-	u8 damage_factor = getDamageFactorForTooltip(weapon_id, unit);
+	u8 damage_factor = get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];
@@ -110,9 +110,6 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	bool hasSplash = splashInner || splashMedium || splashOuter;
 	s32 splash_type = weapons_dat::ExplosionType[weapon_id];
 	std::string splash_type_value = "";
-
-	bool is_suicide_unit = unit->id == UnitId::ZergSkryling;
-
 	/*
 	switch (damage_type) {
 		case DamageType::Concussive: {
@@ -191,7 +188,7 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 		targetFlags.push_back("Terrain");
 	}
 
-	std::string targetFlagsText = formatStringVector(targetFlags);
+	std::string targetFlagsText = format_string_vector(targetFlags);
 
 	// Name
 	std::string text = "\004" + std::string(entryName) + "\002\n";
@@ -215,21 +212,20 @@ const char* getDamageTooltipString(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 	}
 
 	// Armor Pen
-	if (armor_pen > 0) {
-		text += "\nArmor Pen: ";
+	text += "\nArmor Pen: ";
 
-		std::stringstream ss;
-		ss << std::setprecision(4);
-		ss << armor_pen;
-		if (bonus_armor_pen > 0)      text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
-		else if (bonus_armor_pen < 0) text += " (" BWTC_RED   ""  + ss.str() + BWTC_RESET ")";
-		text += ss.str();
-	}
+	std::stringstream ss;
+	ss << std::setprecision(4);
+	ss << armor_pen;
+	if (bonus_armor_pen > 0)      text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
+	else if (bonus_armor_pen < 0) text += " (" BWTC_RED   "" + ss.str() + BWTC_RESET ")";
+	text += ss.str();
 
 	// Cooldown
 	std::stringstream string_builder; // TODO: replace with something not gay
 	string_builder << std::setprecision(4);
 	std::string modifier_color = attack_cooldown_modifier > 0 ? BWTC_RED : attack_cooldown_modifier < 0 ? BWTC_GREEN : BWTC_RESET;
+	bool is_suicide_unit = false; // Removed since we have no suicide units anymore. -Pr0nogo
 	if (!is_suicide_unit) {
 		string_builder.str("");
 		string_builder << (attack_speed + attack_speed_modifier);
@@ -344,7 +340,7 @@ namespace hooks
 	// Returns the C-string for the tooltip text of the unit's weapon icon.
 	const char* get_weapon_tooltip_string(u8 weapon_id, Unit* unit)
 	{
-		return getDamageTooltipString(weapon_id, unit, weapons_dat::label[weapon_id]);
+		return get_damage_tootlip_string(weapon_id, unit, weapons_dat::label[weapon_id]);
 	}
 
 	static std::string timerToString(s32 timer)
@@ -643,7 +639,7 @@ namespace hooks
 		}
 		*/
 
-		std::string status = formatStringVector(statuses);
+		std::string status = format_string_vector(statuses);
 
 		// TODO Statuses
 		// mind control on target, last orders
@@ -674,6 +670,7 @@ namespace hooks
 		{
 			flags.push_back("Invincible");
 		}
+		/* // Disabled since they mean nothing now. -Pr0nogo
 		if (units_dat::base_property[unit->id] & UnitProperty::Organic)
 		{
 			flags.push_back("Organic");
@@ -686,6 +683,7 @@ namespace hooks
 		{
 			flags.push_back("Robotic");
 		}
+		*/
 		if (units_dat::base_property[unit->id] & UnitProperty::Detector)
 		{
 			flags.push_back("Detector");
@@ -696,7 +694,7 @@ namespace hooks
 			flags.push_back("Spreads Creep");
 		}
 
-		std::string flag = formatStringVector(flags);
+		std::string flag = format_string_vector(flags);
 
 		std::string text = "\004" + std::string(armor_upgrade_name) + "\002";
 		text += "\n" + std::string(armor_text) + " " + std::to_string(base_armor);
@@ -765,11 +763,11 @@ namespace hooks
 	{
 		if (iconUnitId == UnitId::ProtossSteward)
 		{
-			return getDamageTooltipString(WeaponId::StewardPulseCannon, unit, 791);				// "Interceptors"
+			return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);				// "Interceptors"
 		}
 		if (iconUnitId == UnitId::ProtossPlasmaShell)
 		{
-			return getDamageTooltipString(WeaponId::Scarab, unit, 792);						// "Scarabs"
+			return get_damage_tootlip_string(WeaponId::Scarab, unit, 792);						// "Scarabs"
 		}
 		if (iconUnitId == UnitId::TerranNuclearMissile)
 		{
@@ -777,11 +775,11 @@ namespace hooks
 		}
 		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
 		{
-			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);				// "Spider Mines"
+			return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);				// "Spider Mines"
 		}
 		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranEidolon)
 		{
-			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);		// "Lobotomy Mines"
+			return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 794);		// "Lobotomy Mines"
 		}
 
 		// Should never reach here

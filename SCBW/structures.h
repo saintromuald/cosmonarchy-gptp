@@ -1109,6 +1109,7 @@ struct TriggerCondition {
 	u8	flags;					// 0x11
 	u16 internal_something;		// 0x12
 };
+C_ASSERT(sizeof(TriggerCondition) == 20);
 
 struct TriggerAction {
 	u32 source_location;		// 0x00
@@ -1124,19 +1125,20 @@ struct TriggerAction {
 	u16 internal_something;		// 0x1D
 	u8	padding;				// 0x1F
 };
+C_ASSERT(sizeof(TriggerAction) == 32);
 
 struct Trigger {
-	TriggerCondition	conditions;				// 0x000
-	TriggerAction		actions;				// 0x140
+	TriggerCondition	conditions[16];			// 0x000
+	TriggerAction		actions[64];			// 0x140
 	u32					flags;					// 0x940
 	u16					execute_for;			// 0x944
 	u8					current_action_index;	// 0x95F
 };
 
 struct TriggerVector {
-	u32			prev;		// 0x0
-	u32			next;		// 0x4
-	Trigger*	trigger;	// 0x8
+	TriggerVector*	prev;		// 0x0
+	TriggerVector*	next;		// 0x4
+	Trigger 		trigger;	// 0x8
 };
 
 struct PaletteEntry {
