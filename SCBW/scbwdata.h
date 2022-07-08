@@ -1066,6 +1066,9 @@ SCBW_DATA(Bitmap**,			g_current_surface,			0x006CF4A8);
 SCBW_DATA(Bitmap*,			g_minimap_surface_2,		0x0059C194);
 SCBW_DATA(u32*,				g_minimap_unit_box_count,	0x0059C2B8);
 
+// For execute_trigger_conditions
+SCBW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
+
 //////////////////////////////////////////////////////////////// @}
 
 #undef SCBW_DATA

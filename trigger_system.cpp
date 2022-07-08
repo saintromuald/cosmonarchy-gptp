@@ -6,6 +6,8 @@
 #include "color_palette.h"
 #include "base_layouts.h"
 
+#include <hook_tools.h>
+
 // TODO: Move dsound handling to music file
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
@@ -749,4 +751,56 @@ void tick_trigger_system(bool in_game) {
 		handle_recolor();
 	}
 	trigger_system.game_paused = paused;
+}
+
+// HOOKS \\
+
+// Hooked to check custom conditions. -Pr0nogo
+s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
+
+	u32 iterations = 0;
+	u8* condition = (u8*)&trigger_vector->trigger->conditions[0].condition_type;
+	while (1)
+	{
+		if (!(condition[2] & 2))
+		{
+			if (!*condition)
+			{
+				return 1;
+			}
+			if (!((u32(__thiscall*)(u32))g_trigger_condition_list[*condition])((u32)(condition - 15)))
+			{
+				break;
+			}
+		}
+		++iterations;
+		condition += 20;
+		if (iterations >= 16)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// HOOK INJECTION \\
+
+void __declspec(naked) execute_trigger_conditions_wrapper() { // 00499A60
+	static s32 result;
+	static TriggerVector* trigger_vector;
+	__asm {
+		MOV trigger_vector, EAX
+		PUSHAD
+	}
+	result = execute_trigger_conditions(trigger_vector);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+
+void inject_trigger_system_hooks()
+{
+	jump_patch(execute_trigger_conditions_wrapper, 0x00489200, 1);
 }

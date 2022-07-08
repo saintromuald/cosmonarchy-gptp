@@ -19,3 +19,6 @@ struct Objectives {
 extern Objectives objectives;
 
 void tick_trigger_system(bool in_game);
+s32 execute_trigger_conditions(TriggerVector* trigger_vector); // 00489200
+
+void inject_trigger_system_hooks();
