@@ -18,4 +18,18 @@ struct Objectives {
 };
 extern Objectives objectives;
 
+enum SpawnType {
+	SpawnType_None,
+	SpawnType_Augur,
+	SpawnType_AugurDamage,
+
+	SpawnType_Count,
+};
+
+const char* spawn_type_names[SpawnType_Count] = {
+	"None",
+	"Augur",
+	"AugurDamage",
+};
+
 void tick_trigger_system(bool in_game);

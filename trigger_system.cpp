@@ -575,6 +575,15 @@ static b32 __fastcall parse_comment_action(Action* action) {
 				s32 player = parser_get_s32(&parser);
 				s32 value = parser_get_s32(&parser);
 				log_placeholder_requests[player] = value;
+			} else if (parser_eq(&parser, "spawn")) {
+				s32 count = parser_get_s32(&parser);
+				s32 unit_id = parser_get_s32(&parser);
+				s32 player = parser_get_s32(&parser);
+				u32 type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
+				f32 delay = parser_get_f32(&parser);
+				f32 stagger = parser_get_f32(&parser);
+				Point16 source_pos = parser_get_position(&parser);
+				Point16 move_pos = parser_get_position(&parser);
 			}
 		}
 	}
