@@ -116,6 +116,12 @@ Token parser_get_string(Parser* parser) {
 
 s32 parser_get_s32(Parser* parser, u32 radix) {
 	parser_get_word(parser);
+	if (parser_eqi(parser, "true")) {
+		return 1;
+	}
+	if (parser_eqi(parser, "false")) {
+		return 0;
+	}
 	return strtol(parser->token.data, 0, radix);
 }
 
