@@ -361,6 +361,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					custom_unit_names[player][i].size = strlen(custom_unit_names[player][i].data);
 				}
 			}
+		} else if (parser_eq(&parser, "reset_player_unit_names") && is_local_player) {
+			u32 player = parser_get_player(&parser);
+
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				custom_unit_names[player][i] = {};
+			}
 		// Gameplay Actions
 		} else if (parser_eq(&parser, "clear_creep")) {
 			Box32 location = parser_get_location(&parser);
