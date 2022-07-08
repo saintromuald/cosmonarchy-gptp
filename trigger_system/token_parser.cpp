@@ -76,7 +76,7 @@ bool parser_get_command(Parser* parser) {
 	return parser_get_word(parser);
 }
 
-Token parser_get_string(Parser* parser, bool consume_rest) {
+Token parser_get_string(Parser* parser) {
 	parser_push(parser);
 
 	if (!parser_skip_whitespace(parser)) {
@@ -94,10 +94,7 @@ Token parser_get_string(Parser* parser, bool consume_rest) {
 		}
 	} else {
 		while (*parser->at) {
-			if (!consume_rest && is_any_space(*parser->at)) {
-				break;
-			}
-			if (consume_rest && is_newline(*parser->at)) {
+			if (is_any_space(*parser->at)) {
 				break;
 			}
 
@@ -151,7 +148,7 @@ Box32 parser_get_location(Parser* parser) {
 		return box;
 	}
 
-	Token string = parser_get_string(parser, true);
+	Token string = parser_get_string(parser);
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
@@ -204,7 +201,7 @@ Point16 parser_get_position(Parser* parser) {
 		return pos;
 	}
 
-	Token string = parser_get_string(parser, true);
+	Token string = parser_get_string(parser);
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
@@ -228,7 +225,7 @@ Point16 parser_get_position(Parser* parser) {
 }
 
 u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count) {
-	Token token = parser_get_string(parser, false);
+	Token token = parser_get_string(parser);
 
 	for (u32 i = 0; i < count; ++i) {
 		if (stricmp(token.data, enum_names[i]) == 0) {
@@ -269,7 +266,7 @@ u32 parser_get_player(Parser* parser) {
 }
 
 u32 parser_get_unit_id(Parser* parser) {
-	Token token = parser_get_string(parser, false);
+	Token token = parser_get_string(parser);
 	for (u32 i = 0; i < UnitId::Count; ++i) {
 		if (stricmp(token.data, get_short_unit_name(i).data) == 0) {
 			return i;

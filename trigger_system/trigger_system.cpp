@@ -86,7 +86,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 	while (parser_get_command(&parser)) {
 		// Local Only Triggers
 		if (parser_eq(&parser, "play_music") && is_local_player) {
-			Token filename = parser_get_string(&parser, true);
+			Token filename = parser_get_string(&parser);
 			playback.next_music = get_music(filename.data);
 			playback.target_fade = 0;
 		} else if (parser_eq(&parser, "stop_music") && is_local_player) {
@@ -115,7 +115,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "playlist_clear") && is_local_player) {
 			current_playlist.size = 0;
 		} else if (parser_eq(&parser, "playlist_add") && is_local_player) {
-			Token filename = parser_get_string(&parser, true);
+			Token filename = parser_get_string(&parser);
 			if (current_playlist.size < MaxMusic) {
 				Music* music = get_music(filename.data);
 				if (music) {
@@ -129,7 +129,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			current_playlist.shuffle = do_shuffle;
 		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
 			s32 player = parser_get_s32(&parser);
-			Token name = parser_get_string(&parser, true);
+			Token name = parser_get_string(&parser);
 			if (player >= 0 && player < 8) {
 				has_custom_name[player] = true;
 				if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
@@ -142,7 +142,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
 			s32 player = parser_get_s32(&parser);
-			Token name = parser_get_string(&parser, true);
+			Token name = parser_get_string(&parser);
 			if (player >= 0 && player < 8) {
 				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
 					"%s", name.data);
@@ -171,7 +171,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			memset(&recolor_system.recolor_list, 0, sizeof(recolor_system.recolor_list));
 		} else if (parser_eq(&parser, "objective_set")) {
 			s32 key = parser_get_s32(&parser);
-			Token text = parser_get_string(&parser, true);
+			Token text = parser_get_string(&parser);
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
@@ -180,7 +180,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "objective_text") && is_local_player) {
 			s32 key = parser_get_s32(&parser);
-			Token text = parser_get_string(&parser, true);
+			Token text = parser_get_string(&parser);
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
@@ -188,7 +188,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "objective_desc") && is_local_player) {
 			s32 key = parser_get_s32(&parser);
-			Token text = parser_get_string(&parser, true);
+			Token text = parser_get_string(&parser);
 
 			// TODO: set objective description
 		} else if (parser_eq(&parser, "objective_show") && is_local_player) {
