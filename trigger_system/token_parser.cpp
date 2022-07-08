@@ -388,17 +388,33 @@ char parser_get_separator(Parser* parser) {
 
 u32 parser_get_player(Parser* parser) {
 	u32 player = parser_get_s32(parser);
-	if (player < 8) {
+	if (player <= 8 || player == 12) {
 		return player;
 	}
-	return *g_current_trigger_player_id;
+	if (player == 13) {
+		return *g_current_trigger_player_id;
+	}
+	return 0;
 }
 
-static PlayerBitset combine_player_bitset(PlayerBitset a, PlayerBitset b) {
+static PlayerBitset player_bitset_combine(PlayerBitset a, PlayerBitset b) {
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		a.set[i] = a.set[i] || b.set[i];
 	}
 	return a;
+}
+
+static void player_bitset_set(PlayerBitset* bitset, u32 i, bool value, bool mask, bool negate) {
+	if (negate) {
+		value = !value;
+	}
+	if (value) {
+		if (!mask) {
+			bitset->set[i] = true;
+		}
+	} else if (mask) {
+		bitset->set[i] = false;
+	}
 }
 
 PlayerBitset parser_get_player_bitset(Parser* parser) {
@@ -408,93 +424,38 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	while (true) {
 		bool negate = parser_get_negation(parser);
 		s32 player = parser_get_player(parser);
+		s32 value = strtol(parser->token.data, 0, 10);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!negate) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				player_bitset_set(&current_bitset, i, true, mask, negate);
 			}
-		} else if (parser_eqi(parser, "f1")) {
+		} else if (value == 14) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				bool value = g_player_table[i].force == 1;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				player_bitset_set(&current_bitset, i, scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "f2")) {
+		} else if (value == 15) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				bool value = g_player_table[i].force == 2;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				player_bitset_set(&current_bitset, i, !scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "f3")) {
+		} else if (value == 16) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				bool value = g_player_table[i].force == 3;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 1, mask, negate);
 			}
-		} else if (parser_eqi(parser, "f4")) {
+		} else if (value == 17) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				bool value = g_player_table[i].force == 4;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 2, mask, negate);
 			}
-		} else if (player >= 0 && player <= PlayerLimit) {
-			if (!mask) {
-				if (negate) {
-					for (u32 i = 0; i < PlayerLimit; ++i) {
-						if (i != player) {
-							current_bitset.set[player] = true;
-						}
-					}
-				} else {
-					current_bitset.set[player] = true;
-				}
-			} else {
-				if (negate) {
-					current_bitset.set[player] = false;
-				} else {
-					for (u32 i = 0; i < PlayerLimit; ++i) {
-						if (i != player) {
-							current_bitset.set[player] = false;
-						}
-					}
-				}
+		} else if (value == 18) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 3, mask, negate);
+			}
+		} else if (value == 19) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
+			}
+		} else if (player) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				player_bitset_set(&current_bitset, i, i == player - 1, mask, negate);
 			}
 		}
 
@@ -503,10 +464,10 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			mask = true;
 		} else if (separator == '|') {
 			mask = false;
-			bitset = combine_player_bitset(bitset, current_bitset);
+			bitset = player_bitset_combine(bitset, current_bitset);
 			current_bitset = {};
 		} else {
-			bitset = combine_player_bitset(bitset, current_bitset);
+			bitset = player_bitset_combine(bitset, current_bitset);
 			parser_pop(parser);
 			break;
 		}
@@ -531,11 +492,24 @@ u32 parser_get_unit_id(Parser* parser) {
 	return UnitId::None;
 }
 
-static UnitIdBitset combine_unit_id_bitset(UnitIdBitset a, UnitIdBitset b) {
+static UnitIdBitset unit_id_bitset_combine(UnitIdBitset a, UnitIdBitset b) {
 	for (u32 i = 0; i < UnitId::Count; ++i) {
 		a.set[i] = a.set[i] || b.set[i];
 	}
 	return a;
+}
+
+static void unit_id_bitset_set(UnitIdBitset* bitset, u32 i, bool value, bool mask, bool negate) {
+	if (negate) {
+		value = !value;
+	}
+	if (value) {
+		if (!mask) {
+			bitset->set[i] = true;
+		}
+	} else if (mask) {
+		bitset->set[i] = false;
+	}
 }
 
 UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
@@ -547,185 +521,62 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 		s32 unit_id = parser_get_unit_id(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (!negate) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, true, mask, negate);
 			}
 		} else if (parser_eqi(parser, "men")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::group_flags[i].is_men;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_men, mask, negate);
 			}
 		} else if (parser_eqi(parser, "buildings")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::group_flags[i].is_building;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_building, mask, negate);
 			}
 		} else if (parser_eqi(parser, "factories")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::group_flags[i].is_factory;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_factory, mask, negate);
 			}
 		} else if (parser_eqi(parser, "tech")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = scbw::unit_id_is_tech(i);
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_tech(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "tech_tier")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = scbw::unit_id_is_tech_tier_structure(i);
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_tech_tier_structure(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::group_flags[i].is_terran;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_terran, mask, negate);
 			}
 		} else if (parser_eqi(parser, "protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::group_flags[i].is_protoss;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_protoss, mask, negate);
 			}
 		} else if (parser_eqi(parser, "zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::group_flags[i].is_zerg;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_zerg, mask, negate);
 			}
 		} else if (parser_eqi(parser, "combatant")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = false;
+				bool is_combatant = false;
 				u32 subunit_id = units_dat::SubUnit[i];
 				if (units_dat::GroundWeapon[i] != WeaponId::None || units_dat::GroundWeapon[subunit_id] != WeaponId::None) {
-					value = true;
+					is_combatant = true;
 				}
 				if (units_dat::AirWeapon[i] != WeaponId::None || units_dat::AirWeapon[subunit_id] != WeaponId::None) {
-					value = true;
+					is_combatant = true;
 				}
 				if (units_dat::base_property[i] & UnitProperty::Spellcaster) {
-					value = true;
+					is_combatant = true;
 				}
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, is_combatant, mask, negate);
 			}
 		} else if (parser_eqi(parser, "worker")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool value = units_dat::base_property[i] & UnitProperty::Worker;
-				if (negate) {
-					value = !value;
-				}
-				if (value) {
-					if (!mask) {
-						current_bitset.set[i] = true;
-					}
-				} else if (mask) {
-					current_bitset.set[i] = false;
-				}
+				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
 		} else if (unit_id != UnitId::None) {
-			if (!mask) {
-				if (negate) {
-					for (u32 i = 0; i < UnitId::Count; ++i) {
-						if (i != unit_id) {
-							current_bitset.set[i] = true;
-						}
-					}
-				} else {
-					current_bitset.set[unit_id] = true;
-				}
-			} else {
-				if (negate) {
-					current_bitset.set[unit_id] = false;
-				} else {
-					for (u32 i = 0; i < UnitId::Count; ++i) {
-						if (i != unit_id) {
-							current_bitset.set[i] = false;
-						}
-					}
-				}
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				unit_id_bitset_set(&current_bitset, i, i == unit_id, mask, negate);
 			}
 		}
 
@@ -734,10 +585,10 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			mask = true;
 		} else if (separator == '|') {
 			mask = false;
-			bitset = combine_unit_id_bitset(bitset, current_bitset);
+			bitset = unit_id_bitset_combine(bitset, current_bitset);
 			current_bitset = {};
 		} else {
-			bitset = combine_unit_id_bitset(bitset, current_bitset);
+			bitset = unit_id_bitset_combine(bitset, current_bitset);
 			parser_pop(parser);
 			break;
 		}

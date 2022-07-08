@@ -91,6 +91,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
 					f32 time = parser_get_time(&parser);
+					u32 player = parser_get_player(&parser);
 
 					for (u32 i = 0; i < PlayerLimit; ++i) {
 						if (!source_players.set[i]) {
