@@ -8,6 +8,10 @@ static bool is_any_space(char c) {
 	return isspace(c);
 }
 
+static bool is_separator(char c) {
+	return c == '|' || c == '&';
+}
+
 static u32 is_newline(char c) {
 	if (c == '\r' || c == '\n') {
 		return 2;
@@ -34,23 +38,23 @@ void parser_push(Parser* parser) {
 
 void parser_pop(Parser* parser) {
 	memset(&parser->token, 0, sizeof(parser->token));
-	if (parser->stack[parser->stack_index]) {
-		parser->at = parser->stack[parser->stack_index];
-		parser->stack_index -= 1;
-		if (parser->stack_index < 0) {
-			parser->stack_index = ParserStackSize - 1;
-		}
+	s32 new_index = parser->stack_index - 1;
+	if (new_index < 0) {
+		new_index = ParserStackSize - 1;
+	}
+	if (parser->stack[new_index]) {
+		parser->at = parser->stack[new_index];
+		parser->stack_index = new_index;
 	}
 }
 
 bool parser_get_word(Parser* parser) {
 	parser_push(parser);
-
 	if (!parser_skip_whitespace(parser)) {
 		return false;
 	}
 
-	while (*parser->at && !is_any_space(*parser->at)) {
+	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
 		if (parser->token.size < MaxToken - 1) {
 			parser->token.data[parser->token.size++] = *parser->at;
 		}
@@ -78,7 +82,6 @@ bool parser_get_command(Parser* parser) {
 
 Token parser_get_string(Parser* parser) {
 	parser_push(parser);
-
 	if (!parser_skip_whitespace(parser)) {
 		return parser->token;
 	}
@@ -94,7 +97,7 @@ Token parser_get_string(Parser* parser) {
 		}
 	} else {
 		while (*parser->at) {
-			if (is_any_space(*parser->at)) {
+			if (is_any_space(*parser->at) || is_separator(*parser->at)) {
 				break;
 			}
 
@@ -118,9 +121,35 @@ f32 parser_get_f32(Parser* parser) {
 	return strtof(parser->token.data, 0);
 }
 
+bool parser_get_negation(Parser* parser) {
+	parser_push(parser);
+	if (!parser_skip_whitespace(parser)) {
+		return false;
+	}
+
+	if (*parser->at == '!') {
+		++parser->at;
+		return true;
+	}
+	return false;
+}
+
+char parser_get_separator(Parser* parser) {
+	parser_push(parser);
+	if (!parser_skip_whitespace(parser)) {
+		return 0;
+	}
+
+	if (is_separator(*parser->at)) {
+		char separator = *parser->at;
+		++parser->at;
+		return separator;
+	}
+	return 0;
+}
+
 Box32 parser_get_location(Parser* parser) {
 	parser_push(parser);
-
 	if (!parser_skip_whitespace(parser)) {
 		return {};
 	}
@@ -173,7 +202,6 @@ Box32 parser_get_location(Parser* parser) {
 
 Point16 parser_get_position(Parser* parser) {
 	parser_push(parser);
-
 	if (!parser_skip_whitespace(parser)) {
 		return {};
 	}
@@ -265,46 +293,119 @@ u32 parser_get_player(Parser* parser) {
 	return *g_current_trigger_player_id;
 }
 
-PlayerBitset parser_get_player_bitset(Parser* parser) {
-	parser_push(parser);
+static PlayerBitset combine_player_bitset(PlayerBitset a, PlayerBitset b) {
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		a.set[i] = a.set[i] || b.set[i];
+	}
+	return a;
+}
 
+PlayerBitset parser_get_player_bitset(Parser* parser) {
+	bool mask = false;
 	PlayerBitset bitset = {};
+	PlayerBitset current_bitset = {};
 	while (true) {
+		bool negate = parser_get_negation(parser);
 		s32 player = parser_get_player(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				bitset.set[i] = true;
+				if (!negate) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
+				}
 			}
 		} else if (parser_eqi(parser, "f1")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (g_player_table[i].force == 1) {
-					bitset.set[i] = true;
+				bool value = g_player_table[i].force == 1;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "f2")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (g_player_table[i].force == 2) {
-					bitset.set[i] = true;
+				bool value = g_player_table[i].force == 2;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "f3")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (g_player_table[i].force == 3) {
-					bitset.set[i] = true;
+				bool value = g_player_table[i].force == 3;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "f4")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (g_player_table[i].force == 4) {
-					bitset.set[i] = true;
+				bool value = g_player_table[i].force == 4;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
-		} else {
-			bitset.set[player] = true;
+		} else if (player >= 0 && player <= PlayerLimit) {
+			if (!mask) {
+				if (negate) {
+					for (u32 i = 0; i < PlayerLimit; ++i) {
+						if (i != player) {
+							current_bitset.set[player] = true;
+						}
+					}
+				} else {
+					current_bitset.set[player] = true;
+				}
+			} else {
+				if (negate) {
+					current_bitset.set[player] = false;
+				} else {
+					for (u32 i = 0; i < PlayerLimit; ++i) {
+						if (i != player) {
+							current_bitset.set[player] = false;
+						}
+					}
+				}
+			}
 		}
 
-		parser_get_word(parser);
-		if (!parser_eq(parser, "|")) {
+		char separator = parser_get_separator(parser);
+		if (separator == '&') {
+			mask = true;
+		} else if (separator == '|') {
+			mask = false;
+			bitset = combine_player_bitset(bitset, current_bitset);
+			current_bitset = {};
+		} else {
+			bitset = combine_player_bitset(bitset, current_bitset);
 			parser_pop(parser);
 			break;
 		}
@@ -329,58 +430,213 @@ u32 parser_get_unit_id(Parser* parser) {
 	return UnitId::None;
 }
 
-UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
-	parser_push(parser);
+static UnitIdBitset combine_unit_id_bitset(UnitIdBitset a, UnitIdBitset b) {
+	for (u32 i = 0; i < UnitId::Count; ++i) {
+		a.set[i] = a.set[i] || b.set[i];
+	}
+	return a;
+}
 
+UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
+	bool mask = false;
 	UnitIdBitset bitset = {};
+	UnitIdBitset current_bitset = {};
 	while (true) {
+		bool negate = parser_get_negation(parser);
 		s32 unit_id = parser_get_unit_id(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bitset.set[i] = true;
+				if (!negate) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
+				}
 			}
 		} else if (parser_eqi(parser, "men")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (units_dat::group_flags[i].is_men) {
-					bitset.set[i] = true;
+				bool value = units_dat::group_flags[i].is_men;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "buildings")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (units_dat::group_flags[i].is_building) {
-					bitset.set[i] = true;
+				bool value = units_dat::group_flags[i].is_building;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "factories")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (units_dat::group_flags[i].is_factory) {
-					bitset.set[i] = true;
+				bool value = units_dat::group_flags[i].is_factory;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
+				}
+			}
+		} else if (parser_eqi(parser, "tech")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				bool value = scbw::unit_id_is_tech(i);
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
+				}
+			}
+		} else if (parser_eqi(parser, "tech_tier")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				bool value = scbw::unit_id_is_tech_tier_structure(i);
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (units_dat::group_flags[i].is_terran) {
-					bitset.set[i] = true;
+				bool value = units_dat::group_flags[i].is_terran;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (units_dat::group_flags[i].is_protoss) {
-					bitset.set[i] = true;
+				bool value = units_dat::group_flags[i].is_protoss;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
 		} else if (parser_eqi(parser, "zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				if (units_dat::group_flags[i].is_zerg) {
-					bitset.set[i] = true;
+				bool value = units_dat::group_flags[i].is_zerg;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
 				}
 			}
-		} else {
-			bitset.set[unit_id] = true;
+		} else if (parser_eqi(parser, "combatant")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				bool value = false;
+				u32 subunit_id = units_dat::SubUnit[i];
+				if (units_dat::GroundWeapon[i] != WeaponId::None || units_dat::GroundWeapon[subunit_id] != WeaponId::None) {
+					value = true;
+				}
+				if (units_dat::AirWeapon[i] != WeaponId::None || units_dat::AirWeapon[subunit_id] != WeaponId::None) {
+					value = true;
+				}
+				if (units_dat::base_property[i] & UnitProperty::Spellcaster) {
+					value = true;
+				}
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
+				}
+			}
+		} else if (parser_eqi(parser, "worker")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				bool value = units_dat::base_property[i] & UnitProperty::Worker;
+				if (negate) {
+					value = !value;
+				}
+				if (value) {
+					if (!mask) {
+						current_bitset.set[i] = true;
+					}
+				} else if (mask) {
+					current_bitset.set[i] = false;
+				}
+			}
+		} else if (unit_id != UnitId::None) {
+			if (!mask) {
+				if (negate) {
+					for (u32 i = 0; i < UnitId::Count; ++i) {
+						if (i != unit_id) {
+							current_bitset.set[i] = true;
+						}
+					}
+				} else {
+					current_bitset.set[unit_id] = true;
+				}
+			} else {
+				if (negate) {
+					current_bitset.set[unit_id] = false;
+				} else {
+					for (u32 i = 0; i < UnitId::Count; ++i) {
+						if (i != unit_id) {
+							current_bitset.set[i] = false;
+						}
+					}
+				}
+			}
 		}
 
-		parser_get_word(parser);
-		if (!parser_eq(parser, "|")) {
+		char separator = parser_get_separator(parser);
+		if (separator == '&') {
+			mask = true;
+		} else if (separator == '|') {
+			mask = false;
+			bitset = combine_unit_id_bitset(bitset, current_bitset);
+			current_bitset = {};
+		} else {
+			bitset = combine_unit_id_bitset(bitset, current_bitset);
 			parser_pop(parser);
 			break;
 		}
@@ -398,6 +654,9 @@ bool parser_has_recolor(Parser* parser) {
 
 Recolor parser_get_recolor(Parser* parser) {
 	parser_push(parser);
+	if (!parser_skip_whitespace(parser)) {
+		return {};
+	}
 
 	Recolor recolor = default_recolor();
 	if (!parser_skip_whitespace(parser)) {

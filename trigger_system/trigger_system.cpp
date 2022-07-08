@@ -12,13 +12,27 @@
 bool trigger_game_paused;
 bool trigger_system_init;
 bool trigger_system_in_game;
+
 bool has_custom_name[PlayerLimit];
+u32 trigger_kills[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
+u32 trigger_combat[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 
 static void init_trigger_system() {
 	trigger_system_init = true;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
 	memset(has_custom_name, 0, sizeof(has_custom_name));
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		for (u32 j = 0; j < UnitId::Count; ++j) {
+			for (u32 k = 0; k < PlayerLimit; ++k) {
+				for (u32 l = 0; l < UnitId::Count; ++l) {
+					trigger_kills [i][j][k][l] = 0;
+					trigger_combat[i][j][k][l] = UINT_MAX;
+				}
+			}
+		}
+	}
+
 	init_objectives();
 	init_music();
 	init_recolors();
@@ -46,6 +60,18 @@ void update_trigger_system(bool in_game) {
 	if (in_game && !paused) {
 		update_recolors();
 		update_spawn();
+
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 j = 0; j < UnitId::Count; ++j) {
+				for (u32 k = 0; k < PlayerLimit; ++k) {
+					for (u32 l = 0; l < UnitId::Count; ++l) {
+						if (trigger_combat[i][j][k][l] != UINT_MAX) {
+							trigger_combat[i][j][k][l]++;
+						}
+					}
+				}
+			}
+		}
 	}
 	trigger_game_paused = paused;
 }
@@ -58,17 +84,77 @@ b32 parse_comment_condition(TriggerAction* action) {
 		if (parser_eq(&parser, "condition")) {
 			if (parser_get_word(&parser)) {
 				if (parser_eq(&parser, "player_combat")) {
+					PlayerBitset source_players = parser_get_player_bitset(&parser);
+					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
+					PlayerBitset target_players = parser_get_player_bitset(&parser);
+					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
+					f32 time = parser_get_f32(&parser);
 
+					for (u32 i = 0; i < PlayerLimit; ++i) {
+						if (!source_players.set[i]) {
+							continue;
+						}
+						for (u32 j = 0; j < UnitId::Count; ++j) {
+							if (!source_unit_ids.set[j]) {
+								continue;
+							}
+							for (u32 k = 0; k < PlayerLimit; ++k) {
+								if (!target_players.set[k]) {
+									continue;
+								}
+								for (u32 l = 0; l < UnitId::Count; ++l) {
+									if (!target_unit_ids.set[l]) {
+										continue;
+									}
+									if (trigger_combat[i][j][k][l] <= time * 24) {
+										return true;
+									}
+								}
+							}
+						}
+					}
+					return false;
 				} else if (parser_eq(&parser, "player_kills")) {
-					
+					PlayerBitset source_players = parser_get_player_bitset(&parser);
+					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
+					PlayerBitset target_players = parser_get_player_bitset(&parser);
+					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
+					u32 kills = parser_get_s32(&parser);
+
+					u32 kill_count = 0;
+					for (u32 i = 0; i < PlayerLimit; ++i) {
+						if (!source_players.set[i]) {
+							continue;
+						}
+						for (u32 j = 0; j < UnitId::Count; ++j) {
+							if (!source_unit_ids.set[j]) {
+								continue;
+							}
+							for (u32 k = 0; k < PlayerLimit; ++k) {
+								if (!target_players.set[k]) {
+									continue;
+								}
+								for (u32 l = 0; l < UnitId::Count; ++l) {
+									if (!target_unit_ids.set[l]) {
+										continue;
+									}
+									kill_count += trigger_kills[i][j][k][l];
+								}
+							}
+						}
+					}
+
+					if (kill_count >= kills) {
+						return true;
+					}
+					return false;
 				} else if (parser_eq(&parser, "local_camera")) {
 					Box32 area = parser_get_location(&parser);
 					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&
 						*g_move_to_y + 200 >= area.y && *g_move_to_y + 200 <= area.y + area.h) {
 						return true;
-					} else {
-						return false;
 					}
+					return false;
 				}
 			}
 		}

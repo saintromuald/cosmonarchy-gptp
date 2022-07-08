@@ -26,7 +26,7 @@ struct UnitIdBitset {
 	bool set[UnitId::Count];
 };
 
-// Parser stack allows for unwinding trivial parser chunks like words, string, numbers. This does not work very well on complex types like bitsets, recolors, etc.
+// Parser stack allows for unwinding parser chunks like words, string, numbers. Currently doesn't work on bitsets, since they are recursively parsed
 void parser_push(Parser* parser);
 void parser_pop(Parser* parser);
 
@@ -36,6 +36,9 @@ Token parser_get_string(Parser* parser);
 
 s32 parser_get_s32(Parser* parser, u32 radix = 10);
 f32 parser_get_f32(Parser* parser);
+
+bool parser_get_negation(Parser* parser);
+char parser_get_separator(Parser* parser);
 
 Box32 parser_get_location(Parser* parser);
 Point16 parser_get_position(Parser* parser);

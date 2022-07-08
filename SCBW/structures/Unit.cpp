@@ -6,6 +6,7 @@
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
+#include "trigger_system/trigger_system.h"
 
 #include "math_utils.h"
 //-------- Unit stats and properties --------//
@@ -660,6 +661,11 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	unitExt->shield_regen_timer = 0;
 	unitExt->damage_receive_timer = 0;
 
+	if (attacker) {
+		trigger_combat[attacker->player][attacker->id][this->player][this->id] = 0;
+		trigger_combat[this->player][this->id][attacker->player][attacker->id] = 0;
+	}
+
 	__asm {
 		PUSHAD
 		PUSH notify_
@@ -669,6 +675,10 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		MOV ECX, this
 		CALL Func_DamageUnitHp
 		POPAD
+	}
+
+	if (attacker && this->is_dead()) {
+		trigger_kills[attacker->player][attacker->id][this->player][this->id]++;
 	}
 }
 
