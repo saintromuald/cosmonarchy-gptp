@@ -61,8 +61,6 @@ b32 parse_comment_condition(TriggerAction* action) {
 
 				} else if (parser_eq(&parser, "player_kills")) {
 					
-				} else if (parser_eq(&parser, "player_deaths")) {
-					
 				} else if (parser_eq(&parser, "local_camera")) {
 					Box32 area = parser_get_location(&parser);
 					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&

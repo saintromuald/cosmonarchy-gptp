@@ -265,6 +265,54 @@ u32 parser_get_player(Parser* parser) {
 	return *g_current_trigger_player_id;
 }
 
+PlayerBitset parser_get_player_bitset(Parser* parser) {
+	parser_push(parser);
+
+	PlayerBitset bitset = {};
+	while (true) {
+		s32 player = parser_get_player(parser);
+		if (parser_eq(parser, "*")) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				bitset.set[i] = true;
+			}
+		} else if (parser_eqi(parser, "f1")) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (g_player_table[i].force == 1) {
+					bitset.set[i] = true;
+				}
+			}
+		} else if (parser_eqi(parser, "f2")) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (g_player_table[i].force == 2) {
+					bitset.set[i] = true;
+				}
+			}
+		} else if (parser_eqi(parser, "f3")) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (g_player_table[i].force == 3) {
+					bitset.set[i] = true;
+				}
+			}
+		} else if (parser_eqi(parser, "f4")) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (g_player_table[i].force == 4) {
+					bitset.set[i] = true;
+				}
+			}
+		} else {
+			bitset.set[player] = true;
+		}
+
+		parser_get_word(parser);
+		if (!parser_eq(parser, "|")) {
+			parser_pop(parser);
+			break;
+		}
+	}
+
+	return bitset;
+}
+
 u32 parser_get_unit_id(Parser* parser) {
 	Token token = parser_get_string(parser);
 	for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -285,55 +333,59 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	parser_push(parser);
 
 	UnitIdBitset bitset = {};
-	if (*parser->at == '(') {
-		++parser->at;
-
-		while (*parser->at) {
-			u32 buffer_index = 0;
-			char buffer[MaxToken] = {};
-
-			if (is_newline(*parser->at)) {
-				break;
+	while (true) {
+		s32 unit_id = parser_get_unit_id(parser);
+		if (parser_eq(parser, "*")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				bitset.set[i] = true;
 			}
-
-			if (*parser->at == '|' || *parser->at == ')') {
-				if (stricmp(buffer, "*") == 0) {
-					for (u32 i = 0; i < UnitId::Count; ++i) {
-						bitset.set[i] = true;
-					}
-				} else {
-					bool set = false;
-					for (u32 i = 0; i < UnitId::Count; ++i) {
-						if (stricmp(buffer, get_short_unit_name(i).data) == 0) {
-							bitset.set[i] = true;
-							set = true;
-						}
-					}
-					if (!set) {
-						s32 unit_id = strtol(buffer, 0, 10);
-						if (unit_id >= 0 && unit_id < UnitId::Count) {
-							bitset.set[unit_id] = true;
-						}
-					}
+		} else if (parser_eqi(parser, "men")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (units_dat::group_flags[i].is_men) {
+					bitset.set[i] = true;
 				}
-
-				buffer_index = 0;
-				memset(buffer, 0, sizeof(buffer));
-
-				if (*parser->at == ')') {
-					++parser->at;
-					break;
+			}
+		} else if (parser_eqi(parser, "buildings")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (units_dat::group_flags[i].is_building) {
+					bitset.set[i] = true;
 				}
-			} else {
-				buffer[buffer_index++] = *parser->at; 
 			}
+		} else if (parser_eqi(parser, "factories")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (units_dat::group_flags[i].is_factory) {
+					bitset.set[i] = true;
+				}
+			}
+		} else if (parser_eqi(parser, "terran")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (units_dat::group_flags[i].is_terran) {
+					bitset.set[i] = true;
+				}
+			}
+		} else if (parser_eqi(parser, "protoss")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (units_dat::group_flags[i].is_protoss) {
+					bitset.set[i] = true;
+				}
+			}
+		} else if (parser_eqi(parser, "zerg")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (units_dat::group_flags[i].is_zerg) {
+					bitset.set[i] = true;
+				}
+			}
+		} else {
+			bitset.set[unit_id] = true;
+		}
 
-			if (parser->token.size < MaxToken - 1) {
-				parser->token.data[parser->token.size++] = *parser->at;
-			}
-			++parser->at;
+		parser_get_word(parser);
+		if (!parser_eq(parser, "|")) {
+			parser_pop(parser);
+			break;
 		}
 	}
+
 	return bitset;
 }
 
@@ -400,4 +452,9 @@ Point16 box_center(Box32 box) {
 bool parser_eq(Parser* parser, char* string) {
 	if (!string) return false;
 	return strcmp(parser->token.data, string) == 0;
+}
+
+bool parser_eqi(Parser* parser, char* string) {
+	if (!string) return false;
+	return stricmp(parser->token.data, string) == 0;
 }
