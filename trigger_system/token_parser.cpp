@@ -300,16 +300,28 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			}
 
 			if (*parser->at == '|' || *parser->at == ')') {
-				for (u32 i = 0; i < UnitId::Count; ++i) {
-					if (stricmp(buffer, get_short_unit_name(i).data) == 0) {
+				if (stricmp(buffer, "*") == 0) {
+					for (u32 i = 0; i < UnitId::Count; ++i) {
 						bitset.set[i] = true;
+					}
+				} else {
+					bool set = false;
+					for (u32 i = 0; i < UnitId::Count; ++i) {
+						if (stricmp(buffer, get_short_unit_name(i).data) == 0) {
+							bitset.set[i] = true;
+							set = true;
+						}
+					}
+					if (!set) {
+						s32 unit_id = strtol(buffer, 0, 10);
+						if (unit_id >= 0 && unit_id < UnitId::Count) {
+							bitset.set[unit_id] = true;
+						}
 					}
 				}
 
-				s32 unit_id = strtol(buffer, 0, 10);
-				if (unit_id >= 0 && unit_id < UnitId::Count) {
-					bitset.set[unit_id] = true;
-				}
+				buffer_index = 0;
+				memset(buffer, 0, sizeof(buffer));
 
 				if (*parser->at == ')') {
 					++parser->at;
