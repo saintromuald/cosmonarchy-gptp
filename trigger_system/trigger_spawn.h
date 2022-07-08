@@ -20,8 +20,8 @@ struct SpawnSequence {
 	u32 unit_id;
 	u32 player;
 	u32 type;
-	f32 delay;
-	f32 stagger;
+	u32 delay;
+	u32 stagger;
 	Point16 source_pos;
 	Point16 move_pos;
 };

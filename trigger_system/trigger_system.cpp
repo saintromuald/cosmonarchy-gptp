@@ -342,8 +342,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 player = parser_get_player(&parser);
 			Token old_race = parser_get_string(&parser);
 			Token new_race = parser_get_string(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 
 			for (u32 i = 0; i < UnitId::Count; ++i) {
+				if (!unit_ids.set[i]) {
+					continue;
+				}
 				if (!custom_unit_names[player][i].size) {
 					const char* default_name = Unit::get_name(i);
 					u32 len = strlen(default_name);
@@ -377,8 +381,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			sequence.unit_id = parser_get_unit_id(&parser);
 			sequence.player = parser_get_player(&parser);
 			sequence.type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
-			sequence.delay = parser_get_f32(&parser);
-			sequence.stagger = parser_get_f32(&parser);
+			sequence.delay = parser_get_f32(&parser) * 24;
+			sequence.stagger = parser_get_f32(&parser) * 24;
 			sequence.source_pos = parser_get_position(&parser);
 			sequence.move_pos = parser_get_position(&parser);
 			
