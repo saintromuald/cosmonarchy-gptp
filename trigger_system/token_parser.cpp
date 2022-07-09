@@ -437,18 +437,24 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 				player_bitset_set(&current_bitset, i, !scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 16) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 1, mask, negate);
-			}
+			// wasn't used in aise, but we can do something here later?
 		} else if (value == 17) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 2, mask, negate);
+				player_bitset_set(&current_bitset, i, true, mask, negate);
 			}
 		} else if (value == 18) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 3, mask, negate);
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 1, mask, negate);
 			}
 		} else if (value == 19) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 2, mask, negate);
+			}
+		} else if (value == 20) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				player_bitset_set(&current_bitset, i, g_player_table[i].force == 3, mask, negate);
+			}
+		} else if (value == 21) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
