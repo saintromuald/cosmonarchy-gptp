@@ -662,8 +662,14 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	unitExt->damage_receive_timer = 0;
 
 	if (attacker) {
-		trigger_combat[attacker->player][attacker->id][this->player][this->id] = 0;
-		trigger_combat[this->player][this->id][attacker->player][attacker->id] = 0;
+		trigger_combat[0][attacker->player][attacker->id][this->player][this->id] = 0;
+		trigger_combat[0][this->player][this->id][attacker->player][attacker->id] = 0;
+		for (u32 i = 0; i < 8; ++i) {
+			if (is_visible_to(i)) {
+				trigger_combat[i + 1][attacker->player][attacker->id][this->player][this->id] = 0;
+				trigger_combat[i + 1][this->player][this->id][attacker->player][attacker->id] = 0;
+			}
+		}
 	}
 
 	__asm {
@@ -677,8 +683,21 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		POPAD
 	}
 
-	if (attacker && this->is_dead()) {
-		trigger_kills[attacker->player][attacker->id][this->player][this->id]++;
+	if (this->is_dead()) {
+		trigger_deaths[0][this->player][this->id]++;
+		for (u32 i = 0; i < 8; ++i) {
+			if (is_visible_to(i)) {
+				trigger_deaths[i + 1][this->player][this->id]++;
+			}
+		}
+		if (attacker) {
+			trigger_kills[0][attacker->player][attacker->id][this->player][this->id]++;
+			for (u32 i = 0; i < 8; ++i) {
+				if (is_visible_to(i)) {
+					trigger_kills[i + 1][attacker->player][attacker->id][this->player][this->id]++;
+				}
+			}
+		}
 	}
 }
 

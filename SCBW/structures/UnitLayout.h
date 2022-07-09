@@ -11,6 +11,7 @@
 #pragma pack(1)
 
 #define PlayerLimit 8
+#define ScoutingPlayerLimit (PlayerLimit + 1)
 
 struct Image;
 struct Sprite;
@@ -396,6 +397,7 @@ struct UnitExt
 
 	u8						seen_by_flags;
 	Point16					last_seen_position[PlayerLimit];
+	u32						last_seen_timer[PlayerLimit];
 
 	f32						building_tick_progress;
 	f32						building_tick_last_progress;

@@ -15,8 +15,9 @@ bool trigger_system_in_game;
 
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
-u32 trigger_combat[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-u32 trigger_kills[PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
+u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
+u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
+u32 trigger_kills[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 
 static void init_trigger_system() {
 	trigger_system_init = true;
@@ -24,12 +25,15 @@ static void init_trigger_system() {
 
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		for (u32 j = 0; j < UnitId::Count; ++j) {
-			for (u32 k = 0; k < PlayerLimit; ++k) {
-				for (u32 l = 0; l < UnitId::Count; ++l) {
-					trigger_combat[i][j][k][l] = UINT_MAX;
-					trigger_kills [i][j][k][l] = 0;
+	memset(trigger_kills, 0, sizeof(trigger_kills));
+	memset(trigger_deaths, 0, sizeof(trigger_deaths));
+	for (u32 scouting_player = 0; scouting_player < ScoutingPlayerLimit; ++scouting_player) {
+		for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
+			for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
+				for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
+					for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
+						trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit] = UINT_MAX;
+					}
 				}
 			}
 		}
@@ -63,12 +67,14 @@ void update_trigger_system(bool in_game) {
 		update_recolors();
 		update_spawn();
 
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			for (u32 j = 0; j < UnitId::Count; ++j) {
-				for (u32 k = 0; k < PlayerLimit; ++k) {
-					for (u32 l = 0; l < UnitId::Count; ++l) {
-						if (trigger_combat[i][j][k][l] != UINT_MAX) {
-							trigger_combat[i][j][k][l]++;
+		for (u32 scouting_player = 0; scouting_player < ScoutingPlayerLimit; ++scouting_player) {
+			for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
+				for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
+					for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
+						for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
+							if (trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit] != UINT_MAX) {
+								trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit]++;
+							}
 						}
 					}
 				}
@@ -85,30 +91,31 @@ b32 parse_comment_condition(TriggerAction* action) {
 	while (parser_get_command(&parser)) {
 		if (parser_eq(&parser, "condition")) {
 			if (parser_get_word(&parser)) {
-				if (parser_eq(&parser, "player_combat")) {
+				if (parser_eq(&parser, "combat")) {
 					PlayerBitset source_players = parser_get_player_bitset(&parser);
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
 					f32 time = parser_get_time(&parser);
+					u32 scouting_player = parser_get_player(&parser);
 
-					for (u32 i = 0; i < PlayerLimit; ++i) {
-						if (!source_players.set[i]) {
+					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
+						if (!source_players.set[source_player]) {
 							continue;
 						}
-						for (u32 j = 0; j < UnitId::Count; ++j) {
-							if (!source_unit_ids.set[j]) {
+						for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
+							if (!source_unit_ids.set[source_unit]) {
 								continue;
 							}
-							for (u32 k = 0; k < PlayerLimit; ++k) {
-								if (!target_players.set[k]) {
+							for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
+								if (!target_players.set[target_player]) {
 									continue;
 								}
-								for (u32 l = 0; l < UnitId::Count; ++l) {
-									if (!target_unit_ids.set[l]) {
+								for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
+									if (!target_unit_ids.set[target_unit]) {
 										continue;
 									}
-									if (trigger_combat[i][j][k][l] <= time * 24) {
+									if (trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit] <= time * 24) {
 										return true;
 									}
 								}
@@ -116,40 +123,101 @@ b32 parse_comment_condition(TriggerAction* action) {
 						}
 					}
 					return false;
-				} else if (parser_eq(&parser, "player_kills")) {
+				} else if (parser_eq(&parser, "kills")) {
 					PlayerBitset source_players = parser_get_player_bitset(&parser);
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
-					u32 kills = parser_get_s32(&parser);
+					u32 quota = parser_get_s32(&parser);
+					u32 scouting_player = parser_get_player(&parser);
 
-					u32 kill_count = 0;
-					for (u32 i = 0; i < PlayerLimit; ++i) {
-						if (!source_players.set[i]) {
+					u32 count = 0;
+					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
+						if (!source_players.set[source_player]) {
 							continue;
 						}
-						for (u32 j = 0; j < UnitId::Count; ++j) {
-							if (!source_unit_ids.set[j]) {
+						for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
+							if (!source_unit_ids.set[source_unit]) {
 								continue;
 							}
-							for (u32 k = 0; k < PlayerLimit; ++k) {
-								if (!target_players.set[k]) {
+							for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
+								if (!target_players.set[target_player]) {
 									continue;
 								}
-								for (u32 l = 0; l < UnitId::Count; ++l) {
-									if (!target_unit_ids.set[l]) {
+								for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
+									if (!target_unit_ids.set[target_unit]) {
 										continue;
 									}
-									kill_count += trigger_kills[i][j][k][l];
+									count += trigger_kills[scouting_player][source_player][source_unit][target_player][target_unit];
 								}
 							}
 						}
 					}
 
-					if (kill_count >= kills) {
+					if (count >= quota) {
 						return true;
 					}
 					return false;
+				} else if (parser_eq(&parser, "deaths")) {
+					PlayerBitset players = parser_get_player_bitset(&parser);
+					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+					u32 quota = parser_get_s32(&parser);
+					u32 scouting_player = parser_get_player(&parser);
+
+					u32 count = 0;
+					for (u32 player = 0; player < PlayerLimit; ++player) {
+						if (!players.set[player]) {
+							continue;
+						}
+						for (u32 unit = 0; unit < UnitId::Count; ++unit) {
+							if (!unit_ids.set[unit]) {
+								continue;
+							}
+							count += trigger_deaths[scouting_player][player][unit];
+						}
+					}
+
+					if (count >= quota) {
+						return true;
+					}
+					return false;
+				} else if (parser_eq(&parser, "scouted")) {
+					u32 scouting_player = parser_get_player(&parser);
+					Box32 area = parser_get_area(&parser);
+					PlayerBitset players = parser_get_player_bitset(&parser);
+					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+					u32 quota = parser_get_s32(&parser);
+					f32 time_quota = parser_get_time(&parser);
+
+					if (scouting_player) {
+						scouting_player -= 1;
+
+						area.w += area.x;
+						area.h += area.y;
+						EntryArray units = seen_unit_search_rect(scouting_player, area);
+
+						u32 count = 0;
+						for (u32 i = 0; i < units.count; ++i) {
+							Unit* unit = units.units[i];
+							if (unit->player < PlayerLimit && unit->id < UnitId::Count) {
+								if (!players.set[unit->player]) {
+									continue;
+								}
+								if (!unit_ids.set[unit->id]) {
+									continue;
+								}
+								UnitExt* unit_ext = globals.get_unit_ext(unit);
+								if (!time_quota || unit_ext->last_seen_timer[scouting_player] < time_quota / 24) {
+									count++;
+								}
+							}
+						}
+
+						if (count >= quota) {
+							return true;
+						}
+						return false;
+					}
 				} else if (parser_eq(&parser, "local_camera")) {
 					Box32 area = parser_get_area(&parser);
 					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&
@@ -214,7 +282,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
 			current_playlist.shuffle = do_shuffle;
 		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
-			s32 player = parser_get_player(&parser);
+			u32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
 			if (player) {
 				player -= 1;
@@ -228,7 +296,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
-			s32 player = parser_get_player(&parser);
+			u32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
 			if (player) {
 				player -= 1;
@@ -330,7 +398,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "objectives_clear") && is_local_player) {
 			memset(&objectives, 0, sizeof(objectives));
 		} else if (parser_eq(&parser, "log_placeholder_requests") && is_local_player) {
-			s32 player = parser_get_player(&parser);
+			u32 player = parser_get_player(&parser);
 			s32 value = parser_get_s32(&parser);
 			if (player) {
 				player -= 1;

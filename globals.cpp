@@ -302,11 +302,13 @@ void Globals::aise_load(const char* ptr, u32 len)
 static void clear_unit_ext(int index)
 {
 	globals.unitExt[index] = {};
-	// this should set combat timer to highest u32,
-	// meaning every unit will start being out of combat
-	globals.unitExt[index].shield_regen_timer = -1;
-	globals.unitExt[index].damage_receive_timer = -1;
-	globals.unitExt[index].damage_dealt_timer = -1;
+	// every unit will starts being out of combat
+	globals.unitExt[index].shield_regen_timer = UINT_MAX;
+	globals.unitExt[index].damage_receive_timer = UINT_MAX;
+	globals.unitExt[index].damage_dealt_timer = UINT_MAX;
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		globals.unitExt[index].last_seen_timer[i] = UINT_MAX;
+	}
 }
 
 void Globals::reset()
@@ -428,16 +430,19 @@ void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 
 void Globals::frame_hook() {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) {
 		UnitExt* unit_ext = &unitExt[j];
-		if (unit_ext->shield_regen_timer != -1) { // don't increment past max value of u32
+		if (unit_ext->shield_regen_timer != UINT_MAX) {
 			++unit_ext->shield_regen_timer;
 		}
-		if (unit_ext->damage_receive_timer != -1) { // don't increment past max value of u32
+		if (unit_ext->damage_receive_timer != UINT_MAX) {
 			++unit_ext->damage_receive_timer;
 		}
-		if (unit_ext->damage_dealt_timer != -1) { // don't increment past max value of u32
+		if (unit_ext->damage_dealt_timer != UINT_MAX) {
 			++unit_ext->damage_dealt_timer;
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (unit_ext->last_seen_timer[i] != UINT_MAX) {
+				++unit_ext->last_seen_timer[i];
+			}
 			if (unit_ext->ai_timer_avoid_targeting[i]) {
 				unit_ext->ai_timer_avoid_targeting[i] -= 1;
 			}
