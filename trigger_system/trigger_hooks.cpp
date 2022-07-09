@@ -1,4 +1,5 @@
 #include "trigger_hooks.h"
+#include "trigger_system.h"
 #include "hook_tools.h"
 
 // HOOKS \\
@@ -45,7 +46,24 @@ s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
 }
 
 void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
-	helper::play_sound_at_pos(sound_id, image->parent_sprite->position, 1, 0);
+	bool replace = false;
+	for (u32 i = 0; i < sound_replacements_count; ++i) {
+		SoundReplacement* sound_replacement = &sound_replacements[i];
+		if ((sound_replacement->any_sound || sound_replacement->old_sound_id == sound_id) &&
+			sound_replacement->image_id  == image->id &&
+			sound_replacement->animation == image->animation &&
+			sound_replacement->player	 == image->parent_sprite->player) {
+			helper::play_sound_at_pos(sound_replacement->new_sound_id, image->parent_sprite->position, 1, 0);
+
+			if (sound_replacement->replace) {
+				replace = true;
+			}
+		}
+	}
+
+	if (!replace) {
+		helper::play_sound_at_pos(sound_id, image->parent_sprite->position, 1, 0);
+	}
 }
 
 // HOOK INJECTION \\

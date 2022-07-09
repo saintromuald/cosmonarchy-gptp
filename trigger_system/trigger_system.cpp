@@ -13,6 +13,9 @@ bool trigger_game_paused;
 bool trigger_system_init;
 bool trigger_system_in_game;
 
+u32 sound_replacements_count;
+SoundReplacement sound_replacements[SoundReplacementCap];
+
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
@@ -22,6 +25,9 @@ u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
 static void init_trigger_system() {
 	trigger_system_init = true;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
+
+	sound_replacements_count = 0;
+	memset(sound_replacements, 0, sizeof(sound_replacements));
 
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
@@ -425,6 +431,23 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				for (u32 i = 0; i < UnitId::Count; ++i) {
 					custom_unit_names[player][i] = {};
+				}
+			}
+		} else if (parser_eq(&parser, "replace_sound") && is_local_player) {
+			SoundReplacement sound_replacement = {};
+			sound_replacement.player = parser_get_player(&parser);
+			sound_replacement.image_id = parser_get_s32(&parser);
+			sound_replacement.animation = parser_get_s32(&parser);
+			sound_replacement.old_sound_id = parser_get_s32(&parser);
+			if (parser_eq(&parser, "*")) {
+				sound_replacement.any_sound = true;
+			}
+			sound_replacement.new_sound_id = parser_get_s32(&parser);
+			sound_replacement.replace = parser_get_s32(&parser);
+			if (sound_replacement.player) {
+				sound_replacement.player -= 1;
+				if (sound_replacements_count < SoundReplacementCap) {
+					sound_replacements[sound_replacements_count++] = sound_replacement;
 				}
 			}
 		// Gameplay Actions
