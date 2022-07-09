@@ -117,12 +117,12 @@ namespace hooks
 				{
 					// 0046F161
 					// if the unit sprite is visible, perform additionnal visibility test, else skip the unit
-					if (current_unit->sprite->visibility_flags & (u8)*VISIBILITY_CHECK_0057F0B0)
+					if (current_unit->sprite->visibility_status & (u8)*VISIBILITY_CHECK_0057F0B0)
 					{
 						// if the unit is cloaked and visibility status test (detection by detectors units probably) fail, the unit is skipped
 						if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 						{
-							if (!(current_unit->visibility_status & *VISIBILITY_CHECK_0057F0B0))
+							if (!(current_unit->detection_status & *VISIBILITY_CHECK_0057F0B0))
 							{
 								dontAddToList = true;
 							}

@@ -164,43 +164,44 @@ b32 parse_comment_condition(TriggerAction* action) {
 						return true;
 					}
 					return false;
-				} else if (parser_eq(&parser, "scouted")) {
-					u32 scouting_player = parser_get_player(&parser);
+				} else if (parser_eq(&parser, "unit_count")) {
 					Box32 area = parser_get_area(&parser);
 					PlayerBitset players = parser_get_player_bitset(&parser);
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 					u32 quota = parser_get_s32(&parser);
-					f32 time_quota = parser_get_time(&parser);
+					u32 scouting_player = parser_get_player(&parser);
+					f32 scouting_time_quota = parser_get_time(&parser);
 
+					area.w += area.x;
+					area.h += area.y;
+					EntryArray units = {};
 					if (scouting_player) {
-						scouting_player -= 1;
+						units = seen_unit_search_rect(scouting_player - 1, area);
+					} else {
+						units = unit_search_rect(area);
+					}
 
-						area.w += area.x;
-						area.h += area.y;
-						EntryArray units = seen_unit_search_rect(scouting_player, area);
-
-						u32 count = 0;
-						for (u32 i = 0; i < units.count; ++i) {
-							Unit* unit = units.units[i];
-							if (unit->player < PlayerLimit && unit->id < UnitId::Count) {
-								if (!players.set[unit->player]) {
-									continue;
-								}
-								if (!unit_ids.set[unit->id]) {
-									continue;
-								}
-								UnitExt* unit_ext = globals.get_unit_ext(unit);
-								if (!time_quota || unit_ext->last_seen_timer[scouting_player] < time_quota / 24) {
-									count++;
-								}
+					u32 count = 0;
+					for (u32 i = 0; i < units.count; ++i) {
+						Unit* unit = units.units[i];
+						if (unit->player < PlayerLimit && unit->id < UnitId::Count) {
+							if (!players.set[unit->player]) {
+								continue;
+							}
+							if (!unit_ids.set[unit->id]) {
+								continue;
+							}
+							UnitExt* unit_ext = globals.get_unit_ext(unit);
+							if (!scouting_player || !scouting_time_quota || unit_ext->last_seen_timer[scouting_player - 1] < scouting_time_quota / 24) {
+								count++;
 							}
 						}
-
-						if (count >= quota) {
-							return true;
-						}
-						return false;
 					}
+
+					if (count >= quota) {
+						return true;
+					}
+					return false;
 				} else if (parser_eq(&parser, "local_camera")) {
 					Box32 area = parser_get_area(&parser);
 					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&

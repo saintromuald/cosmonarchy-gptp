@@ -878,7 +878,7 @@ namespace hooks
 		}
 
 		s32 unitStatus = _pIterator->status;
-		if (unitStatus & 0x300 && !((1 << pSrc->player) & _pIterator->visibility_status))
+		if (unitStatus & 0x300 && !((1 << pSrc->player) & _pIterator->detection_status))
 		{
 			return 0;
 		}

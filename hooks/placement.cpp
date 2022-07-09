@@ -73,7 +73,7 @@ namespace hooks
                     continue;
                 }
                 if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
-                    if (!(other_unit->visibility_status & (1 << builder->player))) {
+                    if (!(other_unit->detection_status & (1 << builder->player))) {
                         needs_detection = true;
                     }
                 }

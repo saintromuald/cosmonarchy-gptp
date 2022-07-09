@@ -62,7 +62,7 @@ namespace hooks
 			|| (s16)unitFlags == UnitId::Special_RightWallMissileTrap
 			|| (s16)unitFlags == UnitId::Special_RightWallFlameTrap) {
 			pUnit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
-				pUnit->visibility_status = 0x80000000;
+				pUnit->detection_status = 0x80000000;
 				ByteOperations::SetLowByte(pUnit->secondary_order_timer, 0);
 			}*/
 		}
@@ -158,7 +158,7 @@ namespace hooks
 		|| v4 == UnitId::Special_RightWallMissileTrap
 		|| v4 == UnitId::Special_RightWallFlameTrap) {
 			v1->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
-			v1->visibility_status = 0x80000000;
+			v1->detection_status = 0x80000000;
 			ByteOperations::SetLowByte(v1->secondary_order_timer, 0);
 		}*/
 		v5 = g_player_table[(u8)v1->player].type;

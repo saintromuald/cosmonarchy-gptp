@@ -1275,7 +1275,7 @@ namespace scbw
 		{
 			if (unitExt->timers[TimerDecloak] == 0)
 			{
-				unit->visibility_status = 0xff;
+				unit->detection_status = 0xff;
 				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
 			if (unitExt->timers[TimerDecloak] != 1)
@@ -2503,7 +2503,7 @@ namespace scbw
 			Sprite* sprite = unit->sprite;
 			fprintf(file, "Sprite");
 			fprintf(file, "\tSprite Id: %u", (u32)sprite->sprite_id);
-			fprintf(file, "\tVisibility: %u", (u32)sprite->visibility_flags);
+			fprintf(file, "\tVisibility: %u", (u32)sprite->visibility_status);
 		}
 		fclose(file);
 	}

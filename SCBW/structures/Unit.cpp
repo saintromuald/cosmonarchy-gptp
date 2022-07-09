@@ -1422,7 +1422,7 @@ bool Unit::is_target_enemy(Unit* target) const
 bool Unit::is_visible_to(u8 player) const
 {
 	assert(this);
-	return (this->visibility_status & (1 << player)) != 0;
+	return this->detection_status & (1 << player) && this->sprite && this->sprite->visibility_status & (1 << player);
 }
 
 const u32 Func_UpdateSpeed = 0x00454310;

@@ -298,7 +298,7 @@ namespace hooks
 				{
 					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building)
 					{
-						unit->sprite->visibility_flags |= reveal_flag;
+						unit->sprite->visibility_status |= reveal_flag;
 					}
 				}
 			}
@@ -461,11 +461,12 @@ namespace hooks
 		}
 
 		UnitExt* unitExt = globals.get_unit_ext(unit);
-		if (!unit_is_hidden) {
-			unitExt->seen_by_flags |= unit->visibility_status;
+		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (unit->is_visible_to(i)) {
+					unitExt->seen_by_flags |= (1 << i);
 					unitExt->last_seen_position[i] = unit->position;
+					unitExt->last_seen_timer[i] = 0;
 				}
 			}
 		}
@@ -1516,7 +1517,7 @@ namespace hooks
 		// Fix target clearing bug
 		/*
 		if (unit->order_target.unit
-			&& !(unit->order_target.unit->visibility_status & (1 << unit->player)))
+			&& !(unit->order_target.unit->detection_status & (1 << unit->player)))
 		{
 			scbw::print("lard");
 			unit->order_to_idle();
@@ -1973,7 +1974,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->visibility_status = 0xff;
+				unit->detection_status = 0xff;
 				helper::update_visibility(unit); // didact cloak needs special handling
 			}
 		}

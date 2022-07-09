@@ -488,7 +488,7 @@ LABEL_42:
 
 	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
 	{
-		return target->status & 0x300 && !((1 << unit->player) & target->visibility_status);
+		return target->status & 0x300 && !((1 << unit->player) & target->detection_status);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
@@ -502,9 +502,9 @@ LABEL_42:
 		}
 
 		u32 result;
-		if (target->status & 0x300 && !((1 << unit->player) & target->visibility_status))
+		if (target->status & 0x300 && !((1 << unit->player) & target->detection_status))
 		{
-			result = (u8)(playerUnit & target->sprite->visibility_flags);
+			result = (u8)(playerUnit & target->sprite->visibility_status);
 		}
 		else
 		{
@@ -529,7 +529,7 @@ LABEL_42:
 
 		if (unit->status & 0x300)
 		{
-			result = (u8)(playerUnit & target->sprite->visibility_flags);
+			result = (u8)(playerUnit & target->sprite->visibility_status);
 		}
 		else
 		{
@@ -540,7 +540,7 @@ LABEL_42:
 
 	void updateUnitVisibility(Unit* unit)
 	{
-		if (*player_visions & unit->visibility_status)
+		if (*player_visions & unit->detection_status)
 		{
 			helper::make_sprite_visible(unit->sprite);
 			Unit* subunit = unit->subunit;
@@ -553,7 +553,7 @@ LABEL_42:
 		{
 			if (unit->sprite->flags & SpriteFlags::Selected)
 			{
-				helper::update_building_land_unit_selection(unit->visibility_status, unit);
+				helper::update_building_land_unit_selection(unit->detection_status, unit);
 			}
 			helper::remove_selection_circle(unit->sprite);
 			helper::make_sprite_invisible(unit->sprite);
@@ -569,14 +569,14 @@ LABEL_42:
 	void check_unit_visibility(Unit* unit) // 00443390
 	{
 		u32 detectingPlayers = helper::get_detecting_players(unit);
-		if (unit->visibility_status != detectingPlayers)
+		if (unit->detection_status != detectingPlayers)
 		{
-			if (unit->visibility_status == 0x80000000)
+			if (unit->detection_status == 0x80000000)
 			{
-				unit->visibility_status = ~(u8)detectingPlayers;
+				unit->detection_status = ~(u8)detectingPlayers;
 			}
-			u32 v6 = unit->visibility_status ^ detectingPlayers;
-			unit->visibility_status = detectingPlayers;
+			u32 v6 = unit->detection_status ^ detectingPlayers;
+			unit->detection_status = detectingPlayers;
 
 			u32 v5 = v6 & ~detectingPlayers;
 			if (v5)

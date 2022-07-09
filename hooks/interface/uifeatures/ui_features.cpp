@@ -336,10 +336,10 @@ LABEL_15:
 					goto next;
 				}
 
-				u32 visibility = unit->sprite->visibility_flags;
+				u32 visibility = unit->sprite->visibility_status;
 				u32 unit_status = unit->status;
 				if (unit_status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
-					visibility &= unit->visibility_status;
+					visibility &= unit->detection_status;
 				}
 				checksum ^= visibility;
 				if (*g_minimap_draw_neutrals) {
