@@ -2502,18 +2502,16 @@ namespace helper
 		return thingy;
 	}
 
-	void playSoundAtPos(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2)
+	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play, u32 min_volume)
 	{
 		const u32 Func_playUnitSFX = 0x0048EC10;
-		static Point16 pos;
-		pos.x = x; pos.y = y;
 		__asm
 		{
 			PUSHAD
-			PUSH unk2
-			PUSH unk1
+			PUSH min_volume
+			PUSH bool_play
 			PUSH pos
-			MOV EBX, soundId
+			MOV EBX, sound_id
 			CALL Func_playUnitSFX
 			POPAD
 		}

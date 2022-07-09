@@ -44,6 +44,10 @@ s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
 	return true;
 }
 
+void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
+	helper::play_sound_at_pos(sound_id, image->parent_sprite->position, 1, 0);
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -61,6 +65,22 @@ void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
 	}
 }
 
+void __declspec(naked) iscript_play_sound_wrapper() { // 004D6610
+	static Image* image;
+	static u32 sound_id;
+	__asm {
+		MOV sound_id, EBX
+		MOV image, EAX
+		PUSHAD
+	}
+	iscript_play_sound(image, sound_id);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 void inject_trigger_system_hooks() {
-	jump_patch(execute_trigger_conditions_wrapper, 0x00489200, 1);
+	jump_patch(execute_trigger_conditions_wrapper,	0x00489200, 1);
+	jump_patch(iscript_play_sound_wrapper,			0x004D6610, 2);
 }

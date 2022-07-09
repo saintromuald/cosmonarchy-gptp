@@ -175,8 +175,8 @@ namespace hooks
 					sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
 					sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
 				}
-				helper::playSoundAtPos(sound_id_source, unit->position.x, unit->position.y, 1, 0);
-				helper::playSoundAtPos(sound_id_target, unit->order_target.pt.x, unit->order_target.pt.y, 1, 0);
+				helper::play_sound_at_pos(sound_id_source, unit->position, 1, 0);
+				helper::play_sound_at_pos(sound_id_target, unit->order_target.pt, 1, 0);
 
 				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
