@@ -435,7 +435,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			SpawnSequence sequence = {};
 			sequence.count = parser_get_s32(&parser);
 			sequence.unit_id = parser_get_unit_id(&parser);
-			sequence.player = parser_get_player(&parser);
+			sequence.player = parser_get_player(&parser, true);
 			sequence.type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
 			sequence.delay = parser_get_time(&parser) * 24;
 			sequence.stagger = parser_get_time(&parser) * 24;

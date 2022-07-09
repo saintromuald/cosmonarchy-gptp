@@ -46,7 +46,7 @@ u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);
 bool parser_get_negation(Parser* parser);
 char parser_get_separator(Parser* parser);
 
-u32 parser_get_player(Parser* parser); // 1 - 8
+u32 parser_get_player(Parser* parser, bool allow_neutral = false); // 1 - 8
 PlayerBitset parser_get_player_bitset(Parser* parser);
 
 u32 parser_get_unit_id(Parser* parser);

@@ -386,9 +386,9 @@ char parser_get_separator(Parser* parser) {
 	return 0;
 }
 
-u32 parser_get_player(Parser* parser) {
+u32 parser_get_player(Parser* parser, bool allow_neutral) {
 	u32 player = parser_get_s32(parser);
-	if (player <= 8 || player == 12) {
+	if (player <= 8 || (allow_neutral && player == 12)) {
 		return player;
 	}
 	if (player == 13) {
