@@ -16,8 +16,8 @@ bool trigger_system_in_game;
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
 u32 trigger_kills[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
+u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
 
 static void init_trigger_system() {
 	trigger_system_init = true;
@@ -25,19 +25,9 @@ static void init_trigger_system() {
 
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
+	memset(trigger_combat, 0, sizeof(trigger_combat));
 	memset(trigger_kills, 0, sizeof(trigger_kills));
 	memset(trigger_deaths, 0, sizeof(trigger_deaths));
-	for (u32 scouting_player = 0; scouting_player < ScoutingPlayerLimit; ++scouting_player) {
-		for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
-			for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
-				for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
-					for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
-						trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit] = UINT_MAX;
-					}
-				}
-			}
-		}
-	}
 
 	init_objectives();
 	init_music();
@@ -66,20 +56,6 @@ void update_trigger_system(bool in_game) {
 	if (in_game && !paused) {
 		update_recolors();
 		update_spawn();
-
-		for (u32 scouting_player = 0; scouting_player < ScoutingPlayerLimit; ++scouting_player) {
-			for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
-				for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
-					for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
-						for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
-							if (trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit] != UINT_MAX) {
-								trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit]++;
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 	trigger_game_paused = paused;
 }
@@ -96,7 +72,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
-					f32 time = parser_get_time(&parser);
+					f32 time_quota = parser_get_time(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
 					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
@@ -115,7 +91,8 @@ b32 parse_comment_condition(TriggerAction* action) {
 									if (!target_unit_ids.set[target_unit]) {
 										continue;
 									}
-									if (trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit] <= time * 24) {
+									u32 combat = trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit];
+									if (combat && *g_elapsed_time_frames - combat <= time_quota * 24) {
 										return true;
 									}
 								}
@@ -296,11 +273,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
-			u32 player = parser_get_player(&parser);
+			u32 force = parser_get_s32(&parser);
 			Token name = parser_get_string(&parser);
-			if (player) {
-				player -= 1;
-				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
+			if (force) {
+				force -= 1;
+				snprintf(g_player_name_list->player[force].force_name, sizeof(g_player_name_list->player[force].force_name),
 					"%s", name.data);
 			}
 		} else if (parser_eq(&parser, "recolor") && is_local_player) {

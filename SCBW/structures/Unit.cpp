@@ -662,12 +662,12 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	unitExt->damage_receive_timer = 0;
 
 	if (attacker) {
-		trigger_combat[0][attacker->player][attacker->id][this->player][this->id] = 0;
-		trigger_combat[0][this->player][this->id][attacker->player][attacker->id] = 0;
+		trigger_combat[0][attacker->player][attacker->id][this->player][this->id] = *g_elapsed_time_frames;
+		trigger_combat[0][this->player][this->id][attacker->player][attacker->id] = *g_elapsed_time_frames;
 		for (u32 i = 0; i < 8; ++i) {
 			if (is_visible_to(i)) {
-				trigger_combat[i + 1][attacker->player][attacker->id][this->player][this->id] = 0;
-				trigger_combat[i + 1][this->player][this->id][attacker->player][attacker->id] = 0;
+				trigger_combat[i + 1][attacker->player][attacker->id][this->player][this->id] = *g_elapsed_time_frames;
+				trigger_combat[i + 1][this->player][this->id][attacker->player][attacker->id] = *g_elapsed_time_frames;
 			}
 		}
 	}

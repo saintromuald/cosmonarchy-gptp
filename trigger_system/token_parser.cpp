@@ -423,8 +423,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	PlayerBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		s32 player = parser_get_player(parser);
-		s32 value = strtol(parser->token.data, 0, 10);
+		s32 value = parser_get_s32(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, true, mask, negate);
@@ -453,10 +452,14 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
-		} else if (player) {
-			player -= 1;
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, i == player, mask, negate);
+		} else {
+			parser_pop(parser);
+			s32 player = parser_get_player(parser);
+			if (player) {
+				player -= 1;
+				for (u32 i = 0; i < PlayerLimit; ++i) {
+					player_bitset_set(&current_bitset, i, i == player, mask, negate);
+				}
 			}
 		}
 
@@ -519,7 +522,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	UnitIdBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		s32 unit_id = parser_get_unit_id(parser);
+		parser_get_word(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, true, mask, negate);
@@ -575,9 +578,13 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
-		} else if (unit_id != UnitId::None) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, i == unit_id, mask, negate);
+		} else {
+			parser_pop(parser);
+			s32 unit_id = parser_get_unit_id(parser);
+			if (unit_id != UnitId::None) {
+				for (u32 i = 0; i < UnitId::Count; ++i) {
+					unit_id_bitset_set(&current_bitset, i, i == unit_id, mask, negate);
+				}
 			}
 		}
 
