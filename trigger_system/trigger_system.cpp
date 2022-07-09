@@ -273,11 +273,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
-			u32 force = parser_get_s32(&parser);
+			u32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
-			if (force) {
-				force -= 1;
-				snprintf(g_player_name_list->player[force].force_name, sizeof(g_player_name_list->player[force].force_name),
+			if (player) {
+				player -= 1;
+				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
 					"%s", name.data);
 			}
 		} else if (parser_eq(&parser, "recolor") && is_local_player) {
