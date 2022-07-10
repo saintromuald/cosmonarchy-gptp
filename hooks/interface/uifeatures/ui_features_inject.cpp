@@ -236,6 +236,6 @@ namespace hooks
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
 
 		// Allow units in fow (seems to desync)
-		//jump_patch(show_fow_unit_check_wrapper, 0x004EBE88, 2);
+		jump_patch(show_fow_unit_check_wrapper, 0x004EBE88, 2);
 	}
 }
