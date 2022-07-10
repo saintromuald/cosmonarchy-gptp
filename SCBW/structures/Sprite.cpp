@@ -3,6 +3,7 @@
 #include "../scbwdata.h"
 #include <algorithm>
 #include <cassert>
+#include "data_ext.h"
 
 // Functionally identical to play_sprite_iscript() (offset 0x00499D00)
 void Sprite::play_iscript_animation(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
@@ -22,6 +23,8 @@ void Sprite::play_iscript_animation(IscriptAnimation::Enum animation, bool bRepl
 void Sprite::free()
 {
 	assert(this);
+
+	remove_sprite_ext(this);
 
 	Image* image = this->images.head;
 	s32 sprite_row_position;
@@ -63,12 +66,12 @@ void Sprite::free()
 	}
 
 	//untie the sprite from the previous and next one
-	if (this->link.prev != nullptr)
+	if (this->link.prev)
 	{
 		(this->link.prev)->link.next = this->link.next;
 	}
 
-	if (this->link.next != nullptr)
+	if (this->link.next)
 	{
 		(this->link.next)->link.prev = this->link.prev;
 	}

@@ -201,7 +201,7 @@ namespace hooks
 			hooks::initalize_screen_locations();
 			hooks::clear_actions();
 			globals.reset();
-			reset_ext_variables();
+			init_ext_variables();
 
 			for (s32 i = 0; i < 8; i++) {
 				scbw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly

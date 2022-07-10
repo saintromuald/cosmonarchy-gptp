@@ -1,5 +1,6 @@
 #include "ui_features.h"
 #include "hook_tools.h"
+#include "data_ext.h"
 
 namespace
 {
@@ -219,6 +220,71 @@ namespace
 			JMP jmp_fail
 		}
 	}
+
+	bool include_sprite_in_vischeck(Sprite* sprite) {
+		SpriteExt* sprite_ext = get_sprite_ext(sprite);
+		if (sprite_ext->is_fow_sprite) {
+			return false;
+		}
+		return true;
+	}
+	
+	void __declspec(naked) include_sprite_in_vischeck_wrapper() {
+		static const u32 jmp_address = 0x00497C72;
+		static Sprite* sprite;
+		__asm {
+			MOV sprite, EAX
+			PUSHAD
+		}
+		if (include_sprite_in_vischeck(sprite)) {
+			__asm {
+				POPAD
+				MOV DL, [EAX+0x0C]
+				XOR [ECX], DL
+				JMP jmp_address
+			}
+		}
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+	
+	void create_fow_sprite_partial(Thingy* thingy, Sprite* sprite) {
+		thingy->unit_id = 1; // Original functionality replaced by the jump patch
+
+		SpriteExt* sprite_ext = get_sprite_ext(sprite);
+		sprite_ext->is_fow_sprite = true;
+	}
+
+	void __declspec(naked) create_fow_sprite_partial_wrapper() {
+		static const u32 jmp_address = 0x00488474;
+		static Thingy* thingy;
+		static Sprite* sprite;
+		__asm {
+			MOV thingy, ESI
+			MOV sprite, EAX
+			PUSHAD
+		}
+		create_fow_sprite_partial(thingy, sprite);
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
+	void __declspec(naked) sprite_destructor_wrapper() {
+		static Sprite* sprite;
+		__asm {
+			MOV sprite, EDI
+			PUSHAD
+		}
+		sprite->free();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -236,6 +302,9 @@ namespace hooks
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
 
 		// Allow units in fow (seems to desync)
-		jump_patch(show_fow_unit_check_wrapper, 0x004EBE88, 2);
+		jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites
+		jump_patch(include_sprite_in_vischeck_wrapper,		0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
+		jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in sprite ext
+		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Needed to clear sprite ext on sprite destruction
 	}
 }
