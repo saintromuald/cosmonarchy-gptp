@@ -237,12 +237,12 @@ namespace
 			PUSHAD
 		}
 		if (include_sprite_in_vischeck(sprite)) {
-			__asm {
-				POPAD
-				MOV DL, [EAX+0x0C]
-				XOR [ECX], DL
-				JMP jmp_address
-			}
+			//__asm {
+			//	POPAD
+			//	MOV DL, [EAX+0x0C]
+			//	XOR [ECX], DL
+			//	JMP jmp_address
+			//}
 		}
 		__asm {
 			POPAD
