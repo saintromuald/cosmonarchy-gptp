@@ -26,6 +26,17 @@ struct UnitIdBitset {
 	bool set[UnitId::Count];
 };
 
+enum QuotaType {
+	QuotaType_Greater,
+	QuotaType_Less,
+	QuotaType_GreaterOrEqual,
+	QuotaType_LessOrEqual,
+	QuotaType_Equal,
+	QuotaType_NotEqual,
+
+	QuotaType_Count
+};
+
 // Parser stack allows for unwinding parser chunks like words, string, numbers. Currently doesn't work on bitsets, since they are recursively parsed
 void parser_push(Parser* parser);
 void parser_pop(Parser* parser);
@@ -51,6 +62,9 @@ PlayerBitset parser_get_player_bitset(Parser* parser);
 
 u32 parser_get_unit_id(Parser* parser);
 UnitIdBitset parser_get_unit_id_bitset(Parser* parser);
+
+QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type);
+bool check_quota(QuotaType type, s32 quota, s32 value);
 
 bool parser_has_recolor(Parser* parser);
 Recolor parser_get_recolor(Parser* parser);

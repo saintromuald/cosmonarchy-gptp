@@ -611,6 +611,44 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	return bitset;
 }
 
+QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
+	parser_push(parser);
+	if (!parser_skip_whitespace(parser)) {
+		return default_type;
+	}
+
+	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=') {
+		char op = *parser->at;
+		++parser->at;
+
+		bool equals = false;
+		if (*parser->at == '=') {
+			equals = true;
+			++parser->at;
+		}
+
+		switch (op) {
+			case '>': return equals ? QuotaType_GreaterOrEqual : QuotaType_Greater; break;
+			case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less; break;
+			case '=': return QuotaType_Equal; break;
+			case '!': return QuotaType_NotEqual; break;
+		}
+	}
+	return default_type;
+}
+
+bool check_quota(QuotaType type, s32 quota, s32 value) {
+	switch (type) {
+		case QuotaType_Greater:			return value >  quota;
+		case QuotaType_Less:			return value <  quota;
+		case QuotaType_GreaterOrEqual:	return value >= quota;
+		case QuotaType_LessOrEqual:		return value <= quota;
+		case QuotaType_Equal:			return value == quota; 
+		case QuotaType_NotEqual:		return value != quota; 
+	}
+	return false;
+}
+
 bool parser_has_recolor(Parser* parser) {
 	if (!parser_skip_whitespace(parser)) {
 		return false;

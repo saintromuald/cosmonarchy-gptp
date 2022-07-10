@@ -78,6 +78,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
+					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
 					f32 time_quota = parser_get_time(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
@@ -98,7 +99,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 										continue;
 									}
 									u32 combat = trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit];
-									if (combat && *g_elapsed_time_frames - combat <= time_quota * 24) {
+									if (combat && check_quota(time_quota_type, time_quota * 24, *g_elapsed_time_frames - combat)) {
 										return true;
 									}
 								}
@@ -111,6 +112,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
@@ -137,13 +139,14 @@ b32 parse_comment_condition(TriggerAction* action) {
 						}
 					}
 
-					if (count >= quota) {
+					if (check_quota(quota_type, quota, count)) {
 						return true;
 					}
 					return false;
 				} else if (parser_eq(&parser, "deaths")) {
 					PlayerBitset players = parser_get_player_bitset(&parser);
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
@@ -160,7 +163,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 						}
 					}
 
-					if (count >= quota) {
+					if (check_quota(quota_type, quota, count)) {
 						return true;
 					}
 					return false;
@@ -168,8 +171,10 @@ b32 parse_comment_condition(TriggerAction* action) {
 					Box32 area = parser_get_area(&parser);
 					PlayerBitset players = parser_get_player_bitset(&parser);
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
 					u32 scouting_player = parser_get_player(&parser);
+					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					f32 scouting_time_quota = parser_get_time(&parser);
 
 					area.w += area.x;
@@ -192,13 +197,13 @@ b32 parse_comment_condition(TriggerAction* action) {
 								continue;
 							}
 							UnitExt* unit_ext = globals.get_unit_ext(unit);
-							if (!scouting_player || !scouting_time_quota || unit_ext->last_seen_timer[scouting_player - 1] < scouting_time_quota / 24) {
+							if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota * 24, unit_ext->last_seen_timer[scouting_player - 1])) {
 								count++;
 							}
 						}
 					}
 
-					if (count >= quota) {
+					if (check_quota(quota_type, quota, count)) {
 						return true;
 					}
 					return false;
