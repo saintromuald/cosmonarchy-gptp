@@ -12608,8 +12608,8 @@ namespace helper
 		const u32 func_address = 0x0048E8D0;
 		__asm {
 			PUSHAD
-			MOV x, ECX
-			MOV y, EAX
+			MOV x, EAX
+			MOV y, ECX
 			CALL func_address
 			MOV result, EAX
 			POPAD
