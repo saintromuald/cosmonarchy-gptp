@@ -580,7 +580,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				set_player_color(player, player_color);
-				scbw::printf("Set color of %u to %s (%u)", player + 1, playerColorNames[player_color], player_color);
 			}
 		}
 	}
