@@ -41,7 +41,7 @@ enum QuotaType {
 void parser_push(Parser* parser);
 void parser_pop(Parser* parser);
 
-bool parser_get_word(Parser* parser);
+Token parser_get_word(Parser* parser);
 bool parser_get_command(Parser* parser);
 Token parser_get_string(Parser* parser);
 
@@ -72,5 +72,7 @@ RecolorSet parser_get_recolor_set(Parser* parser);
 
 Point16 box_center(Box32 box);
 
+bool token_eq(Token* token, char* string);
+bool token_eqi(Token* token, char* string);
 bool parser_eq(Parser* parser, char* string);
 bool parser_eqi(Parser* parser, char* string);

@@ -48,10 +48,10 @@ void parser_pop(Parser* parser) {
 	}
 }
 
-bool parser_get_word(Parser* parser) {
+Token parser_get_word(Parser* parser) {
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
-		return false;
+		return {};
 	}
 
 	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
@@ -61,7 +61,7 @@ bool parser_get_word(Parser* parser) {
 		++parser->at;
 	}
 
-	return parser->token.size != 0;
+	return parser->token;
 }
 
 bool parser_get_command(Parser* parser) {
@@ -77,7 +77,7 @@ bool parser_get_command(Parser* parser) {
 		++parser->at;
 	}
 
-	return parser_get_word(parser);
+	return parser_get_word(parser).size;
 }
 
 Token parser_get_string(Parser* parser) {
@@ -712,12 +712,20 @@ Point16 box_center(Box32 box) {
 	return point;
 }
 
-bool parser_eq(Parser* parser, char* string) {
+bool token_eq(Token* token, char* string) {
 	if (!string) return false;
-	return strcmp(parser->token.data, string) == 0;
+	return strcmp(token->data, string) == 0;
+}
+
+bool token_eqi(Token* token, char* string) {
+	if (!string) return false;
+	return stricmp(token->data, string) == 0;
+}
+
+bool parser_eq(Parser* parser, char* string) {
+	return token_eq(&parser->token, string);
 }
 
 bool parser_eqi(Parser* parser, char* string) {
-	if (!string) return false;
-	return stricmp(parser->token.data, string) == 0;
+	return token_eqi(&parser->token, string);
 }

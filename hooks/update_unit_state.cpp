@@ -384,24 +384,15 @@ namespace hooks
 
 				if (!unit->get_overlay(overlay)) {
 					unit->sprite->create_top_overlay(overlay);
-					if (!unit_ext->timers[TimerFlashShieldingSFXCooldown]) {
-						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
-					}
-					unit_ext->timers[TimerFlashShieldingSFXCooldown] = 6;
+					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 				}
 			}
 			else if (unit->sprite->get_overlay(overlay)) {
 				unit->sprite->remove_overlay(overlay);
 				if (unit->shields >= max_shields) {
-					if (!unit_ext->timers[TimerFlashShieldingSFXCooldown]) {
-						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-					}
-					unit_ext->timers[TimerFlashShieldingSFXCooldown] = 6;
+					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
 				} else {
-					if (!unit_ext->timers[TimerFlashShieldingSFXCooldown]) {
-						helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
-					}
-					unit_ext->timers[TimerFlashShieldingSFXCooldown] = 6;
+					helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 				}
 			}
 		}

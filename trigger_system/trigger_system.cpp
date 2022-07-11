@@ -73,7 +73,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
 		if (parser_eq(&parser, "condition")) {
-			if (parser_get_word(&parser)) {
+			if (parser_get_word(&parser).size) {
 				if (parser_eq(&parser, "combat")) {
 					PlayerBitset source_players = parser_get_player_bitset(&parser);
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
@@ -210,9 +210,26 @@ b32 parse_comment_condition(TriggerAction* action) {
 					return false;
 				} else if (parser_eq(&parser, "local_camera")) {
 					Box32 area = parser_get_area(&parser);
-					if (*g_move_to_x + 320 >= area.x && *g_move_to_x + 320 <= area.x + area.w &&
-						*g_move_to_y + 200 >= area.y && *g_move_to_y + 200 <= area.y + area.h) {
-						return true;
+					Token min_visiblity = parser_get_word(&parser);
+
+					Point16 center = {};
+					center.x = *g_move_to_x + 320;
+					center.y = *g_move_to_y + 200;
+
+					if (center.x >= area.x && center.y <= area.x + area.w &&
+						center.x >= area.y && center.y <= area.y + area.h) {
+						ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
+						if (token_eqi(&min_visiblity, "visible")) {
+							if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
+								return true;
+							}
+						} else if (token_eqi(&min_visiblity, "explored")) {
+							if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
+								return true;
+							}
+						} else if (token_eqi(&min_visiblity, "unexplored") || true) {
+							return true;
+						}
 					}
 					return false;
 				}
