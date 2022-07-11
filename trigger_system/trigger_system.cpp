@@ -1,13 +1,14 @@
 #include "trigger_system.h"
 #include <limits.h>
 
-#include "token_parser.h"
-#include "base_layouts.h"
-
 #include "trigger_music.h"
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
+
+#include "token_parser.h"
+#include "base_layouts.h"
+#include "player_color.h"
 
 bool trigger_game_paused;
 bool trigger_system_init;
@@ -566,6 +567,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 race = parser_get_enum(&parser, race_names, ARRAY_SIZE(race_names));
 
 			g_player_table[player].race = race;
+		} else if (parser_eq(&parser, "set_player_color")) {
+			u32 player = parser_get_player(&parser);
+			u32 player_color = parser_get_enum(&parser, playerColorNames, ARRAY_SIZE(playerColorNames));
+
+			set_player_color(player, player_color);
 		}
 	}
 
