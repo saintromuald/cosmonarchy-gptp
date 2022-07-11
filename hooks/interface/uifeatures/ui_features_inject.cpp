@@ -302,9 +302,9 @@ namespace hooks
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
 
 		// Allow units in fow (seems to desync)
-		//jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites
-		//jump_patch(include_sprite_in_vischeck_wrapper,		0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
-		jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in sprite ext
+	//	jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites
+	//	jump_patch(include_sprite_in_vischeck_wrapper,		0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
+	//	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in sprite ext
 		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Needed to clear sprite ext on sprite destruction
 	}
 }
