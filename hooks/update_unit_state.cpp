@@ -102,7 +102,7 @@ namespace hooks
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	void update_unit_state(Unit* unit) // 004EC290
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		// Timers
 		if (unit->main_order_timer)
@@ -124,20 +124,20 @@ namespace hooks
 
 		// Wyvern clear target when changed owner to allied
 		if (unit->id == UnitId::TerranWyvern
-			&& unitExt->units[UnitWyvernTargetLock])
+			&& unit_ext->units[UnitWyvernTargetLock])
 		{
-			Unit* target = unitExt->units[UnitWyvernTargetLock];
+			Unit* target = unit_ext->units[UnitWyvernTargetLock];
 			UnitExt* targetExt = get_unit_ext(target);
 			if (targetExt->timers[TimerOwnerChangedRecently]
 				&& scbw::is_allied_to(unit->player, target->player))
 			{
-				unitExt->units[UnitWyvernTargetLock] = nullptr;
+				unit_ext->units[UnitWyvernTargetLock] = nullptr;
 			}
 		}
 
 		// Wyvern Reverse Thrust - fire while moving
 		if (unit->id == UnitId::TerranWyvern
-			&& unitExt->timers[TimerWyvernAttackCooldown] == 0)
+			&& unit_ext->timers[TimerWyvernAttackCooldown] == 0)
 		{
 			auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
@@ -145,22 +145,22 @@ namespace hooks
 			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1);
 
 			bool seek_unit = true;
-			if (unitExt->values[ValueWyvernLandGrabOn] == 1)
+			if (unit_ext->values[ValueWyvernLandGrabOn] == 1)
 			{
-				auto targ_x = unitExt->values[ValueWyvernLandGrabX];
-				auto targ_y = unitExt->values[ValueWyvernLandGrabY];
+				auto targ_x = unit_ext->values[ValueWyvernLandGrabX];
+				auto targ_y = unit_ext->values[ValueWyvernLandGrabY];
 				auto direction = scbw::get_angle(x, y, targ_x, targ_y);
 				if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 				{
 					u32 sound = scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
 					helper::play_sound_from_unit(sound, unit, 1, 0);
 					scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, nullptr, targ_x, targ_y);
-					unitExt->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+					unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					seek_unit = false;
 				}
 				else
 				{
-					unitExt->values[ValueWyvernLandGrabOn] = 0;
+					unit_ext->values[ValueWyvernLandGrabOn] = 0;
 				}
 			}
 
@@ -174,10 +174,10 @@ namespace hooks
 					Unit* newTarget = unit->order_target.unit;
 					if (wyvern_can_fire_at(unit, newTarget))
 					{
-						unitExt->units[UnitWyvernTargetLock] = newTarget;
+						unit_ext->units[UnitWyvernTargetLock] = newTarget;
 					}
 				}
-				Unit* target = unitExt->units[UnitWyvernTargetLock];
+				Unit* target = unit_ext->units[UnitWyvernTargetLock];
 				if (!target || !wyvern_can_fire_at(unit, target))
 				{
 					target = scbw::UnitFinder::get_nearest_target(
@@ -208,7 +208,7 @@ namespace hooks
 					auto direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
 					scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
-					unitExt->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+					unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 				}
 			}
 		}
@@ -257,11 +257,11 @@ namespace hooks
 			if (!unit->get_overlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
 				unit->sprite->create_top_overlay(overlayImageId, 0, 0, 0);
-				unitExt->values[ValueHierophantOverlay] = 1;
+				unit_ext->values[ValueHierophantOverlay] = 1;
 			}
 		}
 
-		if (unitExt->values[ValueHierophantOverlay] == 1)
+		if (unit_ext->values[ValueHierophantOverlay] == 1)
 		{
 			auto overlayId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 			auto overlay = unit->get_overlay(overlayId);
@@ -276,7 +276,7 @@ namespace hooks
 				{
 					unit->sprite->create_top_overlay(maliceId, 0, 0, 0);
 				}
-				unitExt->values[ValueHierophantOverlay] = 0;
+				unit_ext->values[ValueHierophantOverlay] = 0;
 			}
 		}
 
@@ -286,7 +286,7 @@ namespace hooks
 			unit->unused_8c &= ~0x2;
 			u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 			u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			unitExt->values[ValueHierophantOverlay] = 0;
+			unit_ext->values[ValueHierophantOverlay] = 0;
 			if (unit->get_overlay(maliceId))
 			{
 				unit->remove_overlay(maliceId);
@@ -312,7 +312,7 @@ namespace hooks
 			{
 				unit->cmbw_resource_regen_mining_delay--;
 			}
-			if (!unit->cmbw_resource_regen_mining_delay || unitExt->timers[TimerResourceBoostedRegen]) {
+			if (!unit->cmbw_resource_regen_mining_delay || unit_ext->timers[TimerResourceBoostedRegen]) {
 				if (unit->cmbw_resource_regen_cooldown > 0)
 				{
 					unit->cmbw_resource_regen_cooldown--;
@@ -321,13 +321,13 @@ namespace hooks
 				{
 					// Set regen timers
 					unit->cmbw_resource_regen_cooldown = 36;
-					if (unitExt->timers[TimerResourceBoostedRegen]) {
+					if (unit_ext->timers[TimerResourceBoostedRegen]) {
 						unit->cmbw_resource_regen_cooldown /= 3;
 					}
 
 					// Actual resource regeneration
 					bool update_image = true;
-					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_capped_gas_structure(unit->id) && unitExt->timers[TimerResourceBoostedRegen]))
+					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_capped_gas_structure(unit->id) && unit_ext->timers[TimerResourceBoostedRegen]))
 					{
 						if (unit->building.resource.resource_amount < 7500) {
 							unit->building.resource.resource_amount++;
@@ -370,8 +370,8 @@ namespace hooks
 				} break;
 			}
 
-			if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unitExt->shield_regen_timer > 2 * 24) {
-				unit->heal_shields(11 * 10 * (1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size()), 0, false);
+			if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
+				unit->heal_shields(11 * 10 * (1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), 0, false);
 				if (unit->shields > max_shields) {
 					if (unit->shields > max_shields) {
 						unit->shields = max_shields;
@@ -384,16 +384,24 @@ namespace hooks
 
 				if (!unit->get_overlay(overlay)) {
 					unit->sprite->create_top_overlay(overlay);
-					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+					if (!unit_ext->timers[TimerFlashShieldingSFXCooldown]) {
+						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+					}
+					unit_ext->timers[TimerFlashShieldingSFXCooldown] = 6;
 				}
 			}
 			else if (unit->sprite->get_overlay(overlay)) {
 				unit->sprite->remove_overlay(overlay);
 				if (unit->shields >= max_shields) {
-					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-				}
-				else {
-					helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
+					if (!unit_ext->timers[TimerFlashShieldingSFXCooldown]) {
+						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+					}
+					unit_ext->timers[TimerFlashShieldingSFXCooldown] = 6;
+				} else {
+					if (!unit_ext->timers[TimerFlashShieldingSFXCooldown]) {
+						helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
+					}
+					unit_ext->timers[TimerFlashShieldingSFXCooldown] = 6;
 				}
 			}
 		}
@@ -456,17 +464,17 @@ namespace hooks
 			}
 
 			// HP regeneration
-			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
+			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
 			&&	 unit->hitpoints > 0
 			&&	 unit->hitpoints != unit->get_max_hp_raw()
-			&&	 unitExt->damage_receive_timer > 2 * 24)
+			&&	 unit_ext->damage_receive_timer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
 				if (unit->status & UnitStatus::Burrowed) {
 					regen *= 2;
 				}
 
-				regen *= 1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
+				regen *= 1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 				unit->heal(regen, 0, false);
 			}
 
@@ -474,7 +482,7 @@ namespace hooks
 			{
 				s32 tick_heal = 0;
 				// Alaszileth - Dermal Accelerant - 500% life regen
-				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)
+				if (unit_ext->timers[TimerAlaszilethRegenBoost] > 0)
 				{
 					tick_heal += 11 * 5;
 				}
@@ -502,7 +510,7 @@ namespace hooks
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora)
 			{
-				if (unitExt->values[ValueLastOrdersInit] == 1)
+				if (unit_ext->values[ValueLastOrdersInit] == 1)
 				{
 					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32)
@@ -537,7 +545,7 @@ namespace hooks
 			}
 
 			// Terran building burn-down
-			if (!bStopHere && !unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
+			if (!bStopHere && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
 			{
 				if (unit->get_race() == RaceId::Terran)
 				{
