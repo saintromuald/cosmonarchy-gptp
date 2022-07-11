@@ -56,7 +56,7 @@ namespace hooks
 			else if (resource->building.resource.resource_amount < RESOURCE_HARVESTED
 			&&		 is_gas_container(resource->id))
 			{
-			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and sound
+			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and new_sound
 			}
 			return_value = RESOURCE_HARVESTED;
 		}

@@ -4,7 +4,7 @@
 
 namespace OrderId {
 enum Enum {
-	Die                    = 0x00, /**< Causes the unit to die. Normal units run the death iscript animation, while hallucinated units have the sound/sprite spawned and then are removed.
+	Die                    = 0x00, /**< Causes the unit to die. Normal units run the death iscript animation, while hallucinated units have the new_sound/sprite spawned and then are removed.
 					* Default Requirements: Allow on hallucinated units. */
 	Stop                   = 0x01, /**< Normal unit stop command. Stops current order chain, and then goes to idle.
 					* Default Requirements: Allow on hallucinated units. */

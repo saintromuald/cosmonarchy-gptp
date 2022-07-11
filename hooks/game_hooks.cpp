@@ -1036,7 +1036,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergLakizilisk:
 			{
-				// Lakizilisk - play sound on attack, hardcoded here to facilitate a different sound on return
+				// Lakizilisk - play new_sound on attack, hardcoded here to facilitate a different new_sound on return
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
@@ -1374,7 +1374,7 @@ namespace hooks
 			} break;
 			case UnitId::SharedAxitrilisk:
 			{
-				// Axitrilisk - play sound on shield loss, timer of 5 seconds per unit
+				// Axitrilisk - play new_sound on shield loss, timer of 5 seconds per unit
 				if (unit->shields < 1
 				&& !unitExt->timers[TimerAxitriliskShieldLossSFX])
 				{

@@ -106,10 +106,10 @@ namespace hooks
 
 				if (*bAtLeast1UnitWasRecalled != 0) {
 
-					// Original code added (randomize_short(0x12) & 1) to the base sound
+					// Original code added (randomize_short(0x12) & 1) to the base new_sound
 					// id Protoss_ARBITER_PAbFol02_WAV then called the playSound function
 					// using that value, but since there are only 2 sounds, it's easier to 
-					// see what sound is used that way.
+					// see what new_sound is used that way.
 					// The compiler may make it back like the original anyway.
 
 					if ((helper::randomize_short(0x12) & 1) == 0) {
@@ -163,10 +163,10 @@ namespace hooks
 					random_value = ((*g_last_random_number) / 65536) & 0x7FFF;
 				}
 
-				// Original code added (random_value & 1) to the base sound
+				// Original code added (random_value & 1) to the base new_sound
 				// id Protoss_ARBITER_PAbFol00_WAV then called the playSound function
 				// using that value, but since there are only 2 sounds, it's easier to 
-				// see what sound is used that way.
+				// see what new_sound is used that way.
 				// The compiler may make it back like the original anyway.
 
 				u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;

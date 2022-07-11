@@ -69,6 +69,7 @@ void update_trigger_system(bool in_game) {
 
 b32 parse_comment_condition(TriggerAction* action) {
 	bool is_local_player = *g_current_trigger_player_id == *g_local_nation_id;
+	u32 trigger_player = *g_current_trigger_player_id;
 	Parser parser = {};
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
@@ -242,6 +243,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 
 b32 __fastcall parse_comment_action(TriggerAction* action) {
 	bool is_local_player = *g_current_trigger_player_id == *g_local_nation_id;
+	u32 trigger_player = *g_current_trigger_player_id;
 	Parser parser = {};
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
@@ -466,11 +468,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (parser_eq(&parser, "*")) {
 				sound_replacement.any_sound = true;
 			}
-			sound_replacement.new_sound_id = parser_get_s32(&parser);
-			if (!parser.number_parsed_correctly) {
-				Token path = parser_get_string(&parser);
-				sound_replacement.sound = get_sound(path.data);
-			}
+			Token path = parser_get_string(&parser);
+			sound_replacement.new_sound = get_sound(path.data);
 			sound_replacement.replace = parser_get_s32(&parser);
 			if (sound_replacement.player) {
 				sound_replacement.player -= 1;
@@ -478,21 +477,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					sound_replacements[sound_replacements_count++] = sound_replacement;
 				}
 			}
-		} else if (parser_eq(&parser, "play_sound") && is_local_player) {
-			u32 sound_id = parser_get_s32(&parser);
-			if (parser.number_parsed_correctly) {
-				Point16 position = parser_get_position(&parser);
+		// Bitset Local Only Triggers
+		} else if (parser_eq(&parser, "play_sound")) {
+			Token path = parser_get_string(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			Point16 position = parser_get_position(&parser);
 
-				if (position.x == 0 && position.y == 0) {
-					helper::play_sound_global(sound_id);
-				} else {
-					helper::play_sound_at_pos(sound_id, position, 1, 0);
-				}
-			} else {
-				parser_pop(&parser);
-				Token path = parser_get_string(&parser);
-				Point16 position = parser_get_position(&parser);
-
+			if (trigger_player < PlayerLimit && players.set[trigger_player]) {
 				if (position.x == 0 && position.y == 0) {
 					play_sound(get_sound(path.data), get_sound_volume());
 				} else {

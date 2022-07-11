@@ -556,7 +556,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to play the correct sound when Taloses complete a structure. -Pr0nogo
+	// Hooked to play the correct new_sound when Taloses complete a structure. -Pr0nogo
 	void play_building_complete_sound(Unit* unit) // 0048F310
 	{
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id)

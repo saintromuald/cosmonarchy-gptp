@@ -4,7 +4,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 
-// These hooks facilitate a new DirectSound implementation, which will enable arbitrary sound channels and other features. -Pr0nogo
+// These hooks facilitate a new DirectSound implementation, which will enable arbitrary new_sound channels and other features. -Pr0nogo
 namespace hooks
 {
     /*
@@ -65,7 +65,7 @@ namespace hooks
                     {
                         goto LABEL_17;
                     }
-                    sprintf_s(&fileName, 260, "sound\\%s", sfx_dat::SoundPtr[v3]);
+                    sprintf_s(&fileName, 260, "new_sound\\%s", sfx_dat::SoundPtr[v3]);
                     soundFile = helper::fastFileRead(fileSize, 1, &fileName, fileName, 0, 1, "Starcraft\\SWAR\\lang\\snd.cpp", 737);
                     if (soundFile)
                     {

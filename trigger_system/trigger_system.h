@@ -15,8 +15,7 @@ struct SoundReplacement {
 	bool any_sound;
 	bool replace;
 	u32 old_sound_id;
-	u32 new_sound_id;
-	Sound* sound;
+	Sound* new_sound;
 };
 
 extern u32 sound_replacements_count;

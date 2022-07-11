@@ -241,7 +241,7 @@ namespace hooks
 		//implement get_flingy_ptr_val() on aise side - done
 		//data rewriting in aise - done
 		//data reading (get_aise_value) in aise - done
-		//aise: add offsets for sound vectors - done
+		//aise: add offsets for new_sound vectors - done
 		//use new data in gptp - done
 		//add usage to gptp
 		//enable everything in aise/gptp

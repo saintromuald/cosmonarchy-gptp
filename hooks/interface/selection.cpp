@@ -504,7 +504,7 @@ namespace hooks
 				// 0046FBD1
 				// Create a new unit_list containing only the clicked unit
 				helper::create_new_unit_selections_from_list(&clicked_unit, 1);
-				// play the sound of the unit (don't need to be a building)
+				// play the new_sound of the unit (don't need to be a building)
 				helper::select_building_sfx(clicked_unit);
 				// select the unit
 				helper::cmdact_select(&clicked_unit, 1);

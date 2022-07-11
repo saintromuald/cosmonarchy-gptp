@@ -40,11 +40,11 @@ namespace scbw
 
 	void printf_console(const char* fmt, ...);
 
-	/// Displays an error message and plays a sound for the player.
+	/// Displays an error message and plays a new_sound for the player.
 	///
 	/// @param  player  ID of the player who receives the message.
 	/// @param  statTxtId ID of the error message string in stat_txt.tbl
-	/// @param  sfxId     ID of the sound file in sfxdata.dat.
+	/// @param  sfxId     ID of the new_sound file in sfxdata.dat.
 	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId);
 
 	//////////////////////////////////////////////////////////////// @}

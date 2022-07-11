@@ -55,11 +55,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 			sound_replacement->animation == image->animation &&
 			sound_replacement->player	 == image->parent_sprite->player) {
 
-			if (sound_replacement->sound) {
-				play_sound(sound_replacement->sound, get_sound_volume_at_pos(image->parent_sprite->position));
-			} else {
-				helper::play_sound_at_pos(sound_replacement->new_sound_id, image->parent_sprite->position, 1, 0);
-			}
+			play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(image->parent_sprite->position));
 
 			if (sound_replacement->replace) {
 				replace = true;
