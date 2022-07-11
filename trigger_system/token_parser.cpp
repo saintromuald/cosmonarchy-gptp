@@ -122,12 +122,20 @@ s32 parser_get_s32(Parser* parser, u32 radix) {
 	if (parser_eqi(parser, "false")) {
 		return 0;
 	}
-	return strtol(parser->token.data, 0, radix);
+
+	char* end = 0;
+	s32 value = strtol(parser->token.data, &end, radix);
+	parser->number_parsed_correctly = end != parser->token.data;
+	return value;
 }
 
 f32 parser_get_f32(Parser* parser) {
 	parser_get_word(parser);
-	return strtof(parser->token.data, 0);
+
+	char* end = 0;
+	f32 value = strtof(parser->token.data, &end);
+	parser->number_parsed_correctly = end != parser->token.data;
+	return value;
 }
 
 enum TimeType {

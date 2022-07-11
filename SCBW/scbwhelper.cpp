@@ -12602,4 +12602,18 @@ namespace helper
 		}
 		return result;
 	}
+
+	s32 get_sfx_volume_from_screen_distance(u32 x, u32 y) {
+		static s32 result;
+		const u32 func_address = 0x0048E8D0;
+		__asm {
+			PUSHAD
+			MOV x, ECX
+			MOV y, EAX
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

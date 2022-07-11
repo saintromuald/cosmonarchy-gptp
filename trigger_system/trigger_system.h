@@ -1,6 +1,8 @@
 #pragma once
 #include "SCBW/api.h"
 
+struct Sound;
+
 extern bool trigger_game_paused;
 extern bool trigger_system_init;
 extern bool trigger_system_in_game;
@@ -14,6 +16,7 @@ struct SoundReplacement {
 	bool replace;
 	u32 old_sound_id;
 	u32 new_sound_id;
+	Sound* sound;
 };
 
 extern u32 sound_replacements_count;

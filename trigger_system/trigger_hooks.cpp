@@ -1,5 +1,6 @@
 #include "trigger_hooks.h"
 #include "trigger_system.h"
+#include "trigger_sound.h"
 #include "hook_tools.h"
 
 // HOOKS \\
@@ -53,7 +54,12 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 			sound_replacement->image_id  == image->id &&
 			sound_replacement->animation == image->animation &&
 			sound_replacement->player	 == image->parent_sprite->player) {
-			helper::play_sound_at_pos(sound_replacement->new_sound_id, image->parent_sprite->position, 1, 0);
+
+			if (sound_replacement->sound) {
+				play_sound(sound_replacement->sound, get_sound_volume_at_pos(image->parent_sprite->position));
+			} else {
+				helper::play_sound_at_pos(sound_replacement->new_sound_id, image->parent_sprite->position, 1, 0);
+			}
 
 			if (sound_replacement->replace) {
 				replace = true;

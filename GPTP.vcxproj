@@ -575,7 +575,7 @@
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
     <ClCompile Include="direct_sound_inject.cpp" />
     <ClCompile Include="trigger_system\trigger_hooks.cpp" />
-    <ClCompile Include="trigger_system\trigger_music.cpp" />
+    <ClCompile Include="trigger_system\trigger_sound.cpp" />
     <ClCompile Include="trigger_system\trigger_objectives.cpp" />
     <ClCompile Include="trigger_system\trigger_recolor.cpp" />
     <ClCompile Include="trigger_system\trigger_spawn.cpp" />
@@ -688,7 +688,7 @@
     <ClInclude Include="SCBW\SFileReader.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
     <ClInclude Include="trigger_system\trigger_hooks.h" />
-    <ClInclude Include="trigger_system\trigger_music.h" />
+    <ClInclude Include="trigger_system\trigger_sound.h" />
     <ClInclude Include="trigger_system\trigger_objectives.h" />
     <ClInclude Include="trigger_system\trigger_recolor.h" />
     <ClInclude Include="trigger_system\trigger_spawn.h" />

@@ -1396,4 +1396,6 @@ namespace helper {
 	u32 thingy_is_visible(u32 some_bool, Thingy* thingy);													// 00487CF0
 
 	u16 get_remaining_build_time_percentage(Unit* unit);													// 004669E0
+
+	s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
 }

@@ -1069,6 +1069,9 @@ SCBW_DATA(u32*,				g_minimap_unit_box_count,	0x0059C2B8);
 // For execute_trigger_conditions
 SCBW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
 
+// For play_sound trigger
+SCBW_DATA(s32*,				g_big_volume_array,			0x005008F0);
+
 //////////////////////////////////////////////////////////////// @}
 
 #undef SCBW_DATA

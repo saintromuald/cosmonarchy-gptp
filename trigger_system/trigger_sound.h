@@ -1,6 +1,7 @@
 #pragma once
 #include "SCBW/api.h"
 #include "trigger_system.h"
+#include <dsound.h>
 
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
@@ -48,27 +49,34 @@ struct WaveData {
 #pragma pack(pop)
 
 #define MaxPath 256
-#define MaxMusic 256
-#define MaxMusicHash 128
-struct Music {
-	Music* hash_next;
-	char path[MaxPath];
+#define MaxSound 1024
+#define MaxSoundHash 512
+#define MaxDupChannels 256
 
+struct SoundLoadData {
 	WAVEFORMATEX wave_format;
 	size_t size;
 	s16* data;
+};
+
+struct Sound {
+	Sound* hash_next;
+	char path[MaxPath];
+	u32 last_play_time;
+
+	LPDIRECTSOUNDBUFFER ds_buffer;
 };
 
 struct Playlist {
 	bool shuffle;
 	u32 index;
 	u32 size;
-	Music* tracks[MaxMusic];
+	Sound* tracks[MaxSound];
 };
 
 struct Playback {
-	Music* current_music;
-	Music* next_music;
+	Sound* current_music;
+	Sound* next_music;
 	f32 fade_in;
 	f32 fade_out;
 	f32 fade;
@@ -79,25 +87,27 @@ struct Playback {
 	bool paused;
 };
 
-extern u32 music_tracks_count;
-extern Music music_tracks[MaxMusic];
-extern Music* music_tracks_hash[MaxMusicHash];
+extern u32 loaded_sounds_count;
+extern Sound loaded_sounds[MaxSound];
+extern Sound* loaded_sounds_hash_table[MaxSoundHash];
 
 extern Playlist current_playlist;
 extern Playback playback;
 
-void init_music();
+void init_sound();
 void init_direct_sound();
-void update_music();
+void update_sound();
 
-Music* load_music(char* filename);
-void free_music(Music* music);
-Music* get_music(char* filename);
+Sound* load_sound(char* filename);
+void free_sound(Sound* sound);
+Sound* get_sound(char* filename);
 
-void play_music(Music* music);
+void play_sound(Sound* sound, s32 volume);
 void resume_music();
 void stop_music();
 void shuffle_playlist();
 
-s32 get_volume();
-Music* get_next_music();
+s32 get_sound_volume();
+s32 get_sound_volume_at_pos(Point16 pos);
+s32 get_playback_volume();
+Sound* get_next_music();

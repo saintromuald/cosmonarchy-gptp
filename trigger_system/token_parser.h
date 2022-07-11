@@ -13,6 +13,7 @@ struct Parser {
 	bool inited;
 	char* at;
 	Token token;
+	bool number_parsed_correctly;
 
 	s8 stack_index;
 	char* stack[ParserStackSize];

@@ -1,7 +1,7 @@
 #include "trigger_system.h"
 #include <limits.h>
 
-#include "trigger_music.h"
+#include "trigger_sound.h"
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
@@ -37,7 +37,7 @@ static void init_trigger_system() {
 	memset(trigger_deaths, 0, sizeof(trigger_deaths));
 
 	init_objectives();
-	init_music();
+	init_sound();
 	init_recolors();
 	init_spawn();
 }
@@ -55,7 +55,7 @@ void update_trigger_system(bool in_game) {
 		init_trigger_system();
 	}
 
-	update_music();
+	update_sound();
 	bool paused = scbw::is_game_paused();
 	if (trigger_game_paused && !paused) {
 		set_palette_recolor(recolor_system.current_recolor.set);
@@ -210,7 +210,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					return false;
 				} else if (parser_eq(&parser, "local_camera")) {
 					Box32 area = parser_get_area(&parser);
-					Token min_visiblity = parser_get_word(&parser);
+					Token min_visibility = parser_get_word(&parser);
 
 					Point16 center = {};
 					center.x = *g_move_to_x + 320;
@@ -219,15 +219,15 @@ b32 parse_comment_condition(TriggerAction* action) {
 					if (center.x >= area.x && center.y <= area.x + area.w &&
 						center.x >= area.y && center.y <= area.y + area.h) {
 						ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
-						if (token_eqi(&min_visiblity, "visible")) {
+						if (token_eqi(&min_visibility, "visible")) {
 							if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
 								return true;
 							}
-						} else if (token_eqi(&min_visiblity, "explored")) {
+						} else if (token_eqi(&min_visibility, "explored")) {
 							if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
 								return true;
 							}
-						} else if (token_eqi(&min_visiblity, "unexplored") || true) {
+						} else if (token_eqi(&min_visibility, "unexplored") || true) {
 							return true;
 						}
 					}
@@ -248,7 +248,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		// Local Only Triggers
 		if (parser_eq(&parser, "play_music") && is_local_player) {
 			Token filename = parser_get_string(&parser);
-			playback.next_music = get_music(filename.data);
+			playback.next_music = get_sound(filename.data);
 			playback.target_fade = 0;
 		} else if (parser_eq(&parser, "stop_music") && is_local_player) {
 			playback.target_fade = 0;
@@ -277,8 +277,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			current_playlist.size = 0;
 		} else if (parser_eq(&parser, "playlist_add") && is_local_player) {
 			Token filename = parser_get_string(&parser);
-			if (current_playlist.size < MaxMusic) {
-				Music* music = get_music(filename.data);
+			if (current_playlist.size < MaxSound) {
+				Sound* music = get_sound(filename.data);
 				if (music) {
 					current_playlist.tracks[current_playlist.size++] = music;
 				}
@@ -467,11 +467,36 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				sound_replacement.any_sound = true;
 			}
 			sound_replacement.new_sound_id = parser_get_s32(&parser);
+			if (!parser.number_parsed_correctly) {
+				Token path = parser_get_string(&parser);
+				sound_replacement.sound = get_sound(path.data);
+			}
 			sound_replacement.replace = parser_get_s32(&parser);
 			if (sound_replacement.player) {
 				sound_replacement.player -= 1;
 				if (sound_replacements_count < SoundReplacementCap) {
 					sound_replacements[sound_replacements_count++] = sound_replacement;
+				}
+			}
+		} else if (parser_eq(&parser, "play_sound") && is_local_player) {
+			u32 sound_id = parser_get_s32(&parser);
+			if (parser.number_parsed_correctly) {
+				Point16 position = parser_get_position(&parser);
+
+				if (position.x == 0 && position.y == 0) {
+					helper::play_sound_global(sound_id);
+				} else {
+					helper::play_sound_at_pos(sound_id, position, 1, 0);
+				}
+			} else {
+				parser_pop(&parser);
+				Token path = parser_get_string(&parser);
+				Point16 position = parser_get_position(&parser);
+
+				if (position.x == 0 && position.y == 0) {
+					play_sound(get_sound(path.data), get_sound_volume());
+				} else {
+					play_sound(get_sound(path.data), get_sound_volume_at_pos(position));
 				}
 			}
 		// Gameplay Actions
