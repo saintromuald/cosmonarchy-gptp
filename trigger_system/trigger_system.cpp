@@ -556,7 +556,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					sort_layouts(layouts);
 				}
 			}
+		} else if (parser_eq(&parser, "set_start_location")) {
+			u32 player = parser_get_player(&parser);
+			Point16 position = parser_get_position(&parser);
 
+			g_start_positions[player] = position;
+		} else if (parser_eq(&parser, "set_race")) {
+			u32 player = parser_get_player(&parser);
+			u32 race = parser_get_enum(&parser, race_names, ARRAY_SIZE(race_names));
+
+			g_player_table[player].race = race;
 		}
 	}
 

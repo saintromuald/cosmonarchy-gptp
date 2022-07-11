@@ -19,6 +19,12 @@ struct SoundReplacement {
 extern u32 sound_replacements_count;
 extern SoundReplacement sound_replacements[SoundReplacementCap];
 
+const char* race_names[] = {
+	"Zerg",
+	"Protoss",
+	"Terran",
+};
+
 extern bool has_custom_player_name[PlayerLimit];
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 extern u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
