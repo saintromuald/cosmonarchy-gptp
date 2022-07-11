@@ -490,7 +490,7 @@ namespace hooks
 			bool jump_to_E8195 = false;
 			bool jump_to_E81AD = false;
 
-			UnitExt* unit_ext = globals.get_unit_ext(unit);
+			UnitExt* unit_ext = get_unit_ext(unit);
 			while (!bEndLoop)
 			{
 				loadedUnitOffset = (u32*)&unit_ext->loaded_unit[counter];

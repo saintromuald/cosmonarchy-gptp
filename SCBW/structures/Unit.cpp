@@ -512,7 +512,7 @@ void Unit::heal_shields(s32 shields, Unit* source, bool restore)
 	this->shields = std::min((u32)this->shields + shields, this->get_max_shields_raw());
 	this->set_hitpoints(this->hitpoints); // Updates unit strength
 
-	UnitExt* this_ext = globals.get_unit_ext(this);
+	UnitExt* this_ext = get_unit_ext(this);
 	this_ext->shield_regen_timer = -1;
 
 	// If heals to full clear debuffs
@@ -603,7 +603,7 @@ void Unit::damage_with_custom(
 void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
 	bool ignoreDmg128Overflow)
 {
-	UnitExt* unitExt = globals.get_unit_ext(this);
+	UnitExt* unitExt = get_unit_ext(this);
 	auto damage = dmg;
 	s32 shield_reduce_amount = 0;
 	if (unitExt->timers[TimerGodsMadeFlesh])
@@ -653,11 +653,11 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 
 	if (attacker)
 	{
-		UnitExt* attackerExt = globals.get_unit_ext(attacker);
+		UnitExt* attackerExt = get_unit_ext(attacker);
 		attackerExt->damage_dealt_timer = 0;
 	}
 
-	UnitExt* unitExt = globals.get_unit_ext(this);
+	UnitExt* unitExt = get_unit_ext(this);
 	unitExt->shield_regen_timer = 0;
 	unitExt->damage_receive_timer = 0;
 
@@ -822,7 +822,7 @@ void Unit::removeAcidSpores()
 /// May underflow if alone
 void Unit::spend_unit_energy(u32 energySpent)
 {
-	UnitExt* unitExt = globals.get_unit_ext(this);
+	UnitExt* unitExt = get_unit_ext(this);
 	if (!(*g_cheat_state & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
@@ -1398,7 +1398,7 @@ bool Unit::give_to(u8 player)
 		{
 			this->order_to_idle();
 		}
-		UnitExt* unitExt = globals.get_unit_ext(this);
+		UnitExt* unitExt = get_unit_ext(this);
 		unitExt->timers[TimerOwnerChangedRecently] = 2;
 		return true;
 	}
@@ -1440,7 +1440,7 @@ void Unit::update_speed()
 
 u32 Unit::get_supply_provided() // overwrites previous supply provided
 {
-	UnitExt* unitExt = globals.get_unit_ext(this);
+	UnitExt* unitExt = get_unit_ext(this);
 	if (unitExt->values[ValueSupplyProvidedSet])
 	{
 		if (unitExt->values[ValueSupplyProvidedId] == id) {
@@ -1476,7 +1476,7 @@ u32 Unit::get_supply_provided() // overwrites previous supply provided
 
 void Unit::set_supply_provided(u8 amount) // overwrites previous supply provided
 {
-	UnitExt* unitExt = globals.get_unit_ext(this);
+	UnitExt* unitExt = get_unit_ext(this);
 	raceSupply[RaceId::Terran].provided[player] -= get_supply_provided();
 	raceSupply[RaceId::Terran].provided[player] += amount;
 	unitExt->values[ValueSupplyProvidedSet] = 1;
@@ -1486,7 +1486,7 @@ void Unit::set_supply_provided(u8 amount) // overwrites previous supply provided
 
 void Unit::reset_supply_provided() // overwrites previous supply provided
 {
-	UnitExt* unitExt = globals.get_unit_ext(this);
+	UnitExt* unitExt = get_unit_ext(this);
 	set_supply_provided(units_dat::SupplyProvided[id]);
 	unitExt->values[ValueSupplyProvidedSet] = 0;
 	unitExt->values[ValueSupplyProvidedId] = 0;

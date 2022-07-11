@@ -82,7 +82,7 @@ namespace hooks
 			return;
 		if (bullet->source_unit != nullptr && bullet->source_unit->sprite != nullptr)
 		{
-			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->source_unit);
+			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 
 			if (bullet->source_unit->is_blind)
 			{
@@ -209,7 +209,7 @@ namespace hooks
 			{
 				if (bullet->source_unit)
 				{
-					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->source_unit);
+					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 
 					const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
@@ -239,7 +239,7 @@ namespace hooks
 			{
 				if (bullet->source_unit)
 				{
-					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->source_unit);
+					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 
 					const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
@@ -294,7 +294,7 @@ namespace hooks
 				bool lurkerOverride = false;
 				if (bullet->source_unit)
 				{
-					UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->source_unit);
+					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 					if ((Unit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
 					{
 						lurkerOverride = true;
@@ -403,7 +403,7 @@ namespace hooks
 			&& target->sprite)
 		{
 			// Searing Acid - Geszithalor behavior
-			UnitExt* bulletSourceExt = globals.get_unit_ext(bullet->source_unit);
+			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 			auto X = bulletSourceExt->last_bullet_launch_position.x;
 			auto Y = bulletSourceExt->last_bullet_launch_position.y;
 			divisor = scbw::get_distance_fast(X, Y, target->get_x(), target->get_y()) / (32 * 3);

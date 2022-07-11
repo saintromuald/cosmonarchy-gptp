@@ -6,7 +6,7 @@ namespace hooks
 {
 	void ordersCastMindControl(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		Unit* target = unit->order_target.unit;
 		if (!target || unit->player == target->player || scbw::is_allied_to(unit->player, target->player)) {
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;

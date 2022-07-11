@@ -136,7 +136,7 @@ namespace hooks
 		{
 			return;
 		}
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		u8 weapon_id = wId;
 		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
 		unitExt->values[ValueAI_PreventTargeting] = 0;
@@ -456,7 +456,7 @@ namespace hooks
 		{
 			Unit* targ = bullet->attackTarget.unit;
 
-			UnitExt* unitExt = globals.get_unit_ext(bullet->source_unit);
+			UnitExt* unitExt = get_unit_ext(bullet->source_unit);
 			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->last_bullet_launch_position);
 			const u32 distFromTarget = scbw::get_distance_fast(bullet->position, targ->position);
 
@@ -689,7 +689,7 @@ namespace hooks
 					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - slow pierced targets
-					UnitExt* collisionTargetExt = globals.get_unit_ext(collisionTarget);
+					UnitExt* collisionTargetExt = get_unit_ext(collisionTarget);
 					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{
 						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
@@ -1456,7 +1456,7 @@ namespace hooks
 		*g_last_bullet_creator = 0;
 		if (!(unit->status & UnitStatus::CanNotAttack))
 		{
-			UnitExt* unit_ext = globals.get_unit_ext(unit);
+			UnitExt* unit_ext = get_unit_ext(unit);
 			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir)
 			{
 				helper::use_weapon_iscript(unit, units_dat::AirWeapon[unit->id], 2, iscript_anim + 1);

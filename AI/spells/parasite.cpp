@@ -20,7 +20,7 @@ namespace AI {
 				return false;
 			}
 
-			UnitExt* target_ext = globals.get_unit_ext(target);
+			UnitExt* target_ext = get_unit_ext(target);
 			if (target_ext->timers[TimerParasiteArm]) {
 				return false;
 			}

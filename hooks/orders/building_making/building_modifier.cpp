@@ -8,7 +8,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 		return modifier;
 	}
 
-	UnitExt* buildingExt = globals.get_unit_ext(building);
+	UnitExt* buildingExt = get_unit_ext(building);
 	if (constructing) {
 		if ((builder && builder->id == UnitId::TerranTalos)
 			|| building->create_origin == UnitId::ProtossArtisan

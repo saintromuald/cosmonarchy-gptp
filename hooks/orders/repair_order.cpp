@@ -101,7 +101,7 @@ namespace hooks
 		}
 
 		bool do_repair = false;
-		//UnitExt* target_ext = globals.get_unit_ext(target);
+		//UnitExt* target_ext = get_unit_ext(target);
 		if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
 			if (unit->worker.repair_resource_loss_timer == 0) { // target_ext->values[ValueNewRepairTimer] == 0
 				unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] == units_dat::time_cost[target->id] / 2; 

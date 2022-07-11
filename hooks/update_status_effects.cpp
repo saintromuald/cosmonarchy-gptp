@@ -94,11 +94,11 @@ namespace hooks
 
 	void update_status_effects(Unit* unit) // 00492F70
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		if (unit->subunit != nullptr)
 		{
-			UnitExt* subunitExt = globals.get_unit_ext(unit->subunit);
+			UnitExt* subunitExt = get_unit_ext(unit->subunit);
 			subunitExt->units[UnitTurretParentLink] = unit;
 		}
 
@@ -175,7 +175,7 @@ namespace hooks
 				}
 				if (units_dat::base_property[target->id] & UnitProperty::ResourceContainer)
 				{
-					UnitExt* targetExt = globals.get_unit_ext(target);
+					UnitExt* targetExt = get_unit_ext(target);
 					targetExt->timers[TimerResourceBoostedRegen] = 24;
 					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::get_overlay_offset(target->id);
 					if (!target->sprite->get_overlay(underlay)) {
@@ -215,7 +215,7 @@ namespace hooks
 				if (scbw::is_allied_to(target->player, unit->player)
 					&& (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
 				{
-					UnitExt* targetExt = globals.get_unit_ext(target);
+					UnitExt* targetExt = get_unit_ext(target);
 					targetExt->timers[TimerSireEggBoost] = 24;
 				}
 			});

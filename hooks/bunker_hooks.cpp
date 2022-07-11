@@ -50,7 +50,7 @@ namespace hooks
 					Unit* target = unit->order_target.unit;
 					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 						if (unit->connected_unit) {
-							UnitExt* bunkerExt = globals.get_unit_ext(unit->connected_unit);
+							UnitExt* bunkerExt = get_unit_ext(unit->connected_unit);
 							Unit* target = bunkerExt->units[UnitBunkerLockOn];
 							if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
 								unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order

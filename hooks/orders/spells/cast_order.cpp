@@ -176,7 +176,7 @@ namespace hooks
 
 	void orders_Spell(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 

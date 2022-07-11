@@ -14,7 +14,7 @@ namespace hooks
 {
 	f64 get_speed_multiplier(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
@@ -70,7 +70,7 @@ namespace hooks
 				auto picked_unit = unitsInFinder.get_unit(i);
 				if (n(picked_unit))
 				{
-					UnitExt* pickedExt = globals.get_unit_ext(picked_unit);
+					UnitExt* pickedExt = get_unit_ext(picked_unit);
 					if (pickedExt->timers[TimerSwarmingOmen])
 					{
 						accelerate = true;

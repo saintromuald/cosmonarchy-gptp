@@ -746,7 +746,7 @@ namespace hooks {
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
 					{
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
 						if (current_button->requirement_var == TechId::ControlledDemolition)
 						{
@@ -1654,7 +1654,7 @@ namespace hooks {
 							bool canCancel = false;
 							if (unit->id == UnitId::TerranWyvern)
 							{
-								UnitExt* activeExt = globals.get_unit_ext(unit);
+								UnitExt* activeExt = get_unit_ext(unit);
 								if (activeExt->values[ValueWyvernLandGrabOn])
 								{
 									canCancel = true;

@@ -265,7 +265,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		UnitExt* targetExt = globals.get_unit_ext(target);
+		UnitExt* targetExt = get_unit_ext(target);
 		s32 type = target->id;
 		s32 abilityFlags = units_dat::base_property[type];
 		s32 enemyCheck;

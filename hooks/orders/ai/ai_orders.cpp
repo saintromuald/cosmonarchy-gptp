@@ -1563,7 +1563,7 @@ LABEL_37:
 						timer = 30;
 					}
 
-					UnitExt* workerExt = globals.get_unit_ext(worker);
+					UnitExt* workerExt = get_unit_ext(worker);
 					if (*g_elapsed_time_seconds - worker_ai->last_update_second >= timer
 						&& !workerExt->timers[TimerAI_KitingLeash])
 					{

@@ -165,7 +165,7 @@ namespace hooks
 				helper::flying_building_lift_if_still_blocked(unit);
 				helper::force_order_done(unit);
 
-				UnitExt* unitExt = globals.get_unit_ext(unit);
+				UnitExt* unitExt = get_unit_ext(unit);
 				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 					scbw::spawn_custom_creep(unit);
 				}
@@ -194,7 +194,7 @@ namespace hooks
 				helper::disconnect_from_addon(unit);
 			}
 			if (unit->is_factory()) {
-				UnitExt* unitExt = globals.get_unit_ext(unit);
+				UnitExt* unitExt = get_unit_ext(unit);
 				unit->rally.unit = unit;
 			}
 

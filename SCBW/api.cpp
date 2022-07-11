@@ -1270,7 +1270,7 @@ namespace scbw
 
 	void decloak_proc(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (is_decloakable(unit))
 		{
 			if (unitExt->timers[TimerDecloak] == 0)
@@ -1398,7 +1398,7 @@ namespace scbw
 
 	void apply_new_hallucination(Unit* unit, u8 player, u32 time)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		// Sounds
 		if (!unitExt->timers[TimerHallucinating])
@@ -1827,10 +1827,10 @@ namespace scbw
 			return;
 		}
 
-		UnitExt* sourceExt = globals.get_unit_ext(source);
+		UnitExt* sourceExt = get_unit_ext(source);
 		sourceExt->unit_vectors[UnitVectorMindControlling].push_back(target);
 
-		UnitExt* targetExt = globals.get_unit_ext(target);
+		UnitExt* targetExt = get_unit_ext(target);
 		targetExt->units[UnitMindController] = source;
 		if (!targetExt->values[ValueMindControlOriginalPlayer])
 		{
@@ -1890,13 +1890,13 @@ namespace scbw
 			return;
 		}
 
-		UnitExt* targetExt = globals.get_unit_ext(target);
+		UnitExt* targetExt = get_unit_ext(target);
 		Unit* mindController = targetExt->units[UnitMindController];
 		targetExt->units[UnitMindController] = 0;
 
 		if (mindController)
 		{
-			UnitExt* mindControllerExt = globals.get_unit_ext(mindController);
+			UnitExt* mindControllerExt = get_unit_ext(mindController);
 			auto& vec = mindControllerExt->unit_vectors[UnitVectorMindControlling];
 			vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
 		}
@@ -1942,7 +1942,7 @@ namespace scbw
 	}
 
 	bool transport_is_full(Unit* transport) {
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
+		UnitExt* transport_ext = get_unit_ext(transport);
 		for (u32 i = 0; i < TransportCap; ++i) {
 			if (!transport_ext->loaded_unit[i].index) {
 				return false;
@@ -1952,7 +1952,7 @@ namespace scbw
 	}
 
 	bool transport_is_empty(Unit* transport) {
-		UnitExt* transport_ext = globals.get_unit_ext(transport);
+		UnitExt* transport_ext = get_unit_ext(transport);
 		for (u32 i = 0; i < TransportCap; ++i) {
 			if (transport_ext->loaded_unit[i].index) {
 				return false;
@@ -2188,7 +2188,7 @@ namespace scbw
 	}
 
 	void update_custom_creep_disappearance(Unit* unit) {
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			helper::update_creep_disappearance_unit_id(UnitId::ZergHive, unit->position.x, unit->position.y, true);
 		}
@@ -2200,7 +2200,7 @@ namespace scbw
 			return;
 		}
 
-		UnitExt* targetExt = globals.get_unit_ext(unit);
+		UnitExt* targetExt = get_unit_ext(unit);
 
 		// Obtain control
 		if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
@@ -2353,7 +2353,7 @@ namespace scbw
 	}
 
 	u32 unit_get_creep_spreader_id(Unit* unit) {
-		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
 			return unit->id;
 		}

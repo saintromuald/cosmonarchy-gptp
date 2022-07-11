@@ -87,7 +87,7 @@ namespace hooks
 	// generic unit training function
 	void order_train(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (!(unit->status & UnitStatus::Frozen)
 			&& !(unit->is_frozen()))
 		{
@@ -126,7 +126,7 @@ namespace hooks
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit != nullptr)
 				{
-					UnitExt* builtUnitExt = globals.get_unit_ext(built_unit);
+					UnitExt* builtUnitExt = get_unit_ext(built_unit);
 					bool extraBuild = false;
 					BuildingModifier modifier = get_building_modifier(unit, 0, false);
 					u32 hpGain = helper::get_hp_gain_for_repair(built_unit) * modifier.multiplier;

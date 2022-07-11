@@ -420,7 +420,7 @@ namespace hooks
 	}
 
 	static f32 get_bonus_armor(Unit* unit, u8 base_armor) {
-		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		f32 bonus_armor = base_armor + unit->get_armor_bonus();
 		bonus_armor -= unit_ext->values[ValueControlledOpposition];
 		bonus_armor -= unit_ext->values[ValueObservanceRend];
@@ -433,7 +433,7 @@ namespace hooks
 
 	const char* get_armor_tooltip_string(Unit* unit)
 	{
-		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 

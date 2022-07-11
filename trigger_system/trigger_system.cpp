@@ -196,7 +196,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 							if (!unit_ids.set[unit->id]) {
 								continue;
 							}
-							UnitExt* unit_ext = globals.get_unit_ext(unit);
+							UnitExt* unit_ext = get_unit_ext(unit);
 							if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota * 24, unit_ext->last_seen_timer[scouting_player - 1])) {
 								count++;
 							}

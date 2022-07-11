@@ -35,7 +35,7 @@ namespace hooks
 		Unit** units_in_area_of_effect = helper::get_all_units_in_bounds(&area_of_effect);
 		Unit* current_unit = *units_in_area_of_effect;
 		while (current_unit) {
-			UnitExt* unit_ext = globals.get_unit_ext(current_unit);
+			UnitExt* unit_ext = get_unit_ext(current_unit);
 			if (current_unit != cloaker																	// Don't cloak self
 			&& !(units_dat::base_property[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
 			&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes

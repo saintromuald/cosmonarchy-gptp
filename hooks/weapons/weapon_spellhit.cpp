@@ -112,7 +112,7 @@ namespace hooks
 			bullet->position.x + radius,
 			bullet->position.y + radius
 		).for_each([&](Unit* target) {
-			UnitExt* targetExt = globals.get_unit_ext(target);
+			UnitExt* targetExt = get_unit_ext(target);
 			targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
 		});
 	}
@@ -216,7 +216,7 @@ namespace hooks
 
 	void MeleeAttackHit(Unit* attacker)
 	{
-		UnitExt* attackerExt = globals.get_unit_ext(attacker);
+		UnitExt* attackerExt = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
 		if (target != nullptr)
 		{
@@ -545,7 +545,7 @@ namespace hooks
 
 				// create the broodling
 				created_broodling = helper::create_unit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->player);
-				UnitExt* broodlingExt = globals.get_unit_ext(created_broodling);
+				UnitExt* broodlingExt = get_unit_ext(created_broodling);
 				broodlingExt->units[UnitBroodlingMother] = attacker;
 
 				if (created_broodling == nullptr)
@@ -596,7 +596,7 @@ namespace hooks
 		//	coords.bottom = y + distance;
 		//	helper::iterate_units_at_location_target_proc_plague(attacker, &coords);
 		//
-		//	UnitExt* attackerExt = globals.get_unit_ext(attacker);
+		//	UnitExt* attackerExt = get_unit_ext(attacker);
 		//	scbw::UnitFinder(
 		//		x - distance,
 		//		y - distance,

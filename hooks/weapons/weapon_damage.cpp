@@ -99,7 +99,7 @@ namespace hooks
 
 	void weapon_damage_root(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.get_unit_ext(data.target);
+		UnitExt* targetExt = get_unit_ext(data.target);
 
 		// The unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible) {
@@ -290,7 +290,7 @@ namespace hooks
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.get_unit_ext(data.target);
+		UnitExt* targetExt = get_unit_ext(data.target);
 
 		// Allied Invincibility Frames
 		if (targetExt->timers[TimerAlliedInvFrames])
@@ -383,11 +383,11 @@ namespace hooks
 
 	static void weapon_damage_behaviors(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.get_unit_ext(data.target);
+		UnitExt* targetExt = get_unit_ext(data.target);
 
 		if (data.attacker)
 		{
-			UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
+			UnitExt* attackerExt = get_unit_ext(data.attacker);
 
 			// Ignore dark swarm!
 			// START
@@ -416,7 +416,7 @@ namespace hooks
 				{
 					halu_attacker = data.attacker->hangar_unit.parent;
 				}
-				UnitExt* halu_attacker_ext = globals.get_unit_ext(halu_attacker);
+				UnitExt* halu_attacker_ext = get_unit_ext(halu_attacker);
 				if (!(halu_attacker->status & UnitStatus::IsHallucination)) {
 					if (scbw::is_allied_to(halu_attacker->player, data.target->player)) {
 						return;
@@ -572,7 +572,7 @@ namespace hooks
 							s32 overlayOffset = scbw::get_overlay_offset(data.target->id);
 							if (data.target->subunit != nullptr)
 							{
-								UnitExt* subunitExt = globals.get_unit_ext(data.target->subunit);
+								UnitExt* subunitExt = get_unit_ext(data.target->subunit);
 								subunitExt->values[ValueDeconstruction]++;
 								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
@@ -790,7 +790,7 @@ namespace hooks
 
 	static void weapon_damage_fatal(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = globals.get_unit_ext(data.target);
+		UnitExt* targetExt = get_unit_ext(data.target);
 		switch (data.weapon_id) {
 			case WeaponId::Plague: {
 				// Plague - Don't kill
@@ -902,7 +902,7 @@ namespace hooks
 					data.target->get_x() + radius,
 					data.target->get_y() + radius
 				).for_each([&](Unit* unit) {
-					UnitExt* unitExt = globals.get_unit_ext(unit);
+					UnitExt* unitExt = get_unit_ext(unit);
 					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
 					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32) {
 						if (scbw::is_allied_to(data.target->player, unit->player)) {
@@ -987,7 +987,7 @@ namespace hooks
 
 		if (data.attacker != nullptr)
 		{
-			UnitExt* attackerExt = globals.get_unit_ext(data.attacker);
+			UnitExt* attackerExt = get_unit_ext(data.attacker);
 			switch (data.weapon_id)
 			{
 				case WeaponId::AlkajeliskPlasmidSpores:
@@ -1067,7 +1067,7 @@ namespace hooks
 
 	u16 get_spores_overlay_id(Unit* target)
 	{
-		UnitExt* targetExt = globals.get_unit_ext(target);
+		UnitExt* targetExt = get_unit_ext(target);
 		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
 		auto overlayMultiplier = 0;
 		if (stacks > 18)
@@ -1088,7 +1088,7 @@ namespace hooks
 	// Hooked to change Corrosive Spores timer - Pr0nogo
 	s32 apply_spores_hook(Unit* target) // 004F4480
 	{
-		UnitExt* targetExt = globals.get_unit_ext(target);
+		UnitExt* targetExt = get_unit_ext(target);
 		targetExt->values[ValueCorrosiveTouchStacks]++;
 		Image* image = target->get_overlay(get_spores_overlay_id(target));
 		u32 overlay = 0;

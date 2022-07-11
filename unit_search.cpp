@@ -290,7 +290,7 @@ void update_search_index() {
 	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		search_index_add(&unit_index, unit->position, unit);
 
-		UnitExt* unit_ext = globals.get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		for (u32 i = 0; i < 8; ++i) {
 			if (unit_ext->seen_by_flags & (1 << i)) {
 				search_index_add(&seen_unit_index[i], unit_ext->last_seen_position[i], unit);

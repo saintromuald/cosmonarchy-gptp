@@ -8,7 +8,7 @@ namespace hooks
 	{
 		u8 armorUpg = 0;
 
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (unitExt->values[ValueSublimeShepherd])
 		{
 			armorUpg += unitExt->values[ValueSublimeShepherd];

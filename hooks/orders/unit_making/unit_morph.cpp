@@ -12,7 +12,7 @@ namespace hooks
 {
 	void orders_zerg_birth(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (!(unit->order_signal & 4))
 		{
 			Image* current_image = unit->sprite->main_graphic;
@@ -122,7 +122,7 @@ namespace hooks
 
 	void orders_morph_1(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (unit->main_order_state == 0)
 		{
 			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))

@@ -222,7 +222,7 @@ namespace hooks
 						town->gas_buildings[1] = 0;
 						town->gas_buildings[2] = 0;
 
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						unitExt->values[ValueAI_WorkerChosenForExpansion] = 1;
 						unitExt->values[ValueAI_WorkerChosenX] = town->position.x;
 						unitExt->values[ValueAI_WorkerChosenY] = town->position.y;

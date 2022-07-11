@@ -15,7 +15,7 @@ namespace hooks
 	// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	void update_unit_energy(Unit* unit) // 004EB4B0
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		// was hardcoded instead of function calling in original code
 		if (unit->is_valid_caster()
@@ -102,7 +102,7 @@ namespace hooks
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	void update_unit_state(Unit* unit) // 004EC290
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		// Timers
 		if (unit->main_order_timer)
@@ -127,7 +127,7 @@ namespace hooks
 			&& unitExt->units[UnitWyvernTargetLock])
 		{
 			Unit* target = unitExt->units[UnitWyvernTargetLock];
-			UnitExt* targetExt = globals.get_unit_ext(target);
+			UnitExt* targetExt = get_unit_ext(target);
 			if (targetExt->timers[TimerOwnerChangedRecently]
 				&& scbw::is_allied_to(unit->player, target->player))
 			{
@@ -662,7 +662,7 @@ namespace hooks
 		}
 		if (first_visible_unit)
 		{
-			UnitExt* unitExt = globals.get_unit_ext(first_visible_unit);
+			UnitExt* unitExt = get_unit_ext(first_visible_unit);
 			do
 			{
 				helper::update_visibility(first_visible_unit);

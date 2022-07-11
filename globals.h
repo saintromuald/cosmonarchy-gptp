@@ -9,6 +9,7 @@
 #include <assert.h>
 #include "scbw\api.h"
 #include "hooks\limits\attack_extender.h"
+#include "data_ext.h"
 
 struct Globals;
 
@@ -114,13 +115,6 @@ struct Globals {
 	std::vector<RevivingUnit> reviving_units;
 	std::unordered_map<Unit*, std::vector<Unit*>> lurker_spine_hits;
 	AttackExtender attackers;
-	UnitExt unitExt[UNIT_ARRAY_LENGTH];
-
-	inline UnitExt* get_unit_ext(Unit* unit) {
-		u32 index = unit->get_unit_index() - 1;
-		assert(unit && index >= 0 && index < UNIT_ARRAY_LENGTH);
-		return &unitExt[index];
-	}
 
 	Globals() {
 		extended_unit_table = 0;

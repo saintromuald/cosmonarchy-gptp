@@ -24,7 +24,7 @@ void Sprite::free()
 {
 	assert(this);
 
-	remove_sprite_ext(this);
+	reset_sprite_ext(this);
 
 	Image* image = this->images.head;
 	s32 sprite_row_position;

@@ -151,7 +151,7 @@ namespace
 
 	void __fastcall cancel_unit_wrapper(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		if (unit->is_dead())
 		{

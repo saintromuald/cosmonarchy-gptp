@@ -167,7 +167,7 @@ namespace hooks
 		}
 		if (hooks::unit_can_have_rally(unit))
 		{
-			UnitExt* unitExt = globals.get_unit_ext(unit);
+			UnitExt* unitExt = get_unit_ext(unit);
 			if (unit->rally.unit == dying)
 			{
 				unit->rally.unit = 0;
@@ -255,7 +255,7 @@ namespace hooks
 							rallyTarget = unit;
 						}
 
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						unit->rally.unit = rallyTarget;
 						unit->rally.pt.x = rallyTarget->sprite->position.x;
 						unit->rally.pt.y = rallyTarget->sprite->position.y;
@@ -267,7 +267,7 @@ namespace hooks
 					{
 						if (hooks::unit_can_have_rally(unit))
 						{
-							UnitExt* unitExt = globals.get_unit_ext(unit);
+							UnitExt* unitExt = get_unit_ext(unit);
 							unit->rally.unit = 0;
 							unit->rally.pt.x = x;
 							unit->rally.pt.y = y;

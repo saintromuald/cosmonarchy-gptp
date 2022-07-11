@@ -109,12 +109,12 @@ void Globals::aise_save()
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.write(reinterpret_cast<char*>(&unitExt[i].damage_receive_timer), sizeof(unitExt[i].damage_receive_timer));
-		stream.write(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
-		stream.write(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
-		stream.write(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
+		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].damage_receive_timer), sizeof(unit_ext_array[i].damage_receive_timer));
+		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].values), sizeof(unit_ext_array[i].values));
+		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].timers), sizeof(unit_ext_array[i].timers));
+		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].units), sizeof(unit_ext_array[i].units));
 
-		for (auto vec : unitExt[i].value_vectors)
+		for (auto vec : unit_ext_array[i].value_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -124,7 +124,7 @@ void Globals::aise_save()
 			}
 		}
 
-		for (auto vec : unitExt[i].timer_vectors)
+		for (auto vec : unit_ext_array[i].timer_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -134,7 +134,7 @@ void Globals::aise_save()
 			}
 		}
 
-		for (auto vec : unitExt[i].unit_vectors)
+		for (auto vec : unit_ext_array[i].unit_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -262,12 +262,12 @@ void Globals::aise_load(const char* ptr, u32 len)
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.read(reinterpret_cast<char*>(&unitExt[i].damage_receive_timer), sizeof(unitExt[i].damage_receive_timer));
-		stream.read(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
-		stream.read(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
-		stream.read(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
+		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].damage_receive_timer), sizeof(unit_ext_array[i].damage_receive_timer));
+		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].values), sizeof(unit_ext_array[i].values));
+		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].timers), sizeof(unit_ext_array[i].timers));
+		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].units), sizeof(unit_ext_array[i].units));
 
-		for (auto vec : unitExt[i].value_vectors)
+		for (auto vec : unit_ext_array[i].value_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -277,7 +277,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 			}
 		}
 
-		for (auto vec : unitExt[i].timer_vectors)
+		for (auto vec : unit_ext_array[i].timer_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -287,7 +287,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 			}
 		}
 
-		for (auto vec : unitExt[i].unit_vectors)
+		for (auto vec : unit_ext_array[i].unit_vectors)
 		{
 			auto vecSize = vec.size();
 			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
@@ -299,76 +299,47 @@ void Globals::aise_load(const char* ptr, u32 len)
 	}
 }
 
-static void clear_unit_ext(int index)
-{
-	globals.unitExt[index] = {};
-	// every unit will starts being out of combat
-	globals.unitExt[index].shield_regen_timer = UINT_MAX;
-	globals.unitExt[index].damage_receive_timer = UINT_MAX;
-	globals.unitExt[index].damage_dealt_timer = UINT_MAX;
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		globals.unitExt[index].last_seen_timer[i] = UINT_MAX;
-	}
-}
-
-void Globals::reset()
-{
+void Globals::reset() {
 	effects.clear();
 	pariah_hits.clear();
 	multihit_bullets.clear();
 	reviving_units.clear();
 	lurker_spine_hits.clear();
-	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
-	{ 
-		clear_unit_ext(i);
-	}
 }
 
-void Globals::unit_death(Unit* unit)
-{
-	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
-	{ // set dead unit pointers to nullptr and erase them from unit vectors
-		UnitExt* ext = &unitExt[j];
+void Globals::unit_death(Unit* unit) {
+	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) { // set dead unit pointers to nullptr and erase them from unit vectors
+		UnitExt* ext = &unit_ext_array[j];
 
-		for (u32 i = 0; i < UnitCount; ++i)
-		{
-			if (ext->units[i] == unit)
-			{
+		for (u32 i = 0; i < UnitCount; ++i) {
+			if (ext->units[i] == unit) {
 				ext->units[i] = nullptr;
 			}
 		}
 
-		for (u32 i = 0; i < UnitVectorCount; ++i)
-		{
+		for (u32 i = 0; i < UnitVectorCount; ++i) {
 			auto& vec = ext->unit_vectors[i];
-			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](Unit* vecUnit)
-			{
+			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](Unit* vecUnit) {
 				return vecUnit == unit;
 			}), vec.end());
 		}
 	}
-	clear_unit_ext(unit->get_unit_index() - 1);
+	reset_unit_ext(unit);
 
-	for (s32 i = 0; i < this->effects.size(); i++)
-	{
+	for (s32 i = 0; i < this->effects.size(); i++) {
 		Effect* effect = &effects[i];
-		if (effect->source == unit)
-		{
+		if (effect->source == unit) {
 			effect->source = nullptr;
 		}
-		if (effect->origin == unit)
-		{
+		if (effect->origin == unit) {
 			effect->origin = nullptr;
 		}
 	}
 
 	lurker_spine_hits[unit].clear();
-	for (auto& a : lurker_spine_hits)
-	{
-		for (s32 b = 0; b < a.second.size(); b++)
-		{
-			if (a.second[b] == unit)
-			{
+	for (auto& a : lurker_spine_hits) {
+		for (s32 b = 0; b < a.second.size(); b++) {
+			if (a.second[b] == unit) {
 				a.second.erase(a.second.begin() + b);
 				b--;
 			}
@@ -428,42 +399,6 @@ void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 
 }
 
 void Globals::frame_hook() {
-	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) {
-		UnitExt* unit_ext = &unitExt[j];
-		if (unit_ext->shield_regen_timer != UINT_MAX) {
-			++unit_ext->shield_regen_timer;
-		}
-		if (unit_ext->damage_receive_timer != UINT_MAX) {
-			++unit_ext->damage_receive_timer;
-		}
-		if (unit_ext->damage_dealt_timer != UINT_MAX) {
-			++unit_ext->damage_dealt_timer;
-		}
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unit_ext->last_seen_timer[i] != UINT_MAX) {
-				++unit_ext->last_seen_timer[i];
-			}
-			if (unit_ext->ai_timer_avoid_targeting[i]) {
-				unit_ext->ai_timer_avoid_targeting[i] -= 1;
-			}
-		}
-		for (u32 i = 0; i < TimerCount; ++i) {
-			if (unit_ext->timers[i] > 0) {
-				unit_ext->timers[i]--;
-			}
-		}
-		for (u32 i = 0; i < TimerVectorCount; ++i) {
-			for (auto& timer : unit_ext->timer_vectors[i]) {
-				if (timer > 0) {
-					timer--;
-				}
-			}
-			unit_ext->timer_vectors[i].erase(std::remove_if(unit_ext->timer_vectors[i].begin(), unit_ext->timer_vectors[i].end(), [&](u32& timer) {
-				return timer == 0;
-			}), unit_ext->timer_vectors[i].end());
-		}
-	}
-
 	// Lazarus Agent and Counter-Proposal
 	for (s32 i = 0; i < reviving_units.size(); ++i) {
 		auto& revivingUnit = reviving_units[i];
@@ -473,7 +408,7 @@ void Globals::frame_hook() {
 			if (g_player_table[revivingUnit.player].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
 				auto revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.player, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
 				if (revived) {
-					UnitExt* revivedExt = globals.get_unit_ext(revived);
+					UnitExt* revivedExt = get_unit_ext(revived);
 					revived->hitpoints = 1;
 					revived->shields = 0;
 					revived->heal_overflow(revivingUnit.hp);
@@ -553,7 +488,7 @@ void Globals::frame_hook() {
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						unit->damage_with_custom(30 * damageMultiplier, DamageType::Impact, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
@@ -568,7 +503,7 @@ void Globals::frame_hook() {
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						unit->damage_with_custom(100 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
@@ -583,7 +518,7 @@ void Globals::frame_hook() {
 						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 							return;
 						}
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						if (!unitExt->timers[TimerHallucinating]) {
 							scbw::apply_new_hallucination(unit, effect->player, effect->current_time);
 						} else {
@@ -632,7 +567,7 @@ void Globals::frame_hook() {
 						break;
 					}
 
-					UnitExt* parentExt = globals.get_unit_ext(effect->origin);
+					UnitExt* parentExt = get_unit_ext(effect->origin);
 					if (!parentExt->values[ValueDisruptionFieldOn]) {
 						effect->current_time = 0;
 						break;
@@ -644,7 +579,7 @@ void Globals::frame_hook() {
 						effect->position.x + 60,
 						effect->position.y + 40
 					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-						UnitExt* unitExt = globals.get_unit_ext(unit);
+						UnitExt* unitExt = get_unit_ext(unit);
 						unitExt->timers[TimerUnderDisruptionField] = 8;
 						unit->status |= UnitStatus::CanNotAttack;
 					});
@@ -903,7 +838,7 @@ namespace scbw
 {
 	void refresh_debuffs(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
@@ -982,8 +917,8 @@ namespace scbw
 
 	void inherit_debuffs(Unit* parent, Unit* child)
 	{
-		UnitExt* parentExt = globals.get_unit_ext(parent);
-		UnitExt* childExt = globals.get_unit_ext(child);
+		UnitExt* parentExt = get_unit_ext(parent);
+		UnitExt* childExt = get_unit_ext(child);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
@@ -1090,7 +1025,7 @@ namespace scbw
 			Sprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
-				UnitExt* subunitExt = globals.get_unit_ext(child->subunit);
+				UnitExt* subunitExt = get_unit_ext(child->subunit);
 				subunitExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
 				sprite = child->subunit->sprite;
 			}
@@ -1181,7 +1116,7 @@ namespace scbw
 
 	// TODO: update
 	bool is_debuffed(Unit* unit) {
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		bool has_parasite = false;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (unitExt->parasite_spawn_count[i]) {
@@ -1207,7 +1142,7 @@ namespace scbw
 	}
 
 	void restore_func(Unit* unit) {
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		Unit* overlayTargetUnit = unit;
 		if (unit->subunit != nullptr)
@@ -1330,7 +1265,7 @@ namespace scbw
 		unit->remove_overlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit)
 		{
-			UnitExt* subunitExt = globals.get_unit_ext(unit->subunit);
+			UnitExt* subunitExt = get_unit_ext(unit->subunit);
 			subunitExt->values[ValueDeconstruction] = 0;
 			unit->subunit->remove_overlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
@@ -1364,7 +1299,7 @@ namespace scbw
 		if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
 			return;
 		}
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (!unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
 			unitExt->values[ValueParasiteArmPlayer] = player;
@@ -1376,7 +1311,7 @@ namespace scbw
 
 	bool is_slowed(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		if (unit->ensnare_timer)
 		{
@@ -1408,7 +1343,7 @@ namespace scbw
 
 	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		// Deconstruction - Pazuzu passive
 		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
@@ -1434,7 +1369,7 @@ namespace scbw
 		{
 			return nullptr;
 		}
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		auto rotate = unitExt->values[valueId];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlayType, unit->sprite->main_graphic->id));
 		u8 frameDirection = unit->sprite->main_graphic->direction;
@@ -1474,12 +1409,12 @@ namespace scbw
 
 	void clear_clarion_links(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		auto& vec = unitExt->unit_vectors[UnitVectorPhaseLink];
 		for (Unit* vecUnit : vec)
 		{
-			UnitExt* vecUnitExt = globals.get_unit_ext(vecUnit);
+			UnitExt* vecUnitExt = get_unit_ext(vecUnit);
 			auto& clarions = vecUnitExt->unit_vectors[UnitVectorPhaseLinkClarions];
 			clarions.erase(std::remove_if(clarions.begin(), clarions.end(),
 			[&](Unit* target)
@@ -1493,7 +1428,7 @@ namespace scbw
 
 	void place_clarion_links(Unit* unit)
 	{
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		auto& link = unitExt->unit_vectors[UnitVectorPhaseLink];
 
 		clear_clarion_links(unit);
@@ -1533,7 +1468,7 @@ namespace scbw
 				link.push_back(target);
 			}
 
-			UnitExt* targetExt = globals.get_unit_ext(target);
+			UnitExt* targetExt = get_unit_ext(target);
 			auto& vec = targetExt->unit_vectors[UnitVectorPhaseLinkClarions];
 			it = std::find(vec.begin(), vec.end(), unit);
 			if (it == vec.end()) {
@@ -1543,7 +1478,7 @@ namespace scbw
 	}
 
 	bool has_clarion_links(Unit* unit) {
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		return unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size();
 	}
 
@@ -1600,7 +1535,7 @@ namespace scbw
 	}
 
 	std::vector<Unit*> get_clarion_links(Unit* unit) {
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 
 		std::unordered_set<Unit*> links = {};
 		auto& clarions = unitExt->unit_vectors[UnitVectorPhaseLinkClarions];
@@ -1608,7 +1543,7 @@ namespace scbw
 			if (!clarion) {
 				continue;
 			}
-			UnitExt* clarionExt = globals.get_unit_ext(clarion);
+			UnitExt* clarionExt = get_unit_ext(clarion);
 			auto link = clarionExt->unit_vectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}

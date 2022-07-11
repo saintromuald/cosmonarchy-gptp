@@ -269,7 +269,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value splitting simulacra more
-	UnitExt* target_ext = globals.get_unit_ext(target);
+	UnitExt* target_ext = get_unit_ext(target);
 	if (target_ext->timers[TimerSimulacrumClone]) {
 		cost -= 5;
 	}
@@ -375,7 +375,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 }
 
 static s32 get_effect_value(Unit* unit, Effect* effect) {
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	s32 value = 0;
 
 	bool flyer = unit->status & UnitStatus::InAir;
@@ -452,7 +452,7 @@ static bool should_kite_back_against(Unit* unit, Unit* target) {
 }
 
 static bool unit_in_combat(Unit* unit, bool strict) {
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->timers[TimerAI_KitingCombat]
 		|| unit_ext->damage_receive_timer < 4 * 24
 		|| unit_ext->damage_dealt_timer < 4 * 24
@@ -599,7 +599,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 }
 
 static bool unit_could_kite(Unit* unit) {
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	bool in_combat = unit_in_combat(unit, false);
 
 	if (unit->id == UnitId::ZergLakizilisk) {
@@ -635,7 +635,7 @@ static bool unit_could_kite(Unit* unit) {
 }
 
 static bool unit_can_kite(Unit* unit) {
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->values[ValueAI_KitingSignal] < 256
 		&& unit->id != UnitId::ProtossAccantor
 		&& unit->id != UnitId::ProtossSolarion) {
@@ -646,7 +646,7 @@ static bool unit_can_kite(Unit* unit) {
 }
 
 static bool unit_kiting_can_attack(Unit* unit) {
-	UnitExt* unit_ext = globals.get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->values[ValueAI_PreventTargeting]) {
 		return false;
 	}
@@ -734,7 +734,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit->get_x() + GroupRadius,
 				unit->get_y() + GroupRadius
 			).for_each([&](Unit* target) {
-				UnitExt* target_ext = globals.get_unit_ext(target);
+				UnitExt* target_ext = get_unit_ext(target);
 				if (!target_match(target) || !unit->can_attack_target(target, true)
 					|| !target->is_visible_to(unit->player) || target_ext->ai_timer_avoid_targeting[unit->player]) {
 					return;
@@ -799,7 +799,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			//} else {
 			//	u32 signal_sum = 0;
 			//	local_group.for_each([&](Unit* local_unit) {
-			//		UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
+			//		UnitExt* local_unit_ext = get_unit_ext(local_unit);
 			//		if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
 			//			signal_sum += 1;
 			//		}
@@ -818,7 +818,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 				if (!result.targets_found) {			
 					local_group.for_each([&](Unit* local_unit) {
-						UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
+						UnitExt* local_unit_ext = get_unit_ext(local_unit);
 						local_unit_ext->timers[TimerAI_KitingCooldown] = 4;
 						local_unit_ext->timers[TimerAI_KitingLeash] = 0;
 						local_unit_ext->values[ValueAI_KitingSignal] = 0;
@@ -829,7 +829,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 				if (update_sync) {
 					local_group.for_each([&](Unit* local_unit) {
-						UnitExt* local_unit_ext = globals.get_unit_ext(local_unit);
+						UnitExt* local_unit_ext = get_unit_ext(local_unit);
 						local_unit_ext->timers[TimerAI_KitingSync] = 24;
 					});
 				}
@@ -999,7 +999,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				s32 count = 0;
 				cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
 				{
-					UnitExt* uExt = globals.get_unit_ext(u);
+					UnitExt* uExt = get_unit_ext(u);
 					if (uExt->values[ValueLazarusAgent] != 1)
 					{
 						count++;
@@ -1024,7 +1024,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 			f32 furiaDamagePotential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
 			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 			if (unit->order_target.unit) {
-				UnitExt* target_ext = globals.get_unit_ext(unit->order_target.unit);
+				UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
 				furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 			}
 			f32 dirgeDamagePotential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
@@ -1076,7 +1076,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				if (enemy_count >= 2) {
 					s32 count = 0;
 					cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally | Flags::CanAttackOrCast, {}, [&](Unit* u) {
-						UnitExt* uExt = globals.get_unit_ext(u);
+						UnitExt* uExt = get_unit_ext(u);
 						if (!uExt->values[TimerEnsnaringBrood]) {
 							count++;
 						}
@@ -1171,7 +1171,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				u32 totalCount = vec.size();
 				u32 inCombatCount = 0;
 				for (Unit* worshiper : vec) {
-					UnitExt* worshiperExt = globals.get_unit_ext(worshiper);
+					UnitExt* worshiperExt = get_unit_ext(worshiper);
 					if (worshiperExt->damage_dealt_timer < 4 * 24 || worshiperExt->damage_receive_timer < 4 * 24)
 					{
 						inCombatCount++;

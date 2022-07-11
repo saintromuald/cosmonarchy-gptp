@@ -46,7 +46,7 @@ void augur_proc(Unit* augur, s32 radius) {
 
 void augur_sacrifice(Unit* augur, s32 radius)
 {
-	UnitExt* targetExt = globals.get_unit_ext(augur);
+	UnitExt* targetExt = get_unit_ext(augur);
 	if (targetExt->values[ValueAugurSafetyCheck] == 0)
 	{
 		targetExt->values[ValueAugurSafetyCheck] = 1;
@@ -140,7 +140,7 @@ void free_resource_container(Unit* resource)
 
 void unit_destructor_special_cases(Unit* unit)
 {
-	UnitExt* unitExt = globals.get_unit_ext(unit);
+	UnitExt* unitExt = get_unit_ext(unit);
 	unit->reset_supply_provided();
 
 	/*
@@ -253,7 +253,7 @@ void unit_destructor_special_cases(Unit* unit)
 					unit->get_y() + range
 				).for_each([&](Unit* target)
 					{
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						if (!scbw::is_allied_to(unit->player, target->player))
 						{
 							return;
@@ -263,7 +263,7 @@ void unit_destructor_special_cases(Unit* unit)
 						
 						if (target->subunit != nullptr)
 						{
-							UnitExt* subunitExt = globals.get_unit_ext(target->subunit);
+							UnitExt* subunitExt = get_unit_ext(target->subunit);
 							subunitExt->values[ValueTerminalSurge]++;
 						}
 					});

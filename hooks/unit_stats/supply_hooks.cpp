@@ -420,7 +420,7 @@ namespace hooks
 
     void increment_unit_scores_ex(s32 count, Unit* unit, s32 increment_scores) // 00488D50
     {
-        UnitExt* unitExt = globals.get_unit_ext(unit);
+        UnitExt* unitExt = get_unit_ext(unit);
 
         if (unit->status & UnitStatus::IsHallucination)
         {

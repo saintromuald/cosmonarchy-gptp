@@ -460,7 +460,7 @@ namespace hooks
 			}
 		}
 
-		UnitExt* unitExt = globals.get_unit_ext(unit);
+		UnitExt* unitExt = get_unit_ext(unit);
 		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (unit->is_visible_to(i)) {
@@ -529,7 +529,7 @@ namespace hooks
 					Unit* target = unit->order_target.unit;
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
-							UnitExt* targetExt = globals.get_unit_ext(target);
+							UnitExt* targetExt = get_unit_ext(target);
 							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
 							
 							u32 time = units_dat::time_cost[target->id] / 2;
@@ -671,7 +671,7 @@ namespace hooks
 							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
 							egg->build_queue[egg->build_queue_slot] = UnitId::ZergSovroleth;
 
-							UnitExt* eggExt = globals.get_unit_ext(egg);
+							UnitExt* eggExt = get_unit_ext(egg);
 							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
 						}
 						corpse->sprite->flags |= SpriteFlags::Flag04;
@@ -845,7 +845,7 @@ namespace hooks
 						if (n(picked_unit))
 						{
 							// Apply Lazarus Agent
-							UnitExt* pickedUnitExt = globals.get_unit_ext(picked_unit);
+							UnitExt* pickedUnitExt = get_unit_ext(picked_unit);
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
 							picked_unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
@@ -1147,7 +1147,7 @@ namespace hooks
 						{
 							target->remove_overlay(ImageId::EnsnaringBroodOverlay);
 						}
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
 						target->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
 					});
@@ -1177,7 +1177,7 @@ namespace hooks
 				if (unitExt->values[ValueGodsMadeFleshActive])
 				{
 					for (Unit* target : unitExt->unit_vectors[UnitVectorWorshipersDemiurge]) {
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						targetExt->timers[TimerGodsMadeFlesh] = 3;
 						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
 						if (!target->get_overlay(overlay)) {
@@ -1233,7 +1233,7 @@ namespace hooks
 						unit->get_x() + radius,
 						unit->get_y() + radius
 					).for_each_in_match(match, [&](Unit* target) {
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						targetExt->timers[TimerAnticthonRevive] = 2;
 					});
 				}
@@ -1253,7 +1253,7 @@ namespace hooks
 					u32 dist = scbw::get_distance_fast(unit->position, target->position);
 					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
 					{
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						if (!(units_dat::base_property[target->id] & UnitProperty::Building)
 							&& targetExt->timers[TimerAnthelionGravityWell])
 						{
@@ -1334,7 +1334,7 @@ namespace hooks
 				{
 					if ((!scbw::is_allied_to(unit->player, target->player)))
 					{
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						if (!targetExt->timers[TimerObservanceDebuff])
 						{
 							unitExt->timers[TimerObservanceOverlay] = 2;
@@ -1368,7 +1368,7 @@ namespace hooks
 						{
 							return;
 						}
-						UnitExt* targetExt = globals.get_unit_ext(target);
+						UnitExt* targetExt = get_unit_ext(target);
 						targetExt->values[ValueHasSublimeShepherd] = 1;
 					});
 			} break;
@@ -1736,7 +1736,7 @@ namespace hooks
 				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
 					&& units_dat::base_property[target->id] & UnitProperty::Building && !(units_dat::base_property[target->id] & UnitProperty::Addon
 					&& unit->player != target->player && !scbw::is_allied_to(unit->player, target->player))) {
-					UnitExt* target_ext = globals.get_unit_ext(target);
+					UnitExt* target_ext = get_unit_ext(target);
 
 					for (u32 i = 0; i < 8; ++i) {
 						if (scbw::is_allied_to(i, unit->player)) {
@@ -1839,7 +1839,7 @@ namespace hooks
 					{
 						continue;
 					}
-					UnitExt* seraphExt = globals.get_unit_ext(seraph);
+					UnitExt* seraphExt = get_unit_ext(seraph);
 					if (seraphExt->timers[TimerObservanceOverlay] == 0)
 					{
 						seraph->sprite->create_overlay(ImageId::SeraphRedOverlay);
@@ -2020,7 +2020,7 @@ namespace hooks
 			for (u32 i = 0; i < arr.count; i++)
 			{
 				Unit* target = arr.units[i];
-				UnitExt* target_ext = globals.get_unit_ext(target);
+				UnitExt* target_ext = get_unit_ext(target);
 				if (scbw::unit_id_is_tech(target->id)) {
 					if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 						continue;
@@ -2039,7 +2039,7 @@ namespace hooks
 					continue;
 				}
 
-				UnitExt* targetExt = globals.get_unit_ext(target);
+				UnitExt* targetExt = get_unit_ext(target);
 				auto& vec = targetExt->unit_vectors[UnitVectorCrucibles];
 				if (std::find(vec.begin(), vec.end(), unit) == vec.end())
 				{
