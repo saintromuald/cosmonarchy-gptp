@@ -561,17 +561,27 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 player = parser_get_player(&parser);
 			Point16 position = parser_get_position(&parser);
 
-			g_start_positions[player] = position;
+			if (player) {
+				player -= 1;
+				g_start_positions[player] = position;
+			}
 		} else if (parser_eq(&parser, "set_race")) {
 			u32 player = parser_get_player(&parser);
 			u32 race = parser_get_enum(&parser, race_names, ARRAY_SIZE(race_names));
 
-			g_player_table[player].race = race;
+			if (player) {
+				player -= 1;
+				g_player_table[player].race = race;
+			}
 		} else if (parser_eq(&parser, "set_player_color")) {
 			u32 player = parser_get_player(&parser);
 			u32 player_color = parser_get_enum(&parser, playerColorNames, ARRAY_SIZE(playerColorNames));
 
-			set_player_color(player, player_color);
+			if (player) {
+				player -= 1;
+				set_player_color(player, player_color);
+				scbw::printf("Set color of %u to %s (%u)", player + 1, playerColorNames[player_color], player_color);
+			}
 		}
 	}
 
