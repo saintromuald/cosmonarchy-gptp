@@ -324,7 +324,14 @@ void Globals::unit_death(Unit* unit) {
 			}), vec.end());
 		}
 	}
+
 	reset_unit_ext(unit);
+	if (unit->sprite) {
+		SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
+		if (sprite_ext->owner == unit) {
+			sprite_ext->owner = 0;
+		}
+	}
 
 	for (s32 i = 0; i < this->effects.size(); i++) {
 		Effect* effect = &effects[i];

@@ -443,6 +443,37 @@ namespace IscriptAnimation
 	};
 }
 
+static const char* animation_type_names[] = {
+	"Init",
+	"Death",
+	"GndAttkInit",
+	"AirAttkInit",
+	"Unused1",
+	"GndAttkRpt",
+	"AirAttkRpt",
+	"CastSpell",
+	"GndAttkToIdle",
+	"AirAttkToIdle",
+	"Unused2",
+	"Walking",
+	"WalkingToIdle",
+	"SpecialState1",
+	"SpecialState2",
+	"AlmostBuilt",
+	"Built",
+	"Landing",
+	"LiftOff",
+	"IsWorking",
+	"WorkingToIdle",
+	"WarpIn",
+	"Unused3",
+	"StarEditInit",
+	"Disable",
+	"Burrow",
+	"UnBurrow",
+	"Enable"
+};
+
 namespace CheatFlags
 {
 	enum Enum

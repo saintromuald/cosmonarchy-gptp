@@ -460,6 +460,11 @@ namespace hooks
 			}
 		}
 
+		if (unit->sprite) {
+			SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
+			sprite_ext->owner = unit;
+		}
+
 		UnitExt* unitExt = get_unit_ext(unit);
 		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {

@@ -47,15 +47,20 @@ s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
 }
 
 void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
+	Sprite* sprite = image->parent_sprite;
+	SpriteExt* sprite_ext = get_sprite_ext(image->parent_sprite);
 	bool replace = false;
 	for (u32 i = 0; i < sound_replacements_count; ++i) {
 		SoundReplacement* sound_replacement = &sound_replacements[i];
-		if ((sound_replacement->any_sound || sound_replacement->old_sound_id == sound_id) &&
-			sound_replacement->image_id  == image->id &&
-			sound_replacement->animation == image->animation &&
-			sound_replacement->player	 == image->parent_sprite->player) {
 
-			play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(image->parent_sprite->position));
+		Unit* unit = sprite_ext->owner;
+		if (unit && sprite->main_graphic == image &&
+			(sound_replacement->any_sound || sound_replacement->old_sound_id == sound_id) &&
+			sound_replacement->unit_id   == unit->id &&
+			sound_replacement->animation == image->animation &&
+			sound_replacement->player	 == unit->player) {
+
+			play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(sprite->position));
 
 			if (sound_replacement->replace) {
 				replace = true;
@@ -64,7 +69,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 	}
 
 	if (!replace) {
-		helper::play_sound_at_pos(sound_id, image->parent_sprite->position, 1, 0);
+		helper::play_sound_at_pos(sound_id, sprite->position, 1, 0);
 	}
 }
 
