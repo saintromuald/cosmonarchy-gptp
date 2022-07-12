@@ -322,7 +322,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			recolor_system.target_recolor = recolor;
 			if (!recolor.time) {
 				recolor_system.current_recolor = recolor;
-				set_palette_recolor(recolor.set);
+				if (*g_elapsed_time_frames != 0) {
+					set_palette_recolor(recolor.set);
+				}
 			}
 		} else if (parser_eq(&parser, "recolor_loop_add") && is_local_player) {
 			TimedRecolor recolor = {};
