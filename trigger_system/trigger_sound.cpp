@@ -313,6 +313,7 @@ void play_sound(Sound* sound, s32 volume) {
 
 void resume_music() {
 	if (playback.current_music && playback.current_music->ds_buffer) {
+		playback.current_music->ds_buffer->SetVolume(get_playback_volume());
 		playback.current_music->ds_buffer->Play(0, 0, 0);
 	}
 }
@@ -365,7 +366,7 @@ s32 get_sound_volume_at_pos(Point16 pos) {
 }
 
 s32 get_playback_volume() {
-	if (playback.fade == 0 || playback.volume == 0 || *g_elapsed_time_frames == 0) {
+	if (playback.fade == 0 || playback.volume == 0) {
 		return DSBVOLUME_MIN;
 	}
 
