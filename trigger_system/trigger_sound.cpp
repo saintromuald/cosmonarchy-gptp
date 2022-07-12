@@ -355,7 +355,6 @@ s32 get_sound_volume() {
 
 s32 get_sound_volume_at_pos(Point16 pos) {
 	u32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
-	scbw::printf("%u %i", index, index);
 	if (*use_quiet_sounds) {
 		index /= 5;
 	}
