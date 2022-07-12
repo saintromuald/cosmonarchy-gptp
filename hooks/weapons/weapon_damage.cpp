@@ -260,7 +260,7 @@ namespace hooks
 		{
 			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
-			if (!data.target->hitpoints) {
+			if (!data.target->hitpoints && data.attackingPlayerId != data.target->player) {
 				helper::unit_attack_notify(data.target);
 			}
 		}
