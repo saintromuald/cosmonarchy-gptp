@@ -27,6 +27,7 @@ void init_trigger_system() {
 	trigger_system_init = true;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
+	trigger_game_paused = false;
 	sound_replacements_count = 0;
 	memset(sound_replacements, 0, sizeof(sound_replacements));
 
@@ -36,9 +37,9 @@ void init_trigger_system() {
 	memset(trigger_kills, 0, sizeof(trigger_kills));
 	memset(trigger_deaths, 0, sizeof(trigger_deaths));
 
+	init_recolors();
 	init_objectives();
 	init_sound();
-	init_recolors();
 	init_spawn();
 }
 

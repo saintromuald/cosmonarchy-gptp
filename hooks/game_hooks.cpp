@@ -2169,10 +2169,6 @@ namespace hooks
 
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
-		
-		RecolorSet set = default_recolor_set();
-		set.recolors[0].gamma = 0;
-		set_palette_recolor(set);
 
 		return true;
 	}
