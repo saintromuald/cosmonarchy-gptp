@@ -354,7 +354,15 @@ s32 get_sound_volume() {
 }
 
 s32 get_sound_volume_at_pos(Point16 pos) {
-	return g_big_volume_array[helper::get_sfx_volume_from_screen_distance(pos.x, pos.y) * options_list->sfx / 100];
+	u32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
+	scbw::printf("%u %i", index, index);
+	if (*use_quiet_sounds) {
+		index /= 5;
+	}
+	if (index <= 10) {
+		return DSBVOLUME_MIN;
+	}
+	return g_big_volume_array[index * options_list->sfx / 100];
 }
 
 s32 get_playback_volume() {

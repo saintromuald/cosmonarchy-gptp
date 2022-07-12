@@ -220,16 +220,16 @@ b32 parse_comment_condition(TriggerAction* action) {
 					if (center.x >= area.x && center.y <= area.x + area.w &&
 						center.x >= area.y && center.y <= area.y + area.h) {
 						ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
-						if (token_eqi(&min_visibility, "visible")) {
-							if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
-								return true;
-							}
+						if (token_eqi(&min_visibility, "unexplored")) {
+							return true;
 						} else if (token_eqi(&min_visibility, "explored")) {
 							if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
 								return true;
 							}
-						} else if (token_eqi(&min_visibility, "unexplored") || true) {
-							return true;
+						} else if (token_eqi(&min_visibility, "visible") || true) {
+							if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
+								return true;
+							}
 						}
 					}
 					return false;
@@ -482,12 +482,30 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token path = parser_get_string(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			Point16 position = parser_get_position(&parser);
+			Token min_visibility = parser_get_word(&parser);
 
 			if (trigger_player < PlayerLimit && players.set[trigger_player]) {
 				if (position.x == 0 && position.y == 0) {
 					play_sound(get_sound(path.data), get_sound_volume());
 				} else {
-					play_sound(get_sound(path.data), get_sound_volume_at_pos(position));
+					bool play = false;
+					ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
+
+					if (token_eqi(&min_visibility, "unexplored")) {
+						play = true;
+					} else if (token_eqi(&min_visibility, "explored")) {
+						if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
+							play = true;
+						}
+					} else if (token_eqi(&min_visibility, "visible") || true) {
+						if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
+							play = true;
+						}
+					}
+
+					if (play) {
+						play_sound(get_sound(path.data), get_sound_volume_at_pos(position));
+					}
 				}
 			}
 		// Gameplay Actions
