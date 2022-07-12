@@ -446,14 +446,14 @@ namespace IscriptAnimation
 static const char* animation_type_names[] = {
 	"Init",
 	"Death",
-	"GndAttkInit",
-	"AirAttkInit",
+	"GroundAttackInit",
+	"AirAttackInit",
 	"Unused1",
-	"GndAttkRpt",
-	"AirAttkRpt",
+	"GroundAttackRepeat",
+	"AirAttackRepeat",
 	"CastSpell",
-	"GndAttkToIdle",
-	"AirAttkToIdle",
+	"GroundAttackToIdle",
+	"AirAttackToIdle",
 	"Unused2",
 	"Walking",
 	"WalkingToIdle",
@@ -470,7 +470,7 @@ static const char* animation_type_names[] = {
 	"StarEditInit",
 	"Disable",
 	"Burrow",
-	"UnBurrow",
+	"Unburrow",
 	"Enable"
 };
 
@@ -1044,7 +1044,7 @@ static const char* playerColorNames[] =
 	"Japanese Violet",
 	"Dark Spring Green",
 	"Golden Brown",
-	"B'dazzled Blue",
+	"Bdazzled Blue",
 	"Coyote Brown",
 	"Midnight Green",
 	"Patriotic Freedom",
