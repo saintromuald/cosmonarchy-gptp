@@ -6,10 +6,12 @@ RecolorSystem recolor_system;
 void init_recolors() {
 	memset(&recolor_system, 0, sizeof(recolor_system));
 	recolor_system.current_recolor.set = default_recolor_set();
-	set_palette_recolor(recolor_system.current_recolor.set);
 }
 
 void update_recolors() {
+	if (*g_elapsed_time_frames == 0) {
+		set_palette_recolor(recolor_system.current_recolor.set);
+	}
 	if (recolor_system.recolor_time < recolor_system.target_recolor.time) {
 		recolor_system.recolor_time += 1.0 / 24; // Tick Time for Brood War
 

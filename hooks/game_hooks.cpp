@@ -253,12 +253,12 @@ namespace hooks
 		}
 
 		// Map Features
-		scbw::set_ingame_loop_state(true);
 		if (*g_elapsed_time_frames == 0 || *g_elapsed_time_frames == 15) {
+			scbw::set_ingame_loop_state(true);
 			load_player_colors();
 			load_player_names();
+			scbw::set_ingame_loop_state(false);
 		}
-		scbw::set_ingame_loop_state(false);
 
 		if (*g_elapsed_time_frames == 1) {
 			u32 local_flags = g_unit_deaths[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
