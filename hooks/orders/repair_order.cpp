@@ -22,11 +22,11 @@ namespace hooks
 
 		switch (unit->main_order_state) {
 			case 0: {
-				s16 unkRepairInfo = 0;
-				u32 repairCostMinerals = 0, repairCostGas = 0;
+				//s16 unkRepairInfo = 0;
+				//u32 repairCostMinerals = 0, repairCostGas = 0;
 
-				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
+				//helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+				//helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
 
 				unit->worker.repair_resource_loss_timer = 0;
 				unit->main_order_state = 1; // continue directly into this case
@@ -108,17 +108,25 @@ namespace hooks
 				do_repair = helper::subtract_repair_resources(unit, target); // This function calls get_repair_info which has some dumb handling that we might need.
 				if (!do_repair)
 				{
-					unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
-					if (unit->order_queue_head) {
-						helper::force_order_done(unit);
-					} else {
-						unit->main_order_state = 1;
-					}
-					return;
+					//unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
+					//if (unit->order_queue_head) {
+					//	helper::force_order_done(unit);
+					//} else {
+					//	unit->main_order_state = 1;
+					//}
+					//return;
 				}
 			} else {
-				unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] -= 1;
-				do_repair = true;
+				s16 unkRepairInfo = 0;
+				u32 repairCostMinerals = 0, repairCostGas = 0;
+
+				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+
+				if (repairCostMinerals <= g_game_minerals[unit->player] &&
+					repairCostGas      <= g_game_vespene[unit->player]) {
+					unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] -= 1;
+					do_repair = true;
+				}
 			}
 		}
 		if (do_repair) {
