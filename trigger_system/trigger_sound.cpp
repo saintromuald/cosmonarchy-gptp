@@ -216,8 +216,7 @@ Sound* load_sound(char* filename) {
 					at += data->chunk_size + 8;
 
 					sound_load_data.size = data->chunk_size;
-					sound_load_data.data = (s16*)calloc(1, sound_load_data.size);
-					memcpy(sound_load_data.data, data + 1, sound_load_data.size);
+					sound_load_data.data = (s16*)data + 1;
 				} break;
 				case RiffFormat_Fmt: {
 					WaveFormat* format = (WaveFormat*) at;
@@ -235,15 +234,12 @@ Sound* load_sound(char* filename) {
 				} break;
 			}
 		}
-		free_loaded_file(&file);
 
 		Sound* sound = &loaded_sounds[loaded_sounds_count++];
 		strcpy_s(sound->path, filename);
 
 		load_ds_buffer(sound, &sound_load_data);
-		if (sound_load_data.data) {
-			free(sound_load_data.data);
-		}
+		free_loaded_file(&file);
 
 		u32 hash_index = hash_string(filename) % MaxSoundHash;
 		sound->hash_next = loaded_sounds_hash_table[hash_index];
