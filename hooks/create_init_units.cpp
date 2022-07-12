@@ -342,6 +342,13 @@ namespace hooks
 		}
 		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
 		if (flags & ChkUnitFlags_Lifted) {
+			char* race_name = "Some Junk";
+			switch (g_player_table[chkunit->player].race) {
+				case RaceId::Terran:  race_name = "Terran";
+				case RaceId::Protoss: race_name = "Protoss";
+				case RaceId::Zerg:    race_name = "Zerg";
+			}
+			scbw::printf("Lifted unit %s checked for player race %s (%u)", Unit::get_name(chkunit->unit_id), race_name, g_player_table[chkunit->player].race);
 			if (!scbw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
 				return 0;
 			}
