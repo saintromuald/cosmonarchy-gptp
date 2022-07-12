@@ -33,6 +33,7 @@ extern u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][Playe
 extern u32 trigger_kills[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 extern u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
 
+void init_trigger_system();
 void update_trigger_system(bool in_game);
 
 b32 parse_comment_condition(TriggerAction* action);

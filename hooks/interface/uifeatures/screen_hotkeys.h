@@ -4,7 +4,7 @@
 
 namespace hooks
 {
-	void initalize_screen_locations();
+	void init_screen_locations();
 	s32 saveScreenLocation(s32 id);
 	s32 recallScreenLocation(s32 id);
 	bool screenLocationSwitchCase(s32 n);

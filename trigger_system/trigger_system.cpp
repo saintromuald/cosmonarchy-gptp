@@ -23,7 +23,7 @@ u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit]
 u32 trigger_kills[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
 u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
 
-static void init_trigger_system() {
+void init_trigger_system() {
 	trigger_system_init = true;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
@@ -43,7 +43,7 @@ static void init_trigger_system() {
 }
 
 void update_trigger_system(bool in_game) {
-	if (!trigger_system_init || (in_game && *g_elapsed_time_frames == 0)) {
+	if (!trigger_system_init) {
 		init_trigger_system();
 	}
 

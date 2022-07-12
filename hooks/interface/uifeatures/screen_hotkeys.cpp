@@ -11,7 +11,7 @@ namespace
 
 namespace hooks
 {
-	void initalize_screen_locations()
+	void init_screen_locations()
 	{
 		for (Point16& point : screen_hotkeys)
 		{

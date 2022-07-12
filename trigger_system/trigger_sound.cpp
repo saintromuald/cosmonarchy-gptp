@@ -1,5 +1,5 @@
 #include "trigger_sound.h"
-#include "utils.h"
+#include "trigger_utils.h"
 
 static LPDIRECTSOUND direct_sound;
 static LPDIRECTSOUNDBUFFER duplicated_buffers[MaxDupChannels];

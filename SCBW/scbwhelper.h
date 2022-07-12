@@ -17,6 +17,7 @@ namespace helper {
 	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
 	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
 	SCBW_FUNC(0x00425B50, void __stdcall, draw_unit_status_string, BinDlg* dialog);
+	SCBW_FUNC(0x0048A460, void __stdcall, execute_all_game_triggers, u32 ms_per_frame);
 
 	bool has_money_can_make(Unit* builder, u32 unitToBuild);
 

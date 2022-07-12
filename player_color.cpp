@@ -3,6 +3,7 @@
 
 static bool loaded_colors;
 static bool can_randomize_player_colors;
+static bool has_custom_color[PlayerLimit];
 static u8 tminimap_colors[MinimapColorCount];
 static u8 tunit_colors[UnitColorCount];
 static u8 player_color_list[PLAYABLE_PLAYER_COUNT];
@@ -14,7 +15,7 @@ static u32 get_random_tint();
 static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
 
-static bool is_player_randomizable(u32 player) {
+static bool player_wants_to_randomize(u32 player) {
 	if (can_randomize_player_colors) {
 		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
 		if (g_death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
@@ -23,6 +24,18 @@ static bool is_player_randomizable(u32 player) {
 		return randomize;
 	}
 	return false;
+}
+
+static bool player_can_randomize(u32 player) {
+	u32 personality = g_unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
+	if (has_custom_color[player]) {
+		return false;
+	}
+	if (g_player_table[player].type == PlayerType::Computer && !personality) {
+		return false; // Don't randomize AI players that don't have personality yet
+	}
+	return true;
+
 }
 
 static std::vector<u32> get_player_tints_from_color(u32 color) {
@@ -63,7 +76,10 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 		}
 	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-		if (other_player != player && (other_player < player || !is_player_randomizable(other_player))) {
+		if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
+			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
+				continue;
+			}
 			for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
 				if (color_tint == other_tint) {
 					return false;
@@ -140,12 +156,14 @@ static void match_color_of(u32 player) {
 		}
 		if (match) {
 			set_player_color(player, color);
+			has_custom_color[player] = false;
 			break;
 		}
 	}
 }
 
 void set_player_color(u32 player, u32 color) {
+	has_custom_color[player] = true;
 	player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
@@ -153,19 +171,19 @@ void set_player_color(u32 player, u32 color) {
 	}
 }
 
-static void load_color_tables() {
+static void init_player_colors() {
 	if (!loaded_colors) {
 		loaded_colors = true;
 		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MinimapColorCount, 0, 0, 0);
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
 	}
+	memset(has_custom_color, 0, sizeof(has_custom_color));
 }
 
 void load_player_colors() {
-	load_color_tables();
 	can_randomize_player_colors = has_enough_colors();
 	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; ++player) {
-		if (is_player_randomizable(player)) {
+		if (player_wants_to_randomize(player) && player_can_randomize(player)) {
 			randomize_player_color(player);
 		} else {
 			match_color_of(player);
@@ -186,7 +204,7 @@ static bool is_valid_name(u32 player, char* name) {
 	if (!name) {
 		return false;
 	}
-	for (u32 i = 0; i < 8; ++i) {
+	for (u32 i = 0; i < PlayerLimit; ++i) {
 		if (i != player && can_get_player_name(i)) {
 			if (strcmp(g_player_name_list->player[i].player_name, name) == 0) {
 				return false;
@@ -241,7 +259,7 @@ static void update_player_name(u32 player) {
 }
 
 void load_player_names() {
-	for (u32 i = 0; i < 8; ++i) {
+	for (u32 i = 0; i < PlayerLimit; ++i) {
 		update_player_name(i);
 	}
 }

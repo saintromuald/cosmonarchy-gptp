@@ -57,8 +57,10 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 
 namespace hooks
 {
-	void tick_unit(Unit* unit, bool unit_is_hidden);
 	static bool game_inited;
+
+	void tick_unit(Unit* unit, bool unit_is_hidden);
+
 	void next_ui_frame() {
 		if (!game_inited) {
 			game_inited = true;
@@ -190,7 +192,9 @@ namespace hooks
 		if (disable_quickbuilding && !*g_is_placing_building) {
 			disable_quickbuilding--;
 		}
-		update_trigger_system(true);
+
+		s32* trigger_cooldown = (s32*)0x006509A0;
+		*trigger_cooldown = 0; // Single frame hypertriggers
 
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {
@@ -198,7 +202,7 @@ namespace hooks
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
-			hooks::initalize_screen_locations();
+			hooks::init_screen_locations();
 			hooks::clear_actions();
 			globals.reset();
 			init_ext_variables();
@@ -216,16 +220,24 @@ namespace hooks
 					}
 				}
 			}
+			
+			// Init Extended Features
+			init_player_colors();
+			init_trigger_system();
+			init_layouts();
+			init_custom_ai();
+
+			// Execute Triggers before frame 0
+			scbw::set_ingame_loop_state(true);
+			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[options_list->speed]);
+			scbw::set_ingame_loop_state(false);
 		}
 
-		// Extended Features
+		// Update Extended Features
 		scbw::set_ingame_loop_state(true);
-		if (*g_elapsed_time_frames == 0) {
-			init_custom_ai();
-			init_layouts();
-		}
-		update_custom_ai();
+		update_trigger_system(true);
 		update_layouts();
+		update_custom_ai();
 		scbw::set_ingame_loop_state(false);
 
 		if (*g_elapsed_time_frames % 2 == 0)
@@ -242,15 +254,13 @@ namespace hooks
 
 		// Map Features
 		scbw::set_ingame_loop_state(true);
-		if (*g_elapsed_time_frames == 1) {
+		if (*g_elapsed_time_frames == 0 || *g_elapsed_time_frames == 15) {
 			load_player_colors();
-		}
-		if (*g_elapsed_time_frames == 0 || *g_elapsed_time_frames == 24) {
 			load_player_names();
 		}
 		scbw::set_ingame_loop_state(false);
 
-		if (*g_elapsed_time_frames == 2) {
+		if (*g_elapsed_time_frames == 1) {
 			u32 local_flags = g_unit_deaths[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
@@ -331,8 +341,6 @@ namespace hooks
 			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
 			graphics::reset_all_graphics();
 			hooks::update_psi_field_providers();
-			const u32 hyperTrigger = 0x006509A0;
-			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
 			// Scenario Features
 			if (*g_elapsed_time_frames == 1) {

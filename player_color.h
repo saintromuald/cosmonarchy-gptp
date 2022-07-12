@@ -423,18 +423,6 @@ const std::vector<std::vector<std::vector<u32>>> personality_colors =
 	},
 };
 
-#define ColorSetCount 256
-#define MinimapColorCount (ColorSetCount * TilesetType::Count)
-#define UnitColorCount 2048
-
-extern u8 tminimap_colors[MinimapColorCount];
-extern u8 tunit_colors[UnitColorCount];
-extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
-
-void set_player_color(u32 player, u32 color);
-void load_color_tables();
-void load_player_colors();
-
 // Feel free to modify this to suit your needed amount of names per personality
 // (you can also specify less names than this maximum)
 #define PlayerPesonalityMaxNames 8
@@ -617,6 +605,18 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		},
 	},
 };
+
+#define ColorSetCount 256
+#define MinimapColorCount (ColorSetCount * TilesetType::Count)
+#define UnitColorCount 2048
+
+extern u8 tminimap_colors[MinimapColorCount];
+extern u8 tunit_colors[UnitColorCount];
+extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+
+void set_player_color(u32 player, u32 color);
+void init_player_colors();
+void load_player_colors();
 
 void load_player_names();
 void set_player_name(u32 player, char* name);

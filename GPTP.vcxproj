@@ -580,7 +580,7 @@
     <ClCompile Include="trigger_system\trigger_recolor.cpp" />
     <ClCompile Include="trigger_system\trigger_spawn.cpp" />
     <ClCompile Include="trigger_system\trigger_system.cpp" />
-    <ClCompile Include="trigger_system\utils.cpp" />
+    <ClCompile Include="trigger_system\trigger_utils.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
@@ -693,7 +693,7 @@
     <ClInclude Include="trigger_system\trigger_recolor.h" />
     <ClInclude Include="trigger_system\trigger_spawn.h" />
     <ClInclude Include="trigger_system\trigger_system.h" />
-    <ClInclude Include="trigger_system\utils.h" />
+    <ClInclude Include="trigger_system\trigger_utils.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />
     <ClInclude Include="Utils\captivating_claws.h" />

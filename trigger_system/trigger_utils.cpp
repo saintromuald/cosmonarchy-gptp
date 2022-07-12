@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "trigger_utils.h"
 
 LoadedFile load_entire_sfile(char* filename) {
 	HANDLE file = 0;
