@@ -341,7 +341,17 @@ namespace hooks
 			chk_cache[chk_cache_size++] = *chkunit;
 		}
 		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
+		if (flags & ChkUnitFlags_Lifted) {
+			if (!scbw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
+				return 0;
+			}
+		}
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
+			flags &= ~ChkUnitFlags_Cloaked;
+			flags &= ~ChkUnitFlags_Burrowed;
+			flags &= ~ChkUnitFlags_Lifted;
+			flags &= ~ChkUnitFlags_Hallucinated;
+			flags &= ~ChkUnitFlags_Invincible;
 			Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
@@ -353,10 +363,6 @@ namespace hooks
 					unit->hitpoints = unit->get_max_hp_raw();
 					unit->shields = unit->get_max_shields_raw();
 					unit->energy = unit->get_max_energy();
-
-					unit->status &= ~UnitStatus::Cloaked;
-					unit->status &= ~UnitStatus::Invincible;
-					unit->status &= ~UnitStatus::IsHallucination;
 				}
 			}
 			return unit;
