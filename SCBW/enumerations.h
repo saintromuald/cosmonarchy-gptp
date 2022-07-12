@@ -1013,7 +1013,7 @@ static const char* playerColorNames[] =
 	"Japanese Violet",
 	"Dark Spring Green",
 	"Golden Brown",
-	"Bdazzled Blue",
+	"B'dazzled Blue",
 	"Coyote Brown",
 	"Midnight Green",
 	"Patriotic Freedom",
