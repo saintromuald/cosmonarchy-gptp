@@ -365,7 +365,7 @@ s32 get_sound_volume_at_pos(Point16 pos) {
 }
 
 s32 get_playback_volume() {
-	if (playback.fade == 0 || playback.volume == 0) {
+	if (playback.fade == 0 || playback.volume == 0 || *g_elapsed_time_frames == 0) {
 		return DSBVOLUME_MIN;
 	}
 
