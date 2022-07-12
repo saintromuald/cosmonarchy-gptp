@@ -393,8 +393,9 @@ namespace hooks
 							snprintf(buffer, 128, "%s (x%u)", Unit::get_name(i), cargo_count[i]);
 						}
 
+						u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 						graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-						pos.x += 75;
+						pos.x += width + 5;
 						x_count++;
 						if (x_count > 4) {
 							pos.x = start_pos.x;

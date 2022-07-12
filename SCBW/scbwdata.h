@@ -858,7 +858,7 @@ SCBW_DATA(u32*, tempUnitsListArraysCountsList, 0x006BEE70);
 namespace graphics {
 	struct Font; struct Bitmap;
 }
-SCBW_DATA(graphics::Font**, fontBase, 0x006CE0F4);
+SCBW_DATA(graphics::Font**, font_base, 0x006CE0F4);
 SCBW_DATA(graphics::Bitmap*, gameScreenBuffer, 0x006CEFF0);
 SCBW_DATA(u8*, refreshRegions, 0x006CEFF8);  //640 x 480 divided into 1200 squares of 16x16
 SCBW_DATA(Layers*, screenLayers, 0x006CEF50);

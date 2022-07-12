@@ -168,7 +168,7 @@ namespace graphics
 			return false;
 
 		// localize pointer
-		Font* fnt = fontBase[size];
+		Font* fnt = font_base[size];
 		if (!fnt)
 			return false;
 

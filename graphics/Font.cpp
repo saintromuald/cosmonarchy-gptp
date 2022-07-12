@@ -75,14 +75,14 @@ namespace graphics
 	s32 Font::getTextWidth(const char* pszStr, s32 size)
 	{
 		if (0 <= size && size <= 3)
-			return fontBase[size]->getTextWidth(pszStr);
+			return font_base[size]->getTextWidth(pszStr);
 		return 0;
 	}
 
 	s32 Font::getTextHeight(const char* pszStr, s32 size)
 	{
 		if (0 <= size && size <= 3)
-			return fontBase[size]->getTextHeight(pszStr);
+			return font_base[size]->getTextHeight(pszStr);
 		return 0;
 	}
 
