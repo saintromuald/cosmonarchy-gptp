@@ -462,8 +462,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "replace_sound") && is_local_player) {
 			SoundReplacement sound_replacement = {};
 			sound_replacement.player = parser_get_player(&parser);
-			sound_replacement.image_id = parser_get_s32(&parser);
-			sound_replacement.animation = parser_get_s32(&parser);
+			sound_replacement.unit_id = parser_get_unit_id(&parser);
+			sound_replacement.animation = parser_get_enum(&parser, animation_type_names, ARRAY_SIZE(animation_type_names));
 			sound_replacement.old_sound_id = parser_get_s32(&parser);
 			if (parser_eq(&parser, "*")) {
 				sound_replacement.any_sound = true;

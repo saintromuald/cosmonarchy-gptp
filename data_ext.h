@@ -286,6 +286,7 @@ struct TileExt {
 
 struct SpriteExt {
 	bool is_fow_sprite;
+	Unit* owner;
 };
 
 extern UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];

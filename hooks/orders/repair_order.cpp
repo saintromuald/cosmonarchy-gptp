@@ -22,11 +22,11 @@ namespace hooks
 
 		switch (unit->main_order_state) {
 			case 0: {
-				//s16 unkRepairInfo = 0;
-				//u32 repairCostMinerals = 0, repairCostGas = 0;
+				s16 unkRepairInfo = 0;
+				u32 repairCostMinerals = 0, repairCostGas = 0;
 
-				//helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-				//helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
+				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
 
 				unit->worker.repair_resource_loss_timer = 0;
 				unit->main_order_state = 1; // continue directly into this case
