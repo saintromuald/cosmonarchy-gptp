@@ -461,8 +461,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "replace_sound") && is_local_player) {
 			SoundReplacement sound_replacement = {};
-			sound_replacement.player = parser_get_player(&parser);
-			sound_replacement.unit_id = parser_get_unit_id(&parser);
+			sound_replacement.players = parser_get_player_bitset(&parser);
+			sound_replacement.unit_ids = parser_get_unit_id_bitset(&parser);
 			sound_replacement.animation = parser_get_enum(&parser, animation_type_names, ARRAY_SIZE(animation_type_names));
 			sound_replacement.old_sound_id = parser_get_s32(&parser);
 			if (parser_eq(&parser, "*")) {
@@ -471,11 +471,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token path = parser_get_string(&parser);
 			sound_replacement.new_sound = get_sound(path.data);
 			sound_replacement.replace = parser_get_s32(&parser);
-			if (sound_replacement.player) {
-				sound_replacement.player -= 1;
-				if (sound_replacements_count < SoundReplacementCap) {
-					sound_replacements[sound_replacements_count++] = sound_replacement;
-				}
+			if (sound_replacements_count < SoundReplacementCap) {
+				sound_replacements[sound_replacements_count++] = sound_replacement;
 			}
 		// Bitset Local Only Triggers
 		} else if (parser_eq(&parser, "play_sound")) {

@@ -9,8 +9,8 @@ extern bool trigger_system_in_game;
 
 #define SoundReplacementCap 1600
 struct SoundReplacement {
-	u32 player;
-	u32 unit_id;
+	PlayerBitset players;
+	UnitIdBitset unit_ids;
 	u32 animation;
 	bool any_sound;
 	bool replace;

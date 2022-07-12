@@ -354,23 +354,17 @@ namespace hooks
 			}
 		}
 		if (!(flags & ChkUnitFlags_Hallucinated)) {
-			flags &= ~ChkUnitFlags_Cloaked;
-			flags &= ~ChkUnitFlags_Burrowed;
-			flags &= ~ChkUnitFlags_Lifted;
-			flags &= ~ChkUnitFlags_Hallucinated;
-			flags &= ~ChkUnitFlags_Invincible;
+			chkunit->state_flags &= ~ChkUnitFlags_Cloaked;
+			chkunit->state_flags &= ~ChkUnitFlags_Burrowed;
+			chkunit->state_flags &= ~ChkUnitFlags_Lifted;
+			chkunit->state_flags &= ~ChkUnitFlags_Hallucinated;
+			chkunit->state_flags &= ~ChkUnitFlags_Invincible;
+			chkunit->hp = 100;
+			chkunit->shields = 100;
+			chkunit->energy = 100;
 			Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
-				if (unit->id != UnitId::ResourceMineralField
-				&&  unit->id != UnitId::ResourceMineralFieldType2
-				&&  unit->id != UnitId::ResourceMineralFieldType3
-				&&  unit->id != UnitId::ResourceVespeneRidge
-				&&  unit->id != UnitId::ResourceVespeneGeyser) {
-					unit->hitpoints = unit->get_max_hp_raw();
-					unit->shields = unit->get_max_shields_raw();
-					unit->energy = unit->get_max_energy();
-				}
 			}
 			return unit;
 		}
