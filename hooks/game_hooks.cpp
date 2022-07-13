@@ -338,11 +338,15 @@ namespace hooks
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
 
-			reset_search_index();
-			update_search_index();
 			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
 			graphics::reset_all_graphics();
 			hooks::update_psi_field_providers();
+
+			reset_search_index();
+			update_search_index();
+			globals.frame_hook();
+			update_search_index_effects();
+			update_ext_variables();
 
 			// Scenario Features
 			if (*g_elapsed_time_frames == 1) {
@@ -362,10 +366,6 @@ namespace hooks
 				scbw::refresh_console();
 			}
 			last_shift = new_shift;
-
-			globals.frame_hook();
-			update_search_index_effects();
-			update_ext_variables();
 
 			// Draw transport UI
 			{
