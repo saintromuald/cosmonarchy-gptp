@@ -623,14 +623,23 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					town->inited = true;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
+
+						u32 worker_id = UnitId::None;
+						switch (g_player_table[town->player].race) {
+							case RaceId::Terran:  worker_id = UnitId::TerranMason;   break;
+							case RaceId::Protoss: worker_id = UnitId::ProtossScribe; break;
+							case RaceId::Zerg:    worker_id = UnitId::ZergDroleth;   break;
+						}
+						if (worker_id != UnitId::None) {
+							helper::ai_build(worker_id, false, worker_count, town, 98);
+						}
 					}
 					if (attach_to_nearest_resarea) {
 						town->resarea = scbw::get_closest_resarea(pos);
-						town->resource_units_not_set = false;
 					} else {
 						town->resarea = 0;
-						town->resource_units_not_set = true;
 					}
+					town->resource_units_not_set = town->resarea == 0;
 					if (claim_placeholders_area.x && claim_placeholders_area.y) {
 						Layouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {

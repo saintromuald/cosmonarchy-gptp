@@ -104,7 +104,7 @@ void update_layouts() {
 			if (placeholder->disabled || !placeholder->should_request) {
 				continue;
 			}
-			if (!town->main_building || has_expanding_town(town->player)) {
+			if ((town->resarea && !town->main_building) || has_expanding_town(town->player)) {
 				continue;
 			}
 			LayoutsTown* layouts_town = get_layouts_town(town);
@@ -417,7 +417,7 @@ bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placehol
 	}
 
 	// Prevent building non town halls when town hall is missing
-	if (!town->main_building && units_dat::base_property[unit_id] & UnitProperty::Building) {
+	if (town->resarea && !town->main_building && units_dat::base_property[unit_id] & UnitProperty::Building) {
 		// Ignore all non townhalls
 		if (!is_basic_townhall(unit_id)) {
 			return false;
@@ -444,7 +444,7 @@ bool has_expanding_town(u32 player) {
 	for (u32 i = 0; i <= AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		LayoutsTown* layouts_town = &layouts_towns[i];
-		if (town->player == player && !town->main_building && layouts_town->inited) {
+		if (town->player == player && town->resarea && !town->main_building && layouts_town->inited) {
 			return true;
 		}
 	}
