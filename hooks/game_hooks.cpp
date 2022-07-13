@@ -367,7 +367,7 @@ namespace hooks
 
 			// Draw transport UI
 			{
-				Point16 start_pos = {169, 353}; // {441, 203};
+				Point16 start_pos = {169, 333}; // {441, 203};
 				Point16 pos = start_pos;
 
 				u32 cargo_count[UnitId::Count] = {};
