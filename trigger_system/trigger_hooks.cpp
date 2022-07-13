@@ -56,7 +56,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 		Unit* unit = sprite_ext->owner;
 		if (unit && sprite->main_graphic == image &&
 			(sound_replacement->any_sound || sound_replacement->old_sound_id == sound_id) &&
-			(sound_replacement->any_animation || sound_replacement->animation == image->animation) &&
+			sound_replacement->animation == image->animation &&
 			unit->id < UnitId::Count && sound_replacement->unit_ids.set[unit->id] &&
 			unit->player < PlayerLimit && sound_replacement->players.set[unit->player]) {
 

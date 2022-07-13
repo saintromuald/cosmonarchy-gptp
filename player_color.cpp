@@ -1,6 +1,5 @@
 #include "player_color.h"
 #include "trigger_system/trigger_system.h"
-#include "color_palette.h" // for math functions that should be moved
 
 static bool loaded_colors;
 static bool can_randomize_player_colors;
@@ -15,21 +14,6 @@ static bool can_use_player_tint(u32 color_tint, u32 last_player);
 static u32 get_random_tint();
 static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
-
-struct PlayerColorSet {
-	u8 minimap_color;
-	u8 ingame_color[PLAYABLE_PLAYER_COUNT];
-};
-
-struct PlayerColorInfo {
-	f32 time;
-	f32 target_time;
-	PlayerColorSet current;
-	PlayerColorSet source;
-	PlayerColorSet target;
-};
-
-static PlayerColorInfo player_color_infos[PlayerLimit];
 
 static bool player_wants_to_randomize(u32 player) {
 	if (can_randomize_player_colors) {
@@ -178,78 +162,22 @@ static void match_color_of(u32 player) {
 	}
 }
 
-static PlayerColorSet lerp_player_color_set(f32 t, PlayerColorSet a, PlayerColorSet b) {
-	a.minimap_color = lerp(t, a.minimap_color, b.minimap_color);
-	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; ++i) {
-		a.ingame_color[i] = lerp(t, a.ingame_color[i], b.ingame_color[i]);
-	}
-	return a;
-}
-
-static PlayerColorSet player_color_set_from_player(u32 player) {
-	PlayerColorSet set = {};
-	set.minimap_color = g_player_minimap_colors[player];
-	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		set.ingame_color[i] = g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i];
-	}
-	return set;
-}
-
-static PlayerColorSet player_color_set_from_color_index(u32 color_index) {
-	PlayerColorSet set = {};
-	set.minimap_color = tminimap_colors[color_index + ColorSetCount * *g_current_tileset];
-	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		set.ingame_color[i] = tunit_colors[color_index * PLAYABLE_PLAYER_COUNT + i];
-	}
-	return set;
-}
-
-static void set_internal_player_color(u32 player, PlayerColorSet player_color_set) {
-	PlayerColorInfo* info = &player_color_infos[player];
-	info->current = player_color_set;
-
-	g_player_minimap_colors[player] = player_color_set.minimap_color;
-	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = player_color_set.ingame_color[i];
-	}
-}
-
-void set_player_color(u32 player, u32 color, f32 time) {
+void set_player_color(u32 player, u32 color) {
 	has_custom_color[player] = true;
 	player_color_list[player] = color;
-
-	PlayerColorInfo* info = &player_color_infos[player];
-
-	info->current = player_color_set_from_player(player);
-	info->source = info->current;
-	info->target = player_color_set_from_color_index(color);
-	if (time == 0) {
-		set_internal_player_color(player, info->target);
+	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
+	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
 	}
 }
 
-void init_player_colors() {
+static void init_player_colors() {
 	if (!loaded_colors) {
 		loaded_colors = true;
 		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MinimapColorCount, 0, 0, 0);
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
 	}
 	memset(has_custom_color, 0, sizeof(has_custom_color));
-}
-
-void update_player_colors() {
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		PlayerColorInfo* info = &player_color_infos[i];
-		if (info->time < info->target_time) {
-			info->time += 1.0 / 24; // Tick time
-			if (info->time > info->target_time) {
-				info->time = info->target_time;
-			}
-
-			info->current = lerp_player_color_set(info->time, info->source, info->target);
-			set_internal_player_color(i, info->current);
-		}
-	}
 }
 
 void load_player_colors() {
