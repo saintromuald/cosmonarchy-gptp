@@ -192,17 +192,15 @@ b32 parse_comment_condition(TriggerAction* action) {
 					u32 count = 0;
 					for (u32 i = 0; i < units.count; ++i) {
 						Unit* unit = units.units[i];
-						if (unit->player < PlayerLimit && unit->id < UnitId::Count) {
-							if (!players.set[unit->player]) {
-								continue;
-							}
-							if (!unit_ids.set[unit->id]) {
-								continue;
-							}
-							UnitExt* unit_ext = get_unit_ext(unit);
-							if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota * 24, unit_ext->last_seen_timer[scouting_player - 1])) {
-								count++;
-							}
+						if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+							continue;
+						}
+						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+							continue;
+						}
+						UnitExt* unit_ext = get_unit_ext(unit);
+						if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota * 24, unit_ext->last_seen_timer[scouting_player - 1])) {
+							count++;
 						}
 					}
 
@@ -544,7 +542,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				Layouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
-					if (!unit_ids.set[placeholder->unit_id]) {
+					if (placeholder->unit_id >= UnitId::None || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
 					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
@@ -635,7 +633,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						Layouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
 							Placeholder* placeholder = &layouts->placeholders[i];
-							if (!unit_ids.set[placeholder->unit_id]) {
+							if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 								continue;
 							}
 							if (placeholder->position.x < claim_placeholders_area.x || placeholder->position.x > claim_placeholders_area.x + claim_placeholders_area.w &&
