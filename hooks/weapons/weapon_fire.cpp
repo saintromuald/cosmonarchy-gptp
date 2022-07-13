@@ -179,7 +179,16 @@ namespace hooks
 
 		if (weapons_dat::FlingyId[weapon_id] != 0)
 		{
-			// Lurker Seismic DrolethSpines behavior
+			if (unit->id == UnitId::TerranSavant) {
+				if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
+				}
+				else {
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
+				}
+			}
+
+			// Lurker Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
 				unitExt->timers[TimerLurkerETA] = 17;
