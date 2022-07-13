@@ -102,6 +102,7 @@ void update_layouts() {
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 			Placeholder* placeholder = &layouts->placeholders[j];
 			if (placeholder->disabled) {
+				scbw::printf("Disabled %u", placeholder->requested);
 				continue;
 			}
 			if (!placeholder->should_request) {

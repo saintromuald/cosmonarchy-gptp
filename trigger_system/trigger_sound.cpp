@@ -18,7 +18,6 @@ void init_sound() {
 
 	for (u32 i = 0; i < MaxDupChannels; ++i) {
 		if (duplicated_buffers[i]) {
-			duplicated_buffers[i]->Stop();
 			duplicated_buffers[i]->Release();
 			duplicated_buffers[i] = 0;
 		}
@@ -251,7 +250,6 @@ Sound* load_sound(char* filename) {
 
 void free_sound(Sound* sound) {
 	if (sound->ds_buffer) {
-		sound->ds_buffer->Stop();
 		sound->ds_buffer->Release();
 		sound->ds_buffer = 0;
 	}
@@ -286,7 +284,6 @@ void play_sound(Sound* sound, s32 volume) {
 			if (duplicated_buffers[i]) {
 				DWORD current_status = 0;
 				if (!SUCCEEDED(duplicated_buffers[i]->GetStatus(&status)) || current_status != DSBSTATUS_PLAYING) {
-					duplicated_buffers[i]->Stop();
 					duplicated_buffers[i]->Release();
 					duplicated_buffers[i] = 0;
 				}
@@ -300,12 +297,14 @@ void play_sound(Sound* sound, s32 volume) {
 			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, buffer);
 			if (*buffer) {
 				(*buffer)->SetVolume(volume);
+				(*buffer)->SetCurrentPosition(0);
 				(*buffer)->Play(0, 0, 0);
 				sound->last_play_time = *g_elapsed_time_frames;
 			}
 		}
 	} else {
 		sound->ds_buffer->SetVolume(volume);
+		sound->ds_buffer->SetCurrentPosition(0);
 		sound->ds_buffer->Play(0, 0, 0);
 		sound->last_play_time = *g_elapsed_time_frames;
 	}

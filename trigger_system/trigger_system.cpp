@@ -540,7 +540,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				Layouts* layouts = &player_layouts[i];
-				for (u32 j = 0; j < PlaceholderLimit; ++j) {
+				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
 					if (!units_ids.set[placeholder->unit_id]) {
 						continue;
@@ -564,7 +564,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				Layouts* layouts = &player_layouts[i];
 				bool changed = false;
-				for (u32 j = 0; j < PlaceholderLimit; ++j) {
+				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
 					if (!units_ids.set[placeholder->unit_id]) {
 						continue;
@@ -592,7 +592,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				Layouts* layouts = &player_layouts[i];
 				bool changed = false;
-				for (u32 j = 0; j < PlaceholderLimit; ++j) {
+				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
 					if (!units_ids.set[placeholder->unit_id]) {
 						continue;
