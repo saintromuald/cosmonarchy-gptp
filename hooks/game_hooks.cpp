@@ -196,8 +196,6 @@ namespace hooks
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
 
-		reset_search_index();
-
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {
 #ifdef CM_DEBUG
@@ -224,6 +222,7 @@ namespace hooks
 			}
 			
 			// Init Extended Features
+			reset_search_index();
 			init_player_colors();
 			init_trigger_system();
 			init_layouts();
@@ -339,6 +338,7 @@ namespace hooks
 				raceSupply[RaceId::Terran].provided[i] = 60000;
 			}
 
+			reset_search_index();
 			update_search_index();
 			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
 			graphics::reset_all_graphics();
