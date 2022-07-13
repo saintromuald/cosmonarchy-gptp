@@ -51,8 +51,9 @@ void update_layouts() {
 		LayoutsTown* layouts_town = &layouts_towns[i];
 		if (!town->inited) {
 			layouts_town->inited = false;
+			layouts_town->can_ignore_resarea = false;
 		}
-		if (town->inited && !layouts_town->inited) {
+		if (town->inited && !layouts_town->inited && (town->resarea || layouts_town->can_ignore_resarea)) {
 			layouts_town->inited = true;
 			memset(layouts_town->request_count, 0, sizeof(layouts_town->request_count));
 
@@ -82,7 +83,7 @@ void update_layouts() {
 			}
 
 			if (log_placeholder_requests[town->player]) {
-				scbw::printf("Player %u started Town #%u at resarea %u", town->player, i, town->resarea);
+				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, i, town->resarea);
 			}
 		}
 	}
@@ -113,7 +114,7 @@ void update_layouts() {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
 					placeholder->requested = true;
 					if (log_placeholder_requests[town->player]) {
-						scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
+						scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
 					}
 					if (!placeholder->inited) {
 						init_placeholder(town, placeholder);

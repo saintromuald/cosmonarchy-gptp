@@ -621,6 +621,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
+					LayoutsTown* layouts_town = get_layouts_town(town);
+					layouts_town->can_ignore_resarea = true;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
 
