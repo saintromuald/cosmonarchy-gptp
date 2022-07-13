@@ -177,7 +177,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
 					u32 scouting_player = parser_get_player(&parser);
-					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
+					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
 					f32 scouting_time_quota = parser_get_time(&parser);
 
 					area.w += area.x;
