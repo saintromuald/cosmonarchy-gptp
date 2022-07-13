@@ -616,20 +616,37 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 worker_count = parser_get_s32(&parser);
 			s32 attach_to_nearest_resarea = parser_get_s32(&parser);
 			Box32 claim_placeholders_area = parser_get_area(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 
-			AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
-			if (town) {
-				if (worker_count) {
-					helper::ai_get_old_peons(town, worker_count);
-				}
-				if (attach_to_nearest_resarea) {
-					town->resarea = scbw::get_closest_resarea(pos);
-					town->resource_units_not_set = false;
-				} else {
-					town->resource_units_not_set = true;
-				}
-				if (claim_placeholders_area.x && claim_placeholders_area.y) {
-
+			if (player) {
+				player -= 1;
+				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
+				if (town) {
+					if (worker_count) {
+						helper::ai_get_old_peons(town, worker_count);
+					}
+					if (attach_to_nearest_resarea) {
+						town->resarea = scbw::get_closest_resarea(pos);
+						town->resource_units_not_set = false;
+					} else {
+						town->resource_units_not_set = true;
+					}
+					if (claim_placeholders_area.x && claim_placeholders_area.y) {
+						Layouts* layouts = &player_layouts[player];
+						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
+							Placeholder* placeholder = &layouts->placeholders[i];
+							if (!unit_ids.set[placeholder->unit_id]) {
+								continue;
+							}
+							if (placeholder->position.x < claim_placeholders_area.x || placeholder->position.x > claim_placeholders_area.x + claim_placeholders_area.w &&
+								placeholder->position.y < claim_placeholders_area.y || placeholder->position.y > claim_placeholders_area.y + claim_placeholders_area.h) {
+								continue;
+							}
+							if (!placeholder->town) {
+								placeholder->town = town;
+							}
+						}
+					}
 				}
 			}
 		} else if (parser_eq(&parser, "set_start_location")) {
