@@ -620,6 +620,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
+					town->inited = true;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
 					}
