@@ -536,7 +536,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	UnitIdBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		parser_get_word(parser);
+		parser_get_string(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, true, mask, negate);
