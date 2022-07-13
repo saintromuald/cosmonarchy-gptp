@@ -75,7 +75,6 @@ void update_layouts() {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				Placeholder* placeholder = &layouts->placeholders[j];
 				if ((!placeholder->town && placeholder->resarea == town->resarea) || (placeholder->town && placeholder->town == town)) {
-					placeholder->inited = false;
 					placeholder->requested = false;
 					placeholder->town = town;
 					placeholder->placement_timeout = 0;
@@ -105,7 +104,7 @@ void update_layouts() {
 			if (placeholder->disabled || !placeholder->should_request) {
 				continue;
 			}
-			if ((town->resarea && !town->main_building) || has_expanding_town(town->player)) {
+			if (has_expanding_town(town->player)) {
 				continue;
 			}
 			LayoutsTown* layouts_town = get_layouts_town(town);
@@ -116,9 +115,7 @@ void update_layouts() {
 					if (log_placeholder_requests[town->player]) {
 						scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
 					}
-					if (!placeholder->inited) {
-						init_placeholder(town, placeholder);
-					}
+					init_placeholder(town, placeholder);
 					request_placeholder(town, layouts_town, placeholder);
 				} else if (placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
 					placeholder->placement_timeout++;
@@ -417,27 +414,6 @@ bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placehol
 		return false;
 	}
 
-	// Prevent building non town halls when town hall is missing
-	if (town->resarea && !town->main_building && units_dat::base_property[unit_id] & UnitProperty::Building) {
-		// Ignore all non townhalls
-		if (!is_basic_townhall(unit_id)) {
-			return false;
-		}
-
-		// Ignore any town halls that aren't the first town hall
-		for (u32 i = 0; i < layouts->placeholders_count; ++i) {
-			Placeholder* other = &layouts->placeholders[i];
-			if (other == placeholder) {
-				break;
-			}
-			if (is_basic_townhall(placeholder->unit_id)) {
-				return false;
-			}
-		}
-
-		// TODO: maybe add custom get old peons handling
-	}
-
 	return true;
 }
 
@@ -453,8 +429,6 @@ bool has_expanding_town(u32 player) {
 }
 
 void init_placeholder(AiTown* town, Placeholder* placeholder) {
-	placeholder->inited = true;
-
 	u32 merge = find_unit_merge(placeholder->unit_id);
 	if (merge != UnitId::None) {
 		Placeholder copy = *placeholder;
