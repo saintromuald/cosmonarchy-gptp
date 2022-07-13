@@ -36,14 +36,13 @@ RecolorSet default_recolor_set() {
 	return set;
 }
 
-// Todo: move those static function to maths file
-static f32 clamp(f32 value, f32 min, f32 max) {
+f32 clamp(f32 value, f32 min, f32 max) {
 	if (value < min) return min;
 	if (value > max) return max;
 	return value;
 }
 
-static f32 lerp(f32 t, f32 a, f32 b) {
+f32 lerp(f32 t, f32 a, f32 b) {
 	return a * (1 - t) + b * t;
 }
 

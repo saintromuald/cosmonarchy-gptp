@@ -11,9 +11,10 @@ extern bool trigger_system_in_game;
 struct SoundReplacement {
 	PlayerBitset players;
 	UnitIdBitset unit_ids;
-	u32 animation;
+	bool any_animation;
 	bool any_sound;
 	bool replace;
+	u32 animation;
 	u32 old_sound_id;
 	Sound* new_sound;
 };

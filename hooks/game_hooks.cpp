@@ -235,6 +235,7 @@ namespace hooks
 
 		// Update Extended Features
 		scbw::set_ingame_loop_state(true);
+		update_player_colors();
 		update_trigger_system(true);
 		update_layouts();
 		update_custom_ai();
