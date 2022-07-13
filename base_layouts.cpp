@@ -80,9 +80,9 @@ void update_layouts() {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				Placeholder* placeholder = &layouts->placeholders[j];
 				if (placeholder->resarea == town->resarea) {
+					placeholder->inited = false;
 					placeholder->requested = false;
 					placeholder->placement_timeout = 0;
-					init_placeholder(town, placeholder);
 				}
 			}
 
@@ -117,6 +117,9 @@ void update_layouts() {
 					placeholder->requested = true;
 					if (log_placeholder_requests[town->player]) {
 						scbw::printf("Player %u requested %s #%u at resarea %u", i, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
+					}
+					if (!placeholder->inited) {
+						init_placeholder(town, placeholder);
 					}
 					request_placeholder(layouts_town, placeholder);
 				} else if (placeholder->placement_timeout < 10 * 24) {  // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
@@ -445,6 +448,8 @@ bool has_expanding_town(u32 player) {
 }
 
 void init_placeholder(AiTown* town, Placeholder* placeholder) {
+	placeholder->inited = true;
+
 	u32 merge = find_unit_merge(placeholder->unit_id);
 	if (merge != UnitId::None) {
 		Placeholder copy = *placeholder;

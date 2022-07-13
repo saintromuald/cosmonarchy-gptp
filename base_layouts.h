@@ -22,6 +22,7 @@ struct Placeholder {
 
 	// Runtime data
 	b8 disabled;
+	b8 inited;
 	b8 requested;
 	u8 placement_timeout;
 };
