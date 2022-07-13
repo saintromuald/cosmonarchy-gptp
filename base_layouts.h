@@ -25,6 +25,7 @@ struct Placeholder {
 	b8 inited;
 	b8 requested;
 	u8 placement_timeout;
+	AiTown* town;
 };
 
 #define PlaceholderLimit 2048
@@ -34,7 +35,7 @@ struct Layouts {
 };
 
 struct LayoutsTown {
-	AiTown* town;
+	bool inited;
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
@@ -90,10 +91,12 @@ extern bool log_placeholder_requests[PlayerLimit];
 extern u32 default_ai_expansion_block[PlayerLimit];
 
 extern Layouts player_layouts[PlayerLimit];
-extern LayoutsTown layouts_towns[ResAreaLimit];
+extern LayoutsTown layouts_towns[AiTownLimit];
 
 void init_layouts();
 void update_layouts();
+
+LayoutsTown* get_layouts_town(AiTown* town);
 u32 ai_get_next_custom_expo(AiTown* main_town);
 
 Equivalent find_unit_equivalent_down(u32 unit_id);
@@ -116,4 +119,4 @@ bool can_place_unit(u32 unit_id, Point16 position, u32 player);
 bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placeholder);
 bool has_expanding_town(u32 player);
 void init_placeholder(AiTown* town, Placeholder* placeholder);
-void request_placeholder(LayoutsTown* layouts_town, Placeholder* placeholder);
+void request_placeholder(AiTown* town, LayoutsTown* layouts_town, Placeholder* placeholder);
