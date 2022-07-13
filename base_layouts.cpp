@@ -49,10 +49,10 @@ void update_layouts() {
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		LayoutsTown* layouts_town = &layouts_towns[i];
-		if (!town->inited || !town->resarea) {
+		if (!town->inited) {
 			layouts_town->inited = false;
 		}
-		if (town->inited && town->resarea && !layouts_town->inited) {
+		if (town->inited && !layouts_town->inited) {
 			layouts_town->inited = true;
 			memset(layouts_town->request_count, 0, sizeof(layouts_town->request_count));
 
@@ -119,7 +119,7 @@ void update_layouts() {
 						init_placeholder(town, placeholder);
 					}
 					request_placeholder(town, layouts_town, placeholder);
-				} else if (placeholder->placement_timeout < 10 * 24) {  // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
+				} else if (placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
 					placeholder->placement_timeout++;
 					break;
 				}

@@ -627,6 +627,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						town->resarea = scbw::get_closest_resarea(pos);
 						town->resource_units_not_set = false;
 					} else {
+						town->resarea = 0;
 						town->resource_units_not_set = true;
 					}
 					if (claim_placeholders_area.x && claim_placeholders_area.y) {
@@ -642,7 +643,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							}
 							if (!placeholder->town) {
 								placeholder->town = town;
-								scbw::printf("Claimed");
 							}
 						}
 					}
