@@ -280,13 +280,17 @@ Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func)
 	return 0;
 }
 
-
-void update_search_index() {
-	// Add units
+void reset_search_index() {
 	search_index_reset(&unit_index);
 	for (u32 i = 0; i < 8; ++i) {
 		search_index_reset(&seen_unit_index[i]);
 	}
+	search_index_reset(&corpse_index);
+	search_index_reset(&effect_index);
+}
+
+void update_search_index() {
+	// Add units
 	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		search_index_add(&unit_index, unit->position, unit);
 
@@ -299,15 +303,11 @@ void update_search_index() {
 	}
 
 	// Add corpses
-	search_index_reset(&corpse_index);
 	for (Thingy* thingy = *first_lone_sprite; thingy; thingy = thingy->next) {
 		if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->sprite_id)) {
 			search_index_add(&corpse_index, thingy->sprite->position, thingy);
 		}
 	}
-
-	// Reset effects
-	search_index_reset(&effect_index);
 }
 
 void update_search_index_effects() {

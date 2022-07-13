@@ -196,6 +196,8 @@ namespace hooks
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
 
+		reset_search_index();
+
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {
 #ifdef CM_DEBUG

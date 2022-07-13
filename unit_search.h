@@ -82,6 +82,7 @@ Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func 
 bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
 void unit_search_add_units_from_connected_transport(EntryArray* unit_array, Unit* unit);
 
+void reset_search_index();
 void update_search_index(); // must be done once per frame
 void update_search_index_effects(); // must be done once per frame after effects are updated
 
