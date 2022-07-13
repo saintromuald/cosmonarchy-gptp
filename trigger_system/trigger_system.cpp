@@ -261,7 +261,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "resume_music") && is_local_player) {
 			playback.target_fade = 1;
 			playback.paused = false;
-			resume_music();
+			play_music(true);
 		} else if (parser_eq(&parser, "fade_in") && is_local_player) {
 			f32 fade_in = parser_get_time(&parser);
 			playback.fade_in = fade_in;

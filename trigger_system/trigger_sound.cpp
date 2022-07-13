@@ -102,7 +102,7 @@ void update_sound() {
 		playback.next_music = get_next_music();
 		if (playback.current_music) {
 			playback.target_fade = 1;
-			resume_music();
+			play_music(false);
 		}
 	}
 
@@ -267,38 +267,39 @@ Sound* get_sound(char* filename) {
 	return sound;
 }
 
-void play_sound(Sound* sound, s32 volume) {
+void play_sound(Sound* sound, s32 volume, bool force) {
 	if (!sound) {
 		return;
 	}
-	if (sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
+	if (!force && sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
 		return;
 	}
 
 	DWORD status = 0;
-	if (!SUCCEEDED(sound->ds_buffer->GetStatus(&status)) || status == DSBSTATUS_PLAYING) {
+	sound->ds_buffer->GetStatus(&status);
+	if (status == DSBSTATUS_PLAYING) {
 		// Use dup channel
-
-		LPDIRECTSOUNDBUFFER* buffer = 0;
+		LPDIRECTSOUNDBUFFER* dup_buffer = 0;
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
 			if (duplicated_buffers[i]) {
-				DWORD current_status = 0;
-				if (!SUCCEEDED(duplicated_buffers[i]->GetStatus(&status)) || current_status != DSBSTATUS_PLAYING) {
+				DWORD dup_status = 0;
+				duplicated_buffers[i]->GetStatus(&dup_status);
+				if (dup_status != DSBSTATUS_PLAYING) {
 					duplicated_buffers[i]->Release();
 					duplicated_buffers[i] = 0;
 				}
 			}
 			if (!duplicated_buffers[i]) {
-				buffer = &duplicated_buffers[i];
+				dup_buffer = &duplicated_buffers[i];
 			}
 		}
 
-		if (buffer) {
-			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, buffer);
-			if (*buffer) {
-				(*buffer)->SetVolume(volume);
-				(*buffer)->SetCurrentPosition(0);
-				(*buffer)->Play(0, 0, 0);
+		if (dup_buffer) {
+			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, dup_buffer);
+			if (*dup_buffer) {
+				(*dup_buffer)->SetVolume(volume);
+				(*dup_buffer)->SetCurrentPosition(0);
+				(*dup_buffer)->Play(0, 0, 0);
 				sound->last_play_time = *g_elapsed_time_frames;
 			}
 		}
@@ -310,9 +311,10 @@ void play_sound(Sound* sound, s32 volume) {
 	}
 }
 
-void resume_music() {
+void play_music(bool resume) {
 	if (playback.current_music && playback.current_music->ds_buffer) {
 		playback.current_music->ds_buffer->SetVolume(get_playback_volume());
+		if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
 		playback.current_music->ds_buffer->Play(0, 0, 0);
 	}
 }

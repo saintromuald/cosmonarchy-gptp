@@ -102,8 +102,8 @@ Sound* load_sound(char* filename);
 void free_sound(Sound* sound);
 Sound* get_sound(char* filename);
 
-void play_sound(Sound* sound, s32 volume);
-void resume_music();
+void play_sound(Sound* sound, s32 volume, bool force = false);
+void play_music(bool resume);
 void stop_music();
 void shuffle_playlist();
 
