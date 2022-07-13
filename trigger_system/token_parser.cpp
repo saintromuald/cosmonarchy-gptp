@@ -260,6 +260,12 @@ Box32 parser_get_area(Parser* parser) {
 	}
 
 	Token string = parser_get_string(parser);
+	if (parser_eq(parser, "*")) {
+		Box32 box = g_location_table[63].dimensions;
+		box.w -= box.x;
+		box.h -= box.y;
+		return box;
+	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
@@ -312,6 +318,12 @@ Point16 parser_get_position(Parser* parser) {
 	}
 
 	Token string = parser_get_string(parser);
+	if (parser_eq(parser, "*")) {
+		Box32 box = g_location_table[63].dimensions;
+		box.w -= box.x;
+		box.h -= box.y;
+		return box_center(box);
+	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
