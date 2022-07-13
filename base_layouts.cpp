@@ -73,7 +73,7 @@ void update_layouts() {
 			// Init placeholders
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				Placeholder* placeholder = &layouts->placeholders[j];
-				if (placeholder->resarea == town->resarea || (placeholder->town && placeholder->town == town)) {
+				if ((!placeholder->town && placeholder->resarea == town->resarea) || (placeholder->town && placeholder->town == town)) {
 					placeholder->inited = false;
 					placeholder->requested = false;
 					placeholder->town = town;
