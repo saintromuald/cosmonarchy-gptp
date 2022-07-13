@@ -60,7 +60,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 			unit->id < UnitId::Count && sound_replacement->unit_ids.set[unit->id] &&
 			unit->player < PlayerLimit && sound_replacement->players.set[unit->player]) {
 
-			play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(sprite->position));
+			play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
 
 			if (sound_replacement->replace) {
 				replace = true;

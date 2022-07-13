@@ -506,7 +506,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 
 					if (play) {
-						play_sound(get_sound(path.data), get_sound_volume_at_pos(position));
+						play_sound(get_sound(path.data), get_sound_volume_at_pos(position), helper::get_sfx_pan_from_screen_distance(position.x));
 					}
 				}
 			}

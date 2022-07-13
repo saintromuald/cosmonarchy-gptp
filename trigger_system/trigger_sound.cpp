@@ -156,7 +156,7 @@ static LPDIRECTSOUNDBUFFER load_ds_buffer(Sound* sound, SoundLoadData* sound_loa
 
 	DSBUFFERDESC buffer_description = {};
 	buffer_description.dwSize = sizeof(DSBUFFERDESC);
-	buffer_description.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME;
+	buffer_description.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN;
 	buffer_description.dwBufferBytes = sound_load_data->size;
 	buffer_description.lpwfxFormat = &sound_load_data->wave_format;
 
@@ -267,11 +267,11 @@ Sound* get_sound(char* filename) {
 	return sound;
 }
 
-void play_sound(Sound* sound, s32 volume, bool force) {
+void play_sound(Sound* sound, s32 volume, s32 pan) {
 	if (!sound) {
 		return;
 	}
-	if (!force && sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
+	if (sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
 		return;
 	}
 
@@ -298,6 +298,7 @@ void play_sound(Sound* sound, s32 volume, bool force) {
 			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, dup_buffer);
 			if (*dup_buffer) {
 				(*dup_buffer)->SetVolume(volume);
+				(*dup_buffer)->SetPan(pan);
 				(*dup_buffer)->SetCurrentPosition(0);
 				(*dup_buffer)->Play(0, 0, 0);
 				sound->last_play_time = *g_elapsed_time_frames;
@@ -305,6 +306,7 @@ void play_sound(Sound* sound, s32 volume, bool force) {
 		}
 	} else {
 		sound->ds_buffer->SetVolume(volume);
+		sound->ds_buffer->SetPan(pan);
 		sound->ds_buffer->SetCurrentPosition(0);
 		sound->ds_buffer->Play(0, 0, 0);
 		sound->last_play_time = *g_elapsed_time_frames;
@@ -314,6 +316,7 @@ void play_sound(Sound* sound, s32 volume, bool force) {
 void play_music(bool resume) {
 	if (playback.current_music && playback.current_music->ds_buffer) {
 		playback.current_music->ds_buffer->SetVolume(get_playback_volume());
+		playback.current_music->ds_buffer->SetPan(0);
 		if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
 		playback.current_music->ds_buffer->Play(0, 0, 0);
 	}
@@ -348,7 +351,7 @@ typedef int __cdecl getMusicVolume_Func();
 static getMusicVolume_Func* getMusicVolume = (getMusicVolume_Func*)0x004A5EF0;
 
 s32 get_sound_volume() {
-	u32 index = 99;
+	s32 index = 99;
 	if (*use_quiet_sounds) {
 		index /= 5;
 	}
@@ -356,7 +359,7 @@ s32 get_sound_volume() {
 }
 
 s32 get_sound_volume_at_pos(Point16 pos) {
-	u32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
+	s32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
 	if (*use_quiet_sounds) {
 		index /= 5;
 	}
