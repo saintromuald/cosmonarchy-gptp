@@ -467,6 +467,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			sound_replacement.players = parser_get_player_bitset(&parser);
 			sound_replacement.unit_ids = parser_get_unit_id_bitset(&parser);
 			sound_replacement.animation = parser_get_enum(&parser, animation_type_names, ARRAY_SIZE(animation_type_names));
+			if (parser_eq(&parser, "*")) {
+				sound_replacement.any_animation = true;
+			}
 			sound_replacement.old_sound_id = parser_get_s32(&parser);
 			if (parser_eq(&parser, "*")) {
 				sound_replacement.any_sound = true;
@@ -532,7 +535,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "placeholders_enable")) {
 			Box32 area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset units_ids = parser_get_unit_id_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 enable = parser_get_s32(&parser);
 
 			for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -542,7 +545,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				Layouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
-					if (!units_ids.set[placeholder->unit_id]) {
+					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
 					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
@@ -555,7 +558,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "placeholders_priority_add")) {
 			Box32 area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset units_ids = parser_get_unit_id_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 priority = parser_get_s32(&parser);
 
 			for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -566,7 +569,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
-					if (!units_ids.set[placeholder->unit_id]) {
+					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
 					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
@@ -583,7 +586,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "placeholders_priority_set")) {
 			Box32 area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset units_ids = parser_get_unit_id_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 priority = parser_get_s32(&parser);
 
 			for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -594,7 +597,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
-					if (!units_ids.set[placeholder->unit_id]) {
+					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
 					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
