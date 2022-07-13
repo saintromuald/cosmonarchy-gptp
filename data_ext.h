@@ -103,6 +103,7 @@ enum ExtValueId
 	ValueMissileSiloLoaded,
 	ValueSovrolethLinkCount,
 	ValueParasiteArmPlayer,
+	ValueDisableAutoBurrow,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

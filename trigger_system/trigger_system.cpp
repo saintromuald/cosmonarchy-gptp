@@ -595,7 +595,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					Placeholder* placeholder = &layouts->placeholders[j];
-					if (!unit_ids.set[placeholder->unit_id]) {
+					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
 					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
@@ -632,6 +632,27 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				set_player_color(player, player_color);
+			}
+		} else if (parser_eq(&parser, "set_ai_auto_burrow")) {
+			Box32 area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			s32 enable = parser_get_s32(&parser);
+
+			area.w += area.x;
+			area.h += area.y;
+			EntryArray units = unit_search_rect(area);
+
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				UnitExt* unit_ext = get_unit_ext(unit);
+				unit_ext->values[ValueDisableAutoBurrow] = !enable;
 			}
 		}
 	}

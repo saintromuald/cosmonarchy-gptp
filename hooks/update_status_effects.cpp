@@ -366,6 +366,11 @@ namespace hooks
 
 	void ai_burrower(Unit* unit) // 004A1340
 	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueDisableAutoBurrow]) {
+			return;
+		}
+
 		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable)
 		{
 			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth)
