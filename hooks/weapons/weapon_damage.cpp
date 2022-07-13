@@ -340,7 +340,6 @@ namespace hooks
 			{
 				// Entropy Gauntlet
 				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), data.attacker, 1, 0);
 					u32 energy = std::min(data.attacker->energy, (u16)(15 * 256));
 					if (energy) {
 						data.attacker->energy -= energy;
