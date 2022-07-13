@@ -294,10 +294,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
 			u32 player = parser_get_player(&parser);
 			Token name = parser_get_string(&parser);
+			s32 ignore_human_name = parser_get_s32(&parser);
 			if (player) {
 				player -= 1;
 				has_custom_player_name[player] = true;
-				if (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated) {
+				if (!ignore_human_name && (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated)) {
 					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
 						"%s (%s)", name.data, g_player_table[player].name);
 				} else {
