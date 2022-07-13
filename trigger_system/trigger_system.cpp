@@ -642,6 +642,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							}
 							if (!placeholder->town) {
 								placeholder->town = town;
+								scbw::printf("Claimed");
 							}
 						}
 					}
