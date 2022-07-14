@@ -623,6 +623,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					town->inited = true;
 					LayoutsTown* layouts_town = get_layouts_town(town);
 					layouts_town->worker_limit = worker_count;
+					layouts_town->worker_maynard = worker_count;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
 

@@ -22,6 +22,7 @@ struct Placeholder {
 
 	// Runtime data
 	b8 disabled;
+	b8 inited;
 	b8 requested;
 	u8 placement_timeout;
 	AiTown* town;
@@ -37,6 +38,7 @@ struct LayoutsTown {
 	bool inited;
 	bool wants_no_resarea;
 	u32 worker_limit;
+	u32 worker_maynard;
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
