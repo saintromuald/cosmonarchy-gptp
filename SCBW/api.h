@@ -447,7 +447,7 @@ namespace scbw
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.
 	u32 get_unit_overlay_adjustment(Unit* const unit);
 
-	/// Refreshes the screen position within the given rectangle area in pixels.
+	/// Refreshes the screen position within the given rectangle box in pixels.
 	void refresh_screen(s32 left, s32 top, s32 right, s32 bottom);
 
 	/// Refreshes the entire screen.

@@ -45,7 +45,7 @@ struct Bullet
 												 // 4 = persist on site
 												 // 5 = appear on target/instant
 
-												 // 6 = attack target area
+												 // 6 = attack target box
 	/*0x4E*/ u8           unknown_0x4E;
 	/*0x4F*/ u8           order_signal;  // added by iquare
 	/*0x50*/ u16          someUnitType; // usually holds UnitType::None (Unknown unit type stuff?)

@@ -92,8 +92,8 @@ namespace UpgradeId {
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
 		MatralethEnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
-		KaumodakiReactor = 85,			// Savant energy and ability area increase
-		EntropyGauntlets = 86,			// Savant Energy Decay area damage
+		KaumodakiReactor = 85,			// Savant energy and ability box increase
+		EntropyGauntlets = 86,			// Savant Energy Decay box damage
 		ChaosMatter = 87,				// Exemplar bounce during Khaydarin Eclipse
 		FinalHour = 88,					// Augur projectile death
 		ForeCastle = 89,				// Battlecruiser forward-facing armor

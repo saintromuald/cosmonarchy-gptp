@@ -81,7 +81,7 @@ namespace AI
 	}
 
 
-	//-------- Get total unit stats in area --------//
+	//-------- Get total unit stats in box --------//
 
 	// 00440A60  unit_shields_clump_in_area_accumulator_proc
 	// 00440AC0  unitEnergyClumpInAreaAccumulatorProc

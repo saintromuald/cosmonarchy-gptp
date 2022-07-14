@@ -171,7 +171,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					}
 					return false;
 				} else if (parser_eq(&parser, "unit_count")) {
-					Box32 area = parser_get_area(&parser);
+					Area area = parser_get_area(&parser);
 					PlayerBitset players = parser_get_player_bitset(&parser);
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
@@ -180,25 +180,34 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
 					f32 scouting_time_quota = parser_get_time(&parser);
 
-					area.w += area.x;
-					area.h += area.y;
+					area.box.w += area.box.x;
+					area.box.h += area.box.y;
 					EntryArray units = {};
 					if (scouting_player) {
-						units = seen_unit_search_rect(scouting_player - 1, area);
+						units = seen_unit_search_rect(scouting_player - 1, area.box);
 					} else {
-						units = unit_search_rect(area);
+						units = unit_search_rect(area.box);
 					}
+					area.box.w -= area.box.x;
+					area.box.h -= area.box.y;
 
 					u32 count = 0;
 					for (u32 i = 0; i < units.count; ++i) {
 						Unit* unit = units.units[i];
+						UnitExt* unit_ext = get_unit_ext(unit);
+						Point16 position = unit->position;
+						if (scouting_player) {
+							position = unit_ext->last_seen_position[scouting_player - 1];
+						}
+						if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+							continue;
+						}
 						if (unit->player >= PlayerLimit || !players.set[unit->player]) {
 							continue;
 						}
 						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
 							continue;
 						}
-						UnitExt* unit_ext = get_unit_ext(unit);
 						if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota * 24, unit_ext->last_seen_timer[scouting_player - 1])) {
 							count++;
 						}
@@ -209,16 +218,17 @@ b32 parse_comment_condition(TriggerAction* action) {
 					}
 					return false;
 				} else if (parser_eq(&parser, "local_camera")) {
-					Box32 area = parser_get_area(&parser);
+					Area area = parser_get_area(&parser);
 					Token min_visibility = parser_get_word(&parser);
 
 					Point16 center = {};
 					center.x = *g_move_to_x + 320;
 					center.y = *g_move_to_y + 200;
 
-					if (center.x >= area.x && center.y <= area.x + area.w &&
-						center.x >= area.y && center.y <= area.y + area.h) {
+					if (center.x >= area.box.x && center.y <= area.box.x + area.box.w &&
+						center.x >= area.box.y && center.y <= area.box.y + area.box.h) {
 						ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
+						// TODO: should we check area flags?
 						if (token_eqi(&min_visibility, "unexplored")) {
 							return true;
 						} else if (token_eqi(&min_visibility, "explored")) {
@@ -510,8 +520,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		// Gameplay Actions
 		} else if (parser_eq(&parser, "clear_creep")) {
-			Box32 location = parser_get_area(&parser);
-			scbw::clear_creep(location);
+			Area location = parser_get_area(&parser);
+			scbw::clear_creep(location.box);
 		} else if (parser_eq(&parser, "spawn")) {
 			SpawnSequence sequence = {};
 			sequence.count = parser_get_s32(&parser);
@@ -530,7 +540,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "placeholders_enable")) {
-			Box32 area = parser_get_area(&parser);
+			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 enable = parser_get_s32(&parser);
@@ -545,15 +555,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id >= UnitId::None || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
-					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w ||
-						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
+					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
 					placeholder->disabled = !enable;
 				}
 			}
 		} else if (parser_eq(&parser, "placeholders_priority_add")) {
-			Box32 area = parser_get_area(&parser);
+			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 priority = parser_get_s32(&parser);
@@ -569,8 +578,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
-					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w ||
-						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
+					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
 					placeholder->priority = CLAMP(placeholder->priority + priority, 0, 255);
@@ -581,7 +589,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "placeholders_priority_set")) {
-			Box32 area = parser_get_area(&parser);
+			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 priority = parser_get_s32(&parser);
@@ -597,8 +605,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
-					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w ||
-						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
+					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
 					placeholder->priority = CLAMP(priority, 0, 255);
@@ -613,7 +620,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Point16 pos = parser_get_position(&parser);
 			s32 worker_count = parser_get_s32(&parser);
 			s32 attach_to_nearest_resarea = parser_get_s32(&parser);
-			Box32 claim_placeholders_area = parser_get_area(&parser);
+			Area claim_placeholders_area = parser_get_area(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 
 			if (player) {
@@ -645,15 +652,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						layouts_town->wants_no_resarea = true;
 					}
 					town->resource_units_not_set = town->resarea != 0;
-					if (claim_placeholders_area.x && claim_placeholders_area.y) {
+					if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
 						Layouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
 							Placeholder* placeholder = &layouts->placeholders[i];
 							if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 								continue;
 							}
-							if (placeholder->position.x < claim_placeholders_area.x || placeholder->position.x > claim_placeholders_area.x + claim_placeholders_area.w ||
-								placeholder->position.y < claim_placeholders_area.y || placeholder->position.y > claim_placeholders_area.y + claim_placeholders_area.h) {
+							if (!check_area(claim_placeholders_area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 								continue;
 							}
 							if (!placeholder->town) {
@@ -691,14 +697,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				set_player_color(player, player_color);
 			}
 		} else if (parser_eq(&parser, "set_ai_auto_burrow")) {
-			Box32 area = parser_get_area(&parser);
+			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 enable = parser_get_s32(&parser);
 
-			area.w += area.x;
-			area.h += area.y;
-			EntryArray units = unit_search_rect(area);
+			area.box.w += area.box.x;
+			area.box.h += area.box.y;
+			EntryArray units = unit_search_rect(area.box);
+			area.box.w -= area.box.x;
+			area.box.h -= area.box.y;
 
 			for (u32 i = 0; i < units.count; ++i) {
 				Unit* unit = units.units[i];
@@ -706,6 +714,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				UnitExt* unit_ext = get_unit_ext(unit);

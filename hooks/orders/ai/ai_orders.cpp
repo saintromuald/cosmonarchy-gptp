@@ -2140,7 +2140,7 @@ LABEL_37:
 											{
 												break;
 											}
-											// TODO: Add check to see if victim is already detected / if there's a detector in the area?
+											// TODO: Add check to see if victim is already detected / if there's a detector in the box?
 											if (victim->id != UnitId::TerranBunker || !helper::is_unit_loaded(victim))
 											{
 												if (!helper::ai_unit_can_attack(victim) || units_dat::base_property[victim->id] & UnitProperty::Worker)

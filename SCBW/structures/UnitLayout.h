@@ -436,7 +436,7 @@ struct UnitLayout
 	/*0x125*/ u8        cmbw_resource_regen_mining_delay;	// Used on resources for regeneration delay - Cosmonarchy
 	/*0x126*/ u8        corrosive_spore_count_unused;		// replaced with generic_value
 	/*0x127*/ u8        corrosive_spore_timer_unused[9];	// replaced with generic_timer
-	/*0x130*/ u16       offset_index_3_by_3;				// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
+	/*0x130*/ u16       offset_index_3_by_3;				// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 box" weapon)
 	/*0x132*/ u8		new_flags_3;						// Cosmonarchy - different flags
 															// 0x1 - burrowed bactalisk flag (unused)
 															// 0x2 - vorvaling proc flag

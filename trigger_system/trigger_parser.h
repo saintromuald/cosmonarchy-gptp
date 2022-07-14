@@ -19,6 +19,20 @@ struct Parser {
 	char* stack[ParserStackSize];
 };
 
+enum LocationFlags {
+	LocationFlags_LowGround  = 0x01,
+	LocationFlags_MidGround  = 0x02,
+	LocationFlags_HighGround = 0x04,
+	LocationFlags_LowAir     = 0x08,
+	LocationFlags_MidAir     = 0x10,
+	LocationFlags_HighAir    = 0x20,
+};
+
+struct Area {
+	Box32 box;
+	u16 flags;
+};
+
 struct PlayerBitset {
 	bool set[PlayerLimit];
 };
@@ -50,7 +64,8 @@ s32 parser_get_s32(Parser* parser, u32 radix = 10);
 f32 parser_get_f32(Parser* parser);
 f32 parser_get_time(Parser* parser);
 
-Box32 parser_get_area(Parser* parser);
+Area parser_get_area(Parser* parser);
+bool check_area(Area area, Point16 position, bool air);
 Point16 parser_get_position(Parser* parser);
 
 u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);

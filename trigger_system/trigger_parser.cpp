@@ -230,10 +230,11 @@ f32 parser_get_time(Parser* parser) {
 	return total_time;
 }
 
-Box32 parser_get_area(Parser* parser) {
+Area parser_get_area(Parser* parser) {
+	Area area = {};
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
-		return {};
+		return area;
 	}
 
 	if (*parser->at == '(') {
@@ -254,38 +255,62 @@ Box32 parser_get_area(Parser* parser) {
 			++parser->at;
 		}
 
-		Box32 box = {};
-		sscanf(parser->token.data, "%u %u %u %u", &box.x, &box.y, &box.w, &box.h);
-		return box;
+		area.box = {};
+		sscanf(parser->token.data, "%u %u %u %u", &area.box.x, &area.box.y, &area.box.w, &area.box.h);
+		area.flags = ~0;
+		return area;
 	}
 
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
-		Box32 box = g_location_table[63].dimensions;
-		box.w -= box.x;
-		box.h -= box.y;
-		return box;
+		area.box = g_location_table[63].dimensions;
+		area.flags = g_location_table[63].flags;
+		area.box.w -= area.box.x;
+		area.box.h -= area.box.y;
+		return area;
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
-			Box32 box = g_location_table[i].dimensions;
-			box.w -= box.x;
-			box.h -= box.y;
-			return box;
+			area.box = g_location_table[i].dimensions;
+			area.flags = g_location_table[i].flags;
+			area.box.w -= area.box.x;
+			area.box.h -= area.box.y;
+			return area;
 		}
 	}
 	parser_pop(parser); // string wasn't valid, let's unwind and try an int
 
 	s32 i = parser_get_s32(parser);
 	if (i >= 0 && i < 256) {
-		Box32 box = g_location_table[i].dimensions;
-		box.w -= box.x;
-		box.h -= box.y;
-		return box;
+		area.box = g_location_table[i].dimensions;
+		area.flags = g_location_table[i].flags;
+		area.box.w -= area.box.x;
+		area.box.h -= area.box.y;
+		return area;
 	}
 
 	return {};
+}
+
+bool check_area(Area area, Point16 position, bool air) {
+	if (position.x >= area.box.x && position.x <= area.box.x + area.box.w &&
+		position.y >= area.box.y && position.y <= area.box.y + area.box.h) {
+
+		ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
+		if (tile->ground_height == 1) {
+			// Low
+			return air ? area.flags & LocationFlags_LowAir : area.flags & LocationFlags_LowGround;
+		} else if (tile->ground_height == 2) {
+			// Mid
+			return air ? area.flags & LocationFlags_MidAir : area.flags & LocationFlags_MidGround;
+		} else if (tile->ground_height == 4) {
+			// High
+			return air ? area.flags & LocationFlags_HighAir : area.flags & LocationFlags_HighGround;
+			
+		}
+	}
+	return false;
 }
 
 Point16 parser_get_position(Parser* parser) {

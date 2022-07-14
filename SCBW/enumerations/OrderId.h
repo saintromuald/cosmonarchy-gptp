@@ -322,7 +322,7 @@ enum Enum {
 					* Default Requirements: Unit is able to move. Allow on Hallucinated units. */
 	HarassMove             = 0x9E, /**< Aggressive Attack Move? Units won't give up on a target. If they see it, they will attack it, even worse than attack move. Might be a computer attack move?
 					* Default Requirements: Unused. */
-	AIPatrol               = 0x9F, /**< Moves units to the center of the current area that they are at? Not sure if the spacing is meant to allow for detectors to cover an area or not.
+	AIPatrol               = 0x9F, /**< Moves units to the center of the current box that they are at? Not sure if the spacing is meant to allow for detectors to cover an box or not.
 					* Default Requirements: Unused. */
 	GuardPost              = 0xA0, /**< Immobile Unit Guard.
 					* Default Requirements: Unused. */

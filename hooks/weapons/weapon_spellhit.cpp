@@ -302,7 +302,7 @@ namespace hooks
 		Unit** unitsInAreaOfEffect;
 		Unit* current_unit;
 
-		// define the base area of effect
+		// define the base box of effect
 		area_of_effect.left = (u16)x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 		area_of_effect.right = (u16)x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 		area_of_effect.top = (u16)y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
@@ -327,7 +327,7 @@ namespace hooks
 			area_of_effect.bottom = *maxBoxBottomValue;
 		}
 
-		// find all units in area of effect and pick the first
+		// find all units in box of effect and pick the first
 		unitsInAreaOfEffect = helper::get_all_units_in_bounds(&area_of_effect);
 		current_unit = *unitsInAreaOfEffect;
 		while (current_unit != nullptr)

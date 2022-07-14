@@ -130,7 +130,7 @@ namespace graphics
 		*(u16*)koreanChars = *(u16*)ch;
 		koreanChars[2] = '\0';
 
-		//Retrieve the count of the rectangular area to draw the character
+		//Retrieve the count of the rectangular box to draw the character
 		RECT chRect = {};
 		DrawText(bufferDc, koreanChars, strlen(koreanChars), &chRect, DT_CALCRECT);
 

@@ -13,7 +13,7 @@ namespace scbw {
 	using UnitFinderCallbackScoreInterface = std::function<s32(Unit*)>;
 
 	/// The UnitFinder struct is used to efficiently search for units in a certain
-	/// area using StarCraft's internal data structures.
+	/// box using StarCraft's internal data structures.
 
 	struct UnitFinder {
 			/// Default constructor.
@@ -63,7 +63,7 @@ namespace scbw {
 		/// Returns the unit at the given index. Invalid index returns nullptr instead.
 		Unit* get_unit(s32 index) const;
 
-		/// Searches the area given by (@p left, @p top, @p right, @p bottom),
+		/// Searches the box given by (@p left, @p top, @p right, @p bottom),
 		/// returning the nearest unit to @p source_unit for which match(unit)
 		/// evaluates to true. If there are no matches, returns nullptr.
 		/// This does not use unit collision boxes for calculating distances.

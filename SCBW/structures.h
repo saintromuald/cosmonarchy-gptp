@@ -456,15 +456,15 @@ union ActiveTile
 			u8 unknown1 : 1;				// 0x00020000 Unused?
 			u8 is_unwalkable : 1;			// 0x00040000 Set on tiles that can't be walked on
 			u8 unknown2 : 1;				// 0x00080000 Unused?
-			u8 has_doodad_cover : 1;		// 0x00100000 Set when a doodad cover (trees) occupies the area
+			u8 has_doodad_cover : 1;		// 0x00100000 Set when a doodad cover (trees) occupies the box
 			u8 unknown3 : 1;				// 0x00200000 Unused?
-			u8 has_creep : 1;				// 0x00400000 Set when creep occupies the area
+			u8 has_creep : 1;				// 0x00400000 Set when creep occupies the box
 			u8 always_unbuildable : 1;		// 0x00800000 always unbuildable, like water
 	/*03*/  u8 ground_height : 3;			// 0x07000000 ground height; 1 for low ground, 2 for middle ground and 4 for high ground
 			u8 currently_occupied : 1;		// 0x08000000 unbuildable but can be made buildable
 			u8 creep_receeding : 1;			// 0x10000000 Set when the nearby structure supporting the creep is destroyed
 			u8 cliff_edge : 1;				// 0x20000000 Set if the tile is a cliff edge
-			u8 temporary_creep : 1;			// 0x40000000 Set when the creep occupying the area was created. Not set if creep tiles were preplaced. Used in drawing routine.
+			u8 temporary_creep : 1;			// 0x40000000 Set when the creep occupying the box was created. Not set if creep tiles were preplaced. Used in drawing routine.
 			u8 unknown4 : 1;				// 0x80000000 Unused?
 	};
 };
