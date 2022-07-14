@@ -45,20 +45,21 @@ void init_layouts() {
 }
 
 void update_layouts() {
-	// Deinit & Init
+	// Tick Layouts Town
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		LayoutsTown* layouts_town = &layouts_towns[i];
 		if (!town->inited) {
 			layouts_town->inited = false;
-			layouts_town->can_ignore_resarea = false;
+			layouts_town->is_custom_town = false;
+			layouts_town->worker_limit = 0;
 		}
-		if (town->inited && !layouts_town->inited && (town->resarea || layouts_town->can_ignore_resarea)) {
+		if (town->inited && !layouts_town->inited && (town->resarea || layouts_town->is_custom_town)) {
 			layouts_town->inited = true;
 			memset(layouts_town->request_count, 0, sizeof(layouts_town->request_count));
 
 			Layouts* layouts = &player_layouts[town->player];
-			if (!layouts_town->can_ignore_resarea) {
+			if (!layouts_town->is_custom_town) {
 				// Claim ownership of invincible placeholders
 				bool claimed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
@@ -87,9 +88,12 @@ void update_layouts() {
 				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, i, town->resarea);
 			}
 		}
+		if (layouts_town->inited && layouts_town->is_custom_town) {
+			town->worker_limit = layouts_town->worker_limit;
+		}
 	}
 
-	// Tick
+	// Tick Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		Layouts* layouts = &player_layouts[i];
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
@@ -423,7 +427,7 @@ bool has_expanding_town(u32 player) {
 	for (u32 i = 0; i <= AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		LayoutsTown* layouts_town = &layouts_towns[i];
-		if (town->player == player && !layouts_town->can_ignore_resarea && !town->main_building && layouts_town->inited) {
+		if (town->player == player && !layouts_town->is_custom_town && !town->main_building && layouts_town->inited) {
 			return true;
 		}
 	}

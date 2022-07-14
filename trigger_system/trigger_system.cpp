@@ -622,7 +622,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (town) {
 					town->inited = true;
 					LayoutsTown* layouts_town = get_layouts_town(town);
-					layouts_town->can_ignore_resarea = true;
+					layouts_town->is_custom_town = true;
+					layouts_town->worker_limit = worker_count;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
 
@@ -641,7 +642,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					} else {
 						town->resarea = 0;
 					}
-					town->resource_units_not_set = town->resarea == 0;
+					town->resource_units_not_set = false;
 					if (claim_placeholders_area.x && claim_placeholders_area.y) {
 						Layouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
@@ -655,7 +656,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							}
 							if (!placeholder->town) {
 								placeholder->town = town;
-								scbw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
+								if (log_placeholder_requests[player]) {
+									scbw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
+								}
 							}
 						}
 					}
