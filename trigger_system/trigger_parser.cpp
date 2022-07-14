@@ -1,4 +1,4 @@
-#include "token_parser.h"
+#include "trigger_parser.h"
 
 static bool is_normal_space(char c) {
 	return c == ' ' || c == '\t';

@@ -1,12 +1,12 @@
 #include "trigger_system.h"
 #include <limits.h>
 
+#include "trigger_parser.h"
 #include "trigger_sound.h"
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
 
-#include "token_parser.h"
 #include "base_layouts.h"
 #include "player_color.h"
 

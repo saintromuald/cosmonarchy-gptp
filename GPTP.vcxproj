@@ -257,7 +257,7 @@
     <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
     <ClCompile Include="direct_sound.cpp" />
-    <ClCompile Include="trigger_system\token_parser.cpp" />
+    <ClCompile Include="trigger_system\trigger_parser.cpp" />
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
@@ -592,7 +592,7 @@
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />
     <ClInclude Include="direct_sound.h" />
-    <ClInclude Include="trigger_system\token_parser.h" />
+    <ClInclude Include="trigger_system\trigger_parser.h" />
     <ClInclude Include="scenario.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />

@@ -1,7 +1,7 @@
 #include "base_layouts.h"
 #include "hooks/unit_stats/new_requirements.h"
 #include "data_ext.h"
-#include "trigger_system/token_parser.h"
+#include "trigger_system/trigger_parser.h"
 
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
