@@ -264,7 +264,7 @@ Area parser_get_area(Parser* parser) {
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		area.box = g_location_table[63].dimensions;
-		area.flags = g_location_table[63].flags;
+		area.flags = ~g_location_table[63].flags;
 		area.box.w -= area.box.x;
 		area.box.h -= area.box.y;
 		return area;
@@ -273,7 +273,7 @@ Area parser_get_area(Parser* parser) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
 			area.box = g_location_table[i].dimensions;
-			area.flags = g_location_table[i].flags;
+			area.flags = ~g_location_table[i].flags;
 			area.box.w -= area.box.x;
 			area.box.h -= area.box.y;
 			return area;
@@ -284,7 +284,7 @@ Area parser_get_area(Parser* parser) {
 	s32 i = parser_get_s32(parser);
 	if (i >= 0 && i < 256) {
 		area.box = g_location_table[i].dimensions;
-		area.flags = g_location_table[i].flags;
+		area.flags = ~g_location_table[i].flags;
 		area.box.w -= area.box.x;
 		area.box.h -= area.box.y;
 		return area;
@@ -297,16 +297,18 @@ bool check_area(Area area, Point16 position, bool air) {
 	if (position.x >= area.box.x && position.x <= area.box.x + area.box.w &&
 		position.y >= area.box.y && position.y <= area.box.y + area.box.h) {
 		ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
-		if (tile->ground_height == 1) {
+		u32 height = tile->ground_height / 2;
+		if (height == 0) {
 			// Low
 			return air ? area.flags & LocationFlags_LowAir : area.flags & LocationFlags_LowGround;
-		} else if (tile->ground_height == 2) {
+		} else if (height == 1) {
 			// Mid
 			return air ? area.flags & LocationFlags_MidAir : area.flags & LocationFlags_MidGround;
-		} else if (tile->ground_height == 4) {
+		} else if (height == 2) {
 			// High
 			return air ? area.flags & LocationFlags_HighAir : area.flags & LocationFlags_HighGround;
 		}
+		return false;
 	}
 	return false;
 }
