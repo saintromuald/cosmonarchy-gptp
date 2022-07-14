@@ -715,5 +715,11 @@ namespace hooks
 		// Disable worker and zethrokor defense gimmick
 		nops(0x0043F85E, 2);
 		nops(0x0043F864, 2);
+
+		// Update gas prios
+		u32 p105 = 105;
+		memory_patch(0x004336E0 + 1, p105);
+		u32 p104 = 104;
+		memory_patch(0x004336A3 + 1, p104);
 	}
 }
