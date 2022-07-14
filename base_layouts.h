@@ -26,6 +26,7 @@ struct Placeholder {
 	b8 requested;
 	u8 placement_timeout;
 	AiTown* town;
+	graphics::ColorId color;
 };
 
 #define PlaceholderLimit 2048

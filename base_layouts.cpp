@@ -95,6 +95,22 @@ void update_layouts() {
 		}
 	}
 
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		Layouts* layouts = &player_layouts[i];
+		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+			Placeholder* placeholder = &layouts->placeholders[j];
+			if (placeholder->requested) {
+				placeholder->color = graphics::GREEN;
+			} else if (placeholder->disabled) {
+				placeholder->color = graphics::BLACK;
+			} else if (!placeholder->should_request) {
+				placeholder->color = graphics::BROWN;
+			} else {
+				placeholder->color = graphics::WHITE;
+			}
+		}
+	}
+
 	// Tick Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		Layouts* layouts = &player_layouts[i];
@@ -119,6 +135,7 @@ void update_layouts() {
 				continue;
 			}
 			if (has_expanding_town(town->player)) {
+				placeholder->color = graphics::PURPLE;
 				continue;
 			}
 			LayoutsTown* layouts_town = get_layouts_town(town);
@@ -145,7 +162,51 @@ void update_layouts() {
 				has_down_equivalent(town, base_unit_id) &&
 				number_of_equivalents_up(town, base_unit_id) < layouts_town->request_count[base_unit_id]) {
 				// Lock adding new requests until this request is started
+				placeholder->color = graphics::YELLOW;
 				break;
+			}
+
+		}
+	}
+
+
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		Layouts* layouts = &player_layouts[i];
+		if (log_placeholder_requests[i]) {
+			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+				Placeholder* placeholder = &layouts->placeholders[j];
+
+				Box16 bounds = units_dat::UnitBounds[placeholder->unit_id];
+				Box16 unit_box = {};
+				unit_box.left = placeholder->position.x - bounds.left;
+				unit_box.top = placeholder->position.y - bounds.top;
+				unit_box.right = placeholder->position.x + bounds.right;
+				unit_box.bottom = placeholder->position.y + bounds.bottom;
+
+				Box16 camera = {};
+				camera.left = *g_move_to_x;
+				camera.top = *g_move_to_x;
+				camera.right = *g_move_to_x + 640;
+				camera.bottom = *g_move_to_x + 400;
+
+				if (unit_box.left <= camera.right && unit_box.right >= camera.left &&
+					unit_box.top <= camera.bottom && unit_box.bottom >= camera.top) {
+					graphics::draw_box(unit_box.left, unit_box.top, unit_box.right, unit_box.bottom, placeholder->color, graphics::CoordType::ON_MAP);
+
+					char buffer[256] = {};
+
+					Point16 pos = {};
+					pos.x = unit_box.left + 5;
+					pos.y = unit_box.top + 5;
+
+					snprintf(buffer, 256, "%s, Player: %u", Unit::get_name(placeholder->unit_id), i + 1);
+					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
+					pos.y += 10;
+
+					snprintf(buffer, 256, "Priority %u", placeholder->priority);
+					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
+					pos.y += 10;
+				}
 			}
 		}
 	}

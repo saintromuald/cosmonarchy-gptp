@@ -234,6 +234,10 @@ namespace hooks
 			scbw::set_ingame_loop_state(false);
 		}
 
+		if (!scbw::is_game_paused()) { // If the game is not paused
+			graphics::reset_all_graphics();
+		}
+
 		// Update Extended Features
 		scbw::set_ingame_loop_state(true);
 		update_trigger_system(true);
@@ -339,7 +343,6 @@ namespace hooks
 			}
 
 			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
-			graphics::reset_all_graphics();
 			hooks::update_psi_field_providers();
 
 			reset_search_index();
