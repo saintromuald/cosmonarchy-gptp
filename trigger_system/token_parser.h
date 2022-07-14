@@ -61,6 +61,7 @@ char parser_get_separator(Parser* parser);
 u32 parser_get_player(Parser* parser, bool allow_neutral = false); // 1 - 8
 PlayerBitset parser_get_player_bitset(Parser* parser);
 
+Token get_short_unit_name(u32 unit_id);
 u32 parser_get_unit_id(Parser* parser);
 UnitIdBitset parser_get_unit_id_bitset(Parser* parser);
 

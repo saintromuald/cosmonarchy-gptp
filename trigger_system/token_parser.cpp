@@ -358,27 +358,6 @@ u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count) {
 	return 0;
 }
 
-static Token get_short_unit_name(u32 unit_id) {
-	Token token = {};
-	const char* name = Unit::get_name(unit_id);
-
-	bool after_space = false;
-	for (const char* c = name; *c; ++c) {
-		if (after_space) {
-			if (token.size < MaxToken - 1) {
-				token.data[token.size++] = *c;
-			} else {
-				break;
-			}
-		}
-		if (*c == ' ') {
-			after_space = true;
-		}
-	}
-
-	return token;
-}
-
 bool parser_get_negation(Parser* parser) {
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
@@ -504,6 +483,27 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	}
 
 	return bitset;
+}
+
+Token get_short_unit_name(u32 unit_id) {
+	Token token = {};
+	const char* name = Unit::get_name(unit_id);
+
+	bool after_space = false;
+	for (const char* c = name; *c; ++c) {
+		if (after_space) {
+			if (token.size < MaxToken - 1) {
+				token.data[token.size++] = *c;
+			} else {
+				break;
+			}
+		}
+		if (*c == ' ') {
+			after_space = true;
+		}
+	}
+
+	return token;
 }
 
 u32 parser_get_unit_id(Parser* parser) {

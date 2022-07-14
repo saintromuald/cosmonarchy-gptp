@@ -1,6 +1,7 @@
 #include "base_layouts.h"
 #include "hooks/unit_stats/new_requirements.h"
 #include "data_ext.h"
+#include "trigger_system/token_parser.h"
 
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
@@ -95,6 +96,7 @@ void update_layouts() {
 		}
 	}
 
+	// Set Layouts Colors
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		Layouts* layouts = &player_layouts[i];
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
@@ -169,7 +171,7 @@ void update_layouts() {
 		}
 	}
 
-
+	// Draws Layouts Preview
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		Layouts* layouts = &player_layouts[i];
 		if (log_placeholder_requests[i]) {
@@ -185,9 +187,9 @@ void update_layouts() {
 
 				Box16 camera = {};
 				camera.left = *g_move_to_x;
-				camera.top = *g_move_to_x;
+				camera.top = *g_move_to_y;
 				camera.right = *g_move_to_x + 640;
-				camera.bottom = *g_move_to_x + 400;
+				camera.bottom = *g_move_to_y + 400;
 
 				if (unit_box.left <= camera.right && unit_box.right >= camera.left &&
 					unit_box.top <= camera.bottom && unit_box.bottom >= camera.top) {
@@ -199,11 +201,11 @@ void update_layouts() {
 					pos.x = unit_box.left + 5;
 					pos.y = unit_box.top + 5;
 
-					snprintf(buffer, 256, "%s, Player: %u", Unit::get_name(placeholder->unit_id), i + 1);
+					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder->unit_id).data, i + 1);
 					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 
-					snprintf(buffer, 256, "Priority %u", placeholder->priority);
+					snprintf(buffer, 256, "Prio: %u", placeholder->priority);
 					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 				}
