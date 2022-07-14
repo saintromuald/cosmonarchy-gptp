@@ -1458,71 +1458,31 @@ LABEL_37:
 				} break;
 			}
 
-			// Lard special cases
-			if (g_game_vespene[town_player] < 800)
-			{
-				if (worker_count < 20)
-				{
-					if (worker_count < 15)
-					{
-						if (worker_count < 10)
-						{
-							if (worker_count >= 5 && gas_count < 1)
-							{
-								gas_count = 1;
-							}
-						}
-						else
-						{
-							if (gas_count < 2)
-							{
-								gas_count = 2;
-							}
-						}
-					}
-					else
-					{
-						if (gas_count < 3)
-						{
-							gas_count = 3;
-						}
-					}
-				}
-				else if (gas_count < 4)
-				{
-					gas_count = 4;
+			AI_Main* ai_player = &g_aiscript_controller[town_player];
+			s32 gas_delta = ai_player->gas_collection - ai_player->gas_available;
+			if (gas_delta > 0) {
+				u32 new_gas_count = gas_delta / 50;
+				if (gas_count < new_gas_count) {
+					gas_count = new_gas_count;
 				}
 			}
 
 			// New limit
-			u32 max_worker_count = 0;
+			u32 max_gas_worker_count = 0;
+			u8 gas_node_worker_count[3] = {};
 			for (u32 i = 0; i < 3; ++i) {
 				Unit* gas = town->gas_buildings[i];
 				if (gas && gas->status & UnitStatus::Completed) {
 					if (gas->id == UnitId::ResourceVespeneRidge || gas->id == UnitId::ResourceVespeneGeyser) {
-						max_worker_count += 2;
+						gas_node_worker_count[i] = 2;
 					} else {
-						max_worker_count += 3;
+						gas_node_worker_count[i] = 3;
 					}
+					max_gas_worker_count += gas_node_worker_count[i];
 				}
 			}
-			if (gas_count > max_worker_count)
-			{
-				gas_count = max_worker_count;
-			}
-
-			u32 total_node_worker_count = 0;
-			u8 node_worker_count[3] = {};
-			for (u32 i = 0; i < 3; ++i) {
-				Unit* gas = town->gas_buildings[i];
-				if (gas && gas->status & UnitStatus::Completed) {
-					if (gas->id == UnitId::ResourceVespeneRidge || gas->id == UnitId::ResourceVespeneGeyser) {
-						node_worker_count[i] = 2;
-					} else {
-						node_worker_count[i] = 3;
-					}
-					total_node_worker_count += node_worker_count[i];
-				}
+			if (gas_count > max_gas_worker_count) {
+				gas_count = max_gas_worker_count;
 			}
 
 			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
@@ -1585,23 +1545,23 @@ LABEL_37:
 				result = *target_resource_type;
 
 				if (*target_resource_type != 1) {
-					if (node_worker_count[*target_resource_type - 1]) {
+					if (gas_node_worker_count[*target_resource_type - 1]) {
 						assert(total_node_worker_count);
-						--total_node_worker_count;
-						--node_worker_count[*target_resource_type - 1];
+						--max_gas_worker_count;
+						--gas_node_worker_count[*target_resource_type - 1];
 					}
 
-					if (total_node_worker_count) {
+					if (max_gas_worker_count) {
 						for (u32 i = 0; i < 3; ++i) {
 							*target_resource_type += 1;
 							if (*target_resource_type > 4) {
 								*target_resource_type = 1;
 							}
-							if (node_worker_count[*target_resource_type - 1]) {
+							if (gas_node_worker_count[*target_resource_type - 1]) {
 								break;
 							}
 						}
-						if (!node_worker_count[*target_resource_type - 1]) {
+						if (!gas_node_worker_count[*target_resource_type - 1]) {
 							*target_resource_type = 0;
 						}
 					} else {
