@@ -499,7 +499,7 @@ bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placehol
 	return true;
 }
 
-bool ai_mining_base_count(u32 player) {
+u32 ai_mining_base_count(u32 player) {
 	u32 count = 0;
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
@@ -507,7 +507,7 @@ bool ai_mining_base_count(u32 player) {
 			count++;
 		}
 	}
-	return true;
+	return count;
 }
 
 bool has_expanding_town(u32 player) {
