@@ -1586,19 +1586,24 @@ LABEL_37:
 
 				if (*target_resource_type != 1) {
 					if (node_worker_count[*target_resource_type - 1]) {
+						--total_node_worker_count;
 						--node_worker_count[*target_resource_type - 1];
 					}
 
-					for (u32 i = 0; i < 3; ++i) {
-						*target_resource_type += 1;
-						if (*target_resource_type > 4) {
-							*target_resource_type = 1;
+					if (total_node_worker_count) {
+						for (u32 i = 0; i < 3; ++i) {
+							*target_resource_type += 1;
+							if (*target_resource_type > 4) {
+								*target_resource_type = 1;
+							}
+							if (node_worker_count[*target_resource_type - 1]) {
+								break;
+							}
 						}
-						if (node_worker_count[*target_resource_type - 1]) {
-							break;
+						if (!node_worker_count[*target_resource_type - 1]) {
+							*target_resource_type = 0;
 						}
-					}
-					if (!node_worker_count[*target_resource_type - 1]) {
+					} else {
 						*target_resource_type = 0;
 					}
 				}
@@ -1642,7 +1647,7 @@ LABEL_37:
 			{
 				resource = fallback;
 			}
-			if (resource && (resource->id == UnitId::ResourceVespeneGeyser || resource->status & UnitStatus::Completed))
+			if (resource && (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser || resource->status & UnitStatus::Completed))
 			{
 				helper::assign_order_with_target(resource, worker, OrderId::Harvest1);
 				resource->building.resource.resource_belongs_to_ai = 1;
