@@ -257,7 +257,7 @@ Area parser_get_area(Parser* parser) {
 
 		area.box = {};
 		sscanf(parser->token.data, "%u %u %u %u", &area.box.x, &area.box.y, &area.box.w, &area.box.h);
-		area.flags = ~0;
+		area.flags = 0;
 		return area;
 	}
 
