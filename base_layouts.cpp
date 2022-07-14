@@ -82,6 +82,7 @@ void update_layouts() {
 				if ((!placeholder->town && placeholder->resarea == town->resarea) || (placeholder->town && placeholder->town == town)) {
 					placeholder->inited = false;
 					placeholder->requested = false;
+					placeholder->request_count = 0;
 					placeholder->town = town;
 					placeholder->placement_timeout = 0;
 				}
@@ -162,7 +163,7 @@ void update_layouts() {
 				can_place_unit(base_unit_id, placeholder->position, i) &&
 				units_dat::base_property[base_unit_id] & UnitProperty::Building &&
 				has_down_equivalent(town, base_unit_id) &&
-				number_of_equivalents_up(town, base_unit_id) < layouts_town->request_count[base_unit_id]) {
+				number_of_equivalents_up(town, base_unit_id) < placeholder->request_count) {
 				// Lock adding new requests until this request is started
 				placeholder->color = graphics::YELLOW;
 				break;
@@ -533,6 +534,7 @@ void request_placeholder(AiTown* town, LayoutsTown* layouts_town, Placeholder* p
 	}
 
 	u32 count = ++layouts_town->request_count[placeholder->unit_id];
+	placeholder->request_count = count;
 	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 		helper::ai_build(placeholder->unit_id, false, count, town, placeholder->priority);
 	} else {

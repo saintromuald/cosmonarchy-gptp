@@ -24,6 +24,7 @@ struct Placeholder {
 	b8 disabled;
 	b8 inited;
 	b8 requested;
+	u8 request_count;
 	u8 placement_timeout;
 	AiTown* town;
 	graphics::ColorId color;
