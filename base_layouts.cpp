@@ -139,6 +139,8 @@ void update_layouts() {
 				}
 			}
 			if (placeholder->requested &&
+				can_build_placeholder(layouts, town, placeholder) &&
+				can_place_unit(base_unit_id, placeholder->position, i) &&
 				units_dat::base_property[base_unit_id] & UnitProperty::Building &&
 				has_down_equivalent(town, base_unit_id) &&
 				number_of_equivalents_up(town, base_unit_id) < layouts_town->request_count[base_unit_id]) {
