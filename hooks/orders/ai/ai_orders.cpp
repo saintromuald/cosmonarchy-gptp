@@ -1460,15 +1460,13 @@ LABEL_37:
 
 			AI_Main* ai_player = &g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->gas_collection - ai_player->gas_available;
-			if (gas_delta > 0) {
-				u32 new_gas_count = gas_delta / 100;
-				new_gas_count += worker_count / 10;
-				if (gas_count < new_gas_count) {
-					gas_count = new_gas_count;
-				}
-				if (gas_count > worker_count / 3) {
-					gas_count = worker_count / 3;
-				}
+			u32 new_gas_count = gas_delta > 0 ? gas_delta / 100 : 0;
+			new_gas_count += worker_count / 10;
+			if (gas_count < new_gas_count) {
+				gas_count = new_gas_count;
+			}
+			if (gas_count > worker_count / 3) {
+				gas_count = worker_count / 3;
 			}
 
 			// New limit
