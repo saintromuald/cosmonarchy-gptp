@@ -5,6 +5,7 @@ enum SpawnType {
 	SpawnType_None,
 	SpawnType_Augur,
 	SpawnType_AugurDamage,
+	SpawnType_Zerg,
 
 	SpawnType_Count,
 };
@@ -13,6 +14,7 @@ const char* spawn_type_names[SpawnType_Count] = {
 	"None",
 	"Augur",
 	"AugurDamage",
+	"Zerg",
 };
 
 struct SpawnSequence {

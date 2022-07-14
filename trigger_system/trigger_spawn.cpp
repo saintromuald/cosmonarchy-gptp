@@ -42,6 +42,20 @@ void update_spawn() {
 			}
 		}
 
+		switch (seq->type) {
+			case SpawnType_Zerg: {
+				u32 rubble = SpriteId::Zerg_Building_Rubble_Small;
+				u32 explo = SpriteId::ZergAirExplosionSmall;
+				if (units_dat::base_property[seq->unit_id] & UnitProperty::LargeOverlay) {
+					rubble = SpriteId::Zerg_Building_Rubble_Large;
+					explo = SpriteId::ZergAirExplosionLarge;
+				}
+				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation_level - 1);
+				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation_level + 1);
+				helper::play_sound_at_pos(SoundId::Zerg_Bldg_ZBldgDth_WAV, seq->source_pos, 1, 0);
+			} break;
+		}
+
 		if (seq->stagger) {
 			seq->delay = seq->stagger;
 		}
