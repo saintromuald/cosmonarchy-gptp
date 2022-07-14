@@ -4,6 +4,7 @@
 #include <SCBW/scbwdata.h>
 #include "logger.h"
 #include "globals.h"
+#include "base_layouts.h"
 
 namespace hooks
 {
@@ -215,6 +216,8 @@ namespace hooks
 					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
+					LayoutsTown* layouts_town = get_layouts_town(town);
+					UnitExt* unitExt = get_unit_ext(unit);
 					if (!town->inited) {
 						town->inited = 1;
 						town->mineral = 0;
@@ -222,7 +225,14 @@ namespace hooks
 						town->gas_buildings[1] = 0;
 						town->gas_buildings[2] = 0;
 
-						UnitExt* unitExt = get_unit_ext(unit);
+						if (layouts_town && layouts_town->worker_maynard) {
+							layouts_town->worker_maynard--;
+						}
+						unitExt->values[ValueAI_WorkerChosenForExpansion] = 1;
+						unitExt->values[ValueAI_WorkerChosenX] = town->position.x;
+						unitExt->values[ValueAI_WorkerChosenY] = town->position.y;
+					} else if (layouts_town && layouts_town->worker_maynard) {
+						layouts_town->worker_maynard--;
 						unitExt->values[ValueAI_WorkerChosenForExpansion] = 1;
 						unitExt->values[ValueAI_WorkerChosenX] = town->position.x;
 						unitExt->values[ValueAI_WorkerChosenY] = town->position.y;
