@@ -58,17 +58,19 @@ void update_layouts() {
 			memset(layouts_town->request_count, 0, sizeof(layouts_town->request_count));
 
 			Layouts* layouts = &player_layouts[town->player];
-			// Claim ownership of invincible placeholders
-			bool claimed = false;
-			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-				Placeholder* placeholder = &layouts->placeholders[j];
-				if (!placeholder->resarea) {
-					placeholder->resarea = town->resarea;
-					claimed = true;
+			if (!layouts_town->can_ignore_resarea) {
+				// Claim ownership of invincible placeholders
+				bool claimed = false;
+				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+					Placeholder* placeholder = &layouts->placeholders[j];
+					if (!placeholder->resarea) {
+						placeholder->resarea = town->resarea;
+						claimed = true;
+					}
 				}
-			}
-			if (claimed) {
-				sort_layouts(layouts);
+				if (claimed) {
+					sort_layouts(layouts);
+				}
 			}
 
 			// Init placeholders
@@ -421,7 +423,7 @@ bool has_expanding_town(u32 player) {
 	for (u32 i = 0; i <= AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		LayoutsTown* layouts_town = &layouts_towns[i];
-		if (town->player == player && town->resarea && !town->main_building && layouts_town->inited) {
+		if (town->player == player && !layouts_town->can_ignore_resarea && !town->main_building && layouts_town->inited) {
 			return true;
 		}
 	}

@@ -545,7 +545,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id >= UnitId::None || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
-					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
+					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w ||
 						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
 						continue;
 					}
@@ -569,7 +569,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
-					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
+					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w ||
 						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
 						continue;
 					}
@@ -597,7 +597,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
-					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w &&
+					if (placeholder->position.x < area.x || placeholder->position.x > area.x + area.w ||
 						placeholder->position.y < area.y || placeholder->position.y > area.y + area.h) {
 						continue;
 					}
@@ -649,12 +649,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 								continue;
 							}
-							if (placeholder->position.x < claim_placeholders_area.x || placeholder->position.x > claim_placeholders_area.x + claim_placeholders_area.w &&
+							if (placeholder->position.x < claim_placeholders_area.x || placeholder->position.x > claim_placeholders_area.x + claim_placeholders_area.w ||
 								placeholder->position.y < claim_placeholders_area.y || placeholder->position.y > claim_placeholders_area.y + claim_placeholders_area.h) {
 								continue;
 							}
 							if (!placeholder->town) {
 								placeholder->town = town;
+								scbw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
 							}
 						}
 					}
