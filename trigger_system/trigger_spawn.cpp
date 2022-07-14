@@ -50,7 +50,7 @@ void update_spawn() {
 					rubble = SpriteId::Zerg_Building_Rubble_Large;
 					explo = SpriteId::ZergAirExplosionLarge;
 				}
-				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation_level - 1);
+				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
 				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation_level + 1);
 				helper::play_sound_at_pos(SoundId::Zerg_Bldg_ZBldgDth_WAV, seq->source_pos, 1, 0);
 			} break;
