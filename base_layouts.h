@@ -35,7 +35,7 @@ struct Layouts {
 
 struct LayoutsTown {
 	bool inited;
-	bool is_custom_town;
+	bool wants_no_resarea;
 	u32 worker_limit;
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };

@@ -622,7 +622,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (town) {
 					town->inited = true;
 					LayoutsTown* layouts_town = get_layouts_town(town);
-					layouts_town->is_custom_town = true;
 					layouts_town->worker_limit = worker_count;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
@@ -639,10 +638,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 					if (attach_to_nearest_resarea) {
 						town->resarea = scbw::get_closest_resarea(pos);
+						layouts_town->wants_no_resarea = false;
 					} else {
 						town->resarea = 0;
+						layouts_town->wants_no_resarea = true;
 					}
-					town->resource_units_not_set = false;
+					town->resource_units_not_set = town->resarea != 0;
 					if (claim_placeholders_area.x && claim_placeholders_area.y) {
 						Layouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
