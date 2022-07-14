@@ -1465,8 +1465,8 @@ LABEL_37:
 			if (gas_count < new_gas_count) {
 				gas_count = new_gas_count;
 			}
-			if (gas_count > worker_count / 3) {
-				gas_count = worker_count / 3;
+			if (gas_count > worker_count / 4) {
+				gas_count = worker_count / 4;
 			}
 
 			// New limit
@@ -1478,7 +1478,7 @@ LABEL_37:
 					if (gas->id == UnitId::ResourceVespeneRidge || gas->id == UnitId::ResourceVespeneGeyser) {
 						gas_node_worker_count[i] = 2;
 					} else {
-						gas_node_worker_count[i] = 3;
+						gas_node_worker_count[i] = 4;
 					}
 					max_gas_worker_count += gas_node_worker_count[i];
 				}
@@ -1489,8 +1489,6 @@ LABEL_37:
 
 			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev)
 			{
-				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
-
 				Unit* worker = worker_ai->parent;
 				u8 unit_order = worker->main_order_id;
 				if (unit_order == OrderId::ConstructingBuilding
@@ -1539,35 +1537,37 @@ LABEL_37:
 					}
 				}
 
+				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
 				if (gas_count) {
 					--gas_count;
+				}
+				if (*target_resource_type != 1) {
+					if (max_gas_worker_count) {
+						for (u32 i = 0; i < 3; ++i) {
+							*target_resource_type += 1;
+							if (*target_resource_type > 4) {
+								*target_resource_type = 2;
+							}
+							if (gas_node_worker_count[*target_resource_type - 2]) {
+								break;
+							}
+						}
+						if (!gas_node_worker_count[*target_resource_type - 2]) {
+							*target_resource_type = 1;
+						}
+					} else {
+						*target_resource_type = 1;
+					}
 				}
 
 				worker_ai->target_resource = *target_resource_type;
 				result = *target_resource_type;
 
 				if (*target_resource_type != 1) {
-					if (gas_node_worker_count[*target_resource_type - 1]) {
-						assert(total_node_worker_count);
+					if (gas_node_worker_count[*target_resource_type - 2]) {
+						assert(max_gas_worker_count);
 						--max_gas_worker_count;
-						--gas_node_worker_count[*target_resource_type - 1];
-					}
-
-					if (max_gas_worker_count) {
-						for (u32 i = 0; i < 3; ++i) {
-							*target_resource_type += 1;
-							if (*target_resource_type > 4) {
-								*target_resource_type = 1;
-							}
-							if (gas_node_worker_count[*target_resource_type - 1]) {
-								break;
-							}
-						}
-						if (!gas_node_worker_count[*target_resource_type - 1]) {
-							*target_resource_type = 0;
-						}
-					} else {
-						*target_resource_type = 0;
+						--gas_node_worker_count[*target_resource_type - 2];
 					}
 				}
 			}
