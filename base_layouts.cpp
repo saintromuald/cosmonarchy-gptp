@@ -499,7 +499,21 @@ bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placehol
 	return true;
 }
 
+bool ai_mining_base_count(u32 player) {
+	u32 count = 0;
+	for (u32 i = 0; i < AiTownLimit; ++i) {
+		AiTown* town = &g_ai_town_array[i];
+		if (town->player == player && town->resarea) {
+			count++;
+		}
+	}
+	return true;
+}
+
 bool has_expanding_town(u32 player) {
+	if (ai_mining_base_count(player) > 2) {
+		return false;
+	}
 	for (u32 i = 0; i <= AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		LayoutsTown* layouts_town = &layouts_towns[i];
