@@ -487,7 +487,9 @@ namespace hooks
 			}
 		}
 
-		tactical_ai(unit, unitExt);
+		if (!unit_is_hidden) {
+			tactical_ai(unit, unitExt);
+		}
 
 		u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
 		if (creep_spreader_id != UnitId::None && unit->player < PlayerLimit) {
