@@ -1440,7 +1440,7 @@ LABEL_37:
 			u8 minerals_percentage = 0;
 			u8 gas_percentage = 0;
 			helper::ai_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
-			u32 gas_count = gas_percentage * town->worker_count / 100;
+			u32 gas_count = gas_percentage * town->worker_count / 100.0;
 
 			u32 worker_count = 0;
 			switch (g_player_table[town_player].race) {
@@ -1586,6 +1586,7 @@ LABEL_37:
 
 				if (*target_resource_type != 1) {
 					if (node_worker_count[*target_resource_type - 1]) {
+						assert(total_node_worker_count);
 						--total_node_worker_count;
 						--node_worker_count[*target_resource_type - 1];
 					}
