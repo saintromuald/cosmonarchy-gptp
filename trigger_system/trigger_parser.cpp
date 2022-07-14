@@ -296,7 +296,6 @@ Area parser_get_area(Parser* parser) {
 bool check_area(Area area, Point16 position, bool air) {
 	if (position.x >= area.box.x && position.x <= area.box.x + area.box.w &&
 		position.y >= area.box.y && position.y <= area.box.y + area.box.h) {
-
 		ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
 		if (tile->ground_height == 1) {
 			// Low
@@ -307,7 +306,6 @@ bool check_area(Area area, Point16 position, bool air) {
 		} else if (tile->ground_height == 4) {
 			// High
 			return air ? area.flags & LocationFlags_HighAir : area.flags & LocationFlags_HighGround;
-			
 		}
 	}
 	return false;
