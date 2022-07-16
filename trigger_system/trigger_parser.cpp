@@ -147,7 +147,7 @@ enum TimeType {
 	TimeType_Count,
 };
 
-f32 parser_get_time(Parser* parser) {
+f32 parser_get_time_seconds(Parser* parser) {
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return false;
@@ -155,13 +155,11 @@ f32 parser_get_time(Parser* parser) {
 
 	bool add_to_total = false;
 	f32 total_time = 0;
-
 	f32 time = 0;
 	u32 time_type = TimeType_Seconds;
 
 	u32 buffer_index = 0;
 	char buffer[MaxToken] = {};
-
 	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
 		if (isdigit(*parser->at) || *parser->at == '.') {
 			if (buffer_index < MaxToken - 1) {
@@ -196,10 +194,10 @@ f32 parser_get_time(Parser* parser) {
 			time = strtof(buffer, 0);
 			switch (time_type) {
 				case TimeType_Hours: {
-					total_time += time * 60 * 60;
+					total_time += time * 60 * 60 * 24;
 				} break;
 				case TimeType_Minutes: {
-					total_time += time * 60;
+					total_time += time * 60 * 24;
 				} break;
 				case TimeType_Seconds: {
 					total_time += time;
@@ -225,9 +223,13 @@ f32 parser_get_time(Parser* parser) {
 	// add seconds by default if anything without type was left
 	if (buffer_index) {
 		time = strtof(buffer, 0);
-		total_time += time;
+		total_time += ceil(time);
 	}
 	return total_time;
+}
+
+u32 parser_get_time_ticks(Parser* parser) {
+	return ceil(parser_get_time_seconds(parser) * 24);
 }
 
 Area parser_get_area(Parser* parser) {

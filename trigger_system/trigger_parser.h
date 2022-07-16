@@ -62,7 +62,8 @@ Token parser_get_string(Parser* parser);
 
 s32 parser_get_s32(Parser* parser, u32 radix = 10);
 f32 parser_get_f32(Parser* parser);
-f32 parser_get_time(Parser* parser);
+f32 parser_get_time_seconds(Parser* parser);
+u32 parser_get_time_ticks(Parser* parser);
 
 Area parser_get_area(Parser* parser);
 bool check_area(Area area, Point16 position, bool air);

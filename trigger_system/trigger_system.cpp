@@ -85,7 +85,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
-					f32 time_quota = parser_get_time(&parser);
+					u32 time_quota = parser_get_time_ticks(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
 					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
@@ -105,7 +105,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 										continue;
 									}
 									u32 combat = trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit];
-									if (combat && check_quota(time_quota_type, time_quota * 24, *g_elapsed_time_frames - combat)) {
+									if (combat && check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - combat)) {
 										return true;
 									}
 								}
@@ -181,7 +181,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					u32 quota = parser_get_s32(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
-					f32 scouting_time_quota = parser_get_time(&parser);
+					u32 scouting_time_quota = parser_get_time_ticks(&parser);
 
 					area.box.w += area.box.x;
 					area.box.h += area.box.y;
@@ -211,7 +211,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
 							continue;
 						}
-						if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota * 24, unit_ext->last_seen_timer[scouting_player - 1])) {
+						if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota, unit_ext->last_seen_timer[scouting_player - 1])) {
 							count++;
 						}
 					}
@@ -247,23 +247,20 @@ b32 parse_comment_condition(TriggerAction* action) {
 					return false;
 				} else if (parser_eq(&parser, "var")) {
 					Token name = parser_get_string(&parser);
-					TriggerVar* var = find_or_create_trigger_var(name.data);
+					TriggerVar* var = find_trigger_var(TriggerVarType_Var, name.data);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
+					s32 quota = parser_get_s32(&parser);
 					if (var) {
-						if (var->is_timer) {
-							f32 quota = parser_get_time(&parser);
-							if (var->set) {
-								return check_quota(quota_type, quota * 24, var->value * 24);
-							}
-						} else {
-							s32 quota = parser_get_s32(&parser);
-							if (var->set) {
-								return check_quota(quota_type, quota, var->value);
-							}
-						}
-					} else {
-						// Consume tokens anyways
-						parser_get_word(&parser);
+						return check_quota(quota_type, quota, var->value);
+					}
+					return false;
+				} else if (parser_eq(&parser, "timer")) {
+					Token name = parser_get_string(&parser);
+					TriggerVar* var = find_trigger_var(TriggerVarType_Timer, name.data);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
+					u32 quota = parser_get_time_ticks(&parser);
+					if (var) {
+						return check_quota(quota_type, quota, var->value);
 					}
 					return false;
 				}
@@ -295,14 +292,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			playback.paused = false;
 			play_music(true);
 		} else if (parser_eq(&parser, "fade_in") && is_local_player) {
-			f32 fade_in = parser_get_time(&parser);
+			f32 fade_in = parser_get_time_seconds(&parser);
 			playback.fade_in = fade_in;
 		} else if (parser_eq(&parser, "fade_out") && is_local_player) {
-			f32 fade_out = parser_get_time(&parser);
+			f32 fade_out = parser_get_time_seconds(&parser);
 			playback.fade_out = fade_out;
 		} else if (parser_eq(&parser, "volume") && is_local_player) {
 			f32 volume = parser_get_f32(&parser);
-			f32 time = parser_get_time(&parser);
+			f32 time = parser_get_time_seconds(&parser);
 			if (time == 0) {
 				playback.volume = 0;
 			}
@@ -349,7 +346,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "recolor") && is_local_player) {
 			TimedRecolor recolor = {};
 			recolor.set  = parser_get_recolor_set(&parser);
-			recolor.time = parser_get_time(&parser);
+			recolor.time = parser_get_time_seconds(&parser);
 
 			recolor_system.recolor_time = 0;
 			recolor_system.source_recolor = recolor_system.current_recolor;
@@ -361,7 +358,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "recolor_loop_add") && is_local_player) {
 			TimedRecolor recolor = {};
 			recolor.set  = parser_get_recolor_set(&parser);
-			recolor.time = parser_get_time(&parser);
+			recolor.time = parser_get_time_seconds(&parser);
 
 			if (recolor_system.recolor_list.count < MaxRecolors) {
 				recolor_system.recolor_list.recolors[recolor_system.recolor_list.count++] = recolor;
@@ -554,8 +551,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			sequence.unit_id = parser_get_unit_id(&parser);
 			sequence.player = parser_get_player(&parser, true);
 			sequence.type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
-			sequence.delay = parser_get_time(&parser) * 24;
-			sequence.stagger = parser_get_time(&parser) * 24;
+			sequence.delay = parser_get_time_ticks(&parser);
+			sequence.stagger = parser_get_time_ticks(&parser);
 			sequence.source_pos = parser_get_position(&parser);
 			sequence.move_pos = parser_get_position(&parser);
 			
@@ -757,57 +754,58 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueDisableAutoBurrow] = !enable;
 			}
-		} else if (parser_eq(&parser, "var")) {
+		} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {
+			bool is_timer = parser_eq(&parser, "timer");
+			TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
+
 			Token name = parser_get_string(&parser);
-			bool is_timer = parser_get_s32(&parser);
-			if (is_timer) {
-				f32 time = parser_get_time(&parser);
+			Token var_operator = parser_get_string(&parser);
 
-				TriggerVar* var = find_or_create_trigger_var(name.data);
+			if (token_eq(&var_operator, "=")) {
+				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_or_create_trigger_var(var_type, name.data);
 				if (var) {
-					var->set = true;
-					var->value = time * 24;
-					var->is_timer = true;
-				}
-			} else {
-				s32 value = parser_get_s32(&parser);
-
-				TriggerVar* var = find_or_create_trigger_var(name.data);
-				if (var) {
-					var->set = true;
 					var->value = value;
-					var->is_timer = false;
 				}
-			}
-		} else if (parser_eq(&parser, "randomize_var")) {
-			Token name = parser_get_string(&parser);
-			bool is_timer = parser_get_s32(&parser);
-			if (is_timer) {
-				f32 min_time = parser_get_time(&parser);
-				f32 max_time = parser_get_time(&parser);
-
-				TriggerVar* var = find_or_create_trigger_var(name.data);
+			} else if (token_eq(&var_operator, "+=")) {
+				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_trigger_var(var_type, name.data);
 				if (var) {
-					var->set = true;
-					var->value = scbw::rand_between(min_time * 24, max_time * 24);
-					var->is_timer = true;
+					var->value += value;
 				}
-			} else {
-				s32 min_value = parser_get_s32(&parser);
-				s32 max_value = parser_get_s32(&parser);
-
-				TriggerVar* var = find_or_create_trigger_var(name.data);
+			} else if (token_eq(&var_operator, "-=")) {
+				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_trigger_var(var_type, name.data);
 				if (var) {
-					var->set = true;
+					var->value -= value;
+				}
+			} else if (token_eq(&var_operator, "*=")) {
+				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_trigger_var(var_type, name.data);
+				if (var) {
+					var->value *= value;
+				}
+			} else if (token_eq(&var_operator, "/=")) {
+				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_trigger_var(var_type, name.data);
+				if (var) {
+					var->value /= value;
+				}
+			} else if (token_eq(&var_operator, "%=")) {
+				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_trigger_var(var_type, name.data);
+				if (var) {
+					var->value %= value;
+				}
+			} else if (token_eq(&var_operator, "rand")) {
+				s32 min_value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				s32 max_value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				TriggerVar* var = find_or_create_trigger_var(var_type, name.data);
+				if (var) {
 					var->value = scbw::rand_between(min_value, max_value); // TODO: support signed
-					var->is_timer = false;
 				}
-			}
-		} else if (parser_eq(&parser, "unset_var")) {
-			Token name = parser_get_string(&parser);
-			TriggerVar* var = find_or_create_trigger_var(name.data);
-			if (var) {
-				var->set = false;
+			} else if (token_eq(&var_operator, "unset")) {
+				unset_trigger_var(var_type, name.data);
 			}
 		}
 	}
