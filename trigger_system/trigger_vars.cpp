@@ -14,15 +14,8 @@ void init_trigger_vars() {
 void update_trigger_vars() {
 	for (u32 i = 0; i < trigger_vars_count; ++i) {
 		TriggerVar* var = &trigger_vars[i];
-		if (var->is_timer) {
-			if (var->value) {
-				var->value--;
-				if (!var->value) {
-					var->timer_expired_this_frame = true;
-				}
-			} else {
-				var->timer_expired_this_frame = false;
-			}
+		if (var->is_timer && var->value) {
+			var->value--;
 		}
 	}
 }

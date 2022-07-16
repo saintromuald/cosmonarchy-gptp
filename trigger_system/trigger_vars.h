@@ -4,11 +4,11 @@
 struct TriggerVar {
 	TriggerVar* hash_next;
 
+	bool set;
 	char name[32];
 	s32 value;
 
 	bool is_timer;
-	bool timer_expired_this_frame;
 };
 
 #define TriggerVarCap 1000

@@ -252,7 +252,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					s32 quota = parser_get_s32(&parser);
 
 					TriggerVar* var = get_trigger_var(name.data);
-					if (var) {
+					if (var && var->set) {
 						return check_quota(quota_type, quota, value);
 					}
 					return false;
@@ -744,6 +744,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 				TriggerVar* var = get_trigger_var(name.data);
 				if (var) {
+					var->set = true;
 					var->value = time * 24;
 					var->is_timer = true;
 				}
@@ -752,6 +753,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 				TriggerVar* var = get_trigger_var(name.data);
 				if (var) {
+					var->set = true;
 					var->value = value;
 					var->is_timer = false;
 				}
