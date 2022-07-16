@@ -335,9 +335,9 @@ namespace scbw
 	u8 get_upgrade_max_level(u8 player, u8 upgradeId);
 	bool has_tech_available(u8 player, u16 techId);
 	//u32 tech_use_allowed(Unit* unit, u16 techId, u32 player);
-	/// Sets the player's tech research state for @p techId to @p isResearched.
+	/// Sets the player's tech research state for @p techId to @p is_researched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-	void set_tech_research_state(u8 player, u16 techId, bool isResearched);
+	void set_tech_research_state(u8 player, u16 techId, bool is_researched);
 
 	/// Returns the player's upgrade level of @p upgradeId. Note that this uses
 	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.

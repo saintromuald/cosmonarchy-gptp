@@ -4832,7 +4832,7 @@ namespace helper
 		{
 			return_value = false;
 		}
-		else if (unit->id == UnitId::ZergOvileth && UpgradesSc->currentLevel[unit->player][UpgradeId::VentralSacs] == 0)
+		else if (unit->id == UnitId::ZergOvileth && UpgradesSc->current_level[unit->player][UpgradeId::VentralSacs] == 0)
 		{
 			return_value = false;
 		}
@@ -12628,5 +12628,70 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	const u32 Func__SysWarn_FileNotFound = 0x004212C0;
+	void SysWarn_FileNotFound(u32 code, const char* filename)
+	{
+		__asm
+		{
+			MOV EBX, code
+			PUSH filename
+			CALL Func__SysWarn_FileNotFound
+		}
+	}
+
+	void EAX_order(Unit* unit, u32 order_func_offset) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL order_func_offset
+			POPAD
+		}
+	}
+
+	void EBX_order(Unit* unit, u32 order_func_offset) {
+		__asm {
+			PUSHAD
+			MOV EBX, unit
+			CALL order_func_offset
+			POPAD
+		}
+	}
+
+	void ECX_order(Unit* unit, u32 order_func_offset) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL order_func_offset
+			POPAD
+		}
+	}
+
+	void EDI_order(Unit* unit, u32 order_func_offset) {
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			CALL order_func_offset
+			POPAD
+		}
+	}
+
+	void ESI_order(Unit* unit, u32 order_func_offset) {
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL order_func_offset
+			POPAD
+		}
+	}
+
+	void PUSH_order(Unit* unit, u32 order_func_offset) {
+		__asm {
+			PUSHAD
+			PUSH unit
+			CALL order_func_offset
+			POPAD
+		}
 	}
 }

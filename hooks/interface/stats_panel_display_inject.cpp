@@ -111,22 +111,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) get_unit_name_wrapper() // 0047B5A0
-	{
-		static const char* result;
-		static Unit* unit;
-		__asm {
-			MOV unit, ECX
-			PUSHAD
-		}
-		result = hooks::get_unit_name(unit);
-		__asm {
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-
 	void __declspec(naked) set_tooltip_info_unit_case1_wrapper() { // 004594B0
 		static const u32 jmp_address = 0x00459635;
 		static u32 unit_id;
@@ -346,7 +330,6 @@ namespace hooks
 		jump_patch(draw_building_info_wrapper,						0x00427890, 3);
 	//	jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
 	//	jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
-		jump_patch(get_unit_name_wrapper,							0x0047B5A0, 2);
 		jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
 		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x0045952F, 4);
 		jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);

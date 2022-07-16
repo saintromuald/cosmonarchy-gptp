@@ -41,7 +41,7 @@ namespace hooks
 		{
 			if (self->unit_ai)
 			{
-				g_aiscript_controller[self->player].previous_building_hit_second = *g_elapsed_time_seconds;
+				g_aiscript_controller[self->player]->previous_building_hit_second = *g_elapsed_time_seconds;
 				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{
@@ -123,12 +123,12 @@ namespace hooks
 		}
 		if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
 		{
-			if (g_aiscript_controller[(u8)self->player].AI_Flags.is_use_map_settings)
+			if (g_aiscript_controller[self->player]->AI_Flags.is_use_map_settings)
 			{
 				parentAi9 = 1;
 			}
 LABEL_37:
-			v14 = &g_ai_region_captains[(u8)self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
+			v14 = &g_ai_region_captains[self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
 			if (!parentAi9)
 			{
 				if (!dont_call_help)
@@ -140,7 +140,7 @@ LABEL_37:
 					if (!self->unit_ai
 						|| helper::ai_is_under_attack(self, 0)
 						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-						&& g_aiscript_controller[(u8)self->player].AI_Flags.is_use_map_settings)
+						&& g_aiscript_controller[self->player]->AI_Flags.is_use_map_settings)
 					{
 						childAi2 = 0;
 					}
@@ -201,7 +201,7 @@ LABEL_37:
 										|| !helper::ai_transport_action(self))
 									{
 										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| g_aiscript_controller[(u8)self->player].AI_Flags.is_use_map_settings
+											|| g_aiscript_controller[self->player]->AI_Flags.is_use_map_settings
 											|| ((child5 = 3 * self->get_total_hp_plus_shields() / 4, self->get_current_life_ingame() > child5)
 												|| child3 != UnitId::ProtossDidact && child3 != UnitId::TerranWraith && child3 != UnitId::ZergMutalisk
 												|| !helper::ai_transport_action(self))
@@ -353,7 +353,7 @@ LABEL_37:
 			return;
 		}
 
-		if (!g_aiscript_controller[player].strategic_suicide)
+		if (!g_aiscript_controller[player]->strategic_suicide)
 		{
 			AiRegion* region2 = 0;
 
@@ -371,7 +371,7 @@ LABEL_37:
 				GuardAi* guardAI = (GuardAi*)unit->unit_ai;
 				if (!guardAI
 				  || helper::unit_is_active_transport(unit)
-				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player].AI_Flags.is_use_map_settings))
+				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player]->AI_Flags.is_use_map_settings))
 				{
 					continue;
 				}
@@ -407,13 +407,13 @@ LABEL_37:
 					helper::add_military_ai(region2, unit, 1);
 					continue;
 				}
-				memset(g_aiscript_controller[player].attackers, 0, sizeof(g_aiscript_controller[player].attackers));
-				g_aiscript_controller[player].ai_attack_group = 0;
+				memset(g_aiscript_controller[player]->attackers, 0, sizeof(g_aiscript_controller[player]->attackers));
+				g_aiscript_controller[player]->ai_attack_group = 0;
 				helper::ai_attack_clear(player);
 				if (!helper::ai_attack_manager(player, unit->sprite->position.x, unit->sprite->position.y, 0, 1))
 				{
-					g_aiscript_controller[player].strategic_suicide = 24;
-					regionIndex = (u16)g_aiscript_controller[player].ai_attack_group - 1;
+					g_aiscript_controller[player]->strategic_suicide = 24;
+					regionIndex = (u16)g_aiscript_controller[player]->ai_attack_group - 1;
 					region2 = &g_ai_region_captains[player][regionIndex];
 					helper::remove_unit_ai(unit, false);
 					helper::add_military_ai(region2, unit, 1);
@@ -460,7 +460,7 @@ LABEL_37:
 			}
 		}
 
-		if (g_aiscript_controller[region->player].AI_Flags.is_use_map_settings)
+		if (g_aiscript_controller[region->player]->AI_Flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
 			s32 v9 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + v8);
@@ -474,7 +474,7 @@ LABEL_37:
 		}
 
 		u32 air_strength = region->air_strength_enemy;
-		if (!(g_aiscript_controller[region->player].AI_Flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player]->AI_Flags.is_use_map_settings))
 		{
 			air_strength += air_strength >> 1;
 		}
@@ -484,7 +484,7 @@ LABEL_37:
 		}
 
 		u32 ground_strength = region->ground_strength_enemy;
-		if (!(g_aiscript_controller[region->player].AI_Flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player]->AI_Flags.is_use_map_settings))
 		{
 			ground_strength += ground_strength >> 1;
 		}
@@ -493,8 +493,8 @@ LABEL_37:
 			region->ground_strength_needed = ground_strength;
 		}
 
-		u16 result = g_aiscript_controller[region->player].ai_max_force;
-		if (g_aiscript_controller[region->player].ai_max_force)
+		u16 result = g_aiscript_controller[region->player]->ai_max_force;
+		if (g_aiscript_controller[region->player]->ai_max_force)
 		{
 			if (region->air_strength_needed > result)
 			{
@@ -712,7 +712,7 @@ LABEL_37:
 			return 0;
 		}
 		s32 player = (u8)unit->player;
-		if (g_aiscript_controller[player].difficulty != 2)
+		if (g_aiscript_controller[player]->difficulty != 2)
 		{
 			return 0;
 		}
@@ -902,7 +902,7 @@ LABEL_37:
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!g_aiscript_controller[player].AI_Flags.is_secure_finished) // SLOBYTE(g_aiscript_controller[player].AI_Flags) < 0
+							if (!g_aiscript_controller[player]->AI_Flags.is_secure_finished) // SLOBYTE(g_aiscript_controller[player].AI_Flags) < 0
 							{
 								goto LABEL_21;
 							}
@@ -1458,7 +1458,7 @@ LABEL_37:
 				} break;
 			}
 
-			AI_Main* ai_player = &g_aiscript_controller[town_player];
+			AI_Main* ai_player = g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->gas_collection - ai_player->gas_available;
 			u32 new_gas_count = gas_delta > 0 ? gas_delta / 100 : 0;
 			new_gas_count += worker_count / 10;
@@ -2083,7 +2083,7 @@ LABEL_37:
 	{
 		if (victim->unit_ai)
 		{
-			g_aiscript_controller[victim->player].AI_Flags.is_secure_finished;
+			g_aiscript_controller[victim->player]->AI_Flags.is_secure_finished;
 			UnitAi* victim_ai = victim->unit_ai;
 			AiRegion* victim_region = 0;
 			if (victim_ai->type == AiType::Military)

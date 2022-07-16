@@ -72,7 +72,7 @@ namespace hooks
 				case RequirementOpcodes::IsTransport:
 				{
 					if (unit->status & UnitStatus::IsHallucination) break;
-					if (unit->id == UnitId::ZergOvileth && UpgradesSc->currentLevel[unit->player][UpgradeId::VentralSacs] == 0) break;
+					if (unit->id == UnitId::ZergOvileth && UpgradesSc->current_level[unit->player][UpgradeId::VentralSacs] == 0) break;
 					if (units_dat::SpaceProvided[unit->id] == 0) break;
 					success++;
 				}

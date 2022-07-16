@@ -1,5 +1,6 @@
 #include "requirement_parser.h"
-#include <SCBW/SFileReader.h>
+#include "SCBW/api.h"
+#include "SCBW/Storm.h"
 
 namespace
 {
@@ -22,7 +23,7 @@ namespace
 			return false;
 		}
 		char* filePointer = (char*)SMemAlloc(fileSize, "logfilename", 0, 0);
-		int bytesRead;
+		u32 bytesRead;
 		if (!SFileReadFile(fileHandle, filePointer, fileSize, &bytesRead, 0) || bytesRead != fileSize)
 		{
 			scbw::printf_console("File reading error %s (%d)", path, GetLastError());

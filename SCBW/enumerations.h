@@ -11,6 +11,7 @@
 #include "enumerations/FlingyId.h"
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
+#include "enumerations/PortraitId.h"
 
 namespace UnitSize
 {

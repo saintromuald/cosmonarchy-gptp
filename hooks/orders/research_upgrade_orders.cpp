@@ -23,9 +23,9 @@ namespace hooks
 				u8 upgrade_level;
 
 				if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
-					upgrade_level = UpgradesBw->currentLevel[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
+					upgrade_level = UpgradesBw->current_level[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
 				else
-					upgrade_level = UpgradesSc->currentLevel[unit->player][unit->building.upgrade_id];
+					upgrade_level = UpgradesSc->current_level[unit->player][unit->building.upgrade_id];
 
 				if (upgrade_level < unit->building.upgrade_level &&
 					!(*g_cheat_state & CheatFlags::OperationCwal))
@@ -42,9 +42,9 @@ namespace hooks
 				helper::play_upgrade_complete_sound();
 
 				if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
-					upgrade_level = UpgradesBw->currentLevel[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
+					upgrade_level = UpgradesBw->current_level[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
 				else
-					upgrade_level = UpgradesSc->currentLevel[unit->player][unit->building.upgrade_id];
+					upgrade_level = UpgradesSc->current_level[unit->player][unit->building.upgrade_id];
 
 				if (upgrade_level < unit->building.upgrade_level)
 				{
@@ -87,7 +87,7 @@ namespace hooks
 				MOV EDX, ECX
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
-				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->currentLevel[unit->player][unit->building.upgrade_id CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->current_level[unit->player][unit->building.upgrade_id CONVERTED?])
 				JNS lbl547E7
 
 				DEC ECX
@@ -174,9 +174,9 @@ namespace hooks
 				u8 bIsResearched;
 
 				if (unit->building.tech_id < TechId::Restoration)
-					bIsResearched = TechSc->isResearched[unit->player][unit->building.tech_id];
+					bIsResearched = TechSc->is_researched[unit->player][unit->building.tech_id];
 				else
-					bIsResearched = TechBw->isResearched[unit->player][unit->building.tech_id - TechId::Restoration];
+					bIsResearched = TechBw->is_researched[unit->player][unit->building.tech_id - TechId::Restoration];
 
 				if (bIsResearched == 0 &&
 					!(*g_cheat_state & CheatFlags::OperationCwal)
@@ -192,9 +192,9 @@ namespace hooks
 				helper::play_research_complete_sound();
 
 				if (unit->building.tech_id < TechId::Restoration)
-					TechSc->isResearched[unit->player][unit->building.tech_id] = 1;
+					TechSc->is_researched[unit->player][unit->building.tech_id] = 1;
 				else if (*g_is_brood_war)
-					TechBw->isResearched[unit->player][unit->building.tech_id - TechId::Restoration] = 1;
+					TechBw->is_researched[unit->player][unit->building.tech_id - TechId::Restoration] = 1;
 
 				scbw::refresh_console();
 
@@ -227,7 +227,7 @@ namespace hooks
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
 				LEA EAX, [EAX + EAX * 0x2]
-				LEA EAX, [EDX + EAX * 0x2 + 0x0058F230] //EAX = &(TechBw->isResearched[unit->player][unit->building.tech_id CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x2 + 0x0058F230] //EAX = &(TechBw->is_researched[unit->player][unit->building.tech_id CONVERTED?])
 				JNS lbl549C7
 
 				DEC ECX

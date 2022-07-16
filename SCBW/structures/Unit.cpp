@@ -7,6 +7,7 @@
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
 #include "trigger_system/trigger_system.h"
+#include <DatExtend/datext.h>
 
 #include "math_utils.h"
 //-------- Unit stats and properties --------//
@@ -66,7 +67,6 @@ bool Unit::shields_enabled() const
 //Identical to function @ 0x00475AD0
 u8 Unit::get_ground_weapon() const
 {
-	assert(this);
 	if (this->id == UnitId::ZergLakizilisk && !(this->status & UnitStatus::Burrowed))
 	{
 		return WeaponId::None;
@@ -218,15 +218,23 @@ const char* Unit::get_name() const
 	assert(this);
 	return get_name(this->id);
 }
+
 #include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
 const char* Unit::get_name(u16 unit_id)
 {
 	assert(unit_id < UNIT_TYPE_COUNT);
-
-	if (units_dat::MapStringId[unit_id])
+	if (unit_id >= UNIT_TYPE_COUNT)
 	{
-		return g_map_string_tbl->get_string(units_dat::MapStringId[unit_id]);
+		return (char*)g_string_empty;
+	}
+	else if (units_dat::MapStringId[unit_id] != 0)
+	{
+		return (char*)g_map_string_tbl->get_string(units_dat::MapStringId[unit_id]);
+	}
+	else if (DatExt::unitNamesTbl != NULL)
+	{
+		return (char*)((StringTbl*)&DatExt::unitNamesTbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
 	}
 	else
 	{

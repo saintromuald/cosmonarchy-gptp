@@ -1400,4 +1400,13 @@ namespace helper {
 
 	s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
 	s32 get_sfx_pan_from_screen_distance(u32 x);															// 0048E850
+
+	void SysWarn_FileNotFound(u32 code, const char* filename);												// 004212C0
+
+	void EAX_order(Unit* unit, u32 order_func_offset);
+	void EBX_order(Unit* unit, u32 order_func_offset);
+	void ECX_order(Unit* unit, u32 order_func_offset);
+	void EDI_order(Unit* unit, u32 order_func_offset);
+	void ESI_order(Unit* unit, u32 order_func_offset);
+	void PUSH_order(Unit* unit, u32 order_func_offset);
 }

@@ -115,6 +115,9 @@
 //	#include "hooks/requirements/requirements.h"
 	#include "hooks/interface/extender/selection_extender.h"
 	#include "trigger_system/trigger_hooks.h"
+	#include "hooks/loading_hook.h"
+	#include "hooks/DatExtend/dat_load.h"
+	#include "DatExtend/datext.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -262,15 +265,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 
-	inject_globals_hooks();
-	hooks::inject_cosmonarchy_specific();
-	hooks::inject_limit_hooks();
-	hooks::inject_weapon_extender();
-	hooks::inject_target_related_hooks();
-//	hooks::unitsDatWrapperPatches();
-
 	// arbiter attack hardcode
-
 	/*
 	nops(0x0043AEE0, 10);
 	nops(0x0043CF89, 4);
@@ -494,9 +489,21 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// frame rate hack
 	nops(0x004D9923, 2);
 
+	// Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
+//	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
+
 	// injection
+	inject_globals_hooks();
+	hooks::inject_cosmonarchy_specific();
+	hooks::inject_limit_hooks();
+	hooks::inject_weapon_extender();
+	hooks::inject_target_related_hooks();
+//	hooks::unitsDatWrapperPatches();
+
 	hooks::inject_game_hooks();
 	hooks::inject_draw_hook();
+	hooks::inject_loading_hook();
+	hooks::inject_dat_load_hooks();
 
 	hooks::inject_siege_transform_hooks();
 	hooks::inject_buttonset_hooks();

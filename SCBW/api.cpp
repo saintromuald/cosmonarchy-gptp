@@ -406,11 +406,11 @@ namespace scbw
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
 		{
-			return TechSc->isResearched[player][techId] != 0;
+			return TechSc->is_researched[player][techId] != 0;
 		}
 		else
 		{
-			return TechBw->isResearched[player][techId - TechId::Restoration] != 0;
+			return TechBw->is_researched[player][techId - TechId::Restoration] != 0;
 		}
 	}
 
@@ -428,18 +428,18 @@ namespace scbw
 		}
 	}
 
-	void set_tech_research_state(u8 player, u16 techId, bool isResearched)
+	void set_tech_research_state(u8 player, u16 techId, bool is_researched)
 	{
 		assert(player < PLAYER_COUNT);
 		assert(techId < TechId::None);
 
 		if (techId < TechId::Restoration)
 		{
-			TechSc->isResearched[player][techId] = isResearched;
+			TechSc->is_researched[player][techId] = is_researched;
 		}
 		else
 		{
-			TechBw->isResearched[player][techId - TechId::Restoration] = isResearched;
+			TechBw->is_researched[player][techId - TechId::Restoration] = is_researched;
 		}
 	}
 
@@ -718,12 +718,12 @@ namespace scbw
 
 		if (upgradeId < UpgradeId::PrismaticShield)
 		{
-			return UpgradesSc->currentLevel[player][upgradeId];
+			return UpgradesSc->current_level[player][upgradeId];
 		}
 		/*
 		else if (upgradeId<UpgradeId::None)
 		{
-			return UpgradesBw->currentLevel[player][upgradeId - UpgradeId::PStructurePlating];
+			return UpgradesBw->current_level[player][upgradeId - UpgradeId::PStructurePlating];
 		}
 		*/
 		else
@@ -753,12 +753,12 @@ namespace scbw
 		assert(upgradeId < 256);
 		if (upgradeId < UpgradeId::PrismaticShield)
 		{
-			return UpgradesSc->maxLevel[player][upgradeId];
+			return UpgradesSc->max_level[player][upgradeId];
 		}
 		/*
 		else if (upgradeId<UpgradeId::None)
 		{
-			return UpgradesBw->maxLevel[player][upgradeId - UpgradeId::PStructurePlating];
+			return UpgradesBw->max_level[player][upgradeId - UpgradeId::PStructurePlating];
 		}
 		*/
 		else
@@ -786,9 +786,9 @@ namespace scbw
 		assert(player < PLAYER_COUNT);
 		assert(upgradeId < UpgradeId::None);
 		if (upgradeId < UpgradeId::PrismaticShield)
-			UpgradesSc->currentLevel[player][upgradeId] = level;
+			UpgradesSc->current_level[player][upgradeId] = level;
 		else
-			UpgradesBw->currentLevel[player][upgradeId - UpgradeId::PrismaticShield] = level;
+			UpgradesBw->current_level[player][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
 
 	void adjust_addon_x(u16 addonId, u16 sourceId, u16* x)

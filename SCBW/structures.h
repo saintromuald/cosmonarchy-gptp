@@ -14,6 +14,8 @@ const s32 UNIT_ARRAY_LENGTH = 1700;
 const s32 BULLET_ARRAY_LENGTH = 100;
 const s32 SPRITE_ARRAY_LENGTH = 2500;
 const s32 SelectionCap = 12;
+
+/*
 const s32 UNIT_TYPE_COUNT = 228;
 const s32 TECH_TYPE_COUNT = 44;
 const s32 UPGRADE_TYPE_COUNT = 61;
@@ -21,6 +23,16 @@ const s32 WEAPON_TYPE_COUNT = 256;
 const s32 FLINGY_TYPE_COUNT = 209;
 const s32 IMAGE_TYPE_COUNT = 999;
 const s32 SOUND_TYPE_COUNT = 1144;
+*/
+
+// use DatExt variables
+extern int UNIT_TYPE_COUNT;		//= 228;
+extern int TECH_TYPE_COUNT;		//= 44;
+extern int UPGRADE_TYPE_COUNT;	//= 61;
+extern int WEAPON_TYPE_COUNT;	//= 130;
+extern int FLINGY_TYPE_COUNT;	//= 209;
+extern int IMAGE_TYPE_COUNT;	//= 999;
+
 #include "structures/Unit.h"
 #include "structures/Bullet.h"
 #include "structures/Sprite.h"
@@ -30,6 +42,12 @@ const s32 SOUND_TYPE_COUNT = 1144;
 #include "structures/Player.h" // made into external file to have .cpp
 
 #pragma pack(1)
+
+struct UnitStatFuncArrayEntry {
+	u32 unit_id;					// unused?
+	u32 unit_stat_cond_func;
+	u32 unit_stat_act_func;
+};
 
 struct UnitPath
 {
@@ -930,11 +948,14 @@ struct AI_Main
 	u32 ai_defenseuse_ag[10];			/*0378*/
 	u32 ai_defenseuse_ga[10];			/*03A0*/
 	u32 ai_defenseuse_aa[10];			/*03C8*/
-	u8 unit_build_limits[0xe4];			/*03F0*/
-	Unit* main_medic;					/*04D4*/
-	u8 unk4d8[0x10];					/*04D8*/
+	u8	ai_define_max[1];				/*03F0*/ // UNIT_TYPE_COUNT entries, but DatExt makes this variable
+//	Unit* main_medic;					/*04D4*/
+//	u8 unk4d8[0x10];					/*04D8*/
+	
+	// Hopefully these are valid xd - FaRTy
+	Unit*& mainMedic() { return (Unit*&)ai_define_max[UNIT_TYPE_COUNT]; }
+	Box32& genCmdLoc() { return (Box32&)ai_define_max[UNIT_TYPE_COUNT + sizeof(Unit*)]; }
 };
-C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 
 struct AiScript
 {
@@ -968,9 +989,8 @@ struct ResourceAreaArray {
 };
 
 // From BWAPI Offsets.h, used in scbwdata.h by unit_availability
-struct _uavail
-{
-	u8 available[PLAYER_COUNT][UNIT_TYPE_COUNT];
+struct _uavail {
+	u8* available[PLAYER_COUNT];
 };
 
 struct StringTbl

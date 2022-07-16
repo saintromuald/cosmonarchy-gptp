@@ -129,9 +129,9 @@ namespace hooks {
 							// Check if tech is researched by unit for transfer
 							b8 is_researched = false;
 							if (tech_id >= TechId::Restoration) {
-								is_researched = TechBw->isResearched[source_unit->player][tech_id - TechId::Restoration];
+								is_researched = TechBw->is_researched[source_unit->player][tech_id - TechId::Restoration];
 							} else {
-								is_researched = TechSc->isResearched[source_unit->player][tech_id];\
+								is_researched = TechSc->is_researched[source_unit->player][tech_id];\
 							}
 
 							// Probably research the tech of unit if not already researched by player
@@ -179,9 +179,9 @@ namespace hooks {
 							u8 source_upgrade_level = 0;
 							// check level of upgrade of by unit for transfer
 							if (upgrade_id >= UpgradeId::PrismaticShield) {
-								source_upgrade_level = UpgradesBw->currentLevel[source_unit->player][upgrade_id - UpgradeId::PrismaticShield];
+								source_upgrade_level = UpgradesBw->current_level[source_unit->player][upgrade_id - UpgradeId::PrismaticShield];
 							} else {
-								source_upgrade_level = UpgradesSc->currentLevel[source_unit->player][upgrade_id];
+								source_upgrade_level = UpgradesSc->current_level[source_unit->player][upgrade_id];
 							}
 
 							// Probably increase the upgrade level of player until reaching same point as source_unit
