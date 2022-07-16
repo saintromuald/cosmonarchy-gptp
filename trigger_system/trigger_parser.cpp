@@ -600,15 +600,15 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			}
 		} else if (parser_eqi(parser, "terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_terran, mask, negate);
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Terran), mask, negate);
 			}
 		} else if (parser_eqi(parser, "protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_protoss, mask, negate);
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Protoss), mask, negate);
 			}
 		} else if (parser_eqi(parser, "zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_zerg, mask, negate);
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
 		} else if (parser_eqi(parser, "combatant")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -620,7 +620,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 				if (units_dat::AirWeapon[i] != WeaponId::None || units_dat::AirWeapon[subunit_id] != WeaponId::None) {
 					is_combatant = true;
 				}
-				if (units_dat::base_property[i] & UnitProperty::Spellcaster) {
+				if (units_dat::base_property[i] & UnitProperty::Spellcaster && i != UnitId::TerranComsatStation) {
 					is_combatant = true;
 				}
 				unit_id_bitset_set(&current_bitset, i, is_combatant, mask, negate);
