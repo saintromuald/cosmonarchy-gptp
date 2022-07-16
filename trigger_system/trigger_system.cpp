@@ -285,13 +285,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			playback.target_fade = 1;
 			playback.paused = false;
 			play_music(true);
-		} else if (parser_eq(&parser, "fade_in") && is_local_player) {
+		} else if (parser_eq(&parser, "music_fade_in") && is_local_player) {
 			f32 fade_in = parser_get_time_seconds(&parser);
 			playback.fade_in = fade_in;
-		} else if (parser_eq(&parser, "fade_out") && is_local_player) {
+		} else if (parser_eq(&parser, "music_fade_out") && is_local_player) {
 			f32 fade_out = parser_get_time_seconds(&parser);
 			playback.fade_out = fade_out;
-		} else if (parser_eq(&parser, "volume") && is_local_player) {
+		} else if (parser_eq(&parser, "music_volume") && is_local_player) {
 			f32 volume = parser_get_f32(&parser);
 			f32 time = parser_get_time_seconds(&parser);
 			if (time == 0) {
