@@ -6,14 +6,14 @@
 u32 chk_cache_size;
 CHKUnit chk_cache[ChkCacheLimit];
 
-bool log_placeholder_requests[PlayerLimit];
+bool show_player_layouts[PlayerLimit];
 u32 default_ai_expansion_block[PlayerLimit];
 
 AiLayouts player_layouts[PlayerLimit];
 AiLayoutsTown layouts_towns[AiTownLimit];
 
 void init_layouts() {
-	memset(log_placeholder_requests, 0, sizeof(log_placeholder_requests));
+	memset(show_player_layouts, 0, sizeof(show_player_layouts));
 	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
 	memset(player_layouts, 0, sizeof(player_layouts));
 	memset(layouts_towns, 0, sizeof(layouts_towns));
@@ -88,7 +88,7 @@ void update_layouts() {
 				}
 			}
 
-			if (log_placeholder_requests[town->player]) {
+			if (show_player_layouts[town->player]) {
 				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, i, town->resarea);
 			}
 		}
@@ -146,7 +146,7 @@ void update_layouts() {
 			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
 					placeholder->requested = true;
-					if (log_placeholder_requests[town->player]) {
+					if (show_player_layouts[town->player]) {
 						scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
 					}
 					if (!placeholder->inited) {
@@ -175,7 +175,7 @@ void update_layouts() {
 	// Draws Layouts Preview
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
-		if (log_placeholder_requests[i]) {
+		if (show_player_layouts[i]) {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				AiPlaceholder* placeholder = &layouts->placeholders[j];
 

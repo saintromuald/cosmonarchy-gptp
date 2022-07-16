@@ -416,12 +416,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			// TODO: sync objectives to mission objectives menu
 		} else if (parser_eq(&parser, "objectives_clear") && is_local_player) {
 			memset(&objectives, 0, sizeof(objectives));
-		} else if (parser_eq(&parser, "log_placeholder_requests") && is_local_player) {
+		} else if (parser_eq(&parser, "show_player_layouts") && is_local_player) {
 			u32 player = parser_get_player(&parser);
 			s32 value = parser_get_s32(&parser);
 			if (player) {
 				player -= 1;
-				log_placeholder_requests[player] = value;
+				show_player_layouts[player] = value;
 			}
 		} else if (parser_eq(&parser, "set_player_unit_name") && is_local_player) {
 			u32 player = parser_get_player(&parser);
@@ -664,7 +664,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							}
 							if (!placeholder->town) {
 								placeholder->town = town;
-								if (log_placeholder_requests[player]) {
+								if (show_player_layouts[player]) {
 									scbw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
 								}
 							}
