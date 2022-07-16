@@ -347,7 +347,7 @@ namespace hooks
 		//		return 0;
 		//	}
 		//}
-		if (!(flags & ChkUnitFlags_Hallucinated)) {
+		if (!(flags & ChkUnitFlags_Cloaked)) {
 			chkunit->state_flags &= ~ChkUnitFlags_Cloaked;
 			chkunit->state_flags &= ~ChkUnitFlags_Burrowed;
 			chkunit->state_flags &= ~ChkUnitFlags_Lifted;

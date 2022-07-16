@@ -29,7 +29,7 @@ void init_layouts() {
 
 		if (unit->player == 11) {
 			u32 flags = unit->valid_state_flags & unit->state_flags;
-			if (flags & ChkUnitFlags_Hallucinated) {
+			if (flags & ChkUnitFlags_Cloaked) {
 				for (u32 i = 0; i < 8; ++i) {
 					add_placeholder(unit, i);
 				}
@@ -354,8 +354,8 @@ void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.priority = unit->hp;
 	placeholder.guard_rebuilds = unit->energy == 100 ? 0 : unit->energy + 1;
 	u32 flags = unit->valid_state_flags & unit->state_flags;
-	placeholder.was_preplaced = !(flags & ChkUnitFlags_Hallucinated);
-	placeholder.should_request = !(flags & ChkUnitFlags_Cloaked);
+	placeholder.was_preplaced = !(flags & ChkUnitFlags_Cloaked);
+	placeholder.should_request = !(flags & ChkUnitFlags_Hallucinated);
 	if (!(flags & ChkUnitFlags_Invincible)) {
 		placeholder.resarea = scbw::get_closest_resarea(placeholder.position);
 	}
