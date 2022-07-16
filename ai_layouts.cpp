@@ -85,9 +85,6 @@ void update_layouts() {
 					placeholder->request_count = 0;
 					placeholder->town = town;
 					placeholder->placement_timeout = 0;
-					if (!placeholder->should_request) {
-						init_placeholder(town, placeholder);
-					}
 				}
 			}
 
@@ -100,11 +97,18 @@ void update_layouts() {
 		}
 	}
 
-	// Set Layouts Colors
+	// Update Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 			AiPlaceholder* placeholder = &layouts->placeholders[j];
+
+			// Init if not already
+			if (placeholder->town && !placeholder->disabled) {
+				init_placeholder(placeholder->town, placeholder);
+			}
+
+			// Colors
 			if (placeholder->requested) {
 				placeholder->color = graphics::GREEN;
 			} else if (placeholder->disabled) {
@@ -117,7 +121,7 @@ void update_layouts() {
 		}
 	}
 
-	// Tick Layouts
+	// Request Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
@@ -149,7 +153,6 @@ void update_layouts() {
 					if (show_player_layouts[town->player]) {
 						scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
 					}
-					init_placeholder(town, placeholder);
 					request_placeholder(town, layouts_town, placeholder);
 				} else if (placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
 					placeholder->placement_timeout++;
@@ -170,7 +173,7 @@ void update_layouts() {
 		}
 	}
 
-	// Draws Layouts Preview
+	// Draw Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		if (show_player_layouts[i]) {
