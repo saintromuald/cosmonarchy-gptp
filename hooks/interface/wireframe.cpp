@@ -29,10 +29,10 @@ namespace hooks
 	{
 		auto eax = unit->id;
 		u8 al = 0;
-		if (units_dat::ShieldsEnabled[unit->id])
+		if (units_dat::shields_enabled[unit->id])
 		{
 			auto lastSlot = scbw::get_last_queue_slot_id(unit);
-			u32 maxShields = units_dat::MaxShieldPoints[lastSlot];
+			u32 maxShields = units_dat::max_shield_points[lastSlot];
 			if (lastSlot == unit->id)
 			{
 				maxShields = unit->max_shields(); // for stasis, later

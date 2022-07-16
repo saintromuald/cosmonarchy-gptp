@@ -123,7 +123,7 @@ namespace hooks
 					while (!bStopLoop)
 					{
 
-						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+						if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
 							unit->order_queue_tail->order_id != OrderId::ComputerAI
 							)
 							bStopLoop = true;
@@ -148,7 +148,7 @@ namespace hooks
 					prepare_for_next_order(unit);
 				}
 				else //54896
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 
 			}
 
@@ -261,7 +261,7 @@ namespace hooks
 
 					while (!bStopLoop)
 					{
-						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+						if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
 							unit->order_queue_tail->order_id != OrderId::ComputerAI
 							)
 							bStopLoop = true;
@@ -285,7 +285,7 @@ namespace hooks
 					prepare_for_next_order(unit);
 				}
 				else
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 			}
 		}
 	}

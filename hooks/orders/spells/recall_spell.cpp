@@ -35,7 +35,7 @@ namespace hooks
 
 			// Stop some currently active orders
 			if (target->id != UnitId::ZergCocoon) {
-				target->order_computer(units_dat::ReturnToIdleOrder[target->id]);
+				target->order_computer(units_dat::return_to_idle_order[target->id]);
 			}
 
 			// Create the Recall animation over the unit

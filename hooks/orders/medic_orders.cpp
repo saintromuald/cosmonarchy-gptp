@@ -114,7 +114,7 @@ namespace hooks
 					while (!bEndLoop)
 					{
 
-						if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id]
+						if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
 							&& unit->order_queue_tail->order_id != OrderId::MedicHeal1)
 						{
 							bEndLoop = true;
@@ -201,7 +201,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 			}
 		}
 		else // 004641D3
@@ -275,7 +275,7 @@ namespace hooks
 			|| !scbw::is_allied_to(medic->player, target->player)
 			|| target->player >= 8
 			|| medic->player >= 8
-			|| target->hitpoints >= units_dat::MaxHitPoints[type]
+			|| target->hitpoints >= units_dat::max_hitpoints[type]
 			|| target->is_frozen()
 			|| targetExt->values[TimerReviveFlagClearMax])
 		{

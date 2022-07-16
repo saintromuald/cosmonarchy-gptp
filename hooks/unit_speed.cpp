@@ -222,7 +222,7 @@ namespace hooks
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive: gains increased movement speed based on shields
-				f64 fraction = (unit->shields / 256.0) / units_dat::MaxShieldPoints[unit->id];
+				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
 				speed *= 1.0 + fraction / 2;
 			} break;
 			case UnitId::TerranBlackjack:
@@ -237,7 +237,7 @@ namespace hooks
 			{
 				// Golem Deathless Procession: gains increased movespeed based on missing shields
 				const u32 health = unit->shields / 256;
-				const u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
+				const u32 maxHealth = units_dat::max_shield_points[unit->id];
 				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
 				speed *= multiplier;
 			} break;

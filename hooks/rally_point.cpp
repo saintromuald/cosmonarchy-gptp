@@ -60,7 +60,7 @@ namespace hooks
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) // 00429520
 	{
 		*g_last_internal_error = 0;
-		if (orders_dat::RequirementsOffset[OrderId::RallyPointToTile] == -1)
+		if (orders_dat::req_offset[OrderId::RallyPointToTile] == -1)
 		{
 			helper::parse_orders_dat_requirements();
 		}
@@ -90,8 +90,8 @@ namespace hooks
 				}
 				else
 				{
-					result = orders_dat::RequirementsOffset[OrderId::RallyPointToTile];
-					if (orders_dat::RequirementsOffset[OrderId::RallyPointToTile])
+					result = orders_dat::req_offset[OrderId::RallyPointToTile];
+					if (orders_dat::req_offset[OrderId::RallyPointToTile])
 					{
 						if (unit->id == UnitId::ZergCreepColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvalColony) // lame
 						{
@@ -99,7 +99,7 @@ namespace hooks
 						}
 						else
 						{
-							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::RallyPointToTile]);
+							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, g_orders_requirement_tree, orders_dat::req_offset[OrderId::RallyPointToTile]);
 						}
 					}
 					else
@@ -226,7 +226,7 @@ namespace hooks
 			}
 			else
 			{
-				order_type = units_dat::RightClickAction[id];
+				order_type = units_dat::right_click_action[id];
 				if (!order_type)
 				{
 					if (hooks::unit_can_rally(unit)) {
@@ -280,9 +280,9 @@ namespace hooks
 							Unit* subunit = unit->subunit;
 							if (subunit)
 							{
-								helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::AttackUnitOrder[subunit->id]);
+								helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::attack_unit_order[subunit->id]);
 							}
-							rightOrder = units_dat::AttackUnitOrder[unit->id];
+							rightOrder = units_dat::attack_unit_order[unit->id];
 						}
 						if (helper::order_is_allowed(unit, rightOrder, *g_active_nation_id) == 1)
 						{
@@ -426,7 +426,7 @@ namespace hooks
 			unit->order_to_idle();
 		} else {
 			if (right_click_order == 8) {
-				right_click_order = units_dat::AttackUnitOrder[unit->id];
+				right_click_order = units_dat::attack_unit_order[unit->id];
 			}
 			if (helper::order_allowed(unit, right_click_order, unit->player) == 1) {
 				if (right_click_order == OrderId::RallyPointToVisibleUnit) {
@@ -459,7 +459,7 @@ namespace hooks
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			order_id = OrderId::PlayerGuard;
 		} else {
-			u8 right_click_order = units_dat::RightClickAction[unit->id];
+			u8 right_click_order = units_dat::right_click_action[unit->id];
 			if (!right_click_order && hooks::unit_can_rally(unit)) {
 				right_click_order = OrderId::Guard;
 			}
@@ -543,7 +543,7 @@ namespace hooks
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			return 1;
 		}
-		u8 right_click_order = units_dat::RightClickAction[unit->id];
+		u8 right_click_order = units_dat::right_click_action[unit->id];
 		if (!right_click_order) {
 			if (hooks::unit_can_have_rally(unit)) {
 				right_click_order = 2;
@@ -558,7 +558,7 @@ namespace hooks
 			return 3;
 		}
 
-		char right_click_order = units_dat::RightClickAction[unit->id];
+		char right_click_order = units_dat::right_click_action[unit->id];
 		if (!right_click_order) {
 			if (hooks::unit_can_have_rally(unit)) {
 				return 2;
@@ -577,7 +577,7 @@ namespace hooks
 						return true;
 					}
 				}
-				if (units_dat::RightClickAction[unit->id]
+				if (units_dat::right_click_action[unit->id]
 				||  unit->status & UnitStatus::GroundedBuilding && unit_can_rally(unit)) {
 					return true;
 				}
@@ -600,7 +600,7 @@ namespace hooks
 					continue;
 				}
 			}
-			right_click_order = units_dat::RightClickAction[unit->id];
+			right_click_order = units_dat::right_click_action[unit->id];
 			if (right_click_order) {
 				if (right_click_order == OrderId::PlayerGuard) {
 					continue;
@@ -620,7 +620,7 @@ namespace hooks
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
 				if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed
-				||  units_dat::RightClickAction[unit->id]
+				||  units_dat::right_click_action[unit->id]
 				||  unit_can_rally(unit)) {
 					if (helper::ai_unit_can_attack(unit)) {
 						return true;
@@ -633,7 +633,7 @@ namespace hooks
 	
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	b32 unit_can_move(Unit* unit) { // 00455660
-		u16 right_click_order = units_dat::RightClickAction[unit->id];
+		u16 right_click_order = units_dat::right_click_action[unit->id];
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			right_click_order = OrderId::PlayerGuard;
 		} else if (!right_click_order) {
@@ -668,11 +668,11 @@ namespace hooks
 		helper::init_building(unit, 1);
 		char main_order_id = unit->main_order_id;
 		char action_flags = unit->user_action_flags | 1;
-		unit->hitpoints = units_dat::MaxHitPoints[unit->id] / 10;
+		unit->hitpoints = units_dat::max_hitpoints[unit->id] / 10;
 		unit->user_action_flags = action_flags;
 		if (main_order_id) {
 			while (Order* order = unit->order_queue_tail) {
-				if (!orders_dat::CanBeInterrupted[order->order_id] && order->order_id != OrderId::ZergBirth) {
+				if (!orders_dat::can_be_interrupted[order->order_id] && order->order_id != OrderId::ZergBirth) {
 					break;
 				}
 				helper::remove_order_from_unit_queue(order, unit);

@@ -28,7 +28,7 @@ namespace hooks
 			if (!isForSpellCasting && unit->is_blind)
 				sightRange = BLIND_SIGHT_RANGE;
 			else
-				sightRange = units_dat::SightRange[unit->id];
+				sightRange = units_dat::sight_range[unit->id];
 
 		return sightRange;
 	}

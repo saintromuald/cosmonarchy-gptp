@@ -1,4 +1,4 @@
-//Source file for the Apply Upgrade Flags hook module.
+//Source file for the Apply Upgrade sound_flags hook module.
 //This file is directly responsible for applying movement speed / attack speed
 //upgrades to units.
 #include "apply_upgrade_flags.h"

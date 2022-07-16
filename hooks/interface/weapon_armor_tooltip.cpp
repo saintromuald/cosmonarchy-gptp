@@ -43,7 +43,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
 	{
 		return 2;
 	}
-	return weapons_dat::DamageFactor[weapon_id];
+	return weapons_dat::damage_factor[weapon_id];
 }
 
 // Returns the C-string for the tooltip text of the unit's weapon icon.
@@ -82,7 +82,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	const char* type_name = "";
 
 	u8 damage_factor = get_damage_factor_for_tooltip(weapon_id, unit);
-	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weapon_id]);
+	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];
 	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
@@ -98,40 +98,40 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	bonus_range -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id);
 
 	std::string damage_modifiers = "";
-	f64 attack_cooldown = (f64)weapons_dat::Cooldown[weapon_id] / 24;
+	f64 attack_cooldown = (f64)weapons_dat::cooldown[weapon_id] / 24;
 	f64 attack_cooldown_modifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attack_cooldown;
 
 	f64 attack_speed = 1.0 / attack_cooldown;
 	f64 attack_speed_modifier = (1.0 / ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24)) - attack_speed;
 
-	s32 splashInner = weapons_dat::InnerSplashRadius[weapon_id];
-	s32 splashMedium = weapons_dat::MediumSplashRadius[weapon_id];
-	s32 splashOuter = weapons_dat::OuterSplashRadius[weapon_id];
+	s32 splashInner = weapons_dat::inner_splash_radius[weapon_id];
+	s32 splashMedium = weapons_dat::medium_splash_radius[weapon_id];
+	s32 splashOuter = weapons_dat::outer_splash_radius[weapon_id];
 	bool hasSplash = splashInner || splashMedium || splashOuter;
-	s32 splash_type = weapons_dat::ExplosionType[weapon_id];
+	s32 splash_type = weapons_dat::explosion_type[weapon_id];
 	std::string splash_type_value = "";
 	/*
 	switch (damage_type) {
-		case DamageType::Concussive: {
+		case damage_type::Concussive: {
 			type_name = BWTC_TEAL "Concussive" BWTC_RESET;
 			damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "75" BWTC_RESET "/" BWTC_ORANGE "50" BWTC_RESET "/" BWTC_RED "25" BWTC_RESET;
 		} break;
-		case DamageType::Impact: {
+		case damage_type::Impact: {
 			type_name = BWTC_YELLOW "Impact" BWTC_RESET;
 			damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "100" BWTC_RESET "/" BWTC_ORANGE "75" BWTC_RESET "/" BWTC_RED "50" BWTC_RESET;
 		} break;
-		case DamageType::Explosive: {
+		case damage_type::Explosive: {
 			type_name = BWTC_ORANGE "Explosive" BWTC_RESET;
 			damage_modifiers = BWTC_TEAL "50" BWTC_RESET "/" BWTC_YELLOW "75" BWTC_RESET "/" BWTC_ORANGE "100" BWTC_RESET "/" BWTC_RED "75" BWTC_RESET;
 		} break;
-		case DamageType::Chronal: {
+		case damage_type::Chronal: {
 			type_name = BWTC_WHITE "Chronal" BWTC_RESET;
 			damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "100" BWTC_RESET "/" BWTC_ORANGE "100" BWTC_RESET "/" BWTC_RED "100" BWTC_RESET;
 		} break;
-		case DamageType::Independent: {
+		case damage_type::Independent: {
 			type_name = BWTC_WHITE "Independent" BWTC_RESET;
 		} break;
-		case DamageType::IgnoreArmor: {
+		case damage_type::IgnoreArmor: {
 			type_name = BWTC_WHITE "Ignores Armor" BWTC_RESET;
 		} break;
 		default: {
@@ -159,31 +159,31 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	};
 
 	std::vector<std::string> targetFlags;
-	if (weapons_dat::TargetFlags[weapon_id].ground)
+	if (weapons_dat::target_flags[weapon_id].ground)
 	{
 		targetFlags.push_back("Ground");
 	}
-	if (weapons_dat::TargetFlags[weapon_id].air)
+	if (weapons_dat::target_flags[weapon_id].air)
 	{
 		targetFlags.push_back("Air");
 	}
-	if (weapons_dat::TargetFlags[weapon_id].mechanical || weapons_dat::TargetFlags[weapon_id].orgOrMech)
+	if (weapons_dat::target_flags[weapon_id].mechanical || weapons_dat::target_flags[weapon_id].orgOrMech)
 	{
 		targetFlags.push_back("Mechanical");
 	}
-	if (weapons_dat::TargetFlags[weapon_id].organic || weapons_dat::TargetFlags[weapon_id].orgOrMech)
+	if (weapons_dat::target_flags[weapon_id].organic || weapons_dat::target_flags[weapon_id].orgOrMech)
 	{
 		targetFlags.push_back("Organic");
 	}
-	if (weapons_dat::TargetFlags[weapon_id].nonBuilding)
+	if (weapons_dat::target_flags[weapon_id].nonBuilding)
 	{
 		targetFlags.push_back("Not Building");
 	}
-	if (weapons_dat::TargetFlags[weapon_id].nonRobotic)
+	if (weapons_dat::target_flags[weapon_id].nonRobotic)
 	{
 		targetFlags.push_back("Not Robotic");
 	}
-	if (weapons_dat::TargetFlags[weapon_id].terrain)
+	if (weapons_dat::target_flags[weapon_id].terrain)
 	{
 		targetFlags.push_back("Terrain");
 	}
@@ -221,7 +221,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	else if (bonus_armor_pen < 0) text += " (" BWTC_RED   "" + ss.str() + BWTC_RESET ")";
 	text += ss.str();
 
-	// Cooldown
+	// cooldown
 	std::stringstream string_builder; // TODO: replace with something not gay
 	string_builder << std::setprecision(4);
 	std::string modifier_color = attack_cooldown_modifier > 0 ? BWTC_RED : attack_cooldown_modifier < 0 ? BWTC_GREEN : BWTC_RESET;
@@ -437,19 +437,19 @@ namespace hooks
 
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
-		const u16 label_id = upgrades_dat::label[units_dat::ArmorUpgrade[unit->id]];
+		const u16 label_id = upgrades_dat::label[units_dat::armor_upgrade[unit->id]];
 		const char* armor_upgrade_name = statTxtTblNew->get_string(label_id);
 		const char* armor_text = statTxtTblNew->get_string(778); // "Armor:"
 
-		const u8 unit_size = units_dat::SizeType[unit->id];
+		const u8 unit_size = units_dat::size_type[unit->id];
 		const char* size_label = "Size:";
 		const char* size_text = "";
 
-		const u8 base_armor = units_dat::ArmorAmount[unit->id];
+		const u8 base_armor = units_dat::armor_amount[unit->id];
 		f32 bonus_armor = get_bonus_armor(unit, base_armor);
 
-		const u8 transport_space = units_dat::SpaceRequired[unit->id];
-		const s32 sight_range = units_dat::SightRange[unit->id];
+		const u8 transport_space = units_dat::space_required[unit->id];
+		const s32 sight_range = units_dat::sight_range[unit->id];
 		
 		/*
 		switch (unit_size) {
@@ -743,7 +743,7 @@ namespace hooks
 		//const char* shields_text = statTxtTblNew->get_string(779); // "Shields:"
 		const char* armor_text = statTxtTblNew->get_string(778); // "Armor:"
 
-		const u8 base_armor = units_dat::ArmorAmount[unit->id];
+		const u8 base_armor = units_dat::armor_amount[unit->id];
 		f32 bonus_armor = get_bonus_armor(unit, base_armor);
 
 		std::string text = "\004" + std::string(shield_upgrade_name) + "\002";

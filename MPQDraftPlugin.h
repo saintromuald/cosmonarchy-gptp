@@ -165,7 +165,7 @@ struct IMPQDraftServer
 			the file name of the module to. This buffer should be
 			MPQDRAFT_MAX_PATH characters long.
 
-		Behavior:
+		behavior:
 			- If lpszFileName is nullptr, GetPluginModules will fail.
 
 			- If the buffer pointer to by lpszFileName is shorter than the
@@ -210,7 +210,7 @@ struct IMPQDraftPlugin
 			lpdwPluginID [out] - A pointer to a DWORD that will receive the
 			plugin's ID. MPQDraft will supply this DWORD.
 
-		Behavior:
+		behavior:
 			- If lpdwPluginID is nullptr, Identify will assert.
 
 			- On success, Identify will copy its ID to lpdwPluginID.
@@ -233,7 +233,7 @@ struct IMPQDraftPlugin
 			nNameBufferLength [in] - The length of the buffer pointed to by
 			lpszPluginName, including space for the final nullptr.
 
-		Behavior:
+		behavior:
 			- If lpszPluginName is null, GetPluginName will assert.
 
 			- If nNameBufferLength is shorter than the name of the plugin,
@@ -259,7 +259,7 @@ struct IMPQDraftPlugin
 			lpszEXEFileName [in] - The absolute path of the currently selected
 			executable.
 
-		Behavior:
+		behavior:
 			- If lpszEXEFileName is nullptr, CanPatchExecutable will assert.
 
 			- If an error occurs (i.e. the executable cannot be opened or read
@@ -286,7 +286,7 @@ struct IMPQDraftPlugin
 			DialogBox, to create a modal dialog. It is NOT to be used to
 			attempt to modify the wizard. Such an attempt will probably crash.
 
-		Behavior:
+		behavior:
 			- If hParentWnd is nullptr, Configure will assert.
 
 			- If an error occurs while configuring the plugin, Configure will
@@ -328,7 +328,7 @@ struct IMPQDraftPlugin
 			lpnNumModules [out] - A pointer to the number of plugin modules
 			the plugin will need. This number ought not to exceed 4.
 
-		Behavior:
+		behavior:
 			- If lpnNumModules is nullptr, GetModules will assert.
 
 			- If an error occurs, and GetModules is unable to supply the
@@ -361,7 +361,7 @@ struct IMPQDraftPlugin
 			plugin's modules. This pointer should be saved in case it is
 			needed in future use.
 
-		Behavior:
+		behavior:
 			- If lpMPQDraftServer is nullptr, InitializePlugin will assert.
 
 			- If the plugin was unable to perform the patch, and the the patch
@@ -384,7 +384,7 @@ struct IMPQDraftPlugin
 
 		Returns TRUE on success, and FALSE on failure.
 
-		Behavior:
+		behavior:
 			- If InitializePlugin was not called previously, TerminatePlugin
 			asserts.
 
@@ -414,7 +414,7 @@ struct IMPQDraftPlugin
 		IMPQDraftPlugin. The plugin must set this to point to the plugin's
 		IMPQDraftPlugin interface.
 
-	Behavior:
+	behavior:
 		- GetMPQDraftPlugin will only be called once, so it isn't necessary
 		to instantiate an IMPQDraftPlugin for each call. A single global
 		IMPQDraftPlugin is sufficient.

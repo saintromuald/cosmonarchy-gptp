@@ -169,14 +169,14 @@ namespace hooks {
 		BinDlg* currentButtonDlg;
 
 		currentUnitMainOrderId = *BUTTONSET_UNIT_MAINORDERID;
-		currentUnitButtonIcon = orders_dat::ButtonIcon[currentUnitMainOrderId];
+		currentUnitButtonIcon = orders_dat::button_icon[currentUnitMainOrderId];
 		currentButtonDlg = (*BUTTONSET_DIALOG)->child_dialog;
 		currentSubUnitMainOrderId = *BUTTONSET_SUBUNIT_MAINORDERID;
 
 		// if the subunit holds the weapon, get the icon from it
 		if (currentSubUnitMainOrderId != 0xFF)
 		{
-			currentSubUnitButtonIcon = orders_dat::ButtonIcon[currentSubUnitMainOrderId];
+			currentSubUnitButtonIcon = orders_dat::button_icon[currentSubUnitMainOrderId];
 		}
 		else
 		{

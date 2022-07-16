@@ -96,9 +96,9 @@ namespace hooks
 
 		v1 = *g_active_portrait_unit;
 		v2 = v1->id;
-		v3 = units_dat::MaxHitPoints[v2] >> 8;
+		v3 = units_dat::max_hitpoints[v2] >> 8;
 		if ((v3 || (v3 = (v1->hitpoints + 255) >> 8) != 0) && v3 > 9999
-			|| units_dat::MaxShieldPoints[v2] > 0x270Fu
+			|| units_dat::max_shield_points[v2] > 0x270Fu
 			|| v1->status & UnitStatus::IsHallucination)
 		{
 			v10 = 0;
@@ -109,12 +109,12 @@ namespace hooks
 				v5 = 6;
 			else
 				v5 = helper::unit_hp_between_33_66_percent(v4, v1) != 0 ? 3 : 7;
-			if (units_dat::ShieldsEnabled[v2])
+			if (units_dat::shields_enabled[v2])
 			{
 				v7 = helper::get_max_hp(v1);
 				v8 = (v1->hitpoints + 255) >> 8;
 				v9 = helper::get_last_queue_slot_id(v1);
-				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::MaxShieldPoints[v9], v5, v8, v7);
+				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::max_shield_points[v9], v5, v8, v7);
 			}
 			else
 			{

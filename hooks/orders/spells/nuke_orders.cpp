@@ -15,7 +15,7 @@ namespace hooks
 					Image* current_image = unit->sprite->images.head;
 					if (unit->order_queue_head == nullptr)
 					{
-						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
+						unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
 					}
 
 					helper::force_order_done(unit);

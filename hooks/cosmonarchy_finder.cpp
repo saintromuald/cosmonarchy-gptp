@@ -96,7 +96,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		}
 		if (context & Flags::Shielded)
 		{
-			if (!units_dat::ShieldsEnabled[unit->id])
+			if (!units_dat::shields_enabled[unit->id])
 			{
 				return false;
 			}

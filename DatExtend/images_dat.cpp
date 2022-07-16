@@ -4,7 +4,7 @@
 
 // scbwdata modified by DatExt
 DATEXT_VAR_REF(const LO_Header* const*, shieldOverlays_var);
-DATEXT_VAR_REF(u8*, damageOverlayFrame_var);
+DATEXT_VAR_REF(u8*, g_building_overlay_state_max_var);
 DATEXT_VAR_REF(GrpHead* const*, imageGrpGraphics_var);
 DATEXT_VAR_REF(ImagesDatExtraOverlayLO_Files*, lo_files_var);
 
@@ -107,7 +107,7 @@ namespace DatExt {
         lo_files_var->liftoffDustOverlays = &((LO_Header**)img_newArrs[1])[newCount*3];
         lo_files_var->landingDustOverlays = &((LO_Header**)img_newArrs[1])[newCount*4];
         shieldOverlays_var = (LO_Header* const*)img_newArrs[2];
-        damageOverlayFrame_var = (u8*)img_newArrs[3];
+        g_building_overlay_state_max = (u8*)img_newArrs[3];
     }
 
     void images_dat_unpatch() {

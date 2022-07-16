@@ -500,7 +500,7 @@ namespace CheatFlags
 	};
 }
 
-namespace DamageType
+namespace damage_type
 {
 	enum Enum
 	{
@@ -513,7 +513,7 @@ namespace DamageType
 	};
 }
 
-// Use with weapons_dat::ExplosionType[]
+// Use with weapons_dat::explosion_type[]
 namespace WeaponEffect
 {
 	enum Enum
@@ -546,7 +546,7 @@ namespace WeaponEffect
 	};
 }
 
-// Use with weapons_dat::Behavior[]
+// Use with weapons_dat::behavior[]
 namespace WeaponBehavior
 {
 	enum Enum

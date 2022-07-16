@@ -73,7 +73,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 			}
 		}
 	}

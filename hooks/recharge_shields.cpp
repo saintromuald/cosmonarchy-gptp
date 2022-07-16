@@ -9,7 +9,7 @@
 void rechargeShieldsProc(Unit* target, Unit* battery)
 {
 
-	const s32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
+	const s32 maxShields = units_dat::max_shield_points[target->id] * 256;
 
 	s32 shield_gain = 1280, energySpent = 640;
 
@@ -49,12 +49,12 @@ namespace hooks
 	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery) {
 		//Check target conditions
 		if (!scbw::is_allied_to(target->player, battery->player)			 // Is not owned by the player (NEW: or the player's allies)
-		|| !(units_dat::ShieldsEnabled[target->id])						     // Does not have shields
+		|| !(units_dat::shields_enabled[target->id])						     // Does not have shields
 		|| !(target->status & UnitStatus::Completed)						 // Is incomplete?
 	//	|| !(target->status & UnitStatus::IsBuilding)						 // Is building (like archon build self)?
 	//	|| target->status & UnitStatus::GroundedBuilding					 // Is a building
 	//	|| target->get_race() != RaceId::Protoss							     // Check target race
-		|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256) // Already has max shields
+		|| target->shields >= (units_dat::max_shield_points[target->id] * 256) // Already has max shields
 		|| !(battery->status & UnitStatus::Completed) || !battery->energy
 		|| battery->is_frozen() || helper::is_hangar_unit(target)) {
 			return 0;
@@ -100,7 +100,7 @@ namespace hooks
 				if (unit->unit_ai != nullptr)
 					unit->order_computer(OrderId::ComputerAI);
 				else
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 			}
 
 		}
@@ -172,7 +172,7 @@ namespace hooks
 					rechargeShieldsProc(unit, battery);
 
 					if (
-						unit->shields >= units_dat::MaxShieldPoints[unit->id] * 256 ||
+						unit->shields >= units_dat::max_shield_points[unit->id] * 256 ||
 						battery->energy == 0
 						)
 					{

@@ -182,8 +182,8 @@ namespace CosmonarchyFlags1
 	};
 }
 
-// From BWAPI/Source/BW/MovementFlags.h
-// Definition of Flags specifying movement type - used in BW#Unit#movement_flags
+// From BWAPI/Source/BW/movement_flags.h
+// Definition of sound_flags specifying movement type - used in BW#Unit#movement_flags
 
 namespace MovementFlags
 {
@@ -223,7 +223,7 @@ struct UnitLayout
 	/*0x018*/ Point16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
 														// Equal to moveToPos for air units since they don't need to navigate around buildings.
 	/*0x01C*/ Point16   next_target_waypoint;			// The desired position
-	/*0x020*/ u8        movement_flags;					// Flags specifying movement type, MovementFlags::Enum contains possible explanations
+	/*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, movement_flags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
 	/*0x022*/ u8        flingy_turn_speed;				// AKA flingy turn radius
 	/*0x023*/ u8        velocity_direction_1;			/*
@@ -401,7 +401,7 @@ struct UnitLayout
 	/*0x0E1*/ u8        wireframe_randomizer;	
 	/*0x0E2*/ u8        secondary_order_state;	
 	/*0x0E3*/ u8        recent_order_timer;				// Counts down from 15 to 0 when most orders are given, or when the unit moves after reaching a patrol location
-	/*0x0E4*/ s32       detection_status;				// Flags specifying which players can detect this unit (cloaked/burrowed)
+	/*0x0E4*/ s32       detection_status;				// sound_flags specifying which players can detect this unit (cloaked/burrowed)
 	/*0x0E8*/ Point16   secondary_order_pos;			// Unused according to BWAPI
 	/*0x0EC*/ Unit*		current_build_unit;				// tied to secondary order according to BWAPI
 	/*0x0F0*/ Link<Unit>burrow_link;

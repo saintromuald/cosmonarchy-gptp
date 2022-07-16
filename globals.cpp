@@ -459,7 +459,7 @@ void Globals::frame_hook() {
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
 					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-						unit->damage_with_custom(2500 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(2500 * damageMultiplier, damage_type::Chronal, effect->source, effect->player, 0, 1, true);
 					});
 				} break;
 				case EffectId_SalamanderFire: {
@@ -468,7 +468,7 @@ void Globals::frame_hook() {
 
 					for (u32 j = 0; j < unit_array.count; j++) {
 						Unit* target = unit_array.units[j];
-						target->damage_with_custom(20 * damageMultiplier, DamageType::Concussive, effect->source, effect->player, 0, 1, true);
+						target->damage_with_custom(20 * damageMultiplier, damage_type::Concussive, effect->source, effect->player, 0, 1, true);
 					}
 				} break;
 				case EffectId_Criticality: {
@@ -496,7 +496,7 @@ void Globals::frame_hook() {
 							return;
 						}
 						UnitExt* unitExt = get_unit_ext(unit);
-						unit->damage_with_custom(30 * damageMultiplier, DamageType::Impact, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(30 * damageMultiplier, damage_type::Impact, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 				} break;
@@ -511,7 +511,7 @@ void Globals::frame_hook() {
 							return;
 						}
 						UnitExt* unitExt = get_unit_ext(unit);
-						unit->damage_with_custom(100 * damageMultiplier, DamageType::Chronal, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(100 * damageMultiplier, damage_type::Chronal, effect->source, effect->player, 0, 1, true);
 						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
 				} break;

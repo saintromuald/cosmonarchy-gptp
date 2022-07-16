@@ -104,7 +104,6 @@
 	#include "hooks/interface/mainmenu/glucustom.h"
 	#include "hooks/orders/pathfinding.h"
 	#include "hooks/placement.h"
-	#include "hooks/limits/weapon_extender.h"
 	#include "hooks/interface/briefing/briefing.h"
 	#include "hooks/unit_stats/supply_hooks.h"
 	#include "hooks/unit_stats/new_requirements.h"
@@ -496,7 +495,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
 	hooks::inject_limit_hooks();
-	hooks::inject_weapon_extender();
 	hooks::inject_target_related_hooks();
 //	hooks::unitsDatWrapperPatches();
 

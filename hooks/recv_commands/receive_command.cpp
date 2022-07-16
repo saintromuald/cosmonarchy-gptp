@@ -21,7 +21,7 @@ namespace hooks
 		*saved_x = x;
 		*saved_y = y;
 		*saved_order = bActionOrder;
-		helper::function_0049A8C0((u8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
+		helper::function_0049A8C0((u8*)&array_of_data[0], orders_dat::can_be_obstructed[bActionOrder]);
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1)
 		{
 			Unit* current_unit;
@@ -33,9 +33,9 @@ namespace hooks
 			{
 				bool jump_to_9AD7E = false;
 				bool bOrderAllowed;
-				if (orders_dat::TechUsed[current_order] != TechId::None)
+				if (orders_dat::tech_used[current_order] != TechId::None)
 				{
-					bOrderAllowed = (current_unit->canUseTech(orders_dat::TechUsed[current_order], *g_active_nation_id) == 1);
+					bOrderAllowed = (current_unit->canUseTech(orders_dat::tech_used[current_order], *g_active_nation_id) == 1);
 				}
 				else
 				{
@@ -130,11 +130,11 @@ namespace hooks
 									// Attack command conversion
 									if (unitParam != nullptr)
 									{
-										*saved_order_3 = units_dat::AttackUnitOrder[current_unit->id];
+										*saved_order_3 = units_dat::attack_unit_order[current_unit->id];
 									}
 									else
 									{
-										*saved_order_3 = units_dat::AttackMoveOrder[current_unit->id];
+										*saved_order_3 = units_dat::attack_move_order[current_unit->id];
 									}
 
 									if (*saved_order_3 == OrderId::Nothing2)
@@ -146,12 +146,12 @@ namespace hooks
 									{
 										if (unitParam != nullptr)
 										{
-											*saved_order_2 = units_dat::AttackUnitOrder[current_unit->subunit->id];
+											*saved_order_2 = units_dat::attack_unit_order[current_unit->subunit->id];
 											jump_to_9aca9 = true;
 										}
 										else
 										{
-											*saved_order_2 = units_dat::AttackMoveOrder[current_unit->subunit->id];
+											*saved_order_2 = units_dat::attack_move_order[current_unit->subunit->id];
 											jump_to_9aca9 = true;
 										}
 

@@ -14,7 +14,7 @@ namespace hooks
 				if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
 				{
 					unit->subunit->order_to(OrderId::Nothing3, unit);
-					helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
+					helper::unitSetRetreatPoint(unit->subunit, units_dat::start_direction[unit->subunit->id]);
 					helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 					unit->main_order_state = 2;
 					scbw::decloak_proc(unit);
@@ -92,9 +92,9 @@ namespace hooks
 				{
 					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
 					{
-						helper::unitSetRetreatPoint(unit, units_dat::StartDirection[unit->id]);
+						helper::unitSetRetreatPoint(unit, units_dat::start_direction[unit->id]);
 						unit->subunit->order_to(OrderId::Nothing3, unit);
-						helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
+						helper::unitSetRetreatPoint(unit->subunit, units_dat::start_direction[unit->subunit->id]);
 						helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 						unit->main_order_state = 2;
 						if (helper::checkForCloseUnit(unit))
@@ -138,7 +138,7 @@ namespace hooks
 				{
 					if (!(unit->order_queue_head->order_id == OrderId::WatchTarget))
 					{
-						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						helper::force_order_done(unit);
 						helper::orderReturnToIdle(unit->subunit);
 						bStopThere = true;

@@ -100,10 +100,10 @@ static u32 get_max_range(u32 unit_id) {
 		return 8 * 32;
 	}
 
-	u32 ground_weapon = units_dat::GroundWeapon[unit_id];
+	u32 ground_weapon = units_dat::ground_weapon[unit_id];
 	u32 ground_range = ground_weapon != WeaponId::None ? weapons_dat::max_range[ground_weapon] : 0;
 
-	u32 air_weapon = units_dat::AirWeapon[unit_id];
+	u32 air_weapon = units_dat::air_weapon[unit_id];
 	u32 air_range = air_weapon != WeaponId::None ? weapons_dat::max_range[air_weapon] : 0;
 
 	return std::max(ground_range, air_range);
@@ -139,7 +139,7 @@ static bool unit_has_min_range(Unit* unit) {
 		} else {
 			weapon_id = context->get_ground_weapon();
 		}
-		if (weapons_dat::min_range[weapon_id] || weapons_dat::ExplosionType[weapon_id] == WeaponEffect::SplashRadial) {
+		if (weapons_dat::min_range[weapon_id] || weapons_dat::explosion_type[weapon_id] == WeaponEffect::SplashRadial) {
 			return true;
 		}
 	}
@@ -203,7 +203,7 @@ static bool is_channeling(Unit* unit) {
 static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
 	if (target) {
 		u32 type = weapons_dat::damage_type[weapon_id];
-		u32 size = units_dat::SizeType[target->id];
+		u32 size = units_dat::size_type[target->id];
 		u32 armor_pen = hooks::get_modified_armor_pen(unit, weapon_id);
 		return std::max(weapons_dat::damage_amount[weapon_id] - std::max(target->get_armor() - armor_pen, 0u), 1u);
 	}
@@ -227,7 +227,7 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 	} else {
 		Unit* context = source->subunit ? source->subunit : source;
 		u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
-		f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
+		f32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5 : 1;
 		return hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(source, weapon_id, target)) * multiplier;
 	}
 	return 0;
@@ -915,7 +915,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	// Value attacking units with higher dps
 	Unit* context_target = target->subunit ? target->subunit : target;
 	u32 weapon_id = source->status & UnitStatus::InAir ? context_target->get_air_weapon() : context_target->get_ground_weapon();
-	f32 multiplier = weapons_dat::InnerSplashRadius[weapon_id] ? 1.5 : 1;
+	f32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5 : 1;
 	cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
@@ -946,7 +946,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 
 void tactical_ai(Unit* unit, UnitExt* unitExt) {
 	if (unit->id == UnitId::TerranBunker && !unitExt->timers[TimerAI_GenericAbilityCooldown]) {
-		const u32 bunker_capacity = units_dat::SpaceProvided[unit->id];
+		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
 		EntryArray allies = unit_search_square(unit->position, unit->get_sight_range(false) * 32);
 		EntryArray enemies = allies;
@@ -962,7 +962,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 			for (u32 i = 0; i < bunker_capacity; ++i) {
 				Unit* target = unit->get_loaded_unit(i);
 				if (target) {
-					counter += units_dat::SpaceRequired[target->id];
+					counter += units_dat::space_required[target->id];
 				}
 			}
 			for (u32 i = 0; i < allies.count && counter <= bunker_capacity; ++i) {
@@ -971,7 +971,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				if (target->unit_ai && helper::can_enter_transport(unit, target)
 					&& !is_melee_attacker(target->id) && !(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 					target->order_to(OrderId::EnterTransport, unit);
-					counter += units_dat::SpaceRequired[target->id];
+					counter += units_dat::space_required[target->id];
 				}
 			}
 			unitExt->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
@@ -1041,7 +1041,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 					s32 supply = 0;
 					cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
 					{
-						u32 priority = units_dat::SupplyRequired[u->id] * 100;
+						u32 priority = units_dat::supply_required[u->id] * 100;
 						if (u->status & UnitStatus::InAir)
 						{
 							priority /= 4;
@@ -1055,7 +1055,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 							}
 						}
 						group.push_back(std::make_pair(u, priority));
-						supply += units_dat::SupplyRequired[u->id];
+						supply += units_dat::supply_required[u->id];
 					});
 					std::sort(group.begin(), group.end(), [](auto& left, auto& right)
 					{
@@ -1157,7 +1157,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				}
 			});
 			if (!alliedTownHalls && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000
-				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id])) {
+				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
 				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
 				unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->order_computer(OrderId::KhaydarinEclipse);

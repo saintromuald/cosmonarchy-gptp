@@ -286,7 +286,7 @@ struct Doodad
 	/*00*/  u16 index;
 	/*02*/	u8	buildability; /**< 8th bit should sign not buildable. */
 	/*03*/  u8	ground_height_and_overlay_flags; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
-					   * Overlay Flags:
+					   * Overlay sound_flags:
 					   * o 0x0 - None
 					   * o 0x1 - Sprites.dat Reference
 					   * o 0x2 - Units.dat Reference (unit sprite)
@@ -449,7 +449,7 @@ struct LO_Header
 C_ASSERT(sizeof(LO_Header) == 12);
 //static_assert(sizeof(LO_Header) == 12, "The count of the LO_Header structure is invalid");
 
-// Image Remapping Data
+// Image remapping Data
 struct ColorShiftData
 {
 	u32		index;
@@ -953,8 +953,8 @@ struct AI_Main
 //	u8 unk4d8[0x10];					/*04D8*/
 	
 	// Hopefully these are valid xd - FaRTy
-	Unit*& mainMedic() { return (Unit*&)ai_define_max[UNIT_TYPE_COUNT]; }
-	Box32& genCmdLoc() { return (Box32&)ai_define_max[UNIT_TYPE_COUNT + sizeof(Unit*)]; }
+	Unit*& main_medic() { return (Unit*&)ai_define_max[UNIT_TYPE_COUNT]; }
+	Box32& gen_cmd_loc() { return (Box32&)ai_define_max[UNIT_TYPE_COUNT + sizeof(Unit*)]; }
 };
 
 struct AiScript
@@ -988,7 +988,7 @@ struct ResourceAreaArray {
 	u32 frames_till_update;
 };
 
-// From BWAPI Offsets.h, used in scbwdata.h by unit_availability
+// From BWAPI Offsets.h, used in scbwdata.h by g_unit_availability
 struct _uavail {
 	u8* available[PLAYER_COUNT];
 };

@@ -22,7 +22,7 @@ void irradiate_proc(Unit* unit, Unit* target)
 	if (unit->status & UnitStatus::InTransport
 		|| unit->get_distance_to_target(target) <= 32)
 	{
-		// const s32 damage = weapons_dat::damage_amount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
+		// const s32 damage = weapons_dat::damage_amount[WeaponId::Irradiate] * 256 / weapons_dat::cooldown[WeaponId::Irradiate];
 		s32 damage = (125 * 256) / 24;
 		if (unit != nullptr)
 		{
@@ -32,7 +32,7 @@ void irradiate_proc(Unit* unit, Unit* target)
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damage_with_custom(50.0 * 256.0 / 15.5, DamageType::Concussive, unit->irradiate_caster, unit->irradiate_player_id, 0, 1, true);
+		target->damage_with_custom(50.0 * 256.0 / 15.5, damage_type::Concussive, unit->irradiate_caster, unit->irradiate_player_id, 0, 1, true);
 	}
 }
 	
@@ -51,7 +51,7 @@ namespace hooks
 			Unit* transport = irradiatedUnit->connected_unit;
 			if (transport)
 			{
-				for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i)
+				for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i)
 				{
 					Unit* loaded_unit = transport->get_loaded_unit(i);
 					if (loaded_unit)
@@ -177,7 +177,7 @@ namespace hooks
 				{
 					UnitExt* targetExt = get_unit_ext(target);
 					targetExt->timers[TimerResourceBoostedRegen] = 24;
-					u32 underlay = ImageId::ResourceBoostOverlay_Small + scbw::get_overlay_offset(target->id);
+					u32 underlay = image_id::ResourceBoostOverlay_Small + scbw::get_overlay_offset(target->id);
 					if (!target->sprite->get_overlay(underlay)) {
 						if (scbw::unit_id_is_gas_structure(target->id))
 						{

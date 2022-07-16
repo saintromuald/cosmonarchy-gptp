@@ -23,7 +23,7 @@ namespace hooks
 	u32 get_modified_weapon_cooldown(Unit* unit, u8 weapon_id)
 	{
 		UnitExt* unitExt = get_unit_ext(unit);
-		u32 cooldown = weapons_dat::Cooldown[weapon_id];
+		u32 cooldown = weapons_dat::cooldown[weapon_id];
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
 		s32 cooldownModifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? 1 : 0)

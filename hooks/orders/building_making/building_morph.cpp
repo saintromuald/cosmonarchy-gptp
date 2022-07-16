@@ -146,7 +146,7 @@ namespace hooks
 			{
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
-				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->sprite_id), 0);
+				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::image_id, building->sprite->sprite_id), 0);
 				function_004D8500_copy(building->sprite->main_graphic);
 			}
 
@@ -185,7 +185,7 @@ namespace hooks
 					helper::replace_unit_with_id(building, buildingId);
 
 					// newHp = newHpMax - oldHpMax + oldHp
-					hpAfterMorph = units_dat::MaxHitPoints[buildingId] - units_dat::MaxHitPoints[building->previous_unit_type] + hpAfterMorph;
+					hpAfterMorph = units_dat::max_hitpoints[buildingId] - units_dat::max_hitpoints[building->previous_unit_type] + hpAfterMorph;
 					if (hpAfterMorph < 256) {
 						hpAfterMorph = 256;
 					}
@@ -348,7 +348,7 @@ namespace hooks
 
 				helper::refresh_sprite_data(unit->sprite);
 				unit->order_computer(OrderId::ResetCollision1);
-				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
+				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->set_hitpoints(previous_hitpoints);
 
 				helper::update_creep_disappearance_unit_id(unit->id, unit->get_x(), unit->get_y(), false);
@@ -507,7 +507,7 @@ namespace hooks
 			target->current_buttonset = UnitId::Buttons_CancelConstruction;
 		}
 		helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
-		target->hitpoints = units_dat::MaxHitPoints[unit_id] / 10;
+		target->hitpoints = units_dat::max_hitpoints[unit_id] / 10;
 		return target;
 	}
 }

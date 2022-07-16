@@ -28,14 +28,14 @@ namespace hooks
 			finalUnit = _unit;
 		if (a2->status & UnitStatus::InAir)
 		{
-			_wpn = units_dat::AirWeapon[(unsigned __int16)finalUnit->id];
+			_wpn = units_dat::air_weapon[(unsigned __int16)finalUnit->id];
 		}
 		else
 		{
 			_id = finalUnit->id;
 			if (_id != UnitId::ZergLakizilisk || finalUnit->status & 0x10)
 			{
-				_wpn = units_dat::GroundWeapon[_id];
+				_wpn = units_dat::ground_weapon[_id];
 			}
 			else
 			{
@@ -106,13 +106,13 @@ namespace hooks
 			v4 = a2;
 		if (v2->status & UnitStatus::InAir)
 		{
-			v5 = units_dat::AirWeapon[(unsigned __int16)v4->id];
+			v5 = units_dat::air_weapon[(unsigned __int16)v4->id];
 		}
 		else
 		{
 			v6 = v4->id;
 			if (v6 != UnitId::ZergLakizilisk || v4->status & 0x10)
-				v5 = units_dat::GroundWeapon[v6];
+				v5 = units_dat::ground_weapon[v6];
 			else
 				v5 = -126;
 		}
@@ -147,7 +147,7 @@ namespace hooks
 			v3 = v1->order_target.unit;
 			if (v3)
 			{
-				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->main_order_id]);
+				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::order_weapon_id[(unsigned __int8)v1->main_order_id]);
 				if (v1->movement_flags & 2)
 				{
 					if (!(v3->movement_flags & 2))
@@ -165,7 +165,7 @@ namespace hooks
 			{
 				v6 = v1->order_target.pt.y;
 				v7 = v1->order_target.pt.x;
-				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->main_order_id]);
+				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::order_weapon_id[(unsigned __int8)v1->main_order_id]);
 				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
 				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
@@ -213,14 +213,14 @@ namespace hooks
 			}
 			if (v4->status & 4)
 			{
-				v6 = units_dat::AirWeapon[(unsigned __int16)v5->id];
+				v6 = units_dat::air_weapon[(unsigned __int16)v5->id];
 			}
 			else
 			{
 				v7 = v5->id;
 				if (v7 != 103 || v5->status & 0x10)
 				{
-					v6 = units_dat::GroundWeapon[v7];
+					v6 = units_dat::ground_weapon[v7];
 				}
 				else
 				{
@@ -294,13 +294,13 @@ LABEL_22:
 					v11 = v1;
 				if (v4->status & 4)
 				{
-					v12 = units_dat::AirWeapon[(unsigned __int16)v11->id];
+					v12 = units_dat::air_weapon[(unsigned __int16)v11->id];
 				}
 				else
 				{
 					v13 = v11->id;
 					if (v13 != UnitId::ZergLakizilisk || v11->status & 0x10)
-						v12 = units_dat::GroundWeapon[v13];
+						v12 = units_dat::ground_weapon[v13];
 					else
 						v12 = 0x82;
 				}
@@ -328,13 +328,13 @@ LABEL_62:
 					v5 = v1;
 				if (v4->status & 4)
 				{
-					v6 = units_dat::AirWeapon[(unsigned __int16)v5->id];
+					v6 = units_dat::air_weapon[(unsigned __int16)v5->id];
 				}
 				else
 				{
 					v7 = v5->id;
 					if (v7 != 103 || v5->status & 0x10)
-						v6 = units_dat::GroundWeapon[v7];
+						v6 = units_dat::ground_weapon[v7];
 					else
 						v6 = 0x82;
 				}
@@ -392,7 +392,7 @@ LABEL_42:
 			}
 			else
 			{
-				helper::issue_order_targeting_nothing(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
+				helper::issue_order_targeting_nothing(v1, units_dat::return_to_idle_order[(unsigned __int16)v1->id]);
 			}
 		}
 	}
@@ -677,9 +677,9 @@ LABEL_42:
 		// GAME RULE: Ground titanic units can be targeted by air-only weapons
 		// Doesn't work currently.
 		/*
-		if (units_dat::SizeType[target->id] == UnitSize::Titanic) {
-			return units_dat::AirWeapon[context->id] != WeaponId::None
-				|| units_dat::GroundWeapon[context->id] != WeaponId::None;
+		if (units_dat::size_type[target->id] == UnitSize::Titanic) {
+			return units_dat::air_weapon[context->id] != WeaponId::None
+				|| units_dat::ground_weapon[context->id] != WeaponId::None;
 		}
 		*/
 
@@ -688,7 +688,7 @@ LABEL_42:
 			for (u32 i = 0; i < TransportCap; ++i) {
 				Unit* cargo_unit = unit->get_loaded_unit(i);
 				if (cargo_unit) {
-					u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[cargo_unit->id] : units_dat::GroundWeapon[cargo_unit->id];
+					u32 weapon = target->status & UnitStatus::InAir ? units_dat::air_weapon[cargo_unit->id] : units_dat::ground_weapon[cargo_unit->id];
 					u32 range = hooks::get_max_weapon_range(unit, weapon, target);
 					if (range > max_range) {
 						max_range = range;
@@ -702,7 +702,7 @@ LABEL_42:
 			return false;
 		}
 
-		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[context->id] : units_dat::GroundWeapon[context->id];
+		u32 weapon = target->status & UnitStatus::InAir ? units_dat::air_weapon[context->id] : units_dat::ground_weapon[context->id];
 
 		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
 			if (!unit->is_target_within_min_range(target, hooks::get_max_weapon_range(unit, weapon, target))) {
@@ -802,7 +802,7 @@ LABEL_23:
 					}
 					else
 					{
-						v2->order_computer(units_dat::ReturnToIdleOrder[v2->id]);
+						v2->order_computer(units_dat::return_to_idle_order[v2->id]);
 					}
 					result = 0;
 				}
@@ -824,13 +824,13 @@ LABEL_23:
 		}
 		else
 		{
-			if (target->status & UnitStatus::InAir || (units_dat::SizeType[target->id] == UnitSize::Titanic && units_dat::AirWeapon[v5->id] != -126))
+			if (target->status & UnitStatus::InAir || (units_dat::size_type[target->id] == UnitSize::Titanic && units_dat::air_weapon[v5->id] != -126))
 			{
-				v8 = units_dat::AirWeapon[v5->id] != WeaponId::None;
+				v8 = units_dat::air_weapon[v5->id] != WeaponId::None;
 			}
 			else
 			{
-				v8 = units_dat::GroundWeapon[v5->id] != WeaponId::None;
+				v8 = units_dat::ground_weapon[v5->id] != WeaponId::None;
 			}
 		}
 LABEL_22:
@@ -863,23 +863,23 @@ LABEL_34:
 				{
 					v16 = v2;
 				}
-				if (v15->status & UnitStatus::InAir || (units_dat::SizeType[v15->id] == UnitSize::Titanic && units_dat::AirWeapon[v16->id] != -126))
+				if (v15->status & UnitStatus::InAir || (units_dat::size_type[v15->id] == UnitSize::Titanic && units_dat::air_weapon[v16->id] != -126))
 				{
-					v17 = units_dat::AirWeapon[v16->id];
+					v17 = units_dat::air_weapon[v16->id];
 				}
 				else
 				{
 					v18 = v16->id;
 					if (v18 != UnitId::ZergLakizilisk || v16->status & UnitStatus::Burrowed)
 					{
-						v17 = units_dat::GroundWeapon[v18];
+						v17 = units_dat::ground_weapon[v18];
 					}
 					else
 					{
 						v17 = -126;
 					}
 				}
-				if (v17 < WeaponId::None)
+				if (v17 != WeaponId::None)
 				{
 					v19 = weapons_dat::min_range[v17];
 					if (!v19 || !helper::is_target_within_min_range(v16, v19, targeta))
@@ -975,7 +975,7 @@ LABEL_65:
 				}
 				if (cooldownVar <= 0)
 				{
-					s32 unitHP = units_dat::MaxHitPoints[unit_id] >> 8;
+					s32 unitHP = units_dat::max_hitpoints[unit_id] >> 8;
 					if (!unitHP)
 					{
 						unitHP = (unit->hitpoints + 255) >> 8;
@@ -1009,21 +1009,21 @@ LABEL_65:
 								u8 airWeapon;
 								if (unitTarget->status & 4)
 								{
-									airWeapon = units_dat::AirWeapon[subunit->id];
+									airWeapon = units_dat::air_weapon[subunit->id];
 								}
 								else
 								{
 									u16 subunitId = subunit->id;
 									if (subunitId != UnitId::ZergLakizilisk || subunit->status & 0x10)
 									{
-										airWeapon = units_dat::GroundWeapon[subunitId];
+										airWeapon = units_dat::ground_weapon[subunitId];
 									}
 									else
 									{
 										airWeapon = WeaponId::None;
 									}
 								}
-								if (airWeapon < WeaponId::None)
+								if (airWeapon != WeaponId::None)
 								{
 									u32 airWeaponMinRange = weapons_dat::min_range[airWeapon];
 									if (!airWeaponMinRange || !(helper::is_target_within_min_range(subunit, airWeaponMinRange, unitTarget)))
@@ -1089,7 +1089,7 @@ LABEL_65:
 					{
 						break;
 					}
-					if (!orders_dat::CanBeInterrupted[order_tail->order_id] && order_tail->order_id != OrderId::Return)
+					if (!orders_dat::can_be_interrupted[order_tail->order_id] && order_tail->order_id != OrderId::Return)
 					{
 						break;
 					}

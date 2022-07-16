@@ -40,7 +40,7 @@ namespace hooks
 		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
 
 		UnitExt* transport_ext = get_unit_ext(transport);
-		if (units_dat::SpaceProvided[transport->id] != 0)
+		if (units_dat::space_provided[transport->id] != 0)
 		{
 			for (;;)
 			{
@@ -59,7 +59,7 @@ namespace hooks
 				}
 
 				counter++;
-				if (counter >= units_dat::SpaceProvided[transport->id])
+				if (counter >= units_dat::space_provided[transport->id])
 				{
 					break;
 				}
@@ -266,7 +266,7 @@ namespace hooks
 					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 						if (unit->unit_ai == nullptr)
 						{
-							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						}
 						else
 						{
@@ -346,9 +346,9 @@ namespace hooks
 					loaded_index = cargo_index | (cargo->target_order_special << 11);
 				}
 				u32 i = 0;
-				if (units_dat::SpaceProvided[cargo_transport->id])
+				if (units_dat::space_provided[cargo_transport->id])
 				{
-					for (i = 0; i < units_dat::SpaceProvided[cargo_transport->id]; ++i)
+					for (i = 0; i < units_dat::space_provided[cargo_transport->id]; ++i)
 					{
 						u16 index = cargo_transport_ext->loaded_unit[i].index;
 						if (index == loaded_index)
@@ -399,7 +399,7 @@ namespace hooks
 		else if (!(transport->status & UnitStatus::IsHallucination))
 		{
 			// Originally had a check for the Ovileth transport upgrade. We enable it by default, so BYE!
-			u8 transport_space = units_dat::SpaceProvided[transport->id];
+			u8 transport_space = units_dat::space_provided[transport->id];
 			if (transport_space)
 			{
 				u16* index = &transport_ext->loaded_unit[0].value;
@@ -471,7 +471,7 @@ namespace hooks
 				{
 					u32 unit_id_3 = unit->id;
 					u32 space_provided_1 = units_dat::base_property[unit_id_3];
-					u32 space_provided_2 = units_dat::SpaceProvided[unit_id_3];
+					u32 space_provided_2 = units_dat::space_provided[unit_id_3];
 					if (space_provided_1)
 					{
 						UnitExt* unit_ext = get_unit_ext(unit);
@@ -564,7 +564,7 @@ namespace hooks
 		KillUnitArgs* args_func = (KillUnitArgs*)&args->func;
 		if ((unit->status & UnitStatus::IsHallucination) == 0)
 		{
-			u8 space_provided = units_dat::SpaceProvided[unit->id];
+			u8 space_provided = units_dat::space_provided[unit->id];
 			if (space_provided)
 			{
 				UnitExt* unit_ext = get_unit_ext(unit);
@@ -629,7 +629,7 @@ namespace hooks
 		else
 		{
 			if (!(unit->status & UnitStatus::IsHallucination)
-				&& units_dat::SpaceProvided[unit->id])
+				&& units_dat::space_provided[unit->id])
 			{
 				if (*trig_remove_unit_active)
 				{
@@ -669,7 +669,7 @@ namespace hooks
 	// Logic moved from Unit.cpp
 	Unit* get_first_loaded_unit(Unit* transport) // 004E6C90
 	{
-		for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i)
+		for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i)
 		{
 			Unit* first_loaded_unit = hooks::get_loaded_unit(transport, i);
 			if (first_loaded_unit)
@@ -714,7 +714,7 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	u32 iterate_loaded_units(Unit* transport, iterate_loaded_units_callback* func, Unit* cargo) // 004E6D00
 	{
-		u32 space_provided = units_dat::SpaceProvided[transport->id];
+		u32 space_provided = units_dat::space_provided[transport->id];
 		if (!space_provided)
 		{
 			return 0;
@@ -795,7 +795,7 @@ namespace hooks
 			return 0;
 		}
 		if (unit->status & UnitStatus::IsHallucination
-			|| !units_dat::SpaceProvided[unit_id])
+			|| !units_dat::space_provided[unit_id])
 		{
 			return 0;
 		}
@@ -891,7 +891,7 @@ namespace hooks
 					if ((reference_1->main_order_id || reference_1->main_order_state != 1)
 						&& reference_1->target_order_special == index_var_1 >> 11)
 					{
-						result += units_dat::SpaceRequired[reference_1->id];
+						result += units_dat::space_required[reference_1->id];
 					}
 				}
 			}
@@ -931,7 +931,7 @@ namespace hooks
 			UnitExt* connected_unit_ext = get_unit_ext(connected_unit);
 			u32 iterations = 0;
 			u32 iterations_2 = 0;
-			if (units_dat::SpaceProvided[connected_unit->id])
+			if (units_dat::space_provided[connected_unit->id])
 			{
 				u16* index = &connected_unit_ext->loaded_unit[0].value;
 				do
@@ -942,7 +942,7 @@ namespace hooks
 					}
 					++iterations;
 					++index;
-				} while (iterations < units_dat::SpaceProvided[connected_unit->id]);
+				} while (iterations < units_dat::space_provided[connected_unit->id]);
 				iterations_2 = iterations;
 			}
 			if (transport_died)
@@ -987,7 +987,7 @@ namespace hooks
 		unit->status = status_something;
 		u32 unit_id = unit->id;
 		if (status_something & 0x40000000
-		|| !units_dat::SpaceProvided[unit_id])
+		|| !units_dat::space_provided[unit_id])
 		{
 			Unit* subunit = unit->subunit;
 			if (subunit)

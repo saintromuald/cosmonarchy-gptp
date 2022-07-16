@@ -597,20 +597,20 @@ namespace hooks
 								Point16 pos = target->sprite->position;
 								switch (scbw::random() % 4) {
 									case 0: {
-										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
-										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
+										pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
+										pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
 									} break;
 									case 1: {
-										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
-										pos.y -= units_dat::UnitBounds[target->id].top * 0.75;
+										pos.x += units_dat::unit_bounds[target->id].right * 0.75;
+										pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
 									} break;
 									case 2: {
-										pos.x -= units_dat::UnitBounds[target->id].left * 0.75;
-										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
+										pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
+										pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
 									} break;
 									case 3: {
-										pos.x += units_dat::UnitBounds[target->id].right * 0.75;
-										pos.y += units_dat::UnitBounds[target->id].bottom * 0.75;
+										pos.x += units_dat::unit_bounds[target->id].right * 0.75;
+										pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
 									} break;
 								}							
 								helper::set_move_target_xy(pos.x, pos.y, unit);
@@ -753,7 +753,7 @@ namespace hooks
 					}
 					if (enemiesDetected)
 					{
-						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
+						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
 							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlaySpecialPtr, unit->sprite->main_graphic->id));
@@ -1019,9 +1019,9 @@ namespace hooks
 						missile_target.x = tgt_x + product.x;
 						missile_target.y = tgt_y + product.y;
 
-						s32 forwardOffset = weapons_dat::ForwardOffset[10];
+						s32 forwardOffset = weapons_dat::forward_offset[10];
 						auto source_x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
-						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1) - weapons_dat::VerticalOffset[10];
+						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1) - weapons_dat::vertical_offset[10];
 						unit->order_target.unit = nullptr;
 						unit->order_target.pt = missile_target;
 						auto range = 64;
@@ -1234,7 +1234,7 @@ namespace hooks
 				{
 					if (fire_multiple(unit, unitExt, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, true))
 					{
-						unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::Cooldown[WeaponId::TarasqueAcceleratedPlasmid];
+						unitExt->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::TarasqueAcceleratedPlasmid];
 					}
 					else
 					{
@@ -1274,7 +1274,7 @@ namespace hooks
 				).for_each_in_match(match, [&](Unit* target)
 				{
 					u32 dist = scbw::get_distance_fast(unit->position, target->position);
-					if (dist <= weapons_dat::OuterSplashRadius[WeaponId::AnthelionEventHorizon])
+					if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon])
 					{
 						UnitExt* targetExt = get_unit_ext(target);
 						if (!(units_dat::base_property[target->id] & UnitProperty::Building)
@@ -1289,11 +1289,11 @@ namespace hooks
 							attacked = true;
 
 							u32 divider = 1;
-							if (dist > weapons_dat::MediumSplashRadius[WeaponId::AnthelionEventHorizon])
+							if (dist > weapons_dat::medium_splash_radius[WeaponId::AnthelionEventHorizon])
 							{
 								divider = 4;
 							}
-							else if (dist > weapons_dat::InnerSplashRadius[WeaponId::AnthelionEventHorizon])
+							else if (dist > weapons_dat::inner_splash_radius[WeaponId::AnthelionEventHorizon])
 							{
 								divider = 2;
 							}
@@ -1721,7 +1721,7 @@ namespace hooks
 					unit->get_x() + radius,
 					unit->get_y() + radius
 				).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&](Unit* target) {
-					target->damage_with_custom(5 * 256, DamageType::Explosive, nullptr, 0, 0, 1, false);
+					target->damage_with_custom(5 * 256, damage_type::Explosive, nullptr, 0, 0, 1, false);
 				});
 			}
 		}
@@ -2123,7 +2123,7 @@ namespace hooks
 			{
 				if (scbw::get_distance_fast(unit->position, target->position) <= radius)
 				{
-					target->damage_with_custom(250 * 256, DamageType::Explosive, unit, unit->player, 0, 1, false);
+					target->damage_with_custom(250 * 256, damage_type::Explosive, unit, unit->player, 0, 1, false);
 				}
 			});
 			helper::create_thingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);

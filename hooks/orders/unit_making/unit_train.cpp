@@ -15,7 +15,7 @@ namespace hooks
 {
 	s32 is_queue_slot_active(Unit* unit, u32 slot)
 	{
-		return unit->build_queue[(slot + unit->build_queue_slot) % 5] < UnitId::None;
+		return unit->build_queue[(slot + unit->build_queue_slot) % 5] != UnitId::None;
 	}
 
 	void secondary_order_train_fighter(Unit* unit) {
@@ -71,7 +71,7 @@ namespace hooks
 				} else {
 					Unit* in_hangar_child = unit->unit_with_hangar.in_hangar_child;
 					if (in_hangar_child) {
-						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
+						s32 hpInterceptor = units_dat::max_hitpoints[UnitId::ProtossSteward];
 						while (in_hangar_child && in_hangar_child->hitpoints >= hpInterceptor) {
 							in_hangar_child = in_hangar_child->hangar_unit.hangar_link.next;
 						}

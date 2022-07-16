@@ -41,7 +41,7 @@ namespace hooks
 {
 	u32 maxhp(s32 id, s32 player)
 	{
-		u32 result = units_dat::MaxHitPoints[id];
+		u32 result = units_dat::max_hitpoints[id];
 		//if (id==UnitId::firebat && scbw::get_upgrade_level(player, UpgradeId::Heatshield)) {
 		//	result += 15 * 256;
 		//}
@@ -50,7 +50,7 @@ namespace hooks
 
 	u32 maxshields(s32 id, s32 player)
 	{
-		u32 result = units_dat::MaxShieldPoints[id];
+		u32 result = units_dat::max_shield_points[id];
 		//if (units_dat::base_property[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
 		//	result += result / 2;
 		//}
@@ -64,11 +64,11 @@ namespace hooks
 		s32 v3; // eax
 
 		v1 = (u16)a1->id;
-		if (units_dat::ShieldsEnabled[v1])
-			v2 = units_dat::MaxShieldPoints[v1];
+		if (units_dat::shields_enabled[v1])
+			v2 = units_dat::max_shield_points[v1];
 		else
 			v2 = 0;
-		v3 = units_dat::MaxHitPoints[v1] >> 8;
+		v3 = units_dat::max_hitpoints[v1] >> 8;
 		if (!v3)
 		{
 			v3 = (a1->hitpoints + 255) >> 8;
@@ -130,7 +130,7 @@ LABEL_14:
 		v8 = (BufferStr*)v5;
 LABEL_19:
 		helper::add_text_to_dialog(v1, -11, (const char*)v8);
-		if (units_dat::ShieldsEnabled[(*g_active_portrait_unit)->id])
+		if (units_dat::shields_enabled[(*g_active_portrait_unit)->id])
 		{
 			helper::draw_shield_upgrade(v1, 0);
 		}
@@ -256,7 +256,7 @@ LABEL_26:
 				v9 = "";
 			}
 			v10 = helper::get_last_queue_slot_id((*g_active_portrait_unit));
-			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
+			sprintf_s("", 260, "%s %d", v9, (units_dat::supply_provided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818)
 			{
@@ -312,7 +312,7 @@ LABEL_26:
 			helper::add_text_to_dialog(v1, -12, (const char*)g_unk_string_char);
 			helper::add_text_to_dialog(v1, -13, (const char*)g_struct_char_2);
 			v18 = (*g_active_portrait_unit)->id;
-			if (units_dat::ShieldsEnabled[v18])
+			if (units_dat::shields_enabled[v18])
 			{
 				helper::draw_shield_upgrade(v1, 0);
 			}
@@ -380,20 +380,20 @@ LABEL_55:
 		s32 v7; // eax
 		s32 totalHits; // [esp+0h] [ebp-4h]
 
-		if (units_dat::ShieldsEnabled[a1])
+		if (units_dat::shields_enabled[a1])
 		{
-			v2 = units_dat::MaxShieldPoints[a1];
+			v2 = units_dat::max_shield_points[a1];
 		}
 		else
 		{
 			v2 = 0;
 		}
 
-		totalHits = v2 + (units_dat::MaxHitPoints[a1] >> 8);
+		totalHits = v2 + (units_dat::max_hitpoints[a1] >> 8);
 		if (totalHits)
 		{
-			v4 = (u8)weapons_dat::DamageFactor[a2];
-			v5 = weapons_dat::Cooldown[a2];
+			v4 = (u8)weapons_dat::damage_factor[a2];
+			v5 = weapons_dat::cooldown[a2];
 			v6 = weapons_dat::damage_amount[a2];
 			if (a2 == -126)
 			{
@@ -436,8 +436,8 @@ LABEL_55:
 		}
 		v7 = helper::get_base_strength(a3, v3);
 		groundAir = helper::get_current_hp_plus_shields(v3);
-		if (units_dat::ShieldsEnabled[v4])
-			v8 = units_dat::MaxShieldPoints[v4];
+		if (units_dat::shields_enabled[v4])
+			v8 = units_dat::max_shield_points[v4];
 		else
 			v8 = 0;
 		v9 = v8 + helper::get_max_hp(v3);
@@ -457,7 +457,7 @@ LABEL_55:
 		{
 			if (helper::can_weapon_target_unit(WeaponId::Restoration, a1, a2))
 			{
-				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
+				v3 = units_dat::shields_enabled[(u16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitpoints + 255) >> 8) > 60
 					&& scbw::is_debuffed(v2))
 				{
@@ -479,7 +479,7 @@ LABEL_55:
 		v2 = a1;
 		v3 = a2;
 		if (!helper::ai_target_unit_is_worth_hitting(a1, a2)
-			|| !units_dat::ShieldsEnabled[(u16)v2->id]
+			|| !units_dat::shields_enabled[(u16)v2->id]
 			|| !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, v2, v3))
 		{
 			return 0;
@@ -516,7 +516,7 @@ LABEL_55:
 					if (a3 != WeaponId::Irradiate && v5->player != a2->player)
 						helper::unit_attack_notify(v5);
 				}
-				if (units_dat::ShieldsEnabled[(u16)v5->id])
+				if (units_dat::shields_enabled[(u16)v5->id])
 				{
 					if (v5->shields >= 256)
 					{
@@ -575,7 +575,7 @@ LABEL_55:
 		v6 = *(u16*)(colorData + 100);
 		v33 = grpRect->left;
 		v34 = grpRect->top;
-		v7 = units_dat::ShieldsEnabled[v6];
+		v7 = units_dat::shields_enabled[v6];
 		v38 = g_screen_y;
 		v8 = grpRect->bottom;
 		v35 = grpRect->right;
@@ -584,9 +584,9 @@ LABEL_55:
 			v36 = 7;
 			if (v8 <= 7)
 				v36 = v8;
-			v13 = sprites_dat::IsVisible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390];
-			v14 = units_dat::MaxHitPoints[v6] >> 8;
-			ByteOperations::SetHighByte(colorData, sprites_dat::IsVisible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390]);
+			v13 = sprites_dat::is_visible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390];
+			v14 = units_dat::max_hitpoints[v6] >> 8;
+			ByteOperations::SetHighByte(colorData, sprites_dat::is_visible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390]);
 			if (v14)
 			{
 				v15 = v14;
@@ -598,7 +598,7 @@ LABEL_55:
 					v15 = 1;
 			}
 			v16 = helper::unk_billions((*(s32*)(v5 + 8) + 255) >> 8, v15, (s32)&v39, v13);
-			helper::unk_billions2(*(s32*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (s32)&colorData, HIBYTE(colorData));
+			helper::unk_billions2(*(s32*)(v5 + 96) >> 8, units_dat::max_shield_points[v6], (s32)&colorData, HIBYTE(colorData));
 			v17 = struct_5140E8;
 			if (v16 < (u8)(*struct_5140E8).anonymous_0)
 			{
@@ -620,9 +620,9 @@ LABEL_55:
 			v36 = 5;
 			if (v8 <= 5)
 				v36 = v8;
-			if (units_dat::MaxHitPoints[v6] >> 8)
+			if (units_dat::max_hitpoints[v6] >> 8)
 			{
-				v9 = units_dat::MaxHitPoints[v6] >> 8;
+				v9 = units_dat::max_hitpoints[v6] >> 8;
 			}
 			else
 			{
@@ -634,7 +634,7 @@ LABEL_55:
 				(*(s32*)(colorData + 8) + 255) >> 8,
 				v9,
 				(s32)&v39,
-				(u8)sprites_dat::IsVisible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390]);
+				(u8)sprites_dat::is_visible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390]);
 			v11 = struct_5140C4;
 			if (v10 < (u8)(*struct_5140C4).anonymous_0)
 			{
@@ -688,7 +688,7 @@ LABEL_32:
 						v26,
 						v24,
 						(s32)&v39,
-						(u8)sprites_dat::IsVisible[*(u16*)(*(s32*)(v5 + 12) + 8) + 390]);
+						(u8)sprites_dat::is_visible[*(u16*)(*(s32*)(v5 + 12) + 8) + 390]);
 					v31 = struct_5140D8;
 					if (v30 < (u8)(*struct_5140D8).anonymous_0)
 					{
@@ -715,16 +715,16 @@ LABEL_32:
 		u32 v5; // eax
 
 		_type = (u16)a1->id;
-		if (units_dat::ShieldsEnabled[_type])
+		if (units_dat::shields_enabled[_type])
 		{
 			if (a1->status & UnitStatus::GroundedBuilding)
 			{
-				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
+				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::max_shield_points[_type] << 8)) >> 0x20) >> 2;
 				v3 = v4 + (v4 >> 31);
 				a1->shields = v3;
 				v2 = units_dat::time_cost[_type];
 				if (!v2
-					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->build_repair_hp_gain = v5) == 0))
+					|| (v5 = (((u32)units_dat::max_shield_points[_type] << 8) - v3) / v2, (a1->build_repair_hp_gain = v5) == 0))
 				{
 					a1->build_repair_hp_gain = 1;
 				}
@@ -751,11 +751,11 @@ LABEL_32:
 
 		v2 = (u8)bullet->weapon_id;
 		v3 = victim;
-		if (weapons_dat::ExplosionType[v2] == WeaponEffect::NuclearMissile)
+		if (weapons_dat::explosion_type[v2] == WeaponEffect::NuclearMissile)
 		{
 			unit_id = (u16)victim->id;
-			v10 = units_dat::MaxHitPoints[unit_id];
-			if (units_dat::ShieldsEnabled[unit_id])
+			v10 = units_dat::max_hitpoints[unit_id];
+			if (units_dat::shields_enabled[unit_id])
 			{
 				v12 = v10 >> 8;
 				if (!v12)
@@ -764,7 +764,7 @@ LABEL_32:
 					if (!v12)
 						v12 = 1;
 				}
-				v13 = 2 * (v12 + units_dat::MaxShieldPoints[unit_id]);
+				v13 = 2 * (v12 + units_dat::max_shield_points[unit_id]);
 			}
 			else
 			{
@@ -785,7 +785,7 @@ LABEL_32:
 		else
 		{
 			v5 = (u8)bullet->weapon_id;
-			v6 = weapons_dat::DamageUpgrade[v5];
+			v6 = weapons_dat::damage_upgrade[v5];
 			v7 = weapons_dat::damage_amount[v5];
 			v4 = (u8)bullet->srcPlayer;
 			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
@@ -812,7 +812,7 @@ LABEL_32:
 
 		v1 = a1->main_order_id;
 		v2 = v1;
-		v10 = orders_dat::OrderWeaponId[v1];
+		v10 = orders_dat::order_weapon_id[v1];
 		v8 = a1->order_target.pt.y;
 		v3 = a1->order_target.unit;
 		v9 = a1->order_target.pt.x;
@@ -839,7 +839,7 @@ LABEL_32:
 						if (HIBYTE(v3->energy) >= 0x64u)
 							goto LABEL_23;
 					}
-					if (units_dat::ShieldsEnabled[(u16)v3->id] && (s32)(v3->shields & 0xFFFFFF00) >= 25600)
+					if (units_dat::shields_enabled[(u16)v3->id] && (s32)(v3->shields & 0xFFFFFF00) >= 25600)
 						goto LABEL_23;
 LABEL_17:
 					result = 1;
@@ -866,14 +866,14 @@ LABEL_17:
 		else
 		{
 LABEL_23:
-			if (orders_dat::UseWeaponTargeting[v2])
+			if (orders_dat::use_weapon_targeting[v2])
 			{
 				if (!helper::can_weapon_target_unit(v10, v3, a1))
 					return 1;
 			}
 			else
 			{
-				ByteOperations::SetLowByte(v6, orders_dat::TechUsed[v2]);
+				ByteOperations::SetLowByte(v6, orders_dat::tech_used[v2]);
 				if ((u8)v6 < (u8)TechId::None)
 				{
 					v6 = (u8)v6;
@@ -923,11 +923,11 @@ LABEL_23:
 			return 0;
 		}
 		v3 = *(u16*)(a1 + 100);
-		if (!units_dat::ShieldsEnabled[v3])
+		if (!units_dat::shields_enabled[v3])
 			return 0;
-		v4 = units_dat::MaxShieldPoints[v3];
+		v4 = units_dat::max_shield_points[v3];
 		if (v4 >= (s32)(a2 * v4 / 0x64u))
-			v4 = a2 * (u32)units_dat::MaxShieldPoints[v3] / 0x64;
+			v4 = a2 * (u32)units_dat::max_shield_points[v3] / 0x64;
 		*(s32*)(a1 + 96) = v4 << 8;
 		return 1;
 	}
@@ -946,8 +946,8 @@ LABEL_23:
 
 		v2 = *(u16*)(a2 + 8);
 		v3 = active_player_selection->unit[*(u8*)(a2 + 11)];
-		v4 = sprites_dat::IsVisible[v2 + 390];
-		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
+		v4 = sprites_dat::is_visible[v2 + 390];
+		*(s8*)(a1 + 15) = sprites_dat::hp_bar_size[v2 + 262]
 			+ (g_image_grp_graphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
 		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
@@ -966,7 +966,7 @@ LABEL_23:
 		}
 		v7 = *(s32*)(a1 + 44);
 		v8 = *(s8*)(v7 + 9);
-		if (units_dat::ShieldsEnabled[(unsigned __int16)v3->id])
+		if (units_dat::shields_enabled[(unsigned __int16)v3->id])
 			v9 = v8 + 7;
 		else
 			v9 = v8 + 5;
@@ -1012,18 +1012,18 @@ LABEL_23:
 			//			if (v4 == 42 && !g_upgrades_level_sc[(u8)v2->player][24])
 			goto LABEL_22;
 			v5 = v4;
-			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))
+			if (!units_dat::space_provided[v4] || !(v3 & 1) || !(v3 & 0x20000))
 				goto LABEL_22;
 			if (v2->order_target.unit == a1)
 				break;
-			v6 = units_dat::MaxHitPoints[v4] >> 8;
+			v6 = units_dat::max_hitpoints[v4] >> 8;
 			if (!v6)
 			{
 				v6 = (v2->hitpoints + 255) >> 8;
 				if (!v6)
 					v6 = 1;
 			}
-			if ((v2->hitpoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5])
+			if ((v2->hitpoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::shields_enabled[v5] && v2->shields >> 8 == units_dat::max_shield_points[v5])
 			{
 				v11 = 1;
 				if (helper::can_enter_transport(v2, a1))

@@ -17,7 +17,7 @@ namespace hooks
 			if (unit->main_order_id != OrderId::Die) {
 				bool break_loop = false;
 				while (unit->order_queue_tail && !break_loop) {
-					break_loop = !orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+					break_loop = !orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
 						(unit->order_queue_tail->order_id != OrderId::BuildingLiftoff);
 					if (!break_loop) {
 						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
@@ -32,7 +32,7 @@ namespace hooks
 				}
 				unit->perform_another_order(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None);
 			}
-			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, false);
+			unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
 		} else if (unit->main_order_state == 0) {
 			// Plan vertical movement toward ground
 			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->vertical_offset);
@@ -151,7 +151,7 @@ namespace hooks
 							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 						}
 						if (!unit->order_queue_head) {
-							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						}
 					}
 
@@ -227,7 +227,7 @@ namespace hooks
 			unit->main_order_id = OrderId::Liftoff;
 		} else {
 			if (!unit->order_queue_head) {
-				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
+				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, 0);
 			}
 			helper::force_order_done(unit);
 		}

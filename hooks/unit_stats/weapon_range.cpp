@@ -27,7 +27,7 @@ namespace hooks
 			}
 		}
 
-		// Repentant Chorus - Barghest Behavior
+		// Repentant Chorus - Barghest behavior
 		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
@@ -56,7 +56,7 @@ namespace hooks
 		}
 
 		// Compile variable for use in height advantage calculations
-		u32 seekRange = units_dat::SeekRange[unit->id] * scale + bonusAmount;
+		u32 seekRange = units_dat::seek_range[unit->id] * scale + bonusAmount;
 
 		// Height advantage
 		seekRange += scbw::get_cliff_advantage(unit, target, 0);

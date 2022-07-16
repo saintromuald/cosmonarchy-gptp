@@ -17,7 +17,7 @@ struct Flingy
 	/*0x018*/ Point16   next_movement_waypoint;  ///< The next way point in the path the unit is following to get to its destination.
 											   ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
 	/*0x01C*/ Point16   next_target_waypoint;    ///< The desired position
-	/*0x020*/ u8        movement_flags;		   /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
+	/*0x020*/ u8        movement_flags;		   /// sound_flags specifying movement type, movement_flags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;	   /// The current direction the unit is facing
 	/*0x022*/ u8        flingy_turn_speed;       //AKA flingy turn radius
 	/*0x023*/ u8        velocity_direction_1;
@@ -62,22 +62,22 @@ struct Unit : public UnitLayout
 	u8 get_ground_weapon() const;
 
 	/// Returns the unit's air weapon ID. This is identical to reading the value
-	/// from units_dat::AirWeapon[unit->id].
+	/// from units_dat::air_weapon[unit->id].
 	u8 get_air_weapon() const;
 
 	/// Returns the total armor amount of this unit (with upgrades).
-	/// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].
+	/// To retrieve a unit's base armor amount, use units_dat::armor_amount[].
 	u8 get_armor() const;
 
 	/// Returns the bonus armor amount of this unit (from upgrades).
-	/// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].
+	/// To retrieve a unit's base armor amount, use units_dat::armor_amount[].
 	u8 get_armor_bonus() const;
 
 	/// Returns the maximum energy amount of this unit (with upgrades).
 	u16 get_max_energy() const;
 
 	/// Returns the maximum HP amount displayed in-game. This is equal to
-	/// units_dat::MaxHitPoints[unit->id] >> 8 (minimum value is 1).
+	/// units_dat::max_hitpoints[unit->id] >> 8 (minimum value is 1).
 	u32 get_max_hp_ingame() const;
 	u32 get_max_hp_raw() const;
 

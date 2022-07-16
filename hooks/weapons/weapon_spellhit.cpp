@@ -71,7 +71,7 @@ namespace hooks
 		{
 			unit->main_order_state = 0;
 		}
-		if (!orders_dat::DisablingKeepsTarget[order_id])
+		if (!orders_dat::disabling_keeps_target[order_id])
 		{
 			unit->order_target.unit = 0;
 		}
@@ -226,13 +226,13 @@ namespace hooks
 				|| (attacker->status & UnitStatus::Burrowed
 					|| attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers, didn't work, but may still be part of the solution
 			{
-				weapon_id = units_dat::GroundWeapon[attacker->id];
+				weapon_id = units_dat::ground_weapon[attacker->id];
 			}
 			else
 			{
 				weapon_id = WeaponId::None;
 			}
-			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
+			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 			attackerExt->values[ValueAI_PreventTargeting] = 0;
 
 			if (attacker->status & UnitStatus::IsHallucination)
@@ -303,10 +303,10 @@ namespace hooks
 		Unit* current_unit;
 
 		// define the base box of effect
-		area_of_effect.left = (u16)x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.right = (u16)x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.top = (u16)y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.bottom = (u16)y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.left = (u16)x - weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
+		area_of_effect.right = (u16)x + weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
+		area_of_effect.top = (u16)y - weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
+		area_of_effect.bottom = (u16)y + weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
 
 		// check and fix effect if beyond width of map
 		if (area_of_effect.left < 0)
@@ -809,7 +809,7 @@ LABEL_15:
 						}
 						else
 						{
-							helper::issue_order_targeting_nothing(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
+							helper::issue_order_targeting_nothing(v1, units_dat::return_to_idle_order[(u16)v1->id]);
 						}
 						return;
 					}

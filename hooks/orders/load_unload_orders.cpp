@@ -28,7 +28,7 @@ namespace hooks
 				while (!bStopLoop)
 				{
 					u8 order_id = (u8)unit->order_queue_tail->order_id;
-					if (orders_dat::CanBeInterrupted[order_id] == 0
+					if (orders_dat::can_be_interrupted[order_id] == 0
 						&& order_id != OrderId::ComputerAI)
 					{
 						bStopLoop = true;
@@ -65,7 +65,7 @@ namespace hooks
 				}
 				else
 				{
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		}
@@ -99,7 +99,7 @@ namespace hooks
 				}
 				else
 				{
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		}
@@ -258,7 +258,7 @@ namespace hooks
 			}
 			else
 			{
-				idleOrder = units_dat::ReturnToIdleOrder[(u16)unitVar->id];
+				idleOrder = units_dat::return_to_idle_order[(u16)unitVar->id];
 			}
 			unitVar->user_action_flags |= 1u;
 			helper::order(1, unitVar, idleOrder, 0, 0, 228);
@@ -335,7 +335,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 1);
+				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, 1);
 			}
 			prepare_for_next_order(unit);
 		}
@@ -425,7 +425,7 @@ namespace hooks
 		Unit* target = unit->order_target.unit;
 		if	 (target != nullptr
 		&&	!(target->status & UnitStatus::IsHallucination)
-		&&	  units_dat::SpaceProvided[target->id] != 0
+		&&	  units_dat::space_provided[target->id] != 0
 		&&	  scbw::can_be_entered_by(target, unit))
 		{
 			if (unit->main_order_state == 0
@@ -463,7 +463,7 @@ namespace hooks
 			}
 			else
 			{
-				unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 			}
 		}
 	}
@@ -578,7 +578,7 @@ namespace hooks
 						bEndLoop = (unit->order_queue_tail == nullptr);
 						while (!bEndLoop)
 						{
-							if (orders_dat::CanBeInterrupted[(unit->order_queue_tail)->order_id]
+							if (orders_dat::can_be_interrupted[(unit->order_queue_tail)->order_id]
 								|| unit->order_queue_tail->order_id == OrderId::ComputerAI)
 							{
 								helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
@@ -599,7 +599,7 @@ namespace hooks
 				else
 				{ // 004E823A
 					unit->user_action_flags |= 1;
-					unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, true);
+					unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, true);
 					prepare_for_next_order(unit);
 				}
 			}
@@ -626,15 +626,15 @@ namespace hooks
 			return 0;
 		}
 
-		u32 space_provided = units_dat::SpaceProvided[transport->id];
+		u32 space_provided = units_dat::space_provided[transport->id];
 		s32 space_required = 0;
 		Unit* loaded_unit;
 		for (u32 index = 0; index < space_provided; ++index) {
 			loaded_unit = helper::get_loaded_unit_from_index(transport, index);
 			if (loaded_unit) {
-				space_required += units_dat::SpaceRequired[loaded_unit->id];
+				space_required += units_dat::space_required[loaded_unit->id];
 			}
 		}
-		return space_provided - space_required >= units_dat::SpaceRequired[unit->id];
+		return space_provided - space_required >= units_dat::space_required[unit->id];
 	}
 }

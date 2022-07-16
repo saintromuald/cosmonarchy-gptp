@@ -48,7 +48,7 @@ namespace hooks
 			} else {
 				helper::init_building(nydus_exit, 1);
 				// logically equivalent to a more complex original calculation
-				nydus_exit->hitpoints = (10 * units_dat::MaxHitPoints[nydus_exit->id]) / 100;
+				nydus_exit->hitpoints = (10 * units_dat::max_hitpoints[nydus_exit->id]) / 100;
 				nydus_exit->order_computer(OrderId::ZergBuildSelf);
 				nydus_exit->current_buttonset = UnitId::Buttons_Blank;
 				helper::stop_creep_disappearing_at_building(nydus_exit);

@@ -143,20 +143,20 @@ namespace hooks
 
 		if (offsetX < 0)
 		{
-			width *= units_dat::UnitBounds[townhallId].left;
+			width *= units_dat::unit_bounds[townhallId].left;
 		}
 		else
 		{
-			width *= units_dat::UnitBounds[townhallId].right;
+			width *= units_dat::unit_bounds[townhallId].right;
 		}
 
 		if (offsetY < 0)
 		{
-			height *= units_dat::UnitBounds[townhallId].top;
+			height *= units_dat::unit_bounds[townhallId].top;
 		}
 		else
 		{
-			height *= units_dat::UnitBounds[townhallId].bottom;
+			height *= units_dat::unit_bounds[townhallId].bottom;
 		}
 
 		offsetX = offsetX * width;
@@ -174,14 +174,14 @@ namespace hooks
 		if (forceHorizontal ||
 			abs(offsetX) < abs(offsetY))
 		{
-			offsetX = -units_dat::UnitBounds[townhallId].left * distanceMultiplier;
+			offsetX = -units_dat::unit_bounds[townhallId].left * distanceMultiplier;
 			offsetY = Sign(offsetY) * height;
 			horizontal = true;
 		}
 		else
 		{
 			offsetX = Sign(offsetX) * width;
-			offsetY = units_dat::UnitBounds[townhallId].bottom * distanceMultiplier * 1.5;
+			offsetY = units_dat::unit_bounds[townhallId].bottom * distanceMultiplier * 1.5;
 			horizontal = false;
 		}
 
@@ -243,8 +243,8 @@ namespace hooks
 						for (s32 i = 0; i < 6; i++)
 						{
 							const s32 correctionOffset = 1;
-							const s32 unitWidth = units_dat::UnitBounds[unit_id].left + units_dat::UnitBounds[unit_id].right + correctionOffset;
-							const s32 unitHeight = units_dat::UnitBounds[unit_id].bottom + units_dat::UnitBounds[unit_id].top + correctionOffset;
+							const s32 unitWidth = units_dat::unit_bounds[unit_id].left + units_dat::unit_bounds[unit_id].right + correctionOffset;
+							const s32 unitHeight = units_dat::unit_bounds[unit_id].bottom + units_dat::unit_bounds[unit_id].top + correctionOffset;
 
 							if (horizontal) pos.x += unitWidth;
 							else pos.y -= unitHeight;
@@ -277,20 +277,20 @@ namespace hooks
 		Unit* created_unit;
 		if (g_start_positions[player].x < *maxBoxRightValue / 2)
 		{
-			overlordStartX = g_start_positions[player].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;
+			overlordStartX = g_start_positions[player].x + units_dat::unit_bounds[UnitId::ZergHatchery].right + units_dat::unit_bounds[UnitId::ZergHatchery].left + 1;
 		}
 		else
 		{
-			overlordStartX = g_start_positions[player].x - (units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1);
+			overlordStartX = g_start_positions[player].x - (units_dat::unit_bounds[UnitId::ZergHatchery].right + units_dat::unit_bounds[UnitId::ZergHatchery].left + 1);
 		}
 
 		if (g_start_positions[player].y < *maxBoxBottomValue / 2)
 		{
-			overlordStartY = g_start_positions[player].y + units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1;
+			overlordStartY = g_start_positions[player].y + units_dat::unit_bounds[UnitId::ZergHatchery].bottom + units_dat::unit_bounds[UnitId::ZergHatchery].top + 1;
 		}
 		else
 		{
-			overlordStartY = g_start_positions[player].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
+			overlordStartY = g_start_positions[player].y - (units_dat::unit_bounds[UnitId::ZergHatchery].bottom + units_dat::unit_bounds[UnitId::ZergHatchery].top + 1);
 		}
 
 		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, player);
@@ -305,7 +305,7 @@ namespace hooks
 	}
 
 	Unit* create_unit_xy(u16 player_id, u16 id, u32 x, u32 y, bool prevent_creep) {
-		if (units_dat::StarEditAvailFlags[id] & 0x200 && !*g_is_brood_war) {
+		if (units_dat::staredit_avail_flags[id] & 0x200 && !*g_is_brood_war) {
 			return 0;
 		}
 		Unit* unit = helper::create_unit(id, x, y, player_id);

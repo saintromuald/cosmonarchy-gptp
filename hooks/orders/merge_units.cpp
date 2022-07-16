@@ -115,7 +115,7 @@ namespace hooks
 				*someDialogUnknownUser = nullptr;
 
 				helper::play_morphing_complete_sound(unit);
-				unit->order(units_dat::HumanIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
+				unit->order(units_dat::human_idle_order[unit->id], 0, 0, nullptr, UnitId::None, 0);
 				helper::force_order_done(unit);
 				if (unit->id == UnitId::ProtossAugur)
 				{
@@ -172,7 +172,7 @@ namespace hooks
 				if (unit->unit_ai != nullptr)
 					unit->order_computer(OrderId::ComputerAI);
 				else
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 
 			}
 
@@ -371,7 +371,7 @@ namespace hooks
 				if (unit->unit_ai != nullptr)
 					unit->order_computer(OrderId::ComputerAI);
 				else
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 
 			}
 

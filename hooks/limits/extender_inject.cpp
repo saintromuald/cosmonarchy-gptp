@@ -69,7 +69,7 @@ namespace hooks
 	{
 		for (s32 i = 0; i < 228; i++)
 		{
-			fakeExtFlingyIds[i] = units_dat::Graphic[i];
+			fakeExtFlingyIds[i] = units_dat::graphic[i];
 		}
 	}
 
@@ -123,7 +123,7 @@ namespace hooks
 		{
 			if (!(units_dat::base_property[i] & UnitProperty::Building))
 			{
-				if (units_dat::StarEditAvailFlags[i] & 0x1)
+				if (units_dat::staredit_avail_flags[i] & 0x1)
 				{
 					auto flingy_id = fakeExtFlingyIds[i];
 					auto sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);

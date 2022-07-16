@@ -9,7 +9,7 @@ DATEXT_VAR_REF(UnitDeaths*, unitCompleteTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitKilledTable_var);
 DATEXT_VAR_REF(AI_Main**, AIScriptController_var);
 DATEXT_VAR_REF(u32*, aiStrength_var);
-DATEXT_VAR_REF(_uavail*, UnitAvailability_var);
+DATEXT_VAR_REF(_uavail*, g_unit_availability_var);
 
 namespace {
 	// List of address reference replacements.
@@ -533,7 +533,7 @@ namespace DatExt {
 		deathTable_var = (UnitDeaths*)unit_newArrs[3];
 		for (i = 0; i < PLAYER_COUNT; i++)
 		{
-			UnitAvailability_var->available[i] = (u8*)(unit_newArrs[4]) + newCount * i;
+			g_unit_availability->available[i] = (u8*)(unit_newArrs[4]) + newCount * i;
 		}
 		aiStrength_var = (u32*)unit_newArrs[5];
 		for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++)

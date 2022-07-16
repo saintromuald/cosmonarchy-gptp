@@ -301,7 +301,7 @@ namespace hooks
 				supply_provided_string = "";
 			}
 			u32 last_queue_slot_type = helper::get_last_queue_slot_id(unit);
-			sprintf_s(g_supply_provided_buffer, 260, "%s %d", supply_provided_string, (units_dat::SupplyProvided[last_queue_slot_type] + 1) / 2);
+			sprintf_s(g_supply_provided_buffer, 260, "%s %d", supply_provided_string, (units_dat::supply_provided[last_queue_slot_type] + 1) / 2);
 			
             u32 supply_available_string_id = race + 66353;
             char* supply_available_string = 0;
@@ -340,7 +340,7 @@ namespace hooks
             }
 
             helper::draw_armor(dialog, unit->id, 0);
-			if (units_dat::ShieldsEnabled[unit->id]) {
+			if (units_dat::shields_enabled[unit->id]) {
 				helper::draw_shield_upgrade(dialog, 1);
 			}
 		} else {
@@ -367,7 +367,7 @@ namespace hooks
             // zerg special handling
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon)
             {
-                supply = units_dat::SupplyRequired[unit->id];
+                supply = units_dat::supply_required[unit->id];
                 if (!(units_dat::base_property[unit->id] & 0x400) || unit->status & 1)
                 {
                     raceSupply[RaceId::Terran].used[unit->player] += count * supply;
@@ -381,7 +381,7 @@ namespace hooks
             else
             {
                 s32 queueUnit = unit->build_queue[unit->build_queue_slot];
-                supply = units_dat::SupplyRequired[queueUnit];
+                supply = units_dat::supply_required[queueUnit];
                 if (units_dat::base_property[queueUnit] & UnitProperty::TwoUnitsIn1Egg)
                 {
                     supply *= 2;
@@ -392,7 +392,7 @@ namespace hooks
         }
         else
         {
-            raceSupply[RaceId::Terran].used[unit->player] += count * units_dat::SupplyRequired[unit->id];
+            raceSupply[RaceId::Terran].used[unit->player] += count * units_dat::supply_required[unit->id];
         }
 
         if (groupFlag.is_factory)
@@ -468,7 +468,7 @@ namespace hooks
                 {
                     buildings_owned[unit->player] += count;
                 }
-                building_score[unit->player] += count * units_dat::BuildScore[unit_id];
+                building_score[unit->player] += count * units_dat::build_score[unit_id];
             }
         }
         if (g_completed_unit_counts[unit_id].player[unit->player] < 0)
@@ -481,14 +481,14 @@ namespace hooks
     bool has_supplies_for_unit(u8 player, u16 unit_id, bool canShowErrorMessage)
     {
         // Default StarCraft behavior
-        s32 supplyCost = units_dat::SupplyRequired[unit_id];
+        s32 supplyCost = units_dat::supply_required[unit_id];
         if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg)
         {
             supplyCost *= 2;
         }
         if (unit_id == UnitId::ZergLakizilisk)
         {
-            supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
+            supplyCost -= units_dat::supply_required[UnitId::ZergHydralisk];
         }
 
         g_ai_supply_reserved[player] = supplyCost;

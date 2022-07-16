@@ -109,7 +109,7 @@ namespace hooks
 		// Demiurge - Gods Made Flesh - target is impervious to damage
 		if (targetExt->timers[TimerGodsMadeFlesh]) {
 			data.final_damage = 0;
-			data.damage_type = DamageType::Independent;
+			data.damage_type = damage_type::Independent;
 		}
 
 		// TODO: remove this
@@ -193,7 +193,7 @@ namespace hooks
 
 		// Apply armor
 		bool shield_overlay = false;
-		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
+		if (data.damage_type != damage_type::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id);
 
 			s32 armor_total = (data.target->get_armor() - armor_pen) * 256;
@@ -221,7 +221,7 @@ namespace hooks
 		}
 
 		// Reduce Plasma Shields
-		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
+		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
 			data.shield_reduce_amount = std::min(data.final_damage, data.target->shields);
 			if (data.shield_reduce_amount < 256) {
 				data.shield_reduce_amount = 256;
@@ -256,7 +256,7 @@ namespace hooks
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage)
+		if (data.damage_type != damage_type::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage)
 		{
 			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
@@ -272,7 +272,7 @@ namespace hooks
 		if (data.shield_reduce_amount != 0 && canDamage)
 		{
 			data.target->shields -= data.shield_reduce_amount;
-			if (data.damage_type != DamageType::Independent && data.target->shields != 0)
+			if (data.damage_type != damage_type::Independent && data.target->shields != 0)
 			{
 				shield_overlay = true;
 			}
@@ -304,7 +304,7 @@ namespace hooks
 		// Isthrathaleth Dark Swarm
 		if (darkswarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor))
 		{
-			data.damage_type = DamageType::Independent;
+			data.damage_type = damage_type::Independent;
 		}
 
 		// Observance Armor Rend
@@ -374,7 +374,7 @@ namespace hooks
 				// Almaksalisk - Flanking DrolethSpines
 				if (scbw::is_debuffed(data.target))
 				{
-					data.damage_type = DamageType::IgnoreArmor;
+					data.damage_type = damage_type::IgnoreArmor;
 				}
 			} break;
 		}
@@ -657,7 +657,7 @@ namespace hooks
 									// Ally Check
 									return;
 								}
-								if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256)
+								if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256)
 								{ 
 									// Shield Check for default behavior
 									helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
@@ -667,7 +667,7 @@ namespace hooks
 									// Return if both checks failed
 									return;
 								}
-								if (units_dat::ShieldsEnabled[unit->id])
+								if (units_dat::shields_enabled[unit->id])
 								{ 
 									// Shield Heal
 									unit->heal_shields(2 * 256, data.target);
@@ -933,7 +933,7 @@ namespace hooks
 					data.target->get_y() + 96
 				).for_each([&](Unit* unit)
 				{
-					if (!units_dat::ShieldsEnabled[unit->id])
+					if (!units_dat::shields_enabled[unit->id])
 					{
 						return;
 					}
@@ -975,7 +975,7 @@ namespace hooks
 					});
 					if (nearest) {
 						data.final_damage = 0;
-						data.target->set_hitpoints(units_dat::MaxHitPoints[data.target->id] / 2);
+						data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id] / 2);
 						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
 						data.target->status |= UnitStatus::CanNotReceiveOrders;
 						data.target->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small);
@@ -1132,7 +1132,7 @@ namespace hooks
 						bool unit_is_grounded_building = (unit->status & UnitStatus::GroundedBuilding) != 0;
 						u32 sound_id = *console_index + (unit_is_grounded_building ? -0xFFFFFF8B : 120);
 						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
-					//	helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
+					//	helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
 					}
 				}
 			}

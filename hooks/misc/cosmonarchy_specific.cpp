@@ -143,7 +143,7 @@ namespace hooks
 	{
 		globals.flingy_init_bullet_id = weapon_id;
 		globals.flingy_init_player_id = player_id;
-		return weapons_dat::FlingyId[weapon_id];
+		return weapons_dat::flingy_id[weapon_id];
 	}
 
 	u32 get_flingy_halt_distance(Flingy* flingy)
@@ -406,13 +406,13 @@ namespace hooks
 			helper::list_push_back_hidden_unit_entry(unit);
 		}
 
-		if (unit_id > UnitId::Spell_DisruptionWeb || units_dat::SubUnit[unit_id] == UnitId::None)
+		if (unit_id != UnitId::None || units_dat::subunit[unit_id] == UnitId::None)
 		{
 			unit->subunit = 0;
 			return unit;
 		}
 
-		Unit* subunit = helper::unit_constructor(x, y, units_dat::SubUnit[unit_id], player, randomNumber);
+		Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, randomNumber);
 		if (!subunit)
 		{
 			helper::unit_destructor(unit);
@@ -461,8 +461,8 @@ namespace hooks
 			unit->energy = 0;
 		}
 		unit->status = unit->status & ~UnitStatus::Frozen;
-		u32 new_hp = (hp * units_dat::MaxHitPoints[unit->id]) / 256;
-		u32 max_hp = units_dat::MaxHitPoints[unit->previous_unit_type] / 256;
+		u32 new_hp = (hp * units_dat::max_hitpoints[unit->id]) / 256;
+		u32 max_hp = units_dat::max_hitpoints[unit->previous_unit_type] / 256;
 		u32 final_hp = 1;
 		if (max_hp)
 		{
@@ -476,7 +476,7 @@ namespace hooks
 		unit->air_strength = helper::get_unit_strength(unit, max_hp, false);
 		unit->ground_strength = helper::get_unit_strength(unit, max_hp, true);
 		unit->status &= ~(UnitStatus::CanNotReceiveOrders | UnitStatus::NoBrkCodeStart);
-		if (!orders_dat::CanBeInterrupted[order_type]) {
+		if (!orders_dat::can_be_interrupted[order_type]) {
 			unit->status |= UnitStatus::CanNotReceiveOrders;
 		}
 		if (sprite->player != player_id )
@@ -552,7 +552,7 @@ namespace hooks
 		{
 			--index;
 			u32 max_overlay_state = 0;
-			building_overlay_state_max[index] = 0;
+			g_building_overlay_state_max[index] = 0;
 			GrpHead* overlay = images_damage_overlay_graphic[index];
 			if (overlay)
 			{
@@ -568,7 +568,7 @@ namespace hooks
 				} while (offset);
 				if (max_overlay_state)
 				{
-					building_overlay_state_max[index] = 2 * max_overlay_state;
+					g_building_overlay_state_max[index] = 2 * max_overlay_state;
 				}
 			}
 		} while (index);

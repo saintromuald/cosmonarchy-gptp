@@ -129,7 +129,7 @@ namespace hooks
 				{
 
 					if (
-						!orders_dat::CanBeInterrupted[out_hangar_child->order_queue_tail->order_id] &&
+						!orders_dat::can_be_interrupted[out_hangar_child->order_queue_tail->order_id] &&
 						out_hangar_child->order_queue_tail->order_id != OrderId::SelfDestrucing
 						)
 						bNotRemovableOrder = true;
@@ -180,7 +180,7 @@ namespace hooks
 			{
 
 				if (
-					!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+					!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
 					unit->order_queue_tail->order_id != OrderId::Reaver
 					)
 					bNotRemovableOrder = true;

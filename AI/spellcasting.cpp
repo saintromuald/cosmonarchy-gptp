@@ -72,7 +72,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						g_aiscript_controller[unit->player].ai_last_nuke_time = *g_elapsed_time_seconds;
+						g_aiscript_controller[unit->player]->ai_last_nuke_time = *g_elapsed_time_seconds;
 						return true;
 					}
 				}
@@ -124,7 +124,7 @@ namespace AI
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connected_unit = unit;
-						g_aiscript_controller[unit->player].ai_last_nuke_time = *g_elapsed_time_seconds;
+						g_aiscript_controller[unit->player]->ai_last_nuke_time = *g_elapsed_time_seconds;
 						return true;
 					}
 				}
@@ -295,9 +295,9 @@ namespace
 	bool canCastSpellOrder(Unit* unit, u8 techId, u8 order_id)
 	{
 		u16 energyCost = 0;
-		if (orders_dat::TechUsed[order_id] < TechId::None)
+		if (orders_dat::tech_used[order_id] < TechId::None)
 		{
-			energyCost = techdata_dat::energy_cost[orders_dat::TechUsed[order_id]] * 256;
+			energyCost = techdata_dat::energy_cost[orders_dat::tech_used[order_id]] * 256;
 		}
 		if (techId == TechId::Lockdown && unit->mine_carrier.mine_count == 0)
 		{
@@ -328,9 +328,9 @@ namespace
 	// Logically equivalent to function @ 0x0049E1C0
 	u16 getOrderEnergyCost(u8 order_id)
 	{
-		if (orders_dat::TechUsed[order_id] < TechId::None)
+		if (orders_dat::tech_used[order_id] < TechId::None)
 		{
-			return techdata_dat::energy_cost[orders_dat::TechUsed[order_id]] * 256;
+			return techdata_dat::energy_cost[orders_dat::tech_used[order_id]] * 256;
 		}
 		else
 		{
@@ -341,7 +341,7 @@ namespace
 	// Logically equivalent to function @ 0x00446E50
 	bool isNukeTimerReady(u8 player)
 	{
-		return *g_elapsed_time_seconds >= g_aiscript_controller[player].ai_last_nuke_time + 60 * g_aiscript_controller[player].ai_nuke_rate;
+		return *g_elapsed_time_seconds >= g_aiscript_controller[player]->ai_last_nuke_time + 60 * g_aiscript_controller[player]->ai_nuke_rate;
 	}
 
 	// Logically equivalent to function @ 0x00463360

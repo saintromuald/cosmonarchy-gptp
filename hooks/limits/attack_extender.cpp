@@ -44,7 +44,7 @@ namespace hooks
 			do
 			{
 				parentTown = v9[v6];
-				if (parentTown < UnitId::None && !helper::ai_add_to_region_military(parentAi, parentTown, v11))
+				if (parentTown != UnitId::None && !helper::ai_add_to_region_military(parentAi, parentTown, v11))
 				{
 					v8 = (u8)parentAi->player;
 					g_aiscript_controller[v8]->AI_Flags.flag_0x40 = 1; // Might be wrong
@@ -263,7 +263,7 @@ LABEL_35:
 		u16* atkFinal;
 
 		counter = result;
-		if (player < 8 && result < 63 && unit_id < UnitId::None)
+		if (player < 8 && result < 63 && unit_id != UnitId::None)
 		{
 			plOffset = 628 * player;
 			index = 0;
@@ -331,7 +331,7 @@ LABEL_8:
 		waveBool = attackWave != 0;
 		if (attackWave)
 		{
-			while (units_dat::DestroyScore[2 * attackWave + 226] & 4)
+			while (units_dat::destroy_score[2 * attackWave + 226] & 4)
 			{
 				attackWave = attackWave2[1];
 				++attackWave2;
@@ -407,7 +407,7 @@ LABEL_12:
 							{
 								if (childTown->status & 1)
 								{
-									if (parentTown != 106 && parentTown != 150 && !orders_dat::UseWeaponTargeting[parentTown])
+									if (parentTown != 106 && parentTown != 150 && !orders_dat::use_weapon_targeting[parentTown])
 									{
 										if (childTown->unit_ai)
 										{

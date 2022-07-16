@@ -76,7 +76,7 @@ namespace hooks
 		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, builtUnitId, 1, 0, 0, 0);
 		if (!can_build)
 		{
-			addonPlaceX = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
+			addonPlaceX = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranCommandCenter].x;
 			/*if (builtUnitId == UnitId::TerranFutureStation) {
 				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 					addonPlaceX = 96;
@@ -95,7 +95,7 @@ namespace hooks
 			}
 			addonPlaceX /= 32;
 			addonPlaceX = x - addonPlaceX;
-			addonPlaceY = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
+			addonPlaceY = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranCommandCenter].y;
 			/*if (builtUnitId == UnitId::TerranFutureStation) {
 				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 					addonPlaceY = 0;

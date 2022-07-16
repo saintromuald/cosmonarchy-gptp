@@ -171,9 +171,9 @@ namespace hooks
 			v10 = *(s16*)((char*)&units_dat::building_dimensions[0].x + v9);
 			*(Point16*)&v40 = __tileX;
 			v9 = *(s16*)((char*)&units_dat::building_dimensions[0].y + v9) / -2 / 32 + __tileX.y;
-			v36 = &units_dat::MaxHitPoints[(u16)unit_id + 122];
+			v36 = &units_dat::max_hitpoints[(u16)unit_id + 122];
 			v8 = *(s16*)v36 / 32 + __tileX.x - v10 / 2 / 32;
-			v35 = (s16*)((char*)&units_dat::MaxHitPoints[(u16)unit_id + 122] + 2);
+			v35 = (s16*)((char*)&units_dat::max_hitpoints[(u16)unit_id + 122] + 2);
 			v41 = *v35 / 32 + v9;
 			v40 = v8;
 			if (!helper::can_build_on_tile_location(builderVar, ownrId, *(s32*)&v40, v41, unit_id, 0, 0, 1, 0))
@@ -765,10 +765,10 @@ namespace hooks
 					do
 					{
 						witness_gas_cost = units_dat::gas_cost[UnitId::ProtossWitness];
-						witness_supply_cost = units_dat::SupplyRequired[UnitId::ProtossWitness];
+						witness_supply_cost = units_dat::supply_required[UnitId::ProtossWitness];
 						if (units_dat::base_property[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
 						{
-							witness_supply_cost = 2 * units_dat::SupplyRequired[UnitId::ProtossWitness];
+							witness_supply_cost = 2 * units_dat::supply_required[UnitId::ProtossWitness];
 						}
 						g_aiscript_controller[player_id]->mineral_collection += units_dat::mineral_cost[UnitId::ProtossWitness];
 						g_aiscript_controller[player_id]->gas_collection += witness_gas_cost;
@@ -792,7 +792,7 @@ namespace hooks
 					{
 						g_aiscript_controller[player_id]->AI_Flags.flag_0x40 = true;
 						transport_1_gas_cost = units_dat::gas_cost[transport_unit_id_1];
-						transport_supply_cost = units_dat::SupplyRequired[transport_unit_id_1];
+						transport_supply_cost = units_dat::supply_required[transport_unit_id_1];
 						if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
 						{
 							transport_supply_cost *= 2;
@@ -816,7 +816,7 @@ namespace hooks
 	
 	void ai_build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority) // 004323D0
 	{
-		if (count <= 30 && unit_id < UnitId::None)
+		if (count <= 30 && unit_id != UnitId::None)
 		{
 			helper::ai_add_build_request(town, 0, count, unit_id, priority, need);
 		}
@@ -904,7 +904,7 @@ namespace hooks
 		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].AI_Flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
-			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
+			if (unit_id != UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
 				g_aiscript_controller[region->player]->AI_Flags.flag_0x40 = true;
 				helper::ai_add_cost_to_needs(unit_id, region->player, 1);

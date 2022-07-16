@@ -174,7 +174,7 @@ namespace hooks
 					if (!v7)
 						break;
 					v8 = v7->order_id;
-					if (!orders_dat::CanBeInterrupted[v8] && v8 != -95)
+					if (!orders_dat::can_be_interrupted[v8] && v8 != -95)
 						break;
 					helper::remove_order_from_unit_queue(v7, v1);
 				}
@@ -190,11 +190,11 @@ namespace hooks
 			}
 			else if (v5 == 1)
 			{ // Computer Game
-				v12 = units_dat::ComputerIdleOrder[v4];
+				v12 = units_dat::computer_idle_order[v4];
 			}
 			else
 			{
-				v12 = units_dat::HumanIdleOrder[v4];
+				v12 = units_dat::human_idle_order[v4];
 			}
 			helper::issue_order_targeting_nothing(v1, v12);
 		}
@@ -205,7 +205,7 @@ namespace hooks
 			v15 = v1->sprite;
 			v1->powerup_origin.x = v15->position.x;
 			v1->powerup_origin.y = v15->position.y;
-			v16 = units_dat::HumanIdleOrder[v13];
+			v16 = units_dat::human_idle_order[v13];
 			v1->user_action_flags |= 1u;
 			helper::order(1, v1, v16, 0, 0, 228);
 			helper::orders_nothing_2(v1);

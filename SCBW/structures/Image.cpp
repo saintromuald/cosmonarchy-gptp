@@ -56,7 +56,7 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 
 	//	this->grp_file = g_image_grp_graphics[imageId];
 	this->grp_file = reinterpret_cast<GrpHead*>(scbw::get_image_data(ImagesDatEntries::ImagePtr, imageId));
-	//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
+	//	this->flags = ((images_dat::is_turnable[imageId] & 1) << 3) | ((images_dat::is_clickable[imageId] & 1) << 5);
 	this->flags = ((scbw::get_image_data(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
 		((scbw::get_image_data(ImagesDatEntries::Clickable, imageId) & 1) << 5);
 	this->frameset = 0;
@@ -75,10 +75,10 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 	this->animation = IscriptAnimation::Init;
 	this->wait = 0;
 	/*
-	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_PLAYER_SIDE)
+	if (images_dat::rle_function[imageId] == PaletteType::RLE_PLAYER_SIDE)
 		*(u32*)(&this->draw_func) = parent->player;
-	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
-		this->draw_func = g_color_shift[images_dat::Remapping[imageId]].data;*/
+	if (images_dat::rle_function[imageId] == PaletteType::RLE_EFFECT)
+		this->draw_func = g_color_shift[images_dat::remapping[imageId]].data;*/
 
 	if (scbw::get_image_data(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
 		*(u32*)(&this->draw_func) = parent->player;

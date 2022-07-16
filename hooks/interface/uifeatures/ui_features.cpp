@@ -122,7 +122,7 @@ namespace hooks {
 	}
 
 	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10) {
-		if (a6 && orders_dat::CanBeQueued[(u8)a7]) {
+		if (a6 && orders_dat::can_be_queued[(u8)a7]) {
 			switch (a3->main_order_id) {
 				case 2:
 				case 3:

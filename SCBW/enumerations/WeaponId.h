@@ -134,7 +134,7 @@ namespace WeaponId {
 		GaussRifle11_Unused = 0x7F,
 		GaussRifle12_Unused = 0x80,
 		GaussRifle13_Unused = 0x81,
-		None = 0xff,
+		None = 130,
 		// Internal entries, not real IDs
 		Custom = 0x100,
 

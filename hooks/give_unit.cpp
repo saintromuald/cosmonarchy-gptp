@@ -115,7 +115,7 @@ namespace hooks
 		{
 			if (unit->id == UnitId::TerranCleric)
 			{
-				Unit* freeMedic = g_aiscript_controller[player].main_medic;				
+				Unit* freeMedic = g_aiscript_controller[player]->main_medic();
 				if (freeMedic == nullptr)
 				{
 					freeMedic = unit;

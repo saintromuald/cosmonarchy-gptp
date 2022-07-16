@@ -38,7 +38,7 @@ namespace hooks
 				return false;
 			}
 			// Don't attack hovering units
-			if (units_dat::MovementFlags[target->id] == MovementFlags::HoverUnit)
+			if (units_dat::movement_flags[target->id] == MovementFlags::HoverUnit)
 			{
 				return false;
 			}
@@ -96,7 +96,7 @@ namespace hooks
 		{
 			if (unit->order_signal & 4)
 			{
-				unit->sprite->elevation_level = units_dat::Elevation[unit->id];
+				unit->sprite->elevation_level = units_dat::elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
 				if (unit->order_target.unit != nullptr)
 				{
@@ -233,7 +233,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::issue_order_targeting_nothing(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
+				helper::issue_order_targeting_nothing(v1, units_dat::return_to_idle_order[(unsigned __int16)v1->id]);
 			}
 		}
 		else

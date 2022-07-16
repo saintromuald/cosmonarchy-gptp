@@ -1358,11 +1358,11 @@ LABEL_37:
 	}
 
 	static bool unit_has_uninterruptable_order(Unit* unit) {
-		if (!orders_dat::CanBeInterrupted[unit->main_order_id]) {
+		if (!orders_dat::can_be_interrupted[unit->main_order_id]) {
 			return true;
 		}
 		for (Order* order = unit->order_queue_head; order; order = order->next) {
-			if (!orders_dat::CanBeInterrupted[order->order_id]) {
+			if (!orders_dat::can_be_interrupted[order->order_id]) {
 				return true;
 			}
 		}
@@ -1589,7 +1589,7 @@ LABEL_37:
 					{
 						break;
 					}
-					if (!orders_dat::CanBeInterrupted[worker->order_queue_tail->order_id]
+					if (!orders_dat::can_be_interrupted[worker->order_queue_tail->order_id]
 					&&	worker->order_queue_tail->order_id != OrderId::ReturnMinerals)
 					{
 						break;
@@ -1672,7 +1672,7 @@ LABEL_37:
 			{
 				continue; // Used to break, but it should actually continue. unless the building list is sorted a particular way, which allows to break early...?
 			}
-			s32 max_hp = units_dat::MaxHitPoints[building->id] / 256;
+			s32 max_hp = units_dat::max_hitpoints[building->id] / 256;
 			if (!max_hp)
 			{
 				max_hp = (building->hitpoints + 255) / 256;
@@ -1708,7 +1708,7 @@ LABEL_37:
 		}
 		if (worker->main_order_id) {
 			for (Order* order_tail = worker->order_queue_tail; order_tail; order_tail = worker->order_queue_tail) {
-				if (!orders_dat::CanBeInterrupted[order_tail->order_id] && order_tail->order_id != OrderId::Repair1) {
+				if (!orders_dat::can_be_interrupted[order_tail->order_id] && order_tail->order_id != OrderId::Repair1) {
 					break;
 				}
 				helper::remove_order_from_unit_queue(order_tail, worker);
@@ -2179,7 +2179,7 @@ LABEL_37:
 									{
 										break;
 									}
-									if (!orders_dat::CanBeInterrupted[tail_order_1->order_id] && tail_order_1->order_id != OrderId::ComputerReturn)
+									if (!orders_dat::can_be_interrupted[tail_order_1->order_id] && tail_order_1->order_id != OrderId::ComputerReturn)
 									{
 										break;
 									}

@@ -7,7 +7,7 @@ namespace hooks
 	void orders_repair_1(Unit* unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
 		if (!target
-	//	||	target->hitpoints >= units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
+	//	||	target->hitpoints >= units_dat::max_hitpoints[target->id] // Disabled to allow tasking repair on full HP targets
 		||	target->stasis_timer != 0
 		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
 		||	target->status & UnitStatus::InTransport
@@ -102,7 +102,7 @@ namespace hooks
 
 		bool do_repair = false;
 		//UnitExt* target_ext = get_unit_ext(target);
-		if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
+		if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
 			if (unit->worker.repair_resource_loss_timer == 0) { // target_ext->values[ValueNewRepairTimer] == 0
 				unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] == units_dat::time_cost[target->id] / 2; 
 				do_repair = helper::subtract_repair_resources(unit, target); // This function calls get_repair_info which has some dumb handling that we might need.
@@ -140,7 +140,7 @@ namespace hooks
 			}
 			target->heal(hpGain, unit);
 
-			if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
+			if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
 				return;
 			}
 		}
@@ -183,7 +183,7 @@ namespace hooks
 					}
 					return 0;
 				}
-				//if (target->hitpoints >= units_dat::MaxHitPoints[target->id])
+				//if (target->hitpoints >= units_dat::max_hitpoints[target->id])
 				//{
 				//	if (bErrorFlag)
 				//	{
@@ -249,7 +249,7 @@ namespace hooks
 				{
 					return 1;
 				}
-				if (units_dat::SpaceProvided[unit->id] >= units_dat::SpaceRequired[target->id])
+				if (units_dat::space_provided[unit->id] >= units_dat::space_required[target->id])
 				{
 					errorStringId = 891;
 				}
@@ -271,7 +271,7 @@ namespace hooks
 				}
 				errorStringId = 1325;
 				if (!(target->status & 6) // GroundedBuilding and InAir
-					&& target->hitpoints < units_dat::MaxHitPoints[target->id])
+					&& target->hitpoints < units_dat::max_hitpoints[target->id])
 				{
 					return 1;
 				}
@@ -296,7 +296,7 @@ namespace hooks
 		*g_last_internal_error = 0;
 		if (order_id < OrderId::None)
 		{
-			if (orders_dat::RequirementsOffset[order_id] == -1)
+			if (orders_dat::req_offset[order_id] == -1)
 			{
 				helper::parse_orders_dat_requirements();
 			}
@@ -326,9 +326,9 @@ namespace hooks
 						}
 						else
 						{
-							if (orders_dat::RequirementsOffset[order_id])
+							if (orders_dat::req_offset[order_id])
 							{
-								result = helper::parse_requirement_opcodes(unit, order_id, player, g_orders_requirement_tree, orders_dat::RequirementsOffset[order_id]);
+								result = helper::parse_requirement_opcodes(unit, order_id, player, g_orders_requirement_tree, orders_dat::req_offset[order_id]);
 							}
 							else
 							{
@@ -377,7 +377,7 @@ namespace hooks
 				}
 				else
 				{
-					char right_click_order = units_dat::RightClickAction[unit_id];
+					char right_click_order = units_dat::right_click_action[unit_id];
 					if (!right_click_order)
 					{
 						if (hooks::unit_can_rally(unit)) {
@@ -491,7 +491,7 @@ namespace hooks
 			{
 				if (options_list->sfx)
 				{
-					s32 sfx_volume = sfx_dat::Volume[sfx_id];
+					s32 sfx_volume = sfx_dat::volume[sfx_id];
 					u32 max_volume = 99;
 					if (sfx_volume >= 99)
 					{
@@ -499,7 +499,7 @@ namespace hooks
 						{
 							if (sfx_volume >= 99)
 							{
-								max_volume = sfx_dat::Volume[sfx_id];
+								max_volume = sfx_dat::volume[sfx_id];
 							}
 						}
 						else

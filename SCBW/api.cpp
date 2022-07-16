@@ -77,7 +77,7 @@ namespace scbw
 			// stop some currently active orders
 			if (u->id != UnitId::ZergCocoon && !preserveOrder)
 			{
-				u->order_computer(units_dat::ReturnToIdleOrder[u->id]);
+				u->order_computer(units_dat::return_to_idle_order[u->id]);
 			}
 
 			// create the Recall animation over the unit
@@ -191,14 +191,14 @@ namespace scbw
 		}
 		if (!target)
 		{
-			return weapons_dat::TargetFlags[weapon_id].terrain;
+			return weapons_dat::target_flags[weapon_id].terrain;
 		}
 		if (target->status & UnitStatus::Invincible)
 		{
 			return false;
 		}
 
-		const TargetFlag tf = weapons_dat::TargetFlags[weapon_id];
+		const TargetFlag tf = weapons_dat::target_flags[weapon_id];
 		const u32 targetProps = units_dat::base_property[target->id];
 		if ((target->status & UnitStatus::InAir) ? !tf.air : !tf.ground)
 		{
@@ -1335,10 +1335,10 @@ namespace scbw
 			}
 		}
 
-		u16 groundWeaponId = units_dat::GroundWeapon[unit->id];
+		u16 groundWeaponId = units_dat::ground_weapon[unit->id];
 		if (unit->subunit)
 		{
-			groundWeaponId = units_dat::GroundWeapon[unit->subunit->id];
+			groundWeaponId = units_dat::ground_weapon[unit->subunit->id];
 		}
 		if (groundWeaponId != WeaponId::None)
 		{
@@ -1347,10 +1347,10 @@ namespace scbw
 				return true;
 			}
 		}
-		u16 airWeaponId = units_dat::AirWeapon[unit->id];
+		u16 airWeaponId = units_dat::air_weapon[unit->id];
 		if (unit->subunit)
 		{
-			airWeaponId = units_dat::AirWeapon[unit->subunit->id];
+			airWeaponId = units_dat::air_weapon[unit->subunit->id];
 		}
 		if (airWeaponId != WeaponId::None)
 		{
@@ -1752,7 +1752,7 @@ namespace scbw
 		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}),
 			[&unitExt](Unit* target)
 		{
-			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
+			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, damage_type::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
 		});
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
@@ -2345,8 +2345,8 @@ namespace scbw
 		if (units_dat::computer_ai_internal[unit->id] & 2) {
 			helper::give_ai(unit);
 		} else {
-			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
-				g_aiscript_controller[unit->player].main_medic = unit;
+			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player]->main_medic()) {
+				g_aiscript_controller[unit->player]->main_medic() = unit;
 			}
 			helper::add_military_ai(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)), unit, true);
 		}

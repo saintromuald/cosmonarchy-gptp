@@ -59,7 +59,7 @@ namespace hooks
 	{
 		s32 posX;
 		s32 posY;
-		if (weapons_dat::Behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit)
+		if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit)
 		{
 			posX = target->get_x();
 			posY = target->get_y();
@@ -138,11 +138,11 @@ namespace hooks
 		}
 		UnitExt* unitExt = get_unit_ext(unit);
 		u8 weapon_id = wId;
-		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
+		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unitExt->values[ValueAI_PreventTargeting] = 0;
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
-		u8 behavior = weapons_dat::Behavior[weapon_id];
+		u8 behavior = weapons_dat::behavior[weapon_id];
 		if (weapon_id == WeaponId::SavantPowerSiphon)
 		{
 			behavior = WeaponBehavior::AppearOnTargetSite;
@@ -162,11 +162,11 @@ namespace hooks
 		}
 		else
 		{
-			s32 forwardOffset = weapons_dat::ForwardOffset[weapon_id];
+			s32 forwardOffset = weapons_dat::forward_offset[weapon_id];
 
 			x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
 			y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1)
-				- weapons_dat::VerticalOffset[weapon_id];
+				- weapons_dat::vertical_offset[weapon_id];
 		}
 
 		// Cloaked Units - Decloak
@@ -177,7 +177,7 @@ namespace hooks
 			scbw::decloak_proc(unit);
 		}
 
-		if (weapons_dat::FlingyId[weapon_id] != 0)
+		if (weapons_dat::flingy_id[weapon_id] != 0)
 		{
 			if (unit->id == UnitId::TerranSavant) {
 				if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
@@ -545,7 +545,7 @@ namespace hooks
 				{
 					return false;
 				}
-				auto box = units_dat::UnitBounds[unit->id];
+				auto box = units_dat::unit_bounds[unit->id];
 				if (bullet->position.x < unit->get_left())
 				{
 					return false;
@@ -589,7 +589,7 @@ namespace hooks
 				{
 					return false;
 				}
-				auto box = units_dat::UnitBounds[unit->id];
+				auto box = units_dat::unit_bounds[unit->id];
 				if (bullet->position.x < unit->get_left())
 				{
 					return false;
@@ -657,7 +657,7 @@ namespace hooks
 				{
 					return false;
 				}
-				auto box = units_dat::UnitBounds[unit->id];
+				auto box = units_dat::unit_bounds[unit->id];
 				if (bullet->position.x < unit->get_left())
 				{
 					return false;
@@ -872,11 +872,11 @@ namespace hooks
 				{
 					if (_pIterator->status & UnitStatus::InAir)
 					{
-						miscBool = units_dat::AirWeapon[(u16)bounceSource->id] != -126;
+						miscBool = units_dat::air_weapon[(u16)bounceSource->id] != -126;
 					}
 					else
 					{
-						miscBool = units_dat::GroundWeapon[(u16)bounceSource->id] != -126;
+						miscBool = units_dat::ground_weapon[(u16)bounceSource->id] != -126;
 					}
 				}
 			}
@@ -1076,7 +1076,7 @@ namespace hooks
 	// Hooked so we don't need aise for Bactalisks - Pr0nogo
 	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) // 0048BEC0
 	{
-		if (!helper::initialize_flingy(weapons_dat::FlingyId[weapon_id], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
+		if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 		{
 			return 0;
 		}
@@ -1089,7 +1089,7 @@ namespace hooks
 		bullet->attackTarget.pt.x = 0;
 		bullet->unknown_0x54 = 0;
 		bullet->weapon_id = weapon_id;
-		bullet->time_remaining = weapons_dat::RemoveAfter[weapon_id];
+		bullet->time_remaining = weapons_dat::remove_after[weapon_id];
 		bullet->someUnitType = 228;
 		bullet->remainingBounces = 0;
 		bullet->hit_flags = 0;
@@ -1101,7 +1101,7 @@ namespace hooks
 		bullet->unknown_0x4E = 0;
 		hooks::bullet_behavior_reassign(bullet);
 
-		u8 launchSpin = weapons_dat::LaunchSpin[weapon_id];
+		u8 launchSpin = weapons_dat::launch_spin[weapon_id];
 		if (launchSpin)
 		{
 			s32 launchSpinVariance = 0;
@@ -1158,7 +1158,7 @@ namespace hooks
 			bullet->attackTarget.pt.y = parent->order_target.pt.y;
 		}
 
-		switch (weapons_dat::Behavior[weapon_id])
+		switch (weapons_dat::behavior[weapon_id])
 		{
 			case WeaponBehavior::Fly_DoNotFollowTarget:
 			case WeaponBehavior::Fly_FollowTarget:
@@ -1342,7 +1342,7 @@ namespace hooks
 			{
 				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
 				Image* bulletOverlay = nullptr;
-				switch (weapons_dat::Behavior[bullet->weapon_id])
+				switch (weapons_dat::behavior[bullet->weapon_id])
 				{
 					case WeaponBehavior::AppearOnTargetUnit:
 					case WeaponBehavior::AppearOnTargetSite:
@@ -1468,13 +1468,13 @@ namespace hooks
 			UnitExt* unit_ext = get_unit_ext(unit);
 			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir)
 			{
-				helper::use_weapon_iscript(unit, units_dat::AirWeapon[unit->id], 2, iscript_anim + 1);
+				helper::use_weapon_iscript(unit, units_dat::air_weapon[unit->id], 2, iscript_anim + 1);
 			}
 			else
 			{
 				if (unit->id != UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed)
 				{
-					helper::use_weapon_iscript(unit, units_dat::GroundWeapon[unit->id], 1, iscript_anim);
+					helper::use_weapon_iscript(unit, units_dat::ground_weapon[unit->id], 1, iscript_anim);
 				}
 				else
 				{

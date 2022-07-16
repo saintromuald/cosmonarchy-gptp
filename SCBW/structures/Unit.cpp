@@ -13,7 +13,7 @@
 //-------- Unit stats and properties --------//
 
 extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
-//Behavior can be modified with detector hook
+//behavior can be modified with detector hook
 bool Unit::canDetect() const
 {
 	assert(this);
@@ -46,7 +46,7 @@ u32 Unit::getCurrentShieldsInGame() const
 u32 Unit::get_current_life_ingame() const
 {
 	assert(this);
-	if (units_dat::ShieldsEnabled[this->id])
+	if (units_dat::shields_enabled[this->id])
 		return get_current_hp_ingame() + getCurrentShieldsInGame();
 	else
 		return get_current_hp_ingame();
@@ -55,13 +55,13 @@ u32 Unit::get_current_life_ingame() const
 s32 Unit::max_shields() const
 {
 	assert(this);
-	return units_dat::MaxShieldPoints[this->id];
+	return units_dat::max_shield_points[this->id];
 }
 
 bool Unit::shields_enabled() const
 {
 	assert(this);
-	return units_dat::ShieldsEnabled[this->id];
+	return units_dat::shields_enabled[this->id];
 }
 
 //Identical to function @ 0x00475AD0
@@ -73,20 +73,20 @@ u8 Unit::get_ground_weapon() const
 	}
 	else
 	{
-		return units_dat::GroundWeapon[this->id];
+		return units_dat::ground_weapon[this->id];
 	}
 }
 
 u8 Unit::get_air_weapon() const
 {
 	assert(this);
-	return units_dat::AirWeapon[this->id];
+	return units_dat::air_weapon[this->id];
 }
 
 u8 Unit::get_armor() const
 {
 	assert(this);
-	return units_dat::ArmorAmount[this->id] + this->get_armor_bonus();
+	return units_dat::armor_amount[this->id] + this->get_armor_bonus();
 }
 
 extern const u32 Func_GetArmorBonus = 0x00453FC0;
@@ -129,7 +129,7 @@ u32 Unit::get_max_hp_ingame() const
 {
 	assert(this);
 
-	u32 maxHp = units_dat::MaxHitPoints[this->id];
+	u32 maxHp = units_dat::max_hitpoints[this->id];
 	if (maxHp == 0)
 	{
 		maxHp = this->get_current_hp_ingame();
@@ -154,7 +154,7 @@ u32 Unit::get_max_shields_in_game() const
 		return 0;
 	}
 
-	u32 maxShields = units_dat::MaxShieldPoints[this->id];
+	u32 maxShields = units_dat::max_shield_points[this->id];
 	if (maxShields == 0)
 	{
 		maxShields = this->getCurrentShieldsInGame();
@@ -169,13 +169,13 @@ u32 Unit::get_max_shields_in_game() const
 u32 Unit::get_max_hp_raw() const
 {
 	assert(this);
-	return units_dat::MaxHitPoints[this->id];
+	return units_dat::max_hitpoints[this->id];
 }
 
 u32 Unit::get_max_shields_raw() const
 {
 	assert(this);
-	return units_dat::MaxShieldPoints[this->id] * 256;
+	return units_dat::max_shield_points[this->id] * 256;
 }
 
 u8 Unit::getSpellCountdown() const
@@ -228,9 +228,9 @@ const char* Unit::get_name(u16 unit_id)
 	{
 		return (char*)g_string_empty;
 	}
-	else if (units_dat::MapStringId[unit_id] != 0)
+	else if (units_dat::map_string_id[unit_id] != 0)
 	{
-		return (char*)g_map_string_tbl->get_string(units_dat::MapStringId[unit_id]);
+		return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
 	}
 	else if (DatExt::unitNamesTbl != NULL)
 	{
@@ -454,25 +454,25 @@ u16 Unit::getTileY() const
 s16 Unit::get_left() const
 {
 	assert(this);
-	return this->get_x() - units_dat::UnitBounds[this->id].left;
+	return this->get_x() - units_dat::unit_bounds[this->id].left;
 }
 
 s16 Unit::get_right() const
 {
 	assert(this);
-	return this->get_x() + units_dat::UnitBounds[this->id].right;
+	return this->get_x() + units_dat::unit_bounds[this->id].right;
 }
 
 s16 Unit::get_top() const
 {
 	assert(this);
-	return this->get_y() - units_dat::UnitBounds[this->id].top;
+	return this->get_y() - units_dat::unit_bounds[this->id].top;
 }
 
 s16 Unit::get_bottom() const
 {
 	assert(this);
-	return this->get_y() + units_dat::UnitBounds[this->id].bottom;
+	return this->get_y() + units_dat::unit_bounds[this->id].bottom;
 }
 
 //-------- Modifying unit state --------//
@@ -618,7 +618,7 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 	{
 		return;
 	}
-	if (units_dat::ShieldsEnabled[this->id])
+	if (units_dat::shields_enabled[this->id])
 	{
 		shield_reduce_amount = std::min(damage, this->shields);
 		damage -= shield_reduce_amount;
@@ -631,7 +631,7 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 	{
 		this->shields -= shield_reduce_amount;
 	}
-	if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0)
+	if (shield_overlay && units_dat::shields_enabled[this->id] && this->shields != 0)
 	{
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayShieldPtr,
 			this->sprite->main_graphic->id));
@@ -865,10 +865,10 @@ s32 Unit::get_total_hp_plus_shields()
 	assert(this);
 	s32 id = this->id;
 	s32 shields = 0;
-	s32 hp = units_dat::MaxHitPoints[id] >> 8;
-	if (units_dat::ShieldsEnabled[id])
+	s32 hp = units_dat::max_hitpoints[id] >> 8;
+	if (units_dat::shields_enabled[id])
 	{
-		shields = units_dat::MaxShieldPoints[id];
+		shields = units_dat::max_shield_points[id];
 	}
 	if (!hp)
 	{
@@ -965,7 +965,7 @@ void Unit::order_to_idle() {
 	} else if (this->unit_ai) {
 		this->order_to(OrderId::ComputerAI);
 	} else {
-		this->order_to(units_dat::ReturnToIdleOrder[this->id]);
+		this->order_to(units_dat::return_to_idle_order[this->id]);
 	}
 }
 
@@ -1456,27 +1456,27 @@ u32 Unit::get_supply_provided() // overwrites previous supply provided
 		}
 		else {
 			raceSupply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
-			raceSupply[RaceId::Terran].provided[player] += units_dat::SupplyProvided[unitExt->values[ValueSupplyProvidedId]];
+			raceSupply[RaceId::Terran].provided[player] += units_dat::supply_provided[unitExt->values[ValueSupplyProvidedId]];
 			unitExt->values[ValueSupplyProvidedSet] = 0;
 			unitExt->values[ValueSupplyProvidedId] = 0;
 			unitExt->values[ValueSupplyProvided] = 0;
 		}
 	}
 
-	u32 supply = units_dat::SupplyProvided[id];
+	u32 supply = units_dat::supply_provided[id];
 	if (scbw::is_zerg_egg_new(this, false, false))
 	{
 		if (build_queue[build_queue_slot % 5] == UnitId::ZergIroleth)
 		{
-			supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
+			supply = units_dat::supply_provided[UnitId::ZergOvileth];
 		}
 		if (build_queue[build_queue_slot % 5] == UnitId::ZergOthstoleth)
 		{
-			supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
+			supply = units_dat::supply_provided[UnitId::ZergIroleth];
 		}
 		if (build_queue[build_queue_slot % 5] == UnitId::ZergAlaszileth)
 		{
-			supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth];
+			supply = units_dat::supply_provided[UnitId::ZergOthstoleth];
 		}
 	}
 	return supply;
@@ -1495,7 +1495,7 @@ void Unit::set_supply_provided(u8 amount) // overwrites previous supply provided
 void Unit::reset_supply_provided() // overwrites previous supply provided
 {
 	UnitExt* unitExt = get_unit_ext(this);
-	set_supply_provided(units_dat::SupplyProvided[id]);
+	set_supply_provided(units_dat::supply_provided[id]);
 	unitExt->values[ValueSupplyProvidedSet] = 0;
 	unitExt->values[ValueSupplyProvidedId] = 0;
 	unitExt->values[ValueSupplyProvided] = 0;
@@ -1597,7 +1597,7 @@ bool Unit::unit_is_training_or_morphing()
 bool Unit::is_queue_slot_active(int slot)
 {
 	assert(this);
-	return this->build_queue[(slot + (unsigned __int8)this->build_queue_slot) % 5] <= (unsigned __int16)UnitId::Spell_DisruptionWeb;
+	return this->build_queue[(slot + (unsigned __int8)this->build_queue_slot) % 5] != UnitId::None;
 }
 
 u8 Unit::get_right_click_action_order()
@@ -1609,7 +1609,7 @@ u8 Unit::get_right_click_action_order()
 	}
 	else
 	{
-		u8 temp_result = units_dat::RightClickAction[this->id];
+		u8 temp_result = units_dat::right_click_action[this->id];
 		if (temp_result == RightClickActions::NoCommand_AutoAttack &&
 			this->status & UnitStatus::GroundedBuilding &&
 			this->is_factory())

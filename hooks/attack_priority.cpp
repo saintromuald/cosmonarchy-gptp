@@ -95,7 +95,7 @@ namespace
 		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack))
 		{
 			if (!isTargetPosWithinAttackAngle(target->get_x(), target->get_y(),
-				actualUnit, units_dat::GroundWeapon[actualUnit->id]))
+				actualUnit, units_dat::ground_weapon[actualUnit->id]))
 			{
 				return false;
 			}
@@ -193,7 +193,7 @@ namespace hooks
 		// AI units have use default sight distance if it is bigger
 		else if (unit->unit_ai)
 		{
-			seek_range = std::max(seek_range, units_dat::SightRange[unit->id] * 32);
+			seek_range = std::max(seek_range, units_dat::sight_range[unit->id] * 32);
 		}
 
 		s32 search_range = seek_range + offset + 64;

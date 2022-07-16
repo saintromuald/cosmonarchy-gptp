@@ -70,7 +70,7 @@ namespace hooks
 			pos.y = unit->sprite->position.y;
 			if (bTwinEggOrCocoon)
 			{
-				if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
+				if (units_dat::movement_flags[unit->id] == MovementFlags::HoverUnit)
 				{
 					pos.y -= 7;
 				}
@@ -130,7 +130,7 @@ namespace hooks
 				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1))
 				{
 					helper::refund_all_queue_slots(unit);
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 				else
 				{
@@ -314,7 +314,7 @@ namespace hooks
 				}
 				helper::play_morphing_complete_sound(unit);
 				unit->build_queue[unit->build_queue_slot] = UnitId::None;
-				if (units_dat::ConstructionGraphic[unit->id] != 0)
+				if (units_dat::construction_graphic[unit->id] != 0)
 				{
 					Image* current_image;
 					helper::init_building(unit, 1);
@@ -498,7 +498,7 @@ namespace hooks
 			return 0;
 		}
 		// Hovering units (?) f32 7 pixels above ground
-		if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
+		if (units_dat::movement_flags[unit->id] == MovementFlags::HoverUnit)
 		{
 			return -7;
 		}

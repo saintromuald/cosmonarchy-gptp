@@ -291,17 +291,17 @@ namespace hooks
 		if (supplyRemaining < 13)
 		{
 			supplyUsedCompare = helper::get_supplies_used(race, player) + 13;
-			townHallSupply = units_dat::SupplyProvided[get_townhall_from_race(race)];
+			townHallSupply = units_dat::supply_provided[get_townhall_from_race(race)];
 			if (supplyUsedCompare > townHallSupply)
 			{
-				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::SupplyProvided[supplyUnit];
+				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::supply_provided[supplyUnit];
 				//farms_timing on, compare ecounits required vs ecounits count
-				if (!(g_aiscript_controller[player].AI_Flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
+				if (!(g_aiscript_controller[player]->AI_Flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
 				{
 					return true;
 				}
 				//if max supply, and current supply units (including those under construction) will not satisfy requirement
-				if ((!supplyRemaining) && helper::ai_count_economy_units(player, supplyUnit) * units_dat::SupplyProvided[supplyUnit] + townHallSupply <= helper::get_supplies_used(race, player))
+				if ((!supplyRemaining) && helper::ai_count_economy_units(player, supplyUnit) * units_dat::supply_provided[supplyUnit] + townHallSupply <= helper::get_supplies_used(race, player))
 				{
 					return true;
 				}
@@ -329,7 +329,7 @@ namespace hooks
 		s32 result;
 		s32 reqType;
 
-		battleTime = g_aiscript_controller[player].previous_building_hit_second;
+		battleTime = g_aiscript_controller[player]->previous_building_hit_second;
 		if (!battleTime
 			|| *g_elapsed_time_seconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
 			|| ((race = g_player_table[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),

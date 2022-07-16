@@ -1,4 +1,4 @@
-//Injector source file for the Apply Upgrade Flags hook module.
+//Injector source file for the Apply Upgrade sound_flags hook module.
 #include "apply_upgrade_flags.h"
 #include <hook_tools.h>
 

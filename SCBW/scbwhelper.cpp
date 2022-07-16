@@ -328,7 +328,7 @@ namespace helper
 		bool result = false;
 		if (!(unit->status & UnitStatus::IsHallucination))
 		{
-			result = units_dat::SpaceProvided[unit->id] != 0;
+			result = units_dat::space_provided[unit->id] != 0;
 		}
 		return result;
 	}
@@ -2239,7 +2239,7 @@ namespace helper
 		}
 		else
 		{
-			u8 temp_result = units_dat::RightClickAction[unit->id];
+			u8 temp_result = units_dat::right_click_action[unit->id];
 			if (temp_result == 0 && unit->status & UnitStatus::GroundedBuilding && unit->is_factory())
 			{
 				result = RightClickActions::NormalMove_NoAttack;
@@ -4836,7 +4836,7 @@ namespace helper
 		{
 			return_value = false;
 		}
-		else if (units_dat::SpaceProvided[unit->id] == 0)
+		else if (units_dat::space_provided[unit->id] == 0)
 		{
 			return_value = false;
 		}

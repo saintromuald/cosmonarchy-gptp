@@ -77,7 +77,7 @@ namespace hooks
 					}
 
 					// original code was *(u16*)(0x006648AC + 2*unitInfested->id);
-					infestedUnitNewId = units_dat::InfestedUnitPartial[unitInfested->id - UnitId::TerranCommandCenter];
+					infestedUnitNewId = units_dat::infested_unit_partial[unitInfested->id - UnitId::TerranCommandCenter];
 
 					// update number of kills/casualties for endgame score
 					helper::increment_unit_death_scores(unitInfested, unitInfesting->player);
@@ -136,16 +136,16 @@ namespace hooks
 						}
 					}
 
-					// Just use ImageId::InfestedCommandCenterOverlay instead
+					// Just use image_id::InfestedCommandCenterOverlay instead
 					// if you're modding this file and you're going for the
 					// default infestation overlay for any target.
-					infestationOverlayId = units_dat::ConstructionGraphic[infestedUnitNewId];
+					infestationOverlayId = units_dat::construction_graphic[infestedUnitNewId];
 
 					if (infestationOverlayId < ImageId::None)
 					{
 						unitInfested->sprite->create_overlay(infestationOverlayId);
 					}
-					unitInfested->set_hitpoints(units_dat::MaxHitPoints[infestedUnitNewId]);
+					unitInfested->set_hitpoints(units_dat::max_hitpoints[infestedUnitNewId]);
 
 					// give the proper button set to the unit
 					helper::change_unit_buttonset(unitInfested, infestedUnitNewId);
@@ -202,7 +202,7 @@ namespace hooks
 
 				if (unitInfesting->order_queue_head == nullptr)
 				{
-					unitInfesting->order_simple(units_dat::ReturnToIdleOrder[unitInfesting->id], false);
+					unitInfesting->order_simple(units_dat::return_to_idle_order[unitInfesting->id], false);
 					bReturnToIdle = true;
 				}
 				else
@@ -251,7 +251,7 @@ namespace hooks
 				}
 				else
 				{
-					unitInfesting->order(units_dat::ReturnToIdleOrder[unitInfesting->id], 0, 0, nullptr, UnitId::None, false);
+					unitInfesting->order(units_dat::return_to_idle_order[unitInfesting->id], 0, 0, nullptr, UnitId::None, false);
 					helper::force_order_done(unitInfesting);
 				}
 			}

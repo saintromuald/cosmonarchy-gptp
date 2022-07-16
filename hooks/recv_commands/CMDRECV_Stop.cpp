@@ -16,7 +16,7 @@ namespace hooks
 		while (current_unit != nullptr)
 		{
 			*u32_0066FF60 = 0x00;
-			if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0xFFFF)
+			if (orders_dat::req_offset[OrderId::ReaverStop] == 0xFFFF)
 			{
 				helper::parse_orders_dat_requirements();
 			}
@@ -58,11 +58,11 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0)
+			else if (orders_dat::req_offset[OrderId::ReaverStop] == 0)
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::ReaverStop]) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::ReaverStop]) == 1)
 			{
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
@@ -74,7 +74,7 @@ namespace hooks
 						{
 							bContinueLoop = false;
 						}
-						else if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id]
+						else if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id]
 						||		 current_unit->order_queue_tail->order_id == OrderId::ReaverStop)
 						{
 							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
@@ -100,7 +100,7 @@ namespace hooks
 		while (current_unit != nullptr)
 		{
 			*u32_0066FF60 = 0x00;
-			if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0xFFFF)
+			if (orders_dat::req_offset[OrderId::CarrierStop] == 0xFFFF)
 			{
 				helper::parse_orders_dat_requirements();
 			}
@@ -142,11 +142,11 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0)
+			else if (orders_dat::req_offset[OrderId::CarrierStop] == 0)
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::CarrierStop]) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::CarrierStop]) == 1)
 			{
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
@@ -158,7 +158,7 @@ namespace hooks
 						{
 							bContinueLoop = false;
 						}
-						else if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id]
+						else if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id]
 						||		 current_unit->order_queue_tail->order_id == OrderId::CarrierStop)
 						{
 							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
@@ -184,7 +184,7 @@ namespace hooks
 		while (current_unit != nullptr)
 		{
 			*u32_0066FF60 = 0x00;
-			if (orders_dat::RequirementsOffset[OrderId::Stop] == 0xFFFF)
+			if (orders_dat::req_offset[OrderId::Stop] == 0xFFFF)
 			{
 				helper::parse_orders_dat_requirements();
 			}
@@ -220,11 +220,11 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x08;
 			}
-			else if (orders_dat::RequirementsOffset[OrderId::Stop] == 0)
+			else if (orders_dat::req_offset[OrderId::Stop] == 0)
 			{
 				*u32_0066FF60 = 0x17;
 			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::Stop]) == 1)
+			else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::Stop]) == 1)
 			{
 				helper::targeted_order(current_unit, UnitId::None, *g_order_type_4_target, *g_order_type_4_position, OrderId::Stop, 0, bCommandType != 0, 1); // bCommandType is 1 if order is queued
 			}

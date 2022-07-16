@@ -10,7 +10,7 @@ namespace hooks
 	{
 		if (building->main_order_state == 0)
 		{
-			if (building->hitpoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
+			if (building->hitpoints > 20 * units_dat::max_hitpoints[building->id] / 100)
 				building->main_order_state = 1;
 		}
 		else if (building->main_order_state == 1)
@@ -25,7 +25,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 2)
 		{
-			if (building->hitpoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
+			if (building->hitpoints > 40 * units_dat::max_hitpoints[building->id] / 100)
 			{
 				building->main_order_state = 3;
 			}
@@ -42,7 +42,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 4)
 		{
-			if (building->hitpoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
+			if (building->hitpoints > 60 * units_dat::max_hitpoints[building->id] / 100)
 			{
 				building->main_order_state = 5;
 			}
@@ -60,7 +60,7 @@ namespace hooks
 		}
 		else if (building->main_order_state == 6)
 		{
-			if (building->hitpoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
+			if (building->hitpoints > 80 * units_dat::max_hitpoints[building->id] / 100)
 			{
 				building->order_computer(OrderId::Nothing2);
 			}
@@ -105,9 +105,9 @@ namespace hooks
 					{
 						builtUnit->connected_unit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
-						unit->sprite->elevation_level = units_dat::Elevation[unit->id] + 1;
+						unit->sprite->elevation_level = units_dat::elevation[unit->id] + 1;
 						unit->order_simple(OrderId::ResetCollision1, false);
-						unit->order_simple(units_dat::ReturnToIdleOrder[unit->id], false);
+						unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized order_target is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
@@ -125,10 +125,10 @@ namespace hooks
 			else if (unit->main_order_state == 4)
 			{
 				s16 x_min, x_max, y_min, y_max;
-				x_min = builtUnit->sprite->position.x - units_dat::UnitBounds[builtUnit->id].left + units_dat::UnitBounds[unit->id].left;
-				x_max = builtUnit->sprite->position.x + units_dat::UnitBounds[builtUnit->id].right - units_dat::UnitBounds[unit->id].right;
-				y_min = builtUnit->sprite->position.y - units_dat::UnitBounds[builtUnit->id].top + units_dat::UnitBounds[unit->id].top;
-				y_max = builtUnit->sprite->position.y + units_dat::UnitBounds[builtUnit->id].bottom - units_dat::UnitBounds[unit->id].bottom;
+				x_min = builtUnit->sprite->position.x - units_dat::unit_bounds[builtUnit->id].left + units_dat::unit_bounds[unit->id].left;
+				x_max = builtUnit->sprite->position.x + units_dat::unit_bounds[builtUnit->id].right - units_dat::unit_bounds[unit->id].right;
+				y_min = builtUnit->sprite->position.y - units_dat::unit_bounds[builtUnit->id].top + units_dat::unit_bounds[unit->id].top;
+				y_max = builtUnit->sprite->position.y + units_dat::unit_bounds[builtUnit->id].bottom - units_dat::unit_bounds[unit->id].bottom;
 				if (x_min > x_max) // DF: If worker is wider than building, don't make him shuffle around horizontally. Might be safer to compare units_dat bounds, but this should be true for like 99% of cases.
 				{
 					x_min = builtUnit->sprite->position.x;
@@ -310,7 +310,7 @@ namespace hooks
 						}
 						else
 						{
-							unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+							unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						}
 					}
 				}
@@ -367,7 +367,7 @@ namespace hooks
 				}
 				else
 				{
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		}
@@ -391,11 +391,11 @@ namespace hooks
 				{
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
-					unit->sprite->elevation_level = units_dat::Elevation[unit->id] + 1;
+					unit->sprite->elevation_level = units_dat::elevation[unit->id] + 1;
 					if (!unit->order_queue_head)
 					{
 						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);
-						helper::add_order_targeting_nothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
+						helper::add_order_targeting_nothing(unit, nullptr, units_dat::return_to_idle_order[unit->id]);
 					}
 					else
 					{
@@ -418,7 +418,7 @@ namespace hooks
 					{
 						helper::refund_unit_train_cost(unit_id, unit->player);
 						helper::display_last_network_error_for_player(unit->player);
-						unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 					}
 					else
 					{
@@ -490,8 +490,8 @@ namespace hooks
 				{
 					auto v4 = *place_building_unit_id - UnitId::TerranCommandCenter;
 					Point16 addon_point;
-					addon_point.x = units_dat::AddonPlacement[v4].x;
-					addon_point.y = units_dat::AddonPlacement[v4].y;
+					addon_point.x = units_dat::addon_placement[v4].x;
+					addon_point.y = units_dat::addon_placement[v4].y;
 					scbw::adjust_addon_coordinates(*place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
@@ -538,8 +538,8 @@ namespace hooks
 							BuildCommand command = {};
 							command.id = 12;
 							command.order_id = OrderId::PlaceAddon;
-							command.tile_x = (unit->position.x - units_dat::AddonPlacement[unit_id].x) / 32;
-							command.tile_y = (unit->position.y - units_dat::AddonPlacement[unit_id].y) / 32;
+							command.tile_x = (unit->position.x - units_dat::addon_placement[unit_id].x) / 32;
+							command.tile_y = (unit->position.y - units_dat::addon_placement[unit_id].y) / 32;
 							command.unit_id = unit_id;
 							helper::queue_game_command((u8*)&command, sizeof(command));
 						}
@@ -568,11 +568,11 @@ namespace hooks
 				{
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
-						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}
 					else if (unit->create_origin == UnitId::ZergGosvileth) {
 						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
-						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}
 				} break;
 				case RaceId::Terran:
@@ -583,12 +583,12 @@ namespace hooks
 						sound_id = 136;
 					}
 					helper::play_sound_from_unit(sound_id, unit, (*options_list).flags & 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (*(u32*)&sound_duration_msecs[sound_id] / 1000), 1, sound_id);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*(u32*)&sound_duration_msecs[sound_id] / 1000), 1, sound_id);
 				} break;
 				case RaceId::Protoss:
 				default:
 				{
-					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 				} break;
 			}
 		}

@@ -301,9 +301,9 @@ namespace hooks
 				shield_gain = building->shield_gain * modifier.multiplier;
 			}
 
-			if (building->shields + shield_gain >= (u32)units_dat::MaxShieldPoints[building->id] * 256)
+			if (building->shields + shield_gain >= (u32)units_dat::max_shield_points[building->id] * 256)
 			{
-				building->shields = units_dat::MaxShieldPoints[building->id] * 256;
+				building->shields = units_dat::max_shield_points[building->id] * 256;
 			}
 			else
 			{

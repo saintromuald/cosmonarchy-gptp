@@ -140,7 +140,7 @@ namespace hooks
 			&& unit_ext->timers[TimerWyvernAttackCooldown] == 0)
 		{
 			auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
-			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
+			s32 forwardOffset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
 			auto x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
 			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1);
 
@@ -348,8 +348,8 @@ namespace hooks
 		*/
 
 		// Shield regeneration
-		if (units_dat::ShieldsEnabled[unit->id] && unit->status & UnitStatus::Completed) {
-			s32 max_shields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
+		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed) {
+			s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 			u32 overlay = ImageId::RechargeShields_Small;
 			switch (scbw::get_overlay_offset(unit->id, true)) {
@@ -527,7 +527,7 @@ namespace hooks
 							{
 								damage /= 2;
 							}
-							target->damage_with_custom(damage, DamageType::Explosive, unit, unit->player, 0, 1, false);
+							target->damage_with_custom(damage, damage_type::Explosive, unit, unit->player, 0, 1, false);
 						});
 						unit->remove();
 						bStopHere = true;

@@ -34,8 +34,8 @@ namespace hooks
 		} else {
 			v3 = current_unit_selection[*(a2 + 11)];
 		}
-		v4 = sprites_dat::IsVisible[v2 + 390];
-		*(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
+		v4 = sprites_dat::is_visible[v2 + 390];
+		*(a1 + 15) = sprites_dat::hp_bar_size[v2 + 262]
 			+ (g_image_grp_graphics[orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
 		*(*(a1 + 44) + 6) = 0;
@@ -53,7 +53,7 @@ namespace hooks
 		}
 		v7 = *(a1 + 44);
 		v8 = *(v7 + 9);
-		if (units_dat::ShieldsEnabled[v3->id])
+		if (units_dat::shields_enabled[v3->id])
 			v9 = v8 + 7;
 		else
 			v9 = v8 + 5;

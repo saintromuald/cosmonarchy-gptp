@@ -6,7 +6,7 @@
 // scbwdata modifid by grafting
 DATEXT_VAR_REF(ButtonSet*, buttonSetTable_var);
 DATEXT_VAR_REF(UnitStatFuncArrayEntry*, unitStatFuncs_var);
-DATEXT_VAR_REF(u32, orderDatReqScript_var);
+DATEXT_VAR_REF(u16*, g_orders_requirement_tree_var);
 
 namespace
 {
@@ -94,7 +94,7 @@ namespace hooks {
 			case GraftType::orders_req:
 			{
 				load_data(graftData, load_offsets_order);
-				orderDatReqScript_var = (u32)graftData;
+				g_orders_requirement_tree_var = (u16*)graftData;
 			} break;
 			case GraftType::buttons:
 			{

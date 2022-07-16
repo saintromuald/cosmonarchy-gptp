@@ -48,7 +48,7 @@ namespace AI
 	bool is_campaign_ai(u8 player)
 	{
 		assert(player < 8);
-		return g_aiscript_controller[player].AI_Flags.is_use_map_settings;
+		return g_aiscript_controller[player]->AI_Flags.is_use_map_settings;
 	}
 
 	// Internal use only
@@ -165,7 +165,7 @@ namespace AI
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if (!(target->status & UnitStatus::Invincible) &&
 				caster->is_target_enemy(target) &&
-				units_dat::ShieldsEnabled[target->id])
+				units_dat::shields_enabled[target->id])
 			{
 				totalEnemyShields += target->getCurrentShieldsInGame();
 			}

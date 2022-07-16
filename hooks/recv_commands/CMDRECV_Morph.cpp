@@ -8,8 +8,8 @@ namespace hooks
 	void cmdrecv_building_morph(u16 unit_id) {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
-			if (unit->id >= UnitId::ZergInfestedCommandCenter && unit->id < UnitId::None &&
-				unit_id >= UnitId::ZergInfestedCommandCenter && unit_id < UnitId::None &&
+			if (unit->id >= UnitId::ZergInfestedCommandCenter && unit->id != UnitId::None &&
+				unit_id >= UnitId::ZergInfestedCommandCenter && unit_id != UnitId::None &&
 				unit->can_make_unit(unit_id, *g_active_nation_id) == 1 &&
 				helper::has_money_can_make(unit, unit_id) && // start construction if successful
 				unit->main_order_id != OrderId::Morph2) {
@@ -28,7 +28,7 @@ namespace hooks
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die) {
 					while (current_unit->order_queue_tail) {
-						if (orders_dat::CanBeInterrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::Morph1) {
+						if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::Morph1) {
 							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 						} else {
 							break;
@@ -92,7 +92,7 @@ namespace hooks
 				if (unit->status & UnitStatus::GroundedBuilding) {
 					if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
 						*g_last_internal_error = 0;
-						if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff] == 65535) {
+						if (orders_dat::req_offset[OrderId::BuildingLiftoff] == 65535) {
 							helper::parse_orders_dat_requirements();
 						}
 						if (unit->player != *g_active_nation_id) {
@@ -115,14 +115,14 @@ namespace hooks
 							|| scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*g_last_internal_error = 8;
-						} else if (orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) {
-						//	if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, g_orders_requirement_tree, orders_dat::RequirementsOffset[OrderId::BuildingLiftoff]) == 1) {
+						} else if (orders_dat::req_offset[OrderId::BuildingLiftoff]) {
+						//	if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::BuildingLiftoff]) == 1) {
 								u16* buffer_u16 = (u16*)(buffer + 1);
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
 								if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
 									helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
-									helper::do_order(unit, units_dat::ReturnToIdleOrder[unit->id], x, y - 42, 0);
+									helper::do_order(unit, units_dat::return_to_idle_order[unit->id], x, y - 42, 0);
 								}
 						//	}
 						} else {

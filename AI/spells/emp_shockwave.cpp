@@ -27,7 +27,7 @@ namespace AI
 			if (!is_target_worth_hitting(target, caster))
 				return false;
 
-			if (!units_dat::ShieldsEnabled[target->id])
+			if (!units_dat::shields_enabled[target->id])
 				return false;
 
 			if (!scbw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))

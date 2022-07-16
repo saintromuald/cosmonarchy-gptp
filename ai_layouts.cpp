@@ -179,7 +179,7 @@ void update_layouts() {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				AiPlaceholder* placeholder = &layouts->placeholders[j];
 
-				Box16 bounds = units_dat::UnitBounds[placeholder->unit_id];
+				Box16 bounds = units_dat::unit_bounds[placeholder->unit_id];
 				Box16 unit_box = {};
 				unit_box.left = placeholder->position.x - bounds.left;
 				unit_box.top = placeholder->position.y - bounds.top;

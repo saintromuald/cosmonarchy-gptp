@@ -2,7 +2,7 @@
 
 //Based on bwapi/BWMemoryEdit/Enums/FlingyType.cs
 
-namespace FlingyId
+namespace flingy_id
 {
 	enum Enum
 	{

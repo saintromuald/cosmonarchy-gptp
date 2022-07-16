@@ -145,10 +145,10 @@ namespace hooks
 			return true;
 		}
 
-		u32 weapon_id = units_dat::GroundWeapon[unit->id];
+		u32 weapon_id = units_dat::ground_weapon[unit->id];
 		u8 timer = unit->ground_weapon_cooldown;
 		if (target->status & UnitStatus::InAir) {
-			weapon_id = units_dat::AirWeapon[unit->id];
+			weapon_id = units_dat::air_weapon[unit->id];
 			timer = unit->air_weapon_cooldown;
 		}
 

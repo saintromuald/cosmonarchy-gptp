@@ -21,12 +21,12 @@ namespace hooks
 			u8 airWeaponMainUnit;
 			u8 airWeaponSubunit;
 			u16 unit_id = helper::get_last_queue_slot_id(activeUnit);
-			if (units_dat::ArmorUpgrade[unit_id] != UpgradeId::GlobalUpgrade60)
+			if (units_dat::armor_upgrade[unit_id] != UpgradeId::GlobalUpgrade60)
 			{
 				helper::StatsArmorLevel(dialog, index);
 				index++;
 			}
-			if (units_dat::ShieldsEnabled[activeUnit->id])
+			if (units_dat::shields_enabled[activeUnit->id])
 			{
 				helper::StatsShieldLevel(dialog, index);
 				index++;
@@ -36,7 +36,7 @@ namespace hooks
 			{
 				bool bNoGroundWeaponDisplay = false;
 				u32 groundWeapon;
-				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];
+				u8 groundWeaponMainUnit = units_dat::ground_weapon[activeUnit->id];
 				if (activeUnit->id == UnitId::TerranMadrigal
 					&& scbw::get_generic_rust_value(activeUnit, RustId::ToggleTempoChange)
 					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles)
@@ -53,7 +53,7 @@ namespace hooks
 					}
 					else
 					{
-						groundWeaponSubunit = units_dat::GroundWeapon[activeUnit->subunit->id];
+						groundWeaponSubunit = units_dat::ground_weapon[activeUnit->subunit->id];
 					}
 				}
 				else
@@ -81,7 +81,7 @@ namespace hooks
 					}
 					else
 					{
-						groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];
+						groundWeapon = units_dat::ground_weapon[activeUnit->subunit->id];
 					}
 					if (!bNoGroundWeaponDisplay)
 					{
@@ -104,7 +104,7 @@ namespace hooks
 			}
 
 			bNoAirWeaponDisplay = false;
-			airWeaponMainUnit = units_dat::AirWeapon[activeUnit->id];
+			airWeaponMainUnit = units_dat::air_weapon[activeUnit->id];
 			if (airWeaponMainUnit != WeaponId::None)
 			{
 				airWeaponSubunit = airWeaponMainUnit;
@@ -115,7 +115,7 @@ namespace hooks
 			}
 			else
 			{
-				airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];
+				airWeaponSubunit = units_dat::air_weapon[activeUnit->subunit->id];
 			}
 
 			if (!bNoAirWeaponDisplay)
@@ -136,7 +136,7 @@ namespace hooks
 					}
 					else
 					{
-						airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
+						airWeapon = units_dat::air_weapon[activeUnit->subunit->id];
 					}
 				}
 				if (!bNoAirWeaponDisplay)
@@ -149,10 +149,10 @@ namespace hooks
 					}
 					else
 					{
-						groundWeapon = units_dat::GroundWeapon[activeUnit->id];
+						groundWeapon = units_dat::ground_weapon[activeUnit->id];
 						if (groundWeapon == WeaponId::None && activeUnit->subunit != nullptr)
 						{
-							groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];
+							groundWeapon = units_dat::ground_weapon[activeUnit->subunit->id];
 						}
 					}
 
@@ -172,7 +172,7 @@ namespace hooks
 						}
 						else
 						{
-							airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; // 00426E16
+							airWeapon = units_dat::air_weapon[activeUnit->subunit->id]; // 00426E16
 						}
 					}
 					if (!bNoAirWeaponDisplay)
@@ -249,12 +249,12 @@ namespace hooks
 		// Originally had Gantrithor - Tassadar hardcode here
 		if (unit_id != UnitId::TerranMinotaur
 			|| !(units_dat::base_property[unit_id] & UnitProperty::Hero)
-			|| !units_dat::MapStringId[unit_id])
+			|| !units_dat::map_string_id[unit_id])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
 				&& !scbw::unit_id_is_shared(unit->id))
 			{
-				return helper::getStatTxtString((unit->rank_increase + units_dat::Rank[unit_id]) + 1302);
+				return helper::getStatTxtString((unit->rank_increase + units_dat::rank[unit_id]) + 1302);
 			}
 			return 0;
 		}
@@ -405,7 +405,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		//if (units_dat::SupplyProvided[unit->id]) {
+		//if (units_dat::supply_provided[unit->id]) {
 		//	helper::draw_supply_unit_info(dialog);
 		//	helper::set_text_string(dialog);
 		//	helper::set_unit_status_string_text(dialog);
@@ -421,9 +421,9 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (units_dat::AirWeapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
-			&& units_dat::GroundWeapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
-			&& !units_dat::ShieldsEnabled[unit->id]) {
+		if (units_dat::air_weapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
+			&& units_dat::ground_weapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
+			&& !units_dat::shields_enabled[unit->id]) {
 			if (*g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;
@@ -501,7 +501,7 @@ namespace hooks
 		{
 			v9 = v7->build_queue[(u8)v7->build_queue_slot];
 		}
-		*(s16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(u8)units_dat::ArmorUpgrade[v9]];
+		*(s16*)(v6 + 4) = upgrades_dat::upgrade_icon[(u8)units_dat::armor_upgrade[v9]];
 		*(s16*)(v6 + 6) = UnitStatus::Completed;
 		if (v7->status & UnitStatus::Completed
 			|| (v10 = v7->build_queue[(u8)v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
@@ -512,7 +512,7 @@ namespace hooks
 		{
 			v11 = v7->build_queue[(u8)v7->build_queue_slot];
 		}
-		*(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
+		*(s16*)(v6 + 8) = (u8)units_dat::armor_upgrade[v11];
 		v4->psz_text = g_status_screen_info_button_unk[buttonRelated];
 		v12 = v4->flags;
 		if (!(v12 & UnitStatus::Completed))
@@ -537,13 +537,13 @@ namespace hooks
 
 		v3 = dialog;
 		v4 = (*g_active_portrait_unit)->player;
-		if (weapons_dat::DamageUpgrade[weapon_id] >= 0x2Eu)
+		if (weapons_dat::damage_upgrade[weapon_id] >= 0x2Eu)
 		{
-//			v5 = *g_upgrades_level_bw[v4][weapons_dat::DamageUpgrade[weapon_id]];
+//			v5 = *g_upgrades_level_bw[v4][weapons_dat::damage_upgrade[weapon_id]];
 		}
 		else
 		{
-//			v5 = *g_upgrades_level_sc[v4][weapons_dat::DamageUpgrade[weapon_id]];
+//			v5 = *g_upgrades_level_sc[v4][weapons_dat::damage_upgrade[weapon_id]];
 		}
 		v10 = v5;
 		sprintf_s(g_status_screen_info_button_unk[buttonRelated], 8, "%d ", v5);
@@ -574,7 +574,7 @@ namespace hooks
 		v8 = g_cmdicons_grp;
 		v6->graphic = 12;
 	//	*(s32*)v7 = v8;
-		*(s16*)(v7 + 4) = weapons_dat::Icon[weapon_id];
+		*(s16*)(v7 + 4) = weapons_dat::weapon_icon[weapon_id];
 		*(s16*)(v7 + 6) = 0;
 		*(s16*)(v7 + 8) = weapon_id;
 		v9 = v6->flags;

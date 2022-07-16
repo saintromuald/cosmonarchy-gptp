@@ -83,7 +83,7 @@ namespace hooks
 			if (caster->unit_ai) {
 				helper::issue_order_targeting_nothing(caster, 0x9Cu);
 			} else {
-				helper::issue_order_targeting_nothing(caster, units_dat::ReturnToIdleOrder[caster->id]);
+				helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
 			}
 			result = 0;
 		}
@@ -137,11 +137,11 @@ namespace hooks
 							}
 							return errorStatString == 0;
 						}
-						hasTarget = fowUnitId < UnitId::None;
+						hasTarget = fowUnitId != UnitId::None;
 					}
 					else
 					{
-						hasTarget = fowUnitId < UnitId::None;
+						hasTarget = fowUnitId != UnitId::None;
 						if (fowUnitId == UnitId::None)
 						{
 							if (error)
@@ -177,7 +177,7 @@ namespace hooks
 	void orders_Spell(Unit* unit)
 	{
 		UnitExt* unitExt = get_unit_ext(unit);
-		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->main_order_id];
+		u8 orderWeaponId = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
 		if (unit->id == UnitId::TerranPaladin)
@@ -241,7 +241,7 @@ namespace hooks
 			}
 			else // 0049291A
 			{
-				u8 techUsed = orders_dat::TechUsed[unit->main_order_id];
+				u8 techUsed = orders_dat::tech_used[unit->main_order_id];
 				s32 spellCost;
 				if (techUsed >= TechId::None)
 				{
@@ -371,7 +371,7 @@ namespace hooks
 								if (unit->sprite->images.head != nullptr)
 								{
 									Image* current_image = unit->sprite->images.head;
-									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->main_order_id];
+									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::order_animation[unit->main_order_id];
 									if (techUsed == TechId::Lockdown && unit->mine_carrier.mine_count > 0)
 									{
 										unit->mine_carrier.mine_count--;
@@ -385,7 +385,7 @@ namespace hooks
 								unit->main_order_state = 2;
 								if (unit->unit_ai != nullptr)
 								{
-									g_aiscript_controller[unit->player].spellcaster_timer = 1;
+									g_aiscript_controller[unit->player]->spellcaster_timer = 1;
 								}
 							}
 						}

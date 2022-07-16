@@ -347,7 +347,7 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 		}
 	}
 	if (flags & FilterShielded) {
-		if (!units_dat::ShieldsEnabled[unit->id]) {
+		if (!units_dat::shields_enabled[unit->id]) {
 			return false;
 		}
 		if (unit->shields < 256) {

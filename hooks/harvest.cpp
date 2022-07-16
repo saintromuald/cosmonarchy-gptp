@@ -207,7 +207,7 @@ namespace hooks
 						helper::delete_order(unit, OrderId::HarvestInterrupt);
 						helper::delete_order(unit, OrderId::ResetCollision2);
 						if (!unit->order_queue_head) {
-							u8 resource_return_order = unit->resource_type & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::ReturnToIdleOrder[unit->id];
+							u8 resource_return_order = unit->resource_type & ResourceType::VespeneGas ? OrderId::ReturnGas : units_dat::return_to_idle_order[unit->id];
 							helper::order_targeting_nothing(resource_return_order, unit, 0);
 						}
 						helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::ResetCollision2);

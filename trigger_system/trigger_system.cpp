@@ -578,7 +578,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->unit_id >= UnitId::None || !unit_ids.set[placeholder->unit_id]) {
+					if (placeholder->unit_id == UnitId::None || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
 					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {

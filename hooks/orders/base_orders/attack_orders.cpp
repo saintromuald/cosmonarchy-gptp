@@ -31,7 +31,7 @@ namespace hooks
 				else
 				{
 					// 004656C6
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ namespace hooks
 				}
 				else // 00465998
 				{
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		}
@@ -250,7 +250,7 @@ namespace hooks
 				bool bStopLoop77A70 = false;
 				while (!bStopLoop77A70 && unit->order_queue_tail != nullptr)
 				{
-					if (!orders_dat::CanBeInterrupted[unit->order_queue_tail->order_id] &&
+					if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
 						unit->order_queue_tail->order_id != OrderId::TurretGuard)
 					{
 						bStopLoop77A70 = true;
@@ -290,7 +290,7 @@ namespace hooks
 				// 00477ACC
 				if (target->status & UnitStatus::InAir)
 				{
-					current_unit_weaponId = units_dat::AirWeapon[current_unit->id]; // 00477AD2
+					current_unit_weaponId = units_dat::air_weapon[current_unit->id]; // 00477AD2
 				}
 				else
 				{
@@ -334,7 +334,7 @@ namespace hooks
 					else
 					{
 						// 00477B5F:
-						u32 result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
+						u32 result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxSiegeModeTurret]);
 						if (!helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange))
 						{
 							jump_to_77BD7 = true;
@@ -342,7 +342,7 @@ namespace hooks
 						else
 						{
 							// 00477B77:
-							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
+							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxTankModeTurret]);
 
 							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
 								|| helper::is_unit_critter(target))
@@ -354,11 +354,11 @@ namespace hooks
 								unit->order_computer(OrderId::Nothing2);
 
 								// this order_id is hardcoded, not calculated 
-								unit->order_simple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
+								unit->order_simple(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeModeTurret], false);
 								current_subunit->order_computer(OrderId::SiegeMode);
 
 								// this order_id is hardcoded, not calculated
-								current_subunit->issue_queued_order_target(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
+								current_subunit->issue_queued_order_target(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeMode], target, false);
 							}
 						}
 					}
@@ -394,7 +394,7 @@ namespace hooks
 									current_unit_weaponId = WeaponId::None;
 								}
 								// 00477C40
-								if (current_unit_weaponId >= WeaponId::None)
+								if (current_unit_weaponId == WeaponId::None)
 								{
 									jump_to_77C78 = true;
 								}
@@ -428,7 +428,7 @@ namespace hooks
 						}
 						if (jump_to_77C78)
 						{
-							if ((unit->subunit)->main_order_id == units_dat::AttackUnitOrder[(unit->subunit)->id]
+							if ((unit->subunit)->main_order_id == units_dat::attack_unit_order[(unit->subunit)->id]
 								&& helper::get_right_click_action_order(unit->subunit) != RightClickActions::NoMove_NormalAttack)
 							{
 								jump_to_77CA1 = true;
@@ -597,7 +597,7 @@ namespace hooks
 				}
 				else // 00477E83
 				{
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 		}
 
@@ -646,7 +646,7 @@ namespace hooks
 				}
 				else
 				{
-					unit->order_computer(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		}
@@ -692,7 +692,7 @@ namespace hooks
 					else
 					{ // 004789CC
 						helper::set_resource_target(unit);
-						if (!unit->is_target_within_min_range(target, weapons_dat::OuterSplashRadius[WeaponId::InfestedTerranSuicide]))
+						if (!unit->is_target_within_min_range(target, weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide]))
 						{
 							unit->order_to_idle();
 							bStopThere = true;
@@ -761,7 +761,7 @@ namespace hooks
 							unit->order_target.pt.y * 256,
 							unit->halt.x,
 							unit->halt.y);
-					if ((distance / 256) > weapons_dat::OuterSplashRadius[WeaponId::InfestedTerranSuicide])
+					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide])
 					{
 						unit->order_to_idle();
 						bStopThere = true;

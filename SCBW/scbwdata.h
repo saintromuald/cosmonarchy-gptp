@@ -47,22 +47,22 @@ SCBW_DATA(Units12*, first_player_unit, 0x006283F8);  //Indexed by player Id
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
-SCBW_DATA(Units12*,		g_completed_factory_counts,	0x0068A9D8);
-SCBW_DATA(Units12*,		g_all_factory_counts,		0x0068A9A8);
+SCBW_DATA(Units12*,			g_completed_factory_counts,	0x0068A9D8);
+SCBW_DATA(Units12*,			g_all_factory_counts,		0x0068A9A8);
 
-SCBW_DATA(Unit*,		g_unit_table,				0x0059CCA8);
-SCBW_DATA(u32*,			g_unit_count,				0x006283F0);
-SCBW_DATA(Bullet*,		g_bullet_table,				0x0064B2E8);
+SCBW_DATA(Unit*,			g_unit_table,				0x0059CCA8);
+SCBW_DATA(u32*,				g_unit_count,				0x006283F0);
+SCBW_DATA(Bullet*,			g_bullet_table,				0x0064B2E8);
 SCBW_DATA_REF(UnitDeaths*,	g_death_table,				0x0058A364);
-SCBW_DATA(UnitDeaths*,	g_unit_deaths,				g_death_table);
-SCBW_DATA(Sprite*,		g_sprite_table,				0x00629D98);
-SCBW_DATA_REF(UnitDeaths*, unitKilledTable,   0x005878A4);
+SCBW_DATA(UnitDeaths*,		g_unit_deaths,				g_death_table);
+SCBW_DATA(Sprite*,			g_sprite_table,				0x00629D98);
+SCBW_DATA_REF(UnitDeaths*,	unitKilledTable,			0x005878A4);
 
-SCBW_DATA_REF(UnitScores_I*, g_unit_count_table,		0x00584DE4);
-SCBW_DATA(UnitScores_I*, g_completed_unit_counts,	g_unit_count_table);
+SCBW_DATA_REF(UnitDeaths*,	g_unit_count_table,			0x00584DE4);
+SCBW_DATA(UnitScores_I*,	g_completed_unit_counts,	g_unit_count_table);
 
 
-SCBW_DATA_REF(UnitScores_I*, g_all_unit_count_table,	0x00582324);
+SCBW_DATA_REF(UnitDeaths*, g_all_unit_count_table,	0x00582324);
 SCBW_DATA(UnitScores_I*, g_all_unit_counts,			g_unit_count_table);
 
 SCBW_DATA(Thingy**,		first_lone_sprite,			0x00654874);
@@ -199,13 +199,12 @@ typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
 SCBW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
 
 // Added from BWAPI Offsets.h
-SCBW_DATA(char*,	current_map_filename,	0x0057FD3C);
-SCBW_DATA(char*,	current_map_name,		0x0057FE40);
-SCBW_DATA_REF(_uavail*, unit_availability,		0x0057F27C);
+SCBW_DATA(char*,		current_map_filename,	0x0057FD3C);
+SCBW_DATA(char*,		current_map_name,		0x0057FE40);
+SCBW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
 
 // Ping data
 SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
-
 
 	// -- Added for various hooks used by Cosmonarchy BW! -- \\
 
@@ -430,7 +429,7 @@ SCBW_DATA(s32*,		g_last_bullet_index,					0x0064DEA8);
 
 // For order_allowed
 SCBW_DATA(s32*,		g_last_internal_error,			0x0066FF60);
-SCBW_DATA_REF(u16*,		g_orders_requirement_tree,		0x00514CF8);
+SCBW_DATA_REF(u16*,	g_orders_requirement_tree,		0x00514CF8);
 
 // For larva_creep_spawn
 SCBW_DATA(s16*,		g_larva_counter,				0x0067D3F8);
@@ -587,72 +586,72 @@ struct DatLoad {
 namespace units_dat {
 //	SCBW_DATA(const DatLoad*, unitsDat, 0x00513C30); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u8*, Graphic, unitsDat[0].address);							// 006644F8
-	SCBW_DATA_REF(u16*, SubUnit, unitsDat[1].address);							// 006607C0
+	SCBW_DATA_REF(u16*, graphic, unitsDat[0].address);							// 006644F8
+	SCBW_DATA_REF(u16*, subunit, unitsDat[1].address);							// 006607C0
 //	SCBW_DATA_REF(u16*,		???,					unitsDat[2].address);	// 00660C38 // Subunit 2 according to EUDDB
-	SCBW_DATA_REF(u16*, InfestedUnitPartial, unitsDat[3].address);				// 00664980 // (Id - UnitId::TerranCommandCenter) for it to work, last valid id is UnitId::Special_OvermindCocoon
-	SCBW_DATA_REF(u32*, ConstructionGraphic, unitsDat[4].address);				// 006610B0
-	SCBW_DATA_REF(u8*, StartDirection, unitsDat[5].address);					// 006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
-	SCBW_DATA_REF(u8*, ShieldsEnabled, unitsDat[6].address);					// 006647B0
-	SCBW_DATA_REF(u16*, MaxShieldPoints, unitsDat[7].address);					// 00660E00
-	SCBW_DATA_REF(s32*, MaxHitPoints, unitsDat[8].address);						// 00662350
-	SCBW_DATA_REF(u8*, Elevation, unitsDat[9].address);							// 00663150
-	SCBW_DATA_REF(u8*, MovementFlags, unitsDat[10].address);					// 00660FC8
-	SCBW_DATA_REF(u8*, Rank, unitsDat[11].address);								// 00663DD0
-	SCBW_DATA_REF(u8*, ComputerIdleOrder, unitsDat[12].address);				// 00662EA0
-	SCBW_DATA_REF(u8*, HumanIdleOrder, unitsDat[13].address);					// 00662268
-	SCBW_DATA_REF(u8*, ReturnToIdleOrder, unitsDat[14].address);				// 00664898
-	SCBW_DATA_REF(u8*, AttackUnitOrder, unitsDat[15].address);					// 00663320
-	SCBW_DATA_REF(u8*, AttackMoveOrder, unitsDat[16].address);					// 00663A50
-	SCBW_DATA_REF(u8*, GroundWeapon, unitsDat[17].address);						// 006636B8
-	SCBW_DATA_REF(u8*, MaxGroundHits, unitsDat[18].address);					// 006645E0
-	SCBW_DATA_REF(u8*, AirWeapon, unitsDat[19].address);						// 006616E0
-	SCBW_DATA_REF(u8*, MaxAirHits, unitsDat[20].address);						// 0065FC18
+	SCBW_DATA_REF(u16*, infested_unit_partial, unitsDat[3].address);				// 00664980 // (Id - UnitId::TerranCommandCenter) for it to work, last valid id is UnitId::Special_OvermindCocoon
+	SCBW_DATA_REF(u32*, construction_graphic, unitsDat[4].address);				// 006610B0
+	SCBW_DATA_REF(u8*, start_direction, unitsDat[5].address);					// 006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
+	SCBW_DATA_REF(u8*, shields_enabled, unitsDat[6].address);					// 006647B0
+	SCBW_DATA_REF(u16*, max_shield_points, unitsDat[7].address);					// 00660E00
+	SCBW_DATA_REF(s32*, max_hitpoints, unitsDat[8].address);						// 00662350
+	SCBW_DATA_REF(u8*, elevation, unitsDat[9].address);							// 00663150
+	SCBW_DATA_REF(u8*, movement_flags, unitsDat[10].address);					// 00660FC8
+	SCBW_DATA_REF(u8*, rank, unitsDat[11].address);								// 00663DD0
+	SCBW_DATA_REF(u8*, computer_idle_order, unitsDat[12].address);				// 00662EA0
+	SCBW_DATA_REF(u8*, human_idle_order, unitsDat[13].address);					// 00662268
+	SCBW_DATA_REF(u8*, return_to_idle_order, unitsDat[14].address);				// 00664898
+	SCBW_DATA_REF(u8*, attack_unit_order, unitsDat[15].address);					// 00663320
+	SCBW_DATA_REF(u8*, attack_move_order, unitsDat[16].address);					// 00663A50
+	SCBW_DATA_REF(u8*, ground_weapon, unitsDat[17].address);						// 006636B8
+	SCBW_DATA_REF(u8*, max_ground_hits, unitsDat[18].address);					// 006645E0
+	SCBW_DATA_REF(u8*, air_weapon, unitsDat[19].address);						// 006616E0
+	SCBW_DATA_REF(u8*, max_air_hits, unitsDat[20].address);						// 0065FC18
 	SCBW_DATA_REF(u8*, computer_ai_internal, unitsDat[21].address);				// 00660178 // "Computer AI Unit Type" according to EUDDB
 	SCBW_DATA_REF(u32*, base_property, unitsDat[22].address);					// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
-	SCBW_DATA_REF(u8*, SeekRange, unitsDat[23].address);						// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
-	SCBW_DATA_REF(u8*, SightRange, unitsDat[24].address);						// 00663238
-	SCBW_DATA_REF(u8*, ArmorUpgrade, unitsDat[25].address);						// 006635D0
-	SCBW_DATA_REF(u8*, SizeType, unitsDat[26].address);							// 00662180
-	SCBW_DATA_REF(u8*, ArmorAmount, unitsDat[27].address);						// 0065FEC8
-	SCBW_DATA_REF(u8*, RightClickAction, unitsDat[28].address);					// 00662098
-	SCBW_DATA_REF(u16*, SoundReady, unitsDat[29].address);						// 00661FC0
-	SCBW_DATA_REF(u16*, SoundWhatFirst, unitsDat[30].address);					// 0065FFB0
-	SCBW_DATA_REF(u16*, SoundWhatLast, unitsDat[31].address);					// 00662BF0
-	SCBW_DATA_REF(u16*, SoundAnnoyedFirst, unitsDat[32].address);				// 00663B38
-	SCBW_DATA_REF(u16*, SoundAnnoyedLast, unitsDat[33].address);				// 00661EE8
-	SCBW_DATA_REF(u16*, SoundYesFirst, unitsDat[34].address);					// 00663C10
-	SCBW_DATA_REF(u16*, SoundYesLast, unitsDat[35].address);					// 00661440
+	SCBW_DATA_REF(u8*, seek_range, unitsDat[23].address);						// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
+	SCBW_DATA_REF(u8*, sight_range, unitsDat[24].address);						// 00663238
+	SCBW_DATA_REF(u8*, armor_upgrade, unitsDat[25].address);						// 006635D0
+	SCBW_DATA_REF(u8*, size_type, unitsDat[26].address);							// 00662180
+	SCBW_DATA_REF(u8*, armor_amount, unitsDat[27].address);						// 0065FEC8
+	SCBW_DATA_REF(u8*, right_click_action, unitsDat[28].address);					// 00662098
+	SCBW_DATA_REF(u16*, sound_ready, unitsDat[29].address);						// 00661FC0
+	SCBW_DATA_REF(u16*, sound_what_first, unitsDat[30].address);					// 0065FFB0
+	SCBW_DATA_REF(u16*, sound_what_last, unitsDat[31].address);					// 00662BF0
+	SCBW_DATA_REF(u16*, sound_annoyed_first, unitsDat[32].address);				// 00663B38
+	SCBW_DATA_REF(u16*, sound_annoyed_last, unitsDat[33].address);				// 00661EE8
+	SCBW_DATA_REF(u16*, sound_yes_first, unitsDat[34].address);					// 00663C10
+	SCBW_DATA_REF(u16*, sound_yes_last, unitsDat[35].address);					// 00661440
 	SCBW_DATA_REF(Point16*, building_dimensions, unitsDat[36].address);			// 00662860	// Placement Box in PyDAT
-	SCBW_DATA_REF(Point16*, AddonPlacement, unitsDat[37].address);				// 006626E0
-	SCBW_DATA_REF(Box16*, UnitBounds, unitsDat[38].address);					// 006617C8	// Unit Dimensions in PyDAT
-//	SCBW_DATA_REF(u16*,		???,					unitsDat[39].address);	// 00662F88 // Portrait according to EUDDB
+	SCBW_DATA_REF(Point16*, addon_placement, unitsDat[37].address);				// 006626E0
+	SCBW_DATA_REF(Box16*, unit_bounds, unitsDat[38].address);					// 006617C8	// Unit Dimensions in PyDAT
+	SCBW_DATA_REF(u16*,	portrait_id, unitsDat[39].address);						// 00662F88
 	SCBW_DATA_REF(u16*, mineral_cost, unitsDat[40].address);					// 00663888
 	SCBW_DATA_REF(u16*, gas_cost, unitsDat[41].address);						// 0065FD00
 	SCBW_DATA_REF(u16*, time_cost, unitsDat[42].address);						// 00660428
-	SCBW_DATA_REF(u16*, unitsDat43, unitsDat[43].address);						// 00660A70 // "Restriction Address" according to EUDDB
+	SCBW_DATA_REF(u16*, units_dat_43, unitsDat[43].address);						// 00660A70 // "Restriction Address" according to EUDDB
 	SCBW_DATA_REF(GroupFlag*, group_flags, unitsDat[44].address);				// 006637A0
-	SCBW_DATA_REF(u8*, SupplyProvided, unitsDat[45].address);					// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
-	SCBW_DATA_REF(u8*, SupplyRequired, unitsDat[46].address);					// 00663CE8
-	SCBW_DATA_REF(u8*, SpaceRequired, unitsDat[47].address);					// 00664410
-	SCBW_DATA_REF(u8*, SpaceProvided, unitsDat[48].address);					// 00660988
-	SCBW_DATA_REF(u16*, BuildScore, unitsDat[49].address);						// 00663408
-	SCBW_DATA_REF(u16*, DestroyScore, unitsDat[50].address);					// 00663EB8
-	SCBW_DATA_REF(u16*, MapStringId, unitsDat[51].address);						// 00660260
-	SCBW_DATA_REF(u8*, BroodwarOnly, unitsDat[52].address);						// 006606D8
-	SCBW_DATA_REF(u16*, StarEditAvailFlags, unitsDat[53].address);				// 00661518 // "Staredit Availability Flags" according to EUDDB
+	SCBW_DATA_REF(u8*, supply_provided, unitsDat[45].address);					// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+	SCBW_DATA_REF(u8*, supply_required, unitsDat[46].address);					// 00663CE8
+	SCBW_DATA_REF(u8*, space_required, unitsDat[47].address);					// 00664410
+	SCBW_DATA_REF(u8*, space_provided, unitsDat[48].address);					// 00660988
+	SCBW_DATA_REF(u16*, build_score, unitsDat[49].address);						// 00663408
+	SCBW_DATA_REF(u16*, destroy_score, unitsDat[50].address);					// 00663EB8
+	SCBW_DATA_REF(u16*, map_string_id, unitsDat[51].address);						// 00660260
+	SCBW_DATA_REF(u8*, broodwar_only, unitsDat[52].address);						// 006606D8
+	SCBW_DATA_REF(u16*, staredit_avail_flags, unitsDat[53].address);				// 00661518 // "Staredit Availability sound_flags" according to EUDDB
 } // (last entry at 0x00513EAC)
 
 namespace flingy_dat {
 //	SCBW_DATA(const DatLoad*, flingyDat, 0x00515A38); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u16*,	SpriteID,			flingyDat[0].address);	// 006CA318
-	SCBW_DATA_REF(u32*,	TopSpeed,			flingyDat[1].address);	// 006C9EF8
-	SCBW_DATA_REF(u16*,	Acceleration,		flingyDat[2].address);	// 006C9C78
-	SCBW_DATA_REF(u32*,	HaltDistance,		flingyDat[3].address);	// 006C9930
-	SCBW_DATA_REF(u8*,	TurnSpeed,			flingyDat[4].address);	// 006C9E20 Incorrectly known as "Turn Radius"
+	SCBW_DATA_REF(u16*,	sprite_id,			flingyDat[0].address);	// 006CA318
+	SCBW_DATA_REF(u32*,	top_speed,			flingyDat[1].address);	// 006C9EF8
+	SCBW_DATA_REF(u16*,	acceleration,		flingyDat[2].address);	// 006C9C78
+	SCBW_DATA_REF(u32*,	halt_distance,		flingyDat[3].address);	// 006C9930
+	SCBW_DATA_REF(u8*,	turn_speed,			flingyDat[4].address);	// 006C9E20 Incorrectly known as "Turn Radius"
 //	SCBW_DATA_REF(u8*,	???,				flingyDat[5].address);	// 006CA240
-	SCBW_DATA_REF(u8*,	MovementControl,	flingyDat[6].address);	// 006C9858
+	SCBW_DATA_REF(u8*,	movement_control,	flingyDat[6].address);	// 006C9858
 } // (last entry at 0x00515A80)
 
 // incorrect, must be clarified
@@ -660,87 +659,56 @@ namespace flingy_dat {
 namespace sfx_dat {
 //	SCBW_DATA(const	DatLoad*,			sfxDat,		0x00515498); // now in scbwdata.cpp
 	
-	SCBW_DATA_REF(u32*,	SoundPtr,			sfxDat[0].address);	// 0068DAA0
-	SCBW_DATA_REF(u8*,	Priority,			sfxDat[1].address);	// 0068D628
-	SCBW_DATA_REF(u8*,	Flags,				sfxDat[2].address);	// 0068C8C0
-	SCBW_DATA_REF(u16*,	PortraitDuration,	sfxDat[3].address);	// 0068CD38
-	SCBW_DATA_REF(u8*,	Volume,				sfxDat[4].address);	// 0068C448
+	SCBW_DATA_REF(u32*,	sound_pointer,		sfxDat[0].address);	// 0068DAA0
+	SCBW_DATA_REF(u8*,	priority,			sfxDat[1].address);	// 0068D628
+	SCBW_DATA_REF(u8*,	sound_flags,		sfxDat[2].address);	// 0068C8C0
+	SCBW_DATA_REF(u16*,	portrait_duration,	sfxDat[3].address);	// 0068CD38
+	SCBW_DATA_REF(u8*,	volume,				sfxDat[4].address);	// 0068C448
 }
 
 namespace weapons_dat {
 //	SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
 
-	SCBW_DATA_REF(u16*, label, weaponsDat[0].address);  // 006572E0
-	SCBW_DATA_REF(u32*, FlingyId, weaponsDat[1].address);  // 00656CA8
-	SCBW_DATA_REF(u8*, SpecialAttack, weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
-	SCBW_DATA_REF(TargetFlag*, TargetFlags, weaponsDat[3].address);  // 00657998
-	SCBW_DATA_REF(u32*, min_range, weaponsDat[4].address);  // 00656A18
-	SCBW_DATA_REF(u32*, max_range, weaponsDat[5].address);  // 00657470
-	SCBW_DATA_REF(u8*, DamageUpgrade, weaponsDat[6].address);  // 006571D0
-	SCBW_DATA_REF(u8*, damage_type, weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
-	SCBW_DATA_REF(u8*, Behavior, weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
-	SCBW_DATA_REF(u8*, RemoveAfter, weaponsDat[9].address);  // 00657040
-	SCBW_DATA_REF(u8*, ExplosionType, weaponsDat[10].address); // 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
-	SCBW_DATA_REF(u16*, InnerSplashRadius, weaponsDat[11].address); // 00656888
-	SCBW_DATA_REF(u16*, MediumSplashRadius, weaponsDat[12].address); // 006570C8
-	SCBW_DATA_REF(u16*, OuterSplashRadius, weaponsDat[13].address); // 00657780
-	SCBW_DATA_REF(u16*, damage_amount, weaponsDat[14].address); // 00656EB0
-	SCBW_DATA_REF(u16*, armor_pen, weaponsDat[15].address); // 00657678
-	SCBW_DATA_REF(u8*, Cooldown, weaponsDat[16].address); // 00656FB8
-	SCBW_DATA_REF(u8*, DamageFactor, weaponsDat[17].address); // 006564E0
-	SCBW_DATA_REF(u8*, attack_angle, weaponsDat[18].address); // 00656990
-	SCBW_DATA_REF(u8*, LaunchSpin, weaponsDat[19].address); // 00657888
-	SCBW_DATA_REF(u8*, ForwardOffset, weaponsDat[20].address); // 00657910
-	SCBW_DATA_REF(u8*, VerticalOffset, weaponsDat[21].address); // 00656C20
-	SCBW_DATA_REF(u16*, ErrorMessage, weaponsDat[22].address); // 00656568 //Target Error Message according to EUDDB
-	SCBW_DATA_REF(u16*, Icon, weaponsDat[23].address); // 00656780 //Icon according to EUDDB
+	SCBW_DATA_REF(u16*,			label, weaponsDat[0].address);  // 006572E0
+	SCBW_DATA_REF(u32*,			flingy_id, weaponsDat[1].address);  // 00656CA8
+	SCBW_DATA_REF(u8*,			special_attack, weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
+	SCBW_DATA_REF(TargetFlag*,	target_flags, weaponsDat[3].address);  // 00657998
+	SCBW_DATA_REF(u32*,			min_range, weaponsDat[4].address);  // 00656A18
+	SCBW_DATA_REF(u32*,			max_range, weaponsDat[5].address);  // 00657470
+	SCBW_DATA_REF(u8*,			damage_upgrade, weaponsDat[6].address);  // 006571D0
+	SCBW_DATA_REF(u8*,			damage_type, weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
+	SCBW_DATA_REF(u8*,			behavior, weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
+	SCBW_DATA_REF(u8*,			remove_after, weaponsDat[9].address);  // 00657040
+	SCBW_DATA_REF(u8*,			explosion_type, weaponsDat[10].address); // 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
+	SCBW_DATA_REF(u16*,			inner_splash_radius, weaponsDat[11].address); // 00656888
+	SCBW_DATA_REF(u16*,			medium_splash_radius, weaponsDat[12].address); // 006570C8
+	SCBW_DATA_REF(u16*,			outer_splash_radius, weaponsDat[13].address); // 00657780
+	SCBW_DATA_REF(u16*,			damage_amount, weaponsDat[14].address); // 00656EB0
+	SCBW_DATA_REF(u16*,			armor_pen, weaponsDat[15].address); // 00657678
+	SCBW_DATA_REF(u8*,			cooldown, weaponsDat[16].address); // 00656FB8
+	SCBW_DATA_REF(u8*,			damage_factor, weaponsDat[17].address); // 006564E0
+	SCBW_DATA_REF(u8*,			attack_angle, weaponsDat[18].address); // 00656990
+	SCBW_DATA_REF(u8*,			launch_spin, weaponsDat[19].address); // 00657888
+	SCBW_DATA_REF(u8*,			forward_offset, weaponsDat[20].address); // 00657910
+	SCBW_DATA_REF(u8*,			vertical_offset, weaponsDat[21].address); // 00656C20
+	SCBW_DATA_REF(u16*,			error_message, weaponsDat[22].address); // 00656568 //Target Error Message according to EUDDB
+	SCBW_DATA_REF(u16*,			weapon_icon, weaponsDat[23].address); // 00656780 //weapon_icon according to EUDDB
 } //weapons_dat (last entry at 0x0051397C)
-
-/*
-#define MAX_WEAPONS 256
-namespace weapons_dat
-{
-	extern	u16			label[MAX_WEAPONS];			
-	extern	u32			FlingyId[MAX_WEAPONS];			
-	extern	u8			SpecialAttack[MAX_WEAPONS];	
-	extern	TargetFlag	TargetFlags[MAX_WEAPONS];		
-	extern	u32			min_range[MAX_WEAPONS];			
-	extern	u32			max_range[MAX_WEAPONS];			
-	extern	u8			DamageUpgrade[MAX_WEAPONS];		
-	extern	u8			damage_type[MAX_WEAPONS];			
-	extern	u8			Behavior[MAX_WEAPONS];			
-	extern	u8			RemoveAfter[MAX_WEAPONS];		
-	extern	u8			ExplosionType[MAX_WEAPONS];		
-	extern	u16			InnerSplashRadius[MAX_WEAPONS];	
-	extern	u16			MediumSplashRadius[MAX_WEAPONS]; 
-	extern	u16			OuterSplashRadius[MAX_WEAPONS];	
-	extern	u16			damage_amount[MAX_WEAPONS];		
-	extern	u16			armor_pen[MAX_WEAPONS];		
-	extern	u8			Cooldown[MAX_WEAPONS];			
-	extern	u8			DamageFactor[MAX_WEAPONS];		
-	extern	u8			attack_angle[MAX_WEAPONS];		
-	extern	u8			LaunchSpin[MAX_WEAPONS];			
-	extern	u8			ForwardOffset[MAX_WEAPONS];		
-	extern	u8			VerticalOffset[MAX_WEAPONS];		
-	extern	u16			ErrorMessage[MAX_WEAPONS];		
-	extern	u16			Icon[MAX_WEAPONS];
-}
-*/
 
 namespace upgrades_dat {
 //	SCBW_DATA(const DatLoad*, upgradesDat, 0x005136E0); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u16*, MineralCostBase, upgradesDat[0].address);	//00656740
-	SCBW_DATA_REF(u16*, MineralCostFactor, upgradesDat[1].address);	//006559C0
-	SCBW_DATA_REF(u16*, GasCostBase, upgradesDat[2].address);	//00655840
-	SCBW_DATA_REF(u16*, GasCostFactor, upgradesDat[3].address);	//006557C0
-	SCBW_DATA_REF(u16*, TimeCostBase, upgradesDat[4].address);	//00655B80
-	SCBW_DATA_REF(u16*, TimeCostFactor, upgradesDat[5].address);	//00655940
-//	SCBW_DATA_REF(u16*, ???,              upgradesDat[6].address);	//006558C0	//Restriction Flags according to EUDDB
-	SCBW_DATA_REF(u16*, UpgradeIcon, upgradesDat[7].address);	//00655AC0	//"Icon, cmdicons.grp frame" according to EUDDB
+	SCBW_DATA_REF(u16*, mineral_cost_base, upgradesDat[0].address);	//00656740
+	SCBW_DATA_REF(u16*, mineral_cost_factor, upgradesDat[1].address);	//006559C0
+	SCBW_DATA_REF(u16*, gas_cost_base, upgradesDat[2].address);	//00655840
+	SCBW_DATA_REF(u16*, gas_cost_factor, upgradesDat[3].address);	//006557C0
+	SCBW_DATA_REF(u16*, time_cost_base, upgradesDat[4].address);	//00655B80
+	SCBW_DATA_REF(u16*, time_cost_factor, upgradesDat[5].address);	//00655940
+//	SCBW_DATA_REF(u16*, ???,              upgradesDat[6].address);	//006558C0	//Restriction sound_flags according to EUDDB
+	SCBW_DATA_REF(u16*, upgrade_icon, upgradesDat[7].address);	//00655AC0	//"Icon, cmdicons.grp frame" according to EUDDB
 	SCBW_DATA_REF(u16*, label, upgradesDat[8].address);	//00655A40
-	SCBW_DATA_REF(u8*, Race, upgradesDat[9].address);	//00655BFC
-	SCBW_DATA_REF(u8*, MaxRepeats, upgradesDat[10].address);	//00655700
+	SCBW_DATA_REF(u8*,	race, upgradesDat[9].address);	//00655BFC
+	SCBW_DATA_REF(u8*,	max_repeats, upgradesDat[10].address);	//00655700
 //	SCBW_DATA_REF(u8*, ???,				upgradesDat[11].address);	//00655B3C	//Brood War Flag according to EUDDB
 } //upgrades_dat (last entry at 0x00513764)
 
@@ -753,9 +721,9 @@ namespace techdata_dat {
 	SCBW_DATA_REF(u16*, energy_cost,			techdataDat[3].address);	//00656380
 //	SCBW_DATA_REF(u16*, ???,					techdataDat[4].address);	//00656198
 	SCBW_DATA_REF(u16*, requirement_offsets,	techdataDat[5].address);	//006562F8
-//	SCBW_DATA_REF(u16*, ???,					techdataDat[6].address);	//00656430	// "Icon, cmdicons.grp frame" according to EUDDB
+	SCBW_DATA_REF(u16*, tech_icon,				techdataDat[6].address);	//00656430	// "Icon, cmdicons.grp frame" according to EUDDB
 	SCBW_DATA_REF(u16*, label,					techdataDat[7].address);	//006562A0
-//	SCBW_DATA_REF(u8*, ???,						techdataDat[8].address);	//00656488	// Race according to EUDDB
+//	SCBW_DATA_REF(u8*, ???,						techdataDat[8].address);	//00656488	// race according to EUDDB
 //	SCBW_DATA_REF(u8*, ???,						techdataDat[9].address);	//00656350	// "Researched" according to EUDDB
 //	SCBW_DATA_REF(u8*, ???,						techdataDat[10].address);	//006564B4	// Brood War Flag according to EUDDB
 } // last entry at 0x00513850
@@ -763,34 +731,34 @@ namespace techdata_dat {
 namespace orders_dat {
 //	SCBW_DATA(const DatLoad*, ordersDat, 0x00513EC8); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u16*, label, ordersDat[0].address);	//00665280
-	SCBW_DATA_REF(u8*, UseWeaponTargeting, ordersDat[1].address);	//00664B00
-//	SCBW_DATA_REF(u8*,	???,				ordersDat[2].address);	//00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
-	SCBW_DATA_REF(u8*, Unused3, ordersDat[3].address);	//00665A00 //May be "Non-subunit" used for debug only
-//	SCBW_DATA_REF(u8*,	???,				ordersDat[4].address);	//00664A40
-//	SCBW_DATA_REF(u8*,	???,				ordersDat[5].address);	//006657C0 //May be "Subunit can use" used for debug only
-	SCBW_DATA_REF(b8*, CanBeInterrupted, ordersDat[6].address);	//00665040
-	SCBW_DATA_REF(u8*,	Unknown7, ordersDat[7].address); //00665100
-	SCBW_DATA_REF(u8*, CanBeQueued, ordersDat[8].address);	//00665700 //"Can Be Queued" according to EUDDB
-	SCBW_DATA_REF(u8*,	DisablingKeepsTarget, ordersDat[9].address);	//006651C0
-	SCBW_DATA_REF(u8*, CanBeObstructed, ordersDat[10].address);	//006654C0 //"Can Be Obstructed?" according to EUDDB
-//	SCBW_DATA_REF(u8*,	???,				ordersDat[11].address);	//00664C80
-//	SCBW_DATA_REF(u8*,	???,				ordersDat[12].address);	//00664BC0 ////May be "Order requires moving"
-	SCBW_DATA_REF(u8*, OrderWeaponId, ordersDat[13].address);	//00665880
-	SCBW_DATA_REF(u8*, TechUsed, ordersDat[14].address);	//00664E00
-	SCBW_DATA_REF(u8*, OrderIscriptAnim, ordersDat[15].address);	//00664D40 //Animation (IscriptAnimation) according to EUDDB
-	SCBW_DATA_REF(u16*, ButtonIcon, ordersDat[16].address);	//00664EC0
-	SCBW_DATA_REF(u16*, RequirementsOffset, ordersDat[17].address);	//00665580 //based on context
-//	SCBW_DATA_REF(u8*,	???,				ordersDat[18].address);	//00665400 //"Obscured Order" according to EUDDB
+	SCBW_DATA_REF(u16*,		label,						ordersDat[0].address);	//00665280
+	SCBW_DATA_REF(u8*,		use_weapon_targeting,		ordersDat[1].address);	//00664B00
+//	SCBW_DATA_REF(u8*,		???,						ordersDat[2].address);	//00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
+	SCBW_DATA_REF(u8*,		Unused3,					ordersDat[3].address);	//00665A00 //May be "Non-subunit" used for debug only
+//	SCBW_DATA_REF(u8*,		???,						ordersDat[4].address);	//00664A40
+//	SCBW_DATA_REF(u8*,		???,						ordersDat[5].address);	//006657C0 //May be "Subunit can use" used for debug only
+	SCBW_DATA_REF(b8*,		can_be_interrupted,			ordersDat[6].address);	//00665040
+	SCBW_DATA_REF(u8*,		Unknown7,					ordersDat[7].address); //00665100
+	SCBW_DATA_REF(u8*,		can_be_queued,				ordersDat[8].address);	//00665700 //"Can Be Queued" according to EUDDB
+	SCBW_DATA_REF(u8*,		disabling_keeps_target,		ordersDat[9].address);	//006651C0
+	SCBW_DATA_REF(u8*,		can_be_obstructed,			ordersDat[10].address);	//006654C0 //"Can Be Obstructed?" according to EUDDB
+//	SCBW_DATA_REF(u8*,		???,						ordersDat[11].address);	//00664C80
+//	SCBW_DATA_REF(u8*,		???,						ordersDat[12].address);	//00664BC0 ////May be "Order requires moving"
+	SCBW_DATA_REF(u8*,		order_weapon_id,			ordersDat[13].address);	//00665880
+	SCBW_DATA_REF(u8*,		tech_used,					ordersDat[14].address);	//00664E00
+	SCBW_DATA_REF(u8*,		order_animation,			ordersDat[15].address);	//00664D40 //Animation (IscriptAnimation) according to EUDDB
+	SCBW_DATA_REF(s16*,		button_icon,				ordersDat[16].address);	//00664EC0
+	SCBW_DATA_REF(u16*,		req_offset,					ordersDat[17].address);	//00665580 //based on context
+	SCBW_DATA_REF(u8*,		obscured_order,				ordersDat[18].address);	//00665400 //"Obscured Order" according to EUDDB
 } //orders_dat (last entry at 0x00513FA0)
 
 namespace sprites_dat {
 //	SCBW_DATA(const DatLoad*, spritesDat, 0x00513FB8); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u16*, ImageId, spritesDat[0].address);		//00666160
-	SCBW_DATA_REF(s8*, HpBarSize, spritesDat[1].address);		//00665E50
+	SCBW_DATA_REF(u16*, image_id, spritesDat[0].address);		//00666160
+	SCBW_DATA_REF(s8*, hp_bar_size, spritesDat[1].address);		//00665E50
 //	SCBW_DATA_REF(s8*,  ???,				spritesDat[2].address);		//00666570
-	SCBW_DATA_REF(u8*, IsVisible, spritesDat[3].address);		//00665C48
+	SCBW_DATA_REF(u8*, is_visible, spritesDat[3].address);		//00665C48
 //	SCBW_DATA_REF(s8*,  ???,				spritesDat[4].address);		//00665AC0 //"Selection Circle" according to EUDDB, not starting at 0
 //	SCBW_DATA_REF(s8*,  ???,				spritesDat[5].address);		//00665FD8 //"Selection Vertical Offset" according to EUDDB
 } //sprites_dat (last entry at 0x00513FF4)
@@ -799,12 +767,12 @@ namespace images_dat {
 //	SCBW_DATA(const DatLoad*, imagesDat, 0x00514010); // now in scbwdata.cpp
 
 	//SCBW_DATA_REF(const u32*,  ???,		imagesDat[0].address);	//00668AA0 //"GRP File" according to EUDDB
-	SCBW_DATA_REF(const u8*, IsTurnable, imagesDat[1].address);	//0066E860
-	SCBW_DATA_REF(const u8*, IsClickable, imagesDat[2].address);	//0066C150
+	SCBW_DATA_REF(const u8*, is_turnable, imagesDat[1].address);	//0066E860
+	SCBW_DATA_REF(const u8*, is_clickable, imagesDat[2].address);	//0066C150
 	//SCBW_DATA_REF(const u8*,  ???,		imagesDat[3].address);	//0066D4D8 //"Use Full Iscript" according to EUDDB
 	//SCBW_DATA_REF(const u8*,  ???,		imagesDat[4].address);	//00667718 //"Draw If Cloaked" according to EUDDB
-	SCBW_DATA_REF(const u8*, RLE_Function, imagesDat[5].address);	//00669E28 // DrawFunc
-	SCBW_DATA_REF(const u8*, Remapping, imagesDat[6].address);	//00669A40
+	SCBW_DATA_REF(const u8*, rle_function, imagesDat[5].address);	//00669E28 // DrawFunc
+	SCBW_DATA_REF(const u8*, remapping, imagesDat[6].address);	//00669A40
 	//SCBW_DATA_REF(const u32*,  ???,		imagesDat[7].address);	//0066EC48 //"Iscript ID" according to EUDDB
 	//SCBW_DATA_REF(const u32*,  ???,		imagesDat[8].address);	//0066C538 //"Shields Overlay" according to EUDDB
 	//SCBW_DATA_REF(const u32*,  ???,		imagesDat[9].address);	//0066B1B0 //"Attack Overlay" according to EUDDB
@@ -901,11 +869,11 @@ struct ImagesDatExtraOverlayLO_Files {
 	LO_Header** landingDustOverlays;
 	LO_Header** liftoffDustOverlays;
 };
-SCBW_DATA_REF(const ImagesDatExtraOverlayLO_Files*, lo_files,			0x0051F2A8);
+SCBW_DATA_REF(ImagesDatExtraOverlayLO_Files*, lo_files,			0x0051F2A8);
 SCBW_DATA_REF(const LO_Header* const*,				g_shield_overlays,	0x0052E5C8);
 
 SCBW_DATA(const ColorShiftData*,	g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
-SCBW_DATA_REF(GrpHead* const*,			g_image_grp_graphics,	0x0051CED0);
+SCBW_DATA_REF(GrpHead* const*,		g_image_grp_graphics,	0x0051CED0);
 
 template <typename T>
 struct PlayerFlags {
@@ -916,7 +884,7 @@ SCBW_DATA(PlayerFlags<u32>*,	player_vision,		0x0057F1EC);
 
 SCBW_DATA(Unit**,		g_active_portrait_unit,		0x00597248);
 
-SCBW_DATA_REF(AI_Main**,		g_aiscript_controller,		0x0068FEE8);
+SCBW_DATA_REF(AI_Main**,		g_aiscript_controller,		0x0068FEE8); // DatExt makes AI_Main a variable size, so include a pointer for each player
 SCBW_DATA(AiRegion**,	g_ai_region_captains,		0x0069A604);
 SCBW_DATA(u32*,			g_ai_supply_reserved,		0x006CA4BC);
 SCBW_DATA(AiScript**,	g_first_active_aiscript,	0x0068C100);
@@ -1032,7 +1000,7 @@ SCBW_DATA(u16*,			is_unit_in_point_y_pos,			0x006509CE);
 SCBW_DATA(Unit**,		local_selection_group_2,		0x0059724C);
 
 // For init_damage_overlay_counts
-SCBW_DATA_REF(u8*,			building_overlay_state_max,		0x005240D0);
+SCBW_DATA_REF(u8*,		g_building_overlay_state_max,	0x005240D0);
 SCBW_DATA(GrpHead**,	images_damage_overlay_graphic,	0x00520244);
 
 // To move in-game timer while leaderboard is active

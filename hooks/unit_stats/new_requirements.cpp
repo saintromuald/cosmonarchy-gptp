@@ -20,11 +20,11 @@ namespace hooks {
 	s32 create_unit_id_allowed(s16 unit_id, s32 player_id, bool ignore_creator)
 	{
 		*g_last_internal_error = InternalErrors::UnknownError0;
-		if (unit_id >= UnitId::None)
+		if (unit_id == UnitId::None)
 		{
 			return false;
 		}
-		if (!unit_availability->available[player_id][unit_id])
+		if (!g_unit_availability->available[player_id][unit_id])
 		{
 			return false;
 		}
@@ -1027,7 +1027,7 @@ namespace hooks {
 	s32 create_unit_allowed_partial(s16 unit_id, Unit* unit, s32 player_id)
 	{
 		*g_last_internal_error = InternalErrors::UnknownError0;
-		if (unit_id >= UnitId::None)
+		if (unit_id == UnitId::None)
 		{
 			*g_last_internal_error = InternalErrors::UnknownError16;
 			return TECH_HIDDEN;
@@ -1047,7 +1047,7 @@ namespace hooks {
 			*g_last_internal_error = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;
 		}
-		if (!unit_availability->available[unit->player][unit_id])
+		if (!g_unit_availability->available[unit->player][unit_id])
 		{
 			*g_last_internal_error = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;

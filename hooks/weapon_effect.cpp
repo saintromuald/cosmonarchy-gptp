@@ -31,7 +31,7 @@ namespace hooks
 		if (dsw != nullptr)
 		{
 			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
-				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::DamageUpgrade[weapon_id]));
+				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::damage_upgrade[weapon_id]));
 			if (bullet->hit_flags & 2)
 			{
 				damage /= 2;
@@ -118,7 +118,7 @@ namespace hooks
 		s16 x, y, radius;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
-		radius = weapons_dat::OuterSplashRadius[weapon_id];
+		radius = weapons_dat::outer_splash_radius[weapon_id];
 
 		// Probing Incisors - Gorgoleth passive
 		if (is_charged_gorgrokor_bullet(bullet, weapon_id))
@@ -173,7 +173,7 @@ namespace hooks
 			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			s16 outer = weapons_dat::OuterSplashRadius[bullet->weapon_id];
+			s16 outer = weapons_dat::outer_splash_radius[bullet->weapon_id];
 
 			// Probing Incisors - Gorgoleth passive
 			if (is_charged_gorgrokor_bullet(bullet, weapon_id))
@@ -197,7 +197,7 @@ namespace hooks
 			}
 
 			// Inner radius 
-			s16 inner = weapons_dat::InnerSplashRadius[bullet->weapon_id];
+			s16 inner = weapons_dat::inner_splash_radius[bullet->weapon_id];
 
 			// Probing Incisors - Gorgoleth passive
 			if (is_charged_gorgrokor_bullet(bullet, weapon_id))
@@ -211,7 +211,7 @@ namespace hooks
 				{
 					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 
-					const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const f64 splashBase = weapons_dat::inner_splash_radius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
 					inner = (s16)(splashBase * (1 + 0.1 * stacks));
 				}
@@ -227,7 +227,7 @@ namespace hooks
 			if (target->status & UnitStatus::Burrowed) continue;
 
 			// Medium radius
-			s16 medium = weapons_dat::MediumSplashRadius[bullet->weapon_id];
+			s16 medium = weapons_dat::medium_splash_radius[bullet->weapon_id];
 
 			// Probing Incisors - Gorgoleth passive
 			if (is_charged_gorgrokor_bullet(bullet, weapon_id))
@@ -241,7 +241,7 @@ namespace hooks
 				{
 					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 
-					const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const f64 splashBase = weapons_dat::medium_splash_radius[WeaponId::HeraclesJavelinCannons];
 					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
 					medium = (s16)(splashBase * (1 + 0.1 * stacks));
 				}
@@ -271,7 +271,7 @@ namespace hooks
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[weapon_id];
+		r = weapons_dat::outer_splash_radius[weapon_id];
 
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
@@ -311,7 +311,7 @@ namespace hooks
 			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::InnerSplashRadius[bullet->weapon_id]))
+			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[bullet->weapon_id]))
 			{
 				continue;
 			}
@@ -424,7 +424,7 @@ namespace hooks
 		}
 		else
 		{
-			if (weapons_dat::Behavior[weapon_id] == WeaponBehavior::Bounce)
+			if (weapons_dat::behavior[weapon_id] == WeaponBehavior::Bounce)
 			{
 				if (bullet)
 				{
@@ -451,7 +451,7 @@ namespace hooks
 		{
 			return;
 		}
-		s16 radius = weapons_dat::OuterSplashRadius[weapon_id];
+		s16 radius = weapons_dat::outer_splash_radius[weapon_id];
 		Sprite* bulletSprite = bullet->sprite;
 		s16 posX = bulletSprite->position.x;
 		s16 posY = bulletSprite->position.y;
@@ -467,7 +467,7 @@ namespace hooks
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[weapon_id];
+		r = weapons_dat::outer_splash_radius[weapon_id];
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 
@@ -486,9 +486,9 @@ namespace hooks
 			{
 				if (scbw::can_weapon_target_unit(weaponIdLoop, target, target))
 				{
-					if (helper::is_unit_distance_within(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop]))
+					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weaponIdLoop]))
 					{
-						if (helper::is_unit_distance_within(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
+						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weaponIdLoop])
 							&& target == bullet->attackTarget.unit)
 						{
 							if (globals.extended_unit_table)
@@ -595,7 +595,7 @@ namespace hooks
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMineExplosion];
+		r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{

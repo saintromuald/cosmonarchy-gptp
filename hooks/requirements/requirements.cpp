@@ -73,7 +73,7 @@ namespace hooks
 				{
 					if (unit->status & UnitStatus::IsHallucination) break;
 					if (unit->id == UnitId::ZergOvileth && UpgradesSc->current_level[unit->player][UpgradeId::VentralSacs] == 0) break;
-					if (units_dat::SpaceProvided[unit->id] == 0) break;
+					if (units_dat::space_provided[unit->id] == 0) break;
 					success++;
 				}
 					break;
@@ -235,7 +235,7 @@ namespace hooks
 						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
-					if ((unit->id == UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack)
+					if ((unit->id == UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack)
 					{
 						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
@@ -318,7 +318,7 @@ namespace hooks
 				case RequirementOpcodes::CanHoldPosition:
 				{
 					if ((unit->id != UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0)
-						&& units_dat::RightClickAction[unit->id] == RightClickActions::NoCommand_AutoAttack
+						&& units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack
 						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
 					{
 						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
@@ -448,7 +448,7 @@ namespace hooks
 		currentOpcode = requirementsTable[opcodeIndex];
 
 		*g_last_internal_error = InternalErrors::UnknownError0;
-		if (unit_id >= UnitId::None)
+		if (unit_id == UnitId::None)
 		{
 			*g_last_internal_error = InternalErrors::UnknownError16;
 			//DebugOut(">Return NotAllowed");
@@ -472,7 +472,7 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (!unit_availability->available[parentUnit->player][parentUnit->id])
+		if (!g_unit_availability->available[parentUnit->player][parentUnit->id])
 		{
 			*g_last_internal_error = InternalErrors::UnknownError2;
 			//DebugOut(">Return NotAllowed");
@@ -863,7 +863,7 @@ LABEL_71_SUM_VALUES:
 
 	s8 unit_create_allowed(u16 unit_id, Unit* parentUnit, s32 playerID) // 0046E1C0
 	{
-		u16* unitsDat = units_dat::unitsDat43;
+		u16* unitsDat = units_dat::units_dat_43;
 		u16* requirementsTable = requirements::units;
 
 		if (customRequirements::getUnitRequirementOverrides()[unit_id] != 0)

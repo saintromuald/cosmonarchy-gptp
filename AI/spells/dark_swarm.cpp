@@ -93,7 +93,7 @@ namespace AI
 
 					u8 totGroundWeapon = targetOfTarget->get_ground_weapon();
 
-					if (totGroundWeapon != WeaponId::None && weapons_dat::Behavior[totGroundWeapon] == WeaponBehavior::AppearOnAttacker)
+					if (totGroundWeapon != WeaponId::None && weapons_dat::behavior[totGroundWeapon] == WeaponBehavior::AppearOnAttacker)
 					{
 						u8 targetGroundWeapon;
 
@@ -105,13 +105,13 @@ namespace AI
 						targetGroundWeapon = target->get_ground_weapon();
 						if (targetGroundWeapon != WeaponId::None)
 						{
-							u8 weapon_behavior = weapons_dat::Behavior[targetGroundWeapon];
+							u8 weapon_behavior = weapons_dat::behavior[targetGroundWeapon];
 
-							if (weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::Fly_DoNotFollowTarget
-								|| weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::Fly_FollowTarget
-								|| weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::AppearOnTargetUnit
-								|| weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::AppearOnTargetSite
-								|| weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::Bounce)
+							if (weapons_dat::behavior[targetGroundWeapon] == WeaponBehavior::Fly_DoNotFollowTarget
+								|| weapons_dat::behavior[targetGroundWeapon] == WeaponBehavior::Fly_FollowTarget
+								|| weapons_dat::behavior[targetGroundWeapon] == WeaponBehavior::AppearOnTargetUnit
+								|| weapons_dat::behavior[targetGroundWeapon] == WeaponBehavior::AppearOnTargetSite
+								|| weapons_dat::behavior[targetGroundWeapon] == WeaponBehavior::Bounce)
 							{
 								bReturnValue = weaponBehaviourCanHitTargetCheck(caster, target, targetOfTarget) == 0;
 							}

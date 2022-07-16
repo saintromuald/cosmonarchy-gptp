@@ -35,7 +35,7 @@ namespace AI {
 
 			if (!(target->status & UnitStatus::IsHallucination)
 				&& (target->id != UnitId::ZergOvileth || scbw::get_upgrade_level(target->player, UpgradeId::VentralSacs))
-				&& units_dat::SpaceProvided[target->id] > 0) {
+				&& units_dat::space_provided[target->id] > 0) {
 				return true;
 			}
 

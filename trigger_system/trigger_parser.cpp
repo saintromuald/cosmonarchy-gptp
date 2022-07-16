@@ -613,11 +613,11 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 		} else if (parser_eqi(parser, "combatant")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				bool is_combatant = false;
-				u32 subunit_id = units_dat::SubUnit[i];
-				if (units_dat::GroundWeapon[i] != WeaponId::None || units_dat::GroundWeapon[subunit_id] != WeaponId::None) {
+				u32 subunit_id = units_dat::subunit[i];
+				if (units_dat::ground_weapon[i] != WeaponId::None || units_dat::ground_weapon[subunit_id] != WeaponId::None) {
 					is_combatant = true;
 				}
-				if (units_dat::AirWeapon[i] != WeaponId::None || units_dat::AirWeapon[subunit_id] != WeaponId::None) {
+				if (units_dat::air_weapon[i] != WeaponId::None || units_dat::air_weapon[subunit_id] != WeaponId::None) {
 					is_combatant = true;
 				}
 				if (units_dat::base_property[i] & UnitProperty::Spellcaster && i != UnitId::TerranComsatStation) {

@@ -33,8 +33,8 @@ namespace hooks
             helper::refresh_layers_3_and_4();
             helper::unk_building_placement_related(1, &placement_pos);
             if (*is_placing_addon) {
-                placement_pos.x -= units_dat::AddonPlacement[*place_building_unit_id - UnitId::TerranCommandCenter].x;
-                placement_pos.y -= units_dat::AddonPlacement[*place_building_unit_id - UnitId::TerranCommandCenter].y;
+                placement_pos.x -= units_dat::addon_placement[*place_building_unit_id - UnitId::TerranCommandCenter].x;
+                placement_pos.y -= units_dat::addon_placement[*place_building_unit_id - UnitId::TerranCommandCenter].y;
                 helper::unk_building_placement_related(0, &placement_pos);
             }
             return helper::refresh_layers_3_and_4();
@@ -50,8 +50,8 @@ namespace hooks
 
         u32 source = *place_building_base_type;
         u32 target = *place_building_unit_id;
-        u16 addon_x = (*place_building_x - units_dat::AddonPlacement[2 * *place_building_unit_id - 212].x / 32);
-        u16 addon_y = (*place_building_y - units_dat::AddonPlacement[2 * *place_building_unit_id - 211].y / 32);
+        u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *place_building_unit_id - 212].x / 32);
+        u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *place_building_unit_id - 211].y / 32);
         scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
         s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
