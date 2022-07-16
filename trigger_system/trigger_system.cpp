@@ -42,6 +42,7 @@ void init_trigger_system() {
 	init_objectives();
 	init_sound();
 	init_spawn();
+	init_trigger_vars();
 }
 
 void update_trigger_system(bool in_game) {
@@ -65,6 +66,7 @@ void update_trigger_system(bool in_game) {
 	if (in_game && !paused) {
 		update_recolors();
 		update_spawn();
+		update_trigger_vars();
 	}
 	trigger_game_paused = paused;
 }
