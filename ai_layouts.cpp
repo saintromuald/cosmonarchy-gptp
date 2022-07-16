@@ -178,6 +178,9 @@ void update_layouts() {
 		if (show_player_layouts[i]) {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				AiPlaceholder* placeholder = &layouts->placeholders[j];
+				if (placeholder->is_townhall_marker) {
+					continue;
+				}
 
 				Box16 bounds = units_dat::UnitBounds[placeholder->unit_id];
 				Box16 unit_box = {};
@@ -316,6 +319,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 	if (unit_id == UnitId::SpecialControlNode) {
 		if (!placeholder->was_preplaced) {
 			placeholder->should_request = false;
+			placeholder->is_townhall_marker = true;
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::TerranCommandCenter);
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ProtossNexus);
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ZergHatchery);

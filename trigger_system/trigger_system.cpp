@@ -578,6 +578,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
+					if (placeholder->is_townhall_marker) {
+						continue;
+					}
 					if (placeholder->unit_id >= UnitId::None || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
@@ -601,6 +604,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
+					if (placeholder->is_townhall_marker) {
+						continue;
+					}
 					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
@@ -628,6 +634,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
+					if (placeholder->is_townhall_marker) {
+						continue;
+					}
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
@@ -767,6 +776,30 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (var) {
 					var->set = true;
 					var->value = value;
+					var->is_timer = false;
+				}
+			}
+		} else if (parser_eq(&parser, "randomize_var")) {
+			Token name = parser_get_string(&parser);
+			bool is_timer = parser_get_s32(&parser);
+			if (is_timer) {
+				f32 min_time = parser_get_time(&parser);
+				f32 max_time = parser_get_time(&parser);
+
+				TriggerVar* var = find_or_create_trigger_var(name.data);
+				if (var) {
+					var->set = true;
+					var->value = scbw::rand_between(min_time * 24, max_time * 24);
+					var->is_timer = true;
+				}
+			} else {
+				s32 min_value = parser_get_s32(&parser);
+				s32 max_value = parser_get_s32(&parser);
+
+				TriggerVar* var = find_or_create_trigger_var(name.data);
+				if (var) {
+					var->set = true;
+					var->value = scbw::rand_between(min_value, max_value); // TODO: support signed
 					var->is_timer = false;
 				}
 			}

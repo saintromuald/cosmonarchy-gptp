@@ -19,6 +19,7 @@ struct AiPlaceholder {
 	u8 resarea;
 	b8 was_preplaced;
 	b8 should_request;
+	b8 is_townhall_marker;
 
 	// Runtime data
 	b8 disabled;
