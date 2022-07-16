@@ -285,7 +285,7 @@ namespace hooks {
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranWatchdog;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ProtossPhotonCannon;
 			} else if (count_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
 			}

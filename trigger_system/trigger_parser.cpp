@@ -232,6 +232,17 @@ u32 parser_get_time_ticks(Parser* parser) {
 	return ceil(parser_get_time_seconds(parser) * 24);
 }
 
+s32 parser_get_var_value(Parser* parser, bool is_timer) {
+	parser_get_word(parser);
+	if (parser_eq(parser, "random")) {
+		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+		return scbw::rand_between(min_value, max_value);
+	}
+	parser_pop(parser);
+	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+}
+
 Area parser_get_area(Parser* parser) {
 	Area area = {};
 	parser_push(parser);

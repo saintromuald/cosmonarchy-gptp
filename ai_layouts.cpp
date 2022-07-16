@@ -46,7 +46,7 @@ void init_layouts() {
 }
 
 void update_layouts() {
-	// Tick Layouts Town
+	// Update Layouts Town
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		AiLayoutsTown* layouts_town = &layouts_towns[i];
@@ -92,8 +92,17 @@ void update_layouts() {
 				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, i, town->resarea);
 			}
 		}
-		if (layouts_town->inited && layouts_town->wants_no_resarea) {
-			town->worker_limit = layouts_town->worker_limit;
+		if (layouts_town->inited) {
+			if (town->worker_limit < layouts_town->worker_limit) {
+				town->worker_limit = layouts_town->worker_limit;
+			}
+			if (layouts_town->wants_no_resarea) {
+				if (layouts_town->worker_maynard) {
+					helper::ai_get_old_peons(town, 1);
+				} else if (town->worker_count < layouts_town->worker_limit) {
+					layouts_town->worker_maynard += 1;
+				}
+			}
 		}
 	}
 

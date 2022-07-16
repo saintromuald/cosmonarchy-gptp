@@ -659,16 +659,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					layouts_town->worker_maynard = worker_count;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
-
-						u32 worker_id = UnitId::None;
-						switch (g_player_table[town->player].race) {
-							case RaceId::Terran:  worker_id = UnitId::TerranMason;   break;
-							case RaceId::Protoss: worker_id = UnitId::ProtossScribe; break;
-							case RaceId::Zerg:    worker_id = UnitId::ZergDroleth;   break;
-						}
-						if (worker_id != UnitId::None) {
-							helper::ai_build(worker_id, false, worker_count, town, 98);
-						}
 					}
 					if (attach_to_nearest_resarea) {
 						town->resarea = scbw::get_closest_resarea(pos);
@@ -756,47 +746,45 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token var_operator = parser_get_string(&parser);
 
 			if (token_eq(&var_operator, "=")) {
-				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+				s32 value = parser_get_var_value(&parser, is_timer);
 				TriggerVar* var = find_or_create_trigger_var(var_type, name.data);
 				if (var) {
 					var->value = value;
 				}
-			} else if (token_eq(&var_operator, "+=")) {
-				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-				TriggerVar* var = find_trigger_var(var_type, name.data);
+			} else if (token_eq(&var_operator, "+=") || token_eq(&var_operator, "+==")) {
+				s32 value = parser_get_var_value(&parser, is_timer);
+				TriggerVar* var = parser.token.size == 3 ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
 				if (var) {
 					var->value += value;
 				}
-			} else if (token_eq(&var_operator, "-=")) {
-				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-				TriggerVar* var = find_trigger_var(var_type, name.data);
+			} else if (token_eq(&var_operator, "-=") || token_eq(&var_operator, "-==")) {
+				s32 value = parser_get_var_value(&parser, is_timer);
+				TriggerVar* var = parser.token.size == 3 ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
 				if (var) {
 					var->value -= value;
 				}
-			} else if (token_eq(&var_operator, "*=")) {
-				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-				TriggerVar* var = find_trigger_var(var_type, name.data);
+			} else if (token_eq(&var_operator, "*=") || token_eq(&var_operator, "*==")) {
+				s32 value = parser_get_var_value(&parser, is_timer);
+				TriggerVar* var = parser.token.size == 3 ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
 				if (var) {
 					var->value *= value;
 				}
-			} else if (token_eq(&var_operator, "/=")) {
-				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-				TriggerVar* var = find_trigger_var(var_type, name.data);
+			} else if (token_eq(&var_operator, "/=") || token_eq(&var_operator, "/==")) {
+				s32 value = parser_get_var_value(&parser, is_timer);
+				TriggerVar* var = parser.token.size == 3 ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
 				if (var) {
 					var->value /= value;
 				}
-			} else if (token_eq(&var_operator, "%=")) {
-				s32 value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-				TriggerVar* var = find_trigger_var(var_type, name.data);
+			} else if (token_eq(&var_operator, "%=") || token_eq(&var_operator, "%==")) {
+				s32 value = parser_get_var_value(&parser, is_timer);
+				TriggerVar* var = parser.token.size == 3 ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
 				if (var) {
 					var->value %= value;
 				}
-			} else if (token_eq(&var_operator, "rand")) {
-				s32 min_value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-				s32 max_value = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
+			} else if (token_eq(&var_operator, "toggle")) {
 				TriggerVar* var = find_or_create_trigger_var(var_type, name.data);
 				if (var) {
-					var->value = scbw::rand_between(min_value, max_value); // TODO: support signed
+					var->value = !var->value;
 				}
 			} else if (token_eq(&var_operator, "unset")) {
 				unset_trigger_var(var_type, name.data);
