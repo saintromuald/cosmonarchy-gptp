@@ -252,7 +252,7 @@
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
-    <ClCompile Include="base_layouts.cpp" />
+    <ClCompile Include="ai_layouts.cpp" />
     <ClCompile Include="color_palette.cpp" />
     <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
@@ -587,7 +587,7 @@
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
-    <ClInclude Include="base_layouts.h" />
+    <ClInclude Include="ai_layouts.h" />
     <ClInclude Include="color_palette.h" />
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />

@@ -3,7 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include "logger.h"
-#include "base_layouts.h"
+#include "ai_layouts.h"
 #include "globals.h"
 
 namespace hooks
@@ -1377,7 +1377,7 @@ LABEL_37:
 		{
 			if (!town->resarea)
 			{
-				LayoutsTown* layouts_town = get_layouts_town(town);
+				AiLayoutsTown* layouts_town = get_layouts_town(town);
 				if (!layouts_town->inited || !layouts_town->wants_no_resarea) {
 					town->resarea = helper::get_closest_base_from_startloc(town->player, town->position.x, town->position.y);
 					town->resource_units_not_set = 1;

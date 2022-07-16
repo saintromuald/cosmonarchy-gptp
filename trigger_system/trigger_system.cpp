@@ -7,7 +7,7 @@
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
 
-#include "base_layouts.h"
+#include "ai_layouts.h"
 #include "player_color.h"
 
 bool trigger_game_paused;
@@ -539,7 +539,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					spawn_sequences[spawn_sequence_count++] = sequence;
 				}
 			}
-		} else if (parser_eq(&parser, "placeholders_enable")) {
+		} else if (parser_eq(&parser, "layouts_enable")) {
 			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
@@ -549,9 +549,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players.set[i]) {
 					continue;
 				}
-				Layouts* layouts = &player_layouts[i];
+				AiLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					Placeholder* placeholder = &layouts->placeholders[j];
+					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (placeholder->unit_id >= UnitId::None || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
@@ -561,7 +561,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					placeholder->disabled = !enable;
 				}
 			}
-		} else if (parser_eq(&parser, "placeholders_priority_add")) {
+		} else if (parser_eq(&parser, "layouts_priority_add")) {
 			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
@@ -571,10 +571,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players.set[i]) {
 					continue;
 				}
-				Layouts* layouts = &player_layouts[i];
+				AiLayouts* layouts = &player_layouts[i];
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					Placeholder* placeholder = &layouts->placeholders[j];
+					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (!unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
@@ -588,7 +588,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					sort_layouts(layouts);
 				}
 			}
-		} else if (parser_eq(&parser, "placeholders_priority_set")) {
+		} else if (parser_eq(&parser, "layouts_priority_set")) {
 			Area area = parser_get_area(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
@@ -598,10 +598,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players.set[i]) {
 					continue;
 				}
-				Layouts* layouts = &player_layouts[i];
+				AiLayouts* layouts = &player_layouts[i];
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					Placeholder* placeholder = &layouts->placeholders[j];
+					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 						continue;
 					}
@@ -628,7 +628,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
-					LayoutsTown* layouts_town = get_layouts_town(town);
+					AiLayoutsTown* layouts_town = get_layouts_town(town);
 					layouts_town->worker_limit = worker_count;
 					layouts_town->worker_maynard = worker_count;
 					if (worker_count) {
@@ -653,9 +653,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 					town->resource_units_not_set = town->resarea != 0;
 					if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
-						Layouts* layouts = &player_layouts[player];
+						AiLayouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
-							Placeholder* placeholder = &layouts->placeholders[i];
+							AiPlaceholder* placeholder = &layouts->placeholders[i];
 							if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
 								continue;
 							}

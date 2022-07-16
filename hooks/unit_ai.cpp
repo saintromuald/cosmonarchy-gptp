@@ -4,7 +4,7 @@
 #include <SCBW/scbwdata.h>
 #include "logger.h"
 #include "globals.h"
-#include "base_layouts.h"
+#include "ai_layouts.h"
 
 namespace hooks
 {
@@ -216,7 +216,7 @@ namespace hooks
 					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
-					LayoutsTown* layouts_town = get_layouts_town(town);
+					AiLayoutsTown* layouts_town = get_layouts_town(town);
 					UnitExt* unitExt = get_unit_ext(unit);
 					if (!town->inited) {
 						town->inited = 1;

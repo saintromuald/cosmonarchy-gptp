@@ -1,7 +1,7 @@
 #include "create_init_units.h"
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
-#include "base_layouts.h"
+#include "ai_layouts.h"
 
 u8 GetRaceTownhall(u8 raceId)
 {

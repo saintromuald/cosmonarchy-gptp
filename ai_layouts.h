@@ -11,7 +11,7 @@ enum ChkUnitFlags {
 };
 
 // This structure is mirrored in aise, be careful when you change it 
-struct Placeholder {
+struct AiPlaceholder {
 	Point16 position;
 	u8 unit_id;
 	u8 priority;
@@ -31,12 +31,12 @@ struct Placeholder {
 };
 
 #define PlaceholderLimit 2048
-struct Layouts {
+struct AiLayouts {
 	u32 placeholders_count;
-	Placeholder placeholders[PlaceholderLimit];
+	AiPlaceholder placeholders[PlaceholderLimit];
 };
 
-struct LayoutsTown {
+struct AiLayoutsTown {
 	bool inited;
 	bool wants_no_resarea;
 	u32 worker_limit;
@@ -44,14 +44,14 @@ struct LayoutsTown {
 	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
 };
 
-struct Equivalent {
+struct AiUnitEquivalent {
 	u32 from;
 	u32 to;
 	s32 priority_decrease;
 	b32 merge_requests;
 };
 
-const Equivalent equivalents[] = {
+const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
 	{UnitId::ZergLair, UnitId::ZergHive, 1},
 	{UnitId::ZergHive, UnitId::ZergSire, 1},
@@ -95,25 +95,25 @@ extern CHKUnit chk_cache[ChkCacheLimit];
 extern bool log_placeholder_requests[PlayerLimit];
 extern u32 default_ai_expansion_block[PlayerLimit];
 
-extern Layouts player_layouts[PlayerLimit];
-extern LayoutsTown layouts_towns[AiTownLimit];
+extern AiLayouts player_layouts[PlayerLimit];
+extern AiLayoutsTown layouts_towns[AiTownLimit];
 
 void init_layouts();
 void update_layouts();
 
-LayoutsTown* get_layouts_town(AiTown* town);
+AiLayoutsTown* get_layouts_town(AiTown* town);
 u32 ai_get_next_custom_expo(AiTown* main_town);
 
-Equivalent find_unit_equivalent_down(u32 unit_id);
-Equivalent find_unit_equivalent_up(u32 unit_id);
+AiUnitEquivalent find_unit_equivalent_down(u32 unit_id);
+AiUnitEquivalent find_unit_equivalent_up(u32 unit_id);
 u32 has_down_equivalent(AiTown* town, u32 unit_id);
 u32 number_of_equivalents_up(AiTown* town, u32 unit_id);
 u32 find_unit_merge(u32 unit_id);
 u32 find_unit_base_merge(u32 unit_id);
 
-void add_placeholder_by_unit_id(Layouts* layouts, Placeholder* placeholder, u32 unit_id);
+void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, u32 unit_id);
 void add_placeholder(CHKUnit* unit, u32 player);
-void sort_layouts(Layouts* layouts);
+void sort_layouts(AiLayouts* layouts);
 
 u32 count_units_in_town(AiTown* town, u32 unit_id);
 bool unit_has_creep(u32 unit_id, u32 x, u32 y);
@@ -121,7 +121,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player);
 bool is_basic_townhall(u32 unit_id);
 
 bool can_place_unit(u32 unit_id, Point16 position, u32 player);
-bool can_build_placeholder(Layouts* layouts, AiTown* town, Placeholder* placeholder);
+bool can_build_placeholder(AiLayouts* layouts, AiTown* town, AiPlaceholder* placeholder);
 bool has_expanding_town(u32 player);
-void init_placeholder(AiTown* town, Placeholder* placeholder);
-void request_placeholder(AiTown* town, LayoutsTown* layouts_town, Placeholder* placeholder);
+void init_placeholder(AiTown* town, AiPlaceholder* placeholder);
+void request_placeholder(AiTown* town, AiLayoutsTown* layouts_town, AiPlaceholder* placeholder);

@@ -23,7 +23,7 @@
 #include "unit_ai.h"
 #include "tactical_ai.h"
 #include "scenario.h"
-#include "base_layouts.h"
+#include "ai_layouts.h"
 #include "trigger_system/trigger_system.h"
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
