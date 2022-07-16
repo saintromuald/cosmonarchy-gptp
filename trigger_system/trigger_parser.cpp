@@ -629,6 +629,22 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_transport(i), mask, negate);
 			}
+		} else if (parser_eqi(parser, "townhall")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_town_center(i), mask, negate);
+			}
+		} else if (parser_eqi(parser, "depot")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
+			}
+		} else if (parser_eqi(parser, "node")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
+			}
+		} else if (parser_eqi(parser, "shared")) {
+			for (u32 i = 0; i < UnitId::Count; ++i) {
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_shared(i), mask, negate);
+			}
 		} else if (parser_eqi(parser, "worker")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
