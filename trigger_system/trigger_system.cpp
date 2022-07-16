@@ -6,6 +6,7 @@
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
+#include "trigger_vars.h"
 
 #include "ai_layouts.h"
 #include "player_color.h"
@@ -240,6 +241,17 @@ b32 parse_comment_condition(TriggerAction* action) {
 								return true;
 							}
 						}
+					}
+					return false;
+				} else if (parser_eq(&parser, "var")) {
+					Token name = parser_get_string(&parser);
+					s32 value = parser_get_s32(&parser);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
+					s32 quota = parser_get_s32(&parser);
+
+					TriggerVar* var = get_trigger_var(name.data);
+					if (var) {
+						return check_quota(quota_type, quota, value);
 					}
 					return false;
 				}
@@ -721,6 +733,26 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueDisableAutoBurrow] = !enable;
+			}
+		} else if (parser_eq(&parser, "var")) {
+			Token name = parser_get_string(&parser);
+			bool is_timer = parser_get_s32(&parser);
+			if (is_timer) {
+				f32 time = parser_get_time(&parser);
+
+				TriggerVar* var = get_trigger_var(name.data);
+				if (var) {
+					var->value = time * 24;
+					var->is_timer = true;
+				}
+			} else {
+				s32 value = parser_get_s32(&parser);
+
+				TriggerVar* var = get_trigger_var(name.data);
+				if (var) {
+					var->value = value;
+					var->is_timer = false;
+				}
 			}
 		}
 	}
