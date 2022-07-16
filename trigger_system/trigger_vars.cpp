@@ -20,7 +20,7 @@ void update_trigger_vars() {
 	}
 }
 
-TriggerVar* get_trigger_var(char* name) {
+TriggerVar* find_or_create_trigger_var(char* name) {
 	u32 hash = hash_string(name);
 	for (TriggerVar* var = trigger_vars_hash[hash % TriggerVarHashCap]; var; var = var->hash_next) {
 		if (strcmp(var->name, name) == 0) {
@@ -30,12 +30,15 @@ TriggerVar* get_trigger_var(char* name) {
 	if (trigger_vars_count < TriggerVarCap) {
 		TriggerVar* var = &trigger_vars[trigger_vars_count++];
 
-		var->hash_next = trigger_vars_hash[hash % TriggerVarHashCap];
-		trigger_vars_hash[hash % TriggerVarHashCap] = var;
-
 		snprintf(var->name, 32, "%s", name);
 		var->value = 0;
 		var->is_timer = false;
+
+		u32 var_hash = hash_string(var->name);
+		var->hash_next = trigger_vars_hash[hash % TriggerVarHashCap];
+		trigger_vars_hash[hash % TriggerVarHashCap] = var;
+
+		return var;
 	}
 	return 0;
 }

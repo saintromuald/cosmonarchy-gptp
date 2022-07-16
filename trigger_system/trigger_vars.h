@@ -21,4 +21,4 @@ extern TriggerVar* trigger_vars_hash[TriggerVarHashCap];
 void init_trigger_vars();
 void update_trigger_vars();
 
-TriggerVar* get_trigger_var(char* name);
+TriggerVar* find_or_create_trigger_var(char* name);

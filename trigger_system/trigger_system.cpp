@@ -247,13 +247,23 @@ b32 parse_comment_condition(TriggerAction* action) {
 					return false;
 				} else if (parser_eq(&parser, "var")) {
 					Token name = parser_get_string(&parser);
-					s32 value = parser_get_s32(&parser);
+					TriggerVar* var = find_or_create_trigger_var(name.data);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
-					s32 quota = parser_get_s32(&parser);
-
-					TriggerVar* var = get_trigger_var(name.data);
-					if (var && var->set) {
-						return check_quota(quota_type, quota, value);
+					if (var) {
+						if (var->is_timer) {
+							f32 quota = parser_get_time(&parser);
+							if (var->set) {
+								return check_quota(quota_type, quota * 24, var->value * 24);
+							}
+						} else {
+							s32 quota = parser_get_s32(&parser);
+							if (var->set) {
+								return check_quota(quota_type, quota, var->value);
+							}
+						}
+					} else {
+						// Consume tokens anyways
+						parser_get_word(&parser);
 					}
 					return false;
 				}
@@ -742,7 +752,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (is_timer) {
 				f32 time = parser_get_time(&parser);
 
-				TriggerVar* var = get_trigger_var(name.data);
+				TriggerVar* var = find_or_create_trigger_var(name.data);
 				if (var) {
 					var->set = true;
 					var->value = time * 24;
@@ -751,12 +761,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			} else {
 				s32 value = parser_get_s32(&parser);
 
-				TriggerVar* var = get_trigger_var(name.data);
+				TriggerVar* var = find_or_create_trigger_var(name.data);
 				if (var) {
 					var->set = true;
 					var->value = value;
 					var->is_timer = false;
 				}
+			}
+		} else if (parser_eq(&parser, "unset_var")) {
+			Token name = parser_get_string(&parser);
+			TriggerVar* var = find_or_create_trigger_var(name.data);
+			if (var) {
+				var->set = false;
 			}
 		}
 	}
