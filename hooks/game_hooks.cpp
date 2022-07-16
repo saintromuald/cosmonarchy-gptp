@@ -241,8 +241,10 @@ namespace hooks
 		// Update Extended Features
 		scbw::set_ingame_loop_state(true);
 		update_trigger_system(true);
-		update_layouts();
-		update_custom_ai();
+		if (!scbw::is_game_paused()) {
+			update_layouts();
+			update_custom_ai();
+		}
 		scbw::set_ingame_loop_state(false);
 
 		if (*g_elapsed_time_frames % 2 == 0)
