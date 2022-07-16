@@ -486,7 +486,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					custom_unit_names[player][i] = {};
 				}
 			}
-		} else if (parser_eq(&parser, "replace_sound") && is_local_player) {
+		} else if (parser_eq(&parser, "unit_sound") && is_local_player) {
 			SoundReplacement sound_replacement = {};
 			sound_replacement.players = parser_get_player_bitset(&parser);
 			sound_replacement.unit_ids = parser_get_unit_id_bitset(&parser);
