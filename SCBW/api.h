@@ -598,6 +598,7 @@ namespace scbw
 	void blissful_embrace(Unit* target, u32 player);
 	AiScript* run_ai(u32 player, Box32 area, s32 name);
 	AiScript* run_ai(u32 player, Point16 pos, s32 name);
+	AiScript* run_default_ai(u32 player, Point16 pos);
 	b32 unit_id_is_tech(u32 unit_id);
 	b32 unit_id_is_tech_tier_structure(u32 unit_id);
 	void give_ai_ex(Unit* unit);

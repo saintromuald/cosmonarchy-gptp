@@ -245,20 +245,14 @@ b32 parse_comment_condition(TriggerAction* action) {
 						}
 					}
 					return false;
-				} else if (parser_eq(&parser, "var")) {
+				} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {
+					bool is_timer = parser_eq(&parser, "timer");
+					TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
+
 					Token name = parser_get_string(&parser);
-					TriggerVar* var = find_trigger_var(TriggerVarType_Var, name.data);
+					TriggerVar* var = find_trigger_var(var_type, name.data);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
-					s32 quota = parser_get_s32(&parser);
-					if (var) {
-						return check_quota(quota_type, quota, var->value);
-					}
-					return false;
-				} else if (parser_eq(&parser, "timer")) {
-					Token name = parser_get_string(&parser);
-					TriggerVar* var = find_trigger_var(TriggerVarType_Timer, name.data);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
-					u32 quota = parser_get_time_ticks(&parser);
+					s32 quota = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
 					if (var) {
 						return check_quota(quota_type, quota, var->value);
 					}
@@ -806,6 +800,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			} else if (token_eq(&var_operator, "unset")) {
 				unset_trigger_var(var_type, name.data);
+			}
+		} else if (parser_eq(&parser, "convert_to_ai")) {
+			u32 player = parser_get_player(&parser);
+
+			if (player) {
+				player -= 1;
+				g_player_table[player].type = PlayerType::Computer;
+				scbw::run_default_ai(player, g_start_positions[player]);
 			}
 		}
 	}

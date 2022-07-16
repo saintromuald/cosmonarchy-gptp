@@ -2338,6 +2338,18 @@ namespace scbw
 		return run_ai(player, area, name);
 	}
 
+	AiScript* run_default_ai(u32 player, Point16 pos) {
+		u32 race = g_player_table[player].race;
+		if (race == RaceId::Terran) {
+			return scbw::run_ai(player, pos, 'xCMT');
+		} else if (race == RaceId::Protoss) {
+			return scbw::run_ai(player, pos, 'xCMP');
+		} else if (race == RaceId::Zerg) {
+			return scbw::run_ai(player, pos, 'xCMZ');
+		}
+		return 0;
+	}
+
 	void give_ai_ex(Unit* unit) {
 		if (!unit || g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
