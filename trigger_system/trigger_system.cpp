@@ -441,11 +441,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "objectives_clear") && is_local_player) {
 			memset(&objectives, 0, sizeof(objectives));
 		} else if (parser_eq(&parser, "show_player_layouts") && is_local_player) {
-			u32 player = parser_get_player(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
 			s32 value = parser_get_s32(&parser);
-			if (player) {
-				player -= 1;
-				show_player_layouts[player] = value;
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (!players.set[i]) {
+					continue;
+				}
+				show_player_layouts[i] = value;
 			}
 		} else if (parser_eq(&parser, "set_player_unit_name") && is_local_player) {
 			u32 player = parser_get_player(&parser);
