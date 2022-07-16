@@ -96,12 +96,10 @@ void update_layouts() {
 			if (town->worker_limit < layouts_town->worker_limit) {
 				town->worker_limit = layouts_town->worker_limit;
 			}
-			if (layouts_town->wants_no_resarea) {
-				if (layouts_town->worker_maynard) {
-					helper::ai_get_old_peons(town, 1);
-				} else if (town->worker_count < layouts_town->worker_limit) {
-					layouts_town->worker_maynard += 1;
-				}
+			if (layouts_town->worker_maynard) {
+				helper::ai_get_old_peons(town, 1);
+			} else if (town->worker_count < layouts_town->worker_limit) {
+				layouts_town->worker_maynard += 1;
 			}
 		}
 	}
