@@ -220,7 +220,7 @@ namespace hooks
 
 		// Bunker bonus
 		u32 offset = 0;
-		if (!unit->unit_ai && unit->status & UnitStatus::InBuilding)
+		if (unit->status & UnitStatus::InBuilding)
 		{
 			offset += 64;
 		}

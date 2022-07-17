@@ -5,25 +5,23 @@
 #include "../SCBW/structures.h"
 #include "globals.h"
 #include "scbw/UnitFinder.h"
+#include "hooks/unit_stats/weapon_range.h"
 
 namespace hooks
 {
-	static inline bool is_within_attack_range(Unit* attacker, Unit* target)
-	{
-		if (!target)
-		{
+	static inline bool is_within_attack_range(Unit* attacker, Unit* target) {
+		if (!target) {
 			return false;
 		}
-		if (target->status & UnitStatus::InAir)
-		{
-			return !attacker->is_target_within_min_range(target, weapons_dat::min_range[attacker->get_air_weapon()])
-			&&		attacker->is_target_within_min_range(target, weapons_dat::max_range[attacker->get_air_weapon()]);
+		u32 weapon_id = target->status & UnitStatus::InAir ? attacker->get_air_weapon() : attacker->get_ground_weapon();
+		if (weapon_id == WeaponId::None) {
+			return false;
 		}
-		else
-		{
-			return !attacker->is_target_within_min_range(target, weapons_dat::min_range[attacker->get_ground_weapon()])
-			&&		attacker->is_target_within_min_range(target, weapons_dat::max_range[attacker->get_ground_weapon()]);
-		}
+		u32 min_range = weapons_dat::min_range[weapon_id];
+		u32 range = hooks::get_max_weapon_range(attacker, weapon_id, target);
+
+		return !attacker->is_target_within_min_range(target, min_range)
+		&&		attacker->is_target_within_min_range(target, range);
 	}
 
 	// Checks whether the unit can attack from inside a bunker.

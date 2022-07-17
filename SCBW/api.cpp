@@ -1138,6 +1138,7 @@ namespace scbw
 
 	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon)
 	{
+		return 0;
 		if (!can_use_cliff_advantage(unit, weapon))
 		{
 			return 0;

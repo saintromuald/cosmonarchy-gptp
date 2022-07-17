@@ -223,9 +223,6 @@ void unit_destructor_special_cases(Unit* unit)
 			}
 			break;
 		}
-		default:
-		{
-		}
 	}
 
 	// These require the unit to be completed
