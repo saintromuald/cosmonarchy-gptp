@@ -1552,14 +1552,4 @@ namespace scbw
 		}
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
-
-	void spread_sovroleth_damage(hooks::WeaponDamageData& data) {
-		Unit* unit = data.target;
-		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-		s32 damage = data.final_damage / (sovroleths.count + 1);
-		for (u32 i = 0; i < sovroleths.count; ++i) {
-			link_damage(sovroleths.units[i], damage, data);
-		}
-		link_damage(unit, damage, data);
-	}
 }
