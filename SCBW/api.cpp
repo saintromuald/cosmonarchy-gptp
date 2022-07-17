@@ -2541,4 +2541,8 @@ namespace scbw
 		}
 		return false;
 	}
+
+	u32 get_ground_path_distance_tiles(Point16 a, Point16 b) {
+		return helper::getTileDistance(a.x, a.y, b.x, b.y);
+	}
 }

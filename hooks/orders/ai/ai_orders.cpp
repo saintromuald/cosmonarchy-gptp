@@ -1730,7 +1730,6 @@ LABEL_37:
 		const f32 distance_bias = -4.0;
 		const f32 mineral_bias  =  1.0;
 		const f32 gas_bias      =  1.0;
-		const f32 start_location_bias = 1;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
@@ -1773,16 +1772,12 @@ LABEL_37:
 			average_enemy_distance /= enemy_count;
 			score += average_enemy_distance * enemy_bias;
 		}
-		if (start_location_count) {
-			average_start_location_distance /= start_location_count;
-			score += average_start_location_distance * start_location_bias;
-		}
 
-		f32 distance_from_main = scbw::get_distance_fast(main_town->position, area->position) / 32;
+		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
 		f32 mineral_value = area->mineral_field_count + area->total_mineral_count / 1500.0;
-		f32 gas_value     = area->geyser_count * 3    + area->total_vespene_count     / 500.0;
+		f32 gas_value     = area->geyser_count * 3    + area->total_vespene_count / 500.0;
 		score += mineral_value * mineral_bias;
 		score += gas_value     * gas_bias;
 

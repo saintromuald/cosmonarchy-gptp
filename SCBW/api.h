@@ -612,4 +612,5 @@ namespace scbw
 	void dump_sync_data();
 	u32 get_zerg_regression(u32 unit_id);
 	bool unit_is_allied_or_detected(Unit* unit, u32 player);
+	u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
 }
