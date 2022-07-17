@@ -31,9 +31,8 @@
 #include "config.h"
 #include "color_palette.h"
 #include "custom_ai.h"
-
-
 #include "SCBW\UnitFinder.h"
+
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
 		u32 overlay = ImageId::ShamanNaniteField;
@@ -443,6 +442,19 @@ namespace hooks
 		if (*g_active_portrait_unit)
 		{
 			Unit* selected = *g_active_portrait_unit;
+			/* For checking cargo-related things. -Pr0nogo
+			if (selected) {
+				for (u32 i = 0; i < TransportCap; ++i) {
+					Unit* cargo_unit = selected->get_loaded_unit(i);
+					if (!cargo_unit)
+					{
+						continue;
+					}
+					u32 unit_status = cargo_unit->status;
+					scbw::printf("0x%X", unit_status);
+				}
+			}
+			*/
 			//if (selected->sprite && selected->sprite->main_graphic) {
 			//	scbw::printf("%u", selected->sprite->main_graphic->animation);
 			//}

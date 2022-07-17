@@ -111,7 +111,7 @@ namespace UnitId
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
-		ZergGosvileth										= 47,		// Scourge
+		ZergGosvileth										= 47,		// Skryling
 		ZergAlkajelisk										= 48,		// Torrasque
 		ZergKalkalisk										= 51,		// Infested Kerrigan
 		ZergEvigrilisk										= 52,		// Unclean One
