@@ -469,7 +469,7 @@ namespace hooks
 
 			if (unit->position.x != transport->position.x || unit->position.y != transport->position.y) {
 				//scbw::move_unit_force(unit, transport->position.x, transport->position.y);
-				helper::move_unit(unit, transport->sprite->position.x, transport->sprite->position.y);
+				//helper::move_unit(unit, transport->sprite->position.x, transport->sprite->position.y);
 			}
 
 			if (unit_is_hidden) {
