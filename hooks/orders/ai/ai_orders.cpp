@@ -1730,7 +1730,7 @@ LABEL_37:
 		const f32 distance_bias = -4.0;
 		const f32 mineral_bias  =  1.0;
 		const f32 gas_bias      =  1.0;
-		const f32 start_location_bias = 10;
+		const f32 start_location_bias = 1;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
