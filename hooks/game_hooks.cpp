@@ -203,7 +203,7 @@ namespace hooks
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
 			hooks::init_screen_locations();
-			hooks::clear_actions();
+			hooks::init_actions();
 			globals.reset();
 			init_ext_variables();
 
@@ -244,6 +244,7 @@ namespace hooks
 		if (!scbw::is_game_paused()) {
 			update_layouts();
 			update_custom_ai();
+			hooks::update_actions();
 		}
 		scbw::set_ingame_loop_state(false);
 

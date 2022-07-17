@@ -576,7 +576,7 @@ namespace helper {
 	void update_dialog(BinDlg* dialog);																								// 0041C400
 
 	//// bunker_hooks
-	Unit* find_random_attack_target(Unit* unit);																						// 00442FC0
+	Unit* find_random_attack_target(Unit* unit);																					// 00442FC0
 	b32 attack_apply_cooldown(Unit* unit);																							// 00478B40
 	void set_image_direction(Image* image, s8 direction);																			// 004D5F80
 
