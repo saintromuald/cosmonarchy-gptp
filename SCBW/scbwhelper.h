@@ -649,7 +649,7 @@ namespace helper {
 	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																	// 004748E0
 	void update_target_something(Unit* unit, Unit* target, u8 order_id);															// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id);														// 00474C30
-	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
+	void unit_order_move_to_target_unit(Unit* unit, Unit* target);																		// 00479FE0
 
 	//// load_unload_orders
 	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																		// 00438E70
@@ -825,7 +825,7 @@ namespace helper {
 
 	//// repair_order
 
-	void getRepairInfo(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);			// 00466D10
+	void get_repair_info(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);			// 00466D10
 	bool verifyResources(u32 mineralCost, u32 gasCost, u32 player);													// 00466EE0
 	bool subtract_repair_resources(Unit* worker, Unit* target);														// 00466FB0
 

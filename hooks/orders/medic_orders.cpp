@@ -79,7 +79,7 @@ namespace hooks
 						helper::order_interrupt(unit, unit->order_target.unit, unit->order_target.pt.x, unit->order_target.pt.y, OrderId::MedicHeal1);
 
 						helper::move_to_target(newTarget, unit);
-						helper::unitOrderMoveToTargetUnit(unit, newTarget);
+						helper::unit_order_move_to_target_unit(unit, newTarget);
 						if (oldTarget != nullptr)
 						{
 							helper::update_target_something(unit, oldTarget, OrderId::HealMove);
@@ -168,7 +168,7 @@ namespace hooks
 				}
 				if (acquired)
 				{
-					helper::unitOrderMoveToTargetUnit(cleric, acquired);
+					helper::unit_order_move_to_target_unit(cleric, acquired);
 					if (!cleric->is_target_within_min_range(acquired, 30))
 					{
 						helper::move_to_target(acquired, cleric);
