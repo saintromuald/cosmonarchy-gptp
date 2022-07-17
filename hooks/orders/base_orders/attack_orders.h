@@ -4,15 +4,15 @@
 namespace hooks
 {
 
-	void orders_ReaverAttack1(Unit* unit);		//00465690
-	void orders_CarrierAttack1(Unit* unit);	//00465950
-	void orders_TurretAttack(Unit* unit);		//00477980
-	void orders_AttackFixedRange(Unit* unit);	//00477D00
-	void orders_SapUnit(Unit* unit);			//004788E0
-	void orders_SapLocation(Unit* unit);		//00478A40
-	void orders_AttackMoveEP(Unit* unit);		//00478DE0
-	void orders_AttackMove(Unit* unit);		//00479040
-	void orders_AttackUnit(Unit* unit);		//00479BD0
+	void orders_reaver_attack(Unit* unit);		//00465690
+	void orders_carrier_attack(Unit* unit);	//00465950
+	void orders_turret_attack(Unit* unit);		//00477980
+	void orders_attack_fixed_range(Unit* unit);	//00477D00
+	void orders_sap_unit(Unit* unit);			//004788E0
+	void orders_sap_location(Unit* unit);		//00478A40
+	void orders_attack_move_ep(Unit* unit);		//00478DE0
+	void orders_attack_move(Unit* unit);		//00479040
+	void orders_attack_unit(Unit* unit);		//00479BD0
 
 	void inject_attack_orders_hooks();
 

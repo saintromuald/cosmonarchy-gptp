@@ -761,7 +761,7 @@ LABEL_42:
 		{
 			goto LABEL_23;
 		}
-		if ( v1->sprite->flags & 0x20 )
+		if ( v1->sprite->flags & SpriteFlags::Hidden)
 		{
 			goto LABEL_23;
 		}
@@ -785,7 +785,7 @@ LABEL_42:
 				v8 = helper::unit_has_path_to_unit(v2, v1);
 				goto LABEL_22;
 			}
-LABEL_23:
+		LABEL_23:
 			v11 = v2->order_target.unit;
 			if ( !v11 || v2->status & UnitStatus::HoldingPosition )
 			{
@@ -835,12 +835,12 @@ LABEL_23:
 				v8 = units_dat::GroundWeapon[v5->id] != WeaponId::None;
 			}
 		}
-LABEL_22:
+	LABEL_22:
 		if (!v8)
 		{
 			goto LABEL_23;
 		}
-LABEL_34:
+	LABEL_34:
 		v15 = v2->order_target.unit;
 		v14 = v15->sprite->position.x;
 		v2->order_target.pt.x = v14;

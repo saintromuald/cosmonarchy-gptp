@@ -10,7 +10,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_ReaverAttack1(unit);
+		hooks::orders_reaver_attack(unit);
 		__asm {
 			POPAD
 			RETN
@@ -26,7 +26,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_CarrierAttack1(unit);
+		hooks::orders_carrier_attack(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -44,7 +44,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_TurretAttack(unit);
+		hooks::orders_turret_attack(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -62,7 +62,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_AttackFixedRange(unit);
+		hooks::orders_attack_fixed_range(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -78,7 +78,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_SapUnit(unit);
+		hooks::orders_sap_unit(unit);
 		__asm {
 			POPAD
 			RETN
@@ -92,7 +92,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_SapLocation(unit);
+		hooks::orders_sap_location(unit);
 		__asm {
 			POPAD
 			RETN
@@ -108,7 +108,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_AttackMoveEP(unit);
+		hooks::orders_attack_move_ep(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -124,7 +124,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::orders_AttackMove(unit);
+		hooks::orders_attack_move(unit);
 		__asm {
 			POPAD
 			RETN
@@ -138,7 +138,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::orders_AttackUnit(unit);
+		hooks::orders_attack_unit(unit);
 
 		__asm {
 			POPAD
