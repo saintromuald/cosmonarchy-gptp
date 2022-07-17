@@ -1396,28 +1396,20 @@ namespace scbw
 			|| id == UnitId::TerranSiren;
 	}
 
-	void apply_hallucinating(Unit* unit, u8 player, u32 time)
-	{
+	void apply_hallucinating(Unit* unit, u8 player, u32 time) {
 		UnitExt* unitExt = get_unit_ext(unit);
 
-		// Sounds
-		if (!unitExt->timers[TimerHallucinating])
-		{
-			helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
-		}
-		else
-		{
-			helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
-		}
+		Unit* context = unit->subunit ? unit->subunit : unit;
+		if (!context->get_overlay(ImageId::HallucinationHit)) {
+			// Overlay
+			context->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
 
-		// Overlays
-		if (unit->subunit != nullptr)
-		{
-			unit->subunit->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
-		}
-		else
-		{
-			unit->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
+			// Sound
+			if (!unitExt->timers[TimerHallucinating]) {
+				helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
+			} else {
+				helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
+			}
 		}
 		
 		// Value

@@ -136,12 +136,7 @@ namespace hooks
 			weapon_damage_damage_modifiers(data);
 		}
 
-		if (!data.dont_proc_link_damage && data.target->id == UnitId::ZergSovroleth)
-		{
-			data.final_damage /= 2;
-			scbw::spread_sovroleth_damage(data);
-		}
-		else if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target))
+		if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target))
 		{
 			data.final_damage /= 2;
 			scbw::spread_clarion_damage(data);
