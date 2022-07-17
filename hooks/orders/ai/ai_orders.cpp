@@ -1782,7 +1782,7 @@ LABEL_37:
 		score += distance_from_main * distance_bias;
 
 		f32 mineral_value = area->mineral_field_count + area->total_mineral_count / 1500.0;
-		f32 gas_value     = area->geyser_count * 3    + area->total_gas_count     / 500.0;
+		f32 gas_value     = area->geyser_count * 3    + area->total_vespene_count     / 500.0;
 		score += mineral_value * mineral_bias;
 		score += gas_value     * gas_bias;
 
