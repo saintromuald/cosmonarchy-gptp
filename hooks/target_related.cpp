@@ -665,7 +665,7 @@ LABEL_42:
 
 		if (helper::unit_is_reaver(unit)) {
 			if (!(target->status & UnitStatus::InAir)) {
-				if (helper::unitHasPathToUnit(unit, target)) {
+				if (helper::unit_has_path_to_unit(unit, target)) {
 					return true;
 				}
 			}
@@ -782,7 +782,7 @@ LABEL_42:
 		{
 			if (!(target->status & UnitStatus::InAir))
 			{
-				v8 = helper::unitHasPathToUnit(v2, v1);
+				v8 = helper::unit_has_path_to_unit(v2, v1);
 				goto LABEL_22;
 			}
 LABEL_23:
@@ -907,7 +907,7 @@ LABEL_76:
 		{
 			if (v2->unit_ai)
 			{
-				if (helper::isUnreachable(v2->order_target.unit, v2) || helper::is_unit_movable(v2) == 2)
+				if (helper::is_unreachable(v2->order_target.unit, v2) || helper::is_unit_movable(v2) == 2)
 				{
 					if (helper::ai_update_attack_target(v2, 0, 1, 0))
 					{
@@ -927,19 +927,19 @@ LABEL_65:
 					return 0;
 				}
 			}
-			v25 = helper::hasGroundWeaponGraphic(v2) == 0;
+			v25 = helper::has_ground_weapon_graphic(v2) == 0;
 			v24 = v2->order_target.unit;
 			if (!v25)
 			{
 				helper::move_towards(v2, v24);
 				return 0;
 			}
-			helper::moveForMeleeRange(v24, v2);
+			helper::move_for_melee_range(v24, v2);
 			return 0;
 		}
 		if (v2->id == UnitId::ZergSkryling)
 		{
-			helper::moveForMeleeRange(v2->order_target.unit, v2);
+			helper::move_for_melee_range(v2->order_target.unit, v2);
 		}
 		else
 		{

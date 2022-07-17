@@ -624,7 +624,7 @@ namespace helper {
 	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
 
 	//// mindcontrol_spell
-	void mind_control_hit(Unit* attacker, Unit* target);																				// 004F6910
+	void mind_control_hit(Unit* attacker, Unit* target);																			// 004F6910
 
 	//// weapon_damage
 	u16 get_unit_strength(Unit* unit, bool useGroundStrength);
@@ -634,35 +634,35 @@ namespace helper {
 	u32 get_corrosive_spores_image(Unit* unit);																						// 004F41F0
 
 	//// recharge_shields
-	void insert_first_order(Unit* unit, u8 order_id);																					// 004749D0
+	void insert_first_order(Unit* unit, u8 order_id);																				// 004749D0
 	u8 has_overlay(Unit* unit);																										// 0047B720
 	bool is_hangar_unit(Unit* unit);
 
 	//// stopholdpos_orders
-	Unit* acquire_medic_heal_target(Unit* medic);																						// 004422A0
-	u32 do_medic_heal(Unit* unit, Unit* target);																						// 00463C40
+	Unit* acquire_medic_heal_target(Unit* medic);																					// 004422A0
+	u32 do_medic_heal(Unit* unit, Unit* target);																					// 00463C40
 	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
 	b32 attack_recent_attacker(Unit* unit);																							// 004770E0
 
 	//// medic_orders
-	b32 ai_order_heal(Unit* unit, Unit* target);																						// 00463530
-	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																		// 004748E0
-	void update_target_something(Unit* unit, Unit* target, u8 order_id);																		// 00474940
+	b32 ai_order_heal(Unit* unit, Unit* target);																					// 00463530
+	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																	// 004748E0
+	void update_target_something(Unit* unit, Unit* target, u8 order_id);															// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id);														// 00474C30
 	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
 
 	//// load_unload_orders
-	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																			// 00438E70
+	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																		// 00438E70
 	void ai_unload_failure(Unit* unit);																								// 0043DF30
 	void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
 	void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
 	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
-	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																		// 004E6C40
-	b32 get_first_loaded_worker(Unit* transport);																						// 004E6D90
+	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																	// 004E6C40
+	b32 get_first_loaded_worker(Unit* transport);																					// 004E6D90
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
-	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
-	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);															// 00475260
+	b32 unload_unit_proc(Unit* unit);																								// 004E7F70 (Hooked)
+	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);														// 00475260
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
@@ -672,28 +672,28 @@ namespace helper {
 	void playSubunitIscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
-	u32 get_hp_gain_for_repair(Unit* unit);																								// 00402C40
+	u32 get_hp_gain_for_repair(Unit* unit);																							// 00402C40
 	void refund_unit_train_cost(u32 unit_id, u8 player);																			// 0042CEC0
-	void function_00432430(Unit* unit, u32 build_queue_slot);																			// 00432430
-	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																			// 00466300
-	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
+	void function_00432430(Unit* unit, u32 build_queue_slot);																		// 00432430
+	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																		// 00466300
+	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag);														// 00468200
 
 	//// weapon_fire
 	// For progress_bullet_flight
-	void progressBulletMovement(Bullet* a1);																						// 0048B250
+	void progress_bullet_movement(Bullet* a1);																						// 0048B250
 	void do_missile_damage(Bullet* bullet);																							// 0048B770
 
 	// For bulletBehavior_Bounce
-	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3);																				// 00495240
-	void progress_bullet_movement(Bullet* a1);																					// 0048B250
-	Unit* find_next_bounce_target(Bullet* a1);																					// 0048B1E0
+	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3);																			// 00495240
+	void progress_bullet_movement(Bullet* a1);																						// 0048B250
+	Unit* find_next_bounce_target(Bullet* a1);																						// 0048B1E0
 
 	// For find_next_bounce_target_proc
 	bool unit_is_subunit(Unit* a1);																									// 00401D40
 	bool unit_is_carrier(Unit* a1);																									// 00401470
 	bool unit_is_reaver(Unit* a1);																									// 00401490
-	bool unitHasPathToUnit(Unit* a1, Unit* a2);																						// 0049CBB0
-	s32 can_be_infested(Unit* a1, Unit* a2);																							// 00402210
+	bool unit_has_path_to_unit(Unit* a1, Unit* a2);																					// 0049CBB0
+	s32 can_be_infested(Unit* a1, Unit* a2);																						// 00402210
 
 	// For find_next_bounce_target
 	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
@@ -893,17 +893,17 @@ namespace helper {
 
 	//// use_tech
 	const void issue_tri_target_order(u8 order1, u8 order2, u8 order3);										// 0048CAF0
-	s32 check_energy_for_tech_use(s32 tech_id);																	// 00423660
+	s32 check_energy_for_tech_use(s32 tech_id);																// 00423660
 
 	//// pathfinding
 	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
 	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior
-	bool hasGroundWeaponGraphic(Unit* unit);
-	bool isUnreachable(Unit* target, Unit* unit);
+	bool has_ground_weapon_graphic(Unit* unit);
+	bool is_unreachable(Unit* target, Unit* unit);
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);											// 00476430
-	s32 moveForMeleeRange(Unit* target, Unit* unit);
+	s32 move_for_melee_range(Unit* target, Unit* unit);
 
 	// For create_upgrade_level_tooltip
 	s16 create_tooltip(char* text);																			// 004591A6

@@ -5944,7 +5944,7 @@ namespace helper
 		return bullet;
 	}
 
-	// For progressBulletMovement
+	// For progress_bullet_movement
 
 	void progress_bullet_movement(Bullet* a1)
 	{
@@ -6036,7 +6036,7 @@ namespace helper
 		*/
 	}
 
-	bool unitHasPathToUnit(Unit* a1, Unit* a2)
+	bool unit_has_path_to_unit(Unit* a1, Unit* a2)
 	{
 		const u32 Func_unitHasPathToUnit = 0x0049CBB0;
 		static s32 result;
@@ -8054,7 +8054,7 @@ namespace helper
 		return (s16)result;
 	}
 
-	bool hasGroundWeaponGraphic(Unit* unit)
+	bool has_ground_weapon_graphic(Unit* unit)
 	{
 		const u32 Func_hasGroundWeaponGraphic = 0x00475A10;
 		static bool result;
@@ -8085,7 +8085,7 @@ namespace helper
 		return result;
 	}
 
-	bool isUnreachable(Unit* target, Unit* unit)
+	bool is_unreachable(Unit* target, Unit* unit)
 	{
 		const u32 Func_isUnreachable = 0x00476C50;
 		static bool result;
@@ -8101,7 +8101,7 @@ namespace helper
 		return result;
 	}
 
-	s32 moveForMeleeRange(Unit* target, Unit* unit)
+	s32 move_for_melee_range(Unit* target, Unit* unit)
 	{
 		const u32 Func_moveForMeleeRange = 0x00477F10;
 		static s32 result;
