@@ -334,7 +334,7 @@ namespace hooks
 			} break;
 			case WeaponId::SavantPowerSiphon:
 			{
-				// Entropy Gauntlet
+				// Entropy Gauntlets
 				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 					u32 energy = std::min(data.attacker->energy, (u16)(15 * 256));
 					if (energy) {
@@ -591,7 +591,6 @@ namespace hooks
 					{
 						// Power Siphon
 						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-							helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), data.attacker, 1, 0);
 							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
 								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
 								if (energy) {
