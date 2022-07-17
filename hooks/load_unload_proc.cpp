@@ -180,36 +180,35 @@ namespace hooks
 			{
 				cargo_unit->pathing_flags &= ~1;
 			}
-			if (cargo_unit->subunit != nullptr
-				&& units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
+			if (cargo_unit->subunit != nullptr && units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
 			{
-				Unit* subUnit = cargo_unit->subunit;
-				scbw::set_unit_position(subUnit, transport->sprite->position.x, transport->sprite->position.y);
-				subUnit->status = (subUnit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
-				if (subUnit->path != nullptr)
+				Unit* subunit = cargo_unit->subunit;
+				scbw::set_unit_position(subunit, transport->sprite->position.x, transport->sprite->position.y);
+				subunit->status = (subunit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
+				if (subunit->path != nullptr)
 				{
-					u32* path_0x4 = (u32*)((u32)subUnit->path + 4);
-					*path_0x4 = ((u32)subUnit->path - *u32_0x006BEE8C) / 128 + 1;
+					u32* path_0x4 = (u32*)((u32)subunit->path + 4);
+					*path_0x4 = ((u32)subunit->path - *u32_0x006BEE8C) / 128 + 1;
 					if (*u32_0x006BEE84 == 0)
 					{
-						subUnit->path = nullptr;
+						subunit->path = nullptr;
 					}
 					else
 					{
-						subUnit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
+						subunit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 					}
-					*u32_0x006BEE84 = (u32)subUnit->path;
-					subUnit->path = nullptr;
+					*u32_0x006BEE84 = (u32)subunit->path;
+					subunit->path = nullptr;
 				}
 
-				subUnit->movement_state = 0;
-				if (subUnit->sprite->elevation_level < 12)
+				subunit->movement_state = 0;
+				if (subunit->sprite->elevation_level < 12)
 				{
-					subUnit->pathing_flags |= 1;
+					subunit->pathing_flags |= 1;
 				}
 				else
 				{
-					subUnit->pathing_flags &= ~1;
+					subunit->pathing_flags &= ~1;
 				}
 			}
 			else

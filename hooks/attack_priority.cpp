@@ -287,38 +287,20 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 	// Prepare for search
 	Unit* bestTarget = targets[priority][0];
 
-	if (attacker->unit_ai && attacker->id == UnitId::ZergSkryling)
+	// AI auto-targeted units with high shields/hp when using Skrylings, but we don't have them anymore, and we already handle that in tactical_ai! -Pr0nogo
+	
+	// Find the nearest target (don't use unit box sizes)
+	u32 bestTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), bestTarget->get_x(), bestTarget->get_y());
+
+	for (u32 i = 1; i < targetCounts[priority]; ++i)
 	{
-		// AI-controlled Scourges auto-target units with the most HP + shields
-		u32 bestTargetLife = bestTarget->get_current_life_ingame();
+		Unit* currentTarget = targets[priority][i];
+		const u32 currentTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), currentTarget->get_x(), currentTarget->get_y());
 
-		for (u32 i = 1; i < targetCounts[priority]; ++i)
+		if (currentTargetDistance < bestTargetDistance)
 		{
-			Unit* currentTarget = targets[priority][i];
-			const u32 currentTargetLife = currentTarget->get_current_life_ingame();
-
-			if (currentTargetLife > bestTargetLife)
-			{
-				bestTarget = currentTarget;
-				bestTargetLife = currentTargetLife;
-			}
-		}
-	}
-	else
-	{
-		// Find the nearest target (don't use unit box sizes)
-		u32 bestTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), bestTarget->get_x(), bestTarget->get_y());
-
-		for (u32 i = 1; i < targetCounts[priority]; ++i)
-		{
-			Unit* currentTarget = targets[priority][i];
-			const u32 currentTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), currentTarget->get_x(), currentTarget->get_y());
-
-			if (currentTargetDistance < bestTargetDistance)
-			{
-				bestTarget = currentTarget;
-				bestTargetDistance = currentTargetDistance;
-			}
+			bestTarget = currentTarget;
+			bestTargetDistance = currentTargetDistance;
 		}
 	}
 	return bestTarget;

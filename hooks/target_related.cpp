@@ -456,9 +456,9 @@ LABEL_42:
 				{
 					if (unit_id != UnitId::ZergMatraleth)
 					{
-						if (unit_id != UnitId::ZergSkryling && unit_id != UnitId::ZergInfestedTerran)
+						if (unit_id == UnitId::TerranCleric)
 						{
-							order_id = unit_id != UnitId::TerranCleric ? 107 : 178;
+							order_id = OrderId::MedicHoldPosition;
 						}
 						else
 						{
@@ -637,35 +637,37 @@ LABEL_42:
 		return 1;
 	}
 
-	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility)
+	bool unit_can_attack_target(Unit* target, Unit* attacker, int check_detection) // 00476730
 	{
-		if (unit->is_frozen()
-			|| !target
-			|| !target->sprite // new
-			|| target->status & UnitStatus::Invincible
-			|| target->sprite->flags & SpriteFlags::Hidden
-			|| checkVisibility && helper::unit_can_see_cloaked_target(target, unit)) {
+		if (attacker->is_frozen()
+		|| !target
+		|| !target->sprite // new
+		||  target->status & UnitStatus::Invincible
+		||  target->sprite->flags & SpriteFlags::Hidden
+		||  check_detection && helper::unit_can_see_cloaked_target(target, attacker))
+		{
 			return false;
 		}
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			if (!(unit->status & UnitStatus::GroundedBuilding)) {
+		if (units_dat::base_property[attacker->id] & UnitProperty::Building)
+		{
+			if (!(attacker->status & UnitStatus::GroundedBuilding)) {
 				return false;
 			}
 		}
 
-		Unit* context = unit;
-		if (helper::unit_is_subunit(unit->subunit)) {
-			context = unit->subunit;
+		Unit* context = attacker;
+		if (helper::unit_is_subunit(attacker->subunit)) {
+			context = attacker->subunit;
 		}
 
-		if (helper::unit_is_carrier(unit)) {
+		if (helper::unit_is_carrier(attacker)) {
 			return true;
 		}
 
-		if (helper::unit_is_reaver(unit)) {
+		if (helper::unit_is_reaver(attacker)) {
 			if (!(target->status & UnitStatus::InAir)) {
-				if (helper::unit_has_path_to_unit(unit, target)) {
+				if (helper::unit_has_path_to_unit(attacker, target)) {
 					return true;
 				}
 			}
@@ -685,20 +687,20 @@ LABEL_42:
 		}
 		*/
 
-		if (unit->id == UnitId::TerranBunker) {
+		if (attacker->id == UnitId::TerranBunker) {
 			u32 max_range = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
-				Unit* cargo_unit = unit->get_loaded_unit(i);
+				Unit* cargo_unit = attacker->get_loaded_unit(i);
 				if (cargo_unit) {
 					u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[cargo_unit->id] : units_dat::GroundWeapon[cargo_unit->id];
-					u32 range = hooks::get_max_weapon_range(unit, weapon, target);
+					u32 range = hooks::get_max_weapon_range(attacker, weapon, target);
 					if (range > max_range) {
 						max_range = range;
 					}
 				}
 			}
 
-			if (unit->is_target_within_min_range(target, max_range)) {
+			if (attacker->is_target_within_min_range(target, max_range)) {
 				return true;
 			}
 			return false;
@@ -706,8 +708,8 @@ LABEL_42:
 
 		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[context->id] : units_dat::GroundWeapon[context->id];
 
-		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
-			if (!unit->is_target_within_min_range(target, hooks::get_max_weapon_range(unit, weapon, target))) {
+		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || attacker->id == UnitId::TerranPhalanxSiegeMode) {
+			if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
 				return false;
 			}
 		}
@@ -761,7 +763,7 @@ LABEL_42:
 		{
 			goto LABEL_23;
 		}
-		if ( v1->sprite->flags & 0x20 )
+		if ( v1->sprite->flags & SpriteFlags::Hidden)
 		{
 			goto LABEL_23;
 		}
@@ -785,7 +787,7 @@ LABEL_42:
 				v8 = helper::unit_has_path_to_unit(v2, v1);
 				goto LABEL_22;
 			}
-LABEL_23:
+		LABEL_23:
 			v11 = v2->order_target.unit;
 			if ( !v11 || v2->status & UnitStatus::HoldingPosition )
 			{
@@ -835,12 +837,12 @@ LABEL_23:
 				v8 = units_dat::GroundWeapon[v5->id] != WeaponId::None;
 			}
 		}
-LABEL_22:
+	LABEL_22:
 		if (!v8)
 		{
 			goto LABEL_23;
 		}
-LABEL_34:
+	LABEL_34:
 		v15 = v2->order_target.unit;
 		v14 = v15->sprite->position.x;
 		v2->order_target.pt.x = v14;
@@ -937,14 +939,8 @@ LABEL_65:
 			helper::move_for_melee_range(v24, v2);
 			return 0;
 		}
-		if (v2->id == UnitId::ZergSkryling)
-		{
-			helper::move_for_melee_range(v2->order_target.unit, v2);
-		}
-		else
-		{
-			helper::set_resource_target(v2);
-		}
+		// Removed code for Skryling since we don't use it anymore. -Pr0nogo
+		helper::set_resource_target(v2);
 		return 1;
 	}
 

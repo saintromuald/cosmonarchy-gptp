@@ -160,27 +160,27 @@ namespace
 	{
 		static u32 result;
 		static Unit* target;
-		static Unit* unit;
-		static u32 a3;
+		static Unit* attacker;
+		static u32 check_detection;
 		__asm
 		{
 			PUSH EBP
 			PUSH EAX
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
-			MOV a3, EAX
+			MOV check_detection, EAX
 			POP EAX
 			MOV target, EBX
-			MOV unit, ESI
+			MOV attacker, ESI
 			POP EBP
 			PUSHAD
 		}
-		result = hooks::unit_can_attack_target(target, unit, a3);
+		result = hooks::unit_can_attack_target(target, attacker, check_detection);
 		__asm
 		{
 			POPAD
 			MOV EAX, result
-			RETN 4
+			RETN 0x04
 		}
 	}
 
