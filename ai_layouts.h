@@ -3,11 +3,11 @@
 #include "unit_constants.h"
 
 enum ChkUnitFlags {
-	ChkUnitFlags_Cloaked      = 0x01,
-	ChkUnitFlags_Burrowed     = 0x02,
+	ChkUnitFlags_Cloaked      = 0x01, // Ai Layout
+	ChkUnitFlags_Burrowed     = 0x02, 
 	ChkUnitFlags_Lifted       = 0x04,
-	ChkUnitFlags_Hallucinated = 0x08,
-	ChkUnitFlags_Invincible   = 0x10,
+	ChkUnitFlags_Hallucinated = 0x08, // Dont Request
+	ChkUnitFlags_Invincible   = 0x10, // Main Town
 };
 
 // This structure is mirrored in aise, be careful when you change it 

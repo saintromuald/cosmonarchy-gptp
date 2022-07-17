@@ -109,7 +109,7 @@ namespace hooks
 				}
 				case WeaponId::CantavisHallucinationCast:
 				{
-					globals.create_effect(EffectId_Hallucination, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->srcPlayer, bullet->source_unit);
+					globals.create_effect(EffectId_HallucinatingField, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->srcPlayer, bullet->source_unit);
 					break;
 				}
 			}

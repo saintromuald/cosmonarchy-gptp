@@ -558,7 +558,7 @@ namespace scbw
 	bool unit_is_ranged_attacker(Unit* unit);
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
-	void apply_new_hallucination(Unit* unit, u8 player, u32 time);
+	void apply_hallucinating(Unit* unit, u8 player, u32 time);
 	bool weapon_pierces_targets(u16 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);

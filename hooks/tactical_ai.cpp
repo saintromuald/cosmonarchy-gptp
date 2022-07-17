@@ -420,7 +420,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		case EffectId_Irradiate: {
 			value -= 100;
 		} break;
-		case EffectId_Hallucination: {
+		case EffectId_HallucinatingField: {
 			value -= 100;
 		} break;
 		case EffectId_GroundZero: {

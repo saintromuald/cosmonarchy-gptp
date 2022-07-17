@@ -515,7 +515,7 @@ void Globals::frame_hook() {
 						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
 				} break;
-				case EffectId_Hallucination: {
+				case EffectId_HallucinatingField: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
@@ -526,11 +526,7 @@ void Globals::frame_hook() {
 							return;
 						}
 						UnitExt* unitExt = get_unit_ext(unit);
-						if (!unitExt->timers[TimerHallucinating]) {
-							scbw::apply_new_hallucination(unit, effect->player, effect->current_time);
-						} else {
-							unitExt->timers[TimerHallucinating] = effect->current_time;
-						}
+						scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
 					});
 				} break;
 				case EffectId_Irradiate: {
@@ -873,7 +869,7 @@ namespace scbw
 		// Refresh Hallucination
 		if (unitExt->timers[TimerHallucinating])
 		{
-			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
+			unitExt->timers[TimerHallucinating] = HallucinatingTimer;
 		}
 
 		// Refresh Captivating ZethrokorClaws

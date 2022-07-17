@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "logger.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/orders/spells/hallucination_spell.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -420,12 +421,10 @@ namespace hooks
 					if (scbw::is_allied_to(halu_attacker->player, data.target->player)) {
 						return;
 					}
-					Unit* hal_unit = helper::create_hallucination(halu_attacker, halu_attacker->player);
+					Unit* hal_unit = hooks::create_hallucination(halu_attacker, halu_attacker->player, targetExt->timers[TimerHallucinating]);
 					if (hal_unit) {
 						hal_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
-						if (helper::place_hallucination(hal_unit)) {
-							targetExt->timers[TimerHallucinating] = 0;
-						} else {
+						if (!helper::place_hallucination(hal_unit)) {
 							helper::UnitDestructor(hal_unit);
 						}
 					}
@@ -618,7 +617,7 @@ namespace hooks
 						// Charlatan - Leading the Blind passive
 						if (!scbw::is_allied_to(data.attacker->player, data.target->player))
 						{
-							scbw::apply_new_hallucination(data.target, data.attacker->player, CharlatanHallucinationTimer);
+							scbw::apply_hallucinating(data.target, data.attacker->player, HallucinatingTimer);
 						}
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:

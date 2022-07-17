@@ -47,7 +47,7 @@ namespace hooks
 					if (built_unit->status & UnitStatus::Completed) {
 						helper::add_hangar_unit(unit, built_unit);
 						if (unit->status & UnitStatus::IsHallucination) {
-							apply_hallucination(built_unit, unit);
+							apply_hallucination(built_unit, unit, unit->remove_timer);
 						}
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 						unit->build_queue_slot++;

@@ -1396,7 +1396,7 @@ namespace scbw
 			|| id == UnitId::TerranSiren;
 	}
 
-	void apply_new_hallucination(Unit* unit, u8 player, u32 time)
+	void apply_hallucinating(Unit* unit, u8 player, u32 time)
 	{
 		UnitExt* unitExt = get_unit_ext(unit);
 
