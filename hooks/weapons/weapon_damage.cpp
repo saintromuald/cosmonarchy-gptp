@@ -365,10 +365,8 @@ namespace hooks
 					if (attackerExt->timers[TimerDecloak] > 2) {
 						attackerExt->timers[TimerDecloak] = 2;
 						data.final_damage /= 2;
-						scbw::printf("Recloak");
 					} else {
 						scbw::decloak_proc(data.attacker);
-						scbw::printf("Cloak");
 					}
 				}
 			} break;
