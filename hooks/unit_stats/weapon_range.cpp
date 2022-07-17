@@ -7,7 +7,7 @@ namespace hooks
 	// Returns the modified seek distance (AKA target acquisition distance) for the unit.
 	// This hook affects the behavior of Unit::get_seek_range().
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 getSeekRangeHook(Unit* unit, Unit* target) // seek distance is measured in tiles, unfortunately
+	u8 get_seek_range(Unit* unit, Unit* target) // seek distance is measured in tiles, unfortunately
 	{
 		UnitExt* unitExt = get_unit_ext(unit);
 

@@ -13,10 +13,10 @@ const s32 ATTACK_PRIORITY_LEVELS = 6;
 
 struct AttackPriorityData
 {
-	Unit* findBestTarget(Unit* attacker) const;
-	Unit* findRandomTarget() const;
+	Unit* find_best_target(Unit* attacker) const;
+	Unit* find_random_target() const;
 
-	void addTarget(Unit* target, u32 attackPriority);
+	void add_target(Unit* target, u32 attackPriority);
 	void reset();
 
 	Unit* targets[ATTACK_PRIORITY_LEVELS][ATTACK_PRIORITY_GROUP_SIZE];
@@ -29,14 +29,14 @@ scbw::UnitFinder attackTargetFinder;
 
 namespace
 {
-	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weapon_id);
-	bool cannotChaseTarget(Unit* unit, Unit* target);
+	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id);
+	bool cannot_chase_target(Unit* unit, Unit* target);
 	// Returns the minimum air/ground weapon distance of the @p unit, whichever is smaller.
 	u32 get_minimum_range(Unit* unit);
 
 	// Checks whether the @p target should be added to the attack priority group.
 	// Based on function @ 0x00442DA0
-	bool checkAttackableTarget(Unit* unit, Unit* target, u32 seekRange, u32 minRange = 0)
+	bool check_attackable_target(Unit* unit, Unit* target, u32 seekRange, u32 minRange = 0)
 	{
 		// Shouldn't be necessary
 		if (!unit || !target)
@@ -94,7 +94,7 @@ namespace
 		// If the unit can't turn around, check if the target is within the attack angle.
 		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack))
 		{
-			if (!isTargetPosWithinAttackAngle(target->get_x(), target->get_y(),
+			if (!is_target_pos_within_attack_angle(target->get_x(), target->get_y(),
 				actualUnit, units_dat::GroundWeapon[actualUnit->id]))
 			{
 				return false;
@@ -102,7 +102,7 @@ namespace
 		}
 
 		// If the target cannot be chased (i.e. ground vs air, is out of distance), don't bother
-		if (cannotChaseTarget(unit, target))
+		if (cannot_chase_target(unit, target))
 		{
 			return false;
 		}
@@ -114,7 +114,7 @@ namespace
 namespace hooks
 {
 	// Calculates the attack priority of the @p target for the @p attacker.
-	u32 getAttackPriorityHook(Unit* target, Unit* attacker)
+	u32 get_attack_priority(Unit* target, Unit* attacker)
 	{
 		Unit* actualTarget = target;
 
@@ -204,16 +204,16 @@ namespace hooks
 
 		attackTargetFinder.for_each([&](Unit* target)
 		{
-			s32 target_seek_range = hooks::getSeekRangeHook(unit, target) * 32;
-			if (checkAttackableTarget(unit, target, target_seek_range + offset, min_range)) {
-				attackPriorityData.addTarget(target, getAttackPriorityHook(target, unit));
+			s32 target_seek_range = hooks::get_seek_range(unit, target) * 32;
+			if (check_attackable_target(unit, target, target_seek_range + offset, min_range)) {
+				attackPriorityData.add_target(target, get_attack_priority(target, unit));
 			}
 		});
-		return attackPriorityData.findBestTarget(unit);
+		return attackPriorityData.find_best_target(unit);
 	}
 
 	// Searches for a random attack target nearby for the @p unit.
-	Unit* findRandomAttackTargetHook(Unit* unit)
+	Unit* find_random_attack_target(Unit* unit)
 	{
 		attackPriorityData.reset();
 		s32 seek_range = unit->get_seek_range() * 32;
@@ -232,19 +232,18 @@ namespace hooks
 
 		attackTargetFinder.for_each([&](Unit* target)
 		{
-			s32 target_seek_range = hooks::getSeekRangeHook(unit, target) * 32;
-			if (checkAttackableTarget(unit, target, target_seek_range + offset)) {
-				attackPriorityData.addTarget(target, getAttackPriorityHook(target, unit));
+			s32 target_seek_range = hooks::get_seek_range(unit, target) * 32;
+			if (check_attackable_target(unit, target, target_seek_range + offset)) {
+				attackPriorityData.add_target(target, get_attack_priority(target, unit));
 			}
 		});
-		return attackPriorityData.findRandomTarget();
+		return attackPriorityData.find_random_target();
 	}
 }
 
-
 // Returns a random target selected from the attack target groups.
 // Based on 0x004401B0
-Unit* AttackPriorityData::findRandomTarget() const
+Unit* AttackPriorityData::find_random_target() const
 {
 	s32 priority = 0;
 	while (targetCounts[priority] == 0)
@@ -268,7 +267,7 @@ Unit* AttackPriorityData::findRandomTarget() const
 
 // Returns the best target selected from the attack target groups.
 // Based on 0x004405E0
-Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
+Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 {
 	s32 priority = 0;
 	while (targetCounts[priority] == 0)
@@ -308,16 +307,12 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	else
 	{
 		// Find the nearest target (don't use unit box sizes)
-		u32 bestTargetDistance = scbw::get_distance_fast(
-			attacker->get_x(), attacker->get_y(),
-			bestTarget->get_x(), bestTarget->get_y());
+		u32 bestTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), bestTarget->get_x(), bestTarget->get_y());
 
 		for (u32 i = 1; i < targetCounts[priority]; ++i)
 		{
 			Unit* currentTarget = targets[priority][i];
-			const u32 currentTargetDistance = scbw::get_distance_fast(
-				attacker->get_x(), attacker->get_y(),
-				currentTarget->get_x(), currentTarget->get_y());
+			const u32 currentTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), currentTarget->get_x(), currentTarget->get_y());
 
 			if (currentTargetDistance < bestTargetDistance)
 			{
@@ -329,11 +324,10 @@ Unit* AttackPriorityData::findBestTarget(Unit* attacker) const
 	return bestTarget;
 }
 
-
 //-------- The following function definitions should not be touched. --------//
 
 // Identical to function @ 0x00440160
-void AttackPriorityData::addTarget(Unit* target, u32 attackPriority)
+void AttackPriorityData::add_target(Unit* target, u32 attackPriority)
 {
 	assert(target);
 	assert(attackPriority < countof(targetCounts));
@@ -355,7 +349,7 @@ namespace
 {
 
 	//Identical to function @ 0x00475BE0
-	bool isTargetPosWithinAttackAngle(s32 x, s32 y, Unit* unit, u8 weapon_id)
+	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id)
 	{
 		assert(unit);
 
@@ -376,7 +370,7 @@ namespace
 	}
 
 	const u32 Func_CannotChaseTarget = 0x004A1140;
-	bool cannotChaseTarget(Unit* unit, Unit* target)
+	bool cannot_chase_target(Unit* unit, Unit* target)
 	{
 		assert(unit);
 		assert(target);
@@ -435,5 +429,4 @@ namespace
 			}
 		}
 	}
-
-} //unnamed namespace
+}

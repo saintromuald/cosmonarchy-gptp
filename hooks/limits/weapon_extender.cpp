@@ -627,7 +627,7 @@ namespace hooks
 		// 00475CE3  |.  3C 82         CMP AL,82
 		patchWeaponDat(1, 0x00475CE3, PatchMaxWeaponCompare);
 
-		// bool __userpurge isUnitTargetOutOfMaxRange@<al>(CUNIT *unit@<eax>, CUNIT *target) // 00476430
+		// bool __userpurge is_unit_target_out_of_max_range@<al>(CUNIT *unit@<eax>, CUNIT *target) // 00476430
 		// 004764A0  |>  80FB 82       CMP BL,82
 		patchWeaponDat(2, 0x004764A0, PatchMaxWeaponCompare);
 

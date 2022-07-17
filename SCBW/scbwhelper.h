@@ -507,19 +507,19 @@ namespace helper {
 	// for is_unit_target_out_of_max_range
 	s32 get_unit_max_weapon_range(Unit* a1, unsigned __int8 a2);
 
-	// for isReadyToAttack
+	// for is_ready_to_attack
 	u32 get_distance_to_unit(Unit* a1, Unit* a2);
 	u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3);
 	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
-	// for canCastOrderedSpellNow
+	// for can_cast_ordered_spell_now
 	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target);
 	s32 getFlingyHaltDistance(s32 a1);
 
-	// for ordersWatchTarget
+	// for orders_watch_target
 	void unknown_orders_func(s32 a1, __int16 a2, __int16 a3);
 
-	// for ordersStayInRange
+	// for orders_stay_in_range
 	void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
 	s32 orders_hold_position_suicidal(Unit* a1);
 	s32 get_direction_from_points(s32 a1, s32 a2, s32 a3, s32 a4);
