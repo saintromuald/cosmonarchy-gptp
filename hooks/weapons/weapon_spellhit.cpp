@@ -221,10 +221,10 @@ namespace hooks
 		if (target != nullptr)
 		{
 			u8 weapon_id;
-			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code
+			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code.
 			if (attacker->id != UnitId::ZergLakizilisk
-				|| (attacker->status & UnitStatus::Burrowed
-					|| attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers, didn't work, but may still be part of the solution
+			|| (attacker->status & UnitStatus::Burrowed
+			||  attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers. Didn't work, but may still be part of the solution. -Pr0nogo
 			{
 				weapon_id = units_dat::GroundWeapon[attacker->id];
 			}

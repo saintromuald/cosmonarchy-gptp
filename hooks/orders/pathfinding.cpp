@@ -97,7 +97,7 @@ namespace hooks
     }
 
     // Hooked to investigate crashes - Pr0nogo
-    bool unitHasPathToUnit(Unit* pather, Unit* target) // 0049CBB0
+    bool unit_has_path_to_unit(Unit* pather, Unit* target) // 0049CBB0
     {
         if (!pather->sprite)
         {

@@ -859,7 +859,7 @@ namespace hooks
 				{
 					return 0;
 				}
-				miscBool = helper::unitHasPathToUnit(pSrc, _pIterator);
+				miscBool = helper::unit_has_path_to_unit(pSrc, _pIterator);
 			}
 			else
 			{

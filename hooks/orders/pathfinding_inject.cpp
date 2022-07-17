@@ -98,7 +98,7 @@ namespace
 			MOV target, ECX
 			PUSHAD
 		}
-		result = hooks::unitHasPathToUnit(pather, target);
+		result = hooks::unit_has_path_to_unit(pather, target);
 		_asm
 		{
 			POPAD
