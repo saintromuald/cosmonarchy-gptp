@@ -93,7 +93,7 @@ const s32 TreasuryIncrease = 8;
 const s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
 
 // Cantavis
-const s32 CantavisHallucinationTimer = 30 * 24 + 1;
+const s32 CantavisHallucinatingFieldTimer = 30 * 24 + 1;
 
 // Archon
 const s32 ArchonAstralAegisShieldHeal = 50 * 256;
