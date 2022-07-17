@@ -358,6 +358,20 @@ namespace hooks
 
 		switch (data.weapon_id)
 		{
+			case WeaponId::CabalistWarpBlades: {
+				// Cabalist - Decloak, Silent Kill
+				if (data.attacker) {
+					UnitExt* attackerExt = get_unit_ext(data.attacker);
+					if (attackerExt->timers[TimerDecloak] > 2) {
+						attackerExt->timers[TimerDecloak] = 2;
+						data.final_damage /= 2;
+						scbw::printf("Recloak");
+					} else {
+						scbw::decloak_proc(data.attacker);
+						scbw::printf("Cloak");
+					}
+				}
+			} break;
 			case WeaponId::QuaziliskAcridBarbs:
 			{
 				// Quazilisk - Melting Points
@@ -388,14 +402,6 @@ namespace hooks
 			// START
 
 			switch (data.attacker->id) {
-				case UnitId::ProtossCabalist: {
-					// Cabalist - Decloak, Silent Kill
-					if (data.final_damage < data.target->hitpoints) {
-						scbw::decloak_proc(data.attacker);
-					} else if (targetExt->timers[TimerDecloak] > 1) {
-						targetExt->timers[TimerDecloak] = 1;
-					}
-				} break;
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);

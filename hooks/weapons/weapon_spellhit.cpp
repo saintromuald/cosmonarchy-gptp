@@ -277,8 +277,7 @@ namespace hooks
 
 			// Cloaked Units - Decloak
 			// Cabalist uses silent strike, so the check has to be in weapon damage
-			if (attacker->id != UnitId::ProtossCabalist)
-			{
+			if (attacker->id != UnitId::ProtossCabalist) {
 				scbw::decloak_proc(attacker);
 			}
 		}
