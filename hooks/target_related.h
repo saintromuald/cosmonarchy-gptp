@@ -14,7 +14,7 @@ namespace hooks
 	u32 is_unit_visible(Unit* unit);																// 004E5DB0
 	void check_unit_visibility(Unit* unit);															// 00443390
 	s32 is_unit_cloaking(Unit* unit);																// 004916E0
-	void updateUnitVisibility(Unit* unit);															// Extracted part of check_unit_visibility
+	void update_unit_visibility(Unit* unit);															// Extracted part of check_unit_visibility
 	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility);						// 00476730
 	s32 order_attack_behavior(Unit *a1);															// 00478540
 	void ai_attack_unit(Unit* unit);																// 0043FFD0

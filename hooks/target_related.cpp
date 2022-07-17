@@ -9,7 +9,7 @@
 
 namespace hooks
 {
-	bool isUnitTargetOutOfMaxRange(Unit* a1, Unit* a2) // 00476430
+	bool is_unit_target_out_of_max_range(Unit* a1, Unit* a2) // 00476430
 	{
 		Unit* _unit;
 		Unit* finalUnit;
@@ -25,7 +25,9 @@ namespace hooks
 		}
 		finalUnit = _unit->subunit;
 		if (!finalUnit || !(units_dat::group_flags[(unsigned __int16)finalUnit->id].is_building))
+		{
 			finalUnit = _unit;
+		}
 		if (a2->status & UnitStatus::InAir)
 		{
 			_wpn = units_dat::AirWeapon[(unsigned __int16)finalUnit->id];
@@ -52,7 +54,7 @@ namespace hooks
 		return v8 == 0;
 	}
 
-	s32 isReadyToAttack(Unit* a1, unsigned __int8 a2) // 00476640
+	s32 is_ready_to_attack(Unit* a1, unsigned __int8 a2) // 00476640
 	{
 		Unit* v2; // esi
 		Unit* v4; // ecx
@@ -83,7 +85,7 @@ namespace hooks
 		return 1;
 	}
 
-	bool isUnitInWeaponRange(Unit* a1, Unit* a2) // 00476870
+	bool is_unit_in_weapon_range(Unit* a1, Unit* a2) // 00476870
 	{
 		Unit* v2; // edi
 		Unit* v4; // esi
@@ -128,7 +130,7 @@ namespace hooks
 		return helper::is_target_within_min_movement_range(v2, v4, v8);
 	}
 
-	char canCastOrderedSpellNow(Unit* a1) // 00491DB0
+	char can_cast_ordered_spell_now(Unit* a1) // 00491DB0
 	{
 		Unit* v1; // esi
 		u32 v2; // eax
@@ -173,7 +175,7 @@ namespace hooks
 		return v2;
 	}
 
-	void ordersWatchTarget(Unit* a1) // 0047BAB0
+	void orders_watch_target(Unit* a1) // 0047BAB0
 	{
 		Unit* v1; // esi
 		Unit* v2; // ebx
@@ -231,9 +233,9 @@ namespace hooks
 				|| (v8 = weapons_dat::min_range[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
 				|| (v9 = helper::get_unit_max_weapon_range(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
-LABEL_23:
+			LABEL_23:
 				if (helper::get_right_click_action_order(v1) == 3)
-LABEL_22:
+			LABEL_22:
 				{
 					helper::unknown_orders_func((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
 				}
@@ -241,7 +243,7 @@ LABEL_22:
 		}
 	}
 
-	void ordersStayInRange(Unit* a1) // 0047C4F0
+	void orders_stay_in_range(Unit* a1) // 0047C4F0
 	{
 		Unit* v1; // esi
 		Unit* v2; // ebx
@@ -538,7 +540,7 @@ LABEL_42:
 		return result;
 	}
 
-	void updateUnitVisibility(Unit* unit)
+	void update_unit_visibility(Unit* unit)
 	{
 		if (*player_visions & unit->detection_status)
 		{
@@ -586,7 +588,7 @@ LABEL_42:
 
 			if (*player_visions & v6)
 			{
-				updateUnitVisibility(unit);
+				update_unit_visibility(unit);
 			}
 		}
 	}
@@ -1104,6 +1106,7 @@ LABEL_65:
 	}
 
 	// Hooked to fix hit tests on structures in fog of war. -Pr0nogo
+	// Doesn't work yet.
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos) { // 00487A10
 		for (Thingy* thingy = *first_used_thingy; thingy; thingy = thingy->next) {
 			if (!helper::unit_is_unselectable(thingy->unit_id)) {

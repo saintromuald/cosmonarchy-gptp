@@ -13,7 +13,7 @@ namespace
 			MOV attacker, EBX
 			PUSHAD
 		}
-		result = hooks::getAttackPriorityHook(target, attacker);
+		result = hooks::get_attack_priority(target, attacker);
 		__asm
 		{
 			POPAD
@@ -55,7 +55,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		target = hooks::findRandomAttackTargetHook(unit);
+		target = hooks::find_random_attack_target(unit);
 		__asm
 		{
 			POPAD

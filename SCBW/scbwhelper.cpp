@@ -4427,7 +4427,7 @@ namespace helper
 		return result;
 	}
 
-	// for isReadyToAttack
+	// for is_ready_to_attack
 	u32 get_distance_to_unit(Unit* a1, Unit* a2)
 	{
 		const u32 Func_getDistanceToUnit = 0x00430D30;
@@ -4477,7 +4477,7 @@ namespace helper
 		return result2 = (bool)result;
 	}
 
-	// for canCastOrderedSpellNow
+	// for can_cast_ordered_spell_now
 
 	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target)
 	{
@@ -4511,7 +4511,7 @@ namespace helper
 		return result;
 	}
 
-	// for ordersWatchTarget
+	// for orders_watch_target
 	void unknown_orders_func(s32 a1, __int16 a2, __int16 a3)
 	{
 		const u32 Func_unknownOrdersFunc = 0x00475350;
@@ -4525,7 +4525,7 @@ namespace helper
 		}
 	}
 
-	// for ordersStayInRange
+	// for orders_stay_in_range
 	void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit)
 	{
 		const u32 Func_prependOrderTargetingGround = 0x00474A20;

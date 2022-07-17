@@ -17,7 +17,7 @@ namespace
 			MOV isForSpellCasting, EAX
 			PUSHAD
 		}
-		sightRange = hooks::getSightRangeHook(unit, isForSpellCasting != 0);
+		sightRange = hooks::get_sight_range(unit, isForSpellCasting != 0);
 		__asm {
 			POPAD
 			MOV EAX, sightRange

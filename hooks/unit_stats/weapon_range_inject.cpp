@@ -12,7 +12,7 @@ namespace
 			MOV unit, EDX
 			PUSHAD
 		}
-		seekRange = hooks::getSeekRangeHook(unit, unit->order_target.unit);
+		seekRange = hooks::get_seek_range(unit, unit->order_target.unit);
 		__asm
 		{
 			POPAD
