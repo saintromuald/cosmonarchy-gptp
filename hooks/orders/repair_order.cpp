@@ -25,7 +25,7 @@ namespace hooks
 				s16 unkRepairInfo = 0;
 				u32 repairCostMinerals = 0, repairCostGas = 0;
 
-				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+				helper::get_repair_info(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
 				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
 
 				unit->worker.repair_resource_loss_timer = 0;
@@ -44,7 +44,7 @@ namespace hooks
 				}
 
 				if (helper::order_to_move_to_target(unit, target)) {
-					helper::unitOrderMoveToTargetUnit(unit, target);
+					helper::unit_order_move_to_target_unit(unit, target);
 					unit->main_order_state = 6;
 				}
 				return;
@@ -60,7 +60,7 @@ namespace hooks
 				}
 
 				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
-				helper::unitOrderMoveToTargetUnit(unit, target);
+				helper::unit_order_move_to_target_unit(unit, target);
 				unit->main_order_state = 7;
 			} break;
 			case 7: {
@@ -69,7 +69,7 @@ namespace hooks
 					return;
 				} else {
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
-					helper::unitOrderMoveToTargetUnit(unit, target);
+					helper::unit_order_move_to_target_unit(unit, target);
 					if (!helper::is_unit_positions_2_equal(unit)) {
 						s32 angle_delta = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						s32 current_angle = unit->current_direction_1 - angle_delta;
@@ -92,7 +92,7 @@ namespace hooks
 			} break;
 			case 8: {
 				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
-				helper::unitOrderMoveToTargetUnit(unit, target);
+				helper::unit_order_move_to_target_unit(unit, target);
 				if (!unit->is_target_within_min_range(target, 5) || target->main_order_id == OrderId::Liftoff) { 
 					unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 					unit->main_order_state = 1;
@@ -120,7 +120,7 @@ namespace hooks
 				s16 unkRepairInfo = 0;
 				u32 repairCostMinerals = 0, repairCostGas = 0;
 
-				helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+				helper::get_repair_info(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
 
 				if (repairCostMinerals <= g_game_minerals[unit->player] &&
 					repairCostGas      <= g_game_vespene[unit->player]) {

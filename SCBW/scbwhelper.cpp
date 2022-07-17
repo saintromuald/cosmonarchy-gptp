@@ -7007,7 +7007,7 @@ namespace helper
 	}
 
 	// unkRepairInfo may be related to unit->worker.repair_resource_loss_timer
-	void getRepairInfo(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo)
+	void get_repair_info(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo)
 	{
 		const u32 Func_getRepairInfo = 0x00466D10;
 		__asm {
@@ -7209,7 +7209,7 @@ namespace helper
 		}
 	}
 
-	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target)
+	void unit_order_move_to_target_unit(Unit* unit, Unit* target)
 	{
 		const u32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
 		__asm {
