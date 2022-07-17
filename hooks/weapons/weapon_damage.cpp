@@ -989,12 +989,6 @@ namespace hooks
 					targetExt->values[ValueAlkajeliskParasite] = 1;
 					targetExt->values[ValueAlkajeliskParasitePlayer] = data.attacker->player;
 				} break;
-				case WeaponId::UltrokorKaiserBlades:
-				{
-					// Kaiser Rampage - Ultralisk behavior
-					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
-					data.attacker->update_speed();
-				} break;
 			}
 
 			// Mind Control - energy restore

@@ -635,8 +635,7 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergZoryusthaleth:
-			{
+			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Swarming Omen
 				if (unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
 				{
@@ -656,21 +655,11 @@ namespace hooks
 				}
 
 				// Zoryusthaleth - Reconstitution
-				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
-				{
+				if (unitExt->timers[TimerReconstitutionCooldown] == 0) {
 					u32 radius = 5 * 32;
 					EntryArray corpses = corpse_search_radial(unit->position, radius);
-					for (u32 i = 0; i < corpses.count; ++i)
-					{
+					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
-						if (unit->energy < 5 * 256)
-						{
-							break;
-						}
-						if (corpse->sprite->flags & SpriteFlags::Flag04)
-						{
-							continue;
-						}
 						EntryArray targets = unit_search_radial(unit->position, radius);
 						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.count; ++i) {
@@ -683,6 +672,24 @@ namespace hooks
 						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unitExt->timers[TimerReconstitutionCooldown] = 1 * 24;
+						break;
+					}
+				}
+			} break;
+			case UnitId::ZergUltrokor: {
+				// Kaiser Rampage - Ultrokor behavior
+				if (!unitExt->timers[TimerKaiserRampageTimeout]) {
+					u32 radius = 1 * 32;
+					EntryArray corpses = corpse_search_radial(unit->position, radius);
+					for (u32 i = 0; i < corpses.count; ++i) {
+						Thingy* corpse = corpses.corpses[i];
+						unitExt->timers[TimerKaiserRampageTimeout] = 0.5 * 24;
+						unitExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
+						unit->update_speed();
+
+						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						break;
 					}
 				}

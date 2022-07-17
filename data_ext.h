@@ -118,6 +118,7 @@ enum ExtValueId
 enum ExtTimerId
 {
 	TimerKaiserRampage,
+	TimerKaiserRampageTimeout,
 	TimerMaledictionSlow,						// unused
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
