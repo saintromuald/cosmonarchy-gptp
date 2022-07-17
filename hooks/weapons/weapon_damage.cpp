@@ -336,7 +336,7 @@ namespace hooks
 			{
 				// Entropy Gauntlets
 				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-					u32 energy = std::min(data.attacker->energy, (u16)(15 * 256));
+					u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
 					if (energy) {
 						data.attacker->energy -= energy;
 						data.final_damage += energy / 2;
