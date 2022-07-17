@@ -1,7 +1,4 @@
-// Contains the definitions of various data structures, arrays, pointers and
-// internal constants in StarCraft.exe.
-// The contents of this file are merged from: unit.cpp, triggers.cpp,
-// resources.cpp, player.cpp, locations.cpp, buttons.cpp, and qdp.cpp.
+// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
 #pragma once
 #include "../definitions.h"
