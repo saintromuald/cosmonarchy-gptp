@@ -332,7 +332,7 @@ namespace hooks
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
 				data.final_damage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
-			case WeaponId::SavantPowerSiphon:
+			case WeaponId::SavantDiscoidRailgun:
 			{
 				// Entropy Gauntlets
 				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
