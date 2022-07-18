@@ -668,7 +668,7 @@ struct AiRegion
 	/*0x06*/  u8  defense_priority_add;
 	/*0x07*/  u8  defend_timeout;
 	/*0x08*/  u8  captain_flags;
-	/*0x09*/  u8  unknown_0x9;
+	/*0x09*/  u8  field_9;
 	/*0x0A*/  u16 ground_unit_count;
 	/*0x0C*/  u16 ground_strength_needed;
 	/*0x0E*/  u16 air_strength_needed;
@@ -733,7 +733,6 @@ struct GuardAi
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
-struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi
 {
 	Link<WorkerAi> link;			// 0x0, 0x4
@@ -847,11 +846,11 @@ struct AiTown
 	u8 worker_limit;					//	0x1b
 	u8 resarea;							//	0x1c
 	u8 resource_units_not_set;			//	0x1d
-	u8 inBattle;						//	0x1e
+	u8 in_battle;						//	0x1e
 	u8 unk1f;							//	0x1f
 	Point16 position;					//	0x20
 	Unit* main_building;				//	0x24
-	Unit* building_SCV;					//	0x28
+	Unit* building_scv;					//	0x28
 	Unit* mineral;						//	0x2c
 	Unit* gas_buildings[3];				//	0x30
 	TownReq town_units[0x64];			//	0x3c
