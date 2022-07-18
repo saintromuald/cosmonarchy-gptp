@@ -494,7 +494,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// frame rate hack
 	nops(0x004D9923, 2);
 
-	// allow all addons to connect
+	// allow all players addons to connect
 	nops(0x00440314, 6);
 
 	// injection
