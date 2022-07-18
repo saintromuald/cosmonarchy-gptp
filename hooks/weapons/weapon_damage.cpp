@@ -241,13 +241,15 @@ namespace hooks
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
-		if (data.final_damage >= data.target->hitpoints || data.target->status & UnitStatus::IsHallucination) {
+		if (data.final_damage >= data.target->hitpoints || data.target->status & UnitStatus::IsHallucination) { // Also proc on deaths for hallucinations, since we know they always die in one hit
 			weapon_damage_fatal(data);
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage)
-		{
+		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage) {
+			if (data.target->status & UnitStatus::IsHallucination) {
+				data.final_damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
+			}
 			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
 			if (!data.target->hitpoints && data.attackingPlayerId != data.target->player) {
