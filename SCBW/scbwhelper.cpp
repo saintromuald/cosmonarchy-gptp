@@ -5292,15 +5292,15 @@ namespace helper
 		}
 	}
 
-	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target)
+	void ai_unit_was_hit(Unit* self, Unit* attacker, u32 main_target_reactions, u32 dont_call_help)
 	{
 		const u32 Func_Ai_UnitWasHit = 0x0043F320;
 		__asm {
 			PUSHAD
-			PUSH main_target_reaction
 			PUSH dont_call_help
-			MOV ECX, target
+			PUSH main_target_reactions
 			MOV EDX, attacker
+			MOV ECX, self
 			CALL Func_Ai_UnitWasHit
 			POPAD
 		}
@@ -12627,5 +12627,45 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) {
+		static u32 result;
+		const u32 func_address = 0x004769D0;
+		__asm {
+			PUSHAD
+			MOV EDI, compare_unit
+			MOV EAX, auto_target
+			MOV ECX, self
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	void react_to_hit(Unit* attacker, Unit* victim) {
+		const u32 func_address = 0x004776C0;
+		__asm {
+			PUSHAD
+			MOV ECX, victim
+			MOV EAX, attacker
+			CALL func_address
+			POPAD
+		}
+	}
+
+	char ask_for_help(Unit* attacker, Unit* helper) {
+		static u32 result;
+		const u32 func_address = 0x00476E60;
+		__asm {
+			PUSHAD
+			MOV ESI, helper
+			MOV EAX, attacker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
 	}
 }

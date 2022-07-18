@@ -336,8 +336,8 @@ namespace hooks
 					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					// reload the previous temporary unit list from before the call to get_all_units_in_bounds
-					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
+					*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
+					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 
 					if (sorted_list_length != 0)
 					{
@@ -384,8 +384,8 @@ namespace hooks
 					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					// reload the previous temporary unit list from before the call to get_all_units_in_bounds
-					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
+					*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
+					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 
 					if (sorted_list_length != 0)
 					{
@@ -623,7 +623,7 @@ namespace hooks
 		Unit* new_units[SelectionCap] = {};
 		Unit** found_units = helper::find_all_units(coords);
 		u32 sorted_units = helper::sort_all_units(found_units, new_units, 0);
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]--];
 		if (sorted_units) {
 			for (u32 i = 0; i < SelectionCap; ++i) {
 				Unit* unit = new_units[i];

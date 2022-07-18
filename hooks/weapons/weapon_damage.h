@@ -67,8 +67,9 @@ namespace hooks {
 
 	void apply_ensnare(Unit* a1);
 	u16 get_spores_overlay_id(Unit* target);
-	s32 apply_spores_hook(Unit* target);		// 004F4480
-	void unit_attack_notify(Unit* unit);		// 0048F230
+	s32 apply_spores_hook(Unit* target);							// 004F4480
+	void unit_attack_notify(Unit* unit);							// 0048F230
+	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal);	// 004795D0
 
 	void inject_weapon_damage_hooks();
 }

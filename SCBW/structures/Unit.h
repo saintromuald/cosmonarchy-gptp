@@ -354,7 +354,7 @@ struct Unit : public UnitLayout
 	///
 	/// If the unit can use the tech, returns 1. If the tech needs to be
 	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 canUseTech(u8 techId, u8 player) const;
+	s32 can_use_tech(u8 techId, u8 player) const;
 
 	//////////////////////////////////////////////////////////////// @}
 

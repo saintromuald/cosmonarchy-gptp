@@ -59,8 +59,8 @@ namespace hooks
 			units_in_area_of_effect++;
 			current_unit = *units_in_area_of_effect;
 		}
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[*tempUnitsListArraysCountsListLastIndex];
-		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list_last_index[*g_temp_units_list_arrays_counts_list_last_index];
+		*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
 		if (needs_refresh) {
 			scbw::refresh_console();
 		}
