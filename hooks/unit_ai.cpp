@@ -96,8 +96,8 @@ namespace hooks
 				AiTown* town = unit_ai->town;
 				if (town && unit_ai->type == AiType::Building) { // type check is new
 					helper::delete_building_ai((BuildingAi*)unit_ai, &town->free_buildings); // moved within nullcheck for sanity
-					if (town->building_SCV == unit) {
-						town->building_SCV = 0;
+					if (town->building_scv == unit) {
+						town->building_scv = 0;
 					}
 					if (town->main_building == unit) {
 						town->main_building = 0;
@@ -133,9 +133,9 @@ namespace hooks
 							AiTown* newUnitTown = newUnitAi->town;
 							helper::delete_building_ai(newUnitAi, &newUnitTown->free_buildings);
 							if (newUnitTown) {
-								if (newUnit == newUnitTown->building_SCV)
+								if (newUnit == newUnitTown->building_scv)
 								{
-									newUnitTown->building_SCV = 0;
+									newUnitTown->building_scv = 0;
 								}
 								if (newUnit == newUnitTown->main_building)
 								{
@@ -454,9 +454,9 @@ namespace hooks
 						helper::delete_building_ai(removeBuilding, &removeBuildingTown->free_buildings);
 						if (removeBuildingTown)
 						{
-							if (result == removeBuildingTown->building_SCV)
+							if (result == removeBuildingTown->building_scv)
 							{
-								removeBuildingTown->building_SCV = 0;
+								removeBuildingTown->building_scv = 0;
 							}
 							if (result == removeBuildingTown->main_building)
 							{
@@ -643,9 +643,9 @@ namespace hooks
 
 			if (town)
 			{
-				if (unit == town->building_SCV)
+				if (unit == town->building_scv)
 				{
-					town->building_SCV = nullptr;
+					town->building_scv = nullptr;
 				}
 				if (unit == town->main_building)
 				{
@@ -698,9 +698,9 @@ namespace hooks
 						delete_building_ai(newBuildingAi, newUnitTown->free_buildings);
 						if (newUnitTown)
 						{
-							if (newUnit == newUnitTown->building_SCV)
+							if (newUnit == newUnitTown->building_scv)
 							{
-								newUnitTown->building_SCV = nullptr;
+								newUnitTown->building_scv = nullptr;
 							}
 							if (newUnit == newUnitTown->main_building)
 							{

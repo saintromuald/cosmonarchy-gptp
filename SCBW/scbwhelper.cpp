@@ -7942,7 +7942,7 @@ namespace helper
 	}
 
 	// Returns 1 if unfindable
-	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y)
+	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y)
 	{
 		const u32 Func_AI_PrepareMovingTo = 0x004E7420;
 		static s32 result;
@@ -7959,10 +7959,10 @@ namespace helper
 		return result;
 	}
 
-	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y)
+	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y)
 	{
 		const u32 Func_CreateUnitAtPos = 0x004CD360; // AKA createUnitXY()
-		if (unit_id >= UNIT_TYPE_COUNT)
+		if (unit_id == UnitId::None || unit_id >= UnitId::Count)
 		{
 			return nullptr;
 		}
@@ -7981,7 +7981,7 @@ namespace helper
 	}
 
 	// more from api.cpp
-	Flingy* createFlingy(u32 flingy_id, u32 player, u32 x, u32 y)
+	Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y)
 	{
 		const u32 Func_CreateFlingy = 0x00496460;
 		static Flingy* flingy;

@@ -584,8 +584,8 @@ namespace helper {
 	void apply_spores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
-	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y);																	// 004CD360
-	Flingy* createFlingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
+	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																	// 004CD360
+	Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph
 	u8 set_archon_pathing(Unit* unit);																								// 0046A820
@@ -897,7 +897,7 @@ namespace helper {
 
 	//// pathfinding
 	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
-	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y);														// 004E7420
+	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior
 	bool has_ground_weapon_graphic(Unit* unit);

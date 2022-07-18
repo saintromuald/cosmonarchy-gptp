@@ -45,7 +45,7 @@ namespace hooks
 				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
 				if (selfBuildingAi)
 				{
-					selfBuildingAi->town->inBattle = 1;
+					selfBuildingAi->town->in_battle = 1;
 				}
 				if (main_target_reactions)
 				{
@@ -576,9 +576,9 @@ LABEL_37:
 			&& !(repairman->status & UnitStatus::InBuilding) // new
 			&& repairmanAI != nullptr
 			&& repairmanAI->town != nullptr
-			&& repairmanAI->town->building_SCV != nullptr) // new
+			&& repairmanAI->town->building_scv != nullptr) // new
 		{
-			result = repairmanAI->town->building_SCV == repairman;
+			result = repairmanAI->town->building_scv == repairman;
 		}
 		return result;
 	}
@@ -1690,10 +1690,10 @@ LABEL_37:
 		}
 		if (!town->buildings || !repairee)
 		{
-			if (!town->building_SCV) {
-				town->building_SCV = worker;
+			if (!town->building_scv) {
+				town->building_scv = worker;
 			}
-			if (town->building_SCV != worker) {
+			if (town->building_scv != worker) {
 				return 0;
 			}
 			repairee = helper::ai_find_best_repair_unit(worker); // This writing to repairee seems really wrong
