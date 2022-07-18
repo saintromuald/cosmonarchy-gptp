@@ -151,12 +151,6 @@ namespace hooks
 			}
 		}
 
-		// Hallucinations take double damage
-		if (data.target->status & UnitStatus::IsHallucination)
-		{
-			data.final_damage *= 2;
-		}
-
 		// Minimum amount of damage that can be dealt
 		if (data.final_damage < 256)
 		{
@@ -247,7 +241,7 @@ namespace hooks
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
-		if (data.final_damage >= data.target->hitpoints) {
+		if (data.final_damage >= data.target->hitpoints || data.target->status & UnitStatus::IsHallucination) {
 			weapon_damage_fatal(data);
 		}
 
@@ -359,7 +353,7 @@ namespace hooks
 		switch (data.weapon_id)
 		{
 			case WeaponId::CabalistWarpBlades: {
-				// Cabalist - Decloak, Silent Kill
+				// Cabalist - Toggle cloak with each attack
 				if (data.attacker) {
 					UnitExt* attackerExt = get_unit_ext(data.attacker);
 					if (attackerExt->timers[TimerDecloak] > 2) {
@@ -430,7 +424,7 @@ namespace hooks
 				}
 			}
 
-			// Ensnaring Brood - Queen enchantment ability
+			// Ensnaring Brood - Matraleth enchantment ability
 			if  (attackerExt->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
 			&&  !scbw::is_under_dark_swarm(data.target))
