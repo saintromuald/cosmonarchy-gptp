@@ -47,7 +47,7 @@ namespace hooks
 				//original code is hardcoded, not using a function
 				u8 techId = getCloakingTech(unit_from_selection);
 
-				if (unit_from_selection->canUseTech(techId, player) == TRUE)
+				if (unit_from_selection->can_use_tech(techId, player) == TRUE)
 				{
 
 					if (
@@ -89,7 +89,7 @@ namespace hooks
 				u8 techId = getCloakingTech(unit_from_selection);
 
 				if (
-					unit_from_selection->canUseTech(techId, player) == TRUE &&				//must be able to use cloaking tech for more checks to be necessary
+					unit_from_selection->can_use_tech(techId, player) == TRUE &&				//must be able to use cloaking tech for more checks to be necessary
 					(!(unit_from_selection->status & UnitStatus::CloakingForFree) ||	//to cloak, unit should not already be cloaked for free
 						unit_from_selection->status & UnitStatus::Burrowed) &&				//if burrowed, cloaking for free, but still allowed to cloak
 					!(unit_from_selection->status & UnitStatus::RequiresDetection)			//if unit doesn't already require detection

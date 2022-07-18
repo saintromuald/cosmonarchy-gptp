@@ -157,7 +157,7 @@ namespace hooks
 
 	u32 doMedicHeal_Func(Unit* cleric, Unit* target) // 00463C40
 	{
-		if (cleric->canUseTech(TechId::Healing, cleric->player))
+		if (cleric->can_use_tech(TechId::Healing, cleric->player))
 		{
 			if (target && helper::ai_order_heal(cleric, target))
 			{

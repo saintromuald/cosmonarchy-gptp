@@ -614,7 +614,7 @@ namespace helper {
 	//// weapon_effect
 	bool is_unit_distance_within(Unit* target, Bullet* bullet, u32 radius);
 	void do_weapon_hit(Unit* target, Unit* attacker, u8 dmgDivisor);
-	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target);
+	void ai_unit_was_hit(Unit* self, Unit* attacker, u32 main_target_reactions, u32 dont_call_help);								// 0043F320
 
 	// for air_splash
 	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));													// 004E8830
@@ -1400,4 +1400,8 @@ namespace helper {
 
 	s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
 	s32 get_sfx_pan_from_screen_distance(u32 x);															// 0048E850
+
+	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit);								// 004769D0
+	void react_to_hit(Unit* attacker, Unit* victim);														// 004776C0
+	char ask_for_help(Unit* attacker, Unit* helper);														// 00476E60
 }

@@ -92,6 +92,30 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) unit_was_hit_wrapper() { // 004795D0
+		static Unit* victim;
+		static Unit* attacker;
+		static u32 reveal;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV attacker, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV reveal, EAX
+			POP EAX
+			MOV victim, EBX
+			PUSHAD
+		}
+		hooks::unit_was_hit(victim, attacker, reveal);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -102,5 +126,6 @@ namespace hooks
 		jump_patch(apply_ensnare_wrapper,				0x004F45E0, 2);
 		jump_patch(update_corrosive_spores_wrapper,		0x004F4480, 1);
 	//	jump_patch(unit_attack_notify_wrapper,			0x0048F230, 3);
+		jump_patch(unit_was_hit_wrapper,				0x004795D0, 1);
 	}
 }

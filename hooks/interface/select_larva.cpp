@@ -55,7 +55,7 @@ namespace hooks
 
 			u32 found_count = get_larvae_units_from_list(units_in_bounds, found_larvae);
 
-			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[--*tempUnitsListArraysCountsListLastIndex];
+			*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--*g_temp_units_list_arrays_counts_list_last_index];
 
 			for (u32 i = 0; i < found_count; ++i) {
 				for (u32 j = 0; j < count; ++j) {

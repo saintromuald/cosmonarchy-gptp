@@ -68,7 +68,7 @@ namespace hooks
 		activePlayerCurrentSelection = get_active_player_next_selection();
 		while (activePlayerCurrentSelection != nullptr)
 		{
-			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *g_active_nation_id) == 1
+			if (activePlayerCurrentSelection->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1
 				&& activePlayerCurrentSelection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;

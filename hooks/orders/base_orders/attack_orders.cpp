@@ -306,7 +306,7 @@ namespace hooks
 
 					if (unit->id != UnitId::TerranPhalanxTankModeTurret
 					||  current_subunit->unit_ai == nullptr
-					|| (current_subunit->canUseTech(TechId::TankSiegeMode, unit->player) != TRUE)
+					|| (current_subunit->can_use_tech(TechId::TankSiegeMode, unit->player) != TRUE)
 					|| !helper::is_unit_visible(unit))
 					{
 						jump_to_77BD7 = true;

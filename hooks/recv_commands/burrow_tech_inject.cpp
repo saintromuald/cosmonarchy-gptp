@@ -4,19 +4,19 @@
 
 namespace
 {
-	void __declspec(naked) CMDRECV_UnburrowWrapper()
+	void __declspec(naked) cmdrecv_unburrow_wrapper()
 	{
 		__asm {
 			PUSHAD
 		}
-		hooks::CMDRECV_Unburrow();
+		hooks::cmdrecv_unburrow();
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) CMDRECV_BurrowWrapper()
+	void __declspec(naked) cmdrecv_burrow_wrapper()
 	{
 		static u8 bCommandType;
 		__asm {
@@ -27,7 +27,7 @@ namespace
 			MOV bCommandType, AL
 			PUSHAD
 		}
-		hooks::CMDRECV_Burrow(bCommandType);
+		hooks::cmdrecv_burrow(bCommandType);
 		__asm {
 			POPAD
 			POP EBP
@@ -35,7 +35,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) Unburrow_ProcWrapper()
+	void __declspec(naked) unburrow_proc_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -44,7 +44,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::Unburrow_Proc(unit);
+		hooks::unburrow_proc(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -56,10 +56,10 @@ namespace
 
 namespace hooks
 {
-	void injectBurrowTechHooks()
+	void inject_burrow_tech_hooks()
 	{
-		jump_patch(CMDRECV_UnburrowWrapper,		0x004C1AC0, 3);
-		jump_patch(CMDRECV_BurrowWrapper,		0x004C1FA0, 6);
-		jump_patch(Unburrow_ProcWrapper,		0x004E97C0, 1);
+		jump_patch(cmdrecv_unburrow_wrapper,	0x004C1AC0, 3);
+		jump_patch(cmdrecv_burrow_wrapper,		0x004C1FA0, 6);
+		jump_patch(unburrow_proc_wrapper,		0x004E97C0, 1);
 	}
 }

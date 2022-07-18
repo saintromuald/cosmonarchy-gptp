@@ -237,7 +237,7 @@ namespace hooks
 			graphics::reset_all_graphics();
 		}
 
-		// Update Extended Features
+		// Update extended features
 		scbw::set_ingame_loop_state(true);
 		update_trigger_system(true);
 		if (!scbw::is_game_paused()) {

@@ -1253,7 +1253,7 @@ s32 Unit::can_make_unit(u16 unit_id, u8 player) const
 	return result;
 }
 
-s32 Unit::canUseTech(u8 techId, u8 player) const
+s32 Unit::can_use_tech(u8 techId, u8 player) const
 {
 	assert(this);
 	const u32 Func_CanUseTech = 0x0046DD80;

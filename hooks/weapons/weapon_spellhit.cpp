@@ -33,9 +33,9 @@ namespace hooks
 				while (aUnitInBound);
 			}
 		}
-		s32 index = tempUnitsListArraysCountsListLastIndex[0] - 1;
-		tempUnitsListArraysCountsListLastIndex[0] = index;
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[index];
+		s32 index = g_temp_units_list_arrays_counts_list_last_index[0] - 1;
+		g_temp_units_list_arrays_counts_list_last_index[0] = index;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[index];
 		return aUnitInBound;
 	}
 
@@ -353,8 +353,8 @@ namespace hooks
 			current_unit = *unitsInAreaOfEffect;
 		}
 		// reload the previous temporary unit list from before the call to get_all_units_in_bounds
-		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
+		*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value

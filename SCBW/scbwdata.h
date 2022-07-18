@@ -845,11 +845,11 @@ SCBW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 SCBW_DATA(Vector32*,		g_angle_distance,	0x00512D28);
 SCBW_DATA(u16*,				g_megatile_count,	0x005998E0);
 
-//Used internally by Starcraft to manage temporary units lists
-SCBW_DATA(Unit***, tempUnitsListsArray, 0x006BB938);
-SCBW_DATA(u32*, tempUnitsListCurrentArrayCount, 0x006BEE64);
-SCBW_DATA(u32*, tempUnitsListArraysCountsListLastIndex, 0x006BEE6C);
-SCBW_DATA(u32*, tempUnitsListArraysCountsList, 0x006BEE70);
+// Used internally by Starcraft to manage temporary units lists
+SCBW_DATA(Unit***, g_temp_units_lists_array, 0x006BB938);
+SCBW_DATA(u32*, g_temp_units_list_current_array_count, 0x006BEE64);
+SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list_last_index, 0x006BEE6C);
+SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list, 0x006BEE70);
 
 // Font & Drawing
 namespace graphics {

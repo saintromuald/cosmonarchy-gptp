@@ -151,12 +151,6 @@ namespace hooks
 			}
 		}
 
-		// Hallucinations take double damage
-		if (data.target->status & UnitStatus::IsHallucination)
-		{
-			data.final_damage *= 2;
-		}
-
 		// Minimum amount of damage that can be dealt
 		if (data.final_damage < 256)
 		{
@@ -247,7 +241,7 @@ namespace hooks
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
-		if (data.final_damage >= data.target->hitpoints) {
+		if (data.final_damage >= data.target->hitpoints || data.target->status & UnitStatus::IsHallucination) {
 			weapon_damage_fatal(data);
 		}
 
@@ -306,7 +300,7 @@ namespace hooks
 		// Observance Armor Rend
 		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
 
-		switch (data.weapon_id) // Damage Divisor Calc
+		switch (data.weapon_id) // Damage divisor calc
 		{
 			case WeaponId::ArchitectDispersiveSalvo:
 			{
@@ -359,7 +353,7 @@ namespace hooks
 		switch (data.weapon_id)
 		{
 			case WeaponId::CabalistWarpBlades: {
-				// Cabalist - Decloak, Silent Kill
+				// Cabalist - Toggle cloak with each attack
 				if (data.attacker) {
 					UnitExt* attackerExt = get_unit_ext(data.attacker);
 					if (attackerExt->timers[TimerDecloak] > 2) {
@@ -430,7 +424,7 @@ namespace hooks
 				}
 			}
 
-			// Ensnaring Brood - Queen enchantment ability
+			// Ensnaring Brood - Matraleth enchantment ability
 			if  (attackerExt->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
 			&&  !scbw::is_under_dark_swarm(data.target))
@@ -1125,6 +1119,76 @@ namespace hooks
 						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
 					//	helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
 					}
+				}
+			}
+		}
+	}
+
+	// Hooked to reveal fog around attackers when they attack allies. -Pr0nogo
+	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal) // 004795D0
+	{
+		if (attacker)
+		{
+			u8 attacking_player = attacker->player;
+			if (attacking_player != victim->player)
+			{
+				victim->last_attacking_player = attacking_player;
+				if (victim->unit_ai)
+				{
+					if (!victim->auto_target_unit)
+					{
+						Unit* victim_subunit = victim->subunit;
+						victim->auto_target_unit = attacker;
+						if (victim_subunit)
+						{
+							if (units_dat::base_property[victim_subunit->id] & UnitProperty::Subunit)
+							{
+								victim_subunit->last_attacking_player = victim->last_attacking_player;
+								victim->subunit->auto_target_unit = attacker;
+							}
+						}
+					}
+				}
+				helper::ai_unit_was_hit(victim, attacker, 1, 0);
+				if (reveal)
+				{
+					if (!helper::unit_can_see_cloaked_target(attacker, victim))
+					{
+						u8 victim_player = victim->player;
+						if (victim_player < 8) // Should probably be 11
+						{
+							helper::reveal_sight_at_location(1, 1 << victim_player, attacker->sprite->position.x, attacker->sprite->position.y, (attacker->status >> 2) & 1);
+						}
+					}
+				}
+				if (attacker->status & UnitStatus::InBuilding)
+				{
+					attacker = attacker->connected_unit;
+					attacker = attacker->connected_unit;
+				}
+				if (helper::is_better_target(victim, victim->auto_target_unit, attacker))
+				{
+					helper::react_to_hit(attacker, victim);
+				}
+				if (!victim->unit_ai)
+				{
+					Box16 bounds = {};
+					u16 pos_x = victim->sprite->position.x;
+					u16 pos_y = victim->sprite->position.y;
+					bounds.w = pos_x + 96;
+					bounds.h = pos_y + 96;
+					bounds.x = pos_x - 96;
+					bounds.y = pos_y - 96;
+					Unit** units_in_bounds = helper::get_all_units_in_bounds(&bounds);
+					for (Unit* i = *units_in_bounds; i; ++units_in_bounds)
+					{
+						if (i != victim && i->player == victim->player)
+						{
+							helper::ask_for_help(attacker, i);
+						}
+						i = units_in_bounds[1];
+					}
+					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--g_temp_units_list_arrays_counts_list_last_index[0]];
 				}
 			}
 		}

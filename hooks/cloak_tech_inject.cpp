@@ -128,7 +128,7 @@ namespace
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (unit->canUseTech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
+			if (unit->can_use_tech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
 				applyCloakingOrderHook(unit);
 		}
 	}
@@ -153,7 +153,7 @@ namespace
 		}
 		if (!(unit->status & UnitStatus::RequiresDetection))
 		{
-			if (unit->canUseTech(hooks::getCloakingTech(unit), unit->player) == 1)
+			if (unit->can_use_tech(hooks::getCloakingTech(unit), unit->player) == 1)
 			{
 				applyCloakingOrderHook(unit);
 				//applyCloakingOrderFunc(unit);
@@ -171,7 +171,7 @@ namespace
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (unit->canUseTech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
+			if (unit->can_use_tech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
 				unit->set_secondary_order(OrderId::Decloak);
 		}
 	}
