@@ -15,7 +15,7 @@
 // worker, factories, resource containers, ghosts, nydus canals, silos, hatcheries, and powerups
 bool is_valid_psi_provider_type(u16 unit_id)
 {
-	if (unit_id >= UNIT_TYPE_COUNT)
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
 	{
 		return false;
 	}

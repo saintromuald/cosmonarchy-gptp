@@ -75,7 +75,7 @@ graphics::ColorId Player::get_faction_color(u8 player)
 
 u32 Player::number_of_units_of_id(u8 player, u16 unit_id)
 {
-	if (unit_id > UNIT_TYPE_COUNT - 1)
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
 	{
 		return 0;
 	}
@@ -84,9 +84,28 @@ u32 Player::number_of_units_of_id(u8 player, u16 unit_id)
 
 u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id)
 {
-	if (unit_id > UNIT_TYPE_COUNT - 1)
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
 	{
 		return 0;
 	}
 	return g_unit_count_table[unit_id].player[player];
+}
+
+u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
+	{
+		return 0;
+	}
+	u32 result = 0;
+	for (Unit* i = first_player_unit->unit[player]; i; i = i->player_link.next) {
+		if (i->id == unit_id) {
+			if (i->status & UnitStatus::InAir) {
+				continue;
+			}
+			else if (i->status & UnitStatus::Completed && i->status & UnitStatus::GroundedBuilding) {
+				result++;
+			}
+		}
+	}
+	return result;
 }
