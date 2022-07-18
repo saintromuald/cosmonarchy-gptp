@@ -621,7 +621,6 @@ namespace helper
 	}
 
 	// For hallucinationHit
-
 	void unit_was_hit(Unit* a1, Unit* a2, s32 a3)
 	{
 		const u32 Func_unitWasHit = 0x004795D0;
@@ -635,12 +634,12 @@ namespace helper
 		}
 	}
 
-	void unit_attack_notify(Unit* a1)
+	void unit_attack_notify(Unit* unit)
 	{
 		const u32 Func_doAttackNotifyEvent = 0x0048F230;
 		__asm {
 			PUSHAD
-			PUSH a1
+			PUSH unit
 			CALL Func_doAttackNotifyEvent
 			POPAD
 		}

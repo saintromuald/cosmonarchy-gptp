@@ -300,7 +300,7 @@ namespace hooks
 		// Observance Armor Rend
 		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
 
-		switch (data.weapon_id) // Damage Divisor Calc
+		switch (data.weapon_id) // Damage divisor calc
 		{
 			case WeaponId::ArchitectDispersiveSalvo:
 			{
