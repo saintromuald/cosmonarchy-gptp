@@ -232,7 +232,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.create_effect(EffectId_Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				globals.create_effect(EffectId_Criticality, 5 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
