@@ -482,7 +482,7 @@ void Globals::frame_hook() {
 						{
 							return;
 						}
-						unit->heal_underflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
+						unit->heal_underflow(4 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
 				case EffectId_CausticDischarge: {
