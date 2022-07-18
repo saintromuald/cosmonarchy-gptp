@@ -73,39 +73,31 @@ graphics::ColorId Player::get_faction_color(u8 player)
 	return return_value;
 }
 
-u32 Player::number_of_units_of_id(u8 player, u16 unit_id)
-{
-	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
-	{
+u32 Player::number_of_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count) {
 		return 0;
 	}
 	return g_all_unit_count_table[unit_id].player[player];
 }
 
-u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id)
-{
-	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
-	{
+u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count) {
 		return 0;
 	}
 	return g_unit_count_table[unit_id].player[player];
 }
 
 u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {
-	if (unit_id == UnitId::None || unit_id >= UnitId::Count)
-	{
+	if (unit_id == UnitId::None || unit_id >= UnitId::Count) {
 		return 0;
 	}
-	u32 result = 0;
-	for (Unit* i = first_player_unit->unit[player]; i; i = i->player_link.next) {
-		if (i->id == unit_id) {
-			if (i->status & UnitStatus::InAir) {
-				continue;
-			}
-			else if (i->status & UnitStatus::Completed && i->status & UnitStatus::GroundedBuilding) {
-				result++;
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->status & UnitStatus::Completed && !(unit->status & UnitStatus::InAir)) {
+				count++;
 			}
 		}
 	}
-	return result;
+	return count;
 }

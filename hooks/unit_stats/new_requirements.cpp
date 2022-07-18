@@ -1085,8 +1085,8 @@ namespace hooks {
 		TierUnlocked[RaceId::Zerg][Tier4] = player_has_completed_unit_id(player_id, UnitId::ZergAlaszilArbor);
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
-		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_unit_id(player_id, UnitId::TerranEngineeringBay);
-		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_unit_id(player_id, UnitId::TerranScienceFacility);
+		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranEngineeringBay);
+		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_landed_unit_id(player_id, UnitId::TerranScienceFacility);
 		TierUnlocked[RaceId::Terran][Tier4] = true;
 
 		TierUnlocked[RaceId::Protoss][Tier1] = true;
