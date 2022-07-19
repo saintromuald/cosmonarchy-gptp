@@ -16,6 +16,9 @@ static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
 
 static bool player_wants_to_randomize(u32 player) {
+	if (has_custom_color[player]) {
+		return false;
+	}
 	if (can_randomize_player_colors) {
 		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
 		if (g_death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
@@ -28,9 +31,6 @@ static bool player_wants_to_randomize(u32 player) {
 
 static bool player_can_randomize(u32 player) {
 	u32 personality = g_unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
-	if (has_custom_color[player]) {
-		return false;
-	}
 	if (g_player_table[player].type == PlayerType::Computer && !personality) {
 		return false; // Don't randomize AI players that don't have personality yet
 	}
