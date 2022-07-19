@@ -1,5 +1,6 @@
 #include "player_color.h"
 #include "trigger_system/trigger_system.h"
+#include "color_palette.h"
 
 static bool loaded_colors;
 static bool can_randomize_player_colors;
@@ -51,15 +52,6 @@ static std::vector<u32> get_player_tints_from_color(u32 color) {
 	return tints;
 }
 
-static bool can_use_player_color(u32 color, u32 player) {
-	for (u32 player_tint : get_player_tints_from_color(color)) {
-		if (!can_use_player_tint(player_tint, player)) {
-			return false;
-		}
-	}
-	return true;
-}
-
 static bool can_use_player_tint(u32 color_tint, u32 player) {
 	if (g_player_table[player].race < banned_race_tints.size()) {
 		for (u32 banned_tint : banned_race_tints[g_player_table[player].race]) {
@@ -84,6 +76,37 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 				if (color_tint == other_tint) {
 					return false;
 				}
+			}
+		}
+	}
+	return true;
+}
+
+static u32 get_color_delta(u32 a, u32 b) {
+	RGBA a_rgba = init_palette->colors[tminimap_colors[a + ColorSetCount * *g_current_tileset]];
+	RGBA b_rgba = init_palette->colors[tminimap_colors[b + ColorSetCount * *g_current_tileset]];
+
+	u32 delta = 0;
+	delta += abs(a_rgba.r - b_rgba.r);
+	delta += abs(a_rgba.g - b_rgba.g);
+	delta += abs(a_rgba.b - b_rgba.b);
+	return delta;
+}
+
+static bool can_use_player_color(u32 color, u32 player) {
+	for (u32 player_tint : get_player_tints_from_color(color)) {
+		if (!can_use_player_tint(player_tint, player)) {
+			return false;
+		}
+	}
+	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+		if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
+			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
+				continue;
+			}
+			u32 delta = get_color_delta(color, player_color_list[other_player]);
+			if (delta < 128) {
+				return false;
 			}
 		}
 	}
@@ -138,11 +161,15 @@ static void randomize_player_color(u32 player) {
 			return;
 		}
 	}
-	u32 tint = get_random_tint();
-	while (!can_use_player_tint(tint, player)) {
-		tint = get_random_tint();
-	}
-	set_player_color(player, get_random_color_from_tint(tint));
+	u32 color = 0;
+	do {
+		u32 tint = 0;
+		do {
+			tint = get_random_tint();
+		} while (!can_use_player_tint(tint, player));
+		color = get_random_color_from_tint(tint);
+	} while (!can_use_player_color(color, player));
+	set_player_color(player, color);
 }
 
 static void match_color_of(u32 player) {
@@ -167,7 +194,7 @@ void set_player_color(u32 player, u32 color) {
 	player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
+		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * ColorSetSize + i];
 	}
 }
 
