@@ -67,18 +67,18 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 			}
 		}
 	}
-	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-		if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
-			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
-				continue;
-			}
-			for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
-				if (color_tint == other_tint) {
-					return false;
-				}
-			}
-		}
-	}
+	//for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+	//	if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
+	//		if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
+	//			continue;
+	//		}
+	//		for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
+	//			if (color_tint == other_tint) {
+	//				return false;
+	//			}
+	//		}
+	//	}
+	//}
 	return true;
 }
 
