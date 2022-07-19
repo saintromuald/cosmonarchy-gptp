@@ -164,14 +164,15 @@ static void randomize_player_color(u32 player) {
 	u32 color = 0;
 	u32 color_attempts = 0;
 	do {
-		color_attempts += 1;
 		u32 tint = 0;
 		u32 tint_attempts = 0;
 		do {
-			tint_attempts += 1;
 			tint = get_random_tint();
+			tint_attempts += 1;
 		} while (!can_use_player_tint(tint, player) && tint_attempts < 100);
+
 		color = get_random_color_from_tint(tint);
+		color_attempts += 1;
 	} while (!can_use_player_color(color, player) && color_attempts < 100);
 	set_player_color(player, color);
 }
