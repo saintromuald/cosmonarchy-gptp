@@ -80,42 +80,43 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 		return false;
 	}
 	
-	u32 flags = SFXDAT_Flags[sound_id];
-	if (flags & DatSoundFlags_OneAtATime) {
-		DWORD status = 0;
-		if (SUCCEEDED(g_sound_data[sound_id].ds_buffer->GetStatus(&status)) && status == DSBSTATUS_PLAYING) {
-			return false;
-		}
-	}
-	if (flags & DatSoundFlags_UnitResponse && unit) {
-		for (u32 i = 0; i < MaxDupChannels; ++i) {
-			DupChannel* dup_channel = &dup_channels[i];
-			if (!dup_channels[i].ds_buffer) {
-				continue;
-			}
-			if (dup_channels[i].unit_id != unit->id) {
-				continue;
-			}
-			DWORD status = 0;
-			dup_channels[i].ds_buffer->GetStatus(&status);
-			if (status == DSBSTATUS_PLAYING) {
-				return false;
-			}
-		}
-	}
-
-	if (flags & DatSoundFlags_BufferCreationQueued) {
-		return false;
-	}
-	s32 unit_id = -1;
-	if (flags & DatSoundFlags_UnitResponse && unit) {
-		unit_id = unit->id;
-	}
 	if (SFXDAT_SoundFile[sound_id]) {
 		char buffer[256] = {};
 		snprintf(buffer, 256, "sound\\%s", SFXDAT_SoundFile[sound_id]);
 		Sound* sound = get_sound(buffer);
 		if (sound) {
+			u32 flags = SFXDAT_Flags[sound_id];
+			if (flags & DatSoundFlags_OneAtATime) {
+				DWORD status = 0;
+				if (sound->ds_buffer) {
+					sound->ds_buffer->GetStatus(&status);
+					if (status == DSBSTATUS_PLAYING) {
+						return false;
+					}
+				}
+			}
+
+			if (flags & DatSoundFlags_UnitResponse && unit) {
+				for (u32 i = 0; i < MaxDupChannels; ++i) {
+					DupChannel* dup_channel = &dup_channels[i];
+					if (!dup_channels[i].ds_buffer) {
+						continue;
+					}
+					if (dup_channels[i].unit_id != unit->id) {
+						continue;
+					}
+					DWORD status = 0;
+					dup_channels[i].ds_buffer->GetStatus(&status);
+					if (status == DSBSTATUS_PLAYING) {
+						return false;
+					}
+				}
+			}
+
+			s32 unit_id = -1;
+			if (flags & DatSoundFlags_UnitResponse && unit) {
+				unit_id = unit->id;
+			}
 			sound->free_after_play = true;
 			play_sound(sound, volume, pan, unit_id);
 		}

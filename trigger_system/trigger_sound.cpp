@@ -67,7 +67,7 @@ void init_direct_sound() {
 void update_sound() {
 	for (u32 i = 0; i < loaded_sounds_count; ++i) {
 		Sound* sound = &loaded_sounds[i];
-		if (sound->ds_buffer && sound->free_after_play && *g_elapsed_time_frames - sound->last_play_time >= 5 * 24) {
+		if (sound->ds_buffer && sound->free_after_play && GetTickCount() - sound->last_play_time >= 5 * 1000) {
 			DWORD status = 0;
 			sound->ds_buffer->GetStatus(&status);
 			if (status != DSBSTATUS_PLAYING) {
@@ -304,7 +304,7 @@ void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 			return;
 		}
 	}
-	if (sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
+	if (sound->last_play_time && GetTickCount() - sound->last_play_time < 80) {
 		return;
 	}
 
@@ -335,7 +335,7 @@ void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 				dup_buffer->ds_buffer->SetCurrentPosition(0);
 				dup_buffer->ds_buffer->Play(0, 0, 0);
 				dup_buffer->unit_id = unit_id;
-				sound->last_play_time = *g_elapsed_time_frames;
+				sound->last_play_time = GetTickCount();
 			}
 		}
 	} else {
@@ -343,7 +343,7 @@ void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 		sound->ds_buffer->SetPan(pan);
 		sound->ds_buffer->SetCurrentPosition(0);
 		sound->ds_buffer->Play(0, 0, 0);
-		sound->last_play_time = *g_elapsed_time_frames;
+		sound->last_play_time = GetTickCount();
 	}
 }
 
