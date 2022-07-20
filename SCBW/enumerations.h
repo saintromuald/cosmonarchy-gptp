@@ -113,11 +113,12 @@ namespace SfxDatEntries
 {
 	enum
 	{
-		Race,
-		MinVolume,
+		Volume,
 		Flags,
-		Priority,
-		SoundFilePtrs = 1000, // unlike sfxdata, uses pointers instead of ids
+		Race,
+		Type,
+		SoundFile,
+		SoundDataPtr, // unlike sfxdata, uses pointers instead of ids
 	};
 }
 
@@ -810,6 +811,15 @@ namespace InternalErrors
 		UnknownError26 = 26,
 	};
 }
+
+enum DatSoundFlags {
+	DatSoundFlags_PermanentlyLoaded    = 0x01,
+	DatSoundFlags_UnitResponse         = 0x02,
+	DatSoundFlags_SkipFreeing          = 0x04,
+	DatSoundFlags_BufferCreationQueued = 0x08,
+	DatSoundFlags_OneAtATime           = 0x10,
+	DatSoundFlags_NeverPreempt         = 0x20,
+};
 
 namespace ResourceType
 {

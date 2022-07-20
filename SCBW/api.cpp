@@ -461,21 +461,19 @@ namespace scbw
 		}
 	}
 
-	u32 get_flingy_data(u32 entry, u32 index)
-	{
+	u32 get_flingy_data(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetFlingyData, entry, index);
 	}
-	u32 get_sprite_data(u32 entry, u32 index)
-	{
+
+	u32 get_sprite_data(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetSpriteData, entry, index);
 	}
 
-	u32 get_image_data(u32 entry, u32 index)
-	{
+	u32 get_image_data(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetImageData, entry, index);
 	}
-	u32 get_unit_data(u32 entry, u32 index)
-	{
+
+	u32 get_unit_data(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetUnitData, entry, index);
 	}
 

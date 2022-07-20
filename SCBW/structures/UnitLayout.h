@@ -119,6 +119,7 @@ namespace AiseId
 		GenericVariable				= 27,
 		GetUnitData					= 28,
 		GetFlingyPtr				= 29, // for extender
+		GetSoundData				= 30,
 	};
 }
 

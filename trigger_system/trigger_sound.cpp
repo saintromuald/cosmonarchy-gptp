@@ -1,15 +1,15 @@
 #include "trigger_sound.h"
 #include "trigger_utils.h"
 
-static LPDIRECTSOUND direct_sound;
-static LPDIRECTSOUNDBUFFER duplicated_buffers[MaxDupChannels];
-
-Playlist current_playlist;
-Playback playback;
+LPDIRECTSOUND direct_sound;
+DupChannel dup_channels[MaxDupChannels];
 
 u32 loaded_sounds_count;
 Sound loaded_sounds[MaxSound];
 Sound* loaded_sounds_hash_table[MaxSoundHash];
+
+Playlist current_playlist;
+Playback playback;
 
 void init_sound() {
 	if (!direct_sound) {
@@ -17,9 +17,9 @@ void init_sound() {
 	}
 
 	for (u32 i = 0; i < MaxDupChannels; ++i) {
-		if (duplicated_buffers[i]) {
-			duplicated_buffers[i]->Release();
-			duplicated_buffers[i] = 0;
+		if (dup_channels[i].ds_buffer) {
+			dup_channels[i].ds_buffer->Release();
+			dup_channels[i].ds_buffer = 0;
 		}
 	}
 
@@ -149,9 +149,9 @@ void update_sound() {
 	}
 }
 
-static LPDIRECTSOUNDBUFFER load_ds_buffer(Sound* sound, SoundLoadData* sound_load_data) {
+static bool load_ds_buffer(Sound* sound, SoundLoadData* sound_load_data) {
 	if (!direct_sound) {
-		return 0;
+		return false;
 	}
 
 	DSBUFFERDESC buffer_description = {};
@@ -161,7 +161,7 @@ static LPDIRECTSOUNDBUFFER load_ds_buffer(Sound* sound, SoundLoadData* sound_loa
 	buffer_description.lpwfxFormat = &sound_load_data->wave_format;
 
 	if (!SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &sound->ds_buffer, 0))) {
-		return 0;
+		return false;
 	}
 
 	u32 play_cursor = 0;
@@ -174,24 +174,29 @@ static LPDIRECTSOUNDBUFFER load_ds_buffer(Sound* sound, SoundLoadData* sound_loa
 
 		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, sound_load_data->size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
 			if (ptr1) {
-				s16* out = (s16*) ptr1;
-				for (u32 i = 0; i < bytes1 / sizeof(s16); ++i) {
+				s8* out = (s8*)ptr1;
+				for (u32 i = 0; i < bytes1; ++i) {
 					*out++ = sound_load_data->data[i];
 				}
 			}
 			if (ptr2) {
-				s16* out = (s16*) ptr2;
-				for (u32 i = 0; i < bytes2 / sizeof(s16); ++i) {
+				s8* out = (s8*)ptr2;
+				for (u32 i = 0; i < bytes2; ++i) {
 					*out++ = sound_load_data->data[i];
 				}
 			}
 
 			sound->ds_buffer->Unlock(ptr1, bytes1, ptr2, bytes2);
+			return true;
 		}
 	}
+	return false;
 }
 
 Sound* load_sound(char* filename) {
+	if (!filename) {
+		return 0;
+	}
 	if (loaded_sounds_count < MaxSound) {
 		LoadedFile file = load_entire_sfile(filename);
 		if (!file.data) {
@@ -215,7 +220,7 @@ Sound* load_sound(char* filename) {
 					at += data->chunk_size + 8;
 
 					sound_load_data.size = data->chunk_size;
-					sound_load_data.data = (s16*)data + 1;
+					sound_load_data.data = (s8*)(data + 1);
 				} break;
 				case RiffFormat_Fmt: {
 					WaveFormat* format = (WaveFormat*) at;
@@ -235,24 +240,21 @@ Sound* load_sound(char* filename) {
 		}
 
 		Sound* sound = &loaded_sounds[loaded_sounds_count++];
-		strcpy_s(sound->path, filename);
+		snprintf(sound->path, MaxPath, "%s", filename);
 
-		load_ds_buffer(sound, &sound_load_data);
-		free_loaded_file(&file);
-
-		u32 hash_index = hash_string(filename) % MaxSoundHash;
-		sound->hash_next = loaded_sounds_hash_table[hash_index];
-		loaded_sounds_hash_table[hash_index] = sound;
-		return sound;
+		if (load_ds_buffer(sound, &sound_load_data)) {
+			free_loaded_file(&file);
+			u32 hash_index = hash_string(filename) % MaxSoundHash;
+			sound->hash_next = loaded_sounds_hash_table[hash_index];
+			loaded_sounds_hash_table[hash_index] = sound;
+			return sound;
+		} else {
+			free_loaded_file(&file);
+			loaded_sounds_count--;
+			return 0;
+		}
 	}
 	return 0;
-}
-
-void free_sound(Sound* sound) {
-	if (sound->ds_buffer) {
-		sound->ds_buffer->Release();
-		sound->ds_buffer = 0;
-	}
 }
 
 Sound* get_sound(char* filename) {
@@ -267,7 +269,14 @@ Sound* get_sound(char* filename) {
 	return sound;
 }
 
-void play_sound(Sound* sound, s32 volume, s32 pan) {
+void free_sound(Sound* sound) {
+	if (sound->ds_buffer) {
+		sound->ds_buffer->Release();
+		sound->ds_buffer = 0;
+	}
+}
+
+void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 	if (!sound) {
 		return;
 	}
@@ -277,30 +286,31 @@ void play_sound(Sound* sound, s32 volume, s32 pan) {
 
 	DWORD status = 0;
 	sound->ds_buffer->GetStatus(&status);
-	if (status == DSBSTATUS_PLAYING) {
+	if (status == DSBSTATUS_PLAYING || unit_id != -1) {
 		// Use dup channel
-		LPDIRECTSOUNDBUFFER* dup_buffer = 0;
+		DupChannel* dup_buffer = 0;
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
-			if (duplicated_buffers[i]) {
+			if (dup_channels[i].ds_buffer) {
 				DWORD dup_status = 0;
-				duplicated_buffers[i]->GetStatus(&dup_status);
+				dup_channels[i].ds_buffer->GetStatus(&dup_status);
 				if (dup_status != DSBSTATUS_PLAYING) {
-					duplicated_buffers[i]->Release();
-					duplicated_buffers[i] = 0;
+					dup_channels[i].ds_buffer->Release();
+					dup_channels[i].ds_buffer = 0;
 				}
 			}
-			if (!duplicated_buffers[i]) {
-				dup_buffer = &duplicated_buffers[i];
+			if (!dup_channels[i].ds_buffer) {
+				dup_buffer = &dup_channels[i];
 			}
 		}
 
 		if (dup_buffer) {
-			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, dup_buffer);
-			if (*dup_buffer) {
-				(*dup_buffer)->SetVolume(volume);
-				(*dup_buffer)->SetPan(pan);
-				(*dup_buffer)->SetCurrentPosition(0);
-				(*dup_buffer)->Play(0, 0, 0);
+			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, &dup_buffer->ds_buffer);
+			if (dup_buffer->ds_buffer) {
+				dup_buffer->ds_buffer->SetVolume(volume);
+				dup_buffer->ds_buffer->SetPan(pan);
+				dup_buffer->ds_buffer->SetCurrentPosition(0);
+				dup_buffer->ds_buffer->Play(0, 0, 0);
+				dup_buffer->unit_id = unit_id;
 				sound->last_play_time = *g_elapsed_time_frames;
 			}
 		}

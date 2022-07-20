@@ -651,11 +651,11 @@ namespace flingy_dat {
 namespace sfx_dat {
 	SCBW_DATA(const	DatLoad*,			sfxDat,		0x00515498);
 	
-	SCBW_DATA(u32*,	SoundPtr,			sfxDat[0].address);	// 0068DAA0
-	SCBW_DATA(u8*,	Priority,			sfxDat[1].address);	// 0068D628
-	SCBW_DATA(u8*,	Flags,				sfxDat[2].address);	// 0068C8C0
-	SCBW_DATA(u16*,	PortraitDuration,	sfxDat[3].address);	// 0068CD38
-	SCBW_DATA(u8*,	Volume,				sfxDat[4].address);	// 0068C448
+	SCBW_DATA(char**,	SoundFile,			sfxDat[0].address);	// 0068DAA0
+	SCBW_DATA(u8*,		Priority,			sfxDat[1].address);	// 0068D628
+	SCBW_DATA(u8*,		Flags,				sfxDat[2].address);	// 0068C8C0
+	SCBW_DATA(u16*,		PortraitDuration,	sfxDat[3].address);	// 0068CD38
+	SCBW_DATA(u8*,		Volume,				sfxDat[4].address);	// 0068C448
 }
 
 /*
@@ -986,7 +986,7 @@ SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 // For do_attack_notify_unit
 SCBW_DATA(char*,		g_palette_index_reference,	0x006CEB20); // sizeof at least 20
 SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
-SCBW_DATA(SoundData*,	g_sound_data,				0x006D1278);
+SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270);
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);

@@ -1154,16 +1154,17 @@ struct Bitmap {
 	u32			buffer;		// 0x4
 };
 
+struct IDirectSoundBuffer;
 struct SoundData {
 	u32 wav_data_size;
-	u32 last_play_time;
+	s32 last_play_time;
 	u32 duration_ms;
-	void* ds_buffer;
+	IDirectSoundBuffer* ds_buffer;
 };
 C_ASSERT(sizeof(SoundData) == 16);
 
 struct SoundChannel {
-	void* ds_buffer;				// 0x00
+	IDirectSoundBuffer* ds_buffer;	// 0x00
 	u16 unit_id;					// 0x04
 	u8 flags;						// 0x06
 	u8 sound_priority;				// 0x07
