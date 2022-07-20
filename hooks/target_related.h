@@ -20,6 +20,7 @@ namespace hooks
 	void ai_attack_unit(Unit* unit);																// 0043FFD0
 	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit);										// 00465810
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos);													// 00487A10
+	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit);						// 004769D0
 
 	void inject_target_related_hooks();
 }

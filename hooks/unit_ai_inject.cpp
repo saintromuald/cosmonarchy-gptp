@@ -397,6 +397,33 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) is_valid_for_wrapper() { // 0043B6D0
+		static bool result;
+		static u32 unit_id;
+		static Unit* unit;
+		static u32 must_be_active;
+		__asm {
+
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV must_be_active, EAX
+			POP EAX
+			MOV unit, ESI
+			MOV unit_id, ECX
+			PUSHAD
+		}
+		result = hooks::is_valid_for(unit_id, unit, must_be_active);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks {
@@ -420,6 +447,7 @@ namespace hooks {
 	//	jump_patch(ai_training_overlord_wrapper,				0x00435770, 1);
 		jump_patch(ai_order_lurker_burrow_wrapper,				0x0043C230, 3);
 	//	jump_patch(create_building_ai_wrapper,					0x004044C0,	4);
+	//	jump_patch(is_valid_for_wrapper,						0x0043B6D0,	5);
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
 	}

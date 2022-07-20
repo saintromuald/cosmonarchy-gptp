@@ -882,4 +882,41 @@ namespace hooks
 		result = result->link.next;
 		return result;
 	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	bool is_valid_for(u32 unit_id, Unit* unit, u32 must_be_active) // 0043B6D0
+	{
+		if (!unit->sprite)
+		{
+			return 0;
+		}
+		if (!unit->main_order_id)
+		{
+			return 0;
+		}
+		u32 arg_unit_id = unit->id;
+		if (units_dat::base_property[arg_unit_id] & UnitProperty::Subunit
+		|| !unit->unit_ai
+		||  arg_unit_id != unit_id && (unit_id != UnitId::TerranPhalanxTankMode
+		||  arg_unit_id != UnitId::TerranPhalanxSiegeMode)
+		||  helper::unit_finished_summon(unit)
+		||  helper::is_threat(0, unit)
+		||  must_be_active && unit->status & UnitStatus::InBuilding)
+		{
+			return 0;
+		}
+		if (arg_unit_id)
+		{
+			if (arg_unit_id != UnitId::TerranHarakan && arg_unit_id != UnitId::ZergZethrokor && arg_unit_id != UnitId::ZergHydralisk && arg_unit_id != UnitId::ProtossZealot && arg_unit_id != UnitId::ProtossDracadin)
+			{
+				u32 total_life = helper::get_total_hp_plus_shields(unit) / 2;
+				return helper::get_current_hp_plus_shields(unit) >= total_life;
+			}
+		}
+		else if (unit->main_order_id == OrderId::EnterTransport)
+		{
+			return 0;
+		}
+		return 1;
+	}
 }

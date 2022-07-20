@@ -1100,7 +1100,7 @@ namespace hooks
 		return 0;
 	}
 
-	// Hooked to fix one-shots never notifying owners. -Pr0nogo
+	// Hooked to fix one-shots not notifying owners. -Pr0nogo
 	void unit_attack_notify(Unit* unit) { // 0048F230
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
 			unit->last_event_color = g_palette_index_reference[20];
@@ -1173,5 +1173,30 @@ namespace hooks
 				}
 			}
 		}
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	u32 ask_for_help(Unit* attacker, Unit* helper) // 00476E60
+	{
+		// Originally had code to prohibit Didact and Danimoth unit IDs.
+		if (!(units_dat::base_property[helper->id] & UnitProperty::Worker)
+		&&  !(helper->status & UnitStatus::Burrowed))
+		{
+			if (helper::ai_unit_can_attack(helper))
+			{
+				if (helper::is_better_target(helper, helper->auto_target_unit, attacker))
+				{
+					Unit* subunit = helper->subunit;
+					helper->auto_target_unit = attacker;
+					if (helper::unit_is_subunit(subunit))
+					{
+						subunit->last_attacking_player = helper->last_attacking_player;
+						helper->subunit->auto_target_unit = attacker;
+					}
+					return 1;
+				}
+			}
+		}
+		return 0;
 	}
 }
