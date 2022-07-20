@@ -476,10 +476,10 @@ namespace hooks
 				case UnitId::TerranCuirass:
 				{
 					// Cuirass - Stonewall Protocol
-					if (!targetExt->values[ValueIsSelfReviving]
+					if (!targetExt->values[ValueCuirassIsSelfReviving]
 					&&   data.target->hitpoints < data.final_damage)
 					{
-						targetExt->values[ValueIsSelfReviving] = 1;
+						targetExt->values[ValueCuirassIsSelfReviving] = 1;
 						data.target->hitpoints = CuirassSelfReviveHP;
 						data.final_damage = 0;
 						data.target->order_computer(OrderId::Stop);
@@ -1163,11 +1163,11 @@ namespace hooks
 					bounds.h = pos.y + 96;
 
 					Unit** units_in_bounds = helper::get_all_units_in_bounds(&bounds);
-					for (Unit* i = *units_in_bounds; i; ++units_in_bounds) {
-						if (i != victim && i->player == victim->player) {
-							helper::ask_for_help(attacker, i);
+					for (Unit* unit = *units_in_bounds; unit; ++units_in_bounds) {
+						if (unit != victim && unit->player == victim->player) {
+							helper::ask_for_help(attacker, unit);
 						}
-						i = units_in_bounds[1];
+						unit = units_in_bounds[1];
 					}
 					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--g_temp_units_list_arrays_counts_list_last_index[0]];
 				}

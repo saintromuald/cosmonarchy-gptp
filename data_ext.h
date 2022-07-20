@@ -91,7 +91,7 @@ enum ExtValueId
 	ValueCharlatanMissilePos,
 	ValueIsNeutralBunker,
 	ValueIsZombified,
-	ValueIsSelfReviving,
+	ValueCuirassIsSelfReviving,
 	ValueTalosAnimationTimer,
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,

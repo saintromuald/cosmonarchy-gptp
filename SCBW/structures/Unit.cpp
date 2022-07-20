@@ -7,6 +7,7 @@
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
 #include "trigger_system/trigger_system.h"
+#include "trigger_system/trigger_events.h"
 
 #include "math_utils.h"
 //-------- Unit stats and properties --------//
@@ -684,19 +685,18 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	}
 
 	if (this->is_dead()) {
-		trigger_deaths[0][this->player][this->id]++;
-		for (u32 i = 0; i < 8; ++i) {
-			if (is_visible_to(i)) {
-				trigger_deaths[i + 1][this->player][this->id]++;
-			}
-		}
-		if (attacker) {
-			trigger_kills[0][attacker->player][attacker->id][this->player][this->id]++;
-			for (u32 i = 0; i < 8; ++i) {
+		if (kill_events_count < EventCap) {
+			KillEvent* event = &kill_events[kill_events_count++];
+			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (is_visible_to(i)) {
-					trigger_kills[i + 1][attacker->player][attacker->id][this->player][this->id]++;
+					event->seen_by |= 1 << i;
 				}
 			}
+			event->dying_player = attackingPlayer;
+			event->killing_player = this->player;
+			event->dying_unit_id = this->id;
+			event->killing_unit_id = attacker ? attacker->id : UnitId::None;
+			event->timestamp = *g_elapsed_time_frames;
 		}
 	}
 }

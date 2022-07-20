@@ -939,11 +939,11 @@ namespace hooks
 			} break;
 			case UnitId::TerranCuirass:
 			{
-				if (unitExt->values[ValueIsSelfReviving])
+				if (unitExt->values[ValueCuirassIsSelfReviving])
 				{
 					if (unit->hitpoints + CuirassSelfHeal >= unit->get_max_hp_raw())
 					{
-						unitExt->values[ValueIsSelfReviving] = 0;
+						unitExt->values[ValueCuirassIsSelfReviving] = 0;
 						unit->hitpoints = unit->get_max_hp_raw();
 						scbw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);

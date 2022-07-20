@@ -552,7 +552,7 @@ namespace hooks
 		add_status(statuses, "Nemean Reactors", unit_ext->values[ValueNemeanReactorsStack], 0);
 		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueSublimeShepherd], 0);
 		add_status(statuses, "Lazarus Agent", unit_ext->values[ValueLazarusAgent], 0);
-		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueIsSelfReviving], 0);
+		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Expanded Storage", unit_ext->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);

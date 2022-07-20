@@ -230,15 +230,13 @@ static bool load_ds_buffer(Sound* sound) {
 
 		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
 			if (ptr1) {
-				s8* out = (s8*)ptr1;
 				for (u32 i = 0; i < bytes1; ++i) {
-					*out++ = data[i];
+					ptr1[i] = data[i];
 				}
 			}
 			if (ptr2) {
-				s8* out = (s8*)ptr2;
 				for (u32 i = 0; i < bytes2; ++i) {
-					*out++ = data[i];
+					ptr2[i] = data[i];
 				}
 			}
 

@@ -7,6 +7,7 @@
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
 #include "trigger_vars.h"
+#include "trigger_events.h"
 
 #include "ai_layouts.h"
 #include "player_color.h"
@@ -20,9 +21,8 @@ SoundReplacement sound_replacements[SoundReplacementCap];
 
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
+
 u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-u32 trigger_kills[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
 
 void init_trigger_system() {
 	trigger_system_init = true;
@@ -35,8 +35,6 @@ void init_trigger_system() {
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
 	memset(trigger_combat, 0, sizeof(trigger_combat));
-	memset(trigger_kills, 0, sizeof(trigger_kills));
-	memset(trigger_deaths, 0, sizeof(trigger_deaths));
 
 	init_recolors();
 	init_objectives();
@@ -87,6 +85,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
 					u32 time_quota = parser_get_time_ticks(&parser);
 					u32 scouting_player = parser_get_player(&parser);
+					// TODO: rework so we don't have this enourmous table
 
 					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
 						if (!source_players.set[source_player]) {
@@ -120,29 +119,30 @@ b32 parse_comment_condition(TriggerAction* action) {
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
+					// TODO: add time quota
 					u32 scouting_player = parser_get_player(&parser);
 
 					u32 count = 0;
-					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
-						if (!source_players.set[source_player]) {
+					for (u32 i = 0; i < kill_events_count; ++i) {
+						KillEvent* event = &kill_events[i];
+						if (!source_players.set[event->killing_player]) {
 							continue;
 						}
-						for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
-							if (!source_unit_ids.set[source_unit]) {
+						if (!source_unit_ids.set[event->killing_unit_id]) {
+							continue;
+						}
+						if (!target_players.set[event->dying_player]) {
+							continue;
+						}
+						if (!target_unit_ids.set[event->dying_unit_id]) {
+							continue;
+						}
+						if (scouting_player) {
+							if (!(event->seen_by & 1 << (scouting_player - 1))) {
 								continue;
 							}
-							for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
-								if (!target_players.set[target_player]) {
-									continue;
-								}
-								for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
-									if (!target_unit_ids.set[target_unit]) {
-										continue;
-									}
-									count += trigger_kills[scouting_player][source_player][source_unit][target_player][target_unit];
-								}
-							}
 						}
+						count += 1;
 					}
 
 					if (check_quota(quota_type, quota, count)) {
@@ -154,19 +154,24 @@ b32 parse_comment_condition(TriggerAction* action) {
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
+					// TODO: add time quota
 					u32 scouting_player = parser_get_player(&parser);
 
 					u32 count = 0;
-					for (u32 player = 0; player < PlayerLimit; ++player) {
-						if (!players.set[player]) {
+					for (u32 i = 0; i < kill_events_count; ++i) {
+						KillEvent* event = &kill_events[i];
+						if (!players.set[event->dying_player]) {
 							continue;
 						}
-						for (u32 unit = 0; unit < UnitId::Count; ++unit) {
-							if (!unit_ids.set[unit]) {
+						if (!unit_ids.set[event->dying_unit_id]) {
+							continue;
+						}
+						if (scouting_player) {
+							if (!(event->seen_by & 1 << (scouting_player - 1))) {
 								continue;
 							}
-							count += trigger_deaths[scouting_player][player][unit];
 						}
+						count += 1;
 					}
 
 					if (check_quota(quota_type, quota, count)) {
