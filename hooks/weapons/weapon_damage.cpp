@@ -1127,65 +1127,51 @@ namespace hooks
 	}
 
 	// Hooked to reveal fog around attackers when they attack allies. -Pr0nogo
-	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal) // 004795D0
-	{
-		if (attacker)
-		{
-			u8 attacking_player = attacker->player;
-			if (attacking_player != victim->player)
-			{
-				victim->last_attacking_player = attacking_player;
-				if (victim->unit_ai)
-				{
-					if (!victim->auto_target_unit)
-					{
-						Unit* victim_subunit = victim->subunit;
+	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal) { // 004795D0
+		if (attacker) {
+			if (attacker->player != victim->player) {
+				victim->last_attacking_player = attacker->player;
+				if (victim->unit_ai) {
+					if (!victim->auto_target_unit) {
 						victim->auto_target_unit = attacker;
-						if (victim_subunit)
-						{
-							if (units_dat::base_property[victim_subunit->id] & UnitProperty::Subunit)
-							{
-								victim_subunit->last_attacking_player = victim->last_attacking_player;
+						if (victim->subunit) {
+							if (units_dat::base_property[victim->subunit->id] & UnitProperty::Subunit) {
+								victim->subunit->last_attacking_player = victim->last_attacking_player;
 								victim->subunit->auto_target_unit = attacker;
 							}
 						}
 					}
 				}
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
-				if (reveal)
-				{
-					if (!helper::unit_can_see_cloaked_target(attacker, victim))
-					{
-						u8 victim_player = victim->player;
-						if (victim_player < 8) // Should probably be 11
-						{
-							helper::reveal_sight_at_location(1, 1 << victim_player, attacker->sprite->position.x, attacker->sprite->position.y, (attacker->status >> 2) & 1);
+				if (reveal) {
+					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
+						u32 flags = 1 << victim->player;
+						for (u32 i = 0; i < PlayerLimit; ++i) {
+							if (scbw::is_vision_allied_to(victim->player, i)) {
+								flags |= 1 << i;
+							}
 						}
+						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, (attacker->status >> 2) & 1);
 					}
 				}
-				if (attacker->status & UnitStatus::InBuilding)
-				{
-					attacker = attacker->connected_unit;
+				if (attacker->status & UnitStatus::InBuilding) {
 					attacker = attacker->connected_unit;
 				}
-				if (helper::is_better_target(victim, victim->auto_target_unit, attacker))
-				{
+				if (helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
 					helper::react_to_hit(attacker, victim);
 				}
-				if (!victim->unit_ai)
-				{
+				if (!victim->unit_ai) {
+					Point16 pos = victim->sprite->position;
+
 					Box16 bounds = {};
-					u16 pos_x = victim->sprite->position.x;
-					u16 pos_y = victim->sprite->position.y;
-					bounds.w = pos_x + 96;
-					bounds.h = pos_y + 96;
-					bounds.x = pos_x - 96;
-					bounds.y = pos_y - 96;
+					bounds.x = pos.x - 96;
+					bounds.y = pos.y - 96;
+					bounds.w = pos.x + 96;
+					bounds.h = pos.y + 96;
+
 					Unit** units_in_bounds = helper::get_all_units_in_bounds(&bounds);
-					for (Unit* i = *units_in_bounds; i; ++units_in_bounds)
-					{
-						if (i != victim && i->player == victim->player)
-						{
+					for (Unit* i = *units_in_bounds; i; ++units_in_bounds) {
+						if (i != victim && i->player == victim->player) {
 							helper::ask_for_help(attacker, i);
 						}
 						i = units_in_bounds[1];
