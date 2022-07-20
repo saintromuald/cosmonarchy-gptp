@@ -3356,16 +3356,19 @@ namespace helper
 		}
 	}
 
-	void set_unit_movement_speed(Unit* unit, u32 newSpeed)
+	Unit* set_unit_movement_speed(Unit* unit, u32 speed)
 	{
+		static Unit* result;
 		const u32 Func_SetUnitMovementSpeed = 0x004951C0;
 		__asm {
 			PUSHAD
+			MOV EDX, speed
 			MOV EAX, unit
-			MOV EDX, newSpeed
 			CALL Func_SetUnitMovementSpeed
+			MOV result, EAX
 			POPAD
 		}
+		return result;
 	}
 
 	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset)
