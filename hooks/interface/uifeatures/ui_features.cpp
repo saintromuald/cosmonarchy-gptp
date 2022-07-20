@@ -319,7 +319,7 @@ LABEL_15:
 				{
 					helper::game_talking_portrait(-1, trigger_time, trigger_var->type, -1);
 				}
-				if (options_list->flags & 0x400 || trigger_var->flags & 4)
+				if (g_options_list->flags & 0x400 || trigger_var->flags & 4)
 				{
 					char* string = helper::get_chk_string(trigger_var->text_string);
 					if (trigger_time > helper::get_text_display_time(string))

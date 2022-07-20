@@ -12668,4 +12668,40 @@ namespace helper
 		}
 		return (char)result;
 	}
+
+	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u16 unit_id, u8 sound_flags, u8 some_bool, u8 priority) {
+		static s32 result;
+		const u32 func_address = 0x004BBAF0;
+		__asm {
+			PUSHAD
+			PUSH priority
+			PUSH some_bool
+			PUSH sound_flags
+			PUSH unit_id
+			PUSH sound_id
+			PUSH pan
+			PUSH volume
+			MOV EBX, loaded_sound
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 queue_sound(u32 sound_id, s32 volume, s32 pan, u16 unit_id) {
+		static s32 result;
+		const u32 func_address = 0x004BBEB0;
+		__asm {
+			PUSHAD
+			PUSH unit_id
+			PUSH pan
+			PUSH volume
+			MOV ESI, sound_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

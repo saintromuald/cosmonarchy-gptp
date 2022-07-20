@@ -238,7 +238,7 @@ SCBW_DATA(u8*,			unk_victory_variable,		0x00581D66);
 SCBW_DATA(u32*,			save_load_success,			0x006D5A68);
 SCBW_DATA(u32*,			elapsed_time_modified,		0x006D5BCC);
 SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
-SCBW_DATA(Options*,		options_list,				0x006CDFD4);
+SCBW_DATA(Options*,		g_options_list,				0x006CDFD4);
 SCBW_DATA(ReplayData*,	replay_data,				0x00596BBC);
 SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
@@ -513,27 +513,27 @@ SCBW_DATA(ColorTable*,		g_color_table,			0x0058F442);
 SCBW_DATA(PlayerNames*,		g_player_name_list,		0x0059B3D8);
 
 // For soundThread
-/*
-SCBW_DATA(HANDLE*,	soundThreadEvent,				0x006D5A00);
-SCBW_DATA(s32*,		unkSoundCore,					0x006D5A08);
-SCBW_DATA(s32*,		soundVolume,					0x00599900);
-SCBW_DATA(s8*,		soundData,						0x006D1270);
-SCBW_DATA(s32*,		volumeReduction,				0x006D5A0C);
-SCBW_DATA(DSound*,	directSoundInterface,			0x006D59F4);
-SCBW_DATA(s32*,		unkSoundCore2,					0x005999C0);
-SCBW_DATA(s32*,		currentSoundMemory,				0x006D59FC);
-SCBW_DATA(CritSect*,soundLock,						0x006D5F4C);
+SCBW_DATA(HANDLE*,		g_sound_thread_event,		0x006D5A00);
+SCBW_DATA(s32*,			g_unk_sound_core,			0x006D5A08);
+SCBW_DATA(s32*,			g_sound_volume,				0x00599900);
+SCBW_DATA(s8*,			g_sound_data,				0x006D1270);
+SCBW_DATA(s32*,			g_volume_reduction,			0x006D5A0C);
+SCBW_DATA(DSound*,		g_direct_sound_interface,	0x006D59F4);
+SCBW_DATA(s32*,			g_unk_sound_core_2,			0x005999C0);
+SCBW_DATA(s32*,			g_current_sound_memory,		0x006D59FC);
+SCBW_DATA(CritSect*,	g_sound_lock,				0x006D5F4C);
 
 // For soundInit
-SCBW_DATA(s32*,		soundChannels,					0x005998F0);
-SCBW_DATA(HMODULE*,	hdSoundModule,					0x006D59F0);
-SCBW_DATA(s8*,		ddaInitialized,					0x006D1265);
-SCBW_DATA(s8*,		vidInitialized,					0x006D1266);
-SCBW_DATA(s32*,		soundMemoryCache,				0x005129B8);
-SCBW_DATA(HANDLE*,	soundHandle,					0x006D5A04);
-SCBW_DATA(s32*,		unkSoundCore3,					0x005998E4);
-SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
-*/
+SCBW_DATA(s32*,			g_sound_channels,			0x005998F0);
+SCBW_DATA(HMODULE*,		g_hd_sound_module,			0x006D59F0);
+SCBW_DATA(s8*,			g_dda_initialized,			0x006D1265);
+SCBW_DATA(s8*,			g_vid_initialized,			0x006D1266);
+SCBW_DATA(s32*,			g_sound_memory_cache,		0x005129B8);
+SCBW_DATA(HANDLE*,		g_sound_handle,				0x006D5A04);
+SCBW_DATA(s32*,			g_unk_sound_core_3,			0x005998E4);
+SCBW_DATA(s8*,			g_unk_sound_bool_core,		0x006D1264);
+
+SCBW_DATA(void*,		g_sfx_tbl_handle,			0x005999B0);
 
 // For handle_window_messages
 typedef void __fastcall InputProcsFunc(s32 arg);

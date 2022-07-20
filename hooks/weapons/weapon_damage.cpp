@@ -1118,7 +1118,7 @@ namespace hooks
 						*notify_cooldown = 100;
 						bool unit_is_grounded_building = (unit->status & UnitStatus::GroundedBuilding) != 0;
 						u32 sound_id = *console_index + (unit_is_grounded_building ? -0xFFFFFF8B : 120);
-						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
+						helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
 					//	helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
 					}
 				}

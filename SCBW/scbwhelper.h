@@ -1404,4 +1404,7 @@ namespace helper {
 	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit);								// 004769D0
 	void react_to_hit(Unit* attacker, Unit* victim);														// 004776C0
 	char ask_for_help(Unit* attacker, Unit* helper);														// 00476E60
+
+	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u16 unit_id, u8 sound_flags, u8 some_bool, u8 priority); // 004BBAF0
+	s32 queue_sound(u32 sound_id, s32 volume, s32 pan, u16 unit_id);																	// 004BBEB0
 }

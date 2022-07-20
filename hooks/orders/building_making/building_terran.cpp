@@ -567,14 +567,14 @@ namespace hooks
 				case RaceId::Zerg:
 				{
 					if (unit->create_origin == UnitId::ZergDroleth) {
-						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					} else if (unit->create_origin == UnitId::ZergGosvileth) {
-						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					} else {
 						// Nydus exit and morphs?
-						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}
 				} break;
@@ -585,7 +585,7 @@ namespace hooks
 					{
 						sound_id = 136;
 					}
-					helper::play_sound_from_unit(sound_id, unit, (*options_list).flags & 1, 99);
+					helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (*(u32*)&sound_duration_msecs[sound_id] / 1000), 1, sound_id);
 				} break;
 				case RaceId::Protoss:

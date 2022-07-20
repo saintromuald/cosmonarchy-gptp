@@ -73,6 +73,101 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 	}
 }
 
+// Hooked to extend sound channels. -Pr0nogo
+s32 play_transmission_from_location_2(u32 sound_id, s32 volume, s32 pan, Unit* unit) // 004BBFD0
+{
+	char sound_flags_orig;
+	Unit* unit_var;
+	char has_flag_10;
+	SoundChannel* sound_channels_reference;
+	char soundid;
+	signed int result;
+	signed __int16 unit_id_2;
+	char sound_flags;
+	signed __int16 unit_id;
+	int out_bool;
+
+	if (!g_direct_sound_interface->lpVtbl || !g_options_list->sfx)
+	{
+		return 0;
+	}
+	sound_flags_orig = sfx_dat::Flags[sound_id];
+	unit_var = unit;
+	has_flag_10 = sound_flags_orig & 0x10;
+	if (unit && sound_flags_orig & 2 || has_flag_10)
+	{
+		sound_channels_reference = *g_sound_channels;
+		do
+		{
+			if (sound_channels_reference->buffer)
+			{
+				if (has_flag_10)
+				{
+					if (sound_channels_reference->sound_id == sound_id)
+					{
+						goto LABEL_13;
+					}
+				}
+				else if (sound_channels_reference->unit_id == unit_var->id && sound_channels_reference->flags & 2)
+				{
+				LABEL_13:
+					// FIRST CUCKO
+					if (!(*(s32(__stdcall**)(s32, s32*))(*(s32*)sound_channels_reference->buffer + 36))(sound_channels_reference->buffer, &out_bool))
+					{
+						if (out_bool == 1)
+						{
+							return 0;
+						}
+						if (sound_channels_reference->release_when_not_used)
+						{
+							// SECOND CUCKO
+							(*(void(__stdcall**)(s32))(*(s32*)sound_channels_reference->buffer + 8))(sound_channels_reference->buffer);
+						}
+						sound_channels_reference->buffer = 0;
+					}
+					unit_var = unit;
+					goto LABEL_19;
+				}
+			}
+		LABEL_19:
+			++sound_channels_reference;
+		} while ((s32)sound_channels_reference < (s32)&g_sfx_tbl_handle);
+	}
+	soundid = sfx_dat::Flags[sound_id];
+	if (soundid & 8)
+	{
+		return 0;
+	}
+	if (*(s32*)&g_sound_data[16 * sound_id + 12])
+	{
+		sound_flags = soundid | 4;
+		sfx_dat::Flags[sound_id] = sound_flags;
+		if (unit_var)
+		{
+			unit_id = unit_var->id;
+		}
+		else
+		{
+			unit_id = -1;
+		}
+		result = helper::play_loaded_sound((u32)&g_sound_data[16 * sound_id], volume, pan, sound_id, unit_id, sound_flags, 0, sfx_dat::Priority[sound_id]);
+	}
+	else
+	{
+		if (unit_var)
+		{
+			unit_id_2 = unit_var->id;
+		}
+		else
+		{
+			unit_id_2 = -1;
+		}
+		helper::queue_sound(sound_id, volume, pan, unit_id_2);
+		result = 1;
+	}
+	return result;
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -105,7 +200,40 @@ void __declspec(naked) iscript_play_sound_wrapper() { // 004D6610
 	}
 }
 
+void __declspec(naked) play_transmission_from_location_2_wrapper() { // 004BBFD0
+	static s32 result;
+	static u32 sound_id;
+	static s32 volume;
+	static s32 pan;
+	static Unit* unit;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV unit, EAX
+		MOV EAX, [EBP + 0x0C]
+		MOV pan, EAX
+		MOV EAX, [EBP + 0x10]
+		MOV volume, EAX
+		POP EAX
+		MOV sound_id, EAX
+		PUSHAD
+	}
+	result = play_transmission_from_location_2(sound_id, volume, pan, unit);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0xC
+	}
+}
+
+// (u32 sound_id, s32 volume, s32 pan, Unit* unit) // 004BBFD0
+
 void inject_trigger_system_hooks() {
-	jump_patch(execute_trigger_conditions_wrapper,	0x00489200, 1);
-	jump_patch(iscript_play_sound_wrapper,			0x004D6610, 2);
+	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
+	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
+	jump_patch(play_transmission_from_location_2_wrapper,	0x004D6610, 0);
 }

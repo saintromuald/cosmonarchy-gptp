@@ -355,7 +355,7 @@ s32 get_sound_volume() {
 	if (*use_quiet_sounds) {
 		index /= 5;
 	}
-	return g_big_volume_array[index * options_list->sfx / 100];
+	return g_big_volume_array[index * g_options_list->sfx / 100];
 }
 
 s32 get_sound_volume_at_pos(Point16 pos) {
@@ -366,7 +366,7 @@ s32 get_sound_volume_at_pos(Point16 pos) {
 	if (index <= 10) {
 		return DSBVOLUME_MIN;
 	}
-	return g_big_volume_array[index * options_list->sfx / 100];
+	return g_big_volume_array[index * g_options_list->sfx / 100];
 }
 
 s32 get_playback_volume() {
