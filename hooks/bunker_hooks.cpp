@@ -41,42 +41,40 @@ namespace hooks
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
-			} else {
-				if (unit->main_order_timer == 0) {
-					unit->main_order_timer = 15;
+			} else if (!unit->main_order_timer) {
+				//unit->main_order_timer = 15;
 					
-					Unit* target = unit->order_target.unit;
+				Unit* target = unit->order_target.unit;
+				if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
+					if (unit->connected_unit) {
+						UnitExt* bunkerExt = get_unit_ext(unit->connected_unit);
+						Unit* target = bunkerExt->units[UnitBunkerLockOn];
+						if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
+							unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
+						}
+					}
+
 					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
-						if (unit->connected_unit) {
-							UnitExt* bunkerExt = get_unit_ext(unit->connected_unit);
-							Unit* target = bunkerExt->units[UnitBunkerLockOn];
-							if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
-								unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
+						const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
+						unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
+							unit->get_x() - radius,
+							unit->get_y() - radius,
+							unit->get_x() + radius,
+							unit->get_y() + radius,
+							unit,
+							[&](Unit* target) {
+							if (scbw::is_allied_to(unit->player, target->player)
+							|| !unit->can_attack_target(target)
+							|| !is_within_attack_range(unit, target)) {
+								return false;
 							}
-						}
-
-						if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
-							const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
-							unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
-								unit->get_x() - radius,
-								unit->get_y() - radius,
-								unit->get_x() + radius,
-								unit->get_y() + radius,
-								unit,
-								[&](Unit* target) {
-								if (scbw::is_allied_to(unit->player, target->player)
-								|| !unit->can_attack_target(target)
-								|| !is_within_attack_range(unit, target)) {
-									return false;
-								}
-								return true;
-							});
-						}
+							return true;
+						});
 					}
+				}
 
-					if (target) {
-						unit->order_queue_timer = 0;
-					}
+				if (target) {
+					unit->order_queue_timer = 0;
 				}
 			}
 		}
