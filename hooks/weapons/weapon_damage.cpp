@@ -1101,25 +1101,18 @@ namespace hooks
 	}
 
 	// Hooked to fix one-shots never notifying owners. -Pr0nogo
-	void unit_attack_notify(Unit* unit) // 0048F230
-	{
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
-		{
+	void unit_attack_notify(Unit* unit) { // 0048F230
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
 			unit->last_event_color = g_palette_index_reference[20];
-			bool cooldown = *notify_cooldown == 0;
 			unit->last_event_timer = 20;
-			if (cooldown)
-			{
-				if (helper::unit_is_in_notify_range(unit))
-				{
-					if (!unit->attack_notify_timer)
-					{
+			if (!*notify_cooldown) {
+				if (helper::unit_is_in_notify_range(unit)) {
+					if (!unit->attack_notify_timer) {
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
 						*notify_cooldown = 100;
-						bool unit_is_grounded_building = (unit->status & UnitStatus::GroundedBuilding) != 0;
-						u32 sound_id = *console_index + (unit_is_grounded_building ? -0xFFFFFF8B : 120);
+						u32 sound_id = *console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
 						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
-					//	helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
+						helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (g_sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 					}
 				}
 			}

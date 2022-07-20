@@ -985,10 +985,9 @@ SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
 SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 
 // For do_attack_notify_unit
-SCBW_DATA(char*,	g_palette_index_reference,	0x006CEB20); // sizeof at least 20
-SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
-//SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
-SCBW_DATA(u8*,		sound_duration_msecs,		0x006D1278);
+SCBW_DATA(char*,		g_palette_index_reference,	0x006CEB20); // sizeof at least 20
+SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
+SCBW_DATA(SoundData*,	g_sound_data,				0x006D1278);
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);

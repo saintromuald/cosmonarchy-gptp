@@ -1154,4 +1154,12 @@ struct Bitmap {
 	u32			buffer;		// 0x4
 };
 
+struct SoundData {
+	u32 wav_data_size;
+	u32 last_play_time;
+	u32 duration_ms;
+	u32 ds_buffer;
+};
+C_ASSERT(sizeof(SoundData) == 16);
+
 #pragma pack()

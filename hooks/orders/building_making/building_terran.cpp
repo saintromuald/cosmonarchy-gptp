@@ -557,15 +557,11 @@ namespace hooks
 	}
 
 	// Hooked to play the correct new_sound when Taloses complete a structure. -Pr0nogo
-	void play_building_complete_sound(Unit* unit) // 0048F310
-	{
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
-		{
+	void play_building_complete_sound(Unit* unit) { // 0048F310
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
 			u32 race = unit->get_race();
-			switch (race)
-			{
-				case RaceId::Zerg:
-				{
+			switch (race) {
+				case RaceId::Zerg: {
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
@@ -578,19 +574,17 @@ namespace hooks
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}
 				} break;
-				case RaceId::Terran:
-				{
+				case RaceId::Terran: {
 					u32 sound_id = 126;
 					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
 					{
 						sound_id = 136;
 					}
 					helper::play_sound_from_unit(sound_id, unit, (*options_list).flags & 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (*(u32*)&sound_duration_msecs[sound_id] / 1000), 1, sound_id);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (g_sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 				} break;
 				case RaceId::Protoss:
-				default:
-				{
+				default: {
 					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 				} break;
 			}
