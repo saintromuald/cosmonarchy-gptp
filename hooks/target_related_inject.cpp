@@ -263,6 +263,25 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) is_better_target_wrapper() { // 004769D0
+		static bool result;
+		static Unit* self;
+		static Unit* auto_target;
+		static Unit* compare_unit;
+		__asm {
+			MOV compare_unit, EDI
+			MOV auto_target, EAX
+			MOV self, ECX
+			PUSHAD
+		}
+		result = hooks::is_better_target(self, auto_target, compare_unit);
+		__asm {
+			POPAD
+			MOVZX AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -285,6 +304,7 @@ namespace hooks
 		jump_patch(ai_attack_unit_wrapper,							0x0043FFD0, 1);
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
 	//	jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
+		jump_patch(is_better_target_wrapper,						0x004769D0, 0);
 	}
 
 	void inject_target_related_hooks()
