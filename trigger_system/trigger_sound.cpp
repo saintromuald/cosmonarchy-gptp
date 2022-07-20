@@ -71,8 +71,6 @@ void update_sound() {
 			DWORD status = 0;
 			sound->ds_buffer->GetStatus(&status);
 			if (status != DSBSTATUS_PLAYING) {
-				scbw::printf("Unloaded %s", sound->path);
-				sound->ds_buffer->Stop();
 				sound->ds_buffer->Release();
 				sound->ds_buffer = 0;
 			}
@@ -247,11 +245,12 @@ static bool load_ds_buffer(Sound* sound) {
 			sound->ds_buffer->Unlock(ptr1, bytes1, ptr2, bytes2);
 
 			free_loaded_file(&file);
-			scbw::printf("Loaded %s", sound->path);
 			return true;
 		}
 	}
 
+	sound->ds_buffer->Release();
+	sound->ds_buffer = 0;
 	free_loaded_file(&file);
 	return false;
 }
