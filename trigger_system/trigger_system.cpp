@@ -120,6 +120,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
 					// TODO: add time quota
+					// TODO: add area?
 					u32 scouting_player = parser_get_player(&parser);
 
 					u32 count = 0;
@@ -155,6 +156,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
 					// TODO: add time quota
+					// TODO: add area?
 					u32 scouting_player = parser_get_player(&parser);
 
 					u32 count = 0;
