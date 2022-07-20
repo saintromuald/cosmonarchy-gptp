@@ -229,7 +229,7 @@ namespace hooks
 
 			// Execute Triggers before frame 0
 			scbw::set_ingame_loop_state(true);
-			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[options_list->speed]);
+			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
 			scbw::set_ingame_loop_state(false);
 		}
 
@@ -335,7 +335,7 @@ namespace hooks
 			}
 		}
 
-		options_list->speed = 6; // Lock game speed at fastest
+		g_options_list->speed = 6; // Lock game speed at fastest
 		if (!scbw::is_game_paused()) // If the game is not paused
 		{
 			*g_ai_update_cooldown = 0; // We don't want AI to be handicaped with request handling and whatnot
@@ -533,7 +533,7 @@ namespace hooks
 			unit->order_signal &= ~0x20;
 			globals.remove_unit_from_pariah_table(unit, true);
 		}
-		//hooks::ShowHealthBar(unit);
+		//hooks::show_health_bar(unit);
 
 		if (unit->unit_ai) {
 			if (unit->main_order_id == OrderId::ComputerAI) {

@@ -1111,7 +1111,7 @@ namespace hooks
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
 						*notify_cooldown = 100;
 						u32 sound_id = *console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
-						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
+						helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
 						helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (g_sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 					}
 				}

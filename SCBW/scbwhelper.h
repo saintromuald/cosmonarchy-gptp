@@ -108,7 +108,7 @@ namespace helper {
 	// For modifyUnitShields
 	s32 SErrSetLastError(char a1);
 
-	// For compileHealthBar
+	// For compile_health_bar
 	void updateImageDrawData(Image* result);
 	void play_image_iscript(Image* img, u8 iscriptAnim);
 
@@ -862,8 +862,8 @@ namespace helper {
 	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player);
 	bool func_dounitscollide(Unit* first, Unit* second);
 	void unburrow(Unit* unit);
-	Image* CreateHealthBar(s32 a1, Sprite* a2);
-	void RemoveHPBar(Image* a1);
+	Image* create_health_bar(s32 a1, Sprite* a2);
+	void remove_hp_bar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
 	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue);									// 0041006A (based on Storm.dll definition)
 	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);											// 00416090
@@ -1404,4 +1404,7 @@ namespace helper {
 	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit);								// 004769D0
 	void react_to_hit(Unit* attacker, Unit* victim);														// 004776C0
 	char ask_for_help(Unit* attacker, Unit* helper);														// 00476E60
+
+	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u16 unit_id, u8 sound_flags, u8 some_bool, u8 priority); // 004BBAF0
+	s32 queue_sound(u32 sound_id, s32 volume, s32 pan, u16 unit_id);																	// 004BBEB0
 }

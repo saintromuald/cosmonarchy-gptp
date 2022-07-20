@@ -73,6 +73,54 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 	}
 }
 
+//enum DatSoundFlags {
+//	DatSoundFlags_PermanentlyLoaded    = 0x01,
+//	DatSoundFlags_UnitResponse         = 0x02,
+//	DatSoundFlags_SkipFreeing          = 0x04,
+//	DatSoundFlags_BufferCreationQueued = 0x08,
+//	DatSoundFlags_OneAtATime           = 0x10,
+//	DatSoundFlags_NeverPreempt         = 0x20,
+//};
+
+// Hooked to extend sound channels. -Pr0nogo
+s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
+	if (!g_direct_sound_interface->lpVtbl || !g_options_list->sfx) {
+		return 0;
+	}
+	
+	u32 flags = sfx_dat::Flags[sound_id];
+	bool has_flag_10 = flags & 0x10;
+	if (unit && flags & 2 || has_flag_10) {
+		for (u32 i = 0; i < 8; ++i) {
+			SoundChannel* sound_channel = &g_sound_channels[i];
+			if (sound_channel->ds_buffer) {
+				if (has_flag_10 || sound_channel->sound_id == sound_id || (sound_channel->flags & 2 && sound_channel->unit_id == unit->id)) {
+					u32 status = 0;
+					if (!(*(s32(__stdcall**)(void*, u32*))(*(s32*) sound_channel->ds_buffer + 36))(sound_channel->ds_buffer, &status)) { // GetStatus
+						if (status == DSBSTATUS_PLAYING) {
+							return 0;
+						}
+						if (sound_channel->release_when_not_used) {
+							(*(void(__stdcall**)(void*))(*(s32*)sound_channel->ds_buffer + 8))(sound_channel->ds_buffer); // Release
+						}
+						sound_channel->ds_buffer = 0;
+					}
+				}
+			}
+		}
+	}
+	if (flags & 8) {
+		return 0;
+	}
+	s32 unit_id = unit ? unit->id : -1;
+	if (g_sound_data[sound_id].ds_buffer) {
+		sfx_dat::Flags[sound_id] |= 4;
+		return helper::play_loaded_sound((u32)&g_sound_data[16 * sound_id], volume, pan, sound_id, unit_id, flags, 0, sfx_dat::Priority[sound_id]);
+	}
+	helper::queue_sound(sound_id, volume, pan, unit_id);
+	return true;
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -105,7 +153,40 @@ void __declspec(naked) iscript_play_sound_wrapper() { // 004D6610
 	}
 }
 
+void __declspec(naked) play_transmission_from_location_wrapper() { // 004BBFD0
+	static s32 result;
+	static u32 sound_id;
+	static s32 volume;
+	static s32 pan;
+	static Unit* unit;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV unit, EAX
+		MOV EAX, [EBP + 0x0C]
+		MOV pan, EAX
+		MOV EAX, [EBP + 0x10]
+		MOV volume, EAX
+		POP EAX
+		MOV sound_id, EAX
+		PUSHAD
+	}
+	result = play_transmission_from_location(sound_id, volume, pan, unit);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0xC
+	}
+}
+
+// (u32 sound_id, s32 volume, s32 pan, Unit* unit) // 004BBFD0
+
 void inject_trigger_system_hooks() {
-	jump_patch(execute_trigger_conditions_wrapper,	0x00489200, 1);
-	jump_patch(iscript_play_sound_wrapper,			0x004D6610, 2);
+	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
+	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
+	jump_patch(play_transmission_from_location_wrapper,	0x004D6610, 0);
 }

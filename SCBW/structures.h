@@ -1158,8 +1158,21 @@ struct SoundData {
 	u32 wav_data_size;
 	u32 last_play_time;
 	u32 duration_ms;
-	u32 ds_buffer;
+	void* ds_buffer;
 };
 C_ASSERT(sizeof(SoundData) == 16);
+
+struct SoundChannel {
+	void* ds_buffer;				// 0x00
+	u16 unit_id;					// 0x04
+	u8 flags;						// 0x06
+	u8 sound_priority;				// 0x07
+	u8 release_when_not_used;		// 0x08
+	u32 sound_id;					// 0x09
+	u32 volume;						// 0x0D
+	u32 pan;						// 0x11
+	u8 unused[3];					// 0x15
+};
+C_ASSERT(sizeof(SoundChannel) == 24);
 
 #pragma pack()

@@ -495,7 +495,7 @@ namespace hooks
 		{
 			if (sfx_id)
 			{
-				if (options_list->sfx)
+				if (g_options_list->sfx)
 				{
 					s32 sfx_volume = sfx_dat::Volume[sfx_id];
 					u32 max_volume = 99;

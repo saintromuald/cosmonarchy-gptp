@@ -11,6 +11,7 @@
 #include "enumerations/FlingyId.h"
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
+#include <algorithm>
 
 namespace UnitSize
 {
@@ -1088,8 +1089,7 @@ enum AiPersonality // disruption_web_unit
 	AiPersonality_ZergGeneral,
 	AiPersonality_ZergCount,
 
-	AiPersonality_AnyCount = std::max(
-		std::max(AiPersonality_TerranCount, AiPersonality_ProtossCount), AiPersonality_ZergCount),
+	AiPersonality_AnyCount = std::max(std::max(AiPersonality_TerranCount, AiPersonality_ProtossCount), AiPersonality_ZergCount),
 };
 
 enum AiBuildType // plasma_shell
