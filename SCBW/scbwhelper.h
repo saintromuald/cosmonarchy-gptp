@@ -295,7 +295,7 @@ namespace helper {
 	//// building_morph
 	void refund_building_cost(u16 unit_id, u8 player);														// 002CE70
 	void update_building_ai(Unit* unit);																	// 0033FE0
-	bool is_valid_morph(u16 buildingId);																	// 005CC60
+	bool is_valid_building_morph(u16 buildingId);																	// 005CC60
 	void spread_initial_creep(u32 id, s32 x, s32 y);														// 005CE90
 	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 007D770

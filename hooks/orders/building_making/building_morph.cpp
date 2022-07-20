@@ -18,7 +18,7 @@ namespace hooks
 		if (!(building->status & UnitStatus::Completed))
 		{
 			// was hardcoded instead of using is_valid_morph in original code
-			bIsMorphing = helper::is_valid_morph(building->build_queue[building->build_queue_slot]);
+			bIsMorphing = helper::is_valid_building_morph(building->build_queue[building->build_queue_slot]);
 		}
 		else
 		{
@@ -29,7 +29,7 @@ namespace hooks
 
 	void orders_zerg_build_self(Unit* building) {
 		bool is_nydus = building->id == UnitId::ZergNydusCanal && building->building.nydus_exit;
-		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_morph(building->id) || is_nydus) ? false : true);
+		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_building_morph(building->id) || is_nydus) ? false : true);
 		if (is_nydus) {
 			BuildingModifier nydus_modifier = get_building_modifier(building->building.nydus_exit, 0, false);
 			modifier.decrease += nydus_modifier.decrease;
@@ -60,6 +60,9 @@ namespace hooks
 
 		if (building->main_order_state == 0)
 		{
+			if (helper::is_valid_building_morph(buildingId)) {
+				building->create_origin = building->id;
+			}
 			if (building->remaining_build_time < (units_dat::time_cost[buildingId] * 3 / 4))
 			{
 				building->main_order_state = 1;
@@ -171,8 +174,7 @@ namespace hooks
 				s32 hpAfterMorph;
 				Image* current_image;
 				building->order_signal &= ~4;
-				if (helper::is_valid_morph(buildingId))
-				{
+				if (helper::is_valid_building_morph(buildingId)) {
 					// save hp before some functions modify them
 					hpAfterMorph = building->hitpoints;
 					u32 save_shields = building->shields;
@@ -267,7 +269,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Completed)) {
 			u16 builtUnitId = unit->build_queue[unit->build_queue_slot];
 			// original code was hardcoded instead of using is_valid_morph
-			if (helper::is_valid_morph(builtUnitId)) {
+			if (helper::is_valid_building_morph(builtUnitId)) {
 				if (unit->get_race() == RaceId::Zerg) {
 					helper::zergPlaceBuildingCntd(unit);
 				} else { // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
