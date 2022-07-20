@@ -569,8 +569,11 @@ namespace hooks
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					}
-					else if (unit->create_origin == UnitId::ZergGosvileth) {
+					} else if (unit->create_origin == UnitId::ZergGosvileth) {
+						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					} else {
+						// Nydus exit and morphs?
 						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}

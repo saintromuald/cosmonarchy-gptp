@@ -2796,7 +2796,7 @@ namespace helper
 	}
 
 	//Identical to is_valid_morph @ 0x0045CC60;
-	bool is_valid_morph(u16 buildingId)
+	bool is_valid_building_morph(u16 buildingId)
 	{
 		bool result;
 		if (scbw::is_zerg_building_morph_result(buildingId))
