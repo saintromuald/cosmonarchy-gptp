@@ -1174,4 +1174,29 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to debug crashes. -Pr0nogo
+	u32 ask_for_help(Unit* attacker, Unit* helper) // 00476E60
+	{
+		if (helper->id != UnitId::ProtossDidact
+		&& !(units_dat::base_property[helper->id] & UnitProperty::Worker)
+		&& !(helper->status & UnitStatus::Burrowed))
+		{
+			if (helper::ai_unit_can_attack(helper))
+			{
+				if (helper::is_better_target(helper, helper->auto_target_unit, attacker))
+				{
+					Unit* subunit = helper->subunit;
+					helper->auto_target_unit = attacker;
+					if (helper::unit_is_subunit(subunit))
+					{
+						subunit->last_attacking_player = helper->last_attacking_player;
+						helper->subunit->auto_target_unit = attacker;
+					}
+					return 1;
+				}
+			}
+		}
+		return 0;
+	}
 }

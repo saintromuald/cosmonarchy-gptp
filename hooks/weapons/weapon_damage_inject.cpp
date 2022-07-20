@@ -116,6 +116,23 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) ask_for_help_wrapper() { // 00476E60
+		static u32 result;
+		static Unit* attacker;
+		static Unit* helper;
+		__asm {
+			MOV helper, ESI
+			MOV attacker, EAX
+			PUSHAD
+		}
+		result = hooks::ask_for_help(attacker, helper);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -127,5 +144,6 @@ namespace hooks
 		jump_patch(update_corrosive_spores_wrapper,		0x004F4480, 1);
 		jump_patch(unit_attack_notify_wrapper,			0x0048F230, 3);
 		jump_patch(unit_was_hit_wrapper,				0x004795D0, 1);
+		jump_patch(ask_for_help_wrapper,				0x00476E60, 2);
 	}
 }
