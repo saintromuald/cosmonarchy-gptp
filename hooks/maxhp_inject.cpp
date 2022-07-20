@@ -913,7 +913,7 @@ namespace hooks
 				jump_patch(unkWireRandomDraw567C0_Wrapper, 0x004567E7, 2);//done
 				jump_patch(startZergBuildingWrapper, 0x0045D392, 2);//MUL DWORD PTR DS:[EDX*4+662350]
 				//add changes in building_morph, building morph hooks are required (0045D6A7, 0045D6A0)
-				//add changes to nydus hooks nydus hooks are required (orders_Build5)
+				//add changes to nydus hooks nydus hooks are required (orders_build5)
 				jump_patch(Ai_TryReturnHomeWrapper, 0x00462EEA, 2);////CMP EDX,DWORD PTR DS:[EAX*4+662350], wrapper is not be enough, hook may be needed
 				jump_patch(Ai_OrderHealWrapper, 0x00463584, 1);////CMP EAX,DWORD PTR DS:[EDI+662350], wrapper is not be enough, hook may be needed
 				jump_patch(doMedicWrapper, 0x00463CC8, 2);////done
