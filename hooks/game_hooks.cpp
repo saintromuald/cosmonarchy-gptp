@@ -533,7 +533,7 @@ namespace hooks
 			unit->order_signal &= ~0x20;
 			globals.remove_unit_from_pariah_table(unit, true);
 		}
-		//hooks::ShowHealthBar(unit);
+		//hooks::show_health_bar(unit);
 
 		if (unit->unit_ai) {
 			if (unit->main_order_id == OrderId::ComputerAI) {

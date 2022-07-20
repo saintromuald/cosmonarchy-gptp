@@ -1,21 +1,17 @@
 #include "hpbars.h"
 
-namespace
-{
-}
-
 namespace hooks
 {
-	void ShowHealthBar(Unit* unit)
+	void show_health_bar(Unit* unit)
 	{
 		if (unit == nullptr) return;
-		helper::RemoveHPBar(unit->sprite->images.head);
+		helper::remove_hp_bar(unit->sprite->images.head);
 		_unitTemp = unit;
-		helper::CreateHealthBar(0, unit->sprite);
+		helper::create_health_bar(0, unit->sprite);
 		_unitTemp = nullptr;
 	}
 
-	void compileHealthBar(Image* a1, Sprite* a2)
+	void compile_health_bar(Image* image, Sprite* sprite)
 	{
 		/*
 		Sprite v2;// eax
@@ -73,8 +69,4 @@ namespace hooks
 	}
 
 	Unit* _unitTemp;
-}
-
-namespace
-{
 }

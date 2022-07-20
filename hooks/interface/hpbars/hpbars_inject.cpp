@@ -3,30 +3,34 @@
 
 namespace
 {
-	void _declspec(naked) compileHealthBar_Wrapper()
+	void _declspec(naked) compile_health_bar_wrapper()
 	{
-		static Image* a1;
-		static Sprite* a2;
+		static Image* image;
+		static Sprite* sprite;
 		_asm {
-			MOV a1, ESI
+			PUSH EBP
+			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x8]
-			MOV a2, EAX
+			MOV sprite, EAX
 			POP EAX
+			MOV image, ESI
 			PUSHAD
 		}
-		hooks::compileHealthBar(a1, a2);
+		hooks::compile_health_bar(image, sprite);
 		_asm {
 			POPAD
-			RETN
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
 		}
 	}
 }
 
 namespace hooks
 {
-	void injectHpBarsHooks()
+	void inject_hp_bars_hooks()
 	{
-	//	jump_patch(compileHealthBar_Wrapper, 0x004D6010, 2);
+//		jump_patch(compile_health_bar_wrapper, 0x004D6010, 2);
 	}
 }

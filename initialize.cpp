@@ -590,7 +590,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_miss_chance_hooks();
 	hooks::inject_build_time_hooks();
 	hooks::inject_screen_hotkey_hooks();
-//	hooks::injectHpBarsHooks();
+//	hooks::inject_hp_bars_hooks();
 	hooks::inject_ui_features_hooks();
 	hooks::inject_trap_hooks();
 

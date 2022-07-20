@@ -19,7 +19,7 @@ namespace hooks
 	s32 getUnitBulletDamage(Unit* victim, Bullet* bullet);												// 0048ACD0
 	s32 canCastSpell(Unit* a1);																			// 00492140
 	s32 modifyUnitShields(s32 a1, s32 a2);																	// 004C5A20
-	void compileHealthBar(s32 a1, s32 a2);																	// 004D6010
+	void compile_health_bar(s32 a1, s32 a2);																	// 004D6010
 	s32 AI_FindTransport(Unit* a1, s32 a2);																// 004E6EF0
 	s32 mapDataTransfer(char a1, s32 a2, s32 a3);															// 004EAFE0
 }

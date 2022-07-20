@@ -871,7 +871,7 @@ namespace helper
 	}
 
 
-	Image* CreateHealthBar(s32 a1, Sprite* a2)
+	Image* create_health_bar(s32 a1, Sprite* a2)
 	{
 		const u32 CreateHealthBar_function = 0x004D6420;
 		static Image* result;
@@ -886,7 +886,7 @@ namespace helper
 		return result;
 	}
 
-	void RemoveHPBar(Image* a1)
+	void remove_hp_bar(Image* a1)
 	{
 		const u32 RemoveHPBar_function = 0x004D5030;
 		_asm {
