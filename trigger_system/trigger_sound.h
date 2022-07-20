@@ -49,22 +49,15 @@ struct WaveData {
 #pragma pack(pop)
 
 #define MaxPath 256
-#define MaxSoundId 20000
-#define MaxSound 20000
+#define MaxSound 5000
 #define MaxSoundHash 512
 #define MaxDupChannels 256
-
-struct SoundLoadData {
-	WAVEFORMATEX wave_format;
-	size_t size;
-	s8* data;
-};
 
 struct Sound {
 	Sound* hash_next;
 	char path[MaxPath];
-	u32 original_sound_id;
 	u32 last_play_time;
+	bool free_after_play;
 	LPDIRECTSOUNDBUFFER ds_buffer;
 };
 
@@ -112,7 +105,6 @@ Sound* get_sound(char* filename);
 void free_sound(Sound* sound);
 
 void play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);
-bool play_sound_id(u32 sound_id, s32 volume, s32 pan, Unit* unit);
 void play_music(bool resume);
 void stop_music();
 void shuffle_playlist();

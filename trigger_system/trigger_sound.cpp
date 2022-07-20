@@ -65,6 +65,20 @@ void init_direct_sound() {
 }
 
 void update_sound() {
+	for (u32 i = 0; i < loaded_sounds_count; ++i) {
+		Sound* sound = &loaded_sounds[i];
+		if (sound->ds_buffer && sound->free_after_play && *g_elapsed_time_frames - sound->last_play_time >= 5 * 24) {
+			DWORD status = 0;
+			sound->ds_buffer->GetStatus(&status);
+			if (status != DSBSTATUS_PLAYING) {
+				scbw::printf("Unloaded %s", sound->path);
+				sound->ds_buffer->Stop();
+				sound->ds_buffer->Release();
+				sound->ds_buffer = 0;
+			}
+		}
+	}
+
 	if (playback.current_music && playback.current_music->ds_buffer) {
 		DWORD status = 0;
 		playback.current_music->ds_buffer->GetStatus(&status);
@@ -149,18 +163,62 @@ void update_sound() {
 	}
 }
 
-static bool load_ds_buffer(Sound* sound, SoundLoadData* sound_load_data) {
+static bool load_ds_buffer(Sound* sound) {
 	if (!direct_sound) {
 		return false;
+	}
+
+	LoadedFile file = load_entire_sfile(sound->path);
+	if (!file.data) {
+		scbw::printf("Error: File %s missing!", sound->path);
+		return false;
+	}
+
+	WAVEFORMATEX wave_format = {};
+	size_t size = 0;
+	s8* data = 0;
+
+	u8* at = (u8*)file.data;
+	void* end = file.data + file.size;
+	while (at < end) {
+		u32* type = (u32*)at;
+		switch (*type) {
+			case RiffFormat_Riff: {
+				WaveHeader* header = (WaveHeader*) at;
+				at += sizeof(*header);
+			} break;
+			case RiffFormat_Data: {
+				WaveData* wave_data = (WaveData*) at;
+				at += wave_data->chunk_size + 8;
+
+				size = wave_data->chunk_size;
+				data = (s8*)(wave_data + 1);
+			} break;
+			case RiffFormat_Fmt: {
+				WaveFormat* format = (WaveFormat*) at;
+				at += format->chunk_size + 8;
+				wave_format.wFormatTag = format->format_type;
+				wave_format.nChannels = format->channels;
+				wave_format.nSamplesPerSec = format->samples_per_sec;
+				wave_format.nAvgBytesPerSec = format->average_bytes_per_sec;
+				wave_format.nBlockAlign = format->block_align;
+				wave_format.wBitsPerSample = format->bits_per_sample;
+			} break;
+			default: {
+				at = (u8*)end;
+				// @Todo: log an error
+			} break;
+		}
 	}
 
 	DSBUFFERDESC buffer_description = {};
 	buffer_description.dwSize = sizeof(DSBUFFERDESC);
 	buffer_description.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN;
-	buffer_description.dwBufferBytes = sound_load_data->size;
-	buffer_description.lpwfxFormat = &sound_load_data->wave_format;
+	buffer_description.dwBufferBytes = size;
+	buffer_description.lpwfxFormat = &wave_format;
 
 	if (!SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &sound->ds_buffer, 0))) {
+		free_loaded_file(&file);
 		return false;
 	}
 
@@ -172,24 +230,29 @@ static bool load_ds_buffer(Sound* sound, SoundLoadData* sound_load_data) {
 		u8* ptr2 = 0;
 		u32 bytes2 = 0;
 
-		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, sound_load_data->size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
+		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
 			if (ptr1) {
 				s8* out = (s8*)ptr1;
 				for (u32 i = 0; i < bytes1; ++i) {
-					*out++ = sound_load_data->data[i];
+					*out++ = data[i];
 				}
 			}
 			if (ptr2) {
 				s8* out = (s8*)ptr2;
 				for (u32 i = 0; i < bytes2; ++i) {
-					*out++ = sound_load_data->data[i];
+					*out++ = data[i];
 				}
 			}
 
 			sound->ds_buffer->Unlock(ptr1, bytes1, ptr2, bytes2);
+
+			free_loaded_file(&file);
+			scbw::printf("Loaded %s", sound->path);
 			return true;
 		}
 	}
+
+	free_loaded_file(&file);
 	return false;
 }
 
@@ -198,58 +261,15 @@ Sound* load_sound(char* filename) {
 		return 0;
 	}
 	if (loaded_sounds_count < MaxSound) {
-		LoadedFile file = load_entire_sfile(filename);
-		if (!file.data) {
-			scbw::printf("Error: File %s missing!", filename);
-			return 0;
-		}
-
-		SoundLoadData sound_load_data = {};
-
-		u8* at = (u8*)file.data;
-		void* end = file.data + file.size;
-		while (at < end) {
-			u32* type = (u32*)at;
-			switch (*type) {
-				case RiffFormat_Riff: {
-					WaveHeader* header = (WaveHeader*) at;
-					at += sizeof(*header);
-				} break;
-				case RiffFormat_Data: {
-					WaveData* data = (WaveData*) at;
-					at += data->chunk_size + 8;
-
-					sound_load_data.size = data->chunk_size;
-					sound_load_data.data = (s8*)(data + 1);
-				} break;
-				case RiffFormat_Fmt: {
-					WaveFormat* format = (WaveFormat*) at;
-					at += format->chunk_size + 8;
-					sound_load_data.wave_format.wFormatTag = format->format_type;
-					sound_load_data.wave_format.nChannels = format->channels;
-					sound_load_data.wave_format.nSamplesPerSec = format->samples_per_sec;
-					sound_load_data.wave_format.nAvgBytesPerSec = format->average_bytes_per_sec;
-					sound_load_data.wave_format.nBlockAlign = format->block_align;
-					sound_load_data.wave_format.wBitsPerSample = format->bits_per_sample;
-				} break;
-				default: {
-					at = (u8*)end;
-					// @Todo: log an error
-				} break;
-			}
-		}
-
 		Sound* sound = &loaded_sounds[loaded_sounds_count++];
 		snprintf(sound->path, MaxPath, "%s", filename);
 
-		if (load_ds_buffer(sound, &sound_load_data)) {
-			free_loaded_file(&file);
+		if (load_ds_buffer(sound)) {
 			u32 hash_index = hash_string(filename) % MaxSoundHash;
 			sound->hash_next = loaded_sounds_hash_table[hash_index];
 			loaded_sounds_hash_table[hash_index] = sound;
 			return sound;
 		} else {
-			free_loaded_file(&file);
 			loaded_sounds_count--;
 			return 0;
 		}
@@ -279,6 +299,11 @@ void free_sound(Sound* sound) {
 void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 	if (!sound) {
 		return;
+	}
+	if (!sound->ds_buffer) {
+		if (!load_ds_buffer(sound)) {
+			return;
+		}
 	}
 	if (sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
 		return;

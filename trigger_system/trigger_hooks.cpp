@@ -91,7 +91,6 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
 			DupChannel* dup_channel = &dup_channels[i];
 			if (!dup_channels[i].ds_buffer) {
-				dup_channels[i].unit_id = -1;
 				continue;
 			}
 			if (dup_channels[i].unit_id != unit->id) {
@@ -115,7 +114,11 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 	if (SFXDAT_SoundFile[sound_id]) {
 		char buffer[256] = {};
 		snprintf(buffer, 256, "sound\\%s", SFXDAT_SoundFile[sound_id]);
-		play_sound(get_sound(buffer), volume, pan, unit_id);
+		Sound* sound = get_sound(buffer);
+		if (sound) {
+			sound->free_after_play = true;
+			play_sound(sound, volume, pan, unit_id);
+		}
 		return true;
 	}
 	return false;
