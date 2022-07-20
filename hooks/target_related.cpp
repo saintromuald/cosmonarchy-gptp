@@ -1118,11 +1118,11 @@ LABEL_65:
 		return 0;
 	}
 
-	// Hooked to investigate crashes.
+	// Hooked to investigate crashes. -Pr0nogo
 	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) // 004769D0
 	{
 		bool result = 0;
-		if (compare_unit && compare_unit != auto_target) // Nullcheck was added; Not sure why it would ever be null!
+		if (compare_unit != auto_target)
 		{
 			u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
 			if (!scbw::is_allied_to(self->player, compare_player))
