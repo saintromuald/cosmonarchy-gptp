@@ -1178,9 +1178,9 @@ namespace hooks
 	// Hooked to debug crashes. -Pr0nogo
 	u32 ask_for_help(Unit* attacker, Unit* helper) // 00476E60
 	{
-		if (helper->id != UnitId::ProtossDidact
-		&& !(units_dat::base_property[helper->id] & UnitProperty::Worker)
-		&& !(helper->status & UnitStatus::Burrowed))
+		// Originally had code to prohibit Didact and Danimoth unit IDs.
+		if (!(units_dat::base_property[helper->id] & UnitProperty::Worker)
+		&&  !(helper->status & UnitStatus::Burrowed))
 		{
 			if (helper::ai_unit_can_attack(helper))
 			{

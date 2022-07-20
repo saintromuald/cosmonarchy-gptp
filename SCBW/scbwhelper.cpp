@@ -12704,4 +12704,30 @@ namespace helper
 		}
 		return result;
 	}
+
+	bool unit_finished_summon(Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x00436E40;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	u32 get_total_hp_plus_shields(Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x00402710;
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

@@ -1407,4 +1407,7 @@ namespace helper {
 
 	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u32 unit_id, u32 sound_flags, u32 some_bool, u32 priority);	// 004BBAF0
 	s32 queue_sound(u32 sound_id, s32 volume, s32 pan, u32 unit_id);																		// 004BBEB0
+
+	bool unit_finished_summon(Unit* unit);																	// 00436E40
+	u32 get_total_hp_plus_shields(Unit* unit);																// 00402710
 }
