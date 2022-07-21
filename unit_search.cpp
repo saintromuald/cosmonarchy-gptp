@@ -78,15 +78,15 @@ static EntryArray index_search_rect(SearchIndex* index, Box32 rect) {
 
 	for (u32 x = x1; x < x2; x++) {
 		for (u32 y = y1; y < y2; y++) {
-			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
-				Box32 tile_rect = {
-					x * CELL_PX_SIZE,
-					y * CELL_PX_SIZE,
-					x * CELL_PX_SIZE + CELL_PX_SIZE,
-					y * CELL_PX_SIZE + CELL_PX_SIZE
-				};
-				bool is_fully_covered = is_rect_in_rect(tile_rect, rect);
+			Box32 tile_rect = {
+				x * CELL_PX_SIZE,
+				y * CELL_PX_SIZE,
+				x * CELL_PX_SIZE + CELL_PX_SIZE,
+				y * CELL_PX_SIZE + CELL_PX_SIZE
+			};
+			bool is_fully_covered = is_rect_in_rect(tile_rect, rect);
 
+			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
 				if (is_fully_covered || is_point_in_rect(entry->position, rect) && entry_array.count < EntryLimit) {
 					entry_array_add(&entry_array, entry->data);
 				}

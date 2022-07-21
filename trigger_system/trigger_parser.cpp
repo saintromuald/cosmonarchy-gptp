@@ -519,7 +519,6 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			break;
 		}
 	}
-
 	return bitset;
 }
 
@@ -540,7 +539,6 @@ Token get_short_unit_name(u32 unit_id) {
 			after_space = true;
 		}
 	}
-
 	return token;
 }
 
@@ -685,7 +683,6 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			break;
 		}
 	}
-
 	return bitset;
 }
 

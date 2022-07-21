@@ -30,7 +30,6 @@ const char* race_names[] = {
 
 extern bool has_custom_player_name[PlayerLimit];
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
-extern u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count]; // TODO: replace with something smaller
 void init_trigger_system();
 void update_trigger_system(bool in_game);
 

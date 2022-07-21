@@ -6,7 +6,6 @@
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
-#include "trigger_system/trigger_system.h"
 #include "trigger_system/trigger_events.h"
 
 #include "math_utils.h"
@@ -637,23 +636,20 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 }
 
 const u32 Func_DamageUnitHp = 0x004797B0;
-void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify)
-{
+void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify) {
 	assert(this);
 
 	// Logging
 	auto targetId = this->id;
 	auto targetPlayerId = this->player;
-	if (attacker)
-	{
+	if (attacker) {
 		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
 			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
 	}
 
 	u32 notify_ = notify ? 1 : 0;
 
-	if (attacker)
-	{
+	if (attacker) {
 		UnitExt* attackerExt = get_unit_ext(attacker);
 		attackerExt->damage_dealt_timer = 0;
 	}
@@ -663,14 +659,20 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	unitExt->damage_receive_timer = 0;
 
 	if (attacker) {
-		trigger_combat[0][attacker->player][attacker->id][this->player][this->id] = *g_elapsed_time_frames;
-		trigger_combat[0][this->player][this->id][attacker->player][attacker->id] = *g_elapsed_time_frames;
-		for (u32 i = 0; i < 8; ++i) {
+		TriggerEvent event = {};
+		event.seen_by = 0;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (is_visible_to(i)) {
-				trigger_combat[i + 1][attacker->player][attacker->id][this->player][this->id] = *g_elapsed_time_frames;
-				trigger_combat[i + 1][this->player][this->id][attacker->player][attacker->id] = *g_elapsed_time_frames;
+				event.seen_by |= 1 << i;
 			}
 		}
+		event.position = this->position;
+		event.source_player = attackingPlayer;
+		event.target_player = this->player;
+		event.source_unit_id = attacker->id;
+		event.target_unit_id = this->id;
+		event.timestamp = *g_elapsed_time_frames;
+		trigger_event_array_add(&kill_events, event);
 	}
 
 	__asm {
@@ -685,19 +687,19 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	}
 
 	if (this->is_dead()) {
-		if (kill_events_count < EventCap) {
-			KillEvent* event = &kill_events[kill_events_count++];
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (is_visible_to(i)) {
-					event->seen_by |= 1 << i;
-				}
+		TriggerEvent event = {};
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (is_visible_to(i)) {
+				event.seen_by |= 1 << i;
 			}
-			event->dying_player = attackingPlayer;
-			event->killing_player = this->player;
-			event->dying_unit_id = this->id;
-			event->killing_unit_id = attacker ? attacker->id : UnitId::None;
-			event->timestamp = *g_elapsed_time_frames;
 		}
+		event.position = this->position;
+		event.source_player = attackingPlayer;
+		event.target_player = this->player;
+		event.source_unit_id = attacker ? attacker->id : UnitId::None;
+		event.target_unit_id = this->id;
+		event.timestamp = *g_elapsed_time_frames;
+		trigger_event_array_add(&combat_events, event);
 	}
 }
 

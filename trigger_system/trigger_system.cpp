@@ -22,8 +22,6 @@ SoundReplacement sound_replacements[SoundReplacementCap];
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 
-u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-
 void init_trigger_system() {
 	trigger_system_init = true;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
@@ -34,7 +32,6 @@ void init_trigger_system() {
 
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
-	memset(trigger_combat, 0, sizeof(trigger_combat));
 
 	init_recolors();
 	init_objectives();
@@ -78,6 +75,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 		if (parser_eq(&parser, "condition")) {
 			if (parser_get_word(&parser).size) {
 				if (parser_eq(&parser, "combat")) {
+					Area area = parser_get_area(&parser);
 					PlayerBitset source_players = parser_get_player_bitset(&parser);
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
@@ -85,57 +83,66 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
 					u32 time_quota = parser_get_time_ticks(&parser);
 					u32 scouting_player = parser_get_player(&parser);
-					// TODO: rework so we don't have this enourmous table
 
-					for (u32 source_player = 0; source_player < PlayerLimit; ++source_player) {
-						if (!source_players.set[source_player]) {
+					for (u32 i = 0; i < combat_events.count; ++i) {
+						TriggerEvent* event = &kill_events.events[i];
+						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						for (u32 source_unit = 0; source_unit < UnitId::Count; ++source_unit) {
-							if (!source_unit_ids.set[source_unit]) {
+						if (!source_players.set[event->source_player]) {
+							continue;
+						}
+						if (!source_unit_ids.set[event->source_unit_id]) {
+							continue;
+						}
+						if (!target_players.set[event->target_player]) {
+							continue;
+						}
+						if (!target_unit_ids.set[event->target_unit_id]) {
+							continue;
+						}
+						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+							continue;
+						}
+						if (scouting_player) {
+							if (!(event->seen_by & 1 << (scouting_player - 1))) {
 								continue;
 							}
-							for (u32 target_player = 0; target_player < PlayerLimit; ++target_player) {
-								if (!target_players.set[target_player]) {
-									continue;
-								}
-								for (u32 target_unit = 0; target_unit < UnitId::Count; ++target_unit) {
-									if (!target_unit_ids.set[target_unit]) {
-										continue;
-									}
-									u32 combat = trigger_combat[scouting_player][source_player][source_unit][target_player][target_unit];
-									if (combat && check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - combat)) {
-										return true;
-									}
-								}
-							}
 						}
+						return true;
 					}
 					return false;
 				} else if (parser_eq(&parser, "kills")) {
+					Area area = parser_get_area(&parser);
 					PlayerBitset source_players = parser_get_player_bitset(&parser);
 					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
 					PlayerBitset target_players = parser_get_player_bitset(&parser);
 					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
-					// TODO: add time quota
-					// TODO: add area?
+					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
+					u32 time_quota = parser_get_time_ticks(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
 					u32 count = 0;
-					for (u32 i = 0; i < kill_events_count; ++i) {
-						KillEvent* event = &kill_events[i];
-						if (!source_players.set[event->killing_player]) {
+					for (u32 i = 0; i < kill_events.count; ++i) {
+						TriggerEvent* event = &kill_events.events[i];
+						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						if (!source_unit_ids.set[event->killing_unit_id]) { // TODO: Handle UnitId::None
+						if (!source_players.set[event->source_player]) {
 							continue;
 						}
-						if (!target_players.set[event->dying_player]) {
+						if (!source_unit_ids.set[event->source_unit_id]) {
 							continue;
 						}
-						if (!target_unit_ids.set[event->dying_unit_id]) {
+						if (!target_players.set[event->target_player]) {
+							continue;
+						}
+						if (!target_unit_ids.set[event->target_unit_id]) {
+							continue;
+						}
+						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
 							continue;
 						}
 						if (scouting_player) {
@@ -151,21 +158,28 @@ b32 parse_comment_condition(TriggerAction* action) {
 					}
 					return false;
 				} else if (parser_eq(&parser, "deaths")) {
+					Area area = parser_get_area(&parser);
 					PlayerBitset players = parser_get_player_bitset(&parser);
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
-					// TODO: add time quota
-					// TODO: add area?
+					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
+					u32 time_quota = parser_get_time_ticks(&parser);
 					u32 scouting_player = parser_get_player(&parser);
 
 					u32 count = 0;
-					for (u32 i = 0; i < kill_events_count; ++i) {
-						KillEvent* event = &kill_events[i];
-						if (!players.set[event->dying_player]) {
+					for (u32 i = 0; i < kill_events.count; ++i) {
+						TriggerEvent* event = &kill_events.events[i];
+						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						if (!unit_ids.set[event->dying_unit_id]) { // TODO: Handle UnitId::None
+						if (!players.set[event->target_player]) {
+							continue;
+						}
+						if (!unit_ids.set[event->target_unit_id]) {
+							continue;
+						}
+						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
 							continue;
 						}
 						if (scouting_player) {
