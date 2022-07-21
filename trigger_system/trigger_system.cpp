@@ -89,16 +89,8 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						if (!source_players.set[event->source_player]) {
-							continue;
-						}
-						if (!source_unit_ids.set[event->source_unit_id]) {
-							continue;
-						}
-						if (!target_players.set[event->target_player]) {
-							continue;
-						}
-						if (!target_unit_ids.set[event->target_unit_id]) {
+						if ((!source_players.set[event->source_player] || !source_unit_ids.set[event->source_unit_id] || !target_players.set[event->target_player] || !target_unit_ids.set[event->target_unit_id])
+						&&  (!source_players.set[event->target_player] || !source_unit_ids.set[event->target_unit_id] || !target_players.set[event->source_player] || !target_unit_ids.set[event->source_unit_id])) {
 							continue;
 						}
 						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
