@@ -295,7 +295,7 @@ Area parser_get_area(Parser* parser) {
 	parser_pop(parser); // string wasn't valid, let's unwind and try an int
 
 	s32 i = parser_get_s32(parser);
-	if (i >= 0 && i < 256) {
+	if (parser->number_parsed_correctly && i >= 0 && i < 256) {
 		area.box = g_location_table[i].dimensions;
 		area.flags = ~g_location_table[i].flags;
 		area.box.w -= area.box.x;
@@ -425,11 +425,13 @@ char parser_get_separator(Parser* parser) {
 
 u32 parser_get_player(Parser* parser, bool allow_neutral) {
 	u32 player = parser_get_s32(parser);
-	if (player <= 8 || (allow_neutral && player == 12)) {
-		return player;
-	}
-	if (player == 13) {
-		return *g_current_trigger_player_id;
+	if (parser->number_parsed_correctly) {
+		if (player <= 8 || (allow_neutral && player == 12)) {
+			return player;
+		}
+		if (player == 13) {
+			return *g_current_trigger_player_id;
+		}
 	}
 	return 0;
 }
@@ -552,7 +554,7 @@ u32 parser_get_unit_id(Parser* parser) {
 	parser_pop(parser);
 
 	s32 unit_id = parser_get_s32(parser);
-	if (parser->token.size) {
+	if (parser->number_parsed_correctly) {
 		return unit_id;
 	}
 	return UnitId::None;
@@ -621,7 +623,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
-		} else if (parser_eqi(parser, "combatant")) {
+		} else if (parser_eqi(parser, "combatants")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				bool is_combatant = false;
 				u32 subunit_id = units_dat::SubUnit[i];
@@ -636,19 +638,19 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 				}
 				unit_id_bitset_set(&current_bitset, i, is_combatant, mask, negate);
 			}
-		} else if (parser_eqi(parser, "transport")) {
+		} else if (parser_eqi(parser, "transports")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_transport(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "townhall")) {
+		} else if (parser_eqi(parser, "townhalls")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_town_center(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "depot")) {
+		} else if (parser_eqi(parser, "depots")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
 			}
-		} else if (parser_eqi(parser, "node")) {
+		} else if (parser_eqi(parser, "nodes")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
 			}
@@ -656,7 +658,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_shared(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "worker")) {
+		} else if (parser_eqi(parser, "workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
