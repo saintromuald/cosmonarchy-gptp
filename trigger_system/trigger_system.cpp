@@ -314,7 +314,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			playback.target_volume = volume;
 			playback.volume_time = time;
 		} else if (parser_eq(&parser, "playlist_clear") && is_local_player) {
-			current_playlist.size = 0;
+			memset(&current_playlist, 0, sizeof(current_playlist));
 		} else if (parser_eq(&parser, "playlist_add") && is_local_player) {
 			Token filename = parser_get_string(&parser);
 			if (current_playlist.size < MaxSound) {

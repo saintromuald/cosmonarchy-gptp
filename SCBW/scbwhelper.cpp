@@ -10321,8 +10321,8 @@ namespace helper
 	SFileGetFileSize_Func* SFileGetFileSize = (SFileGetFileSize_Func*) 0x00410142;
 	SFileReadFile_Func* SFileReadFile       = (SFileReadFile_Func*)    0x00410148;
 
-	playNextMusic_Func* playNextMusic = (playNextMusic_Func*) 0x004A6250;
-	stopMusic_Func* stopMusic         = (stopMusic_Func*)     0x004A5F50;
+	playNextMusic_Func* play_next_bw_music = (playNextMusic_Func*) 0x004A6250;
+	stopMusic_Func* stop_bw_music         = (stopMusic_Func*)     0x004A5F50;
 
 	void prepare_formation_movement(MovementGroup* a1, char a2) {
 		const u32 func_address = 0x0049A8C0;

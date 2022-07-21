@@ -1132,8 +1132,8 @@ namespace helper {
 	typedef void   __cdecl playNextMusic_Func();
 	typedef HANDLE __cdecl stopMusic_Func();
 
-	extern playNextMusic_Func* playNextMusic;
-	extern stopMusic_Func* stopMusic;
+	extern playNextMusic_Func* play_next_bw_music;
+	extern stopMusic_Func* stop_bw_music;
 
 	void prepare_formation_movement(MovementGroup* a1, char a2);												// 0049A8C0
 	Unit* find_fow_unit(u16 y_pos, u16 x_pos, u32 fow_unit_id);													// 00487FD0
