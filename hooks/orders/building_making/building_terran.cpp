@@ -2,6 +2,7 @@
 #include "building_modifier.h"
 #include <SCBW/api.h>
 #include <globals.h>
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -581,7 +582,7 @@ namespace hooks
 						sound_id = 136;
 					}
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (g_sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[sound_id] + 1000 * (SFXDAT_SoundData[sound_id].duration_ms / 1000), 1, sound_id);
 				} break;
 				case RaceId::Protoss:
 				default: {
