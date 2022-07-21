@@ -339,11 +339,16 @@ void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 }
 
 void play_music(bool resume) {
-	if (playback.current_music && playback.current_music->ds_buffer) {
-		playback.current_music->ds_buffer->SetVolume(get_playback_volume());
-		playback.current_music->ds_buffer->SetPan(0);
-		if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
-		playback.current_music->ds_buffer->Play(0, 0, 0);
+	if (playback.current_music) {
+		if (!playback.current_music->ds_buffer) {
+			load_ds_buffer(playback.current_music);
+		}
+		if (playback.current_music->ds_buffer) {
+			playback.current_music->ds_buffer->SetVolume(get_playback_volume());
+			playback.current_music->ds_buffer->SetPan(0);
+			if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
+			playback.current_music->ds_buffer->Play(0, 0, 0);
+		}
 	}
 }
 
