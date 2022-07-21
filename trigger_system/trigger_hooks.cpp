@@ -186,8 +186,6 @@ void __declspec(naked) play_transmission_from_location_wrapper() { // 004BBFD0
 	}
 }
 
-// (u32 sound_id, s32 volume, s32 pan, Unit* unit) // 004BBFD0
-
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);

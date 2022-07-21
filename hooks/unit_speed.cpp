@@ -328,4 +328,19 @@ namespace hooks
 	{
 		return std::max(scbw::get_flingy_data(FlingyDatEntries::TurnRadius, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * get_speed_multiplier(unit), 1.0);
 	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	Unit* set_unit_movement_speed(Unit* unit, u32 speed) // 004951C0
+	{
+		bool speed_is_equal = unit->current_speed_1 == speed;
+		unit->current_speed_2 = speed;
+		if (!speed_is_equal)
+		{
+			u32 direction = unit->current_direction_2;
+			unit->current_speed_1 = speed;
+			unit->current_velocity.x = speed * g_angle_distance[direction].x >> 8;
+			unit->current_velocity.y = speed * g_angle_distance[direction].y >> 8;
+		}
+		return unit;
+	}
 }
