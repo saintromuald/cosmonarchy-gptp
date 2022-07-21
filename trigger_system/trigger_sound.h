@@ -57,7 +57,6 @@ struct Sound {
 	Sound* hash_next;
 	char path[MaxPath];
 	u32 last_play_time;
-	bool free_after_play;
 	LPDIRECTSOUNDBUFFER ds_buffer;
 };
 
@@ -106,7 +105,7 @@ void free_sound(Sound* sound);
 
 void play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);
 void play_music(bool resume);
-void stop_music();
+void stop_music(bool pause);
 void shuffle_playlist();
 
 s32 get_sound_volume();

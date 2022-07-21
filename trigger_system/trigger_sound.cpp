@@ -67,7 +67,7 @@ void init_direct_sound() {
 void update_sound() {
 	for (u32 i = 0; i < loaded_sounds_count; ++i) {
 		Sound* sound = &loaded_sounds[i];
-		if (sound->ds_buffer && sound->free_after_play && GetTickCount() - sound->last_play_time >= 5 * 1000) {
+		if (sound->ds_buffer && GetTickCount() - sound->last_play_time >= 10 * 1000) {
 			DWORD status = 0;
 			sound->ds_buffer->GetStatus(&status);
 			if (status != DSBSTATUS_PLAYING) {
@@ -95,14 +95,7 @@ void update_sound() {
 		}
 		if (playback.fade <= 0) {
 			playback.fade = 0;
-
-			if (playback.paused) {
-				if (playback.current_music && playback.current_music->ds_buffer) {
-					playback.current_music->ds_buffer->Stop();
-				}
-			} else {
-				stop_music();
-			}
+			stop_music(playback.paused);
 		}
 	}
 
@@ -261,7 +254,7 @@ Sound* load_sound(char* filename) {
 		Sound* sound = &loaded_sounds[loaded_sounds_count++];
 		snprintf(sound->path, MaxPath, "%s", filename);
 
-		if (load_ds_buffer(sound)) {
+		if (file_exists(sound->path)) {
 			u32 hash_index = hash_string(filename) % MaxSoundHash;
 			sound->hash_next = loaded_sounds_hash_table[hash_index];
 			loaded_sounds_hash_table[hash_index] = sound;
@@ -354,11 +347,11 @@ void play_music(bool resume) {
 	}
 }
 
-void stop_music() {
-	if (playback.current_music->ds_buffer) {
+void stop_music(bool pause) {
+	if (playback.current_music && playback.current_music->ds_buffer) {
 		playback.current_music->ds_buffer->Stop();
 	}
-	playback.current_music = 0;
+	if (!pause) playback.current_music = 0;
 }
 
 void shuffle_playlist() {

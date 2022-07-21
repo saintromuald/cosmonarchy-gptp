@@ -38,6 +38,7 @@ void init_trigger_system() {
 	init_sound();
 	init_spawn();
 	init_trigger_vars();
+	init_trigger_events();
 }
 
 void update_trigger_system(bool in_game) {

@@ -1,5 +1,15 @@
 #include "trigger_utils.h"
 
+bool file_exists(char* filename) {
+	HANDLE file = 0;
+	helper::SFileOpenFile(filename, &file);
+	if (file) {
+		helper::SFileCloseFile(file);
+		return true;
+	}
+	return false;
+}
+
 LoadedFile load_entire_sfile(char* filename) {
 	HANDLE file = 0;
 	helper::SFileOpenFile(filename, &file);
