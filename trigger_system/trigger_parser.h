@@ -48,6 +48,7 @@ enum QuotaType {
 	QuotaType_LessOrEqual,
 	QuotaType_Equal,
 	QuotaType_NotEqual,
+	QuotaType_Anything,
 
 	QuotaType_Count
 };
