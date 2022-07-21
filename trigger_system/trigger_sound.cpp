@@ -100,11 +100,12 @@ void update_sound() {
 	}
 
 	if (!playback.current_music && !playback.paused) {
-		if (!playback.next_music) {
-			playback.next_music = get_next_music();
+		if (playback.next_music) {
+			playback.current_music = playback.next_music;
+			playback.next_music = 0;
+		} else {
+			playback.current_music = get_next_music();
 		}
-		playback.current_music = playback.next_music;
-		playback.next_music = get_next_music();
 		if (playback.current_music) {
 			playback.target_fade = 1;
 			play_music(false);
@@ -113,12 +114,12 @@ void update_sound() {
 
 	if (playback.current_music || playback.paused) {
 		if (*g_music_playing) {
+			*g_music_playing = false; // So we don't do retarded lard fade which freezes the game
 			helper::stopMusic();
 		}
-	} else {
-		if (!*g_music_playing) {
-			helper::playNextMusic();
-		}
+	} else if (!*g_music_playing) {
+		*g_music_playing = true; // So we actually play the vanilla music
+		helper::playNextMusic();
 	}
 
 	if (playback.target_fade == 1) {
