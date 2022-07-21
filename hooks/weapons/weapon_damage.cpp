@@ -1147,7 +1147,7 @@ namespace hooks
 						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, (attacker->status >> 2) & 1);
 					}
 				}
-				if (attacker->status & UnitStatus::InBuilding) {
+				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
 					attacker = attacker->connected_unit;
 				}
 				if (helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
