@@ -1111,7 +1111,16 @@ namespace hooks
 					if (!unit->attack_notify_timer) {
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
 						*notify_cooldown = 100;
+
 						u32 sound_id = *console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
+						if (!(unit->status & UnitStatus::GroundedBuilding)) {
+							u32 sound_first = scbw::get_unit_data(UnitsDatEntries::SndPssFirst, unit->id);
+							u32 sound_last = scbw::get_unit_data(UnitsDatEntries::SndPssLast, unit->id);
+							if (sound_first && sound_last) {
+								// using C stdlib rand, since we don't want to alter synced hash for local only event
+								sound_id = rand() % (sound_last - sound_first + 1) + sound_first;
+							}
+						}
 						helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
 						helper::do_unit_event_notification(unit, 16, sfx_dat::PortraitDuration[sound_id] + 1000 * (SFXDAT_SoundData[sound_id].duration_ms / 1000), 1, sound_id);
 					}
