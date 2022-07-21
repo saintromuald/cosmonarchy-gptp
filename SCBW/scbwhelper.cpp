@@ -1081,8 +1081,8 @@ namespace helper
 		return result;
 	}
 
-	// For getRandYesSFX
-	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax)
+	// For get_random_yes_unit_response
+	s32 get_rand_sfx_between(s32 soundIdMin, s32 soundIdMax)
 	{
 		const u32 Func_randGetSFXBetween = 0x0048E940;
 		static s32 result;

@@ -126,8 +126,8 @@ namespace helper {
 	VectorHead* vectorTransfer(char a1, char a2);
 	s32 dataTransfer06(s32 a1);
 
-	// For getRandYesSFX
-	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax);											// 0048E940
+	// For get_random_yes_unit_response
+	s32 get_rand_sfx_between(s32 soundIdMin, s32 soundIdMax);											// 0048E940
 	s16 get_region_id(s32 x, s32 y);																// 0049C9F0
 
 	// For ai_train_unit

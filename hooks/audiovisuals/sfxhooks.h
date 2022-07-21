@@ -4,7 +4,7 @@
 namespace hooks
 {
 
-	s32 getResponseSfx(s32 a1, s32 a2);		// 0048EA20
-	s32 getRandYesSFX(s32 a1);				// 0048EAB0
+	u32 get_unit_response_id(s32 a1, s32 last_sound_id);		// 0048EA20
+	s32 get_random_yes_unit_response(s32 unit_id);				// 0048EAB0
 	void inject_sfx_hooks();
 }
