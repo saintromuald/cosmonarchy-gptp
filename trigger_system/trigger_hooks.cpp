@@ -117,9 +117,10 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 			if (flags & DatSoundFlags_UnitResponse && unit) {
 				unit_id = unit->id;
 			}
-			play_sound(sound, volume, pan, unit_id);
+			if (play_sound(sound, volume, pan, unit_id)) {
+				return true;
+			}
 		}
-		return true;
 	}
 	return false;
 }

@@ -103,7 +103,7 @@ Sound* load_sound(char* filename);
 Sound* get_sound(char* filename);
 void free_sound(Sound* sound);
 
-void play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);
+bool play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);
 void play_music(bool resume);
 void stop_music(bool pause);
 void shuffle_playlist();

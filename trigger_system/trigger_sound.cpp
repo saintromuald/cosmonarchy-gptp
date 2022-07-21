@@ -288,17 +288,17 @@ void free_sound(Sound* sound) {
 	}
 }
 
-void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
+bool play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 	if (!sound) {
-		return;
+		return false;
 	}
 	if (!sound->ds_buffer) {
 		if (!load_ds_buffer(sound)) {
-			return;
+			return false;
 		}
 	}
 	if (sound->last_play_time && GetTickCount() - sound->last_play_time < 80) {
-		return;
+		return false;
 	}
 
 	DWORD status = 0;
@@ -329,6 +329,7 @@ void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 				dup_buffer->ds_buffer->Play(0, 0, 0);
 				dup_buffer->unit_id = unit_id;
 				sound->last_play_time = GetTickCount();
+				return true;
 			}
 		}
 	} else {
@@ -337,7 +338,9 @@ void play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
 		sound->ds_buffer->SetCurrentPosition(0);
 		sound->ds_buffer->Play(0, 0, 0);
 		sound->last_play_time = GetTickCount();
+		return true;
 	}
+	return false;
 }
 
 void play_music(bool resume) {

@@ -9,6 +9,7 @@
 #include "logger.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/orders/spells/hallucination_spell.h"
+#include "hooks/limits/sfx_extender.h"
 
 #include "SCBW\UnitFinder.h"
 
