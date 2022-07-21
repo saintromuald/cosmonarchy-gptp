@@ -50,7 +50,7 @@ namespace hooks
 
 	void __declspec(naked) FakeUnitFlingyIdState_Wrapper()
 	{
-		//		jump_patch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
+//		jump_patch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
 		static u32 flingy_id;
 		static u32 index;
 		__asm {
@@ -171,18 +171,18 @@ namespace hooks
 		std::vector<u8> ecx_edi = {0x8b, 0x0c, 0xbd};
 		dumbCodeInject(0x00463A71, fakeExtFlingyIds, ecx_edi, 0);
 		std::vector<u8> edx_ecx = {0x8b, 0x14, 0x8d};
-		//		dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2); // unit_morph - AI Wrapper
+//		dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2); // unit_morph - AI Wrapper
 		std::vector<u8> edx_eax = {0x8b, 0x14, 0x85};
-		//		dumbCodeInject(0x0047B854, fakeExtFlingyIds, edx_eax, 2);
-		//		dumbCodeInject(0x0047B8A4, fakeExtFlingyIds, edx_eax, 2);
-		// 
-				// wrappers 3-5 if gptp speed hooks are enabled
+//		dumbCodeInject(0x0047B854, fakeExtFlingyIds, edx_eax, 2);
+//		dumbCodeInject(0x0047B8A4, fakeExtFlingyIds, edx_eax, 2);
+
+		// wrappers 3-5 if gptp speed hooks are enabled
 		std::vector<u8> ecx_eax = {0x8b, 0x0c, 0x85};
 		dumbCodeInject(0x0047B8F4, fakeExtFlingyIds, ecx_eax, 0);
 		dumbCodeInject(0x0048D756, fakeExtFlingyIds, ecx_eax, 0);
 		dumbCodeInject(0x0048DA8A, fakeExtFlingyIds, ecx_eax, 0);
 
-		//building visibility
+		// building visibility
 //		jump_patch(buildingVisionSyncHook_Wrapper, 0x00497110);
 
 		dumbCodeInject(0x00497148, fakeExtFlingyIds, edx_eax, 0);
@@ -210,7 +210,7 @@ namespace hooks
 		}
 		assert(player < 8);
 		assert(index < ATTACK_LIMIT);
-		//		unit_id = g_aiscript_controller[player].attackers[index]; // is actually "unit_id+1"
+//		unit_id = g_aiscript_controller[player].attackers[index]; // is actually "unit_id+1"
 		unit_id = globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
@@ -475,11 +475,11 @@ namespace hooks
 		newSfxExtender();
 //		injectPortdataLimits();
 //		hooks::inject_tbl_extender();
-		insaneFlingyIdExtender();
+//		insaneFlingyIdExtender();
 
 //		newAttackExtender(); // if extended attack config option is not enabled in aise, will cause aise crashes
 
-		jump_patch(preInitDataWrapper, 0x004DAF31);
+//		jump_patch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::read_samase_file("samase\\sfx_ext.txt");
 		GPTP::logger << "Read Test Len: " << str.count() << '\n';

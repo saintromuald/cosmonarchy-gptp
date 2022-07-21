@@ -415,5 +415,7 @@ namespace UnitId
 		Buttons_LarvaAssault								= 207,
 		Buttons_LarvaControl								= 208,
 		Buttons_LarvaShared									= 101,
+
+		TerranMaverick2										= 250,
 	};
 }
