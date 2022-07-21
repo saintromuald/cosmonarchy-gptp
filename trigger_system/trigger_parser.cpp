@@ -692,7 +692,7 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 		return default_type;
 	}
 
-	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=') {
+	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
 		char op = *parser->at;
 		++parser->at;
 
@@ -707,6 +707,11 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 			case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less; break;
 			case '=': return QuotaType_Equal; break;
 			case '!': return QuotaType_NotEqual; break;
+			case '*': {
+				// We pop since we don't want next parser_get to consume next argument
+				parser_pop(parser);
+				return QuotaType_Anything;
+			} break;
 		}
 	}
 	return default_type;
@@ -720,6 +725,7 @@ bool check_quota(QuotaType type, s32 quota, s32 value) {
 		case QuotaType_LessOrEqual:		return value <= quota;
 		case QuotaType_Equal:			return value == quota; 
 		case QuotaType_NotEqual:		return value != quota; 
+		case QuotaType_Anything:		return true; 
 	}
 	return false;
 }
