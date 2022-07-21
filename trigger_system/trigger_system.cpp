@@ -129,7 +129,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!source_players.set[event->killing_player]) {
 							continue;
 						}
-						if (!source_unit_ids.set[event->killing_unit_id]) {
+						if (!source_unit_ids.set[event->killing_unit_id]) { // TODO: Handle UnitId::None
 							continue;
 						}
 						if (!target_players.set[event->dying_player]) {
@@ -165,7 +165,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!players.set[event->dying_player]) {
 							continue;
 						}
-						if (!unit_ids.set[event->dying_unit_id]) {
+						if (!unit_ids.set[event->dying_unit_id]) { // TODO: Handle UnitId::None
 							continue;
 						}
 						if (scouting_player) {
