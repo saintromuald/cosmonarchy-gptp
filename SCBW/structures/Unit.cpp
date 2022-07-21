@@ -672,7 +672,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		event.source_unit_id = attacker->id;
 		event.target_unit_id = this->id;
 		event.timestamp = *g_elapsed_time_frames;
-		trigger_event_array_add(&kill_events, event);
+		trigger_event_array_add(&combat_events, event);
 	}
 
 	__asm {
@@ -699,7 +699,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		event.source_unit_id = attacker ? attacker->id : UnitId::None;
 		event.target_unit_id = this->id;
 		event.timestamp = *g_elapsed_time_frames;
-		trigger_event_array_add(&combat_events, event);
+		trigger_event_array_add(&kill_events, event);
 	}
 }
 
