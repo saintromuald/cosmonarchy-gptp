@@ -23,7 +23,7 @@ void init_sound() {
 		}
 	}
 
-	for (u32 i = 0; i < MaxSound; ++i) {
+	for (u32 i = 0; i < loaded_sounds_count; ++i) {
 		free_sound(&loaded_sounds[i]);
 	}
 
