@@ -145,6 +145,9 @@ namespace hooks
 						ready_sound = scbw::rand_between(SoundId::ApostleReady01, SoundId::ApostleReady03);
 					} break;
 					case UnitId::TerranPhalanxTankMode:
+					case UnitId::TerranPhalanxTankModeTurret:
+					case UnitId::TerranPhalanxSiegeMode:
+					case UnitId::TerranPhalanxSiegeModeTurret:
 					{
 						ready_sound = scbw::rand_between(SoundId::PhalanxReady01, SoundId::PhalanxReady02);
 					} break;
