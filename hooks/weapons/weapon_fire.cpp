@@ -129,15 +129,20 @@ namespace hooks
 
 	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
-	// This also affects Unit::fireWeapon().
-	void fire_weapon(Unit* unit, u8 wId) // 00479C90
+	// This also affects Unit::fire_weapon().
+	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
 	{
 		if (unit == nullptr)
 		{
 			return;
 		}
+		// TODO: Put this code somewhere.
+		/*
+		u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+		unit->ground_weapon_cooldown = cooldown;
+		unit->air_weapon_cooldown = cooldown;
+		*/
 		UnitExt* unitExt = get_unit_ext(unit);
-		u8 weapon_id = wId;
 		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
 		unitExt->values[ValueAI_PreventTargeting] = 0;
 		// Retrieve the spawning position for the bullet.
