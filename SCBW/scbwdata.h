@@ -249,7 +249,7 @@ SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
 // For get_response_sfx
 SCBW_DATA(u32*,			selection_sound_counter,	0x00640548);
-SCBW_DATA(u32*,			last_random_sfx,			0x006D5BE0);
+SCBW_DATA(u32*,			g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_ui
 SCBW_DATA(u8*,		console_index,					0x0057F1E2);
@@ -1067,7 +1067,11 @@ SCBW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
 // For play_sound trigger
 SCBW_DATA(s32*,				g_big_volume_array,			0x005008F0);
 
-SCBW_DATA(u32*,				g_game_speed_replay_modifiers, 0x005124D8);
+SCBW_DATA(u32*,				g_game_speed_replay_modifiers,	0x005124D8);
+
+// For play_yes_unit_responses
+SCBW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
+SCBW_DATA(void**,			g_sound_duration,				0x006D1278);
 
 //////////////////////////////////////////////////////////////// @}
 

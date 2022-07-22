@@ -1220,6 +1220,11 @@ namespace SoundId
 		SavantEntropyFire03					= 1931,
 		SavantEntropyFire04					= 1932,
 		SavantEntropyFire05					= 1933,
+
+		HierophantOrderAggressive01			= 1939,
+		HierophantOrderAggressive02			= 1940,
+		HierophantOrderAggressive03			= 1941,
+		HierophantOrderAggressive04			= 1942,
 	};
 }
 
