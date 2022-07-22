@@ -12235,7 +12235,7 @@ namespace helper
 		return result;
 	}
 
-	void play_worker_action_sound(Unit* unit) {
+	void play_yes_unit_response(Unit* unit) {
 		const u32 func_address = 0x0048F4D0;
 		__asm {
 			PUSHAD

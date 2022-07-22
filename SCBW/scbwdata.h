@@ -830,19 +830,19 @@ SCBW_DATA(const PlayerSel*, current_unit_selection, 0x006284B8);
 typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 
-//Contains various info on the tiles.
-SCBW_DATA(ActiveTile**, activeTileArray, 0x006D1260);
-SCBW_DATA(u16**, tileIdArray, 0x005993C4);
-SCBW_DATA(u16**, megatileArray, 0x00628494);
-//SCBW_DATA(u16**, megatileExtArrayFlags, 0x00628494+0x20000);//extender only
+// Contains various tile info.
+SCBW_DATA(ActiveTile**,		activeTileArray,		0x006D1260);
+SCBW_DATA(u16**,			tileIdArray,			0x005993C4);
+SCBW_DATA(u16**,			megatileArray,			0x00628494);
+//SCBW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only
 
 // Stores an ordered list of all units currently in the game.
 SCBW_DATA(UnitFinderData*,	g_unit_ordering_x,		0x0066FF78);
 SCBW_DATA(UnitFinderData*,	g_unit_ordering_y,		0x006769B8);
 SCBW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
-SCBW_DATA(Vector32*,		g_angle_distance,	0x00512D28);
-SCBW_DATA(u16*,				g_megatile_count,	0x005998E0);
+SCBW_DATA(Vector32*,		g_angle_distance,		0x00512D28);
+SCBW_DATA(u16*,				g_megatile_count,		0x005998E0);
 
 // Used internally by Starcraft to manage temporary units lists
 SCBW_DATA(Unit***, g_temp_units_lists_array, 0x006BB938);
@@ -854,24 +854,21 @@ SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list, 0x006BEE70);
 namespace graphics {
 	struct Font; struct Bitmap;
 }
-SCBW_DATA(graphics::Font**, font_base, 0x006CE0F4);
-SCBW_DATA(graphics::Bitmap*, gameScreenBuffer, 0x006CEFF0);
-SCBW_DATA(u8*, refreshRegions, 0x006CEFF8);  //640 x 480 divided into 1200 squares of 16x16
-SCBW_DATA(Layers*, screenLayers, 0x006CEF50);
+SCBW_DATA(graphics::Font**,		font_base,			0x006CE0F4);
+SCBW_DATA(graphics::Bitmap*,	gameScreenBuffer,	0x006CEFF0);
+SCBW_DATA(u8*,					refreshRegions,		0x006CEFF8); // 640 x 480 divided into 1200 squares of 16x16
+SCBW_DATA(Layers*,				screenLayers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
 static DrawGameProc const oldDrawGameProc = (DrawGameProc)0x004BD580;
 
 
-//Array used in multiplayer to randomize factions
-//used by unit.get_faction_color() and
-//player.get_faction_color()
-//Max index is PLAYABLE_PLAYER_COUNT-1
+// Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
+// Max index is PLAYABLE_PLAYER_COUNT-1
 SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
 
-///Access to true player colors that differ from
-///standard versions from graphics.h
-///This is the PlayerColors from BWAPI
-///Max index is PLAYER_COUNT-1
+// Access to true player colors that differ from standard versions from graphics.h
+// This is PlayerColors from BWAPI
+// Max index is PLAYER_COUNT-1
 SCBW_DATA(u8*, g_player_minimap_colors,	0x00581DD6);
 SCBW_DATA(u8*, g_player_in_game_colors, 0x00581D76);
 
@@ -884,7 +881,7 @@ struct SpriteTileData {
 };
 SCBW_DATA(SpriteTileData*, spritesOnTileRow, 0x00629288);
 
-//Image-related
+// Image-related
 struct ImagesDatExtraOverlayLO_Files {
 	LO_Header* attackOverlays[IMAGE_TYPE_COUNT];
 	LO_Header* damageOverlays[IMAGE_TYPE_COUNT];
