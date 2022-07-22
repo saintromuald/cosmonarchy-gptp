@@ -1249,6 +1249,10 @@ namespace SoundId
 		PaladinReady03						= 1963,
 		ZealotReady01						= 1964,
 		ZealotReady02						= 1965,
+//		ZealotReady03						= 1966,
+		PhalanxReady01						= 1967,
+		PhalanxReady02						= 1968,
+//		PhalanxReady03						= 1969,
 	};
 }
 
