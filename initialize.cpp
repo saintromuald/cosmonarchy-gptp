@@ -423,6 +423,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004EC814, patchCTF2, sizeof patchCTF2); // CTFCOP1 - essence drain
 	// iquare, end
 
+	// DarkenedFantasies, start
+	// Read all 256 indexes of tminimap.pcx
+	memory_patch(0x004B4C31, (u16)0xB0);		// mov al,00
+	memory_patch(0x004B4C33, (u8)0x68);			// push
+	memory_patch(0x004B4C34, (u32)0x00000100);	// 00000100 (score tminimap buffer size)
+	// DarkenedFantasies, end
+
 	// FaRTy1billion, start
 	// crash fix for irregular minimap sizes
 	const u8 nop3[3] = {0x8d,0x76,0x00};
