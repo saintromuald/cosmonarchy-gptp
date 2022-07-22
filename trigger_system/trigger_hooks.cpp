@@ -132,7 +132,7 @@ void free_sound_buffer(u32 sound_id) {
 		return;
 	}
 	for (u32 i = 0; i < 8; ++i) {
-		if (g_sound_channels[i].ds_buffer == ds_buffer ) {
+		if (g_sound_channels[i].ds_buffer == ds_buffer) {
 			g_sound_channels[i].ds_buffer = 0;
 		}
 	}

@@ -10,13 +10,12 @@ SoundData* SFXDAT_SoundData;
 
 namespace hooks
 {
-	void sfxExtenderGetCount()
-	{
+	void sfxExtenderGetCount() {
 		globals.extended_sfx = 1;
 	//	auto sfx_data = scbw::read_samase_file("arr\\sfxdata.dat");
 	}
-	void newSfxExtender()
-	{
+
+	void newSfxExtender() {
 		NEW_SOUND_TYPE_COUNT = 20000; // Define your length here (change later to custom func reading sfxdata)
 		SFXDAT_Volume = new u8[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_Flags = new u8[NEW_SOUND_TYPE_COUNT];
@@ -24,6 +23,7 @@ namespace hooks
 		SFXDAT_Type = new u8[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_SoundFile = new char*[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_SoundData = new SoundData[NEW_SOUND_TYPE_COUNT];
+		memset(SFXDAT_SoundData, 0, sizeof(SoundData) * NEW_SOUND_TYPE_COUNT);
 
 		memory_patch(0x0045F042, NEW_SOUND_TYPE_COUNT);
 		memory_patch(0x004BBC2D, NEW_SOUND_TYPE_COUNT);
