@@ -206,8 +206,22 @@ void __declspec(naked) play_transmission_from_location_wrapper() { // 004BBFD0
 	}
 }
 
+void __declspec(naked) free_sound_buffer_wrapper() { // 004BB8E0
+	static u32 sound_id;
+	__asm {
+		MOV sound_id, EBX
+		PUSHAD
+	}
+	free_sound_buffer(sound_id);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
 	jump_patch(play_transmission_from_location_wrapper,		0x004BBFD0, 0);
+	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 }
