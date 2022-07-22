@@ -519,7 +519,6 @@ SCBW_DATA(s32*,			g_sound_volume,				0x00599900);
 SCBW_DATA(s32*,			g_volume_reduction,			0x006D5A0C);
 SCBW_DATA(DSound*,		g_direct_sound_interface,	0x006D59F4);
 SCBW_DATA(s32*,			g_unk_sound_core_2,			0x005999C0);
-SCBW_DATA(s32*,			g_current_sound_memory,		0x006D59FC);
 SCBW_DATA(CritSect*,	g_sound_lock,				0x006D5F4C);
 
 // For soundInit
@@ -531,6 +530,7 @@ SCBW_DATA(s32*,			g_sound_memory_cache,		0x005129B8);
 SCBW_DATA(HANDLE*,		g_sound_handle,				0x006D5A04);
 SCBW_DATA(s32*,			g_unk_sound_core_3,			0x005998E4);
 SCBW_DATA(s8*,			g_unk_sound_bool_core,		0x006D1264);
+SCBW_DATA(char**,		g_current_sound_memory,		0x006D59FC);
 
 SCBW_DATA(void*,		g_sfx_tbl_handle,			0x005999B0);
 

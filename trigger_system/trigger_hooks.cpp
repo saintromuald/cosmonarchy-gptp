@@ -125,6 +125,25 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 	return false;
 }
 
+void free_sound_buffer(u32 sound_id) {
+	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
+	IDirectSoundBuffer* ds_buffer = (IDirectSoundBuffer*)sound_data->ds_buffer;
+	if (!ds_buffer) {
+		return;
+	}
+	for (u32 i = 0; i < 8; ++i) {
+		if (g_sound_channels[i].ds_buffer == ds_buffer ) {
+			g_sound_channels[i].ds_buffer = 0;
+		}
+	}
+	ds_buffer->Release();
+	sound_data->ds_buffer = 0;
+	if (SFXDAT_Flags[sound_id] & DatSoundFlags_PermanentlyLoaded) {
+		return;
+	}
+	*g_current_sound_memory -= sound_data->wav_data_size;
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
