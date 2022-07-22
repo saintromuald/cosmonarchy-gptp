@@ -63,18 +63,14 @@ namespace hooks {
 
 	// For aggressive order unit responses. -Pr0nogo
 	u32 get_random_yes_unit_response_internal(u32 unit_id, u32 order_id) {
-		s32 yes_sound = 0;
 		// Technically this will not work if a unit has attack sounds but no order passive sounds... -Pr0nogo
 		if (!(units_dat::group_flags[unit_id].is_building)) {
 			if (scbw::order_id_is_aggressive(order_id)) {
 				switch (unit_id) {
 					case UnitId::ProtossHierophant: {
-						yes_sound = helper::get_random_sfx_between(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
+						return helper::get_random_sfx_between(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
 					} break;
 				}
-			}
-			if (yes_sound) {
-				return yes_sound;
 			}
 		}
 		return get_random_yes_unit_response(unit_id);
@@ -83,15 +79,14 @@ namespace hooks {
 	// Hooked to allow more unit ids to process passive order unit responses. -Pr0nogo
 	// Can disable injection once the internal version is working.
 	u32 get_random_yes_unit_response(u32 unit_id) { // 0048EAB0
-		s32 yes_sound = 0;
 		if (!(units_dat::group_flags[unit_id].is_building)) {
 			u32 yes_first = scbw::get_unit_data(UnitsDatEntries::SndYesFirst, unit_id);
 			u32 yes_last = scbw::get_unit_data(UnitsDatEntries::SndYesLast, unit_id);
 			if (yes_first && yes_last) {
-				yes_sound = helper::get_random_sfx_between(yes_first, yes_last);
+				return helper::get_random_sfx_between(yes_first, yes_last);
 			}
 		}
-		return yes_sound;
+		return 0;
 	}
 
 	// Hooked to allow more ready unit responses. -Pr0nogo
