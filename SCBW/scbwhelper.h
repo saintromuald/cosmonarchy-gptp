@@ -1351,7 +1351,7 @@ namespace helper {
 	Thingy* show_command_response(u32 x_pos, u16 y_pos, Unit* unit);										// 00456490
 	char cmdact_right_click_order(Unit* target, u32 x_pos, u32 y_pos, u32 unit_id, u32 keycode_used);		// 004C0380
 	s32 show_right_click_error_if_needed(Unit* target);														// 00455A00
-	void play_worker_action_sound(Unit* unit);																// 0048F4D0
+	void play_yes_unit_response(Unit* unit);																// 0048F4D0
 	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);											// 0046F0F0
 
 	char tech_is_researched_bw(u32 player, u16 tech_id);													// 004CE8A0
