@@ -127,7 +127,7 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 
 void free_sound_buffer(u32 sound_id) {
 	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
-	IDirectSoundBuffer* ds_buffer = (IDirectSoundBuffer*)sound_data->ds_buffer;
+	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
 	if (!ds_buffer) {
 		return;
 	}
