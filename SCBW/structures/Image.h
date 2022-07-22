@@ -103,7 +103,7 @@ struct Image
 	/*0x20*/  Point16					screen_pos;
 	/*0x24*/  Box16						grp_size;					// Bounds for GRP frame, only different from normal when part of graphic is out of bounds.
 	/*0x2C*/  GrpHead*					grp_file;
-	/*0x30*/  void*						draw_func;
+	/*0x30*/  void*						draw_func_param;
 	/*0x34*/  void*						render_fxn;
 	/*0x38*/  void*						update_fxn;
 	/*0x3C*/  Sprite*					parent_sprite;

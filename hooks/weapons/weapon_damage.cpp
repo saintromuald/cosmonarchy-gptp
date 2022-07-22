@@ -1117,8 +1117,7 @@ namespace hooks
 							u32 sound_first = scbw::get_unit_data(UnitsDatEntries::SndPssFirst, unit->id);
 							u32 sound_last = scbw::get_unit_data(UnitsDatEntries::SndPssLast, unit->id);
 							if (sound_first && sound_last) {
-								// using C stdlib rand, since we don't want to alter synced hash for local only event
-								sound_id = rand() % (sound_last - sound_first + 1) + sound_first;
+								sound_id = scbw::rand_between_local(sound_first, sound_last);
 							}
 						}
 						helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);

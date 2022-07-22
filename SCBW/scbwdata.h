@@ -1071,7 +1071,6 @@ SCBW_DATA(u32*,				g_game_speed_replay_modifiers,	0x005124D8);
 
 // For play_yes_unit_responses
 SCBW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
-SCBW_DATA(void**,			g_sound_duration,				0x006D1278);
 
 //////////////////////////////////////////////////////////////// @}
 

@@ -987,10 +987,15 @@ namespace scbw
 	}
 
 	/* /!\ Not working like 004DC550 rand_between /!\ */
-	u32 rand_between(u32 min, u32 max)
-	{
+	u32 rand_between(u32 min, u32 max) {
 		assert(min <= max);
 		return min + ((max - min + 1) * random() >> 15);
+	}
+
+	// using C stdlib rand
+	u32 rand_between_local(u32 min, u32 max) {
+		assert(min <= max);
+		return rand() % (max - min + 1) + min;
 	}
 
 	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
@@ -2546,18 +2551,18 @@ namespace scbw
 	}
 
 	bool order_id_is_aggressive(u32 order_id) {
-		return	order_id == OrderId::Attack1
-		||		order_id == OrderId::Attack2
-		||		order_id == OrderId::AttackFixedRange
-		||		order_id == OrderId::AttackMove
-		||		order_id == OrderId::AttackMoveComputer
-		||		order_id == OrderId::AttackTile
-		||		order_id == OrderId::AttackUnit
-		||		order_id == OrderId::CarrierAttack1
-		||		order_id == OrderId::CarrierAttack2
-		||		order_id == OrderId::ReaverAttack1
-		||		order_id == OrderId::ReaverAttack2
-		||		order_id == OrderId::TowerAttack
-		||		order_id == OrderId::TurretAttack;
+		return order_id == OrderId::Attack1
+			|| order_id == OrderId::Attack2
+			|| order_id == OrderId::AttackFixedRange
+			|| order_id == OrderId::AttackMove
+			|| order_id == OrderId::AttackMoveComputer
+			|| order_id == OrderId::AttackTile
+			|| order_id == OrderId::AttackUnit
+			|| order_id == OrderId::CarrierAttack1
+			|| order_id == OrderId::CarrierAttack2
+			|| order_id == OrderId::ReaverAttack1
+			|| order_id == OrderId::ReaverAttack2
+			|| order_id == OrderId::TowerAttack
+			|| order_id == OrderId::TurretAttack;
 	}
 }

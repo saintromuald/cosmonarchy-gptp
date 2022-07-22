@@ -1082,14 +1082,13 @@ namespace helper
 	}
 
 	// For get_random_yes_unit_response
-	s32 get_random_sfx_between(s32 soundIdMin, s32 soundIdMax)
-	{
+	u32 get_random_sfx_between(u32 min, u32 max) {
 		const u32 Func_randGetSFXBetween = 0x0048E940;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EDI, soundIdMin
-			MOV ESI, soundIdMax
+			MOV ESI, min
+			MOV EDI, max
 			CALL Func_randGetSFXBetween
 			MOV result, EAX
 			POPAD
