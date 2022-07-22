@@ -1161,6 +1161,7 @@ namespace SoundId
 
 		WyvernAttack01						= 1118,
 		WyvernAttack02						= 1119,
+
 		AugurDeath01						= 1235,
 		AugurDeath02						= 1236,
 		AugurDeath03						= 1237,
@@ -1225,6 +1226,29 @@ namespace SoundId
 		HierophantOrderAggressive02			= 1940,
 		HierophantOrderAggressive03			= 1941,
 		HierophantOrderAggressive04			= 1942,
+		HierophantReady01					= 1943,
+		HierophantReady02					= 1944,
+		HierophantReady03					= 1945,
+		LegionnaireReady01					= 1946,
+		LegionnaireReady02					= 1947,
+		LegionnaireReady03					= 1948,
+		ApostleReady01						= 1949,
+		ApostleReady02						= 1950,
+		ApostleReady03						= 1951,
+		ShamanReady01						= 1952,
+		ShamanReady02						= 1953,
+		ShamanReady03						= 1954,
+		CyprianReady01						= 1955,
+		CyprianReady02						= 1956,
+		CyprianReady03						= 1957,
+		WyvernReady01						= 1958,
+		WyvernReady02						= 1959,
+		WyvernReady03						= 1960,
+		PaladinReady01						= 1961,
+		PaladinReady02						= 1962,
+		PaladinReady03						= 1963,
+		ZealotReady01						= 1964,
+		ZealotReady02						= 1965,
 	};
 }
 

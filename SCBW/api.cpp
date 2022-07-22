@@ -2544,4 +2544,20 @@ namespace scbw
 	u32 get_ground_path_distance_tiles(Point16 a, Point16 b) {
 		return helper::getTileDistance(a.x, a.y, b.x, b.y);
 	}
+
+	bool order_id_is_aggressive(u32 order_id) {
+		return	order_id == OrderId::Attack1
+		||		order_id == OrderId::Attack2
+		||		order_id == OrderId::AttackFixedRange
+		||		order_id == OrderId::AttackMove
+		||		order_id == OrderId::AttackMoveComputer
+		||		order_id == OrderId::AttackTile
+		||		order_id == OrderId::AttackUnit
+		||		order_id == OrderId::CarrierAttack1
+		||		order_id == OrderId::CarrierAttack2
+		||		order_id == OrderId::ReaverAttack1
+		||		order_id == OrderId::ReaverAttack2
+		||		order_id == OrderId::TowerAttack
+		||		order_id == OrderId::TurretAttack;
+	}
 }

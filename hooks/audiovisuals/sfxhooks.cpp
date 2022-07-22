@@ -53,6 +53,7 @@ namespace hooks
 	}
 	
 	// Hooked to allow for aggressive order unit responses. -Pr0nogo
+	// TODO: Parse context of unit order to accurately handle aggressive orders. Order ids are not assigned until after this function is called...
 	void play_yes_unit_response(Unit* self) // 0048F4D0
 	{
 		if (!*use_quiet_sounds)
@@ -63,11 +64,11 @@ namespace hooks
 				if (!self->is_frozen())
 				{
 					u32 last_rand = *g_last_random_sfx_id;
-					u32 rand_response = get_random_yes_unit_response(self->id, self);
+					u32 rand_response = get_random_yes_unit_response_internal(self->id, self->main_order_id); // New second arg
 					bool can_play = (g_options_list->flags >> 1) & 1;
 					if (helper::play_sound_from_unit(rand_response, self, can_play, 99))
 					{
-						helper::do_unit_event_notification(self, 17, sfx_dat::PortraitDuration[rand_response] + 1000 * (*(u32*)&g_sound_duration[rand_response] / 0x3E8u), 0, rand_response);
+						helper::do_unit_event_notification(self, 17, sfx_dat::PortraitDuration[rand_response] + 1000 * (*(u32*)&g_sound_duration[rand_response] / 1000), 0, rand_response);
 					}
 					else
 					{
@@ -78,16 +79,15 @@ namespace hooks
 		}
 	}
 
-	// Hooked to allow more unit ids to process passive order unit responses.
-	// Updated 22 July 2022 with a lame implementation of aggressive order unit responsese. -Pr0nogo
-	s32 get_random_yes_unit_response(s32 unit_id, Unit* unit) // 0048EAB0
+	// For aggressive order unit responses. -Pr0nogo
+	u32 get_random_yes_unit_response_internal(u32 unit_id, u32 order_id)
 	{
 		s32 result = 0;
 		// Technically this will not work if a unit has attack sounds but no order passive sounds... -Pr0nogo
 		u32 unit_data = scbw::get_unit_data(UnitsDatEntries::SndYesFirst, unit_id);
 		if (!(units_dat::group_flags[unit_id].is_building) && unit_data)
 		{
-			if (unit->order_target.unit && !scbw::is_allied_to(unit->player, unit->order_target.unit->player)) {
+			if (scbw::order_id_is_aggressive(order_id)) {
 				switch (unit_id)
 				{
 					case UnitId::ProtossHierophant:
@@ -105,5 +105,72 @@ namespace hooks
 			}
 		}
 		return result;
+	}
+
+	// Hooked to allow more unit ids to process passive order unit responses. -Pr0nogo
+	// Can disable injection once the internal version is working.
+	u32 get_random_yes_unit_response(u32 unit_id) // 0048EAB0
+	{
+		s32 result = 0;
+		u32 unit_data = scbw::get_unit_data(UnitsDatEntries::SndYesFirst, unit_id);
+		if (!(units_dat::group_flags[unit_id].is_building) && unit_data)
+		{
+			result = helper::get_random_sfx_between((s32)scbw::get_unit_data(UnitsDatEntries::SndYesLast, unit_id), unit_data);
+		}
+		return result;
+	}
+
+	// Hooked to allow more ready unit responses. -Pr0nogo
+	void play_unit_ready_sound(Unit* unit) // 0048F440
+	{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id && !*use_quiet_sounds)
+		{
+			u32 unit_id = unit->id;
+			if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell)
+			{
+				u32 ready_sound = units_dat::SoundReady[unit_id];
+				switch (unit_id)
+				{
+					// TODO: Maybe use random method in get_unit_response_id to avoid the same ready line back to back multiple times? -Pr0nogo
+					case UnitId::TerranCyprian:
+					{
+						ready_sound = scbw::rand_between(SoundId::CyprianReady01, SoundId::CyprianReady03);
+					} break;
+					case UnitId::TerranShaman:
+					{
+						ready_sound = scbw::rand_between(SoundId::ShamanReady01, SoundId::ShamanReady03);
+					} break;
+					case UnitId::TerranApostle:
+					{
+						ready_sound = scbw::rand_between(SoundId::ApostleReady01, SoundId::ApostleReady03);
+					} break;
+					case UnitId::TerranPaladin:
+					{
+						ready_sound = scbw::rand_between(SoundId::PaladinReady01, SoundId::PaladinReady03);
+					} break;
+					case UnitId::TerranWyvern:
+					{
+						ready_sound = scbw::rand_between(SoundId::WyvernReady01, SoundId::WyvernReady03);
+					} break;
+					case UnitId::ProtossZealot:
+					{
+						ready_sound = scbw::rand_between(SoundId::ZealotReady01, SoundId::ZealotReady02);
+					} break;
+					case UnitId::ProtossLegionnaire:
+					{
+						ready_sound = scbw::rand_between(SoundId::LegionnaireReady01, SoundId::LegionnaireReady03);
+					} break;
+					case UnitId::ProtossHierophant:
+					{
+						ready_sound = scbw::rand_between(SoundId::HierophantReady01, SoundId::HierophantReady03);
+					} break;
+					default:
+					{
+					} break;
+				}
+				helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[ready_sound] + 1000 * (*(u32*)&g_sound_duration[ready_sound] / 1000), 1, ready_sound);
+			}
+		}
 	}
 }
