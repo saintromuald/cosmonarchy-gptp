@@ -26,19 +26,7 @@ namespace hooks {
 
 		u32 what_start = scbw::get_unit_data(UnitsDatEntries::SndWhtFirst, unit_id);
 		u32 what_end = scbw::get_unit_data(UnitsDatEntries::SndWhtLast, unit_id);
-		u32 what_sound = 0;
-		if (what_start == what_end) {
-			*g_last_random_sfx_id = what_start;
-			what_sound = what_start;
-		} else {
-			u32 rand = what_start + (helper::rand_func() >> 8) % (what_end - what_start + 1);
-			if (rand == *g_last_random_sfx_id && ++rand > what_end) {
-				rand = what_start;
-			}
-			*g_last_random_sfx_id = rand;
-			what_sound = rand;
-		}
-		return what_sound;
+		return helper::get_random_sfx_between(what_start, what_end);
 	}
 	
 	// Hooked to allow for aggressive order unit responses. -Pr0nogo
