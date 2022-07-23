@@ -73,7 +73,9 @@ void update_trigger_system(bool in_game) {
 		init_trigger_system();
 	}
 
-	update_sound();
+	if (in_game) {
+		update_sound();
+	}
 	bool paused = scbw::is_game_paused();
 	if (trigger_game_paused && !paused) {
 		set_palette_recolor(recolor_system.current_recolor.set);

@@ -7,7 +7,7 @@ namespace hooks
 		if (unit == nullptr) return;
 		helper::remove_hp_bar(unit->sprite->images.head);
 		_unitTemp = unit;
-		helper::create_health_bar(0, unit->sprite);
+		helper::create_health_bar(unit->sprite);
 		_unitTemp = nullptr;
 	}
 

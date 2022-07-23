@@ -871,14 +871,14 @@ namespace helper
 	}
 
 
-	Image* create_health_bar(s32 a1, Sprite* a2)
+	Image* create_health_bar(Sprite* sprite)
 	{
 		const u32 CreateHealthBar_function = 0x004D6420;
 		static Image* result;
 		_asm {
 			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
+			MOV ECX, 0
+			MOV EDX, sprite
 			CALL CreateHealthBar_function
 			MOV result, EAX
 			POPAD

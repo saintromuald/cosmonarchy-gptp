@@ -862,7 +862,7 @@ namespace helper {
 	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player);
 	bool func_dounitscollide(Unit* first, Unit* second);
 	void unburrow(Unit* unit);
-	Image* create_health_bar(s32 a1, Sprite* a2);
+	Image* create_health_bar(Sprite* sprite);
 	void remove_hp_bar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
 	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue);									// 0041006A (based on Storm.dll definition)
