@@ -19,16 +19,22 @@ bool trigger_system_in_game;
 u32 sound_replacements_count;
 SoundReplacement sound_replacements[SoundReplacementCap];
 
+u32 sprite_replacements_count;
+SpriteReplacement sprite_replacements[SpriteReplacementCap];
+
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 
 void init_trigger_system() {
 	trigger_system_init = true;
+	trigger_game_paused = false;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
-	trigger_game_paused = false;
 	sound_replacements_count = 0;
 	memset(sound_replacements, 0, sizeof(sound_replacements));
+
+	sprite_replacements_count = 0;
+	memset(sprite_replacements, 0, sizeof(sprite_replacements));
 
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
@@ -39,6 +45,19 @@ void init_trigger_system() {
 	init_spawn();
 	init_trigger_vars();
 	init_trigger_events();
+}
+
+static void replace_unit_sprite(Unit* unit, u32 sprite_id) {
+	if (unit->sprite && unit->sprite->sprite_id != sprite_id) {
+		Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
+		if (new_sprite) {
+			unit->sprite->free();
+			unit->sprite = new_sprite;
+			for (Image* image = new_sprite->images.head; image; image = image->link.next) {
+				helper::set_image_direction(image, unit->current_direction_1);
+			}
+		}
+	}
 }
 
 void update_trigger_system(bool in_game) {
@@ -63,6 +82,27 @@ void update_trigger_system(bool in_game) {
 		update_recolors();
 		update_spawn();
 		update_trigger_vars();
+
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			bool has_replacement = false;
+			for (u32 i = 0; i < sprite_replacements_count; ++i) {
+				SpriteReplacement* sprite_replacement = &sprite_replacements[i];
+				if (unit->player > PlayerLimit || !sprite_replacement->players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !sprite_replacement->unit_ids.set[unit->id]) {
+					continue;
+				}
+				replace_unit_sprite(unit, sprite_replacement->sprite_id);
+				has_replacement = true;
+				break;
+			}
+			if (!has_replacement) {
+				u32 flingy_id = scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id);
+				u32 sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);
+				replace_unit_sprite(unit, sprite_id);
+			}
+		}
 	}
 	trigger_game_paused = paused;
 }
@@ -550,6 +590,52 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		// Gameplay Actions
+		} else if (parser_eq(&parser, "unit_sprite")) {
+			SpriteReplacement sprite_replacement = {};
+			sprite_replacement.players = parser_get_player_bitset(&parser);
+			sprite_replacement.unit_ids = parser_get_unit_id_bitset(&parser);
+			parser_get_word(&parser);
+			if (parser_eq(&parser, "sprite_id")) {
+				sprite_replacement.sprite_id = parser_get_s32(&parser);
+			} else if (parser_eq(&parser, "unit_id")) {
+				u32 unit_id = parser_get_unit_id(&parser);
+				u32 flingy_id = scbw::get_unit_data(UnitsDatEntries::Flingy, unit_id);
+				sprite_replacement.sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);
+			} else {
+				continue;
+			}
+
+			if (sprite_replacements_count < SpriteReplacementCap) {
+				sprite_replacements[sprite_replacements_count++] = sprite_replacement;
+			}
+		} else if (parser_eq(&parser, "clear_unit_sprite")) {
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			u32 sprite_id = 0;
+			parser_get_word(&parser);
+			if (parser_eq(&parser, "sprite_id")) {
+				sprite_id = parser_get_s32(&parser);
+			} else if (parser_eq(&parser, "unit_id")) {
+				u32 unit_id = parser_get_unit_id(&parser);
+				u32 flingy_id = scbw::get_unit_data(UnitsDatEntries::Flingy, unit_id);
+				sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);
+			} else {
+				continue;
+			}
+
+			for (u32 i = 0; i < sprite_replacements_count; ++i) {
+				SpriteReplacement* sprite_replacement = &sprite_replacements[i];
+				if (memcmp(&sprite_replacement->players, &players, sizeof(PlayerBitset)) != 0) {
+					continue;
+				}
+				if (memcmp(&sprite_replacement->unit_ids, &unit_ids, sizeof(UnitIdBitset)) != 0) {
+					continue;
+				}
+				if (sprite_replacement->sprite_id != sprite_id) {
+					continue;
+				}
+				sprite_replacements[i--] = sprite_replacements[--sprite_replacements_count];
+			}
 		} else if (parser_eq(&parser, "clear_creep")) {
 			Area location = parser_get_area(&parser);
 			scbw::clear_creep(location.box);
