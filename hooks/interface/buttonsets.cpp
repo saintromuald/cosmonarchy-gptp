@@ -1234,6 +1234,11 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::TerranClaymore &&  // Claymore Prolonged Arms passive 
+								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)
+							{
+								current_button_state = Button_State::Enabled;
+							}
 							else if (unit->id == UnitId::TerranClaymore &&  // Claymore Kelvin Munitions passive 
 								current_button->icon_id == IconId::FusionCutterHarvest)
 							{
@@ -1254,8 +1259,8 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranSentinel &&  // Sentinel Kinetic Penetration passive
-								current_button->icon_id == IconId::BurstLasersUnused)
+							else if (unit->id == UnitId::TerranSentinel &&  // Sentinel Prolonged Arms passive
+								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)
 							{
 								if (unit->status & UnitStatus::GroundedBuilding) {
 									current_button_state = Button_State::Enabled;
