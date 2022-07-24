@@ -1254,10 +1254,25 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::TerranSentinel &&  // Sentinel Kinetic Penetration passive
+								current_button->icon_id == IconId::BurstLasersUnused)
+							{
+								if (unit->status & UnitStatus::GroundedBuilding) {
+									current_button_state = Button_State::Enabled;
+								}
+								else {
+									current_button_state = Button_State::Invisible;
+								}
+							}
 							else if (unit->id == UnitId::TerranIonCannon &&  // Ion Cannon Ion Field passive 
 								current_button->icon_id == IconId::OpticalFlare)
 							{
-								current_button_state = Button_State::Enabled;
+								if (unit->status & UnitStatus::GroundedBuilding) {
+									current_button_state = Button_State::Enabled;
+								}
+								else {
+									current_button_state = Button_State::Invisible;
+								}
 							}
 
 							// PROTOSS \\

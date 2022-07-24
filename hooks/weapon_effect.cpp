@@ -31,7 +31,7 @@ namespace hooks
 		if (dsw != nullptr)
 		{
 			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
-				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->srcPlayer, weapons_dat::DamageUpgrade[weapon_id]));
+				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->player, weapons_dat::DamageUpgrade[weapon_id]));
 			if (bullet->hit_flags & 2)
 			{
 				damage /= 2;
@@ -94,22 +94,22 @@ namespace hooks
 			{
 				case WeaponId::SalamanderPerditionBarrage:
 				{
-					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->srcPlayer, bullet->source_unit);
+					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, bullet->source_unit);
 					break;
 				}
 				case WeaponId::KeskathalorScreamingVenom:
 				{
-					globals.create_effect(EffectId_CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->srcPlayer, bullet->source_unit);
+					globals.create_effect(EffectId_CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, bullet->source_unit);
 					break;
 				}
 				case WeaponId::IonCannon:
 				{
-					globals.create_effect(EffectId_IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer, bullet->source_unit);
+					globals.create_effect(EffectId_IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->player, bullet->source_unit);
 					break;
 				}
 				case WeaponId::CantavisHallucinationCast:
 				{
-					globals.create_effect(EffectId_HallucinatingField, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->srcPlayer, bullet->source_unit);
+					globals.create_effect(EffectId_HallucinatingField, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->player, bullet->source_unit);
 					break;
 				}
 			}
@@ -156,17 +156,17 @@ namespace hooks
 			// Units can't splash themselves -- except psi storm
 			if (target == bullet->source_unit && bullet->weapon_id != WeaponId::PsiStorm) continue;
 
-			// Don't hit allied units -- normally just checks target->player == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
-			// if(scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
+			// if(scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attackTarget.unit) continue;
 
 			if (splash == SplashType::Enemy)
 			{
-				if (bullet->srcPlayer == target->player && target != bullet->attackTarget.unit) continue;
+				if (bullet->player == target->player && target != bullet->attackTarget.unit) continue;
 			}
 
 			else if (splash == SplashType::FriendlyNew)
 			{
-				if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+				if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attackTarget.unit) continue;
 			}
 
 			// Can the unit be targeted?
@@ -283,11 +283,11 @@ namespace hooks
 			// Units can't splash themselves
 			if (target == bullet->source_unit) continue;
 
-			// Don't hit allied units -- normally just checks target->player == bullet->srcPlayer
-//			if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+			// Don't hit allied units -- normally just checks target->player == bullet->player
+//			if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attackTarget.unit) continue;
 			if (splash == SplashType::Enemy)
 			{
-				if (bullet->srcPlayer == target->player && target != bullet->attackTarget.unit) continue;
+				if (bullet->player == target->player && target != bullet->attackTarget.unit) continue;
 			}
 			else if (splash == SplashType::FriendlyNew)
 			{
@@ -301,7 +301,7 @@ namespace hooks
 					}
 				}
 					
-				if (scbw::is_unit_enemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
+				if (scbw::is_unit_enemy(bullet->player, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
 				{
 					continue;
 				}
@@ -387,7 +387,7 @@ namespace hooks
 			{
 				return;
 			}
-			target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid], bullet->source_unit, bullet->srcPlayer, 0, 1, false);
+			target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid], bullet->source_unit, bullet->player, 0, 1, false);
 			return;
 		}
 
@@ -482,7 +482,7 @@ namespace hooks
 			Unit* target = unitsInSplash.get_unit(i);
 
 			weaponIdLoop = bullet->weapon_id;
-			if (target != bullet->source_unit && (target->player != bullet->srcPlayer || target == bullet->attackTarget.unit))
+			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attackTarget.unit))
 			{
 				if (scbw::can_weapon_target_unit(weaponIdLoop, target, target))
 				{
@@ -545,7 +545,7 @@ namespace hooks
 	{
 		Vector32 pos = { bullet->position.x, bullet->position.y } ;
 
-		globals.create_effect(EffectId_GroundZero, 24, pos, 0, -1, 5, bullet->srcPlayer, bullet->source_unit);
+		globals.create_effect(EffectId_GroundZero, 24, pos, 0, -1, 5, bullet->player, bullet->source_unit);
 
 		splash(bullet, weapon_id, SplashType::Radial);
 	}

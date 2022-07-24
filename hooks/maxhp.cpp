@@ -787,7 +787,7 @@ LABEL_32:
 			v5 = (u8)bullet->weapon_id;
 			v6 = weapons_dat::DamageUpgrade[v5];
 			v7 = weapons_dat::damage_amount[v5];
-			v4 = (u8)bullet->srcPlayer;
+			v4 = (u8)bullet->player;
 			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
 				/*v8 = g_upgrades_level_bw[v4][v6];
 			else

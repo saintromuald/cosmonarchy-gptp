@@ -40,7 +40,7 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+	if (scbw::is_allied_to(bullet->player, unit->player))
 	{
 		return false;
 	}
@@ -504,7 +504,7 @@ namespace hooks
 						bullet->source_unit->order_target.unit = target;
 						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
 						auto newBullet = helper::create_bullet(WeaponId::ArchitectDispersiveSalvo,
-							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
+							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, newAngle);
 						if (newBullet)
 						{
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
@@ -544,7 +544,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->player, unit->player))
 				{
 					return false;
 				}
@@ -588,7 +588,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->player, unit->player))
 				{
 					return false;
 				}
@@ -625,6 +625,10 @@ namespace hooks
 			u32 range = 0;
 			switch (bullet->weapon_id)
 			{
+				case WeaponId::SentinelCerberusRailgun:
+				{
+					range = 64;
+				} break;
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					range = 96;
@@ -656,7 +660,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->player, unit->player))
 				{
 					return false;
 				}
@@ -686,18 +690,25 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				if (bullet->weapon_id == WeaponId::PenumbraErebolShockCannon)
+				if (bullet->weapon_id == WeaponId::SentinelCerberusRailgun)
+				{
+					// Sentinel - Kinetic Penetration - pierce targets
+					globals.add_bullet_multihit(bullet, collisionTarget);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
+				}
+				else if (bullet->weapon_id == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra - Shroud Piercer - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collisionTarget, 2);
 				}
 				else if (bullet->weapon_id == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - slow pierced targets
@@ -711,10 +722,10 @@ namespace hooks
 					// Kalkalisk behavior
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
-					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
 					collisionTarget->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
 						weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid],
-						bullet->source_unit, bullet->srcPlayer, 0, 1, false);
+						bullet->source_unit, bullet->player, 0, 1, false);
 
 					if (count >= 4)
 					{
@@ -1084,7 +1095,7 @@ namespace hooks
 			return 0;
 		}
 
-		bullet->srcPlayer = player;
+		bullet->player = player;
 		bullet->someUnitType = 228;
 		bullet->unknown_0x4E = 0;
 		bullet->attackTarget.unit = nullptr;

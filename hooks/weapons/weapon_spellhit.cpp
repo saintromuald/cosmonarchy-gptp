@@ -169,7 +169,7 @@ namespace hooks
 		{
 			if (bullet->source_unit != nullptr)
 			{
-				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->srcPlayer, bullet->direction1, damage_divisor);
+				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction1, damage_divisor);
 			}
 			else
 			{
@@ -178,7 +178,7 @@ namespace hooks
 		}
 		else
 		{
-			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->srcPlayer, bullet->direction1, damage_divisor);
+			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction1, damage_divisor);
 		}
 	}
 
