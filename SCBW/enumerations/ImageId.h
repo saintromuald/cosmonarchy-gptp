@@ -1146,6 +1146,9 @@ enum Enum {
 	SporeColonyCopy								= 1523,
 	FusionCutterHitDamageless					= 1524,
 
+	SentinelBase								= 1544,
+	SentinelTurret								= 1545,
+	SentinelShadow								= 1546,
 	SimulacrumAutovitalityProc					= 1547,
 	RechargeShieldsCustom_Medium				= 1548,
 	RechargeShieldsCustom_XLarge				= 1549,

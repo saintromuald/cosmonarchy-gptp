@@ -259,6 +259,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 					} break;
+					case WeaponId::SentinelCerberusRailgun:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
@@ -528,7 +532,7 @@ namespace hooks
 		// Empyrean Heavenly Passage
 		// Valkyrie Charon Afterburners
 		else if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage
-			|| bullet->weapon_id == WeaponId::ValkyrieHaloRockets)
+		||		 bullet->weapon_id == WeaponId::ValkyrieHaloRockets)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::get_nearest_target(

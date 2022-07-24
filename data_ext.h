@@ -104,6 +104,7 @@ enum ExtValueId
 	ValueSovrolethLinkCount,
 	ValueParasiteArmPlayer,
 	ValueDisableAutoBurrow,
+	ValueSentinelMissilePos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
