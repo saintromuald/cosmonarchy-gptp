@@ -9,7 +9,7 @@ namespace
 		{
 			PUSHAD
 		}
-		hooks::displayEstablishingShot();
+		hooks::display_establishing_shot();
 		__asm
 		{
 			POPAD
@@ -24,7 +24,7 @@ namespace
 			MOV control, EAX
 			PUSHAD
 		}
-		hooks::CMDACT_game_speed(control);
+		hooks::cmdact_game_speed(control);
 		__asm {
 			POPAD
 			RETN

@@ -1001,8 +1001,8 @@ namespace helper {
 	AiTown* try_begin_delete_town(AiTown* town);															// 00434330
 	AiScript* delete_aiscripts_using_town(AiTown* town);													// 0045AE20
 
-	// For displayEstablishingShot
-	void* loadInitCreditsBIN(char* a1);																		// 004D8DF0
+	// For display_establishing_shot
+	void* load_init_credits_bin(char* a1);																		// 004D8DF0
 	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);				// 004100B2
 	bool SFileCloseArchive(void* archive);																	// 004100BE
 	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);				// 004100C4

@@ -9171,8 +9171,8 @@ namespace helper
 		return result;
 	}
 
-	// For displayEstablishingShot
-	void* loadInitCreditsBIN(char* a1)
+	// For display_establishing_shot
+	void* load_init_credits_bin(char* a1)
 	{
 		s32 address = 0x004D8DF0;
 		void* result_;

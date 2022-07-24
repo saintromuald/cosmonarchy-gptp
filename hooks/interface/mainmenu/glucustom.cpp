@@ -2,10 +2,11 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
+#include "hook_tools.h"
 
 namespace hooks
 {
-	void displayEstablishingShot() // 004D9200, hooked by X405
+	void display_establishing_shot() // 004D9200, hooked by X405
 	{
 		// This is the original original function which loads the establishing shots in campaigns:
 		if (!*multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index)
@@ -14,7 +15,7 @@ namespace hooks
 			{
 				if (campaignMissions[i].mission_index == *campaign_index)
 				{
-					helper::loadInitCreditsBIN(campaignMissions[i].mission_name);
+					helper::load_init_credits_bin(campaignMissions[i].mission_name);
 				}
 			}
 		}
@@ -32,7 +33,7 @@ namespace hooks
 
 			if (establishingShotExists)
 			{
-				helper::loadInitCreditsBIN("est");
+				helper::load_init_credits_bin("est");
 			}
 
 			if (*map_archive_handle)
@@ -43,7 +44,7 @@ namespace hooks
 	}
 
 	// Hooked to fix crash after removing game speed settings. -Pr0nogo
-	void CMDACT_game_speed(BinDlg* control) // 00481EF0
+	void cmdact_game_speed(BinDlg* control) // 00481EF0
 	{
 		BinDlg* control_var = control;
 		if (*last_control_index == -2)
@@ -93,4 +94,238 @@ namespace hooks
 			helper::destroy_dialog(control_var);
 		}
 	}
+
+	// DarkenedFantasies - fix score screen bugs with extended color IDs \\
+
+	void __declspec(naked) sub_41D160() {
+		__asm {
+			PUSH    EBP
+			MOV     EBP, ESP
+			PUSH    ESI
+			MOVZX	SI, AL/* this seems to be no longer needed
+			CMP     SI, [ECX]
+			JB      short loc_41D16F
+			XOR		AL, AL
+
+			loc_41D16F :*/
+			MOVZX   EAX, AX//formerly AL
+			MOVZX   SI, byte ptr[ECX + EAX * 0x8 + 0x6]
+			LEA     EAX, [ECX + EAX * 0x8 + 0x6]
+			PUSH    EDI
+			MOV     EDI, [EBP + 0x8]
+			MOV[EDI], SI
+			MOVZX   SI, byte ptr[EAX + 0x1]
+			MOV     EDI, [EBP + 0xC]
+			MOV[EDI], SI
+			MOV     SI, [ECX + 0x2]
+			MOV     EDI, [EBP + 0x10]
+			MOV[EDI], SI
+			MOV     SI, [ECX + 0x4]
+			MOV     EDI, [EBP + 0x14]
+			MOV[EDI], SI
+			MOVZX   SI, byte ptr[EAX + 0x3]
+			MOV[EDX + 0x2], SI
+			MOVZX   SI, byte ptr[EAX + 0x2]
+			MOV     EAX, [EAX + 0x4]
+			TEST    EAX, EAX
+			POP     EDI
+			JNS     short loc_41D1C3
+			AND		EAX, 0x7FFFFFFF
+			ADD     ESI, 0x100
+
+			loc_41D1C3 :
+			ADD     EAX, ECX
+				MOV[EDX], SI
+				MOV[EDX + 0x4], EAX
+				POP     ESI
+				POP     EBP
+				RETN    0x10
+		}
+	};
+
+#define off_6D5E30 __asm _emit 0x8B __asm _emit 0x0D __asm _emit 0x30 __asm _emit 0x5E __asm _emit 0x6D __asm _emit 0x00
+	const u32 DrawDialogImage = 0x004EF440;
+	void __declspec(naked) sub_4EF600() {
+		__asm {
+			PUSH    EBP
+			MOV     EBP, ESP
+			SUB     ESP, 0x18
+			PUSH    EDI
+			LEA     EAX, [EBP - 0x4]
+			PUSH    EAX
+			LEA     ECX, [EBP + 0xA]
+			PUSH    ECX
+			off_6D5E30//MOV ECX, dword ptr[0x006D5E30]
+			LEA     EDX, [EBP - 0xC]
+			PUSH    EDX
+			LEA     EAX, [EBP - 0x8]
+			PUSH    EAX
+			MOV     AX, [EBP + 0x8]//formerly AL
+			LEA     EDX, [EBP - 0x18]
+			CALL    sub_41D160
+			MOV     ECX, [EBP + 0xC]
+			MOV     EDX, [EBP - 0x8]
+			MOV     EAX, [EBP + 0x10]
+			MOV     EDI, [EBP - 0xC]
+			ADD     EDX, ECX
+			ADD     EDI, EAX
+			MOVSX   EAX, word ptr[ESI]
+			MOVZX   ECX, DX
+			CMP     ECX, EAX
+			MOV[EBP - 0x10], CX
+			JG      short loc_4EF64A
+			MOV[EBP - 0x10], AX
+
+			loc_4EF64A :
+			MOVSX   EAX, word ptr[ESI + 0x2]
+				PUSH    EBX
+				MOVZX   EBX, DI
+				CMP     EBX, EAX
+				MOV[EBP - 0xE], BX
+				JG      short loc_4EF65E
+				MOV[EBP - 0xE], AX
+
+				loc_4EF65E :
+			MOVZX   EAX, word ptr[EBP + 0xA]
+				ADD     EAX, ECX
+				MOVSX   ECX, word ptr[ESI + 0x4]
+				CMP     EAX, ECX
+				MOV     word ptr[EBP - 0xC], AX
+				JL      short loc_4EF674
+				MOV     word ptr[EBP - 0xC], CX
+
+				loc_4EF674 :
+			MOVZX   ECX, word ptr[EBP - 0x4]
+				LEA     EAX, [ECX + EBX]
+				MOVSX   ECX, word ptr[ESI + 0x6]
+				CMP     EAX, ECX
+				POP     EBX
+				MOV     word ptr[EBP - 0xC + 0x2], AX
+				JL      short loc_4EF68C
+				MOV     word ptr[EBP - 0xC + 0x2], CX
+
+				loc_4EF68C :
+			MOVSX   EAX, word ptr[EBP - 0xE]
+				MOVSX   ECX, DI
+				SUB     EAX, ECX
+				MOV     ECX, 0x0
+				SETS    CL
+				MOVSX   EDX, DX
+				DEC     ECX
+				AND		ECX, EAX
+				MOVSX   EAX, word ptr[EBP - 0x10]
+				SUB     EAX, EDX
+				MOV     EDX, 0x0
+				SETS    DL
+				DEC     EDX
+				AND		EAX, EDX
+				MOV     EDX, [EBP + 0x14]
+				PUSH    EDX
+				PUSH    ECX
+				PUSH    EAX
+				LEA     EAX, [EBP - 0x18]
+				PUSH    EAX
+				LEA     ECX, [EBP - 0x10]
+				CALL	DrawDialogImage
+				POP     EDI
+				MOV     ESP, EBP
+				POP     EBP
+				RETN    0x10
+		}
+	};
+
+	void __declspec(naked) sub_4EF710() {
+		__asm {
+			PUSH    EBP
+			MOV     EBP, ESP
+			SUB     ESP, 0x10
+			MOV     EDX, [EBP + 0x10]
+			PUSH    EBX
+			MOV     EBX, ECX
+			MOV     ECX, [EAX]
+			MOV     EAX, [EAX + 0x4]
+			PUSH    ESI
+			MOV[EBP - 0xC], EAX
+			MOV     EAX, [EBP + 0x14]
+			ADD     EDX, ECX
+			PUSH    EAX
+			MOV[EBP - 0x10], ECX
+			MOV     ECX, [EBP + 0xC]
+			MOV     word ptr[EBP - 0xC], DX
+			MOV     EDX, [EBP + 0x8]
+			PUSH    ECX
+			PUSH    EDX
+			PUSH    EBX
+			LEA     ESI, [EBP - 0x10]
+			CALL    sub_4EF600
+			MOV     ECX, [EBP + 0x8]
+			MOV     ESI, [EBP + 0x10]
+			LEA     EAX, [ECX + EDI]
+			MOV[EBP - 0x8], EAX
+			MOV     EAX, ESI
+			SUB     EAX, EDI
+			INC     BX//formerly BL
+			DEC     EAX
+			CDQ
+			IDIV    EDI
+			SUB     word ptr[EBP - 0xC], DI
+			MOV[EBP - 0x4], BX//formerly BL
+			TEST    EAX, EAX
+			JLE     short loc_4EF78F
+			MOV     EBX, EAX
+
+			loc_4EF766 :
+				MOV     EAX, [EBP + 0x14]
+				MOV     ECX, [EBP + 0xC]
+				MOV     EDX, [EBP - 0x8]
+				PUSH    EAX
+				MOV     EAX, dword ptr[EBP - 0x4]
+				PUSH    ECX
+				PUSH    EDX
+				PUSH    EAX
+				LEA     ESI, [EBP - 0x10]
+				CALL    sub_4EF600
+				MOV     ECX, [EBP - 0x8]
+				ADD     ECX, EDI
+				DEC     EBX
+				MOV[EBP - 0x8], ECX
+				JNZ     short loc_4EF766
+				MOV     ECX, [EBP + 0x8]
+				MOV     ESI, [EBP + 0x10]
+
+			loc_4EF78F :
+				MOV     DX, [EBP - 0x4]//formerly DL
+				ADD     word ptr[EBP - 0xC], DI
+				INC     DX//formerly DL
+				CMP     ESI, EDI
+				MOV[EBP - 0x4], DX//formerly DL
+				JL      short loc_4EF7CB
+				MOVSX   EDX, word ptr[EBP - 0x10]
+				LEA     EAX, [ECX + EDI]
+				CMP     EDX, EAX
+				MOV     word ptr[EBP - 0x10], DX
+				JG      short loc_4EF7B2
+				MOV     word ptr[EBP - 0x10], AX
+
+			loc_4EF7B2 :
+				MOV     EDX, [EBP + 0x14]
+				MOV     EAX, [EBP + 0xC]
+				PUSH    EDX
+				SUB     ECX, EDI
+				ADD     ECX, ESI
+				PUSH    EAX
+				PUSH    ECX
+				MOV     ECX, dword ptr[EBP - 0x4]
+				PUSH    ECX
+				LEA     ESI, [EBP - 0x10]
+				CALL    sub_4EF600
+
+			loc_4EF7CB :
+				POP     ESI
+				POP     EBX
+				MOV     ESP, EBP
+				POP     EBP
+				RETN    0x10
+		}
+	};
 }
