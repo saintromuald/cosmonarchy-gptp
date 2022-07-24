@@ -1723,9 +1723,10 @@ namespace scbw
 	{
 		switch (weapon_id)
 		{
-			case WeaponId::KalkaliskViscousAcid:
-			case WeaponId::PenumbraErebolShockCannon:
+			case WeaponId::SentinelCerberusRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
+			case WeaponId::PenumbraErebolShockCannon:
+			case WeaponId::KalkaliskViscousAcid:
 			{
 				return true;
 			}
