@@ -1038,6 +1038,7 @@ enum Enum {
 	ObservanceOverlayMedium						= 1232,
 	ObservanceOverlaySmall						= 1233,
 	RecallFieldShorter							= 1244,
+	IonCannonTurret								= 1256,
 	LazarusAgentCast							= 1265,
 	SublimeShepherdOverlay						= 1267,
 	KhaydarinEclipseOverlayLarge				= 1270,

@@ -424,11 +424,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// iquare, end
 
 	// DarkenedFantasies, start
-	// Read all 256 indexes of tminimap.pcx
-	memory_patch(0x004B4C31, (u16)0xB0);		// mov al,00
-	memory_patch(0x004B4C33, (u8)0x68);			// push
-	memory_patch(0x004B4C34, (u32)0x00000100);	// 00000100 (score tminimap buffer size)
-
 	// Race icons frame color fix (function score_screen 004B4AF0)
 	memory_patch(0x004B4C31, (u16)0xB0);		// MOV AL, 00 (null-terminate "tminimap.pcx" string (0x005032F8))
 	memory_patch(0x004B4C33, (u8)0x68);			// PUSH...
