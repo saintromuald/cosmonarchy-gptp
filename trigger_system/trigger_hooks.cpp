@@ -125,6 +125,7 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 	return false;
 }
 
+// Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
 void free_sound_buffer(u32 sound_id) {
 	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
 	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
@@ -223,5 +224,5 @@ void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
 	jump_patch(play_transmission_from_location_wrapper,		0x004BBFD0, 0);
-	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
+//	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 }
