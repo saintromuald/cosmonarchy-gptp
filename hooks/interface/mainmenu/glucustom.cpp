@@ -141,7 +141,7 @@ namespace hooks
 				POP     EBP
 				RETN    0x10
 		}
-	};
+	}
 
 #define off_6D5E30 __asm _emit 0x8B __asm _emit 0x0D __asm _emit 0x30 __asm _emit 0x5E __asm _emit 0x6D __asm _emit 0x00
 	const u32 DrawDialogImage = 0x004EF440;
@@ -232,7 +232,7 @@ namespace hooks
 				POP     EBP
 				RETN    0x10
 		}
-	};
+	}
 
 	void __declspec(naked) sub_4EF710() {
 		__asm {
@@ -327,5 +327,53 @@ namespace hooks
 				POP     EBP
 				RETN    0x10
 		}
-	};
+	}
+
+	const char pIcons_grp[] = "pIcons.grp";
+	#define aStarcraftSw_47 __asm _emit 0x68 __asm _emit 0xD8 __asm _emit 0x34 __asm _emit 0x50 __asm _emit 0x00
+	const u32 LoadGraphic = 0x004D2B30;
+	#define dword_59B72C __asm _emit 0xA3 __asm _emit 0x2C __asm _emit 0xB7 __asm _emit 0x59 __asm _emit 0x00
+	const u32 loadMenu_gluScore = 0x004B4B92;
+	void __declspec(naked) loadMenu_gluScore_pIcons() {
+		__asm {
+		LOC_4B4B80_pIcons:
+			MOV		CL, [EAX + 0x0059B628]
+				MOV[EBP + EAX - 0x10C], CL
+				INC		EAX
+				TEST	CL, CL
+				JNZ		short LOC_4B4B80_pIcons
+				LEA		EDI, [EBP - 0x10C]
+				DEC		EDI
+				LEA		ESP, [ESP]//For some reason this opcode had an offset of +0x0.
+
+				LOC_4B4BA0 :
+			MOV		AL, [EDI + 0x1]
+				INC		EDI
+				TEST	AL, AL
+				JNZ		short LOC_4B4BA0
+				MOV		EDX, dword ptr ds : pIcons_grp
+				MOV		EAX, dword ptr ds : pIcons_grp + 0x4
+				MOV		CX, word ptr ds : pIcons_grp + 0x8
+				MOV[EDI], EDX
+				//MOV		DL, byte ptr ds : aIscore_grp + 0xA
+				MOV[EDI + 0x4], EAX
+				MOV[EDI + 0x8], CX
+				PUSH	0x560
+				MOV[EDI + 0xA], 0x0//formerly DL, would grab the string's null terminator from the above commented-out line.
+				aStarcraftSw_47//PUSH offset 0x005034D8//"Starcraft\SWAR\lang\gluScore.cpp"
+				XOR		EDX, EDX
+				LEA		ECX, [EBP - 0x10C]
+				CALL	LoadGraphic
+				dword_59B72C//MOV [0x0059B72C], EAX
+				XOR		EAX, EAX
+
+				LOC_4B4B80_iScore :
+			MOV		CL, [EAX + 0x0059B628]
+				MOV[EBP + EAX - 0x10C], CL
+				INC		EAX
+				TEST	CL, CL
+				JNZ		short LOC_4B4B80_iScore
+				JMP		loadMenu_gluScore
+		}
+	}
 }

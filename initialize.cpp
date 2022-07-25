@@ -439,6 +439,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	call_patch(hooks::sub_4EF710, 0x004B3B23);	// Redirect to the patched subroutines.
 	memory_patch(0x004B3B49, (u8)0x8B);			// MOV ECX, [EBP - 0x10], formerly CL
 	call_patch(hooks::sub_4EF710, 0x004B3B4D);	// Redirect to the patched subroutines.
+
+	// Move race icons from iScore.grp into new grp.
+	jump_patch(hooks::loadMenu_gluScore_pIcons, 0x004B4B80, 13);	// Insert code for loading the pIcons.grp file.
+	memory_patch(0x004B38BB, (u16)0x9090);							// Remove +3 frame offset for race icons.
+	memory_patch(0x004B38BD, (u8)0x90);
+	memory_patch(0x004B3A63, (u32)0x59B728);						// New LoadGraphic address for iScore.grp; pIcons.grp gets the original iScore address.
+	memory_patch(0x004B4BE4, (u32)0x59B728);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start
