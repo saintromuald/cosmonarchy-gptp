@@ -1048,9 +1048,14 @@ struct ColorTable
 };
 
 struct PlayerNamesEntry {
-	char player_name[25];
-	char force_name[30];
-	char some_stuff[17];
+	char	player_name[25];
+	char	force_name[30];
+	// The rest is from DarkenedFantasies:
+	u8		unknown;			// 0x37
+	u32		human_id;			// 0x38
+	u32		storm_id;			// 0x3C
+	u32		type;				// 0x40
+	u32		race;				// 0x44
 };
 
 struct PlayerNames
