@@ -145,6 +145,22 @@ void free_sound_buffer(u32 sound_id) {
 	*g_current_sound_memory -= sound_data->wav_data_size;
 }
 
+// Hooked to stop endless tick sound in scoreboard and other issues
+void stop_sounds_partial() {
+	for (u32 i = 0; i < loaded_sounds_count; ++i) {
+		Sound* sound = &loaded_sounds[i];
+		if (sound->ds_buffer) {
+			sound->ds_buffer->Stop();
+		}
+	}
+	for (u32 i = 0; i < MaxDupChannels; ++i) {
+		DupChannel* dup_channel = &dup_channels[i];
+		if (dup_channel->ds_buffer) {
+			dup_channel->ds_buffer->Stop();
+		}
+	}
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -220,9 +236,22 @@ void __declspec(naked) free_sound_buffer_wrapper() { // 004BB8E0
 	}
 }
 
+void __declspec(naked) stop_sounds_partial_wrapper() { // 004BBF5C
+	static const u32 func_address = 0x004015F0;
+	__asm {
+		PUSHAD
+	}
+	stop_sounds_partial();
+	__asm {
+		POPAD
+		JMP func_address
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
 	jump_patch(play_transmission_from_location_wrapper,		0x004BBFD0, 0);
+	call_patch(stop_sounds_partial_wrapper,					0x004BBF5C, 0);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 }
