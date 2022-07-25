@@ -248,10 +248,41 @@ void __declspec(naked) stop_sounds_partial_wrapper() { // 004BBF5C
 	}
 }
 
+void __declspec(naked) pylon_placement_wrapper() { // 00446775
+	static const u32 jz_address = 0x0044677B;
+	static const u32 jmp_address = 0x00446800;
+	static Unit* disabled_unit;
+	static u32 player;
+	static s32* region_id;
+	__asm {
+		MOV disabled_unit, EAX
+		MOV player, ECX
+		PUSH EAX
+		LEA EAX, [EBP-0x14]
+		MOV region_id, EAX
+		POP EAX
+		PUSHAD
+	}
+	if (disabled_unit) {
+		__asm {
+			POPAD
+			JMP jz_address
+		}
+	}
+	if (g_aiscript_controller[player].AI_Flags.spread_creep) {
+		helper::get_bunker_placement_position(player, region_id);
+	}
+	__asm {
+		POPAD
+		JMP jmp_address
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
 	jump_patch(play_transmission_from_location_wrapper,		0x004BBFD0, 0);
 	call_patch(stop_sounds_partial_wrapper,					0x004BBF5C, 0);
+//	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 }
