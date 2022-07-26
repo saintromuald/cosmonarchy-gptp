@@ -475,6 +475,19 @@ namespace hooks
 		return true;
 	}
 
+	static void init_unit(Unit* unit, UnitExt* unitExt) {
+		switch (unit->id) {
+			case UnitId::TerranGoliath: {
+				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+					helper::turn_unit(unit->subunit, unit->current_direction_1);
+				}
+			} break;
+			case UnitId::TerranSentinel: {
+				helper::turn_unit(unit, 128);
+			} break;
+		}
+	}
+
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
@@ -495,6 +508,13 @@ namespace hooks
 		}
 
 		UnitExt* unitExt = get_unit_ext(unit);
+		if (unit->status & UnitStatus::Completed) {
+			if (unitExt->values[ValueUnitInit] != unit->id + 1) {
+				unitExt->values[ValueUnitInit] = unit->id + 1;
+				init_unit(unit, unitExt);
+			}
+		}
+
 		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (unit->is_visible_to(i)) {
