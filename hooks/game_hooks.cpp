@@ -478,7 +478,7 @@ namespace hooks
 	static void init_unit(Unit* unit, UnitExt* unitExt) {
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
-				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+				if (unit->subunit) {
 					helper::turn_unit(unit->subunit, unit->current_direction_1);
 				}
 			} break;
