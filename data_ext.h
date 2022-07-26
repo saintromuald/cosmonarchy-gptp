@@ -5,6 +5,7 @@
 
 enum ExtValueId
 {
+	ValueUnitInit,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
 	ValueSomaticImplants,
