@@ -1372,12 +1372,31 @@ namespace scbw
 		{
 			return nullptr;
 		}
+		Image* image = unit->sprite->main_graphic;
+		switch (unit->id)
+		{
+			case UnitId::TerranWatchdog:
+			{
+				image = unit->get_overlay(ImageId::MissileTurret_Turret);
+			} break;
+			case UnitId::TerranSentinel:
+			{
+				image = unit->get_overlay(ImageId::SentinelTurret);
+			} break;
+			case UnitId::TerranIonCannon:
+			{
+				image = unit->get_overlay(ImageId::IonCannonTurret);
+			} break;
+			default:
+			{
+			}
+		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		auto rotate = unit_ext->values[value_id];
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlay_type, unit->sprite->main_graphic->id));
-		u8 frame_direction = unit->sprite->main_graphic->direction;
+		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlay_type, image->id));
+		u8 frame_direction = image->direction;
 		Point8 offset = loFile->get_offset(frame_direction + (17 * frameset_offset), rotate);
-		if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)
+		if (image->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
 		}

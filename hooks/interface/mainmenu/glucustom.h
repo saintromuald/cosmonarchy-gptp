@@ -13,4 +13,5 @@ namespace hooks
 	void sub_41D160();
 	void sub_4EF600();
 	void sub_4EF710();
+	void loadMenu_gluScore_pIcons();
 }
