@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) AI_UnitWasHit_Wrapper() // 0043F320
+	void __declspec(naked) ai_unit_was_hit_wrapper() // 0043F320
 	{
 		static Unit* self;
 		static Unit* attacker;
@@ -32,7 +32,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_OrderUnitCloaking_Wrapper() // 0043B970
+	void __declspec(naked) ai_order_unit_cloaking_wrapper() // 0043B970
 	{
 		static Unit* unit;
 		__asm {
@@ -46,7 +46,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_SendSuicide_Wrapper() // 0043E050
+	void __declspec(naked) ai_send_suicide_wrapper() // 0043E050
 	{
 		static char argType;
 		static s32 player;
@@ -71,7 +71,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_ReactToHit_TownNullCheck()
+	void __declspec(naked) ai_react_to_hit_town_nullcheck()
 	{
 		static BuildingAi* v7;
 		__asm
@@ -88,7 +88,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_RecalculateRegionStrength_Wrapper()
+	void __declspec(naked) ai_recalculate_region_strength_wrapper()
 	{
 		static u32 result;
 		static AiRegion* region;
@@ -106,7 +106,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getClosestEnemyStructure_Wrapper() // 004A0F90
+	void __declspec(naked) get_closest_enemy_structure_wrapper() // 004A0F90
 	{
 		static s32 x;
 		static s32 y;
@@ -135,7 +135,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getRegionIdFromUnit_Wrapper() // 0049CB40
+	void __declspec(naked) get_region_id_from_unit_wrapper() // 0049CB40
 	{
 		static Unit* unit;
 		static s16 result;
@@ -153,7 +153,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getBestSCVForRepairProc_Wrapper() // 004402B0
+	void __declspec(naked) get_best_worker_for_repair_proc_wrapper() // 004402B0
 	{
 		static bool result;
 		static Unit* repairman;
@@ -173,7 +173,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_military_should_wait_for_group_wrapper() // 0043AA10
+	void __declspec(naked) ai_military_should_wait_for_group_wrapper() // 0043AA10
 	{
 		static b32 result;
 		static Unit* unit;
@@ -191,7 +191,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) deleteAITownIfNeeded_Wrapper() // 004347E0
+	void __declspec(naked) delete_ai_town_if_needed_wrapper() // 004347E0
 	{
 		static AiTown* town;
 		static AiTown* result;
@@ -209,7 +209,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_CanMineExtra_Wrapper() // 00447A70
+	void __declspec(naked) ai_can_mine_extra_wrapper() // 00447A70
 	{
 		static Unit* unit;
 		static bool result;
@@ -227,7 +227,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_is_building_safe_wrapper() // 00438910
+	void __declspec(naked) ai_is_building_safe_wrapper() // 00438910
 	{
 		static Unit* unit;
 		static bool result;
@@ -245,7 +245,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_are_on_connected_regions_wrapper() // 00438E10
+	void __declspec(naked) ai_are_on_connected_regions_wrapper() // 00438E10
 	{
 		static Unit* unit1;
 		static Unit* unit2;
@@ -265,7 +265,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getBunkerPlacementPosition_Wrapper() // 004442E0
+	void __declspec(naked) get_bunker_placement_position_wrapper() // 004442E0
 	{
 		static u32 placementId;
 		static u32* regionId;
@@ -293,13 +293,13 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_GetBuildLocation_Wrapper() // 004461B0
+	void __declspec(naked) ai_get_build_location_wrapper() // 004461B0
 	{
 		static u32 unit_id;
-		static char* placementData;
+		static char* placement_data;
 		static u32 player;
-		static Point16 desiredPos;
-		static s32 maxRange;
+		static Point16 desired_pos;
+		static s32 max_range;
 		__asm
 		{
 			PUSH EBP
@@ -308,15 +308,15 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV player, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV desiredPos, EAX
+			MOV desired_pos, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV maxRange, EAX
+			MOV max_range, EAX
 			POP EAX
-			MOV placementData, ESI
+			MOV placement_data, ESI
 			MOV unit_id, EBX
 			PUSHAD
 		}
-		hooks::ai_get_build_location(unit_id, placementData, player, desiredPos, maxRange);
+		hooks::ai_get_build_location(unit_id, placement_data, player, desired_pos, max_range);
 		__asm
 		{
 			POPAD
@@ -326,7 +326,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_check_military_grouping_wrapper() // 00439550
+	void __declspec(naked) ai_check_military_grouping_wrapper() // 00439550
 	{
 		static bool result;
 		static Unit* unit;
@@ -359,7 +359,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_get_vespene_type_wrapper() { // 004326E0
+	void __declspec(naked) ai_get_vespene_type_wrapper() { // 004326E0
 		static u32 result;
 		static Unit* unit;
 		static u32 player_id;
@@ -403,7 +403,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_worker_controller_wrapper() { // 00435210
+	void __declspec(naked) ai_worker_controller_wrapper() { // 00435210
 		static Unit* worker;
 		__asm {
 			PUSH EBP
@@ -423,7 +423,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_reassign_worker_resources_wrapper() { // 00435900
+	void __declspec(naked) ai_reassign_worker_resources_wrapper() { // 00435900
 		static char result;
 		static AiTown* town;
 		__asm {
@@ -438,7 +438,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_auto_harvest_wrapper() { // 00433B90
+	void __declspec(naked) ai_auto_harvest_wrapper() { // 00433B90
 		static Unit* mineral;
 		static Unit* worker;
 		static Unit* gas;
@@ -489,7 +489,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_find_best_repair_unit_wrapper() { // 00443160
+	void __declspec(naked) ai_find_best_repair_unit_wrapper() { // 00443160
 		static Unit* result;
 		static Unit* unit;
 		__asm {
@@ -504,7 +504,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) AI_SCV_repair_controller_wrapper() { // 00433C70
+	void __declspec(naked) ai_worker_repair_controller_wrapper() { // 00433C70
 		static s32 result;
 		static Unit* repairer;
 		static AiTown* town;
@@ -519,7 +519,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::ai_scv_repair_controller(repairer, town);
+		result = hooks::ai_worker_repair_controller(repairer, town);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -670,36 +670,36 @@ namespace hooks
 {
 	void inject_ai_orders_hooks()
 	{
-//		jump_patch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
+	//	jump_patch(ai_unit_was_hit_wrapper,						0x0043F320, 1);
 
-		jump_patch(AI_OrderUnitCloaking_Wrapper,				0x0043B970, 1);
-		jump_patch(AI_SendSuicide_Wrapper,						0x0043E050, 1);
-		jump_patch(AI_RecalculateRegionStrength_Wrapper,		0x0043A390, 1);
-		jump_patch(getClosestEnemyStructure_Wrapper,			0x004A0F90, 1);
-		jump_patch(getRegionIdFromUnit_Wrapper,					0x0049CB40, 2);
-		jump_patch(getBestSCVForRepairProc_Wrapper,				0x004402B0, 1);
+		jump_patch(ai_order_unit_cloaking_wrapper,				0x0043B970, 1);
+		jump_patch(ai_send_suicide_wrapper,						0x0043E050, 1);
+		jump_patch(ai_recalculate_region_strength_wrapper,		0x0043A390, 1);
+		jump_patch(get_closest_enemy_structure_wrapper,			0x004A0F90, 1);
+		jump_patch(get_region_id_from_unit_wrapper,				0x0049CB40, 2);
+		jump_patch(get_best_worker_for_repair_proc_wrapper,		0x004402B0, 1);
 
-		jump_patch(AI_military_should_wait_for_group_wrapper,	0x0043AA10, 5);
-//		jump_patch(deleteAITownIfNeeded_Wrapper,				0x004347E0, 3);
-//		jump_patch(AI_CanMineExtra_Wrapper,						0x00447A70, 1);
-		jump_patch(AI_is_building_safe_wrapper,					0x00438910, 2);
-		jump_patch(AI_are_on_connected_regions_wrapper,			0x00438E10, 1);
+		jump_patch(ai_military_should_wait_for_group_wrapper,	0x0043AA10, 5);
+	//	jump_patch(delete_ai_town_if_needed_wrapper,			0x004347E0, 3);
+	//	jump_patch(ai_can_mine_extra_wrapper,					0x00447A70, 1);
+		jump_patch(ai_is_building_safe_wrapper,					0x00438910, 2);
+		jump_patch(ai_are_on_connected_regions_wrapper,			0x00438E10, 1);
 
-//		jump_patch(getBunkerPlacementPosition_Wrapper,			0x004442E0, 4);
-//		jump_patch(AI_GetBuildLocation_Wrapper,					0x004461B0, 1);
-		jump_patch(AI_check_military_grouping_wrapper,			0x00439550, 1);
+	//	jump_patch(get_bunker_placement_position_wrapper,		0x004442E0, 4);
+	//	jump_patch(ai_get_build_location_wrapper,				0x004461B0, 1);
+		jump_patch(ai_check_military_grouping_wrapper,			0x00439550, 1);
 		jump_patch(hooks::ai_remove_different_height,			0x004436C0, 3);
-//		jump_patch(attack_recent_attacker_wrapper,				0x004770E0, 2);
+	//	jump_patch(attack_recent_attacker_wrapper,				0x004770E0, 2);
 
-		jump_patch(AI_get_vespene_type_wrapper,					0x004326E0, 2);
+		jump_patch(ai_get_vespene_type_wrapper,					0x004326E0, 2);
 		jump_patch(get_ai_refinery_wrapper,						0x00432B90, 0);
-		jump_patch(AI_worker_controller_wrapper,				0x00435210, 0);
-		jump_patch(AI_reassign_worker_resources_wrapper,		0x00435900, 1);
-		jump_patch(AI_auto_harvest_wrapper,						0x00433B90, 1);
+		jump_patch(ai_worker_controller_wrapper,				0x00435210, 0);
+		jump_patch(ai_reassign_worker_resources_wrapper,		0x00435900, 1);
+		jump_patch(ai_auto_harvest_wrapper,						0x00433B90, 1);
 		jump_patch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
 
-		jump_patch(AI_find_best_repair_unit_wrapper,			0x00443160, 1);
-	//	jump_patch(AI_SCV_repair_controller_wrapper,			0x00433C70, 1);
+		jump_patch(ai_find_best_repair_unit_wrapper,			0x00443160, 1);
+	//	jump_patch(ai_worker_repair_controller_wrapper,			0x00433C70, 1);
 		jump_patch(ai_expand_wrapper,							0x0045B530, 1);
 		jump_patch(ai_remove_addon_placements,					0x00443CC0, 3);
 		jump_patch(ai_manage_military_controller_wrapper,		0x0043D910, 1);
@@ -710,9 +710,9 @@ namespace hooks
 
 		jump_patch(player_has_transport_wrapper, 				0x00437250, 1);
 
-		call_patch(AI_ReactToHit_TownNullCheck,					0x0043F388, 5);
+		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 
-		// Disable worker and zethrokor defense gimmick
+		// Disable worker and Zethrokor defense gimmick
 		nops(0x0043F85E, 2);
 		nops(0x0043F864, 2);
 

@@ -937,7 +937,7 @@ namespace helper {
 	void ai_get_build_location(s32 unit_id, char* placementData, s32 player, Point16 tryPosition,			// 004461B0
 		s32 maxRange);
 	void ai_placement_data_something(s8* placementData, Point16 tryPosition);								// 00443610
-	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
+	u32 get_tile_distance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
 
 	// For initialize_unit_counts
 	char teamGame_CountRaces(char force, char* bIsLegal, char race);										// 004857B0
@@ -1197,7 +1197,7 @@ namespace helper {
 	Unit* remove_harvesters(Unit* node);																// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
-	s32 ai_scv_repair_controller(Unit* unit, AiTown* town);												// 00433C70
+	s32 ai_worker_repair_controller(Unit* unit, AiTown* town);												// 00433C70
 	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90

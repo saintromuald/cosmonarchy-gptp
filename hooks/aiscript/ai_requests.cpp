@@ -307,7 +307,7 @@ namespace hooks
 				{
 					if (v38[v22])
 					{
-//						currentDistance = helper::getTileDistance(32 * (s16)unitTypea, 32 * SHIWORD(unitTypea), 32 * posx, 32 * posy);
+//						currentDistance = helper::get_tile_distance(32 * (s16)unitTypea, 32 * SHIWORD(unitTypea), 32 * posx, 32 * posy);
 						if (currentDistance < bestDistance)
 						{
 							if (currentDistance <= areaTiles)

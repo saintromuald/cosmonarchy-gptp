@@ -8634,36 +8634,36 @@ namespace helper
 		return result;
 	}
 
-	void ai_get_build_location(s32 unit_id, char* placementData, s32 player, Point16 tryPosition, s32 maxRange)
+	void ai_get_build_location(s32 unit_id, char* placement_data, s32 player, Point16 try_position, s32 max_range)
 	{
 		const u32 Func_AIGetBuildLocation = 0x004461B0;
 		__asm
 		{
 			PUSHAD
-			PUSH maxRange
-			PUSH tryPosition
+			PUSH max_range
+			PUSH try_position
 			PUSH player
-			MOV ESI, placementData
+			MOV ESI, placement_data
 			MOV EBX, unit_id
 			CALL Func_AIGetBuildLocation
 			POPAD
 		}
 	}
 
-	void ai_placement_data_something(s8* placementData, Point16 tryPosition)
+	void ai_placement_data_something(s8* placement_data, Point16 try_position)
 	{
 		const u32 Func_AIPlacementDataSomething = 0x00443610;
 		__asm
 		{
 			PUSHAD
-			PUSH tryPosition
-			MOV EBX, placementData
+			PUSH try_position
+			MOV EBX, placement_data
 			CALL Func_AIPlacementDataSomething
 			POPAD
 		}
 	}
 
-	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2)
+	u32 get_tile_distance(s32 x, s32 y, s32 x2, s32 y2)
 	{
 		const u32 Func_getTileDistance = 0x00444100;
 		static u32 result;
@@ -9288,18 +9288,18 @@ namespace helper
 	}
 
 	// For AI_GetBuildingLocation
-	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
+	u32 ai_get_building_placement_data(u32 max_range, u32 unit_id, char* placement_data, u32 player, Point16 desired_pos)
 	{
 		const u32 Func_Ai_GetBuildingPlacementData = 0x00445D60;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
+			PUSH desired_pos
 			PUSH player
-			PUSH placementData
+			PUSH placement_data
 			PUSH unit_id
-			MOV EAX, maxRange
+			MOV EAX, max_range
 			CALL Func_Ai_GetBuildingPlacementData
 			MOV result, EAX
 			POPAD
@@ -9307,15 +9307,15 @@ namespace helper
 		return result;
 	}
 
-	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos)
+	char* ai_remove_unreachable_regions(char* placement_data, Point16 desired_pos)
 	{
 		const u32 Func_Ai_RemoveUnreachableRegions = 0x00443900;
 		static char* result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
-			PUSH placementData
+			PUSH desired_pos
+			PUSH placement_data
 			CALL Func_Ai_RemoveUnreachableRegions
 			MOV result, EAX
 			POPAD
@@ -9323,16 +9323,16 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_remove_dangerous_regions(u32 unit_id, char* placementData, u32 placementId, Point16 desiredPos)
+	u32 ai_remove_dangerous_regions(u32 unit_id, char* placement_data, u32 placement_id, Point16 desired_pos)
 	{
 		const u32 Func_Ai_RemoveDangerousRegions = 0x00443870;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
-			PUSH placementId
-			MOV ECX, placementData
+			PUSH desired_pos
+			PUSH placement_id
+			MOV ECX, placement_data
 			MOV EAX, unit_id
 			CALL Func_Ai_RemoveDangerousRegions
 			MOV result, EAX
@@ -9341,16 +9341,16 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange)
+	u32 ai_remove_far_tiles(char* placement_data, Point16 desired_pos, u32 max_range)
 	{
 		const u32 Func_Ai_RemoveFarAwayTiles = 0x00444E20;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH maxRange
-			PUSH desiredPos
-			MOV ECX, placementData
+			PUSH max_range
+			PUSH desired_pos
+			MOV ECX, placement_data
 			CALL Func_Ai_RemoveFarAwayTiles
 			MOV result, EAX
 			POPAD
@@ -9358,15 +9358,15 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_remove_different_height(char* placementData, Point16 desiredPos)
+	u32 ai_remove_different_height(char* placement_data, Point16 desired_pos)
 	{
 		const u32 Func_Ai_RemoveDifferentHeight = 0x004436C0;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
-			PUSH placementData
+			PUSH desired_pos
+			PUSH placement_data
 			CALL Func_Ai_RemoveDifferentHeight
 			MOV result, EAX
 			POPAD
@@ -9374,15 +9374,15 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_placement_related_something(u16 unit_id, char* placementData, Point16 desiredPos)
+	u32 ai_placement_related_something(u16 unit_id, char* placement_data, Point16 desired_pos)
 	{
 		const u32 Func_Ai_PlacementRelatedSomething = 0x00443E30;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
-			PUSH placementData
+			PUSH desired_pos
+			PUSH placement_data
 			PUSH unit_id
 			CALL Func_Ai_PlacementRelatedSomething
 			MOV result, EAX
@@ -9391,31 +9391,31 @@ namespace helper
 		return result;
 	}
 
-	void ai_remove_unfit_tiles(u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
+	void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos)
 	{
 		const u32 Func_Ai_RemoveTilesIfUnfit = 0x00444CE0;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
+			PUSH desired_pos
 			PUSH player
-			PUSH placementData
+			PUSH placement_data
 			MOV ECX, unit_id
 			CALL Func_Ai_RemoveTilesIfUnfit
 			POPAD
 		}
 	}
 
-	u32 ai_remove_addon_places(u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
+	u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos)
 	{
 		const u32 Func_Ai_RemoveAddonPlaces = 0x00443CC0;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
+			PUSH desired_pos
 			PUSH player
-			PUSH placementData
+			PUSH placement_data
 			PUSH unit_id
 			CALL Func_Ai_RemoveAddonPlaces
 			MOV result, EAX
@@ -9424,18 +9424,18 @@ namespace helper
 		return result;
 	}
 
-	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag)
+	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u16 unit_id, u32 unk_flag)
 	{
 		const u32 Func_getTurretPlacementPosition = 0x00443AC0;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH unkFlag
+			PUSH unk_flag
 			PUSH unit_id
-			PUSH desiredPos
+			PUSH desired_pos
 			PUSH player
-			PUSH placementData
+			PUSH placement_data
 			CALL Func_getTurretPlacementPosition
 			MOV result, EAX
 			POPAD
@@ -9443,16 +9443,16 @@ namespace helper
 		return result;
 	}
 
-	u32 get_pylon_placement_position(char* placementData, u8 player, Point16 desiredPos)
+	u32 get_pylon_placement_position(char* placement_data, u8 player, Point16 desired_pos)
 	{
 		const u32 Func_getPylonPlacementPosition = 0x004448D0;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
+			PUSH desired_pos
 			PUSH player
-			PUSH placementData
+			PUSH placement_data
 			CALL Func_getPylonPlacementPosition
 			MOV result, EAX
 			POPAD
@@ -9460,16 +9460,16 @@ namespace helper
 		return result;
 	}
 
-	u32 get_default_placement_position(u32 unit_id, char* placementData, u32 player, Point16 desiredPos)
+	u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos)
 	{
 		const u32 Func_getDefaultPlacementPosition = 0x004449A0;
 		static u32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH desiredPos
+			PUSH desired_pos
 			PUSH player
-			PUSH placementData
+			PUSH placement_data
 			MOV ECX, unit_id
 			CALL Func_getDefaultPlacementPosition
 			MOV result, EAX
@@ -9479,7 +9479,7 @@ namespace helper
 	}
 
 	// For ai_check_military_grouping
-	void get_region_center_from_id(u16 regionId, u32* out_x, u32* out_y)
+	void get_region_center_from_id(u16 region_id, u32* out_x, u32* out_y)
 	{
 		const u32 Func_getRegionCenter = 0x0049CAA0;
 		__asm
@@ -9487,7 +9487,7 @@ namespace helper
 			PUSHAD
 			PUSH out_y
 			PUSH out_x
-			MOV AX, regionId
+			MOV AX, region_id
 			CALL Func_getRegionCenter
 			POPAD
 		}
@@ -10991,7 +10991,7 @@ namespace helper
 		return result;
 	}
 
-	s32 ai_scv_repair_controller(Unit* unit, AiTown* town) {
+	s32 ai_worker_repair_controller(Unit* unit, AiTown* town) {
 		static s32 result;
 		const u32 func_address = 0x00433C70;
 		__asm {

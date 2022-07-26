@@ -823,7 +823,7 @@ LABEL_37:
 							{
 								do
 								{ // Distance from unit to region position
-									u32 newTileDistance = helper::getTileDistance(i->sprite->position.x, i->sprite->position.y, regionPositions[iterator2].x, regionPositions[iterator2].y);
+									u32 newTileDistance = helper::get_tile_distance(i->sprite->position.x, i->sprite->position.y, regionPositions[iterator2].x, regionPositions[iterator2].y);
 									if (newTileDistance < tileDistances[iterator2])
 									{
 										tileDistances[iterator2] = newTileDistance;
@@ -855,85 +855,85 @@ LABEL_37:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	void ai_get_build_location(u32 unit_id, char* placementData, u32 player, Point16 desiredPos, s32 maxRange) // 004461B0
+	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range) // 004461B0
 	{
-		memset(placementData, 0, 0x1000u);
-		helper::ai_get_building_placement_data(maxRange, unit_id, placementData, player, desiredPos);
-		helper::ai_remove_unreachable_regions(placementData, desiredPos);
+		memset(placement_data, 0, 0x1000u);
+		helper::ai_get_building_placement_data(max_range, unit_id, placement_data, player, desired_pos);
+		helper::ai_remove_unreachable_regions(placement_data, desired_pos);
 		if (unit_id != UnitId::ProtossPylon)
 		{
-			helper::ai_remove_dangerous_regions(unit_id, placementData, player, desiredPos);
+			helper::ai_remove_dangerous_regions(unit_id, placement_data, player, desired_pos);
 		}
-		helper::ai_remove_far_tiles(placementData, desiredPos, maxRange);
+		helper::ai_remove_far_tiles(placement_data, desired_pos, max_range);
 		while (2)
 		{
 			u32 iterator1 = 0;
 			do
 			{
-				if (placementData[iterator1])
+				if (placement_data[iterator1])
 				{
-					helper::ai_remove_different_height(placementData, desiredPos); // Owned?
-					helper::ai_placement_related_something(unit_id, placementData, desiredPos);
+				//	helper::ai_remove_different_height(placement_data, desired_pos);
+					helper::ai_placement_related_something(unit_id, placement_data, desired_pos);
 					if (unit_id == UnitId::TerranCommandCenter || unit_id == UnitId::ZergHatchery || unit_id == UnitId::ProtossNexus)
 					{
-						maxRange = 1;
+						max_range = 1;
 					}
 					else
 					{
-						maxRange = 0;
-						helper::ai_remove_unfit_tiles(unit_id, placementData, player, desiredPos);
+						max_range = 0;
+						helper::ai_remove_unfit_tiles(unit_id, placement_data, player, desired_pos);
 					}
-					helper::ai_remove_addon_places(unit_id, placementData, player, desiredPos);
+					helper::ai_remove_addon_places(unit_id, placement_data, player, desired_pos);
 					switch (unit_id)
 					{
 						case UnitId::TerranWatchdog:
 						case UnitId::ProtossPhotonCannon:
 						{
-							goto LABEL_17; 
+							goto place_turrets_1;
 						}
 						case UnitId::TerranBunker:
 						{
-							if (!helper::get_bunker_placement_position(player, &maxRange))
+							if (!helper::get_bunker_placement_position(player, &max_range))
 							{
-					LABEL_17:
-								helper::get_turret_placement_position(placementData, player, desiredPos, unit_id, 0);
+					place_turrets_1:
+								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 								return;
 							}
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!g_aiscript_controller[player].AI_Flags.is_secure_finished) // SLOBYTE(g_aiscript_controller[player].AI_Flags) < 0
+							if (!g_aiscript_controller[player].AI_Flags.is_secure_finished)
 							{
-								goto LABEL_21;
+								goto place_turrets_2;
 							}
 
-							if (!helper::get_bunker_placement_position(player, &maxRange))
+							if (!helper::get_bunker_placement_position(player, &max_range))
 							{
-					LABEL_21:
-								helper::get_turret_placement_position(placementData, player, desiredPos, unit_id, 0);
+					place_turrets_2:
+								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
 						} break;
 						case UnitId::ProtossPylon:
 						{
-							helper::get_pylon_placement_position(placementData, player, desiredPos);
+							helper::get_pylon_placement_position(placement_data, player, desired_pos);
 						} break;
 						default:
 						{
-							if (!maxRange)
+							if (!max_range)
 							{
-								helper::get_default_placement_position(unit_id, placementData, player, desiredPos);
+								helper::get_default_placement_position(unit_id, placement_data, player, desired_pos);
 							}
 						} break;
 					}
 					return;
 				}
 				++iterator1;
-			} while (iterator1 < 0x40);
+			} while (iterator1 < 64);
 
 			u32 iterator2 = 0;
 			++iterator2;
-			placementData += 64;
-			if (iterator2 < 0x40)
+			placement_data += 64;
+			if (iterator2 < 64)
 			{
 				continue;
 			}
@@ -1124,7 +1124,7 @@ LABEL_37:
 			AiTown* town = worker_ai->town;
 			worker_ai->last_update_second = *g_elapsed_time_seconds;
 			GroupFlag group_flags = units_dat::group_flags[worker->id];
-			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_scv_repair_controller(worker, town))
+			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_worker_repair_controller(worker, town))
 				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
 			{
 				Unit* main_building = town->main_building;
@@ -1657,7 +1657,7 @@ LABEL_37:
 	}
 
 	// Same as above. -Pr0nogo
-	s32 ai_scv_repair_controller(Unit* worker, AiTown* town) // 00433C70
+	s32 ai_worker_repair_controller(Unit* worker, AiTown* town) // 00433C70
 	{
 		u32 best_score = 0;
 		Unit* repairee = 0;
