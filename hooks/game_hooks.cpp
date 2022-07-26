@@ -478,8 +478,9 @@ namespace hooks
 	static void init_unit(Unit* unit, UnitExt* unitExt) {
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
+				helper::turn_unit(unit, 128);
 				if (unit->subunit) {
-					helper::turn_unit(unit->subunit, unit->current_direction_1);
+					helper::turn_unit(unit->subunit, 128);
 				}
 			} break;
 			case UnitId::TerranSentinel: {
