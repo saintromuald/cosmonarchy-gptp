@@ -80,7 +80,7 @@ void Sprite::free()
 	this->link.next = nullptr;
 
 	// perform identically to original code
-	unusedSprites->insertAfterHead<&Sprite::link>(this);
+	g_free_sprites->insertAfterHead<&Sprite::link>(this);
 }
 
 
