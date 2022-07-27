@@ -119,7 +119,7 @@
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
 /// You can also add custom modifications to StarCraft.exe by using:
-///	memoryPatch(address_to_patch, value_to_patch_with);
+///	memory_patch(address_to_patch, value_to_patch_with);
 
 namespace
 {
@@ -196,7 +196,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0049F145 + 4, maxunsigned_2, 2);	// flag
 	memory_patch(0x004E4153 + 4, maxunsigned_2, 2);	// flag
 	memory_patch(0x004E416E + 4, maxunsigned_2, 2);	// flag
-//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2); // ctf create flag, this code doesn't run at all because CTF are spell orders now
+//	memory_patch(0x004E426B + 1, maxunsigned_2, 2); // ctf create flag, this code doesn't run at all because CTF are spell orders now
 	memory_patch(0x004E5F68 + 3, maxunsigned_2, 2);
 	memory_patch(0x004E70E4 + 4, maxunsigned_2, 2);
 	memory_patch(0x004F3A9C + 4, maxunsigned_2, 2);
@@ -205,16 +205,16 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	const u8 none = 0xE4;
 	// TODO: hook parent function and make AI assign different units based on personality
-//	memoryPatch(0x004357FB + 2, &none, sizeof(u8)); // disable AI placing units near bunkers
-//	memoryPatch(0x0043583F + 1, &none, sizeof(u8)); // disable AI placing units near missile turrets
+//	memory_patch(0x004357FB + 2, &none, sizeof(u8)); // disable AI placing units near bunkers
+//	memory_patch(0x0043583F + 1, &none, sizeof(u8)); // disable AI placing units near missile turrets
 
-	// matriarch - pazuzu id hardcode
-	memory_patch(0x0040275A + 2, &none, sizeof(u8));
+	// Matriarch - Pazuzu id hardcode
+	memory_patch(0x0040275A + 2, &none, sizeof(u8)); // Hooked
 	memory_patch(0x0043CF74 + 2, &none, sizeof(u8));
-	memory_patch(0x00455E49 + 3, &none, sizeof(u8));
-	memory_patch(0x00455EC7 + 3, &none, sizeof(u8));
+	memory_patch(0x00455E49 + 3, &none, sizeof(u8)); // Hooked
+	memory_patch(0x00455EC7 + 3, &none, sizeof(u8)); // Hooked
 	memory_patch(0x00475B68 + 2, &none, sizeof(u8));
-	memory_patch(0x004C210A + 2, &none, sizeof(u8));
+	memory_patch(0x004C210A + 2, &none, sizeof(u8)); // Hooked but disabled
 
 	// rhynadon id hardcode
 	memory_patch(0x0042E352 + 1, &none, sizeof(u8));
@@ -232,19 +232,19 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0042F134 + 2, &none, sizeof(u8));
 	memory_patch(0x0042F13A, &jmp, 1); // JA
 	memory_patch(0x0043A602 + 2, &none, sizeof(u8));
-//	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
+//	memory_patch(0x0043A609 + 2, &none, sizeof(u8));
 	memory_patch(0x004558A3 + 2, &none, sizeof(u8));
-//	memoryPatch(0x004558A9 + 2, &none, sizeof(u8));
+//	memory_patch(0x004558A9 + 2, &none, sizeof(u8));
 	memory_patch(0x00455940 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00455946 + 2, &none, sizeof(u8));
+//	memory_patch(0x00455946 + 2, &none, sizeof(u8));
 	memory_patch(0x00455AF2 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00455AF8 + 2, &none, sizeof(u8));
+//	memory_patch(0x00455AF8 + 2, &none, sizeof(u8));
 	memory_patch(0x00473A16 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00473A1C + 2, &none, sizeof(u8));
+//	memory_patch(0x00473A1C + 2, &none, sizeof(u8));
 	memory_patch(0x00473BD6 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00473BE3 + 2, &none, sizeof(u8));
+//	memory_patch(0x00473BE3 + 2, &none, sizeof(u8));
 	memory_patch(0x0047B2C4 + 2, &none, sizeof(u8));
-//	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
+//	memory_patch(0x0047B2CA + 2, &none, sizeof(u8));
 	memory_patch(0x004E3DC4 + 2, &none, sizeof(u8));
 	memory_patch(0x004E3DCA, &jmp, 1); // JA
 	const u8 moveaxpatch[5] = {0xb8,  0x00, 0x00, 0x00, 0x00};
@@ -260,7 +260,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// test for globals
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
-//	memoryPatch(0x004AAF23 + 5, &retn, 1);
+//	memory_patch(0x004AAF23 + 5, &retn, 1);
 
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
@@ -270,21 +270,20 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::unitsDatWrapperPatches();
 
 	// arbiter attack hardcode
-
 	/*
 	nops(0x0043AEE0, 10);
 	nops(0x0043CF89, 4);
-	memoryPatch(0x0043CF8D, &jmp, 1);
+	memory_patch(0x0043CF8D, &jmp, 1);
 	nops(0x0047681B, 5);
-	memoryPatch(0x00476820, &jmp, 1);
+	memory_patch(0x00476820, &jmp, 1);
 	nops(0x00476E67, 6);
 	nops(0x00477AB7, 5);
-	memoryPatch(0x00477ABC, &jmp, 1);
+	memory_patch(0x00477ABC, &jmp, 1);
 	nops(0x00477E09, 5);
 	nops(0x00478613, 5);
 	nops(0x00478613, 5);
 	nops(0x0048B0A1, 5);
-	memoryPatch(0x0048B0A6, &jmp, 1);
+	memory_patch(0x0048B0A6, &jmp, 1);
 	*/
 
 	memory_patch(0x00477AB7 + 4, &none, 1);
@@ -308,7 +307,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	u8 patchLastUnit[] = {0xE4};
 	// allow pissed/yes sounds for >= Command Center
-	// memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
+	// memory_patch(0x0048EA20 + 2, patchLastUnit, 1);
 	// hook required
 	// nops(0x0048EAB0, 5);
 
@@ -405,7 +404,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0040149A + 2, patchLastUnit, 1);
 
 	// Mind Tyrant - energy of controlled Mind Tyrants is no longer set to 0
-//	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
+//	memory_patch(0x004F6938 + 4, patchLastUnit, 1);
 
 	nops(0x0049EEBD, 0xa); // disable beacon collision hardcode
 //	u8 p8a = { 0x8a };

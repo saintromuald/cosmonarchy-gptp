@@ -43,13 +43,13 @@ namespace UnitsDatEntries
 {
 	enum
 	{
-		Flingy,//flingy
-		Subunit, //subunit
-		Infested, //infested unit
-		Construction, //construction graphic
-		StartDirection, //start direction
-		ShieldEnabled, //shield enabled
-		MaxShields, //max shields
+		Flingy,
+		Subunit,
+		Infested,
+		Construction,
+		StartDirection,
+		ShieldEnabled,
+		MaxShields,
 
 		SndReady = 29,
 		SndWhtFirst = 30,
