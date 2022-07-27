@@ -686,7 +686,7 @@ namespace hooks
 		jump_patch(ai_are_on_connected_regions_wrapper,			0x00438E10, 1);
 
 	//	jump_patch(get_bunker_placement_position_wrapper,		0x004442E0, 4);
-	//	jump_patch(ai_get_build_location_wrapper,				0x004461B0, 1);
+	//	jump_patch(ai_get_build_location_wrapper,				0x004461B0, 1);	// TODO - fix crash in ai_manage_building_placement
 		jump_patch(ai_check_military_grouping_wrapper,			0x00439550, 1);
 		jump_patch(hooks::ai_remove_different_height,			0x004436C0, 3);
 	//	jump_patch(attack_recent_attacker_wrapper,				0x004770E0, 2);

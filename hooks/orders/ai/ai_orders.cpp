@@ -767,7 +767,7 @@ LABEL_37:
 	{
 		if (!unit1 || !unit2 || !unit1->sprite || !unit2->sprite)
 		{
-			return 0;
+return 0;
 		}
 
 		u16 regionId = helper::get_region_id(unit2->sprite->position.x, unit2->sprite->position.y);
@@ -865,16 +865,16 @@ LABEL_37:
 			helper::ai_remove_dangerous_regions(unit_id, placement_data, player, desired_pos);
 		}
 		helper::ai_remove_far_tiles(placement_data, desired_pos, max_range);
+
+		u32 iterator2 = 0;
 		while (2)
 		{
-			u32 iterator1 = 0;
-			do
-			{
-				if (placement_data[iterator1])
+			for (u32 i = 0; i < 64; i++) {
+				if (placement_data[i])
 				{
-				//	helper::ai_remove_different_height(placement_data, desired_pos);
+					helper::ai_remove_different_height(placement_data, desired_pos);
 					helper::ai_placement_related_something(unit_id, placement_data, desired_pos);
-					if (unit_id == UnitId::TerranCommandCenter || unit_id == UnitId::ZergHatchery || unit_id == UnitId::ProtossNexus)
+					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot) // Was explicit CC/Nexus/Hatchery check - may have to forbid Hatchery morphs?
 					{
 						max_range = 1;
 					}
@@ -889,27 +889,21 @@ LABEL_37:
 						case UnitId::TerranWatchdog:
 						case UnitId::ProtossPhotonCannon:
 						{
-							goto place_turrets_1;
+							helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+							return;
 						}
 						case UnitId::TerranBunker:
 						{
 							if (!helper::get_bunker_placement_position(player, &max_range))
 							{
-					place_turrets_1:
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 								return;
 							}
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!g_aiscript_controller[player].AI_Flags.is_secure_finished)
+							if (!g_aiscript_controller[player].AI_Flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
 							{
-								goto place_turrets_2;
-							}
-
-							if (!helper::get_bunker_placement_position(player, &max_range))
-							{
-					place_turrets_2:
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
 						} break;
@@ -927,10 +921,7 @@ LABEL_37:
 					}
 					return;
 				}
-				++iterator1;
-			} while (iterator1 < 64);
-
-			u32 iterator2 = 0;
+			}
 			++iterator2;
 			placement_data += 64;
 			if (iterator2 < 64)

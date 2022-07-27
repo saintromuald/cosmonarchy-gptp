@@ -926,13 +926,13 @@ namespace helper
 
 	s16 get_region_id(s32 a1, s32 a2)
 	{
-		const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
+		const u32 Func_SAI_Getregion_idFromPxEx = 0x0049C9F0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
 			MOV ECX, a2
-			CALL Func_SAI_GetRegionIdFromPxEx
+			CALL Func_SAI_Getregion_idFromPxEx
 			MOV result, EAX
 			POPAD
 		}
@@ -1461,26 +1461,26 @@ namespace helper
 
 	s16 get_region_id_from_unit(Unit* unit)
 	{
-		const u32 Func_getRegionIdFromUnit = 0x0049CB40;
+		const u32 Func_getregion_idFromUnit = 0x0049CB40;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_getRegionIdFromUnit
+			CALL Func_getregion_idFromUnit
 			MOV result, EAX
 			POPAD
 		}
 		return (s16)result;
 	}
 
-	s32 get_enemy_air_strength_in_region(u16 regionId, s32 player)
+	s32 get_enemy_air_strength_in_region(u16 region_id, s32 player)
 	{
 		const u32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH player
-			MOVZX AX, regionId
+			MOVZX AX, region_id
 			CALL Func_getEnemyAirStrengthInRegion
 			MOV result, EAX
 			POPAD
@@ -1488,7 +1488,7 @@ namespace helper
 		return result;
 	}
 
-	s32 get_enemy_strength_in_region(u16 regionId, s32 player, s32 includeAir)
+	s32 get_enemy_strength_in_region(u16 region_id, s32 player, s32 includeAir)
 	{
 		const u32 Func_getEnemyStrengthInRegion = 0x004318E0;
 		static s32 result;
@@ -1496,7 +1496,7 @@ namespace helper
 			PUSHAD
 			PUSH includeAir
 			PUSH player
-			MOVZX AX, regionId
+			MOVZX AX, region_id
 			CALL Func_getEnemyStrengthInRegion
 			MOV result, EAX
 			POPAD
@@ -8602,15 +8602,15 @@ namespace helper
 	}
 
 	// For ai_manage_building_placement
-	s32 get_bunker_placement_position(s32 placementId, s32* regionId)
+	s32 get_bunker_placement_position(s32 placement_id, s32* region_id)
 	{
 		const u32 Func_getBunkerPlacementPosition = 0x004442E0;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH regionId
-			PUSH placementId
+			PUSH region_id
+			PUSH placement_id
 			CALL Func_getBunkerPlacementPosition
 			MOV result, EAX
 			POPAD
@@ -9374,7 +9374,7 @@ namespace helper
 		return result;
 	}
 
-	u32 ai_placement_related_something(u16 unit_id, char* placement_data, Point16 desired_pos)
+	u32 ai_placement_related_something(u32 unit_id, char* placement_data, Point16 desired_pos)
 	{
 		const u32 Func_Ai_PlacementRelatedSomething = 0x00443E30;
 		static u32 result;
@@ -9424,7 +9424,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u16 unit_id, u32 unk_flag)
+	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag)
 	{
 		const u32 Func_getTurretPlacementPosition = 0x00443AC0;
 		static u32 result;
@@ -9443,7 +9443,7 @@ namespace helper
 		return result;
 	}
 
-	u32 get_pylon_placement_position(char* placement_data, u8 player, Point16 desired_pos)
+	u32 get_pylon_placement_position(char* placement_data, u32 player, Point16 desired_pos)
 	{
 		const u32 Func_getPylonPlacementPosition = 0x004448D0;
 		static u32 result;
@@ -9618,15 +9618,14 @@ namespace helper
 		return result;
 	}
 
-	/*
-	u32 getSoundDuration(s32 a1)
+	u32 get_sound_duration(s32 sound_id)
 	{
 		static u32 result;
 		const u32 Func_getSoundDuration = 0x004BB890;
 		__asm
 		{
 			PUSHAD
-			MOV ESI, a1
+			MOV ESI, sound_id
 			CALL Func_getSoundDuration
 			MOV result, EAX
 			POPAD
@@ -9635,6 +9634,7 @@ namespace helper
 	}
 
 	// For soundInit
+	/*
 	void dSoundDestroy()
 	{
 		const u32 Func_dSoundDestroy = 0x004BC180;
