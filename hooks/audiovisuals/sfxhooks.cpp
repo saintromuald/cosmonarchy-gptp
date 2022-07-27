@@ -115,6 +115,9 @@ namespace hooks {
 					case UnitId::ProtossHierophant: {
 						ready_sound = helper::get_random_sfx_between(SoundId::HierophantReady01, SoundId::HierophantReady03);
 					} break;
+					case UnitId::ProtossPariah: {
+						ready_sound = helper::get_random_sfx_between(SoundId::PariahReady01, SoundId::PariahReady03);
+					} break;
 				}
 				helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
 				helper::do_unit_event_notification(unit, 17, sfx_dat::PortraitDuration[ready_sound] + 1000 * (SFXDAT_SoundData[ready_sound].duration_ms / 1000), 1, ready_sound);

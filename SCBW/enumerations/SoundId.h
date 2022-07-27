@@ -1259,6 +1259,17 @@ namespace SoundId
 		PaladinHelp01						= 1973,
 		PaladinHelp02						= 1974,
 //		PaladinHelp03						= 1975,
+
+		PariahHelp01						= 1985,
+		PariahHelp02						= 1986,
+		PariahHelp03						= 1987,
+		PariahReady01						= 1988,
+		PariahReady02						= 1989,
+		PariahReady03						= 1990,
+		PariahAggressive01					= 1991,
+		PariahAggressive02					= 1992,
+		PariahAggressive03					= 1993,
+		PariahAggressive04					= 1994,
 	};
 }
 
