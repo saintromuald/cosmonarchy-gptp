@@ -70,42 +70,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_manage_building_placement_wrapper() // 004465C0
-	{
-		static Unit* builder;
-		static u32 unit_id;
-		static Point16 tryPosition;
-		static Point16* outPosition;
-		static s32 areaTiles;
-		static s32 result;
-		__asm
-		{
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV unit_id, EAX
-			MOV EAX, [EBP + 0x0C]
-			MOV tryPosition, EAX
-			MOV EAX, [EBP + 0x10]
-			MOV outPosition, EAX
-			MOV EAX, [EBP + 0x14]
-			MOV areaTiles, EAX
-			POP EAX
-			MOV builder, ECX
-			PUSHAD
-		}
-		result = hooks::ai_manage_building_placement(builder, unit_id, tryPosition, outPosition, areaTiles);
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			MOV ESP, EBP
-			POP EBP
-			RETN 0x10
-		}
-	}
-
 	void __declspec(naked) ai_perform_task_wrapper() // 004361A0
 	{
 		static Unit* unit;
@@ -325,7 +289,6 @@ namespace hooks
 	{
 	//	jump_patch(ai_build_tech_upgrade_wrapper,			0x00431F90, 2);
 		jump_patch(ai_progress_build_wrapper,				0x00434480, 1);
-	//	jump_patch(ai_manage_building_placement_wrapper,	0x004465C0, 3);
 		jump_patch(ai_perform_task_wrapper,					0x004361A0, 0);
 	//	jump_patch(ai_plan_do_merge_morph_wrapper,			0x00435F10, 1);
 	//	jump_patch(ai_train_defensive_military_Wrapper,		0x0043F990, 1);

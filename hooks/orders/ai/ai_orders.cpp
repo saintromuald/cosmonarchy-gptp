@@ -2209,10 +2209,219 @@ return 0;
 	// Hooked to let AI use new transports. -Pr0nogo
 	bool player_has_transport(u32 player_id) // 00437250
 	{
-		return g_unit_count_table[UnitId::TerranTrojan].player[player_id] // Dunno how to properly access this in GPTP. -Pr0nogo
+		return g_unit_count_table[UnitId::TerranTrojan].player[player_id]
 			|| g_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
 			|| g_unit_count_table[UnitId::ZergOvileth].player[player_id]
 			|| g_unit_count_table[UnitId::ZergIroleth].player[player_id]
 			|| g_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
+	}
+
+	// Hooked to improve functionality and allow Pylons to respect the asc3 "creep" header. -Pr0nogo
+	// GREAT GOOGLY MOOGLY BATMAN, THIS IS A DISASTER
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_position, Point16* out_position, s32 area_tiles) // 004465C0
+	{
+		Point16 point1 = {};
+		Point16 point2 = {};
+		point1.x = try_position.x / 32;
+		point2.x = try_position.x / 32;
+		u32 player_var = builder->player;
+		point1.y = (*(s32*)&try_position >> 16) / 32;
+		point2.y = point1.y;
+		u32 player = player_var;
+		Point16 fallback = {};
+		u32 fallback_y = 0;
+
+		u32 addon_cucko0 = 0;
+		s32* addon_cucko1 = 0;
+		u16 addon_cucko2 = 0;
+		u16* addon_cucko3 = 0;
+		u16 addon_cucko4 = 0;
+		u32 addon_dims_x1 = 0;
+		u32 addon_dims_x2 = 0;
+		if (units_dat::base_property[unit_id] & UnitProperty::Addon)
+		{
+			addon_cucko0 = 4 * (u16)builder->id;
+			addon_dims_x1 = *(u16*)((char*)&units_dat::building_dimensions[0].x + addon_cucko0);
+			fallback = point2;
+			addon_cucko0 = *(u16*)((char*)&units_dat::building_dimensions[0].y + addon_cucko0) / -2 / 32 + point2.y;
+			addon_cucko1 = &units_dat::MaxHitPoints[unit_id + 122];
+			addon_cucko2 = *(u16*)addon_cucko1 / 32 + point2.x - addon_dims_x1 / 2 / 32;
+			addon_cucko3 = (u16*)((char*)&units_dat::MaxHitPoints[unit_id + 122] + 2);
+			fallback_y = *addon_cucko3 / 32 + addon_cucko0;
+			fallback.x = addon_cucko2;
+			if (!helper::can_build_on_tile_location(builder, player, fallback.x, fallback_y, unit_id, 0, 0, 1, 0))
+			{
+				addon_cucko4 = *(u16*)addon_cucko1 / -32 + addon_cucko2;
+				fallback_y = *addon_cucko3 / -32 + fallback_y;
+				addon_dims_x2 = units_dat::building_dimensions[builder->id].x;
+				fallback.x = addon_cucko4;
+				out_position->x = 32 * addon_cucko4 + addon_dims_x2 / 2;
+				out_position->y = 32 * fallback_y + units_dat::building_dimensions[builder->id].y / 2;
+				return 1;
+			}
+			player_var = player;
+		}
+		player = 2500;
+		char* placement_data_2 = (char*)1;
+		switch (unit_id)
+		{
+			case UnitId::TerranCommandCenter:
+			case UnitId::ZergHatchery:
+			case UnitId::ProtossNexus:
+			{
+				placement_data_2 = 0;
+			} break;
+			case UnitId::TerranComsatStation:
+			case UnitId::TerranMissileSilo:
+			{
+				unit_id = UnitId::TerranCommandCenter;
+			} break;
+			case UnitId::TerranControlTower:
+			{
+				unit_id = UnitId::TerranStarport;
+			} break;
+			case UnitId::TerranCovertOps:
+			case UnitId::TerranPhysicsLab:
+			{
+				unit_id = UnitId::TerranScienceFacility;
+			} break;
+			case UnitId::TerranMachineShop:
+			{
+				unit_id = UnitId::TerranFulcrum;
+			} break;
+			case UnitId::TerranBunker:
+			{
+				if (get_bunker_placement_position(player_var, (u32*)&player))
+				{
+					placement_data_2 = 0;
+				}
+			} break;
+			case UnitId::ZergCreepColony:
+			{
+				if (g_aiscript_controller[player_var].AI_Flags.spread_creep)
+				{
+					if (get_bunker_placement_position(player_var, (u32*)&player))
+					{
+						placement_data_2 = 0;
+					}
+				}
+			} break;
+			case UnitId::ProtossPylon:
+			{
+				Unit* disabled_unit = helper::get_disabled_unit_in_range(player_var, try_position);
+				g_disabled_unit_array[9] = disabled_unit;
+				if (disabled_unit)
+				{
+					u16 pos_x_disabled = disabled_unit->sprite->position.x;
+					u16 pos_y_disabled = disabled_unit->sprite->position.y;
+					point1.x = pos_x_disabled / 32;
+					point2.x = pos_x_disabled / 32;
+					try_position.x = pos_x_disabled;
+					try_position.y = pos_y_disabled;
+					point1.y = pos_y_disabled / 32;
+					point2.y = pos_y_disabled / 32;
+					placement_data_2 = 0;
+				}
+			} break;
+			default:
+			{
+			} break;
+		}
+		*g_ai_builder_unk = builder;
+		u32 unit_id_1 = unit_id;
+		char placement_data[4096];
+		ai_get_build_location(unit_id, (char*)placement_data, builder->player, try_position, area_tiles);
+		*g_ai_builder_unk = 0;
+		if (placement_data_2)
+		{
+			helper::ai_placement_data_something(placement_data, try_position);
+		}
+		Point16 point3 = point2;
+		if (player != 2500)
+		{
+			__int64 region_something = ((*g_sai_paths)->regions[player].region_center_x >> 8); // It must be destroyed.
+		//	point3.x = ((BYTE4(region_something) & 0x1F) + (s32)region_something) >> 5; // Fixel
+			point3.y = ((*g_sai_paths)->regions[(u16)player].region_center_y >> 8) / 32;
+		}
+		u32 pos_x_minus = point2.x - 32;
+		u32 pos_y_minus = point2.y - 32;
+		u32 best_distance = 99999999;
+		u32 best_fallback_distance = 99999999;
+		Point16 desired_fallback_pos = {};
+		desired_fallback_pos.x = 0;
+		desired_fallback_pos.y = 0;
+		addon_cucko1 = 0;
+		u16 fallback_x = 0;
+		while (1)
+		{
+			u32 pos_y_minus_2 = pos_y_minus;
+			placement_data_2 = placement_data;
+			addon_cucko3 = (u16*)64;
+			bool data_1 = 0;
+			do
+			{
+				u32 pos_x_minus_2 = pos_x_minus;
+				u32 index = 0;
+				point2 = {};
+				do
+				{
+					if (placement_data_2[index])
+					{
+						u32 current_distance = helper::get_tile_distance(32 * point3.x, 32 * point3.y, 32 * pos_x_minus_2, 32 * pos_y_minus_2);
+						if (current_distance < best_distance)
+						{
+							if (current_distance <= area_tiles)
+							{
+								best_distance = current_distance;
+								fallback.x = pos_x_minus_2;
+								fallback_y = pos_y_minus_2;
+							}
+							else if (current_distance < best_fallback_distance)
+							{
+								best_fallback_distance = current_distance;
+								desired_fallback_pos.x = pos_x_minus_2;
+								desired_fallback_pos.y = pos_y_minus_2;
+							}
+						}
+					}
+					index = *(u32*)&point2 + 1; // WHAT
+					++pos_x_minus_2;
+					++* (u32*)&point2; // WHO
+				} while (*(u32*)&point2 < 0x40); // HOW
+				++pos_y_minus_2;
+				data_1 = addon_cucko3 == (u16*)1; // OO
+				placement_data_2 += 64;
+				addon_cucko3 = (u16*)((char*)addon_cucko3 - 1); // O_O!!!
+			} while (!data_1);
+			if (best_distance != 99999999)
+			{
+				break;
+			}
+			best_distance = best_fallback_distance;
+			fallback_x = desired_fallback_pos.x;
+			fallback = desired_fallback_pos;
+			if (best_fallback_distance != 99999999)
+			{
+				out_position->x = 32 * fallback_x + units_dat::building_dimensions[unit_id_1].x / 2;
+				out_position->y = 32 * fallback_y + units_dat::building_dimensions[unit_id_1].y / 2;
+				return 1;
+			}
+			if (player != 2500)
+			{
+				bool data_iterated = (u32)addon_cucko1 + 1 < 2;
+				point3.x = point1.x;
+				point3.y = point1.y;
+				addon_cucko1 = (s32*)((char*)addon_cucko1 + 1);
+				if (data_iterated)
+				{
+					continue;
+				}
+			}
+			return 0;
+		}
+		fallback_x = fallback.x;
+		out_position->x = 32 * fallback_x + units_dat::building_dimensions[unit_id_1].x / 2;
+		out_position->y = 32 * fallback_y + units_dat::building_dimensions[unit_id_1].y / 2;
+		return 1;
 	}
 }

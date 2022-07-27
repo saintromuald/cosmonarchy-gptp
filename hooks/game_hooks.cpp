@@ -475,16 +475,17 @@ namespace hooks
 		return true;
 	}
 
+	// Fix facing angles for specific units
 	static void init_unit(Unit* unit, UnitExt* unitExt) {
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
-				helper::turn_unit(unit, 128);
+				helper::turn_unit(unit, 96);
 				if (unit->subunit) {
-					helper::turn_unit(unit->subunit, 128);
+					helper::turn_unit(unit->subunit, 96);
 				}
 			} break;
 			case UnitId::TerranSentinel: {
-				helper::turn_unit(unit, 128);
+				helper::turn_unit(unit, 96);
 			} break;
 		}
 	}
