@@ -1253,11 +1253,12 @@ namespace SoundId
 		PhalanxReady01						= 1967,
 		PhalanxReady02						= 1968,
 //		PhalanxReady03						= 1969,
-		HierophantHelp01					= 1970,
-		HierophantHelp02					= 1971,
-		HierophantHelp03					= 1972,
+		LegionnaireHelp01					= 1970,
+		LegionnaireHelp02					= 1971,
+//		LegionnaireHelp03					= 1972,
 		PaladinHelp01						= 1973,
 		PaladinHelp02						= 1974,
+//		PaladinHelp03						= 1975,
 	};
 }
 
