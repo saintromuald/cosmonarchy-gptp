@@ -109,6 +109,9 @@ namespace hooks {
 					case UnitId::ProtossZealot: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ZealotReady01, SoundId::ZealotReady02);
 					} break;
+					case UnitId::ProtossEcclesiast: {
+						ready_sound = helper::get_random_sfx_between(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
+					} break;
 					case UnitId::ProtossLegionnaire: {
 						ready_sound = helper::get_random_sfx_between(SoundId::LegionnaireReady01, SoundId::LegionnaireReady03);
 					} break;

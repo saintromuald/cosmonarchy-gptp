@@ -442,7 +442,8 @@ namespace hooks
 		if (*g_active_portrait_unit)
 		{
 			Unit* selected = *g_active_portrait_unit;
-			/* For checking cargo-related things. -Pr0nogo
+			/*
+			// For checking cargo-related elements. -Pr0nogo
 			if (selected) {
 				for (u32 i = 0; i < TransportCap; ++i) {
 					Unit* cargo_unit = selected->get_loaded_unit(i);
@@ -455,11 +456,13 @@ namespace hooks
 				}
 			}
 			*/
-			//if (selected->sprite && selected->sprite->main_graphic) {
-			//	scbw::printf("%u", selected->sprite->main_graphic->animation);
-			//}
-			scbw::printf("%u", selected->main_order_id);
-			//scbw::printf("0x%X", selected->status);
+			/*
+			if (selected->sprite && selected->sprite->main_graphic) {
+				scbw::printf("%u", selected->sprite->main_graphic->animation);
+			}
+			*/
+		//	scbw::printf("%u", selected->main_order_id);
+		//	scbw::printf("0x%X", selected->status);
 
  			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {

@@ -1270,6 +1270,12 @@ namespace SoundId
 		PariahAggressive02					= 1992,
 		PariahAggressive03					= 1993,
 		PariahAggressive04					= 1994,
+		EcclesiastReady01					= 1995,
+		EcclesiastReady02					= 1996,
+		EcclesiastReady03					= 1997,
+		EcclesiastHelp01					= 1998,
+		EcclesiastHelp02					= 1999,
+		EcclesiastHelp03					= 2000,
 	};
 }
 

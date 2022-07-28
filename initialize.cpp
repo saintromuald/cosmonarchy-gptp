@@ -446,7 +446,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004B3AC5, (u8)0x3);								// Remove +9 frame offset for score bar borders.
 
 	// Extend font colors
-	u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
 	memory_patch(0x00417A41, &tFontGame_ImageData[0x1]);			// Update buffer size and redirect to the expanded buffer for "sub_417A10".
 	memory_patch(0x00417A5A, &tFontGame_ImageData[0x10]);
 	memory_patch(0x00417AAA, &tFontGame_ImageData[0x11]);

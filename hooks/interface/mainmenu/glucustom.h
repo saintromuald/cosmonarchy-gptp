@@ -1,6 +1,7 @@
 #pragma once
 #include "SCBW/structures.h"
 
+u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
 namespace hooks
 {
 	void display_establishing_shot();					// 004D9200, hooked by X405

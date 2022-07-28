@@ -377,7 +377,6 @@ namespace hooks
 		}
 	}
 
-	u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
 	void __declspec(naked) get_color_handle() {
 		__asm {
 			CMP		AL, 0x1
