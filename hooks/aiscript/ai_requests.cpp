@@ -682,7 +682,9 @@ namespace hooks
 
 	// Hooked to improve AI guard handling. -Pr0nogo
 	void ai_update_guard_needs(u32 player) { // 004630C0
-		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = guard_ai->link.prev) {
+		GuardAi* prev = 0;
+		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = prev) {
+			prev = guard_ai->link.prev;
 			if (guard_ai->times_died >= 100) {
 				helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
 			} else if (guard_ai->parent) {
