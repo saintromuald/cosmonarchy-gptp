@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) unitCanInfestWrapper()
+	void __declspec(naked) unit_can_infest_wrapper()
 	{
 		static Unit* unit;
 		static u32 result;
@@ -12,7 +12,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, EAX
 		}
-		result = hooks::unitCanInfestHook(unit) ? 1 : 0;
+		result = hooks::unit_can_infest(unit) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -20,7 +20,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unitCanBeInfestedWrapper()
+	void __declspec(naked) unit_can_be_infested_wrapper()
 	{
 		static Unit* unit;
 		static u32 result;
@@ -29,7 +29,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, EDX
 		}
-		result = hooks::isInfestableUnitHook(unit) ? 1 : 0;
+		result = hooks::unit_can_be_infested(unit) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -37,31 +37,30 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unitMorphIntoInfestedOrder()
+	void __declspec(naked) unit_morph_into_infested_order_wrapper()
 	{
-		static Unit* unitInfested;
-
+		static Unit* unit;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
-			MOV unitInfested, EAX
+			MOV unit, EAX
 		}
-		hooks::orderMorphIntoInfested(unitInfested);
+		hooks::unit_morph_into_infested_order(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) unitInfestOrder()
+	void __declspec(naked) unit_infest_order_wrapper()
 	{
-		static Unit* unitInfesting;
+		static Unit* unit;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
-			MOV unitInfesting, EAX
+			MOV unit, EAX
 		}
-		hooks::orderInfestTarget(unitInfesting);
+		hooks::unit_infest_order(unit);
 		__asm {
 			POPAD
 			RETN
@@ -71,11 +70,11 @@ namespace
 
 namespace hooks
 {
-	void injectInfestationHooks()
+	void inject_infestation_hooks()
 	{
-		jump_patch(unitCanBeInfestedWrapper,	0x00402210);
-		jump_patch(unitCanInfestWrapper,		0x00402750);
-		jump_patch(unitInfestOrder,				0x004EA290);
-		jump_patch(unitMorphIntoInfestedOrder,	0x004EA4C0);
+		jump_patch(unit_can_infest_wrapper,					0x00402750);
+	//	jump_patch(unit_can_be_infested_wrapper,			0x00402210);
+	//	jump_patch(unit_infest_order_wrapper,				0x004EA290);
+	//	jump_patch(unit_morph_into_infested_order_wrapper,	0x004EA4C0);
 	}
 }

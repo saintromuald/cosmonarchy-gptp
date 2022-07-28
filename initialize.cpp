@@ -311,7 +311,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// hook required
 	// nops(0x0048EAB0, 5);
 
-	// bengalaas id hardcode
+	// Bengalaas id hardcode
 	memory_patch(0x0043157A + 2, patchLastUnit, 1);
 	memory_patch(0x00431B3D + 2, patchLastUnit, 1);
 	memory_patch(0x00437E11 + 2, patchLastUnit, 1);
@@ -320,7 +320,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7CF + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE4E + 2, patchLastUnit, 1);
 
-	// scantid id hardcode
+	// Scantid id hardcode
 	memory_patch(0x0043158C + 2, patchLastUnit, 1);
 	memory_patch(0x00431B4F + 2, patchLastUnit, 1);
 	memory_patch(0x00437E23 + 2, patchLastUnit, 1);
@@ -329,7 +329,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7E1 + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE58 + 2, patchLastUnit, 1);
 
-	// ragnasaur id hardcode
+	// Ragnasaur id hardcode
 	memory_patch(0x00431580 + 2, patchLastUnit, 1);
 	memory_patch(0x00431B43 + 2, patchLastUnit, 1);
 	memory_patch(0x00437E17 + 2, patchLastUnit, 1);
@@ -338,7 +338,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7D5 + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE53 + 2, patchLastUnit, 1);
 
-	// kakaru id hardcode
+	// Kakaru id hardcode
 	memory_patch(0x00431586 + 2, patchLastUnit, 1);
 	memory_patch(0x00431B49 + 2, patchLastUnit, 1);
 	memory_patch(0x00437E1D + 2, patchLastUnit, 1);
@@ -349,7 +349,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047C476 + 4, patchLastUnit, 1);
 	memory_patch(0x004CBE5D + 2, patchLastUnit, 1);
 
-	// ursadon id hardcode
+	// Ursadon id hardcode
 	memory_patch(0x00431592 + 2, patchLastUnit, 1);
 	memory_patch(0x00431B55 + 2, patchLastUnit, 1);
 	memory_patch(0x00437E29 + 2, patchLastUnit, 1);
@@ -358,7 +358,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7E7 + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE62 + 2, patchLastUnit, 1);
 
-	// warbringer id hardcode
+	// Warbringer id hardcode
 	memory_patch(0x004F6C1C + 2, patchLastUnit, 1);
 	memory_patch(0x004F6578 + 2, patchLastUnit, 1);
 	memory_patch(0x004F656B + 2, patchLastUnit, 1);
@@ -444,6 +444,35 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Remove offsets from iscore.grp.
 	memory_patch(0x004B3AC1, (u16)0x9010);							// Remove +6 frame offset for score bar fills.
 	memory_patch(0x004B3AC5, (u8)0x3);								// Remove +9 frame offset for score bar borders.
+
+	// Extend font colors
+	u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
+	memory_patch(0x00417A41, &tFontGame_ImageData[0x1]);			// Update buffer size and redirect to the expanded buffer for "sub_417A10".
+	memory_patch(0x00417A5A, &tFontGame_ImageData[0x10]);
+	memory_patch(0x00417AAA, &tFontGame_ImageData[0x11]);
+	memory_patch(0x00417B05, &tFontGame_ImageData[0x12]);
+	memory_patch(0x00417B61, &tFontGame_ImageData[0x13]);
+	memory_patch(0x0041FB41, &tFontGame_ImageData);					// ...for "SetFontHandle".
+	memory_patch(0x004BA127, (u32)0x140);							// ...for "get_tFontGam_PCX_0".
+	memory_patch(0x004BA12C, &tFontGame_ImageData);
+	memory_patch(0x004BA137, &tFontGame_ImageData);
+	memory_patch(0x004BA167, (u32)0x140);							// ...for "get_tFontGam_PCX".
+	memory_patch(0x004BA16C, &tFontGame_ImageData);
+	memory_patch(0x004BA177, &tFontGame_ImageData);
+	memory_patch(0x004D48C9, (u32)0x140);							// ...for "titleInit".
+	memory_patch(0x004D48CE, &tFontGame_ImageData);
+	memory_patch(0x004D48E0, &tFontGame_ImageData);
+	memory_patch(0x004D8A34, (u32)0x140);							// ...for "creditsSetFontColorFromFile".
+	memory_patch(0x004D8A67, &tFontGame_ImageData);
+	memory_patch(0x004DD8C8, (u32)0x140);							// ...for "loadTFontPcx".
+	memory_patch(0x004DDB71, &tFontGame_ImageData);					// ...for "registerMenuFunctions".
+	jump_patch(hooks::write_font_apply_color_patch, 0x0041FDC6, 54);
+	jump_patch(hooks::get_color_handle, 0x0041F610, 4);
+	memory_patch(0x004200B6, (u8)0x2);								// Make <0B> tag a valid color, and add gap offset.
+	memory_patch(0x004200B9, (u32)0x04040404);						// Add gap offsets for <0E> to <11>.
+	memory_patch(0x004200BF, (u32)0x06060606);						// Make <14> and <1A> tags valid colors, and add gap offsets.
+	memory_patch(0x004200C3, (u32)0x06060606);
+	memory_patch(0x004200C7, (u32)0x06060606);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start
@@ -581,7 +610,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_harvest_resource();
 
 	hooks::inject_rally_hooks();
-	//hooks::injectInfestationHooks();
+	hooks::inject_infestation_hooks();
 	//hooks::inject_receive_command_hooks();
 
 	hooks::inject_recharge_shields_hooks();

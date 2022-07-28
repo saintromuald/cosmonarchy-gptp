@@ -344,7 +344,7 @@ namespace hooks
 				JNZ		short LOC_4B4B80_pIcons
 				LEA		EDI, [EBP - 0x10C]
 				DEC		EDI
-				LEA		ESP, [ESP]//For some reason this opcode had an offset of +0x0.
+				LEA		ESP, [ESP]	// For some reason this opcode had an offset of +0x0.
 
 				LOC_4B4BA0 :
 			MOV		AL, [EDI + 0x1]
@@ -355,16 +355,16 @@ namespace hooks
 				MOV		EAX, dword ptr ds : pIcons_grp + 0x4
 				MOV		CX, word ptr ds : pIcons_grp + 0x8
 				MOV[EDI], EDX
-				//MOV		DL, byte ptr ds : aIscore_grp + 0xA
+			//	MOV		DL, byte ptr ds : aIscore_grp + 0xA
 				MOV[EDI + 0x4], EAX
 				MOV[EDI + 0x8], CX
 				PUSH	0x560
-				MOV[EDI + 0xA], 0x0//formerly DL, would grab the string's null terminator from the above commented-out line.
-				aStarcraftSw_47//PUSH offset 0x005034D8//"Starcraft\SWAR\lang\gluScore.cpp"
+				MOV[EDI + 0xA], 0x0 // formerly DL, would grab the string's null terminator from the above commented-out line.
+				aStarcraftSw_47		// PUSH offset 0x005034D8//"Starcraft\SWAR\lang\gluScore.cpp"
 				XOR		EDX, EDX
 				LEA		ECX, [EBP - 0x10C]
 				CALL	LoadGraphic
-				dword_59B72C//MOV [0x0059B72C], EAX
+				dword_59B72C		// MOV [0x0059B72C], EAX
 				XOR		EAX, EAX
 
 				LOC_4B4B80_iScore :
@@ -376,4 +376,79 @@ namespace hooks
 				JMP		loadMenu_gluScore
 		}
 	}
+
+	u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
+	void __declspec(naked) get_color_handle() {
+		__asm {
+			CMP		AL, 0x1
+			JNE		offset off_0
+			MOV		EAX, ds: [0x006CE0E8]//<Set savedFontColor to currentFontColor if <01>.
+			MOV		ds : [0x006CE0C0] , EAX
+			RETN
+
+		off_0 :
+			MOV		ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
+			MOV		ds : [0x006CE0E8] , ECX
+			MOVZX	EAX, AL
+			DEC		AL
+			PUSH	EAX
+			CMP		AL, 0xA//Skip if <02> to <0A>.
+			JB		offset off_2
+			CMP		AL, 0x1F//Go to close gaps if <0B> to <1F>.
+			JB		offset off_1
+			SUB		AL, 0x75//Close the gap between <1F> and <8F> so we avoid having to insert unused space in tfont.pcx.
+			CMP		AL, 0x24//Decrement 1 more if above <99>.
+			JB		offset off_2
+			DEC		AL
+			JMP		offset off_2
+
+		off_1 :
+			PUSH	ECX
+			MOV		CL, ds : [EAX + 0x004200AC]
+			SUB		AL, CL
+			POP		ECX
+
+		off_2 :
+			DEC		AL
+			LEA		EAX, [EAX * 8 + tFontGame_ImageData]//Set new font color to currentFontColor.
+			MOV		ds : [0x006CE0C0] , EAX
+			POP		EAX
+			RETN
+
+		}
+	};
+
+	const u32 writeFontApplyColour_1FE01 = 0x0041FE01;
+	const u32 writeFontApplyColour_2000A = 0x0042000A;
+	void __declspec(naked) write_font_apply_color_patch() {
+		__asm {
+			// CL is -1 from actual character ASCII code to naturally exclude <00>.
+			CMP		CL, 0x1F // Include <01> to <1F>.
+			JB		offset off_2
+			CMP		CL, 0x9E // Exclude <A0> to <FF>.
+			JA		offset off_1FE01
+			CMP		CL, 0x8E // Exclude <20> to <8E>.
+			JB		offset off_1FE01
+			CMP		CL, 0x98 // Exclude <99>.
+			JE		offset off_1FE01
+			JMP		offset off_3
+
+		off_2 :
+			MOVZX	ECX, byte ptr ds : [ECX + 0x004200AC] // Exclude the non-color tags (newlines, aligns, etc).
+			TEST	CL, 0x1
+			JNE		offset off_1FE01
+			MOV		CL, ds : [0x006D5DE0]
+			TEST	CL, CL
+			JNE		offset off_2000A
+
+		off_3 :
+			CALL	get_color_handle
+
+		off_2000A :
+			JMP		writeFontApplyColour_2000A
+
+		off_1FE01 :
+			JMP		writeFontApplyColour_1FE01
+		}
+	};
 }

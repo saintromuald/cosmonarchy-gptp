@@ -14,4 +14,6 @@ namespace hooks
 	void sub_4EF600();
 	void sub_4EF710();
 	void loadMenu_gluScore_pIcons();
+	void get_color_handle();
+	void write_font_apply_color_patch();
 }
