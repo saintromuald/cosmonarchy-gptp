@@ -433,16 +433,13 @@ namespace hooks
 			JMP		offset off_3
 
 		off_2 :
-			MOVZX	ECX, byte ptr ds : [ECX + 0x004200AC]	// Exclude the non-color tags (newlines, aligns, etc).
+			MOVZX	ECX, byte ptr ds : [ECX + 0x004200AC] // Exclude the non-color tags (newlines, aligns, etc).
 			TEST	CL, 0x1
 			JNE		offset off_1FE01
 			MOV		CL, ds : [0x006D5DE0]
 			TEST	CL, CL
 			JNE		offset off_2000A
-			PUSH	EAX
-			LEA		EAX, tFontGame_ImageData[0x18]
-			CMP		ds : [0x006CE0C0] , EAX					// Make grey color override subsequent tags.
-			POP		EAX
+			CMP		dword ptr ds : [0x006CE0C0] , offset tFontGame_ImageData + 0x18 // Make grey color override subsequent tags.
 			JE		off_2000A
 
 		off_3 :

@@ -281,6 +281,29 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) ai_make_guard_wrapper() { // 0043A010
+		static u32 player_id;
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player_id, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_make_guard(player_id, unit);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -301,5 +324,6 @@ namespace hooks
 
 		jump_patch(ai_player_need_priority_wrapper,			0x0045BE1F, 2);
 		jump_patch(ai_update_guard_needs_wrapper,			0x004630C0, 1);
+	//	jump_patch(ai_make_guard_wrapper,					0x0043A010, 1);
 	}
 }

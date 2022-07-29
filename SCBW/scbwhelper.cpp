@@ -12732,4 +12732,17 @@ namespace helper
 		}
 		return result;
 	}
+
+	bool unit_is_morphing(Unit* unit) {
+		static u32 result;
+		const u32 func_address = 0x0045CD00;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
 }

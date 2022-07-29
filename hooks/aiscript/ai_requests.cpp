@@ -314,7 +314,7 @@ namespace hooks
 
 		if (!helper::hasResourcesForUnit(nextBuildType, player))
 		{
-			error = (g_aiscript_controller[player].AI_Flags.is_use_map_settings) == 0;
+			error = (g_aiscript_controller[player].ai_flags.is_use_map_settings) == 0;
 			if (error)
 			{
 				helper::ai_reserve(player, 0);
@@ -469,14 +469,14 @@ namespace hooks
 								region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->air_strength_enemy != 0, j - region_gnd_strength);
 							}
 						}
-						if (g_aiscript_controller[player_id].AI_Flags.flag_0x40)
+						if (g_aiscript_controller[player_id].ai_flags.flag_0x40)
 						{
 							v15 = g_aiscript_controller[player_id].defense_priority_base;
 							if (v15)
 							{
 								g_aiscript_controller[player_id].defense_priority_base = v15 - 1;
 							}
-							g_aiscript_controller[player_id].AI_Flags.flag_0x40 = false;
+							g_aiscript_controller[player_id].ai_flags.flag_0x40 = false;
 						}
 					}
 				}
@@ -486,7 +486,7 @@ namespace hooks
 				--region_count_zeroed;
 			} while (!finished_with_regions);
 		}
-		if (!(g_aiscript_controller[player_id].AI_Flags.is_transports_off))
+		if (!(g_aiscript_controller[player_id].ai_flags.is_transports_off))
 		{
 			u32 player_race = g_player_table[player_id].race;
 			if (player_race == RaceId::Terran)
@@ -529,14 +529,14 @@ namespace hooks
 			if (v33)
 			{
 				transport_1_count = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
-				transport_1_quantity = (g_aiscript_controller[player_id].AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
+				transport_1_quantity = (g_aiscript_controller[player_id].ai_flags.is_use_map_settings) != 0 ? 2 : 5;
 				transport_1_priority = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
 				if (transport_1_count < transport_1_quantity)
 				{
 					transport_1_request_count = transport_1_quantity - transport_1_count;
 					while (1)
 					{
-						g_aiscript_controller[player_id].AI_Flags.flag_0x40 = true;
+						g_aiscript_controller[player_id].ai_flags.flag_0x40 = true;
 						transport_1_gas_cost = units_dat::gas_cost[transport_unit_id_1];
 						transport_supply_cost = units_dat::SupplyRequired[transport_unit_id_1];
 						if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
@@ -647,12 +647,12 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].AI_Flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id < UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
-				g_aiscript_controller[region->player].AI_Flags.flag_0x40 = true;
+				g_aiscript_controller[region->player].ai_flags.flag_0x40 = true;
 				helper::ai_add_cost_to_needs(unit_id, region->player, 1);
 				helper::ai_add_spending_request(unit_id, region->player, 1, priority, region);
 				helper::ai_add_base_unit_spending_request(unit_id, region->player, region, priority);
@@ -712,6 +712,88 @@ namespace hooks
 				//	guard_ai->previous_update = *g_elapsed_time_seconds;
 				//}
 			}
+		}
+	}
+
+	// Hooked to add sprite nullcheck and improve behavior. -Pr0nogo
+	void ai_make_guard(u32 player_id, Unit* unit) // 0043A010
+	{
+		if (!unit || !unit->sprite) {
+			return;
+		}
+		u16 region_id = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+		u32 region_id_var = region_id;
+		AiRegion* region_from_id = &g_ai_region_captains[player_id][region_id_var];
+		u32 region_times_52 = region_id_var * 52;
+
+		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow)
+		{
+			helper::ai_assign_military_to_region(5, region_from_id);
+			u8 region_flags = region_from_id->flags | 1;
+			region_from_id->flags = region_flags;
+			if (!(g_aiscript_controller[player_id].ai_flags.is_use_map_settings))
+			{
+				region_from_id->flags = region_flags | 0x40;
+			}
+
+		//	u32 ai_flags = g_aiscript_controller[0].ai_flags; // Really weird
+			u8* alliance_check = (u8*)player_alliance + player_id;
+			AiRegion** ai_regions_var = g_ai_region_captains;
+			u8(*player_alliance_var)[12] = (u8(*)[12])((u8*)player_alliance + player_id);
+			do
+			{
+				if (!(g_aiscript_controller[0].ai_flags.is_use_map_settings))
+				{
+					if (*alliance_check)
+					{
+						AiRegion* region_from_52 = (AiRegion*)((char*)*ai_regions_var + region_times_52);
+						if (!region_from_52->state)
+						{
+							helper::ai_assign_military_to_region(4, region_from_52);
+						}
+					}
+				}
+			//	ai_flags += 628;
+				alliance_check = &(*player_alliance_var)[12];
+				++player_alliance_var;
+				++ai_regions_var;
+			} while (1); //ai_flags < &g_base_array[9].total_mineral_count;
+		}
+
+		u32 unit_status = unit->status;
+		u32 town_center = UnitId::TerranCommandCenter;
+		if (g_player_table[player_id].race == RaceId::Protoss) {
+			town_center = UnitId::ProtossNexus;
+		}
+		else if (g_player_table[player_id].race == RaceId::Zerg) {
+			town_center = UnitId::ZergHatchery;
+		}
+
+		u32 unit_id = unit->id;
+		u8 player_race = g_player_table[player_id].race;
+		if ((unit_status & UnitStatus::Completed
+		||   unit_id == UnitId::ZergSire // new
+		||   unit_id == UnitId::ZergHive
+		||   unit_id == UnitId::ZergLair
+		||   unit_id == UnitId::ZergHatchery && helper::unit_is_morphing(unit))
+		&&   unit_status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::Subunit) // was BYTE1, never saw that on a flag var before, so maybe Subunit should be FlyingBuilding (next entry)?
+		||  (unit->id == town_center))
+		{
+			if (g_aiscript_controller[player_id].ai_flags.is_use_map_settings)
+			{
+				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
+				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
+				helper::ai_assign_military_to_region(6, region_from_id);
+			}
+			else
+			{
+				helper::ai_assign_military_to_region(6, region_from_id);
+				u8 region_has_flag_40 = region_from_id->flags | 0x40;
+				region_from_id->ground_strength_needed = 1500;
+				region_from_id->air_strength_needed = 1000;
+				region_from_id->flags = region_has_flag_40;
+			}
+			region_from_id->defend_timeout = 45;
 		}
 	}
 }
