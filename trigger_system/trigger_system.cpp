@@ -48,7 +48,7 @@ void init_trigger_system() {
 }
 
 static void replace_unit_sprite(Unit* unit, u32 sprite_id) {
-	if (unit->sprite && unit->sprite->sprite_id != sprite_id) {
+	if (unit->sprite && unit->sprite->id != sprite_id) {
 		Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
 		if (new_sprite) {
 			unit->sprite->free();

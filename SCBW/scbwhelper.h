@@ -109,7 +109,7 @@ namespace helper {
 	s32 SErrSetLastError(char a1);
 
 	// For compile_health_bar
-	void updateImageDrawData(Image* result);
+	void update_image_data_draw(Image* result);
 	void play_image_iscript(Image* img, u8 iscriptAnim);
 
 	// For AI_FindTransport

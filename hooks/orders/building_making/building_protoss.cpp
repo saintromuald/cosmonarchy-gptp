@@ -176,7 +176,7 @@ namespace hooks
 			if (building->order_signal & 1)
 			{
 				building->order_signal &= ~1;
-				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->sprite_id), 0);
+				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->id), 0);
 				helper::switch_to_warp_texture(building->sprite->main_graphic);
 				building->main_order_state = 3; // DF: Skip state 2 as it's now redundant.
 			}
@@ -187,7 +187,7 @@ namespace hooks
 			{
 				Image* current_image;
 				building->order_signal &= ~1;
-				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->sprite_id), 0);
+				helper::replace_sprite_images(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->id), 0);
 				current_image = building->sprite->images.head;
 				while (current_image)
 				{

@@ -115,6 +115,7 @@
 //	#include "hooks/requirements/requirements.h"
 	#include "hooks/interface/extender/selection_extender.h"
 	#include "trigger_system/trigger_hooks.h"
+	#include "hooks/interface/hpbars/hpbars.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -671,6 +672,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_cmdrecv_siege_tank_hooks();
 	hooks::inject_selection_extender_hooks();
 	inject_trigger_system_hooks();
+	hooks::inject_hp_bars_hooks();
 
 	return TRUE;
 }

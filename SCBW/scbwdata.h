@@ -893,7 +893,7 @@ SCBW_DATA(const ImagesDatExtraOverlayLO_Files*, lo_files,			0x0051F2A8);
 SCBW_DATA(const LO_Header* const*,				g_shield_overlays,	0x0052E5C8);
 
 SCBW_DATA(const ColorShiftData*,	g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
-SCBW_DATA(GrpHead* const*,			g_image_grp_graphics,	0x0051CED0);
+SCBW_DATA(GrpHead* const*,			g_image_grp_graphic,	0x0051CED0);
 
 template <typename T>
 struct PlayerFlags {

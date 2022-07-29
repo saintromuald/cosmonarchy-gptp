@@ -948,7 +948,7 @@ LABEL_23:
 		v3 = active_player_selection->unit[*(u8*)(a2 + 11)];
 		v4 = sprites_dat::IsVisible[v2 + 390];
 		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
-			+ (g_image_grp_graphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+			+ (g_image_grp_graphic[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
 		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
 		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;
@@ -979,7 +979,7 @@ LABEL_23:
 		*v10 = 0;
 		v10[1] = 0;
 		// *(s32*)(a1 + 48) = v3;
-		helper::updateImageDrawData((Image*)a1);
+		helper::update_image_data_draw((Image*)a1);
 		*(s8*)(a1 + 12) |= 1u;
 		helper::play_image_iscript((Image*)a1, 0);
 	}

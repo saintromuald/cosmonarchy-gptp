@@ -859,7 +859,7 @@ namespace helper
 		return result;
 	}
 
-	void updateImageDrawData(Image* a1)
+	void update_image_data_draw(Image* a1)
 	{
 		const u32 Func_updateImageDrawData = 0x004D57B0;
 		__asm {

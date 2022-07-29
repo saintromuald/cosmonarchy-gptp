@@ -52,7 +52,7 @@ struct Sprite
 	//Actual data structure
 
 	/*0x00*/ Link<Sprite>	link;
-	/*0x08*/ u16			sprite_id;
+	/*0x08*/ u16			id;
 	/*0x0A*/ u8				player;				// officially "creator"
 	/*0x0B*/ u8				selection_index;	// 0 <= selection_index <= 11. Index in the selection box at bottom of screen.
 	/*0x0C*/ u8				visibility_status;	// Determines whether the sprite is visible (not hidden by the fog-of-war).

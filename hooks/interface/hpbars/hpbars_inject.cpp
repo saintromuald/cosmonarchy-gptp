@@ -3,7 +3,7 @@
 
 namespace
 {
-	void _declspec(naked) compile_health_bar_wrapper()
+	void _declspec(naked) compile_healthbar_wrapper()
 	{
 		static Image* image;
 		static Sprite* sprite;
@@ -17,7 +17,7 @@ namespace
 			MOV image, ESI
 			PUSHAD
 		}
-		hooks::compile_health_bar(image, sprite);
+		hooks::compile_healthbar(image, sprite);
 		_asm {
 			POPAD
 			MOV ESP, EBP
@@ -31,6 +31,6 @@ namespace hooks
 {
 	void inject_hp_bars_hooks()
 	{
-//		jump_patch(compile_health_bar_wrapper, 0x004D6010, 2);
+	//	jump_patch(compile_healthbar_wrapper, 0x004D6010, 1); // Crashes
 	}
 }
