@@ -1276,6 +1276,12 @@ namespace SoundId
 		EcclesiastHelp01					= 1998,
 		EcclesiastHelp02					= 1999,
 		EcclesiastHelp03					= 2000,
+		StarSovereignReady01				= 2001,
+		StarSovereignReady02				= 2002,
+		StarSovereignReady03				= 2003,
+		StarSovereignHelp01					= 2004,
+		StarSovereignHelp02					= 2005,
+		StarSovereignHelp03					= 2006,
 	};
 }
 
