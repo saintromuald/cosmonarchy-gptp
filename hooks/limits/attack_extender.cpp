@@ -25,9 +25,9 @@ namespace hooks
 
 		parentAi = region;
 		child = (u8)region->player;
-		result = AI_GetMissingAttackForceUnits(region, v9, g_aiscript_controller[child].AI_Flags.is_use_map_settings);
+		result = AI_GetMissingAttackForceUnits(region, v9, g_aiscript_controller[child].ai_flags.is_use_map_settings);
 		v10 = result;
-		if (g_aiscript_controller[child].AI_Flags.is_use_map_settings
+		if (g_aiscript_controller[child].ai_flags.is_use_map_settings
 			|| (childTown = g_aiscript_controller[child].previous_building_hit_second) != 0
 			&& (v12 = *g_elapsed_time_seconds - childTown >= 30, *g_elapsed_time_seconds - childTown < 30))
 		{
@@ -47,7 +47,7 @@ namespace hooks
 				if (parentTown < UnitId::None && !helper::ai_add_to_region_military(parentAi, parentTown, v11))
 				{
 					v8 = (u8)parentAi->player;
-					g_aiscript_controller[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
+					g_aiscript_controller[v8].ai_flags.flag_0x40 = 1; // Might be wrong
 					helper::ai_add_cost_to_needs(parentTown, v8, 1);
 					helper::ai_add_spending_request(parentTown, v8, 1, 60, parentAi);
 					helper::ai_add_base_unit_spending_request(parentTown, v8, parentAi, 60);
@@ -79,7 +79,7 @@ namespace hooks
 
 		helper::ai_recalculate_region_strength(region);
 		helper::ai_target_enemy_in_region(region);
-		if (region->captain_flags & 0x20 && helper::ai_move_military_to_defend(region))
+		if (region->flags & 0x20 && helper::ai_move_military_to_defend(region))
 		{
 			return;
 		}
@@ -87,14 +87,14 @@ namespace hooks
 		regionVar = region;
 		if (a2 && (*g_sai_paths)->regions[region->region].accessibility_flags == 0x1FFD || helper::ai_can_travel_to_region(region, region))
 		{
-			helper::ai_set_region_type(0, region);
+			helper::ai_assign_military_to_region(0, region);
 			attackTarget = helper::ai_pick_attack_target_no_buildings(region);
 			if (attackTarget)
 			{
 				target_region = &g_ai_region_captains[(u8)region->player][helper::get_region_id(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
-				helper::ai_set_region_type(9, target_region);
+				helper::ai_assign_military_to_region(9, target_region);
 				helper::ai_move_military_to_other_region(target_region, region, 0, 0, 1);
 			}
 			else
@@ -110,12 +110,12 @@ LABEL_15:
 			if (regionId)
 			{
 				targetRegion2 = &g_ai_region_captains[(u8)region->player][regionId];
-				helper::ai_set_region_type(1, targetRegion2);
+				helper::ai_assign_military_to_region(1, targetRegion2);
 				targetRegion3 = targetRegion2;
 				regionVar = region;
 				helper::ai_move_military_to_other_region(targetRegion3, region, 0, 0, 1);
 			}
-			helper::ai_set_region_type(0, regionVar);
+			helper::ai_assign_military_to_region(0, regionVar);
 			return;
 		}
 		missingUnits = AI_GetMissingAttackForceUnits(region, attackWave, 1);
@@ -343,7 +343,7 @@ LABEL_8:
 			waveBool = 0;
 		}
 LABEL_12:
-		g_aiscript_controller[player].AI_Flags.is_secure_finished = 1;
+		g_aiscript_controller[player].ai_flags.is_secure_finished = 1;
 		if (!helper::ai_set_attack_grouping_region(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
 			&& !helper::ai_set_attack_grouping_region(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 		{

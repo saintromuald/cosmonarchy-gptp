@@ -1221,12 +1221,12 @@ namespace helper
 	}
 
 	// for AI_TrainingBroodling
-	void ai_set_region_type(s32 regionType, AiRegion* region)
+	void ai_assign_military_to_region(s32 region_type, AiRegion* region)
 	{
 		const u32 func_address = 0x004390A0;
 		__asm {
 			PUSHAD
-			MOV EBX, regionType
+			MOV EBX, region_type
 			MOV ESI, region
 			CALL func_address
 			POPAD

@@ -106,7 +106,7 @@ namespace hooks
 			{
 				if (self->is_unit_ai_non_building())
 				{
-					helper::ai_set_region_type(2, selfMilitaryAi->region);
+					helper::ai_assign_military_to_region(2, selfMilitaryAi->region);
 				}
 			}
 			childAi1 = helper::ai_is_under_attack(self, 0);
@@ -123,7 +123,7 @@ namespace hooks
 		}
 		if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
 		{
-			if (g_aiscript_controller[(u8)self->player].AI_Flags.is_use_map_settings)
+			if (g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
 			{
 				parentAi9 = 1;
 			}
@@ -140,7 +140,7 @@ LABEL_37:
 					if (!self->unit_ai
 						|| helper::ai_is_under_attack(self, 0)
 						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-						&& g_aiscript_controller[(u8)self->player].AI_Flags.is_use_map_settings)
+						&& g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
 					{
 						childAi2 = 0;
 					}
@@ -150,12 +150,12 @@ LABEL_37:
 						v18 = v14->state;
 						if (v18 == 5 || v18 == 4)
 						{
-							helper::ai_set_region_type(6, v14);
+							helper::ai_assign_military_to_region(6, v14);
 						}
 						if (v14->state)
 						{
 							if (!selfRegion->state && *g_elapsed_time_seconds > 60)
-								helper::ai_set_region_type(5, selfRegion);
+								helper::ai_assign_military_to_region(5, selfRegion);
 						}
 					}
 					if (!dont_call_help)
@@ -175,7 +175,7 @@ LABEL_37:
 					}
 				}
 			}
-			v14->captain_flags |= 0x20u;
+			v14->flags |= 0x20u;
 			if (self->status & UnitStatus::Completed)
 			{
 				child1 = (u8)self->main_order_id;
@@ -201,7 +201,7 @@ LABEL_37:
 										|| !helper::ai_transport_action(self))
 									{
 										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| g_aiscript_controller[(u8)self->player].AI_Flags.is_use_map_settings
+											|| g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings
 											|| ((child5 = 3 * self->get_total_hp_plus_shields() / 4, self->get_current_life_ingame() > child5)
 												|| child3 != UnitId::ProtossDidact && child3 != UnitId::TerranWraith && child3 != UnitId::ZergMutalisk
 												|| !helper::ai_transport_action(self))
@@ -371,7 +371,7 @@ LABEL_37:
 				GuardAi* guardAI = (GuardAi*)unit->unit_ai;
 				if (!guardAI
 				  || helper::unit_is_active_transport(unit)
-				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player].AI_Flags.is_use_map_settings))
+				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player].ai_flags.is_use_map_settings))
 				{
 					continue;
 				}
@@ -460,7 +460,7 @@ LABEL_37:
 			}
 		}
 
-		if (g_aiscript_controller[region->player].AI_Flags.is_use_map_settings)
+		if (g_aiscript_controller[region->player].ai_flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
 			s32 v9 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + v8);
@@ -474,7 +474,7 @@ LABEL_37:
 		}
 
 		u32 air_strength = region->air_strength_enemy;
-		if (!(g_aiscript_controller[region->player].AI_Flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player].ai_flags.is_use_map_settings))
 		{
 			air_strength += air_strength >> 1;
 		}
@@ -484,7 +484,7 @@ LABEL_37:
 		}
 
 		u32 ground_strength = region->ground_strength_enemy;
-		if (!(g_aiscript_controller[region->player].AI_Flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player].ai_flags.is_use_map_settings))
 		{
 			ground_strength += ground_strength >> 1;
 		}
@@ -753,7 +753,7 @@ LABEL_37:
 				AiRegion* playerRegions = g_ai_region_captains[unit->player];
 				char regionState = playerRegions[regionId].state;
 				AiRegion* region = &playerRegions[regionId];
-				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->captain_flags & 0x20))
+				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20))
 				{
 					result = 1;
 				}
@@ -902,7 +902,7 @@ return 0;
 						}
 						case UnitId::ZergCreepColony:
 						{
-							if (!g_aiscript_controller[player].AI_Flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
+							if (!g_aiscript_controller[player].ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
 							{
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
@@ -2069,7 +2069,7 @@ return 0;
 	{
 		if (victim->unit_ai)
 		{
-			g_aiscript_controller[victim->player].AI_Flags.is_secure_finished;
+			g_aiscript_controller[victim->player].ai_flags.is_secure_finished;
 			UnitAi* victim_ai = victim->unit_ai;
 			AiRegion* victim_region = 0;
 			if (victim_ai->type == AiType::Military)
@@ -2298,7 +2298,7 @@ return 0;
 			} break;
 			case UnitId::ZergCreepColony:
 			{
-				if (g_aiscript_controller[player_var].AI_Flags.spread_creep)
+				if (g_aiscript_controller[player_var].ai_flags.spread_creep)
 				{
 					if (get_bunker_placement_position(player_var, (u32*)&player))
 					{

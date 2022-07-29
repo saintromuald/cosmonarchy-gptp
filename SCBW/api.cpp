@@ -2076,7 +2076,7 @@ namespace scbw
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::ai_set_region_type(RegionState::Defending, ai_region);
+				helper::ai_assign_military_to_region(RegionState::Defending, ai_region);
 				if (ai_region->defense_priority_add < priority) {
 					ai_region->defense_priority_add = priority;
 				}
