@@ -5942,6 +5942,7 @@ namespace helper
 			MOV bullet, EAX
 			POPAD
 		}
+
 		return bullet;
 	}
 

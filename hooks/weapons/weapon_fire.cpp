@@ -47,6 +47,16 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	return true;
 }
 
+Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
+	if (bullet && source) {
+		u32 cooldown = helper::get_weapon_cooldown(source, weapon_id);
+		source->ground_weapon_cooldown = cooldown;
+		source->air_weapon_cooldown = cooldown;
+	}
+	return bullet;
+}
+
 namespace
 {
 	typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
@@ -70,7 +80,7 @@ namespace hooks
 			posY = attacker->get_y();
 		}
 		auto newAngle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		helper::create_bullet(weapon_id, attacker, posX, posY, attacker->player, newAngle);
+		create_bullet_and_apply_cooldown(weapon_id, attacker, posX, posY, attacker->player, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
 			scbw::do_deconstruction_damage(attacker, weapon_id, false);
@@ -136,12 +146,6 @@ namespace hooks
 		{
 			return;
 		}
-		// TODO: Put this code somewhere.
-		/*
-		u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
-		unit->ground_weapon_cooldown = cooldown;
-		unit->air_weapon_cooldown = cooldown;
-		*/
 		UnitExt* unitExt = get_unit_ext(unit);
 		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::DamageFactor[weapon_id] + 1;
 		unitExt->values[ValueAI_PreventTargeting] = 0;
@@ -327,7 +331,7 @@ namespace hooks
 						auto rotate = unitExt->values[ValueSalamanderAtkPos];
 						if (rotate == 1)
 						{
-							helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+							create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						}
 						else
 						{
@@ -388,7 +392,7 @@ namespace hooks
 					} break;
 					default:
 					{
-						helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+						create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
@@ -507,7 +511,7 @@ namespace hooks
 						}
 						bullet->source_unit->order_target.unit = target;
 						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
-						auto newBullet = helper::create_bullet(WeaponId::ArchitectDispersiveSalvo,
+						auto newBullet = create_bullet_and_apply_cooldown(WeaponId::ArchitectDispersiveSalvo,
 							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, newAngle);
 						if (newBullet)
 						{

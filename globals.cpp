@@ -3,6 +3,7 @@
 #include "hooks/cosmonarchy_finder.h"
 #include "hooks/limits/attack_extender.h"
 #include "hooks/weapons/weapon_damage.h"
+#include "hooks/weapons/weapon_fire.h"
 #include <algorithm>
 #include <unordered_set>
 #include <Utils/captivating_claws.h>
@@ -1408,7 +1409,7 @@ namespace scbw
 		unit_ext->values[value_id] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
+		Bullet* bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
 		if (bullet && unit_ext->values[value_id] < fake_amount)
 		{
 			bullet->hit_flags |= 0x1;
