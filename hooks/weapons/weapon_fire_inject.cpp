@@ -261,6 +261,34 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) use_weapon_iscript_wrapper() { // 00476C90
+		static s32 result;
+		static Unit* unit;
+		static u8 weapon_id;
+		u32 attack_type;
+		static char iscript_anim;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV iscript_anim, AL
+			POP EAX
+			MOV attack_type, EDI
+			MOV weapon_id, BL
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::use_weapon_iscript(unit, weapon_id, attack_type, iscript_anim);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 extern const u32 Func_FireUnitWeapon;
@@ -280,5 +308,6 @@ namespace hooks
 	//	jump_patch(bullet_behavior_reassign_wrapper,		0x00488D50, 1);
 		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
+		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 	}
 }

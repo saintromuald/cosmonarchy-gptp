@@ -30,6 +30,7 @@ namespace hooks
 		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
 		}
+
 		if (scbw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::HoldingPosition;
 			if (unit->subunit) {
@@ -41,9 +42,9 @@ namespace hooks
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
-			} else if (!unit->main_order_timer) {
-				//unit->main_order_timer = 15;
-					
+			}
+			else if (!unit->main_order_timer) {
+			//	unit->main_order_timer = 15;
 				Unit* target = unit->order_target.unit;
 				if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 					if (unit->connected_unit) {

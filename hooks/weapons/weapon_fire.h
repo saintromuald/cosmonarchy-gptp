@@ -19,6 +19,7 @@ namespace hooks
 	void progress_bullet_frames();																				// 0048C3D0
 	void bullet_behavior_reassign(Bullet* bullet);																// 0048BD50
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0
+	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim);						// 00476C90
 
 	void inject_weapon_fire_hooks();
 }
