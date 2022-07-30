@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <hooks/byte_operations_utils.h>
 #include <cassert>
+#include "weapon_fire.h"
 
 namespace hooks
 {
@@ -280,6 +281,8 @@ namespace hooks
 			if (attacker->id != UnitId::ProtossCabalist) {
 				scbw::decloak_proc(attacker);
 			}
+
+			apply_cooldown(attacker, weapon_id);
 		}
 	}
 

@@ -49,12 +49,8 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 
 void apply_cooldown(Unit* unit, u8 weapon_id) {
 	u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
-	if (units_dat::GroundWeapon[unit->id] == weapon_id) {
-		unit->ground_weapon_cooldown = cooldown;
-	}
-	if (units_dat::AirWeapon[unit->id] == weapon_id) {
-		unit->air_weapon_cooldown = cooldown;
-	}
+	unit->ground_weapon_cooldown = cooldown;
+	unit->air_weapon_cooldown = cooldown;
 }
 
 Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
@@ -1515,43 +1511,32 @@ namespace hooks
 	}
 
 	// Hooked to remove randomization and move cooldown handling. -Pr0nogo
-	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim) // 00476C90
-	{
-		if (weapon_id == WeaponId::None)
-		{
-			return 0;
+	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim) { // 00476C90
+		if (weapon_id == WeaponId::None) {
+			return false;
 		}
-		u8 typed_cooldown = *(&unit->main_order_timer + attack_type);
-		if (typed_cooldown)
-		{
-			if (unit->order_queue_timer > typed_cooldown - 1)
-			{
-				unit->order_queue_timer = typed_cooldown - 1;
+		u8 cooldown = attack_type == 1 ? unit->ground_weapon_cooldown : unit->air_weapon_cooldown;
+		if (cooldown) {
+			if (unit->order_queue_timer > cooldown - 1) {
+				unit->order_queue_timer = cooldown - 1;
 			}
-			return 0;
+			return false;
 		}
-		if (!helper::is_ready_to_attack(unit, weapon_id))
-		{
-			return 0;
+		if (!helper::is_ready_to_attack(unit, weapon_id)) {
+			return false;
 		}
 
-		unit->movement_flags |= 8u;
+		unit->movement_flags |= MovementFlags::StartingAttack;
+
 		// Previously had randomized values and cooldown handling.
-		u8 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
-		*(&unit->main_order_timer + attack_type) = cooldown;
-		if (attack_type == 1)
-		{
-			unit->air_weapon_cooldown = cooldown;
-		}
-		else if (attack_type == 2)
-		{
-			unit->ground_weapon_cooldown = cooldown;
-		}
+		// Now applied in fire bullet and attack melee.
+		//u8 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+		//unit->ground_weapon_cooldown = cooldown;
+		//unit->air_weapon_cooldown = cooldown;
 
-		for (Image* i = unit->sprite->images.head; i; i = i->link.next)
-		{
-			helper::play_image_iscript(i, iscript_anim);
+		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+			helper::play_image_iscript(image, iscript_anim);
 		}
-		return 1;
+		return true;
 	}
 }

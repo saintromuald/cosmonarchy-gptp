@@ -193,6 +193,7 @@ namespace hooks
 		*u32_0064DEB0 = 0;
 
 		// Previously had random delays here.
+		// Now applied in fire bullet and attack melee.
 		//cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 		//unit->ground_weapon_cooldown = cooldown;
 		//unit->air_weapon_cooldown = cooldown;
