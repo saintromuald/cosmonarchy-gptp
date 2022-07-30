@@ -109,11 +109,20 @@ namespace hooks {
 					case UnitId::ProtossZealot: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ZealotReady01, SoundId::ZealotReady02);
 					} break;
+					case UnitId::ProtossEcclesiast: {
+						ready_sound = helper::get_random_sfx_between(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
+					} break;
 					case UnitId::ProtossLegionnaire: {
 						ready_sound = helper::get_random_sfx_between(SoundId::LegionnaireReady01, SoundId::LegionnaireReady03);
 					} break;
 					case UnitId::ProtossHierophant: {
 						ready_sound = helper::get_random_sfx_between(SoundId::HierophantReady01, SoundId::HierophantReady03);
+					} break;
+					case UnitId::ProtossStarSovereign: {
+						ready_sound = helper::get_random_sfx_between(SoundId::StarSovereignReady01, SoundId::StarSovereignReady03);
+					} break;
+					case UnitId::ProtossPariah: {
+						ready_sound = helper::get_random_sfx_between(SoundId::PariahReady01, SoundId::PariahReady03);
 					} break;
 				}
 				helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);

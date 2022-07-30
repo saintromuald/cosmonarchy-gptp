@@ -269,7 +269,7 @@ void __declspec(naked) pylon_placement_wrapper() { // 00446775
 			JMP jz_address
 		}
 	}
-	if (g_aiscript_controller[player].AI_Flags.spread_creep) {
+	if (g_aiscript_controller[player].ai_flags.spread_creep) {
 		helper::get_bunker_placement_position(player, region_id);
 	}
 	__asm {

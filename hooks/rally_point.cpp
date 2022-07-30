@@ -388,9 +388,9 @@ namespace hooks
 			return OrderId::Move;
 		}
 
-		if (unit->id == UnitId::ZergMatraleth
+		if  (unit->id == UnitId::ZergMatraleth
 		&& !(target_unit->status & UnitStatus::Invincible)
-		&& helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) == 0)
+		&&   helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) == 0)
 		{
 			return OrderId::InfestMine2;
 		}

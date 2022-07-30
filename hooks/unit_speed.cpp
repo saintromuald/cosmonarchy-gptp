@@ -332,6 +332,21 @@ namespace hooks
 	// Hooked to investigate crashes. -Pr0nogo
 	Unit* set_unit_movement_speed(Unit* unit, u32 speed) // 004951C0
 	{
+		/*
+		   Crash occurs on the very first ASM instruction because "unit" is null. Appears exceedingly rarely.
+		   Call stack from fagguto:
+				0049794A @ sprite_to_iscript_loop (hooked in update_unit_state)
+				0048C405 @ progress_bullet_frames (hooked but disabled in weapon_fire)
+				012C0B93 @ some plugin or windows thing?
+				004D9908 @ game_loop_top (not hooked)
+				004D9A6F @ begin_game (not hooked)
+				004E07FA @ preload_game (not hooked)
+				004E0B20 @ win_main (cannot be hooked?)
+				00404DA5 @ start (not hooked)
+				761C344D 0018FF94 0001:0000344D C:\Windows\syswow64\kernel32.dll
+				77999802 0018FFD4 0001:00029802 C:\Windows\SysWOW64\ntdll.dll
+				779997D5 0018FFEC 0001:000297D5 C:\Windows\SysWOW64\ntdll.dll
+		*/
 		bool speed_is_equal = unit->current_speed_1 == speed;
 		unit->current_speed_2 = speed;
 		if (!speed_is_equal)

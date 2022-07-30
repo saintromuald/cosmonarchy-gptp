@@ -2076,7 +2076,7 @@ namespace scbw
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::ai_set_region_type(RegionState::Defending, ai_region);
+				helper::ai_assign_military_to_region(RegionState::Defending, ai_region);
 				if (ai_region->defense_priority_add < priority) {
 					ai_region->defense_priority_add = priority;
 				}
@@ -2511,7 +2511,7 @@ namespace scbw
 
 			Sprite* sprite = unit->sprite;
 			fprintf(file, "Sprite");
-			fprintf(file, "\tSprite Id: %u", (u32)sprite->sprite_id);
+			fprintf(file, "\tSprite Id: %u", (u32)sprite->id);
 			fprintf(file, "\tVisibility: %u", (u32)sprite->visibility_status);
 		}
 		fclose(file);
@@ -2548,7 +2548,7 @@ namespace scbw
 	}
 
 	u32 get_ground_path_distance_tiles(Point16 a, Point16 b) {
-		return helper::getTileDistance(a.x, a.y, b.x, b.y);
+		return helper::get_tile_distance(a.x, a.y, b.x, b.y);
 	}
 
 	bool order_id_is_aggressive(u32 order_id) {

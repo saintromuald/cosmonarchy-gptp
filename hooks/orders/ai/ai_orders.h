@@ -17,7 +17,7 @@ namespace hooks
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);															// 00438E10
 
 	s32 get_bunker_placement_position(u32 placementId, u32* regionId);													// 004442E0
-	void ai_get_build_location(u32 unit_id, char* placementData, u32 player, Point16 desiredPos, s32 maxRange);		// 004461B0
+	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range);		// 004461B0
 	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag);	// 00443AC0
 	bool ai_check_military_grouping(Unit* unit);																		// 00439550
 	u32 __stdcall ai_remove_different_height(char* placement_data, Point16 desired_pos);								// 004BD0F0
@@ -30,7 +30,7 @@ namespace hooks
 	u8 ai_get_build_order_id(Unit* unit, u32 unit_id);																	// 00434C31
 
 	Unit* ai_find_best_repair_unit(Unit* unit);																			// 00443160
-	s32 ai_scv_repair_controller(Unit* repairer, AiTown* town);															// 00433C70
+	s32 ai_worker_repair_controller(Unit* repairer, AiTown* town);															// 00433C70
 
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount);															// 0045B530
 

@@ -86,6 +86,22 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) sprite_to_iscript_loop_wrapper() // 00497920
+	{
+		static Sprite* sprite;
+		__asm
+		{
+			MOV sprite, ESI
+			PUSHAD
+		}
+		hooks::sprite_to_iscript_loop(sprite);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -98,5 +114,6 @@ namespace hooks
 	//	jump_patch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
 	//	jump_patch(doCloak_Wrapper,							0x0049B440, 5);
 		jump_patch(progress_unit_frame_wrapper,				0x004ECF70, 3);
+		jump_patch(sprite_to_iscript_loop_wrapper,			0x00497920, 0);
 	}
 }

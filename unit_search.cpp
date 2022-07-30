@@ -304,7 +304,7 @@ void update_search_index() {
 
 	// Add corpses
 	for (Thingy* thingy = *first_lone_sprite; thingy; thingy = thingy->next) {
-		if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->sprite_id)) {
+		if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id)) {
 			search_index_add(&corpse_index, thingy->sprite->position, thingy);
 		}
 	}

@@ -4,7 +4,7 @@
 namespace hooks
 {
 	void show_health_bar(Unit* unit);
-	void compile_health_bar(Image* image, Sprite* sprite);
+	void compile_healthbar(Image* image, Sprite* sprite);	// 004D6010
 
 	void inject_hp_bars_hooks();
 

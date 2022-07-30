@@ -429,11 +429,11 @@ LABEL_15:
 					Sprite* sprite = thingy->sprite;
 
 					char color = g_palette_index_reference[25];
-					if (sprite->sprite_id != SpriteId::VespeneRidge
-					&&	sprite->sprite_id != SpriteId::VespeneGeyser
-					&&  sprite->sprite_id != SpriteId::MineralFieldType1
-					&&  sprite->sprite_id != SpriteId::MineralFieldType2
-					&&  sprite->sprite_id != SpriteId::MineralFieldType3) {
+					if (sprite->id != SpriteId::VespeneRidge
+					&&	sprite->id != SpriteId::VespeneGeyser
+					&&  sprite->id != SpriteId::MineralFieldType1
+					&&  sprite->id != SpriteId::MineralFieldType2
+					&&  sprite->id != SpriteId::MineralFieldType3) {
 						if (*g_minimap_state) {
 							if (scbw::is_allied_to(player, sprite->player)) {
 								color = g_palette_index_reference[17];

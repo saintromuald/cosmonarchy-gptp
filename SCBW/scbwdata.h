@@ -873,7 +873,7 @@ SCBW_DATA(u8*, g_player_minimap_colors,	0x00581DD6);
 SCBW_DATA(u8*, g_player_in_game_colors, 0x00581D76);
 
 const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
-SCBW_DATA(List<Sprite>*, unusedSprites, 0x0063FE30);
+SCBW_DATA(List<Sprite>*, g_free_sprites, 0x0063FE30);
 
 struct SpriteTileData {
 	Sprite* tails[256];
@@ -893,7 +893,7 @@ SCBW_DATA(const ImagesDatExtraOverlayLO_Files*, lo_files,			0x0051F2A8);
 SCBW_DATA(const LO_Header* const*,				g_shield_overlays,	0x0052E5C8);
 
 SCBW_DATA(const ColorShiftData*,	g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
-SCBW_DATA(GrpHead* const*,			g_image_grp_graphics,	0x0051CED0);
+SCBW_DATA(GrpHead* const*,			g_image_grp_graphic,	0x0051CED0);
 
 template <typename T>
 struct PlayerFlags {
@@ -1068,6 +1068,11 @@ SCBW_DATA(u32*,				g_game_speed_replay_modifiers,	0x005124D8);
 
 // For play_yes_unit_responses
 SCBW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
+
+// For sprite_to_iscript_loop
+SCBW_DATA(u16*,			g_map_tile_height,					0x0057F1D6);
+SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_begin,	0x00629688);
+SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_end,		0x00629288);
 
 //////////////////////////////////////////////////////////////// @}
 

@@ -115,11 +115,12 @@
 //	#include "hooks/requirements/requirements.h"
 	#include "hooks/interface/extender/selection_extender.h"
 	#include "trigger_system/trigger_hooks.h"
+	#include "hooks/interface/hpbars/hpbars.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
 /// You can also add custom modifications to StarCraft.exe by using:
-///	memoryPatch(address_to_patch, value_to_patch_with);
+///	memory_patch(address_to_patch, value_to_patch_with);
 
 namespace
 {
@@ -196,7 +197,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0049F145 + 4, maxunsigned_2, 2);	// flag
 	memory_patch(0x004E4153 + 4, maxunsigned_2, 2);	// flag
 	memory_patch(0x004E416E + 4, maxunsigned_2, 2);	// flag
-//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2); // ctf create flag, this code doesn't run at all because CTF are spell orders now
+//	memory_patch(0x004E426B + 1, maxunsigned_2, 2); // ctf create flag, this code doesn't run at all because CTF are spell orders now
 	memory_patch(0x004E5F68 + 3, maxunsigned_2, 2);
 	memory_patch(0x004E70E4 + 4, maxunsigned_2, 2);
 	memory_patch(0x004F3A9C + 4, maxunsigned_2, 2);
@@ -205,16 +206,16 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	const u8 none = 0xE4;
 	// TODO: hook parent function and make AI assign different units based on personality
-//	memoryPatch(0x004357FB + 2, &none, sizeof(u8)); // disable AI placing units near bunkers
-//	memoryPatch(0x0043583F + 1, &none, sizeof(u8)); // disable AI placing units near missile turrets
+//	memory_patch(0x004357FB + 2, &none, sizeof(u8)); // disable AI placing units near bunkers
+//	memory_patch(0x0043583F + 1, &none, sizeof(u8)); // disable AI placing units near missile turrets
 
-	// matriarch - pazuzu id hardcode
-	memory_patch(0x0040275A + 2, &none, sizeof(u8));
+	// Matriarch - Pazuzu id hardcode
+	memory_patch(0x0040275A + 2, &none, sizeof(u8)); // Hooked
 	memory_patch(0x0043CF74 + 2, &none, sizeof(u8));
-	memory_patch(0x00455E49 + 3, &none, sizeof(u8));
-	memory_patch(0x00455EC7 + 3, &none, sizeof(u8));
+	memory_patch(0x00455E49 + 3, &none, sizeof(u8)); // Hooked
+	memory_patch(0x00455EC7 + 3, &none, sizeof(u8)); // Hooked
 	memory_patch(0x00475B68 + 2, &none, sizeof(u8));
-	memory_patch(0x004C210A + 2, &none, sizeof(u8));
+	memory_patch(0x004C210A + 2, &none, sizeof(u8)); // Hooked but disabled
 
 	// rhynadon id hardcode
 	memory_patch(0x0042E352 + 1, &none, sizeof(u8));
@@ -232,19 +233,19 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0042F134 + 2, &none, sizeof(u8));
 	memory_patch(0x0042F13A, &jmp, 1); // JA
 	memory_patch(0x0043A602 + 2, &none, sizeof(u8));
-//	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
+//	memory_patch(0x0043A609 + 2, &none, sizeof(u8));
 	memory_patch(0x004558A3 + 2, &none, sizeof(u8));
-//	memoryPatch(0x004558A9 + 2, &none, sizeof(u8));
+//	memory_patch(0x004558A9 + 2, &none, sizeof(u8));
 	memory_patch(0x00455940 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00455946 + 2, &none, sizeof(u8));
+//	memory_patch(0x00455946 + 2, &none, sizeof(u8));
 	memory_patch(0x00455AF2 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00455AF8 + 2, &none, sizeof(u8));
+//	memory_patch(0x00455AF8 + 2, &none, sizeof(u8));
 	memory_patch(0x00473A16 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00473A1C + 2, &none, sizeof(u8));
+//	memory_patch(0x00473A1C + 2, &none, sizeof(u8));
 	memory_patch(0x00473BD6 + 2, &none, sizeof(u8));
-//	memoryPatch(0x00473BE3 + 2, &none, sizeof(u8));
+//	memory_patch(0x00473BE3 + 2, &none, sizeof(u8));
 	memory_patch(0x0047B2C4 + 2, &none, sizeof(u8));
-//	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
+//	memory_patch(0x0047B2CA + 2, &none, sizeof(u8));
 	memory_patch(0x004E3DC4 + 2, &none, sizeof(u8));
 	memory_patch(0x004E3DCA, &jmp, 1); // JA
 	const u8 moveaxpatch[5] = {0xb8,  0x00, 0x00, 0x00, 0x00};
@@ -260,7 +261,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// test for globals
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
-//	memoryPatch(0x004AAF23 + 5, &retn, 1);
+//	memory_patch(0x004AAF23 + 5, &retn, 1);
 
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
@@ -270,21 +271,20 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::unitsDatWrapperPatches();
 
 	// arbiter attack hardcode
-
 	/*
 	nops(0x0043AEE0, 10);
 	nops(0x0043CF89, 4);
-	memoryPatch(0x0043CF8D, &jmp, 1);
+	memory_patch(0x0043CF8D, &jmp, 1);
 	nops(0x0047681B, 5);
-	memoryPatch(0x00476820, &jmp, 1);
+	memory_patch(0x00476820, &jmp, 1);
 	nops(0x00476E67, 6);
 	nops(0x00477AB7, 5);
-	memoryPatch(0x00477ABC, &jmp, 1);
+	memory_patch(0x00477ABC, &jmp, 1);
 	nops(0x00477E09, 5);
 	nops(0x00478613, 5);
 	nops(0x00478613, 5);
 	nops(0x0048B0A1, 5);
-	memoryPatch(0x0048B0A6, &jmp, 1);
+	memory_patch(0x0048B0A6, &jmp, 1);
 	*/
 
 	memory_patch(0x00477AB7 + 4, &none, 1);
@@ -308,11 +308,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	u8 patchLastUnit[] = {0xE4};
 	// allow pissed/yes sounds for >= Command Center
-	// memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
+	// memory_patch(0x0048EA20 + 2, patchLastUnit, 1);
 	// hook required
 	// nops(0x0048EAB0, 5);
 
-	// bengalaas id hardcode
+	// Bengalaas id hardcode
 	memory_patch(0x0043157A + 2, patchLastUnit, 1);
 	memory_patch(0x00431B3D + 2, patchLastUnit, 1);
 	memory_patch(0x00437E11 + 2, patchLastUnit, 1);
@@ -321,7 +321,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7CF + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE4E + 2, patchLastUnit, 1);
 
-	// scantid id hardcode
+	// Scantid id hardcode
 	memory_patch(0x0043158C + 2, patchLastUnit, 1);
 	memory_patch(0x00431B4F + 2, patchLastUnit, 1);
 	memory_patch(0x00437E23 + 2, patchLastUnit, 1);
@@ -330,7 +330,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7E1 + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE58 + 2, patchLastUnit, 1);
 
-	// ragnasaur id hardcode
+	// Ragnasaur id hardcode
 	memory_patch(0x00431580 + 2, patchLastUnit, 1);
 	memory_patch(0x00431B43 + 2, patchLastUnit, 1);
 	memory_patch(0x00437E17 + 2, patchLastUnit, 1);
@@ -339,7 +339,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7D5 + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE53 + 2, patchLastUnit, 1);
 
-	// kakaru id hardcode
+	// Kakaru id hardcode
 	memory_patch(0x00431586 + 2, patchLastUnit, 1);
 	memory_patch(0x00431B49 + 2, patchLastUnit, 1);
 	memory_patch(0x00437E1D + 2, patchLastUnit, 1);
@@ -350,7 +350,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047C476 + 4, patchLastUnit, 1);
 	memory_patch(0x004CBE5D + 2, patchLastUnit, 1);
 
-	// ursadon id hardcode
+	// Ursadon id hardcode
 	memory_patch(0x00431592 + 2, patchLastUnit, 1);
 	memory_patch(0x00431B55 + 2, patchLastUnit, 1);
 	memory_patch(0x00437E29 + 2, patchLastUnit, 1);
@@ -359,7 +359,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7E7 + 2, patchLastUnit, 1);
 	memory_patch(0x004CBE62 + 2, patchLastUnit, 1);
 
-	// warbringer id hardcode
+	// Warbringer id hardcode
 	memory_patch(0x004F6C1C + 2, patchLastUnit, 1);
 	memory_patch(0x004F6578 + 2, patchLastUnit, 1);
 	memory_patch(0x004F656B + 2, patchLastUnit, 1);
@@ -405,7 +405,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0040149A + 2, patchLastUnit, 1);
 
 	// Mind Tyrant - energy of controlled Mind Tyrants is no longer set to 0
-//	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
+//	memory_patch(0x004F6938 + 4, patchLastUnit, 1);
 
 	nops(0x0049EEBD, 0xa); // disable beacon collision hardcode
 //	u8 p8a = { 0x8a };
@@ -425,15 +425,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// DarkenedFantasies, start
 	// Race icons frame color fix (function score_screen 004B4AF0)
-	memory_patch(0x004B4C31, (u16)0xB0);		// MOV AL, 00 (null-terminate "tminimap.pcx" string (0x005032F8))
-	memory_patch(0x004B4C33, (u8)0x68);			// PUSH...
-	memory_patch(0x004B4C34, (u32)0x100);		// ...00 00 01 00 (change score screen tminimap.pcx buffer size from 12 to 256 (0x0059B730))
+	memory_patch(0x004B4C31, (u16)0xB0);							// MOV AL, 00 (null-terminate "tminimap.pcx" string (0x005032F8))
+	memory_patch(0x004B4C33, (u8)0x68);								// PUSH...
+	memory_patch(0x004B4C34, (u32)0x100);							// ...00 00 01 00 (change score screen tminimap.pcx buffer size from 12 to 256 (0x0059B730))
 
 	// Score fill color fix (function gluscore_score_fill_color 004B3A40)
-	memory_patch(0x004B3B11, (u8)0x8B);			// MOV ECX, [EBP - 0xC], formerly CL
-	call_patch(hooks::sub_4EF710, 0x004B3B23);	// Redirect to the patched subroutines.
-	memory_patch(0x004B3B49, (u8)0x8B);			// MOV ECX, [EBP - 0x10], formerly CL
-	call_patch(hooks::sub_4EF710, 0x004B3B4D);	// Redirect to the patched subroutines.
+	memory_patch(0x004B3B11, (u8)0x8B);								// MOV ECX, [EBP - 0xC], formerly CL
+	call_patch(hooks::sub_4EF710, 0x004B3B23);						// Redirect to the patched subroutines.
+	memory_patch(0x004B3B49, (u8)0x8B);								// MOV ECX, [EBP - 0x10], formerly CL
+	call_patch(hooks::sub_4EF710, 0x004B3B4D);						// Redirect to the patched subroutines.
 
 	// Move race icons from iScore.grp into new grp.
 	jump_patch(hooks::loadMenu_gluScore_pIcons, 0x004B4B80, 13);	// Insert code for loading the pIcons.grp file.
@@ -441,6 +441,38 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004B38BD, (u8)0x90);
 	memory_patch(0x004B3A63, (u32)0x59B728);						// New LoadGraphic address for iScore.grp; pIcons.grp gets the original iScore address.
 	memory_patch(0x004B4BE4, (u32)0x59B728);
+
+	// Remove offsets from iscore.grp.
+	memory_patch(0x004B3AC1, (u16)0x9010);							// Remove +6 frame offset for score bar fills.
+	memory_patch(0x004B3AC5, (u8)0x3);								// Remove +9 frame offset for score bar borders.
+
+	// Extend font colors
+	memory_patch(0x00417A41, &tFontGame_ImageData[0x1]);			// Update buffer size and redirect to the expanded buffer for "sub_417A10".
+	memory_patch(0x00417A5A, &tFontGame_ImageData[0x10]);
+	memory_patch(0x00417AAA, &tFontGame_ImageData[0x11]);
+	memory_patch(0x00417B05, &tFontGame_ImageData[0x12]);
+	memory_patch(0x00417B61, &tFontGame_ImageData[0x13]);
+	memory_patch(0x0041FB41, &tFontGame_ImageData);					// ...for "SetFontHandle".
+	memory_patch(0x004BA127, (u32)0x140);							// ...for "get_tFontGam_PCX_0".
+	memory_patch(0x004BA12C, &tFontGame_ImageData);
+	memory_patch(0x004BA137, &tFontGame_ImageData);
+	memory_patch(0x004BA167, (u32)0x140);							// ...for "get_tFontGam_PCX".
+	memory_patch(0x004BA16C, &tFontGame_ImageData);
+	memory_patch(0x004BA177, &tFontGame_ImageData);
+	memory_patch(0x004D48C9, (u32)0x140);							// ...for "titleInit".
+	memory_patch(0x004D48CE, &tFontGame_ImageData);
+	memory_patch(0x004D48E0, &tFontGame_ImageData);
+	memory_patch(0x004D8A34, (u32)0x140);							// ...for "creditsSetFontColorFromFile".
+	memory_patch(0x004D8A67, &tFontGame_ImageData);
+	memory_patch(0x004DD8C8, (u32)0x140);							// ...for "loadTFontPcx".
+	memory_patch(0x004DDB71, &tFontGame_ImageData);					// ...for "registerMenuFunctions".
+	jump_patch(hooks::write_font_apply_color_patch, 0x0041FDC6, 54);
+	jump_patch(hooks::get_color_handle, 0x0041F610, 4);
+	memory_patch(0x004200B6, (u8)0x2);								// Make <0B> tag a valid color, and add gap offset.
+	memory_patch(0x004200B9, (u32)0x04040404);						// Add gap offsets for <0E> to <11>.
+	memory_patch(0x004200BF, (u32)0x06060606);						// Make <14> and <1A> tags valid colors, and add gap offsets.
+	memory_patch(0x004200C3, (u32)0x06060606);
+	memory_patch(0x004200C7, (u32)0x06060606);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start
@@ -578,7 +610,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_harvest_resource();
 
 	hooks::inject_rally_hooks();
-	//hooks::injectInfestationHooks();
+	hooks::inject_infestation_hooks();
 	//hooks::inject_receive_command_hooks();
 
 	hooks::inject_recharge_shields_hooks();
@@ -640,6 +672,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_cmdrecv_siege_tank_hooks();
 	hooks::inject_selection_extender_hooks();
 	inject_trigger_system_hooks();
+	hooks::inject_hp_bars_hooks();
 
 	return TRUE;
 }

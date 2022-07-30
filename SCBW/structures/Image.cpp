@@ -54,7 +54,7 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 	assert(this);
 	this->id = imageId;
 
-	//	this->grp_file = g_image_grp_graphics[imageId];
+	//	this->grp_file = g_image_grp_graphic[imageId];
 	this->grp_file = reinterpret_cast<GrpHead*>(scbw::get_image_data(ImagesDatEntries::ImagePtr, imageId));
 	//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
 	this->flags = ((scbw::get_image_data(ImagesDatEntries::Turnable, imageId) & 1) << 3) |

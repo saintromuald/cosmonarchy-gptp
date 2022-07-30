@@ -668,7 +668,7 @@ struct AiRegion
 	/*0x05*/  u8  state;
 	/*0x06*/  u8  defense_priority_add;
 	/*0x07*/  u8  defend_timeout;
-	/*0x08*/  u8  captain_flags;
+	/*0x08*/  u8  flags;
 	/*0x09*/  u8  field_9;
 	/*0x0A*/  u16 ground_unit_count;
 	/*0x0C*/  u16 ground_strength_needed;
@@ -909,12 +909,12 @@ struct AI_Main
 		u16 has_strongest_ground_army : 1;	/*0200*/ // Set if the AI's ground army is stronger than the total strength of the strongest enemy force
 		u16 upgrades_finished : 1;			/*0400*/
 		u16 target_expansion : 1;			/*0800*/
-	} AI_Flags;
+	} ai_flags;
 	u16 ai_panic_block;					/*021A*/
 	u16 ai_max_force;					/*021C*/
 	u16 ai_attack_group;				/*021E*/
 	u16 wanted_unit;					/*0220*/
-	u8	dc222;							/*0222*/
+	u8	default_min;					/*0222*/
 	u8	defense_priority_base;			/*0223*/
 	u32 previous_building_hit_second;	/*0224*/
 	u32 last_attack_seconds;			/*0228*/
@@ -933,7 +933,7 @@ struct AI_Main
 	u32 ai_defenseuse_aa[10];			/*03C8*/
 	u8 unit_build_limits[0xe4];			/*03F0*/
 	Unit* main_medic;					/*04D4*/
-	u8 unk4d8[0x10];					/*04D8*/
+	u8 gen_command_location[0x10];		/*04D8*/
 };
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 

@@ -102,7 +102,7 @@ namespace hooks
                                         v28 += fileSize;
                                     }
                                     v8 = v25;
-                                    v9 = helper::getSoundDuration(v25);
+                                    v9 = helper::get_sound_duration(v25);
                                     v10 = v32;
                                     *(v8 + 8) = v9;
                                     if (*(v10 - 10) & 8)

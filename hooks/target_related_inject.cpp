@@ -293,7 +293,7 @@ namespace hooks
 	//	nops(0x004EB316, 2);
 
 	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x00455E00, 1);
-	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x004C20C0, 0);
+	//	jump_patch(cmdrecv_hold_position_wrapper,					0x004C20C0, 0);
 	//	jump_patch(unit_can_see_cloaked_target_wrapper,				0x00401D60, 4);
 	//	jump_patch(is_target_visible_wrapper,						0x004E5E30, 4);
 	//	jump_patch(is_unit_visible_wrapper,							0x004E5DB0, 1);
