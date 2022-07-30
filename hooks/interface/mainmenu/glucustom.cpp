@@ -107,24 +107,24 @@ namespace hooks
 			JB      short loc_41D16F
 			XOR		AL, AL
 
-			loc_41D16F :*/
+		loc_41D16F :*/
 			MOVZX   EAX, AX//formerly AL
 			MOVZX   SI, byte ptr[ECX + EAX * 0x8 + 0x6]
 			LEA     EAX, [ECX + EAX * 0x8 + 0x6]
 			PUSH    EDI
 			MOV     EDI, [EBP + 0x8]
-			MOV[EDI], SI
+			MOV		[EDI], SI
 			MOVZX   SI, byte ptr[EAX + 0x1]
 			MOV     EDI, [EBP + 0xC]
-			MOV[EDI], SI
+			MOV		[EDI], SI
 			MOV     SI, [ECX + 0x2]
 			MOV     EDI, [EBP + 0x10]
-			MOV[EDI], SI
+			MOV		[EDI], SI
 			MOV     SI, [ECX + 0x4]
 			MOV     EDI, [EBP + 0x14]
-			MOV[EDI], SI
+			MOV		[EDI], SI
 			MOVZX   SI, byte ptr[EAX + 0x3]
-			MOV[EDX + 0x2], SI
+			MOV		[EDX + 0x2], SI
 			MOVZX   SI, byte ptr[EAX + 0x2]
 			MOV     EAX, [EAX + 0x4]
 			TEST    EAX, EAX
@@ -133,13 +133,13 @@ namespace hooks
 			AND		EAX, 0x7FFFFFFF
 			ADD     ESI, 0x100
 
-			loc_41D1C3 :
+		loc_41D1C3 :
 			ADD     EAX, ECX
-				MOV[EDX], SI
-				MOV[EDX + 0x4], EAX
-				POP     ESI
-				POP     EBP
-				RETN    0x10
+			MOV		[EDX], SI
+			MOV		[EDX + 0x4], EAX
+			POP     ESI
+			POP     EBP
+			RETN    0x10
 		}
 	}
 
@@ -154,7 +154,7 @@ namespace hooks
 			PUSH    EAX
 			LEA     ECX, [EBP + 0xA]
 			PUSH    ECX
-			MOV ECX, ds: [0x006D5E30]
+			MOV		ECX, ds: [0x006D5E30]
 			LEA     EDX, [EBP - 0xC]
 			PUSH    EDX
 			LEA     EAX, [EBP - 0x8]
@@ -171,65 +171,65 @@ namespace hooks
 			MOVSX   EAX, word ptr[ESI]
 			MOVZX   ECX, DX
 			CMP     ECX, EAX
-			MOV[EBP - 0x10], CX
+			MOV		[EBP - 0x10], CX
 			JG      short loc_4EF64A
-			MOV[EBP - 0x10], AX
+			MOV		[EBP - 0x10], AX
 
-			loc_4EF64A :
+		loc_4EF64A :
 			MOVSX   EAX, word ptr[ESI + 0x2]
-				PUSH    EBX
-				MOVZX   EBX, DI
-				CMP     EBX, EAX
-				MOV[EBP - 0xE], BX
-				JG      short loc_4EF65E
-				MOV[EBP - 0xE], AX
+			PUSH    EBX
+			MOVZX   EBX, DI
+			CMP     EBX, EAX
+			MOV		[EBP - 0xE], BX
+			JG      short loc_4EF65E
+			MOV		[EBP - 0xE], AX
 
-				loc_4EF65E :
+		loc_4EF65E :
 			MOVZX   EAX, word ptr[EBP + 0xA]
-				ADD     EAX, ECX
-				MOVSX   ECX, word ptr[ESI + 0x4]
-				CMP     EAX, ECX
-				MOV     word ptr[EBP - 0xC], AX
-				JL      short loc_4EF674
-				MOV     word ptr[EBP - 0xC], CX
+			ADD     EAX, ECX
+			MOVSX   ECX, word ptr[ESI + 0x4]
+			CMP     EAX, ECX
+			MOV     word ptr[EBP - 0xC], AX
+			JL      short loc_4EF674
+			MOV     word ptr[EBP - 0xC], CX
 
-				loc_4EF674 :
+		loc_4EF674 :
 			MOVZX   ECX, word ptr[EBP - 0x4]
-				LEA     EAX, [ECX + EBX]
-				MOVSX   ECX, word ptr[ESI + 0x6]
-				CMP     EAX, ECX
-				POP     EBX
-				MOV     word ptr[EBP - 0xC + 0x2], AX
-				JL      short loc_4EF68C
-				MOV     word ptr[EBP - 0xC + 0x2], CX
+			LEA     EAX, [ECX + EBX]
+			MOVSX   ECX, word ptr[ESI + 0x6]
+			CMP     EAX, ECX
+			POP     EBX
+			MOV     word ptr[EBP - 0xC + 0x2], AX
+			JL      short loc_4EF68C
+			MOV     word ptr[EBP - 0xC + 0x2], CX
 
-				loc_4EF68C :
+		loc_4EF68C :
 			MOVSX   EAX, word ptr[EBP - 0xE]
-				MOVSX   ECX, DI
-				SUB     EAX, ECX
-				MOV     ECX, 0x0
-				SETS    CL
-				MOVSX   EDX, DX
-				DEC     ECX
-				AND		ECX, EAX
-				MOVSX   EAX, word ptr[EBP - 0x10]
-				SUB     EAX, EDX
-				MOV     EDX, 0x0
-				SETS    DL
-				DEC     EDX
-				AND		EAX, EDX
-				MOV     EDX, [EBP + 0x14]
-				PUSH    EDX
-				PUSH    ECX
-				PUSH    EAX
-				LEA     EAX, [EBP - 0x18]
-				PUSH    EAX
-				LEA     ECX, [EBP - 0x10]
-				CALL	DrawDialogImage
-				POP     EDI
-				MOV     ESP, EBP
-				POP     EBP
-				RETN    0x10
+			MOVSX   ECX, DI
+			SUB     EAX, ECX
+			MOV     ECX, 0x0
+			SETS    CL
+			MOVSX   EDX, DX
+			DEC     ECX
+			AND		ECX, EAX
+			MOVSX   EAX, word ptr[EBP - 0x10]
+			SUB     EAX, EDX
+			MOV     EDX, 0x0
+			SETS    DL
+			DEC     EDX
+			AND		EAX, EDX
+			MOV     EDX, [EBP + 0x14]
+			PUSH    EDX
+			PUSH    ECX
+			PUSH    EAX
+			LEA     EAX, [EBP - 0x18]
+			PUSH    EAX
+			LEA     ECX, [EBP - 0x10]
+			CALL	DrawDialogImage
+			POP     EDI
+			MOV     ESP, EBP
+			POP     EBP
+			RETN    0x10
 		}
 	}
 
@@ -244,11 +244,11 @@ namespace hooks
 			MOV     ECX, [EAX]
 			MOV     EAX, [EAX + 0x4]
 			PUSH    ESI
-			MOV[EBP - 0xC], EAX
+			MOV		[EBP - 0xC], EAX
 			MOV     EAX, [EBP + 0x14]
 			ADD     EDX, ECX
 			PUSH    EAX
-			MOV[EBP - 0x10], ECX
+			MOV		[EBP - 0x10], ECX
 			MOV     ECX, [EBP + 0xC]
 			MOV     word ptr[EBP - 0xC], DX
 			MOV     EDX, [EBP + 0x8]
@@ -260,71 +260,71 @@ namespace hooks
 			MOV     ECX, [EBP + 0x8]
 			MOV     ESI, [EBP + 0x10]
 			LEA     EAX, [ECX + EDI]
-			MOV[EBP - 0x8], EAX
+			MOV		[EBP - 0x8], EAX
 			MOV     EAX, ESI
 			SUB     EAX, EDI
-			INC     BX//formerly BL
+			INC     BX // formerly BL
 			DEC     EAX
 			CDQ
 			IDIV    EDI
 			SUB     word ptr[EBP - 0xC], DI
-			MOV[EBP - 0x4], BX//formerly BL
+			MOV		[EBP - 0x4], BX	// formerly BL
 			TEST    EAX, EAX
 			JLE     short loc_4EF78F
 			MOV     EBX, EAX
 
-			loc_4EF766 :
-				MOV     EAX, [EBP + 0x14]
-				MOV     ECX, [EBP + 0xC]
-				MOV     EDX, [EBP - 0x8]
-				PUSH    EAX
-				MOV     EAX, dword ptr[EBP - 0x4]
-				PUSH    ECX
-				PUSH    EDX
-				PUSH    EAX
-				LEA     ESI, [EBP - 0x10]
-				CALL    sub_4EF600
-				MOV     ECX, [EBP - 0x8]
-				ADD     ECX, EDI
-				DEC     EBX
-				MOV[EBP - 0x8], ECX
-				JNZ     short loc_4EF766
-				MOV     ECX, [EBP + 0x8]
-				MOV     ESI, [EBP + 0x10]
+		loc_4EF766 :
+			MOV     EAX, [EBP + 0x14]
+			MOV     ECX, [EBP + 0xC]
+			MOV     EDX, [EBP - 0x8]
+			PUSH    EAX
+			MOV     EAX, dword ptr[EBP - 0x4]
+			PUSH    ECX
+			PUSH    EDX
+			PUSH    EAX
+			LEA     ESI, [EBP - 0x10]
+			CALL    sub_4EF600
+			MOV     ECX, [EBP - 0x8]
+			ADD     ECX, EDI
+			DEC     EBX
+			MOV		[EBP - 0x8], ECX
+			JNZ     short loc_4EF766
+			MOV     ECX, [EBP + 0x8]
+			MOV     ESI, [EBP + 0x10]
 
-			loc_4EF78F :
-				MOV     DX, [EBP - 0x4]//formerly DL
-				ADD     word ptr[EBP - 0xC], DI
-				INC     DX//formerly DL
-				CMP     ESI, EDI
-				MOV[EBP - 0x4], DX//formerly DL
-				JL      short loc_4EF7CB
-				MOVSX   EDX, word ptr[EBP - 0x10]
-				LEA     EAX, [ECX + EDI]
-				CMP     EDX, EAX
-				MOV     word ptr[EBP - 0x10], DX
-				JG      short loc_4EF7B2
-				MOV     word ptr[EBP - 0x10], AX
+		loc_4EF78F :
+			MOV     DX, [EBP - 0x4] // formerly DL
+			ADD     word ptr[EBP - 0xC], DI
+			INC     DX // formerly DL
+			CMP     ESI, EDI
+			MOV		[EBP - 0x4], DX // formerly DL
+			JL      short loc_4EF7CB
+			MOVSX   EDX, word ptr[EBP - 0x10]
+			LEA     EAX, [ECX + EDI]
+			CMP     EDX, EAX
+			MOV     word ptr[EBP - 0x10], DX
+			JG      short loc_4EF7B2
+			MOV     word ptr[EBP - 0x10], AX
 
-			loc_4EF7B2 :
-				MOV     EDX, [EBP + 0x14]
-				MOV     EAX, [EBP + 0xC]
-				PUSH    EDX
-				SUB     ECX, EDI
-				ADD     ECX, ESI
-				PUSH    EAX
-				PUSH    ECX
-				MOV     ECX, dword ptr[EBP - 0x4]
-				PUSH    ECX
-				LEA     ESI, [EBP - 0x10]
-				CALL    sub_4EF600
+		loc_4EF7B2 :
+			MOV     EDX, [EBP + 0x14]
+			MOV     EAX, [EBP + 0xC]
+			PUSH    EDX
+			SUB     ECX, EDI
+			ADD     ECX, ESI
+			PUSH    EAX
+			PUSH    ECX
+			MOV     ECX, dword ptr[EBP - 0x4]
+			PUSH    ECX
+			LEA     ESI, [EBP - 0x10]
+			CALL    sub_4EF600
 
-			loc_4EF7CB :
-				POP     ESI
-				POP     EBX
-				MOV     ESP, EBP
-				POP     EBP
-				RETN    0x10
+		loc_4EF7CB :
+			POP     ESI
+			POP     EBX
+			MOV     ESP, EBP
+			POP     EBP
+			RETN    0x10
 		}
 	}
 
@@ -356,8 +356,8 @@ namespace hooks
 				MOV		[EDI + 0x4], EAX
 				MOV		[EDI + 0x8], CX
 				PUSH	0x560
-				MOV		[EDI + 0xA], 0x0 // formerly DL, would grab the string's null terminator from the above commented-out line.
-				PUSH	0x005034D8		// PUSH offset 0x005034D8//"Starcraft\SWAR\lang\gluScore.cpp"
+				MOV		[EDI + 0xA], 0x0	// formerly DL, would grab the string's null terminator from the above commented-out line.
+				PUSH	0x005034D8			// PUSH offset 0x005034D8//"Starcraft\SWAR\lang\gluScore.cpp"
 				XOR		EDX, EDX
 				LEA		ECX, [EBP - 0x10C]
 				CALL	LoadGraphic
@@ -366,7 +366,7 @@ namespace hooks
 
 			LOC_4B4B80_iScore :
 				MOV		CL, [EAX + 0x0059B628]
-				MOV[EBP + EAX - 0x10C], CL
+				MOV		[EBP + EAX - 0x10C], CL
 				INC		EAX
 				TEST	CL, CL
 				JNZ		short LOC_4B4B80_iScore
@@ -378,22 +378,22 @@ namespace hooks
 		__asm {
 			CMP		AL, 0x1
 			JNE		offset off_0
-			MOV		EAX, ds: [0x006CE0E8]//<Set savedFontColor to currentFontColor if <01>.
+			MOV		EAX, ds: [0x006CE0E8] // <Set savedFontColor to currentFontColor if <01>.
 			MOV		ds : [0x006CE0C0] , EAX
 			RETN
 
 		off_0 :
-			MOV		ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
+			MOV		ECX, ds : [0x006CE0C0] // Save currentFontColor to savedFontColor.
 			MOV		ds : [0x006CE0E8] , ECX
 			MOVZX	EAX, AL
 			DEC		AL
 			PUSH	EAX
-			CMP		AL, 0xA//Skip if <02> to <0A>.
+			CMP		AL, 0xA // Skip if <02> to <0A>.
 			JB		offset off_2
-			CMP		AL, 0x1F//Go to close gaps if <0B> to <1F>.
+			CMP		AL, 0x1F // Go to close gaps if <0B> to <1F>.
 			JB		offset off_1
-			SUB		AL, 0x75//Close the gap between <1F> and <8F> so we avoid having to insert unused space in tfont.pcx.
-			CMP		AL, 0x24//Decrement 1 more if above <99>.
+			SUB		AL, 0x75 // Close the gap between <1F> and <8F> so we avoid having to insert unused space in tfont.pcx.
+			CMP		AL, 0x24 // Decrement 1 more if above <99>.
 			JB		offset off_2
 			DEC		AL
 			JMP		offset off_2
