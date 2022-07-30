@@ -61,10 +61,10 @@ namespace hooks
 					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 						const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
 						unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
-							unit->get_x() - radius,
-							unit->get_y() - radius,
-							unit->get_x() + radius,
-							unit->get_y() + radius,
+							unit->get_left()   - radius,
+							unit->get_top()    - radius,
+							unit->get_right()  + radius,
+							unit->get_bottom() + radius,
 							unit,
 							[&](Unit* target) {
 							if (scbw::is_allied_to(unit->player, target->player)

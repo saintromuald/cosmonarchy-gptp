@@ -692,7 +692,7 @@ LABEL_42:
 			for (u32 i = 0; i < TransportCap; ++i) {
 				Unit* cargo_unit = attacker->get_loaded_unit(i);
 				if (cargo_unit) {
-					u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[cargo_unit->id] : units_dat::GroundWeapon[cargo_unit->id];
+					u32 weapon = target->status & UnitStatus::InAir ? cargo_unit->get_air_weapon() : cargo_unit->get_ground_weapon();
 					u32 range = hooks::get_max_weapon_range(attacker, weapon, target);
 					if (range > max_range) {
 						max_range = range;
@@ -706,14 +706,12 @@ LABEL_42:
 			return false;
 		}
 
-		u32 weapon = target->status & UnitStatus::InAir ? units_dat::AirWeapon[context->id] : units_dat::GroundWeapon[context->id];
-
+		u32 weapon = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
 		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || attacker->id == UnitId::TerranPhalanxSiegeMode) {
 			if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
 				return false;
 			}
 		}
-
 		return weapon != WeaponId::None;
 	}
 
