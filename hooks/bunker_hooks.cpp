@@ -123,123 +123,86 @@ namespace hooks
 
 	// Ported from public GPTP, and partially-unfucked, to remove randomness from attacks. -Pr0nogo
 	b32 attack_apply_cooldown(Unit* unit) { // 00478B40
-
 		Unit* target = unit->order_target.unit;
-		b32 return_value = 0;
-		if (!target)
-		{
-			return_value = 0;
+		if (!target) {
+			return false;
 		}
-		else
-		{
-			helper::pick_new_target_if_needed(unit);
-			if (!helper::is_unit_visible(unit)
-			||  !unit->can_attack_target(target, true))
-			{
-				return_value = 0;
-			}
-			else
-			{
-				unit->order_target.pt.x = target->sprite->position.x;
-				unit->order_target.pt.y = target->sprite->position.y;
-				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
-				{
-					return_value = 1;
-				}
-				else
-				{
-					u8 weaponId = unit->get_ground_weapon();
-					u8 cooldown = unit->ground_weapon_cooldown;
-					if (target->status & UnitStatus::InAir) {
-						weaponId = units_dat::AirWeapon[unit->id];
-						cooldown = unit->air_weapon_cooldown;
-					}
 
-					if (cooldown != 0) {
-
-						if (unit->order_queue_timer > cooldown - 1)
-						{
-							unit->order_queue_timer = cooldown - 1;
-						}
-						return_value = 1;
-					}
-					else if (unit->movement_flags & MovementFlags::StartingAttack)
-					{
-						return_value = 1;
-					}
-					else
-					{
-
-						u32 distance = helper::get_distance_to_unit(unit, target);
-						u32 range_check = weapons_dat::min_range[weaponId];
-
-						if ((range_check != 0 && distance < range_check)
-						||   distance > unit->get_max_weapon_range(weaponId))
-						{
-							return_value = 0;
-						}
-						else
-						{
-							s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
-							angle = unit->current_direction_1 - angle;
-							if (angle < 0)
-							{
-								angle = angle + 256;
-							}
-							if (angle > 128)
-							{
-								angle = 256 - angle;
-							}
-
-							if (angle > weapons_dat::attack_angle[weaponId])
-							{
-								if (unit->status & UnitStatus::CanTurnAroundToAttack)
-								{
-									unit->order_queue_timer = 0;
-									return_value = 1;
-								}
-								else
-								{
-									return_value = 0;
-								}
-							}
-							else if (unit->status & UnitStatus::CanNotAttack)
-							{
-								return_value = 0;
-							}
-							else
-							{
-								static u32* u32_0064DEB0 = (u32*)0x0064DEB0;
-								if (unit->status & UnitStatus::InBuilding)
-								{
-									helper::create_bunker_attack_overlay(unit);
-								}
-								unit->movement_flags |= MovementFlags::StartingAttack;
-								*u32_0064DEB0 = 0;
-
-								// Previously had random delays here.
-								cooldown = helper::get_weapon_cooldown(unit, weaponId);
-								unit->ground_weapon_cooldown = cooldown;
-								unit->air_weapon_cooldown = cooldown;
-
-								Image* current_image = unit->sprite->images.head;
-								IscriptAnimation::Enum iscript_anim = IscriptAnimation::GndAttkRpt;
-								if (target->status & UnitStatus::InAir)
-								{
-									iscript_anim = IscriptAnimation::AirAttkRpt;
-								}
-								while (current_image)
-								{
-									current_image->play_iscript_animation(iscript_anim);
-									current_image = current_image->link.next;
-								}
-								return_value = 1;
-							}
-						}
-					}
-				}
-			}
+		helper::pick_new_target_if_needed(unit);
+		if (!helper::is_unit_visible(unit) || !unit->can_attack_target(target, true)) {
+			return false;
 		}
-		return return_value;
+
+		unit->order_target.pt.x = target->sprite->position.x;
+		unit->order_target.pt.y = target->sprite->position.y;
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+			return true;
+		}
+
+		u8 weapon_id = unit->get_ground_weapon();
+		u8 cooldown = unit->ground_weapon_cooldown;
+		if (target->status & UnitStatus::InAir) {
+			weapon_id = units_dat::AirWeapon[unit->id];
+			cooldown = unit->air_weapon_cooldown;
+		}
+
+		if (cooldown != 0) { 
+			if (unit->order_queue_timer > cooldown - 1) {
+				unit->order_queue_timer = cooldown - 1;
+			}
+			return true;
+		} 
+		
+		if (unit->movement_flags & MovementFlags::StartingAttack) {
+			return true;
+		}
+
+		u32 distance = helper::get_distance_to_unit(unit, target);
+		u32 range_check = weapons_dat::min_range[weapon_id];
+		if ((range_check != 0 && distance < range_check) || distance > unit->get_max_weapon_range(weapon_id)) {
+			return false;
+		}
+
+		s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+		angle = unit->current_direction_1 - angle;
+		if (angle < 0) {
+			angle = angle + 256;
+		}
+		if (angle > 128) {
+			angle = 256 - angle;
+		}
+
+		if (angle > weapons_dat::attack_angle[weapon_id]) {
+			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
+				unit->order_queue_timer = 0;
+				return true;
+			}
+			return false;
+		}
+		if (unit->status & UnitStatus::CanNotAttack) {
+			return 0;
+		}
+		
+		static u32* u32_0064DEB0 = (u32*)0x0064DEB0;
+		if (unit->status & UnitStatus::InBuilding)
+		{
+			helper::create_bunker_attack_overlay(unit);
+		}
+		unit->movement_flags |= MovementFlags::StartingAttack;
+		*u32_0064DEB0 = 0;
+
+		// Previously had random delays here.
+		//cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+		//unit->ground_weapon_cooldown = cooldown;
+		//unit->air_weapon_cooldown = cooldown;
+
+		IscriptAnimation::Enum iscript_anim = IscriptAnimation::GndAttkRpt;
+		if (target->status & UnitStatus::InAir) {
+			iscript_anim = IscriptAnimation::AirAttkRpt;
+		}
+		for (Image* current_image = unit->sprite->images.head; current_image; current_image = current_image->link.next) {
+			current_image->play_iscript_animation(iscript_anim);
+		}
+		return true;
 	}
 }

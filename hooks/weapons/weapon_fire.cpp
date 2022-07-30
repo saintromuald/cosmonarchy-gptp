@@ -47,12 +47,20 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	return true;
 }
 
+void apply_cooldown(Unit* unit, u8 weapon_id) {
+	u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+	if (units_dat::GroundWeapon[unit->id] == weapon_id) {
+		unit->ground_weapon_cooldown = cooldown;
+	}
+	if (units_dat::AirWeapon[unit->id] == weapon_id) {
+		unit->air_weapon_cooldown = cooldown;
+	}
+}
+
 Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
 	if (bullet && source) {
-		u32 cooldown = helper::get_weapon_cooldown(source, weapon_id);
-		source->ground_weapon_cooldown = cooldown;
-		source->air_weapon_cooldown = cooldown;
+		apply_cooldown(source, weapon_id);
 	}
 	return bullet;
 }
