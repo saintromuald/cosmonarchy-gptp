@@ -424,12 +424,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// iquare, end
 
 	// DarkenedFantasies, start
-	// Race icons frame color fix (function score_screen 004B4AF0)
+	// Race icons frame color fix. (function score_screen 004B4AF0)
 	memory_patch(0x004B4C31, (u16)0xB0);							// MOV AL, 00 (null-terminate "tminimap.pcx" string (0x005032F8))
 	memory_patch(0x004B4C33, (u8)0x68);								// PUSH...
 	memory_patch(0x004B4C34, (u32)0x100);							// ...00 00 01 00 (change score screen tminimap.pcx buffer size from 12 to 256 (0x0059B730))
 
-	// Score fill color fix (function gluscore_score_fill_color 004B3A40)
+	// Score fill color fix. (function gluscore_score_fill_color 004B3A40)
 	memory_patch(0x004B3B11, (u8)0x8B);								// MOV ECX, [EBP - 0xC], formerly CL
 	call_patch(hooks::sub_4EF710, 0x004B3B23);						// Redirect to the patched subroutines.
 	memory_patch(0x004B3B49, (u8)0x8B);								// MOV ECX, [EBP - 0x10], formerly CL
@@ -446,7 +446,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004B3AC1, (u16)0x9010);							// Remove +6 frame offset for score bar fills.
 	memory_patch(0x004B3AC5, (u8)0x3);								// Remove +9 frame offset for score bar borders.
 
-	// Extend font colors
+	// Extend font colors.
 	memory_patch(0x00417A41, &tFontGame_ImageData[0x1]);			// Update buffer size and redirect to the expanded buffer for "sub_417A10".
 	memory_patch(0x00417A5A, &tFontGame_ImageData[0x10]);
 	memory_patch(0x00417AAA, &tFontGame_ImageData[0x11]);
@@ -473,6 +473,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004200BF, (u32)0x06060606);						// Make <14> and <1A> tags valid colors, and add gap offsets.
 	memory_patch(0x004200C3, (u32)0x06060606);
 	memory_patch(0x004200C7, (u32)0x06060606);
+
+	// Enable ESC to skip triggers in campaign mode.
+	memory_patch(0x00489DAF, (u32)0x90909090);
+	memory_patch(0x00489DB3, (u32)0x90909090);
+	memory_patch(0x00489DB7, (u32)0x90909090);
+	memory_patch(0x00489DBB, (u16)0x9090);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start

@@ -320,16 +320,17 @@ namespace hooks
 					helper::display_last_network_error_for_player(unit->player);
 					unit->remove();
 					bStopThere = true;
-				} else { // 0045DB1E
+				} else {
 					helper::update_unit_stats_and_finish_building(worker);
 					helper::update_unit_strength(worker);
 					worker->set_hitpoints(unit->previous_hitpoints * 256);
+					worker->sprite->player = unit->sprite->player;
 					unit->remove();
 					bStopThere = true;
 				}
 			}
 
-			if (!bStopThere) { // 0045DB45
+			if (!bStopThere) {
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy) {
 					thingy->sprite->elevation_level = unit->sprite->elevation_level + 1;

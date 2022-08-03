@@ -55,6 +55,17 @@ namespace
 			RETN 4
 		}
 	}
+
+	const u32 begin_gas_building_6790F = 0x0046790F;
+	void __declspec(naked) begin_gas_building_patch() {
+		__asm
+		{
+			MOV		EDX, [ESI + 0xC]	// unit->sprite
+			MOV		DL, [EDX + 0xA]		// unit->sprite->player
+			MOV		ECX, EBX
+			JMP		begin_gas_building_6790F
+		}
+	}
 }
 
 namespace
@@ -415,6 +426,8 @@ namespace hooks
 		jump_patch(orders_is_morphing_wrapper,											0x0045CD00, 2);
 		jump_patch(orders_zerg_build_self_wrapper,										0x0045D500, 0);
 		jump_patch(cancel_zerg_building_wrapper,										0x0045DA40, 1);
+		jump_patch(begin_gas_building_patch,											0x0046790A);
+
 		jump_patch(is_remorphing_building_wrapper,										Func_IsRemorphingBuilding);
 		jump_patch(is_morphed_building_wrapper_ai_morph_behavior,						0x0043505F);
 		jump_patch(is_morphed_building_wrapper_console_wireframe_update,				0x00456911);
