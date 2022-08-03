@@ -255,6 +255,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
+					case WeaponId::PhotonCannonPrismaticCannon:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);

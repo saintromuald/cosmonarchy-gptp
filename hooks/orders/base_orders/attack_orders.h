@@ -12,6 +12,7 @@ namespace hooks
 	void orders_attack_move_ep(Unit* unit);		// 00478DE0
 	void orders_attack_move(Unit* unit);		// 00479040
 	void orders_attack_unit(Unit* unit);		// 00479BD0
+	void orders_strafe_unit2(Unit* unit);		// 00465E00
 
 	void inject_attack_orders_hooks();
 }

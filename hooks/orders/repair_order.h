@@ -7,6 +7,7 @@ namespace hooks
 	s32 is_order_valid(char order_id, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag);		// 00474D90
 	s32 order_allowed(Unit* unit, u16 order_id, s32 player);										// 0046DC20
 	s32 show_right_click_error_if_needed(Unit* target);												// 00455A00
+	s32 subtract_repair_resources(Unit* unit, Unit* target);										// 00466FB0
 
 	void inject_repair_order_hooks();
 }

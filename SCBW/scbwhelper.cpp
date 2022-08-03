@@ -7039,7 +7039,7 @@ namespace helper
 	}
 
 	// display an error message and return false if not enough resources
-	bool verifyResources(u32 mineralCost, u32 gasCost, u32 player)
+	bool verify_resources(u32 mineralCost, u32 gasCost, u32 player)
 	{
 		const u32 Func_verifyResources = 0x00466EE0;
 		b32 bPreResult;

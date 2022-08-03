@@ -826,7 +826,7 @@ namespace helper {
 	//// repair_order
 
 	void get_repair_info(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);			// 00466D10
-	bool verifyResources(u32 mineralCost, u32 gasCost, u32 player);													// 00466EE0
+	bool verify_resources(u32 mineralCost, u32 gasCost, u32 player);													// 00466EE0
 	bool subtract_repair_resources(Unit* worker, Unit* target);														// 00466FB0
 
 	// For is_order_valid

@@ -842,4 +842,85 @@ namespace hooks
 			}
 		}
 	}
+
+	// Ported from public GPTP to fix the Plasma Shell launch sound. -Pr0nogo
+	void orders_strafe_unit2(Unit* unit) // 00465E00
+	{
+		if (unit->main_order_state <= 6)
+		{
+			if (unit->main_order_state == 0)
+			{
+				if (unit->remove_timer == 0 || unit->remove_timer > 90)
+				{
+					unit->remove_timer = 90;
+				}
+
+				unit->status |= UnitStatus::NoCollide;
+				unit->main_order_timer = 7;
+				if (unit->order_target.unit != NULL)
+				{
+					helper::move_to_target(unit, unit->order_target.unit);
+					unit->main_order_state = 2;
+				}
+				else if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
+				{
+					unit->main_order_state = 2;
+				}
+			}
+			else if (unit->main_order_state == 2)
+			{
+				if (unit->main_order_timer == 0)
+				{
+					unit->status &= ~UnitStatus::NoCollide; // unset flag if set
+					unit->main_order_state = 3;
+				}
+			}
+
+			if (unit->main_order_state == 2 || unit->main_order_state == 3)
+			{
+				Unit* target = unit->order_target.unit;
+				bool bNotEndThere;
+				if (target != NULL)
+				{
+					if (unit->is_target_within_min_range(target, 256)
+					&&  target->movement_flags & MovementFlags::Accelerating)
+					{
+						helper::move_to_collide(unit, target);
+					}
+					else
+					{
+						helper::move_towards(unit, target);
+					}
+					bNotEndThere = unit->is_target_within_min_range(target, weapons_dat::InnerSplashRadius[units_dat::GroundWeapon[unit->id]]);
+				}
+				else
+				{
+					bNotEndThere = (unit->get_movable_state() != MovableState::NotReachedDestination);
+				}
+
+				if (bNotEndThere)
+				{
+					Image* current_image;
+					unit->order_target.pt.x = unit->sprite->position.x;
+					unit->order_target.pt.y = unit->sprite->position.y;
+					current_image = unit->sprite->images.head;
+					while (current_image != NULL)
+					{
+						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
+						current_image = current_image->link.next;
+					}
+					unit->main_order_state = 6;
+				}
+			}
+			else if (unit->main_order_state == 6)
+			{
+				if (unit->order_signal & 1)
+				{
+					unit->status |= UnitStatus::IsSelfDestructing;
+					unit->remove();
+				}
+			}
+
+		}
+	}
 }

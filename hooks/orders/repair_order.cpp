@@ -1,157 +1,145 @@
 #include "repair_order.h"
 #include <SCBW/api.h>
 #include <hooks/rally_point.h>
+#include "globals.h"
 
 namespace hooks
 {
-	void orders_repair_1(Unit* unit) { // 004673D0
+	void orders_repair_1(Unit * unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
-		if (!target
-	//	||	target->hitpoints >= units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
-		||	target->stasis_timer != 0
-		||	(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
-		||	target->status & UnitStatus::InTransport
-		||  !(target->status & UnitStatus::Completed)) {
-			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
-			unit->order_to_idle();
-			if (target && !(target->status & UnitStatus::InTransport)) {
-				target->connected_unit = 0;
-			}
-			return;
-		}
 
-		switch (unit->main_order_state) {
-			case 0: {
-				s16 unkRepairInfo = 0;
-				u32 repairCostMinerals = 0, repairCostGas = 0;
+		if (target
+	//	&&  target->hitPoints < units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
+		&&  target->status & UnitStatus::Completed
+		&&  units_dat::base_property[target->id] & UnitProperty::Mechanical
+		&& !(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
+		&& !(target->status & UnitStatus::InTransport)
+		&& !target->stasis_timer)
+		{
+			switch (unit->main_order_state)
+			{
+				case 0:
+				{
+					s16 unkRepairInfo;
+					u32 repairCostMinerals, repairCostGas;
+					helper::get_repair_info(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+					helper::verify_resources(repairCostMinerals, repairCostGas, unit->player);
+					unit->worker.repair_resource_loss_timer = 0; // Now used as a toggle for the AlmostBuilt animation to avoid some visual bug, but can probably just use a local bool if necessary.
+					unit->main_order_state++;
+				} break;
+				case 1:
+				{
+					if (!(target->status & UnitStatus::Completed)) {
+						unit->order_to(OrderId::ConstructingBuilding, target);
 
-				helper::get_repair_info(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-				helper::verifyResources(repairCostMinerals, repairCostGas, unit->player);
-
-				unit->worker.repair_resource_loss_timer = 0;
-				unit->main_order_state = 1; // continue directly into this case
-			} // fallthrough
-			case 1: {
-				if (!(target->status & UnitStatus::Completed)) {
-					unit->order_to(OrderId::ConstructingBuilding, target);
-					if (*g_is_placing_building) {
-						if (!helper::can_still_place_building()) {
+						if (*g_is_placing_building && !helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
 						}
 					}
+					else {
+						if (helper::order_to_move_to_target(unit, target)) {
+							helper::unit_order_move_to_target_unit(unit, target);
+							unit->main_order_state = 6;
+						}
+					}
 					return;
-				}
-
-				if (helper::order_to_move_to_target(unit, target)) {
-					helper::unit_order_move_to_target_unit(unit, target);
-					unit->main_order_state = 6;
-				}
-				return;
-			} break;
-			case 6: {
-				if (!unit->get_movable_state()) { // not reached destination
-					helper::move_towards(unit, target); // may cause unit to move or become idle
-					return;
-				}
-				if (!(unit->is_target_within_min_range(target, 5))) {
-					unit->main_order_state = 1;
-					return;
-				}
-
-				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
-				helper::unit_order_move_to_target_unit(unit, target);
-				unit->main_order_state = 7;
-			} break;
-			case 7: {
-				if (!(unit->is_target_within_min_range(target, 5))) {
-					unit->main_order_state = 1;
-					return;
-				} else {
+				} break;
+				case 6:
+				{
+					if (!unit->get_movable_state()) { // not reached destination
+						helper::move_towards(unit, target);
+						return;
+					}
+					unit->main_order_state++;
+				} break;
+				case 7:
+				{
+					if (!unit->is_target_within_min_range(target, 5)) {
+						unit->main_order_state = 1;
+						return;
+					}
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unit_order_move_to_target_unit(unit, target);
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						s32 angle_delta = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
-						s32 current_angle = unit->current_direction_1 - angle_delta;
-						if (current_angle < 0) {
-							current_angle += 256;
-						}
+						u8 current_angle = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						if (current_angle > 128) {
 							current_angle = 256 - current_angle;
 						}
-						u8 weapon = unit->get_ground_weapon();
-						if (current_angle <= weapons_dat::attack_angle[weapon]) {
-							unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
-							unit->main_order_state = 8;
+						if (current_angle > weapons_dat::attack_angle[unit->get_ground_weapon()]) {
+							break; // goto LABEL_35
 						}
-					} else {
-						unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
-						unit->main_order_state = 8;
 					}
-				}
-			} break;
-			case 8: {
-				helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
-				helper::unit_order_move_to_target_unit(unit, target);
-				if (!unit->is_target_within_min_range(target, 5) || target->main_order_id == OrderId::Liftoff) { 
-					unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
-					unit->main_order_state = 1;
-				}
-			} break;
-		}
-
-		bool do_repair = false;
-		//UnitExt* target_ext = get_unit_ext(target);
-		if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
-			if (unit->worker.repair_resource_loss_timer == 0) { // target_ext->values[ValueNewRepairTimer] == 0
-				unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] == units_dat::time_cost[target->id] / 2; 
-				do_repair = helper::subtract_repair_resources(unit, target); // This function calls get_repair_info which has some dumb handling that we might need.
-				if (!do_repair)
+					unit->worker.repair_resource_loss_timer++;
+					unit->main_order_state++;
+				} break; // goto LABEL_35
+				case 8:
 				{
-					//unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
-					//if (unit->order_queue_head) {
-					//	helper::force_order_done(unit);
-					//} else {
-					//	unit->main_order_state = 1;
-					//}
-					//return;
-				}
-			} else {
-				s16 unkRepairInfo = 0;
-				u32 repairCostMinerals = 0, repairCostGas = 0;
+					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::unit_order_move_to_target_unit(unit, target);
 
-				helper::get_repair_info(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+					if (!unit->is_target_within_min_range(target, 5) || target->main_order_id == OrderId::Liftoff) {
+						unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
+						unit->main_order_state = 1;
+					}
+					if (unit->worker.repair_resource_loss_timer) {
+						unit->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
+						unit->worker.repair_resource_loss_timer--;
+					}
+				} break;
+				default:
+				{
+				} break; // goto LABEL_35
+			}
 
-				if (repairCostMinerals <= g_game_minerals[unit->player] &&
-					repairCostGas      <= g_game_vespene[unit->player]) {
-					unit->worker.repair_resource_loss_timer--; // target_ext->values[ValueNewRepairTimer] -= 1;
-					do_repair = true;
+			// LABEL_35:
+			UnitExt* target_ext = get_unit_ext(target);
+			if (target_ext->values[ValueNewRepairTimer]) {
+				target_ext->values[ValueNewRepairTimer]--;
+			}
+			else {
+				if (!helper::subtract_repair_resources(unit, target)) {
+					unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+					unit->order_to_idle();
+					return;
 				}
 			}
-		}
-		if (do_repair) {
-			u32 hpGain = target->build_repair_hp_gain;
+			u32 hp_gain = target->build_repair_hp_gain;
 			if (*g_cheat_state & CheatFlags::OperationCwal) {
-				hpGain *= 16;
+				hp_gain *= 16;
 			}
-			// Talos - Advanced repair speed
-			if (unit->id == UnitId::TerranTalos) {
-				hpGain *= 1.5;
+			if (unit->id == UnitId::TerranTalos) { // Talos - Advanced repair speed
+				hp_gain *= 1.5;
 			}
-			target->heal(hpGain, unit);
-
+			target->heal(hp_gain, unit);
 			if (target->hitpoints < units_dat::MaxHitPoints[target->id]) {
-				return;
+				return; // don't goto LABEL_43
 			}
 		}
 
+		// LABEL_43:
 		unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+
 		if (unit->order_queue_head) {
 			helper::force_order_done(unit);
-		} else {
-			unit->main_order_state = 1;
+			/*unit->userActionFlags |= 1;
+			prepareForNextOrder(unit);*/
 		}
-		if (target && !(target->status & UnitStatus::InTransport)) {
+		else {
+			unit->main_order_state = 1;
+			/*u8 orderId;
+
+			if (unit->pAI) {
+				orderId = OrderId::ComputerAI;
+			} else {
+				orderId = units_dat::ReturnToIdleOrder[unit->id];
+			}
+
+			unit->orderComputerCL(orderId);*/
+		}
+
+		if (target && !(target->status & UnitStatus::InTransport))
+		{
 			target->connected_unit = 0;
 		}
 	}
@@ -546,5 +534,23 @@ namespace hooks
 			}
 		}
 		return 0;
+	}
+
+	// Hooked to finish the repair fix from DF. -Pr0nogo
+	s32 subtract_repair_resources(Unit* unit, Unit* target) // 00466FB0
+	{
+		u32 ore_cost;
+		u32 gas_cost;
+		helper::get_repair_info(target, &ore_cost, &gas_cost, (s16*)&target + 1);
+		s32 result = 0;
+		if (helper::verify_resources(ore_cost, gas_cost, unit->player))
+		{
+			UnitExt* target_ext = get_unit_ext(target);
+			target_ext->values[ValueNewRepairTimer] = (u32)&target + 2;
+			g_game_minerals[unit->player] -= ore_cost;
+			g_game_vespene[unit->player] -= gas_cost;
+			result = 1;
+		}
+		return result;
 	}
 }

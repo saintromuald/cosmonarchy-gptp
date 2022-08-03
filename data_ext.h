@@ -106,6 +106,7 @@ enum ExtValueId
 	ValueParasiteArmPlayer,
 	ValueDisableAutoBurrow,
 	ValueSentinelMissilePos,
+	ValuePhotonCannonMissilePos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

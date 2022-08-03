@@ -100,6 +100,30 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) subtract_repair_resources_wrapper() {
+		static s32 result;
+		static Unit* unit;
+		static Unit* target;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV target, EAX
+			POP EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::subtract_repair_resources(unit, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -110,5 +134,6 @@ namespace hooks
 		jump_patch(is_order_valid_wrapper,						0x00474D90, 1);
 //		jump_patch(order_allowed_wrapper,						0x0046DC20, 3); // crashes
 		jump_patch(show_right_click_error_if_needed_Wrapper,	0x00455A00, 0);
+		jump_patch(subtract_repair_resources_wrapper,			0x00466FB0, 1);
 	}
 }
