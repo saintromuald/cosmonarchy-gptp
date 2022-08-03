@@ -859,6 +859,8 @@ namespace hooks
 				unit->main_order_timer = 7;
 				if (unit->order_target.unit != NULL)
 				{
+					u8 rand_value = helper::randomize_short(0) & 1;
+					helper::play_sound_from_unit(SoundId::Bullet_pTrFir00_wav + rand_value, unit, 1, 0);
 					helper::move_to_target(unit, unit->order_target.unit);
 					unit->main_order_state = 2;
 				}
