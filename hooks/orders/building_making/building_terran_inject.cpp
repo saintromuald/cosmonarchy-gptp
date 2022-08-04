@@ -150,6 +150,31 @@ namespace
 		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
 		jump_patch(update_placement_simple_wrapper_2,	0x0048DD61, 2);
 	}
+
+	const u32 orders_PlaceAddon_E6B91 = 0x004E6B91;
+	void __declspec(naked) orders_PlaceAddon_patch() {
+		__asm {
+			PUSH	EAX
+			MOV		EAX, [EDI + 0xC]//unit->sprite
+			MOV		AL, [EAX + 0xA]//unit->sprite->player
+			PUSH	ECX
+			MOV		ECX, [EBX + 0xC]//addon->sprite
+			MOV[ECX + 0xA], AL//addon->sprite->player = unit->sprite->player
+			POP		ECX
+			POP		EAX
+			MOV[EBX + 0x80], EDI
+			JMP		orders_PlaceAddon_E6B91
+		}
+	}
+
+	void __declspec(naked) completeAddon_patch() {
+		__asm {
+			MOV		EDX, [EDI + 0xC]
+			MOVZX	EDX, byte ptr[EDX + 0xA]
+			MOV		ECX, ESI
+			RET
+		}
+	}
 }
 
 namespace hooks
@@ -164,5 +189,7 @@ namespace hooks
 		jump_patch(play_building_complete_sound_wrapper,	0x0048F310, 3);
 
 	//	placementSimpleWrappers(); // bugged
+		jump_patch(orders_PlaceAddon_patch, 0x004E6B8B, 1);
+		call_patch(completeAddon_patch, 0x00463D69, 0);
 	}
 }

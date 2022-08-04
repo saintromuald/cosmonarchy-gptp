@@ -54,6 +54,7 @@ namespace hooks
 				helper::stop_creep_disappearing_at_building(nydus_exit);
 				nydus_canal->building.nydus_exit = nydus_exit;
 				nydus_exit->building.nydus_exit = nydus_canal;
+				nydus_exit->sprite->player = nydus_canal->sprite->player;
 			}
 			nydus_canal->order_to_idle();
 		}

@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_CastMindControlWrapper()
+	void __declspec(naked) orders_cast_mind_control_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -13,14 +13,37 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::ordersCastMindControl(unit);
+		hooks::orders_cast_mind_control(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
+	}
 
+	const u32 give_units = 0x004C8040;
+	const u32 MindControl_Hit_F6938 = 0x004F6938;
+	void __declspec(naked) MindControl_Hit_patch() {
+		__asm {
+			CALL	give_units
+			PUSH	EAX
+			MOV		EAX, [EBX + 0xC]//unit->sprite
+			MOV		AL, [EAX + 0xA]//unit->sprite->player
+			PUSH	EDX
+			MOV		EDX, [ESI + 0xC]//this->sprite
+			MOV[EDX + 0xA], AL//this->sprite->player = unit->sprite->player
+			MOV		EDX, [ESI + 0x70]//this->subunit
+			TEST	EDX, EDX
+			JZ		offset no_subunit
+			MOV		EDX, [EDX + 0xC]//this->subunit->sprite
+			MOV[EDX + 0xA], AL//this->subunit->sprite->player = unit->sprite->player
+
+			no_subunit :
+			POP		EDX
+				POP		EAX
+				JMP		MindControl_Hit_F6938
+		}
 	}
 }
 
@@ -28,6 +51,7 @@ namespace hooks
 {
 	void inject_tyranny_spell_hooks()
 	{
-		jump_patch(orders_CastMindControlWrapper,		0x004F6950, 0);
+		jump_patch(orders_cast_mind_control_wrapper,	0x004F6950, 0);
+		jump_patch(MindControl_Hit_patch, 0x004F6933);
 	}
 }

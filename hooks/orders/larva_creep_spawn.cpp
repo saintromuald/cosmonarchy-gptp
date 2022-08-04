@@ -19,6 +19,7 @@ namespace hooks
 				helper::update_unit_stats_and_finish_building(unit_created);
 				helper::update_unit_strength(unit_created);
 				unit_created->connected_unit = main_building;
+				unit_created->sprite->player = main_building->sprite->player;
 
 				// set main_order_state depending on the collision state with the connected building			
 				helper::function_004E8DA0(unit_created);
@@ -136,6 +137,7 @@ namespace hooks
 							helper::update_unit_strength(new_larva);
 
 							new_larva->connected_unit = unit;
+							new_larva->sprite->player = unit->sprite->player;
 							// set main_order_state depending on the collision state with the connected building						
 							helper::function_004E8DA0(new_larva);
 

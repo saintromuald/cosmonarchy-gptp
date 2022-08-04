@@ -424,6 +424,7 @@ namespace hooks
 					else
 					{
 						builtUnit->connected_unit = unit;
+						builtUnit->sprite->player = unit->sprite->player;
 						unit->main_order_id = OrderId::ConstructingBuilding;
 						unit->main_order_state = 3;
 						unit->order_target.unit = builtUnit;

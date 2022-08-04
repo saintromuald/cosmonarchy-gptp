@@ -93,6 +93,7 @@ namespace hooks
 							if (units_dat::ShieldsEnabled[built_unit->id]) {
 								built_unit->shields += 2 * 256;
 							}
+							built_unit->sprite->player = unit->sprite->player;
 							helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
 							if (is_building_aquifer)
 							{

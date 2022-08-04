@@ -4,7 +4,7 @@
 
 namespace hooks
 {
-	void ordersCastMindControl(Unit* unit)
+	void orders_cast_mind_control(Unit* unit)
 	{
 		UnitExt* unitExt = get_unit_ext(unit);
 		Unit* target = unit->order_target.unit;

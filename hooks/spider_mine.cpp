@@ -207,6 +207,7 @@ namespace hooks
 					{
 						helper::update_unit_stats_and_finish_building(v13);
 						helper::update_unit_strength_and_apply_default_orders(v14);
+						v14->sprite->player = v1->sprite->player;
 						helper::turn_unit(v14, v1->current_direction_1);
 						v1->mine_carrier.mine_count -= 1;
 					}
