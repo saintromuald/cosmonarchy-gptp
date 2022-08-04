@@ -11,7 +11,6 @@ namespace hooks
 		if (target
 	//	&&  target->hitPoints < units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
 		&&  target->status & UnitStatus::Completed
-		&&  units_dat::base_property[target->id] & UnitProperty::Mechanical
 		&& !(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
 		&& !(target->status & UnitStatus::InTransport)
 		&& !target->stasis_timer)
@@ -20,10 +19,10 @@ namespace hooks
 			{
 				case 0:
 				{
-					s16 unkRepairInfo;
-					u32 repairCostMinerals, repairCostGas;
-					helper::get_repair_info(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-					helper::verify_resources(repairCostMinerals, repairCostGas, unit->player);
+					s16 repair_info;
+					u32 repair_cost_minerals, repair_cost_vespene;
+					helper::get_repair_info(target, &repair_cost_minerals, &repair_cost_vespene, &repair_info);
+					helper::verify_resources(repair_cost_minerals, repair_cost_vespene, unit->player);
 					unit->worker.repair_resource_loss_timer = 0; // Now used as a toggle for the AlmostBuilt animation to avoid some visual bug, but can probably just use a local bool if necessary.
 					unit->main_order_state++;
 				} break;
@@ -93,9 +92,8 @@ namespace hooks
 			}
 
 			// LABEL_35:
-			UnitExt* target_ext = get_unit_ext(target);
-			if (target_ext->values[ValueNewRepairTimer]) {
-				target_ext->values[ValueNewRepairTimer]--;
+			if (target->new_repair_timer) {
+				target->new_repair_timer--;
 			}
 			else {
 				if (!helper::subtract_repair_resources(unit, target)) {
@@ -534,23 +532,5 @@ namespace hooks
 			}
 		}
 		return 0;
-	}
-
-	// Hooked to finish the repair fix from DF. -Pr0nogo
-	s32 subtract_repair_resources(Unit* unit, Unit* target) // 00466FB0
-	{
-		u32 ore_cost;
-		u32 gas_cost;
-		helper::get_repair_info(target, &ore_cost, &gas_cost, (s16*)&target + 1);
-		s32 result = 0;
-		if (helper::verify_resources(ore_cost, gas_cost, unit->player))
-		{
-			UnitExt* target_ext = get_unit_ext(target);
-			target_ext->values[ValueNewRepairTimer] = (u32)&target + 2;
-			g_game_minerals[unit->player] -= ore_cost;
-			g_game_vespene[unit->player] -= gas_cost;
-			result = 1;
-		}
-		return result;
 	}
 }

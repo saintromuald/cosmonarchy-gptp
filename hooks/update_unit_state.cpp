@@ -249,54 +249,6 @@ namespace hooks
 			unit->update_speed();
 		}
 
-		// Cowardice / Malice overlays
-		if (unit->unused_8c & 0x1)
-		{
-			unit->unused_8c &= ~0x1;
-			u32 overlayImageId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			if (!unit->get_overlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
-			{
-				unit->sprite->create_top_overlay(overlayImageId, 0, 0, 0);
-				unit_ext->values[ValueHierophantOverlay] = 1;
-			}
-		}
-
-		if (unit_ext->values[ValueHierophantOverlay] == 1)
-		{
-			auto overlayId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			auto overlay = unit->get_overlay(overlayId);
-			if (scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 1)
-			{
-				if (unit->get_overlay(overlayId))
-				{
-					unit->remove_overlay(overlayId);
-				}
-				u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
-				if (!unit->get_overlay(maliceId))
-				{
-					unit->sprite->create_top_overlay(maliceId, 0, 0, 0);
-				}
-				unit_ext->values[ValueHierophantOverlay] = 0;
-			}
-		}
-
-		// Clear Malice & Cowardice overlays
-		if (unit->unused_8c & 0x2)
-		{
-			unit->unused_8c &= ~0x2;
-			u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
-			u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			unit_ext->values[ValueHierophantOverlay] = 0;
-			if (unit->get_overlay(maliceId))
-			{
-				unit->remove_overlay(maliceId);
-			}
-			if (unit->get_overlay(cowardiceId))
-			{
-				unit->remove_overlay(cowardiceId);
-			}
-		}
-
 		// Something to do with player-specific Signify overlays?
 		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0])
 		{

@@ -1767,8 +1767,8 @@ namespace scbw
 			unit->remove_overlay(ImageId::Malice_Small, ImageId::Malice_Large);
 		}
 		else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-			|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-			|| unit->has_weapon())
+		||		   units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+		||		   unit->has_weapon())
 		{
 			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId))
 			{
