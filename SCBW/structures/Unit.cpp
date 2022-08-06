@@ -13,7 +13,7 @@
 
 extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
 //Behavior can be modified with detector hook
-bool Unit::canDetect() const
+bool Unit::can_detect() const
 {
 	assert(this);
 	static u32 result;

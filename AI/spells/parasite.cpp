@@ -29,7 +29,7 @@ namespace AI {
 				return false;
 			}
 
-			if (target->canDetect()) {
+			if (target->can_detect()) {
 				return true;
 			}
 

@@ -34,7 +34,7 @@ namespace AI
 			if (target->is_blind)
 				return false;
 
-			if (target->canDetect())
+			if (target->can_detect())
 				return true;
 
 			if (target->get_current_life_ingame() > 80)

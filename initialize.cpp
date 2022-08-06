@@ -612,7 +612,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_bunker_hooks();
 	hooks::inject_cloak_nearby_units_hooks();
 	hooks::inject_cloaking_tech_hooks();
-//	hooks::injectDetectorHooks();
+//	hooks::inject_detector_hooks();
 	hooks::inject_harvest_resource();
 
 	hooks::inject_rally_hooks();

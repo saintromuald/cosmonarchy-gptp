@@ -43,7 +43,7 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Checks if the unit is a clean detector (no Lockdown, Optical Flare, etc.)
-	bool canDetect() const;
+	bool can_detect() const;
 
 	/// Returns the amount of HP displayed in-game. This is equal to
 	/// (this->hitpoints + 255) / 256.

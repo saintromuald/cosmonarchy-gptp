@@ -215,7 +215,7 @@ namespace AI
 				}
 				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
-					if (target->canDetect()
+					if (target->can_detect()
 					||  target->id == UnitId::ZergSunkenColony
 					||  target->id == UnitId::ZergLakizilisk)
 					{
