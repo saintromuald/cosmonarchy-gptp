@@ -1207,6 +1207,10 @@ namespace SoundId
 		CohortRevive01						= 1886,
 		CohortRevive02						= 1887,
 
+		EvigriliskFire01					= 1898,
+		EvigriliskFire02					= 1899,
+		EvigriliskFire03					= 1900,
+
 		LazarusAgentProc					= 1905,
 
 		SwarmingOmenProc01					= 1907,

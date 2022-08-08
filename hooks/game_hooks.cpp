@@ -581,6 +581,7 @@ namespace hooks
 					if (hooks::fire_multiple(unit, unitExt, weapon_id, 4, FilterEnemy, true)) {
 						scbw::decloak_proc(unit);
 						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
 					}
 				}
 			} break;
