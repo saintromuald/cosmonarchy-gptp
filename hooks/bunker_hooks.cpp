@@ -26,9 +26,6 @@ namespace hooks
 
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
-		if (unit->player == 0) {
-			int i = 0;
-		}
 		if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranBunker
 		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
