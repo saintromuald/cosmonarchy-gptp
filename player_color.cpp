@@ -105,7 +105,8 @@ static bool can_use_player_color(u32 color, u32 player) {
 				continue;
 			}
 			u32 delta = get_color_delta(color, player_color_list[other_player]);
-			if (delta < 128) {
+			u32 threshold = g_player_table[player].race == g_player_table[other_player].race ? 192 : 128;
+			if (delta < threshold) {
 				return false;
 			}
 		}
@@ -198,6 +199,7 @@ void set_player_color(u32 player, u32 color) {
 	has_custom_color[player] = true;
 	player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
+	g_player_scorescreen_colors[player] = color;
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
 		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * ColorSetSize + i];
 	}
