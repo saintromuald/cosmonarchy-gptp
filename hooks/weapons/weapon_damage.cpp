@@ -1131,7 +1131,7 @@ namespace hooks
 								flags |= 1 << i;
 							}
 						}
-						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, (attacker->status >> 2) & 1);
+						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, attacker->status & UnitStatus::InAir);
 					}
 				}
 				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
