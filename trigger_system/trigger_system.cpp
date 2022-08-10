@@ -51,6 +51,9 @@ static void replace_unit_sprite(Unit* unit, u32 sprite_id) {
 	if (unit->sprite && unit->sprite->id != sprite_id) {
 		Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
 		if (new_sprite) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->values[ValueHasCustomSprite] = true;
+
 			unit->sprite->free();
 			unit->sprite = new_sprite;
 			for (Image* image = new_sprite->images.head; image; image = image->link.next) {
@@ -86,6 +89,7 @@ void update_trigger_system(bool in_game) {
 		update_trigger_vars();
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			UnitExt* unit_ext = get_unit_ext(unit);
 			bool has_replacement = false;
 			for (u32 i = 0; i < sprite_replacements_count; ++i) {
 				SpriteReplacement* sprite_replacement = &sprite_replacements[i];
@@ -99,7 +103,8 @@ void update_trigger_system(bool in_game) {
 				has_replacement = true;
 				break;
 			}
-			if (!has_replacement) {
+			if (!has_replacement && unit_ext->values[ValueHasCustomSprite]) {
+				unit_ext->values[ValueHasCustomSprite] = false;
 				u32 flingy_id = scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id);
 				u32 sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);
 				replace_unit_sprite(unit, sprite_id);
