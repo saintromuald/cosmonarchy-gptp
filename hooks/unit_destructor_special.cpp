@@ -401,10 +401,12 @@ void unit_destructor_special_cases(Unit* unit)
 		});
 	}
 
-	// Parasite - spawn broodlings on death
+	// Parasite - broodspawn on death
 	{
 		u16 type = UnitId::ZergRilirokor;
-		if (units_dat::base_property[unit->id] & UnitProperty::Flyer) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Flyer
+		||	unit->status & UnitStatus::InAir)
+		{
 			type = UnitId::ZergRililisk;
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
