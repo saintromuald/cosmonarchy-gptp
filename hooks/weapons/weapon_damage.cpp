@@ -276,7 +276,6 @@ namespace hooks
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data)
 	{
-		UnitExt* attackerExt = get_unit_ext(data.attacker);
 		UnitExt* targetExt = get_unit_ext(data.target);
 
 		// Allied invincibility frames (for e.g. Akistrokor Blissful Embrace)
@@ -337,7 +336,10 @@ namespace hooks
 			} break;
 			case WeaponId::HeraclesJavelinCannons:
 			{
-				data.final_damage += (attackerExt->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
+				if (data.attacker) {
+					UnitExt* attackerExt = get_unit_ext(data.attacker);
+					data.final_damage += (attackerExt->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
+				}
 			} break;
 			default:
 			{
