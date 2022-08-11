@@ -278,7 +278,7 @@ namespace scbw
 
 	inline bool is_vision_allied_to(u8 playerA, u8 playerB)
 	{
-		return 0 != player_vision[playerA].flags[playerB];
+		return player_vision->flags[playerA] & (1 << playerB);
 	}
 
 	/// Checks whether the @p unit is recognized by @p player as an enemy.

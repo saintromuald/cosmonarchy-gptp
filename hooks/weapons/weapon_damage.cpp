@@ -1128,7 +1128,7 @@ namespace hooks
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
 						u32 flags = 1 << victim->player;
 						for (u32 i = 0; i < PlayerLimit; ++i) {
-							if (scbw::is_vision_allied_to(victim->player, i)) { // Appears to cause issues, because sometimes you will get revealed from enemies attacking other enemies. -Pr0nogo
+							if (scbw::is_vision_allied_to(victim->player, i)) {
 								flags |= 1 << i;
 							}
 						}
