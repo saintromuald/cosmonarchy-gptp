@@ -71,15 +71,45 @@ static std::string format_string_vector(std::vector<std::string> strings)
 	return result;
 }
 
+void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended, bool invert_bonus = false, std::string suffix = "") {
+	std::stringstream builder = {}; // TODO: Replace with non std
+	builder << std::setprecision(4);
+
+	f32 sign = invert_bonus ? -bonus : bonus;
+	std::string color = bonus < 0 ? BWTC_RED : sign > 0 ? BWTC_GREEN : BWTC_RESET;
+	text += color;
+
+	f32 total_value = value + bonus;
+	builder.str("");
+	builder << total_value << suffix;
+	text += builder.str();
+
+	if (extended && bonus != 0) {
+		text += " (";
+
+		builder.str("");
+		builder << value << suffix;
+		text += builder.str();
+
+		if (bonus > 0) text += " + ";
+		else text += " - ";
+
+		builder.str("");
+		builder << abs(bonus) << suffix;
+		text += builder.str();
+
+		text += ")";
+	}
+	text += BWTC_RESET;
+}
+
 const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 {
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
 	// Get game strings
-	const char* entryName = statTxtTblNew->get_string(entryStrIndex);
-	const char* damageStr = statTxtTblNew->get_string(777);					//"Damage:"
-//	const char* perRocketStr = statTxtTblNew->get_string(1301);				//"per rocket"
-	const char* type_name = "";
+	const char* entry_name = statTxtTblNew->get_string(entryStrIndex);
+	const char* damage_string = statTxtTblNew->get_string(777);					//"Damage:"
 
 	u8 damage_factor = get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::DamageUpgrade[weapon_id]);
@@ -104,13 +134,15 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	f64 attack_speed = 1.0 / attack_cooldown;
 	f64 attack_speed_modifier = (1.0 / ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24)) - attack_speed;
 
-	s32 splashInner = weapons_dat::InnerSplashRadius[weapon_id];
-	s32 splashMedium = weapons_dat::MediumSplashRadius[weapon_id];
-	s32 splashOuter = weapons_dat::OuterSplashRadius[weapon_id];
-	bool hasSplash = splashInner || splashMedium || splashOuter;
+	s32 splash_inner = weapons_dat::InnerSplashRadius[weapon_id];
+	s32 splash_medium = weapons_dat::MediumSplashRadius[weapon_id];
+	s32 splash_outer = weapons_dat::OuterSplashRadius[weapon_id];
+	bool has_splash = splash_inner || splash_medium || splash_outer;
 	s32 splash_type = weapons_dat::ExplosionType[weapon_id];
 	std::string splash_type_value = "";
+
 	/*
+	const char* type_name = "";
 	switch (damage_type) {
 		case DamageType::Concussive: {
 			type_name = BWTC_TEAL "Concussive" BWTC_RESET;
@@ -158,156 +190,85 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 		} break;
 	};
 
-	std::vector<std::string> targetFlags;
+	std::vector<std::string> target_flags;
 	if (weapons_dat::TargetFlags[weapon_id].ground)
 	{
-		targetFlags.push_back("Ground");
+		target_flags.push_back("Ground");
 	}
 	if (weapons_dat::TargetFlags[weapon_id].air)
 	{
-		targetFlags.push_back("Air");
+		target_flags.push_back("Air");
 	}
 	if (weapons_dat::TargetFlags[weapon_id].mechanical || weapons_dat::TargetFlags[weapon_id].orgOrMech)
 	{
-		targetFlags.push_back("Mechanical");
+		target_flags.push_back("Mechanical");
 	}
 	if (weapons_dat::TargetFlags[weapon_id].organic || weapons_dat::TargetFlags[weapon_id].orgOrMech)
 	{
-		targetFlags.push_back("Organic");
+		target_flags.push_back("Organic");
 	}
 	if (weapons_dat::TargetFlags[weapon_id].nonBuilding)
 	{
-		targetFlags.push_back("Not Building");
+		target_flags.push_back("Not Building");
 	}
 	if (weapons_dat::TargetFlags[weapon_id].nonRobotic)
 	{
-		targetFlags.push_back("Not Robotic");
+		target_flags.push_back("Not Robotic");
 	}
 	if (weapons_dat::TargetFlags[weapon_id].terrain)
 	{
-		targetFlags.push_back("Terrain");
+		target_flags.push_back("Terrain");
 	}
-
-	std::string targetFlagsText = format_string_vector(targetFlags);
+	std::string target_flags_text = format_string_vector(target_flags);
 
 	// Name
-	std::string text = "\004" + std::string(entryName) + "\002\n";
+	std::string text = BWTC_WHITE + std::string(entry_name) + BWTC_RESET"\n";
 
 	// Damage
-	if (extended)
-	{
-		text += std::string(damageStr) + " " + std::to_string(damage_factor) + "x(" + std::to_string(base_damage);
-		text += ")";
-	}
-	else
-	{
-		text += std::string(damageStr) + " " + std::to_string(damage_factor * base_damage);
-
-		/*
-		if (weapon_id == WeaponId::ValkyrieHaloRockets)
-		{
-			text += " " + std::string(perRocketStr);
-		}
-		*/
+	if (extended) {
+		text += std::string(damage_string) + " " + std::to_string(damage_factor) + "x(" + std::to_string(base_damage) + ")";
+	} else {
+		text += std::string(damage_string) + " " + std::to_string(damage_factor * base_damage);
 	}
 
 	// Armor Pen
 	text += "\nArmor Pen: ";
+	append_tooltip_value(text, armor_pen, bonus_armor_pen, extended);
 
-	std::stringstream ss;
-	ss << std::setprecision(4);
-	ss << armor_pen;
-	if (bonus_armor_pen > 0)      text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
-	else if (bonus_armor_pen < 0) text += " (" BWTC_RED   "" + ss.str() + BWTC_RESET ")";
-	text += ss.str();
+	// Attack Speed
+	text += "\nAttack Speed: ";
+	append_tooltip_value(text, attack_speed, attack_speed_modifier, extended);
 
 	// Cooldown
-	std::stringstream string_builder; // TODO: replace with something not gay
-	string_builder << std::setprecision(4);
-	std::string modifier_color = attack_cooldown_modifier > 0 ? BWTC_RED : attack_cooldown_modifier < 0 ? BWTC_GREEN : BWTC_RESET;
-	bool is_suicide_unit = false; // Removed since we have no suicide units anymore. -Pr0nogo
-	if (!is_suicide_unit) {
-		string_builder.str("");
-		string_builder << (attack_speed + attack_speed_modifier);
-		text += "\nAttack Speed: ";
-		text += modifier_color;
-		text += string_builder.str();
-		if (extended && attack_speed_modifier != 0)
-		{
-			string_builder.str("");
-			string_builder << attack_speed;
-
-			text += " (" + string_builder.str();
-
-			string_builder.str("");
-			string_builder << abs(attack_speed_modifier);
-
-			if (attack_speed_modifier > 0) text += " + ";
-			else text += " - ";
-			text += string_builder.str();
-
-			text += ")";
-		}
-		text += BWTC_RESET;
-
-		if (extended) {
-			string_builder.str("");
-			string_builder << (attack_cooldown + attack_cooldown_modifier);
-			text += "\nCooldown: ";
-			text += modifier_color;
-			text += string_builder.str() + "s";
-			if (extended && attack_cooldown_modifier != 0)
-			{
-				string_builder.str("");
-				string_builder << attack_cooldown;
-
-				text += " (" + string_builder.str() + "s";
-
-				string_builder.str("");
-				string_builder << abs(attack_cooldown_modifier);
-
-				if (attack_cooldown_modifier > 0) text += " + ";
-				else text += " - ";
-				text += string_builder.str() + "s";
-
-				text += ")";
-			}
-			text += BWTC_RESET;
-		}
-	}
+	text += "\nCooldown: ";
+	append_tooltip_value(text, attack_cooldown, attack_cooldown_modifier, extended, true, "s");
 
 	// DPS
-	if (!is_suicide_unit && extended)
-	{
-		string_builder.str("");
-		f64 cd = (attack_cooldown + attack_cooldown_modifier);
-		string_builder << ((f64)damage_factor * base_damage / cd);
-		text += "\nDPS: " + modifier_color + string_builder.str() + BWTC_RESET;
+	std::stringstream builder;
+	builder << std::setprecision(4);
+	if (extended) {
+		std::string dps_color = attack_speed_modifier < 0 ? BWTC_RED : attack_speed_modifier > 0 ? BWTC_GREEN : BWTC_RESET;
+		f64 total_cooldown = (attack_cooldown + attack_cooldown_modifier);
+		builder.str("");
+		builder << ((f64)damage_factor * base_damage / total_cooldown);
+		text += "\nDPS: " + dps_color + builder.str() + BWTC_RESET;
 	}
 
 	// Range
 	text += "\nRange: ";
-	if (range > 1)
-	{
-		string_builder.str("");
-		if (min_range > 0)
-		{
-			string_builder << min_range << "-";
-		}
-		string_builder << range;
-		if (bonus_range > 0)
-		{
-			string_builder << "+" << bonus_range;
-		}
-		text += string_builder.str();
-	}
-	else
-	{
+	if (range <= 1) {
 		text += "Melee";
+	} else {
+		if (min_range > 0) {
+			builder.str("");
+			builder << min_range << "-";
+			text += builder.str();
+		}
+		append_tooltip_value(text, range, bonus_range, extended);
 	}
 
 	// Target
-	text += "\nTargets: " + targetFlagsText;
+	text += "\nTargets: " + target_flags_text;
 
 	// Type
 	/*
@@ -319,9 +280,9 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	*/
 
 	// Splash
-	if (hasSplash)
+	if (has_splash)
 	{
-		text += "\nSplash Radius: " + std::to_string(splashInner) + "/" + std::to_string(splashMedium) + "/" + std::to_string(splashOuter);
+		text += "\nSplash Radius: " + std::to_string(splash_inner) + "/" + std::to_string(splash_medium) + "/" + std::to_string(splash_outer);
 		text += "\nSplash Type: " + splash_type_value;
 	}
 
@@ -345,26 +306,26 @@ namespace hooks
 
 	static std::string timerToString(s32 timer)
 	{
-		std::stringstream ss;
-		ss << std::setprecision(4);
-		ss << ceil(timer * 0.042 * 8.0) << "s";
-		return ss.str();
+		std::stringstream builder;
+		builder << std::setprecision(4);
+		builder << ceil(timer * 0.042 * 8.0) << "s";
+		return builder.str();
 	}
 
 	static std::string gptpTimerToString(s32 timer)
 	{
-		std::stringstream ss;
-		ss << std::setprecision(4);
-		ss << ceil((timer - 1) / 24.0) << "s";
-		return ss.str();
+		std::stringstream builder;
+		builder << std::setprecision(4);
+		builder << ceil((timer - 1) / 24.0) << "s";
+		return builder.str();
 	}
 
 	static std::string removeTimerToString(s32 timer)
 	{
-		std::stringstream ss;
-		ss << std::setprecision(4);
-		ss << ceil(timer / 24.0) << "s";
-		return ss.str();
+		std::stringstream builder;
+		builder << std::setprecision(4);
+		builder << ceil(timer / 24.0) << "s";
+		return builder.str();
 	}
 
 	enum struct TimerType
@@ -471,21 +432,21 @@ namespace hooks
 		}
 		*/
 
-		std::stringstream ss;
-		ss << std::setprecision(4);
+		std::stringstream builder;
+		builder << std::setprecision(4);
 
-		ss << unit->flingy_top_speed / 32 / 15 * 24;
-		std::string movementSpeed = ss.str();
-		ss.str("");
+		builder << unit->flingy_top_speed / 32 / 15 * 24;
+		std::string movementSpeed = builder.str();
+		builder.str("");
 
 		s32 accel = hooks::get_modified_unit_acceleration(unit);
-		ss << accel;
-		std::string acceleration = ss.str();
-		ss.str("");
+		builder << accel;
+		std::string acceleration = builder.str();
+		builder.str("");
 
-		ss << hooks::get_modified_unit_turn_speed(unit);
-		std::string turnRate = ss.str();
-		ss.str("");
+		builder << hooks::get_modified_unit_turn_speed(unit);
+		std::string turnRate = builder.str();
+		builder.str("");
 
 		std::string plane = unit->status & UnitStatus::InAir ? "Air" : "Ground";
 
@@ -697,26 +658,20 @@ namespace hooks
 		std::string flag = format_string_vector(flags);
 
 		std::string text = "\004" + std::string(armor_upgrade_name) + "\002";
-		text += "\n" + std::string(armor_text) + " " + std::to_string(base_armor);
-
-		ss.str("");
-		ss << bonus_armor;
-		if (bonus_armor > 0)	  text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
-		else if (bonus_armor < 0) text += " (" BWTC_RED       + ss.str() + BWTC_RESET ")";
+		text += "\n" + std::string(armor_text) + " ";
+		append_tooltip_value(text, base_armor, bonus_armor, extended);
 
 		// text += "\nSize: " + std::string(size_text);
 		text += "\nPlane: " + plane;
 		text += "\nMove Speed: " + movementSpeed;
 		text += "\nStatus: " + status;
 
-		if (extended)
-		{
+		if (extended) {
 			if (unit->player < PlayerLimit) {
 				text += "\nColor: " + std::string(playerColorNames[player_color_list[unit->player]]); // TODO: move to rank text
 			}
 			text += "\nFlags: " + flag;
-			if (accel != 1)
-			{
+			if (accel != 1) {
 				text += "\nAcceleration: " + acceleration;
 			}
 			text += "\nTurn Rate: " + turnRate;
@@ -725,9 +680,7 @@ namespace hooks
 			{
 				text += "\nTransport Space: " + std::to_string(transport_space);
 			}
-		}
-		else
-		{
+		} else {
 			text += "\n-- Hold \003Shift\002 for more details --";
 		}
 
@@ -738,6 +691,7 @@ namespace hooks
 
 	// Returns the C-string for the tooltip text of the plasma shield icon.
 	const char* get_shield_tooltip_string(Unit* unit) {
+		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 		const u16 label_id = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
 		const char* shield_upgrade_name = statTxtTblNew->get_string(label_id);
 		//const char* shields_text = statTxtTblNew->get_string(779); // "Shields:"
@@ -747,13 +701,8 @@ namespace hooks
 		f32 bonus_armor = get_bonus_armor(unit, base_armor);
 
 		std::string text = "\004" + std::string(shield_upgrade_name) + "\002";
-		text += "\n" + std::string(armor_text) + " " + std::to_string(base_armor);
-
-		std::stringstream ss;
-		ss << std::setprecision(4);
-		ss << bonus_armor;
-		if (bonus_armor > 0)	  text += " (" BWTC_GREEN "+" + ss.str() + BWTC_RESET ")";
-		else if (bonus_armor < 0) text += " (" BWTC_RED       + ss.str() + BWTC_RESET ")";
+		text += "\n" + std::string(armor_text) + " ";
+		append_tooltip_value(text, base_armor, bonus_armor, extended);
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
 		buffer[sizeof(buffer) - 1] = 0;
