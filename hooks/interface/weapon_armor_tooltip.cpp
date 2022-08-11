@@ -76,7 +76,7 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 	builder << std::setprecision(4);
 
 	f32 sign = invert_bonus ? -bonus : bonus;
-	std::string color = bonus < 0 ? BWTC_RED : sign > 0 ? BWTC_GREEN : BWTC_RESET;
+	std::string color = sign < 0 ? BWTC_RED : sign > 0 ? BWTC_GREEN : BWTC_RESET;
 	text += color;
 
 	f32 total_value = value + bonus;
