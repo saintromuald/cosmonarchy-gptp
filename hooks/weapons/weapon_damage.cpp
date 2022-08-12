@@ -701,7 +701,7 @@ namespace hooks
 									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
-										thingy->sprite->elevation_level = target->sprite->elevation_level + 1;
+										thingy->sprite->elevation = target->sprite->elevation + 1;
 										helper::set_thingy_visibility_flags(thingy);
 									}
 								});

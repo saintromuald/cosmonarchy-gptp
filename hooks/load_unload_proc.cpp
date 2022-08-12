@@ -172,7 +172,7 @@ namespace hooks
 			}
 
 			cargo_unit->movement_state = 0;
-			if (cargo_unit->sprite->elevation_level < 12)
+			if (cargo_unit->sprite->elevation < 12)
 			{
 				cargo_unit->pathing_flags |= 1;
 			}
@@ -202,7 +202,7 @@ namespace hooks
 				}
 
 				subunit->movement_state = 0;
-				if (subunit->sprite->elevation_level < 12)
+				if (subunit->sprite->elevation < 12)
 				{
 					subunit->pathing_flags |= 1;
 				}

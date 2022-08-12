@@ -452,6 +452,24 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 	}
 }
 
+// Hooked to allow for player-colored corpses. -Pr0nogo
+Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) // 004D7120
+{
+	Sprite* sprite = image->parent_sprite;
+	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
+	u32 pos_y = y + image->vertical_offset + sprite->position.y;
+	Thingy* result = helper::create_thingy(id, pos_x, pos_y, 0);
+	if (result)
+	{
+		if (scbw::sprite_id_is_corpse(result->sprite->id)) {
+			result->sprite->player = sprite->player;
+		}
+		result->sprite->elevation = elevation;
+		helper::set_thingy_visibility_flags(result);
+	}
+	return result;
+}
+
 //-------- Actual hooking --------//
 
 void __declspec(naked) unit_destructor_special_cases_wrapper()
@@ -497,10 +515,44 @@ void __declspec(naked) clear_tile_flags_from_area_wrapper() {
 	}
 }
 
+void __declspec(naked) iscript_create_sprite_wrapper() {
+	static Thingy* result;
+	static Image* image;
+	static u16 id;
+	static u32 x;
+	static u32 y;
+	static u8 elevation;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV id, AX
+		MOV EAX, [EBP + 0x0C]
+		MOV x, EAX
+		MOV EAX, [EBP + 0x10]
+		MOV y, EAX
+		MOV EAX, [EBP + 0x14]
+		MOV elevation, AL
+		POP EAX
+		MOV image, EAX
+		PUSHAD
+	}
+	result = iscript_create_sprite(image, id, x, y, elevation);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x10
+	}
+}
+
 namespace hooks {
 	void inject_unit_destructor_special_hooks() {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
+		jump_patch(iscript_create_sprite_wrapper,			0x004D7120, 1);
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 	}

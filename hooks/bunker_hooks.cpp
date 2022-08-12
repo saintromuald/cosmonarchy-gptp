@@ -112,7 +112,7 @@ namespace hooks
 			return;
 		}
 
-		bunkerAttackEffect->sprite->elevation_level = unitVar->sprite->elevation_level + 1;
+		bunkerAttackEffect->sprite->elevation = unitVar->sprite->elevation + 1;
 		for (Image* image = bunkerAttackEffect->sprite->images.head; image; image = image->link.next) {
 			helper::set_image_direction(image, frameAngle);
 		}
