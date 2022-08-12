@@ -2214,6 +2214,15 @@ namespace hooks
 		if (unitExt->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
+
+		// Legionnaire - Blade Vortex - Handle debuff overlay
+		u32 blade_vortex = unitExt->timers[TimerBladeVortex];
+		if (blade_vortex > 1 && !unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id))) {
+			unit->sprite->create_top_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		}
+		else if (unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id)) && blade_vortex < 1) {
+			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		}
 	}
 
 	bool game_on() {
