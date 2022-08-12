@@ -2223,6 +2223,16 @@ namespace hooks
 		else if (unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id)) && blade_vortex < 1) {
 			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
 		}
+
+		// Magister - Stellar Enforcement - Handle overlay looping
+		if (unitExt->values[ValueStellarEnforcement] && unitExt->timers[TimerStellarEnforcementOverlay] == 1) {
+			unitExt->timers[TimerStellarEnforcementOverlay] = 30;
+			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		}
+		// Handle overlays after effect is cleansed
+		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unitExt->values[ValueStellarEnforcement] == 0) {
+			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		}
 	}
 
 	bool game_on() {
