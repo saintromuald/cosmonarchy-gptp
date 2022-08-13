@@ -888,7 +888,8 @@ namespace hooks
 		}
 
 		// Apostle, Anticthon - Revive
-		if (data.final_damage > 0 && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive])) {
+		if (data.final_damage > 0 && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive])
+			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
 			u32 hp = target_ext->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
 
 			if (target_ext->timers[TimerAnticthonRevive]) {
@@ -990,9 +991,9 @@ namespace hooks
 				case WeaponId::AlkajeliskPlasmidSpores:
 				case WeaponId::AlkajeliskParasiticSpores:
 				{
-					// Alkajelisk - Parasite
-					target_ext->values[ValueAlkajeliskParasite] = 1;
-					target_ext->values[ValueAlkajeliskParasitePlayer] = data.attacker->player;
+					// Alkajelisk - Spores
+					target_ext->values[ValueAlkajeliskSpores] = 1;
+					target_ext->values[ValueAlkajeliskSporesPlayer] = data.attacker->player;
 				} break;
 			}
 

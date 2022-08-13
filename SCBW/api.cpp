@@ -2567,16 +2567,16 @@ namespace scbw
 			|| order_id == OrderId::TurretAttack;
 	}
 
-	bool unit_should_consume_corpse(Unit* unit) {
+	CorpseConsume unit_get_corpse_consume(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive]) {
-			return true;
-		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (unit_ext->parasite_spawn_count[i]) {
-				return true;
+				return CorpseConsume_Parasite;
 			}
 		}
-		return false;
+		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive]) {
+			return CorpseConsume_Revive;
+		}
+		return CorpseConsume_None;
 	}
 }

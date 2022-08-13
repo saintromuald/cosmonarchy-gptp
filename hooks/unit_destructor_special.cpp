@@ -359,11 +359,11 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Alkajelisk Parasitic Spores behavior
-	if (unit_ext->values[ValueAlkajeliskParasite] == 1)
+	if (unit_ext->values[ValueAlkajeliskSpores] == 1)
 	{
 		unit->order_target.pt.x = unit->position.x + 1;
 		unit->order_target.pt.y = unit->position.y;
-		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskParasitePlayer], 0);
+		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskSporesPlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;
@@ -418,7 +418,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Parasite - broodspawn on death
-	{
+	if (scbw::unit_get_corpse_consume(unit) == CorpseConsume_Parasite) {
 		u16 type = UnitId::ZergRilirokor;
 		if (units_dat::base_property[unit->id] & UnitProperty::Flyer
 		||	unit->status & UnitStatus::InAir)
