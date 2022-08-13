@@ -162,8 +162,8 @@ void unit_destructor_special_cases(Unit* unit)
 	/*
 	if (!(unit->user_action_flags & 4) && // for silent remove
 		  unit->status & UnitStatus::Completed && 
-	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
-		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
+	     (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk ||
+		  unit->id == UnitId::ZergGathtelosk     || unit->id == UnitId::ZergSibraelosk ||
 		  units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) ||
 		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 	{
@@ -228,7 +228,7 @@ void unit_destructor_special_cases(Unit* unit)
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			*g_can_update_powered_status = true;
 		} break;
-		case UnitId::ZergNydusCanal:
+		case UnitId::ZergNydusCesiant:
 		{
 			Unit* nydus_exit = unit->building.nydus_exit;
 			if (nydus_exit != nullptr)

@@ -587,14 +587,14 @@ namespace scbw
 
 	bool is_zerg_building_morph_result(u16 id) {
 		switch (id) {
-			case UnitId::ZergSire:
-			case UnitId::ZergHive:
-			case UnitId::ZergLair:
+			case UnitId::ZergSibraelosk:
+			case UnitId::ZergGathtelosk:
+			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
-			case UnitId::ZergLarvalColony:
-			case UnitId::ZergSporeColony:
-			case UnitId::ZergSunkenColony:
+			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergSpraithColony:
+			case UnitId::ZergSurkithColony:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
 			case UnitId::ZergGorgralSwamp:
@@ -609,12 +609,12 @@ namespace scbw
 
 	bool is_zerg_building_morph_source(u16 id) {
 		switch (id) {
-			case UnitId::ZergHive:
-			case UnitId::ZergLair:
-			case UnitId::ZergHatchery:
+			case UnitId::ZergGathtelosk:
+			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergHachirosk:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergCreepColony:
+			case UnitId::ZergCagrantColony:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergHydrokDen:
 			case UnitId::ZergMuthrokSpire:
@@ -1908,21 +1908,21 @@ namespace scbw
 
 	bool is_zerg_production(u16 unit_id)
 	{
-		return unit_id == UnitId::ZergHatchery
-			|| unit_id == UnitId::ZergLair
-			|| unit_id == UnitId::ZergHive
-			|| unit_id == UnitId::ZergSire
-			|| unit_id == UnitId::ZergLarvalColony;
+		return unit_id == UnitId::ZergHachirosk
+			|| unit_id == UnitId::ZergCaphrolosk
+			|| unit_id == UnitId::ZergGathtelosk
+			|| unit_id == UnitId::ZergSibraelosk
+			|| unit_id == UnitId::ZergLarvoskColony;
 	}
 	
 	bool unit_id_is_town_center(u16 unit_id)
 	{
 		return unit_id == UnitId::TerranCommandCenter
 			|| unit_id == UnitId::ProtossNexus
-			|| unit_id == UnitId::ZergHatchery
-			|| unit_id == UnitId::ZergLair
-			|| unit_id == UnitId::ZergHive
-			|| unit_id == UnitId::ZergSire;
+			|| unit_id == UnitId::ZergHachirosk
+			|| unit_id == UnitId::ZergCaphrolosk
+			|| unit_id == UnitId::ZergGathtelosk
+			|| unit_id == UnitId::ZergSibraelosk;
 	}
 
 	bool unit_id_is_shared(u16 unit_id)
@@ -2126,11 +2126,11 @@ namespace scbw
 			|| unit_id == UnitId::ProtossPylon
 			|| unit_id == UnitId::ProtossPhotonCannon
 			|| unit_id == UnitId::ProtossShieldBattery
-			|| unit_id == UnitId::ZergCreepColony
-			|| unit_id == UnitId::ZergSunkenColony
-			|| unit_id == UnitId::ZergSporeColony
-			|| unit_id == UnitId::ZergLarvalColony
-			|| unit_id == UnitId::ZergNydusCanal;
+			|| unit_id == UnitId::ZergCagrantColony
+			|| unit_id == UnitId::ZergSurkithColony
+			|| unit_id == UnitId::ZergSpraithColony
+			|| unit_id == UnitId::ZergLarvoskColony
+			|| unit_id == UnitId::ZergNydusCesiant;
 	}
 
 	EntryArray get_writhing_web_sovroleths(Unit* unit) {
@@ -2161,7 +2161,7 @@ namespace scbw
 	static void stop_custom_creep_disappearing(Unit* unit)
 	{
 		Box32 rect = {};
-		bool spreads_creep = helper::get_creep_spread_area(UnitId::ZergHive, unit->position.x, unit->position.y, true, &rect);
+		bool spreads_creep = helper::get_creep_spread_area(UnitId::ZergGathtelosk, unit->position.x, unit->position.y, true, &rect);
 		if (rect.top > rect.bottom) {
 			return;
 		}
@@ -2181,13 +2181,13 @@ namespace scbw
 
 	void spread_custom_creep(Unit* unit) {
 		scbw::stop_custom_creep_disappearing(unit);
-		helper::spread_creep(UnitId::ZergHive, unit->position.x, unit->position.y);
+		helper::spread_creep(UnitId::ZergGathtelosk, unit->position.x, unit->position.y);
 	}
 
 	void update_custom_creep_disappearance(Unit* unit) {
 		UnitExt* unitExt = get_unit_ext(unit);
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			helper::update_creep_disappearance_unit_id(UnitId::ZergHive, unit->position.x, unit->position.y, true);
+			helper::update_creep_disappearance_unit_id(UnitId::ZergGathtelosk, unit->position.x, unit->position.y, true);
 		}
 	}
 
@@ -2367,7 +2367,7 @@ namespace scbw
 			return unit->id;
 		}
 		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] && !(unit->status & UnitStatus::InAir)) {
-			return UnitId::ZergHatchery;
+			return UnitId::ZergHachirosk;
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
 			return unit->id;
@@ -2519,12 +2519,12 @@ namespace scbw
 
 	u32 get_zerg_regression(u32 unit_id) {
 		switch (unit_id) {
-			case UnitId::ZergSunkenColony:		return UnitId::ZergCreepColony;
-			case UnitId::ZergSporeColony:		return UnitId::ZergCreepColony;
-			case UnitId::ZergLarvalColony:		return UnitId::ZergCreepColony;
-			case UnitId::ZergLair:				return UnitId::ZergHatchery;
-			case UnitId::ZergHive:				return UnitId::ZergLair;
-			case UnitId::ZergSire:				return UnitId::ZergHive;
+			case UnitId::ZergSurkithColony:		return UnitId::ZergCagrantColony;
+			case UnitId::ZergSpraithColony:		return UnitId::ZergCagrantColony;
+			case UnitId::ZergLarvoskColony:		return UnitId::ZergCagrantColony;
+			case UnitId::ZergCaphrolosk:				return UnitId::ZergHachirosk;
+			case UnitId::ZergGathtelosk:				return UnitId::ZergCaphrolosk;
+			case UnitId::ZergSibraelosk:				return UnitId::ZergGathtelosk;
 			case UnitId::ZergOthstolOviform:	return UnitId::ZergIrolIris;
 			case UnitId::ZergAlaszilArbor:		return UnitId::ZergOthstolOviform;
 			case UnitId::ZergLiivralPond:		return UnitId::ZergQuazrokPool;

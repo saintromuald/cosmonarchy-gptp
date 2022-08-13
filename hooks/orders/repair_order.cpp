@@ -170,7 +170,7 @@ namespace hooks
 					return 0;
 				}
 
-				if (target->id == UnitId::ZergNydusCanal && target->hitpoints >= units_dat::MaxHitPoints[target->id])
+				if (target->id == UnitId::ZergNydusCesiant && target->hitpoints >= units_dat::MaxHitPoints[target->id])
 				{
 					return 0;
 				}

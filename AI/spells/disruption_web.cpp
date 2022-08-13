@@ -60,7 +60,7 @@ namespace AI
 			}
 			if (target->id == UnitId::TerranWatchdog
 				|| target->id == UnitId::TerranBunker
-				|| target->id == UnitId::ZergSporeColony
+				|| target->id == UnitId::ZergSpraithColony
 				|| target->id == UnitId::ProtossPhotonCannon)
 			{
 				return true;

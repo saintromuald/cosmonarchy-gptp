@@ -3474,7 +3474,7 @@ namespace helper
 	/* !!! WARNING !!! Use EXTREME caution when calling this.
 	There is absolutely no guarantee that it will find the intended unit,
 	or that it will find a unit at all */
-	Unit* getUnitPointer()
+	Unit* get_unit_pointer()
 	{
 		static Unit* unit = nullptr;
 		__asm {
@@ -3507,7 +3507,7 @@ namespace helper
 		return return_value;
 	}
 
-	void function_004E8DA0(Unit* unit)
+	void set_larva_order_state(Unit* unit)
 	{
 		const u32 Func_Sub4E8DA0 = 0x004E8DA0;
 		__asm {
@@ -3518,7 +3518,7 @@ namespace helper
 		}
 	}
 
-	bool getLarvaSpawnPos(Unit* unit, Vector32* coords)
+	bool get_larva_spawn_pos(Unit* unit, Vector32* coords)
 	{
 		const u32 Func_getLarvaSpawnPos = 0x004E8E10;
 		static b32 return_pre_value;

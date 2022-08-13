@@ -292,10 +292,10 @@ u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 
 u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
 	u32 i = count_units_in_town(town, unit_id);
-	if (unit_id == UnitId::ZergCreepColony) {
-		i += number_of_equivalents_up(town, UnitId::ZergSunkenColony);
-		i += number_of_equivalents_up(town, UnitId::ZergSporeColony);
-		i += number_of_equivalents_up(town, UnitId::ZergLarvalColony);
+	if (unit_id == UnitId::ZergCagrantColony) {
+		i += number_of_equivalents_up(town, UnitId::ZergSurkithColony);
+		i += number_of_equivalents_up(town, UnitId::ZergSpraithColony);
+		i += number_of_equivalents_up(town, UnitId::ZergLarvoskColony);
 	} else {
 		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
 		if (equivalent.to != UnitId::None) {
@@ -330,7 +330,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 			placeholder->is_townhall_marker = true;
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::TerranCommandCenter);
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ProtossNexus);
-			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ZergHatchery);
+			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ZergHachirosk);
 		}
 		return;
 	}
@@ -378,7 +378,7 @@ static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
-	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
+	if (unit_id == UnitId::ZergCagrantColony || unit_id == UnitId::ZergLarvoskColony || unit_id == UnitId::ZergSurkithColony || unit_id == UnitId::ZergSpraithColony) {
 		return 2;
 	}
 	if (units_dat::group_flags[unit_id].is_factory || scbw::unit_id_is_tech(unit_id)) {
@@ -476,7 +476,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 bool is_basic_townhall(u32 unit_id) {
 	return unit_id == UnitId::TerranCommandCenter ||
 		unit_id == UnitId::ProtossNexus || 
-		unit_id == UnitId::ZergHatchery;
+		unit_id == UnitId::ZergHachirosk;
 }
 
 bool can_place_unit(u32 unit_id, Point16 position, u32 player) {

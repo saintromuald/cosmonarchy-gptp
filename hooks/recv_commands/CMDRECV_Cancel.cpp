@@ -66,10 +66,10 @@ namespace hooks
 			if (unit->id != UnitId::ZergLarva
 			&&  unit->id != UnitId::ZergMutalisk
 			&&  unit->id != UnitId::ZergHydralisk
-			&&  unit->id != UnitId::ZergHatchery
-			&&  unit->id != UnitId::ZergLair
+			&&  unit->id != UnitId::ZergHachirosk
+			&&  unit->id != UnitId::ZergCaphrolosk
 			&&  unit->id != UnitId::ZergMuthrokSpire
-			&&  unit->id != UnitId::ZergCreepColony
+			&&  unit->id != UnitId::ZergCagrantColony
 			&&  unit->status & UnitStatus::Completed
 			&&  unit->player == *g_active_nation_id) {
 				if (wUnitID == 0xFE) {

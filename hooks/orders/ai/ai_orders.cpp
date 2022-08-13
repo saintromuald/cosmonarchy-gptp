@@ -816,7 +816,7 @@ return 0;
 				{
 					if (i->main_order_id)
 					{
-						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCreepColony || i->id == UnitId::ZergSunkenColony)
+						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony)
 						{
 							u32 iterator2 = 0;
 							if (region_max)
@@ -900,7 +900,7 @@ return 0;
 								return;
 							}
 						}
-						case UnitId::ZergCreepColony:
+						case UnitId::ZergCagrantColony:
 						{
 							if (!g_aiscript_controller[player].ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
 							{
@@ -1859,10 +1859,10 @@ return 0;
 
 	static bool unit_id_is_stackable_building(u32 unit_id) {
 		switch (unit_id) {
-			case UnitId::ZergCreepColony:
-			case UnitId::ZergSunkenColony:
-			case UnitId::ZergSporeColony:
-			case UnitId::ZergLarvalColony:
+			case UnitId::ZergCagrantColony:
+			case UnitId::ZergSurkithColony:
+			case UnitId::ZergSpraithColony:
+			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
@@ -2266,7 +2266,7 @@ return 0;
 		switch (unit_id)
 		{
 			case UnitId::TerranCommandCenter:
-			case UnitId::ZergHatchery:
+			case UnitId::ZergHachirosk:
 			case UnitId::ProtossNexus:
 			{
 				placement_data_2 = 0;
@@ -2296,7 +2296,7 @@ return 0;
 					placement_data_2 = 0;
 				}
 			} break;
-			case UnitId::ZergCreepColony:
+			case UnitId::ZergCagrantColony:
 			{
 				if (g_aiscript_controller[player_var].ai_flags.spread_creep)
 				{

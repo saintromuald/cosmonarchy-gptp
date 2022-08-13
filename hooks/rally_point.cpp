@@ -93,7 +93,7 @@ namespace hooks
 					result = orders_dat::RequirementsOffset[OrderId::RallyPointToTile];
 					if (orders_dat::RequirementsOffset[OrderId::RallyPointToTile])
 					{
-						if (unit->id == UnitId::ZergCreepColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvalColony) // lame
+						if (unit->id == UnitId::ZergCagrantColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskColony) // lame
 						{
 							result = 1;
 						}
@@ -348,9 +348,9 @@ namespace hooks
 			|| unit->id == UnitId::TerranFulcrum
 			|| unit->id == UnitId::TerranStarport
 			|| unit->id == UnitId::ZergInfestedCommandCenter
-			|| unit->id == UnitId::ZergHatchery
-			|| unit->id == UnitId::ZergLair
-			|| unit->id == UnitId::ZergHive
+			|| unit->id == UnitId::ZergHachirosk
+			|| unit->id == UnitId::ZergCaphrolosk
+			|| unit->id == UnitId::ZergGathtelosk
 			|| unit->id == UnitId::ProtossNexus
 			|| unit->id == UnitId::ProtossGateway
 			|| unit->id == UnitId::ProtossStargate

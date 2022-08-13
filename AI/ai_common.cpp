@@ -216,7 +216,7 @@ namespace AI
 				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
 					if (target->can_detect()
-					||  target->id == UnitId::ZergSunkenColony
+					||  target->id == UnitId::ZergSurkithColony
 					||  target->id == UnitId::ZergLakizilisk)
 					{
 						totalNukeTargetValue = 800; // 0x0320

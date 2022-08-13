@@ -37,10 +37,10 @@ namespace hooks
 				id = UnitId::ProtossNexus;
 				break;
 			case RaceId::Zerg:
-				id = UnitId::ZergHatchery;
+				id = UnitId::ZergHachirosk;
 				break;
 			default:
-				id = UnitId::ZergHatchery;
+				id = UnitId::ZergHachirosk;
 				break;
 		}
 		return id;
@@ -56,7 +56,7 @@ namespace hooks
 				//		case UnitId::UmojanGarrison:
 				//		case UnitId::KelmorianMiningStation:		
 			case UnitId::ProtossNexus:
-			case UnitId::ZergHatchery:
+			case UnitId::ZergHachirosk:
 				return true;
 			default:
 				break;
@@ -71,7 +71,7 @@ namespace hooks
 		{
 			case UnitId::TerranCommandCenter:
 			case UnitId::ProtossNexus:
-			case UnitId::ZergHatchery://lairs and hives are not required
+			case UnitId::ZergHachirosk://lairs and hives are not required
 				return true;
 			default:
 				break;

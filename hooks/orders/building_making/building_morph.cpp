@@ -28,7 +28,7 @@ namespace hooks
 	}
 
 	void orders_zerg_build_self(Unit* building) {
-		bool is_nydus = building->id == UnitId::ZergNydusCanal && building->building.nydus_exit;
+		bool is_nydus = building->id == UnitId::ZergNydusCesiant && building->building.nydus_exit;
 		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_building_morph(building->id) || is_nydus) ? false : true);
 		if (is_nydus) {
 			BuildingModifier nydus_modifier = get_building_modifier(building->building.nydus_exit, 0, false);
@@ -387,29 +387,29 @@ namespace hooks
 
 		switch (unit_id)
 		{
-			case UnitId::ZergHatchery:
+			case UnitId::ZergHachirosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLair, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergCaphrolosk, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergLair:
+			case UnitId::ZergCaphrolosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergHive:
+			case UnitId::ZergGathtelosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergCreepColony:
+			case UnitId::ZergCagrantColony:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSporeColony, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSurkithColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpraithColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskColony, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergIrolIris:

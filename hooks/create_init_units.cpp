@@ -7,7 +7,7 @@ u8 GetRaceTownhall(u8 raceId)
 {
 	if (raceId == RaceId::Zerg)
 	{
-		return UnitId::ZergHatchery;
+		return UnitId::ZergHachirosk;
 	}
 	else if (raceId == RaceId::Terran)
 	{
@@ -277,20 +277,20 @@ namespace hooks
 		Unit* created_unit;
 		if (g_start_positions[player].x < *maxBoxRightValue / 2)
 		{
-			overlordStartX = g_start_positions[player].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;
+			overlordStartX = g_start_positions[player].x + units_dat::UnitBounds[UnitId::ZergHachirosk].right + units_dat::UnitBounds[UnitId::ZergHachirosk].left + 1;
 		}
 		else
 		{
-			overlordStartX = g_start_positions[player].x - (units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1);
+			overlordStartX = g_start_positions[player].x - (units_dat::UnitBounds[UnitId::ZergHachirosk].right + units_dat::UnitBounds[UnitId::ZergHachirosk].left + 1);
 		}
 
 		if (g_start_positions[player].y < *maxBoxBottomValue / 2)
 		{
-			overlordStartY = g_start_positions[player].y + units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1;
+			overlordStartY = g_start_positions[player].y + units_dat::UnitBounds[UnitId::ZergHachirosk].bottom + units_dat::UnitBounds[UnitId::ZergHachirosk].top + 1;
 		}
 		else
 		{
-			overlordStartY = g_start_positions[player].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
+			overlordStartY = g_start_positions[player].y - (units_dat::UnitBounds[UnitId::ZergHachirosk].bottom + units_dat::UnitBounds[UnitId::ZergHachirosk].top + 1);
 		}
 
 		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, player);

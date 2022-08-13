@@ -910,7 +910,7 @@ LABEL_15:
 				Unit* creatingUnit = helper::getCreatingUnit(unit);
 				helper::giveAllUnitPropertiesToPlayer(creatingUnit, playerIdVar);
 			}
-			if (unit->id == UnitId::ZergNydusCanal)
+			if (unit->id == UnitId::ZergNydusCesiant)
 			{
 				Unit* nydus_exit = unit->building.nydus_exit;
 				if (nydus_exit)

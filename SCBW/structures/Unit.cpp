@@ -1394,7 +1394,7 @@ bool Unit::give_to(u8 player)
 	assert(player < 12);
 	if (giveUnitToPlayer(this, player) != 0)
 	{
-		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::base_property[this->id] & UnitProperty::Building))
+		if ((this->id == UnitId::ZergNydusCesiant || !(units_dat::base_property[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
 			&& this->id != UnitId::ZergLarva)
 		{
