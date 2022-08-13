@@ -435,8 +435,8 @@ namespace hooks
 		std::stringstream builder;
 		builder << std::setprecision(4);
 
-		builder << unit->flingy_top_speed / 32 / 15 * 24;
-		std::string movementSpeed = builder.str();
+		builder << unit->flingy_top_speed / 24.0 / 32.0 << " tiles/sec";
+		std::string movement_speed = builder.str();
 		builder.str("");
 
 		s32 accel = hooks::get_modified_unit_acceleration(unit);
@@ -445,7 +445,7 @@ namespace hooks
 		builder.str("");
 
 		builder << hooks::get_modified_unit_turn_speed(unit);
-		std::string turnRate = builder.str();
+		std::string turn_rate = builder.str();
 		builder.str("");
 
 		std::string plane = unit->status & UnitStatus::InAir ? "Air" : "Ground";
@@ -663,7 +663,7 @@ namespace hooks
 
 		// text += "\nSize: " + std::string(size_text);
 		text += "\nPlane: " + plane;
-		text += "\nMove Speed: " + movementSpeed;
+		text += "\nMove Speed: " + movement_speed;
 		text += "\nStatus: " + status;
 
 		if (extended) {
@@ -674,7 +674,7 @@ namespace hooks
 			if (accel != 1) {
 				text += "\nAcceleration: " + acceleration;
 			}
-			text += "\nTurn Rate: " + turnRate;
+			text += "\nTurn Rate: " + turn_rate;
 			text += "\nSight Range: " + std::to_string(sight_range);
 			if (transport_space != 255)
 			{
