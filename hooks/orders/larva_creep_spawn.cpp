@@ -366,30 +366,9 @@ namespace hooks
 	}
 
 	// x and y are relative positions where (0,0) is presumably the center of the building
-	// !!! WARNING !!! Because of the super fun get_unit_pointer call in this function, you probably never want to call this function directly
 	bool in_creep_area(s32 x, s32 y)
 	{
-		// Default function:
-		Unit* unit = helper::get_unit_pointer();
 		return (x * x * 100 + y * y * 256) <= 10240000;
-
-		// TODO: Cleanup
-		// Per-unit function example
-//		Unit* unit = get_unit_pointer();
-		
-		/*
-		switch (g_death_table[214].player[11]) {
-		case 180:
-			return (x*x * 100 + y*y * 256) <= 2560000;
-		case UnitId::ZergCagrantColony:
-		case UnitId::ZergSpraithColony:
-		case UnitId::ZergSurkithColony:
-			return (x*x * 100 + y*y * 256) <= 10240000;
-
-		default: // hatchery/hive/lair
-			return (x*x*100 + y*y*256) <= 10240000;
-		}
-		*/
 	}
 
 	// Callback to determine the creep tile that will replace the existing tile.

@@ -371,12 +371,11 @@ namespace helper {
 	Unit* FindBestUnit(Box16* coords, u32 searchProc);																				// 004E8830
 
 	//// larva_creep_spawn
-	Unit* get_unit_pointer();
 	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680
 	void ai_training_overlord(Unit* main_building, Unit* larva);																	// 00435770
 	void update_unit_strength(Unit* unit);																							// 0049FA40
 	u32 iterate_units_at_location_target_proc_larva_count(Unit* unit, Box16* coords);												// 004E8280
-	void set_larva_order_state(Unit* unit);																								// 004E8DA0
+	void set_larva_order_state(Unit* unit);																							// 004E8DA0
 	bool get_larva_spawn_pos(Unit* unit, Vector32* coords);																			// 004E8E10
 
 	// TODO: move somewhere else?

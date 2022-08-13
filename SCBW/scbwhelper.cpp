@@ -3471,25 +3471,6 @@ namespace helper
 		}
 		return unit;
 	}
-	/* !!! WARNING !!! Use EXTREME caution when calling this.
-	There is absolutely no guarantee that it will find the intended unit,
-	or that it will find a unit at all */
-	Unit* get_unit_pointer()
-	{
-		static Unit* unit = nullptr;
-		__asm {
-			XOR EAX, EAX
-			SuperFunUnitFinder :
-			MOV EDX, DWORD PTR[EBP + EAX * 4]
-				INC EAX
-				CMP EDX, 0x0059CCA8
-				JB SuperFunUnitFinder
-				CMP EDX, 0x006283E8
-				JNB SuperFunUnitFinder
-				MOV unit, EDX
-		}
-		return unit;
-	}
 
 	u8 spread_creep(u32 unit_id, s32 x, s32 y)
 	{
