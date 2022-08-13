@@ -1175,14 +1175,14 @@ namespace hooks
 		Unit* targetUnit = parent->order_target.unit;
 		if (targetUnit)
 		{
-			bullet->sprite->elevation_level = targetUnit->sprite->elevation_level + 1;
+			bullet->sprite->elevation = targetUnit->sprite->elevation + 1;
 			bullet->attackTarget.unit = targetUnit;
 			bullet->attackTarget.pt.x = targetUnit->sprite->position.x;
 			bullet->attackTarget.pt.y = targetUnit->sprite->position.y;
 		}
 		else
 		{
-			bullet->sprite->elevation_level = parent->sprite->elevation_level + 1;
+			bullet->sprite->elevation = parent->sprite->elevation + 1;
 			bullet->attackTarget.unit = 0;
 			bullet->attackTarget.pt.x = parent->order_target.pt.x;
 			bullet->attackTarget.pt.y = parent->order_target.pt.y;

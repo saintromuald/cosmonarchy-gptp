@@ -1154,6 +1154,14 @@ enum Enum {
 	RechargeShieldsCustom_Medium				= 1548,
 	RechargeShieldsCustom_XLarge				= 1549,
 
+	BladeVortexDebuffSmall						= 1556,
+	BladeVortexDebuffMedium						= 1557,
+	BladeVortexDebuffLarge						= 1558,
+	StellarEnforcementDebuffSmall				= 1559,
+	StellarEnforcementDebuffMedium				= 1560,
+	StellarEnforcementDebuffLarge				= 1561,
+	StellarEnforcementDebuffXLarge				= 1562,
+
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
 	LastMinorDamageOverlay						= 471,

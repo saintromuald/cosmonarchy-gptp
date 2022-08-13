@@ -333,7 +333,7 @@ namespace hooks
 			if (!bStopThere) {
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy) {
-					thingy->sprite->elevation_level = unit->sprite->elevation_level + 1;
+					thingy->sprite->elevation = unit->sprite->elevation + 1;
 					helper::set_thingy_visibility_flags(thingy);
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);

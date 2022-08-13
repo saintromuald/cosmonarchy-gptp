@@ -836,7 +836,7 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation_level, unit->player, unit, unit);
+					globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation, unit->player, unit, unit);
 				}
 
 				// blast effects
@@ -2218,6 +2218,25 @@ namespace hooks
 		// Anticthon - Counter-Proposal - add overlay
 		if (unitExt->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
+		}
+
+		// Legionnaire - Blade Vortex - Handle debuff overlay
+		u32 blade_vortex = unitExt->timers[TimerBladeVortex];
+		if (blade_vortex > 1 && !unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id))) {
+			unit->sprite->create_top_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		}
+		else if (unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id)) && blade_vortex < 1) {
+			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		}
+
+		// Magister - Stellar Enforcement - Handle overlay looping
+		if (unitExt->values[ValueStellarEnforcement] && unitExt->timers[TimerStellarEnforcementOverlay] == 1) {
+			unitExt->timers[TimerStellarEnforcementOverlay] = 30;
+			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		}
+		// Handle overlays after effect is cleansed
+		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unitExt->values[ValueStellarEnforcement] == 0) {
+			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
 		}
 	}
 

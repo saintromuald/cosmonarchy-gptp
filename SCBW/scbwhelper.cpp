@@ -2794,7 +2794,7 @@ namespace helper
 		}
 	}
 
-	//Identical to is_valid_morph @ 0x0045CC60;
+	// is_valid_morph @ 0x0045CC60;
 	bool is_valid_building_morph(u16 buildingId)
 	{
 		bool result;

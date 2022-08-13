@@ -254,6 +254,12 @@ namespace hooks
 		// New AI defense logic -Veeq7
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
+		// Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
+		if (data.target && data.weapon_id == WeaponId::LegionnairePsiSabers) {
+			UnitExt* target_ext = get_unit_ext(data.target);
+			target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
+		}
+
 		// Reduce shields
 		if (data.shield_reduce_amount != 0 && can_damage)
 		{
@@ -670,6 +676,8 @@ namespace hooks
 						if (!target_ext->values[ValueStellarEnforcement])
 						{
 							target_ext->values[ValueStellarEnforcement] = 1;
+							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
+							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
 					case WeaponId::VithriliskCorrosiveSpores:
@@ -701,7 +709,7 @@ namespace hooks
 									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
-										thingy->sprite->elevation_level = target->sprite->elevation_level + 1;
+										thingy->sprite->elevation = target->sprite->elevation + 1;
 										helper::set_thingy_visibility_flags(thingy);
 									}
 								});
