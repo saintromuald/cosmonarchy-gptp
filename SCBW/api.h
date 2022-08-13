@@ -618,4 +618,5 @@ namespace scbw
 	bool unit_is_allied_or_detected(Unit* unit, u32 player);
 	u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
 	bool order_id_is_aggressive(u32 order_id);
+	bool unit_should_consume_corpse(Unit* unit);
 }

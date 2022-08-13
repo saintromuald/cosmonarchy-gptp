@@ -146,13 +146,14 @@ void unit_destructor_special_cases(Unit* unit)
 	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
 		Unit* parent = unit_ext->units[UnitAddonParent];
 		if (parent) {
-			for (u32 i = 0; i < 5; ++i) {
-				u32 unit_id = parent->build_queue[i];
-				if (unit_id == UnitId::None || i == parent->build_queue_slot) {
+			for (u32 i = 1; i < 5; ++i) {
+				u32 slot = i + parent->build_queue_slot;
+				u32 unit_id = parent->build_queue[slot];
+				if (unit_id == UnitId::None) {
 					continue;
 				}
 				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
-					helper::refund_queue_slot(parent, i);
+					helper::refund_queue_slot(parent, i--);
 				}
 			}
 		}
@@ -468,21 +469,25 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 }
 
 // Hooked to allow for player-colored corpses. -Pr0nogo
-Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) // 004D7120
-{
+Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) { // 004D7120 
 	Sprite* sprite = image->parent_sprite;
 	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
 	u32 pos_y = y + image->vertical_offset + sprite->position.y;
-	Thingy* result = helper::create_thingy(id, pos_x, pos_y, 0);
-	if (result)
-	{
-		if (scbw::sprite_id_is_corpse(result->sprite->id)) {
-			result->sprite->player = sprite->player;
+	if (scbw::sprite_id_is_corpse(id)) {
+		SpriteExt* sprite_ext = get_sprite_ext(sprite);
+		if (sprite_ext->should_consume_corpse) {
+			return false;
 		}
-		result->sprite->elevation = elevation;
-		helper::set_thingy_visibility_flags(result);
 	}
-	return result;
+	Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);
+	if (thingy) {
+		if (scbw::sprite_id_is_corpse(id)) {
+			thingy->sprite->player = sprite->player;
+		}
+		thingy->sprite->elevation = elevation;
+		helper::set_thingy_visibility_flags(thingy);
+	}
+	return thingy;
 }
 
 //-------- Actual hooking --------//

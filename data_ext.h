@@ -296,6 +296,7 @@ struct TileExt {
 
 struct SpriteExt {
 	bool is_fow_sprite;
+	bool should_consume_corpse;
 	Unit* owner;
 };
 

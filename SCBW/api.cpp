@@ -2566,4 +2566,17 @@ namespace scbw
 			|| order_id == OrderId::TowerAttack
 			|| order_id == OrderId::TurretAttack;
 	}
+
+	bool unit_should_consume_corpse(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive]) {
+			return true;
+		}
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (unit_ext->parasite_spawn_count[i]) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -510,6 +510,7 @@ namespace hooks
 		if (unit->sprite) {
 			SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
 			sprite_ext->owner = unit;
+			sprite_ext->should_consume_corpse = scbw::unit_should_consume_corpse(unit);
 		}
 
 		UnitExt* unitExt = get_unit_ext(unit);
