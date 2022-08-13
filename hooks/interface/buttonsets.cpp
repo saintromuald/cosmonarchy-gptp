@@ -281,7 +281,7 @@ namespace hooks {
 			} else if (count_burrowables != 0 && count_zergs == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
 			} else if (count_hatches == *g_client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHachirosk;
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
@@ -783,7 +783,7 @@ namespace hooks {
 					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
 						current_button_state = Button_State::Enabled;
 					}
-					if (unit->id == UnitId::ZergCreepColony && current_button->icon_id == IconId::SetRallyPoint) {
+					if (unit->id == UnitId::ZergCagrantColony && current_button->icon_id == IconId::SetRallyPoint) {
 						current_button_state = Button_State::Enabled;
 					}
 
@@ -1599,19 +1599,19 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if ((unit->id == UnitId::ZergLair				// Lair, Hive, Sire Larval Gestation passive
-								|| unit->id == UnitId::ZergHive
-								|| unit->id == UnitId::ZergSire) &&
+							else if ((unit->id == UnitId::ZergCaphrolosk				// Lair, Hive, Sire Larval Gestation passive
+								|| unit->id == UnitId::ZergGathtelosk
+								|| unit->id == UnitId::ZergSibraelosk) &&
 								current_button->icon_id == IconId::SuicideScourge)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergSire &&			// Sire Ectomorphic Accelerant passive
+							else if (unit->id == UnitId::ZergSibraelosk &&			// Sire Ectomorphic Accelerant passive
 								current_button->icon_id == IconId::ZergAdvancedBuildings)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergLarvalColony &&	// Larval Colony Larval Gestation passive
+							else if (unit->id == UnitId::ZergLarvoskColony &&	// Larval Colony Larval Gestation passive
 								current_button->icon_id == IconId::MetasynapticNode)
 							{
 								current_button_state = Button_State::Enabled;

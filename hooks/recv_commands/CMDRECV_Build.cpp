@@ -171,7 +171,7 @@ namespace hooks
 			|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & 0x3000)) // CanNotReceiveOrders or NoBrkCodeStart
 			&&   unit->main_order_id != OrderId::DroneBuild)
 			{
-				if ((unit->id != UnitId::ZergNydusCanal || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2)
+				if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2)
 				{
 					g_ai_minerals_reserve[unit->player] = units_dat::mineral_cost[target_unit_id];
 					g_ai_gas_reserve[unit->player] = units_dat::gas_cost[target_unit_id];

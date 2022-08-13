@@ -146,8 +146,8 @@ namespace UnitId
 		ZergAlkajChasm										= 212,		// Right Wall Missile Trap
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
-		ZergSire											= 227,		// Terran Gas Tank Type 2
-		ZergLarvalColony									= 216,		// Young Chrysalis
+		ZergSibraelosk										= 227,		// Terran Gas Tank Type 2
+		ZergLarvoskColony									= 216,		// Young Chrysalis
 
 		/*0x00*/	TerranMaverick							= 0,
 		/*0x01*/	TerranEidolon							= 1,
@@ -280,10 +280,10 @@ namespace UnitId
 		/*0x80*/	Powerup_UrajCrystal						= 128,
 		/*0x81*/	Powerup_KhalisCrystal					= 129,
 		/*0x82*/	ZergInfestedCommandCenter				= 130,
-		/*0x83*/	ZergHatchery							= 131,
-		/*0x84*/	ZergLair								= 132,
-		/*0x85*/	ZergHive								= 133,
-		/*0x86*/	ZergNydusCanal							= 134,
+		/*0x83*/	ZergHachirosk							= 131,
+		/*0x84*/	ZergCaphrolosk							= 132,
+		/*0x85*/	ZergGathtelosk							= 133,
+		/*0x86*/	ZergNydusCesiant						= 134,
 		/*0x87*/	ZergHydrokDen							= 135,
 		/*0x88*/	ZergSovthrathMound						= 136,
 		/*0x89*/	ZergGeszithRoost						= 137,
@@ -292,10 +292,10 @@ namespace UnitId
 		/*0x8C*/	ZergUltrokCavern						= 140,
 		/*0x8D*/	ZergMuthrokSpire						= 141,
 		/*0x8E*/	ZergQuazrokPool							= 142,
-		/*0x8F*/	ZergCreepColony							= 143,
-		/*0x90*/	ZergSporeColony							= 144,
+		/*0x8F*/	ZergCagrantColony						= 143,
+		/*0x90*/	ZergSpraithColony						= 144,
 		/*0x91*/	UnusedZerg1								= 145,
-		/*0x92*/	ZergSunkenColony						= 146,
+		/*0x92*/	ZergSurkithColony						= 146,
 		/*0x93*/	Special_OvermindWithShell				= 147,
 		/*0x94*/	Special_Overmind						= 148,
 		/*0x95*/	ZergExcisant							= 149,

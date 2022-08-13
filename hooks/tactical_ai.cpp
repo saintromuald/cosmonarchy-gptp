@@ -297,7 +297,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value attacking strategically important targets
-	if (target->id == UnitId::ZergNydusCanal
+	if (target->id == UnitId::ZergNydusCesiant
 	|| (units_dat::base_property[target->id] & UnitProperty::Worker && target->main_order_id == OrderId::ConstructingBuilding)
 	|| (units_dat::base_property[target->id] & UnitProperty::ResourceDepot && !(target->status & UnitStatus::Completed))) {
 		cost -= 50;

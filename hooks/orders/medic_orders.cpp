@@ -27,7 +27,7 @@ namespace hooks
 
 		if (target != nullptr)
 		{
-			if (target->id == UnitId::ZergNydusCanal && target->building.nydus_exit)
+			if (target->id == UnitId::ZergNydusCesiant && target->building.nydus_exit)
 			{
 				unit->order_to(OrderId::EnterNydusCanal, target);
 				return;

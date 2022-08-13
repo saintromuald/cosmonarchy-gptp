@@ -466,7 +466,7 @@ namespace hooks
 
  			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {
-				if (selection->id == UnitId::ZergNydusCanal
+				if (selection->id == UnitId::ZergNydusCesiant
 					&& selection->building.nydus_exit
 					&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
 				{
@@ -2110,7 +2110,7 @@ namespace hooks
 						}
 					}
 				}
-				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCanal) {
+				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCesiant) {
 					continue;
 				}
 

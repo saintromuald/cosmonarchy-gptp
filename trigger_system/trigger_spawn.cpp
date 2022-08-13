@@ -40,7 +40,7 @@ void update_spawn() {
 					unit->order_to(OrderId::AttackMove, seq->move_pos.x, seq->move_pos.y);
 				}
 			}
-			if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding || unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire) {
+			if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding || unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk || unit->id == UnitId::ZergSibraelosk) {
 				helper::spread_initial_creep(unit->id, unit->position.x, unit->position.y);
 			}
 		}

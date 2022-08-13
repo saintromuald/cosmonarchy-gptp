@@ -11,7 +11,7 @@ namespace hooks
 	{
 		Vector32 coords;
 		// look for a location to spawn a larva at
-		if (helper::getLarvaSpawnPos(main_building, &coords))
+		if (helper::get_larva_spawn_pos(main_building, &coords))
 		{
 			Unit* unit_created = helper::create_unit(UnitId::ZergLarva, coords.x, coords.y, main_building->player);
 			if (unit_created)
@@ -22,7 +22,7 @@ namespace hooks
 				unit_created->sprite->player = main_building->sprite->player;
 
 				// set main_order_state depending on the collision state with the connected building			
-				helper::function_004E8DA0(unit_created);
+				helper::set_larva_order_state(unit_created);
 				if (main_building->unit_ai != nullptr)
 				{
 					helper::ai_training_overlord(unit_created, main_building);
@@ -34,10 +34,8 @@ namespace hooks
 	// filter for larva in internal game searches, use the limit of 3 larvas
 	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building)
 	{
-		// while bReturnValue == false, the calling function keep calling,
-		// so it return true only when max amount of larvas was counted,
-		// since the counting itself is made with LARVA_COUNTER here and
-		// not in the calling function.
+		// While bReturnValue == false, the calling function keep calling, so it return true only when max amount of larvas was counted,
+		// since the counting itself is made with LARVA_COUNTER here and not in the calling function.
 		bool bReturnValue;
 		if (unit->id == UnitId::ZergLarva)
 		{
@@ -71,7 +69,6 @@ namespace hooks
 		}
 		if (unit->order_queue_timer == 0 && unit->player != 11)
 		{
-			// 004EA79E
 			*g_larva_counter = 0;
 			Box16 coords;
 			coords.left = unit->sprite->position.x - 256;
@@ -99,36 +96,34 @@ namespace hooks
 
 				if (unit->building.larva_timer == 0)
 				{
-					// 004EA80E:
 					unit->building.larva_timer = LarvaSpawnRateHatchery;
-					if (unit->id == UnitId::ZergLarvalColony)
+					if (unit->id == UnitId::ZergLarvoskColony)
 					{
 						unit->building.larva_timer /= LarvaFactorLarvalColony;
 					}
-					else if (unit->id == UnitId::ZergLair && unit->main_order_id != OrderId::Morph2
-						|| unit->id == UnitId::ZergHive && unit->main_order_id == OrderId::Morph2)
+					else if (unit->id == UnitId::ZergCaphrolosk && unit->main_order_id != OrderId::Morph2
+						|| unit->id == UnitId::ZergGathtelosk && unit->main_order_id == OrderId::Morph2)
 					{
 						unit->building.larva_timer /= LarvaFactorLair;
 					}
-					else if (unit->id == UnitId::ZergHive && unit->main_order_id != OrderId::Morph2
-						|| unit->id == UnitId::ZergSire && unit->main_order_id == OrderId::Morph2)
+					else if (unit->id == UnitId::ZergGathtelosk && unit->main_order_id != OrderId::Morph2
+						|| unit->id == UnitId::ZergSibraelosk && unit->main_order_id == OrderId::Morph2)
 					{
 						unit->building.larva_timer /= LarvaFactorHive;
 					}
-					else if (unit->id == UnitId::ZergSire && unit->main_order_id != OrderId::Morph2)
+					else if (unit->id == UnitId::ZergSibraelosk && unit->main_order_id != OrderId::Morph2)
 					{
 						unit->building.larva_timer /= LarvaFactorSire;
 					}
 
 					// if failed to find a spawn point for larva set the timer before retry to 3
 					Vector32 coords_2;
-					if (!helper::getLarvaSpawnPos(unit, &coords_2))
+					if (!helper::get_larva_spawn_pos(unit, &coords_2))
 					{
 						unit->building.larva_timer = 3;
 					}
 					else
 					{
-						// 004EA830:
 						Unit* new_larva = helper::create_unit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->player);
 						if (new_larva)
 						{
@@ -139,7 +134,7 @@ namespace hooks
 							new_larva->connected_unit = unit;
 							new_larva->sprite->player = unit->sprite->player;
 							// set main_order_state depending on the collision state with the connected building						
-							helper::function_004E8DA0(new_larva);
+							helper::set_larva_order_state(new_larva);
 
 							if (unit->unit_ai)
 							{
@@ -154,11 +149,11 @@ namespace hooks
 
 	void secondary_order_spread_creep_spawning_larva(Unit* unit)
 	{
-		if (unit->id == UnitId::ZergHatchery
-			|| unit->id == UnitId::ZergLair
-			|| unit->id == UnitId::ZergHive
-			|| unit->id == UnitId::ZergSire
-			|| unit->id == UnitId::ZergLarvalColony)
+		if (unit->id == UnitId::ZergHachirosk
+			|| unit->id == UnitId::ZergCaphrolosk
+			|| unit->id == UnitId::ZergGathtelosk
+			|| unit->id == UnitId::ZergSibraelosk
+			|| unit->id == UnitId::ZergLarvoskColony)
 		{
 			secondary_order_spawning_larva(unit);
 		}
@@ -185,14 +180,11 @@ namespace hooks
 		}
 		else
 		{
-			// 004EA8B6:
 			u8 result_00414680;
-
 			unit->building.creep_timer = 15;
-
 			// look for a place to spawn creep on
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
-			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in get_creep_region
+			// Replace UnitId::ZergGathtelosk with unit->id if giving specific buildings different creep bounding rectangles in get_creep_region
 			result_00414680 = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
 			if (unit->id == 180 && result_00414680 != 0)
 			{
@@ -260,14 +252,12 @@ namespace hooks
 			}
 			if (result_00414680 == 0)
 			{
-				// 004EA8DC:
-
 				bool isZergMainBuilding =
-					unit->id == UnitId::ZergHatchery
-					|| unit->id == UnitId::ZergLair
-					|| unit->id == UnitId::ZergHive
-					|| unit->id == UnitId::ZergSire
-					|| unit->id == UnitId::ZergLarvalColony;
+					unit->id == UnitId::ZergHachirosk
+				||  unit->id == UnitId::ZergCaphrolosk
+				||  unit->id == UnitId::ZergGathtelosk
+				||  unit->id == UnitId::ZergSibraelosk
+				||  unit->id == UnitId::ZergLarvoskColony;
 
 				u8 order_id;
 				if (isZergMainBuilding)
@@ -349,22 +339,22 @@ namespace hooks
 	}
 
 	// Determines which unit IDs are a creep source (i.e. spreads creep, not just requires it)
-	// Base buildings built by a drone return the value of "isComplete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
-	bool spreads_creep(u16 unit_id, bool isComplete)
+	// Base buildings built by a drone return the value of "is_complete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
+	bool spreads_creep(u16 unit_id, bool is_complete)
 	{
 		switch (unit_id)
 		{
-			case UnitId::ZergHatchery:
-			case UnitId::ZergCreepColony:
+			case UnitId::ZergHachirosk:
+			case UnitId::ZergCagrantColony:
 			{
-				return isComplete;
+				return is_complete;
 			}
-			case UnitId::ZergSire:
-			case UnitId::ZergHive:
-			case UnitId::ZergLair:
-			case UnitId::ZergSporeColony:
-			case UnitId::ZergSunkenColony:
-			case UnitId::ZergLarvalColony:
+			case UnitId::ZergSibraelosk:
+			case UnitId::ZergGathtelosk:
+			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergSpraithColony:
+			case UnitId::ZergSurkithColony:
+			case UnitId::ZergLarvoskColony:
 			{
 				return true;
 			}
@@ -376,30 +366,9 @@ namespace hooks
 	}
 
 	// x and y are relative positions where (0,0) is presumably the center of the building
-	// !!! WARNING !!! Because of the super fun getUnitPointer call in this function, you probably never want to call this function directly
 	bool in_creep_area(s32 x, s32 y)
 	{
-		// Default function:
-		Unit* unit = helper::getUnitPointer();
 		return (x * x * 100 + y * y * 256) <= 10240000;
-
-		// TODO: Cleanup
-		// Per-unit function example
-//		Unit* unit = getUnitPointer();
-		
-		/*
-		switch (g_death_table[214].player[11]) {
-		case 180:
-			return (x*x * 100 + y*y * 256) <= 2560000;
-		case UnitId::ZergCreepColony:
-		case UnitId::ZergSporeColony:
-		case UnitId::ZergSunkenColony:
-			return (x*x * 100 + y*y * 256) <= 10240000;
-
-		default: // hatchery/hive/lair
-			return (x*x*100 + y*y*256) <= 10240000;
-		}
-		*/
 	}
 
 	// Callback to determine the creep tile that will replace the existing tile.

@@ -766,16 +766,16 @@ namespace hooks
 			town_center = UnitId::ProtossNexus;
 		}
 		else if (g_player_table[player_id].race == RaceId::Zerg) {
-			town_center = UnitId::ZergHatchery;
+			town_center = UnitId::ZergHachirosk;
 		}
 
 		u32 unit_id = unit->id;
 		u8 player_race = g_player_table[player_id].race;
 		if ((unit_status & UnitStatus::Completed
-		||   unit_id == UnitId::ZergSire // new
-		||   unit_id == UnitId::ZergHive
-		||   unit_id == UnitId::ZergLair
-		||   unit_id == UnitId::ZergHatchery && helper::unit_is_morphing(unit))
+		||   unit_id == UnitId::ZergSibraelosk // new
+		||   unit_id == UnitId::ZergGathtelosk
+		||   unit_id == UnitId::ZergCaphrolosk
+		||   unit_id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
 		&&   unit_status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::Subunit) // was BYTE1, never saw that on a flag var before, so maybe Subunit should be FlyingBuilding (next entry)?
 		||  (unit->id == town_center))
 		{

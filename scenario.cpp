@@ -1552,7 +1552,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					if (player == 2 || player == 5) {
 						townhall = UnitId::ProtossNexus;
 					} else if (player == 3 || player == 6) {
-						townhall = UnitId::ZergHatchery;
+						townhall = UnitId::ZergHachirosk;
 					}
 
 					Point16 pos = fraud_spawn.sequence[player-1].location->pos;

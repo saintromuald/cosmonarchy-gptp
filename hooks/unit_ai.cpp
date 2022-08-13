@@ -270,7 +270,7 @@ namespace hooks
 				ai->trainQueueTypes[4] = 0;
 
 				unit->unit_ai = (UnitAi*)ai;
-				if (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire) {
+				if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk || unit->id == UnitId::ZergSibraelosk) {
 					if (unit->status & UnitStatus::Completed) {
 						unit->order_computer(OrderId::ComputerAI);
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
@@ -281,9 +281,9 @@ namespace hooks
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
 				&&	  unit->id != UnitId::TerranBunker
-				&&	  unit->id != UnitId::ZergCreepColony
-				&&	  unit->id != UnitId::ZergSporeColony
-				&&	  unit->id != UnitId::ZergSunkenColony
+				&&	  unit->id != UnitId::ZergCagrantColony
+				&&	  unit->id != UnitId::ZergSpraithColony
+				&&	  unit->id != UnitId::ZergSurkithColony
 				&&	  unit->id != UnitId::ProtossPylon
 				&&	  unit->id != UnitId::ProtossPhotonCannon)
 				{
@@ -299,7 +299,7 @@ namespace hooks
 					town->gas_buildings[2] = 0;
 				}
 
-				u32 town_hall_id = UnitId::ZergHatchery;
+				u32 town_hall_id = UnitId::ZergHachirosk;
 				if (g_player_table[unit->player].race == RaceId::Terran) {
 					town_hall_id = UnitId::TerranCommandCenter;
 				}

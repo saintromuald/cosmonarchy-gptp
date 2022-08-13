@@ -53,9 +53,9 @@ struct AiUnitEquivalent {
 };
 
 const AiUnitEquivalent equivalents[] = {
-	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
-	{UnitId::ZergLair, UnitId::ZergHive, 1},
-	{UnitId::ZergHive, UnitId::ZergSire, 1},
+	{UnitId::ZergHachirosk, UnitId::ZergCaphrolosk, 1},
+	{UnitId::ZergCaphrolosk, UnitId::ZergGathtelosk, 1},
+	{UnitId::ZergGathtelosk, UnitId::ZergSibraelosk, 1},
 
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
 	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 2},
@@ -67,9 +67,9 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, 1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 
-	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony, 0, true},
-	{UnitId::ZergCreepColony, UnitId::ZergSporeColony, 0, true},
-	{UnitId::ZergCreepColony, UnitId::ZergLarvalColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergSurkithColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergSpraithColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergLarvoskColony, 0, true},
 
 	{UnitId::ZergDroleth, UnitId::ZergGosvileth},
 	{UnitId::ZergOvileth, UnitId::ZergIroleth},
