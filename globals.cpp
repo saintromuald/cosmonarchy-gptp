@@ -1123,7 +1123,7 @@ namespace scbw
 		UnitExt* unitExt = get_unit_ext(unit);
 		bool has_parasite = false;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unitExt->parasite_spawn_count[i]) {
+			if (!scbw::is_allied_to(i, unit->player)) {
 				has_parasite = true;
 			}
 		}
@@ -1159,12 +1159,14 @@ namespace scbw
 		// remove status effects and corresponding overlays
 
 		// Remove Parasite
-		if (unitExt->timers[TimerParasiteArm]) {
+		if (!scbw::is_allied_to(unitExt->values[ValueParasiteArmPlayer], unit->player) && unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			unitExt->parasite_spawn_count[i] = 0;
+			if (!scbw::is_allied_to(i, unit->player)) {
+				unitExt->parasite_spawn_count[i] = 0;
+			}
 		}
 
 		// Remove default flags
