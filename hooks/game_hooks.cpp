@@ -520,6 +520,11 @@ namespace hooks
 			}
 		}
 
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
+			UnitExt* addon_ext = get_unit_ext(unit->building.addon);
+			addon_ext->units[UnitAddonParent] = unit;
+		}
+
 		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (unit->is_visible_to(i)) {

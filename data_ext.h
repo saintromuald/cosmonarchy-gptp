@@ -220,6 +220,7 @@ enum ExtUnitId
 	UnitTurretParentLink,
 	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
+	UnitAddonParent,
 
 	UnitCount,
 };

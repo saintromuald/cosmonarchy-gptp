@@ -140,8 +140,23 @@ void free_resource_container(Unit* resource)
 
 void unit_destructor_special_cases(Unit* unit)
 {
-	UnitExt* unitExt = get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	unit->reset_supply_provided();
+
+	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
+		Unit* parent = unit_ext->units[UnitAddonParent];
+		if (parent) {
+			for (u32 i = 0; i < 5; ++i) {
+				u32 unit_id = parent->build_queue[i];
+				if (unit_id == UnitId::None || i == parent->build_queue_slot) {
+					continue;
+				}
+				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
+					helper::refund_queue_slot(parent, i);
+				}
+			}
+		}
+	}
 
 	/*
 	if (!(unit->user_action_flags & 4) && // for silent remove
@@ -343,11 +358,11 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Alkajelisk Parasitic Spores behavior
-	if (unitExt->values[ValueAlkajeliskParasite] == 1)
+	if (unit_ext->values[ValueAlkajeliskParasite] == 1)
 	{
 		unit->order_target.pt.x = unit->position.x + 1;
 		unit->order_target.pt.y = unit->position.y;
-		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
+		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskParasitePlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;
@@ -355,20 +370,20 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Madrigal - Dirge
-	if (unitExt->timers[TimerDirgeFuse])
+	if (unit_ext->timers[TimerDirgeFuse])
 	{
-		scbw::madrigal_dirge_fuse(unit, unitExt);
+		scbw::madrigal_dirge_fuse(unit, unit_ext);
 	}
 
 	// Apostle Lazarus Agent - imply revive
-	if (unitExt->values[ValueLazarusAgent] || unitExt->timers[TimerAnticthonRevive])
+	if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive])
 	{
 		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit, 1, 0);
 	}
 
 	// Nuclear Silo - death
-	if (unit->id == UnitId::TerranMissileSilo && unit->building.silo.is_ready && !unitExt->timers[TimerControlledDemolition])
+	if (unit->id == UnitId::TerranMissileSilo && unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition])
 	{
 		scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
 		helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
@@ -410,8 +425,8 @@ void unit_destructor_special_cases(Unit* unit)
 			type = UnitId::ZergRililisk;
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unitExt->parasite_spawn_count[i]) {
-				scbw::create_unit_from_ability(type, unitExt->parasite_spawn_count[i], i, unit->position.x, unit->position.y, 720);
+			if (unit_ext->parasite_spawn_count[i]) {
+				scbw::create_unit_from_ability(type, unit_ext->parasite_spawn_count[i], i, unit->position.x, unit->position.y, 720);
 			}
 		}
 	}
