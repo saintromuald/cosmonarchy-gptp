@@ -12727,4 +12727,18 @@ namespace helper
 		}
 		return (bool)result;
 	}
+
+	Point16 ai_prepare_to_flee(Unit* target, Unit* unit) {
+		static Point16 result;
+		const u32 func_address = 0x00476A50;
+		__asm {
+			PUSHAD
+			PUSH target
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

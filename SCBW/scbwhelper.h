@@ -1411,4 +1411,6 @@ namespace helper {
 	u32 get_total_hp_plus_shields(Unit* unit);																// 00402710
 
 	bool unit_is_morphing(Unit* unit);																		// 0045CD00
+
+	Point16 ai_prepare_to_flee(Unit* target, Unit* unit);													// 00476A50
 }

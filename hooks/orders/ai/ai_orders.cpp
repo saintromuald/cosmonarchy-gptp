@@ -10,28 +10,27 @@ namespace hooks
 {
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
 	// TODO: finish and cleanup
+	// End brace fuckery on 14 Aug 2022, check carefully
 	void ai_unit_was_hit(Unit* self, Unit* attacker, s32 main_target_reactions, s32 dont_call_help) // 0043F320
 	{
-		AiRegion* v14;
+		AiRegion* self_region;
 		s32 v15;
-		AiRegion* selfRegion;
-		char v18;
+		char self_region_state;
 		s16 v19;
 		s16 child0;
-		s32 child1;
-		s32 child3;
+		s32 self_order_id;
+		s32 self_id;
 		s32 child5;
 		s32 child6;
-		Unit* child7;
+		Unit* new_target;
 		__int64 parentAi3;
 		Unit* parentAi4;
-		Unit* parentAi6;
+		Unit* self_subunit;
 		Unit* parentAi7;
 		s32 parentAi9;
-		s32 childAi0;
 		s32 childAi1;
 		s32 childAi2;
-		s32 childAi4;
+		s32 is_unbreakable;
 
 		if (g_player_table[self->player].type != PlayerType::Computer || self->player >= 8u)
 		{
@@ -42,10 +41,10 @@ namespace hooks
 			if (self->unit_ai)
 			{
 				g_aiscript_controller[self->player].previous_building_hit_second = *g_elapsed_time_seconds;
-				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
-				if (selfBuildingAi)
+				BuildingAi* self_building_ai = (BuildingAi*)self->unit_ai;
+				if (self_building_ai)
 				{
-					selfBuildingAi->town->in_battle = 1;
+					self_building_ai->town->in_battle = 1;
 				}
 				if (main_target_reactions)
 				{
@@ -55,8 +54,8 @@ namespace hooks
 							&& !(self->main_order_id) // Original function call checks if unit has a sprite??? 00475A50
 							&& !(self->status & UnitStatus::Completed))
 						{
-							s32 quartTotalHP = self->get_total_hp_plus_shields() / 4;
-							if (self->get_current_life_ingame() < quartTotalHP)
+							s32 quart_total_hp = self->get_total_hp_plus_shields() / 4;
+							if (self->get_current_life_ingame() < quart_total_hp)
 							{
 								helper::ai_cancel_structure(self); // originally unused variable v8
 								return;
@@ -64,230 +63,241 @@ namespace hooks
 						}
 					}
 				}
+
+
 			}
-		}
-		Unit* target = helper::ai_get_actual_target(self, attacker);
-		Unit* actual_target = target;
-		if (target->status & UnitStatus::InBuilding)
-		{
-			actual_target = target->connected_unit;
-			if (!actual_target)
+			Unit* target = helper::ai_get_actual_target(self, attacker);
+			Unit* actual_target = target;
+			if (target->status & UnitStatus::InBuilding)
 			{
-				return;
-			}
-		}
-		if (actual_target->status & UnitStatus::CloakingForFree)
-		{
-			if (!(actual_target->status & UnitStatus::CloakingForFree))
-			{
-				actual_target = helper::check_arbiter_cloaking_range(self, UnitId::ProtossDidact);
+				actual_target = target->connected_unit;
 				if (!actual_target)
 				{
 					return;
 				}
 			}
-		}
-		if (main_target_reactions)
-		{
-			helper::ai_order_unit_cloaking(self);
-			helper::ai_order_lurker_burrow(self);
-		}
-		UnitAi* selfUnitAi = (UnitAi*)self->unit_ai;
-		parentAi9 = 0;
-		childAi1 = 0;
-		if (!selfUnitAi)
-		{
-			goto LABEL_37;
-		}
-		if (selfUnitAi->type == 4)
-		{
-			MilitaryAi* selfMilitaryAi = (MilitaryAi*)selfUnitAi;
-			if (selfMilitaryAi->region->state == 1)
+			if (actual_target->status & UnitStatus::CloakingForFree)
 			{
-				if (self->is_unit_ai_non_building())
+				if (!(actual_target->status & UnitStatus::CloakingForFree))
 				{
-					helper::ai_assign_military_to_region(2, selfMilitaryAi->region);
+					actual_target = helper::check_arbiter_cloaking_range(self, UnitId::ProtossDidact);
+					if (!actual_target)
+					{
+						return;
+					}
 				}
 			}
-			childAi1 = helper::ai_is_under_attack(self, 0);
-		}
-		if (!main_target_reactions || !helper::unit_is_active_transport(self) || !(self->status & UnitStatus::IsBuilding))
-			goto LABEL_37;
-		if (helper::is_unit_loaded(self))
-		{
-			if (self->main_order_id != 111)
+
+			if (main_target_reactions)
 			{
-				helper::issue_order_targeting_nothing(self, 0x6Fu);
+				helper::ai_order_unit_cloaking(self);
+				helper::ai_order_lurker_burrow(self);
 			}
-			return;
-		}
-		if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
-		{
-			if (g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
+
+			UnitAi* self_unit_ai = (UnitAi*)self->unit_ai;
+			parentAi9 = 0;
+			childAi1 = 0;
+			if (!self_unit_ai)
 			{
-				parentAi9 = 1;
+				goto LABEL_37;
 			}
-LABEL_37:
-			v14 = &g_ai_region_captains[(u8)self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
-			if (!parentAi9)
+			if (self_unit_ai->type == 4)
 			{
-				if (!dont_call_help)
+				MilitaryAi* selfMilitaryAi = (MilitaryAi*)self_unit_ai;
+				if (selfMilitaryAi->region->state == 1)
 				{
-					helper::ai_ask_for_help(self, actual_target, childAi1);
+					if (self->is_unit_ai_non_building())
+					{
+						helper::ai_assign_military_to_region(2, selfMilitaryAi->region);
+					}
 				}
-				if (!childAi1)
+				childAi1 = helper::ai_is_under_attack(self, 0);
+			}
+
+			if (!main_target_reactions || !helper::unit_is_active_transport(self) || !(self->status & UnitStatus::IsBuilding))
+			{
+				goto LABEL_37;
+			}
+			if (helper::is_unit_loaded(self))
+			{
+				if (self->main_order_id != 111)
 				{
-					if (!self->unit_ai
-						|| helper::ai_is_under_attack(self, 0)
-						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-						&& g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
-					{
-						childAi2 = 0;
-					}
-					selfRegion = &g_ai_region_captains[(u8)self->player][helper::get_region_id_from_unit(actual_target)];
-					if (childAi2)
-					{
-						v18 = v14->state;
-						if (v18 == 5 || v18 == 4)
-						{
-							helper::ai_assign_military_to_region(6, v14);
-						}
-						if (v14->state)
-						{
-							if (!selfRegion->state && *g_elapsed_time_seconds > 60)
-								helper::ai_assign_military_to_region(5, selfRegion);
-						}
-					}
+					helper::issue_order_targeting_nothing(self, OrderId::Unload);
+				}
+				return;
+			}
+
+			if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
+			{
+				if (g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
+				{
+					parentAi9 = 1;
+				}
+			LABEL_37:
+				self_region = &g_ai_region_captains[(u8)self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
+				if (!parentAi9)
+				{
 					if (!dont_call_help)
 					{
-						selfRegion->air_strength_enemy = helper::get_enemy_air_strength_in_region(selfRegion->region, (u8)self->player);
-						selfRegion->ground_strength_enemy = helper::get_enemy_strength_in_region(selfRegion->region, (u8)self->player, 0);
-						v19 = selfRegion->air_strength_needed;
-						if (v19 > v14->air_strength_needed)
+						helper::ai_ask_for_help(self, actual_target, childAi1);
+					}
+
+					if (!childAi1)
+					{
+						if (!self->unit_ai
+							|| helper::ai_is_under_attack(self, 0)
+							|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
+							&& g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
 						{
-							v14->air_strength_needed = v19;
+							childAi2 = 0;
 						}
-						child0 = selfRegion->ground_strength_needed;
-						if (child0 > v14->ground_strength_needed)
+						self_region = &g_ai_region_captains[(u8)self->player][helper::get_region_id_from_unit(actual_target)];
+						if (childAi2)
 						{
-							v14->ground_strength_needed = child0;
+							self_region_state = self_region->state;
+							if (self_region_state == RegionState::TownRegionHigh || self_region_state == RegionState::TownRegionLow)
+							{
+								helper::ai_assign_military_to_region(6, self_region);
+							}
+							if (self_region->state)
+							{
+								if (!self_region->state && *g_elapsed_time_seconds > 60)
+								{
+									helper::ai_assign_military_to_region(5, self_region);
+								}
+							}
+						}
+						if (!dont_call_help)
+						{
+							self_region->air_strength_enemy = helper::get_enemy_air_strength_in_region(self_region->region, (u8)self->player);
+							self_region->ground_strength_enemy = helper::get_enemy_strength_in_region(self_region->region, (u8)self->player, 0);
+							v19 = self_region->air_strength_needed;
+							if (v19 > self_region->air_strength_needed)
+							{
+								self_region->air_strength_needed = v19;
+							}
+							child0 = self_region->ground_strength_needed;
+							if (child0 > self_region->ground_strength_needed)
+							{
+								self_region->ground_strength_needed = child0;
+							}
 						}
 					}
 				}
-			}
-			v14->flags |= 0x20u;
-			if (self->status & UnitStatus::Completed)
-			{
-				child1 = (u8)self->main_order_id;
-				childAi0 = (u8)self->main_order_id;
-				if (child1 != OrderId::CompletingArchonSummon && child1 != OrderId::ResetCollision1 && child1 != OrderId::ConstructingBuilding)
+
+				self_region->flags |= 0x20u;
+				if (self->status & UnitStatus::Completed)
 				{
-					if (main_target_reactions || !scbw::order_is_spell(child1))
+					self_order_id = self->main_order_id;
+					if (self_order_id != OrderId::CompletingArchonSummon && self_order_id != OrderId::ResetCollision1 && self_order_id != OrderId::ConstructingBuilding)
 					{
-						child3 = (u16)self->id;
-						if (self->id || child1 != OrderId::EnterTransport)
+						if (main_target_reactions || !scbw::order_is_spell(self_order_id))
 						{
-							childAi4 = helper::unit_is_performing_unbreakable_code(self);
-							if (childAi4 || !helper::ai_cast_spell_behavior(self, main_target_reactions))
+							self_id = self->id;
+							if (self->id || self_order_id != OrderId::EnterTransport)
 							{
-								if (child1 != OrderId::RechargeShields1 && child1 != OrderId::Move)
+								is_unbreakable = helper::unit_is_performing_unbreakable_code(self);
+								if (is_unbreakable || !helper::ai_cast_spell_behavior(self, main_target_reactions))
 								{
-									if (!main_target_reactions)
+									if (self_order_id != OrderId::RechargeShields1 && self_order_id != OrderId::Move)
 									{
-										goto LABEL_126;
-									}
-									if (child3 != UnitId::ProtossSolarion
-//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->unit_with_hangar.in_hangar_count)) > 2u
-										|| !helper::ai_transport_action(self))
-									{
-										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings
-											|| ((child5 = 3 * self->get_total_hp_plus_shields() / 4, self->get_current_life_ingame() > child5)
-												|| child3 != UnitId::ProtossDidact && child3 != UnitId::TerranWraith && child3 != UnitId::ZergMutalisk
-												|| !helper::ai_transport_action(self))
-											&& ((child6 = 2 * self->get_total_hp_plus_shields() / 3, self->get_current_life_ingame() > child6)
-												|| child3 != UnitId::TerranMinotaur && child3 != UnitId::ProtossSolarion && child3 != UnitId::ProtossPanoptus
-												|| !helper::ai_transport_action(self)))
+										if (!main_target_reactions)
 										{
-											if (self->id != UnitId::ZergLakizilisk
-												|| self->status & UnitStatus::Burrowed
-												|| childAi0 == OrderId::Burrow
-												|| childAi0 == OrderId::Unburrow)
+											goto LABEL_126;
+										}
+										if (self_id != UnitId::ProtossSolarion
+											//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->unit_with_hangar.in_hangar_count)) > 2u
+											|| !helper::ai_transport_action(self))
+										{
+
+											if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
+												|| g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings
+												|| ((self->get_current_life_ingame() > 3 * self->get_total_hp_plus_shields() / 4)
+													|| !scbw::ai_unit_id_can_flee_quarter(self_id)
+													|| !helper::ai_transport_action(self))
+												&& ((self->get_current_life_ingame() > 2 * self->get_total_hp_plus_shields() / 3)
+													|| !scbw::ai_unit_id_can_flee_third(self_id)
+													|| !helper::ai_transport_action(self)))
 											{
-												child7 = actual_target;
-											}
-											else
-											{
-												child7 = actual_target;
-												if (helper::ai_flee(self, actual_target))
+												Unit* new_target = 0;
+												if (self->id != UnitId::ZergLakizilisk
+													|| self->status & UnitStatus::Burrowed
+													|| self_order_id == OrderId::Burrow
+													|| self_order_id == OrderId::Unburrow)
 												{
-													return;
+													new_target = actual_target; // I know this var's initialization looks retarded, and it probably is, but I'm leaving it for now. -Pr0nogo
 												}
-											}
-											if (childAi4
-												|| !(self->status & UnitStatus::IsBuilding)
-												|| helper::unit_has_ground_path(self, child7->sprite->position.x, child7->sprite->position.y)
-												|| !helper::ai_flee(self, child7))
-											{
-									LABEL_126:
-												if (self->order_target.unit != actual_target)  // Responding with worker
+												else
 												{
-													if (!(units_dat::base_property[(u16)self->id] & UnitProperty::Worker)
-														|| (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
-														|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
-														|| helper::ai_has_no_defense_build((u8)self->id))
+													new_target = actual_target;
+													if (helper::ai_flee(self, actual_target))
 													{
-														if (main_target_reactions)
+														return;
+													}
+												}
+												if (is_unbreakable
+													|| !(self->status & UnitStatus::IsBuilding)
+													|| helper::unit_has_ground_path(self, new_target->sprite->position.x, new_target->sprite->position.y)
+													|| !helper::ai_flee(self, new_target))
+												{
+												LABEL_126:
+													if (self->order_target.unit != actual_target) // Responding with worker
+													{
+														if (!(units_dat::base_property[(u16)self->id] & UnitProperty::Worker)
+															|| (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
+															|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
+															|| helper::ai_has_no_defense_build((u8)self->id))
 														{
-															if (self->unit_ai)
+															if (main_target_reactions)
 															{
-																if (helper::unit_can_see_cloaked_target(actual_target, self))
+																if (self->unit_ai)
 																{
-																	helper::ai_respond_to_cloaked_threat(self, actual_target);
-																}
-															}
-														}
-														if (!childAi4)
-														{
-															if (helper::unit_can_attack_target(actual_target, self, 1))
-															{
-																parentAi6 = self->subunit;
-																parentAi7 = self->subunit;
-																self->auto_target_unit = actual_target;
-																if (parentAi7->is_subunit())
-																{
-																	parentAi6->auto_target_unit = actual_target;
-																}
-																helper::ai_update_attack_target(self, 0, 1, 0);
-															}
-															else if (self->unit_ai)
-															{
-																if (childAi0 != 159
-//																	|| (parentAi3 = ai_prepare_to_flee(actual_target, self), (s32)parentAi3 == *(s32*)&self->sprite->position)
-																	)
-																{
-																	if (main_target_reactions)
+																	if (helper::unit_can_see_cloaked_target(actual_target, self))
 																	{
-																		if (self->id != 34)
+																		helper::ai_respond_to_cloaked_threat(self, actual_target);
+																	}
+																}
+															}
+															if (!is_unbreakable)
+															{
+																if (helper::unit_can_attack_target(actual_target, self, 1))
+																{
+																	self_subunit = self->subunit;
+																	self->auto_target_unit = actual_target;
+																	if (self_subunit->is_subunit())
+																	{
+																		self_subunit->auto_target_unit = actual_target;
+																	}
+																	helper::ai_update_attack_target(self, 0, 1, 0);
+																}
+																else if (self->unit_ai)
+																{
+																	Point16 flee_pos = {};
+																	if (self_order_id != 159 || (flee_pos = helper::ai_prepare_to_flee(actual_target, self), flee_pos == self->sprite->position))
+																	{
+																		if (main_target_reactions)
 																		{
-																			parentAi4 = self->order_target.unit;
-																			if (!parentAi4 || !helper::unit_can_attack_target(parentAi4, parentAi4, 1))
+																			if (self->id != 34)
 																			{
-																				helper::ai_flee(self, actual_target);
+																				parentAi4 = self->order_target.unit;
+																				if (!parentAi4 || !helper::unit_can_attack_target(parentAi4, parentAi4, 1))
+																				{
+																					helper::ai_flee(self, actual_target);
+																				}
 																			}
 																		}
 																	}
-																}
-																else
-																{
-//																	order_interrupt(self, 6u, (Point32*)parentAi3, (Unit*)HIDWORD(parentAi3)); // point32 was dwPosition, I think that's the same thing
+																	else
+																	{
+																		helper::order_interrupt(self, 0, flee_pos.x, flee_pos.y, OrderId::Move); // Could be WRONG
+																	}
 																}
 															}
 														}
-													}
-													else if (main_target_reactions)
-													{
-														helper::ai_flee(self, actual_target);
+														else if (main_target_reactions)
+														{
+															helper::ai_flee(self, actual_target);
+														}
 													}
 												}
 											}
