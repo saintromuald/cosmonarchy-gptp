@@ -11,6 +11,15 @@
 #define NOMINMAX
 #include <windows.h>
 
+// Text colors
+#define BWTC_RESET		"\002"
+#define BWTC_TEAL		"\017"
+#define BWTC_GREEN		"\007"
+#define BWTC_YELLOW		"\003"
+#define BWTC_ORANGE		"\021"
+#define BWTC_RED		"\006"
+#define BWTC_WHITE		"\004"
+
 enum CorpseConsume {
 	CorpseConsume_None,
 	CorpseConsume_Parasite,

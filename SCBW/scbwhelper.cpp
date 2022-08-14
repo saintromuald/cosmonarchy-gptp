@@ -12727,4 +12727,17 @@ namespace helper
 		}
 		return (bool)result;
 	}
+
+	char cmdact_unload(Unit* unit) {
+		const u32 func_address = 0x004BFDB0;
+		static u8 result;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

@@ -12,15 +12,6 @@
 #include <algorithm>
 #include "player_color.h"
 
-// Text colors	TODO: Move to other file
-#define BWTC_RESET		"\002"
-#define BWTC_TEAL		"\017"
-#define BWTC_GREEN		"\007"
-#define BWTC_YELLOW		"\003"
-#define BWTC_ORANGE		"\021"
-#define BWTC_RED		"\006"
-#define BWTC_WHITE		"\004"
-
 char buffer[256];
 
 // Returns the special damage multiplier factor for units that don't use the

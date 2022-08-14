@@ -477,9 +477,9 @@ namespace hooks
 		auto result = *g_is_placing_building;
 		if (*g_is_placing_building)
 		{
-			auto y = mouse->y;
-			auto x = mouse->x;
-			auto mouse_pos = Point16{(u16)mouse->x, (u16)mouse->y};
+			auto y = g_mouse->y;
+			auto x = g_mouse->x;
+			auto mouse_pos = Point16{(u16)g_mouse->x, (u16)g_mouse->y};
 			if (helper::init_placement_box_pos(&mouse_pos))
 			{
 				*g_place_building_message_id = helper::update_placement_state_for_placement_box();

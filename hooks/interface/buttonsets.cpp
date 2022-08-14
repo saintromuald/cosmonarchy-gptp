@@ -1745,8 +1745,8 @@ namespace hooks {
 							stack_placeholder.unknown_value_1 = 0x00000006;
 							stack_placeholder.unknown_value_2 = 0x00000000;
 							stack_placeholder.unknown_value_3 = 0x000E;
-							stack_placeholder.mouseY = mouse->y;
-							stack_placeholder.mouseX = mouse->x;
+							stack_placeholder.mouseY = g_mouse->y;
+							stack_placeholder.mouseX = g_mouse->x;
 							stack_placeholder.buttonState = current_button_state;
 							stack_placeholder.buttonset = current_buttonset;
 							helper::fxn_interact(current_dialog, (u32)&stack_placeholder);

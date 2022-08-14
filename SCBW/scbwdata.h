@@ -135,7 +135,7 @@ SCBW_DATA(s32*, g_screen_y,				0x00628470);
 SCBW_DATA(Point16*, g_start_positions,	0x0058D720);
 
 /// Mouse position relative to the screen
-SCBW_DATA(const Vector32*, mouse,		0x006CDDC4);
+SCBW_DATA(const Vector32*, g_mouse,		0x006CDDC4);
 
 /// Booleans indicating which keyboard buttons are held
 

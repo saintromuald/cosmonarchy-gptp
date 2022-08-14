@@ -25,6 +25,7 @@
 #include "scenario.h"
 #include "ai_layouts.h"
 #include "trigger_system/trigger_system.h"
+#include "trigger_system/trigger_parser.h"
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
@@ -86,15 +87,15 @@ namespace hooks
 
 	static bool process_quickcasting() {
 		if (config.quick_casting && *g_is_targeting && !disable_quickcasting) {
-			if (PtInRect(minimap_rect, *(POINT*) mouse)) {
-				u16 x = mouse->x;
-				u16 y = mouse->y;
+			if (PtInRect(minimap_rect, *(POINT*)g_mouse)) {
+				u16 x = g_mouse->x;
+				u16 y = g_mouse->y;
 				helper::get_minimap_cursor_pos(&x, &y);
 				helper::do_targeted_order(x, y, 0, UnitId::None);
 			} else {
 				Event event = {};
-				event.x_pos = mouse->x;
-				event.y_pos = mouse->y;
+				event.x_pos = g_mouse->x;
+				event.y_pos = g_mouse->y;
 				helper::input_target_order_left_mouse_click(&event);
 			}
 			if (*g_is_targeting) {
@@ -116,8 +117,8 @@ namespace hooks
 			}
 			if (not_held) {
 				Point16 position = {};
-				position.x = mouse->x;
-				position.y = mouse->y;
+				position.x = g_mouse->x;
+				position.y = g_mouse->y;
 
 				Event event = {};
 				event.x_pos = position.x;
@@ -377,36 +378,47 @@ namespace hooks
 				Point16 start_pos = {179, 333}; // {441, 203};
 				Point16 pos = start_pos;
 
-				u32 cargo_count[UnitId::Count] = {};
+				u32 x_count = 0;
 				for (u32 i = 0; i < *g_client_selection_count; ++i) {
 					Unit* transport = g_client_selection_group->unit[i];
 					if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
 						for (u32 j = 0; j < TransportCap; ++j) {
 							Unit* cargo_unit = transport->get_loaded_unit(j);
 							if (cargo_unit) {
-								cargo_count[cargo_unit->id]++;
+								char buffer[128] = {};
+
+								bool own_unit = cargo_unit->player == *g_local_nation_id;
+								if (own_unit) {
+									snprintf(buffer, 128, BWTC_GREEN "%s", get_short_unit_name(cargo_unit->id).data);
+								} else {
+									snprintf(buffer, 128, "%s", get_short_unit_name(cargo_unit->id).data);
+								}
+								u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+
+								RECT rect = {};
+								rect.left = pos.x;
+								rect.top = pos.y;
+								rect.right = rect.left + width;
+								rect.bottom = rect.top + 13;
+								bool hover = PtInRect(&rect, *(POINT*)g_mouse) && own_unit;
+								if (hover) {
+									snprintf(buffer, 128, BWTC_YELLOW "%s (U to unload)", get_short_unit_name(cargo_unit->id).data);
+									width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+								}
+
+								graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+								if (hover && g_is_keycode_used['U']) {
+									helper::cmdact_unload(cargo_unit);
+								}
+
+								pos.x += width + 5;
+								x_count++;
+								if (x_count > 4) {
+									x_count = 0;
+									pos.x = start_pos.x;
+									pos.y -= 15; // += 15;
+								}
 							}
-						}
-					}
-				}
-
-				u32 x_count = 0;
-				for (u32 i = 0; i < UnitId::Count; ++i) {
-					if (cargo_count[i]) {
-						char buffer[128] = {};
-						if (cargo_count[i] == 1) {
-							snprintf(buffer, 128, "%s", Unit::get_name(i));
-						} else {
-							snprintf(buffer, 128, "%s (x%u)", Unit::get_name(i), cargo_count[i]);
-						}
-
-						u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-						graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-						pos.x += width + 5;
-						x_count++;
-						if (x_count > 4) {
-							pos.x = start_pos.x;
-							pos.y -= 15; // += 15;
 						}
 					}
 				}
