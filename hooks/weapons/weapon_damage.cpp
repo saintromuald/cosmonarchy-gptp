@@ -30,14 +30,13 @@ bool irradiateTarget(Unit* unit)
 void parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
 	switch (type) {
 		case AiseSignal_GetTransportCargoCount: {
+			u32 count = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
-				u32* ptr = (u32*)unit2;
-				u32 count = 0;
 				if (unit1->get_loaded_unit(i)) {
 					count += 1;
 				}
-				*ptr = count;
 			}
+			*(u32*)unit2 = count;
 		} break;
 	}
 }
