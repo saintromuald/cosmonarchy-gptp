@@ -390,8 +390,10 @@ namespace hooks
 								bool own_unit = cargo_unit->player == *g_local_nation_id;
 								if (own_unit) {
 									snprintf(buffer, 128, BWTC_GREEN "%s", get_short_unit_name(cargo_unit->id).data);
+								} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
+									snprintf(buffer, 128, BWTC_YELLOW "%s", get_short_unit_name(cargo_unit->id).data);
 								} else {
-									snprintf(buffer, 128, "%s", get_short_unit_name(cargo_unit->id).data);
+									snprintf(buffer, 128, BWTC_RED "%s", get_short_unit_name(cargo_unit->id).data);
 								}
 								u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 
@@ -402,7 +404,7 @@ namespace hooks
 								rect.bottom = rect.top + 13;
 								bool hover = PtInRect(&rect, *(POINT*)g_mouse) && own_unit;
 								if (hover) {
-									snprintf(buffer, 128, BWTC_YELLOW "%s (U to unload)", get_short_unit_name(cargo_unit->id).data);
+									snprintf(buffer, 128, BWTC_WHITE "%s (U to unload)", get_short_unit_name(cargo_unit->id).data);
 									width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 								}
 

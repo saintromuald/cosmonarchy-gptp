@@ -634,4 +634,6 @@ namespace scbw
 	u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
 	bool order_id_is_aggressive(u32 order_id);
 	CorpseConsume unit_get_corpse_consume(Unit* unit);
+	bool ai_unit_id_can_flee_quarter(u32 unit_id);
+	bool ai_unit_id_can_flee_third(u32 unit_id);
 }
