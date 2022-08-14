@@ -146,14 +146,16 @@ void unit_destructor_special_cases(Unit* unit)
 	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
 		Unit* parent = unit_ext->units[UnitAddonParent];
 		if (parent) {
+			u32 offset = 0;
 			for (u32 i = 1; i < 5; ++i) {
-				u32 slot = i + parent->build_queue_slot;
+				u32 slot = i + parent->build_queue_slot - offset;
 				u32 unit_id = parent->build_queue[slot];
 				if (unit_id == UnitId::None) {
 					continue;
 				}
 				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
-					helper::refund_queue_slot(parent, i--);
+					helper::refund_queue_slot(parent, slot);
+					offset++;
 				}
 			}
 		}
