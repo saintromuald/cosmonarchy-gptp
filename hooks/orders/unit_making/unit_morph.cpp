@@ -270,6 +270,10 @@ namespace hooks
 						{
 							animation = IscriptAnimation::Landing;
 						} break;
+						case UnitId::ZergKeskathalor:
+						{
+							animation = IscriptAnimation::LiftOff;
+						} break;
 						default:
 						{
 							animation = IscriptAnimation::Init;
