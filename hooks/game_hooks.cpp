@@ -135,7 +135,7 @@ namespace hooks
 			}
 			*/
 		}
-		//update_discord(false);
+		update_discord(false);
 		update_trigger_system(false);
 	}
 
