@@ -55,11 +55,71 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	target->heal(heal * 256, shaman);
 }
 
+#pragma pack(push, 8)
+#include <discord_game_sdk.h>
+#pragma pack(pop)
+
+#define DiscordClientId 972072419013558326
 namespace hooks
 {
-	static bool game_inited;
+	static u32 discord_init_timeout;
+	static bool discord_in_game;
+	static IDiscordCore* discord;
 
-	void tick_unit(Unit* unit, bool unit_is_hidden);
+	static void init_discord(bool in_game) {
+		if (discord) {
+			return;
+		}
+		if (discord_init_timeout) {
+			discord_init_timeout--;
+			return;
+		}
+
+		DiscordCreateParams params = {};
+		params.client_id = DiscordClientId;
+		params.flags = DiscordCreateFlags_NoRequireDiscord;
+
+		EDiscordResult result = DiscordCreate(DISCORD_VERSION, &params, &discord);
+		if (result != DiscordResult_Ok) {
+			discord_init_timeout = 15 * 24; // Let's forget about discord for a while, if DiscordCreate fails
+			return;
+		}
+
+		discord_in_game = !in_game; // Let's force an update to activity, since we just init discord api
+	}
+
+	static void update_discord(bool in_game) {
+		init_discord(in_game);
+		if (!discord) {
+			return;
+		}
+
+		if (discord_in_game != in_game) {
+			IDiscordActivityManager* activity_manager = discord->get_activity_manager(discord);
+			if (activity_manager) {
+				DiscordActivity activity = {};
+				activity.type = DiscordActivityType_Playing;
+				sprintf_s(activity.name, "Cosmonarchy BW");
+				sprintf_s(activity.assets.large_text, "Cosmonarchy BW");
+				sprintf_s(activity.assets.large_image, "main");
+				activity.timestamps.start = time(0);
+				if (in_game) {
+					sprintf_s(activity.details, "%s", *current_map_name);
+					sprintf_s(activity.state, "In Game");
+					activity.instance = true;
+				} else {
+					sprintf_s(activity.details, "");
+					sprintf_s(activity.state, "In Menu");
+					activity.instance = false;
+				}
+				activity_manager->update_activity(activity_manager, &activity, 0, 0);
+			}
+		}
+
+		discord->run_callbacks(discord);
+	}
+
+	static bool game_inited;
 
 	void next_ui_frame() {
 		if (!game_inited) {
@@ -75,6 +135,7 @@ namespace hooks
 			}
 			*/
 		}
+		//update_discord(false);
 		update_trigger_system(false);
 	}
 
@@ -181,6 +242,8 @@ namespace hooks
 		return 0;
 	}
 
+	void tick_unit(Unit* unit, bool unit_is_hidden);
+
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
@@ -195,6 +258,8 @@ namespace hooks
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
+
+		update_discord(true);
 
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {
