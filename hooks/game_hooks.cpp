@@ -105,7 +105,7 @@ namespace hooks
 				sprintf_s(activity.assets.large_image, "cmbw");
 				activity.timestamps.start = time(0);
 				if (in_game) {
-					sprintf_s(activity.details, "%s", *current_map_name);
+					sprintf_s(activity.details, "%s", current_map_name);
 					sprintf_s(activity.state, "In Game");
 					activity.instance = true;
 				} else {
