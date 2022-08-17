@@ -95,13 +95,14 @@ namespace hooks
 		}
 
 		if (discord_in_game != in_game) {
+			discord_in_game = in_game;
 			IDiscordActivityManager* activity_manager = discord->get_activity_manager(discord);
 			if (activity_manager) {
 				DiscordActivity activity = {};
 				activity.type = DiscordActivityType_Playing;
 				sprintf_s(activity.name, "Cosmonarchy BW");
 				sprintf_s(activity.assets.large_text, "Cosmonarchy BW");
-				sprintf_s(activity.assets.large_image, "main");
+				sprintf_s(activity.assets.large_image, "cmbw");
 				activity.timestamps.start = time(0);
 				if (in_game) {
 					sprintf_s(activity.details, "%s", *current_map_name);
