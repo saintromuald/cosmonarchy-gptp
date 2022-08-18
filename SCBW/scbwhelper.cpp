@@ -4583,19 +4583,19 @@ namespace helper
 		}
 	}
 
-	// for generic_right_click_unit_proc_2
-
-	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5)
+	// For generic_right_click_unit_proc_2
+	// Not sure if unused is actually unused. -Pr0nogo
+	s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error)
 	{
 		const u32 Func_isOrderValid = 0x00474D90;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH a5
-			MOV ESI, a4
-			MOV EDI, a3
-			MOV EBX, a2
-			MOVZX AL, a1
+			PUSH error
+			MOV ESI, target
+			MOV EDI, unused
+			MOV EBX, self
+			MOVZX AL, order_id
 			CALL Func_isOrderValid
 			MOV result, EAX
 			POPAD
@@ -7984,7 +7984,7 @@ namespace helper
 	}
 
 	// For spell_order
-	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7)
+	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7)
 	{
 		const u32 Func_getOrderTargetErrorString = 0x00492020;
 		static s32 result;
@@ -10789,7 +10789,7 @@ namespace helper
 		return result;
 	}
 
-	bool is_unit_target_inside_min_range(Unit* unit, Unit* target) {
+	bool target_is_inside_minimum_range(Unit* unit, Unit* target) {
 		static bool result;
 		const u32 func_address = 0x004764D0;
 		__asm {
@@ -12767,5 +12767,80 @@ namespace helper
 			POPAD
 		}
 		return (bool)result;
+	}
+
+	u32 can_target_order_on_fow_unit(Unit* self, char order_id, u16 fow_unit_id, s32* error) {
+		static u32 result;
+		const u32 func_address = 0x004746D0;
+		__asm {
+			PUSHAD
+			MOV EDI, error
+			MOV CX, fow_unit_id
+			MOV DL, order_id
+			MOV EAX, self
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool unit_can_attack_ground_type(u16 fow_unit_id, Unit* self) {
+		static u32 result;
+		const u32 func_address = 0x00475C80;
+		__asm {
+			PUSHAD
+			MOV ECX, self
+			MOV AX, fow_unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	u16 get_targeting_error_string(u32 weapon_id, s32* error, Unit* target) {
+		static u32 result;
+		const u32 func_address = 0x0046EFE0;
+		__asm {
+			PUSHAD
+			MOV ECX, target
+			MOV EDX, error
+			MOV EAX, weapon_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used) {
+		static u32 result;
+		const u32 func_address = 0x004C0300;
+		__asm {
+			PUSHAD
+			PUSH keycode_used
+			PUSH fow_unit_id
+			PUSH y_pos
+			PUSH x_pos
+			MOV ESI, target
+			MOV DL, order_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	// Inverted args for sanity
+	void ground_attack_init(u16 x_pos, u16 y_pos) {
+		const u32 func_address = 0x00488660;
+		__asm {
+			PUSHAD
+			MOV CX, x_pos
+			MOV AX, y_pos
+			CALL func_address
+			POPAD
+		}
 	}
 }

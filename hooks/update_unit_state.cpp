@@ -27,7 +27,7 @@ namespace hooks
 				&& !(unit->status & UnitStatus::CloakingForFree))							// and must consume energy to stay cloaked (i.e. not under a Didact)
 			{
 				u16 cloakingEnergyCost = 0;
-				if (!(unit->hasEnergy(cloakingEnergyCost)))
+				if (!(unit->has_energy(cloakingEnergyCost)))
 				{
 					if (unit->secondary_order_id == OrderId::Cloak)
 					{

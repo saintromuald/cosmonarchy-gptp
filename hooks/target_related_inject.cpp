@@ -282,6 +282,39 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) do_targeted_order_wrapper() { // 0046F5B0
+		static void* unused;
+		static u32 sound_offset;
+		static u32 pos_x;
+		static u32 pos_y;
+		static Unit* target;
+		static s32 fow_unit_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV pos_x, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV pos_y, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV target, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV fow_unit_id, EAX
+			POP EAX
+			MOV sound_offset, ESI
+			MOV unused, ECX
+			PUSHAD
+		}
+		hooks::do_targeted_order(unused, sound_offset, pos_x, pos_y, target, fow_unit_id);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
 }
 
 namespace hooks
@@ -305,6 +338,7 @@ namespace hooks
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
 	//	jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
 		jump_patch(is_better_target_wrapper,						0x004769D0, 0);
+	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1);
 	}
 
 	void inject_target_related_hooks()

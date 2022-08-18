@@ -754,25 +754,25 @@ namespace techdata_dat {
 namespace orders_dat {
 	SCBW_DATA(const DatLoad*, ordersDat, 0x00513EC8);
 
-	SCBW_DATA(u16*, label, ordersDat[0].address);	//00665280
-	SCBW_DATA(u8*, UseWeaponTargeting, ordersDat[1].address);	//00664B00
-	//SCBW_DATA(u8*,	???,				ordersDat[2].address);	//00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
-	SCBW_DATA(u8*, Unused3, ordersDat[3].address);	//00665A00 //May be "Non-subunit" used for debug only
-	//SCBW_DATA(u8*,	???,				ordersDat[4].address);	//00664A40
-	//SCBW_DATA(u8*,	???,				ordersDat[5].address);	//006657C0 //May be "Subunit can use" used for debug only
-	SCBW_DATA(b8*, CanBeInterrupted, ordersDat[6].address);	//00665040
-	SCBW_DATA(u8*,	Unknown7, ordersDat[7].address); //00665100
-	SCBW_DATA(u8*, CanBeQueued, ordersDat[8].address);	//00665700 //"Can Be Queued" according to EUDDB
-	SCBW_DATA(u8*,	DisablingKeepsTarget, ordersDat[9].address);	//006651C0
-	SCBW_DATA(u8*, CanBeObstructed, ordersDat[10].address);	//006654C0 //"Can Be Obstructed?" according to EUDDB
-	//SCBW_DATA(u8*,	???,				ordersDat[11].address);	//00664C80
-	//SCBW_DATA(u8*,	???,				ordersDat[12].address);	//00664BC0 ////May be "Order requires moving"
-	SCBW_DATA(u8*, OrderWeaponId, ordersDat[13].address);	//00665880
-	SCBW_DATA(u8*, TechUsed, ordersDat[14].address);	//00664E00
-	SCBW_DATA(u8*, OrderIscriptAnim, ordersDat[15].address);	//00664D40 //Animation (IscriptAnimation) according to EUDDB
-	SCBW_DATA(u16*, ButtonIcon, ordersDat[16].address);	//00664EC0
-	SCBW_DATA(u16*, RequirementsOffset, ordersDat[17].address);	//00665580 //based on context
-	//SCBW_DATA(u8*,	???,				ordersDat[18].address);	//00665400 //"Obscured Order" according to EUDDB
+	SCBW_DATA(u16*, label,					ordersDat[0].address);	// 00665280
+	SCBW_DATA(u8*,	UseWeaponTargeting,		ordersDat[1].address);	// 00664B00
+//	SCBW_DATA(u8*,	???,					ordersDat[2].address);	// 00665940 // May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
+	SCBW_DATA(u8*,	Unused3,				ordersDat[3].address);	// 00665A00 // May be "Non-subunit" used for debug only
+//	SCBW_DATA(u8*,	???,					ordersDat[4].address);	// 00664A40
+//	SCBW_DATA(u8*,	???,					ordersDat[5].address);	// 006657C0 // May be "Subunit can use" used for debug only
+	SCBW_DATA(b8*,	CanBeInterrupted,		ordersDat[6].address);	// 00665040
+	SCBW_DATA(u8*,	Unknown7,				ordersDat[7].address);	// 00665100
+	SCBW_DATA(u8*,	CanBeQueued,			ordersDat[8].address);	// 00665700
+	SCBW_DATA(u8*,	DisablingKeepsTarget,	ordersDat[9].address);	// 006651C0
+	SCBW_DATA(u8*,	CanBeObstructed,		ordersDat[10].address);	// 006654C0 // "Can Be Obstructed?" according to EUDDB
+//	SCBW_DATA(u8*,	???,					ordersDat[11].address);	// 00664C80
+//	SCBW_DATA(u8*,	???,					ordersDat[12].address);	// 00664BC0 // May be "Order requires moving"
+	SCBW_DATA(u8*,	OrderWeaponId,			ordersDat[13].address);	// 00665880
+	SCBW_DATA(u8*,	TechUsed,				ordersDat[14].address);	// 00664E00
+	SCBW_DATA(u8*,	OrderIscriptAnim,		ordersDat[15].address);	// 00664D40
+	SCBW_DATA(u16*, ButtonIcon,				ordersDat[16].address);	// 00664EC0
+	SCBW_DATA(u16*, RequirementsOffset,		ordersDat[17].address);	// 00665580 // based on context
+	SCBW_DATA(u8*,	ObscuredOrderId,		ordersDat[18].address);	// 00665400
 } //orders_dat (last entry at 0x00513FA0)
 
 namespace sprites_dat {
@@ -996,9 +996,9 @@ SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
 SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
 
 // For btnsact_rally_point
-SCBW_DATA(char*,	order_id_ground,				0x00641691);
-SCBW_DATA(char*,	order_id_obstructed,			0x00641693);
-SCBW_DATA(char*,	order_id_unit,					0x00641692);
+SCBW_DATA(char*,	g_order_id_ground,				0x00641691);
+SCBW_DATA(char*,	g_order_id_obstructed,			0x00641693);
+SCBW_DATA(char*,	g_order_id_unit,				0x00641692);
 SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
 
 // For select_multiple_units_from_unit_list

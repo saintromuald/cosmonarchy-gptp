@@ -454,7 +454,7 @@ namespace helper {
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
 
 	// For spell_order
-	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7);									// 00492020
+	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7);												// 00492020
 	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																		// 00492450
 
 	// For canTargetSpell
@@ -527,7 +527,7 @@ namespace helper {
 	void stimpack_proc(Unit* unit);																									// 004554A0
 
 	// for generic_right_click_unit_proc_2
-	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																// 00474D90
+	s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error);											// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for cmdrecv_hold_position
@@ -1212,7 +1212,7 @@ namespace helper {
 	u32 get_optimal_mineral_workers(u32 resarea, u32 player);											// 004439B0
 	void ai_get_old_peons(AiTown* town, u32 count);														// 004355C0
 
-	bool is_unit_target_inside_min_range(Unit* unit, Unit* target);										// 004764D0
+	bool target_is_inside_minimum_range(Unit* unit, Unit* target);										// 004764D0
 	bool is_unit_enemy(Unit* unit, Unit* target);														// 0047B910
 	u32 play_transmission_from_location(u32 sfx_id, u32 volume, u32 misc, Unit* unit);					// 004BC270
 	s32 update_text_display(s32 update_case);															// 0048CB80
@@ -1415,4 +1415,11 @@ namespace helper {
 	Point16 ai_prepare_to_flee(Unit* target, Unit* unit);													// 00476A50
 
 	bool unit_is_enemy(Unit* other);																		// 004D1380
+
+	u32 can_target_order_on_fow_unit(Unit* self, char order_id, u16 fow_unit_id, s32* error);						// 004746D0
+	bool unit_can_attack_ground_type(u16 fow_unit_id, Unit* self);													// 00475C80
+	u16 get_targeting_error_string(u32 weapon_id, s32* error, Unit* target);										// 0046EFE0
+	char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used);	// 004C0300
+
+	void ground_attack_init(u16 x_pos, u16 y_pos);															// 00488660
 }

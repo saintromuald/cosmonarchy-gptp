@@ -425,7 +425,7 @@ namespace hooks
 						}
 						else
 						{
-							if (!helper::is_unit_target_inside_min_range(unit, target))
+							if (!helper::target_is_inside_minimum_range(unit, target))
 							{
 								return 1;
 							}
@@ -449,8 +449,8 @@ namespace hooks
 					}
 					if (target->id == UnitId::ResourceVespeneGeyser)
 					{
-						//sfx_id = unit->get_race() + 1;
-						//text_id = unit->get_race()  + 893;
+					//	sfx_id = unit->get_race() + 1;
+					//	text_id = unit->get_race()  + 893;
 					}
 					else
 					{

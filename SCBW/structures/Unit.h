@@ -117,7 +117,7 @@ struct Unit : public UnitLayout
 	///Return true if:
 	/// * THE GATHERING cheat is enabled or
 	/// * unit has at least @p energy available.
-	bool hasEnergy(u32 energy) const;
+	bool has_energy(u32 energy) const;
 
 	/// Returns true if:
 	/// * The unit has a weapon, or

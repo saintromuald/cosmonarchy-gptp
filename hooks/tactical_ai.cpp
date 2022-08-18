@@ -994,7 +994,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 		kiting_ai(unit, unitExt);
 
 		if (unit->id == UnitId::TerranApostle) {
-			if (unit->hasEnergy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 			{
 				s32 count = 0;
 				cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
@@ -1071,7 +1071,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				});
 			}
 
-			if (unit->hasEnergy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
 				s32 enemy_count = cosmonarchyUnitCount(0, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
 				if (enemy_count >= 2) {
 					s32 count = 0;

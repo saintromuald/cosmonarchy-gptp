@@ -1,6 +1,7 @@
 #include "rally_point.h"
 #include "../SCBW/api.h"
 #include "globals.h"
+#include "hooks/audiovisuals/sfxhooks.h"
 
 namespace hooks
 {
@@ -516,7 +517,7 @@ namespace hooks
 												}
 												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, g_is_keycode_used[16]);
 												if (helper::show_right_click_error_if_needed(unit_at_point)) {
-													helper::play_yes_unit_response(*g_active_portrait_unit);
+													hooks::play_yes_unit_response(*g_active_portrait_unit);
 												}
 											}
 											break;

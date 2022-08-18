@@ -6,6 +6,7 @@
 #include <globals.h>
 #include "byte_operations_utils.h"
 #include <limits.h>
+#include "hooks/audiovisuals/sfxhooks.h"
 
 namespace hooks
 {
@@ -1134,8 +1135,201 @@ LABEL_65:
 				}
 			}
 		}
-
-	//	scbw::printf("It's %u", result == 0 ? false : true);
 		return result;
+	}
+
+	// Hooked to allow for aggressive unit responses. -Pr0nogo
+	// Arg sound_offset was cucko'd by IDA, but we don't need the arg anyway since it gets written to before being used in both cases.
+	// TODO: Figure out how to properly access g_client_selection_group in this context
+	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) // 0046F5B0
+	{
+		if (!*g_is_targeting)
+		{
+			return;
+		}
+		s32 error = 0xFFFF;
+		helper::cancel_target_order();
+		u8 order_id = *g_order_id_obstructed;
+		if (target)
+		{
+			order_id = *g_order_id_unit;
+		}
+		else if (fow_unit_id == UnitId::None)
+		{
+			order_id = *g_order_id_ground;
+		}
+
+		char use_weapon = orders_dat::UseWeaponTargeting[order_id];
+		u8 weapon_id = orders_dat::OrderWeaponId[order_id];
+		u8 tech_id = orders_dat::TechUsed[order_id];
+		u32 energy_cost = 0;
+		if (tech_id < TechId::None)
+		{
+			energy_cost = techdata_dat::energy_cost[tech_id] << 8;
+		}
+		if (orders_dat::ObscuredOrderId[order_id] == OrderId::None)
+		{
+			fow_unit_id = UnitId::None;
+		}
+
+		char can_attack_final = 0;
+		char not_enough_energy = 0;
+		char can_target_and_has_energy = 0;
+		Unit** selected_units = &g_client_selection_group->unit[11];
+		Unit** selected_units_2 = &g_client_selection_group->unit[11];
+		while (1) {
+			Unit* unit = *selected_units; // Accessed incorrectly, unit = 0x100
+			if (*selected_units)
+			{
+				if (!unit->is_frozen())
+				{
+					if (!use_weapon)
+					{
+						if (tech_id >= TechId::None)
+						{
+							if (fow_unit_id >= UnitId::None)
+							{
+								helper::is_order_valid(order_id, unit, target, target, &error);
+							}
+							else
+							{
+								helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
+							}
+						}
+						else
+						{
+							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
+							{
+								if (!unit->has_energy(energy_cost))
+								{
+									not_enough_energy = 1;
+								}
+								can_target_and_has_energy = 1;
+							}
+						}
+						goto iterate_selection;
+					}
+					if (weapon_id == WeaponId::None)
+					{
+						if (!target)
+						{
+							if (helper::unit_can_attack_ground_type(fow_unit_id, unit))
+							{
+								can_attack_final = 1;
+							}
+							goto iterate_selection;
+						}
+						if (helper::get_right_click_action_order(unit) == 3)
+						{
+							if (is_unit_target_out_of_max_range(unit, target))
+							{
+								error = 888;
+								goto iterate_selection;
+							}
+							if (helper::target_is_inside_minimum_range(unit, target))
+							{
+								error = 889;
+								goto iterate_selection;
+							}
+						}
+						can_attack_final = unit_can_attack_target(target, unit, 1);
+						goto iterate_selection;
+					}
+					if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1)
+					{
+						if (!unit->has_energy(energy_cost))
+						{
+							not_enough_energy = 1;
+						}
+						can_attack_final = 1;
+					}
+				}
+			}
+		iterate_selection:
+			selected_units = selected_units_2 + 1;
+			selected_units_2++;
+			if (selected_units_2 >= &g_client_selection_group_end) {
+				break;
+			}
+		}
+
+		u32 error_type_2 = error;
+		Unit* active_unit = *g_active_portrait_unit;
+		u8 race = active_unit->get_race();
+		if (use_weapon)
+		{
+			if (!can_attack_final || error != -1)
+			{
+				helper::get_targeting_error_string(weapon_id, &error, target);
+				helper::display_error_message_id_with_sfx(active_unit->player, error, race + 138);
+				if (weapon_id == WeaponId::None)
+				{
+					helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
+				}
+				return;
+			}
+		check_energy:
+			if (energy_cost && !not_enough_energy)
+			{
+				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, race + 156);
+				return;
+			}
+		}
+		else
+		{
+			if (energy_cost)
+			{
+				if (!can_target_and_has_energy)
+				{
+					if (error == -1)
+					{
+						error = 876;
+					}
+					u16 error_type_1 = error - 1;
+					const char* error_string_2 = 0;
+					if (error)
+					{
+						if (error_type_1 < *g_stat_txt_tbl)
+						{
+							error_string_2 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[error_type_1 + 1];
+						}
+						else
+						{
+							error_string_2 = "";
+						}
+					}
+					helper::get_stat_txt_string(active_unit, *g_active_nation_id, (char*)error_string_2);
+					return;
+				}
+				error_type_2 = error;
+				goto check_energy;
+			}
+			error_type_2 = error;
+		}
+		if (error_type_2 == -1)
+		{
+			hooks::play_yes_unit_response(active_unit);
+			helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
+		}
+		else
+		{
+			u8 active_player = active_unit->player;
+			u16 error_string_id = error_type_2 - 1;
+			if (error_type_2)
+			{
+				if (error_string_id < *g_stat_txt_tbl)
+				{
+					helper::get_stat_txt_string(active_unit, active_player, (char*)(g_stat_txt_tbl + g_stat_txt_tbl[error_string_id + 1]));
+				}
+				else
+				{
+					helper::get_stat_txt_string(active_unit, active_player, "");
+				}
+			}
+			else
+			{
+				helper::get_stat_txt_string(active_unit, active_player, 0);
+			}
+		}
 	}
 }

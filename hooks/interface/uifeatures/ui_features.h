@@ -21,6 +21,7 @@ namespace hooks {
 	void draw_minimap_unit_box(u32 player);																		// 004A4650
 	void draw_all_minimap_boxes();																				// 004A4AC0
 	u32 get_cursor_type();																						// 004D1460
+	void cmdact_right_click(DialogEvent* dlg_event);															// 004563A0
 
 	void inject_ui_features_hooks();
 

@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include "config.h"
 #include "trigger_system/trigger_objectives.h"
+#include "hooks/audiovisuals/sfxhooks.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000
@@ -495,5 +496,67 @@ LABEL_15:
 			return 8;
 		}
 		return (helper::unit_is_enemy(unit_at_point) != 0) + 6;
+	}
+
+	// Hooked to allow for aggressive unit responses. -Pr0nogo
+	// Only works on minimap!
+	void cmdact_right_click(DialogEvent* dlg_event) // 004563A0
+	{
+		if (g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id)
+		{
+			u32 selection = 0;
+			while (1)
+			{
+				Unit* selected = g_client_selection_group->unit[selection];
+				if (selected)
+				{
+					if (helper::accepts_right_click_commands(selected))
+					{
+						break;
+					}
+				}
+				if (++selection >= SelectionCap)
+				{
+					return;
+				}
+			}
+			if (selection < SelectionCap)
+			{
+				u32 selection_2 = 0;
+				while (1)
+				{
+					Unit* selected_2 = g_client_selection_group->unit[selection_2];
+					if (selected_2)
+					{
+						if (helper::can_move(selected_2))
+						{
+							break;
+						}
+					}
+					if (++selection_2 >= SelectionCap)
+					{
+						return;
+					}
+				}
+				if (selection_2 < SelectionCap)
+				{
+					u32 x_pos = dlg_event->current.x;
+					u32 y_pos = dlg_event->current.y;
+					helper::get_minimap_cursor_pos((u16*)&x_pos, (u16*)&y_pos);
+					u16 mouse_pos_x = x_pos;
+					u16 mouse_pos_y = y_pos;
+					u8 command[10] = {};
+					command[0] = 20;
+					*(u16*)&command[1] = x_pos;
+					*(u16*)&command[3] = y_pos;
+					*(u16*)&command[5] = 0;
+					*(u16*)&command[7] = 228;
+					command[9] = g_is_keycode_used[16];
+					queue_game_command(command, 10);
+					hooks::play_yes_unit_response(*g_active_portrait_unit);
+					helper::ground_attack_init(mouse_pos_y, mouse_pos_x);
+				}
+			}
+		}
 	}
 }

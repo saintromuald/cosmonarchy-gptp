@@ -303,7 +303,7 @@ u32 Unit::get_sight_range(bool isForSpellCasting) const
 
 //Similar to function Unit__HasEnergy @ 0x00491480
 //The original function returned 0 when got energy or code
-bool Unit::hasEnergy(u32 energy) const
+bool Unit::has_energy(u32 energy) const
 {
 
 	if (
@@ -353,7 +353,7 @@ bool Unit::has_weapon() const
 	return false;
 }
 
-//Identical to function @ 0x004020B0
+// Identical to function @ 0x004020B0
 bool Unit::is_frozen() const
 {
 	assert(this);
