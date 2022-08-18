@@ -453,4 +453,47 @@ LABEL_15:
 		}
 		*g_current_surface = surface;
 	}
+
+	// Hooked for Veeq7's transport UI. -Pr0nogo
+	u32 get_cursor_type() // 004D1460
+	{
+		if (PtInRect((const RECT*)&g_minimap_rect, *(POINT*)g_mouse))
+		{
+			return (u16)*g_minimap_cursor;
+		}
+		if (helper::is_outside_of_game_screen(g_mouse->x, g_mouse->y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse))
+		{
+			return 0;
+		}
+		if (*g_is_drag_selecting)
+		{
+			return 9;
+		}
+		if (*g_is_placing_building)
+		{
+			return 0;
+		}
+		Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + *g_move_to_x, *g_move_to_y + g_mouse->y);
+		if (*g_is_targeting)
+		{
+			if (!unit_at_point)
+			{
+				return 5;
+			}
+			if (unit_at_point->player == 11)
+			{
+				return 2;
+			}
+			return 4 - (helper::unit_is_enemy(unit_at_point) != 0);
+		}
+		if (!unit_at_point)
+		{
+			return 0;
+		}
+		if (unit_at_point->player == 11)
+		{
+			return 8;
+		}
+		return (helper::unit_is_enemy(unit_at_point) != 0) + 6;
+	}
 }

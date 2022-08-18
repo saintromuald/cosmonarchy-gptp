@@ -150,7 +150,7 @@ namespace hooks
 
 		helper::send_message_something(xd, string);
 		helper::set_ingame_input_procs();
-		*unk_rally_related = 2;
+		*g_minimap_cursor = 2;
 		*orders_buttonset = 229;
 		helper::update_current_buttonset();
 	}

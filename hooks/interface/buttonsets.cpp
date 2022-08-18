@@ -440,7 +440,7 @@ namespace hooks {
 		if (hooks::quickcasting_signal) {
 			hooks::quickcasting_signal = false;
 			*orders_buttonset = hooks::quickcasting_command_card;
-			*minimap_cursor = 0;
+			*g_minimap_cursor = 0;
 		}
 
 		BinDlg** const BUTTONSET_DIALOG               = (BinDlg**)0x0068C148;

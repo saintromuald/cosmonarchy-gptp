@@ -191,6 +191,19 @@ namespace
 		}
 	}
 
+	void __declspec(naked) get_cursor_type_wrapper() { // 004D1460
+		static u32 result;
+		__asm {
+			PUSHAD
+		}
+		result = hooks::get_cursor_type();
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	bool show_fow_unit_check(Unit* unit) {
 		if (unit->status & (UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree)) {
 			if (helper::get_detecting_players(unit) & *g_player_visions) {
@@ -300,6 +313,7 @@ namespace hooks
 	//	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
 		jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
+		jump_patch(get_cursor_type_wrapper,					0x004D1460, 0);
 
 		// Allow units in fow (seems to desync)
 	//	jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites

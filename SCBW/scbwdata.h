@@ -999,7 +999,6 @@ SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
 SCBW_DATA(char*,	order_id_ground,				0x00641691);
 SCBW_DATA(char*,	order_id_obstructed,			0x00641693);
 SCBW_DATA(char*,	order_id_unit,					0x00641692);
-SCBW_DATA(u16*,		unk_rally_related,				0x006556FC);
 SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
@@ -1011,8 +1010,8 @@ SCBW_DATA(HACCEL*,				accelerator_tables,		0x005968F0);
 SCBW_DATA(InputProcsFunc**,		left_click_proc,		0x006556EC);
 SCBW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
 
-SCBW_DATA(u16*,					minimap_cursor,			0x006556FC);
-SCBW_DATA(RECT*,				minimap_rect,			0x00512D00);
+SCBW_DATA(u16*,					g_minimap_cursor,		0x006556FC);
+SCBW_DATA(RECT*,				g_minimap_rect,			0x00512D00);
 
 // For process_right_click_action
 SCBW_DATA(u16*,			is_unit_in_point_x_pos,			0x006509CC);
@@ -1074,6 +1073,10 @@ SCBW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
 SCBW_DATA(u16*,			g_map_tile_height,					0x0057F1D6);
 SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_begin,	0x00629688);
 SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_end,		0x00629288);
+
+// For get_cursor_type
+SCBW_DATA(RECT*,		g_cursor_limit_rect,				0x005993B0);
+SCBW_DATA(char*,		g_is_drag_selecting,				0x0066FF5C);
 
 //////////////////////////////////////////////////////////////// @}
 

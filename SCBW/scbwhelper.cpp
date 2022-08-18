@@ -12754,4 +12754,18 @@ namespace helper
 		}
 		return result;
 	}
+
+	// LOCAL
+	bool unit_is_enemy(Unit* other) {
+		static u32 result;
+		const u32 func_address = 0x004D1380;
+		__asm {
+			PUSHAD
+			MOV EAX, other
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
 }

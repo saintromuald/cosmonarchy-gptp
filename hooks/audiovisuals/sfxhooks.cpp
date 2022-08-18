@@ -6,8 +6,8 @@
 #include <hooks/limits/sfx_extender.h>
 
 namespace hooks {
-	// Hooked to allow more unit ids to have annoyed lines.
-	// Updated 22 July 2022 to remove annoyed lines. -Pr0nogo
+	// Hooked to allow more unit ids to have "annoyed" lines.
+	// Updated 22 July 2022 to remove "annoyed" lines, as they are now used for "under attack" lines. -Pr0nogo
 	u32 get_unit_response_id(s32 unit_id, s32 last_sound_id) { // 0048EA20
 		/*
 		if (!(units_dat::group_flags[unit_id].is_building)) { // original check was unit_id <= DisruptionWeb, now checks for existance of annoyed lines
@@ -49,7 +49,7 @@ namespace hooks {
 		}
 	}
 
-	// For aggressive order unit responses. -Pr0nogo
+	// Written for aggressive order unit responses. -Pr0nogo
 	u32 get_random_yes_unit_response_internal(u32 unit_id, u32 order_id) {
 		// Technically this will not work if a unit has attack sounds but no order passive sounds... -Pr0nogo
 		if (!(units_dat::group_flags[unit_id].is_building)) {

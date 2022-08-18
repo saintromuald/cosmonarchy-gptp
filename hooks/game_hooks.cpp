@@ -149,7 +149,7 @@ namespace hooks
 
 	static bool process_quickcasting() {
 		if (config.quick_casting && *g_is_targeting && !disable_quickcasting) {
-			if (PtInRect(minimap_rect, *(POINT*)g_mouse)) {
+			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
 				u16 x = g_mouse->x;
 				u16 y = g_mouse->y;
 				helper::get_minimap_cursor_pos(&x, &y);
