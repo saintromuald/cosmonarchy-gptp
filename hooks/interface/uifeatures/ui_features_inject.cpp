@@ -204,13 +204,13 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdact_right_click_wrapper() { // 004563A0
+	void __declspec(naked) cmdact_right_click_minimap_wrapper() { // 004563A0
 		static DialogEvent* dlg_event;
 		__asm {
 			MOV dlg_event, EAX
 			PUSHAD
 		}
-		hooks::cmdact_right_click(dlg_event);
+		hooks::cmdact_right_click_minimap(dlg_event);
 		__asm {
 			POPAD
 			RETN
@@ -327,7 +327,7 @@ namespace hooks
 		jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
 		jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
 		jump_patch(get_cursor_type_wrapper,					0x004D1460, 0);
-		jump_patch(cmdact_right_click_wrapper,				0x004563A0, 1);
+		jump_patch(cmdact_right_click_minimap_wrapper,		0x004563A0, 1);
 
 		// Allow units in fow (seems to desync)
 	//	jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites

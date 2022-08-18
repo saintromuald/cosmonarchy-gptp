@@ -1308,7 +1308,9 @@ LABEL_65:
 		}
 		if (error_type_2 == -1)
 		{
-			hooks::play_yes_unit_response(active_unit);
+			UnitExt* unit_ext = get_unit_ext(active_unit);
+			unit_ext->values[ValueUnitResponseOrder] = order_id;
+			hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
 			helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
 		}
 		else

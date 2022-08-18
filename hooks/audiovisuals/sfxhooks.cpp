@@ -30,14 +30,13 @@ namespace hooks {
 	}
 	
 	// Hooked to allow for aggressive order unit responses. -Pr0nogo
-	// TODO: Parse context of unit order to accurately handle aggressive orders. Order ids are not assigned until after this function is called...
 	void play_yes_unit_response(Unit* self) { // 0048F4D0
 		if (!*use_quiet_sounds) {
 			*g_place_building_parent_unit = 0;
 			if (!*g_is_in_replay && self->player == *g_local_nation_id) {
 				if (!self->is_frozen()) {
 					u32 last_rand = *g_last_random_sfx_id;
-					u32 rand_response = get_random_yes_unit_response_internal(self->id, self->main_order_id); // New second arg
+					u32 rand_response = get_random_yes_unit_response(self->id);
 					bool can_play = (g_options_list->flags >> 1) & 1;
 					if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
 						helper::do_unit_event_notification(self, 17, sfx_dat::PortraitDuration[rand_response] + 1000 * (SFXDAT_SoundData[rand_response].duration_ms / 1000), 0, rand_response);
@@ -50,18 +49,70 @@ namespace hooks {
 	}
 
 	// Written for aggressive order unit responses. -Pr0nogo
-	u32 get_random_yes_unit_response_internal(u32 unit_id, u32 order_id) {
+	u32 get_random_yes_unit_response_internal(Unit* unit, UnitResponseContext context) {
 		// Technically this will not work if a unit has attack sounds but no order passive sounds... -Pr0nogo
-		if (!(units_dat::group_flags[unit_id].is_building)) {
-			if (scbw::order_id_is_aggressive(order_id)) {
-				switch (unit_id) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (!(units_dat::group_flags[unit->id].is_building) // We might not give a shit about this one anymore tbh
+		&&	  context != UnitResponseContext::URC_Normal
+		&&	  unit_ext->units[UnitUnitResponseTarget])
+		{
+			if (context == UnitResponseContext::URC_Target && helper::unit_is_enemy(unit_ext->units[UnitUnitResponseTarget])
+			||	context == UnitResponseContext::URC_OrderId && scbw::order_id_is_aggressive(unit_ext->values[ValueUnitResponseOrder])) {
+				switch (unit->id) {
+					case UnitId::TerranCyprian: {
+						return helper::get_random_sfx_between(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
+					} break;
+					case UnitId::TerranMadcap: {
+						return helper::get_random_sfx_between(SoundId::MadcapOrderAggressive01, SoundId::MadcapOrderAggressive04);
+					} break;
+					case UnitId::TerranApostle: {
+						return helper::get_random_sfx_between(SoundId::ApostleOrderAggressive01, SoundId::ApostleOrderAggressive04);
+					} break;
+					case UnitId::TerranPaladin: {
+						return helper::get_random_sfx_between(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
+					} break;
+					case UnitId::TerranWyvern: {
+						return helper::get_random_sfx_between(SoundId::WyvernOrderAggressive01, SoundId::WyvernOrderAggressive04);
+					} break;
+					case UnitId::ProtossEcclesiast: {
+						return helper::get_random_sfx_between(SoundId::EcclesiastOrderAggressive01, SoundId::EcclesiastOrderAggressive04);
+					} break;
+					case UnitId::ProtossLegionnaire: {
+						return helper::get_random_sfx_between(SoundId::LegionnaireOrderAggressive01, SoundId::LegionnaireOrderAggressive04);
+					} break;
 					case UnitId::ProtossHierophant: {
 						return helper::get_random_sfx_between(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
+					} break;
+					case UnitId::ProtossPariah: {
+						return helper::get_random_sfx_between(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
+					} break;
+					case UnitId::ProtossStarSovereign: {
+						return helper::get_random_sfx_between(SoundId::StarSovereignOrderAggressive01, SoundId::StarSovereignOrderAggressive04);
 					} break;
 				}
 			}
 		}
-		return get_random_yes_unit_response(unit_id);
+		return get_random_yes_unit_response(unit->id);
+	}
+
+	// Written for aggressive order unit responses. -Pr0nogo
+	void play_yes_unit_response_internal(Unit* self, UnitResponseContext context) {
+		if (!*use_quiet_sounds) {
+			*g_place_building_parent_unit = 0;
+			if (!*g_is_in_replay && self->player == *g_local_nation_id) {
+				if (!self->is_frozen()) {
+					u32 last_rand = *g_last_random_sfx_id;
+					u32 rand_response = get_random_yes_unit_response_internal(self, context);
+					bool can_play = (g_options_list->flags >> 1) & 1;
+					if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
+						helper::do_unit_event_notification(self, 17, sfx_dat::PortraitDuration[rand_response] + 1000 * (SFXDAT_SoundData[rand_response].duration_ms / 1000), 0, rand_response);
+					}
+					else {
+						*g_last_random_sfx_id = last_rand;
+					}
+				}
+			}
+		}
 	}
 
 	// Hooked to allow more unit ids to process passive order unit responses. -Pr0nogo

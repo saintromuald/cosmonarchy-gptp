@@ -109,6 +109,7 @@ enum ExtValueId
 	ValuePhotonCannonMissilePos,
 	ValueCowardiceOverlay,
 	ValueHasCustomSprite,
+	ValueUnitResponseOrder,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -223,6 +224,7 @@ enum ExtUnitId
 	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
 	UnitAddonParent,
+	UnitUnitResponseTarget,
 
 	UnitCount,
 };

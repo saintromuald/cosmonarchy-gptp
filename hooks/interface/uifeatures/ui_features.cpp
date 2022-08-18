@@ -499,8 +499,7 @@ LABEL_15:
 	}
 
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
-	// Only works on minimap!
-	void cmdact_right_click(DialogEvent* dlg_event) // 004563A0
+	void cmdact_right_click_minimap(DialogEvent* dlg_event) // 004563A0
 	{
 		if (g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id)
 		{

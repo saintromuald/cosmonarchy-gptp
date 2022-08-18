@@ -1212,3 +1212,9 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ZergGeneral_ZorkizFlood,
 	AiBuildOrder_ZergGeneral_Count,
 };
+
+enum UnitResponseContext {
+	URC_Normal = 0,
+	URC_Target = 1,
+	URC_OrderId = 2,
+};
