@@ -321,11 +321,11 @@ namespace hooks
 
 	u32 get_modified_unit_acceleration(Unit* unit)
 	{
-		return std::max(scbw::get_flingy_data(FlingyDatEntries::Acceleration, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * get_speed_multiplier(unit), 1.0);
+		return std::max(flingy_dat::acceleration[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0);
 	}
 
 	u32 get_modified_unit_turn_speed(Unit* unit)
 	{
-		return std::max(scbw::get_flingy_data(FlingyDatEntries::TurnRadius, scbw::get_unit_data(UnitsDatEntries::Flingy, unit->id)) * get_speed_multiplier(unit), 1.0);
+		return std::max(flingy_dat::turn_speed[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0);
 	}
 }

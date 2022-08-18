@@ -126,7 +126,7 @@ namespace hooks
 				if (units_dat::staredit_avail_flags[i] & 0x1)
 				{
 					auto flingy_id = fakeExtFlingyIds[i];
-					auto sprite_id = scbw::get_flingy_data(FlingyDatEntries::SpriteId, flingy_id);
+					auto sprite_id = flingy_dat::sprite_id[flingy_id];
 					scbw::set_sprite_data(SpritesDatEntries::IncludeInVision, sprite_id, 1);
 				}
 			}
@@ -472,7 +472,7 @@ namespace hooks
 
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
-		newSfxExtender();
+//		newSfxExtender();
 //		injectPortdataLimits();
 //		hooks::inject_tbl_extender();
 //		insaneFlingyIdExtender();

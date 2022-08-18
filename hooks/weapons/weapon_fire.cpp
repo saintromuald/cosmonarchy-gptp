@@ -238,39 +238,39 @@ namespace hooks
 					// Missile spawn positions start
 					case WeaponId::AxitriliskSearingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskMissilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskMissilePos, 1, true);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, false);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, false);
 					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanMissilePos, 4, false);
 					} break;
 					case WeaponId::StarSovereignCelestialCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignCannonPos, 2, false);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreMissilePos, 1, false);
 					} break;
 					case WeaponId::PenumbraErebolShockCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaserPos, 1, false);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr, 0, 2);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaserPos, 3, false, 0, 2);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurMissilePos, 4, false);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
@@ -287,31 +287,31 @@ namespace hooks
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaserPos, 4, false);
 					} break;
 					case WeaponId::SkithrokorSkitteringSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorMissilePos, 1, false);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskMissilePos, 2, false);
 					} break;
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskMissilePos, 2, ImagesDatEntries::OverlaySpecialPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskMissilePos, 2, true);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskMissilePos, 1, false);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr, 0, 1);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorMissilePos, 2, false, 0, 1);
 					} break;
 					case WeaponId::SporeColonySeekerSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSporeColonyMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSporeColonyMissilePos, 1, false);
 					} break;
 					// Missile spawn positions end
 					case WeaponId::SalamanderPerditionBarrage:

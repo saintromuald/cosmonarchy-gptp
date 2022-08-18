@@ -1370,15 +1370,21 @@ namespace scbw
 		}
 	}
 
-	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset, u32 fake_amount)
+	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount)
 	{
 		if (unit->sprite == nullptr || unit->order_target.unit == nullptr)
 		{
 			return nullptr;
 		}
 		UnitExt* unitExt = get_unit_ext(unit);
-		auto rotate = unitExt->values[valueId];
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::get_image_data(overlayType, unit->sprite->main_graphic->id));
+		auto rotate = unitExt->values[value_id];
+		const LO_Header* loFile = 0;
+		if (use_special_overlay) {
+			loFile = reinterpret_cast<LO_Header*>(images_dat::lo_special[unit->sprite->main_graphic->id]);
+		}
+		else {
+			loFile = reinterpret_cast<LO_Header*>(images_dat::lo_attack[unit->sprite->main_graphic->id]);
+		}
 		u8 frameDirection = unit->sprite->main_graphic->direction;
 		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)
@@ -1386,15 +1392,15 @@ namespace scbw
 			offset.x = -offset.x;
 		}
 		rotate++;
-		if (rotate > rotateCount - 1)
+		if (rotate > rotate_count - 1)
 		{
 			rotate = 0;
 		}
-		unitExt->values[valueId] = rotate;
+		unitExt->values[value_id] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
 		Bullet* bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
-		if (bullet && unitExt->values[valueId] < fake_amount)
+		if (bullet && unitExt->values[value_id] < fake_amount)
 		{
 			bullet->hit_flags |= 0x1;
 		}

@@ -228,13 +228,12 @@ namespace
 			unit->remaining_build_time = 0;
 			unit->build_queue[unit->build_queue_slot] = UnitId::None;
 			
-//			replace_sprite_images(unit->sprite, sprites_dat::image_id[flingy_dat::sprite_id[units_dat::graphic[unit->previous_unit_type]]], 0);			
-//			auto index = units_dat::graphic[unit->previous_unit_type];
-			auto index = scbw::get_unit_data(UnitsDatEntries::Flingy, unit->previous_unit_type);
+//			replace_sprite_images(unit->sprite, sprites_dat::image_id[flingy_dat::sprite_id[units_dat::graphic[unit->previous_unit_type]]], 0);
+			auto index = units_dat::graphic[unit->previous_unit_type];
 //			replace_sprite_images(unit->sprite, sprites_dat::image_id[scbw::get_flingy_data(FlingyDatEntries::SpriteId, index)], 0);
-			auto fl_sId = scbw::get_flingy_data(FlingyDatEntries::SpriteId, index);
+			auto fl_sId = flingy_dat::sprite_id[index];
 //			scbw::get_sprite_data(SpritesDatEntries::image_id,building->sprite->sprite_id),
-			replace_sprite_images(unit->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, fl_sId), 0);
+			replace_sprite_images(unit->sprite, sprites_dat::image_id[fl_sId], 0);
 			unit->order_signal &= ~0x4;
 			if (unit->id == UnitId::ZergZethrokor
 			||  unit->id == UnitId::ZergVorvrokor

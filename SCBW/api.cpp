@@ -469,7 +469,6 @@ namespace scbw
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetSpriteData, entry, index);
 	}
-
 	u32 get_image_data(u32 entry, u32 index)
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GetImageData, entry, index);
@@ -1260,7 +1259,7 @@ namespace scbw
 	void create_shield_overlay(Unit* unit, u32 attackDirection)
 	{
 		//const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
-		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayShieldPtr, unit->sprite->main_graphic->id));
+		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(images_dat::lo_shields[unit->sprite->main_graphic->id]);
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->get_offset(unit->sprite->main_graphic->direction, frameAngle);

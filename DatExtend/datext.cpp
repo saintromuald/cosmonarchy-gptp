@@ -4,12 +4,13 @@
 #include "datext.h"
 
 // from structures.h
-int UNIT_TYPE_COUNT     = 900;
-int TECH_TYPE_COUNT     = 44;
-int UPGRADE_TYPE_COUNT  = 61;
-int WEAPON_TYPE_COUNT   = 130;
-int FLINGY_TYPE_COUNT   = 209;
-int IMAGE_TYPE_COUNT    = 999;
+int UNIT_TYPE_COUNT		= 228;
+int WEAPON_TYPE_COUNT	= 130;
+int FLINGY_TYPE_COUNT	= 209;
+int SPRITES_TYPE_COUNT	= 517;
+int IMAGE_TYPE_COUNT	= 999;
+int UPGRADE_TYPE_COUNT	= 61;
+int TECH_TYPE_COUNT		= 44;
 
 namespace DatExt {
 	struct {
@@ -21,15 +22,15 @@ namespace DatExt {
 	} datFiles[] = {
 		{ "units.dat",    LoadTable::Units_Dat,    19876, 97, false },
 		{ "weapons.dat",  LoadTable::Weapons_Dat,   5460, 42, false },
-		{ "flingy.dat",   LoadTable::Flingy_Dat,    3135, 15, false },
+	//	{ "flingy.dat",   LoadTable::Flingy_Dat,    3135, 15, false },
 		{ "sprites.dat",  LoadTable::Sprites_Dat,   3229,  7, false },
-		{ "images.dat",   LoadTable::Images_Dat,   37962, 38, false },
-		{ "upgrades.dat", LoadTable::Upgrades_Dat,  1281, 21, false },
-		{ "techdata.dat", LoadTable::Techdata_Dat,   836, 19, false },
-		{ "orders.dat",   LoadTable::Orders_Dat,    4158, 22, false },
+	//	{ "images.dat",   LoadTable::Images_Dat,   37962, 38, false },
+	//	{ "upgrades.dat", LoadTable::Upgrades_Dat,  1281, 21, false },
+	//	{ "techdata.dat", LoadTable::Techdata_Dat,   836, 19, false },
+	//	{ "orders.dat",   LoadTable::Orders_Dat,    4158, 22, false },
 		{ "sfxdata.dat",  LoadTable::Sfxdata_Dat,  10296,  9, false },
-		{ "portdata.dat", LoadTable::Portdata_Dat,  1320, 12, false },
-		{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, false },
+	//	{ "portdata.dat", LoadTable::Portdata_Dat,  1320, 12, false },
+	//	{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, false },
 	};
 
 	StringTbl* unitNamesTbl = NULL;
@@ -133,6 +134,7 @@ namespace DatExt {
 			case DatFile::Sprites_Dat:
 			{
 				sprites_dat_doPatch(newCount);
+				SPRITES_TYPE_COUNT = newCount;
 			} break;
 			case DatFile::Images_Dat:
 			{

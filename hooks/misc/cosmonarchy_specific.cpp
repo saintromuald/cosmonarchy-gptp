@@ -15,7 +15,7 @@ namespace hooks
 		{
 			return false;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->main_graphic->id));
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(images_dat::lo_damage[sprite->main_graphic->id]);
 		if (overlay == nullptr)
 		{
 			return false;
@@ -51,7 +51,7 @@ namespace hooks
 		{
 			return;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::get_image_data(ImagesDatEntries::OverlayDamagePtr, sprite->main_graphic->id));
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(images_dat::lo_damage[sprite->main_graphic->id]);
 		if (overlay == nullptr)
 		{
 			return; // return if there's no overlay defined
@@ -113,13 +113,13 @@ namespace hooks
 
 	u32 real_top_speed(Flingy* flingy, u32 flingy_id)
 	{
-		u32 speed = scbw::get_flingy_data(FlingyDatEntries::TopSpeed, flingy_id);
+		u32 speed = flingy_dat::top_speed[flingy_id];
 		return speed;
 	}
 
 	u16 real_acceleration(Flingy* flingy, u32 flingy_id)
 	{
-		u16 acceleration = scbw::get_flingy_data(FlingyDatEntries::Acceleration, flingy_id);
+		u16 acceleration = flingy_dat::acceleration[flingy_id];
 		return acceleration;
 	}
 
@@ -160,7 +160,7 @@ namespace hooks
 		}
 		else
 		{
-			return scbw::get_flingy_data(FlingyDatEntries::HaltDistance, flingy_id);
+			return flingy_dat::halt_distance[flingy_id];
 		}
 	}
 

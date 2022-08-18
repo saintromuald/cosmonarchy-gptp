@@ -168,7 +168,7 @@ namespace hooks
 
 namespace scbw
 {
-	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0, u32 fake_amount = 0);
+	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset = 0, u32 fake_amount = 0);
 	bool is_slowed(Unit* unit);
 	void refresh_debuffs(Unit* unit);
 	void inherit_debuffs(Unit* parent, Unit* child);

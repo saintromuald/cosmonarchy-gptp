@@ -256,18 +256,18 @@ namespace sprites_dat {
 namespace images_dat {
 	SCBW_DATA(const DatLoad*, imagesDat, 0x00514010);
 	
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[0].address);	// 00668AA0 //"GRP File" according to EUDDB
+	SCBW_DATA_DEF(const u32*, grp_file,			imagesDat[0].address);	// 00668AA0
 	SCBW_DATA_DEF(const u8*,  is_turnable,		imagesDat[1].address);	// 0066E860
 	SCBW_DATA_DEF(const u8*,  is_clickable,		imagesDat[2].address);	// 0066C150
-//	SCBW_DATA_DEF(const u8*,  ???,				imagesDat[3].address);	// 0066D4D8 //"Use Full Iscript" according to EUDDB
-//	SCBW_DATA_DEF(const u8*,  ???,				imagesDat[4].address);	// 00667718 //"Draw If Cloaked" according to EUDDB
+	SCBW_DATA_DEF(const u8*,  use_full_iscript,	imagesDat[3].address);	// 0066D4D8
+	SCBW_DATA_DEF(const u8*,  draw_if_cloaked,	imagesDat[4].address);	// 00667718
 	SCBW_DATA_DEF(const u8*,  rle_function,		imagesDat[5].address);	// 00669E28
 	SCBW_DATA_DEF(const u8*,  remapping,		imagesDat[6].address);	// 00669A40
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[7].address);	// 0066EC48 //"Iscript ID" according to EUDDB
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[8].address);	// 0066C538 //"Shields Overlay" according to EUDDB
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[9].address);	// 0066B1B0 //"Attack Overlay" according to EUDDB
-	SCBW_DATA_DEF(const u32*, damage_overlay,	imagesDat[10].address);	// 0066A210
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[11].address);	// 00667B00 //"Special Overlay" according to EUDDB
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[12].address);	// 00666778 //"Landing Dust Overlay" according to EUDDB
-//	SCBW_DATA_DEF(const u32*, ???,				imagesDat[13].address);	// 0066D8C0 //"Lift-off Dust Overlay" according to EUDDB
+	SCBW_DATA_DEF(const u32*, iscript_id,		imagesDat[7].address);	// 0066EC48
+	SCBW_DATA_DEF(const u32*, lo_shields,		imagesDat[8].address);	// 0066C538
+	SCBW_DATA_DEF(const u32*, lo_attack,		imagesDat[9].address);	// 0066B1B0
+	SCBW_DATA_DEF(const u32*, lo_damage,		imagesDat[10].address);	// 0066A210
+	SCBW_DATA_DEF(const u32*, lo_special,		imagesDat[11].address);	// 00667B00
+	SCBW_DATA_DEF(const u32*, lo_landing,		imagesDat[12].address);	// 00666778
+	SCBW_DATA_DEF(const u32*, lo_liftoff,		imagesDat[13].address);	// 0066D8C0
 } //images_dat (last entry at 0x005140AC)
