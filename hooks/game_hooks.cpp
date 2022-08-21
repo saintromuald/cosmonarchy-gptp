@@ -483,9 +483,9 @@ namespace hooks
 								rect.top = pos.y;
 								rect.right = rect.left + width;
 								rect.bottom = rect.top + 13;
-								bool hover = PtInRect(&rect, *(POINT*)g_mouse) && own_unit;
+								bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
 								if (hover) {
-									snprintf(buffer, 128, BWTC_WHITE "%s (Click to unload)", get_short_unit_name(cargo_unit->id).data);
+									snprintf(buffer, 128, BWTC_WHITE "%s", get_short_unit_name(cargo_unit->id).data);
 									width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 								}
 
