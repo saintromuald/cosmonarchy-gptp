@@ -49,47 +49,57 @@ namespace hooks {
 	}
 
 	// Written for aggressive order unit responses. -Pr0nogo
+	// We should probably remove the context parameter, maybe pass is_aggressive bool or something for less complexity? -Veeq7
 	u32 get_random_yes_unit_response_internal(Unit* unit, UnitResponseContext context) {
 		// Technically this will not work if a unit has attack sounds but no order passive sounds... -Pr0nogo
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (!(units_dat::group_flags[unit->id].is_building) // We might not give a shit about this one anymore tbh
-		&&	  context != UnitResponseContext::URC_Normal
-		&&	  unit_ext->units[UnitUnitResponseTarget])
-		{
-			if (context == UnitResponseContext::URC_Target && helper::unit_is_enemy(unit_ext->units[UnitUnitResponseTarget])
-			||	context == UnitResponseContext::URC_OrderId && scbw::order_id_is_aggressive(unit_ext->values[ValueUnitResponseOrder])) {
-				switch (unit->id) {
-					case UnitId::TerranCyprian: {
-						return helper::get_random_sfx_between(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
-					} break;
-					case UnitId::TerranMadcap: {
-						return helper::get_random_sfx_between(SoundId::MadcapOrderAggressive01, SoundId::MadcapOrderAggressive04);
-					} break;
-					case UnitId::TerranApostle: {
-						return helper::get_random_sfx_between(SoundId::ApostleOrderAggressive01, SoundId::ApostleOrderAggressive04);
-					} break;
-					case UnitId::TerranPaladin: {
-						return helper::get_random_sfx_between(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
-					} break;
-					case UnitId::TerranWyvern: {
-						return helper::get_random_sfx_between(SoundId::WyvernOrderAggressive01, SoundId::WyvernOrderAggressive04);
-					} break;
-					case UnitId::ProtossEcclesiast: {
-						return helper::get_random_sfx_between(SoundId::EcclesiastOrderAggressive01, SoundId::EcclesiastOrderAggressive04);
-					} break;
-					case UnitId::ProtossLegionnaire: {
-						return helper::get_random_sfx_between(SoundId::LegionnaireOrderAggressive01, SoundId::LegionnaireOrderAggressive04);
-					} break;
-					case UnitId::ProtossHierophant: {
-						return helper::get_random_sfx_between(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
-					} break;
-					case UnitId::ProtossPariah: {
-						return helper::get_random_sfx_between(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
-					} break;
-					case UnitId::ProtossStarSovereign: {
-						return helper::get_random_sfx_between(SoundId::StarSovereignOrderAggressive01, SoundId::StarSovereignOrderAggressive04);
-					} break;
-				}
+		bool aggressive_response = false;
+		if (!units_dat::group_flags[unit->id].is_building) { // We might not give a shit about this one anymore tbh
+			switch (context) {
+				case URC_Target: {
+					if (unit_ext->units[UnitUnitResponseTarget] && helper::unit_is_enemy(unit_ext->units[UnitUnitResponseTarget])) {
+						aggressive_response = true;
+					}
+				} break;
+				case URC_OrderId: {
+					if (scbw::order_id_is_aggressive(unit_ext->values[ValueUnitResponseOrder])) {
+						aggressive_response = true;
+					}
+				} break;
+			}
+		}
+		if (aggressive_response) {
+			switch (unit->id) {
+				case UnitId::TerranCyprian: {
+					return helper::get_random_sfx_between(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
+				} break;
+				case UnitId::TerranMadcap: {
+					return helper::get_random_sfx_between(SoundId::MadcapOrderAggressive01, SoundId::MadcapOrderAggressive04);
+				} break;
+				case UnitId::TerranApostle: {
+					return helper::get_random_sfx_between(SoundId::ApostleOrderAggressive01, SoundId::ApostleOrderAggressive04);
+				} break;
+				case UnitId::TerranPaladin: {
+					return helper::get_random_sfx_between(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
+				} break;
+				case UnitId::TerranWyvern: {
+					return helper::get_random_sfx_between(SoundId::WyvernOrderAggressive01, SoundId::WyvernOrderAggressive04);
+				} break;
+				case UnitId::ProtossEcclesiast: {
+					return helper::get_random_sfx_between(SoundId::EcclesiastOrderAggressive01, SoundId::EcclesiastOrderAggressive04);
+				} break;
+				case UnitId::ProtossLegionnaire: {
+					return helper::get_random_sfx_between(SoundId::LegionnaireOrderAggressive01, SoundId::LegionnaireOrderAggressive04);
+				} break;
+				case UnitId::ProtossHierophant: {
+					return helper::get_random_sfx_between(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
+				} break;
+				case UnitId::ProtossPariah: {
+					return helper::get_random_sfx_between(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
+				} break;
+				case UnitId::ProtossStarSovereign: {
+					return helper::get_random_sfx_between(SoundId::StarSovereignOrderAggressive01, SoundId::StarSovereignOrderAggressive04);
+				} break;
 			}
 		}
 		return get_random_yes_unit_response(unit->id);
