@@ -142,13 +142,13 @@ namespace hooks
 
 	void ui_button_click(BinDlg* dialog) {
 		if (dialog->parent && dialog->parent->psz_text && strcmp(dialog->parent->psz_text, "StatBtn") == 0) {
-			hooks::disable_quickcasting  = 5;
-			hooks::disable_quickbuilding = 5;
+			hooks::quickcasting_timeout  = 5;
+			hooks::quickbuilding_timeout = 5;
 		}
 	}
 
 	static bool process_quickcasting() {
-		if (config.quick_casting && *g_is_targeting && !disable_quickcasting) {
+		if (config.quick_casting && *g_is_targeting && !quickcasting_timeout) {
 			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
 				u16 x = g_mouse->x;
 				u16 y = g_mouse->y;
@@ -169,7 +169,7 @@ namespace hooks
 	}
 
 	static bool process_quickbuilding() {
-		if (config.quick_building && *g_is_placing_building && !disable_quickbuilding) {
+		if (config.quick_building && *g_is_placing_building && !quickbuilding_timeout) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (g_is_keycode_used[c]) {
@@ -196,10 +196,16 @@ namespace hooks
 		return false;
 	}
 
-	u8 disable_quickcasting;
-	u8 disable_quickbuilding;
+	u8 quickcasting_timeout;
+	u8 quickbuilding_timeout;
 	bool quickcasting_signal;
 	u32 quickcasting_command_card;
+	Unit* transport_ui_unit;
+
+	int transport_ui_click() {
+		helper::cmdact_unload(transport_ui_unit);
+		return 0;
+	}
 
 	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
 	u32 __cdecl set_ingame_input_procs() { // 00484CC0
@@ -230,14 +236,17 @@ namespace hooks
 			quickcasting_command_card = *orders_buttonset;
 		}
 
-		if (*g_is_placing_building) {
-			*left_click_proc = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
+		if (transport_ui_unit) {
+			*left_click_proc  = (InputProcsFunc*)transport_ui_click;
+			*right_click_proc = (InputProcsFunc*)transport_ui_click;
+		} else if (*g_is_placing_building) {
+			*left_click_proc  = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x00484600; // input_place_building_right_mouse_click;
 		} else if (*g_is_targeting) {
-			*left_click_proc = (InputProcsFunc*)0x004BD500; // input_target_order_left_mouse_click;
+			*left_click_proc  = (InputProcsFunc*)0x004BD500; // input_target_order_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x004845F0; // input_target_order_right_mouse_click;
 		} else {
-			*left_click_proc = (InputProcsFunc*)0x0046FF70; // input_game_left_mouse_click;
+			*left_click_proc  = (InputProcsFunc*)0x0046FF70; // input_game_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x004564E0; // input_game_right_mouse_click;
 		}
 		return 0;
@@ -250,11 +259,11 @@ namespace hooks
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
 		*cpu_throttle = false;
 
-		if (disable_quickcasting && !*g_is_targeting) {
-			disable_quickcasting--;
+		if (quickcasting_timeout && !*g_is_targeting) {
+			quickcasting_timeout--;
 		}
-		if (disable_quickbuilding && !*g_is_placing_building) {
-			disable_quickbuilding--;
+		if (quickbuilding_timeout && !*g_is_placing_building) {
+			quickbuilding_timeout--;
 		}
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
@@ -373,6 +382,7 @@ namespace hooks
 					{
 						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;
+						tile.exploredFlags &= ~reveal_flag;
 					}
 				}
 				*/
@@ -444,6 +454,11 @@ namespace hooks
 				Point16 start_pos = {179, 333}; // {441, 203};
 				Point16 pos = start_pos;
 
+				if (transport_ui_unit) {
+					transport_ui_unit = 0;
+					helper::set_ingame_input_procs();
+				}
+
 				u32 x_count = 0;
 				for (u32 i = 0; i < *g_client_selection_count; ++i) {
 					Unit* transport = g_client_selection_group->unit[i];
@@ -470,13 +485,14 @@ namespace hooks
 								rect.bottom = rect.top + 13;
 								bool hover = PtInRect(&rect, *(POINT*)g_mouse) && own_unit;
 								if (hover) {
-									snprintf(buffer, 128, BWTC_WHITE "%s (U to unload)", get_short_unit_name(cargo_unit->id).data);
+									snprintf(buffer, 128, BWTC_WHITE "%s (Click to unload)", get_short_unit_name(cargo_unit->id).data);
 									width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 								}
 
 								graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-								if (hover && g_is_keycode_used['U']) {
-									helper::cmdact_unload(cargo_unit);
+								if (hover && !transport_ui_unit) {
+									transport_ui_unit = cargo_unit;
+									helper::set_ingame_input_procs();
 								}
 
 								pos.x += width + 5;

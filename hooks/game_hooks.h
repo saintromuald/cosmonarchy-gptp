@@ -1,10 +1,11 @@
 #pragma once
 
 namespace hooks {
-	extern u8 disable_quickcasting;
-	extern u8 disable_quickbuilding;
+	extern u8 quickcasting_timeout;
+	extern u8 quickbuilding_timeout;
 	extern bool quickcasting_signal;
 	extern u32 quickcasting_command_card;
+	extern Unit* transport_ui_unit;
 
 	void ui_button_click(BinDlg* dialog);
 	u32 __cdecl set_ingame_input_procs(); // 00484CC0

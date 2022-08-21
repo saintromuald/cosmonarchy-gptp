@@ -7,6 +7,7 @@
 #include "config.h"
 #include "trigger_system/trigger_objectives.h"
 #include "hooks/audiovisuals/sfxhooks.h"
+#include "hooks/game_hooks.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000
@@ -455,47 +456,64 @@ LABEL_15:
 		*g_current_surface = surface;
 	}
 
+	enum CursorType {
+		CursorType_Normal	        = 0,
+		CursorType_TargetingNeutral = 2,
+		CursorType_TargetingEnemy   = 3,
+		CursorType_TargetingAlly    = 4,
+		CursorType_TargetingNoUnit  = 5,
+		CursorType_HoveringAlly     = 6,
+		CursorType_HoveringEnemy    = 7,
+		CursorType_HoveringNeutral  = 8,
+		CursorType_DragSelect       = 9,
+	};
+
 	// Hooked for Veeq7's transport UI. -Pr0nogo
-	u32 get_cursor_type() // 004D1460
-	{
-		if (PtInRect((const RECT*)&g_minimap_rect, *(POINT*)g_mouse))
-		{
+	u32 get_cursor_type() { // 004D1460
+		if (transport_ui_unit) {
+			if (transport_ui_unit->player == 11) {
+				return CursorType_HoveringNeutral;
+			}
+			if (helper::unit_is_enemy(transport_ui_unit)) {
+				return CursorType_HoveringEnemy;
+			}
+			return CursorType_HoveringAlly;
+		}
+		if (PtInRect((const RECT*)&g_minimap_rect, *(POINT*)g_mouse)) {
 			return (u16)*g_minimap_cursor;
 		}
-		if (helper::is_outside_of_game_screen(g_mouse->x, g_mouse->y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse))
-		{
-			return 0;
+		if (helper::is_outside_of_game_screen(g_mouse->x, g_mouse->y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse)) {
+			return CursorType_Normal;
 		}
-		if (*g_is_drag_selecting)
-		{
-			return 9;
+		if (*g_is_drag_selecting) {
+			return CursorType_DragSelect;
 		}
-		if (*g_is_placing_building)
-		{
-			return 0;
+		if (*g_is_placing_building) {
+			return CursorType_Normal;
 		}
 		Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + *g_move_to_x, *g_move_to_y + g_mouse->y);
-		if (*g_is_targeting)
-		{
-			if (!unit_at_point)
-			{
-				return 5;
+		if (*g_is_targeting) {
+			if (!unit_at_point) {
+				return CursorType_TargetingNoUnit;
 			}
-			if (unit_at_point->player == 11)
-			{
-				return 2;
+			if (unit_at_point->player == 11) {
+				return CursorType_TargetingNeutral;
 			}
-			return 4 - (helper::unit_is_enemy(unit_at_point) != 0);
+			if (helper::unit_is_enemy(unit_at_point)) {
+				return CursorType_TargetingEnemy;
+			}
+			return CursorType_TargetingAlly;
 		}
-		if (!unit_at_point)
-		{
-			return 0;
+		if (!unit_at_point) {
+			return CursorType_Normal;
 		}
-		if (unit_at_point->player == 11)
-		{
-			return 8;
+		if (unit_at_point->player == 11) {
+			return CursorType_HoveringNeutral;
 		}
-		return (helper::unit_is_enemy(unit_at_point) != 0) + 6;
+		if (helper::unit_is_enemy(unit_at_point)) {
+			return CursorType_HoveringEnemy;
+		}
+		return CursorType_HoveringAlly;
 	}
 
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
