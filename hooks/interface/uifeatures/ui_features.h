@@ -28,6 +28,5 @@ namespace hooks {
 	void register_action(u8 type);
 	void init_actions();
 	void update_actions();
-	Point16 get_ui_text_pos(bool go_to_end);
 	void draw_ui_features();
 }

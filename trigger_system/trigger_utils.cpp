@@ -1,4 +1,5 @@
 #include "trigger_utils.h"
+#include <stdarg.h>
 
 bool file_exists(char* filename) {
 	HANDLE file = 0;
@@ -28,7 +29,7 @@ LoadedFile load_entire_sfile(char* filename) {
 	LoadedFile loaded_file = {};
 	loaded_file.size = size;
 	if (loaded_file.size) {
-		loaded_file.data = (char*) calloc(loaded_file.size + 1, 1);
+		loaded_file.data = (char*)helper::SMemAlloc(loaded_file.size + 1);
 		helper::SFileReadFile(file, loaded_file.data, loaded_file.size, 0, 0);
 		loaded_file.data[loaded_file.size] = 0;
 	}
@@ -39,7 +40,7 @@ LoadedFile load_entire_sfile(char* filename) {
 
 void free_loaded_file(LoadedFile* file) {
 	if (file->data) {
-		free(file->data);
+		helper::SMemFree(file->data);
 	}
 	file->size = 0;
 	file->data = 0;
@@ -51,4 +52,57 @@ u32 hash_string(char* string) {
 		hash = ((hash << 5) + hash) + *c;
 	}
 	return hash;
+}
+
+void sb_resize(StringBuilder* sb, u32 needed_size) {
+	if (sb->size + needed_size > sb->capacity) {
+		u32 new_capacity = sb->capacity ? sb->capacity * 2 + needed_size : 512 + needed_size;
+		if (new_capacity < sb->capacity) { // Overflow
+			new_capacity = UINT_MAX;
+		}
+		char* new_data = (char*)helper::SMemAlloc(new_capacity + 1);
+		if (new_data) {
+			if (sb->data) {
+				memcpy(new_data, sb->data, sb->size);
+				helper::SMemFree(sb->data);
+			}
+			sb->capacity = new_capacity;
+			sb->data = new_data;
+		}
+	}
+}
+
+void sb_reserve(StringBuilder* sb, u32 size) {
+	sb_resize(sb, size);
+	sb->size += size;
+}
+
+void sb_clear(StringBuilder* sb) {
+	memset(sb->data, 0, sb->size);
+	sb->size = 0;
+}
+
+void sb_free(StringBuilder* sb) {
+	helper::SMemFree(sb->data);
+	sb->size = 0;
+	sb->capacity = 0;
+	sb->data = 0;
+}
+
+void sb_append(StringBuilder* sb, char c) {
+	sb_resize(sb, 1);
+	sb->data[sb->size++] = c;
+}
+
+void sb_printf(StringBuilder* sb, char* format, ...) {
+	va_list va = {};
+	va_start(va, format);
+	u32 size = vsnprintf(0, 0, format, va);
+	va_end(va);
+	sb_resize(sb, size);
+
+	va_start(va, format);
+	vsprintf(sb->data + sb->size, format, va);
+	va_end(va);
+	sb->size += size;
 }

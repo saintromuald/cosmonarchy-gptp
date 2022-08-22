@@ -8,6 +8,7 @@
 #include "trigger_system/trigger_objectives.h"
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
+#include "trigger_system/trigger_utils.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000
@@ -574,6 +575,16 @@ LABEL_15:
 					helper::ground_attack_init(mouse_pos_y, mouse_pos_x);
 				}
 			}
+		}
+	}
+
+	bool is_newline(char c) {
+		return c == '\r' || c == '\n';
+	}
+
+	void skip_newlines(char** c) {
+		while (is_newline(**c)) {
+			*c += 1;
 		}
 	}
 }

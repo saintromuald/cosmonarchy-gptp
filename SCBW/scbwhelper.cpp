@@ -7260,6 +7260,26 @@ namespace helper
 		}
 	}
 
+	void* SMemAlloc(u32 amount)
+	{
+		const u32 Func_SMemAlloc = 0x0041006A;
+		char* unkFilename  = "";
+		u32   unkLine      = 0;
+		u32   defaultValue = 0;
+		static void* pointer_on_allocated_memory;
+		__asm {
+			PUSHAD
+			PUSH defaultValue		// probably what to fill the memory with
+			PUSH unkLine			// unknown use, seems to use hardcoded value
+			PUSH unkFilename		// unknown use, seems to use hardcoded adress (of some text?)
+			PUSH amount				// amount of memory to allocate
+			CALL Func_SMemAlloc
+			MOV pointer_on_allocated_memory, EAX
+			POPAD
+		}
+		return pointer_on_allocated_memory;
+	}
+
 	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue)
 	{
 		const u32 Func_SMemAlloc = 0x0041006A;
@@ -9581,6 +9601,27 @@ namespace helper
 		return result;
 	}
 	*/
+
+	bool SMemFree(void* location)
+	{
+		static bool result;
+		const u32 Func_SMemFree = 0x00410070;
+		char* logFileName  = "";
+		u32   logLine      = 0;
+		u32   defaultValue = 0;
+		__asm
+		{
+			PUSHAD
+			PUSH defaultValue
+			PUSH logLine
+			PUSH logFileName
+			PUSH location
+			CALL Func_SMemFree
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 
 	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue)
 	{

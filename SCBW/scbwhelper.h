@@ -864,6 +864,7 @@ namespace helper {
 	Image* create_health_bar(Sprite* sprite);
 	void remove_hp_bar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
+	void* SMemAlloc(u32 amount);																					// 0041006A (based on Storm.dll definition)
 	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue);									// 0041006A (based on Storm.dll definition)
 	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);											// 00416090
 	void remove_from_selections(Unit* unit);																		// 0049A7F0
@@ -1043,6 +1044,7 @@ namespace helper {
 	// For soundThread
 	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine);		// 004D2D10
 	s32 parseWaveFile(s32 a1, s32 a2, s32 a3);																					// 004BBD80
+	bool SMemFree(void* location);																								// 00410070
 	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue);											// 00410070
 	u32 get_sound_duration(s32 sound_id);																						// 004BB890
 
