@@ -1,4 +1,4 @@
-#include "trigger_utils.h"
+#include "utility.h"
 #include <stdarg.h>
 
 bool file_exists(char* filename) {
@@ -105,4 +105,72 @@ void sb_printf(StringBuilder* sb, char* format, ...) {
 	vsprintf(sb->data + sb->size, format, va);
 	va_end(va);
 	sb->size += size;
+}
+
+char* arena_push(MemoryArena* arena, u32 size) {
+	MemoryBlock* block = arena->block;
+	if (!block || block->size + size > block->capacity) {
+		if (block->size) {
+			u32 capacity = std::max(size, MemoryBlockSize);
+			block = (MemoryBlock*)helper::SMemAlloc(sizeof(MemoryBlock) + capacity);
+			block->capacity = capacity;
+			block->prev = arena->block;
+			arena->block = block;
+		}
+	}
+	char* result = block->data + block->size;
+	memset(result, 0, size);
+	block->size += size;
+	return result;
+}
+
+char* arena_push_string(MemoryArena* arena, char* string) {
+	u32 size = strlen(string) + 1;
+	char* result = arena_push(arena, size);
+	memcpy(result, string, size);
+	return result;
+}
+
+char* arena_printf(MemoryArena* arena, char* format, ...) {
+	va_list va = {};
+	va_start(va, format);
+	u32 size = vsnprintf(0, 0, format, va);
+	va_end(va);
+	
+	char* result = arena_push(arena, size + 1);
+	va_start(va, format);
+	vsprintf(result, format, va);
+	va_end(va);
+	return result;
+}
+
+void arena_free_last(MemoryArena* arena) {
+	if (arena->block) {
+		MemoryBlock* block = arena->block;
+		arena->block = block->prev;
+		helper::SMemFree(block);
+	}
+}
+
+void arena_free(MemoryArena* arena) {
+	while (arena->block) {
+		arena_free_last(arena);
+	}
+}
+
+TempArena start_temp_arena(MemoryArena* arena) {
+	TempArena temp = {};
+	temp.arena = arena;
+	temp.block = arena->block;
+	temp.size  = arena->block ? arena->block->size : 0;
+	return temp;
+}
+
+void end_temp_arena(TempArena* temp) {
+	while (temp->arena->block && temp->arena->block != temp->block) {
+		arena_free_last(temp->arena);
+	}
+	if (temp->block) {
+		temp->block->size = temp->size;
+	}
 }

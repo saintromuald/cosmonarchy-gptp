@@ -8,7 +8,6 @@
 #include "trigger_system/trigger_objectives.h"
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
-#include "trigger_system/trigger_utils.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000

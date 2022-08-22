@@ -1,5 +1,4 @@
 #include "trigger_vars.h"
-#include "trigger_utils.h"
 
 TriggerVars trigger_vars[TriggerVarType_Count];
 

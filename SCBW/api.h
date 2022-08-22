@@ -8,6 +8,8 @@
 #include <math.h>
 #include <unit_search.h>
 
+#include "utility.h"
+
 #define NOMINMAX
 #include <windows.h>
 

@@ -1,5 +1,4 @@
 #include "trigger_sound.h"
-#include "trigger_utils.h"
 
 LPDIRECTSOUND direct_sound;
 DupChannel dup_channels[MaxDupChannels];
