@@ -97,6 +97,9 @@ namespace hooks {
 				case UnitId::ProtossPariah: {
 					return helper::get_random_sfx_between(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
 				} break;
+				case UnitId::ProtossMagister: {
+					return helper::get_random_sfx_between(SoundId::MagisterOrderAggressive01, SoundId::MagisterOrderAggressive04);
+				} break;
 				case UnitId::ProtossStarSovereign: {
 					return helper::get_random_sfx_between(SoundId::StarSovereignOrderAggressive01, SoundId::StarSovereignOrderAggressive04);
 				} break;
@@ -179,11 +182,14 @@ namespace hooks {
 					case UnitId::ProtossHierophant: {
 						ready_sound = helper::get_random_sfx_between(SoundId::HierophantReady01, SoundId::HierophantReady03);
 					} break;
-					case UnitId::ProtossStarSovereign: {
-						ready_sound = helper::get_random_sfx_between(SoundId::StarSovereignReady01, SoundId::StarSovereignReady03);
-					} break;
 					case UnitId::ProtossPariah: {
 						ready_sound = helper::get_random_sfx_between(SoundId::PariahReady01, SoundId::PariahReady03);
+					} break;
+					case UnitId::ProtossMagister: {
+						ready_sound = helper::get_random_sfx_between(SoundId::MagisterReady01, SoundId::MagisterReady03);
+					} break;
+					case UnitId::ProtossStarSovereign: {
+						ready_sound = helper::get_random_sfx_between(SoundId::StarSovereignReady01, SoundId::StarSovereignReady03);
 					} break;
 				}
 				helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
