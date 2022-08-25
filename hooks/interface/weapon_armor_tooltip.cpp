@@ -426,7 +426,14 @@ namespace hooks
 		std::stringstream builder;
 		builder << std::setprecision(4);
 
-		builder << unit->flingy_top_speed / 24.0 / 32.0 << " tiles/sec";
+		f32 speed_calc = (unit->flingy_top_speed / 256.0) / 24.0 / 32.0;
+		if (unit->movement_flags & MovementFlags::Moving && !(unit->movement_flags & MovementFlags::Accelerating)) {
+			speed_calc = (unit->current_speed_2 / 256.0) / 24.0 / 32.0;
+		}
+		else if (unit->stim_timer) {
+			speed_calc /= 2;
+		}
+		builder << speed_calc << " tiles/sec";
 		std::string movement_speed = builder.str();
 		builder.str("");
 
