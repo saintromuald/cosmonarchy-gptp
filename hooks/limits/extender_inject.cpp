@@ -1,5 +1,6 @@
 #include "hooks/limits/extender.h"
 #include "hooks/limits/ccmu.h"
+#include "hooks/limits/sfx_extender.h"
 #include "hooks/limits/tbl_extender.h"
 #include "hooks/limits/misc_extenders.h"
 #include "logger.h"
@@ -7,6 +8,11 @@
 #include <cassert>
 namespace hooks
 {
+	void loadAiseSamaseData()
+	{
+		hooks::sfxExtenderGetCount();
+	}
+
 	u32 buildingVisionSyncHook()
 	{
 		s32 result = 0;
@@ -48,5 +54,12 @@ namespace hooks
 			MOV EAX, result
 			RETN
 		}
+	}
+
+	void inject_limit_hooks()
+	{
+//		hooks::sfxExtender();
+		newSfxExtender();
+//		jump_patch(preInitDataWrapper, 0x004DAF31);
 	}
 }

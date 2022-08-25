@@ -492,6 +492,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// injection
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
+	hooks::inject_limit_hooks();
 	hooks::inject_target_related_hooks();
 //	hooks::unitsDatWrapperPatches();
 

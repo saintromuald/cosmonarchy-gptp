@@ -273,6 +273,7 @@
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
     <ClCompile Include="hooks\grafting\grafting_inject.cpp" />
+    <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\loading_hook.cpp" />
     <ClCompile Include="hooks\loading_hook_inject.cpp" />
     <ClCompile Include="hooks\orders\orders_root.cpp" />
@@ -613,6 +614,7 @@
     <ClInclude Include="hooks\DatExtend\dat_load.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
+    <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\loading_hook.h" />
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="SCBW\enumerations\PortraitId.h" />

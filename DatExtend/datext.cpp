@@ -28,7 +28,7 @@ namespace DatExt {
 		{ "upgrades.dat", LoadTable::Upgrades_Dat,  1281, 21, false },
 		{ "techdata.dat", LoadTable::Techdata_Dat,   836, 19, false },
 		{ "orders.dat",   LoadTable::Orders_Dat,    4158, 22, false },
-		{ "sfxdata.dat",  LoadTable::Sfxdata_Dat,  10296,  9, false },
+	//	{ "sfxdata.dat",  LoadTable::Sfxdata_Dat,  10296,  9, false },
 		{ "portdata.dat", LoadTable::Portdata_Dat,  1320, 12, false },
 		{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, false },
 	};
