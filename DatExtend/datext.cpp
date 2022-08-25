@@ -22,15 +22,15 @@ namespace DatExt {
 	} datFiles[] = {
 		{ "units.dat",    LoadTable::Units_Dat,    19876, 97, false },
 		{ "weapons.dat",  LoadTable::Weapons_Dat,   5460, 42, false },
-	//	{ "flingy.dat",   LoadTable::Flingy_Dat,    3135, 15, false },
+		{ "flingy.dat",   LoadTable::Flingy_Dat,    3135, 15, false },
 		{ "sprites.dat",  LoadTable::Sprites_Dat,   3229,  7, false },
-	//	{ "images.dat",   LoadTable::Images_Dat,   37962, 38, false },
-	//	{ "upgrades.dat", LoadTable::Upgrades_Dat,  1281, 21, false },
-	//	{ "techdata.dat", LoadTable::Techdata_Dat,   836, 19, false },
-	//	{ "orders.dat",   LoadTable::Orders_Dat,    4158, 22, false },
+		{ "images.dat",   LoadTable::Images_Dat,   37962, 38, false },
+		{ "upgrades.dat", LoadTable::Upgrades_Dat,  1281, 21, false },
+		{ "techdata.dat", LoadTable::Techdata_Dat,   836, 19, false },
+		{ "orders.dat",   LoadTable::Orders_Dat,    4158, 22, false },
 		{ "sfxdata.dat",  LoadTable::Sfxdata_Dat,  10296,  9, false },
-	//	{ "portdata.dat", LoadTable::Portdata_Dat,  1320, 12, false },
-	//	{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, false },
+		{ "portdata.dat", LoadTable::Portdata_Dat,  1320, 12, false },
+		{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, false },
 	};
 
 	StringTbl* unitNamesTbl = NULL;
@@ -77,12 +77,6 @@ namespace DatExt {
 			// Count must be a multiple of 12, so round up
 			if ((newCount % 12) != 0) {
 				memCount += 12 - (newCount % 12);
-			}
-
-			// Maximum because of FireGraft
-			if (memCount > 912)
-			{
-				return false;
 			}
 
 			datTablePtr[0].length = 2; // flingy ID to u16

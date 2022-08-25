@@ -15,7 +15,6 @@
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/weapons/weapon_fire.h"
 #include "logger.h"
-#include "limits/sfx_extender.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "globals.h"
 #include "unit_search.h"

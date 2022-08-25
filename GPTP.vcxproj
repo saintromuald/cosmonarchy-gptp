@@ -283,8 +283,6 @@
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
-    <ClCompile Include="hooks\limits\attack_extender.cpp" />
-    <ClCompile Include="hooks\limits\attack_extender_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="hooks\build_time.cpp" />
@@ -320,9 +318,7 @@
     <ClCompile Include="hooks\interface\mainmenu\glucustom.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
     <ClCompile Include="hooks\limits\extender_inject.cpp" />
-    <ClCompile Include="hooks\limits\fake_unitid_extender_inject.cpp" />
     <ClCompile Include="hooks\limits\misc_extenders_inject.cpp" />
-    <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\limits\tbl_extender.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
@@ -639,8 +635,6 @@
     <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\ui_features.h" />
-    <ClInclude Include="hooks\limits\attack_extender.h" />
-    <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />
     <ClInclude Include="hooks\neutral_related.h" />
     <ClInclude Include="hooks\orders\building_making\building_helper.h" />
@@ -732,7 +726,6 @@
     <ClInclude Include="hooks\game\creategame.h" />
     <ClInclude Include="hooks\interface\console.h" />
     <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
-    <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\limits\tbl_extender.h" />
     <ClInclude Include="hooks\maxhp.h" />
     <ClInclude Include="hooks\misc\cosmonarchy_specific.h" />

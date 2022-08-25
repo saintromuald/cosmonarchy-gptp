@@ -35,10 +35,6 @@ struct Extender
 };
 
 
-namespace hooks
-{
-	void inject_limit_hooks();
-}
 namespace Reg
 {
 	enum

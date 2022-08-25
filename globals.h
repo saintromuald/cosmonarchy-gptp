@@ -8,8 +8,9 @@
 #include <istream>
 #include <assert.h>
 #include "scbw\api.h"
-#include "hooks\limits\attack_extender.h"
 #include "data_ext.h"
+
+#define ATTACK_LIMIT 64
 
 struct Globals;
 

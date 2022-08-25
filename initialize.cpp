@@ -107,7 +107,6 @@
 	#include "hooks/unit_stats/supply_hooks.h"
 	#include "hooks/unit_stats/new_requirements.h"
 	#include "hooks/unit_ai.h"
-	#include "hooks/limits/attack_extender.h"
 	#include "hooks/aiscript/ai_requests.h"
 	#include "SCBW/ExtendSightLimit.h"
 //	#include "hooks/requirements/requirements.h"
@@ -493,7 +492,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// injection
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
-	hooks::inject_limit_hooks();
 	hooks::inject_target_related_hooks();
 //	hooks::unitsDatWrapperPatches();
 
@@ -608,7 +606,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::inject_requirement_hooks();
 	hooks::inject_new_requirements_hooks();
 	hooks::inject_unit_ai_hooks();
-	hooks::inject_ai_attack_extender();
 	hooks::inject_ai_request_hooks();
 
 	hooks::inject_attack_orders_hooks();
