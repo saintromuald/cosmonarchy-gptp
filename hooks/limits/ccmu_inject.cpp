@@ -18,7 +18,7 @@ void CCMUExtender::set_value(s32 entry, s32 id, std::string str) {}
 void CCMUExtender::set_value(s32 entry, s32 id, s32 val) {}
 void CCMUExtender::extend()
 {
-	//	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
+//	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
 	const u32 lim_ext = UNIT_ARRAY_LENGTH + 1;
 	const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
 	const u32 table_start = reinterpret_cast<u32>(&new_unit_table.units[0]);
@@ -27,16 +27,16 @@ void CCMUExtender::extend()
 	const u32 position_search_units_start = reinterpret_cast<u32>(&new_unit_table.position_search_units);
 	const u32 position_search_temp_start = reinterpret_cast<u32>(&new_unit_table.position_search_temp);
 	const u32 air_splashes_start = reinterpret_cast<u32>(&new_unit_table.air_splash_results);
-	//	const u32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
+//	const u32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
 	const u32 table_end = table_start + 336 * UNIT_ARRAY_LENGTH;
 	globals.extended_unit_table = 1;
 	memory_patch(0x00402FD2 + 2, index_start);
 	memory_patch(0x0042FEE5 + 1, lim_ext);
 	memory_patch(0x0042FEF1 + 1, lim_ext);
-	memory_patch(0x004EABC4 + 3, table_start + 0x64);//unit Id of first unit
-	memory_patch(0x00430082 + 2, index_start + 0x148);//unit sorting
-	//orderingX
-	//orderingY
+	memory_patch(0x004EABC4 + 3, table_start + 0x64);	// unit Id of first unit
+	memory_patch(0x00430082 + 2, index_start + 0x148);	// unit sorting
+
+	// orderingX, orderingY
 	uplink(orderingXlist(), orderingXstart);
 	uplink(orderingYlist(), orderingYstart);
 	uplink(orderingXlist_off4(), orderingXstart + 0x4);
@@ -52,11 +52,11 @@ void CCMUExtender::extend()
 	memory_patch(0x0046A1D9 + 3, orderingYstart + 0xc);
 	memory_patch(0x0046A229 + 3, orderingYstart + 0xc);
 
-	//	have nothing to do with units, this is larva integers, must not be extended at all
-	//	memoryPatch(0x004E8C9D + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
-	//	memoryPatch(0x004E8CA6 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
-	//	memoryPatch(0x004EA7D4 + 2, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
-	//	memoryPatch(0x004EA7E8 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+	// have nothing to do with units, this is larva integers, must not be extended at all
+//	memoryPatch(0x004E8C9D + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+//	memoryPatch(0x004E8CA6 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+//	memoryPatch(0x004EA7D4 + 2, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+//	memoryPatch(0x004EA7E8 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
 
 	memory_patch(0x0042FEA9 + 3, position_search_units_start);
 	memory_patch(0x0042FEF6 + 1, position_search_units_start);
@@ -69,7 +69,7 @@ void CCMUExtender::extend()
 	memory_patch(0x0043087B + 1, position_search_units_start);
 	memory_patch(0x004308B8 + 3, position_search_units_start);
 	memory_patch(0x00430ADB + 1, position_search_units_start);
-	//
+	
 	memory_patch(0x0042FEEA + 1, position_search_temp_start);
 	memory_patch(0x0043006A + 3, position_search_temp_start);
 	memory_patch(0x00430075 + 3, position_search_temp_start);
@@ -80,11 +80,12 @@ void CCMUExtender::extend()
 	memory_patch(0x00430A97 + 3, position_search_temp_start);
 	memory_patch(0x004309F7 + 3, position_search_temp_start);
 	memory_patch(0x00430AC5 + 3, position_search_temp_start);
-	//004309B5
+	
+	// 004309B5
 	memory_patch(0x0048B1AF + 2, air_splashes_start);
 	memory_patch(0x0048B1C7 + 3, air_splashes_start);
 	memory_patch(0x0048B1AF + 2, air_splashes_start);
-	//
+	
 	uplink(get_size_list(), UNIT_ARRAY_LENGTH);
 	uplink(table_start_list(), table_start);
 	uplink(get_address_list(), index_start);
@@ -729,8 +730,7 @@ namespace hooks
 	void CCMUExtender()
 	{
 		new_unit_table.extend();
-		//plugin code transfer notice: CCMU Extender also require Unit.cpp (index), weapon_effect and load_unload_orders/load_unload_proc (0059cb58)
-		//changes
+		// plugin code transfer notice: CCMU Extender also require changes to Unit.cpp (index), weapon_effect and load_unload_orders/load_unload_proc (0059cb58)
 	}
 	void injectCCMUHooks()
 	{

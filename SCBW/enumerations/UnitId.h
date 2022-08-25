@@ -13,6 +13,7 @@ namespace UnitId
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
 		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
+		ZergZerghere										= 251,		// EXTENDED!!!
 
 	// Shared-Unit
 		SharedCohort										= 50,		// Infested Terran
