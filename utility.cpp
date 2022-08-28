@@ -114,7 +114,7 @@ char* arena_push(MemoryArena* arena, u32 size) {
 			u32 capacity = std::max(size, MemoryBlockSize);
 			block = (MemoryBlock*)helper::SMemAlloc(sizeof(MemoryBlock) + capacity);
 			block->capacity = capacity;
-			block->prev = arena->block;
+			block->next = arena->block;
 			arena->block = block;
 		}
 	}
@@ -147,7 +147,7 @@ char* arena_printf(MemoryArena* arena, char* format, ...) {
 void arena_free_last(MemoryArena* arena) {
 	if (arena->block) {
 		MemoryBlock* block = arena->block;
-		arena->block = block->prev;
+		arena->block = block->next;
 		helper::SMemFree(block);
 	}
 }

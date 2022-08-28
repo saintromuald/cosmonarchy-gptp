@@ -26,10 +26,10 @@ void sb_printf(StringBuilder* sb, char* format, ...);
 
 #define MemoryBlockSize (1024 * 1024u)
 struct MemoryBlock {
-	MemoryBlock* prev;
+	MemoryBlock* next;
 	u32 size;
 	u32 capacity;
-	char data[1]; // 1 so we have a null terminator at the end
+	char data[0];
 };
 
 struct MemoryArena {
