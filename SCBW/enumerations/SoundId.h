@@ -1321,6 +1321,17 @@ namespace SoundId
 		PaladinOrderAggressive02			= 2052,
 		PaladinOrderAggressive03			= 2053,
 		PaladinOrderAggressive04			= 2054,
+		MagisterOrderAggressive01			= 2055,
+		MagisterOrderAggressive02			= 2056,
+		MagisterOrderAggressive03			= 2057,
+		MagisterOrderAggressive04			= 2058,
+		MagisterReady01						= 2059,
+		MagisterReady02						= 2060,
+		MagisterReady03						= 2061,
+		MagisterHelp01						= 2062,
+		MagisterHelp02						= 2063,
+		MagisterHelp03						= 2064,
+		MagisterHelp04						= 2065,
 	};
 }
 
