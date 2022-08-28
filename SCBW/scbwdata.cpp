@@ -64,7 +64,7 @@ SCBW_DATA_DEF(UnitDeaths*, unitKilledTable, unitKilledTable_var);
 SCBW_DATA_DEF(ButtonSet*, g_buttonset_table, buttonSetTable_var);
 SCBW_DATA_DEF(UnitStatFuncArrayEntry*, unitStatFuncs, unitStatFuncs_var);
 SCBW_DATA_DEF(u16*, g_orders_requirement_tree, g_orders_requirement_tree_var);
-SCBW_DATA_DEF(const LO_Header* const*, shieldOverlays, shieldOverlays_var);
+SCBW_DATA_DEF(const LO_Header* const*, g_shield_overlays, shieldOverlays_var);
 SCBW_DATA_DEF(u8*, g_building_overlay_state_max, g_building_overlay_state_max_var);
 SCBW_DATA_DEF(GrpHead* const*, g_image_grp_graphics, imageGrpGraphics_var);
 SCBW_DATA_DEF(u32*, aiStrength, aiStrength_var);
