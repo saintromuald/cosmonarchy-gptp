@@ -113,52 +113,32 @@ namespace hooks
 			unit->next_target_waypoint.x = unit->move_target.pt.x;
 			unit->next_target_waypoint.y = unit->move_target.pt.y;
 		}
-
-		//65500
 		while (out_hangar_child != nullptr)
 		{
-
 			out_hangar_child->user_action_flags |= 1;
-
 			if (out_hangar_child->main_order_id != OrderId::Die)
 			{
-
 				bool bNotRemovableOrder = false;
-
 				while (out_hangar_child->order_queue_tail != nullptr && !bNotRemovableOrder)
 				{
 
-					if (
-						!orders_dat::can_be_interrupted[out_hangar_child->order_queue_tail->order_id] &&
-						out_hangar_child->order_queue_tail->order_id != OrderId::SelfDestrucing
-						)
+					if (!orders_dat::can_be_interrupted[out_hangar_child->order_queue_tail->order_id]
+					&&	 out_hangar_child->order_queue_tail->order_id != OrderId::SelfDestructing)
+					{
 						bNotRemovableOrder = true;
+					}
 					else
+					{
 						helper::remove_order_from_unit_queue(out_hangar_child->order_queue_tail, out_hangar_child);
-
+					}
 				}
-
-				//65539
-				out_hangar_child->perform_another_order(
-					OrderId::SelfDestrucing,
-					0,
-					0,
-					nullptr,
-					UnitId::None
-				);
-
+				out_hangar_child->perform_another_order(OrderId::SelfDestructing, 0, 0, nullptr, UnitId::None);
 			}
-
-			//65554
 			prepare_for_next_order(out_hangar_child);
 			out_hangar_child = out_hangar_child->hangar_unit.hangar_link.prev;
-
-		} //while(out_hangar_child != nullptr)
-
-		//65565
+		}
 
 		unit->user_action_flags |= 1;
-
 		if (unit->order_target.unit != nullptr)
 		{
 			pos.x = (unit->order_target.unit)->sprite->position.x;
@@ -170,42 +150,25 @@ namespace hooks
 			pos.y = 0;
 		}
 
-		//65598
 		if (unit->main_order_id != OrderId::Die)
 		{
-
 			bool bNotRemovableOrder = false;
-
 			while (unit->order_queue_tail != nullptr && !bNotRemovableOrder)
 			{
-
-				if (
-					!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
-					unit->order_queue_tail->order_id != OrderId::Reaver
-					)
+				if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
+				&&	 unit->order_queue_tail->order_id != OrderId::Reaver)
+				{
 					bNotRemovableOrder = true;
+				}
 				else
+				{
 					helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
-
+				}
 			}
-
-			//655C3
-			unit->perform_another_order(
-				OrderId::Reaver,
-				pos.x,
-				pos.y,
-				unit->order_target.unit,
-				UnitId::None
-			);
-
+			unit->perform_another_order(OrderId::Reaver, pos.x, pos.y, unit->order_target.unit, UnitId::None);
 		}
-
-		//655DB
 		prepare_for_next_order(unit);
-
-	} //void orders_ReaverStop(Unit* unit)
-
-	;
+	}
 
 	void orders_Guard(Unit* unit)
 	{

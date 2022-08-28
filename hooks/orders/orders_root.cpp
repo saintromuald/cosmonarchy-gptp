@@ -183,7 +183,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004A1C20,	/*OrderId::Neutral*/				Func_Type::EDI,	2},
 	{ 0x00478490,	/*OrderId::ComputerReturn*/			Func_Type::EAX,	2},
 	{ 0x00493F70,	/*OrderId::InitPsiProvider*/		Func_Type::EAX,	2},
-	{ 0x00475710,	/*OrderId::SelfDestrucing*/			Func_Type::EAX,	1},
+	{ 0x00475710,	/*OrderId::SelfDestructing*/			Func_Type::EAX,	1},
 	{ 0x0047C3C0,	/*OrderId::Critter*/				Func_Type::EAX,	1},
 	{ 0x0047BF80,	/*OrderId::HiddenGun*/				Func_Type::EAX,	2},
 	{ 0x0047BCD0,	/*OrderId::OpenDoor*/				Func_Type::ESI,	2},

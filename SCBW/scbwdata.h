@@ -782,6 +782,8 @@ namespace images_dat {
 	SCBW_DATA_REF(const u32*,		lo_liftoff,			imagesDat[13].address);	// 0066D8C0
 } //images_dat (last entry at 0x005140AC)
 
+SCBW_DATA(u32*,	g_image_overlay_attack,		0x0066B1B0);
+SCBW_DATA(u32*,	g_image_overlay_special,	0x00667B00);
 
 //////////////////////////////////////////////////////////////// @}
 
@@ -869,7 +871,8 @@ struct ImagesDatExtraOverlayLO_Files {
 	LO_Header** landingDustOverlays;
 	LO_Header** liftoffDustOverlays;
 };
-SCBW_DATA_REF(ImagesDatExtraOverlayLO_Files*, lo_files,			0x0051F2A8);
+SCBW_DATA_REF(ImagesDatExtraOverlayLO_Files*,		lo_files,			0x0051F2A8);
+//SCBW_DATA_REF(const LO_Header* const*,			shieldOverlays,		0x0052E5C8);
 SCBW_DATA_REF(const LO_Header* const*,				g_shield_overlays,	0x0052E5C8);
 
 SCBW_DATA(const ColorShiftData*,	g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index

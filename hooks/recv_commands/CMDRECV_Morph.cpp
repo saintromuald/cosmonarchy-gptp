@@ -8,11 +8,12 @@ namespace hooks
 	void cmdrecv_building_morph(u16 unit_id) {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
-			if (unit->id >= UnitId::ZergInfestedCommandCenter && unit->id != UnitId::None &&
-				unit_id >= UnitId::ZergInfestedCommandCenter && unit_id != UnitId::None &&
-				unit->can_make_unit(unit_id, *g_active_nation_id) == 1 &&
-				helper::has_money_can_make(unit, unit_id) && // start construction if successful
-				unit->main_order_id != OrderId::Morph2) {
+			if (unit->id != UnitId::None
+			&&	unit->can_make_unit(unit_id, *g_active_nation_id) == 1
+			&&	helper::has_money_can_make(unit, unit_id)
+			&&	unit->main_order_id != OrderId::Morph2)
+			{
+				// start construction if successful
 				unit->order_computer(OrderId::Morph2);
 				scbw::refresh_console();
 			}

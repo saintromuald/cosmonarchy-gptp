@@ -3,91 +3,64 @@
 
 namespace hooks
 {
-
-	void orders_Upgrade(Unit* unit)
+	void orders_upgrade(Unit* unit)
 	{
-
 		bool bStopThere = false;
 		Image* current_image;
 
-		if (unit->status & UnitStatus::GroundedBuilding &&
-			unit->building.upgrade_id != UpgradeId::None
-			)
+		if (unit->status & UnitStatus::GroundedBuilding && unit->building.upgrade_id != UpgradeId::None)
 		{
-
 			unit->building.upgrade_research_time--;
+			u8 upgrade_level = UpgradesSc->current_level[unit->player][unit->building.upgrade_id];
+			if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
+			{
+				upgrade_level = UpgradesBw->current_level[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
+			}
 
 			if (unit->building.upgrade_research_time != 0xFFFF)
 			{
-
-				u8 upgrade_level;
-
-				if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
-					upgrade_level = UpgradesBw->current_level[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
-				else
-					upgrade_level = UpgradesSc->current_level[unit->player][unit->building.upgrade_id];
-
-				if (upgrade_level < unit->building.upgrade_level &&
-					!(*g_cheat_state & CheatFlags::OperationCwal))
+				if (upgrade_level < unit->building.upgrade_level && !(*g_cheat_state & CheatFlags::OperationCwal))
+				{
 					bStopThere = true;
-
+				}
 			}
 
-			//5471D
 			if (!bStopThere)
 			{
-
-				u8 upgrade_level;
-
 				helper::play_upgrade_complete_sound();
-
-				if (unit->building.upgrade_id >= UpgradeId::PrismaticShield)
-					upgrade_level = UpgradesBw->current_level[unit->player][unit->building.upgrade_id - UpgradeId::PrismaticShield];
-				else
-					upgrade_level = UpgradesSc->current_level[unit->player][unit->building.upgrade_id];
-
 				if (upgrade_level < unit->building.upgrade_level)
 				{
-
 					if (helper::is_unit_upgrade_available(unit))
 					{
 						helper::set_upgrade_level(unit->player, unit->building.upgrade_id, unit->building.upgrade_level);
 						helper::apply_speed_upgrade_from_upgrade_id(unit, unit->building.upgrade_id);
 					}
-
 				}
-
-				//5477F
 				scbw::refresh_console();
-
 			}
-
 		}
 
-		//547A7
 		if (!bStopThere)
 		{
-
 			current_image = unit->sprite->images.head;
-
 			while (current_image != nullptr)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::WorkingToIdle);
 				current_image = current_image->link.next;
 			}
 
-			//code I could not understand enough to convert
+			// code I could not understand enough to convert
 			__asm {
 
 				PUSHAD
 
 				MOV ESI, unit
-				MOVZX ECX, byte ptr[ESI + 0xC9]	//unit->building.upgrade_id
-				MOVZX EAX, byte ptr[ESI + 0x4C]	//unit->player
+				MOVZX ECX, byte ptr[ESI + 0xC9]	// unit->building.upgrade_id
+				MOVZX EAX, byte ptr[ESI + 0x4C]	// unit->player
 				MOV EDX, ECX
 				SHR EDX, 0x3
 				AND ECX, 0x80000007
-				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] //EAX = &(UpgradesBw->current_level[unit->player][unit->building.upgrade_id CONVERTED?])
+				LEA EAX, [EDX + EAX * 0x8 + 0x0058F3E0] // EAX = &(UpgradesBw->current_level[unit->player][unit->building.upgrade_id CONVERTED?])
 				JNS lbl547E7
 
 				DEC ECX
@@ -112,57 +85,45 @@ namespace hooks
 
 			if (unit->unit_ai != nullptr)
 			{
-
 				unit->user_action_flags |= 1;
 
 				if (unit->main_order_id != OrderId::Die)
 				{
-
 					bool bStopLoop = (unit->order_queue_tail == nullptr);
-
 					while (!bStopLoop)
 					{
-
-						if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
-							unit->order_queue_tail->order_id != OrderId::ComputerAI
-							)
+						if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
+						&&   unit->order_queue_tail->order_id != OrderId::ComputerAI)
+						{
 							bStopLoop = true;
+						}
 						else
+						{
 							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
-
+						}
 					}
-
 					unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
-
 				}
-
 				prepare_for_next_order(unit);
-
 			}
 			else
-			{ //54875
-
+			{
 				if (unit->order_queue_head != nullptr)
 				{
 					unit->user_action_flags |= 1;
 					prepare_for_next_order(unit);
 				}
-				else //54896
+				else
+				{
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-
+				}
 			}
-
 		}
-
 	}
 
-	;
-
-	void orders_ResearchTech(Unit* unit)
+	void orders_research_tech(Unit* unit)
 	{
-
 		bool bStopThere = false;
-
 		if (unit->building.tech_id != TechId::None)
 		{
 

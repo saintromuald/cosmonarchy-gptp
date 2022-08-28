@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Upgrade(unit);
+		hooks::orders_upgrade(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -30,7 +30,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_ResearchTech(unit);
+		hooks::orders_research_tech(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP

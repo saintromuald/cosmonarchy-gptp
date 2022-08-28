@@ -756,7 +756,7 @@ namespace hooks
 						unitExt->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
-							const LO_Header* loFile = reinterpret_cast<LO_Header*>(images_dat::lo_special[unit->sprite->main_graphic->id]);
+							const LO_Header* loFile = lo_files->specialOverlays[unit->sprite->main_graphic->id];
 							u8 frameDirection = unit->sprite->main_graphic->direction;
 							Point8 offset = loFile->get_offset(frameDirection, 5 - arc);
 							if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)

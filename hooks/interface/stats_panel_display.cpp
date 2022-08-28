@@ -69,7 +69,7 @@ namespace hooks
 					}
 					else if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
 					{
-						groundWeapon = UnitId::None;
+						groundWeapon = WeaponId::None;
 					}
 					else if (groundWeaponMainUnit != WeaponId::None)
 					{

@@ -88,13 +88,13 @@ namespace DatExt {
 		}
 
 		// portdata.dat special cases
-		if (i == DatFile::Portdata_Dat) {
-			// Count must be a multiple of 5, so round up
-			if ((newCount % 5) != 0)
-			{
-			  memCount += 5 - (newCount % 5);
-			}
-		}
+	//	if (i == DatFile::Portdata_Dat) {
+	//		// Count must be a multiple of 5, so round up
+	//		if ((newCount % 5) != 0)
+	//		{
+	//		  memCount += 5 - (newCount % 5);
+	//		}
+	//	}
 
 		// Load new entry counts
 		for (j = 0; datTablePtr[j].address != NULL; j++) {
@@ -159,7 +159,7 @@ namespace DatExt {
 			} break;
 			case DatFile::Mapdata_Dat:
 			{
-				//mapdata_dat_doPatch(newCount);
+		//		mapdata_dat_doPatch(newCount);
 			} break;
 		}
 

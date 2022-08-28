@@ -334,7 +334,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	InitPsiProvider        = 0xA4, /**< Init Psi Provider. Adds to some kind of linked list.
 					* Default Requirements: Unused. */
-	SelfDestrucing         = 0xA5, /**< Remove unit.
+	SelfDestructing         = 0xA5, /**< Remove unit.
 					* Default Requirements: Unit must be Protoss Scarab. */
 	Critter                = 0xA6, /**< Critter idle.
 					* Default Requirements: Unit must be Rhynadon, Bengalaas, Ragnasaur, Scantid, Kakaru, or Ursadon. Allow on hallucinated units. */

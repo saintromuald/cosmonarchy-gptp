@@ -1377,12 +1377,9 @@ namespace scbw
 		}
 		UnitExt* unitExt = get_unit_ext(unit);
 		auto rotate = unitExt->values[value_id];
-		const LO_Header* loFile = 0;
+		const LO_Header* loFile = lo_files->attackOverlays[unit->sprite->main_graphic->id];
 		if (use_special_overlay) {
-			loFile = reinterpret_cast<LO_Header*>(images_dat::lo_special[unit->sprite->main_graphic->id]);
-		}
-		else {
-			loFile = reinterpret_cast<LO_Header*>(images_dat::lo_attack[unit->sprite->main_graphic->id]);
+			loFile = lo_files->specialOverlays[unit->sprite->main_graphic->id];
 		}
 		u8 frameDirection = unit->sprite->main_graphic->direction;
 		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);

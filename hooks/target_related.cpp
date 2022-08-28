@@ -414,7 +414,9 @@ LABEL_42:
 		if (!target)
 		{
 			if ((unit->id == UnitId::ZergMatraleth) && unitID != UnitId::None)
+			{
 				return OrderId::Rightclickaction;
+			}
 			return OrderId::Move;
 		}
 		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, targetVar, 0))

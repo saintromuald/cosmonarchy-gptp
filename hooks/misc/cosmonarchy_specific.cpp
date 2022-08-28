@@ -15,7 +15,7 @@ namespace hooks
 		{
 			return false;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(images_dat::lo_damage[sprite->main_graphic->id]);
+		const LO_Header* overlay = lo_files->damageOverlays[sprite->main_graphic->id];
 		if (overlay == nullptr)
 		{
 			return false;
@@ -51,7 +51,7 @@ namespace hooks
 		{
 			return;
 		}
-		const LO_Header* overlay = reinterpret_cast<LO_Header*>(images_dat::lo_damage[sprite->main_graphic->id]);
+		const LO_Header* overlay = lo_files->damageOverlays[sprite->main_graphic->id];
 		if (overlay == nullptr)
 		{
 			return; // return if there's no overlay defined
@@ -333,8 +333,8 @@ namespace hooks
 		return false;
 	}
 
-	s32 game_loop()
-	{ // 004D94B0 - hooked for lag testing - Pr0nogo
+	s32 game_loop() // 004D94B0 - hooked for lag testing - Pr0nogo
+	{
 		bool v0;
 		win32::Stopwatch sw;
 		sw.Start();
@@ -379,24 +379,28 @@ namespace hooks
 	// Now used to set starting energy to 100 - Veeq7
 	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) 
 	{
-		u32 randomNumber = 0;
+		u32 random_number = 0;
 		if (*g_is_in_game_loop)
 		{
 			++random_counts[14];
 			*g_last_random_number = 0x15A4E35 * *g_last_random_number + 1;
 			++(*random_counts_total);
-			randomNumber = (*g_last_random_number >> 16) & 0x7FFF;
+			random_number = (*g_last_random_number >> 16) & 0x7FFF;
 		}
-		Unit* unit = helper::unit_constructor(x, y, unit_id, player, randomNumber);
+
+		Unit* unit = helper::unit_constructor(x, y, unit_id, player, random_number);
 		if (!unit)
 		{
 			return 0;
 		}
+
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = 100 * 256; // New starting amount
-		} else {
+		}
+		else {
 			unit->energy = 0;
 		}
+
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::list_push_back_used_unit_entry(unit);
@@ -406,13 +410,13 @@ namespace hooks
 			helper::list_push_back_hidden_unit_entry(unit);
 		}
 
-		if (unit_id != UnitId::None || units_dat::subunit[unit_id] == UnitId::None)
+		if (units_dat::subunit[unit_id] == UnitId::None)
 		{
 			unit->subunit = 0;
 			return unit;
 		}
 
-		Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, randomNumber);
+		Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, random_number);
 		if (!subunit)
 		{
 			helper::unit_destructor(unit);
@@ -424,7 +428,7 @@ namespace hooks
 		u32 attack_frame = 0;
 		helper::get_image_attack_frame(&attack_frame, unit->sprite, 0, 2u);
 		if (!subunit) {} // debug builds will crash without this line, because XD
-		helper::set_sprite_main_image_offset(subunit->sprite, attack_frame, randomNumber);
+		helper::set_sprite_main_image_offset(subunit->sprite, attack_frame, random_number);
 		return unit;
 	}
 
