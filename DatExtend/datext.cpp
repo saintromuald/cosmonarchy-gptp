@@ -34,9 +34,12 @@ namespace DatExt {
 	};
 
 	StringTbl* unitNamesTbl = NULL;
+	GrpHead* unitIcons = NULL;
+	GrpHead** const cmdIcons = (GrpHead**)(0x0068C1E0); // default value
 
 	bool setDatSize(DatLoad* datTablePtr, u32 size)
 	{
+
 		u32 i,j;
 		u32 newCount, memCount;
 		void* newMem = NULL;
@@ -88,13 +91,13 @@ namespace DatExt {
 		}
 
 		// portdata.dat special cases
-	//	if (i == DatFile::Portdata_Dat) {
-	//		// Count must be a multiple of 5, so round up
-	//		if ((newCount % 5) != 0)
-	//		{
-	//		  memCount += 5 - (newCount % 5);
-	//		}
-	//	}
+		if (i == DatFile::Portdata_Dat) {
+			// Count must be a multiple of 5, so round up
+			if ((newCount % 5) != 0)
+			{
+			  memCount += 5 - (newCount % 5);
+			}
+		}
 
 		// Load new entry counts
 		for (j = 0; datTablePtr[j].address != NULL; j++) {
@@ -208,6 +211,11 @@ namespace DatExt {
 			SMemFree(unitNamesTbl, __FILE__, __LINE__, 0);
 			unitNamesTbl = NULL;
 		}
+
+		if (unitIcons != NULL) {
+			SMemFree(unitIcons, __FILE__, __LINE__, 0);
+			unitIcons = NULL;
+		}
 	}
 
 	// Loads rez\unitnames.tbl, if it exists, for extended unit ID names
@@ -218,6 +226,25 @@ namespace DatExt {
 			return; // already loaded
 		}
 		unitNamesTbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", NULL, true, 0, NULL);
+	}
+
+	// Loads unit\cmdbtns\uniticons.grp, if it exists, for extended unit ID build queue icons
+	void loadUnitIcons() {
+		if (unitIcons != NULL) return; // already loaded
+
+		unitIcons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", NULL, true, 0, NULL);
+
+		// patch if hooks aren't enabled
+		memory_patch(0x00426002 + 2, getUnitIconsPtr()); // status_buildmorphtrain --> stats_AddOnBuilder
+		memory_patch(0x00426A33 + 2, getUnitIconsPtr()); // status_buildmorphtrain --> stats_QueueProgress
+		memory_patch(0x004270DB + 2, getUnitIconsPtr()); // status_nukesilo_resources --> stats_nukesilo
+		memory_patch(0x004272F5 + 2, getUnitIconsPtr()); // unit_stat_act --> UnitStatAct_Egg
+	}
+
+	// Returns uniticons.grp pointer if was loaded, otherwise returns default cmdicons.grp pointer
+	GrpHead** const getUnitIconsPtr() {
+		if (unitIcons != NULL) return &unitIcons;
+		return cmdIcons;
 	}
 
 	// general patching functions  

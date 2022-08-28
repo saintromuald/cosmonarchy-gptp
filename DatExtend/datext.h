@@ -62,6 +62,9 @@ namespace DatExt {
 	void constReplace(s32* list, u32 val);
 	u32 simpleReplace(u32* list, u32 val);
 
+	void loadUnitIcons();
+	GrpHead** const getUnitIconsPtr();
+
 	// dat patching functions -- defined in their repective .cpp files to reduce clutter
 	void units_dat_doPatch(u32 newCount);
 	void units_dat_flingyExpand();

@@ -588,7 +588,7 @@ namespace hooks
 	}
 
 	// Hooked to change the name of new building morphs.
-	// Since July 2022, data extenders make use of their own hook for naming extended unit ids.
+	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.
 	// - Pr0nogo
 	const char* get_unit_name(Unit* unit) {
 		if (unit->player < PlayerLimit && unit->id < UnitId::Count &&

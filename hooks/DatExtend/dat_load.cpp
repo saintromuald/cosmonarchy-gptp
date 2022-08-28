@@ -41,6 +41,7 @@ namespace hooks {
 		if (datTable == (DatLoad*)DatExt::LoadTable::Units_Dat)
 		{
 			DatExt::loadUnitNamesTbl(); // load extended unit names table
+			DatExt::loadUnitIcons(); // load extended unit icons
 			if (datTable[0].length == 1)
 			{
 				DatExt::units_dat_flingyExpand();
