@@ -655,7 +655,7 @@ namespace hooks
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV y, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV player, EAX
 			POP EAX
 			MOV x, EAX
@@ -669,7 +669,7 @@ namespace hooks
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 8
+			RETN 0x08
 		}
 	}
 

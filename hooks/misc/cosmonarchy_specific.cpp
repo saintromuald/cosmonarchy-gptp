@@ -393,14 +393,12 @@ namespace hooks
 		{
 			return 0;
 		}
-
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = 100 * 256; // New starting amount
 		}
 		else {
 			unit->energy = 0;
 		}
-
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::list_push_back_used_unit_entry(unit);

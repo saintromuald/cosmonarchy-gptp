@@ -3,6 +3,7 @@
 #include "SCBW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
 #include "trigger_system/trigger_system.h"
+#include "DatExtend/datext.h"
 
 namespace hooks
 {
@@ -818,7 +819,7 @@ namespace hooks
 				child = child->next;
 			}
 			char* user = (char*)child->user;
-			GrpHead* icons_grp = *g_cmdicons_grp;
+			GrpHead* icons_grp = *DatExt::getUnitIconsPtr();
 			child->graphic = 2;
 			*(GrpHead**)(user + 0) = icons_grp;
 			*(u16*)(user + 4) = unit->build_queue[unit->build_queue_slot];
