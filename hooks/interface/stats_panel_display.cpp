@@ -793,8 +793,6 @@ namespace hooks
 		}
 	}
 
-
-
 	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
 	void unit_stat_act_egg(BinDlg* dialog) { // 00427260
 		Unit* unit = *g_active_portrait_unit;
