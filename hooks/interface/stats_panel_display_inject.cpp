@@ -336,7 +336,7 @@ namespace hooks
 		jump_patch(reset_tooltip_info_wrapper_2,					0x004593B0, 0);
 		jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
 		jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
-		jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
+	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
