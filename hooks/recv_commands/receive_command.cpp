@@ -35,7 +35,7 @@ namespace hooks
 				bool bOrderAllowed;
 				if (orders_dat::tech_used[current_order] != TechId::None)
 				{
-					bOrderAllowed = (current_unit->canUseTech(orders_dat::tech_used[current_order], *g_active_nation_id) == 1);
+					bOrderAllowed = (current_unit->can_use_tech(orders_dat::tech_used[current_order], *g_active_nation_id) == 1);
 				}
 				else
 				{

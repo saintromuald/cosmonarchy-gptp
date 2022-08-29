@@ -270,7 +270,7 @@ namespace AI
 				energyReserve = std::min(energyReserve, unit->get_max_energy());
 
 				if ((unit->energy >= energyReserve || scbw::is_cheat_enabled(CheatFlags::TheGathering))
-					&& unit->canUseTech(TechId::Maelstrom, unit->player) != 1)
+					&& unit->can_use_tech(TechId::Maelstrom, unit->player) != 1)
 				{
 					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::CastMaelstrom
@@ -305,7 +305,7 @@ namespace
 		}
 		if (scbw::is_cheat_enabled(CheatFlags::TheGathering || unit->energy >= energyCost))
 		{
-			return unit->canUseTech(techId, unit->player) == 1;
+			return unit->can_use_tech(techId, unit->player) == 1;
 		}
 		return false;
 	}

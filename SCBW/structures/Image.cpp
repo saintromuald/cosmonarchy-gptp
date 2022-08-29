@@ -46,7 +46,7 @@ void Image::free()
 void Image::set_remapping(ColorRemapping::Enum remapping)
 {
 	assert(this);
-	this->draw_func = g_color_shift[remapping].data;
+	this->draw_func_param = g_color_shift[remapping].data;
 }
 //Identical to function @ 0x004D5A50
 void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
@@ -63,7 +63,7 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 	this->horizontal_offset = x;
 	this->vertical_offset = y;
 	this->grp_size = Box16();
-	this->draw_func = 0;
+	this->draw_func_param = 0;
 
 	//Initialize iscript data
 	this->iscript_header_offset = 0;
@@ -79,11 +79,11 @@ void Image::initialize_data(Sprite* parent, u16 imageId, s8 x, s8 y)
 
 	if (images_dat::rle_function[imageId] == PaletteType::RLE_PLAYER_SIDE)
 	{
-		*(u32*)(&this->draw_func) = parent->player;
+		*(u32*)(&this->draw_func_param) = parent->player;
 	}
 	if (images_dat::rle_function[imageId] == PaletteType::RLE_EFFECT)
 	{
-		this->draw_func = g_color_shift[images_dat::remapping[imageId]].data;
+		this->draw_func_param = g_color_shift[images_dat::remapping[imageId]].data;
 	}
 }
 

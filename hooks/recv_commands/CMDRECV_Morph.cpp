@@ -137,12 +137,12 @@ namespace hooks
 
 	// Hooked for multi-building select. -Pr0nogo
 	void btnsact_rally_point(u32 xd) { // 004244A0
-		*order_id_ground = OrderId::RallyPointToTile;
-		*order_id_obstructed = OrderId::RallyPointToTile;
+		*g_order_id_ground = OrderId::RallyPointToTile;
+		*g_order_id_obstructed = OrderId::RallyPointToTile;
 		bool network_table_1 = *network_table < 0x3Eu;
 		bool network_table_2 = *network_table == 62;
 		*g_is_targeting = 1;
-		*order_id_unit = OrderId::RallyPointToVisibleUnit;
+		*g_order_id_unit = OrderId::RallyPointToVisibleUnit;
 
 		const char* string = (const char*)(*network_table + network_table[63]);
 		if (network_table_1 || network_table_2) {
@@ -151,7 +151,7 @@ namespace hooks
 
 		helper::send_message_something(xd, string);
 		helper::set_ingame_input_procs();
-		*unk_rally_related = 2;
+		*g_minimap_cursor = 2;
 		*orders_buttonset = 229;
 		helper::update_current_buttonset();
 	}
@@ -171,7 +171,7 @@ namespace hooks
 					&&  helper::can_enter_transport(target_unit, unit)) {
 						return OrderId::EnterTransport;
 					}
-					if (helper::is_order_valid(OrderId::Repair1, unit, (s32)target_unit, target_unit, 0)) { // this helper is hilarious
+					if (helper::is_order_valid(OrderId::Repair1, unit, target_unit, target_unit, 0)) {
 						return OrderId::Repair1;
 					}
 					if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {

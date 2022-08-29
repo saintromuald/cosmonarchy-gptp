@@ -768,6 +768,8 @@ namespace hooks
 	void unit_stat_action_transport(BinDlg* dialog) // 00427C90
 	{
 		Unit* active_unit = *g_active_portrait_unit;
+		// Disabled the block below to temporarily turn off transport UI display, since it has not yet been reimplemented. -Pr0nogo
+		/*
 		if ((*g_is_in_replay || active_unit->player == *g_local_nation_id)
 		&&  !(active_unit->status & UnitStatus::IsHallucination)
 		&&   (helper::transport_status_update_drawn_values(), helper::is_unit_loaded(active_unit)))
@@ -781,7 +783,9 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::get_active_portrait_unit_name(dialog);
 		}
-		else if (active_unit->status & UnitStatus::GroundedBuilding)
+		else
+		*/
+		if (active_unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::unit_stat_action_building(dialog);
 		}
@@ -790,8 +794,6 @@ namespace hooks
 			helper::unit_stat_act_standard(dialog);
 		}
 	}
-
-
 
 	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
 	void unit_stat_act_egg(BinDlg* dialog) { // 00427260

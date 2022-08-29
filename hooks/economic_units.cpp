@@ -37,10 +37,10 @@ namespace hooks
 				id = UnitId::ProtossNexus;
 				break;
 			case RaceId::Zerg:
-				id = UnitId::ZergHatchery;
+				id = UnitId::ZergHachirosk;
 				break;
 			default:
-				id = UnitId::ZergHatchery;
+				id = UnitId::ZergHachirosk;
 				break;
 		}
 		return id;
@@ -56,7 +56,7 @@ namespace hooks
 				//		case UnitId::UmojanGarrison:
 				//		case UnitId::KelmorianMiningStation:		
 			case UnitId::ProtossNexus:
-			case UnitId::ZergHatchery:
+			case UnitId::ZergHachirosk:
 				return true;
 			default:
 				break;
@@ -71,7 +71,7 @@ namespace hooks
 		{
 			case UnitId::TerranCommandCenter:
 			case UnitId::ProtossNexus:
-			case UnitId::ZergHatchery://lairs and hives are not required
+			case UnitId::ZergHachirosk://lairs and hives are not required
 				return true;
 			default:
 				break;
@@ -199,7 +199,7 @@ namespace hooks
 	bool IsTownEligible(AiTown* town, u8 raceId)
 	{
 		if (!town) return false;
-		if (town->inBattle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
+		if (town->in_battle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
 		if (GetTownRace(town) != raceId) return false;
 		if (town->main_building->remaining_build_time != 0) return false; // town not finished, nullchecks are in the previous function
 		if (raceId == RaceId::Zerg)
@@ -296,7 +296,7 @@ namespace hooks
 			{
 				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::supply_provided[supplyUnit];
 				//farms_timing on, compare ecounits required vs ecounits count
-				if (!(g_aiscript_controller[player]->AI_Flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
+				if (!(g_aiscript_controller[player]->ai_flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
 				{
 					return true;
 				}
@@ -331,7 +331,7 @@ namespace hooks
 
 		battleTime = g_aiscript_controller[player]->previous_building_hit_second;
 		if (!battleTime
-			|| *g_elapsed_time_seconds - battleTime >= 0x1E // inBattle flag? just a coincidence?
+			|| *g_elapsed_time_seconds - battleTime >= 0x1E // in_battle flag? just a coincidence?
 			|| ((race = g_player_table[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
 				unit_id == result || priority == 140))
 		{

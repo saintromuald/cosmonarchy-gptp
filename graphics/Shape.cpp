@@ -130,10 +130,10 @@ namespace graphics
 				p2.y -= *g_screen_y;
 				break;
 			case ON_MOUSE:
-				p1.x += mouse->x;
-				p1.y += mouse->y;
-				p2.x += mouse->x;
-				p2.y += mouse->y;
+				p1.x += g_mouse->x;
+				p1.y += g_mouse->y;
+				p2.x += g_mouse->x;
+				p2.y += g_mouse->y;
 				break;
 			default:
 				set_error(ERR_UNKNOWN_COORD_TYPE);

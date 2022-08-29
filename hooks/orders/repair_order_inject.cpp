@@ -100,6 +100,16 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) subtract_repair_resources_patch() {
+		__asm {
+			PUSH	EBX
+			MOV		EBX, [ESI + 0x5C]
+			MOV		[EBX + 0x8C], AX
+			POP		EBX
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -110,5 +120,6 @@ namespace hooks
 		jump_patch(is_order_valid_wrapper,						0x00474D90, 1);
 //		jump_patch(order_allowed_wrapper,						0x0046DC20, 3); // crashes
 		jump_patch(show_right_click_error_if_needed_Wrapper,	0x00455A00, 0);
+		call_patch(subtract_repair_resources_patch,				0x00466FF0, 2);
 	}
 }

@@ -18,7 +18,7 @@ namespace hooks
 		if (!(building->status & UnitStatus::Completed))
 		{
 			// was hardcoded instead of using is_valid_morph in original code
-			bIsMorphing = helper::is_valid_morph(building->build_queue[building->build_queue_slot]);
+			bIsMorphing = helper::is_valid_building_morph(building->build_queue[building->build_queue_slot]);
 		}
 		else
 		{
@@ -28,8 +28,8 @@ namespace hooks
 	}
 
 	void orders_zerg_build_self(Unit* building) {
-		bool is_nydus = building->id == UnitId::ZergNydusCanal && building->building.nydus_exit;
-		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_morph(building->id) || is_nydus) ? false : true);
+		bool is_nydus = building->id == UnitId::ZergNydusCesiant && building->building.nydus_exit;
+		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_building_morph(building->id) || is_nydus) ? false : true);
 		if (is_nydus) {
 			BuildingModifier nydus_modifier = get_building_modifier(building->building.nydus_exit, 0, false);
 			modifier.decrease += nydus_modifier.decrease;
@@ -60,6 +60,9 @@ namespace hooks
 
 		if (building->main_order_state == 0)
 		{
+			if (helper::is_valid_building_morph(buildingId)) {
+				building->create_origin = building->id;
+			}
 			if (building->remaining_build_time < (units_dat::time_cost[buildingId] * 3 / 4))
 			{
 				building->main_order_state = 1;
@@ -146,7 +149,11 @@ namespace hooks
 			{
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
+<<<<<<< HEAD
 				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::image_id, building->sprite->sprite_id), 0);
+=======
+				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->id), 0);
+>>>>>>> dev
 				function_004D8500_copy(building->sprite->main_graphic);
 			}
 
@@ -171,8 +178,7 @@ namespace hooks
 				s32 hpAfterMorph;
 				Image* current_image;
 				building->order_signal &= ~4;
-				if (helper::is_valid_morph(buildingId))
-				{
+				if (helper::is_valid_building_morph(buildingId)) {
 					// save hp before some functions modify them
 					hpAfterMorph = building->hitpoints;
 					u32 save_shields = building->shields;
@@ -193,7 +199,7 @@ namespace hooks
 					building->remaining_build_time = 0;
 				} else if (building->create_origin == UnitId::ZergGosvileth) {
 					Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
-					worker->set_hitpoints(building->previous_hitpoints);
+					worker->set_hitpoints(building->previous_hitpoints * 256);
 				}
 				// 0045D6CD
 				helper::update_unit_stats_and_finish_building(building);
@@ -267,7 +273,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Completed)) {
 			u16 builtUnitId = unit->build_queue[unit->build_queue_slot];
 			// original code was hardcoded instead of using is_valid_morph
-			if (helper::is_valid_morph(builtUnitId)) {
+			if (helper::is_valid_building_morph(builtUnitId)) {
 				if (unit->get_race() == RaceId::Zerg) {
 					helper::zergPlaceBuildingCntd(unit);
 				} else { // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
@@ -318,19 +324,20 @@ namespace hooks
 					helper::display_last_network_error_for_player(unit->player);
 					unit->remove();
 					bStopThere = true;
-				} else { // 0045DB1E
+				} else {
 					helper::update_unit_stats_and_finish_building(worker);
 					helper::update_unit_strength(worker);
 					worker->set_hitpoints(unit->previous_hitpoints * 256);
+					worker->sprite->player = unit->sprite->player;
 					unit->remove();
 					bStopThere = true;
 				}
 			}
 
-			if (!bStopThere) { // 0045DB45
+			if (!bStopThere) {
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 				if (thingy) {
-					thingy->sprite->elevation_level = unit->sprite->elevation_level + 1;
+					thingy->sprite->elevation = unit->sprite->elevation + 1;
 					helper::set_thingy_visibility_flags(thingy);
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
@@ -384,29 +391,29 @@ namespace hooks
 
 		switch (unit_id)
 		{
-			case UnitId::ZergHatchery:
+			case UnitId::ZergHachirosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLair, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergCaphrolosk, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergLair:
+			case UnitId::ZergCaphrolosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergHive:
+			case UnitId::ZergGathtelosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSire, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
 			} break;
 
-			case UnitId::ZergCreepColony:
+			case UnitId::ZergCagrantColony:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSporeColony, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSurkithColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpraithColony, ignoreIncomplete);
+				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskColony, ignoreIncomplete);
 			} break;
 
 			case UnitId::ZergIrolIris:

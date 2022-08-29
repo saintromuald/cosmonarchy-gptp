@@ -1552,7 +1552,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					if (player == 2 || player == 5) {
 						townhall = UnitId::ProtossNexus;
 					} else if (player == 3 || player == 6) {
-						townhall = UnitId::ZergHatchery;
+						townhall = UnitId::ZergHachirosk;
 					}
 
 					Point16 pos = fraud_spawn.sequence[player-1].location->pos;
@@ -1562,7 +1562,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 						augur_sacrifice(augur, 10 * 32);
 					}
 
-					sequence->temp_townhall = helper::createUnitAtPos(townhall, player, pos.x, pos.y);
+					sequence->temp_townhall = helper::create_unit_at_pos(townhall, player, pos.x, pos.y);
 				}
 
 				set_ally(player, 0, false);

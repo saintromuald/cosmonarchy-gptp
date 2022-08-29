@@ -4,17 +4,17 @@
 
 namespace
 {
-	void __declspec(naked) getResponseSfx_Wrapper() // 0048EA20
+	void __declspec(naked) get_unit_response_id_wrapper() // 0048EA20
 	{
-		static s32 a1;
-		static s32 a2;
+		static s32 unit_id;
+		static s32 last_sound_id;
 		static s32 result;
 		__asm {
-			MOV a1, EAX
-			MOV a2, EDX
+			MOV unit_id, EAX
+			MOV last_sound_id, EDX
 			PUSHAD
 		}
-		result = hooks::getResponseSfx(a1, a2);
+		result = hooks::get_unit_response_id(unit_id, last_sound_id);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -22,18 +22,46 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getRandYesSFX_Wrapper() // 0048EAB0
+	void __declspec(naked) play_yes_unit_response_wrapper() // 0048F4D0
 	{
-		static s32 a1;
-		static s32 result;
+		static Unit* unit;
 		__asm {
-			MOV a1, ECX
+			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::getRandYesSFX(a1);
+		hooks::play_yes_unit_response(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_random_yes_unit_response_wrapper() // 0048EAB0
+	{
+		static u32 unit_id;
+		static u32 result;
+		__asm {
+			MOV unit_id, ECX
+			PUSHAD
+		}
+		result = hooks::get_random_yes_unit_response(unit_id);
 		__asm {
 			POPAD
 			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) play_unit_ready_sound_wrapper() // 0048F440
+	{
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::play_unit_ready_sound(unit);
+		__asm {
+			POPAD
 			RETN
 		}
 	}
@@ -43,7 +71,9 @@ namespace hooks
 {
 	void inject_sfx_hooks()
 	{
-		jump_patch(getResponseSfx_Wrapper,	0x0048EA20, 1);
-		jump_patch(getRandYesSFX_Wrapper,	0x0048EAB0, 0);
+		jump_patch(get_unit_response_id_wrapper,			0x0048EA20, 1);
+	//	jump_patch(play_yes_unit_response_wrapper,			0x0048F4D0, 3);
+		jump_patch(get_random_yes_unit_response_wrapper,	0x0048EAB0, 0);
+		jump_patch(play_unit_ready_sound_wrapper,			0x0048F440, 3);
 	}
 }

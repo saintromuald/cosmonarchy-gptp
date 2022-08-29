@@ -163,7 +163,7 @@ namespace
 			return;
 		}
 
-		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydus_exit != nullptr)
+		if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit != nullptr)
 		{
 			return;
 		}

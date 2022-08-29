@@ -32,7 +32,7 @@
 	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- getUnitBulletDamage -- HOOKED, compiler errors
 	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- canCastSpell -- HOOKED
 	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- modifyUnitShields -- HOOKED
-	Line 318718: 004D60BC  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004D6010 -- compileHealthBar -- HOOKED, compiler error
+	Line 318718: 004D60BC  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004D6010 -- compile_health_bar -- HOOKED, compiler error
 	Line 343282: 004E6FC6  |.  8A87 B0476600 |MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x004E6EF0 -- ai_find_transport -- HOOKED, compiler errors
 	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- mapDataTransfer -- HOOKED, type error?
 */
@@ -787,7 +787,7 @@ LABEL_32:
 			v5 = (u8)bullet->weapon_id;
 			v6 = weapons_dat::damage_upgrade[v5];
 			v7 = weapons_dat::damage_amount[v5];
-			v4 = (u8)bullet->srcPlayer;
+			v4 = (u8)bullet->player;
 			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
 				/*v8 = g_upgrades_level_bw[v4][v6];
 			else
@@ -932,7 +932,7 @@ LABEL_23:
 		return 1;
 	}
 
-	void compileHealthBar(s32 a1, s32 a2)
+	void compile_health_bar(s32 a1, s32 a2)
 	{ // 004D6010
 		s32 v2; // eax
 		Unit* v3; // edi
@@ -979,7 +979,7 @@ LABEL_23:
 		*v10 = 0;
 		v10[1] = 0;
 		// *(s32*)(a1 + 48) = v3;
-		helper::updateImageDrawData((Image*)a1);
+		helper::update_image_data_draw((Image*)a1);
 		*(s8*)(a1 + 12) |= 1u;
 		helper::play_image_iscript((Image*)a1, 0);
 	}

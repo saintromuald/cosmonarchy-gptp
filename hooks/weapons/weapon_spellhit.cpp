@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <hooks/byte_operations_utils.h>
 #include <cassert>
+#include "weapon_fire.h"
 
 namespace hooks
 {
@@ -33,9 +34,9 @@ namespace hooks
 				while (aUnitInBound);
 			}
 		}
-		s32 index = tempUnitsListArraysCountsListLastIndex[0] - 1;
-		tempUnitsListArraysCountsListLastIndex[0] = index;
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[index];
+		s32 index = g_temp_units_list_arrays_counts_list_last_index[0] - 1;
+		g_temp_units_list_arrays_counts_list_last_index[0] = index;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[index];
 		return aUnitInBound;
 	}
 
@@ -169,7 +170,7 @@ namespace hooks
 		{
 			if (bullet->source_unit != nullptr)
 			{
-				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->srcPlayer, bullet->direction1, damage_divisor);
+				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction1, damage_divisor);
 			}
 			else
 			{
@@ -178,7 +179,7 @@ namespace hooks
 		}
 		else
 		{
-			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->srcPlayer, bullet->direction1, damage_divisor);
+			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction1, damage_divisor);
 		}
 	}
 
@@ -221,10 +222,10 @@ namespace hooks
 		if (target != nullptr)
 		{
 			u8 weapon_id;
-			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code
+			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code.
 			if (attacker->id != UnitId::ZergLakizilisk
-				|| (attacker->status & UnitStatus::Burrowed
-					|| attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers, didn't work, but may still be part of the solution
+			|| (attacker->status & UnitStatus::Burrowed
+			||  attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers. Didn't work, but may still be part of the solution. -Pr0nogo
 			{
 				weapon_id = units_dat::ground_weapon[attacker->id];
 			}
@@ -277,10 +278,11 @@ namespace hooks
 
 			// Cloaked Units - Decloak
 			// Cabalist uses silent strike, so the check has to be in weapon damage
-			if (attacker->id != UnitId::ProtossCabalist)
-			{
+			if (attacker->id != UnitId::ProtossCabalist) {
 				scbw::decloak_proc(attacker);
 			}
+
+			apply_cooldown(attacker, weapon_id);
 		}
 	}
 
@@ -293,7 +295,7 @@ namespace hooks
 		Thingy* emp_sprite = helper::create_thingy(371, x, y, 0);
 		if (emp_sprite != nullptr)
 		{
-			emp_sprite->sprite->elevation_level = 19; // 0x13
+			emp_sprite->sprite->elevation = 19; // 0x13
 			helper::set_thingy_visibility_flags(emp_sprite);
 		}
 		static u16* const maxBoxRightValue = (u16*)0x00628450;	// should usually be g_map_tile_size->width * 32
@@ -354,8 +356,8 @@ namespace hooks
 			current_unit = *unitsInAreaOfEffect;
 		}
 		// reload the previous temporary unit list from before the call to get_all_units_in_bounds
-		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
+		*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value
@@ -435,7 +437,7 @@ namespace hooks
 		Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite != nullptr)
 		{
-			ensnare_effect_sprite->sprite->elevation_level = 19; // 0x13
+			ensnare_effect_sprite->sprite->elevation = 19; // 0x13
 			helper::set_thingy_visibility_flags(ensnare_effect_sprite);
 		}
 		Box16 coords;
@@ -481,7 +483,7 @@ namespace hooks
 		else
 		{
 			dark_swarm_unit->status |= UnitStatus::NoCollide;
-			dark_swarm_unit->sprite->elevation_level = 11;
+			dark_swarm_unit->sprite->elevation = 11;
 
 			// update various stuff (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
@@ -619,7 +621,7 @@ namespace hooks
 		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr)
 		{
-			maelstrom_effect_sprite->sprite->elevation_level = 17;
+			maelstrom_effect_sprite->sprite->elevation = 17;
 			helper::set_thingy_visibility_flags(maelstrom_effect_sprite);
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
@@ -679,7 +681,7 @@ namespace hooks
 		Thingy* stasisfield_effect_sprite = helper::create_thingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr)
 		{
-			stasisfield_effect_sprite->sprite->elevation_level = 17; // 0x11
+			stasisfield_effect_sprite->sprite->elevation = 17; // 0x11
 			helper::set_thingy_visibility_flags(stasisfield_effect_sprite);
 		}
 		Box16 coords;
@@ -709,7 +711,7 @@ namespace hooks
 		else
 		{
 			disruption_web_unit->status |= UnitStatus::NoCollide;
-			disruption_web_unit->sprite->elevation_level = 11;
+			disruption_web_unit->sprite->elevation = 11;
 			// update various stats (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(disruption_web_unit);
 			helper::update_unit_strength(disruption_web_unit);
@@ -908,7 +910,7 @@ LABEL_15:
 				Unit* creatingUnit = helper::getCreatingUnit(unit);
 				helper::giveAllUnitPropertiesToPlayer(creatingUnit, playerIdVar);
 			}
-			if (unit->id == UnitId::ZergNydusCanal)
+			if (unit->id == UnitId::ZergNydusCesiant)
 			{
 				Unit* nydus_exit = unit->building.nydus_exit;
 				if (nydus_exit)

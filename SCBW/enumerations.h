@@ -12,6 +12,7 @@
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
 #include "enumerations/PortraitId.h"
+#include <algorithm>
 
 namespace UnitSize
 {
@@ -43,13 +44,13 @@ namespace UnitsDatEntries
 {
 	enum
 	{
-		Flingy,//flingy
-		Subunit, //subunit
-		Infested, //infested unit
-		Construction, //construction graphic
-		StartDirection, //start direction
-		ShieldEnabled, //shield enabled
-		MaxShields, //max shields
+		Flingy,
+		Subunit,
+		Infested,
+		Construction,
+		StartDirection,
+		ShieldEnabled,
+		MaxShields,
 
 		SndReady = 29,
 		SndWhtFirst = 30,
@@ -113,11 +114,12 @@ namespace SfxDatEntries
 {
 	enum
 	{
-		Race,
-		MinVolume,
+		Volume,
 		Flags,
-		Priority,
-		SoundFilePtrs = 1000, // unlike sfxdata, uses pointers instead of ids
+		Race,
+		Type,
+		SoundFile,
+		SoundDataPtr, // unlike sfxdata, uses pointers instead of ids
 	};
 }
 
@@ -811,6 +813,15 @@ namespace InternalErrors
 	};
 }
 
+enum DatSoundFlags {
+	DatSoundFlags_PermanentlyLoaded    = 0x01,
+	DatSoundFlags_UnitResponse         = 0x02,
+	DatSoundFlags_SkipFreeing          = 0x04,
+	DatSoundFlags_BufferCreationQueued = 0x08,
+	DatSoundFlags_OneAtATime           = 0x10,
+	DatSoundFlags_NeverPreempt         = 0x20,
+};
+
 namespace ResourceType
 {
 	enum Enum
@@ -1089,8 +1100,7 @@ enum AiPersonality // disruption_web_unit
 	AiPersonality_ZergGeneral,
 	AiPersonality_ZergCount,
 
-	AiPersonality_AnyCount = std::max(
-		std::max(AiPersonality_TerranCount, AiPersonality_ProtossCount), AiPersonality_ZergCount),
+	AiPersonality_AnyCount = std::max(std::max(AiPersonality_TerranCount, AiPersonality_ProtossCount), AiPersonality_ZergCount),
 };
 
 enum AiBuildType // plasma_shell
@@ -1202,4 +1212,10 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ZergGeneral_HydrokMatravil,
 	AiBuildOrder_ZergGeneral_ZorkizFlood,
 	AiBuildOrder_ZergGeneral_Count,
+};
+
+enum UnitResponseContext {
+	URC_Normal = 0,
+	URC_Target = 1,
+	URC_OrderId = 2,
 };

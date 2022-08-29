@@ -5,7 +5,7 @@ extern const u32 Func_CanDetect; // Defined in Unit.cpp
 
 namespace
 {
-	void __declspec(naked) unitCanDetectWrapper()
+	void __declspec(naked) unit_can_detect_wrapper()
 	{
 		static Unit* unit;
 		static u32 result;
@@ -13,7 +13,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::unitCanDetectHook(unit) ? 1 : 0;
+		result = hooks::unit_can_detect(unit) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -21,7 +21,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getCloakedTargetVisibilityWrapper()
+	void __declspec(naked) get_cloaked_target_visibility_wrapper()
 	{
 		static DetectorCheckParam* param;
 		static Unit* detector;
@@ -30,7 +30,7 @@ namespace
 			MOV param, EDX
 			PUSHAD
 		}
-		hooks::getCloakedTargetVisibility(detector, param);
+		hooks::get_cloaked_target_visibility(detector, param);
 
 		__asm {
 			POPAD
@@ -43,9 +43,9 @@ namespace
 
 namespace hooks
 {
-	void injectDetectorHooks()
+	void inject_detector_hooks()
 	{
-		jump_patch(unitCanDetectWrapper,				Func_CanDetect);
-		jump_patch(getCloakedTargetVisibilityWrapper,	0x004408A0, 9);
+		jump_patch(unit_can_detect_wrapper,					Func_CanDetect);
+		jump_patch(get_cloaked_target_visibility_wrapper,	0x004408A0, 9);
 	}
 }

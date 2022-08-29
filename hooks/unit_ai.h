@@ -20,6 +20,7 @@ namespace hooks
 
 	UnitAi* __stdcall find_nearest_military_or_guard_ai(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6); // 0043BAC0
 	BuildingAi* create_building_ai(BuildingAiArray* ai_array);													// 004044C0
+	bool is_valid_for(u32 unit_id, Unit* unit, u32 must_be_active);												// 0043B6D0
 
 	void inject_unit_ai_hooks();
 }

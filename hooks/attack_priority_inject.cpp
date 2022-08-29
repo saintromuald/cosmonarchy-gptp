@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) getAttackPriorityWrapper()
+	void __declspec(naked) get_attack_priority_wrapper()
 	{
 		static Unit* target, * attacker;
 		static u32 result;
@@ -13,7 +13,7 @@ namespace
 			MOV attacker, EBX
 			PUSHAD
 		}
-		result = hooks::getAttackPriorityHook(target, attacker);
+		result = hooks::get_attack_priority(target, attacker);
 		__asm
 		{
 			POPAD
@@ -22,7 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) findBestAttackTargetWrapper()
+	void __declspec(naked) find_best_attack_target_wrapper()
 	{
 		static Unit* unit;
 		static Unit* target;
@@ -44,7 +44,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) findRandomAttackTargetWrapper()
+	void __declspec(naked) find_random_attack_target_wrapper()
 	{
 		static Unit* unit;
 		static Unit* target;
@@ -55,7 +55,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		target = hooks::findRandomAttackTargetHook(unit);
+		target = hooks::find_random_attack_target(unit);
 		__asm
 		{
 			POPAD
@@ -71,8 +71,8 @@ namespace hooks
 {
 	void inject_attack_priority_hooks()
 	{
-		jump_patch(getAttackPriorityWrapper,			0x00442160, 3);
-		jump_patch(findBestAttackTargetWrapper,			0x00443080, 1);
-		jump_patch(findRandomAttackTargetWrapper,	0x00442FC0, 1);
+		jump_patch(get_attack_priority_wrapper,			0x00442160, 3);
+		jump_patch(find_best_attack_target_wrapper,		0x00443080, 1);
+		jump_patch(find_random_attack_target_wrapper,	0x00442FC0, 1);
 	}
 }

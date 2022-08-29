@@ -2,6 +2,7 @@
 #include "hook_tools.h"
 #include "hooks/cosmonarchy_finder.h"
 #include "hooks/weapons/weapon_damage.h"
+#include "hooks/weapons/weapon_fire.h"
 #include <algorithm>
 #include <unordered_set>
 #include <Utils/captivating_claws.h>
@@ -481,7 +482,7 @@ void Globals::frame_hook() {
 						{
 							return;
 						}
-						unit->heal_underflow(2 * 256 / framePeriod, effect->source, true); // this math seems wrong
+						unit->heal_underflow(4 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
 				case EffectId_CausticDischarge: {
@@ -514,7 +515,7 @@ void Globals::frame_hook() {
 						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
 				} break;
-				case EffectId_Hallucination: {
+				case EffectId_HallucinatingField: {
 					scbw::UnitFinder(
 						effect->position.x - effect->radius,
 						effect->position.y - effect->radius,
@@ -525,11 +526,7 @@ void Globals::frame_hook() {
 							return;
 						}
 						UnitExt* unitExt = get_unit_ext(unit);
-						if (!unitExt->timers[TimerHallucinating]) {
-							scbw::apply_new_hallucination(unit, effect->player, effect->current_time);
-						} else {
-							unitExt->timers[TimerHallucinating] = effect->current_time;
-						}
+						scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
 					});
 				} break;
 				case EffectId_Irradiate: {
@@ -872,7 +869,7 @@ namespace scbw
 		// Refresh Hallucination
 		if (unitExt->timers[TimerHallucinating])
 		{
-			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
+			unitExt->timers[TimerHallucinating] = HallucinatingTimer;
 		}
 
 		// Refresh Captivating ZethrokorClaws
@@ -1125,7 +1122,7 @@ namespace scbw
 		UnitExt* unitExt = get_unit_ext(unit);
 		bool has_parasite = false;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unitExt->parasite_spawn_count[i]) {
+			if (!scbw::is_allied_to(i, unit->player)) {
 				has_parasite = true;
 			}
 		}
@@ -1161,12 +1158,14 @@ namespace scbw
 		// remove status effects and corresponding overlays
 
 		// Remove Parasite
-		if (unitExt->timers[TimerParasiteArm]) {
+		if (!scbw::is_allied_to(unitExt->values[ValueParasiteArmPlayer], unit->player) && unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			unitExt->parasite_spawn_count[i] = 0;
+			if (!scbw::is_allied_to(i, unit->player)) {
+				unitExt->parasite_spawn_count[i] = 0;
+			}
 		}
 
 		// Remove default flags
@@ -1375,15 +1374,32 @@ namespace scbw
 		{
 			return nullptr;
 		}
-		UnitExt* unitExt = get_unit_ext(unit);
-		auto rotate = unitExt->values[value_id];
+		UnitExt* unit_ext = get_unit_ext(unit);
+		auto rotate = unit_ext->values[value_id];
 		const LO_Header* loFile = lo_files->attackOverlays[unit->sprite->main_graphic->id];
 		if (use_special_overlay) {
 			loFile = lo_files->specialOverlays[unit->sprite->main_graphic->id];
 		}
+		Image* image = unit->sprite->main_graphic;
+		switch (unit->id)
+		{
+			case UnitId::TerranWatchdog:
+			{
+				image = unit->get_overlay(ImageId::MissileTurret_Turret);
+			} break;
+			case UnitId::TerranSentinel:
+			{
+				image = unit->get_overlay(ImageId::SentinelTurret);
+			} break;
+			case UnitId::TerranIonCannon:
+			{
+				image = unit->get_overlay(ImageId::IonCannonTurret);
+			} break;
+		}
 		u8 frameDirection = unit->sprite->main_graphic->direction;
 		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)
+		if (image->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
 		}
@@ -1392,11 +1408,11 @@ namespace scbw
 		{
 			rotate = 0;
 		}
-		unitExt->values[value_id] = rotate;
+		unit_ext->values[value_id] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
-		if (bullet && unitExt->values[value_id] < fake_amount)
+		Bullet* bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
+		if (bullet && unit_ext->values[value_id] < fake_amount)
 		{
 			bullet->hit_flags |= 0x1;
 		}
@@ -1557,15 +1573,5 @@ namespace scbw
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<Unit*>(links.begin(), links.end());
-	}
-
-	void spread_sovroleth_damage(hooks::WeaponDamageData& data) {
-		Unit* unit = data.target;
-		EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
-		s32 damage = data.final_damage / (sovroleths.count + 1);
-		for (u32 i = 0; i < sovroleths.count; ++i) {
-			link_damage(sovroleths.units[i], damage, data);
-		}
-		link_damage(unit, damage, data);
 	}
 }

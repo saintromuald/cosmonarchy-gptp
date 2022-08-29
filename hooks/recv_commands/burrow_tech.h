@@ -3,11 +3,9 @@
 
 namespace hooks
 {
+	void cmdrecv_unburrow();				// 004C1AC0
+	void cmdrecv_burrow(u8 bCommandType);	// 004C1FA0
+	void unburrow_proc(Unit* unit);			// 004E97C0
 
-	void CMDRECV_Unburrow();				//004C1AC0
-	void CMDRECV_Burrow(u8 bCommandType);	//004C1FA0
-	void Unburrow_Proc(Unit* unit);		//004E97C0
-
-	void injectBurrowTechHooks();
-
-} //hooks
+	void inject_burrow_tech_hooks();
+}

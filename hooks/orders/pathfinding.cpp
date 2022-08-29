@@ -40,7 +40,7 @@ namespace hooks
                 unit->status &= 0xFFF7FFFF;
                 return 1;
             }
-            else if (unit->unit_ai && unit->main_order_id != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
+            else if (unit->unit_ai && unit->main_order_id != 96 && helper::ai_prepare_moving_to(unit, target->sprite->position.x, target->sprite->position.y))
             {
                 scbw::print("AI");
                 return 0;
@@ -97,7 +97,7 @@ namespace hooks
     }
 
     // Hooked to investigate crashes - Pr0nogo
-    bool unitHasPathToUnit(Unit* pather, Unit* target) // 0049CBB0
+    bool unit_has_path_to_unit(Unit* pather, Unit* target) // 0049CBB0
     {
         if (!pather->sprite)
         {

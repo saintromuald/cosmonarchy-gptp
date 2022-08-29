@@ -51,20 +51,21 @@ struct UnitStatFuncArrayEntry {
 
 struct UnitPath
 {
-	s32		start;
-	s32		next;
-	s32		finish;
-	s32		time_started;
-	s32		unit_index;
-	s8		is_calculating;
-	s8		field_19;
-	s8		field_1A;
-	s8		path_count;
-	s8		num_areas;
-	s8		cur_areas;
-	s8		num_segments;
-	s8		cur_segments;
-	s32		steps[24];
+	s32		start;					 // 0x00
+	s32		next;					 // 0x04
+	s32		finish;					 // 0x08
+	s32		time_started;			 // 0x0C
+	s32		unit_index;				 // 0x10
+	u32		x_y_speed;				 // 0x14
+	s8		is_calculating;			 // 0x18
+	s8		collision_recheck_timer; // 0x19
+	s8		direction;				 // 0x1A
+	s8		path_count;				 // 0x1B
+	s8		num_areas;				 // 0x1C
+	s8		cur_areas;				 // 0x1D
+	s8		num_segments;			 // 0x1E
+	s8		cur_segments;			 // 0x1F
+	s32		steps[24];				 // 0x20
 };
 
 struct CampaignMission
@@ -138,23 +139,24 @@ struct DialogEvent
 	u16		field_12;				// 0x12
 };
 
+// Seems to be identical to ResourceArea
 struct Base
 {
-	Point16	position;			// 0x0
-	u8		unk4;				// 0x4
-	u8		unk5;				// 0x5
-	u8		unk6;				// 0x6
-	u8		flags;				// 0x7
-	u32		unk8;				// 0x8
-	u32		unkC;				// 0xC
-	u32		unk10;				// 0x10
-	u32		unk14;				// 0x14
-	u32		unk18;				// 0x18
-	u32		unk1C;				// 0x1C
-	u32		unk20;				// 0x20
-	u32		unk24;				// 0x24
-	u32		unk28;				// 0x28
-	u32		unk2C;				// 0x2C
+	Point16	position;				// 0x0
+	u8		mineral_field_count;	// 0x4
+	u8		geyser_count;			// 0x5
+	u8		is_start_loc;			// 0x6
+	u8		flags;					// 0x7
+	u32		total_mineral_count;	// 0x8
+	u32		total_vespene_count;	// 0xC
+	u32		unk10;					// 0x10
+	u32		unk14;					// 0x14
+	u32		unk18;					// 0x18
+	u32		unk1C;					// 0x1C
+	u32		unk20;					// 0x20
+	u32		unk24;					// 0x24
+	u32		unk28;					// 0x28
+	u32		unk2C;					// 0x2C
 };
 
 struct GameData // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
@@ -684,8 +686,8 @@ struct AiRegion
 	/*0x05*/  u8  state;
 	/*0x06*/  u8  defense_priority_add;
 	/*0x07*/  u8  defend_timeout;
-	/*0x08*/  u8  captain_flags;
-	/*0x09*/  u8  unknown_0x9;
+	/*0x08*/  u8  flags;
+	/*0x09*/  u8  field_9;
 	/*0x0A*/  u16 ground_unit_count;
 	/*0x0C*/  u16 ground_strength_needed;
 	/*0x0E*/  u16 air_strength_needed;
@@ -750,7 +752,6 @@ struct GuardAi
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
-struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi
 {
 	Link<WorkerAi> link;			// 0x0, 0x4
@@ -864,11 +865,11 @@ struct AiTown
 	u8 worker_limit;					//	0x1b
 	u8 resarea;							//	0x1c
 	u8 resource_units_not_set;			//	0x1d
-	u8 inBattle;						//	0x1e
+	u8 in_battle;						//	0x1e
 	u8 unk1f;							//	0x1f
 	Point16 position;					//	0x20
 	Unit* main_building;				//	0x24
-	Unit* building_SCV;					//	0x28
+	Unit* building_scv;					//	0x28
 	Unit* mineral;						//	0x2c
 	Unit* gas_buildings[3];				//	0x30
 	TownReq town_units[0x64];			//	0x3c
@@ -926,12 +927,12 @@ struct AI_Main
 		u16 has_strongest_ground_army : 1;	/*0200*/ // Set if the AI's ground army is stronger than the total strength of the strongest enemy force
 		u16 upgrades_finished : 1;			/*0400*/
 		u16 target_expansion : 1;			/*0800*/
-	} AI_Flags;
+	} ai_flags;
 	u16 ai_panic_block;					/*021A*/
 	u16 ai_max_force;					/*021C*/
 	u16 ai_attack_group;				/*021E*/
 	u16 wanted_unit;					/*0220*/
-	u8	dc222;							/*0222*/
+	u8	default_min;					/*0222*/
 	u8	defense_priority_base;			/*0223*/
 	u32 previous_building_hit_second;	/*0224*/
 	u32 last_attack_seconds;			/*0228*/
@@ -977,7 +978,7 @@ struct ResourceArea {
 	bool is_start_location;
 	u8 flags;					// 0x1 = Occupied / start location, 0x2 = allies_watch claimed(0069268F)
 	u32 total_mineral_count;
-	u32 total_gas_count;
+	u32 total_vespene_count;
 	u8 padding[32];
 };
 C_ASSERT(sizeof(ResourceArea) == 48);
@@ -1067,9 +1068,14 @@ struct ColorTable
 };
 
 struct PlayerNamesEntry {
-	char player_name[25];
-	char force_name[30];
-	char some_stuff[17];
+	char	player_name[25];
+	char	force_name[30];
+	// The rest is from DarkenedFantasies:
+	u8		unknown;			// 0x37
+	u32		human_id;			// 0x38
+	u32		storm_id;			// 0x3C
+	u32		type;				// 0x40
+	u32		race;				// 0x44
 };
 
 struct PlayerNames
@@ -1173,5 +1179,27 @@ struct Bitmap {
 	u16			height;		// 0x2
 	u32			buffer;		// 0x4
 };
+
+struct IDirectSoundBuffer;
+struct SoundData {
+	u32 wav_data_size;
+	s32 last_play_time;
+	u32 duration_ms;
+	IDirectSoundBuffer* ds_buffer;
+};
+C_ASSERT(sizeof(SoundData) == 16);
+
+struct SoundChannel {
+	IDirectSoundBuffer* ds_buffer;	// 0x00
+	u16 unit_id;					// 0x04
+	u8 flags;						// 0x06
+	u8 sound_priority;				// 0x07
+	u8 release_when_not_used;		// 0x08
+	u32 sound_id;					// 0x09
+	u32 volume;						// 0x0D
+	u32 pan;						// 0x11
+	u8 unused[3];					// 0x15
+};
+C_ASSERT(sizeof(SoundChannel) == 24);
 
 #pragma pack()

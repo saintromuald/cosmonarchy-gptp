@@ -39,7 +39,7 @@ namespace hooks
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 			}
-			else // 004E4DA9
+			else
 			{
 				helper::make_to_hold_position(unit);
 				unit->main_order_state = 2;
@@ -50,8 +50,8 @@ namespace hooks
 			if (!(unit->movement_flags & MovementFlags::Accelerating))
 			{
 				u32 distance_wanted;
-				bool isBuildingAssimilator = (unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer);
-				if (isBuildingAssimilator)
+				bool is_building_aquifer = (unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer);
+				if (is_building_aquifer)
 				{
 					distance_wanted = 88;
 				}
@@ -70,35 +70,39 @@ namespace hooks
 				{
 					if (helper::begin_building(unit))
 					{
-						Unit* builtUnit = 0;
-						if (isBuildingAssimilator) {
-							builtUnit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
+						Unit* built_unit = 0;
+						if (is_building_aquifer) {
+							built_unit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
 						} else {
-							builtUnit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+							built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 						}
-						if (builtUnit) {
-							builtUnit->create_origin = unit->id;
+						if (built_unit) {
+							built_unit->create_origin = unit->id;
 						}
 
 						u32 unit_id = unit->build_queue[unit->build_queue_slot];
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
-						if (!builtUnit)
+						if (!built_unit)
 						{
 							helper::refund_unit_train_cost(unit_id, unit->player);
 							helper::display_last_network_error_for_player(unit->player);
 							unit->order_to_idle();
 						}
-						else // 004E4E63
+						else
 						{
-							helper::replace_sprite_images(builtUnit->sprite, ImageId::WarpAnchor, 0);
-							if (isBuildingAssimilator)
-							{
-								builtUnit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
+							if (units_dat::shields_enabled[built_unit->id]) {
+								built_unit->shields += 2 * 256;
 							}
-							builtUnit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
-							unit->order_target.unit = builtUnit;
-							helper::ai_training_overlord(builtUnit, unit);
-							builtUnit->order_computer(OrderId::BuildSelf2);
+							built_unit->sprite->player = unit->sprite->player;
+							helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
+							if (is_building_aquifer)
+							{
+								built_unit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
+							}
+							built_unit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
+							unit->order_target.unit = built_unit;
+							helper::ai_training_overlord(built_unit, unit);
+							built_unit->order_computer(OrderId::BuildSelf2);
 							helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 							unit->main_order_state = 3;
 						}
@@ -173,7 +177,7 @@ namespace hooks
 			if (building->order_signal & 1)
 			{
 				building->order_signal &= ~1;
-				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->sprite_id], 0);
+				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
 				helper::switch_to_warp_texture(building->sprite->main_graphic);
 				building->main_order_state = 3; // DF: Skip state 2 as it's now redundant.
 			}
@@ -184,7 +188,7 @@ namespace hooks
 			{
 				Image* current_image;
 				building->order_signal &= ~1;
-				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->sprite_id], 0);
+				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
 				current_image = building->sprite->images.head;
 				while (current_image)
 				{

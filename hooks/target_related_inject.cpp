@@ -160,27 +160,27 @@ namespace
 	{
 		static u32 result;
 		static Unit* target;
-		static Unit* unit;
-		static u32 a3;
+		static Unit* attacker;
+		static u32 check_detection;
 		__asm
 		{
 			PUSH EBP
 			PUSH EAX
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
-			MOV a3, EAX
+			MOV check_detection, EAX
 			POP EAX
 			MOV target, EBX
-			MOV unit, ESI
+			MOV attacker, ESI
 			POP EBP
 			PUSHAD
 		}
-		result = hooks::unit_can_attack_target(target, unit, a3);
+		result = hooks::unit_can_attack_target(target, attacker, check_detection);
 		__asm
 		{
 			POPAD
 			MOV EAX, result
-			RETN 4
+			RETN 0x04
 		}
 	}
 
@@ -263,6 +263,58 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) is_better_target_wrapper() { // 004769D0
+		static bool result;
+		static Unit* self;
+		static Unit* auto_target;
+		static Unit* compare_unit;
+		__asm {
+			MOV compare_unit, EDI
+			MOV auto_target, EAX
+			MOV self, ECX
+			PUSHAD
+		}
+		result = hooks::is_better_target(self, auto_target, compare_unit);
+		__asm {
+			POPAD
+			MOVZX AL, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) do_targeted_order_wrapper() { // 0046F5B0
+		static void* unused;
+		static u32 sound_offset;
+		static u32 pos_x;
+		static u32 pos_y;
+		static Unit* target;
+		static s32 fow_unit_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV pos_x, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV pos_y, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV target, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV fow_unit_id, EAX
+			POP EAX
+			MOV sound_offset, ESI
+			MOV unused, ECX
+			PUSHAD
+		}
+		hooks::do_targeted_order(unused, sound_offset, pos_x, pos_y, target, fow_unit_id);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
 }
 
 namespace hooks
@@ -274,7 +326,7 @@ namespace hooks
 	//	nops(0x004EB316, 2);
 
 	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x00455E00, 1);
-	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x004C20C0, 0);
+	//	jump_patch(cmdrecv_hold_position_wrapper,					0x004C20C0, 0);
 	//	jump_patch(unit_can_see_cloaked_target_wrapper,				0x00401D60, 4);
 	//	jump_patch(is_target_visible_wrapper,						0x004E5E30, 4);
 	//	jump_patch(is_unit_visible_wrapper,							0x004E5DB0, 1);
@@ -285,6 +337,8 @@ namespace hooks
 		jump_patch(ai_attack_unit_wrapper,							0x0043FFD0, 1);
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
 	//	jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
+		jump_patch(is_better_target_wrapper,						0x004769D0, 0);
+	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1);
 	}
 
 	void inject_target_related_hooks()

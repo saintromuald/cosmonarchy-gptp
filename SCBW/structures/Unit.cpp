@@ -6,15 +6,16 @@
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
-#include "trigger_system/trigger_system.h"
+#include "trigger_system/trigger_events.h"
 #include <DatExtend/datext.h>
 
 #include "math_utils.h"
 //-------- Unit stats and properties --------//
 
-extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
-//behavior can be modified with detector hook
-bool Unit::canDetect() const
+extern const u32 Func_CanDetect = 0x00403430; // unitHasNoStatusAilments
+
+// Behavior can be modified with detector hook
+bool Unit::can_detect() const
 {
 	assert(this);
 	static u32 result;
@@ -311,7 +312,7 @@ u32 Unit::get_sight_range(bool isForSpellCasting) const
 
 //Similar to function Unit__HasEnergy @ 0x00491480
 //The original function returned 0 when got energy or code
-bool Unit::hasEnergy(u32 energy) const
+bool Unit::has_energy(u32 energy) const
 {
 
 	if (
@@ -361,7 +362,7 @@ bool Unit::has_weapon() const
 	return false;
 }
 
-//Identical to function @ 0x004020B0
+// Identical to function @ 0x004020B0
 bool Unit::is_frozen() const
 {
 	assert(this);
@@ -643,23 +644,20 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 }
 
 const u32 Func_DamageUnitHp = 0x004797B0;
-void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify)
-{
+void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify) {
 	assert(this);
 
 	// Logging
 	auto targetId = this->id;
 	auto targetPlayerId = this->player;
-	if (attacker)
-	{
+	if (attacker) {
 		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
 			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
 	}
 
 	u32 notify_ = notify ? 1 : 0;
 
-	if (attacker)
-	{
+	if (attacker) {
 		UnitExt* attackerExt = get_unit_ext(attacker);
 		attackerExt->damage_dealt_timer = 0;
 	}
@@ -669,14 +667,20 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	unitExt->damage_receive_timer = 0;
 
 	if (attacker) {
-		trigger_combat[0][attacker->player][attacker->id][this->player][this->id] = *g_elapsed_time_frames;
-		trigger_combat[0][this->player][this->id][attacker->player][attacker->id] = *g_elapsed_time_frames;
-		for (u32 i = 0; i < 8; ++i) {
+		TriggerEvent event = {};
+		event.seen_by = 0;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (is_visible_to(i)) {
-				trigger_combat[i + 1][attacker->player][attacker->id][this->player][this->id] = *g_elapsed_time_frames;
-				trigger_combat[i + 1][this->player][this->id][attacker->player][attacker->id] = *g_elapsed_time_frames;
+				event.seen_by |= 1 << i;
 			}
 		}
+		event.position = this->position;
+		event.source_player = attackingPlayer;
+		event.target_player = this->player;
+		event.source_unit_id = attacker->id;
+		event.target_unit_id = this->id;
+		event.timestamp = *g_elapsed_time_frames;
+		trigger_event_array_add(&combat_events, event);
 	}
 
 	__asm {
@@ -691,20 +695,19 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	}
 
 	if (this->is_dead()) {
-		trigger_deaths[0][this->player][this->id]++;
-		for (u32 i = 0; i < 8; ++i) {
+		TriggerEvent event = {};
+		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (is_visible_to(i)) {
-				trigger_deaths[i + 1][this->player][this->id]++;
+				event.seen_by |= 1 << i;
 			}
 		}
-		if (attacker) {
-			trigger_kills[0][attacker->player][attacker->id][this->player][this->id]++;
-			for (u32 i = 0; i < 8; ++i) {
-				if (is_visible_to(i)) {
-					trigger_kills[i + 1][attacker->player][attacker->id][this->player][this->id]++;
-				}
-			}
-		}
+		event.position = this->position;
+		event.source_player = attackingPlayer;
+		event.target_player = this->player;
+		event.source_unit_id = attacker ? attacker->id : UnitId::None;
+		event.target_unit_id = this->id;
+		event.timestamp = *g_elapsed_time_frames;
+		trigger_event_array_add(&kill_events, event);
 	}
 }
 
@@ -1260,7 +1263,7 @@ s32 Unit::can_make_unit(u16 unit_id, u8 player) const
 	return result;
 }
 
-s32 Unit::canUseTech(u8 techId, u8 player) const
+s32 Unit::can_use_tech(u8 techId, u8 player) const
 {
 	assert(this);
 	const u32 Func_CanUseTech = 0x0046DD80;
@@ -1399,7 +1402,7 @@ bool Unit::give_to(u8 player)
 	assert(player < 12);
 	if (giveUnitToPlayer(this, player) != 0)
 	{
-		if ((this->id == UnitId::ZergNydusCanal || !(units_dat::base_property[this->id] & UnitProperty::Building))
+		if ((this->id == UnitId::ZergNydusCesiant || !(units_dat::base_property[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
 			&& this->id != UnitId::ZergLarva)
 		{

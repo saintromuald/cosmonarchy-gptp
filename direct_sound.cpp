@@ -41,22 +41,22 @@ namespace hooks
         s32* v32;
 
         void* soundFile = 0;
-        WaitForSingleObject(soundThreadEvent, 0xFFFFFFFF);
-        if (*unkSoundCore)
+        WaitForSingleObject(g_sound_thread_event, 0xFFFFFFFF);
+        if (*g_unk_sound_core)
         {
             v17 = edi0;
             do
             {
-                v2 = soundVolume;
+                v2 = g_sound_volume;
                 v28 = 0;
-                v32 = soundVolume;
+                v32 = g_sound_volume;
                 do
                 {
                     if (!(*(v2 - 10) & 8))
                     {
                         goto LABEL_20;
                     }
-                    v4 = &soundData[16 * *(v2 - 1)];
+                    v4 = &g_sound_data[16 * *(v2 - 1)];
                     v29 = *(v2 - 1);
                     v3 = v29;
                     v25 = v4;
@@ -82,7 +82,7 @@ namespace hooks
                                 v20 = 20;
                                 v21 = 194;
                                 v22 = v6;
-                                if ((*(directSoundInterface->lpVtbl + 12))(directSoundInterface->lpVtbl, &v20, v7, 0))
+                                if ((*(g_direct_sound_interface->lpVtbl + 12))(g_direct_sound_interface->lpVtbl, &v20, v7, 0))
                                 {
                                     *v7 = 0;
                                 }
@@ -102,13 +102,13 @@ namespace hooks
                                         v28 += fileSize;
                                     }
                                     v8 = v25;
-                                    v9 = helper::getSoundDuration(v25);
+                                    v9 = helper::get_sound_duration(v25);
                                     v10 = v32;
                                     *(v8 + 8) = v9;
                                     if (*(v10 - 10) & 8)
                                     {
                                         v11 = v10;
-                                        (*(**v7 + 60))(*v7, *v10 - *volumeReduction);
+                                        (*(**v7 + 60))(*v7, *v10 - *g_volume_reduction);
                                         (*(**v7 + 64))(*v7, v11[1]);
                                         (*(**v7 + 48))(*v7, 0, 0, 0);
                                         v12 = v29;
@@ -135,16 +135,16 @@ LABEL_17:
 LABEL_20:
                     v2 += 6;
                     v32 = v2;
-                } while (v2 < unkSoundCore2);
+                } while (v2 < g_unk_sound_core_2);
                 v15 = v28;
                 if (v28)
                 {
-                    EnterCriticalSection(soundLock);
-                    *currentSoundMemory += v15;
-                    LeaveCriticalSection(soundLock);
+                    EnterCriticalSection(g_sound_lock);
+                    *g_current_sound_memory += v15;
+                    LeaveCriticalSection(g_sound_lock);
                 }
-                WaitForSingleObject(soundThreadEvent, 0xFFFFFFFF);
-            } while (*unkSoundCore);
+                WaitForSingleObject(g_sound_thread_event, 0xFFFFFFFF);
+            } while (*g_unk_sound_core);
         }
         return 0;
     }
@@ -155,18 +155,18 @@ LABEL_20:
         s32 result;
 
         *v2 = a1;
-        if (directSoundInterface->lpVtbl)
+        if (g_direct_sound_interface->lpVtbl)
         {
             return 1;
         }
         a1 = 0;
         (a1 + 8) = 0;
         (a1 + 4) = 138;
-        memset(soundChannels, 0, 0xC0u);
-        if (!hdSoundModule)
+        memset(g_sound_channels, 0, 0xC0u);
+        if (!g_hd_sound_module)
         {
-            *hdSoundModule = LoadLibraryA("dsound.dll");
-            if (!hdSoundModule)
+            *g_hd_sound_module = LoadLibraryA("dsound.dll");
+            if (!g_hd_sound_module)
             {
                 v2[1] = 133;
                 *v2 = GetLastError();
@@ -181,28 +181,28 @@ LABEL_6:
             goto LABEL_6;
         }
         helper::unkSoundCoreFunc();
-        helper::sFileDdaInitialize(directSoundInterface->lpVtbl);
-        *ddaInitialized = 1;
-        helper::sVidInitialize(directSoundInterface->lpVtbl);
-        *vidInitialized = 1;
+        helper::sFileDdaInitialize(g_direct_sound_interface->lpVtbl);
+        *g_dda_initialized = 1;
+        helper::sVidInitialize(g_direct_sound_interface->lpVtbl);
+        *g_vid_initialized = 1;
         helper::loadButtonSFXFile();
         helper::initVolume();
-        if (helper::sRegLoadValue("Starcraft", "Sound Memory Cache", 0, *soundMemoryCache)) // was &soundMemoryCache
+        if (helper::sRegLoadValue("Starcraft", "Sound Memory Cache", 0, *g_sound_memory_cache)) // was &g_sound_memory_cache
         {
-            if (*soundMemoryCache < 0x100000)
+            if (*g_sound_memory_cache < 0x100000)
             {
-                *soundMemoryCache = 0x100000;
+                *g_sound_memory_cache = 0x100000;
             }
         }
         else
         {
-            *soundMemoryCache = 0x400000;
+            *g_sound_memory_cache = 0x400000;
         }
-        *currentSoundMemory = 0;
-        *soundThreadEvent = CreateEventA(0, 0, 0, 0);
-        if (soundThreadEvent && (*unkSoundCore = 1, (*soundHandle = helper::beginThreadEx(0, 0, soundThread, 0, 0, *unkSoundCore3)) != 0)) // was &unkSoundCore3
+        *g_current_sound_memory = 0;
+        *g_sound_thread_event = CreateEventA(0, 0, 0, 0);
+        if (g_sound_thread_event && (*g_unk_sound_core = 1, (*g_sound_handle = helper::beginThreadEx(0, 0, soundThread, 0, 0, *g_unk_sound_core_3)) != 0)) // was &g_unk_sound_core_3
         {
-            *unkSoundBoolCore = 1;
+            *g_unk_sound_bool_core = 1;
             result = 1;
         }
         else

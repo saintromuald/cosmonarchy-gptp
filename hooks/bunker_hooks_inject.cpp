@@ -39,13 +39,11 @@ namespace
 	void __declspec(naked) attack_apply_cooldown_wrapper() { // 00478B40
 		static u32 result;
 		static Unit* unit;
-		static u32 holdpos_status;
 		__asm {
-			MOV holdpos_status, ECX
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::attack_apply_cooldown(unit, holdpos_status);
+		result = hooks::attack_apply_cooldown(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -60,6 +58,6 @@ namespace hooks
 	{
 		jump_patch(unit_attacks_from_inside_bunker_wrapper,		0x004790A0, 2);
 		jump_patch(create_bunker_attack_overlay_wrapper,		0x00477FD0, 3);
-	//	jump_patch(attack_apply_cooldown_wrapper,				0x00478B40, 1);
+		jump_patch(attack_apply_cooldown_wrapper,				0x00478B40, 1);
 	}
 }

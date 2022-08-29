@@ -111,7 +111,7 @@ namespace hooks
 				helper::end_collision_tracking(unit); // Recalculate position and update effect on surroundings?
 				helper::toggle_pathing_related(unit); // Toggle pathing-related stuff to prepare to no longer use pathing
 
-				unit->sprite->elevation_level = 4;
+				unit->sprite->elevation = 4;
 				helper::set_unit_pathing(unit, 0);
 				scbw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
@@ -201,7 +201,7 @@ namespace hooks
 			helper::end_collision_tracking(unit); // Update globally known position and may remove repulse tile if no longer needed
 			helper::modify_building_grounded_status(unit); // Disable GroundedBuilding status and prepare to enable pathing?
 
-			unit->sprite->elevation_level = 12;
+			unit->sprite->elevation = 12;
 			helper::set_unit_pathing(unit, 1);
 			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings,and  some others things?
 

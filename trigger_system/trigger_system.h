@@ -3,10 +3,6 @@
 
 struct Sound;
 
-extern bool trigger_game_paused;
-extern bool trigger_system_init;
-extern bool trigger_system_in_game;
-
 #define SoundReplacementCap 1600
 struct SoundReplacement {
 	PlayerBitset players;
@@ -19,8 +15,12 @@ struct SoundReplacement {
 	Sound* new_sound;
 };
 
-extern u32 sound_replacements_count;
-extern SoundReplacement sound_replacements[SoundReplacementCap];
+#define SpriteReplacementCap 800
+struct SpriteReplacement {
+	PlayerBitset players;
+	UnitIdBitset unit_ids;
+	u32 sprite_id;
+};
 
 const char* race_names[] = {
 	"Zerg",
@@ -28,12 +28,19 @@ const char* race_names[] = {
 	"Terran",
 };
 
+
+extern bool trigger_game_paused;
+extern bool trigger_system_init;
+extern bool trigger_system_in_game;
+
+extern u32 sound_replacements_count;
+extern SoundReplacement sound_replacements[SoundReplacementCap];
+
+extern u32 sprite_replacements_count;
+extern SpriteReplacement sprite_replacements[SpriteReplacementCap];
+
 extern bool has_custom_player_name[PlayerLimit];
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
-extern u32 trigger_combat[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-extern u32 trigger_kills[ScoutingPlayerLimit][PlayerLimit][UnitId::Count][PlayerLimit][UnitId::Count];
-extern u32 trigger_deaths[ScoutingPlayerLimit][PlayerLimit][UnitId::Count];
-
 void init_trigger_system();
 void update_trigger_system(bool in_game);
 

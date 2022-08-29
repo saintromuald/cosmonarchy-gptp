@@ -297,7 +297,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value attacking strategically important targets
-	if (target->id == UnitId::ZergNydusCanal
+	if (target->id == UnitId::ZergNydusCesiant
 	|| (units_dat::base_property[target->id] & UnitProperty::Worker && target->main_order_id == OrderId::ConstructingBuilding)
 	|| (units_dat::base_property[target->id] & UnitProperty::ResourceDepot && !(target->status & UnitStatus::Completed))) {
 		cost -= 50;
@@ -420,7 +420,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		case EffectId_Irradiate: {
 			value -= 100;
 		} break;
-		case EffectId_Hallucination: {
+		case EffectId_HallucinatingField: {
 			value -= 100;
 		} break;
 		case EffectId_GroundZero: {
@@ -994,7 +994,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 		kiting_ai(unit, unitExt);
 
 		if (unit->id == UnitId::TerranApostle) {
-			if (unit->hasEnergy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 			{
 				s32 count = 0;
 				cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
@@ -1071,7 +1071,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				});
 			}
 
-			if (unit->hasEnergy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
 				s32 enemy_count = cosmonarchyUnitCount(0, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
 				if (enemy_count >= 2) {
 					s32 count = 0;

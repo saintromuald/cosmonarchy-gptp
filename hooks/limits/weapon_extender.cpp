@@ -627,7 +627,7 @@ namespace hooks
 		// 00475CE3  |.  3C 82         CMP AL,82
 		patchWeaponDat(1, 0x00475CE3, PatchMaxWeaponCompare);
 
-		// bool __userpurge isUnitTargetOutOfMaxRange@<al>(CUNIT *unit@<eax>, CUNIT *target) // 00476430
+		// bool __userpurge is_unit_target_out_of_max_range@<al>(CUNIT *unit@<eax>, CUNIT *target) // 00476430
 		// 004764A0  |>  80FB 82       CMP BL,82
 		patchWeaponDat(2, 0x004764A0, PatchMaxWeaponCompare);
 
@@ -649,7 +649,7 @@ namespace hooks
 		// 00476C93  |.  80FB 82       CMP BL,82
 		patchWeaponDat(2, 0x00476C93, PatchMaxWeaponCompare);
 
-		// void __usercall orders_TurretAttack(CUNIT *a1@<eax>, int a2@<ecx>) // 00477980
+		// void __usercall orders_turret_attack(CUNIT *a1@<eax>, int a2@<ecx>) // 00477980
 		// 00477ADE  |.  80F9 82       CMP CL,82
 		// 00477AEF  |.  3C 82         CMP AL,82
 		// 00477C40  |>  80FB 82       CMP BL,82
@@ -657,7 +657,7 @@ namespace hooks
 		patchWeaponDat(1, 0x00477AEF, PatchMaxWeaponCompare);
 		patchWeaponDat(2, 0x00477C40, PatchMaxWeaponCompare);
 
-		// void __usercall orders_AttackFixedRange(CUNIT *this@<eax>, int a2@<ecx>) // 00477D00
+		// void __usercall orders_attack_fixed_range(CUNIT *this@<eax>, int a2@<ecx>) // 00477D00
 		// 00477E2C  |.  80F9 82       CMP CL,82
 		// 00477E3D  |.  3C 82         CMP AL,82
 		patchWeaponDat(2, 0x00477E2C, PatchMaxWeaponCompare);

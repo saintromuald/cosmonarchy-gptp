@@ -6,10 +6,11 @@
 #include <globals.h>
 #include "byte_operations_utils.h"
 #include <limits.h>
+#include "hooks/audiovisuals/sfxhooks.h"
 
 namespace hooks
 {
-	bool isUnitTargetOutOfMaxRange(Unit* a1, Unit* a2) // 00476430
+	bool is_unit_target_out_of_max_range(Unit* a1, Unit* a2) // 00476430
 	{
 		Unit* _unit;
 		Unit* finalUnit;
@@ -25,7 +26,9 @@ namespace hooks
 		}
 		finalUnit = _unit->subunit;
 		if (!finalUnit || !(units_dat::group_flags[(unsigned __int16)finalUnit->id].is_building))
+		{
 			finalUnit = _unit;
+		}
 		if (a2->status & UnitStatus::InAir)
 		{
 			_wpn = units_dat::air_weapon[(unsigned __int16)finalUnit->id];
@@ -52,7 +55,7 @@ namespace hooks
 		return v8 == 0;
 	}
 
-	s32 isReadyToAttack(Unit* a1, unsigned __int8 a2) // 00476640
+	s32 is_ready_to_attack(Unit* a1, unsigned __int8 a2) // 00476640
 	{
 		Unit* v2; // esi
 		Unit* v4; // ecx
@@ -83,7 +86,7 @@ namespace hooks
 		return 1;
 	}
 
-	bool isUnitInWeaponRange(Unit* a1, Unit* a2) // 00476870
+	bool is_unit_in_weapon_range(Unit* a1, Unit* a2) // 00476870
 	{
 		Unit* v2; // edi
 		Unit* v4; // esi
@@ -128,7 +131,7 @@ namespace hooks
 		return helper::is_target_within_min_movement_range(v2, v4, v8);
 	}
 
-	char canCastOrderedSpellNow(Unit* a1) // 00491DB0
+	char can_cast_ordered_spell_now(Unit* a1) // 00491DB0
 	{
 		Unit* v1; // esi
 		u32 v2; // eax
@@ -173,7 +176,7 @@ namespace hooks
 		return v2;
 	}
 
-	void ordersWatchTarget(Unit* a1) // 0047BAB0
+	void orders_watch_target(Unit* a1) // 0047BAB0
 	{
 		Unit* v1; // esi
 		Unit* v2; // ebx
@@ -231,9 +234,9 @@ namespace hooks
 				|| (v8 = weapons_dat::min_range[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
 				|| (v9 = helper::get_unit_max_weapon_range(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
 			{
-LABEL_23:
+			LABEL_23:
 				if (helper::get_right_click_action_order(v1) == 3)
-LABEL_22:
+			LABEL_22:
 				{
 					helper::unknown_orders_func((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
 				}
@@ -241,7 +244,7 @@ LABEL_22:
 		}
 	}
 
-	void ordersStayInRange(Unit* a1) // 0047C4F0
+	void orders_stay_in_range(Unit* a1) // 0047C4F0
 	{
 		Unit* v1; // esi
 		Unit* v2; // ebx
@@ -456,9 +459,9 @@ LABEL_42:
 				{
 					if (unit_id != UnitId::ZergMatraleth)
 					{
-						if (unit_id != UnitId::ZergSkryling && unit_id != UnitId::ZergInfestedTerran)
+						if (unit_id == UnitId::TerranCleric)
 						{
-							order_id = unit_id != UnitId::TerranCleric ? 107 : 178;
+							order_id = OrderId::MedicHoldPosition;
 						}
 						else
 						{
@@ -540,7 +543,7 @@ LABEL_42:
 		return result;
 	}
 
-	void updateUnitVisibility(Unit* unit)
+	void update_unit_visibility(Unit* unit)
 	{
 		if (*player_visions & unit->detection_status)
 		{
@@ -588,7 +591,7 @@ LABEL_42:
 
 			if (*player_visions & v6)
 			{
-				updateUnitVisibility(unit);
+				update_unit_visibility(unit);
 			}
 		}
 	}
@@ -637,35 +640,37 @@ LABEL_42:
 		return 1;
 	}
 
-	bool unit_can_attack_target(Unit* target, Unit* unit, int checkVisibility)
+	bool unit_can_attack_target(Unit* target, Unit* attacker, int check_detection) // 00476730
 	{
-		if (unit->is_frozen()
-			|| !target
-			|| !target->sprite // new
-			|| target->status & UnitStatus::Invincible
-			|| target->sprite->flags & SpriteFlags::Hidden
-			|| checkVisibility && helper::unit_can_see_cloaked_target(target, unit)) {
+		if (attacker->is_frozen()
+		|| !target
+		|| !target->sprite // new
+		||  target->status & UnitStatus::Invincible
+		||  target->sprite->flags & SpriteFlags::Hidden
+		||  check_detection && helper::unit_can_see_cloaked_target(target, attacker))
+		{
 			return false;
 		}
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			if (!(unit->status & UnitStatus::GroundedBuilding)) {
+		if (units_dat::base_property[attacker->id] & UnitProperty::Building)
+		{
+			if (!(attacker->status & UnitStatus::GroundedBuilding)) {
 				return false;
 			}
 		}
 
-		Unit* context = unit;
-		if (helper::unit_is_subunit(unit->subunit)) {
-			context = unit->subunit;
+		Unit* context = attacker;
+		if (helper::unit_is_subunit(attacker->subunit)) {
+			context = attacker->subunit;
 		}
 
-		if (helper::unit_is_carrier(unit)) {
+		if (helper::unit_is_carrier(attacker)) {
 			return true;
 		}
 
-		if (helper::unit_is_reaver(unit)) {
+		if (helper::unit_is_reaver(attacker)) {
 			if (!(target->status & UnitStatus::InAir)) {
-				if (helper::unitHasPathToUnit(unit, target)) {
+				if (helper::unit_has_path_to_unit(attacker, target)) {
 					return true;
 				}
 			}
@@ -685,33 +690,31 @@ LABEL_42:
 		}
 		*/
 
-		if (unit->id == UnitId::TerranBunker) {
+		if (attacker->id == UnitId::TerranBunker) {
 			u32 max_range = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
-				Unit* cargo_unit = unit->get_loaded_unit(i);
+				Unit* cargo_unit = attacker->get_loaded_unit(i);
 				if (cargo_unit) {
-					u32 weapon = target->status & UnitStatus::InAir ? units_dat::air_weapon[cargo_unit->id] : units_dat::ground_weapon[cargo_unit->id];
-					u32 range = hooks::get_max_weapon_range(unit, weapon, target);
+					u32 weapon = target->status & UnitStatus::InAir ? cargo_unit->get_air_weapon() : cargo_unit->get_ground_weapon();
+					u32 range = hooks::get_max_weapon_range(attacker, weapon, target);
 					if (range > max_range) {
 						max_range = range;
 					}
 				}
 			}
 
-			if (unit->is_target_within_min_range(target, max_range)) {
+			if (attacker->is_target_within_min_range(target, max_range)) {
 				return true;
 			}
 			return false;
 		}
 
-		u32 weapon = target->status & UnitStatus::InAir ? units_dat::air_weapon[context->id] : units_dat::ground_weapon[context->id];
-
-		if (unit->status & UnitStatus::GroundedBuilding || unit->status & UnitStatus::Burrowed || unit->id == UnitId::TerranPhalanxSiegeMode) {
-			if (!unit->is_target_within_min_range(target, hooks::get_max_weapon_range(unit, weapon, target))) {
+		u32 weapon = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
+		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || attacker->id == UnitId::TerranPhalanxSiegeMode) {
+			if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
 				return false;
 			}
 		}
-
 		return weapon != WeaponId::None;
 	}
 
@@ -761,7 +764,7 @@ LABEL_42:
 		{
 			goto LABEL_23;
 		}
-		if ( v1->sprite->flags & 0x20 )
+		if ( v1->sprite->flags & SpriteFlags::Hidden)
 		{
 			goto LABEL_23;
 		}
@@ -782,10 +785,10 @@ LABEL_42:
 		{
 			if (!(target->status & UnitStatus::InAir))
 			{
-				v8 = helper::unitHasPathToUnit(v2, v1);
+				v8 = helper::unit_has_path_to_unit(v2, v1);
 				goto LABEL_22;
 			}
-LABEL_23:
+		LABEL_23:
 			v11 = v2->order_target.unit;
 			if ( !v11 || v2->status & UnitStatus::HoldingPosition )
 			{
@@ -835,12 +838,12 @@ LABEL_23:
 				v8 = units_dat::ground_weapon[v5->id] != WeaponId::None;
 			}
 		}
-LABEL_22:
+	LABEL_22:
 		if (!v8)
 		{
 			goto LABEL_23;
 		}
-LABEL_34:
+	LABEL_34:
 		v15 = v2->order_target.unit;
 		v14 = v15->sprite->position.x;
 		v2->order_target.pt.x = v14;
@@ -907,7 +910,7 @@ LABEL_76:
 		{
 			if (v2->unit_ai)
 			{
-				if (helper::isUnreachable(v2->order_target.unit, v2) || helper::is_unit_movable(v2) == 2)
+				if (helper::is_unreachable(v2->order_target.unit, v2) || helper::is_unit_movable(v2) == 2)
 				{
 					if (helper::ai_update_attack_target(v2, 0, 1, 0))
 					{
@@ -927,24 +930,18 @@ LABEL_65:
 					return 0;
 				}
 			}
-			v25 = helper::hasGroundWeaponGraphic(v2) == 0;
+			v25 = helper::has_ground_weapon_graphic(v2) == 0;
 			v24 = v2->order_target.unit;
 			if (!v25)
 			{
 				helper::move_towards(v2, v24);
 				return 0;
 			}
-			helper::moveForMeleeRange(v24, v2);
+			helper::move_for_melee_range(v24, v2);
 			return 0;
 		}
-		if (v2->id == UnitId::ZergSkryling)
-		{
-			helper::moveForMeleeRange(v2->order_target.unit, v2);
-		}
-		else
-		{
-			helper::set_resource_target(v2);
-		}
+		// Removed code for Skryling since we don't use it anymore. -Pr0nogo
+		helper::set_resource_target(v2);
 		return 1;
 	}
 
@@ -1106,6 +1103,7 @@ LABEL_65:
 	}
 
 	// Hooked to fix hit tests on structures in fog of war. -Pr0nogo
+	// Doesn't work yet.
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos) { // 00487A10
 		for (Thingy* thingy = *first_used_thingy; thingy; thingy = thingy->next) {
 			if (!helper::unit_is_unselectable(thingy->unit_id)) {
@@ -1119,5 +1117,223 @@ LABEL_65:
 			}
 		}
 		return 0;
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) // 004769D0
+	{
+		bool result = 0;
+		if (compare_unit != auto_target)
+		{
+			u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
+			if (!scbw::is_allied_to(self->player, compare_player))
+			{
+				if (!auto_target
+				||  !helper::unit_can_attack_target(auto_target, self, 1)
+				||  !helper::is_unit_enemy(self, auto_target)
+				||   helper::is_unit_in_weapon_range(compare_unit, self) && !helper::is_unit_in_weapon_range(auto_target, self))
+				{
+					result = 1;
+				}
+			}
+		}
+		return result;
+	}
+
+	// Hooked to allow for aggressive unit responses. -Pr0nogo
+	// Arg sound_offset was cucko'd by IDA, but we don't need the arg anyway since it gets written to before being used in both cases.
+	// TODO: Figure out how to properly access g_client_selection_group in this context
+	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) // 0046F5B0
+	{
+		if (!*g_is_targeting)
+		{
+			return;
+		}
+		s32 error = 0xFFFF;
+		helper::cancel_target_order();
+		u8 order_id = *g_order_id_obstructed;
+		if (target)
+		{
+			order_id = *g_order_id_unit;
+		}
+		else if (fow_unit_id == UnitId::None)
+		{
+			order_id = *g_order_id_ground;
+		}
+
+		char use_weapon = orders_dat::use_weapon_targeting[order_id];
+		u8 weapon_id = orders_dat::order_weapon_id[order_id];
+		u8 tech_id = orders_dat::tech_used[order_id];
+		u32 energy_cost = 0;
+		if (tech_id < TechId::None)
+		{
+			energy_cost = techdata_dat::energy_cost[tech_id] << 8;
+		}
+		if (orders_dat::obscured_order[order_id] == OrderId::None)
+		{
+			fow_unit_id = UnitId::None;
+		}
+
+		char can_attack_final = 0;
+		char not_enough_energy = 0;
+		char can_target_and_has_energy = 0;
+		Unit** selected_units = &g_client_selection_group->unit[11];
+		Unit** selected_units_2 = &g_client_selection_group->unit[11];
+		while (1) {
+			Unit* unit = *selected_units; // Accessed incorrectly, unit = 0x100
+			if (*selected_units)
+			{
+				if (!unit->is_frozen())
+				{
+					if (!use_weapon)
+					{
+						if (tech_id >= TechId::None)
+						{
+							if (fow_unit_id >= UnitId::None)
+							{
+								helper::is_order_valid(order_id, unit, target, target, &error);
+							}
+							else
+							{
+								helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
+							}
+						}
+						else
+						{
+							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
+							{
+								if (!unit->has_energy(energy_cost))
+								{
+									not_enough_energy = 1;
+								}
+								can_target_and_has_energy = 1;
+							}
+						}
+						goto iterate_selection;
+					}
+					if (weapon_id == WeaponId::None)
+					{
+						if (!target)
+						{
+							if (helper::unit_can_attack_ground_type(fow_unit_id, unit))
+							{
+								can_attack_final = 1;
+							}
+							goto iterate_selection;
+						}
+						if (helper::get_right_click_action_order(unit) == 3)
+						{
+							if (is_unit_target_out_of_max_range(unit, target))
+							{
+								error = 888;
+								goto iterate_selection;
+							}
+							if (helper::target_is_inside_minimum_range(unit, target))
+							{
+								error = 889;
+								goto iterate_selection;
+							}
+						}
+						can_attack_final = unit_can_attack_target(target, unit, 1);
+						goto iterate_selection;
+					}
+					if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1)
+					{
+						if (!unit->has_energy(energy_cost))
+						{
+							not_enough_energy = 1;
+						}
+						can_attack_final = 1;
+					}
+				}
+			}
+		iterate_selection:
+			selected_units = selected_units_2 + 1;
+			selected_units_2++;
+			if (selected_units_2 >= &g_client_selection_group_end) {
+				break;
+			}
+		}
+
+		u32 error_type_2 = error;
+		Unit* active_unit = *g_active_portrait_unit;
+		u8 race = active_unit->get_race();
+		if (use_weapon)
+		{
+			if (!can_attack_final || error != -1)
+			{
+				helper::get_targeting_error_string(weapon_id, &error, target);
+				helper::display_error_message_id_with_sfx(active_unit->player, error, race + 138);
+				if (weapon_id == WeaponId::None)
+				{
+					helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
+				}
+				return;
+			}
+		check_energy:
+			if (energy_cost && !not_enough_energy)
+			{
+				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, race + 156);
+				return;
+			}
+		}
+		else
+		{
+			if (energy_cost)
+			{
+				if (!can_target_and_has_energy)
+				{
+					if (error == -1)
+					{
+						error = 876;
+					}
+					u16 error_type_1 = error - 1;
+					const char* error_string_2 = 0;
+					if (error)
+					{
+						if (error_type_1 < *g_stat_txt_tbl)
+						{
+							error_string_2 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[error_type_1 + 1];
+						}
+						else
+						{
+							error_string_2 = "";
+						}
+					}
+					helper::get_stat_txt_string(active_unit, *g_active_nation_id, (char*)error_string_2);
+					return;
+				}
+				error_type_2 = error;
+				goto check_energy;
+			}
+			error_type_2 = error;
+		}
+		if (error_type_2 == -1)
+		{
+			UnitExt* unit_ext = get_unit_ext(active_unit);
+			unit_ext->values[ValueUnitResponseOrder] = order_id;
+			hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
+			helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
+		}
+		else
+		{
+			u8 active_player = active_unit->player;
+			u16 error_string_id = error_type_2 - 1;
+			if (error_type_2)
+			{
+				if (error_string_id < *g_stat_txt_tbl)
+				{
+					helper::get_stat_txt_string(active_unit, active_player, (char*)(g_stat_txt_tbl + g_stat_txt_tbl[error_string_id + 1]));
+				}
+				else
+				{
+					helper::get_stat_txt_string(active_unit, active_player, "");
+				}
+			}
+			else
+			{
+				helper::get_stat_txt_string(active_unit, active_player, 0);
+			}
+		}
 	}
 }

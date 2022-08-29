@@ -27,7 +27,7 @@ namespace hooks
 				&& !(unit->status & UnitStatus::CloakingForFree))							// and must consume energy to stay cloaked (i.e. not under a Didact)
 			{
 				u16 cloakingEnergyCost = 0;
-				if (!(unit->hasEnergy(cloakingEnergyCost)))
+				if (!(unit->has_energy(cloakingEnergyCost)))
 				{
 					if (unit->secondary_order_id == OrderId::Cloak)
 					{
@@ -247,54 +247,6 @@ namespace hooks
 		{
 			unit->new_flags_3 &= ~0x10;
 			unit->update_speed();
-		}
-
-		// Cowardice / Malice overlays
-		if (unit->unused_8c & 0x1)
-		{
-			unit->unused_8c &= ~0x1;
-			u32 overlayImageId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			if (!unit->get_overlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
-			{
-				unit->sprite->create_top_overlay(overlayImageId, 0, 0, 0);
-				unit_ext->values[ValueHierophantOverlay] = 1;
-			}
-		}
-
-		if (unit_ext->values[ValueHierophantOverlay] == 1)
-		{
-			auto overlayId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			auto overlay = unit->get_overlay(overlayId);
-			if (scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 1)
-			{
-				if (unit->get_overlay(overlayId))
-				{
-					unit->remove_overlay(overlayId);
-				}
-				u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
-				if (!unit->get_overlay(maliceId))
-				{
-					unit->sprite->create_top_overlay(maliceId, 0, 0, 0);
-				}
-				unit_ext->values[ValueHierophantOverlay] = 0;
-			}
-		}
-
-		// Clear Malice & Cowardice overlays
-		if (unit->unused_8c & 0x2)
-		{
-			unit->unused_8c &= ~0x2;
-			u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
-			u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-			unit_ext->values[ValueHierophantOverlay] = 0;
-			if (unit->get_overlay(maliceId))
-			{
-				unit->remove_overlay(maliceId);
-			}
-			if (unit->get_overlay(cowardiceId))
-			{
-				unit->remove_overlay(cowardiceId);
-			}
 		}
 
 		// Something to do with player-specific Signify overlays?
@@ -866,6 +818,79 @@ namespace hooks
 			{
 				unit->sprite = 0;
 			}
+		}
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	void sprite_to_iscript_loop(Sprite* sprite) // 00497920
+	{
+		Image* image = sprite->images.head;
+		Image* next_image = 0;
+		u32 data = 0; // unused arg of iscript_opcode_cases?
+		if (image)
+		{
+			do
+			{
+				next_image = image->link.next;
+				((void(__thiscall*)(Image*))image->update_fxn)(image);
+				helper::iscript_opcode_cases(image, (u32)&image->iscript_header_offset, 0, 0);
+				if (!sprite->images.head)
+				{
+					u32 pos_y = sprite->position.y / 32;
+					if (pos_y >= 0)
+					{
+						if (pos_y >= *g_map_tile_height)
+						{
+							pos_y = *g_map_tile_height - 1;
+						}
+					}
+					else
+					{
+						pos_y = 0;
+					}
+					if (g_horizontal_sprite_lines_begin[pos_y] == sprite)
+					{
+						g_horizontal_sprite_lines_begin[pos_y] = sprite->link.next;
+					}
+					if (g_horizontal_sprite_lines_end[pos_y] == sprite)
+					{
+						g_horizontal_sprite_lines_end[pos_y] = sprite->link.prev;
+					}
+					if (sprite->link.prev)
+					{
+						sprite->link.prev->link.next = sprite->link.next;
+					}
+					Sprite* next_sprite = sprite->link.next;
+					if (next_sprite)
+					{
+						next_sprite->link.prev = sprite->link.prev;
+					}
+					sprite->link.prev = 0;
+					sprite->link.next = 0;
+					Sprite* first_free = g_free_sprites->head;
+					if (g_free_sprites->head)
+					{
+						if (g_free_sprites->tail == g_free_sprites->head)
+						{
+							g_free_sprites->tail = sprite;
+						}
+						sprite->link.prev = g_free_sprites->head;
+						sprite->link.next = first_free->link.next;
+						Sprite* next_free = first_free->link.next;
+						if (next_free)
+						{
+							next_free->link.prev = sprite;
+						}
+						first_free->link.next = sprite;
+					}
+					else
+					{
+						g_free_sprites->head = sprite;
+						g_free_sprites->tail = sprite;
+					}
+				}
+				image = next_image;
+			} while (next_image);
 		}
 	}
 }

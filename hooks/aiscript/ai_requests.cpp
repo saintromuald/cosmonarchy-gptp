@@ -111,261 +111,7 @@ namespace hooks
 		}
 		return result;
 	}
-
-	// We all know what this is for - Pr0nogo
-	// TODO: Finish and clean up
-	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 tryPosition, Point16* outPosition, s32 areaTiles) // 004465C0 - 3 nops
-	{
-		s32 playerVar;
-		Unit* builderVar;
-		char v7;
-		s16 v8;
-		s32 v9;
-		s32 v10;
-		s16 v12;
-		s32 v13;
-		Unit* disabledUnitVar;
-		Sprite* disabledUnitSprite;
-		s16 _x;
-		s16 _y;
-		s32 v18;
-		s64 v19;
-		u32 bestDistance;
-		s32 posy;
-		s32 v22;
-		s32 posx;
-		u32 currentDistance;
-		bool v25;
-		s16 v26;
-		bool v27;
-		s32 v28;
-		s8 a1[4096];
-		s32 v30;
-		s32 v31;
-		s32 v32;
-		POINT _tileX;
-		u32 bestFallbackDistance;
-		s16* v35;
-		s32* v36;
-		s32 ownrId;
-		s8* v38;
-		Point16 __tileX;
-		s16 v40;
-		s32 v41;
-		Point16 unitTypea;
-		Point16 desiredFallbackPosition;
-
-		_tileX.x = tryPosition.x / 32;
-		__tileX.x = tryPosition.x / 32;
-		builderVar = builder;
-		playerVar = (u8)builder->player;
-		_tileX.y = (*(s32*)&tryPosition >> 16) / 32;
-		__tileX.y = _tileX.y;
-		v7 = units_dat::base_property[(u16)unit_id];
-		ownrId = playerVar;
-		v40 = 0;
-		v41 = 0;
-		if (v7 & 2)
-		{
-			v9 = 4 * (u16)builderVar->id;
-			v10 = *(s16*)((char*)&units_dat::building_dimensions[0].x + v9);
-			*(Point16*)&v40 = __tileX;
-			v9 = *(s16*)((char*)&units_dat::building_dimensions[0].y + v9) / -2 / 32 + __tileX.y;
-			v36 = &units_dat::max_hitpoints[(u16)unit_id + 122];
-			v8 = *(s16*)v36 / 32 + __tileX.x - v10 / 2 / 32;
-			v35 = (s16*)((char*)&units_dat::max_hitpoints[(u16)unit_id + 122] + 2);
-			v41 = *v35 / 32 + v9;
-			v40 = v8;
-			if (!helper::can_build_on_tile_location(builderVar, ownrId, *(s32*)&v40, v41, unit_id, 0, 0, 1, 0))
-			{
-				v12 = *(s16*)v36 / -32 + v8;
-				v41 = *v35 / -32 + v41;
-				v13 = units_dat::building_dimensions[(u16)builderVar->id].x;
-				v40 = v12;
-				outPosition->x = 32 * v12 + v13 / 2;
-				outPosition->y = 32 * v41 + units_dat::building_dimensions[(u16)builderVar->id].y / 2;
-				return 1;
-			}
-			playerVar = ownrId;
-		}
-		ownrId = 2500;
-		v38 = (s8*)1;
-		switch ((u16)unit_id)
-		{
-			// Town halls
-			case UnitId::TerranCommandCenter:
-			case UnitId::ZergHatchery:
-			case UnitId::ProtossNexus:
-			{
-				goto LABEL_10;
-			}
-			// Addons
-			case UnitId::TerranComsatStation:
-			case UnitId::TerranMissileSilo:
-			case UnitId::TerranQuarry:
-			{
-				unit_id = UnitId::TerranCommandCenter;
-			} break;
-			case UnitId::TerranControlTower:
-			case UnitId::TerranMunitionsBay:
-			{
-				unit_id = UnitId::TerranStarport;
-			} break;
-			case UnitId::TerranMedbay:
-			case UnitId::TerranCovertOps:
-			{
-				unit_id = UnitId::TerranBarracks;
-			} break;
-			case UnitId::TerranMachineShop:
-			case UnitId::TerranSalvoYard:
-			{
-				unit_id = UnitId::TerranFulcrum;
-			} break;
-			case UnitId::TerranGuildhall:
-			{
-				unit_id = UnitId::TerranCaptaincy;
-			} break;
-			case UnitId::TerranBioticBase:
-			case UnitId::TerranTinkerersTower:
-			{
-				unit_id = UnitId::TerranScrapyard;
-			} break;
-			// Misc special rules
-			case UnitId::TerranBunker:
-			{
-				goto LABEL_9;
-			}
-			case UnitId::ZergCreepColony:
-			{
-//				if (g_aiscript_controller[playerVar].AI_Flags >= 0) // used SLOBYTE, probably checking "creep" asc3 command
-				{
-			LABEL_9:
-					if (helper::get_bunker_placement_position(playerVar, &ownrId))
-					{
-			LABEL_10:
-						v38 = 0;
-					}
-				}
-			} break;
-			case UnitId::ProtossPylon:
-			{
-				disabledUnitVar = helper::get_disabled_unit_in_range(playerVar, tryPosition);
-				g_disabled_unit_array[9] = disabledUnitVar;
-				if (disabledUnitVar)
-				{
-					disabledUnitSprite = disabledUnitVar->sprite;
-					_x = disabledUnitSprite->position.x;
-					_y = disabledUnitSprite->position.y;
-					_tileX.x = _x / 32;
-					__tileX.x = _x / 32;
-					tryPosition.x = _x;
-					tryPosition.y = _y;
-					_tileX.y = _y / 32;
-					__tileX.y = _y / 32;
-					v38 = 0;
-				}				
-			} break;
-			default:
-			{
-			} break;
-		}
-		v18 = (u8)builderVar->player;
-		*g_ai_builder_unk = builderVar;
-		v32 = (u16)unit_id;
-		helper::ai_get_build_location((u16)unit_id, (char*)a1, v18, tryPosition, areaTiles);
-		*g_ai_builder_unk = 0;
-		if (v38)
-		{
-			helper::ai_placement_data_something(a1, tryPosition);
-		}
-		unitTypea = __tileX;
-		if (ownrId != 2500)
-		{
-			v19 = (s16)((*g_sai_paths)->regions[(u16)ownrId].region_center_x >> 8);
-//			LOWORD(unitTypea) = (((v19) & 0x1F) + (s32)v19) >> 5;
-//			HIWORD(unitTypea) = (s16)((*g_sai_paths)->regions[(u16)ownrId].region_center_y >> 8) / 32;
-		}
-		v30 = __tileX.y - 32;
-		bestDistance = 99999999;
-		bestFallbackDistance = 99999999;
-		desiredFallbackPosition.x = 0;
-		desiredFallbackPosition.y = 0;
-		v36 = 0;
-		v31 = __tileX.x - 32;
-		while (1)
-		{
-			posy = v30;
-			v38 = a1;
-			v35 = (s16*)64;
-			do
-			{
-				posx = v31;
-				v22 = 0;
-				__tileX.x = 0;
-				__tileX.y = 0;
-				do
-				{
-					if (v38[v22])
-					{
-//						currentDistance = helper::getTileDistance(32 * (s16)unitTypea, 32 * SHIWORD(unitTypea), 32 * posx, 32 * posy);
-						if (currentDistance < bestDistance)
-						{
-							if (currentDistance <= areaTiles)
-							{
-								bestDistance = currentDistance;
-								v40 = posx;
-								v41 = posy;
-							}
-							else if (currentDistance < bestFallbackDistance)
-							{
-								bestFallbackDistance = currentDistance;
-								desiredFallbackPosition.x = posx;
-								desiredFallbackPosition.y = posy;
-							}
-						}
-					}
-					v22 = *(s32*)&__tileX + 1;
-					++posx;
-					++* (s32*)&__tileX;
-				} while (*(u32*)&__tileX < 0x40);
-				++posy;
-				v25 = v35 == (s16*)1;
-				v38 += 64;
-				v35 = (s16*)((char*)v35 - 1);
-			} while (!v25);
-
-			if (bestDistance != 99999999)
-			{
-				break;
-			}
-			bestDistance = bestFallbackDistance;
-			v26 = desiredFallbackPosition.x;
-			*(Point16*)&v40 = desiredFallbackPosition;
-			if (bestFallbackDistance != 99999999)
-			{
-				goto LABEL_36;
-			}
-			if (ownrId != 2500)
-			{
-				v27 = (u32)v36 + 1 < 2;
-//				LOWORD(unitTypea) = _tileX.x;
-//				HIWORD(unitTypea) = _tileX.y;
-				v36 = (s32*)((char*)v36 + 1);
-				if (v27)
-				{
-					continue;
-				}
-			}
-			return 0;
-		}
-		v26 = v40;
-	LABEL_36:
-		v28 = v32;
-		outPosition->x = 32 * v26 + units_dat::building_dimensions[v32].x / 2;
-		outPosition->y = 32 * v41 + units_dat::building_dimensions[v28].y / 2;
-		return 1;
-	}
-
+	
 	enum RequestType
 	{
 		RequestType_UnitMake = 0,
@@ -568,7 +314,7 @@ namespace hooks
 
 		if (!helper::hasResourcesForUnit(nextBuildType, player))
 		{
-			error = (g_aiscript_controller[player]->AI_Flags.is_use_map_settings) == 0;
+			error = (g_aiscript_controller[player]->ai_flags.is_use_map_settings) == 0;
 			if (error)
 			{
 				helper::ai_reserve(player, 0);
@@ -723,14 +469,14 @@ namespace hooks
 								region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->air_strength_enemy != 0, j - region_gnd_strength);
 							}
 						}
-						if (g_aiscript_controller[player_id]->AI_Flags.flag_0x40)
+						if (g_aiscript_controller[player_id]->ai_flags.flag_0x40)
 						{
 							v15 = g_aiscript_controller[player_id]->defense_priority_base;
 							if (v15)
 							{
 								g_aiscript_controller[player_id]->defense_priority_base = v15 - 1;
 							}
-							g_aiscript_controller[player_id]->AI_Flags.flag_0x40 = false;
+							g_aiscript_controller[player_id]->ai_flags.flag_0x40 = false;
 						}
 					}
 				}
@@ -740,7 +486,7 @@ namespace hooks
 				--region_count_zeroed;
 			} while (!finished_with_regions);
 		}
-		if (!(g_aiscript_controller[player_id]->AI_Flags.is_transports_off))
+		if (!(g_aiscript_controller[player_id]->ai_flags.is_transports_off))
 		{
 			u32 player_race = g_player_table[player_id].race;
 			if (player_race == RaceId::Terran)
@@ -783,14 +529,14 @@ namespace hooks
 			if (v33)
 			{
 				transport_1_count = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
-				transport_1_quantity = (g_aiscript_controller[player_id]->AI_Flags.is_use_map_settings) != 0 ? 2 : 5;
+				transport_1_quantity = (g_aiscript_controller[player_id]->ai_flags.is_use_map_settings) != 0 ? 2 : 5;
 				transport_1_priority = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
 				if (transport_1_count < transport_1_quantity)
 				{
 					transport_1_request_count = transport_1_quantity - transport_1_count;
 					while (1)
 					{
-						g_aiscript_controller[player_id]->AI_Flags.flag_0x40 = true;
+						g_aiscript_controller[player_id]->ai_flags.flag_0x40 = true;
 						transport_1_gas_cost = units_dat::gas_cost[transport_unit_id_1];
 						transport_supply_cost = units_dat::supply_required[transport_unit_id_1];
 						if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
@@ -901,12 +647,12 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
 		u32 attack_wave[63] = {};
 		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].AI_Flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
+		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
 			if (unit_id != UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
 			{
-				g_aiscript_controller[region->player]->AI_Flags.flag_0x40 = true;
+				g_aiscript_controller[region->player]->ai_flags.flag_0x40 = true;
 				helper::ai_add_cost_to_needs(unit_id, region->player, 1);
 				helper::ai_add_spending_request(unit_id, region->player, 1, priority, region);
 				helper::ai_add_base_unit_spending_request(unit_id, region->player, region, priority);
@@ -936,7 +682,9 @@ namespace hooks
 
 	// Hooked to improve AI guard handling. -Pr0nogo
 	void ai_update_guard_needs(u32 player) { // 004630C0
-		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = guard_ai->link.prev) {
+		GuardAi* prev = 0;
+		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = prev) {
+			prev = guard_ai->link.prev;
 			if (guard_ai->times_died >= 100) {
 				helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
 			} else if (guard_ai->parent) {
@@ -964,6 +712,88 @@ namespace hooks
 				//	guard_ai->previous_update = *g_elapsed_time_seconds;
 				//}
 			}
+		}
+	}
+
+	// Hooked to add sprite nullcheck and improve behavior. -Pr0nogo
+	void ai_make_guard(u32 player_id, Unit* unit) // 0043A010
+	{
+		if (!unit || !unit->sprite) {
+			return;
+		}
+		u16 region_id = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+		u32 region_id_var = region_id;
+		AiRegion* region_from_id = &g_ai_region_captains[player_id][region_id_var];
+		u32 region_times_52 = region_id_var * 52;
+
+		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow)
+		{
+			helper::ai_assign_military_to_region(5, region_from_id);
+			u8 region_flags = region_from_id->flags | 1;
+			region_from_id->flags = region_flags;
+			if (!(g_aiscript_controller[player_id]->ai_flags.is_use_map_settings))
+			{
+				region_from_id->flags = region_flags | 0x40;
+			}
+
+		//	u32 ai_flags = g_aiscript_controller[0].ai_flags; // Really weird
+			u8* alliance_check = (u8*)player_alliance + player_id;
+			AiRegion** ai_regions_var = g_ai_region_captains;
+			u8(*player_alliance_var)[12] = (u8(*)[12])((u8*)player_alliance + player_id);
+			do
+			{
+				if (!(g_aiscript_controller[0]->ai_flags.is_use_map_settings))
+				{
+					if (*alliance_check)
+					{
+						AiRegion* region_from_52 = (AiRegion*)((char*)*ai_regions_var + region_times_52);
+						if (!region_from_52->state)
+						{
+							helper::ai_assign_military_to_region(4, region_from_52);
+						}
+					}
+				}
+			//	ai_flags += 628;
+				alliance_check = &(*player_alliance_var)[12];
+				++player_alliance_var;
+				++ai_regions_var;
+			} while (1); //ai_flags < &g_base_array[9].total_mineral_count;
+		}
+
+		u32 unit_status = unit->status;
+		u32 town_center = UnitId::TerranCommandCenter;
+		if (g_player_table[player_id].race == RaceId::Protoss) {
+			town_center = UnitId::ProtossNexus;
+		}
+		else if (g_player_table[player_id].race == RaceId::Zerg) {
+			town_center = UnitId::ZergHachirosk;
+		}
+
+		u32 unit_id = unit->id;
+		u8 player_race = g_player_table[player_id].race;
+		if ((unit_status & UnitStatus::Completed
+		||   unit_id == UnitId::ZergSibraelosk // new
+		||   unit_id == UnitId::ZergGathtelosk
+		||   unit_id == UnitId::ZergCaphrolosk
+		||   unit_id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
+		&&   unit_status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::Subunit) // was BYTE1, never saw that on a flag var before, so maybe Subunit should be FlyingBuilding (next entry)?
+		||  (unit->id == town_center))
+		{
+			if (g_aiscript_controller[player_id]->ai_flags.is_use_map_settings)
+			{
+				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id]->default_min;
+				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id]->default_min;
+				helper::ai_assign_military_to_region(6, region_from_id);
+			}
+			else
+			{
+				helper::ai_assign_military_to_region(6, region_from_id);
+				u8 region_has_flag_40 = region_from_id->flags | 0x40;
+				region_from_id->ground_strength_needed = 1500;
+				region_from_id->air_strength_needed = 1000;
+				region_from_id->flags = region_has_flag_40;
+			}
+			region_from_id->defend_timeout = 45;
 		}
 	}
 }

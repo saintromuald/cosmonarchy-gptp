@@ -33,7 +33,7 @@ enum EffectId {
 	EffectId_Criticality,
 	EffectId_CausticDischarge,
 	EffectId_Irradiate,
-	EffectId_Hallucination,
+	EffectId_HallucinatingField,
 	EffectId_GroundZero,
 	EffectId_DisruptionField,
 	EffectId_PlagueField,

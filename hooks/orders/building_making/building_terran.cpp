@@ -2,6 +2,7 @@
 #include "building_modifier.h"
 #include <SCBW/api.h>
 #include <globals.h>
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -105,7 +106,7 @@ namespace hooks
 					{
 						builtUnit->connected_unit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
-						unit->sprite->elevation_level = units_dat::elevation[unit->id] + 1;
+						unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 						unit->order_simple(OrderId::ResetCollision1, false);
 						unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
@@ -391,7 +392,7 @@ namespace hooks
 				{
 					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
-					unit->sprite->elevation_level = units_dat::elevation[unit->id] + 1;
+					unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 					if (!unit->order_queue_head)
 					{
 						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);
@@ -423,6 +424,7 @@ namespace hooks
 					else
 					{
 						builtUnit->connected_unit = unit;
+						builtUnit->sprite->player = unit->sprite->player;
 						unit->main_order_id = OrderId::ConstructingBuilding;
 						unit->main_order_state = 3;
 						unit->order_target.unit = builtUnit;
@@ -475,9 +477,9 @@ namespace hooks
 		auto result = *g_is_placing_building;
 		if (*g_is_placing_building)
 		{
-			auto y = mouse->y;
-			auto x = mouse->x;
-			auto mouse_pos = Point16{(u16)mouse->x, (u16)mouse->y};
+			auto y = g_mouse->y;
+			auto x = g_mouse->x;
+			auto mouse_pos = Point16{(u16)g_mouse->x, (u16)g_mouse->y};
 			if (helper::init_placement_box_pos(&mouse_pos))
 			{
 				*g_place_building_message_id = helper::update_placement_state_for_placement_box();
@@ -557,37 +559,34 @@ namespace hooks
 	}
 
 	// Hooked to play the correct new_sound when Taloses complete a structure. -Pr0nogo
-	void play_building_complete_sound(Unit* unit) // 0048F310
-	{
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
-		{
+	void play_building_complete_sound(Unit* unit) { // 0048F310
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
 			u32 race = unit->get_race();
-			switch (race)
-			{
-				case RaceId::Zerg:
-				{
+			switch (race) {
+				case RaceId::Zerg: {
 					if (unit->create_origin == UnitId::ZergDroleth) {
-						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					}
-					else if (unit->create_origin == UnitId::ZergGosvileth) {
-						helper::play_sound_from_unit(135, unit, (*options_list).flags & 1, 99);
+					} else if (unit->create_origin == UnitId::ZergGosvileth) {
+						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					} else {
+						// Nydus exit and morphs?
+						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}
 				} break;
-				case RaceId::Terran:
-				{
+				case RaceId::Terran: {
 					u32 sound_id = 126;
 					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
 					{
 						sound_id = 136;
 					}
-					helper::play_sound_from_unit(sound_id, unit, (*options_list).flags & 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*(u32*)&sound_duration_msecs[sound_id] / 1000), 1, sound_id);
+					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (SFXDAT_SoundData[sound_id].duration_ms / 1000), 1, sound_id);
 				} break;
 				case RaceId::Protoss:
-				default:
-				{
+				default: {
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 				} break;
 			}

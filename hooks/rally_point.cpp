@@ -1,6 +1,7 @@
 #include "rally_point.h"
 #include "../SCBW/api.h"
 #include "globals.h"
+#include "hooks/audiovisuals/sfxhooks.h"
 
 namespace hooks
 {
@@ -93,7 +94,7 @@ namespace hooks
 					result = orders_dat::req_offset[OrderId::RallyPointToTile];
 					if (orders_dat::req_offset[OrderId::RallyPointToTile])
 					{
-						if (unit->id == UnitId::ZergCreepColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvalColony) // lame
+						if (unit->id == UnitId::ZergCagrantColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskColony) // lame
 						{
 							result = 1;
 						}
@@ -348,9 +349,9 @@ namespace hooks
 			|| unit->id == UnitId::TerranFulcrum
 			|| unit->id == UnitId::TerranStarport
 			|| unit->id == UnitId::ZergInfestedCommandCenter
-			|| unit->id == UnitId::ZergHatchery
-			|| unit->id == UnitId::ZergLair
-			|| unit->id == UnitId::ZergHive
+			|| unit->id == UnitId::ZergHachirosk
+			|| unit->id == UnitId::ZergCaphrolosk
+			|| unit->id == UnitId::ZergGathtelosk
 			|| unit->id == UnitId::ProtossNexus
 			|| unit->id == UnitId::ProtossGateway
 			|| unit->id == UnitId::ProtossStargate
@@ -388,9 +389,9 @@ namespace hooks
 			return OrderId::Move;
 		}
 
-		if (unit->id == UnitId::ZergMatraleth
+		if  (unit->id == UnitId::ZergMatraleth
 		&& !(target_unit->status & UnitStatus::Invincible)
-		&& helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) == 0)
+		&&   helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) == 0)
 		{
 			return OrderId::InfestMine2;
 		}
@@ -516,7 +517,14 @@ namespace hooks
 												}
 												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, g_is_keycode_used[16]);
 												if (helper::show_right_click_error_if_needed(unit_at_point)) {
-													helper::play_worker_action_sound(*g_active_portrait_unit);
+													if ((*g_active_portrait_unit)->has_weapon()) {
+														UnitExt* unit_ext = get_unit_ext(*g_active_portrait_unit);
+														unit_ext->units[UnitUnitResponseTarget] = unit_at_point;
+														hooks::play_yes_unit_response_internal(*g_active_portrait_unit, UnitResponseContext::URC_Target);
+													}
+													else {
+														helper::play_yes_unit_response(*g_active_portrait_unit);
+													}
 												}
 											}
 											break;

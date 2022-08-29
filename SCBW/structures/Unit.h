@@ -43,7 +43,7 @@ struct Unit : public UnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Checks if the unit is a clean detector (no Lockdown, Optical Flare, etc.)
-	bool canDetect() const;
+	bool can_detect() const;
 
 	/// Returns the amount of HP displayed in-game. This is equal to
 	/// (this->hitpoints + 255) / 256.
@@ -117,7 +117,7 @@ struct Unit : public UnitLayout
 	///Return true if:
 	/// * THE GATHERING cheat is enabled or
 	/// * unit has at least @p energy available.
-	bool hasEnergy(u32 energy) const;
+	bool has_energy(u32 energy) const;
 
 	/// Returns true if:
 	/// * The unit has a weapon, or
@@ -354,7 +354,7 @@ struct Unit : public UnitLayout
 	///
 	/// If the unit can use the tech, returns 1. If the tech needs to be
 	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 canUseTech(u8 techId, u8 player) const;
+	s32 can_use_tech(u8 techId, u8 player) const;
 
 	//////////////////////////////////////////////////////////////// @}
 

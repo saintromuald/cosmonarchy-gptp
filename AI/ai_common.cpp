@@ -48,7 +48,7 @@ namespace AI
 	bool is_campaign_ai(u8 player)
 	{
 		assert(player < 8);
-		return g_aiscript_controller[player]->AI_Flags.is_use_map_settings;
+		return g_aiscript_controller[player]->ai_flags.is_use_map_settings;
 	}
 
 	// Internal use only
@@ -77,7 +77,7 @@ namespace AI
 		return currentAiRegion->state == 3
 			|| currentAiRegion->air_target
 			|| currentAiRegion->ground_target
-			|| currentAiRegion->captain_flags & 0x20;
+			|| currentAiRegion->flags & 0x20;
 	}
 
 
@@ -215,8 +215,8 @@ namespace AI
 				}
 				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
-					if (target->canDetect()
-					||  target->id == UnitId::ZergSunkenColony
+					if (target->can_detect()
+					||  target->id == UnitId::ZergSurkithColony
 					||  target->id == UnitId::ZergLakizilisk)
 					{
 						totalNukeTargetValue = 800; // 0x0320

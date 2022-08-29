@@ -147,7 +147,7 @@ enum TimeType {
 	TimeType_Count,
 };
 
-f32 parser_get_time(Parser* parser) {
+f32 parser_get_time_seconds(Parser* parser) {
 	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return false;
@@ -155,13 +155,11 @@ f32 parser_get_time(Parser* parser) {
 
 	bool add_to_total = false;
 	f32 total_time = 0;
-
 	f32 time = 0;
 	u32 time_type = TimeType_Seconds;
 
 	u32 buffer_index = 0;
 	char buffer[MaxToken] = {};
-
 	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
 		if (isdigit(*parser->at) || *parser->at == '.') {
 			if (buffer_index < MaxToken - 1) {
@@ -196,10 +194,10 @@ f32 parser_get_time(Parser* parser) {
 			time = strtof(buffer, 0);
 			switch (time_type) {
 				case TimeType_Hours: {
-					total_time += time * 60 * 60;
+					total_time += time * 60 * 60 * 24;
 				} break;
 				case TimeType_Minutes: {
-					total_time += time * 60;
+					total_time += time * 60 * 24;
 				} break;
 				case TimeType_Seconds: {
 					total_time += time;
@@ -225,9 +223,24 @@ f32 parser_get_time(Parser* parser) {
 	// add seconds by default if anything without type was left
 	if (buffer_index) {
 		time = strtof(buffer, 0);
-		total_time += time;
+		total_time += ceil(time);
 	}
 	return total_time;
+}
+
+u32 parser_get_time_ticks(Parser* parser) {
+	return ceil(parser_get_time_seconds(parser) * 24);
+}
+
+s32 parser_get_var_value(Parser* parser, bool is_timer) {
+	parser_get_word(parser);
+	if (parser_eq(parser, "random")) {
+		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+		return scbw::rand_between(min_value, max_value);
+	}
+	parser_pop(parser);
+	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 }
 
 Area parser_get_area(Parser* parser) {
@@ -282,7 +295,7 @@ Area parser_get_area(Parser* parser) {
 	parser_pop(parser); // string wasn't valid, let's unwind and try an int
 
 	s32 i = parser_get_s32(parser);
-	if (i >= 0 && i < 256) {
+	if (parser->number_parsed_correctly && i >= 0 && i < 256) {
 		area.box = g_location_table[i].dimensions;
 		area.flags = ~g_location_table[i].flags;
 		area.box.w -= area.box.x;
@@ -412,11 +425,13 @@ char parser_get_separator(Parser* parser) {
 
 u32 parser_get_player(Parser* parser, bool allow_neutral) {
 	u32 player = parser_get_s32(parser);
-	if (player <= 8 || (allow_neutral && player == 12)) {
-		return player;
-	}
-	if (player == 13) {
-		return *g_current_trigger_player_id;
+	if (parser->number_parsed_correctly) {
+		if (player <= 8 || (allow_neutral && player == 12)) {
+			return player;
+		}
+		if (player == 13) {
+			return *g_current_trigger_player_id;
+		}
 	}
 	return 0;
 }
@@ -506,7 +521,6 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			break;
 		}
 	}
-
 	return bitset;
 }
 
@@ -527,7 +541,6 @@ Token get_short_unit_name(u32 unit_id) {
 			after_space = true;
 		}
 	}
-
 	return token;
 }
 
@@ -541,7 +554,7 @@ u32 parser_get_unit_id(Parser* parser) {
 	parser_pop(parser);
 
 	s32 unit_id = parser_get_s32(parser);
-	if (parser->token.size) {
+	if (parser->number_parsed_correctly) {
 		return unit_id;
 	}
 	return UnitId::None;
@@ -610,7 +623,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
-		} else if (parser_eqi(parser, "combatant")) {
+		} else if (parser_eqi(parser, "combatants")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				bool is_combatant = false;
 				u32 subunit_id = units_dat::subunit[i];
@@ -625,19 +638,19 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 				}
 				unit_id_bitset_set(&current_bitset, i, is_combatant, mask, negate);
 			}
-		} else if (parser_eqi(parser, "transport")) {
+		} else if (parser_eqi(parser, "transports")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_transport(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "townhall")) {
+		} else if (parser_eqi(parser, "townhalls")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_town_center(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "depot")) {
+		} else if (parser_eqi(parser, "depots")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
 			}
-		} else if (parser_eqi(parser, "node")) {
+		} else if (parser_eqi(parser, "nodes")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
 			}
@@ -645,7 +658,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_shared(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "worker")) {
+		} else if (parser_eqi(parser, "workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
@@ -672,7 +685,6 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			break;
 		}
 	}
-
 	return bitset;
 }
 
@@ -682,7 +694,7 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 		return default_type;
 	}
 
-	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=') {
+	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
 		char op = *parser->at;
 		++parser->at;
 
@@ -697,6 +709,11 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 			case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less; break;
 			case '=': return QuotaType_Equal; break;
 			case '!': return QuotaType_NotEqual; break;
+			case '*': {
+				// We pop since we don't want next parser_get to consume next argument
+				parser_pop(parser);
+				return QuotaType_Anything;
+			} break;
 		}
 	}
 	return default_type;
@@ -710,6 +727,7 @@ bool check_quota(QuotaType type, s32 quota, s32 value) {
 		case QuotaType_LessOrEqual:		return value <= quota;
 		case QuotaType_Equal:			return value == quota; 
 		case QuotaType_NotEqual:		return value != quota; 
+		case QuotaType_Anything:		return true; 
 	}
 	return false;
 }

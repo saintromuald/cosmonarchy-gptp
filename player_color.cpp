@@ -1,5 +1,6 @@
 #include "player_color.h"
 #include "trigger_system/trigger_system.h"
+#include "color_palette.h"
 
 static bool loaded_colors;
 static bool can_randomize_player_colors;
@@ -16,6 +17,9 @@ static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
 
 static bool player_wants_to_randomize(u32 player) {
+	if (has_custom_color[player]) {
+		return false;
+	}
 	if (can_randomize_player_colors) {
 		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
 		if (g_death_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
@@ -28,9 +32,6 @@ static bool player_wants_to_randomize(u32 player) {
 
 static bool player_can_randomize(u32 player) {
 	u32 personality = g_unit_deaths[UnitId::Spell_DisruptionWeb].player[player];
-	if (has_custom_color[player]) {
-		return false;
-	}
 	if (g_player_table[player].type == PlayerType::Computer && !personality) {
 		return false; // Don't randomize AI players that don't have personality yet
 	}
@@ -51,15 +52,6 @@ static std::vector<u32> get_player_tints_from_color(u32 color) {
 	return tints;
 }
 
-static bool can_use_player_color(u32 color, u32 player) {
-	for (u32 player_tint : get_player_tints_from_color(color)) {
-		if (!can_use_player_tint(player_tint, player)) {
-			return false;
-		}
-	}
-	return true;
-}
-
 static bool can_use_player_tint(u32 color_tint, u32 player) {
 	if (g_player_table[player].race < banned_race_tints.size()) {
 		for (u32 banned_tint : banned_race_tints[g_player_table[player].race]) {
@@ -75,15 +67,47 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 			}
 		}
 	}
+	//for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+	//	if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
+	//		if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
+	//			continue;
+	//		}
+	//		for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
+	//			if (color_tint == other_tint) {
+	//				return false;
+	//			}
+	//		}
+	//	}
+	//}
+	return true;
+}
+
+static u32 get_color_delta(u32 a, u32 b) {
+	RGBA a_rgba = init_palette->colors[tminimap_colors[a + ColorSetCount * *g_current_tileset]];
+	RGBA b_rgba = init_palette->colors[tminimap_colors[b + ColorSetCount * *g_current_tileset]];
+
+	u32 delta = 0;
+	delta += abs(a_rgba.r - b_rgba.r);
+	delta += abs(a_rgba.g - b_rgba.g);
+	delta += abs(a_rgba.b - b_rgba.b);
+	return delta;
+}
+
+static bool can_use_player_color(u32 color, u32 player) {
+	for (u32 player_tint : get_player_tints_from_color(color)) {
+		if (!can_use_player_tint(player_tint, player)) {
+			return false;
+		}
+	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 		if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
 			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
 				continue;
 			}
-			for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
-				if (color_tint == other_tint) {
-					return false;
-				}
+			u32 delta = get_color_delta(color, player_color_list[other_player]);
+			u32 threshold = g_player_table[player].race == g_player_table[other_player].race ? 192 : 128;
+			if (delta < threshold) {
+				return false;
 			}
 		}
 	}
@@ -138,11 +162,20 @@ static void randomize_player_color(u32 player) {
 			return;
 		}
 	}
-	u32 tint = get_random_tint();
-	while (!can_use_player_tint(tint, player)) {
-		tint = get_random_tint();
-	}
-	set_player_color(player, get_random_color_from_tint(tint));
+	u32 color = 0;
+	u32 color_attempts = 0;
+	do {
+		u32 tint = 0;
+		u32 tint_attempts = 0;
+		do {
+			tint = get_random_tint();
+			tint_attempts += 1;
+		} while (!can_use_player_tint(tint, player) && tint_attempts < 100);
+
+		color = get_random_color_from_tint(tint);
+		color_attempts += 1;
+	} while (!can_use_player_color(color, player) && color_attempts < 100);
+	set_player_color(player, color);
 }
 
 static void match_color_of(u32 player) {
@@ -166,8 +199,9 @@ void set_player_color(u32 player, u32 color) {
 	has_custom_color[player] = true;
 	player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
+	g_player_scorescreen_colors[player] = color;
 	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * PLAYABLE_PLAYER_COUNT + i];
+		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * ColorSetSize + i];
 	}
 }
 

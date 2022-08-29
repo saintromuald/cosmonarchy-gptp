@@ -7,7 +7,7 @@
 
 namespace hooks
 {
-	// Unit is a transport (overlord, shuttle, dropship)
+	// Unit is a transport
 	// This is the initial pickup order
 	void orders_pickup1(Unit* unit)
 	{
@@ -70,7 +70,7 @@ namespace hooks
 			}
 		}
 		else
-		{ // 004E73F4
+		{
 			if (scbw::can_be_entered_by(unit, unitToLoad))
 			{
 				unitToLoad->order_to(OrderId::EnterTransport, unit);
@@ -79,7 +79,7 @@ namespace hooks
 		}
 	}
 
-	// Unit is a transport (overlord,shuttle,dropship)
+	// Unit is a transport
 	// This is used after orders_pickup1
 	void orders_pickup2(Unit* unit)
 	{
@@ -222,7 +222,6 @@ namespace hooks
 									bStopLoop = true;
 								}
 							}
-							// 004E78BC
 							if (!bStopAll)
 							{
 								index++;
@@ -240,8 +239,8 @@ namespace hooks
 		}
 	}
 
-	// Unit is a unit to pick up by transport
-	// COULD NOT BE TESTED (tried bunker and all and nothing called this function)
+	// Unit is a unit to be picked up by transport
+	// Breaks AI transport usage! -Pr0nogo
 	void orders_pickup4_0(Unit* unit)
 	{
 		scbw::print("hello");
@@ -419,11 +418,11 @@ namespace hooks
 		*/
 	}
 
-	// unit is a unit aiming to enter a transport
+	// Unit is a unit trying to enter a transport
 	void orders_enter_transport(Unit* unit)
 	{
 		Unit* target = unit->order_target.unit;
-		if	 (target != nullptr
+		if	 (target
 		&&	!(target->status & UnitStatus::IsHallucination)
 		&&	  units_dat::space_provided[target->id] != 0
 		&&	  scbw::can_be_entered_by(target, unit))
@@ -597,7 +596,7 @@ namespace hooks
 					}
 				}
 				else
-				{ // 004E823A
+				{
 					unit->user_action_flags |= 1;
 					unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, true);
 					prepare_for_next_order(unit);
@@ -607,29 +606,36 @@ namespace hooks
 	}
 
 	bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
-		if (!(transport->status & UnitStatus::Completed)) {
+		if (!(transport->status & UnitStatus::Completed))
+		{
 			return 0;
 		}
-		if (transport->is_frozen()) {
+		if (transport->is_frozen())
+		{
 			return 0;
 		}
-		if (!(unit->status & UnitStatus::Completed)) {
+		if (!(unit->status & UnitStatus::Completed))
+		{
 			return 0;
 		}
-		if (unit->status & UnitStatus::Burrowed) {
+		if (unit->status & UnitStatus::Burrowed)
+		{
 			return 0;
 		}
-		if (!scbw::is_allied_to(unit->player, transport->player)) {
+		if (!scbw::is_allied_to(unit->player, transport->player))
+		{
 			return 0;
 		}
-		if (scbw::transport_is_full(transport)) {
+		if (scbw::transport_is_full(transport))
+		{
 			return 0;
 		}
 
 		u32 space_provided = units_dat::space_provided[transport->id];
 		s32 space_required = 0;
 		Unit* loaded_unit;
-		for (u32 index = 0; index < space_provided; ++index) {
+		for (u32 index = 0; index < space_provided; ++index)
+		{
 			loaded_unit = helper::get_loaded_unit_from_index(transport, index);
 			if (loaded_unit) {
 				space_required += units_dat::space_required[loaded_unit->id];

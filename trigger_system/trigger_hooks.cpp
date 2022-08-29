@@ -2,6 +2,7 @@
 #include "trigger_system.h"
 #include "trigger_sound.h"
 #include "hook_tools.h"
+#include "hooks/limits/sfx_extender.h"
 
 // HOOKS \\
 
@@ -73,6 +74,93 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 	}
 }
 
+// Hooked to extend sound channels. -Pr0nogo
+s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
+	if (!g_direct_sound_interface->lpVtbl || !g_options_list->sfx) {
+		return false;
+	}
+	
+	if (SFXDAT_SoundFile[sound_id]) {
+		char buffer[256] = {};
+		snprintf(buffer, 256, "sound\\%s", SFXDAT_SoundFile[sound_id]);
+		Sound* sound = get_sound(buffer);
+		if (sound) {
+			u32 flags = SFXDAT_Flags[sound_id];
+			if (flags & DatSoundFlags_OneAtATime) {
+				DWORD status = 0;
+				if (sound->ds_buffer) {
+					sound->ds_buffer->GetStatus(&status);
+					if (status == DSBSTATUS_PLAYING) {
+						return false;
+					}
+				}
+			}
+
+			if (flags & DatSoundFlags_UnitResponse && unit) {
+				for (u32 i = 0; i < MaxDupChannels; ++i) {
+					DupChannel* dup_channel = &dup_channels[i];
+					if (!dup_channels[i].ds_buffer) {
+						continue;
+					}
+					if (dup_channels[i].unit_id != unit->id) {
+						continue;
+					}
+					DWORD status = 0;
+					dup_channels[i].ds_buffer->GetStatus(&status);
+					if (status == DSBSTATUS_PLAYING) {
+						return false;
+					}
+				}
+			}
+
+			s32 unit_id = -1;
+			if (flags & DatSoundFlags_UnitResponse && unit) {
+				unit_id = unit->id;
+			}
+			if (play_sound(sound, volume, pan, unit_id)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+// Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
+void free_sound_buffer(u32 sound_id) {
+	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
+	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
+	if (!ds_buffer) {
+		return;
+	}
+	for (u32 i = 0; i < 8; ++i) {
+		if (g_sound_channels[i].ds_buffer == ds_buffer) {
+			g_sound_channels[i].ds_buffer = 0;
+		}
+	}
+	ds_buffer->Release();
+	sound_data->ds_buffer = 0;
+	if (SFXDAT_Flags[sound_id] & DatSoundFlags_PermanentlyLoaded) {
+		return;
+	}
+	*g_current_sound_memory -= sound_data->wav_data_size;
+}
+
+// Hooked to stop endless tick sound in scoreboard and other issues
+void stop_sounds_partial() {
+	for (u32 i = 0; i < loaded_sounds_count; ++i) {
+		Sound* sound = &loaded_sounds[i];
+		if (sound->ds_buffer) {
+			sound->ds_buffer->Stop();
+		}
+	}
+	for (u32 i = 0; i < MaxDupChannels; ++i) {
+		DupChannel* dup_channel = &dup_channels[i];
+		if (dup_channel->ds_buffer) {
+			dup_channel->ds_buffer->Stop();
+		}
+	}
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -105,7 +193,96 @@ void __declspec(naked) iscript_play_sound_wrapper() { // 004D6610
 	}
 }
 
+void __declspec(naked) play_transmission_from_location_wrapper() { // 004BBFD0
+	static s32 result;
+	static u32 sound_id;
+	static s32 volume;
+	static s32 pan;
+	static Unit* unit;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV volume, EAX
+		MOV EAX, [EBP + 0x0C]
+		MOV pan, EAX
+		MOV EAX, [EBP + 0x10]
+		MOV unit, EAX
+		POP EAX
+		MOV sound_id, EAX
+		PUSHAD
+	}
+	result = play_transmission_from_location(sound_id, volume, pan, unit);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0xC
+	}
+}
+
+void __declspec(naked) free_sound_buffer_wrapper() { // 004BB8E0
+	static u32 sound_id;
+	__asm {
+		MOV sound_id, EBX
+		PUSHAD
+	}
+	free_sound_buffer(sound_id);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
+void __declspec(naked) stop_sounds_partial_wrapper() { // 004BBF5C
+	static const u32 func_address = 0x004015F0;
+	__asm {
+		PUSHAD
+	}
+	stop_sounds_partial();
+	__asm {
+		POPAD
+		JMP func_address
+	}
+}
+
+void __declspec(naked) pylon_placement_wrapper() { // 00446775
+	static const u32 jz_address = 0x0044677B;
+	static const u32 jmp_address = 0x00446800;
+	static Unit* disabled_unit;
+	static u32 player;
+	static s32* region_id;
+	__asm {
+		MOV disabled_unit, EAX
+		MOV player, ECX
+		PUSH EAX
+		LEA EAX, [EBP-0x14]
+		MOV region_id, EAX
+		POP EAX
+		PUSHAD
+	}
+	if (disabled_unit) {
+		__asm {
+			POPAD
+			JMP jz_address
+		}
+	}
+	if (g_aiscript_controller[player]->ai_flags.spread_creep) {
+		helper::get_bunker_placement_position(player, region_id);
+	}
+	__asm {
+		POPAD
+		JMP jmp_address
+	}
+}
+
 void inject_trigger_system_hooks() {
-	jump_patch(execute_trigger_conditions_wrapper,	0x00489200, 1);
-	jump_patch(iscript_play_sound_wrapper,			0x004D6610, 2);
+	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
+	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
+	jump_patch(play_transmission_from_location_wrapper,		0x004BBFD0, 0);
+	call_patch(stop_sounds_partial_wrapper,					0x004BBF5C, 0);
+//	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
+//	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 }

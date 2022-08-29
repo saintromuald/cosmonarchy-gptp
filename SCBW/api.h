@@ -8,8 +8,25 @@
 #include <math.h>
 #include <unit_search.h>
 
+#include "utility.h"
+
 #define NOMINMAX
 #include <windows.h>
+
+// Text colors
+#define BWTC_RESET		"\002"
+#define BWTC_TEAL		"\017"
+#define BWTC_GREEN		"\007"
+#define BWTC_YELLOW		"\003"
+#define BWTC_ORANGE		"\021"
+#define BWTC_RED		"\006"
+#define BWTC_WHITE		"\004"
+
+enum CorpseConsume {
+	CorpseConsume_None,
+	CorpseConsume_Parasite,
+	CorpseConsume_Revive,
+};
 
 namespace scbw
 {
@@ -278,7 +295,7 @@ namespace scbw
 
 	inline bool is_vision_allied_to(u8 playerA, u8 playerB)
 	{
-		return 0 != player_vision[playerA].flags[playerB];
+		return player_vision->flags[playerA] & (1 << playerB);
 	}
 
 	/// Checks whether the @p unit is recognized by @p player as an enemy.
@@ -298,11 +315,14 @@ namespace scbw
 	/// the @p player, using @p raceId to determine the appropriate race to use.
 	/// This is affected by the "Food For Thought" cheat flag.
 	s32 get_supply_remaining(u8 player, u8 raceId);
-	u32 get_flingy_data(u32 entry, u32 index);
 
+	/*
+	u32 get_flingy_data(u32 entry, u32 index);
 	u32 get_sprite_data(u32 entry, u32 index);
 	u32 get_image_data(u32 entry, u32 index);
 	u32 get_unit_data(u32 entry, u32 index);
+	*/
+
 	//Unit* get_generic_unit(Unit* unit, u32 id);
 	u32 get_generic_rust_value(Unit* u, u32 val);
 	//u32 get_generic_value(Unit* u, u32 val);
@@ -459,6 +479,10 @@ namespace scbw
 	/// NOTE: The RNG has a maximum distance of 0 - 32767.
 	u32 rand_between(u32 min, u32 max);
 
+	// Similar to above, but isn't synced, meaning it should be used for local only code
+	// Uses C stdlib rand
+	u32 rand_between_local(u32 min, u32 max);
+
 	/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
 	/// identical to the function used internally by StarCraft, and is guaranteed to
 	/// generate the same sequence in a replay.
@@ -558,7 +582,7 @@ namespace scbw
 	bool unit_is_ranged_attacker(Unit* unit);
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
-	void apply_new_hallucination(Unit* unit, u8 player, u32 time);
+	void apply_hallucinating(Unit* unit, u8 player, u32 time);
 	bool weapon_pierces_targets(u16 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
@@ -598,6 +622,7 @@ namespace scbw
 	void blissful_embrace(Unit* target, u32 player);
 	AiScript* run_ai(u32 player, Box32 area, s32 name);
 	AiScript* run_ai(u32 player, Point16 pos, s32 name);
+	AiScript* run_default_ai(u32 player, Point16 pos);
 	b32 unit_id_is_tech(u32 unit_id);
 	b32 unit_id_is_tech_tier_structure(u32 unit_id);
 	void give_ai_ex(Unit* unit);
@@ -611,4 +636,9 @@ namespace scbw
 	void dump_sync_data();
 	u32 get_zerg_regression(u32 unit_id);
 	bool unit_is_allied_or_detected(Unit* unit, u32 player);
+	u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
+	bool order_id_is_aggressive(u32 order_id);
+	CorpseConsume unit_get_corpse_consume(Unit* unit);
+	bool ai_unit_id_can_flee_quarter(u32 unit_id);
+	bool ai_unit_id_can_flee_third(u32 unit_id);
 }

@@ -6,8 +6,17 @@
 #include <Windows.h>
 #include "config.h"
 #include "trigger_system/trigger_objectives.h"
+#include "hooks/audiovisuals/sfxhooks.h"
+#include "hooks/game_hooks.h"
 
-u64 total_client_actions;
+#define ActionSampleTime 10
+#define MaxActions 2000
+struct ClientAction {
+	u32 time;
+};
+u32 total_client_actions;
+u32 client_actions_count;
+ClientAction client_actions[MaxActions];
 
 s32* const fonts = (s32*)0x006CE0F4;
 char* const printXYAlignment = (char*)0x006CE110;
@@ -48,10 +57,22 @@ namespace hooks {
 				return;
 		}
 		total_client_actions++;
+		client_actions[client_actions_count++].time = *g_elapsed_time_frames;
 	}
 
-	void clear_actions() { // Called on map start
+	void init_actions() {
 		total_client_actions = 0;
+		client_actions_count = 0;
+		memset(client_actions, 0, sizeof(client_actions));
+	}
+
+	void update_actions() {
+		for (u32 i = 0; i < client_actions_count; ++i) {
+			s32 delta = *g_elapsed_time_frames - client_actions[i].time;
+			if (delta >= ActionSampleTime * 24) {
+				client_actions[i--] = client_actions[--client_actions_count];
+			}
+		}
 	}
 
 	void draw_ui_features() {
@@ -67,11 +88,15 @@ namespace hooks {
 		}
 
 		if (config.show_apm) {
-			u32 apm = total_client_actions / (*g_elapsed_time_frames / 24.0 / 60.0);
-
 			char buffer[32] = {};
+
+			u32 apm = client_actions_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
 			draw_ui_text(buffer, 7);
+
+			//u32 total_apm = total_client_actions / (*g_elapsed_time_frames / 24.0 / 60.0);
+			//sprintf_s(buffer, "AVG APM: %u", total_apm);
+			//draw_ui_text(buffer, 7);
 		}
 
 		for (u32 i = 0; i < objectives_count; ++i) {
@@ -296,7 +321,7 @@ LABEL_15:
 				{
 					helper::game_talking_portrait(-1, trigger_time, trigger_var->type, -1);
 				}
-				if (options_list->flags & 0x400 || trigger_var->flags & 4)
+				if (g_options_list->flags & 0x400 || trigger_var->flags & 4)
 				{
 					char* string = helper::get_chk_string(trigger_var->text_string);
 					if (trigger_time > helper::get_text_display_time(string))
@@ -406,11 +431,11 @@ LABEL_15:
 					Sprite* sprite = thingy->sprite;
 
 					char color = g_palette_index_reference[25];
-					if (sprite->sprite_id != SpriteId::VespeneRidge
-					&&	sprite->sprite_id != SpriteId::VespeneGeyser
-					&&  sprite->sprite_id != SpriteId::MineralFieldType1
-					&&  sprite->sprite_id != SpriteId::MineralFieldType2
-					&&  sprite->sprite_id != SpriteId::MineralFieldType3) {
+					if (sprite->id != SpriteId::VespeneRidge
+					&&	sprite->id != SpriteId::VespeneGeyser
+					&&  sprite->id != SpriteId::MineralFieldType1
+					&&  sprite->id != SpriteId::MineralFieldType2
+					&&  sprite->id != SpriteId::MineralFieldType3) {
 						if (*g_minimap_state) {
 							if (scbw::is_allied_to(player, sprite->player)) {
 								color = g_palette_index_reference[17];
@@ -429,5 +454,136 @@ LABEL_15:
 			}
 		}
 		*g_current_surface = surface;
+	}
+
+	enum CursorType {
+		CursorType_Normal	        = 0,
+		CursorType_TargetingNeutral = 2,
+		CursorType_TargetingEnemy   = 3,
+		CursorType_TargetingAlly    = 4,
+		CursorType_TargetingNoUnit  = 5,
+		CursorType_HoveringAlly     = 6,
+		CursorType_HoveringEnemy    = 7,
+		CursorType_HoveringNeutral  = 8,
+		CursorType_DragSelect       = 9,
+	};
+
+	// Hooked for Veeq7's transport UI. -Pr0nogo
+	u32 get_cursor_type() { // 004D1460
+		if (transport_ui_unit) {
+			if (transport_ui_unit->player == 11) {
+				return CursorType_HoveringNeutral;
+			}
+			if (helper::unit_is_enemy(transport_ui_unit)) {
+				return CursorType_HoveringEnemy;
+			}
+			return CursorType_HoveringAlly;
+		}
+		if (PtInRect((const RECT*)&g_minimap_rect, *(POINT*)g_mouse)) {
+			return (u16)*g_minimap_cursor;
+		}
+		if (helper::is_outside_of_game_screen(g_mouse->x, g_mouse->y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse)) {
+			return CursorType_Normal;
+		}
+		if (*g_is_drag_selecting) {
+			return CursorType_DragSelect;
+		}
+		if (*g_is_placing_building) {
+			return CursorType_Normal;
+		}
+		Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + *g_move_to_x, *g_move_to_y + g_mouse->y);
+		if (*g_is_targeting) {
+			if (!unit_at_point) {
+				return CursorType_TargetingNoUnit;
+			}
+			if (unit_at_point->player == 11) {
+				return CursorType_TargetingNeutral;
+			}
+			if (helper::unit_is_enemy(unit_at_point)) {
+				return CursorType_TargetingEnemy;
+			}
+			return CursorType_TargetingAlly;
+		}
+		if (!unit_at_point) {
+			return CursorType_Normal;
+		}
+		if (unit_at_point->player == 11) {
+			return CursorType_HoveringNeutral;
+		}
+		if (helper::unit_is_enemy(unit_at_point)) {
+			return CursorType_HoveringEnemy;
+		}
+		return CursorType_HoveringAlly;
+	}
+
+	// Hooked to allow for aggressive unit responses. -Pr0nogo
+	void cmdact_right_click_minimap(DialogEvent* dlg_event) // 004563A0
+	{
+		if (g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id)
+		{
+			u32 selection = 0;
+			while (1)
+			{
+				Unit* selected = g_client_selection_group->unit[selection];
+				if (selected)
+				{
+					if (helper::accepts_right_click_commands(selected))
+					{
+						break;
+					}
+				}
+				if (++selection >= SelectionCap)
+				{
+					return;
+				}
+			}
+			if (selection < SelectionCap)
+			{
+				u32 selection_2 = 0;
+				while (1)
+				{
+					Unit* selected_2 = g_client_selection_group->unit[selection_2];
+					if (selected_2)
+					{
+						if (helper::can_move(selected_2))
+						{
+							break;
+						}
+					}
+					if (++selection_2 >= SelectionCap)
+					{
+						return;
+					}
+				}
+				if (selection_2 < SelectionCap)
+				{
+					u32 x_pos = dlg_event->current.x;
+					u32 y_pos = dlg_event->current.y;
+					helper::get_minimap_cursor_pos((u16*)&x_pos, (u16*)&y_pos);
+					u16 mouse_pos_x = x_pos;
+					u16 mouse_pos_y = y_pos;
+					u8 command[10] = {};
+					command[0] = 20;
+					*(u16*)&command[1] = x_pos;
+					*(u16*)&command[3] = y_pos;
+					*(u16*)&command[5] = 0;
+					*(u16*)&command[7] = 228;
+					command[9] = g_is_keycode_used[16];
+					queue_game_command(command, 10);
+					hooks::play_yes_unit_response(*g_active_portrait_unit);
+					helper::ground_attack_init(mouse_pos_y, mouse_pos_x);
+				}
+			}
+		}
+	}
+
+	bool is_newline(char c) {
+		return c == '\r' || c == '\n';
+	}
+
+	void skip_newlines(char** c) {
+		while (is_newline(**c)) {
+			*c += 1;
+		}
 	}
 }

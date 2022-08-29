@@ -139,11 +139,11 @@ namespace hooks {
 			} else if (count_burrowables != 0 && count_zergs == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
 			} else if (count_hatches == *g_client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHatchery;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHachirosk;
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranWatchdog;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ProtossPhotonCannon;
 			} else if (count_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
 			}
@@ -298,7 +298,7 @@ namespace hooks {
 		if (hooks::quickcasting_signal) {
 			hooks::quickcasting_signal = false;
 			*orders_buttonset = hooks::quickcasting_command_card;
-			*minimap_cursor = 0;
+			*g_minimap_cursor = 0;
 		}
 
 		BinDlg** const BUTTONSET_DIALOG               = (BinDlg**)0x0068C148;
@@ -641,7 +641,7 @@ namespace hooks {
 					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
 						current_button_state = Button_State::Enabled;
 					}
-					if (unit->id == UnitId::ZergCreepColony && current_button->icon_id == IconId::SetRallyPoint) {
+					if (unit->id == UnitId::ZergCagrantColony && current_button->icon_id == IconId::SetRallyPoint) {
 						current_button_state = Button_State::Enabled;
 					}
 
@@ -1092,6 +1092,11 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::TerranClaymore &&  // Claymore Prolonged Arms passive 
+								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)
+							{
+								current_button_state = Button_State::Enabled;
+							}
 							else if (unit->id == UnitId::TerranClaymore &&  // Claymore Kelvin Munitions passive 
 								current_button->icon_id == IconId::FusionCutterHarvest)
 							{
@@ -1112,10 +1117,25 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::TerranSentinel &&  // Sentinel Prolonged Arms passive
+								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)
+							{
+								if (unit->status & UnitStatus::GroundedBuilding) {
+									current_button_state = Button_State::Enabled;
+								}
+								else {
+									current_button_state = Button_State::Invisible;
+								}
+							}
 							else if (unit->id == UnitId::TerranIonCannon &&  // Ion Cannon Ion Field passive 
 								current_button->icon_id == IconId::OpticalFlare)
 							{
-								current_button_state = Button_State::Enabled;
+								if (unit->status & UnitStatus::GroundedBuilding) {
+									current_button_state = Button_State::Enabled;
+								}
+								else {
+									current_button_state = Button_State::Invisible;
+								}
 							}
 
 							// PROTOSS \\
@@ -1437,19 +1457,19 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if ((unit->id == UnitId::ZergLair				// Lair, Hive, Sire Larval Gestation passive
-								|| unit->id == UnitId::ZergHive
-								|| unit->id == UnitId::ZergSire) &&
+							else if ((unit->id == UnitId::ZergCaphrolosk				// Lair, Hive, Sire Larval Gestation passive
+								|| unit->id == UnitId::ZergGathtelosk
+								|| unit->id == UnitId::ZergSibraelosk) &&
 								current_button->icon_id == IconId::SuicideScourge)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergSire &&			// Sire Ectomorphic Accelerant passive
+							else if (unit->id == UnitId::ZergSibraelosk &&			// Sire Ectomorphic Accelerant passive
 								current_button->icon_id == IconId::ZergAdvancedBuildings)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergLarvalColony &&	// Larval Colony Larval Gestation passive
+							else if (unit->id == UnitId::ZergLarvoskColony &&	// Larval Colony Larval Gestation passive
 								current_button->icon_id == IconId::MetasynapticNode)
 							{
 								current_button_state = Button_State::Enabled;
@@ -1583,8 +1603,8 @@ namespace hooks {
 							stack_placeholder.unknown_value_1 = 0x00000006;
 							stack_placeholder.unknown_value_2 = 0x00000000;
 							stack_placeholder.unknown_value_3 = 0x000E;
-							stack_placeholder.mouseY = mouse->y;
-							stack_placeholder.mouseX = mouse->x;
+							stack_placeholder.mouseY = g_mouse->y;
+							stack_placeholder.mouseX = g_mouse->x;
 							stack_placeholder.buttonState = current_button_state;
 							stack_placeholder.buttonset = current_buttonset;
 							helper::fxn_interact(current_dialog, (u32)&stack_placeholder);

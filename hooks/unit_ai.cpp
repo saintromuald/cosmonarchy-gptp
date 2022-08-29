@@ -67,7 +67,7 @@ namespace hooks
 		}
 
 		if (player_region[region_id].state == RegionState::Nothing) {
-			helper::ai_set_region_type(RegionState::ContinueAttackHere, region);
+			helper::ai_assign_military_to_region(RegionState::ContinueAttackHere, region);
 		}
 		helper::add_military_ai(region, unit, true);
 	}
@@ -96,8 +96,8 @@ namespace hooks
 				AiTown* town = unit_ai->town;
 				if (town && unit_ai->type == AiType::Building) { // type check is new
 					helper::delete_building_ai((BuildingAi*)unit_ai, &town->free_buildings); // moved within nullcheck for sanity
-					if (town->building_SCV == unit) {
-						town->building_SCV = 0;
+					if (town->building_scv == unit) {
+						town->building_scv = 0;
 					}
 					if (town->main_building == unit) {
 						town->main_building = 0;
@@ -133,9 +133,9 @@ namespace hooks
 							AiTown* newUnitTown = newUnitAi->town;
 							helper::delete_building_ai(newUnitAi, &newUnitTown->free_buildings);
 							if (newUnitTown) {
-								if (newUnit == newUnitTown->building_SCV)
+								if (newUnit == newUnitTown->building_scv)
 								{
-									newUnitTown->building_SCV = 0;
+									newUnitTown->building_scv = 0;
 								}
 								if (newUnit == newUnitTown->main_building)
 								{
@@ -270,20 +270,20 @@ namespace hooks
 				ai->trainQueueTypes[4] = 0;
 
 				unit->unit_ai = (UnitAi*)ai;
-				if (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire) {
+				if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk || unit->id == UnitId::ZergSibraelosk) {
 					if (unit->status & UnitStatus::Completed) {
 						unit->order_computer(OrderId::ComputerAI);
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}
 				}
 
-				if (!(g_aiscript_controller[town->player]->AI_Flags.is_use_map_settings)
+				if (!(g_aiscript_controller[town->player]->ai_flags.is_use_map_settings)
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
 				&&	  unit->id != UnitId::TerranBunker
-				&&	  unit->id != UnitId::ZergCreepColony
-				&&	  unit->id != UnitId::ZergSporeColony
-				&&	  unit->id != UnitId::ZergSunkenColony
+				&&	  unit->id != UnitId::ZergCagrantColony
+				&&	  unit->id != UnitId::ZergSpraithColony
+				&&	  unit->id != UnitId::ZergSurkithColony
 				&&	  unit->id != UnitId::ProtossPylon
 				&&	  unit->id != UnitId::ProtossPhotonCannon)
 				{
@@ -299,7 +299,7 @@ namespace hooks
 					town->gas_buildings[2] = 0;
 				}
 
-				u32 town_hall_id = UnitId::ZergHatchery;
+				u32 town_hall_id = UnitId::ZergHachirosk;
 				if (g_player_table[unit->player].race == RaceId::Terran) {
 					town_hall_id = UnitId::TerranCommandCenter;
 				}
@@ -454,9 +454,9 @@ namespace hooks
 						helper::delete_building_ai(removeBuilding, &removeBuildingTown->free_buildings);
 						if (removeBuildingTown)
 						{
-							if (result == removeBuildingTown->building_SCV)
+							if (result == removeBuildingTown->building_scv)
 							{
-								removeBuildingTown->building_SCV = 0;
+								removeBuildingTown->building_scv = 0;
 							}
 							if (result == removeBuildingTown->main_building)
 							{
@@ -643,9 +643,9 @@ namespace hooks
 
 			if (town)
 			{
-				if (unit == town->building_SCV)
+				if (unit == town->building_scv)
 				{
-					town->building_SCV = nullptr;
+					town->building_scv = nullptr;
 				}
 				if (unit == town->main_building)
 				{
@@ -698,9 +698,9 @@ namespace hooks
 						delete_building_ai(newBuildingAi, newUnitTown->free_buildings);
 						if (newUnitTown)
 						{
-							if (newUnit == newUnitTown->building_SCV)
+							if (newUnit == newUnitTown->building_scv)
 							{
-								newUnitTown->building_SCV = nullptr;
+								newUnitTown->building_scv = nullptr;
 							}
 							if (newUnit == newUnitTown->main_building)
 							{
@@ -824,11 +824,11 @@ namespace hooks
 							if (unit_ai->type != 4 ||
 								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
 								unit_region_type != 2 ||
-								g_aiscript_controller[ai_region->player]->AI_Flags.is_use_map_settings)
+								g_aiscript_controller[ai_region->player]->ai_flags.is_use_map_settings)
 							{
 								if ( (!(unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
-									&& (g_aiscript_controller[unit->player]->AI_Flags.is_use_map_settings
+									&& (g_aiscript_controller[unit->player]->ai_flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defense_priority_add < a2 )
@@ -842,7 +842,7 @@ namespace hooks
 					}
 					goto next;
 				}
-				if (g_aiscript_controller[ai_region_1->player]->AI_Flags.is_use_map_settings)
+				if (g_aiscript_controller[ai_region_1->player]->ai_flags.is_use_map_settings)
 				{
 					if (ai_region_1->air_target == (Unit*)7)
 					{
@@ -881,5 +881,42 @@ namespace hooks
 		}
 		result = result->link.next;
 		return result;
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	bool is_valid_for(u32 unit_id, Unit* unit, u32 must_be_active) // 0043B6D0
+	{
+		if (!unit->sprite)
+		{
+			return 0;
+		}
+		if (!unit->main_order_id)
+		{
+			return 0;
+		}
+		u32 arg_unit_id = unit->id;
+		if (units_dat::base_property[arg_unit_id] & UnitProperty::Subunit
+		|| !unit->unit_ai
+		||  arg_unit_id != unit_id && (unit_id != UnitId::TerranPhalanxTankMode
+		||  arg_unit_id != UnitId::TerranPhalanxSiegeMode)
+		||  helper::unit_finished_summon(unit)
+		||  helper::is_threat(0, unit)
+		||  must_be_active && unit->status & UnitStatus::InBuilding)
+		{
+			return 0;
+		}
+		if (arg_unit_id)
+		{
+			if (arg_unit_id != UnitId::TerranHarakan && arg_unit_id != UnitId::ZergZethrokor && arg_unit_id != UnitId::ZergHydralisk && arg_unit_id != UnitId::ProtossZealot && arg_unit_id != UnitId::ProtossDracadin)
+			{
+				u32 total_life = helper::get_total_hp_plus_shields(unit) / 2;
+				return helper::get_current_hp_plus_shields(unit) >= total_life;
+			}
+		}
+		else if (unit->main_order_id == OrderId::EnterTransport)
+		{
+			return 0;
+		}
+		return 1;
 	}
 }

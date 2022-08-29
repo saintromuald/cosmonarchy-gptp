@@ -69,7 +69,7 @@ namespace helper {
 	void draw_supply_unit_info(BinDlg* dialog);						// 00427540
 
 	// For get_unit_name
-	const char* get_unit_name_stat_string(u16 unit_id); // 0047B090
+	const char* get_unit_name_stat_string(u16 unit_id);				// 0047B090
 
 	// For get_unit_strength
 	s32 get_current_hp_plus_shields(Unit* a1);
@@ -108,8 +108,8 @@ namespace helper {
 	// For modifyUnitShields
 	s32 SErrSetLastError(char a1);
 
-	// For compileHealthBar
-	void updateImageDrawData(Image* result);
+	// For compile_health_bar
+	void update_image_data_draw(Image* result);
 	void play_image_iscript(Image* img, u8 iscriptAnim);
 
 	// For AI_FindTransport
@@ -126,13 +126,13 @@ namespace helper {
 	VectorHead* vectorTransfer(char a1, char a2);
 	s32 dataTransfer06(s32 a1);
 
-	// For getRandYesSFX
-	s32 randGetSFXBetween(s32 soundIdMin, s32 soundIdMax);										// 0048E940
-	s16 get_region_id(s32 x, s32 y);															// 0049C9F0
+	// For get_random_yes_unit_response
+	u32 get_random_sfx_between(u32 min, u32 max);													// 0048E940
+	s16 get_region_id(s32 x, s32 y);																// 0049C9F0
 
 	// For ai_train_unit
 	char ai_training_worker(Unit* result, Unit* parent);											// 00435700
-	void ai_training_overlord(Unit* result, Unit* parent);										// 00435770
+	void ai_training_overlord(Unit* result, Unit* parent);											// 00435770
 	void ai_training_normal(Unit* result, Unit* parent);											// 00435DB0
 	void ai_order_to_destination(Unit* unit, s32 order_id, s32 x, s32 y);							// 0043D5D0
 	void ai_assign_region_to_slowest_unit(AiRegion* region);										// 00436F70
@@ -144,11 +144,11 @@ namespace helper {
 	void hide_unit(Unit* unit);
 
 	// For AI_TrainingBroodling
-	void ai_set_region_type(s32 regionType, AiRegion* region);
-	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);
+	void ai_assign_military_to_region(s32 region_type, AiRegion* region);							// 004390A0
+	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);						// 0043DA20
 
 	// For ai_training_worker
-	char add_worker_structure_ai(Unit* worker, AiTown* town);									// 00433DD0
+	char add_worker_structure_ai(Unit* worker, AiTown* town);										// 00433DD0
 
 	// For AI_AddUnitAI
 	BuildingAi* create_building_ai(BuildingAiArray** buildingAI);
@@ -171,8 +171,8 @@ namespace helper {
 	s32 ai_transport_action(Unit* unit);
 	s32 ai_ask_for_help(Unit* self, Unit* attacker, s32 onlyNearbyGuards);
 	s16 get_region_id_from_unit(Unit* unit);
-	s32 get_enemy_air_strength_in_region(u16 regionId, s32 player);
-	s32 get_enemy_strength_in_region(u16 regionId, s32 player, s32 includeAir);
+	s32 get_enemy_air_strength_in_region(u16 region_id, s32 player);
+	s32 get_enemy_strength_in_region(u16 region_id, s32 player, s32 includeAir);
 	bool unit_is_performing_unbreakable_code(Unit* unit);
 	bool ai_cast_spell_behavior(Unit* unit, bool isAggro);
 	s32 ai_flee(Unit* unit, Unit* enemy);
@@ -190,10 +190,10 @@ namespace helper {
 	void prepare_guard_ai(u16 y, u32 player, u16 unit_id, u16 x);
 
 	// For ai_send_suicide
-	bool is_threat(Unit* target, Unit* unit);														// 00476930
+	bool is_threat(Unit* target, Unit* unit);															// 00476930
 	void prepare_suicide(Unit* unit);																	// 0043CD40
 	u32 ai_attack_clear(s32 player);																	// 00439500
-	bool ai_attack_manager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly); // 0043ABB0
+	bool ai_attack_manager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly);	// 0043ABB0
 
 	// Attack extender
 
@@ -295,7 +295,7 @@ namespace helper {
 	//// building_morph
 	void refund_building_cost(u16 unit_id, u8 player);														// 002CE70
 	void update_building_ai(Unit* unit);																	// 0033FE0
-	bool is_valid_morph(u16 buildingId);																	// 005CC60
+	bool is_valid_building_morph(u16 buildingId);																	// 005CC60
 	void spread_initial_creep(u32 id, s32 x, s32 y);														// 005CE90
 	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 007D770
@@ -358,7 +358,7 @@ namespace helper {
 	void update_creep_disappearance_unit_id(u32 unit_id, u32 x, u32 y, b32 completed);												// 0047DE40
 	void place_building_proc();																										// 0048E6E0
 	void play_building_land_sound(Unit* unit);																						// 0048F5A0
-	void set_unit_movement_speed(Unit* unit, u32 newSpeed);																			// 004951C0
+	Unit* set_unit_movement_speed(Unit* unit, u32 speed);																			// 004951C0
 	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset);																		// 00498150
 	void create_landing_dust(Sprite* sprite);																						// 004997E0
 	void function_004C3B40(Unit* unit);																								// 004C3B40
@@ -371,13 +371,12 @@ namespace helper {
 	Unit* FindBestUnit(Box16* coords, u32 searchProc);																				// 004E8830
 
 	//// larva_creep_spawn
-	Unit* getUnitPointer();
 	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680
 	void ai_training_overlord(Unit* main_building, Unit* larva);																	// 00435770
 	void update_unit_strength(Unit* unit);																							// 0049FA40
 	u32 iterate_units_at_location_target_proc_larva_count(Unit* unit, Box16* coords);												// 004E8280
-	void function_004E8DA0(Unit* unit);																								// 004E8DA0
-	bool getLarvaSpawnPos(Unit* unit, Vector32* coords);																			// 004E8E10
+	void set_larva_order_state(Unit* unit);																							// 004E8DA0
+	bool get_larva_spawn_pos(Unit* unit, Vector32* coords);																			// 004E8E10
 
 	// TODO: move somewhere else?
 	// SC Variables and Buffers used in this file
@@ -448,14 +447,14 @@ namespace helper {
 	void drop_powerup(Unit* powerup);																								// 004F3B70
 
 	//// cast_order
-	u32 get_weapon_cooldown(Unit* unit, u8 weapon_id);																		// 00475DC0
+	u32 get_weapon_cooldown(Unit* unit, u8 weapon_id);																				// 00475DC0
 	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
 	u32 get_stat_txt_string(Unit* unit, u32 player, char* message);																	// 0048EF30
 	bool can_cast_spell(Unit* unit);																								// 00492140
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
 
 	// For spell_order
-	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7);									// 00492020
+	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7);												// 00492020
 	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																		// 00492450
 
 	// For canTargetSpell
@@ -507,19 +506,19 @@ namespace helper {
 	// for is_unit_target_out_of_max_range
 	s32 get_unit_max_weapon_range(Unit* a1, unsigned __int8 a2);
 
-	// for isReadyToAttack
+	// for is_ready_to_attack
 	u32 get_distance_to_unit(Unit* a1, Unit* a2);
 	u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3);
 	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
-	// for canCastOrderedSpellNow
+	// for can_cast_ordered_spell_now
 	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target);
 	s32 getFlingyHaltDistance(s32 a1);
 
-	// for ordersWatchTarget
+	// for orders_watch_target
 	void unknown_orders_func(s32 a1, __int16 a2, __int16 a3);
 
-	// for ordersStayInRange
+	// for orders_stay_in_range
 	void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
 	s32 orders_hold_position_suicidal(Unit* a1);
 	s32 get_direction_from_points(s32 a1, s32 a2, s32 a3, s32 a4);
@@ -528,7 +527,7 @@ namespace helper {
 	void stimpack_proc(Unit* unit);																									// 004554A0
 
 	// for generic_right_click_unit_proc_2
-	s32 is_order_valid(char a1, Unit* a2, s32 a3, Unit* a4, s32 a5);																// 00474D90
+	s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error);											// 00474D90
 	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for cmdrecv_hold_position
@@ -576,7 +575,7 @@ namespace helper {
 	void update_dialog(BinDlg* dialog);																								// 0041C400
 
 	//// bunker_hooks
-	Unit* find_random_attack_target(Unit* unit);																						// 00442FC0
+	Unit* find_random_attack_target(Unit* unit);																					// 00442FC0
 	b32 attack_apply_cooldown(Unit* unit);																							// 00478B40
 	void set_image_direction(Image* image, s8 direction);																			// 004D5F80
 
@@ -584,8 +583,8 @@ namespace helper {
 	void apply_spores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
-	Unit* createUnitAtPos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
-	Flingy* createFlingy(u32 flingy_id, u32 player, u32 x, u32 y);																// 00496460
+	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																	// 004CD360
+	Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph
 	u8 set_archon_pathing(Unit* unit);																								// 0046A820
@@ -614,17 +613,17 @@ namespace helper {
 	//// weapon_effect
 	bool is_unit_distance_within(Unit* target, Bullet* bullet, u32 radius);
 	void do_weapon_hit(Unit* target, Unit* attacker, u8 dmgDivisor);
-	void AI_unit_was_hit(u32 main_target_reaction, u32 dont_call_help, Unit* attacker, Unit* target);
+	void ai_unit_was_hit(Unit* self, Unit* attacker, u32 main_target_reactions, u32 dont_call_help);								// 0043F320
 
 	// for air_splash
-	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));														// 004E8830
-	s32 splash_func(Bullet* bullet, Unit* unit);																						// 0048B570
+	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));													// 004E8830
+	s32 splash_func(Bullet* bullet, Unit* unit);																					// 0048B570
 
 	// For iterateLoadedUnits
 	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
 
 	//// mindcontrol_spell
-	void mind_control_hit(Unit* attacker, Unit* target);																				// 004F6910
+	void mind_control_hit(Unit* attacker, Unit* target);																			// 004F6910
 
 	//// weapon_damage
 	u16 get_unit_strength(Unit* unit, bool useGroundStrength);
@@ -634,35 +633,35 @@ namespace helper {
 	u32 get_corrosive_spores_image(Unit* unit);																						// 004F41F0
 
 	//// recharge_shields
-	void insert_first_order(Unit* unit, u8 order_id);																					// 004749D0
+	void insert_first_order(Unit* unit, u8 order_id);																				// 004749D0
 	u8 has_overlay(Unit* unit);																										// 0047B720
 	bool is_hangar_unit(Unit* unit);
 
 	//// stopholdpos_orders
-	Unit* acquire_medic_heal_target(Unit* medic);																						// 004422A0
-	u32 do_medic_heal(Unit* unit, Unit* target);																						// 00463C40
+	Unit* acquire_medic_heal_target(Unit* medic);																					// 004422A0
+	u32 do_medic_heal(Unit* unit, Unit* target);																					// 00463C40
 	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
 	b32 attack_recent_attacker(Unit* unit);																							// 004770E0
 
 	//// medic_orders
-	b32 ai_order_heal(Unit* unit, Unit* target);																						// 00463530
-	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																		// 004748E0
-	void update_target_something(Unit* unit, Unit* target, u8 order_id);																		// 00474940
+	b32 ai_order_heal(Unit* unit, Unit* target);																					// 00463530
+	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																	// 004748E0
+	void update_target_something(Unit* unit, Unit* target, u8 order_id);															// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id);														// 00474C30
-	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
+	void unit_order_move_to_target_unit(Unit* unit, Unit* target);																		// 00479FE0
 
 	//// load_unload_orders
-	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																			// 00438E70
+	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																		// 00438E70
 	void ai_unload_failure(Unit* unit);																								// 0043DF30
 	void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
 	void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
 	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
-	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																		// 004E6C40
-	b32 get_first_loaded_worker(Unit* transport);																						// 004E6D90
+	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																	// 004E6C40
+	b32 get_first_loaded_worker(Unit* transport);																					// 004E6D90
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void load_unit_proc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
-	b32 unload_unit_proc(Unit* unit);																									// 004E7F70 (Hooked)
-	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);															// 00475260
+	b32 unload_unit_proc(Unit* unit);																								// 004E7F70 (Hooked)
+	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);														// 00475260
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
@@ -672,28 +671,28 @@ namespace helper {
 	void playSubunitIscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
-	u32 get_hp_gain_for_repair(Unit* unit);																								// 00402C40
+	u32 get_hp_gain_for_repair(Unit* unit);																							// 00402C40
 	void refund_unit_train_cost(u32 unit_id, u8 player);																			// 0042CEC0
-	void function_00432430(Unit* unit, u32 build_queue_slot);																			// 00432430
-	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																			// 00466300
-	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
+	void function_00432430(Unit* unit, u32 build_queue_slot);																		// 00432430
+	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																		// 00466300
+	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag);														// 00468200
 
 	//// weapon_fire
 	// For progress_bullet_flight
-	void progressBulletMovement(Bullet* a1);																						// 0048B250
+	void progress_bullet_movement(Bullet* a1);																						// 0048B250
 	void do_missile_damage(Bullet* bullet);																							// 0048B770
 
 	// For bulletBehavior_Bounce
-	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3);																				// 00495240
-	void progress_bullet_movement(Bullet* a1);																					// 0048B250
-	Unit* find_next_bounce_target(Bullet* a1);																					// 0048B1E0
+	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3);																			// 00495240
+	void progress_bullet_movement(Bullet* a1);																						// 0048B250
+	Unit* find_next_bounce_target(Bullet* a1);																						// 0048B1E0
 
 	// For find_next_bounce_target_proc
 	bool unit_is_subunit(Unit* a1);																									// 00401D40
 	bool unit_is_carrier(Unit* a1);																									// 00401470
 	bool unit_is_reaver(Unit* a1);																									// 00401490
-	bool unitHasPathToUnit(Unit* a1, Unit* a2);																						// 0049CBB0
-	s32 can_be_infested(Unit* a1, Unit* a2);																							// 00402210
+	bool unit_has_path_to_unit(Unit* a1, Unit* a2);																					// 0049CBB0
+	s32 can_be_infested(Unit* a1, Unit* a2);																						// 00402210
 
 	// For find_next_bounce_target
 	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
@@ -769,7 +768,7 @@ namespace helper {
 
 	//// update_unit_state
 	bool unitHpIsInRedZone(Unit* unit);																				// 004022C0
-	void restore_all_unit_stats(Unit* unit);																			// 00492F70 (hooked by hooks\update_status_effects.cpp)
+	void restore_all_unit_stats(Unit* unit);																		// 00492F70 (hooked by hooks\update_status_effects.cpp)
 
 	// For update_units
 	bool is_selected_unit_group_enabled();																			// 0049A2C0
@@ -825,8 +824,8 @@ namespace helper {
 
 	//// repair_order
 
-	void getRepairInfo(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);			// 00466D10
-	bool verifyResources(u32 mineralCost, u32 gasCost, u32 player);												// 00466EE0
+	void get_repair_info(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);			// 00466D10
+	bool verify_resources(u32 mineralCost, u32 gasCost, u32 player);													// 00466EE0
 	bool subtract_repair_resources(Unit* worker, Unit* target);														// 00466FB0
 
 	// For is_order_valid
@@ -845,7 +844,7 @@ namespace helper {
 	void update_thingies();
 
 	// create_unit
-	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 player, s32 unused);									// 004A06C0
+	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 player, s32 unused);										// 004A06C0
 	Unit* list_push_back_used_unit_entry(Unit* unit);																// 0049DCA0
 	Unit* list_push_back_hidden_unit_entry(Unit* unit);																// 0049DCE0
 	Sprite* unit_destructor(Unit* unit);																			// 004A0990
@@ -862,9 +861,10 @@ namespace helper {
 	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player);
 	bool func_dounitscollide(Unit* first, Unit* second);
 	void unburrow(Unit* unit);
-	Image* CreateHealthBar(s32 a1, Sprite* a2);
-	void RemoveHPBar(Image* a1);
+	Image* create_health_bar(Sprite* sprite);
+	void remove_hp_bar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
+	void* SMemAlloc(u32 amount);																					// 0041006A (based on Storm.dll definition)
 	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue);									// 0041006A (based on Storm.dll definition)
 	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);											// 00416090
 	void remove_from_selections(Unit* unit);																		// 0049A7F0
@@ -893,17 +893,17 @@ namespace helper {
 
 	//// use_tech
 	const void issue_tri_target_order(u8 order1, u8 order2, u8 order3);										// 0048CAF0
-	s32 check_energy_for_tech_use(s32 tech_id);																	// 00423660
+	s32 check_energy_for_tech_use(s32 tech_id);																// 00423660
 
 	//// pathfinding
 	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
-	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y);														// 004E7420
+	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior
-	bool hasGroundWeaponGraphic(Unit* unit);
-	bool isUnreachable(Unit* target, Unit* unit);
+	bool has_ground_weapon_graphic(Unit* unit);
+	bool is_unreachable(Unit* target, Unit* unit);
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);											// 00476430
-	s32 moveForMeleeRange(Unit* target, Unit* unit);
+	s32 move_for_melee_range(Unit* target, Unit* unit);
 
 	// For create_upgrade_level_tooltip
 	s16 create_tooltip(char* text);																			// 004591A6
@@ -932,12 +932,12 @@ namespace helper {
 	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId);							// 0048EE30
 
 	// For ai_manage_building_placement
-	s32 get_bunker_placement_position(s32 placementId, s32* regionId);										// 004442E0
+	s32 get_bunker_placement_position(s32 placement_id, s32* region_id);									// 004442E0
 	Unit* get_disabled_unit_in_range(s32 owner, Point16 position);											// 00440420
-	void ai_get_build_location(s32 unit_id, char* placementData, s32 player, Point16 tryPosition,			// 004461B0
-		s32 maxRange);
-	void ai_placement_data_something(s8* placementData, Point16 tryPosition);								// 00443610
-	u32 getTileDistance(s32 x, s32 y, s32 x2, s32 y2);														// 00444100
+	void ai_get_build_location(s32 unit_id, char* placement_data, s32 player, Point16 try_position,			// 004461B0
+		s32 max_range);
+	void ai_placement_data_something(s8* placement_data, Point16 try_position);								// 00443610
+	u32 get_tile_distance(s32 x, s32 y, s32 x2, s32 y2);													// 00444100
 
 	// For initialize_unit_counts
 	char teamGame_CountRaces(char force, char* bIsLegal, char race);										// 004857B0
@@ -951,7 +951,7 @@ namespace helper {
 
 	// For draw_supply_unit_status
 	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex);										// 00425510
-	void draw_armor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);										// 00425600
+	void draw_armor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);									// 00425600
 
 	// For progressBulletFrame
 	void bullet_behavior_fly(Bullet* bullet);																// 0048B3B0
@@ -1001,12 +1001,12 @@ namespace helper {
 	AiTown* try_begin_delete_town(AiTown* town);															// 00434330
 	AiScript* delete_aiscripts_using_town(AiTown* town);													// 0045AE20
 
-	// For displayEstablishingShot
-	void* loadInitCreditsBIN(char* a1);																		// 004D8DF0
+	// For display_establishing_shot
+	void* load_init_credits_bin(char* a1);																	// 004D8DF0
 	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);				// 004100B2
 	bool SFileCloseArchive(void* archive);																	// 004100BE
 	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);				// 004100C4
-	//bool SFileCloseFile(void* hFile);																		// 004100C4
+//	bool SFileCloseFile(void* hFile);																		// 004100C4
 
 	// For ai_are_on_connected_regions
 	bool ai_regions_are_connected(u32 player, u32 region1, u32 region2);									// 00437E70
@@ -1015,20 +1015,20 @@ namespace helper {
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
 	// For ai_get_build_location
-	u32 ai_get_building_placement_data(u32 maxRange, u32 unit_id, char* placementData, u32 player, Point16 desiredPos);			// 00445D60
-	char* ai_remove_unreachable_regions(char* placementData, Point16 desiredPos);												// 00443900
-	u32 ai_remove_dangerous_regions(u32 unit_id, char* placementData, u32 placementId, Point16 desiredPos);						// 00443870
-	u32 ai_remove_far_tiles(char* placementData, Point16 desiredPos, u32 maxRange);												// 00444E20
-	u32 ai_remove_different_height(char* placementData, Point16 desiredPos);													// 004436C0
-	u32 ai_placement_related_something(u16 unit_id, char* placementData, Point16 desiredPos);									// 00443E30
-	void ai_remove_unfit_tiles(u32 unit_id, char* placementData, u32 player, Point16 desiredPos);								// 00444CE0
-	u32 ai_remove_addon_places(u32 unit_id, char* placementData, u32 player, Point16 desiredPos);								// 00443CC0
-	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag);			// 00443AC0
-	u32 get_pylon_placement_position(char* placementData, u8 player, Point16 desiredPos);										// 004448D0
-	u32 get_default_placement_position(u32 unit_id, char* placementData, u32 player, Point16 desiredPos);						// 004449A0
+	u32 ai_get_building_placement_data(u32 max_range, u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);		// 00445D60
+	char* ai_remove_unreachable_regions(char* placement_data, Point16 desired_pos);												// 00443900
+	u32 ai_remove_dangerous_regions(u32 unit_id, char* placement_data, u32 placement_id, Point16 desired_pos);					// 00443870
+	u32 ai_remove_far_tiles(char* placement_data, Point16 desired_pos, u32 max_range);											// 00444E20
+	u32 ai_remove_different_height(char* placement_data, Point16 desired_pos);													// 004436C0
+	u32 ai_placement_related_something(u32 unit_id, char* placement_data, Point16 desired_pos);									// 00443E30
+	void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00444CE0
+	u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00443CC0
+	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
+	u32 get_pylon_placement_position(char* placement_data, u32 player, Point16 desired_pos);									// 004448D0
+	u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);						// 004449A0
 
 	// For ai_check_military_grouping
-	void get_region_center_from_id(u16 regionId, u32* out_x, u32* out_y);														// 0049CAA0
+	void get_region_center_from_id(u16 region_id, u32* out_x, u32* out_y);														// 0049CAA0
 
 	// For ignore_iscript_and_go_to_idle
 	void play_idle_iscript(Sprite* sprite);																						// 00497880
@@ -1044,8 +1044,9 @@ namespace helper {
 	// For soundThread
 	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine);		// 004D2D10
 	s32 parseWaveFile(s32 a1, s32 a2, s32 a3);																					// 004BBD80
+	bool SMemFree(void* location);																								// 00410070
 	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue);											// 00410070
-	u32 getSoundDuration(s32 a1);																								// 004BB890
+	u32 get_sound_duration(s32 sound_id);																						// 004BB890
 
 	/*
 	// For soundInit
@@ -1132,8 +1133,8 @@ namespace helper {
 	typedef void   __cdecl playNextMusic_Func();
 	typedef HANDLE __cdecl stopMusic_Func();
 
-	extern playNextMusic_Func* playNextMusic;
-	extern stopMusic_Func* stopMusic;
+	extern playNextMusic_Func* play_next_bw_music;
+	extern stopMusic_Func* stop_bw_music;
 
 	void prepare_formation_movement(MovementGroup* a1, char a2);												// 0049A8C0
 	Unit* find_fow_unit(u16 y_pos, u16 x_pos, u32 fow_unit_id);													// 00487FD0
@@ -1197,7 +1198,7 @@ namespace helper {
 	Unit* remove_harvesters(Unit* node);																// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
-	s32 ai_scv_repair_controller(Unit* unit, AiTown* town);												// 00433C70
+	s32 ai_worker_repair_controller(Unit* unit, AiTown* town);												// 00433C70
 	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
@@ -1213,7 +1214,7 @@ namespace helper {
 	u32 get_optimal_mineral_workers(u32 resarea, u32 player);											// 004439B0
 	void ai_get_old_peons(AiTown* town, u32 count);														// 004355C0
 
-	bool is_unit_target_inside_min_range(Unit* unit, Unit* target);										// 004764D0
+	bool target_is_inside_minimum_range(Unit* unit, Unit* target);										// 004764D0
 	bool is_unit_enemy(Unit* unit, Unit* target);														// 0047B910
 	u32 play_transmission_from_location(u32 sfx_id, u32 volume, u32 misc, Unit* unit);					// 004BC270
 	s32 update_text_display(s32 update_case);															// 0048CB80
@@ -1351,7 +1352,7 @@ namespace helper {
 	Thingy* show_command_response(u32 x_pos, u16 y_pos, Unit* unit);										// 00456490
 	char cmdact_right_click_order(Unit* target, u32 x_pos, u32 y_pos, u32 unit_id, u32 keycode_used);		// 004C0380
 	s32 show_right_click_error_if_needed(Unit* target);														// 00455A00
-	void play_worker_action_sound(Unit* unit);																// 0048F4D0
+	void play_yes_unit_response(Unit* unit);																// 0048F4D0
 	u32 sort_all_units(Unit** units, Unit** units_2, Unit* unit);											// 0046F0F0
 
 	char tech_is_researched_bw(u32 player, u16 tech_id);													// 004CE8A0
@@ -1409,4 +1410,27 @@ namespace helper {
 	void EDI_order(Unit* unit, u32 order_func_offset);
 	void ESI_order(Unit* unit, u32 order_func_offset);
 	void PUSH_order(Unit* unit, u32 order_func_offset);
+
+	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit);								// 004769D0
+	void react_to_hit(Unit* attacker, Unit* victim);														// 004776C0
+	char ask_for_help(Unit* attacker, Unit* helper);														// 00476E60
+
+	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u32 unit_id, u32 sound_flags, u32 some_bool, u32 priority);	// 004BBAF0
+	s32 queue_sound(u32 sound_id, s32 volume, s32 pan, u32 unit_id);																		// 004BBEB0
+
+	bool unit_finished_summon(Unit* unit);																	// 00436E40
+	u32 get_total_hp_plus_shields(Unit* unit);																// 00402710
+
+	bool unit_is_morphing(Unit* unit);																		// 0045CD00
+	char cmdact_unload(Unit* unit);																			// 004BFDB0
+	Point16 ai_prepare_to_flee(Unit* target, Unit* unit);													// 00476A50
+
+	bool unit_is_enemy(Unit* other);																		// 004D1380
+
+	u32 can_target_order_on_fow_unit(Unit* self, char order_id, u16 fow_unit_id, s32* error);						// 004746D0
+	bool unit_can_attack_ground_type(u16 fow_unit_id, Unit* self);													// 00475C80
+	u16 get_targeting_error_string(u32 weapon_id, s32* error, Unit* target);										// 0046EFE0
+	char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used);	// 004C0300
+
+	void ground_attack_init(u16 x_pos, u16 y_pos);															// 00488660
 }

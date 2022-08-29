@@ -119,6 +119,7 @@ namespace AiseId
 		GenericVariable				= 27,
 		GetUnitData					= 28,
 		GetFlingyPtr				= 29, // for extender
+		GetSoundData				= 30,
 	};
 }
 
@@ -291,9 +292,7 @@ struct UnitLayout
 	/*0x088*/ u16       previous_unit_type;				// Also used by zerg buildings while morphing
 	/*0x08A*/ u8        last_event_timer;				// Countdown that stops being recent when it hits 0
 	/*0x08B*/ u8        last_event_color;				// 17 = was completed (train, morph), 174 = was attacked
-	/*0x08C*/ u16       unused_8c;						// Cosmonarchy BW
-														// 0x1 - Hierophant Detect Add Maelstrom Overlay
-														// 0x2 - Hierophant Detect Remove Maelstrom Overlay
+	/*0x08C*/ u16       new_repair_timer;				// For DarkenedFantasies's repair fix
 
 	/*0x08E*/ u8        rank_increase;					// Adds this value to the unit's base rank
 	/*0x08F*/ u8        kill_count;

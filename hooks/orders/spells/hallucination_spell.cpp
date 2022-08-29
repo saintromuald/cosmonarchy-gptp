@@ -26,17 +26,13 @@ namespace hooks
 		}
 	}
 
-	void apply_hallucination(Unit* unit, Unit* source) {
-		u16 remove_timer = unit->id == UnitId::ZergRilirokor || unit->id == UnitId::ZergRililisk ? 1800 : 0;
+	void apply_hallucination(Unit* unit, Unit* source, u32 time) {
+		u16 remove_timer = time;
 		helper::apply_hallucination_stats(unit);
-		if (unit->status & UnitStatus::IsHallucination) {
-			remove_timer = 1350;
-		}
 		if (source->remove_timer && source->remove_timer < remove_timer) {
 			remove_timer = source->remove_timer;
 		}
-		if (!unit->remove_timer || remove_timer < unit->remove_timer)
-		{
+		if (!unit->remove_timer || remove_timer < unit->remove_timer) {
 			unit->remove_timer = remove_timer;
 		}
 		if (source) {
@@ -47,7 +43,7 @@ namespace hooks
 				for (u32 i = 0; i < count; ++i) {
 					Unit* plasma_shell = scbw::create_hangar_unit(unit, UnitId::ProtossPlasmaShell);
 					if (plasma_shell) {
-						apply_hallucination(plasma_shell, unit);
+						apply_hallucination(plasma_shell, unit, unit->remove_timer);
 					}
 				}
 			}
@@ -56,7 +52,7 @@ namespace hooks
 				for (u32 i = 0; i < count; ++i) {
 					Unit* steward = scbw::create_hangar_unit(unit, UnitId::ProtossSteward);
 					if (steward) {
-						apply_hallucination(steward, unit);
+						apply_hallucination(steward, unit, unit->remove_timer);
 					}
 				}
 			}
@@ -64,7 +60,7 @@ namespace hooks
 	}
 
 	// Hooked to rule out AI issues -- Pr0nogo
-	Unit* create_hallucination(Unit* source, s32 player) {
+	Unit* create_hallucination(Unit* source, s32 player, u32 time) {
 		if (units_dat::base_property[source->id] & UnitProperty::Building || source->id == UnitId::ProtossSteward || source->id == UnitId::ProtossPlasmaShell) {
 			return 0;
 		}
@@ -74,7 +70,7 @@ namespace hooks
 			helper::display_last_network_error_for_player(player);
 			return 0;
 		}
-		apply_hallucination(hallucinated_unit, source);
+		apply_hallucination(hallucinated_unit, source, time);
 		scbw::give_ai_ex(hallucinated_unit);
 		return hallucinated_unit;
 	}

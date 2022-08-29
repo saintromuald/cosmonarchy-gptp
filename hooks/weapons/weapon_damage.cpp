@@ -8,6 +8,8 @@
 #include "globals.h"
 #include "logger.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/orders/spells/hallucination_spell.h"
+#include "hooks/limits/sfx_extender.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -28,14 +30,13 @@ bool irradiateTarget(Unit* unit)
 void parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
 	switch (type) {
 		case AiseSignal_GetTransportCargoCount: {
+			u32 count = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
-				u32* ptr = (u32*)unit2;
-				u32 count = 0;
 				if (unit1->get_loaded_unit(i)) {
 					count += 1;
 				}
-				*ptr = count;
 			}
+			*(u32*)unit2 = count;
 		} break;
 	}
 }
@@ -99,7 +100,7 @@ namespace hooks
 
 	void weapon_damage_root(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = get_unit_ext(data.target);
+		UnitExt* target_ext = get_unit_ext(data.target);
 
 		// The unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible) {
@@ -107,13 +108,13 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (targetExt->timers[TimerGodsMadeFlesh]) {
+		if (target_ext->timers[TimerGodsMadeFlesh]) {
 			data.final_damage = 0;
 			data.damage_type = damage_type::Independent;
 		}
 
 		// TODO: remove this
-		bool canDamage = true; // debug only!
+		bool can_damage = true; // debug only!
 		// Ai_ReactToHit crash - null town
 		if (data.target->unit_ai != nullptr)
 		{
@@ -125,7 +126,7 @@ namespace hooks
 				{
 					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 						data.attacker->id, data.attacker->player, data.target->id, data.target->player);
-					canDamage = false;
+					can_damage = false;
 				}
 			}
 		}
@@ -135,12 +136,7 @@ namespace hooks
 			weapon_damage_damage_modifiers(data);
 		}
 
-		if (!data.dont_proc_link_damage && data.target->id == UnitId::ZergSovroleth)
-		{
-			data.final_damage /= 2;
-			scbw::spread_sovroleth_damage(data);
-		}
-		else if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target))
+		if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target))
 		{
 			data.final_damage /= 2;
 			scbw::spread_clarion_damage(data);
@@ -155,12 +151,6 @@ namespace hooks
 			}
 		}
 
-		// Hallucinations take double damage
-		if (data.target->status & UnitStatus::IsHallucination)
-		{
-			data.final_damage *= 2;
-		}
-
 		// Minimum amount of damage that can be dealt
 		if (data.final_damage < 256)
 		{
@@ -170,26 +160,18 @@ namespace hooks
 		// Reduce Defensive Matrix
 		if (data.target->defensive_matrix_hp != 0)
 		{
-			s32 d_matrix_reduceAmount;
+			s32 defensive_matrix_reduction;
 			if (data.target->defensive_matrix_hp > data.final_damage)
 			{
-				d_matrix_reduceAmount = data.final_damage;
+				defensive_matrix_reduction = data.final_damage;
 			}
 			else
 			{
-				d_matrix_reduceAmount = data.target->defensive_matrix_hp;
+				defensive_matrix_reduction = data.target->defensive_matrix_hp;
 			}
-			data.final_damage -= d_matrix_reduceAmount;
-			data.target->reduce_defensive_matrix_hp(d_matrix_reduceAmount);
+			data.final_damage -= defensive_matrix_reduction;
+			data.target->reduce_defensive_matrix_hp(defensive_matrix_reduction);
 		}
-
-		// Cliff Advantage - Armor | Disabled 10 Jan 2022
-		/*
-		if (data.damage_type != damage_type::IgnoreArmor && !data.ignore_flat_armor)
-		{
-			data.final_damage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
-		}
-		*/
 
 		// Apply armor
 		bool shield_overlay = false;
@@ -213,8 +195,8 @@ namespace hooks
 			}
 
 			// Autocrat Controlled Opposition
-			if (targetExt->values[ValueControlledOpposition]) {
-				armor_total = std::max(armor_total - (s32)targetExt->values[ValueControlledOpposition] * 256, 0);
+			if (target_ext->values[ValueControlledOpposition]) {
+				armor_total = std::max(armor_total - (s32)target_ext->values[ValueControlledOpposition] * 256, 0);
 			}
 			armor_total = std::max(armor_total, 0);
 			data.final_damage -= std::min(data.final_damage, armor_total);
@@ -243,6 +225,7 @@ namespace hooks
 			if (data.target->hitpoints < data.target->get_max_hp_raw() * 0.1)
 			{
 				helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+				// TODO: Overlay
 				data.final_damage = data.target->hitpoints;
 			}
 		}
@@ -251,13 +234,15 @@ namespace hooks
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
-		if (data.final_damage >= data.target->hitpoints) {
+		if (data.final_damage >= data.target->hitpoints || data.target->status & UnitStatus::IsHallucination) { // Also proc on deaths for hallucinations, since we know they always die in one hit
 			weapon_damage_fatal(data);
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damage_type != damage_type::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && canDamage)
-		{
+		if (data.damage_type != damage_type::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && can_damage) {
+			if (data.target->status & UnitStatus::IsHallucination) {
+				data.final_damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
+			}
 			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
 			if (!data.target->hitpoints && data.attackingPlayerId != data.target->player) {
@@ -265,11 +250,17 @@ namespace hooks
 			}
 		}
 
-		// New AI defense logic
+		// New AI defense logic -Veeq7
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
+		// Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
+		if (data.target && data.weapon_id == WeaponId::LegionnairePsiSabers) {
+			UnitExt* target_ext = get_unit_ext(data.target);
+			target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
+		}
+
 		// Reduce shields
-		if (data.shield_reduce_amount != 0 && canDamage)
+		if (data.shield_reduce_amount != 0 && can_damage)
 		{
 			data.target->shields -= data.shield_reduce_amount;
 			if (data.damage_type != damage_type::Independent && data.target->shields != 0)
@@ -292,7 +283,7 @@ namespace hooks
 	{
 		UnitExt* targetExt = get_unit_ext(data.target);
 
-		// Allied Invincibility Frames
+		// Allied invincibility frames (for e.g. Akistrokor Blissful Embrace)
 		if (targetExt->timers[TimerAlliedInvFrames])
 		{
 			if (scbw::is_allied_to(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
@@ -310,7 +301,7 @@ namespace hooks
 		// Observance Armor Rend
 		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
 
-		switch (data.weapon_id) // Damage Divisor Calc
+		switch (data.weapon_id) // Damage divisor calc
 		{
 			case WeaponId::ArchitectDispersiveSalvo:
 			{
@@ -336,16 +327,23 @@ namespace hooks
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
 				data.final_damage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
-			case WeaponId::SavantPowerSiphon:
+			case WeaponId::SavantDiscoidRailgun:
 			{
-				// Entropy Gauntlet
+				// Entropy Gauntlets
 				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-					u32 energy = std::min(data.attacker->energy, (u16)(15 * 256));
+					u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
 					if (energy) {
 						data.attacker->energy -= energy;
 						data.final_damage += energy / 2;
 						helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
 					}
+				}
+			} break;
+			case WeaponId::HeraclesJavelinCannons:
+			{
+				if (data.attacker) {
+					UnitExt* attackerExt = get_unit_ext(data.attacker);
+					data.final_damage += (attackerExt->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
 				}
 			} break;
 			default:
@@ -362,12 +360,25 @@ namespace hooks
 
 		switch (data.weapon_id)
 		{
+			case WeaponId::CabalistWarpBlades: {
+				// Cabalist - Toggle cloak with each attack
+				if (data.attacker) {
+					UnitExt* attackerExt = get_unit_ext(data.attacker);
+					if (attackerExt->timers[TimerDecloak] > 2) {
+						attackerExt->timers[TimerDecloak] = 2;
+						data.final_damage /= 2;
+					} else {
+						scbw::decloak_proc(data.attacker);
+					}
+				}
+			} break;
 			case WeaponId::QuaziliskAcridBarbs:
 			{
 				// Quazilisk - Melting Points
-				f32 missingFactor = 1 - ((f32)data.target->hitpoints / data.target->get_max_hp_raw());
-				f32 damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
-				data.final_damage += damageIncrease * HealthMultiplier;
+				// TODO: Replace with armor pen? Remove?
+				f32 missing_factor = 1 - ((f32)data.target->hitpoints / data.target->get_max_hp_raw());
+				f32 damage_increase = floor(missing_factor / QuazaliskPassiveFactor);
+				data.final_damage += damage_increase * HealthMultiplier;
 			} break;
 			case WeaponId::AlmaksaliskPiercingSpines:
 			{
@@ -382,7 +393,7 @@ namespace hooks
 
 	static void weapon_damage_behaviors(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = get_unit_ext(data.target);
+		UnitExt* target_ext = get_unit_ext(data.target);
 
 		if (data.attacker)
 		{
@@ -392,14 +403,6 @@ namespace hooks
 			// START
 
 			switch (data.attacker->id) {
-				case UnitId::ProtossCabalist: {
-					// Cabalist - Decloak, Silent Kill
-					if (data.final_damage < data.target->hitpoints) {
-						scbw::decloak_proc(data.attacker);
-					} else if (targetExt->timers[TimerDecloak] > 1) {
-						targetExt->timers[TimerDecloak] = 1;
-					}
-				} break;
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
@@ -408,7 +411,7 @@ namespace hooks
 			}
 
 			// Cantavis - Hallucinating
-			if (targetExt->timers[TimerHallucinating] >= 1) {
+			if (target_ext->timers[TimerHallucinating] >= 1) {
 				Unit* halu_attacker = data.attacker;
 				if ((halu_attacker->id == UnitId::ProtossSteward || halu_attacker->id == UnitId::ProtossPlasmaShell)
 					&& data.attacker->hangar_unit.parent)
@@ -420,19 +423,17 @@ namespace hooks
 					if (scbw::is_allied_to(halu_attacker->player, data.target->player)) {
 						return;
 					}
-					Unit* hal_unit = helper::create_hallucination(halu_attacker, halu_attacker->player);
+					Unit* hal_unit = hooks::create_hallucination(halu_attacker, halu_attacker->player, target_ext->timers[TimerHallucinating]);
 					if (hal_unit) {
 						hal_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
-						if (helper::place_hallucination(hal_unit)) {
-							targetExt->timers[TimerHallucinating] = 0;
-						} else {
+						if (!helper::place_hallucination(hal_unit)) {
 							helper::UnitDestructor(hal_unit);
 						}
 					}
 				}
 			}
 
-			// Ensnaring Brood - Queen enchantment ability
+			// Ensnaring Brood - Matraleth enchantment ability
 			if  (attackerExt->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
 			&&  !scbw::is_under_dark_swarm(data.target))
@@ -452,9 +453,9 @@ namespace hooks
 					&&  !scbw::is_under_dark_swarm(data.target)
 					&&   data.shield_reduce_amount >= data.target->shields
 					&&   data.final_damage
-					&&   targetExt->timers[TimerSimulacrumClone] == 0)
+					&&   target_ext->timers[TimerSimulacrumClone] == 0)
 					{
-						targetExt->timers[TimerSimulacrumClone] = 4 * 24;
+						target_ext->timers[TimerSimulacrumClone] = 4 * 24;
 						data.target->sprite->create_top_overlay(ImageId::LegionnaireTeleportEffect);
 						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
@@ -482,10 +483,10 @@ namespace hooks
 				case UnitId::TerranCuirass:
 				{
 					// Cuirass - Stonewall Protocol
-					if (!targetExt->values[ValueIsSelfReviving]
+					if (!target_ext->values[ValueCuirassIsSelfReviving]
 					&&   data.target->hitpoints < data.final_damage)
 					{
-						targetExt->values[ValueIsSelfReviving] = 1;
+						target_ext->values[ValueCuirassIsSelfReviving] = 1;
 						data.target->hitpoints = CuirassSelfReviveHP;
 						data.final_damage = 0;
 						data.target->order_computer(OrderId::Stop);
@@ -500,7 +501,7 @@ namespace hooks
 			{
 				case WeaponId::AnthelionEventHorizon:
 				{
-					targetExt->timers[TimerAnthelionGravityWell] = 2;
+					target_ext->timers[TimerAnthelionGravityWell] = 2;
 				} break;
 				case WeaponId::ZethrokorClaws:
 				{
@@ -513,7 +514,7 @@ namespace hooks
 				} break;
 				case WeaponId::VorvalClaws:
 				{
-					// Captivating ZethrokorClaws - Vorvaling behavior
+					// Captivating Claws - Vorvaling behavior
 					captivating_claws_apply(data.attacker, data.target);
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
@@ -535,9 +536,9 @@ namespace hooks
 					case WeaponId::EmpressFadingBioplasma:
 					{
 						// Empress - Anodyne Annex - add stack
-						targetExt->units[UnitEmpressSource] = data.attacker;
-						targetExt->values[ValueEmpressPassiveStacks]++;
-						targetExt->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
+						target_ext->units[UnitEmpressSource] = data.attacker;
+						target_ext->values[ValueEmpressPassiveStacks]++;
+						target_ext->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
 					} break;
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
@@ -556,18 +557,18 @@ namespace hooks
 					case WeaponId::GorgonArtificeBattery:
 					{
 						// Petrification - Gorgon behavior
-						if (targetExt->values[ValuePetrificationStacks] < 20) {
-							targetExt->values[ValuePetrificationStacks] += 1;
+						if (target_ext->values[ValuePetrificationStacks] < 20) {
+							target_ext->values[ValuePetrificationStacks] += 1;
 						}
-						targetExt->timers[TimerPetrification] = 48 + 1;
+						target_ext->timers[TimerPetrification] = 48 + 1;
 					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{
 						// Deconstruction - Pazuzu behavior - apply stack
 						if (!scbw::unit_id_is_pacifist(data.target))
 						{
-							targetExt->values[ValueDeconstruction]++;
-							targetExt->values[ValueDeconstructionPlayer] = data.attacker->player;
+							target_ext->values[ValueDeconstruction]++;
+							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 							s32 overlayOffset = scbw::get_overlay_offset(data.target->id);
 							if (data.target->subunit != nullptr)
 							{
@@ -591,13 +592,12 @@ namespace hooks
 					case WeaponId::AutocratEminanceRifle:
 					{
 						// Apply Controlled Opposition
-						targetExt->values[ValueControlledOpposition]++;
+						target_ext->values[ValueControlledOpposition]++;
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						// Power Siphon
 						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-							helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), data.attacker, 1, 0);
 							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
 								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
 								if (energy) {
@@ -609,36 +609,32 @@ namespace hooks
 							}
 						}
 					} break;
-					case WeaponId::HeraclesJavelinCannons:
-					{
-						data.final_damage += (attackerExt->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
-					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
 						// Charlatan - Leading the Blind passive
 						if (!scbw::is_allied_to(data.attacker->player, data.target->player))
 						{
-							scbw::apply_new_hallucination(data.target, data.attacker->player, CharlatanHallucinationTimer);
+							scbw::apply_hallucinating(data.target, data.attacker->player, HallucinatingTimer);
 						}
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
 					{
 						// Dirge - Madrigal behavior
-						targetExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
-						targetExt->values[ValueDirgeStacks] += 1;
-						targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
-						targetExt->units[UnitDirgeSource] = data.attacker;
+						target_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
+						target_ext->values[ValueDirgeStacks] += 1;
+						target_ext->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
+						target_ext->units[UnitDirgeSource] = data.attacker;
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
 					{
-						targetExt->values[ValueSignifyStacks]++;
-						targetExt->timers[TimerSignify] = 3 * 24 + 1;
-						auto& vec = targetExt->value_vectors[ValueVectorSignifySourcePlayer];
+						target_ext->values[ValueSignifyStacks]++;
+						target_ext->timers[TimerSignify] = 3 * 24 + 1;
+						auto& vec = target_ext->value_vectors[ValueVectorSignifySourcePlayer];
 						if (std::find(vec.begin(), vec.end(), data.attackingPlayerId) == vec.end())
 						{
 							vec.push_back(data.attackingPlayerId);
 						}
-						scbw::update_signify_status(data.target, targetExt);
+						scbw::update_signify_status(data.target, target_ext);
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
 					{
@@ -651,15 +647,14 @@ namespace hooks
 							data.target->get_y() + range
 						).for_each([&](Unit* unit)
 							{
-								if (data.attackingPlayerId != unit->player &&
-									!scbw::is_allied_to(data.attackingPlayerId, unit->player))
+								if (data.attackingPlayerId != unit->player && !scbw::is_allied_to(data.attackingPlayerId, unit->player))
 								{
-									// Ally Check
+									// Ally check
 									return;
 								}
 								if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256)
 								{ 
-									// Shield Check for default behavior
+									// Shield check for default behavior
 									helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 								}
 								else
@@ -669,7 +664,7 @@ namespace hooks
 								}
 								if (units_dat::shields_enabled[unit->id])
 								{ 
-									// Shield Heal
+									// Shield heal
 									unit->heal_shields(2 * 256, data.target);
 								}
 							});
@@ -677,15 +672,17 @@ namespace hooks
 					case WeaponId::MagisterNeutronCannon:
 					{
 						// Stellar Enforcement - Magister behavior
-						if (!targetExt->values[ValueStellarEnforcement])
+						if (!target_ext->values[ValueStellarEnforcement])
 						{
-							targetExt->values[ValueStellarEnforcement] = 1;
+							target_ext->values[ValueStellarEnforcement] = 1;
+							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
+							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
 					case WeaponId::VithriliskCorrosiveSpores:
 					{
 						// Vithrilisk - Critical Mass
-						if (targetExt->values[ValueCorrosiveTouchStacks])
+						if (target_ext->values[ValueCorrosiveTouchStacks])
 						{
 							s32 range = 160;
 							scbw::UnitFinder(
@@ -711,7 +708,7 @@ namespace hooks
 									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 									if (thingy != nullptr)
 									{
-										thingy->sprite->elevation_level = target->sprite->elevation_level + 1;
+										thingy->sprite->elevation = target->sprite->elevation + 1;
 										helper::set_thingy_visibility_flags(thingy);
 									}
 								});
@@ -720,14 +717,14 @@ namespace hooks
 					case WeaponId::CyclopsFlakCannons:
 					{
 						// Cyclops - Flak Cannons
-						targetExt->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
 						// Claymore - Kelvin Munitions - Slow primary target
-						if (!targetExt->values[ValueKelvinMunitionsSlow])
+						if (!target_ext->values[ValueKelvinMunitionsSlow])
 						{
-							targetExt->values[ValueKelvinMunitionsSlow] = 1;
+							target_ext->values[ValueKelvinMunitionsSlow] = 1;
 						}
 					} break;
 					case WeaponId::MagnetarNewtonianShockCannon:
@@ -739,13 +736,13 @@ namespace hooks
 								&& data.target->main_order_id != OrderId::BuildingLand))
 						{
 							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
-							const u32 displacementTime = 5;
+							const u32 displacement_time = 5;
 							Vector32 diff = scbw::get_vector_between_points(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::get_normalized_vector(diff);
-							displacement.x *= 2 * 32.0 / displacementTime;
-							displacement.y *= 2 * 32.0 / displacementTime;
-							targetExt->timers[TimerMagnetarAttraction] = displacementTime;
-							targetExt->repulsion_vector = displacement;
+							displacement.x *= 2 * 32.0 / displacement_time;
+							displacement.y *= 2 * 32.0 / displacement_time;
+							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
+							target_ext->repulsion_vector = displacement;
 						}
 					} break;
 				}
@@ -755,41 +752,41 @@ namespace hooks
 
 	static void weapon_damage_lifesteal(WeaponDamageData& data)
 	{
-		u32 damageDealt = data.final_damage + data.shield_reduce_amount;
+		u32 damage_dealt = data.final_damage + data.shield_reduce_amount;
 		switch (data.weapon_id)
 		{
 			case WeaponId::UltrokorKaiserBlades:
 			{
-				// Ultrakor Saber Siphon passive
-				data.attacker->heal(damageDealt * 0.5, data.attacker);
+				// Ultrokor Saber Siphon passive
+				data.attacker->heal(damage_dealt * 0.5, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
 				const s32 hp = data.attacker->hitpoints / 256;
 				const s32 maxHp = data.attacker->get_max_hp_ingame();
-				u32 shieldsHeal = damageDealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
+				u32 shieldsHeal = damage_dealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 				data.attacker->heal_shields(shieldsHeal, data.attacker);
 			} break;
 			case WeaponId::AxitriliskSearingVenom:
 			{
 				// Axitrilisk passive
 				const s32 shields = data.attacker->getCurrentShieldsInGame();
-				const s32 maxShields = data.attacker->get_max_shields_in_game();
-				u32 lifeHeal = damageDealt * MathUtils::map(shields, 0, maxShields, 1.0, 0.0, true);
-				data.attacker->heal(lifeHeal, data.attacker);
+				const s32 max_shields = data.attacker->get_max_shields_in_game();
+				u32 life_heal = damage_dealt * MathUtils::map(shields, 0, max_shields, 1.0, 0.0, true);
+				data.attacker->heal(life_heal, data.attacker);
 
 				const s32 hp = data.attacker->get_current_hp_ingame();
 				const s32 maxHp = data.attacker->get_max_hp_ingame();
-				u32 shieldsHeal = damageDealt * MathUtils::map(hp, 0, maxHp, 1.0, 0.0, true);
-				data.attacker->heal_shields(shieldsHeal, data.attacker);
+				u32 shields_heal = damage_dealt * MathUtils::map(hp, 0, maxHp, 1.0, 0.0, true);
+				data.attacker->heal_shields(shields_heal, data.attacker);
 			} break;
 		}
 	}
 
 	static void weapon_damage_fatal(WeaponDamageData& data)
 	{
-		UnitExt* targetExt = get_unit_ext(data.target);
+		UnitExt* target_ext = get_unit_ext(data.target);
 		switch (data.weapon_id) {
 			case WeaponId::Plague: {
 				// Plague - Don't kill
@@ -829,23 +826,23 @@ namespace hooks
 		}
 
 		// Empress - Anodyne Annex - zombify target
-		if (targetExt->values[ValueEmpressPassiveStacks]
-			&& !targetExt->values[ValueIsZombified]) {
+		if (target_ext->values[ValueEmpressPassiveStacks]
+			&& !target_ext->values[ValueIsZombified]) {
 			data.final_damage = 0;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
-			data.target->heal_overflow(targetExt->values[ValueEmpressPassiveStacks] * 256 * 2.5, targetExt->units[UnitEmpressSource]);
-			data.target->remove_timer = 1 + targetExt->values[ValueEmpressPassiveStacks] * 24 * 0.25;
-			data.target->give_to(targetExt->values[ValueEmpressSourcePlayer]);
-			targetExt->values[ValueEmpressPassiveStacks] = 0;
-			targetExt->values[ValueIsZombified] = 1;
-			targetExt->values[ValueAlliedInvPlayer] = targetExt->values[ValueEmpressSourcePlayer];
-			targetExt->timers[TimerAlliedInvFrames] = 24;
+			data.target->heal_overflow(target_ext->values[ValueEmpressPassiveStacks] * 256 * 2.5, target_ext->units[UnitEmpressSource]);
+			data.target->remove_timer = 1 + target_ext->values[ValueEmpressPassiveStacks] * 24 * 0.25;
+			data.target->give_to(target_ext->values[ValueEmpressSourcePlayer]);
+			target_ext->values[ValueEmpressPassiveStacks] = 0;
+			target_ext->values[ValueIsZombified] = 1;
+			target_ext->values[ValueAlliedInvPlayer] = target_ext->values[ValueEmpressSourcePlayer];
+			target_ext->timers[TimerAlliedInvFrames] = 24;
 			data.target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
 			helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
 		}
 
-		if (targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+		if (target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			// Update creep
 			scbw::update_custom_creep_disappearance(data.target);
 
@@ -865,11 +862,11 @@ namespace hooks
 			}
 
 			// Recede control
-			data.target->give_to(targetExt->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
-			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
+			data.target->give_to(target_ext->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
+			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 
 			data.final_damage = 0;
-			data.target->set_hitpoints(targetExt->values[ValueBlissfulEmbraceOriginalHealth]);
+			data.target->set_hitpoints(target_ext->values[ValueBlissfulEmbraceOriginalHealth]);
 
 			// Make this a sprite
 			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
@@ -890,10 +887,11 @@ namespace hooks
 		}
 
 		// Apostle, Anticthon - Revive
-		if (data.final_damage > 0 && (targetExt->values[ValueLazarusAgent] || targetExt->timers[TimerAnticthonRevive])) {
-			u32 hp = targetExt->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
+		if (data.final_damage > 0 && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive])
+			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
+			u32 hp = target_ext->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
 
-			if (targetExt->timers[TimerAnticthonRevive]) {
+			if (target_ext->timers[TimerAnticthonRevive]) {
 				const u32 radius = 8 * 32;
 				scbw::UnitFinder(
 					data.target->get_x() - radius,
@@ -944,8 +942,8 @@ namespace hooks
 			case UnitId::ProtossAurora:
 			{
 				// Last Orders - Aurora behavior
-				if (targetExt->values[ValueLastOrdersInit] == 0) {
-					targetExt->values[ValueLastOrdersInit] = 1;
+				if (target_ext->values[ValueLastOrdersInit] == 0) {
+					target_ext->values[ValueLastOrdersInit] = 1;
 					Unit* nearest = scbw::UnitFinder(
 						data.target->get_x() - 9 * 32,
 						data.target->get_y() - 9 * 32,
@@ -986,30 +984,24 @@ namespace hooks
 
 		if (data.attacker != nullptr)
 		{
-			UnitExt* attackerExt = get_unit_ext(data.attacker);
+			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 			switch (data.weapon_id)
 			{
 				case WeaponId::AlkajeliskPlasmidSpores:
 				case WeaponId::AlkajeliskParasiticSpores:
 				{
-					// Alkajelisk - Parasite
-					targetExt->values[ValueAlkajeliskParasite] = 1;
-					targetExt->values[ValueAlkajeliskParasitePlayer] = data.attacker->player;
-				} break;
-				case WeaponId::UltrokorKaiserBlades:
-				{
-					// Kaiser Rampage - Ultralisk behavior
-					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
-					data.attacker->update_speed();
+					// Alkajelisk - Spores
+					target_ext->values[ValueAlkajeliskSpores] = 1;
+					target_ext->values[ValueAlkajeliskSporesPlayer] = data.attacker->player;
 				} break;
 			}
 
 			// Mind Control - energy restore
-			if (attackerExt->units[UnitMindController] != nullptr)
+			if (attacker_ext->units[UnitMindController] != nullptr)
 			{
-				Unit* mindController = attackerExt->units[UnitMindController];
-				mindController->addUnitEnergy(MindControlEnergyGain);
-				mindController->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+				Unit* mind_controller = attacker_ext->units[UnitMindController];
+				mind_controller->addUnitEnergy(MindControlEnergyGain);
+				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 
 			u32 regression = scbw::get_zerg_regression(data.target->id);
@@ -1033,62 +1025,47 @@ namespace hooks
 
 	void apply_ensnare(Unit* unit) // 004F45E0
 	{
-		s32 baseProperty;
-		u8 overlayPadding;
-		Unit* victim;
-
-		if (!(unit->ensnare_timer)
-			&& !(unit->status & UnitStatus::Burrowed))
+		// Overlay
+		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed))
 		{
-			// Calculate overlay ID offset based on units_dat flags
-			overlayPadding = 0;
-			baseProperty = units_dat::base_property[unit->id];
-			if (baseProperty & UnitProperty::MediumOverlay)
-			{
-				overlayPadding = 1;
-			}
-			else if (baseProperty & UnitProperty::LargeOverlay)
-			{
-				overlayPadding = 2;
-			}
-			victim = unit;
+			Unit* victim = unit;
 			if (unit->subunit != nullptr)
 			{
 				victim = unit->subunit;
 			}
-			// Create overlay
-			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(victim->id));
 		}
-		// Apply effect
+
+		// Effect
 		unit->ensnare_timer = 37;
 		unit->update_speed();
 	}
 
 	u16 get_spores_overlay_id(Unit* target)
 	{
-		UnitExt* targetExt = get_unit_ext(target);
-		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
-		auto overlayMultiplier = 0;
+		UnitExt* target_ext = get_unit_ext(target);
+		auto stacks = target_ext->values[ValueCorrosiveTouchStacks];
+		auto overlay_multiplier = 0;
 		if (stacks > 18)
 		{
-			overlayMultiplier++;
+			overlay_multiplier++;
 		}
 		if (stacks > 35)
 		{
-			overlayMultiplier++;
+			overlay_multiplier++;
 		}
 		if (stacks > 50)
 		{
-			overlayMultiplier++;
+			overlay_multiplier++;
 		}
-		return overlayMultiplier + 4 * scbw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
+		return overlay_multiplier + 4 * scbw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
 	}
 
 	// Hooked to change Corrosive Spores timer - Pr0nogo
 	s32 apply_spores_hook(Unit* target) // 004F4480
 	{
-		UnitExt* targetExt = get_unit_ext(target);
-		targetExt->values[ValueCorrosiveTouchStacks]++;
+		UnitExt* target_ext = get_unit_ext(target);
+		target_ext->values[ValueCorrosiveTouchStacks]++;
 		Image* image = target->get_overlay(get_spores_overlay_id(target));
 		u32 overlay = 0;
 		if (image)
@@ -1109,33 +1086,115 @@ namespace hooks
 			final_sprite->create_overlay(spores_image, 0, 0, 0);
 		}
 
-		targetExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
+		target_ext->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		return 0;
 	}
 
-	// Hooked to fix one-shots never notifying owners. -Pr0nogo
-	void unit_attack_notify(Unit* unit) // 0048F230
-	{
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
-		{
+	// Hooked to fix one-shots not notifying owners. -Pr0nogo
+	void unit_attack_notify(Unit* unit) { // 0048F230
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
 			unit->last_event_color = g_palette_index_reference[20];
-			bool cooldown = *notify_cooldown == 0;
 			unit->last_event_timer = 20;
-			if (cooldown)
-			{
-				if (helper::unit_is_in_notify_range(unit))
-				{
-					if (!unit->attack_notify_timer)
-					{
+			if (!*notify_cooldown) {
+				if (helper::unit_is_in_notify_range(unit)) {
+					if (!unit->attack_notify_timer) {
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
 						*notify_cooldown = 100;
-						bool unit_is_grounded_building = (unit->status & UnitStatus::GroundedBuilding) != 0;
-						u32 sound_id = *console_index + (unit_is_grounded_building ? -0xFFFFFF8B : 120);
-						helper::play_sound_from_unit(sound_id, 0, options_list->flags & 1, 0);
-					//	helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (*&sound_duration[sound_id].anonymous_0 / 0x3E8u), 1, sound_id);
+
+						u32 sound_id = *console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
+						if (!(unit->status & UnitStatus::GroundedBuilding)) {
+							u32 sound_first = units_dat::sound_annoyed_first[unit->id];
+							u32 sound_last = units_dat::sound_annoyed_last[unit->id];
+							if (sound_first && sound_last) {
+								sound_id = scbw::rand_between_local(sound_first, sound_last);
+							}
+						}
+						helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
+						helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (SFXDAT_SoundData[sound_id].duration_ms / 1000), 1, sound_id);
 					}
 				}
 			}
 		}
+	}
+
+	// Hooked to reveal fog around attackers when they attack allies. -Pr0nogo
+	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal) { // 004795D0
+		if (attacker) {
+			if (attacker->player != victim->player) {
+				victim->last_attacking_player = attacker->player;
+				if (victim->unit_ai) {
+					if (!victim->auto_target_unit) {
+						victim->auto_target_unit = attacker;
+						if (victim->subunit) {
+							if (units_dat::base_property[victim->subunit->id] & UnitProperty::Subunit) {
+								victim->subunit->last_attacking_player = victim->last_attacking_player;
+								victim->subunit->auto_target_unit = attacker;
+							}
+						}
+					}
+				}
+				helper::ai_unit_was_hit(victim, attacker, 1, 0);
+				if (reveal) {
+					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
+						u32 flags = 1 << victim->player;
+						for (u32 i = 0; i < PlayerLimit; ++i) {
+							if (scbw::is_vision_allied_to(victim->player, i)) {
+								flags |= 1 << i;
+							}
+						}
+						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, attacker->status & UnitStatus::InAir);
+					}
+				}
+				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
+					attacker = attacker->connected_unit;
+				}
+				if (helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
+					helper::react_to_hit(attacker, victim);
+				}
+				if (!victim->unit_ai) {
+					Point16 pos = victim->sprite->position;
+
+					Box16 bounds = {};
+					bounds.x = pos.x - 96;
+					bounds.y = pos.y - 96;
+					bounds.w = pos.x + 96;
+					bounds.h = pos.y + 96;
+
+					Unit** units_in_bounds = helper::get_all_units_in_bounds(&bounds);
+					for (Unit* unit = *units_in_bounds; unit; ++units_in_bounds) {
+						if (unit != victim && unit->player == victim->player) {
+							helper::ask_for_help(attacker, unit);
+						}
+						unit = units_in_bounds[1];
+					}
+					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--g_temp_units_list_arrays_counts_list_last_index[0]];
+				}
+			}
+		}
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	u32 ask_for_help(Unit* attacker, Unit* helper) // 00476E60
+	{
+		// Originally had code to prohibit Didact and Danimoth unit IDs.
+		if (!(units_dat::base_property[helper->id] & UnitProperty::Worker)
+		&&  !(helper->status & UnitStatus::Burrowed))
+		{
+			if (helper::ai_unit_can_attack(helper))
+			{
+				if (helper::is_better_target(helper, helper->auto_target_unit, attacker))
+				{
+					Unit* subunit = helper->subunit;
+					helper->auto_target_unit = attacker;
+					if (helper::unit_is_subunit(subunit))
+					{
+						subunit->last_attacking_player = helper->last_attacking_player;
+						helper->subunit->auto_target_unit = attacker;
+					}
+					return 1;
+				}
+			}
+		}
+		return 0;
 	}
 }

@@ -25,15 +25,15 @@
 #include "scenario.h"
 #include "ai_layouts.h"
 #include "trigger_system/trigger_system.h"
+#include "trigger_system/trigger_parser.h"
 #include "math_utils.h"
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
 #include "config.h"
 #include "color_palette.h"
 #include "custom_ai.h"
-
-
 #include "SCBW\UnitFinder.h"
+
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
 		u32 overlay = ImageId::ShamanNaniteField;
@@ -55,11 +55,92 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	target->heal(heal * 256, shaman);
 }
 
+#pragma pack(push, 8)
+#include <discord_game_sdk.h>
+#pragma pack(pop)
+
+#define DiscordClientId 972072419013558326
 namespace hooks
 {
-	static bool game_inited;
+	HMODULE discord_dll;
+	typedef enum EDiscordResult discord_create_t(DiscordVersion version, struct DiscordCreateParams* params, struct IDiscordCore** result);
+	discord_create_t* discord_create;
 
-	void tick_unit(Unit* unit, bool unit_is_hidden);
+	static u32 discord_init_timeout;
+	static bool discord_in_game;
+	static IDiscordCore* discord;
+
+	static void init_discord(bool in_game) {
+		if (discord) {
+			return;
+		}
+
+		if (discord_init_timeout) {
+			discord_init_timeout--;
+			return;
+		}
+
+		if (!discord_dll) {
+			discord_dll = LoadLibraryA("discord_game_sdk.dll");
+			if (!discord_dll) {
+				discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
+				return;
+			}
+		}
+
+		if (!discord_create) {
+			discord_create = (discord_create_t*)GetProcAddress(discord_dll, "DiscordCreate");
+			if (!discord_create) {
+				discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
+				return;
+			}
+		}
+
+		DiscordCreateParams params = {};
+		params.client_id = DiscordClientId;
+		params.flags = DiscordCreateFlags_NoRequireDiscord;
+		EDiscordResult result = discord_create(DISCORD_VERSION, &params, &discord);
+		if (result != DiscordResult_Ok) {
+			discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
+			return;
+		}
+
+		discord_in_game = !in_game; // Let's force an update to activity, since we just init discord api
+	}
+
+	static void update_discord(bool in_game) {
+		init_discord(in_game);
+		if (!discord) {
+			return;
+		}
+
+		if (discord_in_game != in_game) {
+			discord_in_game = in_game;
+			IDiscordActivityManager* activity_manager = discord->get_activity_manager(discord);
+			if (activity_manager) {
+				DiscordActivity activity = {};
+				activity.type = DiscordActivityType_Playing;
+				sprintf_s(activity.name, "Cosmonarchy BW");
+				sprintf_s(activity.assets.large_text, "Cosmonarchy BW");
+				sprintf_s(activity.assets.large_image, "cmbw");
+				activity.timestamps.start = time(0);
+				if (in_game) {
+					sprintf_s(activity.details, "%s", current_map_name);
+					sprintf_s(activity.state, "In Game");
+					activity.instance = true;
+				} else {
+					sprintf_s(activity.details, "");
+					sprintf_s(activity.state, "In Menu");
+					activity.instance = false;
+				}
+				activity_manager->update_activity(activity_manager, &activity, 0, 0);
+			}
+		}
+
+		discord->run_callbacks(discord);
+	}
+
+	static bool game_inited;
 
 	void next_ui_frame() {
 		if (!game_inited) {
@@ -75,27 +156,28 @@ namespace hooks
 			}
 			*/
 		}
+		update_discord(false);
 		update_trigger_system(false);
 	}
 
 	void ui_button_click(BinDlg* dialog) {
 		if (dialog->parent && dialog->parent->psz_text && strcmp(dialog->parent->psz_text, "StatBtn") == 0) {
-			hooks::disable_quickcasting  = 5;
-			hooks::disable_quickbuilding = 5;
+			hooks::quickcasting_timeout  = 5;
+			hooks::quickbuilding_timeout = 5;
 		}
 	}
 
 	static bool process_quickcasting() {
-		if (config.quick_casting && *g_is_targeting && !disable_quickcasting) {
-			if (PtInRect(minimap_rect, *(POINT*) mouse)) {
-				u16 x = mouse->x;
-				u16 y = mouse->y;
+		if (config.quick_casting && *g_is_targeting && !quickcasting_timeout) {
+			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
+				u16 x = g_mouse->x;
+				u16 y = g_mouse->y;
 				helper::get_minimap_cursor_pos(&x, &y);
 				helper::do_targeted_order(x, y, 0, UnitId::None);
 			} else {
 				Event event = {};
-				event.x_pos = mouse->x;
-				event.y_pos = mouse->y;
+				event.x_pos = g_mouse->x;
+				event.y_pos = g_mouse->y;
 				helper::input_target_order_left_mouse_click(&event);
 			}
 			if (*g_is_targeting) {
@@ -107,7 +189,7 @@ namespace hooks
 	}
 
 	static bool process_quickbuilding() {
-		if (config.quick_building && *g_is_placing_building && !disable_quickbuilding) {
+		if (config.quick_building && *g_is_placing_building && !quickbuilding_timeout) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (g_is_keycode_used[c]) {
@@ -117,8 +199,8 @@ namespace hooks
 			}
 			if (not_held) {
 				Point16 position = {};
-				position.x = mouse->x;
-				position.y = mouse->y;
+				position.x = g_mouse->x;
+				position.y = g_mouse->y;
 
 				Event event = {};
 				event.x_pos = position.x;
@@ -134,10 +216,16 @@ namespace hooks
 		return false;
 	}
 
-	u8 disable_quickcasting;
-	u8 disable_quickbuilding;
+	u8 quickcasting_timeout;
+	u8 quickbuilding_timeout;
 	bool quickcasting_signal;
 	u32 quickcasting_command_card;
+	Unit* transport_ui_unit;
+
+	int transport_ui_click() {
+		helper::cmdact_unload(transport_ui_unit);
+		return 0;
+	}
 
 	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
 	u32 __cdecl set_ingame_input_procs() { // 00484CC0
@@ -168,33 +256,40 @@ namespace hooks
 			quickcasting_command_card = *orders_buttonset;
 		}
 
-		if (*g_is_placing_building) {
-			*left_click_proc = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
+		if (transport_ui_unit) {
+			*left_click_proc  = (InputProcsFunc*)transport_ui_click;
+			*right_click_proc = (InputProcsFunc*)transport_ui_click;
+		} else if (*g_is_placing_building) {
+			*left_click_proc  = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x00484600; // input_place_building_right_mouse_click;
 		} else if (*g_is_targeting) {
-			*left_click_proc = (InputProcsFunc*)0x004BD500; // input_target_order_left_mouse_click;
+			*left_click_proc  = (InputProcsFunc*)0x004BD500; // input_target_order_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x004845F0; // input_target_order_right_mouse_click;
 		} else {
-			*left_click_proc = (InputProcsFunc*)0x0046FF70; // input_game_left_mouse_click;
+			*left_click_proc  = (InputProcsFunc*)0x0046FF70; // input_game_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x004564E0; // input_game_right_mouse_click;
 		}
 		return 0;
 	}
+
+	void tick_unit(Unit* unit, bool unit_is_hidden);
 
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
 		*cpu_throttle = false;
 
-		if (disable_quickcasting && !*g_is_targeting) {
-			disable_quickcasting--;
+		if (quickcasting_timeout && !*g_is_targeting) {
+			quickcasting_timeout--;
 		}
-		if (disable_quickbuilding && !*g_is_placing_building) {
-			disable_quickbuilding--;
+		if (quickbuilding_timeout && !*g_is_placing_building) {
+			quickbuilding_timeout--;
 		}
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
+
+		update_discord(true);
 
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {
@@ -203,7 +298,7 @@ namespace hooks
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
 			hooks::init_screen_locations();
-			hooks::clear_actions();
+			hooks::init_actions();
 			globals.reset();
 			init_ext_variables();
 
@@ -230,7 +325,7 @@ namespace hooks
 
 			// Execute Triggers before frame 0
 			scbw::set_ingame_loop_state(true);
-			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[options_list->speed]);
+			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
 			scbw::set_ingame_loop_state(false);
 		}
 
@@ -238,12 +333,13 @@ namespace hooks
 			graphics::reset_all_graphics();
 		}
 
-		// Update Extended Features
+		// Update extended features
 		scbw::set_ingame_loop_state(true);
 		update_trigger_system(true);
 		if (!scbw::is_game_paused()) {
 			update_layouts();
 			update_custom_ai();
+			hooks::update_actions();
 		}
 		scbw::set_ingame_loop_state(false);
 
@@ -306,6 +402,7 @@ namespace hooks
 					{
 						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;
+						tile.exploredFlags &= ~reveal_flag;
 					}
 				}
 				*/
@@ -335,7 +432,7 @@ namespace hooks
 			}
 		}
 
-		options_list->speed = 6; // Lock game speed at fastest
+		g_options_list->speed = 6; // Lock game speed at fastest
 		if (!scbw::is_game_paused()) // If the game is not paused
 		{
 			*g_ai_update_cooldown = 0; // We don't want AI to be handicaped with request handling and whatnot
@@ -374,39 +471,58 @@ namespace hooks
 
 			// Draw transport UI
 			{
-				Point16 start_pos = {169, 333}; // {441, 203};
+				Point16 start_pos = {179, 333}; // {441, 203};
 				Point16 pos = start_pos;
 
-				u32 cargo_count[UnitId::Count] = {};
+				if (transport_ui_unit) {
+					transport_ui_unit = 0;
+					helper::set_ingame_input_procs();
+				}
+
+				u32 x_count = 0;
 				for (u32 i = 0; i < *g_client_selection_count; ++i) {
 					Unit* transport = g_client_selection_group->unit[i];
 					if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
 						for (u32 j = 0; j < TransportCap; ++j) {
 							Unit* cargo_unit = transport->get_loaded_unit(j);
 							if (cargo_unit) {
-								cargo_count[cargo_unit->id]++;
+								char buffer[128] = {};
+
+								bool own_unit = cargo_unit->player == *g_local_nation_id;
+								if (own_unit) {
+									snprintf(buffer, 128, BWTC_GREEN "%s", get_short_unit_name(cargo_unit->id).data);
+								} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
+									snprintf(buffer, 128, BWTC_YELLOW "%s", get_short_unit_name(cargo_unit->id).data);
+								} else {
+									snprintf(buffer, 128, BWTC_RED "%s", get_short_unit_name(cargo_unit->id).data);
+								}
+								u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+
+								RECT rect = {};
+								rect.left = pos.x;
+								rect.top = pos.y;
+								rect.right = rect.left + width;
+								rect.bottom = rect.top + 13;
+								bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
+								if (hover) {
+									snprintf(buffer, 128, BWTC_WHITE "%s", get_short_unit_name(cargo_unit->id).data);
+									width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+								}
+
+								graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+								if (hover && !transport_ui_unit) {
+									transport_ui_unit = cargo_unit;
+									helper::set_ingame_input_procs();
+								}
+
+								pos.x += width + 5;
+								x_count++;
+								if (x_count > 4) {
+									x_count = 0;
+									pos.x = start_pos.x;
+									pos.y -= 15; // += 15;
+								}
 							}
-						}
-					}
-				}
-
-				u32 x_count = 0;
-				for (u32 i = 0; i < UnitId::Count; ++i) {
-					if (cargo_count[i]) {
-						char buffer[128] = {};
-						if (cargo_count[i] == 1) {
-							snprintf(buffer, 128, "%s", Unit::get_name(i));
-						} else {
-							snprintf(buffer, 128, "%s (x%u)", Unit::get_name(i), cargo_count[i]);
-						}
-
-						u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-						graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-						pos.x += width + 5;
-						x_count++;
-						if (x_count > 4) {
-							pos.x = start_pos.x;
-							pos.y -= 15; // += 15;
 						}
 					}
 				}
@@ -442,15 +558,31 @@ namespace hooks
 		if (*g_active_portrait_unit)
 		{
 			Unit* selected = *g_active_portrait_unit;
-			//if (selected->sprite && selected->sprite->main_graphic) {
-			//	scbw::printf("%u", selected->sprite->main_graphic->animation);
-			//}
-			//scbw::printf("%u", selected->main_order_id);
-			//scbw::printf("0x%X", selected->status);
+			/*
+			// For checking cargo-related elements. -Pr0nogo
+			if (selected) {
+				for (u32 i = 0; i < TransportCap; ++i) {
+					Unit* cargo_unit = selected->get_loaded_unit(i);
+					if (!cargo_unit)
+					{
+						continue;
+					}
+					u32 unit_status = cargo_unit->status;
+					scbw::printf("0x%X", unit_status);
+				}
+			}
+			*/
+			/*
+			if (selected->sprite && selected->sprite->main_graphic) {
+				scbw::printf("%u", selected->sprite->main_graphic->animation);
+			}
+			*/
+		//	scbw::printf("%u", selected->main_order_id);
+		//	scbw::printf("0x%X", selected->status);
 
  			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {
-				if (selection->id == UnitId::ZergNydusCanal
+				if (selection->id == UnitId::ZergNydusCesiant
 					&& selection->building.nydus_exit
 					&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
 				{
@@ -460,6 +592,21 @@ namespace hooks
 			}
 		}
 		return true;
+	}
+
+	// Fix facing angles for specific units
+	static void init_unit(Unit* unit, UnitExt* unitExt) {
+		switch (unit->id) {
+			case UnitId::TerranGoliath: {
+				helper::turn_unit(unit, 96);
+				if (unit->subunit) {
+					helper::turn_unit(unit->subunit, 96);
+				}
+			} break;
+			case UnitId::TerranSentinel: {
+				helper::turn_unit(unit, 96);
+			} break;
+		}
 	}
 
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
@@ -479,9 +626,22 @@ namespace hooks
 		if (unit->sprite) {
 			SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
 			sprite_ext->owner = unit;
+			sprite_ext->should_consume_corpse = scbw::unit_get_corpse_consume(unit) != 0;
 		}
 
 		UnitExt* unitExt = get_unit_ext(unit);
+		if (unit->status & UnitStatus::Completed) {
+			if (unitExt->values[ValueUnitInit] != unit->id + 1) {
+				unitExt->values[ValueUnitInit] = unit->id + 1;
+				init_unit(unit, unitExt);
+			}
+		}
+
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
+			UnitExt* addon_ext = get_unit_ext(unit->building.addon);
+			addon_ext->units[UnitAddonParent] = unit;
+		}
+
 		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (unit->is_visible_to(i)) {
@@ -520,7 +680,7 @@ namespace hooks
 			unit->order_signal &= ~0x20;
 			globals.remove_unit_from_pariah_table(unit, true);
 		}
-		//hooks::ShowHealthBar(unit);
+		//hooks::show_health_bar(unit);
 
 		if (unit->unit_ai) {
 			if (unit->main_order_id == OrderId::ComputerAI) {
@@ -543,6 +703,7 @@ namespace hooks
 					if (hooks::fire_multiple(unit, unitExt, weapon_id, 4, FilterEnemy, true)) {
 						scbw::decloak_proc(unit);
 						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
 					}
 				}
 			} break;
@@ -622,8 +783,7 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergZoryusthaleth:
-			{
+			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Swarming Omen
 				if (unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
 				{
@@ -643,21 +803,11 @@ namespace hooks
 				}
 
 				// Zoryusthaleth - Reconstitution
-				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
-				{
+				if (unitExt->timers[TimerReconstitutionCooldown] == 0) {
 					u32 radius = 5 * 32;
 					EntryArray corpses = corpse_search_radial(unit->position, radius);
-					for (u32 i = 0; i < corpses.count; ++i)
-					{
+					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
-						if (unit->energy < 5 * 256)
-						{
-							break;
-						}
-						if (corpse->sprite->flags & SpriteFlags::Flag04)
-						{
-							continue;
-						}
 						EntryArray targets = unit_search_radial(unit->position, radius);
 						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.count; ++i) {
@@ -670,6 +820,24 @@ namespace hooks
 						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unitExt->timers[TimerReconstitutionCooldown] = 1 * 24;
+						break;
+					}
+				}
+			} break;
+			case UnitId::ZergUltrokor: {
+				// Kaiser Rampage - Ultrokor behavior
+				if (!unitExt->timers[TimerKaiserRampageTimeout]) {
+					u32 radius = 1 * 32;
+					EntryArray corpses = corpse_search_radial(unit->position, radius);
+					for (u32 i = 0; i < corpses.count; ++i) {
+						Thingy* corpse = corpses.corpses[i];
+						unitExt->timers[TimerKaiserRampageTimeout] = 0.5 * 24;
+						unitExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
+						unit->update_speed();
+
+						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						break;
 					}
 				}
@@ -785,7 +953,7 @@ namespace hooks
 				// Star Sovereign - Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation_level, unit->player, unit, unit);
+					globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation, unit->player, unit, unit);
 				}
 
 				// blast effects
@@ -919,11 +1087,11 @@ namespace hooks
 			} break;
 			case UnitId::TerranCuirass:
 			{
-				if (unitExt->values[ValueIsSelfReviving])
+				if (unitExt->values[ValueCuirassIsSelfReviving])
 				{
 					if (unit->hitpoints + CuirassSelfHeal >= unit->get_max_hp_raw())
 					{
-						unitExt->values[ValueIsSelfReviving] = 0;
+						unitExt->values[ValueCuirassIsSelfReviving] = 0;
 						unit->hitpoints = unit->get_max_hp_raw();
 						scbw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
@@ -2058,7 +2226,7 @@ namespace hooks
 						}
 					}
 				}
-				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCanal) {
+				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCesiant) {
 					continue;
 				}
 
@@ -2167,6 +2335,25 @@ namespace hooks
 		// Anticthon - Counter-Proposal - add overlay
 		if (unitExt->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
+		}
+
+		// Legionnaire - Blade Vortex - Handle debuff overlay
+		u32 blade_vortex = unitExt->timers[TimerBladeVortex];
+		if (blade_vortex > 1 && !unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id))) {
+			unit->sprite->create_top_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		}
+		else if (unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id)) && blade_vortex < 1) {
+			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		}
+
+		// Magister - Stellar Enforcement - Handle overlay looping
+		if (unitExt->values[ValueStellarEnforcement] && unitExt->timers[TimerStellarEnforcementOverlay] == 1) {
+			unitExt->timers[TimerStellarEnforcementOverlay] = 30;
+			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		}
+		// Handle overlays after effect is cleansed
+		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unitExt->values[ValueStellarEnforcement] == 0) {
+			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
 		}
 	}
 

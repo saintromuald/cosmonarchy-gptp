@@ -2,6 +2,9 @@
 #include <SCBW/structures/Unit.h>
 #include <SCBW/structures/Bullet.h>
 
+void apply_cooldown(Unit* unit, u8 weapon_id);
+Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+
 namespace hooks
 {
 	// Custom functions
@@ -19,6 +22,7 @@ namespace hooks
 	void progress_bullet_frames();																				// 0048C3D0
 	void bullet_behavior_reassign(Bullet* bullet);																// 0048BD50
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0
+	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim);						// 00476C90
 
 	void inject_weapon_fire_hooks();
 }

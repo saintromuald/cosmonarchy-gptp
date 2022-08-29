@@ -3,11 +3,11 @@
 #include "unit_constants.h"
 
 enum ChkUnitFlags {
-	ChkUnitFlags_Cloaked      = 0x01,
-	ChkUnitFlags_Burrowed     = 0x02,
+	ChkUnitFlags_Cloaked      = 0x01, // Ai Layout
+	ChkUnitFlags_Burrowed     = 0x02, 
 	ChkUnitFlags_Lifted       = 0x04,
-	ChkUnitFlags_Hallucinated = 0x08,
-	ChkUnitFlags_Invincible   = 0x10,
+	ChkUnitFlags_Hallucinated = 0x08, // Dont Request
+	ChkUnitFlags_Invincible   = 0x10, // Main Town
 };
 
 // This structure is mirrored in aise, be careful when you change it 
@@ -19,6 +19,7 @@ struct AiPlaceholder {
 	u8 resarea;
 	b8 was_preplaced;
 	b8 should_request;
+	b8 is_townhall_marker;
 
 	// Runtime data
 	b8 disabled;
@@ -52,9 +53,9 @@ struct AiUnitEquivalent {
 };
 
 const AiUnitEquivalent equivalents[] = {
-	{UnitId::ZergHatchery, UnitId::ZergLair, 1},
-	{UnitId::ZergLair, UnitId::ZergHive, 1},
-	{UnitId::ZergHive, UnitId::ZergSire, 1},
+	{UnitId::ZergHachirosk, UnitId::ZergCaphrolosk, 1},
+	{UnitId::ZergCaphrolosk, UnitId::ZergGathtelosk, 1},
+	{UnitId::ZergGathtelosk, UnitId::ZergSibraelosk, 1},
 
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
 	{UnitId::ZergOthstolOviform, UnitId::ZergAlaszilArbor, 2},
@@ -66,9 +67,9 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, 1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 
-	{UnitId::ZergCreepColony, UnitId::ZergSunkenColony, 0, true},
-	{UnitId::ZergCreepColony, UnitId::ZergSporeColony, 0, true},
-	{UnitId::ZergCreepColony, UnitId::ZergLarvalColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergSurkithColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergSpraithColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergLarvoskColony, 0, true},
 
 	{UnitId::ZergDroleth, UnitId::ZergGosvileth},
 	{UnitId::ZergOvileth, UnitId::ZergIroleth},

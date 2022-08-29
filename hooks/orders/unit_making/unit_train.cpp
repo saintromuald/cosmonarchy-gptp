@@ -36,6 +36,7 @@ namespace hooks
 						unit->secondary_order_state = 1;
 					} else {
 						built_unit->hangar_unit.parent = unit;
+						built_unit->sprite->player = unit->sprite->player;
 						unit->secondary_order_state = 2;
 					}
 				}
@@ -47,7 +48,7 @@ namespace hooks
 					if (built_unit->status & UnitStatus::Completed) {
 						helper::add_hangar_unit(unit, built_unit);
 						if (unit->status & UnitStatus::IsHallucination) {
-							apply_hallucination(built_unit, unit);
+							apply_hallucination(built_unit, unit, unit->remove_timer);
 						}
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 						unit->build_queue_slot++;
@@ -117,6 +118,10 @@ namespace hooks
 					}
 					else
 					{
+						builtUnit->sprite->player = unit->sprite->player;
+						if (builtUnit->subunit) {
+							builtUnit->subunit->sprite->player = unit->sprite->player;
+						}
 						scbw::play_work_animation(unit);
 					}
 				}

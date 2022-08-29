@@ -34,30 +34,30 @@ namespace hooks
 		dialog->onInitDialog0x36.response_area_bit_array = (u32*)helper::SMemAlloc(dialog->onInitDialog0x36.response_area_width * dialog->onInitDialog0x36.response_area_height, (char*)0x00505F98, 481, 0);
 		dialog->index = 0;
 
-		stack_placeholder.mouseX = mouse->x;
+		stack_placeholder.mouseX = g_mouse->x;
 		stack_placeholder.always_14_here = 14;	// 0x000E
 		stack_placeholder.unknown_value = 7;	// 0x00000007
 		stack_placeholder.always_zero_here = 0;
-		stack_placeholder.mouseY = mouse->y;
+		stack_placeholder.mouseY = g_mouse->y;
 
 		helper::fxn_interact(dialog, (u32)&stack_placeholder);
 
 		dialog->bounds.right += dialog->bounds.left;
 		dialog->bounds.bottom += dialog->bounds.top;
 
-		stack_placeholder.mouseY = mouse->y;
+		stack_placeholder.mouseY = g_mouse->y;
 		stack_placeholder.always_14_here = 14;	// 0x000E
 		stack_placeholder.unknown_value = 10;	// 0x0000000A
 		stack_placeholder.always_zero_here = 0;
-		stack_placeholder.mouseX = mouse->x;
+		stack_placeholder.mouseX = g_mouse->x;
 
 		helper::fxn_interact(dialog, (u32)&stack_placeholder);
 
-		stack_placeholder.mouseX = mouse->x;
+		stack_placeholder.mouseX = g_mouse->x;
 		stack_placeholder.always_14_here = 14;	// 0x000E
 		stack_placeholder.unknown_value = 0;
 		stack_placeholder.always_zero_here = 0;
-		stack_placeholder.mouseY = mouse->y;
+		stack_placeholder.mouseY = g_mouse->y;
 
 		helper::fxn_interact(dialog, (u32)&stack_placeholder);
 		helper::set_callback_timer(dialog, 12, 100, 0);

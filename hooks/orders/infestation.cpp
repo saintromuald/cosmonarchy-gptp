@@ -5,13 +5,13 @@
 namespace hooks
 {
 	// replace 0x00402750 canInfest
-	bool unitCanInfestHook(Unit* unit)
+	bool unit_can_infest(Unit* unit)
 	{
 		return false;
 	}
 
 	// replace 0x00402210 CC_CanBeInfested
-	bool isInfestableUnitHook(Unit* unit)
+	bool unit_can_be_infested(Unit* unit)
 	{
 		u32 unitHpTest;
 		u32 unitMaxHp;
@@ -31,14 +31,14 @@ namespace hooks
 	}
 
 	// Based on and replace orders_InfestMine1 (0x004EA4C0)
-	void orderMorphIntoInfested(Unit* unitInfested)
+	void unit_morph_into_infested_order(Unit* unitInfested)
 	{
 		bool bErrorReturnToIdle;
 		bool bStopFunction = false;
 		u16 infestedUnitNewId;
 		u16 infestationOverlayId;
 		Unit* unitInfesting = unitInfested->order_target.unit;
-		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnitHook(unitInfested));
+		bErrorReturnToIdle = (unitInfesting == nullptr || !unit_can_be_infested(unitInfested));
 
 		if (!bErrorReturnToIdle)
 		{
@@ -160,7 +160,7 @@ namespace hooks
 	}
 
 	// Based on and replace 004EA290 orders_InfestMine4
-	void orderInfestTarget(Unit* unitInfesting)
+	void unit_infest_order(Unit* unitInfesting)
 	{
 		Unit* unitInfested = unitInfesting->order_target.unit;
 		bool bBuildTimeReachedZero = false;
@@ -224,7 +224,7 @@ namespace hooks
 		{ // EA33F
 			// not started the infestation logic yet, doing it here
 			if (unitInfested != nullptr
-				&& isInfestableUnitHook(unitInfested)
+				&& unit_can_be_infested(unitInfested)
 				&& unitInfested->main_order_id != OrderId::InfestMine1)
 			{
 				helper::hide_and_disable_unit(unitInfesting);								// hide the infesting unit

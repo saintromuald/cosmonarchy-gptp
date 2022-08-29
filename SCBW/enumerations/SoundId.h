@@ -1161,6 +1161,7 @@ namespace SoundId
 
 		WyvernAttack01						= 1118,
 		WyvernAttack02						= 1119,
+
 		AugurDeath01						= 1235,
 		AugurDeath02						= 1236,
 		AugurDeath03						= 1237,
@@ -1168,6 +1169,12 @@ namespace SoundId
 		MindTyrantMindControlChannel		= 1276,
 		AkistrokorBlissfulEmbraceChannel	= 1277,
 		Simulacrum_Clone_01					= 1332,
+
+		MadcapOrderAggressive01				= 1344,
+		MadcapOrderAggressive02				= 1345,
+		MadcapOrderAggressive03				= 1346,
+		MadcapOrderAggressive04				= 1347,
+
 		PhobosArgentCapacitorsProc			= 1353,
 		PazuzuDeconstructionDamage			= 1372,
 		LakiziliskProjectileReturn			= 1392,
@@ -1206,6 +1213,10 @@ namespace SoundId
 		CohortRevive01						= 1886,
 		CohortRevive02						= 1887,
 
+		EvigriliskFire01					= 1898,
+		EvigriliskFire02					= 1899,
+		EvigriliskFire03					= 1900,
+
 		LazarusAgentProc					= 1905,
 
 		SwarmingOmenProc01					= 1907,
@@ -1220,6 +1231,107 @@ namespace SoundId
 		SavantEntropyFire03					= 1931,
 		SavantEntropyFire04					= 1932,
 		SavantEntropyFire05					= 1933,
+
+		HierophantOrderAggressive01			= 1939,
+		HierophantOrderAggressive02			= 1940,
+		HierophantOrderAggressive03			= 1941,
+		HierophantOrderAggressive04			= 1942,
+		HierophantReady01					= 1943,
+		HierophantReady02					= 1944,
+		HierophantReady03					= 1945,
+		LegionnaireReady01					= 1946,
+		LegionnaireReady02					= 1947,
+		LegionnaireReady03					= 1948,
+		ApostleReady01						= 1949,
+		ApostleReady02						= 1950,
+		ApostleReady03						= 1951,
+		ShamanReady01						= 1952,
+		ShamanReady02						= 1953,
+		ShamanReady03						= 1954,
+		CyprianReady01						= 1955,
+		CyprianReady02						= 1956,
+		CyprianReady03						= 1957,
+		WyvernReady01						= 1958,
+		WyvernReady02						= 1959,
+		WyvernReady03						= 1960,
+		PaladinReady01						= 1961,
+		PaladinReady02						= 1962,
+		PaladinReady03						= 1963,
+		ZealotReady01						= 1964,
+		ZealotReady02						= 1965,
+//		ZealotReady03						= 1966,
+		PhalanxReady01						= 1967,
+		PhalanxReady02						= 1968,
+//		PhalanxReady03						= 1969,
+		LegionnaireHelp01					= 1970,
+		LegionnaireHelp02					= 1971,
+//		LegionnaireHelp03					= 1972,
+		PaladinHelp01						= 1973,
+		PaladinHelp02						= 1974,
+//		PaladinHelp03						= 1975,
+
+		PariahHelp01						= 1985,
+		PariahHelp02						= 1986,
+		PariahHelp03						= 1987,
+		PariahReady01						= 1988,
+		PariahReady02						= 1989,
+		PariahReady03						= 1990,
+		PariahOrderAggressive01				= 1991,
+		PariahOrderAggressive02				= 1992,
+		PariahOrderAggressive03				= 1993,
+		PariahOrderAggressive04				= 1994,
+		EcclesiastReady01					= 1995,
+		EcclesiastReady02					= 1996,
+		EcclesiastReady03					= 1997,
+		EcclesiastHelp01					= 1998,
+		EcclesiastHelp02					= 1999,
+		EcclesiastHelp03					= 2000,
+		StarSovereignReady01				= 2001,
+		StarSovereignReady02				= 2002,
+		StarSovereignReady03				= 2003,
+		StarSovereignHelp01					= 2004,
+		StarSovereignHelp02					= 2005,
+		StarSovereignHelp03					= 2006,
+
+		EcclesiastOrderAggressive01			= 2027,
+		EcclesiastOrderAggressive02			= 2028,
+		EcclesiastOrderAggressive03			= 2029,
+		EcclesiastOrderAggressive04			= 2030,
+		LegionnaireOrderAggressive01		= 2031,
+		LegionnaireOrderAggressive02		= 2032,
+		LegionnaireOrderAggressive03		= 2033,
+		LegionnaireOrderAggressive04		= 2034,
+		StarSovereignOrderAggressive01		= 2035,
+		StarSovereignOrderAggressive02		= 2036,
+		StarSovereignOrderAggressive03		= 2037,
+		StarSovereignOrderAggressive04		= 2038,
+		CyprianOrderAggressive01			= 2039,
+		CyprianOrderAggressive02			= 2040,
+		CyprianOrderAggressive03			= 2041,
+		CyprianOrderAggressive04			= 2042,
+		WyvernOrderAggressive01				= 2043,
+		WyvernOrderAggressive02				= 2044,
+		WyvernOrderAggressive03				= 2045,
+		WyvernOrderAggressive04				= 2046,
+		ApostleOrderAggressive01			= 2047,
+		ApostleOrderAggressive02			= 2048,
+		ApostleOrderAggressive03			= 2049,
+		ApostleOrderAggressive04			= 2050,
+		PaladinOrderAggressive01			= 2051,
+		PaladinOrderAggressive02			= 2052,
+		PaladinOrderAggressive03			= 2053,
+		PaladinOrderAggressive04			= 2054,
+		MagisterOrderAggressive01			= 2055,
+		MagisterOrderAggressive02			= 2056,
+		MagisterOrderAggressive03			= 2057,
+		MagisterOrderAggressive04			= 2058,
+		MagisterReady01						= 2059,
+		MagisterReady02						= 2060,
+		MagisterReady03						= 2061,
+		MagisterHelp01						= 2062,
+		MagisterHelp02						= 2063,
+		MagisterHelp03						= 2064,
+		MagisterHelp04						= 2065,
 	};
 }
 
@@ -1363,10 +1475,10 @@ namespace DeathSoundId
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//Powerup_UrajCrystal
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//Powerup_KhalisCrystal
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ZergInfestedCommandCenter
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV },						//ZergHatchery
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergLair
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergHive
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergNydusCanal
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV },						//ZergHachirosk
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergCaphrolosk
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergGathtelosk
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergNydusCesiant
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergHydraliskDen
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergDefilerMound
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergGuardianRoost
@@ -1375,10 +1487,10 @@ namespace DeathSoundId
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergUltraliskCavern
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSpire
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergQuazrokPool
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergCreepColony
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSporeColony
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergCagrantColony
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSpraithColony
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedZerg1
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSunkenColony
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergSurkithColony
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//Special_OvermindWithShell
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//Special_Overmind
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergExtractor

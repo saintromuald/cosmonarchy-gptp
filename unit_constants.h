@@ -28,8 +28,8 @@ const s32 MindControlEnergyGain = 5 * 256;
 // Shared
 const s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 
-// Charlatan
-const s32 CharlatanHallucinationTimer = 3 * 24;
+// Hallucinating
+const s32 HallucinatingTimer = 3 * 24;
 
 // TERRAN \\
 
@@ -93,7 +93,7 @@ const s32 TreasuryIncrease = 8;
 const s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
 
 // Cantavis
-const s32 CantavisHallucinationTimer = 10 * 24 + 1;
+const s32 CantavisHallucinatingFieldTimer = 10 * 24 + 1;
 
 // Archon
 const s32 ArchonAstralAegisShieldHeal = 50 * 256;

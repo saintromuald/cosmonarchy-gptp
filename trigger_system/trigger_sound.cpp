@@ -1,15 +1,14 @@
 #include "trigger_sound.h"
-#include "trigger_utils.h"
 
-static LPDIRECTSOUND direct_sound;
-static LPDIRECTSOUNDBUFFER duplicated_buffers[MaxDupChannels];
-
-Playlist current_playlist;
-Playback playback;
+LPDIRECTSOUND direct_sound;
+DupChannel dup_channels[MaxDupChannels];
 
 u32 loaded_sounds_count;
 Sound loaded_sounds[MaxSound];
 Sound* loaded_sounds_hash_table[MaxSoundHash];
+
+Playlist current_playlist;
+Playback playback;
 
 void init_sound() {
 	if (!direct_sound) {
@@ -17,13 +16,13 @@ void init_sound() {
 	}
 
 	for (u32 i = 0; i < MaxDupChannels; ++i) {
-		if (duplicated_buffers[i]) {
-			duplicated_buffers[i]->Release();
-			duplicated_buffers[i] = 0;
+		if (dup_channels[i].ds_buffer) {
+			dup_channels[i].ds_buffer->Release();
+			dup_channels[i].ds_buffer = 0;
 		}
 	}
 
-	for (u32 i = 0; i < MaxSound; ++i) {
+	for (u32 i = 0; i < loaded_sounds_count; ++i) {
 		free_sound(&loaded_sounds[i]);
 	}
 
@@ -31,6 +30,7 @@ void init_sound() {
 	memset(loaded_sounds, 0, sizeof(loaded_sounds));
 	memset(loaded_sounds_hash_table, 0, sizeof(loaded_sounds_hash_table));
 
+	memset(&current_playlist, 0, sizeof(current_playlist));
 	memset(&playback, 0, sizeof(playback));
 	playback.fade = 1;
 	playback.target_fade = 1;
@@ -65,6 +65,18 @@ void init_direct_sound() {
 }
 
 void update_sound() {
+	for (u32 i = 0; i < loaded_sounds_count; ++i) {
+		Sound* sound = &loaded_sounds[i];
+		if (sound->ds_buffer && GetTickCount() - sound->last_play_time >= 10 * 1000) {
+			DWORD status = 0;
+			sound->ds_buffer->GetStatus(&status);
+			if (status != DSBSTATUS_PLAYING) {
+				sound->ds_buffer->Release();
+				sound->ds_buffer = 0;
+			}
+		}
+	}
+
 	if (playback.current_music && playback.current_music->ds_buffer) {
 		DWORD status = 0;
 		playback.current_music->ds_buffer->GetStatus(&status);
@@ -83,23 +95,17 @@ void update_sound() {
 		}
 		if (playback.fade <= 0) {
 			playback.fade = 0;
-
-			if (playback.paused) {
-				if (playback.current_music && playback.current_music->ds_buffer) {
-					playback.current_music->ds_buffer->Stop();
-				}
-			} else {
-				stop_music();
-			}
+			stop_music(playback.paused);
 		}
 	}
 
 	if (!playback.current_music && !playback.paused) {
-		if (!playback.next_music) {
-			playback.next_music = get_next_music();
+		if (playback.next_music) {
+			playback.current_music = playback.next_music;
+			playback.next_music = 0;
+		} else {
+			playback.current_music = get_next_music();
 		}
-		playback.current_music = playback.next_music;
-		playback.next_music = get_next_music();
 		if (playback.current_music) {
 			playback.target_fade = 1;
 			play_music(false);
@@ -108,12 +114,12 @@ void update_sound() {
 
 	if (playback.current_music || playback.paused) {
 		if (*g_music_playing) {
-			helper::stopMusic();
+			*g_music_playing = false; // So we don't do retarded lard fade which freezes the game
+			helper::stop_bw_music();
 		}
-	} else {
-		if (!*g_music_playing) {
-			helper::playNextMusic();
-		}
+	} else if (!*g_music_playing) {
+		*g_music_playing = true; // So we actually play the vanilla music
+		helper::play_next_bw_music();
 	}
 
 	if (playback.target_fade == 1) {
@@ -149,19 +155,63 @@ void update_sound() {
 	}
 }
 
-static LPDIRECTSOUNDBUFFER load_ds_buffer(Sound* sound, SoundLoadData* sound_load_data) {
+static bool load_ds_buffer(Sound* sound) {
 	if (!direct_sound) {
-		return 0;
+		return false;
+	}
+
+	LoadedFile file = load_entire_sfile(sound->path);
+	if (!file.data) {
+		scbw::printf("Error: File %s missing!", sound->path);
+		return false;
+	}
+
+	WAVEFORMATEX wave_format = {};
+	size_t size = 0;
+	s8* data = 0;
+
+	u8* at = (u8*)file.data;
+	void* end = file.data + file.size;
+	while (at < end) {
+		u32* type = (u32*)at;
+		switch (*type) {
+			case RiffFormat_Riff: {
+				WaveHeader* header = (WaveHeader*) at;
+				at += sizeof(*header);
+			} break;
+			case RiffFormat_Data: {
+				WaveData* wave_data = (WaveData*) at;
+				at += wave_data->chunk_size + 8;
+
+				size = wave_data->chunk_size;
+				data = (s8*)(wave_data + 1);
+			} break;
+			case RiffFormat_Fmt: {
+				WaveFormat* format = (WaveFormat*) at;
+				at += format->chunk_size + 8;
+				wave_format.wFormatTag = format->format_type;
+				wave_format.nChannels = format->channels;
+				wave_format.nSamplesPerSec = format->samples_per_sec;
+				wave_format.nAvgBytesPerSec = format->average_bytes_per_sec;
+				wave_format.nBlockAlign = format->block_align;
+				wave_format.wBitsPerSample = format->bits_per_sample;
+			} break;
+			default: {
+				at = (u8*)end;
+				// @Todo: log an error
+			} break;
+		}
 	}
 
 	DSBUFFERDESC buffer_description = {};
 	buffer_description.dwSize = sizeof(DSBUFFERDESC);
 	buffer_description.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN;
-	buffer_description.dwBufferBytes = sound_load_data->size;
-	buffer_description.lpwfxFormat = &sound_load_data->wave_format;
+	buffer_description.dwBufferBytes = size;
+	buffer_description.lpwfxFormat = &wave_format;
 
 	if (!SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &sound->ds_buffer, 0))) {
-		return 0;
+		free_loaded_file(&file);
+		return false;
 	}
 
 	u32 play_cursor = 0;
@@ -172,87 +222,50 @@ static LPDIRECTSOUNDBUFFER load_ds_buffer(Sound* sound, SoundLoadData* sound_loa
 		u8* ptr2 = 0;
 		u32 bytes2 = 0;
 
-		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, sound_load_data->size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
+		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
 			if (ptr1) {
-				s16* out = (s16*) ptr1;
-				for (u32 i = 0; i < bytes1 / sizeof(s16); ++i) {
-					*out++ = sound_load_data->data[i];
+				for (u32 i = 0; i < bytes1; ++i) {
+					ptr1[i] = data[i];
 				}
 			}
 			if (ptr2) {
-				s16* out = (s16*) ptr2;
-				for (u32 i = 0; i < bytes2 / sizeof(s16); ++i) {
-					*out++ = sound_load_data->data[i];
+				for (u32 i = 0; i < bytes2; ++i) {
+					ptr2[i] = data[i];
 				}
 			}
 
 			sound->ds_buffer->Unlock(ptr1, bytes1, ptr2, bytes2);
+
+			free_loaded_file(&file);
+			return true;
 		}
 	}
+
+	sound->ds_buffer->Release();
+	sound->ds_buffer = 0;
+	free_loaded_file(&file);
+	return false;
 }
 
 Sound* load_sound(char* filename) {
+	if (!filename) {
+		return 0;
+	}
 	if (loaded_sounds_count < MaxSound) {
-		LoadedFile file = load_entire_sfile(filename);
-		if (!file.data) {
-			scbw::printf("Error: File %s missing!", filename);
+		Sound* sound = &loaded_sounds[loaded_sounds_count++];
+		snprintf(sound->path, MaxPath, "%s", filename);
+
+		if (file_exists(sound->path)) {
+			u32 hash_index = hash_string(filename) % MaxSoundHash;
+			sound->hash_next = loaded_sounds_hash_table[hash_index];
+			loaded_sounds_hash_table[hash_index] = sound;
+			return sound;
+		} else {
+			loaded_sounds_count--;
 			return 0;
 		}
-
-		SoundLoadData sound_load_data = {};
-
-		u8* at = (u8*)file.data;
-		void* end = file.data + file.size;
-		while (at < end) {
-			u32* type = (u32*)at;
-			switch (*type) {
-				case RiffFormat_Riff: {
-					WaveHeader* header = (WaveHeader*) at;
-					at += sizeof(*header);
-				} break;
-				case RiffFormat_Data: {
-					WaveData* data = (WaveData*) at;
-					at += data->chunk_size + 8;
-
-					sound_load_data.size = data->chunk_size;
-					sound_load_data.data = (s16*)data + 1;
-				} break;
-				case RiffFormat_Fmt: {
-					WaveFormat* format = (WaveFormat*) at;
-					at += format->chunk_size + 8;
-					sound_load_data.wave_format.wFormatTag = format->format_type;
-					sound_load_data.wave_format.nChannels = format->channels;
-					sound_load_data.wave_format.nSamplesPerSec = format->samples_per_sec;
-					sound_load_data.wave_format.nAvgBytesPerSec = format->average_bytes_per_sec;
-					sound_load_data.wave_format.nBlockAlign = format->block_align;
-					sound_load_data.wave_format.wBitsPerSample = format->bits_per_sample;
-				} break;
-				default: {
-					at = (u8*)end;
-					// @Todo: log an error
-				} break;
-			}
-		}
-
-		Sound* sound = &loaded_sounds[loaded_sounds_count++];
-		strcpy_s(sound->path, filename);
-
-		load_ds_buffer(sound, &sound_load_data);
-		free_loaded_file(&file);
-
-		u32 hash_index = hash_string(filename) % MaxSoundHash;
-		sound->hash_next = loaded_sounds_hash_table[hash_index];
-		loaded_sounds_hash_table[hash_index] = sound;
-		return sound;
 	}
 	return 0;
-}
-
-void free_sound(Sound* sound) {
-	if (sound->ds_buffer) {
-		sound->ds_buffer->Release();
-		sound->ds_buffer = 0;
-	}
 }
 
 Sound* get_sound(char* filename) {
@@ -267,41 +280,55 @@ Sound* get_sound(char* filename) {
 	return sound;
 }
 
-void play_sound(Sound* sound, s32 volume, s32 pan) {
-	if (!sound) {
-		return;
+void free_sound(Sound* sound) {
+	if (sound->ds_buffer) {
+		sound->ds_buffer->Release();
+		sound->ds_buffer = 0;
 	}
-	if (sound->last_play_time && *g_elapsed_time_frames - sound->last_play_time < 3) {
-		return;
+}
+
+bool play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
+	if (!sound) {
+		return false;
+	}
+	if (!sound->ds_buffer) {
+		if (!load_ds_buffer(sound)) {
+			return false;
+		}
+	}
+	if (sound->last_play_time && GetTickCount() - sound->last_play_time < 80) {
+		return false;
 	}
 
 	DWORD status = 0;
 	sound->ds_buffer->GetStatus(&status);
-	if (status == DSBSTATUS_PLAYING) {
+	if (status == DSBSTATUS_PLAYING || unit_id != -1) {
 		// Use dup channel
-		LPDIRECTSOUNDBUFFER* dup_buffer = 0;
+		DupChannel* dup_buffer = 0;
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
-			if (duplicated_buffers[i]) {
+			if (dup_channels[i].ds_buffer) {
 				DWORD dup_status = 0;
-				duplicated_buffers[i]->GetStatus(&dup_status);
+				dup_channels[i].ds_buffer->GetStatus(&dup_status);
 				if (dup_status != DSBSTATUS_PLAYING) {
-					duplicated_buffers[i]->Release();
-					duplicated_buffers[i] = 0;
+					dup_channels[i].ds_buffer->Release();
+					dup_channels[i].ds_buffer = 0;
 				}
 			}
-			if (!duplicated_buffers[i]) {
-				dup_buffer = &duplicated_buffers[i];
+			if (!dup_channels[i].ds_buffer) {
+				dup_buffer = &dup_channels[i];
 			}
 		}
 
 		if (dup_buffer) {
-			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, dup_buffer);
-			if (*dup_buffer) {
-				(*dup_buffer)->SetVolume(volume);
-				(*dup_buffer)->SetPan(pan);
-				(*dup_buffer)->SetCurrentPosition(0);
-				(*dup_buffer)->Play(0, 0, 0);
-				sound->last_play_time = *g_elapsed_time_frames;
+			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, &dup_buffer->ds_buffer);
+			if (dup_buffer->ds_buffer) {
+				dup_buffer->ds_buffer->SetVolume(volume);
+				dup_buffer->ds_buffer->SetPan(pan);
+				dup_buffer->ds_buffer->SetCurrentPosition(0);
+				dup_buffer->ds_buffer->Play(0, 0, 0);
+				dup_buffer->unit_id = unit_id;
+				sound->last_play_time = GetTickCount();
+				return true;
 			}
 		}
 	} else {
@@ -309,24 +336,31 @@ void play_sound(Sound* sound, s32 volume, s32 pan) {
 		sound->ds_buffer->SetPan(pan);
 		sound->ds_buffer->SetCurrentPosition(0);
 		sound->ds_buffer->Play(0, 0, 0);
-		sound->last_play_time = *g_elapsed_time_frames;
+		sound->last_play_time = GetTickCount();
+		return true;
 	}
+	return false;
 }
 
 void play_music(bool resume) {
-	if (playback.current_music && playback.current_music->ds_buffer) {
-		playback.current_music->ds_buffer->SetVolume(get_playback_volume());
-		playback.current_music->ds_buffer->SetPan(0);
-		if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
-		playback.current_music->ds_buffer->Play(0, 0, 0);
+	if (playback.current_music) {
+		if (!playback.current_music->ds_buffer) {
+			load_ds_buffer(playback.current_music);
+		}
+		if (playback.current_music->ds_buffer) {
+			playback.current_music->ds_buffer->SetVolume(get_playback_volume());
+			playback.current_music->ds_buffer->SetPan(0);
+			if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
+			playback.current_music->ds_buffer->Play(0, 0, 0);
+		}
 	}
 }
 
-void stop_music() {
-	if (playback.current_music->ds_buffer) {
+void stop_music(bool pause) {
+	if (playback.current_music && playback.current_music->ds_buffer) {
 		playback.current_music->ds_buffer->Stop();
 	}
-	playback.current_music = 0;
+	if (!pause) playback.current_music = 0;
 }
 
 void shuffle_playlist() {
@@ -355,7 +389,7 @@ s32 get_sound_volume() {
 	if (*use_quiet_sounds) {
 		index /= 5;
 	}
-	return g_big_volume_array[index * options_list->sfx / 100];
+	return g_big_volume_array[index * g_options_list->sfx / 100];
 }
 
 s32 get_sound_volume_at_pos(Point16 pos) {
@@ -366,7 +400,7 @@ s32 get_sound_volume_at_pos(Point16 pos) {
 	if (index <= 10) {
 		return DSBVOLUME_MIN;
 	}
-	return g_big_volume_array[index * options_list->sfx / 100];
+	return g_big_volume_array[index * g_options_list->sfx / 100];
 }
 
 s32 get_playback_volume() {

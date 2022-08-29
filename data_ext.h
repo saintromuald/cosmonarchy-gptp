@@ -5,6 +5,7 @@
 
 enum ExtValueId
 {
+	ValueUnitInit,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
 	ValueSomaticImplants,
@@ -40,8 +41,8 @@ enum ExtValueId
 	ValueLazarusAgent,
 	ValueRepententChorus,
 	ValueStellarEnforcement,
-	ValueAlkajeliskParasite,
-	ValueAlkajeliskParasitePlayer,
+	ValueAlkajeliskSpores,
+	ValueAlkajeliskSporesPlayer,
 	ValueSovereignCannonPos,
 	ValueAICloakGimmick,
 	ValueKeskathalorMissilePos,
@@ -91,7 +92,7 @@ enum ExtValueId
 	ValueCharlatanMissilePos,
 	ValueIsNeutralBunker,
 	ValueIsZombified,
-	ValueIsSelfReviving,
+	ValueCuirassIsSelfReviving,
 	ValueTalosAnimationTimer,
 	ValueBlissfulEmbraceOriginalPlayer,
 	ValueBlissfulEmbraceOriginalHealth,
@@ -104,6 +105,11 @@ enum ExtValueId
 	ValueSovrolethLinkCount,
 	ValueParasiteArmPlayer,
 	ValueDisableAutoBurrow,
+	ValueSentinelMissilePos,
+	ValuePhotonCannonMissilePos,
+	ValueCowardiceOverlay,
+	ValueHasCustomSprite,
+	ValueUnitResponseOrder,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -118,6 +124,7 @@ enum ExtValueId
 enum ExtTimerId
 {
 	TimerKaiserRampage,
+	TimerKaiserRampageTimeout,
 	TimerMaledictionSlow,						// unused
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
@@ -180,6 +187,8 @@ enum ExtTimerId
 	TimerTalosSoundLoopTimer,
 	TimerAddonAnimation,
 	TimerSwarmingOmenSFX,
+	TimerBladeVortex,
+	TimerStellarEnforcementOverlay,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -214,6 +223,8 @@ enum ExtUnitId
 	UnitTurretParentLink,
 	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
+	UnitAddonParent,
+	UnitUnitResponseTarget,
 
 	UnitCount,
 };
@@ -287,6 +298,7 @@ struct TileExt {
 
 struct SpriteExt {
 	bool is_fow_sprite;
+	bool should_consume_corpse;
 	Unit* owner;
 };
 

@@ -40,7 +40,7 @@ void update_spawn() {
 					unit->order_to(OrderId::AttackMove, seq->move_pos.x, seq->move_pos.y);
 				}
 			}
-			if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding || unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair || unit->id == UnitId::ZergHive || unit->id == UnitId::ZergSire) {
+			if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding || unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk || unit->id == UnitId::ZergSibraelosk) {
 				helper::spread_initial_creep(unit->id, unit->position.x, unit->position.y);
 			}
 		}
@@ -54,7 +54,7 @@ void update_spawn() {
 					explo = SpriteId::ZergAirExplosionLarge;
 				}
 				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
-				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation_level + 1);
+				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
 				helper::play_sound_at_pos(SoundId::Zerg_Bldg_ZBldgDth_WAV, seq->source_pos, 1, 0);
 			} break;
 		}

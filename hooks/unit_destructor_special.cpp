@@ -140,14 +140,32 @@ void free_resource_container(Unit* resource)
 
 void unit_destructor_special_cases(Unit* unit)
 {
-	UnitExt* unitExt = get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 	unit->reset_supply_provided();
+
+	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
+		Unit* parent = unit_ext->units[UnitAddonParent];
+		if (parent) {
+			u32 offset = 0;
+			for (u32 i = 1; i < 5; ++i) {
+				u32 slot = i + parent->build_queue_slot - offset;
+				u32 unit_id = parent->build_queue[slot];
+				if (unit_id == UnitId::None) {
+					continue;
+				}
+				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
+					helper::refund_queue_slot(parent, slot);
+					offset++;
+				}
+			}
+		}
+	}
 
 	/*
 	if (!(unit->user_action_flags & 4) && // for silent remove
 		  unit->status & UnitStatus::Completed && 
-	     (unit->id == UnitId::ZergHatchery || unit->id == UnitId::ZergLair ||
-		  unit->id == UnitId::ZergHive     || unit->id == UnitId::ZergSire ||
+	     (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk ||
+		  unit->id == UnitId::ZergGathtelosk     || unit->id == UnitId::ZergSibraelosk ||
 		  units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) ||
 		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
 	{
@@ -212,7 +230,7 @@ void unit_destructor_special_cases(Unit* unit)
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			*g_can_update_powered_status = true;
 		} break;
-		case UnitId::ZergNydusCanal:
+		case UnitId::ZergNydusCesiant:
 		{
 			Unit* nydus_exit = unit->building.nydus_exit;
 			if (nydus_exit != nullptr)
@@ -223,9 +241,6 @@ void unit_destructor_special_cases(Unit* unit)
 			}
 			break;
 		}
-		default:
-		{
-		}
 	}
 
 	// These require the unit to be completed
@@ -235,7 +250,7 @@ void unit_destructor_special_cases(Unit* unit)
 		{
 			case UnitId::SharedAspirant:
 			{
-				globals.create_effect(EffectId_Criticality, 10 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				globals.create_effect(EffectId_Criticality, 5 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -346,11 +361,11 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Alkajelisk Parasitic Spores behavior
-	if (unitExt->values[ValueAlkajeliskParasite] == 1)
+	if (unit_ext->values[ValueAlkajeliskSpores] == 1)
 	{
 		unit->order_target.pt.x = unit->position.x + 1;
 		unit->order_target.pt.y = unit->position.y;
-		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
+		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskSporesPlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;
@@ -358,20 +373,20 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Madrigal - Dirge
-	if (unitExt->timers[TimerDirgeFuse])
+	if (unit_ext->timers[TimerDirgeFuse])
 	{
-		scbw::madrigal_dirge_fuse(unit, unitExt);
+		scbw::madrigal_dirge_fuse(unit, unit_ext);
 	}
 
 	// Apostle Lazarus Agent - imply revive
-	if (unitExt->values[ValueLazarusAgent] || unitExt->timers[TimerAnticthonRevive])
+	if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive])
 	{
 		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit, 1, 0);
 	}
 
 	// Nuclear Silo - death
-	if (unit->id == UnitId::TerranMissileSilo && unit->building.silo.is_ready && !unitExt->timers[TimerControlledDemolition])
+	if (unit->id == UnitId::TerranMissileSilo && unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition])
 	{
 		scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
 		helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
@@ -404,15 +419,17 @@ void unit_destructor_special_cases(Unit* unit)
 		});
 	}
 
-	// Parasite - spawn broodlings on death
-	{
+	// Parasite - broodspawn on death
+	if (scbw::unit_get_corpse_consume(unit) == CorpseConsume_Parasite) {
 		u16 type = UnitId::ZergRilirokor;
-		if (units_dat::base_property[unit->id] & UnitProperty::Flyer) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Flyer
+		||	unit->status & UnitStatus::InAir)
+		{
 			type = UnitId::ZergRililisk;
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unitExt->parasite_spawn_count[i]) {
-				scbw::create_unit_from_ability(type, unitExt->parasite_spawn_count[i], i, unit->position.x, unit->position.y, 720);
+			if (unit_ext->parasite_spawn_count[i]) {
+				scbw::create_unit_from_ability(type, unit_ext->parasite_spawn_count[i], i, unit->position.x, unit->position.y, 720);
 			}
 		}
 	}
@@ -451,6 +468,28 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 			}
 		}
 	}
+}
+
+// Hooked to allow for player-colored corpses. -Pr0nogo
+Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) { // 004D7120 
+	Sprite* sprite = image->parent_sprite;
+	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
+	u32 pos_y = y + image->vertical_offset + sprite->position.y;
+	if (scbw::sprite_id_is_corpse(id)) {
+		SpriteExt* sprite_ext = get_sprite_ext(sprite);
+		if (sprite_ext->should_consume_corpse) {
+			return false;
+		}
+	}
+	Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);
+	if (thingy) {
+		if (scbw::sprite_id_is_corpse(id)) {
+			thingy->sprite->player = sprite->player;
+		}
+		thingy->sprite->elevation = elevation;
+		helper::set_thingy_visibility_flags(thingy);
+	}
+	return thingy;
 }
 
 //-------- Actual hooking --------//
@@ -498,10 +537,44 @@ void __declspec(naked) clear_tile_flags_from_area_wrapper() {
 	}
 }
 
+void __declspec(naked) iscript_create_sprite_wrapper() {
+	static Thingy* result;
+	static Image* image;
+	static u16 id;
+	static u32 x;
+	static u32 y;
+	static u8 elevation;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV id, AX
+		MOV EAX, [EBP + 0x0C]
+		MOV x, EAX
+		MOV EAX, [EBP + 0x10]
+		MOV y, EAX
+		MOV EAX, [EBP + 0x14]
+		MOV elevation, AL
+		POP EAX
+		MOV image, EAX
+		PUSHAD
+	}
+	result = iscript_create_sprite(image, id, x, y, elevation);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x10
+	}
+}
+
 namespace hooks {
 	void inject_unit_destructor_special_hooks() {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
+		jump_patch(iscript_create_sprite_wrapper,			0x004D7120, 1);
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 	}

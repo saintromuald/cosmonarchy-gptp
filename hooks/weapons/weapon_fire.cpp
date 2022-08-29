@@ -40,11 +40,25 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+	if (scbw::is_allied_to(bullet->player, unit->player))
 	{
 		return false;
 	}
 	return true;
+}
+
+void apply_cooldown(Unit* unit, u8 weapon_id) {
+	u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+	unit->ground_weapon_cooldown = cooldown;
+	unit->air_weapon_cooldown = cooldown;
+}
+
+Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
+	if (bullet && source) {
+		apply_cooldown(source, weapon_id);
+	}
+	return bullet;
 }
 
 namespace
@@ -70,7 +84,7 @@ namespace hooks
 			posY = attacker->get_y();
 		}
 		auto newAngle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		helper::create_bullet(weapon_id, attacker, posX, posY, attacker->player, newAngle);
+		create_bullet_and_apply_cooldown(weapon_id, attacker, posX, posY, attacker->player, newAngle);
 		if (attackerExt->values[ValueDeconstruction])
 		{
 			scbw::do_deconstruction_damage(attacker, weapon_id, false);
@@ -129,15 +143,14 @@ namespace hooks
 
 	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
-	// This also affects Unit::fireWeapon().
-	void fire_weapon(Unit* unit, u8 wId) // 00479C90
+	// This also affects Unit::fire_weapon().
+	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
 	{
 		if (unit == nullptr)
 		{
 			return;
 		}
 		UnitExt* unitExt = get_unit_ext(unit);
-		u8 weapon_id = wId;
 		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unitExt->values[ValueAI_PreventTargeting] = 0;
 		// Retrieve the spawning position for the bullet.
@@ -171,9 +184,7 @@ namespace hooks
 
 		// Cloaked Units - Decloak
 		// Cabalist uses silent strike, so the check has to be in weapon damage
-		// It is a melee unit, so this check is just a failsafe
-		if (unit->id != UnitId::ProtossCabalist)
-		{
+		if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
 		}
 
@@ -244,6 +255,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, false);
 					} break;
+					case WeaponId::PhotonCannonPrismaticCannon:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, false);
@@ -255,6 +270,10 @@ namespace hooks
 					case WeaponId::StarSovereignCelestialCannon:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignCannonPos, 2, false);
+					} break;
+					case WeaponId::SentinelCerberusRailgun:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
@@ -320,7 +339,7 @@ namespace hooks
 						auto rotate = unitExt->values[ValueSalamanderAtkPos];
 						if (rotate == 1)
 						{
-							helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+							create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						}
 						else
 						{
@@ -381,7 +400,7 @@ namespace hooks
 					} break;
 					default:
 					{
-						helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+						create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
@@ -500,8 +519,8 @@ namespace hooks
 						}
 						bullet->source_unit->order_target.unit = target;
 						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
-						auto newBullet = helper::create_bullet(WeaponId::ArchitectDispersiveSalvo,
-							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
+						auto newBullet = create_bullet_and_apply_cooldown(WeaponId::ArchitectDispersiveSalvo,
+							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, newAngle);
 						if (newBullet)
 						{
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
@@ -525,7 +544,7 @@ namespace hooks
 		// Empyrean Heavenly Passage
 		// Valkyrie Charon Afterburners
 		else if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage
-			|| bullet->weapon_id == WeaponId::ValkyrieHaloRockets)
+		||		 bullet->weapon_id == WeaponId::ValkyrieHaloRockets)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
@@ -541,7 +560,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->player, unit->player))
 				{
 					return false;
 				}
@@ -585,7 +604,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->player, unit->player))
 				{
 					return false;
 				}
@@ -622,6 +641,10 @@ namespace hooks
 			u32 range = 0;
 			switch (bullet->weapon_id)
 			{
+				case WeaponId::SentinelCerberusRailgun:
+				{
+					range = 64;
+				} break;
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					range = 96;
@@ -653,7 +676,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->srcPlayer, unit->player))
+				if (scbw::is_allied_to(bullet->player, unit->player))
 				{
 					return false;
 				}
@@ -683,18 +706,25 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				if (bullet->weapon_id == WeaponId::PenumbraErebolShockCannon)
+				if (bullet->weapon_id == WeaponId::SentinelCerberusRailgun)
+				{
+					// Sentinel - Kinetic Penetration - pierce targets
+					globals.add_bullet_multihit(bullet, collisionTarget);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
+				}
+				else if (bullet->weapon_id == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra - Shroud Piercer - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collisionTarget, 2);
 				}
 				else if (bullet->weapon_id == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
 
 					// Claymore - Kelvin Munitions - slow pierced targets
@@ -708,10 +738,10 @@ namespace hooks
 					// Kalkalisk behavior
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 					auto count = globals.get_multihit_count(bullet);
-					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
 					collisionTarget->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
 						weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid],
-						bullet->source_unit, bullet->srcPlayer, 0, 1, false);
+						bullet->source_unit, bullet->player, 0, 1, false);
 
 					if (count >= 4)
 					{
@@ -859,7 +889,7 @@ namespace hooks
 				{
 					return 0;
 				}
-				miscBool = helper::unitHasPathToUnit(pSrc, _pIterator);
+				miscBool = helper::unit_has_path_to_unit(pSrc, _pIterator);
 			}
 			else
 			{
@@ -1081,7 +1111,7 @@ namespace hooks
 			return 0;
 		}
 
-		bullet->srcPlayer = player;
+		bullet->player = player;
 		bullet->someUnitType = 228;
 		bullet->unknown_0x4E = 0;
 		bullet->attackTarget.unit = nullptr;
@@ -1145,14 +1175,14 @@ namespace hooks
 		Unit* targetUnit = parent->order_target.unit;
 		if (targetUnit)
 		{
-			bullet->sprite->elevation_level = targetUnit->sprite->elevation_level + 1;
+			bullet->sprite->elevation = targetUnit->sprite->elevation + 1;
 			bullet->attackTarget.unit = targetUnit;
 			bullet->attackTarget.pt.x = targetUnit->sprite->position.x;
 			bullet->attackTarget.pt.y = targetUnit->sprite->position.y;
 		}
 		else
 		{
-			bullet->sprite->elevation_level = parent->sprite->elevation_level + 1;
+			bullet->sprite->elevation = parent->sprite->elevation + 1;
 			bullet->attackTarget.unit = 0;
 			bullet->attackTarget.pt.x = parent->order_target.pt.x;
 			bullet->attackTarget.pt.y = parent->order_target.pt.y;
@@ -1482,5 +1512,35 @@ namespace hooks
 				}
 			}
 		}
+	}
+
+	// Hooked to remove randomization and move cooldown handling. -Pr0nogo
+	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim) { // 00476C90
+		if (weapon_id == WeaponId::None) {
+			return false;
+		}
+		u8 cooldown = attack_type == 1 ? unit->ground_weapon_cooldown : unit->air_weapon_cooldown;
+		if (cooldown) {
+			if (unit->order_queue_timer > cooldown - 1) {
+				unit->order_queue_timer = cooldown - 1;
+			}
+			return false;
+		}
+		if (!helper::is_ready_to_attack(unit, weapon_id)) {
+			return false;
+		}
+
+		unit->movement_flags |= MovementFlags::StartingAttack;
+
+		// Previously had randomized values and cooldown handling.
+		// Now applied in fire bullet and attack melee.
+		//u8 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+		//unit->ground_weapon_cooldown = cooldown;
+		//unit->air_weapon_cooldown = cooldown;
+
+		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+			helper::play_image_iscript(image, iscript_anim);
+		}
+		return true;
 	}
 }

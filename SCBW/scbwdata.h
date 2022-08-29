@@ -1,7 +1,4 @@
-// Contains the definitions of various data structures, arrays, pointers and
-// internal constants in StarCraft.exe.
-// The contents of this file are merged from: unit.cpp, triggers.cpp,
-// resources.cpp, player.cpp, locations.cpp, buttons.cpp, and qdp.cpp.
+// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
 #pragma once
 #include "../definitions.h"
@@ -143,7 +140,7 @@ SCBW_DATA(s32*, g_screen_y,				0x00628470);
 SCBW_DATA(Point16*, g_start_positions,	0x0058D720);
 
 /// Mouse position relative to the screen
-SCBW_DATA(const Vector32*, mouse,		0x006CDDC4);
+SCBW_DATA(const Vector32*, g_mouse,		0x006CDDC4);
 
 /// Booleans indicating which keyboard buttons are held
 
@@ -245,7 +242,7 @@ SCBW_DATA(u8*,			unk_victory_variable,		0x00581D66);
 SCBW_DATA(u32*,			save_load_success,			0x006D5A68);
 SCBW_DATA(u32*,			elapsed_time_modified,		0x006D5BCC);
 SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
-SCBW_DATA(Options*,		options_list,				0x006CDFD4);
+SCBW_DATA(Options*,		g_options_list,				0x006CDFD4);
 SCBW_DATA(ReplayData*,	replay_data,				0x00596BBC);
 SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
@@ -256,7 +253,7 @@ SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
 // For get_response_sfx
 SCBW_DATA(u32*,			selection_sound_counter,	0x00640548);
-SCBW_DATA(u32*,			last_random_sfx,			0x006D5BE0);
+SCBW_DATA(u32*,			g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_ui
 SCBW_DATA(u8*,		console_index,					0x0057F1E2);
@@ -520,27 +517,26 @@ SCBW_DATA(ColorTable*,		g_color_table,			0x0058F442);
 SCBW_DATA(PlayerNames*,		g_player_name_list,		0x0059B3D8);
 
 // For soundThread
-/*
-SCBW_DATA(HANDLE*,	soundThreadEvent,				0x006D5A00);
-SCBW_DATA(s32*,		unkSoundCore,					0x006D5A08);
-SCBW_DATA(s32*,		soundVolume,					0x00599900);
-SCBW_DATA(s8*,		soundData,						0x006D1270);
-SCBW_DATA(s32*,		volumeReduction,				0x006D5A0C);
-SCBW_DATA(DSound*,	directSoundInterface,			0x006D59F4);
-SCBW_DATA(s32*,		unkSoundCore2,					0x005999C0);
-SCBW_DATA(s32*,		currentSoundMemory,				0x006D59FC);
-SCBW_DATA(CritSect*,soundLock,						0x006D5F4C);
+SCBW_DATA(HANDLE*,		g_sound_thread_event,		0x006D5A00);
+SCBW_DATA(s32*,			g_unk_sound_core,			0x006D5A08);
+SCBW_DATA(s32*,			g_sound_volume,				0x00599900);
+SCBW_DATA(s32*,			g_volume_reduction,			0x006D5A0C);
+SCBW_DATA(DSound*,		g_direct_sound_interface,	0x006D59F4);
+SCBW_DATA(s32*,			g_unk_sound_core_2,			0x005999C0);
+SCBW_DATA(CritSect*,	g_sound_lock,				0x006D5F4C);
 
 // For soundInit
-SCBW_DATA(s32*,		soundChannels,					0x005998F0);
-SCBW_DATA(HMODULE*,	hdSoundModule,					0x006D59F0);
-SCBW_DATA(s8*,		ddaInitialized,					0x006D1265);
-SCBW_DATA(s8*,		vidInitialized,					0x006D1266);
-SCBW_DATA(s32*,		soundMemoryCache,				0x005129B8);
-SCBW_DATA(HANDLE*,	soundHandle,					0x006D5A04);
-SCBW_DATA(s32*,		unkSoundCore3,					0x005998E4);
-SCBW_DATA(s8*,		unkSoundBoolCore,				0x006D1264);
-*/
+SCBW_DATA(SoundChannel*,g_sound_channels,			0x005998F0);
+SCBW_DATA(HMODULE*,		g_hd_sound_module,			0x006D59F0);
+SCBW_DATA(s8*,			g_dda_initialized,			0x006D1265);
+SCBW_DATA(s8*,			g_vid_initialized,			0x006D1266);
+SCBW_DATA(s32*,			g_sound_memory_cache,		0x005129B8);
+SCBW_DATA(HANDLE*,		g_sound_handle,				0x006D5A04);
+SCBW_DATA(s32*,			g_unk_sound_core_3,			0x005998E4);
+SCBW_DATA(s8*,			g_unk_sound_bool_core,		0x006D1264);
+SCBW_DATA(char**,		g_current_sound_memory,		0x006D59FC);
+
+SCBW_DATA(void*,		g_sfx_tbl_handle,			0x005999B0);
 
 // For handle_window_messages
 typedef void __fastcall InputProcsFunc(s32 arg);
@@ -559,7 +555,7 @@ SCBW_DATA(char*,	draw_out_text_left,			0x00641598);
 SCBW_DATA(char*,	text_bytes,					0x00641674); // sizeof 13
 SCBW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 
-// For CMDACT_game_speed
+// For cmdact_game_speed
 SCBW_DATA(s32*,		last_control_index,			0x006D051C);
 SCBW_DATA(b32*,		cpu_throttle,				0x006D5C00);
 SCBW_DATA(b32*,		wants_redraw,				0x005968EC);
@@ -809,53 +805,51 @@ SCBW_DATA(const PlayerSel*, current_unit_selection, 0x006284B8);
 typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 
-//Contains various info on the tiles.
-SCBW_DATA(ActiveTile**, activeTileArray, 0x006D1260);
-SCBW_DATA(u16**, tileIdArray, 0x005993C4);
-SCBW_DATA(u16**, megatileArray, 0x00628494);
-//SCBW_DATA(u16**, megatileExtArrayFlags, 0x00628494+0x20000);//extender only
+// Contains various tile info.
+SCBW_DATA(ActiveTile**,		activeTileArray,		0x006D1260);
+SCBW_DATA(u16**,			tileIdArray,			0x005993C4);
+SCBW_DATA(u16**,			megatileArray,			0x00628494);
+//SCBW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only
 
 // Stores an ordered list of all units currently in the game.
 SCBW_DATA(UnitFinderData*,	g_unit_ordering_x,		0x0066FF78);
 SCBW_DATA(UnitFinderData*,	g_unit_ordering_y,		0x006769B8);
 SCBW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
-SCBW_DATA(Vector32*,		g_angle_distance,	0x00512D28);
-SCBW_DATA(u16*,				g_megatile_count,	0x005998E0);
+SCBW_DATA(Vector32*,		g_angle_distance,		0x00512D28);
+SCBW_DATA(u16*,				g_megatile_count,		0x005998E0);
 
-//Used internally by Starcraft to manage temporary units lists
-SCBW_DATA(Unit***, tempUnitsListsArray, 0x006BB938);
-SCBW_DATA(u32*, tempUnitsListCurrentArrayCount, 0x006BEE64);
-SCBW_DATA(u32*, tempUnitsListArraysCountsListLastIndex, 0x006BEE6C);
-SCBW_DATA(u32*, tempUnitsListArraysCountsList, 0x006BEE70);
+// Used internally by Starcraft to manage temporary units lists
+SCBW_DATA(Unit***, g_temp_units_lists_array, 0x006BB938);
+SCBW_DATA(u32*, g_temp_units_list_current_array_count, 0x006BEE64);
+SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list_last_index, 0x006BEE6C);
+SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list, 0x006BEE70);
 
 // Font & Drawing
 namespace graphics {
 	struct Font; struct Bitmap;
 }
-SCBW_DATA(graphics::Font**, font_base, 0x006CE0F4);
-SCBW_DATA(graphics::Bitmap*, gameScreenBuffer, 0x006CEFF0);
-SCBW_DATA(u8*, refreshRegions, 0x006CEFF8);  //640 x 480 divided into 1200 squares of 16x16
-SCBW_DATA(Layers*, screenLayers, 0x006CEF50);
+SCBW_DATA(graphics::Font**,		font_base,			0x006CE0F4);
+SCBW_DATA(graphics::Bitmap*,	gameScreenBuffer,	0x006CEFF0);
+SCBW_DATA(u8*,					refreshRegions,		0x006CEFF8); // 640 x 480 divided into 1200 squares of 16x16
+SCBW_DATA(Layers*,				screenLayers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
 static DrawGameProc const oldDrawGameProc = (DrawGameProc)0x004BD580;
 
 
-//Array used in multiplayer to randomize factions
-//used by unit.get_faction_color() and
-//player.get_faction_color()
-//Max index is PLAYABLE_PLAYER_COUNT-1
+// Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
+// Max index is PLAYABLE_PLAYER_COUNT-1
 SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
 
-///Access to true player colors that differ from
-///standard versions from graphics.h
-///This is the PlayerColors from BWAPI
-///Max index is PLAYER_COUNT-1
+// Access to true player colors that differ from standard versions from graphics.h
+// This is PlayerColors from BWAPI
+// Max index is PLAYER_COUNT-1
 SCBW_DATA(u8*, g_player_minimap_colors,	0x00581DD6);
+SCBW_DATA(u8*, g_player_scorescreen_colors, 0x0058F442);
 SCBW_DATA(u8*, g_player_in_game_colors, 0x00581D76);
 
 const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
-SCBW_DATA(List<Sprite>*, unusedSprites, 0x0063FE30);
+SCBW_DATA(List<Sprite>*, g_free_sprites, 0x0063FE30);
 
 struct SpriteTileData {
 	Sprite* tails[256];
@@ -863,7 +857,7 @@ struct SpriteTileData {
 };
 SCBW_DATA(SpriteTileData*, spritesOnTileRow, 0x00629288);
 
-//Image-related
+// Image-related
 struct ImagesDatExtraOverlayLO_Files {
 	LO_Header** attackOverlays;
 	LO_Header** damageOverlays;
@@ -962,10 +956,9 @@ SCBW_DATA(GrpHead*,	icons_grp,					0x0068C238);
 SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 
 // For do_attack_notify_unit
-SCBW_DATA(char*,	g_palette_index_reference,	0x006CEB20); // sizeof at least 20
-SCBW_DATA(u32*,		notify_cooldown,			0x00640870);
-//SCBW_DATA(void*,	sound_duration,				0x006D1278); // struct_18 in IDA
-SCBW_DATA(u8*,		sound_duration_msecs,		0x006D1278);
+SCBW_DATA(char*,		g_palette_index_reference,	0x006CEB20); // sizeof at least 20
+SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
+// SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270); use SFXDAT_SoundData from hooks/limits/sfx_extender.h!
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
@@ -977,10 +970,9 @@ SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
 SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
 
 // For btnsact_rally_point
-SCBW_DATA(char*,	order_id_ground,				0x00641691);
-SCBW_DATA(char*,	order_id_obstructed,			0x00641693);
-SCBW_DATA(char*,	order_id_unit,					0x00641692);
-SCBW_DATA(u16*,		unk_rally_related,				0x006556FC);
+SCBW_DATA(char*,	g_order_id_ground,				0x00641691);
+SCBW_DATA(char*,	g_order_id_obstructed,			0x00641693);
+SCBW_DATA(char*,	g_order_id_unit,				0x00641692);
 SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
@@ -992,8 +984,8 @@ SCBW_DATA(HACCEL*,				accelerator_tables,		0x005968F0);
 SCBW_DATA(InputProcsFunc**,		left_click_proc,		0x006556EC);
 SCBW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
 
-SCBW_DATA(u16*,					minimap_cursor,			0x006556FC);
-SCBW_DATA(RECT*,				minimap_rect,			0x00512D00);
+SCBW_DATA(u16*,					g_minimap_cursor,		0x006556FC);
+SCBW_DATA(RECT*,				g_minimap_rect,			0x00512D00);
 
 // For process_right_click_action
 SCBW_DATA(u16*,			is_unit_in_point_x_pos,			0x006509CC);
@@ -1046,7 +1038,19 @@ SCBW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
 // For play_sound trigger
 SCBW_DATA(s32*,				g_big_volume_array,			0x005008F0);
 
-SCBW_DATA(u32*,				g_game_speed_replay_modifiers, 0x005124D8);
+SCBW_DATA(u32*,				g_game_speed_replay_modifiers,	0x005124D8);
+
+// For play_yes_unit_responses
+SCBW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
+
+// For sprite_to_iscript_loop
+SCBW_DATA(u16*,			g_map_tile_height,					0x0057F1D6);
+SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_begin,	0x00629688);
+SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_end,		0x00629288);
+
+// For get_cursor_type
+SCBW_DATA(RECT*,		g_cursor_limit_rect,				0x005993B0);
+SCBW_DATA(char*,		g_is_drag_selecting,				0x0066FF5C);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

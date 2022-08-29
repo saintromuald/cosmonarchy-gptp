@@ -1,37 +1,30 @@
 #include "hooks/limits/sfx_extender.h"
 #include "globals.h"
 
-unk_t * makeCleanSFXDAT_Unknown(s32 count)
-{
-	unk_t* _Unknown = new unk_t[count];
-	for (s32 x = 0; x < count; ++x)
-		_Unknown[x] = NULL;
-	return _Unknown;
-}
 
 u8* SFXDAT_Volume;
 u8* SFXDAT_Flags;
 u16* SFXDAT_Race;
 u8* SFXDAT_Type;
-u32* SFXDAT_SoundFile;
-unk_t* SFXDAT_Unknown;
+char** SFXDAT_SoundFile;
+SoundData* SFXDAT_SoundData;
 
 namespace hooks
 {
-	void sfxExtenderGetCount()
-	{
+	void sfxExtenderGetCount() {
 		globals.extended_sfx = 1;
 		//	auto sfx_data = scbw::read_samase_file("arr\\sfxdata.dat");
 	}
-	void newSfxExtender()
-	{
-		NEW_SOUND_TYPE_COUNT = 20000;   //Define your length here (change later to custom func reading sfxdata)
+
+	void newSfxExtender() {
+		NEW_SOUND_TYPE_COUNT = 20000; // Define your length here (change later to custom func reading sfxdata)
 		SFXDAT_Volume = new u8[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_Flags = new u8[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_Race = new u16[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_Type = new u8[NEW_SOUND_TYPE_COUNT];
-		SFXDAT_SoundFile = new u32[NEW_SOUND_TYPE_COUNT];
-		SFXDAT_Unknown = makeCleanSFXDAT_Unknown(NEW_SOUND_TYPE_COUNT * 16);
+		SFXDAT_SoundFile = new char*[NEW_SOUND_TYPE_COUNT];
+		SFXDAT_SoundData = new SoundData[NEW_SOUND_TYPE_COUNT];
+		memset(SFXDAT_SoundData, 0, sizeof(SoundData) * NEW_SOUND_TYPE_COUNT);
 
 		memory_patch(0x0045F042, NEW_SOUND_TYPE_COUNT);
 		memory_patch(0x004BBC2D, NEW_SOUND_TYPE_COUNT);
@@ -102,25 +95,25 @@ namespace hooks
 		memory_patch(0x004BCB2A, ((u32)SFXDAT_SoundFile) + 0x3C);
 		memory_patch(0x004DB0E6, SFXDAT_SoundFile);
 		memory_patch(0x00515498, SFXDAT_SoundFile);
-		memory_patch(0x004BB8E8, SFXDAT_Unknown);
-		memory_patch(0x004BBC47, SFXDAT_Unknown);
-		memory_patch(0x004BC077, SFXDAT_Unknown);
-		memory_patch(0x004BC674, SFXDAT_Unknown);
-		memory_patch(0x004BCAA6, SFXDAT_Unknown);
-		memory_patch(0x0045EF66, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F11D, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F1FA, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F2DE, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F3CA, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F498, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F56A, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F5FF, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F68F, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F72A, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F81A, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048FAE3, ((u32)SFXDAT_Unknown) + 8);
-		memory_patch(0x0048F8DA, ((u32)SFXDAT_Unknown) + 0x828);
-		memory_patch(0x0048F36F, ((u32)SFXDAT_Unknown) + 0x878);
-		memory_patch(0x0048F412, ((u32)SFXDAT_Unknown) + 0x878);
+		memory_patch(0x004BB8E8, SFXDAT_SoundData);
+		memory_patch(0x004BBC47, SFXDAT_SoundData);
+		memory_patch(0x004BC077, SFXDAT_SoundData);
+		memory_patch(0x004BC674, SFXDAT_SoundData);
+		memory_patch(0x004BCAA6, SFXDAT_SoundData);
+		memory_patch(0x0045EF66, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F11D, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F1FA, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F2DE, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F3CA, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F498, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F56A, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F5FF, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F68F, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F72A, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F81A, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048FAE3, ((u32)SFXDAT_SoundData) + 8);
+		memory_patch(0x0048F8DA, ((u32)SFXDAT_SoundData) + 0x828);
+		memory_patch(0x0048F36F, ((u32)SFXDAT_SoundData) + 0x878);
+		memory_patch(0x0048F412, ((u32)SFXDAT_SoundData) + 0x878);
 	}
 }

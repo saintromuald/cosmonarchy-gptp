@@ -50,7 +50,7 @@ namespace hooks
 			unit->building.nuke_missile = (Unit*)nukeDot;
 			if (nukeDot != nullptr)
 			{
-				nukeDot->sprite->elevation_level = unit->sprite->elevation_level + 1;
+				nukeDot->sprite->elevation = unit->sprite->elevation + 1;
 				helper::set_thingy_visibility_flags(nukeDot);
 			}
 			unit->main_order_state = 6;

@@ -809,7 +809,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) compileHealthBar_Wrapper()
+	void __declspec(naked) compile_health_bar_wrapper()
 	{
 		static s32 a1;
 		static s32 a2;
@@ -824,7 +824,7 @@ namespace hooks
 			POP EAX
 			PUSHAD
 		}
-		hooks::compileHealthBar(a1, a2);
+		hooks::compile_health_bar(a1, a2);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -896,7 +896,7 @@ namespace hooks
 		//		jump_patch(getUnitBulletDamage_Wrapper, 0x0048ACD0, 1);
 		//		jump_patch(canCastSpell_Wrapper, 0x00492140, 1);
 		//		jump_patch(modifyUnitShields_Wrapper, 0x004C5A20, 2);
-		//		jump_patch(compileHealthBar_Wrapper, 0x004D6010, 1);
+		//		jump_patch(compile_health_bar_wrapper, 0x004D6010, 1);
 		//		jump_patch(AI_FindTransport_Wrapper, 0x004E6EF0, 1);
 		//		jump_patch(mapDataTransfer_Wrapper, 0x004EAFE0, 1);
 
@@ -913,7 +913,7 @@ namespace hooks
 				jump_patch(unkWireRandomDraw567C0_Wrapper, 0x004567E7, 2);//done
 				jump_patch(startZergBuildingWrapper, 0x0045D392, 2);//MUL DWORD PTR DS:[EDX*4+662350]
 				//add changes in building_morph, building morph hooks are required (0045D6A7, 0045D6A0)
-				//add changes to nydus hooks nydus hooks are required (orders_Build5)
+				//add changes to nydus hooks nydus hooks are required (orders_build5)
 				jump_patch(Ai_TryReturnHomeWrapper, 0x00462EEA, 2);////CMP EDX,DWORD PTR DS:[EAX*4+662350], wrapper is not be enough, hook may be needed
 				jump_patch(Ai_OrderHealWrapper, 0x00463584, 1);////CMP EAX,DWORD PTR DS:[EDI+662350], wrapper is not be enough, hook may be needed
 				jump_patch(doMedicWrapper, 0x00463CC8, 2);////done

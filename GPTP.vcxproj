@@ -87,24 +87,28 @@
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-Debug</TargetName>
     <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-FastDebug</TargetName>
     <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-Release</TargetName>
     <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>HYD-GPTP-Release</TargetName>
     <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -280,6 +284,7 @@
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="SCBW\scbwdata.cpp" />
     <ClCompile Include="SCBW\Storm.cpp" />
+    <ClCompile Include="trigger_system\trigger_events.cpp" />
     <ClCompile Include="trigger_system\trigger_parser.cpp" />
     <ClCompile Include="scenario.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
@@ -597,7 +602,7 @@
     <ClCompile Include="trigger_system\trigger_recolor.cpp" />
     <ClCompile Include="trigger_system\trigger_spawn.cpp" />
     <ClCompile Include="trigger_system\trigger_system.cpp" />
-    <ClCompile Include="trigger_system\trigger_utils.cpp" />
+    <ClCompile Include="utility.cpp" />
     <ClCompile Include="trigger_system\trigger_vars.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
@@ -619,6 +624,8 @@
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="SCBW\enumerations\PortraitId.h" />
     <ClInclude Include="SCBW\Storm.h" />
+    <ClInclude Include="include\discord_game_sdk.h" />
+    <ClInclude Include="trigger_system\trigger_events.h" />
     <ClInclude Include="trigger_system\trigger_parser.h" />
     <ClInclude Include="scenario.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
@@ -716,7 +723,7 @@
     <ClInclude Include="trigger_system\trigger_recolor.h" />
     <ClInclude Include="trigger_system\trigger_spawn.h" />
     <ClInclude Include="trigger_system\trigger_system.h" />
-    <ClInclude Include="trigger_system\trigger_utils.h" />
+    <ClInclude Include="utility.h" />
     <ClInclude Include="trigger_system\trigger_vars.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />

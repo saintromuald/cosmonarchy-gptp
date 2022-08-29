@@ -10,28 +10,30 @@ namespace hooks
 {
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
 	// TODO: finish and cleanup
+	// End brace fuckery on 14 Aug 2022, check carefully
+	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
+	// TODO: finish and cleanup
+	// End brace fuckery on 14 Aug 2022, check carefully
 	void ai_unit_was_hit(Unit* self, Unit* attacker, s32 main_target_reactions, s32 dont_call_help) // 0043F320
 	{
-		AiRegion* v14;
+		AiRegion* self_region;
 		s32 v15;
-		AiRegion* selfRegion;
-		char v18;
+		char self_region_state;
 		s16 v19;
 		s16 child0;
-		s32 child1;
-		s32 child3;
+		s32 self_order_id;
+		s32 self_id;
 		s32 child5;
 		s32 child6;
-		Unit* child7;
+		Unit* new_target;
 		__int64 parentAi3;
 		Unit* parentAi4;
-		Unit* parentAi6;
+		Unit* self_subunit;
 		Unit* parentAi7;
 		s32 parentAi9;
-		s32 childAi0;
 		s32 childAi1;
 		s32 childAi2;
-		s32 childAi4;
+		s32 is_unbreakable;
 
 		if (g_player_table[self->player].type != PlayerType::Computer || self->player >= 8u)
 		{
@@ -42,10 +44,10 @@ namespace hooks
 			if (self->unit_ai)
 			{
 				g_aiscript_controller[self->player]->previous_building_hit_second = *g_elapsed_time_seconds;
-				BuildingAi* selfBuildingAi = (BuildingAi*)self->unit_ai;
-				if (selfBuildingAi)
+				BuildingAi* self_building_ai = (BuildingAi*)self->unit_ai;
+				if (self_building_ai)
 				{
-					selfBuildingAi->town->inBattle = 1;
+					self_building_ai->town->in_battle = 1;
 				}
 				if (main_target_reactions)
 				{
@@ -55,8 +57,8 @@ namespace hooks
 							&& !(self->main_order_id) // Original function call checks if unit has a sprite??? 00475A50
 							&& !(self->status & UnitStatus::Completed))
 						{
-							s32 quartTotalHP = self->get_total_hp_plus_shields() / 4;
-							if (self->get_current_life_ingame() < quartTotalHP)
+							s32 quart_total_hp = self->get_total_hp_plus_shields() / 4;
+							if (self->get_current_life_ingame() < quart_total_hp)
 							{
 								helper::ai_cancel_structure(self); // originally unused variable v8
 								return;
@@ -64,230 +66,241 @@ namespace hooks
 						}
 					}
 				}
+
+
 			}
-		}
-		Unit* target = helper::ai_get_actual_target(self, attacker);
-		Unit* actual_target = target;
-		if (target->status & UnitStatus::InBuilding)
-		{
-			actual_target = target->connected_unit;
-			if (!actual_target)
+			Unit* target = helper::ai_get_actual_target(self, attacker);
+			Unit* actual_target = target;
+			if (target->status & UnitStatus::InBuilding)
 			{
-				return;
-			}
-		}
-		if (actual_target->status & UnitStatus::CloakingForFree)
-		{
-			if (!(actual_target->status & UnitStatus::CloakingForFree))
-			{
-				actual_target = helper::check_arbiter_cloaking_range(self, UnitId::ProtossDidact);
+				actual_target = target->connected_unit;
 				if (!actual_target)
 				{
 					return;
 				}
 			}
-		}
-		if (main_target_reactions)
-		{
-			helper::ai_order_unit_cloaking(self);
-			helper::ai_order_lurker_burrow(self);
-		}
-		UnitAi* selfUnitAi = (UnitAi*)self->unit_ai;
-		parentAi9 = 0;
-		childAi1 = 0;
-		if (!selfUnitAi)
-		{
-			goto LABEL_37;
-		}
-		if (selfUnitAi->type == 4)
-		{
-			MilitaryAi* selfMilitaryAi = (MilitaryAi*)selfUnitAi;
-			if (selfMilitaryAi->region->state == 1)
+			if (actual_target->status & UnitStatus::CloakingForFree)
 			{
-				if (self->is_unit_ai_non_building())
+				if (!(actual_target->status & UnitStatus::CloakingForFree))
 				{
-					helper::ai_set_region_type(2, selfMilitaryAi->region);
+					actual_target = helper::check_arbiter_cloaking_range(self, UnitId::ProtossDidact);
+					if (!actual_target)
+					{
+						return;
+					}
 				}
 			}
-			childAi1 = helper::ai_is_under_attack(self, 0);
-		}
-		if (!main_target_reactions || !helper::unit_is_active_transport(self) || !(self->status & UnitStatus::IsBuilding))
-			goto LABEL_37;
-		if (helper::is_unit_loaded(self))
-		{
-			if (self->main_order_id != 111)
+
+			if (main_target_reactions)
 			{
-				helper::issue_order_targeting_nothing(self, 0x6Fu);
+				helper::ai_order_unit_cloaking(self);
+				helper::ai_order_lurker_burrow(self);
 			}
-			return;
-		}
-		if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
-		{
-			if (g_aiscript_controller[self->player]->AI_Flags.is_use_map_settings)
+
+			UnitAi* self_unit_ai = (UnitAi*)self->unit_ai;
+			parentAi9 = 0;
+			childAi1 = 0;
+			if (!self_unit_ai)
 			{
-				parentAi9 = 1;
+				goto LABEL_37;
 			}
-LABEL_37:
-			v14 = &g_ai_region_captains[self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
-			if (!parentAi9)
+			if (self_unit_ai->type == 4)
 			{
-				if (!dont_call_help)
+				MilitaryAi* selfMilitaryAi = (MilitaryAi*)self_unit_ai;
+				if (selfMilitaryAi->region->state == 1)
 				{
-					helper::ai_ask_for_help(self, actual_target, childAi1);
+					if (self->is_unit_ai_non_building())
+					{
+						helper::ai_assign_military_to_region(2, selfMilitaryAi->region);
+					}
 				}
-				if (!childAi1)
+				childAi1 = helper::ai_is_under_attack(self, 0);
+			}
+
+			if (!main_target_reactions || !helper::unit_is_active_transport(self) || !(self->status & UnitStatus::IsBuilding))
+			{
+				goto LABEL_37;
+			}
+			if (helper::is_unit_loaded(self))
+			{
+				if (self->main_order_id != 111)
 				{
-					if (!self->unit_ai
-						|| helper::ai_is_under_attack(self, 0)
-						|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-						&& g_aiscript_controller[self->player]->AI_Flags.is_use_map_settings)
-					{
-						childAi2 = 0;
-					}
-					selfRegion = &g_ai_region_captains[(u8)self->player][helper::get_region_id_from_unit(actual_target)];
-					if (childAi2)
-					{
-						v18 = v14->state;
-						if (v18 == 5 || v18 == 4)
-						{
-							helper::ai_set_region_type(6, v14);
-						}
-						if (v14->state)
-						{
-							if (!selfRegion->state && *g_elapsed_time_seconds > 60)
-								helper::ai_set_region_type(5, selfRegion);
-						}
-					}
+					helper::issue_order_targeting_nothing(self, OrderId::Unload);
+				}
+				return;
+			}
+
+			if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
+			{
+				if (g_aiscript_controller[(u8)self->player]->ai_flags.is_use_map_settings)
+				{
+					parentAi9 = 1;
+				}
+			LABEL_37:
+				self_region = &g_ai_region_captains[(u8)self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
+				if (!parentAi9)
+				{
 					if (!dont_call_help)
 					{
-						selfRegion->air_strength_enemy = helper::get_enemy_air_strength_in_region(selfRegion->region, (u8)self->player);
-						selfRegion->ground_strength_enemy = helper::get_enemy_strength_in_region(selfRegion->region, (u8)self->player, 0);
-						v19 = selfRegion->air_strength_needed;
-						if (v19 > v14->air_strength_needed)
+						helper::ai_ask_for_help(self, actual_target, childAi1);
+					}
+
+					if (!childAi1)
+					{
+						if (!self->unit_ai
+							|| helper::ai_is_under_attack(self, 0)
+							|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
+							&& g_aiscript_controller[(u8)self->player]->ai_flags.is_use_map_settings)
 						{
-							v14->air_strength_needed = v19;
+							childAi2 = 0;
 						}
-						child0 = selfRegion->ground_strength_needed;
-						if (child0 > v14->ground_strength_needed)
+						self_region = &g_ai_region_captains[(u8)self->player][helper::get_region_id_from_unit(actual_target)];
+						if (childAi2)
 						{
-							v14->ground_strength_needed = child0;
+							self_region_state = self_region->state;
+							if (self_region_state == RegionState::TownRegionHigh || self_region_state == RegionState::TownRegionLow)
+							{
+								helper::ai_assign_military_to_region(6, self_region);
+							}
+							if (self_region->state)
+							{
+								if (!self_region->state && *g_elapsed_time_seconds > 60)
+								{
+									helper::ai_assign_military_to_region(5, self_region);
+								}
+							}
+						}
+						if (!dont_call_help)
+						{
+							self_region->air_strength_enemy = helper::get_enemy_air_strength_in_region(self_region->region, (u8)self->player);
+							self_region->ground_strength_enemy = helper::get_enemy_strength_in_region(self_region->region, (u8)self->player, 0);
+							v19 = self_region->air_strength_needed;
+							if (v19 > self_region->air_strength_needed)
+							{
+								self_region->air_strength_needed = v19;
+							}
+							child0 = self_region->ground_strength_needed;
+							if (child0 > self_region->ground_strength_needed)
+							{
+								self_region->ground_strength_needed = child0;
+							}
 						}
 					}
 				}
-			}
-			v14->captain_flags |= 0x20u;
-			if (self->status & UnitStatus::Completed)
-			{
-				child1 = (u8)self->main_order_id;
-				childAi0 = (u8)self->main_order_id;
-				if (child1 != OrderId::CompletingArchonSummon && child1 != OrderId::ResetCollision1 && child1 != OrderId::ConstructingBuilding)
+
+				self_region->flags |= 0x20u;
+				if (self->status & UnitStatus::Completed)
 				{
-					if (main_target_reactions || !scbw::order_is_spell(child1))
+					self_order_id = self->main_order_id;
+					if (self_order_id != OrderId::CompletingArchonSummon && self_order_id != OrderId::ResetCollision1 && self_order_id != OrderId::ConstructingBuilding)
 					{
-						child3 = (u16)self->id;
-						if (self->id || child1 != OrderId::EnterTransport)
+						if (main_target_reactions || !scbw::order_is_spell(self_order_id))
 						{
-							childAi4 = helper::unit_is_performing_unbreakable_code(self);
-							if (childAi4 || !helper::ai_cast_spell_behavior(self, main_target_reactions))
+							self_id = self->id;
+							if (self->id || self_order_id != OrderId::EnterTransport)
 							{
-								if (child1 != OrderId::RechargeShields1 && child1 != OrderId::Move)
+								is_unbreakable = helper::unit_is_performing_unbreakable_code(self);
+								if (is_unbreakable || !helper::ai_cast_spell_behavior(self, main_target_reactions))
 								{
-									if (!main_target_reactions)
+									if (self_order_id != OrderId::RechargeShields1 && self_order_id != OrderId::Move)
 									{
-										goto LABEL_126;
-									}
-									if (child3 != UnitId::ProtossSolarion
-//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->unit_with_hangar.in_hangar_count)) > 2u
-										|| !helper::ai_transport_action(self))
-									{
-										if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| g_aiscript_controller[self->player]->AI_Flags.is_use_map_settings
-											|| ((child5 = 3 * self->get_total_hp_plus_shields() / 4, self->get_current_life_ingame() > child5)
-												|| child3 != UnitId::ProtossDidact && child3 != UnitId::TerranWraith && child3 != UnitId::ZergMutalisk
-												|| !helper::ai_transport_action(self))
-											&& ((child6 = 2 * self->get_total_hp_plus_shields() / 3, self->get_current_life_ingame() > child6)
-												|| child3 != UnitId::TerranMinotaur && child3 != UnitId::ProtossSolarion && child3 != UnitId::ProtossPanoptus
-												|| !helper::ai_transport_action(self)))
+										if (!main_target_reactions)
 										{
-											if (self->id != UnitId::ZergLakizilisk
-												|| self->status & UnitStatus::Burrowed
-												|| childAi0 == OrderId::Burrow
-												|| childAi0 == OrderId::Unburrow)
+											goto LABEL_126;
+										}
+										if (self_id != UnitId::ProtossSolarion
+											//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->unit_with_hangar.in_hangar_count)) > 2u
+											|| !helper::ai_transport_action(self))
+										{
+
+											if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
+												|| g_aiscript_controller[(u8)self->player]->ai_flags.is_use_map_settings
+												|| ((self->get_current_life_ingame() > 3 * self->get_total_hp_plus_shields() / 4)
+													|| !scbw::ai_unit_id_can_flee_quarter(self_id)
+													|| !helper::ai_transport_action(self))
+												&& ((self->get_current_life_ingame() > 2 * self->get_total_hp_plus_shields() / 3)
+													|| !scbw::ai_unit_id_can_flee_third(self_id)
+													|| !helper::ai_transport_action(self)))
 											{
-												child7 = actual_target;
-											}
-											else
-											{
-												child7 = actual_target;
-												if (helper::ai_flee(self, actual_target))
+												Unit* new_target = 0;
+												if (self->id != UnitId::ZergLakizilisk
+													|| self->status & UnitStatus::Burrowed
+													|| self_order_id == OrderId::Burrow
+													|| self_order_id == OrderId::Unburrow)
 												{
-													return;
+													new_target = actual_target; // I know this var's initialization looks retarded, and it probably is, but I'm leaving it for now. -Pr0nogo
 												}
-											}
-											if (childAi4
-												|| !(self->status & UnitStatus::IsBuilding)
-												|| helper::unit_has_ground_path(self, child7->sprite->position.x, child7->sprite->position.y)
-												|| !helper::ai_flee(self, child7))
-											{
-									LABEL_126:
-												if (self->order_target.unit != actual_target)  // Responding with worker
+												else
 												{
-													if (!(units_dat::base_property[(u16)self->id] & UnitProperty::Worker)
-														|| (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
-														|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
-														|| helper::ai_has_no_defense_build((u8)self->id))
+													new_target = actual_target;
+													if (helper::ai_flee(self, actual_target))
 													{
-														if (main_target_reactions)
+														return;
+													}
+												}
+												if (is_unbreakable
+													|| !(self->status & UnitStatus::IsBuilding)
+													|| helper::unit_has_ground_path(self, new_target->sprite->position.x, new_target->sprite->position.y)
+													|| !helper::ai_flee(self, new_target))
+												{
+												LABEL_126:
+													if (self->order_target.unit != actual_target) // Responding with worker
+													{
+														if (!(units_dat::base_property[(u16)self->id] & UnitProperty::Worker)
+															|| (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
+															|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
+															|| helper::ai_has_no_defense_build((u8)self->id))
 														{
-															if (self->unit_ai)
+															if (main_target_reactions)
 															{
-																if (helper::unit_can_see_cloaked_target(actual_target, self))
+																if (self->unit_ai)
 																{
-																	helper::ai_respond_to_cloaked_threat(self, actual_target);
-																}
-															}
-														}
-														if (!childAi4)
-														{
-															if (helper::unit_can_attack_target(actual_target, self, 1))
-															{
-																parentAi6 = self->subunit;
-																parentAi7 = self->subunit;
-																self->auto_target_unit = actual_target;
-																if (parentAi7->is_subunit())
-																{
-																	parentAi6->auto_target_unit = actual_target;
-																}
-																helper::ai_update_attack_target(self, 0, 1, 0);
-															}
-															else if (self->unit_ai)
-															{
-																if (childAi0 != 159
-//																	|| (parentAi3 = ai_prepare_to_flee(actual_target, self), (s32)parentAi3 == *(s32*)&self->sprite->position)
-																	)
-																{
-																	if (main_target_reactions)
+																	if (helper::unit_can_see_cloaked_target(actual_target, self))
 																	{
-																		if (self->id != 34)
+																		helper::ai_respond_to_cloaked_threat(self, actual_target);
+																	}
+																}
+															}
+															if (!is_unbreakable)
+															{
+																if (helper::unit_can_attack_target(actual_target, self, 1))
+																{
+																	self_subunit = self->subunit;
+																	self->auto_target_unit = actual_target;
+																	if (self_subunit->is_subunit())
+																	{
+																		self_subunit->auto_target_unit = actual_target;
+																	}
+																	helper::ai_update_attack_target(self, 0, 1, 0);
+																}
+																else if (self->unit_ai)
+																{
+																	Point16 flee_pos = {};
+																	if (self_order_id != 159 || (flee_pos = helper::ai_prepare_to_flee(actual_target, self), flee_pos == self->sprite->position))
+																	{
+																		if (main_target_reactions)
 																		{
-																			parentAi4 = self->order_target.unit;
-																			if (!parentAi4 || !helper::unit_can_attack_target(parentAi4, parentAi4, 1))
+																			if (self->id != 34)
 																			{
-																				helper::ai_flee(self, actual_target);
+																				parentAi4 = self->order_target.unit;
+																				if (!parentAi4 || !helper::unit_can_attack_target(parentAi4, parentAi4, 1))
+																				{
+																					helper::ai_flee(self, actual_target);
+																				}
 																			}
 																		}
 																	}
-																}
-																else
-																{
-//																	order_interrupt(self, 6u, (Point32*)parentAi3, (Unit*)HIDWORD(parentAi3)); // point32 was dwPosition, I think that's the same thing
+																	else
+																	{
+																		helper::order_interrupt(self, 0, flee_pos.x, flee_pos.y, OrderId::Move); // Could be WRONG
+																	}
 																}
 															}
 														}
-													}
-													else if (main_target_reactions)
-													{
-														helper::ai_flee(self, actual_target);
+														else if (main_target_reactions)
+														{
+															helper::ai_flee(self, actual_target);
+														}
 													}
 												}
 											}
@@ -371,12 +384,12 @@ LABEL_37:
 				GuardAi* guardAI = (GuardAi*)unit->unit_ai;
 				if (!guardAI
 				  || helper::unit_is_active_transport(unit)
-				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player]->AI_Flags.is_use_map_settings))
+				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player]->ai_flags.is_use_map_settings))
 				{
 					continue;
 				}
-				s16 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
-				AiRegion* region = &g_ai_region_captains[player][regionId];
+				s16 region_id = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+				AiRegion* region = &g_ai_region_captains[player][region_id];
 				u8 aiType = guardAI->type;
 				if (aiType == 1)
 				{
@@ -460,7 +473,7 @@ LABEL_37:
 			}
 		}
 
-		if (g_aiscript_controller[region->player]->AI_Flags.is_use_map_settings)
+		if (g_aiscript_controller[region->player]->ai_flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
 			s32 v9 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + v8);
@@ -474,7 +487,7 @@ LABEL_37:
 		}
 
 		u32 air_strength = region->air_strength_enemy;
-		if (!(g_aiscript_controller[region->player]->AI_Flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player]->ai_flags.is_use_map_settings))
 		{
 			air_strength += air_strength >> 1;
 		}
@@ -484,7 +497,7 @@ LABEL_37:
 		}
 
 		u32 ground_strength = region->ground_strength_enemy;
-		if (!(g_aiscript_controller[region->player]->AI_Flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player]->ai_flags.is_use_map_settings))
 		{
 			ground_strength += ground_strength >> 1;
 		}
@@ -576,9 +589,9 @@ LABEL_37:
 			&& !(repairman->status & UnitStatus::InBuilding) // new
 			&& repairmanAI != nullptr
 			&& repairmanAI->town != nullptr
-			&& repairmanAI->town->building_SCV != nullptr) // new
+			&& repairmanAI->town->building_scv != nullptr) // new
 		{
-			result = repairmanAI->town->building_SCV == repairman;
+			result = repairmanAI->town->building_scv == repairman;
 		}
 		return result;
 	}
@@ -753,7 +766,7 @@ LABEL_37:
 				AiRegion* playerRegions = g_ai_region_captains[unit->player];
 				char regionState = playerRegions[regionId].state;
 				AiRegion* region = &playerRegions[regionId];
-				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->captain_flags & 0x20))
+				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20))
 				{
 					result = 1;
 				}
@@ -767,7 +780,7 @@ LABEL_37:
 	{
 		if (!unit1 || !unit2 || !unit1->sprite || !unit2->sprite)
 		{
-			return 0;
+return 0;
 		}
 
 		u16 regionId = helper::get_region_id(unit2->sprite->position.x, unit2->sprite->position.y);
@@ -816,14 +829,14 @@ LABEL_37:
 				{
 					if (i->main_order_id)
 					{
-						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCreepColony || i->id == UnitId::ZergSunkenColony)
+						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony)
 						{
 							u32 iterator2 = 0;
 							if (region_max)
 							{
 								do
 								{ // Distance from unit to region position
-									u32 newTileDistance = helper::getTileDistance(i->sprite->position.x, i->sprite->position.y, regionPositions[iterator2].x, regionPositions[iterator2].y);
+									u32 newTileDistance = helper::get_tile_distance(i->sprite->position.x, i->sprite->position.y, regionPositions[iterator2].x, regionPositions[iterator2].y);
 									if (newTileDistance < tileDistances[iterator2])
 									{
 										tileDistances[iterator2] = newTileDistance;
@@ -855,85 +868,76 @@ LABEL_37:
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	void ai_get_build_location(u32 unit_id, char* placementData, u32 player, Point16 desiredPos, s32 maxRange) // 004461B0
+	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range) // 004461B0
 	{
-		memset(placementData, 0, 0x1000u);
-		helper::ai_get_building_placement_data(maxRange, unit_id, placementData, player, desiredPos);
-		helper::ai_remove_unreachable_regions(placementData, desiredPos);
+		memset(placement_data, 0, 0x1000u);
+		helper::ai_get_building_placement_data(max_range, unit_id, placement_data, player, desired_pos);
+		helper::ai_remove_unreachable_regions(placement_data, desired_pos);
 		if (unit_id != UnitId::ProtossPylon)
 		{
-			helper::ai_remove_dangerous_regions(unit_id, placementData, player, desiredPos);
+			helper::ai_remove_dangerous_regions(unit_id, placement_data, player, desired_pos);
 		}
-		helper::ai_remove_far_tiles(placementData, desiredPos, maxRange);
+		helper::ai_remove_far_tiles(placement_data, desired_pos, max_range);
+
+		u32 iterator2 = 0;
 		while (2)
 		{
-			u32 iterator1 = 0;
-			do
-			{
-				if (placementData[iterator1])
+			for (u32 i = 0; i < 64; i++) {
+				if (placement_data[i])
 				{
-					helper::ai_remove_different_height(placementData, desiredPos); // Owned?
-					helper::ai_placement_related_something(unit_id, placementData, desiredPos);
-					if (unit_id == UnitId::TerranCommandCenter || unit_id == UnitId::ZergHatchery || unit_id == UnitId::ProtossNexus)
+					helper::ai_remove_different_height(placement_data, desired_pos);
+					helper::ai_placement_related_something(unit_id, placement_data, desired_pos);
+					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot) // Was explicit CC/Nexus/Hatchery check - may have to forbid Hatchery morphs?
 					{
-						maxRange = 1;
+						max_range = 1;
 					}
 					else
 					{
-						maxRange = 0;
-						helper::ai_remove_unfit_tiles(unit_id, placementData, player, desiredPos);
+						max_range = 0;
+						helper::ai_remove_unfit_tiles(unit_id, placement_data, player, desired_pos);
 					}
-					helper::ai_remove_addon_places(unit_id, placementData, player, desiredPos);
+					helper::ai_remove_addon_places(unit_id, placement_data, player, desired_pos);
 					switch (unit_id)
 					{
 						case UnitId::TerranWatchdog:
 						case UnitId::ProtossPhotonCannon:
 						{
-							goto LABEL_17; 
+							helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+							return;
 						}
 						case UnitId::TerranBunker:
 						{
-							if (!helper::get_bunker_placement_position(player, &maxRange))
+							if (!helper::get_bunker_placement_position(player, &max_range))
 							{
-					LABEL_17:
-								helper::get_turret_placement_position(placementData, player, desiredPos, unit_id, 0);
+								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 								return;
 							}
 						}
-						case UnitId::ZergCreepColony:
+						case UnitId::ZergCagrantColony:
 						{
-							if (!g_aiscript_controller[player]->AI_Flags.is_secure_finished) // SLOBYTE(g_aiscript_controller[player].AI_Flags) < 0
+							if (!g_aiscript_controller[player]->ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
 							{
-								goto LABEL_21;
-							}
-
-							if (!helper::get_bunker_placement_position(player, &maxRange))
-							{
-					LABEL_21:
-								helper::get_turret_placement_position(placementData, player, desiredPos, unit_id, 0);
+								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
 						} break;
 						case UnitId::ProtossPylon:
 						{
-							helper::get_pylon_placement_position(placementData, player, desiredPos);
+							helper::get_pylon_placement_position(placement_data, player, desired_pos);
 						} break;
 						default:
 						{
-							if (!maxRange)
+							if (!max_range)
 							{
-								helper::get_default_placement_position(unit_id, placementData, player, desiredPos);
+								helper::get_default_placement_position(unit_id, placement_data, player, desired_pos);
 							}
 						} break;
 					}
 					return;
 				}
-				++iterator1;
-			} while (iterator1 < 0x40);
-
-			u32 iterator2 = 0;
+			}
 			++iterator2;
-			placementData += 64;
-			if (iterator2 < 0x40)
+			placement_data += 64;
+			if (iterator2 < 64)
 			{
 				continue;
 			}
@@ -1124,7 +1128,7 @@ LABEL_37:
 			AiTown* town = worker_ai->town;
 			worker_ai->last_update_second = *g_elapsed_time_seconds;
 			GroupFlag group_flags = units_dat::group_flags[worker->id];
-			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_scv_repair_controller(worker, town))
+			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_worker_repair_controller(worker, town))
 				&& !helper::ai_try_progress_spending_queue_worker(town, worker))
 			{
 				Unit* main_building = town->main_building;
@@ -1657,7 +1661,7 @@ LABEL_37:
 	}
 
 	// Same as above. -Pr0nogo
-	s32 ai_scv_repair_controller(Unit* worker, AiTown* town) // 00433C70
+	s32 ai_worker_repair_controller(Unit* worker, AiTown* town) // 00433C70
 	{
 		u32 best_score = 0;
 		Unit* repairee = 0;
@@ -1690,10 +1694,10 @@ LABEL_37:
 		}
 		if (!town->buildings || !repairee)
 		{
-			if (!town->building_SCV) {
-				town->building_SCV = worker;
+			if (!town->building_scv) {
+				town->building_scv = worker;
 			}
-			if (town->building_SCV != worker) {
+			if (town->building_scv != worker) {
 				return 0;
 			}
 			repairee = helper::ai_find_best_repair_unit(worker); // This writing to repairee seems really wrong
@@ -1730,7 +1734,6 @@ LABEL_37:
 		const f32 distance_bias = -4.0;
 		const f32 mineral_bias  =  1.0;
 		const f32 gas_bias      =  1.0;
-		const f32 start_location_bias = 10;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
@@ -1773,16 +1776,12 @@ LABEL_37:
 			average_enemy_distance /= enemy_count;
 			score += average_enemy_distance * enemy_bias;
 		}
-		if (start_location_count) {
-			average_start_location_distance /= start_location_count;
-			score += average_start_location_distance * start_location_bias;
-		}
 
-		f32 distance_from_main = scbw::get_distance_fast(main_town->position, area->position) / 32;
+		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
 		f32 mineral_value = area->mineral_field_count + area->total_mineral_count / 1500.0;
-		f32 gas_value     = area->geyser_count * 3    + area->total_gas_count     / 500.0;
+		f32 gas_value     = area->geyser_count * 3    + area->total_vespene_count / 500.0;
 		score += mineral_value * mineral_bias;
 		score += gas_value     * gas_bias;
 
@@ -1873,10 +1872,10 @@ LABEL_37:
 
 	static bool unit_id_is_stackable_building(u32 unit_id) {
 		switch (unit_id) {
-			case UnitId::ZergCreepColony:
-			case UnitId::ZergSunkenColony:
-			case UnitId::ZergSporeColony:
-			case UnitId::ZergLarvalColony:
+			case UnitId::ZergCagrantColony:
+			case UnitId::ZergSurkithColony:
+			case UnitId::ZergSpraithColony:
+			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
@@ -2083,7 +2082,7 @@ LABEL_37:
 	{
 		if (victim->unit_ai)
 		{
-			g_aiscript_controller[victim->player]->AI_Flags.is_secure_finished;
+			g_aiscript_controller[victim->player]->ai_flags.is_secure_finished;
 			UnitAi* victim_ai = victim->unit_ai;
 			AiRegion* victim_region = 0;
 			if (victim_ai->type == AiType::Military)
@@ -2223,10 +2222,219 @@ LABEL_37:
 	// Hooked to let AI use new transports. -Pr0nogo
 	bool player_has_transport(u32 player_id) // 00437250
 	{
-		return g_unit_count_table[UnitId::TerranTrojan].player[player_id] // Dunno how to properly access this in GPTP. -Pr0nogo
+		return g_unit_count_table[UnitId::TerranTrojan].player[player_id]
 			|| g_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
 			|| g_unit_count_table[UnitId::ZergOvileth].player[player_id]
 			|| g_unit_count_table[UnitId::ZergIroleth].player[player_id]
 			|| g_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
+	}
+
+	// Hooked to improve functionality and allow Pylons to respect the asc3 "creep" header. -Pr0nogo
+	// GREAT GOOGLY MOOGLY BATMAN, THIS IS A DISASTER
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_position, Point16* out_position, s32 area_tiles) // 004465C0
+	{
+		Point16 point1 = {};
+		Point16 point2 = {};
+		point1.x = try_position.x / 32;
+		point2.x = try_position.x / 32;
+		u32 player_var = builder->player;
+		point1.y = (*(s32*)&try_position >> 16) / 32;
+		point2.y = point1.y;
+		u32 player = player_var;
+		Point16 fallback = {};
+		u32 fallback_y = 0;
+
+		u32 addon_cucko0 = 0;
+		s32* addon_cucko1 = 0;
+		u16 addon_cucko2 = 0;
+		u16* addon_cucko3 = 0;
+		u16 addon_cucko4 = 0;
+		u32 addon_dims_x1 = 0;
+		u32 addon_dims_x2 = 0;
+		if (units_dat::base_property[unit_id] & UnitProperty::Addon)
+		{
+			addon_cucko0 = 4 * (u16)builder->id;
+			addon_dims_x1 = *(u16*)((char*)&units_dat::building_dimensions[0].x + addon_cucko0);
+			fallback = point2;
+			addon_cucko0 = *(u16*)((char*)&units_dat::building_dimensions[0].y + addon_cucko0) / -2 / 32 + point2.y;
+			addon_cucko1 = &units_dat::max_hitpoints[unit_id + 122];
+			addon_cucko2 = *(u16*)addon_cucko1 / 32 + point2.x - addon_dims_x1 / 2 / 32;
+			addon_cucko3 = (u16*)((char*)&units_dat::max_hitpoints[unit_id + 122] + 2);
+			fallback_y = *addon_cucko3 / 32 + addon_cucko0;
+			fallback.x = addon_cucko2;
+			if (!helper::can_build_on_tile_location(builder, player, fallback.x, fallback_y, unit_id, 0, 0, 1, 0))
+			{
+				addon_cucko4 = *(u16*)addon_cucko1 / -32 + addon_cucko2;
+				fallback_y = *addon_cucko3 / -32 + fallback_y;
+				addon_dims_x2 = units_dat::building_dimensions[builder->id].x;
+				fallback.x = addon_cucko4;
+				out_position->x = 32 * addon_cucko4 + addon_dims_x2 / 2;
+				out_position->y = 32 * fallback_y + units_dat::building_dimensions[builder->id].y / 2;
+				return 1;
+			}
+			player_var = player;
+		}
+		player = 2500;
+		char* placement_data_2 = (char*)1;
+		switch (unit_id)
+		{
+			case UnitId::TerranCommandCenter:
+			case UnitId::ZergHachirosk:
+			case UnitId::ProtossNexus:
+			{
+				placement_data_2 = 0;
+			} break;
+			case UnitId::TerranComsatStation:
+			case UnitId::TerranMissileSilo:
+			{
+				unit_id = UnitId::TerranCommandCenter;
+			} break;
+			case UnitId::TerranControlTower:
+			{
+				unit_id = UnitId::TerranStarport;
+			} break;
+			case UnitId::TerranCovertOps:
+			case UnitId::TerranPhysicsLab:
+			{
+				unit_id = UnitId::TerranScienceFacility;
+			} break;
+			case UnitId::TerranMachineShop:
+			{
+				unit_id = UnitId::TerranFulcrum;
+			} break;
+			case UnitId::TerranBunker:
+			{
+				if (get_bunker_placement_position(player_var, (u32*)&player))
+				{
+					placement_data_2 = 0;
+				}
+			} break;
+			case UnitId::ZergCagrantColony:
+			{
+				if (g_aiscript_controller[player_var]->ai_flags.spread_creep)
+				{
+					if (get_bunker_placement_position(player_var, (u32*)&player))
+					{
+						placement_data_2 = 0;
+					}
+				}
+			} break;
+			case UnitId::ProtossPylon:
+			{
+				Unit* disabled_unit = helper::get_disabled_unit_in_range(player_var, try_position);
+				g_disabled_unit_array[9] = disabled_unit;
+				if (disabled_unit)
+				{
+					u16 pos_x_disabled = disabled_unit->sprite->position.x;
+					u16 pos_y_disabled = disabled_unit->sprite->position.y;
+					point1.x = pos_x_disabled / 32;
+					point2.x = pos_x_disabled / 32;
+					try_position.x = pos_x_disabled;
+					try_position.y = pos_y_disabled;
+					point1.y = pos_y_disabled / 32;
+					point2.y = pos_y_disabled / 32;
+					placement_data_2 = 0;
+				}
+			} break;
+			default:
+			{
+			} break;
+		}
+		*g_ai_builder_unk = builder;
+		u32 unit_id_1 = unit_id;
+		char placement_data[4096];
+		ai_get_build_location(unit_id, (char*)placement_data, builder->player, try_position, area_tiles);
+		*g_ai_builder_unk = 0;
+		if (placement_data_2)
+		{
+			helper::ai_placement_data_something(placement_data, try_position);
+		}
+		Point16 point3 = point2;
+		if (player != 2500)
+		{
+			__int64 region_something = ((*g_sai_paths)->regions[player].region_center_x >> 8); // It must be destroyed.
+		//	point3.x = ((BYTE4(region_something) & 0x1F) + (s32)region_something) >> 5; // Fixel
+			point3.y = ((*g_sai_paths)->regions[(u16)player].region_center_y >> 8) / 32;
+		}
+		u32 pos_x_minus = point2.x - 32;
+		u32 pos_y_minus = point2.y - 32;
+		u32 best_distance = 99999999;
+		u32 best_fallback_distance = 99999999;
+		Point16 desired_fallback_pos = {};
+		desired_fallback_pos.x = 0;
+		desired_fallback_pos.y = 0;
+		addon_cucko1 = 0;
+		u16 fallback_x = 0;
+		while (1)
+		{
+			u32 pos_y_minus_2 = pos_y_minus;
+			placement_data_2 = placement_data;
+			addon_cucko3 = (u16*)64;
+			bool data_1 = 0;
+			do
+			{
+				u32 pos_x_minus_2 = pos_x_minus;
+				u32 index = 0;
+				point2 = {};
+				do
+				{
+					if (placement_data_2[index])
+					{
+						u32 current_distance = helper::get_tile_distance(32 * point3.x, 32 * point3.y, 32 * pos_x_minus_2, 32 * pos_y_minus_2);
+						if (current_distance < best_distance)
+						{
+							if (current_distance <= area_tiles)
+							{
+								best_distance = current_distance;
+								fallback.x = pos_x_minus_2;
+								fallback_y = pos_y_minus_2;
+							}
+							else if (current_distance < best_fallback_distance)
+							{
+								best_fallback_distance = current_distance;
+								desired_fallback_pos.x = pos_x_minus_2;
+								desired_fallback_pos.y = pos_y_minus_2;
+							}
+						}
+					}
+					index = *(u32*)&point2 + 1; // WHAT
+					++pos_x_minus_2;
+					++* (u32*)&point2; // WHO
+				} while (*(u32*)&point2 < 0x40); // HOW
+				++pos_y_minus_2;
+				data_1 = addon_cucko3 == (u16*)1; // OO
+				placement_data_2 += 64;
+				addon_cucko3 = (u16*)((char*)addon_cucko3 - 1); // O_O!!!
+			} while (!data_1);
+			if (best_distance != 99999999)
+			{
+				break;
+			}
+			best_distance = best_fallback_distance;
+			fallback_x = desired_fallback_pos.x;
+			fallback = desired_fallback_pos;
+			if (best_fallback_distance != 99999999)
+			{
+				out_position->x = 32 * fallback_x + units_dat::building_dimensions[unit_id_1].x / 2;
+				out_position->y = 32 * fallback_y + units_dat::building_dimensions[unit_id_1].y / 2;
+				return 1;
+			}
+			if (player != 2500)
+			{
+				bool data_iterated = (u32)addon_cucko1 + 1 < 2;
+				point3.x = point1.x;
+				point3.y = point1.y;
+				addon_cucko1 = (s32*)((char*)addon_cucko1 + 1);
+				if (data_iterated)
+				{
+					continue;
+				}
+			}
+			return 0;
+		}
+		fallback_x = fallback.x;
+		out_position->x = 32 * fallback_x + units_dat::building_dimensions[unit_id_1].x / 2;
+		out_position->y = 32 * fallback_y + units_dat::building_dimensions[unit_id_1].y / 2;
+		return 1;
 	}
 }

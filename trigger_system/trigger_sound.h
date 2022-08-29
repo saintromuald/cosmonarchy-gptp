@@ -49,21 +49,14 @@ struct WaveData {
 #pragma pack(pop)
 
 #define MaxPath 256
-#define MaxSound 1024
+#define MaxSound 5000
 #define MaxSoundHash 512
 #define MaxDupChannels 256
-
-struct SoundLoadData {
-	WAVEFORMATEX wave_format;
-	size_t size;
-	s16* data;
-};
 
 struct Sound {
 	Sound* hash_next;
 	char path[MaxPath];
 	u32 last_play_time;
-
 	LPDIRECTSOUNDBUFFER ds_buffer;
 };
 
@@ -87,6 +80,14 @@ struct Playback {
 	bool paused;
 };
 
+struct DupChannel {
+	s32 unit_id;
+	LPDIRECTSOUNDBUFFER ds_buffer;
+};
+
+extern LPDIRECTSOUND direct_sound;
+extern DupChannel dup_channels[MaxDupChannels];
+
 extern u32 loaded_sounds_count;
 extern Sound loaded_sounds[MaxSound];
 extern Sound* loaded_sounds_hash_table[MaxSoundHash];
@@ -99,12 +100,12 @@ void init_direct_sound();
 void update_sound();
 
 Sound* load_sound(char* filename);
-void free_sound(Sound* sound);
 Sound* get_sound(char* filename);
+void free_sound(Sound* sound);
 
-void play_sound(Sound* sound, s32 volume, s32 pan = 0);
+bool play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);
 void play_music(bool resume);
-void stop_music();
+void stop_music(bool pause);
 void shuffle_playlist();
 
 s32 get_sound_volume();

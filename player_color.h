@@ -28,7 +28,7 @@ enum
 	PlayerTintCount,
 };
 
-// TODO: Convert the vectors into switch statements - it will be more performant, flexible, and readable
+// TODO: Remove std::vector
 
 const std::vector<std::vector<u32>> player_tints =
 {
@@ -95,7 +95,6 @@ const std::vector<std::vector<u32>> player_tints =
 		PlayerColor::Green,
 		PlayerColor::Asparagus,
 		PlayerColor::RussianGreen,
-		PlayerColor::Harlequin,
 		PlayerColor::Celadon,
 		PlayerColor::FernGreen,
 		PlayerColor::VineGreen,
@@ -331,7 +330,6 @@ const std::vector<std::vector<std::vector<u32>>> personality_colors =
 			PlayerColor::Green,
 			PlayerColor::VineGreen,
 			PlayerColor::FernGreen,
-			PlayerColor::Harlequin,
 			PlayerColor::RussianGreen,
 			PlayerColor::DarkGreen,
 			PlayerColor::DarkSpringGreen,
@@ -607,6 +605,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 };
 
 #define ColorSetCount 256
+#define ColorSetSize 8
 #define MinimapColorCount (ColorSetCount * TilesetType::Count)
 #define UnitColorCount 2048
 

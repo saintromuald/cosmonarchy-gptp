@@ -46,7 +46,7 @@ void init_layouts() {
 }
 
 void update_layouts() {
-	// Tick Layouts Town
+	// Update Layouts Town
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
 		AiLayoutsTown* layouts_town = &layouts_towns[i];
@@ -92,16 +92,30 @@ void update_layouts() {
 				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, i, town->resarea);
 			}
 		}
-		if (layouts_town->inited && layouts_town->wants_no_resarea) {
-			town->worker_limit = layouts_town->worker_limit;
+		if (layouts_town->inited) {
+			if (town->worker_limit < layouts_town->worker_limit) {
+				town->worker_limit = layouts_town->worker_limit;
+			}
+			if (layouts_town->worker_maynard) {
+				helper::ai_get_old_peons(town, 1);
+			} else if (town->worker_count < layouts_town->worker_limit) {
+				layouts_town->worker_maynard += 1;
+			}
 		}
 	}
 
-	// Set Layouts Colors
+	// Update Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 			AiPlaceholder* placeholder = &layouts->placeholders[j];
+
+			// Init if not already
+			if (placeholder->town && !placeholder->disabled) {
+				init_placeholder(placeholder->town, placeholder);
+			}
+
+			// Colors
 			if (placeholder->requested) {
 				placeholder->color = graphics::GREEN;
 			} else if (placeholder->disabled) {
@@ -114,7 +128,7 @@ void update_layouts() {
 		}
 	}
 
-	// Tick Layouts
+	// Request Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
@@ -132,9 +146,6 @@ void update_layouts() {
 				continue;
 			}
 			if (!placeholder->should_request) {
-				if (!placeholder->inited) {
-					init_placeholder(town, placeholder);
-				}
 				continue;
 			}
 			if (has_expanding_town(town->player)) {
@@ -148,9 +159,6 @@ void update_layouts() {
 					placeholder->requested = true;
 					if (show_player_layouts[town->player]) {
 						scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
-					}
-					if (!placeholder->inited) {
-						init_placeholder(town, placeholder);
 					}
 					request_placeholder(town, layouts_town, placeholder);
 				} else if (placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
@@ -172,12 +180,15 @@ void update_layouts() {
 		}
 	}
 
-	// Draws Layouts Preview
+	// Draw Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		if (show_player_layouts[i]) {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				AiPlaceholder* placeholder = &layouts->placeholders[j];
+				if (placeholder->is_townhall_marker) {
+					continue;
+				}
 
 				Box16 bounds = units_dat::unit_bounds[placeholder->unit_id];
 				Box16 unit_box = {};
@@ -281,10 +292,10 @@ u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 
 u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
 	u32 i = count_units_in_town(town, unit_id);
-	if (unit_id == UnitId::ZergCreepColony) {
-		i += number_of_equivalents_up(town, UnitId::ZergSunkenColony);
-		i += number_of_equivalents_up(town, UnitId::ZergSporeColony);
-		i += number_of_equivalents_up(town, UnitId::ZergLarvalColony);
+	if (unit_id == UnitId::ZergCagrantColony) {
+		i += number_of_equivalents_up(town, UnitId::ZergSurkithColony);
+		i += number_of_equivalents_up(town, UnitId::ZergSpraithColony);
+		i += number_of_equivalents_up(town, UnitId::ZergLarvoskColony);
 	} else {
 		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
 		if (equivalent.to != UnitId::None) {
@@ -316,9 +327,10 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 	if (unit_id == UnitId::SpecialControlNode) {
 		if (!placeholder->was_preplaced) {
 			placeholder->should_request = false;
+			placeholder->is_townhall_marker = true;
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::TerranCommandCenter);
 			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ProtossNexus);
-			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ZergHatchery);
+			add_placeholder_by_unit_id(layouts, placeholder, UnitId::ZergHachirosk);
 		}
 		return;
 	}
@@ -366,7 +378,7 @@ static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
-	if (unit_id == UnitId::ZergCreepColony || unit_id == UnitId::ZergLarvalColony || unit_id == UnitId::ZergSunkenColony || unit_id == UnitId::ZergSporeColony) {
+	if (unit_id == UnitId::ZergCagrantColony || unit_id == UnitId::ZergLarvoskColony || unit_id == UnitId::ZergSurkithColony || unit_id == UnitId::ZergSpraithColony) {
 		return 2;
 	}
 	if (units_dat::group_flags[unit_id].is_factory || scbw::unit_id_is_tech(unit_id)) {
@@ -464,7 +476,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 bool is_basic_townhall(u32 unit_id) {
 	return unit_id == UnitId::TerranCommandCenter ||
 		unit_id == UnitId::ProtossNexus || 
-		unit_id == UnitId::ZergHatchery;
+		unit_id == UnitId::ZergHachirosk;
 }
 
 bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
@@ -525,6 +537,9 @@ bool has_expanding_town(u32 player) {
 }
 
 void init_placeholder(AiTown* town, AiPlaceholder* placeholder) {
+	if (placeholder->inited) {
+		return;
+	}
 	placeholder->inited = true;
 
 	u32 merge = find_unit_merge(placeholder->unit_id);

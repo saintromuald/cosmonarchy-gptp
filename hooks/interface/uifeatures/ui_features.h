@@ -20,11 +20,13 @@ namespace hooks {
 	s32 trigact_transmission(TriggerAction* trigger, char* a2);													// 004C7890
 	void draw_minimap_unit_box(u32 player);																		// 004A4650
 	void draw_all_minimap_boxes();																				// 004A4AC0
+	u32 get_cursor_type();																						// 004D1460
+	void cmdact_right_click_minimap(DialogEvent* dlg_event);													// 004563A0
 
 	void inject_ui_features_hooks();
 
 	void register_action(u8 type);
-	void clear_actions();
-	Point16 get_ui_text_pos(bool go_to_end);
+	void init_actions();
+	void update_actions();
 	void draw_ui_features();
 }

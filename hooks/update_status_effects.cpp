@@ -194,7 +194,7 @@ namespace hooks
 		*/
 
 		// Sire Ectomorphic Accelerant - egg morph speed aura
-		if (unit->id == UnitId::ZergSire)
+		if (unit->id == UnitId::ZergSibraelosk)
 		{
 			u32 radius = 224;
 			scbw::UnitFinder(

@@ -1,24 +1,5 @@
 #include "color_palette.h"
 
-#define PaletteSize 256
-#pragma pack(push, 1)
-
-struct RGBA {
-	u8 r;
-	u8 g;
-	u8 b;
-	u8 a;
-};
-
-struct Palette {
-	RGBA colors[PaletteSize];
-};
-
-#pragma pack(pop)
-
-static Palette* const init_palette = (Palette*)0x005994E0;
-static Palette* const game_palette = (Palette*)0x006CEB40;
-
 Recolor default_recolor() {
 	Recolor recolor = {};
 	recolor.r = 1;

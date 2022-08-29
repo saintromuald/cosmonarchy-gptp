@@ -24,10 +24,10 @@ namespace hooks
         if (!result) {
             return result;
         }
-        unused.x = mouse->y;
+        unused.x = g_mouse->y;
         Point16 dims = units_dat::building_dimensions[*place_building_unit_id];
-        placement_pos.x = mouse->x - dims.x / 2;
-        placement_pos.y = mouse->y - dims.y / 2;
+        placement_pos.x = g_mouse->x - dims.x / 2;
+        placement_pos.y = g_mouse->y - dims.y / 2;
         if (helper::init_placement_box_pos(&placement_pos)) {
             *g_place_building_message_id = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();
