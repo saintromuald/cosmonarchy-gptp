@@ -62,10 +62,7 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 #define DiscordClientId 972072419013558326
 namespace hooks
 {
-	static HMODULE discord_dll;
-
 	typedef enum EDiscordResult discord_create_t(DiscordVersion version, struct DiscordCreateParams* params, struct IDiscordCore** result);
-	static discord_create_t* discord_create;
 
 	static u32 discord_init_timeout;
 	static bool discord_in_game;
@@ -81,20 +78,16 @@ namespace hooks
 			return;
 		}
 
+		HMODULE discord_dll = LoadLibraryA("discord_game_sdk.dll");
 		if (!discord_dll) {
-			discord_dll = LoadLibraryA("discord_game_sdk.dll");
-			if (!discord_dll) {
-				discord_init_timeout = 15 * 24; // Let's forget about discord for a while, if this fails
-				return;
-			}
+			discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
+			return;
 		}
 
+		discord_create_t* discord_create = (discord_create_t*)GetProcAddress(discord_dll, "DiscordCreate");
 		if (!discord_create) {
-			discord_create = (discord_create_t*)GetProcAddress(discord_dll, "DiscordCreate");
-			if (!discord_create) {
-				discord_init_timeout = 15 * 24; // Let's forget about discord for a while, if this fails
-				return;
-			}
+			discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
+			return;
 		}
 
 		DiscordCreateParams params = {};
@@ -102,7 +95,7 @@ namespace hooks
 		params.flags = DiscordCreateFlags_NoRequireDiscord;
 		EDiscordResult result = discord_create(DISCORD_VERSION, &params, &discord);
 		if (result != DiscordResult_Ok) {
-			discord_init_timeout = 15 * 24; // Let's forget about discord for a while, if this fails
+			discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
 			return;
 		}
 
