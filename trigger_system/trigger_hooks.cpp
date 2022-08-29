@@ -80,9 +80,9 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 		return false;
 	}
 	
-	if (SFXDAT_SoundFile[sound_id]) {
+	if (sfx_dat::sound_file[sound_id]) {
 		char buffer[256] = {};
-		snprintf(buffer, 256, "sound\\%s", SFXDAT_SoundFile[sound_id]);
+		snprintf(buffer, 256, "sound\\%s", sfx_dat::sound_file[sound_id]);
 		Sound* sound = get_sound(buffer);
 		if (sound) {
 			u32 flags = sfx_dat::sound_flags[sound_id];
@@ -127,7 +127,7 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 
 // Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
 void free_sound_buffer(u32 sound_id) {
-	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
+	SoundData* sound_data = &sfx_dat::sound_data[sound_id];
 	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
 	if (!ds_buffer) {
 		return;

@@ -1110,7 +1110,7 @@ namespace hooks
 							}
 						}
 						helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
-						helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::portrait_duration[sound_id] / 1000), 1, sound_id);
+						helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 					}
 				}
 			}

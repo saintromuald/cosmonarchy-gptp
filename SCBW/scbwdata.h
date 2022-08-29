@@ -652,17 +652,6 @@ namespace flingy_dat {
 
 // incorrect, must be clarified
 
-// iquare sound extender
-namespace sfx_dat {
-	SCBW_DATA(const	DatLoad*,			sfxDat,		0x00515498);
-	
-	SCBW_DATA(u32*,	sound_pointer,		sfxDat[0].address);	// 0068DAA0
-	SCBW_DATA(u8*,	priority,			sfxDat[1].address);	// 0068D628
-	SCBW_DATA(u8*,	sound_flags,		sfxDat[2].address);	// 0068C8C0
-	SCBW_DATA(u16*,	portrait_duration,	sfxDat[3].address);	// 0068CD38
-	SCBW_DATA(u8*,	volume,				sfxDat[4].address);	// 0068C448
-}
-
 // Farty sound extender
 /*
 namespace sfx_dat {
