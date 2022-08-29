@@ -25,18 +25,18 @@ namespace DatExt {
 
 	namespace DatFile {
 		enum {
-			Units_Dat    = 0,
-			Weapons_Dat  = 1,
-			Flingy_Dat   = 2,
-			Sprites_Dat  = 3,
-			Images_Dat   = 4,
-			Upgrades_Dat = 5,
-			Techdata_Dat = 6,
-			Orders_Dat   = 7,
-			Sfxdata_Dat  = 8,
-			Portdata_Dat = 9, 
-			Mapdata_Dat  = 10,
-			COUNT        = 11
+			Units_Dat,
+			Weapons_Dat,
+			Flingy_Dat,
+			Sprites_Dat,
+			Images_Dat,
+			Upgrades_Dat,
+			Techdata_Dat,
+			Orders_Dat,
+			// Sfxdata_Dat,
+			Portdata_Dat, 
+			Mapdata_Dat,
+			COUNT, 
 		};
 	};
 
