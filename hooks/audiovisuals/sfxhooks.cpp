@@ -39,7 +39,7 @@ namespace hooks {
 					u32 rand_response = get_random_yes_unit_response(self->id);
 					bool can_play = (g_options_list->flags >> 1) & 1;
 					if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
-						helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (SFXDAT_SoundData[rand_response].duration_ms / 1000), 0, rand_response);
+						helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (sfx_dat::portrait_duration[rand_response] / 1000), 0, rand_response);
 					} else {
 						*g_last_random_sfx_id = last_rand;
 					}
@@ -118,7 +118,7 @@ namespace hooks {
 					u32 rand_response = get_random_yes_unit_response_internal(self, context);
 					bool can_play = (g_options_list->flags >> 1) & 1;
 					if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
-						helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (SFXDAT_SoundData[rand_response].duration_ms / 1000), 0, rand_response);
+						helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (sfx_dat::portrait_duration[rand_response] / 1000), 0, rand_response);
 					}
 					else {
 						*g_last_random_sfx_id = last_rand;
@@ -193,7 +193,7 @@ namespace hooks {
 					} break;
 				}
 				helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
-				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (SFXDAT_SoundData[ready_sound].duration_ms / 1000), 1, ready_sound);
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (sfx_dat::portrait_duration[ready_sound] / 1000), 1, ready_sound);
 			}
 		}
 	}

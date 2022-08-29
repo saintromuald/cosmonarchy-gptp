@@ -583,7 +583,7 @@ namespace hooks
 						sound_id = 136;
 					}
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (SFXDAT_SoundData[sound_id].duration_ms / 1000), 1, sound_id);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::portrait_duration[sound_id] / 1000), 1, sound_id);
 				} break;
 				case RaceId::Protoss:
 				default: {

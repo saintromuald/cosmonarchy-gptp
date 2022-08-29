@@ -80,12 +80,12 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 		return false;
 	}
 	
-	if (SFXDAT_SoundFile[sound_id]) {
+	if (sfx_dat::sound_pointer[sound_id]) {
 		char buffer[256] = {};
-		snprintf(buffer, 256, "sound\\%s", SFXDAT_SoundFile[sound_id]);
+		snprintf(buffer, 256, "sound\\%s", sfx_dat::sound_pointer[sound_id]);
 		Sound* sound = get_sound(buffer);
 		if (sound) {
-			u32 flags = SFXDAT_Flags[sound_id];
+			u32 flags = sfx_dat::sound_flags[sound_id];
 			if (flags & DatSoundFlags_OneAtATime) {
 				DWORD status = 0;
 				if (sound->ds_buffer) {
@@ -127,7 +127,10 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 
 // Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
 void free_sound_buffer(u32 sound_id) {
-	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
+	if (sound_id >= 1144) {
+		return; // g_sound_data, does not seem to be extended!!!
+	}
+	SoundData* sound_data = &g_sound_data[sound_id];
 	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
 	if (!ds_buffer) {
 		return;
@@ -139,7 +142,7 @@ void free_sound_buffer(u32 sound_id) {
 	}
 	ds_buffer->Release();
 	sound_data->ds_buffer = 0;
-	if (SFXDAT_Flags[sound_id] & DatSoundFlags_PermanentlyLoaded) {
+	if (sfx_dat::sound_flags[sound_id] & DatSoundFlags_PermanentlyLoaded) {
 		return;
 	}
 	*g_current_sound_memory -= sound_data->wav_data_size;

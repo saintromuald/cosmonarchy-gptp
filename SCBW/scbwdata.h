@@ -958,7 +958,7 @@ SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 // For do_attack_notify_unit
 SCBW_DATA(char*,		g_palette_index_reference,	0x006CEB20); // sizeof at least 20
 SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
-// SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270); use SFXDAT_SoundData from hooks/limits/sfx_extender.h!
+SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270); // This seems to be incorrect, where is the farty extended version??? TODO: probably port iquare's extender of sound data
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
