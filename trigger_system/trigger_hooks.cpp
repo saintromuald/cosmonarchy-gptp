@@ -127,9 +127,6 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 
 // Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
 void free_sound_buffer(u32 sound_id) {
-	if (sound_id >= 1144) {
-		return; // g_sound_data, does not seem to be extended!!!
-	}
 	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
 	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
 	if (!ds_buffer) {
