@@ -1,23 +1,20 @@
 #include "hooks/limits/sfx_extender.h"
 #include "globals.h"
 
-/*
 u8* SFXDAT_Volume;
 u8* SFXDAT_Flags;
 u16* SFXDAT_Race;
 u8* SFXDAT_Type;
 char** SFXDAT_SoundFile;
 SoundData* SFXDAT_SoundData;
-*/
 
 namespace hooks
 {
 	void sfxExtenderGetCount() {
-		// globals.extended_sfx = 1;
+		globals.extended_sfx = 1;
 	}
 
 	void newSfxExtender() {
-		/*
 		NEW_SOUND_TYPE_COUNT = 20000; // Define your length here (change later to custom func reading sfxdata)
 		SFXDAT_Volume = new u8[NEW_SOUND_TYPE_COUNT];
 		SFXDAT_Flags = new u8[NEW_SOUND_TYPE_COUNT];
@@ -114,6 +111,5 @@ namespace hooks
 		memory_patch(0x0048F8DA, ((u32)SFXDAT_SoundData) + 0x828);
 		memory_patch(0x0048F36F, ((u32)SFXDAT_SoundData) + 0x878);
 		memory_patch(0x0048F412, ((u32)SFXDAT_SoundData) + 0x878);
-		*/
 	}
 }

@@ -130,7 +130,7 @@ void free_sound_buffer(u32 sound_id) {
 	if (sound_id >= 1144) {
 		return; // g_sound_data, does not seem to be extended!!!
 	}
-	SoundData* sound_data = &g_sound_data[sound_id];
+	SoundData* sound_data = &SFXDAT_SoundData[sound_id];
 	IDirectSoundBuffer* ds_buffer = sound_data->ds_buffer;
 	if (!ds_buffer) {
 		return;

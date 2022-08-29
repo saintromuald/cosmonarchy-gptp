@@ -146,6 +146,8 @@ namespace flingy_dat {
 	SCBW_DATA_DEF(u8*,  movement_control,    flingyDat[6].address);	// 006C9858
 } //flingy_dat (last entry at 0x00515A80)
 
+// Farty sound extender
+/*
 namespace sfx_dat {
 	SCBW_DATA(const	DatLoad*,	sfxDat,		0x00515498); // now in scbwdata.cpp
 
@@ -155,6 +157,7 @@ namespace sfx_dat {
 	SCBW_DATA_DEF(u16*, portrait_duration, sfxDat[3].address);	// 0068CD38
 	SCBW_DATA_DEF(u8*,	volume, sfxDat[4].address);				// 0068C448
 }
+*/
 
 namespace weapons_dat {
 	SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);

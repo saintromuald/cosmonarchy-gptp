@@ -154,7 +154,8 @@ namespace DatExt {
 			} break;
 			case DatFile::Sfxdata_Dat:
 			{
-				sfxdata_dat_doPatch(newCount);
+				// For now let's use old iquare code, which patched sound data correctly
+				// sfxdata_dat_doPatch(newCount);
 			} break;
 			case DatFile::Portdata_Dat:
 			{

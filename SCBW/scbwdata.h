@@ -652,6 +652,19 @@ namespace flingy_dat {
 
 // incorrect, must be clarified
 
+// iquare sound extender
+namespace sfx_dat {
+	SCBW_DATA(const	DatLoad*,			sfxDat,		0x00515498);
+	
+	SCBW_DATA(u32*,	sound_pointer,		sfxDat[0].address);	// 0068DAA0
+	SCBW_DATA(u8*,	priority,			sfxDat[1].address);	// 0068D628
+	SCBW_DATA(u8*,	sound_flags,		sfxDat[2].address);	// 0068C8C0
+	SCBW_DATA(u16*,	portrait_duration,	sfxDat[3].address);	// 0068CD38
+	SCBW_DATA(u8*,	volume,				sfxDat[4].address);	// 0068C448
+}
+
+// Farty sound extender
+/*
 namespace sfx_dat {
 //	SCBW_DATA(const	DatLoad*,			sfxDat,		0x00515498); // now in scbwdata.cpp
 	
@@ -661,6 +674,7 @@ namespace sfx_dat {
 	SCBW_DATA_REF(u16*,	portrait_duration,	sfxDat[3].address);	// 0068CD38
 	SCBW_DATA_REF(u8*,	volume,				sfxDat[4].address);	// 0068C448
 }
+*/
 
 namespace weapons_dat {
 //	SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
@@ -958,7 +972,7 @@ SCBW_DATA(Box16*,	tooltip_required_area,		0x006CE0D8);
 // For do_attack_notify_unit
 SCBW_DATA(char*,		g_palette_index_reference,	0x006CEB20); // sizeof at least 20
 SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
-SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270); // This seems to be incorrect, where is the farty extended version??? TODO: probably port iquare's extender of sound data
+// SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270); // THIS IS NOT EXTENDED!!!
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,					0x0068C1FC);
