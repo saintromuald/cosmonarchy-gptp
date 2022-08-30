@@ -19,6 +19,12 @@ namespace hooks
 	u16 get_last_queue_slot_id(Unit* unit);																										// 0047B270
 	void unit_stat_action_transport(BinDlg* dialog);																							// 00427C90
 	void unit_stat_act_egg(BinDlg* dialog);																										// 00427260
+	void stats_addon_builder(BinDlg* dialog);																									// 00425F30
+	void stats_incomplete_unit(BinDlg* dialog);																									// 004260C0
+	void stats_queue_progress(BinDlg* dialog);																									// 004268D0
+	void stats_morph_progress(BinDlg* dialog, int index, u32 unk);																				// 00457250
+	void stats_nuke_silo(BinDlg* dialog);																										// 00426FF0
+	void unit_stat_act_archon(BinDlg* dialog);																									// 004273E0
 
 	void inject_stats_panel_display_hooks();
 }

@@ -538,6 +538,13 @@ C_ASSERT(sizeof(UnitFinderData) == 8);
 // BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt as Dialog Structure
 // That structure is variable depending on the content
 
+struct UnknownUserStruct {
+	/*0x00*/ u32	unkUser_00;
+	/*0x04*/ u16	iconId_04;
+	/*0x06*/ u16	tooltipType_06; // see PanelTooltipTypes::Enum
+	/*0x08*/ u16	id_08;
+};
+
 struct BinDlg
 {
 	/*0x00*/  BinDlg*		next;
@@ -559,6 +566,7 @@ struct BinDlg
 		StatusScreenState*	stat_button_user; // from Neiv's list
 		/*0x26*/  u32		non_user_value;
 		GrpHead*			grp_head_user;
+		UnknownUserStruct*	stat_user; // from public GPTP, probably can be removed
 	};
 
 	/*0x2A*/  void*			fxn_interact;

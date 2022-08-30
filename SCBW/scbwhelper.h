@@ -1183,7 +1183,7 @@ namespace helper {
 	void enable_doodad_state(Unit* unit);																// 0047BA00
 	void disable_doodad_state(Unit* unit);																// 0047B960
 	char unfreeze_unit(Unit* unit);																		// 004F62D0
-	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s16 value);							// 00457200
+	s32 dialog_set_progress_bar_value(BinDlg* dialog, s32 index, u32 value);							// 00457200
 
 	// For vespene rework in harvest.cpp
 	void set_gathering_flags(Unit* unit);																// 00468AA0
@@ -1198,7 +1198,7 @@ namespace helper {
 	Unit* remove_harvesters(Unit* node);																// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 
-	s32 ai_worker_repair_controller(Unit* unit, AiTown* town);												// 00433C70
+	s32 ai_worker_repair_controller(Unit* unit, AiTown* town);											// 00433C70
 	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
@@ -1433,4 +1433,5 @@ namespace helper {
 	char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used);	// 004C0300
 
 	void ground_attack_init(u16 x_pos, u16 y_pos);															// 00488660
+	void bw_sprintf_s(char* buffer, int buffer_size, const char* format_string, int value);					// 0041F1B0
 }

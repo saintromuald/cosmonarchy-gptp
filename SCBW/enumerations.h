@@ -1215,7 +1215,22 @@ enum AiBuildOrder // dark_swarm_unit
 };
 
 enum UnitResponseContext {
-	URC_Normal = 0,
-	URC_Target = 1,
+	URC_Normal	= 0,
+	URC_Target	= 1,
 	URC_OrderId = 2,
 };
+
+// From public gptp, note "may be wrong" -Pr0nogo
+namespace PanelTooltipTypes
+{
+	enum Enum
+	{
+		WeaponPanelTooltip		= 0,	// set in getWeaponTooltipString
+		ArmorPanelTooltip		= 1,	// set in getArmorTooltipString
+		ShieldPanelTooltip		= 2,	// set in getShieldTooltipString
+		SpecialPanelTooltip		= 3,	// some possibilities set in getSpecialTooltipString
+		ResearchPanelTooltip	= 4,
+		UpgradePanelTooltip		= 5,
+		NoPanelTooltip			= 6,
+	};
+}

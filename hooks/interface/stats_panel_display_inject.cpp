@@ -318,6 +318,109 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) stats_addon_builder_wrapper() // 00425F30
+	{
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, EDI
+			PUSHAD
+		}
+		hooks::stats_addon_builder(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) stats_incomplete_unit_wrapper() // 004260C0
+	{
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, EDI
+			PUSHAD
+		}
+		hooks::stats_incomplete_unit(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) stats_queue_progress_wrapper() // 004268D0
+	{
+		static BinDlg* dialog;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::stats_queue_progress(dialog);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
+	void __declspec(naked) stats_morph_progress_wrapper() // 00457250
+	{
+		static BinDlg* dialog;
+		static int index;
+		static u32 unk;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV dialog, EAX
+			MOV index, ECX
+			MOV EAX, [EBP + 0x08]
+			MOV unk, EAX
+			PUSHAD
+		}
+		hooks::stats_morph_progress(dialog, index, unk);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
+	void __declspec(naked) stats_nuke_silo_wrapper() // 00426FF0
+	{
+		static BinDlg* dialog;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::stats_nuke_silo(dialog);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
+	void __declspec(naked) unit_stat_act_archon_wrapper() // 4273E0
+	{
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::unit_stat_act_archon(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -341,6 +444,12 @@ namespace hooks
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
 		jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
+		jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
+		jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
+		jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1);
+		jump_patch(stats_morph_progress_wrapper,					0x00457250, 1);
+		jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
+		jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
 
 		// Disable player checks for progress bar functions
 		nops(0x0042690C, 2);
