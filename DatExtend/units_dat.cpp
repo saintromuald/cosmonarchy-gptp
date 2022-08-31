@@ -519,7 +519,8 @@ namespace DatExt {
 		j = 0;
 		do
 		{
-			offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * (0x404 + newCount) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
+			offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * (sizeof(AI_Main)) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
+			//offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * (0x404 + newCount) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
 			j += simpleReplace((u32*)&unit_AIStruct[j + 2], offs);
 			j += 3;
 		} while (unit_AIStruct[j] != 0 || unit_AIStruct[j + 1] != 0);
