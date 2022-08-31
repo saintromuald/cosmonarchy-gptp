@@ -949,13 +949,9 @@ struct AI_Main
 	u32 ai_defenseuse_ag[10];			/*0378*/
 	u32 ai_defenseuse_ga[10];			/*03A0*/
 	u32 ai_defenseuse_aa[10];			/*03C8*/
-	u8	ai_define_max[1];				/*03F0*/ // UNIT_TYPE_COUNT entries, but DatExt makes this variable
-//	Unit* main_medic;					/*04D4*/
-//	u8 unk4d8[0x10];					/*04D8*/
-	
-	// Hopefully these are valid xd - FaRTy
-	Unit*& main_medic() { return (Unit*&)ai_define_max[UNIT_TYPE_COUNT]; }
-	Box32& gen_cmd_loc() { return (Box32&)ai_define_max[UNIT_TYPE_COUNT + sizeof(Unit*)]; }
+	u8	ai_define_max[UnitsIdLimit];	/*03F0*/
+	Unit* main_medic;					/*04D4*/
+	Box32 gen_cmd_loc;					/*04D8*/
 };
 
 struct AiScript

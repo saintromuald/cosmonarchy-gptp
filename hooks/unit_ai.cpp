@@ -13,8 +13,8 @@ namespace hooks
 			return;
 		}
 
-		if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player]->main_medic()) {
-			g_aiscript_controller[unit->player]->main_medic() = unit;
+		if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player]->main_medic) {
+			g_aiscript_controller[unit->player]->main_medic = unit;
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
