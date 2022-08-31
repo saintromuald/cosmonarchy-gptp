@@ -1028,7 +1028,7 @@ SCBW_DATA(u32*,				g_minimap_box_checksum,		0x0059C1A8);
 SCBW_DATA(u32*,				g_minimap_draw_neutrals,	0x005993AC);
 
 // For draw_train_progress
-SCBW_DATA(void**,			g_cmdbtns_handle,			0x0068C1C0);
+SCBW_DATA(GrpHead**,		g_cmdbtns_handle,			0x0068C1C0);
 
 // For draw_all_minimap_boxes
 SCBW_DATA(Bitmap**,			g_current_surface,			0x006CF4A8);
@@ -1054,6 +1054,9 @@ SCBW_DATA(Sprite**,		g_horizontal_sprite_lines_end,		0x00629288);
 // For get_cursor_type
 SCBW_DATA(RECT*,		g_cursor_limit_rect,				0x005993B0);
 SCBW_DATA(char*,		g_is_drag_selecting,				0x0066FF5C);
+
+// For stats_panel_display hooks
+SCBW_DATA(char**,		g_queues_buffers,					0x00519F40);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

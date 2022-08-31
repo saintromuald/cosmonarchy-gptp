@@ -37,7 +37,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
 	return weapons_dat::damage_factor[weapon_id];
 }
 
-// Returns the C-string for the tooltip text of the unit's weapon icon.
+// Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 // This function is used for weapon icons and special icons.
 // Precondition: @p entryStrIndex is a stat_txt.tbl string index.
 #include "SCBW/stat_txt_spec.h"
@@ -289,7 +289,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 
 namespace hooks
 {
-	// Returns the C-string for the tooltip text of the unit's weapon icon.
+	// Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 	const char* get_weapon_tooltip_string(u8 weapon_id, Unit* unit)
 	{
 		return get_damage_tootlip_string(weapon_id, unit, weapons_dat::label[weapon_id]);
@@ -687,7 +687,7 @@ namespace hooks
 		return buffer;
 	}
 
-	// Returns the C-string for the tooltip text of the plasma shield icon.
+	// Returns the C-string for the tooltip text of the plasma shield grp_frame.
 	const char* get_shield_tooltip_string(Unit* unit) {
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 		const u16 label_id = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
@@ -707,7 +707,7 @@ namespace hooks
 		return buffer;
 	}
 
-	// Returns the C-string for the tooltip text of the Interceptor icon (Carriers), Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine icon (Vultures).
+	// Returns the C-string for the tooltip text of the Interceptor grp_frame (Carriers), Scarab grp_frame (Reavers), Nuclear Missile grp_frame (Nuclear Silos), and Spider Mine grp_frame (Vultures).
 	const char* get_special_tooltip_string(u16 iconUnitId, Unit* unit)
 	{
 		if (iconUnitId == UnitId::ProtossSteward)

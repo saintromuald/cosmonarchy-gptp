@@ -854,18 +854,15 @@ namespace hooks
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
 	void stats_addon_builder(BinDlg* dialog) // 00425F30
 	{
-		u32* const	u32_0068C1E0 = (u32*)DatExt::get_unit_icons_pointer();
-		u8*	 const	u8_0068C1E5  = (u8*)0x0068C1E5; // Some kind of ID of current type of display, to not redo memory allocation
-
 		BinDlg* current_dialog;
 		Unit* unit = *g_active_portrait_unit;
 		if (*g_is_in_replay != 0 || unit->player == *g_local_nation_id)
 		{
-			if (*u8_0068C1E5 != 9)
+			if (*g_status_screen_func != 9)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -40, 17);
-				*u8_0068C1E5 = 9;
+				*g_status_screen_func = 9;
 			}
 
 			Unit* built_unit = 0;
@@ -899,10 +896,10 @@ namespace hooks
 				current_dialog = current_dialog->next;
 			}
 			current_dialog->graphic = 2;
-			current_dialog->stat_user->unkUser_00 = (u32)*u32_0068C1E0;
-			current_dialog->stat_user->iconId_04 = slot_unit_id;
-			current_dialog->stat_user->tooltipType_06 = 3;
-			current_dialog->stat_user->id_08 = slot_unit_id;
+			current_dialog->stat_button_user->button_grp = *g_cmdicons_grp;
+			current_dialog->stat_button_user->grp_frame = slot_unit_id;
+			current_dialog->stat_button_user->type = 3;
+			current_dialog->stat_button_user->id = slot_unit_id;
 
 			if (!(current_dialog->flags & BinDlgFlags::Unknown0)) {
 				current_dialog->flags |= BinDlgFlags::Unknown0;
@@ -916,13 +913,12 @@ namespace hooks
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
 	void stats_incomplete_unit(BinDlg* dialog) // 004260C0
 	{
-		u8* const u8_0068C1E5 = (u8*)0x0068C1E5;
 		Unit* unit = *g_active_portrait_unit;
 		helper::show_control_group(dialog, -30, 13);
-		if (*u8_0068C1E5 != 6)
+		if (*g_status_screen_func != 6)
 		{
 			helper::hide_optional_status_screen_controls(dialog);
-			*u8_0068C1E5 = 6;
+			*g_status_screen_func = 6;
 		}
 
 		helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
@@ -933,11 +929,6 @@ namespace hooks
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
 	void stats_queue_progress(BinDlg* dialog) // 004268D0
 	{
-		char**	const	queues_buffers	= (char**)0x00519F40; // array of buffers for strings in production queues
-		u32*	const	u32_0068C1C0	= (u32*)0x0068C1C0; // unknown, used for empty queue slot case here
-		u32*	const	u32_0068C1E0	= (u32*)DatExt::get_unit_icons_pointer();
-		u8*		const	u8_0068C1E5		= (u8*)0x0068C1E5; // to know if refreshing same info display or new one, probably
-
 		Unit* unit = *g_active_portrait_unit;
 		BinDlg* current_dialog;
 		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
@@ -954,11 +945,11 @@ namespace hooks
 
 		if (*g_is_in_replay != 0 || unit->player == *g_local_nation_id)
 		{
-			if (*u8_0068C1E5 != 5)
+			if (*g_status_screen_func != 5)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -15, 8);
-				*u8_0068C1E5 = 5;
+				*g_status_screen_func = 5;
 			}
 
 			Unit* built_unit = 0;
@@ -1007,7 +998,7 @@ namespace hooks
 						slot_text = (char*)FORMATSTRING_VALUE_SPACE;						// active slot number display (cyan)
 					}
 
-					helper::bw_sprintf_s(queues_buffers[queueSlot], 8, slot_text, queueSlot + 1);
+					helper::bw_sprintf_s(g_queues_buffers[queueSlot], 8, slot_text, queueSlot + 1);
 					if (queueSlot == 0 || queueSlot >= 4)
 					{
 						current_dialog->graphic = 2;
@@ -1019,18 +1010,18 @@ namespace hooks
 
 					if (slotUnitId != UnitId::None)
 					{
-						current_dialog->stat_user->unkUser_00 = *u32_0068C1E0;
-						current_dialog->stat_user->iconId_04 = slotUnitId;
-						current_dialog->stat_user->tooltipType_06 = 3;
-						current_dialog->stat_user->id_08 = slotUnitId;
+						current_dialog->stat_button_user->button_grp = *g_cmdicons_grp;
+						current_dialog->stat_button_user->grp_frame = slotUnitId;
+						current_dialog->stat_button_user->type = 3;
+						current_dialog->stat_button_user->id = slotUnitId;
 						helper::enable_control(current_dialog);
-						current_dialog->psz_text = queues_buffers[queueSlot];
+						current_dialog->psz_text = g_queues_buffers[queueSlot];
 					}
 					else
 					{
-						current_dialog->stat_user->unkUser_00 = *u32_0068C1C0;
-						current_dialog->stat_user->iconId_04 = queueSlot + 6;
-						current_dialog->stat_user->tooltipType_06 = 6;
+						current_dialog->stat_button_user->button_grp = *g_cmdbtns_handle; // This global was previously defined as void**. -Pr0nogo
+						current_dialog->stat_button_user->grp_frame = queueSlot + 6;
+						current_dialog->stat_button_user->type = 6;
 						helper::disable_dialog(current_dialog);
 						current_dialog->psz_text = 0;
 					}
@@ -1089,7 +1080,7 @@ namespace hooks
 				current_dialog = current_dialog->next;
 			}
 			// Spoiler: it didn't work. -Pr0nogo
-		//	current_dialog->psz_text = statusText; // TODO: Fix null crash with this line somehow. Writes "Building" "Warping" etc to terran/protoss unit training bars.
+		//	current_dialog->psz_text = statusText; // TODO: Fix null crash with this line. Writes "Building" "Warping" etc to terran/protoss unit training bars.
 			while (current_dialog)
 			{
 				if (!(current_dialog->flags & BinDlgFlags::Visible))
@@ -1199,19 +1190,15 @@ namespace hooks
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
 	void stats_nuke_silo(BinDlg* dialog) // 00426FF0
 	{
-		char** const	queues_buffers = (char**)0x00519F40; // array of buffers for strings in production queues
-		u32* const	u32_0068C1E0 = (u32*)0x0068C1E0;
-		u8* const	u8_0068C1E5 = (u8*)0x0068C1E5;
-
 		Unit* unit = *g_active_portrait_unit;
 		BinDlg* current_dialog;
 		if (units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) // Originally checked for a Disruption Web ID range
 		{
-			if (*(u16*)u8_0068C1E5 != 3)
+			if (*g_status_screen_func != 3)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -20, 12);
-				*u8_0068C1E5 = 3;
+				*g_status_screen_func = 3;
 			}
 
 			helper::draw_display_buttons(dialog);
@@ -1252,16 +1239,16 @@ namespace hooks
 			else {
 				current_dialog = dialog->parent->child_dialog;
 			}
-
 			while (current_dialog && current_dialog->index != 2)
 			{
 				current_dialog = current_dialog->next;
 			}
 
-			if (*u8_0068C1E5 != 14)
+			if (*g_status_screen_func != 14)
 			{
+				scbw::print("Status screen func != 14");
 				helper::hide_optional_status_screen_controls(dialog);
-				*u8_0068C1E5 = 14;
+				*g_status_screen_func = 14;
 			}
 
 			Unit* target = 0;
@@ -1287,15 +1274,15 @@ namespace hooks
 				builtUnitId = target->id;
 			}
 			helper::dialog_set_progress_bar_value(dialog, 7, progress);
-			helper::bw_sprintf_s(queues_buffers[0], 8, FORMATSTRING_VALUE_SPACE, 1); // active slot number display
+			helper::bw_sprintf_s(g_queues_buffers[0], 8, FORMATSTRING_VALUE_SPACE, 1); // active slot number display
 
 			current_dialog->graphic = 2;
-			current_dialog->stat_user->unkUser_00 = *u32_0068C1E0;
-			current_dialog->stat_user->iconId_04 = builtUnitId;
-			current_dialog->stat_user->tooltipType_06 = PanelTooltipTypes::SpecialPanelTooltip;
-			current_dialog->stat_user->id_08 = builtUnitId;
+			current_dialog->stat_button_user->button_grp = *g_cmdicons_grp;
+			current_dialog->stat_button_user->grp_frame = builtUnitId;
+			current_dialog->stat_button_user->type = PanelTooltipTypes::SpecialPanelTooltip;
+			current_dialog->stat_button_user->id = builtUnitId;
 			helper::enable_control(current_dialog);
-			current_dialog->psz_text = queues_buffers[0];
+			current_dialog->psz_text = g_queues_buffers[0];
 			helper::show_dialog(current_dialog);
 
 			if (!(current_dialog->flags & BinDlgFlags::Unknown0))
@@ -1307,12 +1294,10 @@ namespace hooks
 		}
 	}
 
-	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
+	// Ported from GPTP to show remaining build time seconds above progress bar. NOT TESTED because we don't use it anymore. -Pr0nogo
 	// Used by original Archon and Mind Tyrant. Probably display function 5 in FireGraft. -GPTP
 	void unit_stat_act_archon(BinDlg* dialog) // 004273E0
 	{
-		u8* const u8_0068C1E5 = (u8*)0x0068C1E5; //Some kind of ID of current type of display, to not redo memory allocation
-
 		Unit* unit = *g_active_portrait_unit;
 		if ((*g_is_in_replay == 0 && unit->player != *g_local_nation_id)
 		||	unit->main_order_id != OrderId::CompletingArchonSummon)
@@ -1322,15 +1307,13 @@ namespace hooks
 		else
 		{
 			helper::show_control_group(dialog, -30, 13);
-			if (*u8_0068C1E5 != 6)
+			if (*g_status_screen_func != 6)
 			{
 				helper::hide_optional_status_screen_controls(dialog);
-				*u8_0068C1E5 = 6;
+				*g_status_screen_func = 6;
 			}
 			helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
-
-			// Skipping hardcoded use of statTxtTbl. -GPTP
-			
+			// Skipping hardcoded use of statTxtTbl. -GPTP			
 			helper::add_text_to_dialog(dialog, -30, (char*)statTxtTblNew->get_string(0x316)); // Text: "Summoning"
 			helper::set_text_string(dialog);
 			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
