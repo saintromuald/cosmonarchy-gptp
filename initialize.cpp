@@ -184,6 +184,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	std::this_thread::sleep_for(sleepq7);
 	*/
 
+	DatExt::extend_data();
+
 	// quick drop timeout -- Veeq7
 	memory_patch(0x004A345D + 2, (u32)0);
 
@@ -551,8 +553,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// allow all players addons to connect
 	nops(0x00440314, 6);
-
-	DatExt::extend_data();
 
 	// injection
 	inject_globals_hooks();
