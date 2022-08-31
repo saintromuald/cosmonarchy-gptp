@@ -13,8 +13,8 @@ namespace hooks
 			return;
 		}
 
-		if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player]->main_medic) {
-			g_aiscript_controller[unit->player]->main_medic = unit;
+		if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+			g_aiscript_controller[unit->player].main_medic = unit;
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
@@ -277,7 +277,7 @@ namespace hooks
 					}
 				}
 
-				if (!(g_aiscript_controller[town->player]->ai_flags.is_use_map_settings)
+				if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
 				&&	  unit->id != UnitId::TerranBunker
@@ -824,11 +824,11 @@ namespace hooks
 							if (unit_ai->type != 4 ||
 								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
 								unit_region_type != 2 ||
-								g_aiscript_controller[ai_region->player]->ai_flags.is_use_map_settings)
+								g_aiscript_controller[ai_region->player].ai_flags.is_use_map_settings)
 							{
 								if ( (!(unit->status & UnitStatus::InBuilding)
 									|| a2 != 20
-									&& (g_aiscript_controller[unit->player]->ai_flags.is_use_map_settings
+									&& (g_aiscript_controller[unit->player].ai_flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
 									&& unit_ai_region->defense_priority_add < a2 )
@@ -842,7 +842,7 @@ namespace hooks
 					}
 					goto next;
 				}
-				if (g_aiscript_controller[ai_region_1->player]->ai_flags.is_use_map_settings)
+				if (g_aiscript_controller[ai_region_1->player].ai_flags.is_use_map_settings)
 				{
 					if (ai_region_1->air_target == (Unit*)7)
 					{

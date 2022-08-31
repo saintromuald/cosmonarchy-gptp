@@ -2356,8 +2356,8 @@ namespace scbw
 		if (units_dat::computer_ai_internal[unit->id] & 2) {
 			helper::give_ai(unit);
 		} else {
-			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player]->main_medic) {
-				g_aiscript_controller[unit->player]->main_medic = unit;
+			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+				g_aiscript_controller[unit->player].main_medic = unit;
 			}
 			helper::add_military_ai(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)), unit, true);
 		}

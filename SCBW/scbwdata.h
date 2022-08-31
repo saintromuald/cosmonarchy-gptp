@@ -884,7 +884,7 @@ SCBW_DATA(PlayerFlags<u32>*,	player_vision,		0x0057F1EC);
 
 SCBW_DATA(Unit**,		g_active_portrait_unit,		0x00597248);
 
-SCBW_DATA_REF(AI_Main**,		g_aiscript_controller,		0x0068FEE8); // DatExt makes AI_Main a variable size, so include a pointer for each player
+SCBW_DATA_REF(AI_Main*,	g_aiscript_controller,		0x0068FEE8);
 SCBW_DATA(AiRegion**,	g_ai_region_captains,		0x0069A604);
 SCBW_DATA(u32*,			g_ai_supply_reserved,		0x006CA4BC);
 SCBW_DATA(AiScript**,	g_first_active_aiscript,	0x0068C100);

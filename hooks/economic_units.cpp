@@ -296,7 +296,7 @@ namespace hooks
 			{
 				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::supply_provided[supplyUnit];
 				//farms_timing on, compare ecounits required vs ecounits count
-				if (!(g_aiscript_controller[player]->ai_flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
+				if (!(g_aiscript_controller[player].ai_flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit)))
 				{
 					return true;
 				}
@@ -329,7 +329,7 @@ namespace hooks
 		s32 result;
 		s32 reqType;
 
-		battleTime = g_aiscript_controller[player]->previous_building_hit_second;
+		battleTime = g_aiscript_controller[player].previous_building_hit_second;
 		if (!battleTime
 			|| *g_elapsed_time_seconds - battleTime >= 0x1E // in_battle flag? just a coincidence?
 			|| ((race = g_player_table[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),

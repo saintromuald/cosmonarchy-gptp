@@ -48,7 +48,7 @@ namespace AI
 	bool is_campaign_ai(u8 player)
 	{
 		assert(player < 8);
-		return g_aiscript_controller[player]->ai_flags.is_use_map_settings;
+		return g_aiscript_controller[player].ai_flags.is_use_map_settings;
 	}
 
 	// Internal use only

@@ -7,7 +7,7 @@ DATEXT_VAR_REF(UnitDeaths*, deathTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitAllCountTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitCompleteTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitKilledTable_var);
-DATEXT_VAR_REF(AI_Main**, AIScriptController_var);
+DATEXT_VAR_REF(AI_Main*, AIScriptController_var);
 DATEXT_VAR_REF(u32*, aiStrength_var);
 DATEXT_VAR_REF(_uavail*, g_unit_availability_var);
 
@@ -514,7 +514,7 @@ namespace DatExt {
 		} while (unit_AIStrength[j] != 0 || unit_AIStrength[j + 1] != 0);
 	
 		// unit_AIStruct
-		unit_newArrs[6] = malloc((0x404 + newCount) * PLAYABLE_PLAYER_COUNT); // (0x404 + unit count) * 8 players
+		unit_newArrs[6] = malloc(sizeof(AI_Main) * PLAYABLE_PLAYER_COUNT); // malloc((0x404 + newCount) * PLAYABLE_PLAYER_COUNT); // (0x404 + unit count) * 8 players
 		// - Zero-terminated list of {Player, Offset, ptr, ptr, ptr, ..., 0}
 		j = 0;
 		do
@@ -536,10 +536,11 @@ namespace DatExt {
 			g_unit_availability->available[i] = (u8*)(unit_newArrs[4]) + newCount * i;
 		}
 		aiStrength_var = (u32*)unit_newArrs[5];
-		for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
-		{
-			AIScriptController_var[i] = (AI_Main*)((u32)(unit_newArrs[6]) + (0x404 + newCount)*i);
-		}
+		AIScriptController_var = (AI_Main*)unit_newArrs[6];
+		//for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
+		//{
+		//	AIScriptController_var[i] = (AI_Main*)((u32)(unit_newArrs[6]) + (0x404 + newCount)*i);
+		//}
 	
 		// Load flingy expand patch
 		units_dat_flingyExpand();

@@ -43,7 +43,7 @@ namespace hooks
 		{
 			if (self->unit_ai)
 			{
-				g_aiscript_controller[self->player]->previous_building_hit_second = *g_elapsed_time_seconds;
+				g_aiscript_controller[self->player].previous_building_hit_second = *g_elapsed_time_seconds;
 				BuildingAi* self_building_ai = (BuildingAi*)self->unit_ai;
 				if (self_building_ai)
 				{
@@ -132,7 +132,7 @@ namespace hooks
 
 			if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
 			{
-				if (g_aiscript_controller[(u8)self->player]->ai_flags.is_use_map_settings)
+				if (g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
 				{
 					parentAi9 = 1;
 				}
@@ -150,7 +150,7 @@ namespace hooks
 						if (!self->unit_ai
 							|| helper::ai_is_under_attack(self, 0)
 							|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-							&& g_aiscript_controller[(u8)self->player]->ai_flags.is_use_map_settings)
+							&& g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
 						{
 							childAi2 = 0;
 						}
@@ -214,7 +214,7 @@ namespace hooks
 										{
 
 											if (actual_target && actual_target->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-												|| g_aiscript_controller[(u8)self->player]->ai_flags.is_use_map_settings
+												|| g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings
 												|| ((self->get_current_life_ingame() > 3 * self->get_total_hp_plus_shields() / 4)
 													|| !scbw::ai_unit_id_can_flee_quarter(self_id)
 													|| !helper::ai_transport_action(self))
@@ -366,7 +366,7 @@ namespace hooks
 			return;
 		}
 
-		if (!g_aiscript_controller[player]->strategic_suicide)
+		if (!g_aiscript_controller[player].strategic_suicide)
 		{
 			AiRegion* region2 = 0;
 
@@ -384,7 +384,7 @@ namespace hooks
 				GuardAi* guardAI = (GuardAi*)unit->unit_ai;
 				if (!guardAI
 				  || helper::unit_is_active_transport(unit)
-				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player]->ai_flags.is_use_map_settings))
+				  || unit->status & UnitStatus::InBuilding && !(g_aiscript_controller[player].ai_flags.is_use_map_settings))
 				{
 					continue;
 				}
@@ -420,13 +420,13 @@ namespace hooks
 					helper::add_military_ai(region2, unit, 1);
 					continue;
 				}
-				memset(g_aiscript_controller[player]->attackers, 0, sizeof(g_aiscript_controller[player]->attackers));
-				g_aiscript_controller[player]->ai_attack_group = 0;
+				memset(g_aiscript_controller[player].attackers, 0, sizeof(g_aiscript_controller[player].attackers));
+				g_aiscript_controller[player].ai_attack_group = 0;
 				helper::ai_attack_clear(player);
 				if (!helper::ai_attack_manager(player, unit->sprite->position.x, unit->sprite->position.y, 0, 1))
 				{
-					g_aiscript_controller[player]->strategic_suicide = 24;
-					regionIndex = (u16)g_aiscript_controller[player]->ai_attack_group - 1;
+					g_aiscript_controller[player].strategic_suicide = 24;
+					regionIndex = (u16)g_aiscript_controller[player].ai_attack_group - 1;
 					region2 = &g_ai_region_captains[player][regionIndex];
 					helper::remove_unit_ai(unit, false);
 					helper::add_military_ai(region2, unit, 1);
@@ -473,7 +473,7 @@ namespace hooks
 			}
 		}
 
-		if (g_aiscript_controller[region->player]->ai_flags.is_use_map_settings)
+		if (g_aiscript_controller[region->player].ai_flags.is_use_map_settings)
 		{
 			s32 v8 = region->region << 6;
 			s32 v9 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + v8);
@@ -487,7 +487,7 @@ namespace hooks
 		}
 
 		u32 air_strength = region->air_strength_enemy;
-		if (!(g_aiscript_controller[region->player]->ai_flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player].ai_flags.is_use_map_settings))
 		{
 			air_strength += air_strength >> 1;
 		}
@@ -497,7 +497,7 @@ namespace hooks
 		}
 
 		u32 ground_strength = region->ground_strength_enemy;
-		if (!(g_aiscript_controller[region->player]->ai_flags.is_use_map_settings))
+		if (!(g_aiscript_controller[region->player].ai_flags.is_use_map_settings))
 		{
 			ground_strength += ground_strength >> 1;
 		}
@@ -506,8 +506,8 @@ namespace hooks
 			region->ground_strength_needed = ground_strength;
 		}
 
-		u16 result = g_aiscript_controller[region->player]->ai_max_force;
-		if (g_aiscript_controller[region->player]->ai_max_force)
+		u16 result = g_aiscript_controller[region->player].ai_max_force;
+		if (g_aiscript_controller[region->player].ai_max_force)
 		{
 			if (region->air_strength_needed > result)
 			{
@@ -725,7 +725,7 @@ namespace hooks
 			return 0;
 		}
 		s32 player = (u8)unit->player;
-		if (g_aiscript_controller[player]->difficulty != 2)
+		if (g_aiscript_controller[player].difficulty != 2)
 		{
 			return 0;
 		}
@@ -915,7 +915,7 @@ return 0;
 						}
 						case UnitId::ZergCagrantColony:
 						{
-							if (!g_aiscript_controller[player]->ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
+							if (!g_aiscript_controller[player].ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range))
 							{
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
@@ -1462,7 +1462,7 @@ return 0;
 				} break;
 			}
 
-			AI_Main* ai_player = g_aiscript_controller[town_player];
+			AI_Main* ai_player = &g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->gas_collection - ai_player->gas_available;
 			u32 new_gas_count = gas_delta > 0 ? gas_delta / 100 : 0;
 			new_gas_count += worker_count / 10;
@@ -2082,7 +2082,7 @@ return 0;
 	{
 		if (victim->unit_ai)
 		{
-			g_aiscript_controller[victim->player]->ai_flags.is_secure_finished;
+			g_aiscript_controller[victim->player].ai_flags.is_secure_finished;
 			UnitAi* victim_ai = victim->unit_ai;
 			AiRegion* victim_region = 0;
 			if (victim_ai->type == AiType::Military)
@@ -2311,7 +2311,7 @@ return 0;
 			} break;
 			case UnitId::ZergCagrantColony:
 			{
-				if (g_aiscript_controller[player_var]->ai_flags.spread_creep)
+				if (g_aiscript_controller[player_var].ai_flags.spread_creep)
 				{
 					if (get_bunker_placement_position(player_var, (u32*)&player))
 					{
