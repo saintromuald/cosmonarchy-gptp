@@ -268,7 +268,6 @@ void Sprite::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
 {
 	assert(this);
 	assert(imageIdStart <= imageIdEnd);
-
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (imageIdStart <= image->id && image->id <= imageIdEnd)
@@ -282,7 +281,6 @@ void Sprite::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
 void Sprite::remove_overlay(u32 imageId)
 {
 	assert(this);
-
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (image->id == imageId)
@@ -296,7 +294,6 @@ void Sprite::remove_overlay(u32 imageId)
 void Sprite::play_for_overlay(u32 imageId, u8 anim)
 {
 	assert(this);
-
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (image->id == imageId)
@@ -313,7 +310,6 @@ void Sprite::play_for_overlay(u32 imageId, u8 anim)
 Image* Sprite::get_overlay(u16 imageId) const
 {
 	assert(this);
-
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (image->id == imageId)
@@ -321,7 +317,6 @@ Image* Sprite::get_overlay(u16 imageId) const
 			return image;
 		}
 	}
-
 	return nullptr;
 }
 

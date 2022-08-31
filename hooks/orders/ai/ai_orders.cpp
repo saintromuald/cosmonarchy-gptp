@@ -724,15 +724,15 @@ namespace hooks
 		{
 			return 0;
 		}
-		s32 player = (u8)unit->player;
+		u8 player = unit->player;
 		if (g_aiscript_controller[player].difficulty != 2)
 		{
 			return 0;
 		}
 
-		s32 unit_id = UnitId::None;
-		u8 raceId = g_player_table[player].race;
-		switch(raceId)
+		u16 unit_id = UnitId::None;
+		u8 race_id = g_player_table[player].race;
+		switch(race_id)
 		{
 			case RaceId::Terran:
 			{
@@ -747,11 +747,9 @@ namespace hooks
 				unit_id = UnitId::ZergDroleth;
 			} break;
 		}
-		unit_id = (u16)unit_id;
-		u32 completedCount = g_unit_count_table[(u16)unit_id].player[(u8)player];
-
+		u32 completed_count = g_unit_count_table[unit_id].player[player];
 		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
-		return completedCount >= 12;
+		return completed_count >= 12;
 	}
 
 	// Hooked to fix crashes - Pr0nogo

@@ -487,7 +487,7 @@ namespace hooks
 		}
 		helper::show_dialog(v4);
 		helper::disable_dialog(v4);
-		v5 = g_cmdicons_grp;
+		v5 = *DatExt::get_unit_icons_pointer();
 		v6 = *v4->user;
 		v7 = *g_active_portrait_unit;
 		v4->graphic = 12;
@@ -572,7 +572,7 @@ namespace hooks
 		helper::show_dialog(v6);
 		helper::disable_dialog(v6);
 	//	v7 = v6->user;
-		v8 = g_cmdicons_grp;
+		v8 = *DatExt::get_unit_icons_pointer();
 		v6->graphic = 12;
 	//	*(s32*)v7 = v8;
 		*(s16*)(v7 + 4) = weapons_dat::weapon_icon[weapon_id];
@@ -896,7 +896,7 @@ namespace hooks
 				current_dialog = current_dialog->next;
 			}
 			current_dialog->graphic = 2;
-			current_dialog->stat_button_user->button_grp = *g_cmdicons_grp;
+			current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
 			current_dialog->stat_button_user->grp_frame = slot_unit_id;
 			current_dialog->stat_button_user->type = 3;
 			current_dialog->stat_button_user->id = slot_unit_id;
@@ -1010,7 +1010,7 @@ namespace hooks
 
 					if (slotUnitId != UnitId::None)
 					{
-						current_dialog->stat_button_user->button_grp = *g_cmdicons_grp;
+						current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
 						current_dialog->stat_button_user->grp_frame = slotUnitId;
 						current_dialog->stat_button_user->type = 3;
 						current_dialog->stat_button_user->id = slotUnitId;
@@ -1277,7 +1277,7 @@ namespace hooks
 			helper::bw_sprintf_s(g_queues_buffers[0], 8, FORMATSTRING_VALUE_SPACE, 1); // active slot number display
 
 			current_dialog->graphic = 2;
-			current_dialog->stat_button_user->button_grp = *g_cmdicons_grp;
+			current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
 			current_dialog->stat_button_user->grp_frame = builtUnitId;
 			current_dialog->stat_button_user->type = PanelTooltipTypes::SpecialPanelTooltip;
 			current_dialog->stat_button_user->id = builtUnitId;

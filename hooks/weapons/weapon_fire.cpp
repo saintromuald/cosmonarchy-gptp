@@ -257,7 +257,7 @@ namespace hooks
 					} break;
 					case WeaponId::PhotonCannonPrismaticCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, false);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
@@ -273,7 +273,7 @@ namespace hooks
 					} break;
 					case WeaponId::SentinelCerberusRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelMissilePos, 1, false);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
@@ -401,6 +401,11 @@ namespace hooks
 					default:
 					{
 						create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+					} break;
+					case WeaponId::MatrixKhaydarinRay:
+					{
+						// Multi-Attack IV
+						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
 					} break;
 				}
 			}

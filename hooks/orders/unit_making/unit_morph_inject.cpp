@@ -10,7 +10,7 @@ namespace
 	//-------- cmdrecv_unit_morph --------//
 
 	const u32 Func_AddUnitToBuildQueue = 0x00467250;
-	bool addUnitToBuildQueue(Unit* unit, u16 unit_id)
+	bool add_unit_to_build_queue(Unit* unit, u16 unit_id)
 	{
 		static u32 result;
 		static u32 unitId_;
@@ -27,15 +27,15 @@ namespace
 		return result != 0;
 	}
 
-	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(u8* commandData)
+	void __stdcall unit_morph_wrapper_cmdrecv_unit_morph(u8* commandData)
 	{
-		const u16 morphUnitId = *((u16*)&commandData[1]);
+		const u16 morph_unit_id = *((u16*)&commandData[1]);
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (hooks::unit_can_morph(unit, morphUnitId)
+			if (hooks::unit_can_morph(unit, morph_unit_id)
 				&& unit->main_order_id != OrderId::Morph1
-				&& addUnitToBuildQueue(unit, morphUnitId))
+				&& add_unit_to_build_queue(unit, morph_unit_id))
 			{
 				unit->order_to(OrderId::Morph1);
 			}
@@ -45,7 +45,7 @@ namespace
 
 	//-------- BTNSCOND_CanBuildUnit --------//
 
-	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 player, Unit* unit)
+	s32 __fastcall unit_morph_wrapper_btnscond_can_build_unit(u16 buildUnitId, s32 player, Unit* unit)
 	{
 		if (*g_client_selection_count <= 1
 			|| hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None)
@@ -58,7 +58,7 @@ namespace
 	//-------- Orders_Morph1 --------//
 
 	const u32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
-	void __declspec(naked) unitMorphWrapper_Orders_Morph1_Check()
+	void __declspec(naked) unit_morph_wrapper_orders_morph_1_check()
 	{
 		static Unit* unit;
 		__asm
@@ -90,7 +90,7 @@ namespace
 	}
 
 	const u32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
-	void __declspec(naked) unitMorphWrapper_Orders_Morph1_EggType()
+	void __declspec(naked) unit_morph_wrapper_orders_morph1_egg_type()
 	{
 		static Unit* unit;
 		static u32 morphEggType;
@@ -508,10 +508,10 @@ namespace hooks
 	{
 		jump_patch(orders_zerg_birth_wrapper,					0x0045DD60, 1);
 		jump_patch(orders_morph_1_wrapper,						0x0045DEA0, 0);
-		call_patch(unitMorphWrapper_CMDRECV_UnitMorph,			0x00486B50, 0);		// jmp	004C1990  cmdrecv_unit_morph
-		jump_patch(unitMorphWrapper_BTNSCOND_CanBuildUnit,		0x00428E60);		//		00428E60  BTNSCOND_CanBuildUnit
-		jump_patch(unitMorphWrapper_Orders_Morph1_Check,		0x0045DFB0);		//		0045DEA0  orders_morph_1 within	
-		jump_patch(unitMorphWrapper_Orders_Morph1_EggType,		0x0045E019);		//		0045DEA0  orders_morph_1 within
+		call_patch(unit_morph_wrapper_cmdrecv_unit_morph,		0x00486B50, 0);		// jmp	004C1990  cmdrecv_unit_morph
+		jump_patch(unit_morph_wrapper_btnscond_can_build_unit,	0x00428E60);		//		00428E60  BTNSCOND_CanBuildUnit
+		jump_patch(unit_morph_wrapper_orders_morph_1_check,		0x0045DFB0);		//		0045DEA0  orders_morph_1 within	
+		jump_patch(unit_morph_wrapper_orders_morph1_egg_type,	0x0045E019);		//		0045DEA0  orders_morph_1 within
 		jump_patch(cancel_unit_wrapper,							0x00468280);		//		00468280  ai_cancel_structure EXACT
 		jump_patch(get_remaining_build_time_pct_wrapper,		0x004669E0);		//		004669E0  sub_4669E0 EXACT
 		jump_patch(get_unit_vertical_offset_on_birth_wrapper,	0x0045DE00);		//		0045DD60  orders_zerg_birth within

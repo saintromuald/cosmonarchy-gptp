@@ -435,7 +435,7 @@ namespace hooks
 		g_options_list->speed = 6; // Lock game speed at fastest
 		if (!scbw::is_game_paused()) // If the game is not paused
 		{
-			*g_ai_update_cooldown = 0; // We don't want AI to be handicaped with request handling and whatnot
+			*g_ai_update_cooldown = 0; // We don't want AI to be handicapped with request handling and whatnot
 			*g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
 			for (u32 i = 0; i < 8; ++i) {
 				raceSupply[RaceId::Terran].provided[i] = 60000;
@@ -558,6 +558,9 @@ namespace hooks
 		if (*g_active_portrait_unit)
 		{
 			Unit* selected = *g_active_portrait_unit;
+			if (selected->id == UnitId::ZergAlaszilArbor)  {
+				scbw::printf("Alaszil Arbor count: %u", g_unit_count_table[UnitId::ZergAlaszilArbor].player[selected->player]);
+			}
 			/*
 			// For checking cargo-related elements. -Pr0nogo
 			if (selected) {

@@ -219,6 +219,7 @@ namespace WeaponId {
 		AugurFinalHour						= 128,	// Augur behavior
 		AnthelionEventHorizon				= 139,
 		VagrantVapidBlaster					= 148,
+		MatrixKhaydarinRay					= 149,
 
 		// Zerg \\
 

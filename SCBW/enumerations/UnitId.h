@@ -110,6 +110,7 @@ namespace UnitId
 		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2		| Anthelion requirement
 		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
 		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
+		ProtossMatrix										= 252,		//								| Crowd-controlling static defense
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
@@ -146,10 +147,10 @@ namespace UnitId
 		ZergVithrathHaunt									= 197,		// Zerg Flag Beacon
 		ZergLiivralPond										= 204,		// Floor Hatch
 		ZergAlkajChasm										= 212,		// Right Wall Missile Trap
+		ZergLarvoskColony									= 216,		// Young Chrysalis
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Terran Gas Tank Type 2
-		ZergLarvoskColony									= 216,		// Young Chrysalis
 
 		/*0x00*/	TerranMaverick							= 0,
 		/*0x01*/	TerranEidolon							= 1,
