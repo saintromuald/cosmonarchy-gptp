@@ -552,6 +552,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// allow all players addons to connect
 	nops(0x00440314, 6);
 
+	DatExt::extend_data();
+
 	// injection
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();

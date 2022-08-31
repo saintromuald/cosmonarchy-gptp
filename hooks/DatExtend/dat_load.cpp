@@ -14,12 +14,14 @@ namespace hooks {
 		
 		data = (u8*)FastFileRead(filename, NULL, false, 0, &size);
 		pos = 0;
+
 		
 		// DatExt -- Patch dat file
-		if (DatExt::setDatSize(datTable, size) == false)
-		{
-			helper::SysWarn_FileNotFound(24, filename); // invalid file
-		}
+		// Note now every patch happens immediately with size being in DatExt::extend_data()
+	//	if (DatExt::setDatSize(datTable, size) == false)
+	//	{
+	//		helper::SysWarn_FileNotFound(24, filename); // invalid file
+	//	}
 		
 		for (i = 0; datTable[i].address != NULL; i++)
 		{

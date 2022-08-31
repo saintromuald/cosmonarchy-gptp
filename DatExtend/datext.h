@@ -1,4 +1,5 @@
 #pragma once
+#include "dat_limits.h"
 //#include <SCBW/api.h>
 
 // Signifies the byte after the end of an array
@@ -53,6 +54,7 @@ namespace DatExt {
 
 	// Dat patching functions
 	bool setDatSize(DatLoad* datTablePtr, u32 size);
+	void extend_data();
 	void unloadDatFiles();
 
 	void loadUnitNamesTbl();

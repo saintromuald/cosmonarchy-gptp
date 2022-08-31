@@ -622,6 +622,7 @@
     <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\loading_hook.h" />
     <ClInclude Include="hooks\orders\orders_root.h" />
+    <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="SCBW\enumerations\PortraitId.h" />
     <ClInclude Include="SCBW\Storm.h" />
     <ClInclude Include="include\discord_game_sdk.h" />
