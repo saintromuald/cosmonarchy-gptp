@@ -10815,13 +10815,13 @@ namespace helper
 		return result;
 	}
 
-	s32 dialog_set_progress_bar_value(BinDlg* dialog, s16 index, s32 value) {
+	s32 dialog_set_progress_bar_value(BinDlg* dialog, s32 index, u32 value) {
 		static s32 result;
 		const u32 func_address = 0x00457200;
 		__asm {
 			PUSHAD
 			PUSH value
-			MOV CX, index
+			MOV ECX, index
 			MOV EAX, dialog
 			CALL func_address
 			MOV result, EAX
@@ -12946,6 +12946,23 @@ namespace helper
 			MOV CX, x_pos
 			MOV AX, y_pos
 			CALL func_address
+			POPAD
+		}
+	}
+
+	// Note: buffer_size may be max number of characters * 2, possibly for 16bits text support
+	void bw_sprintf_s(char* buffer, int buffer_size, const char* format_string, int value)
+	{
+		const u32 func_address = 0x0041F1B0;
+		__asm
+		{
+			PUSHAD
+			PUSH value
+			PUSH format_string
+			MOV ESI, buffer_size
+			MOV EDI, buffer
+			CALL func_address
+			ADD ESP, 0x08
 			POPAD
 		}
 	}

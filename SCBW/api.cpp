@@ -2597,4 +2597,13 @@ namespace scbw
 			|| unit_id == UnitId::ProtossSolarion
 			|| unit_id == UnitId::ProtossPanoptus;
 	}
+
+	bool unit_id_is_protoss_warp_factory(u32 unit_id) {
+		return unit_id == UnitId::ProtossGateway
+			|| unit_id == UnitId::ProtossGrandLibrary
+			|| unit_id == UnitId::ProtossStargate
+			|| unit_id == UnitId::ProtossArgosy
+			|| unit_id == UnitId::ProtossProstrationStage
+			|| unit_id == UnitId::ProtossRogueGallery;
+	}
 }

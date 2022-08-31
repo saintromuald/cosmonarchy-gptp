@@ -242,14 +242,14 @@ namespace DatExt {
 		unitIcons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", NULL, true, 0, NULL);
 
 		// patch if hooks aren't enabled
-		memory_patch(0x00426002 + 2, getUnitIconsPtr()); // status_buildmorphtrain --> stats_AddOnBuilder
-		memory_patch(0x00426A33 + 2, getUnitIconsPtr()); // status_buildmorphtrain --> stats_QueueProgress
-		memory_patch(0x004270DB + 2, getUnitIconsPtr()); // status_nukesilo_resources --> stats_nukesilo
-		memory_patch(0x004272F5 + 2, getUnitIconsPtr()); // unit_stat_act --> UnitStatAct_Egg
+		memory_patch(0x00426002 + 2, get_unit_icons_pointer()); // status_buildmorphtrain --> stats_addon_builder
+		memory_patch(0x00426A33 + 2, get_unit_icons_pointer()); // status_buildmorphtrain --> stats_queue_progress
+		memory_patch(0x004270DB + 2, get_unit_icons_pointer()); // status_nukesilo_resources --> stats_nukesilo
+		memory_patch(0x004272F5 + 2, get_unit_icons_pointer()); // unit_stat_act --> UnitStatAct_Egg
 	}
 
 	// Returns uniticons.grp pointer if was loaded, otherwise returns default cmdicons.grp pointer
-	GrpHead** const getUnitIconsPtr() {
+	GrpHead** const get_unit_icons_pointer() {
 		if (unitIcons != NULL) return &unitIcons;
 		return cmdIcons;
 	}
