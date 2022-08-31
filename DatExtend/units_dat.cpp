@@ -594,7 +594,7 @@ namespace DatExt {
 	void units_dat_unpatch() {
 		for (int i = 0; i < UNIT_ARR_COUNT; i++)
 		{
-		if (unit_newArrs[i] != NULL)
+			if (unit_newArrs[i] != NULL)
 			{
 				free(unit_newArrs[i]);
 				unit_newArrs[i] = NULL;
