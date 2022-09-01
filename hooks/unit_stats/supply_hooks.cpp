@@ -58,10 +58,10 @@ namespace hooks
         memset(g_all_unit_count_table_original, 0, 0xAB00u);
         
         // And let's reset the new tables too
-        memset(g_unit_count_table,                0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_completed_unit_count_table,                0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
         memset(g_all_unit_count_table,            0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
         memset(g_unit_killed_table,               0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
-        memset(g_death_table,                     0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_unit_deaths_table,                     0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
         memset(g_unit_availability->available[0], 0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
 
         s32 result = 0;
@@ -441,7 +441,7 @@ namespace hooks
         }
         auto player = unit->player;
         auto unit_id = unit->id;
-        g_unit_count_table[unit->id].player[unit->player] += count;
+        g_completed_unit_count_table[unit->id].player[unit->player] += count;
 
         s32 race = unit->get_race();
         s32 supply = unit->get_supply_provided();
@@ -480,9 +480,9 @@ namespace hooks
                 building_score[unit->player] += count * units_dat::build_score[unit_id];
             }
         }
-        if ((s32)g_unit_count_table[unit_id].player[unit->player] < 0)
+        if ((s32)g_completed_unit_count_table[unit_id].player[unit->player] < 0)
         {
-            g_unit_count_table[unit_id].player[unit->player] = 0;
+            g_completed_unit_count_table[unit_id].player[unit->player] = 0;
         }
     }
 

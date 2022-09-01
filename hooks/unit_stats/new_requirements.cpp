@@ -77,7 +77,7 @@ namespace hooks {
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranEngineeringBay:
 				{
-					return true;
+					return player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter);
 				} break;
 				case UnitId::TerranTreasury:
 				case UnitId::TerranSentinel:
@@ -1131,7 +1131,7 @@ namespace hooks {
 					case UnitId::TerranScrapyard:
 					case UnitId::TerranEngineeringBay:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::TerranCommandCenter))
+						if (player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter))
 						{
 							return TECH_ACTIVE;
 						}

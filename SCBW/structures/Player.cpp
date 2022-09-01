@@ -84,7 +84,7 @@ u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id) {
 	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
 		return 0;
 	}
-	return g_unit_count_table[unit_id].player[player];
+	return g_completed_unit_count_table[unit_id].player[player];
 }
 
 u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {

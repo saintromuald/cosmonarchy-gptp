@@ -1989,7 +1989,7 @@ namespace scbw
 	}
 
 	void set_cmbw_ai_preference(u16 unit_id, u32 player) {
-		g_unit_deaths[unit_id].player[player] = 1;
+		g_unit_deaths_table[unit_id].player[player] = 1;
 	}
 
 	Box32 unit_area(Unit* unit) {

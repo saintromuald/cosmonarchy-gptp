@@ -491,7 +491,7 @@ namespace hooks
 			u32 player_race = g_player_table[player_id].race;
 			if (player_race == RaceId::Terran)
 			{
-				if (!g_unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
+				if (!g_completed_unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
 				{
 					return;
 				}

@@ -8,12 +8,12 @@
 #include <math.h>
 
 u32 get_transmission_playing() {
-	return g_unit_deaths[UnitId::Special_PitDoor].player[0];
+	return g_unit_deaths_table[UnitId::Special_PitDoor].player[0];
 }
 
 bool is_map(u32 campaign, u32 map) {
-	return g_unit_deaths[UnitId::Spell_ScannerSweep].player[0] == campaign
-		&& g_unit_deaths[UnitId::Special_RightPitDoor].player[0] == map;
+	return g_unit_deaths_table[UnitId::Spell_ScannerSweep].player[0] == campaign
+		&& g_unit_deaths_table[UnitId::Special_RightPitDoor].player[0] == map;
 }
 
 /*
@@ -1490,12 +1490,12 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 					if (i == UnitId::Spell_ScannerSweep)   continue;
 					if (i == UnitId::Special_RightPitDoor) continue;
 					if (i == UnitId::Spell_DarkSwarm)      continue;
-					g_unit_deaths[i].player[player] = fraud_spawn.frauds[next_fraud][race].deaths[i];
+					g_unit_deaths_table[i].player[player] = fraud_spawn.frauds[next_fraud][race].deaths[i];
 				}
 
-				g_unit_deaths[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
-				g_unit_deaths[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
-				g_unit_deaths[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
+				g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] = fraud_spawn.frauds[next_fraud][race].personality;
+				g_unit_deaths_table[UnitId::ProtossPlasmaShell].player[player] = fraud_spawn.frauds[next_fraud][race].build_type;
+				g_unit_deaths_table[UnitId::Spell_DarkSwarm].player[player] = fraud_spawn.frauds[next_fraud][race].build_order;
 				set_player_color(player, fraud_spawn.frauds[next_fraud][race].color);
 				set_player_name(player, (char*)fraud_names[next_fraud]);
 				set_player_force_name(player, (char*)fraud_class_names[fraud_class]);
@@ -1534,7 +1534,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				resources->minerals[player] = 1200 * multiplier;
 				resources->gas[player] = 300 * multiplier;
 
-				g_unit_deaths[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
+				g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
 				u32 resource_upgrade = fraud_class;
 				scbw::set_upgrade_level(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
@@ -1683,7 +1683,7 @@ void tick_scenario() {
 		}
 
 		if (!alive_count && fraud_spawn.used_type_count[FraudClass_God] == 6) {
-			g_unit_deaths[UnitId::Special_PitDoor].player[0] = 69;
+			g_unit_deaths_table[UnitId::Special_PitDoor].player[0] = 69;
 		}
 
 		// Fraud *Boom*

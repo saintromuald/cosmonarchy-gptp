@@ -57,9 +57,9 @@ SCBW_DATA_VAR(_bwTechs*,	TechBw_var, &TechBw_dat);
 SCBW_DATA_VAR(_bwUpgrs*,	UpgradesBw_var, &UpgradesBw_dat);
 
 // Define the extern variables
-SCBW_DATA_DEF(UnitDeaths*,	g_death_table, deathTable_var);
+SCBW_DATA_DEF(UnitDeaths*,	g_unit_deaths_table, deathTable_var);
 SCBW_DATA_DEF(UnitDeaths*,	g_all_unit_count_table, unitAllCountTable_var);
-SCBW_DATA_DEF(UnitDeaths*,	g_unit_count_table, unitCompleteTable_var);
+SCBW_DATA_DEF(UnitDeaths*,	g_completed_unit_count_table, unitCompleteTable_var);
 SCBW_DATA_DEF(UnitDeaths*,	g_unit_killed_table, unitKilledTable_var);
 SCBW_DATA_DEF(ButtonSet*,	g_buttonset_table, buttonSetTable_var);
 SCBW_DATA_DEF(UnitStatFuncArrayEntry*, unitStatFuncs, unitStatFuncs_var);

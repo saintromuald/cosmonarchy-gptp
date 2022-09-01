@@ -747,7 +747,7 @@ namespace hooks
 				unit_id = UnitId::ZergDroleth;
 			} break;
 		}
-		u32 completed_count = g_unit_count_table[unit_id].player[player];
+		u32 completed_count = g_completed_unit_count_table[unit_id].player[player];
 		// Originally had an inlined function that combined sieged and unsieged tanks for unit counts
 		return completed_count >= 12;
 	}
@@ -1447,16 +1447,16 @@ return 0;
 			u32 worker_count = 0;
 			switch (g_player_table[town_player].race) {
 				case RaceId::Terran: {
-					worker_count += g_unit_count_table[UnitId::TerranMason].player[town_player];
-					worker_count += g_unit_count_table[UnitId::TerranTalos].player[town_player];
+					worker_count += g_completed_unit_count_table[UnitId::TerranMason].player[town_player];
+					worker_count += g_completed_unit_count_table[UnitId::TerranTalos].player[town_player];
 				} break;
 				case RaceId::Protoss: {
-					worker_count += g_unit_count_table[UnitId::ProtossScribe].player[town_player];
-					worker_count += g_unit_count_table[UnitId::ProtossArtisan].player[town_player];
+					worker_count += g_completed_unit_count_table[UnitId::ProtossScribe].player[town_player];
+					worker_count += g_completed_unit_count_table[UnitId::ProtossArtisan].player[town_player];
 				} break;
 				case RaceId::Zerg: {
-					worker_count += g_unit_count_table[UnitId::ZergDroleth].player[town_player];
-					worker_count += g_unit_count_table[UnitId::ZergGosvileth].player[town_player];
+					worker_count += g_completed_unit_count_table[UnitId::ZergDroleth].player[town_player];
+					worker_count += g_completed_unit_count_table[UnitId::ZergGosvileth].player[town_player];
 				} break;
 			}
 
@@ -2220,11 +2220,11 @@ return 0;
 	// Hooked to let AI use new transports. -Pr0nogo
 	bool player_has_transport(u32 player_id) // 00437250
 	{
-		return g_unit_count_table[UnitId::TerranTrojan].player[player_id]
-			|| g_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
-			|| g_unit_count_table[UnitId::ZergOvileth].player[player_id]
-			|| g_unit_count_table[UnitId::ZergIroleth].player[player_id]
-			|| g_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
+		return g_completed_unit_count_table[UnitId::TerranTrojan].player[player_id]
+			|| g_completed_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
+			|| g_completed_unit_count_table[UnitId::ZergOvileth].player[player_id]
+			|| g_completed_unit_count_table[UnitId::ZergIroleth].player[player_id]
+			|| g_completed_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
 	}
 
 	// Hooked to improve functionality and allow Pylons to respect the asc3 "creep" header. -Pr0nogo

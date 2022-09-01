@@ -364,7 +364,7 @@ namespace hooks
 		}
 
 		if (*g_elapsed_time_frames == 1) {
-			u32 local_flags = g_unit_deaths[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
+			u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
@@ -380,7 +380,7 @@ namespace hooks
 			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
 			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
 			{
-				u32 flags = g_unit_deaths[UnitId::ResourceVespeneGeyser].player[player_id];
+				u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
 				if (flags & VespeneDeaths_Reveal)
 				{
 					reveal_flag |= 1 << player_id;
@@ -559,7 +559,7 @@ namespace hooks
 		{
 			Unit* selected = *g_active_portrait_unit;
 			if (selected->id == UnitId::ZergAlaszilArbor)  {
-				scbw::printf("Alaszil Arbor count: %u", g_unit_count_table[UnitId::ZergAlaszilArbor].player[selected->player]);
+				scbw::printf("Alaszil Arbor count: %u", g_completed_unit_count_table[UnitId::ZergAlaszilArbor].player[selected->player]);
 			}
 			/*
 			// For checking cargo-related elements. -Pr0nogo
