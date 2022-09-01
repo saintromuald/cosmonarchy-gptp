@@ -480,7 +480,7 @@ namespace hooks
                 building_score[unit->player] += count * units_dat::build_score[unit_id];
             }
         }
-        if (g_unit_count_table[unit_id].player[unit->player] < 0)
+        if ((s32)g_unit_count_table[unit_id].player[unit->player] < 0)
         {
             g_unit_count_table[unit_id].player[unit->player] = 0;
         }
