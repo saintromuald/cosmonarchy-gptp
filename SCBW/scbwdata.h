@@ -1,90 +1,82 @@
-// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
-
 #pragma once
 #include "../definitions.h"
 #include "structures.h"
 #include "scbwhelper.h"
 #pragma pack(1)
 
-#define SCBW_DATA(type, name, offset) type const name = (type)offset;
+// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
-// Reference to variable pointer instead of a copy, so it can be resized by DatExt
-#define SCBW_DATA_REF(type, name, offset)  extern type& name;
+#define SCBW_DATA(type, name, offset) type const name = (type)offset;		// Designed as const to make sure programmers don't read from or write to the address itself.
+#define SCBW_DATA_REF(type, name, offset)  extern type& name;				// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
+//////////////////////////////////////////////////////////////// @}
 /// @name Linked list nodes
 //////////////////////////////////////////////////////////////// @{
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
-SCBW_DATA(Unit**, g_first_visible_unit, 0x00628430);
-/// Includes units in transports/bunkers, worker inside gas buildings, nukes in
-/// silos, queens inside command centers, and units in production.
-SCBW_DATA(Unit**,		g_first_hidden_unit,		0x006283EC);
-SCBW_DATA(Unit**,		g_last_hidden_unit,			0x00628428);
-SCBW_DATA(Unit**,		first_scanner_sweep,		0x006283F4);
-SCBW_DATA(Unit**,		last_scanner_sweep,			0x00628434);
-SCBW_DATA(Unit**,		first_psi_field_provider,	0x0063FF54);
-SCBW_DATA(u32*,			psi_field_grp_width,		0x0063FF4C);
-SCBW_DATA(u32*,			psi_field_grp_height,		0x0063FF58);
-SCBW_DATA(u8**,			psi_field_mask,				0x006D5BD8);
-SCBW_DATA(u32*,			psi_unknown,				0x0063FF48);
-SCBW_DATA(u32*,			g_player_visions,			0x0057F0B0);
-SCBW_DATA(Bullet**,		first_bullet,				0x0064DEC4);
-SCBW_DATA(Bullet**,		last_bullet,				0x0064DEAC);
-SCBW_DATA(Bullet**,		first_free_bullet,			0x0064EED8);
-SCBW_DATA(Bullet**,		last_free_bullet,			0x0064EEDC);
-SCBW_DATA(u32*,			bullet_count,				0x0064DEBC);
+SCBW_DATA(Unit**,			g_first_visible_unit,			0x00628430);
+SCBW_DATA(Unit**,			g_first_hidden_unit,			0x006283EC);	// Includes units in transports/bunkers, worker inside gas buildings, nukes in silos, and units in production.
+SCBW_DATA(Unit**,			g_last_hidden_unit,				0x00628428);	// Same as above.
+SCBW_DATA(Unit**,			first_scanner_sweep,			0x006283F4);
+SCBW_DATA(Unit**,			last_scanner_sweep,				0x00628434);
+SCBW_DATA(Unit**,			first_psi_field_provider,		0x0063FF54);
+SCBW_DATA(u32*,				psi_field_grp_width,			0x0063FF4C);
+SCBW_DATA(u32*,				psi_field_grp_height,			0x0063FF58);
+SCBW_DATA(u8**,				psi_field_mask,					0x006D5BD8);
+SCBW_DATA(u32*,				psi_unknown,					0x0063FF48);
+SCBW_DATA(u32*,				g_player_visions,				0x0057F0B0);
+SCBW_DATA(Bullet**,			first_bullet,					0x0064DEC4);
+SCBW_DATA(Bullet**,			last_bullet,					0x0064DEAC);
+SCBW_DATA(Bullet**,			first_free_bullet,				0x0064EED8);
+SCBW_DATA(Bullet**,			last_free_bullet,				0x0064EEDC);
+SCBW_DATA(u32*,				bullet_count,					0x0064DEBC);
 
 struct Units12 {
 	Unit* unit[12];
 };
-SCBW_DATA(Units12*, first_player_unit, 0x006283F8);  //Indexed by player Id
+SCBW_DATA(Units12*, first_player_unit, 0x006283F8); // Indexed by player Id
 
 //////////////////////////////////////////////////////////////// @}
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
-SCBW_DATA(Units12*,			g_completed_factory_counts,	0x0068A9D8);
-SCBW_DATA(Units12*,			g_all_factory_counts,		0x0068A9A8);
+SCBW_DATA(Units12*,			g_completed_factory_counts,		0x0068A9D8);
+SCBW_DATA(Units12*,			g_all_factory_counts,			0x0068A9A8);
 
-SCBW_DATA(Unit*,			g_unit_table,				0x0059CCA8);
-SCBW_DATA(u32*,				g_unit_count,				0x006283F0);
-SCBW_DATA(Bullet*,			g_bullet_table,				0x0064B2E8);
-SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,		0x0058A364);
-SCBW_DATA(Sprite*,			g_sprite_table,				0x00629D98);
-SCBW_DATA_REF(UnitDeaths*,	g_unit_killed_table,		0x005878A4);
+SCBW_DATA(Unit*,			g_unit_table,					0x0059CCA8);
+SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
+SCBW_DATA(Bullet*,			g_bullet_table,					0x0064B2E8);
+SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
+SCBW_DATA(Sprite*,			g_sprite_table,					0x00629D98);
+SCBW_DATA_REF(UnitDeaths*,	g_unit_killed_table,			0x005878A4);
 
 SCBW_DATA_REF(UnitDeaths*,	g_completed_unit_count_table,	0x00584DE4);
 
 SCBW_DATA_REF(UnitDeaths*,	g_all_unit_count_table,			0x00582324);
 SCBW_DATA(UnitDeaths*,		g_all_unit_count_table_original,0x00582324);
 
-SCBW_DATA(Thingy**,			first_lone_sprite,			0x00654874);
+SCBW_DATA(Thingy**,			first_lone_sprite,				0x00654874);
 
-//From locations.cpp
-SCBW_DATA(MapSize*,			g_map_tile_size,			0x0057F1D4);
-SCBW_DATA(Location*,		g_location_table,			0x0058DC60);
+// From locations.cpp
+SCBW_DATA(MapSize*,			g_map_tile_size,				0x0057F1D4);
+SCBW_DATA(Location*,		g_location_table,				0x0058DC60);
 
-//for buttonsets
-SCBW_DATA_REF(ButtonSet*,	g_buttonset_table,			0x005187E8);
-SCBW_DATA_REF(UnitStatFuncArrayEntry*, unitStatFuncs, 0x005193A0);
+// For buttonsets
+SCBW_DATA_REF(ButtonSet*,	g_buttonset_table,				0x005187E8);
+SCBW_DATA_REF(UnitStatFuncArrayEntry*, unitStatFuncs,		0x005193A0);
 
-SCBW_DATA(ActionPointer*, g_action_table,			0x00512800); // From triggers.cpp
-SCBW_DATA(ActionPointer*, g_briefing_action_table,	0x00512800);
-SCBW_DATA(char**,         g_chk_string_table,		0x005993D4);
-SCBW_DATA(void*,          g_main_window,			0x0051BFB0);
-SCBW_DATA(s32*,           g_music_volume,			0x006D5BB4);
-SCBW_DATA(b8*,            g_music_playing,			0x006D5BBC);
-
-//This was in the InitializePlugin() code in qdp.cpp.
-//Not sure what this does, so I'm leaving it as a comment.
-//g_action_table[59] = &EnableDebugModeAction;
+SCBW_DATA(ActionPointer*,	g_action_table,					0x00512800); // From triggers.cpp
+SCBW_DATA(ActionPointer*,	g_briefing_action_table,		0x00512800);
+SCBW_DATA(char**,			g_chk_string_table,				0x005993D4);
+SCBW_DATA(void*,			g_main_window,					0x0051BFB0);
+SCBW_DATA(s32*,				g_music_volume,					0x006D5BB4);
+SCBW_DATA(b8*,				g_music_playing,				0x006D5BBC);
 
 //////////////////////////////////////////////////////////////// @}
-
 /// @name Data Variables and Constants
 //////////////////////////////////////////////////////////////// @{
 
-//From resources.cpp
+// From resources.cpp
 struct Resources {
 	s32 minerals[12];
 	s32 gas[12];
@@ -99,7 +91,8 @@ struct cv5 {
 	u8 unk : 4;
 	u8 flags : 4;
 	u8 ground_height_old : 4;
-	u8 unk2 : 4;*/
+	u8 unk2 : 4;
+	*/
 	u16 flags;
 	u16 left_edge;
 	u16 top_edge;
@@ -124,44 +117,40 @@ SCBW_DATA(const char*,		g_string_empty,		0x00501B7D);
 struct UnitsSel {
 	Unit* unit[SelectionCap];
 };
-SCBW_DATA(UnitsSel*,	g_client_selection_group,		0x00597208);
-SCBW_DATA(Unit*,		g_client_selection_group_end,	0x00597238);
-SCBW_DATA(u8*,			g_client_selection_count,		0x0059723D);
+SCBW_DATA(UnitsSel*,		g_client_selection_group,		0x00597208);
+SCBW_DATA(Unit*,			g_client_selection_group_end,	0x00597238);
+SCBW_DATA(u8*,				g_client_selection_count,		0x0059723D);
 
-/// Screen position relative to the map
-SCBW_DATA(s32*, g_screen_x,				0x00628448);
-SCBW_DATA(s32*, g_screen_y,				0x00628470);
+// Screen position relative to the map
+SCBW_DATA(s32*,				g_screen_x,				0x00628448);
+SCBW_DATA(s32*,				g_screen_y,				0x00628470);
 
-///To use with a player ID
-SCBW_DATA(Point16*, g_start_positions,	0x0058D720);
+// To use with a player ID
+SCBW_DATA(Point16*,			g_start_positions,		0x0058D720);
 
-/// Mouse position relative to the screen
-SCBW_DATA(const Vector32*, g_mouse,		0x006CDDC4);
+// Mouse position relative to the screen
+SCBW_DATA(const Vector32*,	g_mouse,				0x006CDDC4);
 
-/// Booleans indicating which keyboard buttons are held
-
-//use g_is_keycode_used[VK_param] where VK_param is one of the
-//Virtual-Key Codes of Windows as seen in msdn here:
-//https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
+// Booleans indicating which keyboard buttons are held
+// use g_is_keycode_used[VK_param] where VK_param is one of the Virtual-Key Codes of Windows as seen in msdn here: https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
 SCBW_DATA(const b8*, g_is_keycode_used,		0x00596A18);
-
 SCBW_DATA(const b8*, g_is_holding_shift,	0x00596A28);
 SCBW_DATA(const b8*, g_is_holding_ctrl,		0x00596A29);
 SCBW_DATA(const b8*, g_is_holding_alt,		0x00596A2A);
 
-/// Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
-SCBW_DATA(u32*, g_move_to_x,				0x0062848C);
-SCBW_DATA(u32*, g_move_to_y,				0x006284A8);
+// Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
+SCBW_DATA(u32*,		g_move_to_x,			0x0062848C);
+SCBW_DATA(u32*,		g_move_to_y,			0x006284A8);
 
-/// Contains various information (names, player types, race types, and associated forces) of each player in the current game
-SCBW_DATA(Player*, g_player_table,			0x0057EEE0);
+// Contains various information (names, player types, race types, and associated forces) of each player in the current game
+SCBW_DATA(Player*,	g_player_table,			0x0057EEE0);
 
 struct SupplyData {
 	u32 provided[PLAYER_COUNT];
 	u32 used[PLAYER_COUNT];
 	u32 max[PLAYER_COUNT];
 };
-SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::get_race() to get the index.
+SCBW_DATA(SupplyData*,	raceSupply,			0x00582144);  //Array; Use Unit::get_race() to get the index.
 
 SCBW_DATA(u32*,		g_elapsed_time_frames,		0x0057F23C);
 SCBW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
@@ -178,14 +167,14 @@ SCBW_DATA(u32*,		g_command_queue_size,		0x00654AA0);
 SCBW_DATA(char*,	g_turn_buffer,				0x00654880);
 
 // For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
-SCBW_DATA(u16*, tooltip_ore_cost,				0x0068C1D0);
-SCBW_DATA(u16*, tooltip_gas_cost,				0x0068C1D2);
-SCBW_DATA(u16*, tooltip_energy_cost,			0x0068C1D4); // Used to be Protoss energy
-SCBW_DATA(u16*, tooltip_unused_cost,			0x0068C1D6); // Used to be Terran energy
-SCBW_DATA(u16*, tooltip_time_cost,				0x0068C1D8); // Used to be Zerg energy
-SCBW_DATA(u16*, tooltip_p_supply_cost,			0x0068C1DA);
-SCBW_DATA(u16*, tooltip_t_supply_cost,			0x0068C1DC);
-SCBW_DATA(u16*, tooltip_z_supply_cost,			0x0068C1DE);
+SCBW_DATA(u16*,		tooltip_ore_cost,			0x0068C1D0);
+SCBW_DATA(u16*,		tooltip_gas_cost,			0x0068C1D2);
+SCBW_DATA(u16*,		tooltip_energy_cost,		0x0068C1D4); // Used to be Protoss energy
+SCBW_DATA(u16*,		tooltip_unused_cost,		0x0068C1D6); // Used to be Terran energy
+SCBW_DATA(u16*,		tooltip_time_cost,			0x0068C1D8); // Used to be Zerg energy
+SCBW_DATA(u16*,		tooltip_p_supply_cost,		0x0068C1DA);
+SCBW_DATA(u16*,		tooltip_t_supply_cost,		0x0068C1DC);
+SCBW_DATA(u16*,		tooltip_z_supply_cost,		0x0068C1DE);
 
 struct Event;
 typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
@@ -200,7 +189,6 @@ SCBW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
 SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 
 	// -- Added for various hooks used by Cosmonarchy BW! -- \\
-
 
 // For race_dropdown
 SCBW_DATA(StringMap_b*,	single_race_select,			0x0051AAA0);
@@ -252,23 +240,23 @@ SCBW_DATA(u32*,			selection_sound_counter,	0x00640548);
 SCBW_DATA(u32*,			g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_ui
-SCBW_DATA(u8*,		console_index,					0x0057F1E2);
-SCBW_DATA(u16*,		current_music_id,				0x0057F1DE);
-SCBW_DATA(char*,	campaign_first_mission_bw,		0x005122C0);
-SCBW_DATA(char*,	campaign_first_mission,			0x005122BC);
-SCBW_DATA(u32*,		console_race_specific,			0x0051A3B4);
+SCBW_DATA(u8*,			console_index,				0x0057F1E2);
+SCBW_DATA(u16*,			current_music_id,			0x0057F1DE);
+SCBW_DATA(char*,		campaign_first_mission_bw,	0x005122C0);
+SCBW_DATA(char*,		campaign_first_mission,		0x005122BC);
+SCBW_DATA(u32*,			console_race_specific,		0x0051A3B4);
 
 // For load_game_create
-SCBW_DATA(u32*,		is_host,						0x00596888);
-SCBW_DATA(u8*,		out_of_game,					0x006D5A10);
-SCBW_DATA(u32*,		sc_main_state,					0x00596904);
-SCBW_DATA(u8*,		game_active,					0x006D11EC);
-SCBW_DATA(u16*,		next_sc_main_state,				0x0051CE90);
-SCBW_DATA(u32*,		replay_end_frame,				0x006D0F31);
+SCBW_DATA(u32*,			is_host,					0x00596888);
+SCBW_DATA(u8*,			out_of_game,				0x006D5A10);
+SCBW_DATA(u32*,			sc_main_state,				0x00596904);
+SCBW_DATA(u8*,			game_active,				0x006D11EC);
+SCBW_DATA(u16*,			next_sc_main_state,			0x0051CE90);
+SCBW_DATA(u32*,			replay_end_frame,			0x006D0F31);
 
 // For level_cheat_create
-SCBW_DATA(u32*,		level_cheat_unlocked,			0x006D11C0);
-SCBW_DATA(char*,	player_name,					0x0057EEB5);
+SCBW_DATA(u32*,			level_cheat_unlocked,		0x006D11C0);
+SCBW_DATA(char*,		player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
 SCBW_DATA(u8*,		placing_player,					0x0064088C);
