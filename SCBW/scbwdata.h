@@ -55,11 +55,9 @@ SCBW_DATA(Sprite*,			g_sprite_table,				0x00629D98);
 SCBW_DATA_REF(UnitDeaths*,	g_unit_killed_table,			0x005878A4);
 
 SCBW_DATA_REF(UnitDeaths*,	g_unit_count_table,			0x00584DE4);
-SCBW_DATA(UnitScores_I*,	g_completed_unit_counts,	g_unit_count_table);
 
 SCBW_DATA_REF(UnitDeaths*,	g_all_unit_count_table,			0x00582324);
 SCBW_DATA(UnitDeaths*,		g_all_unit_count_table_original,0x00582324);
-SCBW_DATA(UnitScores_I*,	g_all_unit_counts,				g_unit_count_table);
 
 SCBW_DATA(Thingy**,			first_lone_sprite,			0x00654874);
 

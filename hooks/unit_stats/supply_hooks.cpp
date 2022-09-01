@@ -441,7 +441,7 @@ namespace hooks
         }
         auto player = unit->player;
         auto unit_id = unit->id;
-        g_completed_unit_counts[unit->id].player[unit->player] += count;
+        g_unit_count_table[unit->id].player[unit->player] += count;
 
         s32 race = unit->get_race();
         s32 supply = unit->get_supply_provided();
@@ -480,9 +480,9 @@ namespace hooks
                 building_score[unit->player] += count * units_dat::build_score[unit_id];
             }
         }
-        if (g_completed_unit_counts[unit_id].player[unit->player] < 0)
+        if (g_unit_count_table[unit_id].player[unit->player] < 0)
         {
-            g_completed_unit_counts[unit_id].player[unit->player] = 0;
+            g_unit_count_table[unit_id].player[unit->player] = 0;
         }
     }
 
