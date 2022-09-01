@@ -56,13 +56,13 @@ namespace hooks
 
         // Let's reset what it originally did, since it cleared more than just g_all_unit_count_table
         memset(g_all_unit_count_table_original, 0, 0xAB00u);
-
+        
         // And let's reset the new tables too
-        memset(g_unit_count_table,     0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
-        memset(g_all_unit_count_table, 0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
-        memset(g_unit_killed_table,    0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
-        memset(g_death_table,          0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
-        memset(g_unit_availability,    0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_unit_count_table,                0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_all_unit_count_table,            0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_unit_killed_table,               0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_death_table,                     0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
+        memset(g_unit_availability->available[0], 0, UnitsIdLimit * PLAYER_COUNT * sizeof(u32));
 
         s32 result = 0;
         if (*multiplayer_mode && game_data->teams_enabled)
