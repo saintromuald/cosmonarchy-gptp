@@ -249,7 +249,7 @@ namespace {
 						   160, 0x0043B21A +2, 0,
 						   0
 	};
-	
+
 				  // Unit ID, Player, ptr, ptr, ptr, ..., 0, ...
 	u32 unit_Complete[] = {0,   0,  0x00435A96 +3, 0x00436B6A +2, 0x00447AC3 +3, 0x0045B119 +3, 0x0045B940 +3, 0x0045F7C4 +1, 0x0046D685 +3, 0x0046D6CD +2, 0x0046DA37 +3, 0x0046E4F2 +3, 0x0046E530 +2, 0x0046E553 +3, 0x004888AC +3, 0x00488D8F +3, 0x00488D9B +3, 0x00488ECF +3, 0x00488EDB +3, 0,
 						   5,   0,  0x0043B510 +2, 0x00447ACC +3, 0x0045B122 +3, 0x0045B949 +3, 0,
@@ -481,13 +481,14 @@ namespace DatExt {
 		}
 	
 		// unit_Complete
-		unit_newArrs[1] = malloc(newCount * PLAYER_COUNT * sizeof(u32));
+		unit_newArrs[1] = calloc(newCount * PLAYER_COUNT, sizeof(u32));
 		// - Null-terminated list of null-terminated lists of addresses
 		// - First value in list is the unit ID referenced, second value is the player ID
 		for (i = 0; unit_Complete[i] != 0 || i == 0; i++)
 		{
 			offs = (u32)unit_newArrs[1] + (unit_Complete[i] * PLAYER_COUNT + unit_Complete[i + 1]) * sizeof(u32); // ID offset
-			i += simpleReplace(&unit_Complete[i], offs);
+			i += simpleReplace(&unit_Complete[i + 2], offs);
+			i += 2;
 		}
 	
 		// unit_Killed

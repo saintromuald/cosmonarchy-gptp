@@ -303,7 +303,7 @@ LABEL_15:
 				}
 			}
 			trigger_var->flags = trigger_flags | 1;
-			u32 multiplayer_time = multiplayer_mode ? trigger_time : -1;
+			u32 multiplayer_time = *multiplayer_mode ? trigger_time : -1;
 			g_trigger_wait[player_id] = multiplayer_time;
 			g_is_executing_wait[player_id] = 1;
 			if (player_id == *g_local_nation_id)

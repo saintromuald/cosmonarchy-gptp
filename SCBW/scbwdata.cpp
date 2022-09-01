@@ -60,7 +60,7 @@ SCBW_DATA_VAR(_bwUpgrs*,	UpgradesBw_var, &UpgradesBw_dat);
 SCBW_DATA_DEF(UnitDeaths*,	g_death_table, deathTable_var);
 SCBW_DATA_DEF(UnitDeaths*,	g_all_unit_count_table, unitAllCountTable_var);
 SCBW_DATA_DEF(UnitDeaths*,	g_unit_count_table, unitCompleteTable_var);
-SCBW_DATA_DEF(UnitDeaths*,	unitKilledTable, unitKilledTable_var);
+SCBW_DATA_DEF(UnitDeaths*,	g_unit_killed_table, unitKilledTable_var);
 SCBW_DATA_DEF(ButtonSet*,	g_buttonset_table, buttonSetTable_var);
 SCBW_DATA_DEF(UnitStatFuncArrayEntry*, unitStatFuncs, unitStatFuncs_var);
 SCBW_DATA_DEF(u16*,			g_orders_requirement_tree, g_orders_requirement_tree_var);
