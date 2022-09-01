@@ -1370,16 +1370,12 @@ namespace scbw
 
 	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount)
 	{
-		if (unit->sprite == nullptr || unit->order_target.unit == nullptr)
+		if (!unit->sprite || !unit->order_target.unit)
 		{
-			return nullptr;
+			return 0;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		auto rotate = unit_ext->values[value_id];
-		const LO_Header* loFile = lo_files->attackOverlays[unit->sprite->main_graphic->id];
-		if (use_special_overlay) {
-			loFile = lo_files->specialOverlays[unit->sprite->main_graphic->id];
-		}
 		Image* image = unit->sprite->main_graphic;
 		switch (unit->id)
 		{
@@ -1396,9 +1392,11 @@ namespace scbw
 				image = unit->get_overlay(ImageId::IonCannonTurret);
 			} break;
 		}
-		u8 frameDirection = unit->sprite->main_graphic->direction;
-		Point8 offset = loFile->get_offset(frameDirection + (17 * frameset_offset), rotate);
-		if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored)
+		const LO_Header* lo_file = lo_files->attackOverlays[image->id];
+		if (use_special_overlay) {
+			lo_file = lo_files->specialOverlays[image->id];
+		}
+		Point8 offset = lo_file->get_offset(image->direction + (17 * frameset_offset), rotate);
 		if (image->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;

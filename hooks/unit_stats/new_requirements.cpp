@@ -77,10 +77,7 @@ namespace hooks {
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranEngineeringBay:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranCommandCenter))
-					{
-						return true;
-					}
+					return true;
 				} break;
 				case UnitId::TerranTreasury:
 				case UnitId::TerranSentinel:
@@ -581,7 +578,7 @@ namespace hooks {
 				case UnitId::ProtossPylon:
 				case UnitId::ProtossAquifer:
 				case UnitId::ProtossPhotonCannon:
-				case UnitId::ProtossShieldBattery:
+				case UnitId::ProtossMatrix:
 				case UnitId::ProtossForge:
 				case UnitId::ProtossGateway:
 				case UnitId::ProtossCenotaph:
@@ -1822,7 +1819,7 @@ namespace hooks {
 					case UnitId::ProtossPylon:
 					case UnitId::ProtossAquifer:
 					case UnitId::ProtossPhotonCannon:
-					case UnitId::ProtossShieldBattery:
+					case UnitId::ProtossMatrix:
 					case UnitId::ProtossForge:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:

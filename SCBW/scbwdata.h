@@ -40,7 +40,6 @@ struct Units12 {
 SCBW_DATA(Units12*, first_player_unit, 0x006283F8);  //Indexed by player Id
 
 //////////////////////////////////////////////////////////////// @}
-
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
@@ -58,15 +57,14 @@ SCBW_DATA_REF(UnitDeaths*,	unitKilledTable,			0x005878A4);
 SCBW_DATA_REF(UnitDeaths*,	g_unit_count_table,			0x00584DE4);
 SCBW_DATA(UnitScores_I*,	g_completed_unit_counts,	g_unit_count_table);
 
+SCBW_DATA_REF(UnitDeaths*,	g_all_unit_count_table,	0x00582324);
+SCBW_DATA(UnitScores_I*,	g_all_unit_counts,			g_unit_count_table);
 
-SCBW_DATA_REF(UnitDeaths*, g_all_unit_count_table,	0x00582324);
-SCBW_DATA(UnitScores_I*, g_all_unit_counts,			g_unit_count_table);
-
-SCBW_DATA(Thingy**,		first_lone_sprite,			0x00654874);
+SCBW_DATA(Thingy**,			first_lone_sprite,			0x00654874);
 
 //From locations.cpp
-SCBW_DATA(MapSize*,		g_map_tile_size,			0x0057F1D4);
-SCBW_DATA(Location*,	g_location_table,			0x0058DC60);
+SCBW_DATA(MapSize*,			g_map_tile_size,			0x0057F1D4);
+SCBW_DATA(Location*,		g_location_table,			0x0058DC60);
 
 //for buttonsets
 SCBW_DATA_REF(ButtonSet*,	g_buttonset_table,			0x005187E8);
@@ -218,8 +216,8 @@ SCBW_DATA(char*,		selected_singleplayer_race,	0x0057F266);
 SCBW_DATA(char*,		custom_singleplayer,		0x0057F1E3);
 
 // For Lobotomy Mine
-SCBW_DATA(char**,		g_status_screen_info_button_unk,		0x00519F40);
-SCBW_DATA(GrpHead**,	g_cmdicons_grp,							0x0068C1E0);
+SCBW_DATA(char**,		g_status_screen_info_button_unk,	0x00519F40);
+SCBW_DATA(GrpHead**,	g_cmdicons_grp,						0x0068C1E0);
 
 // For init_game_load
 SCBW_DATA(void*,		scenario_chk,				0x006D0F24);

@@ -1290,6 +1290,11 @@ namespace hooks {
 							{
 							current_button_state = Button_State::Enabled;
 							}
+							else if (unit->id == UnitId::ProtossMatrix &&  // Matrix Multi-Attack IV passive
+								current_button->icon_id == IconId::ApialSensors)
+							{
+								current_button_state = Button_State::Enabled;
+							}
 							else if (unit->id == UnitId::ProtossCrucible &&  // Crucible Khaydarin Charge passive
 								current_button->icon_id == IconId::KhaydarinCore)
 							{
