@@ -6,6 +6,7 @@ namespace
 {
 	void __declspec(naked) weapon_damage_wrapper()
 	{
+		static u32 result;
 		static Unit* target;
 		static Unit* attacker;
 		static s32 damage;
@@ -32,14 +33,16 @@ namespace
 			PUSHAD
 		}
 		if (direction == 33333) {
-			parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, weapon_id, attackingPlayerId, damage);
+			result = parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, weapon_id, attackingPlayerId, damage);
 		} else {
 			hooks::weapon_damage(damage, target, weapon_id, attacker, attackingPlayerId,
 				direction, damage_divisor);
+			result = 0;
 		}
 		__asm {
 			POPAD
 			POP EBP
+			MOV EAX, result
 			RETN 0x14
 		}
 	}

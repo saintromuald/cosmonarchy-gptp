@@ -27,7 +27,7 @@ bool irradiateTarget(Unit* unit)
 	return true; // Originally prohibited targeting eggs
 }
 
-void parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
+u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
 	switch (type) {
 		case AiseSignal_GetTransportCargoCount: {
 			u32 count = 0;
@@ -36,9 +36,13 @@ void parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2
 					count += 1;
 				}
 			}
-			*(u32*)unit2 = count;
+			return count;
+		} break;
+		case AiseSignal_GetAiMain: {
+			return (u32)g_aiscript_controller;
 		} break;
 	}
+	return 0;
 }
 
 namespace hooks
