@@ -48,6 +48,7 @@ SCBW_DATA_VAR(const LO_Header* const*, shieldOverlays_var, 0x0052E5C8);
 SCBW_DATA_VAR(u8*,			g_building_overlay_state_max_var, 0x005240D0);
 SCBW_DATA_VAR(GrpHead*		const*, imageGrpGraphics_var, 0x0051CED0);
 SCBW_DATA_VAR(u32*,			aiStrength_var, 0x006BB210);
+SCBW_DATA_VAR(u8*,			g_is_valid_sprite_var, 0x00629A88);
 
 // scbwdata expects pointer references, so make struct pointers to reference
 SCBW_DATA_VAR(AI_Main*,		AIScriptController_var, &AIScriptController_dat);
@@ -68,6 +69,7 @@ SCBW_DATA_DEF(const LO_Header* const*, g_shield_overlays, shieldOverlays_var);
 SCBW_DATA_DEF(u8*,			g_building_overlay_state_max, g_building_overlay_state_max_var);
 SCBW_DATA_DEF(GrpHead* const*, g_image_grp_graphics, imageGrpGraphics_var);
 SCBW_DATA_DEF(u32*,			aiStrength, aiStrength_var);
+SCBW_DATA_DEF(u8*,			g_is_valid_sprite, g_is_valid_sprite_var);
 
 SCBW_DATA_DEF(AI_Main*,		g_aiscript_controller, AIScriptController_var);
 SCBW_DATA_DEF(_uavail*,		g_unit_availability, unit_availability_var);

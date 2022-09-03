@@ -210,6 +210,7 @@ namespace DatExt {
 		}
 	
 		units_dat_unpatch();
+		sprites_dat_unpatch();
 		images_dat_unpatch();
 		upgrades_dat_unpatch();
 		techdata_dat_unpatch();

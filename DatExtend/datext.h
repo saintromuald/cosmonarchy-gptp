@@ -82,6 +82,7 @@ namespace DatExt {
 	//void mapdata_dat_doPatch(u32 newCount);
 
 	void units_dat_unpatch();
+	void sprites_dat_unpatch();
 	void images_dat_unpatch();
 	void upgrades_dat_unpatch();
 	void techdata_dat_unpatch();

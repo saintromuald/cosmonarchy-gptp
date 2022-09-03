@@ -765,8 +765,10 @@ namespace images_dat {
 	SCBW_DATA_REF(const u32*,		lo_liftoff,			imagesDat[13].address);	// 0066D8C0
 } //images_dat (last entry at 0x005140AC)
 
-SCBW_DATA(u32*,	g_image_overlay_attack,		0x0066B1B0);
-SCBW_DATA(u32*,	g_image_overlay_special,	0x00667B00);
+SCBW_DATA_REF(u8*,	g_is_valid_sprite,			0x00629A88);
+
+SCBW_DATA(u32*,		g_image_overlay_attack,		0x0066B1B0);
+SCBW_DATA(u32*,		g_image_overlay_special,	0x00667B00);
 
 //////////////////////////////////////////////////////////////// @}
 

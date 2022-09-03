@@ -10,10 +10,21 @@ namespace {
                        /* visible */ 0,    0x0049906B +2,  0, 0,
                        /* sel img */ /*-130*/0, 0x004D601E +3, 0x004D681A +4,  0, 0,
                     /* sel ofs */ /*-130*/0, 0x004D6032 +2, 0x004D6840 +2,  0, 0};
+
+    u32 sprite_is_valid[] = { 0x0042D515 +2, 0x00497157 +2, 0x0049717E +2, 0x004971A5 +2, 0x004971CC +2, 0x004971F3 +2, 0x0049721A +2, 0x00497C64 +2, 0 };
 }
 
 namespace DatExt {
     void sprites_dat_doPatch(u32 newCount) {
         datTablePatch((DatLoad*)LoadTable::Sprites_Dat, sprites_r);
+
+        g_is_valid_sprite = (u8*)calloc(newCount, sizeof(u8));
+        simpleReplace(sprite_is_valid, (u32)g_is_valid_sprite);
+    }
+
+    void sprites_dat_unpatch() {
+        if (g_is_valid_sprite) {
+            free(g_is_valid_sprite);
+        }
     }
 }
