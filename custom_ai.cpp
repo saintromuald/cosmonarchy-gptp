@@ -19,7 +19,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 		custom_ai_town->gas_cooldown--;
 	} else if (g_game_minerals[ai_town->player] >= mineral_threshold) {
 		for (u32 i = 0; i < 3; ++i) {
-			if (ai_town->gas_buildings[i] && ai_town->gas_buildings[i]->id == UnitId::ResourceVespeneGeyser) {
+			if (!custom_ai_town->gas_requested[i] && ai_town->gas_buildings[i] && ai_town->gas_buildings[i]->id == UnitId::ResourceVespeneGeyser) {
 				u32 capped_id = UnitId::None;
 				u32 race = g_player_table[ai_town->player].race;
 				switch (race) {
@@ -28,8 +28,9 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 					case RaceId::Zerg:		capped_id = UnitId::ZergExcisant; break;
 				}
 				if (capped_id != UnitId::None) {
-					helper::ai_build(capped_id, false, custom_ai_town->gas_requested + 1, ai_town, 105 - custom_ai_town->gas_requested);
-					custom_ai_town->gas_requested++;
+					custom_ai_town->gas_requested[i] = true;
+					helper::ai_build(capped_id, false, custom_ai_town->gas_requested_count + 1, ai_town, 105 - custom_ai_town->gas_requested_count);
+					custom_ai_town->gas_requested_count++;
 					custom_ai_town->gas_cooldown = 30 * 24;
 					break;
 				}
