@@ -519,7 +519,7 @@ LABEL_15:
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
 	void cmdact_right_click_minimap(DialogEvent* dlg_event) // 004563A0
 	{
-		if (g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id)
+		if (*g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id)
 		{
 			u32 selection = 0;
 			while (1)
