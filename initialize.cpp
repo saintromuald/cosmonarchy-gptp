@@ -116,6 +116,7 @@
 	#include "hooks/DatExtend/dat_load.h"
 	#include "DatExtend/datext.h"
 	#include "hooks/interface/hpbars/hpbars.h"
+	#include "SCBW/structures/Image.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -554,11 +555,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// allow all players addons to connect
 	nops(0x00440314, 6);
 
-	// injection
+	// INJECTION \\
+
 	inject_globals_hooks();
 	hooks::inject_cosmonarchy_specific();
 	hooks::inject_limit_hooks();
 	hooks::inject_target_related_hooks();
+	hooks::inject_image_hooks();
 //	hooks::unitsDatWrapperPatches();
 
 	hooks::inject_game_hooks();

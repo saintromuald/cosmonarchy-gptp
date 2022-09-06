@@ -7486,9 +7486,9 @@ namespace helper
 		}
 		worker->resource_type = isMineral ? 2 : 1;
 		Image* chunkImage = worker->sprite->create_overlay(chunkImageId);
-		if (chunkImage && !(chunkImage->flags & ImageFlags::Flag07))
+		if (chunkImage && !(chunkImage->flags & ImageFlags::UsesSpecialOffset))
 		{
-			chunkImage->flags |= ImageFlags::Flag07;
+			chunkImage->flags |= ImageFlags::UsesSpecialOffset;
 			update_image_position_offset(chunkImage);
 		}
 		worker->worker.resource_carry_amount = amountCarried;
@@ -12965,5 +12965,19 @@ namespace helper
 			ADD ESP, 0x08
 			POPAD
 		}
+	}
+
+	Image* set_image_palette_type(Image* out_image, u8 palette_type) {
+		static Image* result;
+		const u32 func_address = 0x004D58B0;
+		__asm {
+			PUSHAD
+			MOV EAX, out_image
+			MOV BL, palette_type
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
