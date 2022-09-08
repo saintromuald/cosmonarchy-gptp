@@ -54,77 +54,7 @@ void Image::set_remapping(ColorRemapping::Enum remapping)
 void Image::initialize_data(Sprite* parent, u16 image_id, s8 x, s8 y)
 {
 	assert(this);
-	this->id = image_id;
-
-	this->grp_file = g_image_grp_graphics[image_id];
-	this->flags = 0;
-	if (images_dat::is_turnable[image_id] & 1)
-	{
-		this->flags |= ImageFlags::HasRotationFrames;
-	}
-	if (images_dat::is_clickable[image_id] & 1)
-	{
-		this->flags |= ImageFlags::Clickable;
-	}
-	this->frameset = 0;
-	this->direction = 0;
-	this->frame_index = 0;
-	this->parent_sprite = parent;
-	this->horizontal_offset = x;
-	this->vertical_offset = y;
-	this->grp_size = Box16();
-	this->draw_func_param = 0;
-
-	// Initialize iscript data
-	this->iscript_header_offset = 0;
-	this->iscript_offset = 0;
-	this->unknown14 = 0;
-	this->animation = IscriptAnimation::Init;
-	this->wait = 0;
-
-	if (images_dat::rle_function[image_id] == PaletteType::RLE_PLAYER_SIDE)
-	{
-		*(u32*)(&this->draw_func_param) = parent->player;
-	}
-	if (images_dat::rle_function[image_id] == PaletteType::RLE_EFFECT)
-	{
-		this->draw_func_param = g_color_shift[images_dat::remapping[image_id]].data;
-	}
-}
-
-// Reimplemented by X405, ported by Pr0nogo, to enable omnidirectional rendering. -Pr0nogo
-void set_image_direction(Image* image, u8 direction) // 004D5F80
-{
-	if (image->flags & ImageFlags::UsesSpecialOffset)
-	{
-		helper::update_image_position_offset(image);
-	}
-
-	if (image->flags & ImageFlags::HasRotationFrames)
-	{
-		u32 new_direction = (direction + 4) / 8;
-		u32 new_flip_flag = 0;
-
-		if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional))
-		{
-			new_flip_flag = ImageFlags::Mirrored;
-			new_direction = 32 - new_direction;
-		}
-
-		if (image->direction != new_direction || (image->flags & ImageFlags::Mirrored) != new_flip_flag)
-		{
-			image->direction = new_direction;
-			image->flags &= ~ImageFlags::Mirrored;
-			image->flags |= new_flip_flag;
-			helper::set_image_palette_type(image, image->palette_type);
-
-			if (image->frame_index != image->frameset + image->direction)
-			{
-				image->flags |= ImageFlags::Redraw;
-				image->frame_index = image->frameset + image->direction;
-			}
-		}
-	}
+	hooks::initialize_image_data(this, parent, image_id, x, y);
 }
 
 // Same as function 0x004D5EA0, direction is 0-31
@@ -147,34 +77,141 @@ GrpFrame* Image::get_current_frame() const
 	return &this->grp_file->frames[this->frame_index];
 }
 
-	// HOOKING \\
-
-void __declspec(naked) set_image_direction_wrapper() { // 004D5F80
-	static Image* image;
-	static u32 direction;
-	__asm {
-		PUSH EBP
-		MOV EBP, ESP
-		PUSH EAX
-		MOV EAX, [EBP + 0x8]
-		MOV direction, EAX
-		POP EAX
-		MOV image, ESI
-		PUSHAD
-	}
-	set_image_direction(image, (u8)direction);
-	__asm {
-		POPAD
-		MOV ESP, EBP
-		POP EBP
-		RETN 0x4
-	}
-}
-
 namespace hooks
 {
+	// Hooked to replace calls in unhooked functions. -Pr0nogo
+	void initialize_image_data(Image* image, Sprite* parent, u16 image_id, s8 horizontal_offset, s8 vertical_offset) // 004D5A50
+	{
+		image->id = image_id;
+		image->grp_file = g_image_grp_graphics[image_id];
+		image->flags = 0;
+		if (images_dat::is_turnable[image_id] & 1)
+		{
+			image->flags |= ImageFlags::HasRotationFrames;
+		}
+		if (images_dat::is_clickable[image_id] & 1)
+		{
+			image->flags |= ImageFlags::Clickable;
+		}
+		image->frameset = 0;
+		image->direction = 0;
+		image->frame_index = 0;
+		image->parent_sprite = parent;
+		image->horizontal_offset = horizontal_offset;
+		image->vertical_offset = vertical_offset;
+		image->grp_size = Box16();
+		image->draw_func_param = 0;
+
+		// Initialize iscript data
+		image->iscript_header_offset = 0;
+		image->iscript_offset = 0;
+		image->unknown14 = 0;
+		image->animation = IscriptAnimation::Init;
+		image->wait = 0;
+
+		if (images_dat::rle_function[image_id] == PaletteType::RLE_PLAYER_SIDE)
+		{
+			*(u32*)(&image->draw_func_param) = parent->player;
+		}
+		if (images_dat::rle_function[image_id] == PaletteType::RLE_EFFECT)
+		{
+			image->draw_func_param = g_color_shift[images_dat::remapping[image_id]].data;
+		}
+	}
+
+	// Reimplemented by X405, ported by Pr0nogo, to enable omnidirectional rendering. -Pr0nogo
+	void set_image_direction(Image* image, u8 direction) // 004D5F80
+	{
+		if (image->flags & ImageFlags::UsesSpecialOffset)
+		{
+			helper::update_image_position_offset(image);
+		}
+
+		if (image->flags & ImageFlags::HasRotationFrames)
+		{
+			u32 new_direction = (direction + 4) / 8;
+			u32 new_flip_flag = 0;
+
+			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional))
+			{
+				new_flip_flag = ImageFlags::Mirrored;
+				new_direction = 32 - new_direction;
+			}
+
+			if (image->direction != new_direction || (image->flags & ImageFlags::Mirrored) != new_flip_flag)
+			{
+				image->direction = new_direction;
+				image->flags &= ~ImageFlags::Mirrored;
+				image->flags |= new_flip_flag;
+				helper::set_image_palette_type(image, image->palette_type);
+
+				if (image->frame_index != image->frameset + image->direction)
+				{
+					image->flags |= ImageFlags::Redraw;
+					image->frame_index = image->frameset + image->direction;
+				}
+			}
+		}
+	}
+
+
+	// HOOKING \\
+
+	void __declspec(naked) initialize_image_data_wrapper() { // 004D5A50
+		static Image* image;
+		static Sprite* sprite;
+		static u32 image_id;
+		static s32 horizontal_offset;
+		static s32 vertical_offset;
+		static u32 direction;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV horizontal_offset, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV vertical_offset, EAX
+			POP EAX
+			MOV image_id, ESI
+			MOV sprite, EDI
+			MOV image, EAX
+			PUSHAD
+		}
+		hooks::initialize_image_data(image, sprite, image_id, (s8)horizontal_offset, (s8)vertical_offset);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) set_image_direction_wrapper() { // 004D5F80
+		static Image* image;
+		static u32 direction;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV direction, EAX
+			POP EAX
+			MOV image, ESI
+			PUSHAD
+		}
+		hooks::set_image_direction(image, (u8)direction);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void inject_image_hooks()
 	{
+		jump_patch(initialize_image_data_wrapper, 0x004D5A50, 2);
 		jump_patch(set_image_direction_wrapper, 0x004D5F80, 1);
 	}
 }
