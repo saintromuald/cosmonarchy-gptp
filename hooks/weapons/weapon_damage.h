@@ -22,6 +22,11 @@ enum AiseSignal {
 	AiseSignal_None = 0,
 	AiseSignal_GetTransportCargoCount = 1,
 	AiseSignal_GetAiMain = 2,
+	AiseSignal_GetAllUnitsCount = 3,
+	AiseSignal_GetCompleteUnitsCount = 4,
+	AiseSignal_GetKilledUnitsTable = 5,
+	AiseSignal_GetDeathTable = 6,
+	AiseSignal_GetUnitAvailabilityTable = 7,
 };
 u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3);
 
