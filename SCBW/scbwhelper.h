@@ -1434,4 +1434,6 @@ namespace helper {
 
 	void ground_attack_init(u16 x_pos, u16 y_pos);															// 00488660
 	void bw_sprintf_s(char* buffer, int buffer_size, const char* format_string, int value);					// 0041F1B0
+
+	Image* set_image_palette_type(Image* out_image, u8 palette_type);										// 004D58B0
 }

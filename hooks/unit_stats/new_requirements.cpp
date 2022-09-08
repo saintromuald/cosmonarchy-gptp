@@ -233,22 +233,36 @@ namespace hooks {
 				} break;
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarpad))
+		{
+			switch (unit_id)
+			{
+				case UnitId::TerranWraith:
+				case UnitId::TerranAncile:
+				case UnitId::TerranTrojan:
+				{
+					return true;
+				} break;
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarport))
 		{
 			switch (unit_id)
 			{
 				case UnitId::TerranMunitionsBay:
+				{
+					return true;
+				} break;
 				case UnitId::TerranControlTower:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
+					if (TierUnlocked[RaceId::Terran][Tier3])
 					{
 						return true;
 					}
 				} break;
-				case UnitId::TerranWraith:
+				case UnitId::TerranWyvern:
 				case UnitId::TerranGorgon:
 				case UnitId::TerranValkyrie:
-				case UnitId::TerranTrojan:
 				{
 					return true;
 				} break;
@@ -260,8 +274,8 @@ namespace hooks {
 						return true;
 					}
 				} break;
+				case UnitId::TerranSundog:
 				case UnitId::TerranSalamander:
-				case UnitId::TerranWyvern:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranMunitionsBay))
 					{
@@ -1373,33 +1387,64 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranStarpad:
+			{
+				switch (unit_id)
+				{
+					case UnitId::TerranWraith:
+					case UnitId::TerranAncile:
+					case UnitId::TerranTrojan:
+					{
+						return true;
+					} break;
+				}
+			}
 			case UnitId::TerranStarport:
 			{
 				switch (unit_id)
 				{
 					case UnitId::TerranMunitionsBay:
+					{
+						if (hasAddon || isTraining)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_LOCKED;
+					}
 					case UnitId::TerranControlTower:
 					{
 						if (hasAddon || isTraining)
 						{
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier2])
+						if (TierUnlocked[RaceId::Terran][Tier3])
 						{
 							return TECH_ACTIVE;
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::TerranWraith:
 					case UnitId::TerranGorgon:
+					case UnitId::TerranWyvern:
 					case UnitId::TerranValkyrie:
-					case UnitId::TerranTrojan:
 					{
 						if (inAir)
 						{
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranSundog:
+					case UnitId::TerranSalamander:
+					{
+						if (inAir)
+						{
+							return TECH_HIDDEN;
+						}
+						if (addonId == UnitId::TerranMunitionsBay)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranAzazel:
 					case UnitId::TerranSeraph:
@@ -1409,19 +1454,6 @@ namespace hooks {
 							return TECH_HIDDEN;
 						}
 						if (addonId == UnitId::TerranControlTower)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
-					case UnitId::TerranSalamander:
-					case UnitId::TerranWyvern:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						if (addonId == UnitId::TerranMunitionsBay)
 						{
 							return TECH_ACTIVE;
 						}

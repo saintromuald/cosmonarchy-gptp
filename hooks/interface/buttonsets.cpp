@@ -713,20 +713,16 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == IconId::Lair && *g_client_selection_count > 1) {
-						current_button_state = Button_State::Invisible;
-					}
-
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
+						// Barracks buttonset handling
 						if (unit->id == UnitId::TerranBarracks)
 						{
-							// Barracks buttonset handling
 							if (current_button->requirement_var == UnitId::TerranCleric
-								|| current_button->requirement_var == UnitId::TerranShaman)
+							||	current_button->requirement_var == UnitId::TerranShaman)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranMedbay)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -736,10 +732,10 @@ namespace hooks {
 								}
 							}
 							else if (current_button->requirement_var == UnitId::TerranEidolon
-									|| current_button->requirement_var == UnitId::TerranSavant)
+							||		 current_button->requirement_var == UnitId::TerranSavant)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranCovertOps)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -750,14 +746,14 @@ namespace hooks {
 							}
 						}
 
+						// Fulcrum buttonset handling
 						else if (unit->id == UnitId::TerranFulcrum)
 						{
-							// Factory buttonset handling
-							if (current_button->requirement_var == UnitId::TerranCuirass
-								|| current_button->requirement_var == UnitId::TerranPhalanxTankMode)
+							if (current_button->requirement_var == UnitId::TerranBlackjack
+							||  current_button->requirement_var == UnitId::TerranMatador)
 							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop)
-									|| scbw::unit_queue_full(unit))
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranScrapyard)
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -766,11 +762,11 @@ namespace hooks {
 									current_button_state = Button_State::Enabled;
 								}
 							}
-							else if (current_button->requirement_var == UnitId::TerranMadrigal
-									|| current_button->requirement_var == UnitId::TerranPaladin)
+							else if (current_button->requirement_var == UnitId::TerranPhalanxTankMode
+							||		 current_button->requirement_var == UnitId::TerranMadrigal)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranSalvoYard)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -781,14 +777,14 @@ namespace hooks {
 							}
 						}
 
+						// Starport buttonset handling
 						else if (unit->id == UnitId::TerranStarport)
 						{
-							// Starport buttonset handling
 							if (current_button->requirement_var == UnitId::TerranSalamander
-								|| current_button->requirement_var == UnitId::TerranWyvern)
+							||  current_button->requirement_var == UnitId::TerranSundog)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranMunitionsBay)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -798,10 +794,10 @@ namespace hooks {
 								}
 							}
 							else if (current_button->requirement_var == UnitId::TerranAzazel
-									|| current_button->requirement_var == UnitId::TerranSeraph)
+							||		 current_button->requirement_var == UnitId::TerranSeraph)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranControlTower)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -812,45 +808,58 @@ namespace hooks {
 							}
 						}
 
-						// Scrapyard buttonset handling
-						if (unit->id == UnitId::TerranScrapyard)
-						{
-							if (current_button->requirement_var == UnitId::SharedStriga
-								|| current_button->requirement_var == UnitId::SharedLuminary)
-							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower)
-									|| scbw::unit_queue_full(unit))
-								{
-									current_button_state = Button_State::Invisible;
-								}
-								else
-								{
-									current_button_state = Button_State::Enabled;
-								}
-							}
-							if (current_button->requirement_var == UnitId::SharedTarasque
-								|| current_button->requirement_var == UnitId::SharedAnticthon)
-							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBase)
-									|| scbw::unit_queue_full(unit))
-								{
-									current_button_state = Button_State::Invisible;
-								}
-								else
-								{
-									current_button_state = Button_State::Enabled;
-								}
-							}
-						}
-
+						// Captaincy buttonset handling
 						else if (unit->id == UnitId::TerranCaptaincy)
 						{
-							// Captaincy buttonset handling
-							if (current_button->requirement_var == UnitId::TerranOlympian
-								|| current_button->requirement_var == UnitId::TerranAutocrat)
+							if (current_button->requirement_var == UnitId::TerranSiren
+							||	current_button->requirement_var == UnitId::SharedStriga)
+							{
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower)
+								||	 scbw::unit_queue_full(unit))
+								{
+									current_button_state = Button_State::Invisible;
+								}
+								else
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
+							else if (current_button->requirement_var == UnitId::TerranOlympian
+							||		 current_button->requirement_var == UnitId::TerranAutocrat)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranGuildhall)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
+								{
+									current_button_state = Button_State::Invisible;
+								}
+								else
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
+						}
+
+						// Iron Foundry buttonset handling
+						if (unit->id == UnitId::TerranIronFoundry)
+						{
+							if (current_button->requirement_var == UnitId::TerranClaymore
+							||	current_button->requirement_var == UnitId::TerranPenumbra)
+							{
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranFutureStation)
+								||	 scbw::unit_queue_full(unit))
+								{
+									current_button_state = Button_State::Invisible;
+								}
+								else
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
+							else if (current_button->requirement_var == UnitId::SharedAnticthon)
+						//	||		 current_button->requirement_var == UnitId::TerranAion)
+							{
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBase)
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
