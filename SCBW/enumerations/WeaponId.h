@@ -186,9 +186,10 @@ namespace WeaponId {
 		WyvernJacksonCannon					= 125,
 		PaladinSkyfall						= 126,	// Paladin ability targeting
 		IonCannon							= 129,
-		EmergencyDetonationExplosion		= 140,	// Emergency Detonation box damage
+		EmergencyDetonationExplosion		= 140,	// Emergency Detonation area damage
 		MagnetarNewtonianShockCannon		= 141,
 		SentinelCerberusRailgun				= 147,
+		SundogBlindsideRockets				= 150,
 
 		// Protoss \\
 				

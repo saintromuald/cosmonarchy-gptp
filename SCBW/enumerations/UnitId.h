@@ -53,6 +53,11 @@ namespace UnitId
 		TerranSavant										= 187,		// Kyadarin Crystal Formation
 		TerranBlackjack										= 195,		// Terran Beacon
 		TerranClaymore										= 196,		// Protoss Beacon
+		TerranSundog										= 253,		// 
+		TerranStarpad										= 254,		// 
+		TerranAncile										= 255,		// 
+		TerranMatador										= 256,		// 
+		TerranFutureStation									= 257,		// 
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
