@@ -18,18 +18,18 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV damage, EAX
-			MOV target, EDI
+			MOV damage, EAX					// Var 3
+			MOV target, EDI					// Unit 2
 			MOV EAX, [EBP + 0x08]
-			MOV weapon_id, EAX
+			MOV weapon_id, EAX				// Var 1
 			MOV EAX, [EBP + 0x0C]
-			MOV damage_divisor, EAX
+			MOV damage_divisor, EAX			// Aise Signal
 			MOV EAX, [EBP + 0x10]
-			MOV direction, EAX
+			MOV direction, EAX				// Magic (33333)
 			MOV EAX, [EBP + 0x14]
-			MOV attacker, EAX
+			MOV attacker, EAX				// Unit 1
 			MOV EAX, [EBP + 0x18]
-			MOV attackingPlayerId, EAX
+			MOV attackingPlayerId, EAX		// Var 2
 			PUSHAD
 		}
 		if (direction == 33333) {
