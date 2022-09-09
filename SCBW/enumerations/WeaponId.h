@@ -245,5 +245,7 @@ namespace WeaponId {
 		IzirokorEnergizedBioplasma			= 142,
 		KagraliskRepeatingVenom				= 145,
 		EvigriliskBrutishTendrils			= 146,
+		ZarcavrokorBisectingBlades			= 152,
+		ZarcavrokorBonesofReflection		= 153,	// Zarcavrokor passive weapon
 	};
 }

@@ -90,15 +90,23 @@ namespace hooks
 						index++;
 
 						// Display additional weapons
-						if (activeUnit->id == UnitId::TerranCentaur)
+						switch (activeUnit->id)
 						{
-							helper::stat_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
-							index++;
-						}
-						else if (activeUnit->id == UnitId::SharedTarasque)
-						{
-							helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
-							index++;
+							case UnitId::SharedTarasque:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
+								index++;
+							} break;
+							case UnitId::TerranCentaur:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
+								index++;
+							} break;
+							case UnitId::ZergZarcavrokor:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
+								index++;
+							} break;
 						}
 					}
 				}

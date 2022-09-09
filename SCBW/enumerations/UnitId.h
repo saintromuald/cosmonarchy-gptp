@@ -8,8 +8,8 @@ namespace UnitId
 		// Cosmonarchy \\
 
 	// AI
-	//	DisruptionField										= 105,		// Disruption Field			- might need mempatches?
-	//	DarkSwarm											= 202,		// Dark Swarm				- might need mempatches?
+	//	DisruptionField										= 105,		// Disruption Field
+	//	DarkSwarm											= 202,		// Dark Swarm
 
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
@@ -53,11 +53,11 @@ namespace UnitId
 		TerranSavant										= 187,		// Kyadarin Crystal Formation
 		TerranBlackjack										= 195,		// Terran Beacon
 		TerranClaymore										= 196,		// Protoss Beacon
-		TerranSundog										= 253,		// 
-		TerranStarpad										= 254,		// 
-		TerranAncile										= 255,		// 
-		TerranMatador										= 256,		// 
-		TerranFutureStation									= 257,		// 
+		TerranSundog										= 253,
+		TerranStarpad										= 254,
+		TerranAncile										= 255,
+		TerranMatador										= 256,
+		TerranFutureStation									= 257,
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
@@ -103,19 +103,19 @@ namespace UnitId
 		ProtossArtisan										= 182,		// Mining Platform
 
 	// Protoss-Building
-		ProtossAutomatonRegister							= 158,		// Unused Protoss 1				| Robotic tier 1.5 requirement
-		ProtossProstrationStage								= 159,		// Observatory					| Profane production
-		ProtossRogueGallery									= 161,		// Unused Protoss 2				| Shared production
-		ProtossWaywardLure									= 163,		// Citadel of Adun				| Luminary, Striga, Empress requirement
-		ProtossArgosy										= 168,		// Stasis Chamber				| Advanced Stellar production
-		ProtossAstralOmen									= 184,		// Independent Starport			| Exemplar, Gladius requirement
-		ProtossCrucible										= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
-		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap		| Star Sovereign requirement
-		ProtossRoboticsAuthority							= 220,		// Mineral Chunk Type 1			| Advanced Robotics production
-		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2		| Anthelion requirement
-		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
-		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
-		ProtossMatrix										= 252,		//								| Crowd-controlling static defense
+		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
+		ProtossProstrationStage								= 159,		// Observatory
+		ProtossRogueGallery									= 161,		// Unused Protoss 2
+		ProtossWaywardLure									= 163,		// Citadel of Adun
+		ProtossArgosy										= 168,		// Stasis Chamber
+		ProtossAstralOmen									= 184,		// Independent Starport
+		ProtossCrucible										= 201,		// Overmind Cocoon
+		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap
+		ProtossRoboticsAuthority							= 220,		// Mineral Chunk Type 1
+		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2
+		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2
+		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1
+		ProtossMatrix										= 252,
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
@@ -141,6 +141,7 @@ namespace UnitId
 		ZergKonvilisk										= 217,		// Psi Emitter
 		ZergAkistrokor										= 218,		// Data Disc
 		ZergIroleth											= 222,		// Protoss Gas Orb Type 1
+		ZergZarcavrokor										= 258,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
