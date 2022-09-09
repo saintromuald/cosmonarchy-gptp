@@ -41,6 +41,21 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 		case AiseSignal_GetAiMain: {
 			return (u32)g_aiscript_controller;
 		} break;
+		case AiseSignal_GetAllUnitsCount: {
+			return (u32)g_all_unit_count_table;
+		} break;
+		case AiseSignal_GetCompleteUnitsCount: {
+			return (u32)g_completed_unit_count_table;
+		} break;
+		case AiseSignal_GetKilledUnitsTable: {
+			return (u32)g_unit_killed_table;
+		} break;
+		case AiseSignal_GetDeathTable: {
+			return (u32)g_unit_deaths_table;
+		} break;
+		case AiseSignal_GetUnitAvailabilityTable: {
+			return (u32)g_unit_availability->available;
+		} break;
 	}
 	return 0;
 }
