@@ -833,7 +833,7 @@ namespace hooks
 			{
 				next_image = image->link.next;
 				((void(__thiscall*)(Image*))image->update_fxn)(image);
-				helper::iscript_opcode_cases(image, (u32)&image->iscript_header_offset, 0, 0);
+				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 				if (!sprite->images.head)
 				{
 					u32 pos_y = sprite->position.y / 32;

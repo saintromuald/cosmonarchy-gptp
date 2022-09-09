@@ -2439,15 +2439,15 @@ namespace helper
 		}
 	}
 
-	void iscript_opcode_cases(Image* image, u32 offset_, u32 unk1, u32 unk2)
+	void iscript_opcode_cases(Image* image, void* script, u32 dont_modify_image, u32 out_speed)
 	{
 		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
 		__asm
 		{
 			PUSHAD
-			PUSH unk1
-			PUSH unk2
-			PUSH offset_
+			PUSH out_speed
+			PUSH dont_modify_image
+			PUSH script
 			MOV ECX, image
 			CALL Func_iscript_OpcodeCases
 			POPAD

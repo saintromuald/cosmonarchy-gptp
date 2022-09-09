@@ -159,7 +159,7 @@ namespace hooks
 						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x22);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
+						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -199,7 +199,7 @@ namespace hooks
 						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x32);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
+						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -226,7 +226,7 @@ namespace hooks
 						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x32);
 						current_image->wait = 0;
 						current_image->unknown14 = 0;
-						helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
+						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 					}
 					current_image = current_image->link.next;
 				}
@@ -243,7 +243,7 @@ namespace hooks
 							current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x38);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
-							helper::iscript_opcode_cases(current_image, (u32)&current_image->iscript_header_offset, 0, 0);
+							helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 						}
 						current_image = current_image->link.next;
 					}
