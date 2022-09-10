@@ -47,38 +47,38 @@ namespace hooks
 	AiTown* ai_progress_build(s32 player, s32* minerals, s32* gas) // 00434480
 	{
 		AiTown* result = gi_ai_active_town_array[player].first;
-		AiTown* firstTown = gi_ai_active_town_array[player].first;
+		AiTown* first_town = gi_ai_active_town_array[player].first;
 		if (result)
 		{
 			do
 			{
-				WorkerAi* firstWorker = firstTown->workers;
-				if (firstTown->workers)
+				WorkerAi* first_worker = first_town->workers;
+				if (first_town->workers)
 				{
 					do
 					{
-						Unit* worker = firstWorker->parent; // This was null during a crash
+						Unit* worker = first_worker->parent; // This was null during a crash
 						if (!worker)
 						{
 							scbw::print("null unit in AI_progressBuild");
 							return result;
 						}
-						s32 buildOrderId = (u8)worker->main_order_id;
-						if (buildOrderId == OrderId::BuildTerran
-						  || buildOrderId == OrderId::BuildProtoss1
-						  || buildOrderId == OrderId::DroneLand
-						  || buildOrderId == OrderId::DroneBuild
-						  || buildOrderId == OrderId::DroneStartBuild)
+						s32 build_order_id = (u8)worker->main_order_id;
+						if (build_order_id == OrderId::BuildTerran
+						  || build_order_id == OrderId::BuildProtoss1
+						  || build_order_id == OrderId::DroneLand
+						  || build_order_id == OrderId::DroneBuild
+						  || build_order_id == OrderId::DroneStartBuild)
 						{
-							u8* consoleVar = nullptr;
-							s32 playerIdVar = (u8)player;
-							u16 targetUnitQueue = worker->build_queue[(u8)worker->build_queue_slot % 5];
-							s32 targetUnitQueue2 = targetUnitQueue;
-							s32 targetQueueCostMinerals = units_dat::mineral_cost[targetUnitQueue2];
-							s32 targetQueueCostGas = units_dat::gas_cost[targetUnitQueue2];
-							g_ai_minerals_reserve[playerIdVar] = targetQueueCostMinerals;
-							g_ai_gas_reserve[playerIdVar] = targetQueueCostGas;
-							if (helper::has_supplies_for_unit(targetUnitQueue, player, 1))
+							u8* console_var = nullptr;
+							s32 player_var = (u8)player;
+							u16 target_unit_queue = worker->build_queue[(u8)worker->build_queue_slot % 5];
+							s32 target_unit_queue2 = target_unit_queue;
+							s32 target_queue_mineral_cost = units_dat::mineral_cost[target_unit_queue2];
+							s32 target_queue_gas_cost = units_dat::gas_cost[target_unit_queue2];
+							g_ai_minerals_reserve[player_var] = target_queue_mineral_cost;
+							g_ai_gas_reserve[player_var] = target_queue_gas_cost;
+							if (helper::has_supplies_for_unit(target_unit_queue, player, 1))
 							{
 								if (g_game_minerals[(u8)player] >= (s32)g_ai_minerals_reserve[(u8)player])
 								{
@@ -89,25 +89,25 @@ namespace hooks
 									}
 									else
 									{
-										consoleVar = console_index;
-										helper::display_error_message_id_with_sfx((u8)player, 851, *consoleVar + 150);
+										console_var = console_index;
+										helper::display_error_message_id_with_sfx((u8)player, 851, *console_var + 150);
 									}
 								}
 								else
 								{
-									consoleVar = console_index;
-									helper::display_error_message_id_with_sfx((u8)player, 850, *consoleVar + 147);
+									console_var = console_index;
+									helper::display_error_message_id_with_sfx((u8)player, 850, *console_var + 147);
 								}
 							}
 						}
-						firstWorker = firstWorker->link.prev;
+						first_worker = first_worker->link.prev;
 					}
-					while (firstWorker);
+					while (first_worker);
 				}
-				result = firstTown->prev;
-				firstTown = firstTown->prev;
+				result = first_town->prev;
+				first_town = first_town->prev;
 			}
-			while (firstTown);
+			while (first_town);
 		}
 		return result;
 	}
@@ -130,6 +130,9 @@ namespace hooks
 		switch (unit->id)
 		{
 			case UnitId::ZergOvileth:
+			case UnitId::ZergIroleth:
+			case UnitId::ZergOthstoleth:
+			case UnitId::ZergAlaszileth:
 			{
 				helper::ai_overlord_behavior(unit);
 			} break;
@@ -143,33 +146,33 @@ namespace hooks
 			} break;
 		}
 
-		UnitAi* unitAIVar = (UnitAi*)unit->unit_ai;
-		if (!unitAIVar || unitAIVar->type != AiType::Building)
+		UnitAi* unit_ai_var = (UnitAi*)unit->unit_ai;
+		if (!unit_ai_var || unit_ai_var->type != AiType::Building)
 		{
 			return 1;
 		}
 
 		s32 player = unit->player;
-		s32 someBool = 0;
+		s32 some_bool = 0;
 		if (g_game_minerals[player] > 1500 && g_game_vespene[player] > 1500)
 		{
 			if (!helper::unit_is_training_or_morphing(unit))
 			{
 				if (helper::ai_unit_construction_behavior(player, unit, 160))
 				{
-					someBool = 1;
+					some_bool = 1;
 				}
 			}
 		}
 
-		AI_Main* AI_Mainframe = &g_aiscript_controller[player];
+		AI_Main* player_ai_data = &g_aiscript_controller[player];
 		s32 request_type;
-		if (AI_Mainframe->request_count)
+		if (player_ai_data->request_count)
 		{
-			request_type = AI_Mainframe->requests->type;
-			if (AI_Mainframe->requests->id == UnitId::ProtossArchon || AI_Mainframe->requests->id == UnitId::ProtossMindTyrant)
+			request_type = player_ai_data->requests->type;
+			if (player_ai_data->requests->id == UnitId::ProtossArchon || player_ai_data->requests->id == UnitId::ProtossMindTyrant)
 			{
-				// Override archon and mind tyrant type
+				// Override Archon and Mind Tyrant request types
 				request_type = RequestType_Train;
 			}
 		}
@@ -186,13 +189,13 @@ namespace hooks
 				{
 					return 1;
 				}
-				someBool = 1;
-				return helper::ai_plan_do_merge_morph(player, unit, someBool);
+				some_bool = 1;
+				return helper::ai_plan_do_merge_morph(player, unit, some_bool);
 			}
 			case RequestType_UnitMergeMorph1:
 			case RequestType_UnitMergeMorph2:
 			{
-				return helper::ai_plan_do_merge_morph(player, unit, someBool);
+				return helper::ai_plan_do_merge_morph(player, unit, some_bool);
 			}
 			case RequestType_ConstructMorph:
 			{
