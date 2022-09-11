@@ -747,8 +747,8 @@ void init_fraud_units() {
 	// Bitcoin Boris
 	fraud_spawn.frauds[Fraud_BitcoinBoris][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::CoyoteBrown};
 	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {4, UnitId::ProtossBarghest});
-	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {1, UnitId::SharedCharlatan});
-	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {2, UnitId::SharedStriga});
+	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {1, UnitId::ProtossCharlatan});
+	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {2, UnitId::TerranStriga});
 
 	// Crypto Carl
 	fraud_spawn.frauds[Fraud_CryptoCarl][RaceId::Protoss] = {AiPersonality_ProtossSkylord, AiBuildType_None, AiBuildOrder_ProtossSkylord_SolarEscort, PlayerColor::BistreBrown};
@@ -802,7 +802,7 @@ void init_fraud_units() {
 	// Cerebrate Stalin
 	fraud_spawn.frauds[Fraud_CerebrateStalin][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Mango};
 	add_fraud_unit(Fraud_CerebrateStalin, RaceId::Zerg, {4, UnitId::SharedCohort});
-	add_fraud_unit(Fraud_CerebrateStalin, RaceId::Zerg, {2, UnitId::SharedAxitrilisk});
+	add_fraud_unit(Fraud_CerebrateStalin, RaceId::Zerg, {2, UnitId::ZergAxitrilisk});
 
 	// Andy Rose Uh
 	fraud_spawn.frauds[Fraud_AndyRoseUh][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Orange};
@@ -978,7 +978,7 @@ void init_fraud_units() {
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Protoss, {2, UnitId::ProtossLegionnaire});
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Protoss, {2, UnitId::ProtossEcclesiast});
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Protoss, {1, UnitId::ProtossHierophant});
-	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Protoss, {1, UnitId::SharedCharlatan});
+	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Protoss, {1, UnitId::ProtossCharlatan});
 
 	fraud_spawn.frauds[Fraud_BearborneArkanianpussy][RaceId::Zerg] = { AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::IridescentGreen};
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Zerg, {8, UnitId::ZergZethrokor});
@@ -1062,7 +1062,7 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_HoopThrower][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::RussianGreen};
 	add_fraud_unit(Fraud_HoopThrower, RaceId::Zerg, {4, UnitId::ZergQuazilisk});
-	add_fraud_unit(Fraud_HoopThrower, RaceId::Zerg, {2, UnitId::SharedAxitrilisk});
+	add_fraud_unit(Fraud_HoopThrower, RaceId::Zerg, {2, UnitId::ZergAxitrilisk});
 
 	// Veeq8
 	fraud_spawn.frauds[Fraud_Veeq8][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
@@ -1169,7 +1169,7 @@ void init_fraud_units() {
 	fraud_spawn.frauds[FraudHero_Charlie][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_None, AiBuildOrder_ZergAssault_3HatchHydrok, PlayerColor::MidnightGreen};
 	add_fraud_unit(FraudHero_Charlie, RaceId::Zerg, {12, UnitId::ZergHydralisk});
 	add_fraud_unit(FraudHero_Charlie, RaceId::Zerg, {4, UnitId::ZergBactalisk});
-	add_fraud_unit(FraudHero_Charlie, RaceId::Zerg, {2, UnitId::SharedAxitrilisk});
+	add_fraud_unit(FraudHero_Charlie, RaceId::Zerg, {2, UnitId::ZergAxitrilisk});
 
 	// Rekt'Son
 	fraud_spawn.frauds[FraudHero_RektSon][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_None, AiBuildOrder_ZergGeneral_ZorkizFlood, PlayerColor::IridescentViolet};
@@ -1221,7 +1221,7 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::ProtossArchon});
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {3, UnitId::ProtossMindTyrant});
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {3, UnitId::ProtossPariah});
-	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::SharedEmpress});
+	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {6, UnitId::ProtossEmpress});
 	add_fraud_unit(FraudSuper_Amon, RaceId::Protoss, {1, UnitId::ProtossAnthelion});
 
 	// The Great Devourer
@@ -1246,7 +1246,7 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {20, UnitId::ZergHydralisk});
 	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {15, UnitId::ZergBactalisk});
 	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {12, UnitId::ZergAlmaksalisk});
-	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::SharedAxitrilisk});
+	add_fraud_unit(FraudSuper_Connor, RaceId::Zerg, {10, UnitId::ZergAxitrilisk});
 
 	// Kagg
 	fraud_spawn.frauds[FraudSuper_Kagg][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::SmokyBlack};

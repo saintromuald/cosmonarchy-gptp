@@ -1386,20 +1386,36 @@ namespace scbw
 			|| id == UnitId::TerranMaverick
 			|| id == UnitId::TerranHarakan
 			|| id == UnitId::TerranCyprian
-			|| id == UnitId::TerranMadcap
-			|| id == UnitId::TerranHeracles
-			|| id == UnitId::TerranApostle
 			|| id == UnitId::TerranVulture
 			|| id == UnitId::TerranCyclops
 			|| id == UnitId::TerranGoliath
-			|| id == UnitId::TerranGorgon
 			|| id == UnitId::TerranWraith
+			|| id == UnitId::TerranAncile
 			|| id == UnitId::TerranTrojan
+			|| id == UnitId::TerranMadcap
+			|| id == UnitId::TerranHeracles
+			|| id == UnitId::TerranApostle
+		//	|| id == UnitId::TerranRamesses
+		//	|| id == UnitId::TerranDurendal
+		//	|| id == UnitId::TerranCataphract
+			|| id == UnitId::TerranGorgon
+			|| id == UnitId::TerranWyvern
 			|| id == UnitId::TerranValkyrie
-			|| id == UnitId::TerranBlackjack
-			|| id == UnitId::SharedCohort
-			|| id == UnitId::SharedAspirant
-			|| id == UnitId::TerranSiren;
+		//	|| id == UnitId::TerranTalos
+		//	|| id == UnitId::TerranArmistice
+		//	|| id == UnitId::TerranPythean
+		//	|| id == UnitId::TerranDilettante
+		//	|| id == UnitId::TerranVirtuoso
+		//	|| id == UnitId::TerranMaven
+			|| id == UnitId::TerranPaladin
+			|| id == UnitId::TerranCuirass
+			|| id == UnitId::TerranPazuzu
+			|| id == UnitId::TerranMinotaur
+			|| id == UnitId::TerranMagnetar;
+		//	|| id == UnitId::TerranPegasus
+		//	|| id == UnitId::TerranAmbassador
+		//	|| id == UnitId::TerranHeir
+		//	|| id == UnitId::TerranHorseman
 	}
 
 	void apply_hallucinating(Unit* unit, u8 player, u32 time) {
@@ -1929,14 +1945,14 @@ namespace scbw
 
 	bool unit_id_is_shared(u16 unit_id)
 	{
-		return unit_id == UnitId::SharedAnticthon
+		return unit_id == UnitId::TerranAnticthon
 			|| unit_id == UnitId::SharedAspirant
-			|| unit_id == UnitId::SharedAxitrilisk
-			|| unit_id == UnitId::SharedCharlatan
+			|| unit_id == UnitId::ZergAxitrilisk
+			|| unit_id == UnitId::ProtossCharlatan
 			|| unit_id == UnitId::SharedCohort
-			|| unit_id == UnitId::SharedEmpress
+			|| unit_id == UnitId::ProtossEmpress
 			|| unit_id == UnitId::SharedLuminary
-			|| unit_id == UnitId::SharedStriga
+			|| unit_id == UnitId::TerranStriga
 			|| unit_id == UnitId::SharedTarasque;
 	}
 
@@ -2464,8 +2480,8 @@ namespace scbw
 					case UnitId::SharedCohort:
 					case UnitId::SharedAspirant:
 					case UnitId::SharedTarasque:
-					case UnitId::SharedStriga:
-					case UnitId::SharedAnticthon:
+					case UnitId::TerranStriga:
+					case UnitId::TerranAnticthon:
 					case UnitId::SharedLuminary: {
 						return true;
 					}
@@ -2477,10 +2493,10 @@ namespace scbw
 				}
 				switch (unit_id) {
 					case UnitId::SharedAspirant:
-					case UnitId::SharedAxitrilisk:
-					case UnitId::SharedStriga:
-					case UnitId::SharedCharlatan:
-					case UnitId::SharedEmpress:
+					case UnitId::ZergAxitrilisk:
+					case UnitId::TerranStriga:
+					case UnitId::ProtossCharlatan:
+					case UnitId::ProtossEmpress:
 					case UnitId::SharedLuminary: {
 						return true;
 					}
@@ -2492,11 +2508,11 @@ namespace scbw
 				}
 				switch (unit_id) {
 					case UnitId::SharedCohort:
-					case UnitId::SharedAxitrilisk:
+					case UnitId::ZergAxitrilisk:
 					case UnitId::SharedTarasque:
-					case UnitId::SharedCharlatan:
-					case UnitId::SharedEmpress:
-					case UnitId::SharedAnticthon: {
+					case UnitId::ProtossCharlatan:
+					case UnitId::ProtossEmpress:
+					case UnitId::TerranAnticthon: {
 						return true;
 					}
 				}
@@ -2605,5 +2621,23 @@ namespace scbw
 			|| unit_id == UnitId::ProtossArgosy
 			|| unit_id == UnitId::ProtossProstrationStage
 			|| unit_id == UnitId::ProtossRogueGallery;
+	}
+
+	bool buttonset_id_is_submenu(u32 buttonset_id) {
+		return	buttonset_id == UnitId::Buttons_BasicZergBuildings
+		||		buttonset_id == UnitId::Buttons_AdvancedZergBuildings
+		||		buttonset_id == UnitId::Buttons_SupremeZergBuildings
+		||		buttonset_id == UnitId::Buttons_BasicTerranBuildings
+		||		buttonset_id == UnitId::Buttons_AdvancedTerranBuildings
+		||		buttonset_id == UnitId::Buttons_SupremeTerranBuildings
+		||		buttonset_id == UnitId::Buttons_BasicProtossBuildings
+		||		buttonset_id == UnitId::Buttons_AdvancedProtossBuildings
+		||		buttonset_id == UnitId::Buttons_RoboticProtossStructures
+		||		buttonset_id == UnitId::Buttons_StellarProtossStructures
+		||		buttonset_id == UnitId::Buttons_ProfaneProtossStructures
+		||		buttonset_id == UnitId::Buttons_LarvaSwarm
+		||		buttonset_id == UnitId::Buttons_LarvaAssault
+		||		buttonset_id == UnitId::Buttons_LarvaControl
+		||		buttonset_id == UnitId::Buttons_LarvaShared;
 	}
 }

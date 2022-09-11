@@ -52,7 +52,8 @@ namespace hooks {
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranEngineeringBay);
 		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_landed_unit_id(player_id, UnitId::TerranScienceFacility);
-		TierUnlocked[RaceId::Terran][Tier4] = true;
+		TierUnlocked[RaceId::Terran][Tier4] = player_has_completed_landed_unit_id(player_id, UnitId::TerranScienceFacility);
+	//	TierUnlocked[RaceId::Terran][Tier4] = player_has_completed_landed_unit_id(player_id, UnitId::TerranQuantumInstitute);
 
 		TierUnlocked[RaceId::Protoss][Tier1] = true;
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
@@ -73,8 +74,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranBarracks:
 				case UnitId::TerranFulcrum:
-				case UnitId::TerranStarport:
-				case UnitId::TerranScrapyard:
+				case UnitId::TerranStarpad:
 				case UnitId::TerranEngineeringBay:
 				{
 					return player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter);
@@ -82,6 +82,8 @@ namespace hooks {
 				case UnitId::TerranTreasury:
 				case UnitId::TerranSentinel:
 				case UnitId::TerranCaptaincy:
+			//	case UnitId::TerranMantle:
+				case UnitId::TerranStarport:
 				case UnitId::TerranScienceFacility:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
@@ -202,31 +204,31 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranMachineShop:
-				case UnitId::TerranSalvoYard:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
 						return true;
 					}
 				} break;
+				case UnitId::TerranScrapyard:
 				case UnitId::TerranVulture:
 				case UnitId::TerranGoliath:
 				case UnitId::TerranCyclops:
 				{
 					return true;
 				} break;
-				case UnitId::TerranPhalanxTankMode:
-				case UnitId::TerranCuirass:
+				case UnitId::TerranBlackjack:
+				case UnitId::TerranMatador:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranMachineShop))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
 					{
 						return true;
 					}
 				} break;
-				case UnitId::TerranPaladin:
+				case UnitId::TerranPhalanxTankMode:
 				case UnitId::TerranMadrigal:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranSalvoYard))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranMachineShop))
 					{
 						return true;
 					}
@@ -284,43 +286,6 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
-		{
-			switch (unit_id)
-			{
-				case UnitId::TerranBioticBase:
-				case UnitId::TerranTinkerersTower:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
-					{
-						return true;
-					}
-				} break;
-				case UnitId::TerranBlackjack:
-				case UnitId::SharedAspirant:
-				case UnitId::SharedCohort:
-				case UnitId::TerranSiren:
-				{
-					return true;
-				} break;
-				case UnitId::SharedStriga:
-				case UnitId::SharedLuminary:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranTinkerersTower))
-					{
-						return true;
-					}
-				} break;
-				case UnitId::SharedTarasque:
-				case UnitId::SharedAnticthon:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranBioticBase))
-					{
-						return true;
-					}
-				} break;
-			}
-		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy))
 		{
 			switch (unit_id)
@@ -332,11 +297,20 @@ namespace hooks {
 						return true;
 					}
 				} break;
+				case UnitId::TerranTinkerersTower:
 				case UnitId::TerranMadcap:
 				case UnitId::TerranHeracles:
 				case UnitId::TerranApostle:
 				{
 					return true;
+				} break;
+				case UnitId::TerranSiren:
+				case UnitId::TerranStriga:
+				{
+					if (player_has_completed_unit_id(player_id, UnitId::TerranTinkerersTower))
+					{
+						return true;
+					}
 				} break;
 				case UnitId::TerranOlympian:
 				case UnitId::TerranAutocrat:
@@ -352,12 +326,36 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
+				case UnitId::TerranBioticBase:
+				{
+					if (TierUnlocked[RaceId::Terran][Tier4])
+					{
+						return true;
+					}
+				} break;
+				case UnitId::TerranFutureStation:
+				case UnitId::TerranPaladin:
+				case UnitId::TerranCuirass:
 				case UnitId::TerranPazuzu:
-				case UnitId::TerranClaymore:
-				case UnitId::TerranPenumbra:
 				{
 					return true;
 				} break;
+				case UnitId::TerranClaymore:
+				case UnitId::TerranPenumbra:
+				{
+					if (player_has_completed_unit_id(player_id, UnitId::TerranFutureStation))
+					{
+						return true;
+					}
+				}
+				case UnitId::TerranAnticthon:
+			//	case UnitId::TerranAion:
+				{
+					if (player_has_completed_unit_id(player_id, UnitId::TerranBioticBase))
+					{
+						return true;
+					}
+				}
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly))
@@ -550,14 +548,14 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::SharedAspirant:
-				case UnitId::SharedCharlatan:
-				case UnitId::SharedAxitrilisk:
+				case UnitId::ProtossCharlatan:
+				case UnitId::ZergAxitrilisk:
 				{
 					return true;
 				} break;
-				case UnitId::SharedStriga:
+				case UnitId::TerranStriga:
 				case UnitId::SharedLuminary:
-				case UnitId::SharedEmpress:
+				case UnitId::ProtossEmpress:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ProtossWaywardLure))
 					{
@@ -680,7 +678,7 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::SharedAxitrilisk:
+				case UnitId::ZergAxitrilisk:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 						&& TierUnlocked[RaceId::Zerg][Tier2])
@@ -707,8 +705,8 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::SharedTarasque:
-				case UnitId::SharedCharlatan:
-				case UnitId::SharedEmpress:
+				case UnitId::ProtossCharlatan:
+				case UnitId::ProtossEmpress:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 						&& TierUnlocked[RaceId::Zerg][Tier3])
@@ -733,7 +731,7 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::SharedAnticthon:
+				case UnitId::TerranAnticthon:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 						&& TierUnlocked[RaceId::Zerg][Tier4])
@@ -1141,8 +1139,7 @@ namespace hooks {
 					}
 					case UnitId::TerranBarracks:
 					case UnitId::TerranFulcrum:
-					case UnitId::TerranStarport:
-					case UnitId::TerranScrapyard:
+					case UnitId::TerranStarpad:
 					case UnitId::TerranEngineeringBay:
 					{
 						if (player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter))
@@ -1154,6 +1151,8 @@ namespace hooks {
 					case UnitId::TerranTreasury:
 					case UnitId::TerranSentinel:
 					case UnitId::TerranCaptaincy:
+				//	case UnitId::TerranMantle:
+					case UnitId::TerranStarport:
 					case UnitId::TerranScienceFacility:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier2])
@@ -1337,7 +1336,6 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranMachineShop:
-					case UnitId::TerranSalvoYard:
 					{
 						if (hasAddon || isTraining)
 						{
@@ -1349,6 +1347,14 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
+					case UnitId::TerranScrapyard:
+					{
+						if (hasAddon || isTraining)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
 					case UnitId::TerranVulture:
 					case UnitId::TerranGoliath:
 					case UnitId::TerranCyclops:
@@ -1359,27 +1365,27 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranPhalanxTankMode:
-					case UnitId::TerranCuirass:
+					case UnitId::TerranBlackjack:
+					case UnitId::TerranMatador:
 					{
 						if (inAir)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranMachineShop)
+						if (addonId == UnitId::TerranScrapyard)
 						{
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranPaladin:
+					case UnitId::TerranPhalanxTankMode:
 					case UnitId::TerranMadrigal:
 					{
 						if (inAir)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranSalvoYard)
+						if (addonId == UnitId::TerranMachineShop)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1461,62 +1467,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranScrapyard:
-			{
-				switch (unit_id)
-				{
-					case UnitId::TerranBioticBase:
-					case UnitId::TerranTinkerersTower:
-					{
-						if (hasAddon || isTraining)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier3])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranBlackjack:
-					case UnitId::SharedAspirant:
-					case UnitId::SharedCohort:
-					case UnitId::TerranSiren:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_ACTIVE;
-					}
-					case UnitId::SharedStriga:
-					case UnitId::SharedLuminary:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						if (addonId == UnitId::TerranTinkerersTower)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
-					case UnitId::SharedTarasque:
-					case UnitId::SharedAnticthon:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						if (addonId == UnitId::TerranBioticBase)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
-				}
-			} break;
 			case UnitId::TerranCaptaincy:
 			{
 				switch (unit_id)
@@ -1533,6 +1483,14 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
+					case UnitId::TerranTinkerersTower:
+					{
+						if (hasAddon || isTraining)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
 					case UnitId::TerranMadcap:
 					case UnitId::TerranHeracles:
 					case UnitId::TerranApostle:
@@ -1542,6 +1500,19 @@ namespace hooks {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranSiren:
+					case UnitId::TerranStriga:
+					{
+						if (inAir)
+						{
+							return TECH_HIDDEN;
+						}
+						if (addonId == UnitId::TerranTinkerersTower)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranOlympian:
 					case UnitId::TerranAutocrat:
@@ -1562,7 +1533,36 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
+					case UnitId::TerranBioticBase:
+					{
+						if (hasAddon || isTraining)
+						{
+							return TECH_HIDDEN;
+						}
+						if (TierUnlocked[RaceId::Terran][Tier4])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::TerranFutureStation:
+					{
+						if (hasAddon || isTraining)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranPaladin:
+					case UnitId::TerranCuirass:
 					case UnitId::TerranPazuzu:
+					{
+						if (inAir)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
 					case UnitId::TerranClaymore:
 					case UnitId::TerranPenumbra:
 					{
@@ -1570,7 +1570,24 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						return TECH_ACTIVE;
+						if (addonId == UnitId::TerranFutureStation)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranAnticthon:
+				//	case UnitId::TerranAion:
+					{
+						if (inAir)
+						{
+							return TECH_HIDDEN;
+						}
+						if (addonId == UnitId::TerranBioticBase)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
 					}
 				}
 			} break;
@@ -1786,14 +1803,14 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::SharedAspirant:
-					case UnitId::SharedCharlatan:
-					case UnitId::SharedAxitrilisk:
+					case UnitId::ProtossCharlatan:
+					case UnitId::ZergAxitrilisk:
 					{
 						return TECH_ACTIVE;
 					}
-					case UnitId::SharedStriga:
+					case UnitId::TerranStriga:
 					case UnitId::SharedLuminary:
-					case UnitId::SharedEmpress:
+					case UnitId::ProtossEmpress:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ProtossWaywardLure))
 						{
@@ -1946,7 +1963,7 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::SharedAxitrilisk:
+					case UnitId::ZergAxitrilisk:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 							&& TierUnlocked[RaceId::Zerg][Tier2])
@@ -1976,8 +1993,8 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::SharedTarasque:
-					case UnitId::SharedCharlatan:
-					case UnitId::SharedEmpress:
+					case UnitId::ProtossCharlatan:
+					case UnitId::ProtossEmpress:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 							&& TierUnlocked[RaceId::Zerg][Tier3])
@@ -2005,7 +2022,7 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::SharedAnticthon:
+					case UnitId::TerranAnticthon:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia)
 							&& TierUnlocked[RaceId::Zerg][Tier4])

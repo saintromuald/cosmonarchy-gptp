@@ -479,7 +479,7 @@ namespace hooks
 						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
 				} break;
-				case UnitId::SharedStriga:
+				case UnitId::TerranStriga:
 				{
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
@@ -920,7 +920,7 @@ namespace hooks
 				).for_each([&](Unit* unit) {
 					UnitExt* unitExt = get_unit_ext(unit);
 					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
-					if (unit->id == UnitId::SharedAnticthon && dist <= 4 * 32) {
+					if (unit->id == UnitId::TerranAnticthon && dist <= 4 * 32) {
 						if (scbw::is_allied_to(data.target->player, unit->player)) {
 							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
 							unitExt->values[ValueAnticthonStacks]++;

@@ -230,7 +230,7 @@ namespace hooks
 
 				if (starting_units == 1 || starting_units == 2)
 				{
-					u8 unit_id = GetRaceWorker(*raceIdOffset);
+					u32 unit_id = GetRaceWorker(*raceIdOffset);
 					u8 townhallId = GetRaceTownhall(*raceIdOffset);
 					Unit* created_unit;
 

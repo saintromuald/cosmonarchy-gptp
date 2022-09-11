@@ -374,7 +374,7 @@ namespace flingy_id
 		IrradiateNew_Large = 364,
 		ProtossDemiurge = 365,
 		TerranSiren = 366,
-		SharedCharlatan = 367,
+		ProtossCharlatan = 367,
 		CanisterRifleHitBlue					= 368,
 		ProtossExemplar							= 369,
 		ArcliteShockCannon_Damageless			= 370,

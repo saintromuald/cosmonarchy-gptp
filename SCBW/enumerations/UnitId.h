@@ -14,18 +14,12 @@ namespace UnitId
 	// Special
 		SpecialControlNode									= 192,		// Terran Marker
 		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
-		ZergZerghere										= 251,		// EXTENDED!!!
 
 	// Shared-Unit
 		SharedCohort										= 50,		// Infested Terran
-		SharedCharlatan										= 90,		// Bengalaas
-		SharedStriga										= 148,		// Overmind
 		SharedLuminary										= 150,		// Mature Chrysalis
-		SharedEmpress										= 183,		// Independent Command Center
-		SharedAxitrilisk									= 191,		// Zerg Marker
 		SharedAspirant										= 194,		// Zerg Beacon
 		SharedTarasque										= 210,		// Left Wall Missile Trap
-		SharedAnticthon										= 211,		// Left Wall Flame Trap
 
 	// Terran-Unit
 		TerranApostle										= 10,		// Gui Montag
@@ -48,16 +42,16 @@ namespace UnitId
 		TerranMagnetar										= 118,		// Physics Lab
 		TerranOlympian										= 137,		// Greater Spire
 		TerranAutocrat										= 145,		// Unused Zerg 1
+		TerranStriga										= 148,		// Overmind
 		TerranSiren											= 151,		// Cerebrate
 		TerranPaladin										= 186,		// Ruins
 		TerranSavant										= 187,		// Kyadarin Crystal Formation
 		TerranBlackjack										= 195,		// Terran Beacon
 		TerranClaymore										= 196,		// Protoss Beacon
+		TerranAnticthon										= 211,		// Left Wall Flame Trap
 		TerranSundog										= 253,
-		TerranStarpad										= 254,
 		TerranAncile										= 255,
 		TerranMatador										= 256,
-		TerranFutureStation									= 257,
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
@@ -74,6 +68,8 @@ namespace UnitId
 		TerranNaniteAssembly								= 203,		// Floor Missile Trap	
 		TerranSentinel										= 209,		// Floor Gun Trap
 		TerranTreasury										= 215,		// Flag
+		TerranStarpad										= 254,
+		TerranFutureStation									= 257,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan
@@ -93,7 +89,7 @@ namespace UnitId
 		ProtossPariah										= 87,		// Aldaris
 		ProtossVassal										= 88,		// Artanis
 		ProtossSimulacrum									= 89,		// Rhynadon
-		ProtossWarpRelay									= 90,		// Bengalaas
+		ProtossCharlatan									= 90,		// Bengalaas
 		ProtossExemplar										= 94,		// Kakaru
 		ProtossIdol											= 99,		// Samir Duran
 		ProtossGolem										= 100,		// Alexei Stukov
@@ -101,6 +97,7 @@ namespace UnitId
 		ProtossBarghest										= 104,		// Infested Duran
 		ProtossAnthelion									= 179,		// Cave
 		ProtossArtisan										= 182,		// Mining Platform
+		ProtossEmpress										= 183,		// Independent Command Center
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
@@ -138,6 +135,7 @@ namespace UnitId
 		ZergAlaszileth										= 173,		// Khaydarin Crystal Formation
 		ZergIzirokor										= 180,		// Cave-in
 		ZergSkithrokor										= 185,		// Independent Jump Gate
+		ZergAxitrilisk										= 191,		// Zerg Marker
 		ZergKonvilisk										= 217,		// Psi Emitter
 		ZergAkistrokor										= 218,		// Data Disc
 		ZergIroleth											= 222,		// Protoss Gas Orb Type 1
@@ -395,7 +393,6 @@ namespace UnitId
 		/*0xE9*/	TrigMax									= 233,
   
 		// Buttonsets using unitid beyond Unit::None
-
 		/*0xE4*/	Buttons_Blank							= 228,
 		/*0xE5*/	Buttons_Cancel							= 229,
 		/*0xE6*/	Buttons_CancelPlaceBuilding				= 230,
@@ -419,10 +416,18 @@ namespace UnitId
 		/*0xF8*/	Buttons_ReplayPaused					= 248,
 		/*0xF9*/	Buttons_ReplayPlaying					= 249,
 
-		// Special
-		Buttons_LarvaSwarm									= 206,
-		Buttons_LarvaAssault								= 207,
-		Buttons_LarvaControl								= 208,
-		Buttons_LarvaShared									= 101,
+
+		// Additional buttonset unitids
+					Buttons_SupremeTerranBuildings			= 250,
+					Buttons_SupremeZergBuildings			= 251,
+
+					Buttons_RoboticProtossStructures		= 33,
+					Buttons_StellarProtossStructures		= 205,
+					Buttons_ProfaneProtossStructures		= 14,
+
+					Buttons_LarvaSwarm						= 206,
+					Buttons_LarvaAssault					= 207,
+					Buttons_LarvaControl					= 208,
+					Buttons_LarvaShared						= 101,
 	};
 }

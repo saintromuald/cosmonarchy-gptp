@@ -33,6 +33,7 @@
 #include "color_palette.h"
 #include "custom_ai.h"
 #include "SCBW\UnitFinder.h"
+#include "hooks/interface/buttonsets.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -469,6 +470,13 @@ namespace hooks
 			}
 			last_shift = new_shift;
 
+			// Implict ESC for closing submenus. -Pr0nogo
+			// @Veeq7 unsure if this is actually safe and/or sane?
+			if (g_is_keycode_used[VK_ESCAPE] && scbw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id))
+			{
+				hooks::update_buttonset();
+			}
+
 			// Draw transport UI
 			{
 				Point16 start_pos = {179, 333}; // {441, 203};
@@ -557,11 +565,8 @@ namespace hooks
 
 		if (*g_active_portrait_unit)
 		{
-			Unit* selected = *g_active_portrait_unit;
-			if (selected->id == UnitId::ZergAlaszilArbor)  {
-				scbw::printf("Alaszil Arbor count: %u", g_completed_unit_count_table[UnitId::ZergAlaszilArbor].player[selected->player]);
-			}
 			/*
+			Unit* selected = *g_active_portrait_unit;
 			// For checking cargo-related elements. -Pr0nogo
 			if (selected) {
 				for (u32 i = 0; i < TransportCap; ++i) {
@@ -585,9 +590,8 @@ namespace hooks
 
  			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {
-				if (selection->id == UnitId::ZergNydusCesiant
-					&& selection->building.nydus_exit
-					&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
+				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
+				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
 				{
 					Unit* exit = selection->building.nydus_exit;
 					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
@@ -678,7 +682,7 @@ namespace hooks
 			}
 		}
 
-		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::SharedStriga) && unit->order_signal & 0x20)
+		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20)
 		{
 			unit->order_signal &= ~0x20;
 			globals.remove_unit_from_pariah_table(unit, true);
@@ -717,7 +721,7 @@ namespace hooks
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
 							UnitExt* targetExt = get_unit_ext(target);
-							targetExt->timers[TimerSalvageStunTimer] = 5 * 24;
+							targetExt->timers[TimerSalvageStunTimer] = 2 * 24;
 							
 							u32 time = units_dat::time_cost[target->id] / 2;
 							targetExt->salvage_time += 1;
@@ -1111,7 +1115,7 @@ namespace hooks
 					}
 				}
 			}
-			case UnitId::SharedStriga:
+			case UnitId::TerranStriga:
 			case UnitId::ProtossLegionnaire:
 			{
 				// Striga - Transient Travels
@@ -1134,7 +1138,7 @@ namespace hooks
 							position = target->sprite->position;
 						}
 					}
-					else if (unit->id == UnitId::SharedStriga)
+					else if (unit->id == UnitId::TerranStriga)
 					{
 						if (distance > 3.5 * 32 && distance <= 5 * 32 && scbw::is_unit_isolated(target))
 						{
@@ -1413,7 +1417,7 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::SharedAnticthon:
+			case UnitId::TerranAnticthon:
 			{
 				// Revive Status
 				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
@@ -1566,7 +1570,7 @@ namespace hooks
 						targetExt->values[ValueHasSublimeShepherd] = 1;
 					});
 			} break;
-			case UnitId::SharedAxitrilisk:
+			case UnitId::ZergAxitrilisk:
 			{
 				// Axitrilisk - play new_sound on shield loss, timer of 5 seconds per unit
 				if (unit->shields < 1

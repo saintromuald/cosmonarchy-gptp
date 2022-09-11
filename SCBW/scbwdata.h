@@ -882,7 +882,7 @@ SCBW_DATA(ResourceAreaArray*, g_resource_areas,		0x00692688);
 SCBW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See scbw::g_is_game_paused()
 SCBW_DATA(b8*,  g_is_brood_war,					0x0058F440);  // See scbw::is_brood_war_mode()
 SCBW_DATA(u32*, g_cheat_state,					0x006D5A6C);  // See scbw::is_cheat_enabled()
-SCBW_DATA(b32*, g_is_in_replay,					0x006D0F14);  // See scbw::isInReplay()
+SCBW_DATA(b32*, g_is_in_replay,					0x006D0F14);  // See scbw::is_in_replay()
 SCBW_DATA(b32*, g_is_replay_paused,				0x006D11B0);
 SCBW_DATA(s32*, g_max_unit_width,				0x006BEE68);
 SCBW_DATA(s32*, g_max_unit_height,				0x006BB930);
@@ -1043,6 +1043,10 @@ SCBW_DATA(char*,		g_is_drag_selecting,				0x0066FF5C);
 
 // For stats_panel_display hooks
 SCBW_DATA(char**,		g_queues_buffers,					0x00519F40);
+
+// For adding implicit ESC to submenus
+SCBW_DATA(u32*,			g_active_portrait_buttonset_id,		0x0068C14C);
+SCBW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

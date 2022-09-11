@@ -247,8 +247,8 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		case UnitId::ProtossAnthelion: {
 			cost -= 50;
 		} break;
-		case UnitId::SharedAnticthon:
-		case UnitId::SharedEmpress:
+		case UnitId::TerranAnticthon:
+		case UnitId::ProtossEmpress:
 		case UnitId::ProtossDemiurge:
 		case UnitId::ProtossClarion: {
 			cost -= 25;

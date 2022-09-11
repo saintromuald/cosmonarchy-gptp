@@ -51,8 +51,7 @@ namespace hooks {
 
 	// 00458BC0
 	// Called (with a jump) as last instruction of update_buttonset
-	// Will update the buttonset for the currently unit active if alone
-	// Handle special case of group orders if multiple units are unit
+	// Will update the buttonset for the currently unit active type, or handle special cases of mixed selections
 	void update_buttonset_ex() {
 		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
 		u8 count_workers = 0;
@@ -249,7 +248,7 @@ namespace hooks {
 		b8* const bDoingCancellableTargetOrder = (b8*)0x00641694;
 		*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_Blank;
 		*BUTTONSET_PORTRAIT_BUTTONSETID = UnitId::Buttons_Blank;
-		if (!scbw::isInReplay())
+		if (!scbw::is_in_replay())
 		{
 			if (*g_client_selection_count != 0)
 			{
@@ -278,7 +277,7 @@ namespace hooks {
 			}
 		}
 		*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
-		if ((*g_client_selection_count > 1) && (!scbw::isInReplay()))
+		if ((*g_client_selection_count > 1) && (!scbw::is_in_replay()))
 		{
 			update_buttonset_ex();
 		}
@@ -765,7 +764,7 @@ namespace hooks {
 							else if (current_button->requirement_var == UnitId::TerranPhalanxTankMode
 							||		 current_button->requirement_var == UnitId::TerranMadrigal)
 							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranSalvoYard)
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop)
 								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
@@ -812,7 +811,7 @@ namespace hooks {
 						else if (unit->id == UnitId::TerranCaptaincy)
 						{
 							if (current_button->requirement_var == UnitId::TerranSiren
-							||	current_button->requirement_var == UnitId::SharedStriga)
+							||	current_button->requirement_var == UnitId::TerranStriga)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower)
 								||	 scbw::unit_queue_full(unit))
@@ -855,7 +854,7 @@ namespace hooks {
 									current_button_state = Button_State::Enabled;
 								}
 							}
-							else if (current_button->requirement_var == UnitId::SharedAnticthon)
+							else if (current_button->requirement_var == UnitId::TerranAnticthon)
 						//	||		 current_button->requirement_var == UnitId::TerranAion)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBase)
@@ -894,7 +893,7 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedCharlatan && // Charlatan Leading the Blind passive
+							else if (unit->id == UnitId::ProtossCharlatan && // Charlatan Leading the Blind passive
 								current_button->icon_id == IconId::DemiurgePassiveWorship)
 							{
 								current_button_state = Button_State::Enabled;
@@ -904,17 +903,17 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedStriga &&  // Striga Fleeting Focus passive 
+							else if (unit->id == UnitId::TerranStriga &&  // Striga Fleeting Focus passive 
 								current_button->icon_id == IconId::PsiAssault)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedStriga &&  // Striga Transient Travels passive 
+							else if (unit->id == UnitId::TerranStriga &&  // Striga Transient Travels passive 
 								current_button->icon_id == IconId::EMPShockwave)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedAxitrilisk &&  // Axitrilisk Sating Strikes passive 
+							else if (unit->id == UnitId::ZergAxitrilisk &&  // Axitrilisk Sating Strikes passive 
 								current_button->icon_id == IconId::RoarUnused)
 							{
 								current_button_state = Button_State::Enabled;
@@ -924,12 +923,12 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedEmpress &&  // Empress Anodyne Annex passive 
+							else if (unit->id == UnitId::ProtossEmpress &&  // Empress Anodyne Annex passive 
 								current_button->icon_id == IconId::ParticleBeamHarvest)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedAnticthon &&  // Anticthon Counter-Proposal passive
+							else if (unit->id == UnitId::TerranAnticthon &&  // Anticthon Counter-Proposal passive
 								current_button->icon_id == IconId::RilirokorToxicSpores)
 							{
 								current_button_state = Button_State::Enabled;

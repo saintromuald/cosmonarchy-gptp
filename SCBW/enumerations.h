@@ -1234,3 +1234,26 @@ namespace PanelTooltipTypes
 		NoPanelTooltip			= 6,
 	};
 }
+
+namespace ButtonsetId
+{
+	enum Enum
+	{
+		TerranStructuresBasic		= 71,
+		TerranStructuresAdvanced	= 72,
+		TerranStructuresSupreme		= 248,
+		ProtossStructuresCore		= 45,
+		ProtossStructuresTemplar	= 46,
+		ProtossStructuresRobotics	= 115,
+		ProtossStructuresStellar	= 116,
+		ProtossStructuresProfane	= 117,
+		ZergStructuresBasic			= 19,
+		ZergStructuresAdvanced		= 20,
+		ZergStructuresSupreme		= 247,
+		LarvaSwarm					= 225,
+		LarvaAssault				= 226,
+		Blank						= 228,
+		LarvaControl				= 227,
+		LarvaShared					= 242,
+	};
+}
