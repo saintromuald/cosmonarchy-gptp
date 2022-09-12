@@ -13,7 +13,7 @@ enum ChkUnitFlags {
 // This structure is mirrored in aise, be careful when you change it 
 struct AiPlaceholder {
 	Point16 position;
-	u8 unit_id;
+	u16 unit_id;
 	u8 priority;
 	u8 guard_rebuilds;
 	u8 resarea;
