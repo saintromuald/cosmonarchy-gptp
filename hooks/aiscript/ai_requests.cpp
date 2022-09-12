@@ -72,7 +72,7 @@ namespace hooks
 						{
 							u8* console_var = nullptr;
 							s32 player_var = (u8)player;
-							u16 target_unit_queue = worker->build_queue[(u8)worker->build_queue_slot % 5];
+							u16 target_unit_queue = worker->build_queue[worker->build_queue_slot % 5];
 							s32 target_unit_queue2 = target_unit_queue;
 							s32 target_queue_mineral_cost = units_dat::mineral_cost[target_unit_queue2];
 							s32 target_queue_gas_cost = units_dat::gas_cost[target_unit_queue2];

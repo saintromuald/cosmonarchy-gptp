@@ -368,7 +368,7 @@ namespace helper {
 	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u32 unit_id);															// 004148F0
 	void create_building_larva(Unit* main_building);																				// 0049D660
 	b32 show_finished_unit(Unit* unit);																								// 0049EC30
-	Unit* FindBestUnit(Box16* coords, u32 searchProc);																				// 004E8830
+	Unit* find_best_unit(Box16* coords, u32 searchProc);																				// 004E8830
 
 	//// larva_creep_spawn
 	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680

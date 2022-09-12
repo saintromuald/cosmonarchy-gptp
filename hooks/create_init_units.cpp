@@ -3,7 +3,7 @@
 #include <SCBW/UnitFinder.h>
 #include "ai_layouts.h"
 
-u8 GetRaceTownhall(u8 raceId)
+u32 get_racial_townhall(u32 raceId)
 {
 	if (raceId == RaceId::Zerg)
 	{
@@ -23,7 +23,7 @@ u8 GetRaceTownhall(u8 raceId)
 	}
 }
 
-u8 GetRaceWorker(u8 raceId)
+u32 get_racial_worker(u32 raceId)
 {
 	if (raceId == RaceId::Zerg)
 	{
@@ -45,9 +45,9 @@ u8 GetRaceWorker(u8 raceId)
 
 namespace hooks
 {
-	void CreateInitialMeleeBuildings(u8 raceId, u32 player)
+	void create_initial_melee_buildings(u8 raceId, u32 player)
 	{
-		u8 buildingId = GetRaceTownhall(raceId);
+		u32 buildingId = get_racial_townhall(raceId);
 		s32 buildingSizeX, buildingSizeY;
 		Box16 searchBox;
 		Unit* created_unit;
@@ -69,7 +69,7 @@ namespace hooks
 		searchBox.right = buildingSizeX / 2 + ((g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 		// yes, the return value is unused for some reason
-		helper::FindBestUnit(&searchBox, 0x0049D640);
+		helper::find_best_unit(&searchBox, 0x0049D640);
 		created_unit = helper::create_unit(buildingId,
 				((g_start_positions[player].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
 				((g_start_positions[player].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
@@ -95,7 +95,7 @@ namespace hooks
 		return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
 	}
 
-	Point16 FindWorkerSpawnPositions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal)
+	Point16 find_worker_spawn_positions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal)
 	{
 		s32 sumX = 0;
 		s32 sumY = 0;
@@ -188,7 +188,7 @@ namespace hooks
 		return Point16{(u16)(startX + offsetX), (u16)(startY + offsetY)};
 	}
 
-	void CreateInitialMeleeUnits()
+	void create_initial_melee_units()
 	{
 		u32 player;
 		u8* raceIdOffset;
@@ -222,23 +222,24 @@ namespace hooks
 
 				if (starting_units == 2)
 				{
-					CreateInitialMeleeBuildings(*raceIdOffset, player);
-
+					create_initial_melee_buildings(*raceIdOffset, player);
 					if (*raceIdOffset == RaceId::Zerg)
-						CreateInitialOverlord(player);
+					{
+						create_initial_ovileth(player);
+					}
 				}
 
 				if (starting_units == 1 || starting_units == 2)
 				{
-					u32 unit_id = GetRaceWorker(*raceIdOffset);
-					u8 townhallId = GetRaceTownhall(*raceIdOffset);
+					u32 unit_id = get_racial_worker(*raceIdOffset);
+					u8 townhallId = get_racial_townhall(*raceIdOffset);
 					Unit* created_unit;
 
 					if (unit_id != UnitId::None)
 					{
 						Point16 startPos = g_start_positions[player];
 						bool horizontal = true;
-						Point16 pos = FindWorkerSpawnPositions(townhallId, startPos.x, startPos.y, horizontal);
+						Point16 pos = find_worker_spawn_positions(townhallId, startPos.x, startPos.y, horizontal);
 
 						for (s32 i = 0; i < 6; i++)
 						{
@@ -267,7 +268,7 @@ namespace hooks
 		}
 	}
 		
-	void CreateInitialOverlord(u8 player)
+	void create_initial_ovileth(u8 player)
 	{
 		return; // Ovileth no longer spawns
 

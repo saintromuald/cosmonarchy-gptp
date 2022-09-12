@@ -3457,7 +3457,7 @@ namespace helper
 		return bResult;
 	}
 
-	Unit* FindBestUnit(Box16* coords, u32 searchProc)
+	Unit* find_best_unit(Box16* coords, u32 searchProc)
 	{
 		const u32 Func_FindBestUnit = 0x004E8830;
 		static Unit* unit;

@@ -396,7 +396,7 @@ namespace hooks
 	}
 
 	// Hooked to safeguard against crashes
-	void issueOrderTargetingGround(Unit* unit, u8 id, u16 coordX, u16 coordY) // 00475260
+	void issueOrderTargetingGround(Unit* unit, u32 id, u16 coordX, u16 coordY) // 00475260
 	{
 		if (!unit)
 		{

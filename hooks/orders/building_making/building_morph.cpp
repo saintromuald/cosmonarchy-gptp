@@ -493,7 +493,7 @@ namespace hooks
 	}
 
 	// Hooked to help Veeq7 remember to go to sleep. -Pr0nogo
-	Unit* begin_gas_building(Unit* unit, u8 unit_id) { // 004678A0
+	Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
 		Unit* target = unit->order_target.unit;
 		if (!target || target->id != UnitId::ResourceVespeneGeyser) {
 			target = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, OrderId::Fatal);

@@ -153,7 +153,7 @@ namespace hooks {
 	// Not calling others converted to C functions
 	// Probably making it so the button corresponding to current order has light on
 	// Last function called within updateCurrentButtonSet
-	void update_buttonset_sub458D50()
+	void highlight_button()
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
@@ -284,7 +284,7 @@ namespace hooks {
 	}
 
 	// Add active/unit units checks here and you can change the buttonset to any you created here in GPTP using something based on get_custom_buttonset method or a more customized way.
-	// Note: if you use update_buttonset_sub4591D0, you can disable the injection of this function in the _inject.cpp file.
+	// Note: if you use update_command_card, you can disable the injection of this function in the _inject.cpp file.
 	ButtonSet* get_buttonset(s32 index)
 	{
 		return &(g_buttonset_table[index]);
@@ -436,11 +436,11 @@ namespace hooks {
 				{
 					// 00459A65
 					// light up the button of the current order
-					update_buttonset_sub458D50();
+					highlight_button();
 					*BUTTONSET_UNIT_MAINORDERID = mainOrderIdHolderUnit_EBP;
 					*BUTTONSET_SUBUNIT_MAINORDERID = mainOrderIdHolderSubUnit_BL;
 					// light up the button of the current order
-					update_buttonset_sub458D50();
+					highlight_button();
 				}
 			}
 		}
@@ -452,11 +452,11 @@ namespace hooks {
 		if (jumpTo59A86)
 		{
 			// light up the button of the current order
-			update_buttonset_sub458D50();
+			highlight_button();
 			*BUTTONSET_UNIT_MAINORDERID = mainOrderIdHolderUnit_EBP;
 			*BUTTONSET_SUBUNIT_MAINORDERID = mainOrderIdHolderSubUnit_BL;
 			// light up the button of the current order
-			update_buttonset_sub458D50();
+			highlight_button();
 			jumpTo59A9F = true;
 		}
 
@@ -481,7 +481,7 @@ namespace hooks {
 		return button_a->icon_id - button_b->icon_id;
 	}
 
-	void update_buttonset_sub4591D0()
+	void update_command_card()
 	{
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
@@ -587,8 +587,7 @@ namespace hooks {
 				{
 					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*g_local_nation_id, unit);
 
-					// I am currently forcing the buttons to show, which is effectively fighting lardcode that forces them not to show when group-unit.
-					// This is STUPID, EXPENSIVE, and should be REPLACED as soon as possible. - Pr0nogo
+					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
 						if (buttonset_id == UnitId::ZergLarva)
@@ -596,8 +595,7 @@ namespace hooks {
 							current_button_state = Button_State::Enabled;
 						}
 					}
-
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == UnitId::SharedCohort) {
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == UnitId::SharedCohort) { // Remove this later
 						current_button_state = Button_State::Enabled;
 					}
 

@@ -132,12 +132,12 @@ namespace hooks
 
 			if (helper::ai_try_return_home(self, 0) || !helper::ai_transport_action(self))
 			{
-				if (g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
+				if (g_aiscript_controller[self->player].ai_flags.is_use_map_settings)
 				{
 					parentAi9 = 1;
 				}
 			LABEL_37:
-				self_region = &g_ai_region_captains[(u8)self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
+				self_region = &g_ai_region_captains[self->player][helper::get_region_id(self->sprite->position.x, self->sprite->position.y)];
 				if (!parentAi9)
 				{
 					if (!dont_call_help)
@@ -150,11 +150,11 @@ namespace hooks
 						if (!self->unit_ai
 							|| helper::ai_is_under_attack(self, 0)
 							|| (childAi2 = 1, *(s8*)(v15 + 8) == 1)
-							&& g_aiscript_controller[(u8)self->player].ai_flags.is_use_map_settings)
+							&& g_aiscript_controller[self->player].ai_flags.is_use_map_settings)
 						{
 							childAi2 = 0;
 						}
-						self_region = &g_ai_region_captains[(u8)self->player][helper::get_region_id_from_unit(actual_target)];
+						self_region = &g_ai_region_captains[self->player][helper::get_region_id_from_unit(actual_target)];
 						if (childAi2)
 						{
 							self_region_state = self_region->state;
@@ -249,7 +249,7 @@ namespace hooks
 														if (!(units_dat::base_property[(u16)self->id] & UnitProperty::Worker)
 															|| (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
 															|| !scbw::unit_is_ranged_attacker(actual_target) // previously only checked for Zethrokor id
-															|| helper::ai_has_no_defense_build((u8)self->id))
+															|| helper::ai_has_no_defense_build(self->id))
 														{
 															if (main_target_reactions)
 															{

@@ -18,7 +18,7 @@ namespace
 			MOV player, EAX
 			PUSHAD
 		}
-		hooks::CreateInitialMeleeBuildings(raceId, player);
+		hooks::create_initial_melee_buildings(raceId, player);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -35,7 +35,7 @@ namespace
 			MOV EBP, ESP
 			PUSHAD
 		}
-		hooks::CreateInitialMeleeUnits();
+		hooks::create_initial_melee_units();
 		__asm
 		{
 			POPAD
@@ -56,7 +56,7 @@ namespace
 			MOV player, AL
 			PUSHAD
 		}
-		hooks::CreateInitialOverlord(player);
+		hooks::create_initial_ovileth(player);
 		__asm
 		{
 			POPAD

@@ -520,7 +520,7 @@ namespace hooks
 #pragma pack(pop)
 
 	// Hooked to allow instant addon placement. -Pr0nogo
-	void btnsact_place_addon(u8 unit_id, char* buffer) { // 00423D10
+	void btnsact_place_addon(u16 unit_id, char* buffer) { // 00423D10
 		bool errored = false;
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_next_commanded_unit()) {

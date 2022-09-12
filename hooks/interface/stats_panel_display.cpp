@@ -502,26 +502,26 @@ namespace hooks
 		// TODO: Fix compiler error
 	//	*(s32*)v6 = v5;
 		if (v7->status & UnitStatus::Completed
-			|| (v8 = v7->build_queue[(u8)v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
+			|| (v8 = v7->build_queue[v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
 		{
 			v9 = v7->id;
 		}
 		else
 		{
-			v9 = v7->build_queue[(u8)v7->build_queue_slot];
+			v9 = v7->build_queue[v7->build_queue_slot];
 		}
 		*(s16*)(v6 + 4) = upgrades_dat::upgrade_icon[(u8)units_dat::armor_upgrade[v9]];
 		*(s16*)(v6 + 6) = UnitStatus::Completed;
 		if (v7->status & UnitStatus::Completed
-			|| (v10 = v7->build_queue[(u8)v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
+			|| (v10 = v7->build_queue[v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
 		{
 			v11 = v7->id;
 		}
 		else
 		{
-			v11 = v7->build_queue[(u8)v7->build_queue_slot];
+			v11 = v7->build_queue[v7->build_queue_slot];
 		}
-		*(s16*)(v6 + 8) = (u8)units_dat::armor_upgrade[v11];
+		*(s16*)(v6 + 8) = units_dat::armor_upgrade[v11];
 		v4->psz_text = g_status_screen_info_button_unk[buttonRelated];
 		v12 = v4->flags;
 		if (!(v12 & UnitStatus::Completed))
@@ -618,7 +618,7 @@ namespace hooks
 	}
 	
 	// 004594B0 0045952F - Hooked to add time costs to tooltip info. -Veeq7
-	void set_tooltip_info_unit(u8 unit_id) {
+	void set_tooltip_info_unit(u16 unit_id) {
 		u32 mineral_cost = units_dat::mineral_cost[unit_id];
 		u32 gas_cost = units_dat::gas_cost[unit_id];
 		u32 time_cost = units_dat::time_cost[unit_id] / 24;

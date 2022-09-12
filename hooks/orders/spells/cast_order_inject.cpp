@@ -102,7 +102,7 @@ namespace
 	void __declspec(naked) issueOrderTargetingGround_Wrapper() // 00475260
 	{
 		static Unit* unit;
-		static u8 id;
+		static u32 id;
 		static u16 coordX;
 		static u16 coordY;
 		__asm
@@ -111,7 +111,7 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV id, AL
+			MOV id, EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV coordX, AX
 			MOV EAX, [EBP + 0x10]

@@ -73,7 +73,7 @@ namespace hooks
 		}
 		qsort(selection, size, sizeof(Unit*), compare_unit_train_priority);
 
-		u32 unit_id = buffer[1];
+		u16 unit_id = *(u16*)(buffer + 1);
 		for (u32 i = 0; i < size; ++i) {
 			Unit* unit = selection[i];
 			if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id)) {

@@ -119,10 +119,10 @@ namespace
 
 	void __declspec(naked) btnsact_place_addon_wrapper() {
 		static char* buffer;
-		static u8 unit_id;
+		static u16 unit_id;
 		__asm {
 			MOV buffer, EDI
-			MOV unit_id, CL
+			MOV unit_id, CX
 			PUSHAD
 		}
 		hooks::btnsact_place_addon(unit_id, buffer);
