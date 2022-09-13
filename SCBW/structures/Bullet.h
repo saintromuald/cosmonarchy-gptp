@@ -38,7 +38,7 @@ struct Bullet
 	/*0x4A*/ u8           currentDirection;
 	/*0x4B*/ u8           velocityDirection; //seems to always be the same as currentDirection
 	/*0x4C*/ u8           player; // the player ID of the bullet owner
-	/*0x4D*/ u8           behaviourTypeInternal; // 0 = none
+	/*0x4D*/ u8           behavior_type_internal; // 0 = none
 												 // 1 = fly
 												 // 2 = fly & follow target
 												 // 3 = bounce
@@ -51,15 +51,15 @@ struct Bullet
 	/*0x50*/ u16          someUnitType; // usually holds UnitType::None (Unknown unit type stuff?)
 	/*0x52*/ u16          unknown_0x52;
 	/*0x54*/ s32          unknown_0x54; // usually holds 0
-	/*0x58*/ Target       attackTarget;
+	/*0x58*/ Target       attack_target;
 	// ^-- POSSIBLE SHARED Bullet/Unit STRUCTURE END
 
 	/*0x60*/ u8           weapon_id;
 	/*0x61*/ u8           time_remaining;
 	/*0x62*/ u8           hit_flags;           // 0x01 = miss target; 0x02 = no damage (hallucination)
-	/*0x63*/ u8           remainingBounces;   // Bounce count for mutalisk weapon (official name: ubChain)
+	/*0x63*/ u8           remaining_bounces;   // Bounce count for mutalisk weapon (official name: ubChain)
 	/*0x64*/ Unit*		  source_unit;
-	/*0x68*/ Unit*		  nextBounceUnit;     // Next unit for bounce, temporary
+	/*0x68*/ Unit*		  next_bounce_unit;     // Next unit for bounce, temporary
 	/*0x6C*/ u32          cyclicMissileIndex; // some sort of cyclic burst counter (used by valkyries, goliath air attack)
 };
 

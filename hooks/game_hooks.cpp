@@ -1114,7 +1114,7 @@ namespace hooks
 						}
 					}
 				}
-			}
+			} break;
 			case UnitId::TerranStriga:
 			case UnitId::ProtossLegionnaire:
 			{
@@ -1314,7 +1314,7 @@ namespace hooks
 						}
 					}
 				}
-			}
+			} break;
 			case UnitId::ZergMatraleth:
 			{
 				// Matraleth - Ensnaring Brood
@@ -1619,11 +1619,31 @@ namespace hooks
 			case UnitId::ZergDroleth:
 			{
 				// Temporary? fix for order queue insanity. -Pr0nogo
+				// DOES NOT FIX AI!
 				if (unit->main_order_id == OrderId::Morph1
 				&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
 				&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
 				{
 					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
+				}
+			} break;
+			case UnitId::TerranAncile:
+			{
+				if (unit->energy >= 10 * 256)
+				{
+					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge))
+					{
+						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
+					}
+					unitExt->values[ValueAncileProvidence] = 1;
+				}
+				else
+				{
+					unitExt->values[ValueAncileProvidence] = 0;
+					if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge))
+					{
+						unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
+					}
 				}
 			} break;
 		}
@@ -2231,7 +2251,7 @@ namespace hooks
 						if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 							continue;
 						}
-					}
+					} break;
 				}
 				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCesiant) {
 					continue;

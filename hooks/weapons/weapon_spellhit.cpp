@@ -372,9 +372,9 @@ namespace hooks
 
 		// IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
 		// spreads originally
-		if (bullet->attackTarget.unit != nullptr)
+		if (bullet->attack_target.unit != nullptr)
 		{
-			auto vec = scbw::get_clarion_links(bullet->attackTarget.unit);
+			auto vec = scbw::get_clarion_links(bullet->attack_target.unit);
 			if (vec.size() != 0)
 			{
 				for (auto unit : vec)
@@ -384,7 +384,7 @@ namespace hooks
 			}
 			else
 			{
-				helper::apply_spores(bullet->attackTarget.unit);
+				helper::apply_spores(bullet->attack_target.unit);
 			}
 		}
 	}

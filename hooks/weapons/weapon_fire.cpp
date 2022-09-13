@@ -427,7 +427,7 @@ namespace hooks
 
 		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores)
 		{
-			if (bullet->attackTarget.unit == nullptr)
+			if (bullet->attack_target.unit == nullptr)
 			{
 				u32 range = AlkajeliskParasiticSporesSeekRange; // seek distance
 				auto seekTarget = scbw::UnitFinder::get_nearest_target(
@@ -442,8 +442,8 @@ namespace hooks
 				});
 				if (seekTarget != nullptr)
 				{
-					bullet->attackTarget.unit = seekTarget;
-					bullet->attackTarget.pt = seekTarget->position;
+					bullet->attack_target.unit = seekTarget;
+					bullet->attack_target.pt = seekTarget->position;
 					bullet->move_target.unit = seekTarget;
 					bullet->move_target.pt = seekTarget->position;
 					bullet->targetPosition = seekTarget->position;
@@ -464,7 +464,7 @@ namespace hooks
 		u8 time = bullet->time_remaining--;
 		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores)
 		{
-			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && bullet->attackTarget.unit == nullptr)
+			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && bullet->attack_target.unit == nullptr)
 			{
 				time = 0;
 			}
@@ -483,18 +483,18 @@ namespace hooks
 		}
 
 		if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
-			&& bullet->source_unit
-			&& bullet->attackTarget.unit
-			&& bullet->attackTarget.unit->sprite && bullet->source_unit->sprite)
+		&&  bullet->source_unit
+		&&  bullet->attack_target.unit
+		&&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite)
 		{
-			Unit* targ = bullet->attackTarget.unit;
+			Unit* targ = bullet->attack_target.unit;
 
 			UnitExt* unitExt = get_unit_ext(bullet->source_unit);
 			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->last_bullet_launch_position);
 			const u32 distFromTarget = scbw::get_distance_fast(bullet->position, targ->position);
 
 			if (distFromSource > 5 * 32
-				&& distFromTarget < 3 * 32)
+			&&  distFromTarget < 3 * 32)
 			{
 				if (!globals.multihit_bullet_is_set(bullet))
 				{
@@ -591,7 +591,7 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				bullet->attackTarget.unit = collisionTarget;
+				bullet->attack_target.unit = collisionTarget;
 				bEnd = true;
 			}
 		}
@@ -635,7 +635,7 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				bullet->attackTarget.unit = collisionTarget;
+				bullet->attack_target.unit = collisionTarget;
 				bEnd = true;
 			}
 		}
@@ -677,7 +677,7 @@ namespace hooks
 				{
 					return false;
 				}
-				if (bullet->attackTarget.unit == unit)
+				if (bullet->attack_target.unit == unit)
 				{
 					return false;
 				}
@@ -754,7 +754,7 @@ namespace hooks
 					}
 					else
 					{
-						bullet->move_target.unit = bullet->attackTarget.unit;
+						bullet->move_target.unit = bullet->attack_target.unit;
 						if (bullet->move_target.unit != nullptr)
 						{
 							bullet->targetPosition = bullet->move_target.unit->position;
@@ -767,16 +767,16 @@ namespace hooks
 
 		if (bEnd)
 		{
-			target = bullet->attackTarget.unit;
-			bullet->behaviourTypeInternal = 5;
+			target = bullet->attack_target.unit;
+			bullet->behavior_type_internal = 5;
 			if (target != nullptr && target->sprite != nullptr)
 			{
-				bullet->attackTarget.pt.x = target->sprite->position.x;
-				bullet->attackTarget.pt.y = target->sprite->position.y;
+				bullet->attack_target.pt.x = target->sprite->position.x;
+				bullet->attack_target.pt.y = target->sprite->position.y;
 			}
 			else
 			{
-				bullet->attackTarget.unit = 0;
+				bullet->attack_target.unit = 0;
 			}
 			bulletSprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
@@ -791,41 +791,40 @@ namespace hooks
 
 	void bullet_behavior_bounce(Bullet* bullet) // 0048B2D0
 	{
-		Unit* v1;
-		char nextBounce;
+		Unit* target_unit;
+		char next_bounce;
 		Unit* target;
 		Image* i;
-		Unit* target_unit;
 		Sprite* sprite;
 		Image* j;
 
-		v1 = bullet->attackTarget.unit;
-		if (v1)
+		target_unit = bullet->attack_target.unit;
+		if (target_unit)
 		{
 			if (!(bullet->hit_flags & 1))
 			{
-				helper::change_move_pos(bullet, v1->sprite->position.y, v1->sprite->position.x);
+				helper::change_move_pos(bullet, target_unit->sprite->position.y, target_unit->sprite->position.x);
 			}
 		}
 		helper::progress_bullet_movement(bullet);
 		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)
 		{
-			nextBounce = bullet->remainingBounces - 1;
+			next_bounce = bullet->remaining_bounces - 1;
 			// Gladius infinite bouncing
 			if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 			{
-				nextBounce = 1;
+				next_bounce = 1;
 			}
 
-			bullet->remainingBounces = nextBounce;
+			bullet->remaining_bounces = next_bounce;
 			globals.bounce_bullet = bullet;
-			if (nextBounce && (target = helper::find_next_bounce_target(bullet), bullet->nextBounceUnit = bullet->attackTarget.unit, target))
+			if (next_bounce && (target = helper::find_next_bounce_target(bullet), bullet->next_bounce_unit = bullet->attack_target.unit, target))
 			{
 				for (i = bullet->sprite->images.head; i; i = i->link.next)
 				{
 					helper::play_image_iscript(i, IscriptAnimation::SpecialState1);
 				}
-				bullet->attackTarget.unit = target;
+				bullet->attack_target.unit = target;
 			}
 			else
 			{
@@ -833,16 +832,16 @@ namespace hooks
 				{
 					globals.remove_multihit_bullet(bullet);
 				}
-				target_unit = bullet->attackTarget.unit;
-				bullet->behaviourTypeInternal = 5;
+				target_unit = bullet->attack_target.unit;
+				bullet->behavior_type_internal = 5;
 				if (target_unit)
 				{
-					bullet->attackTarget.pt.x = target_unit->sprite->position.x;
-					bullet->attackTarget.pt.y = target_unit->sprite->position.y;
+					bullet->attack_target.pt.x = target_unit->sprite->position.x;
+					bullet->attack_target.pt.y = target_unit->sprite->position.y;
 				}
 				else
 				{
-					bullet->attackTarget.unit = 0;
+					bullet->attack_target.unit = 0;
 				}
 				sprite = bullet->sprite;
 				bullet->unknown_0x4E = 0;
@@ -856,56 +855,56 @@ namespace hooks
 		}
 	}
 
-	bool find_next_bounce_target_proc(Unit* pIterator) // 0048AFD0
+	bool find_next_bounce_target_proc(Unit* target) // 0048AFD0
 	{
-		Unit* pSrc = *g_bullet_bounce_missile_source;
-		s32 nSrcStatus = (*g_bullet_bounce_missile_source)->status;
-		Unit* _pIterator = pIterator;
+		Unit* bounce_source = *g_bullet_bounce_missile_source;
+		s32 bounce_source_status = (*g_bullet_bounce_missile_source)->status;
+		Unit* target_var = target;
 
 		// Previously disallowed bouncing if unit was disabled
-		if (!pIterator)
+		if (!target)
 		{
 			return 0;
 		}
-		if (pIterator->status & UnitStatus::Invincible)
+		if (target->status & UnitStatus::Invincible)
 		{
 			return 0;
 		}
-		if (pIterator->sprite->flags & SpriteFlags::Hidden)
+		if (target->sprite->flags & SpriteFlags::Hidden)
 		{
 			return 0;
 		}
-		if (helper::unit_can_see_cloaked_target(pIterator, (*g_bullet_bounce_missile_source)))
+		if (helper::unit_can_see_cloaked_target(target, (*g_bullet_bounce_missile_source)))
 		{
 			return 0;
 		}
 
-		Unit* bounceSource = pSrc;
-		if (pSrc->subunit != nullptr && helper::unit_is_subunit(pSrc->subunit))
+		Unit* bounceSource = bounce_source;
+		if (bounce_source->subunit != nullptr && helper::unit_is_subunit(bounce_source->subunit))
 		{
-			bounceSource = pSrc->subunit;
+			bounceSource = bounce_source->subunit;
 		}
-		if (!(helper::unit_is_carrier(pSrc)))
+		if (!(helper::unit_is_carrier(bounce_source)))
 		{
 			bool miscBool;
-			if (helper::unit_is_reaver(pSrc))
+			if (helper::unit_is_reaver(bounce_source))
 			{
-				if (_pIterator->status & UnitStatus::InAir)
+				if (target_var->status & UnitStatus::InAir)
 				{
 					return 0;
 				}
-				miscBool = helper::unit_has_path_to_unit(pSrc, _pIterator);
+				miscBool = helper::unit_has_path_to_unit(bounce_source, target_var);
 			}
 			else
 			{
-				if (helper::unit_can_infest(pSrc))
+				if (helper::unit_can_infest(bounce_source))
 				{
 					Unit* unusedUnit = nullptr;
-					miscBool = helper::can_be_infested(unusedUnit, _pIterator) != 0; // unusedUnit is not used..?
+					miscBool = helper::can_be_infested(unusedUnit, target_var) != 0; // unusedUnit is not used..?
 				}
 				else
 				{
-					if (_pIterator->status & UnitStatus::InAir)
+					if (target_var->status & UnitStatus::InAir)
 					{
 						miscBool = units_dat::air_weapon[(u16)bounceSource->id] != -126;
 					}
@@ -921,14 +920,14 @@ namespace hooks
 			}
 		}
 
-		s32 unitStatus = _pIterator->status;
-		if (unitStatus & 0x300 && !((1 << pSrc->player) & _pIterator->detection_status))
+		s32 unitStatus = target_var->status;
+		if (unitStatus & 0x300 && !((1 << bounce_source->player) & target_var->detection_status))
 		{
 			return 0;
 		}
 
-		s8 player = _pIterator->player == 11 ? _pIterator->sprite->player : _pIterator->player;
-		if (player_alliance[(u8)pSrc->player].flags[player] || *g_bullet_bounce_missile_target == _pIterator)
+		s8 player = target_var->player == 11 ? target_var->sprite->player : target_var->player;
+		if (player_alliance[(u8)bounce_source->player].flags[player] || *g_bullet_bounce_missile_target == target_var)
 		{
 			return 0;
 		}
@@ -936,18 +935,18 @@ namespace hooks
 		// Gladius Binding Plasma behavior
 		if (globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
-			if (pIterator != nullptr && *g_bullet_bounce_missile_next != nullptr
+			if (target != nullptr && *g_bullet_bounce_missile_next != nullptr
 				&& (*g_bullet_bounce_missile_next)->sprite != nullptr
-				&& _pIterator->sprite != nullptr)
+				&& target_var->sprite != nullptr)
 			{
-				if (globals.was_already_hit_by_multihit_bullet(globals.bounce_bullet, _pIterator))
+				if (globals.was_already_hit_by_multihit_bullet(globals.bounce_bullet, target_var))
 				{
 					return false;
 				}
 				else
 				{
-					globals.add_bullet_multihit(globals.bounce_bullet, _pIterator);
-					return *g_bullet_bounce_missile_next != _pIterator;
+					globals.add_bullet_multihit(globals.bounce_bullet, target_var);
+					return *g_bullet_bounce_missile_next != target_var;
 
 				}
 			}
@@ -956,7 +955,7 @@ namespace hooks
 //				scbw::print("bad bullet");
 			}
 		}
-		return *g_bullet_bounce_missile_next != _pIterator;
+		return *g_bullet_bounce_missile_next != target_var;
 	}
 
 	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
@@ -965,9 +964,9 @@ namespace hooks
 		{
 			return 0;
 		}
-		Unit* nextBounce = bullet->nextBounceUnit;
+		Unit* nextBounce = bullet->next_bounce_unit;
 		*g_bullet_bounce_missile_source = bullet->source_unit;
-		Unit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attack_target.unit;
 		Sprite* bulletSprite = bullet->sprite;
 		*g_bullet_bounce_missile_target = target;
 		u16 posY = bulletSprite->position.x;
@@ -1119,20 +1118,20 @@ namespace hooks
 		bullet->player = player;
 		bullet->someUnitType = 228;
 		bullet->unknown_0x4E = 0;
-		bullet->attackTarget.unit = nullptr;
-		bullet->attackTarget.pt.y = 0;
-		bullet->attackTarget.pt.x = 0;
+		bullet->attack_target.unit = nullptr;
+		bullet->attack_target.pt.y = 0;
+		bullet->attack_target.pt.x = 0;
 		bullet->unknown_0x54 = 0;
 		bullet->weapon_id = weapon_id;
 		bullet->time_remaining = weapons_dat::remove_after[weapon_id];
 		bullet->someUnitType = 228;
-		bullet->remainingBounces = 0;
+		bullet->remaining_bounces = 0;
 		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
-		bullet->behaviourTypeInternal = 0;
-		bullet->attackTarget.unit = nullptr;
-		bullet->attackTarget.pt.y = 0;
-		bullet->attackTarget.pt.x = 0;
+		bullet->behavior_type_internal = 0;
+		bullet->attack_target.unit = nullptr;
+		bullet->attack_target.pt.y = 0;
+		bullet->attack_target.pt.x = 0;
 		bullet->unknown_0x4E = 0;
 		hooks::bullet_behavior_reassign(bullet);
 
@@ -1175,22 +1174,22 @@ namespace hooks
 		{
 			bullet->hit_flags |= 2u;
 		}
-		bullet->nextBounceUnit = nullptr;
+		bullet->next_bounce_unit = nullptr;
 
 		Unit* targetUnit = parent->order_target.unit;
 		if (targetUnit)
 		{
 			bullet->sprite->elevation = targetUnit->sprite->elevation + 1;
-			bullet->attackTarget.unit = targetUnit;
-			bullet->attackTarget.pt.x = targetUnit->sprite->position.x;
-			bullet->attackTarget.pt.y = targetUnit->sprite->position.y;
+			bullet->attack_target.unit = targetUnit;
+			bullet->attack_target.pt.x = targetUnit->sprite->position.x;
+			bullet->attack_target.pt.y = targetUnit->sprite->position.y;
 		}
 		else
 		{
 			bullet->sprite->elevation = parent->sprite->elevation + 1;
-			bullet->attackTarget.unit = 0;
-			bullet->attackTarget.pt.x = parent->order_target.pt.x;
-			bullet->attackTarget.pt.y = parent->order_target.pt.y;
+			bullet->attack_target.unit = 0;
+			bullet->attack_target.pt.x = parent->order_target.pt.x;
+			bullet->attack_target.pt.y = parent->order_target.pt.y;
 		}
 
 		switch (weapons_dat::behavior[weapon_id])
@@ -1205,7 +1204,7 @@ namespace hooks
 						helper::weapon_behavior_can_hit_target_check(targetUnit, parent);
 					}
 				}
-				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
 			case WeaponBehavior::AppearOnTargetUnit:
@@ -1224,7 +1223,7 @@ namespace hooks
 			}
 			case WeaponBehavior::PersistOnTargetSite:
 			{
-				helper::appear_on_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::appear_on_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
 			case WeaponBehavior::AppearOnAttacker:
@@ -1248,23 +1247,23 @@ namespace hooks
 				{
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						const u32 dist = scbw::get_distance_fast(bullet->source_unit->position, bullet->attackTarget.pt);
+						const u32 dist = scbw::get_distance_fast(bullet->source_unit->position, bullet->attack_target.pt);
 						if (dist >= 6 * 32)
 						{
-							bullet->remainingBounces = 2;
+							bullet->remaining_bounces = 2;
 						}
 						else
 						{
-							bullet->remainingBounces = 1;
+							bullet->remaining_bounces = 1;
 						}
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
-						bullet->remainingBounces = 2;
+						bullet->remaining_bounces = 2;
 					} break;
 					default:
 					{
-						bullet->remainingBounces = 3;
+						bullet->remaining_bounces = 3;
 					}
 				}
 				if (targetUnit)
@@ -1274,15 +1273,15 @@ namespace hooks
 						helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->source_unit);
 					}
 				}
-				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
 			case WeaponBehavior::AttackNearbyArea:
 			{
 				bullet->cyclicMissileIndex = parent->offset_index_3_by_3;
-				bullet->attackTarget.pt.x -= (s16)g_attack_curve[parent->offset_index_3_by_3].x;
-				bullet->attackTarget.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
-				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				bullet->attack_target.pt.x -= (s16)g_attack_curve[parent->offset_index_3_by_3].x;
+				bullet->attack_target.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
+				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 
 				s16 finalOffset = parent->offset_index_3_by_3 + 1;
 				if (!g_attack_curve[finalOffset].x)
@@ -1296,9 +1295,9 @@ namespace hooks
 			{
 				s32 bulletDirection = bullet->direction1;
 				s32 maxRangeVar = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
-				bullet->attackTarget.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].x) >> 16);
-				bullet->attackTarget.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].y) >> 16);
-				helper::attack_fly_to_target(bullet, bullet->attackTarget.pt.x, bullet->attackTarget.pt.y);
+				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].x) >> 16);
+				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].y) >> 16);
+				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
 		}
@@ -1327,7 +1326,7 @@ namespace hooks
 					bulletVar->sprite = 0;
 				}
 			}
-			bulletBehavior = (u8)bulletVar->behaviourTypeInternal;
+			bulletBehavior = (u8)bulletVar->behavior_type_internal;
 			switch (bulletBehavior)
 			{
 				case 0:
@@ -1384,15 +1383,15 @@ namespace hooks
 					case WeaponBehavior::AppearOnAttacker:
 					case WeaponBehavior::AttackAndSelfDestruct:
 					{
-						bullet->behaviourTypeInternal = WeaponBehavior::AppearOnAttacker;
-						if (bullet->attackTarget.unit)
+						bullet->behavior_type_internal = WeaponBehavior::AppearOnAttacker;
+						if (bullet->attack_target.unit)
 						{
-							bullet->attackTarget.pt.x = bullet->attackTarget.unit->sprite->position.x;
-							bullet->attackTarget.pt.y = bullet->attackTarget.unit->sprite->position.y;
+							bullet->attack_target.pt.x = bullet->attack_target.unit->sprite->position.x;
+							bullet->attack_target.pt.y = bullet->attack_target.unit->sprite->position.y;
 						}
 						else
 						{
-							bullet->attackTarget.unit = nullptr;
+							bullet->attack_target.unit = nullptr;
 						}
 						bullet->unknown_0x4E = 0;
 						bullet->someUnitType = 228;
@@ -1453,7 +1452,7 @@ namespace hooks
 					} break;
 				}
 
-				switch (bullet->behaviourTypeInternal)
+				switch (bullet->behavior_type_internal)
 				{
 					case 0:
 					{

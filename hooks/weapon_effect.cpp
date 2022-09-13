@@ -141,7 +141,7 @@ namespace hooks
 		dark_swarm_damage(x, y, radius, bullet, weapon_id);
 
 		bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
-		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit))
+		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attack_target.unit))
 		{
 			helper::weapon_bullet_shot(guaranteedHit, bullet, 1);
 		}
@@ -157,16 +157,16 @@ namespace hooks
 			if (target == bullet->source_unit && bullet->weapon_id != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
-			// if(scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attackTarget.unit) continue;
+			// if(scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 
 			if (splash == SplashType::Enemy)
 			{
-				if (bullet->player == target->player && target != bullet->attackTarget.unit) continue;
+				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
 			}
 
 			else if (splash == SplashType::FriendlyNew)
 			{
-				if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attackTarget.unit) continue;
+				if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 			}
 
 			// Can the unit be targeted?
@@ -284,10 +284,10 @@ namespace hooks
 			if (target == bullet->source_unit) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player
-//			if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attackTarget.unit) continue;
+//			if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 			if (splash == SplashType::Enemy)
 			{
-				if (bullet->player == target->player && target != bullet->attackTarget.unit) continue;
+				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
 			}
 			else if (splash == SplashType::FriendlyNew)
 			{
@@ -301,7 +301,7 @@ namespace hooks
 					}
 				}
 					
-				if (scbw::is_unit_enemy(bullet->player, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
+				if (scbw::is_unit_enemy(bullet->player, target) == false && !lurkerOverride && target != bullet->attack_target.unit)
 				{
 					continue;
 				}
@@ -367,17 +367,17 @@ namespace hooks
 	{
 		if (is_charged_gorgrokor_bullet(bullet, weapon_id)) // TODO: Check if this is even necessary (old version needed energy). -Pr0nogo
 		{
-			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attackTarget.unit);
+			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attack_target.unit);
 			return;
 		}
 
-		Unit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attack_target.unit;
 		if (target == nullptr)
 		{
 			return;
 		}
 
-		dark_swarm_damage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weapon_id);
+		dark_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
 
 		// Kalkalisk behavior
 		if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
@@ -435,7 +435,7 @@ namespace hooks
 					else
 					{
 						const s32 bounceCount = 2;
-						divisor = bounceCount - bullet->remainingBounces;
+						divisor = bounceCount - bullet->remaining_bounces;
 					}
 				}
 			}
@@ -446,7 +446,7 @@ namespace hooks
 	// case WPNEffect_Splash_Air:
 	void air_splash(Bullet* bullet, u32 weapon_id) // 0048B790
 	{
-		Unit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attack_target.unit;
 		if (target == nullptr)
 		{
 			return;
@@ -482,14 +482,14 @@ namespace hooks
 			Unit* target = unitsInSplash.get_unit(i);
 
 			weaponIdLoop = bullet->weapon_id;
-			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attackTarget.unit))
+			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit))
 			{
 				if (scbw::can_weapon_target_unit(weaponIdLoop, target, target))
 				{
 					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weaponIdLoop]))
 					{
 						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weaponIdLoop])
-							&& target == bullet->attackTarget.unit)
+							&& target == bullet->attack_target.unit)
 						{
 							if (globals.extended_unit_table)
 							{
@@ -553,12 +553,12 @@ namespace hooks
 	// clone of 'Yamato' damage for reference
 	void yamatoDamage(Bullet* bullet, u32 weapon_id)
 	{
-		if (bullet->attackTarget.unit == nullptr)
+		if (bullet->attack_target.unit == nullptr)
 		{
 			return;
 		}
-		dark_swarm_damage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weapon_id);
-		helper::weapon_bullet_shot(bullet->attackTarget.unit, bullet, 1);
+		dark_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
+		helper::weapon_bullet_shot(bullet->attack_target.unit, bullet, 1);
 	}
 
 	void parasite(Bullet* bullet, u32 weapon_id)
@@ -585,7 +585,7 @@ namespace hooks
 		{
 			return;
 		}
-		Unit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attack_target.unit;
 		hooks::broodling_hit(bullet->source_unit, target, bullet);
 	}
 
