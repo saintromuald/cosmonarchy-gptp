@@ -903,7 +903,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				g_player_table[player].type = PlayerType::Computer;
 				scbw::run_default_ai(player, g_start_positions[player]);
-			}
+			};
 		}
 	}
 

@@ -19,6 +19,7 @@ struct SearchIndex {
 
 static SearchIndex unit_index;
 static SearchIndex seen_unit_index[PlayerLimit];
+static SearchIndex bullet_index;
 static SearchIndex corpse_index;
 static SearchIndex effect_index;
 
@@ -175,6 +176,28 @@ EntryArray seen_unit_search_radial(u32 player, Point16 center, u32 radius) {
 	return filter_unit_array(index_search_radial(&seen_unit_index[player], center, radius));
 }
 
+inline EntryArray filter_bullet_array(EntryArray entry_array) {
+	for (u32 i = 0; i < entry_array.count; ++i) {
+		Bullet* bullet = entry_array.bullets[i];
+		if (!bullet->exists) { // TODO: vet this check is correct
+			entry_array_remove(&entry_array, i--);
+		}
+	}
+	return entry_array;
+}
+
+EntryArray bullet_search_rect(Box32 rect) {
+	return filter_bullet_array(index_search_rect(&bullet_index, rect));
+}
+
+EntryArray bullet_search_square(Point16 center, u32 radius) {
+	return filter_bullet_array(index_search_square(&bullet_index, center, radius));
+}
+
+EntryArray bullet_search_radial(Point16 center, u32 radius) {
+	return filter_bullet_array(index_search_radial(&bullet_index, center, radius));
+}
+
 inline EntryArray filter_corpse_array(EntryArray entry_array) {
 	for (u32 i = 0; i < entry_array.count; ++i) {
 		Thingy* corpse = entry_array.corpses[i];
@@ -285,6 +308,7 @@ void reset_search_index() {
 	for (u32 i = 0; i < 8; ++i) {
 		search_index_reset(&seen_unit_index[i]);
 	}
+	search_index_reset(&bullet_index);
 	search_index_reset(&corpse_index);
 	search_index_reset(&effect_index);
 }
@@ -300,6 +324,11 @@ void update_search_index() {
 				search_index_add(&seen_unit_index[i], unit_ext->last_seen_position[i], unit);
 			}
 		}
+	}
+	
+	// Add bullets
+	for (Bullet* bullet = *g_first_active_bullet; bullet; bullet = bullet->next) {
+		search_index_add(&bullet_index, bullet->position, bullet);
 	}
 
 	// Add corpses
