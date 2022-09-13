@@ -41,6 +41,7 @@ struct EntryArray {
 	union {
 		void* entries[EntryLimit];
 		Unit* units[EntryLimit];
+		Bullet* bullets[EntryLimit];
 		Thingy* corpses[EntryLimit];
 		Effect* effects[EntryLimit];
 	};
@@ -63,6 +64,10 @@ EntryArray unit_search_radial(Point16 center, u32 radius);
 EntryArray seen_unit_search_rect(u32 player, Box32 rect);
 EntryArray seen_unit_search_square(u32 player, Point16 center, u32 radius);
 EntryArray seen_unit_search_radial(u32 player, Point16 center, u32 radius);
+
+EntryArray bullet_search_rect(Box32 rect);
+EntryArray bullet_search_square(Point16 center, u32 radius);
+EntryArray bullet_search_radial(Point16 center, u32 radius);
 
 EntryArray corpse_search_rect(Box32 rect);
 EntryArray corpse_search_square(Point16 center, u32 radius);
