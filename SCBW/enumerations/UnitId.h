@@ -52,6 +52,9 @@ namespace UnitId
 		TerranSundog										= 253,
 		TerranAncile										= 255,
 		TerranMatador										= 256,
+		TerranPegasus										= 261,
+		TerranHippogriff									= 262,
+		TerranOberon										= 263,
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1

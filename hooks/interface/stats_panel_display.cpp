@@ -102,6 +102,16 @@ namespace hooks
 								helper::stat_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
 								index++;
 							} break;
+							case UnitId::TerranPegasus:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::PegasusLancetMissiles);
+								index++;
+							} break;
+							case UnitId::TerranOberon:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::OberonAcheronMissiles);
+								index++;
+							} break;
 							case UnitId::ZergZarcavrokor:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);

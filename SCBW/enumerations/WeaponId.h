@@ -190,6 +190,11 @@ namespace WeaponId {
 		MagnetarNewtonianShockCannon		= 141,
 		SentinelCerberusRailgun				= 147,
 		SundogBlindsideRockets				= 150,
+		PegasusRetractorBatteries			= 154,
+		PegasusLancetMissiles				= 155,
+		HippogriffChimeraCannons			= 156,
+		OberonAxisDrivers					= 157,
+		OberonAcheronMissiles				= 158,
 
 		// Protoss \\
 				

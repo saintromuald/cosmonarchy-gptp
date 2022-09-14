@@ -110,7 +110,8 @@ enum ExtValueId
 	ValueCowardiceOverlay,
 	ValueHasCustomSprite,
 	ValueUnitResponseOrder,
-	ValueAncileProvidence,
+	ValuePegasusLaserPos,
+	ValuePegasusMissilePos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

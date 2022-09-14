@@ -291,6 +291,14 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurMissilePos, 4, false);
 					} break;
+					case WeaponId::PegasusRetractorBatteries:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusLaserPos, 2, false);
+					} break;
+					case WeaponId::PegasusLancetMissiles:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusMissilePos, 4, true);
+					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
 						// Phobos - Argent Capacitors passive
