@@ -10,6 +10,7 @@
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/limits/sfx_extender.h"
+#include "DatExtend/datext.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -55,6 +56,12 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 		} break;
 		case AiseSignal_GetUnitAvailabilityTable: {
 			return (u32)g_unit_availability->available;
+		} break;
+		case AiseSignal_GetUnitTbl: {
+			if (DatExt::unitNamesTbl) {
+				return (u32)DatExt::unitNamesTbl;
+			}
+			return (u32)g_stat_txt_tbl;
 		} break;
 	}
 	return 0;
