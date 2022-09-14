@@ -1635,11 +1635,35 @@ namespace hooks
 					{
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
-					unitExt->values[ValueAncileProvidence] = 1;
+					EntryArray bullets = bullet_search_radial(unit->position, 2 * 32);
+					if (bullets.count)
+					{
+						for (u32 i = 0; i < bullets.count; i++)
+						{
+							scbw::print("bullet detected");
+							Bullet* bullet = bullets.bullets[i];
+							if (scbw::is_allied_to(unit->player, bullet->player))
+							{
+								scbw::print("bullet is allied");
+								continue;
+							}
+							else
+							{
+								scbw::print("bullet is not allied");
+								helper::bullet_behavior_instant(bullet);
+								unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit) * 256);
+								// TODO: Remove bullet!
+								if (unit->energy < 10 * 256)
+								{
+									scbw::print("no energy");
+									break;
+								}
+							}
+						}
+					}
 				}
 				else
 				{
-					unitExt->values[ValueAncileProvidence] = 0;
 					if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge))
 					{
 						unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);

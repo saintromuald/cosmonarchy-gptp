@@ -368,7 +368,7 @@ namespace {
 	
 				   // factor, add, size,       ptr, ptr, ptr, ...,  0,  ...
 	s32 unit_consts[] = { 1,  0, sizeof(u32),   0x004BF04C +1, 0x004BF3BC +1, 0x0049E1AA +2, 0x0046E24C +2, 0x00497223 +1, 0x004314D9 +2, 0x004316D7 +2, 0,
-						  //1,  0, sizeof(u16), 0x0047B090 +3, 0, // overwritten by CUnit::getName call in dat_load_inject.cpp
+						  //1,  0, sizeof(u16), 0x0047B090 +3, 0, // overwritten by Unit::get_name call in dat_load_inject.cpp
 						  2,  0, sizeof(u32),   0x004BF038 +1, 0x004BF060 +1, 0x004BF074 +1, 0x004BF088 +1, 0x004BF09C +1, 0x004BF3A8 +1, 0x004BF3D0 +1, 0x004BF3E4 +1, 0x004BF3F8 +1, 0x004BF40C +1, 0x0046E165 +1, 0,
 						  4,  0, sizeof(u32),   0x004BF024 +1, 0x004BF391 +1, 0x0043161C +2, 0x004316F6 +2, 0,
 						  48, 0, sizeof(u32),   0x00488FA3 +1, 0,
