@@ -532,7 +532,7 @@ namespace SpriteId
 		TerranPaladin = 522,
 		TerranMadrigal = 523,
 		TerranSavant = 524,
-		TerranSalvoYard = 525,
+		TerranParticleAccelerator = 525,
 		TerranMunitionsBay = 526,
 		TerranDrydock = 527, // unused
 		TerranFutureStation = 528,
@@ -576,7 +576,7 @@ namespace SpriteId
 		ExemplarMissile = 566,
 		ProtossArgosy = 567,
 		TerranNaniteAssembly = 568,
-		TerranParticleAccelerator = 569, // unused
+		TerranParticleAcceleratorOld = 569, // unused
 		ProtossCrucible = 570,
 		ProtossPrincipality = 571,
 		ProtossGladius = 572,

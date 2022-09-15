@@ -866,6 +866,37 @@ namespace hooks {
 								}
 							}
 						}
+
+						// Nanite Assembly buttonset handling
+						if (unit->id == UnitId::TerranNaniteAssembly)
+						{
+							if (current_button->requirement_var == UnitId::TerranPegasus
+							||	current_button->requirement_var == UnitId::TerranHippogriff)
+							{
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranAerie)
+								||	 scbw::unit_queue_full(unit))
+								{
+									current_button_state = Button_State::Invisible;
+								}
+								else
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
+							else if (current_button->requirement_var == UnitId::TerranOberon
+							||		 current_button->requirement_var == UnitId::TerranPhobos)
+							{
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranParticleAccelerator)
+								||	 scbw::unit_queue_full(unit))
+								{
+									current_button_state = Button_State::Invisible;
+								}
+								else
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
+						}
 					}
 
 					// Passive icons (yes, it's quite ugly)

@@ -63,16 +63,18 @@ namespace UnitId
 		TerranGuildhall										= 147,		// Overmind (With Shell)
 		TerranQuarry										= 174,		// Protoss Temple
 		TerranTinkerersTower								= 175,		// Xel'Naga Temple
-		TerranSalvoYard										= 189,		// Warp Gate
+		TerranParticleAccelerator							= 189,		// Warp Gate
 		TerranBioticBase									= 190,		// Psi Disruptor
 		TerranIronFoundry									= 198,		// Terran Flag Beacon
 		TerranCaptaincy										= 199,		// Protoss Flag Beacon
 		TerranScrapyard										= 200,		// Power Generator
-		TerranNaniteAssembly								= 203,		// Floor Missile Trap	
+		TerranNaniteAssembly								= 203,		// Floor Missile Trap
 		TerranSentinel										= 209,		// Floor Gun Trap
 		TerranTreasury										= 215,		// Flag
 		TerranStarpad										= 254,
 		TerranFutureStation									= 257,
+		TerranQuantumInstitute								= 259,
+		TerranAerie											= 260,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan

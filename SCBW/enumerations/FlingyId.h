@@ -225,7 +225,7 @@ namespace flingy_id
 		TerranPaladin = 215,
 		TerranMadrigal = 216,
 		TerranSavant = 217,
-		TerranSalvoYard = 218,
+		TerranParticleAccelerator = 218,
 		TerranMunitionsBay = 219,
 		TerranDrydock = 220, // unused
 		TerranFutureStation = 221,
@@ -271,7 +271,7 @@ namespace flingy_id
 		ExemplarMissile = 261,
 		ProtossArgosy = 262,
 		TerranNaniteAssembly = 263,
-		TerranParticleAccelerator = 264, // unused
+		TerranParticleAcceleratorOld = 264, // unused
 		ProtossCrucible = 265,
 		ProtossPrincipality = 266,
 		ProtossGladius = 267,

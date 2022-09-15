@@ -1410,9 +1410,9 @@ namespace scbw
 			|| id == UnitId::TerranPaladin
 			|| id == UnitId::TerranCuirass
 			|| id == UnitId::TerranPazuzu
+			|| id == UnitId::TerranCentaur
 			|| id == UnitId::TerranMinotaur
 			|| id == UnitId::TerranMagnetar;
-		//	|| id == UnitId::TerranPegasus
 		//	|| id == UnitId::TerranAmbassador
 		//	|| id == UnitId::TerranHeir
 		//	|| id == UnitId::TerranHorseman
