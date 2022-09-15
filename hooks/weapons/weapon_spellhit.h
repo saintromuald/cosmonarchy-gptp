@@ -6,33 +6,33 @@
 
 namespace hooks
 {
-	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId);		// 00454E00
-	void OpticalFlareHit(Unit* target, u32 attackingPlayerId, Bullet* bullet);		// 00455170
-	void RestoreHit(Unit* target, Bullet* bullet);									// 00455230
+	void irradiate_hit(Unit* attacker, Point16 target, u8 attackingPlayerId);		// 00454E00
+	void optical_flare_hit(Unit* target, u32 attackingPlayerId, Bullet* bullet);	// 00455170
+	void restore_hit(Unit* target, Bullet* bullet);									// 00455230
 	void lockdown_hit(Unit* target, u8 previousLockdownTimer, Bullet* bullet);		// 00455380
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor);		// 00479AE0
-	void MeleeAttackHit(Unit* attacker);											// 00479B40
-	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 00492BA0
-	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);		// 004F4770
-	void ConsumeHit(Unit* attacker, Unit* target);									// 004F47B0
-	void EnsnareHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4830
-	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet);			// 004F48A0
+	void iscript_attack_melee(Unit* attacker);										// 00479B40
+	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);			// 00492BA0
+	void corrosive_acid_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);	// 004F4770
+	void consume_hit(Unit* attacker, Unit* target);									// 004F47B0
+	void ensnare_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4830
+	void dark_swarm_hit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet);		// 004F48A0
 	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet);				// 004F4940
-	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4B30
-	void MaelstromHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6850
-	void MindControlHitHook(Unit* attacker, Unit* target);							// 004F6910
-	void StasisFieldHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6A80
-	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);		// 004F6AF0
-	Unit* createDisruptionWeb(u32 player, s32 x, s32 y);
-	s32 ensnareProc(Unit* target, Unit* attacker);									// 004F46C0
-	void createScanner(Unit* unit);													// 00464E40
-	u8 stasisFieldOverlay(Unit* a1, u8 a2);
-	char disableUnit(Unit* unit);													// 00492CC0
-	bool maelstromProc(Unit* target, Unit* source);									// 004F6760
-	Unit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
+	void plague_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4B30
+	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6850
+	void mind_control_hit(Unit* attacker, Unit* target);							// 004F6910
+	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);			// 004F6A80
+	void disruption_web_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);	// 004F6AF0
+	Unit* create_disruption_web(u32 player, s32 x, s32 y);
+	s32 ensnare_proc(Unit* target, Unit* attacker);									// 004F46C0
+	void create_scanner(Unit* unit);												// 00464E40
+	u8 stasis_field_overlay(Unit* a1, u8 a2);
+	char disable_unit(Unit* unit);													// 00492CC0
+	bool maelstrom_proc(Unit* target, Unit* source);								// 004F6760
+	Unit* iterate_units_at_location_target_proc(Box16* location,					// 004E8280
 		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
-	b32 giveUnitToPlayer(Unit* unit, u32 player);									// 004C8040
+	b32 give_unit_to_player(Unit* unit, u32 player);								// 004C8040
 
 	void inject_weapon_spell_hit_hooks();
 }

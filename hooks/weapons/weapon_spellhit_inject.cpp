@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) IrradiateHitWrapper()
+	void __declspec(naked) irradiate_hit_wrapper()
 	{
 		static Unit* attacker;
 		static Unit* target;
@@ -20,7 +20,7 @@ namespace
 			MOV target, EDI
 			PUSHAD
 		}
-		hooks::IrradiateHit(attacker, target->position, attackingPlayerId);
+		hooks::irradiate_hit(attacker, target->position, attackingPlayerId);
 		__asm
 		{
 			POPAD
@@ -29,7 +29,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) OpticalFlareHitWrapper() {
+	void __declspec(naked) optical_flare_hit_wrapper() {
 		static Unit* target;
 		static u32 attackingPlayerId;
 		static Bullet* bullet;
@@ -44,7 +44,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::OpticalFlareHit(target, attackingPlayerId, bullet);
+		hooks::optical_flare_hit(target, attackingPlayerId, bullet);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -53,7 +53,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) RestoreHitWrapper()
+	void __declspec(naked) restore_hit_wrapper()
 	{
 		static Unit* target;
 		static Bullet* bullet;
@@ -63,7 +63,7 @@ namespace
 			MOV target, EBX
 			PUSHAD
 		}
-		hooks::RestoreHit(target, bullet);
+		hooks::restore_hit(target, bullet);
 		__asm
 		{
 			POPAD
@@ -71,7 +71,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) LockdownHitWrapper()
+	void __declspec(naked) lockdown_hit_wrapper()
 	{
 		static Unit* target;
 		static u8 previousLockdownTimer;
@@ -95,7 +95,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) MeleeAttackHitWrapper()
+	void __declspec(naked) iscript_attack_melee_wrapper()
 	{
 		static Unit* attacker;
 		__asm
@@ -105,7 +105,7 @@ namespace
 			MOV attacker, EAX
 			PUSHAD
 		}
-		hooks::MeleeAttackHit(attacker);
+		hooks::iscript_attack_melee(attacker);
 		__asm
 		{
 			POPAD
@@ -115,7 +115,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) WeaponBulletHitWrapper()
+	void __declspec(naked) weapon_bullet_hit_wrapper()
 	{
 		static Bullet* bullet;
 		static Unit* target;
@@ -139,7 +139,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) EMPShockwaveHitWrapper()
+	void __declspec(naked) emp_showckwave_hit_wrapper()
 	{
 		static Unit* attacker;
 		static Bullet* bullet;
@@ -156,7 +156,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::EMPShockwaveHit(attacker, x, y, bullet);
+		hooks::emp_shockwave_hit(attacker, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -166,7 +166,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CorrosiveAcidHitWrapper()
+	void __declspec(naked) corrosive_acid_hit_wrapper()
 	{
 		static s32 x;
 		static s32 y;
@@ -183,7 +183,7 @@ namespace
 			MOV player, EAX
 			PUSHAD
 		}
-		hooks::CorrosiveAcidHit(player, x, y, bullet);
+		hooks::corrosive_acid_hit(player, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -193,7 +193,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ConsumeHitWrapper()
+	void __declspec(naked) consume_hit_wrapper()
 	{
 		static Unit* attacker;
 		static Unit* target;
@@ -203,7 +203,7 @@ namespace
 			MOV attacker, ESI
 			PUSHAD
 		}
-		hooks::ConsumeHit(attacker, target);
+		hooks::consume_hit(attacker, target);
 		__asm
 		{
 			POPAD
@@ -211,7 +211,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) EnsnareHitWrapper()
+	void __declspec(naked) ensnare_hit_wrapper()
 	{
 		static Unit* attacker;
 		static s32 x;
@@ -228,7 +228,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::EnsnareHit(attacker, x, y, bullet);
+		hooks::ensnare_hit(attacker, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -238,7 +238,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) DarkSwarmHitWrapper()
+	void __declspec(naked) dark_swarm_hit_wrapper()
 	{
 		static s32 x;
 		static s32 y;
@@ -257,7 +257,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::DarkSwarmHit(x, y, attackingPlayerId, bullet);
+		hooks::dark_swarm_hit(x, y, attackingPlayerId, bullet);
 		__asm
 		{
 			POPAD
@@ -266,7 +266,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) BroodlingHitWrapper()
+	void __declspec(naked) broodling_hit_wrapper()
 	{
 		static Unit* attacker;
 		static Unit* target;
@@ -292,7 +292,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) PlagueHitWrapper()
+	void __declspec(naked) plague_hit_wrapper()
 	{
 		static Unit* attacker;
 		static s32 x;
@@ -309,7 +309,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::PlagueHit(attacker, x, y, bullet);
+		hooks::plague_hit(attacker, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -319,7 +319,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) MaelstromHitWrapper()
+	void __declspec(naked) maelstrom_hit_wrapper()
 	{
 		static Unit* attacker;
 		static s32 x;
@@ -337,7 +337,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::MaelstromHit(attacker, x, y, bullet);
+		hooks::maelstrom_hit(attacker, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -347,7 +347,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) MindControlHitWrapper()
+	void __declspec(naked) mind_control_hit_wrapper()
 	{
 		static Unit* attacker;
 		static Unit* target;
@@ -360,7 +360,7 @@ namespace
 			MOV attacker, EAX
 			PUSHAD
 		}
-		hooks::MindControlHitHook(attacker, target);
+		hooks::mind_control_hit(attacker, target);
 		__asm
 		{
 			POPAD
@@ -369,7 +369,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) StasisFieldHitWrapper()
+	void __declspec(naked) stasis_field_hit_wrapper()
 	{
 		static Unit* attacker;
 		static s32 x;
@@ -386,7 +386,7 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::StasisFieldHit(attacker, x, y, bullet);
+		hooks::stasis_field_hit(attacker, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -396,7 +396,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) DisruptionWebHitWrapper()
+	void __declspec(naked) disruption_web_hit_wrapper()
 	{
 		static s32 x;
 		static s32 y;
@@ -413,7 +413,7 @@ namespace
 			MOV player, EAX
 			PUSHAD
 		}
-		hooks::DisruptionWebHit(player, x, y, bullet);
+		hooks::disruption_web_hit(player, x, y, bullet);
 		__asm
 		{
 			POPAD
@@ -422,7 +422,7 @@ namespace
 		}
 	}
 
-	s32 __declspec(naked) ensnareProcWrapper()
+	s32 __declspec(naked) ensnare_proc_wrapper()
 	{
 		static Unit* target;
 		static Unit* attacker;
@@ -433,7 +433,7 @@ namespace
 			MOV attacker, EDX
 			PUSHAD
 		}
-		hooks::ensnareProc(target, attacker);
+		hooks::ensnare_proc(target, attacker);
 		__asm
 		{
 			POPAD
@@ -442,7 +442,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) createScannerWrapper()
+	void __declspec(naked) create_scanner_wrapper()
 	{
 		static Unit* a1;
 		__asm
@@ -450,7 +450,7 @@ namespace
 			MOV a1, EAX
 			PUSHAD
 		}
-		hooks::createScanner(a1);
+		hooks::create_scanner(a1);
 		__asm
 		{
 			POPAD
@@ -458,7 +458,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stasisFieldOverlayWrapper()
+	void __declspec(naked) stasis_field_overlay_wrapper()
 	{
 		static Unit* unit;
 		static u32 a2;
@@ -473,7 +473,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		a2 = hooks::stasisFieldOverlay(unit, a2);
+		a2 = hooks::stasis_field_overlay(unit, a2);
 		__asm
 		{
 			POPAD
@@ -484,7 +484,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) disableUnit_Wrapper() // 00492CC0
+	void __declspec(naked) disable_unit_wrapper() // 00492CC0
 	{
 		static char result;
 		static Unit* unit;
@@ -493,7 +493,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::disableUnit(unit);
+		result = hooks::disable_unit(unit);
 		__asm
 		{
 			POPAD
@@ -502,7 +502,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) maelstromProc_Wrapper() // 004F6760
+	void __declspec(naked) maelstrom_proc_wrapper() // 004F6760
 	{
 		static bool result;
 		static Unit* target;
@@ -513,7 +513,7 @@ namespace
 			MOV target, ECX
 			PUSHAD
 		}
-		result = hooks::maelstromProc(target, source);
+		result = hooks::maelstrom_proc(target, source);
 		__asm
 		{
 			POPAD
@@ -522,7 +522,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) iterateUnitsAtLocationTargetProc_Wrapper() // 004E8280
+	void __declspec(naked) iterate_units_at_location_target_proc_wrapper() // 004E8280
 	{
 		static Unit* result;
 		static Box16* location;
@@ -540,7 +540,7 @@ namespace
 			MOV location, EAX
 			PUSHAD
 		}
-		result = hooks::iterateUnitsAtLocationTargetProc(location, proc, unit);
+		result = hooks::iterate_units_at_location_target_proc(location, proc, unit);
 		__asm
 		{
 			POPAD
@@ -551,7 +551,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) giveUnitToPlayer_Wrapper()
+	void __declspec(naked) give_unit_to_player_wrapper()
 	{
 		static Unit* unit;
 		static u32 player;
@@ -568,7 +568,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::giveUnitToPlayer(unit, player);
+		result = hooks::give_unit_to_player(unit, player);
 		__asm
 		{
 			POPAD
@@ -584,30 +584,30 @@ namespace hooks
 {
     void inject_weapon_spell_hit_hooks()
     {
-        jump_patch(IrradiateHitWrapper,							0x00454E00, 4);
-        jump_patch(OpticalFlareHitWrapper,						0x00455170, 1);
-        jump_patch(RestoreHitWrapper,							0x00455230, 6);
-        jump_patch(LockdownHitWrapper,							0x00455380, 4);
-        jump_patch(WeaponBulletHitWrapper,						0x00479AE0, 1);
-        jump_patch(MeleeAttackHitWrapper,						0x00479B40, 0);
-        jump_patch(EMPShockwaveHitWrapper,						0x00492BA0, 1);
-        jump_patch(CorrosiveAcidHitWrapper,						0x004F4770, 1);
-        jump_patch(ConsumeHitWrapper,							0x004F47B0, 0);
-        jump_patch(EnsnareHitWrapper,							0x004F4830, 1);
-        jump_patch(DarkSwarmHitWrapper,							0x004F48A0, 2);
-        jump_patch(BroodlingHitWrapper,							0x004F4940, 1);
-        jump_patch(PlagueHitWrapper,							0x004F4B30, 1);
-        jump_patch(MaelstromHitWrapper,							0x004F6850, 1);
-        jump_patch(MindControlHitWrapper,						0x004F6910, 8);
-        jump_patch(StasisFieldHitWrapper,						0x004F6A80, 1);
-        jump_patch(DisruptionWebHitWrapper,						0x004F6AF0, 2);
-        jump_patch(ensnareProcWrapper,							0x004F46C0, 1);
-        jump_patch(createScannerWrapper,						0x00464E40, 0);
-        jump_patch(stasisFieldOverlayWrapper,					0x004F67B0, 4);
-        jump_patch(disableUnit_Wrapper,							0x00492CC0, 2);
-        jump_patch(maelstromProc_Wrapper,						0x004F6760, 3);
-	//	jump_patch(iterateUnitsAtLocationTargetProc_Wrapper,	0x004F6760, 0);
-	//	jump_patch(giveUnitToPlayer_Wrapper,					0x004C8040, 2);
+        jump_patch(irradiate_hit_wrapper,							0x00454E00, 4);
+        jump_patch(optical_flare_hit_wrapper,						0x00455170, 1);
+        jump_patch(restore_hit_wrapper,								0x00455230, 6);
+        jump_patch(lockdown_hit_wrapper,							0x00455380, 4);
+        jump_patch(weapon_bullet_hit_wrapper,						0x00479AE0, 1);
+        jump_patch(iscript_attack_melee_wrapper,					0x00479B40, 0);
+        jump_patch(emp_showckwave_hit_wrapper,						0x00492BA0, 1);
+        jump_patch(corrosive_acid_hit_wrapper,						0x004F4770, 1);
+        jump_patch(consume_hit_wrapper,								0x004F47B0, 0);
+        jump_patch(ensnare_hit_wrapper,								0x004F4830, 1);
+        jump_patch(dark_swarm_hit_wrapper,							0x004F48A0, 2);
+        jump_patch(broodling_hit_wrapper,							0x004F4940, 1);
+        jump_patch(plague_hit_wrapper,								0x004F4B30, 1);
+        jump_patch(maelstrom_hit_wrapper,							0x004F6850, 1);
+        jump_patch(mind_control_hit_wrapper,						0x004F6910, 8);
+        jump_patch(stasis_field_hit_wrapper,						0x004F6A80, 1);
+        jump_patch(disruption_web_hit_wrapper,						0x004F6AF0, 2);
+        jump_patch(ensnare_proc_wrapper,							0x004F46C0, 1);
+        jump_patch(create_scanner_wrapper,							0x00464E40, 0);
+        jump_patch(stasis_field_overlay_wrapper,					0x004F67B0, 4);
+        jump_patch(disable_unit_wrapper,							0x00492CC0, 2);
+        jump_patch(maelstrom_proc_wrapper,							0x004F6760, 3);
+	//	jump_patch(iterate_units_at_location_target_proc_wrapper,	0x004F6760, 0);
+	//	jump_patch(give_unit_to_player_wrapper,						0x004C8040, 2);
 
 		// Remove optical flare target check
 		nops(0x0048BBC7, 2);

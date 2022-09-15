@@ -6199,7 +6199,7 @@ namespace helper
 	}
 	
 	const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3)
+	Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3)
 	{
 		static Unit* result;
 		__asm {
@@ -6335,7 +6335,7 @@ namespace helper
 		}
 	}
 
-	// For createScanner
+	// For create_scanner
 
 	s32 setUnitStatTxtErrorMsg(s32 a1)
 	{
@@ -8856,8 +8856,8 @@ namespace helper
 		}
 	}
 
-	// For giveUnitToPlayer
-	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 player)
+	// For give_unit_to_player
+	void give_all_unit_properties_to_player(Unit* unit, s8 player)
 	{
 		const u32 Func_giveAllUnitPropertiesToPlayer = 0x0047C9F0;
 		s32 playerIdArg = player;

@@ -1393,14 +1393,14 @@ bool Unit::has_loaded_unit()
 namespace
 {
 	typedef u32(__stdcall* GiveUnitToPlayerFunc)(Unit* unit, u32 player);
-	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
+	GiveUnitToPlayerFunc const give_unit_to_player = (GiveUnitToPlayerFunc)0x004C8040;
 }
 
 bool Unit::give_to(u8 player)
 {
 	assert(this);
 	assert(player < 12);
-	if (giveUnitToPlayer(this, player) != 0)
+	if (give_unit_to_player(this, player) != 0)
 	{
 		if ((this->id == UnitId::ZergNydusCesiant || !(units_dat::base_property[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg

@@ -474,7 +474,7 @@ SCBW_DATA(char*,	g_supply_provided_buffer,		0x006CAC78);
 
 SCBW_DATA(char*,	g_kills_buffer,					0x006CAC78);
 
-// For giveUnitToPlayer
+// For give_unit_to_player
 SCBW_DATA(s32*,		g_current_trigger_player_id,	0x006509B0);
 
 // For delete_ai_town_if_needed

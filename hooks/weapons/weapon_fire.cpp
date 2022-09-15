@@ -985,7 +985,7 @@ namespace hooks
 		coords.top = posX + 96;
 		coords.right = posY - 96;
 		coords.bottom = posY + 96;
-//		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, find_next_bounce_target_proc, 0);
+//		return (Unit*)helper::iterate_units_at_location_target_proc(&coords, find_next_bounce_target_proc, 0);
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo

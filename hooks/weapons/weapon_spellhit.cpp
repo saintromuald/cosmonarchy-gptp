@@ -1,4 +1,3 @@
-//The source file for the Weapon/Spell Hit hook module.
 #include "weapon_spellhit.h"
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
@@ -12,7 +11,7 @@
 namespace hooks
 {
 	// Hooked to allow for replacing proc functions - Pr0nogo
-	Unit* iterateUnitsAtLocationTargetProc(Box16* location, Unit*(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
+	Unit* iterate_units_at_location_target_proc(Box16* location, Unit*(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
 	{
 		Unit** unitsInBounds = helper::get_all_units_in_bounds(location);
 		Unit** unitsInBounds2 = unitsInBounds;
@@ -42,7 +41,7 @@ namespace hooks
 
 	// Hooked to clean up lardcode - Pr0nogo
 	// Seems to be double-called from Maelstrom, no idea why
-	char disableUnit(Unit* unit) // 00492CC0
+	char disable_unit(Unit* unit) // 00492CC0
 	{
 		Unit* subunit = unit->subunit;
 		if (subunit)
@@ -95,12 +94,12 @@ namespace hooks
 		return result;
 	}
 
-	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId) {
+	void irradiate_hit(Unit* attacker, Point16 target, u8 attackingPlayerId) {
 		globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void OpticalFlareHit(Unit* unused, u32 attackingPlayerId, Bullet* bullet) {
+	void optical_flare_hit(Unit* unused, u32 attackingPlayerId, Bullet* bullet) {
 		if (!bullet) {
 			return;
 		}
@@ -119,7 +118,7 @@ namespace hooks
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void RestoreHit(Unit* target, Bullet* bullet)
+	void restore_hit(Unit* target, Bullet* bullet)
 	{
 		if (target->status & UnitStatus::IsHallucination)
 		{
@@ -160,7 +159,7 @@ namespace hooks
 
 		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
 		// May have an effect on selection. Performs scbw::refresh_console() code at the end
-		disableUnit(target);
+		disable_unit(target);
 	}
 
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor)
@@ -183,16 +182,16 @@ namespace hooks
 		}
 	}
 
-	u16 GetUnitWidth(Unit* unit)
+	u16 get_unit_width(Unit* unit)
 	{
 		return unit->get_right() - unit->get_left();
 	}
-	u16 GetUnitHeight(Unit* unit)
+	u16 get_unit_height(Unit* unit)
 	{
 		return unit->get_bottom() - unit->get_top();
 	}
 
-	bool IsInRange(Unit* source, Unit* target, u32 range)
+	bool is_in_range(Unit* source, Unit* target, u32 range)
 	{
 		u16 sourceX = source->position.x;
 		u16 sourceY = source->position.y;
@@ -201,8 +200,8 @@ namespace hooks
 
 		u16 horizontalDifference = abs(sourceX - targetX);
 		u16 verticalDifference = abs(sourceY - targetY);
-		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
-		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
+		u16 horizontalRange = range + get_unit_width(source) / 2 + get_unit_width(target) / 2 + 1;
+		u16 verticalRange = range + get_unit_height(source) / 2 + get_unit_height(target) / 2 + 1;
 
 		if (horizontalDifference > horizontalRange
 			|| verticalDifference > verticalRange)
@@ -215,7 +214,7 @@ namespace hooks
 		}
 	}
 
-	void MeleeAttackHit(Unit* attacker)
+	void iscript_attack_melee(Unit* attacker) // 00479B40
 	{
 		UnitExt* attackerExt = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
@@ -236,61 +235,31 @@ namespace hooks
 			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 			attackerExt->values[ValueAI_PreventTargeting] = 0;
 
-			if (attacker->status & UnitStatus::IsHallucination)
+			// Previously checked for Hallucination status, but there was no functional difference in the code!
+			// Refactored 15 Sep 2022. -Pr0nogo
+			u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
+			damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
+			if (attackerExt->values[ValueDeconstruction])
 			{
-				if (attacker != nullptr)
-				{
-					u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
-					damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
-					if (attackerExt->values[ValueDeconstruction])
-					{
-						scbw::do_deconstruction_damage(attacker, weapon_id);
-					}
-					target->damage_with(
-						weapon_id,
-						damage,
-						attacker,
-						attacker->player,
-						attacker->current_direction_1,
-						1);
-				}
-				else
-				{
-					helper::attack_overlay_and_notify(attacker, target, weapon_id, attacker->current_direction_1); // no damage, but still ask for retaliation
-				}
+				scbw::do_deconstruction_damage(attacker, weapon_id);
 			}
-			else
-			{
-				u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
-				damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
-				if (attackerExt->values[ValueDeconstruction])
-				{
-					scbw::do_deconstruction_damage(attacker, weapon_id);
-				}
-				target->damage_with(
-					weapon_id,
-					damage,
-					attacker,
-					attacker->player,
-					attacker->current_direction_1,
-					1);
-			}
+			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
 
-			// Cloaked Units - Decloak
-			// Cabalist uses silent strike, so the check has to be in weapon damage
-			if (attacker->id != UnitId::ProtossCabalist) {
+			// Cloaked units - decloak
+			// Cabalist uses silent strike, so the check has to be in weapon_damage. -Veeq7
+			if (attacker->id != UnitId::ProtossCabalist)
+			{
 				scbw::decloak_proc(attacker);
 			}
-
 			apply_cooldown(attacker, weapon_id);
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	// In the original code, the parameters are gotten from Bullet as:
-	//		attacker from bullet->source_unit
-	//		x and y from bullet->sprite->position
-	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	// In the original code, the parameters are taken from Bullet as:
+	//	attacker from bullet->source_unit
+	//	x and y from bullet->sprite->position
+	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Thingy* emp_sprite = helper::create_thingy(371, x, y, 0);
 		if (emp_sprite != nullptr)
@@ -360,8 +329,8 @@ namespace hooks
 		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 	}
 
-	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value
-	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void corrosive_acid_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
 	{
 		Box16 coords;
 
@@ -371,7 +340,7 @@ namespace hooks
 		coords.right = x + 64;
 
 		// IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
-		// spreads originally
+		// Originally spreads.
 		if (bullet->attack_target.unit != nullptr)
 		{
 			auto vec = scbw::get_clarion_links(bullet->attack_target.unit);
@@ -389,8 +358,8 @@ namespace hooks
 		}
 	}
 
-	// no bullet because the code normally calling this function lose the easily available information (and getting it the hard way seems overkill)
-	void ConsumeHit(Unit* attacker, Unit* target)
+	// No bullet because the code normally calling this function loses easily-available information (and getting it the hard way seems overkill)
+	void consume_hit(Unit* attacker, Unit* target)
 	{
 		if (attacker == nullptr
 			|| target == nullptr)
@@ -430,9 +399,8 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
-	void EnsnareHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void ensnare_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite != nullptr)
@@ -448,7 +416,7 @@ namespace hooks
 		helper::IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
 	}
 
-	s32 ensnareProc(Unit* target, Unit* attacker)
+	s32 ensnare_proc(Unit* target, Unit* attacker)
 	{
 		if (target != attacker
 			&& !(units_dat::base_property[target->id] & UnitProperty::Building)
@@ -462,8 +430,8 @@ namespace hooks
 		return 0;
 	}
 
-	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void dark_swarm_hit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet)
 	{
 		Point16 coords;
 		Unit* dark_swarm_unit;
@@ -496,7 +464,7 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet)
 	{
 		u32 broodlings_to_spawn = 3;
@@ -583,8 +551,8 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void plague_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		if (attacker) {
 			globals.create_effect(EffectId_PlagueField, 10 * 32, {x, y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
@@ -614,9 +582,8 @@ namespace hooks
 		//}
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
-	void MaelstromHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr)
@@ -634,12 +601,12 @@ namespace hooks
 			y + radius
 		).for_each([attacker](Unit* unit)
 		{
-			maelstromProc(unit, attacker);
+			maelstrom_proc(unit, attacker);
 		});
 	}
 
-	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterateUnitsAtLocationTargetProc - 4E8280
-	bool maelstromProc(Unit* target, Unit* source) // 004F6760, always returns 0
+	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280
+	bool maelstrom_proc(Unit* target, Unit* source) // 004F6760, always returns 0
 	{
 		s32 unitStatus = target->status;
 		if (unitStatus & UnitStatus::IsHallucination)
@@ -660,8 +627,8 @@ namespace hooks
 		return 0;
 	}
 
-	// no bullet because this function is called in another context without bullet
-	void MindControlHitHook(Unit* attacker, Unit* target)
+	// No bullet because this function is called in another context without the bullet.
+	void mind_control_hit(Unit* attacker, Unit* target)
 	{
 		scbw::decloak_proc(attacker);
 		if (target->status & UnitStatus::IsHallucination)
@@ -674,9 +641,8 @@ namespace hooks
 		}
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
-	void StasisFieldHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Thingy* stasisfield_effect_sprite = helper::create_thingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr)
@@ -692,9 +658,8 @@ namespace hooks
 		helper::IterateUnitsAtLocationTargetProc_StasisField(attacker, &coords);
 	}
 
-	// bullet is not normally part of the function, so if the function is called
-	// in an unexpected way, it may not contain the correct value.
-	Unit* createDisruptionWeb(u32 attackingPlayerId, s32 x, s32 y)
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	Unit* create_disruption_web(u32 attackingPlayerId, s32 x, s32 y)
 	{
 		Point16 coords;
 		Unit* disruption_web_unit;
@@ -724,12 +689,12 @@ namespace hooks
 		return disruption_web_unit;
 	}
 
-	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
+	void disruption_web_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
 	{
-		auto unit = createDisruptionWeb(attackingPlayerId, x, y);
+		auto unit = create_disruption_web(attackingPlayerId, x, y);
 	}
 
-	u8 stasisFieldOverlay(Unit* unit, u8 timer)
+	u8 stasis_field_overlay(Unit* unit, u8 timer)
 	{
 		if (!unit->stasis_timer)
 		{
@@ -748,10 +713,10 @@ namespace hooks
 			finalTimer = timer;
 		}
 		unit->stasis_timer = finalTimer;
-		return disableUnit(unit);
+		return disable_unit(unit);
 	}
 
-	void createScanner(Unit* unit) // 00464E40
+	void create_scanner(Unit* unit) // 00464E40
 	{
 		Unit* v1; // esi
 		u16 v2; // ax
@@ -851,8 +816,8 @@ LABEL_15:
 		}
 	}
 
-	// Hooked to add Nydus handling, except it already existed - Pr0nogo
-	b32 giveUnitToPlayer(Unit* unit, u32 player) // 004C8040
+	// Hooked to add Nydus handling, except it already existed! - Pr0nogo
+	b32 give_unit_to_player(Unit* unit, u32 player) // 004C8040
 	{
 		u32 playerIdVar = player;
 		if (player == 13)
@@ -876,7 +841,7 @@ LABEL_15:
 		  || unit_id == UnitId::ProtossSteward
 		  || unit_id == UnitId::ProtossPlasmaShell
 		  || units_dat::base_property[unit_id] & UnitProperty::Addon
-		  || (u8)unit->player == playerIdVar)
+		  || unit->player == playerIdVar)
 		{
 			return 0;
 		}
@@ -885,10 +850,10 @@ LABEL_15:
 			Unit* hiddenMiner = helper::getHiddenMiner(unit);
 			if (hiddenMiner)
 			{
-				helper::giveAllUnitPropertiesToPlayer(hiddenMiner, playerIdVar);
+				helper::give_all_unit_properties_to_player(hiddenMiner, playerIdVar);
 			}
 		}
-		helper::giveAllUnitPropertiesToPlayer(unit, playerIdVar);
+		helper::give_all_unit_properties_to_player(unit, playerIdVar);
 		const u32 giveUnitsProc = 0x004C7CE0;
 		if (helper::unit_is_active_transport(unit))
 		{
@@ -903,19 +868,19 @@ LABEL_15:
 			Unit* connected_unit = unit->building.addon;
 			if (connected_unit)
 			{
-				helper::giveAllUnitPropertiesToPlayer(connected_unit, playerIdVar);
+				helper::give_all_unit_properties_to_player(connected_unit, playerIdVar);
 			}
 			if (helper::is_constructing_addon(unit))
 			{
 				Unit* creatingUnit = helper::getCreatingUnit(unit);
-				helper::giveAllUnitPropertiesToPlayer(creatingUnit, playerIdVar);
+				helper::give_all_unit_properties_to_player(creatingUnit, playerIdVar);
 			}
 			if (unit->id == UnitId::ZergNydusCesiant)
 			{
 				Unit* nydus_exit = unit->building.nydus_exit;
 				if (nydus_exit)
 				{
-					helper::giveAllUnitPropertiesToPlayer(nydus_exit, playerIdVar);
+					helper::give_all_unit_properties_to_player(nydus_exit, playerIdVar);
 				}
 			}
 		}

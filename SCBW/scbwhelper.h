@@ -695,7 +695,7 @@ namespace helper {
 	s32 can_be_infested(Unit* a1, Unit* a2);																						// 00402210
 
 	// For find_next_bounce_target
-	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
+	Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
 
 	// For create_bullet
 	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weapon_id, s32 x, s32 angle);					// 0048BEC0
@@ -728,12 +728,12 @@ namespace helper {
 	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);								// 004E8280
 	void createEnsnareOverlay(Unit* a1);																			// 004F45E0
 
-	// For createScanner
+	// For create_scanner
 	s32 setUnitStatTxtErrorMsg(s32 a1);																				// 0048CCB0
 	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
 
-	// For maelstromProc
+	// For maelstrom_proc
 	void orders_self_destructing(Unit* unit);																		// 00475710
 	char set_maelstrom_timer(Unit* unit, u8 time);																	// 004553F0
 
@@ -961,8 +961,8 @@ namespace helper {
 	void bullet_behavior_instant(Bullet* bullet);															// 0048A560
 	void bullet_behavior_area(Bullet* bullet);																// 0048B440
 
-	// For giveUnitToPlayer
-	void giveAllUnitPropertiesToPlayer(Unit* unit, s8 player);												// 0047C9F0
+	// For give_unit_to_player
+	void give_all_unit_properties_to_player(Unit* unit, s8 player);												// 0047C9F0
 	Unit* getHiddenMiner(Unit* unit);																		// 00468A60
 	bool unitHasHanger(Unit* unit);																			// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200

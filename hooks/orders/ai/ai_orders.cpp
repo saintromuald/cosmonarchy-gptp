@@ -483,7 +483,7 @@ namespace hooks
 			s32 regionTown6 = (v9 + 256) << 16;
 			s16 regionTown5 = v9 - 256;
 			regionTown6 |= regionTown0 + 256;
-			helper::iterateUnitsAtLocationTargetProc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
+			helper::iterate_units_at_location_target_proc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
 		}
 
 		u32 air_strength = region->air_strength_enemy;

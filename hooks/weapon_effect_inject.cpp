@@ -209,7 +209,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		hooks::IrradiateHit(bullet->source_unit, bullet->attack_target.pt, bullet->player);
+		hooks::irradiate_hit(bullet->source_unit, bullet->attack_target.pt, bullet->player);
 		__asm {
 			POP EDI
 			POP ESI
