@@ -1627,47 +1627,35 @@ namespace hooks
 					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 				}
 			} break;
-			case UnitId::TerranAncile:
-			{
-				if (unit->energy >= 10 * 256)
-				{
-					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge))
-					{
+			case UnitId::TerranAncile: {
+				if (unit->energy >= 10 * 256) {
+					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
 					EntryArray bullets = bullet_search_radial(unit->position, 2 * 32);
-					if (bullets.count)
-					{
-						for (u32 i = 0; i < bullets.count; i++)
-						{
-							scbw::print("bullet detected");
-							Bullet* bullet = bullets.bullets[i];
-							if (scbw::is_allied_to(unit->player, bullet->player))
-							{
-								scbw::print("bullet is allied");
-								continue;
-							}
-							else
-							{
-								scbw::print("bullet is not allied");
-								helper::bullet_behavior_instant(bullet);
-								unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit) * 256);
-								// TODO: Remove bullet!
-								if (unit->energy < 10 * 256)
-								{
-									scbw::print("no energy");
-									break;
-								}
-							}
+					for (u32 i = 0; i < bullets.count; i++) {
+						Bullet* bullet = bullets.bullets[i];
+
+						Unit* target = bullet->attack_target.unit;
+						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) { // we skip flagged bullets, so we don't have an infinite cycle of redirecting
+							continue;
+						}
+
+						bullet->attack_target.unit = unit;
+						bullet->attack_target.pt   = unit->position;
+						bullet->move_target.unit   = unit;
+						bullet->move_target.pt     = unit->position;
+						bullet->targetPosition     = unit->position;
+						bullet->targetPosition2    = unit->position;
+						bullet->hit_flags |= 1; // for now we flag as missed, so it doesn't deal hp damage
+						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: instead of dealing damage immediately, we should flag the bullet to deal damage as energy
+
+						if (unit->energy < 10 * 256) {
+							break;
 						}
 					}
-				}
-				else
-				{
-					if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge))
-					{
-						unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
-					}
+				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
+					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
 				}
 			} break;
 		}
