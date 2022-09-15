@@ -1628,7 +1628,7 @@ namespace hooks
 				}
 			} break;
 			case UnitId::TerranAncile: {
-				if (unit->energy >= 10 * 256) {
+				if (unit->energy >= 1 * 256) {
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
@@ -1637,7 +1637,7 @@ namespace hooks
 						Bullet* bullet = bullets.bullets[i];
 
 						Unit* target = bullet->attack_target.unit;
-						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) { // we skip flagged bullets, so we don't have an infinite cycle of redirecting
+						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) { // We skip flagged bullets, so we don't have an infinite cycle of redirecting
 							continue;
 						}
 
@@ -1647,10 +1647,10 @@ namespace hooks
 						bullet->move_target.pt     = unit->position;
 						bullet->targetPosition     = unit->position;
 						bullet->targetPosition2    = unit->position;
-						bullet->hit_flags |= 1; // for now we flag as missed, so it doesn't deal hp damage
-						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: instead of dealing damage immediately, we should flag the bullet to deal damage as energy
+						bullet->hit_flags |= 1; // For now we flag as missed, so it doesn't deal hp damage
+						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: Instead of dealing damage immediately, we should flag the bullet to deal damage as energy
 
-						if (unit->energy < 10 * 256) {
+						if (unit->energy < 1 * 256) {
 							break;
 						}
 					}

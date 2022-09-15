@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		maxEnergy = hooks::getUnitMaxEnergyHook(unit);
+		maxEnergy = hooks::get_unit_max_energy(unit);
 		__asm {
 			POPAD
 			MOVZX EAX, maxEnergy
