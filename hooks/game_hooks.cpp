@@ -1722,6 +1722,15 @@ namespace hooks
 			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
+		// Fix AI melee units freezing - DarkenedFantasies
+		if (unit->status & UnitStatus::Unmovable
+		&&  unit->main_order_id & OrderId::AttackUnit
+		&& !unit->movement_flags
+		&&  unit->movement_state == 0x0A)
+		{
+			unit->status ^= UnitStatus::Unmovable;
+		}
+
 		// Sublime Shepherd - Check tagged units for nearby Azazels
 		unitExt->values[ValueSublimeShepherd] = 0;
 		if (unitExt->values[ValueHasSublimeShepherd])
