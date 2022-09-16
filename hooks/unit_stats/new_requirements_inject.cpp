@@ -7,7 +7,7 @@ namespace
 	{
 		bool runOriginal;
 		static s32 result;
-		static s16 unit_id;
+		static u16 unit_id;
 		static Unit* unit;
 		static s32 player;
 		__asm
@@ -58,7 +58,7 @@ namespace
 
 namespace hooks {
 	void inject_new_requirements_hooks() {
-		jump_patch(create_unit_allowed_partial_wrapper, 0x0046E1C0, 1);
-		jump_patch(can_set_rally_opcode_wrapper, 0x0046D8AF, 2);
+		jump_patch(create_unit_allowed_partial_wrapper,	0x0046E1C0, 1);
+		jump_patch(can_set_rally_opcode_wrapper,		0x0046D8AF, 2);
 	}
 }

@@ -4,6 +4,18 @@
 #include "hooks/game_hooks.h"
 #include "hooks/grafting/button_functions.h"
 
+static bool player_has_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_units_of_id(player_id, unit_id);
+}
+
+static bool player_has_completed_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_units_of_id(player_id, unit_id);
+}
+
+static bool player_has_completed_landed_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_landed_units_of_id(player_id, unit_id);
+}
+
 // Example on how to create a custom button set.
 // This makes a copy of the Marine buttonset.
 // Note that the function would have to be duplicated for each custom buttonset
@@ -895,6 +907,26 @@ namespace hooks {
 								{
 									current_button_state = Button_State::Enabled;
 								}
+							}
+						}
+
+						// Experiment to see if extended unit ids can be forced on lol
+						if (unit->id == UnitId::ZergGorgrokor)
+						{
+							if (current_button->requirement_var == UnitId::ZergZarcavrokor)
+							{
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Disabled;
+								}
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
 							}
 						}
 					}

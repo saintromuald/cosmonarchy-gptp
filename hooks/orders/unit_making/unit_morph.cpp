@@ -343,6 +343,7 @@ namespace hooks
 		}
 	}
 
+	// TODO: Convert to switch statement! -Pr0nogo
 	bool unit_can_morph(Unit* unit, u16 morph_unit_id)
 	{
 		if (unit->id == UnitId::ZergLarva)
@@ -387,6 +388,13 @@ namespace hooks
 				return true;
 			}
 		}
+		else if (unit->id == UnitId::ZergNathrokor)
+		{
+			if (morph_unit_id == UnitId::ZergKalkalisk)
+			{
+				return true;
+			}
+		}
 		else if (unit->id == UnitId::ZergHydralisk)
 		{
 			if (morph_unit_id == UnitId::ZergBactalisk)
@@ -394,23 +402,18 @@ namespace hooks
 				return true;
 			}
 		}
+		else if (unit->id == UnitId::ZergIzirokor)
+		{
+			/*
+			if (morph_unit_id == UnitId::ZergTethzorokor)
+			{
+				return true;
+			}
+			*/
+		}
 		else if (unit->id == UnitId::ZergSkithrokor)
 		{
-			if (morph_unit_id == UnitId::ZergGorgrokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergMutalisk)
-		{
 			if (morph_unit_id == UnitId::ZergVithrilisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergNathrokor)
-		{
-			if (morph_unit_id == UnitId::ZergKalkalisk)
 			{
 				return true;
 			}
@@ -422,16 +425,68 @@ namespace hooks
 				return true;
 			}
 		}
-		else if (unit->id == UnitId::ZergMatraleth)
+		else if (unit->id == UnitId::ZergLakizilisk)
 		{
-			if (morph_unit_id == UnitId::ZergAkistrokor)
+			/*
+			if (morph_unit_id == UnitId::ZergZobriolisk)
+			{
+				return true;
+			}
+			*/
+		}
+		else if (unit->id == UnitId::ZergGorgrokor)
+		{
+			if (morph_unit_id == UnitId::ZergZarcavrokor)
 			{
 				return true;
 			}
 		}
+		else if (unit->id == UnitId::ZergMutalisk)
+		{
+			/*
+			if (morph_unit_id == UnitId::ZergTosgrilisk)
+			{
+				return true;
+			}
+			*/
+		}
+		/*
+		else if (unit->id == UnitId::ZergProtathalor)
+		{
+			if (morph_unit_id == UnitId::ZergSovroleth)
+			{
+				return true;
+			}
+		}
+		*/
+		/*
+		else if (unit->id == UnitId::ZergCikrilisk)
+		{
+			if (morph_unit_id == UnitId::ZergGhitorokor)
+			{
+				return true;
+			}
+		}
+		*/
 		else if (unit->id == UnitId::ZergKonvilisk)
 		{
-			if (morph_unit_id == UnitId::ZergAlmaksalisk)
+			if (morph_unit_id == UnitId::ZergAlmaksalisk) // May become Larval
+			{
+				return true;
+			}
+		}
+		/*
+		else if (unit->id == UnitId::ZergVilgorokor)
+		{
+			if (morph_unit_id == UnitId::ZergTBD)
+			{
+				return true;
+			}
+		}
+		*/
+		else if (unit->id == UnitId::ZergMatraleth)
+		{
+			if (morph_unit_id == UnitId::ZergAkistrokor)
 			{
 				return true;
 			}
@@ -442,6 +497,15 @@ namespace hooks
 			{
 				return true;
 			}
+		}
+		else if (unit->id == UnitId::ZergIsthrathaleth)
+		{
+		/*
+		if (morph_unit_id == UnitId::ZergOgroszaleth)
+		{
+			return true;
+		}
+		*/
 		}
 		return false;
 	}

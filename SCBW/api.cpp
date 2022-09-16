@@ -539,14 +539,21 @@ namespace scbw
 			case UnitId::ZergAlaszileth:
 			case UnitId::ZergVorvrokor:
 			case UnitId::ZergLiiralisk:
-			case UnitId::ZergBactalisk:
-			case UnitId::ZergGorgrokor:
-			case UnitId::ZergVithrilisk:
 			case UnitId::ZergKalkalisk:
-			case UnitId::ZergAkistrokor:
-			case UnitId::ZergAlmaksalisk:
+			case UnitId::ZergSovroleth:
+		//	case UnitId::ZergGhitorokor:
+			case UnitId::ZergBactalisk:
+		//	case UnitId::ZergTethzorokor:
+			case UnitId::ZergVithrilisk:
 			case UnitId::ZergUltrokor:
-			case UnitId::ZergAlkajelisk: {
+		//	case UnitId::ZergZobriolisk:
+			case UnitId::ZergZarcavrokor:
+			case UnitId::ZergAlmaksalisk: // May become Larval
+		//	case UnitId::ZergTBD: // Vilgorokor morph
+			case UnitId::ZergAkistrokor:
+			case UnitId::ZergAlkajelisk:
+		//	case UnitId::ZergOgraszaleth:
+			{
 				return true;
 			}
 		}
@@ -567,14 +574,22 @@ namespace scbw
 			case UnitId::ZergOthstoleth:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergQuazilisk:
-			case UnitId::ZergHydralisk:
-			case UnitId::ZergSkithrokor:
-			case UnitId::ZergMutalisk:
 			case UnitId::ZergNathrokor:
-			case UnitId::ZergMatraleth:
-			case UnitId::ZergKonvilisk:
+			case UnitId::ZergHydralisk:
+			case UnitId::ZergIzirokor:
+			case UnitId::ZergSkithrokor:
 			case UnitId::ZergZoryusthaleth:
-			case UnitId::ZergKeskathalor: {
+			case UnitId::ZergLakizilisk:
+			case UnitId::ZergGorgrokor:
+			case UnitId::ZergMutalisk:
+		//	case UnitId::ZergProtathalor:
+		//	case UnitId::ZergCikrilisk:
+			case UnitId::ZergKonvilisk:
+		//	case UnitId::ZergVilgorokor:
+			case UnitId::ZergMatraleth:
+			case UnitId::ZergKeskathalor:
+			case UnitId::ZergIsthrathaleth:
+			{
 				return true; 
 			}
 		}
