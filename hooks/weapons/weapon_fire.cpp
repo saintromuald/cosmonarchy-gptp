@@ -183,7 +183,7 @@ namespace hooks
 		}
 
 		// Cloaked Units - Decloak
-		// Cabalist uses silent strike, so the check has to be in weapon damage
+		// Cabalist has Silent Strikes, so the check has to be in weapon damage
 		if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
 		}
@@ -648,7 +648,7 @@ namespace hooks
 			}
 		}
 
-		// For missiles hitting targets mid-flight
+		// Prolonged Arms - for projectiles hitting targets mid-flight
 		else if (scbw::weapon_pierces_targets(bullet->weapon_id))
 		{
 			u32 range = 0;
@@ -663,6 +663,7 @@ namespace hooks
 					range = 96;
 				} break;
 				case WeaponId::PenumbraErebolShockCannon:
+				case WeaponId::HippogriffChimeraCannons:
 				{
 					range = 128;
 				} break;

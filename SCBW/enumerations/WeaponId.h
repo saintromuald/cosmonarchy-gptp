@@ -195,6 +195,7 @@ namespace WeaponId {
 		HippogriffChimeraCannons			= 156,
 		OberonAxisDrivers					= 157,
 		OberonAcheronMissiles				= 158,
+		AionLazarusSalvo					= 159,
 
 		// Protoss \\
 				

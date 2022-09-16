@@ -490,10 +490,10 @@ namespace hooks
 				helper::unk_building_placement_related(1, &buildPoint);
 				if (*is_placing_addon)
 				{
-					auto v4 = *place_building_unit_id - UnitId::TerranCommandCenter;
+					auto unit_id = *place_building_unit_id - UnitId::TerranCommandCenter;
 					Point16 addon_point;
-					addon_point.x = units_dat::addon_placement[v4].x;
-					addon_point.y = units_dat::addon_placement[v4].y;
+					addon_point.x = units_dat::addon_placement[unit_id].x;
+					addon_point.y = units_dat::addon_placement[unit_id].y;
 					scbw::adjust_addon_coordinates(*place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
@@ -532,7 +532,7 @@ namespace hooks
 					if (g_game_vespene[player] >= g_ai_gas_reserve[player]) {
 						helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
 
-						// For MBS this would essentially require custom game command, for now we just have to disable it :( -Veeq7
+						// For MBS this would essentially require a custom game command, for now we just have to disable it :( -Veeq7
 						/*
 						if ((*g_is_holding_shift || unit->status & UnitStatus::InAir) && *g_client_selection_count <= 1) {
 							helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
@@ -577,7 +577,7 @@ namespace hooks
 					}
 				} break;
 				case RaceId::Terran: {
-					u32 sound_id = 126;
+					u32 sound_id = 126; // Addon complete
 					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
 					{
 						sound_id = 136;

@@ -55,6 +55,7 @@ namespace UnitId
 		TerranPegasus										= 261,
 		TerranHippogriff									= 262,
 		TerranOberon										= 263,
+		TerranAion											= 264,
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1

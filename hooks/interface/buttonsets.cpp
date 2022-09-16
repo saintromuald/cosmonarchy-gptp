@@ -852,8 +852,8 @@ namespace hooks {
 									current_button_state = Button_State::Enabled;
 								}
 							}
-							else if (current_button->requirement_var == UnitId::TerranAnticthon)
-						//	||		 current_button->requirement_var == UnitId::TerranAion)
+							else if (current_button->requirement_var == UnitId::TerranAnticthon
+							||		 current_button->requirement_var == UnitId::TerranAion)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBase)
 								||	 scbw::unit_queue_full(unit))

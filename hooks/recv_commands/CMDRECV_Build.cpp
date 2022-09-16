@@ -77,17 +77,6 @@ namespace hooks
 		if (!can_build)
 		{
 			addonPlaceX = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranCommandCenter].x;
-			/*if (builtUnitId == UnitId::TerranFutureStation) {
-				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
-					addonPlaceX = 96;
-				}
-				else if (builder->id == UnitId::TerranDrydock) {
-					addonPlaceX = 96;
-				}
-			}
-			else if (builtUnitId == UnitId::TerranQuarry) {
-				addonPlaceX = 128;
-			}*/
 			scbw::adjust_addon_x(builtUnitId, builder->id, &addonPlaceX);
 			if (addonPlaceX < 0)
 			{
@@ -96,17 +85,6 @@ namespace hooks
 			addonPlaceX /= 32;
 			addonPlaceX = x - addonPlaceX;
 			addonPlaceY = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranCommandCenter].y;
-			/*if (builtUnitId == UnitId::TerranFutureStation) {
-				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
-					addonPlaceY = 0;
-				}
-				else if (builder->id == UnitId::TerranDrydock) {
-					addonPlaceY = 48;
-				}
-			}
-			else if (builtUnitId == UnitId::TerranQuarry) {
-				addonPlaceY = 32;
-			}*/
 			scbw::adjust_addon_y(builtUnitId, builder->id, &addonPlaceY);
 			if (addonPlaceY < 0)
 			{

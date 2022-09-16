@@ -352,7 +352,7 @@ namespace hooks {
 					}
 				}
 				case UnitId::TerranAnticthon:
-			//	case UnitId::TerranAion:
+				case UnitId::TerranAion:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranBioticBase))
 					{
@@ -409,14 +409,29 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossForge))
 		{
-			if (unit_id == UnitId::ProtossScribe
-			||  unit_id == UnitId::ProtossEnvoy
-			||  unit_id == UnitId::ProtossWitness
-			||  unit_id == UnitId::ProtossArtisan)
+			switch (unit_id)
 			{
-				return true;
+				case UnitId::ProtossArtisan:
+				case UnitId::ProtossEnvoy:
+				case UnitId::ProtossWitness:
+				{
+					return true;
+				} break;
 			}
 		}
+		/*
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStridentStratum))
+		{
+			switch (unit_id)
+			{
+				case UnitId::ProtossBulwark:
+				case UnitId::ProtossMonogram:
+				{
+					return true;
+				} break;
+			}
+		}
+		*/
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGateway))
 		{
 			switch (unit_id)
@@ -427,13 +442,16 @@ namespace hooks {
 				{
 					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossCenotaph))
+		{
+			switch (unit_id)
+			{
 				case UnitId::ProtossLegionnaire:
 				case UnitId::ProtossHierophant:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossCenotaph))
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -441,19 +459,47 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::ProtossCantavis:
 				case UnitId::ProtossAmaranth:
+			//	case UnitId::ProtossHerald:
 				case UnitId::ProtossAtreus:
+				case UnitId::ProtossCantavis:
 				{
 					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery))
+		{
+			switch (unit_id)
+			{
+				//	case UnitId::ProtossVagrant:
+			case UnitId::ProtossCabalist:
+			case UnitId::ProtossBarghest:
+			{
+				return true;
+			} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage))
+		{
+			switch (unit_id)
+			{
+			case UnitId::ProtossPariah:
+			case UnitId::ProtossCharlatan:
+			case UnitId::ProtossMindTyrant:
+			{
+				return true;
+			} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
+		{
+			switch (unit_id)
+			{
 				case UnitId::ProtossArchon:
 				case UnitId::ProtossAugur:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -467,13 +513,16 @@ namespace hooks {
 				{
 					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAutomatonRegister))
+		{
+			switch (unit_id)
+			{
 				case UnitId::ProtossGolem:
 				case UnitId::ProtossIdol:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossAutomatonRegister))
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -487,12 +536,15 @@ namespace hooks {
 				{
 					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
+		{
+			switch (unit_id)
+			{
 				case UnitId::ProtossDemiurge:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -506,13 +558,16 @@ namespace hooks {
 				{
 					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAstralOmen))
+		{
+			switch (unit_id)
+			{
 				case UnitId::ProtossGladius:
 				case UnitId::ProtossExemplar:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossAstralOmen))
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -522,71 +577,31 @@ namespace hooks {
 			{
 				case UnitId::ProtossMagister:
 				case UnitId::ProtossDidact:
-				case UnitId::ProtossEmpyrean:
+			//	case UnitId::ProtossEpigraph:
 				{
 					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
+		{
+			switch (unit_id)
+			{
+				case UnitId::ProtossEmpyrean:
 				case UnitId::ProtossSolarion:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
-					{
-						return true;
-					}
+					return true;
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin))
+		{
+			switch (unit_id)
+			{
+				case UnitId::ProtossAnthelion:
 				case UnitId::ProtossStarSovereign:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossCosmicAltar))
-					{
-						return true;
-					}
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage))
-		{
-			switch (unit_id)
-			{
-				case UnitId::ProtossShieldBattery:
-				case UnitId::ProtossCabalist:
-				case UnitId::ProtossBarghest:
-				{
 					return true;
-				} break;
-				case UnitId::ProtossMindTyrant:
-				case UnitId::ProtossPariah:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossSanctumOfSorrow))
-					{
-						return true;
-					}
-				} break;
-				case UnitId::ProtossAnthelion:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin))
-					{
-						return true;
-					}
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery))
-		{
-			switch (unit_id)
-			{
-				case UnitId::SharedAspirant:
-				case UnitId::ProtossCharlatan:
-				case UnitId::ZergAxitrilisk:
-				{
-					return true;
-				} break;
-				case UnitId::TerranStriga:
-				case UnitId::SharedLuminary:
-				case UnitId::ProtossEmpress:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ProtossWaywardLure))
-					{
-						return true;
-					}
 				} break;
 			}
 		}
@@ -1603,7 +1618,7 @@ namespace hooks {
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranAnticthon:
-				//	case UnitId::TerranAion:
+					case UnitId::TerranAion:
 					{
 						if (inAir)
 						{
@@ -1692,15 +1707,33 @@ namespace hooks {
 			}
 			case UnitId::ProtossForge:
 			{
-				if (unit_id == UnitId::ProtossScribe
-				||  unit_id == UnitId::ProtossEnvoy
-				||  unit_id == UnitId::ProtossWitness
-				||  unit_id == UnitId::ProtossArtisan)
+				switch (unit_id)
 				{
-					return TECH_ACTIVE;
+					case UnitId::ProtossArtisan:
+					case UnitId::ProtossEnvoy:
+					case UnitId::ProtossWitness:
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
 				}
 				return TECH_HIDDEN;
 			}
+			/*
+			case UnitId::ProtossStridentStratum:
+			{
+				switch (unit_id)
+				{
+					case UnitId::ProtossBulwark:
+					case UnitId::ProtossMonogram:
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
+				}
+				return TECH_HIDDEN;
+			}
+			*/
 			case UnitId::ProtossGateway:
 			{
 				switch (unit_id)
@@ -1711,14 +1744,17 @@ namespace hooks {
 					{
 						return TECH_ACTIVE;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossCenotaph:
+			{
+				switch (unit_id)
+				{
 					case UnitId::ProtossLegionnaire:
 					case UnitId::ProtossHierophant:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossCenotaph))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					return TECH_HIDDEN;
 				}
@@ -1727,20 +1763,50 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ProtossCantavis:
 					case UnitId::ProtossAmaranth:
+				//	case UnitId::ProtossHerald:
 					case UnitId::ProtossAtreus:
+					case UnitId::ProtossCantavis:
 					{
 						return TECH_ACTIVE;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossRogueGallery:
+			{
+				switch (unit_id)
+				{
+					//	case UnitId::ProtossVagrant:
+				case UnitId::ProtossCabalist:
+				case UnitId::ProtossBarghest:
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossProstrationStage:
+			{
+				switch (unit_id)
+				{
+				case UnitId::ProtossPariah:
+				case UnitId::ProtossCharlatan:
+				case UnitId::ProtossMindTyrant:
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossArchonArchives:
+			{
+				switch (unit_id)
+				{
 					case UnitId::ProtossArchon:
 					case UnitId::ProtossAugur:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossArchonArchives))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					return TECH_HIDDEN;
 				}
@@ -1755,14 +1821,17 @@ namespace hooks {
 					{
 						return TECH_ACTIVE;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossAutomatonRegister:
+			{
+				switch (unit_id)
+				{
 					case UnitId::ProtossGolem:
 					case UnitId::ProtossIdol:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossAutomatonRegister))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					return TECH_HIDDEN;
 				}
@@ -1772,18 +1841,21 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::ProtossAccantor:
-					case UnitId::ProtossArchitect:
 					case UnitId::ProtossClarion:
+					case UnitId::ProtossArchitect:
 					{
 						return TECH_ACTIVE;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossSyntheticSynod:
+			{
+				switch (unit_id)
+				{
 					case UnitId::ProtossDemiurge:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					return TECH_HIDDEN;
 				}
@@ -1798,14 +1870,17 @@ namespace hooks {
 					{
 						return TECH_ACTIVE;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossAstralOmen:
+			{
+				switch (unit_id)
+				{
 					case UnitId::ProtossGladius:
 					case UnitId::ProtossExemplar:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossAstralOmen))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					return TECH_HIDDEN;
 				}
@@ -1816,10 +1891,18 @@ namespace hooks {
 				{
 					case UnitId::ProtossMagister:
 					case UnitId::ProtossDidact:
-					case UnitId::ProtossEmpyrean:
+				//	case UnitId::ProtossEpigraph:
 					{
 						return TECH_ACTIVE;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossFleetBeacon:
+			{
+				switch (unit_id)
+				{
+					case UnitId::ProtossEmpyrean:
 					case UnitId::ProtossSolarion:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
@@ -1828,66 +1911,17 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
+					return TECH_HIDDEN;
+				}
+			}
+			case UnitId::ProtossMonumentOfSin:
+			{
+				switch (unit_id)
+				{
+					case UnitId::ProtossAnthelion:
 					case UnitId::ProtossStarSovereign:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossCosmicAltar))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossProstrationStage:
-			{
-				switch (unit_id)
-				{
-					case UnitId::ProtossShieldBattery:
-					case UnitId::ProtossCabalist:
-					case UnitId::ProtossBarghest:
-					{
 						return TECH_ACTIVE;
-					}
-					case UnitId::ProtossMindTyrant:
-					case UnitId::ProtossPariah:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossSanctumOfSorrow))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::ProtossAnthelion:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossRogueGallery:
-			{
-				switch (unit_id)
-				{
-					case UnitId::SharedAspirant:
-					case UnitId::ProtossCharlatan:
-					case UnitId::ZergAxitrilisk:
-					{
-						return TECH_ACTIVE;
-					}
-					case UnitId::TerranStriga:
-					case UnitId::SharedLuminary:
-					case UnitId::ProtossEmpress:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ProtossWaywardLure))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
 					}
 					return TECH_HIDDEN;
 				}
