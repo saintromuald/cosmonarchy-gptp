@@ -722,6 +722,16 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
+					bool has_addon = false;
+					s32 addon_id = -1;
+					if (unit->building.addon)
+					{
+						has_addon = true;
+						addon_id = unit->building.addon->id;
+					}
+					bool in_air = unit->status & UnitStatus::InAir;
+					bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
+
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
 						// Barracks buttonset handling
@@ -851,6 +861,17 @@ namespace hooks {
 						// Iron Foundry buttonset handling
 						if (unit->id == UnitId::TerranIronFoundry)
 						{
+							if (current_button->requirement_var == UnitId::TerranFutureStation)
+							{
+								if (!has_addon && !is_training)
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							}
 							if (current_button->requirement_var == UnitId::TerranClaymore
 							||	current_button->requirement_var == UnitId::TerranPenumbra)
 							{
@@ -882,6 +903,17 @@ namespace hooks {
 						// Nanite Assembly buttonset handling
 						if (unit->id == UnitId::TerranNaniteAssembly)
 						{
+							if (current_button->requirement_var == UnitId::TerranAerie)
+							{
+								if (!has_addon && !is_training)
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							}
 							if (current_button->requirement_var == UnitId::TerranPegasus
 							||	current_button->requirement_var == UnitId::TerranHippogriff)
 							{
