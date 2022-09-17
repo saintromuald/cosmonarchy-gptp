@@ -361,15 +361,12 @@ namespace hooks
 	// No bullet because the code normally calling this function loses easily-available information (and getting it the hard way seems overkill)
 	void consume_hit(Unit* attacker, Unit* target)
 	{
-		if (attacker == nullptr
-			|| target == nullptr)
+		if (!attacker || !target)
 		{
 			return;
 		}
 
-		if (target != nullptr
-			&& !(target->status & UnitStatus::Invincible)
-			&& helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
+		if (target && !(target->status & UnitStatus::Invincible) && helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
 		{
 			helper::increment_unit_death_scores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
