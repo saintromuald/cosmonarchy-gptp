@@ -478,7 +478,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				//	case UnitId::ProtossVagrant:
+			case UnitId::ProtossVagrant:
 			case UnitId::ProtossCabalist:
 			case UnitId::ProtossBarghest:
 			{
@@ -1790,7 +1790,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					//	case UnitId::ProtossVagrant:
+				case UnitId::ProtossVagrant:
 				case UnitId::ProtossCabalist:
 				case UnitId::ProtossBarghest:
 				{

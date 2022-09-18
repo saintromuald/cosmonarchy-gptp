@@ -101,6 +101,7 @@ namespace UnitId
 		ProtossGolem										= 100,		// Alexei Stukov
 		ProtossAugur										= 102,		// Gerard DuGalle
 		ProtossBarghest										= 104,		// Infested Duran
+		ProtossVagrant										= 172,		// Shield Battery
 		ProtossAnthelion									= 179,		// Cave
 		ProtossArtisan										= 182,		// Mining Platform
 		ProtossEmpress										= 183,		// Independent Command Center

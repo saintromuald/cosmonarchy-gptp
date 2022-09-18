@@ -543,37 +543,6 @@ namespace hooks
 		return result;
 	}
 
-	// Hooked to investigate startup crash. -Pr0nogo
-	void init_damage_overlay_counts() // 004D5C20
-	{
-		s32 index = 999;
-		s32 offset = 0;
-		do
-		{
-			--index;
-			u32 max_overlay_state = 0;
-			g_building_overlay_state_max[index] = 0;
-			GrpHead* overlay = images_damage_overlay_graphic[index];
-			if (overlay)
-			{
-				offset = 44;
-				do
-				{
-					offset -= 2;
-					GrpFrame* overlay_frame = 0; // (overlay + offset + *&overlay->frames[0].width);
-					if (overlay_frame->x != 127 || overlay_frame->y != 127)
-					{
-						++max_overlay_state;
-					}
-				} while (offset);
-				if (max_overlay_state)
-				{
-					g_building_overlay_state_max[index] = 2 * max_overlay_state;
-				}
-			}
-		} while (index);
-	}
-
 	// Hooked to investigate crashes. -Pr0nogo
 	void turn_unit(Unit* unit, char direction) // 00495F20
 	{
@@ -594,5 +563,37 @@ namespace hooks
 		{
 			helper::set_image_direction(i, direction);
 		}
+	}
+
+	// Hooked to troubleshoot loading issues. -Pr0nogo
+	void init_damage_overlay_counts() // 004D5C20
+	{
+		s32 index = 999;
+		do
+		{
+			--index;
+			u32 max_overlay_state = 0;
+			g_building_overlay_state_max[index] = 0;
+			GrpHead* overlay = g_images_damage_overlay_graphic[index];
+			if (overlay)
+			{
+				s32 offset = 44;
+				do
+				{
+					offset -= 2;
+					GrpFrame* overlay_frame = (GrpFrame*)(overlay + offset + *&overlay->frames[0].width);
+					u32 width = overlay_frame->x;
+					u32 height = overlay_frame->y;
+					if (width != 127 || height != 127)
+					{
+						++max_overlay_state;
+					}
+				} while (offset);
+				if (max_overlay_state)
+				{
+					g_building_overlay_state_max[index] = 2 * max_overlay_state;
+				}
+			}
+		} while (index);
 	}
 }

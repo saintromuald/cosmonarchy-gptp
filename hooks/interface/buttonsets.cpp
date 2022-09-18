@@ -978,21 +978,59 @@ namespace hooks {
 						if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal)
 						{
 							current_button_state = Button_State::Disabled;
+							switch (unit->id)
+							{
+								// SHARED \\
 
-							// SHARED \\
+								case UnitId::SharedCohort:
+								{
+									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Cohort Servile Vigor passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::SharedAspirant:
+								{
+									if (current_button->icon_id == IconId::ScarabDamage) { // Charlatan Leading the Blind passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::SharedTarasque:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Tarasque Fighting Flight passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+
+								// TERRAN \\
+
+								case UnitId::TerranTalos:
+								{
+									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Talos Fusion Sealers passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranHarakan:
+								{
+									if (current_button->icon_id == IconId::FlyerAttack) { // Harakan Apollyoid Adhesive passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranShaman:
+								{
+									if (current_button->icon_id == IconId::Restoration) { // Shaman Nanite Field passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranEidolon:
+								{
+									if (current_button->icon_id == IconId::OcularImplants) { // Eidolon Somatic Implants passive
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+							}
 							
-							if (unit->id == UnitId::SharedCohort &&  // Cohort Servile Vigor passive 
-								current_button->icon_id == IconId::TerranInfantryArmor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossCharlatan && // Charlatan Leading the Blind passive
+							if (unit->id == UnitId::ProtossCharlatan &&
 								current_button->icon_id == IconId::DemiurgePassiveWorship)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::SharedAspirant &&  // Aspirant Criticality passive 
-								current_button->icon_id == IconId::ScarabDamage)
 							{
 								current_button_state = Button_State::Enabled;
 							}
@@ -1011,11 +1049,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::SharedTarasque &&  // Tarasque Fighting Flight passive 
-								current_button->icon_id == IconId::GeszithalorAcidSpore)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::ProtossEmpress &&  // Empress Anodyne Annex passive 
 								current_button->icon_id == IconId::ParticleBeamHarvest)
 							{
@@ -1023,29 +1056,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::TerranAnticthon &&  // Anticthon Counter-Proposal passive
 								current_button->icon_id == IconId::RilirokorToxicSpores)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-
-							// TERRAN \\
-
-							else if (unit->id == UnitId::TerranTalos &&
-								current_button->icon_id == IconId::FusionCutterHarvest) // Talos Fusion Sealers passive
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranHarakan && // Harakan Apollyoid Adhesive passive
-								current_button->icon_id == IconId::FlyerAttack)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranShaman &&  // Shaman Nanite Field passive
-								current_button->icon_id == IconId::Restoration)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranEidolon &&  // Eidolon Somatic Implants passive
-								current_button->icon_id == IconId::OcularImplants)
 							{
 								current_button_state = Button_State::Enabled;
 							}
@@ -1268,6 +1278,11 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossHierophant && // Hierophant Malice passive
 								current_button->icon_id == IconId::DidactPhaseDisruptorCannon)
+							{
+								current_button_state = Button_State::Enabled;
+							}
+							else if (unit->id == UnitId::ProtossVagrant &&  // Vagrant Nihilism passive
+								current_button->icon_id == IconId::MindControlUnused)
 							{
 								current_button_state = Button_State::Enabled;
 							}
