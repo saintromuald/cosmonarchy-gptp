@@ -957,6 +957,19 @@ namespace hooks {
 								current_button_state = Button_State::Invisible;
 							}
 						}
+						if (unit->id == UnitId::ProtossArgosy)
+						{
+							if (current_button->requirement_var == UnitId::ProtossMagister
+							||	current_button->requirement_var == UnitId::ProtossEpigraph
+							||	current_button->requirement_var == UnitId::ProtossDidact)
+							{
+								current_button_state = Button_State::Enabled;
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
 
 						if (unit->id == UnitId::ZergGorgrokor)
 						{

@@ -582,8 +582,8 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::ProtossMagister:
+				case UnitId::ProtossEpigraph:
 				case UnitId::ProtossDidact:
-			//	case UnitId::ProtossEpigraph:
 				{
 					return true;
 				} break;
@@ -1903,8 +1903,8 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::ProtossMagister:
+					case UnitId::ProtossEpigraph:
 					case UnitId::ProtossDidact:
-				//	case UnitId::ProtossEpigraph:
 					{
 						return TECH_ACTIVE;
 					}
