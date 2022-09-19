@@ -226,6 +226,7 @@ namespace WeaponId {
 		AnthelionEventHorizon				= 139,
 		VagrantVapidBlaster					= 148,
 		MatrixKhaydarinRay					= 149,
+		HeraldStellarTorch					= 160,
 
 		// Zerg \\
 
@@ -252,5 +253,6 @@ namespace WeaponId {
 		EvigriliskBrutishTendrils			= 146,
 		ZarcavrokorBisectingBlades			= 152,
 		ZarcavrokorBonesofReflection		= 153,	// Zarcavrokor passive weapon
+		TethzorokorSaberArray				= 162,
 	};
 }

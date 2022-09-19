@@ -811,6 +811,16 @@ namespace hooks {
 				}
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIzirokor))
+		{
+			if (unit_id == UnitId::ZergTethzorokor)
+			{
+				if (player_has_completed_unit_id(player_id, UnitId::ZergGorgralSwamp))
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokor))
 		{
 			if (unit_id == UnitId::ZergVithrilisk)
@@ -2192,7 +2202,6 @@ namespace hooks {
 			}
 			case UnitId::ZergIzirokor:
 			{
-				/*
 				if (unit_id == UnitId::ZergTethzorokor)
 				{
 					if (unit->status & UnitStatus::Burrowed)
@@ -2205,7 +2214,6 @@ namespace hooks {
 					}
 					return TECH_LOCKED;
 				}
-				*/
 				return TECH_HIDDEN;
 			}
 			case UnitId::ZergSkithrokor:

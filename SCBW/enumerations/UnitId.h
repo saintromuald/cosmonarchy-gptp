@@ -149,6 +149,7 @@ namespace UnitId
 		ZergAkistrokor										= 218,		// Data Disc
 		ZergIroleth											= 222,		// Protoss Gas Orb Type 1
 		ZergZarcavrokor										= 258,
+		ZergTethzorokor										= 267,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation

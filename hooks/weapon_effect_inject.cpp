@@ -114,7 +114,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		hooks::yamatoDamage(bullet, weapon_id);
+		hooks::yamato_damage(bullet, weapon_id);
 		__asm {
 			POP EDI
 			POP ESI

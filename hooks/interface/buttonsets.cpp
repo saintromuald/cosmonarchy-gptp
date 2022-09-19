@@ -971,6 +971,25 @@ namespace hooks {
 							}
 						}
 
+						if (unit->id == UnitId::ZergIzirokor)
+						{
+							if (current_button->requirement_var == UnitId::ZergTethzorokor)
+							{
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Disabled;
+								}
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
+
 						if (unit->id == UnitId::ZergGorgrokor)
 						{
 							if (current_button->requirement_var == UnitId::ZergZarcavrokor)
