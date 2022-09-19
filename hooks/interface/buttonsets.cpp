@@ -943,6 +943,21 @@ namespace hooks {
 						}
 
 						// Experiment to see if extended unit ids can be forced on lol
+						if (unit->id == UnitId::ProtossGrandLibrary)
+						{
+							if (current_button->requirement_var == UnitId::ProtossAmaranth
+							||	current_button->requirement_var == UnitId::ProtossHerald
+							||	current_button->requirement_var == UnitId::ProtossAtreus
+							||	current_button->requirement_var == UnitId::ProtossCantavis)
+							{
+								current_button_state = Button_State::Enabled;
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
+
 						if (unit->id == UnitId::ZergGorgrokor)
 						{
 							if (current_button->requirement_var == UnitId::ZergZarcavrokor)

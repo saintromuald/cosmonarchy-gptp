@@ -162,7 +162,7 @@ namespace hooks
 			u32 new_flip_flag = 0;
 			int new_direction = direction;
 
-			if (new_direction > 16)
+			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional))
 			{
 				new_direction = 32 - new_direction;
 				new_flip_flag = ImageFlags::Mirrored;
@@ -245,6 +245,7 @@ namespace hooks
 
 	void __declspec(naked) update_image_direction_wrapper() { // 004D5EA0
 		static Image* image;
+		static u32 unused;
 		static u32 direction;
 		__asm {
 			PUSH EBP
@@ -253,7 +254,8 @@ namespace hooks
 			MOV EAX, [EBP + 0x08]
 			MOV direction, EAX
 			POP EAX
-			MOV image, ESI
+			MOV unused, EDX
+			MOV image, EAX
 			PUSHAD
 		}
 		hooks::update_image_direction(image, (u8)direction);
@@ -269,6 +271,6 @@ namespace hooks
 	{
 		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
 		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
-		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 1);
+		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
 	}
 }

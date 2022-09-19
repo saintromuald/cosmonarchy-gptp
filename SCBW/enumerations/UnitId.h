@@ -105,6 +105,7 @@ namespace UnitId
 		ProtossAnthelion									= 179,		// Cave
 		ProtossArtisan										= 182,		// Mining Platform
 		ProtossEmpress										= 183,		// Independent Command Center
+		ProtossHerald										= 265,
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
