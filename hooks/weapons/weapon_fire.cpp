@@ -247,17 +247,13 @@ namespace hooks
 				switch (weapon_id)
 				{
 					// Missile spawn positions start
-					case WeaponId::AxitriliskSearingVenom:
+					case WeaponId::PhotonCannonPrismaticCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskMissilePos, 1, true);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, false);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, false);
-					} break;
-					case WeaponId::PhotonCannonPrismaticCannon:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, false);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
@@ -274,6 +270,10 @@ namespace hooks
 					case WeaponId::SentinelCerberusRailgun:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelMissilePos, 1, false);
+					} break;
+					case WeaponId::GoliathContenderMissiles:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueGoliathMissilePos, 2, false);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
@@ -327,6 +327,10 @@ namespace hooks
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskMissilePos, 2, true);
+					} break;
+					case WeaponId::AxitriliskSearingVenom:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskMissilePos, 1, true);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
