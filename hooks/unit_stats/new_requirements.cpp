@@ -712,7 +712,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::ZergMutalisk:
-			//	case UnitId::ZergProtathalor:
+				case UnitId::ZergProtathalor:
 			//	case UnitId::ZergCikrilisk:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergVithrathHaunt)
@@ -732,7 +732,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::ZergKonvilisk:
-			//	case UnitId::ZergVilgorokor:
+				case UnitId::ZergVilgorokor:
 				case UnitId::ZergMatraleth:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergAlmakisAntre)
@@ -843,6 +843,16 @@ namespace hooks {
 			}
 			*/
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergProtathalor))
+		{
+			if (unit_id == UnitId::ZergSovroleth)
+			{
+				if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZoryusthaleth))
 		{
 			if (unit_id == UnitId::ZergUltrokor)
@@ -885,9 +895,9 @@ namespace hooks {
 				}
 			}
 		}
-		/*
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergVilgorokor))
 		{
+			/*
 			if (unit_id == UnitId::ZergTBD)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
@@ -895,8 +905,8 @@ namespace hooks {
 					return true;
 				}
 			}
+			*/
 		}
-		*/
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMatraleth))
 		{
 			if (unit_id == UnitId::ZergAkistrokor)
@@ -2087,7 +2097,7 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::ZergMutalisk:
-				//	case UnitId::ZergProtathalor:
+					case UnitId::ZergProtathalor:
 				//	case UnitId::ZergCikralisk:
 					{
 						if (player_has_unit_id(player_id, UnitId::ZergVithrathHaunt)
@@ -2098,7 +2108,7 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::ZergKonvilisk:
-				//	case UnitId::ZergVilgorokor:
+					case UnitId::ZergVilgorokor:
 					case UnitId::ZergMatraleth:
 					{
 						if (player_has_unit_id(player_id, UnitId::ZergAlmakisAntre)
@@ -2242,7 +2252,6 @@ namespace hooks {
 				*/
 				return TECH_HIDDEN;
 			}
-			/*
 			case UnitId::ZergProtathalor:
 			{
 				if (unit_id == UnitId::ZergSovroleth)
@@ -2255,7 +2264,6 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			*/
 			/*
 			case UnitId::ZergCikralisk:
 			{
