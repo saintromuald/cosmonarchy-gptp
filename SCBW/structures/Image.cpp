@@ -89,6 +89,10 @@ namespace hooks
 		{
 			image->flags |= ImageFlags::HasRotationFrames;
 		}
+		if (images_dat::is_turnable[image_id] & 2)
+		{
+			image->flags |= ImageFlags::Omnidirectional;
+		}
 		if (images_dat::is_clickable[image_id] & 1)
 		{
 			image->flags |= ImageFlags::Clickable;
