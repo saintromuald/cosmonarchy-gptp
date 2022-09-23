@@ -387,7 +387,7 @@ namespace {
 												  0x004A1561 +2, 0x004A1601 +2, 0x004A1864 +2, 0x004A22BA +2, 0x004A285B +2, 0x004F39F1 +2, 0x004F3A3D +2, 0,
 						  
 						  // 228*1 + 0x3F0
-						  0, sizeof(AI_Main) - 20, sizeof(u32), 0x00447E99 +2, 0,
+						  //0, sizeof(AI_Main) - 20, sizeof(u32), 0x00447E99 +2, 0,
 						  
 						  // (228 + 0x404) * 2
 						  0, 2 * sizeof(AI_Main), sizeof(u32), 0x00447683 + 1, 0x00447E71 + 1, 0,
