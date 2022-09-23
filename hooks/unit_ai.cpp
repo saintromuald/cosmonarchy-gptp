@@ -440,8 +440,8 @@ namespace hooks
 					parentTown = worker->town;
 				}
 				else
-				{ // assumed BuildingAi, unlikely to be GuardAi, can't be anything else
-					building = (BuildingAi*)parentAI;
+				{
+					building = (BuildingAi*)parentAI; // assumed BuildingAi, unlikely to be GuardAi, can't be anything else
 					parentTown = building->town;
 				}
 				if (parent == result)
@@ -539,7 +539,7 @@ namespace hooks
 	void delete_worker_ai(WorkerAi* workerAi, WorkerAiArray* workerAiArray) // 00404470
 	{
 		// New
-		if (workerAi == nullptr)
+		if (!workerAi)
 		{
 			return;
 		}
@@ -559,7 +559,7 @@ namespace hooks
 			workerAi->link.prev->link.next = workerAi->link.next;
 		}
 
-		workerAi->link.next = nullptr;
+		workerAi->link.next = 0;
 		workerAi->link.prev = workerAiArray->first_free_worker;
 		if (workerAiArray->first_free_worker)
 		{
@@ -572,7 +572,7 @@ namespace hooks
 	void delete_building_ai(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray) // 00404500
 	{
 		// New
-		if (buildingAi == nullptr)
+		if (!buildingAi)
 		{
 			return;
 		}
@@ -591,7 +591,7 @@ namespace hooks
 			buildingAi->link.prev->link.next = buildingAi->link.next;
 		}
 
-		buildingAi->link.next = nullptr;
+		buildingAi->link.next = 0;
 		buildingAi->link.prev = buildingAiArray->first_free_building;
 		if (buildingAiArray->first_free_building)
 		{
@@ -609,7 +609,7 @@ namespace hooks
 		{
 			u16 unit_id = unit->id;
 			u32 baseProperty = units_dat::base_property[unit_id];
-			AiTown* town = nullptr;
+			AiTown* town = 0;
 			if (!unitAI)
 			{
 				if (unitAIVar->type == AiType::Building
@@ -700,14 +700,14 @@ namespace hooks
 						{
 							if (newUnit == newUnitTown->building_scv)
 							{
-								newUnitTown->building_scv = nullptr;
+								newUnitTown->building_scv = 0;
 							}
 							if (newUnit == newUnitTown->main_building)
 							{
-								newUnitTown->main_building = nullptr;
+								newUnitTown->main_building = 0;
 							}
 						}
-						newUnit->unit_ai = nullptr;
+						newUnit->unit_ai = 0;
 					}
 				}
 

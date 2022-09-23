@@ -27,8 +27,8 @@ namespace hooks
 {
 	void dark_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id)
 	{
-		Unit* dsw = scbw::get_dark_swarm_from_position(x, y, r);
-		if (dsw != nullptr)
+		Unit* swarm = scbw::get_dark_swarm_from_position(x, y, r);
+		if (swarm)
 		{
 			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
 				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->player, weapons_dat::damage_upgrade[weapon_id]));
@@ -36,21 +36,21 @@ namespace hooks
 			{
 				damage /= 2;
 			}
-			if (damage >= dsw->hitpoints)
+			if (damage >= swarm->hitpoints)
 			{
-				dsw->remove();
+				swarm->remove();
 			}
 			else
 			{
-				u32 old = dsw->hitpoints;
-				dsw->hitpoints -= damage;
+				u32 old = swarm->hitpoints;
+				swarm->hitpoints -= damage;
 			}
 		}
 	}
 
-	bool nathrokorCondition(Bullet* bullet, Unit* target)
+	bool nathrokor_condition(Bullet* bullet, Unit* target)
 	{
-		if (bullet->source_unit == nullptr || target == nullptr)
+		if (!bullet->source_unit || !target)
 		{
 			return true;
 		}
@@ -78,9 +78,11 @@ namespace hooks
 	void splash(Bullet* bullet, u32 weapon_id, u8 splashType, Unit* guaranteedHit)
 	{
 		s32 splash = splashType;
-		if (bullet == nullptr)
+		if (!bullet)
+		{
 			return;
-		if (bullet->source_unit != nullptr && bullet->source_unit->sprite != nullptr)
+		}
+		if (bullet->source_unit && bullet->source_unit->sprite)
 		{
 			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 
@@ -120,15 +122,20 @@ namespace hooks
 		y = bullet->sprite->position.y;
 		radius = weapons_dat::outer_splash_radius[weapon_id];
 
-		// Probing Incisors - Gorgoleth passive
-		if (is_charged_gorgrokor_bullet(bullet, weapon_id))
-		{
-			radius = 45;
-		}
 		// Nathrokor weapon
 		if (weapon_id == WeaponId::NathrokorPlasmidBreath)
 		{
 			radius = 32;
+		}
+		// Tethzorokor weapon
+		if (weapon_id == WeaponId::TethzorokorSaberArray)
+		{
+			radius = 32;
+		}
+		// Gorgrokor weapon
+		if (is_charged_gorgrokor_bullet(bullet, weapon_id))
+		{
+			radius = 45;
 		}
 
 		// Get units within the outer splash radius
@@ -140,8 +147,8 @@ namespace hooks
 		);
 		dark_swarm_damage(x, y, radius, bullet, weapon_id);
 
-		bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
-		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attack_target.unit))
+		bool hasGuaranteedHitUnit = guaranteedHit != 0;
+		if (hasGuaranteedHitUnit && nathrokor_condition(bullet, bullet->attack_target.unit))
 		{
 			helper::weapon_bullet_shot(guaranteedHit, bullet, 1);
 		}
@@ -217,7 +224,7 @@ namespace hooks
 				}
 			}
 
-			if (helper::is_unit_distance_within(target, bullet, inner) && nathrokorCondition(bullet, target))
+			if (helper::is_unit_distance_within(target, bullet, inner) && nathrokor_condition(bullet, target))
 			{
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
 				continue;
@@ -252,14 +259,14 @@ namespace hooks
 				radius = 32;
 			}
 
-			if (helper::is_unit_distance_within(target, bullet, medium) && nathrokorCondition(bullet, target))
+			if (helper::is_unit_distance_within(target, bullet, medium) && nathrokor_condition(bullet, target))
 			{
 				helper::weapon_bullet_shot(target, bullet, 2); // 50% damage
 				continue;
 			}
 
 			// Outer radius
-			if (nathrokorCondition(bullet, target))
+			if (nathrokor_condition(bullet, target))
 			{
 				helper::weapon_bullet_shot(target, bullet, 4); // 25% damage
 			}
@@ -307,7 +314,7 @@ namespace hooks
 				}
 			}
 
-			// Can the unit be targetted?
+			// Can the unit be targeted?
 			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
@@ -336,27 +343,9 @@ namespace hooks
 	{
 		if (weapon_id == WeaponId::GorgrokorSerratedCleavers)
 		{
-			if (bullet != nullptr && bullet->source_unit != nullptr && bullet->source_unit->id == UnitId::ZergGorgrokor)
+			if (bullet && bullet->source_unit && bullet->source_unit->id == UnitId::ZergGorgrokor)
 			{
 				return true;
-			}
-		}
-		return false;
-	}
-
-	bool is_unsafe_cyprian_bullet(Bullet* bullet, u32 weapon_id)
-	{
-		if (weapon_id == 26)
-		{
-			if (bullet != nullptr)
-			{
-				if (bullet->source_unit != nullptr)
-				{
-					if (scbw::get_aise_value(bullet->source_unit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1)
-					{
-						return true;
-					}
-				}
 			}
 		}
 		return false;
@@ -411,11 +400,11 @@ namespace hooks
 
 		if (bullet->hit_flags & 1) // Miss?
 		{
-			if (target->unit_ai == nullptr)
+			if (!target->unit_ai)
 			{
 				return;
 			}
-			if (bullet->source_unit == nullptr)
+			if (!bullet->source_unit)
 			{
 				return;
 			}
@@ -447,7 +436,7 @@ namespace hooks
 	void air_splash(Bullet* bullet, u32 weapon_id) // 0048B790
 	{
 		Unit* target = bullet->attack_target.unit;
-		if (target == nullptr)
+		if (!target)
 		{
 			return;
 		}
@@ -456,13 +445,13 @@ namespace hooks
 		s16 posX = bulletSprite->position.x;
 		s16 posY = bulletSprite->position.y;
 		s32 list;
-		Box16* searchRadius;
+		Box16* search_radius = {};
 
 		*g_air_splash_list_count = 0;
-		searchRadius->left = posX - radius;
-		searchRadius->top = posY - radius;
-		searchRadius->right = radius + posX;
-		searchRadius->bottom = radius + posY;
+		search_radius->left = posX - radius;
+		search_radius->top = posY - radius;
+		search_radius->right = radius + posX;
+		search_radius->bottom = radius + posY;
 
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
@@ -551,9 +540,9 @@ namespace hooks
 	}
 
 	// clone of 'Yamato' damage for reference
-	void yamatoDamage(Bullet* bullet, u32 weapon_id)
+	void yamato_damage(Bullet* bullet, u32 weapon_id)
 	{
-		if (bullet->attack_target.unit == nullptr)
+		if (!bullet->attack_target.unit)
 		{
 			return;
 		}
@@ -563,7 +552,7 @@ namespace hooks
 
 	void parasite(Bullet* bullet, u32 weapon_id)
 	{
-		if (bullet->source_unit == nullptr)
+		if (!bullet->source_unit)
 		{
 			return;
 		}
@@ -581,7 +570,7 @@ namespace hooks
 
 	void broodlings(Bullet* bullet, u32 weapon_id)
 	{
-		if (bullet->source_unit == nullptr)
+		if (!bullet->source_unit)
 		{
 			return;
 		}

@@ -89,6 +89,10 @@ namespace hooks
 		{
 			image->flags |= ImageFlags::HasRotationFrames;
 		}
+		if (images_dat::is_turnable[image_id] & 2)
+		{
+			image->flags |= ImageFlags::Omnidirectional; // New
+		}
 		if (images_dat::is_clickable[image_id] & 1)
 		{
 			image->flags |= ImageFlags::Clickable;
@@ -154,6 +158,40 @@ namespace hooks
 		}
 	}
 
+	// Hooked by X405 as part of the omnidirectional frame display feature addition. -Pr0nogo
+	void update_image_direction(Image* image, u8 direction) // 004D5EA0
+	{
+		if (image->flags & ImageFlags::HasRotationFrames)
+		{
+			u32 new_flip_flag = 0;
+			int new_direction = direction;
+
+			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional))
+			{
+				new_direction = 32 - new_direction;
+				new_flip_flag = ImageFlags::Mirrored;
+			}
+
+			if ((image->flags & ImageFlags::Mirrored) != new_flip_flag || image->direction != new_direction)
+			{
+				image->direction = new_direction;
+				image->flags &= ~ImageFlags::Mirrored;
+				image->flags |= new_flip_flag;
+				helper::set_image_palette_type(image, image->palette_type);
+
+				if (image->frame_index != image->direction + image->frameset)
+				{
+					image->flags |= ImageFlags::Redraw;
+					image->frame_index = image->direction + image->frameset;
+				}
+
+				if (image->flags & ImageFlags::UsesSpecialOffset)
+				{
+					helper::update_image_position_offset(image);
+				}
+			}
+		}
+	}
 
 	// HOOKING \\
 
@@ -209,9 +247,34 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) update_image_direction_wrapper() { // 004D5EA0
+		static Image* image;
+		static u32 unused;
+		static u32 direction;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV direction, EAX
+			POP EAX
+			MOV unused, EDX
+			MOV image, EAX
+			PUSHAD
+		}
+		hooks::update_image_direction(image, (u8)direction);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void inject_image_hooks()
 	{
-		jump_patch(initialize_image_data_wrapper, 0x004D5A50, 2);
-		jump_patch(set_image_direction_wrapper, 0x004D5F80, 1);
+		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
+		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
+		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
 	}
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-//V241 for VS2008
-
 namespace WeaponId {
 	enum Enum {
 		MaverickGaussRifle = 0x00,
@@ -224,9 +222,11 @@ namespace WeaponId {
 		ManifoldPhaseBlaster				= 118,
 		ArchitectDispersiveSalvo			= 119,
 		AugurFinalHour						= 128,	// Augur behavior
+		EpigraphLitanyCannons				= 132,
 		AnthelionEventHorizon				= 139,
 		VagrantVapidBlaster					= 148,
 		MatrixKhaydarinRay					= 149,
+		HeraldStellarTorch					= 160,
 
 		// Zerg \\
 
@@ -253,5 +253,6 @@ namespace WeaponId {
 		EvigriliskBrutishTendrils			= 146,
 		ZarcavrokorBisectingBlades			= 152,
 		ZarcavrokorBonesofReflection		= 153,	// Zarcavrokor passive weapon
+		TethzorokorSaberArray				= 162,
 	};
 }

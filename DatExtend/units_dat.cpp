@@ -386,17 +386,17 @@ namespace {
 												  0x0045BD42 +2, 0x0045BD9F +2, 0x0045BEE9 +2, 0x0045BF1C +2, 0x0045BF49 +2, 0x0045BF7C +2, 0x0045BFA9 +2, 0x0045BFDC +2, 0x0045C009 +2, 0x0045C03C +2, 0x0045C07B +2, 0x0045C0E5 +2, 0x0045C0F9 +2, 0x0045C114 +2, 0x0045C19E +2, 0x0045C1BA +2, 0x0045C1D4 +2, 0x0045C1FA +2, 0x0045C28C +2, 0x0045C35F +2, 0x0045C377 +2, 0x0045C399 +2, 0x0045C7AC +2, 0x0045C7F5 +2, 0x00463062 +2, 0x004630F1 +2, 0x00492B14 +2, 0x004A12C9 +2, 0x004A13D2 +2, 0x004A14F3 +2,
 												  0x004A1561 +2, 0x004A1601 +2, 0x004A1864 +2, 0x004A22BA +2, 0x004A285B +2, 0x004F39F1 +2, 0x004F3A3D +2, 0,
 						  
-						  // 228*1 + 0x3F0
-						  //0, sizeof(AI_Main) - 20, sizeof(u32), 0x00447E99 +2, 0,
+							// 228*1 + 0x3F0
+						//	0, sizeof(AI_Main) - 20, sizeof(u32), 0x00447E99 +2, 0,
 						  
-						  // (228 + 0x404) * 2
-						  0, 2 * sizeof(AI_Main), sizeof(u32), 0x00447683 + 1, 0x00447E71 + 1, 0,
-						  
-						  // (228 + 0x404) * 4
-						  0, 4 * sizeof(AI_Main), sizeof(u32), 0x00447FF4 +2, 0,
-						  
-						  // (228 + 0x404) * 8
-						  0, 8 * sizeof(AI_Main), sizeof(u32), 0x0043E801 +1, 0x00447FFA +2, 0x0044800A +1, 0x0044824D +1, 0,
+							// (228 + 0x404) * 2
+							0, 2 * sizeof(AI_Main), sizeof(u32), 0x00447683 + 1, 0x00447E71 + 1, 0,
+							
+							// (228 + 0x404) * 4
+							0, 4 * sizeof(AI_Main), sizeof(u32), 0x00447FF4 +2, 0,
+							
+							// (228 + 0x404) * 8
+							0, 8 * sizeof(AI_Main), sizeof(u32), 0x0043E801 +1, 0x00447FFA +2, 0x0044800A +1, 0x0044824D +1, 0,
 						  
 						  
 					  // Code replacements (factor = 0 to set a constant value)

@@ -115,6 +115,7 @@ namespace hooks
 {
 	void initialize_image_data(Image* image, Sprite* parent, u16 image_id, s8 horizontal_offset, s8 vertical_offset);	// 004D5A50
 	void set_image_direction(Image* image, u8 direction);																// 004D5F80
+	void update_image_direction(Image* image, u8 direction);															// 004D5EA0
 
 	void inject_image_hooks();
 }

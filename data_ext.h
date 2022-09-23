@@ -112,6 +112,7 @@ enum ExtValueId
 	ValueUnitResponseOrder,
 	ValuePegasusLaserPos,
 	ValuePegasusMissilePos,
+	ValueGoliathMissilePos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

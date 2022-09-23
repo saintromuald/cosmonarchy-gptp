@@ -1316,6 +1316,7 @@ namespace hooks
 				}
 			} break;
 			case UnitId::ZergMatraleth:
+			case UnitId::InfestedKerriganExt:
 			{
 				// Matraleth - Ensnaring Brood
 				if (scbw::get_generic_rust_value(unit, RustId::CastEnsnaringBrood) == 1)
