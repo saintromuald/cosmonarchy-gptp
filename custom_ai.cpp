@@ -15,7 +15,9 @@ static void update_custom_player(CustomAiPlayer* custom_ai_player, u32 player) {
 static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 	AiTown* ai_town = &g_ai_town_array[town];
 	u32 mineral_threshold = custom_ai_town->gas_requested ? 100 : 500;
-	if (custom_ai_town->gas_cooldown) {
+	if (!ai_town->main_building) {
+		// don't do anything, let's wait for the main building
+	} else if (custom_ai_town->gas_cooldown) {
 		custom_ai_town->gas_cooldown--;
 	} else if (g_game_minerals[ai_town->player] >= mineral_threshold) {
 		for (u32 i = 0; i < 3; ++i) {
