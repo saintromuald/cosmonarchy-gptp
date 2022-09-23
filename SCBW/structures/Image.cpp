@@ -91,7 +91,7 @@ namespace hooks
 		}
 		if (images_dat::is_turnable[image_id] & 2)
 		{
-			image->flags |= ImageFlags::Omnidirectional;
+			image->flags |= ImageFlags::Omnidirectional; // New
 		}
 		if (images_dat::is_clickable[image_id] & 1)
 		{
