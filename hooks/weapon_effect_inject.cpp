@@ -18,7 +18,7 @@ namespace
 		}
 		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 		{
-			hooks::lurkerSplash(bullet, weapon_id, SplashType::FriendlyNew);
+			hooks::lakizilisk_splash(bullet, weapon_id, SplashType::FriendlyNew);
 		}
 		else
 		{
@@ -45,7 +45,7 @@ namespace
 		}
 		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 		{
-			hooks::lurkerSplash(bullet, weapon_id, SplashType::Enemy);
+			hooks::lakizilisk_splash(bullet, weapon_id, SplashType::Enemy);
 		}
 		else
 		{
@@ -71,7 +71,7 @@ namespace
 		}
 		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 		{
-			hooks::lurkerSplash(bullet, weapon_id, SplashType::Radial);
+			hooks::lakizilisk_splash(bullet, weapon_id, SplashType::Radial);
 		}
 		else
 		{

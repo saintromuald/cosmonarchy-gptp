@@ -152,6 +152,10 @@ namespace UnitId
 		ZergTethzorokor										= 267,
 		ZergProtathalor										= 268,
 		ZergVilgorokor										= 269,
+		ZergCikralisk										= 270,
+		ZergTosgrilisk										= 271,
+		ZergGhitorokor										= 272,
+		ZergZobriolisk										= 273,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation

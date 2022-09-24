@@ -568,7 +568,7 @@ namespace hooks
 	// Hooked to troubleshoot loading issues. -Pr0nogo
 	void init_damage_overlay_counts() // 004D5C20
 	{
-		s32 index = 999;
+		s32 index = ImagesIdLimit;
 		do
 		{
 			--index;

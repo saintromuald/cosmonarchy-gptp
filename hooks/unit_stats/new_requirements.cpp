@@ -713,7 +713,7 @@ namespace hooks {
 				} break;
 				case UnitId::ZergMutalisk:
 				case UnitId::ZergProtathalor:
-			//	case UnitId::ZergCikrilisk:
+				case UnitId::ZergCikralisk:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergVithrathHaunt)
 						|| player_has_completed_unit_id(player_id, UnitId::ZergMuthrokSpire))
@@ -833,7 +833,6 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMutalisk))
 		{
-			/*
 			if (unit_id == UnitId::ZergTosgrilisk)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
@@ -841,11 +840,20 @@ namespace hooks {
 					return true;
 				}
 			}
-			*/
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergProtathalor))
 		{
 			if (unit_id == UnitId::ZergSovroleth)
+			{
+				if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
+				{
+					return true;
+				}
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCikralisk))
+		{
+			if (unit_id == UnitId::ZergGhitorokor)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
 				{
@@ -865,7 +873,6 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLakizilisk))
 		{
-			/*
 			if (unit_id == UnitId::ZergZobriolisk)
 			{
 				if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergUltrokCavern))
@@ -873,7 +880,6 @@ namespace hooks {
 					return true;
 				}
 			}
-			*/
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergGorgrokor))
 		{
@@ -2098,7 +2104,7 @@ namespace hooks {
 					}
 					case UnitId::ZergMutalisk:
 					case UnitId::ZergProtathalor:
-				//	case UnitId::ZergCikralisk:
+					case UnitId::ZergCikralisk:
 					{
 						if (player_has_unit_id(player_id, UnitId::ZergVithrathHaunt)
 							|| player_has_completed_unit_id(player_id, UnitId::ZergMuthrokSpire))
@@ -2240,7 +2246,6 @@ namespace hooks {
 			}
 			case UnitId::ZergMutalisk:
 			{
-				/*
 				if (unit_id == UnitId::ZergTosgrilisk)
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::ZergVithrathHaunt))
@@ -2249,7 +2254,6 @@ namespace hooks {
 					}
 					return TECH_LOCKED;
 				}
-				*/
 				return TECH_HIDDEN;
 			}
 			case UnitId::ZergProtathalor:
@@ -2264,7 +2268,6 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			/*
 			case UnitId::ZergCikralisk:
 			{
 				if (unit_id == UnitId::ZergGhitorokor)
@@ -2277,7 +2280,6 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			*/
 			case UnitId::ZergZoryusthaleth:
 			{
 				if (unit_id == UnitId::ZergUltrokor)
@@ -2296,7 +2298,6 @@ namespace hooks {
 			}
 			case UnitId::ZergLakizilisk:
 			{
-				/*
 				if (unit_id == UnitId::ZergZobriolisk)
 				{
 					if (unit->status & UnitStatus::Burrowed)
@@ -2309,7 +2310,6 @@ namespace hooks {
 					}
 					return TECH_LOCKED;
 				}
-				*/
 				return TECH_HIDDEN;
 			}
 			case UnitId::ZergGorgrokor:

@@ -1038,7 +1038,7 @@ namespace hooks {
 								} break;
 								case UnitId::ZergMutalisk:
 								case UnitId::ZergProtathalor:
-							//	case UnitId::ZergCikralisk:
+								case UnitId::ZergCikralisk:
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergMuthrokSpire)
 										|| player_has_unit_id(unit->player, UnitId::ZergVithrathHaunt))
@@ -1109,6 +1109,24 @@ namespace hooks {
 							}
 						}
 
+						if (unit->id == UnitId::ZergMutalisk)
+						{
+							if (current_button->requirement_var == UnitId::ZergTosgrilisk)
+							{
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Disabled;
+								}
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
 						if (unit->id == UnitId::ZergIzirokor)
 						{
 							if (current_button->requirement_var == UnitId::ZergTethzorokor)
@@ -1127,7 +1145,6 @@ namespace hooks {
 								current_button_state = Button_State::Invisible;
 							}
 						}
-
 						if (unit->id == UnitId::ZergGorgrokor)
 						{
 							if (current_button->requirement_var == UnitId::ZergZarcavrokor)

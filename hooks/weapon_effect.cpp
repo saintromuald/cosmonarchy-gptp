@@ -133,7 +133,7 @@ namespace hooks
 			radius = 32;
 		}
 		// Gorgrokor weapon
-		if (is_charged_gorgrokor_bullet(bullet, weapon_id))
+		if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
 		{
 			radius = 45;
 		}
@@ -182,8 +182,8 @@ namespace hooks
 			// We found units in a square around the target, but is the target within the splash radius?
 			s16 outer = weapons_dat::outer_splash_radius[bullet->weapon_id];
 
-			// Probing Incisors - Gorgoleth passive
-			if (is_charged_gorgrokor_bullet(bullet, weapon_id))
+			// Melee attack area of effect
+			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
 			{
 				outer = 45;
 			}
@@ -206,8 +206,8 @@ namespace hooks
 			// Inner radius 
 			s16 inner = weapons_dat::inner_splash_radius[bullet->weapon_id];
 
-			// Probing Incisors - Gorgoleth passive
-			if (is_charged_gorgrokor_bullet(bullet, weapon_id))
+			// Melee attack area of effect
+			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
 			{
 				inner = 30;
 			}
@@ -236,22 +236,10 @@ namespace hooks
 			// Medium radius
 			s16 medium = weapons_dat::medium_splash_radius[bullet->weapon_id];
 
-			// Probing Incisors - Gorgoleth passive
-			if (is_charged_gorgrokor_bullet(bullet, weapon_id))
+			// Melee attack area of effect
+			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
 			{
 				medium = 37;
-			}
-
-			if (weapon_id == WeaponId::HeraclesJavelinCannons)
-			{
-				if (bullet->source_unit)
-				{
-					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
-
-					const f64 splashBase = weapons_dat::medium_splash_radius[WeaponId::HeraclesJavelinCannons];
-					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
-					medium = (s16)(splashBase * (1 + 0.1 * stacks));
-				}
 			}
 
 			if (weapon_id == WeaponId::NathrokorPlasmidBreath)
@@ -273,7 +261,7 @@ namespace hooks
 		}
 	}
 
-	void lurkerSplash(Bullet* bullet, u32 weapon_id, u8 splash)
+	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash)
 	{
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
