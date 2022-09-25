@@ -1127,6 +1127,24 @@ namespace hooks {
 								current_button_state = Button_State::Invisible;
 							}
 						}
+						if (unit->id == UnitId::ZergCikralisk)
+						{
+							if (current_button->requirement_var == UnitId::ZergGhitorokor)
+							{
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Disabled;
+								}
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
 						if (unit->id == UnitId::ZergIzirokor)
 						{
 							if (current_button->requirement_var == UnitId::ZergTethzorokor)
@@ -1145,11 +1163,29 @@ namespace hooks {
 								current_button_state = Button_State::Invisible;
 							}
 						}
+						if (unit->id == UnitId::ZergLakizilisk)
+						{
+							if (current_button->requirement_var == UnitId::ZergZobriolisk)
+							{
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Disabled;
+								}
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
 						if (unit->id == UnitId::ZergGorgrokor)
 						{
 							if (current_button->requirement_var == UnitId::ZergZarcavrokor)
 							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
 								{
 									current_button_state = Button_State::Enabled;
 								}
