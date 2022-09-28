@@ -816,7 +816,7 @@ void Unit::unfreeze()
 }
 
 const u32 Func_RemoveAcidSpores = 0x004F4160;
-void Unit::removeAcidSpores()
+void Unit::remove_acid_spores()
 {
 	assert(this);
 	__asm
@@ -851,12 +851,12 @@ void Unit::spend_unit_energy(u32 energySpent)
 	}
 }
 
-void Unit::addUnitEnergy(u32 energy)
+void Unit::add_unit_energy(u32 energy)
 {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->get_max_energy());
 }
 
-void Unit::addUnitEnergy(u32 energy, u32 energyMax)
+void Unit::add_unit_energy_capped(u32 energy, u32 energyMax)
 {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }

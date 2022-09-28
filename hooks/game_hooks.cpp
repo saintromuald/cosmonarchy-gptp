@@ -1629,7 +1629,7 @@ namespace hooks
 				}
 			} break;
 			case UnitId::TerranAncile: {
-				if (unit->energy >= 1 * 256) {
+				if (unit->energy >= 1 * 256) { // Providence
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
@@ -1650,6 +1650,7 @@ namespace hooks
 						bullet->targetPosition2    = unit->position;
 						bullet->hit_flags |= 1; // For now we flag as missed, so it doesn't deal hp damage
 						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: Instead of dealing damage immediately, we should flag the bullet to deal damage as energy
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 
 						if (unit->energy < 1 * 256) {
 							break;

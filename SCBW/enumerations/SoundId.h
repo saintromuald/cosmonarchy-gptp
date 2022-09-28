@@ -1162,6 +1162,10 @@ namespace SoundId
 		WyvernAttack01						= 1118,
 		WyvernAttack02						= 1119,
 
+		AncilePassiveProc01					= 1154,
+		AncilePassiveProc02					= 1155,
+		AncilePassiveProc03					= 1156,
+
 		AugurDeath01						= 1235,
 		AugurDeath02						= 1236,
 		AugurDeath03						= 1237,

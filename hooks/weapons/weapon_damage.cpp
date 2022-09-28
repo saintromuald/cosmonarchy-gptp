@@ -841,7 +841,7 @@ namespace hooks
 						{
 							show = false;
 						}
-						unit->addUnitEnergy(5 * 256);
+						unit->add_unit_energy(5 * 256);
 						if (show)
 						{
 							helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
@@ -1026,7 +1026,7 @@ namespace hooks
 			if (attacker_ext->units[UnitMindController] != nullptr)
 			{
 				Unit* mind_controller = attacker_ext->units[UnitMindController];
-				mind_controller->addUnitEnergy(MindControlEnergyGain);
+				mind_controller->add_unit_energy(MindControlEnergyGain);
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 

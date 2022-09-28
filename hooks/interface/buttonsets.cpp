@@ -1222,19 +1222,19 @@ namespace hooks {
 
 								case UnitId::SharedCohort:
 								{
-									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Cohort Servile Vigor passive
+									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Cohort - Servile Vigor
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::SharedAspirant:
 								{
-									if (current_button->icon_id == IconId::ScarabDamage) { // Charlatan Leading the Blind passive
+									if (current_button->icon_id == IconId::ScarabDamage) { // Aspirant - Criticality
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::SharedTarasque:
 								{
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Tarasque Fighting Flight passive
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Tarasque - Fighting Flight
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -1243,46 +1243,59 @@ namespace hooks {
 
 								case UnitId::TerranTalos:
 								{
-									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Talos Fusion Sealers passive
+									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Talos - Fusion Sealers
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranHarakan:
 								{
-									if (current_button->icon_id == IconId::FlyerAttack) { // Harakan Apollyoid Adhesive passive
+									if (current_button->icon_id == IconId::FlyerAttack) { // Harakan - Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranShaman:
 								{
-									if (current_button->icon_id == IconId::Restoration) { // Shaman Nanite Field passive
+									if (current_button->icon_id == IconId::Restoration) { // Shaman - Nanite Field
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranEidolon:
 								{
-									if (current_button->icon_id == IconId::OcularImplants) { // Eidolon Somatic Implants passive
+									if (current_button->icon_id == IconId::OcularImplants) { // Eidolon - Somatic Implants
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranStriga:
+								{
+									if (current_button->icon_id == IconId::PsiAssault) // Striga - Fleeting Focus
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else if (current_button->icon_id == IconId::EMPShockwave) // Striga - Transient Travels
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAncile:
+								{
+									if (current_button->icon_id == IconId::DefensiveMatrix) // Ancile - Providence
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+
+								// PROTOSS \\
+
+								case UnitId::ProtossCharlatan:
+								{
+									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
+									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 							}
-							
-							if (unit->id == UnitId::ProtossCharlatan &&
-								current_button->icon_id == IconId::DemiurgePassiveWorship)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranStriga &&  // Striga Fleeting Focus passive 
-								current_button->icon_id == IconId::PsiAssault)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranStriga &&  // Striga Transient Travels passive 
-								current_button->icon_id == IconId::EMPShockwave)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergAxitrilisk &&  // Axitrilisk Sating Strikes passive 
+
+							if (unit->id == UnitId::ZergAxitrilisk &&  // Axitrilisk Sating Strikes passive 
 								current_button->icon_id == IconId::RoarUnused)
 							{
 								current_button_state = Button_State::Enabled;
