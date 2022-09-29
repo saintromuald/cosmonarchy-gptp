@@ -259,6 +259,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, false);
 					} break;
+					case WeaponId::EpigraphLitanyCannons:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaserPos, 4, false);
+					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanMissilePos, 4, false);
@@ -421,6 +425,7 @@ namespace hooks
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 4, false);
 						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
 					} break;
 				}
