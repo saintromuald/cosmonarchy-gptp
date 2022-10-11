@@ -931,7 +931,7 @@ namespace requirements
 SCBW_DATA(GuardAiArray*,       g_guard_array,			0x0067D400);
 SCBW_DATA(GuardAiListPlayers*, g_first_player_guard,	0x00685108);
 
-SCBW_DATA(u32*,			g_ai_update_cooldown,		0x0059CC94);
+SCBW_DATA(u32*,			g_ai_update_cooldown,			0x0059CC94);
 
 // For update_creep_disappearance_unit
 SCBW_DATA(u32*,			g_map_creep_width,						0x006D0F08);
