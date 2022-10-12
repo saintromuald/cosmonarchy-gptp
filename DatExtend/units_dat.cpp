@@ -525,10 +525,6 @@ namespace DatExt {
 			j += simpleReplace((u32*)&unit_AIStruct[j + 2], offs);
 			j += 3;
 		} while (unit_AIStruct[j] != 0 || unit_AIStruct[j + 1] != 0);
-
-		u32 sizeof_ai_main = sizeof(AI_Main) * PLAYABLE_PLAYER_COUNT;
-		memory_patch(0x00447E71 + 1, sizeof_ai_main);
-		memory_patch(0x00447683 + 1, sizeof_ai_main);
 	
 		constReplace(unit_consts, newCount);
 	
