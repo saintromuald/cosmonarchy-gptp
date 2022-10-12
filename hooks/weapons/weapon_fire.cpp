@@ -259,6 +259,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, false);
 					} break;
+					case WeaponId::EpigraphLitanyCannons:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaserPos, 4, false);
+					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanMissilePos, 4, false);
@@ -285,7 +289,11 @@ namespace hooks
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaserPos, 3, false, 0, 2);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaserPos, 4, false);
+					} break;
+					case WeaponId::SundogBlindsideRockets:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSundogRocketPos, 3, false, 0, 2);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
@@ -304,7 +312,7 @@ namespace hooks
 						// Phobos - Argent Capacitors passive
 						if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] == 0)
 						{
-							unit->addUnitEnergy(5 * 256);
+							unit->add_unit_energy(5 * 256);
 							if (unit->energy == unit->get_max_energy())
 							{
 								unitExt->values[ValuePhobosDischarge] = 1;
@@ -417,6 +425,7 @@ namespace hooks
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 4, false);
 						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
 					} break;
 				}

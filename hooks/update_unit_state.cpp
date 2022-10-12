@@ -79,7 +79,7 @@ namespace hooks
 				}
 				else
 				{
-					unit->addUnitEnergy(11, maxEnergy);
+					unit->add_unit_energy_capped(11, maxEnergy);
 				}
 			}
 

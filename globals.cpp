@@ -1263,7 +1263,7 @@ namespace scbw
 		unit->remove_maelstrom();
 
 		// Remove Devourer Corrosive Spores
-		unit->removeAcidSpores();
+		unit->remove_acid_spores();
 
 		// Remove Deconstruction
 		unitExt->values[ValueDeconstruction] = 0;

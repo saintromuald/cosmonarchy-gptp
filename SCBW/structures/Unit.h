@@ -236,12 +236,12 @@ struct Unit : public UnitLayout
 	void unfreeze();
 
 	/// Removes the Acid Spores effect from the unit.
-	void removeAcidSpores();
+	void remove_acid_spores();
 
 	/// Spend an amount of energy, if no THE GATHERING cheat.
 	void spend_unit_energy(u32 energy);
-	void addUnitEnergy(u32 energy);
-	void addUnitEnergy(u32 energy, u32 max);
+	void add_unit_energy(u32 energy);
+	void add_unit_energy_capped(u32 energy, u32 max);
 
 	//////////////////////////////////////////////////////////////// @}
 
