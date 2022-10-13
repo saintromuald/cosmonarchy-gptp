@@ -1336,6 +1336,18 @@ namespace SoundId
 		MagisterHelp02						= 2063,
 		MagisterHelp03						= 2064,
 		MagisterHelp04						= 2065,
+
+		AzazelReady01						= 2074,
+		AzazelReady02						= 2075,
+		AzazelReady03						= 2076,
+		AzazelOrderAggressive01				= 2077,
+		AzazelOrderAggressive02				= 2078,
+		AzazelOrderAggressive03				= 2079,
+		AzazelOrderAggressive04				= 2080,
+		AzazelHelp01						= 2081,
+		AzazelHelp02						= 2082,
+		AzazelHelp03						= 2083,
+		AzazelHelp04						= 2084,
 	};
 }
 
