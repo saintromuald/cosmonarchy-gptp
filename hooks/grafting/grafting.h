@@ -3,6 +3,12 @@
 
 typedef u16 REQ_SCRIPT;
 
+extern REQ_SCRIPT* units_req;
+extern REQ_SCRIPT* upgrades_req;
+extern REQ_SCRIPT* research_req;
+extern REQ_SCRIPT* tech_req;
+extern REQ_SCRIPT* orders_req;
+
 namespace GraftType {
   enum Enum : u32 {
     units_req,

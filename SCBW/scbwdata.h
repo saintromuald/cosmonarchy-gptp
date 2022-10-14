@@ -609,7 +609,7 @@ namespace units_dat {
 	SCBW_DATA_REF(u16*,			mineral_cost, unitsDat[40].address);					// 00663888
 	SCBW_DATA_REF(u16*,			gas_cost, unitsDat[41].address);						// 0065FD00
 	SCBW_DATA_REF(u16*,			time_cost, unitsDat[42].address);						// 00660428
-	SCBW_DATA_REF(u16*,			units_dat_43, unitsDat[43].address);					// 00660A70 // "Restriction Address" according to EUDDB
+	SCBW_DATA_REF(u16*,			requirement_offsets, unitsDat[43].address);				// 00660A70 // "Restriction Address" according to EUDDB
 	SCBW_DATA_REF(GroupFlag*,	group_flags, unitsDat[44].address);						// 006637A0
 	SCBW_DATA_REF(u8*,			supply_provided, unitsDat[45].address);					// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
 	SCBW_DATA_REF(u8*,			supply_required, unitsDat[46].address);					// 00663CE8
@@ -687,7 +687,7 @@ namespace upgrades_dat {
 	SCBW_DATA_REF(u16*,		gas_cost_factor,			upgradesDat[3].address);	// 006557C0
 	SCBW_DATA_REF(u16*,		time_cost_base,				upgradesDat[4].address);	// 00655B80
 	SCBW_DATA_REF(u16*,		time_cost_factor,			upgradesDat[5].address);	// 00655940
-//	SCBW_DATA_REF(u16*,		???,						upgradesDat[6].address);	// 006558C0	// Restriction sound_flags according to EUDDB
+	SCBW_DATA_REF(u16*,		requirement_offsets,		upgradesDat[6].address);	// 006558C0	// Restriction sound_flags according to EUDDB
 	SCBW_DATA_REF(u16*,		upgrade_icon,				upgradesDat[7].address);	// 00655AC0
 	SCBW_DATA_REF(u16*,		label,						upgradesDat[8].address);	// 00655A40
 	SCBW_DATA_REF(u8*,		race,						upgradesDat[9].address);	// 00655BFC
@@ -921,11 +921,11 @@ SCBW_DATA_REF(_bwUpgrs*,	UpgradesBw, 0x0058F278); // Use with BwUpgrade::Enum
 // Requirement opcode lists
 namespace requirements
 {
-	SCBW_DATA(u16*, units,		0x00514178);
-	SCBW_DATA(u16*, orders,		0x00514CF8);
-	SCBW_DATA(u16*, research,	0x00514908);
-	SCBW_DATA(u16*, upgrade,	0x005145C0);
-	SCBW_DATA(u16*, tech,		0x00514A48);
+	SCBW_DATA_REF(u16*, units,		0x00514178);
+	SCBW_DATA_REF(u16*, orders,		0x00514CF8);
+	SCBW_DATA_REF(u16*, research,	0x00514908);
+	SCBW_DATA_REF(u16*, upgrade,	0x005145C0);
+	SCBW_DATA_REF(u16*, tech,		0x00514A48);
 }
 
 SCBW_DATA(GuardAiArray*,       g_guard_array,			0x0067D400);

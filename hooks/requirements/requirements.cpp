@@ -863,7 +863,7 @@ LABEL_71_SUM_VALUES:
 
 	s8 unit_create_allowed(u16 unit_id, Unit* parentUnit, s32 playerID) // 0046E1C0
 	{
-		u16* unitsDat = units_dat::units_dat_43;
+		u16* unitsDat = units_dat::requirement_offsets;
 		u16* requirementsTable = requirements::units;
 
 		if (customRequirements::getUnitRequirementOverrides()[unit_id] != 0)
