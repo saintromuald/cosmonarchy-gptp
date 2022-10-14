@@ -517,7 +517,7 @@ namespace DatExt {
 		simpleReplace(unit_Deaths, (u32)unit_newArrs[3]);
 	
 		// unit_Available
-		unit_newArrs[4] = malloc(newCount * PLAYER_COUNT * sizeof(u32));
+		unit_newArrs[4] = malloc(newCount * PLAYER_COUNT * sizeof(u8));
 		simpleReplace(unit_Available, (u32)unit_newArrs[4]);
 	
 		// unit_AIStrength

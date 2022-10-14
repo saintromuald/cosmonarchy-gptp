@@ -29,7 +29,7 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			return (u32)g_unit_deaths_table;
 		} break;
 		case AiseSignal_GetUnitAvailabilityTable: {
-			return (u32)g_unit_availability->available;
+			return (u32)g_unit_availability->available[0];
 		} break;
 		case AiseSignal_GetUnitTbl: {
 			if (DatExt::unitNamesTbl) {
