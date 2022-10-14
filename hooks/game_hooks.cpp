@@ -1292,26 +1292,22 @@ namespace hooks
 				if (unit->order_signal & 0x20)
 				{
 					unit->order_signal &= ~0x20;
-					if (unit->order_target.unit != nullptr)
+					Unit* target = unit->order_target.unit;
+					if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance)
 					{
-						if (unit->get_distance_to_target(unit->order_target.unit) <= CentaurMissileDistance)
-						{
-							unit->play_iscript_animation(IscriptAnimation::Unused2);
-						}
+						unit->play_iscript_animation(IscriptAnimation::Unused2);
 					}
 				}
 			} break;
 			case UnitId::TerranOlympian:
 			{
-				if (unit->order_signal & 0x20)
+				Unit* target = unit->order_target.unit;
+				if (unit->order_signal & 0x20 && unit->ground_weapon_cooldown <= 1)
 				{
 					unit->order_signal &= ~0x20;
-					if (unit->order_target.unit != nullptr && !(units_dat::base_property[unit->order_target.unit->id] & UnitProperty::Flyer))
+					if (target && !(units_dat::base_property[target->id] & UnitProperty::Flyer) && unit->get_distance_to_target(target) <= OlympianMeleeDistance)
 					{
-						if (unit->get_distance_to_target(unit->order_target.unit) <= OlympianMeleeDistance)
-						{
-							unit->play_iscript_animation(IscriptAnimation::SpecialState1);
-						}
+						unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 					}
 				}
 			} break;
