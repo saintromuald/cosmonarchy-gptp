@@ -444,12 +444,12 @@ namespace hooks
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
 		jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
-		jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
-		jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
-		jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1);
-		jump_patch(stats_morph_progress_wrapper,					0x00457250, 1);
-		jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
-		jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
+	//	jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
+	//	jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
+	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1);
+	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1);
+	//	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
+	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
 
 		// Disable player checks for progress bar functions
 		nops(0x0042690C, 2);
