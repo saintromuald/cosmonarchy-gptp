@@ -2316,6 +2316,7 @@ return 0;
 				missing_ground -= ai_strength_ground[best_unit->id];
 				missing_air    -= ai_strength_air[best_unit->id];
 			}
+			break; // for testing
 		}
 		return sum;
 	}
