@@ -2,9 +2,10 @@
 #include <SCBW/api.h>
 #include <SCBW/Storm.h>
 #include <hook_tools.h>
+#include "DatExtend/datext.h"
 
 namespace hooks {
-	void load_game_data(DatLoad* datTable, const char* filename)
+	void load_game_data(DatLoad* datTable, const char* normal_filename)
 	{
 		u32 size = 0;
 		u32 i;
@@ -12,10 +13,16 @@ namespace hooks {
 		u32 length;
 		u32 pos;
 		
+		char filename[256] = {};
+		if (datTable == (DatLoad*)DatExt::LoadTable::Sfxdata_Dat) {
+			sprintf_s(filename, "%s", normal_filename);
+		} else {
+			sprintf_s(filename, "%sex", normal_filename);
+		}
+
 		data = (u8*)FastFileRead(filename, NULL, false, 0, &size);
 		pos = 0;
 
-		
 		// DatExt -- Patch dat file
 		// Note now every patch happens immediately with size being in DatExt::extend_data()
 	//	if (DatExt::setDatSize(datTable, size) == false)
