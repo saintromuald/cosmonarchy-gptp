@@ -48,7 +48,8 @@ SCBW_DATA_VAR(u16*,			g_orders_requirement_tree_var, 0x00514CF8);
 SCBW_DATA_VAR(const LO_Header* const*, shieldOverlays_var, 0x0052E5C8);
 SCBW_DATA_VAR(u8*,			g_building_overlay_state_max_var, 0x005240D0);
 SCBW_DATA_VAR(GrpHead*		const*, imageGrpGraphics_var, 0x0051CED0);
-SCBW_DATA_VAR(u32*,			aiStrength_var, 0x006BB210);
+SCBW_DATA_VAR(u32*,			ai_strength_air_var, 0x006BB210);
+SCBW_DATA_VAR(u32*,			ai_strength_ground_var, 0x006BB5A0);
 SCBW_DATA_VAR(u8*,			g_is_valid_sprite_var, 0x00629A88);
 
 // scbwdata expects pointer references, so make struct pointers to reference
@@ -69,7 +70,7 @@ SCBW_DATA_DEF(u16*,			g_orders_requirement_tree, g_orders_requirement_tree_var);
 SCBW_DATA_DEF(const LO_Header* const*, g_shield_overlays, shieldOverlays_var);
 SCBW_DATA_DEF(u8*,			g_building_overlay_state_max, g_building_overlay_state_max_var);
 SCBW_DATA_DEF(GrpHead* const*, g_image_grp_graphics, imageGrpGraphics_var);
-SCBW_DATA_DEF(u32*,			aiStrength, aiStrength_var);
+SCBW_DATA_DEF(u32*,			aiStrength, ai_strength_air_var);
 SCBW_DATA_DEF(u8*,			g_is_valid_sprite, g_is_valid_sprite_var);
 
 SCBW_DATA_DEF(AI_Main*,		g_aiscript_controller, AIScriptController_var);
@@ -77,6 +78,10 @@ SCBW_DATA_DEF(_uavail*,		g_unit_availability, unit_availability_var);
 SCBW_DATA_DEF(ImagesDatExtraOverlayLO_Files*, lo_files, lo_files_var);
 SCBW_DATA_DEF(_bwTechs*,	TechBw, TechBw_var);
 SCBW_DATA_DEF(_bwUpgrs*,	UpgradesBw, UpgradesBw_var);
+
+
+SCBW_DATA_DEF(u32*, ai_strength_air, ai_strength_air_var);
+SCBW_DATA_DEF(u32*, ai_strength_ground, ai_strength_ground_var);
 
 namespace units_dat {
 	SCBW_DATA(const DatLoad*, unitsDat, 0x00513C30);
