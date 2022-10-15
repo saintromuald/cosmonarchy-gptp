@@ -2221,6 +2221,7 @@ return 0;
 	bool player_has_transport(u32 player_id) // 00437250
 	{
 		return g_completed_unit_count_table[UnitId::TerranTrojan].player[player_id]
+		//	|| g_completed_unit_count_table[UnitId::TerranPythean].player[player_id]
 			|| g_completed_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
 			|| g_completed_unit_count_table[UnitId::ZergOvileth].player[player_id]
 			|| g_completed_unit_count_table[UnitId::ZergIroleth].player[player_id]
