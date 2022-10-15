@@ -2227,12 +2227,94 @@ return 0;
 			|| g_completed_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
 	}
 
+	bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
+		if (!unit->unit_ai) {
+			return false;
+		}
+		if (unit->unit_ai->type == AiType::Military) {
+			MilitaryAi* military_ai = &unit->unit_ai->military_ai;
+			AiRegion* current_ai_region = military_ai->region;
+			helper::delete_military_ai(military_ai, military_ai->region);
+			unit->unit_ai = 0;
+			helper::add_military_ai(ai_region, unit, 1);
+			if (unit->status & UnitStatus::InBuilding) {
+				helper::unload_unit_proc(unit);
+			}
+			helper::ai_recalculate_region_strength(current_ai_region);
+			return true;
+		} else if (unit->unit_ai->type == AiType::Guard) {
+			unit->unit_ai->guard_ai.parent = 0;
+			unit->unit_ai = 0;
+			helper::add_military_ai(ai_region, unit, 1);
+			if (unit->status & UnitStatus::InBuilding) {
+				helper::unload_unit_proc(unit);
+			}
+			helper::ai_recalculate_region_strength(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)));
+			return true;
+		}
+		return false;
+	}
+
 	u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air)	{ // 0043E760
+		/*
 		u32 sum = 0;
 		for (u16* ptr = defense_ptr; *ptr; ++ptr) {
 			u32 unit_id = *ptr - 1;
 			if (helper::ai_add_to_region_military(ai_region, unit_id, ai_region->defense_priority_add)) {
 				sum += against_air ? g_air_strength_something[unit_id] : g_ground_strength_something[unit_id];
+			}
+		}
+		return sum;
+		*/
+
+		u32 player = ai_region->player;
+		Region* region = scbw::get_region(ai_region->region);
+		Point16 region_center = scbw::get_region_center(region);
+		s32 missing_ground = ai_region->ground_strength_needed - ai_region->ground_strength_full;
+		s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
+
+		u32 sum = 0;
+		while (missing_ground > 0 || missing_air > 0) {
+			Unit* best_unit = 0;
+			s32 best_score = INT_MIN;
+			for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+				if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
+					continue;
+				}
+
+				AiRegion* current_ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+				if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
+					(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+					continue;
+				}
+
+				if (!helper::is_valid_for(unit->id, unit, false) || scbw::unit_is_stunned(unit)) {
+					continue;
+				}
+
+				s32 ground_force = std::min((s32)ai_strength_ground[unit->id], missing_ground);
+				s32 air_force = std::min((s32)ai_strength_air[unit->id], missing_air);
+				s32 force = ground_force + air_force;
+				force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
+				if (force <= 0) {
+					continue;
+				}
+
+				u32 distance = scbw::get_ground_path_distance_tiles(unit->position, region_center);
+				s32 score = distance ? force / distance : force;
+				if (score > best_score) {
+					best_score = score;
+					best_unit = unit;
+				}
+			}
+
+			if (!best_unit) {
+				break;
+			}
+			if (move_unit_ai(best_unit, ai_region)) {
+				sum += against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
+				missing_ground -= ai_strength_ground[best_unit->id];
+				missing_air    -= ai_strength_air[best_unit->id];
 			}
 		}
 		return sum;

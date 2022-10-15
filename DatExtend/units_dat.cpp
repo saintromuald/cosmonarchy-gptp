@@ -8,7 +8,8 @@ DATEXT_VAR_REF(UnitDeaths*, unitAllCountTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitCompleteTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitKilledTable_var);
 DATEXT_VAR_REF(AI_Main*, AIScriptController_var);
-DATEXT_VAR_REF(u32*, aiStrength_var);
+DATEXT_VAR_REF(u32*, ai_strength_air_var);
+DATEXT_VAR_REF(u32*, ai_strength_ground_var);
 DATEXT_VAR_REF(_uavail*, g_unit_availability_var);
 
 namespace {
@@ -554,7 +555,8 @@ namespace DatExt {
 		{
 			g_unit_availability->available[i] = (u8*)(unit_newArrs[4]) + newCount * i;
 		}
-		aiStrength_var = (u32*)unit_newArrs[5];
+		ai_strength_air = (u32*)unit_newArrs[5];
+		ai_strength_ground = (u32*)unit_newArrs[5] + newCount;
 		AIScriptController_var = (AI_Main*)unit_newArrs[6];
 		//for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
 		//{
