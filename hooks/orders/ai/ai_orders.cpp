@@ -2292,8 +2292,8 @@ return 0;
 					continue;
 				}
 
-				s32 ground_force = std::min((s32)ai_strength_ground[unit->id], missing_ground);
-				s32 air_force = std::min((s32)ai_strength_air[unit->id], missing_air);
+				s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
+				s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);
 				s32 force = ground_force + air_force;
 				force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
 				if (force <= 0) {
