@@ -1047,6 +1047,10 @@ SCBW_DATA(char**,		g_queues_buffers,					0x00519F40);
 SCBW_DATA(u32*,			g_active_portrait_buttonset_id,		0x0068C14C);
 SCBW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 
+// For request_military_to
+SCBW_DATA(u32*,			g_air_strength_something,			0x006BB210);
+SCBW_DATA(u32*,			g_ground_strength_something,		0x006BB5A0);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

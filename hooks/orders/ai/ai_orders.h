@@ -47,6 +47,7 @@ namespace hooks
 	b32 ai_is_unit_id_unit_race(u16 unit_id, Unit* unit);																// 00432480
 
 	bool player_has_transport(u32 player_id);																			// 00437250
+	u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air);									// 0043E760
 
 	void inject_ai_orders_hooks();
 }

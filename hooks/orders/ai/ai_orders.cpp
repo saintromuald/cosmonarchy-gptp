@@ -2227,6 +2227,33 @@ return 0;
 			|| g_completed_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
 	}
 
+	u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air) // 0043E760
+	{
+		u16* defense_ptr_ = defense_ptr;
+		u16 defense_value = *defense_ptr;
+		u32 sum = 0;
+		if (!defense_value)
+		{
+			return 0;
+		}
+		do
+		{
+			u32 unit_id = defense_value - 1;
+			if (helper::ai_add_to_region_military(ai_region, unit_id, ai_region->defense_priority_add))
+			{
+				u32 strength = g_ground_strength_something[unit_id];
+				if (against_air)
+				{
+					strength = g_air_strength_something[unit_id];
+				}
+				sum += strength;
+			}
+			defense_value = defense_ptr_[1];
+			++defense_ptr_;
+		} while (defense_value);
+		return sum;
+	}
+
 	// Hooked to improve functionality and allow Pylons to respect the asc3 "creep" header. -Pr0nogo
 	// GREAT GOOGLY MOOGLY BATMAN, THIS IS A DISASTER
 	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_position, Point16* out_position, s32 area_tiles) // 004465C0

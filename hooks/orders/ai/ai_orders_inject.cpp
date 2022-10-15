@@ -664,6 +664,32 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) request_military_to_wrapper() { // 0043E760
+		static u32 result;
+		static u16* defense_ptr;
+		static AiRegion* ai_region;
+		static u32 b_against_air;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV b_against_air, EAX
+			POP EAX
+			MOV ai_region, EBX
+			MOV defense_ptr, EAX
+			PUSHAD
+		}
+		result = hooks::request_military_to(defense_ptr, ai_region, b_against_air);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -709,6 +735,7 @@ namespace hooks
 		jump_patch(ai_is_unit_id_unit_race_wrapper, 			0x00432480, 4);
 
 		jump_patch(player_has_transport_wrapper, 				0x00437250, 1);
+		jump_patch(request_military_to_wrapper,					0x0043E760, 0);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 
