@@ -556,21 +556,15 @@ u32 Unit::heal_energy(s32 value, Unit* source) {
 }
 
 u32 Unit::heal_hp_then_shields(s32 value, Unit* source, bool restore) {
-	value = heal_hp(value, source, restore);
-	value = heal_shields(value, source, restore);
-	return value;
+	return heal_shields(heal_hp(value, source, restore), source, restore);
 }
 
 u32 Unit::heal_shields_then_hp(s32 value, Unit* source, bool restore) {
-	value = heal_shields(value, source, restore);
-	value = heal_hp(value, source, restore);
-	return value;
+	return heal_hp(heal_shields(value, source, restore), source, restore);
 }
 
 u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore) {
-	value = heal_energy(value, source);
-	value = heal_shields(value, source, restore);
-	return value;
+	return heal_shields(heal_energy(value, source), source, restore);
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
