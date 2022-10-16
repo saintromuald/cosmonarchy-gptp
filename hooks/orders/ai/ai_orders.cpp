@@ -1640,7 +1640,8 @@ return 0;
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
 	Unit* ai_find_best_repair_unit(Unit* to_repair) { // 00443160
-		EntryArray workers = unit_search_radial(to_repair->position, 64 * 32);
+		EntryArray workers = {};
+		unit_search_radial(&workers, to_repair->position, 64 * 32);
 		unit_search_filter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
 		Unit* best = unit_search_find_best(&workers, [=](Unit* worker) {
 			if (!worker->has_path_to_unit(to_repair) ||
@@ -1821,7 +1822,8 @@ return 0;
 			if (!has_transport_or_flying_worker && main_region->group_index != area_region->group_index) {
 				continue;
 			}
-			EntryArray units = unit_search_radial(area->position, 12 * 32);
+			EntryArray units = {};
+			unit_search_radial(&units, area->position, 12 * 32);
 			for (u32 j = 0; j < units.count; ++j) {
 				Unit* unit = units.units[j];
 				if (unit->player < PlayerLimit) {

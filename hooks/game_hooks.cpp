@@ -812,10 +812,12 @@ namespace hooks
 				// Zoryusthaleth - Reconstitution
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0) {
 					u32 radius = 5 * 32;
-					EntryArray corpses = corpse_search_radial(unit->position, radius);
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, unit->position, radius);
 					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
-						EntryArray targets = unit_search_radial(unit->position, radius);
+						EntryArray targets = {};
+						unit_search_radial(&targets, unit->position, radius);
 						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.count; ++i) {
 							Unit* target = targets.units[i];
@@ -835,7 +837,8 @@ namespace hooks
 				// Kaiser Rampage - Ultrokor behavior
 				if (!unitExt->timers[TimerKaiserRampageTimeout]) {
 					u32 radius = 1 * 32;
-					EntryArray corpses = corpse_search_radial(unit->position, radius);
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, unit->position, radius);
 					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
 						unitExt->timers[TimerKaiserRampageTimeout] = 0.5 * 24;
@@ -852,7 +855,9 @@ namespace hooks
 			case UnitId::ZergSovroleth:
 			{
 				{
-					EntryArray sovroleths = scbw::get_writhing_web_sovroleths(unit);
+					EntryArray sovroleths = {};
+					unit_search_radial(&sovroleths, unit->position, 8 * 32);
+					unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
 					unitExt->values[ValueSovrolethLinkCount] = sovroleths.count;
 				}
 
@@ -860,7 +865,8 @@ namespace hooks
 				unit->update_speed();
 
 				// Corpse Cocoon
-				EntryArray corpses = corpse_search_rect({unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
+				EntryArray corpses = {};
+				corpse_search_rect(&corpses, {unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
 				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
@@ -1271,7 +1277,8 @@ namespace hooks
 					u32 overlay = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);
 					overlay_unit->sprite->create_overlay(overlay);
 
-					EntryArray unit_array = unit_search_radial(unit->position, 4 * 32);
+					EntryArray unit_array = {};
+					unit_search_radial(&unit_array, unit->position, 4 * 32);
 					unit_search_add_units_from_connected_transport(&unit_array, unit);
 					unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding);
 
@@ -1629,7 +1636,8 @@ namespace hooks
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
-					EntryArray bullets = bullet_search_radial(unit->position, 2 * 32);
+					EntryArray bullets = {};
+					bullet_search_radial(&bullets, unit->position, 2 * 32);
 					for (u32 i = 0; i < bullets.count; i++) {
 						Bullet* bullet = bullets.bullets[i];
 
@@ -1660,7 +1668,8 @@ namespace hooks
 
 		// Tyranny
 		if (unitExt->values[ValueTyrannyPlayer]) {
-			EntryArray mind_tyrants = unit_search_radial(unit->position, 8 * 32);
+			EntryArray mind_tyrants = {};
+			unit_search_radial(&mind_tyrants, unit->position, 8 * 32);
 			unit_search_filter(&mind_tyrants, unit, 0, {UnitId::ProtossMindTyrant});
 			unit_search_custom_filter(&mind_tyrants, [=](Unit* mind_tyrant) {
 				if (scbw::is_allied_to(mind_tyrant->player, unitExt->values[ValueTyrannyPlayer] - 1)) {
@@ -1953,7 +1962,8 @@ namespace hooks
 
 		// Blissful Embrace - Creep Spread
 		if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			EntryArray akistrokors = unit_search_radial(unit->position, 6 * 32);
+			EntryArray akistrokors = {};
+			unit_search_radial(&akistrokors, unit->position, 6 * 32);
 			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
 			unit->hitpoints += akistrokors.count * 256.0 / 24.0;
 
@@ -2252,11 +2262,12 @@ namespace hooks
 		// Crucible - Khaydarin Charge stacks
 		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed)
 		{
-			EntryArray arr = unit_search_radial(unit->position, 8 * 32);
-			unit_search_filter(&arr, unit, FilterAlly | FilterBuilding);
-			for (u32 i = 0; i < arr.count; i++)
+			EntryArray units = {};
+			unit_search_radial(&units, unit->position, 8 * 32);
+			unit_search_filter(&units, unit, FilterAlly | FilterBuilding);
+			for (u32 i = 0; i < units.count; i++)
 			{
-				Unit* target = arr.units[i];
+				Unit* target = units.units[i];
 				UnitExt* target_ext = get_unit_ext(target);
 				if (scbw::unit_id_is_tech(target->id)) {
 					if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {

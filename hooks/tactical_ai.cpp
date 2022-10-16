@@ -483,7 +483,8 @@ static KitePositions get_kite_positions(Unit* unit) {
 	result.targets_found = false;
 	result.distance = get_max_range(unit->id);
 
-	EntryArray hostiles = unit_search_square(unit->position, GroupRadius);
+	EntryArray hostiles = {};
+	unit_search_square(&hostiles, unit->position, GroupRadius);
 	unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
 	for (u32 i = 0; i < hostiles.count; ++i) {
 		Unit* hostile = hostiles.units[i];
@@ -521,7 +522,8 @@ static KitePositions get_kite_positions(Unit* unit) {
 		}
 	}
 
-	EntryArray allies = unit_search_square(unit->position, GroupRadius);
+	EntryArray allies = {};
+	unit_search_square(&allies, unit->position, GroupRadius);
 	unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
 	for (u32 i = 0; i < allies.count; ++i) {
 		Unit* ally = allies.units[i];
@@ -535,7 +537,8 @@ static KitePositions get_kite_positions(Unit* unit) {
 		result.ally_strength += strength; 
 	}
 
-	EntryArray effects = effect_search_square(unit->position, GroupRadius);
+	EntryArray effects = {};
+	effect_search_square(&effects, unit->position, GroupRadius);
 	for (u32 i = 0; i < effects.count; ++i) {
 		Effect* effect = effects.effects[i];
 		s32 value = get_effect_value(unit, effect);
@@ -549,7 +552,8 @@ static KitePositions get_kite_positions(Unit* unit) {
 	}
 
 	if (unit->id == UnitId::ZergSovroleth) {
-		EntryArray corpses = corpse_search_radial(unit->position, GroupRadius);
+		EntryArray corpses = {};
+		corpse_search_radial(&corpses, unit->position, GroupRadius);
 		for (u32 i = 0; i < corpses.count; ++i) {
 			Thingy* corpse = corpses.corpses[i];
 			if (corpse->sprite) {
@@ -674,7 +678,8 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 	if (unit_could_kite(unit)) {
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingCombat]) {
-			EntryArray allies = unit_search_square(unit->position, GroupRadius);
+			EntryArray allies = {};
+			unit_search_square(&allies, unit->position, GroupRadius);
 			unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
 			u32 allied_combat_strength = 0;
 			for (u32 i = 0; i < allies.count; ++i) {
@@ -690,7 +695,8 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 
-			EntryArray hostiles = unit_search_square(unit->position, GroupRadius);
+			EntryArray hostiles = {};
+			unit_search_square(&hostiles, unit->position, GroupRadius);
 			unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
 			u32 hostile_combat_strength = 0;
 			for (u32 i = 0; i < hostiles.count; ++i) {
@@ -948,7 +954,8 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 	if (unit->id == UnitId::TerranBunker && !unitExt->timers[TimerAI_GenericAbilityCooldown]) {
 		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
-		EntryArray allies = unit_search_square(unit->position, unit->get_sight_range(false) * 32);
+		EntryArray allies = {};
+		unit_search_square(&allies, unit->position, unit->get_sight_range(false) * 32);
 		EntryArray enemies = allies;
 
 		unit_search_filter(&allies, unit, FilterAlly);
@@ -1188,7 +1195,8 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 			}
 		} else if (unit->id == UnitId::ZergAkistrokor && unit->main_order_id != OrderId::BlissfulEmbrace) {
-			EntryArray targets = unit_search_radial(unit->position, 512 * 32);
+			EntryArray targets = {};
+			unit_search_radial(&targets, unit->position, 512 * 32);
 			unit_search_filter(&targets, unit, FilterEnemy | FilterBuilding);
 
 			f32 min_cost = FLT_MAX;

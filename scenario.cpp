@@ -561,7 +561,8 @@ FraudSpawnLocation* get_random_spawn() {
 		}
 
 		u32 cost = 0;
-		EntryArray unit_array = unit_search_radial(fraud_spawn.spawns[location].pos, 12 * 32);
+		EntryArray unit_array = {};
+		unit_search_radial(&unit_array, fraud_spawn.spawns[location].pos, 12 * 32);
 		if (unit_array.count) {
 			cost += 1;
 		}

@@ -57,25 +57,25 @@ void entry_array_remove(EntryArray* array, u32 index); // won't preserve order
 using SearchFilterFunc = std::function<bool(Unit*)>;
 using SearchScoreFunc = std::function<s32(Unit*)>;
 
-EntryArray unit_search_rect(Box32 rect);
-EntryArray unit_search_square(Point16 center, u32 radius);
-EntryArray unit_search_radial(Point16 center, u32 radius);
+void unit_search_rect(EntryArray* entry_array, Box32 rect);
+void unit_search_square(EntryArray* entry_array, Point16 center, u32 radius);
+void unit_search_radial(EntryArray* entry_array, Point16 center, u32 radius);
 
-EntryArray seen_unit_search_rect(u32 player, Box32 rect);
-EntryArray seen_unit_search_square(u32 player, Point16 center, u32 radius);
-EntryArray seen_unit_search_radial(u32 player, Point16 center, u32 radius);
+void seen_unit_search_rect(EntryArray* entry_array, u32 player, Box32 rect);
+void seen_unit_search_square(EntryArray* entry_array, u32 player, Point16 center, u32 radius);
+void seen_unit_search_radial(EntryArray* entry_array, u32 player, Point16 center, u32 radius);
 
-EntryArray bullet_search_rect(Box32 rect);
-EntryArray bullet_search_square(Point16 center, u32 radius);
-EntryArray bullet_search_radial(Point16 center, u32 radius);
+void bullet_search_rect(EntryArray* entry_array, Box32 rect);
+void bullet_search_square(EntryArray* entry_array, Point16 center, u32 radius);
+void bullet_search_radial(EntryArray* entry_array, Point16 center, u32 radius);
 
-EntryArray corpse_search_rect(Box32 rect);
-EntryArray corpse_search_square(Point16 center, u32 radius);
-EntryArray corpse_search_radial(Point16 center, u32 radius);
+void corpse_search_rect(EntryArray* entry_array, Box32 rect);
+void corpse_search_square(EntryArray* entry_array, Point16 center, u32 radius);
+void corpse_search_radial(EntryArray* entry_array, Point16 center, u32 radius);
 
-EntryArray effect_search_rect(Box32 rect);
-EntryArray effect_search_square(Point16 center, u32 radius);
-EntryArray effect_search_radial(Point16 center, u32 radius);
+void effect_search_rect(EntryArray* entry_array, Box32 rect);
+void effect_search_square(EntryArray* entry_array, Point16 center, u32 radius);
+void effect_search_radial(EntryArray* entry_array, Point16 center, u32 radius);
 
 // TODO: combine filter and search together for ease of use (unit_search_radial_ex)
 void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_unit_ids = {}); // will break ordering, do sorting after filtering!

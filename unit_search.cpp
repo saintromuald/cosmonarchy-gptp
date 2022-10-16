@@ -68,10 +68,8 @@ static void search_index_add(SearchIndex* index, Point16 position, void* data) {
 	}
 }
 
-static EntryArray index_search_rect(SearchIndex* index, Box32 rect) {
+static void index_search_rect(EntryArray* entry_array, SearchIndex* index, Box32 rect) {
 	rect = scbw::clampRect(rect);
-	EntryArray entry_array = {};
-
 	const u32 x1 = rect.left / CELL_PX_SIZE;
 	const u32 y1 = rect.top / CELL_PX_SIZE;
 	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
@@ -88,18 +86,16 @@ static EntryArray index_search_rect(SearchIndex* index, Box32 rect) {
 			bool is_fully_covered = is_rect_in_rect(tile_rect, rect);
 
 			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
-				if (is_fully_covered || is_point_in_rect(entry->position, rect) && entry_array.count < EntryLimit) {
-					entry_array_add(&entry_array, entry->data);
+				if (is_fully_covered || is_point_in_rect(entry->position, rect) && entry_array->count < EntryLimit) {
+					entry_array_add(entry_array, entry->data);
 				}
 			}
 		}
 	}
-
-	return entry_array;
 }
 
-static EntryArray index_search_square(SearchIndex* index, Point16 center, u32 radius) {
-	return index_search_rect(index, {
+static void index_search_square(EntryArray* entry_array, SearchIndex* index, Point16 center, u32 radius) {
+	index_search_rect(entry_array, index, {
 		center.x - (s32)radius,
 		center.y - (s32)radius,
 		center.x + (s32)radius,
@@ -107,9 +103,7 @@ static EntryArray index_search_square(SearchIndex* index, Point16 center, u32 ra
 	});
 }
 
-static EntryArray index_search_radial(SearchIndex* index, Point16 center, u32 radius) {
-	EntryArray entry_array = {};
-
+static void index_search_radial(EntryArray* entry_array, SearchIndex* index, Point16 center, u32 radius) {
 	Box32 dims = {
 		center.x - radius,
 		center.y - radius,
@@ -133,103 +127,110 @@ static EntryArray index_search_radial(SearchIndex* index, Point16 center, u32 ra
 
 			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
 				if (is_fully_covered || scbw::get_distance_fast(center, entry->position) <= radius) {
-					entry_array_add(&entry_array, entry->data);
+					entry_array_add(entry_array, entry->data);
 				}
 			}
 		}
 	}
-
-	return entry_array;
 }
 
-inline EntryArray filter_unit_array(EntryArray entry_array) {
-	for (u32 i = 0; i < entry_array.count; ++i) {
-		Unit* unit = entry_array.units[i];
+static void filter_unit_array(EntryArray* entry_array) {
+	for (u32 i = 0; i < entry_array->count; ++i) {
+		Unit* unit = entry_array->units[i];
 		if (unit->is_dead()) {
-			entry_array_remove(&entry_array, i--);
+			entry_array_remove(entry_array, i--);
 		}
 	}
-	return entry_array;
 }
 
-EntryArray unit_search_rect(Box32 rect) {
-	return filter_unit_array(index_search_rect(&unit_index, rect));
+void unit_search_rect(EntryArray* entry_array, Box32 rect) {
+	index_search_rect(entry_array, &unit_index, rect);
+	filter_unit_array(entry_array);
 }
 
-EntryArray unit_search_square(Point16 center, u32 radius) {
-	return filter_unit_array(index_search_square(&unit_index, center, radius));
+void unit_search_square(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_square(entry_array, &unit_index, center, radius);
+	filter_unit_array(entry_array);
 }
 
-EntryArray unit_search_radial(Point16 center, u32 radius) {
-	return filter_unit_array(index_search_radial(&unit_index, center, radius));
+void unit_search_radial(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_radial(entry_array, &unit_index, center, radius);
+	filter_unit_array(entry_array);
 }
 
-EntryArray seen_unit_search_rect(u32 player, Box32 rect) {
-	return filter_unit_array(index_search_rect(&seen_unit_index[player], rect));
+void seen_unit_search_rect(EntryArray* entry_array, u32 player, Box32 rect) {
+	index_search_rect(entry_array, &seen_unit_index[player], rect);
+	filter_unit_array(entry_array);
 }
 
-EntryArray seen_unit_search_square(u32 player, Point16 center, u32 radius) {
-	return filter_unit_array(index_search_square(&seen_unit_index[player], center, radius));
+void seen_unit_search_square(EntryArray* entry_array, u32 player, Point16 center, u32 radius) {
+	index_search_square(entry_array, &seen_unit_index[player], center, radius);
+	filter_unit_array(entry_array);
 }
 
-EntryArray seen_unit_search_radial(u32 player, Point16 center, u32 radius) {
-	return filter_unit_array(index_search_radial(&seen_unit_index[player], center, radius));
+void seen_unit_search_radial(EntryArray* entry_array, u32 player, Point16 center, u32 radius) {
+	index_search_radial(entry_array, &seen_unit_index[player], center, radius);
+	filter_unit_array(entry_array);
 }
 
-inline EntryArray filter_bullet_array(EntryArray entry_array) {
-	for (u32 i = 0; i < entry_array.count; ++i) {
-		Bullet* bullet = entry_array.bullets[i];
+static void filter_bullet_array(EntryArray* entry_array) {
+	for (u32 i = 0; i < entry_array->count; ++i) {
+		Bullet* bullet = entry_array->bullets[i];
 		if (!bullet->exists) { // TODO: vet this check is correct
-			entry_array_remove(&entry_array, i--);
+			entry_array_remove(entry_array, i--);
 		}
 	}
-	return entry_array;
 }
 
-EntryArray bullet_search_rect(Box32 rect) {
-	return filter_bullet_array(index_search_rect(&bullet_index, rect));
+void bullet_search_rect(EntryArray* entry_array, Box32 rect) {
+	index_search_rect(entry_array, &bullet_index, rect);
+	filter_bullet_array(entry_array);
 }
 
-EntryArray bullet_search_square(Point16 center, u32 radius) {
-	return filter_bullet_array(index_search_square(&bullet_index, center, radius));
+void bullet_search_square(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_square(entry_array, &bullet_index, center, radius);
+	filter_bullet_array(entry_array);
 }
 
-EntryArray bullet_search_radial(Point16 center, u32 radius) {
-	return filter_bullet_array(index_search_radial(&bullet_index, center, radius));
+void bullet_search_radial(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_radial(entry_array, &bullet_index, center, radius);
+	filter_bullet_array(entry_array);
 }
 
-inline EntryArray filter_corpse_array(EntryArray entry_array) {
-	for (u32 i = 0; i < entry_array.count; ++i) {
-		Thingy* corpse = entry_array.corpses[i];
+static void filter_corpse_array(EntryArray* entry_array) {
+	for (u32 i = 0; i < entry_array->count; ++i) {
+		Thingy* corpse = entry_array->corpses[i];
 		if (corpse->sprite->flags & SpriteFlags::Flag04) {
-			entry_array_remove(&entry_array, i--);
+			entry_array_remove(entry_array, i--);
 		}
 	}
-	return entry_array;
 }
 
-EntryArray corpse_search_rect(Box32 rect) {
-	return filter_corpse_array(index_search_rect(&corpse_index, rect));
+void corpse_search_rect(EntryArray* entry_array, Box32 rect) {
+	index_search_rect(entry_array, &corpse_index, rect);
+	filter_corpse_array(entry_array);
 }
 
-EntryArray corpse_search_square(Point16 center, u32 radius) {
-	return filter_corpse_array(index_search_square(&corpse_index, center, radius));
+void corpse_search_square(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_square(entry_array, &corpse_index, center, radius);
+	filter_corpse_array(entry_array);
 }
 
-EntryArray corpse_search_radial(Point16 center, u32 radius) {
-	return filter_corpse_array(index_search_radial(&corpse_index, center, radius));
+void corpse_search_radial(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_radial(entry_array, &corpse_index, center, radius);
+	filter_corpse_array(entry_array);
 }
 
-EntryArray effect_search_rect(Box32 rect) {
-	return index_search_rect(&effect_index, rect);
+void effect_search_rect(EntryArray* entry_array, Box32 rect) {
+	index_search_rect(entry_array, &effect_index, rect);
 }
 
-EntryArray effect_search_square(Point16 center, u32 radius) {
-	return index_search_square(&effect_index, center, radius);
+void effect_search_square(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_square(entry_array, &effect_index, center, radius);
 }
 
-EntryArray effect_search_radial(Point16 center, u32 radius) {
-	return index_search_radial(&effect_index, center, radius);
+void effect_search_radial(EntryArray* entry_array, Point16 center, u32 radius) {
+	index_search_radial(entry_array, &effect_index, center, radius);
 }
 
 void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids) {

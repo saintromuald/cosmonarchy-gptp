@@ -346,7 +346,8 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	{ // Spellcaster - restore energy on ally kill
-		EntryArray unit_array = unit_search_radial(unit->position, 11 * 32);
+		EntryArray unit_array = {};
+		unit_search_radial(&unit_array, unit->position, 11 * 32);
 		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
 
 		for (u32 i = 0; i < unit_array.count; ++i)
