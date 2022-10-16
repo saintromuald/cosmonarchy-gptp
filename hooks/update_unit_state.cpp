@@ -421,7 +421,7 @@ namespace hooks
 				}
 
 				regen *= 1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
-				unit->heal(regen, 0, false);
+				unit->heal_hp(regen, 0, false);
 			}
 
 			// Deliberate healing
@@ -449,7 +449,7 @@ namespace hooks
 
 				if (tick_heal)
 				{
-					unit->heal(tick_heal);
+					unit->heal_hp(tick_heal);
 				}
 			}
 

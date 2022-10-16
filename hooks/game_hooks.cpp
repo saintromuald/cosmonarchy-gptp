@@ -53,7 +53,7 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	} else if (dist <= 3 * 32) {
 		heal *= 1.5;
 	}
-	target->heal(heal * 256, shaman);
+	target->heal_hp(heal * 256, shaman);
 }
 
 #pragma pack(push, 8)
@@ -821,7 +821,7 @@ namespace hooks
 						unit_search_filter(&targets, unit, FilterAlly);
 						for (u32 i = 0; i < targets.count; ++i) {
 							Unit* target = targets.units[i];
-							target->heal(ZoryusthalethReconstitutionHealing, unit);
+							target->heal_hp(ZoryusthalethReconstitutionHealing, unit);
 							target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 							//scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
@@ -1113,7 +1113,7 @@ namespace hooks
 					}
 					else
 					{
-						unit->heal(CuirassSelfHeal);
+						unit->heal_hp(CuirassSelfHeal);
 						if (!unit->sprite->get_overlay(ImageId::StonewallProtocolOverlay))
 						{
 							unit->sprite->create_top_overlay(ImageId::StonewallProtocolOverlay, -3, -8);

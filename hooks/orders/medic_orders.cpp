@@ -175,7 +175,7 @@ namespace hooks
 						return 3;
 					}
 					scbw::decloak_proc(cleric);
-					target->heal(ClericHealValue, cleric);
+					target->heal_hp(ClericHealValue, cleric);
 					return 1;
 				}
 			}

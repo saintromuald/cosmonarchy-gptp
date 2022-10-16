@@ -179,12 +179,15 @@ struct Unit : public UnitLayout
 	/// Sets the unit's HP, and also updates burning / bleeding graphics and unit
 	/// strength data (used by the AI). HP is guaranteed not to overflow.
 	void set_hitpoints(s32 hitpoints);
-	void heal(s32 hitpoints, Unit* source = nullptr, bool restore = true);
-	void heal_shields(s32 shields, Unit* source = nullptr, bool restore = true);
-	void heal_overflow(s32 amount, Unit* source = nullptr, bool restore = true);
-	void heal_underflow(s32 amount, Unit* source = nullptr, bool restore = true);
-	void heal_energy(s32 energy, Unit* source = nullptr);
-	void heal_energy_overflow_shields(s32 amount, Unit* source = nullptr, bool restore = true);
+
+	// Returns reminder/overflow
+	u32 heal_hp(s32 amount, Unit* source = nullptr, bool restore = true);
+	u32 heal_shields(s32 amount, Unit* source = nullptr, bool restore = true);
+	u32 heal_energy(s32 amount, Unit* source = nullptr);
+
+	u32 heal_hp_then_shields(s32 amount, Unit* source = nullptr, bool restore = true);
+	u32 heal_shields_then_hp(s32 amount, Unit* source = nullptr, bool restore = true);
+	u32 heal_energy_then_shields(s32 amount, Unit* source = nullptr, bool restore = true);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damage_with(
