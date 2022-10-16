@@ -248,9 +248,9 @@ b32 parse_comment_condition(TriggerAction* action) {
 					area.box.h += area.box.y;
 					EntryArray units = {};
 					if (scouting_player) {
-						units = seen_unit_search_rect(scouting_player - 1, area.box);
+						seen_unit_search_rect(&units, scouting_player - 1, area.box);
 					} else {
-						units = unit_search_rect(area.box);
+						unit_search_rect(&units, area.box);
 					}
 					area.box.w -= area.box.x;
 					area.box.h -= area.box.y;
@@ -827,7 +827,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			area.box.w += area.box.x;
 			area.box.h += area.box.y;
-			EntryArray units = unit_search_rect(area.box);
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
 			area.box.w -= area.box.x;
 			area.box.h -= area.box.y;
 

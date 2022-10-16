@@ -2131,7 +2131,8 @@ namespace scbw
 			return;
 		}
 
-		EntryArray allied_structures = unit_search_radial(victim->position, 30 * 32);
+		EntryArray allied_structures = {};
+		unit_search_radial(&allied_structures, victim->position, 30 * 32);
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.count) {
 			for (u32 i = 0; i < 8; ++i) {
@@ -2164,12 +2165,6 @@ namespace scbw
 			|| unit_id == UnitId::ZergSpraithColony
 			|| unit_id == UnitId::ZergLarvoskColony
 			|| unit_id == UnitId::ZergNydusCesiant;
-	}
-
-	EntryArray get_writhing_web_sovroleths(Unit* unit) {
-		EntryArray sovroleths = unit_search_radial(unit->position, 8 * 32);
-		unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
-		return sovroleths;
 	}
 
 	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
@@ -2243,7 +2238,8 @@ namespace scbw
 		scbw::spawn_custom_creep(unit);
 
 		// Remove connected larva
-		EntryArray larvae = unit_search_radial(unit->position, 4 * 32);
+		EntryArray larvae = {};
+		unit_search_radial(&larvae, unit->position, 4 * 32);
 		unit_search_filter(&larvae, unit, 0, {UnitId::ZergLarva});
 		for (u32 i = 0; i < larvae.count; ++i) {
 			Unit* larva = larvae.units[i];

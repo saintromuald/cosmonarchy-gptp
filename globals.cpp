@@ -463,7 +463,8 @@ void Globals::frame_hook() {
 					});
 				} break;
 				case EffectId_SalamanderFire: {
-					EntryArray unit_array = unit_search_radial({(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
+					EntryArray unit_array = {};
+					unit_search_radial(&unit_array, {(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
 					unit_search_filter(&unit_array, nullptr, FilterNoAir);
 
 					for (u32 j = 0; j < unit_array.count; j++) {

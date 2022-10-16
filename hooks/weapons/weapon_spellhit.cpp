@@ -371,7 +371,8 @@ namespace hooks
 			helper::increment_unit_death_scores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination))
 			{
-				EntryArray units = unit_search_radial(attacker->position, 3 * 32);
+				EntryArray units = {};
+				unit_search_radial(&units, attacker->position, 3 * 32);
 				unit_search_filter(&units, attacker, FilterAlly | FilterIncludingSelf);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* unit = units.units[i];
