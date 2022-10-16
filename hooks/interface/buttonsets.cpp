@@ -602,7 +602,9 @@ namespace hooks {
 					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
-						if (buttonset_id == UnitId::ZergLarva)
+						if (buttonset_id == UnitId::ZergLarva
+						|| buttonset_id == UnitId::TerranMason
+						|| buttonset_id == UnitId::TerranTalos)
 						{
 							current_button_state = Button_State::Enabled;
 						}
@@ -943,6 +945,113 @@ namespace hooks {
 						}
 
 						// Experiment to see if extended unit ids can be forced on lol
+						if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
+						{
+							switch (current_button->requirement_var)
+							{
+								case UnitId::TerranCommandCenter:
+								case UnitId::TerranWatchdog:
+								case UnitId::TerranReservoir:
+								case UnitId::TerranBarracks:
+								case UnitId::TerranFulcrum:
+								case UnitId::TerranStarpad:
+								case UnitId::TerranBunker:
+								case UnitId::TerranEngineeringBay:
+								{
+									current_button_state = Button_State::Enabled;
+								} break;
+								case UnitId::TerranTreasury:
+								case UnitId::TerranSentinel:
+								case UnitId::TerranScienceFacility:
+								case UnitId::TerranCaptaincy:
+								case UnitId::TerranMantle:
+								case UnitId::TerranStarport:
+								{
+									if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranEngineeringBay)) {
+										current_button_state = Button_State::Enabled;
+									}
+									else {
+										current_button_state = Button_State::Disabled;
+									}
+								} break;
+								case UnitId::TerranParthenon:
+								case UnitId::TerranIonCannon:
+								case UnitId::TerranQuantumInstitute:
+								case UnitId::TerranApothecary:
+								case UnitId::TerranIronFoundry:
+								case UnitId::TerranNaniteAssembly:
+								{
+									if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranScienceFacility)) {
+										current_button_state = Button_State::Enabled;
+									}
+									else {
+										current_button_state = Button_State::Disabled;
+									}
+								} break;
+								/*
+								case UnitId::TerranCapitol:
+								case UnitId::TerranAmphitheater:
+								{
+									if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranQuantumInstitute)) {
+										current_button_state = Button_State::Enabled;
+									}
+									else {
+										current_button_state = Button_State::Disabled;
+									}
+								}
+								*/
+								default:
+								{
+									current_button_state = Button_State::Invisible;
+								} break;
+							}
+						}
+
+						if (unit->id == UnitId::TerranParthenon)
+						{
+							if (current_button->requirement_var == UnitId::TerranTalos
+							||	current_button->requirement_var == UnitId::TerranArmistice
+							||	current_button->requirement_var == UnitId::TerranPythean
+							&&	unit->status & UnitStatus::GroundedBuilding)
+							{
+								current_button_state = Button_State::Enabled;
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
+
+						if (unit->id == UnitId::TerranMantle)
+						{
+							if (current_button->requirement_var == UnitId::TerranRamesses
+							||	current_button->requirement_var == UnitId::TerranDurendal
+							||	current_button->requirement_var == UnitId::TerranCataphract
+							&&	unit->status & UnitStatus::GroundedBuilding)
+							{
+								current_button_state = Button_State::Enabled;
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
+
+						if (unit->id == UnitId::TerranApothecary)
+						{
+							if (current_button->requirement_var == UnitId::TerranDilettante
+							||	current_button->requirement_var == UnitId::TerranVirtuoso
+							||	current_button->requirement_var == UnitId::TerranHypnagogue
+							&&	unit->status & UnitStatus::GroundedBuilding)
+							{
+								current_button_state = Button_State::Enabled;
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
+
 						if (unit->id == UnitId::ProtossGrandLibrary)
 						{
 							if (current_button->requirement_var == UnitId::ProtossAmaranth

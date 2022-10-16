@@ -4,18 +4,20 @@
 extern const u32 Func_GetMaxEnergy; // Defined in Unit.cpp
 namespace
 {
-	void __declspec(naked) getUnitMaxEnergyWrapper()
+	void __declspec(naked) get_unit_max_energy_wrapper()
 	{
 		static Unit* unit;
-		static u16 maxEnergy;
-		__asm {
+		static u16 max_energy;
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
-		maxEnergy = hooks::get_unit_max_energy(unit);
-		__asm {
+		max_energy = hooks::get_unit_max_energy(unit);
+		__asm
+		{
 			POPAD
-			MOVZX EAX, maxEnergy
+			MOVZX EAX, max_energy
 			RETN
 		}
 	}
@@ -25,6 +27,6 @@ namespace hooks
 {
 	void inject_unit_max_energy_hooks()
 	{
-		jump_patch(getUnitMaxEnergyWrapper, Func_GetMaxEnergy, 7);
+		jump_patch(get_unit_max_energy_wrapper, Func_GetMaxEnergy, 7);
 	}
 }

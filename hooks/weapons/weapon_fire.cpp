@@ -249,63 +249,63 @@ namespace hooks
 					// Missile spawn positions start
 					case WeaponId::PhotonCannonPrismaticCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 1, false);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanLaunchPos, 1, false);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarLaunchPos, 1, false);
 					} break;
 					case WeaponId::EpigraphLitanyCannons:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaserPos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaunchPos, 4, false);
 					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanMissilePos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanLaunchPos, 4, false);
 					} break;
 					case WeaponId::StarSovereignCelestialCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignCannonPos, 2, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignLaunchPos, 2, false);
 					} break;
 					case WeaponId::SentinelCerberusRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelLaunchPos, 1, false);
 					} break;
 					case WeaponId::GoliathContenderMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueGoliathMissilePos, 2, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueGoliathLaunchPos, 2, false);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreLaunchPos, 1, false);
 					} break;
 					case WeaponId::PenumbraErebolShockCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaserPos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaunchPos, 1, false);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaserPos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 4, false);
 					} break;
 					case WeaponId::SundogBlindsideRockets:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSundogRocketPos, 3, false, 0, 2);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSundogLaunchPos, 3, false, 0, 2);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurMissilePos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurLaunchPos, 4, false);
 					} break;
 					case WeaponId::PegasusRetractorBatteries:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusLaserPos, 2, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusLaunchPos1, 2, false);
 					} break;
 					case WeaponId::PegasusLancetMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusMissilePos, 4, true);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusLaunchPos2, 4, true);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
@@ -322,41 +322,47 @@ namespace hooks
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaserPos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaunchPos, 4, false);
 					} break;
 					case WeaponId::SkithrokorSkitteringSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorLaunchPos, 1, false);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskMissilePos, 2, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskLaunchPos, 2, false);
 					} break;
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskMissilePos, 2, true);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskLaunchPos, 2, true);
 					} break;
 					case WeaponId::AxitriliskSearingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskMissilePos, 1, true);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskLaunchPos, 1, true);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskLaunchPos, 1, false);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorMissilePos, 2, false, 0, 1);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorLaunchPos, 2, false, 0, 1);
 					} break;
 					case WeaponId::SporeColonySeekerSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSporeColonyMissilePos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSpraithColonyLaunchPos, 1, false);
 					} break;
 					// Missile spawn positions end
+					case WeaponId::CataphractLonginiusCannons:
+					{
+						// Multi-Attack IV
+					//	scbw::set_missile_source_pos(unit, weapon_id, ValueCataphractLaunchPos, 4, false);
+						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
+					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{
 						// Salamander missile target positions
-						auto rotate = unitExt->values[ValueSalamanderAtkPos];
+						auto rotate = unitExt->values[ValueSalamanderLaunchPos];
 						if (rotate == 1)
 						{
 							create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
@@ -370,7 +376,7 @@ namespace hooks
 						{
 							rotate = 0;
 						}
-						unitExt->values[ValueSalamanderAtkPos] = rotate;
+						unitExt->values[ValueSalamanderLaunchPos] = rotate;
 					} break;
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
@@ -425,7 +431,7 @@ namespace hooks
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhotonCannonMissilePos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 4, false);
 						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
 					} break;
 				}

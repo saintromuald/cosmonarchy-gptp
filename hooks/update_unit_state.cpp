@@ -300,7 +300,7 @@ namespace hooks
 		*/
 
 		// Shield regeneration
-		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed) {
+		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && unit->id != UnitId::TerranVirtuoso) {
 			s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 			u32 overlay = ImageId::RechargeShields_Small;

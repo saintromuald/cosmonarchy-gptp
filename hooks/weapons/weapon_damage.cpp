@@ -718,9 +718,9 @@ namespace hooks
 					{
 						// Magnetar - Law of Attraction - Pull target to attacker
 						if (!(units_dat::base_property[data.target->id] & UnitProperty::Building)
-							|| (data.target->status & UnitStatus::InAir
-								&& data.target->main_order_id != OrderId::Liftoff
-								&& data.target->main_order_id != OrderId::BuildingLand))
+						||   (data.target->status & UnitStatus::InAir
+							&& data.target->main_order_id != OrderId::Liftoff
+							&& data.target->main_order_id != OrderId::BuildingLand))
 						{
 							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacement_time = 5;
@@ -742,6 +742,11 @@ namespace hooks
 		u32 damage_dealt = data.final_damage + data.shield_reduce_amount;
 		switch (data.weapon_id)
 		{
+			case WeaponId::VirtuosoThespianRifle:
+			{
+				// Virtuoso Curtain Call passive - heal energy, then shields
+				data.attacker->heal_energy_overflow_shields((damage_dealt / 2) * 256, data.attacker);
+			} break;
 			case WeaponId::UltrokorKaiserBlades:
 			{
 				// Ultrokor Saber Siphon passive
@@ -906,8 +911,20 @@ namespace hooks
 			globals.init_revive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
 		}
 
-		switch (data.target->id)
-		{ // TARGET SWITCH! MUST BE UNIT
+		switch (data.target->id) // TARGET SWITCH! MUST BE UNIT
+		{
+			case UnitId::TerranVirtuoso:
+			{
+				// Virtuoso Curtain Call passive - Convert energy into emergency health
+				u32 curtain_call_hp = data.target->hitpoints + (data.target->energy / 2);
+				if (curtain_call_hp > data.final_damage)
+				{
+					// TODO: Audiovisuals
+					data.target->set_hitpoints(curtain_call_hp - data.final_damage);
+					data.target->energy = 0;
+					data.final_damage = 0;
+				}
+			} break;
 			case UnitId::ProtossArchon:
 			{
 				// Archon - Astral Aegis

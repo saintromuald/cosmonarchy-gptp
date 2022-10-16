@@ -194,6 +194,13 @@ namespace WeaponId {
 		OberonAxisDrivers					= 157,
 		OberonAcheronMissiles				= 158,
 		AionLazarusSalvo					= 159,
+		RamessesPharoahCannons				= 170,
+		DurendalFistOfAbaddon				= 171,
+		DurendalPhilistineAutogun			= 172,
+		CataphractLonginiusCannons			= 173,
+		DilettanteUpstartRifle				= 174,
+		VirtuosoThespianRifle				= 175,
+		HypnagogueKaleidoscopeCannon		= 176,
 
 		// Protoss \\
 				

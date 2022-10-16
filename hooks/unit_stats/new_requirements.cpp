@@ -64,6 +64,7 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier5] = true;
 
 		// TERRAN
+		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter)
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos))
 		{
 			switch (unit_id)
@@ -85,7 +86,7 @@ namespace hooks {
 				case UnitId::TerranTreasury:
 				case UnitId::TerranSentinel:
 				case UnitId::TerranCaptaincy:
-			//	case UnitId::TerranMantle:
+				case UnitId::TerranMantle:
 				case UnitId::TerranStarport:
 				case UnitId::TerranScienceFacility:
 				{
@@ -94,6 +95,9 @@ namespace hooks {
 						return true;
 					}
 				} break;
+				case UnitId::TerranParthenon:
+				case UnitId::TerranQuantumInstitute:
+				case UnitId::TerranApothecary:
 				case UnitId::TerranIronFoundry:
 				case UnitId::TerranNaniteAssembly:
 				case UnitId::TerranIonCannon:
@@ -122,12 +126,17 @@ namespace hooks {
 						return true;
 					}
 				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranParthenon))
+		{
+			switch (unit_id)
+			{
 				case UnitId::TerranTalos:
+				case UnitId::TerranArmistice:
+				case UnitId::TerranPythean:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -1231,7 +1240,7 @@ namespace hooks {
 					case UnitId::TerranTreasury:
 					case UnitId::TerranSentinel:
 					case UnitId::TerranCaptaincy:
-				//	case UnitId::TerranMantle:
+					case UnitId::TerranMantle:
 					case UnitId::TerranStarport:
 					case UnitId::TerranScienceFacility:
 					{
@@ -1241,6 +1250,9 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
+					case UnitId::TerranParthenon:
+					case UnitId::TerranQuantumInstitute:
+					case UnitId::TerranApothecary:
 					case UnitId::TerranIronFoundry:
 					case UnitId::TerranNaniteAssembly:
 					case UnitId::TerranIonCannon:
@@ -1264,16 +1276,6 @@ namespace hooks {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
-					}
-					case UnitId::TerranTalos:
-					{
-						if (inAir) {
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier3]) {
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
 					}
 					case UnitId::TerranComsatStation:
 					{
@@ -1345,6 +1347,22 @@ namespace hooks {
 							return TECH_ACTIVE;
 						}
 						return TECH_LOCKED;
+					}
+				}
+			} break;
+			case UnitId::TerranParthenon:
+			{
+				switch (unit_id)
+				{
+					case UnitId::TerranTalos:
+					case UnitId::TerranArmistice:
+					case UnitId::TerranPythean:
+					{
+						if (inAir)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
 					}
 				}
 			} break;
@@ -1481,72 +1499,14 @@ namespace hooks {
 					case UnitId::TerranAncile:
 					case UnitId::TerranTrojan:
 					{
-						return true;
-					} break;
-				}
-			}
-			case UnitId::TerranStarport:
-			{
-				switch (unit_id)
-				{
-					case UnitId::TerranMunitionsBay:
-					{
-						if (hasAddon || isTraining)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranControlTower:
-					{
-						if (hasAddon || isTraining)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier3])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranGorgon:
-					case UnitId::TerranWyvern:
-					case UnitId::TerranValkyrie:
-					{
 						if (inAir)
 						{
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranSundog:
-					case UnitId::TerranSalamander:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						if (addonId == UnitId::TerranMunitionsBay)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
-					case UnitId::TerranAzazel:
-					case UnitId::TerranSeraph:
-					{
-						if (inAir)
-						{
-							return TECH_HIDDEN;
-						}
-						if (addonId == UnitId::TerranControlTower)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
 				}
-			} break;
+			}
 			case UnitId::TerranCaptaincy:
 			{
 				switch (unit_id)
@@ -1609,6 +1569,100 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranMantle:
+			{
+				switch (unit_id)
+				{
+					case UnitId::TerranRamesses:
+					case UnitId::TerranDurendal:
+					case UnitId::TerranCataphract:
+					{
+						if (inAir)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
+				}
+			}
+			case UnitId::TerranStarport:
+			{
+				switch (unit_id)
+				{
+				case UnitId::TerranMunitionsBay:
+				{
+					if (hasAddon || isTraining)
+					{
+						return TECH_HIDDEN;
+					}
+					return TECH_LOCKED;
+				}
+				case UnitId::TerranControlTower:
+				{
+					if (hasAddon || isTraining)
+					{
+						return TECH_HIDDEN;
+					}
+					if (TierUnlocked[RaceId::Terran][Tier3])
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
+				}
+				case UnitId::TerranGorgon:
+				case UnitId::TerranWyvern:
+				case UnitId::TerranValkyrie:
+				{
+					if (inAir)
+					{
+						return TECH_HIDDEN;
+					}
+					return TECH_ACTIVE;
+				}
+				case UnitId::TerranSundog:
+				case UnitId::TerranSalamander:
+				{
+					if (inAir)
+					{
+						return TECH_HIDDEN;
+					}
+					if (addonId == UnitId::TerranMunitionsBay)
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
+				}
+				case UnitId::TerranAzazel:
+				case UnitId::TerranSeraph:
+				{
+					if (inAir)
+					{
+						return TECH_HIDDEN;
+					}
+					if (addonId == UnitId::TerranControlTower)
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
+				}
+				}
+			} break;
+			case UnitId::TerranApothecary:
+			{
+				switch (unit_id)
+				{
+				case UnitId::TerranDilettante:
+				case UnitId::TerranVirtuoso:
+				case UnitId::TerranHypnagogue:
+				{
+					if (inAir)
+					{
+						return TECH_HIDDEN;
+					}
+					return TECH_ACTIVE;
+				}
+				}
+			}
 			case UnitId::TerranIronFoundry:
 			{
 				switch (unit_id)

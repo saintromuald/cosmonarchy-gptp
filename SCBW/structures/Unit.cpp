@@ -555,9 +555,22 @@ void Unit::heal_energy(s32 energy, Unit* source)
 	assert(this);
 	if (this->energy == helper::get_unit_max_energy(this) * 256)
 	{
+		scbw::print("true");
 		return;
 	}
 	this->energy = std::min(this->energy + energy, helper::get_unit_max_energy(this) * 256);
+}
+
+// @Todo: Probably convert overflows to a single function that handles typed overflows? -Pr0nogo
+// Also, this doesn't work yet.
+void Unit::heal_energy_overflow_shields(s32 amount, Unit* source, bool restore)
+{
+	heal_energy(amount, source);
+	s32 shields = this->energy + amount - (helper::get_unit_max_energy(this) * 256);
+	if (shields > 0)
+	{
+		heal_shields(shields, source, restore);
+	}
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files

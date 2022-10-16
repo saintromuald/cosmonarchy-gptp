@@ -14,6 +14,10 @@ namespace hooks
 			{
 				energy = 150;
 			} break;
+			case UnitId::TerranVirtuoso:
+			{
+				energy = 100;
+			} break;
 		}
 		return std::min(energy * 256, (u32)USHRT_MAX);
 	}

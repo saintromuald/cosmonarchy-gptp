@@ -472,7 +472,7 @@ namespace hooks
 
 			// Implict ESC for closing submenus. -Pr0nogo
 			// @Veeq7 unsure if this is actually safe and/or sane?
-			if (g_is_keycode_used[VK_ESCAPE] && scbw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id))
+			if (g_is_keycode_used[VK_ESCAPE] && scbw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id) && !*g_is_game_paused)
 			{
 				hooks::update_buttonset();
 			}

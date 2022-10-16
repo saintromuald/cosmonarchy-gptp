@@ -56,6 +56,18 @@ namespace UnitId
 		TerranHippogriff									= 262,
 		TerranOberon										= 263,
 		TerranAion											= 264,
+		TerranRamesses										= 281,
+		TerranDurendal										= 282,
+		TerranCataphract									= 283,
+		TerranDilettante									= 285,
+		TerranVirtuoso										= 286,
+		TerranHypnagogue									= 287,
+		TerranArmistice										= 289,
+		TerranPythean										= 290,
+
+	// Terran-Unit-Factional
+		TerranWendigo										= 275,
+		TerranSouthpaw										= 276,
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
@@ -76,6 +88,9 @@ namespace UnitId
 		TerranFutureStation									= 257,
 		TerranQuantumInstitute								= 259,
 		TerranAerie											= 260,
+		TerranMantle										= 280,
+		TerranApothecary									= 284,
+		TerranParthenon = 288,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan
@@ -122,6 +137,8 @@ namespace UnitId
 		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2
 		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1
 		ProtossMatrix										= 252,
+		ProtossStridentStratum								= 278,
+		ProtossAuxiliaryOasis								= 279,
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
@@ -156,6 +173,8 @@ namespace UnitId
 		ZergTosgrilisk										= 271,
 		ZergGhitorokor										= 272,
 		ZergZobriolisk										= 273,
+		ZergTetcaerokor										= 274,
+		ZergSelkerilisk										= 277,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
