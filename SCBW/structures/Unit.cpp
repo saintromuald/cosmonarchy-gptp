@@ -504,8 +504,7 @@ static u32 cap_value(u32 value, u32 max, s32* remainder) {
 u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 	assert(this);
 	assert(value >= 0);
-
-	if (value == 0 || this->hitpoints == this->get_max_hp_raw()) { // If unit is fully healed already, skip healing
+	if (this->hitpoints == this->get_max_hp_raw()) { // If unit is fully healed already, skip healing
 		return value;
 	}
 
@@ -527,8 +526,7 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 	assert(this);
 	assert(value >= 0);
-
-	if (value == 0 || this->shields == this->get_max_shields_raw()) { // skip healing if max shields already
+	if (this->shields == this->get_max_shields_raw()) { // skip healing if max shields already
 		return value;
 	}
 
@@ -549,8 +547,7 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 u32 Unit::heal_energy(s32 value, Unit* source) {
 	assert(this);
 	assert(value >= 0);
-
-	if (value == 0 || this->energy == helper::get_unit_max_energy(this) * 256) {
+	if (this->energy == helper::get_unit_max_energy(this) * 256) {
 		return true;
 	}
 
