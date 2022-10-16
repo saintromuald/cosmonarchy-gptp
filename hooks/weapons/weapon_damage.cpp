@@ -753,7 +753,7 @@ namespace hooks
 			case WeaponId::VirtuosoThespianRifle:
 			{
 				// Virtuoso Curtain Call passive - heal energy, then shields
-				data.attacker->heal_energy_then_shields((damage_dealt / 2) * 256, data.attacker);
+				data.attacker->heal_energy_then_shields(damage_dealt / 2, data.attacker);
 			} break;
 			case WeaponId::UltrokorKaiserBlades:
 			{
