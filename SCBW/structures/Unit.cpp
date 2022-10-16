@@ -526,17 +526,17 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 	assert(this);
 	assert(value >= 0);
-	if (this->shields == this->get_max_shields_raw()) { // skip healing if max shields already
+	if (this->shields == this->get_max_shields_raw()) { // Skip healing if max shields already
 		return value;
 	}
 
 	this->shields = cap_value(this->shields + value, this->get_max_shields_raw(), &value);
-	this->set_hitpoints(this->hitpoints); // Updates unit strength
+	this->set_hitpoints(this->hitpoints); // Also updates unit strength
 
 	UnitExt* this_ext = get_unit_ext(this);
 	this_ext->shield_regen_timer = -1;
 
-	// If heals to full clear debuffs
+	// If heals to full, clear debuffs
 	if (restore && this->shields == this->get_max_shields_raw()) {
 		scbw::restore_func(this);
 	}

@@ -359,14 +359,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case WeaponId::QuaziliskAcridBarbs:
-			{
-				// Quazilisk - Melting Points
-				// TODO: Replace with armor pen? Remove?
-				f32 missing_factor = 1 - ((f32)data.target->hitpoints / data.target->get_max_hp_raw());
-				f32 damage_increase = floor(missing_factor / QuazaliskPassiveFactor);
-				data.final_damage += damage_increase * HealthMultiplier;
-			} break;
 			case WeaponId::AlmaksaliskPiercingSpines:
 			{
 				// Almaksalisk - Flanking DrolethSpines
@@ -479,6 +471,16 @@ namespace hooks
 						data.target->order_computer(OrderId::Stop);
 						data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 						helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
+					}
+				} break;
+				case UnitId::TerranDilettante:
+				{
+					target_ext->values[ValueDilettanteLuck]++;
+					if (target_ext->values[ValueDilettanteLuck] >= 4)
+					{
+						// @Todo: Audiovisuals
+						target_ext->values[ValueDilettanteLuck] = 0;
+						data.final_damage = 0;
 					}
 				} break;
 			}
@@ -733,14 +735,6 @@ namespace hooks
 						}
 					} break;
 				}
-
-				target_ext->values[ValueDilettanteLuck]++;
-				if (target_ext->values[ValueDilettanteLuck] >= 4)
-				{
-					// @Todo: Audiovisuals
-					target_ext->values[ValueDilettanteLuck] = 0;
-					data.final_damage = 0;
-				}
 			}
 		}
 	}
@@ -753,7 +747,7 @@ namespace hooks
 			case WeaponId::VirtuosoThespianRifle:
 			{
 				// Virtuoso Curtain Call passive - heal energy, then shields
-				data.attacker->heal_energy_then_shields((damage_dealt / 2) * 256, data.attacker);
+				data.attacker->heal_energy_then_shields((damage_dealt / 2), data.attacker);
 			} break;
 			case WeaponId::UltrokorKaiserBlades:
 			{

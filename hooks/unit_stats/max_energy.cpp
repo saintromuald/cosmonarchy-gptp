@@ -18,6 +18,10 @@ namespace hooks
 			{
 				energy = 100;
 			} break;
+			case UnitId::TerranHypnagogue:
+			{
+				energy = 150;
+			} break;
 		}
 		return std::min(energy * 256, (u32)USHRT_MAX);
 	}
