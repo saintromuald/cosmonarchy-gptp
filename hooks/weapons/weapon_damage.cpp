@@ -279,13 +279,13 @@ namespace hooks
 			}
 		}
 
-		// Isthrathaleth Dark Swarm
+		// Isthrathaleth Carapace Swarm
 		if (darkswarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor))
 		{
 			data.damage_type = damage_type::Independent;
 		}
 
-		// Observance Armor Rend
+		// Observance armor reduction
 		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
 
 		switch (data.weapon_id) // Damage divisor calc
@@ -386,7 +386,7 @@ namespace hooks
 		{
 			UnitExt* attackerExt = get_unit_ext(data.attacker);
 
-			// Ignore dark swarm!
+			// Ignore Carapace Swarm!
 			// START
 
 			switch (data.attacker->id) {
@@ -428,7 +428,7 @@ namespace hooks
 				apply_ensnare(data.target);
 			}
 
-			// Ignore dark swarm!
+			// Ignore Carapace Swarm!
 			// END
 
 			switch (data.target->id)
@@ -483,7 +483,7 @@ namespace hooks
 				} break;
 			}
 
-			// These bypass Dark Swarm
+			// These bypass Carapace Swarm
 			switch (data.weapon_id)
 			{
 				case WeaponId::AnthelionEventHorizon:
@@ -732,6 +732,14 @@ namespace hooks
 							target_ext->repulsion_vector = displacement;
 						}
 					} break;
+				}
+
+				target_ext->values[ValueDilettanteLuck]++;
+				if (target_ext->values[ValueDilettanteLuck] >= 4)
+				{
+					// @Todo: Audiovisuals
+					target_ext->values[ValueDilettanteLuck] = 0;
+					data.final_damage = 0;
 				}
 			}
 		}

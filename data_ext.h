@@ -117,6 +117,7 @@ enum ExtValueId
 	ValueEpigraphLaunchPos,
 	ValueMatrixLaunchPos,
 	ValueCataphractLaunchPos,
+	ValueDilettanteLuck,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
