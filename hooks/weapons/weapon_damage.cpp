@@ -753,12 +753,12 @@ namespace hooks
 			case WeaponId::VirtuosoThespianRifle:
 			{
 				// Virtuoso Curtain Call passive - heal energy, then shields
-				data.attacker->heal_energy_overflow_shields((damage_dealt / 2) * 256, data.attacker);
+				data.attacker->heal_energy_then_shields((damage_dealt / 2) * 256, data.attacker);
 			} break;
 			case WeaponId::UltrokorKaiserBlades:
 			{
 				// Ultrokor Saber Siphon passive
-				data.attacker->heal(damage_dealt * 0.5, data.attacker);
+				data.attacker->heal_hp(damage_dealt * 0.5, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
@@ -774,7 +774,7 @@ namespace hooks
 				const s32 shields = data.attacker->getCurrentShieldsInGame();
 				const s32 max_shields = data.attacker->get_max_shields_in_game();
 				u32 life_heal = damage_dealt * MathUtils::map(shields, 0, max_shields, 1.0, 0.0, true);
-				data.attacker->heal(life_heal, data.attacker);
+				data.attacker->heal_hp(life_heal, data.attacker);
 
 				const s32 hp = data.attacker->get_current_hp_ingame();
 				const s32 maxHp = data.attacker->get_max_hp_ingame();
@@ -831,7 +831,7 @@ namespace hooks
 			data.final_damage = 0;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
-			data.target->heal_overflow(target_ext->values[ValueEmpressPassiveStacks] * 256 * 2.5, target_ext->units[UnitEmpressSource]);
+			data.target->heal_hp_then_shields(target_ext->values[ValueEmpressPassiveStacks] * 256 * 2.5, target_ext->units[UnitEmpressSource]);
 			data.target->remove_timer = 1 + target_ext->values[ValueEmpressPassiveStacks] * 24 * 0.25;
 			data.target->give_to(target_ext->values[ValueEmpressSourcePlayer]);
 			target_ext->values[ValueEmpressPassiveStacks] = 0;

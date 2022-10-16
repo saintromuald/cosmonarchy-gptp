@@ -384,7 +384,7 @@ namespace hooks
 					{
 						unit->energy = energyMax;
 						power -= diff;
-						unit->heal_overflow(power, attacker);
+						unit->heal_hp_then_shields(power, attacker);
 					}
 					else
 					{

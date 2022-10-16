@@ -492,10 +492,21 @@ void Unit::set_hitpoints(s32 hitpoints)
 	}
 }
 
-void Unit::heal(s32 hitpoints, Unit* source, bool restore) {
+static u32 cap_value(u32 value, u32 max, u32* remainder) {
+	if (value >= max) {
+		*remainder = value - max;
+		return value;
+	}
+	return value;
+}
+
+u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 	assert(this);
+	assert(value >= 0);
+
+	if (value == 0) return 0;
 	if (this->hitpoints == this->get_max_hp_raw()) { // If unit is fully healed already, skip healing
-		return;
+		return value;
 	}
 
 	// Cohort - Servile Vigor
@@ -503,74 +514,71 @@ void Unit::heal(s32 hitpoints, Unit* source, bool restore) {
 		hitpoints *= 2;
 	}
 
-	set_hitpoints(std::min((u32)this->hitpoints + hitpoints, this->get_max_hp_raw()));
+	u32 remainder = 0;
+	set_hitpoints(cap_value(this->hitpoints + hitpoints, this->get_max_hp_raw(), &remainder));
 
-	// If the unit is fully healed after this, clear any debuffs
-	if (this->hitpoints == this->get_max_hp_raw() && restore) {
+	// If heals to full clear debuffs
+	if (restore && this->hitpoints == this->get_max_hp_raw()) {
 		scbw::restore_func(this);
 	}
+
+	return remainder;
 }
 
-void Unit::heal_shields(s32 shields, Unit* source, bool restore)
-{
+u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 	assert(this);
+	assert(value >= 0);
+
+	if (value == 0) return 0;
 	if (this->shields == this->get_max_shields_raw()) { // skip healing if max shields already
-		return;
+		return value;
 	}
 
-	this->shields = std::min((u32)this->shields + shields, this->get_max_shields_raw());
+	u32 remainder = 0;
+	this->shields = cap_value(this->shields + shields, this->get_max_shields_raw(), &remainder);
 	this->set_hitpoints(this->hitpoints); // Updates unit strength
 
 	UnitExt* this_ext = get_unit_ext(this);
 	this_ext->shield_regen_timer = -1;
 
 	// If heals to full clear debuffs
-	if (this->shields == this->get_max_shields_raw() && restore) {
+	if (restore && this->shields == this->get_max_shields_raw()) {
 		scbw::restore_func(this);
 	}
+
+	return remainder;
 }
 
-void Unit::heal_overflow(s32 amount, Unit* source, bool restore)
-{
-	heal(amount, source, restore);
-	s32 shields = this->hitpoints + amount - get_max_hp_raw();
-	if (shields > 0)
-	{
-		heal_shields(shields, source, restore);
-	}
-}
-
-void Unit::heal_underflow(s32 amount, Unit* source, bool restore)
-{
-	heal_shields(amount, source, restore);
-	s32 health = shields + amount - get_max_shields_raw();
-	if (health > 0)
-	{
-		heal(health, source, restore);
-	}
-}
-
-void Unit::heal_energy(s32 energy, Unit* source)
-{
+u32 Unit::heal_energy(s32 value, Unit* source) {
 	assert(this);
-	if (this->energy == helper::get_unit_max_energy(this) * 256)
-	{
-		scbw::print("true");
-		return;
+	assert(value >= 0);
+
+	if (value == 0) return 0;
+	if (this->energy == helper::get_unit_max_energy(this) * 256) {
+		return true;
 	}
-	this->energy = std::min(this->energy + energy, helper::get_unit_max_energy(this) * 256);
+
+	u32 remainder = 0;
+	this->energy = cap_value(this->energy + energy, helper::get_unit_max_energy(this) * 256, &remainder);
+	return remainder;
 }
 
-// @Todo: Probably convert overflows to a single function that handles typed overflows? -Pr0nogo
-// Also, this doesn't work yet.
-void Unit::heal_energy_overflow_shields(s32 amount, Unit* source, bool restore)
-{
-	heal_energy(amount, source);
-	s32 shields = this->energy + amount - (helper::get_unit_max_energy(this) * 256);
-	if (shields > 0)
-	{
-		heal_shields(shields, source, restore);
-	}
+u32 Unit::heal_hp_then_shields(s32 amount, Unit* source, bool restore) {
+	u32 remainder = heal_hp(amount, source, restore);
+	remainder = heal_shields(shields, source, restore);
+	return remainder;
+}
+
+u32 Unit::heal_shields_then_hp(s32 amount, Unit* source, bool restore) {
+	u32 remainder = heal_shields(amount, source, restore);
+	remainder = heal_hp(remainder, source, restore);
+	return remainder;
+}
+
+u32 Unit::heal_energy_then_shields(s32 amount, Unit* source, bool restore) {
+	u32 remainder = heal_energy(amount, source);
+	remainder = heal_shields(remainder, source, restore);
+	return remainder;
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files

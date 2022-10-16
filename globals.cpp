@@ -418,7 +418,7 @@ void Globals::frame_hook() {
 					UnitExt* revivedExt = get_unit_ext(revived);
 					revived->hitpoints = 1;
 					revived->shields = 0;
-					revived->heal_overflow(revivingUnit.hp);
+					revived->heal_hp_then_shields(revivingUnit.hp);
 					revived->energy = revivingUnit.energy;
 					revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					revived->play_iscript_animation(IscriptAnimation::Unused1);
@@ -483,7 +483,7 @@ void Globals::frame_hook() {
 						{
 							return;
 						}
-						unit->heal_underflow(4 * 256 / framePeriod, effect->source, true); // this math seems wrong
+						unit->heal_shields_then_hp(4 * 256 / framePeriod, effect->source, true); // this math seems wrong
 					});
 				} break;
 				case EffectId_CausticDischarge: {
