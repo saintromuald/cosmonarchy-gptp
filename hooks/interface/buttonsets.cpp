@@ -1385,6 +1385,34 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranDilettante:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Dilettante - Beginner's Luck
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranVirtuoso:
+								{
+									if (current_button->icon_id == IconId::DefensiveMatrix) // Virtuoso - Curtain Call
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								}
+								case UnitId::TerranHypnagogue:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Hypnagogue - Paradigm Shift
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAnticthon:
+								{
+									if (current_button->icon_id == IconId::RilirokorToxicSpores) // Anticthon - Counter-Proposal
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranAncile:
 								{
 									if (current_button->icon_id == IconId::DefensiveMatrix) // Ancile - Providence
@@ -1402,24 +1430,16 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossEmpress:
+								{
+									if (current_button->icon_id == IconId::ParticleBeamHarvest) // Empress- Anodyne Annex
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								}
+								break;
 							}
-
-							if (unit->id == UnitId::ZergAxitrilisk &&  // Axitrilisk Sating Strikes passive 
-								current_button->icon_id == IconId::RoarUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossEmpress &&  // Empress Anodyne Annex passive 
-								current_button->icon_id == IconId::ParticleBeamHarvest)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranAnticthon &&  // Anticthon Counter-Proposal passive
-								current_button->icon_id == IconId::RilirokorToxicSpores)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranSavant &&  // Savant Entropy Gauntlets passive
+							if (unit->id == UnitId::TerranSavant &&  // Savant Entropy Gauntlets passive
 								current_button->icon_id == IconId::DidactPhaseDisruptorCannon &&
 								scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0)
 							{
