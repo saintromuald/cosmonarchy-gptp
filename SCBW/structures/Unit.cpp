@@ -547,11 +547,11 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 u32 Unit::heal_energy(s32 value, Unit* source) {
 	assert(this);
 	assert(value >= 0);
-	if (this->energy == helper::get_unit_max_energy(this) * 256) {
-		return true;
+	if (this->energy == this->get_max_energy()) {
+		return value;
 	}
 
-	this->energy = cap_value(this->energy + value, helper::get_unit_max_energy(this) * 256, &value);
+	this->energy = cap_value(this->energy + value, this->get_max_energy(), &value);
 	return value;
 }
 

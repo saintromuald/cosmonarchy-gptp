@@ -854,7 +854,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergSovroleth:
 			{
-				{
+				{	
 					EntryArray sovroleths = {};
 					unit_search_radial(&sovroleths, unit->position, 8 * 32);
 					unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
