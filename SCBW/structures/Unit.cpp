@@ -493,10 +493,11 @@ void Unit::set_hitpoints(s32 hitpoints)
 }
 
 static u32 cap_value(u32 value, u32 max, u32* remainder) {
-	if (value >= max) {
+	if (value > max) {
 		*remainder = value - max;
-		return value;
+		return max;
 	}
+	*remainder = 0;
 	return value;
 }
 
@@ -515,7 +516,7 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 	}
 
 	u32 remainder = 0;
-	set_hitpoints(cap_value(this->hitpoints + hitpoints, this->get_max_hp_raw(), &remainder));
+	set_hitpoints(cap_value(this->hitpoints + value, this->get_max_hp_raw(), &remainder));
 
 	// If heals to full clear debuffs
 	if (restore && this->hitpoints == this->get_max_hp_raw()) {
@@ -535,7 +536,7 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 	}
 
 	u32 remainder = 0;
-	this->shields = cap_value(this->shields + shields, this->get_max_shields_raw(), &remainder);
+	this->shields = cap_value(this->shields + value, this->get_max_shields_raw(), &remainder);
 	this->set_hitpoints(this->hitpoints); // Updates unit strength
 
 	UnitExt* this_ext = get_unit_ext(this);
@@ -559,7 +560,7 @@ u32 Unit::heal_energy(s32 value, Unit* source) {
 	}
 
 	u32 remainder = 0;
-	this->energy = cap_value(this->energy + energy, helper::get_unit_max_energy(this) * 256, &remainder);
+	this->energy = cap_value(this->energy + value, helper::get_unit_max_energy(this) * 256, &remainder);
 	return remainder;
 }
 
