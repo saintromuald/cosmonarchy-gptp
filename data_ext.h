@@ -199,6 +199,7 @@ enum ExtTimerId
 	TimerBladeVortex,
 	TimerStellarEnforcementOverlay,
 	TimerSwarmingOmenSearch,
+	TimerBindingPlasma,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

@@ -819,14 +819,7 @@ namespace hooks
 
 	void bullet_behavior_bounce(Bullet* bullet) // 0048B2D0
 	{
-		Unit* target_unit;
-		char next_bounce;
-		Unit* target;
-		Image* i;
-		Sprite* sprite;
-		Image* j;
-
-		target_unit = bullet->attack_target.unit;
+		Unit* target_unit = bullet->attack_target.unit;
 		if (target_unit)
 		{
 			if (!(bullet->hit_flags & 1))
@@ -837,7 +830,7 @@ namespace hooks
 		helper::progress_bullet_movement(bullet);
 		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)
 		{
-			next_bounce = bullet->remaining_bounces - 1;
+			char next_bounce = bullet->remaining_bounces - 1;
 			// Gladius infinite bouncing
 			if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 			{
@@ -846,9 +839,11 @@ namespace hooks
 
 			bullet->remaining_bounces = next_bounce;
 			globals.bounce_bullet = bullet;
-			if (next_bounce && (target = helper::find_next_bounce_target(bullet), bullet->next_bounce_unit = bullet->attack_target.unit, target))
+			Unit* target = helper::find_next_bounce_target(bullet);
+			bullet->next_bounce_unit = bullet->attack_target.unit;
+			if (next_bounce && target)
 			{
-				for (i = bullet->sprite->images.head; i; i = i->link.next)
+				for (Image* i = bullet->sprite->images.head; i; i = i->link.next)
 				{
 					helper::play_image_iscript(i, IscriptAnimation::SpecialState1);
 				}
@@ -871,11 +866,11 @@ namespace hooks
 				{
 					bullet->attack_target.unit = 0;
 				}
-				sprite = bullet->sprite;
+				Sprite* sprite = bullet->sprite;
 				bullet->unknown_0x4E = 0;
 				bullet->someUnitType = UnitId::None;
 
-				for (j = sprite->images.head; j; j = j->link.next)
+				for (Image* j = sprite->images.head; j; j = j->link.next)
 				{
 					helper::play_image_iscript(j, IscriptAnimation::Death);
 				}

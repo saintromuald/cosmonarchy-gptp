@@ -1162,6 +1162,8 @@ enum Enum {
 	StellarEnforcementDebuffLarge				= 1561,
 	StellarEnforcementDebuffXLarge				= 1562,
 
+	BindingPlasmaOverlay						= 1588,
+
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
 	LastMinorDamageOverlay						= 471,
