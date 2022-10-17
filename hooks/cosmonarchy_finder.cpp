@@ -137,6 +137,14 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		{
 			if (context & Flags::FrontalArc)
 			{
+				Vector32f angle = scbw::get_direction_vector_from_unit(center);
+				Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(center->position, unit->position));
+				f32 dot = scbw::dot_product(angle, diff);
+				if (dot < 0.5) {
+					return false;
+				}
+
+				/*
 				u16 angle = scbw::get_angle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
 				u16 unit_angle = center->velocity_direction_1;
@@ -148,6 +156,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 				{
 					return false;
 				}
+				*/
 			}
 			if (context & Flags::Own && unit->player != center->player)
 			{

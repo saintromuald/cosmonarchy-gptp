@@ -14,7 +14,7 @@ namespace hooks
 {
 	f64 get_speed_multiplier(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
@@ -31,17 +31,17 @@ namespace hooks
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
-			speed *= pow(0.95, unitExt->values[ValueSovrolethLinkCount]);
+			speed *= pow(0.95, unit_ext->values[ValueSovrolethLinkCount]);
 		}
 
 		// Crucible Aura
-		speed /= 1 + 0.15 * unitExt->unit_vectors[UnitVectorCrucibles].size();
+		speed /= 1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
-		speed *= 1.0 + unitExt->values[ValueTerminalSurge] * 0.05;
+		speed *= 1.0 + unit_ext->values[ValueTerminalSurge] * 0.05;
 
 		// Luminary - Wax Wings
-		if (unitExt->timers[TimerWaxWingsDebuff] > 1)
+		if (unit_ext->timers[TimerWaxWingsDebuff] > 1)
 		{
 			speed *= 0.6666;
 		}
@@ -53,52 +53,63 @@ namespace hooks
 		}
 
 		// Keskathalor Caustic Discharge: Speed Buff
-		if (unitExt->timers[TimerCausticDischargeSpeed] > 0)
+		if (unit_ext->timers[TimerCausticDischargeSpeed] > 0)
 		{
 			speed *= 1.5;
 		}
 
 		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
-		{
-			auto r = 10 * 32;
-			auto n = cosmonarchy_finder_match(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
-			scbw::UnitFinder unitsInFinder(unit->get_x() - r, unit->get_y() - r,
-				unit->position.x + r, unit->position.y + r);
-			bool accelerate = false;
-			for (s32 i = 0; i < unitsInFinder.get_unit_count(); i++)
-			{
-				auto picked_unit = unitsInFinder.get_unit(i);
-				if (n(picked_unit))
-				{
-					UnitExt* pickedExt = get_unit_ext(picked_unit);
-					if (pickedExt->timers[TimerSwarmingOmen])
-					{
-						accelerate = true;
-						unitExt->values[ValueSwarmingOmenStatus]= 25;
-						break;
-					}
+		/*
+		if (unit_ext->values[ValueSwarmingOmenPlayer]) {
+			u32 player = unit_ext->values[ValueSwarmingOmenPlayer] - 1;
+			EntryArray targets = {};
+			unit_search_radial(&targets, unit->position, 10 * 32);
+			for (u32 i = 0; i < targets.count; ++i) {
+				Unit* target = targets.units[i];
+				if (!scbw::is_allied_to(player, target->player)) {
+					continue;
 				}
+				UnitExt* target_ext = get_unit_ext(target);
+				target_ext->timers[TimerSwarmingOmenSearch] = 24;
 			}
-			if (accelerate)
-			{
+		}
+		*/
+		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
+			bool accelerate = false;
+			EntryArray targets = {};
+			unit_search_radial(&targets, unit->position, 10 * 32);
+			unit_search_filter(&targets, unit, FilterFrontalArc);
+			for (u32 i = 0; i < targets.count; ++i) {
+				Unit* target = targets.units[i];
+				UnitExt* target_ext = get_unit_ext(target);
+				if (!target_ext->values[ValueSwarmingOmenPlayer]) {
+					continue;
+				}
+				u32 player = target_ext->values[ValueSwarmingOmenPlayer] - 1;
+				if (!scbw::is_allied_to(player, unit->player)) {
+					continue;
+				}
+				accelerate = true;
+			}
+			if (accelerate) {
 				speed *= 1.25;
 			}
 		}
 
 		// Gorgon - Petrification behavior
-		if (unitExt->timers[TimerPetrification])
+		if (unit_ext->timers[TimerPetrification])
 		{
-			speed *= 1 - (0.05 * unitExt->values[ValuePetrificationStacks]);
+			speed *= 1 - (0.05 * unit_ext->values[ValuePetrificationStacks]);
 		}
 
 		// Claymore - Kelvin Munitions - slow affected targets
-		if (unitExt->values[ValueKelvinMunitionsSlow])
+		if (unit_ext->values[ValueKelvinMunitionsSlow])
 		{
 			speed *= 0.666;
 		}
 
 		// Hierophant Signify: Cowardice
-		if (unitExt->values[ValueSignifyStacks])
+		if (unit_ext->values[ValueSignifyStacks])
 		{
 			auto match = cosmonarchy_finder_match(unit, 0, {});
 			Vector32f dir = scbw::getUnitDirectionVector(unit);
@@ -117,7 +128,7 @@ namespace hooks
 					return false;
 				}
 				bool validPlayer = false;
-				for (auto player : unitExt->value_vectors[ValueVectorSignifySourcePlayer])
+				for (auto player : unit_ext->value_vectors[ValueVectorSignifySourcePlayer])
 				{
 					if (scbw::is_allied_to(player, enemy->player))
 					{
@@ -152,7 +163,7 @@ namespace hooks
 			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
-				if (unitExt->timers[TimerKaiserRampage])
+				if (unit_ext->timers[TimerKaiserRampage])
 				{
 					speed *= 2;
 				}

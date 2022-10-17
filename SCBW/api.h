@@ -22,6 +22,8 @@
 #define BWTC_RED		"\006"
 #define BWTC_WHITE		"\004"
 
+#define PI 3.14159
+
 enum CorpseConsume {
 	CorpseConsume_None,
 	CorpseConsume_Parasite,
@@ -209,6 +211,13 @@ namespace scbw
 		}
 
 		return rect;
+	}
+
+	inline Vector32f get_direction_vector_from_unit(Unit* unit) {
+		Vector32f vec = {};
+		vec.x = g_angle_distance[unit->current_direction_1].x / 256.0;
+		vec.y = g_angle_distance[unit->current_direction_1].y / 256.0;
+		return vec;
 	}
 
 	inline Vector32 get_vector_between_points(Point16 source, Point16 target)

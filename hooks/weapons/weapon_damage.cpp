@@ -522,6 +522,11 @@ namespace hooks
 			{
 				switch (data.weapon_id)
 				{
+					case WeaponId::ZoryusthalethMonstrousMaw:
+					{
+						// Zoryusthaleth - Swarming Omen
+						target_ext->values[ValueSwarmingOmenPlayer] = data.attackingPlayerId + 1;
+					} break;
 					case WeaponId::EmpressFadingBioplasma:
 					{
 						// Empress - Anodyne Annex - add stack

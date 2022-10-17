@@ -236,7 +236,8 @@ namespace WeaponId {
 		HeraldStellarTorch					= 160,
 
 		// Zerg \\
-
+					
+		ZoryusthalethMonstrousMaw			= 28,
 		VorvalClaws							= 36,
 		NathrokorPlasmidBreath				= 37,
 		KeskathalorScreamingVenom			= 41,

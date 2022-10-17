@@ -350,7 +350,7 @@ void update_search_index_effects() {
 	}
 }
 
-bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids) {
+bool unit_flag_match(Unit* unit, Unit* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids) {
 	if (!(flags & FilterIncludingSelf) && unit == center) {
 		return false;
 	}
@@ -406,6 +406,14 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 	}
 	if (center) {
 		if (flags & FilterFrontalArc) {
+			Vector32f angle = scbw::get_direction_vector_from_unit(center);
+			Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(center->position, unit->position));
+			f32 dot = scbw::dot_product(angle, diff);
+			if (dot < 0.5) {
+				return false;
+			}
+
+			/*
 			u16 angle = scbw::get_angle(center->position.x, center->position.y,
 				unit->position.x, unit->position.y);
 			u16 unit_angle = center->velocity_direction_1;
@@ -416,6 +424,7 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16
 			if (delta > arc) {
 				return false;
 			}
+			*/
 		}
 		if (flags & FilterOwn && unit->player != center->player) {
 			return false;

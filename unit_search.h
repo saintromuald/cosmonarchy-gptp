@@ -84,7 +84,7 @@ void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func);
 void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center);
 Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func = nullptr); // score_func defaults to distance check
 Unit* unit_search_get_first(EntryArray* unit_array, SearchFilterFunc match_func = nullptr); // defaults to no check
-bool unit_flag_match(Unit* unit, Unit* center, u32 flags, std::unordered_set<u16> allowed_unit_ids);
+bool unit_flag_match(Unit* unit, Unit* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids);
 void unit_search_add_units_from_connected_transport(EntryArray* unit_array, Unit* unit);
 
 void reset_search_index();

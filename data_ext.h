@@ -118,6 +118,7 @@ enum ExtValueId
 	ValueMatrixLaunchPos,
 	ValueCataphractLaunchPos,
 	ValueDilettanteLuck,
+	ValueSwarmingOmenPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -197,6 +198,7 @@ enum ExtTimerId
 	TimerSwarmingOmenSFX,
 	TimerBladeVortex,
 	TimerStellarEnforcementOverlay,
+	TimerSwarmingOmenSearch,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
