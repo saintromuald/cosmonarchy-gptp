@@ -1815,9 +1815,20 @@ namespace hooks
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
 
-		// Parasite Arm
+		// Parasite
 		if (unit_ext->timers[TimerParasiteArm] == 1) {
 			unit_ext->parasite_spawn_count[unit_ext->values[ValueParasiteArmPlayer]] += 2;
+		}
+
+		// Incubation
+		if (unit_ext->timers[TimerIncubationArm] == 1) {
+			u32 unit_id = UnitId::ZergRilirokor;
+			if (units_dat::base_property[unit->id] & UnitProperty::Flyer
+			||  unit->status & UnitStatus::InAir)
+			{
+				unit_id = UnitId::ZergRililisk;
+			}
+			scbw::create_unit_from_ability(unit_id, 2, unit_ext->values[ValueIncubationPlayer], unit->position.x, unit->position.y, 720);
 		}
 
 		// Disruption Web Clear

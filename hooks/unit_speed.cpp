@@ -40,12 +40,6 @@ namespace hooks
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
 		speed *= 1.0 + unit_ext->values[ValueTerminalSurge] * 0.05;
 
-		// Luminary - Wax Wings
-		if (unit_ext->timers[TimerWaxWingsDebuff] > 1)
-		{
-			speed *= 0.6666;
-		}
-
 		// Vorvrokor Captivating Claws: reduces movement speed by 25% per unique attacker
 		if (captivating_claws_get_timer(unit) > 0)
 		{

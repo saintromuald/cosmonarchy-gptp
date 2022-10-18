@@ -1306,7 +1306,7 @@ namespace scbw
 			return;
 		}
 		UnitExt* unitExt = get_unit_ext(unit);
-		if (!unitExt->timers[TimerParasiteArm]) {
+		if (!unitExt->timers[TimerParasiteArm] && !unitExt->timers[TimerIncubationArm]) {
 			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
 			unitExt->values[ValueParasiteArmPlayer] = player;
 			unit->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);

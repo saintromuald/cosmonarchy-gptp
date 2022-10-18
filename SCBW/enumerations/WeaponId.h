@@ -262,5 +262,11 @@ namespace WeaponId {
 		ZarcavrokorBisectingBlades			= 152,
 		ZarcavrokorBonesofReflection		= 153,	// Zarcavrokor passive weapon
 		TethzorokorSaberArray				= 162,
+		ProtathalorPungentSpores			= 163,
+		VilgorokorDissolvingSabers			= 164,
+		TosgriliskExplosiveSpores			= 165,
+		GhitorokorGnashingTendrils			= 166,
+		ZobrioliskRapidSpines				= 167,
+		TetcaerokorCleavingMaw				= 177,
 	};
 }

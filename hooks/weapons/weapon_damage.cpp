@@ -545,8 +545,18 @@ namespace hooks
 					} break;
 					case WeaponId::KonviliskSowingSpines:
 					{
-						// Fertile DrolethSpines - Konvilisk behavior
+						// Fertile Spines
 						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
+					} break;
+					case WeaponId::TetcaerokorCleavingMaw:
+					{
+						// Virile Coating - incubate
+						if (!target_ext->timers[TimerParasiteArm] && !target_ext->timers[TimerIncubationArm])
+						{
+							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
+							target_ext->timers[TimerIncubationArm] = 48 + 1;
+							data.target->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
+						}
 					} break;
 					case WeaponId::GorgonArtificeBattery:
 					{

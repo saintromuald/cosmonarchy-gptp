@@ -36,7 +36,7 @@ enum ExtValueId
 	ValueSalamanderLaunchPos,
 	ValueNaniteField,
 	ValuePhobosLaunchPos,
-	ValuePhobosLaunchPos2, // unused
+	ValueIncubationPlayer,
 	ValueCentaurLaunchPos,
 	ValueLazarusAgent,
 	ValueRepententChorus,
@@ -177,7 +177,7 @@ enum ExtTimerId
 	TimerReviveFlagClearMax,
 	TimerUnderDisruptionField,
 	TimerAlliedInvFrames,
-	TimerWaxWingsDebuff,						// unused
+	TimerIncubationArm,
 	TimerAuralAssaultBlind,
 	TimerTarasqueSecondaryWeaponCooldown,
 	TimerAnticthonRevive,
