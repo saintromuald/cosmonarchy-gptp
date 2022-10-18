@@ -159,29 +159,39 @@ namespace hooks
 						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
 						case UnitId::ZergQuazilisk:
+						case UnitId::ZergCikralisk:
+						case UnitId::ZergProtathalor:
+						case UnitId::ZergAxitrilisk:
+					//	case UnitId::ZergMortothrokor:
 						case UnitId::ZergHydralisk:
-						case UnitId::ZergZoryusthaleth:
-						case UnitId::ZergKonvilisk:
+						case UnitId::ZergIzirokor:
+						case UnitId::ZergKagralisk:
+						case UnitId::ZergEvigrilisk:
 						case UnitId::ZergKeskathalor:
+						case UnitId::ZergZoryusthaleth:
+						case UnitId::ZergLakizilisk:
+						case UnitId::ZergKonvilisk:
+						case UnitId::ZergVilgorokor:
+						case UnitId::ZergIsthrathaleth:
+					//	case UnitId::ZergElthrazalisk:
 						{
 							eggId = UnitId::ZergEgg;
 						} break;
 						case UnitId::ZergOvileth:
-						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth:
 						case UnitId::ZergNathrokor:
-						case UnitId::ZergSkithrokor:
 						case UnitId::ZergMutalisk:
+						case UnitId::ZergSkithrokor:
+						case UnitId::ZergAlmaksalisk:
+						case UnitId::ZergGeszithalor:
+						case UnitId::ZergGorgrokor:
 						case UnitId::ZergMatraleth:
 						{
 							eggId = UnitId::ZergCocoon;
 						} break;
 						default:
 						{
-							if (unit->id != UnitId::ProtossCantavis)
-							{
-								return;
-							}
+							return;
 						}  break;
 					}
 					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
@@ -191,46 +201,21 @@ namespace hooks
 					{
 						unitExt->values[ValuePreMorphEnergy] = 100 * 256; // New starting amount
 					}
-					/*
-					if (unit->id == UnitId::ProtossCantavis)
-					{
-						helper::replace_unit_with_id(unit, UnitId::ProtossAugur);
-						unit->sprite->flags &= ~SpriteFlags::IscriptCode;
-						if (unit->sprite->images.head != nullptr)
-						{
-							Image* current_image = unit->sprite->images.head;
-							do
-							{
-								current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
-								current_image = current_image->link.next;
-							}
-							while (current_image != nullptr);
+					unit->create_origin = unit->id;
+					unitExt->units[UnitMorphConnectedUnit] = 0;
+					if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
+						AiTown* town = unit->unit_ai->worker_ai.town;
+						helper::remove_worker_or_building_ai(unit, false);
+						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
+						if (eggId == UnitId::ZergEgg) {
+							helper::add_worker_structure_ai(unit, town);
 						}
-						helper::change_unit_buttonset(unit, UnitId::None);
-						scbw::refresh_console();
-						unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
-						helper::set_archon_pathing(unit);
-						unit->order_computer(OrderId::CompletingArchonSummon);
-						return;
+						else {
+							scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
+						}
 					}
-					else
-					*/
-					{
-						unit->create_origin = unit->id;
-						unitExt->units[UnitMorphConnectedUnit] = 0;
-						if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
-							AiTown* town = unit->unit_ai->worker_ai.town;
-							helper::remove_worker_or_building_ai(unit, false);
-							helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
-							if (eggId == UnitId::ZergEgg) {
-								helper::add_worker_structure_ai(unit, town);
-							} else {
-								scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
-							}
-						} else {
-							helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
-						}
-
+					else {
+						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
@@ -404,12 +389,10 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergIzirokor)
 		{
-			/*
 			if (morph_unit_id == UnitId::ZergTethzorokor)
 			{
 				return true;
 			}
-			*/
 		}
 		else if (unit->id == UnitId::ZergSkithrokor)
 		{
@@ -427,12 +410,10 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergLakizilisk)
 		{
-			/*
 			if (morph_unit_id == UnitId::ZergZobriolisk)
 			{
 				return true;
 			}
-			*/
 		}
 		else if (unit->id == UnitId::ZergGorgrokor)
 		{
@@ -464,7 +445,7 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergKonvilisk)
 		{
-			if (morph_unit_id == UnitId::ZergTetcaerokor) // May become Larval
+			if (morph_unit_id == UnitId::ZergTetcaerokor)
 			{
 				return true;
 			}
@@ -492,10 +473,10 @@ namespace hooks
 		}
 		else if (unit->id == UnitId::ZergIsthrathaleth)
 		{
-		if (morph_unit_id == UnitId::ZergOgroszaleth)
-		{
-			return true;
-		}
+			if (morph_unit_id == UnitId::ZergOgroszaleth)
+			{
+				return true;
+			}
 		}
 		return false;
 	}

@@ -945,385 +945,386 @@ namespace hooks {
 						}
 
 						// Experiment to see if extended unit ids can be forced on lol
-						if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
+						switch (unit->id)
 						{
-							switch (current_button->requirement_var)
+							case UnitId::TerranMason:
+							case UnitId::TerranTalos:
 							{
-								case UnitId::TerranCommandCenter:
-								case UnitId::TerranWatchdog:
-								case UnitId::TerranReservoir:
-								case UnitId::TerranBarracks:
-								case UnitId::TerranFulcrum:
-								case UnitId::TerranStarpad:
-								case UnitId::TerranBunker:
-								case UnitId::TerranEngineeringBay:
+								switch (current_button->requirement_var)
+								{
+									case UnitId::TerranCommandCenter:
+									case UnitId::TerranWatchdog:
+									case UnitId::TerranReservoir:
+									case UnitId::TerranBarracks:
+									case UnitId::TerranFulcrum:
+									case UnitId::TerranStarpad:
+									case UnitId::TerranBunker:
+									case UnitId::TerranEngineeringBay:
+									{
+										current_button_state = Button_State::Enabled;
+									} break;
+									case UnitId::TerranTreasury:
+									case UnitId::TerranSentinel:
+									case UnitId::TerranScienceFacility:
+									case UnitId::TerranCaptaincy:
+									case UnitId::TerranMantle:
+									case UnitId::TerranStarport:
+									{
+										if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranEngineeringBay)) {
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::TerranParthenon:
+									case UnitId::TerranIonCannon:
+									case UnitId::TerranQuantumInstitute:
+									case UnitId::TerranApothecary:
+									case UnitId::TerranIronFoundry:
+									case UnitId::TerranNaniteAssembly:
+									{
+										if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranScienceFacility)) {
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									/*
+									case UnitId::TerranCapitol:
+									case UnitId::TerranAmphitheater:
+									{
+										if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranQuantumInstitute)) {
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Disabled;
+										}
+									}
+									*/
+									default:
+									{
+										current_button_state = Button_State::Invisible;
+									} break;
+								}
+							} break;
+							case UnitId::TerranParthenon:
+							{
+								if (current_button->requirement_var == UnitId::TerranTalos
+								||  current_button->requirement_var == UnitId::TerranArmistice
+								||  current_button->requirement_var == UnitId::TerranPythean
+								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
-								} break;
-								case UnitId::TerranTreasury:
-								case UnitId::TerranSentinel:
-								case UnitId::TerranScienceFacility:
-								case UnitId::TerranCaptaincy:
-								case UnitId::TerranMantle:
-								case UnitId::TerranStarport:
-								{
-									if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranEngineeringBay)) {
-										current_button_state = Button_State::Enabled;
-									}
-									else {
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::TerranParthenon:
-								case UnitId::TerranIonCannon:
-								case UnitId::TerranQuantumInstitute:
-								case UnitId::TerranApothecary:
-								case UnitId::TerranIronFoundry:
-								case UnitId::TerranNaniteAssembly:
-								{
-									if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranScienceFacility)) {
-										current_button_state = Button_State::Enabled;
-									}
-									else {
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								/*
-								case UnitId::TerranCapitol:
-								case UnitId::TerranAmphitheater:
-								{
-									if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranQuantumInstitute)) {
-										current_button_state = Button_State::Enabled;
-									}
-									else {
-										current_button_state = Button_State::Disabled;
-									}
 								}
-								*/
-								default:
+								else
 								{
 									current_button_state = Button_State::Invisible;
-								} break;
-							}
-						}
-
-						if (unit->id == UnitId::TerranParthenon)
-						{
-							if (current_button->requirement_var == UnitId::TerranTalos
-							||	current_button->requirement_var == UnitId::TerranArmistice
-							||	current_button->requirement_var == UnitId::TerranPythean
-							&&	unit->status & UnitStatus::GroundedBuilding)
+								}
+							} break;
+							case UnitId::TerranMantle:
 							{
-								current_button_state = Button_State::Enabled;
-							}
-							else
-							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-
-						if (unit->id == UnitId::TerranMantle)
-						{
-							if (current_button->requirement_var == UnitId::TerranRamesses
-							||	current_button->requirement_var == UnitId::TerranDurendal
-							||	current_button->requirement_var == UnitId::TerranCataphract
-							&&	unit->status & UnitStatus::GroundedBuilding)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else
-							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-
-						if (unit->id == UnitId::TerranApothecary)
-						{
-							if (current_button->requirement_var == UnitId::TerranDilettante
-							||	current_button->requirement_var == UnitId::TerranSevenstep
-							||	current_button->requirement_var == UnitId::TerranHypnagogue
-							&&	unit->status & UnitStatus::GroundedBuilding)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else
-							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-
-						if (unit->id == UnitId::ProtossGrandLibrary)
-						{
-							if (current_button->requirement_var == UnitId::ProtossAmaranth
-							||	current_button->requirement_var == UnitId::ProtossHerald
-							||	current_button->requirement_var == UnitId::ProtossAtreus
-							||	current_button->requirement_var == UnitId::ProtossCantavis)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else
-							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-						if (unit->id == UnitId::ProtossArgosy)
-						{
-							if (current_button->requirement_var == UnitId::ProtossMagister
-							||	current_button->requirement_var == UnitId::ProtossEpigraph
-							||	current_button->requirement_var == UnitId::ProtossDidact)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else
-							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-
-						if (unit->id == UnitId::ZergLarva)
-						{
-							switch (current_button->requirement_var)
-							{
-								case UnitId::ZergDroleth:
-								case UnitId::ZergOvileth:
+								if (current_button->requirement_var == UnitId::TerranRamesses
+								||  current_button->requirement_var == UnitId::TerranDurendal
+								||  current_button->requirement_var == UnitId::TerranCataphract
+								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
-								} break;
-								case UnitId::ZergOthstoleth:
-								case UnitId::ZergAgrileth:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
-									||  player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
-									||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergZethrokor:
-								case UnitId::ZergQuazilisk:
-								case UnitId::ZergNathrokor:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazrokPool)
-									||  player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergHydralisk:
-								case UnitId::ZergIzirokor:
-								case UnitId::ZergSkithrokor:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrokDen)
-									||  player_has_unit_id(unit->player, UnitId::ZergGorgralSwamp))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergZoryusthaleth:
-								case UnitId::ZergLakizilisk:
-								case UnitId::ZergGorgrokor:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
-									||  player_has_unit_id(unit->player, UnitId::ZergUltrokCavern))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergMutalisk:
-								case UnitId::ZergProtathalor:
-								case UnitId::ZergCikralisk:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergMuthrokSpire)
-										|| player_has_unit_id(unit->player, UnitId::ZergVithrathHaunt))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergKagralisk:
-								case UnitId::ZergAxitrilisk:
-								case UnitId::ZergEvigrilisk:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergIzkagIteth))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergKonvilisk:
-								case UnitId::ZergVilgorokor:
-								case UnitId::ZergMatraleth:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergMatravilNest)
-									||  player_has_unit_id(unit->player, UnitId::ZergAlmakisAntre))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergAlmaksalisk:
-								case UnitId::ZergKeskathalor:
-								case UnitId::ZergGeszithalor:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergGeszkathGrotto)
-									||  player_has_unit_id(unit->player, UnitId::ZergAlkajChasm))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								case UnitId::ZergIsthrathaleth:
-								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergSovthrathMound))
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Disabled;
-									}
-								} break;
-								default:
+								}
+								else
 								{
 									current_button_state = Button_State::Invisible;
-								} break;
-							}
-						}
-
-						if (unit->id == UnitId::ZergMutalisk)
-						{
-							if (current_button->requirement_var == UnitId::ZergTosgrilisk)
+								}
+							} break;
+							case UnitId::TerranApothecary:
 							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+								if (current_button->requirement_var == UnitId::TerranDilettante
+								||  current_button->requirement_var == UnitId::TerranSevenstep
+								||  current_button->requirement_var == UnitId::TerranHypnagogue
+								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
 								}
 								else
 								{
-									current_button_state = Button_State::Disabled;
+									current_button_state = Button_State::Invisible;
 								}
-							}
-							else
+							} break;
+							case UnitId::ProtossGrandLibrary:
 							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-						if (unit->id == UnitId::ZergCikralisk)
-						{
-							if (current_button->requirement_var == UnitId::ZergGhitorokor)
-							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+								if (current_button->requirement_var == UnitId::ProtossAmaranth
+								||  current_button->requirement_var == UnitId::ProtossHerald
+								||  current_button->requirement_var == UnitId::ProtossAtreus
+								||  current_button->requirement_var == UnitId::ProtossCantavis)
 								{
 									current_button_state = Button_State::Enabled;
 								}
 								else
 								{
-									current_button_state = Button_State::Disabled;
+									current_button_state = Button_State::Invisible;
 								}
-							}
-							else
+							} break;
+							case UnitId::ProtossArgosy:
 							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-						if (unit->id == UnitId::ZergIzirokor)
-						{
-							if (current_button->requirement_var == UnitId::ZergTethzorokor)
-							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+								if (current_button->requirement_var == UnitId::ProtossMagister
+								||  current_button->requirement_var == UnitId::ProtossEpigraph
+								||  current_button->requirement_var == UnitId::ProtossDidact)
 								{
 									current_button_state = Button_State::Enabled;
 								}
 								else
 								{
-									current_button_state = Button_State::Disabled;
+									current_button_state = Button_State::Invisible;
 								}
-							}
-							else
+							} break;
+							case UnitId::ZergLarva:
 							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-						if (unit->id == UnitId::ZergLakizilisk)
-						{
-							if (current_button->requirement_var == UnitId::ZergZobriolisk)
-							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+								switch (current_button->requirement_var)
 								{
-									current_button_state = Button_State::Enabled;
+									case UnitId::ZergDroleth:
+									case UnitId::ZergOvileth:
+									{
+										current_button_state = Button_State::Enabled;
+									} break;
+									case UnitId::ZergOthstoleth:
+									case UnitId::ZergAgrileth:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
+											|| player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
+											|| player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergZethrokor:
+									case UnitId::ZergQuazilisk:
+									case UnitId::ZergNathrokor:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazrokPool)
+											|| player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergHydralisk:
+									case UnitId::ZergIzirokor:
+									case UnitId::ZergSkithrokor:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrokDen)
+											|| player_has_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergZoryusthaleth:
+									case UnitId::ZergLakizilisk:
+									case UnitId::ZergGorgrokor:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
+											|| player_has_unit_id(unit->player, UnitId::ZergUltrokCavern))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergMutalisk:
+									case UnitId::ZergProtathalor:
+									case UnitId::ZergCikralisk:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergMuthrokSpire)
+											|| player_has_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergKagralisk:
+									case UnitId::ZergAxitrilisk:
+									case UnitId::ZergEvigrilisk:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergIzkagIteth))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergKonvilisk:
+									case UnitId::ZergVilgorokor:
+									case UnitId::ZergMatraleth:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergMatravilNest)
+											|| player_has_unit_id(unit->player, UnitId::ZergAlmakisAntre))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergAlmaksalisk:
+									case UnitId::ZergKeskathalor:
+									case UnitId::ZergGeszithalor:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergGeszkathGrotto)
+											|| player_has_unit_id(unit->player, UnitId::ZergAlkajChasm))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergIsthrathaleth:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergSovthrathMound))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									default:
+									{
+										current_button_state = Button_State::Invisible;
+									} break;
+								}
+							} break;
+							case UnitId::ZergMutalisk:
+							{
+								if (current_button->requirement_var == UnitId::ZergTosgrilisk)
+								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
 								}
 								else
 								{
-									current_button_state = Button_State::Disabled;
+									current_button_state = Button_State::Invisible;
 								}
-							}
-							else
+							} break;
+							case UnitId::ZergCikralisk:
 							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-						if (unit->id == UnitId::ZergGorgrokor)
-						{
-							if (current_button->requirement_var == UnitId::ZergZarcavrokor)
-							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+								if (current_button->requirement_var == UnitId::ZergGhitorokor)
 								{
-									current_button_state = Button_State::Enabled;
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
 								}
 								else
 								{
-									current_button_state = Button_State::Disabled;
+									current_button_state = Button_State::Invisible;
 								}
-							}
-							else
+							} break;
+							case UnitId::ZergIzirokor:
 							{
-								current_button_state = Button_State::Invisible;
-							}
-						}
-						if (unit->id == UnitId::ZergKonvilisk)
-						{
-							if (current_button->requirement_var == UnitId::ZergTetcaerokor)
-							{
-								if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre))
+								if (current_button->requirement_var == UnitId::ZergTethzorokor)
 								{
-									current_button_state = Button_State::Enabled;
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
 								}
 								else
 								{
-									current_button_state = Button_State::Disabled;
+									current_button_state = Button_State::Invisible;
 								}
-							}
-							else
+							} break;
+							case UnitId::ZergLakizilisk:
 							{
-								current_button_state = Button_State::Invisible;
+								if (current_button->requirement_var == UnitId::ZergZobriolisk)
+								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergGorgrokor:
+							{
+								if (current_button->requirement_var == UnitId::ZergZarcavrokor)
+								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergKonvilisk:
+							{
+								if (current_button->requirement_var == UnitId::ZergTetcaerokor)
+								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							default:
+							{
 							}
 						}
 					}
