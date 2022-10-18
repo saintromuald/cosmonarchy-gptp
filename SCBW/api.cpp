@@ -541,18 +541,17 @@ namespace scbw
 			case UnitId::ZergLiiralisk:
 			case UnitId::ZergKalkalisk:
 			case UnitId::ZergSovroleth:
-		//	case UnitId::ZergGhitorokor:
+			case UnitId::ZergGhitorokor:
 			case UnitId::ZergBactalisk:
-		//	case UnitId::ZergTethzorokor:
+			case UnitId::ZergTethzorokor:
 			case UnitId::ZergVithrilisk:
 			case UnitId::ZergUltrokor:
-		//	case UnitId::ZergZobriolisk:
+			case UnitId::ZergZobriolisk:
 			case UnitId::ZergZarcavrokor:
-			case UnitId::ZergAlmaksalisk: // May become Larval
-		//	case UnitId::ZergTBD: // Vilgorokor morph
+			case UnitId::ZergSelkerilisk:
 			case UnitId::ZergAkistrokor:
 			case UnitId::ZergAlkajelisk:
-		//	case UnitId::ZergOgraszaleth:
+			case UnitId::ZergOgroszaleth:
 			{
 				return true;
 			}
@@ -582,10 +581,13 @@ namespace scbw
 			case UnitId::ZergLakizilisk:
 			case UnitId::ZergGorgrokor:
 			case UnitId::ZergMutalisk:
-		//	case UnitId::ZergProtathalor:
-		//	case UnitId::ZergCikrilisk:
+			case UnitId::ZergProtathalor:
+			case UnitId::ZergCikralisk:
+			case UnitId::ZergKagralisk:
+			case UnitId::ZergEvigrilisk:
+			case UnitId::ZergAlmaksalisk:
 			case UnitId::ZergKonvilisk:
-		//	case UnitId::ZergVilgorokor:
+			case UnitId::ZergVilgorokor:
 			case UnitId::ZergMatraleth:
 			case UnitId::ZergKeskathalor:
 			case UnitId::ZergIsthrathaleth:
@@ -1410,18 +1412,18 @@ namespace scbw
 			|| id == UnitId::TerranMadcap
 			|| id == UnitId::TerranHeracles
 			|| id == UnitId::TerranApostle
-		//	|| id == UnitId::TerranRamesses
-		//	|| id == UnitId::TerranDurendal
-		//	|| id == UnitId::TerranCataphract
+			|| id == UnitId::TerranRamesses
+			|| id == UnitId::TerranDurendal
+			|| id == UnitId::TerranCataphract
 			|| id == UnitId::TerranGorgon
 			|| id == UnitId::TerranWyvern
 			|| id == UnitId::TerranValkyrie
-		//	|| id == UnitId::TerranTalos
-		//	|| id == UnitId::TerranArmistice
-		//	|| id == UnitId::TerranPythean
-		//	|| id == UnitId::TerranDilettante
-		//	|| id == UnitId::TerranVirtuoso
-		//	|| id == UnitId::TerranMaven
+			|| id == UnitId::TerranTalos
+			|| id == UnitId::TerranArmistice
+			|| id == UnitId::TerranPythean
+			|| id == UnitId::TerranDilettante
+			|| id == UnitId::TerranSevenstep
+			|| id == UnitId::TerranHypnagogue
 			|| id == UnitId::TerranPaladin
 			|| id == UnitId::TerranCuirass
 			|| id == UnitId::TerranPazuzu
@@ -2551,9 +2553,9 @@ namespace scbw
 			case UnitId::ZergSurkithColony:		return UnitId::ZergCagrantColony;
 			case UnitId::ZergSpraithColony:		return UnitId::ZergCagrantColony;
 			case UnitId::ZergLarvoskColony:		return UnitId::ZergCagrantColony;
-			case UnitId::ZergCaphrolosk:				return UnitId::ZergHachirosk;
-			case UnitId::ZergGathtelosk:				return UnitId::ZergCaphrolosk;
-			case UnitId::ZergSibraelosk:				return UnitId::ZergGathtelosk;
+			case UnitId::ZergCaphrolosk:		return UnitId::ZergHachirosk;
+			case UnitId::ZergGathtelosk:		return UnitId::ZergCaphrolosk;
+			case UnitId::ZergSibraelosk:		return UnitId::ZergGathtelosk;
 			case UnitId::ZergOthstolOviform:	return UnitId::ZergIrolIris;
 			case UnitId::ZergAlaszilArbor:		return UnitId::ZergOthstolOviform;
 			case UnitId::ZergLiivralPond:		return UnitId::ZergQuazrokPool;

@@ -1288,11 +1288,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ProtossBarghest:
-			{
-				// Barghest - Repentent Chorus
-				unit_ext->values[ValueRepententChorus] = cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Ally | Flags::NotSelf, { UnitId::ProtossBarghest });
-			} break;
 			case UnitId::TerranCentaur:
 			{
 				// Centaur - Sunchaser Missiles
@@ -1662,6 +1657,20 @@ namespace hooks
 					}
 				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
+				}
+			} break;
+			case UnitId::TerranDurendal:
+			{
+				if (unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] == 0)
+				{
+					if (fire_multiple(unit, unit_ext, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, true))
+					{
+						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
+					}
+					else
+					{
+						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = 3; // performance
+					}
 				}
 			} break;
 		}

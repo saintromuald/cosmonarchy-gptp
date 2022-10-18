@@ -60,7 +60,7 @@ namespace UnitId
 		TerranDurendal										= 282,
 		TerranCataphract									= 283,
 		TerranDilettante									= 285,
-		TerranVirtuoso										= 286,
+		TerranSevenstep										= 286,
 		TerranHypnagogue									= 287,
 		TerranArmistice										= 289,
 		TerranPythean										= 290,
@@ -175,6 +175,8 @@ namespace UnitId
 		ZergZobriolisk										= 273,
 		ZergTetcaerokor										= 274,
 		ZergSelkerilisk										= 277,
+		ZergOgroszaleth										= 291,
+		ZergAgrileth										= 293,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
@@ -190,6 +192,7 @@ namespace UnitId
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Terran Gas Tank Type 2
+		ZergRakzogthRoost									= 292,
 
 	// Special-Unit
 		TerranCivilianExt									= 332,

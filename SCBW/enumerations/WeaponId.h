@@ -199,7 +199,7 @@ namespace WeaponId {
 		DurendalPhilistineAutogun			= 172,
 		CataphractLonginiusCannons			= 173,
 		DilettanteUpstartRifle				= 174,
-		VirtuosoThespianRifle				= 175,
+		SevenstepGeometricRifle				= 175,
 		HypnagogueKaleidoscopeCannon		= 176,
 
 		// Protoss \\

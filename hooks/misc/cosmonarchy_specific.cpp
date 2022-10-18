@@ -460,7 +460,7 @@ namespace hooks
 		} else {
 			unit->energy = 0;
 		}
-		if (unit_id == UnitId::TerranVirtuoso)
+		if (unit_id == UnitId::TerranSevenstep)
 		{
 			unit->shields = 0;
 		}

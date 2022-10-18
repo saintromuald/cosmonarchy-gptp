@@ -1040,7 +1040,7 @@ namespace hooks {
 						if (unit->id == UnitId::TerranApothecary)
 						{
 							if (current_button->requirement_var == UnitId::TerranDilettante
-							||	current_button->requirement_var == UnitId::TerranVirtuoso
+							||	current_button->requirement_var == UnitId::TerranSevenstep
 							||	current_button->requirement_var == UnitId::TerranHypnagogue
 							&&	unit->status & UnitStatus::GroundedBuilding)
 							{
@@ -1090,7 +1090,7 @@ namespace hooks {
 									current_button_state = Button_State::Enabled;
 								} break;
 								case UnitId::ZergOthstoleth:
-							//	case UnitId::ZergAgrileth:
+								case UnitId::ZergAgrileth:
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
 									||  player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
@@ -1308,6 +1308,24 @@ namespace hooks {
 								current_button_state = Button_State::Invisible;
 							}
 						}
+						if (unit->id == UnitId::ZergKonvilisk)
+						{
+							if (current_button->requirement_var == UnitId::ZergTetcaerokor)
+							{
+								if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Disabled;
+								}
+							}
+							else
+							{
+								current_button_state = Button_State::Invisible;
+							}
+						}
 					}
 
 					// Passive icons (yes, it's quite ugly)
@@ -1392,7 +1410,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranVirtuoso:
+								case UnitId::TerranSevenstep:
 								{
 									if (current_button->icon_id == IconId::DefensiveMatrix) // Virtuoso - Curtain Call
 									{
@@ -1432,12 +1450,22 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossEmpress:
 								{
-									if (current_button->icon_id == IconId::ParticleBeamHarvest) // Empress- Anodyne Annex
+									if (current_button->icon_id == IconId::ParticleBeamHarvest) // Empress - Anodyne Annex
 									{
 										current_button_state = Button_State::Enabled;
 									}
 								}
 								break;
+
+								// ZERG \\
+
+								case UnitId::ZergTetcaerokor:
+								{
+									if (current_button->icon_id == IconId::RoarUnused) { // Tetcaerokor - Virile Coating
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+
 							}
 							if (unit->id == UnitId::TerranSavant &&  // Savant Entropy Gauntlets passive
 								current_button->icon_id == IconId::DidactPhaseDisruptorCannon &&

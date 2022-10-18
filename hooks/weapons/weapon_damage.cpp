@@ -749,9 +749,9 @@ namespace hooks
 		u32 damage_dealt = data.final_damage + data.shield_reduce_amount;
 		switch (data.weapon_id)
 		{
-			case WeaponId::VirtuosoThespianRifle:
+			case WeaponId::SevenstepGeometricRifle:
 			{
-				// Virtuoso Curtain Call passive - heal energy, then shields
+				// Sevenstep Mind Matter passive - heal energy, then shields
 				data.attacker->heal_energy_then_shields(damage_dealt / 2, data.attacker);
 			} break;
 			case WeaponId::UltrokorKaiserBlades:
@@ -921,9 +921,9 @@ namespace hooks
 
 		switch (data.target->id) // TARGET SWITCH! MUST BE UNIT
 		{
-			case UnitId::TerranVirtuoso:
+			case UnitId::TerranSevenstep:
 			{
-				// Virtuoso Curtain Call passive - Convert energy into emergency health
+				// Sevenstep Mind Matter passive - Convert energy into emergency health
 				u32 curtain_call_hp = data.target->hitpoints + (data.target->energy / 2);
 				if (curtain_call_hp > data.final_damage)
 				{
