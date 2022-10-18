@@ -26,7 +26,7 @@ namespace hooks
 				&& image->id <= ImageId::LastMinorDamageOverlay)
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
-				if (sprite->main_graphic->frame_index >= overlay->frameCount)
+				if (sprite->main_graphic->frame_index >= overlay->frame_count)
 				{
 					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 					{
@@ -37,7 +37,7 @@ namespace hooks
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->main_graphic->frame_index >= overlay->frameCount)
+		if (sprite->main_graphic->frame_index >= overlay->frame_count)
 		{
 			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 			return false;
@@ -63,7 +63,7 @@ namespace hooks
 			{
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
-				if (sprite->main_graphic->frame_index >= overlay->frameCount)
+				if (sprite->main_graphic->frame_index >= overlay->frame_count)
 				{
 					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 					{
@@ -76,7 +76,7 @@ namespace hooks
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->main_graphic->frame_index >= overlay->frameCount)
+		if (sprite->main_graphic->frame_index >= overlay->frame_count)
 		{
 			return;
 		}

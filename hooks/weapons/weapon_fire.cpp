@@ -275,6 +275,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelLaunchPos, 1, false);
 					} break;
+					case WeaponId::IonCannon:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueIonCannonLaunchPos, 1, true);
+					} break;
 					case WeaponId::GoliathContenderMissiles:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueGoliathLaunchPos, 2, false);

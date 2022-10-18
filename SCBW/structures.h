@@ -427,7 +427,7 @@ C_ASSERT(sizeof(GrpFrame) == 8);
 //GRP file header
 struct GrpHead
 {
-	u16			frameCount;
+	u16			frame_count;
 	s16			width;
 	s16			height;
 	GrpFrame	frames[1];
@@ -439,12 +439,12 @@ C_ASSERT(sizeof(GrpHead) == 14);
 // LO* file header
 struct LO_Header
 {
-	u32 frameCount;
-	u32 overlayCount;
-	u32 frameOffsets[1];
+	u32 frame_count;
+	u32 overlay_count;
+	u32 frame_offsets[1];
 
 	Point8 get_offset(s32 frameNum, s32 overlayNum) const {
-		return ((Point8*)(this->frameOffsets[frameNum] + (u32)this))[overlayNum];
+		return ((Point8*)(this->frame_offsets[frameNum] + (u32)this))[overlayNum];
 	}
 };
 

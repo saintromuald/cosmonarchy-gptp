@@ -689,7 +689,7 @@ namespace hooks
 				if (stat_icon == 1) {
 					stat_icon = *console_index + 1;
 				}
-				if (stat_icon >= icons_grp->frameCount) {
+				if (stat_icon >= icons_grp->frame_count) {
 					stat_icon = 0;
 				}
 				u16 width = icons_grp->frames[stat_icon].width;

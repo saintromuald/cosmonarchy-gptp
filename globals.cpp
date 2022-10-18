@@ -1397,7 +1397,13 @@ namespace scbw
 		if (use_special_overlay) {
 			lo_file = lo_files->specialOverlays[image->id];
 		}
-		Point8 offset = lo_file->get_offset(image->direction + (17 * frameset_offset), rotate);
+
+		u32 frameset_length = 17;
+		if (image->flags & ImageFlags::Omnidirectional)
+		{
+			frameset_length = 32;
+		}
+		Point8 offset = lo_file->get_offset(image->direction + (frameset_length * frameset_offset), rotate);
 		if (image->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
