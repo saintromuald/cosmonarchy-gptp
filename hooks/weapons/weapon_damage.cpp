@@ -934,14 +934,9 @@ namespace hooks
 			case UnitId::TerranSevenstep:
 			{
 				// Sevenstep Mind Matter passive - Convert energy into emergency health
-				u32 curtain_call_hp = data.target->hitpoints + (data.target->energy / 2);
-				if (curtain_call_hp > data.final_damage)
-				{
-					// TODO: Audiovisuals
-					data.target->set_hitpoints(curtain_call_hp - data.final_damage);
-					data.target->energy = 0;
-					data.final_damage = 0;
-				}
+				// TODO: Audiovisuals
+				data.target->heal_hp(data.target->energy / 2, data.target, false);
+				data.target->energy = 0;
 			} break;
 			case UnitId::ProtossArchon:
 			{
