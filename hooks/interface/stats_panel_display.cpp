@@ -97,6 +97,11 @@ namespace hooks
 								helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
 								index++;
 							} break;
+							case UnitId::TerranAmbassador:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::AmbassadorSignatorySalvo);
+								index++;
+							} break;
 							case UnitId::TerranDurendal:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::DurendalPhilistineAutogun);

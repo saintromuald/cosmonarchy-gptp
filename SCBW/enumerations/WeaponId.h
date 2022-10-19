@@ -201,6 +201,11 @@ namespace WeaponId {
 		DilettanteUpstartRifle				= 174,
 		SevenstepGeometricRifle				= 175,
 		HypnagogueKaleidoscopeCannon		= 176,
+		AmbassadorDiplomatPulseRifle		= 178,
+		AmbassadorSignatorySalvo			= 179,
+		HeirUsurperFlamethrower				= 180,
+		HeirExcellencyLaserBatteries		= 181,
+		HorsemanHadesCannon					= 182,
 
 		// Protoss \\
 				

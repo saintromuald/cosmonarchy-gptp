@@ -201,6 +201,7 @@ enum ExtTimerId
 	TimerSwarmingOmenSearch,
 	TimerBindingPlasma,
 	TimerDurendalSecondaryWeaponCooldown,
+	TimerAmbassadorSecondaryWeaponCooldown,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

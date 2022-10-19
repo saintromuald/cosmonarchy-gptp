@@ -149,12 +149,8 @@ namespace hooks
 			{
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				sEnd = true;
-<<<<<<< HEAD
-				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::image_id, building->sprite->sprite_id), 0);
-=======
 				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->id), 0);
->>>>>>> dev
-				function_004D8500_copy(building->sprite->main_graphic);
+				helper::switch_to_warp_texture(building->sprite->main_graphic);
 			}
 
 			if (sEnd)

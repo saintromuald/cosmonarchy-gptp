@@ -707,7 +707,7 @@ namespace hooks
 				bool can_fire = !unit->ground_weapon_cooldown;
 				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					if (hooks::fire_multiple(unit, unit_ext, weapon_id, 4, FilterEnemy, true)) {
+					if (hooks::fire_multiple(unit, unit_ext, weapon_id, 4, FilterEnemy, true, false)) {
 						scbw::decloak_proc(unit);
 						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
@@ -1661,6 +1661,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranDurendal:
 			{
+				// Durendal - Forward March
 				if (unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] == 0)
 				{
 					if (fire_multiple(unit, unit_ext, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, true))
@@ -1670,6 +1671,21 @@ namespace hooks
 					else
 					{
 						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = 3; // performance
+					}
+				}
+			} break;
+			case UnitId::TerranAmbassador:
+			{
+				// Ambassador - Forward March
+				if (unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] == 0)
+				{
+					if (fire_multiple(unit, unit_ext, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, true))
+					{
+						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
+					}
+					else
+					{
+						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
 			} break;

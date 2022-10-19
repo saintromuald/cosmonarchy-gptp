@@ -138,7 +138,7 @@ namespace hooks
 	}
 
 	// Protoss self-building
-	void orders_build_self_2(Unit* building)
+	void orders_build_self_2(Unit* building) // 004E4F40
 	{
 		bool jump_to_E50EE = false;
 		if (building->main_order_state > 3)

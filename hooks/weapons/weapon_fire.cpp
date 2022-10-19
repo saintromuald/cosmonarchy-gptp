@@ -91,7 +91,7 @@ namespace hooks
 		}
 	}
 
-	bool fire_multiple(Unit* attacker, UnitExt* attackerExt, u32 weapon_id, u32 maxTargets, u32 flags, bool ignoreMain)
+	bool fire_multiple(Unit* attacker, UnitExt* attackerExt, u32 weapon_id, u32 maxTargets, u32 flags, bool ignoreMain, bool use_weapon_factor)
 	{
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
@@ -105,6 +105,7 @@ namespace hooks
 			fired = true;
 		}
 		Unit* old = attacker->order_target.unit;
+
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
 			u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
@@ -116,24 +117,33 @@ namespace hooks
 				attacker->get_y() + range,
 				attacker,
 				[&](Unit* target)
-			{
-				if (target == attacker
-					|| targets.find(target) != targets.end()
-					|| scbw::is_allied_to(attacker->player, target->player)
-					|| !attacker->can_attack_target(target)
-					|| !filter(target)
-					|| (targets.size() >= maxTargets && maxTargets > 0))
 				{
-					return false;
-				}
-				return true;
-			});
+					if (target == attacker
+						|| targets.find(target) != targets.end()
+						|| scbw::is_allied_to(attacker->player, target->player)
+						|| !attacker->can_attack_target(target)
+						|| !filter(target)
+						|| (targets.size() >= maxTargets && maxTargets > 0))
+					{
+						return false;
+					}
+					return true;
+				});
 			if ((targets.size() >= maxTargets && maxTargets > 0) || !newTarget)
 			{
 				break;
 			}
 			attacker->order_target.unit = newTarget;
-			launch_missile(attacker, attackerExt, newTarget, weapon_id);
+
+			// @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
+			u32 factor = 1;
+			if (use_weapon_factor) {
+				factor = weapons_dat::damage_factor[weapon_id];
+			}
+			for (u32 j = 0; j < factor || factor == 0; j++)
+			{
+				launch_missile(attacker, attackerExt, newTarget, weapon_id);
+			}
 			fired = true;
 			targets.insert(newTarget);
 		}
@@ -442,7 +452,7 @@ namespace hooks
 					case WeaponId::BarghestRayOfAgony:
 					{
 						// Multi-Attack III
-						fire_multiple(unit, unitExt, weapon_id, 3, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, unitExt, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
 					} break;
 				}
 			}

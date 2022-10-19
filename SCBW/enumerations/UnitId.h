@@ -64,6 +64,9 @@ namespace UnitId
 		TerranHypnagogue									= 287,
 		TerranArmistice										= 289,
 		TerranPythean										= 290,
+		TerranAmbassador									= 292,
+		TerranHeir											= 293,
+		TerranHorseman										= 294,
 
 	// Terran-Unit-Factional
 		TerranWendigo										= 275,
@@ -90,7 +93,7 @@ namespace UnitId
 		TerranAerie											= 260,
 		TerranMantle										= 280,
 		TerranApothecary									= 284,
-		TerranParthenon = 288,
+		TerranParthenon										= 288,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan
@@ -176,7 +179,7 @@ namespace UnitId
 		ZergTetcaerokor										= 274,
 		ZergSelkerilisk										= 277,
 		ZergOgroszaleth										= 291,
-		ZergAgrileth										= 293,
+		ZergAgrileth										= 302,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
@@ -192,7 +195,7 @@ namespace UnitId
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Terran Gas Tank Type 2
-		ZergRakzogthRoost									= 292,
+		ZergRakzogthRoost									= 303,
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
