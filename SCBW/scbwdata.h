@@ -1051,6 +1051,15 @@ SCBW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 SCBW_DATA_REF(u32*,		ai_strength_air, 0x006BB210);
 SCBW_DATA_REF(u32*,		ai_strength_ground, 0x006BB5A0);
 
+// For ground_attack_init
+SCBW_DATA(Thingy**,		g_first_used_thingy_1,	0x00652918);
+SCBW_DATA(u8*,			g_can_draw_thingy,		0x00652920);
+SCBW_DATA(char**,		g_iscript_data,			0x006D1200);
+
+// For play_warp_in_overlay
+SCBW_DATA(UpdateFunction*,	g_sg_update_funcs,	0x00512510);
+SCBW_DATA(DrawFunction*,	g_sg_draw_funcs,	0x005125A0);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

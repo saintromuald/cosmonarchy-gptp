@@ -1198,4 +1198,15 @@ struct SoundChannel {
 };
 C_ASSERT(sizeof(SoundChannel) == 24);
 
+struct UpdateFunction {
+	u32 ui_number;
+	void* function;
+};
+
+struct DrawFunction {
+	u32 ui_number;
+	void* function_1;
+	void* function_2;
+};
+
 #pragma pack()

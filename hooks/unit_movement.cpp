@@ -51,7 +51,7 @@ namespace hooks
         unit->position.y = newPos.y;
         unit->halt.x = newPos.x << 8;
         unit->halt.y = newPos.y << 8;
-        helper::MoveSprite(unit->sprite, newPos.x, newPos.y);
+        helper::move_sprite(unit->sprite, newPos.x, newPos.y);
         if (unit->sprite)
         {
             if (unit->main_order_id)

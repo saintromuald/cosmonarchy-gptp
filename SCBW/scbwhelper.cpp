@@ -870,7 +870,6 @@ namespace helper
 		}
 	}
 
-
 	Image* create_health_bar(Sprite* sprite)
 	{
 		const u32 CreateHealthBar_function = 0x004D6420;
@@ -8923,7 +8922,7 @@ namespace helper
 		return result;
 	}
 
-	void MoveSprite(Sprite* sprite, s16 x, s16 y)
+	void move_sprite(Sprite* sprite, s16 x, s16 y)
 	{
 		const u32 Func_MoveSprite = 0x00497A10;
 		__asm
@@ -12979,5 +12978,20 @@ namespace helper
 			POPAD
 		}
 		return result;
+	}
+
+	u16 is_valid_script(Image* image, u32 iscript_id)
+	{
+		static u32 result;
+		const u32 func_address = 0x004D6640;
+		__asm {
+			PUSHAD
+			MOV EDI, iscript_id
+			MOV EBX, image
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
 	}
 }

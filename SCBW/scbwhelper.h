@@ -969,7 +969,7 @@ namespace helper {
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
 
 	// For UnitMove
-	void MoveSprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
+	void move_sprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
 	u32 updateUnitSortingInfo(u32 x_diff, Unit* unit, u32 y_diff);											// 0046A000
 
 	// For bullet_behavior_reassign
@@ -1436,4 +1436,6 @@ namespace helper {
 	void bw_sprintf_s(char* buffer, int buffer_size, const char* format_string, int value);					// 0041F1B0
 
 	Image* set_image_palette_type(Image* out_image, u8 palette_type);										// 004D58B0
+
+	u16 is_valid_script(Image* image, u32 iscript_id);														// 004D6640
 }

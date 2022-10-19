@@ -193,6 +193,128 @@ namespace hooks
 		}
 	}
 
+	void play_image_iscript(Image* image, char animation) // 004D8470
+	{
+		if ((animation != IscriptAnimation::Death || image->animation != IscriptAnimation::Death)
+		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death))
+		{
+			char image_anim = image->animation;
+			if (animation != image_anim || animation != IscriptAnimation::Walking && animation != IscriptAnimation::IsWorking)
+			{
+				if (animation == IscriptAnimation::GndAttkRpt)
+				{
+					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit)
+					{
+						animation = IscriptAnimation::GndAttkInit;
+					}
+				}
+				else if (animation == IscriptAnimation::AirAttkRpt
+					&& image_anim != IscriptAnimation::AirAttkRpt
+					&& image_anim != IscriptAnimation::AirAttkInit)
+				{
+					animation = IscriptAnimation::AirAttkInit;
+				}
+				u32 offset = image->iscript_header_offset;
+				char* data = *g_iscript_data;
+				image->animation = animation;
+				image->iscript_offset = *&data[2 * animation + 8 + offset];
+				image->wait = 0;
+				image->unknown14 = 0;
+				helper::iscript_opcode_cases(image, &image->iscript_header_offset, image->iscript_header_offset, 0);
+			}
+		}
+	}
+
+	void ground_attack_init(u16 pos_y, u16 pos_x) // 00488660
+	{
+		Thingy* thingy = *g_first_used_thingy_1;
+		Sprite* thingy_sprite = thingy->sprite;
+		*g_can_draw_thingy = 0;
+		helper::move_sprite(thingy_sprite, pos_x + 1, pos_y + 1);
+		for (Image* i = thingy->sprite->images.head; i; i = i->link.next)
+		{
+			if (i->flags & ImageFlags::Flag04)
+			{
+				u32 header = i->iscript_header_offset;
+				char* data = *g_iscript_data;
+				i->animation = 2;
+				i->iscript_offset = *&data[header + 12];
+				i->wait = 0;
+				i->unknown14 = 0;
+				helper::iscript_opcode_cases(i, data, i->iscript_header_offset, 0);
+			}
+		}
+		*g_can_draw_thingy = 1;
+	}
+
+	void play_warp_in_overlay(Image* image, u32 a2) // 004D8500
+	{
+	//	void(__fastcall *function)(u32, u32, GrpFrame*, Rect32*, u32);
+		
+		helper::is_valid_script(image, 193);
+		u32 offset = image->iscript_header_offset;
+		char* data = *g_iscript_data;
+		image->animation = 0;
+		image->iscript_offset = *&data[offset + 8];
+		image->wait = 0;
+		image->unknown14 = 0;
+		helper::iscript_opcode_cases(image, data, image->iscript_header_offset, 0);
+		helper::is_valid_script(image, images_dat::iscript_id[image->id]);
+		image->palette_type = 12;
+		image->update_fxn = g_sg_update_funcs[12].function;
+		u16 flags = image->flags;
+		void* function = g_sg_draw_funcs[12].function_2;
+		if (!(flags & ImageFlags::Mirrored))
+		{
+			function = g_sg_draw_funcs[12].function_1;
+		}
+		image->render_fxn = function;
+		image->flags = flags | 1;
+		helper::iscript_opcode_cases(image, data, image->iscript_header_offset, 0); // guessed second parameter
+	}
+
+	void iscript_something_death(Image* image) // 004D8590
+	{
+		Image* image_var; // esi
+		char param; // al
+		unsigned __int8 param_2; // al
+		int header; // edx
+		char* data; // edi
+
+		image_var = image;
+	//	param = BYTE1(image->draw_func_param);
+		if (param)
+		{
+		//	BYTE1(image->draw_func_param) = param - 1;
+		}
+		else
+		{
+		//	param_2 = image->draw_func_param;
+		//	BYTE1(image->draw_func_param) = 2;
+			if (param_2 >= 63u)
+			{
+				if (image->animation != 1)
+				{
+					header = image->iscript_header_offset;
+					data = *g_iscript_data;
+					image->animation = 1;
+				//	LOWORD(header) = *&data[header + 10];
+					image->wait = 0;
+					image->unknown14 = 0;
+					image->iscript_offset = header;
+					helper::iscript_opcode_cases(image, &header, image->iscript_header_offset, 0);
+				}
+				(*g_active_iscript_entity)->order_signal |= 1u;
+				image_var->flags |= 1u;
+			}
+			else
+			{
+				image->flags |= 1u;
+			//	LOBYTE(image->draw_func_param) = param_2 + 1;
+			}
+		}
+	}
+
 	// HOOKING \\
 
 	void __declspec(naked) initialize_image_data_wrapper() { // 004D5A50
