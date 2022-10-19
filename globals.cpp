@@ -1404,6 +1404,16 @@ namespace scbw
 			frameset_length = 32;
 		}
 		Point8 offset = lo_file->get_offset(image->direction + (frameset_length * frameset_offset), rotate);
+
+		/*
+		for (u32 i = 0; i < lo_file->frame_count; ++i) {
+			for (u32 j = 0; j < lo_file->overlay_count; ++j) {
+				Point8 offset = lo_file->get_offset(i, j);
+				scbw::printf_console("Frame %i #%i: X %i Y %i", i, j, (s32)offset.x, (s32)offset.y);
+			}
+		}
+		*/
+
 		if (image->flags & ImageFlags::Mirrored)
 		{
 			offset.x = -offset.x;
