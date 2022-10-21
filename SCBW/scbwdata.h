@@ -983,7 +983,6 @@ SCBW_DATA(Unit**,		local_selection_group_2,		0x0059724C);
 
 // For init_damage_overlay_counts
 SCBW_DATA_REF(u8*,		g_building_overlay_state_max,	0x005240D0);
-SCBW_DATA(GrpHead**,	g_images_damage_overlay_graphic,0x00520244);
 
 // To move in-game timer while leaderboard is active
 SCBW_DATA(BinDlg**,		leaderboard_dialog,				0x00597284);

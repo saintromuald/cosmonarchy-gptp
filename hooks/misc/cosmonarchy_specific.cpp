@@ -570,35 +570,29 @@ namespace hooks
 	}
 
 	// Hooked to troubleshoot loading issues. -Pr0nogo
-	void init_damage_overlay_counts() // 004D5C20
-	{
-		s32 index = ImagesIdLimit;
-		do
-		{
-			--index;
-			u32 max_overlay_state = 0;
-			g_building_overlay_state_max[index] = 0;
-			GrpHead* overlay = g_images_damage_overlay_graphic[index];
-			if (overlay)
-			{
-				s32 offset = 44;
-				do
-				{
-					offset -= 2;
-					GrpFrame* overlay_frame = (GrpFrame*)(overlay + offset + *&overlay->frames[0].width);
-					u32 width = overlay_frame->x;
-					u32 height = overlay_frame->y;
-					if (width != 127 || height != 127)
-					{
+	void init_damage_overlay_counts() { // 004D5C20
+		u32 image_id = ImagesIdLimit;
+		while (image_id) {
+			--image_id;
+			g_building_overlay_state_max[image_id] = 0;
+			LO_Header* lo_header = lo_files->damage_overlays[image_id];
+			if (lo_header) {
+				u32 max_overlay_state = 0;
+				u32 offset = 22;
+				while (offset) {
+					offset--;
+					Point8 overlay_frame = lo_header->get_offset(0, offset);
+					u32 width = overlay_frame.x;
+					u32 height = overlay_frame.y;
+					if (width != 127 || height != 127) {
 						++max_overlay_state;
 					}
-				} while (offset);
-				if (max_overlay_state)
-				{
-					g_building_overlay_state_max[index] = 2 * max_overlay_state;
+				}
+				if (max_overlay_state) {
+					g_building_overlay_state_max[image_id] = 2 * max_overlay_state;
 				}
 			}
-		} while (index);
+		}
 	}
 
 }
