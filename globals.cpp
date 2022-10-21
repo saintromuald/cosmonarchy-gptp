@@ -1393,9 +1393,9 @@ namespace scbw
 				image = unit->get_overlay(ImageId::IonCannonTurret);
 			} break;
 		}
-		const LO_Header* lo_file = lo_files->attackOverlays[image->id];
+		const LO_Header* lo_file = lo_files->attack_overlays[image->id];
 		if (use_special_overlay) {
-			lo_file = lo_files->specialOverlays[image->id];
+			lo_file = lo_files->special_overlays[image->id];
 		}
 
 		u32 frameset_length = 17;

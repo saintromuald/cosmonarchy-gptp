@@ -1271,10 +1271,10 @@ namespace scbw
 //			|| order_id == OrderId::Ensnare				// Land Grab
 			|| order_id == OrderId::Irradiate
 			|| order_id == OrderId::StasisField
-			|| order_id == OrderId::EmpShockwave			// Observance
+			|| order_id == OrderId::EmpShockwave		// Observance
 			|| order_id == OrderId::MagnaPulse			// Lobotomy Mine
 			|| order_id == OrderId::PsiStorm
-//			|| order_id == OrderId::SummonBroodlings		// unused
+//			|| order_id == OrderId::SummonBroodlings	// unused
 			|| order_id == OrderId::FireYamatoGun1;
 	}
 
@@ -1282,7 +1282,6 @@ namespace scbw
 	// Identical to function @ 0x004E6140
 	void create_shield_overlay(Unit* unit, u32 attackDirection)
 	{
-	//	const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
 		const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 

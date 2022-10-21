@@ -847,18 +847,17 @@ SCBW_DATA(SpriteTileData*, spritesOnTileRow, 0x00629288);
 
 // Image-related
 struct ImagesDatExtraOverlayLO_Files {
-	LO_Header** attackOverlays;
-	LO_Header** damageOverlays;
-	LO_Header** specialOverlays;
-	LO_Header** landingDustOverlays;
-	LO_Header** liftoffDustOverlays;
+	LO_Header** attack_overlays;
+	LO_Header** damage_overlays;
+	LO_Header** special_overlays;
+	LO_Header** landing_dust_overlays;
+	LO_Header** liftoff_dust_overlays;
 };
-SCBW_DATA_REF(ImagesDatExtraOverlayLO_Files*,		lo_files,			0x0051F2A8);
-//SCBW_DATA_REF(const LO_Header* const*,			shieldOverlays,		0x0052E5C8);
-SCBW_DATA_REF(const LO_Header* const*,				g_shield_overlays,	0x0052E5C8);
+SCBW_DATA_REF(ImagesDatExtraOverlayLO_Files*,		lo_files,				0x0051F2A8);
+SCBW_DATA_REF(const LO_Header* const*,				g_shield_overlays,		0x0052E5C8);
 
-SCBW_DATA(const ColorShiftData*,	g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
-SCBW_DATA_REF(GrpHead* const*,		g_image_grp_graphics,	0x0051CED0);
+SCBW_DATA(const ColorShiftData*,					g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
+SCBW_DATA_REF(GrpHead* const*,						g_image_grp_graphics,	0x0051CED0);
 
 template <typename T>
 struct PlayerFlags {

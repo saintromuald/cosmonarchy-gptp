@@ -101,11 +101,11 @@ namespace DatExt {
 
         // Apply 'newArrs' to appropriate scbwdata.h variables
         imageGrpGraphics_var = (GrpHead* const*)img_newArrs[0];
-        lo_files_var->attackOverlays = (LO_Header**)img_newArrs[1];
-        lo_files_var->damageOverlays = &((LO_Header**)img_newArrs[1])[newCount];
-        lo_files_var->specialOverlays = &((LO_Header**)img_newArrs[1])[newCount*2];
-        lo_files_var->liftoffDustOverlays = &((LO_Header**)img_newArrs[1])[newCount*3];
-        lo_files_var->landingDustOverlays = &((LO_Header**)img_newArrs[1])[newCount*4];
+        lo_files_var->attack_overlays = (LO_Header**)img_newArrs[1];
+        lo_files_var->damage_overlays = &((LO_Header**)img_newArrs[1])[newCount];
+        lo_files_var->special_overlays = &((LO_Header**)img_newArrs[1])[newCount*2];
+        lo_files_var->liftoff_dust_overlays = &((LO_Header**)img_newArrs[1])[newCount*3];
+        lo_files_var->landing_dust_overlays = &((LO_Header**)img_newArrs[1])[newCount*4];
         shieldOverlays_var = (LO_Header* const*)img_newArrs[2];
         g_building_overlay_state_max = (u8*)img_newArrs[3];
     }

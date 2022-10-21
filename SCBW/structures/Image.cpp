@@ -193,8 +193,10 @@ namespace hooks
 		}
 	}
 
+	// Hooked to extend iscript.bin. -Pr0nogo
 	void play_image_iscript(Image* image, char animation) // 004D8470
 	{
+		char final_anim = animation;
 		if ((animation != IscriptAnimation::Death || image->animation != IscriptAnimation::Death)
 		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death))
 		{
@@ -205,19 +207,19 @@ namespace hooks
 				{
 					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit)
 					{
-						animation = IscriptAnimation::GndAttkInit;
+						final_anim = IscriptAnimation::GndAttkInit;
 					}
 				}
 				else if (animation == IscriptAnimation::AirAttkRpt
 					&& image_anim != IscriptAnimation::AirAttkRpt
 					&& image_anim != IscriptAnimation::AirAttkInit)
 				{
-					animation = IscriptAnimation::AirAttkInit;
+					final_anim = IscriptAnimation::AirAttkInit;
 				}
 				u32 offset = image->iscript_header_offset;
 				char* data = *g_iscript_data;
-				image->animation = animation;
-				image->iscript_offset = *&data[2 * animation + 8 + offset];
+				image->animation = final_anim;
+				image->iscript_offset = *&data[2 * final_anim + 8 + offset];
 				image->wait = 0;
 				image->unknown14 = 0;
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, image->iscript_header_offset, 0);
@@ -225,7 +227,8 @@ namespace hooks
 		}
 	}
 
-	void ground_attack_init(u16 pos_y, u16 pos_x) // 00488660
+	// Hooked to extend iscript.bin. -Pr0nogo
+	void ground_attack_init(u16 pos_x, u16 pos_y) // 00488660
 	{
 		Thingy* thingy = *g_first_used_thingy_1;
 		Sprite* thingy_sprite = thingy->sprite;
@@ -247,6 +250,7 @@ namespace hooks
 		*g_can_draw_thingy = 1;
 	}
 
+	// Hooked to extend iscript.bin. -Pr0nogo
 	void play_warp_in_overlay(Image* image, u32 a2) // 004D8500
 	{
 	//	void(__fastcall *function)(u32, u32, GrpFrame*, Rect32*, u32);
@@ -273,6 +277,7 @@ namespace hooks
 		helper::iscript_opcode_cases(image, data, image->iscript_header_offset, 0); // guessed second parameter
 	}
 
+	// Hooked to extend iscript.bin. -Pr0nogo
 	void iscript_something_death(Image* image) // 004D8590
 	{
 		Image* image_var; // esi
@@ -393,10 +398,50 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) play_image_iscript_wrapper() { // 004D8470
+		static Image* image;
+		static u32 animation;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV animation, EAX
+			POP EAX
+			MOV image, ECX
+			PUSHAD
+		}
+		hooks::play_image_iscript(image, (u8)animation);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) ground_attack_init_wrapper() { // 00488660
+		static u16 x_pos;
+		static u16 y_pos;
+		__asm {
+			PUSH EBP
+			MOV y_pos, AX
+			MOV x_pos, CX
+			PUSHAD
+		}
+		hooks::ground_attack_init(x_pos, y_pos);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void inject_image_hooks()
 	{
 		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
 		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
 		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
+	//	jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
+	//	jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 	}
 }

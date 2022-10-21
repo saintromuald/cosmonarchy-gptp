@@ -15,7 +15,7 @@ namespace hooks
 		{
 			return false;
 		}
-		const LO_Header* overlay = lo_files->damageOverlays[sprite->main_graphic->id];
+		const LO_Header* overlay = lo_files->damage_overlays[sprite->main_graphic->id];
 		if (overlay == nullptr)
 		{
 			return false;
@@ -51,7 +51,7 @@ namespace hooks
 		{
 			return;
 		}
-		const LO_Header* overlay = lo_files->damageOverlays[sprite->main_graphic->id];
+		const LO_Header* overlay = lo_files->damage_overlays[sprite->main_graphic->id];
 		if (overlay == nullptr)
 		{
 			return; // return if there's no overlay defined
@@ -600,4 +600,5 @@ namespace hooks
 			}
 		} while (index);
 	}
+
 }
