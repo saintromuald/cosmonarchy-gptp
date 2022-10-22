@@ -257,7 +257,7 @@ namespace hooks
 			*param -= 1;
 		} else if (*param >= 63u) {
 			*param = 2;
-			if (image->animation != 1) {
+			if (image->animation != IscriptAnimation::Death) { // IscriptAnimation::Cuckdeath
 				u16 header = image->iscript_header_offset;
 				image->animation = 1; 
 				char* data = *g_iscript_data;
