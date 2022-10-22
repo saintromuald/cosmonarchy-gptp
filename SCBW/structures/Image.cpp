@@ -80,8 +80,7 @@ GrpFrame* Image::get_current_frame() const
 namespace hooks
 {
 	// Hooked to replace calls in unhooked functions. -Pr0nogo
-	void initialize_image_data(Image* image, Sprite* parent, u16 image_id, s8 horizontal_offset, s8 vertical_offset) // 004D5A50
-	{
+	void initialize_image_data(Image* image, Sprite* parent, u16 image_id, s8 horizontal_offset, s8 vertical_offset) { // 004D5A50
 		image->id = image_id;
 		image->grp_file = g_image_grp_graphics[image_id];
 		image->flags = 0;
@@ -113,44 +112,36 @@ namespace hooks
 		image->animation = IscriptAnimation::Init;
 		image->wait = 0;
 
-		if (images_dat::rle_function[image_id] == PaletteType::RLE_PLAYER_SIDE)
-		{
+		if (images_dat::rle_function[image_id] == PaletteType::RLE_PLAYER_SIDE) {
 			*(u32*)(&image->draw_func_param) = parent->player;
 		}
-		if (images_dat::rle_function[image_id] == PaletteType::RLE_EFFECT)
-		{
+		if (images_dat::rle_function[image_id] == PaletteType::RLE_EFFECT) {
 			image->draw_func_param = g_color_shift[images_dat::remapping[image_id]].data;
 		}
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to enable omnidirectional rendering. -Pr0nogo
-	void set_image_direction(Image* image, u8 direction) // 004D5F80
-	{
-		if (image->flags & ImageFlags::UsesSpecialOffset)
-		{
+	void set_image_direction(Image* image, u8 direction) { // 004D5F80
+		if (image->flags & ImageFlags::UsesSpecialOffset) {
 			helper::update_image_position_offset(image);
 		}
 
-		if (image->flags & ImageFlags::HasRotationFrames)
-		{
+		if (image->flags & ImageFlags::HasRotationFrames) {
 			u32 new_direction = (direction + 4) / 8;
 			u32 new_flip_flag = 0;
 
-			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional))
-			{
+			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional)) {
 				new_flip_flag = ImageFlags::Mirrored;
 				new_direction = 32 - new_direction;
 			}
 
-			if (image->direction != new_direction || (image->flags & ImageFlags::Mirrored) != new_flip_flag)
-			{
+			if (image->direction != new_direction || (image->flags & ImageFlags::Mirrored) != new_flip_flag) {
 				image->direction = new_direction;
 				image->flags &= ~ImageFlags::Mirrored;
 				image->flags |= new_flip_flag;
 				helper::set_image_palette_type(image, image->palette_type);
 
-				if (image->frame_index != image->frameset + image->direction)
-				{
+				if (image->frame_index != image->frameset + image->direction) {
 					image->flags |= ImageFlags::Redraw;
 					image->frame_index = image->frameset + image->direction;
 				}
@@ -159,34 +150,28 @@ namespace hooks
 	}
 
 	// Hooked by X405 as part of the omnidirectional frame display feature addition. -Pr0nogo
-	void update_image_direction(Image* image, u8 direction) // 004D5EA0
-	{
-		if (image->flags & ImageFlags::HasRotationFrames)
-		{
+	void update_image_direction(Image* image, u8 direction) { // 004D5EA0
+		if (image->flags & ImageFlags::HasRotationFrames) {
 			u32 new_flip_flag = 0;
 			int new_direction = direction;
 
-			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional))
-			{
+			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional)) {
 				new_direction = 32 - new_direction;
 				new_flip_flag = ImageFlags::Mirrored;
 			}
 
-			if ((image->flags & ImageFlags::Mirrored) != new_flip_flag || image->direction != new_direction)
-			{
+			if ((image->flags & ImageFlags::Mirrored) != new_flip_flag || image->direction != new_direction) {
 				image->direction = new_direction;
 				image->flags &= ~ImageFlags::Mirrored;
 				image->flags |= new_flip_flag;
 				helper::set_image_palette_type(image, image->palette_type);
 
-				if (image->frame_index != image->direction + image->frameset)
-				{
+				if (image->frame_index != image->direction + image->frameset) {
 					image->flags |= ImageFlags::Redraw;
 					image->frame_index = image->direction + image->frameset;
 				}
 
-				if (image->flags & ImageFlags::UsesSpecialOffset)
-				{
+				if (image->flags & ImageFlags::UsesSpecialOffset) {
 					helper::update_image_position_offset(image);
 				}
 			}
@@ -194,26 +179,19 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void play_image_iscript(Image* image, char animation) // 004D8470
-	{
+	void play_image_iscript(Image* image, char animation) { // 004D8470
 		char final_anim = animation;
 		if ((animation != IscriptAnimation::Death || image->animation != IscriptAnimation::Death)
-		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death))
-		{
+		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death)) {
 			char image_anim = image->animation;
-			if (animation != image_anim || animation != IscriptAnimation::Walking && animation != IscriptAnimation::IsWorking)
-			{
-				if (animation == IscriptAnimation::GndAttkRpt)
-				{
-					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit)
-					{
+			if (animation != image_anim || animation != IscriptAnimation::Walking && animation != IscriptAnimation::IsWorking) {
+				if (animation == IscriptAnimation::GndAttkRpt) {
+					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit) {
 						final_anim = IscriptAnimation::GndAttkInit;
 					}
-				}
-				else if (animation == IscriptAnimation::AirAttkRpt
+				} else if (animation == IscriptAnimation::AirAttkRpt
 					&& image_anim != IscriptAnimation::AirAttkRpt
-					&& image_anim != IscriptAnimation::AirAttkInit)
-				{
+					&& image_anim != IscriptAnimation::AirAttkInit) {
 					final_anim = IscriptAnimation::AirAttkInit;
 				}
 				u32 offset = image->iscript_header_offset;
@@ -228,16 +206,13 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void ground_attack_init(u16 pos_x, u16 pos_y) // 00488660
-	{
+	void ground_attack_init(u16 pos_x, u16 pos_y) { // 00488660
 		Thingy* thingy = *g_first_used_thingy_1;
 		Sprite* thingy_sprite = thingy->sprite;
 		*g_can_draw_thingy = 0;
 		helper::move_sprite(thingy_sprite, pos_x + 1, pos_y + 1);
-		for (Image* i = thingy->sprite->images.head; i; i = i->link.next)
-		{
-			if (i->flags & ImageFlags::Flag04)
-			{
+		for (Image* i = thingy->sprite->images.head; i; i = i->link.next) {
+			if (i->flags & ImageFlags::Flag04) {
 				u32 header = i->iscript_header_offset;
 				char* data = *g_iscript_data;
 				i->animation = 2;
@@ -251,15 +226,13 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void play_warp_in_overlay(Image* image, u32 a2) // 004D8500
-	{
+	void play_warp_in_overlay(Image* image, u32 a2) { // 004D8500
 	//	void(__fastcall *function)(u32, u32, GrpFrame*, Rect32*, u32);
-		
 		helper::is_valid_script(image, 193);
 		u32 offset = image->iscript_header_offset;
 		char* data = *g_iscript_data;
 		image->animation = 0;
-		image->iscript_offset = *&data[offset + 8];
+		image->iscript_offset = *(u16*)&data[offset + 8];
 		image->wait = 0;
 		image->unknown14 = 0;
 		helper::iscript_opcode_cases(image, data, image->iscript_header_offset, 0);
@@ -268,8 +241,7 @@ namespace hooks
 		image->update_fxn = g_sg_update_funcs[12].function;
 		u16 flags = image->flags;
 		void* function = g_sg_draw_funcs[12].function_2;
-		if (!(flags & ImageFlags::Mirrored))
-		{
+		if (!(flags & ImageFlags::Mirrored)) {
 			function = g_sg_draw_funcs[12].function_1;
 		}
 		image->render_fxn = function;
@@ -278,45 +250,26 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void iscript_something_death(Image* image) // 004D8590
-	{
-		Image* image_var; // esi
-		char param; // al
-		unsigned __int8 param_2; // al
-		int header; // edx
-		char* data; // edi
-
-		image_var = image;
-	//	param = BYTE1(image->draw_func_param);
-		if (param)
-		{
-		//	BYTE1(image->draw_func_param) = param - 1;
-		}
-		else
-		{
-		//	param_2 = image->draw_func_param;
-		//	BYTE1(image->draw_func_param) = 2;
-			if (param_2 >= 63u)
-			{
-				if (image->animation != 1)
-				{
-					header = image->iscript_header_offset;
-					data = *g_iscript_data;
-					image->animation = 1;
-				//	LOWORD(header) = *&data[header + 10];
-					image->wait = 0;
-					image->unknown14 = 0;
-					image->iscript_offset = header;
-					helper::iscript_opcode_cases(image, &header, image->iscript_header_offset, 0);
-				}
-				(*g_active_iscript_entity)->order_signal |= 1u;
-				image_var->flags |= 1u;
+	void iscript_something_death(Image* image) { // 004D8590
+		u8* param = (u8*)image->draw_func_param + 1;
+		if (*param) {
+			*param -= 1;
+		} else if (*param >= 63u) {
+			if (image->animation != 1) {
+				u16 header = image->iscript_header_offset;
+				char* data = *g_iscript_data;
+				image->animation = 1; 
+				header = *(u16*)&data[header + 10];
+				image->wait = 0;
+				image->unknown14 = 0;
+				image->iscript_offset = header;
+				helper::iscript_opcode_cases(image, &header, image->iscript_header_offset, 0);
 			}
-			else
-			{
-				image->flags |= 1u;
-			//	LOBYTE(image->draw_func_param) = param_2 + 1;
-			}
+			(*g_active_iscript_entity)->order_signal |= 1u;
+			image->flags |= ImageFlags::Redraw;
+		} else {
+			image->flags |= ImageFlags::Redraw;
+			*param += 1;
 		}
 	}
 
