@@ -251,25 +251,29 @@ namespace hooks
 
 	// Hooked to extend iscript.bin. -Pr0nogo
 	void iscript_something_death(Image* image) { // 004D8590
-		u8* param = (u8*)image->draw_func_param + 1;
+		u8* param = (u8*)&image->draw_func_param + 1;
 		if (*param) {
 			*param -= 1;
-		} else if (*param >= 63u) {
-			if (image->animation != 1) {
-				u16 header = image->iscript_header_offset;
-				char* data = *g_iscript_data;
-				image->animation = 1; 
-				header = *(u16*)&data[header + 10];
-				image->wait = 0;
-				image->unknown14 = 0;
-				image->iscript_offset = header;
-				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
-			}
-			(*g_active_iscript_entity)->order_signal |= 1u;
-			image->flags |= ImageFlags::Redraw;
 		} else {
-			image->flags |= ImageFlags::Redraw;
-			*param += 1;
+			u8 param_old = *param;
+			*param = 2;
+			if (param_old >= 63u) {
+				if (image->animation != 1) {
+					u16 header = image->iscript_header_offset;
+					image->animation = 1; 
+					char* data = *g_iscript_data;
+					header = *(u16*)&data[header + 10];
+					image->wait = 0;
+					image->unknown14 = 0;
+					image->iscript_offset = header;
+					helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+				}
+				(*g_active_iscript_entity)->order_signal |= 1u;
+				image->flags |= ImageFlags::Redraw;
+			} else {
+				*param += 1;
+				image->flags |= ImageFlags::Redraw;
+			}
 		}
 	}
 
