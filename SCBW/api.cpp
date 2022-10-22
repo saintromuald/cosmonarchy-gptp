@@ -574,23 +574,27 @@ namespace scbw
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergQuazilisk:
 			case UnitId::ZergNathrokor:
+			case UnitId::ZergCikralisk:
+			case UnitId::ZergProtathalor:
+			case UnitId::ZergMutalisk:
+			case UnitId::ZergAxitrilisk:
+			case UnitId::ZergMortothrokor:
 			case UnitId::ZergHydralisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergSkithrokor:
-			case UnitId::ZergZoryusthaleth:
-			case UnitId::ZergLakizilisk:
-			case UnitId::ZergGorgrokor:
-			case UnitId::ZergMutalisk:
-			case UnitId::ZergProtathalor:
-			case UnitId::ZergCikralisk:
 			case UnitId::ZergKagralisk:
 			case UnitId::ZergEvigrilisk:
 			case UnitId::ZergAlmaksalisk:
+			case UnitId::ZergKeskathalor:
+			case UnitId::ZergGeszithalor:
+			case UnitId::ZergZoryusthaleth:
+			case UnitId::ZergLakizilisk:
+			case UnitId::ZergGorgrokor:
 			case UnitId::ZergKonvilisk:
 			case UnitId::ZergVilgorokor:
 			case UnitId::ZergMatraleth:
-			case UnitId::ZergKeskathalor:
 			case UnitId::ZergIsthrathaleth:
+			case UnitId::ZergElthrazalisk:
 			{
 				return true; 
 			}
