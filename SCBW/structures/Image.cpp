@@ -195,7 +195,7 @@ namespace hooks
 					final_anim = IscriptAnimation::AirAttkInit;
 				}
 				u32 offset = image->iscript_header_offset;
-				char* data = *g_iscript_data;
+				char* data = (char*)*g_iscript_data;
 				image->animation = final_anim;
 				image->iscript_offset = *(u16*)&data[2 * final_anim + 8 + offset];
 				image->wait = 0;
@@ -214,7 +214,7 @@ namespace hooks
 		for (Image* i = thingy->sprite->images.head; i; i = i->link.next) {
 			if (i->flags & ImageFlags::Flag04) {
 				u32 header = i->iscript_header_offset;
-				char* data = *g_iscript_data;
+				char* data = (char*)*g_iscript_data;
 				i->animation = 2;
 				i->iscript_offset = *(u16*)&data[header + 12];
 				i->wait = 0;
@@ -227,10 +227,9 @@ namespace hooks
 
 	// Hooked to extend iscript.bin. -Pr0nogo
 	void play_warp_in_overlay(Image* image, u32 a2) { // 004D8500
-	//	void(__fastcall *function)(u32, u32, GrpFrame*, Rect32*, u32);
 		helper::is_valid_script(image, 193);
 		u32 offset = image->iscript_header_offset;
-		char* data = *g_iscript_data;
+		char* data = (char*)*g_iscript_data;
 		image->animation = 0;
 		image->iscript_offset = *(u16*)&data[offset + 8];
 		image->wait = 0;
@@ -255,19 +254,19 @@ namespace hooks
 		u8* param = (u8*)&image->draw_func_param + 1;
 		if (*param) {
 			*param -= 1;
-		} else if (*param >= 63u) {
+		} else if (*param >= 63) {
 			*param = 2;
 			if (image->animation != IscriptAnimation::Death) { // IscriptAnimation::Cuckdeath
 				u16 header = image->iscript_header_offset;
-				image->animation = 1; 
-				char* data = *g_iscript_data;
+				image->animation = IscriptAnimation::Death;
+				char* data = (char*)*g_iscript_data;
 				header = *(u16*)&data[header + 10];
 				image->wait = 0;
 				image->unknown14 = 0;
 				image->iscript_offset = header;
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 			}
-			(*g_active_iscript_entity)->order_signal |= 1u;
+			(*g_active_iscript_entity)->order_signal |= 1;
 			image->flags |= ImageFlags::Redraw;
 		} else {
 			*param += 1;
@@ -443,6 +442,6 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-		// jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
+	//	jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
 	}
 }
