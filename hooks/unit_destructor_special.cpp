@@ -248,7 +248,7 @@ void unit_destructor_special_cases(Unit* unit)
 	{
 		switch (unit->id)
 		{
-			case UnitId::SharedAspirant:
+			case UnitId::TerranAspirant:
 			{
 				globals.create_effect(EffectId_Criticality, 5 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;

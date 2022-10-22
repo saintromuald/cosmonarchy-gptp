@@ -725,7 +725,7 @@ void init_fraud_units() {
 	// Piglet
 	fraud_spawn.frauds[Fraud_Piglet][RaceId::Terran] = {AiPersonality_TerranShadow, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cordovan};
 	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranBlackjack});
-	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranCohort});
 	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranSiren});
 
 	// DarkenedFantasies
@@ -796,13 +796,13 @@ void init_fraud_units() {
 	// Metathrom
 	fraud_spawn.frauds[Fraud_Metathrom][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::BdazzledBlue};
 	add_fraud_unit(Fraud_Metathrom, RaceId::Protoss, {2, UnitId::ProtossAmaranth});
-	add_fraud_unit(Fraud_Metathrom, RaceId::Protoss, {2, UnitId::SharedAspirant});
+	add_fraud_unit(Fraud_Metathrom, RaceId::Protoss, {2, UnitId::TerranAspirant});
 	add_fraud_unit(Fraud_Metathrom, RaceId::Protoss, {2, UnitId::ProtossCantavis});
 	add_fraud_unit(Fraud_Metathrom, RaceId::Protoss, {1, UnitId::ProtossArchon});
 
 	// Cerebrate Stalin
 	fraud_spawn.frauds[Fraud_CerebrateStalin][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Mango};
-	add_fraud_unit(Fraud_CerebrateStalin, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_CerebrateStalin, RaceId::Zerg, {4, UnitId::TerranCohort});
 	add_fraud_unit(Fraud_CerebrateStalin, RaceId::Zerg, {2, UnitId::ZergAxitrilisk});
 
 	// Andy Rose Uh
@@ -818,7 +818,7 @@ void init_fraud_units() {
 	// A
 	fraud_spawn.frauds[Fraud_A][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::ForestGreen};
 	add_fraud_unit(Fraud_A, RaceId::Zerg, {8, UnitId::ZergZethrokor});
-	add_fraud_unit(Fraud_A, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_A, RaceId::Zerg, {4, UnitId::TerranCohort});
 
 	// Sellout Sam
 	fraud_spawn.frauds[Fraud_SelloutSam][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Beaver};
@@ -850,7 +850,7 @@ void init_fraud_units() {
 
 	// N Thrower
 	fraud_spawn.frauds[Fraud_NThrower][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cyan};
-	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {4, UnitId::TerranCohort});
 	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {2, UnitId::ZergKonvilisk});
 	add_fraud_unit(Fraud_NThrower, RaceId::Zerg, {2, UnitId::ZergMatraleth});
 
@@ -947,7 +947,7 @@ void init_fraud_units() {
 	// Anal Crowsummoner
 	fraud_spawn.frauds[Fraud_AnalCrowsummoner][RaceId::Terran] = {AiPersonality_TerranShadow, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::Grey};
 	add_fraud_unit(Fraud_AnalCrowsummoner, RaceId::Terran, {2, UnitId::TerranBlackjack});
-	add_fraud_unit(Fraud_AnalCrowsummoner, RaceId::Terran, {6, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_AnalCrowsummoner, RaceId::Terran, {6, UnitId::TerranCohort});
 
 	fraud_spawn.frauds[Fraud_AnalCrowsummoner][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::Grey};
 	add_fraud_unit(Fraud_AnalCrowsummoner, RaceId::Protoss, {5, UnitId::ProtossManifold});
@@ -960,20 +960,20 @@ void init_fraud_units() {
 	// Pissing Porncultist
 	fraud_spawn.frauds[Fraud_PissingPorncultist][RaceId::Terran] = {AiPersonality_TerranShadow, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::IridescentYellow};
 	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Terran, {4, UnitId::TerranMaverick});
-	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Terran, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Terran, {4, UnitId::TerranCohort});
 
 	fraud_spawn.frauds[Fraud_PissingPorncultist][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::IridescentYellow};
 	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Protoss, {2, UnitId::ProtossLegionnaire});
-	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Protoss, {4, UnitId::SharedAspirant});
+	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Protoss, {4, UnitId::TerranAspirant});
 
 	fraud_spawn.frauds[Fraud_PissingPorncultist][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::IridescentYellow};
 	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Zerg, {8, UnitId::ZergZethrokor});
-	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_PissingPorncultist, RaceId::Zerg, {4, UnitId::TerranCohort});
 
 	// Bearborne Arkanianpussy
 	fraud_spawn.frauds[Fraud_BearborneArkanianpussy][RaceId::Terran] = {AiPersonality_TerranShadow, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::IridescentGreen};
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Terran, {4, UnitId::TerranBlackjack});
-	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Terran, {1, UnitId::SharedAspirant});
+	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Terran, {1, UnitId::TerranAspirant});
 
 	fraud_spawn.frauds[Fraud_BearborneArkanianpussy][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::IridescentGreen};
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Protoss, {2, UnitId::ProtossLegionnaire});
@@ -983,7 +983,7 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_BearborneArkanianpussy][RaceId::Zerg] = { AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::IridescentGreen};
 	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Zerg, {8, UnitId::ZergZethrokor});
-	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_BearborneArkanianpussy, RaceId::Zerg, {4, UnitId::TerranCohort});
 
 	// Doubling Wuckdevourer
 	fraud_spawn.frauds[Fraud_DoublingWuckdevourer][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::PalatinatePurple};
@@ -1004,7 +1004,7 @@ void init_fraud_units() {
 	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Terran, {4, UnitId::TerranMaverick});
 	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Terran, {2, UnitId::TerranCleric});
 	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Terran, {1, UnitId::TerranApostle});
-	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Terran, {2, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Terran, {2, UnitId::TerranCohort});
 
 	fraud_spawn.frauds[Fraud_MongoloidPointcorruptor][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::AliceBlue};
 	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Protoss, {4, UnitId::ProtossVassal});
@@ -1013,7 +1013,7 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_MongoloidPointcorruptor][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::AliceBlue};
 	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Zerg, {6, UnitId::ZergHydralisk});
-	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Zerg, {2, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_MongoloidPointcorruptor, RaceId::Zerg, {2, UnitId::TerranCohort});
 
 	// Calendared Rageboy
 	fraud_spawn.frauds[Fraud_CalendaredRageboy][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Red};
@@ -1049,7 +1049,7 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_SkeletalTodzombie][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::SilverPink};
 	add_fraud_unit(Fraud_SkeletalTodzombie, RaceId::Zerg, {2, UnitId::ZergBactalisk});
-	add_fraud_unit(Fraud_SkeletalTodzombie, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_SkeletalTodzombie, RaceId::Zerg, {4, UnitId::TerranCohort});
 	add_fraud_unit(Fraud_SkeletalTodzombie, RaceId::Zerg, {1, UnitId::ZergZoryusthaleth});
 
 	// Hoop Thrower
@@ -1076,7 +1076,7 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_Veeq8][RaceId::Zerg] = {AiPersonality_ZergSwarm, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::NeonBlue};
 	add_fraud_unit(Fraud_Veeq8, RaceId::Zerg, {8, UnitId::ZergZethrokor});
-	add_fraud_unit(Fraud_Veeq8, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_Veeq8, RaceId::Zerg, {4, UnitId::TerranCohort});
 
 	// Bonzibuddy
 	fraud_spawn.frauds[Fraud_Bonzibuddy][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::JapaneseViolet};
@@ -1087,7 +1087,7 @@ void init_fraud_units() {
 	add_fraud_unit(Fraud_Bonzibuddy, RaceId::Protoss, {4, UnitId::ProtossEcclesiast});
 
 	fraud_spawn.frauds[Fraud_Bonzibuddy][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::JapaneseViolet};
-	add_fraud_unit(Fraud_Bonzibuddy, RaceId::Zerg, {4, UnitId::SharedCohort});
+	add_fraud_unit(Fraud_Bonzibuddy, RaceId::Zerg, {4, UnitId::TerranCohort});
 	add_fraud_unit(Fraud_Bonzibuddy, RaceId::Zerg, {4, UnitId::ZergLiiralisk});
 
 	// IskatuMesk
@@ -1097,7 +1097,7 @@ void init_fraud_units() {
 
 	fraud_spawn.frauds[Fraud_IskatuMesk][RaceId::Protoss] = {AiPersonality_ProtossProfane, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Chestnut};
 	add_fraud_unit(Fraud_IskatuMesk, RaceId::Protoss, {4, UnitId::ProtossCabalist});
-	add_fraud_unit(Fraud_IskatuMesk, RaceId::Protoss, {2, UnitId::SharedAspirant});
+	add_fraud_unit(Fraud_IskatuMesk, RaceId::Protoss, {2, UnitId::TerranAspirant});
 
 	fraud_spawn.frauds[Fraud_IskatuMesk][RaceId::Zerg] = {AiPersonality_ZergAssault, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Chestnut};
 	add_fraud_unit(Fraud_IskatuMesk, RaceId::Zerg, {4, UnitId::ZergHydralisk});
@@ -1163,7 +1163,7 @@ void init_fraud_units() {
 	// Tuzor
 	fraud_spawn.frauds[FraudHero_Tuzor][RaceId::Zerg] = {AiPersonality_ZergMiscreant, AiBuildType_None, AiBuildOrder_ZergMiscreant_RapidAnnex, PlayerColor::Wine};
 	add_fraud_unit(FraudHero_Tuzor, RaceId::Zerg, {8, UnitId::ZergZethrokor});
-	add_fraud_unit(FraudHero_Tuzor, RaceId::Zerg, {12, UnitId::SharedCohort});
+	add_fraud_unit(FraudHero_Tuzor, RaceId::Zerg, {12, UnitId::TerranCohort});
 	add_fraud_unit(FraudHero_Tuzor, RaceId::Zerg, {2, UnitId::ZergGeszithalor});
 
 	// Charlie

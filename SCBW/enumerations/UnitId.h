@@ -15,12 +15,6 @@ namespace UnitId
 		SpecialControlNode									= 192,		// Terran Marker
 		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
 
-	// Shared-Unit
-		SharedCohort										= 50,		// Infested Terran
-		SharedLuminary										= 150,		// Mature Chrysalis
-		SharedAspirant										= 194,		// Zerg Beacon
-		SharedTarasque										= 210,		// Left Wall Missile Trap
-
 	// Terran-Unit
 		TerranApostle										= 10,		// Gui Montag
 		TerranShaman										= 15,		// Civilian
@@ -67,10 +61,19 @@ namespace UnitId
 		TerranAmbassador									= 292,
 		TerranHeir											= 293,
 		TerranHorseman										= 294,
+		TerranThespian										= 297,
+		TerranSilvertongue									= 298,
+		TerranEmperor										= 300,
+		TerranJester										= 301,
 
 	// Terran-Unit-Factional
+		TerranCohort										= 50,		// Infested Terran
+		TerranLuminary										= 150,		// Mature Chrysalis
+		TerranAspirant										= 194,		// Zerg Beacon
+		TerranTarasque										= 210,		// Left Wall Missile Trap
 		TerranWendigo										= 275,
 		TerranSouthpaw										= 276,
+		TerranZergMeleeHybrid								= 349,
 
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
@@ -94,6 +97,9 @@ namespace UnitId
 		TerranMantle										= 280,
 		TerranApothecary									= 284,
 		TerranParthenon										= 288,
+		TerranIronCouncil									= 295,
+		TerranAmphitheater									= 296,
+		TerranThroneroom									= 299,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan
@@ -125,6 +131,21 @@ namespace UnitId
 		ProtossEmpress										= 183,		// Independent Command Center
 		ProtossHerald										= 265,
 		ProtossEpigraph										= 266,
+		ProtossServitor										= 306,
+		ProtossPositron										= 307,
+		ProtossAnalogue										= 308,
+		ProtossMainstay										= 309,
+		ProtossMaven										= 310,
+		ProtossCloudform									= 311,
+		ProtossVibrance										= 312,
+		ProtossOscilliant									= 313,
+		ProtossPotentate									= 314,
+		ProtossSycophant									= 315,
+		ProtossOptecton										= 316,
+		ProtossPatriarch									= 317,
+		ProtossApostate										= 318,
+		ProtossBulwark										= 331,
+		ProtossMonogram										= 348,
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
@@ -142,6 +163,8 @@ namespace UnitId
 		ProtossMatrix										= 252,
 		ProtossStridentStratum								= 278,
 		ProtossAuxiliaryOasis								= 279,
+		ProtossSequesteredIcon								= 304,
+		ProtossUnitaryUnion									= 305,
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
@@ -180,6 +203,15 @@ namespace UnitId
 		ZergSelkerilisk										= 277,
 		ZergOgroszaleth										= 291,
 		ZergAgrileth										= 302,
+		ZergMortothrokor									= 319,
+		ZergCherbrathalor									= 320,
+		ZergOkrimnilisk										= 321,
+		ZergAlgoztalisk										= 322,
+		ZergElthrazalisk									= 323,
+		ZergBegrothilisk									= 324,
+		ZergOztukrokor										= 325,
+		ZergKethrostalor									= 326,
+		ZergRakzilisk										= 327,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
@@ -196,6 +228,9 @@ namespace UnitId
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Terran Gas Tank Type 2
 		ZergRakzogthRoost									= 303,
+		ZergAxtothAxis										= 328,
+		ZergBegrozithBarrow									= 329,
+		ZergChokralgantChasm								= 330,
 
 	// Special-Unit
 		TerranCivilianExt									= 332,

@@ -328,157 +328,239 @@ namespace hooks
 		}
 	}
 
-	// TODO: Convert to switch statement! -Pr0nogo
 	bool unit_can_morph(Unit* unit, u16 morph_unit_id)
 	{
-		if (unit->id == UnitId::ZergLarva)
+		switch (unit->id)
 		{
-			if (unit->can_make_unit(morph_unit_id, *g_active_nation_id) == 1)
+			case UnitId::ZergLarva:
 			{
-				return true;
+				if (unit->can_make_unit(morph_unit_id, *g_active_nation_id) == 1)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergDroleth:
+			{
+				if (morph_unit_id == UnitId::ZergGosvileth)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergOvileth:
+			{
+				if (morph_unit_id == UnitId::ZergIroleth)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergOthstoleth:
+			{
+				if (morph_unit_id == UnitId::ZergAlaszileth)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergZethrokor:
+			{
+				if (morph_unit_id == UnitId::ZergVorvrokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergQuazilisk:
+			{
+				if (morph_unit_id == UnitId::ZergLiiralisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergNathrokor:
+			{
+				if (morph_unit_id == UnitId::ZergKalkalisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergCikralisk:
+			{
+				if (morph_unit_id == UnitId::ZergGhitorokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergProtathalor:
+			{
+				if (morph_unit_id == UnitId::ZergSovroleth)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergMutalisk:
+			{
+				if (morph_unit_id == UnitId::ZergTosgrilisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergAxitrilisk:
+			{
+				if (morph_unit_id == UnitId::ZergBegrothilisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergMortothrokor:
+			{
+				if (morph_unit_id == UnitId::ZergOztukrokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergHydralisk:
+			{
+				if (morph_unit_id == UnitId::ZergBactalisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergIzirokor:
+			{
+				if (morph_unit_id == UnitId::ZergTethzorokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergSkithrokor:
+			{
+				if (morph_unit_id == UnitId::ZergVithrilisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergKagralisk:
+			{
+				if (morph_unit_id == UnitId::ZergCherbrathalor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergEvigrilisk:
+			{
+				if (morph_unit_id == UnitId::ZergOkrimnilisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergAlmaksalisk:
+			{
+				if (morph_unit_id == UnitId::ZergAlgoztalisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergKeskathalor:
+			{
+				if (morph_unit_id == UnitId::ZergKethrostalor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergGeszithalor:
+			{
+				if (morph_unit_id == UnitId::ZergAlkajelisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergZoryusthaleth:
+			{
+				if (morph_unit_id == UnitId::ZergUltrokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergLakizilisk:
+			{
+				if (morph_unit_id == UnitId::ZergZobriolisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergGorgrokor:
+			{
+				if (morph_unit_id == UnitId::ZergZarcavrokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergKonvilisk:
+			{
+				if (morph_unit_id == UnitId::ZergTetcaerokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergVilgorokor:
+			{
+				if (morph_unit_id == UnitId::ZergSelkerilisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergMatraleth:
+			{
+				if (morph_unit_id == UnitId::ZergAkistrokor)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergIsthrathaleth:
+			{
+				if (morph_unit_id == UnitId::ZergOgroszaleth)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergElthrazalisk:
+			{
+				if (morph_unit_id == UnitId::ZergRakzilisk)
+				{
+					return true;
+				}
+				return false;
+			} break;
+			default:
+			{
+				return false;
 			}
 		}
-		else if (unit->id == UnitId::ZergDroleth)
-		{
-			if (morph_unit_id == UnitId::ZergGosvileth)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergOvileth)
-		{
-			if (morph_unit_id == UnitId::ZergIroleth)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergOthstoleth)
-		{
-			if (morph_unit_id == UnitId::ZergAlaszileth)
-			{
-				return true;
-			}
-		}
-		if (unit->id == UnitId::ZergZethrokor)
-		{
-			if (morph_unit_id == UnitId::ZergVorvrokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergQuazilisk)
-		{
-			if (morph_unit_id == UnitId::ZergLiiralisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergNathrokor)
-		{
-			if (morph_unit_id == UnitId::ZergKalkalisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergHydralisk)
-		{
-			if (morph_unit_id == UnitId::ZergBactalisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergIzirokor)
-		{
-			if (morph_unit_id == UnitId::ZergTethzorokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergSkithrokor)
-		{
-			if (morph_unit_id == UnitId::ZergVithrilisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergZoryusthaleth)
-		{
-			if (morph_unit_id == UnitId::ZergUltrokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergLakizilisk)
-		{
-			if (morph_unit_id == UnitId::ZergZobriolisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergGorgrokor)
-		{
-			if (morph_unit_id == UnitId::ZergZarcavrokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergMutalisk)
-		{
-			if (morph_unit_id == UnitId::ZergTosgrilisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergProtathalor)
-		{
-			if (morph_unit_id == UnitId::ZergSovroleth)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergCikralisk)
-		{
-			if (morph_unit_id == UnitId::ZergGhitorokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergKonvilisk)
-		{
-			if (morph_unit_id == UnitId::ZergTetcaerokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergVilgorokor)
-		{
-			if (morph_unit_id == UnitId::ZergSelkerilisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergMatraleth)
-		{
-			if (morph_unit_id == UnitId::ZergAkistrokor)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergKeskathalor)
-		{
-			if (morph_unit_id == UnitId::ZergAlkajelisk)
-			{
-				return true;
-			}
-		}
-		else if (unit->id == UnitId::ZergIsthrathaleth)
-		{
-			if (morph_unit_id == UnitId::ZergOgroszaleth)
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	bool is_rallyable_egg_unit(u16 unit_id) {

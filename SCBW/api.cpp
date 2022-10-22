@@ -1962,14 +1962,14 @@ namespace scbw
 	bool unit_id_is_shared(u16 unit_id)
 	{
 		return unit_id == UnitId::TerranAnticthon
-			|| unit_id == UnitId::SharedAspirant
+			|| unit_id == UnitId::TerranAspirant
 			|| unit_id == UnitId::ZergAxitrilisk
 			|| unit_id == UnitId::ProtossCharlatan
-			|| unit_id == UnitId::SharedCohort
+			|| unit_id == UnitId::TerranCohort
 			|| unit_id == UnitId::ProtossEmpress
-			|| unit_id == UnitId::SharedLuminary
+			|| unit_id == UnitId::TerranLuminary
 			|| unit_id == UnitId::TerranStriga
-			|| unit_id == UnitId::SharedTarasque;
+			|| unit_id == UnitId::TerranTarasque;
 	}
 
 	bool transport_is_full(Unit* transport) {
@@ -2489,12 +2489,12 @@ namespace scbw
 					return true;
 				}
 				switch (unit_id) {
-					case UnitId::SharedCohort:
-					case UnitId::SharedAspirant:
-					case UnitId::SharedTarasque:
+					case UnitId::TerranCohort:
+					case UnitId::TerranAspirant:
+					case UnitId::TerranTarasque:
 					case UnitId::TerranStriga:
 					case UnitId::TerranAnticthon:
-					case UnitId::SharedLuminary: {
+					case UnitId::TerranLuminary: {
 						return true;
 					}
 				}
@@ -2504,12 +2504,12 @@ namespace scbw
 					return true;
 				}
 				switch (unit_id) {
-					case UnitId::SharedAspirant:
+					case UnitId::TerranAspirant:
 					case UnitId::ZergAxitrilisk:
 					case UnitId::TerranStriga:
 					case UnitId::ProtossCharlatan:
 					case UnitId::ProtossEmpress:
-					case UnitId::SharedLuminary: {
+					case UnitId::TerranLuminary: {
 						return true;
 					}
 				}
@@ -2519,9 +2519,9 @@ namespace scbw
 					return true;
 				}
 				switch (unit_id) {
-					case UnitId::SharedCohort:
+					case UnitId::TerranCohort:
 					case UnitId::ZergAxitrilisk:
-					case UnitId::SharedTarasque:
+					case UnitId::TerranTarasque:
 					case UnitId::ProtossCharlatan:
 					case UnitId::ProtossEmpress:
 					case UnitId::TerranAnticthon: {
