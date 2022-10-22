@@ -724,13 +724,7 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
-					bool has_addon = false;
-					s32 addon_id = -1;
-					if (units_dat::base_property[unit->id] & UnitProperty::Building
-						&& unit->building.addon) {
-						has_addon = true;
-						addon_id = unit->building.addon->id;
-					}
+					bool has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
 					bool in_air = unit->status & UnitStatus::InAir;
 					bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 
