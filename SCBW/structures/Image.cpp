@@ -388,7 +388,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) play_warp_in_overlay_wrapper() { // 00488660
+	void __declspec(naked) play_warp_in_overlay_wrapper() { // 004D8500
 		static Image* image;
 		static u32 unused;
 		__asm {
@@ -403,7 +403,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) iscript_something_death_wrapper() { // 00488660
+	void __declspec(naked) iscript_something_death_wrapper() { // 004D8590
 		static Image* image;
 		__asm {
 			MOV image, ECX
@@ -424,6 +424,6 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-		jump_patch(iscript_something_death_wrapper,	0x004D8500, 1);
+		jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
 	}
 }
