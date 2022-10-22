@@ -377,12 +377,26 @@ namespace hooks
 		static u16 x_pos;
 		static u16 y_pos;
 		__asm {
-			PUSH EBP
 			MOV y_pos, AX
 			MOV x_pos, CX
 			PUSHAD
 		}
 		hooks::ground_attack_init(x_pos, y_pos);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) play_warp_in_overlay_wrapper() { // 00488660
+		static Image* image;
+		static u32 unused;
+		__asm {
+			MOV image, EAX
+			MOV unused, ECX
+			PUSHAD
+		}
+		hooks::play_warp_in_overlay(image, unused);
 		__asm {
 			POPAD
 			RETN
@@ -395,6 +409,7 @@ namespace hooks
 		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
 		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
-		// jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
+		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
+		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
 	}
 }
