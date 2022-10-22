@@ -153,7 +153,7 @@ namespace hooks
 	void update_image_direction(Image* image, u8 direction) { // 004D5EA0
 		if (image->flags & ImageFlags::HasRotationFrames) {
 			u32 new_flip_flag = 0;
-			int new_direction = direction;
+			u32 new_direction = direction;
 
 			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional)) {
 				new_direction = 32 - new_direction;
@@ -179,7 +179,7 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void play_image_iscript(Image* image, char animation) { // 004D8470
+	void play_image_iscript(Image* image, u8 animation) { // 004D8470
 		char final_anim = animation;
 		if ((animation != IscriptAnimation::Death || image->animation != IscriptAnimation::Death)
 		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death)) {
@@ -200,7 +200,7 @@ namespace hooks
 				image->iscript_offset = *&data[2 * final_anim + 8 + offset];
 				image->wait = 0;
 				image->unknown14 = 0;
-				helper::iscript_opcode_cases(image, &image->iscript_header_offset, image->iscript_header_offset, 0);
+				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 			}
 		}
 	}
@@ -219,7 +219,7 @@ namespace hooks
 				i->iscript_offset = *&data[header + 12];
 				i->wait = 0;
 				i->unknown14 = 0;
-				helper::iscript_opcode_cases(i, data, i->iscript_header_offset, 0);
+				helper::iscript_opcode_cases(i, &i->iscript_header_offset, 0, 0);
 			}
 		}
 		*g_can_draw_thingy = 1;
@@ -235,7 +235,7 @@ namespace hooks
 		image->iscript_offset = *(u16*)&data[offset + 8];
 		image->wait = 0;
 		image->unknown14 = 0;
-		helper::iscript_opcode_cases(image, data, image->iscript_header_offset, 0);
+		helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 		helper::is_valid_script(image, images_dat::iscript_id[image->id]);
 		image->palette_type = 12;
 		image->update_fxn = g_sg_update_funcs[12].function;
@@ -246,7 +246,7 @@ namespace hooks
 		}
 		image->render_fxn = function;
 		image->flags = flags | 1;
-		helper::iscript_opcode_cases(image, data, image->iscript_header_offset, 0); // guessed second parameter
+		helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0); // guessed second parameter
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
@@ -263,7 +263,7 @@ namespace hooks
 				image->wait = 0;
 				image->unknown14 = 0;
 				image->iscript_offset = header;
-				helper::iscript_opcode_cases(image, &header, image->iscript_header_offset, 0);
+				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 			}
 			(*g_active_iscript_entity)->order_signal |= 1u;
 			image->flags |= ImageFlags::Redraw;
@@ -394,7 +394,7 @@ namespace hooks
 		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
 		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
 		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
-	//	jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
-	//	jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
+		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
+		// jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 	}
 }
