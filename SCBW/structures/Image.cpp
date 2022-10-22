@@ -250,6 +250,7 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
+	// TODO: Fix an error where warp in overlay doesn't disappear, when this hook is enabled -Veeq7
 	void iscript_something_death(Image* image) { // 004D8590
 		u8* param = (u8*)&image->draw_func_param + 1;
 		if (*param) {
@@ -425,6 +426,6 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-		jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
+		// jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
 	}
 }
