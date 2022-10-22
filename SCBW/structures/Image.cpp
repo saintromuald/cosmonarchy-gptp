@@ -403,6 +403,19 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) iscript_something_death_wrapper() { // 00488660
+		static Image* image;
+		__asm {
+			MOV image, ECX
+			PUSHAD
+		}
+		hooks::iscript_something_death(image);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void inject_image_hooks()
 	{
 		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
@@ -411,5 +424,6 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
+		jump_patch(iscript_something_death_wrapper,	0x004D8500, 1);
 	}
 }
