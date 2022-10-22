@@ -275,6 +275,23 @@ namespace hooks
 		}
 	}
 
+	// Ported from X405's Magnetar hook of iscript_opcode_cases to fix Omnidirectional shadows. -Pr0nogo
+	// TODO: Add partial wrapper to make this code run, and add omnidirectional handling
+	void iscript_opcode_followmaingraphic(Image* image, void* program_state, u32 noop, u32* distance_moved) {
+		Image* main = image->parent_sprite->main_graphic;
+		if (!noop && main)
+		{
+			if (image->frame_index != main->frame_index || ((image->flags ^ main->flags) & ImageFlags::Mirrored))
+			{
+				image->frameset = main->frameset;
+				image->direction = main->direction;
+				image->flags ^= ((image->flags ^ main->flags) & ImageFlags::Mirrored);
+				Image* paletted_image = helper::set_image_palette_type(image, image->palette_type);
+				helper::update_image_frame_index(paletted_image);
+			}
+		}
+	}
+
 	// HOOKING \\
 
 	void __declspec(naked) initialize_image_data_wrapper() { // 004D5A50

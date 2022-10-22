@@ -1438,4 +1438,6 @@ namespace helper {
 	Image* set_image_palette_type(Image* out_image, u8 palette_type);										// 004D58B0
 
 	u16 is_valid_script(Image* image, u32 iscript_id);														// 004D6640
+
+	Image* update_image_frame_index(Image* image);															// 004D5940
 }
