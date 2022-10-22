@@ -197,7 +197,7 @@ namespace hooks
 				u32 offset = image->iscript_header_offset;
 				char* data = *g_iscript_data;
 				image->animation = final_anim;
-				image->iscript_offset = *&data[2 * final_anim + 8 + offset];
+				image->iscript_offset = *(u16*)&data[2 * final_anim + 8 + offset];
 				image->wait = 0;
 				image->unknown14 = 0;
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
@@ -216,7 +216,7 @@ namespace hooks
 				u32 header = i->iscript_header_offset;
 				char* data = *g_iscript_data;
 				i->animation = 2;
-				i->iscript_offset = *&data[header + 12];
+				i->iscript_offset = *(u16*)&data[header + 12];
 				i->wait = 0;
 				i->unknown14 = 0;
 				helper::iscript_opcode_cases(i, &i->iscript_header_offset, 0, 0);
