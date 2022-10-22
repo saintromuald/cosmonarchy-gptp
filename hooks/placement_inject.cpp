@@ -180,7 +180,7 @@ namespace hooks
 	{
 		jump_patch(init_placement_box_pos_wrapper,							0x0048D660, 0);
 		jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);
-//		jump_patch(update_placement_state_for_placement_box_wrapper,		0x0048DCE0, 0);
+	//	jump_patch(update_placement_state_for_placement_box_wrapper,		0x0048DCE0, 0);
 		jump_patch(is_tile_blocked_by_wrapper,								0x00473300, 0);
 		jump_patch(update_creep_building_placement_state_wrapper,			0x00473010, 1);
 		jump_patch(update_building_placement_state_map_tile_flags_wrapper,	0x00473A10, 1);

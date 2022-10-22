@@ -189,7 +189,7 @@ namespace hooks
 		jump_patch(play_building_complete_sound_wrapper,	0x0048F310, 3);
 
 	//	placementSimpleWrappers(); // bugged
-		jump_patch(orders_PlaceAddon_patch, 0x004E6B8B, 1);
-		call_patch(completeAddon_patch, 0x00463D69, 0);
+		jump_patch(orders_PlaceAddon_patch,					0x004E6B8B, 1);
+		call_patch(completeAddon_patch,						0x00463D69, 0);
 	}
 }
