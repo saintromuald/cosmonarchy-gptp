@@ -726,8 +726,8 @@ namespace hooks {
 
 					bool has_addon = false;
 					s32 addon_id = -1;
-					if (unit->building.addon)
-					{
+					if (units_dat::base_property[unit->id] & UnitProperty::Building
+						&& unit->building.addon) {
 						has_addon = true;
 						addon_id = unit->building.addon->id;
 					}
