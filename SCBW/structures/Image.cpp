@@ -132,7 +132,7 @@ namespace hooks
 
 			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional)) {
 				new_flip_flag = ImageFlags::Mirrored;
-				new_direction = 32 - new_direction;
+				new_direction = 31 - new_direction;
 			}
 
 			if (image->direction != new_direction || (image->flags & ImageFlags::Mirrored) != new_flip_flag) {
