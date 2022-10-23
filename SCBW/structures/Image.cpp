@@ -131,8 +131,10 @@ namespace hooks
 			u32 new_flip_flag = 0;
 
 			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional)) {
-				new_flip_flag = ImageFlags::Mirrored;
 				new_direction = 32 - new_direction;
+				new_flip_flag = ImageFlags::Mirrored;
+			} else if (new_direction > 31) {
+				new_direction = 31;
 			}
 
 			if (image->direction != new_direction || (image->flags & ImageFlags::Mirrored) != new_flip_flag) {
@@ -152,12 +154,14 @@ namespace hooks
 	// Hooked by X405 as part of the omnidirectional frame display feature addition. -Pr0nogo
 	void update_image_direction(Image* image, u8 direction) { // 004D5EA0
 		if (image->flags & ImageFlags::HasRotationFrames) {
-			u32 new_flip_flag = 0;
 			u32 new_direction = direction;
+			u32 new_flip_flag = 0;
 
 			if (new_direction > 16 && !(image->flags & ImageFlags::Omnidirectional)) {
 				new_direction = 32 - new_direction;
 				new_flip_flag = ImageFlags::Mirrored;
+			} else if (new_direction > 31) {
+				new_direction = 31;
 			}
 
 			if ((image->flags & ImageFlags::Mirrored) != new_flip_flag || image->direction != new_direction) {

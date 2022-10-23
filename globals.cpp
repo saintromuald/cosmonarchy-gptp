@@ -1399,8 +1399,7 @@ namespace scbw
 		}
 
 		u32 frameset_length = 17;
-		if (image->flags & ImageFlags::Omnidirectional)
-		{
+		if (image->flags & ImageFlags::Omnidirectional) {
 			frameset_length = 32;
 		}
 		Point8 offset = lo_file->get_offset(image->direction + (frameset_length * frameset_offset), rotate);
