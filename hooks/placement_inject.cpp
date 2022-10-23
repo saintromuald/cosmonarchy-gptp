@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) init_placement_box_pos_wrapper()
+	void __declspec(naked) init_placement_box_pos_wrapper() // 0048D660
 	{
 		static s32 unused;
 		static Point16* placement;
@@ -24,7 +24,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) draw_placement_box_wrapper()
+	void __declspec(naked) draw_placement_box_wrapper() // 0048DDC0
 	{
 		static Point16 ecx0;
 		static u8 result;
