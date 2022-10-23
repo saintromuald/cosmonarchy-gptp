@@ -609,7 +609,7 @@ namespace hooks {
 							current_button_state = Button_State::Enabled;
 						}
 					}
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == UnitId::SharedCohort) { // Remove this later
+					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == UnitId::TerranCohort) { // Remove this later
 						current_button_state = Button_State::Enabled;
 					}
 
@@ -1342,19 +1342,19 @@ namespace hooks {
 							{
 								// SHARED \\
 
-								case UnitId::SharedCohort:
+								case UnitId::TerranCohort:
 								{
 									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Cohort - Servile Vigor
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::SharedAspirant:
+								case UnitId::TerranAspirant:
 								{
 									if (current_button->icon_id == IconId::ScarabDamage) { // Aspirant - Criticality
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::SharedTarasque:
+								case UnitId::TerranTarasque:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Tarasque - Fighting Flight
 										current_button_state = Button_State::Enabled;

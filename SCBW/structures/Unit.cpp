@@ -509,7 +509,7 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 	}
 
 	// Cohort - Servile Vigor
-	if (id == UnitId::SharedCohort) {
+	if (id == UnitId::TerranCohort) {
 		hitpoints *= 2;
 	}
 

@@ -92,7 +92,7 @@ namespace hooks
 						// Display additional weapons
 						switch (activeUnit->id)
 						{
-							case UnitId::SharedTarasque:
+							case UnitId::TerranTarasque:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
 								index++;

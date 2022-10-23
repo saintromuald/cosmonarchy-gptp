@@ -25,7 +25,7 @@ namespace hooks
 		qsort(unit_array, size, sizeof(Unit*), compare_selection_unit);
 	}
 
-	/// Function used by Ctrl+Click (select all units of same type)
+	// Function used by Ctrl+Click (select all units of same type)
 	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
 	{
 		sort_unit_selection(units_in_bounds);
@@ -85,7 +85,7 @@ namespace hooks
 				}
 
 				if (!dontAddToList) {
-					// if current_unit==unit, then it's already in
+					// if current_unit == unit, then it's already in
 					// unit_list
 					if (current_unit->subunit)
 					{

@@ -1402,7 +1402,7 @@ namespace hooks
 					unit_ext->values[ValueWyvernLandGrabOn] = 0;
 				}
 			} break;
-			case UnitId::SharedTarasque:
+			case UnitId::TerranTarasque:
 			{
 				if (unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{

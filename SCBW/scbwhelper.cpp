@@ -12994,4 +12994,18 @@ namespace helper
 		}
 		return (u16)result;
 	}
+
+	Image* update_image_frame_index(Image* image)
+	{
+		static Image* result;
+		const u32 func_address = 0x004D5940;
+		__asm {
+			PUSHAD
+			MOV EAX, image
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
