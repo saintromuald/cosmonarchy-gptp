@@ -33,8 +33,8 @@ namespace hooks
             helper::refresh_layers_3_and_4();
             helper::unk_building_placement_related(1, &placement_pos);
             if (*is_placing_addon) {
-                placement_pos.x -= units_dat::addon_placement[*place_building_unit_id - UnitId::TerranCommandCenter].x;
-                placement_pos.y -= units_dat::addon_placement[*place_building_unit_id - UnitId::TerranCommandCenter].y;
+                placement_pos.x -= units_dat::addon_placement[*place_building_unit_id].x;
+                placement_pos.y -= units_dat::addon_placement[*place_building_unit_id].y;
                 helper::unk_building_placement_related(0, &placement_pos);
             }
             return helper::refresh_layers_3_and_4();
