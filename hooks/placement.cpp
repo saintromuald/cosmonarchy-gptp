@@ -43,6 +43,7 @@ namespace hooks
         return helper::unk_building_placement_related_mouse(0, 0);
     }
 
+    // Not enabled.
     s32 update_placement_state_for_placement_box() { // 0048DCE0
         if (!*g_active_portrait_unit) {
             return 0;
@@ -132,7 +133,7 @@ namespace hooks
         return result;
     }
 
-    // Same as above. -Pr0nogo
+    // Hooked to allow building on allied creep. -Pr0nogo
     u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
     {
         u32 human_only_player_bit = 0;
