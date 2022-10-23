@@ -38,4 +38,4 @@ namespace hooks
 }
 
 // Hooks could be confirmed thanks to 0048B770 CBullet_Damage that call almost all of them
-// Hit Features not supported by these hooks may be hardcoded in that function (like the Parasite Hit effect)
+// Hit Features not supported by these hooks may be hardcoded in that function (like the MatralethParasite Hit effect)

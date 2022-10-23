@@ -145,27 +145,27 @@ namespace hooks
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
 	s32 is_order_valid(char order_id, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
 	{
-		s32 unusedResult = 0;
-		u16 errorStringId = 0;
+		s32 unused_result = 0;
+		u16 error_string_id = 0;
 		switch (order_id)
 		{
 			case OrderId::Repair1:
 			{
-				errorStringId = 884;
+				error_string_id = 884;
 				if (!target)
 				{
 					if (bErrorFlag)
 					{
-						*(s16*)bErrorFlag = errorStringId;
+						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
-				errorStringId = 883;
+				error_string_id = 883;
 				if (!(target->status & UnitStatus::Completed))
 				{
 					if (bErrorFlag)
 					{
-						*(s16*)bErrorFlag = errorStringId;
+						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
@@ -179,7 +179,7 @@ namespace hooks
 				//{
 				//	if (bErrorFlag)
 				//	{
-				//		*(s16*)bErrorFlag = errorStringId;
+				//		*(s16*)bErrorFlag = error_string_id;
 				//	}
 				//	return 0;
 				//}
@@ -191,12 +191,12 @@ namespace hooks
 				{
 					return 1;
 				}
-				errorStringId = unit->get_race() + 893;
+				error_string_id = unit->get_race() + 893;
 				if (target->id == UnitId::ResourceVespeneGeyser)
 				{
 					//if (bErrorFlag)
 					//{
-					//	*(s16*)bErrorFlag = errorStringId;
+					//	*(s16*)bErrorFlag = error_string_id;
 					//}
 					//return 0;
 
@@ -206,21 +206,21 @@ namespace hooks
 				{
 					return 0;
 				}
-				errorStringId = 892;
+				error_string_id = 892;
 				if (!(units_dat::base_property[target->id] & UnitProperty::ResourceContainer))
 				{
 					if (bErrorFlag)
 					{
-						*(s16*)bErrorFlag = errorStringId;
+						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
-				errorStringId = 896;
+				error_string_id = 896;
 				if (unit->player != target->player && scbw::unit_id_is_capped_gas_structure(target->id))
 				{
 					if (bErrorFlag)
 					{
-						*(s16*)bErrorFlag = errorStringId;
+						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
@@ -228,12 +228,12 @@ namespace hooks
 			} break;
 			case OrderId::Pickup2:
 			{
-				errorStringId = 890;
+				error_string_id = 890;
 				if (!target || !scbw::is_allied_to(target->player, unit->player))
 				{
 					if (bErrorFlag)
 					{
-						*(s16*)bErrorFlag = errorStringId;
+						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
@@ -243,11 +243,11 @@ namespace hooks
 				}
 				if (units_dat::space_provided[unit->id] >= units_dat::space_required[target->id])
 				{
-					errorStringId = 891;
+					error_string_id = 891;
 				}
 				if (bErrorFlag)
 				{
-					*(s16*)bErrorFlag = errorStringId;
+					*(s16*)bErrorFlag = error_string_id;
 				}
 				return 0;
 			} break;
@@ -261,7 +261,7 @@ namespace hooks
 				{
 					return 0;
 				}
-				errorStringId = 1325;
+				error_string_id = 1325;
 				if (!(target->status & 6) // GroundedBuilding and InAir
 					&& target->hitpoints < units_dat::max_hitpoints[target->id])
 				{
@@ -269,7 +269,7 @@ namespace hooks
 				}
 				if (bErrorFlag)
 				{
-					*(s16*)bErrorFlag = errorStringId;
+					*(s16*)bErrorFlag = error_string_id;
 				}
 				return 0;
 			} break;
@@ -278,15 +278,15 @@ namespace hooks
 				return 1;
 			}
 		}
-		return unusedResult;
+		return unused_result;
 	}
 
-	// Hooked to investigate Repair crashes - Pr0nogo
+	// Hooked to investigate Repair crashes. - Pr0nogo
 	s32 order_allowed(Unit* unit, u16 order_id, s32 player) // 0046DC20
 	{
 		s32 result = 0;
 		*g_last_internal_error = 0;
-		if (order_id < OrderId::None)
+		if (order_id != OrderId::None)
 		{
 			if (orders_dat::req_offset[order_id] == -1)
 			{

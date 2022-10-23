@@ -951,7 +951,7 @@ namespace scbw
 			}
 		}
 
-		// Inherit Parasite
+		// Inherit MatralethParasite
 		child->parasite_flags = parent->parasite_flags;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			childExt->parasite_spawn_count[i] = parentExt->parasite_spawn_count[i];
@@ -1158,7 +1158,7 @@ namespace scbw
 
 		// remove status effects and corresponding overlays
 
-		// Remove Parasite
+		// Remove MatralethParasite
 		if (!scbw::is_allied_to(unitExt->values[ValueParasiteArmPlayer], unit->player) && unitExt->timers[TimerParasiteArm]) {
 			unitExt->timers[TimerParasiteArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);

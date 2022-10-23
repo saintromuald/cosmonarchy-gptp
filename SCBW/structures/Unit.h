@@ -430,7 +430,7 @@ struct Unit : public UnitLayout
 	void update_speed();
 
 	/// For Wyvern Land Grab
-	u8 getSpellCountdown() const;
+	u8 get_spell_countdown() const;
 
 	//////////////////////////////////////////////////////////////// @}
 	

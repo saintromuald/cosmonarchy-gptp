@@ -16,7 +16,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		else if (techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare)
+		else if (techId < TechId::DefensiveMatrix || techId > TechId::LuminaryAuralAssault)
 		{
 			stringId = 876; // Invalid target.<0>
 		}
@@ -82,7 +82,7 @@ namespace hooks
 				case TechId::DefensiveMatrix:
 				case TechId::Irradiate:
 				case TechId::Restoration:
-				case TechId::OpticalFlare: {
+				case TechId::LuminaryAuralAssault: {
 					if (units_dat::base_property[target->id] & UnitProperty::Building)
 					{
 						stringId = 877; // Unable to target structure.<0>

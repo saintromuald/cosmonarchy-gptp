@@ -12,10 +12,10 @@ namespace hooks
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 			unit->order_to_idle();
 		} else {
-			u16 techEnergyCost = 0;
+			u16 tech_energy_cost = 0;
 			// Energy cost is initialized in this function
 			// Corresponding error message is "Invalid Target"
-			if (helper::spell_order(unit, TechId::MindControl, &techEnergyCost, unit->get_sight_range(true) * 32, 0x052E)) {
+			if (helper::spell_order(unit, TechId::MindControl, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
 				// Channel
 				if (!unit->main_order_state) {
 					unit->play_iscript_animation(IscriptAnimation::Unused2);
@@ -41,7 +41,7 @@ namespace hooks
 					target->order_to_idle();
 				}
 				if (!(*g_cheat_state & CheatFlags::TheGathering)) {
-					unit->spend_unit_energy(techEnergyCost);
+					unit->spend_unit_energy(tech_energy_cost);
 				}
 				helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 				unit->order_to_idle();

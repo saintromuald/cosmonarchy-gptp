@@ -116,7 +116,7 @@ namespace AI
 				}
 				else
 				// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom
-				if (weapon_id == WeaponId::Maelstrom)
+				if (weapon_id == WeaponId::MindTyrantMaelstrom)
 				{
 					if (units_dat::base_property[target->id] & UnitProperty::Organic &&
 						target->maelstrom_timer == 0)

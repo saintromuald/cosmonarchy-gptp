@@ -1165,7 +1165,7 @@ LABEL_65:
 		u8 weapon_id = orders_dat::order_weapon_id[order_id];
 		u8 tech_id = orders_dat::tech_used[order_id];
 		u32 energy_cost = 0;
-		if (tech_id < TechId::None)
+		if (tech_id != TechId::None)
 		{
 			energy_cost = techdata_dat::energy_cost[tech_id] << 8;
 		}
@@ -1176,7 +1176,7 @@ LABEL_65:
 
 		char can_attack_final = 0;
 		char not_enough_energy = 0;
-		char can_target_and_has_energy = 0;
+		char can_target_spell = 0;
 		Unit** selected_units = &g_client_selection_group->unit[11];
 		Unit** selected_units_2 = &g_client_selection_group->unit[11];
 		while (1) {
@@ -1187,9 +1187,9 @@ LABEL_65:
 				{
 					if (!use_weapon)
 					{
-						if (tech_id >= TechId::None)
+						if (tech_id == TechId::None)
 						{
-							if (fow_unit_id >= UnitId::None)
+							if (fow_unit_id == UnitId::None)
 							{
 								helper::is_order_valid(order_id, unit, target, target, &error);
 							}
@@ -1200,13 +1200,16 @@ LABEL_65:
 						}
 						else
 						{
+							scbw::print("can target spell");
 							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
 							{
+								scbw::print("can target spell pass");
 								if (!unit->has_energy(energy_cost))
 								{
+									scbw::print("no energy");
 									not_enough_energy = 1;
 								}
-								can_target_and_has_energy = 1;
+								can_target_spell = 1;
 							}
 						}
 						goto iterate_selection;
@@ -1281,7 +1284,7 @@ LABEL_65:
 		{
 			if (energy_cost)
 			{
-				if (!can_target_and_has_energy)
+				if (!can_target_spell)
 				{
 					if (error == -1)
 					{

@@ -723,7 +723,7 @@ namespace hooks
 		u8 iterate; // al
 		s16 v6; // cx
 		s16 v7; // ax
-		const char* v8; // eax
+		char* v8; // eax
 		s16 v9; // cx
 		Unit* v10; // eax
 		Unit* v11; // ebx
@@ -785,7 +785,7 @@ LABEL_15:
 				}
 				if ((u8)v1->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
 				{
-					helper::setUnitStatTxtErrorMsg((s32)v8);
+					helper::set_unit_stat_txt_error_message(v8);
 				}
 				goto LABEL_15;
 			}

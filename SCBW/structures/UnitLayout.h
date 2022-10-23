@@ -145,6 +145,7 @@ namespace RustId
 		CastControlledDemolition,
 		CastEmergencyDetonation,
 		CastSalvage,
+		CastThroughTheLookingGlass,
 
 		CancelLandGrab,
 		CancelAttachment,
@@ -165,7 +166,7 @@ const u32 string_toggle_off[] = {1270, 1233, 1351};
 const u32 button_toggle_on[] = {IconId::DisruptionWeb2, IconId::AfterburnersOnUnused, IconId::RechargeShields};
 const u32 button_toggle_off[] = {IconId::Cancel, IconId::AfterburnersOffUnused, IconId::Feedback};
 const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleTempoChange, RustId::ToggleSavantOnhit};
-const u32 toggle_abilities[] = {TechId::DisruptionWeb, TechId::MadrigalTempoChange, TechId::SavantOnhitToggle};
+const u32 toggle_abilities[] = {TechId::LanifectDisruptionField, TechId::MadrigalTempoChange, TechId::SavantOnhitToggle};
 const u32 generictoggles = 3;
 
 namespace CosmonarchyFlags1

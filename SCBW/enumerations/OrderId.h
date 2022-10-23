@@ -244,7 +244,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	DarkSwarm              = 0x77, /**< Cast Spell: Dark Swarm.
 					* Default Requirements: Unused. */
-	CastParasite           = 0x78, /**< Cast Spell: Parasite.
+	CastParasite           = 0x78, /**< Cast Spell: MatralethParasite.
 					* Default Requirements: Unused. */
 	SummonBroodlings       = 0x79, /**< Cast Spell: Spawn Broodings.
 					* Default Requirements: Unused. */
@@ -387,16 +387,17 @@ enum Enum {
 	// Cosmonarchy \\
 
 	// Terran
-	PaladinSkyfall          = 12,   // Attack Tile              | Paladin missile barrage ability
-	TalosSalvage			= 13,   // Hover                    | Savant energy siphon ability			| unused
-	EnergyDecay				= 104,  // Guardian Aspect          | Savant anti-specialist ability		| unused
-	Observance				= 122,  // EMP Shockwave            | Science Vessel armor rend ability		| unused
+	PaladinSkyfall				= 12,   // Attack Tile              | Paladin missile barrage ability
+	TalosSalvage				= 13,   // Hover                    | Savant energy siphon ability			| unused
+	EnergyDecay					= 104,  // Guardian Aspect          | Savant anti-specialist ability		| unused
+	Observance					= 122,  // EMP Shockwave            | Science Vessel armor rend ability		| unused
+	CastThroughTheLookingGlass	= 189,
 
 	// Protoss
-	WyvernLandGrab          = 153,	// CTF COP (Initialize)		| Wyvern switch							| unused
-	KhaydarinEclipse        = 155,  // CTF COP 2                | Exemplar/Clarion switch				| unused
+	WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern switch							| unused
+	KhaydarinEclipse			= 155,  // CTF COP 2                | Exemplar/Clarion switch				| unused
 
 	// Zerg
-	BlissfulEmbrace         = 154,  // Idle CTF COP             | Gorgoleth energy drain ability		| unused
+	BlissfulEmbrace				= 154,  // Idle CTF COP             | Gorgoleth energy drain ability		| unused
 	};
 }

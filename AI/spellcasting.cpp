@@ -6,7 +6,7 @@ namespace
 {
 	bool canCastSpellOrder(Unit* unit, u8 techId, u8 order_id);
 	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 order_id, u8 aiActionFlag = 1);
-	u16 getOrderEnergyCost(u8 order_id);
+	u16 get_order_energy_cost(u8 order_id);
 	bool isNukeTimerReady(u8 player);
 	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost = 1);
 }
@@ -131,10 +131,10 @@ namespace AI
 			} break;
 			case UnitId::ZergMatraleth:
 			{
-				// Parasite
+				// MatralethParasite
 				if (unit->energy >= unit->get_max_energy() / 2)
 				{
-					if (canCastSpellOrder(unit, TechId::Parasite, OrderId::CastParasite))
+					if (canCastSpellOrder(unit, TechId::MatralethParasite, OrderId::CastParasite))
 					{
 						Unit* target = findBestParasiteTarget(unit, isUnitBeingAttacked);
 
@@ -265,12 +265,12 @@ namespace AI
 				}
 
 				// Maelstrom
-				energyReserve = getOrderEnergyCost(OrderId::CastMaelstrom)
-					+ (getOrderEnergyCost(OrderId::CastMindControl) / 2);
+				energyReserve = get_order_energy_cost(OrderId::CastMaelstrom)
+					+ (get_order_energy_cost(OrderId::CastMindControl) / 2);
 				energyReserve = std::min(energyReserve, unit->get_max_energy());
 
 				if ((unit->energy >= energyReserve || scbw::is_cheat_enabled(CheatFlags::TheGathering))
-					&& unit->can_use_tech(TechId::Maelstrom, unit->player) != 1)
+					&& unit->can_use_tech(TechId::MindTyrantMaelstrom, unit->player) != 1)
 				{
 					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::CastMaelstrom
@@ -295,7 +295,7 @@ namespace
 	bool canCastSpellOrder(Unit* unit, u8 techId, u8 order_id)
 	{
 		u16 energyCost = 0;
-		if (orders_dat::tech_used[order_id] < TechId::None)
+		if (orders_dat::tech_used[order_id] != TechId::None)
 		{
 			energyCost = techdata_dat::energy_cost[orders_dat::tech_used[order_id]] * 256;
 		}
@@ -326,9 +326,9 @@ namespace
 	}
 
 	// Logically equivalent to function @ 0x0049E1C0
-	u16 getOrderEnergyCost(u8 order_id)
+	u16 get_order_energy_cost(u8 order_id)
 	{
-		if (orders_dat::tech_used[order_id] < TechId::None)
+		if (orders_dat::tech_used[order_id] != TechId::None)
 		{
 			return techdata_dat::energy_cost[orders_dat::tech_used[order_id]] * 256;
 		}

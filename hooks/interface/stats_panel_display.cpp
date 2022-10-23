@@ -283,7 +283,7 @@ namespace hooks
 			if (helper::unitGetRace(unit) == RaceId::Terran
 				&& !scbw::unit_id_is_shared(unit->id))
 			{
-				return helper::getStatTxtString((unit->rank_increase + units_dat::rank[unit_id]) + 1302);
+				return helper::get_stat_txt_string((unit->rank_increase + units_dat::rank[unit_id]) + 1302);
 			}
 			return 0;
 		}

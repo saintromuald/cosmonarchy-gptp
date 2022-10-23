@@ -25,7 +25,7 @@ namespace {
 		{UnitId::TerranMinotaur, TechId::YamatoGun, TechId::None},
 
 		// Zerg
-		{UnitId::ZergMatraleth, TechId::Infestation, TechId::Parasite, TechId::SpawnBroodlings, TechId::Ensnare, TechId::None},
+		{UnitId::ZergMatraleth, TechId::Infestation, TechId::MatralethParasite, TechId::SpawnBroodlings, TechId::Ensnare, TechId::None},
 		{UnitId::ZergIsthrathaleth, TechId::Burrowing, TechId::DarkSwarm, TechId::Plague, TechId::Consume, TechId::None},
 		{UnitId::ZergDroleth, TechId::Burrowing, TechId::None},
 		{UnitId::ZergZethrokor, TechId::Burrowing, TechId::None},
@@ -35,9 +35,9 @@ namespace {
 		// Protoss
 		{UnitId::ProtossCantavis, TechId::ArchonWarp, TechId::PsionicStorm, TechId::Hallucination, TechId::None},
 		{UnitId::ProtossDidact, TechId::Recall, TechId::StasisField, TechId::None},
-		{UnitId::ProtossLanifect, TechId::DisruptionWeb, TechId::None},
+		{UnitId::ProtossLanifect, TechId::LanifectDisruptionField, TechId::None},
 		{UnitId::ProtossCabalist, TechId::DarkArchonMeld, TechId::None},
-		{UnitId::ProtossMindTyrant, TechId::MindControl, TechId::Feedback, TechId::Maelstrom, TechId::None},
+		{UnitId::ProtossMindTyrant, TechId::MindControl, TechId::Feedback, TechId::MindTyrantMaelstrom, TechId::None},
 	};
 
 	struct UpgradeTransferData {

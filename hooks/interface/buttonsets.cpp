@@ -639,6 +639,10 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 						}
+						else if (current_button->requirement_var == TechId::HypnagogueThroughTheLookingGlass)
+						{
+							current_button_state = Button_State::Enabled;
+						}
 						else if (current_button->requirement_var == TechId::LarvalSubmenuSelectSwarm || current_button->requirement_var == TechId::LarvalSubmenuSelectAssault || current_button->requirement_var == TechId::LarvalSubmenuSelectControl)							
 						{
 							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {

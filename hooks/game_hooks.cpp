@@ -1689,6 +1689,49 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::TerranHypnagogue:
+			{
+				// Hypnagogue - Through the Looking Glass
+				if (unit->main_order_id == OrderId::CastThroughTheLookingGlass)
+				{
+					scbw::decloak_proc(unit);
+					Point16 target_pos = {};
+					if (unit->order_target.pt.x && unit->order_target.pt.y)
+					{
+						target_pos = unit->order_target.pt;
+					}
+					else if (unit->order_target.unit) {
+						target_pos.x = unit->order_target.unit->get_x();
+						target_pos.y = unit->order_target.unit->get_y();
+					}
+					unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
+					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
+					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
+				//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+				}
+				if (unit_ext->timers[TimerHypnagogueChannel] == 1)
+				{
+					Point16 target_pos = {};
+					target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
+					target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
+					Point16 pos = unit->position;
+					s32 radius = 2 * 32;
+					scbw::UnitFinder(
+						pos.x - radius,
+						pos.y - radius,
+						pos.x + radius,
+						pos.y + radius
+					).for_each([&](Unit* target)
+						{
+							if (units_dat::base_property[target->id] & UnitProperty::Building || !(target->status & UnitStatus::Completed))
+							{
+								return;
+							}
+							scbw::teleport(target, target_pos);
+						});
+					scbw::teleport(unit, target_pos);
+				}
+			} break;
 		}
 
 		// Tyranny
@@ -1831,7 +1874,7 @@ namespace hooks
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
 
-		// Parasite
+		// MatralethParasite
 		if (unit_ext->timers[TimerParasiteArm] == 1) {
 			unit_ext->parasite_spawn_count[unit_ext->values[ValueParasiteArmPlayer]] += 2;
 		}

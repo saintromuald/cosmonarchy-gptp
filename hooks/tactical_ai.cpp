@@ -12,7 +12,7 @@ Apostle Lazarus Agent: If 5 or more organic nearby_allies (that don't have the b
 cast the spell. **DONE**
 AI should also try to position Apostles near organics.
 
-Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
+Matraleth MatralethParasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
 target the group. **DONE**
 
 Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
@@ -1042,8 +1042,8 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
-			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0) {
-				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::Parasite], Flags::NotSelf, {}, [&](Unit* u) {
+			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0) {
+				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::MatralethParasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
 					s32 supply = 0;
 					cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)

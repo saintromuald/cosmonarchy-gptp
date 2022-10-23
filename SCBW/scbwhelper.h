@@ -102,7 +102,7 @@ namespace helper {
 	// For canCastSpell
 	bool unitIsFrozen(Unit* a1);
 	bool isUnitCasterNotHallucination(Unit* a1);
-	b32 getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
+	b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
 	Unit* get_target_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);
 
 	// For modifyUnitShields
@@ -266,7 +266,7 @@ namespace helper {
 	void switch_to_warp_texture(Image* image);																// 004D8500
 	bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);		    								// 00488210
-	void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
+	void set_unit_stat_txt_error_message(char* message);										                        // 0048CCB0
 	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play, u32 min_volume);						// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
@@ -457,8 +457,8 @@ namespace helper {
 	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7);												// 00492020
 	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																		// 00492450
 
-	// For canTargetSpell
-	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unit_id);																			// 004914B0
+	// For can_target_spell
+	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id);																			// 004914B0
 
 	void increment_unit_death_scores(Unit* unit, u8 player);																		// 00488AF0
 	void give_sprite(Unit* unit, u8 player);																						// 0049E4E0
@@ -566,7 +566,7 @@ namespace helper {
 
 	// For get_unit_rank_string and check_hotkey_char
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
-	char* getStatTxtString(u16 a1);																									// 004C36F0
+	char* get_stat_txt_string(u16 a1);																									// 004C36F0
 
 	// For stats_weapon_level / stats_armor_level
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
@@ -729,7 +729,6 @@ namespace helper {
 	void createEnsnareOverlay(Unit* a1);																			// 004F45E0
 
 	// For create_scanner
-	s32 setUnitStatTxtErrorMsg(s32 a1);																				// 0048CCB0
 	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
 
@@ -1326,10 +1325,10 @@ namespace helper {
 	bool compare_unit_rank(Unit* unit, Unit* compare_unit);													// 0049A350
 
 	void do_targeted_order(u32 x, u32 y, Unit* target, u32 fow_unit_id);									// 004A55F0
-	void minimap_game_target_order(Event* event);															// 004A55F0
-	char input_target_order_left_mouse_click(Event* event);													// 004BD500
+	void minimap_game_target_order(Event* event_arg);														// 004A55F0
+	char input_target_order_left_mouse_click(Event* event_arg);												// 004BD500
 
-	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position);					// 0048E5D0
+	char input_place_building_left_mouse_click(Event* event_arg, u32 unused, Point16 position);				// 0048E5D0
 
 	void initialize_input_procs();																			// 004D2FF0
 

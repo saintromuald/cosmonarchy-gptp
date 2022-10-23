@@ -25,7 +25,7 @@ namespace AI {
 				return false;
 			}
 
-			if (!scbw::can_weapon_target_unit(WeaponId::Parasite, target, caster)) {
+			if (!scbw::can_weapon_target_unit(WeaponId::MatralethParasite, target, caster)) {
 				return false;
 			}
 

@@ -420,7 +420,7 @@ void unit_destructor_special_cases(Unit* unit)
 		});
 	}
 
-	// Parasite - broodspawn on death
+	// MatralethParasite - broodspawn on death
 	if (scbw::unit_get_corpse_consume(unit) == CorpseConsume_Parasite) {
 		u16 type = UnitId::ZergRilirokor;
 		if (units_dat::base_property[unit->id] & UnitProperty::Flyer

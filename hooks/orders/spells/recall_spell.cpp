@@ -134,7 +134,7 @@ namespace hooks
 				u8 raceId = unit->get_race();
 				char* message = (char*)statTxtTblNew->get_string(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
-					helper::setUnitStatTxtErrorMsg(message);
+					helper::set_unit_stat_txt_error_message(message);
 				}
 				unit->order_to_idle();
 			} else {
