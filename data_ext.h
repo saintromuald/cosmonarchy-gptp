@@ -119,6 +119,7 @@ enum ExtValueId
 	ValueCataphractLaunchPos,
 	ValueDilettanteLuck,
 	ValueSwarmingOmenPlayer,
+	ValuePanoptusLaunchPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

@@ -215,7 +215,7 @@ namespace WeaponId {
 		EmpyreanPlasmaBarrage				= 71,
 		HierophantPhaseSignifier			= 72,
 		AuroraPhotonBlasters				= 73,
-		PanoptusAntiMatterMissiles			= 74,
+		PanoptusPlasmaMissiles			= 74,
 		AugurAeonsMadness					= 75,
 		ExemplarPlasmaTorpedo				= 76,
 		MagisterNeutronCannon				= 78,
