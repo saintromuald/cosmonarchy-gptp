@@ -182,6 +182,26 @@ namespace hooks
 		}
 	}
 
+	// Reimplemented by X405, ported by Pr0nogo, to fix followmaingraphic for omnidirectional sprites. -Pr0nogo
+	void iscript_opcode_followmaingraphic(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved)
+	{
+		if (!noop)
+		{
+			Image* main = image->parent_sprite->main_graphic;
+			if (main)
+			{
+				if (image->frame_index != main->frame_index || ((image->flags ^ main->flags) & ImageFlags::Mirrored))
+				{
+					image->frameset = main->frameset;
+					image->direction = main->direction;
+					image->flags ^= ((image->flags ^ main->flags) & ImageFlags::Mirrored);
+					Image* paletted_image = helper::set_image_palette_type(image, image->palette_type);
+					helper::update_image_frame_index(paletted_image);
+				}
+			}
+		}
+	}
+
 	// Hooked to extend iscript.bin. -Pr0nogo
 	void play_image_iscript(Image* image, u8 animation) { // 004D8470
 		char final_anim = animation;
