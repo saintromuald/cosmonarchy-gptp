@@ -2116,7 +2116,7 @@ namespace scbw
 			case RegionState::ChaseAway: {
 				helper::ai_set_region_type(RegionState::Defending, ai_region);
 				ai_region->defense_priority += 15;
-				ai_region->defend_time = 5;
+				ai_region->defend_time = 2;
 			} break;
 		}
 		if (depth) {
