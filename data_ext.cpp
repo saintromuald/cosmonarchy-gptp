@@ -21,8 +21,8 @@ void update_ext_variables() {
 		if (unit_ext->shield_regen_timer != UINT_MAX) {
 			++unit_ext->shield_regen_timer;
 		}
-		if (unit_ext->damage_receive_timer != UINT_MAX) {
-			++unit_ext->damage_receive_timer;
+		if (unit_ext->damage_taken_timer != UINT_MAX) {
+			++unit_ext->damage_taken_timer;
 		}
 		if (unit_ext->damage_dealt_timer != UINT_MAX) {
 			++unit_ext->damage_dealt_timer;
@@ -77,7 +77,7 @@ void reset_unit_ext(Unit* unit) {
 	*unit_ext = {};
 	// every unit will starts being out of combat
 	unit_ext->shield_regen_timer = UINT_MAX;
-	unit_ext->damage_receive_timer = UINT_MAX;
+	unit_ext->damage_taken_timer = UINT_MAX;
 	unit_ext->damage_dealt_timer = UINT_MAX;
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		unit_ext->last_seen_timer[i] = UINT_MAX;

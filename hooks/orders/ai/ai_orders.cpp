@@ -2276,52 +2276,51 @@ return 0;
 		s32 missing_ground = ai_region->ground_strength_needed - ai_region->ground_strength_full;
 		s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
 
-		u32 sum = 0;
-		while (missing_ground > 0 || missing_air > 0) {
-			Unit* best_unit = 0;
-			s32 best_score = INT_MIN;
-			for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-				if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
-					continue;
-				}
-
-				AiRegion* current_ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
-				if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
-					(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
-					continue;
-				}
-
-				if (!helper::is_valid_for(unit->id, unit, false) || scbw::unit_is_stunned(unit)) {
-					continue;
-				}
-
-				s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
-				s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);
-				s32 force = ground_force + air_force;
-				force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
-				if (force <= 0) {
-					continue;
-				}
-
-				u32 distance = scbw::get_ground_path_distance_tiles(unit->position, region_center);
-				s32 score = distance ? force / distance : force;
-				if (score > best_score) {
-					best_score = score;
-					best_unit = unit;
-				}
+		Unit* best_unit = 0;
+		s32 best_score = INT_MIN;
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
+				continue;
 			}
 
-			if (!best_unit) {
-				break;
+			AiRegion* current_ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+			if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
+				(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+				continue;
 			}
-			if (move_unit_ai(best_unit, ai_region)) {
-				sum += against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
-				missing_ground -= ai_strength_ground[best_unit->id];
-				missing_air    -= ai_strength_air[best_unit->id];
+
+			if (!helper::is_valid_for(unit->id, unit, false) || scbw::unit_is_stunned(unit)) {
+				continue;
 			}
-			break; // for testing
+
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->timers[TimerAI_DefenseCooldown] || unit_ext->damage_taken_timer < 12 || unit_ext->damage_dealt_timer < 12) {
+				continue;
+			}
+
+			s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
+			s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);
+			s32 force = ground_force + air_force;
+			force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
+			if (force <= 0) {
+				continue;
+			}
+
+			u32 distance = scbw::get_ground_path_distance_tiles(unit->position, region_center);
+			s32 score = distance ? force / distance : force;
+			if (score > best_score) {
+				best_score = score;
+				best_unit = unit;
+			}
 		}
-		return sum;
+
+		if (best_unit && move_unit_ai(best_unit, ai_region)) {
+			UnitExt* unit_ext = get_unit_ext(best_unit);
+			unit_ext->timers[TimerAI_DefenseCooldown] = 12;
+			helper::ai_recalculate_region_strength(ai_region);
+			return against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
+		}
+		return 0;
 	}
 
 	// Hooked to improve functionality and allow Pylons to respect the asc3 "creep" header. -Pr0nogo

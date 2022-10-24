@@ -109,7 +109,7 @@ void Globals::aise_save()
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].damage_receive_timer), sizeof(unit_ext_array[i].damage_receive_timer));
+		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].damage_taken_timer), sizeof(unit_ext_array[i].damage_taken_timer));
 		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].values), sizeof(unit_ext_array[i].values));
 		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].timers), sizeof(unit_ext_array[i].timers));
 		stream.write(reinterpret_cast<char*>(&unit_ext_array[i].units), sizeof(unit_ext_array[i].units));
@@ -262,7 +262,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].damage_receive_timer), sizeof(unit_ext_array[i].damage_receive_timer));
+		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].damage_taken_timer), sizeof(unit_ext_array[i].damage_taken_timer));
 		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].values), sizeof(unit_ext_array[i].values));
 		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].timers), sizeof(unit_ext_array[i].timers));
 		stream.read(reinterpret_cast<char*>(&unit_ext_array[i].units), sizeof(unit_ext_array[i].units));

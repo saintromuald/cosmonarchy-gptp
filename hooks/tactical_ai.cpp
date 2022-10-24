@@ -454,7 +454,7 @@ static bool should_kite_back_against(Unit* unit, Unit* target) {
 static bool unit_in_combat(Unit* unit, bool strict) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->timers[TimerAI_KitingCombat]
-		|| unit_ext->damage_receive_timer < 4 * 24
+		|| unit_ext->damage_taken_timer < 4 * 24
 		|| unit_ext->damage_dealt_timer < 4 * 24
 		|| unit->main_order_id == OrderId::Patrol
 		|| unit->main_order_id == OrderId::AttackMove
@@ -1179,7 +1179,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				u32 inCombatCount = 0;
 				for (Unit* worshiper : vec) {
 					UnitExt* worshiperExt = get_unit_ext(worshiper);
-					if (worshiperExt->damage_dealt_timer < 4 * 24 || worshiperExt->damage_receive_timer < 4 * 24)
+					if (worshiperExt->damage_dealt_timer < 4 * 24 || worshiperExt->damage_taken_timer < 4 * 24)
 					{
 						inCombatCount++;
 					}

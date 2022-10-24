@@ -214,6 +214,7 @@ enum ExtTimerId
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,	
 
+	TimerAI_DefenseCooldown,	
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeash,
@@ -272,7 +273,7 @@ enum ExtTimerVectorId
 struct UnitExt
 {
 	u32						shield_regen_timer;
-	u32						damage_receive_timer;
+	u32						damage_taken_timer;
 	u32						damage_dealt_timer;
 	Point16					anthelion_last_move_target;
 	Vector32f				repulsion_vector;

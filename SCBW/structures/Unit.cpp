@@ -671,7 +671,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 
 	UnitExt* unitExt = get_unit_ext(this);
 	unitExt->shield_regen_timer = 0;
-	unitExt->damage_receive_timer = 0;
+	unitExt->damage_taken_timer = 0;
 
 	if (attacker) {
 		TriggerEvent event = {};
