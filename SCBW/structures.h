@@ -684,7 +684,7 @@ struct AiRegion
 	/*0x02*/  u16 target_region;
 	/*0x04*/  u8  player;
 	/*0x05*/  u8  state;
-	/*0x06*/  u8  defense_priority_add;
+	/*0x06*/  u8  defense_priority;
 	/*0x07*/  u8  defend_time;
 	/*0x08*/  u8  flags;
 	/*0x09*/  u8  field_9;

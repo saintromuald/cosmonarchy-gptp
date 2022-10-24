@@ -831,7 +831,7 @@ namespace hooks
 									&& (g_aiscript_controller[unit->player].ai_flags.is_use_map_settings
 										|| helper::region_is_for_attack_prepare(ai_region)))
 									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
-									&& unit_ai_region->defense_priority_add < a2 )
+									&& unit_ai_region->defense_priority < a2 )
 								{
 									best_ai = unit_ai;
 									min_distance = distance;

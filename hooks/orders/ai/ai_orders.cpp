@@ -1865,7 +1865,7 @@ return 0;
 			}
 			if (base_id) {
 				helper::ai_expand_to(aiscript, base_id, block);
-				//scbw::ai_defend(aiscript->player, scbw::get_region_id(g_resource_areas->areas[base_id].position), 115, true);
+				scbw::ai_defend(aiscript->player, scbw::get_region_id(g_resource_areas->areas[base_id].position), 1);
 			}
 		}
 	}
@@ -2265,8 +2265,8 @@ return 0;
 		u32 sum = 0;
 		for (u16* ptr = defense_ptr; *ptr; ++ptr) {
 			u32 unit_id = *ptr - 1;
-			if (helper::ai_add_to_region_military(ai_region, unit_id, ai_region->defense_priority_add)) {
-				sum += against_air ? g_air_strength_something[unit_id] : g_ground_strength_something[unit_id];
+			if (helper::ai_add_to_region_military(ai_region, unit_id, ai_region->defense_priority)) {
+				sum += against_air ? ai_strength_air[unit_id] : ai_strength_ground[unit_id];
 			}
 		}
 		return sum;
@@ -2285,13 +2285,13 @@ return 0;
 				continue;
 			}
 
-			u32 current_region_id = scbw::get_region_id(unit->position);
+			u32 current_region_id = unit->unit_ai->type == AiType::Military ? unit->unit_ai->military_ai.region->region : scbw::get_region_id(unit->position);
 			if (ai_region->region == current_region_id) {
 				continue;
 			}
-
+			
 			AiRegion* current_ai_region = scbw::get_ai_region(player, current_region_id);
-			if (ai_region->defense_priority_add <= current_ai_region->defense_priority_add) {
+			if (ai_region->defense_priority <= current_ai_region->defense_priority) {
 				if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
 					(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
 					continue;
@@ -2301,21 +2301,16 @@ return 0;
 			if (!helper::is_valid_for(unit->id, unit, false) || scbw::unit_is_stunned(unit)) {
 				continue;
 			}
-
-			UnitExt* unit_ext = get_unit_ext(unit);
-			if (unit_ext->timers[TimerAI_DefenseCooldown] || unit_ext->damage_taken_timer < 24 || unit_ext->damage_dealt_timer < 24) {
-				continue;
-			}
-
+			
 			s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
 			s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);
 			s32 force = ground_force + air_force;
 			force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
-			if (force <= 0) {
+			if (!force) {
 				continue;
 			}
 
-			u32 distance = scbw::get_ground_path_distance_tiles(unit->position, region_center);
+			f32 distance = scbw::get_ground_path_distance_tiles(unit->position, region_center);
 			s32 score = distance ? force / distance : force;
 			if (score > best_score) {
 				best_score = score;
@@ -2325,7 +2320,6 @@ return 0;
 
 		if (best_unit && move_unit_ai(best_unit, ai_region)) {
 			UnitExt* unit_ext = get_unit_ext(best_unit);
-			unit_ext->timers[TimerAI_DefenseCooldown] = 8 * 24;
 			return against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
 		}
 		return 0;
