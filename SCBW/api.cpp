@@ -644,7 +644,7 @@ namespace scbw
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
 			case UnitId::ZergGeszkathGrotto:
-			case UnitId::ZergSovthrathMound: {
+			case UnitId::ZergElthisthMound: {
 				return true;
 			}
 		}
@@ -2169,7 +2169,7 @@ namespace scbw
 			|| unit_id == UnitId::TerranWatchdog
 			|| unit_id == UnitId::TerranBunker
 			|| unit_id == UnitId::ProtossPylon
-			|| unit_id == UnitId::ProtossPhotonCannon
+			|| unit_id == UnitId::ProtossWarden
 			|| unit_id == UnitId::ProtossShieldBattery
 			|| unit_id == UnitId::ZergCagrantColony
 			|| unit_id == UnitId::ZergSurkithColony
@@ -2299,7 +2299,7 @@ namespace scbw
 
 			// Protoss
 			case UnitId::ProtossCenotaph:
-			case UnitId::ProtossArchonArchives:
+			case UnitId::ProtossAncestralArchives:
 			case UnitId::ProtossAutomatonRegister:
 			case UnitId::ProtossSyntheticSynod:
 			case UnitId::ProtossAstralOmen:
@@ -2324,7 +2324,7 @@ namespace scbw
 			case UnitId::ZergUltrokCavern:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergAlmakisAntre:
-			case UnitId::ZergSovthrathMound:
+			case UnitId::ZergElthisthMound:
 			case UnitId::ZergGeszkathGrotto:
 			case UnitId::ZergAlkajChasm:
 				return true;

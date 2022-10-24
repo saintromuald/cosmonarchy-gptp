@@ -898,7 +898,7 @@ return 0;
 					switch (unit_id)
 					{
 						case UnitId::TerranWatchdog:
-						case UnitId::ProtossPhotonCannon:
+						case UnitId::ProtossWarden:
 						{
 							helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							return;
@@ -1881,7 +1881,7 @@ return 0;
 			case UnitId::ZergAlaszilArbor:
 			case UnitId::ProtossPylon:
 			case UnitId::ProtossShieldBattery:
-			case UnitId::ProtossPhotonCannon:
+			case UnitId::ProtossWarden:
 			case UnitId::TerranWatchdog:
 			case UnitId::TerranBunker: {
 				return true;

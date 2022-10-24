@@ -295,7 +295,7 @@ namespace flingy_id
 		ProtossIdol = 285,
 		ProtossGolem = 286,
 		ProtossBarghest = 287,
-		ProtossRoboticsAuthority = 288,
+		ProtossArdentAuthority = 288,
 		ProtossPariah = 289,
 		TerranWendigo = 290,
 		GladiusWeapon = 291,

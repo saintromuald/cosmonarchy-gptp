@@ -605,7 +605,7 @@ namespace SpriteId
 		ProtossGolem = 595,
 		SalamanderImpact = 596,
 		ProtossBarghest = 597,
-		ProtossRoboticsAuthority = 598,
+		ProtossArdentAuthority = 598,
 		ProtossPariah = 599,
 		TerranWendigo = 600,
 		GladiusMissile = 601,
