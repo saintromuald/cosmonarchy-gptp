@@ -2285,21 +2285,18 @@ return 0;
 				continue;
 			}
 
-			u32 current_region_id = unit->unit_ai->type == AiType::Military ? unit->unit_ai->military_ai.region->region : scbw::get_region_id(unit->position);
-			if (ai_region->region == current_region_id) {
-				continue;
-			}
-			
-			AiRegion* current_ai_region = scbw::get_ai_region(player, current_region_id);
-			if (ai_region->defense_priority <= current_ai_region->defense_priority) {
-				if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
-					(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+			if (unit->unit_ai->type == AiType::Military) {
+				u32 current_region_id = unit->unit_ai->military_ai.region->region;
+				if (ai_region->region == current_region_id) {
 					continue;
 				}
-			}
-
-			if (!helper::is_valid_for(unit->id, unit, false) || scbw::unit_is_stunned(unit)) {
-				continue;
+				AiRegion* current_ai_region = scbw::get_ai_region(player, current_region_id);
+				if (ai_region->defense_priority <= current_ai_region->defense_priority) {
+					if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
+						(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+						continue;
+					}
+				}
 			}
 			
 			s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
