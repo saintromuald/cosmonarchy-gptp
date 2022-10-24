@@ -2105,7 +2105,7 @@ namespace scbw
 		return center;
 	}
 
-	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse) {
+	void ai_defend(u32 player, u32 region_id, u32 depth) {
 		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
 		switch (ai_region->state) {
 			case RegionState::Nothing:
@@ -2114,19 +2114,15 @@ namespace scbw
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::ai_assign_military_to_region(RegionState::Defending, ai_region);
-				if (ai_region->defense_priority_add < priority) {
-					ai_region->defense_priority_add = priority;
-				}
-				ai_region->defend_timeout = 0;
-				ai_region->ground_strength_needed = 200;
-				ai_region->air_strength_needed    = 200;
+				helper::ai_set_region_type(RegionState::Defending, ai_region);
+				ai_region->defense_priority_add += 15;
+				ai_region->defend_time = 5;
 			} break;
 		}
-		if (recurse) {
+		if (depth) {
 			Region* region = scbw::get_region(region_id);
 			for (u32 i = 0; i < region->neighbor_count; ++i) {
-				scbw::ai_defend(player, region->neighbors[i], priority, false);
+				scbw::ai_defend(player, region->neighbors[i], depth - 1);
 			}
 		}
 	}
@@ -2143,7 +2139,7 @@ namespace scbw
 			for (u32 i = 0; i < 8; ++i) {
 				if (g_player_table[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
-					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 120, true);
+					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 1);
 				}
 			}
 		}

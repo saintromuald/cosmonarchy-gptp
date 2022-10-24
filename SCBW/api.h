@@ -617,7 +617,7 @@ namespace scbw
 	u32 get_ai_region_military_count(AiRegion* region);
 	Region* get_region(u32 index);
 	Point16 get_region_center(Region* region);
-	void ai_defend(u32 player, u32 region_id, u32 priority, bool recurse);
+	void ai_defend(u32 player, u32 region_id, u32 depth);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
 	bool unit_id_is_gas_structure(u16 unit_id);

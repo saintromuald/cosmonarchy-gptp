@@ -111,7 +111,7 @@ namespace hooks
 				{
 					if (self->is_unit_ai_non_building())
 					{
-						helper::ai_assign_military_to_region(2, selfMilitaryAi->region);
+						helper::ai_set_region_type(2, selfMilitaryAi->region);
 					}
 				}
 				childAi1 = helper::ai_is_under_attack(self, 0);
@@ -160,13 +160,13 @@ namespace hooks
 							self_region_state = self_region->state;
 							if (self_region_state == RegionState::TownRegionHigh || self_region_state == RegionState::TownRegionLow)
 							{
-								helper::ai_assign_military_to_region(6, self_region);
+								helper::ai_set_region_type(6, self_region);
 							}
 							if (self_region->state)
 							{
 								if (!self_region->state && *g_elapsed_time_seconds > 60)
 								{
-									helper::ai_assign_military_to_region(5, self_region);
+									helper::ai_set_region_type(5, self_region);
 								}
 							}
 						}
@@ -2244,6 +2244,7 @@ return 0;
 				helper::unload_unit_proc(unit);
 			}
 			helper::ai_recalculate_region_strength(current_ai_region);
+			helper::ai_recalculate_region_strength(ai_region); // New
 			return true;
 		} else if (unit->unit_ai->type == AiType::Guard) {
 			unit->unit_ai->guard_ai.parent = 0;
@@ -2253,6 +2254,7 @@ return 0;
 				helper::unload_unit_proc(unit);
 			}
 			helper::ai_recalculate_region_strength(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)));
+			helper::ai_recalculate_region_strength(ai_region); // New
 			return true;
 		}
 		return false;
@@ -2283,10 +2285,17 @@ return 0;
 				continue;
 			}
 
-			AiRegion* current_ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
-			if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
-				(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+			u32 current_region_id = scbw::get_region_id(unit->position);
+			if (ai_region->region == current_region_id) {
 				continue;
+			}
+
+			AiRegion* current_ai_region = scbw::get_ai_region(player, current_region_id);
+			if (ai_region->defense_priority_add <= current_ai_region->defense_priority_add) {
+				if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
+					(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+					continue;
+				}
 			}
 
 			if (!helper::is_valid_for(unit->id, unit, false) || scbw::unit_is_stunned(unit)) {
@@ -2294,7 +2303,7 @@ return 0;
 			}
 
 			UnitExt* unit_ext = get_unit_ext(unit);
-			if (unit_ext->timers[TimerAI_DefenseCooldown] || unit_ext->damage_taken_timer < 12 || unit_ext->damage_dealt_timer < 12) {
+			if (unit_ext->timers[TimerAI_DefenseCooldown] || unit_ext->damage_taken_timer < 24 || unit_ext->damage_dealt_timer < 24) {
 				continue;
 			}
 
@@ -2316,8 +2325,7 @@ return 0;
 
 		if (best_unit && move_unit_ai(best_unit, ai_region)) {
 			UnitExt* unit_ext = get_unit_ext(best_unit);
-			unit_ext->timers[TimerAI_DefenseCooldown] = 12;
-			helper::ai_recalculate_region_strength(ai_region);
+			unit_ext->timers[TimerAI_DefenseCooldown] = 8 * 24;
 			return against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
 		}
 		return 0;

@@ -144,7 +144,7 @@ namespace helper {
 	void hide_unit(Unit* unit);
 
 	// For AI_TrainingBroodling
-	void ai_assign_military_to_region(s32 region_type, AiRegion* region);							// 004390A0
+	void ai_set_region_type(s32 region_type, AiRegion* region);							// 004390A0
 	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);						// 0043DA20
 
 	// For ai_training_worker

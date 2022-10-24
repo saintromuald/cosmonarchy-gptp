@@ -731,7 +731,7 @@ namespace hooks
 
 		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow)
 		{
-			helper::ai_assign_military_to_region(5, region_from_id);
+			helper::ai_set_region_type(5, region_from_id);
 			u8 region_flags = region_from_id->flags | 1;
 			region_from_id->flags = region_flags;
 			if (!(g_aiscript_controller[player_id].ai_flags.is_use_map_settings))
@@ -752,7 +752,7 @@ namespace hooks
 						AiRegion* region_from_52 = (AiRegion*)((char*)*ai_regions_var + region_times_52);
 						if (!region_from_52->state)
 						{
-							helper::ai_assign_military_to_region(4, region_from_52);
+							helper::ai_set_region_type(4, region_from_52);
 						}
 					}
 				}
@@ -786,17 +786,17 @@ namespace hooks
 			{
 				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
 				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
-				helper::ai_assign_military_to_region(6, region_from_id);
+				helper::ai_set_region_type(6, region_from_id);
 			}
 			else
 			{
-				helper::ai_assign_military_to_region(6, region_from_id);
+				helper::ai_set_region_type(6, region_from_id);
 				u8 region_has_flag_40 = region_from_id->flags | 0x40;
 				region_from_id->ground_strength_needed = 1500;
 				region_from_id->air_strength_needed = 1000;
 				region_from_id->flags = region_has_flag_40;
 			}
-			region_from_id->defend_timeout = 45;
+			region_from_id->defend_time = 45;
 		}
 	}
 }

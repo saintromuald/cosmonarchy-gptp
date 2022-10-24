@@ -1220,7 +1220,7 @@ namespace helper
 	}
 
 	// for AI_TrainingBroodling
-	void ai_assign_military_to_region(s32 region_type, AiRegion* region)
+	void ai_set_region_type(s32 region_type, AiRegion* region)
 	{
 		const u32 func_address = 0x004390A0;
 		__asm {
