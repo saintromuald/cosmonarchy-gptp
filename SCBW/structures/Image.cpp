@@ -183,7 +183,7 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to fix followmaingraphic for omnidirectional sprites. -Pr0nogo
-	void iscript_opcode_followmaingraphic(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved)
+	void iscript_opcode_followmaingraphic(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved) // 004D750C
 	{
 		if (!noop)
 		{
@@ -213,9 +213,9 @@ namespace hooks
 					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit) {
 						final_anim = IscriptAnimation::GndAttkInit;
 					}
-				} else if (animation == IscriptAnimation::AirAttkRpt
-					&& image_anim != IscriptAnimation::AirAttkRpt
-					&& image_anim != IscriptAnimation::AirAttkInit) {
+				} else if  (animation == IscriptAnimation::AirAttkRpt
+				&&			image_anim != IscriptAnimation::AirAttkRpt
+				&&			image_anim != IscriptAnimation::AirAttkInit) {
 					final_anim = IscriptAnimation::AirAttkInit;
 				}
 				u32 offset = image->iscript_header_offset;
@@ -269,7 +269,7 @@ namespace hooks
 			function = g_sg_draw_funcs[12].function_1;
 		}
 		image->render_fxn = function;
-		image->flags = flags | 1;
+		image->flags = flags | ImageFlags::Redraw;
 		helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0); // guessed second parameter
 	}
 
@@ -283,7 +283,7 @@ namespace hooks
 			*param = 2;
 			if (image->animation != IscriptAnimation::Death) { // IscriptAnimation::Cuckdeath
 				u16 header = image->iscript_header_offset;
-				image->animation = 1; 
+				image->animation = IscriptAnimation::Death;
 				char* data = *g_iscript_data;
 				header = *(u16*)&data[header + 10];
 				image->wait = 0;
