@@ -5,21 +5,24 @@
 
 namespace hooks
 {
-	// Hooked to change order conditions and actions for custom spells - Pr0nogo
-	s32 spell_order(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
+	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
+	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) // 004926D0
 	{
+		scbw::print("spell order");
 		Unit* order_target = caster->order_target.unit;
-		u16 meme = (u16)defaultOrderString;
-		if (techId == TechId::Hallucination
-		||	techId == TechId::LuminaryAuralAssault
-		||	(order_target && hooks::canTargetSpell(techId, order_target, 228, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
+		u16 meme = (u16)default_order_string;
+		if (tech_id == TechId::Hallucination
+		||	tech_id == TechId::LuminaryAuralAssault
+		||	tech_id == TechId::HypnagogueThroughTheLookingGlass
+		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
-			char cheatFlags = *g_cheat_state;
-			u16 techCost = techdata_dat::energy_cost[techId] << 8;
-			*energyCost = techCost;
-			if ((cheatFlags & 8 || caster->energy >= techCost))
+			scbw::print("spell order passed");
+			char cheat_flags = *g_cheat_state;
+			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
+			*energy_cost = tech_cost;
+			if ((cheat_flags & CheatFlags::TheGathering || caster->energy >= tech_cost))
 			{
-				if (techId == TechId::Hallucination && !order_target) {
+				if (tech_id == TechId::Hallucination && !order_target) {
 					Point16 target_pos = caster->order_target.pt;
 					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
 						helper::set_move_target_xy(target_pos.x, target_pos.y, caster);
@@ -37,63 +40,50 @@ namespace hooks
 				return helper::spellOrder_MoveTowardsTarget(caster, range);
 			}
 
-			GroupFlag casterGroupFlags = units_dat::group_flags[caster->id];
-			char casterPlayer = caster->player;
-			u8 casterRace;
-			if (casterGroupFlags.is_zerg)
-			{
-				casterRace = 0;
-			}
-			else if (casterGroupFlags.is_terran)
-			{
-				casterRace = 1;
-			} else {
-			casterRace = (casterGroupFlags.is_protoss) != 0 ? 2 : 4;
-			}
-
-			char* string = helper::getStatTxtString(casterRace + 864);
+			GroupFlag caster_group_flags = units_dat::group_flags[caster->id];
+			char caster_player = caster->player;
+			u8 caster_race = caster->get_race();
+			char* string = helper::get_stat_txt_string(caster_race + 864);
 			if (string) {
 				if (*g_active_player_id == *g_local_human_id) {
-					helper::setUnitStatTxtErrorMsg((s32) string);
+					helper::set_unit_stat_txt_error_message(string);
 				}
 			}
 			helper::to_idle(caster);
 			return 0;
 		}
 
-		s16 orderStringIndex = defaultOrderString - 1;
-		char* finalString;
-		if ((u16) defaultOrderString) {
-			if (orderStringIndex < *g_stat_txt_tbl) {
-				finalString = (char*) g_stat_txt_tbl + g_stat_txt_tbl[orderStringIndex + 1];
+		scbw::print("spell order failed");
+		s16 order_string_index = default_order_string - 1;
+		char* final_string;
+		if ((u16) default_order_string) {
+			if (order_string_index < *g_stat_txt_tbl) {
+				final_string = (char*) g_stat_txt_tbl + g_stat_txt_tbl[order_string_index + 1];
 			} else {
-				finalString = "";
+				final_string = "";
 			}
 		} else {
-			finalString = 0;
+			final_string = 0;
 		}
-		helper::get_stat_txt_string(caster, (u8) caster->player, finalString);
+		helper::get_stat_txt_string(caster, (u8) caster->player, final_string);
 
-		s32 result;
 		if (caster->order_queue_head) {
 			caster->user_action_flags |= 1u;
 			helper::orders_nothing_2(caster);
-			result = 0;
 		} else {
 			if (caster->unit_ai) {
 				helper::issue_order_targeting_nothing(caster, 0x9Cu);
 			} else {
 				helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
 			}
-			result = 0;
 		}
-		return result;
+		return 0;
 	}
 
-	// Same as above
-	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, u16* error) // 00492020
+	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
+	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
-		switch (techId) {
+		switch (tech_id) {
 			// Targeting ground
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
@@ -104,45 +94,47 @@ namespace hooks
 			case TechId::Hallucination: // New
 			case TechId::Recall:
 			case TechId::StasisField:
-			case TechId::DisruptionWeb:
-			case TechId::Maelstrom:
-			case TechId::OpticalFlare: // New, Aural Assault for Luminary
+			case TechId::LanifectDisruptionField:
+			case TechId::MindTyrantMaelstrom:
+			case TechId::LuminaryAuralAssault: // New, Aural Assault for Luminary
+			case TechId::HypnagogueThroughTheLookingGlass:
 			{
+				scbw::print("target ground");
 				return 1;
 			}
 			default:
 			{
-				if (techId != TechId::SpiderMines
-					&& techId != TechId::EidolonLobotomyMine) {
-					bool hasTarget = false;
-					u16 errorStatString = 0;
+				if (tech_id != TechId::SpiderMines
+					&& tech_id != TechId::EidolonLobotomyMine) {
+					bool has_target = false;
+					u16 error_stat_string = 0;
 					if (target) {
 						if (!(target->status & UnitStatus::Invincible)) {
 						LABEL_20:
-							if (fowUnitId == UnitId::None)
+							if (fow_unit_id == UnitId::None)
 							{
-								errorStatString = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, techId);
+								error_stat_string = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, tech_id);
 							}
 							else
 							{
-								errorStatString = helper::canTargetSpellOnFOWUnit((s32)techId, fowUnitId);
+								error_stat_string = helper::can_target_spell_on_fow_unit((s32)tech_id, fow_unit_id);
 							}
 							
-							if (errorStatString)
+							if (error_stat_string)
 							{
 								if (error)
 								{
-									*error = errorStatString;
+									*error = error_stat_string;
 								}
 							}
-							return errorStatString == 0;
+							return error_stat_string == 0;
 						}
-						hasTarget = fowUnitId != UnitId::None;
+						has_target = fow_unit_id != UnitId::None;
 					}
 					else
 					{
-						hasTarget = fowUnitId != UnitId::None;
-						if (fowUnitId == UnitId::None)
+						has_target = fow_unit_id != UnitId::None;
+						if (fow_unit_id == UnitId::None)
 						{
 							if (error)
 							{
@@ -151,7 +143,7 @@ namespace hooks
 							return 0;
 						}
 					}
-					if (!hasTarget || !(~(units_dat::base_property[fowUnitId] >> 29) & 1))
+					if (!has_target || !(~(units_dat::base_property[fow_unit_id] >> 29) & 1))
 					{
 						if (error)
 						{
@@ -161,7 +153,7 @@ namespace hooks
 					}
 					goto LABEL_20;
 				}
-				if (hooks::getActiveTileFlag(y, x, 0x410000, 0))
+				if (hooks::get_active_tile_flag(y, x, 0x410000, 0))
 				{
 					return 1;
 				}
@@ -174,10 +166,10 @@ namespace hooks
 		}
 	}
 
-	void orders_Spell(Unit* unit)
+	void orders_spell(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
-		u8 orderWeaponId = orders_dat::order_weapon_id[unit->main_order_id];
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u8 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
 		if (unit->id == UnitId::TerranPaladin)
@@ -185,24 +177,24 @@ namespace hooks
 			if (unit->order_signal & 0x20)
 			{
 				unit->order_signal &= ~0x20;
-				unitExt->timers[TimerSkyfall] = 3;
-				unitExt->values[ValueSkyfallStacks] = 0;
+				unit_ext->timers[TimerSkyfall] = 3;
+				unit_ext->values[ValueSkyfallStacks] = 0;
 				auto pt = unit->order_target.pt;
 				if (unit->order_target.unit != nullptr)
 				{
 					pt = unit->order_target.unit->position;
 					unit->order_target.unit = nullptr;
 				}
-				unitExt->values[ValueSkyfallX] = unit->order_target.pt.x;
-				unitExt->values[ValueSkyfallY] = unit->order_target.pt.y;
+				unit_ext->values[ValueSkyfallX] = unit->order_target.pt.x;
+				unit_ext->values[ValueSkyfallY] = unit->order_target.pt.y;
 			}
 		}
 
 		if (unit->id == UnitId::TerranWyvern)
 		{
-			unitExt->values[ValueWyvernLandGrabOn] = 1;
-			unitExt->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
-			unitExt->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
+			unit_ext->values[ValueWyvernLandGrabOn] = 1;
+			unit_ext->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
+			unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 		}
 
 		if (unit->main_order_state == 2)
@@ -242,18 +234,18 @@ namespace hooks
 			else // 0049291A
 			{
 				u8 techUsed = orders_dat::tech_used[unit->main_order_id];
-				s32 spellCost;
-				if (techUsed >= TechId::None)
+				s32 spell_cost;
+				if (techUsed == TechId::None)
 				{
-					spellCost = 0;
+					spell_cost = 0;
 				}
 				else
 				{
-					spellCost = techdata_dat::energy_cost[techUsed] * 256;
+					spell_cost = techdata_dat::energy_cost[techUsed] * 256;
 				}
 
 				if (!(*g_cheat_state & CheatFlags::TheGathering) &&
-					unit->energy < spellCost)
+					unit->energy < spell_cost)
 				{
 					u8 raceId = unit->get_race();
 					char* message = (char*)statTxtTblNew->get_string(864 + raceId); // Not enough energy
@@ -263,7 +255,7 @@ namespace hooks
 						if (*g_local_nation_id == unit->player
 						&&	*g_active_player_id == *g_local_human_id)
 						{
-							helper::setUnitStatTxtErrorMsg(message);
+							helper::set_unit_stat_txt_error_message(message);
 						}
 					}
 					unit->order_to_idle();
@@ -292,33 +284,33 @@ namespace hooks
 					}
 					if (result_00492620 == 0)
 					{
-						if (unit->get_movable_state() == 2) // unmovable
+						if (unit->get_movable_state() == MovableState::UnmovableAtDestination)
 						{
 							unit->order_to_idle();
 						}
 					}
-					else // 00492A01
+					else
 					{
 
-						if (unit->getSpellCountdown() == 0
+						if (unit->get_spell_countdown() == 0
 						&&	gcd_condition // new
-						&&	helper::is_ready_to_attack(unit, orderWeaponId) // is ready to fire weapon (angle,distance...) maybe?
+						&&	helper::is_ready_to_attack(unit, order_weapon_id) // is ready to fire weapon (angle,distance...) maybe?
 						&&	!(unit->movement_flags & MovementFlags::Accelerating)
 						&&	unit->get_movable_state() != 0)
-						{ // 00492A38
+						{
 							bool bStopHere = false;
 							// in case it was modified by a previous function, relinking
 							target = unit->order_target.unit;
 							if (unit->unit_ai != nullptr && target != nullptr)
 							{
-								if (orderWeaponId <= WeaponId::Maelstrom) // Maelstrom is the last spell-related weapon
+								if (order_weapon_id <= WeaponId::MindTyrantMaelstrom || order_weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) // Maelstrom is the last spell-related weapon
 								{
 									// array bound to the function
 									const u8* const array_00492B44 = (u8*)(0x00492B44);
 
 									// This code would not work for weapons id of NuclearMissile, YamatoGun, and weapons id before those, they must be excluded somewhere else
 									// Maybe the switch and array use could be removed in a future version since enough elements use default value (switch 6)
-									u32 switch_value = array_00492B44[orderWeaponId - 0x20];
+									u32 switch_value = array_00492B44[order_weapon_id - 0x20];
 									if (switch_value != 6)
 									{
 										// no idea why irradiate is so important
@@ -351,14 +343,11 @@ namespace hooks
 									}
 								}
 							}
-
-							if (!bStopHere) // 00492AA3
+							if (!bStopHere)
 							{
-								u8 cooldown;
-								u32 random_value;
-								unit->spend_unit_energy(spellCost);
+								unit->spend_unit_energy(spell_cost);
 
-								cooldown = helper::get_weapon_cooldown(unit, orderWeaponId);
+								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
 								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern)
 								{
@@ -368,7 +357,7 @@ namespace hooks
 								// disable flag 2 if enabled, else has no effect
 								unit->order_signal &= ~2; //&= -3
 								unit->movement_flags |= MovementFlags::StartingAttack;
-								if (unit->sprite->images.head != nullptr)
+								if (unit->sprite->images.head)
 								{
 									Image* current_image = unit->sprite->images.head;
 									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::order_animation[unit->main_order_id];
@@ -376,14 +365,14 @@ namespace hooks
 									{
 										unit->mine_carrier.mine_count--;
 									}
-									while (current_image != nullptr)
+									while (current_image)
 									{
 										current_image->play_iscript_animation(anim);
 										current_image = current_image->link.next;
 									}
 								}
 								unit->main_order_state = 2;
-								if (unit->unit_ai != nullptr)
+								if (unit->unit_ai)
 								{
 									g_aiscript_controller[unit->player].spellcaster_timer = 1;
 								}
@@ -395,15 +384,39 @@ namespace hooks
 		}
 	}
 
-	// Hooked to safeguard against crashes
-	void issueOrderTargetingGround(Unit* unit, u32 id, u16 coordX, u16 coordY) // 00475260
+	// Hooked to safeguard against crashes. -Pr0nogo
+	void issue_order_targeting_ground(Unit* unit, u32 id, u16 coord_x, u16 coord_y) // 00475260
 	{
 		if (!unit)
 		{
 			return;
 		}
 		unit->user_action_flags |= 1u;
-		unit->order(id, coordX, coordY, nullptr, UnitId::None, true);
+		unit->order(id, coord_x, coord_y, 0, UnitId::None, true);
 		helper::orders_nothing_2(unit);
+	}
+
+	// Hooked to investigate custom abilities. -Pr0nogo
+	// We will likely need to hook all calls to this if order ids ever exceed 256.
+	void issue_tri_target_order(u8 order_1, u8 order_2, u8 order_3) // 0048CAF0
+	{
+		*g_is_targeting = 1;
+		*g_order_id_unit = order_1;
+		*g_order_id_obstructed = order_2;
+		*g_order_id_ground = order_3;
+		const char* error;
+		if (*g_network_table < 62u || *g_network_table == 62)
+		{
+			error = "";
+		}
+		else
+		{
+			error = (char*)g_network_table + g_network_table[63];
+		}
+		helper::send_message_something(order_3, error);
+		helper::set_ingame_input_procs();
+		*g_minimap_cursor = 2;
+		*orders_buttonset = 229;
+		helper::update_current_buttonset();
 	}
 }

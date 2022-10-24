@@ -403,7 +403,7 @@ namespace scbw
 	bool has_tech_researched(u8 player, u16 techId)
 	{
 		assert(player < PLAYER_COUNT);
-		assert(techId < TechId::None);
+		assert(techId != TechId::None);
 		if (techId < TechId::Restoration)
 		{
 			return TechSc->is_researched[player][techId] != 0;
@@ -417,7 +417,7 @@ namespace scbw
 	bool has_tech_available(u8 player, u16 techId)
 	{
 		assert(player < PLAYER_COUNT);
-		assert(techId < TechId::None);
+		assert(techId != TechId::None);
 		if (techId < TechId::Restoration)
 		{
 			return TechSc->is_enabled[player][techId] != 0;
@@ -431,7 +431,7 @@ namespace scbw
 	void set_tech_research_state(u8 player, u16 techId, bool is_researched)
 	{
 		assert(player < PLAYER_COUNT);
-		assert(techId < TechId::None);
+		assert(techId != TechId::None);
 
 		if (techId < TechId::Restoration)
 		{

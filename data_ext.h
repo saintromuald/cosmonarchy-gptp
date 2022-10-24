@@ -119,6 +119,9 @@ enum ExtValueId
 	ValueCataphractLaunchPos,
 	ValueDilettanteLuck,
 	ValueSwarmingOmenPlayer,
+	ValuePanoptusLaunchPos,
+	ValueThroughTheLookingGlassX,
+	ValueThroughTheLookingGlassY,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -202,6 +205,7 @@ enum ExtTimerId
 	TimerBindingPlasma,
 	TimerDurendalSecondaryWeaponCooldown,
 	TimerAmbassadorSecondaryWeaponCooldown,
+	TimerHypnagogueChannel,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

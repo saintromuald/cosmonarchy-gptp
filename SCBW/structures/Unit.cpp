@@ -179,7 +179,7 @@ u32 Unit::get_max_shields_raw() const
 	return units_dat::max_shield_points[this->id] * 256;
 }
 
-u8 Unit::getSpellCountdown() const
+u8 Unit::get_spell_countdown() const
 {
 	assert(this);
 	if (this->id == UnitId::TerranWyvern)
@@ -310,19 +310,15 @@ u32 Unit::get_sight_range(bool isForSpellCasting) const
 	return sightRange;
 }
 
-//Similar to function Unit__HasEnergy @ 0x00491480
-//The original function returned 0 when got energy or code
+// Similar to function Unit__HasEnergy @ 0x00491480
+// The original function returned 0 when got energy or code
 bool Unit::has_energy(u32 energy) const
 {
-
-	if (
-		scbw::is_cheat_enabled(CheatFlags::TheGathering) ||
-		this->energy >= energy
-		)
+	if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || this->energy >= energy)
+	{
 		return true;
-	else
-		return false;
-
+	}
+	return false;
 }
 
 //Identical to function Unit__SpendEnergy @ 0x00476180

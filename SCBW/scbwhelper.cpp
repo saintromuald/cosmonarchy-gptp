@@ -810,7 +810,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	b32 getActiveTileFlag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags)
+	b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags)
 	{
 		const u32 Func_getActiveTileFlag = 0x00472F80;
 		static b32 result;
@@ -2529,7 +2529,7 @@ namespace helper
 		return return_value;
 	}
 
-	void setUnitStatTxtErrorMsg(char* message)
+	void set_unit_stat_txt_error_message(char* message)
 	{
 		const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
 		__asm
@@ -4986,7 +4986,7 @@ namespace helper
 		return (__int8)result;
 	}
 
-	char* getStatTxtString(u16 a1)
+	char* get_stat_txt_string(u16 a1)
 	{
 		const u32 Func_getStatTxtString = 0x004C36F0;
 		static s32 result;
@@ -6335,21 +6335,6 @@ namespace helper
 	}
 
 	// For create_scanner
-
-	s32 setUnitStatTxtErrorMsg(s32 a1)
-	{
-		const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
-		static s32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_setUnitStatTxtErrorMsg
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume)
 	{
 		const u32 Func_playSoundFromSource = 0x0048ED50;
@@ -8040,7 +8025,7 @@ namespace helper
 		return result;
 	}
 
-	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unit_id)
+	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id)
 	{
 		const u32 Func_canTargetSpellOnFOWUnit = 0x004914B0;
 		static s32 result;
@@ -12000,22 +11985,22 @@ namespace helper
 		}
 	}
 
-	void minimap_game_target_order(Event* event) {
+	void minimap_game_target_order(Event* event_arg) {
 		const u32 func_address = 0x004A55F0;
 		__asm {
 			PUSHAD
-			MOV EAX, event
+			MOV EAX, event_arg
 			CALL func_address
 			POPAD
 		}
 	}
 
-	char input_target_order_left_mouse_click(Event* event) {
+	char input_target_order_left_mouse_click(Event* event_arg) {
 		static char result;
 		const u32 func_address = 0x004BD500;
 		__asm {
 			PUSHAD
-			MOV ECX, event
+			MOV ECX, event_arg
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -12023,12 +12008,12 @@ namespace helper
 		return result;
 	}
 
-	char input_place_building_left_mouse_click(Event* event, u32 unused, Point16 position) {
+	char input_place_building_left_mouse_click(Event* event_arg, u32 unused, Point16 position) {
 		static char result;
 		const u32 func_address = 0x0048E5D0;
 		__asm {
 			PUSHAD
-			MOV ECX, event
+			MOV ECX, event_arg
 			MOV EDI, unused
 			MOV ESI, position
 			CALL func_address

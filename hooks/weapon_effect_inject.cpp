@@ -244,7 +244,7 @@ namespace
 	//	(void*)0x0048B8B9,	// 2 - Splash (Radial)
 	//	(void*)0x0048B8B9,	// 3 - Splash (Enemy)
 	//	(void*)0x0048B910	// 4 - Lockdown
-	//	(void*)0x0048B969,	// 6 - Parasite
+	//	(void*)0x0048B969,	// 6 - MatralethParasite
 	//	(void*)0x0048B9C8,	// 7 - Broodlings
 
 	const void* WeaponEffects_SwitchTable[] =
@@ -255,7 +255,7 @@ namespace
 		enemySplashWrapper,		//  3 - Splash (Enemy)
 		lockdownWrapper,		//  4 - Lockdown
 		nukeWrapper,			//  5 - Nuclear Missile
-		parasiteWrapper,		//  6 - Parasite
+		parasiteWrapper,		//  6 - MatralethParasite
 		broodlingsWrapper,		//  7 - Broodlings
 		(void*)0x0048BA0F,		//  8 - EMP Shockwave
 		irradiateWrapper,		//  9 - Irradiate

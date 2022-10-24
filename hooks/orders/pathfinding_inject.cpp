@@ -46,7 +46,7 @@ namespace
 			MOV y, AX
 			PUSHAD
 		}
-		result = hooks::getActiveTileFlag(y, x, includedFlags, excludedFlags);
+		result = hooks::get_active_tile_flag(y, x, includedFlags, excludedFlags);
 		__asm
 		{
 			POPAD

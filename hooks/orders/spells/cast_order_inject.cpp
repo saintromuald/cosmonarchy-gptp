@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_Spell_Wrapper()
+	void __declspec(naked) orders_spell_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -14,7 +14,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Spell(unit);
+		hooks::orders_spell(unit);
 		__asm
 		{
 			POPAD
@@ -24,7 +24,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) spellOrder_Wrapper()
+	void __declspec(naked) spell_order_wrapper()
 	{
 		static s32 result;
 		static s32 defaultOrderString;
@@ -59,7 +59,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) canTargetSpell_Wrapper() // 00492020
+	void __declspec(naked) can_target_spell_wrapper() // 00492020
 	{
 		static bool result;
 		static u16 techId;
@@ -88,7 +88,7 @@ namespace
 			MOV techId, DX
 			PUSHAD
 		}
-		result = hooks::canTargetSpell(techId, target, fowUnitId, caster, x, y, error);
+		result = hooks::can_target_spell(techId, target, fowUnitId, caster, x, y, error);
 		__asm
 		{
 			POPAD
@@ -99,7 +99,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) issueOrderTargetingGround_Wrapper() // 00475260
+	void __declspec(naked) issue_order_targeting_ground_wrapper() // 00475260
 	{
 		static Unit* unit;
 		static u32 id;
@@ -120,7 +120,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::issueOrderTargetingGround(unit, id, coordX, coordY);
+		hooks::issue_order_targeting_ground(unit, id, coordX, coordY);
 		__asm
 		{
 			POPAD
@@ -129,15 +129,38 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) issue_tri_target_order_wrapper() // 0048CAF0
+	{
+		static char* unused;
+		static u8 order_1;
+		static u8 order_2;
+		static u8 order_3;
+		__asm
+		{
+			MOV unused, EDI
+			MOV order_1, AL
+			MOV order_2, DL
+			MOV order_3, CL
+			PUSHAD
+		}
+		hooks::issue_tri_target_order(order_1, order_2, order_3);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_cast_order_hooks()
 	{
-		jump_patch(orders_Spell_Wrapper,					0x00492850, 1);
-		jump_patch(spellOrder_Wrapper,						0x004926D0, 0);
-		jump_patch(canTargetSpell_Wrapper,					0x00492020, 1);
-		jump_patch(issueOrderTargetingGround_Wrapper,		0x00475260, 1);
+		jump_patch(orders_spell_wrapper,						0x00492850, 1);
+		jump_patch(spell_order_wrapper,							0x004926D0, 0);
+		jump_patch(can_target_spell_wrapper,					0x00492020, 1);
+		jump_patch(issue_order_targeting_ground_wrapper,		0x00475260, 1);
+		jump_patch(issue_tri_target_order_wrapper,				0x0048CAF0, 0);
 	}
 }

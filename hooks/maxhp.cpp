@@ -887,13 +887,13 @@ LABEL_23:
 						case TechId::PsionicStorm:
 						case TechId::Recall:
 						case TechId::StasisField:
-						case TechId::DisruptionWeb:
-						case TechId::Maelstrom:
+						case TechId::LanifectDisruptionField:
+						case TechId::MindTyrantMaelstrom:
 							break;
 						default:
 							if ((u8)v6 == TechId::SpiderMines)
 							{
-								ByteOperations::SetLowByte(v7, helper::getActiveTileFlag(v8, v9, 0x410000, 0));
+								ByteOperations::SetLowByte(v7, helper::get_active_tile_flag(v8, v9, 0x410000, 0));
 							}
 							else
 							{

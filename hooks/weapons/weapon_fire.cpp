@@ -366,6 +366,10 @@ namespace hooks
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueSpraithColonyLaunchPos, 1, false);
 					} break;
+					case WeaponId::PanoptusPlasmaMissiles:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePanoptusLaunchPos, 2, false);
+					} break;
 					// Missile spawn positions end
 
 					case WeaponId::CataphractLonginiusCannons:
@@ -447,7 +451,7 @@ namespace hooks
 					{
 						// Multi-Attack IV
 						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 4, false);
-						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy);
 					} break;
 					case WeaponId::BarghestRayOfAgony:
 					{

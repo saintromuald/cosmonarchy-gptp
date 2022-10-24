@@ -194,7 +194,7 @@ SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 // For race_dropdown
 SCBW_DATA(StringMap_b*,	single_race_select,			0x0051AAA0);
 SCBW_DATA(StringMap_w*,	single_type_select,			0x0051AAA8);
-SCBW_DATA(u16*,			network_table,				0x006D1220);
+SCBW_DATA(u16*,			g_network_table,			0x006D1220);
 
 // For init_singleplayer_custom
 SCBW_DATA(u32*,			selected_game_type,			0x0059BA64);

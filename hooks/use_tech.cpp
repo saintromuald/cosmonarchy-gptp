@@ -52,116 +52,6 @@ namespace hooks
 			}
 		}
 		switch (tech) {
-			case TechId::ScannerSweep:
-			{
-				helper::issue_tri_target_order(OrderId::PlaceScanner, 0, 0);
-			} break;
-			case TechId::SpiderMines:
-			{
-				helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
-			} break;
-			case TechId::YamatoGun:
-			{
-				helper::issue_tri_target_order(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
-			} break;
-			case TechId::Lockdown:
-			{
-				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
-			} break;
-			case TechId::Recall:
-			{
-				helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
-			} break;
-			case TechId::DefensiveMatrix:
-			{
-				helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);
-			} break;
-			case TechId::MatralethEnsnaringBrood:
-			{
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *g_active_player_id;
-				buf[4] = RustId::CastEnsnaringBrood;
-				helper::queue_game_command(buf, 0xc);
-			} break;
-			case TechId::Parasite:
-			{
-				helper::issue_tri_target_order(OrderId::CastParasite, 0, 0);
-			} break;
-			case TechId::Infestation:
-			{
-				helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
-			} break;
-			case TechId::Irradiate:
-			{
-				helper::issue_tri_target_order(OrderId::Irradiate, 0, 0);
-			} break;
-			case TechId::Ensnare:
-			{
-				helper::issue_tri_target_order(OrderId::CTFCOPInit, 0, 0);
-			} break;
-			case TechId::StasisField:
-			{
-				helper::issue_tri_target_order(OrderId::StasisField, 0, 0);
-			} break;
-			case TechId::DarkSwarm:
-			{
-				helper::issue_tri_target_order(OrderId::DarkSwarm, 0, 0);
-			} break;
-			case TechId::Plague:
-			{
-				helper::issue_tri_target_order(OrderId::Plague, 0, 0);
-			} break;
-			case TechId::Consume:
-			{
-				helper::issue_tri_target_order(OrderId::Consume, 0, 0);
-			} break;
-			case TechId::PsionicStorm:
-			{
-				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
-			} break;
-			case TechId::Hallucination:
-			{
-				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
-			} break;
-			case TechId::DemiurgeGodsMadeFlesh:
-			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *g_active_player_id;
-				buf[4] = RustId::CastGodsMadeFlesh;
-				helper::queue_game_command(buf, 0xc);
-			} break;
-			case TechId::CancelNewAbility:
-			{
-				if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::TerranWyvern)
-				{
-					s32 action = 1;
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
-					buf[0] = 0x99;
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *g_active_player_id;
-					buf[4] = RustId::CancelLandGrab;
-					helper::queue_game_command(buf, 0xc);
-				}
-				else if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::ZergAkistrokor
-					|| players_selections->unit[*g_active_nation_id][0]->id == UnitId::ZergSovroleth)
-				{
-					s32 action = 1;
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0};
-					buf[0] = 0x99;
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *g_active_player_id;
-					buf[4] = RustId::CancelAttachment;
-					helper::queue_game_command(buf, 0xc);
-				}
-			} break;
 			case TechId::ControlledDemolition:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
@@ -182,24 +72,17 @@ namespace hooks
 				buf[4] = RustId::CastEmergencyDetonation;
 				helper::queue_game_command(buf, 0xc);
 			} break;
-			case TechId::StarSovereignTheGriefOfAllGods:
+			case TechId::ScannerSweep:
 			{
-				auto firstInList = g_client_selection_group->unit[0];
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::IssueCTFCop2;
-				buf[2] = *g_active_player_id;
-				helper::queue_game_command(buf, 0xc);
+				helper::issue_tri_target_order(OrderId::PlaceScanner, 0, 0);
 			} break;
-			case TechId::ApostleLazarusAgent:
+			case TechId::TalosSalvage:
 			{
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *g_active_player_id;
-				buf[4] = RustId::CastLazarusAgent;
-				helper::queue_game_command(buf, 0xc);
+				helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
+			} break;
+			case TechId::Lockdown:
+			{
+				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
 			} break;
 			case TechId::SavantOnhitToggle:
 			{
@@ -215,6 +98,25 @@ namespace hooks
 				buf[4] = RustId::ToggleSavantOnhit;
 				helper::queue_game_command(buf, 0xC);
 			} break;
+			case TechId::ApostleLazarusAgent:
+			{
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = 1;
+				buf[3] = *g_active_player_id;
+				buf[4] = RustId::CastLazarusAgent;
+				helper::queue_game_command(buf, 0xc);
+			} break;
+			case TechId::HypnagogueThroughTheLookingGlass:
+			{
+				scbw::print("issue order");
+				helper::issue_tri_target_order(OrderId::CastThroughTheLookingGlass, 0, 0);
+			} break;
+			case TechId::SpiderMines:
+			{
+				helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
+			} break;
 			case TechId::MadrigalTempoChange:
 			{
 				s32 action = 1;
@@ -222,7 +124,7 @@ namespace hooks
 				{
 					action = 0;
 				}
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
 				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -234,18 +136,90 @@ namespace hooks
 			{
 				helper::issue_tri_target_order(OrderId::PaladinSkyfall, 0, 0);
 			} break;
+			case TechId::DefensiveMatrix:
+			{
+				helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);
+			} break;
+			case TechId::Irradiate:
+			{
+				helper::issue_tri_target_order(OrderId::Irradiate, 0, 0);
+			} break;
+			case TechId::YamatoGun:
+			{
+				helper::issue_tri_target_order(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
+			} break;
+			case TechId::Consume:
+			{
+				helper::issue_tri_target_order(OrderId::Consume, 0, 0);
+			} break;
+			case TechId::MatralethEnsnaringBrood:
+			{
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = 1;
+				buf[3] = *g_active_player_id;
+				buf[4] = RustId::CastEnsnaringBrood;
+				helper::queue_game_command(buf, 0xc);
+			} break;
+			case TechId::MatralethParasite:
+			{
+				helper::issue_tri_target_order(OrderId::CastParasite, 0, 0);
+			} break;
+			case TechId::Ensnare: // TODO: Remove? -Pr0nogo
+			{
+				helper::issue_tri_target_order(OrderId::CTFCOPInit, 0, 0);
+			} break;
+			case TechId::Infestation:
+			{
+				helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
+			} break;
 			case TechId::AkistrokorBlissfulEmbrace:
 			{
 				helper::issue_tri_target_order(OrderId::CTFCOP1, 0, 0);
 			} break;
-			case TechId::DisruptionWeb:
+			case TechId::DarkSwarm:
+			{
+				helper::issue_tri_target_order(OrderId::DarkSwarm, 0, 0);
+			} break;
+			case TechId::Plague:
+			{
+				helper::issue_tri_target_order(OrderId::Plague, 0, 0);
+			} break;
+			case TechId::PsionicStorm:
+			{
+				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
+			} break;
+			case TechId::Hallucination:
+			{
+				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
+			} break;
+			case TechId::MindControl:
+			{
+				helper::issue_tri_target_order(OrderId::CastMindControl, 0, 0);
+			} break;
+			case TechId::MindTyrantMaelstrom:
+			{
+				helper::issue_tri_target_order(OrderId::CastMaelstrom, 0, 0);
+			} break;
+			case TechId::DemiurgeGodsMadeFlesh:
+			{
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = 1;
+				buf[3] = *g_active_player_id;
+				buf[4] = RustId::CastGodsMadeFlesh;
+				helper::queue_game_command(buf, 0xc);
+			} break;
+			case TechId::LanifectDisruptionField:
 			{
 				s32 action = 1;
 				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
 				{
 					action = 0;
 				}
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
 				buf[0] = 0x99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -253,21 +227,26 @@ namespace hooks
 				buf[4] = RustId::ToggleDisruptionField;
 				helper::queue_game_command(buf, 0xc);
 			} break;
-			case TechId::MindControl:
+			case TechId::Recall:
 			{
-				helper::issue_tri_target_order(OrderId::CastMindControl, 0, 0);
+				helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
+			} break;
+			case TechId::StasisField:
+			{
+				helper::issue_tri_target_order(OrderId::StasisField, 0, 0);
+			} break;
+			case TechId::StarSovereignTheGriefOfAllGods:
+			{
+				auto firstInList = g_client_selection_group->unit[0];
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99;
+				buf[1] = NewGameCommand::IssueCTFCop2;
+				buf[2] = *g_active_player_id;
+				helper::queue_game_command(buf, 0xc);
 			} break;
 			case TechId::LuminaryAuralAssault:
 			{
 				helper::issue_tri_target_order(OrderId::CastOpticalFlare, 0, 0);
-			} break;
-			case TechId::Maelstrom:
-			{
-				helper::issue_tri_target_order(OrderId::CastMaelstrom, 0, 0);
-			} break;
-			case TechId::TalosSalvage:
-			{
-				helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
 			} break;
 			case TechId::LarvalSubmenuSelectSwarm:
 			{
@@ -285,6 +264,24 @@ namespace hooks
 			{
 				select_larva_type(UnitId::Buttons_LarvaShared);
 			} break;
+			case TechId::CancelNewAbility:
+			{
+				switch (players_selections->unit[*g_active_nation_id][0]->id)
+				{
+				case UnitId::TerranWyvern:
+				{
+					s32 action = 1;
+					u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+					buf[0] = 0x99;
+					buf[1] = NewGameCommand::GenericSwitchAbility;
+					buf[2] = action;
+					buf[3] = *g_active_player_id;
+					buf[4] = RustId::CancelLandGrab;
+					helper::queue_game_command(buf, 0xc);
+				}
+				break;
+				}
+			} break;
 		};
 	}
 
@@ -292,7 +289,7 @@ namespace hooks
 	s32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player) { // 0046DD80
 		*g_last_internal_error = 0;
 		u32 result = 0;
-		if (tech_id >= TechId::None) {
+		if (tech_id == TechId::None) {
 			*g_last_internal_error = 17;
 			return 0;
 		}

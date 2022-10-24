@@ -58,7 +58,7 @@ namespace WeaponId {
 		SunkenColonySubterraneanTentacle = 0x35,
 		InfestedTerranSuicide = 0x36,
 		ScourgeSuicide = 0x37,
-		Parasite = 0x38,
+		MatralethParasite = 0x38,
 		SpawnBroodlings = 0x39,
 		Ensnare = 0x3A,
 		DarkSwarm = 0x3B,
@@ -103,14 +103,14 @@ namespace WeaponId {
 		FlameThrower_WallTrap = 0x62,
 		HellfireMissilePack_FloorTrap = 0x63,
 		LanifectNeutronFlare = 0x64,
-		DisruptionWeb = 0x65,
+		LanifectDisruptionField = 0x65,
 		Restoration = 0x66,
 		ValkyrieHaloRockets = 0x67,
 		VithriliskCorrosiveSpores = 0x68,
 		MindControl = 0x69,
 		Feedback = 0x6A,
-		OpticalFlare = 0x6B,
-		Maelstrom = 0x6C,
+		LuminaryAuralAssault = 0x6B,
+		MindTyrantMaelstrom = 0x6C,
 		LakiziliskSubterraneanSpines = 0x6D,
 		GaussRifle0_Unused = 0x6E,
 		CabalistWarpBlades = 0x6F,
@@ -143,7 +143,6 @@ namespace WeaponId {
 		CohortGaussPistols					= 20,
 		AspirantPotentiumCannon				= 69,
 		CharlatanFerventBlaster				= 101,
-		LuminaryAuralAssault				= 121,	// Luminary ability targeting
 		LuminaryIcarusMissiles				= 131,
 		StrigaPhaseSaber					= 133,
 		AxitriliskSearingVenom				= 134,
@@ -179,12 +178,12 @@ namespace WeaponId {
 		AutocratEminanceRifle				= 116,
 		ClaymoreHarpoonRailgun				= 120,
 		UnusedSeraphObservance				= 122,	// Was Seraph ability targeting
-		OlympianTitansFist					= 123,	// Olympian melee weapon
+		OlympianTitansFist					= 123,
 		OlympianMountainGun					= 124,
 		WyvernJacksonCannon					= 125,
-		PaladinSkyfall						= 126,	// Paladin ability targeting
+		PaladinSkyfall						= 126,	// Ability targeting
 		IonCannon							= 129,
-		EmergencyDetonationExplosion		= 140,	// Emergency Detonation area damage
+		EmergencyDetonationExplosion		= 140,
 		MagnetarNewtonianShockCannon		= 141,
 		SentinelCerberusRailgun				= 147,
 		SundogBlindsideRockets				= 150,
@@ -206,6 +205,7 @@ namespace WeaponId {
 		HeirUsurperFlamethrower				= 180,
 		HeirExcellencyLaserBatteries		= 181,
 		HorsemanHadesCannon					= 182,
+		HypnagogueThroughTheLookingGlass	= 183,	// Ability targeting
 
 		// Protoss \\
 				
@@ -215,25 +215,25 @@ namespace WeaponId {
 		EmpyreanPlasmaBarrage				= 71,
 		HierophantPhaseSignifier			= 72,
 		AuroraPhotonBlasters				= 73,
-		PanoptusAntiMatterMissiles			= 74,
+		PanoptusPlasmaMissiles				= 74,
 		AugurAeonsMadness					= 75,
 		ExemplarPlasmaTorpedo				= 76,
 		MagisterNeutronCannon				= 78,
 		LegionnairePsiSabers				= 86,
 		StarSovereignCelestialCannon		= 90,
-		StarSovereignInterventionMissiles	= 91,	// Star Sovereign behavior
+		StarSovereignInterventionMissiles	= 91,
 		EcclesiastAstralBlaster				= 97,
 		AtreusDauntlessDisruptorCannon		= 98,
 		AmaranthPsiCleaver					= 99,
 		DemiurgeGalacticWeaver				= 106,
-		CantavisHallucinationCast			= 107,	// Cantavis ability targeting
+		CantavisHallucinationCast			= 107,	// Ability targeting
 		IdolPrismaticBlaster				= 112,
 		GolemBloodlessAssault				= 113,
 		BarghestRayOfAgony					= 114,
 		PariahIconoclastBlades				= 115,
 		ManifoldPhaseBlaster				= 118,
 		ArchitectDispersiveSalvo			= 119,
-		AugurFinalHour						= 128,	// Augur behavior
+		AugurFinalHour						= 128,
 		EpigraphLitanyCannons				= 132,
 		AnthelionEventHorizon				= 139,
 		VagrantVapidBlaster					= 148,
