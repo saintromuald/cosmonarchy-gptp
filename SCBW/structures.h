@@ -685,7 +685,7 @@ struct AiRegion
 	/*0x04*/  u8  player;
 	/*0x05*/  u8  state;
 	/*0x06*/  u8  defense_priority;
-	/*0x07*/  u8  defend_time;
+	/*0x07*/  u8  defend_time; // Unclear to what the unit of time is
 	/*0x08*/  u8  flags;
 	/*0x09*/  u8  field_9;
 	/*0x0A*/  u16 ground_unit_count;

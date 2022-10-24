@@ -2105,7 +2105,7 @@ namespace scbw
 		return center;
 	}
 
-	void ai_defend(u32 player, u32 region_id, u32 depth) {
+	void ai_defend(u32 player, u32 region_id, u32 spread, bool protect) {
 		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
 		switch (ai_region->state) {
 			case RegionState::Nothing:
@@ -2114,15 +2114,25 @@ namespace scbw
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::ai_set_region_type(RegionState::Defending, ai_region);
-				ai_region->defense_priority += 15;
-				ai_region->defend_time = 2;
+				helper::ai_set_region_type(RegionState::Defending, ai_region); // Priority is 120 when defending regions with buildings/workers, 110 otherwise
+				if (protect) {
+					ai_region->defend_time = 255; // Maximum time to ensure the AI can safely finish the town hall and the town is defended for a while
+					if (ai_region->ground_strength_needed < 500) {
+						ai_region->ground_strength_needed = 500;
+					}
+					if (ai_region->air_strength_needed < 500) {
+						ai_region->air_strength_needed = 500;
+					}
+				} else {
+					ai_region->defense_priority += 15; // More than both of the vanilla defense priorities
+					ai_region->defend_time = 2; // Minimal time that the defense doesn't break
+				}
 			} break;
 		}
-		if (depth) {
+		if (spread) {
 			Region* region = scbw::get_region(region_id);
 			for (u32 i = 0; i < region->neighbor_count; ++i) {
-				scbw::ai_defend(player, region->neighbors[i], depth - 1);
+				scbw::ai_defend(player, region->neighbors[i], spread - 1, protect);
 			}
 		}
 	}
@@ -2139,7 +2149,7 @@ namespace scbw
 			for (u32 i = 0; i < 8; ++i) {
 				if (g_player_table[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
-					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 1);
+					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 1, false);
 				}
 			}
 		}
