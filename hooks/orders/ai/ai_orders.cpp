@@ -2298,6 +2298,10 @@ return 0;
 					}
 				}
 			}
+
+			if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
+				continue;
+			}
 			
 			s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
 			s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);

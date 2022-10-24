@@ -707,6 +707,8 @@ struct AiRegion
 
 C_ASSERT(sizeof(AiRegion) == 52);
 
+#define RegionAirOnly 0x1FFD
+
 struct Region
 {
 	u16		accessibility_flags;	// 0x00
