@@ -1439,4 +1439,5 @@ namespace helper {
 	u16 is_valid_script(Image* image, u32 iscript_id);														// 004D6640
 
 	Image* update_image_frame_index(Image* image);															// 004D5940
+	u32 get_path_distance_to(Unit* unit, Point16 position);													// 0042FA30
 }

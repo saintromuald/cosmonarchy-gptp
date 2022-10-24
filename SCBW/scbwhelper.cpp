@@ -12993,4 +12993,20 @@ namespace helper
 		}
 		return result;
 	}
+
+	u32 get_path_distance_to(Unit* unit, Point16 position) {
+		static u32 result;
+		const u32 func_address = 0x0042FA30;
+		u32 x = position.x;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			MOV AX, position.y
+			PUSH x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

@@ -2311,7 +2311,7 @@ return 0;
 				continue;
 			}
 
-			f32 distance = scbw::get_ground_path_distance_tiles(unit->position, region_center);
+			f32 distance = helper::get_path_distance_to(unit, region_center);
 			s32 score = distance ? force / distance : force;
 			if (score > best_score) {
 				best_score = score;
