@@ -435,7 +435,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to investigate crashes - Pr0nogo
+	// Hooked to investigate crashes. - Pr0nogo
 	u32 ai_recalculate_region_strength(AiRegion* region) // 0043A390
 	{
 		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
