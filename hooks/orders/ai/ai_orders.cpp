@@ -421,12 +421,12 @@ namespace hooks
 					continue;
 				}
 				memset(g_aiscript_controller[player].attackers, 0, sizeof(g_aiscript_controller[player].attackers));
-				g_aiscript_controller[player].ai_attack_group = 0;
+				g_aiscript_controller[player].ai_attack_group_region = 0;
 				helper::ai_attack_clear(player);
 				if (!helper::ai_attack_manager(player, unit->sprite->position.x, unit->sprite->position.y, 0, 1))
 				{
 					g_aiscript_controller[player].strategic_suicide = 24;
-					regionIndex = (u16)g_aiscript_controller[player].ai_attack_group - 1;
+					regionIndex = (u16)g_aiscript_controller[player].ai_attack_group_region - 1;
 					region2 = &g_ai_region_captains[player][regionIndex];
 					helper::remove_unit_ai(unit, false);
 					helper::add_military_ai(region2, unit, 1);
@@ -1959,53 +1959,42 @@ return 0;
 	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
 	void ai_manage_military_controller(Unit* unit) // 0043D910
 	{
-		if (unit->unit_ai && unit->unit_ai->type == AiType::Military && unit->unit_ai->military_ai.unit == unit) {
-			MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
-			AiRegion* new_ai_region = find_better_region(military_ai, military_ai->region, 3);
-			if (new_ai_region && military_ai->region != new_ai_region) {
-				helper::delete_military_ai(military_ai, military_ai->region);
-				unit->unit_ai = 0;
-				helper::add_military_ai(new_ai_region, unit, true);
-			}
-		}
+		// This code should not be enabled, since the "better" regions may not be actually attack regions, which may result in unwanted behavior
+	//	if (unit->unit_ai && unit->unit_ai->type == AiType::Military && unit->unit_ai->military_ai.unit == unit) {
+	//		MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
+	//		AiRegion* new_ai_region = find_better_region(military_ai, military_ai->region, 3);
+	//		if (new_ai_region && military_ai->region != new_ai_region) {
+	//			helper::delete_military_ai(military_ai, military_ai->region);
+	//			unit->unit_ai = 0;
+	//			helper::add_military_ai(new_ai_region, unit, true);
+	//		}
+	//	}
 
-		if (unit->unit_ai && unit->unit_ai->type == AiType::Military)
-		{
+		if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
 			MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
-			if (military_ai->unit == unit)
-			{
+			if (military_ai->unit == unit) {
 				u16 unit_id = unit->id;
-				if (!(units_dat::base_property[unit_id] & UnitProperty::Building))
-				{
+				if (!(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 					AiRegion* ai_region = military_ai->region;
-					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region))
-					{
-						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0))
-						{
+					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region)) {
+						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0)) {
 							s32 region_id = ai_region->region;
-							if (ai_region->state == RegionState::ContinueAttackHere)
-							{
-								if (!ai_region->slowest_unit)
-								{
+							if (ai_region->state == RegionState::ContinueAttackHere) {
+								if (!ai_region->slowest_unit) {
 									helper::ai_assign_region_to_slowest_unit(ai_region);
 								}
 								Unit* slowest_unit = ai_region->slowest_unit;
-								if (slowest_unit)
-								{
-									if (helper::ai_has_incomplete_military_in_region(ai_region))
-									{
+								if (slowest_unit) {
+									if (helper::ai_has_incomplete_military_in_region(ai_region)) {
 										region_id = helper::get_region_id_from_unit(slowest_unit);
 									}
 								}
 							}
 
 							Region* region = scbw::get_region(region_id);
-							if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id)
-							{
+							if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id) {
 								helper::make_to_hold_position(unit);
-							}
-							else
-							{
+							} else {
 								Point16 center = scbw::get_region_center(region);
 								helper::ai_order_to_destination(unit, OrderId::AttackMove, center.x, center.y);
 							}
@@ -2274,12 +2263,17 @@ return 0;
 				if (ai_region->region == current_region_id) {
 					continue;
 				}
+
 				AiRegion* current_ai_region = scbw::get_ai_region(player, current_region_id);
 				if (ai_region->defense_priority <= current_ai_region->defense_priority) {
 					if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
 						(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
 						continue;
 					}
+				}
+
+				if (current_region_id == g_aiscript_controller[player].ai_attack_group_region - 1) {
+					continue;
 				}
 			}
 

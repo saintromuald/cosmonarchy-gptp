@@ -932,7 +932,7 @@ struct AI_Main
 	} ai_flags;
 	u16 ai_panic_block;					/*021A*/
 	u16 ai_max_force;					/*021C*/
-	u16 ai_attack_group;				/*021E*/
+	u16 ai_attack_group_region;			/*021E*/ // 1 based (0 means none)
 	u16 wanted_unit;					/*0220*/
 	u8	default_min;					/*0222*/
 	u8	defense_priority_base;			/*0223*/
