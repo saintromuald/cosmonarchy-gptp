@@ -763,6 +763,10 @@ namespace hooks
 			case WeaponId::SevenstepGeometricRifle:
 			{
 				// Sevenstep Mind Matter passive - heal energy, then shields
+				if (data.attacker->energy == data.attacker->get_max_energy() && data.attacker->shields != data.attacker->get_max_shields_raw())
+				{
+					helper::play_sound_from_unit(SoundId::SevenstepShieldHeal01,data.attacker, 1, 0);
+				}
 				data.attacker->heal_energy_then_shields(damage_dealt / 2, data.attacker);
 			} break;
 			case WeaponId::UltrokorKaiserBlades:
@@ -935,7 +939,8 @@ namespace hooks
 			case UnitId::TerranSevenstep:
 			{
 				// Sevenstep Mind Matter passive - Convert energy into emergency health
-				// TODO: Audiovisuals
+				// TODO: Visuals
+				helper::play_sound_from_unit(SoundId::SevenstepRevive01, data.target, 1, 0);
 				data.target->heal_hp(data.target->energy / 2, data.target, false);
 				data.target->energy = 0;
 			} break;
