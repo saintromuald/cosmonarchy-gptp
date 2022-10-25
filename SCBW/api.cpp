@@ -2105,6 +2105,15 @@ namespace scbw
 		return center;
 	}
 
+	Box32 get_region_area(Region* region) {
+		Box32 area = {};
+		area.x = region->left;
+		area.y = region->top;
+		area.w = region->right;
+		area.h = region->bottom;
+		return area;
+	}
+
 	void ai_defend(u32 player, u32 region_id, u32 spread, bool protect) {
 		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
 		switch (ai_region->state) {

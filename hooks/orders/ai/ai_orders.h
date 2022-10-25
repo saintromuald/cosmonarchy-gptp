@@ -10,7 +10,7 @@ namespace hooks
 	bool ai_can_mine_extra(Unit* unit);																					// 00447A70
 	void ai_order_unit_cloaking(Unit* unit);																			// 0043B970
 	void ai_send_suicide(char argType, s32 player);																		// 0043E050
-	u32 ai_recalculate_region_strength(AiRegion* region);																// 0043A390
+	void ai_recalculate_region_strength(AiRegion* region);																// 0043A390
 	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 player);														// 004A0F90
 	s16 get_region_id_from_unit(Unit* unit);																			// 0049CB40
 	bool ai_is_building_safe(Unit* unit);																				// 00438910
