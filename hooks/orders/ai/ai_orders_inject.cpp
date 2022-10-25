@@ -90,18 +90,17 @@ namespace
 
 	void __declspec(naked) ai_recalculate_region_strength_wrapper()
 	{
-		static u32 result;
 		static AiRegion* region;
 		__asm
 		{
 			MOV region, ESI
 			PUSHAD
 		}
-		result = hooks::ai_recalculate_region_strength(region);
+		hooks::ai_recalculate_region_strength(region);
 		__asm
 		{
 			POPAD
-			MOV EAX, result
+			MOV EAX, 0
 			RETN
 		}
 	}

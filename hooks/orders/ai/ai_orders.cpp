@@ -436,89 +436,70 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	u32 ai_recalculate_region_strength(AiRegion* region) // 0043A390
-	{
-		const u32 Func_CB_AICaptainStrengthIterator = 0x00438F60;
-		MilitaryAi* military_ai = region->first_military_ai;
-		region->air_strength = 0;
-		region->air_strength_full = 0;
+	void ai_recalculate_region_strength(AiRegion* region) { // 0043A390
 		region->ground_strength = 0;
 		region->ground_strength_full = 0;
-			
-		for (MilitaryAi* i = military_ai; i; i = i->link.prev)
-		{
-			Unit* townWorker = (Unit*)i->unit;
-			if (!townWorker)
-			{
-				continue;
+		region->air_strength = 0;
+		region->air_strength_full = 0;
+		
+		// Count own and allied AI force
+		for (u32 i = 0; i < 8; ++i) {
+			if (scbw::is_allied_to(region->player, i)) {
+				for (MilitaryAi* military_ai = scbw::get_ai_region(i, region->region)->first_military_ai; military_ai; military_ai = military_ai->link.prev) {
+					Unit* unit = (Unit*)military_ai->unit;
+					if (!unit) {
+						continue;
+					}
+					if (!(unit->status & UnitStatus::InBuilding)) {
+						region->ground_strength_full += unit->ground_strength;
+						region->air_strength_full += unit->air_strength;
+						if (helper::get_region_id(unit->position.x, unit->position.y) == region->region) {
+							region->ground_strength += unit->ground_strength;
+							region->air_strength += unit->air_strength;
+						}
+					}
+				}
 			}
-			if (!(townWorker->status & UnitStatus::InBuilding))
-			{
-				s32 townUnitGroundStrength = townWorker->ground_strength;
-				s16 townUnitAirStrength = townWorker->air_strength;
-				region->air_strength_full += townUnitAirStrength;
-				region->ground_strength_full += townUnitGroundStrength;
-				Sprite* townUnitSprite = townWorker->sprite;
-				if (!townUnitSprite)
-				{
+		}
+		
+		// Also count in allied non-AI force
+		{
+			EntryArray region_units = {};
+			unit_search_rect(&region_units, scbw::get_region_area(scbw::get_region(region->region)));
+			unit_search_filter(&region_units, 0, FilterCanAttackOrCast | FilterNotWorker | FilterNoBuilding | FilterNoTrap);
+			for (u32 i = 0; i < region_units.count; ++i) {
+				Unit* unit = region_units.units[i];
+				if (unit->unit_ai || !scbw::is_allied_to(region->player, unit->player)) {
 					continue;
 				}
-				s32 v6 = townUnitSprite->position.x;
-				s32 regionTown6 = townUnitGroundStrength;
-				if (helper::get_region_id(v6, townUnitSprite->position.y) == region->region)
-				{
-					region->air_strength += townUnitAirStrength;
-					region->ground_strength += regionTown6;
-				}
+				region->ground_strength_full += unit->ground_strength;
+				region->air_strength_full += unit->air_strength;
+				region->ground_strength += unit->ground_strength;
+				region->air_strength += unit->air_strength;
 			}
 		}
 
-		if (g_aiscript_controller[region->player].ai_flags.is_use_map_settings)
-		{
-			s32 v8 = region->region << 6;
-			s32 v9 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_y + v8);
-			s32 regionTown0 = *(s32*)((char*)&(*g_sai_paths)->regions[0].region_center_x + v8) >> 8;
-			v9 >>= 8;
-			s16 a1 = regionTown0 - 256;
-			s32 regionTown6 = (v9 + 256) << 16;
-			s16 regionTown5 = v9 - 256;
-			regionTown6 |= regionTown0 + 256;
-			helper::iterate_units_at_location_target_proc((Box16*)&a1, (Unit*(__fastcall*)(Unit*, Unit*))Func_CB_AICaptainStrengthIterator, (Unit*)region);
-		}
-
-		u32 air_strength = region->air_strength_enemy;
-		if (!(g_aiscript_controller[region->player].ai_flags.is_use_map_settings))
-		{
-			air_strength += air_strength >> 1;
-		}
-		if (air_strength > region->air_strength_needed)
-		{
-			region->air_strength_needed = air_strength;
-		}
-
-		u32 ground_strength = region->ground_strength_enemy;
-		if (!(g_aiscript_controller[region->player].ai_flags.is_use_map_settings))
-		{
-			ground_strength += ground_strength >> 1;
-		}
-		if (ground_strength > region->ground_strength_needed)
-		{
+		// Removed a Camapaign AI only block, which was causing a crash and an unwanted feature
+		// No longer Melee AI only, also times 2 instead of times 1.5
+		u32 ground_strength = region->ground_strength_enemy * 2;
+		if (ground_strength > region->ground_strength_needed) {
 			region->ground_strength_needed = ground_strength;
 		}
 
-		u16 result = g_aiscript_controller[region->player].ai_max_force;
-		if (g_aiscript_controller[region->player].ai_max_force)
-		{
-			if (region->air_strength_needed > result)
-			{
-				region->air_strength_needed = result;
+		u32 air_strength = region->air_strength_enemy * 2;
+		if (air_strength > region->air_strength_needed) {
+			region->air_strength_needed = air_strength;
+		}
+
+		u16 max_force = g_aiscript_controller[region->player].ai_max_force;
+		if (g_aiscript_controller[region->player].ai_max_force) {
+			if (region->air_strength_needed > max_force) {
+				region->air_strength_needed = max_force;
 			}
-			if (region->ground_strength_needed > result)
-			{
-				region->ground_strength_needed = result;
+			if (region->ground_strength_needed > max_force) {
+				region->ground_strength_needed = max_force;
 			}
 		}
-		return result;
 	}	
 
 	// Hooked to change functionality later - Pr0nogo
