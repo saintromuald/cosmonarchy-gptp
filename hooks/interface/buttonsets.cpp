@@ -154,7 +154,7 @@ namespace hooks {
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ProtossPhotonCannon;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ProtossWarden;
 			} else if (count_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
 			}
@@ -1198,7 +1198,7 @@ namespace hooks {
 									} break;
 									case UnitId::ZergIsthrathaleth:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergSovthrathMound))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergElthisthMound))
 										{
 											current_button_state = Button_State::Enabled;
 										}

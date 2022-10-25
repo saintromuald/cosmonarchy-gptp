@@ -285,7 +285,7 @@ namespace hooks
 				&&	  unit->id != UnitId::ZergSpraithColony
 				&&	  unit->id != UnitId::ZergSurkithColony
 				&&	  unit->id != UnitId::ProtossPylon
-				&&	  unit->id != UnitId::ProtossPhotonCannon)
+				&&	  unit->id != UnitId::ProtossWarden)
 				{
 					helper::ai_make_guard(town->player, unit);
 				}

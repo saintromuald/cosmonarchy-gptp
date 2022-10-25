@@ -355,7 +355,7 @@ namespace hooks
 			|| unit->id == UnitId::ProtossNexus
 			|| unit->id == UnitId::ProtossGateway
 			|| unit->id == UnitId::ProtossStargate
-			|| unit->id == UnitId::ProtossRoboticsFacility;
+			|| unit->id == UnitId::ProtossLattice;
 	}
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo

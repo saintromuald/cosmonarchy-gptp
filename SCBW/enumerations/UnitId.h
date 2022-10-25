@@ -156,7 +156,7 @@ namespace UnitId
 		ProtossAstralOmen									= 184,		// Independent Starport
 		ProtossCrucible										= 201,		// Overmind Cocoon
 		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap
-		ProtossRoboticsAuthority							= 220,		// Mineral Chunk Type 1
+		ProtossArdentAuthority							= 220,		// Mineral Chunk Type 1
 		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2
 		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2
 		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1
@@ -165,6 +165,7 @@ namespace UnitId
 		ProtossAuxiliaryOasis								= 279,
 		ProtossSequesteredIcon								= 304,
 		ProtossUnitaryUnion									= 305,
+		ProtossHallOfHeretics								= 349,
 
 	// Zerg-Unit
 		ZergAlmaksalisk										= 29,		// Norad II
@@ -230,7 +231,8 @@ namespace UnitId
 		ZergRakzogthRoost									= 303,
 		ZergAxtothAxis										= 328,
 		ZergBegrozithBarrow									= 329,
-		ZergChokralgantChasm								= 330,
+		ZergChokralgantChazsal								= 330,
+		ZergNephrilosk										= 350,
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
@@ -388,7 +390,7 @@ namespace UnitId
 		ZergGathtelosk										= 133,
 		ZergNydusCesiant									= 134,
 		ZergHydrokDen										= 135,
-		ZergSovthrathMound									= 136,
+		ZergElthisthMound									= 136,
 		ZergGeszithRoost									= 137,
 		ZergMatravilNest									= 138,
 		ZergAlmakisAntre									= 139,
@@ -407,18 +409,18 @@ namespace UnitId
 		Special_CerebrateDaggoth							= 152,
 		UnusedZerg2											= 153,
 		ProtossNexus										= 154,
-		ProtossRoboticsFacility								= 155,
+		ProtossLattice										= 155,
 		ProtossPylon										= 156,
 		ProtossAquifer										= 157,
 		UnusedProtoss1										= 158,
 		ProtossMachinistHall								= 159,
 		ProtossGateway										= 160,
 		UnusedProtoss2										= 161,
-		ProtossPhotonCannon									= 162,
+		ProtossWarden										= 162,
 		ProtossCitadelofAdun								= 163,
 		ProtossCenotaph										= 164,
-		ProtossArchonArchives								= 165,
-		ProtossForge										= 166,
+		ProtossAncestralArchives							= 165,
+		ProtossEmbassy										= 166,
 		ProtossStargate										= 167,
 		Special_StasisCellPrison							= 168,
 		ProtossFleetBeacon									= 169,

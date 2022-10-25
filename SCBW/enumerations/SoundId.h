@@ -1515,18 +1515,18 @@ namespace DeathSoundId
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//Special_CerebrateDaggoth
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedZerg2
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossNexus
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossRoboticsFacility
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossLattice
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossPylon
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossAssimilator
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedProtoss1
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossMachinistHall
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossGateway
 		{ SoundId::No_sound,  SoundId::No_sound }, 													//UnusedProtoss2
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossPhotonCannon
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossWarden
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossCitadelofAdun
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossCyberneticsCore
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossTemplarArchives
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossForge
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossEmbassy
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossStargate
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//Special_StasisCellPrison
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossFleetBeacon
