@@ -1348,6 +1348,12 @@ namespace SoundId
 		AzazelHelp02						= 2082,
 		AzazelHelp03						= 2083,
 		AzazelHelp04						= 2084,
+
+		DilettanteDodge01					= 2095,
+		DilettanteDodge02					= 2096,
+		DilettanteDodge03					= 2097,
+		SevenstepShieldHeal01				= 2098,
+		SevenstepRevive01					= 2099,
 	};
 }
 
