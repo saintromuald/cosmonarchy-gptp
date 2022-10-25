@@ -478,7 +478,8 @@ namespace hooks
 					target_ext->values[ValueDilettanteLuck]++;
 					if (target_ext->values[ValueDilettanteLuck] >= 4)
 					{
-						// @Todo: Audiovisuals
+						// @Todo: Visuals
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::DilettanteDodge01, SoundId::DilettanteDodge03), data.target, 1, 0);
 						target_ext->values[ValueDilettanteLuck] = 0;
 						data.final_damage = 0;
 					}
