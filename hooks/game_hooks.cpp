@@ -289,8 +289,49 @@ namespace hooks
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
+		g_options_list->speed = 6; // Lock game speed at fastest
 
 		update_discord(true);
+		
+		if (*g_active_portrait_unit)
+		{
+			/*
+			Unit* selected = *g_active_portrait_unit;
+			// For checking cargo-related elements. -Pr0nogo
+			if (selected) {
+				for (u32 i = 0; i < TransportCap; ++i) {
+					Unit* cargo_unit = selected->get_loaded_unit(i);
+					if (!cargo_unit)
+					{
+						continue;
+					}
+					u32 unit_status = cargo_unit->status;
+					scbw::printf("0x%X", unit_status);
+				}
+			}
+			*/
+			/*
+			if (selected->sprite && selected->sprite->main_graphic) {
+				scbw::printf("%u", selected->sprite->main_graphic->animation);
+			}
+			*/
+		//	scbw::printf("%u", selected->main_order_id);
+		//	scbw::printf("0x%X", selected->status);
+
+ 			*unit_iterator_pos = 0;
+			while (Unit* selection = get_active_player_next_selection()) {
+				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
+				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
+				{
+					Unit* exit = selection->building.nydus_exit;
+					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
+				}
+			}
+		}
+
+		if (scbw::is_game_paused()) {
+			return true;
+		}
 
 		// This block is executed once every game
 		if (*g_elapsed_time_frames == 0) {
@@ -433,171 +474,132 @@ namespace hooks
 			}
 		}
 
-		g_options_list->speed = 6; // Lock game speed at fastest
-		if (!scbw::is_game_paused()) // If the game is not paused
+		*g_ai_update_cooldown = 0; // We don't want AI to be handicapped with request handling and whatnot
+		*g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
+		for (u32 i = 0; i < 8; ++i) {
+			raceSupply[RaceId::Terran].provided[i] = 60000;
+		}
+
+		scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
+		hooks::update_psi_field_providers();
+
+		reset_search_index();
+		update_search_index();
+		globals.frame_hook();
+		update_search_index_effects();
+		update_ext_variables();
+
+		// Scenario Features
+		if (*g_elapsed_time_frames == 1) {
+			init_scenario();
+		}
+		if (*g_elapsed_time_frames >= 1) {
+			tick_scenario();
+		}
+
+		hooks::handle_screen_hotkeys();
+		scbw::refresh_screen();
+
+		// Needed for extended tooltips
+		static bool last_shift = 0;
+		bool new_shift = *g_is_holding_shift;
+		if (last_shift != new_shift) {
+			scbw::refresh_console();
+		}
+		last_shift = new_shift;
+
+		// Implict ESC for closing submenus. -Pr0nogo
+		// @Veeq7 unsure if this is actually safe and/or sane?
+		if (g_is_keycode_used[VK_ESCAPE] && scbw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id) && !*g_is_game_paused)
 		{
-			*g_ai_update_cooldown = 0; // We don't want AI to be handicapped with request handling and whatnot
-			*g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
-			for (u32 i = 0; i < 8; ++i) {
-				raceSupply[RaceId::Terran].provided[i] = 60000;
+			hooks::update_buttonset();
+		}
+
+		// Draw transport UI
+		{
+			Point16 start_pos = {179, 333}; // {441, 203};
+			Point16 pos = start_pos;
+
+			if (transport_ui_unit) {
+				transport_ui_unit = 0;
+				helper::set_ingame_input_procs();
 			}
 
-			scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work
-			hooks::update_psi_field_providers();
+			u32 x_count = 0;
+			for (u32 i = 0; i < *g_client_selection_count; ++i) {
+				Unit* transport = g_client_selection_group->unit[i];
+				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
+					for (u32 j = 0; j < TransportCap; ++j) {
+						Unit* cargo_unit = transport->get_loaded_unit(j);
+						if (cargo_unit) {
+							char buffer[128] = {};
 
-			reset_search_index();
-			update_search_index();
-			globals.frame_hook();
-			update_search_index_effects();
-			update_ext_variables();
+							bool own_unit = cargo_unit->player == *g_local_nation_id;
+							if (own_unit) {
+								snprintf(buffer, 128, BWTC_GREEN "%s", get_short_unit_name(cargo_unit->id).data);
+							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
+								snprintf(buffer, 128, BWTC_YELLOW "%s", get_short_unit_name(cargo_unit->id).data);
+							} else {
+								snprintf(buffer, 128, BWTC_RED "%s", get_short_unit_name(cargo_unit->id).data);
+							}
+							u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 
-			// Scenario Features
-			if (*g_elapsed_time_frames == 1) {
-				init_scenario();
-			}
-			if (*g_elapsed_time_frames >= 1) {
-				tick_scenario();
-			}
+							RECT rect = {};
+							rect.left = pos.x;
+							rect.top = pos.y;
+							rect.right = rect.left + width;
+							rect.bottom = rect.top + 13;
+							bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
+							if (hover) {
+								snprintf(buffer, 128, BWTC_WHITE "%s", get_short_unit_name(cargo_unit->id).data);
+								width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+							}
 
-			hooks::handle_screen_hotkeys();
-			scbw::refresh_screen();
+							graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+							if (hover && !transport_ui_unit) {
+								transport_ui_unit = cargo_unit;
+								helper::set_ingame_input_procs();
+							}
 
-			// Needed for extended tooltips
-			static bool last_shift = 0;
-			bool new_shift = *g_is_holding_shift;
-			if (last_shift != new_shift) {
-				scbw::refresh_console();
-			}
-			last_shift = new_shift;
-
-			// Implict ESC for closing submenus. -Pr0nogo
-			// @Veeq7 unsure if this is actually safe and/or sane?
-			if (g_is_keycode_used[VK_ESCAPE] && scbw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id) && !*g_is_game_paused)
-			{
-				hooks::update_buttonset();
-			}
-
-			// Draw transport UI
-			{
-				Point16 start_pos = {179, 333}; // {441, 203};
-				Point16 pos = start_pos;
-
-				if (transport_ui_unit) {
-					transport_ui_unit = 0;
-					helper::set_ingame_input_procs();
-				}
-
-				u32 x_count = 0;
-				for (u32 i = 0; i < *g_client_selection_count; ++i) {
-					Unit* transport = g_client_selection_group->unit[i];
-					if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
-						for (u32 j = 0; j < TransportCap; ++j) {
-							Unit* cargo_unit = transport->get_loaded_unit(j);
-							if (cargo_unit) {
-								char buffer[128] = {};
-
-								bool own_unit = cargo_unit->player == *g_local_nation_id;
-								if (own_unit) {
-									snprintf(buffer, 128, BWTC_GREEN "%s", get_short_unit_name(cargo_unit->id).data);
-								} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
-									snprintf(buffer, 128, BWTC_YELLOW "%s", get_short_unit_name(cargo_unit->id).data);
-								} else {
-									snprintf(buffer, 128, BWTC_RED "%s", get_short_unit_name(cargo_unit->id).data);
-								}
-								u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-
-								RECT rect = {};
-								rect.left = pos.x;
-								rect.top = pos.y;
-								rect.right = rect.left + width;
-								rect.bottom = rect.top + 13;
-								bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
-								if (hover) {
-									snprintf(buffer, 128, BWTC_WHITE "%s", get_short_unit_name(cargo_unit->id).data);
-									width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-								}
-
-								graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-								if (hover && !transport_ui_unit) {
-									transport_ui_unit = cargo_unit;
-									helper::set_ingame_input_procs();
-								}
-
-								pos.x += width + 5;
-								x_count++;
-								if (x_count > 4) {
-									x_count = 0;
-									pos.x = start_pos.x;
-									pos.y -= 15; // += 15;
-								}
+							pos.x += width + 5;
+							x_count++;
+							if (x_count > 4) {
+								x_count = 0;
+								pos.x = start_pos.x;
+								pos.y -= 15; // += 15;
 							}
 						}
 					}
 				}
 			}
-
-			// Loop through bullets
-			for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next)
-			{
-				if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
-				{
-					if (bullet->order_signal & 0x80)
-					{
-						bullet->order_signal &= ~0x80;
-						globals.remove_multihit_bullet(bullet);
-					}
-				}
-			}
-
-			process_quickbuilding();
-
-			// Loop through all visible units in the game.
-			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-				tick_unit(unit, false);
-			}
-			for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
-				if (unit->status & UnitStatus::Completed) {
-					tick_unit(unit, true);
-				}
-			}
-			scbw::set_ingame_loop_state(false);
 		}
 
-		if (*g_active_portrait_unit)
+		// Loop through bullets
+		for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next)
 		{
-			/*
-			Unit* selected = *g_active_portrait_unit;
-			// For checking cargo-related elements. -Pr0nogo
-			if (selected) {
-				for (u32 i = 0; i < TransportCap; ++i) {
-					Unit* cargo_unit = selected->get_loaded_unit(i);
-					if (!cargo_unit)
-					{
-						continue;
-					}
-					u32 unit_status = cargo_unit->status;
-					scbw::printf("0x%X", unit_status);
-				}
-			}
-			*/
-			/*
-			if (selected->sprite && selected->sprite->main_graphic) {
-				scbw::printf("%u", selected->sprite->main_graphic->animation);
-			}
-			*/
-		//	scbw::printf("%u", selected->main_order_id);
-		//	scbw::printf("0x%X", selected->status);
-
- 			*unit_iterator_pos = 0;
-			while (Unit* selection = get_active_player_next_selection()) {
-				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
-				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id)))
+			if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
+			{
+				if (bullet->order_signal & 0x80)
 				{
-					Unit* exit = selection->building.nydus_exit;
-					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
+					bullet->order_signal &= ~0x80;
+					globals.remove_multihit_bullet(bullet);
 				}
 			}
 		}
+
+		process_quickbuilding();
+
+		// Loop through all visible units in the game.
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			tick_unit(unit, false);
+		}
+		for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
+			if (unit->status & UnitStatus::Completed) {
+				tick_unit(unit, true);
+			}
+		}
+		scbw::set_ingame_loop_state(false);
+
 		return true;
 	}
 

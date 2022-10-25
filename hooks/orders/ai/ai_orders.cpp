@@ -469,10 +469,10 @@ namespace hooks
 			unit_search_filter(&region_units, 0, FilterCanAttackOrCast | FilterNotWorker | FilterNoTrap);
 			for (u32 i = 0; i < region_units.count; ++i) {
 				Unit* unit = region_units.units[i];
-				if (unit->unit_ai || !scbw::is_allied_to(region->player, unit->player)) {
+				if (!scbw::is_allied_to(region->player, unit->player)) {
 					continue;
 				}
-				if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->has_weapon()) {
+				if (unit->unit_ai && !(units_dat::base_property[unit->id] & UnitProperty::Building && unit->has_weapon())) {
 					continue;
 				}
 				region->ground_strength_full += unit->ground_strength;
