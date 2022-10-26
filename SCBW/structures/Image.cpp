@@ -408,7 +408,7 @@ namespace hooks
 	void iscript_nobrkcodeend(Unit* unit) // 004753E0
 	{
 		unit->status &= ~UnitStatus::NoBrkCodeStart;
-		unit->sprite->flags &= ~0x80;
+		unit->sprite->flags &= ~SpriteFlags::IscriptCode;
 		if (unit->order_queue_head && (unit->user_action_flags & 1))
 		{
 			helper::ignore_all_scripts_and_go_to_idle(unit);
@@ -776,24 +776,24 @@ namespace hooks
 					{
 						break;
 					}
-					if (Image* v84 = image->parent_sprite->main_graphic)
+					if (Image* main_image = image->parent_sprite->main_graphic)
 					{
-						if (image->frame_index != v84->frame_index || ((image->flags ^ v84->flags) & ImageFlags::Mirrored))
+						if (image->frame_index != main_image->frame_index || ((image->flags ^ main_image->flags) & ImageFlags::Mirrored))
 						{
-							image->frameset = v84->frameset;
-							image->direction = v84->direction;
-							image->flags ^= ((image->flags ^ v84->flags) & ImageFlags::Mirrored);
-							Image* v86 = helper::set_image_palette_type(image, image->palette_type);
-							helper::update_image_frame_index(v86);
+							image->frameset = main_image->frameset;
+							image->direction = main_image->direction;
+							image->flags ^= ((image->flags ^ main_image->flags) & ImageFlags::Mirrored);
+							Image* paletted_image = helper::set_image_palette_type(image, image->palette_type);
+							helper::update_image_frame_index(paletted_image);
 						}
 					}
 					break;
 				}
 				case IscriptOpcodes::opc_randcondjmp:
 				{
-					u8 v92 = take_iscript_datum<char>(program_state);
+					u8 chance = take_iscript_datum<char>(program_state);
 					u16 new_pc = take_iscript_datum<unsigned short>(program_state);
-					if ((u8)helper::randomize_short(7) <= (u32)v92)
+					if ((u8)helper::randomize_short(7) <= (u32)chance)
 					{
 						program_state->program_counter = new_pc;
 					}
@@ -913,17 +913,17 @@ namespace hooks
 				case IscriptOpcodes::opc_move:
 				{
 					char arg = take_iscript_datum<char>(program_state);
-					u32 v117 = arg << 8;
+					u32 speed = arg << 8;
 					if (distance_moved)
 					{
-						*distance_moved = helper::get_modified_unit_speed(v117, *g_active_iscript_unit);
+						*distance_moved = helper::get_modified_unit_speed(speed, *g_active_iscript_unit);
 					}
 					if (noop)
 					{
 						break;
 					}
-					u32 v120 = helper::get_modified_unit_speed(v117, *g_active_iscript_unit);
-					helper::set_unit_movement_speed(*g_active_iscript_unit, v120);
+					u32 final_speed = helper::get_modified_unit_speed(speed, *g_active_iscript_unit);
+					helper::set_unit_movement_speed(*g_active_iscript_unit, final_speed);
 					break;
 				}
 				case IscriptOpcodes::opc_gotorepeatattk:
@@ -938,17 +938,17 @@ namespace hooks
 					break;
 				case IscriptOpcodes::opc_engframe:
 				{
-					u8 arg5 = take_iscript_datum<u8>(program_state);
+					u8 frame = take_iscript_datum<u8>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					image->frameset = arg5;
-					Image* v88 = image->parent_sprite->main_graphic;
-					image->direction = v88->direction;
-					image->flags ^= ((image->flags ^ v88->flags) & ImageFlags::Mirrored);
-					Image* v86 = helper::set_image_palette_type(image, image->palette_type);
-					helper::update_image_frame_index(v86);
+					image->frameset = frame;
+					Image* main_image = image->parent_sprite->main_graphic;
+					image->direction = main_image->direction;
+					image->flags ^= ((image->flags ^ main_image->flags) & ImageFlags::Mirrored);
+					Image* paletted_image = helper::set_image_palette_type(image, image->palette_type);
+					helper::update_image_frame_index(paletted_image);
 					break;
 				}
 				case IscriptOpcodes::opc_engset:
@@ -988,9 +988,9 @@ namespace hooks
 					}
 					if (*g_active_iscript_unit)
 					{
-						u16 v5 = program_state->program_counter;
+						u16 counter = program_state->program_counter;
 						iscript_nobrkcodeend(*g_active_iscript_unit);
-						program_state->program_counter = v5;
+						program_state->program_counter = counter;
 					}
 					break;
 				case IscriptOpcodes::opc_ignorerest:
@@ -1005,19 +1005,19 @@ namespace hooks
 						program_state->wait = 10;
 						return;
 					}
-					u16 v5 = program_state->program_counter;
+					u16 counter = program_state->program_counter;
 					helper::ignore_all_scripts_and_go_to_idle(*g_active_iscript_unit);
-					program_state->program_counter = v5;
+					program_state->program_counter = counter;
 					break;
 				}
 				case IscriptOpcodes::opc_attkshiftproj:
 				{
-					char arg = take_iscript_datum<char>(program_state);
+					char amount = take_iscript_datum<char>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					weapons_dat::forward_offset[(*g_active_iscript_unit)->get_ground_weapon()] = arg;
+					weapons_dat::forward_offset[(*g_active_iscript_unit)->get_ground_weapon()] = amount;
 					iscript_attackwith(*g_active_iscript_unit, 1);
 					break;
 				}
@@ -1037,12 +1037,12 @@ namespace hooks
 					break;
 				case IscriptOpcodes::opc_setfldirect:
 				{
-					char arg = take_iscript_datum<char>(program_state);
+					char direction = take_iscript_datum<char>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					helper::turn_unit(*g_active_iscript_unit, 8 * arg);
+					helper::turn_unit(*g_active_iscript_unit, 8 * direction);
 					break;
 				}
 				case IscriptOpcodes::opc_call:
@@ -1057,28 +1057,28 @@ namespace hooks
 					break;
 				case IscriptOpcodes::opc_setflspeed:
 				{
-					u16 arg = take_iscript_datum<u16>(program_state);
+					u16 speed = take_iscript_datum<u16>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					(*g_active_iscript_unit)->flingy_top_speed = arg;
+					(*g_active_iscript_unit)->flingy_top_speed = speed;
 					break;
 				}
 				case IscriptOpcodes::opc_creategasoverlays:
 				{
-					char v65 = take_iscript_datum<char>(program_state);
+					char offset = take_iscript_datum<char>(program_state);
 					if (noop)
 					{
 						break;
 					}
 					Point16 pt;
-					helper::iscript_use_lo_file(&pt, image, 2, v65);
-					u32 v67 = v65 + ((*g_active_iscript_unit)->building.resource.resource_amount != 0 ? 430 : 435);
+					helper::iscript_use_lo_file(&pt, image, 2, offset);
+					u32 gas_id = offset + ((*g_active_iscript_unit)->building.resource.resource_amount != 0 ? 430 : 435);
 					if (Image* new_image = helper::get_empty_image())
 					{
 						helper::images_insert(new_image, image->parent_sprite->images.head, image);
-						helper::some_play_image_crap_that_crashes(LOBYTE(pt.y) + image->vertical_offset, LOBYTE(pt.x) + image->horizontal_offset, new_image, image->parent_sprite, (u16)v67);
+						helper::some_play_image_crap_that_crashes(LOBYTE(pt.y) + image->vertical_offset, LOBYTE(pt.x) + image->horizontal_offset, new_image, image->parent_sprite, (u16)gas_id);
 					}
 					break;
 				}
