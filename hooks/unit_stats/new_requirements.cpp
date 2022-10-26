@@ -1465,6 +1465,7 @@ namespace hooks {
 		}
 		bool inAir = unit->status & UnitStatus::InAir;
 		bool isTraining = unit->build_queue[unit->build_queue_slot] != UnitId::None;
+		bool is_adding_on = unit->build_queue[unit->build_queue_slot] != UnitId::None && !(units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon);
 
 		switch (unit->id)
 		{
@@ -1865,7 +1866,7 @@ namespace hooks {
 					case UnitId::TerranGoliath:
 					case UnitId::TerranCyclops:
 					{
-						if (inAir)
+						if (inAir || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}

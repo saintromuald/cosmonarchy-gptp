@@ -214,7 +214,7 @@ namespace hooks
 		}
 	}
 
-	void iscript_attack_melee(Unit* attacker) // 00479B40
+	void iscript_attackmelee(Unit* attacker) // 00479B40
 	{
 		UnitExt* attackerExt = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
