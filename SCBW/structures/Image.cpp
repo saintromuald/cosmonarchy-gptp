@@ -1113,8 +1113,8 @@ namespace hooks
 				}
 				case IscriptOpcodes::opc_trgtarccondjmp:
 				{
-					u16 v99 = take_iscript_datum<u16>(program_state);
-					u16 v128 = take_iscript_datum<unsigned short>(program_state);
+					u16 target_angle = take_iscript_datum<u16>(program_state);
+					u16 test_angle = take_iscript_datum<unsigned short>(program_state);
 					u16 new_pc = take_iscript_datum<u16>(program_state);
 					if (noop)
 					{
@@ -1126,8 +1126,8 @@ namespace hooks
 						u32 target_y = (u16)target->sprite->position.y;
 						u32 unit_x = (u16)(*g_active_iscript_unit)->sprite->position.x;
 						u32 unit_y = (u16)(*g_active_iscript_unit)->sprite->position.y;
-						char angle = helper::get_direction_from_points(unit_x, unit_y, target_x, target_y);
-						if (helper::get_difference_between_points((u32)v99, angle) < v128)
+						char unit_angle = helper::get_direction_from_points(unit_x, unit_y, target_x, target_y);
+						if (helper::get_difference_between_points((u32)target_angle, unit_angle) < test_angle)
 						{
 							program_state->program_counter = new_pc;
 						}
@@ -1136,14 +1136,14 @@ namespace hooks
 				}
 				case IscriptOpcodes::opc_curdirectcondjmp:
 				{
-					u16 v109 = take_iscript_datum<u16>(program_state);
-					u16 v111 = take_iscript_datum<unsigned short>(program_state);
+					u16 target_angle = take_iscript_datum<u16>(program_state);
+					u16 test_angle = take_iscript_datum<unsigned short>(program_state);
 					u16 new_pc = take_iscript_datum<u16>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					if (helper::get_difference_between_points(v109, (*g_active_iscript_unit)->current_direction_1) < v111)
+					if (helper::get_difference_between_points((u32)target_angle, (*g_active_iscript_unit)->current_direction_1) < test_angle)
 					{
 						program_state->program_counter = new_pc;
 					}
@@ -1367,6 +1367,33 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) iscript_opcode_cases_wrapper() { // 004D74C0
+		static Image* image;
+		static IscriptProgram* program_state;
+		static u32 noop;
+		static u32* distance_moved;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV noop, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV distance_moved, EAX
+			POP EAX
+			MOV image, ECX
+			MOV program_state, EDX
+			PUSHAD
+		}
+		hooks::iscript_opcode_cases(image, program_state, noop, distance_moved);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
 	void inject_image_hooks()
 	{
 		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
@@ -1375,6 +1402,7 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-		// jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
+	//	jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
+	//	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
 	}
 }
