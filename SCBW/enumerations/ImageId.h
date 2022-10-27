@@ -1164,6 +1164,11 @@ enum Enum {
 
 	BindingPlasmaOverlay						= 1588,
 
+	EnergyRegenOverlaySmall						= 1628,
+	EnergyRegenOverlayMedium					= 1629,
+	EnergyRegenOverlayLarge						= 1630,
+	EnergyRegenOverlayXLarge					= 1631,
+
 	// Used for damage overlay crash fix
 	FirstMinorDamageOverlay						= 450,
 	LastMinorDamageOverlay						= 471,
