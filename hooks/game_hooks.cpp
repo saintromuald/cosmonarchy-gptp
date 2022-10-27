@@ -1006,27 +1006,41 @@ namespace hooks
 			case UnitId::TerranApostle:
 			{
 				// Apostle - Lazarus Agent cast
-				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1)
-				{
+				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1) {
 					scbw::decloak_proc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 					// Cast Lazarus Agent						
 					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256);
-					auto r = 4 * 32;
-					auto n = cosmonarchy_finder_match(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar, {});
-					scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r,
-						unit->position.x + r, unit->position.y + r);
-					for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
-					{
-						auto picked_unit = unitsInSplash.get_unit(i);
-						if (n(picked_unit))
-						{
-							// Apply Lazarus Agent
-							UnitExt* pickedUnitExt = get_unit_ext(picked_unit);
-							pickedUnitExt->values[ValueLazarusAgent] += 1;
-							picked_unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-							helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+
+					if (unit_ext->timers[TimerLazarusCasting]) {
+						unit_ext->values[ValueLazarusRecasts]++;
+					} else {
+						unit_ext->timers[TimerLazarusCasting] = 2 * 24;
+					}
+				}
+				if (unit_ext->timers[TimerLazarusCasting] % 12 == 11) {
+					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+					helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+				}
+				if (unit_ext->timers[TimerLazarusCasting] == 1) {
+					EntryArray units = {};
+					unit_search_radial(&units, unit->position, 4 * 32);
+					unit_search_filter(&units, unit, FilterNoBuilding | FilterAlly | FilterIncludingSelf | FilterNoTrap | FilterNoHallucination);
+					for (u32 i = 0; i < units.count; i++) {
+						// Apply Lazarus Agent
+						Unit* target = units.units[i];
+						if (target->id == UnitId::ZergLarva || target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon
+							|| target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward) {
+							continue;
 						}
+						UnitExt* target_ext = get_unit_ext(target);
+						target_ext->values[ValueLazarusAgent] += 1;
+						target->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+						helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+					}
+					if (unit_ext->values[ValueLazarusRecasts]) {
+						unit_ext->values[ValueLazarusRecasts]--;
+						unit_ext->timers[TimerLazarusCasting] = 2 * 24;
 					}
 				}
 			} break;
