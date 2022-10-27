@@ -58,15 +58,19 @@ namespace hooks
 
 		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + scbw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
-			unit->add_unit_energy_capped(10 * 256 / 24, max_energy);
-			if (!unit->get_overlay(overlay_id)) {
-				unit->sprite->create_overlay(overlay_id);
-				helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+			unit->heal_energy(10 * 256 / 24, unit);
+			if (unit->energy > max_energy) {
+				unit->energy = max_energy;
 			}
 
 			// If the unit is currently selected, redraw its graphics
 			if (unit->sprite->flags & SpriteFlags::Selected) {
 				helper::set_all_image_group_flags_palette_11(unit->sprite);
+			}
+
+			if (!unit->get_overlay(overlay_id)) {
+				unit->sprite->create_overlay(overlay_id);
+				helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 			}
 		} else if (unit->sprite->get_overlay(overlay_id)) {
 			unit->sprite->remove_overlay(overlay_id);
@@ -304,7 +308,7 @@ namespace hooks
 			}
 
 			if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
-				unit->heal_shields((10 * 256 / 24) * (1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), 0, false);
+				unit->heal_shields((10 * 256 / 24) * (1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), unit, false);
 				if (unit->shields > max_shields) {
 					if (unit->shields > max_shields) {
 						unit->shields = max_shields;
