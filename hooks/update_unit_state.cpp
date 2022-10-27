@@ -304,7 +304,7 @@ namespace hooks
 			}
 
 			if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
-				unit->heal_shields(11 * 10 * (1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), 0, false);
+				unit->heal_shields((10 * 256 / 24) * (1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), 0, false);
 				if (unit->shields > max_shields) {
 					if (unit->shields > max_shields) {
 						unit->shields = max_shields;
