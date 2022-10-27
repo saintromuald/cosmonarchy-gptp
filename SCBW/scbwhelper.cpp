@@ -5712,7 +5712,7 @@ namespace helper
 	}
 
 	// angleValue is a guess
-	void unitSetRetreatPoint(Unit* unit, u8 angleValue)
+	void set_unit_retreat_point(Unit* unit, u8 angleValue)
 	{
 		const u32 Func_UnitSetRetreatPoint = 0x004011A0;
 		__asm {
@@ -13003,6 +13003,248 @@ namespace helper
 			MOV ECX, unit
 			MOV AX, position.y
 			PUSH x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void fire_unit_weapon(Unit* unit, u8 weapon_id)
+	{
+		const u32 func_address = 0x00479C90;
+		__asm {
+			PUSHAD
+			PUSH weapon_id
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Thingy* ufl_unstable_randomize(Flingy* flingy)
+	{
+		static Thingy* result;
+		const u32 func_address = 0x004955F0;
+		__asm {
+			PUSHAD
+			MOV EAX, flingy
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player_id)
+	{
+		const u32 func_address = 0x00479930;
+		__asm {
+			PUSHAD
+			PUSH attacking_player_id
+			PUSH attacker
+			PUSH direction
+			PUSH divisor
+			PUSH weapon_id
+			MOV EDI, target
+			MOV EAX, damage
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above)
+	{
+		static Image* result;
+		const u32 func_address = 0x004D6D90;
+		__asm {
+			PUSHAD
+			PUSH draw_above
+			PUSH y
+			PUSH x
+			PUSH image_id
+			PUSH relative_image
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 iscript_use_lo_file(void* out_coords, Image* image, u8 a3, u8 frame_offset)
+	{
+		static u32 result;
+		const u32 func_address = 0x004D5770;
+		__asm {
+			PUSHAD
+			MOV DL, frame_offset
+			MOV CL, a3
+			MOV EDX, image
+			MOV EAX, out_coords
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void hide_image(Image* image)
+	{
+		const u32 func_address = 0x00401100;
+		__asm {
+			PUSHAD
+			MOV ESI, image
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u16 show_image(Image* image)
+	{
+		static u32 result;
+		const u32 func_address = 0x00401120;
+		__asm {
+			PUSHAD
+			MOV ECX, image
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	Image* image_destructor(Image* image)
+	{
+		static Image* result;
+		const u32 func_address = 0x004D4CE0;
+		__asm {
+			PUSHAD
+			MOV ESI, image
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void flip_image(Image* image, char direction)
+	{
+		const u32 func_address = 0x004D5F30;
+		__asm {
+			PUSHAD
+			MOV EAX, image
+			MOV CL, direction
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void iscript_play_sound(Image* image, u32 sound_id)
+	{
+		const u32 func_address = 0x004D6610;
+		__asm {
+			PUSHAD
+			MOV EBX, sound_id
+			MOV EAX, image
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void turn_unit_left(Unit* unit, char amount)
+	{
+		const u32 func_address = 0x00496170;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV CL, amount
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 get_difference_between_points(char point_1, char point_2)
+	{
+		static u32 result;
+		const u32 func_address = 0x00494BD0;
+		__asm {
+			PUSHAD
+			MOV AL, point_1
+			MOV CL, point_2
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+	}
+
+	u32 get_modified_unit_speed(u32 speed, Unit* unit)
+	{
+		static u32 result;
+		const u32 func_address = 0x0047B5F0;
+		__asm {
+			PUSHAD
+			MOV EAX, speed
+			MOV EDX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Image* get_empty_image()
+	{
+		static Image* result;
+		const u32 func_address = 0x004D4E30;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Image* images_insert(Image* image, Image* next, Image* prev)
+	{
+		static Image* result;
+		const u32 func_address = 0x0047A070;
+		__asm {
+			PUSHAD
+			MOV EAX, image
+			MOV EDX, next
+			MOV ECX, prev
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void some_play_image_crap_that_crashes(char x_pos, char y_pos, Image* image, Sprite* sprite, u32 image_id)
+	{
+		const u32 func_address = 0x004010E0;
+		__asm {
+			PUSHAD
+			PUSH image_id
+			MOV CL, x_pos
+			MOV AL, y_pos
+			MOV EBX, image
+			MOV EDI, sprite
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 get_closest_point_of_target(Unit* unit, u32 out_x, u32 out_y)
+	{
+		static u32 result;
+		const u32 func_address = 0x004762C0;
+		__asm {
+			PUSHAD
+			PUSH out_y
+			PUSH out_x
+			PUSH unit
 			CALL func_address
 			MOV result, EAX
 			POPAD

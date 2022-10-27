@@ -1397,7 +1397,7 @@ namespace hooks
 			{
 				if (unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{
-					if (fire_multiple(unit, unit_ext, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, true))
+					if (fire_multiple(unit, unit_ext, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true))
 					{
 						unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::TarasqueAcceleratedPlasmid];
 					}
@@ -1655,7 +1655,7 @@ namespace hooks
 				// Durendal - Forward March
 				if (unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] == 0)
 				{
-					if (fire_multiple(unit, unit_ext, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, true))
+					if (fire_multiple(unit, unit_ext, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true))
 					{
 						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
 					}
@@ -1670,7 +1670,7 @@ namespace hooks
 				// Ambassador - Forward March
 				if (unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] == 0)
 				{
-					if (fire_multiple(unit, unit_ext, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, true))
+					if (fire_multiple(unit, unit_ext, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true))
 					{
 						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
 					}
@@ -1722,6 +1722,23 @@ namespace hooks
 						});
 					scbw::teleport(unit, target_pos);
 				}
+			} break;
+			case UnitId::ProtossOptecton:
+			{
+				/*
+				// Optecton - Forward March
+				if (unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] == 0)
+				{
+					if (fire_multiple(unit, unit_ext, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), true, false)
+					{
+						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::OptectonSkybondRay];
+					}
+					else
+					{
+						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = 3; // performance
+					}
+				}
+				*/
 			} break;
 		}
 

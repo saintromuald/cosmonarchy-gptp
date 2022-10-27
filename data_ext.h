@@ -206,6 +206,7 @@ enum ExtTimerId
 	TimerDurendalSecondaryWeaponCooldown,
 	TimerAmbassadorSecondaryWeaponCooldown,
 	TimerHypnagogueChannel,
+	TimerOptectonSecondaryWeaponCooldown,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

@@ -173,13 +173,15 @@ namespace hooks {
 					case UnitId::TerranWyvern: {
 						ready_sound = helper::get_random_sfx_between(SoundId::WyvernReady01, SoundId::WyvernReady03);
 					} break;
+					case UnitId::TerranAncile:
 					case UnitId::TerranAzazel: {
 						ready_sound = helper::get_random_sfx_between(SoundId::AzazelReady01, SoundId::AzazelReady03);
 					} break;
 					case UnitId::ProtossZealot: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ZealotReady01, SoundId::ZealotReady02);
 					} break;
-					case UnitId::ProtossEcclesiast: {
+					case UnitId::ProtossEcclesiast:
+					case UnitId::ProtossPatriarch: {
 						ready_sound = helper::get_random_sfx_between(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
 					} break;
 					case UnitId::ProtossLegionnaire: {

@@ -2671,4 +2671,47 @@ namespace scbw
 		||		buttonset_id == UnitId::Buttons_LarvaControl
 		||		buttonset_id == UnitId::Buttons_LarvaShared;
 	}
+
+	bool unit_id_has_custom_air_weapon(u32 unit_id) {
+		return unit_id == UnitId::TerranDurendal
+		||	   unit_id == UnitId::ProtossOptecton;
+	}
+
+	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
+		switch (unit_id)
+		{
+			case UnitId::TerranTarasque:
+			{
+				return WeaponId::TarasqueAcceleratedPlasmid;
+			}
+			case UnitId::TerranAmbassador:
+			{
+				return WeaponId::AmbassadorSignatorySalvo;
+			}
+			case UnitId::TerranDurendal:
+			{
+				return WeaponId::DurendalPhilistineAutogun;
+			}
+			case UnitId::TerranCentaur:
+			{
+				return WeaponId::CentaurSunchaserMissiles;
+			}
+			case UnitId::TerranPegasus:
+			{
+				return WeaponId::PegasusLancetMissiles;
+			}
+			case UnitId::TerranOberon:
+			{
+				return WeaponId::OberonAcheronMissiles;
+			}
+			case UnitId::ProtossOptecton:
+			{
+				return WeaponId::OptectonSkybondRay;
+			}
+			case UnitId::ZergZarcavrokor:
+			{
+				return WeaponId::ZarcavrokorBonesofReflection;
+			}
+		}
+	}
 }

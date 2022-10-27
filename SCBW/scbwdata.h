@@ -1058,6 +1058,9 @@ SCBW_DATA(char**,		g_iscript_data,			0x006D1200);
 SCBW_DATA(UpdateFunction*,	g_sg_update_funcs,	0x00512510);
 SCBW_DATA(DrawFunction*,	g_sg_draw_funcs,	0x005125A0);
 
+// For iscript_opcode_cases
+SCBW_DATA(char*,			cbullet_damage,		0x0050434C);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

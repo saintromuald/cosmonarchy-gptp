@@ -208,7 +208,7 @@ namespace WeaponId {
 		HypnagogueThroughTheLookingGlass	= 183,	// Ability targeting
 
 		// Protoss \\
-				
+		
 		VassalPulseBlaster					= 65,
 		GladiusPlasmaFlurry					= 67,
 		SimulacrumPhaseCannon				= 68,
@@ -239,6 +239,9 @@ namespace WeaponId {
 		VagrantVapidBlaster					= 148,
 		MatrixKhaydarinRay					= 149,
 		HeraldStellarTorch					= 160,
+		OptectonSunsplitBeam				= 185,
+		OptectonSkybondRay					= 186,
+		PatriarchIronhandWeaver				= 187,
 
 		// Zerg \\
 					

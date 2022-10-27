@@ -105,7 +105,7 @@ namespace
 			MOV attacker, EAX
 			PUSHAD
 		}
-		hooks::iscript_attack_melee(attacker);
+		hooks::iscript_attackmelee(attacker);
 		__asm
 		{
 			POPAD

@@ -100,8 +100,7 @@ namespace hooks
 		}
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->order_target.unit
-			&& weapons_dat::max_range[weapon_id] > 32)
+		if (unit->order_target.unit && weapons_dat::max_range[weapon_id] > 32)
 		{
 			UnitExt* orderUnitExt = get_unit_ext(unit->order_target.unit);
 			if (orderUnitExt->values[ValueStellarEnforcement])

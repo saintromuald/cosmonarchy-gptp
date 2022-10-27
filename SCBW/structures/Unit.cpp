@@ -1284,12 +1284,12 @@ s32 Unit::can_use_tech(u8 techId, u8 player) const
 
 //-------- Utility methods --------//
 
-bool Unit::can_attack_target(Unit* target, bool checkVisibility) const
+bool Unit::can_attack_target(Unit* target, bool check_visibility) const
 {
 	assert(this);
 	assert(target);
 	const u32 Func_CanUnitAttackTarget = 0x00476730;
-	u32 _checkVisibility = checkVisibility ? 1 : 0;
+	u32 _checkVisibility = check_visibility ? 1 : 0;
 	static u32 result;
 	__asm
 	{

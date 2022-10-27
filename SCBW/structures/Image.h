@@ -111,6 +111,7 @@ struct Image
 C_ASSERT(sizeof(Image) == 64); /*0x40*/
 //static_assert(sizeof(Image) == 64, "The count of the Image structure is invalid");
 
+struct IscriptProgram; // Fuck you visual studio
 namespace hooks
 {
 	void initialize_image_data(Image* image, Sprite* parent, u16 image_id, s8 horizontal_offset, s8 vertical_offset);	// 004D5A50
@@ -120,6 +121,7 @@ namespace hooks
 	void ground_attack_init(u16 pos_x, u16 pos_y);																		// 00488660
 	void play_warp_in_overlay(Image* image, u32 unused);																// 004D8500
 	void iscript_something_death(Image* image);																			// 004D8590
+	void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved);				// 004D74C0
 
 	void inject_image_hooks();
 }

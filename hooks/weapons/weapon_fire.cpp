@@ -91,26 +91,26 @@ namespace hooks
 		}
 	}
 
-	bool fire_multiple(Unit* attacker, UnitExt* attackerExt, u32 weapon_id, u32 maxTargets, u32 flags, bool ignoreMain, bool use_weapon_factor)
+	bool fire_multiple(Unit* attacker, UnitExt* attacker_ext, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor)
 	{
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
-		if (!ignoreMain
-			&& attacker->order_target.unit
-			&& attacker->main_order_id != OrderId::Follow
-			&& attacker->main_order_id != OrderId::Patrol)
+		if (!ignore_main
+		&&  attacker->order_target.unit
+		&&  attacker->main_order_id != OrderId::Follow
+		&&  attacker->main_order_id != OrderId::Patrol)
 		{
 			targets.insert(attacker->order_target.unit);
-			launch_missile(attacker, attackerExt, attacker->order_target.unit, weapon_id);
+			launch_missile(attacker, attacker_ext, attacker->order_target.unit, weapon_id);
 			fired = true;
 		}
 		Unit* old = attacker->order_target.unit;
 
-		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
+		for (s32 i = 0; i < max_targets || max_targets <= 0; i++)
 		{
 			u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
 			auto filter = cosmonarchy_finder_match(attacker, flags, {});
-			Unit* newTarget = scbw::UnitFinder::get_nearest_target(
+			Unit* new_target = scbw::UnitFinder::get_nearest_target(
 				attacker->get_x() - range,
 				attacker->get_y() - range,
 				attacker->get_x() + range,
@@ -119,33 +119,36 @@ namespace hooks
 				[&](Unit* target)
 				{
 					if (target == attacker
-						|| targets.find(target) != targets.end()
-						|| scbw::is_allied_to(attacker->player, target->player)
-						|| !attacker->can_attack_target(target)
-						|| !filter(target)
-						|| (targets.size() >= maxTargets && maxTargets > 0))
+					||  targets.find(target) != targets.end()
+					||  scbw::is_allied_to(attacker->player, target->player)
+					|| !attacker->can_attack_target(target)
+					|| !filter(target)
+					|| (targets.size() >= max_targets && max_targets > 0))
 					{
 						return false;
 					}
 					return true;
 				});
-			if ((targets.size() >= maxTargets && maxTargets > 0) || !newTarget)
+			if ((targets.size() >= max_targets && max_targets > 0) || !new_target)
 			{
 				break;
 			}
-			attacker->order_target.unit = newTarget;
+			attacker->order_target.unit = new_target;
 
 			// @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 			u32 factor = 1;
 			if (use_weapon_factor) {
 				factor = weapons_dat::damage_factor[weapon_id];
 			}
-			for (u32 j = 0; j < factor || factor == 0; j++)
+			for (u32 j = 0; j < factor; j++)
 			{
-				launch_missile(attacker, attackerExt, newTarget, weapon_id);
+				if (factor == 0) {
+					break;
+				}
+				launch_missile(attacker, attacker_ext, new_target, weapon_id);
 			}
 			fired = true;
-			targets.insert(newTarget);
+			targets.insert(new_target);
 		}
 		attacker->order_target.unit = old;
 		return fired;
@@ -701,6 +704,7 @@ namespace hooks
 				{
 					range = 64;
 				} break;
+				case WeaponId::OptectonSunsplitBeam:
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					range = 96;

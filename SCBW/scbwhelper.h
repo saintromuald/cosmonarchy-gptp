@@ -664,7 +664,7 @@ namespace helper {
 	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);														// 00475260
 
 	//// siege_transform
-	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
+	void set_unit_retreat_point(Unit* unit, u8 angleValue);																			// 004011A0
 	bool getCloserToDestination_sub402BE0(Unit* unit);																				// 00402BE0
 	void orderReturnToIdle(Unit* unit);																								// 00463770
 	bool checkForCloseUnit(Unit* unit);																								// 00464290
@@ -1440,4 +1440,22 @@ namespace helper {
 
 	Image* update_image_frame_index(Image* image);															// 004D5940
 	u32 get_path_distance_to(Unit* unit, Point16 position);													// 0042FA30
+
+	void fire_unit_weapon(Unit* unit, u8 weapon_id);																						// 00479C90
+	Thingy* ufl_unstable_randomize(Flingy* flingy);																							// 004955F0
+	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player_id);	// 00479930
+	Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above);										// 004D6D90
+	u32 iscript_use_lo_file(void* out_coords, Image* image, u8 a3, u8 frame_offset);														// 004D5770
+	void hide_image(Image* image);																											// 00401100
+	u16 show_image(Image* image);																											// 00401120
+	Image* image_destructor(Image* image);																									// 004D4CE0
+	void flip_image(Image* image, char direction);																							// 004D5F30
+	void iscript_play_sound(Image* image, u32 sound_id);																					// 004D6610
+	void turn_unit_left(Unit* unit, char amount);																							// 00496170
+	u32 get_difference_between_points(char point_1, char point_2);																			// 00494BD0
+	u32 get_modified_unit_speed(u32 speed, Unit* unit);																						// 0047B5F0
+	Image* get_empty_image();																												// 004D4E30
+	Image* images_insert(Image* image, Image* next, Image* prev);																			// 0047A070
+	void some_play_image_crap_that_crashes(char x_pos, char y_pos, Image* image, Sprite* sprite, u32 image_id);								// 004010E0
+	u32 get_closest_point_of_target(Unit* unit, u32 out_x, u32 out_y);																		// 004762C0
 }

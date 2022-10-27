@@ -11,7 +11,7 @@ namespace hooks
 	void restore_hit(Unit* target, Bullet* bullet);									// 00455230
 	void lockdown_hit(Unit* target, u8 previousLockdownTimer, Bullet* bullet);		// 00455380
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor);		// 00479AE0
-	void iscript_attack_melee(Unit* attacker);										// 00479B40
+	void iscript_attackmelee(Unit* attacker);										// 00479B40
 	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);			// 00492BA0
 	void corrosive_acid_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);	// 004F4770
 	void consume_hit(Unit* attacker, Unit* target);									// 004F47B0
