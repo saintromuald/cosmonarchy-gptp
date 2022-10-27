@@ -41,13 +41,10 @@ namespace hooks
 
 		// Spend energy for Phobos Discharge
 		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
-			u32 drain = (200 * 256) / (5 * 24);
-			if (unit->energy < drain) {
-				unit->energy = 0;
+			unit->spend_unit_energy((200 * 256) / (5 * 24));
+			dont_regen = true;
+			if (unit->energy == 0) {
 				unit_ext->values[ValuePhobosDischarge] = 0;
-			} else {
-				unit->spend_unit_energy(drain);
-				dont_regen = true;
 			}
 		}
 
