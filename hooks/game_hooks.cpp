@@ -793,24 +793,6 @@ namespace hooks
 				}
 			} break;
 			case UnitId::ZergZoryusthaleth: {
-				// Zoryusthaleth - Swarming Omen
-				if (unit->get_current_hp_ingame() < unit->get_max_hp_ingame() / 2)
-				{
-					unit_ext->timers[TimerSwarmingOmen] = 5 * 24;
-					if (unit_ext->timers[TimerSwarmingOmenSFX] == 0) {
-						unit_ext->timers[TimerSwarmingOmenSFX] = 10 * 24;
-						helper::play_sound_from_unit(scbw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
-					}
-					if (!unit->sprite->get_overlay(ImageId::EnsnaringBroodOverlay)) {
-						unit->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
-					}
-				}
-				else {
-					if (unit->sprite->get_overlay(ImageId::EnsnaringBroodOverlay) && unit_ext->timers[TimerSwarmingOmen] == 0) {
-						unit->sprite->remove_overlay(ImageId::EnsnaringBroodOverlay);
-					}
-				}
-
 				// Zoryusthaleth - Reconstitution
 				if (unit_ext->timers[TimerReconstitutionCooldown] == 0) {
 					u32 radius = 5 * 32;
