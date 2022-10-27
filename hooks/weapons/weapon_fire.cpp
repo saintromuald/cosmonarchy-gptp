@@ -306,11 +306,11 @@ namespace hooks
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 4, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 4, false, 0, 2);
 					} break;
 					case WeaponId::SundogBlindsideRockets:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSundogLaunchPos, 3, false, 0, 2);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSundogLaunchPos, 3, false);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
