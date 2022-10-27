@@ -18,6 +18,9 @@ void update_ext_variables() {
 	// Units
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
 		UnitExt* unit_ext = &unit_ext_array[i];
+		if (unit_ext->energy_regen_timer != UINT_MAX) {
+			++unit_ext->energy_regen_timer;
+		}
 		if (unit_ext->shield_regen_timer != UINT_MAX) {
 			++unit_ext->shield_regen_timer;
 		}

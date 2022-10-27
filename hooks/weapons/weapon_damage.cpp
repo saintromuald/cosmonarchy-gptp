@@ -320,7 +320,7 @@ namespace hooks
 				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
 					u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
 					if (energy) {
-						data.attacker->energy -= energy;
+						data.attacker->spend_unit_energy(energy);
 						data.final_damage += energy / 2;
 						helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
 					}
@@ -513,8 +513,8 @@ namespace hooks
 					if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster)
 					{
 						u16 energy = std::min(data.target->energy, (u16)(data.final_damage + data.shield_reduce_amount));
-						data.target->energy -= energy;
-						data.attacker->energy += energy;
+						data.target->spend_unit_energy(energy);
+						data.attacker->heal_energy(energy);
 					}
 				} break;
 			}
@@ -606,7 +606,7 @@ namespace hooks
 							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
 								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
 								if (energy) {
-									data.target->energy -= energy;
+									data.target->spend_unit_energy(energy);
 									data.attacker->heal_energy(energy);
 									u32 target_offset = scbw::get_overlay_offset(data.target->id);
 									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset, data.target->position.x, data.target->position.y, data.attackingPlayerId);
@@ -942,7 +942,7 @@ namespace hooks
 				// TODO: Visuals
 				helper::play_sound_from_unit(SoundId::SevenstepRevive01, data.target, 1, 0);
 				data.target->heal_hp(data.target->energy / 2, data.target, false);
-				data.target->energy = 0;
+				data.target->spend_unit_energy(data.target->energy);
 			} break;
 			case UnitId::ProtossArchon:
 			{

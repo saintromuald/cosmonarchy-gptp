@@ -420,28 +420,22 @@ namespace hooks
 			// Check deaths
 			u8 reveal_flag = 0x00;
 			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
-			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id)
-			{
+			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id) {
 				u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
-				if (flags & VespeneDeaths_Reveal)
-				{
+				if (flags & VespeneDeaths_Reveal) {
 					reveal_flag |= 1 << player_id;
 				}
-				if (flags & VespeneDeaths_Ping)
-				{
+				if (flags & VespeneDeaths_Ping) {
 					do_ping[player_id] = true;
 				}
 			}
 
 			// Explores the entire map, requires a trigger that sets 1 death of Vespene Geyser for players in question
-			if (reveal_flag)
-			{
+			if (reveal_flag) {
 				// Explore map
 				/*
-				for (u32 x = 0; x < g_map_tile_size->width; x++)
-				{
-					for (u32 y = 0; y < g_map_tile_size->height; y++)
-					{
+				for (u32 x = 0; x < g_map_tile_size->width; x++) {
+					for (u32 y = 0; y < g_map_tile_size->height; y++) {
 						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;
 						tile.exploredFlags &= ~reveal_flag;
@@ -450,22 +444,17 @@ namespace hooks
 				*/
 
 				// Reveal resources
-				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next)
-				{
-					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building)
-					{
+				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building) {
 						unit->sprite->visibility_status |= reveal_flag;
 					}
 				}
 			}
 
-			for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target)
-			{
-				if (do_ping[target])
-				{
+			for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
+				if (do_ping[target]) {
 					u32 color = 0; // red
-					if (scbw::is_allied_to(*g_local_nation_id, target))
-					{
+					if (scbw::is_allied_to(*g_local_nation_id, target)) {
 						color = 8; // green
 					}
 

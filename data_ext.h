@@ -275,6 +275,7 @@ enum ExtTimerVectorId
 
 struct UnitExt
 {
+	u32						energy_regen_timer;
 	u32						shield_regen_timer;
 	u32						damage_taken_timer;
 	u32						damage_dealt_timer;

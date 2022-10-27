@@ -399,11 +399,9 @@ bool Unit::is_factory() const
 }
 
 //Identical to function @ 0x00401210
-bool Unit::is_valid_caster() const
-{
+bool Unit::is_valid_caster() const {
 	assert(this);
-	return units_dat::base_property[this->id] & UnitProperty::Spellcaster
-		&& !(this->status & UnitStatus::IsHallucination);
+	return units_dat::base_property[this->id] & UnitProperty::Spellcaster && !(this->status & UnitStatus::IsHallucination);
 }
 
 //Identical to function @ 0x00401DC0
@@ -530,7 +528,7 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 	this->set_hitpoints(this->hitpoints); // Also updates unit strength
 
 	UnitExt* this_ext = get_unit_ext(this);
-	this_ext->shield_regen_timer = -1;
+	this_ext->shield_regen_timer = UINT_MAX;
 
 	// If heals to full, clear debuffs
 	if (restore && this->shields == this->get_max_shields_raw()) {
@@ -548,6 +546,7 @@ u32 Unit::heal_energy(s32 value, Unit* source) {
 	}
 
 	this->energy = cap_value(this->energy + value, this->get_max_energy(), &value);
+
 	return value;
 }
 
@@ -833,24 +832,20 @@ void Unit::remove_acid_spores()
 
 /// Identical to Unit__SpendEnergy @ 0x00491460
 /// May underflow if alone
-void Unit::spend_unit_energy(u32 energySpent)
-{
-	UnitExt* unitExt = get_unit_ext(this);
-	if (!(*g_cheat_state & CheatFlags::TheGathering))
-	{
-		if (this->energy > energySpent)
-		{
+void Unit::spend_unit_energy(u32 energySpent) {
+	if (!(*g_cheat_state & CheatFlags::TheGathering)) {
+		if (this->energy > energySpent) {
 			this->energy -= energySpent;
-		}
-		else
-		{
+		} else {
 			this->energy = 0;
 		}
 	}
+	UnitExt* unit_ext = get_unit_ext(this);
+	unit_ext->energy_regen_timer = 0;
+
 	// TODO: fix Entropy Gauntlets bug
-	if (unitExt->values[ValueEntropyGauntlets] > 0)
-	{
-		this->inflictDamage(energySpent * unitExt->values[ValueEntropyGauntlets] * 0.1, unitExt->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+	if (unit_ext->values[ValueEntropyGauntlets] > 0) {
+		this->inflictDamage(energySpent * unit_ext->values[ValueEntropyGauntlets] * 0.1, unit_ext->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 
