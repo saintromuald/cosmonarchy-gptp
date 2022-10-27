@@ -704,6 +704,7 @@ namespace hooks
 				{
 					range = 64;
 				} break;
+				case WeaponId::OptectonSunsplitBeam:
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					range = 96;
