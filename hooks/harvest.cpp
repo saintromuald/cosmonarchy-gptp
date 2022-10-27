@@ -31,34 +31,35 @@ namespace hooks
 		worker->sprite->remove_overlay(ImageId::GasRaw, ImageId::GasRaw2);
 	}
 
-	u8 harvest_resource_from(Unit* resource, bool is_mineral)
-	{
-		u8 return_value;
-		if (resource->building.resource.resource_amount < RESOURCE_HARVESTED)
-		{
-			return_value = std::max((s32)resource->building.resource.resource_amount, 2);
-		//	resource->building.resource.resource_amount = 0;
+	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
+		u32 harvest_count = RESOURCE_HARVESTED;
+		switch (resource->id) {
+			case UnitId::ResourceVespeneRidge: {
+				harvest_count = 2;
+			} break;
+			case UnitId::ResourceVespeneGeyser: {
+				harvest_count = 4;
+			} break;
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExcisant: {
+				harvest_count = 6;
+			} break;
 		}
-		else
-		{
-		//	resource->building.resource.resource_amount -= RESOURCE_HARVESTED;
-			if (is_mineral)
-			{
-				if (resource->building.resource.resource_amount > 0)
-				{
+
+		u8 return_value = std::max((s32)resource->building.resource.resource_amount, 2);
+		if (resource->building.resource.resource_amount >= harvest_count) {
+		//	resource->building.resource.resource_amount -= harvest_count;
+			if (is_mineral) {
+				if (resource->building.resource.resource_amount > 0) {
 					helper::update_mineral_patch_image(resource);	// equivalent to setResourceCount @ 00468830 ?
+				} else {
+				//	resource->building.resource.resource_amount = 0;
 				}
-			//	else
-			//	{
-			//		resource->building.resource.resource_amount = 0;
-			//	}
-			}
-			else if (resource->building.resource.resource_amount < RESOURCE_HARVESTED
-			&&		 is_gas_container(resource->id))
-			{
+			} else if (resource->building.resource.resource_amount < harvest_count && is_gas_container(resource->id)) {
 			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and new_sound
 			}
-			return_value = RESOURCE_HARVESTED;
+			return_value = harvest_count;
 		}
 		return return_value;
 	}
@@ -218,12 +219,10 @@ namespace hooks
 				}
 			} else {
 				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
-				u32 timer = 17;
+				u32 timer = 75;
 				if (node && (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser)) {
-					timer = 75;
 					unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
-
 				unit->main_order_state = 5;
 				unit->main_order_timer = timer;
 			}
