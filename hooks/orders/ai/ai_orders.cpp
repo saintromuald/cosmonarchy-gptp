@@ -2275,6 +2275,13 @@ return 0;
 				if (current_region_id == g_aiscript_controller[player].ai_attack_group_region - 1) {
 					continue;
 				}
+
+				if (current_ai_region->state == RegionState::ContinueAttackHere ||
+					current_ai_region->state == RegionState::Attacking ||
+					current_ai_region->state == RegionState::PreparingAttack || 
+					current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
+					continue;
+				}
 			}
 
 			if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
