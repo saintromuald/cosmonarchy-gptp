@@ -677,9 +677,7 @@ LABEL_42:
 			return false;
 		}
 
-		// Originally had code related to infestation
-
-		// Originally had code to disable AI Didact attacks
+		// Originally had code related to infestation, and to disable AI Didact attacks
 
 		// GAME RULE: Ground titanic units can be targeted by air-only weapons
 		// Doesn't work currently.
@@ -709,7 +707,11 @@ LABEL_42:
 			return false;
 		}
 
-		u32 weapon = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
+		bool air_unit = target->status & UnitStatus::InAir;
+		u32 weapon = air_unit ? context->get_air_weapon() : context->get_ground_weapon();
+		if (air_unit && scbw::unit_id_has_custom_air_weapon(attacker->id)) {
+			weapon = scbw::get_custom_secondary_weapon_from_unit_id(attacker->id);
+		}
 		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || attacker->id == UnitId::TerranPhalanxSiegeMode) {
 			if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
 				return false;

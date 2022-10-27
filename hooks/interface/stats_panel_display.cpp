@@ -122,6 +122,11 @@ namespace hooks
 								helper::stat_weapon_level(dialog, index, WeaponId::OberonAcheronMissiles);
 								index++;
 							} break;
+							case UnitId::ProtossOptecton:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::OptectonSkybondRay);
+								index++;
+							} break;
 							case UnitId::ZergZarcavrokor:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
