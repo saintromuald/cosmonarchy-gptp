@@ -1063,6 +1063,19 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ProtossAncestralArchives:
+							{
+								if (current_button->requirement_var == UnitId::ProtossArchon
+								||  current_button->requirement_var == UnitId::ProtossOptecton
+								||  current_button->requirement_var == UnitId::ProtossPatriarch)
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
 							case UnitId::ProtossArgosy:
 							{
 								if (current_button->requirement_var == UnitId::ProtossMagister
