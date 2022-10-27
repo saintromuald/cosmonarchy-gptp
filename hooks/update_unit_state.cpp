@@ -59,19 +59,7 @@ namespace hooks
 			max_energy = 100 * 256; // Identical to energy amount on spawn
 		}
 
-		u32 overlay_id = ImageId::EnergyRegenOverlaySmall;
-		switch (scbw::get_overlay_offset(unit->id, true)) {
-			case 1: {
-				overlay_id = ImageId::EnergyRegenOverlayMedium;
-			} break;
-			case 2: {
-				overlay_id = ImageId::EnergyRegenOverlayLarge;
-			} break;
-			case 3: {
-				overlay_id = ImageId::EnergyRegenOverlayXLarge;
-			} break;
-		}
-
+		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + scbw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
 			unit->add_unit_energy_capped(10 * 256 / 24, max_energy);
 			if (!unit->get_overlay(overlay_id)) {
