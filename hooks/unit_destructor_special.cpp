@@ -350,11 +350,9 @@ void unit_destructor_special_cases(Unit* unit)
 		unit_search_radial(&unit_array, unit->position, 11 * 32);
 		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
 
-		for (u32 i = 0; i < unit_array.count; ++i)
-		{
+		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* caster = unit_array.units[i];
-			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32)
-			{
+			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32) {
 				caster->heal_energy(5 * 256);
 				caster->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}

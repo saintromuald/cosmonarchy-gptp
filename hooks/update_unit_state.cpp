@@ -13,80 +13,82 @@
 namespace hooks
 {
 	// This function regenerates energy for spellcasters and drains energy for cloaking units.
-	void update_unit_energy(Unit* unit) // 004EB4B0
-	{
-		UnitExt* unitExt = get_unit_ext(unit);
+	void update_unit_energy(Unit* unit) { // 004EB4B0
+		UnitExt* unit_ext = get_unit_ext(unit);
+		bool dont_regen = !unit->is_valid_caster() || !(unit->status & UnitStatus::Completed) || unit_ext->energy_regen_timer <= 2 * 24;
 
-		// was hardcoded instead of function calling in original code
-		if (unit->is_valid_caster()
-			&& (unit->status & UnitStatus::Completed))
-		{
-			bool bStopHere = false;
-			// Spend energy for cloaked units
-			if (unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)		// If the unit is cloaked
-				&& !(unit->status & UnitStatus::CloakingForFree))							// and must consume energy to stay cloaked (i.e. not under a Didact)
-			{
-				u16 cloakingEnergyCost = 0;
-				if (!(unit->has_energy(cloakingEnergyCost)))
-				{
-					if (unit->secondary_order_id == OrderId::Cloak)
-					{
-						unit->set_secondary_order(OrderId::Nothing2); // Supposedly, immediately decloaks the unit.
-					}
-					bStopHere = true;
-				}
-				if (!bStopHere) // the function prevents energy consumption if THE GATHERING is enabled
-				{
-					unit->spend_unit_energy(cloakingEnergyCost);
-				}
+		// Behaviors code -Veeq7
+		// Spend energy for cloaked units
+		// Judging by the cost set to zero I assume this this block is not actually used, so I am commenting it out -Veeq7
+		/*
+		if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection) // If the unit is cloaked and must consume energy to stay cloaked (i.e. not under a Didact)
+			&& !(unit->status & UnitStatus::CloakingForFree)) {
+			u16 cloaking_energy_cost = 0;
+			if (unit->has_energy(cloaking_energy_cost)) {
+				unit->spend_unit_energy(cloaking_energy_cost); // The function prevents energy consumption if THE GATHERING is enabled
+				dont_regen = true;
+			} else if (unit->secondary_order_id == OrderId::Cloak) {
+				unit->set_secondary_order(OrderId::Nothing2);  // Supposedly, immediately decloaks the unit.
 			}
-			else if (unitExt->values[ValueGodsMadeFleshActive])
-			{
-				unit->spend_unit_energy(GodsMadeFleshEnergyDrain);
-			}
-			else
-			{
-				if (unit == nullptr)
-				{
-					return;
-				}
-				s32 maxEnergy;
-				if (unit->id == UnitId::ProtossMindTyrant
-					&& unit->main_order_id == OrderId::CompletingArchonSummon
-					&& unit->main_order_state == 0)
-				{
-					maxEnergy = 100 * 256; // Identical to energy amount on spawn
-				}
-				else
-				{
-					maxEnergy = unit->get_max_energy();
-				}
+		}
+		*/
 
-				if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] > 0)
-				{
-					u32 drain = (200 * 256) / (5 * 24);
-					if (unit->energy < drain)
-					{
-						unit->energy = 0;
-						unitExt->values[ValuePhobosDischarge] = 0;
-					} else {
-						unit->spend_unit_energy(drain);
-					}
-				}
-				else if (unit->energy == maxEnergy)
-				{
-					bStopHere = true;
-				}
-				else
-				{
-					unit->add_unit_energy_capped(11, maxEnergy);
-				}
+		// Spend energy for Gods Made Flesh
+		if (unit_ext->values[ValueGodsMadeFleshActive]) {
+			unit->spend_unit_energy(GodsMadeFleshEnergyDrain);
+			dont_regen = true;
+		}
+
+		// Spend energy for Phobos Discharge
+		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
+			u32 drain = (200 * 256) / (5 * 24);
+			if (unit->energy < drain) {
+				unit->energy = 0;
+				unit_ext->values[ValuePhobosDischarge] = 0;
+			} else {
+				unit->spend_unit_energy(drain);
+				dont_regen = true;
+			}
+		}
+
+		// Regen code -Veeq7
+		s32 max_energy = unit->get_max_energy();
+		if (unit->id == UnitId::ProtossMindTyrant
+			&& unit->main_order_id == OrderId::CompletingArchonSummon
+			&& unit->main_order_state == 0) {
+			max_energy = 100 * 256; // Identical to energy amount on spawn
+		}
+
+		u32 overlay_id = ImageId::RechargeShields_Small;
+		switch (scbw::get_overlay_offset(unit->id, true)) {
+			case 1: {
+				overlay_id = ImageId::RechargeShieldsCustom_Medium;
+			} break;
+			case 2: {
+				overlay_id = ImageId::RechargeShields_Large;
+			} break;
+			case 3: {
+				overlay_id = ImageId::RechargeShieldsCustom_XLarge;
+			} break;
+		}
+
+		if (!dont_regen && unit->energy < max_energy) {
+			unit->add_unit_energy_capped(10 * 256 / 24, max_energy);
+			if (!unit->get_overlay(overlay_id)) {
+				unit->sprite->create_overlay(overlay_id);
+				helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 			}
 
 			// If the unit is currently selected, redraw its graphics
-			if (!bStopHere && unit->sprite->flags & SpriteFlags::Selected)
-			{
+			if (unit->sprite->flags & SpriteFlags::Selected) {
 				helper::set_all_image_group_flags_palette_11(unit->sprite);
+			}
+		} else if (unit->sprite->get_overlay(overlay_id)) {
+			unit->sprite->remove_overlay(overlay_id);
+			if (unit->energy >= max_energy) {
+				helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+			} else {
+				helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 			}
 		}
 	}
@@ -303,22 +305,16 @@ namespace hooks
 		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && unit->id != UnitId::TerranSevenstep) {
 			s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
-			u32 overlay = ImageId::RechargeShields_Small;
+			u32 overlay_id = ImageId::RechargeShields_Small;
 			switch (scbw::get_overlay_offset(unit->id, true)) {
-				case 0:
-				{
+				case 1: {
+					overlay_id = ImageId::RechargeShieldsCustom_Medium;
 				} break;
-				case 1:
-				{
-					overlay = ImageId::RechargeShieldsCustom_Medium;
+				case 2: {
+					overlay_id = ImageId::RechargeShields_Large;
 				} break;
-				case 2:
-				{
-					overlay = ImageId::RechargeShields_Large;
-				} break;
-				case 3:
-				{
-					overlay = ImageId::RechargeShieldsCustom_XLarge;
+				case 3: {
+					overlay_id = ImageId::RechargeShieldsCustom_XLarge;
 				} break;
 			}
 
@@ -334,13 +330,12 @@ namespace hooks
 					}
 				}
 
-				if (!unit->get_overlay(overlay)) {
-					unit->sprite->create_top_overlay(overlay);
+				if (!unit->get_overlay(overlay_id)) {
+					unit->sprite->create_top_overlay(overlay_id);
 					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 				}
-			}
-			else if (unit->sprite->get_overlay(overlay)) {
-				unit->sprite->remove_overlay(overlay);
+			} else if (unit->sprite->get_overlay(overlay_id)) {
+				unit->sprite->remove_overlay(overlay_id);
 				if (unit->shields >= max_shields) {
 					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
 				} else {
