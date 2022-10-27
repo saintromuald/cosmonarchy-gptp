@@ -8,7 +8,8 @@ Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 
 namespace hooks
 {
 	// Custom functions
-	bool fire_multiple(Unit* attacker, UnitExt* attacker_ext, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main = false, bool use_weapon_factor = true);
+	void launch_missile(Unit* attacker, Unit* target, u8 weapon_id);
+	bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main = false, bool use_weapon_factor = true);
 
 	// Hooked functions
 	void fire_weapon(Unit* unit, u8 weapon_id);																	// 00479C90

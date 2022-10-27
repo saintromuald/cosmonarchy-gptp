@@ -34,6 +34,7 @@
 #include "custom_ai.h"
 #include "SCBW\UnitFinder.h"
 #include "hooks/interface/buttonsets.h"
+#include "weapons/weapon_fire.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -698,7 +699,7 @@ namespace hooks
 				bool can_fire = !unit->ground_weapon_cooldown;
 				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					if (hooks::fire_multiple(unit, unit_ext, weapon_id, 4, FilterEnemy, true, false)) {
+					if (hooks::fire_multiple(unit, weapon_id, 4, FilterEnemy, true, false)) {
 						scbw::decloak_proc(unit);
 						unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
@@ -1393,7 +1394,7 @@ namespace hooks
 			{
 				if (unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{
-					if (fire_multiple(unit, unit_ext, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true))
+					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true))
 					{
 						unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::TarasqueAcceleratedPlasmid];
 					}
@@ -1635,12 +1636,12 @@ namespace hooks
 						bullet->targetPosition     = unit->position;
 						bullet->targetPosition2    = unit->position;
 						bullet->hit_flags |= 1; // For now we flag as missed, so it doesn't deal hp damage
-						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: Instead of dealing damage immediately, we should flag the bullet to deal damage as energy
-						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: Instead of dealing damage immediately, we should flag the bullet to deal damage as energy
+helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 
-						if (unit->energy < 1 * 256) {
-							break;
-						}
+if (unit->energy < 1 * 256) {
+	break;
+}
 					}
 				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
@@ -1649,14 +1650,10 @@ namespace hooks
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if (unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] == 0)
-				{
-					if (fire_multiple(unit, unit_ext, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true))
-					{
+				if (unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] == 0) {
+					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true)) {
 						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
-					}
-					else
-					{
+					} else {
 						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
@@ -1664,14 +1661,10 @@ namespace hooks
 			case UnitId::TerranAmbassador:
 			{
 				// Ambassador - Forward March
-				if (unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] == 0)
-				{
-					if (fire_multiple(unit, unit_ext, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true))
-					{
+				if (unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] == 0) {
+					if (fire_multiple(unit, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true)) {
 						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
-					}
-					else
-					{
+					} else {
 						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
@@ -1679,25 +1672,21 @@ namespace hooks
 			case UnitId::TerranHypnagogue:
 			{
 				// Hypnagogue - Through the Looking Glass
-				if (unit->main_order_id == OrderId::CastThroughTheLookingGlass)
-				{
+				if (unit->main_order_id == OrderId::CastThroughTheLookingGlass) {
 					scbw::decloak_proc(unit);
 					Point16 target_pos = {};
-					if (unit->order_target.pt.x && unit->order_target.pt.y)
-					{
+					if (unit->order_target.pt.x && unit->order_target.pt.y) {
 						target_pos = unit->order_target.pt;
-					}
-					else if (unit->order_target.unit) {
+					} else if (unit->order_target.unit) {
 						target_pos.x = unit->order_target.unit->get_x();
 						target_pos.y = unit->order_target.unit->get_y();
 					}
 					unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
 					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
-				//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+					//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
 				}
-				if (unit_ext->timers[TimerHypnagogueChannel] == 1)
-				{
+				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {
 					Point16 target_pos = {};
 					target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
 					target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
@@ -1708,13 +1697,11 @@ namespace hooks
 						pos.y - radius,
 						pos.x + radius,
 						pos.y + radius
-					).for_each([&](Unit* target)
-						{
-							if (units_dat::base_property[target->id] & UnitProperty::Building || !(target->status & UnitStatus::Completed))
-							{
-								return;
-							}
-							scbw::teleport(target, target_pos);
+					).for_each([&](Unit* target) {
+						if (units_dat::base_property[target->id] & UnitProperty::Building || !(target->status & UnitStatus::Completed)) {
+							return;
+						}
+						scbw::teleport(target, target_pos);
 						});
 					scbw::teleport(unit, target_pos);
 				}
@@ -1736,6 +1723,38 @@ namespace hooks
 				}
 				*/
 			} break;
+		}
+
+		// Gladius Binding Plasma
+		{
+			Unit* source_unit = unit_ext->units[UnitGladiusBindingPlasmaSource];
+			if (source_unit) {
+				if (unit_ext->timers[TimerGladiusBindingPlasma] % 12 == 11) {
+					unit->sprite->create_overlay(ImageId::BindingPlasmaOverlay);
+					helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+				}
+				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
+					EntryArray units = {};
+					unit_search_radial(&units, unit->position, 2 * 32);
+					unit_search_filter(&units, source_unit, FilterEnemy | FilterNoBuilding);
+					unit_search_sort_by_distance(&units, unit->position);
+
+					Unit* target = units.count ? units.units[0] : 0;
+					if (source_unit && target) {
+						u32 angle = scbw::get_angle(unit->position.x, unit->position.y, target->position.x, target->position.y);
+						Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source_unit, unit->position.x, unit->position.y, source_unit->player, angle);
+						scbw::set_bullet_target(bullet, target);
+						if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
+							unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
+							unit_ext->timers[TimerGladiusBindingPlasma] = 24;
+						}
+					} else {
+						unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
+					}
+				}
+			} else {
+				unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
+			}
 		}
 
 		// Tyranny

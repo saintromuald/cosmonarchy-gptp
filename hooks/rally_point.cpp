@@ -519,7 +519,7 @@ namespace hooks
 												if (helper::show_right_click_error_if_needed(unit_at_point)) {
 													if ((*g_active_portrait_unit)->has_weapon()) {
 														UnitExt* unit_ext = get_unit_ext(*g_active_portrait_unit);
-														unit_ext->units[UnitUnitResponseTarget] = unit_at_point;
+														unit_ext->units[UnitResponseTarget] = unit_at_point;
 														hooks::play_yes_unit_response_internal(*g_active_portrait_unit, UnitResponseContext::URC_Target);
 													}
 													else {

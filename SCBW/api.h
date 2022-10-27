@@ -654,4 +654,6 @@ namespace scbw
 	bool buttonset_id_is_submenu(u32 buttonset_id);
 	bool unit_id_has_custom_air_weapon(u32 unit_id);
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
+	void set_bullet_target(Bullet* bullet, Unit* target);
+	void set_bullet_target(Bullet* bullet, Point16 target);
 }

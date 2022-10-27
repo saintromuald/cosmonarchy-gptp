@@ -67,47 +67,35 @@ namespace
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
-namespace hooks
-{
-	static void launch_missile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weapon_id)
-	{
-		s32 posX;
-		s32 posY;
-		if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit)
-		{
-			posX = target->get_x();
-			posY = target->get_y();
-		}
-		else
-		{
-			posX = attacker->get_x();
-			posY = attacker->get_y();
+namespace hooks {
+	void launch_missile(Unit* attacker, Unit* target, u8 weapon_id) {
+		Point16 pos = attacker->position;
+		if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit) {
+			pos = target->position;
 		}
 		auto newAngle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		create_bullet_and_apply_cooldown(weapon_id, attacker, posX, posY, attacker->player, newAngle);
-		if (attackerExt->values[ValueDeconstruction])
-		{
+		create_bullet_and_apply_cooldown(weapon_id, attacker, pos.x, pos.y, attacker->player, newAngle);
+		UnitExt* attacker_ext = get_unit_ext(attacker);
+		if (attacker_ext->values[ValueDeconstruction]) {
 			scbw::do_deconstruction_damage(attacker, weapon_id, false);
 		}
 	}
 
-	bool fire_multiple(Unit* attacker, UnitExt* attacker_ext, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor)
-	{
+	bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor) {
 		bool fired = false;
 		std::unordered_set<Unit*> targets;
+		UnitExt* attacker_ext = get_unit_ext(attacker);
 		if (!ignore_main
-		&&  attacker->order_target.unit
-		&&  attacker->main_order_id != OrderId::Follow
-		&&  attacker->main_order_id != OrderId::Patrol)
-		{
+			&& attacker->order_target.unit
+			&& attacker->main_order_id != OrderId::Follow
+			&& attacker->main_order_id != OrderId::Patrol) {
 			targets.insert(attacker->order_target.unit);
-			launch_missile(attacker, attacker_ext, attacker->order_target.unit, weapon_id);
+			launch_missile(attacker, attacker->order_target.unit, weapon_id);
 			fired = true;
 		}
-		Unit* old = attacker->order_target.unit;
 
-		for (s32 i = 0; i < max_targets || max_targets <= 0; i++)
-		{
+		Unit* old = attacker->order_target.unit;
+		for (s32 i = 0; i < max_targets || max_targets <= 0; i++) {
 			u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
 			auto filter = cosmonarchy_finder_match(attacker, flags, {});
 			Unit* new_target = scbw::UnitFinder::get_nearest_target(
@@ -116,8 +104,7 @@ namespace hooks
 				attacker->get_x() + range,
 				attacker->get_y() + range,
 				attacker,
-				[&](Unit* target)
-				{
+				[&](Unit* target) {
 					if (target == attacker
 					||  targets.find(target) != targets.end()
 					||  scbw::is_allied_to(attacker->player, target->player)
@@ -129,8 +116,7 @@ namespace hooks
 					}
 					return true;
 				});
-			if ((targets.size() >= max_targets && max_targets > 0) || !new_target)
-			{
+			if ((targets.size() >= max_targets && max_targets > 0) || !new_target) {
 				break;
 			}
 			attacker->order_target.unit = new_target;
@@ -140,12 +126,11 @@ namespace hooks
 			if (use_weapon_factor) {
 				factor = weapons_dat::damage_factor[weapon_id];
 			}
-			for (u32 j = 0; j < factor; j++)
-			{
+			for (u32 j = 0; j < factor; j++) {
 				if (factor == 0) {
 					break;
 				}
-				launch_missile(attacker, attacker_ext, new_target, weapon_id);
+				launch_missile(attacker, new_target, weapon_id);
 			}
 			fired = true;
 			targets.insert(new_target);
@@ -379,7 +364,7 @@ namespace hooks
 					{
 						// Multi-Attack IV
 					//	scbw::set_missile_source_pos(unit, weapon_id, ValueCataphractLaunchPos, 4, false);
-						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{
@@ -403,7 +388,7 @@ namespace hooks
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
 						// Monoceros Targeting - Minotaur
-						fire_multiple(unit, unitExt, weapon_id, 5, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, weapon_id, 5, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
@@ -431,20 +416,20 @@ namespace hooks
 						}
 
 						// Tertiary Eyes - Siren
-						fire_multiple(unit, unitExt, weapon_id, 1 + count, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, weapon_id, 1 + count, Flags::Enemy | Flags::FrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
 						if (unit->order_target.unit != nullptr)
 						{
-							fire_multiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
+							fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
 						}
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
 						// Crushing Tide - Izirokor
-						fire_multiple(unit, unitExt, weapon_id, 3, Flags::Enemy);
+						fire_multiple(unit, weapon_id, 3, Flags::Enemy);
 					} break;
 					default:
 					{
@@ -454,12 +439,12 @@ namespace hooks
 					{
 						// Multi-Attack IV
 						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 4, false);
-						fire_multiple(unit, unitExt, weapon_id, 4, Flags::Enemy);
+						fire_multiple(unit, weapon_id, 4, Flags::Enemy);
 					} break;
 					case WeaponId::BarghestRayOfAgony:
 					{
 						// Multi-Attack III
-						fire_multiple(unit, unitExt, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
+						fire_multiple(unit, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
 					} break;
 				}
 			}

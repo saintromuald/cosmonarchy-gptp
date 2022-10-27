@@ -57,7 +57,7 @@ namespace hooks {
 		if (!units_dat::group_flags[unit->id].is_building) { // We might not give a shit about this one anymore tbh
 			switch (context) {
 				case URC_Target: {
-					if (unit_ext->units[UnitUnitResponseTarget] && helper::unit_is_enemy(unit_ext->units[UnitUnitResponseTarget])) {
+					if (unit_ext->units[UnitResponseTarget] && helper::unit_is_enemy(unit_ext->units[UnitResponseTarget])) {
 						aggressive_response = true;
 					}
 				} break;

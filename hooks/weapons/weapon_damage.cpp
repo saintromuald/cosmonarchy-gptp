@@ -489,6 +489,17 @@ namespace hooks
 			// These bypass Carapace Swarm
 			switch (data.weapon_id)
 			{
+				case WeaponId::GladiusPlasmaFlurry: {
+					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
+					if (source_unit && target_ext->timers[TimerGladiusBindingPlasma]) {
+						if (scbw::is_allied_to(data.attackingPlayerId, source_unit->player)) {
+							target_ext->values[ValueGladiusBindingPlasmaRecasts]++;
+						}
+					} else {
+						target_ext->timers[TimerGladiusBindingPlasma] = 24;
+						target_ext->units[UnitGladiusBindingPlasmaSource] = data.attacker;
+					}
+				} break;
 				case WeaponId::AnthelionEventHorizon:
 				{
 					target_ext->timers[TimerAnthelionGravityWell] = 2;

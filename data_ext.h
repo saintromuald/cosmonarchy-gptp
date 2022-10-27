@@ -123,6 +123,7 @@ enum ExtValueId
 	ValueThroughTheLookingGlassX,
 	ValueThroughTheLookingGlassY,
 	ValueLazarusRecasts,
+	ValueGladiusBindingPlasmaRecasts,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -209,6 +210,7 @@ enum ExtTimerId
 	TimerHypnagogueChannel,
 	TimerOptectonSecondaryWeaponCooldown,
 	TimerLazarusCasting,
+	TimerGladiusBindingPlasma,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -244,7 +246,8 @@ enum ExtUnitId
 	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
 	UnitAddonParent,
-	UnitUnitResponseTarget,
+	UnitResponseTarget,
+	UnitGladiusBindingPlasmaSource,
 
 	UnitCount,
 };

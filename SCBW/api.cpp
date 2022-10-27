@@ -2714,4 +2714,22 @@ namespace scbw
 			}
 		}
 	}
+
+	void set_bullet_target(Bullet* bullet, Unit* target) {
+		bullet->attack_target.unit = target;
+		bullet->attack_target.pt   = target->position;
+		bullet->move_target.unit   = target;
+		bullet->move_target.pt     = target->position;
+		bullet->targetPosition     = target->position;
+		bullet->targetPosition2    = target->position;
+	}
+
+	void set_bullet_target(Bullet* bullet, Point16 target) {
+		bullet->attack_target.unit = 0;
+		bullet->attack_target.pt   = target;
+		bullet->move_target.unit   = 0;
+		bullet->move_target.pt     = target;
+		bullet->targetPosition     = target;
+		bullet->targetPosition2    = target;
+	}
 }
