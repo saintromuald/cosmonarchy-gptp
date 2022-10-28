@@ -466,6 +466,9 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, const std::unordered_s
 	if (flags & FilterNotWorker && units_dat::base_property[unit->id] & UnitProperty::Worker) {
 		return false;
 	}
+	if (flags & FilterNotSubunit && units_dat::base_property[unit->id] & UnitProperty::Subunit) {
+		return false;
+	}
 	return true;
 }
 

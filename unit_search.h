@@ -30,6 +30,7 @@ enum SearchFilter
 	FilterCanAttackOrCast	= 1 << 21,
 	FilterOwn				= 1 << 22,
 	FilterNotWorker			= 1 << 23,
+	FilterNotSubunit		= 1 << 24,
 	FilterBuilding			= 1 << 25,
 };
 
