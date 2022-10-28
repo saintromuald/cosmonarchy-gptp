@@ -522,7 +522,7 @@ enum Enum {
 	GlaveWurm_SeekerSporesHit           = 512,
 	GlaveWurmTrail                      = 513,
 	SeekerSporesOverlay                 = 514,
-	SporeColonySeekerSpores             = 515,
+	SpraithColonySeekerSpores             = 515,
 	QueenSpellHolder                    = 516,
 	Consume                             = 517,
 	GuardianAttackOverlay               = 518,

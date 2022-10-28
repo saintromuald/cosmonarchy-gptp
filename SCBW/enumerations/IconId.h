@@ -350,7 +350,7 @@ namespace IconId
 		/*0158*/	GeszithalorAcidSpore,
 		/*0159*/	Glave_Wurm,
 		/*015A*/	VenomUnused,
-		/*015B*/	SporeColonySeekerSpores,
+		/*015B*/	SpraithColonySeekerSpores,
 		/*015C*/	SunkenColonySubterraneanTentacle,
 		/*015D*/	SuicideInfestedTerran,
 		/*015E*/	SuicideScourge,

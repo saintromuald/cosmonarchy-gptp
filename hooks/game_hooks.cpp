@@ -1392,6 +1392,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranTarasque:
 			{
+				// Forward March
 				if (unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true))

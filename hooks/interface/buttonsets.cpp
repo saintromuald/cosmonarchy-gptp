@@ -1959,7 +1959,7 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergAlkajelisk &&  // Alkajelisk Parasitic Spores passive
-								current_button->icon_id == IconId::SporeColonySeekerSpores)
+								current_button->icon_id == IconId::SpraithColonySeekerSpores)
 							{
 								current_button_state = Button_State::Enabled;
 							}
