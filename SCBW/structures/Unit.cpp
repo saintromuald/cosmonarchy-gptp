@@ -611,8 +611,7 @@ void Unit::damage_with_custom(
 	);
 }
 
-void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
-	bool ignoreDmg128Overflow)
+void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction, bool ignore_damage_128_overflow)
 {
 	UnitExt* unitExt = get_unit_ext(this);
 	auto damage = dmg;
@@ -626,7 +625,7 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 		shield_reduce_amount = std::min(damage, this->shields);
 		damage -= shield_reduce_amount;
 	}
-	if (shield_reduce_amount == 0 && damage < 128 && !ignoreDmg128Overflow)
+	if (shield_reduce_amount == 0 && damage < 128 && !ignore_damage_128_overflow)
 	{
 		damage = 128;
 	}
@@ -638,9 +637,9 @@ void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool noti
 	{
 		const LO_Header* shield_lo = g_shield_overlays[this->sprite->main_graphic->id];
 
-		u32 frameAngle = (direction - 124) / 8 % 32;
-		Point8 offset = shield_lo->get_offset(this->sprite->main_graphic->direction, frameAngle);
-		this->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+		u32 frame_angle = (direction - 124) / 8 % 32;
+		Point8 offset = shield_lo->get_offset(this->sprite->main_graphic->direction, frame_angle);
+		this->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);
 	}
 	damage_hp(damage, attacker, attackingPlayer, notify);
 }
@@ -650,11 +649,11 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	assert(this);
 
 	// Logging
-	auto targetId = this->id;
-	auto targetPlayerId = this->player;
+	auto target_id = this->id;
+	auto target_player_id = this->player;
 	if (attacker) {
 		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
-			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
+			<< "), target (" << target_id << "), target_player_id (" << target_player_id << "))" << std::endl;
 	}
 
 	u32 notify_ = notify ? 1 : 0;
@@ -845,7 +844,7 @@ void Unit::spend_unit_energy(u32 energySpent) {
 
 	// TODO: fix Entropy Gauntlets bug
 	if (unit_ext->values[ValueEntropyGauntlets] > 0) {
-		this->inflictDamage(energySpent * unit_ext->values[ValueEntropyGauntlets] * 0.1, unit_ext->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+		this->inflict_damage(energySpent * unit_ext->values[ValueEntropyGauntlets] * 0.1, unit_ext->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 

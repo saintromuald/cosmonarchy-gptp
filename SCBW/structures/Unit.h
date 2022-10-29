@@ -214,10 +214,7 @@ struct Unit : public UnitLayout
 		s32 attackingPlayer = -1, bool notify = true);
 
 	/// Deals damage to shields and hp
-	void inflictDamage(s32 damage, Unit* attacker = nullptr,
-		s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, s32 direction = 0, bool ignoreDmg128Overflow = false);
-
-
+	void inflict_damage(s32 damage, Unit* attacker = nullptr, s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, s32 direction = 0, bool ignore_damage_128_overflow = false);
 
 	/// Reduces Defensive Matrix by @p amount, removing it if possible.
 	void reduce_defensive_matrix_hp(s32 amount);

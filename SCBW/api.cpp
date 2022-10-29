@@ -2732,4 +2732,10 @@ namespace scbw
 		bullet->targetPosition     = target;
 		bullet->targetPosition2    = target;
 	}
+
+	bool unit_id_can_regenerate_shields(u32 unit_id)
+	{
+		return	unit_id != UnitId::TerranSevenstep
+		&&		unit_id != UnitId::ProtossVagrantShade;
+	}
 }

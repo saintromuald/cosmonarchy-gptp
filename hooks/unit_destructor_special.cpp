@@ -143,6 +143,7 @@ void unit_destructor_special_cases(Unit* unit)
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit->reset_supply_provided();
 
+	// Cancel units that required an addon
 	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
 		Unit* parent = unit_ext->units[UnitAddonParent];
 		if (parent) {
@@ -248,6 +249,15 @@ void unit_destructor_special_cases(Unit* unit)
 	{
 		switch (unit->id)
 		{
+			case UnitId::TerranMissileSilo:
+			{
+				// Missile Silo - death while armed
+				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition])
+				{
+					scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
+					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
+				}
+			} break;
 			case UnitId::TerranAspirant:
 			{
 				globals.create_effect(EffectId_Criticality, 5 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
@@ -257,6 +267,21 @@ void unit_destructor_special_cases(Unit* unit)
 				// Phase Link
 				scbw::clear_clarion_links(unit);
 			} break;
+			/*
+			case UnitId::ProtossVagrant:
+			{
+				unit->sprite->create_top_overlay(ImageId::ZealotDeath);
+				helper::replace_unit_with_id(unit, UnitId::ProtossVagrantShade);
+				helper::increment_unit_scores_ex(unit, -1, 0);
+				helper::update_unit_stats_and_finish_building(unit);
+				helper::update_unit_strength(unit);
+				helper::refresh_sprite_data(unit->sprite);
+				unit->order_computer(OrderId::ResetCollision1);
+				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
+				unit->hitpoints = unit->get_max_hp_ingame();
+				unit->shields = unit->max_shields();
+			} break;
+			*/
 			case UnitId::ProtossVassal:
 			{
 				// Terminal Surge
@@ -345,7 +370,7 @@ void unit_destructor_special_cases(Unit* unit)
 		}
 	}
 
-	{ // Spellcaster - restore energy on ally kill
+	{ // Spellcaster - restore energy on enemy death
 		EntryArray unit_array = {};
 		unit_search_radial(&unit_array, unit->position, 11 * 32);
 		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
@@ -359,7 +384,7 @@ void unit_destructor_special_cases(Unit* unit)
 		}
 	}
 
-	// Alkajelisk Parasitic Spores behavior
+	// Alkajelisk Parasitic Spores
 	if (unit_ext->values[ValueAlkajeliskSpores] == 1)
 	{
 		unit->order_target.pt.x = unit->position.x + 1;
@@ -377,18 +402,11 @@ void unit_destructor_special_cases(Unit* unit)
 		scbw::madrigal_dirge_fuse(unit, unit_ext);
 	}
 
-	// Apostle Lazarus Agent - imply revive
+	// Imply revive (Lazarus Agent, Counter-Proposal)
 	if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive])
 	{
 		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit, 1, 0);
-	}
-
-	// Nuclear Silo - death
-	if (unit->id == UnitId::TerranMissileSilo && unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition])
-	{
-		scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
-		helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
 	}
 
 	// Apostle Last Breath behavior
@@ -418,7 +436,7 @@ void unit_destructor_special_cases(Unit* unit)
 		});
 	}
 
-	// MatralethParasite - broodspawn on death
+	// Matraleth Parasite - Broodspawn on death
 	if (scbw::unit_get_corpse_consume(unit) == CorpseConsume_Parasite) {
 		u16 type = UnitId::ZergRilirokor;
 		if (units_dat::base_property[unit->id] & UnitProperty::Flyer
@@ -446,7 +464,7 @@ void unit_destructor_special_cases(Unit* unit)
 		helper::iterate_units_at_location_target_proc_plague(unit, &coords);
 	}
 
-	// Update Custom Creep Disappearance
+	// Update custom creep disappearance
 	scbw::update_custom_creep_disappearance(unit);
 
 	// Call kill all loaded units before UnitExt is cleared. Note that the original call is nops'ed
@@ -454,7 +472,9 @@ void unit_destructor_special_cases(Unit* unit)
 
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
-	globals.unit_death(unit);
+	if (unit->id != UnitId::ProtossVagrant) {
+		globals.unit_death(unit);
+	}
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {

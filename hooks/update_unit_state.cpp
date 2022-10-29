@@ -128,7 +128,7 @@ namespace hooks
 
 		// Wyvern Reverse Thrust - fire while moving
 		if (unit->id == UnitId::TerranWyvern
-			&& unit_ext->timers[TimerWyvernAttackCooldown] == 0)
+		&&  unit_ext->timers[TimerWyvernAttackCooldown] == 0)
 		{
 			auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 			s32 forwardOffset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
@@ -204,34 +204,22 @@ namespace hooks
 			}
 		}
 
-		// Clear Cleric healing field
+		// Clear Cleric healing field every tick
 		unit->is_being_healed = 0;
 
-		// Accantor Plasma Shells get shields equal to the Accantor that launches them
+		// Accantor Plasma Shells - gain shields equal to the source Accantor
 		if (unit->id == UnitId::ProtossAccantor)
 		{
-			Unit* scarab = unit->unit_with_hangar.in_hangar_child;
-			while (scarab)
+			Unit* plasma_shell = unit->unit_with_hangar.in_hangar_child;
+			while (plasma_shell)
 			{
-				if (scarab->id == UnitId::ProtossPlasmaShell)
+				if (plasma_shell->id == UnitId::ProtossPlasmaShell)
 				{
-					scarab->shields = unit->shields;
+					plasma_shell->shields = unit->shields;
 				}
-				scarab = scarab->hangar_unit.hangar_link.prev;
+				plasma_shell = plasma_shell->hangar_unit.hangar_link.prev;
 			}
 		}
-
-		// Add mining status, decrease the regeneration rate
-		/*
-		if (unit->main_order_id == OrderId::MiningMinerals
-		||	unit->main_order_id == OrderId::HarvestGas3)
-		{
-			if (unit->order_target.unit)
-			{
-				unit->order_target.unit->cmbw_resource_regen_mining_delay = 5 * 24;
-			}
-		}
-		*/
 		
 		// Cowardice slow flag
 		if (unit->new_flags_3 & 0x10)
@@ -247,7 +235,20 @@ namespace hooks
 			scbw::refresh_console();
 		}
 
+		// Add mining status, decrease the regeneration rate
 		/*
+		if (unit->main_order_id == OrderId::MiningMinerals
+		||	unit->main_order_id == OrderId::HarvestGas3)
+		{
+			if (unit->order_target.unit)
+			{
+				unit->order_target.unit->cmbw_resource_regen_mining_delay = 5 * 24;
+			}
+		}
+		*/
+
+		/*
+		// Resource regeneration
 		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)
 		{
 			// Decrement resource regen timers
@@ -290,8 +291,8 @@ namespace hooks
 		}
 		*/
 
-		// Shield regeneration
-		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && unit->id != UnitId::TerranSevenstep) {
+		// Flash shielding (regeneration)
+		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && scbw::unit_id_can_regenerate_shields(unit->id)) {
 			s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 			u32 overlay_id = ImageId::RechargeShields_Small;
@@ -331,6 +332,12 @@ namespace hooks
 					helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 				}
 			}
+		}
+
+		// Vagrant Nihilism - suffer 2 damage per second until death
+		if (unit->id == UnitId::ProtossVagrantShade)
+		{
+			unit->inflict_damage(21);
 		}
 
 		// Supposedly, allows Zethrokors to attack after unburrowing without delay
@@ -480,9 +487,9 @@ namespace hooks
 				if (unit->get_race() == RaceId::Terran)
 				{
 					if (unit->status & UnitStatus::GroundedBuilding
-						|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
+					||  units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
 					{
-						if (helper::unitHpIsInRedZone(unit))
+						if (helper::unit_hp_is_in_redzone(unit))
 						{
 							unit->damage_hp(20, nullptr, unit->last_attacking_player, true);
 						}

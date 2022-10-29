@@ -656,4 +656,5 @@ namespace scbw
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
 	void set_bullet_target(Bullet* bullet, Unit* target);
 	void set_bullet_target(Bullet* bullet, Point16 target);
+	bool unit_id_can_regenerate_shields(u32 unit_id);
 }
