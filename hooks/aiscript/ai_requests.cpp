@@ -646,20 +646,84 @@ namespace hooks
 		helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->current_home)), priority);
 	}
 
+	static bool is_valid_attack_unit(AiRegion* ai_region, Unit* unit, bool strict) {
+		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
+			return false;
+		}
+
+		// Skip current attack force units
+		AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
+		if (current_ai_region->region == g_aiscript_controller[ai_region->player].ai_attack_group_region - 1) {
+			return false;
+		}
+		if (current_ai_region->state == RegionState::ContinueAttackHere ||
+			current_ai_region->state == RegionState::Attacking ||
+			current_ai_region->state == RegionState::PreparingAttack || 
+			current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
+			return false;
+		}
+
+		if (strict) {
+			// Skip units from regions that don't have strength needed defined, since they are hard to assess properly
+			// We will instead let AI assign units to defense regions and then pull the units to attack waves
+			if (!current_ai_region->ground_strength_needed && !current_ai_region->air_strength_needed) {
+				return false;
+			}
+		}
+
+		// Skip units needed for defending regions, we take a portion of the needed force of less important regions,
+		// and only excess force of the important regions
+		s32 needed_divisor = current_ai_region->defense_priority > 110 ? 1 : 2;
+		if (current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < current_ai_region->ground_strength_needed / needed_divisor ||
+			current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < current_ai_region->air_strength_needed    / needed_divisor) {
+			return false;
+		}
+
+		// Skip units that can't access the region
+		Region* region = scbw::get_region(ai_region->region);
+		if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
+			return false;
+		}
+
+		return true;
+	}
+
+	static Unit* add_attack_unit(AiRegion* ai_region, u32 unit_id) {
+		u32 player = ai_region->player;
+		Region* region = scbw::get_region(ai_region->region);
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (unit->id != unit_id || !is_valid_attack_unit(ai_region, unit, false)) {
+				continue;
+			}
+			if (scbw::move_unit_ai(unit, ai_region)) {
+				return unit;
+			}
+		}
+		return 0;
+	}
+
 	// Hooked to change attack_add priorities. -Pr0nogo
-	void ai_region_train_attack_force(AiRegion* region) { // 0043E670
+	void ai_region_train_attack_force(AiRegion* ai_region) { // 0043E670
 		u32 attack_wave[63] = {};
-		u32 priority = 80;
-		u32 count = helper::get_missing_attack_force_units(region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
+		u32 priority = 100; // testing, we used 80 before -Veeq7
+		u32 count = helper::get_missing_attack_force_units(ai_region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
-			if (unit_id != UnitId::None && !helper::ai_add_to_region_military(region, unit_id, priority))
-			{
-				g_aiscript_controller[region->player].ai_flags.flag_0x40 = true;
-				helper::ai_add_cost_to_needs(unit_id, region->player, 1);
-				helper::ai_add_spending_request(unit_id, region->player, 1, priority, region);
-				helper::ai_add_base_unit_spending_request(unit_id, region->player, region, priority);
+			if (unit_id != UnitId::None && !add_attack_unit(ai_region, unit_id)) { // used to call !helper::ai_add_to_region_military(ai_region, unit_id, priority), now calling a custom function
+				g_aiscript_controller[ai_region->player].ai_flags.flag_0x40 = true;
+				helper::ai_add_cost_to_needs(unit_id, ai_region->player, 1);
+				helper::ai_add_spending_request(unit_id, ai_region->player, 1, priority, ai_region);
+				helper::ai_add_base_unit_spending_request(unit_id, ai_region->player, ai_region, priority);
 			}
+		}
+
+		u32 player = ai_region->player;
+		Region* region = scbw::get_region(ai_region->region);
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (!is_valid_attack_unit(ai_region, unit, true)) {
+				continue;
+			}
+			scbw::move_unit_ai(unit, ai_region);
 		}
 	}
 

@@ -2114,7 +2114,7 @@ namespace scbw
 		return area;
 	}
 
-	void ai_defend(u32 player, u32 region_id, u32 spread, bool protect) {
+	void ai_defend(u32 player, u32 region_id) {
 		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
 		switch (ai_region->state) {
 			case RegionState::Nothing:
@@ -2123,26 +2123,10 @@ namespace scbw
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::ai_set_region_type(RegionState::Defending, ai_region); // Priority is 120 when defending regions with buildings/workers, 110 otherwise
-				if (protect) {
-					ai_region->defend_time = 255; // Maximum time to ensure the AI can safely finish the town hall and the town is defended for a while
-					if (ai_region->ground_strength_needed < 500) {
-						ai_region->ground_strength_needed = 500;
-					}
-					if (ai_region->air_strength_needed < 500) {
-						ai_region->air_strength_needed = 500;
-					}
-				} else {
-					ai_region->defense_priority += 15; // More than both of the vanilla defense priorities
-					ai_region->defend_time = 2; // Minimal time that the defense doesn't break
-				}
+				helper::ai_set_region_type(RegionState::Defending, ai_region); // Priority is 110 when defending regions with buildings/workers, 100 otherwise
+				ai_region->defense_priority += 15; // More than both of the vanilla defense priorities
+				ai_region->defend_time = 2; // The minimal time (around ~60 frames)
 			} break;
-		}
-		if (spread) {
-			Region* region = scbw::get_region(region_id);
-			for (u32 i = 0; i < region->neighbor_count; ++i) {
-				scbw::ai_defend(player, region->neighbors[i], spread - 1, protect);
-			}
 		}
 	}
 
@@ -2158,7 +2142,7 @@ namespace scbw
 			for (u32 i = 0; i < 8; ++i) {
 				if (g_player_table[i].type == PlayerType::Computer && victim->is_visible_to(i) &&
 					!scbw::is_allied_to(i, attacker->player) && scbw::is_allied_to(i, victim->player)) {
-					scbw::ai_defend(i, scbw::get_region_id(attacker->position), 1, false);
+					scbw::ai_defend(i, scbw::get_region_id(attacker->position));
 				}
 			}
 		}
@@ -2731,5 +2715,35 @@ namespace scbw
 		bullet->move_target.pt     = target;
 		bullet->targetPosition     = target;
 		bullet->targetPosition2    = target;
+	}
+
+	bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
+		if (!unit->unit_ai) {
+			return false;
+		}
+		if (unit->unit_ai->type == AiType::Military) {
+			MilitaryAi* military_ai = &unit->unit_ai->military_ai;
+			AiRegion* current_ai_region = military_ai->region;
+			helper::delete_military_ai(military_ai, military_ai->region);
+			unit->unit_ai = 0;
+			helper::add_military_ai(ai_region, unit, 1);
+			if (unit->status & UnitStatus::InBuilding) {
+				helper::unload_unit_proc(unit);
+			}
+			helper::ai_recalculate_region_strength(current_ai_region);
+			helper::ai_recalculate_region_strength(ai_region); // New
+			return true;
+		} else if (unit->unit_ai->type == AiType::Guard) {
+			unit->unit_ai->guard_ai.parent = 0;
+			unit->unit_ai = 0;
+			helper::add_military_ai(ai_region, unit, 1);
+			if (unit->status & UnitStatus::InBuilding) {
+				helper::unload_unit_proc(unit);
+			}
+			helper::ai_recalculate_region_strength(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)));
+			helper::ai_recalculate_region_strength(ai_region); // New
+			return true;
+		}
+		return false;
 	}
 }

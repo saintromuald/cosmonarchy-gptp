@@ -747,5 +747,8 @@ namespace hooks
 		memory_patch(0x004336E0 + 1, p105);
 		u32 p104 = 104;
 		memory_patch(0x004336A3 + 1, p104);
+
+		// Make melee AI convert non building/worker regions state 6 back to 0 instead of 5
+		nops(0x0043E542, 2);
 	}
 }

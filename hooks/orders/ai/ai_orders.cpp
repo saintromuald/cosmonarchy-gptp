@@ -447,16 +447,14 @@ namespace hooks
 			if (scbw::is_allied_to(region->player, i)) {
 				for (MilitaryAi* military_ai = scbw::get_ai_region(i, region->region)->first_military_ai; military_ai; military_ai = military_ai->link.prev) {
 					Unit* unit = (Unit*)military_ai->unit;
-					if (!unit) {
+					if (!unit || unit->status & UnitStatus::InBuilding) {
 						continue;
 					}
-					if (!(unit->status & UnitStatus::InBuilding)) {
-						region->ground_strength_full += unit->ground_strength;
-						region->air_strength_full += unit->air_strength;
-						if (helper::get_region_id(unit->position.x, unit->position.y) == region->region) {
-							region->ground_strength += unit->ground_strength;
-							region->air_strength += unit->air_strength;
-						}
+					region->ground_strength_full += unit->ground_strength;
+					region->air_strength_full += unit->air_strength;
+					if (helper::get_region_id(unit->position.x, unit->position.y) == region->region) {
+						region->ground_strength += unit->ground_strength;
+						region->air_strength += unit->air_strength;
 					}
 				}
 			}
@@ -472,7 +470,7 @@ namespace hooks
 				if (!scbw::is_allied_to(region->player, unit->player)) {
 					continue;
 				}
-				if (unit->unit_ai && !(units_dat::base_property[unit->id] & UnitProperty::Building && unit->has_weapon())) {
+				if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
 					continue;
 				}
 				region->ground_strength_full += unit->ground_strength;
@@ -482,7 +480,7 @@ namespace hooks
 			}
 		}
 
-		// Removed a Camapaign AI only block, which was causing a crash and an unwanted feature
+		// Removed a Campaign AI only block, which was causing a crash and an unwanted feature
 		// No longer Melee AI only, also times 2 instead of times 1.5
 		u32 ground_strength = region->ground_strength_enemy * 2;
 		if (ground_strength > region->ground_strength_needed) {
@@ -495,12 +493,12 @@ namespace hooks
 		}
 
 		u16 max_force = g_aiscript_controller[region->player].ai_max_force;
-		if (g_aiscript_controller[region->player].ai_max_force) {
-			if (region->air_strength_needed > max_force) {
-				region->air_strength_needed = max_force;
-			}
+		if (max_force) {
 			if (region->ground_strength_needed > max_force) {
 				region->ground_strength_needed = max_force;
+			}
+			if (region->air_strength_needed > max_force) {
+				region->air_strength_needed = max_force;
 			}
 		}
 	}	
@@ -1845,7 +1843,6 @@ return 0;
 			}
 			if (base_id) {
 				helper::ai_expand_to(aiscript, base_id, block);
-				scbw::ai_defend(aiscript->player, scbw::get_region_id(g_resource_areas->areas[base_id].position), 1, true);
 			}
 		}
 	}
@@ -1932,40 +1929,8 @@ return 0;
 		}
 	}
 
-	AiRegion* find_better_region(MilitaryAi* military_ai, AiRegion* ai_region, u32 recurses) {
-		if (scbw::get_region_id(military_ai->unit->position) == ai_region->region || scbw::get_ai_region_military_count(ai_region) < 15) {
-			return ai_region;
-		}
-		if (recurses) {
-			Region* region = scbw::get_region(ai_region->region);
-			for (u32 i = 0; i < region->neighbor_count; ++i) {
-				u32 other_id = region->neighbors[i];
-				Region* other_region = scbw::get_region(other_id);
-				if (military_ai->unit->status & UnitStatus::InAir || region->group_index == other_region->group_index) {
-					AiRegion* new_ai_region = find_better_region(military_ai, scbw::get_ai_region(ai_region->player, other_id), recurses - 1);
-					if (new_ai_region) {
-						return new_ai_region;
-					}
-				}
-			}
-		}
-		return 0;
-	}
-
 	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
-	void ai_manage_military_controller(Unit* unit) // 0043D910
-	{
-		// This code should not be enabled, since the "better" regions may not be actually attack regions, which may result in unwanted behavior
-	//	if (unit->unit_ai && unit->unit_ai->type == AiType::Military && unit->unit_ai->military_ai.unit == unit) {
-	//		MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
-	//		AiRegion* new_ai_region = find_better_region(military_ai, military_ai->region, 3);
-	//		if (new_ai_region && military_ai->region != new_ai_region) {
-	//			helper::delete_military_ai(military_ai, military_ai->region);
-	//			unit->unit_ai = 0;
-	//			helper::add_military_ai(new_ai_region, unit, true);
-	//		}
-	//	}
-
+	void ai_manage_military_controller(Unit* unit) { // 0043D910
 		if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
 			MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
 			if (military_ai->unit == unit) {
@@ -2199,36 +2164,6 @@ return 0;
 			|| g_completed_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
 	}
 
-	bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
-		if (!unit->unit_ai) {
-			return false;
-		}
-		if (unit->unit_ai->type == AiType::Military) {
-			MilitaryAi* military_ai = &unit->unit_ai->military_ai;
-			AiRegion* current_ai_region = military_ai->region;
-			helper::delete_military_ai(military_ai, military_ai->region);
-			unit->unit_ai = 0;
-			helper::add_military_ai(ai_region, unit, 1);
-			if (unit->status & UnitStatus::InBuilding) {
-				helper::unload_unit_proc(unit);
-			}
-			helper::ai_recalculate_region_strength(current_ai_region);
-			helper::ai_recalculate_region_strength(ai_region); // New
-			return true;
-		} else if (unit->unit_ai->type == AiType::Guard) {
-			unit->unit_ai->guard_ai.parent = 0;
-			unit->unit_ai = 0;
-			helper::add_military_ai(ai_region, unit, 1);
-			if (unit->status & UnitStatus::InBuilding) {
-				helper::unload_unit_proc(unit);
-			}
-			helper::ai_recalculate_region_strength(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)));
-			helper::ai_recalculate_region_strength(ai_region); // New
-			return true;
-		}
-		return false;
-	}
-
 	u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air)	{ // 0043E760
 		/*
 		u32 sum = 0;
@@ -2254,32 +2189,36 @@ return 0;
 				continue;
 			}
 
+			u32 force_divisor = 1;
 			if (unit->unit_ai->type == AiType::Military) {
-				u32 current_region_id = unit->unit_ai->military_ai.region->region;
-				if (ai_region->region == current_region_id) {
+				AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
+				if (current_ai_region->region == ai_region->region) {
 					continue;
 				}
 
-				AiRegion* current_ai_region = scbw::get_ai_region(player, current_region_id);
+				// Skip units from more important regions, unless they have excess force
 				if (ai_region->defense_priority <= current_ai_region->defense_priority) {
-					if ((s32)current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
-						(s32)current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
+					if (current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
+						current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
 						continue;
 					}
 				}
 
-				if (current_region_id == g_aiscript_controller[player].ai_attack_group_region - 1) {
-					continue;
-				}
-
-				if (current_ai_region->state == RegionState::ContinueAttackHere ||
+				// Skip attack wave units for unimportant defense regions and reduce their score otherwise
+				if (current_ai_region->region == g_aiscript_controller[player].ai_attack_group_region - 1 ||
+					current_ai_region->state == RegionState::ContinueAttackHere ||
 					current_ai_region->state == RegionState::Attacking ||
 					current_ai_region->state == RegionState::PreparingAttack || 
 					current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
-					continue;
+					if (ai_region->defense_priority < 120) {
+						continue;
+					} else {
+						force_divisor = 2;
+					}
 				}
 			}
 
+			// Skip units that can't access the region
 			if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
 				continue;
 			}
@@ -2288,6 +2227,7 @@ return 0;
 			s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);
 			s32 force = ground_force + air_force;
 			force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
+			force /= force_divisor;
 			if (!force) {
 				continue;
 			}
@@ -2300,8 +2240,7 @@ return 0;
 			}
 		}
 
-		if (best_unit && move_unit_ai(best_unit, ai_region)) {
-			UnitExt* unit_ext = get_unit_ext(best_unit);
+		if (best_unit && scbw::move_unit_ai(best_unit, ai_region)) {
 			return against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
 		}
 		return 0;

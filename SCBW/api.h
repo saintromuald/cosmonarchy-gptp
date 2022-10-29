@@ -618,7 +618,7 @@ namespace scbw
 	Region* get_region(u32 index);
 	Point16 get_region_center(Region* region);
 	Box32 get_region_area(Region* region);
-	void ai_defend(u32 player, u32 region_id, u32 spread, bool protect);
+	void ai_defend(u32 player, u32 region_id);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
 	bool unit_id_is_gas_structure(u16 unit_id);
@@ -656,4 +656,5 @@ namespace scbw
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
 	void set_bullet_target(Bullet* bullet, Unit* target);
 	void set_bullet_target(Bullet* bullet, Point16 target);
+	bool move_unit_ai(Unit* unit, AiRegion* ai_region);
 }

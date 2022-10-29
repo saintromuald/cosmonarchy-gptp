@@ -685,7 +685,8 @@ struct AiRegion
 	/*0x04*/  u8  player;
 	/*0x05*/  u8  state;
 	/*0x06*/  u8  defense_priority;
-	/*0x07*/  u8  defend_time; // Unclear to what the unit of time is
+	/*0x07*/  u8  defend_time; // One unit is around ~60 frames (333 region updates per frame out of 2499 regions * 8 players)
+							   // The countdown is 1 based, meaning the first tick is ignored
 	/*0x08*/  u8  flags;
 	/*0x09*/  u8  field_9;
 	/*0x0A*/  u16 ground_unit_count;
