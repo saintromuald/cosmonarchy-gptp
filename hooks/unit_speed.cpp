@@ -109,7 +109,7 @@ namespace hooks
 			Vector32f dir = scbw::getUnitDirectionVector(unit);
 
 			const u32 radius = 6 * 32;
-			Unit* enemyUnit = scbw::UnitFinder::get_nearest_target(
+			Unit* enemy_unit = scbw::UnitFinder::get_nearest_target(
 				unit->get_x() - radius,
 				unit->get_y() - radius,
 				unit->get_x() + radius,
@@ -121,16 +121,16 @@ namespace hooks
 				{
 					return false;
 				}
-				bool validPlayer = false;
+				bool valid_player = false;
 				for (auto player : unit_ext->value_vectors[ValueVectorSignifySourcePlayer])
 				{
 					if (scbw::is_allied_to(player, enemy->player))
 					{
-						validPlayer = true;
+						valid_player = true;
 						break;
 					}
 				}
-				if(!validPlayer)
+				if(!valid_player)
 				{
 					return false;
 				}
@@ -146,7 +146,7 @@ namespace hooks
 				return true;
 			});
 
-			if (enemyUnit)
+			if (enemy_unit)
 			{
 				speed *= 0.5;
 			}
@@ -278,6 +278,7 @@ namespace hooks
 			} break;
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ZergHydralisk:
+			case UnitId::ProtossVagrantShade:
 			{
 				speed *= 1.5;
 			} break;

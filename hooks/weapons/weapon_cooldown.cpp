@@ -26,7 +26,7 @@ namespace hooks
 		u32 cooldown = weapons_dat::cooldown[weapon_id];
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
-		s32 cooldownModifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? 1 : 0)
+		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? 1 : 0)
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 		// Crucible Aura
@@ -41,42 +41,46 @@ namespace hooks
 		// Vassal Terminal Surge behavior
 		cooldown /= 1.0 + 0.05 * unitExt->values[ValueTerminalSurge];
 
-		// Madcap Maverick Feeders behavior: increase weapon speed while stationary
-		if (unit->id == UnitId::TerranMadcap)
+		switch (unit->id)
 		{
-			u32 stacks = ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime);
-			if (stacks > 0)
+			case UnitId::TerranMadcap:
 			{
-				f64 newCooldown = (f64)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
-				cooldown = newCooldown;
-			}
-		}
-
-		// Blackjack Wear and Tear: reduce weapon speed based on missing health
-		else if (unit->id == UnitId::TerranBlackjack)
-		{
-			const u32 health = unit->hitpoints / 256;
-			const u32 maxHealth = unit->get_max_hp_ingame();
-			const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
-			cooldown /= multiplier;
-		}
-
-		// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
-		if (unit->id == UnitId::ZergUltrokor)
-		{
-			if (unitExt->timers[TimerKaiserRampage] > 0)
+				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary
+				u32 stacks = ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime);
+				if (stacks > 0)
+				{
+					f64 new_cooldown = (f64)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
+					cooldown = new_cooldown;
+				}
+			} break;
+			case UnitId::TerranBlackjack:
 			{
-				cooldown /= 2;
-			}
-		}
-
-		// Phobos Argent Capacitors behavior
-		if (unit->id == UnitId::TerranPhobos)
-		{
-			if (unitExt->values[ValuePhobosDischarge] > 0)
+				// Blackjack Wear and Tear: reduce weapon speed based on missing health
+				const u32 health = unit->hitpoints / 256;
+				const u32 max_health = unit->get_max_hp_ingame();
+				const f64 multiplier = MathUtils::map(health, (u32)0, max_health, 0.66, 1.0, true); // nice casting tbh
+				cooldown /= multiplier;
+			} break;
+			case UnitId::TerranPhobos:
 			{
-				cooldown /= 2;
-			}
+				// Argent Capacitors
+				if (unitExt->values[ValuePhobosDischarge] > 0)
+				{
+					cooldown /= 2;
+				}
+			} break;
+			case UnitId::ProtossVagrantShade:
+			{
+				cooldown /= 1.5;
+			} break;
+			case UnitId::ZergUltrokor:
+			{
+				// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
+				if (unitExt->timers[TimerKaiserRampage] > 0)
+				{
+					cooldown /= 2;
+				}
+			} break;
 		}
 
 		// Ion Cannon Ion Field: Attack Speed Buff
@@ -91,36 +95,36 @@ namespace hooks
 			cooldown /= 0.6666;
 		}
 
-		if (cooldownModifier > 0)
-		{	// Lame hardcode for attackspeed upgrades
+		if (cooldown_modifier > 0) // Lame hardcode for attackspeed upgrades
+		{
 			cooldown /= 2;
 		}
 		else
 		{
-			if (cooldownModifier < 0)
-			{	// Presumably, lame hardcode for some slow
+			if (cooldown_modifier < 0) // Presumably, lame hardcode for some slow
+			{
 				cooldown += cooldown / 4;
 
 			}
 		}
 		
-		if (unit->stim_timer)
-		{ // Fixes aice-related Stimpack issue
+		if (unit->stim_timer) // Fixes aice-related Stimpack issue
+		{
 			cooldown += 2;
 		}
 
-		u32 adrenalStacks = unitExt->values[ValueAdrenalStacks];
-		if (adrenalStacks)
+		u32 adrenal_stacks = unitExt->values[ValueAdrenalStacks];
+		if (adrenal_stacks)
 		{
-			cooldown -= adrenalStacks / 2;
+			cooldown -= adrenal_stacks / 2;
 		}
 
-		if (cooldown > 250)
-		{ // Max cutoff
+		if (cooldown > 250) // Max cutoff
+		{
 			cooldown = 250;
 		}
-		else if (cooldown < 3)
-		{ // Min cutoff (previously 5)
+		else if (cooldown < 3) // Min cutoff (previously 5)
+		{
 			cooldown = 3;
 		}
 
@@ -139,5 +143,4 @@ namespace hooks
 	f32 get_current_dps_from_damage(Unit* unit, u8 weapon_id, u32 damage) {
 		return damage / get_weapon_cooldwon_float(unit, weapon_id);
 	}
-
-} //hooks
+}
