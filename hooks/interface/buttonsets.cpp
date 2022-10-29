@@ -1049,6 +1049,45 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ProtossScribe:
+							case UnitId::ProtossArtisan:
+							{
+								if (current_button->requirement_var == UnitId::ProtossNexus
+								||  current_button->requirement_var == UnitId::ProtossPylon
+								||  current_button->requirement_var == UnitId::ProtossAquifer
+								||  current_button->requirement_var == UnitId::ProtossWarden
+								||  current_button->requirement_var == UnitId::ProtossEmbassy
+								||  current_button->requirement_var == UnitId::ProtossCrucible
+								||  current_button->requirement_var == UnitId::ProtossMatrix
+								||  current_button->requirement_var == UnitId::ProtossStridentStratum
+								||  current_button->requirement_var == UnitId::ProtossGateway
+								||  current_button->requirement_var == UnitId::ProtossCenotaph
+								||  current_button->requirement_var == UnitId::ProtossGrandLibrary
+								||  current_button->requirement_var == UnitId::ProtossRogueGallery
+								||  current_button->requirement_var == UnitId::ProtossProstrationStage
+								||  current_button->requirement_var == UnitId::ProtossSanctumOfSorrow
+								||  current_button->requirement_var == UnitId::ProtossAncestralArchives
+								||  current_button->requirement_var == UnitId::ProtossHallOfHeretics
+								||  current_button->requirement_var == UnitId::ProtossLattice
+								||  current_button->requirement_var == UnitId::ProtossAutomatonRegister
+								||  current_button->requirement_var == UnitId::ProtossArdentAuthority
+								||  current_button->requirement_var == UnitId::ProtossSequesteredIcon
+								||  current_button->requirement_var == UnitId::ProtossAuxiliaryOasis
+								||  current_button->requirement_var == UnitId::ProtossUnitaryUnion
+								||  current_button->requirement_var == UnitId::ProtossSyntheticSynod
+								||  current_button->requirement_var == UnitId::ProtossStargate
+								||  current_button->requirement_var == UnitId::ProtossAstralOmen
+								||  current_button->requirement_var == UnitId::ProtossArgosy
+								||  current_button->requirement_var == UnitId::ProtossFleetBeacon
+								||  current_button->requirement_var == UnitId::ProtossMonumentOfSin)
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
 							case UnitId::ProtossGrandLibrary:
 							{
 								if (current_button->requirement_var == UnitId::ProtossAmaranth
@@ -1068,6 +1107,18 @@ namespace hooks {
 								if (current_button->requirement_var == UnitId::ProtossArchon
 								||  current_button->requirement_var == UnitId::ProtossOptecton
 								||  current_button->requirement_var == UnitId::ProtossPatriarch)
+								{
+									current_button_state = Button_State::Enabled;
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ProtossSequesteredIcon:
+							{
+								if (current_button->requirement_var == UnitId::ProtossAccantor
+								||  current_button->requirement_var == UnitId::ProtossArchitect)
 								{
 									current_button_state = Button_State::Enabled;
 								}
