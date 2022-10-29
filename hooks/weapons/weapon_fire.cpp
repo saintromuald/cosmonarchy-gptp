@@ -245,30 +245,6 @@ namespace hooks {
 				switch (weapon_id)
 				{
 					// Missile spawn positions start
-					case WeaponId::PhotonCannonPrismaticCannon:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 1, false);
-					} break;
-					case WeaponId::CharlatanFerventBlaster:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanLaunchPos, 1, false);
-					} break;
-					case WeaponId::ExemplarPlasmaTorpedo:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarLaunchPos, 1, false);
-					} break;
-					case WeaponId::EpigraphLitanyCannons:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaunchPos, 4, false);
-					} break;
-					case WeaponId::EmpyreanPlasmaBarrage:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanLaunchPos, 4, false);
-					} break;
-					case WeaponId::StarSovereignCelestialCannon:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignLaunchPos, 2, false);
-					} break;
 					case WeaponId::SentinelCerberusRailgun:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelLaunchPos, 1, false);
@@ -326,37 +302,61 @@ namespace hooks {
 						}
 						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaunchPos, 4, false);
 					} break;
-					case WeaponId::SkithrokorSkitteringSpores:
+					case WeaponId::WardenPrismaticCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorLaunchPos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 1, false);
+					} break;
+					case WeaponId::CharlatanFerventBlaster:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanLaunchPos, 1, false);
+					} break;
+					case WeaponId::PanoptusPlasmaMissiles:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePanoptusLaunchPos, 2, false);
+					} break;
+					case WeaponId::ExemplarPlasmaTorpedo:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarLaunchPos, 1, false);
+					} break;
+					case WeaponId::EpigraphLitanyCannons:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaunchPos, 4, false);
+					} break;
+					case WeaponId::EmpyreanPlasmaBarrage:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanLaunchPos, 4, false);
+					} break;
+					case WeaponId::StarSovereignCelestialCannon:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignLaunchPos, 2, false);
+					} break;
+					case WeaponId::SpraithColonySeekerSpores:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSpraithColonyLaunchPos, 1, false);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskLaunchPos, 2, false);
 					} break;
-					case WeaponId::BactaliskCorrosiveAcid:
+					case WeaponId::KalkaliskViscousAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskLaunchPos, 2, true);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskLaunchPos, 1, false);
 					} break;
 					case WeaponId::AxitriliskSearingVenom:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskLaunchPos, 1, true);
 					} break;
-					case WeaponId::KalkaliskViscousAcid:
+					case WeaponId::SkithrokorSkitteringSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskLaunchPos, 1, false);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorLaunchPos, 1, false);
+					} break;
+					case WeaponId::BactaliskCorrosiveAcid:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskLaunchPos, 2, true);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorLaunchPos, 2, false, 0, 1);
-					} break;
-					case WeaponId::SporeColonySeekerSpores:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSpraithColonyLaunchPos, 1, false);
-					} break;
-					case WeaponId::PanoptusPlasmaMissiles:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePanoptusLaunchPos, 2, false);
 					} break;
 					// Missile spawn positions end
 
@@ -365,6 +365,11 @@ namespace hooks {
 						// Multi-Attack IV
 					//	scbw::set_missile_source_pos(unit, weapon_id, ValueCataphractLaunchPos, 4, false);
 						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
+					} break;
+					case WeaponId::AnticthonEncirclingMirror:
+					{
+						// Multi-Attack V
+						fire_multiple(unit, weapon_id, 5, Flags::Enemy);
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{

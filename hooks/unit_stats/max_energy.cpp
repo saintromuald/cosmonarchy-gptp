@@ -10,15 +10,13 @@ namespace hooks
 		u32 energy = 200;
 		switch (unit->id)
 		{
-			case UnitId::TerranAncile:
-			{
-				energy = 150;
-			} break;
 			case UnitId::TerranSevenstep:
 			{
 				energy = 100;
 			} break;
+			case UnitId::TerranApostle:
 			case UnitId::TerranHypnagogue:
+			case UnitId::TerranAncile:
 			{
 				energy = 150;
 			} break;

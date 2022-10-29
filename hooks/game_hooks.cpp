@@ -1392,6 +1392,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranTarasque:
 			{
+				// Forward March
 				if (unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] == 0)
 				{
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true))
@@ -1614,7 +1615,7 @@ namespace hooks
 					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 				}
 			} break;
-			case UnitId::TerranAncile: {
+			case UnitId::TerranAncile:{
 				if (unit->energy >= 1 * 256) { // Providence
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
@@ -1636,12 +1637,12 @@ namespace hooks
 						bullet->targetPosition     = unit->position;
 						bullet->targetPosition2    = unit->position;
 						bullet->hit_flags |= 1; // For now we flag as missed, so it doesn't deal hp damage
-unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: Instead of dealing damage immediately, we should flag the bullet to deal damage as energy
-helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit)); // TODO: Instead of dealing damage immediately, we should flag the bullet to deal damage as energy
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 
-if (unit->energy < 1 * 256) {
-	break;
-}
+						if (unit->energy < 1 * 256) {
+							break;
+						}
 					}
 				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
@@ -1736,7 +1737,7 @@ if (unit->energy < 1 * 256) {
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
 					EntryArray units = {};
 					unit_search_radial(&units, unit->position, 2 * 32);
-					unit_search_filter(&units, source_unit, FilterEnemy | FilterNoBuilding);
+					unit_search_filter(&units, source_unit, FilterEnemy | FilterNoBuilding | FilterNotSelf | FilterNotSubunit);
 					unit_search_sort_by_distance(&units, unit->position);
 
 					Unit* target = units.count ? units.units[0] : 0;
