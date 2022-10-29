@@ -10,6 +10,10 @@ namespace hooks
 		u32 energy = 200;
 		switch (unit->id)
 		{
+			case UnitId::ProtossDemiurge:
+			{
+				energy = 50;
+			} break;
 			case UnitId::TerranSevenstep:
 			{
 				energy = 100;
@@ -19,6 +23,10 @@ namespace hooks
 			case UnitId::TerranAncile:
 			{
 				energy = 150;
+			} break;
+			case UnitId::ProtossMindTyrant:
+			{
+				energy = 250;
 			} break;
 		}
 		return std::min(energy * 256, (u32)USHRT_MAX);

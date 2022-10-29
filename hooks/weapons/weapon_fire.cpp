@@ -1217,13 +1217,13 @@ namespace hooks {
 		}
 		bullet->next_bounce_unit = nullptr;
 
-		Unit* targetUnit = parent->order_target.unit;
-		if (targetUnit)
+		Unit* target_unit = parent->order_target.unit;
+		if (target_unit)
 		{
-			bullet->sprite->elevation = targetUnit->sprite->elevation + 1;
-			bullet->attack_target.unit = targetUnit;
-			bullet->attack_target.pt.x = targetUnit->sprite->position.x;
-			bullet->attack_target.pt.y = targetUnit->sprite->position.y;
+			bullet->sprite->elevation = target_unit->sprite->elevation + 1;
+			bullet->attack_target.unit = target_unit;
+			bullet->attack_target.pt.x = target_unit->sprite->position.x;
+			bullet->attack_target.pt.y = target_unit->sprite->position.y;
 		}
 		else
 		{
@@ -1238,11 +1238,11 @@ namespace hooks {
 			case WeaponBehavior::Fly_DoNotFollowTarget:
 			case WeaponBehavior::Fly_FollowTarget:
 			{
-				if (targetUnit != nullptr)
+				if (target_unit)
 				{
-					if (parent != nullptr)
+					if (parent)
 					{
-						helper::weapon_behavior_can_hit_target_check(targetUnit, parent);
+						helper::weapon_behavior_can_hit_target_check(target_unit, parent);
 					}
 				}
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
@@ -1251,7 +1251,7 @@ namespace hooks {
 			case WeaponBehavior::AppearOnTargetUnit:
 			case WeaponBehavior::AppearOnTargetSite:
 			{
-				if (!targetUnit)
+				if (!target_unit)
 				{
 					return 1;
 				}
@@ -1259,7 +1259,7 @@ namespace hooks {
 				{
 					return 1;
 				}
-				helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->source_unit);
+				helper::weapon_behavior_can_hit_target_check(target_unit, bullet->source_unit);
 				return 1;
 			}
 			case WeaponBehavior::PersistOnTargetSite:
@@ -1307,11 +1307,11 @@ namespace hooks {
 						bullet->remaining_bounces = 3;
 					}
 				}
-				if (targetUnit)
+				if (target_unit)
 				{
 					if (bullet->source_unit)
 					{
-						helper::weapon_behavior_can_hit_target_check(targetUnit, bullet->source_unit);
+						helper::weapon_behavior_can_hit_target_check(target_unit, bullet->source_unit);
 					}
 				}
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
