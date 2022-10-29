@@ -1461,11 +1461,7 @@ return 0;
 			for (u32 i = 0; i < 3; ++i) {
 				Unit* gas = town->gas_buildings[i];
 				if (gas && gas->status & UnitStatus::Completed) {
-					if (gas->id == UnitId::ResourceVespeneRidge || gas->id == UnitId::ResourceVespeneGeyser) {
-						gas_node_worker_count[i] = 2;
-					} else {
-						gas_node_worker_count[i] = 4;
-					}
+					gas_node_worker_count[i] = 2;
 					max_gas_worker_count += gas_node_worker_count[i];
 				}
 			}
