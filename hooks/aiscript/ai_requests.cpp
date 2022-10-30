@@ -519,9 +519,9 @@ namespace hooks
 						{
 							witness_supply_cost = 2 * units_dat::supply_required[UnitId::ProtossWitness];
 						}
-						g_aiscript_controller[player_id].mineral_collection += units_dat::mineral_cost[UnitId::ProtossWitness];
-						g_aiscript_controller[player_id].gas_collection += witness_gas_cost;
-						g_aiscript_controller[player_id].supply_collection += witness_supply_cost;
+						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
+						g_aiscript_controller[player_id].gas_needed += witness_gas_cost;
+						g_aiscript_controller[player_id].supply_needed += witness_supply_cost;
 						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
 						--witness_request_quantity;
 					} while (witness_request_quantity);
@@ -546,10 +546,10 @@ namespace hooks
 						{
 							transport_supply_cost *= 2;
 						}
-						v29 = g_aiscript_controller[player_id].gas_collection;
-						g_aiscript_controller[player_id].mineral_collection += units_dat::mineral_cost[transport_unit_id_1];
-						g_aiscript_controller[player_id].gas_collection = transport_1_gas_cost + v29;
-						g_aiscript_controller[player_id].supply_collection += transport_supply_cost;
+						v29 = g_aiscript_controller[player_id].gas_needed;
+						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[transport_unit_id_1];
+						g_aiscript_controller[player_id].gas_needed = transport_1_gas_cost + v29;
+						g_aiscript_controller[player_id].supply_needed += transport_supply_cost;
 						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
 						helper::ai_add_base_unit_spending_request(transport_unit_id_2, player_id, v33, transport_1_priority);
 						if (!--transport_1_request_count)

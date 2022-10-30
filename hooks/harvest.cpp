@@ -219,12 +219,9 @@ namespace hooks
 				}
 			} else {
 				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
-				u32 timer = 75;
-				if (node && (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser)) {
-					unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
-				}
+				unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				unit->main_order_state = 5;
-				unit->main_order_timer = timer;
+				unit->main_order_timer = 75;
 			}
 		} else {
 			helper::set_resource_target(unit);
