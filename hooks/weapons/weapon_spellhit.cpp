@@ -606,17 +606,17 @@ namespace hooks
 	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280
 	bool maelstrom_proc(Unit* target, Unit* source) // 004F6760, always returns 0
 	{
-		s32 unitStatus = target->status;
-		if (unitStatus & UnitStatus::IsHallucination)
+		s32 unit_status = target->status;
+		if (unit_status & UnitStatus::IsHallucination)
 		{
 			helper::orders_self_destructing(target);
 		}
 		else
 		{
-			if (target != source && !(unitStatus & UnitStatus::Invincible))
+			if (target != source && !(unit_status & UnitStatus::Invincible))
 			{
-				s32 unitProperty = units_dat::base_property[target->id];
-				if (!(unitStatus & UnitStatus::Burrowed))
+				s32 unit_property = units_dat::base_property[target->id];
+				if (!(unit_status & UnitStatus::Burrowed))
 				{
 					helper::set_maelstrom_timer(target, MindTyrantMaelstromTimer);
 				}
