@@ -251,6 +251,7 @@ enum ExtUnitId
 	UnitAddonParent,
 	UnitResponseTarget,
 	UnitGladiusBindingPlasmaSource,
+	UnitCentaurSecondaryWeaponTarget,
 
 	UnitCount,
 };

@@ -1369,17 +1369,16 @@ namespace scbw
 		}
 	}
 
-	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount)
+	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount, Unit* override_target)
 	{
-		if (!unit->sprite || !unit->order_target.unit)
-		{
+		Unit* target = override_target ? override_target : unit->order_target.unit;
+		if (!unit->sprite || !target) {
 			return 0;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		auto rotate = unit_ext->values[value_id];
 		Image* image = unit->sprite->main_graphic;
-		switch (unit->id)
-		{
+		switch (unit->id) {
 			case UnitId::TerranWatchdog:
 			{
 				image = unit->get_overlay(ImageId::MissileTurret_Turret);
@@ -1418,16 +1417,15 @@ namespace scbw
 			offset.x = -offset.x;
 		}
 		rotate++;
-		if (rotate > rotate_count - 1)
-		{
+		if (rotate > rotate_count - 1) {
 			rotate = 0;
 		}
 		unit_ext->values[value_id] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, unit->order_target.unit->position.x, unit->order_target.unit->position.y));
-		if (bullet && unit_ext->values[value_id] < fake_amount)
-		{
+		Bullet* bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, target->position.x, target->position.y));
+		scbw::set_bullet_target(bullet, target);
+		if (bullet && unit_ext->values[value_id] < fake_amount) {
 			bullet->hit_flags |= 0x1;
 		}
 		return bullet;

@@ -1279,27 +1279,22 @@ namespace hooks
 			case UnitId::TerranCentaur:
 			{
 				// Centaur - Sunchaser Missiles
-				if (unit->sprite->main_graphic->animation == IscriptAnimation::GndAttkInit && unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] == 0)
-				{
-					Unit* target = unit->order_target.unit;
-					if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance)
-					{
-						if (unit_ext->values[ValueCentaurSecondaryWeaponCount] == 0)
-						{
-							helper::play_sound_from_unit(scbw::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit, 1, 0);
-						}
-						if (unit_ext->timers[TimerCentaurSecondaryWeaponStagger] == 0 && unit_ext->values[ValueCentaurSecondaryWeaponCount] < 4)
-						{
-							scbw::set_missile_source_pos(unit, WeaponId::CentaurSunchaserMissiles, ValueCentaurLaunchPos, 4, false);
-							unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = 4;
-							unit_ext->values[ValueCentaurSecondaryWeaponCount]++;
-						}
-						else if (unit_ext->values[ValueCentaurSecondaryWeaponCount] == 4)
-						{
-							unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::CentaurSunchaserMissiles];
-							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 0;
-						}
-					}
+				// Start the sequence
+				Unit* target = unit->order_target.unit;
+				if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance 
+					&& unit->sprite->main_graphic->animation == IscriptAnimation::GndAttkInit
+					&& unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] == 0) {
+					unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::CentaurSunchaserMissiles];
+					unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
+					unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
+					helper::play_sound_from_unit(scbw::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit, 1, 0);
+				}
+				// Progress the sequence
+				target = unit_ext->units[UnitCentaurSecondaryWeaponTarget];
+				if (target && unit_ext->values[ValueCentaurSecondaryWeaponCount] && !unit_ext->timers[TimerCentaurSecondaryWeaponStagger]) {
+					unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = 4;
+					unit_ext->values[ValueCentaurSecondaryWeaponCount]--;
+					scbw::set_missile_source_pos(unit, WeaponId::CentaurSunchaserMissiles, ValueCentaurLaunchPos, 4, false, 0, 0, target);
 				}
 			} break;
 			case UnitId::TerranOlympian:
