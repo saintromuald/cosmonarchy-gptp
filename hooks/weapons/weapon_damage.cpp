@@ -206,16 +206,21 @@ namespace hooks
 			data.final_damage = 256;
 		}
 
-		// Olympian Mythical Might - execute enemies below 10% HP
-		if (!data.dont_proc_link_damage && (data.weapon_id == WeaponId::OlympianMountainGun || data.weapon_id == WeaponId::OlympianTitansFist))
+		/*
+		// Olympian Dishonorable Discharge - deal +5 damage to targets facing away from the Olympian
+		if (!data.dont_proc_link_damage && (data.attacker->id == UnitId::TerranOlympian))
 		{
-			if (data.target->hitpoints < data.target->get_max_hp_raw() * 0.1)
+			if (!(units_dat::group_flags[data.target->id].is_building))
 			{
-				helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
-				// TODO: Overlay
-				data.final_damage = data.target->hitpoints;
+				if (target is not facing)
+				{
+					helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+					// TODO: Overlay
+					data.final_damage += 5;
+				}
 			}
 		}
+		*/
 
 		weapon_damage_behaviors(data);
 		if (data.attacker) {

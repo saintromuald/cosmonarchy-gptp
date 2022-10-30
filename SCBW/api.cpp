@@ -2746,4 +2746,9 @@ namespace scbw
 		}
 		return false;
 	}
+
+	bool unit_id_can_regenerate_shields(u32 unit_id) {
+		return unit_id != UnitId::TerranSevenstep
+			&& unit_id != UnitId::ProtossVagrantShade;
+	}
 }

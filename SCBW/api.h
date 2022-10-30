@@ -255,7 +255,7 @@ namespace scbw
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
-	inline Vector32f getUnitDirectionVector(Unit* unit)
+	inline Vector32f get_unit_direction_vector(Unit* unit)
 	{
 		return { (f32)sin(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
 			(f32)-cos(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f) };
@@ -657,4 +657,5 @@ namespace scbw
 	void set_bullet_target(Bullet* bullet, Unit* target);
 	void set_bullet_target(Bullet* bullet, Point16 target);
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region);
+	bool unit_id_can_regenerate_shields(u32 unit_id);
 }

@@ -1,7 +1,5 @@
 #include <SCBW/api.h>
 #include "building_modifier.h"
-//helper functions def
-//from unh
 #include <SCBW/enumerations.h>
 #include <SCBW/scbwdata.h>
 #include "hooks\orders\building_making\building_morph.h"
@@ -271,7 +269,7 @@ namespace hooks
 			// original code was hardcoded instead of using is_valid_morph
 			if (helper::is_valid_building_morph(builtUnitId)) {
 				if (unit->get_race() == RaceId::Zerg) {
-					helper::zergPlaceBuildingCntd(unit);
+					helper::zerg_place_building_continued(unit);
 				} else { // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
 					resources->minerals[unit->player] += (units_dat::mineral_cost[builtUnitId] * 3) / 4;

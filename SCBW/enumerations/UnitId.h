@@ -146,6 +146,7 @@ namespace UnitId
 		ProtossApostate										= 318,
 		ProtossBulwark										= 331,
 		ProtossMonogram										= 348,
+		ProtossVagrantShade									= 351,
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
@@ -156,7 +157,7 @@ namespace UnitId
 		ProtossAstralOmen									= 184,		// Independent Starport
 		ProtossCrucible										= 201,		// Overmind Cocoon
 		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap
-		ProtossArdentAuthority							= 220,		// Mineral Chunk Type 1
+		ProtossArdentAuthority								= 220,		// Mineral Chunk Type 1
 		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2
 		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2
 		ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1

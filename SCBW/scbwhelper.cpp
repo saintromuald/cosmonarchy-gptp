@@ -2821,7 +2821,7 @@ namespace helper
 		}
 	}
 
-	void zergPlaceBuildingCntd(Unit* unit)
+	void zerg_place_building_continued(Unit* unit)
 	{
 		const u32 Func_ZergPlaceBuildingCntd = 0x0045D410;
 		__asm {
@@ -6558,7 +6558,7 @@ namespace helper
 		}
 	}
 
-	bool unitHpIsInRedZone(Unit* unit)
+	bool unit_hp_is_in_redzone(Unit* unit)
 	{
 		const u32 Helper_UnitHpIsInRedZone = 0x004022C0;
 		static b32 result;

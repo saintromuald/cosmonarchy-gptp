@@ -297,7 +297,7 @@ namespace helper {
 	void update_building_ai(Unit* unit);																	// 0033FE0
 	bool is_valid_building_morph(u16 buildingId);																	// 005CC60
 	void spread_initial_creep(u32 id, s32 x, s32 y);														// 005CE90
-	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
+	void zerg_place_building_continued(Unit* unit);																	// 005D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 007D770
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);										// 0088D50
 	void play_building_completed_sound(Unit* building);														// 008F310
@@ -766,7 +766,7 @@ namespace helper {
 	void secondary_order_cloak(Unit* unit);																			// 00491790
 
 	//// update_unit_state
-	bool unitHpIsInRedZone(Unit* unit);																				// 004022C0
+	bool unit_hp_is_in_redzone(Unit* unit);																				// 004022C0
 	void restore_all_unit_stats(Unit* unit);																		// 00492F70 (hooked by hooks\update_status_effects.cpp)
 
 	// For update_units

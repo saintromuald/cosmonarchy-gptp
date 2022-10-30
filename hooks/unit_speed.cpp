@@ -52,8 +52,8 @@ namespace hooks
 			speed *= 1.5;
 		}
 
-		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		/*
+		// Old Swarming Omen code
 		if (unit_ext->values[ValueSwarmingOmenPlayer]) {
 			u32 player = unit_ext->values[ValueSwarmingOmenPlayer] - 1;
 			EntryArray targets = {};
@@ -68,6 +68,8 @@ namespace hooks
 			}
 		}
 		*/
+
+		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			bool accelerate = false;
 			EntryArray targets = {};
@@ -106,10 +108,10 @@ namespace hooks
 		if (unit_ext->values[ValueSignifyStacks])
 		{
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vector32f dir = scbw::getUnitDirectionVector(unit);
+			Vector32f dir = scbw::get_unit_direction_vector(unit);
 
 			const u32 radius = 6 * 32;
-			Unit* enemyUnit = scbw::UnitFinder::get_nearest_target(
+			Unit* enemy_unit = scbw::UnitFinder::get_nearest_target(
 				unit->get_x() - radius,
 				unit->get_y() - radius,
 				unit->get_x() + radius,
@@ -121,16 +123,16 @@ namespace hooks
 				{
 					return false;
 				}
-				bool validPlayer = false;
+				bool valid_player = false;
 				for (auto player : unit_ext->value_vectors[ValueVectorSignifySourcePlayer])
 				{
 					if (scbw::is_allied_to(player, enemy->player))
 					{
-						validPlayer = true;
+						valid_player = true;
 						break;
 					}
 				}
-				if(!validPlayer)
+				if(!valid_player)
 				{
 					return false;
 				}
@@ -146,7 +148,7 @@ namespace hooks
 				return true;
 			});
 
-			if (enemyUnit)
+			if (enemy_unit)
 			{
 				speed *= 0.5;
 			}
@@ -278,6 +280,7 @@ namespace hooks
 			} break;
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ZergHydralisk:
+			case UnitId::ProtossVagrantShade:
 			{
 				speed *= 1.5;
 			} break;
