@@ -116,14 +116,14 @@ namespace hooks
 	// Calculates the attack priority of the @p target for the @p attacker.
 	u32 get_attack_priority(Unit* target, Unit* attacker)
 	{
-		Unit* actualTarget = target;
+		Unit* actual_target = target;
 
 		if (target->id == UnitId::TerranBunker)
 		{
-			Unit* firstLoadedUnit = target->get_first_loaded_unit();
-			if (firstLoadedUnit)
+			Unit* first_loaded_unit = target->get_first_loaded_unit();
+			if (first_loaded_unit)
 			{
-				actualTarget = firstLoadedUnit;
+				actual_target = first_loaded_unit;
 			}
 		}
 
@@ -134,48 +134,48 @@ namespace hooks
 		}
 
 		// Normal units
-		u32 attackPriority = 4;
+		u32 attack_priority = 4;
 
 		// Workers
-		if (units_dat::base_property[actualTarget->id] & UnitProperty::Worker)
+		if (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
 		{
-			attackPriority = 2;
+			attack_priority = 2;
 		}
 
-		//Units that can fight back
-		else if (actualTarget->can_attack_target(attacker))
+		// Units that can fight back
+		else if (actual_target->can_attack_target(attacker))
 		{
-			attackPriority = 0;
+			attack_priority = 0;
 		}
 
-		//Active combat units
-		else if (actualTarget->has_weapon())
+		// Active combat units
+		else if (actual_target->has_weapon())
 		{
-			attackPriority = 2;
+			attack_priority = 2;
 		}
 
-		else if (actualTarget->status & UnitStatus::IsBuilding)
+		else if (actual_target->status & UnitStatus::IsBuilding)
 		{
-			attackPriority = 3;
+			attack_priority = 3;
 		}
 
-		if (!(actualTarget->status & UnitStatus::Completed) || actualTarget != target)
+		if (!(actual_target->status & UnitStatus::Completed) || actual_target != target)
 		{
-			attackPriority += 1;
+			attack_priority += 1;
 		}
 
 		// Units under Disruption Field are less important
-		if (attackPriority == 0 && actualTarget->status & UnitStatus::CanNotAttack)
+		if (attack_priority == 0 && actual_target->status & UnitStatus::CanNotAttack)
 		{
-			attackPriority = 1;
+			attack_priority = 1;
 		}
 
-		if (actualTarget->id == UnitId::ProtossPlasmaShell)
+		if (actual_target->id == UnitId::ProtossPlasmaShell)
 		{
-			attackPriority = 2;
+			attack_priority = 2;
 		}
 
-		return attackPriority;
+		return attack_priority;
 	}
 
 	// Searches for the best attack target nearby for the @p unit.

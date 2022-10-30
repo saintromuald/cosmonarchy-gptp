@@ -817,12 +817,12 @@ LABEL_15:
 	// Hooked to add Nydus handling, except it already existed! - Pr0nogo
 	b32 give_unit_to_player(Unit* unit, u32 player) // 004C8040
 	{
-		u32 playerIdVar = player;
+		u32 player_id_var = player;
 		if (player == 13)
 		{
-			playerIdVar = *g_current_trigger_player_id;
+			player_id_var = *g_current_trigger_player_id;
 		}
-		if (!(playerIdVar < 0xC ? -(unit != 0) : 0))
+		if (!(player_id_var < 0xC ? -(unit != 0) : 0))
 		{
 			helper::SErrSetLastError(87);
 			return 0;
@@ -839,7 +839,7 @@ LABEL_15:
 		  || unit_id == UnitId::ProtossSteward
 		  || unit_id == UnitId::ProtossPlasmaShell
 		  || units_dat::base_property[unit_id] & UnitProperty::Addon
-		  || unit->player == playerIdVar)
+		  || unit->player == player_id_var)
 		{
 			return 0;
 		}
@@ -848,37 +848,37 @@ LABEL_15:
 			Unit* hiddenMiner = helper::getHiddenMiner(unit);
 			if (hiddenMiner)
 			{
-				helper::give_all_unit_properties_to_player(hiddenMiner, playerIdVar);
+				helper::give_all_unit_properties_to_player(hiddenMiner, player_id_var);
 			}
 		}
-		helper::give_all_unit_properties_to_player(unit, playerIdVar);
-		const u32 giveUnitsProc = 0x004C7CE0;
+		helper::give_all_unit_properties_to_player(unit, player_id_var);
+		const u32 give_units_proc = 0x004C7CE0;
 		if (helper::unit_is_active_transport(unit))
 		{
-			helper::iterateLoadedUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))giveUnitsProc, playerIdVar);
+			helper::iterateLoadedUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player_id_var);
 		}
 		if (helper::unitHasHanger(unit))
 		{
-			helper::forHangarUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))giveUnitsProc, playerIdVar);
+			helper::forHangarUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player_id_var);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			Unit* connected_unit = unit->building.addon;
 			if (connected_unit)
 			{
-				helper::give_all_unit_properties_to_player(connected_unit, playerIdVar);
+				helper::give_all_unit_properties_to_player(connected_unit, player_id_var);
 			}
 			if (helper::is_constructing_addon(unit))
 			{
-				Unit* creatingUnit = helper::getCreatingUnit(unit);
-				helper::give_all_unit_properties_to_player(creatingUnit, playerIdVar);
+				Unit* creating_unit = helper::getCreatingUnit(unit);
+				helper::give_all_unit_properties_to_player(creating_unit, player_id_var);
 			}
 			if (unit->id == UnitId::ZergNydusCesiant)
 			{
 				Unit* nydus_exit = unit->building.nydus_exit;
 				if (nydus_exit)
 				{
-					helper::give_all_unit_properties_to_player(nydus_exit, playerIdVar);
+					helper::give_all_unit_properties_to_player(nydus_exit, player_id_var);
 				}
 			}
 		}

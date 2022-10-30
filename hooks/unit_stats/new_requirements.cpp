@@ -2414,12 +2414,12 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ProtossPlasmaShell)
 				{
-					u32 shellCount = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
+					u32 shell_count = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
 					for (u32 i = 0; i < 5; ++i)
 					{
-						shellCount += unit->build_queue[i] != UnitId::None;
+						shell_count += unit->build_queue[i] != UnitId::None;
 					}
-					if (shellCount >= 5)
+					if (shell_count >= 5)
 					{
 						return TECH_HIDDEN;
 					}
@@ -2431,12 +2431,12 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ProtossSteward)
 				{
-					u32 stewardCount = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
+					u32 steward_count = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
 					for (u32 i = 0; i < 5; ++i)
 					{
-						stewardCount += unit->build_queue[i] != UnitId::None;
+						steward_count += unit->build_queue[i] != UnitId::None;
 					}
-					if (stewardCount >= 12)
+					if (steward_count >= 12)
 					{
 						return TECH_HIDDEN;
 					}

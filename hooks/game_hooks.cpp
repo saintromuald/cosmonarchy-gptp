@@ -1031,7 +1031,7 @@ namespace hooks
 						// Apply Lazarus Agent
 						Unit* target = units.units[i];
 						if (target->id == UnitId::ZergLarva || target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon
-							|| target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward) {
+						||  target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward) {
 							continue;
 						}
 						UnitExt* target_ext = get_unit_ext(target);

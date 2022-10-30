@@ -70,12 +70,12 @@ void kill_hangar_units(Unit* unit)
 	}
 	while (unit->unit_with_hangar.out_hangar_count != 0)
 	{
-		Unit* childOutside = unit->unit_with_hangar.out_hangar_child;
-		childOutside->hangar_unit.parent = nullptr;
+		Unit* child_outside = unit->unit_with_hangar.out_hangar_child;
+		child_outside->hangar_unit.parent = nullptr;
 		// Kill Stewards only (Plasma Shells will defuse anyway)
-		if (childOutside->id != UnitId::ProtossPlasmaShell)
+		if (child_outside->id != UnitId::ProtossPlasmaShell)
 		{
-			u16 randomDeathTimer;
+			u16 random_death_timer;
 			// TODO: Remove RNG, make farthest Stewards detonate first
 			// hardcoded RNG management
 			if (*g_is_in_game_loop)
@@ -93,17 +93,17 @@ void kill_hangar_units(Unit* unit)
 				random_value = 0;
 			}
 			// should produce a number between 15 and 45 (or maybe 46)
-			randomDeathTimer = ((random_value * 31) / 32768) + 15;
-			if (childOutside->remove_timer == 0
-			||  randomDeathTimer < childOutside->remove_timer)
+			random_death_timer = ((random_value * 31) / 32768) + 15;
+			if (child_outside->remove_timer == 0
+			||  random_death_timer < child_outside->remove_timer)
 			{
-				childOutside->remove_timer = randomDeathTimer;
+				child_outside->remove_timer = random_death_timer;
 			}
 		}
 		// 00466239
-		unit->unit_with_hangar.out_hangar_child = childOutside->hangar_unit.hangar_link.prev;
-		childOutside->hangar_unit.hangar_link.prev = nullptr;
-		childOutside->hangar_unit.hangar_link.next = nullptr;
+		unit->unit_with_hangar.out_hangar_child = child_outside->hangar_unit.hangar_link.prev;
+		child_outside->hangar_unit.hangar_link.prev = nullptr;
+		child_outside->hangar_unit.hangar_link.next = nullptr;
 		unit->unit_with_hangar.out_hangar_count--;
 	}
 	unit->unit_with_hangar.out_hangar_child = nullptr;

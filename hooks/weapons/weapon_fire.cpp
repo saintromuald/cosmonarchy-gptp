@@ -1176,27 +1176,27 @@ namespace hooks {
 		bullet->unknown_0x4E = 0;
 		hooks::bullet_behavior_reassign(bullet);
 
-		u8 launchSpin = weapons_dat::launch_spin[weapon_id];
-		if (launchSpin)
+		u8 launch_spin = weapons_dat::launch_spin[weapon_id];
+		if (launch_spin)
 		{
-			s32 launchSpinVariance = 0;
+			s32 launch_spin_variance = 0;
 			if (parent == *g_last_bullet_creator)
 			{
-				launchSpinVariance = *g_launch_spin_random == 0;
+				launch_spin_variance = *g_launch_spin_random == 0;
 			}
 			else
 			{
-				launchSpinVariance = helper::randomize_short(0) & 1;
+				launch_spin_variance = helper::randomize_short(0) & 1;
 			}
 
-			*g_launch_spin_random = launchSpinVariance;
-			bool invertSpin = launchSpinVariance == 0;
-			launchSpinVariance = launchSpin;
-			if (invertSpin)
+			*g_launch_spin_random = launch_spin_variance;
+			bool invert_spin = launch_spin_variance == 0;
+			launch_spin_variance = launch_spin;
+			if (invert_spin)
 			{
-				launchSpinVariance = -(s8)launchSpin;
+				launch_spin_variance = -(s8)launch_spin;
 			}
-			char launchSpinDirection = launchSpinVariance + bullet->direction2;
+			char launchSpinDirection = launch_spin_variance + bullet->direction2;
 			bullet->direction2 = launchSpinDirection;
 			bullet->direction1 = launchSpinDirection;
 			*g_last_bullet_creator = parent;
