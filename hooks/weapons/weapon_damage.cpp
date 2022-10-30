@@ -712,7 +712,9 @@ namespace hooks
 					case WeaponId::EcclesiastAstralBlaster:
 					{
 						// Astral Blessing - Ecclesiast behavior
-						scbw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);
+						if (data.attacking_player_id != data.target->player && !scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							scbw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);
+						}
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
@@ -724,7 +726,7 @@ namespace hooks
 					} break;
 					case WeaponId::PatriarchIronhandWeaver:
 					{
-						if (target_ext->timers[TimerPatriarchAstralRule] == 0)
+						if (data.attacking_player_id != data.target->player && !scbw::is_allied_to(data.attacking_player_id, data.target->player) && target_ext->timers[TimerPatriarchAstralRule] == 0)
 						{
 							target_ext->values[ValuePatriarchAstralRulePlayer] = data.attacking_player_id;
 							target_ext->timers[TimerPatriarchAstralRule] = 24 + 1;

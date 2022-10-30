@@ -2790,7 +2790,7 @@ namespace scbw
 		return false;
 	}
 
-	void astral_blessing_proc(Unit* unit, u32 attacking_player_id, u32 weapon_id)
+	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id)
 	{
 		u32 heal_amount = 1;
 		switch (weapon_id)
@@ -2806,10 +2806,10 @@ namespace scbw
 		}
 		const s32 range = 64;
 		scbw::UnitFinder(
-			unit->get_x() - range,
-			unit->get_y() - range,
-			unit->get_x() + range,
-			unit->get_y() + range
+			victim->get_x() - range,
+			victim->get_y() - range,
+			victim->get_x() + range,
+			victim->get_y() + range
 		).for_each([&](Unit* unit)
 			{
 				if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player))
@@ -2830,7 +2830,7 @@ namespace scbw
 				if (units_dat::shields_enabled[unit->id])
 				{
 					// Shield heal
-					unit->heal_shields(heal_amount * 256, unit);
+					unit->heal_shields(2 * 256, victim);
 				}
 			});
 	}
