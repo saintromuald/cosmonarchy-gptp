@@ -14,41 +14,34 @@ void augur_proc(Unit* augur, s32 radius) {
 		augur->get_y() - radius,
 		augur->get_x() + radius,
 		augur->get_y() + radius,
-		augur, [&](Unit* unit)
-		{
-			// Don't attack friendly / allied units
-			if (unit->sprite == nullptr)
-			{
-				return false;
-			}
-			if (unit->player == augur->player)
-			{
-				return false;
-			}
-			if (scbw::is_allied_to(unit->player, augur->player))
-			{
-				return false;
-			}
-			if (unit->status & UnitStatus::Invincible)
-			{
-				return false;
-			}
-			return true;
-		});
+		augur,
+	[&](Unit* unit) {
+		// Don't attack friendly / allied units
+		if (!unit->sprite) {
+			return false;
+		}
+		if (unit->player == augur->player) {
+			return false;
+		}
+		if (scbw::is_allied_to(unit->player, augur->player)) {
+			return false;
+		}
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		return true;
+	});
 	Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, augur->get_x(), augur->get_y(), augur->player);
 	helper::play_sound_from_unit(scbw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
-	if (target)
-	{
+	if (target) {
 		augur->order_target.unit = target;
 		helper::create_bullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, scbw::get_angle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
 	}
 }
 
-void augur_sacrifice(Unit* augur, s32 radius)
-{
+void augur_sacrifice(Unit* augur, s32 radius) {
 	UnitExt* targetExt = get_unit_ext(augur);
-	if (targetExt->values[ValueAugurSafetyCheck] == 0)
-	{
+	if (targetExt->values[ValueAugurSafetyCheck] == 0) {
 		targetExt->values[ValueAugurSafetyCheck] = 1;
 		augur_proc(augur, radius);
 		augur->remove();
@@ -57,29 +50,25 @@ void augur_sacrifice(Unit* augur, s32 radius)
 
 // Identical to 00466170 kill_hangar_units
 // Not hooked but used by hooked unit_destructor_special_cases
-void kill_hangar_units(Unit* unit)
-{
+void kill_hangar_units(Unit* unit) {
 	u32 random_value;
-	while (unit->unit_with_hangar.in_hangar_count != 0)
-	{
+	while (unit->unit_with_hangar.in_hangar_count != 0) {
 		Unit* childInside = unit->unit_with_hangar.in_hangar_child;
 		unit->unit_with_hangar.in_hangar_child = childInside->hangar_unit.hangar_link.prev;
 		childInside->hangar_unit.parent = nullptr;
 		childInside->remove();
 		unit->unit_with_hangar.in_hangar_count--;
 	}
-	while (unit->unit_with_hangar.out_hangar_count != 0)
-	{
+	while (unit->unit_with_hangar.out_hangar_count != 0) {
 		Unit* child_outside = unit->unit_with_hangar.out_hangar_child;
 		child_outside->hangar_unit.parent = nullptr;
+
 		// Kill Stewards only (Plasma Shells will defuse anyway)
-		if (child_outside->id != UnitId::ProtossPlasmaShell)
-		{
+		if (child_outside->id != UnitId::ProtossPlasmaShell) {
 			u16 random_death_timer;
 			// TODO: Remove RNG, make farthest Stewards detonate first
 			// hardcoded RNG management
-			if (*g_is_in_game_loop)
-			{
+			if (*g_is_in_game_loop) {
 				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
 				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
@@ -87,59 +76,49 @@ void kill_hangar_units(Unit* unit)
 				*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
 				// number between 0 and 32766
 				random_value = (*g_last_random_number / 65536) & 0x7FFF;
-			}
-			else
-			{
+			} else {
 				random_value = 0;
 			}
 			// should produce a number between 15 and 45 (or maybe 46)
 			random_death_timer = ((random_value * 31) / 32768) + 15;
 			if (child_outside->remove_timer == 0
-			||  random_death_timer < child_outside->remove_timer)
-			{
+			||  random_death_timer < child_outside->remove_timer) {
 				child_outside->remove_timer = random_death_timer;
 			}
 		}
 		// 00466239
 		unit->unit_with_hangar.out_hangar_child = child_outside->hangar_unit.hangar_link.prev;
-		child_outside->hangar_unit.hangar_link.prev = nullptr;
-		child_outside->hangar_unit.hangar_link.next = nullptr;
+		child_outside->hangar_unit.hangar_link.prev = 0;
+		child_outside->hangar_unit.hangar_link.next = 0;
 		unit->unit_with_hangar.out_hangar_count--;
 	}
-	unit->unit_with_hangar.out_hangar_child = nullptr;
+	unit->unit_with_hangar.out_hangar_child = 0;
 }
 
 // Identical to 00468770 remove_harvesters
 // Not hooked but used by hooked unit_destructor_special_cases
-void free_resource_container(Unit* resource)
-{
+void free_resource_container(Unit* resource) {
 	resource->building.resource.gather_queue_count = 0;
 	Unit* worker = resource->building.resource.next_gatherer;
 	Unit* nextWorker;
-	while (worker != nullptr)
-	{
-		if (worker->worker.harvest_link.prev != nullptr) // untie the previous worker from current worker (tie it to next)
-		{
-			(worker->worker.harvest_link.prev)->worker.harvest_link.next = worker->worker.harvest_link.next;
-		}
-		else
-		{
+	while (worker) {
+		if (worker->worker.harvest_link.prev) { // untie the previous worker from current worker (tie it to next)
+			worker->worker.harvest_link.prev->worker.harvest_link.next = worker->worker.harvest_link.next;
+		} else {
 			resource->building.resource.next_gatherer = worker->worker.harvest_link.next;
 		}
-		if (worker->worker.harvest_link.next != nullptr) // untie the next worker from current worker (tie it to previous)
-		{
-			(worker->worker.harvest_link.next)->worker.harvest_link.prev = worker->worker.harvest_link.prev;
+		if (worker->worker.harvest_link.next) { // untie the next worker from current worker (tie it to previous)
+			worker->worker.harvest_link.next->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 		}
 		nextWorker = worker->worker.harvest_link.next;
-		worker->worker.harvest_target = nullptr;
-		worker->worker.harvest_link.prev = nullptr;
-		worker->worker.harvest_link.next = nullptr;
+		worker->worker.harvest_target = 0;
+		worker->worker.harvest_link.prev = 0;
+		worker->worker.harvest_link.next = 0;
 		worker = nextWorker;
 	}
 }
 
-void unit_destructor_special_cases(Unit* unit)
-{
+void unit_destructor_special_cases(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit->reset_supply_provided();
 
@@ -162,82 +141,61 @@ void unit_destructor_special_cases(Unit* unit)
 		}
 	}
 
-	/*
-	if (!(unit->user_action_flags & 4) && // for silent remove
-		  unit->status & UnitStatus::Completed && 
-	     (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk ||
-		  unit->id == UnitId::ZergGathtelosk     || unit->id == UnitId::ZergSibraelosk ||
-		  units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) ||
-		  unitExt->values[ValueBlissfulEmbraceOriginalPlayer])
-	{
-		scbw::clear_creep(scbw::unit_area(unit));
-	}
-	*/
-
 	// These do not require the unit to be completed
-	switch (unit->id)
-	{
+	switch (unit->id) {
 		case UnitId::TerranEidolon:
 		case UnitId::TerranSeraph:
 		{
-			if (unit->building.nuke_missile != nullptr)
-			{
+			if (unit->building.nuke_missile) {
 				(unit->building.nuke_missile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);
-				unit->building.nuke_missile = nullptr;
+				unit->building.nuke_missile = 0;
 			}
 		} break;
 		case UnitId::TerranNuclearMissile:
 		{
-			if (unit->connected_unit != nullptr && unit->connected_unit->id == UnitId::TerranMissileSilo)
-			{
-				(unit->connected_unit)->building.silo.nuke = nullptr;
-				(unit->connected_unit)->building.silo.is_ready = false;
+			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranMissileSilo) {
+				unit->connected_unit->building.silo.nuke = nullptr;
+				unit->connected_unit->building.silo.is_ready = false;
 			}
 		} break;
 		case UnitId::TerranMissileSilo:
 		{
-			if (unit->building.silo.nuke != nullptr)
-			{
-				(unit->building.silo.nuke)->remove();
-				unit->building.silo.nuke = nullptr;
+			if (unit->building.silo.nuke) {
+				unit->building.silo.nuke->remove();
+				unit->building.silo.nuke = 0;
 			}
 		} break;
 		case UnitId::ProtossPylon:
 		{
 			// code from hooks::remove_psi_field(Unit* unit)
 			// copied because the content is hardcoded here
-			if (unit->building.pylon_aura != nullptr)
-			{
+			if (unit->building.pylon_aura) {
 				unit->building.pylon_aura->free();	// should be equivalent to SpriteDestructor @ 00497B40
-				unit->building.pylon_aura = nullptr;
+				unit->building.pylon_aura = 0;
 			}
 
 			// begin hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
-			if (unit->psi_link.prev != nullptr)  // untie the previous pylon from current pylon (tie it to next)
-			{
-				(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
+			if (unit->psi_link.prev) { // untie the previous pylon from current pylon (tie it to next)
+				unit->psi_link.prev->psi_link.next = unit->psi_link.next;
 			}
-			if (unit->psi_link.next != nullptr)  // untie the next pylon from current pylon (tie it to previous)
-			{
-				(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
+			if (unit->psi_link.next) { // untie the next pylon from current pylon (tie it to previous)
+				unit->psi_link.next->psi_link.prev = unit->psi_link.prev;
 			}
 
-			if (unit == *first_psi_field_provider)
-			{
+			if (unit == *first_psi_field_provider) {
 				*first_psi_field_provider = unit->psi_link.next;
 			}
-			unit->psi_link.prev = nullptr;
-			unit->psi_link.next = nullptr;
+			unit->psi_link.prev = 0;
+			unit->psi_link.next = 0;
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			*g_can_update_powered_status = true;
 		} break;
 		case UnitId::ZergNydusCesiant:
 		{
 			Unit* nydus_exit = unit->building.nydus_exit;
-			if (nydus_exit != nullptr)
-			{
-				unit->building.nydus_exit = nullptr;
-				nydus_exit->building.nydus_exit = nullptr;
+			if (nydus_exit) {
+				unit->building.nydus_exit = 0;
+				nydus_exit->building.nydus_exit = 0;
 				nydus_exit->remove();
 			}
 			break;
@@ -245,15 +203,12 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// These require the unit to be completed
-	if (unit->status & UnitStatus::Completed)
-	{
-		switch (unit->id)
-		{
+	if (unit->status & UnitStatus::Completed) {
+		switch (unit->id) {
 			case UnitId::TerranMissileSilo:
 			{
 				// Missile Silo - death while armed
-				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition])
-				{
+				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition]) {
 					scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
 				}
@@ -291,22 +246,21 @@ void unit_destructor_special_cases(Unit* unit)
 					unit->get_y() - range,
 					unit->get_x() + range,
 					unit->get_y() + range
-				).for_each([&](Unit* target)
+				).for_each([&](Unit* target) {
+					UnitExt* targetExt = get_unit_ext(target);
+					if (!scbw::is_allied_to(unit->player, target->player))
 					{
-						UnitExt* targetExt = get_unit_ext(target);
-						if (!scbw::is_allied_to(unit->player, target->player))
-						{
-							return;
-						}
-						targetExt->values[ValueTerminalSurge]++;
-						target->update_speed();
+						return;
+					}
+					targetExt->values[ValueTerminalSurge]++;
+					target->update_speed();
 						
-						if (target->subunit != nullptr)
-						{
-							UnitExt* subunitExt = get_unit_ext(target->subunit);
-							subunitExt->values[ValueTerminalSurge]++;
-						}
-					});
+					if (target->subunit != nullptr)
+					{
+						UnitExt* subunitExt = get_unit_ext(target->subunit);
+						subunitExt->values[ValueTerminalSurge]++;
+					}
+				});
 			} break;
 			case UnitId::ProtossAccantorOld:
 			case UnitId::ProtossSolarion:
@@ -316,41 +270,28 @@ void unit_destructor_special_cases(Unit* unit)
 			case UnitId::ProtossPlasmaShell:
 			case UnitId::ProtossSteward:
 			{
-				if (unit->hangar_unit.parent != nullptr)
-				{
-					if (unit->hangar_unit.hangar_link.next != nullptr) // untie the next hangar_unit/scarab from current hangar_unit/scarab (tie it to previous)
-					{
-						(unit->hangar_unit.hangar_link.next)->hangar_unit.hangar_link.prev = unit->hangar_unit.hangar_link.prev;
-					}
-					else
-					{
-						if (unit->hangar_unit.is_outside_hangar)
-						{
+				if (unit->hangar_unit.parent) {
+					if (unit->hangar_unit.hangar_link.next) { // untie the next hangar_unit/scarab from current hangar_unit/scarab (tie it to previous)
+						unit->hangar_unit.hangar_link.next->hangar_unit.hangar_link.prev = unit->hangar_unit.hangar_link.prev;
+					} else {
+						if (unit->hangar_unit.is_outside_hangar) {
 							unit->hangar_unit.parent->unit_with_hangar.out_hangar_child = unit->hangar_unit.hangar_link.prev;
-						}
-						else
-						{
+						} else {
 							unit->hangar_unit.parent->unit_with_hangar.in_hangar_child = unit->hangar_unit.hangar_link.prev;
 						}
 					}
-					if (unit->hangar_unit.is_outside_hangar)
-					{
+					if (unit->hangar_unit.is_outside_hangar) {
 						unit->hangar_unit.parent->unit_with_hangar.out_hangar_count--;
-					}
-					else
-					{
+					} else {
 						unit->hangar_unit.parent->unit_with_hangar.in_hangar_count--;
 					}
 
-					if (unit->hangar_unit.hangar_link.prev != nullptr)  // untie the previous hangar_unit/scarab from current hangar_unit/scarab (tie it to next)
-					{
-						(unit->hangar_unit.hangar_link.prev)->hangar_unit.hangar_link.next = unit->hangar_unit.hangar_link.next;
+					if (unit->hangar_unit.hangar_link.prev) { // untie the previous hangar_unit/scarab from current hangar_unit/scarab (tie it to next)
+						unit->hangar_unit.hangar_link.prev->hangar_unit.hangar_link.next = unit->hangar_unit.hangar_link.next;
 					}
-				}
-				else
-				{
-					unit->hangar_unit.hangar_link.prev = nullptr;
-					unit->hangar_unit.hangar_link.next = nullptr;
+				} else {
+					unit->hangar_unit.hangar_link.prev = 0;
+					unit->hangar_unit.hangar_link.next = 0;
 				}
 			} break;
 			case UnitId::ResourceMineralField:
@@ -385,26 +326,22 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Alkajelisk Parasitic Spores
-	if (unit_ext->values[ValueAlkajeliskSpores] == 1)
-	{
+	if (unit_ext->values[ValueAlkajeliskSpores] == 1) {
 		unit->order_target.pt.x = unit->position.x + 1;
 		unit->order_target.pt.y = unit->position.y;
 		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskSporesPlayer], 0);
-		if (bullet != nullptr)
-		{
+		if (bullet) {
 			bullet->time_remaining = 255;
 		}
 	}
 
 	// Madrigal - Dirge
-	if (unit_ext->timers[TimerDirgeFuse])
-	{
+	if (unit_ext->timers[TimerDirgeFuse]) {
 		scbw::madrigal_dirge_fuse(unit, unit_ext);
 	}
 
 	// Imply revive (Lazarus Agent, Counter-Proposal)
-	if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive])
-	{
+	if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive]) {
 		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit, 1, 0);
 	}
@@ -417,18 +354,14 @@ void unit_destructor_special_cases(Unit* unit)
 			unit->get_y() - range,
 			unit->get_x() + range,
 			unit->get_y() + range
-		).for_each([&](Unit* target)
-		{
-			if (target->id != UnitId::TerranApostle)
-			{
+		).for_each([&](Unit* target) {
+			if (target->id != UnitId::TerranApostle) {
 				return;
 			}
-			if (target == unit)
-			{
+			if (target == unit) {
 				return;
 			}
-			if (!scbw::is_allied_to(unit->player, target->player))
-			{
+			if (!scbw::is_allied_to(unit->player, target->player)) {
 				return;
 			}
 			target->heal_energy(ApostleLastBreathEnergyGain);
@@ -446,8 +379,7 @@ void unit_destructor_special_cases(Unit* unit)
 	}
 
 	// Metastasis - Plague spreads when a unit dies
-	if (unit->plague_timer)
-	{
+	if (unit->plague_timer) {
 		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);
 		u32 range = 48;
 		Box16 coords = {};
