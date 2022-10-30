@@ -90,7 +90,7 @@ namespace hooks
 		UnitExt* target_ext = get_unit_ext(data.target);
 
 		// The unit must neither be already dead nor invincible
-		if (data.target == nullptr || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible) {
+		if (!data.target || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible) {
 			return;
 		}
 
@@ -102,15 +102,14 @@ namespace hooks
 
 		// TODO: remove this
 		bool can_damage = true; // debug only!
+
 		// Ai_ReactToHit crash - null town
-		if (data.target->unit_ai != nullptr)
-		{
+		if (data.target->unit_ai) {
 			// Ai_ReactToHit crash - null town
 			WorkerAi* ai = (WorkerAi*)data.target->unit_ai;
 			if (ai->type == 2 || ai->type == 3)
 			{
-				if (ai->town == nullptr)
-				{
+				if (!ai->town) {
 					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 						data.attacker->id, data.attacker->player, data.target->id, data.target->player);
 					can_damage = false;
@@ -118,42 +117,33 @@ namespace hooks
 			}
 		}
 
-		if (!data.dont_proc_link_damage) // damage from links was already calculated
-		{
+		if (!data.dont_proc_link_damage) { // damage from links was already calculated
 			weapon_damage_damage_modifiers(data);
 		}
 
-		if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target))
-		{
+		if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target)) {
 			data.final_damage /= 2;
 			scbw::spread_clarion_damage(data);
 		}
 
 		// Hallucinations deal half damage
-		if (data.attacker != nullptr)
-		{
-			if (data.attacker->status & UnitStatus::IsHallucination)
-			{
+		if (data.attacker) {
+			if (data.attacker->status & UnitStatus::IsHallucination) {
 				data.final_damage /= 2;
 			}
 		}
 
 		// Minimum amount of damage that can be dealt
-		if (data.final_damage < 256)
-		{
+		if (data.final_damage < 256) {
 			data.final_damage = 256;
 		}
 
 		// Reduce Defensive Matrix
-		if (data.target->defensive_matrix_hp != 0)
-		{
+		if (data.target->defensive_matrix_hp != 0) {
 			s32 defensive_matrix_reduction;
-			if (data.target->defensive_matrix_hp > data.final_damage)
-			{
+			if (data.target->defensive_matrix_hp > data.final_damage) {
 				defensive_matrix_reduction = data.final_damage;
-			}
-			else
-			{
+			} else {
 				defensive_matrix_reduction = data.target->defensive_matrix_hp;
 			}
 			data.final_damage -= defensive_matrix_reduction;
@@ -166,8 +156,8 @@ namespace hooks
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id);
 
 			s32 armor_total = (data.target->get_armor() - armor_pen) * 256;
-			if (data.attacker != nullptr) {
-				armor_total += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
+			if (data.attacker ) {
+				armor_total += scbw::get_aise_value(data.target, 0, AiseId::GetShepherds, 0, 0) * 256;
 				if (data.target->id == UnitId::TerranMinotaur) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
@@ -236,17 +226,14 @@ namespace hooks
 		}
 
 		// Reduce shields
-		if (data.shield_reduce_amount != 0 && can_damage)
-		{
+		if (data.shield_reduce_amount && can_damage) {
 			data.target->shields -= data.shield_reduce_amount;
-			if (data.damage_type != damage_type::Independent && data.target->shields != 0)
-			{
+			if (data.damage_type != damage_type::Independent && data.target->shields != 0) {
 				shield_overlay = true;
 			}
 		}
 
-		if (shield_overlay)
-		{
+		if (shield_overlay) {
 			scbw::create_shield_overlay(data.target, data.direction);
 		}
 
@@ -255,14 +242,13 @@ namespace hooks
 		data.target->ground_strength = helper::get_unit_strength(data.target, true);
 	}
 
-	static void weapon_damage_damage_modifiers(WeaponDamageData& data)
-	{
-		UnitExt* targetExt = get_unit_ext(data.target);
+	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
+		UnitExt* target_ext = get_unit_ext(data.target);
 
 		// Allied invincibility frames (for e.g. Akistrokor Blissful Embrace)
-		if (targetExt->timers[TimerAlliedInvFrames])
+		if (target_ext->timers[TimerAlliedInvFrames])
 		{
-			if (scbw::is_allied_to(data.attacking_player_id, targetExt->values[ValueAlliedInvPlayer]))
+			if (scbw::is_allied_to(data.attacking_player_id, target_ext->values[ValueAlliedInvPlayer]))
 			{
 				data.final_damage = 0;
 			}
@@ -275,25 +261,23 @@ namespace hooks
 		}
 
 		// Observance armor reduction
-		data.final_damage += 256 * targetExt->values[ValueObservanceRend];
+		data.final_damage += 256 * target_ext->values[ValueObservanceRend];
 
-		switch (data.weapon_id) // Damage divisor calc
-		{
+		switch (data.weapon_id) { // Damage divisor calc
 			case WeaponId::ArchitectDispersiveSalvo:
 			{
 				// Reactive Payload - Architect behavior
 				f64 div = 1.0;
-				if (data.damage_divisor != 0)
-				{
+				if (data.damage_divisor != 0) {
 					div = (f64)data.damage_divisor;
 				}
 				s32 dmg = ((f64)data.final_damage / div);
-				data.final_damage = dmg + targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+				data.final_damage = dmg + target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			case WeaponId::GeszithalorAcidSpore:
 			{
 				// Searing Acid - Geszithalor behavior
-				data.final_damage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damage_divisor * 10 * 256);
+				data.final_damage += (target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damage_divisor * 10 * 256);
 			} break;
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::MutaliskGlaveWurm:
@@ -301,7 +285,7 @@ namespace hooks
 			{
 				// Lithe Organelle - bounce damage
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
-				data.final_damage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+				data.final_damage += (s32)target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			case WeaponId::SavantDiscoidRailgun:
 			{
@@ -318,30 +302,28 @@ namespace hooks
 			case WeaponId::HeraclesJavelinCannons:
 			{
 				if (data.attacker) {
-					UnitExt* attackerExt = get_unit_ext(data.attacker);
-					data.final_damage += (attackerExt->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
+					UnitExt* attacker_ext = get_unit_ext(data.attacker);
+					data.final_damage += (attacker_ext->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
 				}
 			} break;
 			default:
 			{
 				u32 divisor = data.damage_divisor;
-				if (divisor == 0)
-				{
+				if (divisor == 0) {
 					divisor = 1;
 					scbw::printf("Incorrect weapon hit %d", data.weapon_id);
 				}
-				data.final_damage = data.final_damage / divisor + (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
+				data.final_damage = data.final_damage / divisor + (target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
 
-		switch (data.weapon_id)
-		{
+		switch (data.weapon_id) {
 			case WeaponId::CabalistWarpBlades: {
 				// Cabalist - Toggle cloak with each attack
 				if (data.attacker) {
-					UnitExt* attackerExt = get_unit_ext(data.attacker);
-					if (attackerExt->timers[TimerDecloak] > 2) {
-						attackerExt->timers[TimerDecloak] = 2;
+					UnitExt* attacker_ext = get_unit_ext(data.attacker);
+					if (attacker_ext->timers[TimerDecloak] > 2) {
+						attacker_ext->timers[TimerDecloak] = 2;
 						data.final_damage /= 2;
 					} else {
 						scbw::decloak_proc(data.attacker);
@@ -365,7 +347,7 @@ namespace hooks
 
 		if (data.attacker)
 		{
-			UnitExt* attackerExt = get_unit_ext(data.attacker);
+			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 
 			// Ignore Carapace Swarm!
 			// START
@@ -374,7 +356,7 @@ namespace hooks
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
-					attackerExt->shield_regen_timer = 0;
+					attacker_ext->shield_regen_timer = 0;
 				} break;
 				case UnitId::TerranOlympian: {
 					// Olympian Dishonorable Discharge - deal +5 damage to targets facing away from the Olympian
@@ -391,9 +373,7 @@ namespace hooks
 			// Cantavis - Hallucinating
 			if (target_ext->timers[TimerHallucinating] >= 1) {
 				Unit* halu_attacker = data.attacker;
-				if ((halu_attacker->id == UnitId::ProtossSteward || halu_attacker->id == UnitId::ProtossPlasmaShell)
-					&& data.attacker->hangar_unit.parent)
-				{
+				if ((halu_attacker->id == UnitId::ProtossSteward || halu_attacker->id == UnitId::ProtossPlasmaShell) && data.attacker->hangar_unit.parent) {
 					halu_attacker = data.attacker->hangar_unit.parent;
 				}
 				UnitExt* halu_attacker_ext = get_unit_ext(halu_attacker);
@@ -401,29 +381,27 @@ namespace hooks
 					if (scbw::is_allied_to(halu_attacker->player, data.target->player)) {
 						return;
 					}
-					Unit* hal_unit = hooks::create_hallucination(halu_attacker, halu_attacker->player, target_ext->timers[TimerHallucinating]);
-					if (hal_unit) {
-						hal_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
-						if (!helper::place_hallucination(hal_unit)) {
-							helper::UnitDestructor(hal_unit);
+					Unit* halu_unit = hooks::create_hallucination(halu_attacker, halu_attacker->player, target_ext->timers[TimerHallucinating]);
+					if (halu_unit) {
+						halu_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
+						if (!helper::place_hallucination(halu_unit)) {
+							helper::UnitDestructor(halu_unit);
 						}
 					}
 				}
 			}
 
 			// Ensnaring Brood - Matraleth enchantment ability
-			if  (attackerExt->timers[TimerEnsnaringBrood] > 0
+			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
-			&&  !scbw::is_under_dark_swarm(data.target))
-			{
+			&&  !scbw::is_under_dark_swarm(data.target)) {
 				apply_ensnare(data.target);
 			}
 
 			// Ignore Carapace Swarm!
 			// END
 
-			switch (data.target->id)
-			{
+			switch (data.target->id) {
 				case UnitId::ProtossSimulacrum:
 				{
 					// Autovitality - Simulacrum behavior
@@ -453,8 +431,8 @@ namespace hooks
 							displacement.x *= 1 * 32.0 / displacementTime;
 							displacement.y *= 1 * 32.0 / displacementTime;
 
-							attackerExt->timers[TimerStrigaRepulsion] = displacementTime;
-							attackerExt->repulsion_vector = displacement;
+							attacker_ext->timers[TimerStrigaRepulsion] = displacementTime;
+							attacker_ext->repulsion_vector = displacement;
 						}
 					}
 				} break;
@@ -506,11 +484,11 @@ namespace hooks
 				case WeaponId::ZethrokorClaws:
 				{
 					// Adrenal Glands - Zergling behavior
-					if (attackerExt->values[ValueAdrenalStacks] < 4)
+					if (attacker_ext->values[ValueAdrenalStacks] < 4)
 					{
-						attackerExt->values[ValueAdrenalStacks] += 1;
+						attacker_ext->values[ValueAdrenalStacks] += 1;
 					}
-					attackerExt->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
+					attacker_ext->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
 				} break;
 				case WeaponId::VorvalClaws:
 				{
@@ -529,10 +507,8 @@ namespace hooks
 				} break;
 			}
 
-			if (!scbw::is_under_dark_swarm(data.target))
-			{
-				switch (data.weapon_id)
-				{
+			if (!scbw::is_under_dark_swarm(data.target)) {
+				switch (data.weapon_id) {
 					case WeaponId::AutocratEminanceRifle:
 					{
 						// Apply Controlled Opposition
@@ -574,11 +550,11 @@ namespace hooks
 							target_ext->values[ValueDeconstruction]++;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 							s32 overlayOffset = scbw::get_overlay_offset(data.target->id);
-							if (data.target->subunit != nullptr)
+							if (data.target->subunit)
 							{
-								UnitExt* subunitExt = get_unit_ext(data.target->subunit);
-								subunitExt->values[ValueDeconstruction]++;
-								subunitExt->values[ValueDeconstructionPlayer] = data.attacker->player;
+								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
+								subunit_ext->values[ValueDeconstruction]++;
+								subunit_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
 								{
 									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
@@ -670,7 +646,7 @@ namespace hooks
 									}
 									helper::apply_spores(target);
 									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
-									if (thingy != nullptr)
+									if (thingy)
 									{
 										thingy->sprite->elevation = target->sprite->elevation + 1;
 										helper::set_thingy_visibility_flags(thingy);
@@ -747,16 +723,13 @@ namespace hooks
 		}
 	}
 
-	static void weapon_damage_lifesteal(WeaponDamageData& data)
-	{
+	static void weapon_damage_lifesteal(WeaponDamageData& data) {
 		u32 damage_dealt = data.final_damage + data.shield_reduce_amount;
-		switch (data.weapon_id)
-		{
+		switch (data.weapon_id) {
 			case WeaponId::SevenstepGeometricRifle:
 			{
 				// Sevenstep Mind Matter passive - heal energy, then shields
-				if (data.attacker->energy == data.attacker->get_max_energy() && data.attacker->shields != data.attacker->get_max_shields_raw())
-				{
+				if (data.attacker->energy == data.attacker->get_max_energy() && data.attacker->shields != data.attacker->get_max_shields_raw()) {
 					helper::play_sound_from_unit(SoundId::SevenstepShieldHeal01,data.attacker, 1, 0);
 				}
 				data.attacker->heal_energy_then_shields(damage_dealt / 2, data.attacker);
@@ -801,7 +774,7 @@ namespace hooks
 			} break;
 			case WeaponId::PsiStorm: {
 				// Cantavis - Ascendancy
-				if (data.attacker != nullptr && (data.attacker->status & UnitStatus::IsHallucination)) {
+				if (data.attacker && (data.attacker->status & UnitStatus::IsHallucination)) {
 					scbw::UnitFinder(
 						data.target->get_x() - 288,
 						data.target->get_y() - 288,
@@ -832,8 +805,7 @@ namespace hooks
 		}
 
 		// Empress - Anodyne Annex - zombify target
-		if (target_ext->values[ValueEmpressPassiveStacks]
-			&& !target_ext->values[ValueIsZombified]) {
+		if (target_ext->values[ValueEmpressPassiveStacks] && !target_ext->values[ValueIsZombified]) {
 			data.final_damage = 0;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
@@ -906,23 +878,21 @@ namespace hooks
 					data.target->get_x() + radius,
 					data.target->get_y() + radius
 				).for_each([&](Unit* unit) {
-					UnitExt* unitExt = get_unit_ext(unit);
+					UnitExt* unit_ext = get_unit_ext(unit);
 					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
 					if (unit->id == UnitId::TerranAnticthon && dist <= 4 * 32) {
 						if (scbw::is_allied_to(data.target->player, unit->player)) {
-							hp += (1 + unitExt->values[ValueAnticthonStacks]) * 256;
-							unitExt->values[ValueAnticthonStacks]++;
+							hp += (1 + unit_ext->values[ValueAnticthonStacks]) * 256;
+							unit_ext->values[ValueAnticthonStacks]++;
 						}
 					}
 				});
 			}
 
-			WorkerAi* ai = ((WorkerAi*)data.target->unit_ai);
-			AiTown* town = nullptr;
-			if (ai) {
-				town = ai->town;
+			AiTown* town = 0;
+			if (data.target->unit_ai && data.target->unit_ai->type == AiType::Worker) {
+				town = data.target->unit_ai->worker_ai.town;
 			}
-
 			globals.init_revive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
 		}
 
@@ -997,8 +967,7 @@ namespace hooks
 			} break;
 		}
 
-		if (data.attacker != nullptr)
-		{
+		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 			switch (data.weapon_id)
 			{
@@ -1012,8 +981,7 @@ namespace hooks
 			}
 
 			// Mind Control - energy restore
-			if (attacker_ext->units[UnitMindController] != nullptr)
-			{
+			if (attacker_ext->units[UnitMindController]) {
 				Unit* mind_controller = attacker_ext->units[UnitMindController];
 				mind_controller->add_unit_energy(MindControlEnergyGain);
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
@@ -1038,14 +1006,11 @@ namespace hooks
 		}
 	}
 
-	void apply_ensnare(Unit* unit) // 004F45E0
-	{
+	void apply_ensnare(Unit* unit) { // 004F45E0
 		// Overlay
-		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed))
-		{
+		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
 			Unit* victim = unit;
-			if (unit->subunit != nullptr)
-			{
+			if (unit->subunit) {
 				victim = unit->subunit;
 			}
 			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(victim->id));
@@ -1056,40 +1021,33 @@ namespace hooks
 		unit->update_speed();
 	}
 
-	u16 get_spores_overlay_id(Unit* target)
-	{
+	u16 get_spores_overlay_id(Unit* target) {
 		UnitExt* target_ext = get_unit_ext(target);
-		auto stacks = target_ext->values[ValueCorrosiveTouchStacks];
-		auto overlay_multiplier = 0;
-		if (stacks > 18)
-		{
+		u32 stacks = target_ext->values[ValueCorrosiveTouchStacks];
+		u32 overlay_multiplier = 0;
+		if (stacks > 18) {
 			overlay_multiplier++;
 		}
-		if (stacks > 35)
-		{
+		if (stacks > 35) {
 			overlay_multiplier++;
 		}
-		if (stacks > 50)
-		{
+		if (stacks > 50) {
 			overlay_multiplier++;
 		}
 		return overlay_multiplier + 4 * scbw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
 	}
 
 	// Hooked to change Corrosive Spores timer - Pr0nogo
-	s32 apply_spores_hook(Unit* target) // 004F4480
-	{
+	s32 apply_spores_hook(Unit* target) { // 004F4480
 		UnitExt* target_ext = get_unit_ext(target);
 		target_ext->values[ValueCorrosiveTouchStacks]++;
 		Image* image = target->get_overlay(get_spores_overlay_id(target));
 		u32 overlay = 0;
-		if (image)
-		{
+		if (image) {
 			overlay = image->id;
 		}
 
-		if (!overlay)
-		{
+		if (!overlay) {
 			target->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 			u32 spores_image = helper::get_corrosive_spores_image(target);
 			Unit* final_unit = target->subunit;
