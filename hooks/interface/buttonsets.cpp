@@ -1560,6 +1560,12 @@ namespace hooks {
 
 								// ZERG \\
 
+								case UnitId::ZergVilgorokor:
+								{
+									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Vilgorokor - Reconstitution
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergTetcaerokor:
 								{
 									if (current_button->icon_id == IconId::RoarUnused) { // Tetcaerokor - Virile Coating
