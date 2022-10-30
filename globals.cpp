@@ -1369,8 +1369,7 @@ namespace scbw
 		}
 	}
 
-	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount, Unit* override_target)
-	{
+	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount, Unit* override_target, bool apply_cooldown) {
 		Unit* target = override_target ? override_target : unit->order_target.unit;
 		if (!unit->sprite || !target) {
 			return 0;
@@ -1423,10 +1422,18 @@ namespace scbw
 		unit_ext->values[value_id] = rotate;
 		auto X = unit->get_x() + offset.x;
 		auto Y = unit->get_y() + offset.y;
-		Bullet* bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, scbw::get_angle(X, Y, target->position.x, target->position.y));
-		scbw::set_bullet_target(bullet, target);
-		if (bullet && unit_ext->values[value_id] < fake_amount) {
-			bullet->hit_flags |= 0x1;
+		Bullet* bullet = 0;
+		u32 angle = scbw::get_angle(X, Y, target->position.x, target->position.y);
+		if (apply_cooldown) {
+			bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, angle);
+		} else {
+			bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, angle);
+		}
+		if (bullet) {
+			scbw::set_bullet_target(bullet, target);
+			if (unit_ext->values[value_id] < fake_amount) {
+				bullet->hit_flags |= 0x1;
+			}
 		}
 		return bullet;
 	}
