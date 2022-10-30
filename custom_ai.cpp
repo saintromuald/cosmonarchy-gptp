@@ -30,7 +30,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			}
 			u32 mineral_threshold = custom_ai_town->gas_requested_count ? 100 : 500;
 			u32 needed_threshold = 100 * (1 + custom_ai_town->gas_requested_count);
-			if (!harvestable_gas) {
+			if (total_gas == 1) {
 				needed_threshold *= 2;
 			}
 			if ((harvestable_gas || total_gas == 1)
