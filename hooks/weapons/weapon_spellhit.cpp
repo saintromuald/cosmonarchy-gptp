@@ -626,15 +626,14 @@ namespace hooks
 	}
 
 	// No bullet because this function is called in another context without the bullet.
-	void mind_control_hit(Unit* attacker, Unit* target)
-	{
-		scbw::decloak_proc(attacker);
-		if (target->status & UnitStatus::IsHallucination)
-		{
-			target->remove();
+	void mind_control_hit(Unit* attacker, Unit* target) {
+		if (scbw::unit_is_stunned(target)) {
+			attacker->heal_energy(techdata_dat::energy_cost[TechId::MindControl] * 256, attacker);
 		}
-		else
-		{
+		scbw::decloak_proc(attacker);
+		if (target->status & UnitStatus::IsHallucination) {
+			target->remove();
+		} else {
 			scbw::mind_control(attacker, target);
 		}
 	}

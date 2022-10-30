@@ -5,6 +5,7 @@
 #include "stopwatch/Stopwatch.h"
 #include "logger.h"
 #include "SCBW/scbwdata.h"
+#include "hooks/unit_stats/max_energy.h"
 #include <array>
 
 namespace hooks
@@ -376,7 +377,7 @@ namespace hooks
 	}
 
 	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
-	// Now used to set starting energy to 100 - Veeq7
+	// Now used to set starting energy to a new amount - Veeq7
 	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) 
 	{
 		Vector32 attack_frame = {};
@@ -394,7 +395,7 @@ namespace hooks
 			return 0;
 		}
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
-			unit->energy = 100 * 256; // New starting amount
+			unit->energy = hooks::get_unit_max_energy(unit); // New starting amount
 		}
 		else {
 			unit->energy = 0;
@@ -428,7 +429,7 @@ namespace hooks
 		return unit;
 	}
 
-	// Hooked to set starting energy to 100 - Veeq7
+	// Hooked to set starting energy to a new amount - Veeq7
 	void transform_unit_main(Unit* unit, u32 unit_id) // 0049F170
 	{
 		u32 hp = unit->hitpoints;
@@ -456,7 +457,7 @@ namespace hooks
 		}
 		helper::initialize_unit(unit, y, unit_id, x, unit->player);
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
-			unit->energy = 100 * 256; // New starting amount
+			unit->energy = hooks::get_unit_max_energy(unit); // New starting amount
 		} else {
 			unit->energy = 0;
 		}

@@ -6,6 +6,7 @@
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "hooks\orders\ai\ai_orders.h"
+#include "hooks\unit_stats\max_energy.h"
 #include "globals.h"
 
 namespace hooks
@@ -199,7 +200,7 @@ namespace hooks
 						unitExt->values[ValuePreMorphEnergy] = unit->energy;
 					} else
 					{
-						unitExt->values[ValuePreMorphEnergy] = 100 * 256; // New starting amount
+						unitExt->values[ValuePreMorphEnergy] = hooks::get_unit_max_energy(unit); // New starting amount
 					}
 					unit->create_origin = unit->id;
 					unitExt->units[UnitMorphConnectedUnit] = 0;
