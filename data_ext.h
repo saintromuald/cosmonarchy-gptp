@@ -124,6 +124,7 @@ enum ExtValueId
 	ValueThroughTheLookingGlassY,
 	ValueLazarusRecasts,
 	ValueGladiusBindingPlasmaRecasts,
+	ValueCentaurSecondaryWeaponCount,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -211,6 +212,8 @@ enum ExtTimerId
 	TimerOptectonSecondaryWeaponCooldown,
 	TimerLazarusCasting,
 	TimerGladiusBindingPlasma,
+	TimerCentaurSecondaryWeaponCooldown,
+	TimerCentaurSecondaryWeaponStagger,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

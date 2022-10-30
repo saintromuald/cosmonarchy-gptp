@@ -2765,7 +2765,8 @@ namespace scbw
 			case UnitId::ProtossShieldBattery:
 			case UnitId::ProtossWarden:
 			case UnitId::TerranWatchdog:
-			case UnitId::TerranBunker: {
+			case UnitId::TerranBunker:
+			{
 				return true;
 			} break;
 		}
@@ -2778,9 +2779,11 @@ namespace scbw
 			case UnitId::TerranTreasury:
 			case UnitId::TerranBarracks:
 			case UnitId::TerranFulcrum:
-			case UnitId::TerranStarport: 
-			case UnitId::TerranScrapyard: 
-			case UnitId::TerranCaptaincy: {
+			case UnitId::TerranStarport:
+			case UnitId::TerranCaptaincy:
+			case UnitId::TerranIronFoundry:
+			case UnitId::TerranNaniteAssembly:
+			{
 				return true;
 			} break;
 		}

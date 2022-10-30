@@ -1279,13 +1279,26 @@ namespace hooks
 			case UnitId::TerranCentaur:
 			{
 				// Centaur - Sunchaser Missiles
-				if (unit->order_signal & 0x20)
+				if (unit->sprite->main_graphic->animation == IscriptAnimation::GndAttkInit && unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] == 0)
 				{
-					unit->order_signal &= ~0x20;
 					Unit* target = unit->order_target.unit;
 					if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance)
 					{
-						unit->play_iscript_animation(IscriptAnimation::Unused2);
+						if (unit_ext->values[ValueCentaurSecondaryWeaponCount] == 0)
+						{
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit, 1, 0);
+						}
+						if (unit_ext->timers[TimerCentaurSecondaryWeaponStagger] == 0 && unit_ext->values[ValueCentaurSecondaryWeaponCount] < 4)
+						{
+							scbw::set_missile_source_pos(unit, WeaponId::CentaurSunchaserMissiles, ValueCentaurLaunchPos, 4, false);
+							unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = 4;
+							unit_ext->values[ValueCentaurSecondaryWeaponCount]++;
+						}
+						else if (unit_ext->values[ValueCentaurSecondaryWeaponCount] == 4)
+						{
+							unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::CentaurSunchaserMissiles];
+							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 0;
+						}
 					}
 				}
 			} break;
