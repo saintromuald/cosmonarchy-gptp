@@ -2196,24 +2196,24 @@ return 0;
 					continue;
 				}
 
-				// Skip units from more important regions, unless they have excess force
-				if (ai_region->defense_priority <= current_ai_region->defense_priority) {
-					if (current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < (s32)current_ai_region->ground_strength_needed ||
-						current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < (s32)current_ai_region->air_strength_needed) {
-						continue;
-					}
-				}
-
 				// Skip attack wave units for unimportant defense regions and reduce their score otherwise
-				if (current_ai_region->region == g_aiscript_controller[player].ai_attack_group_region - 1 ||
-					current_ai_region->state == RegionState::ContinueAttackHere ||
+				if (current_ai_region->state == RegionState::ContinueAttackHere ||
 					current_ai_region->state == RegionState::Attacking ||
+					current_ai_region->state == RegionState::ChaseAway ||
 					current_ai_region->state == RegionState::PreparingAttack || 
 					current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
 					if (ai_region->defense_priority < 120) {
 						continue;
 					} else {
-						force_divisor = 2;
+						force_divisor = 4;
+					}
+				}
+
+				// Skip units from more important regions, unless they have excess force
+				if (ai_region->defense_priority <= current_ai_region->defense_priority) {
+					if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < (s32)current_ai_region->ground_strength_needed) ||
+						(unit->air_strength    && current_ai_region->air_strength_full    - (s32)unit->air_strength    < (s32)current_ai_region->air_strength_needed)) {
+						continue;
 					}
 				}
 			}
@@ -2223,8 +2223,8 @@ return 0;
 				continue;
 			}
 			
-			s32 ground_force = std::max(std::min((s32)ai_strength_ground[unit->id], missing_ground), 0);
-			s32 air_force = std::max(std::min((s32)ai_strength_air[unit->id], missing_air), 0);
+			s32 ground_force = std::max(std::min((s32)unit->ground_strength, missing_ground), 0);
+			s32 air_force = std::max(std::min((s32)unit->air_strength, missing_air), 0);
 			s32 force = ground_force + air_force;
 			force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
 			force /= force_divisor;

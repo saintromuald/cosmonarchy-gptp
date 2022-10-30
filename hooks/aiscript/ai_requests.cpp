@@ -628,8 +628,7 @@ namespace hooks
 	}
 
 	// Hooked to allow AI to train guards while under attack. -Pr0nogo
-	void ai_request_guard(GuardAi* guard_ai, u32 player_id, u32 priority) // 00448630
-	{
+	void ai_request_guard(GuardAi* guard_ai, u32 player_id, u32 priority) { // 00448630
 		u32 result = 0;
 		u32 last_hit = g_aiscript_controller[player_id].previous_building_hit_second;
 		/*
@@ -653,11 +652,9 @@ namespace hooks
 
 		// Skip current attack force units
 		AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
-		if (current_ai_region->region == g_aiscript_controller[ai_region->player].ai_attack_group_region - 1) {
-			return false;
-		}
 		if (current_ai_region->state == RegionState::ContinueAttackHere ||
 			current_ai_region->state == RegionState::Attacking ||
+			current_ai_region->state == RegionState::ChaseAway ||
 			current_ai_region->state == RegionState::PreparingAttack || 
 			current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
 			return false;
@@ -674,8 +671,8 @@ namespace hooks
 		// Skip units needed for defending regions, we take a portion of the needed force of less important regions,
 		// and only excess force of the important regions
 		s32 needed_divisor = current_ai_region->defense_priority > 110 ? 1 : 2;
-		if (current_ai_region->ground_strength_full - (s32)ai_strength_ground[unit->id] < current_ai_region->ground_strength_needed / needed_divisor ||
-			current_ai_region->air_strength_full    - (s32)ai_strength_air[unit->id]    < current_ai_region->air_strength_needed    / needed_divisor) {
+		if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < current_ai_region->ground_strength_needed / needed_divisor) ||
+			(unit->air_strength    && current_ai_region->air_strength_full    - (s32)unit->air_strength    < current_ai_region->air_strength_needed    / needed_divisor)) {
 			return false;
 		}
 
@@ -696,6 +693,7 @@ namespace hooks
 				continue;
 			}
 			if (scbw::move_unit_ai(unit, ai_region)) {
+				scbw::printf("Player %u is adding %s to attack wave", unit->player + 1, unit->get_name());
 				return unit;
 			}
 		}
@@ -705,7 +703,7 @@ namespace hooks
 	// Hooked to change attack_add priorities. -Pr0nogo
 	void ai_region_train_attack_force(AiRegion* ai_region) { // 0043E670
 		u32 attack_wave[63] = {};
-		u32 priority = 100; // testing, we used 80 before -Veeq7
+		u32 priority = 80;
 		u32 count = helper::get_missing_attack_force_units(ai_region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
@@ -723,6 +721,7 @@ namespace hooks
 			if (!is_valid_attack_unit(ai_region, unit, true)) {
 				continue;
 			}
+			scbw::printf("Player %u is pulling %s to attack wave", unit->player + 1, unit->get_name());
 			scbw::move_unit_ai(unit, ai_region);
 		}
 	}
