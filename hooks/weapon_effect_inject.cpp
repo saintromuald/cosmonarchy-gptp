@@ -288,5 +288,8 @@ namespace hooks
 		*(u32*)data = (u32)WeaponEffects_SwitchTable;
 		memory_patch(Addr_WeaponsDatEffectCount, maxID);
 		memory_patch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
+		
+		// Remove nuclear missile damage rule (use weapon damage instead)
+		nops(0x0048ACDF, 2);
 	}
 }
