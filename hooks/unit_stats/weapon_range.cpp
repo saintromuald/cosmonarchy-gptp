@@ -7,121 +7,96 @@ namespace hooks
 	// Returns the modified seek distance (AKA target acquisition distance) for the unit.
 	// This hook affects the behavior of Unit::get_seek_range().
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 get_seek_range(Unit* unit, Unit* target) // seek distance is measured in tiles, unfortunately
-	{
-		UnitExt* unitExt = get_unit_ext(unit);
+	u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in tiles, unfortunately
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u8 bonus_amount = 0;
 
-		u8 bonusAmount = 0;
-		switch (unit->id)
-		{
-			case UnitId::TerranMadrigal:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange))
-				{	
-					bonusAmount += 4;
+		// Madrigal - Tempo Change
+		switch (unit->id) {
+			case UnitId::TerranMadrigal: {
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange)) {	
+					bonus_amount += 4;
 				}
 			} break;
-			default:
-			{
-				bonusAmount += 0;
-			}
 		}
 
 		// Repentant Chorus - Barghest behavior
-		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
+		bonus_amount += unit_ext->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->order_target.unit)
-		{
-			UnitExt* orderUnitExt = get_unit_ext(unit->order_target.unit);
-
-			if (orderUnitExt->values[ValueStellarEnforcement])
-			{
-				bonusAmount += 2;
-			}
+		if (!target || get_unit_ext(target)->values[ValueStellarEnforcement]) {
+			bonus_amount += 2;
 		}
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32)
-		{
-			bonusAmount = 0;
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32) {
+			bonus_amount = 0;
 		}
 
 		f32 scale = 1;
-		scale += 0.02 * unitExt->values[ValueAnticthonStacks];
+
+		// Anticthon - Passive
+		scale += 0.02 * unit_ext->values[ValueAnticthonStacks];
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
-			scale +=  0.05 * unitExt->values[ValueSovrolethLinkCount];
+			scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];
 		}
 
-		// Compile variable for use in height advantage calculations
-		u32 seekRange = units_dat::seek_range[unit->id] * scale + bonusAmount;
-
 		// Height advantage
-		seekRange += scbw::get_cliff_advantage(unit, target, 0);
+		bonus_amount += scbw::get_cliff_advantage(unit, target, 0);
 
-		return seekRange;
+		// Compile variable for use in height advantage calculations
+		return units_dat::seek_range[unit->id] * scale + bonus_amount;
 	};
 
 	// Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 	// This hook affects the behavior of Unit::get_max_weapon_range().
 	// Note: Weapon ranges are measured in pixels.
-	u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target)
-	{
-		UnitExt* unitExt = get_unit_ext(unit);
+	u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u32 bonus_amount = 0;
 
-		u32 bonusAmount = 0;
 		// Give bonus distance to units inside Bunkers
-		if (unit->status & UnitStatus::InBuilding)
-		{
-			bonusAmount = 64;
+		if (unit->status & UnitStatus::InBuilding) {
+			bonus_amount += 64;
 		}
 
-		switch (unit->id)
-		{
-			case UnitId::TerranMadrigal:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange))
-				{
-					bonusAmount += 4 * 32;
+		// Madrigal - Tempo Change
+		switch (unit->id) {
+			case UnitId::TerranMadrigal: {
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange)) {
+					bonus_amount += 4 * 32;
 				}
 			} break;
-			default:
-			{
-				break;
-			}
 		}
 
 		// Repentent Chorus - Barghest behavior
-		if (unit->id == UnitId::ProtossBarghest)
-		{
-			bonusAmount += unitExt->values[ValueRepententChorus] * 8;
+		if (unit->id == UnitId::ProtossBarghest) {
+			bonus_amount += unit_ext->values[ValueRepententChorus] * 8;
 		}
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->order_target.unit && weapons_dat::max_range[weapon_id] > 32)
-		{
-			UnitExt* orderUnitExt = get_unit_ext(unit->order_target.unit);
-			if (orderUnitExt->values[ValueStellarEnforcement])
-			{
-				bonusAmount += 64;
+		if (target && weapons_dat::max_range[weapon_id] > 32) {
+			UnitExt* target_ext = get_unit_ext(target);
+			if (target_ext->values[ValueStellarEnforcement]) {
+				bonus_amount += 64;
 			}
 		}
 
 		f32 scale = 1;
 
 		// Anticthon - Passive
-		scale += 0.02 * unitExt->values[ValueAnticthonStacks];
+		scale += 0.02 * unit_ext->values[ValueAnticthonStacks];
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
-			scale += 0.05 * unitExt->values[ValueSovrolethLinkCount];
+			scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];
 		}
 
 		// Height advantage
-		bonusAmount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
+		bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
 
-		return weapons_dat::max_range[weapon_id] * scale + bonusAmount;
+		return weapons_dat::max_range[weapon_id] * scale + bonus_amount;
 	}
 }
