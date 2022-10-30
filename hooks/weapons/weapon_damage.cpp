@@ -206,22 +206,6 @@ namespace hooks
 			data.final_damage = 256;
 		}
 
-		/*
-		// Olympian Dishonorable Discharge - deal +5 damage to targets facing away from the Olympian
-		if (!data.dont_proc_link_damage && (data.attacker->id == UnitId::TerranOlympian))
-		{
-			if (!(units_dat::group_flags[data.target->id].is_building))
-			{
-				if (target is not facing)
-				{
-					helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
-					// TODO: Overlay
-					data.final_damage += 5;
-				}
-			}
-		}
-		*/
-
 		weapon_damage_behaviors(data);
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
@@ -391,6 +375,16 @@ namespace hooks
 					// Augur spend shields on attack
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
 					attackerExt->shield_regen_timer = 0;
+				} break;
+				case UnitId::TerranOlympian: {
+					// Olympian Dishonorable Discharge - deal +5 damage to targets facing away from the Olympian
+					if (!units_dat::group_flags[data.target->id].is_building) {
+						if (!scbw::unit_is_facing_position(data.target, data.attacker->position)) {
+							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+							// TODO: Overlay
+							data.final_damage += 5 * 256;
+						}
+					}
 				} break;
 			}
 

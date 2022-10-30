@@ -58,77 +58,77 @@ Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16>
 
 scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds)
 {
-	scbw::UnitFinderCallbackMatchInterface callback = [=](Unit* unit)
+	scbw::UnitFinderCallbackMatchInterface callback = [=](Unit* target)
 	{
-		if (unit == center && !(context & Flags::IncludingSelf))
+		if (target == center && !(context & Flags::IncludingSelf))
 		{
 			return false;
 		}
-		if (unit == center && context & Flags::NotSelf)
+		if (target == center && context & Flags::NotSelf)
 		{
 			return false;
 		}
-		if (unit->status & UnitStatus::Invincible && !(context & Flags::Invincible))
+		if (target->status & UnitStatus::Invincible && !(context & Flags::Invincible))
 		{
 			return false;
 		}
-		if (unit->status & UnitStatus::InAir && context & Flags::NoAir)
+		if (target->status & UnitStatus::InAir && context & Flags::NoAir)
 		{
 			return false;
 		}
-		if (!(unit->status & UnitStatus::InAir) && context & Flags::NoGround)
+		if (!(target->status & UnitStatus::InAir) && context & Flags::NoGround)
 		{
 			return false;
 		}
 		if (context & Flags::Spellcaster)
 		{
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster))
+			if (!(units_dat::base_property[target->id] & UnitProperty::Spellcaster))
 			{
 				return false;
 			}
 		}
 		if (context & Flags::HasEnergy)
 		{
-			if (unit->energy < 256)
+			if (target->energy < 256)
 			{
 				return false;
 			}
 		}
 		if (context & Flags::Shielded)
 		{
-			if (!units_dat::shields_enabled[unit->id])
+			if (!units_dat::shields_enabled[target->id])
 			{
 				return false;
 			}
-			if (unit->shields < 256)
+			if (target->shields < 256)
 			{
 				return false;
 			}
 		}
 		if (context & Flags::Powered)
 		{
-			if (unit->status & UnitStatus::Frozen)
+			if (target->status & UnitStatus::Frozen)
 			{
 				return false;
 			}
 		}
 		if (context & Flags::Completed)
 		{
-			if (!(unit->status & UnitStatus::Completed))
+			if (!(target->status & UnitStatus::Completed))
 			{
 				return false;
 			}
 		}
 		if (context & Flags::NoTrap)
 		{
-			if (scbw::unit_is_trap(unit))
+			if (scbw::unit_is_trap(target))
 			{
 				return false;
 			}
 		}
 		if (context & Flags::NoHallucination)
 		{
-			if (unit->status & UnitStatus::IsHallucination)
+			if (target->status & UnitStatus::IsHallucination)
 			{
 				return false;
 			}
@@ -137,10 +137,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		{
 			if (context & Flags::FrontalArc)
 			{
-				Vector32f angle = scbw::get_direction_vector_from_unit(center);
-				Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(center->position, unit->position));
-				f32 dot = scbw::dot_product(angle, diff);
-				if (dot < 0.5) {
+				if (!scbw::unit_is_facing_position(center, target->position)) {
 					return false;
 				}
 
@@ -158,15 +155,15 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 				}
 				*/
 			}
-			if (context & Flags::Own && unit->player != center->player)
+			if (context & Flags::Own && target->player != center->player)
 			{
 				return false;
 			}
-			if (scbw::is_allied_to(unit->player, center->player) && context & Flags::Enemy)
+			if (scbw::is_allied_to(target->player, center->player) && context & Flags::Enemy)
 			{
 				return false;
 			}
-			if (!scbw::is_allied_to(unit->player, center->player) && context & Flags::Ally)
+			if (!scbw::is_allied_to(target->player, center->player) && context & Flags::Ally)
 			{
 				return false;
 			}
@@ -176,7 +173,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 			bool good = false;
 			for (auto a : allowedUnitIds)
 			{
-				if (unit->id == a)
+				if (target->id == a)
 				{
 					good = true;
 					break;
@@ -187,47 +184,47 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 				return false;
 			}
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Organic && context & Flags::NoOrganic)
+		if (units_dat::base_property[target->id] & UnitProperty::Organic && context & Flags::NoOrganic)
 		{
 			return false;
 		}
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Organic) && context & Flags::OnlyOrganic)
+		if (!(units_dat::base_property[target->id] & UnitProperty::Organic) && context & Flags::OnlyOrganic)
 		{
 			return false;
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Mechanical && context & Flags::NoMechanical)
+		if (units_dat::base_property[target->id] & UnitProperty::Mechanical && context & Flags::NoMechanical)
 		{
 			return false;
 		}
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Mechanical) && context & Flags::OnlyMechanic)
+		if (!(units_dat::base_property[target->id] & UnitProperty::Mechanical) && context & Flags::OnlyMechanic)
 		{
 			return false;
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Building && context & Flags::NoBuilding)
+		if (units_dat::base_property[target->id] & UnitProperty::Building && context & Flags::NoBuilding)
 		{
 			return false;
 		}
-		if (!(scbw::is_enabled(unit)) && context & Flags::Enabled)
+		if (!(scbw::is_enabled(target)) && context & Flags::Enabled)
 		{
 			return false;
 		}
-		if (context & Flags::CanAttackOrCast && !unit->has_weapon() && !(units_dat::base_property[unit->id] & UnitProperty::Spellcaster))
+		if (context & Flags::CanAttackOrCast && !target->has_weapon() && !(units_dat::base_property[target->id] & UnitProperty::Spellcaster))
 		{
 			return false;
 		}
-		if (context & Flags::NotWorker && units_dat::base_property[unit->id] & UnitProperty::Worker)
+		if (context & Flags::NotWorker && units_dat::base_property[target->id] & UnitProperty::Worker)
 		{
 			return false;
 		}
-		if (context & Flags::NoEgg && (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon))
+		if (context & Flags::NoEgg && (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
 		{
 			return false;
 		}
-		if (context & Flags::NoLarva && unit->id == UnitId::ZergLarva)
+		if (context & Flags::NoLarva && target->id == UnitId::ZergLarva)
 		{
 			return false;
 		}
-		if (context & Flags::NoHangar && (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward))
+		if (context & Flags::NoHangar && (target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward))
 		{
 			return false;
 		}

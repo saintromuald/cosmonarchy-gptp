@@ -350,66 +350,63 @@ void update_search_index_effects() {
 	}
 }
 
-bool unit_flag_match(Unit* unit, Unit* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids) {
-	if (!(flags & FilterIncludingSelf) && unit == center) {
+bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids) {
+	if (!(flags & FilterIncludingSelf) && target == center) {
 		return false;
 	}
-	if (flags & FilterNotSelf && unit == center) {
+	if (flags & FilterNotSelf && target == center) {
 		return false;
 	}
-	if (!(flags & FilterInvincible) && unit->status & UnitStatus::Invincible) {
+	if (!(flags & FilterInvincible) && target->status & UnitStatus::Invincible) {
 		return false;
 	}
-	if (flags & FilterNoAir && unit->status & UnitStatus::InAir) {
+	if (flags & FilterNoAir && target->status & UnitStatus::InAir) {
 		return false;
 	}
-	if (flags & FilterNoGround && !(unit->status & UnitStatus::InAir)) {
+	if (flags & FilterNoGround && !(target->status & UnitStatus::InAir)) {
 		return false;
 	}
 	if (flags & FilterSpellcaster) {
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)) {
+		if (!(units_dat::base_property[target->id] & UnitProperty::Spellcaster)) {
 			return false;
 		}
 	}
 	if (flags & FilterHasEnergy) {
-		if (unit->energy < 256) {
+		if (target->energy < 256) {
 			return false;
 		}
 	}
 	if (flags & FilterShielded) {
-		if (!units_dat::shields_enabled[unit->id]) {
+		if (!units_dat::shields_enabled[target->id]) {
 			return false;
 		}
-		if (unit->shields < 256) {
+		if (target->shields < 256) {
 			return false;
 		}
 	}
 	if (flags & FilterPowered) {
-		if (unit->status & UnitStatus::Frozen) {
+		if (target->status & UnitStatus::Frozen) {
 			return false;
 		}
 	}
 	if (flags & FilterCompleted) {
-		if (!(unit->status & UnitStatus::Completed)) {
+		if (!(target->status & UnitStatus::Completed)) {
 			return false;
 		}
 	}
 	if (flags & FilterNoTrap) {
-		if (scbw::unit_is_trap(unit)) {
+		if (scbw::unit_is_trap(target)) {
 			return false;
 		}
 	}
 	if (flags & FilterNoHallucination) {
-		if (unit->status & UnitStatus::IsHallucination) {
+		if (target->status & UnitStatus::IsHallucination) {
 			return false;
 		}
 	}
 	if (center) {
 		if (flags & FilterFrontalArc) {
-			Vector32f angle = scbw::get_direction_vector_from_unit(center);
-			Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(center->position, unit->position));
-			f32 dot = scbw::dot_product(angle, diff);
-			if (dot < 0.5) {
+			if (!scbw::unit_is_facing_position(center, target->position)) {
 				return false;
 			}
 
@@ -426,47 +423,47 @@ bool unit_flag_match(Unit* unit, Unit* center, u32 flags, const std::unordered_s
 			}
 			*/
 		}
-		if (flags & FilterOwn && unit->player != center->player) {
+		if (flags & FilterOwn && target->player != center->player) {
 			return false;
 		}
-		if (scbw::is_allied_to(unit->player, center->player) && flags & FilterEnemy) {
+		if (scbw::is_allied_to(target->player, center->player) && flags & FilterEnemy) {
 			return false;
 		}
-		if (!scbw::is_allied_to(unit->player, center->player) && flags & FilterAlly) {
+		if (!scbw::is_allied_to(target->player, center->player) && flags & FilterAlly) {
 			return false;
 		}
 	}
-	if (allowed_unit_ids.size() && allowed_unit_ids.find(unit->id) == allowed_unit_ids.end()) {
+	if (allowed_unit_ids.size() && allowed_unit_ids.find(target->id) == allowed_unit_ids.end()) {
 		return false;
 	}
-	if (units_dat::base_property[unit->id] & UnitProperty::Organic && flags & FilterNoOrganic) {
+	if (units_dat::base_property[target->id] & UnitProperty::Organic && flags & FilterNoOrganic) {
 		return false;
 	}
-	if (!(units_dat::base_property[unit->id] & UnitProperty::Organic) && flags & FilterOnlyOrganic) {
+	if (!(units_dat::base_property[target->id] & UnitProperty::Organic) && flags & FilterOnlyOrganic) {
 		return false;
 	}
-	if (units_dat::base_property[unit->id] & UnitProperty::Mechanical && flags & FilterNoMechanical) {
+	if (units_dat::base_property[target->id] & UnitProperty::Mechanical && flags & FilterNoMechanical) {
 		return false;
 	}
-	if (!(units_dat::base_property[unit->id] & UnitProperty::Mechanical) && flags & FilterOnlyMechanic) {
+	if (!(units_dat::base_property[target->id] & UnitProperty::Mechanical) && flags & FilterOnlyMechanic) {
 		return false;
 	}
-	if (units_dat::base_property[unit->id] & UnitProperty::Building && flags & FilterNoBuilding) {
+	if (units_dat::base_property[target->id] & UnitProperty::Building && flags & FilterNoBuilding) {
 		return false;
 	}
-	if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && flags & FilterBuilding) {
+	if (!(units_dat::base_property[target->id] & UnitProperty::Building) && flags & FilterBuilding) {
 		return false;
 	}
-	if (!(scbw::is_enabled(unit)) && flags & FilterEnabled) {
+	if (!(scbw::is_enabled(target)) && flags & FilterEnabled) {
 		return false;
 	}
-	if (flags & FilterCanAttackOrCast && !unit->has_weapon() && !(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)) {
+	if (flags & FilterCanAttackOrCast && !target->has_weapon() && !(units_dat::base_property[target->id] & UnitProperty::Spellcaster)) {
 		return false;
 	}
-	if (flags & FilterNotWorker && units_dat::base_property[unit->id] & UnitProperty::Worker) {
+	if (flags & FilterNotWorker && units_dat::base_property[target->id] & UnitProperty::Worker) {
 		return false;
 	}
-	if (flags & FilterNotSubunit && units_dat::base_property[unit->id] & UnitProperty::Subunit) {
+	if (flags & FilterNotSubunit && units_dat::base_property[target->id] & UnitProperty::Subunit) {
 		return false;
 	}
 	return true;
