@@ -125,6 +125,7 @@ enum ExtValueId
 	ValueLazarusRecasts,
 	ValueGladiusBindingPlasmaRecasts,
 	ValueCentaurSecondaryWeaponCount,
+	ValueAccantorLaunchPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

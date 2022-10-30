@@ -242,6 +242,7 @@ namespace WeaponId {
 		OptectonSunsplitBeam				= 185,
 		OptectonSkybondRay					= 186,
 		PatriarchIronhandWeaver				= 187,
+		AccantorPlasmaShell					= 191,
 
 		// Zerg \\
 					

@@ -310,6 +310,10 @@ namespace hooks {
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanLaunchPos, 1, false);
 					} break;
+					case WeaponId::AccantorPlasmaShell:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueAccantorLaunchPos, 1, false);
+					} break;
 					case WeaponId::PanoptusPlasmaMissiles:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValuePanoptusLaunchPos, 2, false);

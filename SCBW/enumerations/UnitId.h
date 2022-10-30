@@ -147,6 +147,7 @@ namespace UnitId
 		ProtossBulwark										= 331,
 		ProtossMonogram										= 348,
 		ProtossVagrantShade									= 351,
+		ProtossAccantor										= 352,		// The new one
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
@@ -338,7 +339,7 @@ namespace UnitId
 		Hero_Mojo											= 80,
 		Hero_Warbringer										= 81,
 		Hero_Gantrithor										= 82,
-		ProtossAccantor										= 83,
+		ProtossAccantorOld									= 83,
 		ProtossWitness										= 84,
 		ProtossPlasmaShell									= 85,
 		Hero_Danimoth										= 86,
