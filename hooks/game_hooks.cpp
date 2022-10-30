@@ -1285,22 +1285,21 @@ namespace hooks
 					case IscriptAnimation::GndAttkInit:
 					case IscriptAnimation::GndAttkRpt:
 					case IscriptAnimation::AirAttkInit:
-					case IscriptAnimation::AirAttkRpt:
-					{
+					case IscriptAnimation::AirAttkRpt: {
 						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance
 							&& unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] == 0) {
-							unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::CentaurSunchaserMissiles];
+							unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
-							helper::play_sound_from_unit(scbw::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit, 1, 0);
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit);
 						}
 					} break;
 				}
 				// Progress the sequence
 				target = unit_ext->units[UnitCentaurSecondaryWeaponTarget];
 				if (target && unit_ext->values[ValueCentaurSecondaryWeaponCount] && !unit_ext->timers[TimerCentaurSecondaryWeaponStagger]) {
-					unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = 4;
 					unit_ext->values[ValueCentaurSecondaryWeaponCount]--;
+					unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = hooks::get_modified_cooldown(unit, 4, false);
 					scbw::set_missile_source_pos(unit, WeaponId::CentaurSunchaserMissiles, ValueCentaurLaunchPos, 4, false, 0, 0, target, false);
 				}
 			} break;

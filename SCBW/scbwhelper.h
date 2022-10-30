@@ -729,7 +729,7 @@ namespace helper {
 	void createEnsnareOverlay(Unit* a1);																			// 004F45E0
 
 	// For create_scanner
-	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume);									// 0048ED50
+	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay = 1, s32 minVolume = 0);							// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
 
 	// For maelstrom_proc
