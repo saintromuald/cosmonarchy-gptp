@@ -790,7 +790,7 @@ void init_fraud_units() {
 	// iquare
 	fraud_spawn.frauds[Fraud_iquare][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Brass};
 	add_fraud_unit(Fraud_iquare, RaceId::Protoss, {2, UnitId::ProtossIdol});
-	add_fraud_unit(Fraud_iquare, RaceId::Protoss, {2, UnitId::ProtossAccantor});
+	add_fraud_unit(Fraud_iquare, RaceId::Protoss, {2, UnitId::ProtossAccantorOld});
 	add_fraud_unit(Fraud_iquare, RaceId::Protoss, {1, UnitId::ProtossArchitect});
 
 	// Metathrom
@@ -1138,7 +1138,7 @@ void init_fraud_units() {
 	// Drakkar
 	fraud_spawn.frauds[FraudHero_Drakkar][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_None, AiBuildOrder_ProtossRanger_2GateStrider, PlayerColor::Emerald};
 	add_fraud_unit(FraudHero_Drakkar, RaceId::Protoss, {4, UnitId::ProtossHierophant});
-	add_fraud_unit(FraudHero_Drakkar, RaceId::Protoss, {4, UnitId::ProtossAccantor});
+	add_fraud_unit(FraudHero_Drakkar, RaceId::Protoss, {4, UnitId::ProtossAccantorOld});
 	add_fraud_unit(FraudHero_Drakkar, RaceId::Protoss, {1, UnitId::ProtossArchitect});
 
 	// Thalazim
@@ -1230,7 +1230,7 @@ void init_fraud_units() {
 	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {4, UnitId::ProtossIdol});
 	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {4, UnitId::ProtossGolem});
 	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {8, UnitId::ProtossAtreus});
-	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {6, UnitId::ProtossAccantor});
+	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {6, UnitId::ProtossAccantorOld});
 	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {4, UnitId::ProtossArchitect});
 	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {3, UnitId::ProtossClarion});
 	add_fraud_unit(FraudSuper_TheGreatDevourer, RaceId::Protoss, {3, UnitId::ProtossMagister});

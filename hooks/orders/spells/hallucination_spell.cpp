@@ -36,7 +36,7 @@ namespace hooks
 			unit->remove_timer = remove_timer;
 		}
 		if (source) {
-			if (unit->id == UnitId::ProtossAccantor) {
+			if (unit->id == UnitId::ProtossAccantorOld) {
 			//	helper::hallucinate_scarabs(unit, source);
 
 				u32 count = source->unit_with_hangar.in_hangar_count;

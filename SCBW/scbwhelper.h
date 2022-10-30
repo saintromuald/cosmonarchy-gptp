@@ -720,7 +720,7 @@ namespace helper {
 	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);													// 00491E80
 	void disableUnitFunc(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
 	void set_all_image_group_flags_palette_11(Sprite* sprite);														// 00497430
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);						// 004E8280
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords);						// 004E8280
 	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);									// 004E8280
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0

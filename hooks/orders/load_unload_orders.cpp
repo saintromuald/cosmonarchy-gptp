@@ -212,7 +212,7 @@ namespace hooks
 							Unit* unitToUnload = helper::get_loaded_unit_from_index(unit, index);
 							if (unitToUnload != nullptr)
 							{
-								if (unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
+								if (unitToUnload->id == UnitId::ProtossAccantorOld && bIsDistanceGreaterThanHaltDistance)
 								{
 									bStopLoop = true;
 								}

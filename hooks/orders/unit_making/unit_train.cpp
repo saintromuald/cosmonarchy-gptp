@@ -19,7 +19,7 @@ namespace hooks
 	}
 
 	void secondary_order_train_fighter(Unit* unit) {
-		if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantor) {
+		if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
 			if (unit->secondary_order_state == 0 || unit->secondary_order_state == 1) {
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
 					unit->secondary_order_state = 3;
@@ -67,7 +67,7 @@ namespace hooks
 					unit->secondary_order_state = 0;
 				}
 			} else if (unit->secondary_order_state == 3) {
-				if (unit->id == UnitId::ProtossAccantor) {
+				if (unit->id == UnitId::ProtossAccantorOld) {
 					unit->secondary_order_state = 4;
 				} else {
 					Unit* in_hangar_child = unit->unit_with_hangar.in_hangar_child;
@@ -239,7 +239,7 @@ namespace hooks
 		if (unit->id == UnitId::ProtossSolarion) {
 			return 12;
 		}
-		if (unit->id == UnitId::ProtossAccantor) {
+		if (unit->id == UnitId::ProtossAccantorOld) {
 			return 1;
 		}
 		return 0;

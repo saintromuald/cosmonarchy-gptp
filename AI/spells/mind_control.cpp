@@ -50,7 +50,7 @@ namespace AI
 				case UnitId::ProtossCantavis:
 				case UnitId::ProtossDidact:
 				case UnitId::ProtossSolarion:
-				case UnitId::ProtossAccantor:
+				case UnitId::ProtossAccantorOld:
 				case UnitId::ZergLakizilisk:
 				{
 					return true;

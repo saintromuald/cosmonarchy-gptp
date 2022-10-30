@@ -2546,6 +2546,13 @@ namespace hooks
 		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unit_ext->values[ValueStellarEnforcement] == 0) {
 			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
 		}
+
+		// Patriarch - Astral Rule
+		if (unit_ext->timers[TimerPatriarchAstralRule] == 1)
+		{
+			scbw::astral_blessing_proc(unit, unit_ext->values[ValuePatriarchAstralRulePlayer], WeaponId::PatriarchIronhandWeaver);
+			unit_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
+		}
 	}
 
 	bool game_on() {

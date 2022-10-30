@@ -43,7 +43,7 @@ namespace hooks
 				u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
 				u8 newOrderId;
 
-				if (unit->id == UnitId::ProtossAccantor)
+				if (unit->id == UnitId::ProtossAccantorOld)
 				{
 					if (unit->main_order_id == OrderId::ReaverHold)
 					{
@@ -110,7 +110,7 @@ namespace hooks
 				// give orders to Stewards and Plasma Shells (through out_hangar_child)
 				helper::set_interceptors_to_standby(unit);
 
-				if (unit->id == UnitId::ProtossAccantor)
+				if (unit->id == UnitId::ProtossAccantorOld)
 				{
 					if (unit->main_order_id == OrderId::ReaverHold)
 					{
@@ -191,7 +191,7 @@ namespace hooks
 				jump_to_77AFE = true;
 			}
 			// identical to check performed by unit_is_reaver @ 0x00401490, using if(!unit_is_reaver())
-			else if (!(unit->id == UnitId::ProtossAccantor))
+			else if (!(unit->id == UnitId::ProtossAccantorOld))
 			{
 				jump_to_77A9D = true;
 			}
@@ -491,7 +491,7 @@ namespace hooks
 			{
 				jump_to_77E99 = true;
 			}
-			else if (!(unit->id == UnitId::ProtossAccantor))
+			else if (!(unit->id == UnitId::ProtossAccantorOld))
 			{
 				jump_to_77DEF = true;
 			}

@@ -308,7 +308,7 @@ void unit_destructor_special_cases(Unit* unit)
 						}
 					});
 			} break;
-			case UnitId::ProtossAccantor:
+			case UnitId::ProtossAccantorOld:
 			case UnitId::ProtossSolarion:
 			{
 				kill_hangar_units(unit);

@@ -629,7 +629,7 @@ namespace hooks
 	{
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->id == UnitId::ProtossSolarion
-			|| unit->id == UnitId::ProtossAccantor
+			|| unit->id == UnitId::ProtossAccantorOld
 			|| scbw::is_larval_egg(unit)) // just egg
 		{
 			if (helper::has_supplies_for_unit(unit_id, unit->player, notify_error))

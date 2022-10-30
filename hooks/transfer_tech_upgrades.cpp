@@ -69,7 +69,7 @@ namespace {
 		{UnitId::ProtossDracadin, UpgradeId::SingularityCharge, UpgradeId::None},
 		{UnitId::ProtossCantavis, UpgradeId::KhaydarinAmulet, UpgradeId::None},
 		{UnitId::ProtossMindTyrant, UpgradeId::ArgusTalisman, UpgradeId::None},
-		{UnitId::ProtossAccantor, UpgradeId::ReinforcedScarabs, UpgradeId::ReaverCapacity, UpgradeId::None},
+		{UnitId::ProtossAccantorOld, UpgradeId::ReinforcedScarabs, UpgradeId::ReaverCapacity, UpgradeId::None},
 		{UnitId::ProtossEnvoy, UpgradeId::GraviticDrive, UpgradeId::None},
 		{UnitId::ProtossWitness, UpgradeId::SensorArray, UpgradeId::GraviticBoosters, UpgradeId::None},
 		{UnitId::ProtossPanoptus, UpgradeId::ApialSensors, UpgradeId::GraviticThrusters, UpgradeId::None},

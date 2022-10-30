@@ -36,7 +36,7 @@ namespace hooks
 	static void weapon_damage_fatal(WeaponDamageData& data);
 
 	/// Hooks into the Unit::damage_with() function.
-	void weapon_damage(s32 damage, Unit* target, u8 weapon_id, Unit* attacker, u8 attackingPlayerId, s8 direction, u8 damage_divisor)
+	void weapon_damage(s32 damage, Unit* target, u8 weapon_id, Unit* attacker, u8 attacking_player_id, s8 direction, u8 damage_divisor)
 	{
 		WeaponDamageData data =
 		{
@@ -49,7 +49,7 @@ namespace hooks
 			direction,
 			target,
 			attacker,
-			attackingPlayerId,
+			attacking_player_id,
 			false,
 			false
 		};
@@ -61,7 +61,7 @@ namespace hooks
 		Unit* target,
 		u8 damage_type,
 		Unit* attacker,
-		u8 attackingPlayerId,
+		u8 attacking_player_id,
 		s8 direction,
 		u8 damage_divisor,
 		bool ignore_flat_armor
@@ -78,7 +78,7 @@ namespace hooks
 			direction,
 			target,
 			attacker,
-			attackingPlayerId,
+			attacking_player_id,
 			false,
 			ignore_flat_armor
 		};
@@ -219,9 +219,9 @@ namespace hooks
 			if (data.target->status & UnitStatus::IsHallucination) {
 				data.final_damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
 			}
-			data.target->damage_hp(data.final_damage, data.attacker, data.attackingPlayerId, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
+			data.target->damage_hp(data.final_damage, data.attacker, data.attacking_player_id, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
-			if (!data.target->hitpoints && data.attackingPlayerId != data.target->player) {
+			if (!data.target->hitpoints && data.attacking_player_id != data.target->player) {
 				helper::unit_attack_notify(data.target);
 			}
 		}
@@ -262,7 +262,7 @@ namespace hooks
 		// Allied invincibility frames (for e.g. Akistrokor Blissful Embrace)
 		if (targetExt->timers[TimerAlliedInvFrames])
 		{
-			if (scbw::is_allied_to(data.attackingPlayerId, targetExt->values[ValueAlliedInvPlayer]))
+			if (scbw::is_allied_to(data.attacking_player_id, targetExt->values[ValueAlliedInvPlayer]))
 			{
 				data.final_damage = 0;
 			}
@@ -311,7 +311,7 @@ namespace hooks
 					if (energy) {
 						data.attacker->spend_unit_energy(energy);
 						data.final_damage += energy / 2;
-						helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attackingPlayerId);
+						helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attacking_player_id);
 					}
 				}
 			} break;
@@ -491,7 +491,7 @@ namespace hooks
 				case WeaponId::GladiusPlasmaFlurry: {
 					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
 					if (source_unit && target_ext->timers[TimerGladiusBindingPlasma]) {
-						if (scbw::is_allied_to(data.attackingPlayerId, source_unit->player)) {
+						if (scbw::is_allied_to(data.attacking_player_id, source_unit->player)) {
 							target_ext->values[ValueGladiusBindingPlasmaRecasts]++;
 						}
 					} else {
@@ -533,49 +533,38 @@ namespace hooks
 			{
 				switch (data.weapon_id)
 				{
-					case WeaponId::ZoryusthalethMonstrousMaw:
+					case WeaponId::AutocratEminanceRifle:
 					{
-						// Zoryusthaleth - Swarming Omen
-						target_ext->values[ValueSwarmingOmenPlayer] = data.attackingPlayerId + 1;
+						// Apply Controlled Opposition
+						target_ext->values[ValueControlledOpposition]++;
 					} break;
-					case WeaponId::EmpressFadingBioplasma:
+					case WeaponId::SavantDiscoidRailgun:
 					{
-						// Empress - Anodyne Annex - add stack
-						target_ext->units[UnitEmpressSource] = data.attacker;
-						target_ext->values[ValueEmpressPassiveStacks]++;
-						target_ext->values[ValueEmpressSourcePlayer] = data.attackingPlayerId;
-					} break;
-					case WeaponId::DemiurgeGalacticWeaver:
-					{
-						// Demiurge - Worship
-						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
-							&& data.target->hitpoints > data.final_damage)
-						{
-							scbw::mind_control(data.attacker, data.target);
+						// Power Siphon
+						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
+							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
+								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
+								if (energy) {
+									data.target->spend_unit_energy(energy);
+									data.attacker->heal_energy(energy);
+									u32 target_offset = scbw::get_overlay_offset(data.target->id);
+									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset, data.target->position.x, data.target->position.y, data.attacking_player_id);
+								}
+							}
 						}
 					} break;
-					case WeaponId::KonviliskSowingSpines:
+					case WeaponId::CyclopsFlakCannons:
 					{
-						// Fertile Spines
-						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
+						// Cyclops - Flak Cannons
+						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
 					} break;
-					case WeaponId::TetcaerokorCleavingMaw:
+					case WeaponId::MadrigalImperiosoMissiles:
 					{
-						// Virile Coating - incubate
-						if (!target_ext->timers[TimerParasiteArm] && !target_ext->timers[TimerIncubationArm])
-						{
-							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
-							target_ext->timers[TimerIncubationArm] = 48 + 1;
-							data.target->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
-						}
-					} break;
-					case WeaponId::GorgonArtificeBattery:
-					{
-						// Petrification - Gorgon behavior
-						if (target_ext->values[ValuePetrificationStacks] < 20) {
-							target_ext->values[ValuePetrificationStacks] += 1;
-						}
-						target_ext->timers[TimerPetrification] = 48 + 1;
+						// Dirge - Madrigal behavior
+						target_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
+						target_ext->values[ValueDirgeStacks] += 1;
+						target_ext->values[ValueDirgeSourcePlayer] = data.attacking_player_id;
+						target_ext->units[UnitDirgeSource] = data.attacker;
 					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{
@@ -604,95 +593,55 @@ namespace hooks
 							}
 						}
 					} break;
-					case WeaponId::AutocratEminanceRifle:
+					case WeaponId::ClaymoreHarpoonRailgun:
 					{
-						// Apply Controlled Opposition
-						target_ext->values[ValueControlledOpposition]++;
-					} break;
-					case WeaponId::SavantDiscoidRailgun:
-					{
-						// Power Siphon
-						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
-								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
-								if (energy) {
-									data.target->spend_unit_energy(energy);
-									data.attacker->heal_energy(energy);
-									u32 target_offset = scbw::get_overlay_offset(data.target->id);
-									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset, data.target->position.x, data.target->position.y, data.attackingPlayerId);
-								}
-							}
-						}
-					} break;
-					case WeaponId::CharlatanFerventBlaster:
-					{
-						// Charlatan - Leading the Blind passive
-						if (!scbw::is_allied_to(data.attacker->player, data.target->player))
+						// Claymore - Kelvin Munitions - Slow primary target
+						if (!target_ext->values[ValueKelvinMunitionsSlow])
 						{
-							scbw::apply_hallucinating(data.target, data.attacker->player, HallucinatingTimer);
+							target_ext->values[ValueKelvinMunitionsSlow] = 1;
 						}
 					} break;
-					case WeaponId::MadrigalImperiosoMissiles:
+					case WeaponId::GorgonArtificeBattery:
 					{
-						// Dirge - Madrigal behavior
-						target_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
-						target_ext->values[ValueDirgeStacks] += 1;
-						target_ext->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
-						target_ext->units[UnitDirgeSource] = data.attacker;
+						// Petrification - Gorgon behavior
+						if (target_ext->values[ValuePetrificationStacks] < 20) {
+							target_ext->values[ValuePetrificationStacks] += 1;
+						}
+						target_ext->timers[TimerPetrification] = 48 + 1;
 					} break;
-					case WeaponId::HierophantPhaseSignifier:
+					case WeaponId::MagnetarNewtonianShockCannon:
 					{
-						target_ext->values[ValueSignifyStacks]++;
-						target_ext->timers[TimerSignify] = 3 * 24 + 1;
-						auto& vec = target_ext->value_vectors[ValueVectorSignifySourcePlayer];
-						if (std::find(vec.begin(), vec.end(), data.attackingPlayerId) == vec.end())
+						// Magnetar - Law of Attraction - Pull target to attacker
+						if (!(units_dat::base_property[data.target->id] & UnitProperty::Building)
+							|| (data.target->status & UnitStatus::InAir
+								&& data.target->main_order_id != OrderId::Liftoff
+								&& data.target->main_order_id != OrderId::BuildingLand))
 						{
-							vec.push_back(data.attackingPlayerId);
+							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
+							const u32 displacement_time = 5;
+							Vector32 diff = scbw::get_vector_between_points(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = scbw::get_normalized_vector(diff);
+							displacement.x *= 2 * 32.0 / displacement_time;
+							displacement.y *= 2 * 32.0 / displacement_time;
+							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
+							target_ext->repulsion_vector = displacement;
 						}
-						scbw::update_signify_status(data.target, target_ext);
 					} break;
-					case WeaponId::EcclesiastAstralBlaster:
+					case WeaponId::DemiurgeGalacticWeaver:
 					{
-						// Astral Blessing - Ecclesiast behavior
-						const s32 range = 64;
-						scbw::UnitFinder(
-							data.target->get_x() - range,
-							data.target->get_y() - range,
-							data.target->get_x() + range,
-							data.target->get_y() + range
-						).for_each([&](Unit* unit)
-							{
-								if (data.attackingPlayerId != unit->player && !scbw::is_allied_to(data.attackingPlayerId, unit->player))
-								{
-									// Ally check
-									return;
-								}
-								if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256)
-								{ 
-									// Shield check for default behavior
-									helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-								}
-								else
-								{ 
-									// Return if both checks failed
-									return;
-								}
-								if (units_dat::shields_enabled[unit->id])
-								{ 
-									// Shield heal
-									unit->heal_shields(2 * 256, data.target);
-								}
-							});
-					} break;
-					case WeaponId::MagisterNeutronCannon:
-					{
-						// Stellar Enforcement - Magister behavior
-						if (!target_ext->values[ValueStellarEnforcement])
+						// Demiurge - Worship
+						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
+						&&  data.target->hitpoints > data.final_damage)
 						{
-							target_ext->values[ValueStellarEnforcement] = 1;
-							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
-							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
+							scbw::mind_control(data.attacker, data.target);
 						}
+					} break;
+					case WeaponId::EmpressFadingBioplasma:
+					{
+						// Empress - Anodyne Annex - add stack
+						target_ext->units[UnitEmpressSource] = data.attacker;
+						target_ext->values[ValueEmpressPassiveStacks]++;
+						target_ext->values[ValueEmpressSourcePlayer] = data.attacking_player_id;
 					} break;
 					case WeaponId::VithriliskCorrosiveSpores:
 					{
@@ -729,35 +678,68 @@ namespace hooks
 								});
 						}
 					} break;
-					case WeaponId::CyclopsFlakCannons:
+					case WeaponId::ZoryusthalethMonstrousMaw:
 					{
-						// Cyclops - Flak Cannons
-						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+						// Zoryusthaleth - Swarming Omen
+						target_ext->values[ValueSwarmingOmenPlayer] = data.attacking_player_id + 1;
 					} break;
-					case WeaponId::ClaymoreHarpoonRailgun:
+					case WeaponId::KonviliskSowingSpines:
 					{
-						// Claymore - Kelvin Munitions - Slow primary target
-						if (!target_ext->values[ValueKelvinMunitionsSlow])
+						// Fertile Spines
+						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
+					} break;
+					case WeaponId::TetcaerokorCleavingMaw:
+					{
+						// Virile Coating - incubate
+						if (!target_ext->timers[TimerParasiteArm] && !target_ext->timers[TimerIncubationArm])
 						{
-							target_ext->values[ValueKelvinMunitionsSlow] = 1;
+							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
+							target_ext->timers[TimerIncubationArm] = 48 + 1;
+							data.target->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
 						}
 					} break;
-					case WeaponId::MagnetarNewtonianShockCannon:
+					case WeaponId::HierophantPhaseSignifier:
 					{
-						// Magnetar - Law of Attraction - Pull target to attacker
-						if (!(units_dat::base_property[data.target->id] & UnitProperty::Building)
-						||   (data.target->status & UnitStatus::InAir
-							&& data.target->main_order_id != OrderId::Liftoff
-							&& data.target->main_order_id != OrderId::BuildingLand))
+						target_ext->values[ValueSignifyStacks]++;
+						target_ext->timers[TimerSignify] = 3 * 24 + 1;
+						auto& vec = target_ext->value_vectors[ValueVectorSignifySourcePlayer];
+						if (std::find(vec.begin(), vec.end(), data.attacking_player_id) == vec.end())
 						{
-							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
-							const u32 displacement_time = 5;
-							Vector32 diff = scbw::get_vector_between_points(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = scbw::get_normalized_vector(diff);
-							displacement.x *= 2 * 32.0 / displacement_time;
-							displacement.y *= 2 * 32.0 / displacement_time;
-							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
-							target_ext->repulsion_vector = displacement;
+							vec.push_back(data.attacking_player_id);
+						}
+						scbw::update_signify_status(data.target, target_ext);
+					} break;
+					case WeaponId::EcclesiastAstralBlaster:
+					{
+						// Astral Blessing - Ecclesiast behavior
+						if (data.attacking_player_id != data.target->player && !scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							scbw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);
+						}
+					} break;
+					case WeaponId::CharlatanFerventBlaster:
+					{
+						// Charlatan - Leading the Blind passive
+						if (!scbw::is_allied_to(data.attacker->player, data.target->player))
+						{
+							scbw::apply_hallucinating(data.target, data.attacker->player, HallucinatingTimer);
+						}
+					} break;
+					case WeaponId::PatriarchIronhandWeaver:
+					{
+						if (data.attacking_player_id != data.target->player && !scbw::is_allied_to(data.attacking_player_id, data.target->player) && target_ext->timers[TimerPatriarchAstralRule] == 0)
+						{
+							target_ext->values[ValuePatriarchAstralRulePlayer] = data.attacking_player_id;
+							target_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
+						}
+					} break;
+					case WeaponId::MagisterNeutronCannon:
+					{
+						// Stellar Enforcement - Magister behavior
+						if (!target_ext->values[ValueStellarEnforcement])
+						{
+							target_ext->values[ValueStellarEnforcement] = 1;
+							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
+							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
 				}

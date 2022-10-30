@@ -43,7 +43,7 @@ namespace hooks
 
 		for (s32 i = 0; return_value == BUTTON_DISABLED && i < SelectionCap; i++)
 			if (g_client_selection_group->unit[i] != nullptr &&
-				(g_client_selection_group->unit[i]->id == UnitId::Hero_Warbringer || g_client_selection_group->unit[i]->id == UnitId::ProtossAccantor) &&
+				(g_client_selection_group->unit[i]->id == UnitId::Hero_Warbringer || g_client_selection_group->unit[i]->id == UnitId::ProtossAccantorOld) &&
 				g_client_selection_group->unit[i]->unit_with_hangar.in_hangar_count != 0
 				)
 				return_value = BUTTON_ENABLED;

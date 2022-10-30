@@ -461,7 +461,7 @@ namespace hooks
 		// Gptp Timer + Value
 		add_status(statuses, "Adrenal Glands", unit_ext->values[ValueAdrenalStacks], 4,
 			unit_ext->timers[TimerAdrenal], TimerType::Gptp);
-		add_status(statuses, "Captivating ZethrokorClaws", captivating_claws_get_stacks(unit), 4,
+		add_status(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
 			captivating_claws_get_timer(unit), TimerType::Gptp);
 		add_status(statuses, "Swarming Omen Aura", unit_ext->values[ValueSwarmingOmenAbility], 1,
 			unit_ext->timers[TimerSwarmingOmen], TimerType::Gptp);
@@ -535,6 +535,7 @@ namespace hooks
 		add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
 		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 		add_status(statuses, "Kelvin Munitions", unit_ext->values[ValueKelvinMunitionsSlow] > 0, 1);
+		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 
 		if (unit_ext->units[UnitMindController])

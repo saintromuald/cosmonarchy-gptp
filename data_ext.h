@@ -125,6 +125,8 @@ enum ExtValueId
 	ValueLazarusRecasts,
 	ValueGladiusBindingPlasmaRecasts,
 	ValueCentaurSecondaryWeaponCount,
+	ValueAccantorLaunchPos,
+	ValuePatriarchAstralRulePlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -214,6 +216,7 @@ enum ExtTimerId
 	TimerGladiusBindingPlasma,
 	TimerCentaurSecondaryWeaponCooldown,
 	TimerCentaurSecondaryWeaponStagger,
+	TimerPatriarchAstralRule,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

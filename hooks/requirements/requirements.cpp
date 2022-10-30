@@ -722,7 +722,7 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 					}
 					else
 					{
-						if (!parentUnit->id == UnitId::ProtossAccantor)
+						if (!parentUnit->id == UnitId::ProtossAccantorOld)
 						{
 							goto LABEL_51;
 						}

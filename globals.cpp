@@ -1537,7 +1537,7 @@ namespace scbw
 			data.direction,
 			unit,
 			data.attacker,
-			data.attackingPlayerId,
+			data.attacking_player_id,
 			true,
 			data.ignore_flat_armor
 		};

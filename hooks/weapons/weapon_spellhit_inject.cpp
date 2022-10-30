@@ -8,7 +8,7 @@ namespace
 	{
 		static Unit* attacker;
 		static Unit* target;
-		static u8 attackingPlayerId;
+		static u8 attacking_player_id;
 		__asm
 		{
 			PUSH EBP
@@ -16,11 +16,11 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV attacker, EAX
 			MOV AL, [EBP + 0x0C]
-			MOV attackingPlayerId, AL
+			MOV attacking_player_id, AL
 			MOV target, EDI
 			PUSHAD
 		}
-		hooks::irradiate_hit(attacker, target->position, attackingPlayerId);
+		hooks::irradiate_hit(attacker, target->position, attacking_player_id);
 		__asm
 		{
 			POPAD
@@ -31,20 +31,20 @@ namespace
 
 	void __declspec(naked) optical_flare_hit_wrapper() {
 		static Unit* target;
-		static u32 attackingPlayerId;
+		static u32 attacking_player_id;
 		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV attackingPlayerId, EAX
+			MOV attacking_player_id, EAX
 			POP EAX
 			MOV target, EAX
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::optical_flare_hit(target, attackingPlayerId, bullet);
+		hooks::optical_flare_hit(target, attacking_player_id, bullet);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -242,7 +242,7 @@ namespace
 	{
 		static s32 x;
 		static s32 y;
-		static u32 attackingPlayerId;
+		static u32 attacking_player_id;
 		static Bullet* bullet;
 		__asm
 		{
@@ -253,11 +253,11 @@ namespace
 			MOV EAX, [EBP + 0x0C]
 			MOV y, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV attackingPlayerId, EAX
+			MOV attacking_player_id, EAX
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::dark_swarm_hit(x, y, attackingPlayerId, bullet);
+		hooks::dark_swarm_hit(x, y, attacking_player_id, bullet);
 		__asm
 		{
 			POPAD

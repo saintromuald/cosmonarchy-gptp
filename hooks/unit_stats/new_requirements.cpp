@@ -647,7 +647,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::ProtossAccantor:
+				case UnitId::ProtossAccantorOld:
 				case UnitId::ProtossArchitect:
 				{
 					return true;
@@ -747,7 +747,7 @@ namespace hooks {
 		}
 
 		// Morphs and subunits
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantor))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantorOld))
 		{
 			if (unit_id == UnitId::ProtossPlasmaShell)
 			{
@@ -2301,7 +2301,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ProtossAccantor:
+					case UnitId::ProtossAccantorOld:
 					case UnitId::ProtossArchitect:
 					{
 						return TECH_ACTIVE;
@@ -2410,7 +2410,7 @@ namespace hooks {
 			}
 
 			// Morphs and subunits
-			case UnitId::ProtossAccantor:
+			case UnitId::ProtossAccantorOld:
 			{
 				if (unit_id == UnitId::ProtossPlasmaShell)
 				{
