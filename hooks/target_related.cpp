@@ -455,7 +455,7 @@ LABEL_42:
 			unit_id = i->id;
 			if (unit_id != UnitId::ProtossSolarion)
 			{
-				if (unit_id != UnitId::ProtossAccantor)
+				if (unit_id != UnitId::ProtossAccantorOld)
 				{
 					if (unit_id != UnitId::ZergMatraleth)
 					{
@@ -783,7 +783,7 @@ LABEL_42:
 		{
 			goto LABEL_34;
 		}
-		if (v2->id == UnitId::ProtossAccantor)
+		if (v2->id == UnitId::ProtossAccantorOld)
 		{
 			if (!(target->status & UnitStatus::InAir))
 			{

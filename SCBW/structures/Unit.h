@@ -203,7 +203,7 @@ struct Unit : public UnitLayout
 		s32 damage,
 		u8 damage_type,
 		Unit* attacker,
-		u8 attackingPlayerId,
+		u8 attacking_player_id,
 		s8 direction,
 		u8 damage_divisor,
 		bool ignore_flat_armor

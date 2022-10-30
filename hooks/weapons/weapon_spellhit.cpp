@@ -94,12 +94,12 @@ namespace hooks
 		return result;
 	}
 
-	void irradiate_hit(Unit* attacker, Point16 target, u8 attackingPlayerId) {
-		globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId, attacker);
+	void irradiate_hit(Unit* attacker, Point16 target, u8 attacking_player_id) {
+		globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void optical_flare_hit(Unit* unused, u32 attackingPlayerId, Bullet* bullet) {
+	void optical_flare_hit(Unit* unused, u32 attacking_player_id, Bullet* bullet) {
 		if (!bullet) {
 			return;
 		}
@@ -330,7 +330,7 @@ namespace hooks
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void corrosive_acid_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
+	void corrosive_acid_hit(u32 attacking_player_id, s32 x, s32 y, Bullet* bullet)
 	{
 		Box16 coords;
 
@@ -339,7 +339,7 @@ namespace hooks
 		coords.top = y - 64;
 		coords.right = x + 64;
 
-		// IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
+		// IterateUnitsAtLocationTargetProc_CorrosiveAcid(attacking_player_id,&coords);
 		// Originally spreads.
 		if (bullet->attack_target.unit != nullptr)
 		{
@@ -429,7 +429,7 @@ namespace hooks
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void dark_swarm_hit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet)
+	void dark_swarm_hit(s32 x, s32 y, u32 attacking_player_id, Bullet* bullet)
 	{
 		Point16 coords;
 		Unit* dark_swarm_unit;
@@ -444,7 +444,7 @@ namespace hooks
 
 		if (dark_swarm_unit == nullptr)
 		{
-			helper::display_last_network_error_for_player(attackingPlayerId);
+			helper::display_last_network_error_for_player(attacking_player_id);
 		}
 		else
 		{
@@ -657,7 +657,7 @@ namespace hooks
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	Unit* create_disruption_web(u32 attackingPlayerId, s32 x, s32 y)
+	Unit* create_disruption_web(u32 attacking_player_id, s32 x, s32 y)
 	{
 		Point16 coords;
 		Unit* disruption_web_unit;
@@ -669,7 +669,7 @@ namespace hooks
 		disruption_web_unit = helper::create_unit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
 		if (disruption_web_unit == nullptr)
 		{
-			helper::display_last_network_error_for_player(attackingPlayerId);
+			helper::display_last_network_error_for_player(attacking_player_id);
 		}
 		else
 		{
@@ -687,9 +687,9 @@ namespace hooks
 		return disruption_web_unit;
 	}
 
-	void disruption_web_hit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
+	void disruption_web_hit(u32 attacking_player_id, s32 x, s32 y, Bullet* bullet)
 	{
-		auto unit = create_disruption_web(attackingPlayerId, x, y);
+		auto unit = create_disruption_web(attacking_player_id, x, y);
 	}
 
 	u8 stasis_field_overlay(Unit* unit, u8 timer)

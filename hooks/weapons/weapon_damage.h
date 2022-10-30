@@ -24,7 +24,7 @@ namespace hooks {
 		Unit* target,
 		u8 weapon_id,
 		Unit* attacker,
-		u8 attackingPlayerId,
+		u8 attacking_player_id,
 		s8 direction,
 		u8 damage_divisor
 	);
@@ -34,7 +34,7 @@ namespace hooks {
 		Unit* target,
 		u8 damage_type,
 		Unit* attacker,
-		u8 attackingPlayerId,
+		u8 attacking_player_id,
 		s8 direction,
 		u8 damage_divisor,
 		bool ignore_flat_armor
@@ -51,7 +51,7 @@ namespace hooks {
 
 		Unit* target;
 		Unit* attacker;
-		u8 attackingPlayerId;
+		u8 attacking_player_id;
 		bool dont_proc_link_damage;
 		bool ignore_flat_armor;
 	};

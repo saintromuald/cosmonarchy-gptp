@@ -1351,7 +1351,7 @@ namespace scbw
 			case UnitId::TerranPhalanxSiegeMode:
 			case UnitId::TerranPhalanxTankModeTurret:
 			case UnitId::TerranPhalanxSiegeModeTurret:
-			case UnitId::ProtossAccantor:
+			case UnitId::ProtossAccantorOld:
 			case UnitId::ProtossPlasmaShell:
 			{
 				return true;
@@ -2788,5 +2788,50 @@ namespace scbw
 			} break;
 		}
 		return false;
+	}
+
+	void astral_blessing_proc(Unit* unit, u32 attacking_player_id, u32 weapon_id)
+	{
+		u32 heal_amount = 1;
+		switch (weapon_id)
+		{
+			case WeaponId::EcclesiastAstralBlaster:
+			{
+				heal_amount = 2;
+			} break;
+			case WeaponId::PatriarchIronhandWeaver:
+			{
+				heal_amount = 5;
+			} break;
+		}
+		const s32 range = 64;
+		scbw::UnitFinder(
+			unit->get_x() - range,
+			unit->get_y() - range,
+			unit->get_x() + range,
+			unit->get_y() + range
+		).for_each([&](Unit* unit)
+			{
+				if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player))
+				{
+					// Ally check
+					return;
+				}
+				if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256)
+				{
+					// Shield check for default behavior
+					helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+				}
+				else
+				{
+					// Return if both checks failed
+					return;
+				}
+				if (units_dat::shields_enabled[unit->id])
+				{
+					// Shield heal
+					unit->heal_shields(heal_amount * 256, unit);
+				}
+			});
 	}
 }

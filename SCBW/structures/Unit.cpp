@@ -338,7 +338,7 @@ bool Unit::has_weapon() const
 		}
 	}
 
-	if (this->id == UnitId::ProtossAccantor)
+	if (this->id == UnitId::ProtossAccantorOld)
 	{
 		if (this->unit_with_hangar.in_hangar_count > 0)
 		{
@@ -591,7 +591,7 @@ void Unit::damage_with_custom(
 	s32 damage,
 	u8 damage_type,
 	Unit* attacker,
-	u8 attackingPlayerId,
+	u8 attacking_player_id,
 	s8 direction,
 	u8 damage_divisor,
 	bool ignore_flat_armor
@@ -604,7 +604,7 @@ void Unit::damage_with_custom(
 		this,
 		damage_type,
 		attacker,
-		attackingPlayerId,
+		attacking_player_id,
 		direction,
 		damage_divisor,
 		ignore_flat_armor
@@ -652,7 +652,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	auto target_id = this->id;
 	auto target_player_id = this->player;
 	if (attacker) {
-		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
+		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attacking_player_id (" << attackingPlayer << "), notify (" << notify
 			<< "), target (" << target_id << "), target_player_id (" << target_player_id << "))" << std::endl;
 	}
 

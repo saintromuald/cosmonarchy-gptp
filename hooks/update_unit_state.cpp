@@ -208,7 +208,7 @@ namespace hooks
 		unit->is_being_healed = 0;
 
 		// Accantor Plasma Shells - gain shields equal to the source Accantor
-		if (unit->id == UnitId::ProtossAccantor)
+		if (unit->id == UnitId::ProtossAccantorOld)
 		{
 			Unit* plasma_shell = unit->unit_with_hangar.in_hangar_child;
 			while (plasma_shell)

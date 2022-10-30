@@ -1118,7 +1118,7 @@ namespace hooks {
 							} break;
 							case UnitId::ProtossSequesteredIcon:
 							{
-								if (current_button->requirement_var == UnitId::ProtossAccantor
+								if (current_button->requirement_var == UnitId::ProtossAccantorOld
 								||  current_button->requirement_var == UnitId::ProtossArchitect)
 								{
 									current_button_state = Button_State::Enabled;

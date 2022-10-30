@@ -303,7 +303,7 @@ namespace hooks
 					return_value = 1;
 					if (units_dat::base_property[transport->id] & UnitProperty::Building)
 					{
-						if (unit->id != UnitId::ProtossAccantor)
+						if (unit->id != UnitId::ProtossAccantorOld)
 						{
 							u8 weapon_id = unit->get_ground_weapon();
 							if (weapon_id != WeaponId::None)

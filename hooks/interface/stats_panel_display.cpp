@@ -218,7 +218,7 @@ namespace hooks
 			}
 
 			if (activeUnit->id == UnitId::ProtossSolarion
-				|| activeUnit->id == UnitId::ProtossAccantor) // Originally had hardcode for Gantrithor and Warbringer
+				|| activeUnit->id == UnitId::ProtossAccantorOld) // Originally had hardcode for Gantrithor and Warbringer
 			{
 				helper::stat_hangar_count(dialog, index);
 				index++;

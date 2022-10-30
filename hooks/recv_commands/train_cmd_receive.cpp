@@ -17,7 +17,7 @@ namespace hooks
 			}
 			else
 			{
-				if (current_selection->id == UnitId::ProtossAccantor)
+				if (current_selection->id == UnitId::ProtossAccantorOld)
 				{
 					unit_to_train = UnitId::ProtossPlasmaShell;
 				}
@@ -31,7 +31,7 @@ namespace hooks
 				&& helper::has_money_can_make(current_selection, unit_to_train)) // add unit to build queue if successful
 			{
 				if (current_selection->id == UnitId::ProtossSolarion
-					|| current_selection->id == UnitId::ProtossAccantor)
+					|| current_selection->id == UnitId::ProtossAccantorOld)
 				{
 					if (current_selection->secondary_order_state != 2)
 					{

@@ -6003,7 +6003,7 @@ namespace helper
 
 	bool unit_is_reaver(Unit* a1)
 	{
-		return a1->id == UnitId::ProtossAccantor;
+		return a1->id == UnitId::ProtossAccantorOld;
 		/*
 		const u32 Func_unitIsReaver = 0x00401490;
 		static s32 result;
@@ -6247,12 +6247,12 @@ namespace helper
 		return return_value;
 	}
 
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords)
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords)
 	{
 		const u32 CorrosiveAcidProc_function = 0x004F4670;
 		__asm {
 			PUSHAD
-			PUSH attackingPlayerId
+			PUSH attacking_player_id
 			MOV EAX, coords
 			MOV EBX, CorrosiveAcidProc_function
 			CALL Func_IterateUnitsAtLocationTargetProc
@@ -8872,7 +8872,7 @@ namespace helper
 
 	bool unitHasHanger(Unit* unit)
 	{
-		return unit->id == UnitId::ProtossAccantor || unit->id == UnitId::ProtossSolarion;
+		return unit->id == UnitId::ProtossAccantorOld || unit->id == UnitId::ProtossSolarion;
 	}
 
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg)
