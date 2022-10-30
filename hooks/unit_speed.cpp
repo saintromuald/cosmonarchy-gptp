@@ -52,8 +52,8 @@ namespace hooks
 			speed *= 1.5;
 		}
 
-		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		/*
+		// Old Swarming Omen code
 		if (unit_ext->values[ValueSwarmingOmenPlayer]) {
 			u32 player = unit_ext->values[ValueSwarmingOmenPlayer] - 1;
 			EntryArray targets = {};
@@ -68,6 +68,8 @@ namespace hooks
 			}
 		}
 		*/
+
+		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			bool accelerate = false;
 			EntryArray targets = {};
@@ -106,7 +108,7 @@ namespace hooks
 		if (unit_ext->values[ValueSignifyStacks])
 		{
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vector32f dir = scbw::getUnitDirectionVector(unit);
+			Vector32f dir = scbw::get_unit_direction_vector(unit);
 
 			const u32 radius = 6 * 32;
 			Unit* enemy_unit = scbw::UnitFinder::get_nearest_target(

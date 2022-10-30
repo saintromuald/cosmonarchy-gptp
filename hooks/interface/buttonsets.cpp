@@ -731,6 +731,7 @@ namespace hooks {
 					bool has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
 					bool in_air = unit->status & UnitStatus::InAir;
 					bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
+					bool is_burrowed = unit->status & UnitStatus::Burrowed;
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
@@ -1297,7 +1298,7 @@ namespace hooks {
 							} break;
 							case UnitId::ZergCikralisk:
 							{
-								if (current_button->requirement_var == UnitId::ZergGhitorokor)
+								if (!is_burrowed && current_button->requirement_var == UnitId::ZergGhitorokor)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
 									{
@@ -1315,7 +1316,7 @@ namespace hooks {
 							} break;
 							case UnitId::ZergIzirokor:
 							{
-								if (current_button->requirement_var == UnitId::ZergTethzorokor)
+								if (!is_burrowed && current_button->requirement_var == UnitId::ZergTethzorokor)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
 									{
@@ -1333,7 +1334,7 @@ namespace hooks {
 							} break;
 							case UnitId::ZergLakizilisk:
 							{
-								if (current_button->requirement_var == UnitId::ZergZobriolisk)
+								if (!is_burrowed && current_button->requirement_var == UnitId::ZergZobriolisk)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
 									{
@@ -1369,7 +1370,7 @@ namespace hooks {
 							} break;
 							case UnitId::ZergKonvilisk:
 							{
-								if (current_button->requirement_var == UnitId::ZergTetcaerokor)
+								if (!is_burrowed && current_button->requirement_var == UnitId::ZergTetcaerokor)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre))
 									{
@@ -1391,18 +1392,16 @@ namespace hooks {
 						}
 					}
 
-					// Passive icons (yes, it's quite ugly)
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
 					{
-						if (current_button->icon_id == IconId::Lockdown
-							&& unit->mine_carrier.mine_count == 0)
+						// Conditional hiding of custom ability icons
+						if (current_button->icon_id == IconId::MasonFusionCutter
+						&&  unit->main_order_id == OrderId::ConstructingBuilding) // Talos Salvage ability
 						{
 							current_button_state = Button_State::Invisible;
 						}
-						if (current_button->icon_id == IconId::MasonFusionCutter
-							&& unit->main_order_id == OrderId::ConstructingBuilding) { // Talos Salvage ability
-							current_button_state = Button_State::Invisible;
-						}
+
+						// Passive icons (yes, it's quite ugly)
 						if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal)
 						{
 							current_button_state = Button_State::Disabled;
@@ -1455,6 +1454,38 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranSavant:
+								{
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0) // Savant - Entropy Gauntlets
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else if (current_button->icon_id == IconId::IonThrusters && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0) // Savant - Power Siphon
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranMadcap:
+								{
+									if (current_button->icon_id == IconId::GoliathTwinAutocannons) // Madcap Maverick Feeders passive
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranHeracles:
+								{
+									if (current_button->icon_id == IconId::TitanReactor) // Heracles Nemean Reactors passive
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranApostle:
+								{
+									if (current_button->icon_id == IconId::SuicideScourge) // Apostle Last Breath passive
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranStriga:
 								{
 									if (current_button->icon_id == IconId::PsiAssault) // Striga - Fleeting Focus
@@ -1462,6 +1493,20 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 									else if (current_button->icon_id == IconId::EMPShockwave) // Striga - Transient Travels
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranOlympian:
+								{
+									if (current_button->icon_id == IconId::OcularImplants) // Olympian - Dishonorable Discharge
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAutocrat:
+								{
+									if (current_button->icon_id == IconId::OcularImplants) // Autocrat - Controlled Opposition
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1480,13 +1525,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								}
-								case UnitId::TerranHypnagogue:
-								{
-									if (current_button->icon_id == IconId::RechargeShields) // Hypnagogue - Paradigm Shift
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::TerranAnticthon:
 								{
 									if (current_button->icon_id == IconId::RilirokorToxicSpores) // Anticthon - Counter-Proposal
@@ -1528,46 +1566,9 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+							}
 
-							}
-							if (unit->id == UnitId::TerranSavant &&  // Savant Entropy Gauntlets passive
-								current_button->icon_id == IconId::DidactPhaseDisruptorCannon &&
-								scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranSavant &&  // Savant Power Siphon passive
-								current_button->icon_id == IconId::IonThrusters &&
-								scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranMadcap && // Madcap Maverick Feeders passive
-								current_button->icon_id == IconId::GoliathTwinAutocannons)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranHeracles && // Heracles Titan Reactors passive
-								current_button->icon_id == IconId::TitanReactor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranApostle &&  // Apostle Last Breath passive
-								current_button->icon_id == IconId::SuicideScourge)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranOlympian && // Olympian Mythical Might passive
-								current_button->icon_id == IconId::PsiAssault)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranAutocrat && // Autocrat Controlled Opposition passive
-								current_button->icon_id == IconId::OcularImplants)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranCuirass &&  // Cuirass Stonewall Protocol passive
+							if (unit->id == UnitId::TerranCuirass &&  // Cuirass Stonewall Protocol passive
 								current_button->icon_id == IconId::MoebiusReactor)
 							{
 								current_button_state = Button_State::Enabled;
