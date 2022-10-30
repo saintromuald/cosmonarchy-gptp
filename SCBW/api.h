@@ -658,4 +658,6 @@ namespace scbw
 	void set_bullet_target(Bullet* bullet, Point16 target);
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region);
 	bool unit_id_can_regenerate_shields(u32 unit_id);
+	bool unit_id_is_stackable_building(u32 unit_id); // Allows the AI to place the building to be placed more closely
+	bool unit_id_has_addon(u32 unit_id); // Allows the AI to reserve space for addon
 }

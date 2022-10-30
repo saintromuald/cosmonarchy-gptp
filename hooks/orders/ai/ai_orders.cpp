@@ -1847,41 +1847,6 @@ return 0;
 		}
 	}
 
-	static bool unit_id_is_stackable_building(u32 unit_id) {
-		switch (unit_id) {
-			case UnitId::ZergCagrantColony:
-			case UnitId::ZergSurkithColony:
-			case UnitId::ZergSpraithColony:
-			case UnitId::ZergLarvoskColony:
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergAlaszilArbor:
-			case UnitId::ProtossPylon:
-			case UnitId::ProtossShieldBattery:
-			case UnitId::ProtossWarden:
-			case UnitId::TerranWatchdog:
-			case UnitId::TerranBunker: {
-				return true;
-			} break;
-		}
-		return false;
-	}
-
-	static bool unit_id_has_addon(u32 unit_id) {
-		switch (unit_id) {
-			case UnitId::TerranCommandCenter:
-			case UnitId::TerranTreasury:
-			case UnitId::TerranBarracks:
-			case UnitId::TerranFulcrum:
-			case UnitId::TerranStarport: 
-			case UnitId::TerranScrapyard: 
-			case UnitId::TerranCaptaincy: {
-				return true;
-			} break;
-		}
-		return false;
-	}
-
 	// Hooked to add addon cases for new addon buildings and to reserve space around buildings. -Veeq7
 	void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) { // 00443CC0
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
@@ -1900,7 +1865,7 @@ return 0;
 
 				// Add padding on top and left
 				// Stackable buildings don't have padding between each other
-				if (!unit_id_is_stackable_building(unit_id) || !unit_id_is_stackable_building(unit->id)) {
+				if (!scbw::unit_id_is_stackable_building(unit_id) || !scbw::unit_id_is_stackable_building(unit->id)) {
 					unit_x -= 1;
 					unit_y -= 1;
 					w += 1;
@@ -1908,10 +1873,10 @@ return 0;
 				}
 
 				// Handle addons
-				if (unit_id_has_addon(unit->id)) {
+				if (scbw::unit_id_has_addon(unit->id)) {
 					w += 2;
 				}
-				if (unit_id_has_addon(unit_id)) {
+				if (scbw::unit_id_has_addon(unit_id)) {
 					unit_x -= 2;
 					w += 2;
 				}

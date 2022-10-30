@@ -2751,4 +2751,39 @@ namespace scbw
 		return unit_id != UnitId::TerranSevenstep
 			&& unit_id != UnitId::ProtossVagrantShade;
 	}
+
+	bool unit_id_is_stackable_building(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::ZergCagrantColony:
+			case UnitId::ZergSurkithColony:
+			case UnitId::ZergSpraithColony:
+			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergIrolIris:
+			case UnitId::ZergOthstolOviform:
+			case UnitId::ZergAlaszilArbor:
+			case UnitId::ProtossPylon:
+			case UnitId::ProtossShieldBattery:
+			case UnitId::ProtossWarden:
+			case UnitId::TerranWatchdog:
+			case UnitId::TerranBunker: {
+				return true;
+			} break;
+		}
+		return false;
+	}
+
+	bool unit_id_has_addon(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::TerranCommandCenter:
+			case UnitId::TerranTreasury:
+			case UnitId::TerranBarracks:
+			case UnitId::TerranFulcrum:
+			case UnitId::TerranStarport: 
+			case UnitId::TerranScrapyard: 
+			case UnitId::TerranCaptaincy: {
+				return true;
+			} break;
+		}
+		return false;
+	}
 }
