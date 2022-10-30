@@ -359,37 +359,20 @@ namespace hooks
 	}
 
 	// No bullet because the code normally calling this function loses easily-available information (and getting it the hard way seems overkill)
-	void consume_hit(Unit* attacker, Unit* target)
-	{
-		if (!attacker || !target)
-		{
+	void consume_hit(Unit* attacker, Unit* target) {
+		if (!attacker || !target) {
 			return;
 		}
 
-		if (target && !(target->status & UnitStatus::Invincible) && helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) // returning a value != 0 means there was an error
-		{
+		if (target && !(target->status & UnitStatus::Invincible) && helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) { // returning a value != 0 means there was an error
 			helper::increment_unit_death_scores(target, attacker->player);
-			if (!(target->status & UnitStatus::IsHallucination))
-			{
+			if (!(target->status & UnitStatus::IsHallucination)) {
 				EntryArray units = {};
 				unit_search_radial(&units, attacker->position, 3 * 32);
 				unit_search_filter(&units, attacker, FilterAlly | FilterIncludingSelf);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* unit = units.units[i];
-
-					u32 power = target->hitpoints;
-					u32 energyMax = unit->get_max_energy();
-					u32 diff = energyMax - unit->energy;
-					if (power > diff)
-					{
-						unit->energy = energyMax;
-						power -= diff;
-						unit->heal_hp_then_shields(power, attacker);
-					}
-					else
-					{
-						unit->heal_energy(power, attacker);
-					}
+					unit->heal_hp_then_shields(target->hitpoints, attacker);
 					unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 				}
 			}
