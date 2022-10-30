@@ -1517,37 +1517,39 @@ return 0;
 					}
 				}
 
-				u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
-				if (gas_count) {
-					--gas_count;
-				}
-				if (*target_resource_type != 1) {
-					if (max_gas_worker_count) {
-						for (u32 i = 0; i < 3; ++i) {
-							*target_resource_type += 1;
-							if (*target_resource_type > 4) {
-								*target_resource_type = 2;
+				if (worker->status & UnitStatus::Completed) {
+					u8* target_resource_type = gas_count ? &gas_value : &mineral_value;
+					if (gas_count) {
+						--gas_count;
+					}
+					if (*target_resource_type != 1) {
+						if (max_gas_worker_count) {
+							for (u32 i = 0; i < 3; ++i) {
+								*target_resource_type += 1;
+								if (*target_resource_type > 4) {
+									*target_resource_type = 2;
+								}
+								if (gas_node_worker_count[*target_resource_type - 2]) {
+									break;
+								}
 							}
-							if (gas_node_worker_count[*target_resource_type - 2]) {
-								break;
+							if (!gas_node_worker_count[*target_resource_type - 2]) {
+								*target_resource_type = 1;
 							}
-						}
-						if (!gas_node_worker_count[*target_resource_type - 2]) {
+						} else {
 							*target_resource_type = 1;
 						}
-					} else {
-						*target_resource_type = 1;
 					}
-				}
 
-				worker_ai->target_resource = *target_resource_type;
-				result = *target_resource_type;
+					worker_ai->target_resource = *target_resource_type;
+					result = *target_resource_type;
 
-				if (*target_resource_type != 1) {
-					if (gas_node_worker_count[*target_resource_type - 2]) {
-						assert(max_gas_worker_count);
-						--max_gas_worker_count;
-						--gas_node_worker_count[*target_resource_type - 2];
+					if (*target_resource_type != 1) {
+						if (gas_node_worker_count[*target_resource_type - 2]) {
+							assert(max_gas_worker_count);
+							--max_gas_worker_count;
+							--gas_node_worker_count[*target_resource_type - 2];
+						}
 					}
 				}
 			}
