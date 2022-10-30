@@ -782,9 +782,8 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergZoryusthaleth:
 			case UnitId::ZergVilgorokor: {
-				// Zoryusthaleth - Reconstitution
+				// Vilgorokor - Reconstitution
 				if (unit_ext->timers[TimerReconstitutionCooldown] == 0) {
 					u32 radius = 5 * 32;
 					EntryArray corpses = {};
@@ -798,15 +797,13 @@ namespace hooks
 							Unit* target = targets.units[i];
 							target->heal_hp(ZoryusthalethReconstitutionHealing, unit);
 							target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-							//scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
+						//	scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unit_ext->timers[TimerReconstitutionCooldown] = 1 * 24;
-						if (unit->id == UnitId::ZergVilgorokor) {
-							scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, corpse->sprite->position);
-						}
+						scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, corpse->sprite->position);
 						break;
 					}
 				}
