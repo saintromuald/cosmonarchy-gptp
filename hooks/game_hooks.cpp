@@ -782,7 +782,8 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergZoryusthaleth: {
+			case UnitId::ZergZoryusthaleth:
+			case UnitId::ZergVilgorokor: {
 				// Zoryusthaleth - Reconstitution
 				if (unit_ext->timers[TimerReconstitutionCooldown] == 0) {
 					u32 radius = 5 * 32;
@@ -803,6 +804,9 @@ namespace hooks
 						corpse->sprite->flags |= SpriteFlags::Flag04;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unit_ext->timers[TimerReconstitutionCooldown] = 1 * 24;
+						if (unit->id == UnitId::ZergVilgorokor) {
+							scbw::create_unit_from_ability(UnitId::ZergRililisk, 2, unit->player, corpse->sprite->position);
+						}
 						break;
 					}
 				}
@@ -1926,7 +1930,7 @@ namespace hooks
 			{
 				unit_id = UnitId::ZergRililisk;
 			}
-			scbw::create_unit_from_ability(unit_id, 2, unit_ext->values[ValueIncubationPlayer], unit->position.x, unit->position.y, 720);
+			scbw::create_unit_from_ability(unit_id, 2, unit_ext->values[ValueIncubationPlayer], unit->position);
 		}
 
 		// Disruption Web Clear
@@ -2362,7 +2366,7 @@ namespace hooks
 		// Autovitality - Simulacrum behavior
 		if (unit_ext->timers[TimerSimulacrumClone] == 1)
 		{
-			scbw::create_unit_from_ability(UnitId::ProtossSimulacrum, 1, unit->player, unit->position.x, unit->position.y, 0, unit);
+			scbw::create_unit_from_ability(UnitId::ProtossSimulacrum, 1, unit->player, unit->position, unit);
 		}
 
 		// Remove Ensnaring Brood overlay
