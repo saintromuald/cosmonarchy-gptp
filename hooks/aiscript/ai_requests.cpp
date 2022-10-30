@@ -693,7 +693,6 @@ namespace hooks
 				continue;
 			}
 			if (scbw::move_unit_ai(unit, ai_region)) {
-				scbw::printf("Player %u is adding %s to attack wave", unit->player + 1, unit->get_name());
 				return unit;
 			}
 		}
@@ -721,7 +720,6 @@ namespace hooks
 			if (!is_valid_attack_unit(ai_region, unit, true)) {
 				continue;
 			}
-			scbw::printf("Player %u is pulling %s to attack wave", unit->player + 1, unit->get_name());
 			scbw::move_unit_ai(unit, ai_region);
 		}
 	}
