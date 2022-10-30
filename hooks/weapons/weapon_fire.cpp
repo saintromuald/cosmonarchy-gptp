@@ -699,6 +699,7 @@ namespace hooks {
 					range = 64;
 				} break;
 				case WeaponId::OptectonSunsplitBeam:
+				case WeaponId::PatriarchIronhandWeaver:
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					range = 96;
@@ -716,7 +717,7 @@ namespace hooks {
 				{
 				}
 			}
-			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
+			Unit* collision_target = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range,
 				bullet->position.y - range,
 				bullet->position.x + range,
@@ -757,59 +758,62 @@ namespace hooks {
 					return false;
 				}
 				return true;
-			}
-			);
-			if (collisionTarget != nullptr)
+			});
+			if (collision_target)
 			{
-				if (bullet->weapon_id == WeaponId::SentinelCerberusRailgun)
+				switch (bullet->weapon_id)
 				{
-					// Sentinel - Kinetic Penetration - pierce targets
-					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
-				}
-				else if (bullet->weapon_id == WeaponId::PenumbraErebolShockCannon)
-				{
-					// Penumbra - Shroud Piercer - pierce targets
-					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collisionTarget, 2);
-				}
-				else if (bullet->weapon_id == WeaponId::ClaymoreHarpoonRailgun)
-				{
-					// Claymore - Kelvin Munitions - pierce targets
-					globals.add_bullet_multihit(bullet, collisionTarget);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collisionTarget, 1);
+					case WeaponId::PenumbraErebolShockCannon:
+					{
+						// Penumbra - Shroud Piercer - pierce targets
+						globals.add_bullet_multihit(bullet, collision_target);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
+						hooks::weapon_bullet_hit(bullet, collision_target, 2);
+					} break;
+					case WeaponId::ClaymoreHarpoonRailgun:
+					{
+						// Claymore - Kelvin Munitions
+						// pierce targets
+						globals.add_bullet_multihit(bullet, collision_target);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
+						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 
-					// Claymore - Kelvin Munitions - slow pierced targets
-					UnitExt* collisionTargetExt = get_unit_ext(collisionTarget);
-					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
-					{
-						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
-					}
-				}
-				else if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
-					// Kalkalisk behavior
-					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
-					auto count = globals.get_multihit_count(bullet);
-					helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
-					collisionTarget->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
-						weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid],
-						bullet->source_unit, bullet->player, 0, 1, false);
-
-					if (count >= 4)
-					{
-						bullet->time_remaining = 0;
-					}
-					else
-					{
-						bullet->move_target.unit = bullet->attack_target.unit;
-						if (bullet->move_target.unit != nullptr)
+						// slow pierced targets
+						UnitExt* collisionTargetExt = get_unit_ext(collision_target);
+						if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 						{
-							bullet->targetPosition = bullet->move_target.unit->position;
-							bullet->targetPosition2 = bullet->move_target.unit->position;
+							collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
 						}
+					} break;
+					case WeaponId::KalkaliskViscousAcid:
+					{
+						// Kalkalisk - Ablative Spores
+						globals.add_incremental_bullet_multihit(bullet, collision_target);
+						auto count = globals.get_multihit_count(bullet);
+						helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
+						collision_target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
+							weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid],
+							bullet->source_unit, bullet->player, 0, 1, false);
+
+						if (count >= 4)
+						{
+							bullet->time_remaining = 0;
+						}
+						else
+						{
+							bullet->move_target.unit = bullet->attack_target.unit;
+							if (bullet->move_target.unit != nullptr)
+							{
+								bullet->targetPosition = bullet->move_target.unit->position;
+								bullet->targetPosition2 = bullet->move_target.unit->position;
+							}
+						}
+					} break;
+					default:
+					{
+						globals.add_bullet_multihit(bullet, collision_target);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
+						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 					}
 				}
 			}
