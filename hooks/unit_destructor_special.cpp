@@ -439,11 +439,9 @@ void unit_destructor_special_cases(Unit* unit)
 	// Matraleth Parasite - Broodspawn on death
 	if (scbw::unit_get_corpse_consume(unit) == CorpseConsume_Parasite) {
 		bool is_air = units_dat::base_property[unit->id] & UnitProperty::Flyer || unit->status & UnitStatus::InAir;
-		u16 type = is_air ? UnitId::ZergRilirokor : UnitId::ZergRililisk;
+		u16 type = is_air ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unit_ext->parasite_spawn_count[i]) {
-				scbw::create_unit_from_ability(type, unit_ext->parasite_spawn_count[i], i, unit->position);
-			}
+			scbw::create_unit_from_ability(type, unit_ext->parasite_spawn_count[i], i, unit->position);
 		}
 	}
 

@@ -805,7 +805,7 @@ namespace hooks
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unit_ext->timers[TimerReconstitutionCooldown] = 1 * 24;
 						if (unit->id == UnitId::ZergVilgorokor) {
-							scbw::create_unit_from_ability(UnitId::ZergRililisk, 2, unit->player, corpse->sprite->position);
+							scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, corpse->sprite->position);
 						}
 						break;
 					}
