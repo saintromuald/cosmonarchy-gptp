@@ -5455,7 +5455,7 @@ namespace helper
 	bool is_hangar_unit(Unit* unit)
 	{
 		if (unit->id == UnitId::ProtossSteward
-			|| unit->id == UnitId::ProtossPlasmaShell)
+		||  unit->id == UnitId::ProtossPlasmaShell)
 		{
 			return true;		
 		}

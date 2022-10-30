@@ -708,25 +708,25 @@ namespace hooks
 	}
 
 	// Returns the C-string for the tooltip text of the Interceptor grp_frame (Carriers), Scarab grp_frame (Reavers), Nuclear Missile grp_frame (Nuclear Silos), and Spider Mine grp_frame (Vultures).
-	const char* get_special_tooltip_string(u16 iconUnitId, Unit* unit)
+	const char* get_special_tooltip_string(u16 icon_unit_id, Unit* unit)
 	{
-		if (iconUnitId == UnitId::ProtossSteward)
+		if (icon_unit_id == UnitId::ProtossSteward)
 		{
 			return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);				// "Interceptors"
 		}
-		if (iconUnitId == UnitId::ProtossPlasmaShell)
+		if (icon_unit_id == UnitId::ProtossPlasmaShell)
 		{
 			return get_damage_tootlip_string(WeaponId::Scarab, unit, 792);						// "Scarabs"
 		}
-		if (iconUnitId == UnitId::TerranNuclearMissile)
+		if (icon_unit_id == UnitId::TerranNuclearMissile)
 		{
 			return statTxtTblNew->get_string(793);											// "Nukes"
 		}
-		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
+		if (icon_unit_id == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
 		{
 			return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);				// "Spider Mines"
 		}
-		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranEidolon)
+		if (icon_unit_id == UnitId::TerranSpiderMine && unit->id == UnitId::TerranEidolon)
 		{
 			return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 794);		// "Lobotomy Mines"
 		}

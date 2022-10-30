@@ -54,7 +54,7 @@ namespace hooks
 					||		 target->id == UnitId::ProtossSteward
 					||		 target->id == UnitId::ProtossPlasmaShell)
 					{
-						stringId = 876; //Invalid target.<0>
+						stringId = 876; // Invalid target.<0>
 					}
 					else
 					{
