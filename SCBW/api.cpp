@@ -2821,6 +2821,7 @@ namespace scbw
 				{
 					// Shield check for default behavior
 					helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+					helper::add_overlay_below_main(victim->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				}
 				else
 				{
