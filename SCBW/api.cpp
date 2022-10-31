@@ -2541,4 +2541,18 @@ namespace scbw {
 			}
 		});
 	}
+
+	bool is_attack_region(AiRegion* ai_region) {
+		switch (ai_region->state) {
+			case RegionState::ContinueAttackHere:
+			case RegionState::Attacking:
+			case RegionState::ChaseAway: // technically not an attack region, but usually treated as one it seems
+			case RegionState::PreparingAttack:
+			case RegionState::PreparingAttackOldUnreachable:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

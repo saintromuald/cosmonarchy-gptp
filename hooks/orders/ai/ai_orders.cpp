@@ -1815,7 +1815,7 @@ namespace hooks
 		s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
 
 		Unit* best_unit = 0;
-		u32 best_score = 0;
+		f32 best_score = 0;
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (!(unit->status & UnitStatus::Completed)) {
 				continue;
@@ -1833,11 +1833,7 @@ namespace hooks
 				}
 
 				// Skip attack wave units for unimportant defense regions and reduce their score otherwise
-				if (current_ai_region->state == RegionState::ContinueAttackHere ||
-					current_ai_region->state == RegionState::Attacking ||
-					current_ai_region->state == RegionState::ChaseAway ||
-					current_ai_region->state == RegionState::PreparingAttack || 
-					current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
+				if (scbw::is_attack_region(current_ai_region)) {
 					if (ai_region->defense_priority <= 110) {
 						continue;
 					} else {
@@ -1874,7 +1870,7 @@ namespace hooks
 			}
 
 			f32 distance = helper::get_path_distance_to(unit, region_center);
-			s32 score = distance >= 1 ? force / distance : force;
+			f32 score = distance >= 1 ? force / distance : force;
 			if (score > best_score) {
 				best_score = score;
 				best_unit = unit;
