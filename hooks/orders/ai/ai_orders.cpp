@@ -742,7 +742,7 @@ namespace hooks
 		||	slowestUnitVar->status & UnitStatus::InTransport
 		||	slowestUnitVar == unit
 		||	region->state == 2
-		||	(u16)(&(*g_sai_paths)->regionCount + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60u
+		||	(u16)(&(*g_sai_paths)->region_count + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60u
 		||	!helper::ai_are_on_connected_regions(slowestUnitVar, unit)
 		||	helper::get_distance_fast(region->slowest_unit->sprite->position.x, unit->sprite->position.x, region->slowest_unit->sprite->position.y, unit->sprite->position.y) <= 0x80) {
 			return 1;
@@ -1775,7 +1775,7 @@ namespace hooks
 	// Hooked to let AI use new transports. -Pr0nogo
 	bool player_has_transport(u32 player_id) { // 00437250
 		return g_completed_unit_count_table[UnitId::TerranTrojan].player[player_id]
-		//	|| g_completed_unit_count_table[UnitId::TerranPythean].player[player_id]
+			|| g_completed_unit_count_table[UnitId::TerranPythean].player[player_id]
 			|| g_completed_unit_count_table[UnitId::ProtossEnvoy].player[player_id]
 			|| g_completed_unit_count_table[UnitId::ZergOvileth].player[player_id]
 			|| g_completed_unit_count_table[UnitId::ZergIroleth].player[player_id]
@@ -2046,5 +2046,79 @@ namespace hooks
 		out_position->x = 32 * fallback_x + units_dat::building_dimensions[unit_id_1].x / 2;
 		out_position->y = 32 * fallback_y + units_dat::building_dimensions[unit_id_1].y / 2;
 		return 1;
+	}
+
+	// Hooked to help AI use transports more intelligently. -Pr0nogo
+	s32 ai_can_travel_to_region(AiRegion* source, AiRegion* destination) // 0043A790
+	{
+		s32 has_ground_military;
+		s32 cant_attack_ground;
+		s32 cant_attack_air;
+		helper::ai_get_region_military_types(destination, &has_ground_military, &cant_attack_ground, &cant_attack_air);
+		if (has_ground_military)
+		{
+			if (player_has_transport(source->player))
+			{
+				MilitaryAi* first_ai = source->first_military_ai;
+				if (!first_ai)
+				{
+					return 1;
+				}
+				Unit* first_military_unit = first_ai->unit;
+				if (first_military_unit->pathing_flags & 1)
+				{
+					if (!helper::unit_has_path_to_destination(first_military_unit, (*g_sai_paths)->regions[destination->region].region_center_x >> 8, (*g_sai_paths)->regions[destination->region].region_center_y >> 8))
+					{
+						return 1;
+					}
+				}
+			}
+		}
+		if (!cant_attack_air && !cant_attack_ground || source->region == destination->region)
+		{
+			return 0;
+		}
+
+		Unit** units_in_region = helper::get_all_units_in_region(destination->region);
+		Unit* first_unit_in_region = *units_in_region;
+		s32 result = 1;
+		if (*units_in_region)
+		{
+			while (1)
+			{
+				u8 unit_in_region_player = first_unit_in_region->player;
+				if (unit_in_region_player == 11)
+				{
+					unit_in_region_player = first_unit_in_region->sprite->player;
+				}
+				if (!scbw::is_allied_to(destination->player, unit_in_region_player))
+				{
+					u32 is_flyer = (first_unit_in_region->status >> 2) & 1;
+					if (!is_flyer)
+					{
+						if (cant_attack_air)
+						{
+							break;
+						}
+					}
+					if (is_flyer && cant_attack_ground)
+					{
+						break;
+					}
+				}
+				first_unit_in_region = units_in_region[1];
+				++units_in_region;
+				if (!first_unit_in_region)
+				{
+					goto index;
+				}
+			}
+			result = 0;
+		}
+	index:
+		u32 index_decremented = g_temp_units_list_arrays_counts_list_last_index[0] - 1;
+		g_temp_units_list_arrays_counts_list_last_index[0] = index_decremented;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[index_decremented];
+		return result;
 	}
 }

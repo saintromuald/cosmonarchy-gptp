@@ -689,6 +689,31 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) ai_can_travel_to_region_wrapper() { // 0043A790
+		static s32 result;
+		static AiRegion* source;
+		static AiRegion* destination;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV source, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV destination, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::ai_can_travel_to_region(source, destination);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -735,6 +760,8 @@ namespace hooks
 
 		jump_patch(player_has_transport_wrapper, 				0x00437250, 1);
 		jump_patch(request_military_to_wrapper,					0x0043E760, 0);
+
+		jump_patch(ai_can_travel_to_region_wrapper,				0x0043A790, 1);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 
