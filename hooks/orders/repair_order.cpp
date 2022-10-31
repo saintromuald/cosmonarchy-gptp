@@ -11,7 +11,7 @@ namespace hooks
 		if (target
 			//	&&  target->hitPoints < units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
 			&&  target->status & UnitStatus::Completed
-			&& !(unit->unit_ai && target->status & UnitStatus::IsBuilding && target->order_target.unit != unit)
+			&& !(unit->unit_ai && target->status & UnitStatus::Reacts && target->order_target.unit != unit)
 			&& !(target->status & UnitStatus::InTransport)
 			&& !target->stasis_timer)
 		{

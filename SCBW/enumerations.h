@@ -304,7 +304,7 @@ namespace UnitStatus
 		UNKNOWN2 = 0x00004000,
 		CanNotAttack = 0x00008000,
 		CanTurnAroundToAttack = 0x00010000,		// IsAUnit in IDA
-		IsBuilding = 0x00020000,
+		Reacts = 0x00020000,
 		IgnoreTileCollision = 0x00040000,
 		Unmovable = 0x00080000,
 		IsNormal = 0x00100000,					// 1 for "normal" units, 0 for hallucinated units

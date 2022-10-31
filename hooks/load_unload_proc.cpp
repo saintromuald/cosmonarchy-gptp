@@ -154,7 +154,7 @@ namespace hooks
 		scbw::refresh_console();
 		if (transport->status & UnitStatus::GroundedBuilding)
 		{
-			cargo_unit->status = (cargo_unit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
+			cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
 			if (cargo_unit->path != nullptr)
 			{
 				u32* path_0x4 = (u32*)((u32)cargo_unit->path + 4);
@@ -184,7 +184,7 @@ namespace hooks
 			{
 				Unit* subunit = cargo_unit->subunit;
 				scbw::set_unit_position(subunit, transport->sprite->position.x, transport->sprite->position.y);
-				subunit->status = (subunit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
+				subunit->status = (subunit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
 				if (subunit->path != nullptr)
 				{
 					u32* path_0x4 = (u32*)((u32)subunit->path + 4);

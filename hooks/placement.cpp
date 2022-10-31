@@ -79,7 +79,7 @@ namespace hooks
                     }
                 }
             }
-            if ((!dont_ignore_reacting && other_unit->status & UnitStatus::IsBuilding)
+            if ((!dont_ignore_reacting && other_unit->status & UnitStatus::Reacts)
             ||  (needs_detection && !also_invisible)
             ||   other_unit == builder
             ||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)

@@ -154,7 +154,7 @@ namespace hooks
 			attack_priority = 2;
 		}
 
-		else if (actual_target->status & UnitStatus::IsBuilding)
+		else if (actual_target->status & UnitStatus::Reacts)
 		{
 			attack_priority = 3;
 		}

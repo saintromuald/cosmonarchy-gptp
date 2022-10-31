@@ -168,7 +168,6 @@ namespace helper {
 	bool unit_is_active_transport(Unit* unit);
 	s32 is_unit_loaded(Unit* unit);
 	s32 ai_try_return_home(Unit* unit, s32 dontIssueOrder);
-	s32 ai_transport_action(Unit* unit);
 	s32 ai_ask_for_help(Unit* self, Unit* attacker, s32 onlyNearbyGuards);
 	s16 get_region_id_from_unit(Unit* unit);
 	s32 get_enemy_air_strength_in_region(u16 region_id, s32 player);

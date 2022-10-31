@@ -209,7 +209,7 @@ namespace AI
 				caster->is_target_enemy(target))
 			{
 				if ((units_dat::base_property[target->id] & UnitProperty::Worker) ||
-					(!(target->status & UnitStatus::IsBuilding)))
+					(!(target->status & UnitStatus::Reacts)))
 				{
 					totalNukeTargetValue += target->get_current_life_ingame();
 				}

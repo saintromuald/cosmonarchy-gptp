@@ -1,9 +1,8 @@
 #pragma once
 #include "SCBW/structures.h"
 
-namespace hooks
-{
-	void ai_unit_was_hit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp);						// 0043F320
+namespace hooks {
+	void ai_unit_was_hit(Unit* unit, Unit* attacker, s32 main_target_reactions, s32 dont_call_help);					// 0043F320
 	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repairTarget);											// 004402B0
 	b32 ai_military_should_wait_for_group(Unit* unit);																	// 0043AA10
 	AiTown* delete_ai_town_if_needed(AiTown* town);																		// 004347E0

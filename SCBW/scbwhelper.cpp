@@ -1427,20 +1427,6 @@ namespace helper
 		return result;
 	}
 
-	s32 ai_transport_action(Unit* unit)
-	{
-		const u32 Func_AI_TransportAction = 0x0043DB50;
-		static s32 result;
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_AI_TransportAction
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	s32 ai_ask_for_help(Unit* self, Unit* attacker, s32 onlyNearbyGuards)
 	{
 		const u32 Func_AI_AskForHelp = 0x0043ADA0;

@@ -2338,14 +2338,14 @@ namespace scbw {
 		return CorpseConsume_None;
 	}
 
-	bool ai_unit_id_can_flee_quarter(u32 unit_id) {
+	bool ai_unit_id_can_flee_three_quarters(u32 unit_id) {
 		// Just like default, for now... -Pr0nogo
 		return unit_id == UnitId::ProtossDidact
 			|| unit_id == UnitId::TerranWraith
 			|| unit_id == UnitId::ZergMutalisk;
 	}
 
-	bool ai_unit_id_can_flee_third(u32 unit_id) {
+	bool ai_unit_id_can_flee_two_thirds(u32 unit_id) {
 		// Just like default, for now... -Pr0nogo
 		return unit_id == UnitId::TerranMinotaur
 			|| unit_id == UnitId::ProtossSolarion

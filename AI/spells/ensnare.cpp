@@ -33,7 +33,7 @@ namespace AI
 			if (target->ensnare_timer)
 				return false;
 
-			if (!(target->status & UnitStatus::IsBuilding)) //??
+			if (!(target->status & UnitStatus::Reacts)) //??
 				return false;
 
 			if (!isTargetAttackingAlly(target, caster))

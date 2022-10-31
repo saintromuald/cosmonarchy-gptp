@@ -430,7 +430,7 @@ namespace hooks
 			if (unit->main_order_state == 0
 			&&  target->main_order_id != OrderId::Pickup2)
 			{
-				if (target->status & UnitStatus::IsBuilding)
+				if (target->status & UnitStatus::Reacts)
 				{
 					helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
 					prepare_for_next_order(target);

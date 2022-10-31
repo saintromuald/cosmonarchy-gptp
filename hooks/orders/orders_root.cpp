@@ -363,7 +363,7 @@ namespace hooks {
 		{
 			helper::EDI_order(unit, mainOrder_func_offsets[OrderId::Warpin][0]);
 		}
-		else if (unit->is_frozen() || (!(unit->status & UnitStatus::IsBuilding) && unit->status & UnitStatus::CanNotAttack))
+		else if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack))
 		{
 			helper::EAX_order(unit, 0x0043FF00); //known as "getMaelstromTarget", though don't make much sense in this context
 		}

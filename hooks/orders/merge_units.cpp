@@ -101,7 +101,7 @@ namespace hooks
 				//93B37
 
 				unit->order_signal -= 4;
-				unit->status |= UnitStatus::IsBuilding;
+				unit->status |= UnitStatus::Reacts;
 
 				//pathing related
 				helper::delete_pathing(unit);
@@ -316,7 +316,7 @@ namespace hooks
 				targetUnit->user_action_flags |= 4;
 				targetUnit->remove();
 
-				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
+				unit->status &= ~UnitStatus::Reacts; //disable the flag if set
 				helper::delete_pathing(unit); ////pathing related
 
 				unit->order_computer(OrderId::CompletingArchonSummon);
@@ -512,7 +512,7 @@ namespace hooks
 				targetUnit->user_action_flags |= 4;
 				targetUnit->remove();
 
-				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
+				unit->status &= ~UnitStatus::Reacts; //disable the flag if set
 				helper::delete_pathing(unit); ////pathing related
 
 				unit->order_computer(OrderId::CompletingArchonSummon);
