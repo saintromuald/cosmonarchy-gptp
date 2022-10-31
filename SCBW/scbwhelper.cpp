@@ -3543,17 +3543,6 @@ namespace helper
 		return return_val;
 	}
 
-	void function_004E97C0(Unit* unit)
-	{
-		const u32 Func_Sub_4E97C0 = 0x004E97C0;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub_4E97C0
-			POPAD
-		}
-	}
-
 	// Note: this function was made from what was seen in this case of use, some things are hardcoded because it's hard to tell what is used or not.
 	// Basically, used elsewhere, the function would be implemented differently
 	void targeted_order(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 order_id, u32 unk3, u32 unk4, u32 unk5)

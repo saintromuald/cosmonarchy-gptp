@@ -147,16 +147,16 @@ namespace hooks
 		);
 		dark_swarm_damage(x, y, radius, bullet, weapon_id);
 
-		bool hasGuaranteedHitUnit = guaranteedHit != 0;
-		if (hasGuaranteedHitUnit && nathrokor_condition(bullet, bullet->attack_target.unit))
+		bool has_guaranteed_hit_unit = guaranteedHit != 0;
+		if (has_guaranteed_hit_unit && nathrokor_condition(bullet, bullet->attack_target.unit))
 		{
 			helper::weapon_bullet_shot(guaranteedHit, bullet, 1);
 		}
 		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{
 			Unit* target = unitsInSplash.get_unit(i);
-			if (hasGuaranteedHitUnit && target == guaranteedHit)
-			{ // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
+			if (has_guaranteed_hit_unit && target == guaranteedHit)
+			{ // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
 
@@ -164,13 +164,12 @@ namespace hooks
 			if (target == bullet->source_unit && bullet->weapon_id != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
-			// if(scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
+			// if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 
 			if (splash == SplashType::Enemy)
 			{
 				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
 			}
-
 			else if (splash == SplashType::FriendlyNew)
 			{
 				if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
