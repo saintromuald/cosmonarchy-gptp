@@ -599,22 +599,22 @@ namespace hooks
 								data.target->get_x() + 96,
 								data.target->get_y() + 96
 							).for_each([&](Unit* target) {
-									if (target->status & UnitStatus::Burrowed) {
-										return;
-									}
-									if (target->status & UnitStatus::Invincible) {
-										return;
-									}
-									if (scbw::is_allied_to(data.attacker->player, target->player)) {
-										return;
-									}
-									helper::apply_spores(target);
-									Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
-									if (thingy) {
-										thingy->sprite->elevation = target->sprite->elevation + 1;
-										helper::set_thingy_visibility_flags(thingy);
-									}
-								});
+								if (target->status & UnitStatus::Burrowed) {
+									return;
+								}
+								if (target->status & UnitStatus::Invincible) {
+									return;
+								}
+								if (scbw::is_allied_to(data.attacker->player, target->player)) {
+									return;
+								}
+								helper::apply_spores(target);
+								Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
+								if (thingy) {
+									thingy->sprite->elevation = target->sprite->elevation + 1;
+									helper::set_thingy_visibility_flags(thingy);
+								}
+							});
 						}
 					} break;
 					case WeaponId::ZoryusthalethMonstrousMaw:
