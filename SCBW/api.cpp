@@ -2506,7 +2506,7 @@ namespace scbw {
 	}
 
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
-		u32 heal_amount = 1;
+		u32 heal_amount = 2;
 		switch (weapon_id) {
 			case WeaponId::EcclesiastAstralBlaster: {
 				heal_amount = 2;
@@ -2522,22 +2522,22 @@ namespace scbw {
 			victim->get_x() + range,
 			victim->get_y() + range
 		).for_each([&](Unit* unit) {
-				if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player)) {
-					// Ally check
-					return;
-				}
-				if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
-					// Shield check for default behavior
-					helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-					helper::add_overlay_below_main(victim->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-				} else {
-					// Return if both checks failed
-					return;
-				}
-				if (units_dat::shields_enabled[unit->id]) {
-					// Shield heal
-					unit->heal_shields(2 * 256, victim);
-				}
-			});
+			if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player)) {
+				// Ally check
+				return;
+			}
+			if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
+				// Shield check for default behavior
+				helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+				helper::add_overlay_below_main(victim->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+			} else {
+				// Return if both checks failed
+				return;
+			}
+			if (units_dat::shields_enabled[unit->id]) {
+				// Shield heal
+				unit->heal_shields(2 * 256, victim);
+			}
+		});
 	}
 }
