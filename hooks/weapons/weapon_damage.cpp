@@ -445,8 +445,7 @@ namespace hooks
 			}
 
 			// These bypass Carapace Swarm
-			switch (data.weapon_id)
-			{
+			switch (data.weapon_id) {
 				case WeaponId::GladiusPlasmaFlurry: {
 					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
 					if (source_unit && target_ext->timers[TimerGladiusBindingPlasma]) {
