@@ -420,7 +420,7 @@ namespace hooks
 		s32 v34;
 		u16 transport_unit_id_2;
 
-		region_count = (*g_sai_paths)->regionCount;
+		region_count = (*g_sai_paths)->region_count;
 		v33 = 0;
 		if (region_count > 1)
 		{

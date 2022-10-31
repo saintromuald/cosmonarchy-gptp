@@ -48,5 +48,7 @@ namespace hooks {
 	bool player_has_transport(u32 player_id);																			// 00437250
 	u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air);									// 0043E760
 
+	s32 ai_can_travel_to_region(AiRegion* source, AiRegion* destination);												// 0043A790
+
 	void inject_ai_orders_hooks();
 }

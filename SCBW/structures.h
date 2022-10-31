@@ -734,7 +734,7 @@ C_ASSERT(sizeof(Region) == 64);
 
 struct RegionArray
 {
-	u16 regionCount;
+	u16 region_count;
 	u8 _dc2[0x449fa];
 	Region regions[5000];
 	u8 _dc92bfc[0x4e24];

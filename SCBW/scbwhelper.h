@@ -1457,4 +1457,7 @@ namespace helper {
 	Image* images_insert(Image* image, Image* next, Image* prev);																			// 0047A070
 	void some_play_image_crap_that_crashes(char x_pos, char y_pos, Image* image, Sprite* sprite, u32 image_id);								// 004010E0
 	u32 get_closest_point_of_target(Unit* unit, u32 out_x, u32 out_y);																		// 004762C0
+
+	bool unit_has_path_to_destination(Unit* unit, s32 pos_x, s32 pos_y);																	// 0049CB60
+	Unit** get_all_units_in_region(u16 region_id);																							// 00430B50
 }

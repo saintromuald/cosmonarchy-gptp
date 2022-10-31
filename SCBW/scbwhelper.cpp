@@ -1762,8 +1762,7 @@ namespace helper
 		return result;
 	}
 
-	void ai_get_region_military_types(AiRegion* region, s32* hasGroundMilitary,
-		s32* cantAttackGround, s32* cantAttackAir)
+	void ai_get_region_military_types(AiRegion* region, s32* hasGroundMilitary, s32* cantAttackGround, s32* cantAttackAir)
 	{
 		const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
 		__asm {
@@ -13230,6 +13229,36 @@ namespace helper
 			PUSH out_y
 			PUSH out_x
 			PUSH unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool unit_has_path_to_destination(Unit* unit, s32 pos_x, s32 pos_y)
+	{
+		static u32 result;
+		const u32 func_address = 0x0049CB60;
+		__asm {
+			PUSHAD
+			PUSH pos_y
+			PUSH pos_x
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	Unit** get_all_units_in_region(u16 region_id)
+	{
+		static Unit** result;
+		const u32 func_address = 0x00430B50;
+		__asm {
+			PUSHAD
+			PUSH region_id
 			CALL func_address
 			MOV result, EAX
 			POPAD
