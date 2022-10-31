@@ -24,9 +24,10 @@ namespace hooks
 			if (main_target_reactions && attacker) {
 				// Cancel structure code
 				if (!(units_dat::base_property[unit->id] & UnitProperty::Worker) 
-					&& !unit->main_order_id // Original function call checks if unit has a sprite??? 00475A50
+					&& unit->main_order_id // Original function call checks if unit has a sprite??? 00475A50
 					&& !(unit->status & UnitStatus::Completed)) {
-					if (unit->get_current_life_ingame() < unit->get_total_hp_plus_shields() / 16) { // Used to be divided by 4 -Veeq7
+					u32 threshold = std::max(10, unit->get_total_hp_plus_shields() / 16); // Used to be divided by 4 -Veeq7
+					if (unit->get_current_life_ingame() < threshold) {
 						helper::ai_cancel_structure(unit);
 						return;
 					}
