@@ -307,11 +307,7 @@ bool Unit::has_weapon() const {
 // Identical to function @ 0x004020B0
 bool Unit::is_frozen() const {
 	assert(this);
-	return
-		this->status & UnitStatus::Frozen
-		|| this->lockdown_timer
-		|| this->stasis_timer
-		|| this->maelstrom_timer;
+	return scbw::unit_is_stunned((Unit*)this);
 }
 
 extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
