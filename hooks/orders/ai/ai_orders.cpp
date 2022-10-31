@@ -1817,7 +1817,7 @@ namespace hooks
 		Unit* best_unit = 0;
 		f32 best_score = 0;
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-			if (!(unit->status & UnitStatus::Completed)) {
+			if (!(unit->status & UnitStatus::Completed) || !helper::is_valid_for(unit->id, unit, 0)) {
 				continue;
 			}
 			

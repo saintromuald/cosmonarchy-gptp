@@ -646,7 +646,7 @@ namespace hooks
 	}
 
 	static bool is_valid_attack_unit(AiRegion* ai_region, Unit* unit, bool strict) {
-		if (!(unit->status & UnitStatus::Completed)) {
+		if (!(unit->status & UnitStatus::Completed) || !helper::is_valid_for(unit->id, unit, 0)) {
 			return false;
 		}
 

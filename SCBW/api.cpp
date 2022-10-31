@@ -2453,9 +2453,6 @@ namespace scbw {
 			unit->unit_ai->guard_ai.parent = 0;
 			unit->unit_ai = 0;
 			helper::add_military_ai(ai_region, unit, 1);
-			if (unit->status & UnitStatus::InBuilding) {
-				helper::unload_unit_proc(unit);
-			}
 			helper::ai_recalculate_region_strength(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)));
 			helper::ai_recalculate_region_strength(ai_region); // New
 			return true;
