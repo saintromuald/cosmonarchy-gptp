@@ -346,8 +346,7 @@ struct UnitLayout
 			/*0x0C8*/     u32 flag_spawn_frame;			// flag beacons, the frame that the flag will spawn
 		} beacon;
 
-		struct
-		{
+		struct {
 			/*0x0C0*/     Unit*		addon;
 			/*0x0C4*/     u16		addon_build_id;
 			/*0x0C6*/     u16		upgrade_research_time;
@@ -358,10 +357,8 @@ struct UnitLayout
 			/*0x0CC*/     u8		creep_timer;
 			/*0x0CD*/     u8		upgrade_level;
 			/*0x0CE*/     u16		_padding_0E;
-			/*0x0D0*/     union
-			{
-				struct
-				{
+			/*0x0D0*/     union {
+				struct {
 					/*0x0D0*/		u16     resource_amount;
 					/*0x0D2*/		u8      resource_iscript;
 					/*0x0D3*/		u8      gather_queue_count;
@@ -372,8 +369,7 @@ struct UnitLayout
 				/*0x0D0*/			Unit*	nydus_exit;				// connected nydus canal
 				/*0x0D0*/			Unit*	nuke_missile;			// confirmed to be Unit* and not Sprite*
 				/*0x0D0*/			Sprite*	pylon_aura;
-				struct
-				{
+				struct {
 					/*0x0D0*/		Unit*	nuke;					// attached nuke
 					/*0x0D4*/		bool	is_ready;
 				} silo;
@@ -382,8 +378,7 @@ struct UnitLayout
 																	// sides are decreased by 1 at the same time. Larvas spawn at the side with smallest value.
 			};
 		} building;
-		struct
-		{
+		struct {
 			/*0x0C0*/				Unit*		powerup;
 			/*0x0C4*/				Target		target_resource;	// Position, and when moving to harvest
 			/*0x0CC*/				u16			repair_resource_loss_timer;

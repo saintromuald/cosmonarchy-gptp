@@ -9,7 +9,7 @@ namespace hooks
 	AiTown* delete_ai_town_if_needed(AiTown* town);																		// 004347E0
 	bool ai_can_mine_extra(Unit* unit);																					// 00447A70
 	void ai_order_unit_cloaking(Unit* unit);																			// 0043B970
-	void ai_send_suicide(char argType, s32 player);																		// 0043E050
+	void ai_send_suicide(bool is_random_suicide, s32 player);															// 0043E050
 	void ai_recalculate_region_strength(AiRegion* region);																// 0043A390
 	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 player);														// 004A0F90
 	s16 get_region_id_from_unit(Unit* unit);																			// 0049CB40

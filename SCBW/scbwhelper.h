@@ -164,7 +164,7 @@ namespace helper {
 	Unit* check_arbiter_cloaking_range(Unit* unit, u16 id);
 	void ai_order_unit_cloaking(Unit* unit);
 	void ai_order_lurker_burrow(Unit* unit);
-	bool ai_is_under_attack(Unit* unit, s32 flag);
+	bool unit_is_in_attack_group(Unit* unit, b32 exclude_grouping_regions);
 	bool unit_is_active_transport(Unit* unit);
 	s32 is_unit_loaded(Unit* unit);
 	s32 ai_try_return_home(Unit* unit, s32 dontIssueOrder);

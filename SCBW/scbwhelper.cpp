@@ -1384,13 +1384,12 @@ namespace helper
 		}
 	}
 
-	bool ai_is_under_attack(Unit* unit, s32 flag)
-	{
+	bool unit_is_in_attack_group(Unit* unit, b32 exclude_grouping_regions) {
 		const u32 Func_AI_IsUnderAttack = 0x00436E70;
 		static u32 result;
 		__asm {
 			PUSHAD
-			PUSH flag
+			PUSH exclude_grouping_regions
 			MOV EAX, unit
 			CALL Func_AI_IsUnderAttack
 			MOV result, EAX
