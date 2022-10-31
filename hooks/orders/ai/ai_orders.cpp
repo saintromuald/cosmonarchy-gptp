@@ -62,11 +62,11 @@ namespace hooks
 			if (!unit_ai) {
 				goto skip_checks;
 			}
-			if (unit_ai->type == 4) {
+			if (unit_ai->type == AiType::Military) {
 				MilitaryAi* unit_military_ai = (MilitaryAi*)unit_ai;
-				if (unit_military_ai->region->state == 1) {
+				if (unit_military_ai->region->state == RegionState::ContinueAttackHere) {
 					if (unit->is_unit_ai_non_building()) {
-						helper::ai_set_region_type(2, unit_military_ai->region);
+						helper::ai_set_region_type(RegionState::Attacking, unit_military_ai->region);
 					}
 				}
 				in_attack_group = helper::unit_is_in_attack_group(unit, 0);
@@ -97,8 +97,8 @@ namespace hooks
 						u32 unit_ai_type = unit->unit_ai->type;
 						if (!unit->unit_ai
 							|| helper::unit_is_in_attack_group(unit, 0)
-							|| unit_ai_type == 1 && g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
-							unit_ai_type = 0;
+							|| unit_ai_type == AiType::Guard && g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
+							unit_ai_type = AiType::Unassigned;
 						}
 						AiRegion* target_region = scbw::get_ai_region(unit->player, scbw::get_region_id(actual_target->position));;
 						if (unit_ai_type) {
