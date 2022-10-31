@@ -96,9 +96,6 @@ static u32 get_max_range(u32 unit_id) {
 	if (unit_id == UnitId::ProtossSolarion) {
 		return 8 * 32;
 	}
-	if (unit_id == UnitId::ProtossAccantorOld) {
-		return 8 * 32;
-	}
 
 	u32 ground_weapon = units_dat::ground_weapon[unit_id];
 	u32 ground_range = ground_weapon != WeaponId::None ? weapons_dat::max_range[ground_weapon] : 0;
@@ -147,7 +144,7 @@ static bool unit_has_min_range(Unit* unit) {
 }
 
 static u8 get_current_weapon_cooldown(Unit* unit) {
-	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
+	if (unit->id == UnitId::ProtossSolarion) {
 		if (unit->main_order_timer == 0 && (unit->unit_with_hangar.in_hangar_count || (*g_elapsed_time_frames) % 24 == 0)) {
 			return 0;
 		}
@@ -157,7 +154,7 @@ static u8 get_current_weapon_cooldown(Unit* unit) {
 }
 
 static u8 get_max_weapon_cooldown(Unit* unit) {
-	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
+	if (unit->id == UnitId::ProtossSolarion) {
 		return 1;
 	}
 
@@ -211,18 +208,12 @@ static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
 }
 
 static u32 get_dps_against(Unit* source, Unit* target) {
-	if (target->id == UnitId::ProtossAccantorOld) {
-		if (!(target->status & UnitStatus::InAir)) {
-			return (get_damage_against(source, WeaponId::Scarab, target) /* / INSERT ACCANTOR WEAPON COOLDOWN HERE / 24.0f*/)
-				* 1.5; // aoe multiplier
-		}
-	} else if (target->id == UnitId::ProtossSolarion) {
+	if (target->id == UnitId::ProtossSolarion) {
 		return (get_damage_against(source, WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
 			* (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
 			* 1.5; // additional bias to encourage targeting solarions more
 	} else if (units_dat::base_property[target->id] & UnitProperty::Spellcaster
-		&& target->id != UnitId::TerranComsatStation
-		&& target->id != UnitId::ProtossShieldBattery) {
+		&& target->id != UnitId::TerranComsatStation) {
 		return (target->energy / 256 / 50) * 20;
 	} else {
 		Unit* context = source->subunit ? source->subunit : source;
@@ -339,25 +330,37 @@ static KiterType get_kiter_type(u32 unit_id) {
 	}
 
 	switch(unit_id) {
-		case UnitId::ZergLakizilisk:
-		case UnitId::TerranPhalanxSiegeMode: {
+		case UnitId::TerranPhalanxSiegeMode:
+		case UnitId::TerranPhalanxSiegeModeTurret:
+		case UnitId::ZergLakizilisk: {
 			// No kiting; Just smart targeting
 			return KiterType_TargetingOnly;
 		} break;
 
-		case UnitId::ProtossSolarion:
+		case UnitId::TerranHorseman:
+		case UnitId::TerranSilvertongue:
+		case UnitId::TerranCataphract:
+		case UnitId::TerranPaladin:
+		case UnitId::TerranHippogriff:
+		case UnitId::ProtossOptecton:
+		case UnitId::ProtossAccantor:
 		case UnitId::ProtossArchitect:
-		case UnitId::ProtossAccantorOld:
+		case UnitId::ProtossSolarion:
+		case UnitId::ZergProtathalor:
+		case UnitId::ZergBactalisk:
 		case UnitId::ZergKeskathalor:
 		case UnitId::ZergGeszithalor:
-		case UnitId::ZergBactalisk:
-		case UnitId::TerranPaladin: {
+		case UnitId::ZergCherbrathalor:
+		case UnitId::ZergKethrostalor:{
 			// Stay back
 			return KiterType_Artillery;
 		} break;
 
-		case UnitId::TerranMinotaur:
 		case UnitId::TerranCentaur:
+		case UnitId::TerranMinotaur:
+		case UnitId::TerranMagnetar:
+		case UnitId::TerranPegasus:
+		case UnitId::TerranOberon:
 		case UnitId::TerranPhobos:
 		case UnitId::ProtossEmpyrean:
 		case UnitId::ProtossStarSovereign: {
@@ -624,7 +627,6 @@ static bool unit_could_kite(Unit* unit) {
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
-		//&& unit->id != UnitId::ProtossAccantorOld // currently disabled
 		&& unit->id != UnitId::TerranNuclearMissile
 		&& unit->id != UnitId::ProtossAnthelion
 		// Other rules
@@ -641,7 +643,6 @@ static bool unit_could_kite(Unit* unit) {
 static bool unit_can_kite(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->values[ValueAI_KitingSignal] < 256
-		&& unit->id != UnitId::ProtossAccantorOld
 		&& unit->id != UnitId::ProtossSolarion) {
 		return false;
 	}
@@ -654,7 +655,7 @@ static bool unit_kiting_can_attack(Unit* unit) {
 	if (unit_ext->values[ValueAI_PreventTargeting]) {
 		return false;
 	}
-	if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
+	if (unit->id == UnitId::ProtossSolarion) {
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
 	if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_speed < 35) {
@@ -768,8 +769,6 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				u32 attack_order_id = OrderId::AttackUnit;
 				if (unit->id == UnitId::ProtossSolarion) {
 					attack_order_id = OrderId::CarrierFight;
-				} else if (unit->id == UnitId::ProtossAccantorOld) {	
-					attack_order_id = OrderId::ReaverFight;
 				} else {
 					unit_ext->values[ValueAI_PreventTargeting] = 1;
 				}
@@ -798,7 +797,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 			bool sync = false;
 			bool update_sync = false;
-			//if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
+			//if (unit->id == UnitId::ProtossSolarion) {
 			//	sync = true;
 			//} else if (unit_ext->timers[TimerAI_KitingSync]) {
 			//	sync = true;
@@ -841,7 +840,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 				unit_ext->timers[TimerAI_KitingSync] = 0;
 
-				if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
+				if (unit->id == UnitId::ProtossSolarion) {
 					unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
 				} else if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_speed < 35) {
 					unit_ext->timers[TimerAI_KitingCooldown] = 2;

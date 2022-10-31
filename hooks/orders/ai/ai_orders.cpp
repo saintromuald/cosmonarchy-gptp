@@ -176,8 +176,8 @@ namespace hooks
 
 					if (unit->id == UnitId::ZergLakizilisk
 						&& !(unit->status & UnitStatus::Burrowed)
-						&& unit_order_id == OrderId::Burrow
-						&& unit_order_id == OrderId::Unburrow) {
+						&& unit_order_id != OrderId::Burrow
+						&& unit_order_id != OrderId::Unburrow) {
 						if (helper::ai_flee(unit, target)) {
 							return;
 						}
