@@ -1532,14 +1532,14 @@ namespace helper
 		return result;
 	}
 
-	bool unit_has_ground_path(Unit* unit, s16 x, s16 y)
-	{
+	bool unit_has_ground_path(Unit* unit, s16 x, s16 y) {
 		const u32 Func_unitHasGroundPath = 0x0042FA00;
 		static u32 result;
+		u32 y_ = y;
 		__asm {
 			PUSHAD
-			PUSH y
-			MOVZX DX, x
+			PUSH y_
+			MOV DX, x
 			MOV EAX, unit
 			CALL Func_unitHasGroundPath
 			MOV result, EAX

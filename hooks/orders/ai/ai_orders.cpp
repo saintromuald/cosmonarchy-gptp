@@ -63,10 +63,8 @@ namespace hooks
 		if (unit_ai) {
 			if (unit_ai->type == AiType::Military) {
 				MilitaryAi* unit_military_ai = (MilitaryAi*)unit_ai;
-				if (unit_military_ai->region->state == RegionState::ContinueAttackHere) {
-					if (unit->is_unit_ai_non_building()) {
-						helper::ai_set_region_type(RegionState::Attacking, unit_military_ai->region);
-					}
+				if (unit_military_ai->region->state == RegionState::ContinueAttackHere && unit->is_unit_ai_non_building()) {
+					helper::ai_set_region_type(RegionState::Attacking, unit_military_ai->region);
 				}
 				in_attack_group = helper::unit_is_in_attack_group(unit, 0);
 			}
@@ -154,8 +152,8 @@ namespace hooks
 						return;
 					}
 
-					if ((!target || !(target->status & UnitStatus::Reacts))
-						&& !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
+					if (!target || (!(target->status & UnitStatus::Reacts)
+						&& !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings)) {
 						return;
 					}
 
@@ -196,14 +194,21 @@ namespace hooks
 					return;
 				}
 
-				// Flee with workers, unless they have to defend
+				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible -Veeq7)
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker
-					&& !(units_dat::base_property[target->id] & UnitProperty::Worker)
+					/* && !(units_dat::base_property[target->id] & UnitProperty::Worker)
 					&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
-					&& !helper::ai_has_no_defense_build(unit->id)) {
+					&& !helper::ai_has_no_defense_build(unit->id)*/) {
 					if (main_target_reactions) {
 						helper::ai_flee(unit, target);
 					}
+					return;
+				}
+
+				// Ignore allied units (new) -Veeq7		
+				if (target && scbw::is_allied_to(unit->player, target->player)) {
+					// TODO: initially flee and then attack if the allied player keeps attacking AI units (basically AI patience mechanic)
+					// helper::ai_flee(unit, target);
 					return;
 				}
 
