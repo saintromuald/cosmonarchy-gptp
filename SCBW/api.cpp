@@ -106,11 +106,9 @@ namespace scbw
 		return result;
 	}
 
-	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player, s32 elevation_level)
-	{
+	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player, s32 elevation_level) {
 		Thingy* thingy = helper::create_thingy(spriteId, x, y, player);
-		if (thingy)
-		{
+		if (thingy) {
 			thingy->sprite->elevation = elevation_level;
 			helper::set_thingy_visibility_flags(thingy);
 		}
