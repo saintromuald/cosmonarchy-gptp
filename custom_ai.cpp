@@ -1,15 +1,17 @@
 #include "custom_ai.h"
 
-CustomAiPlayer custom_ai_player[PlayerLimit];
+CustomAiPlayer custom_ai_players[PlayerLimit];
 CustomAiTown custom_ai_towns[AiTownLimit];
 
 void init_custom_ai() {
-	memset(custom_ai_player, 0, sizeof(custom_ai_player));
+	memset(custom_ai_players, 0, sizeof(custom_ai_players));
 	memset(custom_ai_towns, 0, sizeof(custom_ai_towns));
 }
 
 static void update_custom_player(CustomAiPlayer* custom_ai_player, u32 player) {
-	
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+
+	}
 }
 
 static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
@@ -60,7 +62,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 
 void update_custom_ai() {
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		update_custom_player(&custom_ai_player[i], i);
+		update_custom_player(&custom_ai_players[i], i);
 	}
 
 	for (u32 i = 0; i < AiTownLimit; ++i) {

@@ -11,10 +11,8 @@
 #define FALSE 0
 #endif
 
-namespace hooks
-{
-	s32 is_queue_slot_active(Unit* unit, u32 slot)
-	{
+namespace hooks {
+	s32 is_queue_slot_active(Unit* unit, u32 slot) {
 		return unit->build_queue[(slot + unit->build_queue_slot) % 5] != UnitId::None;
 	}
 
@@ -86,51 +84,30 @@ namespace hooks
 	}
 
 	// generic unit training function
-	void order_train(Unit* unit)
-	{
+	void order_train(Unit* unit) {
 		UnitExt* unitExt = get_unit_ext(unit);
-		if (!(unit->status & UnitStatus::Frozen)
-			&& !(unit->is_frozen()))
-		{
+		if (!(unit->status & UnitStatus::Frozen) && !unit->is_frozen()) {
 			bool jump_to_685D8 = false;
-			if (unit->secondary_order_state <= 1)
-			{
-				if (unit->build_queue[unit->build_queue_slot] == UnitId::None)
-				{
+			if (unit->secondary_order_state <= 1) {
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
 					unit->set_secondary_order(OrderId::Nothing2);
 					unit->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle, true);
-				}
-				else
-				{
-					Unit* builtUnit;
-					if (unit->secondary_order_state == 0)
-					{
-						builtUnit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 1);
-					}
-					else
-					{
-						builtUnit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 0);
-					}
-					unit->current_build_unit = builtUnit;
-					if (builtUnit == nullptr)
-					{
+				} else {
+					Unit* built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], unit->secondary_order_state == 0 ? 1 : 0);
+					unit->current_build_unit = built_unit;
+					if (!built_unit) {
 						unit->secondary_order_state = 1;
-					}
-					else
-					{
-						builtUnit->sprite->player = unit->sprite->player;
-						if (builtUnit->subunit) {
-							builtUnit->subunit->sprite->player = unit->sprite->player;
+					} else {
+						built_unit->sprite->player = unit->sprite->player;
+						if (built_unit->subunit) {
+							built_unit->subunit->sprite->player = unit->sprite->player;
 						}
 						scbw::play_work_animation(unit);
 					}
 				}
-			}
-			else if (unit->secondary_order_state == 2)
-			{
+			} else if (unit->secondary_order_state == 2) {
 				Unit* built_unit = unit->current_build_unit;
-				if (built_unit != nullptr)
-				{
+				if (built_unit) {
 					UnitExt* builtUnitExt = get_unit_ext(built_unit);
 					bool extraBuild = false;
 					BuildingModifier modifier = get_building_modifier(unit, 0, false);
@@ -142,29 +119,26 @@ namespace hooks
 							built_unit->remaining_build_time = 0;
 						}
 					}
-					if (extraBuild || helper::progress_build(built_unit, hpGain, TRUE))
-					{
-						if (built_unit->status & UnitStatus::Completed)
-						{
+					if (extraBuild || helper::progress_build(built_unit, hpGain, TRUE)) {
+						if (built_unit->status & UnitStatus::Completed) {
 							u32 count = 1;
-							Unit* builtUnits[2] = {built_unit, nullptr};
+							Unit* built_units[2] = {built_unit, 0};
 							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 								count = 2;
-								builtUnits[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
+								built_units[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}
 
-							for (u32 i = 0; i < count; i++)
-							{
-								Unit* newUnit = builtUnits[i];
-								if (newUnit) {
-									helper::ai_training_unit(newUnit, unit);
+							for (u32 i = 0; i < count; i++) {
+								Unit* new_unit = built_units[i];
+								if (new_unit) {
+									helper::ai_training_unit(new_unit, unit);
 									if (built_unit->id == UnitId::TerranNuclearMissile)
 									{
-										helper::hide_and_disable_unit(newUnit);
+										helper::hide_and_disable_unit(new_unit);
 									}
 									else
 									{
-										helper::order_new_unit_to_rally(newUnit, unit);
+										helper::order_new_unit_to_rally(new_unit, unit);
 									}
 								}
 							}
@@ -173,27 +147,18 @@ namespace hooks
 							unit->build_queue_slot = (unit->build_queue_slot + 1) % 5;
 							jump_to_685D8 = true;
 						}
-					}
-					else // unit was canceled due to lack of space around the building
-					{
+					} else { // unit was canceled due to lack of space around the building
 						u32 queueSlot = unit->build_queue_slot % 5;
-						if (unit->build_queue[queueSlot] == UnitId::None)
-						{
+						if (unit->build_queue[queueSlot] == UnitId::None) {
 							jump_to_685D8 = true;
-						}
-						else
-						{
+						} else {
 							u8 counter = 4;
-							if (unit->current_build_unit != nullptr)
-							{
+							if (unit->current_build_unit) {
 								helper::ai_cancel_structure(unit->current_build_unit);
-							}
-							else if (!units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building)
-							{
+							} else if (!units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) {
 								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot % 5], unit->player);
 							}
-							do
-							{
+							do {
 								counter--;
 								unit->build_queue[unit->build_queue_slot] = unit->build_queue[(unit->build_queue_slot + 1) % 5];
 								if (unit->unit_ai != nullptr && *(u8*)((u32)unit->unit_ai + 8) == 3)
@@ -206,16 +171,12 @@ namespace hooks
 							jump_to_685D8 = true;
 						}
 					}
-				}
-				else
-				{
+				} else {
 					jump_to_685D8 = true;
 				}
-				if (jump_to_685D8)
-				{
+				if (jump_to_685D8) {
 					// Solarion - start with 12 interceptors
-					if (built_unit && built_unit->id == UnitId::ProtossSolarion)
-					{
+					if (built_unit && built_unit->id == UnitId::ProtossSolarion) {
 						scbw::create_hangar_units(built_unit, 12, UnitId::ProtossSteward);
 						
 						// s32 interceptors = 12;

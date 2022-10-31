@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "ai_layouts.h"
 #include "globals.h"
+#include "custom_ai.h"
 
 namespace hooks
 {
@@ -24,9 +25,10 @@ namespace hooks
 			if (main_target_reactions && attacker) {
 				// Cancel structure code
 				if (!(units_dat::base_property[unit->id] & UnitProperty::Worker) 
-					&& !unit->main_order_id // Original function call checks if unit has a sprite??? 00475A50
+					&& unit->main_order_id // Original function call checks if unit has a sprite??? 00475A50
 					&& !(unit->status & UnitStatus::Completed)) {
-					if (unit->get_current_life_ingame() < unit->get_total_hp_plus_shields() / 16) { // Used to be divided by 4 -Veeq7
+					u32 threshold = std::max(10, unit->get_total_hp_plus_shields() / 16); // Used to be divided by 4 -Veeq7
+					if (unit->get_current_life_ingame() < threshold) {
 						helper::ai_cancel_structure(unit);
 						return;
 					}
@@ -62,10 +64,8 @@ namespace hooks
 		if (unit_ai) {
 			if (unit_ai->type == AiType::Military) {
 				MilitaryAi* unit_military_ai = (MilitaryAi*)unit_ai;
-				if (unit_military_ai->region->state == RegionState::ContinueAttackHere) {
-					if (unit->is_unit_ai_non_building()) {
-						helper::ai_set_region_type(RegionState::Attacking, unit_military_ai->region);
-					}
+				if (unit_military_ai->region->state == RegionState::ContinueAttackHere && unit->is_unit_ai_non_building()) {
+					helper::ai_set_region_type(RegionState::Attacking, unit_military_ai->region);
 				}
 				in_attack_group = helper::unit_is_in_attack_group(unit, 0);
 			}
@@ -153,8 +153,8 @@ namespace hooks
 						return;
 					}
 
-					if ((!target || !(target->status & UnitStatus::Reacts))
-						&& !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
+					if (!target || (!(target->status & UnitStatus::Reacts)
+						&& !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings)) {
 						return;
 					}
 
@@ -195,15 +195,29 @@ namespace hooks
 					return;
 				}
 
-				// Flee with workers, unless they have to defend
+				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible -Veeq7)
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker
-					&& !(units_dat::base_property[target->id] & UnitProperty::Worker)
+					/* && !(units_dat::base_property[target->id] & UnitProperty::Worker)
 					&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
-					&& !helper::ai_has_no_defense_build(unit->id)) {
+					&& !helper::ai_has_no_defense_build(unit->id)*/) {
 					if (main_target_reactions) {
 						helper::ai_flee(unit, target);
 					}
 					return;
+				}
+
+				// Ignore allied units (new) -Veeq7		
+				if (target && scbw::is_allied_to(unit->player, target->player)) {
+					UnitExt* unit_ext = get_unit_ext(unit);
+					u32 patience = unit_ext->timers[TimerAI_Patience];
+					unit_ext->timers[TimerAI_Patience] += 2 * 24;
+					if (patience <= 7 * 24) {
+						if (units_dat::base_property[unit->id] & UnitProperty::Worker ||
+							!helper::unit_can_attack_target(target, unit, 1)) {
+							helper::ai_flee(unit, target); // Flee
+						}
+						return;
+					}
 				}
 
 				if (main_target_reactions && unit->unit_ai) {

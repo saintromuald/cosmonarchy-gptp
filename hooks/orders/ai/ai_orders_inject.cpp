@@ -15,9 +15,9 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV dontCallHelp, EAX
-			MOV EAX, [EBP + 0x0C]
 			MOV mainTargetReactions, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV dontCallHelp, EAX
 			POP EAX
 			MOV attacker, EDX
 			MOV self, ECX

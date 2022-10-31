@@ -12,7 +12,7 @@ struct CustomAiTown {
 	bool gas_requested[3];
 };
 
-extern CustomAiPlayer custom_ai_player[PlayerLimit];
+extern CustomAiPlayer custom_ai_players[PlayerLimit];
 extern CustomAiTown custom_ai_towns[AiTownLimit];
 
 void init_custom_ai();
