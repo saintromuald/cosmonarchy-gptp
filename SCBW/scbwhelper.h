@@ -406,7 +406,6 @@ namespace helper {
 	//// burrow_tech
 	void force_order_done(Unit* unit);																								// 00475420
 	void targeted_order(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 order_id, u32 unk3, u32 unk4, u32 unk5);					// 004754F0
-	void function_004E97C0(Unit* unit);																								// 004E97C0
 
 	//// die_order
 	void clearUnitSprites(Sprite* unit_sprite, Sprite* subunit_sprite);																// 00496F00
