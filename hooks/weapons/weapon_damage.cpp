@@ -89,6 +89,18 @@ namespace hooks
 			return;
 		}
 
+		// Ancile - Providence - Gimmick to make sure hitscan attacks and etc don't deal damage
+		if (data.target->id != UnitId::TerranAncile) {
+			EntryArray units = {};
+			unit_search_radial(&units, data.target->position, 2 * 32);
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && !scbw::is_allied_to(unit->player, data.attacking_player_id)) {
+					return;
+				}
+			}
+		}
+
 		// Demiurge - Gods Made Flesh - target is impervious to damage
 		if (target_ext->timers[TimerGodsMadeFlesh]) {
 			data.final_damage = 0;
@@ -148,7 +160,7 @@ namespace hooks
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id);
 
 			s32 armor_total = (data.target->get_armor() - armor_pen) * 256;
-			if (data.attacker ) {
+			if (data.attacker) {
 				armor_total += scbw::get_aise_value(data.target, 0, AiseId::GetShepherds, 0, 0) * 256;
 				if (data.target->id == UnitId::TerranMinotaur) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);

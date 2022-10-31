@@ -39,13 +39,12 @@ struct Bullet
 	/*0x4B*/ u8           velocityDirection; //seems to always be the same as currentDirection
 	/*0x4C*/ u8           player; // the player ID of the bullet owner
 	/*0x4D*/ u8           behavior_type_internal; // 0 = none
-												 // 1 = fly
-												 // 2 = fly & follow target
-												 // 3 = bounce
-												 // 4 = persist on site
-												 // 5 = appear on target/instant
-
-												 // 6 = attack target box
+												  // 1 = fly
+												  // 2 = fly & follow target
+												  // 3 = bounce
+												  // 4 = persist on site
+												  // 5 = appear on target/instant
+												  // 6 = attack target box
 	/*0x4E*/ u8           unknown_0x4E;
 	/*0x4F*/ u8           order_signal;  // added by iquare
 	/*0x50*/ u16          someUnitType; // usually holds UnitType::None (Unknown unit type stuff?)
