@@ -671,4 +671,5 @@ namespace scbw
 	bool unit_id_is_stackable_building(u32 unit_id); // Allows the AI to place the building to be placed more closely
 	bool unit_id_has_addon(u32 unit_id); // Allows the AI to reserve space for addon
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id);
+	bool is_attack_region(AiRegion* ai_region);
 }
