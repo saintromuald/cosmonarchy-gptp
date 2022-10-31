@@ -169,6 +169,8 @@ namespace hooks {
 		return true;
 	}
 
+	bool is_attack_melee;
+
 	void iscript_attackmelee(Unit* attacker) { // 00479B40
 		UnitExt* attackerExt = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
@@ -192,7 +194,9 @@ namespace hooks {
 			if (attackerExt->values[ValueDeconstruction]) {
 				scbw::do_deconstruction_damage(attacker, weapon_id);
 			}
+			is_attack_melee = true;
 			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
+			is_attack_melee = false;
 
 			// Cloaked units - decloak
 			// Cabalist uses silent strike, so the check has to be in weapon_damage. -Veeq7

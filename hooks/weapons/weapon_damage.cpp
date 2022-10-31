@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "logger.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/limits/sfx_extender.h"
 #include "DatExtend/datext.h"
@@ -89,16 +90,24 @@ namespace hooks
 			return;
 		}
 
-		// Ancile - Providence - Gimmick to make sure hitscan attacks and etc don't deal damage
-		if (data.target->id != UnitId::TerranAncile) {
-			EntryArray units = {};
-			unit_search_radial(&units, data.target->position, 2 * 32);
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && !scbw::is_allied_to(unit->player, data.attacking_player_id)) {
-					return;
+		// Ancile - Providence - Hitscan handling
+		switch (weapons_dat::behavior[data.weapon_id]) {
+			case WeaponBehavior::AppearOnAttacker:
+			case WeaponBehavior::AppearOnTargetSite:
+			case WeaponBehavior::AppearOnTargetUnit:
+			{
+				EntryArray units = {};
+				unit_search_radial(&units, data.target->position, 2 * 32);
+				for (u32 i = 0; i < units.count; ++i) {
+					Unit* unit = units.units[i];
+					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && scbw::is_allied_to(unit->player, data.target->player)) {
+						scbw::create_shield_overlay(data.target, data.direction);
+						unit->spend_unit_energy(data.final_damage);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						return;
+					}
 				}
-			}
+			} break;
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
