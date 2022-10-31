@@ -1834,13 +1834,9 @@ namespace hooks
 
 				// Skip attack wave units for unimportant defense regions and reduce their score otherwise
 				if (scbw::is_attack_region(current_ai_region)) {
-					if (ai_region->defense_priority <= 110) {
-						continue;
-					} else {
-						force_divisor = 4;
-					}
+					continue;
 				}
-
+				
 				// Skip units from more important regions, unless they have excess force
 				if (ai_region->defense_priority <= current_ai_region->defense_priority) {
 					if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < (s32)current_ai_region->ground_strength_needed) ||

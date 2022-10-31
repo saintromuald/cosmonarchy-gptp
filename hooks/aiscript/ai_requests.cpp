@@ -675,9 +675,9 @@ namespace hooks
 
 		// Skip units needed for defending regions, we take a portion of the needed force of less important regions,
 		// and only excess force of the important regions
-		s32 needed_divisor = current_ai_region->defense_priority > 110 ? 1 : (strict ? 4 : 2);
-		if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < current_ai_region->ground_strength_needed / needed_divisor) ||
-			(unit->air_strength    && current_ai_region->air_strength_full    - (s32)unit->air_strength    < current_ai_region->air_strength_needed    / needed_divisor)) {
+		u16 max_force = current_ai_region->defense_priority > 110 ? 0xffff : 100 * (*g_elapsed_time_frames / 24 / 60);
+		if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < std::min(current_ai_region->ground_strength_needed, max_force)) ||
+			(unit->air_strength    && current_ai_region->air_strength_full    - (s32)unit->air_strength    < std::min(current_ai_region->air_strength_needed,    max_force))) {
 			return false;
 		}
 
