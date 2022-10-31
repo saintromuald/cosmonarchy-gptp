@@ -1834,7 +1834,7 @@ namespace hooks
 					current_ai_region->state == RegionState::ChaseAway ||
 					current_ai_region->state == RegionState::PreparingAttack || 
 					current_ai_region->state == RegionState::PreparingAttackOldUnreachable) {
-					if (ai_region->defense_priority < 120) {
+					if (ai_region->defense_priority <= 110) {
 						continue;
 					} else {
 						force_divisor = 4;

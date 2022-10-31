@@ -777,5 +777,10 @@ namespace hooks
 
 		// Make melee AI convert non building/worker regions state 6 back to 0 instead of 5
 		nops(0x0043E542, 2);
+
+		// Do not clear grouping region on attack_clear opcode (because attack_do is garbage and doesn't guarantee that and we don't want the grouping regions to be removed too quickly!!!)
+		nops(0x0045BCD6, 1);
+		nops(0x0045BCD7, 7);
+		nops(0x0045BCE4, 5);
 	}
 }

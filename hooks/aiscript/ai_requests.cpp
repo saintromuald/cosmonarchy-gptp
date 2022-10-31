@@ -707,7 +707,7 @@ namespace hooks
 	// Hooked to change attack_add priorities. -Pr0nogo
 	void ai_region_train_attack_force(AiRegion* ai_region) { // 0043E670
 		u32 attack_wave[63] = {};
-		u32 priority = 80;
+		u32 priority = 120;
 		u32 count = helper::get_missing_attack_force_units(ai_region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
 		for (u32 i = 0; i < count; ++i) {
 			u32 unit_id = attack_wave[i];
