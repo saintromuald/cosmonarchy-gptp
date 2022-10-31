@@ -1866,8 +1866,7 @@ namespace scbw {
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.count) {
 			for (u32 ai_player = 0; ai_player < 8; ++ai_player) {
-				if (g_player_table[ai_player].type == PlayerType::Computer &&
-					victim->is_visible_to(ai_player) && attacker->is_visible_to(ai_player) &&
+				if (g_player_table[ai_player].type == PlayerType::Computer && victim->is_visible_to(ai_player) &&
 					!scbw::is_allied_to(ai_player, attacker->player) && scbw::is_allied_to(ai_player, victim->player)) {
 					scbw::ai_defend(ai_player, scbw::get_region_id(attacker->position));
 				}
