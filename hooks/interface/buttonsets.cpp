@@ -1542,6 +1542,13 @@ namespace hooks {
 
 								// PROTOSS \\
 
+								case UnitId::ProtossHerald:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Herald - Triumphant Rise
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossCharlatan:
 								{
 									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
