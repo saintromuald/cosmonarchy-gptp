@@ -646,6 +646,10 @@ namespace hooks
 	}
 
 	static bool is_valid_attack_unit(AiRegion* ai_region, Unit* unit, bool strict) {
+		if (!(unit->status & UnitStatus::Completed)) {
+			return false;
+		}
+
 		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
 			return false;
 		}

@@ -1817,6 +1817,10 @@ namespace hooks
 		Unit* best_unit = 0;
 		u32 best_score = 0;
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (!(unit->status & UnitStatus::Completed)) {
+				continue;
+			}
+			
 			if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
 				continue;
 			}
