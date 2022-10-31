@@ -15,21 +15,17 @@
 #include <windows.h>
 #include <hooks\unit_movement.h>
 
-namespace scbw
-{
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt)
-	{
+namespace scbw {
+
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
 		auto target_unit = source->order_target.unit;
 		auto target_pos = source->order_target.pt;
 		source->order_target.unit = target;
 		source->order_target.pt = target_pt;
 		Point16 pick;
-		if (target != nullptr && target_unit != nullptr)
-		{
+		if (target && target_unit) {
 			source->order_target.pt = target_unit->sprite->position;
-		}
-		else
-		{
+		} else {
 			source->order_target.pt = target_pt;
 		}
 		helper::create_bullet(weapon_id, source, source->sprite->position.x, source->sprite->position.y, player,
@@ -37,69 +33,56 @@ namespace scbw
 		source->order_target.unit = target_unit;
 		source->order_target.pt = target_pos;
 	}
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y)
-	{
+
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y) {
 		Point16 tgt;
 		tgt.x = x;
 		tgt.y = y;
 		artificial_bullet_from(weapon_id, player, source, target, tgt);
 	}
 
-	bool teleport(Unit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
-	{
-		Point16 previous_pos, new_pos;
+	bool teleport(Unit* u, Point16 target, u16 sprite_id, bool preserveOrder) {
+		Point16 previous_pos = u->sprite->position;
+		Point16 new_pos = {};
 		bool result = false;
-		previous_pos.x = u->sprite->position.x;
-		previous_pos.y = u->sprite->position.y;
 
-		// identical code to set_unit_position() but for some reason, is using another function to do exactly the same thing
+		// Identical code to set_unit_position() but for some reason, is using another function to do exactly the same thing
 		helper::move_unit_duplicate(u, target.x, target.y);
 
-		if (!scbw::check_unit_collision_pos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
-		{
-			// collision detected, cancel the movement
+		if (!scbw::check_unit_collision_pos(u, &(u->sprite->position), &new_pos, nullptr, false, 0)) {
+			// Collision detected, cancel the movement
 			scbw::set_unit_position(u, previous_pos.x, previous_pos.y);
-		}
-		else
-		{
+		} else {
 			result = true;
-			Thingy* recall_effect_sprite;
 
-			// finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
+			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepare_unit_move(u, false);
-			if (!preserveOrder)
-			{
-				u->order_target.unit = nullptr;
+			if (!preserveOrder) {
+				u->order_target.unit = 0;
 			}
 			scbw::set_unit_position(u, new_pos.x, new_pos.y);
 			scbw::refresh_unit_after_move(u);
 
-			// stop some currently active orders
-			if (u->id != UnitId::ZergCocoon && !preserveOrder)
-			{
+			// Stop some currently active orders
+			if (u->id != UnitId::ZergCocoon && !preserveOrder) {
 				u->order_computer(units_dat::return_to_idle_order[u->id]);
 			}
 
-			// create the Recall animation over the unit
-			if (spriteAnimation)
-			{
-				recall_effect_sprite = helper::create_thingy(spriteAnimation, new_pos.x, new_pos.y, 0);
-				if (recall_effect_sprite != nullptr)
-				{
+			// Create the Recall animation over the unit
+			if (sprite_id) {
+				Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, new_pos.x, new_pos.y, 0);
+				if (recall_effect_sprite) {
 					recall_effect_sprite->sprite->elevation = u->sprite->elevation + 1;
 					helper::set_thingy_visibility_flags(recall_effect_sprite);
 				}
 
 			}
 
-			// disconnect a nuke from a unit using it
-			if (scbw::unit_can_nuke(u))
-			{
-				if (u->connected_unit != nullptr
-					&& u->connected_unit->id == UnitId::TerranNuclearMissile)
-				{
-					u->connected_unit->connected_unit = nullptr;
-					u->connected_unit = nullptr;
+			// Disconnect a nuke from a unit using it
+			if (scbw::unit_can_nuke(u)) {
+				if (u->connected_unit && u->connected_unit->id == UnitId::TerranNuclearMissile) {
+					u->connected_unit->connected_unit = 0;
+					u->connected_unit = 0;
 				}
 			}
 		}
@@ -115,22 +98,18 @@ namespace scbw
 		return thingy;
 	}
 
-	void print_string(std::string text, u32 color)
-	{
+	void print_string(std::string text, u32 color) {
 		print(text.c_str(), color);
 	}
 
-	void print(const char* text, u32 color)
-	{
+	void print(const char* text, u32 color) {
 		const u32 Func_PrintText = 0x0048CD30;
-		if (!text)
-		{
+		if (!text) {
 			return;
 		}
 
 		DWORD gtc = GetTickCount() + 7000;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			PUSH 0;//unknown
 			MOV eax, text
@@ -141,9 +120,8 @@ namespace scbw
 		}
 	}
 
-	void printf(const char* format, ...)
-	{
-		char buf[256];
+	void printf(const char* format, ...) {
+		char buf[256] = {};
 
 		va_list _ArgList;
 		va_start(_ArgList, format);
@@ -153,9 +131,8 @@ namespace scbw
 		print(buf);
 	}
 
-	void printf_color(const char* format, u32 color, ...)
-	{
-		char buf[256];
+	void printf_color(const char* format, u32 color, ...) {
+		char buf[256] = {};
 
 		va_list _ArgList;
 		va_start(_ArgList, format);
@@ -165,9 +142,8 @@ namespace scbw
 		print(buf, color);
 	}
 
-	void printf_console(const char* format, ...)
-	{
-		char buf[1025];
+	void printf_console(const char* format, ...) {
+		char buf[1025] = {};
 
 		va_list _ArgList;
 		va_start(_ArgList, format);
@@ -181,79 +157,61 @@ namespace scbw
 	//-------- Unit checks --------//
 
 	// Identical to function @ 0x00475CE0
-	bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker)
-	{
-		if (weapon_id >= WEAPON_TYPE_COUNT)
-		{
+	bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
+		if (weapon_id >= WEAPON_TYPE_COUNT) {
 			return false;
 		}
-		if (!target)
-		{
+		if (!target) {
 			return weapons_dat::target_flags[weapon_id].terrain;
 		}
-		if (target->status & UnitStatus::Invincible)
-		{
+		if (target->status & UnitStatus::Invincible) {
 			return false;
 		}
 
-		const TargetFlag tf = weapons_dat::target_flags[weapon_id];
+		const TargetFlag target_flags = weapons_dat::target_flags[weapon_id];
 		const u32 targetProps = units_dat::base_property[target->id];
-		if ((target->status & UnitStatus::InAir) ? !tf.air : !tf.ground)
-		{
+		if (target->status & UnitStatus::InAir ? !target_flags.air : !target_flags.ground) {
 			return false;
 		}
-		if (tf.mechanical && !(targetProps & UnitProperty::Mechanical))
-		{
+		if (target_flags.mechanical && !(targetProps & UnitProperty::Mechanical)) {
 			return false;
 		}
-		if (tf.organic && !(targetProps & UnitProperty::Organic))
-		{
+		if (target_flags.organic && !(targetProps & UnitProperty::Organic)) {
 			return false;
 		}
-		if (tf.nonBuilding && (targetProps & UnitProperty::Building))
-		{
+		if (target_flags.nonBuilding && targetProps & UnitProperty::Building) {
 			return false;
 		}
-		if (tf.nonRobotic && (targetProps & UnitProperty::RoboticUnit))
-		{
+		if (target_flags.nonRobotic && targetProps & UnitProperty::RoboticUnit) {
 			return false;
 		}
-		if (tf.orgOrMech && !(targetProps & (UnitProperty::Organic | UnitProperty::Mechanical)))
-		{
+		if (target_flags.orgOrMech && !(targetProps & (UnitProperty::Organic | UnitProperty::Mechanical))) {
 			return false;
 		}
-		if (tf.playerOwned && target->player != attacker->player)
-		{
+		if (target_flags.playerOwned && target->player != attacker->player) {
 			return false;
 		}
 		return true;
 	}
 
-	bool is_under_dark_swarm(Unit* unit)
-	{
+	bool is_under_dark_swarm(Unit* unit) {
 		return !(unit->status & UnitStatus::InAir) && get_dark_swarm_unit(unit) != nullptr;
 	}
 
-	bool is_dark_swarm(Unit* unit)
-	{
+	bool is_dark_swarm(Unit* unit) {
 		return unit->id == UnitId::Spell_DarkSwarm;
 	}
 
-	Unit* get_dark_swarm_unit(Unit* unit)
-	{
-		static UnitFinder darkSwarmFinder;
-		darkSwarmFinder.search(unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom());
-
-		Unit* darkSwarm = darkSwarmFinder.get_first(is_dark_swarm);
-		return darkSwarm;
+	Unit* get_dark_swarm_unit(Unit* unit) {
+		static UnitFinder dark_swarm_finder;
+		dark_swarm_finder.search(unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom());
+		return dark_swarm_finder.get_first(is_dark_swarm);
 	}
 
-	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius)
-	{
-		UnitFinder darkSwarmFinder;
-		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
-		Unit* darkSwarm = darkSwarmFinder.get_first(is_dark_swarm);
-		return darkSwarm;
+	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius) {
+		static UnitFinder dark_swarm_finder;
+		dark_swarm_finder.search(x - radius, y - radius, x + radius, y + radius);
+		return dark_swarm_finder.get_first(is_dark_swarm);
 	}
 
 	//-------- Graphics and geometry --------//
@@ -261,28 +219,23 @@ namespace scbw
 	// Improved code from BWAPI's include/BWAPI/Position.h: getApproxDistance()
 	// Logically same as function @ 0x0040C360
 	// x1 = ECX;x2 = EDX;y1 = [EBP+08];y2 = [EBP+0C];
-	u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2)
-	{
+	u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2) {
 		s32 dMax = abs(x1 - x2), dMin = abs(y1 - y2);
-		if (dMax < dMin)
-		{
+		if (dMax < dMin) {
 			std::swap(dMax, dMin);
 		}
-		if (dMin <= (dMax >> 2))
-		{
+		if (dMin <= (dMax >> 2)) {
 			return dMax;
 		}
 		return (dMin * 3 >> 3) + (dMin * 3 >> 8) + dMax - (dMax >> 4) - (dMax >> 6);
 	}
 
-	u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2)
-	{
+	u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2) {
 		return std::max(abs(x1 - x2), abs(y1 - y2));
 	}
 
 	// Identical to function @ 0x00494C10
-	s32 arc_tangent(s32 slope)
-	{
+	s32 arc_tangent(s32 slope) {
 		const u32 tangentTable[] = {
 				 7,	 13,	 19,	 26,	 32,	 38,	 45,	 51,
 				58,	 65,	 71,	 78,	 85,	 92,	 99,	107,
@@ -295,21 +248,16 @@ namespace scbw
 		};
 
 		bool isNegative = false;
-		if (slope < 0)
-		{
+		if (slope < 0) {
 			isNegative = true;
 			slope = -slope;
 		}
 
 		s32 min = 0, max = 64, angle = 32;
-		do
-		{
-			if ((u32)slope <= tangentTable[angle])
-			{
+		do {
+			if ((u32)slope <= tangentTable[angle]) {
 				max = angle;
-			}
-			else
-			{
+			} else {
 				min = angle + 1;
 			}
 			angle = (min + max) / 2;
@@ -319,22 +267,17 @@ namespace scbw
 
 	// Identical to function @ 0x00495300
 	//					EDX		[EBP+08]	ECX			EAX
-	s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd)
-	{
+	s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd) {
 		s32 dx = xEnd - xStart, dy = yEnd - yStart;
-		if (dx == 0)
-		{
+		if (dx == 0) {
 			return dy > 0 ? 128 : 0;		
 		}
 
 		s32 angle = arc_tangent((dy << 8) / dx);
-		if (dx < 0)
-		{
+		if (dx < 0) {
 			angle += 192;
 			return angle == 256 ? 0 : angle;
-		}
-		else
-		{
+		} else {
 			return angle + 64;
 		}
 	}
@@ -363,89 +306,68 @@ namespace scbw
 		return product;
 	}
 
-	f64 bw_angle_to_normal(s32 bw_angle)
-	{
+	f64 bw_angle_to_normal(s32 bw_angle) {
 		f64 angle = (f64)bw_angle * 1.40625;
 		return angle;
 	}
 
-	s32 get_polar_x(s32 distance, u8 angle)
-	{
+	s32 get_polar_x(s32 distance, u8 angle) {
 		return distance * g_angle_distance[angle].x >> 8;
 	}
 
-	s32 get_polar_y(s32 distance, u8 angle)
-	{
+	s32 get_polar_y(s32 distance, u8 angle) {
 		return distance * g_angle_distance[angle].y >> 8;
 	}
 
 	//-------- Player information --------//
 
-	s32 get_supply_remaining(u8 player, u8 raceId)
-	{
+	s32 get_supply_remaining(u8 player, u8 raceId) {
 		assert(raceId <= 2);
 		assert(player < PLAYER_COUNT);
 
 		s32 supplyProvided;
-		if (is_cheat_enabled(CheatFlags::FoodForThought))
-		{
+		if (is_cheat_enabled(CheatFlags::FoodForThought)) {
 			supplyProvided = raceSupply[RaceId::Terran].max[player];
-		}
-		else
-		{
+		} else {
 			supplyProvided = std::min(raceSupply[RaceId::Terran].max[player], raceSupply[RaceId::Terran].provided[player]);
 		}
 		return supplyProvided - raceSupply[RaceId::Terran].used[player];
 	}
 
-	bool has_tech_researched(u8 player, u16 techId)
-	{
+	bool has_tech_researched(u8 player, u16 techId) {
 		assert(player < PLAYER_COUNT);
 		assert(techId != TechId::None);
-		if (techId < TechId::Restoration)
-		{
+		if (techId < TechId::Restoration) {
 			return TechSc->is_researched[player][techId] != 0;
-		}
-		else
-		{
+		} else {
 			return TechBw->is_researched[player][techId - TechId::Restoration] != 0;
 		}
 	}
 
-	bool has_tech_available(u8 player, u16 techId)
-	{
+	bool has_tech_available(u8 player, u16 techId) {
 		assert(player < PLAYER_COUNT);
 		assert(techId != TechId::None);
-		if (techId < TechId::Restoration)
-		{
+		if (techId < TechId::Restoration) {
 			return TechSc->is_enabled[player][techId] != 0;
-		}
-		else
-		{
+		} else {
 			return TechBw->is_enabled[player][techId - TechId::Restoration] != 0;
 		}
 	}
 
-	void set_tech_research_state(u8 player, u16 techId, bool is_researched)
-	{
+	void set_tech_research_state(u8 player, u16 techId, bool is_researched) {
 		assert(player < PLAYER_COUNT);
 		assert(techId != TechId::None);
 
-		if (techId < TechId::Restoration)
-		{
+		if (techId < TechId::Restoration) {
 			TechSc->is_researched[player][techId] = is_researched;
-		}
-		else
-		{
+		} else {
 			TechBw->is_researched[player][techId - TechId::Restoration] = is_researched;
 		}
 	}
 
 	const u32 Func_DoWeaponDamage = 0x00479930;
-	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
-	{
-		_asm
-		{
+	void send_gptp_aise_command(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3) {
+		_asm {
 			PUSHAD
 			MOV EAX, v3
 			MOV EDI, unit2
@@ -477,13 +399,10 @@ namespace scbw
 	}
 	*/
 
-	bool is_larval_egg(Unit* unit)
-	{
-		if (unit->id == UnitId::ZergEgg)
-		{
+	bool is_larval_egg(Unit* unit) {
+		if (unit->id == UnitId::ZergEgg) {
 			u8 origin = unit->create_origin;
-			if (origin == UnitId::ZergLarva)
-			{
+			if (origin == UnitId::ZergLarva) {
 				return true;
 			}
 		}
@@ -649,8 +568,7 @@ namespace scbw
 		return false;
 	}
 
-	std::string read_samase_file(char* name)
-	{
+	std::string read_samase_file(char* name) {
 		const char* data = nullptr;
 		u32 len = 0;
 		auto data_ptr = &data;
@@ -659,60 +577,48 @@ namespace scbw
 		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
 		char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 		std::string str;
-		if (length == 0)
-		{
+		if (length == 0) {
 			return str;
-		}
-		else
-		{
+		} else {
 			str = std::string(buf, length);
 		}
 		return str;
 	}
 
-	s32 get_generic_variable(u32 id)
-	{
-		return get_aise_value(nullptr, nullptr, AiseId::GenericVariable, id, 0);
+	s32 get_generic_variable(u32 id) {
+		return get_aise_value(0, 0, AiseId::GenericVariable, id, 0);
 	}
 
-	Unit* get_generic_rust_unit(Unit* unit, u32 id)
-	{
-		u32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
+	Unit* get_generic_rust_unit(Unit* unit, u32 id) {
+		u32 val = get_aise_value(unit, 0, AiseId::GenericUnit, id, 0);
 		return reinterpret_cast<Unit*>(val);
 	}
 
-	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ)
-	{
+	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ) {
 		scbw::send_gptp_aise_command(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 	}
 
-	void set_generic_variable(u32 id, s32 val)
-	{
-		scbw::send_gptp_aise_command(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
+	void set_generic_variable(u32 id, s32 val) {
+		scbw::send_gptp_aise_command(0, 0, GptpId::SetGenericVariable, id, val, 0);
 	}
 
-	u32 get_generic_rust_value(Unit* u, u32 val)
-	{
-		return get_aise_value(u, nullptr, AiseId::GenericValue, val, 0);
+	u32 get_generic_rust_value(Unit* u, u32 val) {
+		return get_aise_value(u, 0, AiseId::GenericValue, val, 0);
 	}
 
-	void set_generic_rust_value(Unit* u, u32 id, u32 val)
-	{
-		scbw::send_gptp_aise_command(u, nullptr, GptpId::SetGenericValue, id, val, 0);
+	void set_generic_rust_value(Unit* u, u32 id, u32 val) {
+		scbw::send_gptp_aise_command(u, 0, GptpId::SetGenericValue, id, val, 0);
 	}
 
-	void set_sprite_data(u32 entry, u32 index, u32 value)
-	{
-		return send_gptp_aise_command(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
+	void set_sprite_data(u32 entry, u32 index, u32 value) {
+		return send_gptp_aise_command(0, 0, GptpId::SetSpriteData, entry, index, value);
 	}
 
 	const u32 Func_CanTargetSpell = 0x00492020;
-	u32 get_aise_value(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2)
-	{
+	u32 get_aise_value(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2) {
 		u32 result = 0;
 		u32 v3 = 0; // pointer
-		_asm
-		{
+		_asm {
 			PUSHAD
 			MOV ESI, v2 // fow_unit_id
 			MOV EDI, unit2 // target
@@ -729,24 +635,18 @@ namespace scbw
 	}
 
 	const u32 Func_PsiPlacement = 0x00473920;
-	u8 get_upgrade_level(u8 player, u8 upgradeId)
-	{
+	u8 get_upgrade_level(u8 player, u8 upgradeId) {
 		assert(player < PLAYER_COUNT);
 //		assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
 
-		if (upgradeId < UpgradeId::PrismaticShield)
-		{
+		if (upgradeId < UpgradeId::PrismaticShield) {
 			return UpgradesSc->current_level[player][upgradeId];
-		}
 		/*
-		else if (upgradeId<UpgradeId::None)
-		{
+		} else if (upgradeId<UpgradeId::None) {
 			return UpgradesBw->current_level[player][upgradeId - UpgradeId::PStructurePlating];
-		}
 		*/
-		else
-		{
+		} else {
 			u32 result = 0;
 			u32 player_u32 = player;
 			u32 upgrade_u32 = upgradeId;
@@ -763,30 +663,23 @@ namespace scbw
 			return result;
 		}
 	}
-	//EBX = max/current upgrade read, ECX - player, EDI - id
+	// EBX = max/current upgrade read, ECX - player, EDI - id
 
-	u8 get_upgrade_max_level(u8 player, u8 upgradeId)
-	{
+	u8 get_upgrade_max_level(u8 player, u8 upgradeId) {
 		assert(player < PLAYER_COUNT);
 //		assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
-		if (upgradeId < UpgradeId::PrismaticShield)
-		{
+		if (upgradeId < UpgradeId::PrismaticShield) {
 			return UpgradesSc->max_level[player][upgradeId];
-		}
 		/*
-		else if (upgradeId<UpgradeId::None)
-		{
+		} else if (upgradeId < UpgradeId::None) {
 			return UpgradesBw->max_level[player][upgradeId - UpgradeId::PStructurePlating];
-		}
 		*/
-		else
-		{
+		} else {
 			u32 result = 0;
 			u32 player_u32 = player;
 			u32 upgrade_u32 = upgradeId;
-			_asm
-			{
+			_asm {
 				PUSHAD
 				MOV ESI, upgrade_u32
 				MOV EAX, player_u32
@@ -800,42 +693,36 @@ namespace scbw
 		}
 	}
 
-	void set_upgrade_level(u8 player, u8 upgradeId, u8 level)
-	{
+	void set_upgrade_level(u8 player, u8 upgradeId, u8 level) {
 		assert(player < PLAYER_COUNT);
 		assert(upgradeId < UpgradeId::None);
-		if (upgradeId < UpgradeId::PrismaticShield)
+		if (upgradeId < UpgradeId::PrismaticShield) {
 			UpgradesSc->current_level[player][upgradeId] = level;
-		else
+		} else {
 			UpgradesBw->current_level[player][upgradeId - UpgradeId::PrismaticShield] = level;
+		}
 	}
 
-	void adjust_addon_x(u16 addonId, u16 sourceId, u16* x)
-	{
-		if (addonId == UnitId::TerranQuarry)
-		{
+	void adjust_addon_x(u16 addonId, u16 sourceId, u16* x) {
+		if (addonId == UnitId::TerranQuarry) {
 			*x = 128;
 		}
 	}
 
-	void adjust_addon_y(u16 addonId, u16 sourceId, u16* y)
-	{
-		if (addonId == UnitId::TerranQuarry)
-		{
+	void adjust_addon_y(u16 addonId, u16 sourceId, u16* y) {
+		if (addonId == UnitId::TerranQuarry) {
 			*y = 32;
 		}
 	}
 
-	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y)
-	{
+	void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y) {
 		adjust_addon_x(addonId, sourceId, x);
 		adjust_addon_y(addonId, sourceId, y);
 	}
 
 	//-------- Moving Units --------//
 
-	bool move_unit(Unit* unit, s16 x, s16 y)
-	{
+	bool move_unit(Unit* unit, s16 x, s16 y) {
 		Point16 targetPos = {x, y};
 		Point16 actualPos = {};
 		Point16 prevPos = unit->sprite->position;
@@ -843,36 +730,29 @@ namespace scbw
 		// Based on the code for Recall/Nydus Canal/Move Unit trigger
 		set_unit_position(unit, x, y);
 
-		if (check_unit_collision_pos(unit, &targetPos, &actualPos))
-		{
+		if (check_unit_collision_pos(unit, &targetPos, &actualPos)) {
 			prepare_unit_move(unit);
 			set_unit_position(unit, actualPos.x, actualPos.y);
 			refresh_unit_after_move(unit);
 			return true;
-		}
-		else
-		{
+		} else {
 			set_unit_position(unit, prevPos.x, prevPos.y);
 			return false;
 		}
 	}
 
-	bool move_unit_force(Unit* unit, s16 x, s16 y)
-	{
+	bool move_unit_force(Unit* unit, s16 x, s16 y) {
 		prepare_unit_move(unit);
 		hooks::move_unit(unit, x, y, true);
 		return true;
 	}
 
-	bool move_unit_improved(Unit* unit, s16 x, s16 y)
-	{
-		if (!(unit->status & UnitStatus::InAir))
-		{
+	bool move_unit_improved(Unit* unit, s16 x, s16 y) {
+		if (!(unit->status & UnitStatus::InAir)) {
 			ActiveTile originalTile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
 			ActiveTile finalTile = scbw::get_stupid_reference_to_active_tile_at(x, y);
 
-			if (finalTile.is_unwalkable || originalTile.ground_height != finalTile.ground_height)
-			{
+			if (finalTile.is_unwalkable || originalTile.ground_height != finalTile.ground_height) {
 				return false;
 			}
 
@@ -883,8 +763,7 @@ namespace scbw
 				unit->get_bottom()
 			).get_first(cosmonarchy_finder_match(unit, Flags::NotSelf | Flags::NoAir, {}));
 
-			if (collision)
-			{
+			if (collision) {
 				return false;
 			}
 		}
@@ -895,12 +774,10 @@ namespace scbw
 		return true;
 	}
 
-	void prepare_unit_move_custom(Unit* unit)
-	{
+	void prepare_unit_move_custom(Unit* unit) {
 		helper::sort_unit(unit);
 		helper::refresh_grp_image(unit->sprite);
-		if (unit->subunit)
-		{
+		if (unit->subunit) {
 			helper::refresh_grp_image(unit->subunit->sprite);
 		}
 
@@ -912,8 +789,7 @@ namespace scbw
 
 	//-------- Utility functions --------//
 
-	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI)
-	{
+	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI) {
 		if (*g_unit_count >= 1700) {
 			return 0; // Prevent crashes, move to create unit later. -Veeq7
 		}
@@ -956,54 +832,41 @@ namespace scbw
 		}
 	}
 
-	u32 get_unit_overlay_adjustment(Unit* const unit)
-	{
-		if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay)
-		{
-			return 1;
-		}
-		else if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay)
-		{
+	u32 get_unit_overlay_adjustment(Unit* const unit) {
+		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
 			return 2;
 		}
-		else
-		{
-			return 0;
+		if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+			return 1;
 		}
+		return 0;
 	}
 
-	void refresh_screen(s32 left, s32 top, s32 right, s32 bottom)
-	{
-
+	void refresh_screen(s32 left, s32 top, s32 right, s32 bottom) {
 		left >>= 4; right = (right + 15) >> 4;
 		top >>= 4; bottom = (bottom + 15) >> 4;
 
-		if (left > right)
-		{
+		if (left > right) {
 			std::swap(left, right);
 		}
-		if (top > bottom)
-		{
+		if (top > bottom) {
 			std::swap(top, bottom);
 		}
 
 		// Rect out of bounds
-		if (left >= 40 || right < 0 || top >= 30 || bottom < 0)
-		{
+		if (left >= 40 || right < 0 || top >= 30 || bottom < 0) {
 			return;
 		}
 
 		left = std::max(left, 0); right = std::min(right, 40 - 1);
 		top = std::max(top, 0); bottom = std::min(bottom, 30 - 1);
 
-		for (s32 y = top; y <= bottom; ++y)
-		{
+		for (s32 y = top; y <= bottom; ++y) {
 			memset(&refreshRegions[40 * y + left], 1, right - left + 1);
 		}
 	}
 
-	void refresh_screen()
-	{
+	void refresh_screen() {
 		memset(refreshRegions, 1, 1200);
 	}
 
@@ -1020,17 +883,12 @@ namespace scbw
 	}
 
 	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
-	u16 random()
-	{
-		if (*g_is_in_game_loop)
-		{
+	u16 random() {
+		if (*g_is_in_game_loop) {
 			*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
 			return (*g_last_random_number >> 16) % 32768; // Make a number between 0 and 32767
 		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 
 	void refresh_console() { // 004C36C0
@@ -1101,14 +959,12 @@ namespace scbw
 		}
 	}
 
-	void range_modified_fire(u8 weapon_id, Unit* unit, s16 x, s16 y, u32 offset)
-	{
+	void range_modified_fire(u8 weapon_id, Unit* unit, s16 x, s16 y, u32 offset) {
 		auto target_unit = unit->order_target.unit;
 		auto target_pos = unit->order_target.pt;
 		auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.unit->position.x, unit->order_target.unit->position.y);
 		distance += offset;
-		if (distance < 0)
-		{
+		if (distance < 0) {
 			distance = 0;
 		}
 		auto polar_x = unit->get_x() + scbw::get_polar_x(distance, unit->current_direction_1);
@@ -1121,160 +977,118 @@ namespace scbw
 		unit->order_target.pt = target_pos;
 	}
 
-	bool can_spawn_broodling(Unit* target)
-	{
+	bool can_spawn_broodling(Unit* target) {
 		if (units_dat::group_flags[target->id].is_building) return false;
 		return true;
 	}
 
-	s32 dir_saturate(s32 direction, s32 value)
-	{
+	s32 dir_saturate(s32 direction, s32 value) {
 		s32 d = direction + value;
-		if (d > 255)
-		{
+		if (d > 255) {
 			return d - 255;
 		}
-		if (d < 0)
-		{
+		if (d < 0) {
 			return d + 255;
 		}
 		return d;
 	}
 
-	u32 get_sized_overlay(Unit* unit, u32 initial)
-	{
-		u32 overlayImageId;
-		if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay)
-		{
-			overlayImageId = initial + 1;
+	u32 get_sized_overlay(Unit* unit, u32 initial) {
+		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
+			return initial + 2;
 		}
-		else if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay)
-		{
-			overlayImageId = initial + 2;
+		if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+			return initial + 1;
 		}
-		else
-		{
-			overlayImageId = initial;
-		}
-		return overlayImageId;
+		return initial;
 	}
 
-	bool can_use_cliff_advantage(Unit* unit, u8 weapon)
-	{
+	bool can_use_cliff_advantage(Unit* unit, u8 weapon) {
 		return !(unit->status & UnitStatus::InAir)
 		&&		 unit->id != UnitId::ProtossPlasmaShell
 		&&	   (!weapon || weapons_dat::max_range[weapon] > 32)
 		&&		 unit->id != UnitId::TerranHarakan;
 	}
 
-	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon)
-	{
+	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon) {
 		return 0;
-		if (!can_use_cliff_advantage(unit, weapon))
-		{
+		if (!can_use_cliff_advantage(unit, weapon)) {
 			return 0;
 		}
 		s32 source_height = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).ground_height / 2;
-		if (!target_unit)
-		{
+		if (!target_unit) {
 			return source_height * 2;
 		}
 		s32 target_height = scbw::get_stupid_reference_to_active_tile_at(target_unit->position.x, target_unit->position.y).ground_height / 2;
 		return std::max(source_height - target_height, 0) * 2;
 	}
 
-	void apply_ensnare(Unit* unit) // 004F45E0
-	{
+	void apply_ensnare(Unit* unit) { // 004F45E0
 		if (!(unit->ensnare_timer)
-			&& !(unit->status & UnitStatus::Burrowed))
-		{
-			Unit* victim = unit;
-			if (unit->subunit != nullptr)
-			{
-				victim = unit->subunit;
-			}
+			&& !(unit->status & UnitStatus::Burrowed)) {
+			Unit* victim = unit->subunit ? unit->subunit : unit;
 			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 		unit->ensnare_timer = 37;
 		unit->update_speed();
 	}
 
-	bool is_enabled(Unit* unit)
-	{
-		if (unit->lockdown_timer
-			|| unit->maelstrom_timer
-			|| unit->stasis_timer
-			|| unit->status & UnitStatus::Disabled)
-		{
+	bool is_enabled(Unit* unit) {
+		if (scbw::unit_is_stunned(unit) || unit->status & UnitStatus::Disabled) {
 			return false;
 		}
 		return true;
 	}
 
-	s32 get_upgrade_type(Unit* unit)
-	{
+	s32 get_upgrade_type(Unit* unit) {
 		s32 race = unit->get_race();
-		f64 upgType;
-		switch (race)
-		{
-			case RaceId::Zerg:
-			{
-				upgType = UpgradeId::ZergMeleeAttacks;
-			} break;
-			case RaceId::Protoss:
-			{
-				upgType = UpgradeId::ProtossGroundWeapons;
-			} break;
-			default:
-			{
-				upgType = UpgradeId::TerranInfantryWeapons;
+		switch (race) {
+			case RaceId::Terran: {
+				return UpgradeId::TerranInfantryWeapons;
 			}
+			case RaceId::Zerg: {
+				return UpgradeId::ZergMeleeAttacks;
+			} break;
+			case RaceId::Protoss: {
+				return UpgradeId::ProtossGroundWeapons;
+			} break;
 		}
-		return upgType;
+		return UpgradeId::TerranInfantryWeapons;
 	}
 
-	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed)
-	{
-		u32 overlayOffset = 0;
-		if (xlargeAllowed && scbw::unit_id_uses_xlarge_overlays(unit_id))
-		{
-			overlayOffset = 3;
+	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed) {
+		if (xlargeAllowed && scbw::unit_id_uses_xlarge_overlays(unit_id)) {
+			return 3;
 		}
-		else if (units_dat::base_property[unit_id] & UnitProperty::MediumOverlay)
-		{
-			overlayOffset = 1;
+		if (units_dat::base_property[unit_id] & UnitProperty::LargeOverlay) {
+			return 2;
 		}
-		else if (units_dat::base_property[unit_id] & UnitProperty::LargeOverlay)
-		{
-			overlayOffset = 2;
+		if (units_dat::base_property[unit_id] & UnitProperty::MediumOverlay) {
+			return 1;
 		}
-		return overlayOffset;
+		return 0;
 	}
 
-	s32 get_final_damage(Unit* unit, u16 weapon_id)
-	{
-		s32 upgType = get_upgrade_type(unit);
-		s32 baseDamage = weapons_dat::damage_amount[weapon_id];
-		f64 bonusDamage = (f64)weapons_dat::armor_pen[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgType);
-		f64 final_damage = baseDamage;
-		if (bonusDamage)
-		{
-			final_damage = baseDamage + bonusDamage;
+	s32 get_final_damage(Unit* unit, u16 weapon_id) {
+		s32 upgrade_type = get_upgrade_type(unit);
+		s32 base_damage = weapons_dat::damage_amount[weapon_id];
+		f64 bonus_damagge = (f64)weapons_dat::armor_pen[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgrade_type);
+		f64 final_damage = base_damage;
+		if (bonus_damagge) {
+			final_damage = base_damage + bonus_damagge;
 		}
 		return final_damage;
 	}
 
 	// I may need to make this function more flexible later -- Pr0nogo
-	bool unit_id_is_pacifist(Unit* unit)
-	{
+	bool unit_id_is_pacifist(Unit* unit) {
 		return !unit->has_weapon()
 		&&		unit->id != UnitId::ZergLakizilisk; // LAME
 	}
 
 	// Identical to function order_is_spell @ 00436930 -- Pr0nogo
 	// We should update the lardcode for Cosmonarchy
-	bool order_is_spell(s32 order_id)
-	{
+	bool order_is_spell(s32 order_id) {
 		return order_id == OrderId::Plague
 			|| order_id == OrderId::DarkSwarm
 //			|| order_id == OrderId::Ensnare				// Land Grab
@@ -1289,56 +1103,45 @@ namespace scbw
 
 	// Creates the Plasma Shield flickering effect.
 	// Identical to function @ 0x004E6140
-	void create_shield_overlay(Unit* unit, u32 attackDirection)
-	{
+	void create_shield_overlay(Unit* unit, u32 attackDirection) {
 		const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->get_offset(unit->sprite->main_graphic->direction, frameAngle);
-
 		unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 
-	void decloak_proc(Unit* unit)
-	{
+	void decloak_proc(Unit* unit) {
 		UnitExt* unitExt = get_unit_ext(unit);
-		if (is_decloakable(unit))
-		{
-			if (unitExt->timers[TimerDecloak] == 0)
-			{
+		if (is_decloakable(unit)) {
+			if (unitExt->timers[TimerDecloak] == 0) {
 				unit->detection_status = 0xff;
 				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
-			if (unitExt->timers[TimerDecloak] != 1)
-			{
+			if (unitExt->timers[TimerDecloak] != 1) {
 				unitExt->timers[TimerDecloak] = 48 + 1;
 			}
 		}
-		if (unit->is_subunit() && unit->subunit)
-		{
+		if (unit->is_subunit() && unit->subunit) {
 			decloak_proc(unit->subunit);
 		}
 	}
 
-	bool is_decloakable(Unit* unit)
-	{
+	bool is_decloakable(Unit* unit) {
 		return (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
 	// Replacement for isUnitGhost
-	bool unit_can_nuke(Unit* unit)
-	{
+	bool unit_can_nuke(Unit* unit) {
 		return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
 	}
 
-	bool unit_is_trap(Unit* unit)
-	{
+	bool unit_is_trap(Unit* unit) {
 		return (unit->id == UnitId::TerranSpiderMine);
 	}
 
-	bool unit_is_ranged_attacker(Unit* unit)
-	{
+	bool unit_is_ranged_attacker(Unit* unit) {
 		// Would be nice to somehow avoid ID hardcode
 		switch (unit->id)
 		{
@@ -1361,51 +1164,39 @@ namespace scbw
 			{
 				return true;
 			} break;
-			default:
-			{
-			}
 		}
 
-		u16 groundWeaponId = units_dat::ground_weapon[unit->id];
-		if (unit->subunit)
-		{
-			groundWeaponId = units_dat::ground_weapon[unit->subunit->id];
+		u16 ground_weapon_id = units_dat::ground_weapon[unit->id];
+		if (unit->subunit) {
+			ground_weapon_id = units_dat::ground_weapon[unit->subunit->id];
 		}
-		if (groundWeaponId != WeaponId::None)
-		{
-			if (weapons_dat::max_range[groundWeaponId] > 32)
-			{
+		if (ground_weapon_id != WeaponId::None) {
+			if (weapons_dat::max_range[ground_weapon_id] > 32) {
 				return true;
 			}
 		}
-		u16 airWeaponId = units_dat::air_weapon[unit->id];
-		if (unit->subunit)
-		{
-			airWeaponId = units_dat::air_weapon[unit->subunit->id];
+		u16 air_weapon_id = units_dat::air_weapon[unit->id];
+		if (unit->subunit) {
+			air_weapon_id = units_dat::air_weapon[unit->subunit->id];
 		}
-		if (airWeaponId != WeaponId::None)
-		{
-			if (weapons_dat::max_range[airWeaponId] > 32)
-			{
+		if (air_weapon_id != WeaponId::None) {
+			if (weapons_dat::max_range[air_weapon_id] > 32) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	void play_work_animation(Unit* unit)
-	{
+	void play_work_animation(Unit* unit) {
 		Image* current_image = unit->sprite->images.head;
 		unit->secondary_order_state = 2;
-		while (current_image != nullptr)
-		{
+		while (current_image) {
 			current_image->play_iscript_animation(IscriptAnimation::IsWorking);
 			current_image = current_image->link.next;
 		}
 	}
 
-	bool unit_id_is_available_without_an_addon(u16 id)
-	{
+	bool unit_id_is_available_without_an_addon(u16 id) {
 		return id == UnitId::TerranMason
 			|| id == UnitId::TerranTalos
 			|| id == UnitId::TerranMaverick
@@ -1463,8 +1254,7 @@ namespace scbw
 		unitExt->timers[TimerHallucinating] = time;
 	}
 
-	bool can_be_entered_by(Unit* transport, Unit* unit)
-	{
+	bool can_be_entered_by(Unit* transport, Unit* unit) {
 		const u32 Func_CanBeEnteredBy = 0x004E6E00; // AKA CanEnterTransport()
 		static u32 result;
 		__asm {
@@ -1478,8 +1268,7 @@ namespace scbw
 		return result != 0;
 	}
 
-	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId)
-	{
+	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId) {
 		const u32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
 		__asm {
 			PUSHAD
@@ -1491,8 +1280,7 @@ namespace scbw
 		}
 	}
 
-	u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId)
-	{
+	u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId) {
 		const u32 Func_GetTechUseErrorMessage = 0x00491E80;
 		static u32 techId_;
 		static u16 errorMessage;
@@ -1509,8 +1297,7 @@ namespace scbw
 		return errorMessage;
 	}
 
-	u16 get_last_queue_slot_id(Unit* a1)
-	{
+	u16 get_last_queue_slot_id(Unit* a1) {
 		const u32 Func_getLastQueueSlotType = 0x0047B270;
 		static s32 result;
 		__asm {
@@ -1523,8 +1310,7 @@ namespace scbw
 		return (u16)result;
 	}
 
-	void set_offset_to_parent_special_overlay(Image* image)
-	{
+	void set_offset_to_parent_special_overlay(Image* image) {
 		const u32 Func_updateImagePositionOffset = 0x004D5A00;
 		__asm {
 			PUSHAD
@@ -1534,8 +1320,7 @@ namespace scbw
 		}
 	}
 
-	u32 get_ground_height_at_pos(s32 x, s32 y)
-	{
+	u32 get_ground_height_at_pos(s32 x, s32 y) {
 		const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;
 		static u32 height;
 		__asm {
@@ -1549,11 +1334,9 @@ namespace scbw
 		return height;
 	}
 
-	void disable_dialog(BinDlg* dialog)
-	{
+	void disable_dialog(BinDlg* dialog) {
 		const u32 Func_DisableDialog = 0x00418640;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV ESI, dialog
 			CALL Func_DisableDialog
@@ -1561,11 +1344,9 @@ namespace scbw
 		}
 	}
 
-	void show_dialog(BinDlg* dialog)
-	{
+	void show_dialog(BinDlg* dialog) {
 		const u32 Func_ShowDialog = 0x004186A0;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV ESI, dialog
 			CALL Func_ShowDialog
@@ -1573,11 +1354,9 @@ namespace scbw
 		}
 	}
 
-	void hide_dialog(BinDlg* dialog)
-	{
+	void hide_dialog(BinDlg* dialog) {
 		const u32 Func_HideDialog = 0x00418700;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV ESI, dialog
 			CALL Func_HideDialog
@@ -1585,11 +1364,9 @@ namespace scbw
 		}
 	}
 
-	void enable_control(BinDlg* dialog)
-	{
+	void enable_control(BinDlg* dialog) {
 		const u32 Func_Sub418E00 = 0x00418E00;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV ESI, dialog
 			CALL Func_Sub418E00
@@ -1597,11 +1374,9 @@ namespace scbw
 		}
 	}
 
-	void update_dialog(BinDlg* dialog)
-	{
+	void update_dialog(BinDlg* dialog) {
 		const u32 Func_UpdateDialog = 0x0041C400;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			CALL Func_UpdateDialog
@@ -1609,14 +1384,12 @@ namespace scbw
 		}
 	}
 
-	void prepare_unit_move(Unit* unit, bool hideUnit)
-	{
+	void prepare_unit_move(Unit* unit, bool hideUnit) {
 		const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
 		assert(unit);
 		static b32 _hideUnit;
 		_hideUnit = hideUnit ? 1 : 0;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			PUSH _hideUnit
 			MOV EDI, unit
@@ -1625,8 +1398,7 @@ namespace scbw
 		}
 	}
 
-	bool check_unit_collision_pos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag)
-	{
+	bool check_unit_collision_pos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag) {
 		const u32 Func_CheckUnitCollisionPos = 0x0049D3E0;
 		assert(unit);
 		assert(inPos);
@@ -1649,8 +1421,7 @@ namespace scbw
 		return result != 0;
 	}
 
-	void set_unit_position(Unit* unit, u16 x, u16 y)
-	{
+	void set_unit_position(Unit* unit, u16 x, u16 y) {
 		const u32 Func_SetUnitPosition = 0x004EB9F0;
 		assert(unit);
 		__asm {
@@ -1663,8 +1434,7 @@ namespace scbw
 		}
 	}
 
-	void refresh_unit_after_move(Unit* unit)
-	{
+	void refresh_unit_after_move(Unit* unit) {
 		const u32 Func_RefreshRevealUnitAfterMove = 0x00494160;
 		assert(unit);
 		__asm {
@@ -1675,8 +1445,7 @@ namespace scbw
 		}
 	}
 
-	void make_to_hold_position(Unit* unit)
-	{
+	void make_to_hold_position(Unit* unit) {
 		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 		__asm
 		{
@@ -1688,20 +1457,15 @@ namespace scbw
 	}
 
 	// Player check added based on how others functions test it. Values above or equal to 8 means all players.
-	void move_screen_to_unit(Unit* unit, u32 player) // 004E6020
-	{
+	void move_screen_to_unit(Unit* unit, u32 player) { // 004E6020
 		const u32 Func_MoveScreen = 0x0049C440;
-		if (player >= 8 || player == *g_local_nation_id)
-		{
-			s32 x, y;
-			x = (s16)unit->sprite->position.x;
-			y = (s16)unit->sprite->position.y;
-			if (x < 0)
-			{
+		if (player >= 8 || player == *g_local_nation_id) {
+			s32 x = unit->sprite->position.x;
+			s32 y = unit->sprite->position.y;
+			if (x < 0) {
 				x += 31;
 			}
-			if (y < 0)
-			{
+			if (y < 0) {
 				y += 31;
 			}
 			x = ((x / 32) - 10) * 32;
@@ -1719,13 +1483,10 @@ namespace scbw
 	// Player check added based on how others functions test it
 	// Values above or equal to 8 means all players
 	// x and y are coords as gotten from unit->sprite->position
-	void minimap_ping(u32 x, u32 y, s32 color, u32 player)
-	{
+	void minimap_ping(u32 x, u32 y, s32 color, u32 player) {
 		const u32 Func_minimapPing = 0x004A34C0;
-		if (player >= 8 || player == *g_local_nation_id)
-		{
-			__asm
-			{
+		if (player >= 8 || player == *g_local_nation_id) {
+			__asm {
 				PUSHAD
 				PUSH color
 				PUSH y
@@ -1736,12 +1497,10 @@ namespace scbw
 		}
 	}
 
-	u8 has_overlay(Unit* unit)
-	{
+	u8 has_overlay(Unit* unit) {
 		const u32 Func_hasOverlay = 0x0047B720;
 		static u8 result;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_hasOverlay
@@ -1751,8 +1510,7 @@ namespace scbw
 		return result;
 	}
 
-	void hide_and_disable_unit(Unit* unit)
-	{
+	void hide_and_disable_unit(Unit* unit) {
 		const u32 Func_unitDeathSomething_0 = 0x004E6340;
 		__asm {
 			PUSHAD
@@ -1762,10 +1520,8 @@ namespace scbw
 		}
 	}
 
-	bool weapon_pierces_targets(u16 weapon_id)
-	{
-		switch (weapon_id)
-		{
+	bool weapon_pierces_targets(u16 weapon_id) {
+		switch (weapon_id) {
 			case WeaponId::SentinelCerberusRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:
@@ -1773,15 +1529,11 @@ namespace scbw
 			{
 				return true;
 			}
-			default:
-			{
-				return false;
-			}
 		}
+		return false;
 	}
 
-	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt)
-	{
+	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt) {
 		unit->sprite->create_top_overlay(ImageId::ArcliteShockCannon_Damageless);
 		const u32 radius = 2 * 32;
 		scbw::UnitFinder(
@@ -1790,45 +1542,36 @@ namespace scbw
 			unit->get_x() + radius,
 			unit->get_y() + radius
 		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}),
-			[&unitExt](Unit* target)
-		{
+		[&unitExt](Unit* target) {
 			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, damage_type::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
 		});
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
 
-	void update_signify_status(Unit* unit, UnitExt* unitExt)
-	{
+	void update_signify_status(Unit* unit, UnitExt* unitExt) {
 		unit->update_speed();
 
 		const u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 		const u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 
-		if (unitExt->values[ValueSignifyStacks] == 0)
-		{
+		if (unitExt->values[ValueSignifyStacks] == 0) {
 			unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 			unit->remove_overlay(ImageId::Malice_Small, ImageId::Malice_Large);
-		}
-		else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-		||		   units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		||		   unit->has_weapon())
-		{
-			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId))
-			{
+		} else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
+				|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+				|| unit->has_weapon()) {
+			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId)) {
 				unit->sprite->create_top_overlay(cowardiceId);
-			}
-			else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(maliceId))
-			{
+			} else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(maliceId)) {
 				unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 				unit->sprite->create_top_overlay(maliceId);
 			}
 		}
 	}
 
-	bool is_unit_isolated(Unit* unit)
-	{
-		u32 allyCount = 0;
-		u32 enemyCount = 0;
+	bool is_unit_isolated(Unit* unit) {
+		u32 ally_count = 0;
+		u32 enemy_count = 0;
 
 		auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 		const u32 radius = 5 * 32;
@@ -1837,44 +1580,39 @@ namespace scbw
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
-		).for_each_in_match(match, [&](Unit* target)
-		{
+		).for_each_in_match(match, [&](Unit* target) {
 			if (scbw::is_allied_to(target->player, unit->player))
 			{
-				allyCount++;
+				ally_count++;
 			}
 			else
 			{
-				enemyCount++;
+				enemy_count++;
 			}
 		});
 
-		return allyCount < enemyCount;
+		return ally_count < enemy_count;
 	}
 
-	bool unit_id_is_zerg_supply(u16 unit_id)
-	{
+	bool unit_id_is_zerg_supply(u16 unit_id) {
 		return (unit_id == UnitId::ZergOvileth
 			|| unit_id == UnitId::ZergIroleth
 			|| unit_id == UnitId::ZergOthstoleth
 			|| unit_id == UnitId::ZergAlaszileth);
 	}
 
-	void mind_control(Unit* source, Unit* target)
-	{
-		if (!source || !target || source->player == target->player || scbw::is_allied_to(source->player, target->player))
-		{
+	void mind_control(Unit* source, Unit* target) {
+		if (!source || !target || source->player == target->player || scbw::is_allied_to(source->player, target->player)) {
 			return;
 		}
 
-		UnitExt* sourceExt = get_unit_ext(source);
-		sourceExt->unit_vectors[UnitVectorMindControlling].push_back(target);
+		UnitExt* source_ext = get_unit_ext(source);
+		source_ext->unit_vectors[UnitVectorMindControlling].push_back(target);
 
-		UnitExt* targetExt = get_unit_ext(target);
-		targetExt->units[UnitMindController] = source;
-		if (!targetExt->values[ValueMindControlOriginalPlayer])
-		{
-			targetExt->values[ValueMindControlOriginalPlayer] = target->player + 1;
+		UnitExt* target_ext = get_unit_ext(target);
+		target_ext->units[UnitMindController] = source;
+		if (!target_ext->values[ValueMindControlOriginalPlayer]) {
+			target_ext->values[ValueMindControlOriginalPlayer] = target->player + 1;
 		}
 
 		// Recurse
@@ -1882,27 +1620,24 @@ namespace scbw
 			Unit* unit = target->get_loaded_unit(i);
 			mind_control(source, unit);
 		}
-		for (Unit* unit : targetExt->unit_vectors[UnitVectorMindControlling])
-		{
+		for (Unit* unit : target_ext->unit_vectors[UnitVectorMindControlling]) {
 			mind_control(source, unit);
 		}
-		targetExt->unit_vectors[UnitVectorMindControlling].clear();
+		target_ext->unit_vectors[UnitVectorMindControlling].clear();
 
 		// Demiurge - apply behavior
 		if (source->id == UnitId::ProtossDemiurge) {
-			auto& vec = sourceExt->unit_vectors[UnitVectorWorshipersDemiurge];
-			if (std::find(vec.begin(), vec.end(), target) == vec.end())
-			{
+			auto& vec = source_ext->unit_vectors[UnitVectorWorshipersDemiurge];
+			if (std::find(vec.begin(), vec.end(), target) == vec.end()) {
 				vec.push_back(target);
 			}
-
-			targetExt->values[ValueWorshipStack] = 1;
+			target_ext->values[ValueWorshipStack] = 1;
 		}
 
 		// Mind Tyrant - apply behavior
 		if (source->id == UnitId::ProtossMindTyrant) {
-			targetExt->values[ValueTyrannyPlayer] = source->player + 1;
-			targetExt->timers[TimerTyrannyRecede] = 5 * 24;
+			target_ext->values[ValueTyrannyPlayer] = source->player + 1;
+			target_ext->timers[TimerTyrannyRecede] = 5 * 24;
 		}
 
 		// Obtain control
@@ -1911,33 +1646,27 @@ namespace scbw
 		// Audio Visuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
 			u32 offset = scbw::get_overlay_offset(target->id);
-			if (source->id == UnitId::ProtossDemiurge)
-			{
+			if (source->id == UnitId::ProtossDemiurge) {
 				target->sprite->create_top_overlay(ImageId::Worship_Small + offset, 0, 0, 0);
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
-			}
-			else if (source->id == UnitId::ProtossMindTyrant)
-			{
+			} else if (source->id == UnitId::ProtossMindTyrant) {
 				target->sprite->create_top_overlay(ImageId::MindControlHit_Small + offset, 0, 0, 0);
 			}
 		}
 	}
 
-	void recede_mind_control(Unit* target)
-	{
-		if (!target)
-		{
+	void recede_mind_control(Unit* target) {
+		if (!target) {
 			return;
 		}
 
 		UnitExt* targetExt = get_unit_ext(target);
-		Unit* mindController = targetExt->units[UnitMindController];
+		Unit* mind_controller = targetExt->units[UnitMindController];
 		targetExt->units[UnitMindController] = 0;
 
-		if (mindController)
-		{
-			UnitExt* mindControllerExt = get_unit_ext(mindController);
-			auto& vec = mindControllerExt->unit_vectors[UnitVectorMindControlling];
+		if (mind_controller) {
+			UnitExt* mind_controller_ext = get_unit_ext(mind_controller);
+			auto& vec = mind_controller_ext->unit_vectors[UnitVectorMindControlling];
 			vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
 		}
 
@@ -1949,8 +1678,7 @@ namespace scbw
 		targetExt->values[ValueTyrannyPlayer] = 0;
 	}
 
-	bool is_zerg_production(u16 unit_id)
-	{
+	bool is_zerg_production(u16 unit_id) {
 		return unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
 			|| unit_id == UnitId::ZergGathtelosk
@@ -1958,8 +1686,7 @@ namespace scbw
 			|| unit_id == UnitId::ZergLarvoskColony;
 	}
 	
-	bool unit_id_is_town_center(u16 unit_id)
-	{
+	bool unit_id_is_town_center(u16 unit_id) {
 		return unit_id == UnitId::TerranCommandCenter
 			|| unit_id == UnitId::ProtossNexus
 			|| unit_id == UnitId::ZergHachirosk
@@ -1968,8 +1695,7 @@ namespace scbw
 			|| unit_id == UnitId::ZergSibraelosk;
 	}
 
-	bool unit_id_is_shared(u16 unit_id)
-	{
+	bool unit_id_is_shared(u16 unit_id) {
 		return unit_id == UnitId::TerranAnticthon
 			|| unit_id == UnitId::TerranAspirant
 			|| unit_id == UnitId::ZergAxitrilisk
@@ -2001,17 +1727,14 @@ namespace scbw
 		return true;
 	}
 
-	bool unit_id_uses_xlarge_overlays(u16 unit_id)
-	{
+	bool unit_id_uses_xlarge_overlays(u16 unit_id) {
 		return unit_id == UnitId::TerranPenumbra
 			|| unit_id == UnitId::TerranPhobos
 			|| unit_id == UnitId::ProtossStarSovereign;
 	}
 
-	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures)
-	{
-		if (count_gas_structures)
-		{
+	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
+		if (count_gas_structures) {
 			return unit_id == UnitId::ResourceMineralField
 				|| unit_id == UnitId::ResourceMineralFieldType2
 				|| unit_id == UnitId::ResourceMineralFieldType3
@@ -2019,9 +1742,7 @@ namespace scbw
 				|| unit_id == UnitId::TerranReservoir
 				|| unit_id == UnitId::ProtossAquifer
 				|| unit_id == UnitId::ZergExcisant;
-		}
-		else
-		{
+		} else {
 			return unit_id == UnitId::ResourceMineralField
 				|| unit_id == UnitId::ResourceMineralFieldType2
 				|| unit_id == UnitId::ResourceMineralFieldType3
@@ -2195,8 +1916,7 @@ namespace scbw
 		spawn_custom_creep_at(unit->position, unit->id, units_dat::group_flags[unit->id].is_factory);
 	}
 
-	static void stop_custom_creep_disappearing(Unit* unit)
-	{
+	static void stop_custom_creep_disappearing(Unit* unit) {
 		Box32 rect = {};
 		bool spreads_creep = helper::get_creep_spread_area(UnitId::ZergGathtelosk, unit->position.x, unit->position.y, true, &rect);
 		if (rect.top > rect.bottom) {
@@ -2618,16 +2338,14 @@ namespace scbw
 		return CorpseConsume_None;
 	}
 
-	bool ai_unit_id_can_flee_quarter(u32 unit_id)
-	{
+	bool ai_unit_id_can_flee_quarter(u32 unit_id) {
 		// Just like default, for now... -Pr0nogo
 		return unit_id == UnitId::ProtossDidact
 			|| unit_id == UnitId::TerranWraith
 			|| unit_id == UnitId::ZergMutalisk;
 	}
 
-	bool ai_unit_id_can_flee_third(u32 unit_id)
-	{
+	bool ai_unit_id_can_flee_third(u32 unit_id) {
 		// Just like default, for now... -Pr0nogo
 		return unit_id == UnitId::TerranMinotaur
 			|| unit_id == UnitId::ProtossSolarion
@@ -2644,64 +2362,56 @@ namespace scbw
 	}
 
 	bool buttonset_id_is_submenu(u32 buttonset_id) {
-		return	buttonset_id == UnitId::Buttons_BasicZergBuildings
-		||		buttonset_id == UnitId::Buttons_AdvancedZergBuildings
-		||		buttonset_id == UnitId::Buttons_SupremeZergBuildings
-		||		buttonset_id == UnitId::Buttons_BasicTerranBuildings
-		||		buttonset_id == UnitId::Buttons_AdvancedTerranBuildings
-		||		buttonset_id == UnitId::Buttons_SupremeTerranBuildings
-		||		buttonset_id == UnitId::Buttons_BasicProtossBuildings
-		||		buttonset_id == UnitId::Buttons_AdvancedProtossBuildings
-		||		buttonset_id == UnitId::Buttons_RoboticProtossStructures
-		||		buttonset_id == UnitId::Buttons_StellarProtossStructures
-		||		buttonset_id == UnitId::Buttons_ProfaneProtossStructures
-		||		buttonset_id == UnitId::Buttons_LarvaSwarm
-		||		buttonset_id == UnitId::Buttons_LarvaAssault
-		||		buttonset_id == UnitId::Buttons_LarvaControl
-		||		buttonset_id == UnitId::Buttons_LarvaShared;
+		return buttonset_id == UnitId::Buttons_BasicZergBuildings
+			|| buttonset_id == UnitId::Buttons_AdvancedZergBuildings
+			|| buttonset_id == UnitId::Buttons_SupremeZergBuildings
+			|| buttonset_id == UnitId::Buttons_BasicTerranBuildings
+			|| buttonset_id == UnitId::Buttons_AdvancedTerranBuildings
+			|| buttonset_id == UnitId::Buttons_SupremeTerranBuildings
+			|| buttonset_id == UnitId::Buttons_BasicProtossBuildings
+			|| buttonset_id == UnitId::Buttons_AdvancedProtossBuildings
+			|| buttonset_id == UnitId::Buttons_RoboticProtossStructures
+			|| buttonset_id == UnitId::Buttons_StellarProtossStructures
+			|| buttonset_id == UnitId::Buttons_ProfaneProtossStructures
+			|| buttonset_id == UnitId::Buttons_LarvaSwarm
+			|| buttonset_id == UnitId::Buttons_LarvaAssault
+			|| buttonset_id == UnitId::Buttons_LarvaControl
+			|| buttonset_id == UnitId::Buttons_LarvaShared;
 	}
 
 	bool unit_id_has_custom_air_weapon(u32 unit_id) {
 		return unit_id == UnitId::TerranDurendal
-		||	   unit_id == UnitId::ProtossOptecton;
+			|| unit_id == UnitId::ProtossOptecton;
 	}
 
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
-		switch (unit_id)
-		{
-			case UnitId::TerranTarasque:
-			{
+		switch (unit_id) {
+			case UnitId::TerranTarasque: {
 				return WeaponId::TarasqueAcceleratedPlasmid;
 			}
-			case UnitId::TerranAmbassador:
-			{
+			case UnitId::TerranAmbassador: {
 				return WeaponId::AmbassadorSignatorySalvo;
 			}
-			case UnitId::TerranDurendal:
-			{
+			case UnitId::TerranDurendal: {
 				return WeaponId::DurendalPhilistineAutogun;
 			}
-			case UnitId::TerranCentaur:
-			{
+			case UnitId::TerranCentaur: {
 				return WeaponId::CentaurSunchaserMissiles;
 			}
-			case UnitId::TerranPegasus:
-			{
+			case UnitId::TerranPegasus: {
 				return WeaponId::PegasusLancetMissiles;
 			}
-			case UnitId::TerranOberon:
-			{
+			case UnitId::TerranOberon: {
 				return WeaponId::OberonAcheronMissiles;
 			}
-			case UnitId::ProtossOptecton:
-			{
+			case UnitId::ProtossOptecton: {
 				return WeaponId::OptectonSkybondRay;
 			}
-			case UnitId::ZergZarcavrokor:
-			{
+			case UnitId::ZergZarcavrokor: {
 				return WeaponId::ZarcavrokorBonesofReflection;
 			}
 		}
+		return WeaponId::None;
 	}
 
 	void set_bullet_target(Bullet* bullet, Unit* target) {
@@ -2795,17 +2505,13 @@ namespace scbw
 		return false;
 	}
 
-	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id)
-	{
+	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
 		u32 heal_amount = 1;
-		switch (weapon_id)
-		{
-			case WeaponId::EcclesiastAstralBlaster:
-			{
+		switch (weapon_id) {
+			case WeaponId::EcclesiastAstralBlaster: {
 				heal_amount = 2;
 			} break;
-			case WeaponId::PatriarchIronhandWeaver:
-			{
+			case WeaponId::PatriarchIronhandWeaver: {
 				heal_amount = 5;
 			} break;
 		}
@@ -2815,26 +2521,20 @@ namespace scbw
 			victim->get_y() - range,
 			victim->get_x() + range,
 			victim->get_y() + range
-		).for_each([&](Unit* unit)
-			{
-				if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player))
-				{
+		).for_each([&](Unit* unit) {
+				if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player)) {
 					// Ally check
 					return;
 				}
-				if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256)
-				{
+				if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
 					// Shield check for default behavior
 					helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 					helper::add_overlay_below_main(victim->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-				}
-				else
-				{
+				} else {
 					// Return if both checks failed
 					return;
 				}
-				if (units_dat::shields_enabled[unit->id])
-				{
+				if (units_dat::shields_enabled[unit->id]) {
 					// Shield heal
 					unit->heal_shields(2 * 256, victim);
 				}
