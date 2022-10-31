@@ -661,6 +661,11 @@ namespace hooks
 		}
 
 		if (strict) {
+			// Skip transports
+			if (scbw::unit_id_is_transport(unit->id)) {
+				return false;
+			}
+
 			// Skip units from regions that don't have strength needed defined, since they are hard to assess properly
 			// We will instead let AI assign units to defense regions and then pull the units to attack waves
 			if (!current_ai_region->ground_strength_needed && !current_ai_region->air_strength_needed) {

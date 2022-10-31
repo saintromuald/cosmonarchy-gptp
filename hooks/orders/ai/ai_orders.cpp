@@ -1815,7 +1815,7 @@ namespace hooks
 		s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
 
 		Unit* best_unit = 0;
-		s32 best_score = INT_MIN;
+		u32 best_score = 0;
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
 				continue;
@@ -1850,6 +1850,11 @@ namespace hooks
 				}
 			}
 
+			// Skip transports
+			if (scbw::unit_id_is_transport(unit->id)) {
+				continue;
+			}
+
 			// Skip units that can't access the region
 			if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
 				continue;
@@ -1865,7 +1870,7 @@ namespace hooks
 			}
 
 			f32 distance = helper::get_path_distance_to(unit, region_center);
-			s32 score = distance ? force / distance : force;
+			s32 score = distance >= 1 ? force / distance : force;
 			if (score > best_score) {
 				best_score = score;
 				best_unit = unit;

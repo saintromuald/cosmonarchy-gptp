@@ -1471,15 +1471,15 @@ namespace hooks {
 					unit->get_x() + 128,
 					unit->get_y() + 128
 				).for_each([&](Unit* target) {
-						if (target == unit) {
-							return;
-						}
-						if (scbw::unit_id_is_resource_node(target->id, false)) {
-							return;
-						}
-						UnitExt* targetExt = get_unit_ext(target);
-						targetExt->values[ValueHasSublimeShepherd] = 1;
-					});
+					if (target == unit) {
+						return;
+					}
+					if (scbw::unit_id_is_resource_node(target->id, false)) {
+						return;
+					}
+					UnitExt* targetExt = get_unit_ext(target);
+					targetExt->values[ValueHasSublimeShepherd] = 1;
+				});
 			} break;
 			case UnitId::ZergAxitrilisk:
 			{
