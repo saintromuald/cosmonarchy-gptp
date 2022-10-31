@@ -234,6 +234,7 @@ enum ExtTimerId
 	TimerAI_KitingLeash,
 	TimerAI_KitingSync,
 	TimerAI_KitingCombat,
+	TimerAI_Patience,
 
 	TimerCount,
 };

@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "ai_layouts.h"
 #include "globals.h"
+#include "custom_ai.h"
 
 namespace hooks
 {
@@ -207,9 +208,16 @@ namespace hooks
 
 				// Ignore allied units (new) -Veeq7		
 				if (target && scbw::is_allied_to(unit->player, target->player)) {
-					// TODO: initially flee and then attack if the allied player keeps attacking AI units (basically AI patience mechanic)
-					// helper::ai_flee(unit, target);
-					return;
+					UnitExt* unit_ext = get_unit_ext(unit);
+					u32 patience = unit_ext->timers[TimerAI_Patience];
+					unit_ext->timers[TimerAI_Patience] += 2 * 24;
+					if (patience <= 7 * 24) {
+						if (units_dat::base_property[unit->id] & UnitProperty::Worker ||
+							!helper::unit_can_attack_target(target, unit, 1)) {
+							helper::ai_flee(unit, target); // Flee
+						}
+						return;
+					}
 				}
 
 				if (main_target_reactions && unit->unit_ai) {
