@@ -695,7 +695,7 @@ namespace hooks
 {
 	void inject_ai_orders_hooks()
 	{
-	//	jump_patch(ai_unit_was_hit_wrapper,						0x0043F320, 1);
+		jump_patch(ai_unit_was_hit_wrapper,						0x0043F320, 1);
 
 		jump_patch(ai_order_unit_cloaking_wrapper,				0x0043B970, 1);
 		jump_patch(ai_send_suicide_wrapper,						0x0043E050, 1);

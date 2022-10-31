@@ -15,8 +15,7 @@
 extern const u32 Func_CanDetect = 0x00403430; // unitHasNoStatusAilments
 
 // Behavior can be modified with detector hook
-bool Unit::can_detect() const
-{
+bool Unit::can_detect() const {
 	assert(this);
 	static u32 result;
 
@@ -31,68 +30,56 @@ bool Unit::can_detect() const
 	return result != 0;
 }
 
-u32 Unit::get_current_hp_ingame() const
-{
+u32 Unit::get_current_hp_ingame() const {
 	assert(this);
 	return (this->hitpoints + 255) >> 8;
 }
 
-u32 Unit::getCurrentShieldsInGame() const
-{
+u32 Unit::getCurrentShieldsInGame() const {
 	assert(this);
 	return this->shields >> 8;
 }
 
 //Identical to function @ 0x004026D0
-u32 Unit::get_current_life_ingame() const
-{
+u32 Unit::get_current_life_ingame() const {
 	assert(this);
-	if (units_dat::shields_enabled[this->id])
+	if (units_dat::shields_enabled[this->id]) {
 		return get_current_hp_ingame() + getCurrentShieldsInGame();
-	else
-		return get_current_hp_ingame();
+	}
+	return get_current_hp_ingame();
 }
 
-s32 Unit::max_shields() const
-{
+s32 Unit::max_shields() const {
 	assert(this);
 	return units_dat::max_shield_points[this->id];
 }
 
-bool Unit::shields_enabled() const
-{
+bool Unit::shields_enabled() const {
 	assert(this);
 	return units_dat::shields_enabled[this->id];
 }
 
 //Identical to function @ 0x00475AD0
-u8 Unit::get_ground_weapon() const
-{
-	if (this->id == UnitId::ZergLakizilisk && !(this->status & UnitStatus::Burrowed))
-	{
+u8 Unit::get_ground_weapon() const {
+	if (this->id == UnitId::ZergLakizilisk && !(this->status & UnitStatus::Burrowed)) {
 		return WeaponId::None;
-	}
-	else
-	{
+	} else {
 		return units_dat::ground_weapon[this->id];
 	}
 }
 
-u8 Unit::get_air_weapon() const
-{
+u8 Unit::get_air_weapon() const {
 	assert(this);
 	return units_dat::air_weapon[this->id];
 }
 
-u8 Unit::get_armor() const
-{
+u8 Unit::get_armor() const {
 	assert(this);
 	return units_dat::armor_amount[this->id] + this->get_armor_bonus();
 }
 
 extern const u32 Func_GetArmorBonus = 0x00453FC0;
-u8 Unit::get_armor_bonus() const
-{
+u8 Unit::get_armor_bonus() const {
 	assert(this);
 
 	static u8 armorBonus;
@@ -108,8 +95,7 @@ u8 Unit::get_armor_bonus() const
 }
 
 extern const u32 Func_GetMaxEnergy = 0x00491870;
-u16 Unit::get_max_energy() const
-{
+u16 Unit::get_max_energy() const {
 	assert(this);
 
 	static u16 result;
@@ -126,38 +112,31 @@ u16 Unit::get_max_energy() const
 }
 
 //Similar to function @ 0x00401400
-u32 Unit::get_max_hp_ingame() const
-{
+u32 Unit::get_max_hp_ingame() const {
 	assert(this);
 
 	u32 maxHp = units_dat::max_hitpoints[this->id];
-	if (maxHp == 0)
-	{
+	if (maxHp == 0) {
 		maxHp = this->get_current_hp_ingame();
 		if (maxHp == 0)
 		{
 			maxHp = 1;
 		}
-	}
-	else
-	{
+	} else {
 		maxHp = maxHp >> 8;
 	}
 	return maxHp;
 }
 
-u32 Unit::get_max_shields_in_game() const
-{
+u32 Unit::get_max_shields_in_game() const {
 	assert(this);
 
-	if (!this->shields_enabled())
-	{
+	if (!this->shields_enabled()) {
 		return 0;
 	}
 
 	u32 maxShields = units_dat::max_shield_points[this->id];
-	if (maxShields == 0)
-	{
+	if (maxShields == 0) {
 		maxShields = this->getCurrentShieldsInGame();
 		if (maxShields == 0)
 		{
@@ -167,43 +146,36 @@ u32 Unit::get_max_shields_in_game() const
 	return maxShields;
 }
 
-u32 Unit::get_max_hp_raw() const
-{
+u32 Unit::get_max_hp_raw() const {
 	assert(this);
 	return units_dat::max_hitpoints[this->id];
 }
 
-u32 Unit::get_max_shields_raw() const
-{
+u32 Unit::get_max_shields_raw() const {
 	assert(this);
 	return units_dat::max_shield_points[this->id] * 256;
 }
 
-u8 Unit::get_spell_countdown() const
-{
+u8 Unit::get_spell_countdown() const {
 	assert(this);
-	if (this->id == UnitId::TerranWyvern)
-	{
+	if (this->id == UnitId::TerranWyvern) {
 		return this->ground_weapon_cooldown;
 	}
 	return this->spell_cooldown;
 }
 
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
-u32 Unit::get_max_weapon_range(u8 weapon_id) const
-{
+u32 Unit::get_max_weapon_range(u8 weapon_id) const {
 	assert(this);
 
-	if (weapon_id == WeaponId::None)
-	{
+	if (weapon_id == WeaponId::None) {
 		return 0;
 	}
 
 	assert(weapon_id < WEAPON_TYPE_COUNT);
 
 	static u32 maxWeaponRange;
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV BL, weapon_id
 		MOV EAX, this
@@ -214,67 +186,48 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const
 	return maxWeaponRange;
 }
 
-const char* Unit::get_name() const
-{
+const char* Unit::get_name() const {
 	assert(this);
 	return get_name(this->id);
 }
 
 #include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
-const char* Unit::get_name(u16 unit_id)
-{
+const char* Unit::get_name(u16 unit_id) {
 	assert(unit_id < UNIT_TYPE_COUNT);
-	if (unit_id >= UNIT_TYPE_COUNT)
-	{
+	if (unit_id >= UNIT_TYPE_COUNT) {
 		return (char*)g_string_empty;
-	}
-	else if (units_dat::map_string_id[unit_id] != 0)
-	{
+	} else if (units_dat::map_string_id[unit_id] != 0) {
 		return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
-	}
-	else if (DatExt::unitNamesTbl != NULL)
-	{
+	} else if (DatExt::unitNamesTbl != NULL) {
 		return (char*)((StringTbl*)&DatExt::unitNamesTbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
-	}
-	else
-	{
+	} else {
 		return statTxtTblNew->get_string(unit_id + 1);
 	}
 }
 
-RaceId::Enum Unit::get_race() const
-{
+RaceId::Enum Unit::get_race() const {
 	assert(this);
 	return get_race(this->id);
 }
 
 //Based on function at 0x0047B150
-RaceId::Enum Unit::get_race(u16 unit_id)
-{
+RaceId::Enum Unit::get_race(u16 unit_id) {
 	assert(unit_id < UNIT_TYPE_COUNT);
 
-	if (units_dat::group_flags[unit_id].is_zerg)
-	{
+	if (units_dat::group_flags[unit_id].is_zerg) {
 		return RaceId::Zerg;
-	}
-	else if (units_dat::group_flags[unit_id].is_protoss)
-	{
+	} else if (units_dat::group_flags[unit_id].is_protoss) {
 		return RaceId::Protoss;
-	}
-	else if (units_dat::group_flags[unit_id].is_terran)
-	{
+	} else if (units_dat::group_flags[unit_id].is_terran) {
 		return RaceId::Terran;
-	}
-	else
-	{
+	} else {
 		return RaceId::Neutral;
 	}
 }
 
 extern const u32 Func_GetSeekRange = 0x00476000;
-u8 Unit::get_seek_range() const
-{
+u8 Unit::get_seek_range() const {
 	assert(this);
 
 	static u8 seekRange;
@@ -291,8 +244,7 @@ u8 Unit::get_seek_range() const
 }
 
 extern const u32 Func_GetSightRange = 0x004E5B40;
-u32 Unit::get_sight_range(bool isForSpellCasting) const
-{
+u32 Unit::get_sight_range(bool isForSpellCasting) const {
 	assert(this);
 
 	static u32 sightRange;
@@ -312,42 +264,36 @@ u32 Unit::get_sight_range(bool isForSpellCasting) const
 
 // Similar to function Unit__HasEnergy @ 0x00491480
 // The original function returned 0 when got energy or code
-bool Unit::has_energy(u32 energy) const
-{
-	if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || this->energy >= energy)
-	{
+bool Unit::has_energy(u32 energy) const {
+	if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || this->energy >= energy) {
 		return true;
 	}
 	return false;
 }
 
 //Identical to function Unit__SpendEnergy @ 0x00476180
-bool Unit::has_weapon() const
-{
+bool Unit::has_weapon() const {
 	assert(this);
 
 	if (this->get_ground_weapon() != WeaponId::None
 		|| this->get_air_weapon() != WeaponId::None)
 		return true;
 
-	if (this->id == UnitId::ProtossSolarion)
-	{
+	if (this->id == UnitId::ProtossSolarion) {
 		if ((this->unit_with_hangar.in_hangar_count + this->unit_with_hangar.out_hangar_count) > 0)
 		{
 			return true;
 		}
 	}
 
-	if (this->id == UnitId::ProtossAccantorOld)
-	{
+	if (this->id == UnitId::ProtossAccantorOld) {
 		if (this->unit_with_hangar.in_hangar_count > 0)
 		{
 			return true;
 		}
 	}
 
-	if (this->subunit)
-	{
+	if (this->subunit) {
 		if (this->subunit->get_ground_weapon() != WeaponId::None
 			|| this->subunit->get_air_weapon() != WeaponId::None)
 		{
@@ -359,8 +305,7 @@ bool Unit::has_weapon() const
 }
 
 // Identical to function @ 0x004020B0
-bool Unit::is_frozen() const
-{
+bool Unit::is_frozen() const {
 	assert(this);
 	return
 		this->status & UnitStatus::Frozen
@@ -370,8 +315,7 @@ bool Unit::is_frozen() const
 }
 
 extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
-bool Unit::isRemorphingBuilding() const
-{
+bool Unit::isRemorphingBuilding() const {
 	static b32 result;
 	assert(this);
 
@@ -387,14 +331,12 @@ bool Unit::isRemorphingBuilding() const
 }
 
 //Identical to function @ 0x00401D40
-bool Unit::is_subunit() const
-{
+bool Unit::is_subunit() const {
 	return (this && units_dat::base_property[this->id] & UnitProperty::Subunit);
 }
 
 // Equivalent to function @ 0x0047B2E0 until you change .dat files.
-bool Unit::is_factory() const
-{
+bool Unit::is_factory() const {
 	return (this && units_dat::group_flags[this->id].is_factory);
 }
 
@@ -408,64 +350,53 @@ bool Unit::is_valid_caster() const {
 //Returns:	0 - Unit has not reached destination
 //					1 - Unit has reached destination
 //					2 - Unit cannot move
-u32 Unit::get_movable_state()
-{
+u32 Unit::get_movable_state() {
 	if (this->move_target.pt != this->sprite->position)
-		return 0;
-	else if (!(this->status & UnitStatus::Unmovable))
-		return 1;
-	else
+		return 0; else if (!(this->status & UnitStatus::Unmovable))
+		return 1; else
 		return 2;
 }
 
 //-------- Positions and dimensions --------//
 
-u16 Unit::get_x() const
-{
+u16 Unit::get_x() const {
 	assert(this);
 	assert(this->sprite);
 	return this->sprite->position.x;
 };
 
-u16 Unit::get_y() const
-{
+u16 Unit::get_y() const {
 	assert(this);
 	assert(this->sprite);
 	return this->sprite->position.y;
 };
 
-u16 Unit::getTileX() const
-{
+u16 Unit::getTileX() const {
 	assert(this);
 	return this->get_x() / 32;
 };
 
-u16 Unit::getTileY() const
-{
+u16 Unit::getTileY() const {
 	assert(this);
 	return this->get_y() / 32;
 };
 
-s16 Unit::get_left() const
-{
+s16 Unit::get_left() const {
 	assert(this);
 	return this->get_x() - units_dat::unit_bounds[this->id].left;
 }
 
-s16 Unit::get_right() const
-{
+s16 Unit::get_right() const {
 	assert(this);
 	return this->get_x() + units_dat::unit_bounds[this->id].right;
 }
 
-s16 Unit::get_top() const
-{
+s16 Unit::get_top() const {
 	assert(this);
 	return this->get_y() - units_dat::unit_bounds[this->id].top;
 }
 
-s16 Unit::get_bottom() const
-{
+s16 Unit::get_bottom() const {
 	assert(this);
 	return this->get_y() + units_dat::unit_bounds[this->id].bottom;
 }
@@ -473,8 +404,7 @@ s16 Unit::get_bottom() const
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;
-void Unit::set_hitpoints(s32 hitpoints)
-{
+void Unit::set_hitpoints(s32 hitpoints) {
 	assert(this);
 
 	__asm {
@@ -563,17 +493,14 @@ u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore) {
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
-void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damage_divisor)
-{
+void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damage_divisor) {
 	assert(this);
 	assert(weapon_id < WEAPON_TYPE_COUNT);
 //	assert(damage_divisor != 0);
-	if (damage < 0)
-	{
+	if (damage < 0) {
 		damage = weapons_dat::damage_amount[weapon_id] * 256;
 	}
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV EDI, this
 		MOV EAX, damage
@@ -595,8 +522,7 @@ void Unit::damage_with_custom(
 	s8 direction,
 	u8 damage_divisor,
 	bool ignore_flat_armor
-)
-{
+) {
 	assert(this);
 
 	hooks::weapon_damage_custom(
@@ -611,30 +537,24 @@ void Unit::damage_with_custom(
 	);
 }
 
-void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction, bool ignore_damage_128_overflow)
-{
+void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction, bool ignore_damage_128_overflow) {
 	UnitExt* unitExt = get_unit_ext(this);
 	auto damage = dmg;
 	s32 shield_reduce_amount = 0;
-	if (unitExt->timers[TimerGodsMadeFlesh])
-	{
+	if (unitExt->timers[TimerGodsMadeFlesh]) {
 		return;
 	}
-	if (units_dat::shields_enabled[this->id])
-	{
+	if (units_dat::shields_enabled[this->id]) {
 		shield_reduce_amount = std::min(damage, this->shields);
 		damage -= shield_reduce_amount;
 	}
-	if (shield_reduce_amount == 0 && damage < 128 && !ignore_damage_128_overflow)
-	{
+	if (shield_reduce_amount == 0 && damage < 128 && !ignore_damage_128_overflow) {
 		damage = 128;
 	}
-	if (shield_reduce_amount != 0)
-	{
+	if (shield_reduce_amount != 0) {
 		this->shields -= shield_reduce_amount;
 	}
-	if (shield_overlay && units_dat::shields_enabled[this->id] && this->shields != 0)
-	{
+	if (shield_overlay && units_dat::shields_enabled[this->id] && this->shields != 0) {
 		const LO_Header* shield_lo = g_shield_overlays[this->sprite->main_graphic->id];
 
 		u32 frame_angle = (direction - 124) / 8 % 32;
@@ -713,38 +633,29 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 }
 
 // Logically equivalent to function @ 0x00454ED0
-void Unit::reduce_defensive_matrix_hp(s32 amount)
-{
+void Unit::reduce_defensive_matrix_hp(s32 amount) {
 	assert(this);
-	if (this->defensive_matrix_hp > amount)
-	{
+	if (this->defensive_matrix_hp > amount) {
 		this->defensive_matrix_hp -= amount;
-	}
-	else
-	{
+	} else {
 		Image* current_image;
 		this->defensive_matrix_hp = 0;
 		this->defensive_matrix_timer = 0;
 		this->remove_overlay(ImageId::DefensiveMatrixFront_Small, ImageId::DefensiveMatrixFront_Large);
 		current_image = this->sprite->images.head;
 
-		while (current_image != nullptr)
-		{
+		while (current_image != nullptr) {
 			if (current_image->id < ImageId::DefensiveMatrixBack_Small
-				|| current_image->id > ImageId::DefensiveMatrixBack_Large)
-			{
+				|| current_image->id > ImageId::DefensiveMatrixBack_Large) {
 				current_image = current_image->link.next;
-			}
-			else
-			{
+			} else {
 				current_image->free();
 				current_image = nullptr; // to exit loop
 			}
 		}
 	}
 
-	if (this->defensive_matrix_timer != 0 && !(this->status & UnitStatus::Burrowed))
-	{
+	if (this->defensive_matrix_timer != 0 && !(this->status & UnitStatus::Burrowed)) {
 		Unit* unit = this->subunit ? this->subunit : this;
 		// get_unit_overlay_adjustment code was hardcoded into function in original code)
 		unit->sprite->create_top_overlay(scbw::get_unit_overlay_adjustment(unit) + ImageId::DefensiveMatrixHit_Small);
@@ -753,11 +664,9 @@ void Unit::reduce_defensive_matrix_hp(s32 amount)
 }
 
 const u32 Func_RemoveUnit = 0x00475710; // AKA orders_self_destructing()
-void Unit::remove()
-{
+void Unit::remove() {
 	assert(this);
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV EAX, this
 		CALL Func_RemoveUnit
@@ -766,11 +675,9 @@ void Unit::remove()
 }
 
 const u32 Func_RemoveLockdown = 0x00454D90;
-void Unit::remove_lockdown()
-{
+void Unit::remove_lockdown() {
 	assert(this);
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV ESI, this
 		CALL Func_RemoveLockdown
@@ -779,11 +686,9 @@ void Unit::remove_lockdown()
 }
 
 const u32 Func_RemoveMaelstrom = 0x00454D20;
-void Unit::remove_maelstrom()
-{
+void Unit::remove_maelstrom() {
 	assert(this);
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV ESI, this
 		CALL Func_RemoveMaelstrom
@@ -792,8 +697,7 @@ void Unit::remove_maelstrom()
 }
 
 const u32 Func_FreezeUnit = 0x00492CC0;
-void Unit::freeze()
-{
+void Unit::freeze() {
 	assert(this);
 	__asm {
 		PUSHAD
@@ -804,11 +708,9 @@ void Unit::freeze()
 }
 
 const u32 Func_UnfreezeUnit = 0x004F62D0;
-void Unit::unfreeze()
-{
+void Unit::unfreeze() {
 	assert(this);
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV ESI, this
 		CALL Func_UnfreezeUnit
@@ -817,11 +719,9 @@ void Unit::unfreeze()
 }
 
 const u32 Func_RemoveAcidSpores = 0x004F4160;
-void Unit::remove_acid_spores()
-{
+void Unit::remove_acid_spores() {
 	assert(this);
-	__asm
-	{
+	__asm {
 		PUSHAD
 		MOV EDX, this
 		CALL Func_RemoveAcidSpores
@@ -848,32 +748,26 @@ void Unit::spend_unit_energy(u32 energySpent) {
 	}
 }
 
-void Unit::add_unit_energy(u32 energy)
-{
+void Unit::add_unit_energy(u32 energy) {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->get_max_energy());
 }
 
-void Unit::add_unit_energy_capped(u32 energy, u32 energyMax)
-{
+void Unit::add_unit_energy_capped(u32 energy, u32 energyMax) {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }
 
 // Identical to get_total_hp_plus_shields @ 00402710
-s32 Unit::get_total_hp_plus_shields()
-{
+s32 Unit::get_total_hp_plus_shields() {
 	assert(this);
 	s32 id = this->id;
 	s32 shields = 0;
 	s32 hp = units_dat::max_hitpoints[id] >> 8;
-	if (units_dat::shields_enabled[id])
-	{
+	if (units_dat::shields_enabled[id]) {
 		shields = units_dat::max_shield_points[id];
 	}
-	if (!hp)
-	{
+	if (!hp) {
 		hp = (this->hitpoints + 255) >> 8;
-		if (!hp)
-		{
+		if (!hp) {
 			hp = 1;
 		}
 	}
@@ -881,8 +775,7 @@ s32 Unit::get_total_hp_plus_shields()
 }
 
 // Identical to isAIControllerNotABuilding @ 004381D0
-s32 Unit::is_unit_ai_non_building()
-{
+s32 Unit::is_unit_ai_non_building() {
 	assert(this);
 	UnitAi* ai = (UnitAi*)this->unit_ai;
 	MilitaryAi* mai = (MilitaryAi*)ai;
@@ -890,8 +783,7 @@ s32 Unit::is_unit_ai_non_building()
 	if (!ai
 		|| ai->type != 4
 		|| mai->unit != this
-		|| units_dat::base_property[this->id] & UnitProperty::Building)
-	{
+		|| units_dat::base_property[this->id] & UnitProperty::Building) {
 		result = 0;
 	}
 	return result;
@@ -903,24 +795,19 @@ s32 Unit::is_unit_ai_non_building()
 // ESI = this
 // EAX = target
 // [ebp+08] = order_id
-void Unit::order_to(u8 order_id, Unit* target)
-{
+void Unit::order_to(u8 order_id, Unit* target) {
 	assert(this);
 	this->user_action_flags |= 0x1;
-	if (target)
-	{
+	if (target) {
 		this->order(order_id, target->get_x(), target->get_y(), target, UnitId::None, true);
-	}
-	else
-	{
+	} else {
 		this->order(order_id, 0, 0, target, UnitId::None, true);
 	}
 	prepare_for_next_order(this);
 }
 
 // Logically equivalent to function @ 0x00475260
-void Unit::order_to(u8 order_id, u16 x, u16 y)
-{
+void Unit::order_to(u8 order_id, u16 x, u16 y) {
 	assert(this);
 	this->user_action_flags |= 0x1;
 	this->order(order_id, x, y, nullptr, UnitId::None, true);
@@ -929,28 +816,22 @@ void Unit::order_to(u8 order_id, u16 x, u16 y)
 
 // Logically equivalent to function orderComputer_cl @ 0x00475310
 // used in hooks so not doing assert, mind it if used in mods
-void Unit::order_computer(u8 order_id)
-{
+void Unit::order_computer(u8 order_id) {
 	this->user_action_flags |= 0x1;
 	this->order(order_id, 0, 0, nullptr, UnitId::None, true);
 	prepare_for_next_order(this);
 }
 
 // Equivalent to 00474D60 __order function
-void Unit::order_simple(u8 order_id, bool stopPreviousOrders)
-{
+void Unit::order_simple(u8 order_id, bool stopPreviousOrders) {
 	this->order(order_id, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 }
 
 // Equivalent to 00474D10 issue_queued_order_target function
-void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders)
-{
-	if (target == nullptr)
-	{
+void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders) {
+	if (target == nullptr) {
 		this->order(order_id, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
-	}
-	else
-	{
+	} else {
 		this->order(order_id, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
 	}
 }
@@ -968,8 +849,7 @@ void Unit::order_to_idle() {
 	}
 }
 
-void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders)
-{
+void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders) {
 	assert(this);
 	const u32 Func_Order = 0x00474810;
 	static Point16 pos;
@@ -989,8 +869,7 @@ void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool
 	}
 }
 
-void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk)
-{
+void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk) {
 	const u32 Func_PerformAnotherOrder = 0x004745F0;
 	static Point16 pos;
 	pos.x = x; pos.y = y;
@@ -1008,11 +887,9 @@ void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 ta
 }
 
 // Identical to @ 0x004743D0
-void Unit::set_secondary_order(u8 order_id)
-{
+void Unit::set_secondary_order(u8 order_id) {
 	assert(this);
-	if (this->secondary_order_id == order_id)
-	{
+	if (this->secondary_order_id == order_id) {
 		return;
 	}
 	this->secondary_order_id = order_id;
@@ -1025,39 +902,32 @@ void Unit::set_secondary_order(u8 order_id)
 //-------- Graphics and animations --------//
 
 // Similar to function @ 0x004E5C90
-Image* Unit::get_overlay(u16 imageId) const
-{
+Image* Unit::get_overlay(u16 imageId) const {
 	assert(this);
 	Image* image = this->sprite->get_overlay(imageId);
-	if (!image && this->subunit)
-	{
+	if (!image && this->subunit) {
 		image = this->subunit->sprite->get_overlay(imageId);
 	}
 	return image;
 }
 
-void Unit::play_iscript_animation(IscriptAnimation::Enum animation)
-{
+void Unit::play_iscript_animation(IscriptAnimation::Enum animation) {
 	assert(this);
 	this->sprite->play_iscript_animation(animation);
 }
 
-void Unit::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
-{
+void Unit::remove_overlay(u32 imageIdStart, u32 imageIdEnd) {
 	assert(this);
 	this->sprite->remove_overlay(imageIdStart, imageIdEnd);
-	if (this->subunit)
-	{
+	if (this->subunit) {
 		this->subunit->sprite->remove_overlay(imageIdStart, imageIdEnd);
 	}
 }
 
-void Unit::remove_overlay(u32 imageId)
-{
+void Unit::remove_overlay(u32 imageId) {
 	assert(this);
 	this->sprite->remove_overlay(imageId);
-	if (this->subunit)
-	{
+	if (this->subunit) {
 		this->subunit->sprite->remove_overlay(imageId);
 	}
 }
@@ -1066,80 +936,64 @@ void Unit::remove_overlay(u32 imageId)
 //  Return the proper ColorId to use an unit color with graphics function
 // -----------------------------------------------------------------------//
 
-graphics::ColorId Unit::get_faction_color()
-{
+graphics::ColorId Unit::get_faction_color() {
 	assert(this);
 	return get_faction_color(this);
 }
 
-graphics::ColorId Unit::get_faction_color(Unit* unit)
-{
+graphics::ColorId Unit::get_faction_color(Unit* unit) {
 	// store a player until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
-	if (unit != nullptr)
-	{
-		if (unit->sprite != nullptr)
-		{
+	if (unit != nullptr) {
+		if (unit->sprite != nullptr) {
 			// note: using the sprite player to preserve recruitable units color
 			return_value = unit->sprite->player;
-		}
-		else
-		{
+		} else {
 			// note: using player color for spriteless units (if that exist)
 			return_value = unit->player;
 		}
 		// for normal players, apply colors switching
-		if (unit->player < PLAYABLE_PLAYER_COUNT)
-		{
+		if (unit->player < PLAYABLE_PLAYER_COUNT) {
 			// get the proper player in multiplayer game (don't break campaigns/UMS)
 			return_value = factionsColorsOrdering[return_value];
 			// fix BROWN to GREEN color swap in Desert map
-			if (*g_current_tileset == TilesetType::Desert && return_value == 5)
-			{
+			if (*g_current_tileset == TilesetType::Desert && return_value == 5) {
 				return_value = 8;
 			}
 			// fix WHITE to GREEN color swap in Ice map
-			if (*g_current_tileset == TilesetType::Ice && return_value == 6)
-			{
+			if (*g_current_tileset == TilesetType::Ice && return_value == 6) {
 				return_value = 8;
 			}
 		}
 		if (return_value < PLAYER_COUNT) {
 			return_value = graphics::standardColors[return_value];
-		}
-		else {
+		} else {
 			return_value = graphics::BLACK; // will return 0/black if abnormal player
 		}
-	}
-	else {
+	} else {
 		return_value = graphics::BLACK; // will return 0/black if null pointer is the argument
 	}
 	return return_value;
 }
 
-graphics::ColorId Unit::get_color()
-{
+graphics::ColorId Unit::get_color() {
 	assert(this);
 	return get_color(this);
 }
 
-graphics::ColorId Unit::get_color(Unit* unit)
-{
+graphics::ColorId Unit::get_color(Unit* unit) {
 	// getColourID internal function
 	const u32 Func_getColourID = 0x0049B0E0;
 	graphics::ColorId return_value;
-	if (unit != nullptr)
-	{
+	if (unit != nullptr) {
 		if (unit->sprite != nullptr) {
 			// note: using the sprite player to preserve recruitable units color
 			return_value = unit->sprite->player;
-		}
-		else {
+		} else {
 			// note: using player color for spriteless units (if that exist)
 			return_value = unit->player;
 		}
-		if (return_value < PLAYABLE_PLAYER_COUNT)
-		{
+		if (return_value < PLAYABLE_PLAYER_COUNT) {
 			__asm {
 				PUSHAD
 				MOV AL, return_value
@@ -1148,12 +1002,10 @@ graphics::ColorId Unit::get_color(Unit* unit)
 				POPAD
 			}
 			return_value = g_player_minimap_colors[return_value];
-		}
-		else {
+		} else {
 			return_value = graphics::BLACK; // will return 0/black if abnormal player
 		}
-	}
-	else {
+	} else {
 		return_value = graphics::BLACK; // will return 0/black if unit is nullptr
 	}
 	return return_value;
@@ -1161,8 +1013,7 @@ graphics::ColorId Unit::get_color(Unit* unit)
 
 //-------- Distances and terrain --------//
 
-u32 Unit::get_distance_to_target(Unit* target) const
-{
+u32 Unit::get_distance_to_target(Unit* target) const {
 	assert(this);
 	assert(target);
 	Unit* unit = (Unit*)this;
@@ -1170,28 +1021,23 @@ u32 Unit::get_distance_to_target(Unit* target) const
 		unit = this->subunit; // Current unit is a turret, so use it's base instead
 	}
 	s32 dx = unit->get_left() - target->get_right() - 1;
-	if (dx < 0)
-	{
+	if (dx < 0) {
 		dx = target->get_left() - unit->get_right() - 1;
-		if (dx < 0)
-		{
+		if (dx < 0) {
 			dx = 0;
 		}
 	}
 	s32 dy = unit->get_top() - target->get_bottom() - 1;
-	if (dy < 0)
-	{
+	if (dy < 0) {
 		dy = target->get_top() - unit->get_bottom() - 1;
-		if (dy < 0)
-		{
+		if (dy < 0) {
 			dy = 0;
 		}
 	}
 	return scbw::get_distance_fast(0, 0, dx, dy);
 }
 
-bool Unit::has_path_to_pos(u32 x, u32 y) const
-{
+bool Unit::has_path_to_pos(u32 x, u32 y) const {
 	const u32 Func_HasPathToPos = 0x0049CB60;
 	assert(this);
 	u32 result;
@@ -1207,8 +1053,7 @@ bool Unit::has_path_to_pos(u32 x, u32 y) const
 	return result != 0;
 }
 
-bool Unit::has_path_to_unit(Unit* target) const
-{
+bool Unit::has_path_to_unit(Unit* target) const {
 	const u32 Func_HasPathToTarget = 0x0049CBB0;
 	assert(this);
 	assert(target);
@@ -1224,8 +1069,7 @@ bool Unit::has_path_to_unit(Unit* target) const
 	return result != 0;
 }
 
-bool Unit::is_target_within_min_range(Unit* target, u32 range)
-{
+bool Unit::is_target_within_min_range(Unit* target, u32 range) {
 	const u32 Func_IsTargetWithinMinRange = 0x00430F10;
 	static b32 bPreResult;
 	__asm {
@@ -1242,8 +1086,7 @@ bool Unit::is_target_within_min_range(Unit* target, u32 range)
 
 //-------- DAT Requirements --------//
 
-s32 Unit::can_make_unit(u16 unit_id, u8 player) const
-{
+s32 Unit::can_make_unit(u16 unit_id, u8 player) const {
 	assert(this);
 	const u32 Func_CanMakeUnit = 0x0046E1C0;
 	s32 playerId_ = player;
@@ -1260,8 +1103,7 @@ s32 Unit::can_make_unit(u16 unit_id, u8 player) const
 	return result;
 }
 
-s32 Unit::can_use_tech(u8 techId, u8 player) const
-{
+s32 Unit::can_use_tech(u8 techId, u8 player) const {
 	assert(this);
 	const u32 Func_CanUseTech = 0x0046DD80;
 	s32 playerId_ = player;
@@ -1283,15 +1125,13 @@ s32 Unit::can_use_tech(u8 techId, u8 player) const
 
 //-------- Utility methods --------//
 
-bool Unit::can_attack_target(Unit* target, bool check_visibility) const
-{
+bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 	assert(this);
 	assert(target);
 	const u32 Func_CanUnitAttackTarget = 0x00476730;
 	u32 _checkVisibility = check_visibility ? 1 : 0;
 	static u32 result;
-	__asm
-	{
+	__asm {
 		PUSHAD
 		PUSH _checkVisibility
 		MOV EBX, target
@@ -1305,13 +1145,11 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const
 }
 
 extern const u32 Func_FireUnitWeapon = 0x00479C90;
-void Unit::fireWeapon(u8 weapon_id) const
-{
+void Unit::fireWeapon(u8 weapon_id) const {
 	assert(this);
 	static u32 weaponId_;
 	weaponId_ = weapon_id;
-	__asm
-	{
+	__asm {
 		PUSHAD
 		PUSH weaponId_
 		MOV ESI, this
@@ -1320,65 +1158,51 @@ void Unit::fireWeapon(u8 weapon_id) const
 	}
 }
 
-Unit* Unit::get_unit_from_index(u16 index)
-{
-	if (globals.extended_unit_table == 1)
-	{
-		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/)
-		{
+Unit* Unit::get_unit_from_index(u16 index) {
+	if (globals.extended_unit_table == 1) {
+		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/) {
 			return (Unit*)&new_unit_table.units[index - 1];
 		}
 		return nullptr;
 	}
-	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
-	{
+	if (1 <= index && index <= UNIT_ARRAY_LENGTH) {
 		return &g_unit_table[index - 1];
 	}
 	return nullptr;
 }
 
-u16 Unit::get_unit_index() const
-{
+u16 Unit::get_unit_index() const {
 	assert(this);
-	if (globals.extended_unit_table == 1)
-	{
+	if (globals.extended_unit_table == 1) {
 		return this - (Unit*)&new_unit_table.units[0] + 1;
 	}
 	return this - g_unit_table + 1;
 }
 
-u8 Unit::get_last_owner_id() const
-{
+u8 Unit::get_last_owner_id() const {
 	assert(this);
 	assert(this->sprite);
-	if (this->player == 11) // The owner has left the game
-	{
+	if (this->player == 11) { // The owner has left the game
 		return this->sprite->player;
-	}
-	else
-	{
+	} else {
 		return this->player;
 	}
 }
 
-Unit* Unit::get_loaded_unit(s32 index)
-{
+Unit* Unit::get_loaded_unit(s32 index) {
 	return hooks::get_loaded_unit_from_index(this, index);
 }
 
 // Logically equivalent to function @ 0x004E6C90
-Unit* Unit::get_first_loaded_unit()
-{
+Unit* Unit::get_first_loaded_unit() {
 	assert(this);
 	return hooks::get_first_loaded_unit(this);
 }
 
 // Logically equivalent to function @ 0x004E7110
-bool Unit::has_loaded_unit()
-{
+bool Unit::has_loaded_unit() {
 	assert(this);
-	for (s32 i = 0; i < 8; ++i)
-	{
+	for (s32 i = 0; i < 8; ++i) {
 		if (!get_loaded_unit(i))
 		{
 			return true;
@@ -1387,18 +1211,15 @@ bool Unit::has_loaded_unit()
 	return false;
 }
 
-namespace
-{
+namespace {
 	typedef u32(__stdcall* GiveUnitToPlayerFunc)(Unit* unit, u32 player);
 	GiveUnitToPlayerFunc const give_unit_to_player = (GiveUnitToPlayerFunc)0x004C8040;
 }
 
-bool Unit::give_to(u8 player)
-{
+bool Unit::give_to(u8 player) {
 	assert(this);
 	assert(player < 12);
-	if (give_unit_to_player(this, player) != 0)
-	{
+	if (give_unit_to_player(this, player) != 0) {
 		if ((this->id == UnitId::ZergNydusCesiant || !(units_dat::base_property[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
 			&& this->id != UnitId::ZergLarva)
@@ -1413,28 +1234,24 @@ bool Unit::give_to(u8 player)
 }
 
 // Identical to function @ 00475A50
-bool Unit::is_dead() const
-{
+bool Unit::is_dead() const {
 	assert(this);
 	return (!this->sprite) || (this->main_order_id == OrderId::Die);
 }
 
 // Probably equivalent to function @ 0047B910
-bool Unit::is_target_enemy(Unit* target) const
-{
+bool Unit::is_target_enemy(Unit* target) const {
 	assert(this);
 	return scbw::is_unit_enemy(this->player, target);
 }
 
-bool Unit::is_visible_to(u8 player) const
-{
+bool Unit::is_visible_to(u8 player) const {
 	assert(this);
 	return this->detection_status & (1 << player) && this->sprite && this->sprite->visibility_status & (1 << player);
 }
 
 const u32 Func_UpdateSpeed = 0x00454310;
-void Unit::update_speed()
-{
+void Unit::update_speed() {
 	assert(this);
 
 	__asm {
@@ -1445,15 +1262,12 @@ void Unit::update_speed()
 	}
 }
 
-u32 Unit::get_supply_provided() // overwrites previous supply provided
-{
+u32 Unit::get_supply_provided() { // overwrites previous supply provided
 	UnitExt* unitExt = get_unit_ext(this);
-	if (unitExt->values[ValueSupplyProvidedSet])
-	{
+	if (unitExt->values[ValueSupplyProvidedSet]) {
 		if (unitExt->values[ValueSupplyProvidedId] == id) {
 			return unitExt->values[ValueSupplyProvided];
-		}
-		else {
+		} else {
 			raceSupply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
 			raceSupply[RaceId::Terran].provided[player] += units_dat::supply_provided[unitExt->values[ValueSupplyProvidedId]];
 			unitExt->values[ValueSupplyProvidedSet] = 0;
@@ -1463,8 +1277,7 @@ u32 Unit::get_supply_provided() // overwrites previous supply provided
 	}
 
 	u32 supply = units_dat::supply_provided[id];
-	if (scbw::is_zerg_egg_new(this, false, false))
-	{
+	if (scbw::is_zerg_egg_new(this, false, false)) {
 		if (build_queue[build_queue_slot % 5] == UnitId::ZergIroleth)
 		{
 			supply = units_dat::supply_provided[UnitId::ZergOvileth];
@@ -1481,8 +1294,7 @@ u32 Unit::get_supply_provided() // overwrites previous supply provided
 	return supply;
 }
 
-void Unit::set_supply_provided(u8 amount) // overwrites previous supply provided
-{
+void Unit::set_supply_provided(u8 amount) { // overwrites previous supply provided
 	UnitExt* unitExt = get_unit_ext(this);
 	raceSupply[RaceId::Terran].provided[player] -= get_supply_provided();
 	raceSupply[RaceId::Terran].provided[player] += amount;
@@ -1491,8 +1303,7 @@ void Unit::set_supply_provided(u8 amount) // overwrites previous supply provided
 	unitExt->values[ValueSupplyProvided] = amount;
 }
 
-void Unit::reset_supply_provided() // overwrites previous supply provided
-{
+void Unit::reset_supply_provided() { // overwrites previous supply provided
 	UnitExt* unitExt = get_unit_ext(this);
 	set_supply_provided(units_dat::supply_provided[id]);
 	unitExt->values[ValueSupplyProvidedSet] = 0;
@@ -1500,8 +1311,7 @@ void Unit::reset_supply_provided() // overwrites previous supply provided
 	unitExt->values[ValueSupplyProvided] = 0;
 }
 
-bool Unit::is_attempting_protoss_build()
-{
+bool Unit::is_attempting_protoss_build() {
 	assert(this);
 	return this->main_order_id == OrderId::BuildProtoss1
 		&& this->status & UnitStatus::GroundedBuilding
@@ -1509,8 +1319,7 @@ bool Unit::is_attempting_protoss_build()
 		&& !(this->order_target.unit->status & UnitStatus::Completed);
 }
 
-bool Unit::is_constructing_addon()
-{
+bool Unit::is_constructing_addon() {
 	assert(this);
 	return this->secondary_order_id == OrderId::BuildAddon
 		&& this->status & UnitStatus::GroundedBuilding
@@ -1518,8 +1327,7 @@ bool Unit::is_constructing_addon()
 		&& !(this->current_build_unit->status & UnitStatus::Completed);
 }
 
-u8 Unit::get_hangar_train_count()
-{
+u8 Unit::get_hangar_train_count() {
 	assert(this);
 	const u32 Func_getHangarTrainCount = 0x00465270;
 	static u8 result = 0;
@@ -1533,8 +1341,7 @@ u8 Unit::get_hangar_train_count()
 	return result;
 }
 
-u8 Unit::get_max_hangar_space()
-{
+u8 Unit::get_max_hangar_space() {
 	assert(this);
 	const u32 Func_getMaxHangarSpace = 0x004653D0;
 	static u8 result = 0;
@@ -1548,8 +1355,7 @@ u8 Unit::get_max_hangar_space()
 	return result;
 }
 
-bool Unit::is_reaver()
-{
+bool Unit::is_reaver() {
 	assert(this);
 	const u32 Func_unitIsReaver = 0x00401490;
 	static s32 result;
@@ -1563,8 +1369,7 @@ bool Unit::is_reaver()
 	return (bool)result;
 }
 
-bool Unit::is_carrier()
-{
+bool Unit::is_carrier() {
 	assert(this);
 	const u32 Func_unitIsCarrier = 0x00401470;
 	static s32 result;
@@ -1578,8 +1383,7 @@ bool Unit::is_carrier()
 	return (bool)result;
 }
 
-bool Unit::unit_is_training_or_morphing()
-{
+bool Unit::unit_is_training_or_morphing() {
 	assert(this);
 	const u32 Func_unitIsTrainingOrMorphing = 0x00401500;
 	static u32 result;
@@ -1593,30 +1397,22 @@ bool Unit::unit_is_training_or_morphing()
 	return (bool)result;
 }
 
-bool Unit::is_queue_slot_active(int slot)
-{
+bool Unit::is_queue_slot_active(int slot) {
 	assert(this);
 	return this->build_queue[(slot + (unsigned __int8)this->build_queue_slot) % 5] != UnitId::None;
 }
 
-u8 Unit::get_right_click_action_order()
-{
+u8 Unit::get_right_click_action_order() {
 	u8 result;
-	if (this->id == UnitId::ZergLakizilisk && this->status & UnitStatus::Burrowed)
-	{
+	if (this->id == UnitId::ZergLakizilisk && this->status & UnitStatus::Burrowed) {
 		result = RightClickActions::NoMove_NormalAttack;
-	}
-	else
-	{
+	} else {
 		u8 temp_result = units_dat::right_click_action[this->id];
 		if (temp_result == RightClickActions::NoCommand_AutoAttack &&
 			this->status & UnitStatus::GroundedBuilding &&
-			this->is_factory())
-		{
+			this->is_factory()) {
 			result = RightClickActions::NormalMove_NoAttack;
-		}
-		else
-		{
+		} else {
 			result = temp_result;
 		}
 	}

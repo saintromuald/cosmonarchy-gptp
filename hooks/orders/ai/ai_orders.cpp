@@ -22,17 +22,18 @@ namespace hooks
 				unit->unit_ai->building_ai.town->in_battle = true;
 			}
 			if (main_target_reactions && attacker) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Worker // cancel structure code
+				// Cancel structure code
+				if (!(units_dat::base_property[unit->id] & UnitProperty::Worker) 
 					&& !unit->main_order_id // Original function call checks if unit has a sprite??? 00475A50
 					&& !(unit->status & UnitStatus::Completed)) {
-					s32 quart_total_hp = unit->get_total_hp_plus_shields() / 16; // Used to be 4 -Veeq7
-					if (unit->get_current_life_ingame() < quart_total_hp) {
-						helper::ai_cancel_structure(unit); // originally unused variable v8
+					if (unit->get_current_life_ingame() < unit->get_total_hp_plus_shields() / 16) { // Used to be divided by 4 -Veeq7
+						helper::ai_cancel_structure(unit);
 						return;
 					}
 				}
 			}
 		}
+
 		Unit* target = helper::ai_get_actual_target(unit, attacker);
 		if (target->status & UnitStatus::InBuilding) {
 			target = target->connected_unit;
@@ -121,101 +122,114 @@ namespace hooks
 			unit_region->flags |= 0x20u;
 			if (unit->status & UnitStatus::Completed) {
 				u32 unit_order_id = unit->main_order_id; // Keeping a copy of the order id, since some of the calls later could probably change it -Veeq7
-				if (unit_order_id != OrderId::CompletingArchonSummon && unit_order_id != OrderId::ResetCollision1 && unit_order_id != OrderId::ConstructingBuilding) {
-					if (main_target_reactions || !scbw::order_is_spell(unit_order_id)) {
-						if (unit->id || unit_order_id != OrderId::EnterTransport) {
-							bool is_unbreakable = helper::unit_is_performing_unbreakable_code(unit);
-							if (is_unbreakable || !helper::ai_cast_spell_behavior(unit, main_target_reactions)) {
-								if (unit_order_id != OrderId::RechargeShields1 && unit_order_id != OrderId::Move) {
-									if (main_target_reactions) {
-										if (unit->id == UnitId::ProtossSolarion
-											&& unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count <= 2
-											&& helper::ai_return_to_nearest_base_forced(unit)) {
-											return;
-										}
+				if (unit_order_id == OrderId::CompletingArchonSummon ||
+					unit_order_id == OrderId::ResetCollision1 ||
+					unit_order_id == OrderId::ConstructingBuilding) {
+					return;
+				}
 
-										if ((!target || !(target->status & UnitStatus::Reacts))
-											&& !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
-											return;
-										}
+				if (!main_target_reactions && scbw::order_is_spell(unit_order_id)) {
+					return;
+				}
 
-										// Attempt to return to base when below an HP threshold
-										u32 current = unit->get_current_life_ingame();
-										u32 total = unit->get_total_hp_plus_shields();
+				if (unit_order_id == OrderId::EnterTransport) {
+					return;
+				}
 
-										if (current <= total * 3 / 4
-											&& scbw::ai_unit_id_can_flee_three_quarters(unit->id)
-											&& helper::ai_return_to_nearest_base_forced(unit)) {
-											return;
-										}
+				bool is_unbreakable = helper::unit_is_performing_unbreakable_code(unit);
+				if (!is_unbreakable && helper::ai_cast_spell_behavior(unit, main_target_reactions)) {
+					return;
+				}
+				
+				if (unit_order_id == OrderId::RechargeShields1 ||
+					unit_order_id == OrderId::Move) {
+					return;
+				}
 
-										if (current <= total * 2 / 3
-											&& scbw::ai_unit_id_can_flee_two_thirds(unit->id)
-											&& helper::ai_return_to_nearest_base_forced(unit)) {
-											return;
-										}
+				if (main_target_reactions) {
+					if (unit->id == UnitId::ProtossSolarion
+						&& unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count <= 2
+						&& helper::ai_return_to_nearest_base_forced(unit)) {
+						return;
+					}
 
-										if (unit->id == UnitId::ZergLakizilisk
-											&& !(unit->status & UnitStatus::Burrowed)
-											&& unit_order_id == OrderId::Burrow
-											&& unit_order_id == OrderId::Unburrow) {
-											if (helper::ai_flee(unit, target)) {
-												return;
-											}
-										}
+					if ((!target || !(target->status & UnitStatus::Reacts))
+						&& !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
+						return;
+					}
 
-										if (!is_unbreakable
-											&& unit->status & UnitStatus::Reacts
-											&& !helper::unit_has_ground_path(unit, target->position.x, target->position.y)
-											&& helper::ai_flee(unit, target)) {
-											return;
-										}
-									}
+					// Attempt to return to base when below an HP threshold
+					u32 current = unit->get_current_life_ingame();
+					u32 total = unit->get_total_hp_plus_shields();
 
-									if (unit->order_target.unit == target) {
-										return;
-									}
+					if (current <= total * 3 / 4
+						&& scbw::ai_unit_id_can_flee_three_quarters(unit->id)
+						&& helper::ai_return_to_nearest_base_forced(unit)) {
+						return;
+					}
 
-									// Flee with workers, unless they have to defend
-									if (units_dat::base_property[unit->id] & UnitProperty::Worker
-										&& !(units_dat::base_property[target->id] & UnitProperty::Worker)
-										&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
-										&& !helper::ai_has_no_defense_build(unit->id)) {
-										if (main_target_reactions) {
-											helper::ai_flee(unit, target);
-										}
-										return;
-									}
+					if (current <= total * 2 / 3
+						&& scbw::ai_unit_id_can_flee_two_thirds(unit->id)
+						&& helper::ai_return_to_nearest_base_forced(unit)) {
+						return;
+					}
 
-									if (main_target_reactions && unit->unit_ai) {
-										if (helper::unit_can_see_cloaked_target(target, unit)) {
-											helper::ai_respond_to_cloaked_threat(unit, target);
-										}
-									}
-									if (!is_unbreakable) {
-										if (helper::unit_can_attack_target(target, unit, 1)) {
-											unit->auto_target_unit = target;
-											if (unit->subunit->is_subunit()) {
-												unit->subunit->auto_target_unit = target;
-											}
-											helper::ai_update_attack_target(unit, 0, 1, 0);
-										} else if (unit->unit_ai) {
-											Point16 flee_pos = {};
-											if (unit_order_id != OrderId::AIPatrol || (flee_pos = helper::ai_prepare_to_flee(target, unit)) == unit->position) {
-												if (main_target_reactions) {
-													if (unit->id != UnitId::TerranCleric) {
-														if (!unit->order_target.unit || !helper::unit_can_attack_target(unit->order_target.unit, unit->order_target.unit, 1)) {
-															helper::ai_flee(unit, target);
-														}
-													}
-												}
-											} else {
-												helper::order_interrupt(unit, 0, flee_pos.x, flee_pos.y, OrderId::Move);
-											}
-										}
+					if (unit->id == UnitId::ZergLakizilisk
+						&& !(unit->status & UnitStatus::Burrowed)
+						&& unit_order_id == OrderId::Burrow
+						&& unit_order_id == OrderId::Unburrow) {
+						if (helper::ai_flee(unit, target)) {
+							return;
+						}
+					}
+
+					if (!is_unbreakable
+						&& unit->status & UnitStatus::Reacts
+						&& !helper::unit_has_ground_path(unit, target->position.x, target->position.y)
+						&& helper::ai_flee(unit, target)) {
+						return;
+					}
+				}
+
+				if (unit->order_target.unit == target) {
+					return;
+				}
+
+				// Flee with workers, unless they have to defend
+				if (units_dat::base_property[unit->id] & UnitProperty::Worker
+					&& !(units_dat::base_property[target->id] & UnitProperty::Worker)
+					&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
+					&& !helper::ai_has_no_defense_build(unit->id)) {
+					if (main_target_reactions) {
+						helper::ai_flee(unit, target);
+					}
+					return;
+				}
+
+				if (main_target_reactions && unit->unit_ai) {
+					if (helper::unit_can_see_cloaked_target(target, unit)) {
+						helper::ai_respond_to_cloaked_threat(unit, target);
+					}
+				}
+				if (!is_unbreakable) {
+					if (helper::unit_can_attack_target(target, unit, 1)) {
+						unit->auto_target_unit = target;
+						if (unit->subunit->is_subunit()) {
+							unit->subunit->auto_target_unit = target;
+						}
+						helper::ai_update_attack_target(unit, 0, 1, 0);
+					} else if (unit->unit_ai) {
+						Point16 flee_pos = {};
+						if (unit_order_id != OrderId::AIPatrol || (flee_pos = helper::ai_prepare_to_flee(target, unit)) == unit->position) {
+							if (main_target_reactions) {
+								if (unit->id != UnitId::TerranCleric) {
+									if (!unit->order_target.unit || !helper::unit_can_attack_target(unit->order_target.unit, unit->order_target.unit, 1)) {
+										helper::ai_flee(unit, target);
 									}
 								}
 							}
+						} else {
+							helper::order_interrupt(unit, 0, flee_pos.x, flee_pos.y, OrderId::Move);
 						}
 					}
 				}
