@@ -249,6 +249,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	// Value targeting larva and egg less
 	switch (target->id) {
 		case UnitId::ZergLarva:
+		case UnitId::ZergOcsalLarva:
 		case UnitId::ZergEgg: {
 			cost += 100;
 		} break;

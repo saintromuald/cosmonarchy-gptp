@@ -220,7 +220,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		{
 			return false;
 		}
-		if (context & Flags::NoLarva && target->id == UnitId::ZergLarva)
+		if (context & Flags::NoLarva && (target->id == UnitId::ZergLarva || target->id == UnitId::ZergOcsalLarva))
 		{
 			return false;
 		}

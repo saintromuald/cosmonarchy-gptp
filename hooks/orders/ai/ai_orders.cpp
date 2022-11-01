@@ -283,6 +283,7 @@ namespace hooks
 						if (!unit->is_subunit()
 							&& unit->id != UnitId::TerranNuclearMissile
 							&& unit->id != UnitId::ZergLarva
+							&& unit->id != UnitId::ZergOcsalLarva
 							&& !(units_dat::base_property[unit->id] & UnitProperty::Worker)
 							&& !(unit->sprite->flags & SpriteFlags::Hidden)
 							&& !helper::is_threat(0, unit)) {

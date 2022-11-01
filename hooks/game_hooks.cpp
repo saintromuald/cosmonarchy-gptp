@@ -1006,7 +1006,7 @@ namespace hooks {
 					for (u32 i = 0; i < units.count; i++) {
 						// Apply Lazarus Agent
 						Unit* target = units.units[i];
-						if (target->id == UnitId::ZergLarva || target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon
+						if (target->id == UnitId::ZergLarva || target->id == UnitId::ZergOcsalLarva || target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon
 						||  target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward) {
 							continue;
 						}

@@ -49,6 +49,7 @@ namespace hooks
 					}
 					else if (target->id == UnitId::TerranSpiderMine
 					||		 target->id == UnitId::ZergLarva
+					||		 target->id == UnitId::ZergOcsalLarva
 					||		 target->id == UnitId::ZergEgg
 					||		 target->id == UnitId::ZergCocoon
 					||		 target->id == UnitId::ProtossSteward

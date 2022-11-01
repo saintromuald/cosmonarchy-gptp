@@ -10,7 +10,7 @@ namespace hooks
 	static void select_larva_type(u32 buttonset) {
 		btnsact_select_larva();
 		helper::update_hud_info();
-		if (*g_active_portrait_unit && (*g_active_portrait_unit)->id == UnitId::ZergLarva) {
+		if (*g_active_portrait_unit && ((*g_active_portrait_unit)->id == UnitId::ZergLarva || (*g_active_portrait_unit)->id == UnitId::ZergOcsalLarva)) {
 			helper::BTNSACT_ChangeButtons(buttonset);
 		}
 	}

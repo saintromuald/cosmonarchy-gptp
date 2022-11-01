@@ -402,7 +402,7 @@ namespace scbw {
 	bool is_larval_egg(Unit* unit) {
 		if (unit->id == UnitId::ZergEgg) {
 			u8 origin = unit->create_origin;
-			if (origin == UnitId::ZergLarva) {
+			if (origin == UnitId::ZergLarva || origin == UnitId::ZergOcsalLarva) {
 				return true;
 			}
 		}
@@ -418,7 +418,7 @@ namespace scbw {
 		}
 		switch (id) {
 			case UnitId::ZergEgg: {
-				if (unit && !allow_larval_eggs && unit->create_origin == UnitId::ZergLarva) {
+				if (unit && !allow_larval_eggs && (unit->create_origin == UnitId::ZergLarva || unit->create_origin == UnitId::ZergOcsalLarva)) {
 					return false;
 				}
 				return true;
@@ -428,7 +428,7 @@ namespace scbw {
 			}
 		}
 
-		if (allow_larvae && id == UnitId::ZergLarva) {
+		if (allow_larvae && (id == UnitId::ZergLarva || id == UnitId::ZergOcsalLarva)) {
 			return true;
 		}
 		return false;
@@ -440,7 +440,7 @@ namespace scbw {
 				return true; 
 			}
 		}
-		if (id == UnitId::ZergLarva && allow_larvae) {
+		if ((id == UnitId::ZergLarva || id == UnitId::ZergOcsalLarva) && allow_larvae) {
 			return true;
 		}
 		if (id == UnitId::ZergEgg && allow_normal_eggs) {
@@ -519,7 +519,7 @@ namespace scbw {
 		if (id == UnitId::ProtossCantavis && allow_high_templar) {
 			return true;
 		}
-		if (id == UnitId::ZergLarva && allow_larvae) {
+		if ((id == UnitId::ZergLarva || id == UnitId::ZergOcsalLarva) && allow_larvae) {
 			return true;
 		}
 		return false;
@@ -1966,10 +1966,17 @@ namespace scbw {
 		// Spread initial creep
 		scbw::spawn_custom_creep(unit);
 
+
 		// Remove connected larva
+		u16 larva_id = UnitId::ZergLarva;
+		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergSibraelosk)
+		{
+			larva_id = UnitId::ZergOcsalLarva;
+		}
+
 		EntryArray larvae = {};
 		unit_search_radial(&larvae, unit->position, 4 * 32);
-		unit_search_filter(&larvae, unit, 0, {UnitId::ZergLarva});
+		unit_search_filter(&larvae, unit, 0, {larva_id});
 		for (u32 i = 0; i < larvae.count; ++i) {
 			Unit* larva = larvae.units[i];
 			if (larva->connected_unit == unit) {
@@ -2549,5 +2556,11 @@ namespace scbw {
 			}
 		}
 		return false;
+	}
+
+	bool unit_id_spawns_ocsal_larva(u32 unit_id)
+	{
+		return unit_id == UnitId::ZergCaphrolosk
+			|| unit_id == UnitId::ZergSibraelosk;
 	}
 }

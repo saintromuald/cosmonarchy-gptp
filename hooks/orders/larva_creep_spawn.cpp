@@ -13,7 +13,11 @@ namespace hooks
 		// look for a location to spawn a larva at
 		if (helper::get_larva_spawn_pos(main_building, &coords))
 		{
-			Unit* unit_created = helper::create_unit(UnitId::ZergLarva, coords.x, coords.y, main_building->player);
+			u32 larva_id = UnitId::ZergLarva;
+			if (scbw::unit_id_spawns_ocsal_larva(main_building->id)) {
+				larva_id = UnitId::ZergOcsalLarva;
+			}
+			Unit* unit_created = helper::create_unit(larva_id, coords.x, coords.y, main_building->player);
 			if (unit_created)
 			{
 				helper::update_unit_stats_and_finish_building(unit_created);
@@ -34,32 +38,35 @@ namespace hooks
 	// filter for larva in internal game searches, use the limit of 3 larvas
 	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building)
 	{
-		// While bReturnValue == false, the calling function keep calling, so it return true only when max amount of larvas was counted,
+		// While return_value == false, the calling function keep calling, so it return true only when max amount of larvas was counted,
 		// since the counting itself is made with LARVA_COUNTER here and not in the calling function.
-		bool bReturnValue;
-		if (unit->id == UnitId::ZergLarva)
+		bool return_value;
+		u32 larva_id = UnitId::ZergLarva;
+		if (scbw::unit_id_spawns_ocsal_larva(main_building->id)) {
+			larva_id = UnitId::ZergOcsalLarva;
+		}
+		if (unit->id == larva_id)
 		{
 			if (unit->sprite->flags & SpriteFlags::Hidden)
 			{
-				bReturnValue = false;
+				return_value = false;
+			}
+			else if (unit->connected_unit != main_building)
+			{
+				return_value = false;
 			}
 			else
-				if (unit->connected_unit != main_building)
-				{
-					bReturnValue = false;
-				}
-				else
-				{
-					(*g_larva_counter)++;
-					bReturnValue = (*g_larva_counter > 3);
-				}
+			{
+				(*g_larva_counter)++;
+				return_value = (*g_larva_counter > 3);
+			}
 		}
 		else
 		{
-			bReturnValue = false;
+			return_value = false;
 		}
 
-		return bReturnValue;
+		return return_value;
 	}
 
 	void secondary_order_spawning_larva(Unit* unit)
@@ -124,7 +131,11 @@ namespace hooks
 					}
 					else
 					{
-						Unit* new_larva = helper::create_unit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->player);
+						u32 larva_id = UnitId::ZergLarva;
+						if (scbw::unit_id_spawns_ocsal_larva(unit->id)) {
+							larva_id = UnitId::ZergOcsalLarva;
+						}
+						Unit* new_larva = helper::create_unit(larva_id, coords_2.x, coords_2.y, unit->player);
 						if (new_larva)
 						{
 							// update various stats (set hp, set shield...) not finished on CreateUnit

@@ -240,7 +240,7 @@ namespace hooks
 				}
 			}
 		} else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneRidge && unit->id != UnitId::ResourceVespeneGeyser) ||
-				unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
+				unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
 			BuildingAi* ai = 0;
 			if (town && town->free_buildings) {
 				if (town->free_buildings <= (void*)0x100000) {
@@ -604,30 +604,31 @@ namespace hooks
 	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI) // 00434C90
 	{
 		helper::ai_remove_from_towns(unit);
-		UnitAi* unitAIVar = (UnitAi*)unit->unit_ai;
-		if (unitAIVar)
+		UnitAi* unit_ai_var = (UnitAi*)unit->unit_ai;
+		if (unit_ai_var)
 		{
 			u16 unit_id = unit->id;
 			u32 baseProperty = units_dat::base_property[unit_id];
 			AiTown* town = 0;
 			if (!unitAI)
 			{
-				if (unitAIVar->type == AiType::Building
+				if (unit_ai_var->type == AiType::Building
 					&& (baseProperty & UnitProperty::Building && unit_id != UnitId::ResourceVespeneGeyser
 					|| unit_id == UnitId::ZergLarva
+					|| unit_id == UnitId::ZergOcsalLarva
 					|| scbw::is_larval_egg(unit)
 					|| scbw::unit_id_is_zerg_supply(unit_id)))
 				{
-					BuildingAi* buildingAIVar = (BuildingAi*)unitAIVar;
+					BuildingAi* buildingAIVar = (BuildingAi*)unit_ai_var;
 					town = buildingAIVar->town;
 					if (town)
 					{
 						helper::delete_building_ai(buildingAIVar, &town->free_buildings);
 					}
 				}
-				else if (unitAIVar->type == AiType::Worker && baseProperty & UnitProperty::Worker)
+				else if (unit_ai_var->type == AiType::Worker && baseProperty & UnitProperty::Worker)
 				{
-					WorkerAi* workerAIVar = (WorkerAi*)unitAIVar;
+					WorkerAi* workerAIVar = (WorkerAi*)unit_ai_var;
 					town = workerAIVar->town;
 					if (town)
 					{

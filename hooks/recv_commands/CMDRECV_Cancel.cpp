@@ -64,6 +64,7 @@ namespace hooks
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->id != UnitId::ZergLarva
+			&&  unit->id != UnitId::ZergOcsalLarva
 			&&  unit->id != UnitId::ZergMutalisk
 			&&  unit->id != UnitId::ZergHydralisk
 			&&  unit->id != UnitId::ZergHachirosk

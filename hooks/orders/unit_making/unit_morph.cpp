@@ -91,6 +91,9 @@ namespace hooks
 				if (unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva) {
 					factory = unit->connected_unit;
 				}
+				if (unit->create_origin == UnitId::ZergOcsalLarva && unit->id != UnitId::ZergOcsalLarva) {
+					factory = unit->connected_unit;
+				}
 
 				helper::order_new_unit_to_rally(unit, factory);
 				if (unit2) {
@@ -157,13 +160,14 @@ namespace hooks
 					switch (unit->id)
 					{
 						case UnitId::ZergLarva:
+						case UnitId::ZergOcsalLarva:
 						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergCikralisk:
 						case UnitId::ZergProtathalor:
 						case UnitId::ZergAxitrilisk:
-					//	case UnitId::ZergMortothrokor:
+						case UnitId::ZergMortothrokor:
 						case UnitId::ZergHydralisk:
 						case UnitId::ZergIzirokor:
 						case UnitId::ZergKagralisk:
@@ -174,7 +178,7 @@ namespace hooks
 						case UnitId::ZergKonvilisk:
 						case UnitId::ZergVilgorokor:
 						case UnitId::ZergIsthrathaleth:
-					//	case UnitId::ZergElthrazalisk:
+						case UnitId::ZergElthrazalisk:
 						{
 							eggId = UnitId::ZergEgg;
 						} break;
@@ -227,6 +231,7 @@ namespace hooks
 					switch (origin)
 					{
 						case UnitId::ZergLarva:
+						case UnitId::ZergOcsalLarva:
 						{
 							animation = IscriptAnimation::Walking;
 						} break;
@@ -321,7 +326,7 @@ namespace hooks
 				{
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					if (unit->id == UnitId::ZergEgg && unit->create_origin == UnitId::ZergLarva) {
+					if (unit->id == UnitId::ZergEgg && (unit->create_origin == UnitId::ZergLarva || unit->create_origin == UnitId::ZergOcsalLarva)) {
 						helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					}
 				}
@@ -334,6 +339,7 @@ namespace hooks
 		switch (unit->id)
 		{
 			case UnitId::ZergLarva:
+			case UnitId::ZergOcsalLarva:
 			{
 				if (unit->can_make_unit(morph_unit_id, *g_active_nation_id) == 1)
 				{

@@ -805,9 +805,15 @@ namespace hooks
 			//}
 
 			// Remove connected larva
+			u16 larva_id = UnitId::ZergLarva;
+			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergSibraelosk)
+			{
+				larva_id = UnitId::ZergOcsalLarva;
+			}
+
 			EntryArray larvae = {};
 			unit_search_radial(&larvae, data.target->position, 4 * 32);
-			unit_search_filter(&larvae, data.target, 0, {UnitId::ZergLarva});
+			unit_search_filter(&larvae, data.target, 0, {larva_id});
 			for (u32 i = 0; i < larvae.count; ++i) {
 				Unit* larva = larvae.units[i];
 				if (larva->connected_unit == data.target) {

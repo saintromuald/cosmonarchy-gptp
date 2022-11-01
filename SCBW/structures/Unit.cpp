@@ -1218,7 +1218,8 @@ bool Unit::give_to(u8 player) {
 	if (give_unit_to_player(this, player) != 0) {
 		if ((this->id == UnitId::ZergNydusCesiant || !(units_dat::base_property[this->id] & UnitProperty::Building))
 			&& this->id != UnitId::ZergEgg
-			&& this->id != UnitId::ZergLarva)
+			&& this->id != UnitId::ZergLarva
+			&& this->id != UnitId::ZergOcsalLarva)
 		{
 			this->order_to_idle();
 		}

@@ -239,15 +239,15 @@ namespace hooks
 		s16 unitAIQueues;
 		s16 unit_id;
 
-		Unit* unitCopy = unit;
+		Unit* unit_copy = unit;
 		s32 nextBuildType = g_aiscript_controller[player].requests->type;
 		Unit* dummy = nullptr;
 		switch (nextBuildType)
 		{
 			case UnitId::ZergGeszithalor:
 			case UnitId::ZergVithrilisk:
-				unitCopy = helper::ai_get_mutalisk_for_morph(player);
-				if (!unitCopy)
+				unit_copy = helper::ai_get_mutalisk_for_morph(player);
+				if (!unit_copy)
 				{
 					helper::ai_reserve(player, 0);
 					helper::ai_pop_spending_request(player);
@@ -276,8 +276,8 @@ namespace hooks
 				helper::ai_pop_spending_request(player);
 				return 0;
 			case UnitId::ZergLakizilisk:
-				unitCopy = helper::AI_GetHydraliskForMorph(player);
-				if (!unitCopy)
+				unit_copy = helper::AI_GetHydraliskForMorph(player);
+				if (!unit_copy)
 				{
 					helper::ai_reserve(player, 0);
 					helper::ai_pop_spending_request(player);
@@ -286,7 +286,7 @@ namespace hooks
 				break;
 		}
 
-		if (!helper::is_unit_id_race_equal_to_unit_race(nextBuildType, unitCopy) || helper::create_unit_allowed(nextBuildType, unitCopy, player) != 1)
+		if (!helper::is_unit_id_race_equal_to_unit_race(nextBuildType, unit_copy) || helper::create_unit_allowed(nextBuildType, unit_copy, player) != 1)
 		{
 			if (*g_last_internal_error == 2
 			  || *g_last_internal_error == 23
@@ -337,50 +337,50 @@ namespace hooks
 			return 0;
 		}
 
-		if (unit == unitCopy)
+		if (unit == unit_copy)
 		{
 			requestedBuildId = helper::ai_get_request_build_type(player);
-			if (!helper::ai_train_unit(unitCopy, nextBuildType, requestedBuildId, g_aiscript_controller[player].requests->val))
+			if (!helper::ai_train_unit(unit_copy, nextBuildType, requestedBuildId, g_aiscript_controller[player].requests->val))
 			{
 				return 0;
 			}
 		}
 		else
 		{
-			if (!helper::has_money_can_make(unitCopy, nextBuildType))
+			if (!helper::has_money_can_make(unit_copy, nextBuildType))
 			{
 				return 0;
 			}
-			helper::remove_unit_ai(unitCopy, 0);
+			helper::remove_unit_ai(unit_copy, 0);
 			if (helper::ai_get_request_build_type(player) == 2)
 			{
 				/*
 				BuildingAi* unitAI = (BuildingAi*)g_aiscript_controller[player].requests->val;
 				mainTownTown = unitAI->town;
 				unitAIQueues = (s16)unitAI->trainQueueValues;
-				unitAI->parent = unitCopy;
+				unitAI->parent = unit_copy;
 				unitAI->region = mainTownTown;
 				unitAI->town = unitAIQueues;
-				unitCopy->pAI = unitAI;
+				unit_copy->pAI = unitAI;
 				*/
 			}
 			else
 			{
-				helper::add_military_ai((AiRegion*)g_aiscript_controller[player].requests->val, unitCopy, 1);
+				helper::add_military_ai((AiRegion*)g_aiscript_controller[player].requests->val, unit_copy, 1);
 			}
 		}
 
 		helper::ai_reserve(player, 1);
 		helper::ai_pop_spending_request(player);
-		unit_id = unitCopy->id;
-		if (unit_id == UnitId::ZergLarva || unit_id == UnitId::ZergMutalisk || unit_id == UnitId::ZergHydralisk)
+		unit_id = unit_copy->id;
+		if (scbw::is_conventional_unit_morph_source(unit_id))
 		{
-			helper::issue_order_targeting_nothing(unitCopy, OrderId::Morph1);
+			helper::issue_order_targeting_nothing(unit_copy, OrderId::Morph1);
 			return 1;
 		}
 		else
 		{
-			helper::set_secondary_order(unitCopy, OrderId::Train);
+			helper::set_secondary_order(unit_copy, OrderId::Train);
 			return 1;
 		}
 	}
