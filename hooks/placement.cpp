@@ -178,63 +178,29 @@ namespace hooks
 	}
 
 	// Hooked to port unit mover logic from aise to GPTP. -Pr0nogo
-	s32 start_building(Unit* builder) // 00467030
-	{
-		u16 building_id = builder->build_queue[(unsigned __int8)builder->build_queue_slot];
+	s32 start_building(Unit* builder) { // 00467030
+		u16 building_id = builder->build_queue[builder->build_queue_slot];
 		u32 player = builder->player;
 		g_ai_minerals_reserve[player] = units_dat::mineral_cost[building_id];
 		g_ai_vespene_reserve[player] = units_dat::vespene_cost[building_id];
 
 		// Originally had code checking for supplies.
-
-		if (g_game_minerals[player] < g_ai_minerals_reserve[player])
-		{
+		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
 			helper::display_error_message_id_with_sfx(player, 850, (s32)*console_index + 147); // Not enough minerals...mine more minerals.<0>
 			return 0;
 		}
-		if (g_game_vespene[player] < g_ai_vespene_reserve[player])
-		{
+		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
 			helper::display_error_message_id_with_sfx(player, 851, (s32)*console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
 			return 0;
 		}
-		if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0))
-		{
+		if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {
 			helper::play_worker_error_sound(builder, 856); // You can't build there.<0>
 			return 0;
-		}
-		else
-		{
-			player = 4 * (u8)builder->player;
-			*(int*)((char*)g_game_minerals + player) -= *(DWORD*)((char*)g_ai_minerals_reserve + player);
-			*(int*)((char*)g_game_vespene + player) -= *(DWORD*)((char*)g_ai_vespene_reserve + player);
-
-			Box32 rect = {};
-			rect.x = builder->order_target.pt.x;
-			rect.y = builder->order_target.pt.y;
-			rect.w = units_dat::unit_bounds[building_id].x;
-			rect.h = units_dat::unit_bounds[building_id].y;
-		//	scbw::printf("rect %i %i %i %i", rect.x, rect.y, rect.w, rect.h);
-			EntryArray units = {};
-			unit_search_rect(&units, rect);
-		//	scbw::printf("units found: %u", units.count);
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				if (unit == builder) {
-					continue;
-				}
-				if (unit->id == UnitId::TerranSpiderMine) {
-					unit->remove();
-					continue;
-				}
-
-				if (unit->status & UnitStatus::Burrowed) {
-					helper::unburrow(unit);
-				}
-				else if (unit->main_order_id == OrderId::Burrow) {
-					unit->order(OrderId::Unburrow, unit->position.x, unit->position.y, 0, UnitId::None, true);
-				}
-			}
-
+		} else {
+			player = builder->player;
+			g_game_minerals[player] -= g_ai_minerals_reserve[player];
+			g_game_vespene[player] -= g_ai_vespene_reserve[player];
+			scbw::prepare_building_area(builder->order_target.pt, building_id);
 			return 1;
 		}
 	}

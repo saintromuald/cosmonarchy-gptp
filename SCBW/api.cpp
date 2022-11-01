@@ -2560,9 +2560,37 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_id_spawns_ocsal_larva(u32 unit_id)
-	{
+	bool unit_id_spawns_ocsal_larva(u32 unit_id) {
 		return unit_id == UnitId::ZergCaphrolosk
 			|| unit_id == UnitId::ZergSibraelosk;
+	}
+
+	void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
+		Box32 rect = {};
+		rect.x = pos.x - units_dat::building_dimensions[unit_id].x / 2;
+		rect.y = pos.y - units_dat::building_dimensions[unit_id].y / 2;
+		rect.w = pos.x + units_dat::building_dimensions[unit_id].x / 2;
+		rect.h = pos.y + units_dat::building_dimensions[unit_id].y / 2;
+
+		EntryArray units = {};
+		unit_search_rect(&units, rect);
+		for (u32 i = 0; i < units.count; ++i) {
+			Unit* unit = units.units[i];
+			if (unit == builder) {
+				continue;
+			}
+
+			if (unit->id == UnitId::TerranPhalanxSiegeMode || unit->main_order_id == OrderId::SiegeMode) {
+				unit->order_to(OrderId::TankMode);
+			}
+
+			if (unit->status & UnitStatus::Burrowed || unit->main_order_id == OrderId::Burrow) {
+				helper::unburrow(unit);
+			}
+
+			if (unit->id == UnitId::TerranSpiderMine) {
+				unit->remove();
+			}
+		}
 	}
 }

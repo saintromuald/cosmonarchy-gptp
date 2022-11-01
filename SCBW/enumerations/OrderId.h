@@ -383,21 +383,21 @@ enum Enum {
 	Fatal                  = 0xBC, /**< Nothing.
 					* Default Requirements: Unused. */
 	None                   = 0xBD,
-
+	
 	// Cosmonarchy \\
-
+	
 	// Terran
 	PaladinSkyfall				= 12,   // Attack Tile              | Paladin missile barrage ability
 	TalosSalvage				= 13,   // Hover                    | Savant energy siphon ability			| unused
 	EnergyDecay					= 104,  // Guardian Aspect          | Savant anti-specialist ability		| unused
 	Observance					= 122,  // EMP Shockwave            | Science Vessel armor rend ability		| unused
 	CastThroughTheLookingGlass	= 189,
-
+	
 	// Protoss
 	WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern switch							| unused
 	KhaydarinEclipse			= 155,  // CTF COP 2                | Exemplar/Clarion switch				| unused
-
+	
 	// Zerg
 	BlissfulEmbrace				= 154,  // Idle CTF COP             | Gorgoleth energy drain ability		| unused
-	};
+};
 }

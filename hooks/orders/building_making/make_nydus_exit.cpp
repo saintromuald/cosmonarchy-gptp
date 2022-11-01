@@ -33,6 +33,7 @@ namespace hooks
 			helper::play_worker_error_sound(nydus_canal, 0x358); // "You can't build there"
 			nydus_canal->order_to_idle();
 		} else {
+			scbw::prepare_building_area(nydus_canal->order_target.pt, UnitId::ZergNydusCesiant);
 			Unit* nydus_exit = helper::create_unit(UnitId::ZergNydusCesiant, nydus_canal->order_target.pt.x, nydus_canal->order_target.pt.y, nydus_canal->player);
 			if (nydus_exit) {
 				helper::ai_training_overlord(nydus_exit, nydus_canal);
