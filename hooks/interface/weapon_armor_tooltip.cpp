@@ -463,8 +463,6 @@ namespace hooks
 			unit_ext->timers[TimerAdrenal], TimerType::Gptp);
 		add_status(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
 			captivating_claws_get_timer(unit), TimerType::Gptp);
-		add_status(statuses, "Swarming Omen Aura", unit_ext->values[ValueSwarmingOmenAbility], 1,
-			unit_ext->timers[TimerSwarmingOmen], TimerType::Gptp);
 		add_status(statuses, "Observance", unit_ext->values[ValueObservanceRend], 0,
 			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
 		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
@@ -486,7 +484,7 @@ namespace hooks
 		}
 
 		// Gptp Timer
-		// TODO: Add mineral and egg boost timers eventually (currently can't read tooltips from eggs nor mineral fields)
+		// TODO: Add egg boost timers eventually (currently can't read tooltips from eggs)
 		add_status(statuses, "Ensnaring Brood", -1, 1,
 			unit_ext->timers[TimerEnsnaringBrood], TimerType::Gptp);
 		add_status(statuses, "Kaiser Rampage", -1, 1,
@@ -526,17 +524,16 @@ namespace hooks
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
 
 		// Gptp Value - Gimmicked
+		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
+		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
 		add_status(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
-		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
-		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
-		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenStatus] > 0, 1);
-		add_status(statuses, "Protective Instincts", unit_ext->values[ValueProtectiveInstinctsStatus] > 0, 1);
-		add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
-		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 		add_status(statuses, "Kelvin Munitions", unit_ext->values[ValueKelvinMunitionsSlow] > 0, 1);
-		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
+		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
+		add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
+		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenPlayer] > 0, 1);
+		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 
 		if (unit_ext->units[UnitMindController])
 		{

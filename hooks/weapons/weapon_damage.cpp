@@ -641,7 +641,10 @@ namespace hooks
 					case WeaponId::ZoryusthalethMonstrousMaw:
 					{
 						// Zoryusthaleth - Swarming Omen
-						target_ext->values[ValueSwarmingOmenPlayer] = data.attacking_player_id + 1;
+						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player))
+						{
+							target_ext->values[ValueSwarmingOmenPlayer] = data.attacking_player_id + 1;
+						}
 					} break;
 					case WeaponId::KonviliskSowingSpines:
 					{

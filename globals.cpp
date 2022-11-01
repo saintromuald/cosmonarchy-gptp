@@ -1068,10 +1068,9 @@ namespace scbw
 		}
 
 		// Inherit Swarming Omen
-		if (parentExt->timers[TimerSwarmingOmen])
+		if (parentExt->values[ValueSwarmingOmenPlayer])
 		{
-			childExt->values[ValueSwarmingOmenStatus] = parentExt->values[ValueSwarmingOmenStatus];
-			childExt->timers[TimerSwarmingOmen] = parentExt->timers[TimerSwarmingOmen];
+			childExt->values[ValueSwarmingOmenPlayer] = parentExt->values[ValueSwarmingOmenPlayer];
 		}
 
 		// Inherit Kaiser Rampage

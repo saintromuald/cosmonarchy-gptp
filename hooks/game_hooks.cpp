@@ -2244,11 +2244,6 @@ namespace hooks {
 			unit->remove_overlay(ImageId::EnsnaringBroodOverlay);
 		}
 
-		// Remove Swarming Omen overlay
-		if (unit_ext->timers[TimerSwarmingOmen] == 1) {
-			// unit->remove_overlay();
-		}
-
 		// Crucible Stacks Clear
 		{
 			auto& crucibles = unit_ext->unit_vectors[UnitVectorCrucibles];

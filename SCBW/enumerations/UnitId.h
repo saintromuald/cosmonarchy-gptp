@@ -215,6 +215,7 @@ namespace UnitId
 		ZergOztukrokor										= 325,
 		ZergKethrostalor									= 326,
 		ZergRakzilisk										= 327,
+		ZergOcsalLarva										= 353,
 
 	// Zerg-Building
 		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
