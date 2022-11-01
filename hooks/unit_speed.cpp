@@ -52,23 +52,6 @@ namespace hooks
 			speed *= 1.5;
 		}
 
-		/*
-		// Old Swarming Omen code
-		if (unit_ext->values[ValueSwarmingOmenPlayer]) {
-			u32 player = unit_ext->values[ValueSwarmingOmenPlayer] - 1;
-			EntryArray targets = {};
-			unit_search_radial(&targets, unit->position, 10 * 32);
-			for (u32 i = 0; i < targets.count; ++i) {
-				Unit* target = targets.units[i];
-				if (!scbw::is_allied_to(player, target->player)) {
-					continue;
-				}
-				UnitExt* target_ext = get_unit_ext(target);
-				target_ext->timers[TimerSwarmingOmenSearch] = 24;
-			}
-		}
-		*/
-
 		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			bool accelerate = false;
