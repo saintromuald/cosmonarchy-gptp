@@ -525,10 +525,10 @@ namespace hooks
 		while (Unit* unit = helper::get_next_commanded_unit()) {
 			u8 player = unit->player;
 			g_ai_minerals_reserve[player] = units_dat::mineral_cost[unit_id];
-			g_ai_gas_reserve[player] = units_dat::gas_cost[unit_id];
+			g_ai_vespene_reserve[player] = units_dat::vespene_cost[unit_id];
 			if (helper::has_supplies_for_unit(player, unit_id, 1)) {
 				if (g_game_minerals[player] >= g_ai_minerals_reserve[player]) {
-					if (g_game_vespene[player] >= g_ai_gas_reserve[player]) {
+					if (g_game_vespene[player] >= g_ai_vespene_reserve[player]) {
 						helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
 
 						// For MBS this would essentially require a custom game command, for now we just have to disable it :( -Veeq7

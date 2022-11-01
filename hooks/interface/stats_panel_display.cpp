@@ -645,7 +645,7 @@ namespace hooks
 	// 004594B0 0045952F - Hooked to add time costs to tooltip info. -Veeq7
 	void set_tooltip_info_unit(u16 unit_id) {
 		u32 mineral_cost = units_dat::mineral_cost[unit_id];
-		u32 gas_cost = units_dat::gas_cost[unit_id];
+		u32 vespene_cost = units_dat::vespene_cost[unit_id];
 		u32 time_cost = units_dat::time_cost[unit_id] / 24;
 
 		u32 race = Unit::get_race(unit_id);
@@ -654,7 +654,7 @@ namespace hooks
 			supply = 2;
 		}
 
-		set_tooltip_info(mineral_cost, gas_cost, 0, 0, 0,
+		set_tooltip_info(mineral_cost, vespene_cost, 0, 0, 0,
 			race == RaceId::Protoss ? supply : 0,
 			race == RaceId::Terran ? supply : 0,
 			race == RaceId::Zerg ? supply : 0);
@@ -676,9 +676,9 @@ namespace hooks
 	}
 
 	// 00458800 - Hooked to add time costs to tooltip info. -Veeq7
-	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply) {
+	void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply) {
 		*tooltip_ore_cost = mineral_cost;	
-		*tooltip_gas_cost = gas_cost;
+		*tooltip_gas_cost = vespene_cost;
 		*tooltip_energy_cost = p_energy + t_energy + z_energy;
 		*tooltip_unused_cost = 0;
 		*tooltip_time_cost = 0;

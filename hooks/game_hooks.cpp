@@ -711,7 +711,7 @@ namespace hooks {
 								resources->minerals[unit->player] += 1;
 							}
 							
-							targetExt->salvage_gas += (f32)units_dat::gas_cost[target->id] / time;
+							targetExt->salvage_gas += (f32)units_dat::vespene_cost[target->id] / time;
 							while (targetExt->salvage_gas > 1) {
 								targetExt->salvage_gas -= 1;
 								resources->gas[unit->player] += 1;

@@ -75,17 +75,17 @@ namespace hooks
 							u16 target_unit_queue = worker->build_queue[worker->build_queue_slot % 5];
 							s32 target_unit_queue2 = target_unit_queue;
 							s32 target_queue_mineral_cost = units_dat::mineral_cost[target_unit_queue2];
-							s32 target_queue_gas_cost = units_dat::gas_cost[target_unit_queue2];
+							s32 target_queue_gas_cost = units_dat::vespene_cost[target_unit_queue2];
 							g_ai_minerals_reserve[player_var] = target_queue_mineral_cost;
-							g_ai_gas_reserve[player_var] = target_queue_gas_cost;
+							g_ai_vespene_reserve[player_var] = target_queue_gas_cost;
 							if (helper::has_supplies_for_unit(target_unit_queue, player, 1))
 							{
 								if (g_game_minerals[(u8)player] >= (s32)g_ai_minerals_reserve[(u8)player])
 								{
-									if (g_game_vespene[(u8)player] >= (s32)g_ai_gas_reserve[(u8)player])
+									if (g_game_vespene[(u8)player] >= (s32)g_ai_vespene_reserve[(u8)player])
 									{
 										*minerals -= g_ai_minerals_reserve[player];
-										*gas -= g_ai_gas_reserve[player];
+										*gas -= g_ai_vespene_reserve[player];
 									}
 									else
 									{
@@ -513,7 +513,7 @@ namespace hooks
 					witness_request_quantity = 2 - witness_count;
 					do
 					{
-						witness_gas_cost = units_dat::gas_cost[UnitId::ProtossWitness];
+						witness_gas_cost = units_dat::vespene_cost[UnitId::ProtossWitness];
 						witness_supply_cost = units_dat::supply_required[UnitId::ProtossWitness];
 						if (units_dat::base_property[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
 						{
@@ -540,7 +540,7 @@ namespace hooks
 					while (1)
 					{
 						g_aiscript_controller[player_id].ai_flags.flag_0x40 = true;
-						transport_1_gas_cost = units_dat::gas_cost[transport_unit_id_1];
+						transport_1_gas_cost = units_dat::vespene_cost[transport_unit_id_1];
 						transport_supply_cost = units_dat::supply_required[transport_unit_id_1];
 						if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
 						{

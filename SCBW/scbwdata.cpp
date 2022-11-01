@@ -127,7 +127,7 @@ namespace units_dat {
 	SCBW_DATA_DEF(Box16*,		unit_bounds,			unitsDat[38].address);	// 006617C8
 	SCBW_DATA_DEF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
 	SCBW_DATA_DEF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
-	SCBW_DATA_DEF(u16*,			gas_cost,				unitsDat[41].address);	// 0065FD00
+	SCBW_DATA_DEF(u16*,			vespene_cost,				unitsDat[41].address);	// 0065FD00
 	SCBW_DATA_DEF(u16*,			time_cost,				unitsDat[42].address);	// 00660428
 	SCBW_DATA_DEF(u16*,			requirement_offsets,	unitsDat[43].address);	// 00660A70 //"Restriction Address" according to EUDDB
 	SCBW_DATA_DEF(GroupFlag*,	group_flags,			unitsDat[44].address);	// 006637A0
@@ -217,7 +217,7 @@ namespace techdata_dat {
 	SCBW_DATA(const DatLoad*, techdataDat, 0x005137D8);
 	
 	SCBW_DATA_DEF(u16*, mineral_cost,			techdataDat[0].address);	// 00656248
-	SCBW_DATA_DEF(u16*, gas_cost,				techdataDat[1].address);	// 006561F0
+	SCBW_DATA_DEF(u16*, vespene_cost,				techdataDat[1].address);	// 006561F0
 	SCBW_DATA_DEF(u16*, time_cost,				techdataDat[2].address);	// 006563D8
 	SCBW_DATA_DEF(u16*, energy_cost,			techdataDat[3].address);	// 00656380
 //	SCBW_DATA_DEF(u16*, ???,					techdataDat[4].address);	// 00656198

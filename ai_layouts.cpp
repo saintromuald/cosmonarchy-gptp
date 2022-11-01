@@ -388,7 +388,7 @@ static u32 get_unit_class(u32 unit_id) {
 } 
 
 static u32 get_unit_cost(u32 unit_id) {
-	return units_dat::mineral_cost[unit_id] + units_dat::gas_cost[unit_id];
+	return units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
 }
 
 static s32 compare_base_layout(const void* a, const void* b) {

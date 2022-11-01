@@ -1887,13 +1887,15 @@ namespace scbw {
 			|| unit_id == UnitId::TerranSupplyDepot
 			|| unit_id == UnitId::TerranWatchdog
 			|| unit_id == UnitId::TerranBunker
+			|| unit_id == UnitId::TerranSentinel
 			|| unit_id == UnitId::ProtossPylon
 			|| unit_id == UnitId::ProtossWarden
-			|| unit_id == UnitId::ProtossShieldBattery
+			|| unit_id == UnitId::ProtossMatrix
 			|| unit_id == UnitId::ZergCagrantColony
 			|| unit_id == UnitId::ZergSurkithColony
 			|| unit_id == UnitId::ZergSpraithColony
 			|| unit_id == UnitId::ZergLarvoskColony
+		//	|| unit_id == UnitId::ZergKazitrithColony
 			|| unit_id == UnitId::ZergNydusCesiant;
 	}
 

@@ -172,6 +172,24 @@ namespace
 			RETN 0x18
 		}
 	}
+
+	void __declspec(naked) start_building_wrapper() // 00467030
+	{
+		static s32 result;
+		static Unit* builder;
+		__asm
+		{
+			MOV builder, EAX
+			PUSHAD
+		}
+		result = hooks::start_building(builder);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -184,5 +202,6 @@ namespace hooks
 		jump_patch(is_tile_blocked_by_wrapper,								0x00473300, 0);
 		jump_patch(update_creep_building_placement_state_wrapper,			0x00473010, 1);
 		jump_patch(update_building_placement_state_map_tile_flags_wrapper,	0x00473A10, 1);
+		jump_patch(start_building_wrapper,									0x00467030, 1);
 	}
 }

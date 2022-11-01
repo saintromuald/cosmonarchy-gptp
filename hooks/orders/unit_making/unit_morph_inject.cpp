@@ -188,7 +188,7 @@ namespace
 				return;
 			}
 			resources->minerals[unit->player] += units_dat::mineral_cost[unit->id] * 3 / 4;
-			resources->gas[unit->player] += units_dat::gas_cost[unit->id] * 3 / 4;
+			resources->gas[unit->player] += units_dat::vespene_cost[unit->id] * 3 / 4;
 		}
 		else
 		{
@@ -202,7 +202,7 @@ namespace
 				refundUnitId = unit->id;
 			}
 			resources->minerals[unit->player] += units_dat::mineral_cost[refundUnitId];
-			resources->gas[unit->player] += units_dat::gas_cost[refundUnitId];
+			resources->gas[unit->player] += units_dat::vespene_cost[refundUnitId];
 		}
 
 		u16 cancelChangeUnitId = hooks::get_cancel_morph_revert_id(unit);

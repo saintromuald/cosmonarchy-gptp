@@ -176,7 +176,7 @@ namespace
 
 	void __declspec(naked) set_tooltip_info_wrapper() { // 00458800
 		static u16 mineral_cost;
-		static u16 gas_cost;
+		static u16 vespene_cost;
 		static u16 p_energy;
 		static u16 t_energy;
 		static u16 z_energy;
@@ -199,11 +199,11 @@ namespace
 			MOV z_supply, AX
 			POP EAX
 			MOV mineral_cost, AX
-			MOV gas_cost, CX
+			MOV vespene_cost, CX
 			MOV p_energy, DX
 			PUSHAD
 		}
-		hooks::set_tooltip_info(mineral_cost, gas_cost, p_energy, t_energy, z_energy, p_supply, t_supply, z_supply);
+		hooks::set_tooltip_info(mineral_cost, vespene_cost, p_energy, t_energy, z_energy, p_supply, t_supply, z_supply);
 		__asm {
 			POPAD
 			MOV ESP, EBP

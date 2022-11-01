@@ -11638,12 +11638,12 @@ namespace helper
 		}
 	}
 
-	void set_tooltip_info(u32 mineral_cost, u32 gas_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply) {
+	void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply) {
 		const u32 func_address = 0x00458800;
 		__asm {
 			PUSHAD
 			MOV EAX, mineral_cost
-			MOV ECX, gas_cost
+			MOV ECX, vespene_cost
 			PUSH z_supply
 			PUSH t_supply
 			PUSH p_supply

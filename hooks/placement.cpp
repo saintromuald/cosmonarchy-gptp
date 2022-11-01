@@ -4,176 +4,238 @@
 namespace hooks
 {
 	s32 init_placement_box_pos(s32 unused, Point16* placement_pos) { // 0048D660
-        if (placement_pos->x >= 640 || placement_pos->y >= 400) {
-            return 0;
-        }
+		if (placement_pos->x >= 640 || placement_pos->y >= 400) {
+			return 0;
+		}
 
-        u32 tile_x = (placement_pos->x + 16) / 32;
-        u32 tile_y = (placement_pos->y + 16) / 32;
+		u32 tile_x = (placement_pos->x + 16) / 32;
+		u32 tile_y = (placement_pos->y + 16) / 32;
 
-        *place_building_x = tile_x + *move_to_tile_x;
-        *place_building_y = tile_y + *move_to_tile_y;
-        placement_pos->x = *place_building_x * 32 - *g_move_to_x;
-        placement_pos->y = *place_building_y * 32 - *g_move_to_y;
-        return 1;
+		*place_building_x = tile_x + *move_to_tile_x;
+		*place_building_y = tile_y + *move_to_tile_y;
+		placement_pos->x = *place_building_x * 32 - *g_move_to_x;
+		placement_pos->y = *place_building_y * 32 - *g_move_to_y;
+		return 1;
 	}
 
-    u8 draw_placement_box(Point16 unused) { // 0048DDC0
-        Point16 placement_pos = unused;
-        u8 result = *g_is_placing_building;
-        if (!result) {
-            return result;
-        }
-        unused.x = g_mouse->y;
-        Point16 dims = units_dat::building_dimensions[*place_building_unit_id];
-        placement_pos.x = g_mouse->x - dims.x / 2;
-        placement_pos.y = g_mouse->y - dims.y / 2;
-        if (helper::init_placement_box_pos(&placement_pos)) {
-            *g_place_building_message_id = helper::update_placement_state_for_placement_box();
-            helper::refresh_layers_3_and_4();
-            helper::unk_building_placement_related(1, &placement_pos);
-            if (*is_placing_addon) {
-                placement_pos.x -= units_dat::addon_placement[*place_building_unit_id].x;
-                placement_pos.y -= units_dat::addon_placement[*place_building_unit_id].y;
-                helper::unk_building_placement_related(0, &placement_pos);
-            }
-            return helper::refresh_layers_3_and_4();
-        }
-        helper::unk_building_placement_related_mouse(0, 1);
-        return helper::unk_building_placement_related_mouse(0, 0);
-    }
+	u8 draw_placement_box(Point16 unused) { // 0048DDC0
+		Point16 placement_pos = unused;
+		u8 result = *g_is_placing_building;
+		if (!result) {
+			return result;
+		}
+		unused.x = g_mouse->y;
+		Point16 dims = units_dat::building_dimensions[*place_building_unit_id];
+		placement_pos.x = g_mouse->x - dims.x / 2;
+		placement_pos.y = g_mouse->y - dims.y / 2;
+		if (helper::init_placement_box_pos(&placement_pos)) {
+			*g_place_building_message_id = helper::update_placement_state_for_placement_box();
+			helper::refresh_layers_3_and_4();
+			helper::unk_building_placement_related(1, &placement_pos);
+			if (*is_placing_addon) {
+				placement_pos.x -= units_dat::addon_placement[*place_building_unit_id].x;
+				placement_pos.y -= units_dat::addon_placement[*place_building_unit_id].y;
+				helper::unk_building_placement_related(0, &placement_pos);
+			}
+			return helper::refresh_layers_3_and_4();
+		}
+		helper::unk_building_placement_related_mouse(0, 1);
+		return helper::unk_building_placement_related_mouse(0, 0);
+	}
 
-    // Not enabled.
-    s32 update_placement_state_for_placement_box() { // 0048DCE0
-        if (!*g_active_portrait_unit) {
-            return 0;
-        }
+	// Not enabled.
+	s32 update_placement_state_for_placement_box() { // 0048DCE0
+		if (!*g_active_portrait_unit) {
+			return 0;
+		}
 
-        u32 source = *place_building_base_type;
-        u32 target = *place_building_unit_id;
-        u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *place_building_unit_id - 212].x / 32);
-        u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *place_building_unit_id - 211].y / 32);
-        scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
+		u32 source = *place_building_base_type;
+		u32 target = *place_building_unit_id;
+		u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *place_building_unit_id - 212].x / 32);
+		u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *place_building_unit_id - 211].y / 32);
+		scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
-        s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
-        s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, addon_x, addon_y, *place_building_base_type, 0, 1, 0, 0);
-        // ^ this call might be needed, even if the result isn't returned, untested
-        if (!*is_placing_addon || can_build) {
-            result = can_build;
-        }
-        return result;
-    }
+		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
+		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, addon_x, addon_y, *place_building_base_type, 0, 1, 0, 0);
+		// ^ this call might be needed, even if the result isn't returned, untested
+		if (!*is_placing_addon || can_build) {
+			result = can_build;
+		}
+		return result;
+	}
 
 	// Hooked to enable unit mover for human players. - Pr0nogo
-    s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) { // 00473300
-        for (Unit** it = unit_array; *it; ++it) {
-            Unit* other_unit = *it;
-            bool needs_detection = false;
-            if (builder) {
-                if (scbw::is_allied_to(other_unit->player, builder->player)) {
-                    continue;
-                }
-                if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
-                    if (!(other_unit->detection_status & (1 << builder->player))) {
-                        needs_detection = true;
-                    }
-                }
-            }
-            if ((!dont_ignore_reacting && other_unit->status & UnitStatus::Reacts)
-            ||  (needs_detection && !also_invisible)
-            ||   other_unit == builder
-            ||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
-            ||   other_unit->id == UnitId::Spell_DarkSwarm
-            ||   other_unit->id == UnitId::Spell_DisruptionWeb
-            ||   other_unit->sprite->flags & SpriteFlags::Hidden) {
-                continue;
-            }
+	s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 x_tile, s32 y_tile, s8 dont_ignore_reacting, s8 also_invisible) { // 00473300
+		for (Unit** it = unit_array; *it; ++it) {
+			Unit* other_unit = *it;
+			bool needs_detection = false;
+			if (builder) {
+				if (scbw::is_allied_to(other_unit->player, builder->player)) {
+					continue;
+				}
+				if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
+					if (!(other_unit->detection_status & (1 << builder->player))) {
+						needs_detection = true;
+					}
+				}
+			}
+			if ((!dont_ignore_reacting && other_unit->status & UnitStatus::Reacts)
+			||  (needs_detection && !also_invisible)
+			||   other_unit == builder
+			||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
+			||   other_unit->id == UnitId::Spell_DarkSwarm
+			||   other_unit->id == UnitId::Spell_DisruptionWeb
+			||   other_unit->sprite->flags & SpriteFlags::Hidden) {
+				continue;
+			}
 
-            if (g_unit_ordering_x[other_unit->finder_index.left  ].position < 32 * x_tile + 32
-            &&  g_unit_ordering_x[other_unit->finder_index.right ].position > 32 * x_tile
-            &&  g_unit_ordering_y[other_unit->finder_index.top   ].position < 32 * y_tile + 32
-            &&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile) {
-                return needs_detection ? 1 : 4;
-            }
-        }
-        return 0;
-    }
+			if (g_unit_ordering_x[other_unit->finder_index.left  ].position < 32 * x_tile + 32
+			&&  g_unit_ordering_x[other_unit->finder_index.right ].position > 32 * x_tile
+			&&  g_unit_ordering_y[other_unit->finder_index.top   ].position < 32 * y_tile + 32
+			&&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile) {
+				return needs_detection ? 1 : 4;
+			}
+		}
+		return 0;
+	}
 
-    // Hooked to allow building on allied creep. -Pr0nogo
-    int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
-    {
-        u32 human_only_player_bit = 0;
-        if (g_player_table[player].type == PlayerType::Human) {
-            human_only_player_bit = 1 << player;
-        }
+	// Hooked to allow building on allied creep. -Pr0nogo
+	int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
+	{
+		u32 human_only_player_bit = 0;
+		if (g_player_table[player].type == PlayerType::Human) {
+			human_only_player_bit = 1 << player;
+		}
 
-        u8 result = 0;
-        for (u32 y = 0; y < size.y; ++y) {
-            for (u32 x = 0; x < size.x; ++x) {
-                ActiveTile* tile = scbw::get_active_tile_at_tile(x_tile + x, y_tile + y);
+		u8 result = 0;
+		for (u32 y = 0; y < size.y; ++y) {
+			for (u32 x = 0; x < size.x; ++x) {
+				ActiveTile* tile = scbw::get_active_tile_at_tile(x_tile + x, y_tile + y);
 
-                char state = 0;
-                if (tile->explored_flags & human_only_player_bit) {
-                    state  = 10;
-                    result = 10;
-                }
-                bool creep = !tile->has_creep;
-                if (check_temporary_creep) {
-                    creep  = !tile->temporary_creep;
-                }
-                if ((check_temporary_creep || check_creep || !(tile->visibility_flags & human_only_player_bit)) && creep) {
-                    state = 5;
-                    if (result < 5) {
-                        result = 5;
-                    }
-                }
-                g_building_placement_state[6 * (y + 8 * placement_state_entry) + x] = state;
-            }
-        }
-        return result;
-    }
+				char state = 0;
+				if (tile->explored_flags & human_only_player_bit) {
+					state  = 10;
+					result = 10;
+				}
+				bool creep = !tile->has_creep;
+				if (check_temporary_creep) {
+					creep  = !tile->temporary_creep;
+				}
+				if ((check_temporary_creep || check_creep || !(tile->visibility_flags & human_only_player_bit)) && creep) {
+					state = 5;
+					if (result < 5) {
+						result = 5;
+					}
+				}
+				g_building_placement_state[6 * (y + 8 * placement_state_entry) + x] = state;
+			}
+		}
+		return result;
+	}
 
-    // Hooked to allow building on allied creep. -Pr0nogo
-    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
-    {
-        u32 human_only_player_bit = 0;
-        if (g_player_table[player].type == PlayerType::Human) {
-            human_only_player_bit = 1 << player;
-        }
+	// Hooked to allow building on allied creep. -Pr0nogo
+	u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
+	{
+		u32 human_only_player_bit = 0;
+		if (g_player_table[player].type == PlayerType::Human) {
+			human_only_player_bit = 1 << player;
+		}
 
-        u8 result = 0;
-        for (u32 y = 0; y < size.y; ++y) {
-            for (u32 x = 0; x < size.x; ++x) {
-                ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x + x, tile_y + y);
-                TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
+		u8 result = 0;
+		for (u32 y = 0; y < size.y; ++y) {
+			for (u32 x = 0; x < size.x; ++x) {
+				ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x + x, tile_y + y);
+				TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
-                u32 flags = 0x20800000; // cliff_edge, always_unbuildable
-                if (!units_dat::group_flags[unit_id].is_zerg && !can_place_on_creep_tile(tile_ext, player)) {
-                    flags |= check_creep ? 0x40000000 : 0x400000;
-                }
+				u32 flags = 0x20800000; // cliff_edge, always_unbuildable
+				if (!units_dat::group_flags[unit_id].is_zerg && !can_place_on_creep_tile(tile_ext, player)) {
+					flags |= check_creep ? 0x40000000 : 0x400000;
+				}
 
-                u8 state = 0;
-                if (tile->explored_flags & human_only_player_bit) {
-                    //state = 10;
+				u8 state = 0;
+				if (tile->explored_flags & human_only_player_bit) {
+					//state = 10;
 
-                    if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::find_blocking_fow_resource(x + tile_x, y + tile_y, 3)) {
-                        state = 2;
-                    }
-                } else if (!check_creep && tile->visibility_flags & human_only_player_bit
-                || !(tile->value & flags)
-                || tile->value < 0) { // originally also checked for if the unit id was any racial beacon
-                    if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::place_building_resource_restriction_check(check_creep, x + tile_x, y + tile_y)) {
-                        state = 2;
-                    }
-                } else {
-                    state = 4;
-                }
-                g_building_placement_state[6 * (y + (8 * placement_state_entry)) + x] = state;
-                if (result < state) {
-                    result = state;
-                }
-            }
-        }
-        return result;
-    }
+					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::find_blocking_fow_resource(x + tile_x, y + tile_y, 3)) {
+						state = 2;
+					}
+				} else if (!check_creep && tile->visibility_flags & human_only_player_bit
+				|| !(tile->value & flags)
+				|| tile->value < 0) { // originally also checked for if the unit id was any racial beacon
+					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::place_building_resource_restriction_check(check_creep, x + tile_x, y + tile_y)) {
+						state = 2;
+					}
+				} else {
+					state = 4;
+				}
+				g_building_placement_state[6 * (y + (8 * placement_state_entry)) + x] = state;
+				if (result < state) {
+					result = state;
+				}
+			}
+		}
+		return result;
+	}
+
+	// Hooked to port unit mover logic from aise to GPTP. -Pr0nogo
+	s32 start_building(Unit* builder) // 00467030
+	{
+		u16 building_id = builder->build_queue[(unsigned __int8)builder->build_queue_slot];
+		u32 player = builder->player;
+		g_ai_minerals_reserve[player] = units_dat::mineral_cost[building_id];
+		g_ai_vespene_reserve[player] = units_dat::vespene_cost[building_id];
+
+		// Originally had code checking for supplies.
+
+		if (g_game_minerals[player] < g_ai_minerals_reserve[player])
+		{
+			helper::display_error_message_id_with_sfx(player, 850, (s32)*console_index + 147); // Not enough minerals...mine more minerals.<0>
+			return 0;
+		}
+		if (g_game_vespene[player] < g_ai_vespene_reserve[player])
+		{
+			helper::display_error_message_id_with_sfx(player, 851, (s32)*console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
+			return 0;
+		}
+		if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0))
+		{
+			helper::play_worker_error_sound(builder, 856); // You can't build there.<0>
+			return 0;
+		}
+		else
+		{
+			player = 4 * (u8)builder->player;
+			*(int*)((char*)g_game_minerals + player) -= *(DWORD*)((char*)g_ai_minerals_reserve + player);
+			*(int*)((char*)g_game_vespene + player) -= *(DWORD*)((char*)g_ai_vespene_reserve + player);
+
+			Box32 rect = {};
+			rect.x = builder->order_target.pt.x;
+			rect.y = builder->order_target.pt.y;
+			rect.w = units_dat::unit_bounds[building_id].x;
+			rect.h = units_dat::unit_bounds[building_id].y;
+		//	scbw::printf("rect %i %i %i %i", rect.x, rect.y, rect.w, rect.h);
+			EntryArray units = {};
+			unit_search_rect(&units, rect);
+		//	scbw::printf("units found: %u", units.count);
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				if (unit == builder) {
+					continue;
+				}
+				if (unit->id == UnitId::TerranSpiderMine) {
+					unit->remove();
+					continue;
+				}
+
+				if (unit->status & UnitStatus::Burrowed) {
+					helper::unburrow(unit);
+				}
+				else if (unit->main_order_id == OrderId::Burrow) {
+					unit->order(OrderId::Unburrow, unit->position.x, unit->position.y, 0, UnitId::None, true);
+				}
+			}
+
+			return 1;
+		}
+	}
 }

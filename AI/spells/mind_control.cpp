@@ -58,7 +58,7 @@ namespace AI
 				default:
 				{
 					if (units_dat::mineral_cost[target->id] >= units_dat::mineral_cost[UnitId::ProtossCabalist]
-						&& units_dat::gas_cost[target->id] >= units_dat::gas_cost[UnitId::ProtossCabalist])
+						&& units_dat::vespene_cost[target->id] >= units_dat::vespene_cost[UnitId::ProtossCabalist])
 					{
 						return true;
 					}
