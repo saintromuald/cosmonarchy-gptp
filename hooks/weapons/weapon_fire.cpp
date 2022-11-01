@@ -535,34 +535,38 @@ namespace hooks {
 		&&  bullet->attack_target.unit
 		&&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite)
 		{
-			Unit* targ = bullet->attack_target.unit;
+			Unit* main_target = bullet->attack_target.unit;
 
-			UnitExt* unitExt = get_unit_ext(bullet->source_unit);
-			const u32 distFromSource = scbw::get_distance_fast(bullet->position, unitExt->last_bullet_launch_position);
-			const u32 distFromTarget = scbw::get_distance_fast(bullet->position, targ->position);
+			UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
+			const u32 distance_from_source = scbw::get_distance_fast(bullet->position, unit_ext->last_bullet_launch_position);
+			const u32 distance_from_target = scbw::get_distance_fast(bullet->position, main_target->position);
 
-			if (distFromSource > 5 * 32
-			&&  distFromTarget < 3 * 32)
+			if (distance_from_source > 5 * 32
+			&&  distance_from_target < 3 * 32)
 			{
 				if (!globals.multihit_bullet_is_set(bullet))
 				{
 					auto old = bullet->source_unit->order_target.unit;
-					auto oldSpritePos = bullet->source_unit->sprite->position;
-					auto oldPos = bullet->source_unit->position;
+					auto old_sprite_pos = bullet->source_unit->sprite->position;
+					auto old_pos = bullet->source_unit->position;
 					bullet->source_unit->sprite->position = bullet->position;
 					bullet->source_unit->position = bullet->position;
 					auto r = 3 * 32;
-					scbw::UnitFinder unitsInSplash(bullet->position.x - r, bullet->position.y - r,
+					scbw::UnitFinder units_in_splash(bullet->position.x - r, bullet->position.y - r,
 						bullet->position.x + r, bullet->position.y + r);
 					globals.add_multihit_empty_bullet(bullet, 1);
-					for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
+					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
 					{
-						Unit* target = unitsInSplash.get_unit(i);
-						if (target == nullptr)
+						Unit* target = units_in_splash.get_unit(i);
+						if (!target)
 						{
 							continue;
 						}
-						if (target == targ)
+						if (target == main_target)
+						{
+							continue;
+						}
+						if (!bullet->source_unit->can_attack_target(target)) // Check detection status
 						{
 							continue;
 						}
@@ -571,19 +575,19 @@ namespace hooks {
 							continue;
 						}
 						bullet->source_unit->order_target.unit = target;
-						auto newAngle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
-						auto newBullet = create_bullet_and_apply_cooldown(WeaponId::ArchitectDispersiveSalvo,
-							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, newAngle);
-						if (newBullet)
+						s32 new_angle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
+						Bullet* new_bullet = create_bullet_and_apply_cooldown(WeaponId::ArchitectDispersiveSalvo,
+							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
+						if (new_bullet)
 						{
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
-							newBullet->position = bullet->position;
-							globals.add_multihit_empty_bullet(newBullet, 1);
+							new_bullet->position = bullet->position;
+							globals.add_multihit_empty_bullet(new_bullet, 1);
 						}
 					};
 					bullet->source_unit->order_target.unit = old;
-					bullet->source_unit->position = oldPos;
-					bullet->source_unit->sprite->position = oldSpritePos;
+					bullet->source_unit->position = old_pos;
+					bullet->source_unit->sprite->position = old_sprite_pos;
 				}
 			}
 		}

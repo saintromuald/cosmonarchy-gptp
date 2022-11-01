@@ -610,6 +610,7 @@ static bool unit_could_kite(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool in_combat = unit_in_combat(unit, false);
 
+	/*
 	if (unit->id == UnitId::ZergLakizilisk) {
 		if (!(unit->status & UnitStatus::Burrowed)) {
 			return false;
@@ -618,6 +619,11 @@ static bool unit_could_kite(Unit* unit) {
 		if (unit->status & UnitStatus::Burrowed) {
 			return false;
 		}
+	}
+	*/
+
+	if (unit->id == UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed) {
+		return false;
 	}
 
 	return in_combat
