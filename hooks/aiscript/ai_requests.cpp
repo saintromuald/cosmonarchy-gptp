@@ -112,23 +112,9 @@ namespace hooks
 		}
 		return result;
 	}
-	
-	enum TaskType {
-		TaskType_UnitMake = 0,
-		TaskType_UnitMergeMorph1 = 1,
-		TaskType_UnitMergeMorph2 = 2,
-		TaskType_ConstructMorph = 3,
-		TaskType_Train = 4,
-		TaskType_Upgrade = 5,
-		TaskType_Research = 6,
-		TaskType_PlaceAddon = 7,
-		TaskType_MakeDetector = 8,
-	};
 
-	char ai_perform_task(Unit* unit) // 004361A0 -- hooked to fix AI Archon training -- Pr0nogo
-	{
-		switch (unit->id)
-		{
+	char ai_perform_task(Unit* unit) { // 004361A0 -- hooked to fix AI Archon training -- Pr0nogo
+		switch (unit->id) {
 			case UnitId::ZergOvileth:
 			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
@@ -146,87 +132,71 @@ namespace hooks
 			} break;
 		}
 
-		UnitAi* unit_ai_var = (UnitAi*)unit->unit_ai;
-		if (!unit_ai_var || unit_ai_var->type != AiType::Building)
-		{
-			return 1;
+		UnitAi* unit_ai = unit->unit_ai;
+		if (!unit_ai || unit_ai->type != AiType::Building) {
+			return true;
 		}
 
-		s32 player = unit->player;
-		s32 some_bool = 0;
-		if (g_game_minerals[player] > 1500 && g_game_vespene[player] > 1500)
-		{
-			if (!helper::unit_is_training_or_morphing(unit))
-			{
-				if (helper::ai_unit_construction_behavior(player, unit, 160))
-				{
-					some_bool = 1;
+		u32 player = unit->player;
+		bool recurse = false;
+		if (g_game_minerals[player] > 1500 && g_game_vespene[player] > 1500) {
+			if (!helper::unit_is_training_or_morphing(unit)) {
+				if (helper::ai_unit_construction_behavior(player, unit, 160)) {
+					recurse = true;
 				}
 			}
 		}
 
-		AI_Main* player_ai_data = &g_aiscript_controller[player];
-		s32 request_type;
-		if (player_ai_data->request_count)
-		{
-			request_type = player_ai_data->requests->type;
-			if (player_ai_data->requests->id == UnitId::ProtossArchon || player_ai_data->requests->id == UnitId::ProtossMindTyrant)
-			{
-				// Override Archon and Mind Tyrant request types
-				request_type = TaskType_Train;
-			}
-		}
-		else
-		{
-			request_type = 0;
+		u32 request_type = RequestType::None;
+		if (g_aiscript_controller[player].request_count) {
+			request_type = g_aiscript_controller[player].requests[0].type;
 		}
 
-		switch (request_type)
-		{
-			case TaskType_UnitMake:
+		switch (request_type) {
+			case RequestType::None:
 			{
 				if (!helper::ai_unit_construction_behavior(player, unit, 50))
 				{
-					return 1;
+					return true;
 				}
-				some_bool = 1;
-				return helper::ai_plan_do_merge_morph(player, unit, some_bool);
+				recurse = true;
+				return helper::ai_plan_do_merge_morph(player, unit, recurse);
 			}
-			case TaskType_UnitMergeMorph1:
-			case TaskType_UnitMergeMorph2:
+			case RequestType::Military:
+			case RequestType::Guard:
 			{
-				return helper::ai_plan_do_merge_morph(player, unit, some_bool);
+				return helper::ai_plan_do_merge_morph(player, unit, recurse);
 			}
-			case TaskType_ConstructMorph:
+			case RequestType::Building:
 			{
 				return helper::ai_morph_behavior(player, unit, unit->unit_ai);
 			}
-			case TaskType_Train:
+			case RequestType::Worker:
 			{
 				helper::ai_train_behavior(unit, unit->unit_ai, player);
-				return 1;
+				return true;
 			} break;
-			case TaskType_Upgrade:
+			case RequestType::Upgrade:
 			{
 				helper::ai_upgrade_behavior(unit, player);
-				return 1;
+				return true;
 			} break;
-			case TaskType_Research:
+			case RequestType::Tech:
 			{
 				helper::ai_research_behavior(unit, player);
-				return 1;
+				return true;
 			} break;
-			case TaskType_PlaceAddon:
+			case RequestType::Addon:
 			{
 				helper::ai_construct_behavior(unit, unit->unit_ai, player);
-				return 1;
+				return true;
 			} break;
-			case TaskType_MakeDetector:
+			case RequestType::Detector:
 			{
 				return helper::ai_make_detectors_behavior(unit, player);
 			} break;
 		}
-		return 1;
+		return true;
 	}
 
 	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 boolSomething) // 00435F10

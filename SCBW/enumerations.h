@@ -181,6 +181,7 @@ namespace RequestType
 {
 	enum Enum
 	{
+		None		= 0,
 		Military	= 1,
 		Guard		= 2,
 		Building	= 3,
@@ -188,6 +189,7 @@ namespace RequestType
 		Upgrade		= 5,
 		Tech		= 6,
 		Addon		= 7,
+		Detector	= 8,
 	};
 }
 
