@@ -1175,7 +1175,7 @@ namespace hooks
 			}
 
 			AI_Main* ai_player = &g_aiscript_controller[town_player];
-			s32 gas_delta = ai_player->gas_needed - ai_player->gas_available;
+			s32 gas_delta = ai_player->vespene_needed - ai_player->vespene_available;
 			u32 new_gas_count = gas_delta > 0 ? gas_delta / 100 : 0;
 			new_gas_count += worker_count / 10;
 			if (gas_count < new_gas_count) {

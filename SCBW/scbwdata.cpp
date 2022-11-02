@@ -201,8 +201,8 @@ namespace upgrades_dat {
 	
 	SCBW_DATA_DEF(u16*, mineral_cost_base,		upgradesDat[0].address);	// 00656740
 	SCBW_DATA_DEF(u16*, mineral_cost_factor,	upgradesDat[1].address);	// 006559C0
-	SCBW_DATA_DEF(u16*, gas_cost_base,			upgradesDat[2].address);	// 00655840
-	SCBW_DATA_DEF(u16*, gas_cost_factor,		upgradesDat[3].address);	// 006557C0
+	SCBW_DATA_DEF(u16*, vespene_cost_base,			upgradesDat[2].address);	// 00655840
+	SCBW_DATA_DEF(u16*, vespene_cost_factor,		upgradesDat[3].address);	// 006557C0
 	SCBW_DATA_DEF(u16*, time_cost_base,			upgradesDat[4].address);	// 00655B80
 	SCBW_DATA_DEF(u16*, time_cost_factor,		upgradesDat[5].address);	// 00655940
 	SCBW_DATA_DEF(u16*, requirement_offsets,	upgradesDat[6].address);	// 006558C0	//Restriction sound_flags according to EUDDB

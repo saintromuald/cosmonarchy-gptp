@@ -37,7 +37,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			}
 			if ((harvestable_gas || total_gas == 1)
 				&& g_game_minerals[ai_town->player] >= mineral_threshold
-				&& g_aiscript_controller[ai_town->player].gas_needed >= needed_threshold) {
+				&& g_aiscript_controller[ai_town->player].vespene_needed >= needed_threshold) {
 				for (u32 i = 0; i < 3; ++i) {
 					if (!custom_ai_town->gas_requested[i] && ai_town->gas_buildings[i] && ai_town->gas_buildings[i]->id == UnitId::ResourceVespeneGeyser) {
 						u32 capped_id = UnitId::None;

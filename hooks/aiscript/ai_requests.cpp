@@ -14,9 +14,9 @@ namespace hooks
 		TownReq* town_units;
 		if (g_player_table[(u8)town->player].type == PlayerType::Computer)
 		{
-			town_units = town->town_units;
+			town_units = town->requests;
 			bool setNeed = false;
-			if (town->town_units[0].flags_and_count & BuildCountFlag) // if build
+			if (town->requests[0].flags_and_count & BuildCountFlag) // if build
 			{
 				for (s32 i = 0; i < 100; i++)
 				{
@@ -35,9 +35,9 @@ namespace hooks
 			}
 			if (setNeed)
 			{
-				town->town_units[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
-				town->town_units[iterate].id = id;
-				town->town_units[iterate].priority = priority;
+				town->requests[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
+				town->requests[iterate].id = id;
+				town->requests[iterate].priority = priority;
 				// build orders have 0xf8 flag, tech has 0x4, upgrade has 0x2, if needed (player_need) has 0x1
 			}
 		}
@@ -520,7 +520,7 @@ namespace hooks
 							witness_supply_cost = 2 * units_dat::supply_required[UnitId::ProtossWitness];
 						}
 						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
-						g_aiscript_controller[player_id].gas_needed += witness_gas_cost;
+						g_aiscript_controller[player_id].vespene_needed += witness_gas_cost;
 						g_aiscript_controller[player_id].supply_needed += witness_supply_cost;
 						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
 						--witness_request_quantity;
@@ -546,9 +546,9 @@ namespace hooks
 						{
 							transport_supply_cost *= 2;
 						}
-						v29 = g_aiscript_controller[player_id].gas_needed;
+						v29 = g_aiscript_controller[player_id].vespene_needed;
 						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[transport_unit_id_1];
-						g_aiscript_controller[player_id].gas_needed = transport_1_gas_cost + v29;
+						g_aiscript_controller[player_id].vespene_needed = transport_1_gas_cost + v29;
 						g_aiscript_controller[player_id].supply_needed += transport_supply_cost;
 						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
 						helper::ai_add_base_unit_spending_request(transport_unit_id_2, player_id, v33, transport_1_priority);
@@ -785,8 +785,7 @@ namespace hooks
 	}
 
 	// Hooked to add sprite nullcheck and improve behavior. -Pr0nogo
-	void ai_make_guard(u32 player_id, Unit* unit) // 0043A010
-	{
+	void ai_make_guard(u32 player_id, Unit* unit) { // 0043A010
 		if (!unit || !unit->sprite) {
 			return;
 		}
@@ -795,13 +794,11 @@ namespace hooks
 		AiRegion* region_from_id = &g_ai_region_captains[player_id][region_id_var];
 		u32 region_times_52 = region_id_var * 52;
 
-		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow)
-		{
+		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow) {
 			helper::ai_set_region_type(5, region_from_id);
 			u8 region_flags = region_from_id->flags | 1;
 			region_from_id->flags = region_flags;
-			if (!(g_aiscript_controller[player_id].ai_flags.is_use_map_settings))
-			{
+			if (!g_aiscript_controller[player_id].ai_flags.is_use_map_settings) {
 				region_from_id->flags = region_flags | 0x40;
 			}
 
@@ -809,12 +806,9 @@ namespace hooks
 			u8* alliance_check = (u8*)player_alliance + player_id;
 			AiRegion** ai_regions_var = g_ai_region_captains;
 			u8(*player_alliance_var)[12] = (u8(*)[12])((u8*)player_alliance + player_id);
-			do
-			{
-				if (!(g_aiscript_controller[0].ai_flags.is_use_map_settings))
-				{
-					if (*alliance_check)
-					{
+			do {
+				if (!g_aiscript_controller[0].ai_flags.is_use_map_settings) {
+					if (*alliance_check) {
 						AiRegion* region_from_52 = (AiRegion*)((char*)*ai_regions_var + region_times_52);
 						if (!region_from_52->state)
 						{
@@ -833,8 +827,7 @@ namespace hooks
 		u32 town_center = UnitId::TerranCommandCenter;
 		if (g_player_table[player_id].race == RaceId::Protoss) {
 			town_center = UnitId::ProtossNexus;
-		}
-		else if (g_player_table[player_id].race == RaceId::Zerg) {
+		} else if (g_player_table[player_id].race == RaceId::Zerg) {
 			town_center = UnitId::ZergHachirosk;
 		}
 
@@ -846,16 +839,12 @@ namespace hooks
 		||   unit_id == UnitId::ZergCaphrolosk
 		||   unit_id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
 		&&   unit_status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::Subunit) // was BYTE1, never saw that on a flag var before, so maybe Subunit should be FlyingBuilding (next entry)?
-		||  (unit->id == town_center))
-		{
-			if (g_aiscript_controller[player_id].ai_flags.is_use_map_settings)
-			{
+		||  (unit->id == town_center)) {
+			if (g_aiscript_controller[player_id].ai_flags.is_use_map_settings) {
 				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
 				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
 				helper::ai_set_region_type(6, region_from_id);
-			}
-			else
-			{
+			} else {
 				helper::ai_set_region_type(6, region_from_id);
 				u8 region_has_flag_40 = region_from_id->flags | 0x40;
 				region_from_id->ground_strength_needed = 1500;
@@ -867,343 +856,170 @@ namespace hooks
 	}
 
 	// Hooked to fix player_need and improve functionality. -Pr0nogo
-	void ai_add_spending_request_from_towns(u32 player) // 00436320
-	{
-		g_aiscript_controller[player].ai_flags.flag_0x40 = 1; // HIBYTE(g_aiscript_controller[player].ai_flags) |= 4u;
-		u32 priority_subtract = 0;
+	void ai_add_spending_request_from_towns(u32 player) { // 00436320
+		g_aiscript_controller[player].ai_flags.upgrades_finished = true; // HIBYTE(g_aiscript_controller[player].ai_flags) |= 4u;
+
+		u32 race = g_player_table[player].race;
+		u32 builder_id = UnitId::None;
+		u32 main_building_id = UnitId::None;
+		switch (race) {
+			case RaceId::Terran: {
+				main_building_id = UnitId::TerranCommandCenter;
+				builder_id = UnitId::TerranMason;
+			} break;
+			case RaceId::Protoss: {
+				main_building_id = UnitId::ProtossNexus;
+				builder_id = UnitId::ProtossScribe;
+			} break;
+			case RaceId::Zerg: {
+				main_building_id = UnitId::ZergHachirosk;
+				builder_id = UnitId::ZergDroleth;
+			} break;
+		}
+
 		s32 can_have_more_workers = 0;
-		AiTown* town = gi_ai_active_town_array[player].first;
-		if (gi_ai_active_town_array[player].first)
-		{
-			while (1)
-			{
-				helper::cancel_queued_trains(town);
-				if (town->workers)
-				{
-					if (town->worker_count > town->worker_limit)
-					{
-						can_have_more_workers = 1;
-					}
+		for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+			helper::cancel_queued_trains(town);
+			if (town->workers) {
+				if (town->worker_count > town->worker_limit) {
+					can_have_more_workers = 1;
 				}
-				else
-				{
-					Unit* main_building = town->main_building;
-					if (!main_building || main_building->status & UnitStatus::Completed || main_building->id != UnitId::ZergHachirosk)
-					{
-						helper::ai_get_oldpeons(town, 1u);
-					}
-				}
-				AiTown* town_copy = town;
-				TownReq* town_units = town->town_units;
-				u32 iterator_1 = 0;
-				u32 unit_count = 0;
-				for (TownReq* i = town->town_units; ; town_units = i)
-				{
-					u8 town_flags = town_units->flags_and_count;
-					u8 town_flags_2 = town_units->flags_and_count;
-					if (!(town_units->flags_and_count & 0xF8))
-					{
-						break;
-					}
-
-					u32 request_count = 0;
-					if ((town_flags >> 1) & 3)
-					{
-						if (((town_flags >> 1) & 3) == 1)
-						{
-							request_count = helper::get_upgrade_count(town, town_units->id);
-						}
-						else
-						{
-							request_count = helper::get_tech_count(town, town_units->id);
-						}
-					}
-					else
-					{
-						if (town_flags & 1)
-						{
-							request_count = g_all_unit_count_table[player + 12 * town_units->id].player[0];
-						}
-						else
-						{
-							u32 town_units_type = town_units->id;
-							WorkerAi* town_workers = town->workers;
-							u32 final_count = 0;
-							u32 queued_count = 0;
-							u32 j = 0;
-							for (j = town_units_type; town_workers; final_count += queued_count)
-							{
-								Unit* worker_unit = town_workers->parent;
-								if (worker_unit->id == j)
-								{
-									queued_count = 1;
-								}
-								else
-								{
-									queued_count = helper::ai_get_queued_count(worker_unit, j);
-								}
-								town_workers = town_workers->link.prev;
-							}
-							BuildingAi* town_buildings = town->buildings;
-							BuildingAi* town_buildings_2 = town->buildings;
-							if (town_buildings)
-							{
-								while (1)
-								{
-									Unit* building_unit = town_buildings->parent;
-									u32 queued_count_2 = 0;
-									if (building_unit->id == j)
-									{
-										queued_count_2 = 1;
-									}
-									else
-									{
-										queued_count_2 = helper::ai_get_queued_count(town_buildings->parent, j);
-									}
-									final_count += queued_count_2;
-									s32 queued_building_1 = 0;
-									s32 queued_building_2 = 0;
-									s32 queued_building_3 = 0;
-									u32 queued_unit_id = UnitId::None;
-									switch (j)
-									{
-										case UnitId::ZergHachirosk:
-											if (building_unit->id == UnitId::ZergCaphrolosk)
-											{
-												queued_building_1 = 1;
-											}
-											else
-											{
-												queued_building_1 = helper::ai_get_queued_count(building_unit, UnitId::ZergCaphrolosk);
-											}
-											final_count += queued_building_1;
-											goto LABEL_29;
-										case UnitId::ZergCaphrolosk:
-										LABEL_29:
-											if (building_unit->id == UnitId::ZergGathtelosk)
-											{
-												queued_building_2 = 1;
-												goto LABEL_42;
-											}
-											queued_unit_id = UnitId::ZergGathtelosk;
-											goto LABEL_41;
-										case UnitId::ZergMuthrokSpire:
-											if (building_unit->id == UnitId::ZergVithrathHaunt)
-											{
-												queued_building_2 = 1;
-												goto LABEL_42;
-											}
-											queued_unit_id = UnitId::ZergVithrathHaunt;
-											goto LABEL_41;
-										case UnitId::ZergCagrantColony:
-											if (building_unit->id == UnitId::ZergSurkithColony)
-											{
-												queued_building_3 = 1;
-											}
-											else
-											{
-												queued_building_3 = helper::ai_get_queued_count(building_unit, UnitId::ZergSurkithColony);
-											}
-											final_count += queued_building_3;
-											if (building_unit->id == UnitId::ZergSpraithColony)
-											{
-												queued_building_2 = 1;
-											}
-											else
-											{
-												queued_unit_id = UnitId::ZergSpraithColony;
-											LABEL_41:
-												queued_building_2 = helper::ai_get_queued_count(building_unit, queued_unit_id);
-											}
-										LABEL_42:
-											final_count += queued_building_2;
-										LABEL_43:
-											town_buildings = town_buildings_2->link.prev;
-											town_buildings_2 = town_buildings_2->link.prev;
-											if (!town_buildings_2)
-											{
-												goto LABEL_44;
-											}
-											break;
-										default:
-										{
-											goto LABEL_43;
-										}
-									}
-								}
-							}
-						LABEL_44:
-							unit_count = final_count;
-						}
-						if (town->in_battle)
-						{
-							goto _continue;
-						}
-						town_units = i;
-					}
-					u32 player_race = g_player_table[player].race;
-					u32 town_flags_3 = (unsigned int)town_flags_2 >> 3;
-					u32 builder_id;
-					if (player_race == RaceId::Terran)
-					{
-						builder_id = UnitId::TerranMason;
-					}
-					else
-					{
-						builder_id = player_race != 0 ? UnitId::ProtossScribe : UnitId::ZergDroleth;
-					}
-					if (town_units->id == builder_id && town_flags_3 > town->worker_limit)
-					{
-						town_flags_3 = town->worker_limit;
-					}
-					if (unit_count < town_flags_3)
-					{
-						u32 unit_count_sth = town_flags_3 - unit_count;
-						if (unit_count_sth)
-						{
-							AiTown* town_copy_2 = town;
-							u32 unit_count_sth_copy = unit_count_sth;
-							do
-							{
-								u32 original_priority = (unsigned __int8)i->priority;
-								u32 flags_x = ((unsigned __int8)i->flags_and_count >> 1) & 3;
-								u32 new_priority = i->priority;
-								if (flags_x == 1 || flags_x == 2)
-								{
-									if (g_aiscript_controller[player].ai_flags.is_use_map_settings)
-									{
-										if (priority_subtract <= original_priority)
-										{
-											new_priority = original_priority - priority_subtract++;
-										}
-										else
-										{
-											new_priority = 0;
-										}
-										g_aiscript_controller[player].ai_flags.upgrades_finished = 0;
-									}
-								}
-
-								u32 town_player = town_copy_2->player;
-								u32 town_player_2 = town_copy_2->player;
-								if (!(g_aiscript_controller[town_player].ai_flags.is_use_map_settings) && !(i->flags_and_count & 6))
-								{
-									u32 player_race_2 = g_player_table[town_player].race;
-									u32 main_building_id = UnitId::None;
-									if (player_race_2 == RaceId::Terran)
-									{
-										main_building_id = UnitId::TerranCommandCenter;
-									}
-									else
-									{
-										main_building_id = player_race_2 != 0 ? UnitId::ProtossNexus : UnitId::ZergHachirosk;
-									}
-									if (i->id == main_building_id && g_game_minerals[town_player] < 600)
-									{
-										new_priority = 150;
-									}
-								}
-
-								u32 town_units_type_2 = i->id;
-								u32 request_type = 0;
-								u32 mineral_cost = 0;
-								u32 vespene_cost = 0;
-								if (((unsigned int)(unsigned __int8)i->flags_and_count >> 1) & 3)
-								{
-									if ((((unsigned int)(unsigned __int8)i->flags_and_count >> 1) & 3) == 1)
-									{
-										request_type = 5;
-									LABEL_100:
-										// Originally had upgrade handling
-										goto LABEL_80;
-									}
-									request_type = 6;
-								}
-								else
-								{
-									u32 town_unit_base_property = units_dat::base_property[town_units_type_2];
-									if (town_unit_base_property & UnitProperty::Worker)
-									{
-										request_type = 4;
-									LABEL_77:
-										mineral_cost = units_dat::mineral_cost[town_units_type_2];
-										vespene_cost = units_dat::vespene_cost[town_units_type_2];
-										town_player = town_copy_2->player;
-										goto LABEL_80;
-									}
-									u32 addon_sth = 2 * (units_dat::base_property[town_units_type_2] & UnitProperty::Addon) | 3;
-									request_type = 2 * (units_dat::base_property[town_units_type_2] & UnitProperty::Addon) | 3;
-									if (addon_sth == 5)
-									{
-										goto LABEL_100;
-									}
-									if (addon_sth != 6)
-									{
-										goto LABEL_77;
-									}
-								}
-								mineral_cost = techdata_dat::mineral_cost[town_units_type_2];
-								vespene_cost = techdata_dat::vespene_cost[town_units_type_2];
-							LABEL_80:
-								u32 player_copy = town_player;
-								u32 mineral_collection = g_aiscript_controller[town_player].minerals_available;
-								u32 vespene_collection = g_aiscript_controller[town_player].gas_available;
-								g_aiscript_controller[player_copy].minerals_available = mineral_cost + mineral_collection;
-								town_copy_2 = town;
-								g_aiscript_controller[player_copy].gas_available = vespene_cost + vespene_collection;
-								helper::ai_add_spending_request(town_units_type_2, town_player_2, request_type, new_priority, town);
-								--unit_count_sth_copy;
-							} while (unit_count_sth_copy);
-						}
-					}
-				_continue:
-					u32 iterator_2 = (unsigned int)(iterator_1++ + 1) < 0x64;
-					++i;
-					if (!iterator_2)
-					{
-						break;
-					}
-				}
-				AiTown* town_copy = town;
-				u32 town_worker_count = town->worker_count;
-				u32 race_again = g_player_table[town->player].race;
-				if (town_worker_count > 1u
-				||  town_worker_count == 1
-				&&  town->main_building
-				&&  race_again != 1
-				&& !race_again)
-				{
-					hooks::ai_build_refinery(town);
-				}
-				town = town->prev;
-				if (!town_copy->prev)
-				{
-					if (can_have_more_workers)
-					{
-						for (AiTown* k = gi_ai_active_town_array[player].first; k; k = k->prev)
-						{
-							Unit* main_building_2 = k->main_building;
-							if (main_building_2)
-							{
-								if (main_building_2->status & UnitStatus::Completed)
-								{
-									if (k->worker_count < k->worker_limit)
-									{
-										helper::ai_get_oldpeons(k, 1u);
-									}
-								}
-							}
-						}
-					}
-					if (town_copy)
-					{
-						// Originally called ai_build_supplies
-						helper::ai_build_bunker(town_copy, player);
-						helper::ai_build_turret(town_copy, player);
-					}
-					return;
+			} else {
+				Unit* main_building = town->main_building;
+				if (!main_building || main_building->status & UnitStatus::Completed || main_building->id != UnitId::ZergHachirosk) {
+					helper::ai_get_old_peons(town, 1);
 				}
 			}
+
+			u32 existing_count = 0;
+			for (u32 i = 0; i < ARRAY_SIZE(town->requests); ++i) {
+				TownReq* request = &town->requests[i];
+				if (!request->count) {
+					break;
+				}
+				if (request->is_upgrade) {
+					existing_count += helper::get_upgrade_count(town, request->id);
+				} else if (request->is_tech) {
+					existing_count += helper::get_tech_count(town, request->id);
+				} else if (request->only_if_needed) {
+					existing_count += g_all_unit_count_table[request->id].player[player];
+					// Count global equivalents up
+				} else {
+					for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev) {
+						Unit* unit = worker_ai->parent;
+						if (unit->id == request->id) {
+							existing_count += 1;
+						} else {
+							existing_count += helper::ai_get_queued_count(unit, request->id);
+						}
+					}
+
+					for (BuildingAi* building_ai = town->buildings; building_ai; building_ai = building_ai->link.prev) {
+						Unit* unit = building_ai->parent;
+
+						if (unit->id == request->id) {
+							existing_count += 1;
+						} else {
+							existing_count += helper::ai_get_queued_count(unit, request->id);
+						}
+
+						// TODO: count town up equivalents (use example below)
+						switch (request->id) {
+							case UnitId::ZergHachirosk: {
+								if (unit->id == UnitId::ZergCaphrolosk) {
+									existing_count += 1;
+								} else {
+									existing_count += helper::ai_get_queued_count(unit, UnitId::ZergCaphrolosk);
+								}								
+							} break;
+						}
+					}
+				}
+				if (town->in_battle) {
+					continue; // TODO: make sure this is in correct place using IDA
+				}
+				u32 requested_count = request->count;
+				if (request->id == builder_id && requested_count > town->worker_limit) {
+					requested_count = town->worker_limit; // This is not supporting multiple worker ids properly (would have to count all worker ids in the town)
+				}
+				if (existing_count < requested_count) {
+					u32 new_count = requested_count - existing_count;
+					u32 priority_subtract = 0;
+					for (u32 i = 0; i < new_count; ++i) {
+						u32 new_priority = request->priority;
+						if (request->is_upgrade || request->is_tech) {
+							if (g_aiscript_controller[player].ai_flags.is_use_map_settings) {
+								if (priority_subtract <= request->priority) {
+									new_priority = request->priority - priority_subtract;
+									priority_subtract += 1;
+								} else {
+									new_priority = 0;
+								}
+								g_aiscript_controller[player].ai_flags.upgrades_finished = false;
+							}
+						}
+
+						/*
+						if (!(g_aiscript_controller[player].ai_flags.is_use_map_settings) && !request->is_upgrade && !request->is_tech) {
+							if (request->id == main_building_id && g_game_minerals[player] < 600) {
+								new_priority = 150;
+							}
+						}
+						*/
+
+						u32 request_type = 0;
+						u32 mineral_cost = 0;
+						u32 vespene_cost = 0;
+						if (request->is_tech) {
+							request_type = 6;
+							mineral_cost = techdata_dat::mineral_cost[request->id];
+							vespene_cost = techdata_dat::vespene_cost[request->id];
+						} else if (request->is_upgrade || units_dat::base_property[request->id] & UnitProperty::Addon) {
+							request_type = 5;
+							mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
+							vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
+						} else if (units_dat::base_property[request->id] & UnitProperty::Worker) {
+							request_type = 4;
+							mineral_cost = units_dat::mineral_cost[request->id];
+							vespene_cost = units_dat::vespene_cost[request->id];
+						} else {
+							request_type = 2;
+							mineral_cost = units_dat::mineral_cost[request->id];
+							vespene_cost = units_dat::vespene_cost[request->id];
+						}
+
+						g_aiscript_controller[player].mineral_needed += mineral_cost;
+						g_aiscript_controller[player].vespene_needed += vespene_cost;
+						helper::ai_add_spending_request(request->id, player, request_type, new_priority, town);
+					}
+				}
+			}
+		}
+
+		AiTown* last_town = 0;
+		for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+			if (town->worker_count > 1 || (town->worker_count == 1 && town->main_building && race == RaceId::Protoss)) {
+				hooks::ai_build_refinery(town);
+			}
+			last_town = town;
+		}
+		if (last_town) {
+			if (can_have_more_workers) {
+				for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+					Unit* main_building = town->main_building;
+					if (main_building && main_building->status & UnitStatus::Completed) {
+						if (town->worker_count < town->worker_limit) {
+							helper::ai_get_old_peons(town, 1u);
+						}
+					}
+				}
+			}
+			if (last_town) {
+				// Originally called ai_build_supplies
+				helper::ai_build_bunker(last_town, player);
+				helper::ai_build_turret(last_town, player);
+			}
+			return;
 		}
 	}
 }

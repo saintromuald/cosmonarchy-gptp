@@ -875,7 +875,7 @@ struct AiTown
 	Unit* building_scv;					//	0x28
 	Unit* mineral;						//	0x2c
 	Unit* gas_buildings[3];				//	0x30
-	TownReq town_units[0x64];			//	0x3c
+	TownReq requests[0x64];				//	0x3c
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
@@ -906,10 +906,10 @@ struct AiFlags;
 struct AI_Main
 {
 	u32 mineral_needed;					/*0000*/
-	u32 gas_needed;						/*0004*/
+	u32 vespene_needed;					/*0004*/
 	u32 supply_needed;					/*0008*/
-	u32 minerals_available;				/*000C*/
-	u32 gas_available;					/*0010*/
+	u32 mineral_available;				/*000C*/
+	u32 vespene_available;				/*0010*/
 	u32 supply_available;				/*0014*/
 	SpendingRequest requests[63];		/*0018*/
 	u8 request_count;					/*0210*/
