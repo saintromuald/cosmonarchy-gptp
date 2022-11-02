@@ -2638,7 +2638,6 @@ namespace scbw {
 			military_add_spending_request(player, unit_id, guard_ai->current_home, priority); // Intentionally using military, since we don't want the base unit to take over the guard
 		}
 		helper::ai_add_spending_request(unit_id, player, RequestType::Guard, priority, guard_ai);
-
 	}
 
 	// Based on the function at 0x00462670 -Veeq7
