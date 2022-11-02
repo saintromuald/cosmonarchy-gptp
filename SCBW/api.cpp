@@ -9,6 +9,7 @@
 #include <globals.h>
 #include "hooks/target_related.h"
 #include "hooks/unit_ai.h"
+#include "ai_layouts.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -2591,6 +2592,28 @@ namespace scbw {
 			if (unit->id == UnitId::TerranSpiderMine) {
 				unit->remove();
 			}
+		}
+	}
+
+	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority) {
+		u32 base_unit_id = find_unit_base(unit_id);
+		if (base_unit_id != UnitId::None) {
+			u32 base_count = town_count_units(town, base_unit_id);
+			if (base_count < count) {
+				town_add_spending_request(town, count - base_count, base_unit_id, priority);
+			}
+		}
+
+		u32 request_type = 3;
+		if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
+			request_type = 4;
+		} else if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
+			request_type = 7;
+		}
+		g_aiscript_controller[town->player].mineral_needed += units_dat::mineral_cost[unit_id] * count;
+		g_aiscript_controller[town->player].vespene_needed += units_dat::vespene_cost[unit_id] * count;
+		for (u32 i = 0; i < count; ++i) {
+			helper::ai_add_spending_request(unit_id, town->player, request_type, priority, town);
 		}
 	}
 }

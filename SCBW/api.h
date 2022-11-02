@@ -674,4 +674,5 @@ namespace scbw
 	bool is_attack_region(AiRegion* ai_region);
 	bool unit_id_spawns_ocsal_larva(u32 unit_id);
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
+	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority);
 }

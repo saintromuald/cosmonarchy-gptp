@@ -153,7 +153,7 @@ void update_layouts() {
 				continue;
 			}
 			AiLayoutsTown* layouts_town = get_layouts_town(town);
-			u32 base_unit_id = find_unit_base_merge(placeholder->unit_id);
+			u32 base_unit_id = find_unit_root_merge(placeholder->unit_id);
 			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
 					placeholder->requested = true;
@@ -171,7 +171,7 @@ void update_layouts() {
 				can_place_unit(base_unit_id, placeholder->position, i) &&
 				units_dat::base_property[base_unit_id] & UnitProperty::Building &&
 				town_has_down_equivalent(town, base_unit_id) &&
-				town_number_of_equivalents_up(town, base_unit_id) < placeholder->request_count) {
+				town_count_up_equivalents(town, base_unit_id) < placeholder->request_count) {
 				// Lock adding new requests until this request is started
 				placeholder->color = graphics::YELLOW;
 				break;
@@ -264,6 +264,15 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	return best_resarea;
 }
 
+u32 find_unit_base(u32 unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].to) {
+			return equivalents[i].from;
+		}
+	}
+	return UnitId::None;
+}
+
 AiUnitEquivalent find_unit_equivalent_down(u32 unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
 		if (unit_id == equivalents[i].to && !equivalents[i].merge_requests) {
@@ -282,44 +291,6 @@ AiUnitEquivalent find_unit_equivalent_up(u32 unit_id) {
 	return {UnitId::None, UnitId::None, 0};
 }
 
-u32 town_has_down_equivalent(AiTown* town, u32 unit_id) {
-	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
-	if (equivalent.from != UnitId::None) {
-		return count_units_in_town(town, equivalent.from);
-	}
-	return true;
-}
-
-u32 town_number_of_equivalents_up(AiTown* town, u32 unit_id) {
-	u32 count = count_units_in_town(town, unit_id);
-	if (unit_id == UnitId::ZergCagrantColony) {
-		count += town_number_of_equivalents_up(town, UnitId::ZergSurkithColony);
-		count += town_number_of_equivalents_up(town, UnitId::ZergSpraithColony);
-		count += town_number_of_equivalents_up(town, UnitId::ZergLarvoskColony);
-	} else {
-		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
-		if (equivalent.to != UnitId::None) {
-			count += town_number_of_equivalents_up(town, equivalent.to);
-		}
-	}
-	return count;
-}
-
-u32 player_number_of_equivalents_up(u32 player, u32 unit_id) {
-	u32 count = g_all_unit_count_table[unit_id].player[player];
-	if (unit_id == UnitId::ZergCagrantColony) {
-		count += player_number_of_equivalents_up(player, UnitId::ZergSurkithColony);
-		count += player_number_of_equivalents_up(player, UnitId::ZergSpraithColony);
-		count += player_number_of_equivalents_up(player, UnitId::ZergLarvoskColony);
-	} else {
-		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
-		if (equivalent.to != UnitId::None) {
-			count += player_number_of_equivalents_up(player, equivalent.to);
-		}
-	}
-	return count;
-}
-
 u32 find_unit_merge(u32 unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
 		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
@@ -329,13 +300,51 @@ u32 find_unit_merge(u32 unit_id) {
 	return UnitId::None;
 }
 
-u32 find_unit_base_merge(u32 unit_id) {
-    for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
-        if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
-            return find_unit_base_merge(equivalents[i].from);
-        }
-    }
-    return unit_id;
+u32 find_unit_root_merge(u32 unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
+			return find_unit_root_merge(equivalents[i].from);
+		}
+	}
+	return unit_id;
+}
+
+u32 town_has_down_equivalent(AiTown* town, u32 unit_id) {
+	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
+	if (equivalent.from != UnitId::None) {
+		return town_count_units(town, equivalent.from);
+	}
+	return true;
+}
+
+u32 town_count_up_equivalents(AiTown* town, u32 unit_id) {
+	u32 count = town_count_units(town, unit_id);
+	if (unit_id == UnitId::ZergCagrantColony) {
+		count += town_count_up_equivalents(town, UnitId::ZergSurkithColony);
+		count += town_count_up_equivalents(town, UnitId::ZergSpraithColony);
+		count += town_count_up_equivalents(town, UnitId::ZergLarvoskColony);
+	} else {
+		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
+		if (equivalent.to != UnitId::None) {
+			count += town_count_up_equivalents(town, equivalent.to);
+		}
+	}
+	return count;
+}
+
+u32 player_count_up_equivalents(u32 player, u32 unit_id) {
+	u32 count = g_all_unit_count_table[unit_id].player[player];
+	if (unit_id == UnitId::ZergCagrantColony) {
+		count += player_count_up_equivalents(player, UnitId::ZergSurkithColony);
+		count += player_count_up_equivalents(player, UnitId::ZergSpraithColony);
+		count += player_count_up_equivalents(player, UnitId::ZergLarvoskColony);
+	} else {
+		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
+		if (equivalent.to != UnitId::None) {
+			count += player_count_up_equivalents(player, equivalent.to);
+		}
+	}
+	return count;
 }
 
 void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, u32 unit_id) {
@@ -433,7 +442,7 @@ void sort_layouts(AiLayouts* layouts) {
 	qsort(layouts->placeholders, layouts->placeholders_count, sizeof(AiPlaceholder), compare_base_layout);
 }
 
-u32 count_units_in_town(AiTown* town, u32 unit_id) {
+u32 town_count_units(AiTown* town, u32 unit_id) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
 		UnitAi* unit_ai = unit->unit_ai;
@@ -517,7 +526,7 @@ bool can_build_placeholder(AiLayouts* layouts, AiTown* town, AiPlaceholder* plac
 	u32 unit_id = placeholder->unit_id;
 
 	// Check tech availability
-	u32 base_unit_id = find_unit_base_merge(unit_id);
+	u32 base_unit_id = find_unit_root_merge(unit_id);
 	if (!hooks::create_unit_id_allowed(base_unit_id, town->player, false) ||
 		(unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town->player, true))) {
 		return false;
