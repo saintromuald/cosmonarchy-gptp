@@ -897,25 +897,29 @@ namespace hooks
 				continue;
 			}
 
-			u32 existing_count = 0;
 			for (u32 i = 0; i < ARRAY_SIZE(town->requests); ++i) {
 				TownReq* request = &town->requests[i];
+
 				if (!request->count) {
 					break;
 				}
+
+				u32 existing_count = 0;
 				if (request->is_upgrade) {
-					existing_count += helper::get_upgrade_count(town, request->id);
+					existing_count = helper::get_upgrade_count(town, request->id);
 				} else if (request->is_tech) {
-					existing_count += helper::get_tech_count(town, request->id);
+					existing_count = helper::get_tech_count(town, request->id);
 				} else if (request->only_if_needed) {
-					existing_count += player_number_of_equivalents_up(player, request->id);
+					existing_count = player_number_of_equivalents_up(player, request->id);
 				} else {
-					existing_count += town_number_of_equivalents_up(town, request->id);
+					existing_count = town_number_of_equivalents_up(town, request->id);
 				}
+
 				u32 requested_count = request->count;
 				if (request->id == builder_id && requested_count > town->worker_limit) {
 					requested_count = town->worker_limit; // This is not supporting multiple worker ids properly (would have to count all worker ids in the town)
 				}
+
 				if (existing_count < requested_count) {
 					u32 new_count = requested_count - existing_count;
 					u32 priority_subtract = 0;
@@ -948,7 +952,7 @@ namespace hooks
 							request_type = 6;
 							mineral_cost = techdata_dat::mineral_cost[request->id];
 							vespene_cost = techdata_dat::vespene_cost[request->id];
-						} else if (request->is_upgrade || units_dat::base_property[request->id] & UnitProperty::Addon) {
+						} else if (request->is_upgrade) {
 							request_type = 5;
 							mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
 							vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
@@ -957,7 +961,7 @@ namespace hooks
 							mineral_cost = units_dat::mineral_cost[request->id];
 							vespene_cost = units_dat::vespene_cost[request->id];
 						} else {
-							request_type = 2;
+							request_type = units_dat::base_property[request->id] & UnitProperty::Addon ? 7 : 3;
 							mineral_cost = units_dat::mineral_cost[request->id];
 							vespene_cost = units_dat::vespene_cost[request->id];
 						}

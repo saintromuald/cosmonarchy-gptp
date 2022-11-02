@@ -344,6 +344,6 @@ namespace hooks
 		jump_patch(ai_player_need_priority_wrapper,				0x0045BE1F, 2);
 		jump_patch(ai_update_guard_needs_wrapper,				0x004630C0, 1);
 	//	jump_patch(ai_make_guard_wrapper,						0x0043A010, 1);
-	//	jump_patch(ai_add_spending_request_from_towns_wrapper,	0x00436320, 1);
+		jump_patch(ai_add_spending_request_from_towns_wrapper,	0x00436320, 1);
 	}
 }
