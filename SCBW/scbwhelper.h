@@ -740,7 +740,7 @@ namespace helper {
 	s32 _fastcall airSplashProc(Unit* unit, Bullet* bullet);														// 0048B150
 	s32 _fastcall airSplashProc2(Unit* unit, Bullet* bullet);														// 0048B730
 	bool unitHasNoMainOrderType(Unit* unit);																		// 00475A50
-	s32 setEventUnitComplete();																						// 004C36C0
+	s32 set_unit_event_complete();																					// 004C36C0
 
 	// For find_best_unit
 	Unit** find_all_units(Box16* coords);																			// 004308A0

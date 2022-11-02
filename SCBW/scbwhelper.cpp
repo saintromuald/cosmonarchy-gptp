@@ -7706,7 +7706,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	s32 setEventUnitComplete()
+	s32 set_unit_event_complete()
 	{
 		const u32 Func_setEventUnitComplete = 0x004C36C0;
 		static s32 result;
