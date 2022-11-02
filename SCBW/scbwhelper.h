@@ -1464,6 +1464,9 @@ namespace helper {
 	Unit* get_unit_powerup(Unit* unit);																										// 004014E0
 	void droleth_build_excisant(Unit* unit);																								// 0045D790
 
+	void cancel_queued_trains(AiTown* town);																								// 004326A0
+	u32 get_upgrade_count(AiTown* town, u32 upgrade_id);																					// 004325A0
+	u32 get_tech_count(AiTown* town, u32 tech_id);																							// 00432530
 	u16 ai_build_bunker(AiTown* town, u32 player);																							// 0043EBB0
 	u32 ai_build_turret(AiTown* town, u32 player);																							// 0043AAE0
 }

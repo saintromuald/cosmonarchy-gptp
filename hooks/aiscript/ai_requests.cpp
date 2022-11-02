@@ -3,6 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include "logger.h"
+#include "ai_layouts.h"
 
 namespace hooks
 {
@@ -877,18 +878,23 @@ namespace hooks
 			} break;
 		}
 
-		s32 can_have_more_workers = 0;
-		for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+		s32 has_excess_workers = false;
+		AiTown* town = 0;
+		for (town = gi_ai_active_town_array[player].first; town; town = town->prev) {
 			helper::cancel_queued_trains(town);
 			if (town->workers) {
 				if (town->worker_count > town->worker_limit) {
-					can_have_more_workers = 1;
+					has_excess_workers = true;
 				}
 			} else {
 				Unit* main_building = town->main_building;
 				if (!main_building || main_building->status & UnitStatus::Completed || main_building->id != UnitId::ZergHachirosk) {
 					helper::ai_get_old_peons(town, 1);
 				}
+			}
+
+			if (town->in_battle) {
+				continue;
 			}
 
 			u32 existing_count = 0;
@@ -902,41 +908,9 @@ namespace hooks
 				} else if (request->is_tech) {
 					existing_count += helper::get_tech_count(town, request->id);
 				} else if (request->only_if_needed) {
-					existing_count += g_all_unit_count_table[request->id].player[player];
-					// Count global equivalents up
+					existing_count += player_number_of_equivalents_up(player, request->id);
 				} else {
-					for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev) {
-						Unit* unit = worker_ai->parent;
-						if (unit->id == request->id) {
-							existing_count += 1;
-						} else {
-							existing_count += helper::ai_get_queued_count(unit, request->id);
-						}
-					}
-
-					for (BuildingAi* building_ai = town->buildings; building_ai; building_ai = building_ai->link.prev) {
-						Unit* unit = building_ai->parent;
-
-						if (unit->id == request->id) {
-							existing_count += 1;
-						} else {
-							existing_count += helper::ai_get_queued_count(unit, request->id);
-						}
-
-						// TODO: count town up equivalents (use example below)
-						switch (request->id) {
-							case UnitId::ZergHachirosk: {
-								if (unit->id == UnitId::ZergCaphrolosk) {
-									existing_count += 1;
-								} else {
-									existing_count += helper::ai_get_queued_count(unit, UnitId::ZergCaphrolosk);
-								}								
-							} break;
-						}
-					}
-				}
-				if (town->in_battle) {
-					continue; // TODO: make sure this is in correct place using IDA
+					existing_count += town_number_of_equivalents_up(town, request->id);
 				}
 				u32 requested_count = request->count;
 				if (request->id == builder_id && requested_count > town->worker_limit) {
@@ -994,17 +968,15 @@ namespace hooks
 					}
 				}
 			}
-		}
 
-		AiTown* last_town = 0;
-		for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
 			if (town->worker_count > 1 || (town->worker_count == 1 && town->main_building && race == RaceId::Protoss)) {
 				hooks::ai_build_refinery(town);
 			}
-			last_town = town;
 		}
-		if (last_town) {
-			if (can_have_more_workers) {
+
+		// Last town handling
+		if (town) {
+			if (has_excess_workers) {
 				for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
 					Unit* main_building = town->main_building;
 					if (main_building && main_building->status & UnitStatus::Completed) {
@@ -1014,10 +986,10 @@ namespace hooks
 					}
 				}
 			}
-			if (last_town) {
+			if (town) {
 				// Originally called ai_build_supplies
-				helper::ai_build_bunker(last_town, player);
-				helper::ai_build_turret(last_town, player);
+				helper::ai_build_bunker(town, player);
+				helper::ai_build_turret(town, player);
 			}
 			return;
 		}

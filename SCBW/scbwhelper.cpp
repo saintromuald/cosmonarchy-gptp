@@ -10187,7 +10187,7 @@ namespace helper {
 		return result;
 	}
 
-	void ai_get_oldpeons(AiTown* town, u32 count) {
+	void ai_get_old_peons(AiTown* town, u32 count) {
 		const u32 func_address = 0x004355C0;
 		__asm {
 			PUSHAD
@@ -12317,6 +12317,19 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	u32 get_tech_count(AiTown* town, u32 tech_id) {
+		static u32 result;
+		const u32 func_address = 0x00432530;
+		__asm {
+			PUSHAD
+			MOV EAX, town
+			MOV ESI, tech_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
 	}
 
 	u16 ai_build_bunker(AiTown* town, u32 player) {

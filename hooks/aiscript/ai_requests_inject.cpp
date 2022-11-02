@@ -244,7 +244,6 @@ namespace
 		return 80;
 	}
 
-
 	void __declspec(naked) ai_player_need_priority_wrapper() { // 0045BE1F
 		static const u32 jmp_address = 0x0045BE26;
 		static u32 priority;

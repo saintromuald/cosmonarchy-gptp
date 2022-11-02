@@ -107,8 +107,9 @@ u32 ai_get_next_custom_expo(AiTown* main_town);
 
 AiUnitEquivalent find_unit_equivalent_down(u32 unit_id);
 AiUnitEquivalent find_unit_equivalent_up(u32 unit_id);
-u32 has_down_equivalent(AiTown* town, u32 unit_id);
-u32 number_of_equivalents_up(AiTown* town, u32 unit_id);
+u32 town_has_down_equivalent(AiTown* town, u32 unit_id);
+u32 town_number_of_equivalents_up(AiTown* town, u32 unit_id);
+u32 player_number_of_equivalents_up(u32 player, u32 unit_id);
 u32 find_unit_merge(u32 unit_id);
 u32 find_unit_base_merge(u32 unit_id);
 

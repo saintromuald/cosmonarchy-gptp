@@ -170,8 +170,8 @@ void update_layouts() {
 				can_build_placeholder(layouts, town, placeholder) &&
 				can_place_unit(base_unit_id, placeholder->position, i) &&
 				units_dat::base_property[base_unit_id] & UnitProperty::Building &&
-				has_down_equivalent(town, base_unit_id) &&
-				number_of_equivalents_up(town, base_unit_id) < placeholder->request_count) {
+				town_has_down_equivalent(town, base_unit_id) &&
+				town_number_of_equivalents_up(town, base_unit_id) < placeholder->request_count) {
 				// Lock adding new requests until this request is started
 				placeholder->color = graphics::YELLOW;
 				break;
@@ -282,7 +282,7 @@ AiUnitEquivalent find_unit_equivalent_up(u32 unit_id) {
 	return {UnitId::None, UnitId::None, 0};
 }
 
-u32 has_down_equivalent(AiTown* town, u32 unit_id) {
+u32 town_has_down_equivalent(AiTown* town, u32 unit_id) {
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.from != UnitId::None) {
 		return count_units_in_town(town, equivalent.from);
@@ -290,19 +290,34 @@ u32 has_down_equivalent(AiTown* town, u32 unit_id) {
 	return true;
 }
 
-u32 number_of_equivalents_up(AiTown* town, u32 unit_id) {
-	u32 i = count_units_in_town(town, unit_id);
+u32 town_number_of_equivalents_up(AiTown* town, u32 unit_id) {
+	u32 count = count_units_in_town(town, unit_id);
 	if (unit_id == UnitId::ZergCagrantColony) {
-		i += number_of_equivalents_up(town, UnitId::ZergSurkithColony);
-		i += number_of_equivalents_up(town, UnitId::ZergSpraithColony);
-		i += number_of_equivalents_up(town, UnitId::ZergLarvoskColony);
+		count += town_number_of_equivalents_up(town, UnitId::ZergSurkithColony);
+		count += town_number_of_equivalents_up(town, UnitId::ZergSpraithColony);
+		count += town_number_of_equivalents_up(town, UnitId::ZergLarvoskColony);
 	} else {
 		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
 		if (equivalent.to != UnitId::None) {
-			i += number_of_equivalents_up(town, equivalent.to);
+			count += town_number_of_equivalents_up(town, equivalent.to);
 		}
 	}
-	return i;
+	return count;
+}
+
+u32 player_number_of_equivalents_up(u32 player, u32 unit_id) {
+	u32 count = g_all_unit_count_table[unit_id].player[player];
+	if (unit_id == UnitId::ZergCagrantColony) {
+		count += player_number_of_equivalents_up(player, UnitId::ZergSurkithColony);
+		count += player_number_of_equivalents_up(player, UnitId::ZergSpraithColony);
+		count += player_number_of_equivalents_up(player, UnitId::ZergLarvoskColony);
+	} else {
+		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
+		if (equivalent.to != UnitId::None) {
+			count += player_number_of_equivalents_up(player, equivalent.to);
+		}
+	}
+	return count;
 }
 
 u32 find_unit_merge(u32 unit_id) {

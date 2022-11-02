@@ -1212,7 +1212,7 @@ namespace hooks
 				//	worker_ai->wait_timer = 10;
 				//	worker_ai->last_update_second = *g_elapsed_time_seconds;
 				//	worker_ai->reassign_count += 1;
-				//	helper::ai_get_old_peons(worker_ai->town, 1u);
+				//	helper::ai_get_oldpeons(worker_ai->town, 1u);
 				} else {
 					u32 timer = 5;
 					if (unit_has_uninterruptable_order(worker)
