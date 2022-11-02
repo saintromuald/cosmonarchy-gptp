@@ -1456,16 +1456,16 @@ namespace hooks {
 			return TECH_HIDDEN;
 		}
 
-		bool hasAddon = false;
-		s32 addonId = -1; 
+		bool has_addon = false;
+		s32 addon_id = -1; 
 		if (unit->building.addon)
 		{
-			hasAddon = true;
-			addonId = unit->building.addon->id;
+			has_addon = true;
+			addon_id = unit->building.addon->id;
 		}
-		bool inAir = unit->status & UnitStatus::InAir;
-		bool isTraining = unit->build_queue[unit->build_queue_slot] != UnitId::None;
-		bool is_adding_on = unit->build_queue[unit->build_queue_slot] != UnitId::None && !(units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon);
+		bool in_air = unit->status & UnitStatus::InAir;
+		bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
+		bool is_adding_on = unit->build_queue[unit->build_queue_slot] != UnitId::None && (units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon);
 
 		switch (unit->id)
 		{
@@ -1540,7 +1540,7 @@ namespace hooks {
 				{
 					case UnitId::TerranMason:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1548,7 +1548,7 @@ namespace hooks {
 					}
 					case UnitId::TerranComsatStation:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1557,7 +1557,7 @@ namespace hooks {
 					case UnitId::TerranMissileSilo:
 					case UnitId::TerranQuarry:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1598,7 +1598,7 @@ namespace hooks {
 				{
 					case UnitId::TerranComsatStation:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1607,7 +1607,7 @@ namespace hooks {
 					case UnitId::TerranMissileSilo:
 					case UnitId::TerranQuarry:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1627,7 +1627,7 @@ namespace hooks {
 					case UnitId::TerranArmistice:
 					case UnitId::TerranPythean:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1641,7 +1641,7 @@ namespace hooks {
 				{
 					case UnitId::TerranMedbay:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1649,7 +1649,7 @@ namespace hooks {
 					}
 					case UnitId::TerranCovertOps:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1663,7 +1663,7 @@ namespace hooks {
 					case UnitId::TerranHarakan:
 					case UnitId::TerranCyprian:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1672,11 +1672,11 @@ namespace hooks {
 					case UnitId::TerranCleric:
 					case UnitId::TerranShaman:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranMedbay)
+						if (addon_id == UnitId::TerranMedbay)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1685,11 +1685,11 @@ namespace hooks {
 					case UnitId::TerranEidolon:
 					case UnitId::TerranSavant:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranCovertOps)
+						if (addon_id == UnitId::TerranCovertOps)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1704,7 +1704,7 @@ namespace hooks {
 				{
 					case UnitId::TerranGuildhall:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1716,7 +1716,7 @@ namespace hooks {
 					}
 					case UnitId::TerranTinkerersTower:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1726,7 +1726,7 @@ namespace hooks {
 					case UnitId::TerranHeracles:
 					case UnitId::TerranApostle:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1735,11 +1735,11 @@ namespace hooks {
 					case UnitId::TerranSiren:
 					case UnitId::TerranStriga:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranTinkerersTower)
+						if (addon_id == UnitId::TerranTinkerersTower)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1748,11 +1748,11 @@ namespace hooks {
 					case UnitId::TerranOlympian:
 					case UnitId::TerranAutocrat:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranGuildhall)
+						if (addon_id == UnitId::TerranGuildhall)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1768,7 +1768,7 @@ namespace hooks {
 					case UnitId::TerranSevenstep:
 					case UnitId::TerranHypnagogue:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1782,7 +1782,7 @@ namespace hooks {
 				{
 					case UnitId::TerranThroneroom:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1794,7 +1794,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAmphitheater:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1804,7 +1804,7 @@ namespace hooks {
 					case UnitId::TerranHeir:
 					case UnitId::TerranHorseman:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1813,11 +1813,11 @@ namespace hooks {
 					case UnitId::TerranThespian:
 					case UnitId::TerranSilvertongue:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranAmphitheater)
+						if (addon_id == UnitId::TerranAmphitheater)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1826,11 +1826,11 @@ namespace hooks {
 					case UnitId::TerranEmperor:
 					case UnitId::TerranJester:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranThroneroom)
+						if (addon_id == UnitId::TerranThroneroom)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1844,7 +1844,7 @@ namespace hooks {
 				{
 					case UnitId::TerranMachineShop:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1856,7 +1856,7 @@ namespace hooks {
 					}
 					case UnitId::TerranScrapyard:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1866,7 +1866,7 @@ namespace hooks {
 					case UnitId::TerranGoliath:
 					case UnitId::TerranCyclops:
 					{
-						if (inAir || is_adding_on)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1875,11 +1875,11 @@ namespace hooks {
 					case UnitId::TerranBlackjack:
 					case UnitId::TerranMatador:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranScrapyard)
+						if (addon_id == UnitId::TerranScrapyard)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1888,11 +1888,11 @@ namespace hooks {
 					case UnitId::TerranPhalanxTankMode:
 					case UnitId::TerranMadrigal:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranMachineShop)
+						if (addon_id == UnitId::TerranMachineShop)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1908,7 +1908,7 @@ namespace hooks {
 					case UnitId::TerranDurendal:
 					case UnitId::TerranCataphract:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1922,7 +1922,7 @@ namespace hooks {
 				{
 					case UnitId::TerranBioticBase:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1934,7 +1934,7 @@ namespace hooks {
 					}
 					case UnitId::TerranFutureStation:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1944,7 +1944,7 @@ namespace hooks {
 					case UnitId::TerranCuirass:
 					case UnitId::TerranPazuzu:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1953,11 +1953,11 @@ namespace hooks {
 					case UnitId::TerranClaymore:
 					case UnitId::TerranPenumbra:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranFutureStation)
+						if (addon_id == UnitId::TerranFutureStation)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1966,11 +1966,11 @@ namespace hooks {
 					case UnitId::TerranAnticthon:
 					case UnitId::TerranAion:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranBioticBase)
+						if (addon_id == UnitId::TerranBioticBase)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1986,7 +1986,7 @@ namespace hooks {
 					case UnitId::TerranAncile:
 					case UnitId::TerranTrojan:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2000,7 +2000,7 @@ namespace hooks {
 				{
 					case UnitId::TerranMunitionsBay:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2008,7 +2008,7 @@ namespace hooks {
 					}
 					case UnitId::TerranControlTower:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2022,7 +2022,7 @@ namespace hooks {
 					case UnitId::TerranWyvern:
 					case UnitId::TerranValkyrie:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2031,11 +2031,11 @@ namespace hooks {
 					case UnitId::TerranSundog:
 					case UnitId::TerranSalamander:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranMunitionsBay)
+						if (addon_id == UnitId::TerranMunitionsBay)
 						{
 							return TECH_ACTIVE;
 						}
@@ -2044,11 +2044,11 @@ namespace hooks {
 					case UnitId::TerranAzazel:
 					case UnitId::TerranSeraph:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranControlTower)
+						if (addon_id == UnitId::TerranControlTower)
 						{
 							return TECH_ACTIVE;
 						}
@@ -2062,7 +2062,7 @@ namespace hooks {
 				{
 					case UnitId::TerranParticleAccelerator:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2074,7 +2074,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAerie:
 					{
-						if (hasAddon || isTraining)
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2084,7 +2084,7 @@ namespace hooks {
 					case UnitId::TerranMinotaur:
 					case UnitId::TerranMagnetar:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2093,11 +2093,11 @@ namespace hooks {
 					case UnitId::TerranPegasus:
 					case UnitId::TerranHippogriff:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranAerie)
+						if (addon_id == UnitId::TerranAerie)
 						{
 							return TECH_ACTIVE;
 						}
@@ -2106,11 +2106,11 @@ namespace hooks {
 					case UnitId::TerranOberon:
 					case UnitId::TerranPhobos:
 					{
-						if (inAir)
+						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addonId == UnitId::TerranParticleAccelerator)
+						if (addon_id == UnitId::TerranParticleAccelerator)
 						{
 							return TECH_ACTIVE;
 						}
