@@ -144,6 +144,7 @@ void update_layouts() {
 	// Request Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
+		bool is_expanding = has_expanding_town(i);
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 			AiPlaceholder* placeholder = &layouts->placeholders[j];
 			AiTown* town = placeholder->town;
@@ -161,7 +162,7 @@ void update_layouts() {
 			if (!placeholder->should_request) {
 				continue;
 			}
-			if (has_expanding_town(town->player)) {
+			if (is_expanding) {
 				placeholder->color = graphics::PURPLE;
 				continue;
 			}
@@ -596,7 +597,6 @@ void init_placeholder(AiTown* town, AiPlaceholder* placeholder) {
 	if (placeholder->inited) {
 		return;
 	}
-	placeholder->inited = true;
 
 	u32 merge = find_unit_merge(placeholder->unit_id);
 	if (merge != UnitId::None) {
@@ -605,6 +605,7 @@ void init_placeholder(AiTown* town, AiPlaceholder* placeholder) {
 		init_placeholder(town, &copy);
 	}
 
+	placeholder->inited = true;
 	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
 	}
