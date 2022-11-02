@@ -13317,6 +13317,20 @@ namespace helper
 		return result;
 	}
 
+	u32 get_tech_count(AiTown* town, u32 tech_id)
+	{
+		static u32 result;
+		const u32 func_address = 0x00432530;
+		__asm {
+			PUSHAD
+			MOV EAX, town
+			MOV ESI, tech_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+	}
+
 	u16 ai_build_bunker(void* param, u32 player)
 	{
 		static u32 result;

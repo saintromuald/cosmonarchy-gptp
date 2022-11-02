@@ -765,7 +765,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					layouts_town->worker_limit = worker_count;
 					layouts_town->worker_maynard = worker_count;
 					if (worker_count) {
-						helper::ai_get_old_peons(town, worker_count);
+						helper::ai_get_oldpeons(town, worker_count);
 					}
 					if (attach_to_nearest_resarea) {
 						town->resarea = scbw::get_closest_resarea(pos);

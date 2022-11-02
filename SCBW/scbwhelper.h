@@ -1209,7 +1209,7 @@ namespace helper {
 	Unit* get_resource_area_gas(u32 resarea, Unit** gas_1, Unit** gas_2, Unit** gas_3);					// 00444460
 	Unit* get_resource_area_mineral(u32 resarea);														// 004445E0
 	u32 get_optimal_mineral_workers(u32 resarea, u32 player);											// 004439B0
-	void ai_get_old_peons(AiTown* town, u32 count);														// 004355C0
+	void ai_get_oldpeons(AiTown* town, u32 count);														// 004355C0
 
 	bool target_is_inside_minimum_range(Unit* unit, Unit* target);										// 004764D0
 	bool is_unit_enemy(Unit* unit, Unit* target);														// 0047B910
@@ -1464,6 +1464,9 @@ namespace helper {
 	Unit* get_unit_powerup(Unit* unit);																										// 004014E0
 	void droleth_build_excisant(Unit* unit);																								// 0045D790
 
+	void cancel_queued_trains(AiTown* town);																								// 004326A0
+	u32 get_upgrade_count(AiTown* town, u32 upgrade_id);																					// 004325A0
+	u32 get_tech_count(AiTown* town, u32 tech_id);																							// 00432530
 	u16 ai_build_bunker(void* param, u32 player);																							// 0043EBB0
 	u32 ai_build_turret(void* param, u32 player);																							// 0043AAE0
 }

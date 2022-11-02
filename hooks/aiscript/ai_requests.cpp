@@ -1164,7 +1164,7 @@ namespace hooks
 						break;
 					}
 				}
-				AiTown* town_copy = town;
+				town_copy = town;
 				u32 town_worker_count = town->worker_count;
 				u32 race_again = g_player_table[town->player].race;
 				if (town_worker_count > 1u
