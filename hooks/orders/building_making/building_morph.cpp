@@ -608,30 +608,6 @@ namespace hooks
 	// Hooked to clear placement area (and maybe fix the AI stacked Droleth bug). -Pr0nogo
 	void orders_drone_land(Unit* unit) // 004E9AA0
 	{
-		Image* underlay; // eax
-		Image* v7; // eax
-		Order* order_queue; // eax
-		Image* underlay_2; // eax
-		Order* order_queue_2; // eax
-		Image* underlay_3; // eax
-		Sprite* sprite_2; // eax
-		unsigned __int16 queue_slot_id; // di
-		signed int can_build; // eax
-		Unit* unit_at_tile; // eax
-		int builder_id; // ecx
-		int acquire_move_target; // eax
-		u32 status; // eax
-		int is_greater; // eax
-		int acquire_move_target_2; // eax
-		u32 v21; // eax
-		Image* underlay_4; // eax
-		u32 status_2; // eax
-		Order* order_queue_3; // eax
-		int tgt_x; // ebx
-		int tgt_y; // edi
-		int move_target; // eax
-		int unmovable_2; // [esp+10h] [ebp-4h]
-
 		if (unit->unit_ai)
 		{
 			unit->status |= UnitStatus::IsGathering;
@@ -655,7 +631,7 @@ namespace hooks
 							{
 								if (underlay->vertical_offset)
 								{
-									underlay->flags |= 1u;
+									underlay->flags |= ImageFlags::Redraw;
 									underlay->vertical_offset = 0;
 								}
 							}
@@ -666,10 +642,10 @@ namespace hooks
 							if (unmovable == 2)
 							{
 								helper::play_building_land_sound(unit);
-								order_queue = unit->order_queue_head;
+								Order* order_queue = unit->order_queue_head;
 								if (order_queue)
 								{
-									if (order_queue->order_id == 26)
+									if (order_queue->order_id == OrderId::DroneBuild)
 									{
 										helper::remove_order_from_unit_queue(order_queue, unit);
 									}
@@ -677,17 +653,17 @@ namespace hooks
 								underlay = unit->sprite->images.tail;
 								if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
 								{
-									underlay->flags |= 1u;
+									underlay->flags |= ImageFlags::Redraw;
 									underlay->vertical_offset = 7;
 								}
 								helper::refresh_sprite_data(unit->sprite);
-								helper::order_immediate(unit, 0x96u);
+								helper::order_immediate(unit, OrderId::ResetCollision1);
 								helper::force_order_done(unit);
 							}
 							else
 							{
-								order_queue_2 = unit->order_queue_head;
-								if (order_queue_2 && order_queue_2->order_id == 26)
+								Order* order_queue = unit->order_queue_head;
+								if (order_queue && order_queue->order_id == OrderId::DroneBuild)
 								{
 									helper::move_unit(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 								}
@@ -696,11 +672,11 @@ namespace hooks
 									underlay = unit->sprite->images.tail;
 									if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
 									{
-										underlay->flags |= 1u;
+										underlay->flags |= ImageFlags::Redraw;
 										underlay->vertical_offset = 7;
 									}
 									helper::refresh_sprite_data(unit->sprite);
-									helper::order_immediate(unit, 0x96u);
+									helper::order_immediate(unit, OrderId::ResetCollision1);
 								}
 								*control_under_mouse = 0;
 								*control_under_mouse_value = 0;
@@ -714,66 +690,88 @@ namespace hooks
 				}
 				return;
 			}
-			sprite_2 = unit->sprite;
-			if (unit->move_target.pt.x == sprite_2->position.x && unit->move_target.pt.y == sprite_2->position.y)
+			if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y)
 			{
-				unmovable_2 = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
+				u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
 				if (((unit->status & UnitStatus::Unmovable) != 0) != -1)
 				{
-					queue_slot_id = unit->build_queue[unit->build_queue_slot];
-					can_build = helper::can_build_on_tile_location(unit, unit->player, (unit->order_target.pt.x - units_dat::building_dimensions[queue_slot_id].x / 2) / 32, (unit->order_target.pt.y - units_dat::building_dimensions[queue_slot_id].y / 2) / 32, queue_slot_id, 0, 0, 1, 1);
-					if (queue_slot_id != 149 || unmovable_2 != 1)
+					u32 queue_slot_id = unit->build_queue[unit->build_queue_slot];
+					u32 can_build = helper::can_build_on_tile_location(unit, unit->player,  (unit->order_target.pt.x - units_dat::building_dimensions[queue_slot_id].x / 2) / 32,
+																							(unit->order_target.pt.y - units_dat::building_dimensions[queue_slot_id].y / 2) / 32,
+																							 queue_slot_id, 0, 0, 1, 1);
+					if (queue_slot_id != UnitId::ZergExcisant || unmovable != 1)
 					{
-						if (!can_build && unmovable_2 != 2)
+						if (!can_build && unmovable != 2)
 						{
-							goto LABEL_42;
+							if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128))
+							{
+								if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) // Was BYTE1(unit->status)
+								{
+									Image* underlay = unit->sprite->images.tail;
+									if (underlay->palette_type == 10)
+									{
+										underlay->flags |= ImageFlags::DontUpdate;
+									}
+									u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
+									unit->main_order_state = 2;
+									unit->status = status;
+								}
+								return;
+							}
 						}
 					}
 					else if (!can_build)
 					{
-						unit_at_tile = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, 188);
-						if (unit_at_tile && helper::is_target_within_min_range(unit, 0x20u, unit_at_tile))
+						Unit* unit_at_tile = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, 188);
+						if (unit_at_tile && helper::is_target_within_min_range(unit, 32, unit_at_tile))
 						{
-							builder_id = unit->id;
+							u32 builder_id = unit->id;
 							unit->status &= 0xFFEFFFFF;
 							unit->sprite->elevation = units_dat::elevation[builder_id] + 1;
 							helper::order_targeting_nothing(0x96u, unit, 0);
 							helper::order_targeting_nothing(units_dat::return_to_idle_order[unit->id], unit, 0);
-							acquire_move_target = helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-							if (acquire_move_target)
+							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
 							{
-								status = unit->status | UnitStatus::CanNotReceiveOrders;
+								u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
 								unit->main_order_state = 2;
 								unit->status = status;
 							}
 							return;
 						}
-					LABEL_42:
-						if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 0x80u))
+						if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128))
 						{
-							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & 0x30) // Was BYTE1(unit->status)
+							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) // Was BYTE1(unit->status)
 							{
-								underlay_4 = unit->sprite->images.tail;
-								if (underlay_4->palette_type == 10)
+								Image* underlay = unit->sprite->images.tail;
+								if (underlay->palette_type == 10)
 								{
-									underlay_4->flags |= 4u;
+									underlay->flags |= ImageFlags::DontUpdate;
 								}
-								status_2 = unit->status | UnitStatus::CanNotReceiveOrders;
+								u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
 								unit->main_order_state = 2;
-								unit->status = status_2;
+								unit->status = status;
 							}
 							return;
 						}
-						goto LABEL_48;
-					}
-				LABEL_48:
-					helper::play_building_land_sound(unit);
-					order_queue_3 = unit->order_queue_head;
-					if (order_queue_3)
-					{
-						if (order_queue_3->order_id == OrderId::DroneBuild)
+						helper::play_building_land_sound(unit);
+						Order* order_queue = unit->order_queue_head;
+						if (order_queue)
 						{
-							helper::remove_order_from_unit_queue(order_queue_3, unit);
+							if (order_queue->order_id == OrderId::DroneBuild)
+							{
+								helper::remove_order_from_unit_queue(order_queue, unit);
+							}
+						}
+						helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
+						return;
+					}
+					helper::play_building_land_sound(unit);
+					Order* order_queue = unit->order_queue_head;
+					if (order_queue)
+					{
+						if (order_queue->order_id == OrderId::DroneBuild)
+						{
+							helper::remove_order_from_unit_queue(order_queue, unit);
 						}
 					}
 					helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
@@ -783,9 +781,9 @@ namespace hooks
 		}
 		else
 		{
-			tgt_x = unit->order_target.pt.x;
-			tgt_y = unit->order_target.pt.y - 7;
-			move_target = helper::set_move_target_xy(tgt_x, tgt_y, unit);
+			u32 tgt_x = unit->order_target.pt.x;
+			u32 tgt_y = unit->order_target.pt.y - 7;
+			bool move_target = helper::set_move_target_xy(tgt_x, tgt_y, unit);
 			if (tgt_x != unit->next_target_waypoint.x || tgt_y != unit->next_target_waypoint.y)
 			{
 				unit->next_target_waypoint.x = tgt_x;

@@ -610,49 +610,36 @@ namespace hooks
 						return;
 					}
 					unit->main_order_state = 1;
-					goto LABEL_12;
+					goto place_addon;
 				}
-				helper::issue_order_targeting_ground(unit, 0x48u, unit->order_target.pt.x, unit->order_target.pt.y);
+				helper::issue_order_targeting_ground(unit, OrderId::Liftoff, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
 			else
 			{
-				helper::issue_order_targeting_ground(unit, 0x47u, unit->order_target.pt.x, unit->order_target.pt.y);
+				helper::issue_order_targeting_ground(unit, OrderId::BuildingLand, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
-			helper::do_order(unit, 0x24u, unit->order_target.pt.x, unit->order_target.pt.y, 0);
+			helper::do_order(unit, OrderId::PlaceAddon, unit->order_target.pt.x, unit->order_target.pt.y, 0);
 			return;
 		}
 		if (unit->main_order_state != 1)
 		{
 			return;
 		}
-	LABEL_12:
+	place_addon:
 		Sprite* unit_sprite = unit->sprite;
 		if  (unit->move_target.pt.x == unit_sprite->position.x
 		&&   unit->move_target.pt.y == unit_sprite->position.y
-		&& ((unit->status & 0x80000) != 0) != -1)
+		&& ((unit->status & UnitStatus::Unmovable) != 0) != -1)
 		{
+			// Get addon position - this is probably wrong right now, the original IDA code was a disaster.
 			u32 addon_id = unit->building.addon_build_id;
 			Point16 dimensions = units_dat::building_dimensions[addon_id];
-			u32 max_hp = units_dat::max_hitpoints[addon_id + 122];
-			u32 unit_id_mp = 4 * unit->id;
-			unit->order_target.pt.x += (units_dat::building_dimensions[0].x + unit_id_mp) / -2;
-			unit->order_target.pt.y += (units_dat::building_dimensions[0].y + unit_id_mp) / -2;
-			unit_id_mp = unit->order_target.pt.y;
-			u32 dims_x = dimensions.x;
-			u32 dims_y = dimensions.y;
-			unit->order_target.pt.x += max_hp + dimensions.x / 2;
-			u16 dims_fucker = unit->order_target.pt.y + dimensions.y / 2;
-			unit->order_target.pt.y = HIWORD(max_hp) + dims_fucker;
-			u32 gas_cost = units_dat::vespene_cost[addon_id];
+			unit->order_target.pt.x += units_dat::addon_placement[addon_id].x + dimensions.x / 2;
+			unit->order_target.pt.y += units_dat::addon_placement[addon_id].y + dimensions.y / 2;
+
 			u32 player = unit->player;
 			g_ai_minerals_reserve[player] = units_dat::mineral_cost[addon_id];
-			g_ai_vespene_reserve[player] = gas_cost;
-			if (!helper::has_supplies_for_unit(player, addon_id, 1)) // TODO: delete this and tidy above
-			{
-			LABEL_20:
-				helper::to_idle(unit);
-				return;
-			}
+			g_ai_vespene_reserve[player] = units_dat::vespene_cost[addon_id];
 			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
 			{
 				helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
@@ -662,9 +649,10 @@ namespace hooks
 			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
 			{
 				helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
-				goto LABEL_20;
+				helper::to_idle(unit);
+				return;
 			}
-			if (helper::can_build_on_tile_location(unit, unit->player, unit->order_target.pt.x / 32 - dims_x / 32 / 2, unit->order_target.pt.y / 32 - dims_y / 32 / 2, unit->building.addon_build_id, 0, 0, 1, 0))
+			if (helper::can_build_on_tile_location(unit, unit->player, unit->order_target.pt.x / 32 - dimensions.x / 32 / 2, unit->order_target.pt.y / 32 - dimensions.y / 32 / 2, unit->building.addon_build_id, 0, 0, 1, 0))
 			{
 				helper::play_worker_error_sound(unit, 856);
 				helper::to_idle(unit);
@@ -676,9 +664,9 @@ namespace hooks
 				{
 					helper::subtract_queue_cost(unit->player);
 					helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
-					helper::set_secondary_order(unit, 37);
+					helper::set_secondary_order(unit, OrderId::BuildAddon);
 					unit->current_build_unit = addon;
-					helper::issue_order_targeting_nothing(addon, 0x2Cu);
+					helper::issue_order_targeting_nothing(addon, OrderId::BuildSelf1);
 					helper::ai_training_overlord(addon, unit);
 					addon->connected_unit = unit;
 					helper::set_unit_event_complete();

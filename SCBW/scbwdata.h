@@ -603,11 +603,11 @@ namespace units_dat {
 	SCBW_DATA_REF(u16*,			sound_yes_first, unitsDat[34].address);					// 00663C10
 	SCBW_DATA_REF(u16*,			sound_yes_last, unitsDat[35].address);					// 00661440
 	SCBW_DATA_REF(Point16*,		building_dimensions, unitsDat[36].address);				// 00662860	// Placement Box in PyDAT
-	SCBW_DATA_REF(Point16*,		addon_placement, unitsDat[37].address);					// 006626E0
+	SCBW_DATA_REF(Point16*,		addon_placement, unitsDat[37].address);					// 006626E0 // Addon Position in PyDAT
 	SCBW_DATA_REF(Box16*,		unit_bounds, unitsDat[38].address);						// 006617C8	// Unit Dimensions in PyDAT
 	SCBW_DATA_REF(u16*,			portrait_id, unitsDat[39].address);						// 00662F88
 	SCBW_DATA_REF(u16*,			mineral_cost, unitsDat[40].address);					// 00663888
-	SCBW_DATA_REF(u16*,			vespene_cost, unitsDat[41].address);						// 0065FD00
+	SCBW_DATA_REF(u16*,			vespene_cost, unitsDat[41].address);					// 0065FD00
 	SCBW_DATA_REF(u16*,			time_cost, unitsDat[42].address);						// 00660428
 	SCBW_DATA_REF(u16*,			requirement_offsets, unitsDat[43].address);				// 00660A70 // "Restriction Address" according to EUDDB
 	SCBW_DATA_REF(GroupFlag*,	group_flags, unitsDat[44].address);						// 006637A0

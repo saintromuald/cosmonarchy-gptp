@@ -15,6 +15,7 @@ namespace hooks
 	void drone_morph_standard(Unit* unit, u32 id);				// 0045D890
 	Unit* begin_gas_building(Unit* unit, u16 unit_id);			// 004678A0
 	void orders_drone_build(Unit* builder);						// 0045E090
+	void orders_drone_land(Unit* unit);							// 004E9AA0
 
 	void inject_building_morph_hooks();
 }

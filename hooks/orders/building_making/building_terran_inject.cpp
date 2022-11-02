@@ -79,7 +79,7 @@ namespace
 		}
 	}
 
-	const u32 updatePlacementWrapperJmp1 = 0x0048DD49;
+	const u32 update_placement_wrapper_jump_1 = 0x0048DD49;
 	void __declspec(naked) update_placement_simple_wrapper()
 	{
 		static u16 addonOffsetY;
@@ -94,11 +94,11 @@ namespace
 		{
 			POPAD
 			MOV AX, addonOffsetY
-			JMP updatePlacementWrapperJmp1
+			JMP update_placement_wrapper_jump_1
 		}
 	}
 
-	const u32 updatePlacementWrapperJmp2 = 0x0048DD68;
+	const u32 update_placement_wrapper_jump_2 = 0x0048DD68;
 	void __declspec(naked) update_placement_simple_wrapper_2()
 	{
 		static u16 addonOffsetX;
@@ -113,7 +113,7 @@ namespace
 		{
 			POPAD
 			MOV AX, addonOffsetX
-			JMP updatePlacementWrapperJmp2
+			JMP update_placement_wrapper_jump_2
 		}
 	}
 
@@ -145,29 +145,51 @@ namespace
 		}
 	}
 
-	void placementSimpleWrappers()
+	void __declspec(naked) orders_place_addon_wrapper() { // 004E6880
+		static u32 unused;
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			MOV unused, ESI
+			PUSHAD
+		}
+		hooks::orders_place_addon(unused, unit);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void placement_simple_wrappers()
 	{
 		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
 		jump_patch(update_placement_simple_wrapper_2,	0x0048DD61, 2);
 	}
 
-	const u32 orders_PlaceAddon_E6B91 = 0x004E6B91;
-	void __declspec(naked) orders_PlaceAddon_patch() {
+	const u32 orders_place_addon_E6891 = 0x004E6B91;
+	void __declspec(naked) orders_place_addon_patch() {
 		__asm {
 			PUSH	EAX
-			MOV		EAX, [EDI + 0xC]//unit->sprite
-			MOV		AL, [EAX + 0xA]//unit->sprite->player
+			MOV		EAX, [EDI + 0xC]	// unit->sprite
+			MOV		AL, [EAX + 0xA]		// unit->sprite->player
 			PUSH	ECX
-			MOV		ECX, [EBX + 0xC]//addon->sprite
-			MOV[ECX + 0xA], AL//addon->sprite->player = unit->sprite->player
+			MOV		ECX, [EBX + 0xC]	// addon->sprite
+			MOV[ECX + 0xA], AL			// addon->sprite->player = unit->sprite->player
 			POP		ECX
 			POP		EAX
 			MOV[EBX + 0x80], EDI
-			JMP		orders_PlaceAddon_E6B91
+			JMP		orders_place_addon_E6891
 		}
 	}
 
-	void __declspec(naked) completeAddon_patch() {
+	void __declspec(naked) complete_addon_patch() {
 		__asm {
 			MOV		EDX, [EDI + 0xC]
 			MOVZX	EDX, byte ptr[EDX + 0xA]
@@ -187,9 +209,10 @@ namespace hooks
 	//	jump_patch(refresh_screen_wrapper,					0x0048DDC0, 4);
 	//	jump_patch(btnsact_place_addon_wrapper,				0x00423D10, 4);
 		jump_patch(play_building_complete_sound_wrapper,	0x0048F310, 3);
+	//	jump_patch(orders_place_addon_wrapper,				0x004E6880, 1);
 
-	//	placementSimpleWrappers(); // bugged
-		jump_patch(orders_PlaceAddon_patch,					0x004E6B8B, 1);
-		call_patch(completeAddon_patch,						0x00463D69, 0);
+	//	placement_simple_wrappers(); // bugged
+		jump_patch(orders_place_addon_patch,				0x004E6B8B, 1);
+		call_patch(complete_addon_patch,					0x00463D69, 0);
 	}
 }
