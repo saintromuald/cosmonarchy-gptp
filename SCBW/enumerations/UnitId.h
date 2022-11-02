@@ -230,12 +230,14 @@ namespace UnitId
 		ZergLarvoskColony									= 216,		// Young Chrysalis
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
-		ZergSibraelosk										= 227,		// Terran Gas Tank Type 2
+		ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
 		ZergRakzogthRoost									= 303,
 		ZergAxtothAxis										= 328,
 		ZergBegrozithBarrow									= 329,
 		ZergChokralgantChazsal								= 330,
-		ZergNephrilosk										= 350,
+		ZergNephrilosk										= 350,		// Morphed from Gathtelosk
+		ZergOcsalColony										= 354,
+		ZergKazitrithColony									= 355,
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
@@ -389,8 +391,8 @@ namespace UnitId
 		Powerup_KhalisCrystal								= 129,
 		ZergInfestedCommandCenter							= 130,
 		ZergHachirosk										= 131,
-		ZergCaphrolosk										= 132,
-		ZergGathtelosk										= 133,
+		ZergCaphrolosk										= 132,	// Was Lair, morphed from Hachirosk
+		ZergGathtelosk										= 133,	// Was Hive, morphed from Hachirosk
 		ZergNydusCesiant									= 134,
 		ZergHydrokDen										= 135,
 		ZergElthisthMound									= 136,
