@@ -111,15 +111,17 @@ AiUnitEquivalent find_unit_equivalent_up(u32 unit_id);
 u32 find_unit_merge(u32 unit_id);
 u32 find_unit_root_merge(u32 unit_id);
 
+u32 town_count_units(AiTown* town, u32 unit_id);
 u32 town_has_down_equivalent(AiTown* town, u32 unit_id);
 u32 town_count_up_equivalents(AiTown* town, u32 unit_id);
+
+u32 player_count_units(u32 player, u32 unit_id);
 u32 player_count_up_equivalents(u32 player, u32 unit_id);
 
 void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, u32 unit_id);
 void add_placeholder(CHKUnit* unit, u32 player);
 void sort_layouts(AiLayouts* layouts);
 
-u32 town_count_units(AiTown* town, u32 unit_id);
 bool unit_has_creep(u32 unit_id, u32 x, u32 y);
 bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player);
 bool is_basic_townhall(u32 unit_id);

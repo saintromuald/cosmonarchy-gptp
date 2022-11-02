@@ -178,8 +178,9 @@ void update_layouts() {
 					}
 
 					bool is_building = units_dat::base_property[placeholder->unit_id] & UnitProperty::Building;
+					bool not_guard = units_dat::computer_ai_internal[placeholder->unit_id] & 2;
 					bool should_build = town_count_up_equivalents(town, placeholder->unit_id) < layouts_town->request_count[placeholder->unit_id];
-					if ((is_building && should_build) || (placeholder->guard_ai && !placeholder->guard_ai->parent)) {
+					if (((is_building || not_guard) && should_build) || (placeholder->guard_ai && !placeholder->guard_ai->parent)) {
 						request_placeholder(town, layouts_town, placeholder);
 						placeholder->color = graphics::ORANGE;
 					}
@@ -336,6 +337,26 @@ u32 find_unit_root_merge(u32 unit_id) {
 	return unit_id;
 }
 
+u32 town_count_units(AiTown* town, u32 unit_id) {
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
+		UnitAi* unit_ai = unit->unit_ai;
+		if (unit_ai && (unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building)) {
+			if (unit_ai->worker_ai.town == town) {
+				if (unit->id == unit_id) {
+					count += 1;
+				} else {
+					count += helper::ai_get_queued_count(unit, unit_id);
+				}
+			}
+		} else if (unit->id == unit_id) {
+			// Could add closest town check, but for now we will just count any unit that doesn't belong to a town
+			count += 1;
+		}
+	}
+	return count;
+}
+
 u32 town_has_down_equivalent(AiTown* town, u32 unit_id) {
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.from != UnitId::None) {
@@ -359,8 +380,12 @@ u32 town_count_up_equivalents(AiTown* town, u32 unit_id) {
 	return count;
 }
 
+u32 player_count_units(u32 player, u32 unit_id) {
+	return g_all_unit_count_table[unit_id].player[player];
+}
+
 u32 player_count_up_equivalents(u32 player, u32 unit_id) {
-	u32 count = g_all_unit_count_table[unit_id].player[player];
+	u32 count = player_count_units(player, unit_id);
 	if (unit_id == UnitId::ZergCagrantColony) {
 		count += player_count_up_equivalents(player, UnitId::ZergSurkithColony);
 		count += player_count_up_equivalents(player, UnitId::ZergSpraithColony);
@@ -467,26 +492,6 @@ static s32 compare_base_layout(const void* a, const void* b) {
 
 void sort_layouts(AiLayouts* layouts) {
 	qsort(layouts->placeholders, layouts->placeholders_count, sizeof(AiPlaceholder), compare_base_layout);
-}
-
-u32 town_count_units(AiTown* town, u32 unit_id) {
-	u32 count = 0;
-	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
-		UnitAi* unit_ai = unit->unit_ai;
-		if (unit_ai && (unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building)) {
-			if (unit_ai->worker_ai.town == town) {
-				if (unit->id == unit_id) {
-					count += 1;
-				} else {
-					count += helper::ai_get_queued_count(unit, unit_id);
-				}
-			}
-		} else if (unit->id == unit_id) {
-			// Could add closest town check, but for now we will just count any unit that doesn't belong to a town
-			count += 1;
-		}
-	}
-	return count;
 }
 
 bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
@@ -618,6 +623,8 @@ void request_placeholder(AiTown* town, AiLayoutsTown* layouts_town, AiPlaceholde
 		*/
 
 		scbw::town_add_spending_request(town, 1, placeholder->unit_id, placeholder->priority);
+	} else if (units_dat::computer_ai_internal[placeholder->unit_id] & 2) {
+		scbw::military_add_spending_request(town->player, placeholder->unit_id, placeholder->position, placeholder->priority);
 	} else {
 		if (!placeholder->guard_ai) {
 			placeholder->guard_ai = scbw::create_guard_ai(town->player, placeholder->unit_id, placeholder->position);

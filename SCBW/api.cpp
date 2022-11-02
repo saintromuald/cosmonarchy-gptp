@@ -2622,7 +2622,7 @@ namespace scbw {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		u32 base_unit_id = find_unit_base(unit_id);
-		if (base_unit_id != UnitId::None) {
+		if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id)) {
 			military_add_spending_request(player, unit_id, position, priority);
 		}
 		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, scbw::get_ai_region(player, scbw::get_region_id(position)));
@@ -2635,7 +2635,7 @@ namespace scbw {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		u32 base_unit_id = find_unit_base(unit_id);
-		if (base_unit_id != UnitId::None) {
+		if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id)) {
 			military_add_spending_request(player, unit_id, guard_ai->current_home, priority); // Intentionally using military, since we don't want the base unit to take over the guard
 		}
 		helper::ai_add_spending_request(unit_id, player, RequestType::Guard, priority, guard_ai);
