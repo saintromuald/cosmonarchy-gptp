@@ -1463,4 +1463,7 @@ namespace helper {
 	void subtract_queue_cost(u8 player);																									// 0042CE40
 	Unit* get_unit_powerup(Unit* unit);																										// 004014E0
 	void droleth_build_excisant(Unit* unit);																								// 0045D790
+
+	u16 ai_build_bunker(void* param, u32 player);																							// 0043EBB0
+	u32 ai_build_turret(void* param, u32 player);																							// 0043AAE0
 }

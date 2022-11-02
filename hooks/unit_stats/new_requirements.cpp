@@ -1875,7 +1875,7 @@ namespace hooks {
 					case UnitId::TerranBlackjack:
 					case UnitId::TerranMatador:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1888,7 +1888,7 @@ namespace hooks {
 					case UnitId::TerranPhalanxTankMode:
 					case UnitId::TerranMadrigal:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1944,7 +1944,7 @@ namespace hooks {
 					case UnitId::TerranCuirass:
 					case UnitId::TerranPazuzu:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1953,7 +1953,7 @@ namespace hooks {
 					case UnitId::TerranClaymore:
 					case UnitId::TerranPenumbra:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1966,7 +1966,7 @@ namespace hooks {
 					case UnitId::TerranAnticthon:
 					case UnitId::TerranAion:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2022,7 +2022,7 @@ namespace hooks {
 					case UnitId::TerranWyvern:
 					case UnitId::TerranValkyrie:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2031,7 +2031,7 @@ namespace hooks {
 					case UnitId::TerranSundog:
 					case UnitId::TerranSalamander:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2044,7 +2044,7 @@ namespace hooks {
 					case UnitId::TerranAzazel:
 					case UnitId::TerranSeraph:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2084,7 +2084,7 @@ namespace hooks {
 					case UnitId::TerranMinotaur:
 					case UnitId::TerranMagnetar:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2093,7 +2093,7 @@ namespace hooks {
 					case UnitId::TerranPegasus:
 					case UnitId::TerranHippogriff:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2106,7 +2106,7 @@ namespace hooks {
 					case UnitId::TerranOberon:
 					case UnitId::TerranPhobos:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}

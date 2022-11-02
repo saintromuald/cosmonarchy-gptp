@@ -902,6 +902,7 @@ struct SpendingRequest
 	void*	val;
 };
 
+struct AiFlags;
 struct AI_Main
 {
 	u32 mineral_needed;					/*0000*/
@@ -916,7 +917,7 @@ struct AI_Main
 	u8 ai_nuke_rate;					/*0212*/
 	u8 ai_attacks;						/*0213*/
 	u32 ai_last_nuke_time;				/*0214*/
-	struct
+	struct AiFlags
 	{
 		u16 is_secure_finished : 1;			/*0001*/
 		u16 is_town_started : 1;			/*0002*/

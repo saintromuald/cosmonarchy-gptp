@@ -11154,7 +11154,7 @@ namespace helper
 		return result;
 	}
 
-	void ai_get_old_peons(AiTown* town, u32 count) {
+	void ai_get_oldpeons(AiTown* town, u32 count) {
 		const u32 func_address = 0x004355C0;
 		__asm {
 			PUSHAD
@@ -13289,5 +13289,61 @@ namespace helper
 			CALL func_address
 			POPAD
 		}
+	}
+
+	void cancel_queued_trains(AiTown* town)
+	{
+		const u32 func_address = 0x004326A0;
+		__asm {
+			PUSHAD
+			PUSH town
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 get_upgrade_count(AiTown* town, u32 upgrade_id)
+	{
+		static u32 result;
+		const u32 func_address = 0x004325A0;
+		__asm {
+			PUSHAD
+			MOV EAX, town
+			MOV EDI, upgrade_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u16 ai_build_bunker(void* param, u32 player)
+	{
+		static u32 result;
+		const u32 func_address = 0x0043EBB0;
+		__asm {
+			PUSHAD
+			PUSH player
+			PUSH param
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	u32 ai_build_turret(void* param, u32 player)
+	{
+		static u32 result;
+		const u32 func_address = 0x0043AAE0;
+		__asm {
+			PUSHAD
+			PUSH player
+			PUSH param
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
