@@ -1459,4 +1459,8 @@ namespace helper {
 
 	bool unit_has_path_to_destination(Unit* unit, s32 pos_x, s32 pos_y);																	// 0049CB60
 	Unit** get_all_units_in_region(u16 region_id);																							// 00430B50
+
+	void subtract_queue_cost(u8 player);																									// 0042CE40
+	Unit* get_unit_powerup(Unit* unit);																										// 004014E0
+	void droleth_build_excisant(Unit* unit);																								// 0045D790
 }

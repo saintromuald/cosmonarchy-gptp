@@ -416,6 +416,26 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) orders_drone_build_wrapper() { // 0045E090
+		static Unit* builder;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV builder, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::orders_drone_build(builder);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 extern const u32 Func_IsRemorphingBuilding;
@@ -441,5 +461,6 @@ namespace hooks
 		jump_patch(morph_special_state_setup_wrapper,									0x0045D2A1);
 		jump_patch(drone_morph_standard_wrapper,										0x0045D890, 0);
 		jump_patch(begin_gas_building_wrapper,											0x004678A0, 0);
+	//	jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
 	}
 }

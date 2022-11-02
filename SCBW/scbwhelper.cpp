@@ -13254,4 +13254,40 @@ namespace helper
 		}
 		return result;
 	}
+
+	void subtract_queue_cost(u8 player)
+	{
+		const u32 func_address = 0x0042CE40;
+		__asm {
+			PUSHAD
+			MOV AL, player
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* get_unit_powerup(Unit* unit)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004014E0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void droleth_build_excisant(Unit* unit)
+	{
+		const u32 func_address = 0x0045D790;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

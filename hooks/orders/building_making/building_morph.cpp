@@ -511,4 +511,97 @@ namespace hooks
 		target->hitpoints = units_dat::max_hitpoints[unit_id] / 10;
 		return target;
 	}
+
+	// Hooked to clear placement area (and maybe fix the AI stacked Droleth bug). -Pr0nogo
+	void orders_drone_build(Unit* builder) // 0045E090
+	{
+		Sprite* builder_sprite = builder->sprite;
+		Image* underlay = builder_sprite->images.tail;
+		if (builder_sprite->position.x != builder->order_target.pt.x
+		||  builder_sprite->position.y != builder->order_target.pt.y)
+		{
+			// Change shadow pos
+			if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
+			{
+				underlay->flags |= ImageFlags::Redraw;
+				underlay->vertical_offset = 7;
+			}
+			helper::refresh_sprite_data(builder->sprite);
+			Order* order_head = builder->order_queue_head;
+			if (order_head)
+			{
+				helper::insert_order_before(builder, order_head, OrderId::ResetCollision1, 0, 0, 0, 228);
+			}
+			else
+			{
+				helper::perform_another_order(OrderId::ResetCollision1, 0, builder, 228, {}, 0);
+			}
+			helper::force_order_done(builder);
+		}
+		else
+		{
+			u32 building_id = builder->build_queue[builder->build_queue_slot];
+			u16 pos_x = builder_sprite->position.x;
+			u16 pos_y = builder_sprite->position.y;
+			u32 dims_x = units_dat::building_dimensions[building_id].x;
+			u32 dims_y = units_dat::building_dimensions[building_id].y;
+			u32 tile_y = (pos_y - (dims_y >> 1)) / 32;
+			if (helper::can_build_on_tile_location(builder, builder->player, (pos_x - (dims_x >> 1)) / 32, tile_y, building_id, 0, 0, 1, 1) // This is probably WRONG
+			|| builder_sprite->position.x != builder->order_target.pt.x
+			|| builder_sprite->position.y != builder->order_target.pt.y)
+			{
+				helper::play_worker_error_sound(builder, 856);
+				if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
+				{
+					underlay->flags |= ImageFlags::Redraw;
+					underlay->vertical_offset = 7;
+				}
+				helper::refresh_sprite_data(builder->sprite);
+				helper::order_immediate(builder, OrderId::ResetCollision1);
+				helper::force_order_done(builder);
+				return;
+			}
+
+			u32 player = builder->player;
+			g_ai_minerals_reserve[player] = units_dat::mineral_cost[building_id];
+			g_ai_vespene_reserve[player] = units_dat::vespene_cost[building_id];
+
+			// @Todo: Tidy this into not being inlined
+			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
+			{
+				helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
+				helper::set_shadow_y(builder->sprite, 7);
+				helper::refresh_sprite_data(builder->sprite);
+				helper::order_immediate(builder, OrderId::ResetCollision1);
+				helper::force_order_done(builder);
+			}
+			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
+			{
+				helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
+				helper::set_shadow_y(builder->sprite, 7);
+				helper::refresh_sprite_data(builder->sprite);
+				helper::order_immediate(builder, OrderId::ResetCollision1);
+				helper::force_order_done(builder);
+			}
+
+			helper::subtract_queue_cost(builder->player);
+			Unit* powerup = helper::get_unit_powerup(builder);
+			if (powerup)
+			{
+				helper::drop_powerup(builder);
+			}
+			if (building_id == UnitId::ZergExcisant)
+			{
+				helper::droleth_build_excisant(builder);
+			}
+			else
+			{
+				drone_morph_standard(builder, building_id);
+			}
+			if (powerup)
+			{
+				helper::move_unit(powerup, powerup->powerup_origin.x, powerup->powerup_origin.y);
+			}
+		}
+	}
 }
