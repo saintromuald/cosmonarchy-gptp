@@ -2626,7 +2626,6 @@ namespace scbw {
 			military_add_spending_request(player, unit_id, position, priority);
 		}
 		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, scbw::get_ai_region(player, scbw::get_region_id(position)));
-
 	}
 
 	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority) {

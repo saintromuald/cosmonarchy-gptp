@@ -189,7 +189,7 @@ namespace RequestType
 		Upgrade		= 5,
 		Tech		= 6,
 		Addon		= 7,
-		Detector	= 8,
+		Witness		= 8,
 	};
 }
 

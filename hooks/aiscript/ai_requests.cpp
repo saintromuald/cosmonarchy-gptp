@@ -191,7 +191,7 @@ namespace hooks
 				helper::ai_construct_behavior(unit, unit->unit_ai, player);
 				return true;
 			} break;
-			case RequestType::Detector:
+			case RequestType::Witness:
 			{
 				return helper::ai_make_detectors_behavior(unit, player);
 			} break;
