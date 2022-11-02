@@ -740,8 +740,7 @@ struct RegionArray
 	u8 _dc92bfc[0x4e24];
 };
 
-struct GuardAi
-{
+struct GuardAi {
 	Link<GuardAi> link;				// 0x0, 0x4
 	u8 type;						// 0x8
 	u8 times_died;					// 0x9
@@ -755,8 +754,7 @@ struct GuardAi
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
-struct WorkerAi
-{
+struct WorkerAi {
 	Link<WorkerAi> link;			// 0x0, 0x4
 	u8 type;						// 0x8
 	u8 target_resource;				// 0x9
@@ -768,8 +766,7 @@ struct WorkerAi
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
-struct BuildingAi
-{
+struct BuildingAi {
 	Link<BuildingAi> link;			// 0x0, 0x4
 	u8 type;						// 0x8
 	u8 trainQueueTypes[5];			// 0x9
@@ -780,8 +777,7 @@ struct BuildingAi
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
-struct MilitaryAi
-{
+struct MilitaryAi {
 	Link<MilitaryAi> link;			// 0x0, 0x4
 	u8 type;						// 0x8
 	u8 padding1;					// 0x9
@@ -791,8 +787,7 @@ struct MilitaryAi
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
 
-struct UnitAi
-{
+struct UnitAi {
 	union {
 		struct {
 			Link<UnitAi> link;			// 0x0, 0x4
@@ -805,33 +800,28 @@ struct UnitAi
 	};
 };
 
-struct WorkerAiArray
-{
+struct WorkerAiArray {
 	WorkerAi worker_ais[1000];
 	WorkerAi* first_free_worker;
 };
 
-struct BuildingAiArray
-{
+struct BuildingAiArray {
 	BuildingAi building_ais[1000];
 	BuildingAi* first_free_building;
 };
 
-struct MilitaryAiArray
-{
+struct MilitaryAiArray {
 	MilitaryAi military_ais[1000];
 	MilitaryAi* first_free_military;
 };
 
-struct GuardAiArray
-{
+struct GuardAiArray {
 	GuardAi guard_ais[1000];
 	GuardAi* first_free_guard;
 };
 
-struct GuardAiList
-{
-	GuardAiArray* free_ais;
+struct GuardAiList {
+	GuardAiArray* guard_array;
 	GuardAi* first;
 };
 

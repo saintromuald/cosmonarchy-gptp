@@ -113,17 +113,16 @@ namespace hooks
 		return result;
 	}
 	
-	enum RequestType
-	{
-		RequestType_UnitMake = 0,
-		RequestType_UnitMergeMorph1 = 1,
-		RequestType_UnitMergeMorph2 = 2,
-		RequestType_ConstructMorph = 3,
-		RequestType_Train = 4,
-		RequestType_Upgrade = 5,
-		RequestType_Research = 6,
-		RequestType_PlaceAddon = 7,
-		RequestType_MakeDetector = 8,
+	enum TaskType {
+		TaskType_UnitMake = 0,
+		TaskType_UnitMergeMorph1 = 1,
+		TaskType_UnitMergeMorph2 = 2,
+		TaskType_ConstructMorph = 3,
+		TaskType_Train = 4,
+		TaskType_Upgrade = 5,
+		TaskType_Research = 6,
+		TaskType_PlaceAddon = 7,
+		TaskType_MakeDetector = 8,
 	};
 
 	char ai_perform_task(Unit* unit) // 004361A0 -- hooked to fix AI Archon training -- Pr0nogo
@@ -174,7 +173,7 @@ namespace hooks
 			if (player_ai_data->requests->id == UnitId::ProtossArchon || player_ai_data->requests->id == UnitId::ProtossMindTyrant)
 			{
 				// Override Archon and Mind Tyrant request types
-				request_type = RequestType_Train;
+				request_type = TaskType_Train;
 			}
 		}
 		else
@@ -184,7 +183,7 @@ namespace hooks
 
 		switch (request_type)
 		{
-			case RequestType_UnitMake:
+			case TaskType_UnitMake:
 			{
 				if (!helper::ai_unit_construction_behavior(player, unit, 50))
 				{
@@ -193,36 +192,36 @@ namespace hooks
 				some_bool = 1;
 				return helper::ai_plan_do_merge_morph(player, unit, some_bool);
 			}
-			case RequestType_UnitMergeMorph1:
-			case RequestType_UnitMergeMorph2:
+			case TaskType_UnitMergeMorph1:
+			case TaskType_UnitMergeMorph2:
 			{
 				return helper::ai_plan_do_merge_morph(player, unit, some_bool);
 			}
-			case RequestType_ConstructMorph:
+			case TaskType_ConstructMorph:
 			{
 				return helper::ai_morph_behavior(player, unit, unit->unit_ai);
 			}
-			case RequestType_Train:
+			case TaskType_Train:
 			{
 				helper::ai_train_behavior(unit, unit->unit_ai, player);
 				return 1;
 			} break;
-			case RequestType_Upgrade:
+			case TaskType_Upgrade:
 			{
 				helper::ai_upgrade_behavior(unit, player);
 				return 1;
 			} break;
-			case RequestType_Research:
+			case TaskType_Research:
 			{
 				helper::ai_research_behavior(unit, player);
 				return 1;
 			} break;
-			case RequestType_PlaceAddon:
+			case TaskType_PlaceAddon:
 			{
 				helper::ai_construct_behavior(unit, unit->unit_ai, player);
 				return 1;
 			} break;
-			case RequestType_MakeDetector:
+			case TaskType_MakeDetector:
 			{
 				return helper::ai_make_detectors_behavior(unit, player);
 			} break;
@@ -651,13 +650,7 @@ namespace hooks
 			return false;
 		}
 
-		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
-			return false;
-		}
-
-		// Skip current attack force units
-		AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
-		if (scbw::is_attack_region(current_ai_region)) {
+		if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
 			return false;
 		}
 
@@ -667,19 +660,34 @@ namespace hooks
 				return false;
 			}
 
-			// Skip units from regions that don't have strength needed defined, since they are hard to assess properly
-			// We will instead let AI assign units to defense regions and then pull the units to attack waves
-			if (!current_ai_region->ground_strength_needed && !current_ai_region->air_strength_needed) {
+			// Skip guards
+			if (unit->unit_ai->type == AiType::Guard) {
 				return false;
 			}
 		}
 
-		// Skip units needed for defending regions, we take a portion of the needed force of less important regions,
-		// and only excess force of the important regions
-		u16 max_force = current_ai_region->defense_priority > 110 ? 0xffff : 100 * (*g_elapsed_time_frames / 24 / 60);
-		if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < std::min(current_ai_region->ground_strength_needed, max_force)) ||
-			(unit->air_strength    && current_ai_region->air_strength_full    - (s32)unit->air_strength    < std::min(current_ai_region->air_strength_needed,    max_force))) {
-			return false;
+		if (unit->unit_ai->type == AiType::Military) {
+			// Skip current attack force units
+			AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
+			if (scbw::is_attack_region(current_ai_region)) {
+				return false;
+			}
+
+			if (strict) {
+				// Skip units from regions that don't have strength needed defined, since they are hard to assess properly
+				// We will instead let AI assign units to defense regions and then pull the units to attack waves
+				if (!current_ai_region->ground_strength_needed && !current_ai_region->air_strength_needed) {
+					return false;
+				}
+			}
+
+			// Skip units needed for defending regions, we take a portion of the needed force of less important regions,
+			// and only excess force of the important regions
+			u16 max_force = current_ai_region->defense_priority > 110 ? 0xffff : 100 * (*g_elapsed_time_frames / 24 / 60);
+			if ((unit->ground_strength && current_ai_region->ground_strength_full - (s32)unit->ground_strength < std::min(current_ai_region->ground_strength_needed, max_force)) ||
+				(unit->air_strength    && current_ai_region->air_strength_full    - (s32)unit->air_strength    < std::min(current_ai_region->air_strength_needed,    max_force))) {
+				return false;
+			}
 		}
 
 		// Skip units that can't access the region
@@ -750,13 +758,53 @@ namespace hooks
 		}
 	}
 
+	static Unit* find_unit_for_guard(u32 player, u32 unit_id, Point16 position) {
+		Unit* best_unit = 0;
+		f32 best_score = 0;
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (unit->id != unit_id) {
+				continue;
+			}
+
+			if (!(unit->status & UnitStatus::Completed) || !helper::is_valid_for(unit->id, unit, 0)) {
+				continue;
+			}
+			
+			if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
+				continue;
+			}
+
+			AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
+			if (scbw::is_attack_region(current_ai_region)) {
+				continue;
+			}
+			if (current_ai_region->defense_priority > 110) {
+				continue;
+			}
+			
+			f32 force = unit->ground_strength + unit->air_strength;
+			if (!force) {
+				continue;
+			}
+
+			f32 distance = helper::get_path_distance_to(unit, position);
+			f32 score = distance >= 1 ? force / distance : force;
+			if (score > best_score) {
+				best_score = score;
+				best_unit = unit;
+			}
+		}
+
+		return best_unit;
+	}
+
 	// Hooked to improve AI guard handling. -Pr0nogo
 	void ai_update_guard_needs(u32 player) { // 004630C0
 		GuardAi* prev = 0;
-		for (GuardAi* guard_ai = g_first_player_guard->player[player].first; guard_ai; guard_ai = prev) {
+		for (GuardAi* guard_ai = g_player_guard_list->player[player].first; guard_ai; guard_ai = prev) {
 			prev = guard_ai->link.prev;
 			if (guard_ai->times_died >= 100) {
-				helper::delete_guard_ai(guard_ai, &g_first_player_guard->player[player]);
+				helper::delete_guard_ai(guard_ai, &g_player_guard_list->player[player]);
 			} else if (guard_ai->parent) {
 				Unit* unit = guard_ai->parent;
 				guard_ai->current_home = guard_ai->original_home;
@@ -768,19 +816,19 @@ namespace hooks
 				}
 			} else {
 				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
-				Unit* nearest_military = helper::find_nearest_available_military(player, guard_ai->unit_id, guard_ai->original_home);
-				if (nearest_military && scbw::get_distance_fast(guard_ai->original_home, nearest_military->position) < 30 * 32) {
-					helper::remove_unit_ai(nearest_military, 0);
+				Unit* unit = find_unit_for_guard(player, guard_ai->unit_id, guard_ai->original_home);
+				if (unit && scbw::get_distance_fast(guard_ai->original_home, unit->position) < 30 * 32) {
+					helper::remove_unit_ai(unit, 0);
 					guard_ai->current_home = guard_ai->original_home;
-					guard_ai->parent = nearest_military;
-					nearest_military->unit_ai = (UnitAi*)guard_ai;
-					helper::issue_order_targeting_nothing(nearest_military, OrderId::ComputerAI);
+					guard_ai->parent = unit;
+					unit->unit_ai = (UnitAi*)guard_ai;
+					helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 				}
 				// Request handling is currently in Aise, so we don't duplicate the priority system
-				//else if (!guard_ai->previous_update || *g_elapsed_time_seconds > guard_ai->previous_update + 5) {
-				//	helper::ai_request_guard(guard_ai, player);
-				//	guard_ai->previous_update = *g_elapsed_time_seconds;
-				//}
+			//	else if (!guard_ai->previous_update || *g_elapsed_time_seconds > guard_ai->previous_update + 5) {
+			//		helper::ai_request_guard(guard_ai, player);
+			//		guard_ai->previous_update = *g_elapsed_time_seconds;
+			//	}
 			}
 		}
 	}
@@ -924,11 +972,11 @@ namespace hooks
 					u32 count = requested_count - existing_count;
 					u32 priority_subtract = 0;
 					if (request->is_upgrade || request->is_tech) {
-						u32 request_type = 5;
+						u32 request_type = RequestType::Upgrade;
 						u32 mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
 						u32 vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
 						if (request->is_tech) {
-							request_type = 6;
+							request_type = RequestType::Tech;
 							mineral_cost = techdata_dat::mineral_cost[request->id];
 							vespene_cost = techdata_dat::vespene_cost[request->id];
 						}

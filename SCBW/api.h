@@ -675,4 +675,7 @@ namespace scbw
 	bool unit_id_spawns_ocsal_larva(u32 unit_id);
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
 	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority);
+	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority);
+	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority);
+	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position);
 }

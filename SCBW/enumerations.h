@@ -185,6 +185,8 @@ namespace RequestType
 		Guard		= 2,
 		Building	= 3,
 		Worker		= 4,
+		Upgrade		= 5,
+		Tech		= 6,
 		Addon		= 7,
 	};
 }

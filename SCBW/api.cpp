@@ -2116,7 +2116,7 @@ namespace scbw {
 	}
 
 	void give_ai_ex(Unit* unit) {
-		if (!unit || g_player_table[unit->player].type != PlayerType::Computer) {
+		if (!unit || unit->unit_ai || g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
 		}
 		if (units_dat::computer_ai_internal[unit->id] & 2) {
@@ -2604,16 +2604,71 @@ namespace scbw {
 			}
 		}
 
-		u32 request_type = 3;
+		u32 request_type = RequestType::Building;
 		if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
-			request_type = 4;
+			request_type = RequestType::Worker;
 		} else if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
-			request_type = 7;
+			request_type = RequestType::Addon;
 		}
 		g_aiscript_controller[town->player].mineral_needed += units_dat::mineral_cost[unit_id] * count;
 		g_aiscript_controller[town->player].vespene_needed += units_dat::vespene_cost[unit_id] * count;
 		for (u32 i = 0; i < count; ++i) {
 			helper::ai_add_spending_request(unit_id, town->player, request_type, priority, town);
 		}
+	}
+
+	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority) {
+		if (unit_id == UnitId::TerranPhalanxSiegeMode) {
+			unit_id = UnitId::TerranPhalanxTankMode;
+		}
+		u32 base_unit_id = find_unit_base(unit_id);
+		if (base_unit_id != UnitId::None) {
+			military_add_spending_request(player, unit_id, position, priority);
+		}
+		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, scbw::get_ai_region(player, scbw::get_region_id(position)));
+
+	}
+
+	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority) {
+		u32 unit_id = guard_ai->unit_id;
+		if (unit_id == UnitId::TerranPhalanxSiegeMode) {
+			unit_id = UnitId::TerranPhalanxTankMode;
+		}
+		u32 base_unit_id = find_unit_base(unit_id);
+		if (base_unit_id != UnitId::None) {
+			military_add_spending_request(player, unit_id, guard_ai->current_home, priority); // Intentionally using military, since we don't want the base unit to take over the guard
+		}
+		helper::ai_add_spending_request(unit_id, player, RequestType::Guard, priority, guard_ai);
+
+	}
+
+	// Based on the function at 0x00462670 -Veeq7
+	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position) {
+		GuardAiList* guard_list = &g_player_guard_list->player[player];
+		GuardAi* guard_ai = guard_list->guard_array->first_free_guard;
+		if (guard_ai) {
+			// Remove from free list
+			guard_list->guard_array->first_free_guard = guard_ai->link.prev;
+			if (guard_ai->link.prev) {
+				guard_ai->link.prev->link.next = 0;
+			}
+
+			// Zero init
+			*guard_ai = {};
+
+			// Add to active list
+			guard_ai->link.prev = guard_list->first;
+			if (guard_list->first) {
+				guard_list->first->link.next = guard_ai;
+			}
+			guard_list->first = guard_ai;
+
+			// Set vars
+			guard_ai->unit_id = unit_id;
+			guard_ai->type = 1;
+			guard_ai->current_home = position;
+			guard_ai->original_home = position;
+		}
+		return guard_ai;
 	}
 }

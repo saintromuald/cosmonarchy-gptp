@@ -1826,6 +1826,10 @@ namespace hooks
 				continue;
 			}
 
+			if (unit->unit_ai->type == AiType::Guard && ai_region->defense_priority <= 110) {
+				continue;
+			}
+
 			if (unit->unit_ai->type == AiType::Military) {
 				AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
 				if (current_ai_region->region == ai_region->region) {
@@ -1859,7 +1863,6 @@ namespace hooks
 			s32 ground_force = std::max(std::min((s32)unit->ground_strength, missing_ground), 0);
 			s32 air_force = std::max(std::min((s32)unit->air_strength, missing_air), 0);
 			s32 force = ground_force + air_force;
-			force *= (f64)(unit->hitpoints + unit->shields) / (units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id] * 256);
 			if (!force) {
 				continue;
 			}

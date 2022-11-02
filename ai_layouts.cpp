@@ -42,6 +42,19 @@ void init_layouts() {
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		AiLayouts* layouts = &player_layouts[i];
 		sort_layouts(layouts);
+
+		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+			AiPlaceholder* placeholder = &layouts->placeholders[j];
+			if (!(units_dat::base_property[placeholder->unit_id] & UnitProperty::Building)) {
+				for (GuardAi* guard_ai = g_player_guard_list->player[i].first; guard_ai; guard_ai = guard_ai->link.prev) {
+					if (guard_ai->original_home.x == placeholder->position.x &&
+						guard_ai->original_home.y == placeholder->position.y &&
+						guard_ai->unit_id == placeholder->unit_id) {
+						placeholder->guard_ai = guard_ai;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -82,7 +95,6 @@ void update_layouts() {
 				if ((!placeholder->town && placeholder->resarea == town->resarea) || (placeholder->town && placeholder->town == town)) {
 					placeholder->inited = false;
 					placeholder->requested = false;
-					placeholder->request_count = 0;
 					placeholder->town = town;
 					placeholder->placement_timeout = 0;
 				}
@@ -93,6 +105,7 @@ void update_layouts() {
 			}
 		}
 		if (layouts_town->inited) {
+			memset(layouts_town->request_count, 0, sizeof(layouts_town->request_count)); // Have to reset it every frame, but it's pretty costly
 			if (town->worker_limit < layouts_town->worker_limit) {
 				town->worker_limit = layouts_town->worker_limit;
 			}
@@ -154,36 +167,50 @@ void update_layouts() {
 			}
 			AiLayoutsTown* layouts_town = get_layouts_town(town);
 			u32 base_unit_id = find_unit_root_merge(placeholder->unit_id);
-			if (!placeholder->requested && can_build_placeholder(layouts, town, placeholder)) {
+			layouts_town->request_count[placeholder->unit_id] += 1;
+			if (can_build_placeholder(layouts, town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder->position, i)) {
-					placeholder->requested = true;
-					if (show_player_layouts[town->player]) {
-						scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
+					if (!placeholder->requested) {
+						placeholder->requested = true;
+						if (show_player_layouts[town->player]) {
+							scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
+						}
 					}
-					request_placeholder(town, layouts_town, placeholder);
+
+					bool is_building = units_dat::base_property[placeholder->unit_id] & UnitProperty::Building;
+					bool should_build = town_count_up_equivalents(town, placeholder->unit_id) < layouts_town->request_count[placeholder->unit_id];
+					if ((is_building && should_build) || (placeholder->guard_ai && !placeholder->guard_ai->parent)) {
+						request_placeholder(town, layouts_town, placeholder);
+						placeholder->color = graphics::ORANGE;
+					}
+
+					if (is_building && should_build &&
+						town_has_down_equivalent(town, base_unit_id)) {
+						// Lock adding new requests until this request is started
+						placeholder->color = graphics::YELLOW;
+						break;
+					}
 				} else if (placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
 					placeholder->placement_timeout++;
 					break;
 				}
 			}
-			if (placeholder->requested &&
-				can_build_placeholder(layouts, town, placeholder) &&
-				can_place_unit(base_unit_id, placeholder->position, i) &&
-				units_dat::base_property[base_unit_id] & UnitProperty::Building &&
-				town_has_down_equivalent(town, base_unit_id) &&
-				town_count_up_equivalents(town, base_unit_id) < placeholder->request_count) {
-				// Lock adding new requests until this request is started
-				placeholder->color = graphics::YELLOW;
-				break;
+			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+				AiPlaceholder* placeholder = &layouts->placeholders[j];
+				if (placeholder->guard_ai) {
+					placeholder->guard_ai->times_died = 0;
+					if (placeholder->guard_ai->parent) {
+						placeholder->color = graphics::BLUE;
+					}
+				}
 			}
-
 		}
 	}
 
 	// Draw Layouts
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		AiLayouts* layouts = &player_layouts[i];
 		if (show_player_layouts[i]) {
+			AiLayouts* layouts = &player_layouts[i];
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				AiPlaceholder* placeholder = &layouts->placeholders[j];
 				if (placeholder->is_townhall_marker) {
@@ -579,18 +606,25 @@ void init_placeholder(AiTown* town, AiPlaceholder* placeholder) {
 }
 
 void request_placeholder(AiTown* town, AiLayoutsTown* layouts_town, AiPlaceholder* placeholder) {
-	u32 merge = find_unit_merge(placeholder->unit_id);
-	if (merge != UnitId::None) {
-		AiPlaceholder copy = *placeholder;
-		copy.unit_id = merge;
-		request_placeholder(town, layouts_town, &copy);
-	}
-
-	u32 count = ++layouts_town->request_count[placeholder->unit_id];
-	placeholder->request_count = count;
 	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
-		helper::ai_build(placeholder->unit_id, false, count, town, placeholder->priority);
+		// Requesting the base unit currently handled in town_add_spending_request
+		/*
+		u32 merge = find_unit_merge(placeholder->unit_id);
+		if (merge != UnitId::None) {
+			AiPlaceholder copy = *placeholder;
+			copy.unit_id = merge;
+			request_placeholder(town, layouts_town, &copy);
+		}
+		*/
+
+		scbw::town_add_spending_request(town, 1, placeholder->unit_id, placeholder->priority);
 	} else {
-		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+		if (!placeholder->guard_ai) {
+			placeholder->guard_ai = scbw::create_guard_ai(town->player, placeholder->unit_id, placeholder->position);
+		}
+		if (placeholder->guard_ai && !placeholder->guard_ai->parent) {
+			scbw::guard_add_spending_request(town->player, placeholder->guard_ai, placeholder->priority);
+		}
+		// scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
 	}
 }
