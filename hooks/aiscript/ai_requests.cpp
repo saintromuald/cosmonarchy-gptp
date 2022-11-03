@@ -986,4 +986,41 @@ namespace hooks
 			return;
 		}
 	}
+
+	// Hooked to improve ordering consistency of spending requests -Veeq7
+	void pop_spending_request(u32 player) {
+		AI_Main* ai_main = &g_aiscript_controller[player];
+
+		ai_main->request_count -= 1;
+		memmove(ai_main->requests, ai_main->requests + 1, sizeof(SpendingRequest) * ai_main->request_count);
+		ai_main->requests[ai_main->request_count] = {};
+
+		/*
+		ai_main->request_count -=  1;
+		if (!ai_main->request_count) {
+			return;
+		}
+		ai_main->requests[0] = ai_main->requests[ai_main->request_count];
+		ai_main->requests[ai_main->request_count] = {};
+		if (ai_main->request_count == 1) {
+			return;
+		}
+
+		u32 new_index = 0;
+		while (2 * new_index + 1 <= ai_main->request_count) {
+			u32 prev_index = new_index;
+			u32 new_index_alt = 2 * new_index + 1; 
+			new_index = 2 * new_index + 2;
+			if (new_index >= ai_main->request_count || ai_main->requests[new_index_alt].priority > ai_main->requests[new_index].priority) {
+				new_index = new_index_alt;
+			}
+			if (ai_main->requests[prev_index].priority >= ai_main->requests[new_index].priority) {
+				break;
+			}
+			SpendingRequest temp = ai_main->requests[prev_index];
+			ai_main->requests[prev_index] = ai_main->requests[new_index];
+			ai_main->requests[new_index] = temp;
+		}
+		*/
+	}
 }

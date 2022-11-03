@@ -323,12 +323,23 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) pop_spending_request_wrapper() { // 004476D0
+		static u32 player_id;
+		__asm {
+			MOV player_id, EAX
+			PUSHAD
+		}
+		hooks::pop_spending_request(player_id);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
-namespace hooks
-{
-	void inject_ai_request_hooks()
-	{
+namespace hooks {
+	void inject_ai_request_hooks() {
 	//	jump_patch(ai_build_tech_upgrade_wrapper,				0x00431F90, 2);
 		jump_patch(ai_progress_build_wrapper,					0x00434480, 1);
 		jump_patch(ai_perform_task_wrapper,						0x004361A0, 0);
@@ -345,5 +356,6 @@ namespace hooks
 		jump_patch(ai_update_guard_needs_wrapper,				0x004630C0, 1);
 	//	jump_patch(ai_make_guard_wrapper,						0x0043A010, 1);
 		jump_patch(ai_add_spending_request_from_towns_wrapper,	0x00436320, 1);
+		jump_patch(pop_spending_request_wrapper,				0x004476D0, 1);
 	}
 }
