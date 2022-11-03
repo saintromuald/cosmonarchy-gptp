@@ -1314,24 +1314,6 @@ namespace hooks
 		}
 	}
 
-	u8 ai_get_build_order_id(Unit* unit, u32 unit_id) { // 00434C31
-		u32 worker_race = unit->get_race();
-		if (worker_race == Unit::get_race(unit_id)) {
-			switch (worker_race) {
-				case RaceId::Terran: {
-					return OrderId::BuildTerran;
-				} break;
-				case RaceId::Protoss: {
-					return OrderId::BuildProtoss1;
-				} break;
-				case RaceId::Zerg: {
-					return OrderId::DroneStartBuild;
-				} break;
-			}
-		}
-		return OrderId::None;
-	}
-
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
 	Unit* ai_find_best_repair_unit(Unit* to_repair) { // 00443160
 		EntryArray workers = {};

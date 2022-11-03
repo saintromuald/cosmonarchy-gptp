@@ -165,10 +165,8 @@ namespace ImagesDatEntries
 	};
 }
 
-namespace AiType
-{
-	enum Enum
-	{
+namespace AiType {
+	enum Enum {
 		Unassigned	= 0, // Never this?
 		Guard		= 1,
 		Worker		= 2,
@@ -177,10 +175,8 @@ namespace AiType
 	};
 }
 
-namespace RequestType
-{
-	enum Enum
-	{
+namespace RequestType {
+	enum Enum {
 		None		= 0,
 		Military	= 1,
 		Guard		= 2,
@@ -193,10 +189,8 @@ namespace RequestType
 	};
 }
 
-namespace RegionState
-{
-	enum Enum
-	{
+namespace RegionState {
+	enum Enum {
 		Nothing							= 0,
 		ContinueAttackHere				= 1,
 		Attacking						= 2,

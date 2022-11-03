@@ -340,6 +340,7 @@ namespace
 	void __declspec(naked) ai_try_progress_spending_queue_worker_wrapper() { // 004348C0
 		static AiTown* town;
 		static Unit* unit;
+		static u32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -351,9 +352,10 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::ai_try_progress_spending_queue_worker(town, unit);
+		result = hooks::ai_try_progress_spending_queue_worker(town, unit);
 		__asm {
 			POPAD
+			MOV result, EAX
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x08

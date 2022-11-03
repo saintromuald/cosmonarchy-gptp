@@ -876,20 +876,11 @@ struct AiExpandList
 };
 C_ASSERT(sizeof(AiExpandList) == 0x8);
 
-struct AiSpendingRequest
-{
-	u8 priority;
-	u8 type;
-	u16 id;
-	void* val;
-};
-
-struct SpendingRequest
-{
+struct SpendingRequest {
 	u8		priority;
 	u8		type;
 	u16		id;
-	void*	val;
+	void*	value;
 };
 
 struct AI_Main
