@@ -1128,7 +1128,7 @@ namespace helper {
 	}
 
 	// for AI_TrainingBroodling
-	void ai_set_region_type(s32 region_type, AiRegion* region) {
+	void ai_assign_military_to_region(s32 region_type, AiRegion* region) {
 		const u32 func_address = 0x004390A0;
 		__asm {
 			PUSHAD
@@ -9113,7 +9113,7 @@ namespace helper {
 		return result;
 	}
 
-	bool hasResourcesForUnit(u16 unit_id, s32 player) {
+	bool has_resources_for_unit(u16 unit_id, s32 player) {
 		static bool result;
 		const u32 Func_hasResourcesForUnit = 0x004487B0;
 		__asm {
@@ -12358,5 +12358,93 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	s32 get_bunker_position(u32 player, Point16* return_pos)
+	{
+		static s32 result;
+		const u32 func_address = 0x004376F0;
+		__asm {
+			PUSHAD
+			MOV EBX, player
+			MOV ESI, return_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations)
+	{
+		const u32 func_address = 0x00444EB0;
+		__asm {
+			PUSHAD
+			PUSH iterations
+			PUSH region_id
+			PUSH player
+			CALL func_address
+			POPAD
+		}
+	}
+
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles)
+	{
+		static s32 result;
+		const u32 func_address = 0x004465C0;
+		__asm {
+			PUSHAD
+			PUSH area_tiles
+			PUSH out_pos
+			PUSH try_pos
+			PUSH unit_id
+			MOV ECX, builder
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 ai_finish_unit(Unit* unit)
+	{
+		static u32 result;
+		const u32 func_address = 0x00433640;
+		__asm {
+			PUSHAD
+			MOV EDi, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 get_turret_position(u32 player, Point16* out_pos)
+	{
+		static s32 result;
+		const u32 func_address = 0x00437670;
+		__asm {
+			PUSHAD
+			MOV EBX, player
+			MOV ESI, out_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y)
+	{
+		const u32 func_address = 0x00444630;
+		__asm {
+			PUSHAD
+			PUSH out_y
+			PUSH out_x
+			PUSH resarea
+			CALL func_address
+			POPAD
+		}
 	}
 }

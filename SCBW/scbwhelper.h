@@ -144,7 +144,7 @@ namespace helper {
 	void hide_unit(Unit* unit);
 
 	// For AI_TrainingBroodling
-	void ai_set_region_type(s32 region_type, AiRegion* region);							// 004390A0
+	void ai_assign_military_to_region(s32 region_type, AiRegion* region);							// 004390A0
 	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);						// 0043DA20
 
 	// For ai_training_worker
@@ -1083,7 +1083,7 @@ namespace helper {
 	AI_Main* ai_pop_spending_request(s32 player);																				// 004476D0
 	Unit* AI_GetHydraliskForMorph(s32 player);																					// 00437570
 	s32 is_unit_id_race_equal_to_unit_race(u16 unit_id, Unit* unit);															// 00432480
-	bool hasResourcesForUnit(u16 unit_id, s32 player);																			// 004487B0
+	bool has_resources_for_unit(u16 unit_id, s32 player);																			// 004487B0
 	char ai_perform_task(Unit* unit);																							// 004361A0
 	s32 ai_get_request_build_type(s32 player);																					// 00447590
 	bool ai_train_unit(Unit* unit, u16 unit_id, char requestId, void* value);													// 004672F0
@@ -1469,4 +1469,11 @@ namespace helper {
 	u32 get_tech_count(AiTown* town, u32 tech_id);																							// 00432530
 	u16 ai_build_bunker(AiTown* town, u32 player);																							// 0043EBB0
 	u32 ai_build_turret(AiTown* town, u32 player);																							// 0043AAE0
+
+	s32 get_bunker_position(u32 player, Point16* return_pos);																				// 004376F0
+	void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations);																// 00444EB0
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles);						// 004465C0
+	u32 ai_finish_unit(Unit* unit);																											// 00433640
+	s32 get_turret_position(u32 player, Point16* out_pos);																					// 00437670
+	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);														// 00444630
 }

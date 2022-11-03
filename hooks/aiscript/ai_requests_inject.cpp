@@ -336,26 +336,50 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) ai_try_progress_spending_queue_worker_wrapper() { // 004348C0
+		static AiTown* town;
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV town, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_try_progress_spending_queue_worker(town, unit);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks {
 	void inject_ai_request_hooks() {
-	//	jump_patch(ai_build_tech_upgrade_wrapper,				0x00431F90, 2);
-		jump_patch(ai_progress_build_wrapper,					0x00434480, 1);
-		jump_patch(ai_perform_task_wrapper,						0x004361A0, 0);
-	//	jump_patch(ai_plan_do_merge_morph_wrapper,				0x00435F10, 1);
-	//	jump_patch(ai_train_defensive_military_Wrapper,			0x0043F990, 1);
-		jump_patch(ai_build_wrapper,							0x004323D0, 1);
-		jump_patch(ai_build_gas_building_wrapper,				0x00433660, 1);
+	//	jump_patch(ai_build_tech_upgrade_wrapper,					0x00431F90, 2);
+		jump_patch(ai_progress_build_wrapper,						0x00434480, 1);
+		jump_patch(ai_perform_task_wrapper,							0x004361A0, 0);
+	//	jump_patch(ai_plan_do_merge_morph_wrapper,					0x00435F10, 1);
+	//	jump_patch(ai_train_defensive_military_Wrapper,				0x0043F990, 1);
+		jump_patch(ai_build_wrapper,								0x004323D0, 1);
+		jump_patch(ai_build_gas_building_wrapper,					0x00433660, 1);
 
-		jump_patch(ai_request_guard_wrapper,					0x00448630, 0);
-		jump_patch(ai_region_train_attack_force_wrapper,		0x0043E670,	4);
-		jump_patch(ai_add_town_spending_request_wrapper,		0x00448400, 0);
+		jump_patch(ai_request_guard_wrapper,						0x00448630, 0);
+		jump_patch(ai_region_train_attack_force_wrapper,			0x0043E670,	4);
+		jump_patch(ai_add_town_spending_request_wrapper,			0x00448400, 0);
 
-		jump_patch(ai_player_need_priority_wrapper,				0x0045BE1F, 2);
-		jump_patch(ai_update_guard_needs_wrapper,				0x004630C0, 1);
-	//	jump_patch(ai_make_guard_wrapper,						0x0043A010, 1);
-		jump_patch(ai_add_spending_request_from_towns_wrapper,	0x00436320, 1);
-		jump_patch(pop_spending_request_wrapper,				0x004476D0, 1);
+		jump_patch(ai_player_need_priority_wrapper,					0x0045BE1F, 2);
+		jump_patch(ai_update_guard_needs_wrapper,					0x004630C0, 1);
+	//	jump_patch(ai_make_guard_wrapper,							0x0043A010, 1);
+		jump_patch(ai_add_spending_request_from_towns_wrapper,		0x00436320, 1);
+		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
+	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1);
 	}
 }

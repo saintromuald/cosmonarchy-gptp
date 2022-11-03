@@ -65,7 +65,7 @@ namespace hooks
 			if (unit_ai->type == AiType::Military) {
 				MilitaryAi* unit_military_ai = (MilitaryAi*)unit_ai;
 				if (unit_military_ai->region->state == RegionState::ContinueAttackHere && unit->is_unit_ai_non_building()) {
-					helper::ai_set_region_type(RegionState::Attacking, unit_military_ai->region);
+					helper::ai_assign_military_to_region(RegionState::Attacking, unit_military_ai->region);
 				}
 				in_attack_group = helper::unit_is_in_attack_group(unit, 0);
 			}
@@ -100,10 +100,10 @@ namespace hooks
 						&& !helper::unit_is_in_attack_group(unit, 0)
 						&& (unit->unit_ai->type != AiType::Guard || !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings)) {
 						if (unit_region->state == RegionState::TownRegionHigh || unit_region->state == RegionState::TownRegionLow) {
-							helper::ai_set_region_type(RegionState::Defending, unit_region);
+							helper::ai_assign_military_to_region(RegionState::Defending, unit_region);
 						}
 						if (unit_region->state && !target_region->state && *g_elapsed_time_seconds > 60) {
-							helper::ai_set_region_type(RegionState::TownRegionHigh, target_region);
+							helper::ai_assign_military_to_region(RegionState::TownRegionHigh, target_region);
 						}
 					}
 					if (!dont_call_help) {

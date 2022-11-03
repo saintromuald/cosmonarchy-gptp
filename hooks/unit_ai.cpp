@@ -67,7 +67,7 @@ namespace hooks
 		}
 
 		if (player_region[region_id].state == RegionState::Nothing) {
-			helper::ai_set_region_type(RegionState::ContinueAttackHere, region);
+			helper::ai_assign_military_to_region(RegionState::ContinueAttackHere, region);
 		}
 		helper::add_military_ai(region, unit, true);
 	}

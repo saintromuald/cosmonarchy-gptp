@@ -285,7 +285,7 @@ namespace hooks
 			}
 		}
 
-		if (!helper::hasResourcesForUnit(nextBuildType, player))
+		if (!helper::has_resources_for_unit(nextBuildType, player))
 		{
 			error = (g_aiscript_controller[player].ai_flags.is_use_map_settings) == 0;
 			if (error)
@@ -814,7 +814,7 @@ namespace hooks
 		u32 region_times_52 = region_id_var * 52;
 
 		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow) {
-			helper::ai_set_region_type(5, region_from_id);
+			helper::ai_assign_military_to_region(5, region_from_id);
 			u8 region_flags = region_from_id->flags | 1;
 			region_from_id->flags = region_flags;
 			if (!g_aiscript_controller[player_id].ai_flags.is_use_map_settings) {
@@ -831,7 +831,7 @@ namespace hooks
 						AiRegion* region_from_52 = (AiRegion*)((char*)*ai_regions_var + region_times_52);
 						if (!region_from_52->state)
 						{
-							helper::ai_set_region_type(4, region_from_52);
+							helper::ai_assign_military_to_region(4, region_from_52);
 						}
 					}
 				}
@@ -862,9 +862,9 @@ namespace hooks
 			if (g_aiscript_controller[player_id].ai_flags.is_use_map_settings) {
 				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
 				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
-				helper::ai_set_region_type(6, region_from_id);
+				helper::ai_assign_military_to_region(6, region_from_id);
 			} else {
-				helper::ai_set_region_type(6, region_from_id);
+				helper::ai_assign_military_to_region(6, region_from_id);
 				u8 region_has_flag_40 = region_from_id->flags | 0x40;
 				region_from_id->ground_strength_needed = 1500;
 				region_from_id->air_strength_needed = 1000;
@@ -988,7 +988,7 @@ namespace hooks
 	}
 
 	// Hooked to improve ordering consistency of spending requests. -Veeq7
-	void pop_spending_request(u32 player) {
+	void pop_spending_request(u32 player) {	// 004476D0
 		AI_Main* ai_main = &g_aiscript_controller[player];
 
 		ai_main->request_count -= 1;
@@ -1022,5 +1022,181 @@ namespace hooks
 			ai_main->requests[new_index] = temp;
 		}
 		*/
+	}
+
+	// Hooked to make AI use only one worker per build request. -Pr0nogo
+	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit) // 004348C0
+	{
+		unsigned __int16 region_id_at_pos; // ax
+		signed int building_placement; // eax
+		unsigned __int16 region_id_3; // ax
+		signed int px_distance; // eax
+		int unit_id; // eax
+		unsigned __int8 order_id; // al
+
+		u32 player = unit->player;
+		if (!g_aiscript_controller[player].request_count || g_aiscript_controller[player].requests->type != RequestType::Building)
+		{
+			return 0;
+		}
+		UnitAi* unit_ai = unit->unit_ai;
+		if ((AiTown*)g_aiscript_controller[player].requests->val != unit_ai->worker_ai.town
+			&& g_aiscript_controller[player].requests->id != UnitId::TerranSupplyDepot)
+		{
+			return 0;
+		}
+		if (unit_ai->worker_ai.reassign_count >= 3)
+		{
+			return 0;
+		}
+		u32 build_type = g_aiscript_controller[player].requests->id;
+		if (!helper::is_unit_id_race_equal_to_unit_race(build_type, unit)
+		||   helper::create_unit_allowed(build_type, unit, unit->player) != 1
+		||  !helper::has_resources_for_unit(build_type, unit->player))
+		{
+			return 0;
+		}
+		u32 town_player = town->player;
+		Point16 build_pos = {};
+		if (build_type != helper::get_default_refinery_type(town_player))
+		{
+			switch (build_type)
+			{
+				case UnitId::TerranBunker:
+				{
+					if (!helper::get_bunker_position(player, &build_pos))
+					{
+						build_pos.x = town->position.x;
+						build_pos.y = town->position.y;
+					}
+					u32 region_id_at_pos = helper::get_region_id(build_pos.x, build_pos.y);
+					helper::do_area_fixups_for_enemy(town->player, region_id_at_pos, 1u);
+					if (!g_aiscript_controller[unit->player].liftoff_cooldown)
+					{
+						if (!helper::ai_manage_building_placement(unit, UnitId::TerranBunker, build_pos, &build_pos, 64))
+						{
+							g_aiscript_controller[unit->player].liftoff_cooldown = 1;
+							return helper::ai_finish_unit(unit);
+						}
+						u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
+						AiRegion* ai_region = &g_ai_region_captains[town->player][region_id];
+						if (!ai_region->state)
+						{
+							helper::ai_assign_military_to_region(4, ai_region);
+							ai_region->flags |= 0x41;
+							if ((*g_sai_paths)->regions[region_id].accessibility_flags != 0x1FFD)
+							{
+								ai_region->ground_strength_needed = 1000;
+							}
+							goto LABEL_45;
+						}
+					}
+				} break;
+				case UnitId::TerranWatchdog:
+				{
+					Point16 town_pos = {};
+					if (!helper::get_turret_position(player, (Point16*)&unit))
+					{
+						town_pos.x = town->position.x;
+						town_pos.y = town->position.y;
+					}
+					if (!g_aiscript_controller[unit->player].liftoff_cooldown)
+					{
+						if (!helper::ai_manage_building_placement(unit, UnitId::TerranWatchdog, town_pos, &build_pos, 40))
+						{
+							g_aiscript_controller[unit->player].liftoff_cooldown = 1;
+							return helper::ai_finish_unit(unit);
+						}
+						goto LABEL_45;
+					}
+				} break;
+				case UnitId::ZergHachirosk:
+				{
+					if (town->main_building)
+					{
+						Point16 town_pos = {};
+						helper::get_secondary_hachirosk_build_location(town->resarea, &town_pos.x, &town_pos.y);
+						if (g_aiscript_controller[unit->player].liftoff_cooldown)
+						{
+							return helper::ai_finish_unit(unit);
+						}
+						building_placement = helper::ai_manage_building_placement(unit, UnitId::ZergHachirosk, town->position, &build_pos, 64);
+					}
+				} // Fallthrough intended
+				default:
+				{
+					// If there is a main_building, Hachirosk is already processed above. If not, process it normally.
+					// I know this is retarded, but the original code was even worse.
+					if (town->main_building)
+					{
+						break;
+					}
+					build_pos.x = town->position.x;
+					build_pos.y = town->position.y;
+					if (build_type == UnitId::ZergCagrantColony || build_type == UnitId::ProtossWarden)
+					{
+						u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
+						helper::do_area_fixups_for_enemy(town_player, region_id, 4u);
+					}
+					px_distance = 64;
+					if (g_aiscript_controller[unit->player].liftoff_cooldown)
+					{
+						return helper::ai_finish_unit(unit);
+					}
+					if (build_type == UnitId::TerranWatchdog)
+					{
+						px_distance = 40;
+					}
+					building_placement = helper::ai_manage_building_placement(unit, build_type, build_pos, &build_pos, px_distance);
+					if (building_placement)
+					{
+						goto LABEL_45;
+					}
+					g_aiscript_controller[unit->player].liftoff_cooldown = 1;
+				}
+			}
+			return helper::ai_finish_unit(unit);
+		}
+
+		Unit* refinery = helper::get_ai_refinery(town, 1, 1);
+		if (!refinery)
+		{
+			return 0;
+		}
+		Sprite* refinery_sprite = refinery->sprite;
+		build_pos.x = refinery->sprite->position.x;
+		build_pos.y = refinery->sprite->position.y;
+
+	LABEL_45:
+		helper::ai_reserve(town_player, 1);
+		helper::ai_pop_spending_request(town_player);
+
+		unit_id = unit->id;
+		switch (unit_id)
+		{
+			case UnitId::TerranMason:
+			case UnitId::TerranTalos:
+			{
+				order_id = OrderId::BuildTerran;
+			} break;
+			case UnitId::ZergDroleth:
+			case UnitId::ZergGosvileth:
+			{
+				order_id = OrderId::DroneStartBuild;
+			} break;
+			case UnitId::ProtossScribe:
+			case UnitId::ProtossArtisan:
+			{
+				order_id = OrderId::BuildProtoss1;
+			} break;
+			default:
+			{
+				return 0;
+			}
+		}
+		helper::issue_order_targeting_ground(unit, order_id, build_pos.x, build_pos.y);
+		helper::refund_all_queue_slots(unit);
+		helper::has_money_can_make(unit, build_type);
+		return 1;
 	}
 }
