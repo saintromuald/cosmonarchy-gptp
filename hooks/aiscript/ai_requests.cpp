@@ -1027,13 +1027,6 @@ namespace hooks
 	// Hooked to make AI use only one worker per build request. -Pr0nogo
 	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit) // 004348C0
 	{
-		unsigned __int16 region_id_at_pos; // ax
-		signed int building_placement; // eax
-		unsigned __int16 region_id_3; // ax
-		signed int px_distance; // eax
-		int unit_id; // eax
-		unsigned __int8 order_id; // al
-
 		u32 player = unit->player;
 		if (!g_aiscript_controller[player].request_count || g_aiscript_controller[player].requests->type != RequestType::Building)
 		{
@@ -1060,6 +1053,7 @@ namespace hooks
 		Point16 build_pos = {};
 		if (build_type != helper::get_default_refinery_type(town_player))
 		{
+			u32 building_placement = 0;
 			switch (build_type)
 			{
 				case UnitId::TerranBunker:
@@ -1138,7 +1132,7 @@ namespace hooks
 						u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
 						helper::do_area_fixups_for_enemy(town_player, region_id, 4u);
 					}
-					px_distance = 64;
+					u32 px_distance = 64;
 					if (g_aiscript_controller[unit->player].liftoff_cooldown)
 					{
 						return helper::ai_finish_unit(unit);
@@ -1171,7 +1165,8 @@ namespace hooks
 		helper::ai_reserve(town_player, 1);
 		helper::ai_pop_spending_request(town_player);
 
-		unit_id = unit->id;
+		u32 unit_id = unit->id;
+		u32 order_id = OrderId::None;
 		switch (unit_id)
 		{
 			case UnitId::TerranMason:
