@@ -1465,7 +1465,7 @@ namespace hooks {
 		}
 		bool in_air = unit->status & UnitStatus::InAir;
 		bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
-		bool is_adding_on = unit->build_queue[unit->build_queue_slot] != UnitId::None && (units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon);
+		bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
 
 		switch (unit->id)
 		{
@@ -2004,7 +2004,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					case UnitId::TerranControlTower:
 					{
