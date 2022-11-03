@@ -406,8 +406,6 @@ u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 	else if (unit_id == UnitId::ZergHachirosk) {
 		count += player_count_up_equivalents(player, UnitId::ZergCaphrolosk);
 		count += player_count_up_equivalents(player, UnitId::ZergGathtelosk);
-		count += player_count_up_equivalents(player, UnitId::ZergSibraelosk);
-		count += player_count_up_equivalents(player, UnitId::ZergNephrilosk);
 	}
 	else {
 		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
