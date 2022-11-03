@@ -372,7 +372,16 @@ u32 town_count_up_equivalents(AiTown* town, u32 unit_id) {
 		count += town_count_up_equivalents(town, UnitId::ZergSurkithColony);
 		count += town_count_up_equivalents(town, UnitId::ZergSpraithColony);
 		count += town_count_up_equivalents(town, UnitId::ZergLarvoskColony);
-	} else {
+		count += town_count_up_equivalents(town, UnitId::ZergKazitrithColony);
+		count += town_count_up_equivalents(town, UnitId::ZergOcsalColony);
+	}
+	else if (unit_id == UnitId::ZergHachirosk) {
+		count += town_count_up_equivalents(town, UnitId::ZergCaphrolosk);
+		count += town_count_up_equivalents(town, UnitId::ZergGathtelosk);
+		count += town_count_up_equivalents(town, UnitId::ZergSibraelosk);
+		count += town_count_up_equivalents(town, UnitId::ZergNephrilosk);
+	}
+	else {
 		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
 		if (equivalent.to != UnitId::None) {
 			count += town_count_up_equivalents(town, equivalent.to);
@@ -391,7 +400,16 @@ u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 		count += player_count_up_equivalents(player, UnitId::ZergSurkithColony);
 		count += player_count_up_equivalents(player, UnitId::ZergSpraithColony);
 		count += player_count_up_equivalents(player, UnitId::ZergLarvoskColony);
-	} else {
+		count += player_count_up_equivalents(player, UnitId::ZergKazitrithColony);
+		count += player_count_up_equivalents(player, UnitId::ZergOcsalColony);
+	}
+	else if (unit_id == UnitId::ZergHachirosk) {
+		count += player_count_up_equivalents(player, UnitId::ZergCaphrolosk);
+		count += player_count_up_equivalents(player, UnitId::ZergGathtelosk);
+		count += player_count_up_equivalents(player, UnitId::ZergSibraelosk);
+		count += player_count_up_equivalents(player, UnitId::ZergNephrilosk);
+	}
+	else {
 		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
 		if (equivalent.to != UnitId::None) {
 			count += player_count_up_equivalents(player, equivalent.to);
