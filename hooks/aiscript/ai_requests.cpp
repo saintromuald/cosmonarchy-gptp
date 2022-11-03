@@ -987,7 +987,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to improve ordering consistency of spending requests -Veeq7
+	// Hooked to improve ordering consistency of spending requests. -Veeq7
 	void pop_spending_request(u32 player) {
 		AI_Main* ai_main = &g_aiscript_controller[player];
 
