@@ -1555,7 +1555,7 @@ namespace hooks {
 									bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
 									if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !(unit->status & UnitStatus::InAir) && !scbw::unit_queue_full(unit))
 									{
-										current_button_state = Button_State::Disabled;
+										current_button_state = Button_State::Disabled; // Still shows even when they are building an addon!
 									}
 									else {
 										current_button_state = Button_State::Invisible;
@@ -1589,6 +1589,32 @@ namespace hooks {
 
 								// ZERG \\
 
+								case UnitId::ZergLakizilisk:
+								{
+									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed Attacker
+										if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow)
+										{
+											current_button_state = Button_State::Invisible;
+										}
+										else {
+											current_button_state = Button_State::Disabled;
+										}
+									}
+									else if (current_button->icon_id == IconId::PneumatizedCaparace) // Lakizilisk - armor bonus, reveal rule
+									{
+										if (unit->status & UnitStatus::Burrowed)
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Invisible;
+										}
+									}
+									else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) // Lakizilisk - Seismic Spines
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergVilgorokor:
 								{
 									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Vilgorokor - Reconstitution
@@ -1941,7 +1967,7 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergVorvrokor && // Vorvrokor Captivating ZethrokorClaws passive
+							else if (unit->id == UnitId::ZergVorvrokor && // Vorvrokor Captivating Claws passive
 								current_button->icon_id == IconId::ZethrokorClaws)
 							{
 								current_button_state = Button_State::Enabled;
@@ -1972,16 +1998,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ZergLiiralisk && // Liiralisk Lithe Organelle passive
 								current_button->icon_id == IconId::GeszithalorAcidSpore)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergAlmaksalisk && // Almaksalisk Flanking DrolethSpines passive
-								current_button->icon_id == IconId::ChitinousPlating)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergLakizilisk && // Lakizilisk Seismic DrolethSpines passive
-								current_button->icon_id == IconId::LakiziliskSubterraneanSpines)
 							{
 								current_button_state = Button_State::Enabled;
 							}
@@ -2050,18 +2066,8 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergZoryusthaleth &&  // Zoryusthaleth Reconstitution passive
-								current_button->icon_id == IconId::PneumatizedCaparace)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::ZergZoryusthaleth &&  // Zoryusthaleth Swarming Omen passive
 								current_button->icon_id == IconId::MetabolicBoost)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergAkistrokor &&		// Akistrokor Devouring Instinct passive
-								current_button->icon_id == IconId::SuicideScourge)
 							{
 								current_button_state = Button_State::Enabled;
 							}
