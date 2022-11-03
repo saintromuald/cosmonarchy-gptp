@@ -1544,6 +1544,23 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranBarracks:
+								case UnitId::TerranCaptaincy:
+								case UnitId::TerranIronCouncil:
+								case UnitId::TerranFulcrum:
+								case UnitId::TerranIronFoundry:
+								case UnitId::TerranStarport:
+								case UnitId::TerranNaniteAssembly:
+								{
+									bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
+									if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !(unit->status & UnitStatus::InAir) && !scbw::unit_queue_full(unit))
+									{
+										current_button_state = Button_State::Disabled;
+									}
+									else {
+										current_button_state = Button_State::Invisible;
+									}
+								} break;
 
 								// PROTOSS \\
 
