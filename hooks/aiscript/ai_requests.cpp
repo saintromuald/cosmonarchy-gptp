@@ -1107,8 +1107,7 @@ namespace hooks
 				case UnitId::TerranWatchdog: {
 					Point16 town_pos = {};
 					if (!helper::get_turret_position(player, &town_pos)) {
-						town_pos.x = town->position.x;
-						town_pos.y = town->position.y;
+						town_pos = town->position;
 					}
 					if (g_aiscript_controller[unit->player].liftoff_cooldown) {
 						return helper::ai_finish_unit(unit);
@@ -1128,8 +1127,7 @@ namespace hooks
 						}
 						building_placement = helper::ai_manage_building_placement(unit, UnitId::ZergHachirosk, town_pos, &build_pos, 64);
 					} else {
-						build_pos.x = town->position.x;
-						build_pos.y = town->position.y;
+						build_pos = town->position;
 						if (unit_id == UnitId::ZergCagrantColony || unit_id == UnitId::ProtossWarden) {
 							u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
 							helper::do_area_fixups_for_enemy(town->player, region_id, 4u);

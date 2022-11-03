@@ -1812,6 +1812,7 @@ namespace hooks
 				continue;
 			}
 
+			u32 force_divisor = 1;
 			if (unit->unit_ai->type == AiType::Military) {
 				AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
 				if (current_ai_region->region == ai_region->region) {
@@ -1820,7 +1821,17 @@ namespace hooks
 
 				// Skip attack wave units for unimportant defense regions and reduce their score otherwise
 				if (scbw::is_attack_region(current_ai_region)) {
-					continue;
+					if (ai_region->defense_priority <= 110) {
+						continue;
+					} else {
+						force_divisor = 4;
+
+						// Only request up to half of the needed force from attack waves
+						if ((unit->ground_strength && ai_region->ground_strength_full >= (s32)ai_region->ground_strength_needed / 2) ||
+							(unit->air_strength    && ai_region->air_strength_full    >= (s32)ai_region->air_strength_needed    / 2)) {
+							continue;
+						}
+					}
 				}
 				
 				// Skip units from more important regions, unless they have excess force
@@ -1845,6 +1856,7 @@ namespace hooks
 			s32 ground_force = std::max(std::min((s32)unit->ground_strength, missing_ground), 0);
 			s32 air_force = std::max(std::min((s32)unit->air_strength, missing_air), 0);
 			s32 force = ground_force + air_force;
+			force /= force_divisor;
 			if (!force) {
 				continue;
 			}
