@@ -1679,12 +1679,14 @@ namespace scbw {
 		targetExt->values[ValueTyrannyPlayer] = 0;
 	}
 
-	bool is_zerg_production(u16 unit_id) {
+	bool unit_id_is_zerg_production(u16 unit_id) {
 		return unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
 			|| unit_id == UnitId::ZergGathtelosk
 			|| unit_id == UnitId::ZergSibraelosk
-			|| unit_id == UnitId::ZergLarvoskColony;
+			|| unit_id == UnitId::ZergNephrilosk
+			|| unit_id == UnitId::ZergLarvoskColony
+			|| unit_id == UnitId::ZergOcsalColony;
 	}
 	
 	bool unit_id_is_town_center(u16 unit_id) {
@@ -1693,18 +1695,14 @@ namespace scbw {
 			|| unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
 			|| unit_id == UnitId::ZergGathtelosk
-			|| unit_id == UnitId::ZergSibraelosk;
+			|| unit_id == UnitId::ZergSibraelosk
+			|| unit_id == UnitId::ZergNephrilosk;
 	}
 
-	bool unit_id_is_shared(u16 unit_id) {
-		return unit_id == UnitId::TerranAnticthon
-			|| unit_id == UnitId::TerranAspirant
-			|| unit_id == UnitId::ZergAxitrilisk
-			|| unit_id == UnitId::ProtossCharlatan
+	bool unit_id_is_factional(u16 unit_id) {
+		return unit_id == UnitId::TerranAspirant
 			|| unit_id == UnitId::TerranCohort
-			|| unit_id == UnitId::ProtossEmpress
 			|| unit_id == UnitId::TerranLuminary
-			|| unit_id == UnitId::TerranStriga
 			|| unit_id == UnitId::TerranTarasque;
 	}
 
@@ -1730,6 +1728,7 @@ namespace scbw {
 
 	bool unit_id_uses_xlarge_overlays(u16 unit_id) {
 		return unit_id == UnitId::TerranPenumbra
+			|| unit_id == UnitId::TerranOberon
 			|| unit_id == UnitId::TerranPhobos
 			|| unit_id == UnitId::ProtossStarSovereign;
 	}
@@ -1740,6 +1739,7 @@ namespace scbw {
 				|| unit_id == UnitId::ResourceMineralFieldType2
 				|| unit_id == UnitId::ResourceMineralFieldType3
 				|| unit_id == UnitId::ResourceVespeneGeyser
+				|| unit_id == UnitId::ResourceVespeneRidge
 				|| unit_id == UnitId::TerranReservoir
 				|| unit_id == UnitId::ProtossAquifer
 				|| unit_id == UnitId::ZergExcisant;
@@ -1747,7 +1747,8 @@ namespace scbw {
 			return unit_id == UnitId::ResourceMineralField
 				|| unit_id == UnitId::ResourceMineralFieldType2
 				|| unit_id == UnitId::ResourceMineralFieldType3
-				|| unit_id == UnitId::ResourceVespeneGeyser;
+				|| unit_id == UnitId::ResourceVespeneGeyser
+				|| unit_id == UnitId::ResourceVespeneRidge;
 		}
 	}
 
@@ -1896,7 +1897,8 @@ namespace scbw {
 			|| unit_id == UnitId::ZergSurkithColony
 			|| unit_id == UnitId::ZergSpraithColony
 			|| unit_id == UnitId::ZergLarvoskColony
-		//	|| unit_id == UnitId::ZergKazitrithColony
+			|| unit_id == UnitId::ZergOcsalColony
+			|| unit_id == UnitId::ZergKazitrithColony
 			|| unit_id == UnitId::ZergNydusCesiant;
 	}
 
@@ -1952,7 +1954,7 @@ namespace scbw {
 	}
 
 	void blissful_embrace(Unit* unit, u32 player) {
-		// Sanity Check. Spawning creep wouldn't work properly on units. Spawning creep on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
+		// Sanity check. Spawning creep wouldn't work properly on units. Spawning creep on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || units_dat::base_property[unit->id] & UnitProperty::Addon) {
 			return;
 		}
@@ -1996,7 +1998,7 @@ namespace scbw {
 			unit->sprite->create_top_overlay(infested_image_id);
 		}
 
-		// Spawn effect overlay  TODO: Make this a sprite
+		// Spawn effect overlay | TODO: Make this a sprite
 		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
 		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
 			effect_image_id = ImageId::ZergBuildingExplosion;
@@ -2005,7 +2007,7 @@ namespace scbw {
 		}
 		unit->sprite->create_overlay(effect_image_id);
 
-		// Play Sound
+		// Play sound
 		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
 	}
 
@@ -2024,37 +2026,32 @@ namespace scbw {
 			// Terran
 			case UnitId::TerranEngineeringBay:
 			case UnitId::TerranScienceFacility:
-
-			// Protoss
-			case UnitId::ProtossCenotaph:
-			case UnitId::ProtossAncestralArchives:
-			case UnitId::ProtossAutomatonRegister:
-			case UnitId::ProtossSyntheticSynod:
-			case UnitId::ProtossAstralOmen:
-			case UnitId::ProtossFleetBeacon:
-			case UnitId::ProtossCosmicAltar:
-			case UnitId::ProtossSanctumOfSorrow:
-			case UnitId::ProtossWaywardLure:
-			case UnitId::ProtossMonumentOfSin:
+			case UnitId::TerranQuantumInstitute:
+		//	case UnitId::TerranCapitol:
 
 			// Zerg
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
+			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergLiivralPond:
-			case UnitId::ZergHydrokDen:
-			case UnitId::ZergGorgralSwamp:
 			case UnitId::ZergMuthrokSpire:
 			case UnitId::ZergVithrathHaunt:
-			case UnitId::ZergOrbothOmlia:
+			case UnitId::ZergAxtothAxis:
+			case UnitId::ZergBegrozithBarrow:
+			case UnitId::ZergHydrokDen:
+			case UnitId::ZergGorgralSwamp:
+			case UnitId::ZergIzkagIteth:
+			case UnitId::ZergChokralgantChazsal:
+			case UnitId::ZergGeszkathGrotto:
+			case UnitId::ZergAlkajChasm:
 			case UnitId::ZergZorkizShroud:
 			case UnitId::ZergUltrokCavern:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergElthisthMound:
-			case UnitId::ZergGeszkathGrotto:
-			case UnitId::ZergAlkajChasm:
+			case UnitId::ZergRakzogthRoost:
 				return true;
 		}
 		return false;
@@ -2065,11 +2062,14 @@ namespace scbw {
 			// Terran
 			case UnitId::TerranEngineeringBay:
 			case UnitId::TerranScienceFacility:
+			case UnitId::TerranQuantumInstitute:
+		//	case UnitId::TerranCapitol:
 
 			// Zerg
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
+			case UnitId::ZergOrbothOmlia:
 				return true;
 		}
 		return false;
@@ -2214,6 +2214,7 @@ namespace scbw {
 
 	bool unit_id_is_transport(u32 unit_id) {
 		return unit_id == UnitId::TerranTrojan
+			|| unit_id == UnitId::TerranPythean
 			|| unit_id == UnitId::ProtossEnvoy
 			|| unit_id == UnitId::ZergOvileth
 			|| unit_id == UnitId::ZergIroleth
@@ -2230,8 +2231,6 @@ namespace scbw {
 					case UnitId::TerranCohort:
 					case UnitId::TerranAspirant:
 					case UnitId::TerranTarasque:
-					case UnitId::TerranStriga:
-					case UnitId::TerranAnticthon:
 					case UnitId::TerranLuminary: {
 						return true;
 					}
@@ -2241,30 +2240,10 @@ namespace scbw {
 				if (units_dat::group_flags[unit_id].is_protoss) {
 					return true;
 				}
-				switch (unit_id) {
-					case UnitId::TerranAspirant:
-					case UnitId::ZergAxitrilisk:
-					case UnitId::TerranStriga:
-					case UnitId::ProtossCharlatan:
-					case UnitId::ProtossEmpress:
-					case UnitId::TerranLuminary: {
-						return true;
-					}
-				}
 			} break;
 			case RaceId::Zerg: {
 				if (units_dat::group_flags[unit_id].is_zerg) {
 					return true;
-				}
-				switch (unit_id) {
-					case UnitId::TerranCohort:
-					case UnitId::ZergAxitrilisk:
-					case UnitId::TerranTarasque:
-					case UnitId::ProtossCharlatan:
-					case UnitId::ProtossEmpress:
-					case UnitId::TerranAnticthon: {
-						return true;
-					}
 				}
 			} break;
 		}
@@ -2287,20 +2266,27 @@ namespace scbw {
 
 	u32 get_zerg_regression(u32 unit_id) {
 		switch (unit_id) {
-			case UnitId::ZergSurkithColony:		return UnitId::ZergCagrantColony;
-			case UnitId::ZergSpraithColony:		return UnitId::ZergCagrantColony;
-			case UnitId::ZergLarvoskColony:		return UnitId::ZergCagrantColony;
-			case UnitId::ZergCaphrolosk:		return UnitId::ZergHachirosk;
-			case UnitId::ZergGathtelosk:		return UnitId::ZergCaphrolosk;
-			case UnitId::ZergSibraelosk:		return UnitId::ZergGathtelosk;
-			case UnitId::ZergOthstolOviform:	return UnitId::ZergIrolIris;
-			case UnitId::ZergAlaszilArbor:		return UnitId::ZergOthstolOviform;
-			case UnitId::ZergLiivralPond:		return UnitId::ZergQuazrokPool;
-			case UnitId::ZergGorgralSwamp:		return UnitId::ZergHydrokDen;
-			case UnitId::ZergVithrathHaunt:		return UnitId::ZergMuthrokSpire;
-			case UnitId::ZergAlmakisAntre:		return UnitId::ZergMatravilNest;
-			case UnitId::ZergUltrokCavern:		return UnitId::ZergZorkizShroud;
-			case UnitId::ZergAlkajChasm:		return UnitId::ZergGeszkathGrotto;
+			case UnitId::ZergSurkithColony:			return UnitId::ZergCagrantColony;
+			case UnitId::ZergSpraithColony:			return UnitId::ZergCagrantColony;
+			case UnitId::ZergLarvoskColony:			return UnitId::ZergCagrantColony;
+			case UnitId::ZergKazitrithColony:		return UnitId::ZergCagrantColony;
+			case UnitId::ZergOcsalColony:			return UnitId::ZergCagrantColony;
+			case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
+			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
+			case UnitId::ZergSibraelosk:			return UnitId::ZergCaphrolosk;
+			case UnitId::ZergNephrilosk:			return UnitId::ZergGathtelosk;
+			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
+			case UnitId::ZergAlaszilArbor:			return UnitId::ZergOthstolOviform;
+			case UnitId::ZergOrbothOmlia:			return UnitId::ZergAlaszilArbor;
+			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
+			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
+			case UnitId::ZergGorgralSwamp:			return UnitId::ZergHydrokDen;
+			case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
+			case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
+			case UnitId::ZergChokralgantChazsal:	return UnitId::ZergIzkagIteth;
+			case UnitId::ZergUltrokCavern:			return UnitId::ZergZorkizShroud;
+			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
+			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
 		}
 		return UnitId::None;
 	}
@@ -2364,11 +2350,18 @@ namespace scbw {
 
 	bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 		return unit_id == UnitId::ProtossGateway
+			|| unit_id == UnitId::ProtossCenotaph
 			|| unit_id == UnitId::ProtossGrandLibrary
-			|| unit_id == UnitId::ProtossStargate
-			|| unit_id == UnitId::ProtossArgosy
+			|| unit_id == UnitId::ProtossRogueGallery
 			|| unit_id == UnitId::ProtossProstrationStage
-			|| unit_id == UnitId::ProtossRogueGallery;
+			|| unit_id == UnitId::ProtossSanctumOfSorrow
+			|| unit_id == UnitId::ProtossAncestralArchives
+			|| unit_id == UnitId::ProtossHallOfHeretics
+			|| unit_id == UnitId::ProtossStargate
+			|| unit_id == UnitId::ProtossAstralOmen
+			|| unit_id == UnitId::ProtossArgosy
+			|| unit_id == UnitId::ProtossFleetBeacon
+			|| unit_id == UnitId::ProtossMonumentOfSin;
 	}
 
 	bool buttonset_id_is_submenu(u32 buttonset_id) {
@@ -2476,18 +2469,22 @@ namespace scbw {
 
 	bool unit_id_is_stackable_building(u32 unit_id) {
 		switch (unit_id) {
+			case UnitId::TerranWatchdog:
+			case UnitId::TerranBunker:
+			case UnitId::TerranSentinel:
+			case UnitId::ProtossPylon:
+			case UnitId::ProtossWarden:
+			case UnitId::ProtossMatrix:
 			case UnitId::ZergCagrantColony:
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergKazitrithColony:
+			case UnitId::ZergOcsalColony:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlaszilArbor:
-			case UnitId::ProtossPylon:
-			case UnitId::ProtossShieldBattery:
-			case UnitId::ProtossWarden:
-			case UnitId::TerranWatchdog:
-			case UnitId::TerranBunker:
+			case UnitId::ZergOrbothOmlia:
 			{
 				return true;
 			} break;
@@ -2500,10 +2497,11 @@ namespace scbw {
 			case UnitId::TerranCommandCenter:
 			case UnitId::TerranTreasury:
 			case UnitId::TerranBarracks:
-			case UnitId::TerranFulcrum:
-			case UnitId::TerranStarport:
 			case UnitId::TerranCaptaincy:
+			case UnitId::TerranIronCouncil:
+			case UnitId::TerranFulcrum:
 			case UnitId::TerranIronFoundry:
+			case UnitId::TerranStarport:
 			case UnitId::TerranNaniteAssembly:
 			{
 				return true;
@@ -2563,7 +2561,8 @@ namespace scbw {
 
 	bool unit_id_spawns_ocsal_larva(u32 unit_id) {
 		return unit_id == UnitId::ZergCaphrolosk
-			|| unit_id == UnitId::ZergSibraelosk;
+			|| unit_id == UnitId::ZergSibraelosk
+			|| unit_id == UnitId::ZergOcsalColony;
 	}
 
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {

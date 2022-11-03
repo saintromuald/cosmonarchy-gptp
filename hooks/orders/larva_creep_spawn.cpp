@@ -408,8 +408,8 @@ namespace hooks
 
 	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) // 00429740
 	{
-		if (scbw::is_zerg_production(unit->id)
-			|| scbw::is_zerg_production(unit->build_queue[unit->build_queue_slot]))
+		if (scbw::unit_id_is_zerg_production(unit->id)
+			|| scbw::unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot]))
 		{
 			return helper::btnscond_rally(unused, player, unit);
 		}

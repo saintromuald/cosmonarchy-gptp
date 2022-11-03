@@ -286,7 +286,7 @@ namespace hooks
 			|| !units_dat::map_string_id[unit_id])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
-				&& !scbw::unit_id_is_shared(unit->id))
+				&& !scbw::unit_id_is_factional(unit->id))
 			{
 				return helper::get_stat_txt_string((unit->rank_increase + units_dat::rank[unit_id]) + 1302);
 			}

@@ -107,7 +107,7 @@ namespace hooks {
 					count_burrowables++;
 				}
 
-				if (scbw::is_zerg_production(selected->id)) {
+				if (scbw::unit_id_is_zerg_production(selected->id)) {
 					count_hatches++;
 				}
 
@@ -609,7 +609,7 @@ namespace hooks {
 							current_button_state = Button_State::Enabled;
 						}
 					}
-					if (scbw::is_zerg_production(unit->id) && current_button->icon_id == UnitId::TerranCohort) { // Remove this later
+					if (scbw::unit_id_is_zerg_production(unit->id) && current_button->icon_id == UnitId::TerranCohort) { // Remove this later
 						current_button_state = Button_State::Enabled;
 					}
 

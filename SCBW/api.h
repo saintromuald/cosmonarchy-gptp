@@ -609,9 +609,9 @@ namespace scbw
 	bool unit_id_is_zerg_supply(u16 unit_id);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
-	bool is_zerg_production(u16 unit_id);
+	bool unit_id_is_zerg_production(u16 unit_id);
 	bool unit_id_is_town_center(u16 unit_id);
-	bool unit_id_is_shared(u16 unit_id);
+	bool unit_id_is_factional(u16 unit_id);
 	bool transport_is_full(Unit* transport);
 	bool transport_is_empty(Unit* transport);
 	bool unit_id_uses_xlarge_overlays(u16 unit_id);

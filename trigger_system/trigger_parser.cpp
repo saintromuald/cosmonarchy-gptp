@@ -654,9 +654,9 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
 			}
-		} else if (parser_eqi(parser, "shared")) {
+		} else if (parser_eqi(parser, "factional")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_shared(i), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_factional(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
