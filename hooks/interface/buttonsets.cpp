@@ -606,11 +606,14 @@ namespace hooks {
 						|| buttonset_id == UnitId::TerranMason
 						|| buttonset_id == UnitId::TerranTalos)
 						{
-							current_button_state = Button_State::Enabled;
+							if (unit->main_order_id != OrderId::ConstructingBuilding)
+							{
+								if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit))
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
 						}
-					}
-					if (scbw::unit_id_is_zerg_production(unit->id) && current_button->icon_id == UnitId::TerranCohort) { // Remove this later
-						current_button_state = Button_State::Enabled;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
