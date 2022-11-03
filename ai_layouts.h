@@ -126,7 +126,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town);
 
 u32 find_unit_base(u32 unit_id);
 AiUnitEquivalent find_unit_equivalent_down(u32 unit_id);
-AiUnitEquivalent find_unit_equivalent_up(u32 unit_id);
+AiUnitEquivalent find_unit_equivalent_up(u32 unit_id, u32* index = 0);
 u32 find_unit_merge(u32 unit_id);
 u32 find_unit_root_merge(u32 unit_id);
 

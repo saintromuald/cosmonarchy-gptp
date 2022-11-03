@@ -311,8 +311,9 @@ AiUnitEquivalent find_unit_equivalent_down(u32 unit_id) {
 	return {UnitId::None, UnitId::None, 0};
 }
 
-AiUnitEquivalent find_unit_equivalent_up(u32 unit_id) {
-	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+AiUnitEquivalent find_unit_equivalent_up(u32 unit_id, u32* index) {
+	for (u32 i = index ? *index : 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (index) *index += 1;
 		if (unit_id == equivalents[i].from) {
 			return equivalents[i];
 		}
@@ -368,20 +369,11 @@ u32 town_has_down_equivalent(AiTown* town, u32 unit_id) {
 
 u32 town_count_up_equivalents(AiTown* town, u32 unit_id) {
 	u32 count = town_count_units(town, unit_id);
-	if (unit_id == UnitId::ZergCagrantColony) {
-		count += town_count_up_equivalents(town, UnitId::ZergSurkithColony);
-		count += town_count_up_equivalents(town, UnitId::ZergSpraithColony);
-		count += town_count_up_equivalents(town, UnitId::ZergLarvoskColony);
-		count += town_count_up_equivalents(town, UnitId::ZergKazitrithColony);
-		count += town_count_up_equivalents(town, UnitId::ZergOcsalColony);
-	} else if (unit_id == UnitId::ZergHachirosk) {
-		count += town_count_up_equivalents(town, UnitId::ZergCaphrolosk);
-		count += town_count_up_equivalents(town, UnitId::ZergGathtelosk);
-	} else {
-		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
-		if (equivalent.to != UnitId::None) {
-			count += town_count_up_equivalents(town, equivalent.to);
-		}
+	u32 index = 0;
+	AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id, &index);
+	while (equivalent.to != UnitId::None) {
+		count += town_count_up_equivalents(town, equivalent.to);
+		equivalent = find_unit_equivalent_up(unit_id, &index);
 	}
 	return count;
 }
@@ -392,20 +384,11 @@ u32 player_count_units(u32 player, u32 unit_id) {
 
 u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 	u32 count = player_count_units(player, unit_id);
-	if (unit_id == UnitId::ZergCagrantColony) {
-		count += player_count_up_equivalents(player, UnitId::ZergSurkithColony);
-		count += player_count_up_equivalents(player, UnitId::ZergSpraithColony);
-		count += player_count_up_equivalents(player, UnitId::ZergLarvoskColony);
-		count += player_count_up_equivalents(player, UnitId::ZergKazitrithColony);
-		count += player_count_up_equivalents(player, UnitId::ZergOcsalColony);
-	} else if (unit_id == UnitId::ZergHachirosk) {
-		count += player_count_up_equivalents(player, UnitId::ZergCaphrolosk);
-		count += player_count_up_equivalents(player, UnitId::ZergGathtelosk);
-	} else {
-		AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id);
-		if (equivalent.to != UnitId::None) {
-			count += player_count_up_equivalents(player, equivalent.to);
-		}
+	u32 index = 0;
+	AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id, &index);
+	while (equivalent.to != UnitId::None) {
+		count += player_count_up_equivalents(player, equivalent.to);
+		equivalent = find_unit_equivalent_up(unit_id, &index);
 	}
 	return count;
 }
