@@ -8,7 +8,6 @@ enum ExtValueId
 	ValueUnitInit,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
-	ValueSomaticImplants,
 	ValueSublimeShepherd,
 	ValueHasSublimeShepherd,
 	ValueWyvernLandGrabX,
