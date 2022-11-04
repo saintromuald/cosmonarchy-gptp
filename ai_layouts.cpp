@@ -180,17 +180,19 @@ void update_layouts() {
 
 					bool is_building = units_dat::base_property[placeholder->unit_id] & UnitProperty::Building;
 					bool not_guard = units_dat::computer_ai_internal[placeholder->unit_id] & 2;
-					bool should_build = town_count_up_equivalents(town, placeholder->unit_id) < layouts_town->request_count[placeholder->unit_id];
-					if (((is_building || not_guard) && should_build) || (placeholder->guard_ai && !placeholder->guard_ai->parent)) {
+					if (is_building || not_guard) {
+						if (town_count_up_equivalents(town, placeholder->unit_id) < layouts_town->request_count[placeholder->unit_id]) {
+							request_placeholder(town, layouts_town, placeholder);
+							placeholder->color = graphics::ORANGE;
+							if (is_building && town_has_down_equivalent(town, base_unit_id)) {
+								// Lock adding new requests until this request is started
+								placeholder->color = graphics::YELLOW;
+								break;
+							}
+						}
+					} else if (!placeholder->guard_ai || !placeholder->guard_ai->parent) {
 						request_placeholder(town, layouts_town, placeholder);
 						placeholder->color = graphics::ORANGE;
-					}
-
-					if (is_building && should_build &&
-						town_has_down_equivalent(town, base_unit_id)) {
-						// Lock adding new requests until this request is started
-						placeholder->color = graphics::YELLOW;
-						break;
 					}
 				} else if (placeholder->placement_timeout < 10 * 24) { // Keep in mind that placement_timeout can't be higher than 256 (it's u8)
 					placeholder->placement_timeout++;
