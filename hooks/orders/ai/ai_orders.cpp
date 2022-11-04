@@ -874,7 +874,7 @@ namespace hooks {
 		if (!unit || !unit->sprite || !unit->main_order_id) {
 			return 0;
 		}
-		if (!for_harvesting && (unit->id == UnitId::ResourceVespeneRidge || unit->id == UnitId::ResourceVespeneGeyser)) {
+		if (!for_harvesting && unit->id == UnitId::ResourceVespeneGeyser) {
 			return 1;
 		}
 		if (unit->id == UnitId::ResourceVespeneRidge || unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExcisant) {
