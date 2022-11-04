@@ -94,7 +94,7 @@ namespace hooks
 
 	void update_status_effects(Unit* unit) // 00492F70
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		if (unit->subunit != nullptr)
 		{
@@ -221,19 +221,6 @@ namespace hooks
 			});
 		}
 
-		// Ghost Somatic Implants behavior
-		if (unit->id == UnitId::TerranEidolon)
-		{
-			if (!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
-			{
-				if (unitExt->values[ValueSomaticImplants] == 1)
-				{
-					unit->update_speed();
-					unitExt->values[ValueSomaticImplants] = 0;
-				}
-			}
-		}
-
 		if (unit->stim_timer != 0)
 		{
 			unit->stim_timer--;
@@ -348,18 +335,18 @@ namespace hooks
 		}
 
 		// Vithrilisk - Corrosive Touch - update overlays
-		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
+		if (unit_ext->values[ValueCorrosiveTouchStacks] != 0)
 		{
 			// Calculate the appropriate overlay ID
-			u32 acidOverlayId = get_spores_overlay_id(unit);
-			if (!unit->get_overlay(acidOverlayId))
+			u32 acid_overlay_id = get_spores_overlay_id(unit);
+			if (!unit->get_overlay(acid_overlay_id))
 			{
 				unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 				if (unit->subunit)
 				{
 					unit = unit->subunit;
 				}
-				unit->sprite->create_top_overlay(acidOverlayId);
+				unit->sprite->create_top_overlay(acid_overlay_id);
 			}
 		}
 	}
@@ -383,8 +370,8 @@ namespace hooks
 						// Originally checked for burrow tech here
 						)
 					{
-						bool canBurrow = true;
-						auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
+						bool can_burrow = true;
+						ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
 						if (tile.currently_occupied)
 						{
 							Unit* nearest = scbw::UnitFinder::get_nearest_target(
@@ -400,10 +387,10 @@ namespace hooks
 							);
 							if (nearest)
 							{
-								canBurrow = false;
+								can_burrow = false;
 							}
 						}
-						if (canBurrow)
+						if (can_burrow)
 						{
 							if (unit->id != UnitId::ZergLakizilisk) {
 								EntryArray array = {};
