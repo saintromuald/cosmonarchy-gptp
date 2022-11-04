@@ -15,7 +15,7 @@ namespace hooks
 		}
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
 		{
-			bonus_armor += 3;
+			bonus_armor += 2;
 		}
 		return bonus_armor + scbw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
 	}

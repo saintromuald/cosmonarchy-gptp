@@ -413,7 +413,7 @@ namespace
 	void __declspec(naked) has_resources_for_unit_wrapper() { // 004487B0
 		static u16 unit_id;
 		static u32 player;
-		static bool result;
+		static b32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -427,7 +427,7 @@ namespace
 		result = hooks::has_resources_for_unit(unit_id, player);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04
@@ -454,7 +454,7 @@ namespace hooks {
 	//	jump_patch(ai_make_guard_wrapper,							0x0043A010, 1);
 		jump_patch(ai_add_spending_request_from_towns_wrapper,		0x00436320, 1);
 		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
-		jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1);
+	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1);
 		jump_patch(ai_add_spending_request_wrapper,					0x00447980, 1);
 	//	jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
 		jump_patch(has_resources_for_unit_wrapper,					0x004487B0, 1);
