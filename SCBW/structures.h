@@ -829,8 +829,7 @@ struct GuardAiListPlayers {
 	GuardAiList player[8];
 };
 
-struct TownReq
-{
+struct TownReq {
 	union {
 		u8 flags_and_count;
 		struct {
@@ -883,7 +882,7 @@ struct SpendingRequest {
 	union {
 		AiRegion* ai_region; // RequestType::Military
 		GuardAi* guard_ai;	 // RequestType::Guard
-		AiTown* town;		 // RequestType::Building, RequestType::Worker, and RequestType::Addon
+		AiTown* town;		 // RequestType::Building, RequestType::Worker, RequestType::Addon, RequestType::Upgrade, and RequestType::Tech
 		void*	value;       // Empty otherwise
 	};
 };
