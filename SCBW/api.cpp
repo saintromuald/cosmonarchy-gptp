@@ -2618,7 +2618,7 @@ namespace scbw {
 		} else if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 			request_type = RequestType::Addon;
 		}
-		g_aiscript_controller[town->player].mineral_needed += units_dat::mineral_cost[unit_id] * count;
+		g_aiscript_controller[town->player].minerals_needed += units_dat::mineral_cost[unit_id] * count;
 		g_aiscript_controller[town->player].vespene_needed += units_dat::vespene_cost[unit_id] * count;
 		for (u32 i = 0; i < count; ++i) {
 			helper::ai_add_spending_request(unit_id, town->player, request_type, priority, town);

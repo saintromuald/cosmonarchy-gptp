@@ -290,7 +290,7 @@ namespace hooks
 			return 0;
 		}
 
-		if (helper::ai_is_at_define_max(player, next_build_type))
+		if (helper::ai_isnt_at_define_max(player, next_build_type))
 		{
 			helper::ai_reserve(player, 0);
 			helper::ai_pop_spending_request(player);
@@ -478,7 +478,7 @@ namespace hooks
 						{
 							witness_supply_cost = 2 * units_dat::supply_required[UnitId::ProtossWitness];
 						}
-						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
+						g_aiscript_controller[player_id].minerals_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
 						g_aiscript_controller[player_id].vespene_needed += witness_gas_cost;
 						g_aiscript_controller[player_id].supply_needed += witness_supply_cost;
 						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
@@ -506,7 +506,7 @@ namespace hooks
 							transport_supply_cost *= 2;
 						}
 						v29 = g_aiscript_controller[player_id].vespene_needed;
-						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[transport_unit_id_1];
+						g_aiscript_controller[player_id].minerals_needed += units_dat::mineral_cost[transport_unit_id_1];
 						g_aiscript_controller[player_id].vespene_needed = transport_1_gas_cost + v29;
 						g_aiscript_controller[player_id].supply_needed += transport_supply_cost;
 						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
@@ -939,7 +939,7 @@ namespace hooks
 							mineral_cost = techdata_dat::mineral_cost[request->id];
 							vespene_cost = techdata_dat::vespene_cost[request->id];
 						}
-						g_aiscript_controller[player].mineral_needed += mineral_cost * count;
+						g_aiscript_controller[player].minerals_needed += mineral_cost * count;
 						g_aiscript_controller[player].vespene_needed += vespene_cost * count;
 						for (u32 i = 0; i < count; ++i) {
 							helper::ai_add_spending_request(request->id, player, request_type, request->priority, town);
@@ -1121,7 +1121,7 @@ namespace hooks
 						build_pos = town->position;
 						if (unit_id == UnitId::ZergCagrantColony || unit_id == UnitId::ProtossWarden) {
 							u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
-							helper::do_area_fixups_for_enemy(player, region_id, 4u);
+							helper::do_area_fixups_for_enemy(player, region_id, 4);
 						}
 						if (g_aiscript_controller[player].failed_placement) {
 							return helper::ai_finish_unit(unit);
@@ -1163,7 +1163,7 @@ namespace hooks
 			case RequestType::Worker:
 			case RequestType::Witness:
 			{
-				if (helper::ai_is_at_define_max(player, id)) {
+				if (helper::ai_isnt_at_define_max(player, id)) {
 					return false;
 				}
 			}
@@ -1192,5 +1192,73 @@ namespace hooks
 			}
 		}
 		return true;
+	}
+
+	// Hooked in case it's useful for improving AI detector requests. -Pr0nogo
+	s32 ai_make_detector_behavior(Unit* unit, u32 player_id) // 00435130
+	{
+		if (g_aiscript_controller[player_id].requests[0].id == UnitId::ProtossWitness)
+		{
+			if (helper::is_unit_id_race_equal_to_unit_race(UnitId::ProtossWitness, unit)
+			&&  helper::create_unit_allowed(UnitId::ProtossWitness, unit, player_id) == 1)
+			{
+				if (helper::has_resources_for_unit(UnitId::ProtossWitness, player_id))
+				{
+					if (helper::ai_isnt_at_define_max(player_id, UnitId::ProtossWitness))
+					{
+						helper::ai_reserve(player_id, 0);
+						helper::ai_pop_spending_request(player_id);
+						return 0;
+					}
+					if (helper::ai_train_unit(unit, UnitId::ProtossWitness, 5, 0))
+					{
+						helper::set_secondary_order(unit, OrderId::Train);
+						helper::ai_reserve(player_id, 1);
+						helper::ai_pop_spending_request(player_id);
+						return 1;
+					}
+				}
+			}
+			else if (*g_last_internal_error == 2
+			||		 *g_last_internal_error  == 23
+			||		 *g_last_internal_error  == 21
+			||		 *g_last_internal_error  == 8
+			||		 *g_last_internal_error  == 7
+			||		 *g_last_internal_error  == 13)
+			{
+				helper::ai_reserve(player_id, 0);
+				helper::ai_pop_spending_request(player_id);
+				helper::ai_perform_task(unit);
+			}
+		}
+		return 0;
+	}
+
+	// Hooked to investigate refinery issue. -Pr0nogo
+	bool has_resources_for_unit(u16 unit_id, u32 player) // 004487B0
+	{
+		u32 ore = units_dat::mineral_cost[unit_id];
+		u32 gas = units_dat::vespene_cost[unit_id];
+		g_ai_minerals_reserve[player] = ore;
+		g_ai_vespene_reserve[player] = gas;
+
+		// Originally checked supplies.
+
+		if (g_game_minerals[player] < g_ai_minerals_reserve[player])
+		{
+			helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
+			return 0;
+		}
+		if (g_game_vespene[player] < g_ai_vespene_reserve[player])
+		{
+			helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
+			return 0;
+		}
+		if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player]
+			|| g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player])
+		{
+			return 0;
+		}
+		return 1; // Originally checked supplies.
 	}
 }

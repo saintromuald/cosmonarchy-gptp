@@ -6883,7 +6883,7 @@ namespace helper {
 	}
 
 	// For ai_add_spending_request
-	bool ai_is_at_define_max(s32 player, s32 unit_id) {
+	bool ai_isnt_at_define_max(s32 player, s32 unit_id) {
 		const u32 Func_isAIAllowedToBuild = 0x00447830;
 		static s32 result;
 		__asm {
@@ -9114,17 +9114,17 @@ namespace helper {
 	}
 
 	bool has_resources_for_unit(u16 unit_id, s32 player) {
-		static bool result;
-		const u32 Func_hasResourcesForUnit = 0x004487B0;
+		static u32 result;
+		const u32 func_address = 0x004487B0;
 		__asm {
 			PUSHAD
 			PUSH player
 			MOV CX, unit_id
-			CALL Func_hasResourcesForUnit
-			MOV result, AL
+			CALL func_address
+			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (bool)result;
 	}
 
 	char ai_perform_task(Unit* unit) {

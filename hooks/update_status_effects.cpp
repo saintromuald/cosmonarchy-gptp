@@ -420,4 +420,17 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to reveal Lakizilisks like cloaked units. -Pr0nogo
+	bool is_revealed(Unit* unit) // 00491810
+	{
+		return unit->defensive_matrix_hp
+		||	   unit->lockdown_timer
+		||	   unit->maelstrom_timer
+		||	   unit->irradiate_timer
+		||	   unit->ensnare_timer
+		||	   unit->stasis_timer
+		||	   unit->plague_timer
+		||	   unit->corrosive_spore_count_unused;
+	}
 }
