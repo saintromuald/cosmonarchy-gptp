@@ -361,6 +361,38 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) ai_add_spending_request_wrapper() { // 00447980
+		static u16 unit_id; // u16 in ida, register arg, isn't it an error to make them u32? Thought stack args were the ones that didn't matter. -P
+		static u32 player;
+		static char request_type;
+		static char priority;
+		static void* value;
+		static b32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV priority, AL
+			MOV EAX, [EBP + 0x0C]
+			MOV value, EAX
+			POP EAX
+			MOV unit_id, AX
+			MOV player, EDX
+			MOV request_type, CL
+			PUSHAD
+		}
+		result = hooks::ai_add_spending_request(unit_id, player, request_type, priority, value);
+		__asm {
+			POPAD
+			MOV result, EAX
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
 }
 
 namespace hooks {
@@ -383,5 +415,6 @@ namespace hooks {
 		jump_patch(ai_add_spending_request_from_towns_wrapper,		0x00436320, 1);
 		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
 	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1);
+	//	jump_patch(ai_add_spending_request_wrapper,					0x00447980, 1);
 	}
 }

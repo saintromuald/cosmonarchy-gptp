@@ -1146,7 +1146,8 @@ namespace hooks
 		return false;
 	}
 
-	b32 ai_add_spending_request(u32 id, u32 player, u32 type, u32 priority, void* value) {
+	// Hooked to improve request ordering. -Veeq7
+	b32 ai_add_spending_request(u16 id, u32 player, char type, char priority, void* value) { // 00447980
 		SpendingRequest request = {};
 		request.id = id;
 		request.type = type;
