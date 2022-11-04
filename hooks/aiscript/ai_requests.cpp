@@ -1044,10 +1044,7 @@ namespace hooks
 			return 0;
 		}
 
-		// Counting of this var was already disabled in worker controller, as we want any worker to be able to build -Veeq7
-	//	if (unit_ai->worker_ai.reassign_count >= 3) {
-	//		return 0;
-	//	}
+		// Originally counted a per-worker variable that prohibited that worker from attempting construction.
 
 		u32 unit_id = g_aiscript_controller[player].requests[0].id;
 		if (!helper::is_unit_id_race_equal_to_unit_race(unit_id, unit)
