@@ -313,8 +313,7 @@ namespace hooks {
 					}
 				} else {
 					u32 refinery_id = helper::get_default_refinery_type(unit->player);
-					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	 || unit->id == UnitId::ResourceVespeneGeyser) {
-						bool sort = false;
+					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	|| unit->id == UnitId::ResourceVespeneGeyser) {
 						for (u32 i = 0; i < 3; ++i) {
 							if (!town->gas_buildings[i]) {
 								town->gas_buildings[i] = unit;

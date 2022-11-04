@@ -884,7 +884,7 @@ namespace hooks {
 	}
 
 	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
-		// This is stupid, but changing or even cleaning it seems to break AI having more than 1 refinery, might be undefined behavior. Please fix
+		/*
 		Unit* gas_building = town->gas_buildings[0];
 		u32 counter = 0;
 		if (gas_building && ai_get_vespene_type(town->gas_buildings[0], town->player, for_harvesting) == gas_state && (counter = 1, index == 1)
@@ -892,10 +892,33 @@ namespace hooks {
 			|| (gas_building = town->gas_buildings[2]) != 0 && ai_get_vespene_type(town->gas_buildings[2], town->player, for_harvesting) == gas_state && counter + 1 == index) {
 			return gas_building;
 		}
+		*/
 
-		//if (town->gas_buildings[index - 1] && ai_get_vespene_type(town->gas_buildings[index - 1], town->player, for_harvesting) == gas_state) {
-		//	return town->gas_buildings[index - 1];
-		//}
+		u32 counter = 0;
+		for (u32 i = 0; i < 3; ++i) {
+			Unit* gas_building = town->gas_buildings[i];
+			if (gas_building && ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 3) {
+				if (index == ++counter) {
+					return gas_building;
+				}
+			}
+		}
+		for (u32 i = 0; i < 3; ++i) {
+			Unit* gas_building = town->gas_buildings[i];
+			if (gas_building && ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 2) {
+				if (index == ++counter) {
+					return gas_building;
+				}
+			}
+		}
+		for (u32 i = 0; i < 3; ++i) {
+			Unit* gas_building = town->gas_buildings[i];
+			if (gas_building && ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 1) {
+				if (index == ++counter) {
+					return gas_building;
+				}
+			}
+		}
 
 		return 0;
 	}

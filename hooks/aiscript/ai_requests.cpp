@@ -776,7 +776,7 @@ namespace hooks
 			} else {
 				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
 				Unit* unit = find_unit_for_guard(player, guard_ai->unit_id, guard_ai->original_home);
-				if (unit && scbw::get_distance_fast(guard_ai->original_home, unit->position) < 30 * 32) {
+				if (unit) {
 					helper::remove_unit_ai(unit, 0);
 					guard_ai->current_home = guard_ai->original_home;
 					guard_ai->parent = unit;

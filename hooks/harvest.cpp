@@ -1,6 +1,25 @@
 #include "harvest.h"
 #include "../SCBW/api.h"
 
+// Used for gas state sorting
+u32 get_gas_tier(Unit* unit) {
+	if (unit) {
+		switch (unit->id) {
+			case UnitId::ResourceVespeneRidge:
+				return 1;
+
+			case UnitId::ResourceVespeneGeyser:
+				return 2;
+
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExcisant:
+				return 3;
+		}
+	}
+	return 0;
+}
+
 u32 get_harvest_amount(Unit* unit) {
 	if (unit) {
 		switch (unit->id) {
