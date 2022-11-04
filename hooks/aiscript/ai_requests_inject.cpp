@@ -119,7 +119,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_train_defensive_military_Wrapper() { // 0043F990
+	void __declspec(naked) ai_train_defensive_military_wrapper() { // 0043F990
 		static u8 player_id;
 		__asm {
 			PUSH EBP
@@ -409,8 +409,6 @@ namespace
 			RETN
 		}
 	}
-
-	// s32 ai_make_detector_behavior(Unit* unit, u32 player_id);
 }
 
 namespace hooks {
@@ -419,7 +417,7 @@ namespace hooks {
 		jump_patch(ai_progress_build_wrapper,						0x00434480, 1);
 		jump_patch(ai_perform_task_wrapper,							0x004361A0, 0);
 	//	jump_patch(ai_plan_do_merge_morph_wrapper,					0x00435F10, 1);
-	//	jump_patch(ai_train_defensive_military_Wrapper,				0x0043F990, 1);
+	//	jump_patch(ai_train_defensive_military_wrapper,				0x0043F990, 1);
 		jump_patch(ai_build_wrapper,								0x004323D0, 1);
 		jump_patch(ai_build_gas_building_wrapper,					0x00433660, 1);
 
@@ -434,6 +432,6 @@ namespace hooks {
 		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
 	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1);
 		jump_patch(ai_add_spending_request_wrapper,					0x00447980, 1);
-		jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
+	//	jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
 	}
 }

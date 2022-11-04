@@ -885,7 +885,7 @@ namespace helper {
 	s32 ai_count_economy_units(u32 player, u32 unit_id);
 	s32 get_supplies_remaining(u8 player, u16 unit_id);
 	s32 get_supplies_used(s32 byte_data, u8 player);
-	bool ai_is_at_define_max(s32 player, s32 unit_id);
+	bool ai_isnt_at_define_max(s32 player, s32 unit_id);
 	void applyCloakingOrder(Unit* unit);																	// 00491B30
 
 	//// use_tech

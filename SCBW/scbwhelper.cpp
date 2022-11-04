@@ -6883,7 +6883,7 @@ namespace helper {
 	}
 
 	// For ai_add_spending_request
-	bool ai_is_at_define_max(s32 player, s32 unit_id) {
+	bool ai_isnt_at_define_max(s32 player, s32 unit_id) {
 		const u32 Func_isAIAllowedToBuild = 0x00447830;
 		static s32 result;
 		__asm {
