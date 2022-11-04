@@ -880,11 +880,15 @@ struct SpendingRequest {
 	u8		priority;
 	u8		type;
 	u16		id;
-	void*	value;
+	union {
+		AiRegion* ai_region; // RequestType::Military
+		GuardAi* guard_ai;	 // RequestType::Guard
+		AiTown* town;		 // RequestType::Building, RequestType::Worker, and RequestType::Addon
+		void*	value;       // Empty otherwise
+	};
 };
 
-struct AI_Main
-{
+struct AI_Main {
 	u32 mineral_needed;					/*0000*/
 	u32 vespene_needed;					/*0004*/
 	u32 supply_needed;					/*0008*/
@@ -893,12 +897,11 @@ struct AI_Main
 	u32 supply_available;				/*0014*/
 	SpendingRequest requests[63];		/*0018*/
 	u8 request_count;					/*0210*/
-	u8 liftoff_cooldown;				/*0211*/
+	u8 failed_placement;				/*0211*/
 	u8 ai_nuke_rate;					/*0212*/
 	u8 ai_attacks;						/*0213*/
 	u32 ai_last_nuke_time;				/*0214*/
-	struct
-	{
+	struct {
 		u16 is_secure_finished : 1;			/*0001*/
 		u16 is_town_started : 1;			/*0002*/
 		u16 is_default_build_off : 1;		/*0004*/
@@ -938,8 +941,7 @@ struct AI_Main
 	Box32 gen_cmd_loc;					/*04D8*/
 };
 
-struct AiScript
-{
+struct AiScript {
 	Link<AiScript>		link;			// 0x0, 0x4
 	s32					script_offset;	// 0x8
 	s32					sleep;			// 0xC
