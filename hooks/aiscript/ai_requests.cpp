@@ -1036,12 +1036,12 @@ namespace hooks
 		assert(town->player == unit->player);
 		u32 player = unit->player;
 		if (!g_aiscript_controller[player].request_count || g_aiscript_controller[player].requests[0].type != RequestType::Building) {
-			return 0;
+			return false;
 		}
 
 		UnitAi* unit_ai = unit->unit_ai;
 		if (g_aiscript_controller[player].requests[0].value != unit_ai->worker_ai.town) {
-			return 0;
+			return false;
 		}
 
 		// Originally counted a per-worker variable that prohibited that worker from attempting construction.
@@ -1050,16 +1050,23 @@ namespace hooks
 		if (!helper::is_unit_id_race_equal_to_unit_race(unit_id, unit)
 		||   helper::create_unit_allowed(unit_id, unit, player) != 1
 		||  !helper::has_resources_for_unit(unit_id, player)) {
-			return 0;
+			return false;
 		}
 
 		Point16 build_pos = {};
 		if (unit_id == helper::get_default_refinery_type(player)) {
-			Unit* gas = helper::get_ai_refinery(town, 1, 1);
-			if (!gas) {
-				return 0;
+			bool found = false;
+			for (u32 i = 1; i <= 3; ++i) {
+				Unit* gas = helper::get_ai_refinery(town, 1, 1);
+				if (gas) {
+					build_pos = gas->position;
+					found = true;
+					break;
+				}
 			}
-			build_pos = gas->position;
+			if (!found) {
+				return false;
+			}
 		} else {
 			switch (unit_id) {
 				case UnitId::TerranBunker: {
