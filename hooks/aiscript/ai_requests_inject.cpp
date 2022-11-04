@@ -392,7 +392,6 @@ namespace
 			RETN 0x08
 		}
 	}
-
 }
 
 namespace hooks {
