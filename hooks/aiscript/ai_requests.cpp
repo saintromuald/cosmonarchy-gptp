@@ -1205,11 +1205,11 @@ namespace hooks
 				}
 			}
 			else if (*g_last_internal_error == 2
-			||		 *g_last_internal_error  == 23
-			||		 *g_last_internal_error  == 21
-			||		 *g_last_internal_error  == 8
-			||		 *g_last_internal_error  == 7
-			||		 *g_last_internal_error  == 13) {
+			||		 *g_last_internal_error == 23
+			||		 *g_last_internal_error == 21
+			||		 *g_last_internal_error == 8
+			||		 *g_last_internal_error == 7
+			||		 *g_last_internal_error == 13) {
 				helper::ai_reserve(player_id, 0);
 				helper::ai_pop_spending_request(player_id);
 				helper::ai_perform_task(unit);
