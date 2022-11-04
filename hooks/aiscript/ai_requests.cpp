@@ -290,7 +290,7 @@ namespace hooks
 			return 0;
 		}
 
-		if (helper::is_ai_allowed_to_build(player, next_build_type))
+		if (helper::ai_is_at_define_max(player, next_build_type))
 		{
 			helper::ai_reserve(player, 0);
 			helper::ai_pop_spending_request(player);
@@ -1160,7 +1160,7 @@ namespace hooks
 			case RequestType::Worker:
 			case RequestType::Witness:
 			{
-				if (!helper::is_ai_allowed_to_build(player, id)) {
+				if (helper::ai_is_at_define_max(player, id)) {
 					return false;
 				}
 			}
