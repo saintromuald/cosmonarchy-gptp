@@ -201,18 +201,10 @@ namespace hooks
 
 	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 boolSomething) // 00435F10
 	{
-		bool error;
-		AiTown* mainTown2;
-		char requestedBuildId;
-		AI_Main* mainTown;
-		s16 mainTownTown;
-		s16 unitAIQueues;
-		s16 unit_id;
-
 		Unit* unit_copy = unit;
-		s32 nextBuildType = g_aiscript_controller[player].requests->type;
+		s32 next_build_type = g_aiscript_controller[player].requests->type;
 		Unit* dummy = nullptr;
-		switch (nextBuildType)
+		switch (next_build_type)
 		{
 			case UnitId::ZergGeszithalor:
 			case UnitId::ZergVithrilisk:
@@ -256,7 +248,7 @@ namespace hooks
 				break;
 		}
 
-		if (!helper::is_unit_id_race_equal_to_unit_race(nextBuildType, unit_copy) || helper::create_unit_allowed(nextBuildType, unit_copy, player) != 1)
+		if (!helper::is_unit_id_race_equal_to_unit_race(next_build_type, unit_copy) || helper::create_unit_allowed(next_build_type, unit_copy, player) != 1)
 		{
 			if (*g_last_internal_error == 2
 			  || *g_last_internal_error == 23
@@ -272,8 +264,7 @@ namespace hooks
 				}
 				return 0;
 			}
-			error = *g_last_internal_error == 13;
-			if (error)
+			if (*g_last_internal_error == 13)
 			{
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
@@ -285,10 +276,9 @@ namespace hooks
 			}
 		}
 
-		if (!helper::has_resources_for_unit(nextBuildType, player))
+		if (!helper::has_resources_for_unit(next_build_type, player))
 		{
-			error = (g_aiscript_controller[player].ai_flags.is_use_map_settings) == 0;
-			if (error)
+			if ((g_aiscript_controller[player].ai_flags.is_use_map_settings) == 0)
 			{
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
@@ -300,7 +290,7 @@ namespace hooks
 			return 0;
 		}
 
-		if (helper::is_ai_allowed_to_build(player, nextBuildType))
+		if (helper::is_ai_allowed_to_build(player, next_build_type))
 		{
 			helper::ai_reserve(player, 0);
 			helper::ai_pop_spending_request(player);
@@ -309,15 +299,15 @@ namespace hooks
 
 		if (unit == unit_copy)
 		{
-			requestedBuildId = helper::ai_get_request_build_type(player);
-			if (!helper::ai_train_unit(unit_copy, nextBuildType, requestedBuildId, g_aiscript_controller[player].requests->value))
+			u32 requested_build_id = helper::ai_get_request_build_type(player);
+			if (!helper::ai_train_unit(unit_copy, next_build_type, requested_build_id, g_aiscript_controller[player].requests->value))
 			{
 				return 0;
 			}
 		}
 		else
 		{
-			if (!helper::has_money_can_make(unit_copy, nextBuildType))
+			if (!helper::has_money_can_make(unit_copy, next_build_type))
 			{
 				return 0;
 			}
@@ -342,8 +332,7 @@ namespace hooks
 
 		helper::ai_reserve(player, 1);
 		helper::ai_pop_spending_request(player);
-		unit_id = unit_copy->id;
-		if (scbw::is_conventional_unit_morph_source(unit_id))
+		if (scbw::is_conventional_unit_morph_source(unit_copy->id))
 		{
 			helper::issue_order_targeting_nothing(unit_copy, OrderId::Morph1);
 			return 1;
