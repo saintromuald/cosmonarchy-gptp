@@ -1147,7 +1147,7 @@ namespace hooks
 	}
 
 	// Hooked to improve request ordering. -Veeq7
-	b32 ai_add_spending_request(u16 id, u32 player, char type, char priority, void* value) { // 00447980
+	b32 ai_add_spending_request(u32 id, u32 player, u32 type, u32 priority, void* value) { // 00447980
 		SpendingRequest request = {};
 		request.id = id;
 		request.type = type;
@@ -1170,16 +1170,16 @@ namespace hooks
 		if (ai_main->request_count < 63) {
 			ai_main->request_count += 1;
 		}
-		u32 index = ai_main->request_count - 1;
 
-		SpendingRequest to_insert = request;
-		for (u32 i = 0; i < ai_main->request_count; ++i) {
+		u32 index = ai_main->request_count - 1;
+		SpendingRequest* to_insert = &ai_main->requests[index];
+		*to_insert = request;
+		for (u32 i = 0; i < index; ++i) {
 			SpendingRequest* current = &ai_main->requests[i];
-			if (to_insert.priority <= current->priority) {
-				// Swap
+			if (to_insert->priority > current->priority) {
 				SpendingRequest temp = *current;
-				*current = to_insert;
-				to_insert = temp;
+				*current = *to_insert;
+				*to_insert = temp;
 			}
 		}
 		return true;

@@ -6883,13 +6883,13 @@ namespace helper {
 	}
 
 	// For ai_add_spending_request
-	bool is_ai_allowed_to_build(s32 a1, s32 a2) {
+	bool is_ai_allowed_to_build(s32 player, s32 unit_id) {
 		const u32 Func_isAIAllowedToBuild = 0x00447830;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a2
-			MOV EAX, a1
+			MOV ECX, unit_id
+			MOV EAX, player
 			CALL Func_isAIAllowedToBuild
 			MOV result, EAX
 			POPAD
