@@ -1,7 +1,7 @@
 #include "harvest.h"
 #include "../SCBW/api.h"
 
-// Used for gas state sorting
+// Used for AI calcs (currently supported values: 3, 2, 1)
 u32 get_gas_tier(Unit* unit) {
 	if (unit) {
 		switch (unit->id) {

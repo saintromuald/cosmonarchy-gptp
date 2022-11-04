@@ -1210,23 +1210,23 @@ namespace hooks {
 
 			AI_Main* ai_player = &g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->vespene_needed - ai_player->vespene_available;
-			u32 new_gas_count = gas_delta > 0 ? gas_delta / 100 : 0;
-			new_gas_count += worker_count / 10;
+			u32 new_gas_count = gas_delta > 0 ? gas_delta / 50 : 0;
+			new_gas_count += worker_count / 5;
 			if (gas_count < new_gas_count) {
 				gas_count = new_gas_count;
 			}
-			if (gas_count > worker_count / 4) {
-				gas_count = worker_count / 4;
+			if (gas_count > worker_count / 3) {
+				gas_count = worker_count / 3;
 			}
 
 			// New limit
 			u32 max_gas_worker_count = 0;
-			u8 gas_node_worker_count[3] = {};
+			u8 gas_worker_counts[3] = {};
 			for (u32 i = 0; i < 3; ++i) {
 				Unit* gas = town->gas_buildings[i];
 				if (gas && gas->status & UnitStatus::Completed) {
-					gas_node_worker_count[i] = 2;
-					max_gas_worker_count += gas_node_worker_count[i];
+					gas_worker_counts[i] = 2;
+					max_gas_worker_count += gas_worker_counts[i];
 				}
 			}
 			if (gas_count > max_gas_worker_count) {
@@ -1284,17 +1284,11 @@ namespace hooks {
 					}
 					if (*target_resource_type != 1) {
 						if (max_gas_worker_count) {
-							for (u32 i = 0; i < 3; ++i) {
+							if (!gas_worker_counts[*target_resource_type - 2]) {
 								*target_resource_type += 1;
 								if (*target_resource_type > 4) {
-									*target_resource_type = 2;
+									*target_resource_type = 1;
 								}
-								if (gas_node_worker_count[*target_resource_type - 2]) {
-									break;
-								}
-							}
-							if (!gas_node_worker_count[*target_resource_type - 2]) {
-								*target_resource_type = 1;
 							}
 						} else {
 							*target_resource_type = 1;
@@ -1305,10 +1299,10 @@ namespace hooks {
 					result = *target_resource_type;
 
 					if (*target_resource_type != 1) {
-						if (gas_node_worker_count[*target_resource_type - 2]) {
+						if (gas_worker_counts[*target_resource_type - 2]) {
 							assert(max_gas_worker_count);
 							--max_gas_worker_count;
-							--gas_node_worker_count[*target_resource_type - 2];
+							--gas_worker_counts[*target_resource_type - 2];
 						}
 					}
 				}
