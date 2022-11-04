@@ -1014,7 +1014,7 @@ namespace hooks
 		*/
 	}
 
-	static u8 ai_get_build_order_id(Unit* unit, u32 unit_id) { // 00434C31
+	u8 ai_get_build_order_id(Unit* unit, u32 unit_id) { // 00434C31
 		u32 worker_race = unit->get_race();
 		if (worker_race == Unit::get_race(unit_id)) {
 			switch (worker_race) {
