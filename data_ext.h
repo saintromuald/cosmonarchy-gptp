@@ -170,6 +170,7 @@ enum ExtTimerId
 	TimerHallucinating,
 	TimerPetrification,
 	TimerDecloak,
+	TimerDecloakBurrow,
 	TimerResourceBoostedRegen,
 	TimerAdrenal,
 	TimerParasiteArm,

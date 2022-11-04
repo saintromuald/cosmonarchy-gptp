@@ -596,7 +596,6 @@ namespace scbw
 	void create_shield_overlay(Unit* unit, u32 attackDirection);
 	void decloak_proc(Unit* unit);
 	bool is_decloakable(Unit* unit);
-	bool is_animated_decloak(Unit* unit);
 	bool unit_can_nuke(Unit* unit);
 	bool unit_is_trap(Unit* unit);
 	bool unit_is_ranged_attacker(Unit* unit);

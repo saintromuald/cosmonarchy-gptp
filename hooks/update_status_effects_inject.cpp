@@ -36,7 +36,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) is_revealed_wrapper()
+	void __declspec(naked) unit_is_always_detected_wrapper()
 	{
 		static bool result;
 		static Unit* unit;
@@ -47,7 +47,7 @@ namespace
 		result = hooks::unit_is_always_detected(unit);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}
@@ -59,6 +59,6 @@ namespace hooks
 	{
 		jump_patch(update_status_effects_wrapper,	0x00492F70, 5);
 		jump_patch(ai_burrower_wrapper,				0x004A1340, 4);
-		jump_patch(is_revealed_wrapper,				0x00491810, 3);
+		jump_patch(unit_is_always_detected_wrapper,	0x00491810, 3);
 	}
 }
