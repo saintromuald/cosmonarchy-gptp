@@ -148,9 +148,9 @@ namespace hooks {
 		{
 			return;
 		}
-		UnitExt* unitExt = get_unit_ext(unit);
-		unitExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
-		unitExt->values[ValueAI_PreventTargeting] = 0;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
+		unit_ext->values[ValueAI_PreventTargeting] = 0;
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
 		u8 behavior = weapons_dat::behavior[weapon_id];
@@ -200,16 +200,16 @@ namespace hooks {
 			// Lurker Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
-				unitExt->timers[TimerLurkerETA] = 17;
+				unit_ext->timers[TimerLurkerETA] = 17;
 				auto range = weapons_dat::max_range[weapon_id] + 16;
 				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
 				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
 				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
-				unitExt->values[ValueSpineX] = targ_x;
-				unitExt->values[ValueSpineY] = targ_y;
+				unit_ext->values[ValueSpineX] = targ_x;
+				unit_ext->values[ValueSpineY] = targ_y;
 				if (unit->order_target.unit != nullptr)
 				{
-					unitExt->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
+					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
 				}
 				globals.clear_lakizilisk(unit);
 			}
@@ -227,20 +227,20 @@ namespace hooks {
 				// Nemean Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weapon_id == WeaponId::HeraclesJavelinCannons)
 				{
-					unitExt->values[ValueNemeanReactorsStack]++;
-					unitExt->timers[TimerNemeanReactors] = 49;
+					unit_ext->values[ValueNemeanReactorsStack]++;
+					unit_ext->timers[TimerNemeanReactors] = 49;
 				//	helper::play_sound_from_unit(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive
 				if (unit->id == UnitId::TerranMadcap)
 				{
-					s32 stacks = unitExt->values[ValueMadcapStacks];
-					unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
+					s32 stacks = unit_ext->values[ValueMadcapStacks];
+					unit_ext->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}
 
 				// Track launch position
-				unitExt->last_bullet_launch_position = unit->position;
+				unit_ext->last_bullet_launch_position = unit->position;
 
 				switch (weapon_id)
 				{
@@ -288,12 +288,12 @@ namespace hooks {
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
 						// Phobos - Argent Capacitors passive
-						if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] == 0)
+						if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] == 0)
 						{
 							unit->add_unit_energy(5 * 256);
 							if (unit->energy == unit->get_max_energy())
 							{
-								unitExt->values[ValuePhobosDischarge] = 1;
+								unit_ext->values[ValuePhobosDischarge] = 1;
 								unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
 								unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
 								helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
@@ -378,7 +378,7 @@ namespace hooks {
 					case WeaponId::SalamanderPerditionBarrage:
 					{
 						// Salamander missile target positions
-						auto rotate = unitExt->values[ValueSalamanderLaunchPos];
+						auto rotate = unit_ext->values[ValueSalamanderLaunchPos];
 						if (rotate == 1)
 						{
 							create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
@@ -392,7 +392,7 @@ namespace hooks {
 						{
 							rotate = 0;
 						}
-						unitExt->values[ValueSalamanderLaunchPos] = rotate;
+						unit_ext->values[ValueSalamanderLaunchPos] = rotate;
 					} break;
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
@@ -460,7 +460,7 @@ namespace hooks {
 		}
 
 		// Deconstruction - Pazuzu passive
-		if (unitExt->values[ValueDeconstruction])
+		if (unit_ext->values[ValueDeconstruction])
 		{
 			scbw::do_deconstruction_damage(unit, weapon_id);
 		}

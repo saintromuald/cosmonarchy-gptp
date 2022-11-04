@@ -753,23 +753,23 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 
 void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
 {
-	RevivingUnit revivingUnit = {};
-	revivingUnit.player = player;
-	revivingUnit.position.x = x;
-	revivingUnit.position.y = y;
-	revivingUnit.timer = 48;
-	revivingUnit.unit_id = unit_id;
-	revivingUnit.energy = energy;
-	revivingUnit.hp = hp;
+	RevivingUnit reviving_unit = {};
+	reviving_unit.player = player;
+	reviving_unit.position.x = x;
+	reviving_unit.position.y = y;
+	reviving_unit.timer = 48;
+	reviving_unit.unit_id = unit_id;
+	reviving_unit.energy = energy;
+	reviving_unit.hp = hp;
 	if (units_dat::base_property[unit_id] & (UnitProperty::Worker | UnitProperty::Building) || unit_id == UnitId::ZergOvileth)
 	{
-		revivingUnit.town = town;
+		reviving_unit.town = town;
 	}
 	else
 	{
-		revivingUnit.ignore_town = true;
+		reviving_unit.ignore_town = true;
 	}
-	reviving_units.push_back(revivingUnit);
+	reviving_units.push_back(reviving_unit);
 }
 
 void Globals::clear_lakizilisk(Unit* lurker)
