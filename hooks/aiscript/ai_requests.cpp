@@ -996,7 +996,7 @@ namespace hooks
 		ai_main->requests[ai_main->request_count] = {};
 
 		/*
-		ai_main->request_count -=  1;
+		ai_main->request_count -= 1;
 		if (!ai_main->request_count) {
 			return;
 		}
