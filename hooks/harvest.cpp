@@ -1,30 +1,46 @@
 #include "harvest.h"
 #include "../SCBW/api.h"
 
-namespace hooks
-{
-	const s32 RESOURCE_HARVESTED = 8;
+u32 get_harvest_amount(Unit* unit) {
+	if (unit) {
+		switch (unit->id) {
+			case UnitId::ResourceMineralField:
+			case UnitId::ResourceMineralFieldType2:
+			case UnitId::ResourceMineralFieldType3:
+				return 8;
+
+			case UnitId::ResourceVespeneRidge:
+				return 2;
+
+			case UnitId::ResourceVespeneGeyser:
+				return 4;
+
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExcisant:
+				return 6;
+		}
+	}
+	return 0;
+}
+
+namespace hooks {
 	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
 	// Identical to sub_469650
-	bool is_gas_container(u16 unit_id)
-	{
-		if (unit_id == UnitId::ProtossAquifer)
-		{
+	bool is_gas_container(u16 unit_id) {
+		if (unit_id == UnitId::ProtossAquifer) {
 			return true;
 		}
-		if (unit_id == UnitId::TerranReservoir)
-		{
+		if (unit_id == UnitId::TerranReservoir) {
 			return true;
 		}
-		if (unit_id == UnitId::ZergExcisant)
-		{
+		if (unit_id == UnitId::ZergExcisant) {
 			return true;
 		}
 		return false;
 	}
 
-	void remove_powerup_image_overlay(Unit* worker) // 004F3900
-	{
+	void remove_powerup_image_overlay(Unit* worker) { // 004F3900
 		worker->sprite->remove_overlay(ImageId::MineralChunkShadow, ImageId::PsiEmitterShadow_Carried);
 		worker->sprite->remove_overlay(ImageId::Flag, ImageId::TerranGasTankType2);
 		worker->sprite->remove_overlay(ImageId::Uraj, ImageId::Khalis);
@@ -32,23 +48,10 @@ namespace hooks
 	}
 
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
-		u32 harvest_count = RESOURCE_HARVESTED;
-		switch (resource->id) {
-			case UnitId::ResourceVespeneRidge: {
-				harvest_count = 2;
-			} break;
-			case UnitId::ResourceVespeneGeyser: {
-				harvest_count = 4;
-			} break;
-			case UnitId::TerranReservoir:
-			case UnitId::ProtossAquifer:
-			case UnitId::ZergExcisant: {
-				harvest_count = 6;
-			} break;
-		}
+		u32 harvest_amount = get_harvest_amount(resource);
 
 		u8 return_value = std::max((s32)resource->building.resource.resource_amount, 2);
-		if (resource->building.resource.resource_amount >= harvest_count) {
+		if (resource->building.resource.resource_amount >= harvest_amount) {
 		//	resource->building.resource.resource_amount -= harvest_count;
 			if (is_mineral) {
 				if (resource->building.resource.resource_amount > 0) {
@@ -56,10 +59,10 @@ namespace hooks
 				} else {
 				//	resource->building.resource.resource_amount = 0;
 				}
-			} else if (resource->building.resource.resource_amount < harvest_count && is_gas_container(resource->id)) {
+			} else if (resource->building.resource.resource_amount < harvest_amount && is_gas_container(resource->id)) {
 			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and new_sound
 			}
-			return_value = harvest_count;
+			return_value = harvest_amount;
 		}
 		return return_value;
 	}
@@ -101,7 +104,7 @@ namespace hooks
 		if (!bEndThere)
 		{
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
-			if (resource_amount < RESOURCE_HARVESTED)
+			if (resource_amount < get_harvest_amount(resource))
 			{
 				chunk_image_id += 1;	// Use depleted resource image
 			}

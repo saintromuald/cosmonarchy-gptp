@@ -1,6 +1,8 @@
 #pragma once
 #include "SCBW/structures.h"
 
+void sort_gas_buildings(AiTown* town);
+
 namespace hooks {
 	void ai_unit_was_hit(Unit* unit, Unit* attacker, s32 main_target_reactions, s32 dont_call_help);					// 0043F320
 	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repairTarget);											// 004402B0
