@@ -252,13 +252,13 @@ void unit_destructor_special_cases(Unit* unit) {
 					{
 						return;
 					}
-					targetExt->values[ValueTerminalSurge]++;
+					targetExt->timers[TimerTerminalSurge] = 24 + 1;
 					target->update_speed();
 						
 					if (target->subunit != nullptr)
 					{
 						UnitExt* subunitExt = get_unit_ext(target->subunit);
-						subunitExt->values[ValueTerminalSurge]++;
+						subunitExt->timers[TimerTerminalSurge] = 24 + 1;
 					}
 				});
 			} break;

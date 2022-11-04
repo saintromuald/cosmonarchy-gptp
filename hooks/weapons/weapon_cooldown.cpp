@@ -27,14 +27,17 @@ namespace hooks {
 		// Crucible Aura
 		cooldown /= 1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 
-		// Anticthon - Passive
+		// Anticthon - Counter-Proposal
 		cooldown /= 1 + 0.02 * unit_ext->values[ValueAnticthonStacks];
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 
-		// Vassal Terminal Surge behavior
-		cooldown /= 1.0 + 0.05 * unit_ext->values[ValueTerminalSurge];
+		// Vassal Terminal Surge
+		if (unit_ext->timers[TimerTerminalSurge] > 1)
+		{
+			cooldown /= 1.25;
+		}
 
 		switch (unit->id) {
 			case UnitId::TerranMadcap: {

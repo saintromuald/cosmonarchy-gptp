@@ -38,7 +38,10 @@ namespace hooks
 		speed /= 1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
-		speed *= 1.0 + unit_ext->values[ValueTerminalSurge] * 0.05;
+		if (unit_ext->timers[TimerTerminalSurge] > 1)
+		{
+			speed *= 1.0 + 0.25;
+		}
 
 		// Vorvrokor Captivating Claws: reduces movement speed by 25% per unique attacker
 		if (captivating_claws_get_timer(unit) > 0)

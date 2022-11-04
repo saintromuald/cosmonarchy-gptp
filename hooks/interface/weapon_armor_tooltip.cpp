@@ -503,6 +503,8 @@ namespace hooks
 			unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		add_status(statuses, "Ion Field", -1, 1,
 			unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
+		add_status(statuses, "Terminal Surge", -1, 1,
+			unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 
 		// Gptp Value
 		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
@@ -514,7 +516,6 @@ namespace hooks
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
 		add_status(statuses, "Stellar Enforcement", unit_ext->values[ValueStellarEnforcement], 1);
-		add_status(statuses, "Terminal Surge", unit_ext->values[ValueTerminalSurge], 0);
 		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueControlledOpposition], 0);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressPassiveStacks], 0);
 		add_status(statuses, "Counter-Proposal", unit_ext->values[ValueAnticthonStacks], 0);
