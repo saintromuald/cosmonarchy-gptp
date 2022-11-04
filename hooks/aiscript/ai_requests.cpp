@@ -1055,18 +1055,11 @@ namespace hooks
 
 		Point16 build_pos = {};
 		if (unit_id == helper::get_default_refinery_type(player)) {
-			bool found = false;
-			for (u32 i = 1; i <= 3; ++i) {
-				Unit* gas = helper::get_ai_refinery(town, 1, i);
-				if (gas) {
-					build_pos = gas->position;
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
+			Unit* gas = helper::get_ai_refinery(town, 1, 1);
+			if (!gas) {
 				return false;
 			}
+			build_pos = gas->position;
 		} else {
 			switch (unit_id) {
 				case UnitId::TerranBunker: {
