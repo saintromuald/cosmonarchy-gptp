@@ -888,7 +888,7 @@ struct SpendingRequest {
 };
 
 struct AI_Main {
-	u32 mineral_needed;					/*0000*/
+	u32 minerals_needed;				/*0000*/
 	u32 vespene_needed;					/*0004*/
 	u32 supply_needed;					/*0008*/
 	u32 minerals_available;				/*000C*/
