@@ -5,9 +5,9 @@
 #include "logger.h"
 #include "globals.h"
 #include "ai_layouts.h"
+#include "hooks/orders/ai/ai_orders.h"
 
-namespace hooks
-{
+namespace hooks {
 	void ai_training_unit(Unit* unit, Unit* parent) { // 004A2830
 		if (g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
@@ -314,12 +314,13 @@ namespace hooks
 				} else {
 					u32 refinery_id = helper::get_default_refinery_type(unit->player);
 					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	 || unit->id == UnitId::ResourceVespeneGeyser) {
-						if (!town->gas_buildings[0]) {
-							town->gas_buildings[0] = unit;
-						} else if (!town->gas_buildings[1]) {
-							town->gas_buildings[1] = unit;
-						} else if (!town->gas_buildings[2]) {
-							town->gas_buildings[2] = unit;
+						bool sort = false;
+						for (u32 i = 0; i < 3; ++i) {
+							if (!town->gas_buildings[i]) {
+								town->gas_buildings[i] = unit;
+								sort_gas_buildings(town);
+								break;
+							}
 						}
 						if (town->resarea) {
 							town->resource_units_not_set = 1;

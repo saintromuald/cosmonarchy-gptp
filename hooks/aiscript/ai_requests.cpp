@@ -1145,4 +1145,42 @@ namespace hooks
 		}
 		return false;
 	}
+
+	b32 ai_add_spending_request(u32 id, u32 player, u32 type, u32 priority, void* value) {
+		SpendingRequest request = {};
+		request.id = id;
+		request.type = type;
+		request.priority = priority;
+		request.value = value;
+
+		switch (type) {
+			case RequestType::Military:
+			case RequestType::Guard:
+			case RequestType::Worker:
+			case RequestType::Witness:
+			{
+				if (!helper::is_ai_allowed_to_build(player, id)) {
+					return false;
+				}
+			}
+		}
+
+		AI_Main* ai_main = &g_aiscript_controller[player];
+		if (ai_main->request_count < 63) {
+			ai_main->request_count += 1;
+		}
+		u32 index = ai_main->request_count - 1;
+
+		SpendingRequest to_insert = request;
+		for (u32 i = 0; i < ai_main->request_count; ++i) {
+			SpendingRequest* current = &ai_main->requests[i];
+			if (to_insert.priority <= current->priority) {
+				// Swap
+				SpendingRequest temp = *current;
+				*current = to_insert;
+				to_insert = temp;
+			}
+		}
+		return true;
+	}
 }

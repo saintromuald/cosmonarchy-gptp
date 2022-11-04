@@ -6,9 +6,19 @@
 #include "ai_layouts.h"
 #include "globals.h"
 #include "custom_ai.h"
+#include "hooks/harvest.h"
 
-namespace hooks
-{
+static s32 compare_gas_buildings(const void* a, const void* b) {
+	Unit* ua = *(Unit**)a;
+	Unit* ub = *(Unit**)b;
+	return get_harvest_amount(ub) - get_harvest_amount(ua);
+}
+
+void sort_gas_buildings(AiTown* town) {
+	qsort(town->gas_buildings, 3, sizeof(Unit*), compare_gas_buildings);
+}
+
+namespace hooks {
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
 	// TODO: finish and cleanup
 	// End brace fuckery on 14 Aug 2022, check carefully
@@ -1119,6 +1129,7 @@ namespace hooks
 			if (town->resource_units_not_set) {
 				town->resource_units_not_set = 0;
 				helper::get_resource_area_gas(resarea, &town->gas_buildings[0], &town->gas_buildings[1], &town->gas_buildings[2]);
+				sort_gas_buildings(town);
 				for (u32 i = 0; i < 3; ++i) {
 					if (town->gas_buildings[i]) {
 						helper::ai_make_guard(town->player, town->gas_buildings[i]);

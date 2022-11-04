@@ -2602,6 +2602,8 @@ namespace scbw {
 	}
 
 	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority) {
+		if (count < 0) return;
+
 		u32 base_unit_id = find_unit_base(unit_id);
 		if (base_unit_id != UnitId::None) {
 			u32 base_count = town_count_units(town, base_unit_id, false);

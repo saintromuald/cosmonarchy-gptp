@@ -1,8 +1,9 @@
 #pragma once
 #include "../SCBW/structures/Unit.h"
 
-namespace hooks
-{
+u32 get_harvest_amount(Unit* unit);
+
+namespace hooks {
 	void remove_powerup_image_overlay(Unit* worker);											// 004F3900
 	void transfer_resource_to_worker(Unit* worker, Unit* resource);								// 004696D0
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker, bool ignore_completed = false);	// 00468930
