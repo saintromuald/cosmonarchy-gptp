@@ -386,7 +386,7 @@ namespace
 		result = hooks::ai_add_spending_request(unit_id, player, request_type, priority, value);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x08
