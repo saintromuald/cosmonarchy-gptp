@@ -1121,11 +1121,10 @@ namespace hooks
 							u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
 							helper::do_area_fixups_for_enemy(town->player, region_id, 4u);
 						}
-						u32 px_distance = 64;
 						if (g_aiscript_controller[unit->player].liftoff_cooldown) {
 							return helper::ai_finish_unit(unit);
 						}
-						building_placement = helper::ai_manage_building_placement(unit, unit_id, build_pos, &build_pos, px_distance);
+						building_placement = helper::ai_manage_building_placement(unit, unit_id, build_pos, &build_pos, 64);
 					}
 					if (!building_placement) {
 						g_aiscript_controller[unit->player].liftoff_cooldown = 1;
