@@ -355,7 +355,7 @@ namespace
 		result = hooks::ai_try_progress_spending_queue_worker(town, unit);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x08
