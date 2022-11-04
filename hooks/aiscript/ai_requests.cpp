@@ -1170,16 +1170,18 @@ namespace hooks
 		if (ai_main->request_count < 63) {
 			ai_main->request_count += 1;
 		}
-
 		u32 index = ai_main->request_count - 1;
-		SpendingRequest* to_insert = &ai_main->requests[index];
-		*to_insert = request;
-		for (u32 i = 0; i < index; ++i) {
+
+		for (u32 i = 0; i < ai_main->request_count; ++i) {
 			SpendingRequest* current = &ai_main->requests[i];
-			if (to_insert->priority > current->priority) {
-				SpendingRequest temp = *current;
-				*current = *to_insert;
-				*to_insert = temp;
+			if (request.priority > current->priority || i == index) {
+				// Shift right
+				for (u32 j = ai_main->request_count - 1; j > i; --j) {
+					ai_main->requests[j] = ai_main->requests[j - 1];
+				}
+				// Insert
+				*current = request;
+				break;
 			}
 		}
 		return true;
