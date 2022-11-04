@@ -807,7 +807,7 @@ namespace SpriteId
 		Corpse_Hydralisk			= 147,
 		Corpse_Larva				= 150,
 		Corpse_Ultrokor				= 158,
-		Corpse_Zethrokor				= 160,
+		Corpse_Zethrokor			= 160,
 		Corpse_Lakizilisk			= 484,
 		Corpse_Bactalisk			= 617,
 		Corpse_Konvilisk			= 689,
