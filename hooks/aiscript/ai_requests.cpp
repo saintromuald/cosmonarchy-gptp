@@ -1039,7 +1039,7 @@ namespace hooks
 		}
 
 		UnitAi* unit_ai = unit->unit_ai;
-		if (g_aiscript_controller[player].requests[0].value != unit_ai->worker_ai.town && g_aiscript_controller[player].requests[0].id != UnitId::TerranSupplyDepot) {
+		if (g_aiscript_controller[player].requests[0].value != unit_ai->worker_ai.town) {
 			return 0;
 		}
 
