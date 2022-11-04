@@ -1113,16 +1113,16 @@ namespace scbw {
 	}
 
 	void decloak_proc(Unit* unit) {
-		UnitExt* unitExt = get_unit_ext(unit);
-		if (is_decloakable(unit)) {
-			if (is_animated_decloak(unit)) {
-				if (unitExt->timers[TimerDecloak] == 0) {
-					unit->detection_status = 0xff;
-					helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
-				}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit->status & UnitStatus::Burrowed) {
+			unit_ext->timers[TimerDecloakBurrow] = 48;
+		} else if (is_decloakable(unit)) {
+			if (unit_ext->timers[TimerDecloak] == 0) {
+				unit->detection_status = 0xff;
+				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
-			if (unitExt->timers[TimerDecloak] != 1) {
-				unitExt->timers[TimerDecloak] = 48 + 1;
+			if (unit_ext->timers[TimerDecloak] != 1) {
+				unit_ext->timers[TimerDecloak] = 48 + 1;
 			}
 		}
 		if (unit->is_subunit() && unit->subunit) {
@@ -1131,11 +1131,7 @@ namespace scbw {
 	}
 
 	bool is_decloakable(Unit* unit) {
-		return units_dat::base_property[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree || unit->status & UnitStatus::Burrowed;
-	}
-
-	bool is_animated_decloak(Unit* unit) {
-		return !(unit->status & UnitStatus::Burrowed);
+		return units_dat::base_property[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree;
 	}
 
 	// Replacement for isUnitGhost

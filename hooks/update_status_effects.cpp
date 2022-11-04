@@ -417,6 +417,6 @@ namespace hooks
 			|| unit->ensnare_timer
 			|| unit->stasis_timer
 			|| unit->plague_timer
-			|| unit_ext->timers[TimerDecloak];
+			|| unit_ext->timers[TimerDecloakBurrow];
 	}
 }

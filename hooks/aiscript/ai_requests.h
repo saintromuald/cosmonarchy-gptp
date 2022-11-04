@@ -17,6 +17,7 @@ namespace hooks
 	void ai_make_guard(u32 player_id, Unit* unit);																			// 0043A010
 	void ai_add_spending_request_from_towns(u32 player);																	// 00436320
 	void pop_spending_request(u32 player);																					// 004476D0
+	u8 ai_get_build_order_id(Unit* unit, u32 unit_id);																		// utility
 	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit);													// 004348C0
 	bool ai_add_spending_request(u32 id, u32 player, u32 type, u32 priority, void* value);									// 00447980
 	s32 ai_make_detector_behavior(Unit* unit, u32 player_id);																// 00435130

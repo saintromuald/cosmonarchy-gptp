@@ -2227,9 +2227,7 @@ namespace hooks {
 		// Cloaked units recloak after 2 seconds of being out of combat
 		if (unit_ext->timers[TimerDecloak] == 1) {
 			if (scbw::is_decloakable(unit) && units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
-				if (scbw::is_animated_decloak(unit)) {
-					helper::anim_cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
-				}
+				helper::anim_cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			} else {
 				unit->detection_status = 0xff;
 				helper::update_visibility(unit); // Didact Shroud of Adun needs special handling
