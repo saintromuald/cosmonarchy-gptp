@@ -1,4 +1,5 @@
 #include "custom_ai.h"
+#include "ai_layouts.h"
 
 CustomAiPlayer custom_ai_players[PlayerLimit];
 CustomAiTown custom_ai_towns[AiTownLimit];
@@ -17,42 +18,55 @@ static void update_custom_player(CustomAiPlayer* custom_ai_player, u32 player) {
 static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 	AiTown* ai_town = &g_ai_town_array[town];
 	if (ai_town->main_building && ai_town->main_building->status & UnitStatus::Completed) {
-		if (custom_ai_town->gas_timer < 30 * 24) {
-			custom_ai_town->gas_timer++;
-		} else {
-			u32 harvestable_gas = 0;
+		if (custom_ai_town->gas_cap < 3) {
+			if (custom_ai_town->gas_timer < 30 * 24) {
+				custom_ai_town->gas_timer++;
+			} else {
+				custom_ai_town->gas_timer = 0;
+				custom_ai_town->gas_cap += 1;
+			}
+		}
+
+		u32 capped_id = UnitId::None;
+		switch (g_player_table[ai_town->player].race) {
+			case RaceId::Terran:  capped_id = UnitId::TerranReservoir; break;
+			case RaceId::Protoss: capped_id = UnitId::ProtossAquifer;  break;
+			case RaceId::Zerg:	  capped_id = UnitId::ZergExcisant;    break;
+		}
+
+		if (capped_id != UnitId::None) {
 			u32 total_gas = 0;
+			u32 harvestable_gas = 0;
+			u32 unupgradeable_gas = 0;
 			for (u32 i = 0; i < 3; ++i) {
-				if (ai_town->gas_buildings[i]) {
+				Unit* unit = ai_town->gas_buildings[i];
+				if (unit) {
 					total_gas++;
-					if (ai_town->gas_buildings[i]->status & UnitStatus::Completed) {
+					if (unit->status & UnitStatus::Completed) {
 						harvestable_gas++;
+						if (unit->id == UnitId::ResourceVespeneRidge) {
+							unupgradeable_gas++;
+						}
 					}
 				}
 			}
-			u32 mineral_threshold = custom_ai_town->gas_requested_count ? 100 : 500;
-			u32 needed_threshold = 100 * (1 + custom_ai_town->gas_requested_count);
+
+			u32 requested_count = town_count_units(ai_town, capped_id, false);
+			u32 mineral_threshold = requested_count ? 100 : 500;
+			u32 needed_threshold = 100 * (1 + requested_count);
 			if (total_gas == 1) {
 				needed_threshold *= 2;
 			}
+
 			if ((harvestable_gas || total_gas == 1)
 				&& g_game_minerals[ai_town->player] >= mineral_threshold
 				&& g_aiscript_controller[ai_town->player].vespene_needed >= needed_threshold) {
-				for (u32 i = 0; i < 3; ++i) {
-					if (!custom_ai_town->gas_requested[i] && ai_town->gas_buildings[i] && ai_town->gas_buildings[i]->id == UnitId::ResourceVespeneGeyser) {
-						u32 capped_id = UnitId::None;
-						switch (g_player_table[ai_town->player].race) {
-							case RaceId::Terran:  capped_id = UnitId::TerranReservoir; break;
-							case RaceId::Protoss: capped_id = UnitId::ProtossAquifer;  break;
-							case RaceId::Zerg:	  capped_id = UnitId::ZergExcisant;    break;
-						}
-						if (capped_id != UnitId::None) {
-							custom_ai_town->gas_requested[i] = true;
-							helper::ai_build(capped_id, false, custom_ai_town->gas_requested_count + 1, ai_town, 105 - custom_ai_town->gas_requested_count);
-							custom_ai_town->gas_requested_count++;
-							custom_ai_town->gas_timer = 0;
-							break;
-						}
+				s32 request_count = std::min(total_gas - unupgradeable_gas, custom_ai_town->gas_cap) - requested_count;
+				if (request_count > 0) {
+					u32 priority = 125 - requested_count;
+					for (u32 i = 0; i < request_count; ++i) {
+						scbw::town_add_spending_request(ai_town, 1, capped_id, priority);
+						priority -= 1;
 					}
 				}
 			}

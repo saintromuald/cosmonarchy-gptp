@@ -8,8 +8,7 @@ struct CustomAiPlayer {
 struct CustomAiTown {
 	bool active;
 	u32 gas_timer;
-	u8 gas_requested_count;
-	bool gas_requested[3];
+	u32 gas_cap;
 };
 
 extern CustomAiPlayer custom_ai_players[PlayerLimit];
