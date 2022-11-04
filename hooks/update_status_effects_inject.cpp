@@ -38,7 +38,7 @@ namespace
 
 	void __declspec(naked) unit_is_always_detected_wrapper()
 	{
-		static bool result;
+		static b32 result;
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -47,7 +47,7 @@ namespace
 		result = hooks::unit_is_always_detected(unit);
 		__asm {
 			POPAD
-			MOVZX EAX, result
+			MOV EAX, result
 			RETN
 		}
 	}
