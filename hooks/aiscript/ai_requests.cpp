@@ -1034,6 +1034,7 @@ namespace hooks
 	// Hooked to make AI use only one worker per build request. -Pr0nogo
 	s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit) { // 004348C0
 		assert(town->player == unit->player);
+
 		u32 player = unit->player;
 		if (!g_aiscript_controller[player].request_count || g_aiscript_controller[player].requests[0].type != RequestType::Building) {
 			return false;
@@ -1042,6 +1043,11 @@ namespace hooks
 		UnitAi* unit_ai = unit->unit_ai;
 		if (g_aiscript_controller[player].requests[0].value != unit_ai->worker_ai.town) {
 			return false;
+		}
+
+		// TODO: remove
+		if (scbw::unit_id_is_capped_gas_structure(g_aiscript_controller[unit->player].requests[0].id)) {
+			int i = 0;
 		}
 
 		// Originally counted a per-worker variable that prohibited that worker from attempting construction.
@@ -1163,6 +1169,11 @@ namespace hooks
 			}
 		}
 
+		// TODO: remove
+		if (scbw::unit_id_is_capped_gas_structure(id)) {
+			int i = 0;
+		}
+
 		AI_Main* ai_main = &g_aiscript_controller[player];
 		if (ai_main->request_count < 63) {
 			ai_main->request_count += 1;
@@ -1172,11 +1183,10 @@ namespace hooks
 		for (u32 i = 0; i < ai_main->request_count; ++i) {
 			SpendingRequest* current = &ai_main->requests[i];
 			if (request.priority > current->priority || i == index) {
-				// Shift right
+				// Insert
 				for (u32 j = ai_main->request_count - 1; j > i; --j) {
 					ai_main->requests[j] = ai_main->requests[j - 1];
 				}
-				// Insert
 				*current = request;
 				break;
 			}

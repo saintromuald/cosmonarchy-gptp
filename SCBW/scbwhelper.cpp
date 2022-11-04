@@ -12375,13 +12375,13 @@ namespace helper {
 		return result;
 	}
 
-	void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations)
-	{
+	void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations) {
 		const u32 func_address = 0x00444EB0;
+		u32 _region_id = region_id;
 		__asm {
 			PUSHAD
 			PUSH iterations
-			PUSH region_id
+			PUSH _region_id
 			PUSH player
 			CALL func_address
 			POPAD
