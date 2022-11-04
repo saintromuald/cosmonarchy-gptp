@@ -139,21 +139,27 @@ namespace hooks
 
 		switch (unit->id)
 		{
-			case UnitId::ZergUltrokor:
+			case UnitId::TerranBlackjack:
 			{
-				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
-				if (unit_ext->timers[TimerKaiserRampage])
-				{
-					speed *= 2;
-				}
+				// Blackjack Wear and Tear: reduce movement speed based on missing health
+				const u32 health = unit->hitpoints / 256;
+				const u32 maxHealth = unit->get_max_hp_ingame();
+				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+				speed *= multiplier;
 			} break;
-			case UnitId::TerranWyvern:
+			case UnitId::ProtossClarion:
 			{
-				// Wyvern Reverse Thrust ability: reduce movespeed
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleReverseThrust) == 1)
-				{
-					speed *= 0.5;
-				}
+				// Clarion Harmony Drive: gains increased movement speed based on shields
+				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
+				speed *= 1.0 + fraction / 2;
+			} break;
+			case UnitId::ProtossGolem:
+			{
+				// Golem Deathless Procession: gains increased movespeed based on missing shields
+				const u32 health = unit->shields / 256;
+				const u32 maxHealth = units_dat::max_shield_points[unit->id];
+				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
+				speed *= multiplier;
 			} break;
 			case UnitId::ZergVorvrokor:
 			{
@@ -168,24 +174,24 @@ namespace hooks
 						unit->get_y() + range
 					);
 					unitFinder.for_each([&](Unit* target)
-					{
-						if (scbw::is_allied_to(unit->player, target->player)
-							|| units_dat::base_property[target->id] & UnitProperty::Flyer)
 						{
-							return;
-						}
-						u16 angle = scbw::get_angle(unit->position.x, unit->position.y,
-							target->position.x, target->position.y);
-						u16 unit_angle = unit->velocity_direction_1;
-						s32 arc = (f64)60 / 1.40625;
-						// 120 degrees
-						s32 delta = unit_angle - angle;
-						delta = abs((delta + 128) % 256 - 128);
-						if (delta <= arc)
-						{
-							unit->new_flags_3 |= 0x2;
-						}
-					});
+							if (scbw::is_allied_to(unit->player, target->player)
+								|| units_dat::base_property[target->id] & UnitProperty::Flyer)
+							{
+								return;
+							}
+							u16 angle = scbw::get_angle(unit->position.x, unit->position.y,
+								target->position.x, target->position.y);
+							u16 unit_angle = unit->velocity_direction_1;
+							s32 arc = (f64)60 / 1.40625;
+							// 120 degrees
+							s32 delta = unit_angle - angle;
+							delta = abs((delta + 128) % 256 - 128);
+							if (delta <= arc)
+							{
+								unit->new_flags_3 |= 0x2;
+							}
+						});
 					if (unit->new_flags_3 & 0x2)
 					{
 						speed *= 2;
@@ -193,43 +199,17 @@ namespace hooks
 					}
 					else
 					{
-						speed * 1.25;
+						speed * 1.3;
 					}
 				}
 			} break;
-			case UnitId::TerranVulture:
+			case UnitId::ZergUltrokor:
 			{
-				// Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
-				auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->get_x(), unit->get_y());
-				if (tile.is_unwalkable || !tile.is_walkable)
+				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
+				if (unit_ext->timers[TimerKaiserRampage])
 				{
-					if (scbw::get_upgrade_level(unit->player, UpgradeId::IonPropulsion))
-					{
-						speed *= 0.5;
-					}
+					speed *= 2;
 				}
-			} break;
-			case UnitId::ProtossClarion:
-			{
-				// Clarion Harmony Drive: gains increased movement speed based on shields
-				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
-				speed *= 1.0 + fraction / 2;
-			} break;
-			case UnitId::TerranBlackjack:
-			{
-				// Blackjack Wear and Tear: reduce movement speed based on missing health
-				const u32 health = unit->hitpoints / 256;
-				const u32 maxHealth = unit->get_max_hp_ingame();
-				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
-				speed *= multiplier;
-			} break;
-			case UnitId::ProtossGolem:
-			{
-				// Golem Deathless Procession: gains increased movespeed based on missing shields
-				const u32 health = unit->shields / 256;
-				const u32 maxHealth = units_dat::max_shield_points[unit->id];
-				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
-				speed *= multiplier;
 			} break;
 			// Hardcode ideal movement speeds
 			case UnitId::TerranClaymore:
@@ -238,6 +218,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranHarakan:
 			case UnitId::ProtossIdol:
+			case UnitId::ZergIzirokor:
 			case UnitId::ZergKonvilisk:
 			{
 				speed *= 1.1;
@@ -257,13 +238,16 @@ namespace hooks
 			} break;
 			case UnitId::ProtossZealot:
 			case UnitId::ProtossManifold:
-			case UnitId::ZergZethrokor:
 			{
 				speed *= 1.25;
 			} break;
+			case UnitId::ZergZethrokor:
+			{
+				speed *= 1.3;
+			} break;
 			case UnitId::ProtossLegionnaire:
-			case UnitId::ZergHydralisk:
 			case UnitId::ProtossVagrantShade:
+			case UnitId::ZergHydralisk:
 			{
 				speed *= 1.5;
 			} break;
