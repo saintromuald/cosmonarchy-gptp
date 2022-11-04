@@ -2162,6 +2162,7 @@ namespace scbw {
 			case SpriteId::Corpse_Izirokor:
 			case SpriteId::Corpse_Bactalisk:
 			case SpriteId::Corpse_Kagralisk:
+			case SpriteId::Corpse_Evigrilisk:
 			case SpriteId::Corpse_Lakizilisk:
 			case SpriteId::Corpse_Konvilisk:
 			case SpriteId::Corpse_Rilirokor:

@@ -813,6 +813,7 @@ namespace SpriteId
 		Corpse_Konvilisk			= 689,
 		Corpse_Izirokor				= 763,
 		Corpse_Kagralisk			= 780,
+		Corpse_Evigrilisk			= 785,
 
 		Corpse_Mason				= 809,
 
