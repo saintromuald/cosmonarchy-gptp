@@ -1125,9 +1125,6 @@ namespace hooks
 						if (g_aiscript_controller[unit->player].liftoff_cooldown) {
 							return helper::ai_finish_unit(unit);
 						}
-						if (unit_id == UnitId::TerranWatchdog) { // Isn't Watchdog this already handled in the switch case above? -Veeq7
-							px_distance = 40;
-						}
 						building_placement = helper::ai_manage_building_placement(unit, unit_id, build_pos, &build_pos, px_distance);
 					}
 					if (!building_placement) {
