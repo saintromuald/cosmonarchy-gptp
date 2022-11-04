@@ -290,7 +290,7 @@ namespace hooks
 			return 0;
 		}
 
-		if (helper::ai_is_at_define_max(player, next_build_type))
+		if (helper::ai_isnt_at_define_max(player, next_build_type))
 		{
 			helper::ai_reserve(player, 0);
 			helper::ai_pop_spending_request(player);
@@ -1115,7 +1115,7 @@ namespace hooks
 						build_pos = town->position;
 						if (unit_id == UnitId::ZergCagrantColony || unit_id == UnitId::ProtossWarden) {
 							u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
-							helper::do_area_fixups_for_enemy(player, region_id, 4u);
+							helper::do_area_fixups_for_enemy(player, region_id, 4);
 						}
 						if (g_aiscript_controller[player].failed_placement) {
 							return helper::ai_finish_unit(unit);
@@ -1157,7 +1157,7 @@ namespace hooks
 			case RequestType::Worker:
 			case RequestType::Witness:
 			{
-				if (helper::ai_is_at_define_max(player, id)) {
+				if (helper::ai_isnt_at_define_max(player, id)) {
 					return false;
 				}
 			}
@@ -1182,5 +1182,45 @@ namespace hooks
 			}
 		}
 		return true;
+	}
+
+	// Hooked in case it's useful for improving AI detector requests. -Pr0nogo
+	s32 ai_make_detector_behavior(Unit* unit, u32 player_id) // 00435130
+	{
+		if (g_aiscript_controller[player_id].requests[0].id == UnitId::ProtossWitness)
+		{
+			if (helper::is_unit_id_race_equal_to_unit_race(UnitId::ProtossWitness, unit)
+			&&  helper::create_unit_allowed(UnitId::ProtossWitness, unit, player_id) == 1)
+			{
+				if (helper::has_resources_for_unit(UnitId::ProtossWitness, player_id))
+				{
+					if (helper::ai_isnt_at_define_max(player_id, UnitId::ProtossWitness))
+					{
+						helper::ai_reserve(player_id, 0);
+						helper::ai_pop_spending_request(player_id);
+						return 0;
+					}
+					if (helper::ai_train_unit(unit, UnitId::ProtossWitness, 5, 0))
+					{
+						helper::set_secondary_order(unit, OrderId::Train);
+						helper::ai_reserve(player_id, 1);
+						helper::ai_pop_spending_request(player_id);
+						return 1;
+					}
+				}
+			}
+			else if (*g_last_internal_error == 2
+			||		 *g_last_internal_error  == 23
+			||		 *g_last_internal_error  == 21
+			||		 *g_last_internal_error  == 8
+			||		 *g_last_internal_error  == 7
+			||		 *g_last_internal_error  == 13)
+			{
+				helper::ai_reserve(player_id, 0);
+				helper::ai_pop_spending_request(player_id);
+				helper::ai_perform_task(unit);
+			}
+		}
+		return 0;
 	}
 }

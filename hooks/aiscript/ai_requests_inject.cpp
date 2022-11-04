@@ -392,6 +392,25 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) ai_make_detector_behavior_wrapper() { // 00435130
+		static Unit* unit;
+		static u32 player;
+		static s32 result;
+		__asm {
+			MOV unit, EAX
+			MOV player, EDI
+			PUSHAD
+		}
+		result = hooks::ai_make_detector_behavior(unit, player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	// s32 ai_make_detector_behavior(Unit* unit, u32 player_id);
 }
 
 namespace hooks {
@@ -415,5 +434,6 @@ namespace hooks {
 		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
 	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1);
 		jump_patch(ai_add_spending_request_wrapper,					0x00447980, 1);
+		jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
 	}
 }
