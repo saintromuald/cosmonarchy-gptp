@@ -363,7 +363,7 @@ namespace
 	}
 
 	void __declspec(naked) ai_add_spending_request_wrapper() { // 00447980
-		static u16 unit_id; // u16 in ida, register arg, isn't it an error to make them u32? Thought stack args were the ones that didn't matter. -P
+		static u16 unit_id;
 		static u32 player;
 		static char request_type;
 		static char priority;
