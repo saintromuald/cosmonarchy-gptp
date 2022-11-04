@@ -478,7 +478,7 @@ namespace hooks
 						{
 							witness_supply_cost = 2 * units_dat::supply_required[UnitId::ProtossWitness];
 						}
-						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
+						g_aiscript_controller[player_id].minerals_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
 						g_aiscript_controller[player_id].vespene_needed += witness_gas_cost;
 						g_aiscript_controller[player_id].supply_needed += witness_supply_cost;
 						helper::ai_add_spending_request(UnitId::ProtossWitness, player_id, 8, 80, 0);
@@ -506,7 +506,7 @@ namespace hooks
 							transport_supply_cost *= 2;
 						}
 						v29 = g_aiscript_controller[player_id].vespene_needed;
-						g_aiscript_controller[player_id].mineral_needed += units_dat::mineral_cost[transport_unit_id_1];
+						g_aiscript_controller[player_id].minerals_needed += units_dat::mineral_cost[transport_unit_id_1];
 						g_aiscript_controller[player_id].vespene_needed = transport_1_gas_cost + v29;
 						g_aiscript_controller[player_id].supply_needed += transport_supply_cost;
 						helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
@@ -939,7 +939,7 @@ namespace hooks
 							mineral_cost = techdata_dat::mineral_cost[request->id];
 							vespene_cost = techdata_dat::vespene_cost[request->id];
 						}
-						g_aiscript_controller[player].mineral_needed += mineral_cost * count;
+						g_aiscript_controller[player].minerals_needed += mineral_cost * count;
 						g_aiscript_controller[player].vespene_needed += vespene_cost * count;
 						for (u32 i = 0; i < count; ++i) {
 							helper::ai_add_spending_request(request->id, player, request_type, request->priority, town);
@@ -1222,5 +1222,33 @@ namespace hooks
 			}
 		}
 		return 0;
+	}
+
+	// Hooked to investigate refinery issue. -Pr0nogo
+	bool has_resources_for_unit(u16 unit_id, u32 player) // 004487B0
+	{
+		u32 ore = units_dat::mineral_cost[unit_id];
+		u32 gas = units_dat::vespene_cost[unit_id];
+		g_ai_minerals_reserve[player] = ore;
+		g_ai_vespene_reserve[player] = gas;
+
+		// Originally checked supplies.
+
+		if (g_game_minerals[player] < g_ai_minerals_reserve[player])
+		{
+			helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
+			return 0;
+		}
+		if (g_game_vespene[player] < g_ai_vespene_reserve[player])
+		{
+			helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
+			return 0;
+		}
+		if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player]
+			|| g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player])
+		{
+			return 0;
+		}
+		return 1; // Originally checked supplies.
 	}
 }
