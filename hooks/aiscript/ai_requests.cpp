@@ -1057,7 +1057,7 @@ namespace hooks
 		if (unit_id == helper::get_default_refinery_type(player)) {
 			bool found = false;
 			for (u32 i = 1; i <= 3; ++i) {
-				Unit* gas = helper::get_ai_refinery(town, 1, 1);
+				Unit* gas = helper::get_ai_refinery(town, 1, i);
 				if (gas) {
 					build_pos = gas->position;
 					found = true;
