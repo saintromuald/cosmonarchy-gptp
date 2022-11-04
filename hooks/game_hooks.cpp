@@ -2202,7 +2202,7 @@ namespace hooks {
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 		}
 
-		// Talos - Salvage Stun
+		// Talos - Salvage stun
 		if (unit_ext->timers[TimerSalvageStunTimer] > 1) {
 			unit->freeze();
 
@@ -2230,7 +2230,7 @@ namespace hooks {
 				helper::anim_cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			} else {
 				unit->detection_status = 0xff;
-				helper::update_visibility(unit); // didact cloak needs special handling
+				helper::update_visibility(unit); // Didact Shroud of Adun needs special handling
 			}
 		}
 
@@ -2244,7 +2244,7 @@ namespace hooks {
 			unit->remove_overlay(ImageId::EnsnaringBroodOverlay);
 		}
 
-		// Crucible Stacks Clear
+		// Crucible stacks clear
 		{
 			auto& crucibles = unit_ext->unit_vectors[UnitVectorCrucibles];
 			for (auto it = crucibles.begin(); it != crucibles.end(); ++it) {

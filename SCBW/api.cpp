@@ -1117,7 +1117,13 @@ namespace scbw {
 		if (is_decloakable(unit)) {
 			if (unitExt->timers[TimerDecloak] == 0) {
 				unit->detection_status = 0xff;
-				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				if (!(unit->status & UnitStatus::Burrowed))
+				{
+					helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				}
+				else {
+					scbw::print("try reveal");
+				}
 			}
 			if (unitExt->timers[TimerDecloak] != 1) {
 				unitExt->timers[TimerDecloak] = 48 + 1;
@@ -1129,8 +1135,7 @@ namespace scbw {
 	}
 
 	bool is_decloakable(Unit* unit) {
-		return (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
-			&& !(unit->status & UnitStatus::Burrowed);
+		return (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree || unit->status & UnitStatus::Burrowed);
 	}
 
 	// Replacement for isUnitGhost
