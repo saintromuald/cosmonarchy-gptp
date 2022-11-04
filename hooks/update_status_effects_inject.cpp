@@ -44,7 +44,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::is_revealed(unit);
+		result = hooks::unit_is_always_detected(unit);
 		__asm {
 			POPAD
 			MOV AL, result

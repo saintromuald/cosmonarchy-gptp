@@ -611,7 +611,7 @@ namespace hooks
 			do
 			{
 				helper::update_visibility(first_visible_unit);
-				if (first_visible_unit->status & 0x300 && unitExt->timers[TimerDecloak] == 0)
+				if (first_visible_unit->status & 0x300 || unitExt->timers[TimerDecloak] == 1)
 				{
 					first_visible_unit->is_cloaked = 0;
 					if (first_visible_unit->secondary_order_timer)
