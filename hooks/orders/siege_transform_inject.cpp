@@ -9,7 +9,7 @@ void __declspec(naked) unitTransformIntoTankModeOrder()
 		MOV EBP, ESP
 		MOV unitTransforming, EAX
 	}
-	hooks::ordersTankMode(unitTransforming);
+	hooks::orders_tank_mode(unitTransforming);
 	__asm {
 		POPAD
 		RETN
@@ -24,7 +24,7 @@ void __declspec(naked) unitTransformIntoSiegeModeOrder()
 		MOV EBP, ESP
 		MOV unitTransforming, EDI
 	}
-	hooks::ordersSiegeMode(unitTransforming);
+	hooks::orders_siege_mode(unitTransforming);
 	__asm {
 		POPAD
 		RETN

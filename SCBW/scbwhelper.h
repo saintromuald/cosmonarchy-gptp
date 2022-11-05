@@ -663,10 +663,10 @@ namespace helper {
 
 	//// siege_transform
 	void set_unit_retreat_point(Unit* unit, u8 angleValue);																			// 004011A0
-	bool getCloserToDestination_sub402BE0(Unit* unit);																				// 00402BE0
-	void orderReturnToIdle(Unit* unit);																								// 00463770
-	bool checkForCloseUnit(Unit* unit);																								// 00464290
-	void playSubunitIscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
+	bool get_closer_to_destination(Unit* unit);																				// 00402BE0
+	void order_return_to_idle(Unit* unit);																								// 00463770
+	bool check_for_close_unit(Unit* unit);																								// 00464290
+	void play_subunit_iscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
 	u32 get_hp_gain_for_repair(Unit* unit);																							// 00402C40
