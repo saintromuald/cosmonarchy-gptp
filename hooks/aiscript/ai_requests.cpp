@@ -1147,12 +1147,6 @@ namespace hooks
 
 	// Hooked to improve request ordering. -Veeq7
 	bool ai_add_spending_request(u32 id, u32 player, u32 type, u32 priority, void* value) { // 00447980
-		SpendingRequest request = {};
-		request.id = id;
-		request.type = type;
-		request.priority = priority;
-		request.value = value;
-
 		switch (type) {
 			case RequestType::Military:
 			case RequestType::Guard:
@@ -1171,6 +1165,11 @@ namespace hooks
 			ai_main->request_count += 1;
 		}
 
+		SpendingRequest request = {};
+		request.id = id;
+		request.type = type;
+		request.priority = priority;
+		request.value = value;
 		for (u32 i = 0; i < ai_main->request_count; ++i) {
 			SpendingRequest* current = &ai_main->requests[i];
 			if (request.priority > current->priority || i == index) {
