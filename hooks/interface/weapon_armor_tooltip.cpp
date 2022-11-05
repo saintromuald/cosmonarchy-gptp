@@ -485,26 +485,16 @@ namespace hooks
 
 		// Gptp Timer
 		// TODO: Add egg boost timers eventually (currently can't read tooltips from eggs)
-		add_status(statuses, "Ensnaring Brood", -1, 1,
-			unit_ext->timers[TimerEnsnaringBrood], TimerType::Gptp);
-		add_status(statuses, "Kaiser Rampage", -1, 1,
-			unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
-		add_status(statuses, "Hallucinating", -1, 1,
-			unit_ext->timers[TimerHallucinating], TimerType::Gptp);
-		add_status(statuses, "Controlled Demolition", -1, 1,
-			unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
-		add_status(statuses, "Emergency Detonation", -1, 1,
-			unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
-		add_status(statuses, "Binding Grip", -1, 1,
-			unit_ext->timers[TimerBindingGrip], TimerType::Gptp);
-		add_status(statuses, "Autovitality", -1, 1,
-			unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
-		add_status(statuses, "Caustic Discharge", -1, 1,
-			unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
-		add_status(statuses, "Ion Field", -1, 1,
-			unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
-		add_status(statuses, "Terminal Surge", -1, 1,
-			unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
+		add_status(statuses, "Ensnaring Brood", -1, 1, unit_ext->timers[TimerEnsnaringBrood], TimerType::Gptp);
+		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
+		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
+		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
+		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
+		add_status(statuses, "Binding Grip", -1, 1, unit_ext->timers[TimerBindingGrip], TimerType::Gptp);
+		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
+		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
+		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
+		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 
 		// Gptp Value
 		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);

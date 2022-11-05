@@ -246,20 +246,17 @@ u8 Unit::get_seek_range() const {
 extern const u32 Func_GetSightRange = 0x004E5B40;
 u32 Unit::get_sight_range(bool isForSpellCasting) const {
 	assert(this);
-
-	static u32 sightRange;
-	b32 ignoreStatusEffects = (isForSpellCasting ? 0 : 1);
-
+	static u32 sight_range;
+	b32 ignore_status_effects = (isForSpellCasting ? 0 : 1);
 	__asm {
 		PUSHAD
-		PUSH ignoreStatusEffects
+		PUSH ignore_status_effects
 		MOV EDX, this
 		CALL Func_GetSightRange
-		MOV sightRange, EAX
+		MOV sight_range, EAX
 		POPAD
 	}
-
-	return sightRange;
+	return sight_range;
 }
 
 // Similar to function Unit__HasEnergy @ 0x00491480
