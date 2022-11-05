@@ -147,8 +147,7 @@ namespace hooks {
 		}
 	}
 
-	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash)
-	{
+	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash) {
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
@@ -157,8 +156,7 @@ namespace hooks {
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 
-		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
-		{
+		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++) {
 			Unit* target = unitsInSplash.get_unit(i);
 
 			// Units can't splash themselves
@@ -166,24 +164,18 @@ namespace hooks {
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player
 //			if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
-			if (splash == SplashType::Enemy)
-			{
+			if (splash == SplashType::Enemy) {
 				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
-			}
-			else if (splash == SplashType::FriendlyNew)
-			{
+			} else if (splash == SplashType::FriendlyNew) {
 				bool lurkerOverride = false;
-				if (bullet->source_unit)
-				{
+				if (bullet->source_unit) {
 					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
-					if ((Unit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
-					{
+					if ((Unit*)bulletSourceExt->values[ValueLurkerPickTarget] == target) {
 						lurkerOverride = true;
 					}
 				}
 					
-				if (scbw::is_unit_enemy(bullet->player, target) == false && !lurkerOverride && target != bullet->attack_target.unit)
-				{
+				if (scbw::is_unit_enemy(bullet->player, target) == false && !lurkerOverride && target != bullet->attack_target.unit) {
 					continue;
 				}
 			}
@@ -192,33 +184,26 @@ namespace hooks {
 			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[bullet->weapon_id]))
-			{
+			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[bullet->weapon_id])) {
 				continue;
 			}
 
-			if (bullet->source_unit != nullptr)
-			{
-				bool cont = false;
-				if (globals.spine_pair_exists(bullet->source_unit, target))
-				{
-					cont = true;
+			if (bullet->source_unit) {
+				bool skip = false;
+				if (globals.spine_pair_exists(bullet->source_unit, target)) {
+					skip = true;
 					break;
 				}
-				if (cont)
-					continue;
+				if (skip) continue;
 				globals.add_lurker_spine_pair(bullet->source_unit, target);
 			}
 			helper::weapon_bullet_shot(target, bullet, 1);
 		}
 	}
 
-	bool is_charged_gorgrokor_bullet(Bullet* bullet, u32 weapon_id)
-	{
-		if (weapon_id == WeaponId::GorgrokorSerratedCleavers)
-		{
-			if (bullet && bullet->source_unit && bullet->source_unit->id == UnitId::ZergGorgrokor)
-			{
+	bool is_charged_gorgrokor_bullet(Bullet* bullet, u32 weapon_id) {
+		if (weapon_id == WeaponId::GorgrokorSerratedCleavers) {
+			if (bullet && bullet->source_unit && bullet->source_unit->id == UnitId::ZergGorgrokor) {
 				return true;
 			}
 		}
@@ -226,28 +211,23 @@ namespace hooks {
 	}
 
 	// clone of 'Normal' damage for reference
-	void normal_damage(Bullet* bullet, u32 weapon_id)
-	{
-		if (is_charged_gorgrokor_bullet(bullet, weapon_id)) // TODO: Check if this is even necessary (old version needed energy). -Pr0nogo
-		{
+	void normal_damage(Bullet* bullet, u32 weapon_id) {
+		if (is_charged_gorgrokor_bullet(bullet, weapon_id)) { // TODO: Check if this is even necessary (old version needed energy). -Pr0nogo
 			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attack_target.unit);
 			return;
 		}
 
 		Unit* target = bullet->attack_target.unit;
-		if (target == nullptr)
-		{
+		if (!target) {
 			return;
 		}
 
 		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
 
 		// Kalkalisk behavior
-		if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
-		{
+		if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
 			auto count = globals.get_multihit_count(bullet);
-			if (count >= 4)
-			{
+			if (count >= 4) {
 				return;
 			}
 			target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid], bullet->source_unit, bullet->player, 0, 1, false);
@@ -255,16 +235,12 @@ namespace hooks {
 		}
 
 		u8 divisor = 1;
-		if (weapon_id == WeaponId::ArchitectDispersiveSalvo)
-		{
+		if (weapon_id == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = globals.get_divider(bullet);
-		}
-
-		else if (weapon_id == WeaponId::GeszithalorAcidSpore
+		} else if (weapon_id == WeaponId::GeszithalorAcidSpore
 			&& bullet->source_unit
 			&& bullet->source_unit->sprite
-			&& target->sprite)
-		{
+			&& target->sprite) {
 			// Searing Acid - Geszithalor behavior
 			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
 			auto X = bulletSourceExt->last_bullet_launch_position.x;
@@ -272,31 +248,21 @@ namespace hooks {
 			divisor = scbw::get_distance_fast(X, Y, target->get_x(), target->get_y()) / (32 * 3);
 		}
 
-		if (bullet->hit_flags & 1) // Miss?
-		{
-			if (!target->unit_ai)
-			{
+		if (bullet->hit_flags & 1) { // Miss
+			if (!target->unit_ai) {
 				return;
 			}
-			if (!bullet->source_unit)
-			{
+			if (!bullet->source_unit) {
 				return;
 			}
 			helper::do_weapon_hit(target, bullet->source_unit, divisor);
 			return;
-		}
-		else
-		{
-			if (weapons_dat::behavior[weapon_id] == WeaponBehavior::Bounce)
-			{
-				if (bullet)
-				{
-					if (bullet->source_unit && bullet->source_unit->id == UnitId::ZergBactalisk)
-					{
+		} else {
+			if (weapons_dat::behavior[weapon_id] == WeaponBehavior::Bounce) {
+				if (bullet) {
+					if (bullet->source_unit && bullet->source_unit->id == UnitId::ZergBactalisk) {
 						divisor = 1;
-					}
-					else
-					{
+					} else {
 						const s32 bounceCount = 2;
 						divisor = bounceCount - bullet->remaining_bounces;
 					}
