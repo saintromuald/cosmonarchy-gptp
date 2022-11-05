@@ -590,7 +590,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"LongZhongDong",
 			"Metzen's Matriarchs",
 			"A Vile Voidspeaker",
-			"nullptr",
+			"0", // not nullptr, because fuck you C++
 		},
 	},
 };
