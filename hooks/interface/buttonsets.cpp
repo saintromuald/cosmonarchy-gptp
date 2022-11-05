@@ -153,7 +153,7 @@ namespace hooks {
 			if (count_workers == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
 			} else if (count_burrowables) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower;
 			} else if (count_hatches == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHachirosk;
 			} else if (count_lifted_buildings) {
