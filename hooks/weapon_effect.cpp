@@ -148,10 +148,9 @@ namespace hooks {
 	}
 
 	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash) {
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::outer_splash_radius[weapon_id];
+		s16 x = bullet->sprite->position.x;
+		s16 y = bullet->sprite->position.y;
+		s16 r = weapons_dat::outer_splash_radius[weapon_id];
 
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
