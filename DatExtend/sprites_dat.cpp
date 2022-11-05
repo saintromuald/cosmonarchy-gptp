@@ -19,7 +19,7 @@ namespace DatExt {
         datTablePatch((DatLoad*)LoadTable::Sprites_Dat, sprites_r);
 
         g_is_valid_sprite = (u8*)calloc(newCount, sizeof(u8));
-        simpleReplace(sprite_is_valid, (u32)g_is_valid_sprite);
+        simple_replace(sprite_is_valid, (u32)g_is_valid_sprite);
     }
 
     void sprites_dat_unpatch() {

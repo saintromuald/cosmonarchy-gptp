@@ -134,7 +134,7 @@ namespace DatExt {
 			{
 				offs = (u32)tech_newArrs[0] + tech_bwAvail[i++]; // ID offset
 			}
-			i += simpleReplace((u32*)&tech_bwAvail[i], offs);
+			i += simple_replace((u32*)&tech_bwAvail[i], offs);
 		}
 
 		// tech_bwResearch
@@ -152,10 +152,10 @@ namespace DatExt {
 			{
 				offs = (u32)tech_newArrs[1] + tech_bwResearch[i++]; // ID offset
 			}
-			i += simpleReplace((u32*)&tech_bwResearch[i], offs);
+			i += simple_replace((u32*)&tech_bwResearch[i], offs);
 		}   
 	
-		constReplace(tech_consts, newCount);
+		const_replace(tech_consts, newCount);
 
 		// Apply 'newArrs' to appropriate scbwdata.h variables
 		for (i = 0; i < PLAYER_COUNT; i++)

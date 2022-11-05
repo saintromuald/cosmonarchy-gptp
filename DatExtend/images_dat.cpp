@@ -70,7 +70,7 @@ namespace DatExt {
         for(i=0; img_grpArr[i] != 0 || i == 0; i++)
         {
             offs = (u32)img_newArrs[0] + img_grpArr[i++] * sizeof(u32); // ID offset
-            i += simpleReplace(&img_grpArr[i], offs);
+            i += simple_replace(&img_grpArr[i], offs);
         }
 
         // img_loArr
@@ -79,7 +79,7 @@ namespace DatExt {
         for(i=0,j=0; i < 5; i++,j++)
         {
             offs = (u32)img_newArrs[1] + newCount * sizeof(u32) * i;
-            j += simpleReplace(&img_loArr[j], offs);
+            j += simple_replace(&img_loArr[j], offs);
         }
 
         // img_loShield
@@ -88,16 +88,16 @@ namespace DatExt {
         for(i=0,j=0; i < 2; i++,j++)
         {
             offs = (u32)img_newArrs[2] + i * 984 * sizeof(u32);
-            j += simpleReplace(&img_loShield[j], offs);
+            j += simple_replace(&img_loShield[j], offs);
         }
 
         // img_blgOlState
         img_newArrs[3] = malloc(newCount);
         // - Null-terminated lists of addresses
-        simpleReplace(img_blgOlState, (u32)img_newArrs[3]);   
+        simple_replace(img_blgOlState, (u32)img_newArrs[3]);   
 
         // img_consts
-        constReplace(img_consts, newCount);
+        const_replace(img_consts, newCount);
 
         // Apply 'newArrs' to appropriate scbwdata.h variables
         imageGrpGraphics_var = (GrpHead* const*)img_newArrs[0];

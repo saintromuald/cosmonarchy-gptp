@@ -12,6 +12,17 @@ DATEXT_VAR_REF(u32*, ai_strength_air_var);
 DATEXT_VAR_REF(u32*, ai_strength_ground_var);
 DATEXT_VAR_REF(_uavail*, g_unit_availability_var);
 
+struct PlayerCountList {
+	u32 player[12];
+};
+
+struct UnitPlayerCountList {
+	PlayerCountList unit[UnitId::Count];
+};
+
+static UnitPlayerCountList completed_units_count_at_location;
+static UnitPlayerCountList all_units_count_at_location;
+
 namespace {
 	// List of address reference replacements.
 	s32 unit_r[] = {
@@ -361,7 +372,7 @@ namespace {
 						   0,0,0
 	};
 
-	/* // Trigger or AI stuff that needs to be extended! @Veeq7
+	/* // Trigger or AI stuff that needs to be extended! -Veeq7
 	completed_unit_counts_at_location:
 	0045F7C9
 	0045FED9
@@ -378,6 +389,14 @@ namespace {
 	004607F1
 	00460A14
 	*/
+
+	s32 unit_completed_at_location[] = {
+		0x0045F7C9 +1, 0x0045FED9 +3, 0x0045FEE5 +3, 0x004607A1 +3, 0x00460878 +3, 0x00460913 +3, 0x00460A08 +1, 0
+	};
+
+	s32 unit_all_at_location[] = {
+		0x0045F7DA +1, 0x0045F815 +3, 0x0045F820 +3, 0x004607F1 +3, 0x00460A14 +1, 0
+	};
 	
 	/*{0x00582324,  // Unit Buttons Table -> Unit Count Table
 						   0x005878A4}; // Unit Button Stat Table -> Unit Killed Count Table
@@ -415,7 +434,10 @@ namespace {
 							
 							// (228 + 0x404) * 8
 							0, 8 * sizeof(AI_Main), sizeof(u32), 0x0043E801 +1, 0x00447FFA +2, 0x0044800A +1, 0x0044824D +1, 0,
-						  
+
+					  // Unit Player List struct sizes
+						// UnitId::Count * 12 * sizeof(u32)
+						0, sizeof(UnitPlayerCountList) / 4, sizeof(u32), 0x0045F7BF +1, 0x0045F7D0 +1, 0x00460A03 +1, 0x00460A0F +1,
 						  
 					  // Code replacements (factor = 0 to set a constant value)
 						  0, 0x75,       sizeof(u8),  0x0046E1DD, 0, // replace a jb with a jne
@@ -495,7 +517,7 @@ namespace DatExt {
 		// - First value in list is the unit ID referenced
 		for (i = 0; unit_AllCount[i] != 0 || i == 0; i++) {
 			offs = (u32)unit_newArrs[0] + unit_AllCount[i++] * PLAYER_COUNT * sizeof(u32); // ID offset
-			i += simpleReplace(&unit_AllCount[i], offs);
+			i += simple_replace(&unit_AllCount[i], offs);
 		}
 	
 		// unit_Complete
@@ -505,21 +527,21 @@ namespace DatExt {
 		for (i = 0; unit_Complete[i] != 0 || i == 0; i++)
 		{
 			offs = (u32)unit_newArrs[1] + (unit_Complete[i] * PLAYER_COUNT + unit_Complete[i + 1]) * sizeof(u32); // ID offset
-			i += simpleReplace(&unit_Complete[i + 2], offs);
+			i += simple_replace(&unit_Complete[i + 2], offs);
 			i += 2;
 		}
 	
 		// unit_Killed
 		unit_newArrs[2] = malloc(newCount * PLAYER_COUNT * sizeof(u32));
-		simpleReplace(unit_Killed, (u32)unit_newArrs[2]);
+		simple_replace(unit_Killed, (u32)unit_newArrs[2]);
 	
 		// unit_Deaths
 		unit_newArrs[3] = malloc(newCount * PLAYER_COUNT * sizeof(u32));
-		simpleReplace(unit_Deaths, (u32)unit_newArrs[3]);
+		simple_replace(unit_Deaths, (u32)unit_newArrs[3]);
 	
 		// unit_Available
 		unit_newArrs[4] = malloc(newCount * PLAYER_COUNT * sizeof(u8));
-		simpleReplace(unit_Available, (u32)unit_newArrs[4]);
+		simple_replace(unit_Available, (u32)unit_newArrs[4]);
 	
 		// unit_AIStrength
 		unit_newArrs[5] = malloc(newCount * sizeof(u32) * 2);
@@ -528,7 +550,7 @@ namespace DatExt {
 		do
 		{
 			offs = (u32)unit_newArrs[5] + (unit_AIStrength[j] * newCount + unit_AIStrength[j + 1]) * sizeof(u32); // factor * 12 + add
-			j += simpleReplace((u32*)&unit_AIStrength[j + 2], offs);
+			j += simple_replace((u32*)&unit_AIStrength[j + 2], offs);
 			j += 3;
 		} while (unit_AIStrength[j] != 0 || unit_AIStrength[j + 1] != 0);
 	
@@ -540,11 +562,15 @@ namespace DatExt {
 		{
 			offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * sizeof(AI_Main) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
 			//offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * (0x404 + newCount) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
-			j += simpleReplace((u32*)&unit_AIStruct[j + 2], offs);
+			j += simple_replace((u32*)&unit_AIStruct[j + 2], offs);
 			j += 3;
 		} while (unit_AIStruct[j] != 0 || unit_AIStruct[j + 1] != 0);
+
+		// unit_completed_at_location and unit_all_at_location
+		simple_replace((u32*)unit_completed_at_location, (u32)&completed_units_count_at_location);
+		simple_replace((u32*)unit_all_at_location, (u32)&all_units_count_at_location);
 	
-		constReplace(unit_consts, newCount);
+		const_replace(unit_consts, newCount);
 	
 		// Apply 'newArrs' to appropriate scbwdata.h variables
 		unitAllCountTable_var = (UnitDeaths*)unit_newArrs[0];

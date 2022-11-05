@@ -30,6 +30,6 @@ namespace {
 namespace DatExt {
     void portdata_dat_doPatch(u32 newCount) {
         datTablePatch((DatLoad*)LoadTable::Portdata_Dat, portdata_r);
-        constReplace(port_consts, newCount);
+        const_replace(port_consts, newCount);
     }
 }

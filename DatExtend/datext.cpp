@@ -290,7 +290,7 @@ namespace DatExt {
 	}
 
 	// Writes a value with a list of modifiers to a list of addresses, defined by "constList" struct
-	void constReplace(s32* list, u32 val) {
+	void const_replace(s32* list, u32 val) {
 		u32 i;
 		s32 newVal;
 		// - Null-terminated list of null-terminated lists of addresses
@@ -308,11 +308,9 @@ namespace DatExt {
 	}
 
 	// Writes a constant value to a list of addresses
-	u32 simpleReplace(u32* list, u32 val)
-	{
-		u32 i;
-		for (i = 0; list[i] != 0; i++)
-		{
+	u32 simple_replace(u32* list, u32 val) {
+		u32 i = 0;
+		for (; list[i] != 0; i++) {
 			memory_patch(list[i], val);
 		}
 		return i;

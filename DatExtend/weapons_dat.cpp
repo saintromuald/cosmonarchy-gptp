@@ -53,6 +53,6 @@ namespace DatExt {
 	void weapons_dat_doPatch(u32 newCount)
 	{
 		datTablePatch((DatLoad*)LoadTable::Weapons_Dat, weapons_r);
-		constReplace(weapons_consts, newCount);
+		const_replace(weapons_consts, newCount);
 	}
 }

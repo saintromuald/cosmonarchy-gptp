@@ -61,8 +61,8 @@ namespace DatExt {
 
 	// general patching functions
 	void datTablePatch(DatLoad* datTablePtr, s32* list);
-	void constReplace(s32* list, u32 val);
-	u32 simpleReplace(u32* list, u32 val);
+	void const_replace(s32* list, u32 val);
+	u32 simple_replace(u32* list, u32 val);
 
 	void loadUnitIcons();
 	GrpHead** const get_unit_icons_pointer();
