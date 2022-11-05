@@ -15,7 +15,9 @@ namespace hooks
 		if (unit->id != UnitId::ZergLarva && unit->id != UnitId::ZergOcsalLarva) {
 			btnsact_select_larva();
 			helper::update_hud_info();
-			if (!*g_active_portrait_unit) { // Make sure we have something selected
+
+			Unit* new_unit = *g_active_portrait_unit;
+			if (!new_unit || (new_unit->id != UnitId::ZergLarva && new_unit->id != UnitId::ZergOcsalLarva)) { // Make sure we have something selected
 				return;
 			}
 		}
