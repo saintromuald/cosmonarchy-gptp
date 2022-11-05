@@ -47,7 +47,7 @@ namespace hooks {
 			return;
 		}
 		Point16 pos = bullet->sprite->position;
-		Unit* unit = unit;
+		Unit* unit = bullet->source_unit;
 		if (unit && unit->sprite) {
 			UnitExt* bullet_source_ext = get_unit_ext(unit);
 			if (unit->is_blind) {
