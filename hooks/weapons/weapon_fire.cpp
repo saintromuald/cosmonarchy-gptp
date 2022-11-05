@@ -148,15 +148,9 @@ namespace hooks {
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
 	{
-		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
-			scbw::print("fire weapon");
-		}
 		if (!unit)
 		{
 			return;
-		}
-		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
-			scbw::print("unit exists");
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
@@ -440,7 +434,7 @@ namespace hooks {
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
-						if (unit->order_target.unit != nullptr)
+						if (!unit->order_target.unit)
 						{
 							fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
 						}
@@ -449,10 +443,6 @@ namespace hooks {
 					{
 						// Crushing Tide - Izirokor
 						fire_multiple(unit, weapon_id, 3, Flags::Enemy);
-					} break;
-					default:
-					{
-						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 					case WeaponId::MatrixKhaydarinRay:
 					{
@@ -464,6 +454,10 @@ namespace hooks {
 					{
 						// Multi-Attack III
 						fire_multiple(unit, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
+					} break;
+					default:
+					{
+						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
@@ -478,7 +472,6 @@ namespace hooks {
 
 	void progress_bullet_flight(Bullet* bullet) // 0048B3B0
 	{
-		Bullet* v1;
 		Unit* target;
 		Sprite* bulletSprite;
 		Image* i;
@@ -711,7 +704,6 @@ namespace hooks {
 				case WeaponId::ZarcavrokorBonesofReflection:
 				case WeaponId::SentinelCerberusRailgun:
 				{
-					scbw::print("range");
 					range = 64;
 				} break;
 				case WeaponId::OptectonSunsplitBeam:
@@ -777,7 +769,6 @@ namespace hooks {
 			});
 			if (collision_target)
 			{
-				scbw::print("collision target");
 				switch (bullet->weapon_id)
 				{
 					case WeaponId::PenumbraErebolShockCannon:
@@ -856,11 +847,11 @@ namespace hooks {
 			{
 				bullet->attack_target.unit = 0;
 			}
-			bulletSprite = bullet->sprite;
+			Sprite* bullet_sprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
 			bullet->unknown_0x4E = 0;
 			bullet->someUnitType = 228;
-			for (i = bulletSprite->images.head; i; i = i->link.next)
+			for (i = bullet_sprite->images.head; i; i = i->link.next)
 			{
 				helper::play_image_iscript(i, IscriptAnimation::Death);
 			}
@@ -953,7 +944,7 @@ namespace hooks {
 		}
 
 		Unit* bounceSource = bounce_source;
-		if (bounce_source->subunit != nullptr && helper::unit_is_subunit(bounce_source->subunit))
+		if (!bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
 		{
 			bounceSource = bounce_source->subunit;
 		}
@@ -1037,14 +1028,14 @@ namespace hooks {
 		{
 			return 0;
 		}
-		Unit* nextBounce = bullet->next_bounce_unit;
+		Unit* next_bounce = bullet->next_bounce_unit;
 		*g_bullet_bounce_missile_source = bullet->source_unit;
 		Unit* target = bullet->attack_target.unit;
-		Sprite* bulletSprite = bullet->sprite;
+		Sprite* bullet_sprite = bullet->sprite;
 		*g_bullet_bounce_missile_target = target;
-		u16 posY = bulletSprite->position.x;
-		u16 posX = bulletSprite->position.y;
-		*g_bullet_bounce_missile_next = nextBounce;
+		u16 posY = bullet_sprite->position.x;
+		u16 posX = bullet_sprite->position.y;
+		*g_bullet_bounce_missile_next = next_bounce;
 		Box16 coords;
 		coords.left = posX - 96;
 		coords.top = posX + 96;
@@ -1380,61 +1371,61 @@ namespace hooks {
 	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
 	void progress_bullet_frames() // 0048C3D0
 	{
-		Bullet* bulletVar = *first_bullet;
-		Sprite* bulletSprite = nullptr;
+		Bullet* first_bullet_var = *first_bullet;
+		Sprite* bullet_sprite = nullptr;
 		s32 bulletBehavior = 0;
 		Bullet* nextBullet = *first_bullet;
 		while (nextBullet)
 		{
-			nextBullet = bulletVar->next;
-			*g_active_iscript_entity = (Unit*)bulletVar;
-			*g_active_iscript_bullet = bulletVar;
-			helper::set_thingy_visibility_flags((Thingy*)bulletVar);
-			bulletSprite = bulletVar->sprite;
-			if (bulletSprite)
+			nextBullet = first_bullet_var->next;
+			*g_active_iscript_entity = (Unit*)first_bullet_var;
+			*g_active_iscript_bullet = first_bullet_var;
+			helper::set_thingy_visibility_flags((Thingy*)first_bullet_var);
+			bullet_sprite = first_bullet_var->sprite;
+			if (bullet_sprite)
 			{
-				helper::sprite_to_iscript_loop(bulletSprite);
-				if (!bulletVar->sprite->images.head)
+				helper::sprite_to_iscript_loop(bullet_sprite);
+				if (!first_bullet_var->sprite->images.head)
 				{
-					bulletVar->sprite = 0;
+					first_bullet_var->sprite = 0;
 				}
 			}
-			bulletBehavior = (u8)bulletVar->behavior_type_internal;
+			bulletBehavior = (u8)first_bullet_var->behavior_type_internal;
 			switch (bulletBehavior)
 			{
 				case 0:
 				{
-					hooks::bullet_behavior_reassign(bulletVar);
+					hooks::bullet_behavior_reassign(first_bullet_var);
 				} break;
 				case 1:
 				{
-					helper::bullet_behavior_fly(bulletVar);
+					helper::bullet_behavior_fly(first_bullet_var);
 				} break;
 				case 2:
 				{
-					helper::bullet_behavior_follow(bulletVar);
+					helper::bullet_behavior_follow(first_bullet_var);
 				} break;
 				case 3:
 				{
-					helper::bullet_behavior_bounce(bulletVar);
+					helper::bullet_behavior_bounce(first_bullet_var);
 				} break;
 				case 4:
 				{
-					helper::bullet_behavior_persist(bulletVar);
+					helper::bullet_behavior_persist(first_bullet_var);
 				} break;
 				case 5:
 				{
-					helper::bullet_behavior_instant(bulletVar);
+					helper::bullet_behavior_instant(first_bullet_var);
 				} break;
 				case 6:
 				{
-					helper::bullet_behavior_area(bulletVar);
+					helper::bullet_behavior_area(first_bullet_var);
 				} break;
 				default:
 				{
 				} break;
 			}
-			bulletVar = nextBullet;
+			first_bullet_var = nextBullet;
 		}
 		*g_active_iscript_entity = 0;
 		*g_active_iscript_bullet = 0;

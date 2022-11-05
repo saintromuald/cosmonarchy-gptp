@@ -478,8 +478,8 @@ namespace {
 						{0x0048D756, {0x8B, 0xC8, 0xE8}, TE_FUNC_CC}, // mov ecx,eax / call TE_FUNC_CC
 						{0x0048DA8A, {0x8B, 0xC8, 0xE8}, TE_FUNC_CC}, // mov ecx,eax / call TE_FUNC_CC
 						{0x004683C6, {0x8B, 0xD1, 0xE8}, TE_FUNC_DD}, // mov edx,ecx / call TE_FUNC_DD
-	//                    {0x0047B854, {0xB2, 0, 0xE8}, TE_FUNC_DA}, // mov dl,0 / call TE_FUNC_DA // collides with GPTP hook getModifiedUnitTurnRadius in unit_speed.cpp
-	//                    {0x0047B8A4, {0xB2, 0, 0xE8}, TE_FUNC_DA}, // mov dl,0 / call TE_FUNC_DA // collides with GPTP hook getModifiedUnitAccelerationHook in unit_speed.cpp
+	//					{0x0047B854, {0xB2, 0, 0xE8}, TE_FUNC_DA}, // mov dl,0 / call TE_FUNC_DA // collides with GPTP hook getModifiedUnitTurnRadius in unit_speed.cpp
+	//					{0x0047B8A4, {0xB2, 0, 0xE8}, TE_FUNC_DA}, // mov dl,0 / call TE_FUNC_DA // collides with GPTP hook getModifiedUnitAccelerationHook in unit_speed.cpp
 						{0x00497148, {0xB2, 0, 0xE8}, TE_FUNC_DA}, // mov dl,0 / call TE_FUNC_DA
 						{0x0049716F, {0xB2, 1, 0xE8}, TE_FUNC_DA}, // mov dl,1 / call TE_FUNC_DA
 						{0x00497196, {0xB2, 2, 0xE8}, TE_FUNC_DA}, // mov dl,2 / call TE_FUNC_DA
@@ -496,7 +496,7 @@ namespace {
 	} ThingyExpandFxns[] = {{TE_FUNC_AA, {0x0F, 0xB7, 0x04, 0x45, 0,0,0,0, 0xC3}}, // movzx eax,word ptr ds:[eax*2 + offset] / retn
 							{TE_FUNC_CC, {0x0F, 0xB7, 0x0C, 0x4D, 0,0,0,0, 0xC3}}, // movzx ecx,word ptr ds:[ecx*2 + offset] / retn
 							{TE_FUNC_DA, {0x0F, 0xB6, 0xD2, 0x03, 0xD0, 0x0F, 0xB6, 0x14, 0x55}}, // movzx edx,dl / add edx,eax / 
-							//{TE_FUNC_DD, {0x0F, 0xB6, 0x14, 0x55, 0,0,0,0, 0xC3}}, // movzx edx,word ptr ds:[edx*2 + offset] / retn
+						//	{TE_FUNC_DD, {0x0F, 0xB6, 0x14, 0x55, 0,0,0,0, 0xC3}}, // movzx edx,word ptr ds:[edx*2 + offset] / retn
 							0
 	};
 	
