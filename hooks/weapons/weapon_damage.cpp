@@ -846,6 +846,18 @@ namespace hooks
 			data.target->remove_overlay(infested_image_id);
 		}
 
+		switch (data.target->id) { // Pre-revive target behaviors (Do NOT merge with the other target switch!) -Veeq7
+			case UnitId::ProtossVagrant:
+			{
+				scbw::create_and_init_thingy(SpriteId::ZealotDeath, data.target->position.x, data.target->position.y, data.target->player, data.target->sprite->elevation + 1);
+				helper::increment_unit_death_scores(data.target, data.target->player);
+				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
+				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
+				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
+				data.final_damage = 0;
+			}
+		}
+
 		// Apostle, Anticthon - Revive
 		if (data.final_damage > 0 && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive])
 			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {

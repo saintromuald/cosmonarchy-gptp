@@ -222,21 +222,6 @@ void unit_destructor_special_cases(Unit* unit) {
 				// Phase Link
 				scbw::clear_clarion_links(unit);
 			} break;
-			/*
-			case UnitId::ProtossVagrant:
-			{
-				unit->sprite->create_top_overlay(ImageId::ZealotDeath);
-				helper::replace_unit_with_id(unit, UnitId::ProtossVagrantShade);
-				helper::increment_unit_scores_ex(unit, -1, 0);
-				helper::update_unit_stats_and_finish_building(unit);
-				helper::update_unit_strength(unit);
-				helper::refresh_sprite_data(unit->sprite);
-				unit->order_computer(OrderId::ResetCollision1);
-				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
-				unit->hitpoints = unit->get_max_hp_ingame();
-				unit->shields = unit->max_shields();
-			} break;
-			*/
 			case UnitId::ProtossVassal:
 			{
 				// Terminal Surge
@@ -248,15 +233,13 @@ void unit_destructor_special_cases(Unit* unit) {
 					unit->get_y() + range
 				).for_each([&](Unit* target) {
 					UnitExt* target_ext = get_unit_ext(target);
-					if (!scbw::is_allied_to(unit->player, target->player))
-					{
+					if (!scbw::is_allied_to(unit->player, target->player)) {
 						return;
 					}
 					target_ext->timers[TimerTerminalSurge] = 48;
 					target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 					target->update_speed();
-					if (target->subunit)
-					{
+					if (target->subunit) {
 						UnitExt* subunit_ext = get_unit_ext(target->subunit);
 						subunit_ext->timers[TimerTerminalSurge] = 48;
 					}

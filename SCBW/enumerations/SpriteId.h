@@ -779,6 +779,7 @@ namespace SpriteId
 		BlackjackCorpse = 771,
 		BurstLasersImpactBlue_Damageless = 772,
 		PlagueField = 773,
+		ZealotDeath = 810,
 
 		// CORPSE \\
 			
