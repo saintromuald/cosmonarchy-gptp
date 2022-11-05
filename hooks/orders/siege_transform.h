@@ -5,10 +5,10 @@ namespace hooks
 {
 
 	//go from Siege Mode to Tank Mode
-	void ordersTankMode(Unit* unit);
+	void orders_tank_mode(Unit* unit);
 
 	//go from Tank Mode to Siege Mode
-	void ordersSiegeMode(Unit* unit);
+	void orders_siege_mode(Unit* unit);
 
 	//The injector function that should be called in initialize.cpp
 	void inject_siege_transform_hooks();

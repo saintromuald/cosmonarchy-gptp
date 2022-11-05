@@ -5234,7 +5234,7 @@ namespace helper {
 	//At least that's what I think it does (not sure what I called
 	//"action inside the function" is, and how it's used to return
 	//true
-	bool getCloserToDestination_sub402BE0(Unit* unit) {
+	bool get_closer_to_destination(Unit* unit) {
 		const u32 Func_Sub402BE0_GetCloserToDestination = 0x00402BE0;
 		static b32 bResult;
 		__asm {
@@ -5247,7 +5247,7 @@ namespace helper {
 		return (bResult == 1);
 	}
 
-	void orderReturnToIdle(Unit* unit) {
+	void order_return_to_idle(Unit* unit) {
 		const u32 Func_OrderReturnToIdle = 0x00463770;
 		__asm {
 			PUSHAD
@@ -5257,7 +5257,7 @@ namespace helper {
 		}
 	}
 
-	bool checkForCloseUnit(Unit* unit) {
+	bool check_for_close_unit(Unit* unit) {
 		const u32 Func_Sub464290_CheckForCloseUnit = 0x00464290;
 		static b32 bResult;
 		__asm {
@@ -5270,7 +5270,7 @@ namespace helper {
 		return (bResult == 1);
 	}
 
-	void playSubunitIscript(Unit* unit, IscriptAnimation::Enum anim) {
+	void play_subunit_iscript(Unit* unit, IscriptAnimation::Enum anim) {
 		const u32 Func_PlaySubunitIscript = 0x00474380;
 		u32 anim_ = anim;
 		assert(unit->subunit);
