@@ -685,7 +685,7 @@ namespace hooks {
 			case UnitId::ZergOcsalLarva:
 			{
 				Unit* building = unit->connected_unit;
-				if (building) {
+				if (building && building->status & UnitStatus::Completed) {
 					unit_ext->values[ValueSwarmhold] = scbw::unit_id_swarmhold_value(building->id);
 					u32 unit_id = scbw::unit_id_get_larva_type(building->id);
 					if (unit->id != unit_id) {
