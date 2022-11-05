@@ -430,7 +430,7 @@ namespace hooks
         if (units_dat::group_flags[unit_id].is_men) {
             units_produced[unit->player] += count;
         }
-        if (increment_scores != 0) {
+        if (increment_scores) {
             if (units_dat::group_flags[unit_id].is_men) {
                 if (!scbw::is_any_morph_result(unit_id))  {
                     units_owned[unit->player] += count;
