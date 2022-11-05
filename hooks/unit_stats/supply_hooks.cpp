@@ -364,14 +364,15 @@ namespace hooks
         if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
             return;
         }
+
         g_all_unit_count_table[unit->id].player[unit->player] += count;
-        GroupFlag groupFlag = units_dat::group_flags[(u16)unit->id];
+        GroupFlag group_flag = units_dat::group_flags[(u16)unit->id];
         
         if (unit->get_race() == RaceId::Zerg) {
-            // Zerg special handling
+            // Zerghere special handling
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
                u8 supply = units_dat::supply_required[unit->id];
-                if (!(units_dat::base_property[unit->id] & 0x400) || unit->status & 1) {
+                if (!(units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) || unit->status & UnitStatus::Completed) {
                     g_race_supply[RaceId::Terran].used[unit->player] += count * supply;
                 } else {
                     supply *= 2;
@@ -389,13 +390,13 @@ namespace hooks
             g_race_supply[RaceId::Terran].used[unit->player] += count * units_dat::supply_required[unit->id];
         }
 
-        if (groupFlag.is_factory) {
+        if (group_flag.is_factory) {
             factories_produced_owned_total[unit->player] += count;
         }
-        if (groupFlag.is_men) {
+        if (group_flag.is_men) {
             units_produced_owned_total[unit->player] += count;
         }
-        if (groupFlag.is_building) {
+        if (group_flag.is_building) {
             structures_produced_owned_total[unit->player] += count;
         }
         if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
