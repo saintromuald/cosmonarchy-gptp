@@ -16,15 +16,15 @@ namespace hooks
 			btnsact_select_larva();
 			helper::update_hud_info();
 
-			Unit* new_unit = *g_active_portrait_unit;
-			if (!new_unit || (new_unit->id != UnitId::ZergLarva && new_unit->id != UnitId::ZergOcsalLarva)) { // Make sure we have something selected
+			unit = *g_active_portrait_unit;
+			if (!unit) {
 				return;
 			}
 		}
-		// Determine the type using the originally selected unit
-		if (unit->id == UnitId::ZergLarva || scbw::unit_id_get_larva_type(unit->id) == UnitId::ZergLarva) {
+
+		if (unit->id == UnitId::ZergLarva) {
 			helper::BTNSACT_ChangeButtons(buttonset);
-		} else if (unit->id == UnitId::ZergOcsalLarva || scbw::unit_id_get_larva_type(unit->id) == UnitId::ZergOcsalLarva) {
+		} else if (unit->id == UnitId::ZergOcsalLarva) {
 			helper::BTNSACT_ChangeButtons(ocsal_buttonset);
 		}
 	}
