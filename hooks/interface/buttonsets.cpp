@@ -122,7 +122,12 @@ namespace hooks {
 				if (selected->id == UnitId::ZergEgg) {
 					count_eggs++;
 				}
+			}
+		}
 
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* selected = g_client_selection_group->unit[i];
+			if (selected) {
 				// if you use a custom buttonset, and are reusing the current_buttonset property of an active differently, change these conditions to take it in account
 				if (selected->status & UnitStatus::Completed && selected_button_set_id != active_button_set_id) {
 					ButtonSet* selected_button_set = hooks::get_buttonset(selected_button_set_id);
@@ -133,7 +138,7 @@ namespace hooks {
 							if (active_button_set->connected_unit == selected_button_set_id) {
 								active_button_set_id = selected_button_set_id;
 								*BUTTONSET_CURRENT_BUTTONSETID = selected_button_set_id;
-							} else if (!count_burrowables) {
+							} else {
 								*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
 							}
 						}
@@ -147,8 +152,8 @@ namespace hooks {
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
 			if (count_workers == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
-			} else if (count_burrowables != 0 && count_zergs == *g_client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower; // non-zergs units prevent this, maybe they shouldn't?
+			} else if (count_burrowables) {
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
 			} else if (count_hatches == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHachirosk;
 			} else if (count_lifted_buildings) {
