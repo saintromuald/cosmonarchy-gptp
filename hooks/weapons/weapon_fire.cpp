@@ -58,8 +58,7 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 	if (bullet && source && apply_cooldown) {
 		apply_weapon_cooldown(source, weapon_id);
 	}
-	if (bullet->weapon_id == WeaponId::ZarcavrokorBonesofReflection)
-	{
+	if (bullet->weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
 		scbw::set_bullet_target(bullet, bullet->attack_target.pt);
 	}
 	return bullet;
@@ -450,10 +449,6 @@ namespace hooks {
 						// Crushing Tide - Izirokor
 						fire_multiple(unit, weapon_id, 3, Flags::Enemy);
 					} break;
-					default:
-					{
-						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
-					} break;
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
@@ -464,6 +459,10 @@ namespace hooks {
 					{
 						// Multi-Attack III
 						fire_multiple(unit, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
+					} break;
+					default:
+					{
+						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
