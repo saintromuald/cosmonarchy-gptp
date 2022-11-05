@@ -672,7 +672,8 @@ namespace scbw
 	bool unit_id_has_addon(u32 unit_id); // Allows the AI to reserve space for addon
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id);
 	bool is_attack_region(AiRegion* ai_region);
-	bool unit_id_spawns_ocsal_larva(u32 unit_id);
+	u32 unit_id_get_larva_type(u32 unit_id);
+	u32 unit_id_swarmhold_value(u32 unit_id);
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
 	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority);
 	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority);

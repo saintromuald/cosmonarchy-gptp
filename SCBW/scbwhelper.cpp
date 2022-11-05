@@ -3231,7 +3231,7 @@ namespace helper {
 		return return_val;
 	}
 
-	void setCreepRelationalData(u32 x, u32 y, setCreepRelationalData_callback callback, u32 arg) {
+	void setCreepRelationalData(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg) {
 		const u32 Func_setCreepRelationalData = 0x00413FA0;
 		__asm {
 			PUSHAD
