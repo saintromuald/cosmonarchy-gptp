@@ -216,6 +216,7 @@ enum ExtTimerId
 	TimerCentaurSecondaryWeaponStagger,
 	TimerPatriarchAstralRule,
 	TimerTerminalSurge,
+	TimerTriumphantRiseDebuff,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

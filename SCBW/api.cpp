@@ -2515,15 +2515,21 @@ namespace scbw {
 
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
 		u32 heal_amount = 2;
+		u32 range = 64;
 		switch (weapon_id) {
 			case WeaponId::EcclesiastAstralBlaster: {
 				heal_amount = 2;
+				range = 64;
 			} break;
 			case WeaponId::PatriarchIronhandWeaver: {
 				heal_amount = 5;
+				range = 64;
+			} break;
+			case WeaponId::HeraldStellarTorch: {
+				heal_amount = 1;
+				range = 96;
 			} break;
 		}
-		const s32 range = 64;
 		scbw::UnitFinder(
 			victim->get_x() - range,
 			victim->get_y() - range,
@@ -2544,7 +2550,7 @@ namespace scbw {
 			}
 			if (units_dat::shields_enabled[unit->id]) {
 				// Shield heal
-				unit->heal_shields(2 * 256, victim);
+				unit->heal_shields(heal_amount * 256, victim);
 			}
 		});
 	}
