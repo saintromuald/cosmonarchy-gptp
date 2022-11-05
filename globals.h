@@ -27,15 +27,16 @@ struct SaveState
 };
 
 enum EffectId {
-	EffectId_SalamanderFire,
-	EffectId_StarSovereignTheGriefOfAllGods,
-	EffectId_IonField,
-	EffectId_Criticality,
-	EffectId_CausticDischarge,
-	EffectId_Irradiate,
-	EffectId_HallucinatingField,
 	EffectId_GroundZero,
+	EffectId_IonField,
+	EffectId_ReclamationField,
+	EffectId_SalamanderFire,
+	EffectId_Irradiate,
+	EffectId_Criticality,
+	EffectId_HallucinatingField,
 	EffectId_DisruptionField,
+	EffectId_StarSovereignTheGriefOfAllGods,
+	EffectId_CausticDischarge,
 	EffectId_PlagueField,
 
 	EffectId_Count,

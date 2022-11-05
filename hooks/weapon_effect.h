@@ -13,7 +13,7 @@ namespace SplashType
 
 namespace hooks
 {
-	void splash(Bullet* bullet, u32 weapon_id, u8 splashType, Unit* guaranteedHit = nullptr);
+	void splash(Bullet* bullet, u32 weapon_id, u8 splash_type, Unit* guaranteed_hit = nullptr);
 	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash);
 
 	void inject_weapon_effect_hooks();
