@@ -365,17 +365,14 @@ namespace hooks
             return;
         }
         g_all_unit_count_table[unit->id].player[unit->player] += count;
-        GroupFlag groupFlag = units_dat::group_flags[(u16)unit->id];
-        
         if (unit->get_race() == RaceId::Zerg) {
             // Zerg special handling
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
-               u8 supply = units_dat::supply_required[unit->id];
-                if (!(units_dat::base_property[unit->id] & 0x400) || unit->status & 1) {
-                    raceSupply[RaceId::Terran].used[unit->player] += count * supply;
+                u8 supply = units_dat::supply_required[unit->id];
+                if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !(unit->status & UnitStatus::Completed)) {
+                    race_supply[RaceId::Terran].used[unit->player] += count * supply * 2;
                 } else {
-                    supply *= 2;
-                    raceSupply[RaceId::Terran].used[unit->player] += count * supply;
+                    race_supply[RaceId::Terran].used[unit->player] += count * supply;
                 }
             } else {
                 s32 queue_unit_id = unit->build_queue[unit->build_queue_slot];
@@ -383,19 +380,20 @@ namespace hooks
                 if (units_dat::base_property[queue_unit_id] & UnitProperty::TwoUnitsIn1Egg) {
                     supply *= 2;
                 }
-                raceSupply[RaceId::Terran].used[unit->player] += count * supply;
+                race_supply[RaceId::Terran].used[unit->player] += count * supply;
             }
         } else {
-            raceSupply[RaceId::Terran].used[unit->player] += count * units_dat::supply_required[unit->id];
+            race_supply[RaceId::Terran].used[unit->player] += count * units_dat::supply_required[unit->id];
         }
 
-        if (groupFlag.is_factory) {
+        GroupFlag group_flags = units_dat::group_flags[unit->id];
+        if (group_flags.is_factory) {
             factories_produced_owned_total[unit->player] += count;
         }
-        if (groupFlag.is_men) {
+        if (group_flags.is_men) {
             units_produced_owned_total[unit->player] += count;
         }
-        if (groupFlag.is_building) {
+        if (group_flags.is_building) {
             structures_produced_owned_total[unit->player] += count;
         }
         if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
@@ -422,7 +420,7 @@ namespace hooks
         u32 race = unit->get_race();
         if (race <= RaceId::Protoss) {
             u32 supply = unit->get_supply_provided();
-            raceSupply[RaceId::Terran].provided[player] += count * supply;
+            race_supply[RaceId::Terran].provided[player] += count * supply;
         }
         if (units_dat::group_flags[unit_id].is_factory) {
             factories_owned[unit->player] += count;
@@ -468,9 +466,9 @@ namespace hooks
             return true;
         }
         u32 race = g_player_table[player].race;
-        const u32 supply_used = raceSupply[RaceId::Terran].used[player];
+        const u32 supply_used = race_supply[RaceId::Terran].used[player];
         // Must construct additional pylons
-        if (supply_used + supply_cost > raceSupply[RaceId::Terran].max[player]) {
+        if (supply_used + supply_cost > race_supply[RaceId::Terran].max[player]) {
             if (canShowErrorMessage) {
                 scbw::show_error_message_with_sfx(player, 847 + race, 1 + race);
             }
