@@ -531,5 +531,9 @@ namespace UnitId
 		Buttons_LarvaAssault								= 207,
 		Buttons_LarvaControl								= 208,
 		Buttons_LarvaShared									= 101,
+
+		Buttons_OcsalLarvaSwarm								= 356,
+		Buttons_OcsalLarvaAssault							= 357,
+		Buttons_OcsalLarvaControl							= 358,
 	};
 }

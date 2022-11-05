@@ -7,11 +7,34 @@
 
 namespace hooks
 {
-	static void select_larva_type(u32 buttonset) {
-		btnsact_select_larva();
-		helper::update_hud_info();
-		if (*g_active_portrait_unit && ((*g_active_portrait_unit)->id == UnitId::ZergLarva || (*g_active_portrait_unit)->id == UnitId::ZergOcsalLarva)) {
-			helper::BTNSACT_ChangeButtons(buttonset);
+	static void select_larva_type(u32 buttonset, u32 ocsal_buttonset) {
+		Unit* unit = *g_active_portrait_unit;
+		if (!unit) {
+			return;
+		}
+		if (unit->id != UnitId::ZergLarva && unit->id != UnitId::ZergOcsalLarva) {
+			btnsact_select_larva();
+			helper::update_hud_info();
+			if (!*g_active_portrait_unit) {
+				return;
+			}
+		}
+		switch (unit->id) {
+			case UnitId::ZergHachirosk:
+			case UnitId::ZergGathtelosk:
+			case UnitId::ZergNephrilosk:
+			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergLarva:
+			{
+				helper::BTNSACT_ChangeButtons(buttonset);
+			} break;
+			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergSibraelosk:
+			case UnitId::ZergOcsalColony:
+			case UnitId::ZergOcsalLarva:
+			{
+				helper::BTNSACT_ChangeButtons(ocsal_buttonset);
+			} break;
 		}
 	}
 
@@ -250,20 +273,20 @@ namespace hooks
 			} break;
 			case TechId::LarvalSubmenuSelectSwarm:
 			{
-				select_larva_type(UnitId::Buttons_LarvaSwarm);
+				select_larva_type(UnitId::Buttons_LarvaSwarm, UnitId::Buttons_OcsalLarvaSwarm);
 			} break;
 			case TechId::LarvalSubmenuSelectAssault:
 			{
-				select_larva_type(UnitId::Buttons_LarvaAssault);
+				select_larva_type(UnitId::Buttons_LarvaAssault, UnitId::Buttons_OcsalLarvaAssault);
 			} break;
 			case TechId::LarvalSubmenuSelectControl:
 			{
-				select_larva_type(UnitId::Buttons_LarvaControl);
+				select_larva_type(UnitId::Buttons_LarvaControl, UnitId::Buttons_OcsalLarvaControl);
 			} break;
-			case TechId::LarvalSubmenuSelectShared:
-			{
-				select_larva_type(UnitId::Buttons_LarvaShared);
-			} break;
+		//	case TechId::LarvalSubmenuSelectShared:
+		//	{
+		//		select_larva_type(UnitId::Buttons_LarvaShared);
+		//	} break;
 			case TechId::CancelNewAbility:
 			{
 				switch (players_selections->unit[*g_active_nation_id][0]->id)
