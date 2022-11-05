@@ -360,6 +360,7 @@ namespace hooks
 			Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
+				unit->remove_timer = 0;
 			}
 			return unit;
 		}

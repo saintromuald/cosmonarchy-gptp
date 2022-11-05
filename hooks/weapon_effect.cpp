@@ -79,16 +79,16 @@ namespace hooks {
 		s16 outer = weapons_dat::outer_splash_radius[weapon_id];
 		switch (weapon_id) {
 			case WeaponId::TethzorokorSaberArray: {
-				bool splash = false;
+				bool should_splash = false;
 				if (unit) {
 					if (unit->order_signal & 0x20) {
-						splash = false;
+						should_splash = false;
 					} else if (unit->order_signal & 0x40) {
-						splash = true;
+						should_splash = true;
 					}
 					unit->order_signal &= ~0x60;
 				}
-				if (!splash) {
+				if (!should_splash) {
 					inner = 0;
 					medium = 0;
 					outer = 0;
@@ -100,6 +100,10 @@ namespace hooks {
 			helper::weapon_bullet_shot(guaranteed_hit, bullet, 1);
 		}
 		carapace_swarm_damage(pos.x, pos.y, outer, bullet, weapon_id);
+
+		if (!outer) {
+			return;
+		}
 
 		EntryArray units_in_splash = {};
 		unit_search_radial(&units_in_splash, pos, outer);
@@ -200,10 +204,14 @@ namespace hooks {
 		}
 	}
 
-	bool is_charged_gorgrokor_bullet(Bullet* bullet, u32 weapon_id) {
-		if (weapon_id == WeaponId::GorgrokorSerratedCleavers) {
-			if (bullet && bullet->source_unit && bullet->source_unit->id == UnitId::ZergGorgrokor) {
-				return true;
+	bool is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
+		if (bullet && bullet->source_unit) {
+			switch (weapon_id) {
+				case WeaponId::NathrokorPlasmidBreath:
+				case WeaponId::GorgrokorSerratedCleavers:
+				case WeaponId::ZarcavrokorBisectingBlades:
+				case WeaponId::TethzorokorSaberArray:
+					return true;
 			}
 		}
 		return false;
@@ -211,7 +219,7 @@ namespace hooks {
 
 	// clone of 'Normal' damage for reference
 	void normal_damage(Bullet* bullet, u32 weapon_id) {
-		if (is_charged_gorgrokor_bullet(bullet, weapon_id)) { // TODO: Check if this is even necessary (old version needed energy). -Pr0nogo
+		if (is_melee_with_aoe(bullet, weapon_id)) { // TODO: Check if this is even necessary (old version needed energy). -Pr0nogo
 			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attack_target.unit);
 			return;
 		}

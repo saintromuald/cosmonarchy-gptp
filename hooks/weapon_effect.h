@@ -23,7 +23,7 @@ namespace hooks
 	void nuke(Bullet* bullet, u32 weapon_id);
 
 	// Cosmonarchy BW specific
-	bool is_charged_gorgrokor_bullet(Bullet* bullet, u32 weapon_id);
+	bool is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
 	void parasite(Bullet* bullet, u32 weapon_id);
 	void broodlings(Bullet* bullet, u32 weapon_id);
 	void lockdown(Bullet* bullet, u32 weapon_id);
