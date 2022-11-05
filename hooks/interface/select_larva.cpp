@@ -9,7 +9,7 @@ namespace hooks
 		u32 count = 0;
 		for (Unit** it = unit_list; *it; ++it) {
 			Unit* unit = *it;
-			if (unit->id == UnitId::ZergLarva && !(unit->sprite->flags & SpriteFlags::Hidden)) {
+			if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva) && !(unit->sprite->flags & SpriteFlags::Hidden)) {
 				bool connected = false;
 				for (u32 i = 0; i < SelectionCap; ++i) {
 					Unit* other = g_client_selection_group->unit[i];
