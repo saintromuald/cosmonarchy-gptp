@@ -678,4 +678,5 @@ namespace scbw
 	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority);
 	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority);
 	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position);
+	bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
 }

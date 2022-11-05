@@ -204,22 +204,9 @@ namespace hooks {
 		}
 	}
 
-	bool is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
-		if (bullet && bullet->source_unit) {
-			switch (weapon_id) {
-				case WeaponId::NathrokorPlasmidBreath:
-				case WeaponId::GorgrokorSerratedCleavers:
-				case WeaponId::ZarcavrokorBisectingBlades:
-				case WeaponId::TethzorokorSaberArray:
-					return true;
-			}
-		}
-		return false;
-	}
-
 	// clone of 'Normal' damage for reference
 	void normal_damage(Bullet* bullet, u32 weapon_id) {
-		if (is_melee_with_aoe(bullet, weapon_id)) { // TODO: Check if this is even necessary (old version needed energy). -Pr0nogo
+		if (scbw::weapon_is_melee_with_aoe(bullet, weapon_id)) {
 			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attack_target.unit);
 			return;
 		}

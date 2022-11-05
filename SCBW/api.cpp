@@ -2673,4 +2673,18 @@ namespace scbw {
 		}
 		return guard_ai;
 	}
+
+	bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
+		if (bullet && bullet->source_unit) {
+			switch (weapon_id) {
+				case WeaponId::NathrokorPlasmidBreath:
+				case WeaponId::GorgrokorSerratedCleavers:
+				case WeaponId::ZarcavrokorBisectingBlades:
+				case WeaponId::TethzorokorSaberArray:
+				case WeaponId::TetcaerokorCleavingMaw:
+					return true;
+			}
+		}
+		return false;
+	}
 }
