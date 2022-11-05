@@ -55,11 +55,13 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
-	if (bullet && source && apply_cooldown) {
-		apply_weapon_cooldown(source, weapon_id);
-	}
-	if (bullet->weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
-		scbw::set_bullet_target(bullet, bullet->attack_target.pt);
+	if (bullet) {
+		if (source && apply_cooldown) {
+			apply_weapon_cooldown(source, weapon_id);
+		}
+		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
+			scbw::set_bullet_target(bullet, bullet->attack_target.pt);
+		}
 	}
 	return bullet;
 }
