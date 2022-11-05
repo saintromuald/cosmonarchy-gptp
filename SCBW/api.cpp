@@ -328,11 +328,11 @@ namespace scbw {
 
 		s32 supplyProvided;
 		if (is_cheat_enabled(CheatFlags::FoodForThought)) {
-			supplyProvided = raceSupply[RaceId::Terran].max[player];
+			supplyProvided = g_race_supply[RaceId::Terran].max[player];
 		} else {
-			supplyProvided = std::min(raceSupply[RaceId::Terran].max[player], raceSupply[RaceId::Terran].provided[player]);
+			supplyProvided = std::min(g_race_supply[RaceId::Terran].max[player], g_race_supply[RaceId::Terran].provided[player]);
 		}
-		return supplyProvided - raceSupply[RaceId::Terran].used[player];
+		return supplyProvided - g_race_supply[RaceId::Terran].used[player];
 	}
 
 	bool has_tech_researched(u8 player, u16 techId) {
