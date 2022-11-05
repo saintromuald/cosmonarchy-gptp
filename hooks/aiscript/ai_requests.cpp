@@ -1166,10 +1166,10 @@ namespace hooks
 		}
 
 		AI_Main* ai_main = &g_aiscript_controller[player];
+		u32 index = ai_main->request_count;
 		if (ai_main->request_count < 63) {
 			ai_main->request_count += 1;
 		}
-		u32 index = ai_main->request_count - 1;
 
 		for (u32 i = 0; i < ai_main->request_count; ++i) {
 			SpendingRequest* current = &ai_main->requests[i];
