@@ -199,7 +199,7 @@ namespace hooks {
 			if (attacker->id != UnitId::ProtossCabalist) {
 				scbw::decloak_proc(attacker);
 			}
-			apply_cooldown(attacker, weapon_id);
+			apply_weapon_cooldown(attacker, weapon_id);
 		}
 	}
 

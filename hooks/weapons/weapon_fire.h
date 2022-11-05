@@ -2,16 +2,13 @@
 #include <SCBW/structures/Unit.h>
 #include <SCBW/structures/Bullet.h>
 
-void apply_cooldown(Unit* unit, u8 weapon_id);
-Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool b_apply_cooldown = true);
+void apply_weapon_cooldown(Unit* unit, u8 weapon_id);
+Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown = true);
+void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_cooldown = true);
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main = false, bool use_weapon_factor = true);
 
 namespace hooks
 {
-	// Custom functions
-	void launch_missile(Unit* attacker, Unit* target, u8 weapon_id);
-	bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main = false, bool use_weapon_factor = true);
-
-	// Hooked functions
 	void fire_weapon(Unit* unit, u8 weapon_id);																	// 00479C90
 	void progress_bullet_flight(Bullet* a1);																	// 0048B3B0
 	void bullet_behavior_bounce(Bullet* a1);																	// 0048B2D0

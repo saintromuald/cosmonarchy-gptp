@@ -47,22 +47,93 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	return true;
 }
 
-void apply_cooldown(Unit* unit, u8 weapon_id) {
+void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 	u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 	unit->ground_weapon_cooldown = cooldown;
 	unit->air_weapon_cooldown = cooldown;
 }
 
-Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool b_apply_cooldown) {
+Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
-	if (bullet && source && b_apply_cooldown) {
-		apply_cooldown(source, weapon_id);
+	if (bullet && source && apply_cooldown) {
+		apply_weapon_cooldown(source, weapon_id);
 	}
 	if (bullet->weapon_id == WeaponId::ZarcavrokorBonesofReflection)
 	{
 		scbw::set_bullet_target(bullet, bullet->attack_target.pt);
 	}
 	return bullet;
+}
+
+void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_cooldown) {
+	Point16 pos = attacker->position;
+	if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit) {
+		pos = target->position;
+	}
+	auto new_angle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
+	create_bullet_ex(weapon_id, attacker, pos.x, pos.y, attacker->player, new_angle, apply_cooldown);
+	UnitExt* attacker_ext = get_unit_ext(attacker);
+	if (attacker_ext->values[ValueDeconstruction]) {
+		scbw::do_deconstruction_damage(attacker, weapon_id, false);
+	}
+}
+
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor) {
+	bool fired = false;
+	std::unordered_set<Unit*> targets;
+	UnitExt* attacker_ext = get_unit_ext(attacker);
+	if (!ignore_main
+		&& attacker->order_target.unit
+		&& attacker->main_order_id != OrderId::Follow
+		&& attacker->main_order_id != OrderId::Patrol) {
+		targets.insert(attacker->order_target.unit);
+		launch_missile(attacker, attacker->order_target.unit, weapon_id);
+		fired = true;
+	}
+
+	Unit* old = attacker->order_target.unit;
+	for (s32 i = 0; i < max_targets || max_targets <= 0; i++) {
+		u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
+		auto filter = cosmonarchy_finder_match(attacker, flags, {});
+		Unit* new_target = scbw::UnitFinder::get_nearest_target(
+			attacker->get_x() - range,
+			attacker->get_y() - range,
+			attacker->get_x() + range,
+			attacker->get_y() + range,
+			attacker,
+			[&](Unit* target) {
+				if (target == attacker
+					||  targets.find(target) != targets.end()
+					||  scbw::is_allied_to(attacker->player, target->player)
+					|| !attacker->can_attack_target(target)
+					|| !filter(target)
+					|| (targets.size() >= max_targets && max_targets > 0))
+				{
+					return false;
+				}
+				return true;
+			});
+		if ((targets.size() >= max_targets && max_targets > 0) || !new_target) {
+			break;
+		}
+		attacker->order_target.unit = new_target;
+
+		// @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
+		u32 factor = 1;
+		if (use_weapon_factor) {
+			factor = weapons_dat::damage_factor[weapon_id];
+		}
+		for (u32 j = 0; j < factor; j++) {
+			if (factor == 0) {
+				break;
+			}
+			launch_missile(attacker, new_target, weapon_id);
+		}
+		fired = true;
+		targets.insert(new_target);
+	}
+	attacker->order_target.unit = old;
+	return fired;
 }
 
 namespace
@@ -72,81 +143,6 @@ namespace
 }
 
 namespace hooks {
-	void launch_missile(Unit* attacker, Unit* target, u8 weapon_id) {
-		Point16 pos = attacker->position;
-		if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit) {
-			pos = target->position;
-		}
-		auto new_angle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		bool apply_cooldown = true;
-		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) { // LARD
-			apply_cooldown = false;
-		}
-		create_bullet_and_apply_cooldown(weapon_id, attacker, pos.x, pos.y, attacker->player, new_angle, apply_cooldown);
-		UnitExt* attacker_ext = get_unit_ext(attacker);
-		if (attacker_ext->values[ValueDeconstruction]) {
-			scbw::do_deconstruction_damage(attacker, weapon_id, false);
-		}
-	}
-
-	bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor) {
-		bool fired = false;
-		std::unordered_set<Unit*> targets;
-		UnitExt* attacker_ext = get_unit_ext(attacker);
-		if (!ignore_main
-			&& attacker->order_target.unit
-			&& attacker->main_order_id != OrderId::Follow
-			&& attacker->main_order_id != OrderId::Patrol) {
-			targets.insert(attacker->order_target.unit);
-			launch_missile(attacker, attacker->order_target.unit, weapon_id);
-			fired = true;
-		}
-
-		Unit* old = attacker->order_target.unit;
-		for (s32 i = 0; i < max_targets || max_targets <= 0; i++) {
-			u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
-			auto filter = cosmonarchy_finder_match(attacker, flags, {});
-			Unit* new_target = scbw::UnitFinder::get_nearest_target(
-				attacker->get_x() - range,
-				attacker->get_y() - range,
-				attacker->get_x() + range,
-				attacker->get_y() + range,
-				attacker,
-				[&](Unit* target) {
-					if (target == attacker
-					||  targets.find(target) != targets.end()
-					||  scbw::is_allied_to(attacker->player, target->player)
-					|| !attacker->can_attack_target(target)
-					|| !filter(target)
-					|| (targets.size() >= max_targets && max_targets > 0))
-					{
-						return false;
-					}
-					return true;
-				});
-			if ((targets.size() >= max_targets && max_targets > 0) || !new_target) {
-				break;
-			}
-			attacker->order_target.unit = new_target;
-
-			// @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
-			u32 factor = 1;
-			if (use_weapon_factor) {
-				factor = weapons_dat::damage_factor[weapon_id];
-			}
-			for (u32 j = 0; j < factor; j++) {
-				if (factor == 0) {
-					break;
-				}
-				launch_missile(attacker, new_target, weapon_id);
-			}
-			fired = true;
-			targets.insert(new_target);
-		}
-		attacker->order_target.unit = old;
-		return fired;
-	}
-
 	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
@@ -395,7 +391,7 @@ namespace hooks {
 						auto rotate = unit_ext->values[ValueSalamanderLaunchPos];
 						if (rotate == 1)
 						{
-							create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						}
 						else
 						{
@@ -456,7 +452,7 @@ namespace hooks {
 					} break;
 					default:
 					{
-						create_bullet_and_apply_cooldown(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 					case WeaponId::MatrixKhaydarinRay:
 					{
@@ -590,7 +586,7 @@ namespace hooks {
 						}
 						bullet->source_unit->order_target.unit = target;
 						s32 new_angle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
-						Bullet* new_bullet = create_bullet_and_apply_cooldown(WeaponId::ArchitectDispersiveSalvo,
+						Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo,
 							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
 						if (new_bullet)
 						{

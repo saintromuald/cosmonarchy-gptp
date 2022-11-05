@@ -1424,7 +1424,7 @@ namespace scbw
 		Bullet* bullet = 0;
 		u32 angle = scbw::get_angle(X, Y, target->position.x, target->position.y);
 		if (apply_cooldown) {
-			bullet = create_bullet_and_apply_cooldown(weapon_id, unit, X, Y, unit->player, angle);
+			bullet = create_bullet_ex(weapon_id, unit, X, Y, unit->player, angle);
 		} else {
 			bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, angle);
 		}
