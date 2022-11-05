@@ -9,7 +9,7 @@
 
 namespace
 {
-	// SC internal data for Lurker spines
+	// SC internal data for Lakizilisk spines
 	struct SpineHitTable
 	{
 		struct
@@ -25,7 +25,7 @@ namespace
 
 namespace hooks
 {
-	void dark_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id)
+	void carapace_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id)
 	{
 		Unit* swarm = scbw::get_dark_swarm_from_position(x, y, r);
 		if (swarm)
@@ -57,8 +57,7 @@ namespace hooks
 		if (bullet->weapon_id == WeaponId::NathrokorPlasmidBreath)
 		{
 			Unit* nathrokor = bullet->source_unit;
-			u16 angle = scbw::get_angle(nathrokor->position.x, nathrokor->position.y,
-				target->position.x, target->position.y);
+			u16 angle = scbw::get_angle(nathrokor->position.x, nathrokor->position.y, target->position.x, target->position.y);
 			u16 unit_angle = nathrokor->velocity_direction_1;
 			s32 arc = (f64)15 / 1.40625;
 			// 30 degrees
@@ -75,43 +74,49 @@ namespace hooks
 		return true;
 	}
 
-	void splash(Bullet* bullet, u32 weapon_id, u8 splashType, Unit* guaranteedHit)
+	void splash(Bullet* bullet, u32 weapon_id, u8 splash_type, Unit* guaranteed_hit)
 	{
-		s32 splash = splashType;
+		s32 splash = splash_type;
 		if (!bullet)
 		{
 			return;
 		}
 		if (bullet->source_unit && bullet->source_unit->sprite)
 		{
-			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
+			UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
 
 			if (bullet->source_unit->is_blind)
 			{
 				splash = SplashType::Radial;
 			}
 
+			// Create effect fields
 			Point16 hit = bullet->position;
 			switch (weapon_id)
 			{
-				case WeaponId::SalamanderPerditionBarrage:
-				{
-					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, bullet->source_unit);
-					break;
-				}
-				case WeaponId::KeskathalorScreamingVenom:
-				{
-					globals.create_effect(EffectId_CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, bullet->source_unit);
-					break;
-				}
 				case WeaponId::IonCannon:
 				{
 					globals.create_effect(EffectId_IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->player, bullet->source_unit);
 					break;
 				}
+				case WeaponId::AionLazarusSalvo:
+				{
+					globals.create_effect(EffectId_ReclamationField, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, bullet->source_unit);
+					break;
+				}
+				case WeaponId::SalamanderPerditionBarrage:
+				{
+					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, bullet->source_unit);
+					break;
+				}
 				case WeaponId::CantavisHallucinationCast:
 				{
 					globals.create_effect(EffectId_HallucinatingField, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->player, bullet->source_unit);
+					break;
+				}
+				case WeaponId::KeskathalorScreamingVenom:
+				{
+					globals.create_effect(EffectId_CausticDischarge, 5 * 24, { hit.x, hit.y }, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, bullet->source_unit);
 					break;
 				}
 			}
@@ -122,40 +127,38 @@ namespace hooks
 		y = bullet->sprite->position.y;
 		radius = weapons_dat::outer_splash_radius[weapon_id];
 
-		// Nathrokor weapon
-		if (weapon_id == WeaponId::NathrokorPlasmidBreath)
+		switch (weapon_id)
 		{
-			radius = 32;
-		}
-		// Tethzorokor weapon
-		if (weapon_id == WeaponId::TethzorokorSaberArray)
-		{
-			radius = 32;
-		}
-		// Gorgrokor weapon
-		if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
-		{
-			radius = 45;
+			case WeaponId::NathrokorPlasmidBreath:
+			case WeaponId::TethzorokorSaberArray:
+			{
+				radius = 32;
+			} break;
+			case WeaponId::GorgrokorSerratedCleavers:
+			case WeaponId::ZarcavrokorBisectingBlades:
+			{
+				radius = 45;
+			} break;
 		}
 
 		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(
+		scbw::UnitFinder units_in_splash(
 			x - radius,
 			y - radius,
 			x + radius,
 			y + radius
 		);
-		dark_swarm_damage(x, y, radius, bullet, weapon_id);
+		carapace_swarm_damage(x, y, radius, bullet, weapon_id);
 
-		bool has_guaranteed_hit_unit = guaranteedHit != 0;
+		bool has_guaranteed_hit_unit = guaranteed_hit != 0;
 		if (has_guaranteed_hit_unit && nathrokor_condition(bullet, bullet->attack_target.unit))
 		{
-			helper::weapon_bullet_shot(guaranteedHit, bullet, 1);
+			helper::weapon_bullet_shot(guaranteed_hit, bullet, 1);
 		}
-		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
+		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
 		{
-			Unit* target = unitsInSplash.get_unit(i);
-			if (has_guaranteed_hit_unit && target == guaranteedHit)
+			Unit* target = units_in_splash.get_unit(i);
+			if (has_guaranteed_hit_unit && target == guaranteed_hit)
 			{ // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
@@ -181,16 +184,20 @@ namespace hooks
 			// We found units in a square around the target, but is the target within the splash radius?
 			s16 outer = weapons_dat::outer_splash_radius[bullet->weapon_id];
 
-			// Melee attack area of effect
-			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
+			switch (weapon_id)
 			{
-				outer = 45;
-			}
-
-			// Nathrokor weapon
-			if (weapon_id == WeaponId::NathrokorPlasmidBreath)
-			{
-				outer = 32;
+				case WeaponId::NathrokorPlasmidBreath:
+				{
+					outer = 32;
+				} break;
+				case WeaponId::GorgrokorSerratedCleavers:
+				{
+					outer = 45;
+				} break;
+				case WeaponId::ZarcavrokorBisectingBlades:
+				{
+					outer = 45;
+				} break;
 			}
 
 			if (!helper::is_unit_distance_within(target, bullet, outer)) continue;
@@ -206,21 +213,20 @@ namespace hooks
 			s16 inner = weapons_dat::inner_splash_radius[bullet->weapon_id];
 
 			// Melee attack area of effect
-			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
+			switch (weapon_id)
 			{
-				inner = 30;
-			}
-
-			if (weapon_id == WeaponId::HeraclesJavelinCannons)
-			{
-				if (bullet->source_unit)
+				case WeaponId::NathrokorPlasmidBreath:
 				{
-					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
-
-					const f64 splashBase = weapons_dat::inner_splash_radius[WeaponId::HeraclesJavelinCannons];
-					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
-					inner = (s16)(splashBase * (1 + 0.1 * stacks));
-				}
+					inner = 20;
+				} break;
+				case WeaponId::GorgrokorSerratedCleavers:
+				{
+					inner = 30;
+				} break;
+				case WeaponId::ZarcavrokorBisectingBlades:
+				{
+					inner = 45;
+				} break;
 			}
 
 			if (helper::is_unit_distance_within(target, bullet, inner) && nathrokor_condition(bullet, target))
@@ -234,16 +240,20 @@ namespace hooks
 
 			// Medium radius
 			s16 medium = weapons_dat::medium_splash_radius[bullet->weapon_id];
-
-			// Melee attack area of effect
-			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
+			switch (weapon_id)
 			{
-				medium = 37;
-			}
-
-			if (weapon_id == WeaponId::NathrokorPlasmidBreath)
-			{
-				radius = 32;
+				case WeaponId::NathrokorPlasmidBreath:
+				{
+					medium = 32;
+				} break;
+				case WeaponId::GorgrokorSerratedCleavers:
+				{
+					medium = 37;
+				} break;
+				case WeaponId::ZarcavrokorBisectingBlades:
+				{
+					medium = 45;
+				} break;
 			}
 
 			if (helper::is_unit_distance_within(target, bullet, medium) && nathrokor_condition(bullet, target))
@@ -353,7 +363,7 @@ namespace hooks
 			return;
 		}
 
-		dark_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
+		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
 
 		// Kalkalisk behavior
 		if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid)
@@ -447,7 +457,7 @@ namespace hooks
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 
-		dark_swarm_damage(x, y, r, bullet, weapon_id);
+		carapace_swarm_damage(x, y, r, bullet, weapon_id);
 
 		s32 result;
 		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
@@ -533,7 +543,7 @@ namespace hooks
 		{
 			return;
 		}
-		dark_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
+		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
 		helper::weapon_bullet_shot(bullet->attack_target.unit, bullet, 1);
 	}
 
