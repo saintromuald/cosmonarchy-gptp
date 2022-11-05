@@ -23,39 +23,29 @@ namespace
 	u32* const spineHitCol = (u32*)(0x64DEA8);
 }
 
-namespace hooks
-{
-	void dark_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id)
-	{
+namespace hooks {
+	void dark_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id) {
 		Unit* swarm = scbw::get_dark_swarm_from_position(x, y, r);
-		if (swarm)
-		{
+		if (swarm) {
 			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
 				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->player, weapons_dat::damage_upgrade[weapon_id]));
-			if (bullet->hit_flags & 2)
-			{
+			if (bullet->hit_flags & 2) {
 				damage /= 2;
 			}
-			if (damage >= swarm->hitpoints)
-			{
+			if (damage >= swarm->hitpoints) {
 				swarm->remove();
-			}
-			else
-			{
+			} else {
 				u32 old = swarm->hitpoints;
 				swarm->hitpoints -= damage;
 			}
 		}
 	}
 
-	bool nathrokor_condition(Bullet* bullet, Unit* target)
-	{
-		if (!bullet->source_unit || !target)
-		{
+	bool nathrokor_condition(Bullet* bullet, Unit* target) {
+		if (!bullet->source_unit || !target) {
 			return true;
 		}
-		if (bullet->weapon_id == WeaponId::NathrokorPlasmidBreath)
-		{
+		if (bullet->weapon_id == WeaponId::NathrokorPlasmidBreath) {
 			Unit* nathrokor = bullet->source_unit;
 			u16 angle = scbw::get_angle(nathrokor->position.x, nathrokor->position.y,
 				target->position.x, target->position.y);
@@ -64,36 +54,26 @@ namespace hooks
 			// 30 degrees
 			s32 delta = unit_angle - angle;
 			delta = abs((delta + 128) % 256 - 128);
-			if (delta > arc)
-			{
+			if (delta > arc) {
 				return false;
-			}
-			else
-			{
 			}
 		}
 		return true;
 	}
 
-	void splash(Bullet* bullet, u32 weapon_id, u8 splashType, Unit* guaranteedHit)
-	{
+	void splash(Bullet* bullet, u32 weapon_id, u8 splashType, Unit* guaranteedHit) {
 		s32 splash = splashType;
-		if (!bullet)
-		{
+		if (!bullet) {
 			return;
 		}
-		if (bullet->source_unit && bullet->source_unit->sprite)
-		{
-			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
-
-			if (bullet->source_unit->is_blind)
-			{
+		if (bullet->source_unit && bullet->source_unit->sprite) {
+			UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
+			if (bullet->source_unit->is_blind) {
 				splash = SplashType::Radial;
 			}
 
 			Point16 hit = bullet->position;
-			switch (weapon_id)
-			{
+			switch (weapon_id) {
 				case WeaponId::SalamanderPerditionBarrage:
 				{
 					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, bullet->source_unit);
@@ -123,18 +103,15 @@ namespace hooks
 		radius = weapons_dat::outer_splash_radius[weapon_id];
 
 		// Nathrokor weapon
-		if (weapon_id == WeaponId::NathrokorPlasmidBreath)
-		{
+		if (weapon_id == WeaponId::NathrokorPlasmidBreath) {
 			radius = 32;
 		}
 		// Tethzorokor weapon
-		if (weapon_id == WeaponId::TethzorokorSaberArray)
-		{
+		if (weapon_id == WeaponId::TethzorokorSaberArray) {
 			radius = 32;
 		}
 		// Gorgrokor weapon
-		if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
-		{
+		if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id)) {
 			radius = 45;
 		}
 
@@ -148,15 +125,12 @@ namespace hooks
 		dark_swarm_damage(x, y, radius, bullet, weapon_id);
 
 		bool has_guaranteed_hit_unit = guaranteedHit != 0;
-		if (has_guaranteed_hit_unit && nathrokor_condition(bullet, bullet->attack_target.unit))
-		{
+		if (has_guaranteed_hit_unit && nathrokor_condition(bullet, bullet->attack_target.unit)) {
 			helper::weapon_bullet_shot(guaranteedHit, bullet, 1);
 		}
-		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
-		{
+		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++) {
 			Unit* target = unitsInSplash.get_unit(i);
-			if (has_guaranteed_hit_unit && target == guaranteedHit)
-			{ // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
+			if (has_guaranteed_hit_unit && target == guaranteedHit) { // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
 
@@ -166,12 +140,9 @@ namespace hooks
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
 			// if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 
-			if (splash == SplashType::Enemy)
-			{
+			if (splash == SplashType::Enemy) {
 				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
-			}
-			else if (splash == SplashType::FriendlyNew)
-			{
+			} else if (splash == SplashType::FriendlyNew) {
 				if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 			}
 
@@ -182,14 +153,12 @@ namespace hooks
 			s16 outer = weapons_dat::outer_splash_radius[bullet->weapon_id];
 
 			// Melee attack area of effect
-			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
-			{
+			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id)) {
 				outer = 45;
 			}
 
 			// Nathrokor weapon
-			if (weapon_id == WeaponId::NathrokorPlasmidBreath)
-			{
+			if (weapon_id == WeaponId::NathrokorPlasmidBreath) {
 				outer = 32;
 			}
 
@@ -206,25 +175,21 @@ namespace hooks
 			s16 inner = weapons_dat::inner_splash_radius[bullet->weapon_id];
 
 			// Melee attack area of effect
-			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
-			{
+			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id)) {
 				inner = 30;
 			}
 
-			if (weapon_id == WeaponId::HeraclesJavelinCannons)
-			{
-				if (bullet->source_unit)
-				{
-					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
+			if (weapon_id == WeaponId::HeraclesJavelinCannons) {
+				if (bullet->source_unit) {
+					UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
 
 					const f64 splashBase = weapons_dat::inner_splash_radius[WeaponId::HeraclesJavelinCannons];
-					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					const u32 stacks = bullet_source_ext->values[ValueNemeanReactorsStack];
 					inner = (s16)(splashBase * (1 + 0.1 * stacks));
 				}
 			}
 
-			if (helper::is_unit_distance_within(target, bullet, inner) && nathrokor_condition(bullet, target))
-			{
+			if (helper::is_unit_distance_within(target, bullet, inner) && nathrokor_condition(bullet, target)) {
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
 				continue;
 			}
@@ -236,25 +201,21 @@ namespace hooks
 			s16 medium = weapons_dat::medium_splash_radius[bullet->weapon_id];
 
 			// Melee attack area of effect
-			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id))
-			{
+			if (weapon_id == WeaponId::ZarcavrokorBisectingBlades || is_charged_gorgrokor_bullet(bullet, weapon_id)) {
 				medium = 37;
 			}
 
-			if (weapon_id == WeaponId::NathrokorPlasmidBreath)
-			{
+			if (weapon_id == WeaponId::NathrokorPlasmidBreath) {
 				radius = 32;
 			}
 
-			if (helper::is_unit_distance_within(target, bullet, medium) && nathrokor_condition(bullet, target))
-			{
+			if (helper::is_unit_distance_within(target, bullet, medium) && nathrokor_condition(bullet, target)) {
 				helper::weapon_bullet_shot(target, bullet, 2); // 50% damage
 				continue;
 			}
 
 			// Outer radius
-			if (nathrokor_condition(bullet, target))
-			{
+			if (nathrokor_condition(bullet, target)) {
 				helper::weapon_bullet_shot(target, bullet, 4); // 25% damage
 			}
 		}
