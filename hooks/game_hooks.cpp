@@ -292,39 +292,6 @@ namespace hooks {
 		g_options_list->speed = 6; // Lock game speed at fastest
 
 		update_discord(true);
-		
-		if (*g_active_portrait_unit) {
-			/*
-			Unit* selected = *g_active_portrait_unit;
-			// For checking cargo-related elements. -Pr0nogo
-			if (selected) {
-				for (u32 i = 0; i < TransportCap; ++i) {
-					Unit* cargo_unit = selected->get_loaded_unit(i);
-					if (!cargo_unit) {
-						continue;
-					}
-					u32 unit_status = cargo_unit->status;
-					scbw::printf("0x%X", unit_status);
-				}
-			}
-			*/
-			/*
-			if (selected->sprite && selected->sprite->main_graphic) {
-				scbw::printf("%u", selected->sprite->main_graphic->animation);
-			}
-			*/
-		//	scbw::printf("%u", selected->main_order_id);
-		//	scbw::printf("0x%X", selected->status);
-
- 			*unit_iterator_pos = 0;
-			while (Unit* selection = get_active_player_next_selection()) {
-				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
-				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id))) {
-					Unit* exit = selection->building.nydus_exit;
-					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
-				}
-			}
-		}
 
 		if (scbw::is_game_paused()) {
 			return true;
@@ -495,6 +462,40 @@ namespace hooks {
 		// @Veeq7 unsure if this is actually safe and/or sane?
 		if (g_is_keycode_used[VK_ESCAPE] && scbw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id) && !*g_is_game_paused) {
 			hooks::update_buttonset();
+		}
+		
+		// Draw selection info
+		Unit* selected = *g_active_portrait_unit;
+		if (selected) {
+			/*
+			// For checking cargo-related elements. -Pr0nogo
+			if (selected) {
+				for (u32 i = 0; i < TransportCap; ++i) {
+					Unit* cargo_unit = selected->get_loaded_unit(i);
+					if (!cargo_unit) {
+						continue;
+					}
+					u32 unit_status = cargo_unit->status;
+					scbw::printf("0x%X", unit_status);
+				}
+			}
+			*/
+			/*
+			if (selected->sprite && selected->sprite->main_graphic) {
+				scbw::printf("%u", selected->sprite->main_graphic->animation);
+			}
+			*/
+		//	scbw::printf("%u", selected->main_order_id);
+		//	scbw::printf("0x%X", selected->status);
+
+ 			*unit_iterator_pos = 0;
+			while (Unit* selection = get_active_player_next_selection()) {
+				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
+				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id))) {
+					Unit* exit = selection->building.nydus_exit;
+					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
+				}
+			}
 		}
 
 		// Draw transport UI
