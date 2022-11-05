@@ -15,7 +15,7 @@ struct {
 };
 */
 
-bool darkswarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
+bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
 
 namespace hooks {
 

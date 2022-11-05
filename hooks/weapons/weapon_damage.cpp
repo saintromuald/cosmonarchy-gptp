@@ -15,7 +15,7 @@
 
 #include "SCBW\UnitFinder.h"
 
-bool darkswarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
+bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
 	return scbw::is_under_dark_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
@@ -266,7 +266,7 @@ namespace hooks
 		}
 
 		// Isthrathaleth Carapace Swarm
-		if (darkswarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor)) {
+		if (carapace_swarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor)) {
 			data.damage_type = damage_type::Independent;
 		}
 
@@ -340,13 +340,11 @@ namespace hooks
 					}
 				}
 			} break;
-			case WeaponId::AlmaksaliskPiercingSpines:
-			{
-				// Almaksalisk - Flanking DrolethSpines
-				if (scbw::is_debuffed(data.target)) {
-					data.damage_type = damage_type::IgnoreArmor;
-				}
-			} break;
+		}
+
+		if (target_ext->timers[TimerTriumphantRiseDebuff])
+		{
+			scbw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
 		}
 	}
 
@@ -484,7 +482,7 @@ namespace hooks
 				} break;
 				case WeaponId::ZethrokorClaws:
 				{
-					// Adrenal Glands - Zergling behavior
+					// Adrenal Glands - Zethrokor behavior
 					if (attacker_ext->values[ValueAdrenalStacks] < 4) {
 						attacker_ext->values[ValueAdrenalStacks] += 1;
 					}
@@ -492,12 +490,12 @@ namespace hooks
 				} break;
 				case WeaponId::VorvalClaws:
 				{
-					// Captivating Claws - Vorvaling behavior
+					// Captivating Claws - Vorvrokor behavior
 					captivating_claws_apply(data.attacker, data.target);
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
 				{
-					// Essence Drain - Gorgrokor Energy Steal
+					// Essence Drain - Gorgrokor energy steal
 					if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
 						u16 energy = std::min(data.target->energy, (u16)(data.final_damage + data.shield_reduce_amount));
 						data.target->spend_unit_energy(energy);
@@ -592,6 +590,13 @@ namespace hooks
 							displacement.y *= 2 * 32.0 / displacement_time;
 							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
 							target_ext->repulsion_vector = displacement;
+						}
+					} break;
+					case WeaponId::HeraldStellarTorch:
+					{
+						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							// TODO: Audiovisuals
+							target_ext->timers[TimerTriumphantRiseDebuff] = 36;
 						}
 					} break;
 					case WeaponId::DemiurgeGalacticWeaver:

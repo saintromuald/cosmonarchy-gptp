@@ -306,7 +306,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
 
 		// Value dark swarm immune units way less
-		if (darkswarm_blocks_damage(target, weapon_id, 1)) {
+		if (carapace_swarm_blocks_damage(target, weapon_id, 1)) {
 			cost += 1000;
 		}
 	}
