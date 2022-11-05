@@ -335,9 +335,8 @@ namespace hooks
 		}
 
 		// Vagrant Nihilism - suffer 2 damage per second until death
-		if (unit->id == UnitId::ProtossVagrantShade)
-		{
-			unit->inflict_damage(21);
+		if (unit->id == UnitId::ProtossVagrantShade) {
+			unit->inflict_damage(21, unit, unit->player, false, (*g_elapsed_time_frames) % 6 == 0);
 		}
 
 		// Supposedly, allows Zethrokors to attack after unburrowing without delay
