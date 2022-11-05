@@ -124,6 +124,7 @@ enum ExtValueId
 	ValueCentaurSecondaryWeaponCount,
 	ValueAccantorLaunchPos,
 	ValuePatriarchAstralRulePlayer,
+	ValueSwarmhold,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

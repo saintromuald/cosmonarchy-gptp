@@ -6,78 +6,52 @@
 
 namespace hooks
 {
-	helper::setCreepRelationalData_callback runCreepRandomizerPtr = &run_creep_randomizer;
-	void create_building_larva(Unit* main_building)
-	{
-		Vector32 coords;
-		// look for a location to spawn a larva at
-		if (helper::get_larva_spawn_pos(main_building, &coords))
-		{
-			u32 larva_id = UnitId::ZergLarva;
-			if (scbw::unit_id_spawns_ocsal_larva(main_building->id)) {
-				larva_id = UnitId::ZergOcsalLarva;
-			}
-			Unit* unit_created = helper::create_unit(larva_id, coords.x, coords.y, main_building->player);
-			if (unit_created)
-			{
-				helper::update_unit_stats_and_finish_building(unit_created);
-				helper::update_unit_strength(unit_created);
-				unit_created->connected_unit = main_building;
-				unit_created->sprite->player = main_building->sprite->player;
+	helper::SetCreepRelationalData_callback run_creep_randomizer_ptr = &run_creep_randomizer;
+	void create_building_larva(Unit* building) {
+		Vector32 coords = {};
+		if (helper::get_larva_spawn_pos(building, &coords)) {
+			Unit* unit = helper::create_unit(scbw::unit_id_get_larva_type(building->id), coords.x, coords.y, building->player);
+			if (unit) {
+				helper::update_unit_stats_and_finish_building(unit);
+				helper::update_unit_strength(unit);
+				unit->connected_unit = building;
+				unit->sprite->player = building->sprite->player;
 
 				// set main_order_state depending on the collision state with the connected building			
-				helper::set_larva_order_state(unit_created);
-				if (main_building->unit_ai != nullptr)
-				{
-					helper::ai_training_overlord(unit_created, main_building);
+				helper::set_larva_order_state(unit);
+				if (building->unit_ai) {
+					helper::ai_training_overlord(unit, building);
 				}
 			}
+		} else {
+			building->building.larva_timer = 3;
 		}
 	}
 
 	// filter for larva in internal game searches, use the limit of 3 larvas
-	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building)
-	{
+	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building) {
 		// While return_value == false, the calling function keep calling, so it return true only when max amount of larvas was counted,
 		// since the counting itself is made with LARVA_COUNTER here and not in the calling function.
-		bool return_value;
-		u32 larva_id = UnitId::ZergLarva;
-		if (scbw::unit_id_spawns_ocsal_larva(main_building->id)) {
-			larva_id = UnitId::ZergOcsalLarva;
-		}
-		if (unit->id == larva_id)
-		{
-			if (unit->sprite->flags & SpriteFlags::Hidden)
-			{
-				return_value = false;
+		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva) {
+			if (unit->sprite->flags & SpriteFlags::Hidden) {
+				return false;
 			}
-			else if (unit->connected_unit != main_building)
-			{
-				return_value = false;
+			if (unit->connected_unit != main_building) {
+				return false;
 			}
-			else
-			{
-				(*g_larva_counter)++;
-				return_value = (*g_larva_counter > 3);
-			}
+			(*g_larva_counter)++;
+			return *g_larva_counter > 3;
 		}
-		else
-		{
-			return_value = false;
-		}
-
-		return return_value;
+		return false;
 	}
 
-	void secondary_order_spawning_larva(Unit* unit)
-	{
+	void secondary_order_spawning_larva(Unit* unit) {
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
-		if (unit->order_queue_timer == 0 && unit->player != 11)
-		{
+		if (unit->order_queue_timer == 0 && unit->player != 11) {
 			*g_larva_counter = 0;
-			Box16 coords;
+			Box16 coords = {};
 			coords.left = unit->sprite->position.x - 256;
 			coords.top = unit->sprite->position.y - 256;
 			coords.right = unit->sprite->position.x + 256;
@@ -85,10 +59,8 @@ namespace hooks
 
 			// Count existing larvas in LARVA_COUNTER
 			helper::iterate_units_at_location_target_proc_larva_count(unit, &coords);
-			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir))
-			{
-				if (unit->building.larva_timer != 0)
-				{
+			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir)) {
+				if (unit->building.larva_timer != 0) {
 					unit->building.larva_timer--;
 
 					BuildingModifier modifier = get_building_modifier(unit, 0, false);
@@ -101,58 +73,25 @@ namespace hooks
 					}
 				}
 
-				if (unit->building.larva_timer == 0)
-				{
+				if (unit->building.larva_timer == 0) {
 					unit->building.larva_timer = LarvaSpawnRateHatchery;
-					if (unit->id == UnitId::ZergLarvoskColony)
-					{
-						unit->building.larva_timer /= LarvaFactorLarvalColony;
-					}
-					else if (unit->id == UnitId::ZergCaphrolosk && unit->main_order_id != OrderId::Morph2
-						|| unit->id == UnitId::ZergGathtelosk && unit->main_order_id == OrderId::Morph2)
-					{
-						unit->building.larva_timer /= LarvaFactorLair;
-					}
-					else if (unit->id == UnitId::ZergGathtelosk && unit->main_order_id != OrderId::Morph2
-						|| unit->id == UnitId::ZergSibraelosk && unit->main_order_id == OrderId::Morph2)
-					{
-						unit->building.larva_timer /= LarvaFactorHive;
-					}
-					else if (unit->id == UnitId::ZergSibraelosk && unit->main_order_id != OrderId::Morph2)
-					{
-						unit->building.larva_timer /= LarvaFactorSire;
+
+					u32 unit_id = unit->id;
+					if (unit->main_order_id == OrderId::Morph2) {
+						unit_id = unit->previous_unit_type;
 					}
 
-					// if failed to find a spawn point for larva set the timer before retry to 3
-					Vector32 coords_2;
-					if (!helper::get_larva_spawn_pos(unit, &coords_2))
-					{
-						unit->building.larva_timer = 3;
+					switch (unit_id) {
+						case UnitId::ZergLarvoskColony:
+						case UnitId::ZergOcsalColony: {
+							unit->building.larva_timer /= 0.75; // 75% speed
+						} break;
+						case UnitId::ZergSibraelosk: {
+							unit->building.larva_timer /= 1.5; // 150% speed
+						} break;
 					}
-					else
-					{
-						u32 larva_id = UnitId::ZergLarva;
-						if (scbw::unit_id_spawns_ocsal_larva(unit->id)) {
-							larva_id = UnitId::ZergOcsalLarva;
-						}
-						Unit* new_larva = helper::create_unit(larva_id, coords_2.x, coords_2.y, unit->player);
-						if (new_larva)
-						{
-							// update various stats (set hp, set shield...) not finished on CreateUnit
-							helper::update_unit_stats_and_finish_building(new_larva);
-							helper::update_unit_strength(new_larva);
 
-							new_larva->connected_unit = unit;
-							new_larva->sprite->player = unit->sprite->player;
-							// set main_order_state depending on the collision state with the connected building						
-							helper::set_larva_order_state(new_larva);
-
-							if (unit->unit_ai)
-							{
-								helper::ai_training_overlord(new_larva, unit);
-							}
-						}
-					}
+					create_building_larva(unit);
 				}
 			}
 		}

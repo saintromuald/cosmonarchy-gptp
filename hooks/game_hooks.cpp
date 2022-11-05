@@ -681,6 +681,18 @@ namespace hooks {
 		}
 
 		switch (unit->id) {
+			case UnitId::ZergLarva:
+			case UnitId::ZergOcsalLarva:
+			{
+				Unit* building = unit->connected_unit;
+				if (building) {
+					unit_ext->values[ValueSwarmhold] = scbw::unit_id_swarmhold_value(building->id);
+					u32 unit_id = scbw::unit_id_get_larva_type(building->id);
+					if (unit->id != unit_id) {
+						helper::replace_unit_with_id(unit, unit_id);
+					}
+				}
+			}
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;

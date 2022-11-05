@@ -9,58 +9,71 @@
 #include "hooks\unit_stats\max_energy.h"
 #include "globals.h"
 
-namespace hooks
-{
-	void orders_zerg_birth(Unit* unit)
-	{
-		UnitExt* unitExt = get_unit_ext(unit);
-		if (!(unit->order_signal & 4))
-		{
+namespace hooks {
+	void orders_zerg_birth(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (!(unit->order_signal & 4)) {
 			Image* current_image = unit->sprite->main_graphic;
 			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState1;
-			if (unitExt->values[ValueSpecialSovrolethBirth]) {
+			if (unit_ext->values[ValueSpecialSovrolethBirth]) {
 				animation = IscriptAnimation::Unused2;
 			}
-			if (current_image->animation != animation)
-			{
+			if (current_image->animation != animation) {
 				current_image->play_iscript_animation(animation);
 			}
 		}
 
-		if (unit->order_signal & 4)
-		{
-			bool bTwinEggOrCocoon = true;
-			Point16 pos = {};
+		if (unit->order_signal & 4) {
 			unit->order_signal &= ~4;
+
+			Point16 pos = {};
 			bool no_two_units = false;
-			auto origin = unit->create_origin;
-			if (units_dat::base_property[origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
-			||  unitExt->values[ValueSpecialSovrolethBirth])
-			{
+			if (units_dat::base_property[unit->create_origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
+			||  unit_ext->values[ValueSpecialSovrolethBirth]) {
 				no_two_units = true;
 			}
+
+			bool offset_unit = true;
 			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg
-				|| unit->previous_unit_type == UnitId::ZergCocoon)
-			{
-				bTwinEggOrCocoon = false;
+				|| unit->previous_unit_type == UnitId::ZergCocoon) {
+				offset_unit = false;
 			}
-			if (unitExt->values[ValueSpecialSovrolethBirth]) {
-				bTwinEggOrCocoon = true;
+			if (unit_ext->values[ValueSpecialSovrolethBirth]) {
+				offset_unit = true;
 			}
-			unitExt->values[ValueSpecialSovrolethBirth] = 0;
-			Unit* unit2 = nullptr;
-			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units)
-			{
-				unit2 = helper::zerg_dual_birth(unit);
-				if (unit2)
-				{
-					unit2->rally = unit->rally;
-					helper::ai_training_unit(unit2, unit);
+			unit_ext->values[ValueSpecialSovrolethBirth] = 0;
+
+			Unit* factory = 0;
+			if ((unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
+			||  (unit->create_origin == UnitId::ZergOcsalLarva && unit->id != UnitId::ZergOcsalLarva)) {
+				factory = unit->connected_unit;
+			}
+
+			u32 extra_count = unit_ext->values[ValueSwarmhold];
+			unit_ext->values[ValueSwarmhold] = 0;
+
+			Unit* twin_unit = 0;
+			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
+				Unit* twin_unit = helper::zerg_dual_birth(unit);
+				if (twin_unit) {
+					twin_unit->rally = unit->rally;
+					helper::ai_training_unit(twin_unit, unit);
+				}
+				extra_count *= 2;
+			}
+
+			for (u32 i = 0; i < extra_count; ++i) {
+				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y, 0, false);
+				if (new_unit) {
+					// TODO: potentially replicate functionality from zerg dual birth like selecting the new unit if the egg was selected
+					new_unit->rally = unit->rally;
+					helper::ai_training_unit(new_unit, unit); // We should inherit the AI, since it might be specifically assigned to a region or w/e
+					helper::order_new_unit_to_rally(new_unit, factory);
 				}
 			}
+
 			if (unit->id != UnitId::ZergDroleth
-			&&  unit->id != UnitId::ZergOvileth)
-			{
+			&&  unit->id != UnitId::ZergOvileth) {
 				helper::ai_training_unit(unit, unit);
 			}
 			helper::init_building(unit, 0);
@@ -69,39 +82,26 @@ namespace hooks
 
 			pos.x = unit->sprite->position.x;
 			pos.y = unit->sprite->position.y;
-			if (bTwinEggOrCocoon)
-			{
-				if (units_dat::movement_flags[unit->id] == MovementFlags::HoverUnit)
-				{
+			if (offset_unit) {
+				if (units_dat::movement_flags[unit->id] == MovementFlags::HoverUnit) {
 					pos.y -= 7;
-				}
-				else if (unit->status & UnitStatus::InAir)
-				{
+				} else if (unit->status & UnitStatus::InAir) {
 					pos.y -= 42;
 				}
 			}
 			helper::fix_target_location(&pos, unit->id);
 			if (pos.x != unit->sprite->position.x ||
-				pos.y != unit->sprite->position.y)
-			{
+				pos.y != unit->sprite->position.y) {
 				scbw::set_unit_position(unit, pos.x, pos.y);
 			}
 			if (!scbw::is_zerg_egg_new(unit, true, false)) {
-				Unit* factory = 0;
-				if (unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva) {
-					factory = unit->connected_unit;
-				}
-				if (unit->create_origin == UnitId::ZergOcsalLarva && unit->id != UnitId::ZergOcsalLarva) {
-					factory = unit->connected_unit;
-				}
-
 				helper::order_new_unit_to_rally(unit, factory);
-				if (unit2) {
-					helper::order_new_unit_to_rally(unit2, factory);
+				if (twin_unit) {
+					helper::order_new_unit_to_rally(twin_unit, factory);
 				}
 			}
 			helper::force_order_done(unit);
-			unit->connected_unit = unitExt->units[UnitMorphConnectedUnit];
+			unit->connected_unit = unit_ext->units[UnitMorphConnectedUnit];
 		}
 	}
 

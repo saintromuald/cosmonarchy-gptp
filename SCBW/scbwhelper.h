@@ -384,11 +384,11 @@ namespace helper {
 	u16** const mapTileBuf = (u16**)(0x006D0E84);
 	Vector32* const someCreepPointBuf = (Vector32*)(0x006D7578);
 	typedef u32(*isTileVisible_func)(u32 x, u32 y);
-	typedef bool(*setCreepRelationalData_callback)(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg);
+	typedef bool(*SetCreepRelationalData_callback)(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg);
 	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
 
 	u32 getNumSurroundingCreepTiles(u32 x, u32 y);																					// 00414290
-	void setCreepRelationalData(u32 x, u32 y, setCreepRelationalData_callback callback, u32 arg);									// 00413FA0
+	void setCreepRelationalData(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg);									// 00413FA0
 	u32 iterateDirectionalCreepData(u32 x, u32 y, u32 callback, u32 arg);															// 00413B30
 
 	// TODO: add helpers for these functions

@@ -2568,10 +2568,21 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_id_spawns_ocsal_larva(u32 unit_id) {
-		return unit_id == UnitId::ZergCaphrolosk
-			|| unit_id == UnitId::ZergSibraelosk
-			|| unit_id == UnitId::ZergOcsalColony;
+	u32 unit_id_get_larva_type(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergSibraelosk:
+			case UnitId::ZergOcsalColony:
+				return UnitId::ZergOcsalLarva;
+		}
+		return UnitId::ZergLarva;
+	}
+
+	u32 unit_id_swarmhold_value(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::ZergGathtelosk: return 1; // 1 extra unit per egg
+		}
+		return 0;
 	}
 
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
