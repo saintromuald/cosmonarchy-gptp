@@ -423,7 +423,7 @@ const std::vector<std::vector<std::vector<u32>>> personality_colors =
 
 // Feel free to modify this to suit your needed amount of names per personality
 // (you can also specify less names than this maximum)
-#define PlayerPesonalityMaxNames 8
+#define PlayerPesonalityMaxNames 12 // btw
 char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
 	// Zerg
 	{
@@ -438,6 +438,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Crouching Tiger Hidden U",
 			"Whyquare's Whydralisks",
 			"Unused Claw Society",
+			"Boron Enthusiasts",
+			"Moron Npunchers",
 		},
 		// Swarm
 		{
@@ -449,6 +451,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Wigglehead Warriors",
 			"botched_zerg_rush.png",
 			"The Dank Swarm",
+			"N's Miracle Workers",
+			"Nfinitodny",
 		},
 		// Sunblot
 		{
@@ -460,17 +464,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Apple Juice?",
 			"Flyq7",
 			"The Decollider",
-		},
-		// Miscreant
-		{
-			"N's Miracle Workers",
-			"Boron Enthusiasts",
 			":endofallthings:",
-			"Spooky Idiots",
-			"Trees and Then",
-			"Stenchmongers",
-			"Moron Npunchers",
-			"Nfinitodny",
 		},
 		// General
 		{
@@ -482,6 +476,9 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Discount Orlithrei",
 			"Average Zerg Enjoyer",
 			"A Fine Addition",
+			"Spooky Idiots",
+			"Stenchmongers",
+			"Trees and Then",
 		},
 	},
 	// Terran
@@ -497,6 +494,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"StuckInMudDuringWinter.jpeg",
 			"Foreign Dogwalkers",
 			"Somehow Still Viable",
+			"Metathrom's Cancrusher",
 		},
 		// Raider
 		{
@@ -508,6 +506,9 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"The Chrishtapha",
 			"Seven Player Army",
 			"Agent TOD Marshall",
+			"Edgemin Division",
+			"The Man, Now, Dawg",
+			"Vacuum Hitler Busboys",
 		},
 		// Orbital
 		{
@@ -519,17 +520,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"The Tower of Triple Tony",
 			"Ghosts of Veeqiv",
 			"DuhDuhDooooDoo...",
-		},
-		// Shadow
-		{
-			"Edgemin Division",
-			"U Combinator",
-			"The Man, Now, Dawg",
-			"Metathrom's Cancrusher",
-			"The Midwife Crisis",
 			"Exotic Mixplay Purchase",
-			"Vacuum Hitler Busboys",
-			"The Threeborne Technique",
 		},
 		// General
 		{
@@ -541,6 +532,9 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Do the Worker",
 			"The Dreamwhackers",
 			"ILOVEUUV",
+			"U Combinator",
+			"The Midwife Crisis",
+			"The Threeborne Technique",
 		},
 	},
 	// Protoss
@@ -556,6 +550,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"The Autobutts",
 			"Prank7: Autoveeqality",
 			"Premium Lawn-Mower",
+			"Voidthem Ifyoucan",
+			"Ancient Artifact",
 		},
 		// Templar
 		{
@@ -567,6 +563,8 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"The White-Nose Winner",
 			"Selfstorm Syndicate",
 			"Male Gender Symbol",
+			"The Action-Voiders",
+			"Shadowcloak Skullcrushers",
 		},
 		// Skylord
 		{
@@ -578,17 +576,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Tiny \"Techrush\" Tony",
 			"Stargate SV7",
 			"Furious Angles",
-		},
-		// Profane
-		{
 			"Tree Tribe",
-			"The Action-Voiders",
-			"Metzen's Matriarchs",
-			"Voidthem Ifyoucan",
-			"nullptr",
-			"A Vile Voidspeaker",
-			"Shadowcloak Skullcrushers",
-			"Ancient Artifact",
 		},
 		// General
 		{
@@ -600,6 +588,9 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"NoMoreRoom_InMyBase_HELP",
 			"Cannoncucker",
 			"LongZhongDong",
+			"Metzen's Matriarchs",
+			"A Vile Voidspeaker",
+			"nullptr",
 		},
 	},
 };

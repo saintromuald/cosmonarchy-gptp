@@ -1080,21 +1080,18 @@ enum AiPersonality // disruption_web_unit
 	AiPersonality_TerranArmor = 1,
 	AiPersonality_TerranRaider,
 	AiPersonality_TerranOrbital,
-	AiPersonality_TerranShadow,
 	AiPersonality_TerranGeneral,
 	AiPersonality_TerranCount,
 
 	AiPersonality_ProtossRanger = 1,
 	AiPersonality_ProtossTemplar,
 	AiPersonality_ProtossSkylord,
-	AiPersonality_ProtossProfane,
 	AiPersonality_ProtossGeneral,
 	AiPersonality_ProtossCount,
 
 	AiPersonality_ZergAssault = 1,
 	AiPersonality_ZergSwarm,
 	AiPersonality_ZergSunblot,
-	AiPersonality_ZergMiscreant,
 	AiPersonality_ZergGeneral,
 	AiPersonality_ZergCount,
 

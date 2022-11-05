@@ -22,31 +22,31 @@ static bool player_has_completed_landed_unit_id(s32 player_id, u32 unit_id) {
 ButtonSet* get_custom_buttonset()
 {
 	// Use static variables to avoid memory allocation trouble
-	static ButtonSet customButtonSet;
-	static Button customButtonsArray[50];
+	static ButtonSet custom_buttonset;
+	static Button custom_buttons_array[50];
 
 	// Since it's a copy of the marine set, it would have the same amount of buttons
-	customButtonSet.buttons_in_set = g_buttonset_table[UnitId::TerranMaverick].buttons_in_set;
+	custom_buttonset.buttons_in_set = g_buttonset_table[UnitId::TerranMaverick].buttons_in_set;
 
 	// connected_unit should usually be init at 0xFFFF.Almost unused (maybe not fully implemented).
-	customButtonSet.connected_unit = 0xFFFF;
+	custom_buttonset.connected_unit = 0xFFFF;
 
 	// This should always be like this since the array is static
-	customButtonSet.first_button = &customButtonsArray[0];
+	custom_buttonset.first_button = &custom_buttons_array[0];
 
 	// For each button in the array until reaching the amount of buttons_in_set, copy the data for each member of the button structure from the marine to the custom set.
-	for (u32 i = 0; i < customButtonSet.buttons_in_set; i++)
+	for (u32 i = 0; i < custom_buttonset.buttons_in_set; i++)
 	{
-		customButtonsArray[i].action_func = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_func;
-		customButtonsArray[i].action_string_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_string_id;
-		customButtonsArray[i].action_var = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_var;
-		customButtonsArray[i].icon_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].icon_id;
-		customButtonsArray[i].position = g_buttonset_table[UnitId::TerranMaverick].first_button[i].position;
-		customButtonsArray[i].requirement_func = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_func;
-		customButtonsArray[i].requirement_string_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_string_id;
-		customButtonsArray[i].requirement_var = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_var;
+		custom_buttons_array[i].action_func = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_func;
+		custom_buttons_array[i].action_string_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_string_id;
+		custom_buttons_array[i].action_var = g_buttonset_table[UnitId::TerranMaverick].first_button[i].action_var;
+		custom_buttons_array[i].icon_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].icon_id;
+		custom_buttons_array[i].position = g_buttonset_table[UnitId::TerranMaverick].first_button[i].position;
+		custom_buttons_array[i].requirement_func = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_func;
+		custom_buttons_array[i].requirement_string_id = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_string_id;
+		custom_buttons_array[i].requirement_var = g_buttonset_table[UnitId::TerranMaverick].first_button[i].requirement_var;
 	}
-	return &customButtonSet;
+	return &custom_buttonset;
 }
 
 namespace hooks {
@@ -123,7 +123,7 @@ namespace hooks {
 					count_eggs++;
 				}
 
-				// if you use a custom buttonset, and are reusing the current_buttonset property of a active differently, change these conditions to take it in account
+				// if you use a custom buttonset, and are reusing the current_buttonset property of an active differently, change these conditions to take it in account
 				if (selected->status & UnitStatus::Completed && selected_button_set_id != active_button_set_id) {
 					ButtonSet* selected_button_set = hooks::get_buttonset(selected_button_set_id);
 					ButtonSet* active_button_set = hooks::get_buttonset(active_button_set_id);
@@ -133,7 +133,7 @@ namespace hooks {
 							if (active_button_set->connected_unit == selected_button_set_id) {
 								active_button_set_id = selected_button_set_id;
 								*BUTTONSET_CURRENT_BUTTONSETID = selected_button_set_id;
-							} else {
+							} else if (!count_burrowables) {
 								*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
 							}
 						}
