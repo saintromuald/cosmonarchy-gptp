@@ -1177,7 +1177,7 @@ namespace hooks {
 				}
 				// Lakizilisk - Seismic Spines
 				if (unit->sprite && unit->main_order_id != OrderId::Die
-					&& unit_ext->timers[TimerLurkerETA] == 1) {
+					&& unit_ext->timers[TimerLakiziliskETA] == 1) {
 					auto position = unit->position; // new target
 					auto spr_position = unit->sprite->position;
 					Point16 pos;

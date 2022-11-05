@@ -3,7 +3,7 @@
 #include <SCBW/structures/Bullet.h>
 
 void apply_cooldown(Unit* unit, u8 weapon_id);
-Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool b_apply_cooldown = true);
 
 namespace hooks
 {

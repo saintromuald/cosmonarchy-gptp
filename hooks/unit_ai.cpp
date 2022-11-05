@@ -351,25 +351,25 @@ namespace hooks {
 	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
 		bool prevent = false;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-			scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+		//	scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(),debug_caller_address);
+		//	scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(),debug_caller_address);
 			prevent = true;
 		} else if (units_dat::computer_ai_internal[unit->id] & 2 && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
-			scbw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+		//	scbw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (g_player_table[unit->player].type != PlayerType::Computer) {
-			scbw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+		//	scbw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (ai_region->player != unit->player) {
-			scbw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+		//	scbw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (prevent) {
-			scbw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+		//	scbw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			helper::remove_unit_ai(unit, false);
 			scbw::give_ai_ex(unit);
 			return;

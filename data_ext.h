@@ -142,7 +142,7 @@ enum ExtTimerId
 	TimerMaledictionSlow,						// unused
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
-	TimerLurkerETA,
+	TimerLakiziliskETA,
 	TimerLobotomySlow,							// unused
 	TimerPlanetCrackerChannel,
 	TimerPlanetCrackerDelay,

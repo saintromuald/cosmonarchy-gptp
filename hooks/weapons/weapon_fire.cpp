@@ -53,10 +53,14 @@ void apply_cooldown(Unit* unit, u8 weapon_id) {
 	unit->air_weapon_cooldown = cooldown;
 }
 
-Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+Bullet* create_bullet_and_apply_cooldown(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool b_apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
-	if (bullet && source) {
+	if (bullet && source && b_apply_cooldown) {
 		apply_cooldown(source, weapon_id);
+	}
+	if (bullet->weapon_id == WeaponId::ZarcavrokorBonesofReflection)
+	{
+		scbw::set_bullet_target(bullet, bullet->attack_target.pt);
 	}
 	return bullet;
 }
@@ -73,8 +77,12 @@ namespace hooks {
 		if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit) {
 			pos = target->position;
 		}
-		auto newAngle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-		create_bullet_and_apply_cooldown(weapon_id, attacker, pos.x, pos.y, attacker->player, newAngle);
+		auto new_angle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
+		bool apply_cooldown = true;
+		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) { // LARD
+			apply_cooldown = false;
+		}
+		create_bullet_and_apply_cooldown(weapon_id, attacker, pos.x, pos.y, attacker->player, new_angle, apply_cooldown);
 		UnitExt* attacker_ext = get_unit_ext(attacker);
 		if (attacker_ext->values[ValueDeconstruction]) {
 			scbw::do_deconstruction_damage(attacker, weapon_id, false);
@@ -144,9 +152,15 @@ namespace hooks {
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
 	{
-		if (unit == nullptr)
+		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
+			scbw::print("fire weapon");
+		}
+		if (!unit)
 		{
 			return;
+		}
+		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
+			scbw::print("unit exists");
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
@@ -160,7 +174,7 @@ namespace hooks {
 		}
 		if (behavior == WeaponBehavior::AppearOnTargetUnit)
 		{
-			if (unit->order_target.unit == nullptr)
+			if (!unit->order_target.unit)
 			{
 				return;
 			}
@@ -173,10 +187,10 @@ namespace hooks {
 		}
 		else
 		{
-			s32 forwardOffset = weapons_dat::forward_offset[weapon_id];
+			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
 
-			x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
-			y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1)
+			x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
+			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1)
 				- weapons_dat::vertical_offset[weapon_id];
 		}
 
@@ -197,10 +211,10 @@ namespace hooks {
 				}
 			}
 
-			// Lurker Seismic Spines behavior
+			// Lakizilisk Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
-				unit_ext->timers[TimerLurkerETA] = 17;
+				unit_ext->timers[TimerLakiziliskETA] = 17;
 				auto range = weapons_dat::max_range[weapon_id] + 16;
 				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
 				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
@@ -215,7 +229,7 @@ namespace hooks {
 			}
 
 			if (unit->id != UnitId::TerranWyvern // disable default weapon for custom behaviors
-				&& unit->id != UnitId::ProtossAnthelion)
+			&&  unit->id != UnitId::ProtossAnthelion)
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles
@@ -698,8 +712,10 @@ namespace hooks {
 			u32 range = 0;
 			switch (bullet->weapon_id)
 			{
+				case WeaponId::ZarcavrokorBonesofReflection:
 				case WeaponId::SentinelCerberusRailgun:
 				{
+					scbw::print("range");
 					range = 64;
 				} break;
 				case WeaponId::OptectonSunsplitBeam:
@@ -765,6 +781,7 @@ namespace hooks {
 			});
 			if (collision_target)
 			{
+				scbw::print("collision target");
 				switch (bullet->weapon_id)
 				{
 					case WeaponId::PenumbraErebolShockCannon:
@@ -812,6 +829,13 @@ namespace hooks {
 								bullet->targetPosition2 = bullet->move_target.unit->position;
 							}
 						}
+					} break;
+					case WeaponId::ZarcavrokorBonesofReflection:
+					{
+						scbw::print("hit");
+						globals.add_bullet_multihit(bullet, collision_target);
+						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
+						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 					} break;
 					default:
 					{

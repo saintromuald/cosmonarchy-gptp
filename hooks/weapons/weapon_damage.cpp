@@ -12,6 +12,7 @@
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/limits/sfx_extender.h"
 #include "DatExtend/datext.h"
+#include "weapon_fire.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -460,6 +461,10 @@ namespace hooks
 						target_ext->values[ValueDilettanteLuck] = 0;
 						data.final_damage = 0;
 					}
+				} break;
+				case UnitId::ZergZarcavrokor:
+				{
+					hooks::launch_missile(data.target, data.attacker, WeaponId::ZarcavrokorBonesofReflection);
 				} break;
 			}
 
