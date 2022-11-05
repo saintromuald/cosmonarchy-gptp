@@ -859,7 +859,7 @@ namespace hooks
 		switch (data.target->id) { // Pre-revive target behaviors (Do NOT merge with the other target switch!) -Veeq7
 			case UnitId::ProtossVagrant:
 			{
-				scbw::create_and_init_thingy(SpriteId::ZealotDeath, data.target->position.x, data.target->position.y, data.target->player, data.target->sprite->elevation + 1);
+			//	scbw::create_and_init_thingy(SpriteId::ZealotDeath, data.target->position.x, data.target->position.y, data.target->player, data.target->sprite->elevation + 1);
 				helper::increment_unit_death_scores(data.target, data.target->player);
 				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
