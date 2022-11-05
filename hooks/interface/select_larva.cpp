@@ -6,10 +6,19 @@ namespace hooks
 	/// Filter larvae out of a list of units
 	/// unitList contains various units (possibly including larvae) outputList is an empty list of 12 (SelectionCap) slots to fill with larvae found_larvae in unitList.
 	u32 get_larvae_units_from_list(Unit** unit_list, Unit** output_list) { // 00423190
+		u32 unit_id = UnitId::None;
+		Unit* original = *g_active_portrait_unit;
+		if (original) {
+			unit_id = scbw::unit_id_get_larva_type(original->id);
+		}
+		if (unit_id == UnitId::None) {
+			unit_id = UnitId::ZergLarva;
+		}
+
 		u32 count = 0;
 		for (Unit** it = unit_list; *it; ++it) {
 			Unit* unit = *it;
-			if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva) && !(unit->sprite->flags & SpriteFlags::Hidden)) {
+			if (unit->id == unit_id && !(unit->sprite->flags & SpriteFlags::Hidden)) {
 				bool connected = false;
 				for (u32 i = 0; i < SelectionCap; ++i) {
 					Unit* other = g_client_selection_group->unit[i];
