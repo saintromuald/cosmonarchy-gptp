@@ -370,9 +370,9 @@ namespace hooks
             if (unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
                 u8 supply = units_dat::supply_required[unit->id];
                 if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !(unit->status & UnitStatus::Completed)) {
-                    race_supply[RaceId::Terran].used[unit->player] += count * supply * 2;
+                    g_race_supply[RaceId::Terran].used[unit->player] += count * supply * 2;
                 } else {
-                    race_supply[RaceId::Terran].used[unit->player] += count * supply;
+                    g_race_supply[RaceId::Terran].used[unit->player] += count * supply;
                 }
             } else {
                 s32 queue_unit_id = unit->build_queue[unit->build_queue_slot];
@@ -380,10 +380,10 @@ namespace hooks
                 if (units_dat::base_property[queue_unit_id] & UnitProperty::TwoUnitsIn1Egg) {
                     supply *= 2;
                 }
-                race_supply[RaceId::Terran].used[unit->player] += count * supply;
+                g_race_supply[RaceId::Terran].used[unit->player] += count * supply;
             }
         } else {
-            race_supply[RaceId::Terran].used[unit->player] += count * units_dat::supply_required[unit->id];
+            g_race_supply[RaceId::Terran].used[unit->player] += count * units_dat::supply_required[unit->id];
         }
 
         GroupFlag group_flags = units_dat::group_flags[unit->id];
@@ -419,8 +419,7 @@ namespace hooks
 
         u32 race = unit->get_race();
         if (race <= RaceId::Protoss) {
-            u32 supply = unit->get_supply_provided();
-            race_supply[RaceId::Terran].provided[player] += count * supply;
+            g_race_supply[RaceId::Terran].provided[player] += count * unit->get_supply_provided();
         }
         if (units_dat::group_flags[unit_id].is_factory) {
             factories_owned[unit->player] += count;
@@ -466,9 +465,9 @@ namespace hooks
             return true;
         }
         u32 race = g_player_table[player].race;
-        const u32 supply_used = race_supply[RaceId::Terran].used[player];
+        const u32 supply_used = g_race_supply[RaceId::Terran].used[player];
         // Must construct additional pylons
-        if (supply_used + supply_cost > race_supply[RaceId::Terran].max[player]) {
+        if (supply_used + supply_cost > g_race_supply[RaceId::Terran].max[player]) {
             if (canShowErrorMessage) {
                 scbw::show_error_message_with_sfx(player, 847 + race, 1 + race);
             }

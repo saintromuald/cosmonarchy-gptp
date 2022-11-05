@@ -1262,8 +1262,8 @@ u32 Unit::get_supply_provided() { // overwrites previous supply provided
 		if (unitExt->values[ValueSupplyProvidedId] == id) {
 			return unitExt->values[ValueSupplyProvided];
 		} else {
-			raceSupply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
-			raceSupply[RaceId::Terran].provided[player] += units_dat::supply_provided[unitExt->values[ValueSupplyProvidedId]];
+			g_race_supply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
+			g_race_supply[RaceId::Terran].provided[player] += units_dat::supply_provided[unitExt->values[ValueSupplyProvidedId]];
 			unitExt->values[ValueSupplyProvidedSet] = 0;
 			unitExt->values[ValueSupplyProvidedId] = 0;
 			unitExt->values[ValueSupplyProvided] = 0;
@@ -1290,8 +1290,8 @@ u32 Unit::get_supply_provided() { // overwrites previous supply provided
 
 void Unit::set_supply_provided(u8 amount) { // overwrites previous supply provided
 	UnitExt* unitExt = get_unit_ext(this);
-	raceSupply[RaceId::Terran].provided[player] -= get_supply_provided();
-	raceSupply[RaceId::Terran].provided[player] += amount;
+	g_race_supply[RaceId::Terran].provided[player] -= get_supply_provided();
+	g_race_supply[RaceId::Terran].provided[player] += amount;
 	unitExt->values[ValueSupplyProvidedSet] = 1;
 	unitExt->values[ValueSupplyProvidedId] = id;
 	unitExt->values[ValueSupplyProvided] = amount;

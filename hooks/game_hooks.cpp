@@ -460,7 +460,7 @@ namespace hooks {
 		*g_ai_update_cooldown = 0; // We want the AI to update spending requests every tick, so we can have precise 
 		*g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
 		for (u32 i = 0; i < 8; ++i) {
-			raceSupply[RaceId::Terran].provided[i] = 60000;
+			g_race_supply[RaceId::Terran].provided[i] = 60000;
 		}
 
 		scbw::set_ingame_loop_state(true); // Needed for scbw::random() to work

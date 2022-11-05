@@ -151,7 +151,7 @@ struct SupplyData {
 	u32 used[PLAYER_COUNT];
 	u32 max[PLAYER_COUNT];
 };
-SCBW_DATA(SupplyData*,	raceSupply,			0x00582144);  //Array; Use Unit::get_race() to get the index.
+SCBW_DATA(SupplyData*,	g_race_supply,			0x00582144);  //Array; Use Unit::get_race() to get the index.
 
 SCBW_DATA(u32*,		g_elapsed_time_frames,		0x0057F23C);
 SCBW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
@@ -271,18 +271,18 @@ SCBW_DATA(u16*,		move_to_tile_x,					0x0057F1D0);
 SCBW_DATA(u16*,		move_to_tile_y,					0x0057F1D2);
 
 // For increment_unit_scores_ex
-SCBW_DATA(u32*,		factories_owned,				0x005820B4); // Array of 12
-SCBW_DATA(u32*,		units_produced,					0x00581E14); // Array of 12
-SCBW_DATA(u32*,		structures_built,				0x00581F64); // Array of 12
-SCBW_DATA(u32*,		unit_score,						0x00581ED4); // Array of 12
-SCBW_DATA(u32*,		building_score,					0x00582024); // Array of 12
-SCBW_DATA(u32*,		units_owned,					0x00581E44); // Array of 12
-SCBW_DATA(u32*,		buildings_owned,				0x00582024); // Array of 12
+SCBW_DATA(u32*,		factories_owned,				0x005820B4); // Array of 12	btw
+SCBW_DATA(u32*,		units_produced,					0x00581E14); // Array of 12	btw
+SCBW_DATA(u32*,		structures_built,				0x00581F64); // Array of 12	btw
+SCBW_DATA(u32*,		unit_score,						0x00581ED4); // Array of 12	btw
+SCBW_DATA(u32*,		building_score,					0x00582024); // Array of 12	btw
+SCBW_DATA(u32*,		units_owned,					0x00581E44); // Array of 12	btw
+SCBW_DATA(u32*,		buildings_owned,				0x00582024); // Array of 12	btw
 
 // For increment_unit_scores
-SCBW_DATA(u32*,		factories_produced_owned_total,	0x00582084); // Array of 12
-SCBW_DATA(u32*,		structures_produced_owned_total,0x00581F34); // Array of 12
-SCBW_DATA(u32*,		units_produced_owned_total,		0x00581DE4); // Array of 12
+SCBW_DATA(u32*,		factories_produced_owned_total,	0x00582084); // Array of 12	btw
+SCBW_DATA(u32*,		structures_produced_owned_total,0x00581F34); // Array of 12	btw
+SCBW_DATA(u32*,		units_produced_owned_total,		0x00581DE4); // Array of 12	btw
 
 // For refresh_screen
 SCBW_DATA(u32*,		g_place_building_message_id,	0x00640958);

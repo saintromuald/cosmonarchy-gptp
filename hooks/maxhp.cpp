@@ -212,11 +212,11 @@ LABEL_26:
 			{ // !RACE_Zerg
 				if (v21 == RaceId::Terran)
 				{
-					v5 = raceSupply[RaceId::Terran].used[v4];
+					v5 = g_race_supply[RaceId::Terran].used[v4];
 				}
 				else if (v21 == RaceId::Protoss)
 				{
-					v5 = raceSupply[RaceId::Protoss].used[v4];
+					v5 = g_race_supply[RaceId::Protoss].used[v4];
 				}
 				else
 				{
@@ -225,7 +225,7 @@ LABEL_26:
 			}
 			else
 			{
-				v5 = raceSupply[RaceId::Zerg].used[v4];
+				v5 = g_race_supply[RaceId::Zerg].used[v4];
 			}
 			ByteOperations::SetLowWord(v20, v21);
 			v6 = v21 + 820;
@@ -279,15 +279,15 @@ LABEL_26:
 			s32 race = (*g_active_portrait_unit)->get_race();
 			if (v14.is_zerg)
 			{
-				v15 = raceSupply[RaceId::Zerg].max[v22];
+				v15 = g_race_supply[RaceId::Zerg].max[v22];
 			}
 			else if (v14.is_terran)
 			{
-				v15 = raceSupply[RaceId::Terran].max[v22];
+				v15 = g_race_supply[RaceId::Terran].max[v22];
 			}
 			else if (v14.is_protoss)
 			{
-				v15 = raceSupply[RaceId::Protoss].max[v22];
+				v15 = g_race_supply[RaceId::Protoss].max[v22];
 			}
 			else
 			{
