@@ -69,6 +69,7 @@ namespace hooks {
 		u8 count_workers = 0;
 		u8 count_burrowables = 0;
 		u8 count_larva = 0;
+		u8 count_ocsal_larva = 0;
 		u8 count_eggs  = 0;
 		u8 count_hatches = 0;
 		u8 count_zergs = 0;
@@ -119,6 +120,10 @@ namespace hooks {
 					count_larva++;
 				}
 
+				if (selected->id == UnitId::ZergOcsalLarva) {
+					count_ocsal_larva++;
+				}
+
 				if (selected->id == UnitId::ZergEgg) {
 					count_eggs++;
 				}
@@ -148,6 +153,9 @@ namespace hooks {
 		}
 		if (count_larva && count_larva + count_eggs == *g_client_selection_count) {
 			*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
+		}
+		if (count_ocsal_larva && count_ocsal_larva + count_eggs == *g_client_selection_count) {
+			*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergOcsalLarva;
 		}
 		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
 			if (count_workers == *g_client_selection_count) {
@@ -512,6 +520,7 @@ namespace hooks {
 		}
 
 		bool has_larva = false;
+		bool has_ocsal_larva = false;
 		bool has_egg = false;
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
@@ -521,13 +530,16 @@ namespace hooks {
 			if (unit->id == UnitId::ZergLarva) {
 				has_larva = true;
 			}
+			if (unit->id == UnitId::ZergOcsalLarva) {
+				has_ocsal_larva = true;
+			}
 			if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
 				has_egg = true;
 			}
 		}
 
 		// Fix larva category buttons not clearing for eggs
-		if (!has_larva && has_egg) {
+		if (!has_larva && !has_ocsal_larva && has_egg) {
 			if (buttonset_id == UnitId::Buttons_LarvaSwarm
 			||  buttonset_id == UnitId::Buttons_LarvaAssault
 			||  buttonset_id == UnitId::Buttons_LarvaControl
@@ -538,7 +550,11 @@ namespace hooks {
 				return;
 			}
 		}
-		if (has_larva && !has_egg && buttonset_id == UnitId::ZergEgg) {
+		if (has_larva && !has_ocsal_larva && !has_egg && buttonset_id == UnitId::ZergEgg) {
+			helper::BTNSACT_ChangeButtons(UnitId::ZergLarva);
+			return;
+		}
+		if (has_ocsal_larva && !has_larva && !has_egg && buttonset_id == UnitId::ZergEgg) {
 			helper::BTNSACT_ChangeButtons(UnitId::ZergLarva);
 			return;
 		}
@@ -664,7 +680,7 @@ namespace hooks {
 						}
 					}
 
-					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
+					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
 						current_button_state = Button_State::Enabled;
 					}
 					if (unit->id == UnitId::ZergCagrantColony && current_button->icon_id == IconId::SetRallyPoint) {
@@ -720,6 +736,10 @@ namespace hooks {
 					}
 
 					if (buttonset_id == UnitId::ZergLarva && !has_egg && current_button->icon_id == IconId::Cancel) {
+						current_button_state = Button_State::Invisible;
+					}
+
+					if (buttonset_id == UnitId::ZergOcsalLarva && !has_egg && current_button->icon_id == IconId::Cancel) {
 						current_button_state = Button_State::Invisible;
 					}
 
