@@ -12,9 +12,6 @@ namespace hooks
 		if (helper::get_larva_spawn_pos(building, &coords)) {
 			Unit* unit = helper::create_unit(scbw::unit_id_get_larva_type(building->id), coords.x, coords.y, building->player);
 			if (unit) {
-				UnitExt* unit_ext = get_unit_ext(unit);
-				unit_ext->values[ValueSwarmhold] = scbw::unit_id_swarmhold_value(building->id);
-
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
 				unit->connected_unit = building;

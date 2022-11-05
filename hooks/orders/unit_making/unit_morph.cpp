@@ -45,21 +45,29 @@ namespace hooks {
 
 			Unit* factory = 0;
 			if ((unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
-				||  (unit->create_origin == UnitId::ZergOcsalLarva && unit->id != UnitId::ZergOcsalLarva)) {
+			||  (unit->create_origin == UnitId::ZergOcsalLarva && unit->id != UnitId::ZergOcsalLarva)) {
 				factory = unit->connected_unit;
 			}
 
 			u32 extra_count = unit_ext->values[ValueSwarmhold];
-			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
-				extra_count *= 2;
-				extra_count += 1;
-			}
 			unit_ext->values[ValueSwarmhold] = 0;
+
+			Unit* twin_unit = 0;
+			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
+				Unit* twin_unit = helper::zerg_dual_birth(unit);
+				if (twin_unit) {
+					twin_unit->rally = unit->rally;
+					helper::ai_training_unit(twin_unit, unit);
+				}
+				extra_count *= 2;
+			}
+
 			for (u32 i = 0; i < extra_count; ++i) {
-				Unit* new_unit = helper::zerg_dual_birth(unit);
+				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y, 0, false);
 				if (new_unit) {
+					// TODO: potentially replicate functionality from zerg dual birth like selecting the new unit if the egg was selected
 					new_unit->rally = unit->rally;
-					helper::ai_training_unit(new_unit, unit);
+					helper::ai_training_unit(new_unit, unit); // We should inherit the AI, since it might be specifically assigned to a region or w/e
 					helper::order_new_unit_to_rally(new_unit, factory);
 				}
 			}
@@ -88,6 +96,9 @@ namespace hooks {
 			}
 			if (!scbw::is_zerg_egg_new(unit, true, false)) {
 				helper::order_new_unit_to_rally(unit, factory);
+				if (twin_unit) {
+					helper::order_new_unit_to_rally(twin_unit, factory);
+				}
 			}
 			helper::force_order_done(unit);
 			unit->connected_unit = unit_ext->units[UnitMorphConnectedUnit];
