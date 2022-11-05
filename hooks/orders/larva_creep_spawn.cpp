@@ -26,6 +26,8 @@ namespace hooks
 					helper::ai_training_overlord(unit, building);
 				}
 			}
+		} else {
+			building->building.larva_timer = 3;
 		}
 	}
 
@@ -46,8 +48,7 @@ namespace hooks
 		return false;
 	}
 
-	void secondary_order_spawning_larva(Unit* unit)
-	{
+	void secondary_order_spawning_larva(Unit* unit) {
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
@@ -77,25 +78,23 @@ namespace hooks
 
 				if (unit->building.larva_timer == 0) {
 					unit->building.larva_timer = LarvaSpawnRateHatchery;
-					if (unit->id == UnitId::ZergLarvoskColony) {
-						unit->building.larva_timer /= LarvaFactorLarvalColony;
-					} else if (unit->id == UnitId::ZergCaphrolosk && unit->main_order_id != OrderId::Morph2
-						|| unit->id == UnitId::ZergGathtelosk && unit->main_order_id == OrderId::Morph2) {
-						unit->building.larva_timer /= LarvaFactorLair;
-					} else if (unit->id == UnitId::ZergGathtelosk && unit->main_order_id != OrderId::Morph2
-						|| unit->id == UnitId::ZergSibraelosk && unit->main_order_id == OrderId::Morph2) {
-						unit->building.larva_timer /= LarvaFactorHive;
-					} else if (unit->id == UnitId::ZergSibraelosk && unit->main_order_id != OrderId::Morph2) {
-						unit->building.larva_timer /= LarvaFactorSire;
+
+					u32 unit_id = unit->id;
+					if (unit->main_order_id == OrderId::Morph2) {
+						unit_id = unit->previous_unit_type;
 					}
 
-					// if failed to find a spawn point for larva set the timer before retry to 3
-					Vector32 coords_2 = {};
-					if (!helper::get_larva_spawn_pos(unit, &coords_2)) {
-						unit->building.larva_timer = 3;
-					} else {
-						create_building_larva(unit);
+					switch (unit_id) {
+						case UnitId::ZergLarvoskColony:
+						case UnitId::ZergOcsalColony: {
+							unit->building.larva_timer /= 0.75; // 75% speed
+						} break;
+						case UnitId::ZergSibraelosk: {
+							unit->building.larva_timer /= 1.5; // 150% speed
+						} break;
 					}
+
+					create_building_larva(unit);
 				}
 			}
 		}

@@ -160,15 +160,3 @@ const s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
 
 // Hatchery
 const s32 LarvaSpawnRateHatchery = 30; // ~10 seconds
-
-// Larval Colony
-const f64 LarvaFactorLarvalColony = 0.75;
-
-// Lair
-const f64 LarvaFactorLair = 1.5;
-
-// Hive
-const f64 LarvaFactorHive = 2;
-
-// Sire
-const f64 LarvaFactorSire = 2.5;
