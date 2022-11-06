@@ -25,7 +25,7 @@ Unit* findBestStasisFieldTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestRecallTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestDisruptionWebTarget(Unit* caster, bool isUnderAttack);
 Unit* findBestFeedbackTarget(Unit* caster, bool isUnderAttack);
-Unit* findBestMaelstromTarget(Unit* caster, bool isUnderAttack);
+Unit* find_best_maelstrom_target(Unit* caster, bool isUnderAttack);
 Unit* findBestMindControlTarget(Unit* caster, bool isUnderAttack);
 
 } //AI

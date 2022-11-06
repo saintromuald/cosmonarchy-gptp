@@ -578,6 +578,33 @@ namespace
 			RETN 0x8
 		}
 	}
+
+	void __declspec(naked) set_maelstrom_timer_wrapper() // 004553F0
+	{
+		static Unit* unit;
+		static u32 duration;
+		static char result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV duration, EAX
+			POP EAX
+			MOV unit, EDI
+			PUSHAD
+		}
+		result = hooks::set_maelstrom_timer(unit, duration);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -608,6 +635,7 @@ namespace hooks
         jump_patch(maelstrom_proc_wrapper,							0x004F6760, 3);
 	//	jump_patch(iterate_units_at_location_target_proc_wrapper,	0x004F6760, 0);
 	//	jump_patch(give_unit_to_player_wrapper,						0x004C8040, 2);
+		jump_patch(set_maelstrom_timer_wrapper,						0x004553F0, 4);
 
 		// Remove optical flare target check
 		nops(0x0048BBC7, 2);

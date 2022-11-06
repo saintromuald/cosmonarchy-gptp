@@ -33,6 +33,7 @@ namespace hooks
 		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
 	b32 give_unit_to_player(Unit* unit, u32 player);								// 004C8040
+	char set_maelstrom_timer(Unit* unit, u8 duration);								// 004553F0
 
 	void inject_weapon_spell_hit_hooks();
 }
