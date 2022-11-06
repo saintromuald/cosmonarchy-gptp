@@ -36,7 +36,6 @@ namespace hooks {
 	// Hooked to clean up lardcode - Pr0nogo
 	// Seems to be double-called from Maelstrom, no idea why
 	char disable_unit(Unit* unit) { // 00492CC0
-		scbw::print("call disable unit");
 		Unit* subunit = unit->subunit;
 		if (subunit) {
 			subunit->status |= UnitStatus::Disabled;
