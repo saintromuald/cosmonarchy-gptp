@@ -647,7 +647,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::ProtossAccantorOld:
+				case UnitId::ProtossAccantor:
 				case UnitId::ProtossArchitect:
 				{
 					return true;
@@ -2301,7 +2301,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ProtossAccantorOld:
+					case UnitId::ProtossAccantor:
 					case UnitId::ProtossArchitect:
 					{
 						return TECH_ACTIVE;
