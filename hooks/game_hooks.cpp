@@ -1656,7 +1656,7 @@ namespace hooks {
 					unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
 					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
-					//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+				//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
 				}
 				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {
 					Point16 target_pos = {};

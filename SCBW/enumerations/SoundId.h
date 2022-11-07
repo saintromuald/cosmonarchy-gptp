@@ -1362,6 +1362,8 @@ namespace SoundId
 
 		LazarusAgentCastTick				= 2118,
 		LazarusAgentCastEnd					= 2119,
+		EnergyRegenStart					= 2120,
+		EnergyRegenEnd					= 2121,
 	};
 }
 
