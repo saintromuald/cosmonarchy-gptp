@@ -244,4 +244,40 @@ namespace hooks {
 		}
 		return player_zeroed;
 	}
+
+	// Ported from GPTP. -Pr0nogo
+	void update_selected_unit_data() { // 004C38B0
+		Unit** current_unit_offset = (Unit**)g_client_selection_group;
+		Unit* unit_at_selection_top = 0;
+		for (u32 i = 0; i < SelectionCap; i++)
+		{
+			g_client_selection_group->unit[i] = active_player_selection->unit[i];
+		}
+
+		*g_client_selection_count = 0;
+		*g_active_portrait_unit = 0;
+		while (*current_unit_offset < g_client_selection_group_end) {
+			Unit* current_unit = *current_unit_offset;
+
+			if (current_unit) {
+				if (helper::compare_unit_rank(current_unit, unit_at_selection_top) != 0)
+				{
+					unit_at_selection_top = current_unit;
+				}
+				(*g_client_selection_count)++;
+			}
+			current_unit_offset++;
+		}
+
+		*g_active_portrait_unit = unit_at_selection_top;
+		if (*g_client_selection_count == 1)
+		{
+			g_client_selection_group->unit[0] = *g_active_portrait_unit;
+			for (u32 i = 1; i < SelectionCap; i++)
+			{
+				g_client_selection_group->unit[i] = 0;
+			}
+		}
+		helper::update_buttonset();
+	}
 }

@@ -1477,4 +1477,6 @@ namespace helper {
 	u32 ai_finish_unit(Unit* unit);																											// 00433640
 	s32 get_turret_position(u32 player, Point16* out_pos);																					// 00437670
 	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);														// 00444630
+
+	char update_buttonset();																												// 00458DE0
 }

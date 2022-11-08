@@ -63,6 +63,17 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) update_selected_unit_data_wrapper() { // 004C38B0
+		__asm {
+			PUSHAD
+		}
+		hooks::update_selected_unit_data();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -73,5 +84,6 @@ namespace hooks
 		jump_patch(is_selected_unit_group_enabled_wrapper,	0x0049A2C0, 1);
 	//	jump_patch(select_unit_initial_wrapper,				0x0049B690, 1); // Not finished
 	//	jump_patch(create_all_selection_circles_wrapper,	0x00499A60, 1); // Not finished
+	//	jump_patch(update_selected_unit_data_wrapper,		0x004C38B0, 3); // Not working
 	}
 }

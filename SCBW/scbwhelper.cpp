@@ -12447,4 +12447,17 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	char update_buttonset()
+	{
+		static char result;
+		const u32 func_address = 0x00458DE0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }
