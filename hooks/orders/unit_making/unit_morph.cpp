@@ -54,7 +54,7 @@ namespace hooks {
 
 			Unit* twin_unit = 0;
 			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
-				Unit* twin_unit = helper::zerg_dual_birth(unit);
+				twin_unit = helper::zerg_dual_birth(unit);
 				if (twin_unit) {
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
