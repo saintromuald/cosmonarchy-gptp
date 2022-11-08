@@ -760,11 +760,12 @@ namespace hooks
 		archon_hardcode_patches();
 
 		// Hook patches!
-	//	jump_patch(game_loop_wrapper,						0x004D94B0, 3);
-		jump_patch(create_unit_wrapper,						0x004A09D0, 1);
-		jump_patch(transform_unit_main_wrapper,				0x0049F170, 1);
-		jump_patch(ignore_iscript_and_go_to_idle_wrapper,	0x00476550, 1);
-		jump_patch(turn_unit_wrapper,						0x00495F20, 1);
-		jump_patch(init_damage_overlay_counts_wrapper,		0x004D5C20, 1);
+	//	jump_patch(game_loop_wrapper,							0x004D94B0, 3);
+		jump_patch(create_unit_wrapper,							0x004A09D0, 1);
+		jump_patch(transform_unit_main_wrapper,					0x0049F170, 1);
+		jump_patch(ignore_iscript_and_go_to_idle_wrapper,		0x00476550, 1);
+		jump_patch(turn_unit_wrapper,							0x00495F20, 1);
+		jump_patch(init_damage_overlay_counts_wrapper,			0x004D5C20, 1);
+		jump_patch(create_unit_building_sprite_validity_array,	0x00497110, 1);
 	}
 }

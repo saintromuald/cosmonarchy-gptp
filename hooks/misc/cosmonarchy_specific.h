@@ -27,6 +27,7 @@ namespace hooks
 	char ignore_iscript_and_go_to_idle(Unit* unit);													// 00476550
 	void turn_unit(Unit* unit, char direction);														// 00495F20
 	void init_damage_overlay_counts();																// 004D5C20
+	void __cdecl create_unit_building_sprite_validity_array();										// 00497110
 }
 
 namespace hooks
