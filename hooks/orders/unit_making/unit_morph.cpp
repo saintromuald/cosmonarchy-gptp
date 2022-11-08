@@ -10,6 +10,40 @@
 #include "globals.h"
 
 namespace hooks {
+	static void add_unit_to_control_group(ControlGroup* control_group, Unit* unit) {
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			UnitIndex* index = &control_group->unit_index[i];
+			if (control_group->unit_index[i].index) {
+				Unit* old_unit = &g_unit_table[index->index - 1];
+				if (old_unit->target_order_special == index->target_order_special) {
+					continue;
+				}
+			}
+			index->index = unit->get_unit_index();
+			index->target_order_special = unit->target_order_special;
+			break;
+		}
+	}
+
+	static void add_new_unit_to_control_groups(Unit* original_unit, Unit* new_unit) {
+		assert(original_unit->player == new_unit->player);
+		u32 player = original_unit->player;
+		for (u32 i = 0; i < TotalControlGroups; ++i) {
+			for (u32 j = 0; j < SelectionCap; ++j) {
+				UnitIndex index = control_group_array->player[player].control_group[i].unit_index[j];
+				if (!index.value) {
+					break;
+				}
+				if (index.index) {
+					Unit* unit = &g_unit_table[index.index - 1];
+					if (unit == original_unit) {
+						add_unit_to_control_group(&control_group_array->player[player].control_group[i], new_unit);
+					}
+				}
+			}
+		}
+	}
+
 	void orders_zerg_birth(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (!(unit->order_signal & 4)) {
@@ -58,6 +92,7 @@ namespace hooks {
 				if (twin_unit) {
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
+					add_new_unit_to_control_groups(unit, twin_unit);
 				}
 				extra_count *= 2;
 			}
@@ -71,6 +106,7 @@ namespace hooks {
 					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
 						helper::select_new_unit(new_unit);
 					}
+					add_new_unit_to_control_groups(unit, new_unit);
 				}
 			}
 

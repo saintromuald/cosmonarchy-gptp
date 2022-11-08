@@ -1194,13 +1194,39 @@ struct DrawFunction {
 	void* function_2;
 };
 
-struct IscriptProgram
-{
+struct IscriptProgram {
 	u16 iscript_header;					// 0x0
 	u16 program_counter;				// 0x2
 	u16 unsigned4;						// 0x4
 	IscriptAnimation::Enum animation;	// 0x5
 	u8 wait;							// 0x6
 };
+
+union UnitIndex {
+	struct {
+		u32 index : 11;
+		u32 target_order_special : 21;
+	};
+	u32 value;
+};
+
+C_ASSERT(sizeof(UnitIndex) == 0x4);
+
+struct ControlGroup {
+	UnitIndex unit_index[12];
+};
+
+#define TotalControlGroups 18 // Control groups + Recent selections?
+#define UiControlGroups 10 // Control groups
+
+struct ControlGroupPlayer {
+	ControlGroup control_group[TotalControlGroups];
+};
+
+struct ControlGroupPlayerArray {
+	ControlGroupPlayer player[PlayerLimit];
+};
+
+C_ASSERT(sizeof(ControlGroupPlayerArray) == 0x1B00);
 
 #pragma pack()

@@ -1067,6 +1067,8 @@ SCBW_DATA(u32*,			g_want_visibility_hash_update,	0x00629D90);
 SCBW_DATA(char*,		g_region_vision_hash,			0x0063FE38);
 SCBW_DATA(u32*,			g_current_hash_offset,			0x0063FD28);
 
+SCBW_DATA(ControlGroupPlayerArray*, control_group_array, 0x0057FE60);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
