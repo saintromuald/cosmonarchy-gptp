@@ -18,7 +18,11 @@ namespace DatExt {
     void sprites_dat_doPatch(u32 newCount) {
         datTablePatch((DatLoad*)LoadTable::Sprites_Dat, sprites_r);
 
+<<<<<<< HEAD
         g_is_valid_sprite = (u8*)calloc(newCount, sizeof(u8));
+=======
+        g_is_valid_sprite = (u8*)calloc(new_count, sizeof(u8));
+>>>>>>> e1fa3344b705dbab43ff6616f838db3993bfe9db
         simple_replace(sprite_is_valid, (u32)g_is_valid_sprite);
     }
 
