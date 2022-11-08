@@ -482,7 +482,7 @@ union ActiveTile
 			u8 always_unbuildable : 1;		// 0x00800000 always unbuildable, like water
 	/*03*/  u8 ground_height : 3;			// 0x07000000 ground height; 1 for low ground, 2 for middle ground and 4 for high ground
 			u8 currently_occupied : 1;		// 0x08000000 unbuildable but can be made buildable
-			u8 creep_receeding : 1;			// 0x10000000 Set when the nearby structure supporting the creep is destroyed
+			u8 creep_receding : 1;			// 0x10000000 Set when the nearby structure supporting the creep is destroyed
 			u8 cliff_edge : 1;				// 0x20000000 Set if the tile is a cliff edge
 			u8 temporary_creep : 1;			// 0x40000000 Set when the creep occupying the box was created. Not set if creep tiles were preplaced. Used in drawing routine.
 			u8 unknown4 : 1;				// 0x80000000 Unused?

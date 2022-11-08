@@ -818,6 +818,8 @@ namespace SpriteId
 
 		Corpse_Mason				= 809,
 		Corpse_Vulture				= 813,
+		Corpse_Quazilisk			= 814,
+		Corpse_Zealot				= 815,
 
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
