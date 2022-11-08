@@ -21,7 +21,7 @@ namespace DatExt {
         u32 corrected_count = (new_count + 5) / 6; // has to be divisible by 6, because loop at 0x00497110 iterates 6 entries at a time
         g_is_valid_sprite = (u8*)calloc(corrected_count, sizeof(u8));
         simple_replace(sprite_is_valid, (u32)g_is_valid_sprite);
-        memory_patch(0x00497223, corrected_count);
+        memory_patch(0x00497223 +1, corrected_count);
     }
 
     void sprites_dat_unpatch() {
