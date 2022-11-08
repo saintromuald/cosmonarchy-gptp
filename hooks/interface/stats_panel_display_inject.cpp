@@ -117,6 +117,29 @@ namespace
 		}
 	}
 
+	void __declspec(naked) stats_shield_level_wrapper() // 00425510
+	{
+		static BinDlg* dialog;
+		static u16 status_screen_index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV status_screen_index, AX
+			POP EAX
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::stats_shield_level(dialog, status_screen_index);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void __declspec(naked) set_tooltip_info_unit_case1_wrapper() { // 004594B0
 		static const u32 jmp_address = 0x00459635;
 		static u32 unit_id;
@@ -439,6 +462,7 @@ namespace hooks
 		jump_patch(draw_building_info_wrapper,						0x00427890, 3);
 		jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
 		jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
+		jump_patch(stats_shield_level_wrapper,						0x00425510, 1);
 		jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
 		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x0045952F, 4);
 		jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);

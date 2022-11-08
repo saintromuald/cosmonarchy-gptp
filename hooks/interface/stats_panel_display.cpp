@@ -587,6 +587,56 @@ namespace hooks
 	//	*g_unk_upgrade_count += weapons_dat::damage_amount[weapon_id];
 	}
 
+	// Hooked to draw new values to icons. -Pr0nogo
+	void stats_shield_level(BinDlg* dialog, u16 status_screen_index) // 00425510
+	{
+		BinDlg* dialog_var = dialog;
+		u32 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current shield armor using g_active_portrait_unit
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", armor_value);
+
+		if (dialog_var->control_type)
+		{
+			dialog_var = dialog_var->parent;
+		}
+		BinDlg* child = dialog_var->child_dialog;
+		if (child)
+		{
+			while (child->index != status_screen_index + 9)
+			{
+				child = child->next;
+				if (!child)
+				{
+					child = 0;
+					break;
+				}
+			}
+		}
+		else
+		{
+			child = 0;
+		}
+
+		helper::show_dialog(child);
+		helper::disable_dialog(child);
+		StatusScreenState* state = child->stat_button_user;
+		GrpHead* icons_grp = *g_cmdicons_grp;
+		child->graphic = 12;
+		state->button_grp = icons_grp;
+		state->grp_frame = 310;
+		state->type = 2;
+		state->id = 15;
+
+		u32 flags = child->flags;
+		child->psz_text = g_status_screen_info_button_unk[status_screen_index];
+		if (!(flags & 1))
+		{
+			child->flags = flags | 1;
+			helper::update_dialog(child);
+		}
+	//	*g_unk_upgrade_count += armor_value;
+	}
+
+
 	// Hooked to change the name of new building morphs.
 	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.
 	// - Pr0nogo
