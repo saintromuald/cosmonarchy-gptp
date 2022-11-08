@@ -372,7 +372,7 @@ struct StatusScreenState
 	GrpHead*	button_grp;	// 0x0
 	u16			grp_frame;	// 0x4
 	u16			type;		// 0x6
-	u8			id;			// 0x8	
+	u8			id;			// 0x8
 };
 
 struct ButtonSet

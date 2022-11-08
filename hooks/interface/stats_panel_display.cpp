@@ -482,143 +482,109 @@ namespace hooks
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
-	void stats_armor_level(BinDlg* dialog, s32 unused, u16 buttonRelated) // 00425600
+	void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index) // 00425600
 	{
-		BinDlg* v3;
-		BinDlg* v4;
-		void* v5;
-		s32 v6;
-		Unit* v7;
-		u16 v8;
-		u16 v9;
-		s16 v10;
-		u16 v11;
-		s32 v12;
-		u8 v13;
-
-		v3 = dialog;
-		v13 = helper::getArmorCount(*g_active_portrait_unit, unused);
-		sprintf_s(g_status_screen_info_button_unk[buttonRelated], 8, "%d ", v13);
-		if (v3->control_type)
+		// Second arg is unit id in one case and empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit.
+		BinDlg* dialog_var = dialog;
+		u8 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current armor using g_active_portrait_unit
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", armor_value);
+		if (dialog_var->control_type)
 		{
-			v3 = *(BinDlg**)&v3->parent;
+			dialog_var = dialog_var->parent;
 		}
-		v4 = *(BinDlg**)&v3->child_dialog;
-		if (v4)
+		BinDlg* child = dialog_var->child_dialog;
+		if (child)
 		{
-			while (v4->index != buttonRelated + 9)
+			while (child->index != status_screen_index + 9)
 			{
-				v4 = v4->next;
-				if (!v4)
-					goto LABEL_6;
-			}
-		}
-		else
-		{
-	LABEL_6:
-			v4 = 0;
-		}
-		helper::show_dialog(v4);
-		helper::disable_dialog(v4);
-		v5 = *DatExt::get_unit_icons_pointer();
-		v6 = *v4->user;
-		v7 = *g_active_portrait_unit;
-		v4->graphic = 12;
-		// TODO: Fix compiler error
-	//	*(s32*)v6 = v5;
-		if (v7->status & UnitStatus::Completed
-			|| (v8 = v7->build_queue[v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
-		{
-			v9 = v7->id;
-		}
-		else
-		{
-			v9 = v7->build_queue[v7->build_queue_slot];
-		}
-		*(s16*)(v6 + 4) = upgrades_dat::upgrade_icon[(u8)units_dat::armor_upgrade[v9]];
-		*(s16*)(v6 + 6) = UnitStatus::Completed;
-		if (v7->status & UnitStatus::Completed
-			|| (v10 = v7->build_queue[v7->build_queue_slot], !scbw::is_zerg_building_morph_result(v8)))
-		{
-			v11 = v7->id;
-		}
-		else
-		{
-			v11 = v7->build_queue[v7->build_queue_slot];
-		}
-		*(s16*)(v6 + 8) = units_dat::armor_upgrade[v11];
-		v4->psz_text = g_status_screen_info_button_unk[buttonRelated];
-		v12 = v4->flags;
-		if (!(v12 & UnitStatus::Completed))
-		{
-			v4->flags = v12 | UnitStatus::Completed;
-			helper::update_dialog(v4);
-		}
-		*unkUpgradeCount += v13;
-	}
-
-	// Hooked to draw new values to icons. -- Pr0nogo
-	void stats_weapon_level(BinDlg* dialog, u16 buttonRelated, u8 weapon_id) // 00425790
-	{
-		BinDlg* v3;
-		s32 v4;
-		u8 v5;
-		BinDlg* v6;
-		s32 v7;
-		void* v8;
-		s32 v9;
-		s16 v10;
-
-		v3 = dialog;
-		v4 = (*g_active_portrait_unit)->player;
-		if (weapons_dat::damage_upgrade[weapon_id] >= 0x2Eu)
-		{
-//			v5 = *g_upgrades_level_bw[v4][weapons_dat::damage_upgrade[weapon_id]];
-		}
-		else
-		{
-//			v5 = *g_upgrades_level_sc[v4][weapons_dat::damage_upgrade[weapon_id]];
-		}
-		v10 = v5;
-		sprintf_s(g_status_screen_info_button_unk[buttonRelated], 8, "%d ", v5);
-		if (v3->control_type)
-		{
-			v3 = v3->parent;
-		}
-		v6 = v3->child_dialog;
-		if (v6)
-		{
-			while (v6->index != buttonRelated + 9)
-			{
-				v6 = v6->next;
-				if (!v6)
+				child = child->next;
+				if (!child)
 				{
-					goto LABEL_9;
+					child = 0;
+					break;
 				}
 			}
 		}
 		else
 		{
-	LABEL_9:
-			v6 = 0;
+			child = 0;
 		}
-		helper::show_dialog(v6);
-		helper::disable_dialog(v6);
-	//	v7 = v6->user;
-		v8 = *DatExt::get_unit_icons_pointer();
-		v6->graphic = 12;
-	//	*(s32*)v7 = v8;
-		*(s16*)(v7 + 4) = weapons_dat::weapon_icon[weapon_id];
-		*(s16*)(v7 + 6) = 0;
-		*(s16*)(v7 + 8) = weapon_id;
-		v9 = v6->flags;
-		v6->psz_text = g_status_screen_info_button_unk[buttonRelated];
-		if (!(v9 & 1))
+
+		helper::show_dialog(child);
+		helper::disable_dialog(child);
+		
+		GrpHead* icons_grp = *g_cmdicons_grp;
+		StatusScreenState* state = child->stat_button_user;
+		Unit* active_unit = *g_active_portrait_unit;
+		child->graphic = 12;
+		state->button_grp = icons_grp;
+		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
+		if (active_unit->status & UnitStatus::Completed || scbw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
 		{
-			v6->flags = v9 | 1;
-			helper::update_dialog(v6);
+			final_unit_id = active_unit->id;
 		}
-		*unkUpgradeCount += v10;
+		state->grp_frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
+		state->type = 1;
+		state->id = units_dat::armor_upgrade[final_unit_id];
+		child->psz_text = g_status_screen_info_button_unk[status_screen_index];
+		u32 flags = child->flags;
+		if (!(flags & UnitStatus::Completed))
+		{
+			child->flags = flags | 1;
+			helper::update_dialog(child);
+		}
+	//	*g_unk_upgrade_count += armor_value;
+	}
+
+	// Hooked to draw new values to icons. - Pr0nogo
+	void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) // 00425790
+	{
+		u32 active_player = (*g_active_portrait_unit)->player;
+		u16 damage_value = weapons_dat::damage_amount[weapon_id]; // TODO: calculate current damage using g_active_portrait_unit
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", damage_value);
+
+		BinDlg* dialog_var = dialog;
+		if (dialog->control_type)
+		{
+			dialog_var = dialog->parent;
+		}
+
+		BinDlg* child = dialog_var->child_dialog;
+		if (child)
+		{
+			while (child->index != status_screen_index + 9)
+			{
+				child = child->next;
+				if (!child)
+				{
+					child = 0;
+					break;
+				}
+			}
+		}
+		else
+		{
+			child = 0;
+		}
+
+		helper::show_dialog(child);
+		helper::disable_dialog(child);
+		StatusScreenState* state = child->stat_button_user;
+		GrpHead* icons_grp = *g_cmdicons_grp;
+		child->graphic = 12;
+		state->button_grp = icons_grp;
+		state->grp_frame = weapons_dat::weapon_icon[weapon_id];
+		state->type = 0;
+		state->id = weapon_id;
+
+		u32 flags = child->flags;
+		child->psz_text = g_status_screen_info_button_unk[status_screen_index];
+		if (!(flags & 1))
+		{
+			child->flags = flags | 1;
+			helper::update_dialog(child);
+		}
+	//	*g_unk_upgrade_count += weapons_dat::damage_amount[weapon_id];
 	}
 
 	// Hooked to change the name of new building morphs.
