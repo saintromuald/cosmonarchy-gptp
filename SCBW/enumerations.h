@@ -331,16 +331,6 @@ namespace NewFlags1
 	};
 }
 
-namespace NewFlags2
-{
-	enum Enum : u8
-	{
-		Unused1 = 0x1,
-		Unused2 = 0x2,
-		Unused4 = 0x4,
-	};
-}
-
 namespace Button_State
 {
 	enum Enum

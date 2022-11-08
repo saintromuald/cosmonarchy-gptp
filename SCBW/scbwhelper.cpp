@@ -4485,7 +4485,7 @@ namespace helper {
 		}
 	}
 
-	void StatsShieldLevel(BinDlg* dialog, u32 index) {
+	void stats_shield_level(BinDlg* dialog, u32 index) {
 		const u32 Func_Sub425510 = 0x00425510;
 		__asm {
 			PUSHAD
@@ -4496,7 +4496,7 @@ namespace helper {
 		}
 	}
 
-	void StatsArmorLevel(BinDlg* dialog, u32 index) {
+	void stats_armor_level(BinDlg* dialog, u32 index) {
 		const u32 Func_Sub425600 = 0x00425600;
 		__asm {
 			PUSHAD

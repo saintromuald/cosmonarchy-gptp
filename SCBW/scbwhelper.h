@@ -558,8 +558,8 @@ namespace helper {
 	//// stats_panel_display
 	void stat_nuke_count(BinDlg* dialog, u32 index);																				// 00425310
 	void stat_hangar_count(BinDlg* dialog, u32 index);																				// 004253D0
-	void StatsShieldLevel(BinDlg* dialog, u32 index);																				// 00425510
-	void StatsArmorLevel(BinDlg* dialog, u32 index);																				// 00425600
+	void stats_shield_level(BinDlg* dialog, u32 index);																				// 00425510
+	void stats_armor_level(BinDlg* dialog, u32 index);																				// 00425600
 	void stat_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id);																// 00425790
 	bool stat_spidermine_count(BinDlg* dialog, u32 index);																			// 00426300
 
