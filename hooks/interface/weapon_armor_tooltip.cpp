@@ -14,29 +14,6 @@
 
 char buffer[256];
 
-// Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
-u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
-{
-	if (weapon_id == WeaponId::CohortGaussPistols
-		||  weapon_id == WeaponId::HarakanFlameThrower
-		||  weapon_id == WeaponId::HypnagogueKaleidoscopeCannon
-		||  weapon_id == WeaponId::PazuzuJupiterDriver
-		||  weapon_id == WeaponId::ZealotPsiBlades
-		||  weapon_id == WeaponId::LegionnairePsiSabers
-		||  weapon_id == WeaponId::AmaranthPsiCleaver
-		||  weapon_id == WeaponId::GolemBloodlessAssault
-		||  weapon_id == WeaponId::PariahIconoclastBlades
-		||  weapon_id == WeaponId::StarSovereignCelestialCannon
-		||  weapon_id == WeaponId::LiiraliskHollowedSpores
-		||  weapon_id == WeaponId::BactaliskCorrosiveAcid
-		||  weapon_id == WeaponId::AlmaksaliskPiercingSpines
-		||  weapon_id == WeaponId::KeskathalorScreamingVenom)
-	{
-		return 2;
-	}
-	return weapons_dat::damage_factor[weapon_id];
-}
-
 // Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 // This function is used for weapon icons and special icons.
 // Precondition: @p entryStrIndex is a stat_txt.tbl string index.
@@ -102,7 +79,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	const char* entry_name = statTxtTblNew->get_string(entryStrIndex);
 	const char* damage_string = statTxtTblNew->get_string(777);					//"Damage:"
 
-	u8 damage_factor = get_damage_factor_for_tooltip(weapon_id, unit);
+	u8 damage_factor = scbw::get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];

@@ -540,7 +540,7 @@ namespace hooks
 	void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) // 00425790
 	{
 		u32 active_player = (*g_active_portrait_unit)->player;
-		u16 damage_value = weapons_dat::damage_amount[weapon_id]; // TODO: calculate current damage using g_active_portrait_unit
+		u16 damage_value = weapons_dat::damage_amount[weapon_id] * scbw::get_damage_factor_for_tooltip(weapon_id, *g_active_portrait_unit); // TODO: calculate current damage using g_active_portrait_unit
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", damage_value);
 
 		BinDlg* dialog_var = dialog;
