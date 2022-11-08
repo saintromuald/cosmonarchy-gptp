@@ -69,7 +69,7 @@ SCBW_DATA_REF(UnitStatFuncArrayEntry*, unitStatFuncs,		0x005193A0);
 SCBW_DATA(ActionPointer*,	g_action_table,					0x00512800); // From triggers.cpp
 SCBW_DATA(ActionPointer*,	g_briefing_action_table,		0x00512800);
 SCBW_DATA(char**,			g_chk_string_table,				0x005993D4);
-SCBW_DATA(void*,			g_main_window,					0x0051BFB0);
+SCBW_DATA(HWND*,			g_main_window,					0x0051BFB0);
 SCBW_DATA(s32*,				g_music_volume,					0x006D5BB4);
 SCBW_DATA(b8*,				g_music_playing,				0x006D5BBC);
 

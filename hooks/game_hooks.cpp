@@ -293,6 +293,7 @@ namespace hooks {
 
 		update_discord(true);
 
+		handle_screen_hotkeys();
 		if (scbw::is_game_paused()) {
 			return true;
 		}
@@ -303,7 +304,7 @@ namespace hooks {
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
-			hooks::init_screen_locations();
+			init_screen_locations();
 			hooks::init_actions();
 			globals.reset();
 			init_ext_variables();
@@ -447,7 +448,6 @@ namespace hooks {
 			tick_scenario();
 		}
 
-		hooks::handle_screen_hotkeys();
 		scbw::refresh_screen();
 
 		// Needed for extended tooltips

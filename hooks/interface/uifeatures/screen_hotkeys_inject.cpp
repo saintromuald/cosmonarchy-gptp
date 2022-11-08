@@ -2,17 +2,16 @@
 #include "hook_tools.h"
 #include "config.h"
 
-namespace
-{
-	void _declspec(naked) saveScreenLocation_Wrapper()
-	{
+namespace {
+
+	void _declspec(naked) save_screen_location_wrapper() {
 		static s32 id;
 		static s32 result;
 		_asm {
 			MOV id, EAX
 			PUSHAD
 		}
-		result = hooks::saveScreenLocation(id);
+		result = hooks::save_screen_location(id);
 		_asm {
 			POPAD
 			MOV EAX, result
@@ -20,15 +19,14 @@ namespace
 		}
 	}
 
-	void _declspec(naked) recallScreenLocation_Wrapper()
-	{
+	void _declspec(naked) recall_screen_location_wrapper() {
 		static s32 id;
 		static s32 result;
 		_asm {
 			MOV id, EAX
 			PUSHAD
 		}
-		result = hooks::recallScreenLocation(id);
+		result = hooks::recall_screen_location(id);
 		_asm {
 			POPAD
 			MOV EAX, result
@@ -36,35 +34,31 @@ namespace
 		}
 	}
 
-	const u32 helpMenuCall_jmp = 0x0048478A;
-	void _declspec(naked) helpMenuCall_Wrapper()
-	{
+	void _declspec(naked) help_menu_call_wrapper() {
+		static const u32 jmp_address = 0x0048478A;
 		_asm {
-			JMP helpMenuCall_jmp
+			JMP jmp_address
 		}
 	}
 
-	const u32 screenLocationSwitchCase_jmp = 0x00484796;
-	const u32 loc_484B24 = 0x00484B24;
-	void _declspec(naked) screenLocationSwitchCase_Wrapper()
-	{
+	void _declspec(naked) screen_location_switch_case_wrapper() {
 		static s32 v1;
 		static bool result;
 		_asm {
 			MOV v1, EDI
 			PUSHAD
 		}
-		if (!(*g_is_game_paused))
-		{
-			result = hooks::screenLocationSwitchCase(v1 + 0x642D);
-			if (!result)
-			{
+		if (!*g_is_game_paused) {
+			result = hooks::screen_location_switch_case(v1 + 0x642D);
+			if (!result) {
+				static const u32 screenLocationSwitchCase_jmp = 0x00484796;
 				_asm { // continue executing switch case if case wasn't found
 					POPAD
 					JMP screenLocationSwitchCase_jmp
 				}
 			}
 		}
+		static const u32 loc_484B24 = 0x00484B24;
 		_asm { // return
 			POPAD
 			JMP loc_484B24
@@ -72,17 +66,13 @@ namespace
 	}
 }
 
-namespace hooks
-{
-
-	void inject_screen_hotkey_hooks()
-	{
-		if (config.extended_camera_hotkeys)
-		{
-			jump_patch(saveScreenLocation_Wrapper,			0x00484360, 0);
-			jump_patch(recallScreenLocation_Wrapper,		0x00484500, 1);
-			jump_patch(helpMenuCall_Wrapper,				0x00484770, 0);
-			jump_patch(screenLocationSwitchCase_Wrapper,	0x0048478A, 1);
+namespace hooks {
+	void inject_screen_hotkey_hooks() {
+		if (config.extended_camera_hotkeys) {
+			jump_patch(save_screen_location_wrapper,		0x00484360, 0);
+			jump_patch(recall_screen_location_wrapper,		0x00484500, 1);
+			jump_patch(help_menu_call_wrapper,				0x00484770, 0);
+			jump_patch(screen_location_switch_case_wrapper,	0x0048478A, 1);
 		}
 	}
 }
