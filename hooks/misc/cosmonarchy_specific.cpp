@@ -596,4 +596,25 @@ namespace hooks
 		}
 	}
 
+	// Hooked to investigate the sprite desync. -Pr0nogo
+	u32 __cdecl create_unit_building_sprite_validity_array()
+	{
+		u32 unit_id = 0;
+		memset(g_current_visibility_hash, 0, 256);
+		*g_want_visibility_hash_update = 0;
+		*g_region_vision_hash = 0;
+		*g_current_hash_offset = 0;
+		do
+		{
+			if (!(units_dat::base_property[unit_id] & UnitProperty::Building))
+			{
+				if (units_dat::staredit_avail_flags[unit_id] & 1)
+				{
+					g_is_valid_sprite[flingy_dat::sprite_id[units_dat::graphic[unit_id]]] = 1;
+				}
+			}
+			unit_id++;
+		} while (unit_id < UnitsIdLimit);
+		return unit_id;
+	}
 }
