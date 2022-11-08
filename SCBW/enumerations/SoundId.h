@@ -1218,7 +1218,7 @@ namespace SoundId
 		SimulacrumCloneStart01				= 1882,
 		CohortDeath01						= 1883,
 		CohortDeath02						= 1884,
-		LazarusAgentCast					= 1885,
+		LazarusAgentCastStart				= 1885,
 		CohortRevive01						= 1886,
 		CohortRevive02						= 1887,
 
@@ -1359,6 +1359,11 @@ namespace SoundId
 		DilettanteDodge03					= 2097,
 		SevenstepShieldHeal01				= 2098,
 		SevenstepRevive01					= 2099,
+
+		LazarusAgentCastTick				= 2118,
+		LazarusAgentCastEnd					= 2119,
+		EnergyRegenStart					= 2120,
+		EnergyRegenEnd					= 2121,
 	};
 }
 

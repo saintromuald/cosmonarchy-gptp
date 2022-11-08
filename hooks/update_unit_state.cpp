@@ -50,11 +50,15 @@ namespace hooks
 
 		// Regen code -Veeq7
 		s32 max_energy = unit->get_max_energy();
+
+		/*
+		// Stupid special case for specialists summoned in this manner. No longer applies since Mind Tyrant was revised. -Pr0nogo
 		if (unit->id == UnitId::ProtossMindTyrant
 			&& unit->main_order_id == OrderId::CompletingArchonSummon
 			&& unit->main_order_state == 0) {
 			max_energy = 100 * 256; // Identical to energy amount on spawn
 		}
+		*/
 
 		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + scbw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
@@ -69,16 +73,13 @@ namespace hooks
 			}
 
 			if (!unit->get_overlay(overlay_id)) {
-				unit->sprite->create_overlay(overlay_id);
-				helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+				unit->sprite->create_top_overlay(overlay_id);
+				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
 		} else if (unit->sprite->get_overlay(overlay_id)) {
-			unit->sprite->remove_overlay(overlay_id);
-			if (unit->energy >= max_energy) {
-				helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-			} else {
-				helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
-			}
+			Image* overlay = unit->get_overlay(overlay_id);
+			overlay->play_iscript_animation(IscriptAnimation::Death);
+			helper::play_sound_from_unit(SoundId::EnergyRegenEnd, unit, 1, 0);
 		}
 	}
 

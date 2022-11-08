@@ -8,7 +8,6 @@ namespace hooks
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
 	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) // 004926D0
 	{
-		scbw::print("spell order");
 		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)default_order_string;
 		if (tech_id == TechId::Hallucination
@@ -16,7 +15,6 @@ namespace hooks
 		||	tech_id == TechId::HypnagogueThroughTheLookingGlass
 		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
-			scbw::print("spell order passed");
 			char cheat_flags = *g_cheat_state;
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
 			*energy_cost = tech_cost;
@@ -53,7 +51,6 @@ namespace hooks
 			return 0;
 		}
 
-		scbw::print("spell order failed");
 		s16 order_string_index = default_order_string - 1;
 		char* final_string;
 		if ((u16) default_order_string) {
@@ -99,7 +96,6 @@ namespace hooks
 			case TechId::LuminaryAuralAssault: // New, Aural Assault for Luminary
 			case TechId::HypnagogueThroughTheLookingGlass:
 			{
-				scbw::print("target ground");
 				return 1;
 			}
 			default:

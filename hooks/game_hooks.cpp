@@ -1008,9 +1008,13 @@ namespace hooks {
 						unit_ext->timers[TimerLazarusCasting] = 2 * 24;
 					}
 				}
-				if (unit_ext->timers[TimerLazarusCasting] % 12 == 11) {
+				if (unit_ext->timers[TimerLazarusCasting] == 2 * 24) {
 					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-					helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+					helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0);
+				}
+				else if (unit_ext->timers[TimerLazarusCasting] % 12 == 11) {
+					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+					helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0);
 				}
 				if (unit_ext->timers[TimerLazarusCasting] == 1) {
 					EntryArray units = {};
@@ -1026,7 +1030,7 @@ namespace hooks {
 						UnitExt* target_ext = get_unit_ext(target);
 						target_ext->values[ValueLazarusAgent] += 1;
 						target->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-						helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+						helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
 					}
 					if (unit_ext->values[ValueLazarusRecasts]) {
 						unit_ext->values[ValueLazarusRecasts]--;
@@ -1652,7 +1656,7 @@ namespace hooks {
 					unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
 					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
-					//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+				//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
 				}
 				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {
 					Point16 target_pos = {};
@@ -1695,7 +1699,7 @@ namespace hooks {
 			if (source_unit) {
 				if (unit_ext->timers[TimerGladiusBindingPlasma] % 12 == 11) {
 					unit->sprite->create_overlay(ImageId::BindingPlasmaOverlay);
-					helper::play_sound_from_unit(SoundId::LazarusAgentCast, unit, 1, 0);
+				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0);
 				}
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
 					EntryArray units = {};
@@ -2386,7 +2390,7 @@ namespace hooks {
 		}
 
 		// Anticthon - Counter-Proposal - add overlay
-		if (unit_ext->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+		if ((unit_ext->timers[TimerAnticthonRevive] || unit_ext->values[ValueLazarusAgent]) && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 

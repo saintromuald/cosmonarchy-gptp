@@ -448,6 +448,7 @@ namespace hooks {
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
 
+		// TODO: Unit search
 		const u32 radius = 48;
 		scbw::UnitFinder(
 			x - radius,
@@ -459,7 +460,7 @@ namespace hooks {
 		});
 	}
 
-	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280
+	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280 - Pr0nogo
 	bool maelstrom_proc(Unit* target, Unit* source) { // 004F6760, always returns 0
 		s32 unit_status = target->status;
 		if (unit_status & UnitStatus::IsHallucination) {
@@ -678,5 +679,27 @@ LABEL_15:
 			}
 		}
 		return 1;
+	}
+
+	// Hooked to investigate Maelstrom double-calling disable_unit. -Pr0nogo
+	char set_maelstrom_timer(Unit* unit, u8 duration) // 004553F0
+	{
+		if (!unit->maelstrom_timer)
+		{
+			u32 overlay_offset = scbw::get_overlay_offset(unit->id);
+			Unit* final_unit = unit->subunit;
+			if (!final_unit)
+			{
+				final_unit = unit;
+			}
+			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + overlay_offset, 0, 0, 0);
+		}
+		u32 timer = unit->maelstrom_timer;
+		if (duration > timer)
+		{
+			timer = duration;
+		}
+		unit->maelstrom_timer = timer;
+		return hooks::disable_unit(unit);
 	}
 }

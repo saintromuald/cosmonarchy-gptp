@@ -12,7 +12,7 @@ namespace UnitId
 	//	DarkSwarm											= 202,		// Dark Swarm
 
 	// Special
-		SpecialControlNode									= 192,		// Terran Marker
+		TownCenterMarker									= 192,		// Terran Marker
 		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
 
 	// Terran-Unit
@@ -257,6 +257,7 @@ namespace UnitId
 		ProtossTempleExt									= 344,
 		XelNagaTempleExt									= 345,
 		ProtossWarpGateExt									= 346,
+		TerranControlNode									= 359,
 
 	// Old enum
 		TerranMaverick										= 0,

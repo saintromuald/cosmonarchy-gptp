@@ -272,7 +272,7 @@ namespace AI
 				if ((unit->energy >= energyReserve || scbw::is_cheat_enabled(CheatFlags::TheGathering))
 					&& unit->can_use_tech(TechId::MindTyrantMaelstrom, unit->player) != 1)
 				{
-					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
+					Unit* target = find_best_maelstrom_target(unit, isUnitBeingAttacked);
 					if (unit->main_order_id == OrderId::CastMaelstrom
 						&& unit->order_target.unit == target)
 					{

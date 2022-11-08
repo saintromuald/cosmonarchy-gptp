@@ -412,7 +412,7 @@ u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 }
 
 void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, u32 unit_id) {
-	if (unit_id == UnitId::SpecialControlNode) {
+	if (unit_id == UnitId::TownCenterMarker) {
 		if (!placeholder->was_preplaced) {
 			placeholder->should_request = false;
 			placeholder->is_townhall_marker = true;
