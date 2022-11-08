@@ -1059,7 +1059,13 @@ SCBW_DATA(UpdateFunction*,	g_sg_update_funcs,	0x00512510);
 SCBW_DATA(DrawFunction*,	g_sg_draw_funcs,	0x005125A0);
 
 // For iscript_opcode_cases
-SCBW_DATA(char*,			cbullet_damage,		0x0050434C);
+SCBW_DATA(char*,		cbullet_damage,					0x0050434C);
+
+// For create_unit_building_sprite_validity_array
+SCBW_DATA(u32*,			g_current_visibility_hash,		0x0063FD30);
+SCBW_DATA(u32*,			g_want_visibility_hash_update,	0x00629D90);
+SCBW_DATA(char*,		g_region_vision_hash,			0x0063FE38);
+SCBW_DATA(u32*,			g_current_hash_offset,			0x0063FD28);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 
