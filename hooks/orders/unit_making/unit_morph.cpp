@@ -65,10 +65,12 @@ namespace hooks {
 			for (u32 i = 0; i < extra_count; ++i) {
 				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y, 0, false);
 				if (new_unit) {
-					// TODO: potentially replicate functionality from zerg dual birth like selecting the new unit if the egg was selected
 					new_unit->rally = unit->rally;
 					helper::ai_training_unit(new_unit, unit); // We should inherit the AI, since it might be specifically assigned to a region or w/e
 					helper::order_new_unit_to_rally(new_unit, factory);
+					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
+						helper::select_new_unit(new_unit);
+					}
 				}
 			}
 
