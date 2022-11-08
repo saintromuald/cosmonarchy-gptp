@@ -24,12 +24,12 @@ namespace hooks
 			u16 unit_id = helper::get_last_queue_slot_id(activeUnit);
 			if (units_dat::armor_upgrade[unit_id] != UpgradeId::GlobalUpgrade60)
 			{
-				helper::StatsArmorLevel(dialog, index);
+				helper::stats_armor_level(dialog, index);
 				index++;
 			}
 			if (units_dat::shields_enabled[activeUnit->id])
 			{
-				helper::StatsShieldLevel(dialog, index);
+				helper::stats_shield_level(dialog, index);
 				index++;
 			}
 			if (activeUnit->id != UnitId::ZergLakizilisk
