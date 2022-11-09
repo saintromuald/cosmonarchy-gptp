@@ -5,12 +5,12 @@
 
 namespace
 {
-	bool wantRefresh = false;
-	void __stdcall DrawHook(graphics::Bitmap* surface, Bounds* bounds)
+	bool want_refresh = false;
+	void __stdcall draw_hook(graphics::Bitmap* surface, Bounds* bounds)
 	{
-		if (wantRefresh)
+		if (want_refresh)
 		{
-			wantRefresh = false;
+			want_refresh = false;
 			scbw::refresh_screen();
 		}
 		/*
@@ -25,18 +25,18 @@ namespace
 			//graphics::draw_box(l, t, r, b, graphics::YELLOW, graphics::ON_MAP);
 		  //  graphics::draw_dot(x, y, graphics::GREEN, graphics::ON_MAP);
 		}*/
-		oldDrawGameProc(surface, bounds);
+		g_old_draw_game_proc(surface, bounds);
 
 		//if ( BW::BWDATA::GameScreenBuffer->isValid() )
 		//{
 		//  u32 numShapes = BWAPI::BroodwarImpl.drawShapes();
 		//  
 		//  if ( numShapes )
-		//    wantRefresh = true;
+		//    want_refresh = true;
 		//}
 		if (graphics::draw_all_shapes() > 0)
 		{
-			wantRefresh = true;
+			want_refresh = true;
 		}
 	}
 }
@@ -45,6 +45,6 @@ namespace hooks
 {
 	void inject_draw_hook()
 	{
-		memory_patch(0x004BD68D, &DrawHook);
+		memory_patch(0x004BD68D, &draw_hook);
 	}
 }

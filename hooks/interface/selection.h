@@ -8,6 +8,8 @@ namespace hooks
 	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command);	// 0049AEF0
 	u32 create_new_unit_selections_from_list(Unit** unit_list, u32 count);											// 0049AE40
 	void __stdcall get_selected_units_in_box(Box16* coords);														// 0046FA40
+	void create_unit_selection(Unit* unit, char index);																// 004E6180
+	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id);											// 004D7070
 
 	void inject_selection_hooks();
 }

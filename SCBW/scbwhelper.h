@@ -859,7 +859,7 @@ namespace helper {
 	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player);
 	bool func_dounitscollide(Unit* first, Unit* second);
 	void unburrow(Unit* unit);
-	Image* create_health_bar(Sprite* sprite);
+	Image* create_healthbar(Sprite* sprite);
 	void remove_hp_bar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
 	void* SMemAlloc(u32 amount);																					// 0041006A (based on Storm.dll definition)
@@ -1479,4 +1479,8 @@ namespace helper {
 	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);														// 00444630
 
 	char update_buttonset();																												// 00458DE0
+
+	void refresh_image(Image* image);																										// 004970A0
+	void compile_healthbar(Image* image, Sprite* sprite);																					// 004D6010
+	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id);												// 004D6810
 }

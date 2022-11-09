@@ -653,4 +653,111 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to help debug hpbars.cpp hooks. -Pr0nogo
+	void create_unit_selection(Unit* unit, char index) // 004E6180
+	{
+		Sprite* sprite = unit->sprite;
+		if (units_dat::base_property[unit->id] & UnitStatus::Invincible)
+		{
+			if (!(sprite->flags & SpriteFlags::DrawSelCircle))
+			{
+				if (helper::create_selection_circle(sprite, g_selection_circle_color[(unsigned __int8)unit->player], ImageId::SelectionCircleDashed_22pixels))
+				{
+					sprite->flags |= SpriteFlags::DrawSelCircle;
+				}
+			}
+			Sprite* sprite_copy = unit->sprite;
+			sprite_copy->flags |= SpriteFlags::Selected;
+			sprite_copy->selection_index = index;
+		}
+		else
+		{
+			u8 sprite_id = g_selection_circle_color[(unsigned __int8)unit->player];
+			u8 sprite_flags = sprite->flags;
+			if (!(sprite_flags & SpriteFlags::Selected))
+			{
+				sprite->selection_index = index;
+				sprite->flags = sprite_flags | SpriteFlags::Selected;
+				helper::create_healthbar(sprite);
+				if (!(sprite->flags & SpriteFlags::DrawSelCircle))
+				{
+					if (helper::create_selection_circle(sprite, sprite_id, ImageId::SelectionCircleDashed_22pixels))
+					{
+						sprite->flags |= SpriteFlags::DrawSelCircle;
+					}
+				}
+			}
+			if (!g_is_in_replay && unit->player == *g_local_nation_id)
+			{
+				if (unit->status & UnitStatus::Completed)
+				{
+					if (unit->id == UnitId::ProtossPylon)
+					{
+						helper::create_pylon_aura();
+					}
+				}
+			}
+		}
+	}
+
+	// Hooked to help debug hpbars.cpp hooks. -Pr0nogo
+	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id) // 004D7070
+	{
+		Image* last_free_circle = *g_last_free_selection_circle;
+		if (*g_last_free_selection_circle == 0)
+		{
+			return 0;
+		}
+		
+		Image* next_free_circle = (*g_last_free_selection_circle)->link.next;
+		*g_last_free_selection_circle = (*g_last_free_selection_circle)->link.next;
+		if (*g_first_free_selection_circle == last_free_circle)
+		{
+			*g_first_free_selection_circle = last_free_circle->link.prev;
+		}
+		if (last_free_circle->link.prev)
+		{
+			last_free_circle->link.prev->link.next = next_free_circle;
+		}
+		if (next_free_circle)
+		{
+			next_free_circle->link.prev = last_free_circle->link.prev;
+		}
+		last_free_circle->link.prev = 0;
+		next_free_circle = 0;
+
+		Image* tail = sprite->images.tail;
+		if (tail->palette_type == 10)
+		{
+			if (sprite->images.head == tail)
+			{
+				sprite->images.head = last_free_circle;
+			}
+			last_free_circle->link.prev = tail->link.prev;
+			next_free_circle = tail;
+			if (tail->link.prev)
+			{
+				tail->link.prev->link.next = last_free_circle;
+			}
+			tail->link.prev = last_free_circle;
+		}
+		else
+		{
+			if (sprite->images.tail == tail)
+			{
+				sprite->images.tail = last_free_circle;
+			}
+			last_free_circle->link.prev = tail;
+			next_free_circle = tail->link.next;
+			Image* next_tail = tail->link.next;
+			if (next_tail)
+			{
+				next_tail->link.prev = last_free_circle;
+			}
+			tail->link.next = last_free_circle;
+		}
+		helper::create_selection_circle_image(last_free_circle, sprite, color, image_id);
+		return last_free_circle;
+	}
 }

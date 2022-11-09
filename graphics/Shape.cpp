@@ -145,44 +145,44 @@ namespace graphics
 
 			case Text:
 				//TODO: Add ability to change font count
-				gameScreenBuffer->blitString(
+				g_game_screen_buffer->blitString(
 					get_string_from_index(this->stringIndex).c_str(), p1.x, p1.y, this->fontSize);
 				break;
 
 			case DOT:
-				gameScreenBuffer->draw_dot(p1.x, p1.y, this->color);
+				g_game_screen_buffer->draw_dot(p1.x, p1.y, this->color);
 				break;
 
 			case LINE:
-				gameScreenBuffer->draw_line(p1.x, p1.y, p2.x, p2.y, this->color);
+				g_game_screen_buffer->draw_line(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case BOX:
-				gameScreenBuffer->draw_box(p1.x, p1.y, p2.x, p2.y, this->color);
+				g_game_screen_buffer->draw_box(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case CIRCLE:
-				gameScreenBuffer->draw_circle(p1.x, p1.y, this->radius, this->color);
+				g_game_screen_buffer->draw_circle(p1.x, p1.y, this->radius, this->color);
 				break;
 
 			case FILLED_BOX:
-				gameScreenBuffer->draw_filled_box(p1.x, p1.y, p2.x, p2.y, this->color);
+				g_game_screen_buffer->draw_filled_box(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case FILLED_CIRCLE:
-				gameScreenBuffer->draw_filled_circle(p1.x, p1.y, this->radius, this->color);
+				g_game_screen_buffer->draw_filled_circle(p1.x, p1.y, this->radius, this->color);
 				break;
 
 			case ELLIPSE:
-				gameScreenBuffer->draw_ellipse(p1.x, p1.y, p2.x, p2.y, this->color);
+				g_game_screen_buffer->draw_ellipse(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case DOTTED_LINE:
-				gameScreenBuffer->draw_dotted_line(p1.x, p1.y, p2.x, p2.y, this->color);
+				g_game_screen_buffer->draw_dotted_line(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			case DOTTED_ELLIPSE:
-				gameScreenBuffer->draw_dotted_elipse(p1.x, p1.y, p2.x, p2.y, this->color);
+				g_game_screen_buffer->draw_dotted_elipse(p1.x, p1.y, p2.x, p2.y, this->color);
 				break;
 
 			default:

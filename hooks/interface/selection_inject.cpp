@@ -122,6 +122,55 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) create_unit_selection_wrapper() { // 0049AE40
+		static Unit* unit;
+		static char index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV index, AL
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::create_unit_selection(unit, index);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) create_selection_circle_wrapper() { // 004D7070
+		static Image* result;
+		static Sprite* sprite;
+		static u8 color;
+		static u16 image_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV image_id, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV color, AL
+			POP EAX
+			MOV sprite, EAX
+			PUSHAD
+		}
+		result = hooks::create_selection_circle(sprite, color, image_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -133,5 +182,7 @@ namespace hooks
 		jump_patch(select_multiple_units_from_unit_list_wrapper,	0x0049AEF0, 2);
 		jump_patch(create_new_unit_selections_from_list_wrapper,	0x0049AE40, 0);
 		jump_patch(get_selected_units_in_box,						0x0046FA40, 1);
+	//	jump_patch(create_unit_selection_wrapper,					0x004E6180, 0);
+	//	jump_patch(create_selection_circle_wrapper,					0x004D7070, 5);
 	}
 }

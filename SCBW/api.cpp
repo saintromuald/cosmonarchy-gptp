@@ -863,12 +863,12 @@ namespace scbw {
 		top = std::max(top, 0); bottom = std::min(bottom, 30 - 1);
 
 		for (s32 y = top; y <= bottom; ++y) {
-			memset(&refreshRegions[40 * y + left], 1, right - left + 1);
+			memset(&g_refresh_regions[40 * y + left], 1, right - left + 1);
 		}
 	}
 
 	void refresh_screen() {
-		memset(refreshRegions, 1, 1200);
+		memset(g_refresh_regions, 1, 1200);
 	}
 
 	/* /!\ Not working like 004DC550 rand_between /!\ */

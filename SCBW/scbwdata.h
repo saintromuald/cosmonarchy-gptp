@@ -818,12 +818,12 @@ SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list, 0x006BEE70);
 namespace graphics {
 	struct Font; struct Bitmap;
 }
-SCBW_DATA(graphics::Font**,		font_base,			0x006CE0F4);
-SCBW_DATA(graphics::Bitmap*,	gameScreenBuffer,	0x006CEFF0);
-SCBW_DATA(u8*,					refreshRegions,		0x006CEFF8); // 640 x 480 divided into 1200 squares of 16x16
-SCBW_DATA(Layers*,				screenLayers,		0x006CEF50);
+SCBW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
+SCBW_DATA(graphics::Bitmap*,	g_game_screen_buffer,	0x006CEFF0);
+SCBW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 640 x 480 divided into 1200 squares of 16x16
+SCBW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
-static DrawGameProc const oldDrawGameProc = (DrawGameProc)0x004BD580;
+static DrawGameProc const g_old_draw_game_proc = (DrawGameProc)0x004BD580;
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
@@ -1068,6 +1068,14 @@ SCBW_DATA(char*,		g_region_vision_hash,			0x0063FE38);
 SCBW_DATA(u32*,			g_current_hash_offset,			0x0063FD28);
 
 SCBW_DATA(ControlGroupPlayerArray*, control_group_array, 0x0057FE60);
+
+// For remove_healthbar
+SCBW_DATA(Layer*,		g_game_layer,					0x006CEFB4);
+SCBW_DATA(Image**,		g_first_free_healthbar,			0x0057EB6C);
+SCBW_DATA(Image**,		g_last_free_healthbar,			0x005254B8);
+
+SCBW_DATA(Image**,		g_first_free_selection_circle,	0x0052E4C0);
+SCBW_DATA(Image**,		g_last_free_selection_circle,	0x0052F564);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

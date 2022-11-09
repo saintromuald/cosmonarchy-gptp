@@ -806,7 +806,7 @@ namespace helper {
 		}
 	}
 
-	Image* create_health_bar(Sprite* sprite) {
+	Image* create_healthbar(Sprite* sprite) {
 		const u32 CreateHealthBar_function = 0x004D6420;
 		static Image* result;
 		_asm {
@@ -12459,5 +12459,42 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void refresh_image(Image* image)
+	{
+		const u32 func_address = 0x004970A0;
+		__asm {
+			PUSHAD
+			MOV EAX, image
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void compile_healthbar(Image* image, Sprite* sprite)
+	{
+		const u32 func_address = 0x004D6010;
+		__asm {
+			PUSHAD
+			PUSH sprite
+			MOV ESI, image
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id)
+	{
+		const u32 func_address = 0x004D6810;
+		__asm {
+			PUSHAD
+			PUSH image_id
+			PUSH color
+			MOV EAX, sprite
+			MOV ECX, image
+			CALL func_address
+			POPAD
+		}
 	}
 }
