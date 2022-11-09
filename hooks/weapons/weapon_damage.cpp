@@ -535,6 +535,7 @@ namespace hooks
 					{
 						// Cyclops - Flak Cannons
 						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
+						data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryArming);
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
 					{

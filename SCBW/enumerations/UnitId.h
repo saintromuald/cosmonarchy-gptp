@@ -5,11 +5,19 @@ namespace UnitId
 {
 	enum Enum
 	{
-		// Cosmonarchy \\
+		// Cosmonarchy BW \\
 
 	// AI
-	//	DisruptionField										= 105,		// Disruption Field
-	//	DarkSwarm											= 202,		// Dark Swarm
+	//	Personality											= 105,		// Disruption Field
+	//	Build Order											= 202,		// Dark Swarm
+	//	Build Type											= 85,		// Plasma Shell
+	//	Rush Build Counts									= 177,		// Mineral Field 2
+	//	Greed Build Counts									= 178,		// Mineral Field 3
+	
+	//	Campaign											= 33,		// Scanner Sweep
+	//	Campaign mission									= 208,		// Right Pit Door
+	//	Campaign mission player								= 6,		// Phalanx Turret (Tank Mode)
+	//	Campaign mission dialogue event						= 207,		// Left Pit Door
 
 	// Special
 		TownCenterMarker									= 192,		// Terran Marker

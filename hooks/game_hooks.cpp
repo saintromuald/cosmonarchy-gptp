@@ -1972,7 +1972,7 @@ namespace hooks {
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* target = units.units[i];
 					target->damage_with_custom(5 * 256, damage_type::Explosive, 0, 0, 0, 1, false);
-					// TODO: visually indicate which targets were hit
+					target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 				}
 			}
 		}
