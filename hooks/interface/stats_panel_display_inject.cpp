@@ -382,8 +382,10 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV dialog, EAX
+			POP EAX
 			PUSHAD
 		}
 		hooks::stats_queue_progress(dialog);
@@ -391,7 +393,7 @@ namespace
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 
@@ -403,10 +405,12 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV dialog, EAX
-			MOV index, ECX
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV unk, EAX
+			POP EAX
+			MOV dialog, EAX
+			MOV index, ECX
 			PUSHAD
 		}
 		hooks::stats_morph_progress(dialog, index, unk);
@@ -414,7 +418,7 @@ namespace
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 
@@ -424,8 +428,10 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV dialog, EAX
+			POP EAX
 			PUSHAD
 		}
 		hooks::stats_nuke_silo(dialog);
@@ -477,10 +483,10 @@ namespace hooks
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
 		jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
 
-	//	jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
-	//	jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
-	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1);
-	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1);	
+		jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
+	//	jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2); // Breaks unit training tooltips
+	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1); // Breaks unit training tooltips
+	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1); // Breaks unit training tooltips
 	//	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
 	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
 

@@ -76,8 +76,8 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
 	// Get game strings
-	const char* entry_name = statTxtTblNew->get_string(entryStrIndex);
-	const char* damage_string = statTxtTblNew->get_string(777);					//"Damage:"
+	const char* entry_name = g_stat_txt_tbl_new->get_string(entryStrIndex);
+	const char* damage_string = g_stat_txt_tbl_new->get_string(777);					//"Damage:"
 
 	u8 damage_factor = scbw::get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
@@ -367,8 +367,8 @@ namespace hooks
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 
 		const u16 label_id = upgrades_dat::label[units_dat::armor_upgrade[unit->id]];
-		const char* armor_upgrade_name = statTxtTblNew->get_string(label_id);
-		const char* armor_text = statTxtTblNew->get_string(778); // "Armor:"
+		const char* armor_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);
+		const char* armor_text = g_stat_txt_tbl_new->get_string(778); // "Armor:"
 
 		const u8 unit_size = units_dat::size_type[unit->id];
 		const char* size_label = "Size:";
@@ -658,9 +658,9 @@ namespace hooks
 	const char* get_shield_tooltip_string(Unit* unit) {
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 		const u16 label_id = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
-		const char* shield_upgrade_name = statTxtTblNew->get_string(label_id);
-		//const char* shields_text = statTxtTblNew->get_string(779); // "Shields:"
-		const char* armor_text = statTxtTblNew->get_string(778); // "Armor:"
+		const char* shield_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);
+		//const char* shields_text = g_stat_txt_tbl_new->get_string(779); // "Shields:"
+		const char* armor_text = g_stat_txt_tbl_new->get_string(778); // "Armor:"
 
 		const u8 base_armor = units_dat::armor_amount[unit->id];
 		f32 bonus_armor = get_bonus_armor(unit, base_armor);
@@ -687,7 +687,7 @@ namespace hooks
 		}
 		if (icon_unit_id == UnitId::TerranNuclearMissile)
 		{
-			return statTxtTblNew->get_string(793);											// "Nukes"
+			return g_stat_txt_tbl_new->get_string(793);											// "Nukes"
 		}
 		if (icon_unit_id == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
 		{

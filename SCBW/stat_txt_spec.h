@@ -36,4 +36,4 @@ struct StatTxtStringTbl
 		u32* extendedBuffer;
 	};
 };
-const StatTxtStringTbl* const statTxtTblNew = (const StatTxtStringTbl*)0x006D1238;
+const StatTxtStringTbl* const g_stat_txt_tbl_new = (const StatTxtStringTbl*)0x006D1238;

@@ -59,7 +59,7 @@ namespace hooks
 			}
 			if (!TechCapableUnit)
 			{
-				char* message = (char*)statTxtTblNew->get_string(864);
+				char* message = (char*)g_stat_txt_tbl_new->get_string(864);
 				Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
 				helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, message);
 				return;

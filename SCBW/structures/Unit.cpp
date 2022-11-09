@@ -202,7 +202,7 @@ const char* Unit::get_name(u16 unit_id) {
 	} else if (DatExt::unitNamesTbl != NULL) {
 		return (char*)((StringTbl*)&DatExt::unitNamesTbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
 	} else {
-		return statTxtTblNew->get_string(unit_id + 1);
+		return g_stat_txt_tbl_new->get_string(unit_id + 1);
 	}
 }
 

@@ -292,11 +292,11 @@ namespace hooks
 			}
 			return 0;
 		}
-		if (statTxtTblNew->get_string(570))
+		if (g_stat_txt_tbl_new->get_string(570))
 		{
 			return "";
 		}
-		return (char*)statTxtTblNew->get_string(571); // "Admiral"
+		return (char*)g_stat_txt_tbl_new->get_string(571); // "Admiral"
 		*/
 	}
 
@@ -648,7 +648,7 @@ namespace hooks
 
 		u16 queue = unit->build_queue[unit->build_queue_slot];
 		if (unit->status & UnitStatus::Completed
-			|| !scbw::is_zerg_building_morph_result(queue)) // Fixes lardcode
+		||  !scbw::is_zerg_building_morph_result(queue))
 		{
 			return helper::get_unit_name_stat_string(unit->id);
 		}
@@ -816,7 +816,7 @@ namespace hooks
 	void unit_stat_action_transport(BinDlg* dialog) // 00427C90
 	{
 		Unit* active_unit = *g_active_portrait_unit;
-		// Disabled the block below to temporarily turn off transport UI display, since it has not yet been reimplemented. -Pr0nogo
+		// Disabled the block below to turn off transport UI display, since it has not yet been reimplemented. -Pr0nogo
 		/*
 		if ((*g_is_in_replay || active_unit->player == *g_local_nation_id)
 		&&  !(active_unit->status & UnitStatus::IsHallucination)
@@ -955,7 +955,7 @@ namespace hooks
 				helper::update_dialog(current_dialog);
 			}
 			u32 textId = 0x313 + built_unit->get_race(); // "Mutating", "Adding On", "Opening Warp Rift"
-			helper::add_text_to_dialog(dialog, -40, (char*)statTxtTblNew->get_string(textId));
+			helper::add_text_to_dialog(dialog, -40, (char*)g_stat_txt_tbl_new->get_string(textId));
 		}
 	}
 
@@ -972,7 +972,7 @@ namespace hooks
 
 		helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
 		u32 textId = 0x31F + unit->get_race(); // "Mutating" for Zerg, "Under Construction" for Terran, "Opening Warp Rift" for Protoss
-		helper::add_text_to_dialog(dialog, -30, (char*)statTxtTblNew->get_string(textId));
+		helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl_new->get_string(textId));
 	}
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
@@ -992,7 +992,7 @@ namespace hooks
 			current_dialog = current_dialog->next;
 		}
 
-		if (*g_is_in_replay != 0 || unit->player == *g_local_nation_id)
+		if (*g_is_in_replay || unit->player == *g_local_nation_id)
 		{
 			if (*g_status_screen_func != 5)
 			{
@@ -1084,10 +1084,10 @@ namespace hooks
 				}
 			}
 
-			u32 progressNameTextId = 0;
+			u32 progress_string_id = 0;
 			if (unit->status & UnitStatus::GroundedBuilding && unit->is_frozen())
 			{
-				progressNameTextId = 0x33C; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
+				progress_string_id = 0x33C; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
 			}
 			else
 			{
@@ -1104,17 +1104,17 @@ namespace hooks
 				// Note: original code recalculated unitId/builtUnitId, not done here to optimize things. -GPTP
 				if (scbw::unit_id_is_protoss_warp_factory(unit_id)) // TODO: Revisit this, probably a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
 				{
-					progressNameTextId = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
+					progress_string_id = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
 				}
 				else
 				{
-					progressNameTextId = 0x306; //"Morphing" ("Building" for Terran and Protoss)
+					progress_string_id = 0x306; //"Morphing" ("Building" for Terran and Protoss)
 				}
 
 			}
 
 			// Simplified lots of code here, should work. -GPTP
-			char* statusText = (char*)statTxtTblNew->get_string(progressNameTextId + unit->get_race());
+			char* status_text = (char*)g_stat_txt_tbl_new->get_string(progress_string_id + unit->get_race());
 			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 			{
 				current_dialog = dialog->child_dialog;
@@ -1128,8 +1128,10 @@ namespace hooks
 			{
 				current_dialog = current_dialog->next;
 			}
-			// Spoiler: it didn't work. -Pr0nogo
-		//	current_dialog->psz_text = statusText; // TODO: Fix null crash with this line. Writes "Building" "Warping" etc to terran/protoss unit training bars.
+			// Spoiler: it didn't work.
+			if (current_dialog) { // This nullcheck wasn't in the original code. Currently we crash if this is removed, and text status_text is not written to any visible dialog. IDA was not helpful. -Pr0nogo
+				current_dialog->psz_text = status_text;
+			}
 			while (current_dialog)
 			{
 				if (!(current_dialog->flags & BinDlgFlags::Visible))
@@ -1179,6 +1181,7 @@ namespace hooks
 	}
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
+	// Don't see any progress bar code here... is this even relevant?
 	void stats_morph_progress(BinDlg* dialog, int index, u32 unk) // 00457250
 	{
 		BinDlg* current_dialog;
@@ -1339,7 +1342,7 @@ namespace hooks
 				current_dialog->flags |= BinDlgFlags::Unknown0;
 				helper::update_dialog(current_dialog);
 			}
-			helper::add_text_to_dialog(dialog, -15, (char*)statTxtTblNew->get_string(0x303 + unit->get_race())); // Zerg: "Morphing", Terran: "Building", Protoss: "Opening Warp Gate"
+			helper::add_text_to_dialog(dialog, -15, (char*)g_stat_txt_tbl_new->get_string(0x303 + unit->get_race())); // Zerg: "Morphing", Terran: "Building", Protoss: "Opening Warp Gate"
 		}
 	}
 
@@ -1363,7 +1366,7 @@ namespace hooks
 			}
 			helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
 			// Skipping hardcoded use of statTxtTbl. -GPTP			
-			helper::add_text_to_dialog(dialog, -30, (char*)statTxtTblNew->get_string(0x316)); // Text: "Summoning"
+			helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl_new->get_string(0x316)); // Text: "Summoning"
 			helper::set_text_string(dialog);
 			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 		}

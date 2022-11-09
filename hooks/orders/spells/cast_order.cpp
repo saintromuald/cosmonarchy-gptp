@@ -220,7 +220,7 @@ namespace hooks
 		{
 			if (!helper::can_cast_spell(unit))
 			{
-				char* message = (char*)statTxtTblNew->get_string(876); // Invalid target
+				char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
 				// do the actual transmission corresponding to the message
 				helper::get_stat_txt_string(unit, unit->player, message);
 				// make the unit stop since the order failed
@@ -244,7 +244,7 @@ namespace hooks
 					unit->energy < spell_cost)
 				{
 					u8 raceId = unit->get_race();
-					char* message = (char*)statTxtTblNew->get_string(864 + raceId); // Not enough energy
+					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId); // Not enough energy
 					if (message != nullptr)
 					{
 						// display an error message only for the owner of the unit
