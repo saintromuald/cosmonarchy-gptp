@@ -892,6 +892,7 @@ namespace hooks {
 				if (!unit_ext->timers[TimerStarSovereignInterventionMissiles]) {
 					auto radius = 5 * 32;
 					auto match_func = cosmonarchy_finder_match(unit, Flags::Enemy | Flags::FrontalArc, {});
+					// TODO: unit search, also wtf is the above aids? -Pr0nogo
 					scbw::UnitFinder unit_finder(
 						unit->position.x - radius,
 						unit->position.y - radius,
@@ -1158,29 +1159,6 @@ namespace hooks {
 						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1) - weapons_dat::vertical_offset[10];
 						unit->order_target.unit = 0;
 						unit->order_target.pt = missile_target;
-						auto range = 64;
-
-						auto targ = scbw::UnitFinder::get_nearest_target(
-							missile_target.x - range,
-							missile_target.y - range,
-							missile_target.x + range,
-							missile_target.y + range,
-							unit,
-						[&](Unit* target) {
-							if (target == unit) {
-								return false;
-							}
-							if (scbw::is_allied_to(unit->player, target->player)) {
-								return false;
-							}
-							if (target->status & UnitStatus::Invincible) {
-								return false;
-							}
-							return true;
-						});
-						if (targ) {
-							unit->order_target.unit = targ;
-						}
 						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->current_direction_1);
 					}
 				}
@@ -1983,20 +1961,19 @@ namespace hooks {
 			unit->current_direction_1 = angle;
 		}
 
-		// Cyclops - Flak Cannon Fuse
+		// Cyclops - Fragmentary Shells fuse
 		for (u32 fuse_timer : unit_ext->timer_vectors[TimerVectorCyclopsFuse]) {
 			if (fuse_timer == 1) {
 				helper::create_thingy(SpriteId::FragmentaryExplosion, unit->get_x(), unit->get_y(), 11);
 				helper::play_sound_from_unit(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
-				const u32 radius = 1.5 * 32;
-				scbw::UnitFinder(
-					unit->get_x() - radius,
-					unit->get_y() - radius,
-					unit->get_x() + radius,
-					unit->get_y() + radius
-				).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&](Unit* target) {
+
+				EntryArray units = {};
+				unit_search_radial(&units, unit->position, 2 * 32);
+				for (u32 i = 0; i < units.count; ++i) {
+					Unit* target = units.units[i];
 					target->damage_with_custom(5 * 256, damage_type::Explosive, 0, 0, 0, 1, false);
-				});
+					// TODO: visually indicate which targets were hit
+				}
 			}
 		}
 

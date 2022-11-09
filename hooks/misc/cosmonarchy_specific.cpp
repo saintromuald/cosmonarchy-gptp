@@ -602,11 +602,13 @@ namespace hooks
 		*g_want_visibility_hash_update = 0;
 		*g_region_vision_hash = 0;
 		*g_current_hash_offset = 0;
-		memset(g_is_valid_sprite, 0, SpritesIdLimit); // Reseting validity array to zero (new) -Veeq7
+		memset(g_is_valid_sprite, 0, SpritesIdLimit); // Resetting validity array to zero (new) -Veeq7
+		/*
 		for (u32 i = 0; i < UnitsIdLimit; ++i) {
 			if (!(units_dat::base_property[i] & UnitProperty::Building) && units_dat::staredit_avail_flags[i] & 1) {
 				g_is_valid_sprite[flingy_dat::sprite_id[units_dat::graphic[i]]] = true;
 			}
 		}
+		*/
 	}
 }
