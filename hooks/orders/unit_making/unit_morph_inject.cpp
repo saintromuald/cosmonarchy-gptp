@@ -205,8 +205,8 @@ namespace
 			resources->gas[unit->player] += units_dat::vespene_cost[refundUnitId];
 		}
 
-		u16 cancelChangeUnitId = hooks::get_cancel_morph_revert_id(unit);
-		if (cancelChangeUnitId == UnitId::None)
+		u16 cancel_change_unit_id = hooks::get_cancel_morph_revert_id(unit);
+		if (cancel_change_unit_id == UnitId::None)
 		{
 			if (unit->id == UnitId::TerranNuclearMissile)
 			{
@@ -222,7 +222,7 @@ namespace
 		}
 		else
 		{
-			change_unit_type(unit, cancelChangeUnitId);
+			change_unit_type(unit, cancel_change_unit_id);
 			unit->energy = unitExt->values[ValuePreMorphEnergy];
 			unitExt->units[UnitMorphConnectedUnit] = unit->connected_unit;
 			unit->remaining_build_time = 0;

@@ -344,7 +344,7 @@ namespace hooks {
 			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
 			helper::update_unit_strength(dark_swarm_unit);
 			if (dark_swarm_unit->remove_timer == 0 || dark_swarm_unit->remove_timer > 900) {
-				dark_swarm_unit->remove_timer = 900;	// 0x0384
+				dark_swarm_unit->remove_timer = 900;
 			}
 		}
 	}
@@ -353,7 +353,7 @@ namespace hooks {
 	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet) {
 		u32 broodlings_to_spawn = 3;
 		ActiveTile* tile = scbw::get_active_tile_at_coords(bullet->sprite->position.x, bullet->sprite->position.y);
-		if (tile->has_creep || tile->creep_receeding) {
+		if (tile->has_creep || tile->creep_receding) {
 			broodlings_to_spawn = 5;
 		}
 		Point16 current = bullet->sprite->position;
@@ -530,7 +530,7 @@ namespace hooks {
 		create_disruption_web(attacking_player_id, x, y);
 	}
 
-	u8 stasis_field_overlay(Unit* unit, u8 timer) {
+	u8 stasis_field_overlay(Unit* unit, u8 timer) { // 004F67B0
 		if (!unit->stasis_timer) {
 			Unit* final_unit = unit->subunit;
 			if (!final_unit) {
@@ -583,7 +583,7 @@ namespace hooks {
 				if (v7 < *g_stat_txt_tbl) {
 					v8 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v7 + 1];
 					if (!v8) {
-LABEL_15:
+				LABEL_15:
 						if (v1->order_queue_head) {
 							v1->user_action_flags |= 1u;
 							helper::orders_nothing_2(v1);

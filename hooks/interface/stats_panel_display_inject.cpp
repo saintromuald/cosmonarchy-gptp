@@ -69,45 +69,74 @@ namespace
 	void __declspec(naked) stats_armor_level_wrapper() // 00425600
 	{
 		static BinDlg* dialog;
-		static s32 unused;
-		static u16 buttonRelated;
+		static Unit* unit;
+		static u16 status_screen_index;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV buttonRelated, AX
+			MOV status_screen_index, AX
 			POP EAX
-			MOV unused, EDX
+			MOV unit, EDX
 			MOV dialog, EAX
 			PUSHAD
 		}
-		hooks::stats_armor_level(dialog, unused, buttonRelated);
+		hooks::stats_armor_level(dialog, unit, status_screen_index);
 		__asm {
 			POPAD
-			RETN
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
 		}
 	}
 
 	void __declspec(naked) stats_weapon_level_wrapper() // 00425790
 	{
 		static BinDlg* dialog;
-		static u16 buttonRelated;
+		static u16 status_screen_index;
 		static u8 weapon_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP + 0xC]
-			MOV weapon_id, AL
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV buttonRelated, AX
+			MOV status_screen_index, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV weapon_id, AL
 			POP EAX
 			MOV dialog, EAX
 			PUSHAD
 		}
-		hooks::stats_weapon_level(dialog, buttonRelated, weapon_id);
+		hooks::stats_weapon_level(dialog, status_screen_index, weapon_id);
 		__asm {
 			POPAD
-			RETN
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) stats_shield_level_wrapper() // 00425510
+	{
+		static BinDlg* dialog;
+		static u16 status_screen_index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV status_screen_index, AX
+			POP EAX
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::stats_shield_level(dialog, status_screen_index);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
 		}
 	}
 
@@ -431,19 +460,23 @@ namespace hooks
 		jump_patch(get_unit_rank_string_wrapper,					0x0042F370, 2);
 		jump_patch(draw_unit_kills_string_wrapper,					0x00425DD0, 2);
 		jump_patch(draw_building_info_wrapper,						0x00427890, 3);
-	//	jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
-	//	jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
+		jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
+		jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
+		jump_patch(stats_shield_level_wrapper,						0x00425510, 1);
 		jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
 		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x0045952F, 4);
 		jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);
 		jump_patch(reset_tooltip_info_wrapper_2,					0x004593B0, 0);
 		jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
 		jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
+
 	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
 	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
+
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
 		jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
+
 	//	jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
 	//	jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
 	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1);

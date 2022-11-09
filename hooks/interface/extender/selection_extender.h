@@ -7,6 +7,7 @@ namespace hooks
 	bool is_selected_unit_group_enabled();					// 0049A2C0
 	char select_unit_initial();								// 0049B690
 	char create_all_selection_circles();					// 00499A60
+	void update_selected_unit_data();						// 004C38B0
 
 	void inject_selection_extender_hooks();
 }
@@ -47,7 +48,7 @@ Notes:
 	Line 229198: 0x00499A70  |>  8B349D B88462>/MOV ESI,DWORD PTR DS:[EBX*4+6284B8]		// 00499A60 create_all_selection_circles; hook started by Pr0nogo --  old comment: memory patch address and cmp 12
 	Line 229209: 0x00499A98  |.  89148D B88462>|MOV DWORD PTR DS:[ECX*4+6284B8],EDX
 
-	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo (not working yet)
+	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo
 
 	Line 230073: 0x0049A328   .  BF B8846200   MOV EDI,006284B8							// 0049A320 very small function; https://pastebin.com/raw/jC5bW6LM
 
@@ -93,7 +94,7 @@ Notes:
 
 	Line 230048: 0x0049A303  |.  81FA E8846200 |CMP EDX,006284E8						// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo
 
-	Line 230076: 0x0049A334   .  BF E8846200   MOV EDI,006284E8							// not shown in ida, ?
+	Line 230076: 0x0049A334   .  BF E8846200   MOV EDI,006284E8							// 0049A320 very small function; https://pastebin.com/raw/jC5bW6LM
 
 	Line 230481: 0x0049A758  |.  81C7 E8846200 ADD EDI,006284E8							// 0049A740 clear_selection; unhooked
 	Line 230490: 0x0049A770  |.  81C6 E8846200 ADD ESI,006284E8							//

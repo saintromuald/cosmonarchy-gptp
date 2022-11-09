@@ -179,7 +179,7 @@ namespace hooks
 						if (in_range)
 						{
 							ActiveTile a = scbw::get_stupid_reference_to_active_tile_at(i * 32, j * 32);
-							if (a.has_creep || a.temporary_creep || a.creep_receeding)
+							if (a.has_creep || a.temporary_creep || a.creep_receding)
 							{
 								// why is there nothing here LMAO
 							}
@@ -202,15 +202,17 @@ namespace hooks
 			}
 			if (result_00414680 == 0)
 			{
-				bool isZergMainBuilding =
+				bool can_spawn_larva =
 					unit->id == UnitId::ZergHachirosk
 				||  unit->id == UnitId::ZergCaphrolosk
 				||  unit->id == UnitId::ZergGathtelosk
 				||  unit->id == UnitId::ZergSibraelosk
-				||  unit->id == UnitId::ZergLarvoskColony;
+				||  unit->id == UnitId::ZergNephrilosk
+				||  unit->id == UnitId::ZergLarvoskColony
+				||  unit->id == UnitId::ZergOcsalColony;
 
 				u8 order_id;
-				if (isZergMainBuilding)
+				if (can_spawn_larva)
 				{
 					order_id = OrderId::SpawningLarva;
 				}

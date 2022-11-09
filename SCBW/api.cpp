@@ -2152,13 +2152,16 @@ namespace scbw {
 			case SpriteId::Corpse_Cleric:
 			case SpriteId::Corpse_Eidolon:
 			case SpriteId::Corpse_Apostle:
+			case SpriteId::Corpse_Vulture:
 			case SpriteId::Corpse_Blackjack:
 			case SpriteId::Corpse_Scribe:
+			case SpriteId::Corpse_Zealot:
 			case SpriteId::Corpse_Dracadin:
 			case SpriteId::Corpse_Larva:
 			case SpriteId::Corpse_Egg:
 			case SpriteId::Corpse_Droleth:
 			case SpriteId::Corpse_Zethrokor:
+			case SpriteId::Corpse_Quazilisk:
 			case SpriteId::Corpse_Hydralisk:
 			case SpriteId::Corpse_Izirokor:
 			case SpriteId::Corpse_Bactalisk:
@@ -2714,5 +2717,28 @@ namespace scbw {
 			}
 		}
 		return false;
+	}
+
+	// Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
+	u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
+	{
+		if (weapon_id == WeaponId::CohortGaussPistols
+			|| weapon_id == WeaponId::HarakanFlameThrower
+			|| weapon_id == WeaponId::HypnagogueKaleidoscopeCannon
+			|| weapon_id == WeaponId::PazuzuJupiterDriver
+			|| weapon_id == WeaponId::ZealotPsiBlades
+			|| weapon_id == WeaponId::LegionnairePsiSabers
+			|| weapon_id == WeaponId::AmaranthPsiCleaver
+			|| weapon_id == WeaponId::GolemBloodlessAssault
+			|| weapon_id == WeaponId::PariahIconoclastBlades
+			|| weapon_id == WeaponId::StarSovereignCelestialCannon
+			|| weapon_id == WeaponId::LiiraliskHollowedSpores
+			|| weapon_id == WeaponId::BactaliskCorrosiveAcid
+			|| weapon_id == WeaponId::AlmaksaliskPiercingSpines
+			|| weapon_id == WeaponId::KeskathalorScreamingVenom)
+		{
+			return 2;
+		}
+		return weapons_dat::damage_factor[weapon_id];
 	}
 }

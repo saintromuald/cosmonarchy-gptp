@@ -558,8 +558,8 @@ namespace helper {
 	//// stats_panel_display
 	void stat_nuke_count(BinDlg* dialog, u32 index);																				// 00425310
 	void stat_hangar_count(BinDlg* dialog, u32 index);																				// 004253D0
-	void StatsShieldLevel(BinDlg* dialog, u32 index);																				// 00425510
-	void StatsArmorLevel(BinDlg* dialog, u32 index);																				// 00425600
+	void stats_shield_level(BinDlg* dialog, u32 index);																				// 00425510
+	void stats_armor_level(BinDlg* dialog, u32 index);																				// 00425600
 	void stat_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id);																// 00425790
 	bool stat_spidermine_count(BinDlg* dialog, u32 index);																			// 00426300
 
@@ -1477,4 +1477,6 @@ namespace helper {
 	u32 ai_finish_unit(Unit* unit);																											// 00433640
 	s32 get_turret_position(u32 player, Point16* out_pos);																					// 00437670
 	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);														// 00444630
+
+	char update_buttonset();																												// 00458DE0
 }

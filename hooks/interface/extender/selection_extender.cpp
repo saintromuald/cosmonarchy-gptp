@@ -29,7 +29,6 @@ namespace hooks {
 
 	bool is_selected_unit_group_enabled() // 0049A2C0
 	{
-		return false;
 		for (u32 i = 0; i < SelectionCap; ++i)
 		{
 			Unit* unit_from_selection = active_player_selection->unit[i];
@@ -132,19 +131,19 @@ namespace hooks {
 										u32 sprite_flags_4 = sprite_flags_3 ^ (sprite_flags_3 ^ ((sprite_flags_3 & 0xFE) + 2)) & 6;
 										previous_sprite_2->flags = sprite_flags_4;
 										if ((sprite_flags_4 & (SpriteFlags::Flag01 | SpriteFlags::Flag02)) <= 2
-											&& !helper::create_selection_circle(previous_sprite_2, g_selection_circle_color[previous_player], ImageId::SelectionCircleDashed_22pixels))
+										&&  !helper::create_selection_circle(previous_sprite_2, g_selection_circle_color[previous_player], ImageId::SelectionCircleDashed_22pixels))
 										{
 											previous_sprite_2->flags &= 0xF9u;
 										}
 									}
 								}
 								result = i_3 + 1;
-								player_selection = (player_selection + 4);
+								player_selection = (Unit*)((char*)player_selection + 4);
 							}
 						}
 					}
 					++iterations_2;
-				//	player_selection = &(*player_selection_2)[12]; // Obviously wrong
+				//	player_selection = (Unit*)&(*player_selection_2)[12]; // Needs to be fixed
 					++player_selection_2;
 				}
 			}
@@ -244,5 +243,41 @@ namespace hooks {
 			}
 		}
 		return player_zeroed;
+	}
+
+	// Ported from GPTP. -Pr0nogo
+	void update_selected_unit_data() { // 004C38B0
+		Unit** current_unit_offset = (Unit**)g_client_selection_group;
+		Unit* unit_at_selection_top = 0;
+		for (u32 i = 0; i < SelectionCap; i++)
+		{
+			g_client_selection_group->unit[i] = active_player_selection->unit[i];
+		}
+
+		*g_client_selection_count = 0;
+		*g_active_portrait_unit = 0;
+		while (*current_unit_offset < g_client_selection_group_end) {
+			Unit* current_unit = *current_unit_offset;
+
+			if (current_unit) {
+				if (helper::compare_unit_rank(current_unit, unit_at_selection_top) != 0)
+				{
+					unit_at_selection_top = current_unit;
+				}
+				(*g_client_selection_count)++;
+			}
+			current_unit_offset++;
+		}
+
+		*g_active_portrait_unit = unit_at_selection_top;
+		if (*g_client_selection_count == 1)
+		{
+			g_client_selection_group->unit[0] = *g_active_portrait_unit;
+			for (u32 i = 1; i < SelectionCap; i++)
+			{
+				g_client_selection_group->unit[i] = 0;
+			}
+		}
+		helper::update_buttonset();
 	}
 }

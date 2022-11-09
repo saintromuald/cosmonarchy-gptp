@@ -386,7 +386,7 @@ SCBW_DATA(s8*, visionUpdated,				0x0051CE9C);
 SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 
 // For stats_weapon_level / stats_armor_level
-SCBW_DATA(s16*, unkUpgradeCount,			0x006CA940);
+SCBW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ever written to.
 
 // For isUnitCloaked
 SCBW_DATA(Unit**,	first_invisible_unit,		0x0063FF5C);

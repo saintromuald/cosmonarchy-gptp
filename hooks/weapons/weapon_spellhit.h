@@ -1,4 +1,3 @@
-//The header file for the Weapon/Spell hit hook module.
 #pragma once
 #include <SCBW/structures/Unit.h>
 #include <SCBW/structures/Bullet.h>
@@ -26,7 +25,7 @@ namespace hooks
 	Unit* create_disruption_web(u32 player, s32 x, s32 y);
 	s32 ensnare_proc(Unit* target, Unit* attacker);									// 004F46C0
 	void create_scanner(Unit* unit);												// 00464E40
-	u8 stasis_field_overlay(Unit* a1, u8 a2);
+	u8 stasis_field_overlay(Unit* unit, u8 timer);									// 004F67B0
 	char disable_unit(Unit* unit);													// 00492CC0
 	bool maelstrom_proc(Unit* target, Unit* source);								// 004F6760
 	Unit* iterate_units_at_location_target_proc(Box16* location,					// 004E8280
@@ -39,4 +38,4 @@ namespace hooks
 }
 
 // Hooks could be confirmed thanks to 0048B770 CBullet_Damage that call almost all of them
-// Hit Features not supported by these hooks may be hardcoded in that function (like the MatralethParasite Hit effect)
+// Hit features not supported by these hooks may be hardcoded in that function (like the Matraleth Parasite hit effect)
