@@ -689,7 +689,7 @@ namespace hooks {
 				if (building && building->status & UnitStatus::Completed) {
 					unit_ext->values[ValueSwarmhold] = scbw::unit_id_swarmhold_value(building->id);
 					u32 unit_id = scbw::unit_id_get_larva_type(building->id);
-					if (unit->id != unit_id) {
+					if (unit_id != UnitId::None && unit->id != unit_id) {
 						helper::replace_unit_with_id(unit, unit_id);
 					}
 				}
