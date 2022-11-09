@@ -18,6 +18,7 @@ namespace hooks {
 	Unit* remove_references_node_worker(Unit* node, Unit* worker);								// 00468EF0
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);								// 004686D0
 	void remove_harvesters(Unit* node);															// 00468770
+	void update_mineral_field_image(u16 unused, Unit* unit);									// 00468830
 
 	void inject_harvest_resource();
 }

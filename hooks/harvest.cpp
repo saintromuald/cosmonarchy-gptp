@@ -26,7 +26,34 @@ u32 get_harvest_amount(Unit* unit) {
 			case UnitId::ResourceMineralField:
 			case UnitId::ResourceMineralFieldType2:
 			case UnitId::ResourceMineralFieldType3:
-				return 8;
+			{
+				switch (unit->building.resource.resource_amount)
+				{
+					case 1:
+					{
+						return 1;
+					}
+					case 2:
+					case 3:
+					{
+						return 2;
+					}
+					case 4:
+					case 5:
+					{
+						return 4;
+					}
+					case 6:
+					case 7:
+					{
+						return 6;
+					}
+					default:
+					{
+						return 8;
+					}
+				}
+			}
 
 			case UnitId::ResourceVespeneRidge:
 				return 2;
@@ -71,14 +98,7 @@ namespace hooks {
 
 		u8 return_value = std::max((s32)resource->building.resource.resource_amount, 2);
 		if (resource->building.resource.resource_amount >= harvest_amount) {
-		//	resource->building.resource.resource_amount -= harvest_count;
-			if (is_mineral) {
-				if (resource->building.resource.resource_amount > 0) {
-					helper::update_mineral_patch_image(resource);	// equivalent to setResourceCount @ 00468830 ?
-				} else {
-				//	resource->building.resource.resource_amount = 0;
-				}
-			} else if (resource->building.resource.resource_amount < harvest_amount && is_gas_container(resource->id)) {
+			if (resource->building.resource.resource_amount < harvest_amount && is_gas_container(resource->id)) {
 			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and new_sound
 			}
 			return_value = harvest_amount;
@@ -547,6 +567,43 @@ namespace hooks {
 			worker->worker.harvest_link.prev = 0;
 			worker->worker.harvest_link.next = 0;
 			worker->worker.harvest_target = 0;
+		}
+	}
+
+	// Hooked to change the breakpoints for mineral images.
+	void update_mineral_field_image(u16 unused, Unit* unit) // 00468830
+	{
+		IscriptAnimation::Enum anim;
+		switch (unit->building.resource.resource_amount)
+		{
+		case 1:
+		{
+			anim = IscriptAnimation::Landing;
+		} break;
+		case 2:
+		case 3:
+		{
+			anim = IscriptAnimation::SpecialState1;
+		} break;
+		case 4:
+		case 5:
+		{
+			anim = IscriptAnimation::SpecialState2;
+		} break;
+		case 6:
+		case 7:
+		{
+			anim = IscriptAnimation::AlmostBuilt;
+		} break;
+		default:
+		{
+			anim = IscriptAnimation::Built;
+		} break;
+		}
+
+		if (anim != unit->building.resource.resource_iscript) {
+			unit->building.resource.resource_iscript = anim;
+			unit->sprite->play_iscript_animation(anim);
 		}
 	}
 }

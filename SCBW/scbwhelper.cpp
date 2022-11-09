@@ -6778,20 +6778,31 @@ namespace helper {
 
 	void update_mineral_patch_image(Unit* mineralPatch) {
 		IscriptAnimation::Enum anim;
-		if (mineralPatch->building.resource.resource_amount >= 750) {
-			anim = IscriptAnimation::WorkingToIdle;
-		}
-		else if (mineralPatch->building.resource.resource_amount >= 500) {
-			anim = IscriptAnimation::AlmostBuilt;
-		}
-		else if (mineralPatch->building.resource.resource_amount >= 250) {
-			anim = IscriptAnimation::SpecialState2;
-		}
-		else if (mineralPatch->building.resource.resource_amount >= 50) {
-			anim = IscriptAnimation::SpecialState1;
-		}
-		else {
-			anim = IscriptAnimation::Landing;
+		switch (mineralPatch->building.resource.resource_amount)
+		{
+			case 1:
+			{
+				anim = IscriptAnimation::WorkingToIdle;
+			} break;
+			case 2:
+			case 3:
+			{
+				anim = IscriptAnimation::AlmostBuilt;
+			} break;
+			case 4:
+			case 5:
+			{
+				anim = IscriptAnimation::SpecialState2;
+			} break;
+			case 6:
+			case 7:
+			{
+				anim = IscriptAnimation::SpecialState1;
+			} break;
+			default:
+			{
+				anim = IscriptAnimation::Landing;
+			} break;
 		}
 
 		if (anim != mineralPatch->building.resource.resource_iscript) {

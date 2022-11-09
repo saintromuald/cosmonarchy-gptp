@@ -247,6 +247,21 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) update_mineral_field_image_wrapper() { // 00468830
+		static u16 unused;
+		static Unit* unit;
+		__asm {
+			MOV unused, AX
+			MOV unit, ECX
+			PUSHAD
+		}
+		hooks::update_mineral_field_image(unused, unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -266,6 +281,7 @@ namespace hooks {
 		jump_patch(remove_references_node_worker_wrapper,					0x00468EF0,	4);
 		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
 		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
+		jump_patch(update_mineral_field_image_wrapper,						0x00468830,	6);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 	}

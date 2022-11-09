@@ -1658,16 +1658,36 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossOptecton:
 			{
-				/*
 				// Optecton - Forward March
 				if (!unit_ext->timers[TimerOptectonSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, unit_ext, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), true, false) {
+					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), false, false) {
 						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::OptectonSkybondRay];
 					} else {
 						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
-				*/
+			} break;
+			case UnitId::ResourceMineralField:
+			case UnitId::ResourceMineralFieldType2:
+			case UnitId::ResourceMineralFieldType3:
+			{
+				if (unit->building.resource.resource_amount > 8) {
+					unit->building.resource.resource_amount = 8; // TODO: don't set this every frame - it is just to update the UI when selected! -Pr0nogo
+				}
+			} break;
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExcisant:
+			{
+				unit->building.resource.resource_amount = 6;
+			} break;
+			case UnitId::ResourceVespeneGeyser:
+			{
+				unit->building.resource.resource_amount = 4;
+			} break;
+			case UnitId::ResourceVespeneRidge:
+			{
+				unit->building.resource.resource_amount = 2;
 			} break;
 		}
 
