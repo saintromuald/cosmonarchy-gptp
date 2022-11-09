@@ -2153,10 +2153,14 @@ namespace scbw {
 			case SpriteId::Corpse_Eidolon:
 			case SpriteId::Corpse_Apostle:
 			case SpriteId::Corpse_Vulture:
+			case SpriteId::Corpse_Cyclops:
+			case SpriteId::Corpse_Goliath:
 			case SpriteId::Corpse_Blackjack:
 			case SpriteId::Corpse_Scribe:
 			case SpriteId::Corpse_Zealot:
 			case SpriteId::Corpse_Dracadin:
+			case SpriteId::Corpse_Ecclesiast:
+			case SpriteId::Corpse_Legionnaire:
 			case SpriteId::Corpse_Larva:
 			case SpriteId::Corpse_Egg:
 			case SpriteId::Corpse_Droleth:

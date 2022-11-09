@@ -820,6 +820,10 @@ namespace SpriteId
 		Corpse_Vulture				= 813,
 		Corpse_Quazilisk			= 814,
 		Corpse_Zealot				= 815,
+		Corpse_Cyclops				= 816,
+		Corpse_Goliath				= 817,
+		Corpse_Ecclesiast			= 818,
+		Corpse_Legionnaire			= 819,
 
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
