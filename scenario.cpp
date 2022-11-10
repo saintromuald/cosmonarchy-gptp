@@ -1189,60 +1189,57 @@ void init_fraud_units() {
 		switch (get_fraud_class(i)) {
 			case FraudClass_Fraud:
 			{
-				// Workers
 				add_fraud_unit(i, RaceId::Terran,  {12, UnitId::TerranMason});
-				add_fraud_unit(i, RaceId::Protoss, {12, UnitId::ProtossScribe});
-				add_fraud_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
-				 
-				// Utility
 				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranAncile});
+
+				add_fraud_unit(i, RaceId::Protoss, {12, UnitId::ProtossScribe});
 				add_fraud_unit(i, RaceId::Protoss, {1, UnitId::ProtossWitness});
+
+				add_fraud_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
 				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergOvileth});
 			} break;
 			case FraudClass_Hero:
 			{
-				// Workers
 				add_fraud_unit(i, RaceId::Terran,  {10, UnitId::TerranMason});
-				add_fraud_unit(i, RaceId::Protoss, {10, UnitId::ProtossScribe});
-				add_fraud_unit(i, RaceId::Zerg,    {10, UnitId::ZergDroleth});
 				add_fraud_unit(i, RaceId::Terran,  {2, UnitId::TerranTalos});
-				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossArtisan});
-				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Terran,  {2, UnitId::TerranAncile});
 
-				// Utility
-				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
+				add_fraud_unit(i, RaceId::Protoss, {10, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossArtisan});
 				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
+
+				add_fraud_unit(i, RaceId::Zerg,    {10, UnitId::ZergDroleth});
+				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
 				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
+
 			} break;
 			case FraudClass_Super:
 			{
-				// Workers
 				add_fraud_unit(i, RaceId::Terran,  {8, UnitId::TerranMason});
-				add_fraud_unit(i, RaceId::Protoss, {8, UnitId::ProtossScribe});
-				add_fraud_unit(i, RaceId::Zerg,    {8, UnitId::ZergDroleth});
 				add_fraud_unit(i, RaceId::Terran,  {4, UnitId::TerranTalos});
-				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossArtisan});
-				add_fraud_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
 
-				// Utility
-				add_fraud_unit(i, RaceId::Terran,  {2, UnitId::TerranSeraph});
-				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossWitness});
-				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergIroleth});
+				add_fraud_unit(i, RaceId::Protoss, {8, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossArtisan});
+				add_fraud_unit(i, RaceId::Protoss, {3, UnitId::ProtossWitness});
+
+				add_fraud_unit(i, RaceId::Zerg,    {8, UnitId::ZergDroleth});
+				add_fraud_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergAlaszileth});
 			} break;
 			case FraudClass_God:
 			{
-				// Workers
 				add_fraud_unit(i, RaceId::Terran,  {6, UnitId::TerranMason});
-				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossScribe});
-				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergDroleth});
 				add_fraud_unit(i, RaceId::Terran,  {6, UnitId::TerranTalos});
-				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossArtisan});
-				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Terran,  {2, UnitId::TerranSeraph});
 
-				// Utility
-				add_fraud_unit(i, RaceId::Terran,  {3, UnitId::TerranSeraph});
-				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossWitness});
-				add_fraud_unit(i, RaceId::Zerg,    {3, UnitId::ZergIroleth});
+				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossArtisan});
+				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossWitness});
+
+				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergDroleth});
+				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergAlaszileth});
 			} break;
 		}
 	}
