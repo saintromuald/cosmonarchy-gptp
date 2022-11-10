@@ -505,17 +505,14 @@ namespace hooks {
 				anim = IscriptAnimation::Landing;
 			} break;
 			case 2:
-			case 3:
 			{
 				anim = IscriptAnimation::SpecialState1;
 			} break;
 			case 4:
-			case 5:
 			{
 				anim = IscriptAnimation::SpecialState2;
 			} break;
 			case 6:
-			case 7:
 			{
 				anim = IscriptAnimation::AlmostBuilt;
 			} break;
