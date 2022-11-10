@@ -285,17 +285,6 @@ namespace hooks
 				// Searing Acid - Geszithalor behavior
 				data.final_damage += data.damage_divisor * 10 * 256;
 			} break;
-			case WeaponId::CharlatanFerventBlaster:
-			case WeaponId::EmpressFadingBioplasma:
-			case WeaponId::LiiraliskHollowedSpores:
-			case WeaponId::MutaliskGlaveWurm:
-			{
-				// Lithe Organelle - bounce damage
-				data.final_damage *= 1 - data.damage_divisor * 0.33;
-				if (data.final_damage < 0) {
-					data.final_damage = 0;
-				}
-			} break;
 			case WeaponId::SavantDiscoidRailgun:
 			{
 				// Entropy Gauntlets
@@ -313,6 +302,18 @@ namespace hooks
 				if (data.attacker) {
 					UnitExt* attacker_ext = get_unit_ext(data.attacker);
 					data.final_damage += (attacker_ext->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
+				}
+			} break;
+			case WeaponId::CharlatanFerventBlaster:
+			case WeaponId::EmpressFadingBioplasma:
+			case WeaponId::LiiraliskHollowedSpores:
+			case WeaponId::MutaliskGlaveWurm:
+			default:
+			{
+				// Lithe Organelle - bounce damage
+				data.final_damage *= 1 - data.damage_divisor * 0.33;
+				if (data.final_damage < 0) {
+					data.final_damage = 0;
 				}
 			} break;
 		}
