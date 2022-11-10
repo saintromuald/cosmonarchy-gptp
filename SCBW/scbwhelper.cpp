@@ -6778,7 +6778,7 @@ namespace helper {
 
 	void update_mineral_patch_image(Unit* mineralPatch) {
 		IscriptAnimation::Enum anim;
-		switch (mineralPatch->building.resource.resource_amount)
+		switch (mineralPatch->building.resource.resource_yield)
 		{
 			case 1:
 			{

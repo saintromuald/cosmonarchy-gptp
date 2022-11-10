@@ -90,7 +90,7 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
-		*g_supplies_available_temp = (*g_active_portrait_unit)->building.resource.resource_amount;
+		*g_supplies_available_temp = (*g_active_portrait_unit)->building.resource.resource_yield;
 		if (*g_status_screen_func != 15)
 		{
 			helper::hide_optional_status_screen_controls(a1);
@@ -107,13 +107,13 @@ namespace hooks
 				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[796];
 			else
 				v3 = "";
-			v7 = (u16)(*g_active_portrait_unit)->building.resource.resource_amount;
+			v7 = (u16)(*g_active_portrait_unit)->building.resource.resource_yield;
 LABEL_14:
 			sprintf_s(g_struct_char->buf, 260, "%s %d", v3, v7);
 			v8 = g_struct_char;
 			goto LABEL_19;
 		}
-		v4 = (*g_active_portrait_unit)->building.resource.resource_amount;
+		v4 = (*g_active_portrait_unit)->building.resource.resource_yield;
 		if (v4)
 		{
 			if (*g_stat_txt_tbl > 0x31Cu)

@@ -1667,43 +1667,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ResourceMineralField:
-			case UnitId::ResourceMineralFieldType2:
-			case UnitId::ResourceMineralFieldType3:
-			{
-				u16* yield = &unit->building.resource.resource_amount; // TODO: don't set this every frame - it is just to update the UI when selected! -Pr0nogo
-				if (*yield >= 750) {
-					*yield = 8;
-				} else if (*yield >= 500) {
-					*yield = 6;
-				} else if (*yield >= 250) {
-					*yield = 4;
-				} else if (*yield >= 8) {
-					*yield = 8;
-				} else if (*yield >= 6) {
-					*yield = 6;
-				} else if (*yield >= 4) {
-					*yield = 4;
-				} else if (*yield >= 2) {
-					*yield = 2;
-				} else {
-					*yield = 1;
-				}
-			} break;
-			case UnitId::TerranReservoir:
-			case UnitId::ProtossAquifer:
-			case UnitId::ZergExcisant:
-			{
-				unit->building.resource.resource_amount = 6;
-			} break;
-			case UnitId::ResourceVespeneGeyser:
-			{
-				unit->building.resource.resource_amount = 4;
-			} break;
-			case UnitId::ResourceVespeneRidge:
-			{
-				unit->building.resource.resource_amount = 2;
-			} break;
 		}
 
 		// Gladius Binding Plasma

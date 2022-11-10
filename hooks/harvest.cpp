@@ -27,7 +27,7 @@ u32 get_harvest_amount(Unit* unit) {
 			case UnitId::ResourceMineralFieldType2:
 			case UnitId::ResourceMineralFieldType3:
 			{
-				switch (unit->building.resource.resource_amount)
+				switch (unit->building.resource.resource_yield)
 				{
 					case 1:
 					{
@@ -96,9 +96,9 @@ namespace hooks {
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
 
-		u8 return_value = std::max((s32)resource->building.resource.resource_amount, 2);
-		if (resource->building.resource.resource_amount >= harvest_amount) {
-			if (resource->building.resource.resource_amount < harvest_amount && is_gas_container(resource->id)) {
+		u8 return_value = std::max((s32)resource->building.resource.resource_yield, 2);
+		if (resource->building.resource.resource_yield >= harvest_amount) {
+			if (resource->building.resource.resource_yield < harvest_amount && is_gas_container(resource->id)) {
 			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and new_sound
 			}
 			return_value = harvest_amount;
@@ -574,7 +574,7 @@ namespace hooks {
 	void update_mineral_field_image(u16 unused, Unit* unit) // 00468830
 	{
 		IscriptAnimation::Enum anim;
-		switch (unit->building.resource.resource_amount)
+		switch (unit->building.resource.resource_yield)
 		{
 		case 1:
 		{

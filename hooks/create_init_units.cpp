@@ -361,6 +361,46 @@ namespace hooks
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				unit->remove_timer = 0;
+
+				switch (unit->id) {
+					case UnitId::ResourceMineralField:
+					case UnitId::ResourceMineralFieldType2:
+					case UnitId::ResourceMineralFieldType3:
+					{
+						u16* yield = &unit->building.resource.resource_yield;
+						if (*yield >= 750) {
+							*yield = 8;
+						} else if (*yield >= 500) {
+							*yield = 6;
+						} else if (*yield >= 250) {
+							*yield = 4;
+						} else if (*yield >= 8) {
+							*yield = 8;
+						} else if (*yield >= 6) {
+							*yield = 6;
+						} else if (*yield >= 4) {
+							*yield = 4;
+						} else if (*yield >= 2) {
+							*yield = 2;
+						} else {
+							*yield = 1;
+						}
+					} break;
+					case UnitId::TerranReservoir:
+					case UnitId::ProtossAquifer:
+					case UnitId::ZergExcisant:
+					{
+						unit->building.resource.resource_yield = 6;
+					} break;
+					case UnitId::ResourceVespeneGeyser:
+					{
+						unit->building.resource.resource_yield = 4;
+					} break;
+					case UnitId::ResourceVespeneRidge:
+					{
+						unit->building.resource.resource_yield = 2;
+					} break;
+				}
 			}
 			return unit;
 		}

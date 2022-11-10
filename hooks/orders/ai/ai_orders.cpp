@@ -878,7 +878,7 @@ namespace hooks {
 			return 1;
 		}
 		if (unit->id == UnitId::ResourceVespeneRidge || unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExcisant) {
-			return 2 + (unit->building.resource.resource_amount != 0);
+			return 2 + (unit->building.resource.resource_yield != 0);
 		}
 		return 0;
 	}
