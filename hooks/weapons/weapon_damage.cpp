@@ -319,11 +319,7 @@ namespace hooks
 			} break;
 			default:
 			{
-				u32 divisor = data.damage_divisor;
-				if (divisor == 0) {
-					divisor = 1;
-					scbw::printf("Incorrect weapon hit %d", data.weapon_id);
-				}
+				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
 				data.final_damage = data.final_damage / divisor + (target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
