@@ -374,7 +374,9 @@ namespace hooks
 							*yield = 6;
 						} else if (*yield >= 250) {
 							*yield = 4;
-						} else if (*yield >= 8) {
+						} else if (*yield > 8) {
+							*yield = 2;
+						} else if (*yield <= 8) {
 							*yield = 8;
 						} else if (*yield >= 6) {
 							*yield = 6;
