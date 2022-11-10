@@ -7,6 +7,9 @@ namespace hooks {
 	extern u32 quickcasting_command_card;
 	extern Unit* transport_ui_unit;
 
+	void init_unit(Unit* unit);
+	void tick_unit(Unit* unit, bool unit_is_hidden);
+
 	void ui_button_click(BinDlg* dialog);
 	u32 __cdecl set_ingame_input_procs(); // 00484CC0
 	bool game_on();

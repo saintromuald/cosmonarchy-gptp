@@ -273,8 +273,6 @@ namespace hooks {
 		return 0;
 	}
 
-	void tick_unit(Unit* unit, bool unit_is_hidden);
-
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
@@ -584,7 +582,9 @@ namespace hooks {
 	}
 
 	// Fix facing angles for specific units
-	static void init_unit(Unit* unit, UnitExt* unit_ext) {
+	void init_unit(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueUnitInit] = unit->id + 1;
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
@@ -594,6 +594,45 @@ namespace hooks {
 			} break;
 			case UnitId::TerranSentinel: {
 				helper::turn_unit(unit, 96);
+			} break;
+			case UnitId::ResourceMineralField:
+			case UnitId::ResourceMineralFieldType2:
+			case UnitId::ResourceMineralFieldType3:
+			{
+				u16* yield = &unit->building.resource.resource_yield;
+				if (*yield >= 750) {
+					*yield = 8;
+				} else if (*yield >= 500) {
+					*yield = 6;
+				} else if (*yield >= 250) {
+					*yield = 4;
+				} else if (*yield > 8) {
+					*yield = 2;
+				} else if (*yield <= 8) {
+					*yield = 8;
+				} else if (*yield >= 6) {
+					*yield = 6;
+				} else if (*yield >= 4) {
+					*yield = 4;
+				} else if (*yield >= 2) {
+					*yield = 2;
+				} else {
+					*yield = 1;
+				}
+			} break;
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExcisant:
+			{
+				unit->building.resource.resource_yield = 6;
+			} break;
+			case UnitId::ResourceVespeneGeyser:
+			{
+				unit->building.resource.resource_yield = 4;
+			} break;
+			case UnitId::ResourceVespeneRidge:
+			{
+				unit->building.resource.resource_yield = 2;
 			} break;
 		}
 	}
@@ -621,8 +660,7 @@ namespace hooks {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->status & UnitStatus::Completed) {
 			if (unit_ext->values[ValueUnitInit] != unit->id + 1) {
-				unit_ext->values[ValueUnitInit] = unit->id + 1;
-				init_unit(unit, unit_ext);
+				init_unit(unit);
 			}
 		}
 

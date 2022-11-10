@@ -21,53 +21,7 @@ u32 get_gas_tier(Unit* unit) {
 }
 
 u32 get_harvest_amount(Unit* unit) {
-	if (unit) {
-		switch (unit->id) {
-			case UnitId::ResourceMineralField:
-			case UnitId::ResourceMineralFieldType2:
-			case UnitId::ResourceMineralFieldType3:
-			{
-				switch (unit->building.resource.resource_yield)
-				{
-					case 1:
-					{
-						return 1;
-					}
-					case 2:
-					case 3:
-					{
-						return 2;
-					}
-					case 4:
-					case 5:
-					{
-						return 4;
-					}
-					case 6:
-					case 7:
-					{
-						return 6;
-					}
-					default:
-					{
-						return 8;
-					}
-				}
-			}
-
-			case UnitId::ResourceVespeneRidge:
-				return 2;
-
-			case UnitId::ResourceVespeneGeyser:
-				return 4;
-
-			case UnitId::TerranReservoir:
-			case UnitId::ProtossAquifer:
-			case UnitId::ZergExcisant:
-				return 6;
-		}
-	}
-	return 0;
+	return unit ? unit->building.resource.resource_yield : 0; // For now we were albe to simplify this function to reading resource yield field -Veeq7
 }
 
 namespace hooks {
@@ -94,70 +48,42 @@ namespace hooks {
 	}
 
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
-		u32 harvest_amount = get_harvest_amount(resource);
-
-		u8 return_value = std::max((s32)resource->building.resource.resource_yield, 2);
-		if (resource->building.resource.resource_yield >= harvest_amount) {
-			if (resource->building.resource.resource_yield < harvest_amount && is_gas_container(resource->id)) {
-			//	scbw::show_error_message_with_sfx(resource->player, 875, 20); // Gas depleted message and new_sound
-			}
-			return_value = harvest_amount;
-		}
-		return return_value;
+		return get_harvest_amount(resource);
 	}
 
-	void transfer_resource_to_worker(Unit* worker, Unit* resource) // 004696D0
-	{
+	void transfer_resource_to_worker(Unit* worker, Unit* resource) { // 004696D0
 		u32 chunk_image_id;
 		bool is_mineral = false;
-		bool bEndThere = false;
+		bool no_chunk_image = false;
 
-		if (resource->id >= UnitId::ResourceMineralField &&
-			resource->id <= UnitId::ResourceMineralFieldType3)
-		{
+		if (resource->id >= UnitId::ResourceMineralField && resource->id <= UnitId::ResourceMineralFieldType3) {
 			chunk_image_id = ImageId::MineralChunkType1;
 			is_mineral = true;
-		}
-		else if (resource->id == UnitId::ProtossAquifer)
-		{
+		} else if (resource->id == UnitId::ProtossAquifer) {
 			chunk_image_id = ImageId::ProtossGasOrbType1;
-		}
-		else if (resource->id == UnitId::ZergExcisant)
-		{
+		} else if (resource->id == UnitId::ZergExcisant) {
 			chunk_image_id = ImageId::ZergGasSacType1;
-		}
-		else if (resource->id == UnitId::TerranReservoir)
-		{
+		} else if (resource->id == UnitId::TerranReservoir) {
 			chunk_image_id = ImageId::TerranGasTankType1;
-		}
-		else if (resource->id == UnitId::ResourceVespeneRidge
-			|| resource->id == UnitId::ResourceVespeneGeyser)
-		{
+		} else if (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser) {
 			chunk_image_id = ImageId::GasRaw;
-		}
-		else
-		{
-			bEndThere = true;
+		} else {
+			no_chunk_image = true;
 		}
 
-		if (!bEndThere)
-		{
+		if (!no_chunk_image) {
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
-			if (resource_amount < get_harvest_amount(resource))
-			{
+			if (resource_amount < get_harvest_amount(resource)) {
 				chunk_image_id += 1;	// Use depleted resource image
 			}
-			if (resource_amount > 0)
-			{
-				if (worker->resource_type & ResourceType::Either)
-				{
+			if (resource_amount > 0) {
+				if (worker->resource_type & ResourceType::Either) {
 					helper::remove_powerup_image_overlay(worker);
 					worker->resource_type = ResourceType::None;
 				}
 
 				// Resource return multipliers
-				switch (scbw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency))
-				{
+				switch (scbw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency)) {
 					case 0:
 					case 99:
 					{
