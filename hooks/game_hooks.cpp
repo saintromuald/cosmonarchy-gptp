@@ -1671,8 +1671,17 @@ namespace hooks {
 			case UnitId::ResourceMineralFieldType2:
 			case UnitId::ResourceMineralFieldType3:
 			{
-				if (unit->building.resource.resource_amount > 8) {
-					unit->building.resource.resource_amount = 8; // TODO: don't set this every frame - it is just to update the UI when selected! -Pr0nogo
+				u16* yield = &unit->building.resource.resource_amount; // TODO: don't set this every frame - it is just to update the UI when selected! -Pr0nogo
+				if (*yield <= 1) {
+					*yield = 1;
+				} else if (*yield <= 2) {
+					*yield = 2;
+				} else if (*yield <= 4) {
+					*yield = 4;
+				} else if (*yield <= 6) {
+					*yield = 6;
+				} else {
+					*yield = 8;
 				}
 			} break;
 			case UnitId::TerranReservoir:
