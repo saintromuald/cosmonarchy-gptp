@@ -196,111 +196,48 @@ namespace
 		}
 	}
 
-	void __declspec(naked) delete_worker_ai_wrapper() // 00404470
-	{
-		static WorkerAi* workerAi;
-		static WorkerAiArray** workerAiArray;
-		__asm
-		{
-			MOV workerAi, EAX
-			MOV workerAiArray, EDX
+	void __declspec(naked) delete_worker_ai_wrapper() { // 00404470
+		static WorkerAi* worker_ai;
+		static WorkerAiList* worker_ai_list;
+		__asm {
+			MOV worker_ai, EAX
+			MOV worker_ai_list, EDX
 			PUSHAD
 		}
-		hooks::delete_worker_ai(workerAi, *workerAiArray);
-		__asm
-		{
+		hooks::delete_worker_ai(worker_ai, worker_ai_list);
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) delete_building_ai_wrapper() // 00404500
-	{
-		static BuildingAi* buildingAi;
-		static BuildingAiArray** buildingAiArray;
-		__asm
-		{
-			MOV buildingAi, EAX
-			MOV buildingAiArray, EDX
+	void __declspec(naked) delete_building_ai_wrapper() { // 00404500
+		static BuildingAi* building_ai;
+		static BuildingAiList* building_ai_list;
+		__asm {
+			MOV building_ai, EAX
+			MOV building_ai_list, EDX
 			PUSHAD
 		}
-		hooks::delete_building_ai(buildingAi, *buildingAiArray);
-		__asm
-		{
+		hooks::delete_building_ai(building_ai, building_ai_list);
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) delete_worker_ai_nullcheck() // 00404470
-	{
-		static const u32 back_jump = 0x00404475;
-		static const u32 cmp_jump = 0x0040447A;
-		static WorkerAi* ai;
-		static WorkerAiArray** aiArray;
-		__asm
-		{
-			MOV ai, EAX
-			MOV aiArray, EDX
+	void __declspec(naked) delete_military_ai_wrapper() { // 004371D0
+		static MilitaryAi* military_ai;
+		static AiRegion* ai_region;
+		__asm {
+			MOV military_ai, EAX
+			MOV ai_region, EDX
 			PUSHAD
 		}
-		if (!ai)
-		{
-			__asm
-			{
-				POPAD
-				MOV EAX, 0
-				RETN
-			}
-		}
-		if ((*aiArray)->worker_ais[0].link.next == ai)
-		{
-			__asm
-			{
-				POPAD
-				JMP cmp_jump
-			}
-		}
-		__asm
-		{
+		hooks::delete_military_ai(military_ai, ai_region);
+		__asm {
 			POPAD
-			JMP back_jump
-		}
-	}
-
-	void __declspec(naked) delete_building_ai_nullcheck() // 00404500
-	{
-		static const u32 back_jump = 0x00404505;
-		static const u32 cmp_jump = 0x0040450A;
-		static BuildingAi* ai;
-		static BuildingAiArray** aiArray;
-		__asm
-		{
-			MOV ai, EAX
-			MOV aiArray, EDX
-			PUSHAD
-		}
-		if (!ai)
-		{
-			__asm
-			{
-				POPAD
-				MOV EAX, 0
-				RETN
-			}
-		}
-		if ((*aiArray)->building_ais[0].link.next == ai)
-		{
-			__asm
-			{
-				POPAD
-				JMP cmp_jump
-			}
-		}
-		__asm
-		{
-			POPAD
-			JMP back_jump
+			RETN
 		}
 	}
 
@@ -438,10 +375,9 @@ namespace hooks {
 	//	jump_patch(add_unit_ai_free_worker_check_jump_wrapper,	0x00433DE7, 1);
 	//	jump_patch(iterate_building_ai_wrapper,					0x00435770, 1);
 
-	//	jump_patch(delete_worker_ai_wrapper,					0x00404470, 0);
-	//	jump_patch(delete_building_ai_wrapper,					0x00404500, 0);
-	//	jump_patch(delete_worker_ai_nullcheck,					0x00404470, 0);
-	//	jump_patch(delete_building_ai_nullcheck,				0x00404500, 0);
+		jump_patch(delete_worker_ai_wrapper,					0x00404470, 0);
+		jump_patch(delete_building_ai_wrapper,					0x00404500, 0);
+		jump_patch(delete_military_ai_wrapper,					0x004371D0, 0);
 		jump_patch(ai_remove_unit_ai_wrapper,					0x004A1E50, 0);
 		jump_patch(ai_remove_worker_or_building_ai_wrapper,		0x00434C90, 0);
 	//	jump_patch(ai_training_overlord_wrapper,				0x00435770, 1);

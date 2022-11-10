@@ -1152,7 +1152,7 @@ namespace helper {
 	}
 
 	// for AI_AddUnitAI
-	BuildingAi* create_building_ai(BuildingAiArray** buildingAI) {
+	BuildingAi* create_building_ai(BuildingAiList* buildingAI) {
 		const u32 Func_AI_CreateBuildingAi = 0x004044C0;
 		static BuildingAi* result;
 		__asm {
@@ -6908,7 +6908,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	void delete_building_ai(BuildingAi* building, BuildingAiArray** buildingList) {
+	void delete_building_ai(BuildingAi* building, BuildingAiList* buildingList) {
 		const u32 Func_DeleteBuildingAI = 0x00404500;
 		__asm {
 			PUSHAD
@@ -6919,11 +6919,11 @@ namespace helper {
 		}
 	}
 
-	void delete_worker_ai(WorkerAi* ai, WorkerAiArray** workerArray) {
+	void delete_worker_ai(WorkerAi* ai, WorkerAiList* workerList) {
 		const u32 Func_DeleteWorkerAi = 0x00404470;
 		__asm {
 			PUSHAD
-			MOV EDX, workerArray
+			MOV EDX, workerList
 			MOV EAX, ai
 			CALL Func_DeleteWorkerAi
 			POPAD

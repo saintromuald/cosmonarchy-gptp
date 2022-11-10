@@ -152,7 +152,7 @@ namespace helper {
 	char add_worker_structure_ai(Unit* worker, AiTown* town);										// 00433DD0
 
 	// For AI_AddUnitAI
-	BuildingAi* create_building_ai(BuildingAiArray** buildingAI);
+	BuildingAi* create_building_ai(BuildingAiList* buildingAI);
 	void issue_order_targeting_nothing(Unit* unit, u8 order_id);
 	Unit* set_secondary_order(Unit* result, char order_id);
 	void ai_make_guard(s32 player, Unit* unit);
@@ -591,8 +591,8 @@ namespace helper {
 	Unit* zerg_dual_birth(Unit* unit);																							    // 0045D910
 	void order_new_unit_to_rally(Unit* unit, Unit* factory);																		// 00466F50
 	void ai_training_unit(Unit* unit, Unit* creator);																				// 004A2830
-	void delete_building_ai(BuildingAi* building, BuildingAiArray** buildingList);                                                  // 00404500
-	void delete_worker_ai(WorkerAi* ai, WorkerAiArray** workerArray);                                                               // 00404470
+	void delete_building_ai(BuildingAi* building, BuildingAiList* buildingList);                                                    // 00404500
+	void delete_worker_ai(WorkerAi* ai, WorkerAiList* workerList);                                                                  // 00404470
 	void delete_ai_town_if_needed(AiTown* town);                                                                                    // 004347E0
 
 	//// hallucination_spell

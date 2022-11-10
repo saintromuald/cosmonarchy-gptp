@@ -1794,7 +1794,7 @@ namespace scbw {
 	AiTown* get_closest_town(u32 player, Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		AiTown* best_town = 0;
-		for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+		for (AiTown* town = g_ai_active_town_array[player].first; town; town = town->prev) {
 			if (!town->inited) {
 				continue;
 			}
@@ -1817,7 +1817,7 @@ namespace scbw {
 
 	u32 get_ai_region_military_count(AiRegion* ai_region) {
 		u32 count = 0;
-		for (MilitaryAi* military_ai = ai_region->first_military_ai; military_ai; military_ai = military_ai->link.prev) {
+		for (MilitaryAi* military_ai = ai_region->military_ai.first; military_ai; military_ai = military_ai->link.prev) {
 			count += 1;
 		}
 		return count;
@@ -2682,10 +2682,10 @@ namespace scbw {
 	// Based on the function at 0x00462670 -Veeq7
 	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position) {
 		GuardAiList* guard_list = &g_player_guard_list->player[player];
-		GuardAi* guard_ai = guard_list->guard_array->first_free_guard;
+		GuardAi* guard_ai = guard_list->array->first_free_guard;
 		if (guard_ai) {
 			// Remove from free list
-			guard_list->guard_array->first_free_guard = guard_ai->link.prev;
+			guard_list->array->first_free_guard = guard_ai->link.prev;
 			if (guard_ai->link.prev) {
 				guard_ai->link.prev->link.next = 0;
 			}

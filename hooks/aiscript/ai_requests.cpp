@@ -47,14 +47,14 @@ namespace hooks
 	// Hooked to investigate crashes - Pr0nogo
 	AiTown* ai_progress_build(s32 player, s32* minerals, s32* gas) // 00434480
 	{
-		AiTown* result = gi_ai_active_town_array[player].first;
-		AiTown* first_town = gi_ai_active_town_array[player].first;
+		AiTown* result = g_ai_active_town_array[player].first;
+		AiTown* first_town = g_ai_active_town_array[player].first;
 		if (result)
 		{
 			do
 			{
-				WorkerAi* first_worker = first_town->workers;
-				if (first_town->workers)
+				WorkerAi* first_worker = first_town->worker_ai.first;
+				if (first_town->worker_ai.first)
 				{
 					do
 					{
@@ -887,9 +887,9 @@ namespace hooks
 
 		s32 has_excess_workers = false;
 		AiTown* town = 0;
-		for (town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+		for (town = g_ai_active_town_array[player].first; town; town = town->prev) {
 			helper::cancel_queued_trains(town);
-			if (town->workers) {
+			if (town->worker_ai.first) {
 				if (town->worker_count > town->worker_limit) {
 					has_excess_workers = true;
 				}
@@ -959,7 +959,7 @@ namespace hooks
 		// Last town handling
 		if (town) {
 			if (has_excess_workers) {
-				for (AiTown* town = gi_ai_active_town_array[player].first; town; town = town->prev) {
+				for (AiTown* town = g_ai_active_town_array[player].first; town; town = town->prev) {
 					Unit* main_building = town->main_building;
 					if (main_building && main_building->status & UnitStatus::Completed) {
 						if (town->worker_count < town->worker_limit) {

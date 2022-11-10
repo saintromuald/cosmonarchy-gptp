@@ -12,8 +12,9 @@ namespace hooks
 	void* add_worker_structure_ai(Unit* unit, AiTown* town);													// 00433DD0
 	void iterate_building_ai(Unit* result, Unit* parent);														// 00435770
 	void remove_unit_ai(Unit* unit, UnitAi* unitAI);															// 004A1E50
-	void delete_worker_ai(WorkerAi* workerAi, WorkerAiArray* workerAiArray);									// 00404470
-	void delete_building_ai(BuildingAi* buildingAi, BuildingAiArray* buildingAiArray);							// 00404500
+	void delete_worker_ai(WorkerAi* worker_ai, WorkerAiList* worker_ai_list);									// 00404470
+	void delete_building_ai(BuildingAi* building_ai, BuildingAiList* building_ai_list);							// 00404500
+	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region);										// 004371D0
 	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI);												// 00434C90
 	void ai_training_overlord(Unit* newUnit, Unit* oldUnit);													// 00435770
 	void ai_order_lurker_burrow(Unit* unit);																	// 0043C230

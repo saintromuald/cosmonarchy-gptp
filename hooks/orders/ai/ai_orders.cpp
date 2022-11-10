@@ -369,7 +369,7 @@ namespace hooks {
 		// Count own and allied AI force
 		for (u32 i = 0; i < 8; ++i) {
 			if (scbw::is_allied_to(region->player, i)) {
-				for (MilitaryAi* military_ai = scbw::get_ai_region(i, region->region)->first_military_ai; military_ai; military_ai = military_ai->link.prev) {
+				for (MilitaryAi* military_ai = scbw::get_ai_region(i, region->region)->military_ai.first; military_ai; military_ai = military_ai->link.prev) {
 					Unit* unit = (Unit*)military_ai->unit;
 					if (!unit || unit->status & UnitStatus::InBuilding) {
 						continue;
@@ -490,7 +490,7 @@ namespace hooks {
 			return false;
 		}
 
-		MilitaryAi* military_ai = unit_ai->region->first_military_ai;
+		MilitaryAi* military_ai = unit_ai->region->military_ai.first;
 		for (; military_ai; military_ai = military_ai->link.prev) {
 			Unit* unit_it = (Unit*)military_ai->unit;
 			if (unit_it && unit_it->sprite && unit_it != unit) {
@@ -530,8 +530,8 @@ namespace hooks {
 			}
 
 			s32 player = (u8)town->player;
-			if (gi_ai_active_town_array[player].first == town) {
-				gi_ai_active_town_array[player].first = town->prev;
+			if (g_ai_active_town_array[player].first == town) {
+				g_ai_active_town_array[player].first = town->prev;
 			}
 
 			if (town->next) {
@@ -542,7 +542,7 @@ namespace hooks {
 				town->prev->next = town->next;
 			}
 
-			result = gi_ai_active_town_array[player].last;
+			result = g_ai_active_town_array[player].last;
 			town->next = 0;
 			town->prev = result[100].prev;
 			AiTown* previous_town = result[100].prev;
@@ -1233,7 +1233,7 @@ namespace hooks {
 				gas_count = max_gas_worker_count;
 			}
 
-			for (WorkerAi* worker_ai = town->workers; worker_ai; worker_ai = worker_ai->link.prev) {
+			for (WorkerAi* worker_ai = town->worker_ai.first; worker_ai; worker_ai = worker_ai->link.prev) {
 				Unit* worker = worker_ai->parent;
 				u8 unit_order = worker->main_order_id;
 				if (unit_order == OrderId::ConstructingBuilding
@@ -1367,7 +1367,7 @@ namespace hooks {
 	s32 ai_worker_repair_controller(Unit* worker, AiTown* town) { // 00433C70
 		u32 best_score = 0;
 		Unit* repairee = 0;
-		for (BuildingAi* building_ai = town->buildings; building_ai; building_ai = building_ai->link.prev) {
+		for (BuildingAi* building_ai = town->building_ai.first; building_ai; building_ai = building_ai->link.prev) {
 			Unit* building = building_ai->parent;
 			if (building->connected_unit || !helper::ai_is_building_safe(building)) {
 				continue;
@@ -1388,7 +1388,7 @@ namespace hooks {
 				best_score = score;
 			}
 		}
-		if (!town->buildings || !repairee) {
+		if (!town->building_ai.first || !repairee) {
 			if (!town->building_scv) {
 				town->building_scv = worker;
 			}
@@ -1665,7 +1665,7 @@ namespace hooks {
 				slowest_ground_speed = slowest_unit->flingy_top_speed;
 			}
 		}
-		for (MilitaryAi* first_military = region->first_military_ai; first_military; first_military = first_military->link.prev) {
+		for (MilitaryAi* first_military = region->military_ai.first; first_military; first_military = first_military->link.prev) {
 			Unit* military = first_military->unit;
 			if (military->status & UnitStatus::InAir) {
 				if (military->flingy_top_speed < slowest_air_speed) {
@@ -2098,7 +2098,7 @@ namespace hooks {
 		{
 			if (player_has_transport(source->player))
 			{
-				MilitaryAi* first_ai = source->first_military_ai;
+				MilitaryAi* first_ai = source->military_ai.first;
 				if (!first_ai)
 				{
 					return 1;

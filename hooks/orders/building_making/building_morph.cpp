@@ -479,7 +479,7 @@ namespace hooks
 				WorkerAi* worker_ai = (WorkerAi*)unit->unit_ai;
 				AiTown* unit_town = worker_ai->town;
 				unit->unit_ai = 0;
-				helper::delete_worker_ai(worker_ai, &unit_town->free_workers);
+				helper::delete_worker_ai(worker_ai, &unit_town->worker_ai);
 				--unit_town->worker_count;
 				helper::add_worker_structure_ai(unit, unit_town);
 			}

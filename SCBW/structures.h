@@ -675,70 +675,8 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 //-------- AI related stuff --------//
 
+struct AiRegion;
 struct AiTown;
-struct MilitaryAi;
-struct MilitaryAiArray; // fuck you visual studio
-struct AiRegion
-{
-	/*0x00*/  u16 region;
-	/*0x02*/  u16 target_region;
-	/*0x04*/  u8  player;
-	/*0x05*/  u8  state;
-	/*0x06*/  u8  defense_priority;
-	/*0x07*/  u8  defend_time; // One unit is around ~60 frames (333 region updates per frame out of 2499 regions * 8 players)
-							   // The countdown is 1 based, meaning the first tick is ignored
-	/*0x08*/  u8  flags;
-	/*0x09*/  u8  field_9;
-	/*0x0A*/  u16 ground_unit_count;
-	/*0x0C*/  u16 ground_strength_needed;
-	/*0x0E*/  u16 air_strength_needed;
-	/*0x10*/  u16 ground_strength;
-	/*0x12*/  u16 air_strength;
-	/*0x14*/  u16 ground_strength_full;
-	/*0x16*/  u16 air_strength_full;
-	/*0x18*/  u16 air_strength_enemy;
-	/*0x1A*/  u16 ground_strength_enemy;
-	/*0x1C*/  Unit* air_target;
-	/*0x20*/  Unit* ground_target;
-	/*0x24*/  Unit* slowest_unit;
-	/*0x28*/  Unit* follow_target;
-	/*0x2C*/  MilitaryAiArray* military;
-	/*0x30*/  MilitaryAi* first_military_ai;
-};
-
-C_ASSERT(sizeof(AiRegion) == 52);
-
-#define RegionAirOnly 0x1FFD
-
-struct Region
-{
-	u16		accessibility_flags;	// 0x00
-	u16		group_index;			// 0x02
-	u16		tile_count;				// 0x04
-	u8		path_count;				// 0x06
-	u8		neighbor_count;			// 0x07
-	u32		field_8;				// 0x08
-	u16*	neighbors;				// 0x0C
-	u32		region_center_x;		// 0x10
-	u32		region_center_y;		// 0x14
-	u16		left;					// 0x18
-	u16		top;					// 0x1A
-	u16		right;					// 0x1C
-	u16		bottom;					// 0x1E
-	u32		properties;				// 0x20
-	u32		field_24;				// 0x24
-	u32		field_28;				// 0x28
-	u16		local_data[10];			// 0x2C
-};
-C_ASSERT(sizeof(Region) == 64);
-
-struct RegionArray
-{
-	u16 region_count;
-	u8 _dc2[0x449fa];
-	Region regions[5000];
-	u8 _dc92bfc[0x4e24];
-};
 
 struct GuardAi {
 	Link<GuardAi> link;				// 0x0, 0x4
@@ -805,14 +743,29 @@ struct WorkerAiArray {
 	WorkerAi* first_free_worker;
 };
 
+struct WorkerAiList {
+	WorkerAiArray* array;
+	WorkerAi* first;
+};
+
 struct BuildingAiArray {
 	BuildingAi building_ais[1000];
 	BuildingAi* first_free_building;
 };
 
+struct BuildingAiList {
+	BuildingAiArray* array;
+	BuildingAi* first;
+};
+
 struct MilitaryAiArray {
 	MilitaryAi military_ais[1000];
 	MilitaryAi* first_free_military;
+};
+
+struct MilitaryAiList {
+	MilitaryAiArray* array;
+	MilitaryAi* first;
 };
 
 struct GuardAiArray {
@@ -821,12 +774,73 @@ struct GuardAiArray {
 };
 
 struct GuardAiList {
-	GuardAiArray* guard_array;
+	GuardAiArray* array;
 	GuardAi* first;
 };
 
 struct GuardAiListPlayers {
 	GuardAiList player[8];
+};
+
+struct AiRegion
+{
+	/*0x00*/  u16 region;
+	/*0x02*/  u16 target_region;
+	/*0x04*/  u8  player;
+	/*0x05*/  u8  state;
+	/*0x06*/  u8  defense_priority;
+	/*0x07*/  u8  defend_time; // One unit is around ~60 frames (333 region updates per frame out of 2499 regions * 8 players)
+							   // The countdown is 1 based, meaning the first tick is ignored
+	/*0x08*/  u8  flags;
+	/*0x09*/  u8  field_9;
+	/*0x0A*/  u16 ground_unit_count;
+	/*0x0C*/  u16 ground_strength_needed;
+	/*0x0E*/  u16 air_strength_needed;
+	/*0x10*/  u16 ground_strength;
+	/*0x12*/  u16 air_strength;
+	/*0x14*/  u16 ground_strength_full;
+	/*0x16*/  u16 air_strength_full;
+	/*0x18*/  u16 air_strength_enemy;
+	/*0x1A*/  u16 ground_strength_enemy;
+	/*0x1C*/  Unit* air_target;
+	/*0x20*/  Unit* ground_target;
+	/*0x24*/  Unit* slowest_unit;
+	/*0x28*/  Unit* follow_target;
+	/*0x2C*/  MilitaryAiList military_ai;
+};
+
+C_ASSERT(sizeof(AiRegion) == 52);
+
+#define RegionAirOnly 0x1FFD
+
+struct Region
+{
+	u16		accessibility_flags;	// 0x00
+	u16		group_index;			// 0x02
+	u16		tile_count;				// 0x04
+	u8		path_count;				// 0x06
+	u8		neighbor_count;			// 0x07
+	u32		field_8;				// 0x08
+	u16*	neighbors;				// 0x0C
+	u32		region_center_x;		// 0x10
+	u32		region_center_y;		// 0x14
+	u16		left;					// 0x18
+	u16		top;					// 0x1A
+	u16		right;					// 0x1C
+	u16		bottom;					// 0x1E
+	u32		properties;				// 0x20
+	u32		field_24;				// 0x24
+	u32		field_28;				// 0x28
+	u16		local_data[10];			// 0x2C
+};
+C_ASSERT(sizeof(Region) == 64);
+
+struct RegionArray
+{
+	u16 region_count;
+	u8 _dc2[0x449fa];
+	Region regions[5000];
+	u8 _dc92bfc[0x4e24];
 };
 
 struct TownReq {
@@ -843,28 +857,25 @@ struct TownReq {
 	u16 id;
 };
 
-struct AiTown
-{
-	AiTown* prev;						//	0x0
-	AiTown* next;						//	0x4
-	WorkerAiArray* free_workers;		//	0x8
-	WorkerAi* workers;					//	0xC
-	BuildingAiArray* free_buildings;	//	0x10
-	BuildingAi* buildings;				//	0x14
-	u8 player;							//	0x18
-	u8 inited;							//	0x19
-	u8 worker_count;					//	0x1a
-	u8 worker_limit;					//	0x1b
-	u8 resarea;							//	0x1c
-	u8 resource_units_not_set;			//	0x1d
-	u8 in_battle;						//	0x1e
-	u8 unk1f;							//	0x1f
-	Point16 position;					//	0x20
-	Unit* main_building;				//	0x24
-	Unit* building_scv;					//	0x28
-	Unit* mineral;						//	0x2c
-	Unit* gas_buildings[3];				//	0x30
-	TownReq requests[0x64];				//	0x3c
+struct AiTown {
+	AiTown* prev;							//	0x0
+	AiTown* next;							//	0x4
+	WorkerAiList worker_ai;					//	0x8
+	BuildingAiList building_ai;				//	0x10
+	u8 player;								//	0x18
+	u8 inited;								//	0x19
+	u8 worker_count;						//	0x1a
+	u8 worker_limit;						//	0x1b
+	u8 resarea;								//	0x1c
+	u8 resource_units_not_set;				//	0x1d
+	u8 in_battle;							//	0x1e
+	u8 unk1f;								//	0x1f
+	Point16 position;						//	0x20
+	Unit* main_building;					//	0x24
+	Unit* building_scv;						//	0x28
+	Unit* mineral;							//	0x2c
+	Unit* gas_buildings[3];					//	0x30
+	TownReq requests[0x64];					//	0x3c
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
