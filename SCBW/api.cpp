@@ -2083,10 +2083,10 @@ namespace scbw {
 			AiScript* ai_script = helper::run_aiscript(&area, player, block, is_bw);
 			if (ai_script) {
 				Point16 center = {};
-				center.x = area.x + area.w / 2;
-				center.y = area.y + area.h / 2;
+				center.x = area.left + (area.right - area.left)   / 2;
+				center.y = area.top  + (area.top   - area.bottom) / 2;
 
-				ai_script->flags &= 0x3;
+				ai_script->flags &= 0x7;
 				ai_script->flags |= scbw::get_closest_resarea(center) << 3;
 			}
 			return ai_script;
@@ -2106,12 +2106,10 @@ namespace scbw {
 
 	AiScript* run_default_ai(u32 player, Point16 pos) {
 		u32 race = g_player_table[player].race;
-		if (race == RaceId::Terran) {
-			return scbw::run_ai(player, pos, 'xCMT');
-		} else if (race == RaceId::Protoss) {
-			return scbw::run_ai(player, pos, 'xCMP');
-		} else if (race == RaceId::Zerg) {
-			return scbw::run_ai(player, pos, 'xCMZ');
+		switch (race) {
+			case RaceId::Terran:	return scbw::run_ai(player, pos, 'xCMT');
+			case RaceId::Protoss:	return scbw::run_ai(player, pos, 'xCMP');
+			case RaceId::Zerg:		return scbw::run_ai(player, pos, 'xCMZ');
 		}
 		return 0;
 	}
