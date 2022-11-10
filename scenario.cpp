@@ -1225,9 +1225,9 @@ void init_fraud_units() {
 				add_fraud_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
 
 				// Utility
-				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
-				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
-				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
+				add_fraud_unit(i, RaceId::Terran,  {2, UnitId::TerranSeraph});
+				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossWitness});
+				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergIroleth});
 			} break;
 			case FraudClass_God:
 			{
@@ -1240,9 +1240,9 @@ void init_fraud_units() {
 				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
 
 				// Utility
-				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
-				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
-				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
+				add_fraud_unit(i, RaceId::Terran,  {3, UnitId::TerranSeraph});
+				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossWitness});
+				add_fraud_unit(i, RaceId::Zerg,    {3, UnitId::ZergIroleth});
 			} break;
 		}
 	}
