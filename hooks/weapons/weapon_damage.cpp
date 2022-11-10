@@ -275,6 +275,11 @@ namespace hooks
 		data.final_damage += 256 * target_ext->values[ValueObservanceRend];
 
 		switch (data.weapon_id) { // Damage divisor calc
+			case WeaponId::ArchitectDispersiveSalvo:
+			{
+				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
+				data.final_damage /= divisor;
+			} break;
 			case WeaponId::GeszithalorAcidSpore:
 			{
 				// Searing Acid - Geszithalor behavior
@@ -287,6 +292,9 @@ namespace hooks
 			{
 				// Lithe Organelle - bounce damage
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
+				if (data.final_damage < 0) {
+					data.final_damage = 0;
+				}
 			} break;
 			case WeaponId::SavantDiscoidRailgun:
 			{
@@ -307,11 +315,6 @@ namespace hooks
 					data.final_damage += (attacker_ext->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
 				}
 			} break;
-			default:
-			{
-				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
-				data.final_damage /= divisor;
-			}
 		}
 		data.final_damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 
