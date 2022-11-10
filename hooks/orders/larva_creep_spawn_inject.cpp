@@ -183,7 +183,6 @@ namespace
 		}
 	}
 
-	// Not a real function lol -- I think it is actually an inline function because every instance is almost exactly the same
 	void __declspec(naked) in_creep_area_call()
 	{
 		static s32 x, y;

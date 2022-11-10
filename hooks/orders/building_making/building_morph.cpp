@@ -336,6 +336,7 @@ namespace hooks
 				}
 				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 
+				u32 previous_unit_id = unit->id;
 				u32 previous_hitpoints = unit->previous_hitpoints * 256;
 				helper::replace_unit_with_id(unit, unit->create_origin);
 				helper::update_building_ai(unit);
@@ -352,7 +353,7 @@ namespace hooks
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->set_hitpoints(previous_hitpoints);
 
-				helper::update_creep_disappearance_unit_id(unit->id, unit->get_x(), unit->get_y(), false);
+				helper::update_creep_disappearance_unit_id(previous_unit_id, unit->get_x(), unit->get_y(), false);
 			}
 		}
 	}

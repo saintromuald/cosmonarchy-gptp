@@ -102,20 +102,16 @@ namespace hooks
 		}
 	}
 
-	void secondary_order_spread_creep_spawning_larva(Unit* unit)
-	{
+	void secondary_order_spread_creep_spawning_larva(Unit* unit) {
 		if (unit->id == UnitId::ZergHachirosk
 			|| unit->id == UnitId::ZergCaphrolosk
 			|| unit->id == UnitId::ZergGathtelosk
 			|| unit->id == UnitId::ZergSibraelosk
-			|| unit->id == UnitId::ZergLarvoskColony)
-		{
+			|| unit->id == UnitId::ZergLarvoskColony) {
 			secondary_order_spawning_larva(unit);
 		}
-		if (unit->building.creep_timer != 0)
-		{
-			if (unit->building.creep_timer >= 2)
-			{
+		if (unit->building.creep_timer != 0) {
+			if (unit->building.creep_timer >= 2) {
 				unit->building.creep_timer -= 2;
 
 				BuildingModifier modifier = get_building_modifier(unit, 0, false);
@@ -126,23 +122,18 @@ namespace hooks
 						unit->building.creep_timer = 0;
 					}
 				}
-			}
-			else
-			{
+			} else {
 				unit->building.creep_timer = 0;
 			}
 
-		}
-		else
-		{
+		} else {
 			u8 result_00414680;
 			unit->building.creep_timer = 15;
 			// look for a place to spawn creep on
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergGathtelosk with unit->id if giving specific buildings different creep bounding rectangles in get_creep_region
 			result_00414680 = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
-			if (unit->id == 180 && result_00414680 != 0)
-			{
+			if (unit->id == 180 && result_00414680 != 0) {
 				u32 current_tile_x = unit->sprite->position.x / 32;
 				u32 current_tile_y = unit->sprite->position.y / 32;
 				s32 width_x = 6;
@@ -153,20 +144,16 @@ namespace hooks
 				s32 x2 = current_tile_x + width_x;
 				s32 y2 = current_tile_y + width_y;
 
-				if (x1 < 0)
-				{
+				if (x1 < 0) {
 					x1 = 0;
 				}
-				if (y1 < 0)
-				{
+				if (y1 < 0) {
 					y1 = 0;
 				}
-				if (x2 >= g_map_tile_size->width)
-				{
+				if (x2 >= g_map_tile_size->width) {
 					x2 = g_map_tile_size->width - 1;
 				}
-				if (y2 >= g_map_tile_size->height)
-				{
+				if (y2 >= g_map_tile_size->height) {
 					y2 = g_map_tile_size->height - 1;
 				}
 
@@ -181,18 +168,14 @@ namespace hooks
 						bool in_range = ((256 * X * X) + (100 * Y * Y)) < 1300000;
 						// adjust value 1300000 to get slightly different radius
 
-						if (in_range)
-						{
+						if (in_range) {
 							ActiveTile a = scbw::get_stupid_reference_to_active_tile_at(i * 32, j * 32);
 							if (a.has_creep || a.temporary_creep || a.creep_receding)
 							{
 								// why is there nothing here LMAO
-							}
-							else
-							{
+							} else {
 								// can spread
-								if (!a.always_unbuildable && a.is_walkable)
-								{
+								if (!a.always_unbuildable && a.is_walkable) {
 
 									mustspread = 1;
 								}
@@ -200,33 +183,21 @@ namespace hooks
 						}
 					}
 				}
-				if (!mustspread)
-				{
+				if (!mustspread) {
 					result_00414680 = 0;
 				}
 			}
-			if (result_00414680 == 0)
-			{
-				bool can_spawn_larva =
-					unit->id == UnitId::ZergHachirosk
-				||  unit->id == UnitId::ZergCaphrolosk
-				||  unit->id == UnitId::ZergGathtelosk
-				||  unit->id == UnitId::ZergSibraelosk
-				||  unit->id == UnitId::ZergNephrilosk
-				||  unit->id == UnitId::ZergLarvoskColony
-				||  unit->id == UnitId::ZergOcsalColony;
+			if (result_00414680 == 0) {
+				bool can_spawn_larva = unit->id == UnitId::ZergHachirosk
+									|| unit->id == UnitId::ZergCaphrolosk
+									|| unit->id == UnitId::ZergGathtelosk
+									|| unit->id == UnitId::ZergSibraelosk
+									|| unit->id == UnitId::ZergNephrilosk
+									|| unit->id == UnitId::ZergLarvoskColony
+									|| unit->id == UnitId::ZergOcsalColony;
 
-				u8 order_id;
-				if (can_spawn_larva)
-				{
-					order_id = OrderId::SpawningLarva;
-				}
-				else
-				{
-					order_id = OrderId::Nothing2;
-				}
-				if (unit->secondary_order_id != order_id)
-				{
+				u8 order_id = can_spawn_larva ? OrderId::SpawningLarva : OrderId::Nothing2;
+				if (unit->secondary_order_id != order_id) {
 					unit->secondary_order_id = order_id;
 					unit->secondary_order_pos.y = 0;
 					unit->secondary_order_pos.x = 0;
@@ -239,33 +210,25 @@ namespace hooks
 
 	// Returns the bounding rectangle (in tiles) of the maximum extent of creep around a source or the building footprint of a non-source creep building.
 	// Return value is if the building is a creep source (spreads creep) or not
-	bool get_creep_region(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal)
-	{
+	bool get_creep_region(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal) {
 		// Default maximum bounding count
 		const static s32 maxCreepAreaLeft = 320; // 10 tiles
 		const static s32 maxCreepAreaRight = 320; // 10 tiles
 		const static s32 maxCreepAreaUp = 200; // 6.25 tiles
 		const static s32 maxCreepAreaDown = 200; // 6.25 tiles
-		if (spreads_creep(unit_id, defRetVal))
-		{
+		if (spreads_creep(unit_id, defRetVal)) {
 			rect->left = (x - maxCreepAreaLeft) / 32;
 			rect->right = (x + maxCreepAreaRight) / 32;
 			rect->top = (y - maxCreepAreaUp) / 32;
 			rect->bottom = (y + maxCreepAreaDown) / 32;
-			if (rect->left < 0)
-			{
+			if (rect->left < 0) {
 				rect->left = 0;
-			}
-			else if (rect->right >= *helper::mapTileBufWidth)
-			{
+			} else if (rect->right >= *helper::mapTileBufWidth) {
 				rect->right = *helper::mapTileBufWidth - 1;
 			}
-			if (rect->top < 0)
-			{
+			if (rect->top < 0) {
 				rect->top = 0;
-			}
-			else if (rect->bottom >= *helper::mapTileBufHeight)
-			{
+			} else if (rect->bottom >= *helper::mapTileBufHeight) {
 				rect->bottom = *helper::mapTileBufHeight - 1;
 			}
 			return true;
@@ -276,20 +239,14 @@ namespace hooks
 		rect->top = y / 32 - h / 2;
 		rect->right = rect->left + w - 1;
 		rect->bottom = rect->top + h - 1;
-		if (rect->left < 0)
-		{
+		if (rect->left < 0) {
 			rect->left = 0;
-		}
-		else if (rect->right >= *helper::mapTileBufWidth)
-		{
+		} else if (rect->right >= *helper::mapTileBufWidth) {
 			rect->right = *helper::mapTileBufWidth - 1;
 		}
-		if (rect->top < 0)
-		{
+		if (rect->top < 0) {
 			rect->top = 0;
-		}
-		else if (rect->bottom >= *helper::mapTileBufHeight)
-		{
+		} else if (rect->bottom >= *helper::mapTileBufHeight) {
 			rect->bottom = *helper::mapTileBufHeight - 1;
 		}
 		return false;
@@ -297,70 +254,52 @@ namespace hooks
 
 	// Determines which unit IDs are a creep source (i.e. spreads creep, not just requires it)
 	// Base buildings built by a drone return the value of "is_complete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
-	bool spreads_creep(u16 unit_id, bool is_complete)
-	{
-		switch (unit_id)
-		{
+	bool spreads_creep(u16 unit_id, bool is_complete) {
+		switch (unit_id) {
 			case UnitId::ZergHachirosk:
-			case UnitId::ZergCagrantColony:
-			{
+			case UnitId::ZergCagrantColony: {
 				return is_complete;
 			}
 			case UnitId::ZergSibraelosk:
 			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergSpraithColony:
-			case UnitId::ZergSurkithColony:
-			case UnitId::ZergLarvoskColony:
-			{
+			case UnitId::ZergSurkithColony: {
 				return true;
 			}
-			default:
-			{
-				return false;
-			}
 		}
+		return false;
 	}
 
 	// x and y are relative positions where (0,0) is presumably the center of the building
-	bool in_creep_area(s32 x, s32 y)
-	{
+	bool in_creep_area(s32 x, s32 y) {
 		return (x * x * 100 + y * y * 256) <= 10240000;
 	}
 
 	// Callback to determine the creep tile that will replace the existing tile.
-	bool run_creep_randomizer(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg)
-	{
+	bool run_creep_randomizer(u16* tile_backup, u8* creep_overlay_value, u32* return_value, u16* tile, u32 arg) {
 		// Stores the existing tile to replace the creep tile when the creep is removed
-		if (*tileBackup == 0)
-		{
-			*tileBackup = *tile;
+		if (*tile_backup == 0) {
+			*tile_backup = *tile;
 		}
 
-		u16 creepTile;
+		u16 creep_tile = 0;
 		// use of std::rand() can cause desyncs
-		if ((std::rand() % 100) >= 4)
-		{
-			creepTile = std::rand() % 6; // normal tiles
+		if ((std::rand() % 100) >= 4) {
+			creep_tile = std::rand() % 6; // normal tiles
+		} else {
+			creep_tile = (std::rand() % 7) + 6; // clutter tiles
 		}
-		else
-		{
-			creepTile = (std::rand() % 7) + 6; // clutter tiles
-		}
-		*tile = creepTile + 0x10; // tile in creep group
-		*retval = 0;
+		*tile = creep_tile + 0x10; // tile in creep group
+		*return_value = 0;
 		return true;
 	}
 
-	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) // 00429740
-	{
+	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) { // 00429740
 		if (scbw::unit_id_is_zerg_production(unit->id)
-			|| scbw::unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot]))
-		{
+			|| scbw::unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot])) {
 			return helper::btnscond_rally(unused, player, unit);
-		}
-		else
-		{
+		} else {
 			return 0;
 		}
 	}
@@ -431,32 +370,25 @@ namespace hooks
 	}
 	*/
 
-	s32 update_creep_disappearance_unit(Unit* unit)
-	{
+	s32 update_creep_disappearance_unit(Unit* unit) {
 		Box32 rect = {};
 		bool does_spread = helper::get_creep_spread_area(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
 		u32 pos_x = 32 * rect.left - unit->position.x + 16;
 		u32 pos_y = 32 * rect.top - unit->position.y + 16;
 		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 0x18000000;
-		if (rect.top > rect.bottom)
-		{
+		if (rect.top > rect.bottom) {
 			*g_dying_unit_creep_disappearance_count = 0;
 			return 1;
-		}
-		else
-		{
+		} else {
 			u32 rect_top = rect.top;
 			u32 rect_left = rect.left;
-			while (true)
-			{
-				if (rect_left <= rect.right)
-				{
+			while (true) {
+				if (rect_left <= rect.right) {
 					break;
 				}
 				++rect_top;
 				pos_y += 32;
-				if (rect_top > rect.bottom)
-				{
+				if (rect_top > rect.bottom) {
 					*g_dying_unit_creep_disappearance_count = 0;
 					return 1;
 				}
@@ -465,17 +397,14 @@ namespace hooks
 				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
 				|| tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
 				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
-				|| helper::mark_creep_to_disappear(rect_left, rect_top))
-			{
+				|| helper::mark_creep_to_disappear(rect_left, rect_top)) {
 				++rect_left;
 				pos_x += 32;
-				if (rect_left > rect.right)
-				{
+				if (rect_left > rect.right) {
 					rect_left = rect.left;
 					++rect_top;
 					pos_y += 32;
-					if (rect_top > rect.bottom)
-					{
+					if (rect_top > rect.bottom) {
 						*g_dying_unit_creep_disappearance_count = 0;
 						return 1;
 					}

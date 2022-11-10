@@ -3115,18 +3115,18 @@ namespace helper {
 		}
 	}
 
-	b32 spreads_creep(u32 unit_id, b32 defaultReturn) {
-		const u32 Func_spreadsCreep = 0x00413870;
-		b32 bReturnValue;
+	b32 spreads_creep(u32 unit_id, b32 status) {
+		const u32 func_address = 0x00413870;
+		b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit_id
-			PUSH defaultReturn
-			CALL Func_spreadsCreep
-			MOV bReturnValue, EAX
+			PUSH status
+			CALL func_address
+			MOV return_value, EAX
 			POPAD
 		}
-		return bReturnValue;
+		return return_value;
 	}
 
 	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u32 unit_id) {
