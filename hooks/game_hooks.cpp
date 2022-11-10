@@ -516,13 +516,19 @@ namespace hooks {
 						if (cargo_unit) {
 							char buffer[128] = {};
 
+							Token unit_name = get_short_unit_name(cargo_unit->id);
+							if (cargo_unit->id == UnitId::TerranPhalanxSiegeMode) {
+								strcat_s(unit_name.data, " (Sieged)");
+								unit_name.size = strlen(unit_name.data);
+							}
+
 							bool own_unit = cargo_unit->player == *g_local_nation_id;
 							if (own_unit) {
-								snprintf(buffer, 128, BWTC_GREEN "%s", get_short_unit_name(cargo_unit->id).data);
+								snprintf(buffer, 128, BWTC_GREEN "%s", unit_name.data);
 							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
-								snprintf(buffer, 128, BWTC_YELLOW "%s", get_short_unit_name(cargo_unit->id).data);
+								snprintf(buffer, 128, BWTC_YELLOW "%s", unit_name.data);
 							} else {
-								snprintf(buffer, 128, BWTC_RED "%s", get_short_unit_name(cargo_unit->id).data);
+								snprintf(buffer, 128, BWTC_RED "%s", unit_name.data);
 							}
 							u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 
@@ -533,7 +539,7 @@ namespace hooks {
 							rect.bottom = rect.top + 13;
 							bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
 							if (hover) {
-								snprintf(buffer, 128, BWTC_WHITE "%s", get_short_unit_name(cargo_unit->id).data);
+								snprintf(buffer, 128, BWTC_WHITE "%s", unit_name.data);
 								width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
 							}
 
