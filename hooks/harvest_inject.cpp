@@ -256,7 +256,7 @@ namespace {
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::update_mineral_field_image(unused, unit);
+		hooks::update_mineral_field_image(unit);
 		__asm {
 			POPAD
 			RETN

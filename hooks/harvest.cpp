@@ -497,34 +497,28 @@ namespace hooks {
 	}
 
 	// Hooked to change the breakpoints for mineral images.
-	void update_mineral_field_image(u16 unused, Unit* unit) // 00468830
-	{
-		IscriptAnimation::Enum anim;
-		switch (unit->building.resource.resource_yield)
-		{
-		case 1:
-		{
-			anim = IscriptAnimation::Landing;
-		} break;
-		case 2:
-		case 3:
-		{
-			anim = IscriptAnimation::SpecialState1;
-		} break;
-		case 4:
-		case 5:
-		{
-			anim = IscriptAnimation::SpecialState2;
-		} break;
-		case 6:
-		case 7:
-		{
-			anim = IscriptAnimation::AlmostBuilt;
-		} break;
-		default:
-		{
-			anim = IscriptAnimation::Built;
-		} break;
+	void update_mineral_field_image(Unit* unit) { // 00468830
+		IscriptAnimation::Enum anim = IscriptAnimation::Built;
+		switch (unit->building.resource.resource_yield) {
+			case 1:
+			{
+				anim = IscriptAnimation::Landing;
+			} break;
+			case 2:
+			case 3:
+			{
+				anim = IscriptAnimation::SpecialState1;
+			} break;
+			case 4:
+			case 5:
+			{
+				anim = IscriptAnimation::SpecialState2;
+			} break;
+			case 6:
+			case 7:
+			{
+				anim = IscriptAnimation::AlmostBuilt;
+			} break;
 		}
 
 		if (anim != unit->building.resource.resource_iscript) {

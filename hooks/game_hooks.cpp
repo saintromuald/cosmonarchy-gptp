@@ -35,6 +35,7 @@
 #include "SCBW\UnitFinder.h"
 #include "hooks/interface/buttonsets.h"
 #include "weapons/weapon_fire.h"
+#include "harvest.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -619,6 +620,7 @@ namespace hooks {
 				} else {
 					*yield = 1;
 				}
+				update_mineral_field_image(unit);
 			} break;
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
