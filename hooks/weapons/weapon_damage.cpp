@@ -275,20 +275,10 @@ namespace hooks
 		data.final_damage += 256 * target_ext->values[ValueObservanceRend];
 
 		switch (data.weapon_id) { // Damage divisor calc
-			case WeaponId::ArchitectDispersiveSalvo:
-			{
-				// Reactive Payload - Architect behavior
-				f64 div = 1.0;
-				if (data.damage_divisor != 0) {
-					div = (f64)data.damage_divisor;
-				}
-				s32 dmg = ((f64)data.final_damage / div);
-				data.final_damage = dmg + target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
-			} break;
 			case WeaponId::GeszithalorAcidSpore:
 			{
 				// Searing Acid - Geszithalor behavior
-				data.final_damage += (target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damage_divisor * 10 * 256);
+				data.final_damage += data.damage_divisor * 10 * 256;
 			} break;
 			case WeaponId::CharlatanFerventBlaster:
 			case WeaponId::EmpressFadingBioplasma:
@@ -297,7 +287,6 @@ namespace hooks
 			{
 				// Lithe Organelle - bounce damage
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
-				data.final_damage += (s32)target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			case WeaponId::SavantDiscoidRailgun:
 			{
@@ -321,9 +310,10 @@ namespace hooks
 			default:
 			{
 				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
-				data.final_damage = data.final_damage / divisor + (target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction);
+				data.final_damage /= divisor;
 			}
 		}
+		data.final_damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 
 		switch (data.weapon_id) {
 			case WeaponId::CabalistWarpBlades: {
