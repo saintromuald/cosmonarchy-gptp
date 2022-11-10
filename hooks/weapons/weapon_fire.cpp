@@ -944,10 +944,10 @@ namespace hooks {
 			return 0;
 		}
 
-		Unit* bounceSource = bounce_source;
+		Unit* bounce_source_unit = bounce_source;
 		if (!bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
 		{
-			bounceSource = bounce_source->subunit;
+			bounce_source_unit = bounce_source->subunit;
 		}
 		if (!(helper::unit_is_carrier(bounce_source)))
 		{
@@ -971,11 +971,11 @@ namespace hooks {
 				{
 					if (target_var->status & UnitStatus::InAir)
 					{
-						miscBool = units_dat::air_weapon[(u16)bounceSource->id] != -126;
+						miscBool = units_dat::air_weapon[(u16)bounce_source_unit->id] != -126;
 					}
 					else
 					{
-						miscBool = units_dat::ground_weapon[(u16)bounceSource->id] != -126;
+						miscBool = units_dat::ground_weapon[(u16)bounce_source_unit->id] != -126;
 					}
 				}
 			}
@@ -1069,7 +1069,7 @@ namespace hooks {
 			}
 			bullet->previous = 0;
 			bullet->next = 0;
-			Bullet* nextBounce = *first_free_bullet;
+			Bullet* next_bounce_bullet = *first_free_bullet;
 			if (*first_free_bullet)
 			{
 				if (*last_free_bullet == *first_free_bullet)
@@ -1077,13 +1077,13 @@ namespace hooks {
 					*last_free_bullet = bullet;
 				}
 				bullet->previous = *first_free_bullet;
-				bullet->next = nextBounce->next;
-				Bullet* target = nextBounce->next;
+				bullet->next = next_bounce_bullet->next;
+				Bullet* target = next_bounce_bullet->next;
 				if (target)
 				{
 					target->previous = bullet;
 				}
-				nextBounce->next = bullet;
+				next_bounce_bullet->next = bullet;
 				*bullet_count -= 1;
 			}
 			else
@@ -1100,14 +1100,14 @@ namespace hooks {
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
 	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, char player, s32 angle) // 0048C260
 	{
-		Bullet* pBullet;
+		Bullet* free_bullet;
 		s32 parentStatus;
 		Bullet* result;
-		Bullet* pNextBullet;
-		Bullet* firstBulletVar;
+		Bullet* next_bullet;
+		Bullet* first_bullet_var;
 		Bullet* nextBulletVar;
 
-		pBullet = *first_free_bullet;
+		free_bullet = *first_free_bullet;
 		if (!*first_free_bullet)
 		{
 			return 0;
@@ -1125,49 +1125,49 @@ namespace hooks {
 		{
 			return 0;
 		}
-		if (*first_free_bullet == pBullet)
+		if (*first_free_bullet == free_bullet)
 		{
-			*first_free_bullet = pBullet->next;
+			*first_free_bullet = free_bullet->next;
 		}
-		if (*last_free_bullet == pBullet)
+		if (*last_free_bullet == free_bullet)
 		{
-			*last_free_bullet = pBullet->previous;
+			*last_free_bullet = free_bullet->previous;
 		}
-		if (pBullet->previous)
+		if (free_bullet->previous)
 		{
-			pBullet->previous->next = pBullet->next;
+			free_bullet->previous->next = free_bullet->next;
 		}
-		pNextBullet = pBullet->next;
-		if (pNextBullet)
+		next_bullet = free_bullet->next;
+		if (next_bullet)
 		{
-			pNextBullet->previous = pBullet->previous;
+			next_bullet->previous = free_bullet->previous;
 		}
-		pBullet->previous = 0;
-		pBullet->next = 0;
-		firstBulletVar = *first_bullet;
+		free_bullet->previous = 0;
+		free_bullet->next = 0;
+		first_bullet_var = *first_bullet;
 		if (*first_bullet)
 		{
 			if (*last_bullet == *first_bullet)
 			{
-				*last_bullet = pBullet;
+				*last_bullet = free_bullet;
 			}
-			pBullet->previous = *first_bullet;
-			pBullet->next = firstBulletVar->next;
-			nextBulletVar = firstBulletVar->next;
+			free_bullet->previous = *first_bullet;
+			free_bullet->next = first_bullet_var->next;
+			nextBulletVar = first_bullet_var->next;
 			if (nextBulletVar)
 			{
-				nextBulletVar->previous = pBullet;
+				nextBulletVar->previous = free_bullet;
 			}
-			firstBulletVar->next = pBullet;
+			first_bullet_var->next = free_bullet;
 			++*bullet_count;
-			result = pBullet;
+			result = free_bullet;
 		}
 		else
 		{
 			++*bullet_count;
-			*last_bullet = pBullet;
-			*first_bullet = pBullet;
-			result = pBullet;
+			*last_bullet = free_bullet;
+			*first_bullet = free_bullet;
+			result = free_bullet;
 		}
 		return result;
 	}
