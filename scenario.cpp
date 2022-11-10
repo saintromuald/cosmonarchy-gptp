@@ -774,6 +774,14 @@ u32 get_next_fraud(u32 player, u32 fraud_class) {
 	return Fraud_None;
 }
 
+u32 get_fraud_class(u32 fraud) {
+	if (fraud >= Fraud_First      && fraud <= Fraud_Last)      return FraudClass_Fraud;
+	if (fraud >= FraudHero_First  && fraud <= FraudHero_Last)  return FraudClass_Hero;
+	if (fraud >= FraudSuper_First && fraud <= FraudSuper_Last) return FraudClass_Super;
+	if (fraud >= FraudGod_First   && fraud <= FraudGod_Last)   return FraudClass_God;
+	return FraudClass_None;
+}
+
 u32 get_fraud_race(u32 fraud) {
 	if (fraud >= Fraud_TerranFirst && fraud <= Fraud_TerranLast
 		|| fraud >= FraudHero_TerranFirst && fraud <= FraudHero_TerranLast
@@ -1178,12 +1186,65 @@ void tick_scenario() {
 
 void init_fraud_units() {
 	for (u32 i = 0; i < Fraud_Count; ++i) {
-		add_fraud_unit(i, RaceId::Terran,  {12, UnitId::TerranMason});
-		add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranAncile});
-		add_fraud_unit(i, RaceId::Protoss, {12, UnitId::ProtossScribe});
-		add_fraud_unit(i, RaceId::Protoss, {1, UnitId::ProtossWitness});
-		add_fraud_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
-		add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergOvileth});
+		switch (get_fraud_class(i)) {
+			case FraudClass_Fraud:
+			{
+				// Workers
+				add_fraud_unit(i, RaceId::Terran,  {12, UnitId::TerranMason});
+				add_fraud_unit(i, RaceId::Protoss, {12, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
+				 
+				// Utility
+				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranAncile});
+				add_fraud_unit(i, RaceId::Protoss, {1, UnitId::ProtossWitness});
+				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergOvileth});
+			} break;
+			case FraudClass_Hero:
+			{
+				// Workers
+				add_fraud_unit(i, RaceId::Terran,  {10, UnitId::TerranMason});
+				add_fraud_unit(i, RaceId::Protoss, {10, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Zerg,    {10, UnitId::ZergDroleth});
+				add_fraud_unit(i, RaceId::Terran,  {2, UnitId::TerranTalos});
+				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossArtisan});
+				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
+
+				// Utility
+				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
+				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
+				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
+			} break;
+			case FraudClass_Super:
+			{
+				// Workers
+				add_fraud_unit(i, RaceId::Terran,  {8, UnitId::TerranMason});
+				add_fraud_unit(i, RaceId::Protoss, {8, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Zerg,    {8, UnitId::ZergDroleth});
+				add_fraud_unit(i, RaceId::Terran,  {4, UnitId::TerranTalos});
+				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossArtisan});
+				add_fraud_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
+
+				// Utility
+				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
+				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
+				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
+			} break;
+			case FraudClass_God:
+			{
+				// Workers
+				add_fraud_unit(i, RaceId::Terran,  {6, UnitId::TerranMason});
+				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossScribe});
+				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergDroleth});
+				add_fraud_unit(i, RaceId::Terran,  {6, UnitId::TerranTalos});
+				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossArtisan});
+				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
+
+				// Utility
+				add_fraud_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
+				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
+				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
+			} break;
+		}
 	}
 
 	//// Frauds
@@ -1769,7 +1830,6 @@ void init_fraud_units() {
 	// Testing
 	for (u32 i = 0; i < 6; ++i) {
 		fraud_spawn.frauds[FraudGod_Hand1 + i][RaceId::Terran] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Blood};
-		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Terran, {6, UnitId::TerranTalos});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Terran, {8, UnitId::TerranOlympian});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Terran, {4, UnitId::TerranApostle});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Terran, {2, UnitId::TerranAutocrat});
@@ -1780,7 +1840,6 @@ void init_fraud_units() {
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Terran, {1, UnitId::TerranMagnetar});
 
 		fraud_spawn.frauds[FraudGod_Hand1 + i][RaceId::Protoss] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Blood};
-		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Protoss, {6, UnitId::ProtossArtisan});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Protoss, {6, UnitId::ProtossArchon});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Protoss, {4, UnitId::ProtossAtreus});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Protoss, {2, UnitId::ProtossAugur});
@@ -1788,7 +1847,6 @@ void init_fraud_units() {
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Protoss, {1, UnitId::ProtossStarSovereign});
 
 		fraud_spawn.frauds[FraudGod_Hand1 + i][RaceId::Zerg] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Blood};
-		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Zerg, {6, UnitId::ZergGosvileth});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Zerg, {10, UnitId::ZergHydralisk});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Zerg, {5, UnitId::ZergAlmaksalisk});
 		add_fraud_unit(FraudGod_Hand1 + i, RaceId::Zerg, {4, UnitId::ZergKonvilisk});
