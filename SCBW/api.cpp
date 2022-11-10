@@ -2389,7 +2389,9 @@ namespace scbw {
 			|| buttonset_id == UnitId::Buttons_LarvaSwarm
 			|| buttonset_id == UnitId::Buttons_LarvaAssault
 			|| buttonset_id == UnitId::Buttons_LarvaControl
-			|| buttonset_id == UnitId::Buttons_LarvaShared;
+			|| buttonset_id == UnitId::Buttons_OcsalLarvaSwarm
+			|| buttonset_id == UnitId::Buttons_OcsalLarvaAssault
+			|| buttonset_id == UnitId::Buttons_OcsalLarvaControl;
 	}
 
 	bool unit_id_has_custom_air_weapon(u32 unit_id) {

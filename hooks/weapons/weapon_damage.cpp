@@ -290,9 +290,10 @@ namespace hooks
 				// Searing Acid - Geszithalor behavior
 				data.final_damage += (target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damage_divisor * 10 * 256);
 			} break;
+			case WeaponId::CharlatanFerventBlaster:
+			case WeaponId::EmpressFadingBioplasma:
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::MutaliskGlaveWurm:
-			case WeaponId::CharlatanFerventBlaster:
 			{
 				// Lithe Organelle - bounce damage
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
