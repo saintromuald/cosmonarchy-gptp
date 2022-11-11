@@ -1700,7 +1700,7 @@ namespace hooks {
 			{
 				// Optecton - Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), false, false) {
+					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround, true, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::OptectonSkybondRay, true);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
