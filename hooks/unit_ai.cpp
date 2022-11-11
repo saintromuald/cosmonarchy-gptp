@@ -387,9 +387,9 @@ namespace hooks {
 		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
 			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
 		}
-		MilitaryAi* military_ai = ai_region->military.first;
+		MilitaryAi* military_ai = ai_region->military.array->first_free_military;
 		if (military_ai) {
-			ai_region->military.first = (MilitaryAi*)military_ai->link.prev;
+			ai_region->military.array->first_free_military = (MilitaryAi*)military_ai->link.prev;
 			if (military_ai->link.prev) {
 				military_ai->link.prev->link.next = 0;
 			}
