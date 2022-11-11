@@ -360,25 +360,26 @@ namespace hooks {
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void ai_recalculate_region_strength(AiRegion* region) { // 0043A390
-		region->ground_strength = 0;
-		region->ground_strength_full = 0;
-		region->air_strength = 0;
-		region->air_strength_full = 0;
+	void ai_recalculate_region_strength(AiRegion* ai_region) { // 0043A390
+		ai_region->ground_strength = 0;
+		ai_region->ground_strength_full = 0;
+		ai_region->air_strength = 0;
+		ai_region->air_strength_full = 0;
 		
 		// Count own and allied AI force
-		for (u32 i = 0; i < 8; ++i) {
-			if (scbw::is_allied_to(region->player, i)) {
-				for (MilitaryAi* military_ai = scbw::get_ai_region(i, region->region)->military_ai.first; military_ai; military_ai = military_ai->link.prev) {
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			if (scbw::is_allied_to(ai_region->player, player)) {
+				AiRegion* player_ai_region = scbw::get_ai_region(player, ai_region->region);
+				for (MilitaryAi* military_ai = player_ai_region->military_ai.first; military_ai; military_ai = military_ai->link.prev) {
 					Unit* unit = (Unit*)military_ai->unit;
 					if (!unit || unit->status & UnitStatus::InBuilding) {
 						continue;
 					}
-					region->ground_strength_full += unit->ground_strength;
-					region->air_strength_full += unit->air_strength;
-					if (helper::get_region_id(unit->position.x, unit->position.y) == region->region) {
-						region->ground_strength += unit->ground_strength;
-						region->air_strength += unit->air_strength;
+					ai_region->ground_strength_full += unit->ground_strength;
+					ai_region->air_strength_full += unit->air_strength;
+					if (helper::get_region_id(unit->position.x, unit->position.y) == ai_region->region) {
+						ai_region->ground_strength += unit->ground_strength;
+						ai_region->air_strength += unit->air_strength;
 					}
 				}
 			}
@@ -387,42 +388,42 @@ namespace hooks {
 		// Also count in allied non-AI force
 		{
 			EntryArray region_units = {};
-			unit_search_rect(&region_units, scbw::get_region_area(scbw::get_region(region->region)));
+			unit_search_rect(&region_units, scbw::get_region_area(scbw::get_region(ai_region->region)));
 			unit_search_filter(&region_units, 0, FilterCanAttackOrCast | FilterNotWorker | FilterNoTrap);
 			for (u32 i = 0; i < region_units.count; ++i) {
 				Unit* unit = region_units.units[i];
-				if (!scbw::is_allied_to(region->player, unit->player)) {
+				if (!scbw::is_allied_to(ai_region->player, unit->player)) {
 					continue;
 				}
 				if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
 					continue;
 				}
-				region->ground_strength_full += unit->ground_strength;
-				region->air_strength_full += unit->air_strength;
-				region->ground_strength += unit->ground_strength;
-				region->air_strength += unit->air_strength;
+				ai_region->ground_strength_full += unit->ground_strength;
+				ai_region->air_strength_full += unit->air_strength;
+				ai_region->ground_strength += unit->ground_strength;
+				ai_region->air_strength += unit->air_strength;
 			}
 		}
 
 		// Removed a Campaign AI only block, which was causing a crash and an unwanted feature
 		// No longer Melee AI only, also times 2 instead of times 1.5
-		u32 ground_strength = region->ground_strength_enemy * 2;
-		if (ground_strength > region->ground_strength_needed) {
-			region->ground_strength_needed = ground_strength;
+		u32 ground_strength = ai_region->ground_strength_enemy * 2;
+		if (ground_strength > ai_region->ground_strength_needed) {
+			ai_region->ground_strength_needed = ground_strength;
 		}
 
-		u32 air_strength = region->air_strength_enemy * 2;
-		if (air_strength > region->air_strength_needed) {
-			region->air_strength_needed = air_strength;
+		u32 air_strength = ai_region->air_strength_enemy * 2;
+		if (air_strength > ai_region->air_strength_needed) {
+			ai_region->air_strength_needed = air_strength;
 		}
 
-		u16 max_force = g_aiscript_controller[region->player].ai_max_force;
+		u16 max_force = g_aiscript_controller[ai_region->player].ai_max_force;
 		if (max_force) {
-			if (region->ground_strength_needed > max_force) {
-				region->ground_strength_needed = max_force;
+			if (ai_region->ground_strength_needed > max_force) {
+				ai_region->ground_strength_needed = max_force;
 			}
-			if (region->air_strength_needed > max_force) {
-				region->air_strength_needed = max_force;
+			if (ai_region->air_strength_needed > max_force) {
+				ai_region->air_strength_needed = max_force;
 			}
 		}
 	}	
