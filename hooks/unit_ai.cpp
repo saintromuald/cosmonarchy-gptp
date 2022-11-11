@@ -622,13 +622,13 @@ namespace hooks {
 		military_ai_array->first_free_military = military_ai;
 	}
 
-	void __stdcall remove_from_ai_structs(Unit* unit, b32 was_killed) { // 00439D60
+	b32 __stdcall remove_from_ai_structs(Unit* unit, b32 was_killed) { // 00439D60
 		for (u32 player = 0; player < 8; ++player) {
 			if (g_player_table[player].type != PlayerType::Computer) {
 				continue;
 			}
 
-			for (u32 i = 1; i < *g_region_ids_count; ++i) {
+			for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
 				AiRegion* ai_region = scbw::get_ai_region(player, i);
 				if (ai_region->air_target == unit) {
 					ai_region->air_target = 0;
@@ -644,7 +644,11 @@ namespace hooks {
 				}
 			}
 
-			if (!scbw::is_allied_to(player, unit->player)) {
+			u32 unit_player = unit->player;
+			if (unit_player == 11 && unit->sprite) {
+				unit_player = unit->sprite->player;
+			}
+			if (!scbw::is_allied_to(unit->player, player)) {
 				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
 				if (ai_region->ground_strength_needed >= ai_strength_ground[unit->id]) {
 					ai_region->ground_strength_needed -= ai_strength_ground[unit->id];
