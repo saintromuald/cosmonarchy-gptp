@@ -361,7 +361,7 @@ SCBW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);
 // For ai_add_military
 SCBW_DATA(RegionArray**,	g_sai_paths,				0x006D5BFC);
 SCBW_DATA(AiTown*,			g_ai_town_array,			0x006AA090);
-SCBW_DATA(AiExpandList*,	g_ai_active_town_array,	0x006AA050); // sizeof 0x64[0x8]
+SCBW_DATA(AiExpandList*,	g_ai_active_town_array,		0x006AA050); // sizeof 0x64[0x8]
 
 // For cmdrecv_hold_position
 SCBW_DATA(s16*,		g_map_width_pixels,					0x00628450);

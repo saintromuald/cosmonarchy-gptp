@@ -2085,8 +2085,6 @@ namespace scbw {
 				Point16 center = {};
 				center.x = area.left + (area.right - area.left)   / 2;
 				center.y = area.top  + (area.top   - area.bottom) / 2;
-
-				ai_script->flags &= 0x7;
 				ai_script->flags |= scbw::get_closest_resarea(center) << 3;
 			}
 			return ai_script;

@@ -904,11 +904,17 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 			g_start_positions[player] = spawn_location->pos;
 			
-			// Mark previous AI scripts to die
+			// Mark current AI scripts to die
 			for (AiScript* ai_script = *g_first_active_aiscript; ai_script; ai_script = ai_script->link.next) {
 				if (ai_script->player == player) {
 					ai_script->flags |= 0x4;
 				}
+			}
+			// Mark current AI towns to die
+			AiTown* ai_town_prev = 0;
+			for (AiTown* ai_town = g_ai_active_town_array[player].first; ai_town; ai_town = ai_town_prev) {
+				ai_town_prev = ai_town->prev;
+				helper::delete_ai_town_if_needed(ai_town);
 			}
 
 			scbw::run_default_ai(player, spawn_location->pos);

@@ -664,7 +664,7 @@ namespace hooks {
 		}
 
 		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
-			return;
+			return false;
 		}
 		
 		MilitaryAi* military_ai = &unit->unit_ai->military_ai;
@@ -679,6 +679,7 @@ namespace hooks {
 			}
 		}
 		helper::delete_military_ai(military_ai, ai_region);
+		return true;
 	}
 
 	// Hooked to add type check - Pr0nogo
