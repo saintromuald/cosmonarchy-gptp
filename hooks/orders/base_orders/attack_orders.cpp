@@ -75,60 +75,29 @@ namespace hooks
 		}
 	}
 
-	void orders_carrier_attack(Unit* unit)
-	{
+	void orders_carrier_attack(Unit* unit) {
 		Unit* target = unit->order_target.unit;
-		if (target == nullptr)
-		{
-			if (unit->order_queue_head != nullptr)
-			{
-				unit->user_action_flags |= 1;
-				prepare_for_next_order(unit);
-			}
-			else
-			{
-				if (unit->unit_ai != nullptr)
-				{
-					unit->order_computer(OrderId::ComputerAI);
-				}
-				else
-				{
-					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-				}
-			}
-		}
-		else
-		{
-			if (!unit->can_attack_target(target, true))
-			{
+		if (!target) {
+			unit->order_to_idle();
+		} else {
+			if (!unit->can_attack_target(target, true)) {
 				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
-			}
-			else
-			{
-				u32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
-				u8 newOrderId;
+			} else {
+				u32 status_saved = (unit->status & UnitStatus::Disabled) | (unit->status & UnitStatus::HoldingPosition);
 				// give orders to Stewards and Plasma Shells (through out_hangar_child)
 				helper::set_interceptors_to_standby(unit);
 
-				if (unit->id == UnitId::ProtossAccantorOld)
-				{
-					if (unit->main_order_id == OrderId::ReaverHold)
-					{
+				u8 newOrderId = 0;
+				if (unit->id == UnitId::ProtossAccantorOld) {
+					if (unit->main_order_id == OrderId::ReaverHold) {
 						newOrderId = OrderId::ReaverHold;
-					}
-					else
-					{
+					} else {
 						newOrderId = OrderId::ReaverFight;
 					}
-				}
-				else
-				{
-					if (unit->main_order_id == OrderId::HoldPosition1)
-					{
+				} else {
+					if (unit->main_order_id == OrderId::HoldPosition1) {
 						newOrderId = OrderId::HoldPosition1;
-					}
-					else
-					{
+					} else {
 						newOrderId = OrderId::CarrierFight;
 					}
 				}
@@ -136,7 +105,7 @@ namespace hooks
 				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
-				unit->status &= ~(UnitStatus::Disabled + UnitStatus::HoldingPosition);
+				unit->status &= ~(UnitStatus::Disabled | UnitStatus::HoldingPosition);
 				unit->status = status_saved | unit->status;
 			}
 		}
