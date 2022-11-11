@@ -212,8 +212,8 @@ namespace hooks {
 		jump_patch(orders_attack_move_wrapper,			0x00479040, 0);
 	//	jump_patch(orders_attack_unit_wrapper,			0x00479BD0, 2);
 		jump_patch(orders_strafe_unit2_wrapper,			0x00465E00, 2);
-		jump_patch(set_interceptors_to_standby_wrapper,	0x00465780, 1);
-		jump_patch(orders_strafe_unit_wrapper,			0x00465F60, 0);
+	//	jump_patch(set_interceptors_to_standby_wrapper,	0x00465780, 1);
+	//	jump_patch(orders_strafe_unit_wrapper,			0x00465F60, 0);
 	//	jump_patch(get_next_strafe_position_wrapper,	0x00465D30, 0);
 	}
 }
