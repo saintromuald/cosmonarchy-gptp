@@ -917,8 +917,6 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				helper::delete_ai_town_if_needed(ai_town);
 			}
 
-			scbw::run_default_ai(player, spawn_location->pos);
-
 			if (spawn_townhall) {
 				Point16 pos = fraud_spawn.sequence[player - 1].location->pos;
 				Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
@@ -959,6 +957,8 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 			if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 				player_vision->flags[player] |= 1 << 7;
 			}
+
+			scbw::run_default_ai(player, spawn_location->pos);
 
 			return true;
 		}
