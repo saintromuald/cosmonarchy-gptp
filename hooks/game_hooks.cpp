@@ -1721,11 +1721,11 @@ namespace hooks {
 			if (source_unit) {
 				if (unit_ext->timers[TimerGladiusBindingPlasma] % 12 == 11) {
 					unit->sprite->create_overlay(ImageId::BindingPlasmaOverlay);
-				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0);
+				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
 					EntryArray units = {};
-					unit_search_radial(&units, unit->position, 2 * 32);
+					unit_search_radial(&units, unit->position, 3 * 32);
 					unit_search_filter(&units, source_unit, FilterEnemy | FilterNoBuilding | FilterNotSubunit);
 					unit_search_filter(&units, unit, FilterNotSelf);
 					unit_search_sort_by_distance(&units, unit->position);
