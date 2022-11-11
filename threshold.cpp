@@ -1097,9 +1097,6 @@ bool try_prepare_threshold() {
 }
 
 void update_threshold() {
-	if (!threshold_config.enabled) {
-		return;
-	}
 	if (!try_prepare_threshold()) {
 		return;
 	}
