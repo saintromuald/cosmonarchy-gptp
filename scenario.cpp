@@ -1157,7 +1157,6 @@ void tick_scenario() {
 							}
 							Unit* unit = scbw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
 							if (unit) {
-								helper::give_ai(unit);
 								if (!(units_dat::base_property[unit_id] & UnitProperty::Worker)) {
 									unit->order_to(OrderId::AttackMove, rally.x, rally.y);
 								}
