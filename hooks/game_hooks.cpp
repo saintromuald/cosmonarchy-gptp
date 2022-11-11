@@ -1263,8 +1263,8 @@ namespace hooks {
 					case IscriptAnimation::AirAttkInit:
 					case IscriptAnimation::AirAttkRpt: {
 						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance
-							&& !unit_ext->timers[TimerCentaurSecondaryWeaponCooldown]) {
-							unit_ext->timers[TimerCentaurSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
+							&& !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
 							helper::play_sound_from_unit(scbw::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit);
@@ -1372,11 +1372,11 @@ namespace hooks {
 			case UnitId::TerranTarasque:
 			{
 				// Forward March
-				if (!unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown]) {
+				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::TarasqueAcceleratedPlasmid];
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid, true);;
 					} else {
-						unit_ext->timers[TimerTarasqueSecondaryWeaponCooldown] = 3; // performance
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
 			} break;
@@ -1640,22 +1640,22 @@ namespace hooks {
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if (!unit_ext->timers[TimerDurendalSecondaryWeaponCooldown]) {
+				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::DurendalPhilistineAutogun, true);
 					} else {
-						unit_ext->timers[TimerDurendalSecondaryWeaponCooldown] = 3; // performance
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
 			} break;
 			case UnitId::TerranAmbassador:
 			{
 				// Ambassador - Forward March
-				if (!unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown]) {
+				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::DurendalPhilistineAutogun];
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::AmbassadorSignatorySalvo, true);
 					} else {
-						unit_ext->timers[TimerAmbassadorSecondaryWeaponCooldown] = 3; // performance
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
 			} break;
@@ -1699,11 +1699,11 @@ namespace hooks {
 			case UnitId::ProtossOptecton:
 			{
 				// Optecton - Forward March
-				if (!unit_ext->timers[TimerOptectonSecondaryWeaponCooldown]) {
+				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), false, false) {
-						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::OptectonSkybondRay, true);
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::OptectonSkybondRay, true);
 					} else {
-						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = 3; // performance
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
 			} break;
