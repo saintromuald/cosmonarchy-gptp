@@ -1476,8 +1476,10 @@ namespace hooks {
 		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
-		f32 mineral_value = area->mineral_field_count + area->total_mineral_count / 1500.0;
-		f32 gas_value     = area->geyser_count * 3    + area->total_vespene_count / 500.0;
+		EntryArray resources = {};
+		unit_search_radial(&resources, area->position, 12 * 32);
+		f32 mineral_value = area->total_mineral_count;
+		f32 gas_value     = area->total_vespene_count * 8;
 		score += mineral_value * mineral_bias;
 		score += gas_value     * gas_bias;
 
