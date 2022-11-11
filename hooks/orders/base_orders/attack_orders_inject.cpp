@@ -177,17 +177,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_strafe_unit_wrapper()
-	{
+	void __declspec(naked) orders_strafe_unit_wrapper() {
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::orders_strafe_unit(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
@@ -224,8 +221,7 @@ namespace
 
 namespace hooks
 {
-	void inject_attack_orders_hooks()
-	{
+	void inject_attack_orders_hooks() {
 	//	jump_patch(orders_reaver_attack_wrapper,			0x00465690, 2);
 	//	jump_patch(orders_carrier_attack_wrapper,		0x00465950, 0);
 	//	jump_patch(orders_turret_attack_wrapper,			0x00477980, 1);
