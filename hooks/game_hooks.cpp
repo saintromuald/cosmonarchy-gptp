@@ -22,7 +22,7 @@
 #include "player_color.h"
 #include "unit_ai.h"
 #include "tactical_ai.h"
-#include "scenario.h"
+#include "threshold.h"
 #include "ai_layouts.h"
 #include "trigger_system/trigger_system.h"
 #include "trigger_system/trigger_parser.h"
@@ -444,7 +444,7 @@ namespace hooks {
 			init_scenario();
 		}
 		if (*g_elapsed_time_frames >= 1) {
-			tick_scenario();
+			tick_threshold();
 		}
 
 		scbw::refresh_screen();
@@ -2453,7 +2453,7 @@ namespace hooks {
 	}
 
 	bool game_end() {
-		end_scenario();
+		end_threshold();
 		return true;
 	}
 }
