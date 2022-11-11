@@ -975,4 +975,64 @@ namespace hooks {
 		}
 		return 1;
 	}
+
+	// Hooked to resolve unit AI issues. -Pr0nogo
+	void __stdcall add_guard_ai_to_unit(Unit* unit) // 00462960
+	{
+		u32 player = unit->player;
+		if (g_player_table[player].type == PlayerType::Computer) {
+			u32 unit_id = unit->id;
+			if (!(units_dat::computer_ai_internal[unit_id] & 2)) {
+				u32 x = unit->sprite->position.x;
+				u32 y = unit->sprite->position.y;
+				GuardAi* first_guard_ai_end = g_player_guard_list->player[player].first;
+				if (first_guard_ai_end)
+				{
+					while (first_guard_ai_end->parent
+					||	   first_guard_ai_end->unit_id != unit_id
+					||	   first_guard_ai_end->current_home.x != x
+					||	   first_guard_ai_end->current_home.y != y)
+					{
+						first_guard_ai_end = first_guard_ai_end->link.prev;
+						if (!first_guard_ai_end) {
+							goto LABEL_9;
+						}
+					}
+					goto LABEL_16;
+				}
+			LABEL_9:
+				GuardAiArray* first_guard_ai_begin = g_player_guard_list->player[player].array;
+				first_guard_ai_end = first_guard_ai_begin->first_free_guard;
+				if (first_guard_ai_end) {
+					GuardAi* previous_guard_ai = first_guard_ai_end->link.prev;
+					first_guard_ai_begin->first_free_guard = first_guard_ai_end->link.prev;
+					if (previous_guard_ai) {
+						previous_guard_ai->link.next = 0;
+					}
+					if (first_guard_ai_end)
+					{
+						GuardAi* first_guard_ai_end_2 = g_player_guard_list->player[player].first;
+						first_guard_ai_end->link.next = 0;
+						first_guard_ai_end->link.prev = first_guard_ai_end_2->link.prev;
+						if (first_guard_ai_end_2->link.prev)
+						{
+							first_guard_ai_end_2->link.prev->link.next = first_guard_ai_end;
+						}
+						first_guard_ai_end_2->link.prev = first_guard_ai_end;
+						first_guard_ai_end->type = 1;
+						first_guard_ai_end->unit_id = unit_id;
+					LABEL_16:
+						first_guard_ai_end->parent = unit;
+						first_guard_ai_end->original_home.x = x;
+						first_guard_ai_end->original_home.y = y;
+						first_guard_ai_end->current_home.x = x;
+						first_guard_ai_end->current_home.y = y;
+						first_guard_ai_end->times_died = 0;
+						unit->unit_ai = (UnitAi*)first_guard_ai_end;
+						return;
+					}
+				}
+			}
+		}
+	}
 }

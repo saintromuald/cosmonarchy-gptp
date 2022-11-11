@@ -385,6 +385,7 @@ namespace hooks {
 		jump_patch(ai_order_lurker_burrow_wrapper,				0x0043C230, 3);
 	//	jump_patch(create_building_ai_wrapper,					0x004044C0,	4);
 	//	jump_patch(is_valid_for_wrapper,						0x0043B6D0,	5);
+		jump_patch(add_guard_ai_to_unit,						0x00462960,	2);
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
 	}
