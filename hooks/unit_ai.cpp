@@ -178,7 +178,7 @@ namespace hooks {
 	// Hooked because iquare told me to - Pr0nogo
 	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
 		if (unit->unit_ai) {
-			scbw::printf("Attempt to add worker or structure AI to a unit with unit_ai (prevented)");
+		//	scbw::printf("Attempt to add worker or structure AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 
@@ -365,7 +365,7 @@ namespace hooks {
 	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
 	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
 		if (unit->unit_ai) {
-			scbw::printf("Attempt to add military AI to a unit with unit_ai (prevented)");
+		//	scbw::printf("Attempt to add military AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 
@@ -979,7 +979,7 @@ namespace hooks {
 	// Hooked to resolve unit AI issues. -Pr0nogo
 	void __stdcall add_guard_ai_to_unit(Unit* unit) { // 00462960
 		if (unit->unit_ai) {
-			scbw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
+		//	scbw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 
