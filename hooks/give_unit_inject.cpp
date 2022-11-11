@@ -42,7 +42,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::giveAI(unit);
+		hooks::give_ai(unit);
 		__asm
 		{
 			POPAD

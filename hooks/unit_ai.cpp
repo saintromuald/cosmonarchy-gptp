@@ -177,6 +177,11 @@ namespace hooks {
 
 	// Hooked because iquare told me to - Pr0nogo
 	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
+		if (unit->unit_ai) {
+			scbw::printf("Attempt to add worker or structure AI to a unit with unit_ai (prevented)");
+			helper::remove_unit_ai(unit, false);
+		}
+
 		void* result = 0;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 			if (town->workers.array) {
@@ -359,6 +364,11 @@ namespace hooks {
 
 	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
 	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
+		if (unit->unit_ai) {
+			scbw::printf("Attempt to add military AI to a unit with unit_ai (prevented)");
+			helper::remove_unit_ai(unit, false);
+		}
+
 		bool prevent = false;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 			scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
@@ -543,7 +553,7 @@ namespace hooks {
 	// Hooked to investigate crashes - Pr0nogo
 	void delete_worker_ai(WorkerAi* worker_ai, WorkerAiList* worker_ai_list) { // 00404470
 		if (worker_ai->type != AiType::Worker) {
-			scbw::printf("delete_worker_ai called on a non-worker unit AI! Please check the call stack with debugger attached!\n\t\"%s\":%u", __FILE__, __LINE__);
+			scbw::printf("delete_worker_ai called on a non-worker unit AI! Please check the call stack with debugger attached!");
 		}
 
 		if (worker_ai_list->first == worker_ai) {
@@ -569,7 +579,7 @@ namespace hooks {
 	// Hooked to resolve a crash - Pr0nogo
 	void delete_building_ai(BuildingAi* building_ai, BuildingAiList* building_ai_list) { // 00404500
 		if (building_ai->type != AiType::Building) {
-			scbw::printf("delete_building_ai called on a non-building unit AI! Please check the call stack with debugger attached!\n\t\"%s\":%u", __FILE__, __LINE__);
+			scbw::printf("delete_building_ai called on a non-building unit AI! Please check the call stack with debugger attached!");
 		}
 
 		if (building_ai_list->first == building_ai) {
@@ -595,7 +605,7 @@ namespace hooks {
 	// Hooked to investigate unit AI issues -Veeq7
 	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region) { // 004371D0
 		if (military_ai->type != AiType::Military) {
-			scbw::printf("delete_military_ai called on a non-military unit AI! Please check the call stack with debugger attached!\n\t\"%s\":%u", __FILE__, __LINE__);
+			scbw::printf("delete_military_ai called on a non-military unit AI! Please check the call stack with debugger attached!");
 		}
 
 		if (!(military_ai->unit->status & UnitStatus::InAir)) {
@@ -728,42 +738,31 @@ namespace hooks {
 	}
 
 	// Hooked to investigate unit AI corruption - Pr0nogo
-	void ai_training_overlord(Unit* newUnit, Unit* oldUnit) // 00435770
-	{
-		if (g_player_table[oldUnit->player].type == PlayerType::Computer)
-		{
+	void ai_training_overlord(Unit* newUnit, Unit* oldUnit) { // 00435770
+		if (g_player_table[oldUnit->player].type == PlayerType::Computer) {
 			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
-			if (oldUnitAI)
-			{
+			if (oldUnitAI) {
 				AiTown* oldUnitTown;
-				if (oldUnitAI->type == AiType::Worker)
-				{
+				if (oldUnitAI->type == AiType::Worker) {
 					WorkerAi* oldWorkerAi = (WorkerAi*)oldUnit->unit_ai;
 					oldUnitTown = oldWorkerAi->town;
-				}
-				else
-				{
+				} else {
 					BuildingAi* oldBuildingAi = (BuildingAi*)oldUnit->unit_ai;
 					oldUnitTown = oldBuildingAi->town;
 				}
 
-				if (oldUnit == newUnit)
-				{
+				if (oldUnit == newUnit) {
 					helper::ai_remove_from_towns(newUnit);
 					UnitAi* newUnitAI = (UnitAi*)newUnit->unit_ai;
-					if (newUnitAI)
-					{
+					if (newUnitAI) {
 						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->unit_ai;
 						AiTown* newUnitTown = newBuildingAi->town;
 						delete_building_ai(newBuildingAi, &newUnitTown->buildings);
-						if (newUnitTown)
-						{
-							if (newUnit == newUnitTown->building_scv)
-							{
+						if (newUnitTown) {
+							if (newUnit == newUnitTown->building_scv) {
 								newUnitTown->building_scv = 0;
 							}
-							if (newUnit == newUnitTown->main_building)
-							{
+							if (newUnit == newUnitTown->main_building) {
 								newUnitTown->main_building = 0;
 							}
 						}
@@ -773,16 +772,13 @@ namespace hooks {
 
 				helper::add_worker_structure_ai(newUnit, oldUnitTown);
 				u16 newUnitId = newUnit->id;
-				if (newUnitId != UnitId::TerranBunker || *g_elapsed_time_seconds <= 60)
-				{
-					if (newUnitId == UnitId::TerranWatchdog)
-					{
+				if (newUnitId != UnitId::TerranBunker || *g_elapsed_time_seconds <= 60) {
+					if (newUnitId == UnitId::TerranWatchdog) {
 						u32 i;
 						BuildingAi* j;
 						s32 queuedCount;
 						Unit* oldFirstTownUnit = (Unit*)oldUnitTown->workers.first;
-						for (i = 0; oldFirstTownUnit; i += queuedCount)
-						{
+						for (i = 0; oldFirstTownUnit; i += queuedCount) {
 							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->move_target.unit;
 							if (oldFirstTownMoveTarget->id == UnitId::TerranWatchdog)
 							{

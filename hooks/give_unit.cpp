@@ -108,54 +108,46 @@ namespace hooks
 	}
 
 	// Hooked to rule out unit AI type issues - Pr0nogo
-	void giveAI(Unit* unit) // 00463040
-	{
-		s32 player = unit->player;
-		if (player < 8 && g_player_table[player].type == PlayerType::Computer)
-		{
-			if (unit->id == UnitId::TerranCleric)
-			{
-				Unit* freeMedic = g_aiscript_controller[player].main_medic;
-				if (freeMedic == nullptr)
-				{
-					freeMedic = unit;
+	void give_ai(Unit* unit) { // 00463040
+		u32 player = unit->player;
+		if (player < PlayerLimit && g_player_table[player].type == PlayerType::Computer) {
+			if (unit->id == UnitId::TerranCleric) {
+				Unit* free_medic = g_aiscript_controller[player].main_medic;
+				if (!free_medic) {
+					free_medic = unit;
 				}
 			}
 
-			if (units_dat::computer_ai_internal[unit->id] & 2) // "Non-military"
-			{
-				// Originally used gi_ai_active_town_array[player].first
-
+			if (units_dat::computer_ai_internal[unit->id] & 2) { // "Non-military"
 				AiTown* town = scbw::get_closest_town(player, unit->position);
-				//u32 closest_resarea = scbw::get_closest_resarea(unit->position);
-				//if (default_ai_expansion_block[player] && scbw::unit_id_is_town_center(unit->id) && (!town || town->resarea != closest_resarea)) {
-				//	AiScript* aiscript = 0;
-				//	for (AiScript* it = *g_first_active_aiscript; it; it = it->link.next) {
-				//		if (it->player == player) {
-				//			aiscript = it;
-				//			break;
-				//		}
-				//	}
-				//	if (aiscript) {
-				//		if (helper::ai_try_expanding_to(closest_resarea)) {
-				//			helper::ai_expand_to(aiscript, closest_resarea, default_ai_expansion_block[aiscript->player]);
-				//			town = scbw::get_closest_town(player, unit->position);
-				//		}
-				//	}
-				//}
+			//	u32 closest_resarea = scbw::get_closest_resarea(unit->position);
+			//	if (default_ai_expansion_block[player] && scbw::unit_id_is_town_center(unit->id) && (!town || town->resarea != closest_resarea)) {
+			//		AiScript* aiscript = 0;
+			//		for (AiScript* it = *g_first_active_aiscript; it; it = it->link.next) {
+			//			if (it->player == player) {
+			//				aiscript = it;
+			//				break;
+			//			}
+			//		}
+			//		if (aiscript) {
+			//			if (helper::ai_try_expanding_to(closest_resarea)) {
+			//				helper::ai_expand_to(aiscript, closest_resarea, default_ai_expansion_block[aiscript->player]);
+			//				town = scbw::get_closest_town(player, unit->position);
+			//			}
+			//		}
+			//	}
 				if (town) {
 					helper::add_worker_structure_ai(unit, town);
 				}
-			}
-			else
-			{
+			} else {
 				UnitExt* unitExt = get_unit_ext(unit);
-				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] || unitExt->units[UnitMindController])
-				{
+				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] || unitExt->units[UnitMindController]) {
 					helper::ai_training_simple_military(unit, unit);
-				}
-				else
-				{
+				} else {
+					if (unit->unit_ai) {
+						scbw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
+						helper::remove_unit_ai(unit, false);
+					}
 					helper::add_guard_ai_to_unit(unit);
 				}
 			}
