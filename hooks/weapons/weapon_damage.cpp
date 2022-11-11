@@ -169,9 +169,9 @@ namespace hooks
 		if (data.damage_type != damage_type::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id);
 
-			s32 armor_total = (data.target->get_armor() - armor_pen) * 256;
+			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
-				armor_total += scbw::get_aise_value(data.target, 0, AiseId::GetShepherds, 0, 0) * 256;
+				armor_total += scbw::get_aise_value(data.target, 0, AiseId::GetShepherds, 0, 0);
 				if (data.target->id == UnitId::TerranMinotaur) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
@@ -186,11 +186,10 @@ namespace hooks
 			}
 
 			// Autocrat Controlled Opposition
-			if (target_ext->values[ValueControlledOpposition]) {
-				armor_total = std::max(armor_total - (s32)target_ext->values[ValueControlledOpposition] * 256, 0);
-			}
+			armor_total -= target_ext->values[ValueControlledOpposition];
+
 			armor_total = std::max(armor_total, 0);
-			data.final_damage -= std::min(data.final_damage, armor_total);
+			data.final_damage -= std::min(data.final_damage, armor_total * 256);
 		}
 
 		// Reduce Plasma Shields
@@ -308,7 +307,6 @@ namespace hooks
 			case WeaponId::EmpressFadingBioplasma:
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::MutaliskGlaveWurm:
-			default:
 			{
 				// Lithe Organelle - bounce damage
 				data.final_damage *= 1 - data.damage_divisor * 0.33;
