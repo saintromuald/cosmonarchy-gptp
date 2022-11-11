@@ -2781,7 +2781,7 @@ namespace scbw {
 			g_base_array[resource_area].flags &= ~0x2;
 		}
 
-		s32 player = (u8)ai_town->player;
+		s32 player = ai_town->player;
 		if (g_ai_town_list[player].first == ai_town) {
 			g_ai_town_list[player].first = ai_town->prev;
 		}
