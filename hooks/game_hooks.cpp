@@ -1374,7 +1374,7 @@ namespace hooks {
 				// Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid, true);;
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);;
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
@@ -1642,7 +1642,7 @@ namespace hooks {
 				// Durendal - Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::DurendalPhilistineAutogun, true);
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
@@ -1653,7 +1653,7 @@ namespace hooks {
 				// Ambassador - Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::AmbassadorSignatorySalvo, true);
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AmbassadorSignatorySalvo);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
@@ -1701,7 +1701,7 @@ namespace hooks {
 				// Optecton - Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround, true, false)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::OptectonSkybondRay, true);
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
