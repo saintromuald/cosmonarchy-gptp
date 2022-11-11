@@ -1527,6 +1527,7 @@ namespace scbw {
 			case WeaponId::SentinelCerberusRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:
+			case WeaponId::HippogriffChimeraCannons:
 			case WeaponId::OptectonSunsplitBeam:
 			case WeaponId::PatriarchIronhandWeaver:
 			case WeaponId::KalkaliskViscousAcid:
