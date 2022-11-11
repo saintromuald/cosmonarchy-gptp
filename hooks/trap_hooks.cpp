@@ -207,7 +207,7 @@ namespace hooks
 			v1->powerup_origin.y = v15->position.y;
 			v16 = units_dat::human_idle_order[v13];
 			v1->user_action_flags |= 1u;
-			helper::order(1, v1, v16, 0, 0, 228);
+			helper::order(1, v1, v16, {}, 0, 228);
 			helper::orders_nothing_2(v1);
 		}
 		v1->air_strength = helper::get_unit_strength(v1, v13, 0);

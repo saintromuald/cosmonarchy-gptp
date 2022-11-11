@@ -53,7 +53,7 @@ namespace AI
 				return false;
 			}
 
-			if (isTargetAttackingAlly(target, caster))
+			if (is_target_attacking_ally(target, caster))
 			{
 				return true;
 			}

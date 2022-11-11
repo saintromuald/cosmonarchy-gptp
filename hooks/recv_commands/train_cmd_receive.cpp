@@ -10,7 +10,7 @@ namespace hooks
 		while (current_selection)
 		{
 			u32 unit_to_train;
-			//the original code was messy, simplified/optimized version here
+			// The original code was messy, simplified/optimized version here. -GPTP
 			if (current_selection->id == UnitId::ProtossSolarion)
 			{
 				unit_to_train = UnitId::ProtossSteward;
@@ -23,15 +23,15 @@ namespace hooks
 				}
 				else
 				{
-					unit_to_train = 0; // not translating it as marine as it's an error case
+					unit_to_train = 0; // Not translating it as marine as it's an error case
 				}
 			}
 
 			if (current_selection->can_make_unit(unit_to_train, *g_active_nation_id) == 1
-				&& helper::has_money_can_make(current_selection, unit_to_train)) // add unit to build queue if successful
+			&&  helper::has_money_can_make(current_selection, unit_to_train)) // Add unit to build queue if successful
 			{
 				if (current_selection->id == UnitId::ProtossSolarion
-					|| current_selection->id == UnitId::ProtossAccantorOld)
+				||  current_selection->id == UnitId::ProtossAccantorOld)
 				{
 					if (current_selection->secondary_order_state != 2)
 					{
@@ -59,7 +59,7 @@ namespace hooks
 			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs
 			if (builder->can_make_unit(unit_id, *g_active_nation_id) == 1)
 			{
-				if (helper::has_money_can_make(builder, unit_id)) // add unit to build queue if successful
+				if (helper::has_money_can_make(builder, unit_id)) // Add unit to build queue if successful
 				{
 					builder->set_secondary_order(OrderId::Train);
 				}

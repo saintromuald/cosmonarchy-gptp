@@ -25,19 +25,19 @@ namespace AI
 			return false;
 		}
 		if (target->id == UnitId::ProtossPlasmaShell
-			|| target->id == UnitId::TerranSpiderMine
-			|| target->id == UnitId::ProtossSteward)
+		||  target->id == UnitId::TerranSpiderMine
+		||  target->id == UnitId::ProtossSteward)
 		{
 			return false;
 		}
 		return true;
 	}
 
-	bool isTargetAttackingAlly(Unit* target, Unit* unit)
+	bool is_target_attacking_ally(Unit* target, Unit* unit)
 	{
-		if (Unit* targetOfTarget = target->order_target.unit)
+		if (Unit* target_of_target = target->order_target.unit)
 		{
-			if (targetOfTarget->player < 8 && !unit->is_target_enemy(targetOfTarget))
+			if (target_of_target->player < 8 && !unit->is_target_enemy(target_of_target))
 			{
 				return true;
 			}
@@ -72,14 +72,13 @@ namespace AI
 	//Based on code @ 0x00440BB0 (not a real independant function)
 	bool unit_is_in_unsafe_region(Unit* unit)
 	{
-		u16 currentRegion = get_region_at_position_exact(unit->get_x(), unit->get_y());
-		AiRegion* currentAiRegion = &g_ai_region_captains[unit->player][currentRegion];
-		return currentAiRegion->state == 3
-			|| currentAiRegion->air_target
-			|| currentAiRegion->ground_target
-			|| currentAiRegion->flags & 0x20;
+		u16 current_region = get_region_at_position_exact(unit->get_x(), unit->get_y());
+		AiRegion* current_ai_region = &g_ai_region_captains[unit->player][current_region];
+		return current_ai_region->state == 3
+			|| current_ai_region->air_target
+			|| current_ai_region->ground_target
+			|| current_ai_region->flags & 0x20;
 	}
-
 
 	//-------- Get total unit stats in box --------//
 

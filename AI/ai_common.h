@@ -9,7 +9,7 @@ namespace AI
 	bool is_target_worth_hitting(Unit* target, Unit* attacker);
 
 	// Returns true if @p target is attacking a player allied to @p unit.
-	bool isTargetAttackingAlly(Unit* target, Unit* unit);
+	bool is_target_attacking_ally(Unit* target, Unit* unit);
 
 	// Determines whether the given @p player is in a UMS map (i.e. campaign mode).
 	bool is_campaign_ai(u8 player);

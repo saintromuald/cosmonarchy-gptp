@@ -244,34 +244,34 @@ namespace hooks
 	void orders_pickup4_0(Unit* unit)
 	{
 		scbw::print("hello");
-		Unit* unitVar = unit;
+		Unit* unit_var = unit;
 		bool bIsNeutral = unit->player == 11;
 		char unitStatus = unit->status;
 		if (bIsNeutral)
 		{
 			scbw::print("is_neutral");
-			u8 idleOrder;
+			u8 idle_order;
 			if (unitStatus & 0x40)
 			{
-				idleOrder = OrderId::Nothing2;
+				idle_order = OrderId::Nothing2;
 			}
 			else
 			{
-				idleOrder = units_dat::return_to_idle_order[(u16)unitVar->id];
+				idle_order = units_dat::return_to_idle_order[(u16)unit_var->id];
 			}
-			unitVar->user_action_flags |= 1u;
-			helper::order(1, unitVar, idleOrder, 0, 0, 228);
-			helper::orders_nothing_2(unitVar);
+			unit_var->user_action_flags |= 1u;
+			helper::order(1, unit_var, idle_order, {}, 0, 228);
+			helper::orders_nothing_2(unit_var);
 			return;
 		}
-		if (!(unitStatus & 0x40) && !helper::ai_update_attack_target(unitVar, 0, 0, 1))
+		if (!(unitStatus & 0x40) && !helper::ai_update_attack_target(unit_var, 0, 0, 1))
 		{
 			scbw::print("order_target");
-			Unit* order_target = unitVar->order_target.unit;
-			Unit** orderTargetOffset = &unitVar->order_target.unit;
+			Unit* order_target = unit_var->order_target.unit;
+			Unit** orderTargetOffset = &unit_var->order_target.unit;
 			if (order_target)
 			{
-				if (!helper::unit_is_active_transport(order_target) || order_target->order_target.unit != unitVar)
+				if (!helper::unit_is_active_transport(order_target) || order_target->order_target.unit != unit_var)
 				{
 					scbw::print("goto label16");
 					goto LABEL_16;
@@ -279,10 +279,10 @@ namespace hooks
 			}
 			else
 			{
-				if (!helper::ai_find_transport(unitVar, &unitVar->order_target.unit))
+				if (!helper::ai_find_transport(unit_var, &unit_var->order_target.unit))
 				{
 					scbw::print("toIdle / return");
-					helper::to_idle(unitVar);
+					helper::to_idle(unit_var);
 					return;
 				}
 				order_target = *orderTargetOffset;
@@ -292,18 +292,18 @@ namespace hooks
 					return;
 				}
 			}
-			if (!can_enter_transport(order_target, unitVar))
+			if (!can_enter_transport(order_target, unit_var))
 			{
 			LABEL_16:
 				scbw::print("can't enter transport");
 				*orderTargetOffset = 0;
 				return;
 			}
-			if (helper::is_target_within_min_range(unitVar, 1u, order_target))
+			if (helper::is_target_within_min_range(unit_var, 1u, order_target))
 			{
 				scbw::print("target within min range");
-				helper::load_unit_proc(order_target, unitVar);
-				helper::issue_order_targeting_ground(order_target, OrderId::MoveUnload, unitVar->order_target.pt.x, unitVar->order_target.pt.y);
+				helper::load_unit_proc(order_target, unit_var);
+				helper::issue_order_targeting_ground(order_target, OrderId::MoveUnload, unit_var->order_target.pt.x, unit_var->order_target.pt.y);
 				if (order_target->unit_ai)
 				{
 					scbw::print("has AI");
@@ -313,13 +313,13 @@ namespace hooks
 			else
 			{
 				scbw::print("target not within min range");
-				helper::prepend_order_targeting_unit(unitVar, order_target, 0x5Eu);
+				helper::prepend_order_targeting_unit(unit_var, order_target, 0x5Eu);
 				helper::orders_nothing_2(order_target);
-				if (helper::ai_are_on_connected_regions(unitVar, order_target->sprite->position.x, order_target->sprite->position.y))
+				if (helper::ai_are_on_connected_regions(unit_var, order_target->sprite->position.x, order_target->sprite->position.y))
 				{
 					scbw::print("set waypoint");
-					helper::set_secondary_waypoint(unitVar, order_target->sprite->position.x, order_target->sprite->position.y);
-					helper::move_towards(order_target, unitVar);
+					helper::set_secondary_waypoint(unit_var, order_target->sprite->position.x, order_target->sprite->position.y);
+					helper::move_towards(order_target, unit_var);
 				}
 			}
 		}

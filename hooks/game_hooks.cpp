@@ -1698,6 +1698,7 @@ namespace hooks {
 			case UnitId::ProtossOptecton:
 			{
 				// Optecton - Forward March
+				/*
 				if (!unit_ext->timers[TimerOptectonSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), false, false) {
 						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::OptectonSkybondRay];
@@ -1705,6 +1706,7 @@ namespace hooks {
 						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
+				*/
 			} break;
 		}
 

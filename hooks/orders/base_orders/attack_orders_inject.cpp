@@ -99,7 +99,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_AttackMoveEPWrapper()
+	void __declspec(naked) orders_attack_move_ep_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -117,7 +117,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_AttackMoveWrapper()
+	void __declspec(naked) orders_attack_move_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -160,6 +160,22 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) set_interceptors_to_standby_wrapper()
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EDI
+			PUSHAD
+		}
+		hooks::set_interceptors_to_standby(unit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -172,9 +188,10 @@ namespace hooks
 	//	jump_patch(orders_AttackFixedRangeWrapper,		0x00477D00, 0);
 	//	jump_patch(orders_SapUnitWrapper,				0x004788E0, 2);
 	//	jump_patch(orders_SapLocationWrapper,			0x00478A40, 3);
-		jump_patch(orders_AttackMoveEPWrapper,			0x00478DE0, 1);
-		jump_patch(orders_AttackMoveWrapper,			0x00479040, 0);
+		jump_patch(orders_attack_move_ep_wrapper,		0x00478DE0, 1);
+		jump_patch(orders_attack_move_wrapper,			0x00479040, 0);
 	//	jump_patch(orders_AttackUnitWrapper,			0x00479BD0, 2);
 		jump_patch(orders_strafe_unit2_wrapper,			0x00465E00, 2);
+		jump_patch(set_interceptors_to_standby_wrapper,	0x00465780, 1);
 	}
 }

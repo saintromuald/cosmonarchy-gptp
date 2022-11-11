@@ -3781,16 +3781,16 @@ namespace helper {
 		return result;
 	}
 
-	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6) {
+	void order(s32 some_bool, Unit* unit, s8 order_id, Point16 pos, Unit* target_unit, u32 fow_unit_id) {
 		const u32 Func_order = 0x00474810;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			MOV EDX, a2
-			MOVZX CL, a3
-			PUSH a4
-			PUSH a5
-			PUSH a6
+			PUSH fow_unit_id
+			PUSH target_unit
+			PUSH pos
+			MOV EAX, some_bool
+			MOV EDX, unit
+			MOVZX CL, order_id
 			CALL Func_order
 			POPAD
 		}
@@ -8070,7 +8070,7 @@ namespace helper {
 		}
 	}
 
-	Unit* getHiddenMiner(Unit* unit) {
+	Unit* get_hidden_miner(Unit* unit) {
 		const u32 Func_getHiddenMiner = 0x00468A60;
 		static Unit* result;
 		__asm {

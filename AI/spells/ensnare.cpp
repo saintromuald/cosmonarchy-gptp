@@ -36,7 +36,7 @@ namespace AI
 			if (!(target->status & UnitStatus::Reacts)) //??
 				return false;
 
-			if (!isTargetAttackingAlly(target, caster))
+			if (!is_target_attacking_ally(target, caster))
 				return false;
 
 			const s32 totalEnemyLife = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::Ensnare);

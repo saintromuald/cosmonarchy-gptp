@@ -639,19 +639,20 @@ namespace hooks {
 		}
 		s16 unit_id = unit->id;
 		if (unit_id == UnitId::ResourceMineralField
-		  || unit_id == UnitId::ResourceMineralFieldType2
-		  || unit_id == UnitId::ResourceMineralFieldType3
-		  || unit_id == UnitId::ResourceVespeneGeyser
-		  || unit_id == UnitId::ProtossSteward
-		  || unit_id == UnitId::ProtossPlasmaShell
-		  || units_dat::base_property[unit_id] & UnitProperty::Addon
-		  || unit->player == player_id_var) {
+		||  unit_id == UnitId::ResourceMineralFieldType2
+		||  unit_id == UnitId::ResourceMineralFieldType3
+		||  unit_id == UnitId::ResourceVespeneGeyser
+		||  unit_id == UnitId::ProtossSteward
+		||  unit_id == UnitId::ProtossPlasmaShell
+		||  units_dat::base_property[unit_id] & UnitProperty::Addon
+		||  unit->player == player_id_var)
+		{
 			return 0;
 		}
 		if (helper::unit_is_geyser(unit)) {
-			Unit* hiddenMiner = helper::getHiddenMiner(unit);
-			if (hiddenMiner) {
-				helper::give_all_unit_properties_to_player(hiddenMiner, player_id_var);
+			Unit* hidden_miner = helper::get_hidden_miner(unit);
+			if (hidden_miner) {
+				helper::give_all_unit_properties_to_player(hidden_miner, player_id_var);
 			}
 		}
 		helper::give_all_unit_properties_to_player(unit, player_id_var);

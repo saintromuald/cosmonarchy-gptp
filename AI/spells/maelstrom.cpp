@@ -54,7 +54,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (isTargetAttackingAlly(target, caster)
+			if (is_target_attacking_ally(target, caster)
 				&& !scbw::is_zerg_egg_new(target, true, true))
 			{
 				const s32 totalEnemyLife = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::MindTyrantMaelstrom);

@@ -475,7 +475,7 @@ namespace helper {
 	void refresh_unit_vision(Unit* a1);																								// 004E5F30
 	void init_unit_trap_doodad(Unit* a1);																							// 004E6490
 	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
-	void order(s32 a1, Unit* a2, s8 a3, Vector32* a4, Unit* a5, s32 a6);															// 00474810
+	void order(s32 some_bool, Unit* unit, s8 order_id, Point16 pos, Unit* target_unit, u32 fow_unit_id);							// 00474810
 	u32 get_unit_strength(Unit* a1, s32 a2, bool a3);																				// 00431800
 
 	//// make_nydus_exit
@@ -964,7 +964,7 @@ namespace helper {
 
 	// For give_unit_to_player
 	void give_all_unit_properties_to_player(Unit* unit, s8 player);												// 0047C9F0
-	Unit* getHiddenMiner(Unit* unit);																		// 00468A60
+	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
 	bool unitHasHanger(Unit* unit);																			// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30

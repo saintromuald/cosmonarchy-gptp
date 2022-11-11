@@ -315,6 +315,10 @@ namespace hooks {
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanLaunchPos, 1, false);
 					} break;
+					case WeaponId::OptectonSunsplitBeam:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueOptectonLaunchPos1, 1, false);
+					} break;
 					case WeaponId::AccantorPlasmaShell:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueAccantorLaunchPos, 1, false);
@@ -707,7 +711,7 @@ namespace hooks {
 				{
 					range = 64;
 				} break;
-				case WeaponId::OptectonSunsplitBeam:
+			//	case WeaponId::OptectonSunsplitBeam:
 				case WeaponId::PatriarchIronhandWeaver:
 				case WeaponId::KalkaliskViscousAcid:
 				{
@@ -851,7 +855,7 @@ namespace hooks {
 			Sprite* bullet_sprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
 			bullet->unknown_0x4E = 0;
-			bullet->someUnitType = 228;
+			bullet->some_unit_type = 228;
 			for (i = bullet_sprite->images.head; i; i = i->link.next)
 			{
 				helper::play_image_iscript(i, IscriptAnimation::Death);
@@ -910,7 +914,7 @@ namespace hooks {
 				}
 				Sprite* sprite = bullet->sprite;
 				bullet->unknown_0x4E = 0;
-				bullet->someUnitType = UnitId::None;
+				bullet->some_unit_type = UnitId::None;
 
 				for (Image* j = sprite->images.head; j; j = j->link.next)
 				{
@@ -1100,20 +1104,12 @@ namespace hooks {
 	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
 	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, char player, s32 angle) // 0048C260
 	{
-		Bullet* free_bullet;
-		s32 parentStatus;
-		Bullet* result;
-		Bullet* next_bullet;
-		Bullet* first_bullet_var;
-		Bullet* nextBulletVar;
-
-		free_bullet = *first_free_bullet;
+		Bullet* free_bullet = *first_free_bullet;
 		if (!*first_free_bullet)
 		{
 			return 0;
 		}
-		parentStatus = parent->status;
-		if (parentStatus & UnitStatus::CanNotAttack)
+		if (parent->status & UnitStatus::CanNotAttack)
 		{
 			return 0;
 		}
@@ -1137,14 +1133,17 @@ namespace hooks {
 		{
 			free_bullet->previous->next = free_bullet->next;
 		}
-		next_bullet = free_bullet->next;
+		
+		Bullet* next_bullet = free_bullet->next;
 		if (next_bullet)
 		{
 			next_bullet->previous = free_bullet->previous;
 		}
 		free_bullet->previous = 0;
 		free_bullet->next = 0;
-		first_bullet_var = *first_bullet;
+		Bullet* result = 0;
+		
+		Bullet* first_bullet_var = *first_bullet;
 		if (*first_bullet)
 		{
 			if (*last_bullet == *first_bullet)
@@ -1153,10 +1152,10 @@ namespace hooks {
 			}
 			free_bullet->previous = *first_bullet;
 			free_bullet->next = first_bullet_var->next;
-			nextBulletVar = first_bullet_var->next;
-			if (nextBulletVar)
+			Bullet* next_bullet_var = first_bullet_var->next;
+			if (next_bullet_var)
 			{
-				nextBulletVar->previous = free_bullet;
+				next_bullet_var->previous = free_bullet;
 			}
 			first_bullet_var->next = free_bullet;
 			++*bullet_count;
@@ -1181,7 +1180,7 @@ namespace hooks {
 		}
 
 		bullet->player = player;
-		bullet->someUnitType = 228;
+		bullet->some_unit_type = UnitId::None;
 		bullet->unknown_0x4E = 0;
 		bullet->attack_target.unit = nullptr;
 		bullet->attack_target.pt.y = 0;
@@ -1189,7 +1188,7 @@ namespace hooks {
 		bullet->unknown_0x54 = 0;
 		bullet->weapon_id = weapon_id;
 		bullet->time_remaining = weapons_dat::remove_after[weapon_id];
-		bullet->someUnitType = 228;
+		bullet->some_unit_type = UnitId::None;
 		bullet->remaining_bounces = 0;
 		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
@@ -1220,9 +1219,9 @@ namespace hooks {
 			{
 				launch_spin_variance = -(s8)launch_spin;
 			}
-			char launchSpinDirection = launch_spin_variance + bullet->direction2;
-			bullet->direction2 = launchSpinDirection;
-			bullet->direction1 = launchSpinDirection;
+			char launch_spin_direction = launch_spin_variance + bullet->direction2;
+			bullet->direction2 = launch_spin_direction;
+			bullet->direction1 = launch_spin_direction;
 			*g_last_bullet_creator = parent;
 		}
 
@@ -1239,7 +1238,7 @@ namespace hooks {
 		{
 			bullet->hit_flags |= 2u;
 		}
-		bullet->next_bounce_unit = nullptr;
+		bullet->next_bounce_unit = 0;
 
 		Unit* target_unit = parent->order_target.unit;
 		if (target_unit)
@@ -1358,10 +1357,9 @@ namespace hooks {
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
-				s32 bulletDirection = bullet->direction1;
-				s32 maxRangeVar = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
-				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].x) >> 16);
-				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(maxRangeVar * g_angle_distance[bulletDirection].y) >> 16);
+				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
+				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->direction1].x) >> 16);
+				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->direction1].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
@@ -1459,7 +1457,7 @@ namespace hooks {
 							bullet->attack_target.unit = nullptr;
 						}
 						bullet->unknown_0x4E = 0;
-						bullet->someUnitType = 228;
+						bullet->some_unit_type = 228;
 						helper::play_sprite_iscript(bullet->sprite, 1, 1);
 					} break;
 					case WeaponBehavior::Fly_FollowTarget:

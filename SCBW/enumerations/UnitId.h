@@ -377,7 +377,7 @@ namespace UnitId
 		TerranCommandCenter									= 106,
 		TerranComsatStation									= 107,
 		TerranMissileSilo									= 108,
-		TerranSupplyDepot									= 109,
+		TerranSupplyDepot									= 109, // Threshold - unit origin
 		TerranReservoir										= 110,
 		TerranBarracks										= 111,
 		TerranAcademy										= 112,

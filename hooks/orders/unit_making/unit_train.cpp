@@ -70,8 +70,8 @@ namespace hooks {
 				} else {
 					Unit* in_hangar_child = unit->unit_with_hangar.in_hangar_child;
 					if (in_hangar_child) {
-						s32 hpInterceptor = units_dat::max_hitpoints[UnitId::ProtossSteward];
-						while (in_hangar_child && in_hangar_child->hitpoints >= hpInterceptor) {
+						s32 hp_steward = units_dat::max_hitpoints[UnitId::ProtossSteward];
+						while (in_hangar_child && in_hangar_child->hitpoints >= hp_steward) {
 							in_hangar_child = in_hangar_child->hangar_unit.hangar_link.next;
 						}
 						if (in_hangar_child) {

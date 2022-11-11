@@ -1372,14 +1372,14 @@ static void init_threshold_units() {
 	// Alexei Ukov
 	threshold.frauds[Fraud_AlexeiUkov][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::VividRed};
 	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {5, UnitId::TerranMaverick});
-	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {2, UnitId::TerranGorgon});
-	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {1, UnitId::TerranWyvern});
+	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {2, UnitId::TerranWraith});
+	add_fraud_unit(Fraud_AlexeiUkov, RaceId::Terran, {1, UnitId::TerranGorgon});
 
 	// Ullen "Bank on Me" Bigmunney
 	threshold.frauds[Fraud_UllenBankOnMeBigmunney][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_None, AiBuildOrder_TerranArmor_IronCrusade, PlayerColor::VineGreen};
 	add_fraud_unit(Fraud_UllenBankOnMeBigmunney, RaceId::Terran, {4, UnitId::TerranMason});
 	add_fraud_unit(Fraud_UllenBankOnMeBigmunney, RaceId::Terran, {2, UnitId::TerranGoliath});
-	add_fraud_unit(Fraud_UllenBankOnMeBigmunney, RaceId::Terran, {2, UnitId::TerranPhalanxTankMode});
+	add_fraud_unit(Fraud_UllenBankOnMeBigmunney, RaceId::Terran, {4, UnitId::TerranBlackjack});
 
 	// knightoftherealm
 	threshold.frauds[Fraud_knightoftherealm][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Aero};
@@ -1390,17 +1390,18 @@ static void init_threshold_units() {
 	// KKKhris
 	threshold.frauds[Fraud_KKKhris][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Brown};
 	add_fraud_unit(Fraud_KKKhris, RaceId::Terran, {4, UnitId::TerranMaverick});
-	add_fraud_unit(Fraud_KKKhris, RaceId::Terran, {2, UnitId::TerranPhalanxTankMode});
+	add_fraud_unit(Fraud_KKKhris, RaceId::Terran, {3, UnitId::TerranGoliath});
 	add_fraud_unit(Fraud_KKKhris, RaceId::Terran, {2, UnitId::TerranWraith});
 
 	// Dynamo
 	threshold.frauds[Fraud_Dynamo][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_None, AiBuildOrder_TerranRaider_3RaxMarineAndCleric, PlayerColor::VividOrange};
-	add_fraud_unit(Fraud_Dynamo, RaceId::Terran, {4, UnitId::TerranMadcap});
-	add_fraud_unit(Fraud_Dynamo, RaceId::Terran, {1, UnitId::TerranAutocrat});
+	add_fraud_unit(Fraud_Dynamo, RaceId::Terran, {4, UnitId::TerranMaverick});
+	add_fraud_unit(Fraud_Dynamo, RaceId::Terran, {1, UnitId::TerranOlympian});
 
 	// TodsDadPat
 	threshold.frauds[Fraud_TodsDadPat][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Platinum};
-	add_fraud_unit(Fraud_TodsDadPat, RaceId::Terran, {2, UnitId::TerranPaladin});
+	add_fraud_unit(Fraud_TodsDadPat, RaceId::Terran, {3, UnitId::TerranVulture});
+	add_fraud_unit(Fraud_TodsDadPat, RaceId::Terran, {5, UnitId::TerranCyclops});
 
 	// Piglet
 	threshold.frauds[Fraud_Piglet][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cordovan};

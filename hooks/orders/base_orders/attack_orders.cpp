@@ -545,20 +545,19 @@ namespace hooks
 
 		if (jump_to_77E48)
 		{
-			if (unit->order_queue_head != nullptr)
+			if (unit->order_queue_head)
 			{
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
 			}
+			else if (unit->unit_ai)
+			{
+				unit->order_computer(OrderId::ComputerAI);
+			}
 			else
-				if (unit->unit_ai != nullptr)
-				{
-					unit->order_computer(OrderId::ComputerAI);
-				}
-				else
-				{
-					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-				}
+			{
+				unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+			}
 		}
 
 		if (jump_to_77E99)
@@ -575,31 +574,30 @@ namespace hooks
 				}
 				helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
 			}
+			else if (!unit->unit_ai)
+			{
+				unit->order_to_idle();
+			}
 			else
-				if (unit->unit_ai == nullptr)
-				{
-					unit->order_to_idle();
-				}
-				else
-				{
-					unit->order_to(OrderId::AttackMove, unit->order_target.pt.x, unit->order_target.pt.y);
-				}
+			{
+				unit->order_to(OrderId::AttackMove, unit->order_target.pt.x, unit->order_target.pt.y);
+			}
 		}
 	}
 
 	void orders_sap_unit(Unit* unit)
 	{
 		Unit* target = unit->order_target.unit;
-		if (target == nullptr)
+		if (!target)
 		{
-			if (unit->order_queue_head != nullptr)
+			if (unit->order_queue_head)
 			{
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
 			}
 			else
 			{
-				if (unit->unit_ai != nullptr)
+				if (unit->unit_ai)
 				{
 					unit->order_computer(OrderId::ComputerAI);
 				}
@@ -660,7 +658,7 @@ namespace hooks
 						{
 							unit->order_target.unit = unit;
 							Image* current_image = unit->sprite->images.head;
-							while (current_image != nullptr)
+							while (current_image)
 							{
 								current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 								current_image = current_image->link.next;
@@ -857,7 +855,7 @@ namespace hooks
 
 				unit->status |= UnitStatus::NoCollide;
 				unit->main_order_timer = 7;
-				if (unit->order_target.unit != NULL)
+				if (unit->order_target.unit)
 				{
 					u8 rand_value = helper::randomize_short(0) & 1;
 					helper::play_sound_from_unit(SoundId::Bullet_pTrFir00_wav + rand_value, unit, 1, 0);
@@ -882,7 +880,7 @@ namespace hooks
 			{
 				Unit* target = unit->order_target.unit;
 				bool bNotEndThere;
-				if (target != NULL)
+				if (target)
 				{
 					if (unit->is_target_within_min_range(target, 256)
 					&&  target->movement_flags & MovementFlags::Accelerating)
@@ -922,7 +920,27 @@ namespace hooks
 					unit->remove();
 				}
 			}
+		}
+	}
 
+	// Hooked to debug Stewards in a post-extender environment. -Pr0nogo
+	void set_interceptors_to_standby(Unit* unit) // 00465780
+	{
+		for (Unit* out_hangar_child = unit->unit_with_hangar.out_hangar_child; out_hangar_child; out_hangar_child = out_hangar_child->hangar_unit.hangar_link.next)
+		{
+			out_hangar_child->sprite->elevation = unit->sprite->elevation - 1;
+			Unit* target = unit->order_target.unit;
+			u32 attack_order = units_dat::attack_unit_order[out_hangar_child->id];
+			out_hangar_child->user_action_flags |= 1u;
+			if (target)
+			{
+				helper::order(1, out_hangar_child, attack_order, target->sprite->position, target, UnitId::None);
+			}
+			else
+			{
+				helper::order(1, out_hangar_child, attack_order, {}, 0, UnitId::None);
+			}
+			helper::orders_nothing_2(out_hangar_child);
 		}
 	}
 }

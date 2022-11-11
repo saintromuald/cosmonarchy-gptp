@@ -679,25 +679,20 @@ namespace hooks
 	{
 		if (icon_unit_id == UnitId::ProtossSteward)
 		{
-			return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);				// "Interceptors"
+			return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);				// "Stewards"
 		}
 		if (icon_unit_id == UnitId::ProtossPlasmaShell)
 		{
-			return get_damage_tootlip_string(WeaponId::Scarab, unit, 792);						// "Scarabs"
+			return get_damage_tootlip_string(WeaponId::Scarab, unit, 792);						// "Plasma Shells"
 		}
 		if (icon_unit_id == UnitId::TerranNuclearMissile)
 		{
-			return g_stat_txt_tbl_new->get_string(793);											// "Nukes"
+			return g_stat_txt_tbl_new->get_string(793);											// "Missiles"
 		}
 		if (icon_unit_id == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
 		{
 			return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);				// "Spider Mines"
 		}
-		if (icon_unit_id == UnitId::TerranSpiderMine && unit->id == UnitId::TerranEidolon)
-		{
-			return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 794);		// "Lobotomy Mines"
-		}
-
 		// Should never reach here
 		return "";
 	}

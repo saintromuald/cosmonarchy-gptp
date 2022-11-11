@@ -125,6 +125,8 @@ enum ExtValueId
 	ValueAccantorLaunchPos,
 	ValuePatriarchAstralRulePlayer,
 	ValueSwarmhold,
+	ValueOptectonLaunchPos1,
+	ValueOptectonLaunchPos2,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
