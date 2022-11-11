@@ -1093,6 +1093,7 @@ namespace helper {
 	
 	// For scenario.cpp
 	Unit* ai_create_unit(u32 unit_id, s32 player, s32 x, s32 y);																// 004A0AD0
+	bool is_ai_script_name_valid(u32 player, u32 name);																			// 0045AEA0
 	s32 parse_aiscript_name(s32 name, s32* is_bw);																				// 0045AEF0
 	AiScript* run_aiscript(Box32* area, u32 player, u32 block, u32 is_bw);														// 0045B170
 	AiScript* ai_stop(AiScript* ai_script);																						// 00403380

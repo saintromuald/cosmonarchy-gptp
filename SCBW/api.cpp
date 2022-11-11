@@ -2078,6 +2078,9 @@ namespace scbw {
 
 	AiScript* run_ai(u32 player, Box32 area, s32 name) {
 		s32 is_bw = 0;
+		if (!helper::is_ai_script_name_valid(player, name)) {
+			return 0;
+		}
 		s32 block = helper::parse_aiscript_name(name, &is_bw);
 		if (block) {
 			AiScript* ai_script = helper::run_aiscript(&area, player, block, is_bw);

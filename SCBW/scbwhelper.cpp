@@ -9221,6 +9221,20 @@ namespace helper {
 		return result;
 	}
 
+	bool is_ai_script_name_valid(u32 player, u32 name) {
+		const u32 func_address = 0x0045AEA0;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV ESI, name
+			MOV EDX, player
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	s32 parse_aiscript_name(s32 name, s32* is_bw) {
 		static s32 result;
 		const u32 Func_parseAIScriptName = 0x0045B170;
