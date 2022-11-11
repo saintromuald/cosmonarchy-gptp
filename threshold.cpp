@@ -1080,18 +1080,6 @@ bool try_prepare_threshold() {
 			}
 			clear_player_slot(player, true);
 		}
-		for (u32 player = 0; player < PlayerLimit; ++player) {
-			if (!threshold.fraud_enabled[player]) {
-				continue;
-			}
-			if (threshold_config.initial_count) {
-				if (place_fraud(player, FraudClass_Fraud, true)) {
-					threshold_config.initial_count -= 1;
-				}
-			} else {
-				break;
-			}
-		}
 	}
 	return threshold.init;
 }
@@ -1102,6 +1090,22 @@ void update_threshold() {
 	}
 	update_config();
 	const u32 god_spawn_breakpoint = threshold_config.total_count;
+
+	if (threshold_config.initial_count) {
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			if (!threshold.fraud_enabled[player]) {
+				continue;
+			}
+			if (threshold_config.initial_count) {
+				if (place_fraud(player, FraudClass_Fraud, true)) {
+					threshold_config.initial_count -= 1;
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+	}
 
 	static char buffer[64];
 	if (threshold.used_count < god_spawn_breakpoint) {
