@@ -2094,6 +2094,7 @@ namespace scbw {
 		} else {
 			scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
 		}
+		return 0;
 	}
 
 	AiScript* run_ai(u32 player, Point16 pos, s32 name) {
