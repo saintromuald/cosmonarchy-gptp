@@ -1374,7 +1374,7 @@ namespace hooks {
 				// Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);;
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
