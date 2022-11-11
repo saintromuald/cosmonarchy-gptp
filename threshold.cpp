@@ -916,7 +916,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 			f32 multiplier = (0.5 + fraud_count * 0.2) * threshold_config.scalar;
 			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
-				threshold.units[next_fraud][race][i].count *= multiplier;
+				threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * multiplier);
 				if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
 					if (threshold.units[next_fraud][race][i].count > 40 * threshold_config.scalar) {
 						threshold.units[next_fraud][race][i].count = 40 * threshold_config.scalar;
