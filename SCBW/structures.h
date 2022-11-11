@@ -879,12 +879,16 @@ struct AiTown {
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
-struct AiExpandList
-{
-	AiTown* last;
+struct AiTownArray {
+	AiTown towns[100];
+	AiTown* first_free;
+};
+
+struct AiTownList {
+	AiTownArray* array;
 	AiTown* first;
 };
-C_ASSERT(sizeof(AiExpandList) == 0x8);
+C_ASSERT(sizeof(AiTownList) == 0x8);
 
 struct SpendingRequest {
 	u8		priority;
@@ -962,6 +966,11 @@ struct AiScript {
 	s32					flags;			// 0x30
 };
 C_ASSERT(sizeof(AiScript) == 52);
+
+struct AiScriptArray {
+	AiScript scripts[100];
+	AiScript* first_free;
+};
 
 struct ResourceArea {
 	Point16 position;

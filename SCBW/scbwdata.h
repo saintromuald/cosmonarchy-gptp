@@ -361,7 +361,7 @@ SCBW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);
 // For ai_add_military
 SCBW_DATA(RegionArray**,	g_sai_paths,				0x006D5BFC);
 SCBW_DATA(AiTown*,			g_ai_town_array,			0x006AA090);
-SCBW_DATA(AiExpandList*,	g_ai_active_town_array,		0x006AA050); // sizeof 0x64[0x8]
+SCBW_DATA(AiTownList*,		g_ai_town_list,				0x006AA050); // sizeof 0x64[0x8]
 
 // For cmdrecv_hold_position
 SCBW_DATA(s16*,		g_map_width_pixels,					0x00628450);
@@ -868,10 +868,11 @@ SCBW_DATA(PlayerFlags<u32>*,	player_vision,		0x0057F1EC);
 
 SCBW_DATA(Unit**,		g_active_portrait_unit,		0x00597248);
 
-SCBW_DATA_REF(AI_Main*,	g_aiscript_controller,		0x0068FEE8);
-SCBW_DATA(AiRegion**,	g_ai_region_captains,		0x0069A604);
-SCBW_DATA(u32*,			g_ai_supply_reserved,		0x006CA4BC);
-SCBW_DATA(AiScript**,	g_first_active_aiscript,	0x0068C100);
+SCBW_DATA_REF(AI_Main*,		g_aiscript_controller,		0x0068FEE8);
+SCBW_DATA(AiRegion**,		g_ai_region_captains,		0x0069A604);
+SCBW_DATA(u32*,				g_ai_supply_reserved,		0x006CA4BC);
+SCBW_DATA(AiScript**,		g_first_active_aiscript,	0x0068C100);
+SCBW_DATA(AiScriptArray*,	g_aiscript_array,			0x0068C0FC);
 
 SCBW_DATA(ResourceAreaArray*, g_resource_areas,		0x00692688);
 

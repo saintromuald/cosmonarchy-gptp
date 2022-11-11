@@ -1794,7 +1794,7 @@ namespace scbw {
 	AiTown* get_closest_town(u32 player, Point16 position) {
 		u32 min_distance = UINT32_MAX;
 		AiTown* best_town = 0;
-		for (AiTown* town = g_ai_active_town_array[player].first; town; town = town->prev) {
+		for (AiTown* town = g_ai_town_list[player].first; town; town = town->prev) {
 			if (!town->inited) {
 				continue;
 			}
@@ -2746,5 +2746,58 @@ namespace scbw {
 			return 2;
 		}
 		return weapons_dat::damage_factor[weapon_id];
+	}
+
+	void delete_ai_script(AiScript* ai_script) {
+		if (*g_first_active_aiscript == ai_script) {
+			*g_first_active_aiscript = ai_script->link.next;
+		}
+
+		if (ai_script->link.next) {
+			ai_script->link.prev->link.prev = ai_script->link.prev;
+		}
+		if (ai_script->link.next) {
+			ai_script->link.next->link.prev = ai_script->link.prev;
+		}
+
+		ai_script->link.prev = 0;
+		ai_script->link.next = g_aiscript_array->first_free;
+		if (g_aiscript_array->first_free) {
+			g_aiscript_array->first_free->link.prev = ai_script;
+		}
+		g_aiscript_array->first_free = ai_script;
+	}
+
+	void delete_town(AiTown* ai_town) {
+		helper::delete_aiscripts_using_town(ai_town);
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
+				unit->building.resource.resource_group = 0;
+			}
+		}
+
+		u8 resource_area = ai_town->resarea;
+		if (resource_area) {
+			g_base_array[resource_area].flags &= ~0x2;
+		}
+
+		s32 player = (u8)ai_town->player;
+		if (g_ai_town_list[player].first == ai_town) {
+			g_ai_town_list[player].first = ai_town->prev;
+		}
+
+		if (ai_town->next) {
+			ai_town->next->prev = ai_town->prev;
+		}
+		if (ai_town->prev) {
+			ai_town->prev->next = ai_town->next;
+		}
+
+		ai_town->next = 0;
+		ai_town->prev = g_ai_town_list[player].array->first_free;
+		if (g_ai_town_list[player].array->first_free) {
+			g_ai_town_list[player].array->first_free->next = ai_town;
+		}
+		g_ai_town_list[player].array->first_free = ai_town;
 	}
 }

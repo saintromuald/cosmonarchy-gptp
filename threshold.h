@@ -24,12 +24,9 @@ enum Mission {
 
 struct ThresholdConfig {
 	bool enabled;
-	bool init; // Internal
 	bool fraud_allowed[PlayerLimit];
-	bool fraud_enabled[PlayerLimit]; // Internal
 	bool witness_enabled[PlayerLimit];
 	f32 auto_scale;
-	f32 scalar; // Internal
 	u32 initial_count;
 	u32 min_count;
 	u32 total_count;

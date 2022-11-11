@@ -527,12 +527,12 @@ namespace hooks {
 
 			u8 resource_area = town->resarea;
 			if (resource_area) {
-				g_base_array[resource_area].flags &= 0xFDu;
+				g_base_array[resource_area].flags &= ~0x2;
 			}
 
 			s32 player = (u8)town->player;
-			if (g_ai_active_town_array[player].first == town) {
-				g_ai_active_town_array[player].first = town->prev;
+			if (g_ai_town_list[player].first == town) {
+				g_ai_town_list[player].first = town->prev;
 			}
 
 			if (town->next) {
@@ -543,14 +543,12 @@ namespace hooks {
 				town->prev->next = town->next;
 			}
 
-			result = g_ai_active_town_array[player].last;
 			town->next = 0;
-			town->prev = result[100].prev;
-			AiTown* previous_town = result[100].prev;
-			if (previous_town) {
-				previous_town->next = town;
+			town->prev = g_ai_town_list[player].array->first_free;
+			if (g_ai_town_list[player].array->first_free) {
+				g_ai_town_list[player].array->first_free->next = town;
 			}
-			result[100].prev = town;
+			g_ai_town_list[player].array->first_free = town;
 		}
 		return result;
 	}

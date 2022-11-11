@@ -922,7 +922,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			for (u32 player = 0; player < PlayerLimit; ++player) {
 				threshold_config.witness_enabled[player] = players.set[player];
 				if (players.set[player]) {
-					threshold_config.fraud_enabled[player] = false;
+					threshold_config.fraud_allowed[player] = false;
 				}
 			}
 		} else if (parser_eq(&parser, "threshold_autoscale")) {
