@@ -176,6 +176,50 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) orders_strafe_unit_wrapper()
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_strafe_unit(unit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_next_strafe_position_wrapper()
+	{
+		static Unit* unit;
+		static u8 strafe_type;
+		static Point16 position;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV position, EAX
+			POP EAX
+			MOV strafe_type, CL
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::get_next_strafe_position(unit, strafe_type, position);
+		__asm
+		{
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -193,5 +237,7 @@ namespace hooks
 	//	jump_patch(orders_AttackUnitWrapper,			0x00479BD0, 2);
 		jump_patch(orders_strafe_unit2_wrapper,			0x00465E00, 2);
 		jump_patch(set_interceptors_to_standby_wrapper,	0x00465780, 1);
+		jump_patch(orders_strafe_unit_wrapper,			0x00465F60, 0);
+	//	jump_patch(get_next_strafe_position_wrapper,	0x00465D30, 0);
 	}
 }

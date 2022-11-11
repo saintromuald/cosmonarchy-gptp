@@ -12547,4 +12547,46 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	b32 return_interceptor_if_cannot_attack(Unit* steward)
+	{
+		static b32 result;
+		const u32 func_address = 0x00465810;
+		__asm {
+			PUSHAD
+			MOV EAX, steward
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos)
+	{
+		static u32 result;
+		const u32 func_address = 0x00465D30;
+		__asm {
+			PUSHAD
+			PUSH pos
+			MOVZX CL, strafe_type
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation)
+	{
+		const u32 func_address = 0x00476ED0;
+		__asm {
+			PUSHAD
+			MOVZX DL, animation
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

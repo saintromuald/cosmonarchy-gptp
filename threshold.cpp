@@ -1412,9 +1412,10 @@ static void init_threshold_units() {
 
 	// Piglet
 	threshold.frauds[Fraud_Piglet][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Cordovan};
-	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranBlackjack});
-	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranCohort});
-	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranSiren});
+	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {3, UnitId::TerranMaverick});
+	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranCyprian});
+	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {3, UnitId::TerranHarakan});
+	add_fraud_unit(Fraud_Piglet, RaceId::Terran, {2, UnitId::TerranCleric});
 
 	// DarkenedFantasies
 	threshold.frauds[Fraud_DarkenedFantasies][RaceId::Terran] = { AiPersonality_TerranArmor, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::DarkSpringGreen};
@@ -1424,36 +1425,37 @@ static void init_threshold_units() {
 
 	// Customer Supporter
 	threshold.frauds[Fraud_CustomerSupporter][RaceId::Terran] = {AiPersonality_TerranOrbital, AiBuildType_Greed, AiBuildOrder_None, PlayerColor::Turquoise};
-	add_fraud_unit(Fraud_CustomerSupporter, RaceId::Terran, {2, UnitId::TerranGorgon});
-	add_fraud_unit(Fraud_CustomerSupporter, RaceId::Terran, {1, UnitId::TerranSalamander});
+	add_fraud_unit(Fraud_CustomerSupporter, RaceId::Terran, {2, UnitId::TerranWraith});
+	add_fraud_unit(Fraud_CustomerSupporter, RaceId::Terran, {1, UnitId::TerranGorgon});
 
 	// Customer Supporter
 	threshold.frauds[Fraud_Desler][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Mint};
 	add_fraud_unit(Fraud_Desler, RaceId::Terran, {2, UnitId::TerranEidolon});
-	add_fraud_unit(Fraud_Desler, RaceId::Terran, {2, UnitId::TerranGoliath});
+	add_fraud_unit(Fraud_Desler, RaceId::Terran, {2, UnitId::TerranCyclops});
 	add_fraud_unit(Fraud_Desler, RaceId::Terran, {2, UnitId::TerranBlackjack});
 
 	// Bitcoin Boris
 	threshold.frauds[Fraud_BitcoinBoris][RaceId::Protoss] = {AiPersonality_ProtossGeneral, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::CoyoteBrown};
-	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {4, UnitId::ProtossBarghest});
-	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {1, UnitId::ProtossCharlatan});
-	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {2, UnitId::TerranStriga});
+	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {1, UnitId::ProtossAmaranth});
+	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {2, UnitId::ProtossVagrant});
+	add_fraud_unit(Fraud_BitcoinBoris, RaceId::Protoss, {2, UnitId::ProtossBarghest});
 
 	// Crypto Carl
 	threshold.frauds[Fraud_CryptoCarl][RaceId::Protoss] = {AiPersonality_ProtossSkylord, AiBuildType_None, AiBuildOrder_ProtossSkylord_SolarEscort, PlayerColor::BistreBrown};
 	add_fraud_unit(Fraud_CryptoCarl, RaceId::Protoss, {2, UnitId::ProtossPanoptus});
-	add_fraud_unit(Fraud_CryptoCarl, RaceId::Protoss, {1, UnitId::ProtossEmpyrean});
+	add_fraud_unit(Fraud_CryptoCarl, RaceId::Protoss, {1, UnitId::ProtossMagister});
+	add_fraud_unit(Fraud_CryptoCarl, RaceId::Protoss, {1, UnitId::ProtossEpigraph});
 
 	// Veeq7
 	threshold.frauds[Fraud_Veeq7][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::RoyalBlue};
-	add_fraud_unit(Fraud_Veeq7, RaceId::Protoss, {4, UnitId::ProtossSimulacrum});
+	add_fraud_unit(Fraud_Veeq7, RaceId::Protoss, {6, UnitId::ProtossSimulacrum});
 	add_fraud_unit(Fraud_Veeq7, RaceId::Protoss, {2, UnitId::ProtossDracadin});
 
 	// jun3hong
 	threshold.frauds[Fraud_jun3hong][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::PersianOrange};
 	add_fraud_unit(Fraud_jun3hong, RaceId::Protoss, {4, UnitId::ProtossLegionnaire});
 	add_fraud_unit(Fraud_jun3hong, RaceId::Protoss, {2, UnitId::ProtossHierophant});
-	add_fraud_unit(Fraud_jun3hong, RaceId::Protoss, {1, UnitId::ProtossWitness});
+	add_fraud_unit(Fraud_jun3hong, RaceId::Protoss, {1, UnitId::ProtossClarion});
 
 	// Digital Rights Manager
 	threshold.frauds[Fraud_DigitalRightsManager][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Glacial};

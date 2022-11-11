@@ -1487,4 +1487,8 @@ namespace helper {
 	void refresh_image(Image* image);																										// 004970A0
 	void compile_healthbar(Image* image, Sprite* sprite);																					// 004D6010
 	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id);												// 004D6810
+
+	b32 return_interceptor_if_cannot_attack(Unit* steward);																					// 00465810
+	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos);																	// 00465D30
+	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation);																// 00476ED0
 }

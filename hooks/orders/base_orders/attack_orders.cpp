@@ -943,4 +943,140 @@ namespace hooks
 			helper::orders_nothing_2(out_hangar_child);
 		}
 	}
+
+	// Hooked to debug Stewards in a post-extender environment. -Pr0nogo
+	void orders_strafe_unit(Unit* unit) // 00465F60
+	{
+		if (unit->hangar_unit.parent && unit->shields < units_dat::shields_enabled[UnitId::ProtossSteward] << 8 >> 2) // Return if shields are below some threshold
+		{
+			helper::issue_order_targeting_nothing(unit, OrderId::Return);
+		}
+		else if (helper::return_interceptor_if_cannot_attack(unit))
+		{
+			Unit* target = unit->order_target.unit; // Compiler error avoidance
+			switch (unit->main_order_state)
+			{
+			case 0:
+				if (unit->hangar_unit.parent)
+				{
+					helper::play_sound_from_unit(616, unit, 1, 0);
+					helper::get_next_strafe_position(unit, 3u, unit->order_target.pt);
+					unit->main_order_timer = 15;
+					unit->main_order_state = 1;
+					goto LABEL_9;
+				}
+				helper::orders_self_destructing(unit);
+				break;
+			case 1:
+			LABEL_9:
+				if (!unit->main_order_timer)
+				{
+					unit->sprite->elevation += 2;
+					unit->main_order_state = 3;
+					goto LABEL_11;
+				}
+				break;
+			case 3:
+			LABEL_11:
+				if (!target)
+				{
+					goto LABEL_38;
+				}
+				if (helper::is_target_visible(target, unit))
+				{
+					Unit* final_unit = unit->subunit;
+					if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit))
+					{
+						final_unit = unit;
+					}
+
+					u32 weapon_id = WeaponId::None;
+					if (target->status & UnitStatus::InAir)
+					{
+						weapon_id = units_dat::air_weapon[final_unit->id];
+					}
+					else
+					{
+						if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
+						{
+							weapon_id = units_dat::ground_weapon[final_unit->id];
+						}
+					}
+					if (weapon_id != WeaponId::None)
+					{
+						u32 min_range = weapons_dat::min_range[weapon_id];
+						if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target))
+						{
+							u32 max_weapon_range = helper::get_unit_max_weapon_range(unit, weapon_id);
+							if (helper::is_target_within_min_movement_range(final_unit, target, max_weapon_range))
+							{
+							LABEL_38:
+								helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+							}
+						}
+					}
+				}
+				if (helper::is_target_within_min_movement_range(unit, 0, 50))
+				{
+					helper::get_next_strafe_position(unit, 1u, unit->order_target.pt);
+					unit->main_order_state = 4;
+				}
+				else
+				{
+					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+				}
+				break;
+			case 4:
+				if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50))
+				{
+					helper::get_next_strafe_position(unit, 2, unit->order_target.pt);
+					unit->main_order_state = 5;
+				}
+				break;
+			case 5:
+				if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50))
+				{
+					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
+					{
+						unit->main_order_state = 3;
+					}
+				}
+				break;
+			default:
+				return;
+			}
+		}
+	}
+
+	// Hooked to remove randomness. -Pr0nogo
+	void get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 position) // 00465D30
+	{
+		// TODO: replace randomness with a clockwise rotation?
+		u32 rand_aids = strafe_type * helper::rand_between(-127, 128, 11);
+		u32 rand_aids_2 = strafe_type * helper::rand_between(0, 128, 11); // Dunno what's up with the first arg, it was an uninitialized variable in IDA, whose register didn't get written to in the previous function.
+		u32 rand_pos_x = rand_aids + position.x;
+		if (rand_pos_x < units_dat::unit_bounds[UnitId::ProtossSteward].x
+		||  rand_pos_x >= *g_map_width_pixels - units_dat::unit_bounds[UnitId::ProtossSteward].w)
+		{
+			rand_aids = -rand_aids;
+		}
+		u32 rand_pos_y = rand_aids_2 + position.y;
+		if (rand_pos_y < units_dat::unit_bounds[UnitId::ProtossSteward].y
+		||  rand_pos_y >= *g_map_height_pixels - units_dat::unit_bounds[UnitId::ProtossSteward].h)
+		{
+			rand_aids_2 = -rand_aids_2;
+		}
+
+		position.x += rand_aids;
+		position.y += rand_aids_2;
+		helper::fix_target_location(&position, UnitId::ProtossSteward);
+		u32 pos_x = position.x;
+		u32 pos_y = position.y;
+		helper::set_move_target_xy(position.x, position.y, unit);
+		if (pos_x != unit->next_target_waypoint.x || pos_y != unit->next_target_waypoint.y)
+		{
+			unit->next_target_waypoint.x = pos_x;
+			unit->next_target_waypoint.y = pos_y;
+		}
+	}
 }
