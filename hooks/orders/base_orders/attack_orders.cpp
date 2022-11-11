@@ -69,7 +69,7 @@ namespace hooks
 				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
-				unit->status &= ~(UnitStatus::Disabled + UnitStatus::HoldingPosition);
+				unit->status &= ~(UnitStatus::Disabled | UnitStatus::HoldingPosition);
 				unit->status = status_saved | unit->status;
 			}
 		}
@@ -893,20 +893,15 @@ namespace hooks
 	}
 
 	// Hooked to debug Stewards in a post-extender environment. -Pr0nogo
-	void set_interceptors_to_standby(Unit* unit) // 00465780
-	{
-		for (Unit* out_hangar_child = unit->unit_with_hangar.out_hangar_child; out_hangar_child; out_hangar_child = out_hangar_child->hangar_unit.hangar_link.next)
-		{
+	void set_interceptors_to_standby(Unit* unit) { // 00465780
+		for (Unit* out_hangar_child = unit->unit_with_hangar.out_hangar_child; out_hangar_child; out_hangar_child = out_hangar_child->hangar_unit.hangar_link.next) {
 			out_hangar_child->sprite->elevation = unit->sprite->elevation - 1;
 			Unit* target = unit->order_target.unit;
 			u32 attack_order = units_dat::attack_unit_order[out_hangar_child->id];
 			out_hangar_child->user_action_flags |= 1u;
-			if (target)
-			{
+			if (target) {
 				helper::order(1, out_hangar_child, attack_order, target->sprite->position, target, UnitId::None);
-			}
-			else
-			{
+			} else {
 				helper::order(1, out_hangar_child, attack_order, {}, 0, UnitId::None);
 			}
 			helper::orders_nothing_2(out_hangar_child);
