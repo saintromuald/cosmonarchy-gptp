@@ -95,7 +95,7 @@ namespace hooks {
 			if (unit_ai) {
 				AiTown* town = unit_ai->town;
 				if (town && unit_ai->type == AiType::Building) { // type check is new
-					helper::delete_building_ai((BuildingAi*)unit_ai, &town->building_ai); // moved within nullcheck for sanity
+					helper::delete_building_ai((BuildingAi*)unit_ai, &town->buildings); // moved within nullcheck for sanity
 					if (town->building_scv == unit) {
 						town->building_scv = 0;
 					}
@@ -131,7 +131,7 @@ namespace hooks {
 						BuildingAi* newUnitAi = (BuildingAi*)newUnit->unit_ai;
 						if (newUnitAi) {
 							AiTown* newUnitTown = newUnitAi->town;
-							helper::delete_building_ai(newUnitAi, &newUnitTown->building_ai);
+							helper::delete_building_ai(newUnitAi, &newUnitTown->buildings);
 							if (newUnitTown) {
 								if (newUnit == newUnitTown->building_scv)
 								{
@@ -179,37 +179,37 @@ namespace hooks {
 	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
 		void* result = 0;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-			if (town->worker_ai.array) {
+			if (town->workers.array) {
 				WorkerAi* ai = 0;
-				if (town && town->worker_ai.array) {
-					if (town->worker_ai.array && town->worker_ai.array <= (void*)0x100000) {
+				if (town && town->workers.array) {
+					if (town->workers.array && town->workers.array <= (void*)0x100000) {
 						scbw::printf("Corrupted free worker AI array!");
 						return result;
 					}
-					if (town->worker_ai.array && town->worker_ai.array->first_free_worker
-						&& town->worker_ai.array->first_free_worker <= (void*)0x100000) {
+					if (town->workers.array && town->workers.array->first_free_worker
+						&& town->workers.array->first_free_worker <= (void*)0x100000) {
 						scbw::printf("Corrupted first free worker AI!");
 						return result;
 					}
-					if (town->worker_ai.first && town->worker_ai.first <= (void*)0x100000) {
+					if (town->workers.first && town->workers.first <= (void*)0x100000) {
 						scbw::printf("Corrupted first active worker AI!");
 						return result;
 					}
-					ai = town->worker_ai.array->first_free_worker; // This nullcheck was added
+					ai = town->workers.array->first_free_worker; // This nullcheck was added
 				}
 				if (ai) {
 					result = ai;
 					WorkerAi* worker_prev = ai->link.prev;
-					town->worker_ai.array->first_free_worker = ai->link.prev;
+					town->workers.array->first_free_worker = ai->link.prev;
 					if (worker_prev) {
 						worker_prev->link.next = 0;
 					}
 					ai->link.next = 0;
-					ai->link.prev = town->worker_ai.first;
-					if (town->worker_ai.first) {
-						town->worker_ai.first->link.next = ai;
+					ai->link.prev = town->workers.first;
+					if (town->workers.first) {
+						town->workers.first->link.next = ai;
 					}
-					town->worker_ai.first = ai;
+					town->workers.first = ai;
 					ai->type = 2;
 					ai->parent = unit;
 					ai->town = town;
@@ -248,20 +248,20 @@ namespace hooks {
 				unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
 			BuildingAi* ai = 0;
 			if (town) {
-				if (town->building_ai.array && town->building_ai.array <= (void*)0x100000) {
+				if (town->buildings.array && town->buildings.array <= (void*)0x100000) {
 					scbw::printf("Corrupted free building AI array!");
 					return result;
 				}
-				if (town->building_ai.array && town->building_ai.array->first_free_building
-					&& town->building_ai.array->first_free_building <= (void*)0x100000) {
+				if (town->buildings.array && town->buildings.array->first_free_building
+					&& town->buildings.array->first_free_building <= (void*)0x100000) {
 					scbw::printf("Corrupted first free building AI!");
 					return result;
 				}
-				if (town->building_ai.first && town->building_ai.first <= (void*)0x100000) {
+				if (town->buildings.first && town->buildings.first <= (void*)0x100000) {
 					scbw::printf("Corrupted first active building AI!");
 					return result;
 				}
-				ai = helper::create_building_ai(&town->building_ai); // This nullcheck was added
+				ai = helper::create_building_ai(&town->buildings); // This nullcheck was added
 			}
 			if (ai) {
 				result = ai;
@@ -387,19 +387,19 @@ namespace hooks {
 		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
 			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
 		}
-		MilitaryAi* military_ai = ai_region->military_ai.first;
+		MilitaryAi* military_ai = ai_region->military.first;
 		if (military_ai) {
-			ai_region->military_ai.first = (MilitaryAi*)military_ai->link.prev;
+			ai_region->military.first = (MilitaryAi*)military_ai->link.prev;
 			if (military_ai->link.prev) {
 				military_ai->link.prev->link.next = 0;
 			}
 			if (military_ai) {
 				military_ai->link.next = 0;
-				military_ai->link.prev = ai_region->military_ai.first;
-				if (ai_region->military_ai.first) {
-					ai_region->military_ai.first->link.next = military_ai;
+				military_ai->link.prev = ai_region->military.first;
+				if (ai_region->military.first) {
+					ai_region->military.first->link.next = military_ai;
 				}
-				ai_region->military_ai.first = military_ai;
+				ai_region->military.first = military_ai;
 				military_ai->type = AiType::Military;
 				military_ai->unit = unit;
 				military_ai->region = ai_region;
@@ -461,7 +461,7 @@ namespace hooks {
 					if (removeBuilding)
 					{
 						removeBuildingTown = removeBuilding->town;
-						helper::delete_building_ai(removeBuilding, &removeBuildingTown->building_ai);
+						helper::delete_building_ai(removeBuilding, &removeBuildingTown->buildings);
 						if (removeBuildingTown)
 						{
 							if (result == removeBuildingTown->building_scv)
@@ -481,7 +481,7 @@ namespace hooks {
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
-						workerUnit = (Unit*)parentTown->worker_ai.first;
+						workerUnit = (Unit*)parentTown->workers.first;
 						for (i = 0; workerUnit; i += queueCount)
 						{
 							workerTarget = workerUnit->move_target.unit;
@@ -495,7 +495,7 @@ namespace hooks {
 							}
 //							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
-						for (j = parentTown->building_ai.first; j; i += queueCount2)
+						for (j = parentTown->buildings.first; j; i += queueCount2)
 						{
 							builderUnit = j->parent;
 							if (builderUnit->id == UnitId::TerranWatchdog)
@@ -602,8 +602,8 @@ namespace hooks {
 			--ai_region->ground_unit_count;
 		}
 
-		if (ai_region->military_ai.first == military_ai) {
-			ai_region->military_ai.first = military_ai->link.prev;
+		if (ai_region->military.first == military_ai) {
+			ai_region->military.first = military_ai->link.prev;
 		}
 
 		if (military_ai->link.next) {
@@ -613,7 +613,7 @@ namespace hooks {
 			military_ai->link.prev->link.next = military_ai->link.next;
 		}
 
-		MilitaryAiArray* military_ai_array = ai_region->military_ai.array;
+		MilitaryAiArray* military_ai_array = ai_region->military.array;
 		if (military_ai == military_ai_array->first_free_military) {
 			int i = 0;
 		}
@@ -645,12 +645,12 @@ namespace hooks {
 			|| scbw::unit_id_is_zerg_supply(unit_id))*/) {
 			BuildingAi* building_ai = &current_unit_ai->building_ai;
 			town = building_ai->town;
-			helper::delete_building_ai(building_ai, &town->building_ai);
+			helper::delete_building_ai(building_ai, &town->buildings);
 		} else if (current_unit_ai->type == AiType::Worker
 			/* base_property & UnitProperty::Worker*/) {
 			WorkerAi* worker_ai = &current_unit_ai->worker_ai;
 			town = worker_ai->town;
-			helper::delete_worker_ai(worker_ai, &town->worker_ai);
+			helper::delete_worker_ai(worker_ai, &town->workers);
 			if (base_property & UnitProperty::Worker) {
 				town->worker_count -= 1;
 			}
@@ -698,7 +698,7 @@ namespace hooks {
 					{
 						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->unit_ai;
 						AiTown* newUnitTown = newBuildingAi->town;
-						delete_building_ai(newBuildingAi, &newUnitTown->building_ai);
+						delete_building_ai(newBuildingAi, &newUnitTown->buildings);
 						if (newUnitTown)
 						{
 							if (newUnit == newUnitTown->building_scv)
@@ -723,7 +723,7 @@ namespace hooks {
 						u32 i;
 						BuildingAi* j;
 						s32 queuedCount;
-						Unit* oldFirstTownUnit = (Unit*)oldUnitTown->worker_ai.first;
+						Unit* oldFirstTownUnit = (Unit*)oldUnitTown->workers.first;
 						for (i = 0; oldFirstTownUnit; i += queuedCount)
 						{
 							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->move_target.unit;
@@ -740,7 +740,7 @@ namespace hooks {
 
 						Unit* iterateUnit;
 						s32 queuedCount2;
-						for (j = oldUnitTown->building_ai.first; j; i += queuedCount2)
+						for (j = oldUnitTown->buildings.first; j; i += queuedCount2)
 						{
 							iterateUnit = j->parent;
 							if (iterateUnit->id == UnitId::TerranWatchdog)

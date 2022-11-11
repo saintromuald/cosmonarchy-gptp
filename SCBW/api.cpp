@@ -1817,7 +1817,7 @@ namespace scbw {
 
 	u32 get_ai_region_military_count(AiRegion* ai_region) {
 		u32 count = 0;
-		for (MilitaryAi* military_ai = ai_region->military_ai.first; military_ai; military_ai = military_ai->link.prev) {
+		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
 			count += 1;
 		}
 		return count;

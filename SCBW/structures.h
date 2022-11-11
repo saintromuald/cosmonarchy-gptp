@@ -806,7 +806,7 @@ struct AiRegion
 	/*0x20*/  Unit* ground_target;
 	/*0x24*/  Unit* slowest_unit;
 	/*0x28*/  Unit* follow_target;
-	/*0x2C*/  MilitaryAiList military_ai;
+	/*0x2C*/  MilitaryAiList military;
 };
 
 C_ASSERT(sizeof(AiRegion) == 52);
@@ -860,8 +860,8 @@ struct TownReq {
 struct AiTown {
 	AiTown* prev;							//	0x0
 	AiTown* next;							//	0x4
-	WorkerAiList worker_ai;					//	0x8
-	BuildingAiList building_ai;				//	0x10
+	WorkerAiList workers;					//	0x8
+	BuildingAiList buildings;				//	0x10
 	u8 player;								//	0x18
 	u8 inited;								//	0x19
 	u8 worker_count;						//	0x1a

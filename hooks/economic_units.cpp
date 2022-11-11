@@ -179,7 +179,7 @@ namespace hooks
 	// First checks SC's first free worker var; If invalid iterates over all free worker
 	// This was needed since first free worker is sometimes null.
 	bool HasFreeWorker(AiTown* town, u8 raceId) {
-		for (WorkerAi* worker_ai = town->worker_ai.first; worker_ai; worker_ai = worker_ai->link.prev) {
+		for (WorkerAi* worker_ai = town->workers.first; worker_ai; worker_ai = worker_ai->link.prev) {
 			if (IsValidWorker(*worker_ai, raceId)) return true;
 		}
 		return false;

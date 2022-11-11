@@ -53,8 +53,8 @@ namespace hooks
 		{
 			do
 			{
-				WorkerAi* first_worker = first_town->worker_ai.first;
-				if (first_town->worker_ai.first)
+				WorkerAi* first_worker = first_town->workers.first;
+				if (first_town->workers.first)
 				{
 					do
 					{
@@ -889,7 +889,7 @@ namespace hooks
 		AiTown* town = 0;
 		for (town = g_ai_active_town_array[player].first; town; town = town->prev) {
 			helper::cancel_queued_trains(town);
-			if (town->worker_ai.first) {
+			if (town->workers.first) {
 				if (town->worker_count > town->worker_limit) {
 					has_excess_workers = true;
 				}
