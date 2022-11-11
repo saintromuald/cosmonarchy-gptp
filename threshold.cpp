@@ -726,6 +726,9 @@ static void set_ally(u32 a, u32 b, bool ally) {
 		player_vision->flags[a] &= ~(1 << b);
 		player_vision->flags[b] &= ~(1 << a);
 	}
+	if (a == *g_local_nation_id || b == *g_local_nation_id) {
+		helper::update_alliances();
+	}
 }
 
 static void messagef(char* format, ...) {
