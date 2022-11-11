@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_ReaverAttack1Wrapper()
+	void __declspec(naked) orders_reaver_attack_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -17,7 +17,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_CarrierAttack1Wrapper()
+	void __declspec(naked) orders_carrier_attack_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -35,7 +35,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_TurretAttackWrapper()
+	void __declspec(naked) orders_turret_attack_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -53,7 +53,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_AttackFixedRangeWrapper()
+	void __declspec(naked) orders_attack_fixed_range_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -71,7 +71,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_SapUnitWrapper()
+	void __declspec(naked) orders_sap_unit_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -85,7 +85,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_SapLocationWrapper()
+	void __declspec(naked) orders_sap_location_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -131,7 +131,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_AttackUnitWrapper()
+	void __declspec(naked) orders_attack_unit_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -226,15 +226,15 @@ namespace hooks
 {
 	void inject_attack_orders_hooks()
 	{
-	//	jump_patch(orders_ReaverAttack1Wrapper,			0x00465690, 2);
-	//	jump_patch(orders_CarrierAttack1Wrapper,		0x00465950, 0);
-	//	jump_patch(orders_TurretAttackWrapper,			0x00477980, 1);
-	//	jump_patch(orders_AttackFixedRangeWrapper,		0x00477D00, 0);
-	//	jump_patch(orders_SapUnitWrapper,				0x004788E0, 2);
-	//	jump_patch(orders_SapLocationWrapper,			0x00478A40, 3);
+	//	jump_patch(orders_reaver_attack_wrapper,			0x00465690, 2);
+	//	jump_patch(orders_carrier_attack_wrapper,		0x00465950, 0);
+	//	jump_patch(orders_turret_attack_wrapper,			0x00477980, 1);
+	//	jump_patch(orders_attack_fixed_range_wrapper,		0x00477D00, 0);
+	//	jump_patch(orders_sap_unit_wrapper,				0x004788E0, 2);
+	//	jump_patch(orders_sap_location_wrapper,			0x00478A40, 3);
 		jump_patch(orders_attack_move_ep_wrapper,		0x00478DE0, 1);
 		jump_patch(orders_attack_move_wrapper,			0x00479040, 0);
-	//	jump_patch(orders_AttackUnitWrapper,			0x00479BD0, 2);
+	//	jump_patch(orders_attack_unit_wrapper,			0x00479BD0, 2);
 		jump_patch(orders_strafe_unit2_wrapper,			0x00465E00, 2);
 		jump_patch(set_interceptors_to_standby_wrapper,	0x00465780, 1);
 		jump_patch(orders_strafe_unit_wrapper,			0x00465F60, 0);
