@@ -711,7 +711,7 @@ namespace hooks {
 				{
 					range = 64;
 				} break;
-			//	case WeaponId::OptectonSunsplitBeam:
+				case WeaponId::OptectonSunsplitBeam:
 				case WeaponId::PatriarchIronhandWeaver:
 				case WeaponId::KalkaliskViscousAcid:
 				{
