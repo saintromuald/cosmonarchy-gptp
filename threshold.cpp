@@ -1037,11 +1037,15 @@ static void update_config() {
 			threshold_config.fraud_enabled[player] = false;
 		}
 		if (!threshold_config.fraud_enabled[player] && !threshold_config.witness_enabled[player]) {
+			set_player_force_name(player, BWTC_WHITE "Contenders" BWTC_RESET);
 			if (first) {
 				first = false;
 			} else {
 				threshold_config.scalar += threshold_config.auto_scale;
 			}
+		}
+		if (threshold_config.witness_enabled[player]) {
+			set_player_force_name(player, BWTC_YELLOW "Witness" BWTC_RESET);
 		}
 	}
 	if (threshold_config.total_count > Fraud_Count - FraudGod_Count) {
