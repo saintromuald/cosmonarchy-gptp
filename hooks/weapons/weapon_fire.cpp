@@ -706,8 +706,8 @@ namespace hooks {
 			u32 range = 0;
 			switch (bullet->weapon_id)
 			{
-				case WeaponId::ZarcavrokorBonesofReflection:
 				case WeaponId::SentinelCerberusRailgun:
+				case WeaponId::ZarcavrokorBonesofReflection:
 				{
 					range = 64;
 				} break;
