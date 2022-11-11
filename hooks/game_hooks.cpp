@@ -1976,12 +1976,12 @@ namespace hooks {
 
 		// Anthelion - Gravity Well
 		if (unit_ext->timers[TimerAnthelionGravityWell] && unit_ext->units[UnitAnthelionGravityWellSource]) {
-			Point16 targetPos = unit_ext->units[UnitAnthelionGravityWellSource]->position;
-			if (unit->position != targetPos) {
-				Vector32 diff = scbw::get_vector_between_points(unit->position, targetPos);
+			Point16 target_pos = unit_ext->units[UnitAnthelionGravityWellSource]->position;
+			if (unit->position != target_pos) {
+				Vector32 diff = scbw::get_vector_between_points(unit->position, target_pos);
 
 				if (scbw::get_vector_distance(diff) < 2) {
-					scbw::move_unit_improved(unit, targetPos.x, targetPos.y);
+					scbw::move_unit_improved(unit, target_pos.x, target_pos.y);
 				} else {
 					Vector32f displacement = scbw::get_normalized_vector(diff);
 					displacement.x *= 2;
@@ -1995,7 +1995,7 @@ namespace hooks {
 					scbw::move_unit_improved(unit, finalPos.x, finalPos.y);
 				}
 			}
-			s32 angle = scbw::get_angle(unit->position, targetPos);
+			s32 angle = scbw::get_angle(unit->position, target_pos);
 			unit->current_direction_1 = angle;
 		}
 
