@@ -3,6 +3,7 @@
 #include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 #include "hooks/unit_destructor_special.h"
+#include "ai_layouts.h"
 
 #include <assert.h>
 #include <math.h>
@@ -621,25 +622,27 @@ static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point1
 InitPositions sources_positions;
 InitPositions rally_positions;
 
-bool init_threshold_spawn(CHKUnit* unit) {
+bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
 	if (unit->player != 11) {
 		return false;
 	}
 
 	Point16 position = {unit->x, unit->y};
 	switch (unit->unit_id) {
-		case UnitId::TerranCommandCenter:
+		case UnitId::TownCenterMarker:
 		{
-			FraudSpawnLocation spawn = {};
-			spawn.pos = position;
-			if (threshold.spawn_count < FraudSpawnCap) {
-				threshold.spawns[threshold.spawn_count++] = spawn;
-			} else {
-				scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
+			if (!(flags & ChkUnitFlags_Cloaked)) {
+				FraudSpawnLocation spawn = {};
+				spawn.pos = position;
+				if (threshold.spawn_count < FraudSpawnCap) {
+					threshold.spawns[threshold.spawn_count++] = spawn;
+				} else {
+					scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
+				}
 			}
-			return true;
+			return false; // We don't want to delete Town Center Markers, since they are supposed to be also processed by AI layouts
 		} break;
-		case UnitId::ProtossPylon:
+		case UnitId::TerranSupplyDepot:
 		{
 			if (sources_positions.count < InitPositionsCap) {
 				sources_positions.positions[sources_positions.count++] = position;

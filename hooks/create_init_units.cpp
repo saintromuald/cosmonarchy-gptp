@@ -339,13 +339,13 @@ namespace hooks
 	}
 
 	Unit* create_preplaced_unit(CHKUnit* chkunit) {
-		if (init_threshold_spawn(chkunit)) {
+		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
+		if (init_threshold_spawn(chkunit, flags)) {
 			return 0;
 		}
 		if (chk_cache_size < ChkCacheLimit) {
 			chk_cache[chk_cache_size++] = *chkunit;
 		}
-		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {
 		//	if (!scbw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
