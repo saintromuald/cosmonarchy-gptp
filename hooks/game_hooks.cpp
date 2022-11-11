@@ -36,6 +36,7 @@
 #include "hooks/interface/buttonsets.h"
 #include "weapons/weapon_fire.h"
 #include "harvest.h"
+#include "hooks/weapons/weapon_cooldown.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -1698,15 +1699,13 @@ namespace hooks {
 			case UnitId::ProtossOptecton:
 			{
 				// Optecton - Forward March
-				/*
 				if (!unit_ext->timers[TimerOptectonSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround), false, false) {
-						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = weapons_dat::cooldown[WeaponId::OptectonSkybondRay];
+						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = hooks::get_modified_cooldown(unit, WeaponId::OptectonSkybondRay, true);
 					} else {
 						unit_ext->timers[TimerOptectonSecondaryWeaponCooldown] = 3; // performance
 					}
 				}
-				*/
 			} break;
 		}
 
