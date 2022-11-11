@@ -374,7 +374,7 @@ namespace hooks {
 			scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(),debug_caller_address);
+			scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		} else if (units_dat::computer_ai_internal[unit->id] & 2 && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
 			scbw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
@@ -977,62 +977,57 @@ namespace hooks {
 	}
 
 	// Hooked to resolve unit AI issues. -Pr0nogo
-	void __stdcall add_guard_ai_to_unit(Unit* unit) // 00462960
-	{
+	void __stdcall add_guard_ai_to_unit(Unit* unit) { // 00462960
+		if (unit->unit_ai) {
+			scbw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
+			helper::remove_unit_ai(unit, false);
+		}
+
 		u32 player = unit->player;
-		if (g_player_table[player].type == PlayerType::Computer) {
-			u32 unit_id = unit->id;
-			if (!(units_dat::computer_ai_internal[unit_id] & 2)) {
-				u32 x = unit->sprite->position.x;
-				u32 y = unit->sprite->position.y;
-				GuardAi* first_guard_ai_end = g_player_guard_list->player[player].first;
-				if (first_guard_ai_end)
-				{
-					while (first_guard_ai_end->parent
-					||	   first_guard_ai_end->unit_id != unit_id
-					||	   first_guard_ai_end->current_home.x != x
-					||	   first_guard_ai_end->current_home.y != y)
-					{
-						first_guard_ai_end = first_guard_ai_end->link.prev;
-						if (!first_guard_ai_end) {
-							goto LABEL_9;
-						}
-					}
-					goto LABEL_16;
-				}
-			LABEL_9:
-				GuardAiArray* first_guard_ai_begin = g_player_guard_list->player[player].array;
-				first_guard_ai_end = first_guard_ai_begin->first_free_guard;
-				if (first_guard_ai_end) {
-					GuardAi* previous_guard_ai = first_guard_ai_end->link.prev;
-					first_guard_ai_begin->first_free_guard = first_guard_ai_end->link.prev;
-					if (previous_guard_ai) {
-						previous_guard_ai->link.next = 0;
-					}
-					if (first_guard_ai_end)
-					{
-						GuardAi* first_guard_ai_end_2 = g_player_guard_list->player[player].first;
-						first_guard_ai_end->link.next = 0;
-						first_guard_ai_end->link.prev = first_guard_ai_end_2->link.prev;
-						if (first_guard_ai_end_2->link.prev)
-						{
-							first_guard_ai_end_2->link.prev->link.next = first_guard_ai_end;
-						}
-						first_guard_ai_end_2->link.prev = first_guard_ai_end;
-						first_guard_ai_end->type = 1;
-						first_guard_ai_end->unit_id = unit_id;
-					LABEL_16:
-						first_guard_ai_end->parent = unit;
-						first_guard_ai_end->original_home.x = x;
-						first_guard_ai_end->original_home.y = y;
-						first_guard_ai_end->current_home.x = x;
-						first_guard_ai_end->current_home.y = y;
-						first_guard_ai_end->times_died = 0;
-						unit->unit_ai = (UnitAi*)first_guard_ai_end;
-						return;
-					}
-				}
+		if (g_player_table[player].type != PlayerType::Computer) {
+			return;
+		}
+
+		u32 unit_id = unit->id;
+		if (units_dat::computer_ai_internal[unit_id] & 2) {
+			return;
+		}
+
+		for (GuardAi* guard_ai = g_player_guard_list->player[player].first; guard_ai; guard_ai = guard_ai->link.next) {
+			if (!guard_ai->parent
+				&& guard_ai->unit_id == unit_id
+				&& guard_ai->original_home.x == unit->position.x
+				&& guard_ai->original_home.y == unit->position.y) {
+				guard_ai->parent = unit;
+				guard_ai->original_home = unit->position;
+				guard_ai->current_home = unit->position;
+				guard_ai->times_died = 0;
+				unit->unit_ai = (UnitAi*)guard_ai;
+				return;
 			}
 		}
+
+		GuardAiArray* guard_ai_array = g_player_guard_list->player[player].array;
+		GuardAi* guard_ai = guard_ai_array->first_free_guard;
+		if (!guard_ai) {
+			return;
+		}
+		guard_ai_array->first_free_guard = guard_ai->link.prev;
+		if (guard_ai->link.prev) {
+			guard_ai->link.prev->link.next = 0;
+		}
+		guard_ai->link.next = 0;
+		guard_ai->link.prev = g_player_guard_list->player[player].first;
+		if (g_player_guard_list->player[player].first) {
+			g_player_guard_list->player[player].first->link.next = guard_ai;
+		}
+		g_player_guard_list->player[player].first = guard_ai;
+		guard_ai->type = AiType::Guard;
+		guard_ai->unit_id = unit_id;
+		guard_ai->parent = unit;
+		guard_ai->original_home = unit->position;
+		guard_ai->current_home = unit->position;
+		guard_ai->times_died = 0;
+		unit->unit_ai = (UnitAi*)guard_ai;
 	}
 }

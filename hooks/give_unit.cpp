@@ -144,10 +144,6 @@ namespace hooks
 				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] || unitExt->units[UnitMindController]) {
 					helper::ai_training_simple_military(unit, unit);
 				} else {
-					if (unit->unit_ai) {
-						scbw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
-						helper::remove_unit_ai(unit, false);
-					}
 					helper::add_guard_ai_to_unit(unit);
 				}
 			}
