@@ -824,7 +824,6 @@ namespace hooks {
 					} break;
 					case WeaponId::ZarcavrokorBonesofReflection:
 					{
-						scbw::print("hit");
 						globals.add_bullet_multihit(bullet, collision_target);
 						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
 						hooks::weapon_bullet_hit(bullet, collision_target, 1);

@@ -1528,6 +1528,7 @@ namespace scbw {
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:
 			case WeaponId::KalkaliskViscousAcid:
+			case WeaponId::ZarcavrokorBonesofReflection:
 			{
 				return true;
 			}
