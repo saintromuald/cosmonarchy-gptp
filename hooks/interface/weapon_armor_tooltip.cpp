@@ -626,9 +626,9 @@ namespace hooks
 		text += "\n" + std::string(armor_text) + " ";
 		append_tooltip_value(text, base_armor, bonus_armor, extended);
 
-		// text += "\nSize: " + std::string(size_text);
+	//	text += "\nSize: " + std::string(size_text);
 		text += "\nPlane: " + plane;
-		text += "\nMove Speed: " + movement_speed;
+	//	text += "\nMove Speed: " + movement_speed;
 		text += "\nStatus: " + status;
 
 		if (extended) {
