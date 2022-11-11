@@ -1211,7 +1211,6 @@ void init_fraud_units() {
 				add_fraud_unit(i, RaceId::Zerg,    {10, UnitId::ZergDroleth});
 				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
 				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
-
 			} break;
 			case FraudClass_Super:
 			{
