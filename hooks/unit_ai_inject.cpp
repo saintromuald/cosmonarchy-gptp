@@ -244,14 +244,14 @@ namespace
 	void __declspec(naked) ai_remove_unit_ai_wrapper() // 004A1E50
 	{
 		static Unit* unit;
-		static UnitAi* unitAI;
+		static UnitAi* unit_ai;
 		__asm
 		{
-			MOV unitAI, EDX
+			MOV unit_ai, EDX
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::remove_unit_ai(unit, unitAI);
+		hooks::remove_unit_ai(unit, unit_ai);
 		__asm
 		{
 			POPAD
@@ -263,23 +263,23 @@ namespace
 	{
 		static s32 result;
 		static Unit* unit;
-		static UnitAi* unitAI;
+		static b32 always_building;
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV unitAI, EAX
+			MOV always_building, EAX
 			POP EAX
 			MOV unit, EDI
 			PUSHAD
 		}
-		result = hooks::remove_worker_or_building_ai(unit, unitAI);
+		hooks::remove_worker_or_building_ai(unit, always_building);
 		__asm
 		{
 			POPAD
-			MOV EAX, result
+			MOV EAX, 0
 			MOV ESP, EBP
 			POP EBP
 			RETN 4

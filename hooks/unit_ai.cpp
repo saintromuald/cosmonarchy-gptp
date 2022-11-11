@@ -361,25 +361,25 @@ namespace hooks {
 	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
 		bool prevent = false;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-		//	scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-		//	scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(),debug_caller_address);
+			scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(),debug_caller_address);
 			prevent = true;
 		} else if (units_dat::computer_ai_internal[unit->id] & 2 && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
-		//	scbw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			scbw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (g_player_table[unit->player].type != PlayerType::Computer) {
-		//	scbw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			scbw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (ai_region->player != unit->player) {
-		//	scbw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			scbw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (prevent) {
-		//	scbw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			scbw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			helper::remove_unit_ai(unit, false);
 			scbw::give_ai_ex(unit);
 			return;
@@ -524,25 +524,20 @@ namespace hooks {
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	void remove_unit_ai(Unit* unit, UnitAi* unitAI) // 004A1E50
-	{
-		helper::remove_from_ai_structs(unit, unitAI);
+	void remove_unit_ai(Unit* unit, UnitAi* unit_ai) { // 004A1E50
+		helper::remove_from_ai_structs(unit, unit_ai);
 		helper::remove_worker_or_building_ai(unit, false);
-		if (unitAI != nullptr)
-		{
-			if (unitAI->type == AiType::Guard)
-			{
-				GuardAi* guardAI = (GuardAi*)unitAI;
-				u8 timesDied = guardAI->times_died;
-				guardAI->parent = nullptr;
-				if ((u8)timesDied < 100u)
-				{
-					guardAI->times_died = timesDied + 1;
+		if (unit_ai) {
+			if (unit_ai->type == AiType::Guard) {
+				GuardAi* guard_ai = &unit_ai->guard_ai;
+				guard_ai->parent = 0;
+				if (guard_ai->times_died < 100u) {
+					guard_ai->times_died += 1;
 				}
 			}
 		}
 		helper::ai_remove_medic(unit);
-		unit->unit_ai = nullptr;
+		unit->unit_ai = 0;
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
@@ -619,6 +614,9 @@ namespace hooks {
 		}
 
 		MilitaryAiArray* military_ai_array = ai_region->military_ai.array;
+		if (military_ai == military_ai_array->first_free_military) {
+			int i = 0;
+		}
 		military_ai->link.next = 0;
 		military_ai->link.prev = military_ai_array->first_free_military;
 		if (military_ai_array->first_free_military) {
@@ -628,71 +626,48 @@ namespace hooks {
 	}
 
 	// Hooked to add type check - Pr0nogo
-	s32 remove_worker_or_building_ai(Unit* unit, UnitAi* unitAI) // 00434C90
-	{
+	void remove_worker_or_building_ai(Unit* unit, bool always_building) { // 00434C90
 		helper::ai_remove_from_towns(unit);
-		UnitAi* unit_ai_var = (UnitAi*)unit->unit_ai;
-		if (unit_ai_var)
-		{
-			u16 unit_id = unit->id;
-			u32 baseProperty = units_dat::base_property[unit_id];
-			AiTown* town = 0;
-			if (!unitAI)
-			{
-				if (unit_ai_var->type == AiType::Building
-					&& (baseProperty & UnitProperty::Building && unit_id != UnitId::ResourceVespeneGeyser
-					|| unit_id == UnitId::ZergLarva
-					|| unit_id == UnitId::ZergOcsalLarva
-					|| scbw::is_larval_egg(unit)
-					|| scbw::unit_id_is_zerg_supply(unit_id)))
-				{
-					BuildingAi* buildingAIVar = (BuildingAi*)unit_ai_var;
-					town = buildingAIVar->town;
-					if (town)
-					{
-						helper::delete_building_ai(buildingAIVar, &town->building_ai);
-					}
-				}
-				else if (unit_ai_var->type == AiType::Worker && baseProperty & UnitProperty::Worker)
-				{
-					WorkerAi* workerAIVar = (WorkerAi*)unit_ai_var;
-					town = workerAIVar->town;
-					if (town)
-					{
-						helper::delete_worker_ai(workerAIVar, &town->worker_ai);
-						town->worker_count -= 1;
-					}
-				}
-				else
-				{
-					return 0;
-				}
-			}
-
-			if (town)
-			{
-				if (unit == town->building_scv)
-				{
-					town->building_scv = nullptr;
-				}
-				if (unit == town->main_building)
-				{
-					town->main_building = nullptr;
-				}
-				if (!unitAI)
-				{
-					helper::delete_ai_town_if_needed(town);
-				}
-			}
-			unit->unit_ai = nullptr;
-			return 1;
+		UnitAi* current_unit_ai = (UnitAi*)unit->unit_ai;
+		if (!current_unit_ai) {
+			return;
 		}
 
-		if (unit->unit_ai)
-		{
-			return 1;
+		u16 unit_id = unit->id;
+		u32 base_property = units_dat::base_property[unit_id];
+		AiTown* town = 0;
+		if (current_unit_ai->type == AiType::Building
+			/*always_building
+			|| base_property & UnitProperty::Building && unit_id != UnitId::ResourceVespeneGeyser
+			|| unit_id == UnitId::ZergLarva
+			|| unit_id == UnitId::ZergOcsalLarva
+			|| scbw::is_larval_egg(unit)
+			|| scbw::unit_id_is_zerg_supply(unit_id))*/) {
+			BuildingAi* building_ai = &current_unit_ai->building_ai;
+			town = building_ai->town;
+			helper::delete_building_ai(building_ai, &town->building_ai);
+		} else if (current_unit_ai->type == AiType::Worker
+			/* base_property & UnitProperty::Worker*/) {
+			WorkerAi* worker_ai = &current_unit_ai->worker_ai;
+			town = worker_ai->town;
+			helper::delete_worker_ai(worker_ai, &town->worker_ai);
+			if (base_property & UnitProperty::Worker) {
+				town->worker_count -= 1;
+			}
 		}
-		return 0;
+
+		if (town) {
+			if (unit == town->building_scv) {
+				town->building_scv = 0;
+			}
+			if (unit == town->main_building) {
+				town->main_building = 0;
+			}
+			if (!always_building) {
+				helper::delete_ai_town_if_needed(town);
+			}
+		}
+		unit->unit_ai = 0;
 	}
 
 	// Hooked to investigate unit AI corruption - Pr0nogo
