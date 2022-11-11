@@ -1175,12 +1175,12 @@ namespace hooks
 		if (!region_state || region_state == RegionState::TownRegionLow) {
 			helper::ai_set_region_state(RegionState::TownRegionHigh, ai_region);
 			ai_region->flags |= 0x1;
-			if (!(g_aiscript_controller[player].ai_flags.is_use_map_settings)) {
+			if (!g_aiscript_controller[player].ai_flags.is_use_map_settings) {
 				ai_region->flags |= 0x40;
 			}
 			AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
 			for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-				if (!(g_aiscript_controller[other_player].ai_flags.is_use_map_settings)) {
+				if (!g_aiscript_controller[other_player].ai_flags.is_use_map_settings) {
 					if (scbw::is_allied_to(other_player, player)) {
 						AiRegion* other_player_ai_region = scbw::get_ai_region(other_player, region_id);
 						if (!other_player_ai_region->state) {
