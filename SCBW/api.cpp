@@ -1680,14 +1680,23 @@ namespace scbw {
 		targetExt->values[ValueTyrannyPlayer] = 0;
 	}
 
-	bool unit_id_is_zerg_production(u16 unit_id) {
-		return unit_id == UnitId::ZergHachirosk
-			|| unit_id == UnitId::ZergCaphrolosk
-			|| unit_id == UnitId::ZergGathtelosk
-			|| unit_id == UnitId::ZergSibraelosk
-			|| unit_id == UnitId::ZergNephrilosk
-			|| unit_id == UnitId::ZergLarvoskColony
-			|| unit_id == UnitId::ZergOcsalColony;
+	bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
+		if (town_center_only) {
+			return unit_id == UnitId::ZergHachirosk
+				|| unit_id == UnitId::ZergCaphrolosk
+				|| unit_id == UnitId::ZergGathtelosk
+				|| unit_id == UnitId::ZergSibraelosk
+				|| unit_id == UnitId::ZergNephrilosk;
+		}
+		else {
+			return unit_id == UnitId::ZergHachirosk
+				|| unit_id == UnitId::ZergCaphrolosk
+				|| unit_id == UnitId::ZergGathtelosk
+				|| unit_id == UnitId::ZergSibraelosk
+				|| unit_id == UnitId::ZergNephrilosk
+				|| unit_id == UnitId::ZergLarvoskColony
+				|| unit_id == UnitId::ZergOcsalColony;
+		}
 	}
 	
 	bool unit_id_is_town_center(u16 unit_id) {

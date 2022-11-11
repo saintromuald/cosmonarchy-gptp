@@ -14,7 +14,6 @@ namespace hooks
 	void ai_region_train_attack_force(AiRegion* region);																	// 0043E670
 	void ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, AiRegion* region);								// 00448400
 	void ai_update_guard_needs(u32 player);																					// 004630C0
-	void ai_make_guard(u32 player_id, Unit* unit);																			// 0043A010
 	void ai_add_spending_request_from_towns(u32 player);																	// 00436320
 	void pop_spending_request(u32 player);																					// 004476D0
 	u8 ai_get_build_order_id(Unit* unit, u32 unit_id);																		// utility
@@ -22,6 +21,7 @@ namespace hooks
 	bool ai_add_spending_request(u32 id, u32 player, u32 type, u32 priority, void* value);									// 00447980
 	s32 ai_make_detector_behavior(Unit* unit, u32 player_id);																// 00435130
 	bool has_resources_for_unit(u16 unit_id, u32 player);																	// 004487B0
+	void ai_make_guard(u32 player_id, Unit* unit);																			// 0043A010
 
 	void inject_ai_request_hooks();
 }

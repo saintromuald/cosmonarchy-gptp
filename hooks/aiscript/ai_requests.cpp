@@ -792,77 +792,6 @@ namespace hooks
 		}
 	}
 
-	// Hooked to add sprite nullcheck and improve behavior. -Pr0nogo
-	void ai_make_guard(u32 player_id, Unit* unit) { // 0043A010
-		if (!unit || !unit->sprite) {
-			return;
-		}
-		u16 region_id = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
-		u32 region_id_var = region_id;
-		AiRegion* region_from_id = &g_ai_region_captains[player_id][region_id_var];
-		u32 region_times_52 = region_id_var * 52;
-
-		if (!region_from_id->state || region_from_id->state == RegionState::TownRegionLow) {
-			helper::ai_set_region_state(5, region_from_id);
-			u8 region_flags = region_from_id->flags | 1;
-			region_from_id->flags = region_flags;
-			if (!g_aiscript_controller[player_id].ai_flags.is_use_map_settings) {
-				region_from_id->flags = region_flags | 0x40;
-			}
-
-		//	u32 ai_flags = g_aiscript_controller[0].ai_flags; // Really weird
-			u8* alliance_check = (u8*)player_alliance + player_id;
-			AiRegion** ai_regions_var = g_ai_region_captains;
-			u8(*player_alliance_var)[12] = (u8(*)[12])((u8*)player_alliance + player_id);
-			do {
-				if (!g_aiscript_controller[0].ai_flags.is_use_map_settings) {
-					if (*alliance_check) {
-						AiRegion* region_from_52 = (AiRegion*)((char*)*ai_regions_var + region_times_52);
-						if (!region_from_52->state)
-						{
-							helper::ai_set_region_state(4, region_from_52);
-						}
-					}
-				}
-			//	ai_flags += 628;
-				alliance_check = &(*player_alliance_var)[12];
-				++player_alliance_var;
-				++ai_regions_var;
-			} while (1); //ai_flags < &g_base_array[9].total_mineral_count;
-		}
-
-		u32 unit_status = unit->status;
-		u32 town_center = UnitId::TerranCommandCenter;
-		if (g_player_table[player_id].race == RaceId::Protoss) {
-			town_center = UnitId::ProtossNexus;
-		} else if (g_player_table[player_id].race == RaceId::Zerg) {
-			town_center = UnitId::ZergHachirosk;
-		}
-
-		u32 unit_id = unit->id;
-		u8 player_race = g_player_table[player_id].race;
-		if ((unit_status & UnitStatus::Completed
-		||   unit_id == UnitId::ZergSibraelosk // new
-		||   unit_id == UnitId::ZergGathtelosk
-		||   unit_id == UnitId::ZergCaphrolosk
-		||   unit_id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
-		&&   unit_status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::Subunit) // was BYTE1, never saw that on a flag var before, so maybe Subunit should be FlyingBuilding (next entry)?
-		||  (unit->id == town_center)) {
-			if (g_aiscript_controller[player_id].ai_flags.is_use_map_settings) {
-				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
-				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
-				helper::ai_set_region_state(6, region_from_id);
-			} else {
-				helper::ai_set_region_state(6, region_from_id);
-				u8 region_has_flag_40 = region_from_id->flags | 0x40;
-				region_from_id->ground_strength_needed = 1500;
-				region_from_id->air_strength_needed = 1000;
-				region_from_id->flags = region_has_flag_40;
-			}
-			region_from_id->defend_time = 45;
-		}
-	}
-
 	// Hooked to fix player_need and improve functionality. -Pr0nogo
 	void ai_add_spending_request_from_towns(u32 player) { // 00436320
 		g_aiscript_controller[player].ai_flags.upgrades_finished = true; // HIBYTE(g_aiscript_controller[player].ai_flags) |= 4u;
@@ -1236,5 +1165,70 @@ namespace hooks
 			return false;
 		}
 		return true;
+	}
+
+	// Hooked to change position check from sprite to unit. -Pr0nogo
+	void ai_make_guard(u32 player_id, Unit* unit) // 0043A010
+	{
+		u32 region_id = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+		AiRegion* region_from_id = &g_ai_region_captains[player_id][region_id];
+		u32 region_times_52 = region_id * 52;
+		char region_state = region_from_id->state;
+		if (!region_state || region_state == 4)
+		{
+			helper::ai_set_region_state(5, region_from_id);
+			char region_flags_1 = region_from_id->flags | 1;
+			region_from_id->flags = region_flags_1;
+			if (!(g_aiscript_controller[player_id].ai_flags.is_use_map_settings))
+			{
+				region_from_id->flags = region_flags_1 | 0x40;
+			}
+			AiRegion* ai_regions_var = *g_ai_region_captains; // aids
+			u8* alliance_check = (u8*)player_alliance + player_id; // aids
+			u8 (*player_alliance_var)[12] = (u8(*)[12])((char*)player_alliance + player_id); // aids
+			u16* ai_flags; // aids
+			for (u32 player_for_loop = 0; player_for_loop <= PlayerLimit; player_for_loop++) {
+				if (!(g_aiscript_controller[player_for_loop].ai_flags.is_use_map_settings))
+				{
+					if (*alliance_check)
+					{
+						AiRegion* region_from_52 = &g_ai_region_captains[player_for_loop][region_times_52]; // Probably wrong
+						if (!region_from_52->state)
+						{
+							helper::ai_set_region_state(4, region_from_52);
+							// Originally reset ai_flags_var here
+						}
+					}
+				}
+				alliance_check = &(*player_alliance_var)[12];
+				++player_alliance_var;
+				++ai_regions_var;
+				if ((ai_flags < (u16*)&g_base_array[9].total_mineral_count)) { // old do-while condition, probably wrong
+					break;
+				}
+			}
+		}
+		if ((unit->status & UnitStatus::Completed
+		||	 scbw::unit_id_is_zerg_production(unit->id, true)
+		||   unit->id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
+		&&   unit->status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) // Was BYTE1 0x10, 0x10 is UnitProperty::Subunit
+		||	 scbw::unit_id_is_town_center(unit->id)) // Originally checked for race, so Terran would only accept Command Center, etc
+		{
+			if (g_aiscript_controller[player_id].ai_flags.is_use_map_settings)
+			{
+				region_from_id->ground_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
+				region_from_id->air_strength_needed = 6 * g_aiscript_controller[player_id].default_min;
+				helper::ai_set_region_state(6, region_from_id);
+			}
+			else
+			{
+				helper::ai_set_region_state(6, region_from_id);
+				char region_flags_40 = region_from_id->flags | 0x40;
+				region_from_id->ground_strength_needed = 1500;
+				region_from_id->air_strength_needed = 1000;
+				region_from_id->flags = region_flags_40;
+			}
+			region_from_id->defend_time = 45;
+		}
 	}
 }
