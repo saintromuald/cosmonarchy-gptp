@@ -828,19 +828,19 @@ static void clear_player_slot(u32 player, bool map_start) {
 		}
 		unit->remove();
 	}
-	// Mark active AI scripts to die
+	// Clear AI towns
+	AiTown* ai_town_prev = 0;
+	for (AiTown* ai_town = g_ai_town_list[player].first; ai_town; ai_town = ai_town_prev) {
+		ai_town_prev = ai_town->prev;
+		scbw::delete_town(ai_town);
+	}
+	// Clear AI scripts
 	AiScript* ai_script_next = 0;
 	for (AiScript* ai_script = *g_first_active_aiscript; ai_script; ai_script = ai_script_next) {
 		ai_script_next = ai_script->link.next;
 		if (ai_script->player == player) {
 			scbw::delete_ai_script(ai_script);
 		}
-	}
-	// Clear AI towns to die
-	AiTown* ai_town_prev = 0;
-	for (AiTown* ai_town = g_ai_town_list[player].first; ai_town; ai_town = ai_town_prev) {
-		ai_town_prev = ai_town->prev;
-		scbw::delete_town(ai_town);
 	}
 }
 
