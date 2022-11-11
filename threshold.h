@@ -38,9 +38,20 @@ struct ThresholdConfig {
 
 extern ThresholdConfig threshold_config;
 
+#define InitPositionsCap 1700
+struct InitPositions {
+	u32 count;
+	Point16 positions[InitPositionsCap];
+};
+
+extern InitPositions sources_positions;
+extern InitPositions rally_positions;
+
 u32 get_transmission_playing();
 bool is_map(u32 campaign, u32 map);
 
-void init_scenario();
+bool init_threshold_spawn(CHKUnit* unit);
+void init_threshold();
+bool try_prepare_threshold();
 void end_threshold();
 void tick_threshold();

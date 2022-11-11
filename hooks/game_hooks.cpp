@@ -342,6 +342,7 @@ namespace hooks {
 		// Update extended features
 		scbw::set_ingame_loop_state(true);
 		update_trigger_system(true);
+		try_prepare_threshold();
 		if (!scbw::is_game_paused()) {
 			update_layouts();
 			update_custom_ai();
@@ -438,14 +439,7 @@ namespace hooks {
 		globals.frame_hook();
 		update_search_index_effects();
 		update_ext_variables();
-
-		// Scenario Features
-		if (*g_elapsed_time_frames == 1) {
-			init_threshold();
-		}
-		if (*g_elapsed_time_frames >= 1) {
-			update_threshold();
-		}
+		update_threshold();
 
 		scbw::refresh_screen();
 
@@ -2449,6 +2443,7 @@ namespace hooks {
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
 
+		init_threshold();
 		return true;
 	}
 

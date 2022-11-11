@@ -559,11 +559,11 @@ static FraudSpawnLocation* get_random_spawn() {
 		u32 location = (i + offset) % count;
 
 		u32 skip = false;
-		for (u32 j = 0; j < PlayerLimit; ++j) {
-			if (!threshold_config.fraud_enabled[j]) {
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			if (!threshold_config.fraud_enabled[player]) {
 				continue;
 			}
-			if (threshold.sequence[j].location == &threshold.spawns[location]) {
+			if (threshold.sequence[player].location == &threshold.spawns[location]) {
 				skip = true;
 				break;
 			}
@@ -572,16 +572,11 @@ static FraudSpawnLocation* get_random_spawn() {
 			continue;
 		}
 
-		u32 cost = 0;
 		EntryArray unit_array = {};
 		unit_search_radial(&unit_array, threshold.spawns[location].pos, 12 * 32);
-		if (unit_array.count) {
-			cost += 1;
-		}
+		u32 cost = unit_array.count;
 		unit_search_filter(&unit_array, 0, FilterBuilding);
-		if (unit_array.count) {
-			cost += 1;
-		}
+		cost += unit_array.count;
 
 		if (cost < best_cost) {
 			best_cost = cost;
@@ -594,7 +589,6 @@ static FraudSpawnLocation* get_random_spawn() {
 static FraudSpawnLocation* get_closest_spawn(Point16 pos) {
 	FraudSpawnLocation* closest_loc = 0;
 	f32 lowest_distance = 999999999;
-
 	for (u32 i = 0; i < threshold.spawn_count; ++i) {
 		FraudSpawnLocation* loc = &threshold.spawns[i];
 		f32 distance = scbw::get_distance_fast(loc->pos, pos);
@@ -603,14 +597,12 @@ static FraudSpawnLocation* get_closest_spawn(Point16 pos) {
 			lowest_distance = distance;
 		}
 	}
-
 	return closest_loc;
 }
 
 static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) {
 	FraudSpawnSource* closest_loc = 0;
 	f32 lowest_distance = 999999999;
-
 	for (u32 i = 0; i < location->source_count; ++i) {
 		FraudSpawnSource* loc = &location->sources[i];
 		f32 distance = scbw::get_distance_fast(loc->pos, pos);
@@ -619,60 +611,72 @@ static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point1
 			lowest_distance = distance;
 		}
 	}
-
 	return closest_loc;
 }
 
-static void init_threshold_spawns() {
-	Unit* next = 0;
-	for (Unit* unit = first_player_unit->unit[11]; unit; unit = next) {
-		next = unit->player_link.next;
-		if (unit->id == UnitId::TerranCommandCenter) {
+InitPositions sources_positions;
+InitPositions rally_positions;
+
+bool init_threshold_spawn(CHKUnit* unit) {
+	if (unit->player != 11) {
+		return false;
+	}
+
+	Point16 position = {unit->x, unit->y};
+	switch (unit->unit_id) {
+		case UnitId::TerranCommandCenter:
+		{
 			FraudSpawnLocation spawn = {};
-			spawn.pos = unit->position;
+			spawn.pos = position;
 			if (threshold.spawn_count < FraudSpawnCap) {
 				threshold.spawns[threshold.spawn_count++] = spawn;
 			} else {
 				scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
 			}
+			return true;
+		} break;
+		case UnitId::ProtossPylon:
+		{
+			if (sources_positions.count < InitPositionsCap) {
+				sources_positions.positions[sources_positions.count++] = position;
+			}
+			return true;
+		} break;
+		case UnitId::TerranMaverick:
+		{
+			if (rally_positions.count < InitPositionsCap) {
+				rally_positions.positions[rally_positions.count++] = position;
+			}
+			return true;
+		} break;
+	}
+	return false;
+}
 
-			unit->user_action_flags |= 4; // silent remove
-			unit->remove();
+static void init_threshold_spawns() {
+	for (u32 i = 0; i < sources_positions.count; ++i) {
+		Point16 position = sources_positions.positions[i];
+		FraudSpawnLocation* spawn = get_closest_spawn(position);
+		if (spawn) {
+			if (spawn->source_count < FraudSourceCap) {
+				spawn->sources[spawn->source_count++] = {position};
+			} else {
+				scbw::printf("Source cap per spawn reached (" STR(FraudSourceCap) ")");
+			}
 		}
 	}
-	for (Unit* unit = first_player_unit->unit[11]; unit; unit = next) {
-		next = unit->player_link.next;
-		if (unit->id == UnitId::ProtossPylon) {
-			FraudSpawnLocation* spawn = get_closest_spawn(unit->position);
-			if (spawn) {
-				if (spawn->source_count < FraudSourceCap) {
-					spawn->sources[spawn->source_count++] = {unit->position};
+	for (u32 i = 0; i < rally_positions.count; ++i) {
+		Point16 position = rally_positions.positions[i];
+		FraudSpawnLocation* spawn = get_closest_spawn(position);
+		if (spawn) {
+			FraudSpawnSource* source = get_closest_source(spawn, position);
+			if (source) {
+				if (source->rally_count < FraudRallyCap) {
+					source->rallies[source->rally_count++] = position;
 				} else {
-					scbw::printf("Source cap per spawn reached (" STR(FraudSourceCap) ")");
+					scbw::printf("Rally cap per source reached (" STR(FraudRallyCap) ")");
 				}
 			}
-
-			unit->user_action_flags |= 4; // silent remove
-			unit->remove();
-		}
-	}
-	for (Unit* unit = first_player_unit->unit[11]; unit; unit = next) {
-		next = unit->player_link.next;
-		if (unit->id == UnitId::TerranMaverick) {
-			FraudSpawnLocation* spawn = get_closest_spawn(unit->position);
-			if (spawn) {
-				FraudSpawnSource* source = get_closest_source(spawn, unit->position);
-				if (source) {
-					if (source->rally_count < FraudRallyCap) {
-						source->rallies[source->rally_count++] = unit->position;
-					} else {
-						scbw::printf("Rally cap per source reached (" STR(FraudRallyCap) ")");
-					}
-				}
-			}
-
-			unit->user_action_flags |= 4; // silent remove
-			unit->remove();
 		}
 	}
 }
@@ -724,7 +728,7 @@ static void set_ally(u32 a, u32 b, bool ally) {
 	}
 }
 
-void messagef(char* format, ...) {
+static void messagef(char* format, ...) {
 	static char buffer[1024];
 
 	va_list va;
@@ -735,7 +739,7 @@ void messagef(char* format, ...) {
 	helper::display_text_message(buffer, 2, GetTickCount() + helper::get_text_display_time(buffer), 1);
 }
 
-u32 get_next_fraud(u32 player, u32 fraud_class) {
+static u32 get_next_fraud(u32 player, u32 fraud_class) {
 	if (!threshold.sequence[player].location) {
 		u32 first = 0;
 		u32 last  = 0;
@@ -779,7 +783,7 @@ u32 get_next_fraud(u32 player, u32 fraud_class) {
 	return Fraud_None;
 }
 
-u32 get_fraud_class(u32 fraud) {
+static u32 get_fraud_class(u32 fraud) {
 	if (fraud >= Fraud_First      && fraud <= Fraud_Last)      return FraudClass_Fraud;
 	if (fraud >= FraudHero_First  && fraud <= FraudHero_Last)  return FraudClass_Hero;
 	if (fraud >= FraudSuper_First && fraud <= FraudSuper_Last) return FraudClass_Super;
@@ -787,7 +791,7 @@ u32 get_fraud_class(u32 fraud) {
 	return FraudClass_None;
 }
 
-u32 get_fraud_race(u32 fraud) {
+static u32 get_fraud_race(u32 fraud) {
 	if (fraud >= Fraud_TerranFirst && fraud <= Fraud_TerranLast
 		|| fraud >= FraudHero_TerranFirst && fraud <= FraudHero_TerranLast
 		|| fraud >= FraudSuper_TerranFirst && fraud <= FraudSuper_TerranLast) {
@@ -804,6 +808,29 @@ u32 get_fraud_race(u32 fraud) {
 		return RaceId::Zerg;
 	}
 	return scbw::rand_between(0, 2);
+}
+
+static void clear_player_slot(u32 player) {
+	// Clear units
+	Unit* unit_next = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit_next) {
+		unit_next = unit->player_link.next;
+
+		unit->user_action_flags |= 4; // silent remove
+		unit->remove();
+	}
+	// Mark active AI scripts to die
+	for (AiScript* ai_script = *g_first_active_aiscript; ai_script; ai_script = ai_script->link.next) {
+		if (ai_script->player == player) {
+			ai_script->flags |= 0x4;
+		}
+	}
+	// Clear AI towns to die
+	AiTown* ai_town_prev = 0;
+	for (AiTown* ai_town = g_ai_active_town_array[player].first; ai_town; ai_town = ai_town_prev) {
+		ai_town_prev = ai_town->prev;
+		helper::delete_ai_town_if_needed(ai_town);
+	}
 }
 
 bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
@@ -908,18 +935,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 			g_start_positions[player] = spawn_location->pos;
 			
-			// Mark current AI scripts to die
-			for (AiScript* ai_script = *g_first_active_aiscript; ai_script; ai_script = ai_script->link.next) {
-				if (ai_script->player == player) {
-					ai_script->flags |= 0x4;
-				}
-			}
-			// Mark current AI towns to die
-			AiTown* ai_town_prev = 0;
-			for (AiTown* ai_town = g_ai_active_town_array[player].first; ai_town; ai_town = ai_town_prev) {
-				ai_town_prev = ai_town->prev;
-				helper::delete_ai_town_if_needed(ai_town);
-			}
+			clear_player_slot(player);
 
 			if (spawn_townhall) {
 				Point16 pos = threshold.sequence[player].location->pos;
@@ -940,15 +956,14 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				}
 			}
 
-			set_ally(player, 0, false);
 			for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 				if (player == other_player) {
 					continue;
 				}
-				if (threshold_config.fraud_enabled[other_player] && 
-					fraud_share_alliance(threshold.sequence[player].fraud, threshold.sequence[other_player].fraud) ||
+				if (threshold_config.fraud_enabled[other_player] && threshold.sequence[other_player].fraud &&
+					(fraud_share_alliance(threshold.sequence[player].fraud, threshold.sequence[other_player].fraud) ||
 					(threshold.sequence[player].fraud_class == threshold.sequence[other_player].fraud_class &&
-						(threshold.sequence[player].fraud_class == FraudClass_Hero || threshold.sequence[player].fraud_class == FraudClass_God))) {
+						(threshold.sequence[player].fraud_class == FraudClass_Hero || threshold.sequence[player].fraud_class == FraudClass_God)))) {
 					set_ally(player, other_player, true);
 
 					messagef("%s\x01 allies to %s\x01!", fraud_names[threshold.sequence[player].fraud], fraud_names[threshold.sequence[other_player].fraud]);
@@ -975,18 +990,20 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 	return false;
 }
 
-void init_threshold_units();
+static void init_threshold_units();
 
 void init_threshold() {
 	memset(&threshold_config, 0, sizeof(threshold_config));
 	memset(&threshold, 0, sizeof(threshold));
+	memset(&sources_positions, 0, sizeof(sources_positions));
+	memset(&rally_positions, 0, sizeof(rally_positions));
 
 	// Defaults
 	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
 		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
 		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
 		threshold_config.enabled = true;
-		for (u32 player = 0; player < PlayerLimit; ++player) {
+		for (u32 player = 1; player <= 6; ++player) {
 			threshold_config.fraud_allowed[player] = true;
 		}
 	}
@@ -1029,9 +1046,9 @@ static void update_config() {
 	}
 }
 
-void update_threshold() {
+bool try_prepare_threshold() {
 	if (!threshold_config.enabled) {
-		return;
+		return false;
 	}
 	if (!threshold_config.init) {
 		threshold_config.init = true;
@@ -1046,6 +1063,12 @@ void update_threshold() {
 			if (!threshold_config.fraud_enabled[player]) {
 				continue;
 			}
+			clear_player_slot(player);
+		}
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			if (!threshold_config.fraud_enabled[player]) {
+				continue;
+			}
 			if (threshold_config.initial_count) {
 				if (place_fraud(player, FraudClass_Fraud, true)) {
 					threshold_config.initial_count -= 1;
@@ -1053,7 +1076,16 @@ void update_threshold() {
 			}
 		}
 	}
+	return threshold_config.init;
+}
 
+void update_threshold() {
+	if (!threshold_config.enabled) {
+		return;
+	}
+	if (!try_prepare_threshold()) {
+		return;
+	}
 	update_config();
 	const u32 god_spawn_breakpoint = threshold_config.total_count;
 
@@ -1262,7 +1294,7 @@ void update_threshold() {
 	}
 }
 
-void init_threshold_units() {
+static void init_threshold_units() {
 	for (u32 i = 0; i < Fraud_Count; ++i) {
 		switch (get_fraud_class(i)) {
 			case FraudClass_Fraud:

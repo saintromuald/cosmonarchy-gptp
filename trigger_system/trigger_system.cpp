@@ -909,8 +909,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "threshold_set_fraud_slots")) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
 
+			threshold_config.enabled = true;
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				threshold_config.enabled = true;
 				threshold_config.fraud_allowed[player] = players.set[player];
 			}
 		} else if (parser_eq(&parser, "threshold_set_witness_slots")) {
