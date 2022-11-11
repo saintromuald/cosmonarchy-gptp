@@ -1008,20 +1008,6 @@ void init_threshold() {
 	memset(&sources_positions, 0, sizeof(sources_positions));
 	memset(&rally_positions, 0, sizeof(rally_positions));
 
-	// Defaults
-	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
-		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
-		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
-		threshold_config.enabled = true;
-		for (u32 player = 1; player <= 6; ++player) {
-			threshold_config.fraud_allowed[player] = true;
-		}
-	}
-	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
-		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1)) {
-		threshold_config.witness_enabled[7] = true;
-	}
-
 	threshold_config.total_count = 33;
 	threshold_config.auto_scale = 0.5;
 	threshold_config.timer = 5 * 60 * 24;
@@ -1066,6 +1052,21 @@ bool try_prepare_threshold() {
 	}
 	if (!threshold.init) {
 		threshold.init = true;
+
+		// Scenario Defaults
+		if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
+			is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
+			is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
+			threshold_config.enabled = true;
+			for (u32 player = 1; player <= 6; ++player) {
+				threshold_config.fraud_allowed[player] = true;
+			}
+			if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
+				is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1)) {
+				threshold_config.witness_enabled[7] = true;
+			}
+		}
+
 		init_threshold_spawns();
 		init_threshold_units();
 
@@ -1087,6 +1088,8 @@ bool try_prepare_threshold() {
 				if (place_fraud(player, FraudClass_Fraud, true)) {
 					threshold_config.initial_count -= 1;
 				}
+			} else {
+				break;
 			}
 		}
 	}
