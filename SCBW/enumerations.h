@@ -1121,12 +1121,6 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_TerranOrbital_Hotdrop,
 	AiBuildOrder_TerranOrbital_Count,
 
-	AiBuildOrder_TerranShadow_RoyalFlush = 1,
-	AiBuildOrder_TerranShadow_UnholyTrinity,
-	AiBuildOrder_TerranShadow_AngelsAbove,
-	AiBuildOrder_TerranShadow_TheVerdict,
-	AiBuildOrder_TerranShadow_Count,
-
 	AiBuildOrder_TerranGeneral_2FactMech = 1,
 	AiBuildOrder_TerranGeneral_EarlyRiser,
 	AiBuildOrder_TerranGeneral_TheCube,
@@ -1156,12 +1150,6 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ProtossSkylord_SorrowFleet,
 	AiBuildOrder_ProtossSkylord_Count,
 
-	AiBuildOrder_ProtossProfane_TheBanished = 1,
-	AiBuildOrder_ProtossProfane_LostAndFound,
-	AiBuildOrder_ProtossProfane_CloakAndDagger,
-	AiBuildOrder_ProtossProfane_Starbreach,
-	AiBuildOrder_ProtossProfane_Count,
-
 	AiBuildOrder_ProtossGeneral_RoboFE = 1,
 	AiBuildOrder_ProtossGeneral_StridentStriders,
 	AiBuildOrder_ProtossGeneral_2GateRobo,
@@ -1185,12 +1173,6 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ZergSunblot_2HatchGeszithalor,
 	AiBuildOrder_ZergSunblot_2HatchMutalisk,
 	AiBuildOrder_ZergSunblot_Count,
-
-	AiBuildOrder_ZergMiscreant_Symbiosis = 1,
-	AiBuildOrder_ZergMiscreant_Former,
-	AiBuildOrder_ZergMiscreant_MisbegottenMight,
-	AiBuildOrder_ZergMiscreant_RapidAnnex,
-	AiBuildOrder_ZergMiscreant_Count,
 
 	AiBuildOrder_ZergGeneral_FastOthstol = 1,
 	AiBuildOrder_ZergGeneral_SwarmingZorkiz,
