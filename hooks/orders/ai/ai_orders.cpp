@@ -527,12 +527,12 @@ namespace hooks {
 
 			u8 resource_area = town->resarea;
 			if (resource_area) {
-				g_base_array[resource_area].flags &= 0xFDu;
+				g_base_array[resource_area].flags &= ~0x2;
 			}
 
 			s32 player = (u8)town->player;
-			if (g_ai_active_town_array[player].first == town) {
-				g_ai_active_town_array[player].first = town->prev;
+			if (g_ai_town_list[player].first == town) {
+				g_ai_town_list[player].first = town->prev;
 			}
 
 			if (town->next) {
@@ -543,14 +543,12 @@ namespace hooks {
 				town->prev->next = town->next;
 			}
 
-			result = g_ai_active_town_array[player].last;
 			town->next = 0;
-			town->prev = result[100].prev;
-			AiTown* previous_town = result[100].prev;
-			if (previous_town) {
-				previous_town->next = town;
+			town->prev = g_ai_town_list[player].array->first_free;
+			if (g_ai_town_list[player].array->first_free) {
+				g_ai_town_list[player].array->first_free->next = town;
 			}
-			result[100].prev = town;
+			g_ai_town_list[player].array->first_free = town;
 		}
 		return result;
 	}
@@ -1478,8 +1476,8 @@ namespace hooks {
 
 		EntryArray resources = {};
 		unit_search_radial(&resources, area->position, 12 * 32);
-		f32 mineral_value = area->total_mineral_count;
-		f32 gas_value     = area->total_vespene_count * 8;
+		f32 mineral_value = 5  * (f32)area->total_mineral_count / (area->mineral_field_count / 2);
+		f32 gas_value     = 15 * (f32)area->total_vespene_count / (area->geyser_count / 2);
 		score += mineral_value * mineral_bias;
 		score += gas_value     * gas_bias;
 

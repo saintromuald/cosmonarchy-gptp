@@ -11,6 +11,7 @@
 
 #include "ai_layouts.h"
 #include "player_color.h"
+#include "threshold.h"
 
 bool trigger_game_paused;
 bool trigger_system_init;
@@ -905,6 +906,45 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				g_player_table[player].type = PlayerType::Computer;
 				scbw::run_default_ai(player, g_start_positions[player]);
 			};
+		} else if (parser_eq(&parser, "threshold_set_fraud_slots")) {
+			PlayerBitset players = parser_get_player_bitset(&parser);
+
+			threshold_config.enabled = true;
+			for (u32 player = 0; player < PlayerLimit; ++player) {
+				threshold_config.fraud_allowed[player] = players.set[player];
+				if (players.set[player]) {
+					threshold_config.witness_enabled[player] = false;
+				}
+			}
+		} else if (parser_eq(&parser, "threshold_set_witness_slots")) {
+			PlayerBitset players = parser_get_player_bitset(&parser);
+
+			for (u32 player = 0; player < PlayerLimit; ++player) {
+				threshold_config.witness_enabled[player] = players.set[player];
+				if (players.set[player]) {
+					threshold_config.fraud_allowed[player] = false;
+				}
+			}
+		} else if (parser_eq(&parser, "threshold_autoscale")) {
+			f32 value = parser_get_f32(&parser);
+
+			threshold_config.auto_scale = value;
+		} else if (parser_eq(&parser, "threshold_initial_count")) {
+			u32 count = parser_get_s32(&parser);
+
+			threshold_config.initial_count = count;
+		} else if (parser_eq(&parser, "threshold_min_count")) {
+			u32 count = parser_get_s32(&parser);
+
+			threshold_config.min_count = count;
+		} else if (parser_eq(&parser, "threshold_total_count")) {
+			u32 count = parser_get_s32(&parser);
+
+			threshold_config.total_count = count;
+		} else if (parser_eq(&parser, "threshold_timer")) {
+			u32 timer = parser_get_time_ticks(&parser);
+
+			threshold_config.timer = timer;
 		}
 	}
 

@@ -287,7 +287,7 @@
     <ClCompile Include="SCBW\Storm.cpp" />
     <ClCompile Include="trigger_system\trigger_events.cpp" />
     <ClCompile Include="trigger_system\trigger_parser.cpp" />
-    <ClCompile Include="scenario.cpp" />
+    <ClCompile Include="threshold.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
@@ -630,7 +630,7 @@
     <ClInclude Include="include\discord_game_sdk.h" />
     <ClInclude Include="trigger_system\trigger_events.h" />
     <ClInclude Include="trigger_system\trigger_parser.h" />
-    <ClInclude Include="scenario.h" />
+    <ClInclude Include="threshold.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />

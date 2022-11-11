@@ -22,7 +22,7 @@
 #include "player_color.h"
 #include "unit_ai.h"
 #include "tactical_ai.h"
-#include "scenario.h"
+#include "threshold.h"
 #include "ai_layouts.h"
 #include "trigger_system/trigger_system.h"
 #include "trigger_system/trigger_parser.h"
@@ -438,14 +438,7 @@ namespace hooks {
 		globals.frame_hook();
 		update_search_index_effects();
 		update_ext_variables();
-
-		// Scenario Features
-		if (*g_elapsed_time_frames == 1) {
-			init_scenario();
-		}
-		if (*g_elapsed_time_frames >= 1) {
-			tick_scenario();
-		}
+		update_threshold();
 
 		scbw::refresh_screen();
 
@@ -2449,11 +2442,12 @@ namespace hooks {
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
 
+		init_threshold();
 		return true;
 	}
 
 	bool game_end() {
-		end_scenario();
+		end_threshold();
 		return true;
 	}
 }

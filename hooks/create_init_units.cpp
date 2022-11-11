@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "ai_layouts.h"
+#include "threshold.h"
 
 u32 get_racial_townhall(u32 raceId)
 {
@@ -338,6 +339,9 @@ namespace hooks
 	}
 
 	Unit* create_preplaced_unit(CHKUnit* chkunit) {
+		if (init_threshold_spawn(chkunit)) {
+			return 0;
+		}
 		if (chk_cache_size < ChkCacheLimit) {
 			chk_cache[chk_cache_size++] = *chkunit;
 		}
