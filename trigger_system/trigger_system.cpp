@@ -912,12 +912,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			threshold_config.enabled = true;
 			for (u32 player = 0; player < PlayerLimit; ++player) {
 				threshold_config.fraud_allowed[player] = players.set[player];
+				if (players.set[player]) {
+					threshold_config.witness_enabled[player] = false;
+				}
 			}
 		} else if (parser_eq(&parser, "threshold_set_witness_slots")) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
 				threshold_config.witness_enabled[player] = players.set[player];
+				if (players.set[player]) {
+					threshold_config.fraud_enabled[player] = false;
+				}
 			}
 		} else if (parser_eq(&parser, "threshold_autoscale")) {
 			f32 value = parser_get_f32(&parser);
