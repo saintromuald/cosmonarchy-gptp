@@ -1692,7 +1692,7 @@ namespace hooks {
 							return;
 						}
 						scbw::teleport(target, target_pos);
-						});
+					});
 					scbw::teleport(unit, target_pos);
 				}
 			} break;
