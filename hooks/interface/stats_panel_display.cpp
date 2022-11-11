@@ -484,7 +484,7 @@ namespace hooks
 	// Hooked to draw new values to icons. -- Pr0nogo
 	void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index) // 00425600
 	{
-		// Second arg is unit id in one case and empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit.
+		// Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit.
 		BinDlg* dialog_var = dialog;
 		u8 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current armor using g_active_portrait_unit
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", armor_value);
