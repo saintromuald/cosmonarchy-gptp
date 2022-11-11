@@ -378,6 +378,7 @@ namespace hooks {
 		jump_patch(delete_worker_ai_wrapper,					0x00404470, 0);
 		jump_patch(delete_building_ai_wrapper,					0x00404500, 0);
 		jump_patch(delete_military_ai_wrapper,					0x004371D0, 0);
+		jump_patch(remove_from_ai_structs,						0x00439D60, 0);
 		jump_patch(ai_remove_unit_ai_wrapper,					0x004A1E50, 0);
 		jump_patch(ai_remove_worker_or_building_ai_wrapper,		0x00434C90, 0);
 	//	jump_patch(ai_training_overlord_wrapper,				0x00435770, 1);

@@ -1128,7 +1128,7 @@ namespace helper {
 	}
 
 	// for AI_TrainingBroodling
-	void ai_assign_military_to_region(s32 region_type, AiRegion* region) {
+	void ai_set_region_state(s32 region_type, AiRegion* region) {
 		const u32 func_address = 0x004390A0;
 		__asm {
 			PUSHAD
@@ -6938,6 +6938,31 @@ namespace helper {
 			CALL Func_DeleteAITownIfNeeded
 			POPAD
 		}
+	}
+
+	void remove_from_attack_force(u32 unit_id, u32 player) {
+		const u32 func_address = 0x00447040;
+		__asm {
+			PUSHAD
+			MOV EDX, player
+			MOV EAX, unit_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	bool ai_has_worker_or_building(u32 region_id, u32 player) {
+		const u32 func_address = 0x00432AD0;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV EDI, player
+			MOV EAX, region_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
 	// For is_order_valid

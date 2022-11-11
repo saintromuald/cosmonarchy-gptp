@@ -15,6 +15,7 @@ namespace hooks
 	void delete_worker_ai(WorkerAi* worker_ai, WorkerAiList* worker_ai_list);									// 00404470
 	void delete_building_ai(BuildingAi* building_ai, BuildingAiList* building_ai_list);							// 00404500
 	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region);										// 004371D0
+	void __stdcall remove_from_ai_structs(Unit* unit, b32 was_killed);											// 00439D60
 	void remove_worker_or_building_ai(Unit* unit, bool always_building);										// 00434C90
 	void ai_training_overlord(Unit* newUnit, Unit* oldUnit);													// 00435770
 	void ai_order_lurker_burrow(Unit* unit);																	// 0043C230

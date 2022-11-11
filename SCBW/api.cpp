@@ -1852,7 +1852,7 @@ namespace scbw {
 			case RegionState::TownRegionHigh:
 			case RegionState::Defending:
 			case RegionState::ChaseAway: {
-				helper::ai_assign_military_to_region(RegionState::Defending, ai_region); // Priority is 110 when defending regions with buildings/workers, 100 otherwise
+				helper::ai_set_region_state(RegionState::Defending, ai_region); // Priority is 110 when defending regions with buildings/workers, 100 otherwise
 				ai_region->defense_priority += 15; // More than both of the vanilla defense priorities
 				ai_region->defend_time = 2; // The minimal time (around ~60 frames)
 			} break;

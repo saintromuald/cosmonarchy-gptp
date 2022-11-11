@@ -67,7 +67,7 @@ namespace hooks {
 		}
 
 		if (player_region[region_id].state == RegionState::Nothing) {
-			helper::ai_assign_military_to_region(RegionState::ContinueAttackHere, region);
+			helper::ai_set_region_state(RegionState::ContinueAttackHere, region);
 		}
 		helper::add_military_ai(region, unit, true);
 	}
@@ -614,15 +614,67 @@ namespace hooks {
 		}
 
 		MilitaryAiArray* military_ai_array = ai_region->military.array;
-		if (military_ai == military_ai_array->first_free_military) {
-			int i = 0;
-		}
 		military_ai->link.next = 0;
 		military_ai->link.prev = military_ai_array->first_free_military;
 		if (military_ai_array->first_free_military) {
 			military_ai_array->first_free_military->link.next = military_ai;
 		}
 		military_ai_array->first_free_military = military_ai;
+	}
+
+	void __stdcall remove_from_ai_structs(Unit* unit, b32 was_killed) { // 00439D60
+		for (u32 player = 0; player < 8; ++player) {
+			if (g_player_table[player].type != PlayerType::Computer) {
+				continue;
+			}
+
+			for (u32 i = 1; i < *g_region_ids_count; ++i) {
+				AiRegion* ai_region = scbw::get_ai_region(player, i);
+				if (ai_region->air_target == unit) {
+					ai_region->air_target = 0;
+				}
+				if (ai_region->ground_target == unit) {
+					ai_region->ground_target = 0;
+				}
+				if (ai_region->slowest_unit == unit) {
+					ai_region->slowest_unit = 0;
+				}
+				if (ai_region->follow_target == unit) {
+					ai_region->follow_target = 0;
+				}
+			}
+
+			if (!scbw::is_allied_to(player, unit->player)) {
+				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+				if (ai_region->ground_strength_needed >= ai_strength_ground[unit->id]) {
+					ai_region->ground_strength_needed -= ai_strength_ground[unit->id];
+				} else {
+					ai_region->ground_strength_needed = 0;
+				}
+				if (ai_region->air_strength_needed >= ai_strength_air[unit->id]) {
+					ai_region->air_strength_needed -= ai_strength_air[unit->id];
+				} else {
+					ai_region->air_strength_needed = 0;
+				}
+			}
+		}
+
+		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
+			return;
+		}
+		
+		MilitaryAi* military_ai = &unit->unit_ai->military_ai;
+		AiRegion* ai_region = military_ai->region;
+		if (ai_region->state == RegionState::PreparingAttack) {
+			helper::remove_from_attack_force(unit->id, unit->player);
+		} else if (was_killed) {
+			if (!scbw::is_attack_region(ai_region)) {
+				if (scbw::get_region_id(unit->position) != ai_region->region && !helper::ai_has_worker_or_building(ai_region->region, ai_region->player)) {
+					helper::ai_set_region_state(RegionState::EnemySighted, ai_region);
+				}
+			}
+		}
+		helper::delete_military_ai(military_ai, ai_region);
 	}
 
 	// Hooked to add type check - Pr0nogo

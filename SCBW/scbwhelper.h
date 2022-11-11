@@ -145,7 +145,7 @@ namespace helper {
 	void hide_unit(Unit* unit);
 
 	// For AI_TrainingBroodling
-	void ai_assign_military_to_region(s32 region_type, AiRegion* region);							// 004390A0
+	void ai_set_region_state(s32 region_type, AiRegion* region);							// 004390A0
 	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);						// 0043DA20
 
 	// For ai_training_worker
@@ -594,6 +594,8 @@ namespace helper {
 	void delete_building_ai(BuildingAi* building, BuildingAiList* buildingList);                                                    // 00404500
 	void delete_worker_ai(WorkerAi* ai, WorkerAiList* workerList);                                                                  // 00404470
 	void delete_ai_town_if_needed(AiTown* town);                                                                                    // 004347E0
+	void remove_from_attack_force(u32 unit_id, u32 player);																			// 00447040
+	bool ai_has_worker_or_building(u32 region_id, u32 player);																		// 00432AD0
 
 	//// hallucination_spell
 	// for orders_Hallucination1
