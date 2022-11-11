@@ -821,7 +821,9 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 			threshold.used[next_fraud] = true;
 			threshold.timer = threshold_config.timer;
 			if (fraud_class == FraudClass_God) {
-				threshold.timer = threshold_config.god_timer;
+				threshold.timer = 1 * 60 * 24;
+			} else {
+				threshold.timer /= threshold_config.scalar;
 			}
 
 			messagef("Spawn %s\x02 (Class: %s\x01)!", fraud_names[next_fraud], fraud_class_names[fraud_class]);
@@ -975,7 +977,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 
 void init_threshold_units();
 
-void init_scenario() {
+void init_threshold() {
 	memset(&threshold_config, 0, sizeof(threshold_config));
 	memset(&threshold, 0, sizeof(threshold));
 
@@ -992,18 +994,12 @@ void init_scenario() {
 		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1)) {
 		threshold_config.witness_enabled[7] = true;
 	}
-	if (is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
-		threshold_config.timer = 1.5 * 60 * 24;
-		threshold_config.god_timer = 1 * 60 * 24;
-		threshold_config.initial_count = 4;
-		threshold_config.min_frauds = 4;
-	} else {
-		threshold_config.timer = 3 * 60 * 24;
-		threshold_config.god_timer = 1 * 60 * 24;
-		threshold_config.timer = 4 * 60 * 24;
-		threshold_config.initial_count = 2;
-		threshold_config.min_frauds = 2;
-	}
+
+	threshold_config.total_count = 33;
+	threshold_config.auto_scale = 1;
+	threshold_config.timer = 4 * 60 * 24;
+	threshold_config.initial_count = 2;
+	threshold_config.min_count = 2;
 }
 
 void end_threshold() {
@@ -1011,7 +1007,29 @@ void end_threshold() {
 	memset(&threshold, 0, sizeof(threshold));
 }
 
-void tick_threshold() {
+static void update_config() {
+	bool first = true;
+	threshold_config.scalar = 1;
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		if (threshold_config.fraud_allowed[player] && g_player_table[player].type == PlayerType::Computer) {
+			threshold_config.fraud_enabled[player] = true;
+		} else {
+			threshold_config.fraud_enabled[player] = false;
+		}
+		if (!threshold_config.fraud_enabled[player] && !threshold_config.witness_enabled[player]) {
+			if (first) {
+				first = false;
+			} else {
+				threshold_config.scalar += threshold_config.auto_scale;
+			}
+		}
+	}
+	if (threshold_config.total_count > Fraud_Count - FraudGod_Count) {
+		threshold_config.total_count = Fraud_Count - FraudGod_Count;
+	}
+}
+
+void update_threshold() {
 	if (!threshold_config.enabled) {
 		return;
 	}
@@ -1020,6 +1038,8 @@ void tick_threshold() {
 		init_threshold_spawns();
 		init_threshold_units();
 
+		update_config();
+		threshold_config.initial_count *= threshold_config.scalar;
 		threshold.hero_spawn_counter = -1 - threshold_config.initial_count;
 		threshold.super_spawn_counter = -4 - threshold_config.initial_count;
 		for (u32 player = 0; player < PlayerLimit; ++player) {
@@ -1034,18 +1054,8 @@ void tick_threshold() {
 		}
 	}
 
-	// Update Config
-	for (u32 player = 0; player < PlayerLimit; ++player) {
-		if (threshold_config.fraud_allowed[player] && g_player_table[player].type == PlayerType::Computer) {
-			threshold_config.fraud_enabled[player] = true;
-		} else {
-			threshold_config.fraud_enabled[player] = false;
-		}
-	}
-	if (threshold_config.total_frauds > Fraud_Count - FraudGod_Count - 1) {
-		threshold_config.total_frauds = Fraud_Count - FraudGod_Count - 1;
-	}
-	const u32 god_spawn_breakpoint = threshold_config.total_frauds;
+	update_config();
+	const u32 god_spawn_breakpoint = threshold_config.total_count;
 
 	static char buffer[64];
 	if (threshold.used_count < god_spawn_breakpoint) {
@@ -1130,7 +1140,8 @@ void tick_threshold() {
 	}
 
 	// Fraud Spawning
-	if (alive_count >= threshold_config.min_frauds && threshold.timer) {
+	u32 min_count = threshold_config.min_count * threshold_config.scalar;
+	if (alive_count >= min_count && threshold.timer) {
 		--threshold.timer;
 	} else {
 		threshold.timer = 0;

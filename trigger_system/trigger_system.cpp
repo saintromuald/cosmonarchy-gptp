@@ -919,6 +919,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			for (u32 player = 0; player < PlayerLimit; ++player) {
 				threshold_config.witness_enabled[player] = players.set[player];
 			}
+		} else if (parser_eq(&parser, "threshold_autoscale")) {
+			f32 value = parser_get_f32(&parser);
+
+			threshold_config.auto_scale = value;
 		} else if (parser_eq(&parser, "threshold_initial_count")) {
 			u32 count = parser_get_s32(&parser);
 
@@ -926,19 +930,15 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "threshold_min_count")) {
 			u32 count = parser_get_s32(&parser);
 
-			threshold_config.min_frauds = count;
+			threshold_config.min_count = count;
 		} else if (parser_eq(&parser, "threshold_total_count")) {
 			u32 count = parser_get_s32(&parser);
 
-			threshold_config.total_frauds = count;
+			threshold_config.total_count = count;
 		} else if (parser_eq(&parser, "threshold_timer")) {
 			u32 timer = parser_get_time_ticks(&parser);
 
 			threshold_config.timer = timer;
-		} else if (parser_eq(&parser, "threshold_god_timer")) {
-			u32 timer = parser_get_time_ticks(&parser);
-
-			threshold_config.god_timer = timer;
 		}
 	}
 

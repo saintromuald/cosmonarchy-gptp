@@ -441,10 +441,10 @@ namespace hooks {
 
 		// Scenario Features
 		if (*g_elapsed_time_frames == 1) {
-			init_scenario();
+			init_threshold();
 		}
 		if (*g_elapsed_time_frames >= 1) {
-			tick_threshold();
+			update_threshold();
 		}
 
 		scbw::refresh_screen();
