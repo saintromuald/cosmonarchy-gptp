@@ -97,6 +97,11 @@ namespace hooks
 	// Idle/AI order probably
 	void orders_Medic(Unit* unit)
 	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueReviveStarted]) {
+			return;
+		}
+
 		bool bStopThere = false;
 		if (unit->unit_ai != nullptr && helper::ai_cast_spell_behavior(unit, NULL) != 0)
 		{
@@ -261,6 +266,11 @@ namespace hooks
 
 	bool AI_AcquireHealTarget(Unit* medic, Unit* target)
 	{
+		UnitExt* unit_ext = get_unit_ext(medic);
+		if (unit_ext->values[ValueReviveStarted]) {
+			return 0;
+		}
+
 		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination)
 		{
 			return 0;
