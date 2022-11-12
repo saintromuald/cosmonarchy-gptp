@@ -1036,7 +1036,7 @@ namespace hooks
 		helper::fix_target_location(&position, UnitId::ProtossSteward);
 		u32 pos_x = position.x;
 		u32 pos_y = position.y;
-		helper::set_move_target_xy(position.x, position.y, unit);
+		helper::set_move_target_xy(unit, position.x, position.y);
 		if (pos_x != unit->next_target_waypoint.x || pos_y != unit->next_target_waypoint.y)
 		{
 			unit->next_target_waypoint.x = pos_x;

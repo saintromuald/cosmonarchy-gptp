@@ -23,10 +23,10 @@ namespace hooks
 				if (tech_id == TechId::Hallucination && !order_target) {
 					Point16 target_pos = caster->order_target.pt;
 					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
-						helper::set_move_target_xy(target_pos.x, target_pos.y, caster);
+						helper::set_move_target_xy(caster, target_pos.x, target_pos.y);
 						return 0;
 					}
-					helper::set_move_target_xy(caster->position.x, caster->position.y, caster);
+					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
 
 					if (!helper::is_angle_in_attack_angle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
 						helper::turn_unit(caster, scbw::get_angle(caster->position, target_pos));

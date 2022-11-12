@@ -263,7 +263,7 @@ namespace hooks
 			{
 				v8 = unit->order_target.pt.y;
 				v9 = unit->order_target.pt.x;
-				ByteOperations::SetLowByte(v10, helper::set_move_target_xy(v9, v8, unit));
+				ByteOperations::SetLowByte(v10, helper::set_move_target_xy(unit, v9, v8));
 				if (v9 != v1->next_target_waypoint.x || v8 != v1->next_target_waypoint.y)
 				{
 					v1->next_target_waypoint.x = v9;

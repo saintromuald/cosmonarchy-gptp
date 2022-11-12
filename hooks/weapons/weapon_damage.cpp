@@ -314,6 +314,11 @@ namespace hooks
 					data.final_damage = 0;
 				}
 			} break;
+			default:
+			{
+				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
+				data.final_damage /= divisor;
+			}
 		}
 		data.final_damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 
@@ -469,10 +474,6 @@ namespace hooks
 						target_ext->timers[TimerGladiusBindingPlasma] = 24;
 						target_ext->units[UnitGladiusBindingPlasmaSource] = data.attacker;
 					}
-				} break;
-				case WeaponId::AnthelionEventHorizon:
-				{
-					target_ext->timers[TimerAnthelionGravityWell] = 2;
 				} break;
 				case WeaponId::ZethrokorClaws:
 				{

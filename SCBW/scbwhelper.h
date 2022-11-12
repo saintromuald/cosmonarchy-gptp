@@ -287,7 +287,6 @@ namespace helper {
 	void to_idle(Unit* a1);																                    // 004753A0
 	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
 	void orders_nothing_2(Unit* a1);																		// 00475000
-	bool set_move_target_xy(s32 a1, s32 a2, Unit* a3);														// 004EB820
 
 	// For burrowGeneric
 	void toggle_unit_path(Unit* unit);									                                    // 004E42A0

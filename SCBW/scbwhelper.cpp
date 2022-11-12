@@ -2469,21 +2469,6 @@ namespace helper {
 		}
 	}
 
-	bool set_move_target_xy(s32 a1, s32 a2, Unit* a3) {
-		const u32 Func_setMoveTargetXY = 0x004EB820;
-		static s32 result;
-		__asm {
-			PUSHAD
-			MOV EBX, a1
-			MOV EDI, a2
-			MOV ESI, a3
-			CALL Func_setMoveTargetXY
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
 	// For burrowGeneric
 
 	void toggle_unit_path(Unit* unit) {

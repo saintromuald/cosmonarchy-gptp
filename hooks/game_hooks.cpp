@@ -813,7 +813,7 @@ namespace hooks {
 										pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
 									} break;
 								}							
-								helper::set_move_target_xy(pos.x, pos.y, unit);
+								helper::set_move_target_xy(unit, pos.x, pos.y);
 							}
 							unit_ext->values[ValueTalosAnimationTimer] += 1;
 						} else {
@@ -1400,42 +1400,37 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossAnthelion:
 			{
-				u32 attackRadius = 10 * 32;
-				auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
-				bool attacked = false;
-				scbw::UnitFinder(
-					unit->get_x() - attackRadius,
-					unit->get_y() - attackRadius,
-					unit->get_x() + attackRadius,
-					unit->get_y() + attackRadius
-				).for_each_in_match(match, [&](Unit* target) {
-					u32 dist = scbw::get_distance_fast(unit->position, target->position);
-					if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon]) {
-						UnitExt* targetExt = get_unit_ext(target);
-						if (!(units_dat::base_property[target->id] & UnitProperty::Building)
-							&& targetExt->timers[TimerAnthelionGravityWell]) {
-							targetExt->timers[TimerAnthelionGravityWell] = 2;
-							targetExt->units[UnitAnthelionGravityWellSource] = unit;
-						}
-
-						if (!unit_ext->timers[TimerAnthelionAttackCooldown]) {
-							attacked = true;
-
-							u32 divider = 1;
-							if (dist > weapons_dat::medium_splash_radius[WeaponId::AnthelionEventHorizon]) {
-								divider = 4;
-							} else if (dist > weapons_dat::inner_splash_radius[WeaponId::AnthelionEventHorizon]) {
-								divider = 2;
+				if (!unit_ext->timers[TimerAnthelionAttackCooldown]) {
+					bool attacked = false;
+					EntryArray targets = {};
+					unit_search_radial(&targets, unit->position, weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon]);
+					unit_search_filter(&targets, unit, FilterEnemy);
+					for (u32 i = 0; i < targets.count; ++i) {
+						Unit* target = targets.units[i];
+						u32 dist = scbw::get_distance_fast(unit->position, target->position);
+						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon]) {
+							UnitExt* target_ext = get_unit_ext(target);
+							if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
+								target_ext->timers[TimerAnthelionGravityWell] = 24;
+								target_ext->units[UnitAnthelionGravityWellSource] = unit;
 							}
-							target->damage_with(WeaponId::AnthelionEventHorizon, -1, unit, unit->player, 0, divider);
-							helper::create_thingy(SpriteId::NeutronFlareOrange_Damageless, target->sprite->position.x, target->sprite->position.y, unit->player);
+
+							u32 divisor = 4;
+							if (dist <= weapons_dat::inner_splash_radius[WeaponId::AnthelionEventHorizon]) {
+								divisor = 1;
+							} else if (dist <= weapons_dat::medium_splash_radius[WeaponId::AnthelionEventHorizon]) {
+								divisor = 2;
+							}
+							target->damage_with(WeaponId::AnthelionEventHorizon, -1, unit, unit->player, 0, divisor);
+							helper::create_thingy(SpriteId::NeutronFlareOrange_Damageless, target->position.x, target->position.y, unit->player);
+							attacked = true;
 						}
 					}
-				});
-				if (attacked) {
-					unit_ext->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
-					unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
+					if (attacked) {
+						unit_ext->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
+						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
+					}
 				}
 
 				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit) {
@@ -1454,13 +1449,12 @@ namespace hooks {
 							unit_ext->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 						}
 						unit_ext->anthelion_last_move_target = unit->move_target.pt;
-						s16 oldX = unit->sprite->position.x;
-						s16 oldY = unit->sprite->position.y;
 
 						if (unit_ext->timers[TimerAnthelionEndlessEclipse] == 1) {
+							Point16 old_pos = unit->position;
 							bool teleport = scbw::teleport(unit, unit->move_target.pt, 0, true);
 							if (teleport) {
-								scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, oldX, oldY, unit->player, 11);
+								scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, old_pos.x, old_pos.y, unit->player, 11);
 								helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
 								unit->sprite->create_top_overlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 							}
@@ -1979,7 +1973,6 @@ namespace hooks {
 			Point16 target_pos = unit_ext->units[UnitAnthelionGravityWellSource]->position;
 			if (unit->position != target_pos) {
 				Vector32 diff = scbw::get_vector_between_points(unit->position, target_pos);
-
 				if (scbw::get_vector_distance(diff) < 2) {
 					scbw::move_unit_improved(unit, target_pos.x, target_pos.y);
 				} else {
@@ -1987,16 +1980,16 @@ namespace hooks {
 					displacement.x *= 2;
 					displacement.y *= 2;
 
-					Point16 finalPos = unit->position;
-					finalPos.x += displacement.x;
-					finalPos.y += displacement.y;
-					finalPos = scbw::clamp_point(finalPos);
+					Point16 final_pos = unit->position;
+					final_pos.x += displacement.x;
+					final_pos.y += displacement.y;
+					final_pos = scbw::clamp_point(final_pos);
 
-					scbw::move_unit_improved(unit, finalPos.x, finalPos.y);
+					scbw::move_unit_improved(unit, final_pos.x, final_pos.y);
 				}
 			}
 			s32 angle = scbw::get_angle(unit->position, target_pos);
-			unit->current_direction_1 = angle;
+			helper::turn_unit(unit, angle);
 		}
 
 		// Cyclops - Fragmentary Shells fuse

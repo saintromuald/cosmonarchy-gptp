@@ -784,7 +784,7 @@ namespace hooks
 		{
 			u32 tgt_x = unit->order_target.pt.x;
 			u32 tgt_y = unit->order_target.pt.y - 7;
-			bool move_target = helper::set_move_target_xy(tgt_x, tgt_y, unit);
+			bool move_target = helper::set_move_target_xy(unit, tgt_x, tgt_y);
 			if (tgt_x != unit->next_target_waypoint.x || tgt_y != unit->next_target_waypoint.y)
 			{
 				unit->next_target_waypoint.x = tgt_x;
