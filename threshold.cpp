@@ -1041,6 +1041,7 @@ void end_threshold() {
 static void update_config() {
 	bool first = true;
 	threshold.scalar = 1;
+	threshold.multiplier_scalar = 1;
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (threshold_config.fraud_allowed[player] && g_player_table[player].type == PlayerType::Computer) {
 			threshold.fraud_enabled[player] = true;
