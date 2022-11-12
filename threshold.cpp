@@ -1289,12 +1289,12 @@ void update_threshold() {
 			if (sequence->unit_timer) {
 				--sequence->unit_timer;
 			}
-			if (!sequence->unit_timer) {
+			if (!sequence->unit_timer && *g_unit_count < 1650) {
 				while (sequence->unit_index < threshold.unit_count[sequence->fraud][sequence->race]
 					&& !threshold.units[sequence->fraud][sequence->race][sequence->unit_index].count) {
 					++sequence->unit_index;
 				}
-				if (sequence->unit_index < threshold.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count && *g_unit_count < 1650) {
+				if (sequence->unit_index < threshold.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count) {
 					FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
 					u32 unit_id = threshold.units[sequence->fraud][sequence->race][sequence->unit_index].unit_id;
 					if (source->rally_count) {
