@@ -352,7 +352,7 @@ namespace hooks
 		//		return 0;
 		//	}
 		//}
-		if (!(flags & ChkUnitFlags_Cloaked)) {
+		if (!(flags & ChkUnitFlags_Cloaked) && chkunit->unit_id != UnitId::TownCenterMarker) {
 			chkunit->state_flags &= ~ChkUnitFlags_Cloaked;
 			chkunit->state_flags &= ~ChkUnitFlags_Burrowed;
 			chkunit->state_flags &= ~ChkUnitFlags_Lifted;

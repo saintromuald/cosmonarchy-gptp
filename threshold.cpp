@@ -1012,7 +1012,7 @@ void init_threshold() {
 	memset(&rally_positions, 0, sizeof(rally_positions));
 
 	threshold_config.total_count = 33;
-	threshold_config.auto_scale = 0.5;
+	threshold_config.auto_scale = 0.25;
 	threshold_config.timer = 5 * 60 * 24;
 	threshold_config.initial_count = 2;
 	threshold_config.min_count = 2;
