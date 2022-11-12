@@ -532,6 +532,7 @@ struct ThresholdState {
 	bool init;
 	bool fraud_enabled[PlayerLimit];
 	f32 scalar;
+	f32 multiplier_scalar;
 
 	FraudInfo frauds[Fraud_Count][RaceId::Count];
 	u32 used_count;
@@ -847,7 +848,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 	}
 }
 
-bool place_fraud(u32 player, u32 fraud_class) {
+bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 	if (fraud_class == FraudClass_None) {
 		return false;
 	}
@@ -928,19 +929,27 @@ bool place_fraud(u32 player, u32 fraud_class) {
 				fraud_count = 0;
 			}
 
-			f32 multiplier = (0.5 + fraud_count * 0.1) * threshold.scalar;
+			f32 multiplier = (0.5 + fraud_count * 0.1) * threshold.multiplier_scalar;
 			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
-				threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * multiplier);
-				if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
-					if (threshold.units[next_fraud][race][i].count > 40 * threshold.scalar) {
-						threshold.units[next_fraud][race][i].count = 40 * threshold.scalar;
+				if (initial) {
+					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
+						threshold.units[next_fraud][race][i].count = 6;
+					} else {
+						threshold.units[next_fraud][race][i].count = 0;
+					}
+				} else {
+					threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * multiplier);
+					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
+						if (threshold.units[next_fraud][race][i].count > 40 * threshold.multiplier_scalar) {
+							threshold.units[next_fraud][race][i].count = 40 * threshold.multiplier_scalar;
+						}
 					}
 				}
 			}
 			multiplier += 0.5 * (fraud_class - 1);
 			u32 minerals = 1200 * multiplier;
 			u32 gas = 300 * multiplier;
-			if (*g_elapsed_time_frames <= 60 * 24) {
+			if (initial) {
 				minerals = 100;
 				gas = 0;
 			}
@@ -1018,7 +1027,7 @@ void init_threshold() {
 	memset(&rally_positions, 0, sizeof(rally_positions));
 
 	threshold_config.total_count = 33;
-	threshold_config.auto_scale = 0.25;
+	threshold_config.auto_scale = 0.5;
 	threshold_config.timer = 5 * 60 * 24;
 	threshold_config.initial_count = 2;
 	threshold_config.min_count = 2;
@@ -1106,7 +1115,7 @@ void update_threshold() {
 				continue;
 			}
 			if (threshold_config.initial_count) {
-				if (place_fraud(player, FraudClass_Fraud)) {
+				if (place_fraud(player, FraudClass_Fraud, true)) {
 					threshold_config.initial_count -= 1;
 					break;
 				}
@@ -1224,7 +1233,7 @@ void update_threshold() {
 					fraud_class = FraudClass_God;
 				}
 
-				if (place_fraud(player, fraud_class)) {
+				if (place_fraud(player, fraud_class, false)) {
 					++alive_count;
 					break;
 				}
@@ -1252,7 +1261,7 @@ void update_threshold() {
 			if (!threshold.fraud_enabled[player]) {
 				continue;
 			}
-			if (place_fraud(player, FraudClass_God)) {
+			if (place_fraud(player, FraudClass_God, false)) {
 				break;
 			}
 		}
