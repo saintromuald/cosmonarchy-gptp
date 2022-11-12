@@ -933,9 +933,9 @@ bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
 				if (initial) {
 					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
-						threshold.units[next_fraud][race][i].count = 6;
+						threshold.units[next_fraud][race][i].count = 6 * threshold.multiplier_scalar;
 					} else {
-						threshold.units[next_fraud][race][i].count = 0;
+						threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * (1 - threshold.multiplier_scalar));
 					}
 				} else {
 					threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * multiplier);
@@ -1040,15 +1040,18 @@ void end_threshold() {
 
 static void update_config() {
 	bool first = true;
+	u32 fraud_count = 0;
+	u32 human_count = 0;
 	threshold.scalar = 1;
-	threshold.multiplier_scalar = 1;
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (threshold_config.fraud_allowed[player] && g_player_table[player].type == PlayerType::Computer) {
+			fraud_count += 1;
 			threshold.fraud_enabled[player] = true;
 		} else {
 			threshold.fraud_enabled[player] = false;
 		}
 		if (!threshold.fraud_enabled[player] && !threshold_config.witness_enabled[player]) {
+			human_count += 1;
 			set_player_force_name(player, BWTC_WHITE "Contenders" BWTC_RESET);
 			if (first) {
 				first = false;
@@ -1060,6 +1063,8 @@ static void update_config() {
 			set_player_force_name(player, BWTC_YELLOW "Witness" BWTC_RESET);
 		}
 	}
+	threshold.multiplier_scalar = 1;
+	threshold.multiplier_scalar += std::max(human_count - fraud_count, 0u) / 2 * threshold_config.auto_scale;
 	if (threshold_config.total_count > Fraud_Count - FraudGod_Count) {
 		threshold_config.total_count = Fraud_Count - FraudGod_Count;
 	}
