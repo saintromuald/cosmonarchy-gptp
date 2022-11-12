@@ -77,6 +77,22 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) update_iscript_speed_wrapper() // 004951C0
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::update_iscript_speed(unit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -87,5 +103,6 @@ namespace hooks
 		jump_patch(get_modified_unit_acceleration_wrapper,	0x0047B8A0, 6);
 		jump_patch(get_modified_unit_turn_speed_wrapper,	0x0047B850, 6);
 	//	jump_patch(set_unit_movement_speed_wrapper,			0x004951C0, 1); // Causes psycho spinning!
+	//	jump_patch(update_iscript_speed_wrapper,			0x0042D8C0, 1);
 	}
 }

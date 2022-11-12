@@ -336,4 +336,63 @@ namespace hooks
 		}
 		return unit;
 	}
+
+	// Hooked to fix speed tooltip for iscript units. -Pr0nogo
+	void update_iscript_speed(Unit* unit) // 0042D8C0
+	{
+		if (unit->flingy_movement_type == 2)
+		{
+			Image* image = unit->sprite->main_graphic;
+			*g_temp_iscript_header = image->iscript_header_offset;
+			*g_iscript_speed_something = image->unknown14;
+			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking))
+			{
+				Unit* active_unit = *g_active_iscript_unit;
+				u32 v10 = 0;
+				u32 opcode_value = 0;
+				u32 tile_size = 32;
+				bool tile_size_bool = 0;
+				u32 base_speed = 0;
+				do
+				{
+					Image* loop_image = unit->sprite->main_graphic;
+					*g_active_iscript_unit = unit;
+					iscript_opcode_cases(loop_image, base_speed, (u32)&g_temp_iscript_header, 1, (u32)&opcode_value);
+					char stim_timer = unit->stim_timer;
+					u32 opcode_value_copy = opcode_value;
+					u32 buff_or_debuff = 0;
+					*g_active_iscript_unit = active_unit;
+					if (stim_timer)
+					{
+						buff_or_debuff = 1;
+					}
+					if (unit->status & UnitStatus::SpeedUpgrade)
+					{
+						++buff_or_debuff;
+					}
+					if (unit->ensnare_timer)
+					{
+						--buff_or_debuff;
+					}
+					if (buff_or_debuff <= 0)
+					{
+						if (buff_or_debuff < 0)
+						{
+							opcode_value_copy = opcode_value - (opcode_value >> 2);
+						}
+					}
+					else
+					{
+						opcode_value_copy = 2 * opcode_value;
+					}
+					base_speed = opcode_value_copy + v10;
+					tile_size_bool = tile_size == 1;
+					v10 += opcode_value_copy;
+					opcode_value = 0;
+					--tile_size;
+				} while (!tile_size_bool);
+				unit->flingy_top_speed = base_speed / 32;
+			}
+		}
+	}
 }

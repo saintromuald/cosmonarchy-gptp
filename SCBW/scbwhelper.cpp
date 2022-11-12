@@ -12589,4 +12589,18 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation)
+	{
+		static b32 result;
+		const u32 func_address = 0x0042D600;
+		__asm {
+			PUSHAD
+			MOVZX AL, animation
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

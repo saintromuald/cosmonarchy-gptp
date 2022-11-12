@@ -1047,36 +1047,39 @@ SCBW_DATA(u32*,			g_active_portrait_buttonset_id,		0x0068C14C);
 SCBW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 
 // For request_military_to
-SCBW_DATA_REF(u32*,		ai_strength_air,	0x006BB210);
-SCBW_DATA_REF(u32*,		ai_strength_ground, 0x006BB5A0);
+SCBW_DATA_REF(u32*,		ai_strength_air,					0x006BB210);
+SCBW_DATA_REF(u32*,		ai_strength_ground,					0x006BB5A0);
 
 // For ground_attack_init
-SCBW_DATA(Thingy**,		g_first_used_thingy_1,	0x00652918);
-SCBW_DATA(u8*,			g_can_draw_thingy,		0x00652920);
-SCBW_DATA(char**,		g_iscript_data,			0x006D1200);
+SCBW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);
+SCBW_DATA(u8*,			g_can_draw_thingy,					0x00652920);
+SCBW_DATA(char**,		g_iscript_data,						0x006D1200);
 
 // For play_warp_in_overlay
-SCBW_DATA(UpdateFunction*,	g_sg_update_funcs,	0x00512510);
-SCBW_DATA(DrawFunction*,	g_sg_draw_funcs,	0x005125A0);
+SCBW_DATA(UpdateFunction*,	g_sg_update_funcs,				0x00512510);
+SCBW_DATA(DrawFunction*,	g_sg_draw_funcs,				0x005125A0);
 
 // For iscript_opcode_cases
-SCBW_DATA(char*,		cbullet_damage,					0x0050434C);
+SCBW_DATA(char*,		cbullet_damage,						0x0050434C);
 
 // For create_unit_building_sprite_validity_array
-SCBW_DATA(u32*,			g_current_visibility_hash,		0x0063FD30);
-SCBW_DATA(u32*,			g_want_visibility_hash_update,	0x00629D90);
-SCBW_DATA(char*,		g_region_vision_hash,			0x0063FE38);
-SCBW_DATA(u32*,			g_current_hash_offset,			0x0063FD28);
+SCBW_DATA(u32*,			g_current_visibility_hash,			0x0063FD30);
+SCBW_DATA(u32*,			g_want_visibility_hash_update,		0x00629D90);
+SCBW_DATA(char*,		g_region_vision_hash,				0x0063FE38);
+SCBW_DATA(u32*,			g_current_hash_offset,				0x0063FD28);
 
-SCBW_DATA(ControlGroupPlayerArray*, control_group_array, 0x0057FE60);
+SCBW_DATA(ControlGroupPlayerArray*, control_group_array,	0x0057FE60);
 
 // For remove_healthbar
-SCBW_DATA(Layer*,		g_game_layer,					0x006CEFB4);
-SCBW_DATA(Image**,		g_first_free_healthbar,			0x0057EB6C);
-SCBW_DATA(Image**,		g_last_free_healthbar,			0x005254B8);
+SCBW_DATA(Layer*,		g_game_layer,						0x006CEFB4);
+SCBW_DATA(Image**,		g_first_free_healthbar,				0x0057EB6C);
+SCBW_DATA(Image**,		g_last_free_healthbar,				0x005254B8);
 
-SCBW_DATA(Image**,		g_first_free_selection_circle,	0x0052E4C0);
-SCBW_DATA(Image**,		g_last_free_selection_circle,	0x0052F564);
+SCBW_DATA(Image**,		g_first_free_selection_circle,		0x0052E4C0);
+SCBW_DATA(Image**,		g_last_free_selection_circle,		0x0052F564);
+
+SCBW_DATA(u16*,			g_temp_iscript_header,				0x006C2310);
+SCBW_DATA(u16*,			g_iscript_speed_something,			0x006C2314);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

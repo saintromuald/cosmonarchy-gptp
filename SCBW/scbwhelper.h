@@ -1491,4 +1491,6 @@ namespace helper {
 	b32 return_interceptor_if_cannot_attack(Unit* steward);																					// 00465810
 	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos);																	// 00465D30
 	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation);																// 00476ED0
+
+	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation);																		// 0042D600
 }
