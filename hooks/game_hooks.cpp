@@ -1986,10 +1986,9 @@ namespace hooks {
 					final_pos = scbw::clamp_point(final_pos);
 
 					scbw::move_unit_improved(unit, final_pos.x, final_pos.y);
+					helper::turn_unit(unit, scbw::get_angle(unit->position, target_pos));
 				}
 			}
-			s32 angle = scbw::get_angle(unit->position, target_pos);
-			helper::turn_unit(unit, angle);
 		}
 
 		// Cyclops - Fragmentary Shells fuse
