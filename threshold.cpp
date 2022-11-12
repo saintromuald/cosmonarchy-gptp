@@ -1040,8 +1040,8 @@ void end_threshold() {
 
 static void update_config() {
 	bool first = true;
-	u32 fraud_count = 0;
-	u32 human_count = 0;
+	s32 fraud_count = 0;
+	s32 human_count = 0;
 	threshold.scalar = 1;
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (threshold_config.fraud_allowed[player] && g_player_table[player].type == PlayerType::Computer) {
@@ -1064,7 +1064,7 @@ static void update_config() {
 		}
 	}
 	threshold.multiplier_scalar = 1;
-	threshold.multiplier_scalar += std::max(human_count - fraud_count, 0u) / 2 * threshold_config.auto_scale;
+	threshold.multiplier_scalar += std::max(human_count - fraud_count, 0) / 2 * threshold_config.auto_scale;
 	if (threshold_config.total_count > Fraud_Count - FraudGod_Count) {
 		threshold_config.total_count = Fraud_Count - FraudGod_Count;
 	}
