@@ -847,7 +847,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 	}
 }
 
-bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
+bool place_fraud(u32 player, u32 fraud_class) {
 	if (fraud_class == FraudClass_None) {
 		return false;
 	}
@@ -938,10 +938,16 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 				}
 			}
 			multiplier += 0.5 * (fraud_class - 1);
-			resources->cumulative_minerals[player] += 1200 * multiplier;
-			resources->cumulative_gas[player] += 300 * multiplier;
-			resources->minerals[player] = 1200 * multiplier;
-			resources->gas[player] = 300 * multiplier;
+			u32 minerals = 1200 * multiplier;
+			u32 gas = 300 * multiplier;
+			if (*g_elapsed_time_frames <= 60 * 24) {
+				minerals = 100;
+				gas = 0;
+			}
+			resources->minerals[player] = minerals;
+			resources->cumulative_minerals[player] += minerals;
+			resources->gas[player] = gas;
+			resources->cumulative_gas[player] += gas;
 
 			g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
 			u32 resource_upgrade = fraud_class;
@@ -951,7 +957,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool spawn_townhall) {
 			
 			clear_player_slot(player, false);
 
-			if (spawn_townhall) {
+			{
 				Point16 pos = threshold.sequence[player].location->pos;
 				Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
 				if (augur) {
@@ -1100,7 +1106,7 @@ void update_threshold() {
 				continue;
 			}
 			if (threshold_config.initial_count) {
-				if (place_fraud(player, FraudClass_Fraud, true)) {
+				if (place_fraud(player, FraudClass_Fraud)) {
 					threshold_config.initial_count -= 1;
 					break;
 				}
@@ -1218,7 +1224,7 @@ void update_threshold() {
 					fraud_class = FraudClass_God;
 				}
 
-				if (place_fraud(player, fraud_class, true)) {
+				if (place_fraud(player, fraud_class)) {
 					++alive_count;
 					break;
 				}
@@ -1246,7 +1252,7 @@ void update_threshold() {
 			if (!threshold.fraud_enabled[player]) {
 				continue;
 			}
-			if (place_fraud(player, FraudClass_God, true)) {
+			if (place_fraud(player, FraudClass_God)) {
 				break;
 			}
 		}
