@@ -91,7 +91,7 @@ namespace hooks
 						else
 						{
 							if (units_dat::shields_enabled[built_unit->id]) {
-								built_unit->shields += 2 * 256;
+								built_unit->shields += 3 * 256;
 							}
 							built_unit->sprite->player = unit->sprite->player;
 							helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
