@@ -758,10 +758,10 @@ namespace scbw {
 			}
 
 			Unit* collision = scbw::UnitFinder(
-				unit->get_left(),
-				unit->get_top(),
-				unit->get_right(),
-				unit->get_bottom()
+				x - units_dat::unit_bounds[unit->id].left,
+				y - units_dat::unit_bounds[unit->id].top,
+				x + units_dat::unit_bounds[unit->id].right,
+				y + units_dat::unit_bounds[unit->id].bottom
 			).get_first(cosmonarchy_finder_match(unit, Flags::NotSelf | Flags::NoAir, {}));
 
 			if (collision) {
