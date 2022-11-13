@@ -2813,4 +2813,10 @@ namespace scbw {
 		}
 		g_ai_town_list[player].array->first_free = ai_town;
 	}
+
+	bool unit_id_is_broodspawn(u32 unit_id)
+	{
+		return unit_id == UnitId::ZergRilirokor
+			|| unit_id == UnitId::ZergRililisk;
+	}
 }
