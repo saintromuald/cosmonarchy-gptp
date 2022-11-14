@@ -531,6 +531,7 @@ struct FraudSpawnUnit {
 struct ThresholdState {
 	bool init;
 	bool fraud_enabled[PlayerLimit];
+	u32 fraud_slots;
 	f32 scalar;
 	f32 multiplier_scalar;
 
@@ -1053,18 +1054,16 @@ void end_threshold() {
 
 static void update_config() {
 	bool first = true;
-	s32 fraud_count = 0;
-	s32 human_count = 0;
 	threshold.scalar = 1;
+	threshold.fraud_slots = 0;
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (threshold_config.fraud_allowed[player] && g_player_table[player].type == PlayerType::Computer) {
-			fraud_count += 1;
+			threshold.fraud_slots += 1;
 			threshold.fraud_enabled[player] = true;
 		} else {
 			threshold.fraud_enabled[player] = false;
 		}
 		if (!threshold.fraud_enabled[player] && !threshold_config.witness_enabled[player]) {
-			human_count += 1;
 			set_player_force_name(player, BWTC_WHITE "Contenders" BWTC_RESET);
 			if (first) {
 				first = false;
@@ -1076,8 +1075,6 @@ static void update_config() {
 			set_player_force_name(player, BWTC_YELLOW "Witness" BWTC_RESET);
 		}
 	}
-	threshold.multiplier_scalar = 1;
-	threshold.multiplier_scalar += std::max(human_count - fraud_count, 0) / 2 * threshold_config.auto_scale;
 	if (threshold_config.total_count > Fraud_Count - FraudGod_Count) {
 		threshold_config.total_count = Fraud_Count - FraudGod_Count;
 	}
@@ -1108,7 +1105,14 @@ bool try_prepare_threshold() {
 		init_threshold_units();
 
 		update_config();
+
+		threshold.multiplier_scalar = 1;
 		threshold_config.initial_count *= threshold.scalar;
+		if (threshold_config.initial_count > threshold.fraud_slots) {
+			threshold.multiplier_scalar += (threshold_config.initial_count - threshold.fraud_slots) / 2 * threshold_config.auto_scale;
+			threshold_config.initial_count = threshold.fraud_slots;
+		}
+
 		threshold.hero_spawn_counter = -1 - threshold_config.initial_count;
 		threshold.super_spawn_counter = -4 - threshold_config.initial_count;
 		for (u32 player = 0; player < PlayerLimit; ++player) {
