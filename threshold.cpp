@@ -849,19 +849,22 @@ static void clear_player_slot(u32 player, bool map_start) {
 	}
 }
 
-static bool player_can_spawn(u32 player) {
+static bool fraud_is_alive(u32 player) {
 	FraudSpawnSequence* sequence = &threshold.sequence[player];
-	if (sequence->location || sequence->safety_timer || g_all_factory_counts->unit[player] > 0 || *g_unit_count >= 1600) { // Do not spawn frauds if they are already on the map
+	if (!sequence->fraud) {
 		return false;
 	}
-	return true;
+	if (sequence->location || sequence->safety_timer || g_all_factory_counts->unit[player] > 0) {
+		return true;
+	}
+	return false;
 }
 
 static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 	if (fraud_class == FraudClass_None) {
 		return false;
 	}
-	if (!player_can_spawn(player)) {
+	if (fraud_is_alive(player)) {
 		return false;
 	}
 	u32 next_fraud = get_next_fraud(player, fraud_class);
@@ -1029,7 +1032,7 @@ void init_threshold() {
 	threshold_config.auto_scale = 0.5;
 	threshold_config.timer = 5 * 60 * 24;
 	threshold_config.initial_count = 2;
-	threshold_config.min_count = 2;
+	threshold_config.min_count = 1;
 }
 
 void end_threshold() {
@@ -1120,7 +1123,7 @@ void update_threshold() {
 				continue;
 			}
 			if (threshold_config.initial_count) {
-				if (place_fraud(player, FraudClass_Fraud, true)) {
+				if (*g_unit_count < 1600 && place_fraud(player, FraudClass_Fraud, true)) {
 					threshold_config.initial_count -= 1;
 					break;
 				}
@@ -1171,12 +1174,17 @@ void update_threshold() {
 	}
 
 	u32 alive_count = 0;
+	u32 non_god_alive_count = 0;
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (!threshold.fraud_enabled[player]) {
 			continue;
 		}
-		if (threshold.sequence[player].location || g_all_factory_counts->unit[player] > 0) {
+		if (fraud_is_alive(player)) {
 			++alive_count;
+
+			if (threshold.sequence[player].fraud_class != FraudClass_God) {
+				++non_god_alive_count;
+			}
 		}
 	}
 
@@ -1186,11 +1194,15 @@ void update_threshold() {
 
 	// Fraud *Boom*
 	for (u32 player = 0; player < PlayerLimit; ++player) {
+		if (!threshold.fraud_enabled[player]) {
+			continue;
+		}
+
 		FraudSpawnSequence* sequence = &threshold.sequence[player];
 		if (sequence->safety_timer) {
 			--sequence->safety_timer;
 		}
-		if (g_all_factory_counts->unit[player] == 0 && sequence->fraud && !sequence->location && !sequence->safety_timer) {
+		if (!fraud_is_alive(player)) {
 			if (sequence->fraud_class == FraudClass_God) {
 				if (first_player_unit->unit[player]) {
 					sequence->fraud = Fraud_None;
@@ -1225,7 +1237,7 @@ void update_threshold() {
 				continue;
 			}
 			FraudSpawnSequence* sequence = &threshold.sequence[player];
-			if (player_can_spawn(player)) {
+			if (!fraud_is_alive(player) && *g_unit_count < 1600) {
 				u32 fraud_class = FraudClass_None;
 				if (threshold.used_count < god_spawn_breakpoint) {
 					fraud_class = FraudClass_Fraud;
@@ -1242,18 +1254,6 @@ void update_threshold() {
 					++alive_count;
 					break;
 				}
-			}
-		}
-	}
-
-	u32 non_god_alive_count = 0;
-	for (u32 player = 0; player < PlayerLimit; ++player) {
-		if (!threshold.fraud_enabled[player]) {
-			continue;
-		}
-		if (threshold.sequence[player].location || g_all_factory_counts->unit[player] > 0) {
-			if (threshold.sequence[player].fraud_class != FraudClass_God) {
-				++non_god_alive_count;
 			}
 		}
 	}
