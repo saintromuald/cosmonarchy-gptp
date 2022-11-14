@@ -2336,7 +2336,7 @@ namespace helper {
 		}
 	}
 
-	Unit* SpiderMine_AcquireTarget(Unit* spiderMine) {
+	Unit* spider_mine_acquire_target(Unit* spiderMine) {
 		const u32 Func_SpiderMine_AcquireTarget = 0x00441270;
 		static Unit* target;
 		__asm {
@@ -2349,7 +2349,7 @@ namespace helper {
 		return target;
 	}
 
-	void instantCloak(Unit* unit) {
+	void instant_cloak(Unit* unit) {
 		const u32 Func_instantCloak = 0x0049B1E0;
 		__asm {
 			PUSHAD
@@ -2359,7 +2359,7 @@ namespace helper {
 		}
 	}
 
-	void unburrowGeneric(Unit* unit) {
+	void unburrow_generic(Unit* unit) {
 		const u32 Func_unburrowGeneric = 0x004E99D0;
 		__asm {
 			PUSHAD
@@ -2369,7 +2369,7 @@ namespace helper {
 		}
 	}
 
-	void burrowGeneric(Unit* unit) {
+	void burrow_generic(Unit* unit) {
 		const u32 Func_burrowGeneric = 0x004E9A30;
 		__asm {
 			PUSHAD
@@ -2379,7 +2379,7 @@ namespace helper {
 		}
 	}
 
-	// For orders_PlaceMine
+	// For orders_place_mine
 
 	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3) {
 		const u32 Func_techUseAllowed = 0x0046DD80;
@@ -2412,7 +2412,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 orders_HoldPosSuicidal(Unit* a1) {
+	s32 orders_hold_pos_suicidal(Unit* a1) {
 		const u32 Func_orders_HoldPosSuicidal = 0x004EB5B0;
 		static s32 result;
 		__asm {
@@ -2469,7 +2469,7 @@ namespace helper {
 		}
 	}
 
-	// For burrowGeneric
+	// For burrow_generic
 
 	void toggle_unit_path(Unit* unit) {
 		const u32 Func_toggleUnitPath = 0x004E42A0;

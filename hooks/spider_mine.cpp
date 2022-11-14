@@ -6,14 +6,14 @@
 
 namespace hooks
 {
-	// Return the best target for the mine. If there is no suitable target, return nullptr instead.
-	Unit* findBestTerranMineTarget(Unit* mine) // 00441270
+	// Return the best target for the mine. If there is no suitable target, return 0 instead.
+	Unit* find_best_mine_target(Unit* mine) // 00441270
 	{
 		s32 range;
 		// Don't search for a target if the mine is under a Disruption Web
 		if (mine->status & UnitStatus::CanNotAttack)
 		{
-			return nullptr;
+			return 0;
 		}
 		range = 32 * mine->get_seek_range();
 		return
@@ -46,7 +46,7 @@ namespace hooks
 		});
 	}
 
-	void orders_TerranMine(Unit* unit) // 00463DF0
+	void orders_terran_mine(Unit* unit) // 00463DF0
 	{
 		if (unit->main_order_state == 0)
 		{
@@ -70,8 +70,8 @@ namespace hooks
 			{
 				if (!(unit->status & UnitStatus::IsHallucination))
 				{
-					helper::burrowGeneric(unit); // related to movement
-					helper::instantCloak(unit); // related to cloaking/stealth
+					helper::burrow_generic(unit); // related to movement
+					helper::instant_cloak(unit); // related to cloaking/stealth
 				}
 				unit->main_order_state = 3;
 			}
@@ -79,9 +79,9 @@ namespace hooks
 
 		if (unit->main_order_state == 3)
 		{
-			Unit* target = helper::SpiderMine_AcquireTarget(unit);
+			Unit* target = helper::spider_mine_acquire_target(unit);
 
-			if (target != nullptr)
+			if (target)
 			{
 				unit->order_target.unit = target;
 				unit->sprite->play_iscript_animation(IscriptAnimation::UnBurrow, true);
@@ -98,7 +98,7 @@ namespace hooks
 			{
 				unit->sprite->elevation = units_dat::elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
-				if (unit->order_target.unit != nullptr)
+				if (unit->order_target.unit)
 				{
 					// probably trigger movement/acceleration of unit toward the target
 					helper::move_to_collide(unit, unit->order_target.unit);
@@ -117,8 +117,8 @@ namespace hooks
 		{
 			bool bIsCompletelyInRange = false;
 			bool bEndThere = false;
-			helper::unburrowGeneric(unit); // related to movement, similar to function_004E9A30
-			if (unit->order_target.unit != nullptr)
+			helper::unburrow_generic(unit); // related to movement, similar to function_004E9A30
+			if (unit->order_target.unit)
 			{
 				if (unit->is_target_within_min_range(unit->order_target.unit, MineSeekRange))
 				{
@@ -169,7 +169,7 @@ namespace hooks
 		}
 	}
 
-	void orders_PlaceMine(Unit* unit) // 00464FD0
+	void orders_place_mine(Unit* unit) // 00464FD0
 	{
 		Unit* v1;
 		Unit* target;
@@ -196,7 +196,7 @@ namespace hooks
 			{
 				if ((helper::get_distance_fast(v1->halt.x, v1->order_target.pt.x << 8, v1->halt.y, v1->order_target.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
 				{
-					helper::orders_HoldPosSuicidal(v1);
+					helper::orders_hold_pos_suicidal(v1);
 					v12 = v1->order_target.pt.y;
 					a2.x = v1->order_target.pt.x;
 					a2.y = v12;
@@ -278,33 +278,33 @@ namespace hooks
 	}
 
 	// Hooked to try to fix mine burrowing - Pr0nogo
-	char burrowGeneric(Unit* unit)
-	{ // 004E9A30
-		Unit* unitVar = unit;
+	char burrow_generic(Unit* unit) // 004E9A30
+	{
+		Unit* unit_var = unit;
 		helper::toggle_unit_path(unit);
 
-		Sprite* unitSprite = unitVar->sprite;
-		char unitPathing = unitVar->pathing_flags;
-		unitVar->movement_state = 0;
-		unitVar->pathing_flags = (unitPathing ^ (unitSprite->elevation < 12u)) & 1 ^ unitPathing;
-		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
-		unitSprite->flags |= 0x40u; // image is hidden
+		Sprite* unit_sprite = unit_var->sprite;
+		char unitPathing = unit_var->pathing_flags;
+		unit_var->movement_state = 0;
+		unit_var->pathing_flags = (unitPathing ^ (unit_sprite->elevation < 12u)) & 1 ^ unitPathing;
+		unit_var->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
+		unit_sprite->flags |= 0x40u; // image is hidden
 
-		Sprite* oldSprite = unitVar->sprite;
-		Sprite* newSprite;
-		if (unitVar->id == UnitId::ZergLakizilisk)
+		Sprite* old_sprite = unit_var->sprite;
+		Sprite* new_sprite = 0;
+		if (unit_var->id == UnitId::ZergLakizilisk)
 		{
 			// Warning, tism detected
-			// ByteOperations::SetLowByte(newSprite, switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible));
-			unitVar->sprite->elevation = 1;
+			// ByteOperations::SetLowByte(new_sprite, switchSpriteId(old_sprite, SpriteId::White_Circle_Invisible));
+			unit_var->sprite->elevation = 1;
 		}
 		else
 		{
-			helper::switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible);
-			newSprite = unitVar->sprite;
-			newSprite->elevation = 1;
+			helper::switchSpriteId(old_sprite, SpriteId::White_Circle_Invisible);
+			new_sprite = unit_var->sprite;
+			new_sprite->elevation = 1;
 		}
-		return (char)newSprite;
+		return (char)new_sprite;
 	}
 
 }
