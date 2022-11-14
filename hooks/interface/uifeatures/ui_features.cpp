@@ -588,6 +588,7 @@ LABEL_15:
 	}
 
 	// Hooked to investigate crashes on Fraudscendance. -Pr0nogo
+	/*
 	u8* draw_vertical_line(u32 unused, u16 iterations, u16 width_offset, u16 buffer_multiplier) // 0041D7D0
 	{
 		Bitmap* surface = *g_current_surface;
@@ -605,4 +606,5 @@ LABEL_15:
 		}
 		return result;
 	}
+	*/
 }
