@@ -1081,6 +1081,8 @@ SCBW_DATA(Image**,		g_last_free_selection_circle,		0x0052F564);
 SCBW_DATA(u16*,			g_temp_iscript_header,				0x006C2310);
 SCBW_DATA(u16*,			g_iscript_speed_something,			0x006C2314);
 
+SCBW_DATA(char*,		g_draw_color_index,					0x006CF4AC);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

@@ -3,7 +3,7 @@
 
 namespace
 {
-	void _declspec(naked) compile_healthbar_wrapper()
+	void _declspec(naked) compile_healthbar_wrapper() // 004D6010
 	{
 		static Image* image;
 		static Sprite* sprite;
@@ -11,7 +11,7 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x8]
+			MOV EAX, [EBP + 0x08]
 			MOV sprite, EAX
 			POP EAX
 			MOV image, ESI
@@ -63,7 +63,7 @@ namespace hooks
 {
 	void inject_hp_bars_hooks()
 	{
-	//	jump_patch(compile_healthbar_wrapper,	0x004D6010, 1); // Crashes
+	//	jump_patch(compile_healthbar_wrapper,	0x004D6010, 1);
 		jump_patch(remove_healthbar_wrapper,	0x004D5030, 2);
 	//	jump_patch(create_healthbar_wrapper,	0x004D6420, 2); // Causes a crash after returning the value, but wrapper seems correct...
 	}

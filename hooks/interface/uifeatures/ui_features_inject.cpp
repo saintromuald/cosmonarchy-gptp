@@ -311,6 +311,35 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) draw_vertical_line_wrapper() {
+		static u8* result;
+		static u32 unused;
+		static u16 iterations;
+		static u16 width_offset;
+		static u16 buffer_multiplier;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV width_offset, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV buffer_multiplier, AX
+			POP EAX
+			MOV iterations, DX
+			MOV unused, ECX
+			PUSHAD
+		}
+		result = hooks::draw_vertical_line(unused, iterations, width_offset, buffer_multiplier);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			MOV EAX, result
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -334,5 +363,6 @@ namespace hooks
 	//	jump_patch(include_sprite_in_vischeck_wrapper,		0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
 	//	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in sprite ext
 		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Needed to clear sprite ext on sprite destruction
+	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4);
 	}
 }

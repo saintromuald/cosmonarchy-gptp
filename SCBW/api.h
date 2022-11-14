@@ -683,4 +683,5 @@ namespace scbw
 	u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit);
 	void delete_ai_script(AiScript* ai_script);
 	void delete_town(AiTown* ai_town);
+	bool unit_id_is_broodspawn(u32 unit_id);
 }

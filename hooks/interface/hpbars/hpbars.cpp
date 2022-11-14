@@ -1,4 +1,5 @@
 #include "hpbars.h"
+#include "SCBW/api.h"
 
 namespace hooks
 {
@@ -14,52 +15,55 @@ namespace hooks
 		temp_unit = 0;
 	}
 
+	Unit* temp_unit; // ? -Veeq7
+
+	// Hooked to add functionality. -Pr0nogo
 	void compile_healthbar(Image* image, Sprite* sprite) // 004D6010
 	{
 		Unit* selection = active_player_selection->unit[sprite->selection_index];
+		u8 is_visible = sprites_dat::is_visible[sprite->id + 390]; // Not sure what these id offsets are --v
 		image->vertical_offset = sprites_dat::hp_bar_size[sprite->id + 262] + (g_image_grp_graphics[orders_dat::Unused3[sprite->id + 62] + 561]->frames[0].height >> 1) + 8;
-
-		u8 is_visible = sprites_dat::is_visible[sprite->id + 390];
 		image->grp_file->frames[0].x = 0;
 		image->grp_file->frames[0].y = 0;
 		image->grp_file->frames[0].width = is_visible - (is_visible - 1) % 3;
-		if (image->grp_file->frames[0].width < 0x13u)
-		{
-			image->grp_file->frames[0].width = 19;
-		}
-		image->grp_file->frames[0].height = 0;
-
-		if (units_dat::base_property[selection->id] & UnitProperty::Spellcaster && !(selection->status & UnitStatus::IsHallucination)
-		||  selection->status & UnitStatus::IsHallucination
-		||	selection->id == UnitId::ZergRilirokor
-		||	selection->id == UnitId::ZergRililisk) // New
-		{
-			image->grp_file->frames[0].height += 6;
-		}
 
 		GrpHead* grp_file = image->grp_file;
+		if (grp_file->frames[0].width < 0x13u)
+		{
+			grp_file->frames[0].width = 19;
+		}
+
+		// Prepare height based on energy
+		image->grp_file->frames[0].height = 0;
 		u8 grp_height = grp_file->frames[0].height;
-		u8 grp_height_final = grp_height + 5;
+		if (units_dat::base_property[selection->id] & UnitProperty::Spellcaster && !(selection->status & UnitStatus::IsHallucination) || selection->status & UnitStatus::IsHallucination || scbw::unit_id_is_broodspawn(selection->id))
+		{
+			grp_height += 6;
+		}
+		// Prepare height based on shields
 		if (units_dat::shields_enabled[selection->id])
 		{
-			grp_height_final = grp_height + 7;
+			grp_height += 7;
 		}
-		grp_file->frames[0].height = grp_height_final;
+		else
+		{
+			grp_height += 5;
+		}
+		grp_file->frames[0].height = grp_height;
 		image->grp_file->width = image->grp_file->frames[0].width;
 		image->grp_file->height = image->grp_file->frames[0].height;
 		image->parent_sprite = sprite;
 		image->flags = 0;
 
-		s16* grp_left = &image->grp_size.left; // wtf
-		*(u32*)grp_left = 0;
-		*((u32*)grp_left + 1) = 0;
+		// Finalize image
+		Box16 grp_size = image->grp_size; // This seems wrong
+		grp_size.w = 0;
+		grp_size.h = 0;
 		image->draw_func_param = selection;
 		helper::update_image_data_draw(image);
-		image->flags |= 1u; // was LOBYTE
+		image->flags |= ImageFlags::Redraw;
 		helper::play_image_iscript(image, 0);
 	}
-
-	Unit* temp_unit; // ? -Veeq7
 
 	// Hooked to allow showing all HP bars. -Pr0nogo
 	void remove_healthbar(Image* image) // 004D5030
