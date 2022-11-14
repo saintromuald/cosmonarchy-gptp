@@ -628,7 +628,7 @@ bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
 		return false;
 	}
 
-	Point16 position = {unit->x, unit->y};
+	Point16 position = { unit->x, unit->y };
 	switch (unit->unit_id) {
 		case UnitId::TownCenterMarker:
 		{
@@ -667,7 +667,7 @@ static void init_threshold_spawns() {
 		FraudSpawnLocation* spawn = get_closest_spawn(position);
 		if (spawn) {
 			if (spawn->source_count < FraudSourceCap) {
-				spawn->sources[spawn->source_count++] = {position};
+				spawn->sources[spawn->source_count++] = { position };
 			} else {
 				scbw::printf("Source cap per spawn reached (" STR(FraudSourceCap) ")");
 			}
@@ -704,6 +704,11 @@ static void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit, u32 min_ind
 }
 
 static bool fraud_share_alliance(u32 a, u32 b) {
+	if (threshold.sequence[a].fraud_class == threshold.sequence[b].fraud_class &&
+		(threshold.sequence[a].fraud_class == FraudClass_Hero || threshold.sequence[a].fraud_class == FraudClass_God)) {
+		return true;
+	}
+
 	u32* alliance = 0;
 	for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
 		for (u32 j = 0; j < AlliancePlayerCap; ++j) {
@@ -929,7 +934,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				fraud_count = 0;
 			}
 
-			f32 multiplier = (0.5 + fraud_count * 0.1) * threshold.multiplier_scalar;
+			f32 multiplier = (0.5 + fraud_count * 0.05) * threshold.multiplier_scalar;
 			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
 				if (initial) {
 					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
@@ -990,9 +995,7 @@ bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 					continue;
 				}
 				if (threshold.fraud_enabled[other_player] && threshold.sequence[other_player].fraud &&
-					(fraud_share_alliance(threshold.sequence[player].fraud, threshold.sequence[other_player].fraud) ||
-					(threshold.sequence[player].fraud_class == threshold.sequence[other_player].fraud_class &&
-						(threshold.sequence[player].fraud_class == FraudClass_Hero || threshold.sequence[player].fraud_class == FraudClass_God)))) {
+					fraud_share_alliance(threshold.sequence[player].fraud, threshold.sequence[other_player].fraud)) {
 					set_ally(player, other_player, true);
 
 					messagef("%s\x01 allies to %s\x01!", fraud_names[threshold.sequence[player].fraud], fraud_names[threshold.sequence[other_player].fraud]);
