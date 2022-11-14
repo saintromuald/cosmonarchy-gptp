@@ -849,10 +849,10 @@ static void clear_player_slot(u32 player, bool map_start) {
 	}
 }
 
-static bool fraud_is_alive(u32 player) {
+static bool fraud_is_alive(u32 player, bool active_only = false) {
 	FraudSpawnSequence* sequence = &threshold.sequence[player];
 	if (!sequence->fraud) {
-		return false;
+		return active_only;
 	}
 	if (sequence->location || sequence->safety_timer || g_all_factory_counts->unit[player] > 0) {
 		return true;
@@ -1202,7 +1202,7 @@ void update_threshold() {
 		if (sequence->safety_timer) {
 			--sequence->safety_timer;
 		}
-		if (!fraud_is_alive(player)) {
+		if (!fraud_is_alive(player, true)) {
 			if (sequence->fraud_class == FraudClass_God) {
 				if (first_player_unit->unit[player]) {
 					sequence->fraud = Fraud_None;
