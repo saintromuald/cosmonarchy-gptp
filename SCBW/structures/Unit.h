@@ -201,7 +201,7 @@ struct Unit : public UnitLayout
 
 	void Unit::damage_with_custom(
 		s32 damage,
-		s32 armor_pen = -1,
+		s32 armor_pen = -1,		// -1 = ignore all armor
 		Unit* attacker = 0,
 		u8 attacking_player_id = -1,
 		s8 direction = 0,
