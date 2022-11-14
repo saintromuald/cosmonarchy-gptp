@@ -961,7 +961,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 					}
 				}
 			}
-			multiplier += 0.5 * (fraud_class - 1);
+			multiplier *= 1 + 0.5 * (fraud_class - 1);
 			u32 minerals = 600 * multiplier;
 			u32 gas      = 200 * multiplier;
 			if (initial) {
