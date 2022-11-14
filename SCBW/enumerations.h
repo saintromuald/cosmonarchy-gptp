@@ -490,7 +490,7 @@ namespace CheatFlags
 	};
 }
 
-namespace damage_type
+namespace DamageType
 {
 	enum Enum
 	{

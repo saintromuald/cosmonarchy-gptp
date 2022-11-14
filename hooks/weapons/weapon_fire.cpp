@@ -804,9 +804,7 @@ namespace hooks {
 						globals.add_incremental_bullet_multihit(bullet, collision_target);
 						auto count = globals.get_multihit_count(bullet);
 						helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
-						collision_target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count + 1) * 256,
-							weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid],
-							bullet->source_unit, bullet->player, 0, 1, false);
+						collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
 						if (count >= 4)
 						{

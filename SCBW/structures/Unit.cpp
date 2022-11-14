@@ -509,24 +509,29 @@ void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPla
 
 void Unit::damage_with_custom(
 	s32 damage,
-	u8 damage_type,
+	s32 armor_pen,
 	Unit* attacker,
 	u8 attacking_player_id,
 	s8 direction,
-	u8 damage_divisor,
-	bool ignore_flat_armor
+	u8 damage_divisor
 ) {
 	assert(this);
+
+	bool ignore_armor = false;
+	if (armor_pen < 0) {
+		armor_pen = 0;
+		ignore_armor = true;
+	}
 
 	hooks::weapon_damage_custom(
 		damage,
 		this,
-		damage_type,
+		armor_pen,
 		attacker,
 		attacking_player_id,
 		direction,
 		damage_divisor,
-		ignore_flat_armor
+		ignore_armor
 	);
 }
 

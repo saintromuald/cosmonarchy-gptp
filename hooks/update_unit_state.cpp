@@ -473,7 +473,7 @@ namespace hooks
 							{
 								damage /= 2;
 							}
-							target->damage_with_custom(damage, damage_type::Explosive, unit, unit->player, 0, 1, false);
+							target->damage_with_custom(damage, -1, unit, unit->player);
 						});
 						unit->remove();
 						bStopHere = true;

@@ -2001,7 +2001,7 @@ namespace hooks {
 				unit_search_radial(&units, unit->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* target = units.units[i];
-					target->damage_with_custom(5 * 256, damage_type::Explosive, 0, 0, 0, 1, false);
+					target->damage_with_custom(5 * 256, 2);
 					target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 				}
 			}
@@ -2360,7 +2360,7 @@ namespace hooks {
 				unit->get_y() + radius
 			).for_each_in_match(match, [&](Unit* target) {
 				if (scbw::get_distance_fast(unit->position, target->position) <= radius) {
-					target->damage_with_custom(250 * 256, damage_type::Explosive, unit, unit->player, 0, 1, false);
+					target->damage_with_custom(250 * 256, 0, unit, unit->player);
 				}
 			});
 			helper::create_thingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);

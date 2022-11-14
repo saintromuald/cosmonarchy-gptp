@@ -445,7 +445,7 @@ void Globals::frame_hook() {
 		}
 		const s32 framePeriod = 6;
 		if (effect->current_time % framePeriod == 1) {
-			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effect->max_time;
+			const f64 damage_multiplier = 256.0 * (f64)framePeriod / effect->max_time;
 			switch (effect->id) {
 				case EffectId_StarSovereignTheGriefOfAllGods: {
 					if (!effect->origin) {
@@ -459,7 +459,7 @@ void Globals::frame_hook() {
 						effect->position.x + effect->radius,
 						effect->position.y + effect->radius
 					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-						unit->damage_with_custom(2500 * damageMultiplier, damage_type::Chronal, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(2500 * damage_multiplier, -1, effect->source, effect->player);
 					});
 				} break;
 				case EffectId_SalamanderFire: {
@@ -469,7 +469,7 @@ void Globals::frame_hook() {
 
 					for (u32 j = 0; j < unit_array.count; j++) {
 						Unit* target = unit_array.units[j];
-						target->damage_with_custom(20 * damageMultiplier, damage_type::Concussive, effect->source, effect->player, 0, 1, true);
+						target->damage_with_custom(20 * damage_multiplier, -1, effect->source, effect->player);
 					}
 				} break;
 				case EffectId_Criticality: {
@@ -497,7 +497,7 @@ void Globals::frame_hook() {
 							return;
 						}
 						UnitExt* unitExt = get_unit_ext(unit);
-						unit->damage_with_custom(30 * damageMultiplier, damage_type::Impact, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(30 * damage_multiplier, -1, effect->source, effect->player);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 				} break;
@@ -512,7 +512,7 @@ void Globals::frame_hook() {
 							return;
 						}
 						UnitExt* unitExt = get_unit_ext(unit);
-						unit->damage_with_custom(100 * damageMultiplier, damage_type::Chronal, effect->source, effect->player, 0, 1, true);
+						unit->damage_with_custom(100 * damage_multiplier, -1, effect->source, effect->player);
 						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
 				} break;
@@ -1526,20 +1526,8 @@ namespace scbw
 	}
 
 	void link_damage(Unit* unit, s32 damage, hooks::WeaponDamageData& data) {
-		hooks::WeaponDamageData new_data = {
-			damage,
-			damage,
-			0,
-			data.damage_type,
-			data.damage_divisor,
-			data.weapon_id,
-			data.direction,
-			unit,
-			data.attacker,
-			data.attacking_player_id,
-			true,
-			data.ignore_flat_armor
-		};
+		hooks::WeaponDamageData new_data = data;
+		new_data.dont_proc_link_damage = true;
 		hooks::weapon_damage_root(new_data);
 	}
 
@@ -1547,7 +1535,7 @@ namespace scbw
 		Unit* unit = data.target;
 		auto links = get_clarion_links(unit); // has to be copy
 		links.erase(std::remove(links.begin(), links.end(), unit), links.end());
-		s32 damage = data.final_damage;
+		s32 damage = data.damage;
 		if (links.size() == 0 || unit->shields < 256) {
 			link_damage(unit, damage, data);
 		} else {

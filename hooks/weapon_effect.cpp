@@ -220,11 +220,9 @@ namespace hooks {
 
 		// Kalkalisk behavior
 		if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
+			globals.add_incremental_bullet_multihit(bullet, target);
 			auto count = globals.get_multihit_count(bullet);
-			if (count >= 4) {
-				return;
-			}
-			target->damage_with_custom((weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, weapons_dat::damage_type[WeaponId::KalkaliskViscousAcid], bullet->source_unit, bullet->player, 0, 1, false);
+			target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 			return;
 		}
 

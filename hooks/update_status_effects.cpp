@@ -32,7 +32,7 @@ void irradiate_proc(Unit* unit, Unit* target)
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damage_with_custom(50.0 * 256.0 / 15.5, damage_type::Concussive, unit->irradiate_caster, unit->irradiate_player_id, 0, 1, true);
+		target->damage_with_custom(50.0 * 256.0 / 15.5, -1, unit->irradiate_caster, unit->irradiate_player_id);
 	}
 }
 	

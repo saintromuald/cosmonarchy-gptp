@@ -193,20 +193,19 @@ struct Unit : public UnitLayout
 	void damage_with(
 		u8 weapon_id,              ///< weapons.dat ID to use.
 		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weapon_id
-		Unit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
-		u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
+		Unit* attacker = 0,   ///< Attacking unit (for increasing kill count)
+		u8 attacking_player_id = -1,  ///< Attacking player (for increasing kill score)
 		s8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
 		u8 damage_divisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
 	void Unit::damage_with_custom(
 		s32 damage,
-		u8 damage_type,
-		Unit* attacker,
-		u8 attacking_player_id,
-		s8 direction,
-		u8 damage_divisor,
-		bool ignore_flat_armor
+		s32 armor_pen = -1,
+		Unit* attacker = 0,
+		u8 attacking_player_id = -1,
+		s8 direction = 0,
+		u8 damage_divisor = 1
 	);
 
 	/// Deals damage directly to unit HP, killing it if possible.

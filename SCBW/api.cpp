@@ -1547,9 +1547,8 @@ namespace scbw {
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
-		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}),
-		[&unitExt](Unit* target) {
-			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, damage_type::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
+		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&unitExt](Unit* target) {
+			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, 0, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer]);
 		});
 		unitExt->values[ValueDirgeStacks] = 0;
 	}
