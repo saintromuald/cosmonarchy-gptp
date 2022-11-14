@@ -1944,12 +1944,12 @@ namespace hooks {
 
 		// Striga - Fleeting Focus
 		if (unit_ext->timers[TimerStrigaRepulsion]) {
-			Point16 finalPos = unit->position;
-			finalPos.x += unit_ext->repulsion_vector.x;
-			finalPos.y += unit_ext->repulsion_vector.y;
-			finalPos = scbw::clamp_point(finalPos);
+			Point16 final_pos = unit->position;
+			final_pos.x += unit_ext->repulsion_vector.x;
+			final_pos.y += unit_ext->repulsion_vector.y;
+			final_pos = scbw::clamp_point(final_pos);
 
-			if (!scbw::move_unit_improved(unit, finalPos.x, finalPos.y)) {
+			if (!scbw::move_unit_improved(unit, final_pos.x, final_pos.y)) {
 				unit_ext->timers[TimerStrigaRepulsion] = 0;
 			}
 		}
@@ -1958,12 +1958,12 @@ namespace hooks {
 		// Todo - fix lag time between multiple pulls
 		// Todo - fix delay before moved unit is able to do stuff
 		if (unit_ext->timers[TimerMagnetarAttraction]) {
-			Point16 finalPos = unit->position;
-			finalPos.x += unit_ext->repulsion_vector.x;
-			finalPos.y += unit_ext->repulsion_vector.y;
-			finalPos = scbw::clamp_point(finalPos);
+			Point16 final_pos = unit->position;
+			final_pos.x += unit_ext->repulsion_vector.x;
+			final_pos.y += unit_ext->repulsion_vector.y;
+			final_pos = scbw::clamp_point(final_pos);
 
-			if (!scbw::move_unit_improved(unit, finalPos.x, finalPos.y)) {
+			if (!scbw::move_unit_improved(unit, final_pos.x, final_pos.y)) {
 				unit_ext->timers[TimerMagnetarAttraction] = 0;
 			}
 		}
@@ -2001,7 +2001,7 @@ namespace hooks {
 				unit_search_radial(&units, unit->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* target = units.units[i];
-					target->damage_with_custom(5 * 256, damage_type::Explosive, 0, 0, 0, 1, false);
+					target->damage_with_custom(5 * 256, damage_type::Explosive, 0, 0, 0, 1, false); // TODO: Make this have 2 armor pen
 					target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 				}
 			}
