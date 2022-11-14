@@ -1112,10 +1112,19 @@ bool try_prepare_threshold() {
 		threshold.hero_spawn_counter = -1 - threshold_config.initial_count;
 		threshold.super_spawn_counter = -4 - threshold_config.initial_count;
 		for (u32 player = 0; player < PlayerLimit; ++player) {
-			if (!threshold.fraud_enabled[player]) {
-				continue;
+			if (threshold.fraud_enabled[player]) {
+				clear_player_slot(player, true);
 			}
-			clear_player_slot(player, true);
+			if (threshold_config.witness_enabled[player]) {
+				for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+					if (threshold.fraud_enabled[other_player]) {
+						set_ally(player, other_player, false);
+					} else {
+						set_ally(player, other_player, true);
+					}
+					player_vision->flags[other_player] |= 1 << player;
+				}
+			}
 		}
 	}
 	return threshold.init;
