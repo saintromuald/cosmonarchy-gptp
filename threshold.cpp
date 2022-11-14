@@ -869,6 +869,14 @@ static bool fraud_is_alive(u32 player, bool active_only = false) {
 	return false;
 }
 
+static f32 get_multiplier() {
+	s32 fraud_count = threshold.used_count - threshold_config.initial_count; // Don't count initial spawns towards the multiplier
+	if (fraud_count < 0) {
+		fraud_count = 0;
+	}
+	return (1 + fraud_count * 0.05) * threshold.multiplier_scalar;
+}
+
 static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 	if (fraud_class == FraudClass_None) {
 		return false;
@@ -936,13 +944,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				set_player_force_name(player, (char*)fraud_alliance_names[alliance]);
 			}
 
-			// Todo: reset kills using aise
-			s32 fraud_count = threshold.used_count - threshold_config.initial_count; // Don't count initial spawns towards the multiplier
-			if (fraud_count < 0) {
-				fraud_count = 0;
-			}
-
-			f32 multiplier = (1 + fraud_count * 0.05) * threshold.multiplier_scalar;
+			f32 multiplier = get_multiplier();
 			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
 				if (initial) {
 					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
@@ -961,7 +963,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			}
 			multiplier += 0.5 * (fraud_class - 1);
 			u32 minerals = 600 * multiplier;
-			u32 gas      = 150 * multiplier;
+			u32 gas      = 200 * multiplier;
 			if (initial) {
 				minerals = 100;
 				gas      = 0;
@@ -1325,7 +1327,7 @@ void update_threshold() {
 								unit->order_to(OrderId::AttackMove, rally.x, rally.y);
 							}
 
-							sequence->unit_timer = 24 * 0.3;
+							sequence->unit_timer = 24 * 0.3 / get_multiplier();
 							assert(spawn_unit->count); // We should implictly have set count, since we first skipped all the units without count
 							spawn_unit->count -= 1;
 						}
