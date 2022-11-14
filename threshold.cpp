@@ -495,9 +495,9 @@ struct FraudInfo {
 };
 
 #define FraudSpawnCap 100
-#define FraudUnitCap 20
 #define FraudSourceCap 10
 #define FraudRallyCap 100
+#define FraudUnitCap 20
 struct FraudSpawnSource {
 	Point16 pos;
 	u32 rally_count;
@@ -508,6 +508,16 @@ struct FraudSpawnLocation {
 	Point16 pos;
 	u32 source_count;
 	FraudSpawnSource sources[FraudSourceCap];
+};
+
+struct FraudSpawnUnit {
+	u32 count;
+	u32 unit_id;
+};
+
+struct FraudSpawnArray {
+	u32 count;
+	FraudSpawnUnit units[FraudUnitCap];
 };
 
 struct FraudSpawnSequence {
@@ -521,11 +531,7 @@ struct FraudSpawnSequence {
 	u32 unit_index;
 	Unit* temp_townhall;
 	FraudSpawnLocation* location;
-};
-
-struct FraudSpawnUnit {
-	u32 count;
-	u32 unit_id;
+	FraudSpawnArray unit_array;
 };
 
 struct ThresholdState {
@@ -546,8 +552,7 @@ struct ThresholdState {
 	FraudSpawnSequence sequence[PlayerLimit];
 	u32 spawn_count;
 	FraudSpawnLocation spawns[FraudSpawnCap];
-	u32 unit_count[Fraud_Count][RaceId::Count];
-	FraudSpawnUnit units[Fraud_Count][RaceId::Count][FraudUnitCap];
+	FraudSpawnArray fraud_presets[Fraud_Count][RaceId::Count];
 };
 
 ThresholdConfig threshold_config;
@@ -579,11 +584,11 @@ static FraudSpawnLocation* get_random_spawn() {
 			continue;
 		}
 
-		EntryArray unit_array = {};
-		unit_search_radial(&unit_array, threshold.spawns[location].pos, 12 * 32);
-		u32 cost = unit_array.count;
-		unit_search_filter(&unit_array, 0, FilterBuilding);
-		cost += unit_array.count;
+		EntryArray units = {};
+		unit_search_radial(&units, threshold.spawns[location].pos, 12 * 32);
+		u32 cost = units.count;
+		unit_search_filter(&units, 0, FilterBuilding);
+		cost += units.count;
 
 		if (cost < best_cost) {
 			best_cost = cost;
@@ -691,14 +696,15 @@ static void init_threshold_spawns() {
 }
 
 static void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit, u32 min_index = 0) {
-	for (u32 i = min_index; i < threshold.unit_count[fraud][race]; ++i) {
-		if (threshold.units[fraud][race][i].unit_id == unit.unit_id) {
-			threshold.units[fraud][race][i].count += unit.count;
+	FraudSpawnArray* fraud_preset = &threshold.fraud_presets[fraud][race];
+	for (u32 i = min_index; i < fraud_preset->count; ++i) {
+		if (fraud_preset->units[i].unit_id == unit.unit_id) {
+			fraud_preset->units[i].count += unit.count;
 			return;
 		}
 	}
-	if (threshold.unit_count[fraud][race] < FraudUnitCap) {
-		threshold.units[fraud][race][threshold.unit_count[fraud][race]++] = unit;
+	if (fraud_preset->count < FraudUnitCap) {
+		fraud_preset->units[fraud_preset->count++] = unit;
 	} else {
 		scbw::printf("Unit entry cap per fraud/race reached (" STR(FraudUnitCap) ")");
 	}
@@ -885,12 +891,12 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 	if (fraud_is_alive(player)) {
 		return false;
 	}
-	u32 next_fraud = get_next_fraud(player, fraud_class);
-	if (next_fraud) {
+	u32 fraud = get_next_fraud(player, fraud_class);
+	if (fraud) {
 		FraudSpawnLocation* spawn_location = get_random_spawn();
 		if (spawn_location) {
 			threshold.used_count += fraud_class;
-			threshold.used[next_fraud] = true;
+			threshold.used[fraud] = true;
 			threshold.timer = threshold_config.timer;
 			if (fraud_class == FraudClass_God) {
 				threshold.timer = 1 * 60 * 24;
@@ -898,7 +904,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				threshold.timer /= threshold.scalar;
 			}
 
-			messagef("Spawn %s\x02 (Class: %s\x01)!", fraud_names[next_fraud], fraud_class_names[fraud_class]);
+			messagef("Spawn %s\x02 (Class: %s\x01)!", fraud_names[fraud], fraud_class_names[fraud_class]);
 
 			++threshold.used_type_count[fraud_class];
 			if (fraud_class == FraudClass_Hero) {
@@ -912,12 +918,12 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				++threshold.super_spawn_counter;
 			}
 
-			u32 race = get_fraud_race(next_fraud);
+			u32 race = get_fraud_race(fraud);
 			g_player_table[player].race = race;
 
 			FraudSpawnSequence* sequence = &threshold.sequence[player];
 			sequence->fraud_class = fraud_class;
-			sequence->fraud = next_fraud;
+			sequence->fraud = fraud;
 			sequence->race = race;
 			sequence->unit_timer = 0;
 			sequence->safety_timer = 30 * 24;
@@ -930,34 +936,35 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				if (i == UnitId::Spell_ScannerSweep)   continue;
 				if (i == UnitId::Special_RightPitDoor) continue;
 				if (i == UnitId::Spell_DarkSwarm)      continue;
-				g_unit_deaths_table[i].player[player] = threshold.frauds[next_fraud][race].deaths[i];
+				g_unit_deaths_table[i].player[player] = threshold.frauds[fraud][race].deaths[i];
 			}
 
-			g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] = threshold.frauds[next_fraud][race].personality;
-			g_unit_deaths_table[UnitId::ProtossPlasmaShell].player[player] = threshold.frauds[next_fraud][race].build_type;
-			g_unit_deaths_table[UnitId::Spell_DarkSwarm].player[player] = threshold.frauds[next_fraud][race].build_order;
-			set_player_color(player, threshold.frauds[next_fraud][race].color);
-			set_player_name(player, (char*)fraud_names[next_fraud]);
+			g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] = threshold.frauds[fraud][race].personality;
+			g_unit_deaths_table[UnitId::ProtossPlasmaShell].player[player] = threshold.frauds[fraud][race].build_type;
+			g_unit_deaths_table[UnitId::Spell_DarkSwarm].player[player] = threshold.frauds[fraud][race].build_order;
+			set_player_color(player, threshold.frauds[fraud][race].color);
+			set_player_name(player, (char*)fraud_names[fraud]);
 			set_player_force_name(player, (char*)fraud_class_names[fraud_class]);
 
-			s32 alliance = find_alliance(next_fraud);
+			s32 alliance = find_alliance(fraud);
 			if (alliance != -1) {
 				set_player_force_name(player, (char*)fraud_alliance_names[alliance]);
 			}
 
 			f32 multiplier = get_multiplier();
-			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
+			sequence->unit_array = threshold.fraud_presets[fraud][race];
+			for (u32 i = 0; i < sequence->unit_array.count; ++i) {
 				if (initial) {
-					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
-						threshold.units[next_fraud][race][i].count = 6 * threshold.multiplier_scalar;
+					if (units_dat::base_property[sequence->unit_array.units[i].unit_id] & UnitProperty::Worker) {
+						sequence->unit_array.units[i].count = 6 * threshold.multiplier_scalar;
 					} else {
-						threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * (1 - threshold.multiplier_scalar));
+						sequence->unit_array.units[i].count = ceil(sequence->unit_array.units[i].count * (1 - threshold.multiplier_scalar));
 					}
 				} else {
-					threshold.units[next_fraud][race][i].count = ceil(threshold.units[next_fraud][race][i].count * multiplier);
-					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
-						if (threshold.units[next_fraud][race][i].count > 40 * threshold.multiplier_scalar) {
-							threshold.units[next_fraud][race][i].count = 40 * threshold.multiplier_scalar;
+					sequence->unit_array.units[i].count = ceil(sequence->unit_array.units[i].count * multiplier);
+					if (units_dat::base_property[sequence->unit_array.units[i].unit_id] & UnitProperty::Worker) {
+						if (sequence->unit_array.units[i].count > 40 * threshold.multiplier_scalar) {
+							sequence->unit_array.units[i].count = 40 * threshold.multiplier_scalar;
 						}
 					}
 				}
@@ -1318,17 +1325,17 @@ void update_threshold() {
 				--sequence->unit_timer;
 			}
 			if (!sequence->unit_timer) {
-				u32 unit_count = threshold.unit_count[sequence->fraud][sequence->race];
+				u32 unit_count = sequence->unit_array.count;
 				// Skip units without count
 				while (sequence->unit_index < unit_count
-					&& !threshold.units[sequence->fraud][sequence->race][sequence->unit_index].count) {
+					&& !sequence->unit_array.units[sequence->unit_index].count) {
 					++sequence->unit_index;
 				}
 
 				// Spawn a unit
 				if (sequence->unit_index < unit_count && *g_unit_count < 1700) {
 					FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
-					FraudSpawnUnit* spawn_unit = &threshold.units[sequence->fraud][sequence->race][sequence->unit_index];
+					FraudSpawnUnit* spawn_unit = &sequence->unit_array.units[sequence->unit_index];
 					u32 unit_id = spawn_unit->unit_id;
 					if (source->rally_count) {
 						Point16 source_pos = source->pos;
