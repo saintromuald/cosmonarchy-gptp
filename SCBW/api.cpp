@@ -2161,7 +2161,9 @@ namespace scbw {
 			case SpriteId::Corpse_Mason:
 			case SpriteId::Corpse_Maverick:
 			case SpriteId::Corpse_Harakan:
+			case SpriteId::Corpse_Cyprian:
 			case SpriteId::Corpse_Cleric:
+			case SpriteId::Corpse_Shaman:
 			case SpriteId::Corpse_Eidolon:
 			case SpriteId::Corpse_Apostle:
 			case SpriteId::Corpse_Vulture:

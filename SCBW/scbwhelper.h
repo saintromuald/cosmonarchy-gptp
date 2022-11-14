@@ -274,21 +274,21 @@ namespace helper {
 	void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
 	//// spider_mine
-	Unit* SpiderMine_AcquireTarget(Unit* spiderMine);									                    // 00441270
-	void instantCloak(Unit* unit);												                            // 0049B1E0
-	void unburrowGeneric(Unit* unit);												                        // 004E99D0
-	void burrowGeneric(Unit* unit);																			// 004E9A30
+	Unit* spider_mine_acquire_target(Unit* spiderMine);									                    // 00441270
+	void instant_cloak(Unit* unit);												                            // 0049B1E0
+	void unburrow_generic(Unit* unit);												                        // 004E99D0
+	void burrow_generic(Unit* unit);																			// 004E9A30
 
-	// For orders_PlaceMine
+	// For orders_place_mine
 	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
 	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
-	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
+	s32 orders_hold_pos_suicidal(Unit* a1);												                    // 004EB5B0
 	void turn_unit(Unit* a1, char a2);													                    // 00495F20
 	void to_idle(Unit* a1);																                    // 004753A0
 	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
 	void orders_nothing_2(Unit* a1);																		// 00475000
 
-	// For burrowGeneric
+	// For burrow_generic
 	void toggle_unit_path(Unit* unit);									                                    // 004E42A0
 	char switchSpriteId(Sprite* sprite, s32 spriteId);														// 00499860
 
