@@ -853,11 +853,19 @@ static void clear_player_slot(u32 player, bool map_start) {
 	}
 }
 
-bool place_fraud(u32 player, u32 fraud_class, bool initial) {
+static bool player_can_spawn(u32 player) {
+	FraudSpawnSequence* sequence = &threshold.sequence[player];
+	if (sequence->location || sequence->safety_timer || g_all_factory_counts->unit[player] > 0 || *g_unit_count >= 1600) { // Do not spawn frauds if they are already on the map
+		return false;
+	}
+	return true;
+}
+
+static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 	if (fraud_class == FraudClass_None) {
 		return false;
 	}
-	if (threshold.sequence[player].location) { // Do not spawn frauds if they are already on the map
+	if (!player_can_spawn(player)) {
 		return false;
 	}
 	u32 next_fraud = get_next_fraud(player, fraud_class);
@@ -1229,7 +1237,7 @@ void update_threshold() {
 				continue;
 			}
 			FraudSpawnSequence* sequence = &threshold.sequence[player];
-			if (g_all_factory_counts->unit[player] == 0 && !sequence->safety_timer && *g_unit_count < 1600) {
+			if (player_can_spawn(player)) {
 				u32 fraud_class = FraudClass_None;
 				if (threshold.used_count < god_spawn_breakpoint) {
 					fraud_class = FraudClass_Fraud;
@@ -1292,7 +1300,7 @@ void update_threshold() {
 			if (sequence->unit_timer) {
 				--sequence->unit_timer;
 			}
-			if (!sequence->unit_timer && *g_unit_count < 1650) {
+			if (!sequence->unit_timer) {
 				while (sequence->unit_index < threshold.unit_count[sequence->fraud][sequence->race]
 					&& !threshold.units[sequence->fraud][sequence->race][sequence->unit_index].count) {
 					++sequence->unit_index;
