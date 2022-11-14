@@ -851,7 +851,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 
 static u32 player_has_a_factory(u32 player) { // TODO: maybe cache this
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-		if (units_dat::group_flags[unit->player].is_factory) {
+		if (units_dat::group_flags[unit->id].is_factory) {
 			return true;
 		}
 	}
