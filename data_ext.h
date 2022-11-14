@@ -333,9 +333,16 @@ struct SpriteExt {
 	Unit* owner;
 };
 
+struct ImageExt {
+	u32 iscript_header_offset;
+	u32 iscript_offset;
+	u32 return_address;
+};
+
 extern UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
 extern TileExt tile_ext_array[256][256];
 extern SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
+extern ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
 
 void init_ext_variables();
 void update_ext_variables();
@@ -348,5 +355,8 @@ void reset_unit_ext(Unit* unit);
 
 SpriteExt* get_sprite_ext(Sprite* sprite);
 void reset_sprite_ext(Sprite* sprite);
+
+ImageExt* get_image_ext(Image* image);
+void reset_image_ext(Image* image);
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player);

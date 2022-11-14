@@ -93,7 +93,7 @@ struct Image
 	/*0x0F*/  u8						vertical_offset;
 	/*0x10*/  u16						iscript_header_offset;
 	/*0x12*/  u16						iscript_offset;
-	/*0x14*/  u16						unknown14;
+	/*0x14*/  u16						return_address;
 	/*0x16*/  u8						animation;					// Use IscriptAnimation::Enum
 	/*0x17*/  u8						wait;						// iscript sleep time
 	/*0x18*/  u16						frameset;

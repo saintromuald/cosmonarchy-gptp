@@ -3,6 +3,7 @@
 UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
 TileExt tile_ext_array[256][256];
 SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
+ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
 
 void init_ext_variables() {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
@@ -11,6 +12,9 @@ void init_ext_variables() {
 	memset(tile_ext_array, 0, sizeof(tile_ext_array));
 	for (u32 i = 0; i < SPRITE_ARRAY_LENGTH; ++i) {
 		reset_sprite_ext(&g_sprite_table[i]);
+	}
+	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
+		reset_image_ext(&g_image_table[i]);
 	}
 }
 
@@ -104,6 +108,17 @@ SpriteExt* get_sprite_ext(Sprite* sprite) {
 void reset_sprite_ext(Sprite* sprite) {
 	SpriteExt* sprite_ext = get_sprite_ext(sprite);
 	*sprite_ext = {};
+}
+
+ImageExt* get_image_ext(Image* image) {
+	s32 index = image - g_image_table;
+	assert(image && index >= 0 && index <= IMAGE_ARRAY_LENGTH);
+	return &image_ext_array[index];
+}
+
+void reset_image_ext(Image* image) {
+	ImageExt* image_ext = get_image_ext(image);
+	*image_ext = {};
 }
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {

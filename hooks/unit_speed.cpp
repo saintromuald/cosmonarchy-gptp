@@ -344,7 +344,7 @@ namespace hooks
 		{
 			Image* image = unit->sprite->main_graphic;
 			*g_temp_iscript_header = image->iscript_header_offset;
-			*g_iscript_speed_something = image->unknown14;
+			*g_iscript_speed_something = image->return_address;
 			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking))
 			{
 				Unit* active_unit = *g_active_iscript_unit;

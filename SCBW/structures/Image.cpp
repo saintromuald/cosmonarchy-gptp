@@ -109,7 +109,7 @@ namespace hooks
 		// Initialize iscript data
 		image->iscript_header_offset = 0;
 		image->iscript_offset = 0;
-		image->unknown14 = 0;
+		image->return_address = 0;
 		image->animation = IscriptAnimation::Init;
 		image->wait = 0;
 
@@ -224,7 +224,7 @@ namespace hooks
 				image->animation = final_anim;
 				image->iscript_offset = *(u16*)&data[2 * final_anim + 8 + offset];
 				image->wait = 0;
-				image->unknown14 = 0;
+				image->return_address = 0;
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 			}
 		}
@@ -243,7 +243,7 @@ namespace hooks
 				i->animation = 2;
 				i->iscript_offset = *(u16*)&data[header + 12];
 				i->wait = 0;
-				i->unknown14 = 0;
+				i->return_address = 0;
 				helper::iscript_opcode_cases(i, &i->iscript_header_offset, 0, 0);
 			}
 		}
@@ -259,7 +259,7 @@ namespace hooks
 		image->animation = 0;
 		image->iscript_offset = *(u16*)&data[offset + 8];
 		image->wait = 0;
-		image->unknown14 = 0;
+		image->return_address = 0;
 		helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 		helper::is_valid_script(image, images_dat::iscript_id[image->id]);
 		image->palette_type = 12;
@@ -288,7 +288,7 @@ namespace hooks
 				char* data = *g_iscript_data;
 				header = *(u16*)&data[header + 10];
 				image->wait = 0;
-				image->unknown14 = 0;
+				image->return_address = 0;
 				image->iscript_offset = header;
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 			}
