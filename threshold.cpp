@@ -703,30 +703,26 @@ static void add_fraud_unit(u32 fraud, u32 race, FraudSpawnUnit unit, u32 min_ind
 	}
 }
 
+static s32 find_alliance(u32 fraud) {
+	for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
+		for (u32 j = 0; j < AlliancePlayerCap; ++j) {
+			if (fraud_alliances[i][j] == fraud) {
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
 static bool fraud_share_alliance(u32 a, u32 b) {
 	if (threshold.sequence[a].fraud_class == threshold.sequence[b].fraud_class &&
 		(threshold.sequence[a].fraud_class == FraudClass_Hero || threshold.sequence[a].fraud_class == FraudClass_God)) {
 		return true;
 	}
 
-	u32* alliance = 0;
-	for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
-		for (u32 j = 0; j < AlliancePlayerCap; ++j) {
-			if (fraud_alliances[i][j] == a) {
-				alliance = fraud_alliances[i];
-				break;
-			}
-		}
-	}
-
-	if (alliance) {
-		for (u32 i = 0; i < AlliancePlayerCap; ++i) {
-			if (alliance[i] == b) {
-				return true;
-			}
-		}
-	}
-	return false;
+	s32 a_alliance = find_alliance(a);
+	s32 b_alliance = find_alliance(b);
+	return a_alliance != -1 && b_alliance != -1 && a_alliance == b_alliance;
 }
 
 static void set_ally(u32 a, u32 b, bool ally) {
@@ -922,18 +918,10 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			set_player_color(player, threshold.frauds[next_fraud][race].color);
 			set_player_name(player, (char*)fraud_names[next_fraud]);
 			set_player_force_name(player, (char*)fraud_class_names[fraud_class]);
-			for (u32 i = 0; i < ARRAY_SIZE(fraud_alliances); ++i) {
-				bool exit = false;
-				for (u32 j = 0; j < AlliancePlayerCap; ++j) {
-					if (fraud_alliances[i][j] == next_fraud) {
-						set_player_force_name(player, (char*)fraud_alliance_names[i]);
-						exit = true;
-						break;
-					}
-				}
-				if (exit) {
-					break;
-				}
+
+			s32 alliance = find_alliance(next_fraud);
+			if (alliance != -1) {
+				set_player_force_name(player, (char*)fraud_alliance_names[alliance]);
 			}
 
 			// Todo: reset kills using aise
@@ -942,7 +930,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				fraud_count = 0;
 			}
 
-			f32 multiplier = (0.5 + fraud_count * 0.05) * threshold.multiplier_scalar;
+			f32 multiplier = (1 + fraud_count * 0.05) * threshold.multiplier_scalar;
 			for (u32 i = 0; i < threshold.unit_count[next_fraud][race]; ++i) {
 				if (initial) {
 					if (units_dat::base_property[threshold.units[next_fraud][race][i].unit_id] & UnitProperty::Worker) {
@@ -960,11 +948,11 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				}
 			}
 			multiplier += 0.5 * (fraud_class - 1);
-			u32 minerals = 1200 * multiplier;
-			u32 gas = 300 * multiplier;
+			u32 minerals = 600 * multiplier;
+			u32 gas      = 150 * multiplier;
 			if (initial) {
 				minerals = 100;
-				gas = 0;
+				gas      = 0;
 			}
 			resources->minerals[player] = minerals;
 			resources->cumulative_minerals[player] += minerals;
@@ -1301,13 +1289,18 @@ void update_threshold() {
 				--sequence->unit_timer;
 			}
 			if (!sequence->unit_timer) {
-				while (sequence->unit_index < threshold.unit_count[sequence->fraud][sequence->race]
+				u32 unit_count = threshold.unit_count[sequence->fraud][sequence->race];
+				// Skip units without count
+				while (sequence->unit_index < unit_count
 					&& !threshold.units[sequence->fraud][sequence->race][sequence->unit_index].count) {
 					++sequence->unit_index;
 				}
-				if (sequence->unit_index < threshold.unit_count[sequence->fraud][sequence->race] && sequence->location->source_count) {
+
+				// Spawn a unit
+				if (sequence->unit_index < unit_count) {
 					FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
-					u32 unit_id = threshold.units[sequence->fraud][sequence->race][sequence->unit_index].unit_id;
+					FraudSpawnUnit* spawn_unit = &threshold.units[sequence->fraud][sequence->race][sequence->unit_index];
+					u32 unit_id = spawn_unit->unit_id;
 					if (source->rally_count) {
 						Point16 source_pos = source->pos;
 						Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
@@ -1324,9 +1317,8 @@ void update_threshold() {
 							}
 
 							sequence->unit_timer = 24 * 0.3;
-							if (threshold.units[sequence->fraud][sequence->race][sequence->unit_index].count) {
-								--threshold.units[sequence->fraud][sequence->race][sequence->unit_index].count;
-							}
+							assert(spawn_unit->count); // We should implictly have set count, since we first skipped all the units without count
+							spawn_unit->count -= 1;
 						}
 					}
 					++sequence->source_index;
@@ -1372,8 +1364,9 @@ static void init_threshold_units() {
 				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossArtisan});
 				add_fraud_unit(i, RaceId::Protoss, {2, UnitId::ProtossWitness});
 
-				add_fraud_unit(i, RaceId::Zerg,    {10, UnitId::ZergDroleth});
-				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Zerg,    {14, UnitId::ZergDroleth});
+			//	add_fraud_unit(i, RaceId::Zerg,    {10, UnitId::ZergDroleth});
+			//	add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
 				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
 			} break;
 			case FraudClass_Super:
@@ -1386,8 +1379,9 @@ static void init_threshold_units() {
 				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossArtisan});
 				add_fraud_unit(i, RaceId::Protoss, {3, UnitId::ProtossWitness});
 
-				add_fraud_unit(i, RaceId::Zerg,    {8, UnitId::ZergDroleth});
-				add_fraud_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Zerg,    {16, UnitId::ZergDroleth});
+			//	add_fraud_unit(i, RaceId::Zerg,    {8, UnitId::ZergDroleth});
+			//	add_fraud_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
 				add_fraud_unit(i, RaceId::Zerg,    {1, UnitId::ZergAlaszileth});
 			} break;
 			case FraudClass_God:
@@ -1400,8 +1394,9 @@ static void init_threshold_units() {
 				add_fraud_unit(i, RaceId::Protoss, {6, UnitId::ProtossArtisan});
 				add_fraud_unit(i, RaceId::Protoss, {4, UnitId::ProtossWitness});
 
-				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergDroleth});
-				add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
+				add_fraud_unit(i, RaceId::Zerg,    {18, UnitId::ZergDroleth});
+			//	add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergDroleth});
+			//	add_fraud_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
 				add_fraud_unit(i, RaceId::Zerg,    {2, UnitId::ZergAlaszileth});
 			} break;
 		}
