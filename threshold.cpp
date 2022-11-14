@@ -849,12 +849,21 @@ static void clear_player_slot(u32 player, bool map_start) {
 	}
 }
 
+static u32 player_has_a_factory(u32 player) { // TODO: maybe cache this
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (units_dat::group_flags[unit->player].is_factory) {
+			return true;
+		}
+	}
+	return false;
+}
+
 static bool fraud_is_alive(u32 player, bool active_only = false) {
 	FraudSpawnSequence* sequence = &threshold.sequence[player];
 	if (!sequence->fraud) {
 		return active_only;
 	}
-	if (sequence->location || sequence->safety_timer || g_all_factory_counts->unit[player] > 0) {
+	if (sequence->location || sequence->safety_timer || player_has_a_factory(player)) {
 		return true;
 	}
 	return false;

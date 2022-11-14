@@ -42,7 +42,7 @@ SCBW_DATA(Units12*, first_player_unit, 0x006283F8); // Indexed by player Id
 //////////////////////////////////////////////////////////////// @{
 
 SCBW_DATA(Units12*,			g_completed_factory_counts,		0x0068A9D8);
-SCBW_DATA(Units12*,			g_all_factory_counts,			0x0068A9A8);
+SCBW_DATA(Units12*,			g_trigger_factory_counts,		0x0068A9A8);
 
 SCBW_DATA(Unit*,			g_unit_table,					0x0059CCA8);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
