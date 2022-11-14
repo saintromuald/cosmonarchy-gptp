@@ -984,11 +984,11 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 
 			{
 				Point16 pos = threshold.sequence[player].location->pos;
-				Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
-				if (augur) {
-					augur->user_action_flags |= 4;
-					augur_sacrifice(augur, 10 * 32);
-				}
+			//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
+			//	if (augur) {
+			//		augur->user_action_flags |= 4;
+			//		augur_sacrifice(augur, 10 * 32);
+			//	}
 
 				u32 townhall = UnitId::None;
 				switch (race) {
@@ -997,7 +997,12 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 					case RaceId::Zerg:		townhall = UnitId::ZergHachirosk;		break;
 				}
 				if (townhall != UnitId::None) {
-					sequence->temp_townhall = helper::create_unit_at_pos(townhall, player, pos.x, pos.y);
+					Unit* unit = helper::create_unit_at_pos(townhall, player, pos.x, pos.y);
+					sequence->temp_townhall = unit;
+					if (unit) {
+						scbw::create_and_init_thingy(SpriteId::AugurDeathExplosion, pos.x, pos.y, player, unit->sprite->elevation + 1);
+						helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), pos);
+					}
 				}
 			}
 
@@ -1321,7 +1326,7 @@ void update_threshold() {
 				}
 
 				// Spawn a unit
-				if (sequence->unit_index < unit_count) {
+				if (sequence->unit_index < unit_count && *g_unit_count < 1700) {
 					FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
 					FraudSpawnUnit* spawn_unit = &threshold.units[sequence->fraud][sequence->race][sequence->unit_index];
 					u32 unit_id = spawn_unit->unit_id;
@@ -1329,13 +1334,15 @@ void update_threshold() {
 						Point16 source_pos = source->pos;
 						Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
 
-						Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
-						if (augur) {
-							augur->user_action_flags |= 4;
-							augur_sacrifice(augur, 10 * 32);
-						}
+					//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
+					//	if (augur) {
+					//		augur->user_action_flags |= 4;
+					//		augur_sacrifice(augur, 10 * 32);
+					//	}
 						Unit* unit = scbw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
 						if (unit) {
+							scbw::create_and_init_thingy(SpriteId::AugurDeathExplosion, source_pos.x, source_pos.y, unit->player, unit->sprite->elevation + 1);
+							helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), source_pos);
 							if (!(units_dat::base_property[unit_id] & UnitProperty::Worker)) {
 								unit->order_to(OrderId::AttackMove, rally.x, rally.y);
 							}

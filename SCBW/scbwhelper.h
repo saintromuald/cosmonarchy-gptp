@@ -267,8 +267,8 @@ namespace helper {
 	void switch_to_warp_texture(Image* image);																// 004D8500
 	bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);		    								// 00488210
-	void set_unit_stat_txt_error_message(char* message);										                        // 0048CCB0
-	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play, u32 min_volume);						// 0048EC10
+	void set_unit_stat_txt_error_message(char* message);									                // 0048CCB0
+	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
 	void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
@@ -277,7 +277,7 @@ namespace helper {
 	Unit* spider_mine_acquire_target(Unit* spiderMine);									                    // 00441270
 	void instant_cloak(Unit* unit);												                            // 0049B1E0
 	void unburrow_generic(Unit* unit);												                        // 004E99D0
-	void burrow_generic(Unit* unit);																			// 004E9A30
+	void burrow_generic(Unit* unit);																		// 004E9A30
 
 	// For orders_place_mine
 	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
