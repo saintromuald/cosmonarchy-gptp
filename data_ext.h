@@ -296,7 +296,7 @@ struct UnitExt
 	Vector32f				repulsion_vector;
 	Point16					last_bullet_launch_position;
 	Point16					ai_kiting_origin;
-	//	Target					rally;
+//	Target					rally;
 
 	u8						seen_by_flags;
 	Point16					last_seen_position[PlayerLimit];

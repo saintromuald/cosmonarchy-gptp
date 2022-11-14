@@ -1425,9 +1425,9 @@ namespace hooks {
 		const f32 own_bias      = -1.0;
 		const f32 ally_bias     = -0.5;
 		const f32 enemy_bias    =  0.5;
-		const f32 distance_bias = -4.0;
+		const f32 distance_bias = -5.0;
 		const f32 mineral_bias  =  1.0;
-		const f32 gas_bias      =  1.0;
+		const f32 gas_bias      =  3.0;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
@@ -1476,8 +1476,8 @@ namespace hooks {
 
 		EntryArray resources = {};
 		unit_search_radial(&resources, area->position, 12 * 32);
-		f32 mineral_value = 2 * (f32)area->total_mineral_count / (area->mineral_field_count / 2);
-		f32 gas_value     = 6 * (f32)area->total_vespene_count / (area->geyser_count / 2);
+		f32 mineral_value = (f32)area->total_mineral_count / area->mineral_field_count + area->mineral_field_count;
+		f32 gas_value     = (f32)area->total_vespene_count / area->geyser_count + area->geyser_count;
 		score += mineral_value * mineral_bias;
 		score += gas_value     * gas_bias;
 
@@ -1613,75 +1613,158 @@ namespace hooks {
 		}
 	}
 
+	static bool is_valid_grouping_unit(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		return unit_ext->damage_dealt_timer >= 4 * 24 
+			&& unit_ext->damage_taken_timer >= 4 * 24;
+	}
+
+	static bool group_before_region(Unit* unit, AiRegion* ai_region) {
+		// Original rule
+		if (ai_region->state == RegionState::ContinueAttackHere && helper::ai_has_incomplete_military_in_region(ai_region)) {
+			return true;
+		}
+
+		// Forbid in-combat units from grouping
+		if (!is_valid_grouping_unit(unit)) {
+			return false;
+		}
+
+		// Don't group before prepare region
+		switch (ai_region->state) {
+			case RegionState::PreparingAttack:
+			case RegionState::PreparingAttackOldUnreachable:
+				return false;
+		}
+
+		// Group before entering enemy teritory
+		switch (ai_region->state) {
+			case RegionState::ContinueAttackHere:
+			case RegionState::Attacking:
+				return true;
+		}
+
+		// Group before entering threatning regions
+		if (ai_region->ground_strength_enemy || ai_region->air_strength_enemy) {
+			return true;
+		}
+
+		return false;
+	}
+
+	static bool is_valid_group_region(AiRegion* target_region, AiRegion* group_region) {
+		if ((!target_region->ground_strength_needed || group_region->ground_strength >= target_region->ground_strength_needed - target_region->ground_strength)
+		&&	(!target_region->air_strength_needed    || group_region->air_strength    >= target_region->air_strength_needed    - target_region->air_strength)) {
+			return false;
+		}
+		return true;
+	}
+
 	// Hooked to fix AI pathfinding lag and improve army spread. -Pr0nogo
 	void ai_manage_military_controller(Unit* unit) { // 0043D910
-		if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
-			MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
-			if (military_ai->unit == unit) {
-				u16 unit_id = unit->id;
-				if (!(units_dat::base_property[unit_id] & UnitProperty::Building)) {
-					AiRegion* ai_region = military_ai->region;
-					if (unit_id && unit_id != UnitId::TerranHarakan || !helper::ai_defender_bunker_behavior(unit, ai_region->region)) {
-						if (!helper::ai_cast_spell_behavior(unit, 0) && !helper::ai_update_attack_target(unit, 0, 1, 0)) {
-							s32 region_id = ai_region->region;
-							if (ai_region->state == RegionState::ContinueAttackHere) {
-								if (!ai_region->slowest_unit) {
-									helper::ai_assign_region_to_slowest_unit(ai_region);
-								}
-								Unit* slowest_unit = ai_region->slowest_unit;
-								if (slowest_unit) {
-									if (helper::ai_has_incomplete_military_in_region(ai_region)) {
-										region_id = helper::get_region_id_from_unit(slowest_unit);
-									}
-								}
-							}
+		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
+			return;
+		}
 
-							Region* region = scbw::get_region(region_id);
-							if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id) {
-								helper::make_to_hold_position(unit);
-							} else {
-								Point16 center = scbw::get_region_center(region);
-								helper::ai_order_to_destination(unit, OrderId::AttackMove, center.x, center.y);
-							}
-						}
-					}
+		MilitaryAi* military_ai = (MilitaryAi*)unit->unit_ai;
+		if (military_ai->unit != unit) {
+			return;
+		}
+
+		AiRegion* ai_region = military_ai->region;
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			return;
+		}
+
+		switch (unit->id) {
+			case UnitId::TerranMaverick:
+			case UnitId::TerranHarakan: {
+				if (helper::ai_defender_bunker_behavior(unit, ai_region->region)) {
+					return;
+				}
+			} break;
+		}
+
+		if (helper::ai_cast_spell_behavior(unit, 0)) {
+			return;
+		}
+
+		if (helper::ai_update_attack_target(unit, 0, 1, 0)) {
+			return;
+		}
+
+		u32 region_id = ai_region->region;
+		if (group_before_region(unit, ai_region)) {
+			if (!ai_region->slowest_unit) {
+				helper::ai_assign_region_to_slowest_unit(ai_region);
+			}
+			Unit* slowest_unit = ai_region->slowest_unit;
+			if (slowest_unit) {
+				u32 new_region_id = helper::get_region_id_from_unit(slowest_unit);
+				if (is_valid_group_region(ai_region, scbw::get_ai_region(unit->player, new_region_id))) {
+					region_id = new_region_id;
+
+				//	scbw::printf("Player %u is grouping units!", unit->player);
+				//	Point16 ping = scbw::get_region_center(scbw::get_region(new_region_id));
+				//	scbw::minimap_ping(ping.x, ping.y, unit->player);
 				}
 			}
+		}
+
+		Region* region = scbw::get_region(region_id);
+		if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id) {
+			helper::make_to_hold_position(unit);
+		} else {
+			Point16 center = scbw::get_region_center(region);
+			helper::ai_order_to_destination(unit, OrderId::AttackMove, center.x, center.y);
 		}
 	}
 
 	// Hooked to help AI group mixed speed armies in more intelligent ways. -Pr0nogo
-	void ai_assign_region_to_slowest_unit(AiRegion* region) { // 00436F70
-		Unit* slowest_unit = region->slowest_unit;
+	void ai_assign_region_to_slowest_unit(AiRegion* ai_region) { // 00436F70
+		Region* region = scbw::get_region(ai_region->region);
+		Point16 center = scbw::get_region_center(region);
+
 		Unit* slowest_ground_unit = 0;
+		u32 slowest_ground_speed = UINT_MAX;
 		Unit* slowest_air_unit = 0;
-		u32 slowest_ground_speed = 99999999;
-		u32 slowest_air_speed = 99999999;
+		u32 slowest_air_speed = UINT_MAX;
+
+		Unit* slowest_unit = ai_region->slowest_unit;
 		if (slowest_unit) {
-			if (slowest_unit->status & UnitStatus::InAir) {
-				slowest_air_unit = region->slowest_unit;
-				slowest_air_speed = slowest_unit->flingy_top_speed;
-			} else {
-				slowest_ground_unit = region->slowest_unit;
-				slowest_ground_speed = slowest_unit->flingy_top_speed;
-			}
-		}
-		for (MilitaryAi* first_military = region->military.first; first_military; first_military = first_military->link.prev) {
-			Unit* military = first_military->unit;
-			if (military->status & UnitStatus::InAir) {
-				if (military->flingy_top_speed < slowest_air_speed) {
-					slowest_air_speed = military->flingy_top_speed;
-					slowest_air_unit = first_military->unit;
+			if (is_valid_grouping_unit(slowest_unit)) {
+				u32 speed = scbw::get_distance_fast(slowest_unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
+				if (slowest_unit->status & UnitStatus::InAir) {
+					slowest_air_unit = ai_region->slowest_unit;
+					slowest_air_speed = speed;
+				} else {
+					slowest_ground_unit = ai_region->slowest_unit;
+					slowest_ground_speed = speed;
 				}
-			} else if (military->flingy_top_speed < slowest_ground_speed) {
-				slowest_ground_speed = military->flingy_top_speed;
-				slowest_ground_unit = first_military->unit;
 			}
 		}
-		if (!slowest_ground_unit) {
-			slowest_ground_unit = slowest_air_unit;
+
+		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
+			Unit* unit = military_ai->unit;
+			if (is_valid_grouping_unit(unit)) {
+				u32 speed = scbw::get_distance_fast(unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
+				if (unit->status & UnitStatus::InAir) {
+					if (speed < slowest_air_speed) {
+						slowest_air_speed = speed;
+						slowest_air_unit = military_ai->unit;
+					}
+				} else if (speed < slowest_ground_speed) {
+					slowest_ground_speed = speed;
+					slowest_ground_unit = military_ai->unit;
+				}
+			}
 		}
-		region->slowest_unit = slowest_ground_unit;
+
+		if (slowest_ground_unit) {
+			ai_region->slowest_unit = slowest_ground_unit;
+		} else {
+			ai_region->slowest_unit = slowest_air_unit;
+		}
 	}
 
 	// Hooked to improve behavior. -Pr0nogo
