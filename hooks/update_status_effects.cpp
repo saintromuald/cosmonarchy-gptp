@@ -12,12 +12,6 @@ void irradiate_proc(Unit* unit, Unit* target)
 		return;
 	}
 
-	//Irradiate splash damage does not affect burrowed units
-	if (target != unit && target->status & UnitStatus::Burrowed)
-	{
-		return;
-	}
-
 	// Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
 	||  unit->get_distance_to_target(target) <= 32)
