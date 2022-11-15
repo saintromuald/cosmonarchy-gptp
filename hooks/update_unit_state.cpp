@@ -453,7 +453,7 @@ namespace hooks
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;
-
+						// TODO: unit search radial
 						auto match = cosmonarchy_finder_match(unit, Flags::NoAir | Flags::Enemy, {});
 						const u32 radius = 64;
 						scbw::UnitFinder(
