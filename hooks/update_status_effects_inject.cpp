@@ -3,7 +3,7 @@
 
 namespace
 {
-	// note: acid spores management is normally done in function @ 004F42C0, jumped in at the end of this one, but the hook merge both
+	// Note: acid spores management is normally done in function @ 004F42C0, jumped in at the end of this one, but the hook merges both
 	void __declspec(naked) update_status_effects_wrapper()
 	{
 

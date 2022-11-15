@@ -859,7 +859,7 @@ namespace helper {
 
 	// misc
 	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player);
-	bool func_dounitscollide(Unit* first, Unit* second);
+	bool do_units_collide(Unit* first, Unit* second);
 	void unburrow(Unit* unit);
 	Image* create_healthbar(Sprite* sprite);
 	void remove_hp_bar(Image* a1);

@@ -18,9 +18,9 @@ void irradiate_proc(Unit* unit, Unit* target)
 		return;
 	}
 
-	//Check if the unit is within distance, or is inside the same transport
+	// Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
-		|| unit->get_distance_to_target(target) <= 32)
+	||  unit->get_distance_to_target(target) <= 32)
 	{
 		// const s32 damage = weapons_dat::damage_amount[WeaponId::Irradiate] * 256 / weapons_dat::cooldown[WeaponId::Irradiate];
 		s32 damage = (125 * 256) / 24;
@@ -38,39 +38,35 @@ void irradiate_proc(Unit* unit, Unit* target)
 	
 namespace hooks
 {
-	void do_irradiate_damage(Unit* irradiatedUnit)
+	void do_irradiate_damage(Unit* unit)
 	{
-		if (irradiatedUnit->status & UnitStatus::Burrowed)
-		{
-			// No splash if burrowed
-			irradiate_proc(irradiatedUnit, irradiatedUnit);
-		}
-		else if (irradiatedUnit->status & UnitStatus::InTransport)
+		if (unit->status & UnitStatus::InTransport)
 		{
 			// If inside a transport, damage all units loaded within
-			Unit* transport = irradiatedUnit->connected_unit;
+			Unit* transport = unit->connected_unit;
 			if (transport)
 			{
 				for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i)
 				{
 					Unit* loaded_unit = transport->get_loaded_unit(i);
-					if (loaded_unit)
-						irradiate_proc(irradiatedUnit, loaded_unit);
+					if (loaded_unit) {
+						irradiate_proc(unit, loaded_unit);
+					}
 				}
 			}
-
 		}
 		else
 		{
 			// Find and iterate nearby units
+			// TODO: unit search radial
 			scbw::UnitFinder(
-				irradiatedUnit->get_x() - 160,
-				irradiatedUnit->get_y() - 160,
-				irradiatedUnit->get_x() + 160,
-				irradiatedUnit->get_y() + 160
+				unit->get_x() - 160,
+				unit->get_y() - 160,
+				unit->get_x() + 160,
+				unit->get_y() + 160
 			).for_each([&](Unit* target)
 			{
-				irradiate_proc(irradiatedUnit, target);
+				irradiate_proc(unit, target);
 			});
 		}
 	}
@@ -85,7 +81,7 @@ namespace hooks
 		{
 			return false;
 		}
-		if (!helper::func_dounitscollide(unit, target))
+		if (!helper::do_units_collide(unit, target))
 		{
 			return false;
 		}
@@ -118,6 +114,7 @@ namespace hooks
 			auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
 			if (tile.currently_occupied)
 			{
+				// TODO: unit search
 				Unit* nearest = scbw::UnitFinder::get_nearest_target(
 					unit->get_left() - 32,
 					unit->get_top() - 32,
@@ -136,91 +133,6 @@ namespace hooks
 			}
 		}
 
-		// Quarry, Iroleth, Pennant resource regeneration aura
-		// REMOVED as of 26 June 2022. We will revisit this when the concepts of node yield and node upgrading are vetted. -Pr0nogo
-		/*
-		u32 unit_id = unit->id;
-		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
-			unit_id = unit->building.addon->id;
-		}
-		if (unit->sprite && unit->main_order_id != OrderId::Die
-			&& (unit_id == UnitId::TerranQuarry || unit_id == UnitId::ZergIroleth))
-		{
-			u32 radius = 0;
-			switch (unit_id) {
-				case UnitId::TerranQuarry:
-				{
-					radius = 320;
-				} break;
-				case UnitId::ZergIroleth:
-				{
-					radius = 224;
-				} break;
-			}
-
-			scbw::UnitFinder(
-				unit->position.x - radius,
-				unit->position.y - radius,
-				unit->position.x + radius,
-				unit->position.y + radius
-			).for_each([&](Unit* target)
-			{
-				if (unit == target)
-				{
-					return;
-				}
-				if (!(unit->status & UnitStatus::Completed))
-				{
-					return;
-				}
-				if (units_dat::base_property[target->id] & UnitProperty::ResourceContainer)
-				{
-					UnitExt* targetExt = get_unit_ext(target);
-					targetExt->timers[TimerResourceBoostedRegen] = 24;
-					u32 underlay = image_id::ResourceBoostOverlay_Small + scbw::get_overlay_offset(target->id);
-					if (!target->sprite->get_overlay(underlay)) {
-						if (scbw::unit_id_is_gas_structure(target->id))
-						{
-							target->sprite->create_underlay(underlay, -5, 2);
-						}
-						else
-						{
-							target->sprite->create_underlay(underlay);
-						}
-					}
-				}
-			});
-		}
-		*/
-
-		// Sire Ectomorphic Accelerant - egg morph speed aura
-		if (unit->id == UnitId::ZergSibraelosk)
-		{
-			u32 radius = 224;
-			scbw::UnitFinder(
-				unit->get_x() - radius,
-				unit->get_y() - radius,
-				unit->get_x() + radius,
-				unit->get_y() + radius
-			).for_each([&](Unit* target)
-			{
-				if (unit == target)
-				{
-					return;
-				}
-				if (!(unit->status & UnitStatus::Completed))
-				{
-					return;
-				}
-				if (scbw::is_allied_to(target->player, unit->player)
-					&& (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon))
-				{
-					UnitExt* targetExt = get_unit_ext(target);
-					targetExt->timers[TimerSireEggBoost] = 24;
-				}
-			});
-		}
-
 		if (unit->stim_timer != 0)
 		{
 			unit->stim_timer--;
@@ -230,7 +142,7 @@ namespace hooks
 			}
 		}
 
-		// Why are we updating Vorvrokor / Ovileth speed every frame?
+		// TODO: Why are we updating Vorvrokor / Ovileth speed every frame?
 		if (unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergOvileth)
 		{
 			unit->update_speed();
@@ -257,7 +169,7 @@ namespace hooks
 			}
 		}
 
-		// Redraw console/UI elements
+		// Redraw console and UI elements
 		if (unit == *g_active_portrait_unit)
 		{
 			if (unit->is_valid_caster())
@@ -326,7 +238,7 @@ namespace hooks
 
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
-			scbw::place_clarion_links(unit); //clears, then places all clarion links
+			scbw::place_clarion_links(unit); // Clears, then places all Clarion links
 		}
 
 		if (unit->is_under_storm != 0)

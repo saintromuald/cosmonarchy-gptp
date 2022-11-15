@@ -6587,7 +6587,7 @@ namespace helper {
 		return thingy;
 	}
 
-	bool func_dounitscollide(Unit* first, Unit* second) {
+	bool do_units_collide(Unit* first, Unit* second) {
 		const u32 Func_DoUnitsCollide = 0x00469B60;
 		static u32 result = 0;
 		__asm {
