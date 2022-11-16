@@ -333,7 +333,7 @@ namespace hooks
 		}
 
 		if (data.attacker) {
-			switch (data.target->id) {
+			switch (data.attacker->id) {
 				case UnitId::TerranOlympian: {
 					// Olympian Dishonorable Discharge - deal +5 damage to targets facing away from the Olympian
 					if (!units_dat::group_flags[data.target->id].is_building) {
