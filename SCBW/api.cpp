@@ -2656,7 +2656,7 @@ namespace scbw {
 			if (base_unit_id != UnitId::None) {
 				u32 base_count = town_count_units(town, base_unit_id, false);
 				if (base_count < count) {
-					town_add_spending_request(town, count - base_count, base_unit_id, priority);
+					town_add_spending_request(town, count - base_count, base_unit_id, priority, request_base);
 				}
 			}
 		}
