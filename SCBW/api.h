@@ -675,9 +675,9 @@ namespace scbw
 	u32 unit_id_get_larva_type(u32 unit_id);
 	u32 unit_id_swarmhold_value(u32 unit_id);
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
-	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority);
-	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority);
-	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority);
+	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority, bool request_base = true);
+	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base = true);
+	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base = true);
 	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position);
 	bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
 	u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit);

@@ -874,7 +874,8 @@ namespace hooks
 							helper::ai_add_spending_request(request->id, player, request_type, request->priority, town);
 						}
 					} else {
-						scbw::town_add_spending_request(town, count, request->id, request->priority);
+						bool request_base = request->only_if_needed ? false : true;
+						scbw::town_add_spending_request(town, count, request->id, request->priority, request_base);
 					}
 				}
 			}

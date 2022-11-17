@@ -2648,7 +2648,7 @@ namespace scbw {
 		}
 	}
 
-	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority) {
+	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority, bool request_base) {
 		if (count < 0) return;
 
 		u32 base_unit_id = find_unit_base(unit_id);
@@ -2672,25 +2672,25 @@ namespace scbw {
 		}
 	}
 
-	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority) {
+	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base) {
 		if (unit_id == UnitId::TerranPhalanxSiegeMode) {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		u32 base_unit_id = find_unit_base(unit_id);
 		if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id, false)) {
-			military_add_spending_request(player, unit_id, position, priority);
+			military_add_spending_request(player, unit_id, position, priority, request_base);
 		}
 		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, scbw::get_ai_region(player, scbw::get_region_id(position)));
 	}
 
-	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority) {
+	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base) {
 		u32 unit_id = guard_ai->unit_id;
 		if (unit_id == UnitId::TerranPhalanxSiegeMode) {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		u32 base_unit_id = find_unit_base(unit_id);
 		if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id, false)) {
-			military_add_spending_request(player, unit_id, guard_ai->current_home, priority); // Intentionally using military, since we don't want the base unit to take over the guard
+			military_add_spending_request(player, unit_id, guard_ai->current_home, priority, request_base); // Intentionally using military, since we don't want the base unit to take over the guard
 		}
 		helper::ai_add_spending_request(unit_id, player, RequestType::Guard, priority, guard_ai);
 	}
