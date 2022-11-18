@@ -2244,4 +2244,70 @@ namespace hooks {
 		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[index_decremented];
 		return result;
 	}
+
+	// Hooked to improve functionality. -Pr0nogo
+	b32 ai_prepare_attack(u32 player, u32 x, u32 y, u32 override_last_attack, u32 fallback_air_only) // 0043ABB0
+	{
+		if (g_aiscript_controller[player].attack_failed) {
+			return 1;
+		}
+		if (g_aiscript_controller[player].ai_attack_group_region) {
+//			return (g_ai_region_captains[player][g_aiscript_controller[player].ai_attack_group_region] - 47) != 8;
+		}
+
+		char regions_list[2500];
+		memset(regions_list, 0, sizeof(regions_list));
+		helper::populate_regions_with_own(regions_list, player);
+		helper::populate_regions_with_enemy(player, regions_list);
+		while (helper::ai_get_neighboring_region_types(regions_list)) {
+			helper::ai_finish_region_accessibility(regions_list);
+		}
+		u16 attacking_unit_id = g_aiscript_controller[player].attackers[0];
+		u16* attacking_unit_count = g_aiscript_controller[player].attackers;
+		u32 air_attack = attacking_unit_id != 0;
+		if (attacking_unit_id)
+		{
+			while (units_dat::destroy_score[2 * attacking_unit_id + 226] & 4)
+			{
+				attacking_unit_id = attacking_unit_count[1];
+				++attacking_unit_count;
+				if (!attacking_unit_id)
+				{
+					goto exit;
+				}
+			}
+			air_attack = 0;
+		}
+	exit:
+		g_aiscript_controller[player].ai_flags.is_secure_finished == 1; // was |= 1u
+		if (!helper::ai_set_attack_grouping_region(air_attack, 0, player, regions_list, x, y, override_last_attack)
+		&&  !helper::ai_set_attack_grouping_region(air_attack, 1, player, regions_list, x, y, override_last_attack))
+		{
+			if (!fallback_air_only || air_attack) {
+				return 1;
+			}
+			if (!helper::ai_set_attack_grouping_region(1, 0, player, regions_list, x, y, override_last_attack)
+			&&  !helper::ai_set_attack_grouping_region(1, 1, player, regions_list, x, y, override_last_attack))
+			{
+				g_aiscript_controller[player].attack_failed = 1;
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	// Hooked to improve functionality. -Pr0nogo
+	u32 ai_attack_timer_decrement(u32 player) // 00447090
+	{
+		u32 seconds = g_aiscript_controller[player].last_attack_seconds;
+		if (seconds)
+		{
+			seconds = *g_elapsed_time_seconds - seconds >= 120;
+			if (seconds)
+			{
+				g_aiscript_controller[player].last_attack_seconds = 0;
+			}
+		}
+		return seconds;
+	}
 }

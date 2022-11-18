@@ -714,6 +714,55 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) ai_prepare_attack_wrapper() { // 0043ABB0
+		static b32 result;
+		static u32 player;
+		static u32 x;
+		static u32 y;
+		static u32 override_last_attack;
+		static u32 fallback_air_only;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV x, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV y, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV override_last_attack, EAX
+			MOV EAX, [EBP + 0x18]
+			MOV fallback_air_only, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::ai_prepare_attack(player, x, y, override_last_attack, fallback_air_only);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x14
+		}
+	}
+
+	void __declspec(naked) ai_attack_timer_decrement_wrapper() { // 00447090
+		static u32 result;
+		static u32 player;
+		__asm {
+			MOV player, ECX
+			PUSHAD
+		}
+		result = hooks::ai_attack_timer_decrement(player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -760,6 +809,9 @@ namespace hooks
 
 		jump_patch(player_has_transport_wrapper, 				0x00437250, 1);
 		jump_patch(request_military_to_wrapper,					0x0043E760, 0);
+
+		jump_patch(ai_prepare_attack_wrapper,					0x0043ABB0, 4);
+		jump_patch(ai_attack_timer_decrement_wrapper,			0x00447090, 1);
 
 		jump_patch(ai_can_travel_to_region_wrapper,				0x0043A790, 1);
 

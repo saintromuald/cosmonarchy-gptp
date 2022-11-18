@@ -119,7 +119,7 @@ namespace hooks
 			if (ai->type == 2 || ai->type == 3) {
 				if (!ai->town) {
 					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
-						data.attacker->id, data.attacker->player, data.target->id, data.target->player);
+																   data.attacker->id, data.attacker->player, data.target->id, data.target->player);
 					can_damage = false;
 				}
 			}
@@ -454,6 +454,11 @@ namespace hooks
 
 			// These bypass Carapace Swarm
 			switch (data.weapon_id) {
+				case WeaponId::HarakanFlameThrower:
+				{
+					target_ext->values[ValueApollyoidAdhesiveStacks]++;
+					target_ext->timers[TimerApollyoidAdhesive] = 49;
+				} break;
 				case WeaponId::GladiusPlasmaFlurry: {
 					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
 					if (source_unit && target_ext->timers[TimerGladiusBindingPlasma]) {

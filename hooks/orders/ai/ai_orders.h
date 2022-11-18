@@ -50,6 +50,8 @@ namespace hooks {
 	u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air);									// 0043E760
 
 	s32 ai_can_travel_to_region(AiRegion* source, AiRegion* destination);												// 0043A790
+	b32 ai_prepare_attack(u32 player, u32 x, u32 y, u32 override_last_attack, u32 fallback_air_only);					// 0043ABB0
+	u32 ai_attack_timer_decrement(u32 player);																			// 00447090
 
 	void inject_ai_orders_hooks();
 }
