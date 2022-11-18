@@ -922,6 +922,35 @@ namespace hooks {
 		return 0;
 	}
 
+	static Unit* get_best_mineral_field(AiTown* ai_town) {
+		u32 best_score = 0;
+		u32 best_distance = UINT_MAX;
+		Unit* best_mineral_field = 0;
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (unit->id < UnitId::ResourceMineralField || unit->id > UnitId::ResourceMineralFieldType3) {
+				continue;
+			}
+			if (unit->building.resource.resource_group != ai_town->resarea) {
+				continue;
+			}
+			if (unit->building.resource.next_gatherer) {
+				continue;
+			}
+
+			u32 score = unit->building.resource.resource_yield;
+			if (unit->building.resource.is_mining || unit->building.resource.resource_belongs_to_ai) {
+				score -= 1;
+			}
+			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
+			if (score > best_score || (score == best_score && distance < best_distance)) {
+				best_score = score;
+				best_distance = distance;
+				best_mineral_field = unit;
+			}
+		}
+		return best_mineral_field;
+	}
+
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void ai_worker_controller(Unit* worker) { // 00435210
 		WorkerAi* worker_ai = (WorkerAi*)worker->unit_ai;
@@ -941,6 +970,11 @@ namespace hooks {
 					Unit* town_gas = 0;
 					Unit* town_gas_2 = 0;
 					if (helper::unit_is_active_resource_depot(main_building)) {
+						Unit* best_mineral_field = get_best_mineral_field(town); // New -Veeq7
+						if (best_mineral_field) {
+							town->mineral = best_mineral_field;
+						}
+
 						if (worker_ai->target_resource == 1) {
 							Unit* target_resource = worker->worker.target_resource.unit;
 							if (target_resource && helper::unit_is_mineral_field(target_resource)) {
@@ -950,6 +984,9 @@ namespace hooks {
 								if (!town_mineral || town_mineral->building.resource.resource_belongs_to_ai) {
 									worker_pos = worker->sprite->position;
 									town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 0xCu, worker, worker_pos);
+									if (best_mineral_field) { // New -Veeq7
+										town_mineral = best_mineral_field;
+									}
 									if (!town_mineral) {
 										town_mineral = town->mineral;
 									}

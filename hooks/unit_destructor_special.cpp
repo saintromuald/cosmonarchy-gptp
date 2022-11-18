@@ -98,7 +98,7 @@ void kill_hangar_units(Unit* unit) {
 // Identical to 00468770 remove_harvesters
 // Not hooked but used by hooked unit_destructor_special_cases
 void free_resource_container(Unit* resource) {
-	resource->building.resource.gather_queue_count = 0;
+	resource->building.resource.is_mining = 0;
 	Unit* worker = resource->building.resource.next_gatherer;
 	Unit* nextWorker;
 	while (worker) {

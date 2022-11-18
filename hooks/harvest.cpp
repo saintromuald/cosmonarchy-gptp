@@ -302,10 +302,10 @@ namespace hooks {
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	s32 begin_harvest(Unit* worker, Unit* node) { // 00468CAA
-		if (node->building.resource.gather_queue_count) {
+		if (node->building.resource.is_mining) {
 			return 0;
 		}
-		node->building.resource.gather_queue_count = 1;
+		node->building.resource.is_mining = 1;
 		worker->worker.is_harvesting = 1;
 		worker->worker.harvest_target = node;
 
@@ -431,7 +431,7 @@ namespace hooks {
 			worker->worker.harvest_target = 0;
 			if (node)
 			{
-				--node->building.resource.gather_queue_count;
+				--node->building.resource.is_mining;
 				Unit* next_harvester = helper::let_next_unit_mine(node);
 				if (next_harvester)
 				{
@@ -478,7 +478,7 @@ namespace hooks {
 
 	// Hooked to investigate crashes. -Pr0nogo
 	void remove_harvesters(Unit* node) { // 00468770
-		node->building.resource.gather_queue_count = 0;
+		node->building.resource.is_mining = 0;
 		for (Unit* worker = node->building.resource.next_gatherer; worker; worker = worker->worker.harvest_link.next) {
 			Unit* prev_worker = worker->worker.harvest_link.prev;
 			if (prev_worker) {
