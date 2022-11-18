@@ -1635,7 +1635,7 @@ namespace helper {
 		return result;
 	}
 
-	void ai_get_region_military_types(AiRegion* region, s32* hasGroundMilitary, s32* cantAttackGround, s32* cantAttackAir) {
+	void ai_get_region_military_types(AiRegion* region, b32* hasGroundMilitary, b32* cantAttackGround, b32* cantAttackAir) {
 		const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
 		__asm {
 			PUSHAD
@@ -1718,7 +1718,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 ai_has_forces_moving_to_attack(u32 player) {
+	s32 ai_has_forces_moving_to_group(u32 player) {
 		const u32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
 		static s32 result;
 		__asm {

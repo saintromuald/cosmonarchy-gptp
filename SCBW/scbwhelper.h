@@ -207,15 +207,15 @@ namespace helper {
 	u32 ai_recalculate_region_strength(AiRegion* region);
 	Unit* ai_target_enemy_in_region(AiRegion* region);
 	s32 ai_move_military_to_defend(AiRegion* region);
-	void ai_get_region_military_types(AiRegion* region, s32* hasGroundMilitary,
-		s32* cantAttackGround, s32* cantAttackAir);
+	void ai_get_region_military_types(AiRegion* region, b32* hasGroundMilitary,
+		b32* cantAttackGround, b32* cantAttackAir);
 	s32 ai_can_travel_to_region(AiRegion* region1, AiRegion* region2);
 	Unit* ai_pick_attack_target_no_buildings(AiRegion* region);
 	u32 ai_move_military_to_other_region(AiRegion* target, AiRegion* source, u32 pullUnitsNearRegion,
 		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
 	AiTown* ai_iterate_town_something(AiRegion* region);
 	u32 ai_attack_timer_decrement(u32 player);
-	s32 ai_has_forces_moving_to_attack(u32 player);
+	s32 ai_has_forces_moving_to_group(u32 player);
 
 	// for ai_attack_manager
 	u16 populate_regions_with_own(char* regionData, u32 player);
