@@ -2364,33 +2364,6 @@ namespace hooks {
 			return;
 		}
 
-		/*
-		if (!helper::ai_attack_timer_decrement(ai_region->player)) {
-			u32 attack_wave[63] = {};
-			u32 attack_count = helper::get_missing_attack_force_units(ai_region, attack_wave, true);
-			if (attack_count) {
-				bool do_attack = false;
-				for (u32 i = 0; i < 63; ++i) {
-					u32 unit_id = attack_wave[i];
-					if (unit_id != UnitId::None && unit_id < UnitId::Count) {
-						break;
-					}
-					if (i >= attack_count) {
-						do_attack = true;
-						break;
-					}
-				}
-				if (!do_attack) {
-					return;
-				}
-			}
-
-			if (helper::ai_has_forces_moving_to_group(ai_region->player)) {
-				return;
-			}
-		}
-		*/
-
 		u32 last_attack_time = g_aiscript_controller[player].last_attack_seconds;
 		if (last_attack_time) {
 			u32 elapsed = *g_elapsed_time_seconds - last_attack_time;
