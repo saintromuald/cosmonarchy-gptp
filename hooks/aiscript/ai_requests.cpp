@@ -858,20 +858,21 @@ namespace hooks
 
 				if (existing_count < requested_count) {
 					u32 count = requested_count - existing_count;
-					u32 priority_subtract = 0;
-					if (request->is_upgrade || request->is_tech) {
-						u32 request_type = RequestType::Upgrade;
+					if (request->is_upgrade) {
 						u32 mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
 						u32 vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
-						if (request->is_tech) {
-							request_type = RequestType::Tech;
-							mineral_cost = techdata_dat::mineral_cost[request->id];
-							vespene_cost = techdata_dat::vespene_cost[request->id];
-						}
 						g_aiscript_controller[player].minerals_needed += mineral_cost * count;
-						g_aiscript_controller[player].vespene_needed += vespene_cost * count;
+						g_aiscript_controller[player].vespene_needed  += vespene_cost * count;
 						for (u32 i = 0; i < count; ++i) {
-							helper::ai_add_spending_request(request->id, player, request_type, request->priority, town);
+							helper::ai_add_spending_request(request->id, player, RequestType::Upgrade, request->priority, town);
+						}
+					} else if (request->is_tech) {
+						u32 mineral_cost = techdata_dat::mineral_cost[request->id];
+						u32 vespene_cost = techdata_dat::vespene_cost[request->id];
+						g_aiscript_controller[player].minerals_needed += mineral_cost * count;
+						g_aiscript_controller[player].vespene_needed  += vespene_cost * count;
+						for (u32 i = 0; i < count; ++i) {
+							helper::ai_add_spending_request(request->id, player, RequestType::Tech, request->priority, town);
 						}
 					} else {
 						bool request_base = request->only_if_needed ? false : true;
