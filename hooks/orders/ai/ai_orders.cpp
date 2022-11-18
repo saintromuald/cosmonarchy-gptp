@@ -2308,8 +2308,37 @@ namespace hooks {
 		return false;
 	}
 
+	static bool ai_has_an_active_attack(u32 player) {
+		for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
+			AiRegion* ai_region = scbw::get_ai_region(player, i);
+			if (ai_region->state == RegionState::ContinueAttackHere
+			||	ai_region->state == RegionState::Attacking) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static u32 ai_force_in_region(AiRegion* ai_region) {
+		u32 player = ai_region->player;
+		u32 total_force = 0;
+		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
+			Unit* unit = military_ai->unit;
+			AiRegion* unit_ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+			if (unit_ai_region == ai_region) {
+				if (unit->ground_strength > unit->air_strength) {
+					total_force += unit->ground_strength;
+				} else {
+					total_force += unit->air_strength;
+				}
+			}
+		}
+		return total_force;
+	}
+
 	// Hooked to improve functionality. -Veeq7
 	void __stdcall ai_region_grouping_for_attack(AiRegion* ai_region) { // 0043EEC0
+		u32 player = ai_region->player;
 		helper::ai_recalculate_region_strength(ai_region);
 		helper::ai_target_enemy_in_region(ai_region);
 		if (ai_region->flags & 0x20 && helper::ai_move_military_to_defend(ai_region)) {
@@ -2326,7 +2355,7 @@ namespace hooks {
 			helper::ai_set_region_state(RegionState::Nothing, ai_region);
 			Unit* attack_target = helper::ai_pick_attack_target_no_buildings(ai_region);
 			if (attack_target) {
-				AiRegion* target_ai_region = scbw::get_ai_region(ai_region->player, scbw::get_region_id(attack_target->position));
+				AiRegion* target_ai_region = scbw::get_ai_region(player, scbw::get_region_id(attack_target->position));
 				helper::ai_set_region_state(RegionState::PreparingAttackOldUnreachable, target_ai_region);
 				helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, false, true);
 			} else {
@@ -2335,6 +2364,7 @@ namespace hooks {
 			return;
 		}
 
+		/*
 		if (!helper::ai_attack_timer_decrement(ai_region->player)) {
 			u32 attack_wave[63] = {};
 			u32 attack_count = helper::get_missing_attack_force_units(ai_region, attack_wave, true);
@@ -2356,6 +2386,33 @@ namespace hooks {
 			}
 
 			if (helper::ai_has_forces_moving_to_group(ai_region->player)) {
+				return;
+			}
+		}
+		*/
+
+		u32 last_attack_time = g_aiscript_controller[player].last_attack_seconds;
+		if (last_attack_time) {
+			u32 elapsed = *g_elapsed_time_seconds - last_attack_time;
+			if (elapsed <= 30) {
+				return;
+			} else if (elapsed <= 120) {
+				u32 min_force = 1000;
+				if (elapsed <= 90) {
+					min_force = 1500;
+				} else if (elapsed <= 60) {
+					min_force = 2000;
+				}
+				if (ai_has_an_active_attack(player)) {
+					min_force /= 2;
+				}
+				u32 total_force = ai_force_in_region(ai_region);
+				if (total_force < min_force) {
+					return;
+				}
+			}
+
+			if (helper::ai_has_forces_moving_to_group(player)) {
 				return;
 			}
 		}
