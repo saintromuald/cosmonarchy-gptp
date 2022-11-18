@@ -2172,11 +2172,10 @@ namespace hooks {
 	}
 
 	// Hooked to help AI use transports more intelligently. -Pr0nogo
-	s32 ai_can_travel_to_region(AiRegion* source, AiRegion* destination) // 0043A790
-	{
-		s32 has_ground_military;
-		s32 cant_attack_ground;
-		s32 cant_attack_air;
+	s32 ai_can_travel_to_region(AiRegion* source, AiRegion* destination) { // 0043A790
+		b32 has_ground_military;
+		b32 cant_attack_ground;
+		b32 cant_attack_air;
 		helper::ai_get_region_military_types(destination, &has_ground_military, &cant_attack_ground, &cant_attack_air);
 		if (has_ground_military)
 		{
@@ -2246,68 +2245,127 @@ namespace hooks {
 	}
 
 	// Hooked to improve functionality. -Pr0nogo
-	b32 ai_prepare_attack(u32 player, u32 x, u32 y, u32 override_last_attack, u32 fallback_air_only) // 0043ABB0
-	{
+	bool ai_prepare_attack(u32 player, u32 x, u32 y, u32 overwrite_last_attack, u32 fallback_air_only) { // 0043ABB0
 		if (g_aiscript_controller[player].attack_failed) {
-			return 1;
+			return true;
 		}
 		if (g_aiscript_controller[player].ai_attack_group_region) {
-//			return (g_ai_region_captains[player][g_aiscript_controller[player].ai_attack_group_region] - 47) != 8;
+			AiRegion* grouping_region = scbw::get_ai_region(player, g_aiscript_controller[player].ai_attack_group_region);
+			return grouping_region->state != RegionState::PreparingAttack;
 		}
 
-		char regions_list[2500];
-		memset(regions_list, 0, sizeof(regions_list));
+		char regions_list[2500] = {};
 		helper::populate_regions_with_own(regions_list, player);
 		helper::populate_regions_with_enemy(player, regions_list);
 		while (helper::ai_get_neighboring_region_types(regions_list)) {
 			helper::ai_finish_region_accessibility(regions_list);
 		}
-		u16 attacking_unit_id = g_aiscript_controller[player].attackers[0];
-		u16* attacking_unit_count = g_aiscript_controller[player].attackers;
-		u32 air_attack = attacking_unit_id != 0;
-		if (attacking_unit_id)
-		{
-			while (units_dat::destroy_score[2 * attacking_unit_id + 226] & 4)
-			{
-				attacking_unit_id = attacking_unit_count[1];
-				++attacking_unit_count;
-				if (!attacking_unit_id)
-				{
-					goto exit;
+
+		u16* attackers = g_aiscript_controller[player].attackers;
+		u32 air_only_attack = false;
+		if (attackers[0]) {
+			air_only_attack = true;
+			for (u32 i = 0; i < 63; ++i) {
+				u32 unit_id = attackers[i];
+				if (!unit_id) {
+					break;
+				}
+				unit_id -= 1;
+				if (!(units_dat::base_property[unit_id] & UnitProperty::Flyer)) {
+					air_only_attack = false;
+					break;
 				}
 			}
-			air_attack = 0;
 		}
-	exit:
-		g_aiscript_controller[player].ai_flags.is_secure_finished == 1; // was |= 1u
-		if (!helper::ai_set_attack_grouping_region(air_attack, 0, player, regions_list, x, y, override_last_attack)
-		&&  !helper::ai_set_attack_grouping_region(air_attack, 1, player, regions_list, x, y, override_last_attack))
-		{
-			if (!fallback_air_only || air_attack) {
-				return 1;
-			}
-			if (!helper::ai_set_attack_grouping_region(1, 0, player, regions_list, x, y, override_last_attack)
-			&&  !helper::ai_set_attack_grouping_region(1, 1, player, regions_list, x, y, override_last_attack))
-			{
-				g_aiscript_controller[player].attack_failed = 1;
-				return 1;
-			}
+
+		g_aiscript_controller[player].ai_flags.is_secure_finished = true;
+		if (helper::ai_set_attack_grouping_region(air_only_attack, false, player, regions_list, x, y, overwrite_last_attack)
+		||  helper::ai_set_attack_grouping_region(air_only_attack, true,  player, regions_list, x, y, overwrite_last_attack)) {
+			return false;
 		}
-		return 0;
+		if (!fallback_air_only || air_only_attack) {
+			return true;
+		}
+		if (helper::ai_set_attack_grouping_region(true, false, player, regions_list, x, y, overwrite_last_attack)
+		||	helper::ai_set_attack_grouping_region(true, true,  player, regions_list, x, y, overwrite_last_attack)) {
+			g_aiscript_controller[player].attack_failed = true;
+			return false;
+		}
+		return true;
 	}
 
 	// Hooked to improve functionality. -Pr0nogo
-	u32 ai_attack_timer_decrement(u32 player) // 00447090
-	{
-		u32 seconds = g_aiscript_controller[player].last_attack_seconds;
-		if (seconds)
-		{
-			seconds = *g_elapsed_time_seconds - seconds >= 120;
-			if (seconds)
-			{
-				g_aiscript_controller[player].last_attack_seconds = 0;
+	bool ai_attack_timer_decrement(u32 player) { // 00447090
+		u32 last_attack_time = g_aiscript_controller[player].last_attack_seconds;
+		if (!last_attack_time) {
+			return false;
+		}
+		u32 elapsed = *g_elapsed_time_seconds - last_attack_time;
+		if (elapsed >= 120) {
+			g_aiscript_controller[player].last_attack_seconds = 0;
+			return true;
+		}
+		return false;
+	}
+
+	// Hooked to improve functionality. -Veeq7
+	void __stdcall ai_region_grouping_for_attack(AiRegion* ai_region) { // 0043EEC0
+		helper::ai_recalculate_region_strength(ai_region);
+		helper::ai_target_enemy_in_region(ai_region);
+		if (ai_region->flags & 0x20 && helper::ai_move_military_to_defend(ai_region)) {
+			return;
+		}
+
+		b32 cant_attack_ground = false; 
+		b32 cant_attack_air = false; 
+		b32 has_ground_military = false; 
+		helper::ai_get_region_military_types(ai_region, &has_ground_military, &cant_attack_ground, &cant_attack_air);
+
+		Region* region = scbw::get_region(ai_region->region);
+		if (has_ground_military && region->accessibility_flags == RegionAirOnly || helper::ai_can_travel_to_region(ai_region, ai_region) ) {
+			helper::ai_set_region_state(RegionState::Nothing, ai_region);
+			Unit* attack_target = helper::ai_pick_attack_target_no_buildings(ai_region);
+			if (attack_target) {
+				AiRegion* target_ai_region = scbw::get_ai_region(ai_region->player, scbw::get_region_id(attack_target->position));
+				helper::ai_set_region_state(RegionState::PreparingAttackOldUnreachable, target_ai_region);
+				helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, false, true);
+			} else {
+				helper::ai_iterate_town_something(ai_region);
+			}
+			return;
+		}
+
+		if (!helper::ai_attack_timer_decrement(ai_region->player)) {
+			u32 attack_wave[63] = {};
+			u32 attack_count = helper::get_missing_attack_force_units(ai_region, attack_wave, true);
+			if (attack_count) {
+				bool do_attack = false;
+				for (u32 i = 0; i < 63; ++i) {
+					u32 unit_id = attack_wave[i];
+					if (unit_id != UnitId::None && unit_id < UnitId::Count) {
+						break;
+					}
+					if (i >= attack_count) {
+						do_attack = true;
+						break;
+					}
+				}
+				if (!do_attack) {
+					return;
+				}
+			}
+
+			if (helper::ai_has_forces_moving_to_group(ai_region->player)) {
+				return;
 			}
 		}
-		return seconds;
+
+		u32 target_region = ai_region->target_region;
+		if (target_region) {
+			AiRegion* target_ai_region = scbw::get_ai_region(ai_region->player, target_region);
+			helper::ai_set_region_state(RegionState::ContinueAttackHere, target_ai_region);
+			helper::ai_move_military_to_other_region(target_ai_region, ai_region, 0, 0, 1);
+		}
+		helper::ai_set_region_state(RegionState::Nothing, ai_region);
 	}
 }
