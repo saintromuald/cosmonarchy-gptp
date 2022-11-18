@@ -2749,19 +2749,19 @@ namespace scbw {
 	u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
 	{
 		if (weapon_id == WeaponId::CohortGaussPistols
-			|| weapon_id == WeaponId::HarakanFlameThrower
-			|| weapon_id == WeaponId::HypnagogueKaleidoscopeCannon
-			|| weapon_id == WeaponId::PazuzuJupiterDriver
-			|| weapon_id == WeaponId::ZealotPsiBlades
-			|| weapon_id == WeaponId::LegionnairePsiSabers
-			|| weapon_id == WeaponId::AmaranthPsiCleaver
-			|| weapon_id == WeaponId::GolemBloodlessAssault
-			|| weapon_id == WeaponId::PariahIconoclastBlades
-			|| weapon_id == WeaponId::StarSovereignCelestialCannon
-			|| weapon_id == WeaponId::LiiraliskHollowedSpores
-			|| weapon_id == WeaponId::BactaliskCorrosiveAcid
-			|| weapon_id == WeaponId::AlmaksaliskPiercingSpines
-			|| weapon_id == WeaponId::KeskathalorScreamingVenom)
+		||  weapon_id == WeaponId::HarakanFlameThrower
+		||  weapon_id == WeaponId::HypnagogueKaleidoscopeCannon
+		||  weapon_id == WeaponId::PazuzuJupiterDriver
+		||  weapon_id == WeaponId::ZealotPsiBlades
+		||  weapon_id == WeaponId::LegionnairePsiSabers
+		||  weapon_id == WeaponId::AmaranthPsiCleaver
+		||  weapon_id == WeaponId::GolemBloodlessAssault
+		||  weapon_id == WeaponId::PariahIconoclastBlades
+		||  weapon_id == WeaponId::StarSovereignCelestialCannon
+		||  weapon_id == WeaponId::LiiraliskHollowedSpores
+		||  weapon_id == WeaponId::BactaliskCorrosiveAcid
+		||  weapon_id == WeaponId::AlmaksaliskPiercingSpines
+		||  weapon_id == WeaponId::KeskathalorScreamingVenom)
 		{
 			return 2;
 		}

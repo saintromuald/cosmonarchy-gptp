@@ -239,6 +239,10 @@ namespace
 			return 120;
 		}
 		if (scbw::unit_id_is_tech(unit_id)) {
+			return 110;
+		}
+		if (units_dat::group_flags[unit_id].is_factory)
+		{
 			return 100;
 		}
 		return 80;

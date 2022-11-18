@@ -127,6 +127,7 @@ enum ExtValueId
 	ValueSwarmhold,
 	ValueOptectonLaunchPos1,
 	ValueOptectonLaunchPos2,
+	ValueApollyoidAdhesiveStacks,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -142,7 +143,7 @@ enum ExtTimerId
 {
 	TimerKaiserRampage,
 	TimerKaiserRampageTimeout,
-	TimerMaledictionSlow,						// unused
+	TimerApollyoidAdhesive,
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
 	TimerLakiziliskETA,

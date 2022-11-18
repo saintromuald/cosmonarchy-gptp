@@ -2424,6 +2424,17 @@ namespace hooks {
 			scbw::astral_blessing_proc(unit, unit_ext->values[ValuePatriarchAstralRulePlayer], WeaponId::PatriarchIronhandWeaver);
 			unit_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
 		}
+
+		// Harakan - Apollyoid Adhesive
+		{
+			u32 timer = unit_ext->timers[TimerApollyoidAdhesive];
+			if (timer > 1) {
+			//	unit->damage_with_custom(unit_ext->values[ValueApollyoidAdhesiveStacks]); // TODO: deal this over time. -Pr0nogo
+			}
+			else if (timer == 1) {
+				unit_ext->values[ValueApollyoidAdhesiveStacks] = 0;
+			}
+		}
 	}
 
 	bool game_on() {

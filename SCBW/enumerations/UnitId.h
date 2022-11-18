@@ -125,7 +125,7 @@ namespace UnitId
 		ProtossEmpyrean										= 82,		// Gantrithor
 		ProtossDemiurge										= 86,		// Danimoth
 		ProtossPariah										= 87,		// Aldaris
-		ProtossVassal										= 88,		// Artanis
+		ProtossVassalOld									= 88,		// Artanis
 		ProtossSimulacrum									= 89,		// Rhynadon
 		ProtossCharlatan									= 90,		// Bengalaas
 		ProtossExemplar										= 94,		// Kakaru
@@ -156,6 +156,7 @@ namespace UnitId
 		ProtossMonogram										= 348,
 		ProtossVagrantShade									= 351,
 		ProtossAccantor										= 352,		// The new one
+		ProtossVassal										= 360,		// The new one
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1

@@ -119,7 +119,7 @@ namespace hooks
 			if (ai->type == 2 || ai->type == 3) {
 				if (!ai->town) {
 					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
-						data.attacker->id, data.attacker->player, data.target->id, data.target->player);
+																   data.attacker->id, data.attacker->player, data.target->id, data.target->player);
 					can_damage = false;
 				}
 			}
@@ -344,6 +344,13 @@ namespace hooks
 						}
 					}
 				} break;
+				case UnitId::TerranHarakan: {
+					// Harakan Apollyoid Adhesive - stack damage over time
+					if (units_dat::base_property[data.target->id] & UnitProperty::Building) {
+						target_ext->values[ValueApollyoidAdhesiveStacks]++;
+						target_ext->timers[TimerApollyoidAdhesive] = 49;
+					}
+				}
 			}
 		}
 
