@@ -1877,7 +1877,7 @@ namespace scbw {
 		}
 
 		EntryArray allied_structures = {};
-		unit_search_radial(&allied_structures, victim->position, 30 * 32);
+		unit_search_radial(&allied_structures, victim->position, 20 * 32);
 		unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
 		if (allied_structures.count) {
 			for (u32 ai_player = 0; ai_player < 8; ++ai_player) {
