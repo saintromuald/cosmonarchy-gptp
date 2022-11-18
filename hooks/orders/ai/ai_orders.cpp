@@ -2411,10 +2411,7 @@ namespace hooks {
 					return;
 				}
 			}
-
-			if (helper::ai_has_forces_moving_to_group(player)) {
-				return;
-			}
+			g_aiscript_controller[player].last_attack_seconds = 0;
 		}
 
 		u32 target_region = ai_region->target_region;
