@@ -2324,13 +2324,10 @@ namespace hooks {
 		u32 total_force = 0;
 		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
 			Unit* unit = military_ai->unit;
-			AiRegion* unit_ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
-			if (unit_ai_region == ai_region) {
-				if (unit->ground_strength > unit->air_strength) {
-					total_force += unit->ground_strength;
-				} else {
-					total_force += unit->air_strength;
-				}
+			if (unit->ground_strength > unit->air_strength) {
+				total_force += unit->ground_strength;
+			} else {
+				total_force += unit->air_strength;
 			}
 		}
 		return total_force;
