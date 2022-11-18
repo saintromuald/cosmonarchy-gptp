@@ -344,13 +344,6 @@ namespace hooks
 						}
 					}
 				} break;
-				case UnitId::TerranHarakan: {
-					// Harakan Apollyoid Adhesive - stack damage over time
-					if (units_dat::base_property[data.target->id] & UnitProperty::Building) {
-						target_ext->values[ValueApollyoidAdhesiveStacks]++;
-						target_ext->timers[TimerApollyoidAdhesive] = 49;
-					}
-				}
 			}
 		}
 
@@ -461,6 +454,11 @@ namespace hooks
 
 			// These bypass Carapace Swarm
 			switch (data.weapon_id) {
+				case WeaponId::HarakanFlameThrower:
+				{
+					target_ext->values[ValueApollyoidAdhesiveStacks]++;
+					target_ext->timers[TimerApollyoidAdhesive] = 49;
+				} break;
 				case WeaponId::GladiusPlasmaFlurry: {
 					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
 					if (source_unit && target_ext->timers[TimerGladiusBindingPlasma]) {
