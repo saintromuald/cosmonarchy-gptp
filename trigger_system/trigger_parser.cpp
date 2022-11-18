@@ -544,10 +544,22 @@ Token get_short_unit_name(u32 unit_id) {
 	return token;
 }
 
+static bool str_equals_lazy(const char* a, const char* b) {
+	while (*a++ && *b++) {
+		if (tolower(*a) != tolower(*b)) {
+			if ((*a != ' ' && *a != '_')
+			||  (*b != ' ' && *b != '_')) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 u32 parser_get_unit_id(Parser* parser) {
 	Token token = parser_get_string(parser);
 	for (u32 i = 0; i < UnitId::Count; ++i) {
-		if (stricmp(token.data, get_short_unit_name(i).data) == 0) {
+		if (str_equals_lazy(token.data, get_short_unit_name(i).data)) {
 			return i;
 		}
 	}
@@ -803,6 +815,11 @@ bool token_eq(Token* token, char* string) {
 bool token_eqi(Token* token, char* string) {
 	if (!string) return false;
 	return stricmp(token->data, string) == 0;
+}
+
+bool token_eql(Token* token, char* string) {
+	if (!string) return false;
+	return str_equals_lazy(token->data, string);
 }
 
 bool parser_eq(Parser* parser, char* string) {
