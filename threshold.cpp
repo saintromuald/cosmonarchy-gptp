@@ -1060,9 +1060,9 @@ void init_threshold() {
 
 	threshold_config.total_count = 33;
 	threshold_config.auto_scale = 0.5;
-	threshold_config.timer = 5 * 60 * 24;
+	threshold_config.timer = 4 * 60 * 24;
 	threshold_config.initial_count = 2;
-	threshold_config.min_count = 1;
+	threshold_config.min_count = 2;
 }
 
 void end_threshold() {
@@ -1289,7 +1289,11 @@ void update_threshold() {
 						fraud_class = FraudClass_Super;
 					}
 				} else if (threshold.used_type_count[FraudClass_God]) {
-					fraud_class = FraudClass_God;
+					if (threshold.used_type_count[FraudClass_God] < 3) {
+						fraud_class = FraudClass_None;
+					} else {
+						fraud_class = FraudClass_God;
+					}
 				}
 
 				if (place_fraud(player, fraud_class, false)) {
@@ -1301,7 +1305,7 @@ void update_threshold() {
 	}
 
 	if (!non_god_alive_count && threshold.used_count >= god_spawn_breakpoint && threshold.used_type_count[FraudClass_God] < 3) {
-		if (threshold.used_type_count[FraudClass_God] < 2) {
+		if (threshold.used_type_count[FraudClass_God] < 3) {
 			threshold.timer = 0;
 		}
 		for (u32 player = 0; player < PlayerLimit; ++player) {
