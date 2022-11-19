@@ -1662,6 +1662,8 @@ namespace hooks {
 			return true;
 		}
 
+		return false; // Currently disable the new stuff, since we seem to have issues with grouping? -Veeq7
+
 		// Forbid in-combat units from grouping
 		if (!is_valid_grouping_unit(unit)) {
 			return false;
