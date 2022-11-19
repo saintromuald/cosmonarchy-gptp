@@ -236,7 +236,7 @@ enum ExtTimerId
 	TimerAI_KitingCombat,
 	TimerAI_Patience,
 
-	TimerRepulse,
+	TimerUseLastRepulsion,
 
 	TimerCount,
 };
@@ -299,7 +299,7 @@ struct UnitExt
 	Vector32f				repulsion_vector;
 	Point16					last_bullet_launch_position;
 	Point16					ai_kiting_origin;
-	Vector32				last_random_repulse;
+	Vector32f				last_repulsion;
 //	Target					rally;
 
 	u8						seen_by_flags;
