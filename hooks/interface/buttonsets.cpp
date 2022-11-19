@@ -1187,8 +1187,8 @@ namespace hooks {
 									case UnitId::ZergAgrileth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
-											|| player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
-											|| player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+										||  player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
+										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1202,7 +1202,7 @@ namespace hooks {
 									case UnitId::ZergNathrokor:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazrokPool)
-											|| player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
+										||  player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1216,7 +1216,7 @@ namespace hooks {
 									case UnitId::ZergSkithrokor:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrokDen)
-											|| player_has_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+										||  player_has_unit_id(unit->player, UnitId::ZergGorgralSwamp))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1230,7 +1230,7 @@ namespace hooks {
 									case UnitId::ZergGorgrokor:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
-											|| player_has_unit_id(unit->player, UnitId::ZergUltrokCavern))
+										||  player_has_unit_id(unit->player, UnitId::ZergUltrokCavern))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1244,7 +1244,7 @@ namespace hooks {
 									case UnitId::ZergCikralisk:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergMuthrokSpire)
-											|| player_has_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+										||  player_has_unit_id(unit->player, UnitId::ZergVithrathHaunt))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1258,7 +1258,7 @@ namespace hooks {
 									case UnitId::ZergAlmaksalisk:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergIzkagIteth)
-											|| player_has_unit_id(unit->player, UnitId::ZergChokralgantChazsal))
+										||  player_has_unit_id(unit->player, UnitId::ZergChokralgantChazsal))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1272,7 +1272,7 @@ namespace hooks {
 									case UnitId::ZergMatraleth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergMatravilNest)
-											|| player_has_unit_id(unit->player, UnitId::ZergAlmakisAntre))
+										||  player_has_unit_id(unit->player, UnitId::ZergAlmakisAntre))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1285,7 +1285,7 @@ namespace hooks {
 									case UnitId::ZergGeszithalor:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergGeszkathGrotto)
-											|| player_has_unit_id(unit->player, UnitId::ZergAlkajChasm))
+										||  player_has_unit_id(unit->player, UnitId::ZergAlkajChasm))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1297,7 +1297,7 @@ namespace hooks {
 									case UnitId::ZergIsthrathaleth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergElthisthMound)
-											|| player_has_unit_id(unit->player, UnitId::ZergRakzogthRoost))
+										||  player_has_unit_id(unit->player, UnitId::ZergRakzogthRoost))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1358,7 +1358,7 @@ namespace hooks {
 									case UnitId::ZergVorvrokor:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazrokPool)
-											|| player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
+										||  player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
 										{
 											current_button_state = Button_State::Enabled;
 										}
