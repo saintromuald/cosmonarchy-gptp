@@ -2759,6 +2759,7 @@ namespace scbw {
 		||  weapon_id == WeaponId::PariahIconoclastBlades
 		||  weapon_id == WeaponId::StarSovereignCelestialCannon
 		||  weapon_id == WeaponId::LiiraliskHollowedSpores
+		||  weapon_id == WeaponId::MortothrokorWickedIncisors
 		||  weapon_id == WeaponId::BactaliskCorrosiveAcid
 		||  weapon_id == WeaponId::AlmaksaliskPiercingSpines
 		||  weapon_id == WeaponId::KeskathalorScreamingVenom)

@@ -277,5 +277,6 @@ namespace WeaponId {
 		GhitorokorGnashingTendrils			= 166,
 		ZobrioliskRapidSpines				= 167,
 		TetcaerokorCleavingMaw				= 177,
+		MortothrokorWickedIncisors			= 192,
 	};
 }
