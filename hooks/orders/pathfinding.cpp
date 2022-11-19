@@ -6,10 +6,10 @@ namespace hooks
 {
     static Box16 unit_get_box(Unit* unit) {
         Box16 box  = {};
-        box.left   = unit->position.x - units_dat::unit_bounds[unit->id].left;
-        box.top    = unit->position.y - units_dat::unit_bounds[unit->id].top;
-        box.right  = unit->position.x + units_dat::unit_bounds[unit->id].right;
-        box.bottom = unit->position.y + units_dat::unit_bounds[unit->id].bottom;
+        box.left   = unit->position.x - units_dat::unit_bounds[unit->id].left   - 1;
+        box.top    = unit->position.y - units_dat::unit_bounds[unit->id].top    - 1;
+        box.right  = unit->position.x + units_dat::unit_bounds[unit->id].right  + 2;
+        box.bottom = unit->position.y + units_dat::unit_bounds[unit->id].bottom + 2;
         return box;
     }
 
