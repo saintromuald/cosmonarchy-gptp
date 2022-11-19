@@ -1106,10 +1106,10 @@ namespace scbw {
 	// Identical to function @ 0x004E6140
 	void create_shield_overlay(Unit* unit, u32 attackDirection) {
 		const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
-		u32 frameAngle = (attackDirection - 124) / 8 % 32;
+		u32 frame_angle = (attackDirection - 124) / 8 % 32;
 
-		Point8 offset = shield_lo->get_offset(unit->sprite->main_graphic->direction, frameAngle);
-		unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+		Point8 offset = shield_lo->get_offset(unit->sprite->main_graphic->direction, frame_angle);
+		unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);
 	}
 
 	void decloak_proc(Unit* unit) {

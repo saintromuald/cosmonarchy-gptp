@@ -1,16 +1,11 @@
 #include "unit_movement.h"
 #include <SCBW/api.h>
 
-namespace
-{ // helper declarations
-
-}
-
 namespace hooks
 {
 
-	s32 unitMovementDormant(Unit* unit)
-	{     // 0046A8D0
+	s32 unit_movement_dormant(Unit* unit) // 0046A8D0
+	{
 		s32 flags; // edx
 		Sprite* sprite; // ecx
 
@@ -29,11 +24,11 @@ namespace hooks
 		if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal))
 		{
 			sprite = unit->sprite;
-			if (sprite != nullptr && unit->move_target.pt.x == sprite->position.x
-				&& unit->move_target.pt.y == sprite->position.y
-				&& ((flags & UnitStatus::Unmovable) != 0) != -1
-				&& unit->next_target_waypoint.x == unit->position.x
-				&& unit->next_target_waypoint.y == unit->position.y)
+			if  (sprite != nullptr && unit->move_target.pt.x == sprite->position.x
+			&&   unit->move_target.pt.y == sprite->position.y
+			&& ((flags & UnitStatus::Unmovable) != 0) != -1
+			&&   unit->next_target_waypoint.x == unit->position.x
+			&&   unit->next_target_waypoint.y == unit->position.y)
 			{
 				return 0;
 			}
@@ -42,32 +37,32 @@ namespace hooks
 		return 1;
 	}
 
-	void move_unit(Unit* unit, s16 x, s16 y, bool ignoreCollision)
+	void move_unit(Unit* unit, s16 x, s16 y, bool ignore_collision) // 004EB9F0
 	{
-		Point16 oldPos = { unit->sprite->position.x, unit->sprite->position.y };
-		Point16 newPos = { x, y };
-		helper::fix_target_location(&newPos, unit->id);
-        unit->position.x = newPos.x;
-        unit->position.y = newPos.y;
-        unit->halt.x = newPos.x << 8;
-        unit->halt.y = newPos.y << 8;
-        helper::move_sprite(unit->sprite, newPos.x, newPos.y);
+		Point16 old_pos = { unit->sprite->position.x, unit->sprite->position.y };
+		Point16 new_pos = { x, y };
+		helper::fix_target_location(&new_pos, unit->id);
+        unit->position.x = new_pos.x;
+        unit->position.y = new_pos.y;
+        unit->halt.x = new_pos.x << 8;
+        unit->halt.y = new_pos.y << 8;
+        helper::move_sprite(unit->sprite, new_pos.x, new_pos.y);
         if (unit->sprite)
         {
             if (unit->main_order_id)
             {
-                helper::set_move_target_xy(unit, newPos.x, newPos.y);
-                if (newPos.x != unit->next_target_waypoint.x || newPos.y != unit->next_target_waypoint.y)
+                helper::set_move_target_xy(unit, new_pos.x, new_pos.y);
+                if (new_pos.x != unit->next_target_waypoint.x || new_pos.y != unit->next_target_waypoint.y)
                 {
-                    unit->next_target_waypoint.x = newPos.x;
-                    unit->next_target_waypoint.y = newPos.y;
+                    unit->next_target_waypoint.x = new_pos.x;
+                    unit->next_target_waypoint.y = new_pos.y;
                 }
             }
         }
-        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignoreCollision)
+        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignore_collision)
         {
-            helper::updateUnitSortingInfo(newPos.x - oldPos.x, unit, newPos.y - oldPos.y);
-            if (!ignoreCollision && !(unit->sprite->flags & SpriteFlags::Hidden))
+            helper::update_unit_sorting_info(new_pos.x - old_pos.x, unit, new_pos.y - old_pos.y);
+            if (!ignore_collision && !(unit->sprite->flags & SpriteFlags::Hidden))
             {
                 helper::check_unstack(unit);
             }

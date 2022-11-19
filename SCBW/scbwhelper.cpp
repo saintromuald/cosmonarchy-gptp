@@ -8112,7 +8112,7 @@ namespace helper {
 		}
 	}
 
-	u32 updateUnitSortingInfo(u32 x_diff, Unit* unit, u32 y_diff) {
+	u32 update_unit_sorting_info(u32 x_diff, Unit* unit, u32 y_diff) {
 		const u32 Func_updateUnitSortingInfo = 0x0046A000;
 		static s32 result;
 		__asm {
