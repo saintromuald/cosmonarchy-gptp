@@ -544,16 +544,20 @@ Token get_short_unit_name(u32 unit_id) {
 	return token;
 }
 
+static char tolazy(char c) {
+	if (c == ' ') {
+		return '_';
+	}
+	return tolower(c);
+}
+
 static bool str_equals_lazy(const char* a, const char* b) {
 	while (*a++ && *b++) {
-		if (tolower(*a) != tolower(*b)) {
-			if ((*a != ' ' && *a != '_')
-			||  (*b != ' ' && *b != '_')) {
-				return false;
-			}
+		if (tolazy(*a) != tolazy(*b)) {
+			return false;
 		}
 	}
-	return true;
+	return *a == *b;
 }
 
 u32 parser_get_unit_id(Parser* parser) {
