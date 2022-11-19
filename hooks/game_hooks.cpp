@@ -2159,7 +2159,7 @@ namespace hooks {
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
-		// Game rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
+		// Game rule - Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 		if (unit->main_order_id == OrderId::Harvest1
 			|| unit->main_order_id == OrderId::HarvestGas1
 			|| unit->main_order_id == OrderId::ReturnMinerals

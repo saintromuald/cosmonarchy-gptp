@@ -120,41 +120,76 @@ namespace hooks
     }
 
     // Hooked to OoooooO. -Pr0nogo
-    void set_repulse_angle(Unit* unit) // 00453300
-    {
-        return;
-        if (unit->status & UnitStatus::Reacts)
-        {
-            if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && unit->id != UnitId::ProtossSteward)
-            {
-                if (!(unit->repulse_unk & 0xF0))
-                {
-                    u32 random = helper::randomize_short(37);
-                    unit->repulse_angle = random;
-                    s32 aids = (random >> 8) & 0xF0;
-                    if (!aids)
-                    {
-                        aids = -16;
-                    }
-                    unit->repulse_unk |= aids;
-                }
-                unit->repulse_unk &= 0xF8u;
-                Sprite* sprite = unit->sprite;
-                unit->drift_pos.x = (char)sprite->position.x / 48;
-                char pos_y_post = (char)sprite->position.y / 48;
-                char* handle = (char*)g_repulse_handle;
-                unit->drift_pos.y = pos_y_post;
-                char* CUCKDEATH = &handle[171 * pos_y_post + (u8)unit->drift_pos.x];
-                if ((u8)*CUCKDEATH < 0xFFu)
-                {
-                    ++* CUCKDEATH;
-                }
-            }
-        }
+    void set_repulse_angle(Unit* unit) { // 00453300
     }
 
-    u16 repulse_unit(Unit* unit, void* LOLRSK8S_EQUIPPED) // 004535A0
-    {
-        return 0;
+    void repulse_unit(Unit* unit, b32 should_repulse) { // 004535A0
+        if (unit->pathing_flags & 1
+        ||  unit->status & UnitStatus::CanNotReceiveOrders
+        ||  unit->status & UnitStatus::NoBrkCodeStart
+        ||  !(unit->status & UnitStatus::Reacts)
+        ||  unit->status & UnitStatus::IsGathering
+        ||  units_dat::base_property[unit->id] & UnitProperty::Building
+        ||  unit->id == UnitId::ProtossSteward
+        ||  unit->move_target.pt.x != unit->position.x
+        ||  unit->move_target.pt.y != unit->position.y) {
+            return;
+        }
+
+        EntryArray units = {};
+        Box32 unit_box  = {};
+        unit_box.left   = unit->get_left()   - 8;
+        unit_box.top    = unit->get_top()    - 8;
+        unit_box.right  = unit->get_right()  + 8;
+        unit_box.bottom = unit->get_bottom() + 8;
+        unit_search_rect(&units, unit_box);
+
+        bool collides = false;
+        u32 count = 0;
+        Vector32f repulsion = {};
+        for (u32 i = 0; i < units.count; ++i) {
+            Unit* target = units.units[i];
+            if (unit == target || target->pathing_flags & 1) {
+                continue;
+            }
+            collides = true;
+
+            Vector32f diff = {};
+            diff = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, target->move_target.pt));
+            if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
+                continue;
+            }
+
+            repulsion.x -= diff.x;
+            repulsion.y -= diff.y;
+            count += 1;
+        }
+
+        if (count) {
+            repulsion.x /= count;
+            repulsion.y /= count;
+        }
+
+        if (collides) {
+            if (!count || (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001)) {
+                UnitExt* unit_ext = get_unit_ext(unit);
+                if (!unit_ext->timers[TimerRepulse]) {
+                    unit_ext->timers[TimerRepulse] = 24;
+                    unit_ext->last_random_repulse = g_angle_distance[scbw::rand_between(0, 255)];
+                }
+                repulsion.x = unit_ext->last_random_repulse.x >> 8;
+                repulsion.y = unit_ext->last_random_repulse.y >> 8;
+            }
+
+            Point16 target = {};
+            target.x = unit->position.x + repulsion.x * (unit->flingy_top_speed / 256.0 / 2.0);
+            target.y = unit->position.y + repulsion.y * (unit->flingy_top_speed / 256.0 / 2.0);
+            target = scbw::clamp_point(target);
+
+            unit->move_target.pt.x = target.x;
+            unit->move_target.pt.y = target.y;
+            unit->next_movement_waypoint.x = target.x;
+            unit->next_movement_waypoint.y = target.y;
+        }
     }
 }

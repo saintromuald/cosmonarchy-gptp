@@ -123,27 +123,23 @@ namespace
 		}
 	}
 
-	void __declspec(naked) repulse_unit_wrapper() // 004535A0
-	{
-		static u16 result;
+	void __declspec(naked) repulse_unit_wrapper() { // 004535A0
 		static Unit* unit;
-		static void* LOLRSK8S_EQUIPPED;
-		__asm
-		{
+		static b32 should_repulse;
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV LOLRSK8S_EQUIPPED, EAX
+			MOV should_repulse, EAX
 			POP EAX
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::repulse_unit(unit, LOLRSK8S_EQUIPPED);
-		_asm
-		{
+		hooks::repulse_unit(unit, should_repulse);
+		_asm {
 			POPAD
-			MOV AX, result
+			MOV EAX, 0
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04

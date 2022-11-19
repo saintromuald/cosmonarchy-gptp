@@ -231,6 +231,9 @@ namespace scbw
 	inline Vector32f get_normalized_vector(Vector32 vector)
 	{
 		f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+		if (!dist) {
+			return {};
+		}
 		return { vector.x / dist, vector.y / dist };
 	}
 

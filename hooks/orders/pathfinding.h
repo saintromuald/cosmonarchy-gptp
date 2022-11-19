@@ -9,7 +9,7 @@ namespace hooks
 	bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y);														// 0049CB60
 	bool unit_has_path_to_unit(Unit* pather, Unit* target);														// 0049CBB0
 	void set_repulse_angle(Unit* unit);																			// 00453300
-	u16 repulse_unit(Unit* unit, void* LOLRSK8S_EQUIPPED);													// 004535A0
+	void repulse_unit(Unit* unit, b32 should_repulse);															// 004535A0
 
 	void inject_pathfinding_hooks();
 }

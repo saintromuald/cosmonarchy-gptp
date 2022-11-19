@@ -226,7 +226,7 @@ struct UnitLayout
 	/*0x018*/ Point16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
 														// Equal to moveToPos for air units since they don't need to navigate around buildings.
 	/*0x01C*/ Point16   next_target_waypoint;			// The desired position
-	/*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, movement_flags::Enum contains possible explanations
+	/*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, MovementFlags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
 	/*0x022*/ u8        flingy_turn_speed;				// AKA flingy turn radius
 	/*0x023*/ u8        velocity_direction_1;			/*
