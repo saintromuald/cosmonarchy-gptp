@@ -896,7 +896,7 @@ namespace helper {
 	s32 check_energy_for_tech_use(s32 tech_id);																// 00423660
 
 	//// pathfinding
-	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
+	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, Point16 position_xy);						// 004EB720
 	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior

@@ -4,77 +4,87 @@
 
 namespace hooks
 {
+    static Box16 unit_get_box(Unit* unit) {
+        Box16 box  = {};
+        box.left   = unit->position.x - units_dat::unit_bounds[unit->id].left;
+        box.top    = unit->position.y - units_dat::unit_bounds[unit->id].top;
+        box.right  = unit->position.x + units_dat::unit_bounds[unit->id].right;
+        box.bottom = unit->position.y + units_dat::unit_bounds[unit->id].bottom;
+        return box;
+    }
+
+    static bool unit_aabb(Unit* a, Unit* b) {
+        Box16 box_a = unit_get_box(a);
+        Box16 box_b = unit_get_box(b);
+        return box_a.left <= box_b.right
+            && box_b.left <= box_a.right
+            && box_a.top  <= box_b.bottom
+            && box_b.top  <= box_a.bottom;
+    }
+
+    // Hooked to improve functionality -Veeq7
+    b32 __fastcall is_point_at_unit_border(u32 unused, Unit* target_unit, Unit* unit, Point16 target_point) { // 0042DA90
+        if (unit_aabb(unit, target_unit)) {
+            return true;
+        }
+        return false;
+    }
+
+    static Point16 get_target_point(Unit* unit, Unit* target) {
+        Point16 position = unit->position;
+        Box16 box = unit_get_box(target);
+        if (position.x < box.left) {
+            position.x = box.left;
+        }
+        if (position.x > box.right) {
+            position.x = box.right;
+        }
+        if (position.y < box.top) {
+            position.y = box.top;
+        }
+        if (position.y > box.bottom) {
+            position.y = box.bottom;
+        }
+        return position;
+    }
+
     // Hooked to resolve contextual order issues - Pr0nogo
-    s32 move_to_target(Unit* target, Unit* unit) // 004EB720
-    {
-        Unit* orderTargetUnit = unit->order_target.unit;
-        if (orderTargetUnit == nullptr
-            || target == nullptr
-            || unit == nullptr)
-        {
-            return 0;
+    s32 move_to_target(Unit* target, Unit* unit) { // 004EB720
+        Point16 new_target = get_target_point(unit, target);
+        if (target == unit->move_target.unit
+        && ((unit->position.x == new_target.x && unit->position.y == new_target.y)
+            || helper::isPointAtUnitBorder(0, unit->move_target.unit, unit, unit->move_target.pt))) {
+            unit->status &= ~UnitStatus::Unmovable;
+            return true;
+        }
+        if (unit->unit_ai
+        &&  unit->main_order_id != OrderId::Pickup4
+        &&  helper::ai_prepare_moving_to(unit, target->position.x, target->position.y)) {
+            return false;
         }
 
-        Sprite* orderTargetSprite = orderTargetUnit->sprite;
-        s16 orderTargetX = unit->order_target.pt.x;
-        s16 orderTargetY = unit->order_target.pt.y;
-        s32 result;
-
-        if (target != nullptr) // todo: probably remove this, since target is already null checked
-        {
-            if (target == orderTargetUnit)
-            {
-                scbw::print("target == orderTargetUnit");
-                unit->status &= 0xFFF7FFFF;
-                return 1;
-            }
-            else if ((orderTargetX == orderTargetSprite->position.x) && (orderTargetY == orderTargetSprite->position.y))
-            {
-                scbw::print("targetX = spriteX && targetY = spriteY");
-                unit->status &= 0xFFF7FFFF;
-                return 1;
-            }
-            else if (helper::isPointAtUnitBorder(orderTargetY, orderTargetUnit, unit, *(s32*)&unit->order_target))
-            {
-                scbw::print("isPointAtUnitBorder == true");
-                unit->status &= 0xFFF7FFFF;
-                return 1;
-            }
-            else if (unit->unit_ai && unit->main_order_id != 96 && helper::ai_prepare_moving_to(unit, target->sprite->position.x, target->sprite->position.y))
-            {
-                scbw::print("AI");
-                return 0;
-            }
+        UnitPath* path = (UnitPath*)unit->path;
+        if (path) {
+            path->is_calculating |= 1;
         }
-
-        UnitPath* pathVar = (UnitPath*)unit->path;
-        if (pathVar)
-        {
-            pathVar->is_calculating |= 1u;
+        if (new_target.x != unit->move_target.pt.x
+        ||  new_target.y != unit->move_target.pt.y
+        ||  target != unit->move_target.unit) {
+            unit->move_target.unit = target;
+            unit->move_target.pt = new_target;
+            unit->next_movement_waypoint = new_target;
+            unit->movement_flags &= ~4;
+            unit->movement_flags |= 1;
         }
-        Sprite* targetSprite = target->sprite;
-        s16 targetSpriteX = targetSprite->position.x;
-        s16 targetSpriteY = targetSprite->position.y;
-        if (targetSpriteX != unit->order_target.pt.x || targetSpriteY != unit->order_target.pt.y || target != unit->order_target.unit)
-        {
-            unit->order_target.pt.y = targetSpriteY;
-            unit->order_target.pt.x = targetSpriteX;
-            char movementFlagsVar = unit->movement_flags & 0xFB;
-            Point16 targetPoint = unit->order_target.pt;
-            unit->order_target.unit = target;
-            unit->movement_flags = movementFlagsVar | 1;
-            unit->next_target_waypoint = targetPoint;
-        }
-        Order* unitOrder = unit->order_queue_head;
         unit->recent_order_timer = 15;
-        unit->status = unit->status & 0xFFF7FFFF;
-        if (!unitOrder || orders_dat::button_icon[unitOrder->order_id])
-        {
-            unit->movement_flags &= 0xDFu;
-            return 1;
+        unit->status &= ~UnitStatus::Unmovable;
+        Order* unit_order = unit->order_queue_head;
+        if (!unit_order || orders_dat::button_icon[unit_order->order_id]) {
+            unit->movement_flags &= ~0x20;
+        } else {
+            unit->movement_flags |= 0x20;
         }
-        unit->movement_flags |= 0x20u;
-        return 1;
+        return true;
     }
 
     // Hooked because the helper is fucked - Pr0nogo

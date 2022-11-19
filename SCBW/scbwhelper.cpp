@@ -7231,7 +7231,7 @@ namespace helper {
 	}
 
 	// For move_to_target
-	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy) {
+	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, Point16 position_xy) {
 		const u32 Func_isPointAtUnitBorder = 0x0042DA90;
 		static s32 result;
 		__asm {
