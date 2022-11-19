@@ -122,6 +122,33 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) repulse_unit_wrapper() // 004535A0
+	{
+		static u16 result;
+		static Unit* unit;
+		static void* LOLRSK8S_EQUIPPED;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV LOLRSK8S_EQUIPPED, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::repulse_unit(unit, LOLRSK8S_EQUIPPED);
+		_asm
+		{
+			POPAD
+			MOV AX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -130,9 +157,10 @@ namespace hooks
 	{
 		jump_patch(is_point_at_unit_border,			0x0042DA90, 1);
 		jump_patch(move_to_target_wrapper,			0x004EB720, 0);
-//		jump_patch(get_active_tile_flag_wrapper,	0x00472F80, 1);
+	//	jump_patch(get_active_tile_flag_wrapper,	0x00472F80, 1);
 		jump_patch(unit_has_path_to_dest_wrapper,	0x0049CB60, 1);
 		jump_patch(unit_has_path_to_unit_wrapper,	0x0049CBB0, 0);
 		jump_patch(set_repulse_angle_wrapper,		0x00453300, 5);
+		jump_patch(repulse_unit_wrapper,			0x004535A0, 1);
 	}
 }

@@ -152,4 +152,9 @@ namespace hooks
             }
         }
     }
+
+    u16 repulse_unit(Unit* unit, void* LOLRSK8S_EQUIPPED) // 004535A0
+    {
+        return 0;
+    }
 }
