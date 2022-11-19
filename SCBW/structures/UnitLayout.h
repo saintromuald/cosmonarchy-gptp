@@ -448,9 +448,9 @@ struct UnitLayout
 	{
 		u32 left, right, top, bottom;
 	} finder_index;										// Ordering for unit boundries in unit finder for binary search
-	/*0x14C*/ u8        repulse_unknown;
+	/*0x14C*/ u8        repulse_unk;
 	/*0x14D*/ u8        repulse_angle;					// updated only when air unit is being pushed
-	/*0x14E*/ Point8    driftPos;						// (mapsizex / 1.5 max)
+	/*0x14E*/ Point8    drift_pos;						// (mapsizex / 1.5 max)
 };
 C_ASSERT(sizeof(UnitLayout) == 336);
 #pragma pack()

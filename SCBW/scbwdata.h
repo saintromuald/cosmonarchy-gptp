@@ -1084,6 +1084,8 @@ SCBW_DATA(u16*,			g_iscript_speed_something,			0x006C2314);
 
 SCBW_DATA(char*,		g_draw_color_index,					0x006CF4AC);
 
+SCBW_DATA(void**,		g_repulse_handle,					0x006D5CD8);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

@@ -970,7 +970,7 @@ namespace helper {
 
 	// For UnitMove
 	void move_sprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
-	u32 updateUnitSortingInfo(u32 x_diff, Unit* unit, u32 y_diff);											// 0046A000
+	u32 update_unit_sorting_info(u32 x_diff, Unit* unit, u32 y_diff);											// 0046A000
 
 	// For bullet_behavior_reassign
 	void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00

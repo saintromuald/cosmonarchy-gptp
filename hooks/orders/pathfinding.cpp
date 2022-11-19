@@ -85,7 +85,7 @@ namespace hooks
     }
 
     // Hooked to investigate crashes - Pr0nogo
-    bool unitHasPathToDest(Unit* unit, s32 x, s32 y) // 0049CB60
+    bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y) // 0049CB60
     {
         if (!unit->sprite)
         {
@@ -107,5 +107,39 @@ namespace hooks
         RegionArray* paths = *g_sai_paths;
         s32 regionId = helper::get_region_id(target->sprite->position.x, target->sprite->position.y) << 6;
         return *(s16*)((char*)&paths->regions[0].group_index + regionId) == paths->regions[helper::get_region_id(patherSprite->position.x, patherSprite->position.y)].group_index;
-    }    
+    }
+
+    // Hooked to OoooooO. -Pr0nogo
+    void set_repulse_angle(Unit* unit) // 00453300
+    {
+        return;
+        if (unit->status & UnitStatus::Reacts)
+        {
+            if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && unit->id != UnitId::ProtossSteward)
+            {
+                if (!(unit->repulse_unk & 0xF0))
+                {
+                    u32 random = helper::randomize_short(37);
+                    unit->repulse_angle = random;
+                    s32 aids = (random >> 8) & 0xF0;
+                    if (!aids)
+                    {
+                        aids = -16;
+                    }
+                    unit->repulse_unk |= aids;
+                }
+                unit->repulse_unk &= 0xF8u;
+                Sprite* sprite = unit->sprite;
+                unit->drift_pos.x = (char)sprite->position.x / 48;
+                char pos_y_post = (char)sprite->position.y / 48;
+                char* handle = (char*)g_repulse_handle;
+                unit->drift_pos.y = pos_y_post;
+                char* CUCKDEATH = &handle[171 * pos_y_post + (u8)unit->drift_pos.x];
+                if ((u8)*CUCKDEATH < 0xFFu)
+                {
+                    ++* CUCKDEATH;
+                }
+            }
+        }
+    }
 }

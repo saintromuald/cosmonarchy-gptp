@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) moveToTarget_Wrapper() // 004EB720
+	void __declspec(naked) move_to_target_wrapper() // 004EB720
 	{
 		static s32 result;
 		static Unit* target;
@@ -24,7 +24,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) getActiveTileFlag_Wrapper() // 00472F80
+	void __declspec(naked) get_active_tile_flag_wrapper() // 00472F80
 	{
 		static b32 result;
 		static s16 x;
@@ -57,7 +57,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unitHasPathToDest_Wrapper() // 0049CB60
+	void __declspec(naked) unit_has_path_to_dest_wrapper() // 0049CB60
 	{
 		static Unit* unit;
 		static s32 x;
@@ -76,7 +76,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::unitHasPathToDest(unit, x, y);
+		result = hooks::unit_has_path_to_dest(unit, x, y);
 		__asm
 		{
 			POPAD
@@ -87,7 +87,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unitHasPathToUnit_Wrapper() // 0049CBB0
+	void __declspec(naked) unit_has_path_to_unit_wrapper() // 0049CBB0
 	{
 		static Unit* pather;
 		static Unit* target;
@@ -106,15 +106,32 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) set_repulse_angle_wrapper() // 0049CBB0
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::set_repulse_angle(unit);
+		_asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_pathfinding_hooks()
 	{
-//		jump_patch(moveToTarget_Wrapper,		0x004EB720, 0);
-//		jump_patch(getActiveTileFlag_Wrapper,	0x00472F80, 1);
-		jump_patch(unitHasPathToDest_Wrapper,	0x0049CB60, 1);
-		jump_patch(unitHasPathToUnit_Wrapper,	0x0049CBB0, 0);
+//		jump_patch(move_to_target_wrapper,			0x004EB720, 0);
+//		jump_patch(get_active_tile_flag_wrapper,	0x00472F80, 1);
+		jump_patch(unit_has_path_to_dest_wrapper,	0x0049CB60, 1);
+		jump_patch(unit_has_path_to_unit_wrapper,	0x0049CBB0, 0);
+		jump_patch(set_repulse_angle_wrapper,		0x00453300, 5);
 	}
 }

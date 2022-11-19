@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::unitMovementDormant(unit);
+		result = hooks::unit_movement_dormant(unit);
 		__asm
 		{
 			POPAD
