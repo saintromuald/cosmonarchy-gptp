@@ -156,7 +156,7 @@ namespace hooks
 	//	jump_patch(get_active_tile_flag_wrapper,	0x00472F80, 1);
 		jump_patch(unit_has_path_to_dest_wrapper,	0x0049CB60, 1);
 		jump_patch(unit_has_path_to_unit_wrapper,	0x0049CBB0, 0);
-		jump_patch(set_repulse_angle_wrapper,		0x00453300, 5);
-		jump_patch(repulse_unit_wrapper,			0x004535A0, 1);
+	//	jump_patch(set_repulse_angle_wrapper,		0x00453300, 5);
+	//	jump_patch(repulse_unit_wrapper,			0x004535A0, 1);
 	}
 }
