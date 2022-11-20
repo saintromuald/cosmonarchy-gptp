@@ -71,9 +71,9 @@ namespace hooks
 	// Resume construction on an existing structure
 	void orders_scv_build_2(Unit* unit) // 00467A70
 	{
-		Unit* builtUnit = unit->order_target.unit;
-		BuildingModifier modifier = get_building_modifier(builtUnit, unit, true);
-		if (builtUnit && !(builtUnit->status & UnitStatus::Completed))
+		Unit* built_unit = unit->order_target.unit;
+		BuildingModifier modifier = get_building_modifier(built_unit, unit, true);
+		if (built_unit && !(built_unit->status & UnitStatus::Completed))
 		{
 			bool jump_to_switch_1 = false;
 			if (unit->main_order_state > 8 ||
@@ -83,35 +83,35 @@ namespace hooks
 			}
 			if (unit->main_order_state == 0)
 			{
-				if (helper::order_to_move_to_target(unit, builtUnit))
+				if (helper::order_to_move_to_target(unit, built_unit))
 					unit->main_order_state = 2;
 			}
 			if (unit->main_order_state == 2)
 			{
-				u32 movableState = unit->get_movable_state();
-				if (movableState == MovableState::UnmovableAtDestination)
+				u32 movable_state = unit->get_movable_state();
+				if (movable_state == MovableState::UnmovableAtDestination)
 				{
 					unit->order_to_idle();
 				}
-				else if (movableState == MovableState::ReachedDestination)
+				else if (movable_state == MovableState::ReachedDestination)
 				{
 					scbw::refresh_console();
-					if (builtUnit->connected_unit &&
-						builtUnit->connected_unit != unit &&
-						(builtUnit->connected_unit)->order_target.unit == builtUnit)
+					if (built_unit->connected_unit &&
+						built_unit->connected_unit != unit &&
+						(built_unit->connected_unit)->order_target.unit == built_unit)
 					{
 						unit->order_to_idle(); // another worker is already on the job
 					}
 					else
 					{
-						builtUnit->connected_unit = unit;
+						built_unit->connected_unit = unit;
 						unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
 						unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 						unit->order_simple(OrderId::ResetCollision1, false);
 						unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized order_target is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
-						//if (helper::ChangeMovementTargetMoveTarget2(unit, builtUnit->sprite->position.x, builtUnit->sprite->position.y))
+						//if (helper::ChangeMovementTargetMoveTarget2(unit, built_unit->sprite->position.x, built_unit->sprite->position.y))
 						unit->main_order_state = 3;
 					}
 				}
@@ -126,14 +126,14 @@ namespace hooks
 			else if (unit->main_order_state == 4)
 			{
 				s16 x_min, x_max, y_min, y_max;
-				x_min = builtUnit->sprite->position.x - units_dat::unit_bounds[builtUnit->id].left + units_dat::unit_bounds[unit->id].left;
-				x_max = builtUnit->sprite->position.x + units_dat::unit_bounds[builtUnit->id].right - units_dat::unit_bounds[unit->id].right;
-				y_min = builtUnit->sprite->position.y - units_dat::unit_bounds[builtUnit->id].top + units_dat::unit_bounds[unit->id].top;
-				y_max = builtUnit->sprite->position.y + units_dat::unit_bounds[builtUnit->id].bottom - units_dat::unit_bounds[unit->id].bottom;
+				x_min = built_unit->sprite->position.x - units_dat::unit_bounds[built_unit->id].left + units_dat::unit_bounds[unit->id].left;
+				x_max = built_unit->sprite->position.x + units_dat::unit_bounds[built_unit->id].right - units_dat::unit_bounds[unit->id].right;
+				y_min = built_unit->sprite->position.y - units_dat::unit_bounds[built_unit->id].top + units_dat::unit_bounds[unit->id].top;
+				y_max = built_unit->sprite->position.y + units_dat::unit_bounds[built_unit->id].bottom - units_dat::unit_bounds[unit->id].bottom;
 				if (x_min > x_max) // DF: If worker is wider than building, don't make him shuffle around horizontally. Might be safer to compare units_dat bounds, but this should be true for like 99% of cases.
 				{
-					x_min = builtUnit->sprite->position.x;
-					x_max = builtUnit->sprite->position.y;
+					x_min = built_unit->sprite->position.x;
+					x_max = built_unit->sprite->position.y;
 				}
 				if (y_min > y_max) // DF: If worker is taller than building, don't make him shuffle around vertically.
 				{
@@ -242,21 +242,21 @@ namespace hooks
 
 			if (jump_to_switch_1)
 			{
-				u32 hpGain = builtUnit->build_repair_hp_gain * modifier.multiplier;
-				UnitExt* unitExt = get_unit_ext(builtUnit);
+				u32 hpGain = built_unit->build_repair_hp_gain * modifier.multiplier;
+				UnitExt* unitExt = get_unit_ext(built_unit);
 				if (*g_cheat_state & CheatFlags::OperationCwal)
 				{
 					hpGain *= 16;
 				}
-				helper::progress_build(builtUnit, hpGain, false);
+				helper::progress_build(built_unit, hpGain, false);
 				if (modifier.decrease) {
-					if (builtUnit->remaining_build_time > modifier.decrease) {
-						builtUnit->remaining_build_time -= modifier.decrease;
+					if (built_unit->remaining_build_time > modifier.decrease) {
+						built_unit->remaining_build_time -= modifier.decrease;
 					} else {
-						builtUnit->remaining_build_time = 0;
+						built_unit->remaining_build_time = 0;
 					}
 				}
-				if (builtUnit->status & UnitStatus::Completed)
+				if (built_unit->status & UnitStatus::Completed)
 				{
 					Image* current_image = unit->sprite->images.head;
 					bool bEndThere = false;
@@ -265,19 +265,19 @@ namespace hooks
 						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 						current_image = current_image->link.next;
 					}
-					if (builtUnit)
+					if (built_unit)
 					{
 						bool jump_to_67F3C = false;
-						builtUnit->connected_unit = nullptr;
+						built_unit->connected_unit = nullptr;
 						helper::play_building_completed_sound(unit);
 
-						if (builtUnit->status & UnitStatus::Completed)
+						if (built_unit->status & UnitStatus::Completed)
 						{
-							if (builtUnit->id == UnitId::TerranReservoir
-								|| builtUnit->id == UnitId::ProtossAquifer
-								|| builtUnit->id == UnitId::ZergExcisant)
+							if (built_unit->id == UnitId::TerranReservoir
+							||  built_unit->id == UnitId::ProtossAquifer
+							||  built_unit->id == UnitId::ZergExcisant)
 							{
-								if (builtUnit->player == unit->player)
+								if (built_unit->player == unit->player)
 								{
 									jump_to_67F3C = true;
 								}
@@ -285,15 +285,15 @@ namespace hooks
 						}
 						if (!jump_to_67F3C)
 						{
-							if (builtUnit->id >= UnitId::ResourceMineralField &&
-								builtUnit->id <= UnitId::ResourceMineralFieldType3)
+							if (built_unit->id >= UnitId::ResourceMineralField &&
+								built_unit->id <= UnitId::ResourceMineralFieldType3)
 							{
 								jump_to_67F3C = true;
 							}
 						}
 						if (jump_to_67F3C)
 						{
-							unit->order_to(OrderId::Harvest1, builtUnit);
+							unit->order_to(OrderId::Harvest1, built_unit);
 							bEndThere = true;
 						}
 					}
@@ -325,16 +325,16 @@ namespace hooks
 				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
-			if (builtUnit)
+			if (built_unit)
 			{
 				bool jump_to_67F3C = false;
-				builtUnit->connected_unit = nullptr;
-				helper::play_building_completed_sound(builtUnit);
-				if (builtUnit->status & UnitStatus::Completed)
+				built_unit->connected_unit = nullptr;
+				helper::play_building_completed_sound(built_unit);
+				if (built_unit->status & UnitStatus::Completed)
 				{
-					if (scbw::unit_id_is_capped_gas_structure(builtUnit->id))
+					if (scbw::unit_id_is_capped_gas_structure(built_unit->id))
 					{
-						if (builtUnit->player == unit->player)
+						if (built_unit->player == unit->player)
 						{
 							jump_to_67F3C = true;
 						}
@@ -342,15 +342,15 @@ namespace hooks
 				}
 				if (!jump_to_67F3C)
 				{
-					if (builtUnit->id >= UnitId::ResourceMineralField &&
-						builtUnit->id <= UnitId::ResourceMineralFieldType3)
+					if (built_unit->id >= UnitId::ResourceMineralField &&
+						built_unit->id <= UnitId::ResourceMineralFieldType3)
 					{
 						jump_to_67F3C = true;
 					}
 				}
 				if (jump_to_67F3C)
 				{
-					unit->order_to(OrderId::Harvest1, builtUnit);
+					unit->order_to(OrderId::Harvest1, built_unit);
 					bEndThere = true;
 				}
 			}
@@ -389,7 +389,7 @@ namespace hooks
 				&&	  helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
 				&&	  helper::begin_building(unit))
 				{
-					Unit* builtUnit;
+					Unit* built_unit = 0;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 					if (!unit->order_queue_head)
@@ -403,18 +403,18 @@ namespace hooks
 					}
 					if (unit->build_queue[unit->build_queue_slot] == UnitId::TerranReservoir)
 					{
-						builtUnit = helper::begin_gas_building(unit, UnitId::TerranReservoir);
+						built_unit = helper::begin_gas_building(unit, UnitId::TerranReservoir);
 					}
 					else
 					{
-						builtUnit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+						built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 					}
-					if (builtUnit) {
-						builtUnit->create_origin = unit->id;
+					if (built_unit) {
+						built_unit->create_origin = unit->id;
 					}
 					u32 unit_id = unit->build_queue[unit->build_queue_slot];
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
-					if (!builtUnit)
+					if (!built_unit)
 					{
 						helper::refund_unit_train_cost(unit_id, unit->player);
 						helper::display_last_network_error_for_player(unit->player);
@@ -422,11 +422,11 @@ namespace hooks
 					}
 					else
 					{
-						builtUnit->connected_unit = unit;
-						builtUnit->sprite->player = unit->sprite->player;
+						built_unit->connected_unit = unit;
+						built_unit->sprite->player = unit->sprite->player;
 						unit->main_order_id = OrderId::ConstructingBuilding;
 						unit->main_order_state = 3;
-						unit->order_target.unit = builtUnit;
+						unit->order_target.unit = built_unit;
 						if (*g_is_placing_building)
 						{
 							if (!helper::can_still_place_building())
@@ -436,8 +436,8 @@ namespace hooks
 							}
 						}
 						scbw::refresh_console();
-						builtUnit->order_computer(OrderId::BuildSelf1);
-						helper::ai_training_overlord(builtUnit, unit);
+						built_unit->order_computer(OrderId::BuildSelf1);
+						helper::ai_training_overlord(built_unit, unit);
 					}
 				}
 				else
@@ -448,14 +448,14 @@ namespace hooks
 		}
 		else if (unit->main_order_state == 0)
 		{
-			bool bMoveTargetResult;
+			bool move_target_result;
 			scbw::refresh_console();
 			if (unit->order_target.unit)
 			{
 				unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
 				unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
 			}
-			bMoveTargetResult = helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+			move_target_result = helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 			if ((unit->order_target.pt.x != unit->next_target_waypoint.x ||
 				unit->order_target.pt.y != unit->next_target_waypoint.y)
 				&& !(unit->order_target.pt.x == 0 && unit->order_target.pt.y == 0))
@@ -463,7 +463,7 @@ namespace hooks
 				unit->next_target_waypoint.x = unit->order_target.pt.x;
 				unit->next_target_waypoint.y = unit->order_target.pt.y;
 			}
-			if (bMoveTargetResult)
+			if (move_target_result)
 			{
 				unit->main_order_state = 1;
 			}
@@ -530,7 +530,6 @@ namespace hooks
 				if (g_game_minerals[player] >= g_ai_minerals_reserve[player]) {
 					if (g_game_vespene[player] >= g_ai_vespene_reserve[player]) {
 						helper::issue_place_building_order(buffer, unit_id, OrderId::PlaceAddon);
-
 						// For MBS this would essentially require a custom game command, for now we just have to disable it :( -Veeq7
 						/*
 						if ((*g_is_holding_shift || unit->status & UnitStatus::InAir) && *g_client_selection_count <= 1) {
