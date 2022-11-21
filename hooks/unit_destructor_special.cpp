@@ -373,6 +373,15 @@ void unit_destructor_special_cases(Unit* unit) {
 		helper::iterate_units_at_location_target_proc_plague(unit, &coords);
 	}
 
+	// Gladius - Binding Plasma - proc on death
+	{
+		Unit* source_unit = unit_ext->units[UnitGladiusBindingPlasmaSource];
+		if (source_unit) {
+			scbw::binding_plasma_proc(unit, source_unit);
+			// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
+		}
+	}
+
 	// Update custom creep disappearance
 	scbw::update_custom_creep_disappearance(unit);
 

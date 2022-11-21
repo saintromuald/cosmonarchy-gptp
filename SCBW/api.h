@@ -591,7 +591,7 @@ namespace scbw
 	bool is_enabled(Unit* unit);
 	bool is_debuffed(Unit* unit);
 	s32 get_upgrade_type(Unit* unit);
-	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed = false);
+	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
 	bool unit_id_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 order_id);
@@ -687,4 +687,5 @@ namespace scbw
 	void delete_ai_script(AiScript* ai_script);
 	void delete_town(AiTown* ai_town);
 	bool unit_id_is_broodspawn(u32 unit_id);
+	void binding_plasma_proc(Unit* victim, Unit* source);
 }

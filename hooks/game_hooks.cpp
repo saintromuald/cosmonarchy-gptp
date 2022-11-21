@@ -1712,24 +1712,7 @@ namespace hooks {
 				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
-					EntryArray units = {};
-					unit_search_radial(&units, unit->position, 3 * 32);
-					unit_search_filter(&units, source_unit, FilterEnemy | FilterNoBuilding | FilterNotSubunit);
-					unit_search_filter(&units, unit, FilterNotSelf);
-					unit_search_sort_by_distance(&units, unit->position);
-
-					Unit* target = units.count ? units.units[0] : 0;
-					if (source_unit && target) {
-						u32 angle = scbw::get_angle(unit->position.x, unit->position.y, target->position.x, target->position.y);
-						Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source_unit, unit->position.x, unit->position.y, source_unit->player, angle);
-						scbw::set_bullet_target(bullet, target);
-						if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
-							unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
-							unit_ext->timers[TimerGladiusBindingPlasma] = 24;
-						}
-					} else {
-						unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
-					}
+					scbw::binding_plasma_proc(unit, source_unit);
 				}
 			} else {
 				unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;

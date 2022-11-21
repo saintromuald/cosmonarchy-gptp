@@ -497,7 +497,7 @@ namespace hooks
 			return 0;
 		}
 		if (*unk_sprite_related) {
-			helper::inherit_gas_overlays(target->sprite); // Guessed name, probably wrong
+			helper::inherit_gas_overlays(target->sprite); // Guessed helper name, probably wrong
 		}
 		helper::increment_unit_scores_ex(target, -1, 1);
 		target->status &= ~UnitStatus::Completed;

@@ -1057,8 +1057,8 @@ namespace scbw {
 		return UpgradeId::TerranInfantryWeapons;
 	}
 
-	s32 get_overlay_offset(u16 unit_id, bool xlargeAllowed) {
-		if (xlargeAllowed && scbw::unit_id_uses_xlarge_overlays(unit_id)) {
+	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed) {
+		if (xlarge_allowed && scbw::unit_id_uses_xlarge_overlays(unit_id)) {
 			return 3;
 		}
 		if (units_dat::base_property[unit_id] & UnitProperty::LargeOverlay) {
@@ -2826,5 +2826,29 @@ namespace scbw {
 	{
 		return unit_id == UnitId::ZergRilirokor
 			|| unit_id == UnitId::ZergRililisk;
+	}
+
+	void binding_plasma_proc(Unit* victim, Unit* source)
+	{
+		UnitExt* unit_ext = get_unit_ext(victim);
+		EntryArray units = {};
+		unit_search_radial(&units, victim->position, 3 * 32);
+		unit_search_filter(&units, source, FilterEnemy | FilterNoBuilding | FilterNotSubunit);
+		unit_search_filter(&units, victim, FilterNotSelf);
+		unit_search_sort_by_distance(&units, victim->position);
+
+		Unit* target = units.count ? units.units[0] : 0;
+		if (source && target) {
+			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
+			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source, victim->position.x, victim->position.y, source->player, angle);
+			scbw::set_bullet_target(bullet, target);
+			if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
+				unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
+				unit_ext->timers[TimerGladiusBindingPlasma] = 24;
+			}
+		}
+		else {
+			unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
+		}
 	}
 }
