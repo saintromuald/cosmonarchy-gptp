@@ -4,22 +4,24 @@
 
 namespace hooks
 {
-    static Box16 unit_get_box(Unit* unit) {
-        Box16 box  = {};
-        box.left   = unit->position.x - units_dat::unit_bounds[unit->id].left   - 1;
-        box.top    = unit->position.y - units_dat::unit_bounds[unit->id].top    - 1;
-        box.right  = unit->position.x + units_dat::unit_bounds[unit->id].right  + 2;
-        box.bottom = unit->position.y + units_dat::unit_bounds[unit->id].bottom + 2;
+    static bool box_aabb(Box32 a, Box32 b) {
+        return a.left <= b.right
+            && b.left <= a.right
+            && a.top  <= b.bottom
+            && b.top  <= a.bottom;
+    }
+
+    static Box32 get_unit_box(Unit* unit) {
+        Box32 box  = {};
+        box.left   = unit->get_left()   - 1;
+        box.top    = unit->get_top()    - 1;
+        box.right  = unit->get_right()  + 2;
+        box.bottom = unit->get_bottom() + 2;
         return box;
     }
 
     static bool unit_aabb(Unit* a, Unit* b) {
-        Box16 box_a = unit_get_box(a);
-        Box16 box_b = unit_get_box(b);
-        return box_a.left <= box_b.right
-            && box_b.left <= box_a.right
-            && box_a.top  <= box_b.bottom
-            && box_b.top  <= box_a.bottom;
+        return box_aabb(get_unit_box(a), get_unit_box(b));
     }
 
     // Hooked to improve functionality -Veeq7
@@ -32,7 +34,7 @@ namespace hooks
 
     static Point16 get_target_point(Unit* unit, Unit* target) {
         Point16 position = unit->position;
-        Box16 box = unit_get_box(target);
+        Box32 box = get_unit_box(target);
         if (position.x < box.left) {
             position.x = box.left;
         }
@@ -128,6 +130,7 @@ namespace hooks
         if (unit->pathing_flags & 1
         ||  unit->status & UnitStatus::CanNotReceiveOrders
         ||  unit->status & UnitStatus::NoBrkCodeStart
+        ||  unit->status & UnitStatus::Unmovable
         ||  !(unit->status & UnitStatus::Reacts)
         ||  unit->status & UnitStatus::IsGathering
         ||  units_dat::base_property[unit->id] & UnitProperty::Building
@@ -138,12 +141,14 @@ namespace hooks
         }
 
         EntryArray units = {};
-        Box32 unit_box  = {};
-        unit_box.left   = unit->get_left()   - 8;
-        unit_box.top    = unit->get_top()    - 8;
-        unit_box.right  = unit->get_right()  + 8;
-        unit_box.bottom = unit->get_bottom() + 8;
-        unit_search_rect(&units, unit_box);
+        Box32 unit_box = get_unit_box(unit);
+        u32 dist = 8;
+        Box32 search_box = unit_box;
+        search_box.x -= dist;
+        search_box.y -= dist;
+        search_box.w += dist * 2;
+        search_box.h += dist * 2;
+        unit_search_rect(&units, search_box);
 
         Vector32f repulsion = {};
         bool collides = false;
@@ -154,34 +159,33 @@ namespace hooks
                 if (unit == target || target->pathing_flags & 1) {
                     continue;
                 }
-                collides = true;
+                if (box_aabb(unit_box, get_unit_box(target))) {
+                    collides = true;
+                }
             }
         } else {
-            u32 count = 0;
             for (u32 i = 0; i < units.count; ++i) {
                 Unit* target = units.units[i];
                 if (unit == target || target->pathing_flags & 1) {
                     continue;
                 }
-                collides = true;
+                if (box_aabb(unit_box, get_unit_box(target))) {
+                    collides = true;
+                }
 
                 Vector32f diff = {};
-                diff = scbw::get_normalized_vector(scbw::get_vector_between_points(target->move_target.pt, unit->position));
+                diff = scbw::get_normalized_vector(scbw::get_vector_between_points(target->position, unit->position));
                 if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
                     continue;
                 }
 
                 repulsion.x += diff.x;
                 repulsion.y += diff.y;
-                count += 1;
             }
 
-            if (count) {
-                repulsion.x /= count;
-                repulsion.y /= count;
-            }
+            repulsion = scbw::get_normalized_vector(repulsion);
 
-            if (!count || (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001)) {
+            if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
                 Vector32 random_repulse = g_angle_distance[scbw::rand_between(0, 255)];
                 repulsion.x = random_repulse.x / 256.0;
                 repulsion.y = random_repulse.y / 256.0;
