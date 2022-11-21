@@ -29,7 +29,7 @@ void init_layouts() {
 
 		if (unit->player == 11) {
 			u32 flags = unit->valid_state_flags & unit->state_flags;
-			if (flags & ChkUnitFlags_Cloaked) {
+			if (flags & ChkUnitFlags_Cloaked || unit->unit_id == UnitId::TownCenterMarker) {
 				for (u32 i = 0; i < 8; ++i) {
 					add_placeholder(unit, i);
 				}
