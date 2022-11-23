@@ -2358,6 +2358,22 @@ namespace hooks {
 		return false;
 	}
 
+	static bool human_has_an_active_attack(u32 player) {
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->damage_dealt_timer <= 2 * 24
+			||  unit_ext->damage_taken_timer <= 2 * 24) {
+				EntryArray units = {};
+				unit_search_radial(&units, unit->position, 20 * 32);
+				unit_search_filter(&units, unit, FilterEnemy | FilterBuilding);
+				if (units.count) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	static u32 ai_force_in_region(AiRegion* ai_region) {
 		u32 player = ai_region->player;
 		u32 total_force = 0;
@@ -2413,7 +2429,28 @@ namespace hooks {
 				} else if (elapsed <= 60) {
 					min_force = 2000;
 				}
-				if (ai_has_an_active_attack(player)) {
+				bool has_active_attack = false;
+				for (u32 i = 0; i < PlayerLimit; ++i) {
+					if (!scbw::is_allied_to(player, i)) {
+						return;
+					}
+
+					switch (g_player_table[i].type) {
+						case PlayerType::Computer: {
+							if (ai_has_an_active_attack(player)) {
+								has_active_attack = true;
+								break;
+							}
+						} break;
+						case PlayerType::Human: {
+							if (human_has_an_active_attack(player)) {
+								has_active_attack = true;
+								break;
+							}
+						} break;
+					}
+				}
+				if (has_active_attack) {
 					min_force /= 2;
 				}
 				u32 total_force = ai_force_in_region(ai_region);
