@@ -1913,7 +1913,7 @@ static void init_threshold_units() {
 	fraud_add_unit(FraudHero_Drakkar, RaceId::Protoss, {1, UnitId::ProtossArchitect});
 
 	// Thalazim
-	threshold.frauds[FraudHero_Thalazim][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_None, AiBuildOrder_ProtossTemplar_2GateCabalist, PlayerColor::Earthtone};
+	threshold.frauds[FraudHero_Thalazim][RaceId::Protoss] = {AiPersonality_ProtossTemplar, AiBuildType_None, AiBuildOrder_ProtossTemplar_SuffocatingShadow, PlayerColor::Earthtone};
 	fraud_add_unit(FraudHero_Thalazim, RaceId::Protoss, {8, UnitId::ProtossCabalist});
 	fraud_add_unit(FraudHero_Thalazim, RaceId::Protoss, {2, UnitId::ProtossPariah});
 
@@ -1944,7 +1944,7 @@ static void init_threshold_units() {
 	fraud_add_unit(FraudHero_Charlie, RaceId::Zerg, {2, UnitId::ZergProtathalor});
 
 	// Rekt'Son
-	threshold.frauds[FraudHero_RektSon][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_None, AiBuildOrder_ZergGeneral_ZorkizFlood, PlayerColor::IridescentViolet};
+	threshold.frauds[FraudHero_RektSon][RaceId::Zerg] = {AiPersonality_ZergGeneral, AiBuildType_None, AiBuildOrder_ZergGeneral_BeforeTheStorm, PlayerColor::IridescentViolet};
 	fraud_add_unit(FraudHero_RektSon, RaceId::Zerg, {10, UnitId::ZergHydralisk});
 	fraud_add_unit(FraudHero_RektSon, RaceId::Zerg, {6, UnitId::ZergLakizilisk});
 	fraud_add_unit(FraudHero_RektSon, RaceId::Zerg, {1, UnitId::ZergUltrokor});
