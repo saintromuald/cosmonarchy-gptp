@@ -1896,7 +1896,7 @@ static void init_threshold_units() {
 	fraud_add_unit(FraudHero_Cullen, RaceId::Terran, {1, UnitId::TerranMagnetar});
 
 	// Steve Miller
-	threshold.frauds[FraudHero_SteveMiller][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_None, AiBuildOrder_TerranArmor_2FactVult, PlayerColor::White};
+	threshold.frauds[FraudHero_SteveMiller][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_None, AiBuildOrder_TerranArmor_2FulcVult, PlayerColor::White};
 	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {6, UnitId::TerranPhalanxTankMode});
 	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {2, UnitId::TerranMadrigal});
 	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {2, UnitId::TerranPaladin});
@@ -1981,7 +1981,7 @@ static void init_threshold_units() {
 	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {1, UnitId::TerranMagnetar});
 
 	// Tetragram
-	threshold.frauds[FraudSuper_Tetragram][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_None, AiBuildOrder_ProtossRanger_1GateExpo, PlayerColor::YinmnBlue};
+	threshold.frauds[FraudSuper_Tetragram][RaceId::Protoss] = {AiPersonality_ProtossRanger, AiBuildType_None, AiBuildOrder_ProtossRanger_LatticeExpo, PlayerColor::YinmnBlue};
 	fraud_add_unit(FraudSuper_Tetragram, RaceId::Protoss, {16, UnitId::ProtossSimulacrum});
 	fraud_add_unit(FraudSuper_Tetragram, RaceId::Protoss, {2, UnitId::ProtossClarion});
 	fraud_add_unit(FraudSuper_Tetragram, RaceId::Protoss, {2, UnitId::ProtossDemiurge});
