@@ -2289,7 +2289,7 @@ namespace hooks {
 			return true;
 		}
 		if (g_aiscript_controller[player].ai_attack_group_region) {
-			AiRegion* grouping_region = scbw::get_ai_region(player, g_aiscript_controller[player].ai_attack_group_region);
+			AiRegion* grouping_region = scbw::get_ai_region(player, g_aiscript_controller[player].ai_attack_group_region - 1);
 			return grouping_region->state != RegionState::PreparingAttack;
 		}
 
@@ -2327,9 +2327,9 @@ namespace hooks {
 		}
 		if (helper::ai_set_attack_grouping_region(true, false, player, regions_list, x, y, overwrite_last_attack)
 		||	helper::ai_set_attack_grouping_region(true, true,  player, regions_list, x, y, overwrite_last_attack)) {
-			g_aiscript_controller[player].attack_failed = true;
 			return false;
 		}
+		g_aiscript_controller[player].attack_failed = true;
 		return true;
 	}
 
@@ -2393,13 +2393,14 @@ namespace hooks {
 			if (attack_target) {
 				AiRegion* target_ai_region = scbw::get_ai_region(player, scbw::get_region_id(attack_target->position));
 				helper::ai_set_region_state(RegionState::PreparingAttackOldUnreachable, target_ai_region);
-				helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, false, true);
+				helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, true, true); // New: allow pure spellcasters -Veeq7
 			} else {
 				helper::ai_iterate_town_something(ai_region);
 			}
 			return;
 		}
 
+		// New: Timer handling -Veeq7
 		u32 last_attack_time = g_aiscript_controller[player].last_attack_seconds;
 		if (last_attack_time) {
 			u32 elapsed = *g_elapsed_time_seconds - last_attack_time;
@@ -2427,8 +2428,8 @@ namespace hooks {
 		if (target_region) {
 			AiRegion* target_ai_region = scbw::get_ai_region(ai_region->player, target_region);
 			helper::ai_set_region_state(RegionState::ContinueAttackHere, target_ai_region);
-			helper::ai_move_military_to_other_region(target_ai_region, ai_region, 0, 0, 1);
+			helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, true, true); // New: allow pure spellcasters -Veeq7
 		}
-		helper::ai_set_region_state(RegionState::Nothing, ai_region);
+ 		helper::ai_set_region_state(RegionState::Nothing, ai_region);
 	}
 }

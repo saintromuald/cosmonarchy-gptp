@@ -810,9 +810,9 @@ namespace hooks
 		jump_patch(player_has_transport_wrapper, 				0x00437250, 1);
 		jump_patch(request_military_to_wrapper,					0x0043E760, 0);
 
-	//	jump_patch(ai_prepare_attack_wrapper,					0x0043ABB0, 4);
-	//	jump_patch(ai_attack_timer_decrement_wrapper,			0x00447090, 1);
-	//	jump_patch(ai_region_grouping_for_attack,				0x0043EEC0, 4);
+		jump_patch(ai_prepare_attack_wrapper,					0x0043ABB0, 4);
+		jump_patch(ai_attack_timer_decrement_wrapper,			0x00447090, 1);
+		jump_patch(ai_region_grouping_for_attack,				0x0043EEC0, 4);
 
 		jump_patch(ai_can_travel_to_region_wrapper,				0x0043A790, 1);
 
