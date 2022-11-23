@@ -444,7 +444,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 		// Swarm
 		{
 			"Pathfinding Organ",
-			"BingBongBorrowers",
+			"BingBongBurrowers",
 			"OnlyFeet Creator Union",
 			"Wuckling Whirlwind",
 			"UltraTHIS!",
