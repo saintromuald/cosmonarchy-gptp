@@ -2841,10 +2841,13 @@ namespace scbw {
 		if (source && target) {
 			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
 			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source, victim->position.x, victim->position.y, source->player, angle);
-			scbw::set_bullet_target(bullet, target);
-			if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
-				unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
-				unit_ext->timers[TimerGladiusBindingPlasma] = 24;
+			if (bullet)
+			{
+				scbw::set_bullet_target(bullet, target);
+				if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
+					unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
+					unit_ext->timers[TimerGladiusBindingPlasma] = 24;
+				}
 			}
 		}
 		else {
