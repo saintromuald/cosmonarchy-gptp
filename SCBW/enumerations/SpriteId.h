@@ -790,7 +790,7 @@ namespace SpriteId
 		Corpse_Cleric				= 490,
 		Corpse_Apostle				= 565,
 		Corpse_Harakan				= 615,
-		Corpse_Blackjack			= 1500,
+		Corpse_Blackjack			= 771,
 
 		Corpse_TerranBuildingSmall	= 273,
 		Corpse_TerranBuildingLarge	= 274,
