@@ -826,6 +826,8 @@ namespace SpriteId
 		Corpse_Legionnaire			= 819,
 		Corpse_Cyprian				= 820,
 		Corpse_Shaman				= 821,
+		Corpse_Wraith				= 822,
+		Corpse_Zoryusthaleth		= 832,
 
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
