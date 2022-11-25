@@ -538,7 +538,7 @@ namespace helper {
 	u32 get_detecting_players(Unit* unit);																							// 00441130
 	u32 iterate_player_units_something(u32 aResult, Unit* unit);																	// 0049E8A0
 	void make_sprite_visible(Sprite* sprite);																						// 00497ED0
-	s32 update_building_land_unit_selection(u32 unused, Unit* selection);															// 004C3B40
+	s32 update_building_land_unit_selection(u32 detection_status, Unit* selection);													// 004C3B40
 	char remove_selection_circle(Sprite* sprite);																					// 004975D0
 	Image* make_sprite_invisible(Sprite* sprite);																					// 00498A10
 
@@ -565,7 +565,7 @@ namespace helper {
 
 	// For get_unit_rank_string and check_hotkey_char
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
-	char* get_stat_txt_string(u16 a1);																									// 004C36F0
+	char* get_stat_txt_string(u16 a1);																								// 004C36F0
 
 	// For stats_weapon_level / stats_armor_level
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
@@ -582,7 +582,7 @@ namespace helper {
 	void apply_spores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
-	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																	// 004CD360
+	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
 	Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph

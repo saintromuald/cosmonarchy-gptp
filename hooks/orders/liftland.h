@@ -4,7 +4,7 @@
 namespace hooks
 {
 	void orders_building_land(Unit* unit);			// 00464360
-	void orders_building_liftoff(Unit* unit);		// 
+	void orders_building_liftoff(Unit* unit);		// 004649B0
 
 	void inject_lift_land_hooks();
 }

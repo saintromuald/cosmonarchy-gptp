@@ -22,7 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_building_liftoff_wrapper()
+	void __declspec(naked) orders_building_liftoff_wrapper() // 004649B0
 	{
 		static Unit* unit;
 		__asm {

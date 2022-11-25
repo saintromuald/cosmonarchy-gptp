@@ -29,6 +29,14 @@ namespace hooks
 			}
 		}
 
+		// Flying structures
+		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+		&&  unit->sprite->elevation >= 12
+		&&  unit->main_order_id != OrderId::Liftoff
+		&&  unit->main_order_id != OrderId::BuildingLand) {
+			speed *= 2;
+		}
+
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			speed *= pow(0.95, unit_ext->values[ValueSovrolethLinkCount]);

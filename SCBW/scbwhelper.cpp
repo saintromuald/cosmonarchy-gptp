@@ -4282,12 +4282,12 @@ namespace helper {
 		}
 	}
 
-	s32 update_building_land_unit_selection(u32 unused, Unit* selection) {
+	s32 update_building_land_unit_selection(u32 detection_status, Unit* selection) {
 		const u32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, unused
+			MOV ECX, detection_status
 			MOV EDX, selection
 			CALL Func_updateBuildingLandUnitSelection
 			MOV result, EAX
