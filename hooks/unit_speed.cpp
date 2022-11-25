@@ -240,7 +240,6 @@ namespace hooks
 			} break;
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
-			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
 			case UnitId::ZergKagralisk:
 			case UnitId::ZergZoryusthaleth:
@@ -252,6 +251,7 @@ namespace hooks
 			{
 				speed *= 1.25;
 			} break;
+			case UnitId::ProtossAmaranth:
 			case UnitId::ZergZethrokor:
 			{
 				speed *= 1.3;
