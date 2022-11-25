@@ -997,7 +997,7 @@ SCBW_DATA(char*,		unk_sprite_related,				0x006D5BE4);
 SCBW_DATA(char**,		game_result_text,				0x00628668);
 
 // For find_fow_target
-SCBW_DATA(Thingy**,		first_used_thingy,				0x00654868);
+SCBW_DATA(Thingy**,		g_first_used_thingy,				0x00654868);
 
 // For play_building_complete_sound
 SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);
