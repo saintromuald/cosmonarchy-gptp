@@ -4,7 +4,7 @@
 #include "SCBW/scbwhelper.h"
 
 namespace {
-	void __declspec(naked) CreateInitialMeleeBuildingsWrapper() {
+	void __declspec(naked) create_initial_melee_buildings_wrapper() {
 		static u32 player;
 		static u8 raceId;
 		__asm {
@@ -24,7 +24,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) CreateInitialMeleeUnitsWrapper() {
+	void __declspec(naked) create_initial_melee_units_wrapper() {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -39,7 +39,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) CreateInitialOverlordWrapper() {
+	void __declspec(naked) create_initial_ovileth_wrapper() {
 		static u8 player;
 		__asm {
 			PUSH EBP
@@ -56,7 +56,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) CreateUnitXY_Wrapper() { // 004CD360
+	void __declspec(naked) create_unit_xy_wrapper() { // 004CD360
 		static s16 player_id;
 		static s16 id;
 		static s32 x;
@@ -85,7 +85,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) CreatePreplacedUnit_Wrapper() { // 004CD740
+	void __declspec(naked) create_preplaced_unit_wrapper() { // 004CD740
 		static CHKUnit* chkunit;
 		static Unit* result;
 		__asm {
@@ -108,11 +108,11 @@ namespace {
 namespace hooks
 {
 	void inject_create_initial_units_hooks() {
-		jump_patch(CreateInitialMeleeBuildingsWrapper,	0x0049D7C0, 1);
-		jump_patch(CreateInitialMeleeUnitsWrapper,		0x0049DA40, 1);
-		jump_patch(CreateInitialOverlordWrapper,		0x0049D6C0, 3);
+		jump_patch(create_initial_melee_buildings_wrapper,	0x0049D7C0, 1);
+		jump_patch(create_initial_melee_units_wrapper,		0x0049DA40, 1);
+		jump_patch(create_initial_ovileth_wrapper,			0x0049D6C0, 3);
 
-		jump_patch(CreateUnitXY_Wrapper,				0x004CD360, 4);
-		jump_patch(CreatePreplacedUnit_Wrapper,			0x004CD740, 3);
+		jump_patch(create_unit_xy_wrapper,					0x004CD360, 4);
+		jump_patch(create_preplaced_unit_wrapper,			0x004CD740, 3);
 	}
 }
