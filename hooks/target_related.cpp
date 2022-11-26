@@ -1105,20 +1105,30 @@ LABEL_65:
 	}
 
 	// Hooked to fix hit tests on structures in fog of war. -Pr0nogo
-	// Doesn't work yet.
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos) { // 00487A10
-		for (Thingy* thingy = *g_first_used_thingy; thingy; thingy = thingy->next) {
-			if (!helper::unit_is_unselectable(thingy->unit_id)) {
+
+		Thingy* thingy = *g_first_used_thingy;
+		if (!*g_first_used_thingy)
+		{
+			return 0;
+		}
+		while (1)
+		{
+			if (!helper::unit_is_unselectable(thingy->unit_id))
+			{
 				if (thingy->sprite->position.x + units_dat::building_dimensions[thingy->unit_id].x / 2 - x_pos < thingy->sprite->width
-				&&  thingy->sprite->position.y + units_dat::building_dimensions[thingy->unit_id].y / 2 - y_pos < thingy->sprite->height) {
+				&&  thingy->sprite->position.y + units_dat::building_dimensions[thingy->unit_id].y / 2 - y_pos < thingy->sprite->height)
+				{
 					break;
 				}
 			}
-			if (thingy) {
-				return thingy;
+			thingy = thingy->next;
+			if (!thingy)
+			{
+				return 0;
 			}
 		}
-		return 0;
+		return thingy;
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
