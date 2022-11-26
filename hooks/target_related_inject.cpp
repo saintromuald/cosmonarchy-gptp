@@ -242,16 +242,16 @@ namespace
 
 	void __declspec(naked) find_fow_target_wrapper() { // 00487A10
 		static Thingy* result;
-		static u32 x_pos;
-		static u32 y_pos;
+		static u16 x_pos;
+		static u16 y_pos;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV y_pos, EAX
+			MOV y_pos, AX
 			POP EAX
-			MOV x_pos, EBX
+			MOV x_pos, BX
 			PUSHAD
 		}
 		result = hooks::find_fow_target(x_pos, y_pos);
