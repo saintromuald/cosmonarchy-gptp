@@ -166,16 +166,16 @@ namespace hooks
 		if (result == OrderId::None) {
 			if (!(target_unit->status & UnitStatus::GroundedBuilding) || target_unit->status & UnitStatus::Completed) {
 				if (scbw::is_allied_to(unit->player, target_unit->player)) {
-					if (!(units_dat::base_property[target_unit->id] & UnitProperty::Building)
-					&&  helper::unit_is_active_transport(target_unit)
-					&&  helper::can_enter_transport(target_unit, unit)) {
+					if (target_unit->hitpoints < target_unit->get_max_hp_raw()) {
+						if (helper::is_order_valid(OrderId::Repair1, unit, target_unit, target_unit, 0)) {
+							return OrderId::Repair1;
+						}
+					}
+					if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {
 						return OrderId::EnterTransport;
 					}
 					if (helper::is_order_valid(OrderId::Repair1, unit, target_unit, target_unit, 0)) {
 						return OrderId::Repair1;
-					}
-					if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {
-						return OrderId::EnterTransport;
 					}
 				}
 			} else if (target_unit->player == unit->player && target_unit->get_race() == RaceId::Terran
