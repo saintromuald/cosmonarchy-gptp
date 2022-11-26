@@ -221,7 +221,7 @@ namespace
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 
