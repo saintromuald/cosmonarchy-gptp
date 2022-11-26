@@ -348,7 +348,7 @@ namespace hooks
 	// Hooked to fix speed tooltip for iscript units. -Pr0nogo
 	void update_iscript_speed(Unit* unit) // 0042D8C0
 	{
-		if (unit->flingy_movement_type == 2)
+		if (unit->flingy_movement_type == 2) // Uses iscript for movement
 		{
 			Image* image = unit->sprite->main_graphic;
 			*g_temp_iscript_header = image->iscript_header_offset;
