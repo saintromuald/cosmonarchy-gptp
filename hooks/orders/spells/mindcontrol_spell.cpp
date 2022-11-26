@@ -15,14 +15,25 @@ namespace hooks
 			u16 tech_energy_cost = 0;
 			// Energy cost is initialized in this function
 			// Corresponding error message is "Invalid Target"
-			if (helper::spell_order(unit, TechId::MindControl, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
-				// Channel
-				if (!unit->main_order_state) {
+
+			if (!unit->main_order_state) {
+				if (helper::spell_order(unit, TechId::MindControl, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
+					// Start the channel
 					unit->play_iscript_animation(IscriptAnimation::Unused2);
 					unit->main_order_state = 1;
 					unit->main_order_timer = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 				}
+			} else {
+				// Cancel when way out of range or lost sight of target
+				u32 distance = scbw::get_distance_fast(unit->position, target->position);
+				if (distance > unit->get_sight_range(true) * 32 * 2 || !target->is_visible_to(unit->player)) {
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+					unit->order_to_idle();
+					return;
+				}
+
+				// Wait for channel
 				if (unit->main_order_timer) {
 					return;
 				}
@@ -45,9 +56,6 @@ namespace hooks
 				}
 				helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 				unit->order_to_idle();
-			} else {
-				// Reset timer if target out of distance
-				unit->main_order_state = 0;
 			}
 		}
 	}
