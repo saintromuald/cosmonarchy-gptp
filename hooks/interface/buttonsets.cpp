@@ -1924,9 +1924,79 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								}
+								case UnitId::TerranCyclops:
+								{
+									if (current_button->icon_id == IconId::VultureFragmentationGrenade) // Cyclops - Fragmentary Shells
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranPhalanxTankMode:
+								{
+									if (current_button->icon_id == IconId::TerranVehiclePlating) // Phalanx - Babylon Plating
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranPhalanxSiegeMode:
+								{
+									if (current_button->icon_id == IconId::TerranVehiclePlating) // Phalanx - Babylon Plating
+									{
+										current_button_state = Button_State::Disabled; // Disable while sieged
+									}
+								} break;
+								case UnitId::TerranMadrigal:
+								{
+									if (current_button->icon_id == IconId::GeminiMissiles
+									&&	scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0) // Madrigal - Furia Salvo
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else if (current_button->icon_id == IconId::FusionCutterHarvest
+									&&		 scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) > 0) // Madrigal - Shrike Payload
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranCuirass:
+								{
+									if (current_button->icon_id == IconId::MoebiusReactor) // Cuirass - Stonewall Protocol
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranPazuzu:
+								{
+									if (current_button->icon_id == IconId::ScarabDamage) // Pazuzu - Deconstruction
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranPenumbra:
+								{
+									if (current_button->icon_id == IconId::WraithBurstLasers) // Penumbra - Shroud Piercer
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranAnticthon:
 								{
 									if (current_button->icon_id == IconId::RilirokorToxicSpores) // Anticthon - Counter-Proposal
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranWraith:
+								{
+									// TODO: replace with permancloak icon
+									if (current_button->icon_id == IconId::WraithBurstLasers) // Wraith - Capacitors
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranTrojan:
+								{
+									if (current_button->icon_id == IconId::Land) // Trojan - Hotdrop
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2035,65 +2105,8 @@ namespace hooks {
 								} break;
 							}
 
-							if (unit->id == UnitId::TerranCuirass &&  
-								current_button->icon_id == IconId::MoebiusReactor) // Cuirass - Stonewall Protocol
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranCyclops &&  
-								current_button->icon_id == IconId::VultureFragmentationGrenade) // Cyclops - Fragmentary Shells
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranPhalanxTankMode &&  
-								current_button->icon_id == IconId::TerranVehiclePlating) // Phalanx - Babylon Plating
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranPhalanxSiegeMode &&  
-								current_button->icon_id == IconId::TerranVehiclePlating) // Phalanx - Babylon Plating
-							{
-								current_button_state = Button_State::Disabled; // Disable while sieged
-							}
-							else if (unit->id == UnitId::TerranMadrigal &&  
-								current_button->icon_id == IconId::GeminiMissiles &&
-								scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0) // Madrigal - Furia Salvo
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranMadrigal &&  
-								current_button->icon_id == IconId::FusionCutterHarvest &&
-								scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) > 0) // Madrigal Shrike Payload
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranPazuzu &&  
-								current_button->icon_id == IconId::ScarabDamage) // Pazuzu Deconstruction
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranPenumbra &&  
-								current_button->icon_id == IconId::WraithBurstLasers) // Penumbra Shroud Piercer
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranWraith &&  
-								current_button->icon_id == IconId::WraithBurstLasers) // Wraith Capacitors
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranGorgon &&  
-								current_button->icon_id == IconId::ArgusJewel) // Gorgon Petrification
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranValkyrie &&  
+							if (unit->id == UnitId::TerranValkyrie &&  
 								current_button->icon_id == IconId::GraviticBoosters) // Valkyrie Charon Afterburners
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranTrojan &&  
-								current_button->icon_id == IconId::Land) // Trojan Hotdrop
 							{
 								current_button_state = Button_State::Enabled;
 							}
