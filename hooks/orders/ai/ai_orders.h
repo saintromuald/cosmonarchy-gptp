@@ -54,5 +54,7 @@ namespace hooks {
 	bool ai_attack_timer_decrement(u32 player);																			// 00447090
 	void __stdcall ai_region_grouping_for_attack(AiRegion* ai_region);
 
+	bool is_ground_map(Point16 position, u32 player);																	// 00433110
+
 	void inject_ai_orders_hooks();
 }

@@ -2641,4 +2641,19 @@ namespace hooks {
 		}
  		helper::ai_set_region_state(RegionState::Nothing, ai_region);
 	}
+
+	// Hooked to improve and validate. -Veeq7
+	bool is_ground_map(Point16 position, u32 player) { // 00433110
+		Region* source = scbw::get_region(position);
+		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+			if (scbw::is_allied_to(player, other_player) || g_completed_factory_counts->unit[other_player] == 0) {
+				continue;
+			}
+			Region* target = scbw::get_region(g_start_positions[other_player]);
+			if (source->group_index == target->group_index) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

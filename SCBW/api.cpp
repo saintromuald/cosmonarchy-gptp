@@ -1819,26 +1819,6 @@ namespace scbw {
 		return best_town;
 	}
 
-	u32 get_region_id(Point16 position) {
-		return helper::get_region_id(position.x, position.y);
-	}
-
-	AiRegion* get_ai_region(u32 player, u32 index) {
-		return &g_ai_region_captains[player][index];
-	}
-
-	u32 get_ai_region_military_count(AiRegion* ai_region) {
-		u32 count = 0;
-		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
-			count += 1;
-		}
-		return count;
-	}
-
-	Region* get_region(u32 index) {
-		return &(*g_sai_paths)->regions[index];
-	}
-
 	Point16 get_region_center(Region* region) {
 		Point16 center = {};
 		center.x = region->region_center_x >> 8;
@@ -1853,6 +1833,14 @@ namespace scbw {
 		area.w = region->right;
 		area.h = region->bottom;
 		return area;
+	}
+
+	u32 get_ai_region_military_count(AiRegion* ai_region) {
+		u32 count = 0;
+		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
+			count += 1;
+		}
+		return count;
 	}
 
 	void ai_defend(u32 player, u32 region_id) {

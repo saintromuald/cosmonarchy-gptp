@@ -763,6 +763,31 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) is_ground_map_wrapper() { // 00433110
+		static bool result;
+		static u32 player;
+		static Point16 position;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			POP EAX
+			MOV position.x, BX
+			MOV position.y, DI
+			PUSHAD
+		}
+		result = hooks::is_ground_map(position, player);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 }
 
 namespace hooks
@@ -815,6 +840,7 @@ namespace hooks
 		jump_patch(ai_region_grouping_for_attack,				0x0043EEC0, 4);
 
 		jump_patch(ai_can_travel_to_region_wrapper,				0x0043A790, 1);
+		jump_patch(is_ground_map_wrapper,						0x00433110, 5);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 

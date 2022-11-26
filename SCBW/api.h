@@ -402,6 +402,10 @@ namespace scbw
 		return &(*activeTileArray)[(x / 32) + (y / 32) * g_map_tile_size->width];
 	}
 
+	inline ActiveTile* get_active_tile_at_coords(Point16 point) {
+		return get_active_tile_at_coords(point.x, point.y);
+	}
+
 	inline ActiveTile* get_active_tile_at_tile(u32 tile_x, u32 tile_y) {
 		return &(*activeTileArray)[tile_x + tile_y * g_map_tile_size->width];
 	}
@@ -618,17 +622,35 @@ namespace scbw
 	bool unit_id_uses_xlarge_overlays(u16 unit_id);
 	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures);
 
+	inline u32 get_region_id(Point16 position) {
+		return helper::get_region_id(position.x, position.y);
+	}
+
+	inline AiRegion* get_ai_region(u32 player, u32 index) {
+		return &g_ai_region_captains[player][index];
+	}
+
+	inline AiRegion* get_ai_region(u32 player, Point16 position) {
+		return get_ai_region(player, get_region_id(position));
+	}
+
+	inline Region* get_region(u32 index) {
+		return &(*g_sai_paths)->regions[index];
+	}
+
+	inline Region* get_region(Point16 position) {
+		return get_region(get_region_id(position));
+	}
+
+	Point16 get_region_center(Region* region);
+	Box32 get_region_area(Region* region);
+
 	void set_cmbw_ai_preference(u16 unit_id, u32 player);
 	Box32 unit_area(Unit* unit);
 	void clear_creep(Box32 area);
 	u32 get_closest_resarea(Point16 position);
 	AiTown* get_closest_town(u32 player, Point16 position);
-	u32 get_region_id(Point16 position);
-	AiRegion* get_ai_region(u32 player, u32 index);
 	u32 get_ai_region_military_count(AiRegion* region);
-	Region* get_region(u32 index);
-	Point16 get_region_center(Region* region);
-	Box32 get_region_area(Region* region);
 	void ai_defend(u32 player, u32 region_id);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
 	bool unit_id_is_capped_gas_structure(u16 unit_id);
