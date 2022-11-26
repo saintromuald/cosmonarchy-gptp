@@ -5,10 +5,10 @@
 namespace hooks
 {
 	void orders_building_land(Unit* unit) { // 00464360
-		Target unitTarget;
-		unitTarget.unit = unit->order_target.unit;
-		unitTarget.pt = unit->order_target.pt;
-		Point16 coords;
+		Target unit_target = {};
+		unit_target.unit = unit->order_target.unit;
+		unit_target.pt = unit->order_target.pt;
+		Point16 coords = {};
 		coords.x = 0;
 		coords.y = 0;
 
@@ -17,22 +17,21 @@ namespace hooks
 			if (unit->main_order_id != OrderId::Die) {
 				bool break_loop = false;
 				while (unit->order_queue_tail && !break_loop) {
-					break_loop = !orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
-						(unit->order_queue_tail->order_id != OrderId::BuildingLiftoff);
+					break_loop = !orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] && (unit->order_queue_tail->order_id != OrderId::BuildingLiftoff);
 					if (!break_loop) {
 						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
 				}
-				unit->perform_another_order(OrderId::BuildingLiftoff, coords.x, coords.y,	nullptr, 0);
+				unit->perform_another_order(OrderId::BuildingLiftoff, coords.x, coords.y, 0, 0);
 			}
 			prepare_for_next_order(unit);
 			if (unit->main_order_id != OrderId::Die) {
 				while (unit->order_queue_tail && unit->order_queue_tail->order_id == OrderId::BuildingLand) {
 					helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 				}
-				unit->perform_another_order(OrderId::BuildingLand, unitTarget.pt.x, unitTarget.pt.y, unitTarget.unit, UnitId::None);
+				unit->perform_another_order(OrderId::BuildingLand, unit_target.pt.x, unit_target.pt.y, unit_target.unit, UnitId::None);
 			}
-			unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
+			unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, false);
 		} else if (unit->main_order_state == 0) {
 			// Plan vertical movement toward ground
 			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->vertical_offset);
@@ -54,8 +53,7 @@ namespace hooks
 				x /= 32; y /= 32;
 
 				// Check for units occupying the landing zone before the final vertical movement started?
-				u32 return_00473FB0 = helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0);
-				if (return_00473FB0) {
+				if (helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0)) {
 					// Probably play "landing sequence interrupted"
 					helper::play_building_land_sound(unit);
 
@@ -68,22 +66,17 @@ namespace hooks
 				} else {
 					// Use a AddFogMask() function after some coordinates calculations
 					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-
 					unit->building.landing_timer = 1;
 
 					// Plan movement again after latest updates
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-
 					if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
 					{
 						unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 					}
-
 					unit->status |= UnitStatus::CanNotReceiveOrders;
-
 					unit->flingy_top_speed = 256;
 					helper::set_unit_movement_speed(unit, 256);
-
 					unit->main_order_state = 2;
 				}
 			}
@@ -120,7 +113,7 @@ namespace hooks
 				// Maybe the landing unit would get excluded from multi-units selection if that could happen in normal Starcraft gameplay? That may be what this function does.
 				if (unit->sprite->flags & SpriteFlags::Selected && *g_client_selection_count > 1)
 				{
-					helper::function_004C3B40(unit);
+					helper::update_building_land_unit_selection(0, unit);
 				}
 
 				helper::set_shadow_y(unit->sprite, 0);
@@ -166,11 +159,10 @@ namespace hooks
 				helper::flying_building_lift_if_still_blocked(unit);
 				helper::force_order_done(unit);
 
-				UnitExt* unitExt = get_unit_ext(unit);
-				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
+				UnitExt* unit_ext = get_unit_ext(unit);
+				if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 					scbw::spawn_custom_creep(unit);
 				}
-
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
 					helper::complete_addon(unit, addon);
@@ -190,7 +182,8 @@ namespace hooks
 
 	void orders_building_liftoff(Unit* unit) { // 004649B0
 		if ((unit->status & UnitStatus::GroundedBuilding)
-		&& (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)) {
+		&& (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
+		{
 			if (unit->building.addon) {
 				helper::disconnect_from_addon(unit);
 			}
@@ -204,7 +197,7 @@ namespace hooks
 
 			unit->sprite->elevation = 12;
 			helper::set_unit_pathing(unit, 1);
-			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings,and  some others things?
+			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings, and some others things?
 
 			if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW) {
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
@@ -216,10 +209,7 @@ namespace hooks
 				unit->next_target_waypoint.x = unit->sprite->position.x;
 				unit->next_target_waypoint.y = unit->sprite->position.y - 42;
 			}
-
-			if (unit->id == UnitId::ZergInfestedCommandCenter) {
-				helper::update_creep_disappearance_unit(unit);
-			}
+			// Originally called update_creep_disappearance_unit when lifting off Infested Command Centers
 			scbw::update_custom_creep_disappearance(unit);
 
 			if (*g_is_placing_building) {
@@ -228,7 +218,7 @@ namespace hooks
 			unit->main_order_id = OrderId::Liftoff;
 		} else {
 			if (!unit->order_queue_head) {
-				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, 0);
+				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);
 			}
 			helper::force_order_done(unit);
 		}

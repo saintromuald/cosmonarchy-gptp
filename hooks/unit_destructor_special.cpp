@@ -236,6 +236,9 @@ void unit_destructor_special_cases(Unit* unit) {
 					if (!scbw::is_allied_to(unit->player, target->player)) {
 						return;
 					}
+					if (target->player == 11) {
+						return;
+					}
 					target_ext->timers[TimerTerminalSurge] = 48;
 					target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 					target->update_speed();

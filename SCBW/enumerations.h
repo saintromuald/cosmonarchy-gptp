@@ -1169,7 +1169,7 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ZergAssault_2HatchHydrokQuazrok,
 	AiBuildOrder_ZergAssault_2HatchGeszkath,
 	AiBuildOrder_ZergAssault_Potency,
-	AiBuildOrder_ZergAssault_6,
+	AiBuildOrder_ZergAssault_EarthenTides,
 	AiBuildOrder_ZergAssault_Count,
 
 	AiBuildOrder_ZergSwarm_3HatchFlood = 1,
@@ -1177,7 +1177,7 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ZergSwarm_InstantQuazrok,
 	AiBuildOrder_ZergSwarm_3HatchOthstol,
 	AiBuildOrder_ZergSwarm_GatesOfHell,
-	AiBuildOrder_ZergSwarm_6,
+	AiBuildOrder_ZergSwarm_PrimitivePressure,
 	AiBuildOrder_ZergSwarm_Count,
 
 	AiBuildOrder_ZergSunblot_BigAndLittle = 1,
@@ -1185,15 +1185,15 @@ enum AiBuildOrder // dark_swarm_unit
 	AiBuildOrder_ZergSunblot_SkitteringDuo,
 	AiBuildOrder_ZergSunblot_EarlyBirds,
 	AiBuildOrder_ZergSunblot_FlyingFeint,
-	AiBuildOrder_ZergSunblot_6,
+	AiBuildOrder_ZergSunblot_DescendingHorizon,
 	AiBuildOrder_ZergSunblot_Count,
 
 	AiBuildOrder_ZergGeneral_SleepingGiant = 1,
 	AiBuildOrder_ZergGeneral_ShriekingSwarm,
 	AiBuildOrder_ZergGeneral_Subjugation,
 	AiBuildOrder_ZergGeneral_BeforeTheStorm,
-	AiBuildOrder_ZergGeneral_5,
-	AiBuildOrder_ZergGeneral_6,
+	AiBuildOrder_ZergGeneral_TimeAfterTime,
+	AiBuildOrder_ZergGeneral_ConstrainedCoil,
 	AiBuildOrder_ZergGeneral_Count,
 };
 

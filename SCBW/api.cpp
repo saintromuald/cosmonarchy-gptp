@@ -2170,6 +2170,7 @@ namespace scbw {
 			case SpriteId::Corpse_Cyclops:
 			case SpriteId::Corpse_Goliath:
 			case SpriteId::Corpse_Blackjack:
+			case SpriteId::Corpse_Wraith:
 			case SpriteId::Corpse_Scribe:
 			case SpriteId::Corpse_Zealot:
 			case SpriteId::Corpse_Dracadin:
@@ -2182,6 +2183,7 @@ namespace scbw {
 			case SpriteId::Corpse_Quazilisk:
 			case SpriteId::Corpse_Hydralisk:
 			case SpriteId::Corpse_Izirokor:
+			case SpriteId::Corpse_Zoryusthaleth:
 			case SpriteId::Corpse_Bactalisk:
 			case SpriteId::Corpse_Kagralisk:
 			case SpriteId::Corpse_Evigrilisk:
@@ -2841,10 +2843,13 @@ namespace scbw {
 		if (source && target) {
 			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
 			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source, victim->position.x, victim->position.y, source->player, angle);
-			scbw::set_bullet_target(bullet, target);
-			if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
-				unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
-				unit_ext->timers[TimerGladiusBindingPlasma] = 24;
+			if (bullet)
+			{
+				scbw::set_bullet_target(bullet, target);
+				if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
+					unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
+					unit_ext->timers[TimerGladiusBindingPlasma] = 24;
+				}
 			}
 		}
 		else {
