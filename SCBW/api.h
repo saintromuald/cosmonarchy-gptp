@@ -398,11 +398,6 @@ namespace scbw
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Returns the pointer to the active tile data at (x, y).
-	inline ActiveTile& get_stupid_reference_to_active_tile_at(s32 x, s32 y)
-	{
-		return (*activeTileArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
-	}
-
 	inline ActiveTile* get_active_tile_at_coords(u32 x, u32 y) {
 		return &(*activeTileArray)[(x / 32) + (y / 32) * g_map_tile_size->width];
 	}

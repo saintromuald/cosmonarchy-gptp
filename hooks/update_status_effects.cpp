@@ -105,8 +105,8 @@ namespace hooks
 		// Forcibly unburrow units that collide with buildings
 		if (unit->status & UnitStatus::Burrowed)
 		{
-			auto tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
-			if (tile.currently_occupied)
+			ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			if (tile->currently_occupied)
 			{
 				// TODO: unit search
 				Unit* nearest = scbw::UnitFinder::get_nearest_target(
@@ -257,47 +257,37 @@ namespace hooks
 		}
 	}
 
-	void ai_burrower(Unit* unit) // 004A1340
-	{
+	void ai_burrower(Unit* unit) { // 004A1340
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->values[ValueDisableAutoBurrow]) {
 			return;
 		}
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable)
-		{
-			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth)
-			{
-				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard)
-				{
+		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable) {
+			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth) {
+				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard) {
 					if (unit->move_target.pt.x == unit->sprite->position.x
 						&& unit->move_target.pt.y == unit->sprite->position.y
 						&& ((unit->status & UnitStatus::Unmovable) != 0) != -1
 						// Originally checked for burrow tech here
-						)
-					{
+						) {
 						bool can_burrow = true;
-						ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
-						if (tile.currently_occupied)
+						ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+						if (tile->currently_occupied)
 						{
 							Unit* nearest = scbw::UnitFinder::get_nearest_target(
 								unit->get_left() - 32,
 								unit->get_top() - 32,
 								unit->get_right() + 32,
 								unit->get_bottom() + 32,
-								unit,
-								[&](Unit* target)
-							{
+								unit, [&](Unit* target) {
 								return safety_unburrow_check(unit, target);
-							}
-							);
-							if (nearest)
-							{
+							});
+							if (nearest) {
 								can_burrow = false;
 							}
 						}
-						if (can_burrow)
-						{
+						if (can_burrow) {
 							if (unit->id != UnitId::ZergLakizilisk) {
 								EntryArray array = {};
 								unit_search_radial(&array, unit->position, 10 * 32);

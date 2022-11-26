@@ -909,7 +909,7 @@ namespace hooks {
 					}
 				}
 				if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
-					if (scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).has_creep && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+					if (scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->has_creep && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 						unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 					}
 				}

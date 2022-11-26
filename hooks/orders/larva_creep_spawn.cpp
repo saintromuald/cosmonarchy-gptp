@@ -157,10 +157,8 @@ namespace hooks
 					y2 = g_map_tile_size->height - 1;
 				}
 
-				for (s32 i = x1; i <= x2; i++)
-				{
-					for (s32 j = y1; j <= y2; j++)
-					{
+				for (s32 i = x1; i <= x2; i++) {
+					for (s32 j = y1; j <= y2; j++) {
 						s32 x = (i * 32) + 16;
 						s32 y = (j * 32) + 16;
 						s32 X = (x - (current_tile_x * 32));
@@ -169,13 +167,12 @@ namespace hooks
 						// adjust value 1300000 to get slightly different radius
 
 						if (in_range) {
-							ActiveTile a = scbw::get_stupid_reference_to_active_tile_at(i * 32, j * 32);
-							if (a.has_creep || a.temporary_creep || a.creep_receding)
-							{
+							ActiveTile* a = scbw::get_active_tile_at_coords(i * 32, j * 32);
+							if (a->has_creep || a->temporary_creep || a->creep_receding) {
 								// why is there nothing here LMAO
 							} else {
 								// can spread
-								if (!a.always_unbuildable && a.is_walkable) {
+								if (!a->always_unbuildable && a->is_walkable) {
 
 									mustspread = 1;
 								}

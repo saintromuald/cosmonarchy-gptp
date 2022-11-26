@@ -750,10 +750,10 @@ namespace scbw {
 
 	bool move_unit_improved(Unit* unit, s16 x, s16 y) {
 		if (!(unit->status & UnitStatus::InAir)) {
-			ActiveTile originalTile = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y);
-			ActiveTile finalTile = scbw::get_stupid_reference_to_active_tile_at(x, y);
+			ActiveTile* original_tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			ActiveTile* final_tile = scbw::get_active_tile_at_coords(x, y);
 
-			if (finalTile.is_unwalkable || originalTile.ground_height != finalTile.ground_height) {
+			if (final_tile->is_unwalkable || original_tile->ground_height != final_tile->ground_height) {
 				return false;
 			}
 
@@ -1016,11 +1016,11 @@ namespace scbw {
 		if (!can_use_cliff_advantage(unit, weapon)) {
 			return 0;
 		}
-		s32 source_height = scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).ground_height / 2;
+		s32 source_height = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height / 2;
 		if (!target_unit) {
 			return source_height * 2;
 		}
-		s32 target_height = scbw::get_stupid_reference_to_active_tile_at(target_unit->position.x, target_unit->position.y).ground_height / 2;
+		s32 target_height = scbw::get_active_tile_at_coords(target_unit->position.x, target_unit->position.y)->ground_height / 2;
 		return std::max(source_height - target_height, 0) * 2;
 	}
 

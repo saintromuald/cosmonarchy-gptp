@@ -90,10 +90,9 @@ namespace hooks
     }
 
     // Hooked because the helper is fucked - Pr0nogo
-    b32 get_active_tile_flag(s16 y, s16 x, s32 includedFlags, s32 excludedFlags) // 00472F80
-    {
-        ActiveTile tile = scbw::get_stupid_reference_to_active_tile_at(x, y);
-        return tile.value & includedFlags && !(tile.value & excludedFlags);
+    b32 get_active_tile_flag(s16 y, s16 x, s32 included_flags, s32 excluded_flags) { // 00472F80
+        ActiveTile* tile = scbw::get_active_tile_at_coords(x, y);
+        return tile->value & included_flags && !(tile->value & excluded_flags);
     }
 
     // Hooked to investigate crashes - Pr0nogo

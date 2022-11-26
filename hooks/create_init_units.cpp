@@ -91,48 +91,43 @@ namespace hooks
 		}
 	}
 
-	f64 Sign(f64 x)
-	{
+	f64 Sign(f64 x) {
 		return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
 	}
 
-	Point16 find_worker_spawn_positions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal)
-	{
-		s32 sumX = 0;
-		s32 sumY = 0;
+	Point16 find_worker_spawn_positions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal) {
+		s32 sum_x = 0;
+		s32 sum_y = 0;
 		u32 count = 0;
 
-		scbw::UnitFinder unitFinder;
-		unitFinder.search(
+		scbw::UnitFinder unit_finder;
+		unit_finder.search(
 			startX - 10 * 32,
 			startY - 10 * 32,
 			startX + 10 * 32,
 			startY + 10 * 32
 		);
-		u8 cliffLevel = scbw::get_stupid_reference_to_active_tile_at(startX, startY).ground_height;
-		unitFinder.for_each([&](Unit* unit)
-		{
+		u8 cliff_level = scbw::get_active_tile_at_coords(startX, startY)->ground_height;
+		unit_finder.for_each([&](Unit* unit) {
 			if ((unit->id == UnitId::ResourceMineralField
-				|| unit->id == UnitId::ResourceMineralFieldType2
-				|| unit->id == UnitId::ResourceMineralFieldType3)
-				&& scbw::get_stupid_reference_to_active_tile_at(unit->position.x, unit->position.y).ground_height == cliffLevel)
-			{
+			|| unit->id == UnitId::ResourceMineralFieldType2
+			|| unit->id == UnitId::ResourceMineralFieldType3)
+			&& scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level) {
 				Point16 pos = unit->position;
-				sumX += pos.x - startX;
-				sumY += pos.y - startY;
+				sum_x += pos.x - startX;
+				sum_y += pos.y - startY;
 				count += 1;
 			}
 		});
 
-		if (count == 0)
-		{ // default to bottom horizontal
+		if (count == 0) { // Default to bottom horizontal
 			count = 1;
-			sumX = 0;
-			sumY = 1;
+			sum_x = 0;
+			sum_y = 1;
 		}
 
-		f64 averageX = (f64)sumX / count;
-		f64 averageY = (f64)sumY / count;
+		f64 averageX = (f64)sum_x / count;
+		f64 averageY = (f64)sum_y / count;
 		f64 distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
 
 		f64 offsetX = averageX / distance;
@@ -142,21 +137,15 @@ namespace hooks
 		f64 width = distanceMultiplier;
 		f64 height = distanceMultiplier;
 
-		if (offsetX < 0)
-		{
+		if (offsetX < 0) {
 			width *= units_dat::unit_bounds[townhallId].left;
-		}
-		else
-		{
+		} else {
 			width *= units_dat::unit_bounds[townhallId].right;
 		}
 
-		if (offsetY < 0)
-		{
+		if (offsetY < 0) {
 			height *= units_dat::unit_bounds[townhallId].top;
-		}
-		else
-		{
+		} else {
 			height *= units_dat::unit_bounds[townhallId].bottom;
 		}
 
@@ -167,20 +156,15 @@ namespace hooks
 		bool forceHorizontal = false;
 		f64 max = std::max(abs(offsetX), abs(offsetY));
 		f64 min = std::min(abs(offsetX), abs(offsetY));
-		if (min != 0 && diagonalThreshold != 0)
-		{
+		if (min != 0 && diagonalThreshold != 0) {
 			forceHorizontal = max / min < 1 / diagonalThreshold;
 		}
 
-		if (forceHorizontal ||
-			abs(offsetX) < abs(offsetY))
-		{
+		if (forceHorizontal || abs(offsetX) < abs(offsetY)) {
 			offsetX = -units_dat::unit_bounds[townhallId].left * distanceMultiplier;
 			offsetY = Sign(offsetY) * height;
 			horizontal = true;
-		}
-		else
-		{
+		} else {
 			offsetX = Sign(offsetX) * width;
 			offsetY = units_dat::unit_bounds[townhallId].bottom * distanceMultiplier * 1.5;
 			horizontal = false;
