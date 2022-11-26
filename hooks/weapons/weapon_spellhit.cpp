@@ -38,7 +38,7 @@ namespace hooks {
 	char disable_unit(Unit* unit) { // 00492CC0
 		Unit* subunit = unit->subunit;
 		if (subunit) {
-			subunit->status |= UnitStatus::Disabled;
+			subunit->status |= UnitStatus::Frozen;
 		}
 		helper::set_resource_target(unit);
 		s16 unit_id = unit->id;
