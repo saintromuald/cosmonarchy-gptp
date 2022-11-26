@@ -1733,27 +1733,21 @@ namespace hooks {
 
 			if (mind_tyrants.count) {
 				if (unit_ext->timers[TimerTyrannyRecede] <= 4 * 24) {
-					if (unit->status & UnitStatus::Frozen) {
-						unit->unfreeze();
-					}
+					unit->unfreeze();
 					u32 offset = scbw::get_overlay_offset(unit->id, true);
 					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				}
 				unit_ext->timers[TimerTyrannyRecede] = 5 * 24;
 			}
 			if (unit_ext->timers[TimerTyrannyRecede] <= 4 * 24) {
-				if (!(unit->status & UnitStatus::Frozen)) {
-					unit->freeze();
-				}
+				unit->freeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				if (!unit->get_overlay(ImageId::TyrannyStunSmall + offset)) {
 					unit->sprite->create_top_overlay(ImageId::TyrannyStunSmall + offset);
 				}
 			}
 			if (!unit_ext->timers[TimerTyrannyRecede]) {
-				if (unit->status & UnitStatus::Frozen) {
-					unit->unfreeze();
-				}
+				unit->unfreeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				scbw::recede_mind_control(unit);
