@@ -336,7 +336,7 @@ namespace hooks
 	//	jump_patch(order_attack_behavior_wrapper,					0x00478540, 0);
 		jump_patch(ai_attack_unit_wrapper,							0x0043FFD0, 1);
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
-	//	jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
+		jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
 		jump_patch(is_better_target_wrapper,						0x004769D0, 0);
 	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1); // Crashes
 	}
