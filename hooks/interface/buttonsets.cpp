@@ -576,10 +576,11 @@ namespace hooks {
 		for (u32 i = 0; i < current_buttonset->buttons_in_set; ++i) {
 			Button* button = &current_buttonset->first_button[i];
 			if (button->icon_id == IconId::Cancel) {
-				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon) {
+				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
+					|| units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 					button->position = 6;
-				} else if (units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
-					button->position = 6;
+				} else if (buttonset_id == UnitId::ProtossLanifect) {
+					button->position = 7;
 				} else {
 					button->position = 9;
 				}
