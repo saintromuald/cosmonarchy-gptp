@@ -2543,17 +2543,17 @@ namespace hooks {
 						// Cancel new abilities!
 						if (current_button->action_var == TechId::CancelNewAbility)
 						{
-							bool canCancel = false;
+							bool can_cancel = false;
 							if (unit->id == UnitId::TerranWyvern)
 							{
-								UnitExt* activeExt = get_unit_ext(unit);
-								if (activeExt->values[ValueWyvernLandGrabOn])
+								UnitExt* active_ext = get_unit_ext(unit);
+								if (active_ext->values[ValueWyvernLandGrabOn])
 								{
-									canCancel = true;
+									can_cancel = true;
 								}
 							}
 
-							if (!canCancel)
+							if (!can_cancel)
 							{
 								current_button_state = Button_State::Invisible;
 							}
