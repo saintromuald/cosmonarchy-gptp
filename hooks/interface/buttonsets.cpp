@@ -688,6 +688,31 @@ namespace hooks {
 						current_button_state = Button_State::Enabled;
 					}
 
+					/*
+					if (buttonset_id == UnitId::ProtossLanifect) {
+						if (current_button->icon_id == IconId::DisruptionWeb2) {
+							bool has_enabled = false;
+							bool has_disabled = false;
+
+							for (u32 i = 0; i < *g_client_selection_count; ++i) {
+								Unit* unit = g_client_selection_group->unit[i];
+								UnitExt* unit_ext = get_unit_ext(unit);
+								if (unit_ext->values[ValueDisruptionFieldOn]) {
+									has_enabled = true;
+								} else {
+									has_disabled = true;
+								}
+							}
+
+							if (has_disabled && !has_enabled) {
+								current_button_state = Button_State::Enabled;
+							} else {
+								current_button_state = Button_State::Invisible;
+							}
+						}
+					}
+					*/
+
 					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LurkerBurrow) {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
