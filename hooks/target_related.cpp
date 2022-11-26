@@ -1104,31 +1104,27 @@ LABEL_65:
 		return result;
 	}
 
+	static Box32 get_thingy_box(Thingy* thingy) {
+		Box32 box = {};
+		box.left   = thingy->sprite->position.x - units_dat::unit_bounds[thingy->unit_id].left;
+		box.right  = thingy->sprite->position.x + units_dat::unit_bounds[thingy->unit_id].right;
+		box.top    = thingy->sprite->position.y - units_dat::unit_bounds[thingy->unit_id].top;
+		box.bottom = thingy->sprite->position.y + units_dat::unit_bounds[thingy->unit_id].bottom;
+		return box;
+	}
+
 	// Hooked to fix hit tests on structures in fog of war. -Pr0nogo
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos) { // 00487A10
-
-		Thingy* thingy = *g_first_used_thingy;
-		if (!*g_first_used_thingy)
-		{
-			return 0;
-		}
-		while (1)
-		{
-			if (!helper::unit_is_unselectable(thingy->unit_id))
-			{
-				if (thingy->sprite->position.x + units_dat::building_dimensions[thingy->unit_id].x / 2 - x_pos < thingy->sprite->width
-				&&  thingy->sprite->position.y + units_dat::building_dimensions[thingy->unit_id].y / 2 - y_pos < thingy->sprite->height)
-				{
-					break;
+		for (Thingy* thingy = *g_first_used_thingy; thingy; thingy = thingy->next) {
+			if (!helper::unit_is_unselectable(thingy->unit_id)) {
+				Box32 box = get_thingy_box(thingy);
+				if (box.left <= x_pos && x_pos <= box.right
+				&&	box.top  <= y_pos && y_pos <= box.bottom) {
+					return thingy;
 				}
 			}
-			thingy = thingy->next;
-			if (!thingy)
-			{
-				return 0;
-			}
 		}
-		return thingy;
+		return 0;
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
