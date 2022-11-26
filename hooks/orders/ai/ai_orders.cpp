@@ -172,6 +172,8 @@ namespace hooks {
 					u32 current = unit->get_current_life_ingame();
 					u32 total = unit->get_total_hp_plus_shields();
 
+					// Disabled for now... -Veeq7
+					/*
 					if (current <= total * 3 / 4
 						&& scbw::ai_unit_id_can_flee_three_quarters(unit->id)
 						&& helper::ai_return_to_nearest_base_forced(unit)) {
@@ -183,6 +185,7 @@ namespace hooks {
 						&& helper::ai_return_to_nearest_base_forced(unit)) {
 						return;
 					}
+					*/
 
 					if (unit->id == UnitId::ZergLakizilisk
 						&& !(unit->status & UnitStatus::Burrowed)
