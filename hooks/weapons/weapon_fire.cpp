@@ -272,7 +272,7 @@ namespace hooks {
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 4, false, 0, 2);
+						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 3, false, 0, 2);
 					} break;
 					case WeaponId::SundogBlindsideRockets:
 					{

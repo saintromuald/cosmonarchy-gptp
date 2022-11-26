@@ -3,14 +3,11 @@
 #include <hook_tools.h>
 #include "SCBW/scbwhelper.h"
 
-namespace
-{
-	void __declspec(naked) CreateInitialMeleeBuildingsWrapper()
-	{
+namespace {
+	void __declspec(naked) CreateInitialMeleeBuildingsWrapper() {
 		static u32 player;
 		static u8 raceId;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV raceId, AL
@@ -27,17 +24,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CreateInitialMeleeUnitsWrapper()
-	{
-		__asm
-		{
+	void __declspec(naked) CreateInitialMeleeUnitsWrapper() {
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSHAD
 		}
 		hooks::create_initial_melee_units();
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -45,11 +39,9 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CreateInitialOverlordWrapper()
-	{
+	void __declspec(naked) CreateInitialOverlordWrapper() {
 		static u8 player;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV AL, byte ptr[EBP + 0x08]
@@ -57,8 +49,7 @@ namespace
 			PUSHAD
 		}
 		hooks::create_initial_ovileth(player);
-		__asm
-		{
+		__asm {
 			POPAD
 			POP EBP
 			RETN 4
@@ -71,8 +62,7 @@ namespace
 		static s32 x;
 		static s32 y;
 		static Unit* result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -86,8 +76,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::create_unit_xy(player_id, id, x, y, false);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -99,16 +88,14 @@ namespace
 	void __declspec(naked) CreatePreplacedUnit_Wrapper() { // 004CD740
 		static CHKUnit* chkunit;
 		static Unit* result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV chkunit, ESI
 			PUSHAD
 		}
 		result = hooks::create_preplaced_unit(chkunit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -120,8 +107,7 @@ namespace
 
 namespace hooks
 {
-	void inject_create_initial_units_hooks()
-	{
+	void inject_create_initial_units_hooks() {
 		jump_patch(CreateInitialMeleeBuildingsWrapper,	0x0049D7C0, 1);
 		jump_patch(CreateInitialMeleeUnitsWrapper,		0x0049DA40, 1);
 		jump_patch(CreateInitialOverlordWrapper,		0x0049D6C0, 3);

@@ -44,10 +44,8 @@ u32 get_racial_worker(u32 raceId)
 	}
 }
 
-namespace hooks
-{
-	void create_initial_melee_buildings(u8 raceId, u32 player)
-	{
+namespace hooks {
+	void create_initial_melee_buildings(u8 raceId, u32 player) {
 		u32 buildingId = get_racial_townhall(raceId);
 		s32 buildingSizeX, buildingSizeY;
 		Box16 searchBox;
@@ -64,20 +62,19 @@ namespace hooks
 			buildingSizeY++;
 		}
 
-		searchBox.left = (g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
-		searchBox.top = (g_start_positions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
-		searchBox.bottom = buildingSizeY / 2 + ((g_start_positions[player].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
-		searchBox.right = buildingSizeX / 2 + ((g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
+		searchBox.left = (g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0xFFE0;
+		searchBox.top = (g_start_positions[player].y - (s16)(buildingSizeY / 2)) & 0xFFE0;
+		searchBox.bottom = buildingSizeY / 2 + ((g_start_positions[player].y - (s16)(buildingSizeY / 2)) & 0xFFE0) + buildingSizeY / 2 - 1;
+		searchBox.right = buildingSizeX / 2 + ((g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0xFFE0) + buildingSizeX / 2 - 1;
 
 		// yes, the return value is unused for some reason
 		helper::find_best_unit(&searchBox, 0x0049D640);
 		created_unit = helper::create_unit(buildingId,
-				((g_start_positions[player].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
-				((g_start_positions[player].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
+				((g_start_positions[player].x - (buildingSizeX / 2)) & 0xFFE0) + buildingSizeX / 2,
+				((g_start_positions[player].y - (buildingSizeY / 2)) & 0xFFE0) + buildingSizeY / 2,
 				player);
 
-		if (created_unit != nullptr)
-		{
+		if (created_unit) {
 			helper::update_unit_stats_and_finish_building(created_unit);
 			if (helper::show_finished_unit(created_unit) != 0)
 			{
