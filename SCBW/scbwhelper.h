@@ -20,6 +20,7 @@ namespace helper {
 	SCBW_FUNC(0x0048A460, void __stdcall, execute_all_game_triggers, u32 ms_per_frame);
 	SCBW_FUNC(0x0045D040, s32 __stdcall, select_new_unit, Unit* unit);
 	SCBW_FUNC(0x0049B870, bool __cdecl, update_alliances);
+	SCBW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
 
 	bool has_money_can_make(Unit* builder, u32 unitToBuild);
 

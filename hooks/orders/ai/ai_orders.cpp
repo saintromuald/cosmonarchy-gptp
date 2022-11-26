@@ -1455,7 +1455,7 @@ namespace hooks {
 		return 1;
 	}
 
-	f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, EntryArray* units) {
+	f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, EntryArray* units, bool use_absolute_path) {
 		f32 score = 0;
 
 		// TODO: make trigger customizable (and probably convert all biases to 1.0, so it's always the default)
@@ -1534,16 +1534,18 @@ namespace hooks {
 		u32 best_resarea = 0;
 		f32 best_score = INT_MIN;
 
-		bool has_transport_or_flying_worker = false;
+		bool has_transport = false;
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (scbw::unit_id_is_transport(unit->id)) {
-				has_transport_or_flying_worker = true;
+				has_transport = true;
 				break;
 			}
+			/*
 			if (units_dat::base_property[unit->id] & UnitProperty::Worker && units_dat::base_property[unit->id] & UnitProperty::Flyer) {
-				has_transport_or_flying_worker = true;
+				has_transport = true;
 				break;
 			}
+			*/
 		}
 
 		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
@@ -1553,8 +1555,13 @@ namespace hooks {
 				continue;
 			}
 			Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
-			if (!has_transport_or_flying_worker && main_region->group_index != area_region->group_index) {
-				continue;
+			bool use_absolute_path = false;
+			if (main_region->group_index != area_region->group_index) {
+				if (has_transport) {
+					use_absolute_path = true;
+				} else {
+					continue;
+				}
 			}
 			EntryArray units = {};
 			unit_search_radial(&units, area->position, 12 * 32);
@@ -1573,7 +1580,7 @@ namespace hooks {
 				}
 			}
 
-			f32 score = get_resarea_score(player, main_town, area, &units);
+			f32 score = get_resarea_score(player, main_town, area, &units, use_absolute_path);
 			if (score > best_score) {
 				best_score = score;
 				best_resarea = i;
@@ -2283,6 +2290,160 @@ namespace hooks {
 		return result;
 	}
 
+	static u32 attack_distance(Point16 a, Point16 b, bool air_only_attack) {
+		if (air_only_attack) {
+			return scbw::get_distance_fast(a, b) / 32;
+		}
+		return scbw::get_ground_path_distance_tiles(a, b);
+	}
+
+	AiRegion* get_best_grouping_region(u32 player, bool air_only_attack) {
+		AiRegion* best_region = 0;
+		s32 best_score = 0;
+		for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
+			AiRegion* ai_region = scbw::get_ai_region(player, i);
+			s32 score = 0;
+
+			switch (ai_region->state) {
+				case RegionState::ContinueAttackHere:
+				case RegionState::Attacking:
+				case RegionState::EnemySighted:
+				case RegionState::ChaseAway:
+				case RegionState::PreparingAttack:
+				case RegionState::PreparingAttackOldUnreachable:
+				case RegionState::Defending: // We don't want this for grouping, even though it's not a "special" region
+					continue;
+			}
+
+			Region* region = scbw::get_region(ai_region->region);
+			if (!air_only_attack && region->accessibility_flags == RegionAirOnly) {
+				continue;
+			}
+
+			u32 town_count = 0;
+			u32 town_score = 0;
+			for (AiTown* ai_town = g_ai_town_list[player].first; ai_town; ai_town = ai_town->prev) {
+				town_count += 1;
+				town_score += attack_distance(scbw::get_region_center(region), ai_town->position, air_only_attack);
+			}
+			if (town_count) {
+				score -= town_score / town_count;
+			}
+
+			// TODO: should probably check if we have an advantage in the match
+			if (true) {
+				u32 hostile_score = 0;
+				u32 hostile_count = 0;
+				for (u32 j = 0; j < PlayerLimit; ++j) {
+					if (!scbw::is_allied_to(player, j)) { // TODO: maybe instead of start locations we iterate over all units?
+						hostile_count += 1;
+						hostile_score += attack_distance(scbw::get_region_center(region), g_start_positions[j], air_only_attack);
+					}
+				}
+				if (hostile_count) {
+					score -= hostile_score / hostile_count;
+				}
+			}
+
+			if (!best_region || score > best_score) {
+				best_score = score;
+				best_region = ai_region;
+			}
+		}
+		return best_region;
+	}
+
+	AiRegion* get_best_target_region(u32 player, bool air_only_attack, AiRegion* grouping_ai_region) {
+		if (!grouping_ai_region) {
+			return 0;
+		}
+
+		AiRegion* best_region = 0;
+		s32 best_score = 0;
+		for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
+			AiRegion* ai_region = scbw::get_ai_region(player, i);
+			s32 score = 0;
+
+			switch (ai_region->state) {
+				case RegionState::ContinueAttackHere:
+				case RegionState::Attacking:
+				case RegionState::EnemySighted:
+				case RegionState::ChaseAway:
+				case RegionState::PreparingAttack:
+				case RegionState::PreparingAttackOldUnreachable:
+					continue;
+			}
+
+			Region* region = scbw::get_region(ai_region->region);
+			Region* grouping_region = scbw::get_region(grouping_ai_region->region);
+			if (!air_only_attack) {
+				if (region->accessibility_flags == RegionAirOnly) {
+					continue;
+				}
+				if (region->group_index != grouping_region->group_index && !helper::player_has_transports(player)) {
+					continue;
+				}
+			}
+
+			bool valid_region = false;
+			EntryArray units = {};
+			unit_search_rect(&units, scbw::get_region_area(region)); // TODO: consider radial search of more distance
+			for (u32 j = 0; j < units.count; ++j) {
+				Unit* unit = units.units[j];
+				if (unit->player > PlayerLimit) {
+					continue;
+				}
+				UnitExt* unit_ext = get_unit_ext(unit);
+				if (scbw::is_allied_to(player, unit->player)) {
+					if (unit_ext->damage_dealt_timer <= 4 * 24
+					||  unit_ext->damage_taken_timer <= 4 * 24) {
+						score += unit->get_strength();
+					}
+				} else {
+					valid_region = true;
+					u32 unit_score = unit->get_strength();
+					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+						unit_score = 200;
+					} else if (units_dat::base_property[unit->id] & UnitProperty::ResourceDepot) {
+						unit_score = unit->status & UnitStatus::Completed ? 1500 : 2500;
+					} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+						unit_score = 0;
+					}
+					score += unit_score;
+				}
+			}
+			if (!valid_region) {
+				continue;
+			}
+
+			score -= attack_distance(scbw::get_region_center(region), scbw::get_region_center(grouping_region), air_only_attack);
+
+			if (!best_region || score > best_score) {
+				best_score = score;
+				best_region = ai_region;
+			}
+		}
+		return best_region;
+	}
+
+	bool ai_set_attack_grouping_region(bool air_only_attack, bool allow_near_regions, u32 player, char* regions_list, u32 x, u32 y, bool overwrite_last_attack) {
+		/*
+		AiRegion* best_grouping_region = get_best_grouping_region(player, air_only_attack);
+		AiRegion* best_target_region = get_best_target_region(player, air_only_attack, best_grouping_region);
+		if (best_grouping_region && best_target_region) {
+			if (overwrite_last_attack || !g_aiscript_controller[player].last_attack_seconds) {
+				g_aiscript_controller[player].last_attack_seconds = *g_elapsed_time_seconds;
+			}
+			g_aiscript_controller[player].ai_attack_group_region = best_grouping_region->region + 1;
+			helper::ai_set_region_state(RegionState::PreparingAttack, best_grouping_region);
+			best_grouping_region->target_region = best_target_region->region;
+			return true;
+		}
+		*/
+		// Default to vanilla code, if we haven't found anything
+		return helper::ai_set_attack_grouping_region(air_only_attack, allow_near_regions, player, regions_list, x, y, overwrite_last_attack);
+	}
+
 	// Hooked to improve functionality. -Pr0nogo
 	bool ai_prepare_attack(u32 player, u32 x, u32 y, u32 overwrite_last_attack, u32 fallback_air_only) { // 0043ABB0
 		if (g_aiscript_controller[player].attack_failed) {
@@ -2318,15 +2479,15 @@ namespace hooks {
 		}
 
 		g_aiscript_controller[player].ai_flags.is_secure_finished = true;
-		if (helper::ai_set_attack_grouping_region(air_only_attack, false, player, regions_list, x, y, overwrite_last_attack)
-		||  helper::ai_set_attack_grouping_region(air_only_attack, true,  player, regions_list, x, y, overwrite_last_attack)) {
+		if (ai_set_attack_grouping_region(air_only_attack, false, player, regions_list, x, y, overwrite_last_attack)
+		||  ai_set_attack_grouping_region(air_only_attack, true,  player, regions_list, x, y, overwrite_last_attack)) {
 			return false;
 		}
 		if (!fallback_air_only || air_only_attack) {
 			return true;
 		}
-		if (helper::ai_set_attack_grouping_region(true, false, player, regions_list, x, y, overwrite_last_attack)
-		||	helper::ai_set_attack_grouping_region(true, true,  player, regions_list, x, y, overwrite_last_attack)) {
+		if (ai_set_attack_grouping_region(true, false, player, regions_list, x, y, overwrite_last_attack)
+		||	ai_set_attack_grouping_region(true, true,  player, regions_list, x, y, overwrite_last_attack)) {
 			return false;
 		}
 		g_aiscript_controller[player].attack_failed = true;
@@ -2361,8 +2522,8 @@ namespace hooks {
 	static bool human_has_an_active_attack(u32 player) {
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			UnitExt* unit_ext = get_unit_ext(unit);
-			if (unit_ext->damage_dealt_timer <= 2 * 24
-			||  unit_ext->damage_taken_timer <= 2 * 24) {
+			if (unit_ext->damage_dealt_timer <= 4 * 24
+			||  unit_ext->damage_taken_timer <= 4 * 24) {
 				EntryArray units = {};
 				unit_search_radial(&units, unit->position, 20 * 32);
 				unit_search_filter(&units, unit, FilterEnemy | FilterBuilding);
@@ -2460,6 +2621,14 @@ namespace hooks {
 			}
 			g_aiscript_controller[player].last_attack_seconds = 0;
 		}
+
+		/*
+		bool air_only_attack = false; // TODO: figure out if we have only air units
+		AiRegion* new_target_region = get_best_target_region(player, air_only_attack, ai_region);
+		if (new_target_region) {
+			ai_region->target_region = new_target_region->region;
+		}
+		*/
 
 		u32 target_region = ai_region->target_region;
 		if (target_region) {

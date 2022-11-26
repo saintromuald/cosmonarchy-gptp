@@ -463,6 +463,10 @@ struct Unit : public UnitLayout
 
 	// Returns the right click action for the given unit
 	u8 get_right_click_action_order();
+
+	inline u32 get_strength() {
+		return this->ground_strength >= this->air_strength ? this->ground_strength : this->air_strength;
+	}
 };
 
 C_ASSERT(sizeof(Flingy) == 0x4c);
