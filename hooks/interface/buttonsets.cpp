@@ -2053,6 +2053,13 @@ namespace hooks {
 
 								// ZERG \\
 								
+								case UnitId::ZergMutalisk:
+								case UnitId::ZergTosgrilisk:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergTethzorokor:
 								{
 									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Tethzorokor - Bone Flurry
@@ -2416,11 +2423,6 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergLiiralisk && // Liiralisk Lithe Organelle
-								current_button->icon_id == IconId::GeszithalorAcidSpore)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergMutalisk &&  // Mutalisk Lithe Organelle
 								current_button->icon_id == IconId::GeszithalorAcidSpore)
 							{
 								current_button_state = Button_State::Enabled;
