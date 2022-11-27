@@ -293,6 +293,70 @@ namespace hooks {
 		}
 	}
 
+	// Hooked to show doodad sprites in quasi-fog. -Pr0nogo
+	b32 update_doodad_visibility(Thingy* thingy) // 00487690
+	{
+		if (thingy->sprite->flags & SpriteFlags::Hidden)
+		{
+			return 0;
+		}
+		Sprite* sprite = thingy->sprite;
+		u32 width = sprite->width;
+		u32 height = sprite->height;
+		u32 tile_x = (sprite->position.x - width / 2) / 32;
+		u32 tile_y = (sprite->position.y - height / 2) / 32;
+		u32 width_tile = (width + 31) >> 5;
+		u32 height_tile = (height + 31) >> 5;
+		if (tile_x >= 0)
+		{
+			if ((width_tile + tile_x) > g_map_tile_size->width)
+			{
+				width_tile = g_map_tile_size->width - tile_x;
+			}
+		}
+		else
+		{
+			width_tile = tile_x + width_tile;
+			tile_x = 0;
+		}
+		if (tile_y >= 0)
+		{
+			if ((height_tile + tile_y) > g_map_tile_size->height)
+			{
+				height_tile = g_map_tile_size->height - tile_y;
+			}
+		}
+		else
+		{
+			height_tile = tile_y + height_tile;
+			tile_y = 0;
+		}
+
+		u8 visibility_mask = 0;
+		if (g_is_in_replay && g_replay_reveal_all)
+		{
+			visibility_mask = -1;
+		}
+		else
+		{
+			visibility_mask = helper::get_visibility_mask_from_position_and_size(height_tile, tile_x, tile_y, width_tile);
+		}
+		b32 result = 0;
+		if (sprite->visibility_status != visibility_mask)
+		{
+			char player_visions = *g_player_visions & sprite->visibility_status;
+			helper::refresh_all_visible_images_at_screen_pos(sprite, visibility_mask);
+			if (player_visions)
+			{
+				if (!(*g_player_visions & thingy->sprite->visibility_status))
+				{
+					result = 1;
+				}
+			}
+		}
+		return result;
+	}
+
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps

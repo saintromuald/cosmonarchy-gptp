@@ -103,18 +103,41 @@ bool isGameOn = false;
 		}
 	}
 
+	void __declspec(naked) update_doodad_visibility_wrapper() { // 00487690
+		static Thingy* thingy;
+		static b32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV thingy, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::update_doodad_visibility(thingy);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			MOV EAX, result
+			RETN 0x04
+		}
+	}
+
 //-------- Hook injector --------//
 
 namespace hooks {
 	void inject_game_hooks() {
-		jump_patch(on_game_start,			Hook_OnGameStart);
-		jump_patch(set_ingame_input_procs,	0x00484CC0, 0);
-		jump_patch(update_minimap_colors,	0x004A3A00, 0);
+		jump_patch(on_game_start,						Hook_OnGameStart);
+		jump_patch(set_ingame_input_procs,				0x00484CC0, 0);
+		jump_patch(update_minimap_colors,				0x004A3A00, 0);
+	//	jump_patch(update_doodad_visibility_wrapper,	0x00487690, 1);
 
-		jump_patch(ui_button_click_wrapper, 0x004190ED, 2);
+		jump_patch(ui_button_click_wrapper,				0x004190ED, 2);
 
-		call_patch(on_game_end,				0x004EE983, 0);
-		call_patch(next_frame_hook,			0x004D974E, 0);
-		call_patch(next_ui_frame_hook,		0x004DE433, 0);
+		call_patch(on_game_end,							0x004EE983, 0);
+		call_patch(next_frame_hook,						0x004D974E, 0);
+		call_patch(next_ui_frame_hook,					0x004DE433, 0);
 	}
 }

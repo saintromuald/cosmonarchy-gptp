@@ -7,13 +7,14 @@ namespace hooks {
 	extern u32 quickcasting_command_card;
 	extern Unit* transport_ui_unit;
 
-	void __cdecl update_minimap_colors(); // 004A3A00
+	void __cdecl update_minimap_colors();			// 004A3A00
+	b32 update_doodad_visibility(Thingy* thingy);	// 00487690
 
 	void init_unit(Unit* unit);
 	void tick_unit(Unit* unit, bool unit_is_hidden);
 
 	void ui_button_click(BinDlg* dialog);
-	u32 __cdecl set_ingame_input_procs(); // 00484CC0
+	u32 __cdecl set_ingame_input_procs();			// 00484CC0
 	bool game_on();
 	bool game_end();
 	void next_ui_frame();

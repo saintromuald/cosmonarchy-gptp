@@ -3277,7 +3277,7 @@ namespace helper {
 		}
 	}
 
-	void function_00497480(Sprite* thingySprite, u32 visibility_flags) {
+	void refresh_all_visible_images_at_screen_pos(Sprite* thingySprite, u32 visibility_flags) {
 		const u32 Func_Sub497480 = 0x00497480;
 		__asm {
 			PUSHAD
@@ -12582,6 +12582,23 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOVZX AL, animation
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 get_visibility_mask_from_position_and_size(u16 y_pos, u16 height, u16 width, u16 x_pos)
+	{
+		static u32 result;
+		const u32 func_address = 0x00402570;
+		__asm {
+			PUSHAD
+			MOVZX AX, y
+			PUSH x_pos
+			PUSH width
+			PUSH height
 			CALL func_address
 			MOV result, EAX
 			POPAD

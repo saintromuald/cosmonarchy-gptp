@@ -411,7 +411,7 @@ namespace helper {
 
 	//// die_order
 	void clearUnitSprites(Sprite* unit_sprite, Sprite* subunit_sprite);																// 00496F00
-	void function_00497480(Sprite* thingySprite, u32 visibility_flags);																// 00497480
+	void refresh_all_visible_images_at_screen_pos(Sprite* thingySprite, u32 visibility_flags);																// 00497480
 	void _UnitDestructor(Unit* unit);																								// 004A0740
 	void UnitDestructor(Unit* unit);																								// 004A0990
 	void hide_and_disable_unit(Unit* unit);																							// 004E6340
@@ -1493,4 +1493,6 @@ namespace helper {
 	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation);																// 00476ED0
 
 	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation);																		// 0042D600
+
+	u32 get_visibility_mask_from_position_and_size(u16 y_pos, u16 height, u16 width, u16 x_pos);											// 00402570
 }

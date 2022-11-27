@@ -54,7 +54,7 @@ namespace hooks
 					if (hallucination_smoke != nullptr)
 					{
 						//allow players to see smoke if could already see unit vanishing
-						helper::function_00497480(hallucination_smoke->sprite, unit->sprite->visibility_status);
+						helper::refresh_all_visible_images_at_screen_pos(hallucination_smoke->sprite, unit->sprite->visibility_status);
 					}
 				}
 			}
