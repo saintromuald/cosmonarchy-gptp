@@ -688,7 +688,7 @@ namespace hooks
 					}
 				}
 			}
-			if (!g_is_in_replay && unit->player == *g_local_nation_id)
+			if (!*g_is_in_replay && unit->player == *g_local_nation_id)
 			{
 				if (unit->status & UnitStatus::Completed)
 				{

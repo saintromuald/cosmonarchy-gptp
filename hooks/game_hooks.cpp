@@ -294,67 +294,53 @@ namespace hooks {
 	}
 
 	// Hooked to show doodad sprites in quasi-fog. -Pr0nogo
-	b32 update_doodad_visibility(Thingy* thingy) // 00487690
-	{
-		if (thingy->sprite->flags & SpriteFlags::Hidden)
-		{
-			return 0;
+	b32 update_doodad_visibility(Thingy* thingy) { // 00487690
+		if (thingy->sprite->flags & SpriteFlags::Hidden) {
+			return false;
 		}
+
 		Sprite* sprite = thingy->sprite;
-		u32 width = sprite->width;
-		u32 height = sprite->height;
-		u32 tile_x = (sprite->position.x - width / 2) / 32;
-		u32 tile_y = (sprite->position.y - height / 2) / 32;
-		u32 width_tile = (width + 31) >> 5;
-		u32 height_tile = (height + 31) >> 5;
-		if (tile_x >= 0)
-		{
-			if ((width_tile + tile_x) > g_map_tile_size->width)
-			{
-				width_tile = g_map_tile_size->width - tile_x;
-			}
-		}
-		else
-		{
-			width_tile = tile_x + width_tile;
+		s32 tile_x = (sprite->position.x - sprite->width / 2) / 32;
+		s32 tile_y = (sprite->position.y - sprite->height / 2) / 32;
+		s32 tile_w = (sprite->width + 31) / 32;
+		s32 tile_h = (sprite->height + 31) / 32;
+		if (tile_x < 0) {
+			tile_w = tile_x + tile_w;
 			tile_x = 0;
+		} else if (tile_x + tile_w > g_map_tile_size->width) {
+			tile_w = g_map_tile_size->width - tile_x;
 		}
-		if (tile_y >= 0)
-		{
-			if ((height_tile + tile_y) > g_map_tile_size->height)
-			{
-				height_tile = g_map_tile_size->height - tile_y;
-			}
-		}
-		else
-		{
-			height_tile = tile_y + height_tile;
+		if (tile_y < 0) {
+			tile_h = tile_y + tile_h;
 			tile_y = 0;
+		} else if (tile_y + tile_h > g_map_tile_size->height) {
+			tile_h = g_map_tile_size->height - tile_y;
 		}
 
 		u8 visibility_mask = 0;
-		if (g_is_in_replay && g_replay_reveal_all)
-		{
-			visibility_mask = -1;
+		if (*g_is_in_replay && *g_replay_reveal_all) {
+			visibility_mask = 0xff;
+		} else {
+			visibility_mask = helper::get_visibility_mask_from_position_and_size(tile_x, tile_y, tile_w, tile_h);
 		}
-		else
-		{
-			visibility_mask = helper::get_visibility_mask_from_position_and_size(height_tile, tile_x, tile_y, width_tile);
+
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player];
+			if (!(flags & VespeneDeaths_DisableQuasifog)) {
+				visibility_mask |= 1 << player;
+			}
 		}
-		b32 result = 0;
-		if (sprite->visibility_status != visibility_mask)
-		{
-			char player_visions = *g_player_visions & sprite->visibility_status;
+
+		if (sprite->visibility_status != visibility_mask) {
 			helper::refresh_all_visible_images_at_screen_pos(sprite, visibility_mask);
-			if (player_visions)
-			{
-				if (!(*g_player_visions & thingy->sprite->visibility_status))
-				{
-					result = 1;
+			u8 player_visions = *g_player_visions & sprite->visibility_status;
+			if (player_visions) {
+				if (!(*g_player_visions & thingy->sprite->visibility_status)) {
+					return true;
 				}
 			}
 		}
-		return result;
+		return false;
 	}
 
 	/// This hook is called every frame

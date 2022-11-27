@@ -255,7 +255,7 @@ namespace hooks
 
 	bool redraw_supply_info() // 00425230 // Guessed name
 	{
-		if (!g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id)
+		if (!*g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id)
 		{
 			return helper::unitStatCond_Standard();
 		}
