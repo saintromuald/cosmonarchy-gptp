@@ -354,34 +354,22 @@ void Globals::unit_death(Unit* unit) {
 	}
 }
 
-void apply_irradiate(Unit* unit, u8 player, u32 time)
-{
-	if (time == 0)
-	{
+void apply_irradiate(Unit* unit, u8 player, u32 time) {
+	if (time == 0) {
 		return;
 	}
 	// if not already irradiated and not burrowed, add the irradiate overlay
-	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed))
-	{
+	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed)) {
 		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
-		Unit* unitWithOverlay;
-		if (unit->subunit != nullptr)
-		{
-			unitWithOverlay = unit->subunit;
-		}
-		else
-		{
-			unitWithOverlay = unit;
-		}
-		unitWithOverlay->sprite->create_top_overlay(irradiateImageId, 0, 0, 0);
+		Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
+		overlay_unit->sprite->create_top_overlay(irradiateImageId, 0, 0, 0);
 	}
-	unit->irradiate_caster = nullptr;
+	unit->irradiate_caster = 0;
 	unit->irradiate_player_id = player;
 	unit->irradiate_timer = time;
 }
 
-void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent)
-{
+void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent) {
 	Effect effect = {};
 	effect.id = id;
 	effect.position = position;
@@ -898,8 +886,7 @@ namespace scbw
 		}
 
 		// Refresh Irradiate
-		if (unit->irradiate_timer)
-		{
+		if (unit->irradiate_timer) {
 			unit->irradiate_timer = SeraphIrradiateTimer;
 		}
 
@@ -1004,8 +991,7 @@ namespace scbw
 		}
 
 		// Inherit Irradiate
-		if (parent->irradiate_timer != 0)
-		{
+		if (parent->irradiate_timer) {
 			child->irradiate_timer = parent->irradiate_timer;
 		}
 
@@ -1199,8 +1185,7 @@ namespace scbw
 		}
 
 		// Remove Irradiate
-		if (unit->irradiate_timer != 0)
-		{
+		if (unit->irradiate_timer != 0) {
 			unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 			unit->irradiate_timer = 0;
 

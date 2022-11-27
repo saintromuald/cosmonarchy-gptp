@@ -5,52 +5,32 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
 
-void irradiate_proc(Unit* unit, Unit* target)
-{
-	if (!unit)
-	{
+void irradiate_proc(Unit* unit, Unit* target) {
+	if (!unit) {
 		return;
 	}
-
 	// Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
-	||  unit->get_distance_to_target(target) <= 32)
-	{
-		// const s32 damage = weapons_dat::damage_amount[WeaponId::Irradiate] * 256 / weapons_dat::cooldown[WeaponId::Irradiate];
-		s32 damage = (125 * 256) / 24;
-		if (unit != nullptr)
-		{
-			if (unit->irradiate_timer == 0)
-			{
-				damage += (125 * 256) % 24;
-				//scbw::print("Add additional damage");
-			}
-		}
+	||  unit->get_distance_to_target(target) <= 32) {
 		target->damage_with_custom(50.0 * 256.0 / 15.5, -1, unit->irradiate_caster, unit->irradiate_player_id);
 	}
 }
 	
 namespace hooks
 {
-	void do_irradiate_damage(Unit* unit)
-	{
-		if (unit->status & UnitStatus::InTransport)
-		{
+	void do_irradiate_damage(Unit* unit) {
+		if (unit->status & UnitStatus::InTransport) {
 			// If inside a transport, damage all units loaded within
 			Unit* transport = unit->connected_unit;
-			if (transport)
-			{
-				for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i)
-				{
+			if (transport) {
+				for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i) {
 					Unit* loaded_unit = transport->get_loaded_unit(i);
 					if (loaded_unit) {
 						irradiate_proc(unit, loaded_unit);
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			// Find and iterate nearby units
 			// TODO: unit search radial
 			scbw::UnitFinder(
@@ -58,8 +38,7 @@ namespace hooks
 				unit->get_y() - 160,
 				unit->get_x() + 160,
 				unit->get_y() + 160
-			).for_each([&](Unit* target)
-			{
+			).for_each([&](Unit* target) {
 				irradiate_proc(unit, target);
 			});
 		}
@@ -273,8 +252,7 @@ namespace hooks
 						) {
 						bool can_burrow = true;
 						ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
-						if (tile->currently_occupied)
-						{
+						if (tile->currently_occupied) {
 							Unit* nearest = scbw::UnitFinder::get_nearest_target(
 								unit->get_left() - 32,
 								unit->get_top() - 32,
