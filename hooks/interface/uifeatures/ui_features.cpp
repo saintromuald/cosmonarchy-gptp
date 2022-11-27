@@ -424,7 +424,7 @@ LABEL_15:
 			helper::draw_all_minimap_unit_boxes(player);
 		}
 		
-		for (Thingy* thingy = *g_first_used_thingy; thingy; thingy = thingy->next) {
+		for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
 			if (thingy->unit_id != UnitId::Spell_DarkSwarm) {
 				u32 is_visible = helper::thingy_is_visible(1, thingy);
 				if (!*g_is_in_replay || !is_visible) {

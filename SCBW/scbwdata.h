@@ -49,6 +49,8 @@ SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
 SCBW_DATA(Bullet*,			g_bullet_table,					0x0064B2E8);
 SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
 SCBW_DATA(Sprite*,			g_sprite_table,					0x00629D98);
+SCBW_DATA(u32*,				g_sprite_count,					0x006C4A2C);
+SCBW_DATA(Sprite**,			g_sprite_refs,					0x006C2318);
 SCBW_DATA(Image*,			g_image_table,					0x0052F568);
 SCBW_DATA_REF(UnitDeaths*,	g_unit_killed_table,			0x005878A4);
 
@@ -57,7 +59,7 @@ SCBW_DATA_REF(UnitDeaths*,	g_completed_unit_count_table,	0x00584DE4);
 SCBW_DATA_REF(UnitDeaths*,	g_all_unit_count_table,			0x00582324);
 SCBW_DATA(UnitDeaths*,		g_all_unit_count_table_original,0x00582324);
 
-SCBW_DATA(Thingy**,			first_lone_sprite,				0x00654874);
+SCBW_DATA(Thingy**,			g_first_lone_sprite,			0x00654874);
 
 // From locations.cpp
 SCBW_DATA(MapSize*,			g_map_tile_size,				0x0057F1D4);
@@ -1017,7 +1019,7 @@ SCBW_DATA(char*,		unk_sprite_related,				0x006D5BE4);
 SCBW_DATA(char**,		game_result_text,				0x00628668);
 
 // For find_fow_target
-SCBW_DATA(Thingy**,		g_first_used_thingy,				0x00654868);
+SCBW_DATA(Thingy**,		g_first_fow_sprite,				0x00654868);
 
 // For play_building_complete_sound
 SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);

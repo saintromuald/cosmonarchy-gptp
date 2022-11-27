@@ -1115,7 +1115,7 @@ LABEL_65:
 
 	// Hooked to fix hit tests on structures in fog of war. -Pr0nogo
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos) { // 00487A10
-		for (Thingy* thingy = *g_first_used_thingy; thingy; thingy = thingy->next) {
+		for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
 			if (!helper::unit_is_unselectable(thingy->unit_id)) {
 				Box32 box = get_thingy_box(thingy);
 				if (box.left <= x_pos && x_pos <= box.right
