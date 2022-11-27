@@ -445,8 +445,6 @@ LABEL_15:
 						} else {
 							color = g_player_minimap_colors[sprite->player];
 						}
-					} else {
-						int i = 0;
 					}
 
 					Point16 pos = sprite->position;
