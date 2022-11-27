@@ -445,8 +445,19 @@ LABEL_15:
 						} else {
 							color = g_player_minimap_colors[sprite->player];
 						}
+					} else {
+						int i = 0;
 					}
-					Point16 pos = thingy->sprite->position;
+
+					Point16 pos = sprite->position;
+					if (sprite->player == 11) {
+						ActiveTile* tile = scbw::get_active_tile_at_coords(pos);
+						if (tile->explored_flags & 1 << *g_local_nation_id) {
+							color = dark_pcx_image_map->index[28][color];
+						} else {
+							color = dark_pcx_image_map->index[32][color];
+						}
+					}
 					Point16 dims = units_dat::building_dimensions[thingy->unit_id];
 					helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, units_dat::base_property[thingy->unit_id] & UnitProperty::Building);
 					--*g_minimap_unit_box_count;
