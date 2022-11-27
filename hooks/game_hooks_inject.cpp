@@ -109,6 +109,7 @@ namespace hooks {
 	void inject_game_hooks() {
 		jump_patch(on_game_start,			Hook_OnGameStart);
 		jump_patch(set_ingame_input_procs,	0x00484CC0, 0);
+		jump_patch(update_minimap_colors,	0x004A3A00, 0);
 
 		jump_patch(ui_button_click_wrapper, 0x004190ED, 2);
 

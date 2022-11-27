@@ -237,6 +237,26 @@ SCBW_DATA(u32*,			next_replay_command_frame,	0x005136C8);
 SCBW_DATA(u32*,			player_explored_visions,	0x0057EEB8);
 SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
+enum MinimapColor {
+	MinimapColor_Unexplored,
+	MinimapColor_Explored,
+	MinimapColor_Visible,
+	MinimapColor_Visible2,
+
+	MinimapColor_Count,
+};
+
+struct MinimapColors {
+	u8 index[MinimapColor_Count][256];
+};
+SCBW_DATA(MinimapColors*,	minimap_colors, 0x0059C2C0);
+
+struct DarkMap {
+	u8 index[32][256];
+};
+SCBW_DATA(DarkMap*,			dark_pcx_image_map, 0x005973A0);
+SCBW_DATA(u8*,				palette_index_ref,  0x006CEB20);
+
 // For get_response_sfx
 SCBW_DATA(u32*,			selection_sound_counter,	0x00640548);
 SCBW_DATA(u32*,			g_last_random_sfx_id,		0x006D5BE0);

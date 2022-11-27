@@ -275,6 +275,24 @@ namespace hooks {
 		return 0;
 	}
 
+	// Hooked to support quasi-fog on the minimap. -Veeq7
+	void __cdecl update_minimap_colors() { // 004A3A00
+		u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
+		for (u32 i = 0; i < 256; ++i) {
+			if (local_flags & VespeneDeaths_DisableQuasifog) {
+				minimap_colors->index[MinimapColor_Unexplored][i] = palette_index_ref[15];
+				minimap_colors->index[MinimapColor_Explored][i]   = dark_pcx_image_map->index[15][i];
+				minimap_colors->index[MinimapColor_Visible][i]    = i;
+				minimap_colors->index[MinimapColor_Visible2][i]   = i;
+			} else {
+				minimap_colors->index[MinimapColor_Unexplored][i] = dark_pcx_image_map->index[8][i];
+				minimap_colors->index[MinimapColor_Explored][i]   = dark_pcx_image_map->index[15][i];
+				minimap_colors->index[MinimapColor_Visible][i]    = i;
+				minimap_colors->index[MinimapColor_Visible2][i]   = i;
+			}
+		}
+	}
+
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
