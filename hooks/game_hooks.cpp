@@ -2204,7 +2204,15 @@ namespace hooks {
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
-		// Spinder Mine - No collision
+		// Low Yield Mineral Fields - No collision
+		if (unit->id >= UnitId::ResourceMineralField
+		&&  unit->id <= UnitId::ResourceMineralFieldType3
+		&&  unit->building.resource.resource_yield <= 2) {
+			unit->status |= UnitStatus::NoCollide;
+			unit->sprite->elevation = 0;
+		}
+
+		// Spider Mine - No collision
 		if (unit->id == UnitId::TerranSpiderMine) {
 			unit->status |= UnitStatus::NoCollide;
 		}
