@@ -2485,6 +2485,14 @@ namespace hooks {
 				unit_ext->values[ValueApollyoidAdhesiveStacks] = 0;
 			}
 		}
+
+		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
+		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+		&&	unit->status & UnitStatus::InAir
+		&&	unit->main_order_id != OrderId::Liftoff
+		&&	unit->main_order_id != OrderId::BuildingLand) {
+			unit->update_speed();
+		}
 	}
 
 	bool game_on() {
