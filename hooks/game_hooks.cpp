@@ -2204,7 +2204,7 @@ namespace hooks {
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
-		// Low Yield Mineral Fields - No collision
+		// Low-yield Mineral Fields - No collision
 		if (unit->id >= UnitId::ResourceMineralField
 		&&  unit->id <= UnitId::ResourceMineralFieldType3
 		&&  unit->building.resource.resource_yield <= 2) {
