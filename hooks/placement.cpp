@@ -100,8 +100,7 @@ namespace hooks
 	}
 
 	// Hooked to allow building on allied creep. -Pr0nogo
-	int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) // 00473010
-	{
+	int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) { // 00473010
 		u32 human_only_player_bit = 0;
 		if (g_player_table[player].type == PlayerType::Human) {
 			human_only_player_bit = 1 << player;
@@ -152,6 +151,13 @@ namespace hooks
 					flags |= check_creep ? 0x40000000 : 0x400000;
 				}
 
+				bool buildable = false;
+				if (!check_creep && tile->visibility_flags & human_only_player_bit
+					|| !(tile->value & flags)
+					|| tile->value < 0) {
+					buildable = true;
+				}
+
 				u8 state = 0;
 				if (tile->explored_flags & human_only_player_bit) {
 					//state = 10;
@@ -159,9 +165,14 @@ namespace hooks
 					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::find_blocking_fow_resource(x + tile_x, y + tile_y, 3)) {
 						state = 2;
 					}
-				} else if (!check_creep && tile->visibility_flags & human_only_player_bit
-				|| !(tile->value & flags)
-				|| tile->value < 0) { // originally also checked for if the unit id was any racial beacon
+					
+					u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player];
+					if (!(flags & VespeneDeaths_DisableQuasifog)) {
+						if (!buildable) {
+							state = 4;
+						}
+					}
+				} else if (buildable) { // originally also checked for if the unit id was any racial beacon
 					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::place_building_resource_restriction_check(check_creep, x + tile_x, y + tile_y)) {
 						state = 2;
 					}
