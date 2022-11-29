@@ -49,6 +49,5 @@ bool is_map(u32 campaign, u32 map);
 
 bool init_threshold_spawn(CHKUnit* unit, u32 flags);
 void init_threshold();
-bool try_prepare_threshold();
 void end_threshold();
 void tick_threshold();

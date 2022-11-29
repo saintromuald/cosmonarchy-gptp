@@ -764,44 +764,42 @@ static void messagef(char* format, ...) {
 	helper::display_text_message(buffer, 2, GetTickCount() + helper::get_text_display_time(buffer), 1);
 }
 
-static u32 get_next_fraud(u32 player, u32 fraud_class) {
-	if (!threshold.sequence[player].location) {
-		u32 first = 0;
-		u32 last  = 0;
-		if (fraud_class == FraudClass_Fraud) {
-			first = Fraud_First;
-			last  = Fraud_Last;
-		} else if (fraud_class == FraudClass_Hero) {
-			first = FraudHero_First;
-			last  = FraudHero_Last;
-		} else if (fraud_class == FraudClass_Super) {
-			first = FraudSuper_First;
-			last  = FraudSuper_Last;
-		} else if (fraud_class == FraudClass_God) {
-			first = FraudGod_First;
-			last  = FraudGod_Last;
-		} else {
-			return Fraud_None;
-		}
+static u32 get_next_fraud(u32 fraud_class) {
+	u32 first = 0;
+	u32 last  = 0;
+	if (fraud_class == FraudClass_Fraud) {
+		first = Fraud_First;
+		last  = Fraud_Last;
+	} else if (fraud_class == FraudClass_Hero) {
+		first = FraudHero_First;
+		last  = FraudHero_Last;
+	} else if (fraud_class == FraudClass_Super) {
+		first = FraudSuper_First;
+		last  = FraudSuper_Last;
+	} else if (fraud_class == FraudClass_God) {
+		first = FraudGod_First;
+		last  = FraudGod_Last;
+	} else {
+		return Fraud_None;
+	}
 
-		u32 count = 0;
-		for (u32 i = first; i <= last; ++i) {
-			if (!threshold.used[i]) {
-				++count;
-			}
+	u32 count = 0;
+	for (u32 i = first; i <= last; ++i) {
+		if (!threshold.used[i]) {
+			++count;
 		}
-		if (count) {
-			u32 fraud = first;
-			u32 index = scbw::rand_between(1, count);
-			while (index) {
-				if (!threshold.used[fraud]) {
-					if (!--index) {
-						return fraud;
-					}
+	}
+	if (count) {
+		u32 fraud = first;
+		u32 index = scbw::rand_between(1, count);
+		while (index) {
+			if (!threshold.used[fraud]) {
+				if (!--index) {
+					return fraud;
 				}
-				if (++fraud > last) { // This should never happen if the count is correct, but I will leave it as a fail safe -Veeq7
-					fraud = first;
-				}
+			}
+			if (++fraud > last) { // This should never happen if the count is correct, but I will leave it as a fail safe -Veeq7
+				fraud = first;
 			}
 		}
 	}
@@ -846,12 +844,23 @@ static void clear_player_slot(u32 player, bool map_start) {
 		}
 		unit->remove();
 	}
+
+	// Clear fow sprites
+	Thingy* thingy_next = 0;
+	for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy_next) {
+		thingy_next = thingy->next;
+		if (thingy->sprite->player == player) {
+			scbw::delete_fow_sprite(thingy);
+		}
+	}
+
 	// Clear AI towns
 	AiTown* ai_town_prev = 0;
 	for (AiTown* ai_town = g_ai_town_list[player].first; ai_town; ai_town = ai_town_prev) {
 		ai_town_prev = ai_town->prev;
 		scbw::delete_town(ai_town);
 	}
+
 	// Clear AI scripts
 	AiScript* ai_script_next = 0;
 	for (AiScript* ai_script = *g_first_active_aiscript; ai_script; ai_script = ai_script_next) {
@@ -897,17 +906,15 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 	if (fraud_is_alive(player)) {
 		return false;
 	}
-	u32 fraud = get_next_fraud(player, fraud_class);
+	u32 fraud = get_next_fraud(fraud_class);
 	if (fraud) {
 		FraudSpawnLocation* spawn_location = get_random_spawn();
 		if (spawn_location) {
 			threshold.used_count += fraud_class;
 			threshold.used[fraud] = true;
-			threshold.timer = threshold_config.timer;
+			threshold.timer = threshold_config.timer / threshold.scalar;
 			if (fraud_class == FraudClass_God) {
 				threshold.timer = 1 * 60 * 24;
-			} else {
-				threshold.timer /= threshold.scalar;
 			}
 
 			messagef("Spawn %s\x02 (Class: %s\x01)!", fraud_names[fraud], fraud_class_names[fraud_class]);
@@ -1098,7 +1105,7 @@ static void update_config() {
 	}
 }
 
-bool try_prepare_threshold() {
+static bool try_prepare_threshold() {
 	// Scenario Defaults
 	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
 		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
@@ -1148,43 +1155,15 @@ bool try_prepare_threshold() {
 				}
 			}
 		}
+
+		threshold.timer = threshold_config.timer / threshold.scalar;
 	}
 	return threshold.init;
 }
 
-void update_threshold() {
-	if (!try_prepare_threshold()) {
-		return;
-	}
-	update_config();
-	const u32 god_spawn_breakpoint = threshold_config.total_count;
-
-	if (threshold_config.initial_count) {
-		for (u32 player = 0; player < PlayerLimit; ++player) {
-			if (!threshold.fraud_enabled[player]) {
-				continue;
-			}
-			if (threshold_config.initial_count) {
-				if (*g_unit_count < 1600 && place_fraud(player, FraudClass_Fraud, true)) {
-					threshold_config.initial_count -= 1;
-					break;
-				}
-			} else {
-				break;
-			}
-		}
-	}
-
-	static char buffer[64];
-	if (threshold.used_count < god_spawn_breakpoint) {
-		sprintf_s(buffer, sizeof(buffer), "Frauds remaining: %u", god_spawn_breakpoint - threshold.used_count);
-		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-		ui_text_pos.y += ui_text_height;
-
-		format_time(buffer, sizeof(buffer), "Next Fraud: ", threshold.timer / 24);
-		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
-		ui_text_pos.y += ui_text_height;
-	} else if (threshold.used_type_count[FraudClass_God]) {
+static void draw_fraud_ui() {
+	static char buffer[64] = {};
+	if (threshold.used_type_count[FraudClass_God]) {
 		sprintf_s(buffer, sizeof(buffer), "Hands remaining: %u", 6 - threshold.used_type_count[FraudClass_God]);
 		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		ui_text_pos.y += ui_text_height;
@@ -1194,10 +1173,16 @@ void update_threshold() {
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		}
 		ui_text_pos.y += ui_text_height;
-	} else {
-		sprintf_s(buffer, sizeof(buffer), "Frauds remaining: 0");
+	} else if (threshold.used_count < threshold_config.total_count) {
+		sprintf_s(buffer, sizeof(buffer), "Frauds remaining: %u", threshold_config.total_count - threshold.used_count);
 		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		ui_text_pos.y += ui_text_height;
+
+		if (threshold.used_count < threshold_config.total_count) {
+			format_time(buffer, sizeof(buffer), "Next Fraud: ", threshold.timer / 24);
+			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+			ui_text_pos.y += ui_text_height;
+		}
 	}
 
 	sprintf_s(buffer, sizeof(buffer), "Active Frauds:");
@@ -1213,6 +1198,59 @@ void update_threshold() {
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 			ui_text_pos.y += ui_text_height;
 		}
+	}
+
+}
+
+static void cleanup_dead_frauds() {
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		if (!threshold.fraud_enabled[player]) {
+			continue;
+		}
+
+		FraudSpawnSequence* sequence = &threshold.sequence[player];
+		if (sequence->safety_timer) {
+			--sequence->safety_timer;
+		}
+		if (!fraud_is_alive(player, true)) {
+			if (sequence->fraud_class == FraudClass_God) {
+				if (first_player_unit->unit[player]) {
+					sequence->fraud = Fraud_None;
+					sequence->fraud_class = FraudClass_None;
+				}
+			} else {
+				messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[threshold.sequence[player].fraud_class]);
+				sequence->safety_timer = 24;
+
+				Unit* next = 0;
+				for (Unit* unit = first_player_unit->unit[player]; unit; unit = next) {
+					next = unit->player_link.next;
+					unit->remove();
+				}
+				clear_player_slot(player, false);
+				sequence->fraud = Fraud_None;
+				sequence->fraud_class = FraudClass_None;
+			}
+		}
+	}
+}
+
+void spawn_new_frauds() {
+	if (threshold_config.initial_count) {
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			if (!threshold.fraud_enabled[player]) {
+				continue;
+			}
+			if (threshold_config.initial_count) {
+				if (*g_unit_count < 1600 && place_fraud(player, FraudClass_Fraud, true)) {
+					threshold_config.initial_count -= 1;
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		return;
 	}
 
 	u32 alive_count = 0;
@@ -1234,39 +1272,6 @@ void update_threshold() {
 		g_unit_deaths_table[UnitId::Special_PitDoor].player[0] = 69;
 	}
 
-	// Fraud *Boom*
-	for (u32 player = 0; player < PlayerLimit; ++player) {
-		if (!threshold.fraud_enabled[player]) {
-			continue;
-		}
-
-		FraudSpawnSequence* sequence = &threshold.sequence[player];
-		if (sequence->safety_timer) {
-			--sequence->safety_timer;
-		}
-		if (!fraud_is_alive(player, true)) {
-			if (sequence->fraud_class == FraudClass_God) {
-				if (first_player_unit->unit[player]) {
-					sequence->fraud = Fraud_None;
-					sequence->fraud_class = FraudClass_None;
-				}
-			} else {
-				if (first_player_unit->unit[player]) {
-					messagef("%s\x01 (Class: %s\x01) died!", fraud_names[sequence->fraud], fraud_class_names[threshold.sequence[player].fraud_class]);
-					sequence->safety_timer = 24;
-				}
-				Unit* next = 0;
-				for (Unit* unit = first_player_unit->unit[player]; unit; unit = next) {
-					next = unit->player_link.next;
-					unit->remove();
-				}
-				sequence->fraud = Fraud_None;
-				sequence->fraud_class = FraudClass_None;
-			}
-		}
-	}
-
-	// Fraud Spawning
 	u32 min_count = threshold_config.min_count * threshold.scalar;
 	if (alive_count >= min_count && threshold.timer) {
 		--threshold.timer;
@@ -1274,28 +1279,28 @@ void update_threshold() {
 		threshold.timer = 0;
 	}
 	if (!threshold.timer) {
+		u32 fraud_class = FraudClass_None;
+		if (threshold.used_count < threshold_config.total_count) {
+			fraud_class = FraudClass_Fraud;
+			if (get_next_fraud(FraudClass_Hero) && (s32)scbw::rand_between(0, 99) < threshold.hero_spawn_counter * 33) {
+				fraud_class = FraudClass_Hero;
+			} else if (get_next_fraud(FraudClass_Super) && (s32)scbw::rand_between(0, 99) < threshold.super_spawn_counter * 20) {
+				fraud_class = FraudClass_Super;
+			}
+		} else if (threshold.used_type_count[FraudClass_God]) {
+			if (threshold.used_type_count[FraudClass_God] < 3) {
+				fraud_class = FraudClass_None;
+			} else {
+				fraud_class = FraudClass_God;
+			}
+		}
+
 		for (u32 player = 0; player < PlayerLimit; ++player) {
 			if (!threshold.fraud_enabled[player]) {
 				continue;
 			}
 			FraudSpawnSequence* sequence = &threshold.sequence[player];
 			if (!fraud_is_alive(player) && *g_unit_count < 1600) {
-				u32 fraud_class = FraudClass_None;
-				if (threshold.used_count < god_spawn_breakpoint) {
-					fraud_class = FraudClass_Fraud;
-					if (get_next_fraud(player, FraudClass_Hero) && (s32)scbw::rand_between(0, 99) < threshold.hero_spawn_counter * 33) {
-						fraud_class = FraudClass_Hero;
-					} else if (get_next_fraud(player, FraudClass_Super) && (s32)scbw::rand_between(0, 99) < threshold.super_spawn_counter * 20) {
-						fraud_class = FraudClass_Super;
-					}
-				} else if (threshold.used_type_count[FraudClass_God]) {
-					if (threshold.used_type_count[FraudClass_God] < 3) {
-						fraud_class = FraudClass_None;
-					} else {
-						fraud_class = FraudClass_God;
-					}
-				}
-
 				if (place_fraud(player, fraud_class, false)) {
 					++alive_count;
 					break;
@@ -1304,7 +1309,7 @@ void update_threshold() {
 		}
 	}
 
-	if (!non_god_alive_count && threshold.used_count >= god_spawn_breakpoint && threshold.used_type_count[FraudClass_God] < 3) {
+	if (!non_god_alive_count && threshold.used_count >= threshold_config.total_count && threshold.used_type_count[FraudClass_God] < 3) {
 		if (threshold.used_type_count[FraudClass_God] < 3) {
 			threshold.timer = 0;
 		}
@@ -1317,7 +1322,9 @@ void update_threshold() {
 			}
 		}
 	}
+}
 
+static void spawn_sequence_units() {
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (!threshold.fraud_enabled[player]) {
 			continue;
@@ -1351,11 +1358,11 @@ void update_threshold() {
 						Point16 source_pos = source->pos;
 						Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
 
-					//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
-					//	if (augur) {
-					//		augur->user_action_flags |= 4;
-					//		augur_sacrifice(augur, 10 * 32);
-					//	}
+						//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
+						//	if (augur) {
+						//		augur->user_action_flags |= 4;
+						//		augur_sacrifice(augur, 10 * 32);
+						//	}
 						Unit* unit = scbw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
 						if (unit) {
 							scbw::create_and_init_thingy(SpriteId::AugurDeathExplosion, source_pos.x, source_pos.y, unit->player, unit->sprite->elevation + 1);
@@ -1386,6 +1393,17 @@ void update_threshold() {
 			}
 		}
 	}
+}
+
+void update_threshold() {
+	if (!try_prepare_threshold()) {
+		return;
+	}
+	update_config();
+	draw_fraud_ui();
+	cleanup_dead_frauds();
+	spawn_new_frauds();
+	spawn_sequence_units();
 }
 
 static void init_threshold_units() {
