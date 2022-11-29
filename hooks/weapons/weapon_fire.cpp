@@ -224,7 +224,7 @@ namespace hooks {
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles
-					&& scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1)
+				&&  scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1)
 				{
 					weapon_id = WeaponId::MadrigalImperiosoMissiles;
 				}
