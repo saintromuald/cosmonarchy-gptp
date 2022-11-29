@@ -35,7 +35,7 @@ namespace hooks
 		}
 
 		// Crucible Aura
-		speed /= 1 + 0.15 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
+		speed /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
 		if (unit_ext->timers[TimerTerminalSurge])

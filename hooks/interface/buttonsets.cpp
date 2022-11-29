@@ -2008,6 +2008,20 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranGorgon:
+								{
+									if (current_button->icon_id == IconId::ArgusJewel) // Gorgon - Petrification
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranSeraph:
+								{
+									if (current_button->icon_id == IconId::OcularImplants) // Seraph - Observance
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranBarracks:
 								case UnitId::TerranCaptaincy:
 								case UnitId::TerranIronCouncil:
@@ -2038,6 +2052,13 @@ namespace hooks {
 								case UnitId::ProtossCharlatan:
 								{
 									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossVassal:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Vassal - Terminal Surge
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2282,11 +2303,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossPariah &&  // Pariah Heretical Bedlam
 								current_button->icon_id == IconId::DracadinPhaseDisruptor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossVassal &&  // Vassal Terminal Surge
-								current_button->icon_id == IconId::RechargeShields)
 							{
 								current_button_state = Button_State::Enabled;
 							}

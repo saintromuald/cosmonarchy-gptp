@@ -16,7 +16,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 			modifier.multiplier *= 1.5;
 		}
 	} else {
-		modifier.multiplier *= 1 + 0.15 * buildingExt->unit_vectors[UnitVectorCrucibles].size();
+		modifier.multiplier *= 1 + 0.25 * buildingExt->unit_vectors[UnitVectorCrucibles].size();
 	}
 
 	// First time this is called in a frame, update the value
