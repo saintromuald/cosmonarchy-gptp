@@ -1020,6 +1020,9 @@ SCBW_DATA(char**,		game_result_text,				0x00628668);
 
 // For find_fow_target
 SCBW_DATA(Thingy**,		g_first_fow_sprite,				0x00654868);
+SCBW_DATA(Thingy**,		g_last_fow_sprite,				0x0065486C);
+SCBW_DATA(Thingy**,		g_first_free_fow_sprite,		0x006509D0);
+SCBW_DATA(Thingy**,		g_last_free_fow_sprite,			0x00654870);
 
 // For play_building_complete_sound
 SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);

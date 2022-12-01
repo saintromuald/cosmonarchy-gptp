@@ -2812,14 +2812,48 @@ namespace scbw {
 		g_ai_town_list[player].array->first_free = ai_town;
 	}
 
-	bool unit_id_is_broodspawn(u32 unit_id)
-	{
+	void delete_fow_sprite(Thingy* thingy) {
+		helper::remove_selection_circle(thingy->sprite);
+		helper::sprite_destructor(thingy->sprite);
+		thingy->sprite = 0;
+		if (*g_first_fow_sprite == thingy) {
+			*g_first_fow_sprite = thingy->next;
+		}
+		if (*g_last_fow_sprite == thingy ) {
+			*g_last_fow_sprite = thingy->prev;
+		}
+		if (thingy->prev) {
+			thingy->prev->next = thingy->next;
+		}
+		if (thingy->next) {
+			thingy->next->prev = thingy->prev;
+		}
+		thingy->prev = 0;
+		thingy->next = 0;
+
+		Thingy* first_free = *g_first_free_fow_sprite;
+		if (first_free) {
+			if (first_free == *g_first_free_fow_sprite) {
+				*g_last_free_fow_sprite = thingy;
+			}
+			thingy->prev = first_free;
+			thingy->next = first_free->next;
+			if (first_free->next) {
+				first_free->next->prev = thingy;
+			}
+			first_free->next = thingy;
+		} else {
+			*g_first_free_fow_sprite = thingy;
+			*g_last_free_fow_sprite = thingy;
+		}
+	}
+
+	bool unit_id_is_broodspawn(u32 unit_id) {
 		return unit_id == UnitId::ZergRilirokor
 			|| unit_id == UnitId::ZergRililisk;
 	}
 
-	void binding_plasma_proc(Unit* victim, Unit* source)
-	{
+	void binding_plasma_proc(Unit* victim, Unit* source) {
 		UnitExt* unit_ext = get_unit_ext(victim);
 		EntryArray units = {};
 		unit_search_radial(&units, victim->position, 3 * 32);
@@ -2831,16 +2865,14 @@ namespace scbw {
 		if (source && target) {
 			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
 			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source, victim->position.x, victim->position.y, source->player, angle);
-			if (bullet)
-			{
+			if (bullet) {
 				scbw::set_bullet_target(bullet, target);
 				if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
 					unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
 					unit_ext->timers[TimerGladiusBindingPlasma] = 24;
 				}
 			}
-		}
-		else {
+		} else {
 			unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
 		}
 	}
