@@ -535,6 +535,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"U Combinator",
 			"The Midwife Crisis",
 			"The Threeborne Technique",
+			"Lardcode Licker",
 		},
 	},
 	// Protoss
