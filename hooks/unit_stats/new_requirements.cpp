@@ -362,12 +362,6 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranBioticBase:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier4])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranFutureStation:
 				case UnitId::TerranPaladin:
 				case UnitId::TerranCuirass:
@@ -449,28 +443,13 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranParticleAccelerator:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier4])
-					{
-						return true;
-					}
-				} break;
-				case UnitId::TerranAerie:
 				case UnitId::TerranCentaur:
 				case UnitId::TerranMinotaur:
 				case UnitId::TerranMagnetar:
 				{
 					return true;
 				} break;
-				case UnitId::TerranPegasus:
 				case UnitId::TerranHippogriff:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranAerie))
-					{
-						return true;
-					}
-				} break;
-				case UnitId::TerranOberon:
 				case UnitId::TerranPhobos:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranParticleAccelerator))
@@ -892,7 +871,7 @@ namespace hooks {
 				case UnitId::ZergGeszithalor:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergAlkajChasm)
-						|| player_has_completed_unit_id(player_id, UnitId::ZergGeszkathGrotto))
+					||  player_has_completed_unit_id(player_id, UnitId::ZergGeszkathGrotto))
 					{
 						return true;
 					}
@@ -1369,7 +1348,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergAlkajChasm)
 			{
-				if (TierUnlocked[RaceId::Zerg][Tier4])
+				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
 					return true;
 				}
@@ -1921,17 +1900,6 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranBioticBase:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier4])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 					case UnitId::TerranFutureStation:
 					{
 						if (has_addon || is_training)
@@ -2066,18 +2034,6 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier4])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranAerie:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranCentaur:
@@ -2090,20 +2046,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranPegasus:
 					case UnitId::TerranHippogriff:
-					{
-						if (in_air || is_adding_on)
-						{
-							return TECH_HIDDEN;
-						}
-						if (addon_id == UnitId::TerranAerie)
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
-					case UnitId::TerranOberon:
 					case UnitId::TerranPhobos:
 					{
 						if (in_air || is_adding_on)
@@ -2114,7 +2057,7 @@ namespace hooks {
 						{
 							return TECH_ACTIVE;
 						}
-						return TECH_HIDDEN;
+						return TECH_LOCKED;
 					}
 				}
 			} break;
@@ -3300,7 +3243,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergAlkajChasm)
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier4])
+					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
 						return TECH_ACTIVE;
 					}

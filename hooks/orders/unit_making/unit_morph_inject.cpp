@@ -192,17 +192,17 @@ namespace
 		}
 		else
 		{
-			u16 refundUnitId;
+			u16 refund_unit_id;
 			if (scbw::is_zerg_egg_new(unit, true, false))
 			{
-				refundUnitId = unit->build_queue[unit->build_queue_slot % 5];
+				refund_unit_id = unit->build_queue[unit->build_queue_slot % 5];
 			}
 			else
 			{
-				refundUnitId = unit->id;
+				refund_unit_id = unit->id;
 			}
-			resources->minerals[unit->player] += units_dat::mineral_cost[refundUnitId];
-			resources->gas[unit->player] += units_dat::vespene_cost[refundUnitId];
+			resources->minerals[unit->player] += units_dat::mineral_cost[refund_unit_id];
+			resources->gas[unit->player] += units_dat::vespene_cost[refund_unit_id];
 		}
 
 		u16 cancel_change_unit_id = hooks::get_cancel_morph_revert_id(unit);
@@ -250,6 +250,8 @@ namespace
 			{
 				unit->play_iscript_animation(IscriptAnimation::SpecialState2);
 			}
+			unit->rally.pt = unit->position;
+			unit->rally.unit = 0;
 			unit->order_to(OrderId::ZergBirth);
 		}
 	}

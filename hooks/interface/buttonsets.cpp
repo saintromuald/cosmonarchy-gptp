@@ -961,7 +961,7 @@ namespace hooks {
 						// Nanite Assembly buttonset handling
 						if (unit->id == UnitId::TerranNaniteAssembly)
 						{
-							if (current_button->requirement_var == UnitId::TerranAerie)
+							if (current_button->requirement_var == UnitId::TerranParticleAccelerator)
 							{
 								if (!has_addon && !is_training)
 								{
@@ -972,24 +972,14 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							}
-							if (current_button->requirement_var == UnitId::TerranPegasus
-							||	current_button->requirement_var == UnitId::TerranHippogriff)
+							if (current_button->requirement_var == UnitId::TerranHippogriff
+							||	current_button->requirement_var == UnitId::TerranPhobos)
 							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranAerie)
-								||	 scbw::unit_queue_full(unit))
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranParticleAccelerator))
 								{
-									current_button_state = Button_State::Invisible;
+									current_button_state = Button_State::Disabled;
 								}
-								else
-								{
-									current_button_state = Button_State::Enabled;
-								}
-							}
-							else if (current_button->requirement_var == UnitId::TerranOberon
-							||		 current_button->requirement_var == UnitId::TerranPhobos)
-							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranParticleAccelerator)
-								||	 scbw::unit_queue_full(unit))
+								else if (scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -2028,7 +2018,6 @@ namespace hooks {
 								case UnitId::TerranFulcrum:
 								case UnitId::TerranIronFoundry:
 								case UnitId::TerranStarport:
-								case UnitId::TerranNaniteAssembly:
 								{
 									bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
 									if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !(unit->status & UnitStatus::InAir) && !scbw::unit_queue_full(unit))
