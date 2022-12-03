@@ -79,23 +79,12 @@ namespace hooks
 				}
 
 				if (unit->building.larva_timer == 0) {
-					unit->building.larva_timer = LarvaSpawnRateHatchery;
+					unit->building.larva_timer = LarvaSpawnRate;
 
 					u32 unit_id = unit->id;
 					if (unit->main_order_id == OrderId::Morph2) {
 						unit_id = unit->previous_unit_type;
 					}
-
-					switch (unit_id) {
-						case UnitId::ZergLarvoskColony:
-						case UnitId::ZergOcsalColony: {
-							unit->building.larva_timer /= 0.75; // 75% speed
-						} break;
-						case UnitId::ZergSibraelosk: {
-							unit->building.larva_timer /= 1.5; // 150% speed
-						} break;
-					}
-
 					create_building_larva(unit);
 				}
 			}
@@ -257,11 +246,11 @@ namespace hooks
 			case UnitId::ZergCagrantColony: {
 				return is_complete;
 			}
-			case UnitId::ZergSibraelosk:
 			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergSpraithColony:
-			case UnitId::ZergSurkithColony: {
+			case UnitId::ZergSurkithColony:
+			case UnitId::ZergLarvoskColony: {
 				return true;
 			}
 		}

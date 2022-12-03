@@ -309,10 +309,7 @@ namespace hooks
 		helper::add_text_to_dialog(dialog, -21, buffer);
 
 		/*
-		if  (unit->id == UnitId::ZergSkryling || unit->id == UnitId::ZergInfestedTerran
-		||   unit->status & UnitStatus::IsHallucination
-		&&   unit->player == *g_local_nation_id
-		&& !*is_in_replay)
+		if  (unit->player == *g_local_nation_id && !*is_in_replay)
 		{
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->child_dialog;

@@ -190,16 +190,13 @@ namespace hooks
 		{
 			unit->mine_carrier.mine_count = 3;
 		}
-		else if (unit->id == UnitId::TerranEidolon)
-		{
-			unit->mine_carrier.mine_count = 2;
-		}
 	}
 
 	u32 get_mine_id(Unit* unit)
 	{
 		return UnitId::TerranSpiderMine;
 	}
+
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId)
 	{
 		if (orig_result == 0)
@@ -489,7 +486,7 @@ namespace hooks
 			sprite->player = player_id;
 			for (Image* image = sprite->images.head; image; image->link.next)
 			{
-				//image->flags |= ImageFlags::Redraw;
+			//	image->flags |= ImageFlags::Redraw;
 			}
 		}
 		if (unit->status & UnitStatus::GroundedBuilding)
@@ -526,24 +523,24 @@ namespace hooks
 		{
 			return 0;
 		}
-		Sprite* unitSprite = unit->sprite;
-		if (!unitSprite)
+		Sprite* unit_sprite = unit->sprite;
+		if (!unit_sprite)
 		{
 			return 0;
 		}
 
 		unit->status &= 0xFFFFDFFF;
-		Unit* activeEntity = *g_active_iscript_entity;
-		Unit* activeSubunit = *g_active_iscript_unit;
-		unitSprite->flags &= 0x7Fu;
+		Unit* active_entity = *g_active_iscript_entity;
+		Unit* active_subunit = *g_active_iscript_unit;
+		unit_sprite->flags &= 0x7Fu;
 		*g_active_iscript_unit = unit;
 		*g_active_iscript_entity = unit;
-		helper::play_idle_iscript(unitSprite);
-		char unitMovementFlags = unit->movement_flags;
-		*g_active_iscript_unit = activeSubunit;
+		helper::play_idle_iscript(unit_sprite);
+		char movement_flags = unit->movement_flags;
+		*g_active_iscript_unit = active_subunit;
 
-		char result = unitMovementFlags & 0xF7;
-		*g_active_iscript_entity = activeEntity;
+		char result = movement_flags & 0xF7;
+		*g_active_iscript_entity = active_entity;
 		unit->movement_flags = result;
 		return result;
 	}

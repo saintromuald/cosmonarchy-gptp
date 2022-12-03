@@ -1064,6 +1064,11 @@ namespace ImageId {
 		ArcliteShockCannon_Damageless				= 1382,
 		ProtossHallucinationEffect					= 1385,
 
+		ExplosionSmallOrangeReversed				= 1441,
+		ExplosionSmallBlueReversed					= 1442,
+		ExplosionMediumOrangeReversed				= 1443,
+		ExplosionMediumBlueReversed					= 1444,
+		ZealotDeathReversed							= 1445,
 		NeutronFlareOrange_Damageless				= 1446,
 		OrbothOmlia									= 1447,
 		OrbothOmliaShadow							= 1448,

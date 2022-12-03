@@ -847,11 +847,11 @@ namespace hooks
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
 			case UnitId::ProtossVagrant:
 			{
-			//	scbw::create_and_init_thingy(SpriteId::ZealotDeath, data.target->position.x, data.target->position.y, data.target->player, data.target->sprite->elevation + 1);
 				helper::increment_unit_death_scores(data.target, data.target->player);
 				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
+				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 				is_fatal = false;
 			}
 			case UnitId::TerranCuirass:

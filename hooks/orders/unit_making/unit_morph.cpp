@@ -152,10 +152,6 @@ namespace hooks {
 		} else {
 			unit->remaining_build_time -= 1;
 		}
-		if (!scbw::is_larval_egg(unit) &&
-			scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->has_creep) {
-			unit->remaining_build_time -= 1;
-		}
 		if (unit->remaining_build_time < 0) {
 			unit->remaining_build_time = 0;
 		}

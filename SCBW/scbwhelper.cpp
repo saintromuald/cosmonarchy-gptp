@@ -117,12 +117,12 @@ namespace helper {
 		return (bool)result;
 	}
 
-	s32 get_max_hp(Unit* a1) {
+	s32 get_max_hp(Unit* unit) {
 		const u32 Func_getMaxHP = 0x00401400;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, unit
 			CALL Func_getMaxHP
 			MOV result, EAX
 			POPAD

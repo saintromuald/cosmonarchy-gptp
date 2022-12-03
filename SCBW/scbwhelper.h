@@ -32,7 +32,7 @@ namespace helper {
 	s32 rand_func();
 	bool unit_hp_below_33_percent(Unit* a1);
 	bool unit_hp_between_33_66_percent(s32 a1, Unit* a2);
-	s32 get_max_hp(Unit* a1);
+	s32 get_max_hp(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* unit);
 	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text);
 	void draw_energy(BinDlg* a1);
@@ -77,7 +77,6 @@ namespace helper {
 	// For get_unit_strength
 	s32 get_current_hp_plus_shields(Unit* a1);
 	s32 get_base_strength(s32 a1, Unit* a2);
-	s32 get_max_hp(Unit* a1);
 
 	// For AI_RestorationRequirementsProc
 	s32 can_weapon_target_unit(u8 a1, Unit* a2, Unit* a3);
