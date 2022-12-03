@@ -1,6 +1,7 @@
 #include <SCBW/api.h>
 #include <DatExtend/datext.h>
 #include <hooks/grafting/grafting.h>
+#include "bullet_extender.h"
 
 // Macros for actual instance declarations
 #define SCBW_DATA_VAR(type, name, offset)  type name = (type)offset;
@@ -79,9 +80,10 @@ SCBW_DATA_DEF(ImagesDatExtraOverlayLO_Files*,	lo_files, lo_files_var);
 SCBW_DATA_DEF(_bwTechs*,						TechBw, TechBw_var);
 SCBW_DATA_DEF(_bwUpgrs*,						UpgradesBw, UpgradesBw_var);
 
-
 SCBW_DATA_DEF(u32*,								ai_strength_air, ai_strength_air_var);
 SCBW_DATA_DEF(u32*,								ai_strength_ground, ai_strength_ground_var);
+
+SCBW_DATA_DEF(Bullet*,							g_bullet_table, new_bullet_table);
 
 namespace units_dat {
 	SCBW_DATA(const DatLoad*, unitsDat, 0x00513C30);

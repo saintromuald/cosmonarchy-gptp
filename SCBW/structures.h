@@ -7,11 +7,12 @@
 
 #define AiTownLimit 100
 #define ResAreaLimit 250
+#define BulletLimit 2048
 
 const s32 PLAYER_COUNT = 12;
 const s32 PLAYABLE_PLAYER_COUNT = 8;
 const s32 UNIT_ARRAY_LENGTH = 1700;
-const s32 BULLET_ARRAY_LENGTH = 100;
+const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100;
 const s32 SPRITE_ARRAY_LENGTH = 2500;
 const s32 IMAGE_ARRAY_LENGTH = 5000;
 const s32 SelectionCap = 12;

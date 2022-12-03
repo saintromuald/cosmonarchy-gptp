@@ -686,6 +686,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::inject_cmdrecv_siege_tank_hooks();
 	hooks::inject_selection_extender_hooks();
+	hooks::inject_bullet_extender();
 	inject_trigger_system_hooks();
 	hooks::inject_hp_bars_hooks();
 
