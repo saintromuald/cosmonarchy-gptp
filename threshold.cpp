@@ -1133,7 +1133,7 @@ static bool try_prepare_threshold() {
 		threshold.multiplier_scalar = 1;
 		threshold_config.initial_count *= threshold.scalar;
 		if (threshold_config.initial_count > threshold.fraud_slots) {
-			threshold.multiplier_scalar += (threshold_config.initial_count - threshold.fraud_slots) * threshold_config.auto_scale;
+			threshold.multiplier_scalar += (threshold_config.initial_count - threshold.fraud_slots) * threshold_config.auto_scale / 2;
 			threshold_config.initial_count = threshold.fraud_slots;
 		}
 
