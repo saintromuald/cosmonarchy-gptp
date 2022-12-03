@@ -55,7 +55,7 @@ namespace hooks {
 
 		// 0048A690 initialize_bullet_array
 		memory_patch(0x0048A691, &new_bullet_table);
-		memory_patch(0x0048A69B, (u32)BulletLimit * sizeof(Bullet));
+		memory_patch(0x0048A69B, (u32)sizeof(new_bullet_table));
 		memory_patch(0x0048A6BD, new_bullet_table + 1); // new_bullet_table[1]
 		memory_patch(0x0048A6C2, (u32)BulletLimit - 1);
 		memory_patch(0x0048A6C7, &new_bullet_table);
