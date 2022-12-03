@@ -971,7 +971,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 					if (units_dat::base_property[sequence->spawn_array.units[i].unit_id] & UnitProperty::Worker) {
 						sequence->spawn_array.units[i].count = 6 * threshold.multiplier_scalar;
 					} else {
-						sequence->spawn_array.units[i].count = ceil(sequence->spawn_array.units[i].count * (1 - threshold.multiplier_scalar));
+						sequence->spawn_array.units[i].count = ceil(sequence->spawn_array.units[i].count * (threshold.multiplier_scalar - 1));
 					}
 				} else {
 					sequence->spawn_array.units[i].count = ceil(sequence->spawn_array.units[i].count * multiplier);
@@ -1128,7 +1128,6 @@ static bool try_prepare_threshold() {
 
 		init_threshold_spawns();
 		init_threshold_units();
-
 		update_config();
 
 		threshold.multiplier_scalar = 1;
@@ -1358,11 +1357,11 @@ static void spawn_sequence_units() {
 						Point16 source_pos = source->pos;
 						Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
 
-						//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
-						//	if (augur) {
-						//		augur->user_action_flags |= 4;
-						//		augur_sacrifice(augur, 10 * 32);
-						//	}
+					//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
+					//	if (augur) {
+					//		augur->user_action_flags |= 4;
+					//		augur_sacrifice(augur, 10 * 32);
+					//	}
 						Unit* unit = scbw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
 						if (unit) {
 							scbw::create_and_init_thingy(SpriteId::AugurDeathExplosion, source_pos.x, source_pos.y, unit->player, unit->sprite->elevation + 1);
