@@ -70,7 +70,7 @@ namespace hooks {
 		// 0048AEB0 write_bullets
 		memory_patch(0x0048AEB9, (u32)new_bullet_table);
 		memory_patch(0x0048AEBE, (u32)BulletLimit);
-		memory_patch(0x0048AED7, (u32)new_bullet_table + 0x12); // new_bullet_table[0].sprite
+		memory_patch(0x0048AED7, (u32)new_bullet_table + 0xC); // new_bullet_table[0].sprite
 		memory_patch(0x0048AEDC, (u32)BulletLimit);
 		memory_patch(0x0048AF48, (u32)new_bullet_table);
 		memory_patch(0x0048AFA4, (u32)new_bullet_table);
