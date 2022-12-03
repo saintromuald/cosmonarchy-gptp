@@ -55,7 +55,7 @@ namespace hooks {
 
 		// 0048A690 initialize_bullet_array
 		memory_patch(0x0048A691, (u32)new_bullet_table);
-		memory_patch(0x0048A69B, (u32)sizeof(new_bullet_table));
+		memory_patch(0x0048A69B, (u32)sizeof(new_bullet_table) / 4);
 		memory_patch(0x0048A6BD, (u32)(new_bullet_table + 1)); // new_bullet_table[1]
 		memory_patch(0x0048A6C2, (u32)BulletLimit - 1);
 		memory_patch(0x0048A6C7, (u32)new_bullet_table);
@@ -83,7 +83,7 @@ namespace hooks {
 		// 0048AE40 read_bullets_array
 		memory_patch(0x0048AE80, (u32)new_bullet_table);
 		memory_patch(0x0048AE85, (u32)BulletLimit);
-		memory_patch(0x0048AE47, (u32)sizeof(new_bullet_table));
+		memory_patch(0x0048AE47, (u32)sizeof(new_bullet_table) / 4);
 		memory_patch(0x0048AE4C, (u32)new_bullet_table);
 
 		// 0048A720 reorder_bullet_array
