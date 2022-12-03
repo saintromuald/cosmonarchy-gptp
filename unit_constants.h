@@ -159,4 +159,4 @@ const s32 AlkajeliskParasiticSporesTimer = 135; // 135 is 255 - 5 * 24
 const s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
 
 // Hatchery
-const s32 LarvaSpawnRateHatchery = 30; // ~10 seconds
+const s32 LarvaSpawnRate = 30; // ~10 seconds
