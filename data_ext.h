@@ -128,6 +128,7 @@ enum ExtValueId
 	ValueOptectonLaunchPos1,
 	ValueOptectonLaunchPos2,
 	ValueApollyoidAdhesiveStacks,
+	ValueRamessesLaunchPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

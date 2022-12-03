@@ -224,7 +224,7 @@ namespace hooks {
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles
-					&& scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1)
+				&&  scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1)
 				{
 					weapon_id = WeaponId::MadrigalImperiosoMissiles;
 				}
@@ -261,6 +261,10 @@ namespace hooks {
 					case WeaponId::GoliathContenderMissiles:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueGoliathLaunchPos, 2, false);
+					} break;
+					case WeaponId::RamessesPharoahCannons:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueRamessesLaunchPos, 2, false);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
@@ -376,8 +380,8 @@ namespace hooks {
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
-					//	scbw::set_missile_source_pos(unit, weapon_id, ValueCataphractLaunchPos, 4, false);
-						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc);
+					//	scbw::set_missile_source_pos(unit, weapon_id, ValueCataphractLaunchPos, 1, false);
+						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc, false);
 					} break;
 					case WeaponId::AnticthonEncirclingMirror:
 					{
