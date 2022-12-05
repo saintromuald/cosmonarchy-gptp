@@ -115,5 +115,6 @@ namespace hooks {
 		memory_patch(0x0048A7E5, &new_bullet_table[1].sprite);
 		memory_patch(0x0048A8B5, &new_bullet_table[BulletLimit]);
 		memory_patch(0x0048A819, &new_bullet_table[BulletLimit + 1].sprite);
+		memory_patch(0x0048A759, &new_bullet_table[BulletLimit + 1].sprite);
 	}
 }
