@@ -910,39 +910,33 @@ namespace hooks
 
 	// Hooked to improve ordering consistency of spending requests. -Veeq7
 	void pop_spending_request(u32 player) {	// 004476D0
-		AI_Main* ai_main = &g_aiscript_controller[player];
+		AI_Main* player_ai = &g_aiscript_controller[player];
 
-		ai_main->request_count -= 1;
-		memmove(ai_main->requests, ai_main->requests + 1, sizeof(SpendingRequest) * ai_main->request_count);
-		ai_main->requests[ai_main->request_count] = {};
-
-		/*
-		ai_main->request_count -= 1;
-		if (!ai_main->request_count) {
-			return;
-		}
-		ai_main->requests[0] = ai_main->requests[ai_main->request_count];
-		ai_main->requests[ai_main->request_count] = {};
-		if (ai_main->request_count == 1) {
+		player_ai->request_count -= 1;
+		player_ai->requests[0] = player_ai->requests[player_ai->request_count];
+		player_ai->requests[player_ai->request_count] = {};
+		if (player_ai->request_count <= 1) {
 			return;
 		}
 
-		u32 new_index = 0;
-		while (2 * new_index + 1 <= ai_main->request_count) {
-			u32 prev_index = new_index;
-			u32 new_index_alt = 2 * new_index + 1; 
-			new_index = 2 * new_index + 2;
-			if (new_index >= ai_main->request_count || ai_main->requests[new_index_alt].priority > ai_main->requests[new_index].priority) {
-				new_index = new_index_alt;
+		u32 index = 0;
+		while (2 * index + 1 < player_ai->request_count) {
+			u32 left_index  = 2 * index + 1;
+			u32 right_index = 2 * index + 2;
+
+			u32 highest_index = left_index;
+			if (right_index < player_ai->request_count && player_ai->requests[right_index].priority > player_ai->requests[left_index].priority) {
+				highest_index = right_index;
 			}
-			if (ai_main->requests[prev_index].priority >= ai_main->requests[new_index].priority) {
+
+			SpendingRequest request         = player_ai->requests[index];
+			SpendingRequest highest_request = player_ai->requests[highest_index];
+			if (highest_request.priority >= request.priority) {
 				break;
 			}
-			SpendingRequest temp = ai_main->requests[prev_index];
-			ai_main->requests[prev_index] = ai_main->requests[new_index];
-			ai_main->requests[new_index] = temp;
+			player_ai->requests[index] = highest_request;
+			player_ai->requests[highest_index] = request;
 		}
-		*/
 	}
 
 	u8 ai_get_build_order_id(Unit* unit, u32 unit_id) { // 00434C31
@@ -1090,27 +1084,27 @@ namespace hooks
 			}
 		}
 
-		AI_Main* ai_main = &g_aiscript_controller[player];
-		u32 index = ai_main->request_count;
-		if (ai_main->request_count < 63) {
-			ai_main->request_count += 1;
+		AI_Main* player_ai = &g_aiscript_controller[player];
+		if (player_ai->request_count < 63) {
+			player_ai->request_count += 1;
 		}
 
-		SpendingRequest request = {};
-		request.id = id;
-		request.type = type;
-		request.priority = priority;
-		request.value = value;
-		for (u32 i = 0; i < ai_main->request_count; ++i) {
-			SpendingRequest* current = &ai_main->requests[i];
-			if (request.priority > current->priority || i == index) {
-				// Insert
-				for (u32 j = ai_main->request_count - 1; j > i; --j) {
-					ai_main->requests[j] = ai_main->requests[j - 1];
-				}
-				*current = request;
+		u32 index = player_ai->request_count - 1;
+		player_ai->requests[index].id = id;
+		player_ai->requests[index].type = type;
+		player_ai->requests[index].priority = priority;
+		player_ai->requests[index].value = value;
+
+		while (index > 0) {
+			u32 parent_index = (index - 1) / 2;
+			SpendingRequest request        = player_ai->requests[index];
+			SpendingRequest parent_request = player_ai->requests[parent_index];
+			if (request.priority <= parent_request.priority) {
 				break;
 			}
+			player_ai->requests[index] = parent_request;
+			player_ai->requests[parent_index] = request;
+			index = parent_index;
 		}
 		return true;
 	}
