@@ -443,10 +443,7 @@ namespace hooks {
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
-						if (!unit->order_target.unit)
-						{
-							fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
-						}
+						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{

@@ -1187,6 +1187,7 @@ namespace SoundId
 		PhobosArgentCapacitorsProc			= 1353,
 		PazuzuDeconstructionDamage			= 1372,
 		LakiziliskProjectileReturn			= 1392,
+		AncileProvidenceDeactivate			= 1401,
 		DemiurgeGodsMadeFleshCast01			= 1407,
 		DemiurgeGodsMadeFleshCast02			= 1408,
 		ArchitectWeaponSplit01				= 1416,
@@ -1363,7 +1364,7 @@ namespace SoundId
 		LazarusAgentCastTick				= 2118,
 		LazarusAgentCastEnd					= 2119,
 		EnergyRegenStart					= 2120,
-		EnergyRegenEnd					= 2121,
+		EnergyRegenEnd						= 2121,
 	};
 }
 

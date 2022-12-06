@@ -801,7 +801,7 @@ namespace hooks {
 						helper::replace_unit_with_id(unit, unit_id);
 					}
 				}
-			}
+			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;
@@ -1692,6 +1692,7 @@ namespace hooks {
 					}
 				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
+					helper::play_sound_from_unit(SoundId::AncileProvidenceDeactivate, unit, 1, 0);
 				}
 			} break;
 			case UnitId::TerranDurendal:
