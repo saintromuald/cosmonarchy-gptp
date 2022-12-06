@@ -9,9 +9,10 @@ struct Config {
 	bool prefer_wmode = true;
 
 	// UI
+	bool extended_camera_hotkeys = true;
 	bool show_timer = true;
 	bool show_apm = true;
-	bool extended_camera_hotkeys = true;
+	bool show_worker_harvest_links = false;
 	bool always_show_extended_tooltips = false;
 
 	// Hotkeys
