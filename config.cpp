@@ -21,9 +21,10 @@ void load_config() {
 		LoadField(config_node, "disable-wmode-prompt", config.disable_wmode_prompt);
 		LoadField(config_node, "prefer-wmode", config.prefer_wmode);
 
+		LoadField(config_node, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 		LoadField(config_node, "show-timer", config.show_timer);
 		LoadField(config_node, "show-apm", config.show_apm);
-		LoadField(config_node, "extended-camera-hotkeys", config.extended_camera_hotkeys);
+		LoadField(config_node, "show-worker-harvest-links", config.show_worker_harvest_links);
 		LoadField(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 		LoadField(config_node, "quick-casting", config.quick_casting);
 		LoadField(config_node, "quick-building", config.quick_building);
@@ -52,9 +53,10 @@ void save_config() {
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("UI");
+	write_field(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 	write_field(out, "show-timer", config.show_timer);
 	write_field(out, "show-apm", config.show_apm);
-	write_field(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
+	write_field(out, "show-worker-harvest-links", config.show_worker_harvest_links);
 	write_field(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 	out << YAML::Newline << YAML::Newline;
 

@@ -556,6 +556,18 @@ namespace hooks {
 					Unit* exit = selection->building.nydus_exit;
 					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
 				}
+				if (config.show_worker_harvest_links)
+				{
+					if (units_dat::base_property[selection->id] & UnitProperty::Worker
+						&& *g_local_human_id == selection->player
+						&& scbw::order_id_is_harvest_related(selection->main_order_id)) {
+						if (selection->worker.target_resource.unit)
+						{
+							Unit* resource = selection->worker.target_resource.unit;
+							graphics::draw_line(selection->get_x(), selection->get_y(), resource->get_x(), resource->get_y(), graphics::GREEN, graphics::ON_MAP);
+						}
+					}
+				}
 			}
 		}
 

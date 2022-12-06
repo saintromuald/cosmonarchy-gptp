@@ -2876,4 +2876,21 @@ namespace scbw {
 			unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
 		}
 	}
+
+	bool order_id_is_harvest_related(u32 order_id)
+	{
+		return order_id == OrderId::Harvest1
+		||	   order_id == OrderId::Harvest5
+		||	   order_id == OrderId::MoveToMinerals
+		||	   order_id == OrderId::HarvestGas1
+		||	   order_id == OrderId::HarvestGas3
+		||	   order_id == OrderId::HarvestFinish
+		||	   order_id == OrderId::ReturnGas
+		||	   order_id == OrderId::ReturnMinerals
+		||	   order_id == OrderId::MiningMinerals
+		||	   order_id == OrderId::CanHarvestOre
+		||	   order_id == OrderId::CanEnterGasMine
+		||	   order_id == OrderId::ResetCollision2
+		||	   order_id == OrderId::MoveToHarvestObscured;
+	}
 }

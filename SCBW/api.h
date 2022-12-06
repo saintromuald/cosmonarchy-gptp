@@ -709,4 +709,5 @@ namespace scbw
 	void delete_fow_sprite(Thingy* thingy);
 	bool unit_id_is_broodspawn(u32 unit_id);
 	void binding_plasma_proc(Unit* victim, Unit* source);
+	bool order_id_is_harvest_related(u32 order_id);
 }
