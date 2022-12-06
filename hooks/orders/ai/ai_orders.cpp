@@ -1516,10 +1516,12 @@ namespace hooks {
 
 		EntryArray resources = {};
 		unit_search_radial(&resources, area->position, 12 * 32);
-		f32 mineral_value = (f32)area->total_mineral_count / area->mineral_field_count + area->mineral_field_count;
-		f32 gas_value     = (f32)area->total_vespene_count / area->geyser_count + area->geyser_count;
-		score += mineral_value * mineral_bias;
-		score += gas_value     * gas_bias;
+		if (area->mineral_field_count) {
+			score += ((f32)area->total_mineral_count / area->mineral_field_count + area->mineral_field_count) * mineral_bias;
+		}
+		if (area->geyser_count) {
+			score += ((f32)area->total_vespene_count / area->geyser_count + area->geyser_count) * gas_bias;
+		}
 
 		for (u32 j = 0; j < units->count; ++j) {
 			Unit* unit = units->units[j];
