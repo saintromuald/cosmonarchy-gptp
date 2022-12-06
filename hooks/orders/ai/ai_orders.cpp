@@ -1209,8 +1209,8 @@ namespace hooks {
 			if (resarea) {
 				ResourceArea* ai_resarea = &g_base_array[resarea];
 				u32 new_worker_limit = 0;
-				if (resarea && resarea < 250u && ai_resarea != 0) {
-					new_worker_limit = 3 * ai_resarea->geyser_count + helper::get_optimal_mineral_workers(resarea, town->player);
+				if (resarea && resarea < 250) {
+					new_worker_limit = 2 * ai_resarea->mineral_field_count + 2 * ai_resarea->geyser_count;
 				}
 				town->worker_limit = new_worker_limit;
 			}
