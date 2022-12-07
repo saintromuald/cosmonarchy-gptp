@@ -1210,7 +1210,7 @@ namespace hooks {
 				ResourceArea* ai_resarea = &g_base_array[resarea];
 				u32 new_worker_limit = 0;
 				if (resarea && resarea < 250) {
-					new_worker_limit = 2 * ai_resarea->mineral_field_count + 2 * ai_resarea->geyser_count;
+					new_worker_limit = 2.25 * ai_resarea->mineral_field_count + 2 * ai_resarea->geyser_count;
 				}
 				town->worker_limit = new_worker_limit;
 			}
@@ -1467,7 +1467,7 @@ namespace hooks {
 		const f32 enemy_bias    =  0.5;
 		const f32 distance_bias = -5.0;
 		const f32 mineral_bias  =  1.0;
-		const f32 gas_bias      =  3.0;
+		const f32 gas_bias      =  2.75;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
