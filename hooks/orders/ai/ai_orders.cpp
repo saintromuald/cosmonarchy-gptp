@@ -1466,8 +1466,8 @@ namespace hooks {
 		const f32 ally_bias     = -0.5;
 		const f32 enemy_bias    =  0.5;
 		const f32 distance_bias = -5.0;
-		const f32 mineral_bias  =  1.0;
-		const f32 gas_bias      =  2.75;
+		const f32 mineral_bias  =  0.5;
+		const f32 gas_bias      =  1.5;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
@@ -1517,10 +1517,14 @@ namespace hooks {
 		EntryArray resources = {};
 		unit_search_radial(&resources, area->position, 12 * 32);
 		if (area->mineral_field_count) {
-			score += ((f32)area->total_mineral_count / area->mineral_field_count + area->mineral_field_count) * mineral_bias;
+			f32 average_yield = area->total_mineral_count / area->mineral_field_count;
+			f32 total_yield = area->total_mineral_count;
+			score += average_yield * total_yield * mineral_bias;
 		}
 		if (area->geyser_count) {
-			score += ((f32)area->total_vespene_count / area->geyser_count + area->geyser_count) * gas_bias;
+			f32 average_yield = area->total_vespene_count / area->geyser_count;
+			f32 total_yield = area->total_vespene_count;
+			score += average_yield * total_yield * gas_bias;
 		}
 
 		for (u32 j = 0; j < units->count; ++j) {
