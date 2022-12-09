@@ -1,5 +1,6 @@
 #pragma once
 #include "SCBW/structures.h"
+#include "unit_search.h"
 
 void sort_gas_buildings(AiTown* town);
 
@@ -32,6 +33,7 @@ namespace hooks {
 	Unit* ai_find_best_repair_unit(Unit* unit);																			// 00443160
 	s32 ai_worker_repair_controller(Unit* repairer, AiTown* town);														// 00433C70
 
+	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray* out_units); // utility
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount);															// 0045B530
 
 	struct PlacementData {

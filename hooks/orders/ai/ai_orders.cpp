@@ -1458,7 +1458,55 @@ namespace hooks {
 		return 1;
 	}
 
-	f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, EntryArray* units, bool use_absolute_path) {
+	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray* out_units) {
+		ResourceArea* area = &g_resource_areas->areas[resarea];
+		if (area->flags & 2) { // Already taken by an AI, maybe we shouldn't care and allow them both to compete for the expo?
+			return false;
+		}
+		Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
+		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
+		if (main_region->group_index != area_region->group_index) {
+			if (!has_transport) {
+				return false;
+			}
+		}
+
+		// Since we are not checking for area->flags & 1, we need to make sure the AI doesn't expand to own main town and main towns of allied players
+		// Maybe we should assign the area flag 2 for those? Or maybe not check area flag 2 at all and only use this method?
+		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+			if (scbw::is_allied_to(player, other_player) && g_player_table[other_player].type == PlayerType::Computer) {
+				for (AiTown* town = g_ai_town_list[other_player].first; town; town = town->prev) {
+					if (scbw::get_distance_fast(town->position, area->position) <= 12 * 32) {
+						return false;
+					}
+				}
+			}
+		}
+
+		// A bit annoying to have to this like that, but it's better than doing the same search twice (ai_resarea_valid_for_expo and get_resarea_score)
+		EntryArray local_units = {};
+		if (!out_units) {
+			out_units = &local_units;
+		}
+		unit_search_radial(out_units, area->position, 12 * 32);
+		for (u32 j = 0; j < out_units->count; ++j) {
+			Unit* unit = out_units->units[j];
+			if (unit->player < PlayerLimit) {
+				if (player != unit->player && scbw::is_allied_to(player, unit->player)
+					&& (units_dat::group_flags[unit->id].is_factory
+						|| units_dat::base_property[unit->id] & UnitProperty::ResourceDepot
+						|| units_dat::base_property[unit->id] & UnitProperty::Worker)) {
+					return false;
+				}
+				if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	static f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, EntryArray* units, bool use_absolute_path) {
 		f32 score = 0;
 
 		// TODO: make trigger customizable (and probably convert all biases to 1.0, so it's always the default)
@@ -1514,8 +1562,6 @@ namespace hooks {
 		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
-		EntryArray resources = {};
-		unit_search_radial(&resources, area->position, 12 * 32);
 		if (area->mineral_field_count) {
 			f32 average_yield = area->total_mineral_count / area->mineral_field_count;
 			f32 total_yield = area->total_mineral_count;
@@ -1539,54 +1585,22 @@ namespace hooks {
 		return score;
 	}
 
-	u32 ai_find_expansion_custom(u32 player, AiTown* main_town) {
+	static u32 ai_find_expansion_custom(u32 player, AiTown* main_town) {
 		u32 best_resarea = 0;
 		f32 best_score = INT_MIN;
 
-		bool has_transport = false;
-		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-			if (scbw::unit_id_is_transport(unit->id)) {
-				has_transport = true;
-				break;
-			}
-			/*
-			if (units_dat::base_property[unit->id] & UnitProperty::Worker && units_dat::base_property[unit->id] & UnitProperty::Flyer) {
-				has_transport = true;
-				break;
-			}
-			*/
-		}
-
+		bool has_transport = scbw::player_has_transport(player);
 		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
 		for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 			ResourceArea* area = &g_resource_areas->areas[i];
-			if (area->flags & 3) {
+			EntryArray units = {};
+			if (!ai_resarea_valid_for_expo(player, i, main_town, has_transport, &units)) {
 				continue;
 			}
 			Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
 			bool use_absolute_path = false;
-			if (main_region->group_index != area_region->group_index) {
-				if (has_transport) {
-					use_absolute_path = true;
-				} else {
-					continue;
-				}
-			}
-			EntryArray units = {};
-			unit_search_radial(&units, area->position, 12 * 32);
-			for (u32 j = 0; j < units.count; ++j) {
-				Unit* unit = units.units[j];
-				if (unit->player < PlayerLimit) {
-					if (player != unit->player && scbw::is_allied_to(player, unit->player)
-						&& (units_dat::group_flags[unit->id].is_factory
-							|| units_dat::base_property[unit->id] & UnitProperty::ResourceDepot
-							|| units_dat::base_property[unit->id] & UnitProperty::Worker)) {
-						goto exit;
-					}
-					if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
-						goto exit;
-					}
-				}
+			if (main_region->group_index != area_region->group_index && has_transport) {
+				use_absolute_path = true;
 			}
 
 			f32 score = get_resarea_score(player, main_town, area, &units, use_absolute_path);
@@ -1594,9 +1608,6 @@ namespace hooks {
 				best_score = score;
 				best_resarea = i;
 			}
-
-		exit:
-			continue;
 		}
 		
 		if (best_resarea) {

@@ -1,5 +1,6 @@
 #include "ai_layouts.h"
 #include "hooks/unit_stats/new_requirements.h"
+#include "hooks/orders/ai/ai_orders.h"
 #include "data_ext.h"
 #include "trigger_system/trigger_parser.h"
 
@@ -268,11 +269,13 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	u32 best_distance = UINT_MAX;
 	u32 best_resarea = 0;
 
+	bool has_transport = scbw::player_has_transport(main_town->player);
+
 	AiLayouts* layouts = &player_layouts[main_town->player];
 	for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 		AiPlaceholder* placeholder = &layouts->placeholders[j];
 		// Check if resarea is available
-		if (g_resource_areas->areas[placeholder->resarea].flags & 3) {
+		if (!hooks::ai_resarea_valid_for_expo(main_town->player, placeholder->resarea, main_town, has_transport, 0)) {
 			continue;
 		}
 		// Skip disabled placeholders
