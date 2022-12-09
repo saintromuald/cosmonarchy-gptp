@@ -289,8 +289,8 @@ namespace hooks
 					if (!anchor) {
 						anchor->play_iscript_animation(IscriptAnimation::Death);
 					} else {
-						unit->sprite->create_top_overlay(ImageId::UnusedHeal_Small);
-						anchor = unit->get_overlay(ImageId::UnusedHeal_Small);
+						unit->sprite->create_top_overlay(ImageId::WarpAnchorPlayerColor);
+						anchor = unit->get_overlay(ImageId::WarpAnchorPlayerColor);
 						if (anchor != nullptr)
 						{
 							anchor->play_iscript_animation(IscriptAnimation::Death);

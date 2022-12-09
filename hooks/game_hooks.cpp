@@ -1712,6 +1712,8 @@ namespace hooks {
 				// Durendal - Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true)) {
+						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03), unit, 1, 0);
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance

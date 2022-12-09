@@ -1365,6 +1365,10 @@ namespace SoundId
 		LazarusAgentCastEnd					= 2119,
 		EnergyRegenStart					= 2120,
 		EnergyRegenEnd						= 2121,
+
+		DurendalSecondaryFire01				= 2164,
+		DurendalSecondaryFire02				= 2165,
+		DurendalSecondaryFire03				= 2166,
 	};
 }
 

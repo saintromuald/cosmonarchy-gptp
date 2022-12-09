@@ -974,8 +974,8 @@ namespace ImageId {
 		RestorationHit_Small                = 967,
 		RestorationHit_Medium               = 968,
 		RestorationHit_Large                = 969,
-		UnusedHeal_Small                    = 970,
-		UnusedHeal_Medium                   = 971,
+		WarpAnchorPlayerColor               = 970,
+		LegionnaireTeleport                 = 971,
 		UnusedHeal_Large                    = 972,
 		MindControlHit_Small                = 973,
 		MindControlHit_Medium               = 974,
@@ -1172,6 +1172,8 @@ namespace ImageId {
 		EnergyRegenOverlayXLarge					= 1631,
 
 		CyclopsFragmentaryArming					= 1646,
+
+		DurendalWeaponfireOverlay					= 1659,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
