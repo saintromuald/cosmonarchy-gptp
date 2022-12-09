@@ -1447,7 +1447,7 @@ static void init_threshold_units() {
 				fraud_add_unit(i, RaceId::Zerg,    {16, UnitId::ZergDroleth});
 			//	fraud_add_unit(i, RaceId::Zerg,    {8, UnitId::ZergDroleth});
 			//	fraud_add_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
-				fraud_add_unit(i, RaceId::Zerg,    {1, UnitId::ZergAlaszileth});
+				fraud_add_unit(i, RaceId::Zerg,    {1, UnitId::ZergOthstoleth});
 			} break;
 			case FraudClass_God:
 			{
@@ -1462,7 +1462,7 @@ static void init_threshold_units() {
 				fraud_add_unit(i, RaceId::Zerg,    {18, UnitId::ZergDroleth});
 			//	fraud_add_unit(i, RaceId::Zerg,    {6, UnitId::ZergDroleth});
 			//	fraud_add_unit(i, RaceId::Zerg,    {6, UnitId::ZergGosvileth});
-				fraud_add_unit(i, RaceId::Zerg,    {2, UnitId::ZergAlaszileth});
+				fraud_add_unit(i, RaceId::Zerg,    {2, UnitId::ZergOthstoleth});
 			} break;
 		}
 	}
@@ -2070,7 +2070,6 @@ static void init_threshold_units() {
 		threshold.frauds[FraudGod_Hand1 + i][RaceId::Protoss] = {AiPersonality_None, AiBuildType_None, AiBuildOrder_None, PlayerColor::Blood};
 		fraud_add_unit(FraudGod_Hand1 + i, RaceId::Protoss, {6, UnitId::ProtossArchon});
 		fraud_add_unit(FraudGod_Hand1 + i, RaceId::Protoss, {4, UnitId::ProtossAtreus});
-		fraud_add_unit(FraudGod_Hand1 + i, RaceId::Protoss, {2, UnitId::ProtossAugur});
 		fraud_add_unit(FraudGod_Hand1 + i, RaceId::Protoss, {1, UnitId::ProtossDemiurge});
 		fraud_add_unit(FraudGod_Hand1 + i, RaceId::Protoss, {1, UnitId::ProtossStarSovereign});
 
