@@ -780,6 +780,7 @@ namespace SpriteId
 		BurstLasersImpactBlue_Damageless = 772,
 		PlagueField = 773,
 		ZealotDeath = 810,
+		AntiMatterMissileHit = 829,
 
 		// CORPSE \\
 			
