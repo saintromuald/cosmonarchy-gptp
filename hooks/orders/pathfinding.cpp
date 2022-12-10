@@ -54,7 +54,7 @@ namespace hooks
     s32 move_to_target(Unit* target, Unit* unit) { // 004EB720
         Point16 new_target = get_target_point(unit, target);
         if (target == unit->move_target.unit
-        && ((unit->position.x == new_target.x && unit->position.y == new_target.y)
+        && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
             || helper::isPointAtUnitBorder(0, unit->move_target.unit, unit, unit->move_target.pt))) {
             unit->status &= ~UnitStatus::Unmovable;
             return true;
@@ -80,7 +80,7 @@ namespace hooks
         unit->recent_order_timer = 15;
         unit->status &= ~UnitStatus::Unmovable;
         Order* next_order = unit->order_queue_head;
-        if (!next_order || orders_dat::button_icon[next_order->order_id]) {
+        if (!next_order || orders_dat::Unknown7[next_order->order_id]) {
             unit->movement_flags &= ~MovementFlags::Lifted;
         } else {
             unit->movement_flags |= MovementFlags::Lifted;
