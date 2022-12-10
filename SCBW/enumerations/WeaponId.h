@@ -243,6 +243,8 @@ namespace WeaponId {
 		OptectonSkybondRay					= 186,
 		PatriarchIronhandWeaver				= 187,
 		AccantorPlasmaShell					= 191,
+		ServitorRecycledBlaster				= 192,
+		PositronAntimatterMissile			= 193,
 
 		// Zerg \\
 					
