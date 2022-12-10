@@ -499,11 +499,11 @@ namespace hooks {
 		} else {
 			helper::progress_bullet_movement(bullet);
 		}
+
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
 		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
-
 		if (bullet->weapon_id == WeaponId::PositronAntimatterMissile) {
 			u32 period = 2 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
@@ -801,23 +801,33 @@ namespace hooks {
 		}
 	}
 
-	void bullet_behavior_bounce(Bullet* bullet) // 0048B2D0
-	{
+	void bullet_behavior_bounce(Bullet* bullet) { // 0048B2D0
 		Unit* target_unit = bullet->attack_target.unit;
-		if (target_unit)
-		{
-			if (!(bullet->hit_flags & 1))
-			{
+		if (target_unit) {
+			if (!(bullet->hit_flags & 1)) {
 				helper::change_move_pos(bullet, target_unit->sprite->position.y, target_unit->sprite->position.x);
 			}
 		}
+
+		Point16 old_position = bullet->position;
 		helper::progress_bullet_movement(bullet);
-		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)
-		{
+
+		BulletExt* bullet_ext = get_bullet_ext(bullet);
+		u32 old_distance_traveled = bullet_ext->distance_traveled;
+		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
+		bullet_ext->time_traveled += 1;
+		if (bullet->weapon_id == WeaponId::BactaliskCorrosiveAcid && !bullet_ext->bounced) {
+			u32 period = 4 * 32;
+			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
+				bullet->remaining_bounces += 1;
+			}
+		}
+
+		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y) {
+			bullet_ext->bounced = true;
 			char next_bounce = bullet->remaining_bounces - 1;
 			// Gladius infinite bouncing
-			if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
-			{
+			if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
 				next_bounce = 1;
 			}
 
@@ -825,38 +835,29 @@ namespace hooks {
 			globals.bounce_bullet = bullet;
 			Unit* target = helper::find_next_bounce_target(bullet);
 			bullet->next_bounce_unit = bullet->attack_target.unit;
-			if (next_bounce && target)
-			{
-				for (Image* i = bullet->sprite->images.head; i; i = i->link.next)
-				{
-					helper::play_image_iscript(i, IscriptAnimation::SpecialState1);
+			if (next_bounce && target) {
+				for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
+					helper::play_image_iscript(image, IscriptAnimation::SpecialState1);
 				}
 				bullet->attack_target.unit = target;
-			}
-			else
-			{
-				if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
-				{
+			} else {
+				if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
 					globals.remove_multihit_bullet(bullet);
 				}
 				target_unit = bullet->attack_target.unit;
 				bullet->behavior_type_internal = 5;
-				if (target_unit)
-				{
+				if (target_unit) {
 					bullet->attack_target.pt.x = target_unit->sprite->position.x;
 					bullet->attack_target.pt.y = target_unit->sprite->position.y;
-				}
-				else
-				{
+				} else {
 					bullet->attack_target.unit = 0;
 				}
 				Sprite* sprite = bullet->sprite;
 				bullet->unknown_0x4E = 0;
 				bullet->some_unit_type = UnitId::None;
 
-				for (Image* j = sprite->images.head; j; j = j->link.next)
-				{
-					helper::play_image_iscript(j, IscriptAnimation::Death);
+				for (Image* image = sprite->images.head; image; image = image->link.next) {
+					helper::play_image_iscript(image, IscriptAnimation::Death);
 				}
 			}
 		}
@@ -1230,12 +1231,9 @@ namespace hooks {
 			case WeaponBehavior::Bounce:
 			{
 				switch (weapon_id) {
-					case WeaponId::BactaliskCorrosiveAcid: {
-						if (bullet_ext->distance_traveled >= 6 * 32) {
-							bullet->remaining_bounces = 2;
-						} else {
-							bullet->remaining_bounces = 1;
-						}
+					case WeaponId::BactaliskCorrosiveAcid:
+					{
+						bullet->remaining_bounces = 1; // Additional bounces added later
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{

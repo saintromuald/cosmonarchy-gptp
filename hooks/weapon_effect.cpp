@@ -247,11 +247,11 @@ namespace hooks {
 		} else {
 			if (weapons_dat::behavior[weapon_id] == WeaponBehavior::Bounce) {
 				if (bullet) {
-					if (bullet->source_unit && bullet->source_unit->id == UnitId::ZergBactalisk) {
+					if (bullet->source_unit && bullet->weapon_id == WeaponId::BactaliskCorrosiveAcid) {
 						divisor = 1;
 					} else {
-						const s32 bounceCount = 2;
-						divisor = bounceCount - bullet->remaining_bounces;
+						const s32 bounce_count = 2;
+						divisor = bounce_count - bullet->remaining_bounces;
 					}
 				}
 			}
