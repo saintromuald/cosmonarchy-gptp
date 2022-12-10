@@ -5,7 +5,7 @@
 void apply_weapon_cooldown(Unit* unit, u8 weapon_id);
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown = true);
 void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_cooldown = true);
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main = false, bool use_weapon_factor = true);
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main = false, bool use_weapon_factor = true, bool apply_cooldown = true);
 
 namespace hooks
 {
