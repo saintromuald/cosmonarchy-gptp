@@ -50,9 +50,9 @@ namespace
 		hooks::zerg_place_building(unit);
 		__asm {
 			POPAD
-			MOv ESP, EBp
+			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x4
 		}
 	}
 

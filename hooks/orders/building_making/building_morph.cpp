@@ -267,15 +267,15 @@ namespace hooks
 	void zerg_place_building(Unit* unit) {
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed)) {
-			u16 builtUnitId = unit->build_queue[unit->build_queue_slot];
+			u16 built_unit_id = unit->build_queue[unit->build_queue_slot];
 			// original code was hardcoded instead of using is_valid_morph
-			if (helper::is_valid_building_morph(builtUnitId)) {
+			if (helper::is_valid_building_morph(built_unit_id)) {
 				if (unit->get_race() == RaceId::Zerg) {
 					helper::zerg_place_building_continued(unit);
 				} else { // ALL of this code is no longer run; previously used for protoss building morphs (e.g. gateway -> principality)
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
-					resources->minerals[unit->player] += (units_dat::mineral_cost[builtUnitId] * 3) / 4;
-					resources->gas[unit->player] += (units_dat::vespene_cost[builtUnitId] * 3) / 4;
+					resources->minerals[unit->player] += (units_dat::mineral_cost[built_unit_id] * 3) / 4;
+					resources->gas[unit->player] += (units_dat::vespene_cost[built_unit_id] * 3) / 4;
 					unit->status |= UnitStatus::Completed;
 					helper::increment_unit_scores_ex(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
