@@ -1796,7 +1796,7 @@ namespace hooks {
 							current_button_state = Button_State::Disabled;
 							switch (unit->id)
 							{
-								// SHARED \\
+								// FACTIONAL \\
 
 								case UnitId::TerranCohort:
 								{
@@ -2088,6 +2088,12 @@ namespace hooks {
 								case UnitId::ZergTosgrilisk:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergAxitrilisk:
+								{
+									if (current_button->icon_id == IconId::RoarUnused) { // Axitrilisk - Perpetual Wind
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
