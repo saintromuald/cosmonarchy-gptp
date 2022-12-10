@@ -2045,9 +2045,30 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossSimulacrum:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Simulacrum - Autovitality
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossVassal:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Vassal - Terminal Surge
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossGolem:
+								{
+									if (current_button->icon_id == IconId::LegEnhancements) // Golem - Deathless Procession
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossPositron:
+								{
+									if (current_button->icon_id == IconId::ScarabDamage) // Positron - Particle Annihilation
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2292,16 +2313,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossPariah &&  // Pariah Heretical Bedlam
 								current_button->icon_id == IconId::DracadinPhaseDisruptor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossSimulacrum &&  // Simulacrum Autovitality
-								current_button->icon_id == IconId::ApialSensors)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossGolem &&  // Golem Deathless Procession
-								current_button->icon_id == IconId::LegEnhancements)
 							{
 								current_button_state = Button_State::Enabled;
 							}
