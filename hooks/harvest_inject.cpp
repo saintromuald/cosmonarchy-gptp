@@ -1,5 +1,6 @@
 #include "harvest.h"
 #include "../hook_tools.h"
+#include "SCBW/api.h"
 
 namespace {
 	void __declspec(naked) remove_powerup_image_overlay_wrapper() // 004F3900
@@ -224,10 +225,7 @@ namespace {
 	}
 
 	b32 death_geyser_check(Unit* unit) {
-		if (unit->id == UnitId::TerranReservoir
-		||  unit->id == UnitId::ProtossAquifer
-		||  unit->id == UnitId::ZergExcisant
-		||  unit->id == UnitId::ResourceVespeneGeyser) {
+		if (scbw::unit_id_is_gas_structure(unit->id)) {
 			return true;
 		}
 		return false;

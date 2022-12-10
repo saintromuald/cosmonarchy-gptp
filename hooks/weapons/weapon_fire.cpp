@@ -79,17 +79,19 @@ void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_coold
 	}
 }
 
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor) {
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown) {
+	scbw::decloak_proc(attacker);
+
 	bool fired = false;
-	std::unordered_set<Unit*> targets;
+	std::unordered_set<Unit*> units_fired = {};
 	UnitExt* attacker_ext = get_unit_ext(attacker);
 	if (!ignore_main
 		&& attacker->order_target.unit
 		&& attacker->main_order_id != OrderId::Follow
-		&& attacker->main_order_id != OrderId::Patrol) {
-		targets.insert(attacker->order_target.unit);
+		&& attacker->main_order_id != OrderId::Patrol
+		&& attacker->can_attack_target(attacker->order_target.unit)) {
+		units_fired.insert(attacker->order_target.unit);
 		launch_missile(attacker, attacker->order_target.unit, weapon_id);
-		fired = true;
 	}
 
 	Unit* old = attacker->order_target.unit;
@@ -104,17 +106,17 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 			attacker,
 			[&](Unit* target) {
 				if (target == attacker
-					||  targets.find(target) != targets.end()
+					||  units_fired.find(target) != units_fired.end()
 					||  scbw::is_allied_to(attacker->player, target->player)
 					|| !attacker->can_attack_target(target)
 					|| !filter(target)
-					|| (targets.size() >= max_targets && max_targets > 0))
+					|| (units_fired.size() >= max_targets && max_targets > 0))
 				{
 					return false;
 				}
 				return true;
 			});
-		if ((targets.size() >= max_targets && max_targets > 0) || !new_target) {
+		if ((units_fired.size() >= max_targets && max_targets > 0) || !new_target) {
 			break;
 		}
 		attacker->order_target.unit = new_target;
@@ -128,13 +130,12 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 			if (factor == 0) {
 				break;
 			}
-			launch_missile(attacker, new_target, weapon_id);
+			launch_missile(attacker, new_target, weapon_id, apply_cooldown);
 		}
-		fired = true;
-		targets.insert(new_target);
+		units_fired.insert(new_target);
 	}
 	attacker->order_target.unit = old;
-	return fired;
+	return units_fired.size();
 }
 
 namespace
