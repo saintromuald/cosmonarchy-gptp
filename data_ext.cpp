@@ -11,6 +11,9 @@ void init_ext_variables() {
 		reset_unit_ext(&g_unit_table[i]);
 	}
 	memset(tile_ext_array, 0, sizeof(tile_ext_array));
+	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
+		reset_image_ext(&g_image_table[i]);
+	}
 	for (u32 i = 0; i < SPRITE_ARRAY_LENGTH; ++i) {
 		reset_sprite_ext(&g_sprite_table[i]);
 	}
@@ -70,17 +73,17 @@ void update_ext_variables() {
 
 	// Bullets
 	for (u32 i = 0; i < BULLET_ARRAY_LENGTH; ++i) {
-		reset_bullet_ext(&g_bullet_table[i]);
+
 	}
 
 	// Sprites
 	for (u32 i = 0; i < SPRITE_ARRAY_LENGTH; ++i) {
-		reset_sprite_ext(&g_sprite_table[i]);
+
 	}
 
 	// Images
 	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
-		reset_image_ext(&g_image_table[i]);
+
 	}
 }
 
@@ -112,7 +115,7 @@ TileExt* get_tile_ext_at_coords(u32 x, u32 y) {
 
 BulletExt* get_bullet_ext(Bullet* bullet) {
 	u32 index = bullet - g_bullet_table;
-	assert(unit && index >= 0 && index < BULLET_ARRAY_LENGTH);
+	assert(bullet && index >= 0 && index < BULLET_ARRAY_LENGTH);
 	return &bullet_ext_array[index];
 }
 
@@ -123,7 +126,7 @@ void reset_bullet_ext(Bullet* bullet) {
 
 SpriteExt* get_sprite_ext(Sprite* sprite) {
 	s32 index = sprite - g_sprite_table;
-	assert(sprite && index >= 0 && index <= SPRITE_ARRAY_LENGTH);
+	assert(sprite && index >= 0 && index < SPRITE_ARRAY_LENGTH);
 	return &sprite_ext_array[index];
 }
 
@@ -134,7 +137,7 @@ void reset_sprite_ext(Sprite* sprite) {
 
 ImageExt* get_image_ext(Image* image) {
 	s32 index = image - g_image_table;
-	assert(image && index >= 0 && index <= IMAGE_ARRAY_LENGTH);
+	assert(image && index >= 0 && index < IMAGE_ARRAY_LENGTH);
 	return &image_ext_array[index];
 }
 

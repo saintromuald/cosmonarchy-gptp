@@ -502,12 +502,15 @@ namespace hooks {
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
 		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
+		bullet_ext->time_traveled += 1;
 
-		if (bullet->weapon_id == 193) { // TODO: update weapon id
+		if (bullet->weapon_id == WeaponId::PositronAntimatterMissile) {
 			u32 period = 2 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
+				scbw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
 				EntryArray targets = {};
 				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
+				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not
 				for (u32 i = 0; i < targets.count; ++i) {
 					Unit* target = targets.units[i];
 					if (scbw::is_allied_to(bullet->player, target->player)) {
@@ -547,9 +550,8 @@ namespace hooks {
 		&&  bullet->attack_target.unit
 		&&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
 			Unit* main_target = bullet->attack_target.unit;
-
 			UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
-			const u32 distance_from_source = scbw::get_distance_fast(bullet->position, unit_ext->last_bullet_launch_position);
+			const u32 distance_from_source = bullet_ext->distance_traveled;
 			const u32 distance_from_target = scbw::get_distance_fast(bullet->position, main_target->position);
 			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
 				if (!globals.multihit_bullet_is_set(bullet)) {
@@ -558,9 +560,12 @@ namespace hooks {
 					Point16 old_pos = bullet->source_unit->position;
 					bullet->source_unit->sprite->position = bullet->position;
 					bullet->source_unit->position = bullet->position;
-					u32 r = 3 * 32;
-					scbw::UnitFinder units_in_splash(bullet->position.x - r, bullet->position.y - r,
-						bullet->position.x + r, bullet->position.y + r);
+					u32 radius = 3 * 32;
+					scbw::UnitFinder units_in_splash(
+						main_target->position.x - radius,
+						main_target->position.y - radius,
+						main_target->position.x + radius,
+						main_target->position.y + radius);
 					globals.add_multihit_empty_bullet(bullet, 1);
 					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 						Unit* target = units_in_splash.get_unit(i);
@@ -1225,15 +1230,10 @@ namespace hooks {
 			case WeaponBehavior::Bounce:
 			{
 				switch (weapon_id) {
-					case WeaponId::BactaliskCorrosiveAcid:
-					{
-						const u32 dist = scbw::get_distance_fast(bullet->source_unit->position, bullet->attack_target.pt);
-						if (dist >= 6 * 32)
-						{
+					case WeaponId::BactaliskCorrosiveAcid: {
+						if (bullet_ext->distance_traveled >= 6 * 32) {
 							bullet->remaining_bounces = 2;
-						}
-						else
-						{
+						} else {
 							bullet->remaining_bounces = 1;
 						}
 					} break;

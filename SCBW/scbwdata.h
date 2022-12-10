@@ -2,6 +2,7 @@
 #include "../definitions.h"
 #include "structures.h"
 #include "scbwhelper.h"
+#include "bullet_extender.h"
 #pragma pack(1)
 
 // Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
@@ -46,7 +47,7 @@ SCBW_DATA(Units12*,			g_trigger_factory_counts,		0x0068A9A8);
 
 SCBW_DATA(Unit*,			g_unit_table,					0x0059CCA8);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
-SCBW_DATA_REF(Bullet*,		g_bullet_table,					0x0064B2E8);
+SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table); // 0x0064B2E8
 SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
 SCBW_DATA(Sprite*,			g_sprite_table,					0x00629D98);
 SCBW_DATA(u32*,				g_sprite_count,					0x006C4A2C);

@@ -229,15 +229,10 @@ namespace hooks {
 		u8 divisor = 1;
 		if (weapon_id == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = globals.get_divider(bullet);
-		} else if (weapon_id == WeaponId::GeszithalorAcidSpore
-			&& bullet->source_unit
-			&& bullet->source_unit->sprite
-			&& target->sprite) {
+		} else if (weapon_id == WeaponId::GeszithalorAcidSpore) {
 			// Searing Acid - Geszithalor behavior
-			UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
-			auto X = bulletSourceExt->last_bullet_launch_position.x;
-			auto Y = bulletSourceExt->last_bullet_launch_position.y;
-			divisor = scbw::get_distance_fast(X, Y, target->get_x(), target->get_y()) / (32 * 3);
+			BulletExt* bullet_ext = get_bullet_ext(bullet);
+			divisor = bullet_ext->distance_traveled / (32 * 3);
 		}
 
 		if (bullet->hit_flags & 1) { // Miss
