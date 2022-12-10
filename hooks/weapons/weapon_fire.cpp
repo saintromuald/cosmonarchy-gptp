@@ -568,6 +568,7 @@ namespace hooks {
 						main_target->position.x + radius,
 						main_target->position.y + radius);
 					globals.add_multihit_empty_bullet(bullet, 1);
+					u32 fired = 0;
 					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 						Unit* target = units_in_splash.get_unit(i);
 						if (!target) {
@@ -590,6 +591,10 @@ namespace hooks {
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							new_bullet->position = bullet->position;
 							globals.add_multihit_empty_bullet(new_bullet, 1);
+
+							if (++fired == 2) {
+								break;
+							}
 						}
 					};
 					bullet->source_unit->order_target.unit = old_target;
