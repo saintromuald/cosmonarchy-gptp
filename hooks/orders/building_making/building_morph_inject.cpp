@@ -47,7 +47,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::zerg_place_building(unit);
+		hooks::cancel_zerg_building(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -80,8 +80,7 @@ namespace
 			MOV EBP, ESP
 			MOV unit, EAX
 		}
-		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
+		if (!(unit->status & UnitStatus::Completed) && hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
 		{
 			__asm {
 				POPAD

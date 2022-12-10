@@ -297,7 +297,7 @@ namespace helper {
 	void update_building_ai(Unit* unit);																	// 0033FE0
 	bool is_valid_building_morph(u16 buildingId);																	// 005CC60
 	void spread_initial_creep(u32 id, s32 x, s32 y);														// 005CE90
-	void zerg_place_building_continued(Unit* unit);																	// 005D410
+	void cancel_zerg_building_morph(Unit* unit);																	// 005D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 007D770
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);										// 0088D50
 	void play_building_completed_sound(Unit* building);														// 008F310
