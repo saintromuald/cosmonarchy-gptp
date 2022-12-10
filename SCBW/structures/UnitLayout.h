@@ -198,7 +198,7 @@ namespace MovementFlags
 		StartingAttack = 0x08,			// Always 1 for a moment when the unit is starting new attack cycle
 		Moving = 0x10,					// Still moving, but not accelerating
 		Lifted = 0x20,					// Lifted structures have this on (just before it moves)
-		unknown1 = 0x40,				// The value is unknown, but it has something to do with changing directio n& accelerating
+		unknown1 = 0x40,				// The value is unknown, but it has something to do with changing direction & accelerating
 		_alwaysZero1 = 0x80,
 		HoverUnit = 0xC1				// OrderedAtLeastOnce | unknown1 | _alwaysZero1
 	};

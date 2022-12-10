@@ -61,7 +61,7 @@ namespace hooks
         }
         if (unit->unit_ai
         &&  unit->main_order_id != OrderId::Pickup4
-        &&  helper::ai_prepare_moving_to(unit, target->position.x, target->position.y)) {
+        &&  helper::ai_prepare_moving_to(unit, new_target.x, new_target.y)) {
             return false;
         }
 
@@ -69,22 +69,21 @@ namespace hooks
         if (path) {
             path->is_calculating |= 1;
         }
-        if (new_target.x != unit->move_target.pt.x
-        ||  new_target.y != unit->move_target.pt.y
-        ||  target != unit->move_target.unit) {
+        if (unit->move_target.pt != new_target
+        ||  unit->move_target.unit != target) {
             unit->move_target.unit = target;
             unit->move_target.pt = new_target;
             unit->next_movement_waypoint = new_target;
-            unit->movement_flags &= ~4;
-            unit->movement_flags |= 1;
+            unit->movement_flags &= ~MovementFlags::Braking;
+            unit->movement_flags |= MovementFlags::OrderedAtLeastOnce;
         }
         unit->recent_order_timer = 15;
         unit->status &= ~UnitStatus::Unmovable;
-        Order* unit_order = unit->order_queue_head;
-        if (!unit_order || orders_dat::button_icon[unit_order->order_id]) {
-            unit->movement_flags &= ~0x20;
+        Order* next_order = unit->order_queue_head;
+        if (!next_order || orders_dat::button_icon[next_order->order_id]) {
+            unit->movement_flags &= ~MovementFlags::Lifted;
         } else {
-            unit->movement_flags |= 0x20;
+            unit->movement_flags |= MovementFlags::Lifted;
         }
         return true;
     }
@@ -96,32 +95,19 @@ namespace hooks
     }
 
     // Hooked to investigate crashes - Pr0nogo
-    bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y) // 0049CB60
-    {
-        if (!unit->sprite)
-        {
-            return false;
-        }
-        RegionArray* paths = *g_sai_paths;
-        s32 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) << 6;
-        return paths->regions[helper::get_region_id(x, y)].group_index == *(s16*)((char*)&paths->regions[0].group_index + regionId);
+    bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y) { // 0049CB60
+        Point16 target = {x, y};
+        return scbw::get_region(unit->position)->group_index == scbw::get_region(target)->group_index;
     }
 
     // Hooked to investigate crashes - Pr0nogo
-    bool unit_has_path_to_unit(Unit* pather, Unit* target) // 0049CBB0
-    {
-        if (!pather->sprite)
-        {
-            return false;
-        }
-        Sprite* patherSprite = pather->sprite;
-        RegionArray* paths = *g_sai_paths;
-        s32 regionId = helper::get_region_id(target->sprite->position.x, target->sprite->position.y) << 6;
-        return *(s16*)((char*)&paths->regions[0].group_index + regionId) == paths->regions[helper::get_region_id(patherSprite->position.x, patherSprite->position.y)].group_index;
+    bool unit_has_path_to_unit(Unit* unit, Unit* target) { // 0049CBB0
+        return scbw::get_region(unit->position)->group_index == scbw::get_region(target->position)->group_index;
     }
 
     // Hooked to OoooooO. -Pr0nogo
     void set_repulse_angle(Unit* unit) { // 00453300
+        // Empty
     }
 
     void repulse_unit(Unit* unit, b32 should_repulse) { // 004535A0
