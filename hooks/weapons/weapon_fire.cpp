@@ -324,6 +324,10 @@ namespace hooks {
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueOptectonLaunchPos1, 1, false);
 					} break;
+					case WeaponId::PositronAntimatterMissile:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePositronLaunchPos, 1, false);
+					} break;
 					case WeaponId::AccantorPlasmaShell:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueAccantorLaunchPos, 1, false);
@@ -509,6 +513,7 @@ namespace hooks {
 			u32 period = 2 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
 				scbw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
+				helper::play_sound_at_pos(scbw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
 				EntryArray targets = {};
 				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
 				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not

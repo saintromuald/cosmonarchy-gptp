@@ -2565,7 +2565,7 @@ namespace helper {
 		}
 	}
 
-	void zerg_place_building_continued(Unit* unit) {
+	void cancel_zerg_building_morph(Unit* unit) {
 		const u32 Func_ZergPlaceBuildingCntd = 0x0045D410;
 		__asm {
 			PUSHAD

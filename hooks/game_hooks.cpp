@@ -543,19 +543,22 @@ namespace hooks {
 			*/
 			/*
 			if (selected->sprite && selected->sprite->main_graphic) {
-				scbw::printf("%u", selected->sprite->main_graphic->animation);
+				scbw::printf("Animation: %u", selected->sprite->main_graphic->animation);
 			}
 			*/
-		//	scbw::printf("%u", selected->main_order_id);
-		//	scbw::printf("0x%X", selected->status);
+		//	scbw::printf("Order id: %u", selected->main_order_id);
+		//	scbw::printf("Status: 0x%X", selected->status);
 
  			*unit_iterator_pos = 0;
 			while (Unit* selection = get_active_player_next_selection()) {
+				// Show connected Nyduses
 				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
 				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id))) {
 					Unit* exit = selection->building.nydus_exit;
 					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
 				}
+
+				// Show worker harvest links
 				if (config.show_worker_harvest_links)
 				{
 					if (units_dat::base_property[selection->id] & UnitProperty::Worker

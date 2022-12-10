@@ -5,7 +5,7 @@ namespace hooks
 {
 	bool is_morphing(Unit* building);							// 0045CD00
 	void orders_zerg_build_self(Unit* building);				// 0045D500
-	void zerg_place_building(Unit* drone);						// 0045DA40
+	void cancel_zerg_building(Unit* drone);						// 0045DA40
 	
 	// from unhooked
 	bool is_morphed_building(u16 unit_id);

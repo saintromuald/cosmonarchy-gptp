@@ -1369,6 +1369,10 @@ namespace SoundId
 		DurendalSecondaryFire01				= 2164,
 		DurendalSecondaryFire02				= 2165,
 		DurendalSecondaryFire03				= 2166,
+
+		PositronWeaponHit01					= 2174,
+		PositronWeaponHit02					= 2175,
+		PositronWeaponHit03					= 2176,
 	};
 }
 
