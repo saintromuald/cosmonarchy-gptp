@@ -476,64 +476,67 @@ namespace hooks {
 		}
 	}
 
-	void progress_bullet_flight(Bullet* bullet) // 0048B3B0
-	{
-		Unit* target;
-		Sprite* bulletSprite;
-		Image* i;
-
-		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores)
-		{
-			if (bullet->attack_target.unit == nullptr)
-			{
+	void progress_bullet_flight(Bullet* bullet) { // 0048B3B0
+		Point16 old_position = bullet->position;
+		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
+			if (!bullet->attack_target.unit) {
 				u32 range = AlkajeliskParasiticSporesSeekRange; // seek distance
-				auto seekTarget = scbw::UnitFinder::get_nearest_target(
+				auto seek_target = scbw::UnitFinder::get_nearest_target(
 					bullet->position.x - range,
 					bullet->position.y - range,
 					bullet->position.x + range,
 					bullet->position.y + range,
-					bullet,
-					[&](Unit* unit)
-				{
+					bullet, [&](Unit* unit) {
 					return alkajelisk_spore_match(bullet, unit);
 				});
-				if (seekTarget != nullptr)
-				{
-					bullet->attack_target.unit = seekTarget;
-					bullet->attack_target.pt = seekTarget->position;
-					bullet->move_target.unit = seekTarget;
-					bullet->move_target.pt = seekTarget->position;
-					bullet->targetPosition = seekTarget->position;
-					bullet->targetPosition2 = seekTarget->position;
+				if (seek_target) {
+					scbw::set_bullet_target(bullet, seek_target);
 					helper::progress_bullet_movement(bullet);
 				}
-			}
-			else
-			{
+			} else {
 				helper::progress_bullet_movement(bullet);
 			}
-		}
-		else
-		{
+		} else {
 			helper::progress_bullet_movement(bullet);
+		}
+		BulletExt* bullet_ext = get_bullet_ext(bullet);
+		u32 old_distance_traveled = bullet_ext->distance_traveled;
+		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
+
+		if (bullet->weapon_id == 193) { // TODO: update weapon id
+			u32 period = 2 * 32;
+			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
+				EntryArray targets = {};
+				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
+				for (u32 i = 0; i < targets.count; ++i) {
+					Unit* target = targets.units[i];
+					if (scbw::is_allied_to(bullet->player, target->player)) {
+						continue;
+					}
+					u32 distance = scbw::get_distance_fast(bullet->position, target->position);
+					u32 divisor = 1;
+					if (distance <= weapons_dat::inner_splash_radius[bullet->weapon_id]) {
+						divisor = 4;
+					} else if (distance <= weapons_dat::medium_splash_radius[bullet->weapon_id]) {
+						divisor = 2;
+					}
+					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->currentDirection);
+				}
+			}
 		}
 
 		u8 time = bullet->time_remaining--;
-		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores)
-		{
-			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && bullet->attack_target.unit == nullptr)
-			{
+		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
+			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && !bullet->attack_target.unit) {
 				time = 0;
 			}
 		}
-		bool bEnd = false;
+		bool despawn_bullet = false;
 
 		// Accelerate missiles over time
-		if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage)
-		{
+		if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage) {
 			u8 time_current = 255 - time;
-			if (time_current == 8)
-			{
+			if (time_current == 8) {
 				bullet->flingy_top_speed *= 2;
 				bullet->flingy_acceleration *= 2;
 			}
@@ -542,171 +545,127 @@ namespace hooks {
 		if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
 		&&  bullet->source_unit
 		&&  bullet->attack_target.unit
-		&&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite)
-		{
+		&&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
 			Unit* main_target = bullet->attack_target.unit;
 
 			UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
 			const u32 distance_from_source = scbw::get_distance_fast(bullet->position, unit_ext->last_bullet_launch_position);
 			const u32 distance_from_target = scbw::get_distance_fast(bullet->position, main_target->position);
-
-			if (distance_from_source > 5 * 32
-			&&  distance_from_target < 3 * 32)
-			{
-				if (!globals.multihit_bullet_is_set(bullet))
-				{
-					auto old = bullet->source_unit->order_target.unit;
-					auto old_sprite_pos = bullet->source_unit->sprite->position;
-					auto old_pos = bullet->source_unit->position;
+			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
+				if (!globals.multihit_bullet_is_set(bullet)) {
+					Unit* old_target = bullet->source_unit->order_target.unit;
+					Point16 old_sprite_pos = bullet->source_unit->sprite->position;
+					Point16 old_pos = bullet->source_unit->position;
 					bullet->source_unit->sprite->position = bullet->position;
 					bullet->source_unit->position = bullet->position;
-					auto r = 3 * 32;
+					u32 r = 3 * 32;
 					scbw::UnitFinder units_in_splash(bullet->position.x - r, bullet->position.y - r,
 						bullet->position.x + r, bullet->position.y + r);
 					globals.add_multihit_empty_bullet(bullet, 1);
-					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
-					{
+					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 						Unit* target = units_in_splash.get_unit(i);
-						if (!target)
-						{
+						if (!target) {
 							continue;
 						}
-						if (target == main_target)
-						{
+						if (target == main_target) {
 							continue;
 						}
-						if (!bullet->source_unit->can_attack_target(target)) // Check detection status
-						{
+						if (!bullet->source_unit->can_attack_target(target)) { // Check detection status
 							continue;
 						}
-						if (!alkajelisk_spore_match(bullet, target))
-						{
+						if (!alkajelisk_spore_match(bullet, target)) {
 							continue;
 						}
 						bullet->source_unit->order_target.unit = target;
 						s32 new_angle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
 						Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo,
 							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
-						if (new_bullet)
-						{
+						if (new_bullet) {
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							new_bullet->position = bullet->position;
 							globals.add_multihit_empty_bullet(new_bullet, 1);
 						}
 					};
-					bullet->source_unit->order_target.unit = old;
+					bullet->source_unit->order_target.unit = old_target;
 					bullet->source_unit->position = old_pos;
 					bullet->source_unit->sprite->position = old_sprite_pos;
 				}
 			}
 		}
 
-		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y))
-		{
-			bEnd = true;
-		}
-
-		// Missile interception
-		// Empyrean Heavenly Passage
-		// Valkyrie Charon Afterburners
-		else if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage
-		||		 bullet->weapon_id == WeaponId::ValkyrieHaloRockets)
-		{
+		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
+			despawn_bullet = true;
+		} else if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage || bullet->weapon_id == WeaponId::ValkyrieHaloRockets) {
+			// Missile interception - Empyrean Heavenly Passage, Valkyrie Charon Afterburners
 			u32 range = 128;
-			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
+			auto collision_target = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](Unit* unit)
-			{
-				if (!(unit->status & UnitStatus::InAir))
-				{
+				bullet, [&](Unit* unit) {
+				if (!(unit->status & UnitStatus::InAir)) {
 					return false;
 				}
-				if (unit->status & UnitStatus::Invincible)
-				{
+				if (unit->status & UnitStatus::Invincible) {
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->player, unit->player))
-				{
+				if (scbw::is_allied_to(bullet->player, unit->player)) {
 					return false;
 				}
 				auto box = units_dat::unit_bounds[unit->id];
-				if (bullet->position.x < unit->get_left())
-				{
+				if (bullet->position.x < unit->get_left()) {
 					return false;
 				}
-				if (bullet->position.x > unit->get_right())
-				{
+				if (bullet->position.x > unit->get_right()) {
 					return false;
 				}
-				if (bullet->position.y < unit->get_top())
-				{
+				if (bullet->position.y < unit->get_top()) {
 					return false;
 				}
-				if (bullet->position.y > unit->get_bottom())
-				{
+				if (bullet->position.y > unit->get_bottom()) {
 					return false;
 				}
 				return true;
+			});
+			if (collision_target) {
+				bullet->attack_target.unit = collision_target;
+				despawn_bullet = true;
 			}
-			);
-			if (collisionTarget != nullptr)
-			{
-				bullet->attack_target.unit = collisionTarget;
-				bEnd = true;
-			}
-		}
-
-		// Star Sovereign Intervention
-		else if (bullet->weapon_id == WeaponId::StarSovereignInterventionMissiles)
-		{
+		} else if (bullet->weapon_id == WeaponId::StarSovereignInterventionMissiles) {
+			// Star Sovereign Intervention
 			u32 range = 128;
-			auto collisionTarget = scbw::UnitFinder::get_nearest_target(
+			auto collision_target = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](Unit* unit)
-			{
-				if (unit->status & UnitStatus::Invincible)
-				{
+				bullet, [&](Unit* unit) {
+				if (unit->status & UnitStatus::Invincible) {
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->player, unit->player))
-				{
+				if (scbw::is_allied_to(bullet->player, unit->player)) {
 					return false;
 				}
 				auto box = units_dat::unit_bounds[unit->id];
-				if (bullet->position.x < unit->get_left())
-				{
+				if (bullet->position.x < unit->get_left()) {
 					return false;
 				}
-				if (bullet->position.x > unit->get_right())
-				{
+				if (bullet->position.x > unit->get_right()) {
 					return false;
 				}
-				if (bullet->position.y < unit->get_top())
-				{
+				if (bullet->position.y < unit->get_top()) {
 					return false;
 				}
-				if (bullet->position.y > unit->get_bottom())
-				{
+				if (bullet->position.y > unit->get_bottom()) {
 					return false;
 				}
 				return true;
+			});
+			if (collision_target) {
+				bullet->attack_target.unit = collision_target;
+				despawn_bullet = true;
 			}
-			);
-			if (collisionTarget != nullptr)
-			{
-				bullet->attack_target.unit = collisionTarget;
-				bEnd = true;
-			}
-		}
-
-		// Prolonged Arms - for projectiles hitting targets mid-flight
-		else if (scbw::weapon_pierces_targets(bullet->weapon_id))
-		{
+		} else if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
+			// Prolonged Arms - for projectiles hitting targets mid-flight
 			u32 range = 0;
-			switch (bullet->weapon_id)
-			{
+			switch (bullet->weapon_id) {
 				case WeaponId::SentinelCerberusRailgun:
 				case WeaponId::ZarcavrokorBonesofReflection:
 				{
@@ -727,56 +686,42 @@ namespace hooks {
 				{
 					range = 160;
 				} break;
-				default:
-				{
-				}
 			}
 			Unit* collision_target = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range,
 				bullet->position.y - range,
 				bullet->position.x + range,
 				bullet->position.y + range,
-				bullet, [&](Unit* unit)
-			{
-				if (unit->status & UnitStatus::Invincible)
-				{
+				bullet, [&](Unit* unit) {
+				if (unit->status & UnitStatus::Invincible) {
 					return false;
 				}
-				if (bullet->attack_target.unit == unit)
-				{
+				if (bullet->attack_target.unit == unit) {
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->player, unit->player))
-				{
+				if (scbw::is_allied_to(bullet->player, unit->player)) {
 					return false;
 				}
-				auto box = units_dat::unit_bounds[unit->id];
-				if (bullet->position.x < unit->get_left())
-				{
+				Box16 box = units_dat::unit_bounds[unit->id];
+				if (bullet->position.x < unit->get_left()) {
 					return false;
 				}
-				if (bullet->position.x > unit->get_right())
-				{
+				if (bullet->position.x > unit->get_right()) {
 					return false;
 				}
-				if (bullet->position.y < unit->get_top())
-				{
+				if (bullet->position.y < unit->get_top()) {
 					return false;
 				}
-				if (bullet->position.y > unit->get_bottom())
-				{
+				if (bullet->position.y > unit->get_bottom()) {
 					return false;
 				}
-				if (globals.was_already_hit_by_multihit_bullet(bullet, unit))
-				{
+				if (globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
 					return false;
 				}
 				return true;
 			});
-			if (collision_target)
-			{
-				switch (bullet->weapon_id)
-				{
+			if (collision_target) {
+				switch (bullet->weapon_id) {
 					case WeaponId::PenumbraErebolShockCannon:
 					{
 						// Penumbra - Shroud Piercer - pierce targets
@@ -794,8 +739,7 @@ namespace hooks {
 
 						// slow pierced targets
 						UnitExt* collisionTargetExt = get_unit_ext(collision_target);
-						if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
-						{
+						if (!collisionTargetExt->values[ValueKelvinMunitionsSlow]) {
 							collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
 						}
 					} break;
@@ -807,15 +751,11 @@ namespace hooks {
 						helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
 						collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
-						if (count >= 4)
-						{
+						if (count >= 4) {
 							bullet->time_remaining = 0;
-						}
-						else
-						{
+						} else {
 							bullet->move_target.unit = bullet->attack_target.unit;
-							if (bullet->move_target.unit != nullptr)
-							{
+							if (bullet->move_target.unit) {
 								bullet->targetPosition = bullet->move_target.unit->position;
 								bullet->targetPosition2 = bullet->move_target.unit->position;
 							}
@@ -837,26 +777,21 @@ namespace hooks {
 			}
 		}
 
-		if (bEnd)
-		{
-			target = bullet->attack_target.unit;
+		if (despawn_bullet) {
+			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-			if (target != nullptr && target->sprite != nullptr)
-			{
+			if (target && target->sprite) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
-			}
-			else
-			{
+			} else {
 				bullet->attack_target.unit = 0;
 			}
 			Sprite* bullet_sprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
 			bullet->unknown_0x4E = 0;
 			bullet->some_unit_type = 228;
-			for (i = bullet_sprite->images.head; i; i = i->link.next)
-			{
-				helper::play_image_iscript(i, IscriptAnimation::Death);
+			for (Image* image = bullet_sprite->images.head; image; image = image->link.next) {
+				helper::play_image_iscript(image, IscriptAnimation::Death);
 			}
 		}
 	}
@@ -1170,10 +1105,8 @@ namespace hooks {
 	}
 
 	// Hooked so we don't need aise for Bactalisks - Pr0nogo
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) // 0048BEC0
-	{
-		if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], y, x, (Flingy*)bullet, player, angle)) // Unit/Bullet/Flingy have a shared header, so this is presumably fine
-		{
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) { // 0048BEC0
+		if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], y, x, (Flingy*)bullet, player, angle)) { // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 			return 0;
 		}
 
@@ -1196,25 +1129,23 @@ namespace hooks {
 		bullet->attack_target.pt.x = 0;
 		bullet->unknown_0x4E = 0;
 		hooks::bullet_behavior_reassign(bullet);
+		reset_bullet_ext(bullet);
+		BulletExt* bullet_ext = get_bullet_ext(bullet);
+		bullet_ext->bullet_source = bullet->position;
 
 		u8 launch_spin = weapons_dat::launch_spin[weapon_id];
-		if (launch_spin)
-		{
+		if (launch_spin) {
 			s32 launch_spin_variance = 0;
-			if (parent == *g_last_bullet_creator)
-			{
+			if (parent == *g_last_bullet_creator) {
 				launch_spin_variance = *g_launch_spin_random == 0;
-			}
-			else
-			{
+			} else {
 				launch_spin_variance = helper::randomize_short(0) & 1;
 			}
 
 			*g_launch_spin_random = launch_spin_variance;
 			bool invert_spin = launch_spin_variance == 0;
 			launch_spin_variance = launch_spin;
-			if (invert_spin)
-			{
+			if (invert_spin) {
 				launch_spin_variance = -(s8)launch_spin;
 			}
 			char launch_spin_direction = launch_spin_variance + bullet->direction2;
@@ -1224,45 +1155,36 @@ namespace hooks {
 		}
 
 		bullet->source_unit = parent;
-		if (units_dat::base_property[parent->id] & UnitProperty::Subunit)
-		{
+		if (units_dat::base_property[parent->id] & UnitProperty::Subunit) {
 			bullet->source_unit = parent->subunit;
 		}
-		if (parent->id == UnitId::ProtossPlasmaShell)
-		{
+		if (parent->id == UnitId::ProtossPlasmaShell) {
 			bullet->source_unit = parent->hangar_unit.parent;
 		}
-		if (parent->status & UnitStatus::IsHallucination)
-		{
+		if (parent->status & UnitStatus::IsHallucination) {
 			bullet->hit_flags |= 2u;
 		}
 		bullet->next_bounce_unit = 0;
 
 		Unit* target_unit = parent->order_target.unit;
-		if (target_unit)
-		{
+		if (target_unit) {
 			bullet->sprite->elevation = target_unit->sprite->elevation + 1;
 			bullet->attack_target.unit = target_unit;
 			bullet->attack_target.pt.x = target_unit->sprite->position.x;
 			bullet->attack_target.pt.y = target_unit->sprite->position.y;
-		}
-		else
-		{
+		} else {
 			bullet->sprite->elevation = parent->sprite->elevation + 1;
 			bullet->attack_target.unit = 0;
 			bullet->attack_target.pt.x = parent->order_target.pt.x;
 			bullet->attack_target.pt.y = parent->order_target.pt.y;
 		}
 
-		switch (weapons_dat::behavior[weapon_id])
-		{
+		switch (weapons_dat::behavior[weapon_id]) {
 			case WeaponBehavior::Fly_DoNotFollowTarget:
 			case WeaponBehavior::Fly_FollowTarget:
 			{
-				if (target_unit)
-				{
-					if (parent)
-					{
+				if (target_unit) {
+					if (parent) {
 						helper::weapon_behavior_can_hit_target_check(target_unit, parent);
 					}
 				}
@@ -1272,12 +1194,10 @@ namespace hooks {
 			case WeaponBehavior::AppearOnTargetUnit:
 			case WeaponBehavior::AppearOnTargetSite:
 			{
-				if (!target_unit)
-				{
+				if (!target_unit) {
 					return 1;
 				}
-				if (!bullet->source_unit)
-				{
+				if (!bullet->source_unit) {
 					return 1;
 				}
 				helper::weapon_behavior_can_hit_target_check(target_unit, bullet->source_unit);
@@ -1294,8 +1214,7 @@ namespace hooks {
 			}
 			case WeaponBehavior::AttackAndSelfDestruct:
 			{
-				if (!bullet->source_unit)
-				{
+				if (!bullet->source_unit) {
 					return 1;
 				}
 				bullet->source_unit->status |= UnitStatus::IsSelfDestructing;
@@ -1305,8 +1224,7 @@ namespace hooks {
 			}
 			case WeaponBehavior::Bounce:
 			{
-				switch (weapon_id)
-				{
+				switch (weapon_id) {
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
 						const u32 dist = scbw::get_distance_fast(bullet->source_unit->position, bullet->attack_target.pt);
@@ -1328,10 +1246,8 @@ namespace hooks {
 						bullet->remaining_bounces = 3;
 					}
 				}
-				if (target_unit)
-				{
-					if (bullet->source_unit)
-					{
+				if (target_unit) {
+					if (bullet->source_unit) {
 						helper::weapon_behavior_can_hit_target_check(target_unit, bullet->source_unit);
 					}
 				}
@@ -1346,8 +1262,7 @@ namespace hooks {
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 
 				s16 finalOffset = parent->offset_index_3_by_3 + 1;
-				if (!g_attack_curve[finalOffset].x)
-				{
+				if (!g_attack_curve[finalOffset].x) {
 					finalOffset = 0;
 				}
 				parent->offset_index_3_by_3 = finalOffset;
@@ -1366,92 +1281,78 @@ namespace hooks {
 	}
 
 	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
-	void progress_bullet_frames() // 0048C3D0
-	{
-		Bullet* first_bullet_var = *first_bullet;
-		Sprite* bullet_sprite = nullptr;
-		s32 bulletBehavior = 0;
-		Bullet* nextBullet = *first_bullet;
-		while (nextBullet)
-		{
-			nextBullet = first_bullet_var->next;
-			*g_active_iscript_entity = (Unit*)first_bullet_var;
-			*g_active_iscript_bullet = first_bullet_var;
-			helper::set_thingy_visibility_flags((Thingy*)first_bullet_var);
-			bullet_sprite = first_bullet_var->sprite;
+	void progress_bullet_frames() { // 0048C3D0
+		Bullet* bullet = *first_bullet;
+		Bullet* next_bullet = *first_bullet;
+		while (next_bullet) {
+			next_bullet = bullet->next;
+			*g_active_iscript_entity = (Unit*)bullet;
+			*g_active_iscript_bullet = bullet;
+			helper::set_thingy_visibility_flags((Thingy*)bullet);
+			Sprite* bullet_sprite = bullet->sprite;
 			if (bullet_sprite)
 			{
 				helper::sprite_to_iscript_loop(bullet_sprite);
-				if (!first_bullet_var->sprite->images.head)
+				if (!bullet->sprite->images.head)
 				{
-					first_bullet_var->sprite = 0;
+					bullet->sprite = 0;
 				}
 			}
-			bulletBehavior = (u8)first_bullet_var->behavior_type_internal;
-			switch (bulletBehavior)
+			u32 bullet_behavior = (u8)bullet->behavior_type_internal;
+			switch (bullet_behavior)
 			{
 				case 0:
 				{
-					hooks::bullet_behavior_reassign(first_bullet_var);
+					hooks::bullet_behavior_reassign(bullet);
 				} break;
 				case 1:
 				{
-					helper::bullet_behavior_fly(first_bullet_var);
+					helper::bullet_behavior_fly(bullet);
 				} break;
 				case 2:
 				{
-					helper::bullet_behavior_follow(first_bullet_var);
+					helper::bullet_behavior_follow(bullet);
 				} break;
 				case 3:
 				{
-					helper::bullet_behavior_bounce(first_bullet_var);
+					helper::bullet_behavior_bounce(bullet);
 				} break;
 				case 4:
 				{
-					helper::bullet_behavior_persist(first_bullet_var);
+					helper::bullet_behavior_persist(bullet);
 				} break;
 				case 5:
 				{
-					helper::bullet_behavior_instant(first_bullet_var);
+					helper::bullet_behavior_instant(bullet);
 				} break;
 				case 6:
 				{
-					helper::bullet_behavior_area(first_bullet_var);
-				} break;
-				default:
-				{
+					helper::bullet_behavior_area(bullet);
 				} break;
 			}
-			first_bullet_var = nextBullet;
+			bullet = next_bullet;
 		}
 		*g_active_iscript_entity = 0;
 		*g_active_iscript_bullet = 0;
 	}
 
 	// Hooked to investigate firstFreeBullet nonsense - Pr0nogo
-	void bullet_behavior_reassign(Bullet* bullet) // 0048BD50
-	{
-		while (2) // xd
-		{
-			if (bullet->unknown_0x4E & 1)
-			{
+	void bullet_behavior_reassign(Bullet* bullet) { // 0048BD50
+		while (2) { // xd
+			if (bullet->unknown_0x4E & 1) {
 				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
 				Image* bulletOverlay = nullptr;
-				switch (weapons_dat::behavior[bullet->weapon_id])
-				{
+				switch (weapons_dat::behavior[bullet->weapon_id]) {
 					case WeaponBehavior::AppearOnTargetUnit:
 					case WeaponBehavior::AppearOnTargetSite:
 					case WeaponBehavior::AppearOnAttacker:
 					case WeaponBehavior::AttackAndSelfDestruct:
 					{
 						bullet->behavior_type_internal = WeaponBehavior::AppearOnAttacker;
-						if (bullet->attack_target.unit)
-						{
+						if (bullet->attack_target.unit) {
 							bullet->attack_target.pt.x = bullet->attack_target.unit->sprite->position.x;
 							bullet->attack_target.pt.y = bullet->attack_target.unit->sprite->position.y;
-						}
-						else
-						{
+						} else {
 							bullet->attack_target.unit = nullptr;
 						}
 						bullet->unknown_0x4E = 0;
@@ -1473,38 +1374,30 @@ namespace hooks {
 						helper::assign_weapon_data(bullet, 4);
 						Image* bulletOverlay = nullptr;
 						bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay)
-						{
-							do
-							{
+						if (bulletOverlay) {
+							do {
 								helper::play_image_iscript(bulletOverlay, 14);
 								bulletOverlay = bulletOverlay->link.next;
-							}
-							while (bulletOverlay);
+							} while (bulletOverlay);
 						}
 					} break;
 					case WeaponBehavior::AttackNearbyArea:
 					{
 						helper::assign_weapon_data(bullet, 6);
 						Image* bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay)
-						{
-							do
-							{
+						if (bulletOverlay) {
+							do {
 								helper::play_image_iscript(bulletOverlay, 2);
 								bulletOverlay = bulletOverlay->link.next;
-							}
-							while (bulletOverlay);
+							} while (bulletOverlay);
 						}
 					} break;
 					default:
 					{
 						helper::assign_weapon_data(bullet, 1);
 						Image* bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay)
-						{
-							do
-							{
+						if (bulletOverlay) {
+							do {
 								helper::play_image_iscript(bulletOverlay, 2);
 								bulletOverlay = bulletOverlay->link.next;
 							}
@@ -1513,8 +1406,7 @@ namespace hooks {
 					} break;
 				}
 
-				switch (bullet->behavior_type_internal)
-				{
+				switch (bullet->behavior_type_internal) {
 					case 0:
 					{
 						continue;

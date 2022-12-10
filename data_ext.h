@@ -332,6 +332,11 @@ struct TileExt {
 	u8 creep_owners;
 };
 
+struct BulletExt {
+	Point16 bullet_source;
+	u32 distance_traveled;
+};
+
 struct SpriteExt {
 	bool is_fow_sprite;
 	bool should_consume_corpse;
@@ -344,24 +349,22 @@ struct ImageExt {
 	u32 return_address;
 };
 
-extern UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
-extern TileExt tile_ext_array[256][256];
-extern SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
-extern ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
-
 void init_ext_variables();
 void update_ext_variables();
-
-TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y);
-TileExt* get_tile_ext_at_coords(u32 x, u32 y);
 
 UnitExt* get_unit_ext(Unit* unit);
 void reset_unit_ext(Unit* unit);
 
+TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y);
+TileExt* get_tile_ext_at_coords(u32 x, u32 y);
+
+BulletExt* get_bullet_ext(Bullet* bullet);
+void reset_bullet_ext(Bullet* bullet);
+
 SpriteExt* get_sprite_ext(Sprite* sprite);
-void reset_sprite_ext(Sprite* sprite);
+void reset_sprite_ext(Sprite* sprite); // TODO: call on new sprite creation!!!
 
 ImageExt* get_image_ext(Image* image);
-void reset_image_ext(Image* image);
+void reset_image_ext(Image* image); // TODO: call on new image creation!!!
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player);

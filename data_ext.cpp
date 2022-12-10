@@ -1,9 +1,10 @@
 #include "data_ext.h"
 
-UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
-TileExt tile_ext_array[256][256];
-SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
-ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
+static UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
+static TileExt tile_ext_array[256][256];
+static BulletExt bullet_ext_array[BULLET_ARRAY_LENGTH];
+static SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
+static ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
 
 void init_ext_variables() {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
@@ -67,9 +68,19 @@ void update_ext_variables() {
 		}
 	}
 
+	// Bullets
+	for (u32 i = 0; i < BULLET_ARRAY_LENGTH; ++i) {
+		reset_bullet_ext(&g_bullet_table[i]);
+	}
+
 	// Sprites
 	for (u32 i = 0; i < SPRITE_ARRAY_LENGTH; ++i) {
+		reset_sprite_ext(&g_sprite_table[i]);
+	}
 
+	// Images
+	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
+		reset_image_ext(&g_image_table[i]);
 	}
 }
 
@@ -97,6 +108,17 @@ TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y) {
 
 TileExt* get_tile_ext_at_coords(u32 x, u32 y) {
 	return &tile_ext_array[y / 32][x / 32];
+}
+
+BulletExt* get_bullet_ext(Bullet* bullet) {
+	u32 index = bullet - g_bullet_table;
+	assert(unit && index >= 0 && index < BULLET_ARRAY_LENGTH);
+	return &bullet_ext_array[index];
+}
+
+void reset_bullet_ext(Bullet* bullet) {
+	BulletExt* bullet_ext = get_bullet_ext(bullet);
+	*bullet_ext = {};
 }
 
 SpriteExt* get_sprite_ext(Sprite* sprite) {
