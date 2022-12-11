@@ -10,8 +10,8 @@ namespace hooks
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (unit->id != UnitId::None
 			&&	unit->can_make_unit(unit_id, *g_active_nation_id) == 1
-			&&	helper::has_money_can_make(unit, unit_id)
-			&&	unit->main_order_id != OrderId::Morph2)
+			&&	unit->main_order_id != OrderId::Morph2
+			&&	helper::has_money_can_make(unit, unit_id))
 			{
 				// start construction if successful
 				unit->order_computer(OrderId::Morph2);
