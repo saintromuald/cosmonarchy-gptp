@@ -239,6 +239,7 @@ namespace hooks
 				speed *= 1.2;
 			} break;
 			case UnitId::ProtossZealot:
+			case UnitId::ProtossSycophant:
 			case UnitId::ProtossManifold:
 			{
 				speed *= 1.25;
