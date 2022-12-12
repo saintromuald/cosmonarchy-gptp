@@ -267,6 +267,10 @@ namespace hooks {
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueRamessesLaunchPos, 2, false);
 					} break;
+					case WeaponId::PaladinCrusaderMissiles:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValuePaladinLaunchPos, 5, false);
+					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreLaunchPos, 1, false);
@@ -286,14 +290,6 @@ namespace hooks {
 					case WeaponId::CentaurSunchaserMissiles:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurLaunchPos, 4, false);
-					} break;
-					case WeaponId::PegasusRetractorBatteries:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusLaunchPos1, 2, false);
-					} break;
-					case WeaponId::PegasusLancetMissiles:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePegasusLaunchPos2, 4, true);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{

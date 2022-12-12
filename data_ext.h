@@ -107,8 +107,8 @@ enum ExtValueId
 	ValueCowardiceOverlay,
 	ValueHasCustomSprite,
 	ValueUnitResponseOrder,
-	ValuePegasusLaunchPos1,
-	ValuePegasusLaunchPos2,
+	ValuePaladinLaunchPos,
+	ValuePegasusLaunchPos2, // unused
 	ValueGoliathLaunchPos,
 	ValueSundogLaunchPos,
 	ValueEpigraphLaunchPos,
