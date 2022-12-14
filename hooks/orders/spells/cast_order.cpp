@@ -400,14 +400,10 @@ namespace hooks
 		*g_order_id_unit = order_1;
 		*g_order_id_obstructed = order_2;
 		*g_order_id_ground = order_3;
-		const char* error;
-		if (*g_network_table < 62u || *g_network_table == 62)
+		const char* error = "";
+		if (*g_network_table > 62)
 		{
-			error = "";
-		}
-		else
-		{
-			error = (char*)g_network_table + g_network_table[63];
+			error = (const char*)g_network_table + g_network_table[63];
 		}
 		helper::send_message_something(order_3, error);
 		helper::set_ingame_input_procs();
