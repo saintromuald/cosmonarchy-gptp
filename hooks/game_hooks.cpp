@@ -1440,7 +1440,7 @@ namespace hooks {
 			case UnitId::TerranTarasque:
 			{
 				// Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
@@ -1706,22 +1706,11 @@ namespace hooks {
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true, false)) {
 						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03), unit, 1, 0);
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
-					} else {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
-					}
-				}
-			} break;
-			case UnitId::TerranAmbassador:
-			{
-				// Ambassador - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true, false)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AmbassadorSignatorySalvo);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
@@ -1767,7 +1756,7 @@ namespace hooks {
 			case UnitId::ProtossOptecton:
 			{
 				// Optecton - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround, false, false, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
 					} else {
