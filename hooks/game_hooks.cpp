@@ -47,15 +47,6 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 		}
 		target_context->sprite->create_top_overlay(overlay, 0, 0, 0);
 	}
-
-	u32 dist = scbw::get_distance_fast(target->position, shaman->position);
-	if (dist <= 1 * 32) {
-		heal *= 2.5;
-	} else if (dist <= 2 * 32) {
-		heal *= 2;
-	} else if (dist <= 3 * 32) {
-		heal *= 1.5;
-	}
 	target->heal_hp(heal * 256, shaman);
 }
 
@@ -1375,6 +1366,7 @@ namespace hooks {
 					Point16 pos = unit->position;
 					s32 radius = 6 * 32;
 					scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 0);
+					// TODO: unit search
 					scbw::UnitFinder(
 						pos.x - radius,
 						pos.y - radius,
@@ -1448,7 +1440,7 @@ namespace hooks {
 			case UnitId::TerranTarasque:
 			{
 				// Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, Flags::Enemy, false, true, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
@@ -1458,10 +1450,11 @@ namespace hooks {
 			} break;
 			case UnitId::TerranAnticthon:
 			{
-				// Revive Status
+				// Revive status
 				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
 				u32 radius = 4 * 32;
 				if (!unit_ext->values[ValueReviveStarted]) {
+					// TODO: unit search
 					auto match = cosmonarchy_finder_match(unit, flags, {});
 					scbw::UnitFinder(
 						unit->get_x() - radius,
@@ -1543,6 +1536,7 @@ namespace hooks {
 			case UnitId::TerranSeraph:
 			{
 				// Observance - Seraph ability
+				// TODO: unit search
 				u32 radius = 6 * 32;
 				auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
 				bool attacked = false;
@@ -1570,6 +1564,7 @@ namespace hooks {
 			case UnitId::TerranAzazel:
 			{
 				// Tag nearby units for Sublime Shepherd
+				// TODO: unit search
 				scbw::UnitFinder(
 					unit->get_x() - 128,
 					unit->get_y() - 128,
@@ -1711,22 +1706,11 @@ namespace hooks {
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, Flags::Enemy, false, true, false)) {
 						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03), unit, 1, 0);
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
-					} else {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
-					}
-				}
-			} break;
-			case UnitId::TerranAmbassador:
-			{
-				// Ambassador - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, WeaponId::AmbassadorSignatorySalvo, 1, Flags::Enemy, false, true, false)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AmbassadorSignatorySalvo);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
@@ -1772,11 +1756,31 @@ namespace hooks {
 			case UnitId::ProtossOptecton:
 			{
 				// Optecton - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround, false, false, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
+					}
+				}
+			} break;
+			case UnitId::ProtossSycophant:
+			{
+				if (unit->shields) {
+					EntryArray unit_array = {};
+					unit_search_radial(&unit_array, unit->position, 3 * 32);
+					unit_search_add_units_from_connected_transport(&unit_array, unit);
+					unit_search_filter(&unit_array, unit, FilterAlly);
+					for (u32 i = 0; i < unit_array.count; ++i) {
+						Unit* target = unit_array.units[i];
+						// TODO: Filter for closest ally
+						if (target->shields + 1 < unit->shields
+						&&  target->shields != target->max_shields())
+						{
+							target->shields += 64;
+							unit->shields -= 64;
+							unit_ext->shield_regen_timer++;
+						}
 					}
 				}
 			} break;

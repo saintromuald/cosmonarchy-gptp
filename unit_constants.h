@@ -37,7 +37,7 @@ const s32 HallucinatingTimer = 3 * 24;
 const s32 ClericHealValue = 128; // 12 HP per second
 
 // Shaman
-const s32 ShamanHeal = 2;
+const s32 ShamanHeal = 4;
 
 // Madcap
 const s32 MadcapPassiveDecayTime = 0.5 * 24;

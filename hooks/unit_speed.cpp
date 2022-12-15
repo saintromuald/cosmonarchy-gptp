@@ -220,6 +220,7 @@ namespace hooks
 				speed *= 0.9;
 			} break;
 			case UnitId::TerranHarakan:
+			case UnitId::TerranCataphract:
 			case UnitId::ProtossIdol:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKonvilisk:
@@ -239,6 +240,7 @@ namespace hooks
 				speed *= 1.2;
 			} break;
 			case UnitId::ProtossZealot:
+			case UnitId::ProtossSycophant:
 			case UnitId::ProtossManifold:
 			{
 				speed *= 1.25;
