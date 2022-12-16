@@ -35,6 +35,7 @@ struct AiPlaceholder {
 struct AiLayouts {
 	u32 placeholders_count;
 	AiPlaceholder placeholders[PlaceholderLimit];
+	bool should_sort;
 };
 
 struct AiLayoutsTown {

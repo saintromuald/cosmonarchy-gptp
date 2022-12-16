@@ -592,7 +592,6 @@ namespace hooks {
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							new_bullet->position = bullet->position;
 							globals.add_multihit_empty_bullet(new_bullet, 1);
-
 							if (++fired == 2) {
 								break;
 							}

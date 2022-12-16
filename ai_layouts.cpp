@@ -59,11 +59,44 @@ void init_layouts() {
 	}
 }
 
+static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 townhall_index) {
+	switch (g_player_table[player].race) {
+		case RaceId::Terran: {
+			if (townhall_index && hooks::create_unit_id_allowed(UnitId::TerranTreasury, player, true)) {
+				placeholder->unit_id = UnitId::TerranTreasury;
+			} else {
+				placeholder->unit_id = UnitId::TerranCommandCenter;
+			}
+		} break;
+		case RaceId::Protoss: {
+			if (townhall_index && hooks::create_unit_id_allowed(UnitId::ProtossCrucible, player, true)
+				&& can_place_unit(UnitId::ProtossCrucible, placeholder->position, player)) {
+				placeholder->unit_id = UnitId::ProtossCrucible;
+			} else {
+				placeholder->unit_id = UnitId::ProtossNexus;
+			}
+		} break;
+		case RaceId::Zerg: {
+			placeholder->unit_id = UnitId::ZergHachirosk;
+		} break;
+	}
+
+	u32 old_priority = placeholder->priority;
+	if (townhall_index) {
+		placeholder->should_request = true;
+		placeholder->priority = 130;
+	} else {
+		placeholder->should_request = false;
+		placeholder->priority = 180;
+	}
+	return old_priority != placeholder->priority;
+}
+
 void update_layouts() {
-	// Update Layouts Town
-	for (u32 i = 0; i < AiTownLimit; ++i) {
-		AiTown* town = &g_ai_town_array[i];
-		AiLayoutsTown* layouts_town = &layouts_towns[i];
+	// Update Layouts Towns
+	for (u32 town_id = 0; town_id < AiTownLimit; ++town_id) {
+		AiTown* town = &g_ai_town_array[town_id];
+		AiLayoutsTown* layouts_town = &layouts_towns[town_id];
 		if (!town->inited) {
 			layouts_town->inited = false;
 			layouts_town->wants_no_resarea = false;
@@ -77,22 +110,18 @@ void update_layouts() {
 			AiLayouts* layouts = &player_layouts[town->player];
 			if (!layouts_town->wants_no_resarea) {
 				// Claim ownership of invincible placeholders
-				bool claimed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (!placeholder->resarea) {
 						placeholder->resarea = town->resarea;
-						claimed = true;
+						layouts->should_sort = true;
 					}
-				}
-				if (claimed) {
-					sort_layouts(layouts);
 				}
 			}
 
 			// Init placeholders
-			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-				AiPlaceholder* placeholder = &layouts->placeholders[j];
+			for (u32 placeholder_id = 0; placeholder_id < layouts->placeholders_count; ++placeholder_id) {
+				AiPlaceholder* placeholder = &layouts->placeholders[placeholder_id];
 				if ((!placeholder->town && placeholder->resarea == town->resarea) || (placeholder->town && placeholder->town == town)) {
 					placeholder->inited = false;
 					placeholder->requested = false;
@@ -102,7 +131,7 @@ void update_layouts() {
 			}
 
 			if (show_player_layouts[town->player]) {
-				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, i, town->resarea);
+				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, town_id, town->resarea);
 			}
 		}
 		if (layouts_town->inited) {
@@ -119,10 +148,37 @@ void update_layouts() {
 	}
 
 	// Update Layouts
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		AiLayouts* layouts = &player_layouts[i];
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		AiLayouts* layouts = &player_layouts[player];
+
+		// Update State
+		bool is_expanding = has_expanding_town(player);
+		u32 townhall_index = 0;
 		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 			AiPlaceholder* placeholder = &layouts->placeholders[j];
+
+			// Update town
+			if (placeholder->town) {
+				AiTown* town = placeholder->town;
+				if (!town->inited || town->player != player) {
+					placeholder->town = 0;
+				}
+			}
+
+			// Update guard
+			if (placeholder->guard_ai) {
+				placeholder->guard_ai->times_died = 0;
+				if (placeholder->guard_ai->parent) {
+					placeholder->color = graphics::BLUE;
+				}
+			}
+
+			// Update townhall markers
+			if (placeholder->is_townhall_marker) {
+				if (update_townhall_marker(placeholder, player, townhall_index++)) {
+					layouts->should_sort = true;
+				}
+			}
 
 			// Init if not already
 			if (placeholder->town && !placeholder->disabled) {
@@ -136,46 +192,42 @@ void update_layouts() {
 				placeholder->color = graphics::BLACK;
 			} else if (!placeholder->should_request) {
 				placeholder->color = graphics::BROWN;
+			} else if (is_expanding) {
+				placeholder->color = graphics::PURPLE;
 			} else {
 				placeholder->color = graphics::WHITE;
 			}
 		}
-	}
 
-	// Request Layouts
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		AiLayouts* layouts = &player_layouts[i];
-		bool is_expanding = has_expanding_town(i);
-		for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-			AiPlaceholder* placeholder = &layouts->placeholders[j];
-			AiTown* town = placeholder->town;
-			if (town) {
-				if (!town->inited || town->player != i) {
-					placeholder->town = 0;
-					continue;
-				}
-			} else {
-				continue;
-			}
-			if (placeholder->disabled) {
-				continue;
-			}
-			if (!placeholder->should_request) {
-				continue;
-			}
+		// Sort Layouts - if there've been any updates
+		if (layouts->should_sort) {
+			layouts->should_sort = false;
+			sort_layouts(layouts);
+		}
+
+		// Request Layouts
+		for (u32 placeholder_id = 0; placeholder_id < layouts->placeholders_count; ++placeholder_id) {
 			if (is_expanding) {
-				placeholder->color = graphics::PURPLE;
+				break;
+			}
+			AiPlaceholder* placeholder = &layouts->placeholders[placeholder_id];
+			if (placeholder->disabled || !placeholder->should_request) {
+				continue;
+			}
+			AiTown* town = placeholder->town;
+			if (!town) {
 				continue;
 			}
 			AiLayoutsTown* layouts_town = get_layouts_town(town);
 			u32 base_unit_id = find_unit_root_merge(placeholder->unit_id);
+
 			layouts_town->request_count[placeholder->unit_id] += 1;
 			if (can_build_placeholder(layouts, town, placeholder)) {
-				if (can_place_unit(base_unit_id, placeholder->position, i)) {
+				if (can_place_unit(base_unit_id, placeholder->position, player)) {
 					if (!placeholder->requested) {
 						placeholder->requested = true;
 						if (show_player_layouts[town->player]) {
-							scbw::printf("Player %u requested %s #%u at resarea %u", i + 1, Unit::get_name(placeholder->unit_id), j, placeholder->resarea);
+							scbw::printf("Player %u requested %s #%u at resarea %u", player + 1, Unit::get_name(placeholder->unit_id), placeholder_id, placeholder->resarea);
 						}
 					}
 
@@ -200,22 +252,10 @@ void update_layouts() {
 					break;
 				}
 			}
-			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-				AiPlaceholder* placeholder = &layouts->placeholders[j];
-				if (placeholder->guard_ai) {
-					placeholder->guard_ai->times_died = 0;
-					if (placeholder->guard_ai->parent) {
-						placeholder->color = graphics::BLUE;
-					}
-				}
-			}
 		}
-	}
 
-	// Draw Layouts
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		if (show_player_layouts[i]) {
-			AiLayouts* layouts = &player_layouts[i];
+		// Draw layouts
+		if (show_player_layouts[player]) {
 			for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 				AiPlaceholder* placeholder = &layouts->placeholders[j];
 				if (placeholder->is_townhall_marker) {
@@ -245,7 +285,7 @@ void update_layouts() {
 					pos.x = unit_box.left + 5;
 					pos.y = unit_box.top + 5;
 
-					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder->unit_id).data, i + 1);
+					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder->unit_id).data, player + 1);
 					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 
@@ -283,7 +323,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 			continue;
 		}
 		// See if it's an optimal expansion
-		if (placeholder->should_request && units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
+		if (placeholder->should_request && !placeholder->is_townhall_marker && units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 			u32 distance = scbw::get_distance_fast(main_town->position, g_resource_areas->areas[placeholder->resarea].position);
 			if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
 				best_priority = placeholder->priority;
@@ -416,12 +456,13 @@ u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 
 void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, u32 unit_id) {
 	if (unit_id == UnitId::TownCenterMarker) {
-		placeholder->should_request = false;
 		placeholder->is_townhall_marker = true;
-		add_placeholder_by_unit_id(layouts, placeholder, UnitId::TerranCommandCenter);
-		add_placeholder_by_unit_id(layouts, placeholder, UnitId::ProtossNexus);
-		add_placeholder_by_unit_id(layouts, placeholder, UnitId::ZergHachirosk);
-		return;
+		placeholder->was_preplaced = false;
+
+		// Initial values, will be updated later
+		// Priority needs to be the same for correct sorting
+		placeholder->should_request = true;
+		placeholder->priority = 180;
 	}
 
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
@@ -431,8 +472,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 
 	for (u32 i = 0; i < layouts->placeholders_count; ++i) {
 		AiPlaceholder* other = &layouts->placeholders[i];
-		if (unit_id == layouts->placeholders[i].unit_id &&
-			placeholder->position.x == other->position.x && placeholder->position.y == other->position.y) {
+		if (unit_id == layouts->placeholders[i].unit_id && placeholder->position == other->position) {
 			if (other->priority < placeholder->priority) {
 				other->priority = placeholder->priority;
 			}
@@ -627,7 +667,7 @@ void request_placeholder(AiTown* town, AiLayoutsTown* layouts_town, AiPlaceholde
 	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
 		// Requesting the base unit currently handled in town_add_spending_request
 		/*
-		u32 merge = find_unit_merge(placeholder->unit_id);
+		u32 merge = find_unit_merge(unit_id);
 		if (merge != UnitId::None) {
 			AiPlaceholder copy = *placeholder;
 			copy.unit_id = merge;

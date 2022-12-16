@@ -677,7 +677,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->is_townhall_marker) {
+					if (placeholder->unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
 					if (placeholder->unit_id == UnitId::None || !unit_ids.set[placeholder->unit_id]) {
@@ -703,7 +703,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->is_townhall_marker) {
+					if (placeholder->unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
 					if (!unit_ids.set[placeholder->unit_id]) {
@@ -733,7 +733,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->is_townhall_marker) {
+					if (placeholder->unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
