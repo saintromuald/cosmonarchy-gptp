@@ -890,7 +890,7 @@ namespace hooks {
 						{
 							if (current_button->requirement_var == UnitId::TerranFutureStation)
 							{
-								if (!has_addon && !is_training)
+								if (!has_addon || !is_training)
 								{
 									current_button_state = Button_State::Enabled;
 								}
@@ -1944,6 +1944,20 @@ namespace hooks {
 									}
 									else if (current_button->icon_id == IconId::FusionCutterHarvest
 									&&		 scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) > 0) // Madrigal - Shrike Payload
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranDurendal:
+								{
+									if (current_button->icon_id == IconId::TerranShipWeapons) // Durendal - Forward March
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranCataphract:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Cataphract - Forward March
 									{
 										current_button_state = Button_State::Enabled;
 									}
