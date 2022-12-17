@@ -122,12 +122,11 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranMason:
-				case UnitId::TerranComsatStation:
+				case UnitId::TerranQuarry:
 				{
 					return true;
 				} break;
 				case UnitId::TerranMissileSilo:
-				case UnitId::TerranQuarry:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -172,12 +171,11 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranComsatStation:
+				case UnitId::TerranQuarry:
 				{
 					return true;
 				} break;
 				case UnitId::TerranMissileSilo:
-				case UnitId::TerranQuarry:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -473,7 +471,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::ProtossBulwark:
+				case UnitId::ProtossScribe:
 				case UnitId::ProtossEnvoy:
 				case UnitId::ProtossWitness:
 				{
@@ -1525,7 +1523,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranComsatStation:
+					case UnitId::TerranQuarry:
 					{
 						if (has_addon || is_training)
 						{
@@ -1534,7 +1532,6 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranMissileSilo:
-					case UnitId::TerranQuarry:
 					{
 						if (has_addon || is_training)
 						{
@@ -1575,7 +1572,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranComsatStation:
+					case UnitId::TerranQuarry:
 					{
 						if (has_addon || is_training)
 						{
@@ -1584,7 +1581,6 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranMissileSilo:
-					case UnitId::TerranQuarry:
 					{
 						if (has_addon || is_training)
 						{
@@ -2076,7 +2072,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ProtossBulwark:
+					case UnitId::ProtossScribe:
 					case UnitId::ProtossEnvoy:
 					case UnitId::ProtossWitness:
 					{

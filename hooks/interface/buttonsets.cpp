@@ -1140,7 +1140,7 @@ namespace hooks {
 							} break;
 							case UnitId::ProtossEmbassy:
 							{
-								if (current_button->requirement_var == UnitId::ProtossBulwark
+								if (current_button->requirement_var == UnitId::ProtossScribe
 								||  current_button->requirement_var == UnitId::ProtossEnvoy
 								||  current_button->requirement_var == UnitId::ProtossWitness)
 								{
