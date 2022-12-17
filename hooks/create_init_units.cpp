@@ -3,6 +3,7 @@
 #include <SCBW/UnitFinder.h>
 #include "ai_layouts.h"
 #include "threshold.h"
+#include "hooks/game_hooks.h"
 
 u32 get_racial_townhall(u32 raceId)
 {
@@ -345,6 +346,8 @@ namespace hooks {
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				unit->remove_timer = 0;
+
+				hooks::init_unit(unit);
 			}
 			return unit;
 		}

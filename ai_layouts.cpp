@@ -84,7 +84,7 @@ static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 t
 	u32 old_priority = placeholder->priority;
 	if (townhall_index) {
 		placeholder->should_request = true;
-		placeholder->priority = 130;
+		placeholder->priority = 170; // this should be lower (probably 130 or 140), but it needs to be high due to what I assume is some aise bug with spending requests -Veeq7
 	} else {
 		placeholder->should_request = false;
 		placeholder->priority = 180;
@@ -463,6 +463,31 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 		// Priority needs to be the same for correct sorting
 		placeholder->should_request = true;
 		placeholder->priority = 180;
+		placeholder->yield_score = 0;
+
+		u32 resarea = scbw::get_closest_resarea(placeholder->position);
+		EntryArray found = {};
+		unit_search_radial(&found, placeholder->position, 12 * 32);
+		for (u32 i = 0; i < found.count; ++i) {
+			Unit* unit = found.units[i];
+			if ((unit->id < UnitId::ResourceMineralField || unit->id > UnitId::ResourceMineralFieldType3) &&
+				unit->id != UnitId::ResourceVespeneGeyser && unit->id != UnitId::ResourceVespeneRidge) {
+				continue;
+			}
+			if (unit->building.resource.resource_group != resarea) {
+				continue;
+			}
+
+			u32 score = unit->building.resource.resource_yield * 512;
+			if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::ResourceVespeneRidge) {
+				score *= 3;
+			}
+			u32 distance = scbw::get_distance_fast(placeholder->position, unit->position) / 32;
+			if (distance) {
+				score /= distance;
+			}
+			placeholder->yield_score += score;
+		}
 	}
 
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
@@ -526,6 +551,11 @@ static s32 compare_base_layout(const void* a, const void* b) {
 
 	s32 priority_diff = pb->priority - pa->priority;
 	if (priority_diff) return priority_diff;
+
+	if (pa->is_townhall_marker && pb->is_townhall_marker) {
+		s32 yield_diff = pb->yield_score - pa->yield_score;
+		if (yield_diff) return yield_diff;
+	}
 
 	s32 class_diff = get_unit_class(pb->unit_id) - get_unit_class(pa->unit_id);
 	if (class_diff) return class_diff;

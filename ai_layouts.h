@@ -26,6 +26,7 @@ struct AiPlaceholder {
 	b8 inited;
 	b8 requested;
 	u8 placement_timeout;
+	u32 yield_score;
 	AiTown* town;
 	GuardAi* guard_ai;
 	graphics::ColorId color;
