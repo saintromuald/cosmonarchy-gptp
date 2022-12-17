@@ -384,6 +384,7 @@ namespace hooks {
 			
 			// Init Extended Features
 			reset_search_index();
+			update_search_index();
 			init_player_colors();
 			init_trigger_system();
 			init_layouts();
@@ -656,9 +657,15 @@ namespace hooks {
 		return true;
 	}
 
-	// Fix facing angles for specific units
+	// Init the unit if not already
 	void init_unit(Unit* unit) {
+		if (!(unit->status & UnitStatus::Completed)) {
+			return;
+		}
 		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueUnitInit] == unit->id + 1) {
+			return;
+		}
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
@@ -714,6 +721,8 @@ namespace hooks {
 	}
 
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
+		init_unit(unit);
+
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
 			Unit* transport = unit->connected_unit;
@@ -734,12 +743,6 @@ namespace hooks {
 		}
 
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit->status & UnitStatus::Completed) {
-			if (unit_ext->values[ValueUnitInit] != unit->id + 1) {
-				init_unit(unit);
-			}
-		}
-
 		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
 			UnitExt* addon_ext = get_unit_ext(unit->building.addon);
 			addon_ext->units[UnitAddonParent] = unit;
