@@ -245,16 +245,12 @@ b32 parse_comment_condition(TriggerAction* action) {
 					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
 					u32 scouting_time_quota = parser_get_time_ticks(&parser);
 
-					area.box.w += area.box.x;
-					area.box.h += area.box.y;
 					EntryArray units = {};
 					if (scouting_player) {
 						seen_unit_search_rect(&units, scouting_player - 1, area.box);
 					} else {
 						unit_search_rect(&units, area.box);
 					}
-					area.box.w -= area.box.x;
-					area.box.h -= area.box.y;
 
 					u32 count = 0;
 					for (u32 i = 0; i < units.count; ++i) {
@@ -290,8 +286,8 @@ b32 parse_comment_condition(TriggerAction* action) {
 					center.x = *g_move_to_x + 320;
 					center.y = *g_move_to_y + 200;
 
-					if (center.x >= area.box.x && center.y <= area.box.x + area.box.w &&
-						center.x >= area.box.y && center.y <= area.box.y + area.box.h) {
+					if (center.x >= area.box.left && center.x <= area.box.right &&
+						center.y >= area.box.top  && center.y <= area.box.bottom) {
 						ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
 						// TODO: should we check area flags?
 						if (token_eqi(&min_visibility, "unexplored")) {
@@ -826,13 +822,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 enable = parser_get_s32(&parser);
 
-			area.box.w += area.box.x;
-			area.box.h += area.box.y;
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
-			area.box.w -= area.box.x;
-			area.box.h -= area.box.y;
-
 			for (u32 i = 0; i < units.count; ++i) {
 				Unit* unit = units.units[i];
 				if (unit->player >= PlayerLimit || !players.set[unit->player]) {

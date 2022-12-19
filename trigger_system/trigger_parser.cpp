@@ -23,7 +23,12 @@ static bool is_word_char(char c) {
 	return isalnum(c) || c == '.' || c == '_' || c == '*';
 }
 
+static void parser_clear(Parser* parser) {
+	memset(&parser->token, 0, sizeof(parser->token));
+}
+
 static bool parser_skip_whitespace(Parser* parser) {
+	parser_clear(parser);
 	while (*parser->at && is_any_space(*parser->at)) {
 		if (is_newline(*parser->at)) {
 			return false;
@@ -34,6 +39,7 @@ static bool parser_skip_whitespace(Parser* parser) {
 }
 
 static bool parser_skip_non_word_chars(Parser* parser) {
+	parser_clear(parser);
 	while (*parser->at && !is_word_char(*parser->at)) {
 		if (is_newline(*parser->at)) {
 			return false;
@@ -48,20 +54,19 @@ char* parser_marker(Parser* parser) {
 }
 
 void parser_unwind(Parser* parser, char* marker) {
-	memset(&parser->token, 0, sizeof(parser->token));
+	parser_clear(parser);
 	parser->at = (char*)marker;
 }
 
 bool parser_get_char(Parser* parser, char c) {
 	if (*parser->at == c) {
-		parser->at++;
+		++parser->at;
 		return true;
 	}
 	return false;
 }
 
 Token parser_get_word(Parser* parser) {
-	memset(&parser->token, 0, sizeof(parser->token));
 	if (!parser_skip_non_word_chars(parser)) {
 		return {};
 	}
@@ -98,23 +103,16 @@ Token parser_get_string(Parser* parser) {
 	}
 
 	bool is_string = false;
-	if (*parser->at == '"') {
-		++parser->at;
+	if (parser_get_char(parser, '"')) {
 		while (*parser->at && *parser->at != '"' && !is_newline(*parser->at)) {
 			if (parser->token.size < MaxToken) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
 			++parser->at;
 		}
-		if (*parser->at == '"') {
-			++parser->at;
-		}
+		parser_get_char(parser, '"');
 	} else {
-		while (*parser->at) {
-			if (!is_word_char(*parser->at)) {
-				break;
-			}
-
+		while (is_word_char(*parser->at)) {
 			if (parser->token.size < MaxToken) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
@@ -282,7 +280,7 @@ Area parser_get_area(Parser* parser) {
 			}
 		}
 
-		area.box.top  = parser_get_s32(parser);
+		area.box.top = parser_get_s32(parser);
 		{
 			u32 relative_op = parser_get_relative_op(parser);
 			u32 h = parser_get_s32(parser);
@@ -308,8 +306,6 @@ Area parser_get_area(Parser* parser) {
 	if (parser_eq(parser, "*")) {
 		area.box = g_location_table[63].dimensions;
 		area.flags = ~g_location_table[63].flags;
-		area.box.w -= area.box.x;
-		area.box.h -= area.box.y;
 		return area;
 	}
 	for (u32 i = 0; i < 256; ++i) {
@@ -317,8 +313,6 @@ Area parser_get_area(Parser* parser) {
 		if (name && name[0] && strcmp(name, string.data) == 0) {
 			area.box = g_location_table[i].dimensions;
 			area.flags = ~g_location_table[i].flags;
-			area.box.w -= area.box.x;
-			area.box.h -= area.box.y;
 			return area;
 		}
 	}
@@ -328,8 +322,6 @@ Area parser_get_area(Parser* parser) {
 	if (i >= 0 && i < 256) {
 		area.box = g_location_table[i].dimensions;
 		area.flags = ~g_location_table[i].flags;
-		area.box.w -= area.box.x;
-		area.box.h -= area.box.y;
 		return area;
 	}
 
@@ -337,8 +329,8 @@ Area parser_get_area(Parser* parser) {
 }
 
 bool check_area(Area area, Point16 position, bool air) {
-	if (position.x >= area.box.x && position.x <= area.box.x + area.box.w &&
-		position.y >= area.box.y && position.y <= area.box.y + area.box.h) {
+	if (position.x >= area.box.left && position.x <= area.box.right &&
+		position.y >= area.box.top  && position.y <= area.box.bottom) {
 		ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
 		u32 height = tile->ground_height / 2;
 		if (height == 0) {
@@ -372,28 +364,19 @@ Point16 parser_get_position(Parser* parser) {
 	char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
-		Box32 box = g_location_table[63].dimensions;
-		box.w -= box.x;
-		box.h -= box.y;
-		return box_center(box);
+		return box_center(g_location_table[63].dimensions);
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
 		if (name && name[0] && strcmp(name, string.data) == 0) {
-			Box32 box = g_location_table[i].dimensions;
-			box.w -= box.x;
-			box.h -= box.y;
-			return box_center(box);
+			return box_center(g_location_table[i].dimensions);
 		}
 	}
 	parser_unwind(parser, marker); // string wasn't valid, let's unwind and try an int
 
 	s32 i = parser_get_s32(parser);
 	if (i >= 0 && i < 256) {
-		Box32 box = g_location_table[i].dimensions;
-		box.w -= box.x;
-		box.h -= box.y;
-		return box_center(box);
+		return box_center(g_location_table[i].dimensions);
 	}
 
 	return {};
@@ -424,9 +407,7 @@ char parser_get_separator(Parser* parser) {
 	}
 
 	if (is_separator(*parser->at)) {
-		char separator = *parser->at;
-		++parser->at;
-		return separator;
+		return *parser->at++;
 	}
 	return 0;
 }
@@ -729,15 +710,9 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 
 	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
 		char* marker = parser_marker(parser);
-		char op = *parser->at;
-		++parser->at;
+		char op = *parser->at++;
 
-		bool equals = false;
-		if (*parser->at == '=') {
-			equals = true;
-			++parser->at;
-		}
-
+		bool equals = parser_get_char(parser, '=');
 		switch (op) {
 			case '>': return equals ? QuotaType_GreaterOrEqual : QuotaType_Greater; break;
 			case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less; break;
@@ -806,8 +781,8 @@ RecolorSet parser_get_recolor_set(Parser* parser) {
 
 Point16 box_center(Box32 box) {
 	Point16 point = {};
-	point.x = box.x + box.w / 2;
-	point.y = box.y + box.h / 2;
+	point.x = box.left + (box.right  - box.left) / 2;
+	point.y = box.top  + (box.bottom - box.top)  / 2;
 	return point;
 }
 
