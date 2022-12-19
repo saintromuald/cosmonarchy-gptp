@@ -5,15 +5,14 @@
 #define MaxToken 256
 struct Token {
 	u32 size;
-	char data[MaxToken];
+	char data[MaxToken + 1];
 };
 
 #define ParserStackSize 64
 struct Parser {
-	bool inited;
+	bool parsed_first_command;
 	char* at;
 	Token token;
-	bool number_parsed_correctly;
 
 	s8 stack_index;
 	char* stack[ParserStackSize];
@@ -53,16 +52,15 @@ enum QuotaType {
 	QuotaType_Count
 };
 
-// Parser stack allows for unwinding parser chunks like words, string, numbers. Currently doesn't work on bitsets, since they are recursively parsed
-void parser_push(Parser* parser);
-void parser_pop(Parser* parser);
+char* parser_marker(Parser* parser);
+void parser_unwind(Parser* parser, char* marker);
 
 Token parser_get_word(Parser* parser);
 bool parser_get_command(Parser* parser);
 Token parser_get_string(Parser* parser);
 
-s32 parser_get_s32(Parser* parser, u32 radix = 10);
-f32 parser_get_f32(Parser* parser);
+s32 parser_get_s32(Parser* parser, s32 default_value = 0);
+f32 parser_get_f32(Parser* parser, f32 default_value = 0);
 f32 parser_get_time_seconds(Parser* parser);
 u32 parser_get_time_ticks(Parser* parser);
 s32 parser_get_var_value(Parser* parser, bool is_timer);
@@ -75,6 +73,7 @@ u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);
 
 bool parser_get_negation(Parser* parser);
 char parser_get_separator(Parser* parser);
+char parser_get_relative_op(Parser* parser);
 
 u32 parser_get_player(Parser* parser, bool allow_neutral = false); // 1 - 8
 PlayerBitset parser_get_player_bitset(Parser* parser);

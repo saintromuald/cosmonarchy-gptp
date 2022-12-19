@@ -19,6 +19,10 @@ static u32 is_newline(char c) {
 	return 0;
 }
 
+static bool is_word_char(char c) {
+	return isalnum(c) || c == '.' || c == '_' || c == '*';
+}
+
 static bool parser_skip_whitespace(Parser* parser) {
 	while (*parser->at && is_any_space(*parser->at)) {
 		if (is_newline(*parser->at)) {
@@ -29,33 +33,41 @@ static bool parser_skip_whitespace(Parser* parser) {
 	return true;
 }
 
-void parser_push(Parser* parser) {
-	memset(&parser->token, 0, sizeof(parser->token));
-	parser->stack[parser->stack_index] = parser->at;
-	parser->stack_index += 1;
-	parser->stack_index %= ParserStackSize;
+static bool parser_skip_non_word_chars(Parser* parser) {
+	while (*parser->at && !is_word_char(*parser->at)) {
+		if (is_newline(*parser->at)) {
+			return false;
+		}
+		++parser->at;
+	}
+	return true;
 }
 
-void parser_pop(Parser* parser) {
+char* parser_marker(Parser* parser) {
+	return parser->at;
+}
+
+void parser_unwind(Parser* parser, char* marker) {
 	memset(&parser->token, 0, sizeof(parser->token));
-	s32 new_index = parser->stack_index - 1;
-	if (new_index < 0) {
-		new_index = ParserStackSize - 1;
+	parser->at = (char*)marker;
+}
+
+bool parser_get_char(Parser* parser, char c) {
+	if (*parser->at == c) {
+		parser->at++;
+		return true;
 	}
-	if (parser->stack[new_index]) {
-		parser->at = parser->stack[new_index];
-		parser->stack_index = new_index;
-	}
+	return false;
 }
 
 Token parser_get_word(Parser* parser) {
-	parser_push(parser);
-	if (!parser_skip_whitespace(parser)) {
+	memset(&parser->token, 0, sizeof(parser->token));
+	if (!parser_skip_non_word_chars(parser)) {
 		return {};
 	}
 
-	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
-		if (parser->token.size < MaxToken - 1) {
+	while (is_word_char(*parser->at)) {
+		if (parser->token.size < MaxToken) {
 			parser->token.data[parser->token.size++] = *parser->at;
 		}
 		++parser->at;
@@ -65,8 +77,8 @@ Token parser_get_word(Parser* parser) {
 }
 
 bool parser_get_command(Parser* parser) {
-	if (!parser->inited) {
-		parser->inited = true;
+	if (!parser->parsed_first_command) {
+		parser->parsed_first_command = true;
 	} else {
 		while (*parser->at && !is_newline(*parser->at)) {
 			++parser->at;
@@ -81,7 +93,6 @@ bool parser_get_command(Parser* parser) {
 }
 
 Token parser_get_string(Parser* parser) {
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return parser->token;
 	}
@@ -90,7 +101,7 @@ Token parser_get_string(Parser* parser) {
 	if (*parser->at == '"') {
 		++parser->at;
 		while (*parser->at && *parser->at != '"' && !is_newline(*parser->at)) {
-			if (parser->token.size < MaxToken - 1) {
+			if (parser->token.size < MaxToken) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
 			++parser->at;
@@ -100,11 +111,11 @@ Token parser_get_string(Parser* parser) {
 		}
 	} else {
 		while (*parser->at) {
-			if (is_any_space(*parser->at) || is_separator(*parser->at)) {
+			if (!is_word_char(*parser->at)) {
 				break;
 			}
 
-			if (parser->token.size < MaxToken - 1) {
+			if (parser->token.size < MaxToken) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
 			++parser->at;
@@ -114,7 +125,7 @@ Token parser_get_string(Parser* parser) {
 	return parser->token;
 }
 
-s32 parser_get_s32(Parser* parser, u32 radix) {
+s32 parser_get_s32(Parser* parser, s32 default_value) {
 	parser_get_word(parser);
 	if (parser_eqi(parser, "true")) {
 		return 1;
@@ -124,17 +135,21 @@ s32 parser_get_s32(Parser* parser, u32 radix) {
 	}
 
 	char* end = 0;
-	s32 value = strtol(parser->token.data, &end, radix);
-	parser->number_parsed_correctly = end != parser->token.data;
+	s32 value = strtol(parser->token.data, &end, 10);
+	if (end != parser->token.data + parser->token.size) {
+		return default_value;
+	}
 	return value;
 }
 
-f32 parser_get_f32(Parser* parser) {
+f32 parser_get_f32(Parser* parser, f32 default_value) {
 	parser_get_word(parser);
 
 	char* end = 0;
 	f32 value = strtof(parser->token.data, &end);
-	parser->number_parsed_correctly = end != parser->token.data;
+	if (end != parser->token.data + parser->token.size) {
+		return default_value;
+	}
 	return value;
 }
 
@@ -148,7 +163,6 @@ enum TimeType {
 };
 
 f32 parser_get_time_seconds(Parser* parser) {
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return false;
 	}
@@ -159,10 +173,10 @@ f32 parser_get_time_seconds(Parser* parser) {
 	u32 time_type = TimeType_Seconds;
 
 	u32 buffer_index = 0;
-	char buffer[MaxToken] = {};
+	char buffer[MaxToken + 1] = {};
 	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
 		if (isdigit(*parser->at) || *parser->at == '.') {
-			if (buffer_index < MaxToken - 1) {
+			if (buffer_index < MaxToken) {
 				buffer[buffer_index++] = *parser->at;
 			}
 		} else if (*parser->at == 'h') {
@@ -173,7 +187,7 @@ f32 parser_get_time_seconds(Parser* parser) {
 				time_type = TimeType_Miliseconds;
 				add_to_total = true;
 
-				if (parser->token.size < MaxToken - 1) {
+				if (parser->token.size < MaxToken) {
 					parser->token.data[parser->token.size++] = *parser->at;
 				}
 				++parser->at;
@@ -214,7 +228,7 @@ f32 parser_get_time_seconds(Parser* parser) {
 			time = 0;
 		}
 
-		if (parser->token.size < MaxToken - 1) {
+		if (parser->token.size < MaxToken) {
 			parser->token.data[parser->token.size++] = *parser->at;
 		}
 		++parser->at;
@@ -233,47 +247,63 @@ u32 parser_get_time_ticks(Parser* parser) {
 }
 
 s32 parser_get_var_value(Parser* parser, bool is_timer) {
+	char* marker = parser_marker(parser);
 	parser_get_word(parser);
 	if (parser_eq(parser, "random")) {
 		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		return scbw::rand_between(min_value, max_value);
 	}
-	parser_pop(parser);
+	parser_unwind(parser, marker);
 	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 }
 
 Area parser_get_area(Parser* parser) {
 	Area area = {};
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return area;
 	}
 
-	if (*parser->at == '(') {
-		++parser->at;
-
-		while (*parser->at && *parser->at != ')') {
-			if (is_newline(*parser->at)) {
-				break;
+	if (parser_get_char(parser, '(')) {
+		area.box.left = parser_get_s32(parser);
+		{
+			u32 relative_op = parser_get_relative_op(parser);
+			u32 w = parser_get_s32(parser);
+			if (relative_op == '+') {
+				area.box.right = area.box.left + w;
+			} else if (relative_op == '-') {
+				area.box.right = area.box.left;
+				area.box.left -= w;
+			} else if (relative_op == '~') {
+				area.box.left  = area.box.left - w / 2;
+				area.box.right = area.box.left + w;
+			} else {
+				area.box.right = w;
 			}
-
-			if (parser->token.size < MaxToken - 1) {
-				parser->token.data[parser->token.size++] = *parser->at;
-			}
-			++parser->at;
 		}
 
-		if (*parser->at == ')') {
-			++parser->at;
+		area.box.top  = parser_get_s32(parser);
+		{
+			u32 relative_op = parser_get_relative_op(parser);
+			u32 h = parser_get_s32(parser);
+			if (relative_op == '+') {
+				area.box.bottom = area.box.top + h;
+			} else if (relative_op == '-') {
+				area.box.bottom = area.box.top;
+				area.box.top   -= h;
+			} else if (relative_op == '~') {
+				area.box.top    = area.box.top - h / 2;
+				area.box.bottom = area.box.top + h;
+			} else {
+				area.box.bottom = h;
+			}
 		}
 
-		area.box = {};
-		sscanf(parser->token.data, "%u %u %u %u", &area.box.x, &area.box.y, &area.box.w, &area.box.h);
-		area.flags = 0;
+		parser_get_char(parser, ')');
 		return area;
 	}
 
+	char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		area.box = g_location_table[63].dimensions;
@@ -292,10 +322,10 @@ Area parser_get_area(Parser* parser) {
 			return area;
 		}
 	}
-	parser_pop(parser); // string wasn't valid, let's unwind and try an int
+	parser_unwind(parser, marker); // string wasn't valid, let's unwind and try an int
 
-	s32 i = parser_get_s32(parser);
-	if (parser->number_parsed_correctly && i >= 0 && i < 256) {
+	s32 i = parser_get_s32(parser, -1);
+	if (i >= 0 && i < 256) {
 		area.box = g_location_table[i].dimensions;
 		area.flags = ~g_location_table[i].flags;
 		area.box.w -= area.box.x;
@@ -327,34 +357,19 @@ bool check_area(Area area, Point16 position, bool air) {
 }
 
 Point16 parser_get_position(Parser* parser) {
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return {};
 	}
 
-	if (*parser->at == '(') {
-		++parser->at;
-
-		while (*parser->at && *parser->at != ')') {
-			if (is_newline(*parser->at)) {
-				break;
-			}
-
-			if (parser->token.size < MaxToken - 1) {
-				parser->token.data[parser->token.size++] = *parser->at;
-			}
-			++parser->at;
-		}
-
-		if (*parser->at == ')') {
-			++parser->at;
-		}
-
+	if (parser_get_char(parser, '(')) {
 		Point16 pos = {};
-		sscanf(parser->token.data, "%u %u", &pos.x, &pos.y);
+		pos.x = parser_get_s32(parser);
+		pos.y = parser_get_s32(parser);
+		parser_get_char(parser, ')');
 		return pos;
 	}
 
+	char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		Box32 box = g_location_table[63].dimensions;
@@ -371,7 +386,7 @@ Point16 parser_get_position(Parser* parser) {
 			return box_center(box);
 		}
 	}
-	parser_pop(parser); // string wasn't valid, let's unwind and try an int
+	parser_unwind(parser, marker); // string wasn't valid, let's unwind and try an int
 
 	s32 i = parser_get_s32(parser);
 	if (i >= 0 && i < 256) {
@@ -397,20 +412,13 @@ u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count) {
 }
 
 bool parser_get_negation(Parser* parser) {
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return false;
 	}
-
-	if (*parser->at == '!') {
-		++parser->at;
-		return true;
-	}
-	return false;
+	return parser_get_char(parser, '!');
 }
 
 char parser_get_separator(Parser* parser) {
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return 0;
 	}
@@ -423,9 +431,23 @@ char parser_get_separator(Parser* parser) {
 	return 0;
 }
 
+char parser_get_relative_op(Parser* parser) {
+	if (!parser_skip_whitespace(parser)) {
+		return 0;
+	}
+
+	switch (*parser->at) {
+		case '-':
+		case '+':
+		case '~':
+			return *parser->at++;
+	}
+	return 0;
+}
+
 u32 parser_get_player(Parser* parser, bool allow_neutral) {
-	u32 player = parser_get_s32(parser);
-	if (parser->number_parsed_correctly) {
+	s32 player = parser_get_s32(parser, -1);
+	if (player >= 0) {
 		if (player <= 8 || (allow_neutral && player == 12)) {
 			return player;
 		}
@@ -462,6 +484,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	PlayerBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
+		char* marker = parser_marker(parser);
 		s32 value = parser_get_s32(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -498,7 +521,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
 		} else {
-			parser_pop(parser);
+			parser_unwind(parser, marker);
 			s32 player = parser_get_player(parser);
 			if (player) {
 				player -= 1;
@@ -517,7 +540,6 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			current_bitset = {};
 		} else {
 			bitset = player_bitset_combine(bitset, current_bitset);
-			parser_pop(parser);
 			break;
 		}
 	}
@@ -531,7 +553,7 @@ Token get_short_unit_name(u32 unit_id) {
 	bool after_space = false;
 	for (const char* c = name; *c; ++c) {
 		if (after_space) {
-			if (token.size < MaxToken - 1) {
+			if (token.size < MaxToken) {
 				token.data[token.size++] = *c;
 			} else {
 				break;
@@ -561,19 +583,15 @@ static bool str_equals_lazy(const char* a, const char* b) {
 }
 
 u32 parser_get_unit_id(Parser* parser) {
+	char* marker = parser_marker(parser);
 	Token token = parser_get_string(parser);
 	for (u32 i = 0; i < UnitId::Count; ++i) {
 		if (str_equals_lazy(token.data, get_short_unit_name(i).data)) {
 			return i;
 		}
 	}
-	parser_pop(parser);
-
-	s32 unit_id = parser_get_s32(parser);
-	if (parser->number_parsed_correctly) {
-		return unit_id;
-	}
-	return UnitId::None;
+	parser_unwind(parser, marker);
+	return parser_get_s32(parser, UnitId::None);
 }
 
 static UnitIdBitset unit_id_bitset_combine(UnitIdBitset a, UnitIdBitset b) {
@@ -602,6 +620,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	UnitIdBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
+		char* marker = parser_marker(parser);
 		parser_get_string(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -679,7 +698,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
 		} else {
-			parser_pop(parser);
+			parser_unwind(parser, marker);
 			s32 unit_id = parser_get_unit_id(parser);
 			if (unit_id != UnitId::None) {
 				for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -697,7 +716,6 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			current_bitset = {};
 		} else {
 			bitset = unit_id_bitset_combine(bitset, current_bitset);
-			parser_pop(parser);
 			break;
 		}
 	}
@@ -705,12 +723,12 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 }
 
 QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
-	parser_push(parser);
 	if (!parser_skip_whitespace(parser)) {
 		return default_type;
 	}
 
 	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
+		char* marker = parser_marker(parser);
 		char op = *parser->at;
 		++parser->at;
 
@@ -727,7 +745,7 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 			case '!': return QuotaType_NotEqual; break;
 			case '*': {
 				// We pop since we don't want next parser_get to consume next argument
-				parser_pop(parser);
+				parser_unwind(parser, marker);
 				return QuotaType_Anything;
 			} break;
 		}
@@ -756,36 +774,18 @@ bool parser_has_recolor(Parser* parser) {
 }
 
 Recolor parser_get_recolor(Parser* parser) {
-	parser_push(parser);
-	if (!parser_skip_whitespace(parser)) {
-		return {};
-	}
-
 	Recolor recolor = default_recolor();
 	if (!parser_skip_whitespace(parser)) {
 		return recolor;
 	}
 
-	if (*parser->at == '(') {
-		++parser->at;
-
-		while (*parser->at && *parser->at != ')') {
-			if (is_newline(*parser->at)) {
-				break;
-			}
-
-			if (parser->token.size < MaxToken - 1) {
-				parser->token.data[parser->token.size++] = *parser->at;
-			}
-			++parser->at;
-		}
-
-		if (*parser->at == ')') {
-			++parser->at;
-		}
-
-		Box32 box = {};
-		sscanf(parser->token.data, "%f %f %f %f %f", &recolor.r, &recolor.g, &recolor.b, &recolor.gamma, &recolor.saturation);
+	if (parser_get_char(parser, '(')) {
+		recolor.r          = parser_get_f32(parser, recolor.r);
+		recolor.g          = parser_get_f32(parser, recolor.g);
+		recolor.b          = parser_get_f32(parser, recolor.b);
+		recolor.gamma      = parser_get_f32(parser, recolor.gamma);
+		recolor.saturation = parser_get_f32(parser, recolor.saturation);
+		parser_get_char(parser, ')');
 	}
 	return recolor;
 }
