@@ -49,6 +49,47 @@ static bool parser_skip_non_word_chars(Parser* parser) {
 	return true;
 }
 
+static bool parser_get_char(Parser* parser, char c) {
+	if (*parser->at == c) {
+		++parser->at;
+		return true;
+	}
+	return false;
+}
+
+
+static bool parser_get_negation(Parser* parser) {
+	if (!parser_skip_whitespace(parser)) {
+		return false;
+	}
+	return parser_get_char(parser, '!');
+}
+
+static char parser_get_separator(Parser* parser) {
+	if (!parser_skip_whitespace(parser)) {
+		return 0;
+	}
+
+	if (is_separator(*parser->at)) {
+		return *parser->at++;
+	}
+	return 0;
+}
+
+static char parser_get_relative_op(Parser* parser) {
+	if (!parser_skip_whitespace(parser)) {
+		return 0;
+	}
+
+	switch (*parser->at) {
+		case '-':
+		case '+':
+		case '~':
+			return *parser->at++;
+	}
+	return 0;
+}
+
 char* parser_marker(Parser* parser) {
 	return parser->at;
 }
@@ -56,14 +97,6 @@ char* parser_marker(Parser* parser) {
 void parser_unwind(Parser* parser, char* marker) {
 	parser_clear(parser);
 	parser->at = marker;
-}
-
-bool parser_get_char(Parser* parser, char c) {
-	if (*parser->at == c) {
-		++parser->at;
-		return true;
-	}
-	return false;
 }
 
 Token parser_get_word(Parser* parser) {
@@ -256,7 +289,7 @@ s32 parser_get_var_value(Parser* parser, bool is_timer) {
 	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 }
 
-Area parser_get_area(Parser* parser) {
+Area parser_get_area(Parser* parser, Area default_value) {
 	Area area = {};
 	if (!parser_skip_whitespace(parser)) {
 		return area;
@@ -325,7 +358,7 @@ Area parser_get_area(Parser* parser) {
 		return area;
 	}
 
-	return {};
+	return default_value;
 }
 
 bool check_area(Area area, Point16 position, bool air) {
@@ -348,7 +381,7 @@ bool check_area(Area area, Point16 position, bool air) {
 	return false;
 }
 
-Point16 parser_get_position(Parser* parser) {
+Point16 parser_get_position(Parser* parser, Point16 default_value) {
 	if (!parser_skip_whitespace(parser)) {
 		return {};
 	}
@@ -379,10 +412,10 @@ Point16 parser_get_position(Parser* parser) {
 		return box_center(g_location_table[i].dimensions);
 	}
 
-	return {};
+	return default_value;
 }
 
-u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count) {
+s32 parser_get_enum(Parser* parser, const char** enum_names, u32 count, s32 default_value) {
 	Token token = parser_get_string(parser);
 
 	for (u32 i = 0; i < count; ++i) {
@@ -391,39 +424,7 @@ u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count) {
 		}
 	}
 
-	return 0;
-}
-
-bool parser_get_negation(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
-		return false;
-	}
-	return parser_get_char(parser, '!');
-}
-
-char parser_get_separator(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
-		return 0;
-	}
-
-	if (is_separator(*parser->at)) {
-		return *parser->at++;
-	}
-	return 0;
-}
-
-char parser_get_relative_op(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
-		return 0;
-	}
-
-	switch (*parser->at) {
-		case '-':
-		case '+':
-		case '~':
-			return *parser->at++;
-	}
-	return 0;
+	return default_value;
 }
 
 u32 parser_get_player(Parser* parser, bool allow_neutral) {

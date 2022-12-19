@@ -691,28 +691,26 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 priority = parser_get_s32(&parser);
 
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players.set[i]) {
-					continue;
-				}
-				AiLayouts* layouts = &player_layouts[i];
-				bool changed = false;
-				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->unit_id == UnitId::TownCenterMarker) {
+			if (priority) {
+				for (u32 i = 0; i < PlayerLimit; ++i) {
+					if (!players.set[i]) {
 						continue;
 					}
-					if (!unit_ids.set[placeholder->unit_id]) {
-						continue;
+					AiLayouts* layouts = &player_layouts[i];
+					for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+						AiPlaceholder* placeholder = &layouts->placeholders[j];
+						if (placeholder->unit_id == UnitId::TownCenterMarker) {
+							continue;
+						}
+						if (!unit_ids.set[placeholder->unit_id]) {
+							continue;
+						}
+						if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+							continue;
+						}
+						placeholder->priority = CLAMP(placeholder->priority + priority, 0, 255);
+						layouts->should_sort = true;
 					}
-					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
-						continue;
-					}
-					placeholder->priority = CLAMP(placeholder->priority + priority, 0, 255);
-					changed = true;
-				}
-				if (changed) {
-					sort_layouts(layouts);
 				}
 			}
 		} else if (parser_eq(&parser, "layouts_priority_set")) {
@@ -721,12 +719,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			s32 priority = parser_get_s32(&parser);
 
+			u8 new_priority = CLAMP(priority, 0, 255);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (!players.set[i]) {
 					continue;
 				}
 				AiLayouts* layouts = &player_layouts[i];
-				bool changed = false;
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
@@ -738,11 +736,39 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
-					placeholder->priority = CLAMP(priority, 0, 255);
-					changed = true;
+					if (placeholder->priority != new_priority) {
+						placeholder->priority = new_priority;
+						layouts->should_sort = true;
+					}
 				}
-				if (changed) {
-					sort_layouts(layouts);
+			}
+		} else if (parser_eq(&parser, "layouts_assign")) {
+			Area area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			Point16 resarea_position = parser_get_position(&parser, box_center(area.box));
+
+			u32 resarea = scbw::get_closest_resarea(resarea_position);
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (!players.set[i]) {
+					continue;
+				}
+				AiLayouts* layouts = &player_layouts[i];
+				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
+					AiPlaceholder* placeholder = &layouts->placeholders[j];
+					if (placeholder->unit_id == UnitId::TownCenterMarker) {
+						continue;
+					}
+					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
+						continue;
+					}
+					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+						continue;
+					}
+					if (placeholder->resarea != resarea) {
+						placeholder->resarea = resarea;
+						layouts->should_sort = true;
+					}
 				}
 			}
 		} else if (parser_eq(&parser, "create_town")) {

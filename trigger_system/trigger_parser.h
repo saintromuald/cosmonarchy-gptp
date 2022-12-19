@@ -65,15 +65,11 @@ f32 parser_get_time_seconds(Parser* parser);
 u32 parser_get_time_ticks(Parser* parser);
 s32 parser_get_var_value(Parser* parser, bool is_timer);
 
-Area parser_get_area(Parser* parser);
+Area parser_get_area(Parser* parser, Area default_value = {});
 bool check_area(Area area, Point16 position, bool air);
-Point16 parser_get_position(Parser* parser);
+Point16 parser_get_position(Parser* parser, Point16 default_value = {});
 
-u32 parser_get_enum(Parser* parser, const char** enum_names, u32 count);
-
-bool parser_get_negation(Parser* parser);
-char parser_get_separator(Parser* parser);
-char parser_get_relative_op(Parser* parser);
+s32 parser_get_enum(Parser* parser, const char** enum_names, u32 count, s32 default_value = 0);
 
 u32 parser_get_player(Parser* parser, bool allow_neutral = false); // 1 - 8
 PlayerBitset parser_get_player_bitset(Parser* parser);
