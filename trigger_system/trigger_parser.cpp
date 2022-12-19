@@ -55,7 +55,7 @@ char* parser_marker(Parser* parser) {
 
 void parser_unwind(Parser* parser, char* marker) {
 	parser_clear(parser);
-	parser->at = (char*)marker;
+	parser->at = marker;
 }
 
 bool parser_get_char(Parser* parser, char c) {
@@ -112,7 +112,7 @@ Token parser_get_string(Parser* parser) {
 		}
 		parser_get_char(parser, '"');
 	} else {
-		while (is_word_char(*parser->at)) {
+		while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
 			if (parser->token.size < MaxToken) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
