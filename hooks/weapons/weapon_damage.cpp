@@ -171,7 +171,7 @@ namespace hooks
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
-						armor_total += 512;
+						armor_total += 2;
 						shield_overlay = true;
 					}
 				}

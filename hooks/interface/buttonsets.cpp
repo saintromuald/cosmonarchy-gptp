@@ -73,6 +73,7 @@ namespace hooks {
 		u8 count_eggs  = 0;
 		u8 count_hatches = 0;
 		u8 count_zergs = 0;
+		u8 count_mason_sources = 0;
 		u8 count_buildings = 0;
 		u8 count_attacking_buildings = 0;
 		u8 count_lifted_buildings = 0;
@@ -110,6 +111,10 @@ namespace hooks {
 
 				if (scbw::unit_id_is_zerg_production(selected->id)) {
 					count_hatches++;
+				}
+
+				if (selected->id == UnitId::TerranCommandCenter || selected->id == UnitId::TerranQuarry) {
+					count_mason_sources++;
 				}
 
 				if (units_dat::group_flags[selected->id].is_zerg) {
@@ -164,6 +169,8 @@ namespace hooks {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower;
 			} else if (count_hatches == *g_client_selection_count) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHachirosk;
+			} else if (count_mason_sources == *g_client_selection_count) {
+				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_MixedMasonTraining;
 			} else if (count_lifted_buildings) {
 				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
@@ -1140,7 +1147,7 @@ namespace hooks {
 							} break;
 							case UnitId::ProtossEmbassy:
 							{
-								if (current_button->requirement_var == UnitId::ProtossBulwark
+								if (current_button->requirement_var == UnitId::ProtossScribe
 								||  current_button->requirement_var == UnitId::ProtossEnvoy
 								||  current_button->requirement_var == UnitId::ProtossWitness)
 								{

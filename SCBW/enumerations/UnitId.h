@@ -545,5 +545,7 @@ namespace UnitId
 		Buttons_OcsalLarvaSwarm								= 356,
 		Buttons_OcsalLarvaAssault							= 357,
 		Buttons_OcsalLarvaControl							= 358,
+
+		Buttons_MixedMasonTraining							= 361,
 	};
 }

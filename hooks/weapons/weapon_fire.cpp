@@ -745,13 +745,13 @@ namespace hooks {
 						// Claymore - Kelvin Munitions
 						// pierce targets
 						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
 						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 
 						// slow pierced targets
-						UnitExt* collisionTargetExt = get_unit_ext(collision_target);
-						if (!collisionTargetExt->values[ValueKelvinMunitionsSlow]) {
-							collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
+						UnitExt* collision_target_ext = get_unit_ext(collision_target);
+						if (!collision_target_ext->values[ValueKelvinMunitionsSlow]) {
+							collision_target_ext->values[ValueKelvinMunitionsSlow] = 1;
 						}
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
