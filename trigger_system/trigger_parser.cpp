@@ -263,7 +263,9 @@ Area parser_get_area(Parser* parser) {
 	}
 
 	if (parser_get_char(parser, '(')) {
+		area.flags = ~0;
 		area.box.left = parser_get_s32(parser);
+		area.box.top  = parser_get_s32(parser);
 		{
 			u32 relative_op = parser_get_relative_op(parser);
 			u32 w = parser_get_s32(parser);
@@ -279,8 +281,6 @@ Area parser_get_area(Parser* parser) {
 				area.box.right = w;
 			}
 		}
-
-		area.box.top = parser_get_s32(parser);
 		{
 			u32 relative_op = parser_get_relative_op(parser);
 			u32 h = parser_get_s32(parser);
