@@ -80,18 +80,19 @@ void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_coold
 }
 
 bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown) {
-	scbw::decloak_proc(attacker);
-
-	bool fired = false;
 	std::unordered_set<Unit*> units_fired = {};
 	UnitExt* attacker_ext = get_unit_ext(attacker);
 	if (!ignore_main
 		&& attacker->order_target.unit
 		&& attacker->main_order_id != OrderId::Follow
 		&& attacker->main_order_id != OrderId::Patrol
+		&& scbw::get_distance_fast(attacker->position, attacker->order_target.unit->position) <= weapons_dat::max_range[weapon_id] // Not accurate to normal weapon range calcs
 		&& attacker->can_attack_target(attacker->order_target.unit)) {
-		units_fired.insert(attacker->order_target.unit);
-		launch_missile(attacker, attacker->order_target.unit, weapon_id);
+		auto filter = cosmonarchy_finder_match(attacker, flags, {});
+		if (filter(attacker->order_target.unit)) {
+			units_fired.insert(attacker->order_target.unit);
+			launch_missile(attacker, attacker->order_target.unit, weapon_id);
+		}
 	}
 
 	Unit* old = attacker->order_target.unit;
@@ -114,6 +115,7 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 				{
 					return false;
 				}
+				scbw::decloak_proc(attacker);
 				return true;
 			});
 		if ((units_fired.size() >= max_targets && max_targets > 0) || !new_target) {
@@ -135,7 +137,11 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		units_fired.insert(new_target);
 	}
 	attacker->order_target.unit = old;
-	return units_fired.size();
+	if (units_fired.size()) {
+		scbw::decloak_proc(attacker);
+		return true;
+	}
+	return false;
 }
 
 namespace
