@@ -48,20 +48,29 @@ void init_trigger_system() {
 	init_trigger_events();
 }
 
-static void replace_unit_sprite(Unit* unit, u32 sprite_id) {
-	if (unit->sprite && unit->sprite->id != sprite_id) {
-		Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
-		if (new_sprite) {
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->values[ValueHasCustomSprite] = true;
-
-			unit->sprite->free();
-			unit->sprite = new_sprite;
-			for (Image* image = new_sprite->images.head; image; image = image->link.next) {
-				helper::set_image_direction(image, unit->current_direction_1);
-			}
+static u32 unit_get_desired_sprite_id(Unit* unit) {
+	bool has_replacement = false;
+	for (u32 i = 0; i < sprite_replacements_count; ++i) {
+		SpriteReplacement* sprite_replacement = &sprite_replacements[i];
+		if (unit->player > PlayerLimit || !sprite_replacement->players.set[unit->player]) {
+			continue;
+		}
+		if (unit->id >= UnitId::Count || !sprite_replacement->unit_ids.set[unit->id]) {
+			continue;
+		}
+		return sprite_replacement->sprite_id;
+	}
+	
+	if (false /* instead of false write your event check here*/) {
+		switch (unit->id) {
+			case UnitId::TerranMadcap:	return SpriteId::TerranMadcap;		// write your unit/sprite ids here, and please keep the formatting as is, because it reads better, and the remove those comments
+			case UnitId::TerranApostle:	return SpriteId::TerranApostle;
 		}
 	}
+
+	u32 flingy_id = units_dat::graphic[unit->id];
+	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
+	return sprite_id;
 }
 
 void update_trigger_system(bool in_game) {
@@ -90,25 +99,17 @@ void update_trigger_system(bool in_game) {
 		update_trigger_vars();
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-			UnitExt* unit_ext = get_unit_ext(unit);
-			bool has_replacement = false;
-			for (u32 i = 0; i < sprite_replacements_count; ++i) {
-				SpriteReplacement* sprite_replacement = &sprite_replacements[i];
-				if (unit->player > PlayerLimit || !sprite_replacement->players.set[unit->player]) {
-					continue;
+			u32 sprite_id = unit_get_desired_sprite_id(unit);
+			if (unit->sprite && unit->sprite->id != sprite_id) {
+				Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
+				if (new_sprite) {
+					// TODO: we should find a way of transfering overlays
+					unit->sprite->free();
+					unit->sprite = new_sprite;
+					for (Image* image = new_sprite->images.head; image; image = image->link.next) {
+						helper::set_image_direction(image, unit->current_direction_1);
+					}
 				}
-				if (unit->id >= UnitId::Count || !sprite_replacement->unit_ids.set[unit->id]) {
-					continue;
-				}
-				replace_unit_sprite(unit, sprite_replacement->sprite_id);
-				has_replacement = true;
-				break;
-			}
-			if (!has_replacement && unit_ext->values[ValueHasCustomSprite]) {
-				unit_ext->values[ValueHasCustomSprite] = false;
-				u32 flingy_id = units_dat::graphic[unit->id];
-				u32 sprite_id = flingy_dat::sprite_id[flingy_id];
-				replace_unit_sprite(unit, sprite_id);
 			}
 		}
 	}

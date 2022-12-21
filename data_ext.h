@@ -105,7 +105,6 @@ enum ExtValueId
 	ValueSentinelLaunchPos,
 	ValueWardenLaunchPos,
 	ValueCowardiceOverlay,
-	ValueHasCustomSprite,
 	ValueUnitResponseOrder,
 	ValuePaladinLaunchPos,
 	ValuePegasusLaunchPos2, // unused
