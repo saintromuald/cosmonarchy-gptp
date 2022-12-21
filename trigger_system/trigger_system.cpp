@@ -139,10 +139,13 @@ void update_trigger_system(bool in_game) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit_ext->values[ValueCustomSprite] = sprite_id + 1;
 
-					bool overlay = false;
+					bool overlay = true;
 					for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 						if (image == unit->sprite->main_graphic) {
-							overlay = true;
+							overlay = false;
+							continue;
+						}
+						if (image->palette_type == PaletteType::RLE_SHADOW) {
 							continue;
 						}
 						Image* new_image = 0;
@@ -155,9 +158,13 @@ void update_trigger_system(bool in_game) {
 							new_image->play_iscript_animation((IscriptAnimation::Enum)image->animation);
 						}
 					}
-					if (unit->sprite->main_graphic && new_sprite->main_graphic) {
-						new_sprite->main_graphic->play_iscript_animation((IscriptAnimation::Enum)unit->sprite->main_graphic->animation);
-						helper::set_image_direction(new_sprite->main_graphic, unit->sprite->main_graphic->direction);
+					if (new_sprite->main_graphic) {
+						if (unit->sprite->main_graphic) {
+							new_sprite->main_graphic->play_iscript_animation((IscriptAnimation::Enum)unit->sprite->main_graphic->animation);
+							helper::set_image_direction(new_sprite->main_graphic, unit->sprite->main_graphic->direction);
+						} else {
+							helper::set_image_direction(new_sprite->main_graphic, unit->current_direction_1);
+						}
 					}
 
 					unit->sprite->free();
