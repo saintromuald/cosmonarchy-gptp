@@ -65,16 +65,18 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 	if (scbw::can_celebrate()) {
 		// Christmas
 		if (scbw::get_local_month() == 12) {
-			switch (unit->id)
-			{
-				case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
-				case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
-				case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
-				case UnitId::TerranCommandCenter:		return SpriteId::Christmas_CommandCenter;
-				case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
-				case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
-				case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
-				case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
+			if (unit->status & UnitStatus::Completed) {
+				switch (unit->id)
+				{
+					case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
+					case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
+					case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
+					case UnitId::TerranCommandCenter:		return SpriteId::Christmas_CommandCenter;
+					case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
+					case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
+					case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
+					case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
+				}
 			}
 		}
 	}

@@ -2532,6 +2532,7 @@ namespace hooks {
 					case UnitId::TerranMaverick:
 					case UnitId::TerranHarakan:
 					case UnitId::ProtossZealot:
+					case UnitId::ZergEgg:
 					{
 						u32 image_id = ImageId::SantaHatSmall17;
 						if (!unit->get_overlay(image_id)) {
@@ -2548,7 +2549,6 @@ namespace hooks {
 					case UnitId::ProtossScribe:
 					case UnitId::ZergDroleth:
 					case UnitId::ZergLarva:
-					case UnitId::ZergEgg:
 					case UnitId::ZergZethrokor:
 					case UnitId::ZergVorvrokor:
 					case UnitId::ZergGeszithalor:
