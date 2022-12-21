@@ -12,6 +12,7 @@
 #include "ai_layouts.h"
 #include "player_color.h"
 #include "threshold.h"
+#include <ctime>
 
 bool trigger_game_paused;
 bool trigger_system_init;
@@ -60,11 +61,28 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		}
 		return sprite_replacement->sprite_id;
 	}
-	
-	if (false /* instead of false write your event check here*/) {
-		switch (unit->id) {
-			case UnitId::TerranMadcap:	return SpriteId::TerranMadcap;		// write your unit/sprite ids here, and please keep the formatting as is, because it reads better, and the remove those comments
-			case UnitId::TerranApostle:	return SpriteId::TerranApostle;
+
+	bool can_celebrate = true;
+	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id) {
+		u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
+		if (flags & VespeneDeaths_DisableCelebrations) {
+			can_celebrate = false;
+		}
+	}
+	if (can_celebrate) {
+		time_t now = time(0);
+		tm* ltm = localtime(&now);
+
+		// Christmas
+		if (ltm->tm_mon == 11) {
+			switch (unit->id)
+			{
+				case UnitId::TerranCommandCenter:	return SpriteId::Christmas_CommandCenter;
+				case UnitId::ProtossNexus:			return SpriteId::Christmas_Nexus;
+				case UnitId::ZergHachirosk:			return SpriteId::Christmas_Hachirosk;
+				case UnitId::ZergCaphrolosk:		return SpriteId::Christmas_Caphrolosk;
+				case UnitId::ZergGathtelosk:		return SpriteId::Christmas_Gathtelosk;
+			}
 		}
 	}
 
@@ -103,7 +121,7 @@ void update_trigger_system(bool in_game) {
 			if (unit->sprite && unit->sprite->id != sprite_id) {
 				Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
 				if (new_sprite) {
-					// TODO: we should find a way of transfering overlays
+					// TODO: we should find a way of transferring overlays
 					unit->sprite->free();
 					unit->sprite = new_sprite;
 					for (Image* image = new_sprite->images.head; image; image = image->link.next) {
