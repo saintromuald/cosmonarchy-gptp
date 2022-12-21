@@ -60,6 +60,7 @@ namespace hooks {
 		if (resource->id >= UnitId::ResourceMineralField && resource->id <= UnitId::ResourceMineralFieldType3) {
 			chunk_image_id = ImageId::MineralChunkType1;
 			if (scbw::can_celebrate()) {
+				// Christmas
 				if (scbw::get_local_month() == 12) {
 					chunk_image_id = ImageId::Christmas_MineralChunkType1;
 				}
@@ -79,8 +80,8 @@ namespace hooks {
 
 		if (!no_chunk_image) {
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
-			if (resource_amount < get_harvest_amount(resource)) {
-				chunk_image_id += 1;	// Use depleted resource image
+			if (resource_amount <= 2) {
+				chunk_image_id += 1; // Use depleted resource image
 			}
 			if (resource_amount > 0) {
 				if (worker->resource_type & ResourceType::Either) {

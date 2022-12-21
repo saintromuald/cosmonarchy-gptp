@@ -1,5 +1,6 @@
 #include "trigger_system.h"
 #include <limits.h>
+#include <time.h>
 
 #include "trigger_parser.h"
 #include "trigger_sound.h"
@@ -12,7 +13,8 @@
 #include "ai_layouts.h"
 #include "player_color.h"
 #include "threshold.h"
-#include <ctime>
+
+#include "hooks/harvest.h"
 
 bool trigger_game_paused;
 bool trigger_system_init;
@@ -49,8 +51,24 @@ void init_trigger_system() {
 	init_trigger_events();
 }
 
+static bool unit_can_change_sprite(Unit* unit) {
+	if (!unit->sprite) {
+		return false;
+	}
+	u32 unit_sprite_id = unit->sprite->id;
+	UnitExt* unit_ext = get_unit_ext(unit);
+	if (unit_ext->values[ValueCustomSprite] == unit_sprite_id + 1) {
+		return true;
+	}
+	u32 flingy_id = units_dat::graphic[unit->id];
+	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
+	if (unit_sprite_id == sprite_id) {
+		return true;
+	}
+	return false;
+}
+
 static u32 unit_get_desired_sprite_id(Unit* unit) {
-	bool has_replacement = false;
 	for (u32 i = 0; i < sprite_replacements_count; ++i) {
 		SpriteReplacement* sprite_replacement = &sprite_replacements[i];
 		if (unit->player > PlayerLimit || !sprite_replacement->players.set[unit->player]) {
@@ -65,8 +83,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 	if (scbw::can_celebrate()) {
 		// Christmas
 		if (scbw::get_local_month() == 12) {
-			switch (unit->id)
-			{
+			switch (unit->id) {
 				case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
 				case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
 				case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
@@ -110,15 +127,24 @@ void update_trigger_system(bool in_game) {
 		update_trigger_vars();
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (!unit_can_change_sprite(unit)) {
+				continue;
+			}
 			u32 sprite_id = unit_get_desired_sprite_id(unit);
 			if (unit->sprite && unit->sprite->id != sprite_id) {
 				Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
 				if (new_sprite) {
-					// TODO: we should find a way of transferring overlays
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->values[ValueCustomSprite] = sprite_id + 1;
+					// Ideally we would transfer overlays, but maybe instead we can replace the main image only
+					// Ideally we would preserve iscript state, but that's probably not possible in BW
 					unit->sprite->free();
 					unit->sprite = new_sprite;
 					for (Image* image = new_sprite->images.head; image; image = image->link.next) {
 						helper::set_image_direction(image, unit->current_direction_1);
+					}
+					if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) {
+						hooks::update_mineral_field_image(unit);
 					}
 				}
 			}

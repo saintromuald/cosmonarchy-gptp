@@ -298,7 +298,7 @@ void Sprite::play_for_overlay(u32 imageId, u8 anim)
 	{
 		if (image->id == imageId)
 		{
-			image->play_iscript_animation(IscriptAnimation::Death);
+			image->play_iscript_animation((IscriptAnimation::Enum)anim);
 			return;
 		}
 	}
