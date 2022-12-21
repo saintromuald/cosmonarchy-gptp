@@ -136,13 +136,30 @@ void update_trigger_system(bool in_game) {
 				if (new_sprite) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit_ext->values[ValueCustomSprite] = sprite_id + 1;
-					// Ideally we would transfer overlays, but maybe instead we can replace the main image only
-					// Ideally we would preserve iscript state, but that's probably not possible in BW
+
+					bool overlay = false;
+					for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+						if (image == unit->sprite->main_graphic) {
+							overlay = true;
+							continue;
+						}
+						Image* new_image = 0;
+						if (overlay) {
+							new_image = new_sprite->create_overlay(image->id, image->horizontal_offset, image->vertical_offset, image->direction);
+						} else {
+							new_image = new_sprite->create_underlay(image->id, image->horizontal_offset, image->vertical_offset, image->direction);
+						}
+						if (image) {
+							new_image->play_iscript_animation((IscriptAnimation::Enum)image->animation);
+						}
+					}
+					if (unit->sprite->main_graphic && new_sprite->main_graphic) {
+						new_sprite->main_graphic->play_iscript_animation((IscriptAnimation::Enum)unit->sprite->main_graphic->animation);
+						helper::set_image_direction(new_sprite->main_graphic, unit->sprite->main_graphic->direction);
+					}
+
 					unit->sprite->free();
 					unit->sprite = new_sprite;
-					for (Image* image = new_sprite->images.head; image; image = image->link.next) {
-						helper::set_image_direction(image, unit->current_direction_1);
-					}
 					if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) {
 						hooks::update_mineral_field_image(unit);
 					}
