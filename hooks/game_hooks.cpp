@@ -38,6 +38,7 @@
 #include "harvest.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include <ctime>
+#include "trigger_system/trigger_system.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -2536,18 +2537,47 @@ namespace hooks {
 				tm* ltm = localtime(&now);
 				if (ltm->tm_mon == 11) {
 					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-						&& !(units_dat::base_property[unit->id] & UnitProperty::ResourceContainer))
+					&&  !(units_dat::base_property[unit->id] & UnitProperty::ResourceContainer))
 					{
-						u32 image_id = ImageId::SantaHatSmall17 + scbw::get_overlay_offset(unit->id);
-						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
-							image_id -= 4;
-						}
-						Unit* unit_final = unit;
-						if (unit->subunit) {
-							unit_final = unit->subunit;
-						}
-						if (!unit_final->get_overlay(image_id)) {
-							unit_final->sprite->create_top_overlay(image_id, 0, (units_dat::unit_bounds[unit->id].top / 2 * -1));
+						if (!unit_ext->values[ValueHasCustomSprite])
+						{
+							switch (unit->id)
+							{
+								case UnitId::TerranCommandCenter:
+								{
+								//	replace_unit_sprite(unit, SpriteId::Christmas_CommandCenter);
+								} break;
+								case UnitId::ProtossNexus:
+								{
+								//	replace_unit_sprite(unit, SpriteId::Christmas_Nexus);
+								} break;
+								case UnitId::ZergHachirosk:
+								{
+								//	replace_unit_sprite(unit, SpriteId::Christmas_Hatchery);
+								} break;
+								case UnitId::ZergCaphrolosk:
+								{
+								//	replace_unit_sprite(unit, SpriteId::Christmas_Lair);
+								} break;
+								case UnitId::ZergGathtelosk:
+								{
+								//	replace_unit_sprite(unit, SpriteId::Christmas_Hive);
+								} break;
+								default:
+								{
+									u32 image_id = ImageId::SantaHatSmall17 + scbw::get_overlay_offset(unit->id);
+									if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
+										image_id -= 4;
+									}
+									Unit* unit_final = unit;
+									if (unit->subunit) {
+										unit_final = unit->subunit;
+									}
+									if (!unit_final->get_overlay(image_id)) {
+										unit_final->sprite->create_top_overlay(image_id, 0, (units_dat::unit_bounds[unit->id].top / 2 * -1));
+									}
+								}
+							}
 						}
 					}
 				}
