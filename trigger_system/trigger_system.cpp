@@ -14,8 +14,6 @@
 #include "player_color.h"
 #include "threshold.h"
 
-#include "hooks/harvest.h"
-
 bool trigger_game_paused;
 bool trigger_system_init;
 bool trigger_system_in_game;
@@ -169,9 +167,6 @@ void update_trigger_system(bool in_game) {
 
 					unit->sprite->free();
 					unit->sprite = new_sprite;
-					if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) {
-						hooks::update_mineral_field_image(unit);
-					}
 				}
 			}
 		}
