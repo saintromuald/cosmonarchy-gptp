@@ -80,63 +80,54 @@ void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_coold
 }
 
 bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown) {
+	u32 attack_range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
+	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 	std::unordered_set<Unit*> units_fired = {};
-	UnitExt* attacker_ext = get_unit_ext(attacker);
+
+	auto unit_filter = cosmonarchy_finder_match(attacker, flags, {});
+	Unit* order_target = attacker->order_target.unit;
 	if (!ignore_main
-		&& attacker->order_target.unit
+		&& order_target
 		&& attacker->main_order_id != OrderId::Follow
 		&& attacker->main_order_id != OrderId::Patrol
-		&& scbw::get_distance_fast(attacker->position, attacker->order_target.unit->position) <= weapons_dat::max_range[weapon_id] // Not accurate to normal weapon range calcs
-		&& attacker->can_attack_target(attacker->order_target.unit)) {
-		auto filter = cosmonarchy_finder_match(attacker, flags, {});
-		if (filter(attacker->order_target.unit)) {
-			units_fired.insert(attacker->order_target.unit);
-			launch_missile(attacker, attacker->order_target.unit, weapon_id);
+		&& attacker->is_target_within_min_range(order_target, attack_range)
+		&& attacker->can_attack_target(order_target)) {
+		if (unit_filter(order_target)) { // This shouldn't really be checked for main target, since we want to allow targeting allied unit, but then we also care about some other flags like air or w/e -Veeq7
+			for (u32 j = 0; j < factor; j++) {
+				launch_missile(attacker, order_target, weapon_id);
+			}
+			units_fired.insert(order_target);
 		}
 	}
 
-	Unit* old = attacker->order_target.unit;
-	for (s32 i = 0; i < max_targets || max_targets <= 0; i++) {
-		u32 range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
-		auto filter = cosmonarchy_finder_match(attacker, flags, {});
+	for (u32 i = 0; i < max_targets || max_targets <= 0; i++) {
 		Unit* new_target = scbw::UnitFinder::get_nearest_target(
-			attacker->get_x() - range,
-			attacker->get_y() - range,
-			attacker->get_x() + range,
-			attacker->get_y() + range,
-			attacker,
-			[&](Unit* target) {
+			attacker->get_x() - attack_range,
+			attacker->get_y() - attack_range,
+			attacker->get_x() + attack_range,
+			attacker->get_y() + attack_range,
+			attacker, [&](Unit* target) {
 				if (target == attacker
 					||  units_fired.find(target) != units_fired.end()
 					||  scbw::is_allied_to(attacker->player, target->player)
 					|| !attacker->can_attack_target(target)
-					|| !filter(target)
-					|| (units_fired.size() >= max_targets && max_targets > 0))
-				{
+					|| !unit_filter(target)
+					|| (units_fired.size() >= max_targets && max_targets > 0)) {
 					return false;
 				}
-				scbw::decloak_proc(attacker);
 				return true;
 			});
 		if ((units_fired.size() >= max_targets && max_targets > 0) || !new_target) {
 			break;
 		}
-		attacker->order_target.unit = new_target;
 
-		// @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
-		u32 factor = 1;
-		if (use_weapon_factor) {
-			factor = weapons_dat::damage_factor[weapon_id];
-		}
+		attacker->order_target.unit = new_target;
 		for (u32 j = 0; j < factor; j++) {
-			if (factor == 0) {
-				break;
-			}
 			launch_missile(attacker, new_target, weapon_id, apply_cooldown);
 		}
 		units_fired.insert(new_target);
 	}
-	attacker->order_target.unit = old;
+	attacker->order_target.unit = order_target;
 	if (units_fired.size()) {
 		scbw::decloak_proc(attacker);
 		return true;
