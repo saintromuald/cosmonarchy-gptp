@@ -29,6 +29,7 @@ void load_config() {
 		LoadField(config_node, "quick-casting", config.quick_casting);
 		LoadField(config_node, "quick-building", config.quick_building);
 
+		LoadField(config_node, "celebrations-enabled", config.celebrations_enabled);
 		LoadField(config_node, "verbose", config.verbose);
 		GPTP::doLogging = config.verbose;
 
@@ -58,6 +59,10 @@ void save_config() {
 	write_field(out, "show-apm", config.show_apm);
 	write_field(out, "show-worker-harvest-links", config.show_worker_harvest_links);
 	write_field(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+	out << YAML::Newline << YAML::Newline;
+
+	out << YAML::Comment("Visuals");
+	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Debug");

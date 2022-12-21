@@ -45,6 +45,7 @@ namespace hooks {
 		worker->sprite->remove_overlay(ImageId::Flag, ImageId::TerranGasTankType2);
 		worker->sprite->remove_overlay(ImageId::Uraj, ImageId::Khalis);
 		worker->sprite->remove_overlay(ImageId::GasRaw, ImageId::GasRaw2);
+		worker->sprite->remove_overlay(ImageId::Christmas_MineralChunkType1, ImageId::Christmas_MineralChunkType2);
 	}
 
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
@@ -58,6 +59,11 @@ namespace hooks {
 
 		if (resource->id >= UnitId::ResourceMineralField && resource->id <= UnitId::ResourceMineralFieldType3) {
 			chunk_image_id = ImageId::MineralChunkType1;
+			if (scbw::can_celebrate()) {
+				if (scbw::get_local_month() == 12) {
+					chunk_image_id = ImageId::Christmas_MineralChunkType1;
+				}
+			}
 			is_mineral = true;
 		} else if (resource->id == UnitId::ProtossAquifer) {
 			chunk_image_id = ImageId::ProtossGasOrbType1;

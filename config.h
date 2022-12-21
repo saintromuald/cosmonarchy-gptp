@@ -15,6 +15,9 @@ struct Config {
 	bool show_worker_harvest_links = false;
 	bool always_show_extended_tooltips = false;
 
+	// Visuals
+	bool celebrations_enabled = true;
+
 	// Hotkeys
 	bool quick_casting = false;
 	bool quick_building = false;

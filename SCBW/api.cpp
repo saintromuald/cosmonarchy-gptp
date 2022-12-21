@@ -10,6 +10,7 @@
 #include "hooks/target_related.h"
 #include "hooks/unit_ai.h"
 #include "ai_layouts.h"
+#include "config.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -2900,5 +2901,24 @@ namespace scbw {
 			}
 		}
 		return false;
+	}
+
+	int get_local_month()
+	{
+		time_t now = time(0);
+		tm* ltm = localtime(&now);
+		return ltm->tm_mon + 1;
+	}
+
+	bool can_celebrate()
+	{
+		if (!config.celebrations_enabled) { return false; }
+		for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id) {
+			u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
+			if (flags & VespeneDeaths_DisableCelebrations) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

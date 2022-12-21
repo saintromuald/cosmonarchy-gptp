@@ -1042,6 +1042,8 @@ namespace ImageId {
 		KhaydarinEclipseOverlayMedium				= 1271,
 		EnsnaringBroodOverlay						= 1281,
 		KhaydarinEclipseOverlaySmall				= 1272,
+		Christmas_MineralChunkType1					= 1322,
+		Christmas_MineralChunkType2					= 1323,
 		DeconstructionSmall							= 1332,
 		DeconstructionMedium						= 1333,
 		DeconstructionLarge							= 1334,

@@ -62,26 +62,19 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		return sprite_replacement->sprite_id;
 	}
 
-	bool can_celebrate = true;
-	for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id) {
-		u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
-		if (flags & VespeneDeaths_DisableCelebrations) {
-			can_celebrate = false;
-		}
-	}
-	if (can_celebrate) {
-		time_t now = time(0);
-		tm* ltm = localtime(&now);
-
+	if (scbw::can_celebrate()) {
 		// Christmas
-		if (ltm->tm_mon == 11) {
+		if (scbw::get_local_month() == 12) {
 			switch (unit->id)
 			{
-				case UnitId::TerranCommandCenter:	return SpriteId::Christmas_CommandCenter;
-				case UnitId::ProtossNexus:			return SpriteId::Christmas_Nexus;
-				case UnitId::ZergHachirosk:			return SpriteId::Christmas_Hachirosk;
-				case UnitId::ZergCaphrolosk:		return SpriteId::Christmas_Caphrolosk;
-				case UnitId::ZergGathtelosk:		return SpriteId::Christmas_Gathtelosk;
+				case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
+				case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
+				case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
+				case UnitId::TerranCommandCenter:		return SpriteId::Christmas_CommandCenter;
+				case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
+				case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
+				case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
+				case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
 			}
 		}
 	}

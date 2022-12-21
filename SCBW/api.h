@@ -711,4 +711,6 @@ namespace scbw
 	void binding_plasma_proc(Unit* victim, Unit* source);
 	bool order_id_is_harvest_related(u32 order_id);
 	bool player_has_transport(u32 player);
+	int get_local_month();
+	bool can_celebrate();
 }
