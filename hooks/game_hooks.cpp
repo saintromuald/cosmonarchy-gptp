@@ -37,6 +37,7 @@
 #include "weapons/weapon_fire.h"
 #include "harvest.h"
 #include "hooks/weapons/weapon_cooldown.h"
+#include <ctime>
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -2518,6 +2519,39 @@ namespace hooks {
 		&&	unit->main_order_id != OrderId::Liftoff
 		&&	unit->main_order_id != OrderId::BuildingLand) {
 			unit->update_speed();
+		}
+
+		// Celebrations!
+		{
+			bool can_celebrate = true;
+			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id) {
+				u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
+				if (flags & VespeneDeaths_DisableCelebrations) {
+					can_celebrate = false;
+				}
+			}
+			if (can_celebrate) {
+				// Christmas
+				time_t now = time(0);
+				tm* ltm = localtime(&now);
+				if (ltm->tm_mon == 11) {
+					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
+						&& !(units_dat::base_property[unit->id] & UnitProperty::ResourceContainer))
+					{
+						u32 image_id = ImageId::SantaHatSmall17 + scbw::get_overlay_offset(unit->id);
+						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
+							image_id -= 4;
+						}
+						Unit* unit_final = unit;
+						if (unit->subunit) {
+							unit_final = unit->subunit;
+						}
+						if (!unit_final->get_overlay(image_id)) {
+							unit_final->sprite->create_top_overlay(image_id, 0, (units_dat::unit_bounds[unit->id].top / 2 * -1));
+						}
+					}
+				}
+			}
 		}
 	}
 

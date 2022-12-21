@@ -1175,6 +1175,15 @@ namespace ImageId {
 
 		DurendalWeaponfireOverlay					= 1659,
 
+		SantaHatSmall								= 1669,
+		SantaHatMedium								= 1670,
+		SantaHatLarge								= 1671,
+		SantaHatXLarge								= 1672,
+		SantaHatSmall17								= 1673,
+		SantaHatMedium17							= 1674,
+		SantaHatLarge17								= 1675,
+		SantaHatXLarge17							= 1676,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,
