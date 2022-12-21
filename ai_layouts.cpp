@@ -175,7 +175,8 @@ void update_layouts() {
 
 			// Update townhall markers
 			if (placeholder->is_townhall_marker) {
-				if (update_townhall_marker(placeholder, player, townhall_index++)) {
+				if (update_townhall_marker(placeholder, player, townhall_index)) {
+					townhall_index += 1;
 					layouts->should_sort = true;
 				}
 			}
