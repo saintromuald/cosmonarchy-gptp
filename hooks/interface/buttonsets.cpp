@@ -2006,7 +2006,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranAnticthon:
 								{
-									if (current_button->icon_id == IconId::RilirokorToxicSpores) // Anticthon - Counter-Proposal
+									if (current_button->icon_id == IconId::RilirokorToxicSpores // Anticthon - Counter-Proposal
+									||	current_button->icon_id == IconId::ApialSensors)		// Anticthon - Multi-Attack V
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2054,6 +2055,20 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranPhobos:
+								{
+									if (current_button->icon_id == IconId::KhaydarinCore) // Phobos - Argent Capacitors
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranHippogriff:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Hippogriff - Prolonged Arms
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranBarracks:
 								case UnitId::TerranCaptaincy:
 								case UnitId::TerranIronCouncil:
@@ -2076,6 +2091,13 @@ namespace hooks {
 								case UnitId::ProtossHerald:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Herald - Triumphant Rise
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossBarghest:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Barghest - Multi-Attack III
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2238,11 +2260,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranPhobos &&   
-								current_button->icon_id == IconId::KhaydarinCore) // Phobos Argent Capacitors
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::TerranClaymore &&   
 								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Claymore Prolonged Arms
 							{
@@ -2363,11 +2380,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossPariah &&  // Pariah Heretical Bedlam
 								current_button->icon_id == IconId::DracadinPhaseDisruptor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossBarghest &&  // Barghest Repentent Chorus
-								current_button->icon_id == IconId::PhotonCannonWeapon)
 							{
 								current_button_state = Button_State::Enabled;
 							}
