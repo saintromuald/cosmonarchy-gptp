@@ -1775,16 +1775,19 @@ namespace hooks {
 					EntryArray unit_array = {};
 					unit_search_radial(&unit_array, unit->position, 3 * 32);
 					unit_search_add_units_from_connected_transport(&unit_array, unit);
-					unit_search_filter(&unit_array, unit, FilterAlly);
+					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf);
+					unit_search_sort_by_distance(&unit_array, unit->position);
+
+					u32 shields = 64;
+					if (shields > unit->shields) {
+						shields = unit->shields;
+					}
 					for (u32 i = 0; i < unit_array.count; ++i) {
 						Unit* target = unit_array.units[i];
-						// TODO: Filter for closest ally
-						if (target->shields + 1 < unit->shields
-						&&  target->shields != target->max_shields())
-						{
-							target->shields += 64;
-							unit->shields -= 64;
-							unit_ext->shield_regen_timer++;
+						if (target->shields < unit->shields) {
+							shields -= target->heal_shields(shields, unit, false, false);
+							unit->shields -= shields;
+							break;
 						}
 					}
 				}
