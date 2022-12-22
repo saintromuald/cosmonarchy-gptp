@@ -35,11 +35,11 @@ struct Sprite
 	// Moves the sprite to the new position.
 	void set_position(u16 x, u16 y);
 
-	Image* create_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0); // Creates an image overlay over the main image of this sprite.
-	Image* create_underlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
+	Image* create_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0, Unit* palette_unit = 0); // Creates an image overlay over the main image of this sprite.
+	Image* create_underlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0, Unit* palette_unit = 0);
 
-	Image* create_top_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0); // Creates an image overlay on top of all other images of this sprite.
-	Image* create_top_underlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0);
+	Image* create_top_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0, Unit* palette_unit = 0); // Creates an image overlay on top of all other images of this sprite.
+	Image* create_top_underlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0, Unit* palette_unit = 0);
 
 	void play_for_overlay(u32 imageId, u8 anim);	
 	void remove_overlay(u32 imageIdStart, u32 imageIdEnd); // Removes the first image overlay with an ID value between @p imageIdStart and @p imageIdEnd.

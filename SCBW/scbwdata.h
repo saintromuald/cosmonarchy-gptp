@@ -1112,6 +1112,8 @@ SCBW_DATA(char*,		g_draw_color_index,					0x006CF4AC);
 
 SCBW_DATA(void**,		g_repulse_handle,					0x006D5CD8);
 
+SCBW_DATA(u8*,			g_images_draw_if_cloaked,			0x00667718);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

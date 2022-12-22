@@ -85,16 +85,13 @@ namespace hooks
 		image->id = image_id;
 		image->grp_file = g_image_grp_graphics[image_id];
 		image->flags = 0;
-		if (images_dat::is_turnable[image_id] & 1)
-		{
+		if (images_dat::is_turnable[image_id] & 1) {
 			image->flags |= ImageFlags::HasRotationFrames;
 		}
-		if (images_dat::is_turnable[image_id] & 2)
-		{
+		if (images_dat::is_turnable[image_id] & 2) {
 			image->flags |= ImageFlags::Omnidirectional; // New
 		}
-		if (images_dat::is_clickable[image_id] & 1)
-		{
+		if (images_dat::is_clickable[image_id] & 1) {
 			image->flags |= ImageFlags::Clickable;
 		}
 		image->frameset = 0;

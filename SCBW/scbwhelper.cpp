@@ -12562,4 +12562,18 @@ namespace helper {
 		}
 		return result;
 	}
+
+	Image* copy_image_palette_type(Image* image, Image* from) {
+		static Image* result;
+		const u32 func_address = 0x004D5E40;
+		__asm {
+			PUSHAD
+			MOV EAX, image
+			MOV ESI, from
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

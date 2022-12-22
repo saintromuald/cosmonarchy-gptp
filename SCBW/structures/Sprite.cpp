@@ -118,7 +118,7 @@ void Sprite::set_position(u16 x, u16 y)
 
 //-------- Create overlay --------//
 
-void createUpdateImageSomething(Image* image)
+void create_update_image_something(Image* image)
 {
 	const u32 Func_createUpdateImageSomething = 0x004D66B0;
 
@@ -131,7 +131,7 @@ void createUpdateImageSomething(Image* image)
 	}
 }
 
-void updateImageDirection(Image* image, u32 direction)
+void update_image_direction(Image* image, u32 direction)
 {
 	const u32 Func_updateImageDirection = 0x004D5EA0;
 
@@ -147,116 +147,120 @@ void updateImageDirection(Image* image, u32 direction)
 
 //-------- Create overlay --------//
 
-// Identical to function @ 0x00498E00
-Image* Sprite::create_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
-{
-	assert(this);
-	if (unusedImages.head == nullptr)
-	{
-		return nullptr;
-	}
-	Image* overlay = unusedImages.popHead();
-
-	if (overlay)
-	{
-		if (this->images.head)
-		{
-			this->images.insertBefore<&Image::link>(overlay, this->main_graphic);
+static void inherit_image_palette(Unit* unit, Image* image, Image* main_image) {
+	if (!image->palette_type && unit) {
+		if (unit->status & UnitStatus::IsHallucination
+			&& (unit->player == *g_local_nation_id || *g_is_in_replay)) {
+			image->palette_type = PaletteType::RLE_SHIFT;
+			image->update_fxn = g_sg_update_funcs[PaletteType::RLE_SHIFT].function;
+			image->render_fxn = image->flags & 2 ? g_sg_draw_funcs[PaletteType::RLE_SHIFT].function_2 : g_sg_draw_funcs[PaletteType::RLE_SHIFT].function_1;
+			image->flags |= 1;
+			image->draw_func_param = 0;
 		}
-		else
-		{
+		if (unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
+			helper::copy_image_palette_type(image, main_image);
+		}
+	}
+}
+
+// Identical to function @ 0x00498E00
+Image* Sprite::create_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction, Unit* palette_unit) {
+	assert(this);
+	if (!unusedImages.head) {
+		return 0;
+	}
+
+	Image* overlay = unusedImages.popHead();
+	if (overlay) {
+		if (this->images.head) {
+			this->images.insertBefore<&Image::link>(overlay, this->main_graphic);
+		} else {
 			this->main_graphic = overlay;
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
 		overlay->initialize_data(this, imageId, offsetX, offsetY);
-		createUpdateImageSomething(overlay);
-		updateImageDirection(overlay, direction);
+		create_update_image_something(overlay);
+		update_image_direction(overlay, direction);
+		if (palette_unit) {
+			inherit_image_palette(palette_unit, overlay, this->main_graphic);
+		}
 	}
 	return overlay;
 }
 
-Image* Sprite::create_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
-{
+Image* Sprite::create_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction, Unit* palette_unit) {
 	assert(this);
-	if (unusedImages.head == nullptr)
-	{
-		return nullptr;
+	if (!unusedImages.head) {
+		return 0;
 	}
-	Image* underlay = unusedImages.popHead();
 
-	if (underlay)
-	{
-		if (this->images.head)
-		{
+	Image* underlay = unusedImages.popHead();
+	if (underlay) {
+		if (this->images.head) {
 			this->images.insertAfter<&Image::link>(underlay, this->main_graphic);
-		}
-		else
-		{
+		} else {
 			this->main_graphic = underlay;
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
 		underlay->initialize_data(this, imageId, offsetX, offsetY);
-		createUpdateImageSomething(underlay);
-		updateImageDirection(underlay, direction);
+		create_update_image_something(underlay);
+		update_image_direction(underlay, direction);
+		if (palette_unit) {
+			inherit_image_palette(palette_unit, underlay, this->main_graphic);
+		}
 	}
 	return underlay;
 }
 
 // Identical to function @ 0x00498EA0
-Image* Sprite::create_top_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
-{
+Image* Sprite::create_top_overlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction, Unit* palette_unit) {
 	assert(this);
-	if (unusedImages.head == nullptr)
-	{
-		return nullptr;
+	if (!unusedImages.head) {
+		return 0;
 	}
-	Image* overlay = unusedImages.popHead();
 
-	if (overlay)
-	{
-		if (this->images.head)
-		{
+	Image* overlay = unusedImages.popHead();
+	if (overlay) {
+		if (this->images.head) {
 			this->images.insertBeforeHead<&Image::link>(overlay);
-		}
-		else
-		{
+		} else {
 			this->main_graphic = overlay;
 			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
 		overlay->initialize_data(this, imageId, offsetX, offsetY);
-		createUpdateImageSomething(overlay);
-		updateImageDirection(overlay, direction);
+		create_update_image_something(overlay);
+		update_image_direction(overlay, direction);
+		if (palette_unit) {
+			inherit_image_palette(palette_unit, overlay, this->main_graphic);
+		}
 	}
 	return overlay;
 }
 
-Image* Sprite::create_top_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction)
-{
+Image* Sprite::create_top_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 direction, Unit* palette_unit) {
 	assert(this);
-	if (unusedImages.head == nullptr)
-	{
-		return nullptr;
+	if (!unusedImages.head) {
+		return 0;
 	}
-	Image* underlay = unusedImages.popHead();
 
-	if (underlay)
-	{
-		if (this->images.head)
-		{
+	Image* underlay = unusedImages.popHead();
+	if (underlay) {
+		if (this->images.head) {
 			this->images.insertAfterHead<&Image::link>(underlay);
-		}
-		else
-		{
+		} else {
 			this->main_graphic = underlay;
 			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
 		underlay->initialize_data(this, imageId, offsetX, offsetY);
-		createUpdateImageSomething(underlay);
-		updateImageDirection(underlay, direction);
+		create_update_image_something(underlay);
+		update_image_direction(underlay, direction);
+		if (palette_unit) {
+			inherit_image_palette(palette_unit, underlay, this->main_graphic);
+		}
 	}
 	return underlay;
 }

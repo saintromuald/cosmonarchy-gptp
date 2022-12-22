@@ -2629,7 +2629,7 @@ namespace hooks {
 
 				if (image_id != ImageId::None) {
 					if (!unit->get_overlay(image_id)) {
-						unit->sprite->create_top_overlay(image_id, offset_x, -offset_y);
+						unit->sprite->create_top_overlay(image_id, offset_x, -offset_y, 0, unit);
 					}
 				}
 			}
