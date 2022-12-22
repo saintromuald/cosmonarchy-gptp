@@ -2508,15 +2508,18 @@ namespace hooks {
 		// Harakan - Apollyoid Adhesive
 		{
 			u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
-			if (unit_ext->timers[TimerApollyoidAdhesive] > 1) {
+			if (unit_ext->timers[TimerApollyoidAdhesive] >= 1) {
 				if (!unit->sprite->get_overlay(image_id)) {
 					unit->sprite->create_top_overlay(image_id);
 				}
-				if (!unit_ext->timers[TimerApollyoidAdhesiveDamageCooldown]) {
-					unit->damage_with_custom(unit_ext->values[ValueApollyoidAdhesiveStacks] * 256, 2);
-					unit_ext->timers[TimerApollyoidAdhesiveDamageCooldown] = 24;
+				if (!unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod]) {
+					unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] = 24;
 				}
-			} else if (unit_ext->timers[TimerApollyoidAdhesive] == 1) {
+				if (unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] == 1) {
+					unit->damage_with_custom(unit_ext->values[ValueApollyoidAdhesiveStacks] * 256, 2);
+				}
+			}
+			if (unit_ext->timers[TimerApollyoidAdhesive] == 1) {
 				unit->remove_overlay(image_id);
 				unit_ext->values[ValueApollyoidAdhesiveStacks] = 0;
 			}
