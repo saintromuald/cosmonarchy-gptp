@@ -572,21 +572,18 @@ void Globals::frame_hook() {
 		if (revivingUnit.timer > 0) {
 			revivingUnit.timer--;
 		} else {
-			if (g_player_table[revivingUnit.player].type != PlayerType::Computer || revivingUnit.town || revivingUnit.ignore_town) {
-				auto revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.player, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
-				if (revived) {
-					UnitExt* revivedExt = get_unit_ext(revived);
-					revived->hitpoints = 1;
-					revived->shields = 0;
-					revived->heal_hp_then_shields(revivingUnit.hp);
-					revived->energy = revivingUnit.energy;
-					revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
-					revived->play_iscript_animation(IscriptAnimation::Unused1);
-					revivedExt->values[ValueReviveStarted] = 1;
-					revivedExt->values[ValueReviveTownPointer] = (u32)revivingUnit.town;
-					revivedExt->timers[TimerReviveFlagClearMin] = 3;
-					revivedExt->timers[TimerReviveFlagClearMax] = 14;
-				}
+			Unit* revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.player, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
+			if (revived) {
+				UnitExt* revivedExt = get_unit_ext(revived);
+				revived->hitpoints = 1;
+				revived->shields = 0;
+				revived->heal_hp_then_shields(revivingUnit.hp);
+				revived->energy = revivingUnit.energy;
+				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+				revived->play_iscript_animation(IscriptAnimation::Unused1);
+				revivedExt->values[ValueReviveStarted] = 1;
+				revivedExt->timers[TimerReviveFlagClearMin] = 3;
+				revivedExt->timers[TimerReviveFlagClearMax] = 14;
 			}
 			reviving_units.erase(reviving_units.begin() + i);
 			i--;
@@ -755,24 +752,15 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihit_bullets.push_back(gb);
 }
 
-void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town)
-{
+void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town) {
 	RevivingUnit reviving_unit = {};
 	reviving_unit.player = player;
 	reviving_unit.position.x = x;
 	reviving_unit.position.y = y;
-	reviving_unit.timer = 48;
+	reviving_unit.timer = 2 * 24;
 	reviving_unit.unit_id = unit_id;
 	reviving_unit.energy = energy;
 	reviving_unit.hp = hp;
-	if (units_dat::base_property[unit_id] & (UnitProperty::Worker | UnitProperty::Building) || unit_id == UnitId::ZergOvileth)
-	{
-		reviving_unit.town = town;
-	}
-	else
-	{
-		reviving_unit.ignore_town = true;
-	}
 	reviving_units.push_back(reviving_unit);
 }
 

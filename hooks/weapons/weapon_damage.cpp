@@ -974,29 +974,35 @@ namespace hooks
 		// Apostle, Anticthon - Revive (Must be last!)
 		if (is_fatal && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
 			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
-			u32 hp = target_ext->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
+			u32 max_hp = data.target->get_max_hp_raw();
 
-			if (target_ext->timers[TimerAnticthonRevive]) {
-				const u32 radius = 8 * 32;
-				scbw::UnitFinder(
-					data.target->get_x() - radius,
-					data.target->get_y() - radius,
-					data.target->get_x() + radius,
-					data.target->get_y() + radius
-				).for_each([&](Unit* unit) {
-					UnitExt* unit_ext = get_unit_ext(unit);
-					u32 dist = scbw::get_distance_fast(data.target->position, unit->position);
-					if (unit->id == UnitId::TerranAnticthon && dist <= 4 * 32) {
-						if (scbw::is_allied_to(data.target->player, unit->player)) {
-							hp += (1 + unit_ext->values[ValueAnticthonStacks]) * 256;
-							unit_ext->values[ValueAnticthonStacks]++;
+			u32 hp = max_hp; // Reclamation
+			if (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive]) {
+				hp = target_ext->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
+
+				if (target_ext->timers[TimerAnticthonRevive]) {
+					hp += 1 * 256;
+					const u32 radius = 8 * 32;
+					scbw::UnitFinder(
+						data.target->get_x() - radius,
+						data.target->get_y() - radius,
+						data.target->get_x() + radius,
+						data.target->get_y() + radius
+					).for_each([&](Unit* unit) {
+						UnitExt* unit_ext = get_unit_ext(unit);
+						u32 distance = scbw::get_distance_fast(data.target->position, unit->position);
+						if (unit->id == UnitId::TerranAnticthon && distance <= 4 * 32) {
+							if (scbw::is_allied_to(data.target->player, unit->player)) {
+								hp += (unit_ext->values[ValueAnticthonStacks]) * 256;
+								unit_ext->values[ValueAnticthonStacks]++;
+							}
 						}
-					}
-				});
+					});
+				}
 			}
 
 			u32 player = data.target->player;
-			if (target_ext->timers[TimerReclamation]) {
+			if (target_ext->timers[TimerReclamation] && !target_ext->values[ValueLazarusAgent] && !target_ext->timers[TimerAnticthonRevive]) {
 				player = target_ext->values[ValueReclamationPlayer];
 			}
 
