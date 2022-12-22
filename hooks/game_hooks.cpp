@@ -2571,11 +2571,17 @@ namespace hooks {
 							}
 						} break;
 						case UnitId::ZergLarvoskColony:
-						case UnitId::ZergMatravilNest:
 						{
 							u32 image_id = ImageId::SantaHatLarge17;
 							if (!unit->get_overlay(image_id)) {
 								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 6) * -1));
+							}
+						} break;
+						case UnitId::ZergMatravilNest:
+						{
+							u32 image_id = ImageId::SantaHatXLarge17;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 14) * -1));
 							}
 						} break;
 						case UnitId::ZergGosvileth:
