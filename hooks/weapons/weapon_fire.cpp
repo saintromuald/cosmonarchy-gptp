@@ -84,7 +84,6 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 	std::unordered_set<Unit*> units_fired = {};
 
-	auto unit_filter = cosmonarchy_finder_match(attacker, flags, {});
 	Unit* order_target = attacker->order_target.unit;
 	if (!ignore_main
 		&& order_target
@@ -92,14 +91,16 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		&& attacker->main_order_id != OrderId::Patrol
 		&& attacker->is_target_within_min_range(order_target, attack_range)
 		&& attacker->can_attack_target(order_target)) {
-		if (unit_filter(order_target)) { // This shouldn't really be checked for main target, since we want to allow targeting allied unit, but then we also care about some other flags like air or w/e -Veeq7
+		auto unit_filter = cosmonarchy_finder_match(attacker, flags & ~(Flags::Ally | Flags::Enemy), {}); // We want to attack the order target regardless of alliance flags
+		if (unit_filter(order_target)) {
 			for (u32 j = 0; j < factor; j++) {
 				launch_missile(attacker, order_target, weapon_id);
 			}
 			units_fired.insert(order_target);
 		}
 	}
-
+	
+	auto unit_filter = cosmonarchy_finder_match(attacker, flags, {});
 	for (u32 i = 0; i < max_targets || max_targets <= 0; i++) {
 		Unit* new_target = scbw::UnitFinder::get_nearest_target(
 			attacker->get_x() - attack_range,
