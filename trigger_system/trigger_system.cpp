@@ -50,15 +50,21 @@ void init_trigger_system() {
 }
 
 static bool unit_can_change_sprite(Unit* unit) {
-	if (!unit->sprite) {
+	if (!unit->sprite || !unit->sprite->main_graphic) {
 		return false;
 	}
 	u32 flingy_id = units_dat::graphic[unit->id];
 	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
-	if (unit->sprite->id == sprite_id) {
-		return true;
+	if (unit->sprite->id != sprite_id) {
+		return false;
 	}
-	return false;
+	u32 image_id = sprites_dat::image_id[sprite_id];
+	UnitExt* unit_ext = get_unit_ext(unit);
+	if (unit->sprite->main_graphic->id != image_id &&
+		(!unit_ext->values[ValueCustomImage] || unit->sprite->main_graphic->id != unit_ext->values[ValueCustomImage] - 1)) {
+		return false;
+	}
+	return true;
 }
 
 static u32 unit_get_desired_sprite_id(Unit* unit) {
@@ -119,6 +125,9 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 		unit->sprite->main_graphic->free();
 		unit->sprite->main_graphic = new_image;
 	}
+
+	UnitExt* unit_ext = get_unit_ext(unit);
+	unit_ext->values[ValueCustomImage] = image_id + 1;
 }
 
 void update_trigger_system(bool in_game) {

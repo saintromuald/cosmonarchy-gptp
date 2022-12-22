@@ -129,6 +129,7 @@ enum ExtValueId
 	ValueApollyoidAdhesiveStacks,
 	ValueRamessesLaunchPos,
 	ValuePositronLaunchPos,
+	ValueCustomImage,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
