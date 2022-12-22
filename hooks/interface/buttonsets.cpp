@@ -897,7 +897,7 @@ namespace hooks {
 						{
 							if (current_button->requirement_var == UnitId::TerranFutureStation)
 							{
-								if (!has_addon || !is_training)
+								if (!has_addon && !is_training)
 								{
 									current_button_state = Button_State::Enabled;
 								}
@@ -2007,6 +2007,13 @@ namespace hooks {
 								case UnitId::TerranAnticthon:
 								{
 									if (current_button->icon_id == IconId::RilirokorToxicSpores) // Anticthon - Counter-Proposal
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAion:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Aion - Reclamation Fields
 									{
 										current_button_state = Button_State::Enabled;
 									}
