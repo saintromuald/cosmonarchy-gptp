@@ -857,8 +857,7 @@ namespace hooks
 			case UnitId::TerranCuirass:
 			{
 				// Cuirass - Stonewall Protocol
-				if (!target_ext->values[ValueCuirassIsSelfReviving]
-					&&   data.target->hitpoints < data.damage) {
+				if (!target_ext->values[ValueCuirassIsSelfReviving]) {
 					target_ext->values[ValueCuirassIsSelfReviving] = 1;
 					data.target->hitpoints = CuirassSelfReviveHP;
 					is_fatal = false;
