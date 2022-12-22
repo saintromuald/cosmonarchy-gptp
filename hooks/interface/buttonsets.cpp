@@ -2109,6 +2109,22 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossOptecton:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon // Optecton - Prolonged Arms
+									||	current_button->icon_id == IconId::TerranShipWeapons) // Optecton - Forward March
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossPatriarch:
+								{
+									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Patriarch - Prolonged Arms
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossCharlatan:
 								{
 									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
