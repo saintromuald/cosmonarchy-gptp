@@ -971,7 +971,7 @@ namespace hooks
 			}
 		}
 
-		// Apostle, Anticthon - Revive (Must be last!)
+		// Apostle, Anticthon, Aion - Revive (Must be last!)
 		if (is_fatal && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
 			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
 			u32 max_hp = data.target->get_max_hp_raw();
