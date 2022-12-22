@@ -2530,7 +2530,7 @@ namespace hooks {
 			if (scbw::get_local_month() == 12) {
 				if (unit->status & UnitStatus::Burrowed) {
 					unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
-				} else {
+				} else if (unit->id == UnitId::ZergEgg || unit->status & UnitStatus::Completed) {
 					u32 image_id = ImageId::None;
 					u32 offset_x = 0;
 					u32 offset_y = 0;
@@ -2616,7 +2616,7 @@ namespace hooks {
 						} break;
 					}
 
-					if (image_id != ImageId::None && (unit->id == UnitId::ZergEgg || unit->status & UnitStatus::Completed)) {
+					if (image_id != ImageId::None) {
 						if (!unit->get_overlay(image_id)) {
 							unit->sprite->create_top_overlay(image_id, offset_x, offset_y);
 						}
