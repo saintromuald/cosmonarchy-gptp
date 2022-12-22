@@ -1187,6 +1187,7 @@ namespace ImageId {
 		SantaHatXLarge17							= 1676,
 		Christmas_VespeneChunk1						= 1677,
 		Christmas_VespeneChunk2						= 1678,
+		HarakanApollyoidAdhesiveOverlay				= 1679,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

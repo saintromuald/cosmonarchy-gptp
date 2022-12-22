@@ -1928,6 +1928,20 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranBlackjack:
+								{
+									if (current_button->icon_id == IconId::ProtossAirPlating) // Blackjack - Wear and Tear
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranMatador:
+								{
+									if (current_button->icon_id == IconId::PhotonCannonWeapon) // Matador - Automedicus
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranPhalanxTankMode:
 								{
 									if (current_button->icon_id == IconId::TerranVehiclePlating) // Phalanx - Babylon Plating
@@ -2219,11 +2233,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::TerranPhobos &&   
 								current_button->icon_id == IconId::KhaydarinCore) // Phobos Argent Capacitors
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranBlackjack &&   
-								current_button->icon_id == IconId::ProtossAirPlating) // Blackjack Wear and Tear
 							{
 								current_button_state = Button_State::Enabled;
 							}
