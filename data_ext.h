@@ -129,7 +129,6 @@ enum ExtValueId
 	ValueApollyoidAdhesiveStacks,
 	ValueRamessesLaunchPos,
 	ValuePositronLaunchPos,
-	ValueCustomSprite,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

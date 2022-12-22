@@ -53,14 +53,9 @@ static bool unit_can_change_sprite(Unit* unit) {
 	if (!unit->sprite) {
 		return false;
 	}
-	u32 unit_sprite_id = unit->sprite->id;
-	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueCustomSprite] == unit_sprite_id + 1) {
-		return true;
-	}
 	u32 flingy_id = units_dat::graphic[unit->id];
 	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
-	if (unit_sprite_id == sprite_id) {
+	if (unit->sprite->id == sprite_id) {
 		return true;
 	}
 	return false;
@@ -101,6 +96,31 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 	return sprite_id;
 }
 
+static void replace_sprite(Unit* unit, u32 sprite_id) {
+	u32 image_id = sprites_dat::image_id[sprite_id];
+	if (!unit->sprite || !unit->sprite->main_graphic || unit->sprite->main_graphic->id == image_id) {
+		return;
+	}
+
+	// Remove old shadow, since the new image will create it's own
+	// Would be better to do it only after we know new_image is created, but then the other shadow also gets removed
+	// As of right now shadow would disappear if the main image replacement fails
+	Image* next_image = 0;
+	for (Image* image = unit->sprite->images.head; image; image = next_image) {
+		next_image = image->link.next;
+		if (image->palette_type == PaletteType::RLE_SHADOW) {
+			image->free();
+		}
+	}
+
+	// Replace main image
+	Image* new_image = unit->sprite->create_overlay(image_id, 0, 0, unit->sprite->main_graphic->direction);
+	if (new_image) {
+		unit->sprite->main_graphic->free();
+		unit->sprite->main_graphic = new_image;
+	}
+}
+
 void update_trigger_system(bool in_game) {
 	if (!trigger_system_init) {
 		init_trigger_system();
@@ -131,44 +151,7 @@ void update_trigger_system(bool in_game) {
 				continue;
 			}
 			u32 sprite_id = unit_get_desired_sprite_id(unit);
-			if (unit->sprite && unit->sprite->id != sprite_id) {
-				Sprite* new_sprite = helper::create_sprite(sprite_id, unit->position.x, unit->position.y, unit->player);
-				if (new_sprite) {
-					UnitExt* unit_ext = get_unit_ext(unit);
-					unit_ext->values[ValueCustomSprite] = sprite_id + 1;
-
-					bool overlay = true;
-					for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
-						if (image == unit->sprite->main_graphic) {
-							overlay = false;
-							continue;
-						}
-						if (image->palette_type == PaletteType::RLE_SHADOW) {
-							continue;
-						}
-						Image* new_image = 0;
-						if (overlay) {
-							new_image = new_sprite->create_overlay(image->id, image->horizontal_offset, image->vertical_offset, image->direction);
-						} else {
-							new_image = new_sprite->create_underlay(image->id, image->horizontal_offset, image->vertical_offset, image->direction);
-						}
-						if (image) {
-							new_image->play_iscript_animation((IscriptAnimation::Enum)image->animation);
-						}
-					}
-					if (new_sprite->main_graphic) {
-						if (unit->sprite->main_graphic) {
-							new_sprite->main_graphic->play_iscript_animation((IscriptAnimation::Enum)unit->sprite->main_graphic->animation);
-							helper::set_image_direction(new_sprite->main_graphic, unit->sprite->main_graphic->direction);
-						} else {
-							helper::set_image_direction(new_sprite->main_graphic, unit->current_direction_1);
-						}
-					}
-
-					unit->sprite->free();
-					unit->sprite = new_sprite;
-				}
-			}
+			replace_sprite(unit, sprite_id);
 		}
 	}
 	trigger_game_paused = paused;
