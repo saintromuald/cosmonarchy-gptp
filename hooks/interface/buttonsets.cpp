@@ -2127,7 +2127,8 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossCharlatan:
 								{
-									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
+									if (current_button->icon_id == IconId::DemiurgePassiveWorship // Charlatan - Leading the Blind
+									||	current_button->icon_id == IconId::GeszithalorAcidSpore) // Charlatan - Lithe Organelle
 									{
 										current_button_state = Button_State::Enabled;
 									}
