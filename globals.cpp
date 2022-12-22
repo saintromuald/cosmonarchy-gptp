@@ -568,22 +568,22 @@ void Globals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 s
 void Globals::frame_hook() {
 	// Lazarus Agent and Counter-Proposal
 	for (s32 i = 0; i < reviving_units.size(); ++i) {
-		auto& revivingUnit = reviving_units[i];
-		if (revivingUnit.timer > 0) {
-			revivingUnit.timer--;
+		auto& reviving_unit = reviving_units[i];
+		if (reviving_unit.timer > 0) {
+			reviving_unit.timer--;
 		} else {
-			Unit* revived = scbw::create_unit_in_game(revivingUnit.unit_id, revivingUnit.player, revivingUnit.position.x, revivingUnit.position.y, nullptr, false);
+			Unit* revived = scbw::create_unit_in_game(reviving_unit.unit_id, reviving_unit.player, reviving_unit.position.x, reviving_unit.position.y, nullptr, false);
 			if (revived) {
-				UnitExt* revivedExt = get_unit_ext(revived);
+				UnitExt* revived_ext = get_unit_ext(revived);
 				revived->hitpoints = 1;
 				revived->shields = 0;
-				revived->heal_hp_then_shields(revivingUnit.hp);
-				revived->energy = revivingUnit.energy;
+				revived->heal_hp_then_shields(reviving_unit.hp);
+				revived->energy = reviving_unit.energy;
 				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 				revived->play_iscript_animation(IscriptAnimation::Unused1);
-				revivedExt->values[ValueReviveStarted] = 1;
-				revivedExt->timers[TimerReviveFlagClearMin] = 3;
-				revivedExt->timers[TimerReviveFlagClearMax] = 14;
+				revived_ext->values[ValueReviveStarted] = 1;
+				revived_ext->timers[TimerReviveFlagClearMin] = 3;
+				revived_ext->timers[TimerReviveFlagClearMax] = 14;
 			}
 			reviving_units.erase(reviving_units.begin() + i);
 			i--;
