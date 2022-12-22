@@ -60,7 +60,7 @@ namespace hooks {
 					globals.create_effect(EffectId_IonField, 10 * 24, {pos.x, pos.y}, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
 				} break;
 				case WeaponId::AionLazarusSalvo: {
-					globals.create_effect(EffectId_ReclamationField, 5 * 24, {pos.x, pos.y}, 0.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
+					globals.create_effect(EffectId_ReclamationField, 5 * 24, {pos.x, pos.y}, 2 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 				case WeaponId::SalamanderPerditionBarrage: {
 					globals.create_effect(EffectId_SalamanderFire, 5 * 24, {pos.x, pos.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, unit);
@@ -357,11 +357,8 @@ namespace hooks {
 		splash(bullet, weapon_id, SplashType::FriendlyNew);
 	}
 
-	void nuke(Bullet* bullet, u32 weapon_id)
-	{
-		Vector32 pos = { bullet->position.x, bullet->position.y } ;
-
-		globals.create_effect(EffectId_GroundZero, 24, pos, 0, -1, 5, bullet->player, bullet->source_unit);
+	void nuke(Bullet* bullet, u32 weapon_id) {
+		globals.create_effect(EffectId_GroundZero, 24, bullet->position, 0, -1, 5, bullet->player, bullet->source_unit);
 
 		splash(bullet, weapon_id, SplashType::Radial);
 	}

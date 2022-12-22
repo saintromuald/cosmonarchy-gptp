@@ -130,6 +130,7 @@ enum ExtValueId
 	ValueRamessesLaunchPos,
 	ValuePositronLaunchPos,
 	ValueCustomImage,
+	ValueReclamationPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -220,6 +221,7 @@ enum ExtTimerId
 	TimerPatriarchAstralRule,
 	TimerTerminalSurge,
 	TimerTriumphantRiseDebuff,
+	TimerReclamation,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

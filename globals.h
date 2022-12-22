@@ -29,7 +29,6 @@ struct SaveState
 enum EffectId {
 	EffectId_GroundZero,
 	EffectId_IonField,
-	EffectId_ReclamationField,
 	EffectId_SalamanderFire,
 	EffectId_Irradiate,
 	EffectId_Criticality,
@@ -38,19 +37,20 @@ enum EffectId {
 	EffectId_StarSovereignTheGriefOfAllGods,
 	EffectId_CausticDischarge,
 	EffectId_PlagueField,
+	EffectId_ReclamationField,
 
 	EffectId_Count,
 };
 
 struct Effect {
-	u8 id;
-	Vector32 position;
+	u32 id;
+	Point16 position;
 	u32 radius;
 	u32 current_time;
 	u32 max_time;
 	s32 sprite_id;
-	u8 elevation;
-	u8 player;
+	u32 elevation;
+	u32 player;
 	Thingy* thingy;
 	Unit* source;
 	Unit* origin;
@@ -142,7 +142,7 @@ struct Globals {
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 
 	void register_pariah_hit(Unit* source, Unit* target);
-	void create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
+	void create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

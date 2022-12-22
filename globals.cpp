@@ -369,7 +369,178 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	unit->irradiate_timer = time;
 }
 
-void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent) {
+void tick_effect(Effect* effect) {
+	const s32 effect_period = 6;
+	if (effect->current_time % effect_period == 0) {
+		const f64 damage_multiplier = 256.0 * (f64)effect_period / effect->max_time;
+		switch (effect->id) {
+			case EffectId_StarSovereignTheGriefOfAllGods: {
+				if (!effect->origin) {
+					effect->current_time = 0;
+					return;
+				}
+
+				scbw::UnitFinder(
+					effect->position.x - effect->radius,
+					effect->position.y - effect->radius,
+					effect->position.x + effect->radius,
+					effect->position.y + effect->radius
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
+					unit->damage_with_custom(2500 * damage_multiplier, -1, effect->source, effect->player);
+					});
+			} break;
+			case EffectId_SalamanderFire: {
+				EntryArray unit_array = {};
+				unit_search_radial(&unit_array, {(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
+				unit_search_filter(&unit_array, nullptr, FilterNoAir);
+
+				for (u32 j = 0; j < unit_array.count; j++) {
+					Unit* target = unit_array.units[j];
+					target->damage_with_custom(20 * damage_multiplier, 3, effect->source, effect->player);
+				}
+			} break;
+			case EffectId_Criticality: {
+				scbw::UnitFinder(
+					effect->position.x - effect->radius,
+					effect->position.y - effect->radius,
+					effect->position.x + effect->radius,
+					effect->position.y + effect->radius
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
+					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+						return;
+					}
+					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect->source, true);
+					});
+			} break;
+			case EffectId_CausticDischarge: {
+				scbw::UnitFinder(
+					effect->position.x - effect->radius,
+					effect->position.y - effect->radius,
+					effect->position.x + effect->radius,
+					effect->position.y + effect->radius
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
+					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+						return;
+					}
+					UnitExt* unitExt = get_unit_ext(unit);
+					unit->damage_with_custom(30 * damage_multiplier, -1, effect->source, effect->player);
+					unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
+					});
+			} break;
+			case EffectId_IonField: {
+				scbw::UnitFinder(
+					effect->position.x - effect->radius,
+					effect->position.y - effect->radius,
+					effect->position.x + effect->radius,
+					effect->position.y + effect->radius
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
+					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+						return;
+					}
+					UnitExt* unitExt = get_unit_ext(unit);
+					unit->damage_with_custom(100 * damage_multiplier, -1, effect->source, effect->player);
+					unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
+					});
+			} break;
+			case EffectId_HallucinatingField: {
+				scbw::UnitFinder(
+					effect->position.x - effect->radius,
+					effect->position.y - effect->radius,
+					effect->position.x + effect->radius,
+					effect->position.y + effect->radius
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
+					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+						return;
+					}
+					UnitExt* unitExt = get_unit_ext(unit);
+					scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
+					});
+			} break;
+			case EffectId_Irradiate: {
+				scbw::UnitFinder(
+					effect->position.x - effect->radius,
+					effect->position.y - effect->radius,
+					effect->position.x + effect->radius,
+					effect->position.y + effect->radius
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
+					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+						return;
+					}
+					apply_irradiate(unit, effect->player, 15);
+					});
+			} break;
+			case EffectId_GroundZero: {
+				const u32 delta = effect->max_time - effect->current_time;
+				const u32 stage = delta / effect_period;
+
+				switch (stage) {
+					case 0: {
+						globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+					} break;
+					case 1:
+					case 2: {
+						f32 distance = stage * 2 * 32;
+						u32 count = stage * 8;
+
+						Point16 new_pos = effect->position;
+						new_pos.x += distance;
+						for (u32 j = 0; j < count; ++j) {
+							new_pos = scbw::rotate_point(effect->position, new_pos, (360.0 / count));
+							globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+						}
+					} break;
+				}
+			} break;
+			case EffectId_DisruptionField: {
+				if (!effect->origin) {
+					effect->current_time = 0;
+					break;
+				}
+
+				UnitExt* parentExt = get_unit_ext(effect->origin);
+				if (!parentExt->values[ValueDisruptionFieldOn]) {
+					effect->current_time = 0;
+					break;
+				}
+
+				scbw::UnitFinder(
+					effect->position.x - 60,
+					effect->position.y - 40,
+					effect->position.x + 60,
+					effect->position.y + 40
+				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
+					UnitExt* unitExt = get_unit_ext(unit);
+					unitExt->timers[TimerUnderDisruptionField] = 8;
+					unit->status |= UnitStatus::CanNotAttack;
+					});
+			} break;
+			case EffectId_PlagueField: {
+				scbw::UnitFinder(
+					effect->position.x - 1.5 * 32,
+					effect->position.y - 1 * 32,
+					effect->position.x + 1.5 * 32,
+					effect->position.y + 1 * 32
+				).for_each([&](Unit* unit) {
+					helper::plague_proc(unit, 0);
+					});
+			} break;
+			case EffectId_ReclamationField: {
+				EntryArray effect_units = {};
+				unit_search_radial(&effect_units, effect->position, effect->radius);
+				unit_search_filter(&effect_units, 0);
+
+				for (u32 i = 0; i < effect_units.count; ++i) {
+					Unit* unit = effect_units.units[i];
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->timers[TimerReclamation] = effect_period + 1;
+					unit_ext->values[ValueReclamationPlayer] = effect->player;
+				}
+			} break;
+		}
+	}
+}
+
+void Globals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent) {
 	Effect effect = {};
 	effect.id = id;
 	effect.position = position;
@@ -390,6 +561,7 @@ void Globals::create_effect(u8 id, u32 time, Vector32 position, u32 radius, s32 
 		}
 		effect.thingy = thingy;
 	}
+	tick_effect(&effect);
 	effects.push_back(effect);
 }
 
@@ -431,163 +603,7 @@ void Globals::frame_hook() {
 				effect->thingy->sprite->set_position(effect->origin->position.x, effect->origin->position.y);
 			}
 		}
-		const s32 framePeriod = 6;
-		if (effect->current_time % framePeriod == 1) {
-			const f64 damage_multiplier = 256.0 * (f64)framePeriod / effect->max_time;
-			switch (effect->id) {
-				case EffectId_StarSovereignTheGriefOfAllGods: {
-					if (!effect->origin) {
-						effect->current_time = 0;
-						return;
-					}
-
-					scbw::UnitFinder(
-						effect->position.x - effect->radius,
-						effect->position.y - effect->radius,
-						effect->position.x + effect->radius,
-						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-						unit->damage_with_custom(2500 * damage_multiplier, -1, effect->source, effect->player);
-					});
-				} break;
-				case EffectId_SalamanderFire: {
-					EntryArray unit_array = {};
-					unit_search_radial(&unit_array, {(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
-					unit_search_filter(&unit_array, nullptr, FilterNoAir);
-
-					for (u32 j = 0; j < unit_array.count; j++) {
-						Unit* target = unit_array.units[j];
-						target->damage_with_custom(20 * damage_multiplier, 3, effect->source, effect->player);
-					}
-				} break;
-				case EffectId_Criticality: {
-					scbw::UnitFinder(
-						effect->position.x - effect->radius,
-						effect->position.y - effect->radius,
-						effect->position.x + effect->radius,
-						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius)
-						{
-							return;
-						}
-						unit->heal_shields_then_hp(4 * 256 / framePeriod, effect->source, true); // this math seems wrong
-					});
-				} break;
-				case EffectId_CausticDischarge: {
-					scbw::UnitFinder(
-						effect->position.x - effect->radius,
-						effect->position.y - effect->radius,
-						effect->position.x + effect->radius,
-						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
-							return;
-						}
-						UnitExt* unitExt = get_unit_ext(unit);
-						unit->damage_with_custom(30 * damage_multiplier, -1, effect->source, effect->player);
-						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
-					});
-				} break;
-				case EffectId_IonField: {
-					scbw::UnitFinder(
-						effect->position.x - effect->radius,
-						effect->position.y - effect->radius,
-						effect->position.x + effect->radius,
-						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
-							return;
-						}
-						UnitExt* unitExt = get_unit_ext(unit);
-						unit->damage_with_custom(100 * damage_multiplier, -1, effect->source, effect->player);
-						unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
-					});
-				} break;
-				case EffectId_HallucinatingField: {
-					scbw::UnitFinder(
-						effect->position.x - effect->radius,
-						effect->position.y - effect->radius,
-						effect->position.x + effect->radius,
-						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
-							return;
-						}
-						UnitExt* unitExt = get_unit_ext(unit);
-						scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
-					});
-				} break;
-				case EffectId_Irradiate: {
-					scbw::UnitFinder(
-						effect->position.x - effect->radius,
-						effect->position.y - effect->radius,
-						effect->position.x + effect->radius,
-						effect->position.y + effect->radius
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-						if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
-							return;
-						}
-						apply_irradiate(unit, effect->player, 15);
-					});
-				} break;
-				case EffectId_GroundZero: {
-					const u32 delta = effect->max_time - effect->current_time;
-					const u32 stage = delta / framePeriod;
-
-					switch (stage) {
-						case 0: {
-							globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
-						} break;
-						case 1:
-						case 2: {
-							f32 d = stage * 2 * 32;
-							u32 count = stage * 8;
-
-							Vector32 newPos = effect->position;
-							newPos.x += d;
-							for (u32 j = 0; j < count; ++j) {
-								newPos = scbw::rotate_point(effect->position, newPos, (360.0 / count));
-								globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
-							}
-						} break;
-					}
-				} break;
-				case EffectId_DisruptionField: {
-					if (!effect->origin) {
-						effect->current_time = 0;
-						break;
-					}
-
-					UnitExt* parentExt = get_unit_ext(effect->origin);
-					if (!parentExt->values[ValueDisruptionFieldOn]) {
-						effect->current_time = 0;
-						break;
-					}
-
-					scbw::UnitFinder(
-						effect->position.x - 60,
-						effect->position.y - 40,
-						effect->position.x + 60,
-						effect->position.y + 40
-					).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-						UnitExt* unitExt = get_unit_ext(unit);
-						unitExt->timers[TimerUnderDisruptionField] = 8;
-						unit->status |= UnitStatus::CanNotAttack;
-					});
-				} break;
-				case EffectId_PlagueField: {
-					scbw::UnitFinder(
-						effect->position.x - 1.5 * 32,
-						effect->position.y - 1 * 32,
-						effect->position.x + 1.5 * 32,
-						effect->position.y + 1 * 32
-					).for_each([&](Unit* unit) {
-						helper::plague_proc(unit, 0);
-					});
-				} break;
-			}
-		}
+		tick_effect(effect);
 		if (effect->current_time == 0) {
 			if (effect->thingy && effect->thingy->sprite) {
 				effect->thingy->sprite->play_iscript_animation(IscriptAnimation::Death);

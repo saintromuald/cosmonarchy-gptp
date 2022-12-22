@@ -972,7 +972,7 @@ namespace hooks
 		}
 
 		// Apostle, Anticthon - Revive (Must be last!)
-		if (is_fatal && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive])
+		if (is_fatal && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
 			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
 			u32 hp = target_ext->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
 
@@ -995,11 +995,16 @@ namespace hooks
 				});
 			}
 
+			u32 player = data.target->player;
+			if (target_ext->timers[TimerReclamation]) {
+				player = target_ext->values[ValueReclamationPlayer];
+			}
+
 			AiTown* town = 0;
 			if (data.target->unit_ai && data.target->unit_ai->type == AiType::Worker) {
 				town = data.target->unit_ai->worker_ai.town;
 			}
-			globals.init_revive(data.target->position.x, data.target->position.y, data.target->player, data.target->id, data.target->energy, hp, town);
+			globals.init_revive(data.target->position.x, data.target->position.y, player, data.target->id, data.target->energy, hp, town);
 		}
 
 		return is_fatal;

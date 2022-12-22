@@ -2344,7 +2344,7 @@ namespace scbw {
 				return CorpseConsume_Parasite;
 			}
 		}
-		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive]) {
+		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
 			return CorpseConsume_Revive;
 		}
 		return CorpseConsume_None;
