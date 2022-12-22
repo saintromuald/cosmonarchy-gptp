@@ -2561,6 +2561,20 @@ namespace hooks {
 								unit->sprite->create_top_overlay(image_id, 1, ((units_dat::unit_bounds[unit->id].top / 2 + 17) * -1));
 							}
 						} break;
+						case UnitId::ProtossGladius:
+						{
+							u32 image_id = ImageId::SantaHatLarge;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, (units_dat::unit_bounds[unit->id].top / 2 * -1));
+							}
+						} break;
+						case UnitId::ProtossAnthelion:
+						{
+							u32 image_id = ImageId::SantaHatXLarge;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 46) * -1));
+							}
+						} break;
 						case UnitId::ProtossAccantor:
 						case UnitId::ZergOvileth:
 						{
@@ -2593,6 +2607,7 @@ namespace hooks {
 						// Use unit bounds
 						case UnitId::TerranTalos:
 						case UnitId::ProtossScribe:
+						case UnitId::ProtossSteward:
 						case UnitId::ZergLarva:
 						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
