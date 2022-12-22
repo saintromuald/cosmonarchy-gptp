@@ -710,7 +710,7 @@ namespace hooks
 			{
 				// Sevenstep Mind Matter passive - heal energy, then shields
 				if (data.attacker->energy == data.attacker->get_max_energy() && data.attacker->shields != data.attacker->get_max_shields_raw()) {
-					helper::play_sound_from_unit(SoundId::SevenstepShieldHeal01,data.attacker, 1, 0);
+					helper::play_sound_from_unit(SoundId::SevenstepShieldHeal01, data.attacker, 1, 0);
 				}
 				data.attacker->heal_energy_then_shields(damage_dealt / 2, data.attacker);
 			} break;
@@ -744,13 +744,13 @@ namespace hooks
 	}
 
 	static bool weapon_damage_fatal(const WeaponDamageData& data) {
-		bool is_fatal = true;
+		bool fatal_deal_damage = true;
 
 		UnitExt* target_ext = get_unit_ext(data.target);
 		switch (data.weapon_id) {
 			case WeaponId::Plague: {
 				// Plague - Don't kill
-				is_fatal = false;
+				fatal_deal_damage = false;
 				data.target->set_hitpoints(256);
 			} break;
 			case WeaponId::PsiStorm: {
@@ -779,7 +779,7 @@ namespace hooks
 
 		// Empress - Anodyne Annex - zombify target
 		if (target_ext->values[ValueEmpressPassiveStacks] && !target_ext->values[ValueIsZombified]) {
-			is_fatal = false;
+			fatal_deal_damage = false;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
 			data.target->heal_hp_then_shields(target_ext->values[ValueEmpressPassiveStacks] * 256 * 2.5, target_ext->units[UnitEmpressSource]);
@@ -823,7 +823,7 @@ namespace hooks
 			data.target->give_to(target_ext->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
 
-			is_fatal = false;
+			fatal_deal_damage = false;
 			data.target->set_hitpoints(target_ext->values[ValueBlissfulEmbraceOriginalHealth]);
 
 			// Make this a sprite
@@ -852,7 +852,7 @@ namespace hooks
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
-				is_fatal = false;
+				fatal_deal_damage = false;
 			}
 			case UnitId::TerranCuirass:
 			{
@@ -860,7 +860,7 @@ namespace hooks
 				if (!target_ext->values[ValueCuirassIsSelfReviving]) {
 					target_ext->values[ValueCuirassIsSelfReviving] = 1;
 					data.target->hitpoints = CuirassSelfReviveHP;
-					is_fatal = false;
+					fatal_deal_damage = false;
 					data.target->order_computer(OrderId::Stop);
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
@@ -923,7 +923,7 @@ namespace hooks
 						return true;
 					});
 					if (nearest) {
-						is_fatal = false;
+						fatal_deal_damage = false;
 						data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id] / 2);
 						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
 						data.target->status |= UnitStatus::CanNotReceiveOrders;
@@ -966,12 +966,12 @@ namespace hooks
 				data.target->sprite->create_overlay(effect_image_id);
 				helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
 
-				is_fatal = false;
+				fatal_deal_damage = false;
 			}
 		}
 
 		// Apostle, Anticthon, Aion - Revive (Must be last!)
-		if (is_fatal && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
+		if (fatal_deal_damage && data.damage >= data.target->hitpoints && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
 			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
 			u32 max_hp = data.target->get_max_hp_raw();
 
@@ -1012,7 +1012,7 @@ namespace hooks
 			globals.init_revive(data.target->position.x, data.target->position.y, player, data.target->id, data.target->energy, hp, town);
 		}
 
-		return is_fatal;
+		return fatal_deal_damage;
 	}
 
 	void apply_ensnare(Unit* unit) { // 004F45E0
