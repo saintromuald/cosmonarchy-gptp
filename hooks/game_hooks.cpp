@@ -1778,7 +1778,7 @@ namespace hooks {
 					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf);
 					unit_search_sort_by_distance(&unit_array, unit->position);
 
-					u32 shields = 64;
+					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
 					}
