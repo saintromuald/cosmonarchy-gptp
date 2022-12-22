@@ -2528,10 +2528,8 @@ namespace hooks {
 			if (scbw::get_local_month() == 12) {
 				if (unit->status & UnitStatus::Burrowed) {
 					unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
-				}
-				else {
-					switch (unit->id)
-					{
+				} else {
+					switch (unit->id) {
 						case UnitId::ProtossPylon:
 						case UnitId::ZergLarvoskColony:
 						{
@@ -2589,9 +2587,6 @@ namespace hooks {
 								unit->sprite->create_top_overlay(image_id, 0, (units_dat::unit_bounds[unit->id].top / 2 * -1));
 							}
 						} break;
-						default:
-						{
-						}
 					}
 				}
 			}
