@@ -1042,8 +1042,8 @@ namespace ImageId {
 		KhaydarinEclipseOverlayMedium				= 1271,
 		EnsnaringBroodOverlay						= 1281,
 		KhaydarinEclipseOverlaySmall				= 1272,
-		Christmas_MineralChunkType1					= 1322,
-		Christmas_MineralChunkType2					= 1323,
+		Christmas_MineralChunk1					= 1322,
+		Christmas_MineralChunk2					= 1323,
 		DeconstructionSmall							= 1332,
 		DeconstructionMedium						= 1333,
 		DeconstructionLarge							= 1334,
@@ -1185,6 +1185,8 @@ namespace ImageId {
 		SantaHatMedium17							= 1674,
 		SantaHatLarge17								= 1675,
 		SantaHatXLarge17							= 1676,
+		Christmas_VespeneChunk1						= 1677,
+		Christmas_VespeneChunk2						= 1678,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

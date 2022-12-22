@@ -45,7 +45,8 @@ namespace hooks {
 		worker->sprite->remove_overlay(ImageId::Flag, ImageId::TerranGasTankType2);
 		worker->sprite->remove_overlay(ImageId::Uraj, ImageId::Khalis);
 		worker->sprite->remove_overlay(ImageId::GasRaw, ImageId::GasRaw2);
-		worker->sprite->remove_overlay(ImageId::Christmas_MineralChunkType1, ImageId::Christmas_MineralChunkType2);
+		worker->sprite->remove_overlay(ImageId::Christmas_MineralChunk1, ImageId::Christmas_MineralChunk2);
+		worker->sprite->remove_overlay(ImageId::Christmas_VespeneChunk1, ImageId::Christmas_VespeneChunk2);
 	}
 
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
@@ -62,7 +63,7 @@ namespace hooks {
 			if (scbw::can_celebrate()) {
 				// Christmas
 				if (scbw::get_local_month() == 12) {
-					chunk_image_id = ImageId::Christmas_MineralChunkType1;
+					chunk_image_id = ImageId::Christmas_MineralChunk1;
 				}
 			}
 			is_mineral = true;
@@ -79,6 +80,14 @@ namespace hooks {
 		}
 
 		if (!no_chunk_image) {
+			if (scbw::can_celebrate()) {
+				// Christmas
+				if (scbw::get_local_month() == 12) {
+					if (!is_mineral) {
+						chunk_image_id = ImageId::Christmas_VespeneChunk1;
+					}
+				}
+			}
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
 			if (resource_amount <= 2) {
 				chunk_image_id += 1; // Use depleted resource image
