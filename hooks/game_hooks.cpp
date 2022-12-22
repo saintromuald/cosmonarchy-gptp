@@ -2548,10 +2548,17 @@ namespace hooks {
 					case UnitId::ZergEgg:
 					{
 						image_id = ImageId::SantaHatSmall17;
-						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 6) * -1;
 						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
 							image_id -= 4;
 						}
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 6) * -1;
+					} break;
+					case UnitId::ZergQuazilisk:
+					case UnitId::ZergHydralisk:
+					case UnitId::ZergKagralisk:
+					{
+						image_id = ImageId::SantaHatSmall17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 9) * -1;
 					} break;
 					case UnitId::ProtossPylon:
 					{
@@ -2602,10 +2609,8 @@ namespace hooks {
 					case UnitId::ZergLarva:
 					case UnitId::ZergDroleth:
 					case UnitId::ZergZethrokor:
-					case UnitId::ZergQuazilisk:
 					case UnitId::ZergVorvrokor:
 					case UnitId::ZergLiiralisk:
-					case UnitId::ZergHydralisk:
 					case UnitId::ZergGeszithalor:
 					case UnitId::ZergRilirokor:
 					case UnitId::ZergRililisk:
