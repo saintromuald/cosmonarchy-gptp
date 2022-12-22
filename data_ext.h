@@ -146,6 +146,7 @@ enum ExtTimerId
 	TimerKaiserRampage,
 	TimerKaiserRampageTimeout,
 	TimerApollyoidAdhesive,
+	TimerApollyoidAdhesiveDamageCooldown,
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
 	TimerLakiziliskETA,
