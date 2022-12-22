@@ -126,13 +126,12 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 	if (new_image) {
 		unit->sprite->main_graphic->free();
 		unit->sprite->main_graphic = new_image;
-	}
+		if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) {
+			new_image->play_iscript_animation((IscriptAnimation::Enum)unit->building.resource.resource_iscript);
+		}
 
-	UnitExt* unit_ext = get_unit_ext(unit);
-	unit_ext->values[ValueCustomImage] = image_id + 1;
-
-	if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) {
-		hooks::update_mineral_field_image(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueCustomImage] = image_id + 1;
 	}
 }
 

@@ -534,7 +534,7 @@ namespace hooks {
 			} break;
 		}
 
-		if (anim != unit->building.resource.resource_iscript) {
+		if (unit->building.resource.resource_iscript != anim) {
 			unit->building.resource.resource_iscript = anim;
 			unit->sprite->play_iscript_animation(anim);
 		}
