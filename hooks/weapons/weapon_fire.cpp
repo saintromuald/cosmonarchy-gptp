@@ -276,6 +276,10 @@ namespace hooks {
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaunchPos, 1, false);
 					} break;
+					case WeaponId::AionLazarusSalvo:
+					{
+						scbw::set_missile_source_pos(unit, weapon_id, ValueAionLaunchPos, 4, false);
+					} break;
 					case WeaponId::WraithBurstLasers:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 3, false, 0, 2);

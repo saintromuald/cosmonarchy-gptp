@@ -130,7 +130,11 @@ enum ExtValueId
 	ValueRamessesLaunchPos,
 	ValuePositronLaunchPos,
 	ValueCustomImage,
+<<<<<<< HEAD
 	ValueReclamationPlayer,
+=======
+	ValueAionLaunchPos,
+>>>>>>> 6b0277b528b117dc427d3810e6e5be8f6b4c037b
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
