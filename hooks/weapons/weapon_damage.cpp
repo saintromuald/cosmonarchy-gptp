@@ -457,7 +457,7 @@ namespace hooks
 				case WeaponId::HarakanFlameThrower:
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
-					target_ext->timers[TimerApollyoidAdhesive] = 49;
+					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
 				} break;
 				case WeaponId::GladiusPlasmaFlurry: {
 					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
