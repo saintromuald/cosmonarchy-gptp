@@ -2530,102 +2530,98 @@ namespace hooks {
 			unit->update_speed();
 		}
 
-		// Celebrations!
-		if (scbw::can_celebrate()) {
-			// Christmas
-			if (scbw::get_local_month() == 12) {
-				if (unit->status & UnitStatus::Burrowed) {
-					unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
-				} else if (unit->id == UnitId::ZergEgg || unit->status & UnitStatus::Completed) {
-					u32 image_id = ImageId::None;
-					u32 offset_x = 0;
-					u32 offset_y = 0;
-					switch (unit->id) {
-						// Use special offsets
-						case UnitId::TerranCohort:
-						case UnitId::TerranMason:
-						case UnitId::TerranMaverick:
-						case UnitId::TerranHarakan:
-						case UnitId::ProtossArtisan:
-						case UnitId::ProtossSimulacrum:
-						case UnitId::ZergEgg:
-						{
-							image_id = ImageId::SantaHatSmall17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 6) * -1;
-							if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
-								image_id -= 4;
-							}
-						} break;
-						case UnitId::ProtossPylon:
-						{
-							image_id = ImageId::SantaHatMedium17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 12) * -1;
-						} break;
-						case UnitId::ProtossCenotaph:
-						{
-							image_id = ImageId::SantaHatXLarge17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 17) * -1;
-						} break;
-						case UnitId::ProtossGladius:
-						{
-							image_id = ImageId::SantaHatLarge;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2) * -1;
-						} break;
-						case UnitId::ProtossAnthelion:
-						{
-							image_id = ImageId::SantaHatXLarge;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 46) * -1;
-						} break;
-						case UnitId::ProtossAccantor:
-						case UnitId::ZergOvileth:
-						{
-							image_id = ImageId::SantaHatLarge17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 8) * -1;
-						} break;
-						case UnitId::ZergLarvoskColony:
-						{
-							image_id = ImageId::SantaHatLarge17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 6) * -1;
-						} break;
-						case UnitId::ZergMatravilNest:
-						{
-							image_id = ImageId::SantaHatXLarge17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 14) * -1;
-						} break;
-						case UnitId::ZergGosvileth:
-						{
-							image_id = ImageId::SantaHatSmall;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 4) * -1;
-						} break;
-						// Use unit bounds
-						case UnitId::TerranTalos:
-						case UnitId::TerranWraith:
-						case UnitId::ProtossScribe:
-						case UnitId::ProtossSteward:
-						case UnitId::ZergLarva:
-						case UnitId::ZergDroleth:
-						case UnitId::ZergZethrokor:
-						case UnitId::ZergQuazilisk:
-						case UnitId::ZergVorvrokor:
-						case UnitId::ZergLiiralisk:
-						case UnitId::ZergHydralisk:
-						case UnitId::ZergGeszithalor:
-						case UnitId::ZergRilirokor:
-						case UnitId::ZergRililisk:
-						case UnitId::ZergIsthrathaleth:
-						{
-							image_id = ImageId::SantaHatSmall17 + scbw::get_overlay_offset(unit->id, true);
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2) * -1;
-							if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
-								image_id -= 4;
-							}
-						} break;
-					}
-
-					if (image_id != ImageId::None) {
-						if (!unit->get_overlay(image_id)) {
-							unit->sprite->create_top_overlay(image_id, offset_x, offset_y);
+		if (global_vars.celebration == Celebration_Christmas) {
+			if (unit->status & UnitStatus::Burrowed) {
+				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
+			} else if (unit->id == UnitId::ZergEgg || unit->status & UnitStatus::Completed) {
+				u32 image_id = ImageId::None;
+				u32 offset_x = 0;
+				u32 offset_y = 0;
+				switch (unit->id) {
+					// Use special offsets
+					case UnitId::TerranCohort:
+					case UnitId::TerranMason:
+					case UnitId::TerranMaverick:
+					case UnitId::TerranHarakan:
+					case UnitId::ProtossArtisan:
+					case UnitId::ProtossSimulacrum:
+					case UnitId::ZergEgg:
+					{
+						image_id = ImageId::SantaHatSmall17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 6) * -1;
+						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
+							image_id -= 4;
 						}
+					} break;
+					case UnitId::ProtossPylon:
+					{
+						image_id = ImageId::SantaHatMedium17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 12) * -1;
+					} break;
+					case UnitId::ProtossCenotaph:
+					{
+						image_id = ImageId::SantaHatXLarge17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 17) * -1;
+					} break;
+					case UnitId::ProtossGladius:
+					{
+						image_id = ImageId::SantaHatLarge;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2) * -1;
+					} break;
+					case UnitId::ProtossAnthelion:
+					{
+						image_id = ImageId::SantaHatXLarge;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 46) * -1;
+					} break;
+					case UnitId::ProtossAccantor:
+					case UnitId::ZergOvileth:
+					{
+						image_id = ImageId::SantaHatLarge17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 8) * -1;
+					} break;
+					case UnitId::ZergLarvoskColony:
+					{
+						image_id = ImageId::SantaHatLarge17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 6) * -1;
+					} break;
+					case UnitId::ZergMatravilNest:
+					{
+						image_id = ImageId::SantaHatXLarge17;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 14) * -1;
+					} break;
+					case UnitId::ZergGosvileth:
+					{
+						image_id = ImageId::SantaHatSmall;
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 4) * -1;
+					} break;
+					// Use unit bounds
+					case UnitId::TerranTalos:
+					case UnitId::TerranWraith:
+					case UnitId::ProtossScribe:
+					case UnitId::ProtossSteward:
+					case UnitId::ZergLarva:
+					case UnitId::ZergDroleth:
+					case UnitId::ZergZethrokor:
+					case UnitId::ZergQuazilisk:
+					case UnitId::ZergVorvrokor:
+					case UnitId::ZergLiiralisk:
+					case UnitId::ZergHydralisk:
+					case UnitId::ZergGeszithalor:
+					case UnitId::ZergRilirokor:
+					case UnitId::ZergRililisk:
+					case UnitId::ZergIsthrathaleth:
+					{
+						image_id = ImageId::SantaHatSmall17 + scbw::get_overlay_offset(unit->id, true);
+						offset_y = (units_dat::unit_bounds[unit->id].top / 2) * -1;
+						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
+							image_id -= 4;
+						}
+					} break;
+				}
+
+				if (image_id != ImageId::None) {
+					if (!unit->get_overlay(image_id)) {
+						unit->sprite->create_top_overlay(image_id, offset_x, offset_y);
 					}
 				}
 			}

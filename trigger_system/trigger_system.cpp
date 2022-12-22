@@ -13,6 +13,7 @@
 #include "ai_layouts.h"
 #include "player_color.h"
 #include "threshold.h"
+#include "config.h"
 
 #include "hooks/harvest.h"
 
@@ -29,6 +30,24 @@ SpriteReplacement sprite_replacements[SpriteReplacementCap];
 bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 
+GlobalVars global_vars;
+
+static void init_auto_celebration() {
+	if (!config.celebrations_enabled) {
+		return;
+	}
+
+	time_t now = time(0);
+	tm* ltm = localtime(&now);
+	u32 month = ltm->tm_mon + 1;
+
+	if (month == 12) {
+		global_vars.celebration = Celebration_Christmas;
+	} else {
+		global_vars.celebration = Celebration_None;
+	}
+}
+
 void init_trigger_system() {
 	trigger_system_init = true;
 	trigger_game_paused = false;
@@ -42,7 +61,9 @@ void init_trigger_system() {
 
 	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
+	memset(&global_vars, 0, sizeof(global_vars));
 
+	init_auto_celebration();
 	init_recolors();
 	init_objectives();
 	init_sound();
@@ -81,21 +102,16 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		return sprite_replacement->sprite_id;
 	}
 
-	if (scbw::can_celebrate()) {
-		// Christmas
-		if (scbw::get_local_month() == 12) {
-			if (unit->status & UnitStatus::Completed) {
-				switch (unit->id) {
-					case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
-					case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
-					case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
-					case UnitId::TerranCommandCenter:		return SpriteId::Christmas_CommandCenter;
-					case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
-					case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
-					case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
-					case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
-				}
-			}
+	if (global_vars.celebration == Celebration_Christmas) {
+		switch (unit->id) {
+			case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
+			case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
+			case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
+			case UnitId::TerranCommandCenter:		return SpriteId::Christmas_CommandCenter;
+			case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
+			case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
+			case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
+			case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
 		}
 	}
 
@@ -1018,6 +1034,15 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 timer = parser_get_time_ticks(&parser);
 
 			threshold_config.timer = timer;
+		} else if (parser_eq(&parser, "set_celebration")) {
+			parser_get_word(&parser);
+			if (parser_eqi(&parser, "auto")) {
+				init_auto_celebration();
+			} else if (parser_eqi(&parser, "none")) {
+				global_vars.celebration = Celebration_None;
+			} else if (parser_eqi(&parser, "christmas")) {
+				global_vars.celebration = Celebration_Christmas;
+			}
 		}
 	}
 

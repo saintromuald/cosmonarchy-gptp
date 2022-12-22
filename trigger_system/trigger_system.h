@@ -28,7 +28,6 @@ const char* race_names[] = {
 	"Terran",
 };
 
-
 extern bool trigger_game_paused;
 extern bool trigger_system_init;
 extern bool trigger_system_in_game;
@@ -41,6 +40,25 @@ extern SpriteReplacement sprite_replacements[SpriteReplacementCap];
 
 extern bool has_custom_player_name[PlayerLimit];
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
+
+struct PlayerVars {
+	u32 temp;
+};
+
+enum Celebration {
+	Celebration_None,
+	Celebration_Christmas,
+
+	Celebration_Count,
+};
+
+struct GlobalVars {
+	PlayerVars players[PlayerLimit];
+	u32 celebration;
+};
+
+extern GlobalVars global_vars;
+
 void init_trigger_system();
 void update_trigger_system(bool in_game);
 

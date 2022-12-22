@@ -1062,7 +1062,6 @@ enum VespeneDeaths
 	VespeneDeaths_Ping					= 0x02,
 	VespeneDeaths_ToggleRandomizeColor	= 0x04,
 	VespeneDeaths_DisableQuasifog		= 0x08,
-	VespeneDeaths_DisableCelebrations	= 0x10,
 };
 
 enum AiPersonality // disruption_web_unit

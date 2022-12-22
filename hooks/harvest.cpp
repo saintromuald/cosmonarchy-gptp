@@ -1,6 +1,8 @@
 #include "harvest.h"
 #include "../SCBW/api.h"
 
+#include "trigger_system/trigger_system.h"
+
 // Used for AI calcs (currently supported values: 3, 2, 1)
 u32 get_gas_tier(Unit* unit) {
 	if (unit) {
@@ -60,11 +62,8 @@ namespace hooks {
 
 		if (resource->id >= UnitId::ResourceMineralField && resource->id <= UnitId::ResourceMineralFieldType3) {
 			chunk_image_id = ImageId::MineralChunkType1;
-			if (scbw::can_celebrate()) {
-				// Christmas
-				if (scbw::get_local_month() == 12) {
-					chunk_image_id = ImageId::Christmas_MineralChunk1;
-				}
+			if (global_vars.celebration == Celebration_Christmas) {
+				chunk_image_id = ImageId::Christmas_MineralChunk1;
 			}
 			is_mineral = true;
 		} else if (resource->id == UnitId::ProtossAquifer) {
@@ -80,12 +79,9 @@ namespace hooks {
 		}
 
 		if (!no_chunk_image) {
-			if (scbw::can_celebrate()) {
-				// Christmas
-				if (scbw::get_local_month() == 12) {
-					if (!is_mineral) {
-						chunk_image_id = ImageId::Christmas_VespeneChunk1;
-					}
+			if (global_vars.celebration == Celebration_Christmas) {
+				if (!is_mineral) {
+					chunk_image_id = ImageId::Christmas_VespeneChunk1;
 				}
 			}
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
