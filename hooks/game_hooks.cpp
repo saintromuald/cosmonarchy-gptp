@@ -2532,21 +2532,7 @@ namespace hooks {
 				else {
 					switch (unit->id)
 					{
-						case UnitId::ProtossPylon:
-						case UnitId::ZergLarvoskColony:
-						{
-							u32 image_id = ImageId::SantaHatLarge17;
-							if (!unit->get_overlay(image_id)) {
-								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 6) * -1));
-							}
-						} break;
-						case UnitId::ZergGosvileth:
-						{
-							u32 image_id = ImageId::SantaHatSmall;
-							if (!unit->get_overlay(image_id)) {
-								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 4) * -1));
-							}
-						} break;
+						// Use special offsets
 						case UnitId::TerranCohort:
 						case UnitId::TerranMason:
 						case UnitId::TerranMaverick:
@@ -2562,14 +2548,44 @@ namespace hooks {
 								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 6) * -1));
 							}
 						} break;
-						case UnitId::ZergOvileth:
+						case UnitId::ProtossPylon:
+						{
+							u32 image_id = ImageId::SantaHatMedium17;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 12) * -1));
+							}
+						} break;
+						case UnitId::ProtossCenotaph:
+						{
+							u32 image_id = ImageId::SantaHatXLarge17;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 1, ((units_dat::unit_bounds[unit->id].top / 2 + 17) * -1));
+							}
+						} break;
 						case UnitId::ProtossAccantor:
+						case UnitId::ZergOvileth:
 						{
 							u32 image_id = ImageId::SantaHatLarge17;
 							if (!unit->get_overlay(image_id)) {
 								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 8) * -1));
 							}
 						} break;
+						case UnitId::ZergLarvoskColony:
+						case UnitId::ZergMatravilNest:
+						{
+							u32 image_id = ImageId::SantaHatLarge17;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 6) * -1));
+							}
+						} break;
+						case UnitId::ZergGosvileth:
+						{
+							u32 image_id = ImageId::SantaHatSmall;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 4) * -1));
+							}
+						} break;
+						// Use unit bounds
 						case UnitId::TerranTalos:
 						case UnitId::ProtossScribe:
 						case UnitId::ZergLarva:
