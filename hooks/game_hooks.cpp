@@ -1775,7 +1775,7 @@ namespace hooks {
 					EntryArray unit_array = {};
 					unit_search_radial(&unit_array, unit->position, 3 * 32);
 					unit_search_add_units_from_connected_transport(&unit_array, unit);
-					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf);
+					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf | FilterCompleted);
 					unit_search_sort_by_distance(&unit_array, unit->position);
 
 					u32 shields = 64;
