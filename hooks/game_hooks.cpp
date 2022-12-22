@@ -2538,6 +2538,7 @@ namespace hooks {
 						case UnitId::TerranMaverick:
 						case UnitId::TerranHarakan:
 						case UnitId::ProtossArtisan:
+						case UnitId::ProtossSimulacrum:
 						case UnitId::ZergEgg:
 						{
 							u32 image_id = ImageId::SantaHatSmall17;
@@ -2597,7 +2598,10 @@ namespace hooks {
 						case UnitId::ZergLarva:
 						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
+						case UnitId::ZergQuazilisk:
 						case UnitId::ZergVorvrokor:
+						case UnitId::ZergLiiralisk:
+						case UnitId::ZergHydralisk:
 						case UnitId::ZergGeszithalor:
 						case UnitId::ZergRilirokor:
 						case UnitId::ZergRililisk:
