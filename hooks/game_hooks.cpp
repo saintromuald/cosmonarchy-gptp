@@ -2507,12 +2507,18 @@ namespace hooks {
 
 		// Harakan - Apollyoid Adhesive
 		{
+			u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
 			u32 timer = unit_ext->timers[TimerApollyoidAdhesive];
-			if (timer > 1) {
-			//	unit->damage_with_custom(unit_ext->values[ValueApollyoidAdhesiveStacks]); // TODO: deal this over time. -Pr0nogo
-			}
-			else if (timer == 1) {
+			if (timer % 24 == 23) {
+				unit->damage_with_custom(unit_ext->values[ValueApollyoidAdhesiveStacks] * 256, 2);
+
+				if (!unit->sprite->get_overlay(image_id)) {
+					unit->sprite->create_top_overlay(image_id);
+				}
+			} else if (timer == 1) {
 				unit_ext->values[ValueApollyoidAdhesiveStacks] = 0;
+
+				unit->remove_overlay(image_id);
 			}
 		}
 
@@ -2553,7 +2559,7 @@ namespace hooks {
 						case UnitId::ProtossPylon:
 						{
 							image_id = ImageId::SantaHatMedium17;
-							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 12);
+							offset_y = (units_dat::unit_bounds[unit->id].top / 2 + 12) * -1;
 						} break;
 						case UnitId::ProtossCenotaph:
 						{
