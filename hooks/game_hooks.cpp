@@ -1775,7 +1775,7 @@ namespace hooks {
 					EntryArray unit_array = {};
 					unit_search_radial(&unit_array, unit->position, 3 * 32);
 					unit_search_add_units_from_connected_transport(&unit_array, unit);
-					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf);
+					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf | FilterCompleted);
 					unit_search_sort_by_distance(&unit_array, unit->position);
 
 					u32 shields = 6 * 256 / 24;
@@ -2564,6 +2564,20 @@ namespace hooks {
 								unit->sprite->create_top_overlay(image_id, 1, ((units_dat::unit_bounds[unit->id].top / 2 + 17) * -1));
 							}
 						} break;
+						case UnitId::ProtossGladius:
+						{
+							u32 image_id = ImageId::SantaHatLarge;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, (units_dat::unit_bounds[unit->id].top / 2 * -1));
+							}
+						} break;
+						case UnitId::ProtossAnthelion:
+						{
+							u32 image_id = ImageId::SantaHatXLarge;
+							if (!unit->get_overlay(image_id)) {
+								unit->sprite->create_top_overlay(image_id, 0, ((units_dat::unit_bounds[unit->id].top / 2 + 46) * -1));
+							}
+						} break;
 						case UnitId::ProtossAccantor:
 						case UnitId::ZergOvileth:
 						{
@@ -2596,6 +2610,7 @@ namespace hooks {
 						// Use unit bounds
 						case UnitId::TerranTalos:
 						case UnitId::ProtossScribe:
+						case UnitId::ProtossSteward:
 						case UnitId::ZergLarva:
 						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
