@@ -2163,7 +2163,8 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossEmpress:
 								{
-									if (current_button->icon_id == IconId::ParticleBeamHarvest) // Empress - Anodyne Annex
+									if (current_button->icon_id == IconId::ParticleBeamHarvest // Empress - Anodyne Annex
+									|| current_button->icon_id == IconId::GeszithalorAcidSpore) // Empress - Lithe Organelle
 									{
 										current_button_state = Button_State::Enabled;
 									}
