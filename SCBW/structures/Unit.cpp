@@ -440,7 +440,7 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 	return value;
 }
 
-u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
+u32 Unit::heal_shields(s32 value, Unit* source, bool restore, bool proc_flash_shielding) {
 	assert(this);
 	assert(value >= 0);
 	if (this->shields == this->get_max_shields_raw()) { // Skip healing if max shields already
@@ -450,12 +450,15 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore) {
 	this->shields = cap_value(this->shields + value, this->get_max_shields_raw(), &value);
 	this->set_hitpoints(this->hitpoints); // Also updates unit strength
 
-	UnitExt* this_ext = get_unit_ext(this);
-	this_ext->shield_regen_timer = UINT_MAX;
-
 	// If heals to full, clear debuffs
 	if (restore && this->shields == this->get_max_shields_raw()) {
 		scbw::restore_func(this);
+	}
+
+	// Activate flash shielding
+	if (proc_flash_shielding) {
+		UnitExt* this_ext = get_unit_ext(this);
+		this_ext->shield_regen_timer = UINT_MAX;
 	}
 
 	return value;
@@ -473,16 +476,16 @@ u32 Unit::heal_energy(s32 value, Unit* source) {
 	return value;
 }
 
-u32 Unit::heal_hp_then_shields(s32 value, Unit* source, bool restore) {
-	return heal_shields(heal_hp(value, source, restore), source, restore);
+u32 Unit::heal_hp_then_shields(s32 value, Unit* source, bool restore, bool proc_flash_shielding) {
+	return heal_shields(heal_hp(value, source, restore), source, restore, proc_flash_shielding);
 }
 
-u32 Unit::heal_shields_then_hp(s32 value, Unit* source, bool restore) {
-	return heal_hp(heal_shields(value, source, restore), source, restore);
+u32 Unit::heal_shields_then_hp(s32 value, Unit* source, bool restore, bool proc_flash_shielding) {
+	return heal_hp(heal_shields(value, source, restore, proc_flash_shielding), source, restore);
 }
 
-u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore) {
-	return heal_shields(heal_energy(value, source), source, restore);
+u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore, bool proc_flash_shielding) {
+	return heal_shields(heal_energy(value, source), source, restore, proc_flash_shielding);
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
