@@ -1742,9 +1742,10 @@ namespace scbw {
 
 	bool unit_id_uses_xlarge_overlays(u16 unit_id) {
 		return unit_id == UnitId::TerranPenumbra
-			|| unit_id == UnitId::TerranOberon
 			|| unit_id == UnitId::TerranPhobos
-			|| unit_id == UnitId::ProtossStarSovereign;
+			|| unit_id == UnitId::ProtossStarSovereign
+			|| unit_id == UnitId::ZergOthstoleth
+			|| unit_id == UnitId::ZergAlkajelisk;
 	}
 
 	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
