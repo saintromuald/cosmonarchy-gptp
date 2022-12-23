@@ -2109,9 +2109,26 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossOptecton:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon // Optecton - Prolonged Arms
+									||	current_button->icon_id == IconId::TerranShipWeapons) // Optecton - Forward March
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossPatriarch:
+								{
+									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Patriarch - Prolonged Arms
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossCharlatan:
 								{
-									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
+									if (current_button->icon_id == IconId::DemiurgePassiveWorship // Charlatan - Leading the Blind
+									||	current_button->icon_id == IconId::GeszithalorAcidSpore) // Charlatan - Lithe Organelle
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2146,7 +2163,8 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossEmpress:
 								{
-									if (current_button->icon_id == IconId::ParticleBeamHarvest) // Empress - Anodyne Annex
+									if (current_button->icon_id == IconId::ParticleBeamHarvest // Empress - Anodyne Annex
+									|| current_button->icon_id == IconId::GeszithalorAcidSpore) // Empress - Lithe Organelle
 									{
 										current_button_state = Button_State::Enabled;
 									}

@@ -117,14 +117,14 @@ namespace hooks
 								helper::stat_weapon_level(dialog, index, WeaponId::PegasusLancetMissiles);
 								index++;
 							} break;
-							case UnitId::TerranOberon:
-							{
-								helper::stat_weapon_level(dialog, index, WeaponId::OberonAcheronMissiles);
-								index++;
-							} break;
 							case UnitId::ProtossOptecton:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::OptectonSkybondRay);
+								index++;
+							} break;
+							case UnitId::ProtossStarSovereign:
+							{
+								helper::stat_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
 								index++;
 							} break;
 							case UnitId::ZergZarcavrokor:
