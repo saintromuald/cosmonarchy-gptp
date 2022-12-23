@@ -911,15 +911,15 @@ namespace helper {
 
 	// lobby.cpp
 	
-	// For initGame
-	void switchAllAvailableComputerSlotsToOpen();															// 004DBBE0
-	bool setLastOpenSlotToComputer(s8 race);																// 004DBB70
+	// For init_game
+	void switch_all_available_computer_slots_to_open();															// 004DBBE0
+	bool set_last_open_slot_to_computer(s8 race);																// 004DBB70
 
-	// For startGame
-	s32 bootReason(u8 player);																				// 004B8870
-	s32 isAuthedMap(void* a1);																				// 004C4870
-	void setTimerFunc();																					// 00472E00
-	s32 getTickCount();																						// 004FE0C4
+	// For start_game
+	s32 boot_reason(u8 player);																				// 004B8870
+	s32 is_authorized_map(void* a1);																				// 004C4870
+	void set_timer_func();																					// 00472E00
+	s32 get_tick_count();																						// 004FE0C4
 
 	// For initialize_bullet
 	Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);		// 00496360

@@ -7,7 +7,7 @@ namespace
 {/*
 // For singleplayerMeleeCreate
 void switchComputerToOpen(); //004DBBE0
-bool setLastOpenSlotToComputer(char a1); //004DBB70
+bool set_last_open_slot_to_computer(char a1); //004DBB70
 
 // For loadGameCreate
 s32 loadSave(); // 004CF5F0
@@ -37,7 +37,7 @@ namespace hooks
 				do
 				{
 					if (selected_singleplayer_race[v1 + 1] != 7) // RACE_Inactive
-						setLastOpenSlotToComputer(selected_singleplayer_race[v1 + 1]);
+						set_last_open_slot_to_computer(selected_singleplayer_race[v1 + 1]);
 					++v1;
 				} while (v1 < 8);
 			}
@@ -65,7 +65,7 @@ namespace hooks
 				setNetTblError(0, 0, 0, a2, 97);
 				if (sc_main_state == 3)
 				{
-					game_active = 0;
+					g_game_active = 0;
 					next_sc_main_state = 4;
 					if (!is_in_replay)
 						replay_end_frame = g_elapsed_time_frames;
@@ -236,7 +236,7 @@ void switchComputerToOpen() {
 };
 
 const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
-bool setLastOpenSlotToComputer(char a1) {
+bool set_last_open_slot_to_computer(char a1) {
 	static char a1;
 	static bool result;
 	__asm {

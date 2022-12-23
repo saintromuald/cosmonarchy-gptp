@@ -13,7 +13,7 @@ namespace GPTP
 	{
 			/// Writes a "game start" message to the log file and resets the internal
 		/// frame timer.
-		bool startGame();
+		bool start_game();
 		/// Writes a "game end" message to the log file.
 		bool endGame();
 		template <typename T>

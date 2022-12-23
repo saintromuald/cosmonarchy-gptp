@@ -229,7 +229,7 @@ SCBW_DATA(u8*,			player_has_left,			0x00581D62); // array of 0x8
 SCBW_DATA(u8*,			loss_type,					0x00581D61);
 SCBW_DATA(u8*,			unk_victory_variable,		0x00581D66);
 SCBW_DATA(u32*,			save_load_success,			0x006D5A68);
-SCBW_DATA(u32*,			elapsed_time_modified,		0x006D5BCC);
+SCBW_DATA(u32*,			g_elapsed_time_modified,		0x006D5BCC);
 SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
 SCBW_DATA(Options*,		g_options_list,				0x006CDFD4);
 SCBW_DATA(ReplayData*,	replay_data,				0x00596BBC);
@@ -275,7 +275,7 @@ SCBW_DATA(u32*,			console_race_specific,		0x0051A3B4);
 SCBW_DATA(u32*,			is_host,					0x00596888);
 SCBW_DATA(u8*,			out_of_game,				0x006D5A10);
 SCBW_DATA(u32*,			sc_main_state,				0x00596904);
-SCBW_DATA(u8*,			game_active,				0x006D11EC);
+SCBW_DATA(u8*,			g_game_active,				0x006D11EC);
 SCBW_DATA(u16*,			next_sc_main_state,			0x0051CE90);
 SCBW_DATA(u32*,			replay_end_frame,			0x006D0F31);
 
@@ -367,7 +367,7 @@ SCBW_DATA(Unit**,	g_bullet_bounce_missile_next,	0x0064EED4);
 SCBW_DATA(void**,	unk_array_59CB64,				0x0059CB64);	// count of 252
 SCBW_DATA(Unit*,	g_unit_reference,				0x0059CB58);
 
-// For startGame
+// For start_game
 SCBW_DATA(s8*,		g_game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
 SCBW_DATA(Player*,	g_player_replay_watchers,		0x00640970);
 

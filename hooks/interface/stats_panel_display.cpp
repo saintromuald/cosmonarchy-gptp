@@ -11,95 +11,90 @@ namespace hooks
 	void stats_panel_display(BinDlg* dialog)
 	{
 		BinDlg* current_dialog;
-		Unit* activeUnit = *g_active_portrait_unit;
+		Unit* active_unit = *g_active_portrait_unit;
 		u32 index = 0;
 
-		if (!(activeUnit->status & UnitStatus::IsHallucination)
-			|| (!*g_is_in_replay && activeUnit->player != *g_local_nation_id))
+		if (!(active_unit->status & UnitStatus::IsHallucination)
+			|| (!*g_is_in_replay && active_unit->player != *g_local_nation_id))
 		{
-			bool bNoAirWeaponDisplay;
-			u32 airWeapon;
-			u8 airWeaponMainUnit;
-			u8 airWeaponSubunit;
-			u16 unit_id = helper::get_last_queue_slot_id(activeUnit);
+			bool no_air_weapon_display;
+			u32 air_weapon;
+			u8 air_weapon_main_unit;
+			u8 air_weapon_subunit;
+			u16 unit_id = helper::get_last_queue_slot_id(active_unit);
 			if (units_dat::armor_upgrade[unit_id] != UpgradeId::GlobalUpgrade60)
 			{
 				helper::stats_armor_level(dialog, index);
 				index++;
 			}
-			if (units_dat::shields_enabled[activeUnit->id])
+			if (units_dat::shields_enabled[active_unit->id])
 			{
 				helper::stats_shield_level(dialog, index);
 				index++;
 			}
-			if (activeUnit->id != UnitId::ZergLakizilisk
-				|| activeUnit->status & UnitStatus::Burrowed)
+			if (active_unit->id != UnitId::ZergLakizilisk
+				|| active_unit->status & UnitStatus::Burrowed)
 			{
-				bool bNoGroundWeaponDisplay = false;
-				u32 groundWeapon;
-				u8 groundWeaponMainUnit = units_dat::ground_weapon[activeUnit->id];
-				if (activeUnit->id == UnitId::TerranMadrigal
-					&& scbw::get_generic_rust_value(activeUnit, RustId::ToggleTempoChange)
-					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles)
+				bool no_ground_weapon_display = false;
+				u32 ground_weapon;
+				u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
+				if (active_unit->id == UnitId::TerranMadrigal
+					&& scbw::get_generic_rust_value(active_unit, RustId::ToggleTempoChange)
+					&& ground_weapon_main_unit == WeaponId::MadrigalFuriaMissiles)
 				{
-					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
+					ground_weapon_main_unit = WeaponId::MadrigalImperiosoMissiles;
 				}
 
-				u8 groundWeaponSubunit;
-				if (groundWeaponMainUnit == WeaponId::None)
+				u8 ground_weapon_subunit;
+				if (ground_weapon_main_unit == WeaponId::None)
 				{
-					if (!activeUnit->subunit)
+					if (!active_unit->subunit)
 					{
-						bNoGroundWeaponDisplay = true;
+						no_ground_weapon_display = true;
 					}
 					else
 					{
-						groundWeaponSubunit = units_dat::ground_weapon[activeUnit->subunit->id];
+						ground_weapon_subunit = units_dat::ground_weapon[active_unit->subunit->id];
 					}
 				}
 				else
 				{
-					groundWeaponSubunit = groundWeaponMainUnit;
+					ground_weapon_subunit = ground_weapon_main_unit;
 				}
 
-				if (!bNoGroundWeaponDisplay)
+				if (!no_ground_weapon_display)
 				{
-					if (groundWeaponSubunit == WeaponId::None)
+					if (ground_weapon_subunit == WeaponId::None)
 					{
-						bNoGroundWeaponDisplay = true;
+						no_ground_weapon_display = true;
 					}
-					else if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
+					else if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed))
 					{
-						groundWeapon = WeaponId::None;
+						ground_weapon = WeaponId::None;
 					}
-					else if (groundWeaponMainUnit != WeaponId::None)
+					else if (ground_weapon_main_unit != WeaponId::None)
 					{
-						groundWeapon = groundWeaponMainUnit;
+						ground_weapon = ground_weapon_main_unit;
 					}
-					else if (!activeUnit->subunit)
+					else if (!active_unit->subunit)
 					{
-						groundWeapon = WeaponId::None;
+						ground_weapon = WeaponId::None;
 					}
 					else
 					{
-						groundWeapon = units_dat::ground_weapon[activeUnit->subunit->id];
+						ground_weapon = units_dat::ground_weapon[active_unit->subunit->id];
 					}
-					if (!bNoGroundWeaponDisplay)
+					if (!no_ground_weapon_display)
 					{
-						helper::stat_weapon_level(dialog, index, groundWeapon);
+						helper::stat_weapon_level(dialog, index, ground_weapon);
 						index++;
 
 						// Display additional weapons
-						switch (activeUnit->id)
+						switch (active_unit->id)
 						{
 							case UnitId::TerranTarasque:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
-								index++;
-							} break;
-							case UnitId::TerranAmbassador:
-							{
-								helper::stat_weapon_level(dialog, index, WeaponId::AmbassadorSignatorySalvo);
 								index++;
 							} break;
 							case UnitId::TerranDurendal:
@@ -110,11 +105,6 @@ namespace hooks
 							case UnitId::TerranCentaur:
 							{
 								helper::stat_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
-								index++;
-							} break;
-							case UnitId::TerranPegasus:
-							{
-								helper::stat_weapon_level(dialog, index, WeaponId::PegasusLancetMissiles);
 								index++;
 							} break;
 							case UnitId::ProtossOptecton:
@@ -137,101 +127,100 @@ namespace hooks
 				}
 			}
 
-			bNoAirWeaponDisplay = false;
-			airWeaponMainUnit = units_dat::air_weapon[activeUnit->id];
-			if (airWeaponMainUnit != WeaponId::None)
+			no_air_weapon_display = false;
+			air_weapon_main_unit = units_dat::air_weapon[active_unit->id];
+			if (air_weapon_main_unit != WeaponId::None)
 			{
-				airWeaponSubunit = airWeaponMainUnit;
+				air_weapon_subunit = air_weapon_main_unit;
 			}
-			else if (!activeUnit->subunit)
+			else if (!active_unit->subunit)
 			{
-				bNoAirWeaponDisplay = true;
+				no_air_weapon_display = true;
 			}
 			else
 			{
-				airWeaponSubunit = units_dat::air_weapon[activeUnit->subunit->id];
+				air_weapon_subunit = units_dat::air_weapon[active_unit->subunit->id];
 			}
 
-			if (!bNoAirWeaponDisplay)
+			if (!no_air_weapon_display)
 			{
-				if (airWeaponSubunit == WeaponId::None)
+				if (air_weapon_subunit == WeaponId::None)
 				{
-					bNoAirWeaponDisplay = true;
+					no_air_weapon_display = true;
 				}
-				else if (airWeaponMainUnit != WeaponId::None)
+				else if (air_weapon_main_unit != WeaponId::None)
 				{
-					airWeapon = airWeaponMainUnit;
+					air_weapon = air_weapon_main_unit;
 				}
 				else
 				{
-					if (!activeUnit->subunit)
+					if (!active_unit->subunit)
 					{
-						airWeapon = WeaponId::None;
+						air_weapon = WeaponId::None;
 					}
 					else
 					{
-						airWeapon = units_dat::air_weapon[activeUnit->subunit->id];
+						air_weapon = units_dat::air_weapon[active_unit->subunit->id];
 					}
 				}
-				if (!bNoAirWeaponDisplay)
+				if (!no_air_weapon_display)
 				{
-					u8 groundWeapon;
-
-					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
+					u8 ground_weapon;
+					if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed))
 					{
-						groundWeapon = WeaponId::None;
+						ground_weapon = WeaponId::None;
 					}
 					else
 					{
-						groundWeapon = units_dat::ground_weapon[activeUnit->id];
-						if (groundWeapon == WeaponId::None && activeUnit->subunit)
+						ground_weapon = units_dat::ground_weapon[active_unit->id];
+						if (ground_weapon == WeaponId::None && active_unit->subunit)
 						{
-							groundWeapon = units_dat::ground_weapon[activeUnit->subunit->id];
+							ground_weapon = units_dat::ground_weapon[active_unit->subunit->id];
 						}
 					}
 
-					if (airWeapon == groundWeapon)
+					if (air_weapon == ground_weapon)
 					{
-						bNoAirWeaponDisplay = true;
+						no_air_weapon_display = true;
 					}
-					else if (airWeaponMainUnit != WeaponId::None)
+					else if (air_weapon_main_unit != WeaponId::None)
 					{
-						airWeapon = airWeaponMainUnit;
+						air_weapon = air_weapon_main_unit;
 					}
-					else if (airWeaponMainUnit == WeaponId::None)
+					else if (air_weapon_main_unit == WeaponId::None)
 					{
-						if (!activeUnit->subunit)
+						if (!active_unit->subunit)
 						{
-							airWeapon = WeaponId::None;
+							air_weapon = WeaponId::None;
 						}
 						else
 						{
-							airWeapon = units_dat::air_weapon[activeUnit->subunit->id]; // 00426E16
+							air_weapon = units_dat::air_weapon[active_unit->subunit->id]; // 00426E16
 						}
 					}
-					if (!bNoAirWeaponDisplay)
+					if (!no_air_weapon_display)
 					{
-						helper::stat_weapon_level(dialog, index, airWeapon);
+						helper::stat_weapon_level(dialog, index, air_weapon);
 						index++;
 					}
 				}
 			}
 
-			if (activeUnit->id == UnitId::ProtossSolarion
-				|| activeUnit->id == UnitId::ProtossAccantorOld) // Originally had hardcode for Gantrithor and Warbringer
+			if (active_unit->id == UnitId::ProtossSolarion
+				|| active_unit->id == UnitId::ProtossAccantorOld) // Originally had hardcode for Gantrithor and Warbringer
 			{
 				helper::stat_hangar_count(dialog, index);
 				index++;
 			}
 
-			if (activeUnit->id == UnitId::TerranVulture) // Originally also had hardcode for Raynor Vulture
+			if (active_unit->id == UnitId::TerranVulture) // Originally also had hardcode for Raynor Vulture
 			{
 				if (helper::stat_spidermine_count(dialog, index))
 				{
 					index++;
 				}
 			}
-			unit_id = helper::get_last_queue_slot_id(activeUnit);
+			unit_id = helper::get_last_queue_slot_id(active_unit);
 			if (unit_id == UnitId::TerranMissileSilo)
 			{
 				helper::stat_nuke_count(dialog, index);

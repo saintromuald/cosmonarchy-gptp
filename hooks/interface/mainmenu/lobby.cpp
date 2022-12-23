@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	s32 initGame() // 004EE110
+	s32 init_game() // 004EE110
 	{
 		if (*multiplayer_mode)
 		{
@@ -16,13 +16,13 @@ namespace hooks
 		{
 			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 			{
-				helper::switchAllAvailableComputerSlotsToOpen();
+				helper::switch_all_available_computer_slots_to_open();
 				g_player_table[*g_local_nation_id].race = selected_singleplayer_race[0];
 				for (s32 player = 0; player < 8; player++)
 				{
 					if (selected_singleplayer_race[player + 1] != RaceId::None)
 					{
-						helper::setLastOpenSlotToComputer(selected_singleplayer_race[player + 1]);
+						helper::set_last_open_slot_to_computer(selected_singleplayer_race[player + 1]);
 					}
 				}
 			}
@@ -39,15 +39,15 @@ namespace hooks
 		return 1;
 	}
 
-	s32 startGame(void* lobbyState, s32 player) // 00472060
+	s32 start_game(void* lobby_state, s32 player) // 00472060
 	{
-		lobbyState = g_game_state;
-		u8 bootReason = 4;
+		lobby_state = g_game_state;
+		u8 boot_reason = 4;
 
 		// Boot (incoming?) players if lobby is not idle
 		if (*g_game_state != 4)
 		{
-			return helper::bootReason(bootReason);
+			return helper::boot_reason(boot_reason);
 		}
 
 		// ?
@@ -58,10 +58,10 @@ namespace hooks
 		}
 
 		// Lard
-		if (!helper::isAuthedMap(lobbyState))
+		if (!helper::is_authorized_map(lobby_state))
 		{
-			bootReason = 9;
-			return helper::bootReason(bootReason);
+			boot_reason = 9;
+			return helper::boot_reason(boot_reason);
 		}
 
 		// Replay-specific
@@ -82,14 +82,14 @@ namespace hooks
 		}
 
 		// Set timers
-		helper::setTimerFunc();
-		s32 tickCount = helper::getTickCount(); // CRASH
-		*g_countdown_timer_tick_count = tickCount;
-		*g_countdown_timer_tick_count_2 = tickCount;
-		result = tickCount - 120000;
+		helper::set_timer_func();
+		s32 tick_count = helper::get_tick_count(); // CRASH
+		*g_countdown_timer_tick_count = tick_count;
+		*g_countdown_timer_tick_count_2 = tick_count;
+		result = tick_count - 120000;
 
 		*g_is_in_game = 1;
-		*elapsed_time_modified = 0;
+		*g_elapsed_time_modified = 0;
 		*g_countdown_time_remaining = result;
 
 		// Convert open slots to computers (multiplayer)

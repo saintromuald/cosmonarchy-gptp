@@ -10,7 +10,7 @@ namespace GPTP
 	GameLogger logger;
 	bool doLogging = false; // Now handled by 'verbose' config option in config.yml
 
-	bool GameLogger::startGame()
+	bool GameLogger::start_game()
 	{
 		if (doLogging)
 		{

@@ -297,111 +297,106 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// townhall code
 	// 00433f62, 0043A100, 004365f6, 00433EB5, 0044387B, 00446230
 
-	// hatchery-lair-hive code, required later to patch that for sire/brood
-	// 0043A100,00433EB5,00401cf0,0043A146,004A1F8B (partial, id check is for zerg only)
-	// 00402C24, 0042850A, 0042974B,00444D51,004E8C04,004EA88C(hook exists, larva)
-	// hatchery-only code 00434B2F,00436380,
-
-	u8 patchLastUnit[] = {0xE4};
+	u8 patch_last_unit[] = {0xE4};
 	// allow pissed/yes sounds for >= Command Center
-	// memory_patch(0x0048EA20 + 2, patchLastUnit, 1);
+	// memory_patch(0x0048EA20 + 2, patch_last_unit, 1);
 	// hook required
 	// nops(0x0048EAB0, 5);
 
 	// Bengalaas id hardcode
-	memory_patch(0x0043157A + 2, patchLastUnit, 1);
-	memory_patch(0x00431B3D + 2, patchLastUnit, 1);
-	memory_patch(0x00437E11 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E40 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B45A + 2, patchLastUnit, 1);
-	memory_patch(0x0047B7CF + 2, patchLastUnit, 1);
-	memory_patch(0x004CBE4E + 2, patchLastUnit, 1);
+	memory_patch(0x0043157A + 2, patch_last_unit, 1);
+	memory_patch(0x00431B3D + 2, patch_last_unit, 1);
+	memory_patch(0x00437E11 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E40 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B45A + 2, patch_last_unit, 1);
+	memory_patch(0x0047B7CF + 2, patch_last_unit, 1);
+	memory_patch(0x004CBE4E + 2, patch_last_unit, 1);
 
 	// Scantid id hardcode
-	memory_patch(0x0043158C + 2, patchLastUnit, 1);
-	memory_patch(0x00431B4F + 2, patchLastUnit, 1);
-	memory_patch(0x00437E23 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E52 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B46C + 2, patchLastUnit, 1);
-	memory_patch(0x0047B7E1 + 2, patchLastUnit, 1);
-	memory_patch(0x004CBE58 + 2, patchLastUnit, 1);
+	memory_patch(0x0043158C + 2, patch_last_unit, 1);
+	memory_patch(0x00431B4F + 2, patch_last_unit, 1);
+	memory_patch(0x00437E23 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E52 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B46C + 2, patch_last_unit, 1);
+	memory_patch(0x0047B7E1 + 2, patch_last_unit, 1);
+	memory_patch(0x004CBE58 + 2, patch_last_unit, 1);
 
 	// Ragnasaur id hardcode
-	memory_patch(0x00431580 + 2, patchLastUnit, 1);
-	memory_patch(0x00431B43 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E17 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E46 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B460 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B7D5 + 2, patchLastUnit, 1);
-	memory_patch(0x004CBE53 + 2, patchLastUnit, 1);
+	memory_patch(0x00431580 + 2, patch_last_unit, 1);
+	memory_patch(0x00431B43 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E17 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E46 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B460 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B7D5 + 2, patch_last_unit, 1);
+	memory_patch(0x004CBE53 + 2, patch_last_unit, 1);
 
 	// Kakaru id hardcode
-	memory_patch(0x00431586 + 2, patchLastUnit, 1);
-	memory_patch(0x00431B49 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E1D + 2, patchLastUnit, 1);
-	memory_patch(0x00437E4C + 2, patchLastUnit, 1);
-	memory_patch(0x0047B466 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B7DB + 2, patchLastUnit, 1);
-	memory_patch(0x0047C425 + 4, patchLastUnit, 1);
-	memory_patch(0x0047C476 + 4, patchLastUnit, 1);
-	memory_patch(0x004CBE5D + 2, patchLastUnit, 1);
+	memory_patch(0x00431586 + 2, patch_last_unit, 1);
+	memory_patch(0x00431B49 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E1D + 2, patch_last_unit, 1);
+	memory_patch(0x00437E4C + 2, patch_last_unit, 1);
+	memory_patch(0x0047B466 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B7DB + 2, patch_last_unit, 1);
+	memory_patch(0x0047C425 + 4, patch_last_unit, 1);
+	memory_patch(0x0047C476 + 4, patch_last_unit, 1);
+	memory_patch(0x004CBE5D + 2, patch_last_unit, 1);
 
 	// Ursadon id hardcode
-	memory_patch(0x00431592 + 2, patchLastUnit, 1);
-	memory_patch(0x00431B55 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E29 + 2, patchLastUnit, 1);
-	memory_patch(0x00437E58 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B472 + 2, patchLastUnit, 1);
-	memory_patch(0x0047B7E7 + 2, patchLastUnit, 1);
-	memory_patch(0x004CBE62 + 2, patchLastUnit, 1);
+	memory_patch(0x00431592 + 2, patch_last_unit, 1);
+	memory_patch(0x00431B55 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E29 + 2, patch_last_unit, 1);
+	memory_patch(0x00437E58 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B472 + 2, patch_last_unit, 1);
+	memory_patch(0x0047B7E7 + 2, patch_last_unit, 1);
+	memory_patch(0x004CBE62 + 2, patch_last_unit, 1);
 
 	// Warbringer id hardcode
-	memory_patch(0x004F6C1C + 2, patchLastUnit, 1);
-	memory_patch(0x004F6578 + 2, patchLastUnit, 1);
-	memory_patch(0x004F656B + 2, patchLastUnit, 1);
-	memory_patch(0x004E36EA + 2, patchLastUnit, 1);
-	memory_patch(0x004E3029 + 3, patchLastUnit, 1);
-	memory_patch(0x004CD28C + 2, patchLastUnit, 1);
-	memory_patch(0x004C8ADE + 3, patchLastUnit, 1);
-	memory_patch(0x004C8A94 + 2, patchLastUnit, 1);
-	memory_patch(0x004C8A5F + 2, patchLastUnit, 1);
-	memory_patch(0x004C20FA + 2, patchLastUnit, 1);
-	memory_patch(0x004C189C + 2, patchLastUnit, 1);
-	memory_patch(0x004C1859 + 2, patchLastUnit, 1);
-	memory_patch(0x004C1836 + 2, patchLastUnit, 1);
-	memory_patch(0x0049F4B9 + 2, patchLastUnit, 1);
-	memory_patch(0x0047CA8C + 2, patchLastUnit, 1);
-	memory_patch(0x004761D5 + 2, patchLastUnit, 1);
-	memory_patch(0x00475CAB + 2, patchLastUnit, 1);
-	memory_patch(0x00475B59 + 2, patchLastUnit, 1);
-	memory_patch(0x00468222 + 2, patchLastUnit, 1);
-	memory_patch(0x004668A5 + 2, patchLastUnit, 1);
-	memory_patch(0x004667A9 + 2, patchLastUnit, 1);
-	memory_patch(0x00466764 + 2, patchLastUnit, 1);
-	memory_patch(0x004659FD + 2, patchLastUnit, 1);
-	memory_patch(0x0046571A + 2, patchLastUnit, 1);
-	memory_patch(0x00465466 + 2, patchLastUnit, 1);
-	memory_patch(0x00465412 + 2, patchLastUnit, 1);
-	memory_patch(0x004653A7 + 3, patchLastUnit, 1);
-	memory_patch(0x0046536A + 2, patchLastUnit, 1);
-	memory_patch(0x0046534B + 2, patchLastUnit, 1);
-	memory_patch(0x004608D9 + 2, patchLastUnit, 1);
-	memory_patch(0x0045FEBD + 2, patchLastUnit, 1);
-	memory_patch(0x0045FE98 + 2, patchLastUnit, 1);
-	memory_patch(0x004407B5 + 2, patchLastUnit, 1);
-	memory_patch(0x0043CF4D + 2, patchLastUnit, 1);
-	memory_patch(0x004286B5 + 3, patchLastUnit, 1);
-	memory_patch(0x00426E4A + 2, patchLastUnit, 1);
-	memory_patch(0x004254D2 + 2, patchLastUnit, 1);
-	memory_patch(0x0042549C + 2, patchLastUnit, 1);
-	memory_patch(0x004253E6 + 2, patchLastUnit, 1);
-	memory_patch(0x0042491E + 3, patchLastUnit, 1);
-	memory_patch(0x004247C4 + 3, patchLastUnit, 1);
-	memory_patch(0x004014C6 + 2, patchLastUnit, 1);
-	memory_patch(0x0040149A + 2, patchLastUnit, 1);
+	memory_patch(0x004F6C1C + 2, patch_last_unit, 1);
+	memory_patch(0x004F6578 + 2, patch_last_unit, 1);
+	memory_patch(0x004F656B + 2, patch_last_unit, 1);
+	memory_patch(0x004E36EA + 2, patch_last_unit, 1);
+	memory_patch(0x004E3029 + 3, patch_last_unit, 1);
+	memory_patch(0x004CD28C + 2, patch_last_unit, 1);
+	memory_patch(0x004C8ADE + 3, patch_last_unit, 1);
+	memory_patch(0x004C8A94 + 2, patch_last_unit, 1);
+	memory_patch(0x004C8A5F + 2, patch_last_unit, 1);
+	memory_patch(0x004C20FA + 2, patch_last_unit, 1);
+	memory_patch(0x004C189C + 2, patch_last_unit, 1);
+	memory_patch(0x004C1859 + 2, patch_last_unit, 1);
+	memory_patch(0x004C1836 + 2, patch_last_unit, 1);
+	memory_patch(0x0049F4B9 + 2, patch_last_unit, 1);
+	memory_patch(0x0047CA8C + 2, patch_last_unit, 1);
+	memory_patch(0x004761D5 + 2, patch_last_unit, 1);
+	memory_patch(0x00475CAB + 2, patch_last_unit, 1);
+	memory_patch(0x00475B59 + 2, patch_last_unit, 1);
+	memory_patch(0x00468222 + 2, patch_last_unit, 1);
+	memory_patch(0x004668A5 + 2, patch_last_unit, 1);
+	memory_patch(0x004667A9 + 2, patch_last_unit, 1);
+	memory_patch(0x00466764 + 2, patch_last_unit, 1);
+	memory_patch(0x004659FD + 2, patch_last_unit, 1);
+	memory_patch(0x0046571A + 2, patch_last_unit, 1);
+	memory_patch(0x00465466 + 2, patch_last_unit, 1);
+	memory_patch(0x00465412 + 2, patch_last_unit, 1);
+	memory_patch(0x004653A7 + 3, patch_last_unit, 1);
+	memory_patch(0x0046536A + 2, patch_last_unit, 1);
+	memory_patch(0x0046534B + 2, patch_last_unit, 1);
+	memory_patch(0x004608D9 + 2, patch_last_unit, 1);
+	memory_patch(0x0045FEBD + 2, patch_last_unit, 1);
+	memory_patch(0x0045FE98 + 2, patch_last_unit, 1);
+	memory_patch(0x004407B5 + 2, patch_last_unit, 1);
+	memory_patch(0x0043CF4D + 2, patch_last_unit, 1);
+	memory_patch(0x004286B5 + 3, patch_last_unit, 1);
+	memory_patch(0x00426E4A + 2, patch_last_unit, 1);
+	memory_patch(0x004254D2 + 2, patch_last_unit, 1);
+	memory_patch(0x0042549C + 2, patch_last_unit, 1);
+	memory_patch(0x004253E6 + 2, patch_last_unit, 1);
+	memory_patch(0x0042491E + 3, patch_last_unit, 1);
+	memory_patch(0x004247C4 + 3, patch_last_unit, 1);
+	memory_patch(0x004014C6 + 2, patch_last_unit, 1);
+	memory_patch(0x0040149A + 2, patch_last_unit, 1);
 
 	// Mind Tyrant - energy of controlled Mind Tyrants is no longer set to 0
-//	memory_patch(0x004F6938 + 4, patchLastUnit, 1);
+//	memory_patch(0x004F6938 + 4, patch_last_unit, 1);
 
 	nops(0x0049EEBD, 0xa); // disable beacon collision hardcode
 //	u8 p8a = { 0x8a };
@@ -475,6 +470,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x00489DB3, (u32)0x90909090);
 	memory_patch(0x00489DB7, (u32)0x90909090);
 	memory_patch(0x00489DBB, (u16)0x9090);
+
+	// Set to 1 to speed up force switching in lobby -- DarkenedFantasies
+	memory_patch(0x004D3EE9, (u32)1);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start
