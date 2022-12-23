@@ -299,6 +299,17 @@ void update_layouts() {
 	}
 }
 
+Point16 get_ai_town_position(AiTown* town) {
+	AiLayouts* layouts = &player_layouts[town->player];
+	for (u32 i = 0; i < layouts->placeholders_count; ++i) {
+		AiPlaceholder* placeholder = &layouts->placeholders[i];
+		if (placeholder->resarea == town->resarea && placeholder->is_townhall_marker) {
+			return placeholder->position;
+		}
+	}
+	return town->position;
+}
+
 AiLayoutsTown* get_layouts_town(AiTown* town) {
 	s32 index = town - g_ai_town_array;
 	assert(index >= 0 && index <= AiTownLimit);

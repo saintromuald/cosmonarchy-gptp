@@ -227,7 +227,7 @@ namespace hooks {
 					++town->worker_count;
 
 					AiLayoutsTown* layouts_town = get_layouts_town(town);
-					UnitExt* unitExt = get_unit_ext(unit);
+					UnitExt* unit_ext = get_unit_ext(unit);
 					if (!town->inited) {
 						town->inited = 1;
 						town->mineral = 0;
@@ -238,14 +238,16 @@ namespace hooks {
 						if (layouts_town && layouts_town->worker_maynard) {
 							layouts_town->worker_maynard--;
 						}
-						unitExt->values[ValueAI_WorkerChosenForExpansion] = 1;
-						unitExt->values[ValueAI_WorkerChosenX] = town->position.x;
-						unitExt->values[ValueAI_WorkerChosenY] = town->position.y;
+						Point16 position = get_ai_town_position(town);
+						unit_ext->values[ValueAI_WorkerChosenForExpansion] = true;
+						unit_ext->values[ValueAI_WorkerChosenX] = position.x;
+						unit_ext->values[ValueAI_WorkerChosenY] = position.y;
 					} else if (layouts_town && layouts_town->worker_maynard) {
 						layouts_town->worker_maynard--;
-						unitExt->values[ValueAI_WorkerChosenForExpansion] = 1;
-						unitExt->values[ValueAI_WorkerChosenX] = town->position.x;
-						unitExt->values[ValueAI_WorkerChosenY] = town->position.y;
+						Point16 position = get_ai_town_position(town);
+						unit_ext->values[ValueAI_WorkerChosenForExpansion] = true;
+						unit_ext->values[ValueAI_WorkerChosenX] = position.x;
+						unit_ext->values[ValueAI_WorkerChosenY] = position.y;
 					}
 				}
 			}

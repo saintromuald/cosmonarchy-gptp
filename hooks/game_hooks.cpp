@@ -2470,10 +2470,8 @@ namespace hooks {
 		}
 
 		if (unit_ext->values[ValueAI_WorkerChosenForExpansion] && unit->resource_type == ResourceType::None) {
+			unit_ext->values[ValueAI_WorkerChosenForExpansion] = false;
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
-			unit_ext->values[ValueAI_WorkerChosenForExpansion] = 0;
-			unit_ext->values[ValueAI_WorkerChosenX] = 0;
-			unit_ext->values[ValueAI_WorkerChosenY] = 0;
 		}
 
 		// Anticthon - Counter-Proposal - add overlay

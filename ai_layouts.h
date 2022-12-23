@@ -123,6 +123,7 @@ extern AiLayoutsTown layouts_towns[AiTownLimit];
 void init_layouts();
 void update_layouts();
 
+Point16 get_ai_town_position(AiTown* town);
 AiLayoutsTown* get_layouts_town(AiTown* town);
 u32 ai_get_next_custom_expo(AiTown* main_town);
 
