@@ -16,7 +16,7 @@ bool isGameOn = false;
 		{
 			isGameOn = true;
 			hooks::game_on();
-			GPTP::logger.startGame();
+			GPTP::logger.start_game();
 		}
 		__asm {
 			POPAD

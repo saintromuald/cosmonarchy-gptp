@@ -3,14 +3,14 @@
 
 namespace
 {
-	void __declspec(naked) initGame_Wrapper() // 004EE110
+	void __declspec(naked) init_game_wrapper() // 004EE110
 	{
 		static s32 result;
 		__asm
 		{
 			PUSHAD
 		}
-		result = hooks::initGame();
+		result = hooks::init_game();
 		__asm
 		{
 			POPAD
@@ -19,23 +19,23 @@ namespace
 		}
 	}
 
-	void __declspec(naked) startGame_Wrapper() // 00472060
+	void __declspec(naked) start_game_wrapper() // 00472060
 	{
 		static s32 result;
-		static void* a1;
-		static s32 a2;
+		static void* lobby_state;
+		static s32 player;
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV a2, EAX
+			MOV player, EAX
 			POP EAX
-			MOV a1, ECX
+			MOV lobby_state, ECX
 			PUSHAD
 		}
-		result = hooks::startGame(a1, a2);
+		result = hooks::start_game(lobby_state, player);
 		__asm
 		{
 			POPAD
@@ -53,7 +53,7 @@ namespace hooks
 
 	void inject_lobby_hooks()
 	{
-		jump_patch(initGame_Wrapper,	0x004EE110, 0);
-		jump_patch(startGame_Wrapper, 0x00472060, 4);
+		jump_patch(init_game_wrapper,	0x004EE110, 0);
+		jump_patch(start_game_wrapper,	0x00472060, 4);
 	}
 }

@@ -7628,8 +7628,8 @@ namespace helper {
 		}
 	}
 
-	// For initGame
-	void switchAllAvailableComputerSlotsToOpen() {
+	// For init_game
+	void switch_all_available_computer_slots_to_open() {
 		const u32 Func_switchAllAvailableComputerSlotsToOpen = 0x004DBBE0;
 		__asm {
 			PUSHAD
@@ -7638,7 +7638,7 @@ namespace helper {
 		}
 	}
 
-	bool setLastOpenSlotToComputer(s8 race) {
+	bool set_last_open_slot_to_computer(s8 race) {
 		const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
 		static s8 result;
 		__asm {
@@ -7651,8 +7651,8 @@ namespace helper {
 		return result;
 	}
 
-	// For startGame
-	s32 bootReason(u8 player) {
+	// For start_game
+	s32 boot_reason(u8 player) {
 		const u32 Func_bootReason = 0x004B8870;
 		static s32 result;
 		__asm {
@@ -7665,7 +7665,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 isAuthedMap(void* a1) {
+	s32 is_authorized_map(void* a1) {
 		const u32 Func_isAuthedMap = 0x004C4870;
 		static s32 result;
 		__asm {
@@ -7678,7 +7678,7 @@ namespace helper {
 		return result;
 	}
 
-	void setTimerFunc() {
+	void set_timer_func() {
 		const u32 Func_setTimerFunc = 0x00472E00;
 		__asm {
 			PUSHAD
@@ -7687,7 +7687,7 @@ namespace helper {
 		}
 	}
 
-	s32 getTickCount() {
+	s32 get_tick_count() {
 		static u32 Func_getTickCount = *(u32*)0x004FE0C4;
 		static s32 result;
 		__asm {
