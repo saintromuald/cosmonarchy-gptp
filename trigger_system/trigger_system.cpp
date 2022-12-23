@@ -126,6 +126,12 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 		return;
 	}
 
+	// This shouldn't be needed, since `unit_can_change_sprite` should protect us already and avoid visual flicker
+	// Unfortunately without this shitty hardcode nexus never warps
+	if (!(unit->status & UnitStatus::Completed)) {
+		return;
+	}
+
 	// Remove old shadow, since the new image will create it's own
 	// Would be better to do it only after we know new_image is created, but then the other shadow also gets removed
 	// As of right now shadow would disappear if the main image replacement fails
@@ -140,11 +146,9 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 	// Replace main image
 	Image* new_image = unit->sprite->create_overlay(image_id, 0, 0, unit->sprite->main_graphic->direction);
 	if (new_image) {
+		new_image->play_iscript_animation((IscriptAnimation::Enum)unit->sprite->main_graphic->animation);
 		unit->sprite->main_graphic->free();
 		unit->sprite->main_graphic = new_image;
-		if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) {
-			new_image->play_iscript_animation((IscriptAnimation::Enum)unit->building.resource.resource_iscript);
-		}
 
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueCustomImage] = image_id + 1;
