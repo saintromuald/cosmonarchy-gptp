@@ -79,6 +79,9 @@ namespace hooks {
 				case UnitId::TerranApostle: {
 					return helper::get_random_sfx_between(SoundId::ApostleOrderAggressive01, SoundId::ApostleOrderAggressive04);
 				} break;
+				case UnitId::TerranBlackjack: {
+					return helper::get_random_sfx_between(SoundId::BlackjackAggressive01, SoundId::BlackjackAggressive04);
+				} break;
 				case UnitId::TerranPaladin: {
 					return helper::get_random_sfx_between(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
 				} break;
@@ -160,6 +163,9 @@ namespace hooks {
 					} break;
 					case UnitId::TerranApostle: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ApostleReady01, SoundId::ApostleReady03);
+					} break;
+					case UnitId::TerranBlackjack: {
+						ready_sound = helper::get_random_sfx_between(SoundId::BlackjackReady01, SoundId::BlackjackReady03);
 					} break;
 					case UnitId::TerranPhalanxTankMode:
 					case UnitId::TerranPhalanxTankModeTurret:

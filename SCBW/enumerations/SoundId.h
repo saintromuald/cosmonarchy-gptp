@@ -1373,6 +1373,14 @@ namespace SoundId
 		PositronWeaponHit01					= 2174,
 		PositronWeaponHit02					= 2175,
 		PositronWeaponHit03					= 2176,
+		BlackjackReady01					= 2177,
+		BlackjackReady02					= 2178,
+		BlackjackReady03					= 2179,
+
+		BlackjackAggressive01				= 2188,
+		BlackjackAggressive02				= 2189,
+		BlackjackAggressive03				= 2190,
+		BlackjackAggressive04				= 2191,
 	};
 }
 
