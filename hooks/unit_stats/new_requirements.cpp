@@ -1235,7 +1235,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergVithrathHaunt)
 			{
-				if (TierUnlocked[RaceId::Zerg][Tier2])
+				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
 					return true;
 				}
@@ -3163,7 +3163,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergVithrathHaunt)
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier2])
+					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
 						return TECH_ACTIVE;
 					}
