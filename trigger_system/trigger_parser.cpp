@@ -540,11 +540,12 @@ static const char* remove_prefix(const char* string, char* prefix) {
 }
 
 Token get_short_unit_name(u32 unit_id) {
-	Token token = {};
 	const char* name = Unit::get_name(unit_id);
 	name = remove_prefix(name, "terran");
 	name = remove_prefix(name, "protoss");
 	name = remove_prefix(name, "zerg");
+
+	Token token = {};
 	for (const char* c = name; *c; ++c) {
 		if (token.size < MaxToken) {
 			token.data[token.size++] = *c;
