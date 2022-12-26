@@ -528,21 +528,28 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	return bitset;
 }
 
+static const char* remove_prefix(const char* string, char* prefix) {
+	u32 len = strlen(prefix);
+	if (strnicmp(string, prefix, len) == 0) {
+		string += len;
+		for (const char* c = string; *c == ' '; ++c) {
+			++string;
+		}
+	}
+	return string;
+}
+
 Token get_short_unit_name(u32 unit_id) {
 	Token token = {};
 	const char* name = Unit::get_name(unit_id);
-
-	bool after_space = false;
+	name = remove_prefix(name, "terran");
+	name = remove_prefix(name, "protoss");
+	name = remove_prefix(name, "zerg");
 	for (const char* c = name; *c; ++c) {
-		if (after_space) {
-			if (token.size < MaxToken) {
-				token.data[token.size++] = *c;
-			} else {
-				break;
-			}
-		}
-		if (*c == ' ') {
-			after_space = true;
+		if (token.size < MaxToken) {
+			token.data[token.size++] = *c;
+		} else {
+			break;
 		}
 	}
 	return token;
