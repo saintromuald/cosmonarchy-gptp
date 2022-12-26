@@ -19,7 +19,7 @@ namespace UnitId
 	//	Campaign mission player								= 6,		// Phalanx Turret (Tank Mode)
 	//	Campaign mission dialogue event						= 207,		// Left Pit Door
 
-	// Special
+	// Neutral
 		TownCenterMarker									= 192,		// Terran Marker
 		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
 
@@ -252,6 +252,8 @@ namespace UnitId
 		TerranCivilianExt									= 332,
 		SarahKerriganExt									= 333,
 		InfestedKerriganExt									= 334,
+		DanielsMason										= 362,
+		SmoochieBoy											= 363,
 
 	// Special-Building
 		CrashedMinotaurExt									= 335,
