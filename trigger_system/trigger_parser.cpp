@@ -50,15 +50,6 @@ static bool parser_skip_non_word_chars(Parser* parser) {
 	return true;
 }
 
-static bool parser_get_char(Parser* parser, char c) {
-	if (*parser->at == c) {
-		++parser->at;
-		return true;
-	}
-	return false;
-}
-
-
 static bool parser_get_negation(Parser* parser) {
 	if (!parser_skip_whitespace(parser)) {
 		return false;
@@ -100,6 +91,14 @@ void parser_unwind(Parser* parser, char* marker) {
 	parser->at = marker;
 }
 
+bool parser_get_char(Parser* parser, char c) {
+	if (*parser->at == c) {
+		++parser->at;
+		return true;
+	}
+	return false;
+}
+
 Token parser_get_word(Parser* parser) {
 	if (!parser_skip_non_word_chars(parser)) {
 		return {};
@@ -113,6 +112,16 @@ Token parser_get_word(Parser* parser) {
 	}
 
 	return parser->token;
+}
+
+bool parser_get_keyword(Parser* parser, char* keyword) {
+	char* marker = parser_marker(parser);
+	parser_get_word(parser);
+	if (parser_eq(parser, keyword)) {
+		return true;
+	}
+	parser_unwind(parser, marker);
+	return false;
 }
 
 bool parser_get_command(Parser* parser) {
@@ -290,16 +299,6 @@ f32 parser_get_time_seconds(Parser* parser) {
 
 u32 parser_get_time_ticks(Parser* parser) {
 	return ceil(parser_get_time_seconds(parser) * 24);
-}
-
-bool parser_get_keyword(Parser* parser, char* keyword) {
-	char* marker = parser_marker(parser);
-	parser_get_word(parser);
-	if (parser_eq(parser, keyword)) {
-		return true;
-	}
-	parser_unwind(parser, marker);
-	return false;
 }
 
 s32 parser_get_var_value(Parser* parser, bool is_timer) {

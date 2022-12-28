@@ -384,8 +384,8 @@ b32 parse_comment_condition(TriggerAction* action) {
 					TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
 
 					Token name = parser_get_string(&parser);
-					TriggerVar* var = find_trigger_var(var_type, name.data);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
+					TriggerVar* var = parser_get_char(&parser, '=') ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
 					s32 quota = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
 					if (var) {
 						return check_quota(quota_type, quota, var->value);

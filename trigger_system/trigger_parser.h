@@ -52,7 +52,9 @@ enum QuotaType {
 char* parser_marker(Parser* parser);
 void parser_unwind(Parser* parser, char* marker);
 
+bool parser_get_char(Parser* parser, char c);
 Token parser_get_word(Parser* parser);
+bool parser_get_keyword(Parser* parser, char* keyword);
 bool parser_get_command(Parser* parser);
 Token parser_get_string(Parser* parser);
 
