@@ -13,9 +13,6 @@ struct Parser {
 	bool parsed_first_command;
 	char* at;
 	Token token;
-
-	s8 stack_index;
-	char* stack[ParserStackSize];
 };
 
 enum LocationFlags {
@@ -74,6 +71,7 @@ s32 parser_get_enum(Parser* parser, const char** enum_names, u32 count, s32 defa
 u32 parser_get_player(Parser* parser, bool allow_neutral = false); // 1 - 8
 PlayerBitset parser_get_player_bitset(Parser* parser);
 
+Token token_from_str(const char* str);
 Token get_short_unit_name(u32 unit_id);
 u32 parser_get_unit_id(Parser* parser);
 UnitIdBitset parser_get_unit_id_bitset(Parser* parser);

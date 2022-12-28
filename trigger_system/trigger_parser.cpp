@@ -1,4 +1,5 @@
 #include "trigger_parser.h"
+#include "trigger_vars.h"
 
 static bool is_normal_space(char c) {
 	return c == ' ' || c == '\t';
@@ -156,7 +157,21 @@ Token parser_get_string(Parser* parser) {
 	return parser->token;
 }
 
+TriggerVar* parser_get_var(Parser* parser) {
+	if (parser_get_char(parser, '$')) {
+		Token name = parser_get_word(parser);
+		TriggerVar* var = find_trigger_var(TriggerVarType_Var, name.data);
+		return var;
+	}
+	return 0;
+}
+
 s32 parser_get_s32(Parser* parser, s32 default_value) {
+	TriggerVar* var = parser_get_var(parser);
+	if (var) {
+		return var->value;
+	}
+
 	parser_get_word(parser);
 	if (parser_eqi(parser, "true")) {
 		return 1;
@@ -277,15 +292,23 @@ u32 parser_get_time_ticks(Parser* parser) {
 	return ceil(parser_get_time_seconds(parser) * 24);
 }
 
-s32 parser_get_var_value(Parser* parser, bool is_timer) {
+bool parser_get_keyword(Parser* parser, char* keyword) {
 	char* marker = parser_marker(parser);
 	parser_get_word(parser);
-	if (parser_eq(parser, "random")) {
+	if (parser_eq(parser, keyword)) {
+		return true;
+	}
+	parser_unwind(parser, marker);
+	return false;
+}
+
+s32 parser_get_var_value(Parser* parser, bool is_timer) {
+	char* marker = parser_marker(parser);
+	if (parser_get_keyword(parser, "random")) {
 		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		return scbw::rand_between(min_value, max_value);
 	}
-	parser_unwind(parser, marker);
 	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 }
 
@@ -539,14 +562,9 @@ static const char* remove_prefix(const char* string, char* prefix) {
 	return string;
 }
 
-Token get_short_unit_name(u32 unit_id) {
-	const char* name = Unit::get_name(unit_id);
-	name = remove_prefix(name, "terran");
-	name = remove_prefix(name, "protoss");
-	name = remove_prefix(name, "zerg");
-
+Token token_from_str(const char* str) {
 	Token token = {};
-	for (const char* c = name; *c; ++c) {
+	for (const char* c = str; *c; ++c) {
 		if (token.size < MaxToken) {
 			token.data[token.size++] = *c;
 		} else {
@@ -554,6 +572,14 @@ Token get_short_unit_name(u32 unit_id) {
 		}
 	}
 	return token;
+}
+
+Token get_short_unit_name(u32 unit_id) {
+	const char* name = Unit::get_name(unit_id);
+	name = remove_prefix(name, "terran");
+	name = remove_prefix(name, "protoss");
+	name = remove_prefix(name, "zerg");
+	return token_from_str(name);
 }
 
 static char tolazy(char c) {
