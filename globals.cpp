@@ -584,6 +584,9 @@ void Globals::frame_hook() {
 				revived_ext->values[ValueReviveStarted] = 1;
 				revived_ext->timers[TimerReviveFlagClearMin] = 3;
 				revived_ext->timers[TimerReviveFlagClearMax] = 14;
+				if (revived->id == UnitId::ZergRilirokor || revived->id == UnitId::ZergRililisk) {
+					revived->remove_timer = 90;
+				}
 			}
 			reviving_units.erase(reviving_units.begin() + i);
 			i--;

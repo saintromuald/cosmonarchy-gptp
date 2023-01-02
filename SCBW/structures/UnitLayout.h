@@ -276,7 +276,7 @@ struct UnitLayout
 														// BW shows this value/256
 
 	/*0x064*/ u16       id;								// Unit ID in units.dat
-	/*0x066*/ u8		cmbw_resource_regen_cooldown;	// Cosmonarchy BW - mineral regen cooldown
+	/*0x066*/ u8		cmbw_resource_regen_cooldown;	// unused
 			  u8		unused_67;						// unused
 	/*0x068*/ Link<Unit>player_link;
 	/*0x070*/ Unit*		subunit;
