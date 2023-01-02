@@ -908,7 +908,7 @@ namespace scbw {
 				case UnitId::ZergRililisk:
 				case UnitId::ZergRilirokor:
 				{
-					remove_timer = 720;
+					remove_timer = BroodspawnTimer;
 				}
 			}
 			Unit* unit = scbw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false);

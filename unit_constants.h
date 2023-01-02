@@ -150,6 +150,7 @@ const s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 const s32 MatralethAIParasiteTimer = 75;
 const s32 MatralethAIEnsnaringBroodTimer = 75;
 const s32 MatralethEnsnareTimer = 37;
+const s32 BroodspawnTimer = 720;
 
 // Akistrokor
 const s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
