@@ -77,24 +77,6 @@ namespace hooks {
 		s16 inner = weapons_dat::inner_splash_radius[weapon_id];
 		s16 medium = weapons_dat::medium_splash_radius[weapon_id];
 		s16 outer = weapons_dat::outer_splash_radius[weapon_id];
-		switch (weapon_id) {
-			case WeaponId::TethzorokorSaberArray: {
-				bool should_splash = false;
-				if (unit) {
-					if (unit->order_signal & 0x20) {
-						should_splash = false;
-					} else if (unit->order_signal & 0x40) {
-						should_splash = true;
-					}
-					unit->order_signal &= ~0x60;
-				}
-				if (!should_splash) {
-					inner = 0;
-					medium = 0;
-					outer = 0;
-				}
-			}
-		}
 
 		if (guaranteed_hit) {
 			helper::weapon_bullet_shot(guaranteed_hit, bullet, 1);

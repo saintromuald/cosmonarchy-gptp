@@ -2186,12 +2186,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ZergTethzorokor:
-								{
-									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Tethzorokor - Bone Flurry
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::ZergLakizilisk:
 								{
 									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed Attacker
