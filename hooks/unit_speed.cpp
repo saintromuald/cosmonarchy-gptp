@@ -208,7 +208,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergUltrokor:
 			{
-				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
+				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
 				if (unit_ext->timers[TimerKaiserRampage])
 				{
 					speed *= 2;
@@ -265,8 +265,7 @@ namespace hooks
 		return speed;
 	}
 
-	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
-	u32 get_modified_unit_speed(Unit* unit, u32 baseSpeed)
+	u32 get_modified_unit_speed(Unit* unit, u32 baseSpeed) // 0047B5F0
 	{
 		if (unit == nullptr)
 		{
@@ -340,7 +339,7 @@ namespace hooks
 		return unit;
 	}
 
-	// Hooked to fix speed tooltip for iscript units. -Pr0nogo
+	// Hooked to fix the speed tooltip for iscript units. -Pr0nogo
 	void update_iscript_speed(Unit* unit) // 0042D8C0
 	{
 		if (unit->flingy_movement_type == 2) // Uses iscript for movement

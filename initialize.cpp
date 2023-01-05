@@ -471,8 +471,14 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x00489DB7, (u32)0x90909090);
 	memory_patch(0x00489DBB, (u16)0x9090);
 
-	// Set to 1 to speed up force switching in lobby -- DarkenedFantasies
+	// Set to 1 to speed up force switching in lobby.
 	memory_patch(0x004D3EE9, (u32)1);
+
+	// Prevent pause triggers from indefinitely freezing replays.
+	memory_patch(0x0048885C, (u16)0x90C3);
+
+	// Pick appropriate icon size for hangar counts. Weapons, armor, and shields are handled in stats_panel_display.
+	jump_patch(hooks::StatHangarCount_patch_25471, 0x00425471, 1);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start

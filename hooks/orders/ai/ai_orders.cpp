@@ -2673,4 +2673,47 @@ namespace hooks {
 		}
 		return false;
 	}
+
+	// Hooked to remove gas building limits from AI. -Pr0nogo
+	// TODO:
+	//	  00432020 create_ai_town
+	//	  00435BD0 ai_panic_control (confirm we need this!)
+
+	// Hooked to remove gas building limits from AI. -Pr0nogo
+	AiTown* ai_remove_from_towns(Unit* unit) // 00432760
+	{
+		AiTown* result = 0;
+		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)
+		{
+			u32 player = 0;
+			do
+			{
+				for (result = g_ai_town_list[player].first; result; result = result->prev)
+				{
+					if (result->mineral == unit)
+					{
+						result->mineral = 0;
+					}
+					if (result->gas_buildings[0] == unit)
+					{
+						result->gas_buildings[0] = 0;
+					}
+					if (result->gas_buildings[1] == unit)
+					{
+						result->gas_buildings[1] = 0;
+					}
+					if (result->gas_buildings[2] == unit)
+					{
+						result->gas_buildings[2] = 0;
+					}
+					if (result->resarea)
+					{
+						result->resource_units_not_set = 1;
+					}
+				}
+				++player;
+			} while (player < PlayerLimit);
+		}
+		return result;
+	}
 }

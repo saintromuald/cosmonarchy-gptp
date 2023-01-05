@@ -192,55 +192,46 @@ namespace hooks {
 		u16* const BUTTONSET_MAINBUTTONGRAPHIC = (u16*)0x0068C1BC;
 		u8* const BUTTONSET_UNIT_MAINORDERID = (u8*)0x0068C1E4;
 
-		u8 currentUnitMainOrderId;
-		u8 currentSubUnitMainOrderId;
-		u16 currentUnitButtonIcon;
-		u16 currentSubUnitButtonIcon;
-		u16 usedButtonIcon;
-		BinDlg* currentButtonDlg;
-
-		currentUnitMainOrderId = *BUTTONSET_UNIT_MAINORDERID;
-		currentUnitButtonIcon = orders_dat::button_icon[currentUnitMainOrderId];
-		currentButtonDlg = (*BUTTONSET_DIALOG)->child_dialog;
-		currentSubUnitMainOrderId = *BUTTONSET_SUBUNIT_MAINORDERID;
+		u8 current_unit_main_order_id = *BUTTONSET_UNIT_MAINORDERID;
+		u16 current_unit_button_icon = orders_dat::button_icon[current_unit_main_order_id];
+		BinDlg* current_button_dialog = (*BUTTONSET_DIALOG)->child_dialog;
+		u8 current_subunit_main_order_id = *BUTTONSET_SUBUNIT_MAINORDERID;
 
 		// if the subunit holds the weapon, get the icon from it
-		if (currentSubUnitMainOrderId != 0xFF)
+		u16 current_subunit_button_icon = 0xFFFF;
+		if (current_subunit_main_order_id != 0xFF)
 		{
-			currentSubUnitButtonIcon = orders_dat::button_icon[currentSubUnitMainOrderId];
-		}
-		else
-		{
-			currentSubUnitButtonIcon = 0xFFFF;
+			current_subunit_button_icon = orders_dat::button_icon[current_subunit_main_order_id];
 		}
 
-		if (currentUnitButtonIcon != 0xFFFF)
+		u16 used_button_icon;
+		if (current_unit_button_icon != 0xFFFF)
 		{
-			if (currentSubUnitButtonIcon == 0xFFFF || currentUnitButtonIcon != IconId::Stop)
+			if (current_subunit_button_icon == 0xFFFF || current_unit_button_icon != IconId::Stop)
 			{
-				usedButtonIcon = currentUnitButtonIcon;
+				used_button_icon = current_unit_button_icon;
 			}
 			else
 			{
-				usedButtonIcon = currentSubUnitButtonIcon;
+				used_button_icon = current_subunit_button_icon;
 			}
 		}
 		else
 		{
-			usedButtonIcon = currentSubUnitButtonIcon;
+			used_button_icon = current_subunit_button_icon;
 		}
 
-		if (currentButtonDlg != nullptr)
+		if (current_button_dialog != nullptr)
 		{
 			bool bStopLooping = false;
 			do
 			{
 				// look for the button corresponding to the one used for the current mainOrder
-				if (currentButtonDlg->flags & BinDlgFlags::Visible)
+				if (current_button_dialog->flags & BinDlgFlags::Visible)
 				{
-					if (currentButtonDlg->graphic != usedButtonIcon)
+					if (current_button_dialog->graphic != used_button_icon)
 					{
-						currentButtonDlg = currentButtonDlg->next;
+						current_button_dialog = current_button_dialog->next;
 					}
 					else
 					{
@@ -249,22 +240,22 @@ namespace hooks {
 				}
 				else
 				{
-					currentButtonDlg = currentButtonDlg->next;
+					current_button_dialog = current_button_dialog->next;
 				}
-			} while (!bStopLooping && currentButtonDlg != nullptr);
+			} while (!bStopLooping && current_button_dialog);
 		}
-		if (currentButtonDlg == nullptr)
+		if (!current_button_dialog)
 		{
 			*BUTTONSET_MAINBUTTONGRAPHIC = 0xFFFF;
 		}
 		else
 		{
-			if (!(currentButtonDlg->flags & BinDlgFlags::Unknown0))
+			if (!(current_button_dialog->flags & BinDlgFlags::Unknown0))
 			{
-				currentButtonDlg->flags |= BinDlgFlags::Unknown0;
-				scbw::update_dialog(currentButtonDlg);
+				current_button_dialog->flags |= BinDlgFlags::Unknown0;
+				scbw::update_dialog(current_button_dialog);
 			}
-			*BUTTONSET_MAINBUTTONGRAPHIC = usedButtonIcon;
+			*BUTTONSET_MAINBUTTONGRAPHIC = used_button_icon;
 		}
 	}
 
@@ -339,12 +330,13 @@ namespace hooks {
 		u16*     const BUTTONSET_SPECIAL_BUTTONSETID  = (u16*)    0x0068C1C8; // replay, cancel building...
 		u8*      const BUTTONSET_UNIT_MAINORDERID     = (u8*)     0x0068C1E4;
 		u32*     const bCanUpdateCurrentButtonSet     = (u32*)    0x0068C1B0;
+
 		bool jumpTo59A38 = false;
 		bool jumpTo59A9F = false;
 		bool jumpTo59A83 = false;
 		bool jumpTo59A86 = false;
-		u8 mainOrderIdHolderUnit_EBP;
-		u8 mainOrderIdHolderSubUnit_BL;
+		u8 active_unit_main_order_id;
+		u8 active_subunit_main_order_id;
 		u16 CX_Holder;
 		if (!*bCanUpdateCurrentButtonSet)
 		{
@@ -401,15 +393,15 @@ namespace hooks {
 				jumpTo59A9F = *g_active_portrait_unit;
 				if (!jumpTo59A9F)
 				{
-					mainOrderIdHolderUnit_EBP = (*g_active_portrait_unit)->main_order_id;
-					CX_Holder = mainOrderIdHolderUnit_EBP;
+					active_unit_main_order_id = (*g_active_portrait_unit)->main_order_id;
+					CX_Holder = active_unit_main_order_id;
 					if (!(*g_active_portrait_unit)->subunit)
 					{
 						jumpTo59A83 = true;
 					}
 					else
 					{
-						mainOrderIdHolderSubUnit_BL = (*g_active_portrait_unit)->subunit->main_order_id;
+						active_subunit_main_order_id = (*g_active_portrait_unit)->subunit->main_order_id;
 						jumpTo59A86 = true;
 					}
 				}
@@ -425,15 +417,15 @@ namespace hooks {
 				jumpTo59A9F = !*g_active_portrait_unit;
 				if (!jumpTo59A9F)
 				{
-					mainOrderIdHolderUnit_EBP = (*g_active_portrait_unit)->main_order_id;
-					CX_Holder = mainOrderIdHolderUnit_EBP;
+					active_unit_main_order_id = (*g_active_portrait_unit)->main_order_id;
+					CX_Holder = active_unit_main_order_id;
 					if (!(*g_active_portrait_unit)->subunit)
 					{
 						jumpTo59A83 = true;
 					}
 					else
 					{
-						mainOrderIdHolderSubUnit_BL = (*g_active_portrait_unit)->subunit->main_order_id;
+						active_subunit_main_order_id = (*g_active_portrait_unit)->subunit->main_order_id;
 						jumpTo59A86 = true;
 					}
 				}
@@ -446,20 +438,20 @@ namespace hooks {
 			if (*g_active_portrait_unit)
 			{
 				bool jumpTo59ABD = false;
-				mainOrderIdHolderUnit_EBP = (*g_active_portrait_unit)->main_order_id;
+				active_unit_main_order_id = (*g_active_portrait_unit)->main_order_id;
 				if ((*g_active_portrait_unit)->subunit)
 				{
-					mainOrderIdHolderSubUnit_BL = (*g_active_portrait_unit)->subunit->main_order_id;
+					active_subunit_main_order_id = (*g_active_portrait_unit)->subunit->main_order_id;
 				}
 				else
 				{
-					mainOrderIdHolderSubUnit_BL = 0xFF;
+					active_subunit_main_order_id = 0xFF;
 				}
 				// 00459A55
-				if (*BUTTONSET_UNIT_MAINORDERID == mainOrderIdHolderUnit_EBP)
+				if (*BUTTONSET_UNIT_MAINORDERID == active_unit_main_order_id)
 				{
 					// 00459A5D
-					if (*BUTTONSET_SUBUNIT_MAINORDERID == mainOrderIdHolderSubUnit_BL)
+					if (*BUTTONSET_SUBUNIT_MAINORDERID == active_subunit_main_order_id)
 					{
 						jumpTo59ABD = true;
 					}
@@ -469,8 +461,8 @@ namespace hooks {
 					// 00459A65
 					// light up the button of the current order
 					highlight_button();
-					*BUTTONSET_UNIT_MAINORDERID = mainOrderIdHolderUnit_EBP;
-					*BUTTONSET_SUBUNIT_MAINORDERID = mainOrderIdHolderSubUnit_BL;
+					*BUTTONSET_UNIT_MAINORDERID = active_unit_main_order_id;
+					*BUTTONSET_SUBUNIT_MAINORDERID = active_subunit_main_order_id;
 					// light up the button of the current order
 					highlight_button();
 				}
@@ -478,15 +470,15 @@ namespace hooks {
 		}
 		if (jumpTo59A83) // cannot be set if a jump beyond is set
 		{
-			mainOrderIdHolderSubUnit_BL = 0xFF;
+			active_subunit_main_order_id = 0xFF;
 			jumpTo59A86 = true;
 		}
 		if (jumpTo59A86)
 		{
 			// light up the button of the current order
 			highlight_button();
-			*BUTTONSET_UNIT_MAINORDERID = mainOrderIdHolderUnit_EBP;
-			*BUTTONSET_SUBUNIT_MAINORDERID = mainOrderIdHolderSubUnit_BL;
+			*BUTTONSET_UNIT_MAINORDERID = active_unit_main_order_id;
+			*BUTTONSET_SUBUNIT_MAINORDERID = active_subunit_main_order_id;
 			// light up the button of the current order
 			highlight_button();
 			jumpTo59A9F = true;
@@ -650,11 +642,11 @@ namespace hooks {
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched)
 					{
-						UnitExt* unitExt = get_unit_ext(unit);
+						UnitExt* unit_ext = get_unit_ext(unit);
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
 						if (current_button->requirement_var == TechId::ControlledDemolition)
 						{
-							if (unitExt->timers[TimerControlledDemolition] || unitExt->timers[TimerEmergencyDetonation])
+							if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation])
 							{
 								current_button_state = Button_State::Invisible;
 							}
@@ -665,7 +657,7 @@ namespace hooks {
 						}
 						else if (current_button->requirement_var == TechId::EmergencyDetonation)							
 						{
-							if (!unitExt->timers[TimerControlledDemolition] || unitExt->timers[TimerEmergencyDetonation])
+							if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation])
 							{
 								current_button_state = Button_State::Invisible;
 							}
@@ -688,11 +680,14 @@ namespace hooks {
 						}
 					}
 
-					if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg && current_button->icon_id == IconId::SetRallyPoint) {
-						current_button_state = Button_State::Enabled;
-					}
-					if (unit->id == UnitId::ZergCagrantColony && current_button->icon_id == IconId::SetRallyPoint) {
-						current_button_state = Button_State::Enabled;
+					if (current_button->icon_id == IconId::SetRallyPoint) {
+						if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg)
+						{
+							current_button_state = Button_State::Enabled;
+						}
+						if (unit->id == UnitId::ZergCagrantColony) {
+							current_button_state = Button_State::Enabled;
+						}
 					}
 
 					/*
@@ -792,10 +787,16 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
-					bool has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
-					bool in_air = unit->status & UnitStatus::InAir;
-					bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
-					bool is_burrowed = unit->status & UnitStatus::Burrowed;
+					bool has_addon = 0;
+					bool in_air = 0;
+					bool is_training = 0;
+					bool is_burrowed = 0;
+					if (unit) {
+						has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
+						in_air = unit->status & UnitStatus::InAir;
+						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
+						is_burrowed = unit->status & UnitStatus::Burrowed;
+					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{

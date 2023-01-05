@@ -788,6 +788,21 @@ namespace
 			RETN 0x4
 		}
 	}
+
+	void __declspec(naked) ai_remove_from_towns_wrapper() { // 00432760
+		static AiTown* result;
+		static Unit* unit;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::ai_remove_from_towns(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -841,6 +856,7 @@ namespace hooks
 
 		jump_patch(ai_can_travel_to_region_wrapper,				0x0043A790, 1);
 		jump_patch(is_ground_map_wrapper,						0x00433110, 5);
+	//	jump_patch(ai_remove_from_towns_wrapper,				0x00432760, 6); // Not tested.
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 

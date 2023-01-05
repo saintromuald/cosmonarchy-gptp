@@ -17,4 +17,5 @@ namespace hooks
 	void loadMenu_gluScore_pIcons();
 	void get_color_handle();
 	void write_font_apply_color_patch();
+	void StatHangarCount_patch_25471();
 }

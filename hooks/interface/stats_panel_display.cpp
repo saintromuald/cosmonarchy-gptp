@@ -86,7 +86,7 @@ namespace hooks
 					}
 					if (!no_ground_weapon_display)
 					{
-						helper::stat_weapon_level(dialog, index, ground_weapon);
+						helper::stats_weapon_level(dialog, index, ground_weapon);
 						index++;
 
 						// Display additional weapons
@@ -94,32 +94,32 @@ namespace hooks
 						{
 							case UnitId::TerranTarasque:
 							{
-								helper::stat_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
+								helper::stats_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
 								index++;
 							} break;
 							case UnitId::TerranDurendal:
 							{
-								helper::stat_weapon_level(dialog, index, WeaponId::DurendalPhilistineAutogun);
+								helper::stats_weapon_level(dialog, index, WeaponId::DurendalPhilistineAutogun);
 								index++;
 							} break;
 							case UnitId::TerranCentaur:
 							{
-								helper::stat_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
+								helper::stats_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
 								index++;
 							} break;
 							case UnitId::ProtossOptecton:
 							{
-								helper::stat_weapon_level(dialog, index, WeaponId::OptectonSkybondRay);
+								helper::stats_weapon_level(dialog, index, WeaponId::OptectonSkybondRay);
 								index++;
 							} break;
 							case UnitId::ProtossStarSovereign:
 							{
-								helper::stat_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
+								helper::stats_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
 								index++;
 							} break;
 							case UnitId::ZergZarcavrokor:
 							{
-								helper::stat_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
+								helper::stats_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
 								index++;
 							} break;
 						}
@@ -200,7 +200,7 @@ namespace hooks
 					}
 					if (!no_air_weapon_display)
 					{
-						helper::stat_weapon_level(dialog, index, air_weapon);
+						helper::stats_weapon_level(dialog, index, air_weapon);
 						index++;
 					}
 				}
@@ -209,7 +209,7 @@ namespace hooks
 			if (active_unit->id == UnitId::ProtossSolarion
 				|| active_unit->id == UnitId::ProtossAccantorOld) // Originally had hardcode for Gantrithor and Warbringer
 			{
-				helper::stat_hangar_count(dialog, index);
+				helper::stats_hangar_count(dialog, index);
 				index++;
 			}
 
@@ -621,7 +621,6 @@ namespace hooks
 		}
 	//	*g_unk_upgrade_count += armor_value;
 	}
-
 
 	// Hooked to change the name of new building morphs.
 	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.

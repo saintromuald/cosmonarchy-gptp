@@ -4459,7 +4459,7 @@ namespace helper {
 		}
 	}
 
-	void stat_hangar_count(BinDlg* dialog, u32 index) {
+	void stats_hangar_count(BinDlg* dialog, u32 index) {
 		const u32 Func_StatHangerCount = 0x004253D0;
 		__asm {
 			PUSHAD
@@ -4492,7 +4492,7 @@ namespace helper {
 		}
 	}
 
-	void stat_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id) {
+	void stats_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id) {
 		const u32 Func_Sub425790 = 0x00425790;
 		__asm {
 			PUSHAD
