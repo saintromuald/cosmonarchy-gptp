@@ -554,8 +554,8 @@ namespace hooks {
 					graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREEN, graphics::ON_MAP);
 				}
 
-				if (config.show_worker_harvest_links) {
-					if (scbw::is_allied_to(selected->player, *g_local_nation_id)) {
+				if (config.show_order_lines) {
+					if (scbw::is_in_replay() || scbw::is_allied_to(selected->player, *g_local_nation_id)) {
 						// Show worker harvest links
 						Unit* ignore_unit = 0;
 						if (units_dat::base_property[selected->id] & UnitProperty::Worker

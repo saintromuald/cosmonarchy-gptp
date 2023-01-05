@@ -12,7 +12,7 @@ struct Config {
 	bool extended_camera_hotkeys = true;
 	bool show_timer = true;
 	bool show_apm = true;
-	bool show_worker_harvest_links = false;
+	bool show_order_lines = false;
 	bool always_show_extended_tooltips = false;
 
 	// Visuals
