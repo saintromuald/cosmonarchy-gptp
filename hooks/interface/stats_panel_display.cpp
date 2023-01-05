@@ -473,7 +473,7 @@ namespace hooks
 		// Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit.
 		BinDlg* dialog_var = dialog;
 		u8 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current armor using g_active_portrait_unit
-		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", armor_value);
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 		if (dialog_var->control_type)
 		{
 			dialog_var = dialog_var->parent;
@@ -502,7 +502,7 @@ namespace hooks
 		GrpHead* icons_grp = *g_cmdicons_grp;
 		StatusScreenState* state = child->stat_button_user;
 		Unit* active_unit = *g_active_portrait_unit;
-		child->graphic = 12;
+		child->graphic = 37 + (armor_value >= 10) + (armor_value >= 100);
 		state->button_grp = icons_grp;
 		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
 		if (active_unit->status & UnitStatus::Completed || scbw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
@@ -527,7 +527,7 @@ namespace hooks
 	{
 		u32 active_player = (*g_active_portrait_unit)->player;
 		u16 damage_value = weapons_dat::damage_amount[weapon_id] * scbw::get_damage_factor_for_tooltip(weapon_id, *g_active_portrait_unit); // TODO: calculate current damage using g_active_portrait_unit
-		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", damage_value);
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
 		BinDlg* dialog_var = dialog;
 		if (dialog->control_type)
@@ -557,7 +557,7 @@ namespace hooks
 		helper::disable_dialog(child);
 		StatusScreenState* state = child->stat_button_user;
 		GrpHead* icons_grp = *g_cmdicons_grp;
-		child->graphic = 12;
+		child->graphic = 37 + (damage_value >= 10) + (damage_value >= 100);
 		state->button_grp = icons_grp;
 		state->grp_frame = weapons_dat::weapon_icon[weapon_id];
 		state->type = 0;
@@ -578,7 +578,7 @@ namespace hooks
 	{
 		BinDlg* dialog_var = dialog;
 		u32 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current shield armor using g_active_portrait_unit
-		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d ", armor_value);
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
 		if (dialog_var->control_type)
 		{
@@ -606,7 +606,7 @@ namespace hooks
 		helper::disable_dialog(child);
 		StatusScreenState* state = child->stat_button_user;
 		GrpHead* icons_grp = *g_cmdicons_grp;
-		child->graphic = 12;
+		child->graphic = 37 + (armor_value >= 10) + (armor_value >= 100);
 		state->button_grp = icons_grp;
 		state->grp_frame = 310;
 		state->type = 2;
