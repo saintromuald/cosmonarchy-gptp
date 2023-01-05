@@ -753,7 +753,7 @@ namespace hooks {
 			} break;
 			case UnitId::ResourceVespeneRidge:
 			{
-				unit->building.resource.resource_yield = 2;
+				unit->building.resource.resource_yield = 3;
 			} break;
 		}
 	}
