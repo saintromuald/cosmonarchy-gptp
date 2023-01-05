@@ -543,25 +543,61 @@ namespace hooks {
 		//	scbw::printf("Order id: %u", selected->main_order_id);
 		//	scbw::printf("Status: 0x%X", selected->status);
 
- 			*unit_iterator_pos = 0;
-			while (Unit* selection = get_active_player_next_selection()) {
+			for (u32 i = 0; i < *g_client_selection_count; ++i) {
+				Unit* selected = g_client_selection_group->unit[i];
+				Point16 source = selected->position;
+
 				// Show connected Nyduses
-				if (selection->id == UnitId::ZergNydusCesiant && selection->building.nydus_exit
-				&& (scbw::is_allied_to(selection->player, *g_local_human_id) || helper::get_detecting_players(selection) & (1 << *g_local_human_id))) {
-					Unit* exit = selection->building.nydus_exit;
-					graphics::draw_line(selection->get_x(), selection->get_y(), exit->get_x(), exit->get_y(), graphics::GREEN, graphics::ON_MAP);
+				if (selected->id == UnitId::ZergNydusCesiant && selected->building.nydus_exit
+				&& (scbw::is_allied_to(selected->player, *g_local_nation_id) || helper::get_detecting_players(selected) & (1 << *g_local_nation_id))) {
+					Point16 target = selected->building.nydus_exit->position;
+					graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREEN, graphics::ON_MAP);
 				}
 
-				// Show worker harvest links
-				if (config.show_worker_harvest_links)
-				{
-					if (units_dat::base_property[selection->id] & UnitProperty::Worker
-						&& *g_local_human_id == selection->player
-						&& scbw::order_id_is_harvest_related(selection->main_order_id)) {
-						if (selection->worker.target_resource.unit)
-						{
-							Unit* resource = selection->worker.target_resource.unit;
-							graphics::draw_line(selection->get_x(), selection->get_y(), resource->get_x(), resource->get_y(), graphics::GREEN, graphics::ON_MAP);
+				if (config.show_worker_harvest_links) {
+					if (scbw::is_allied_to(selected->player, *g_local_nation_id)) {
+						// Show worker harvest links
+						Unit* ignore_unit = 0;
+						if (units_dat::base_property[selected->id] & UnitProperty::Worker
+							&& *g_local_nation_id == selected->player
+							&& scbw::order_id_is_harvest_related(selected->main_order_id)) {
+							if (selected->worker.target_resource.unit) {
+								Point16 target = selected->worker.target_resource.unit->position;
+								graphics::draw_line(source.x, source.y, target.x, target.y, graphics::CYAN, graphics::ON_MAP);
+								ignore_unit = selected->worker.target_resource.unit;
+							}
+						}
+
+						// Show order line
+						if (!selected->order_target.unit || selected->order_target.unit != ignore_unit) {
+							graphics::ColorId color = graphics::GREEN;
+							switch (selected->main_order_id) {
+								case OrderId::Patrol:
+								case OrderId::ReturnMinerals:
+								case OrderId::ReturnGas:
+								{
+									color = graphics::YELLOW;
+								} break;
+								case OrderId::AttackMove:
+								case OrderId::AttackUnit:
+								{
+									color = graphics::RED;
+								} break;
+							}
+
+							Point16 target = selected->order_target.unit ? selected->order_target.unit->position : selected->order_target.pt;
+							if (target.x != 0 || target.y != 0) {
+								graphics::draw_line(source.x, source.y, target.x, target.y, color, graphics::ON_MAP);
+								source = target;
+							}
+
+							for (Order* order = selected->order_queue_head; order; order = order->next) {
+								Point16 target = order->target.unit ? order->target.unit->position : order->target.pt;
+								if (target.x != 0 || target.y != 0) {
+									graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREY, graphics::ON_MAP);
+									source = target;
+								}
+							}
 						}
 					}
 				}
