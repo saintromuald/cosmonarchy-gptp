@@ -1829,6 +1829,16 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranMatador:
+			{
+				if (unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving)
+				{
+					unit_ext->timers[TimerMatadorHeal] = 1 * 24;
+				}
+				if (unit_ext->timers[TimerMatadorHeal] == 0 && !unit->sprite->get_overlay(ImageId::RestorationHit_Small)) {
+					unit->sprite->create_top_overlay(ImageId::RestorationHit_Small);
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma

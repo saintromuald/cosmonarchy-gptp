@@ -479,6 +479,30 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Pick appropriate icon size for hangar counts. Weapons, armor, and shields are handled in stats_panel_display.
 	jump_patch(hooks::StatHangarCount_patch_25471, 0x00425471, 1);
+
+	call_patch(hooks::RestartGameMenu, 0x00484785); // Change leaderboard toggle shortcut action to mission restart shortcut action.
+	memory_patch(0x00484B40, (u32)0x00484B24); // Default switch table case (do nothing) for save game shortcut.
+	memory_patch(0x00484B44, (u32)0x00484B24); // Default switch table case (do nothing) for load game shortcut.
+
+	// sub_490300 (0x00490300)
+	memory_patch(0x004903D1, (u8)0x02); // list computer players instead of humans
+	memory_patch(0x00490482, (u16)0x9090); // temporary global disable of "allies" and "shared vision" checkboxes
+	memory_patch(0x004904F8, (u16)0x9090);
+
+	// allyfltr_AllyVictoryBox (0x00490C40)
+	memory_patch(0x00490D47, (u32)0x57F0B4A1); // disable allied victory checkbox for singleplayer mode
+
+	// minimap_dlg_Create (0x004A5230)
+	memory_patch(0x004A5252, (u32)0x000001B8); // show diplo button for singleplayer mode
+	memory_patch(0x004A5267, (u32)0x000002B8); // show diplo button even if there is only one human player
+
+	// sub_490E90 (0x00490E90)
+	jump_patch(hooks::sub_490E90_patch_90EC3, 0x00490EC3);
+	jump_patch(hooks::sub_490E90_patch_90ED1, 0x00490ED1);
+	jump_patch(hooks::sub_490E90_patch_90EDF, 0x00490EDF);
+
+	//genericBtnInteract (0x004E1C20)
+	memory_patch(0x004E1C38, (u16)0x73FC);
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start

@@ -18,4 +18,9 @@ namespace hooks
 	void get_color_handle();
 	void write_font_apply_color_patch();
 	void StatHangarCount_patch_25471();
+	void RestartGameMenu();
+	void sub_490E90_patch_90EC3();
+	void sub_490E90_patch_90ED1();
+	void UpdateOKButton2();
+	void sub_490E90_patch_90EDF();
 }

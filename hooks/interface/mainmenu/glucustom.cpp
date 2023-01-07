@@ -475,4 +475,81 @@ namespace hooks
 				JMP     StatHangarCount_25477
 		}
 	};
+	
+	const u32 load_dialog = 0x004F57A0;
+	void __declspec(naked) RestartGameMenu() {
+		__asm {
+			MOV		dword ptr ds : [0x006D1234] , 0x004C9530//last_bindlg_menu_function = CMDACT_RestartGame
+			MOV		EDX, 0x004CA240//game_menu_dialog_interact
+			MOV		ECX, 0x0050294C//"rez\restart.bin"
+			JMP		load_dialog
+		}
+	};
+
+	const u32 sub_490E90_90EC8 = 0x00490EC8;
+	void __declspec(naked) sub_490E90_patch_90EC3() {
+		__asm {
+			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			SHL		EAX, 3
+			OR		EAX, 0x20000000
+			PUSH	EAX
+			JMP		sub_490E90_90EC8
+		}
+	};
+
+	const u32 sub_490E90_90ED6 = 0x00490ED6;
+	void __declspec(naked) sub_490E90_patch_90ED1() {
+		__asm {
+			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			SHL		EAX, 3
+			OR		EAX, 0x20000000
+			PUSH	EAX
+			JMP		sub_490E90_90ED6
+		}
+	};
+
+	void __declspec(naked) UpdateOKButton2() {
+		__asm {
+			PUSH	EBP
+			MOV		EBP, ESP
+			CMP		word ptr[EAX + 0x22], 0
+			JE		offset off_00
+			MOV		EAX, [EAX + 0x32]
+			off_00:
+			MOV		EAX, [EAX + 0x42]
+				TEST	EAX, EAX
+				MOV		ECX, 0xFFFFFFFC//button id
+				off_01 :
+				CMP[EAX + 0x20], CX
+				JE		offset off_02
+				MOV		EAX, [EAX]
+				TEST	EAX, EAX
+				JNE		offset off_01
+				POP		EBP
+				RETN	8
+				off_02:
+			MOVZX	ECX, word ptr[EBP + 8]
+				MOV		DX, ds : [ECX * 2 + 0x00512768]//OKButtonGraphicIndex
+				MOV		ECX, [EBP + 0xC]
+				MOV[EAX + 0x24], DX
+				OR[EAX + 0x18], ECX
+				POP		EBP
+				RETN	8
+		}
+	};
+
+	void __declspec(naked) sub_490E90_patch_90EDF() {
+		__asm {
+			MOV		EAX, 1
+			XOR		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			SHL		EAX, 3
+			OR		EAX, 0x20000000
+			PUSH	EAX
+			PUSH	4//button graphic style
+			MOV		EAX, EBX
+			CALL	UpdateOKButton2
+			POP		EBX
+			RETN
+		}
+	};
 }

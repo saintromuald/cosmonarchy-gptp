@@ -408,7 +408,12 @@ namespace hooks
 					regen *= 2;
 				}
 				if (unit->id == UnitId::TerranMatador) {
-					regen *= 5;
+					if (unit_ext->timers[TimerMatadorHeal] == 0) {
+						regen *= 5;
+					}
+					else {
+						regen = 0;
+					}
 				}
 
 				regen *= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
