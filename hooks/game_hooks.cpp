@@ -591,11 +591,13 @@ namespace hooks {
 								source = target;
 							}
 
-							for (Order* order = selected->order_queue_head; order; order = order->next) {
-								Point16 target = order->target.unit ? order->target.unit->position : order->target.pt;
-								if (target.x != 0 || target.y != 0) {
-									graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREY, graphics::ON_MAP);
-									source = target;
+							if (config.show_queued_order_lines) {
+								for (Order* order = selected->order_queue_head; order; order = order->next) {
+									Point16 target = order->target.unit ? order->target.unit->position : order->target.pt;
+									if (target.x != 0 || target.y != 0) {
+										graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREY, graphics::ON_MAP);
+										source = target;
+									}
 								}
 							}
 						}

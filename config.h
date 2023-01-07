@@ -13,6 +13,7 @@ struct Config {
 	bool show_timer = true;
 	bool show_apm = true;
 	bool show_order_lines = false;
+	bool show_queued_order_lines = false;
 	bool always_show_extended_tooltips = false;
 
 	// Visuals
