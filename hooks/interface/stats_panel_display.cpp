@@ -622,6 +622,57 @@ namespace hooks
 	//	*g_unk_upgrade_count += armor_value;
 	}
 
+	// Hooked to correct string spacing. -Pr0nogo
+	b32 stats_spidermine_count(BinDlg* dialog, u16 index) // 00426300
+	{
+		Unit* unit = *g_active_portrait_unit;
+		if (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player) != 1)
+		{
+			return 0;
+		}
+		sprintf_s(g_status_screen_info_button_unk[index], 8, "%d", unit->mine_carrier.mine_count);
+		if (dialog->control_type)
+		{
+			dialog = dialog->parent;
+		}
+
+		BinDlg* child = dialog->child_dialog;
+		if (child)
+		{
+			while (child->index != index + 9)
+			{
+				child = child->next;
+				if (!child)
+				{
+					goto LABEL_8;
+				}
+			}
+		}
+		else
+		{
+		LABEL_8:
+			child = 0;
+		}
+		helper::show_dialog(child);
+		helper::disable_dialog(child);
+		StatusScreenState* user = child->stat_button_user;
+		GrpHead* grp = *g_cmdicons_grp;
+		child->graphic = 12;
+		user->button_grp = *g_cmdicons_grp;
+		user->grp_frame = 13;
+		user->type = 3;
+		user->id = 13;
+
+		u32 flags = child->flags;
+		child->psz_text = g_status_screen_info_button_unk[index];
+		if (!(flags & 1))
+		{
+			child->flags = flags | 1;
+			helper::update_dialog(child);
+		}
+		return 1;
+	}
+
 	// Hooked to change the name of new building morphs.
 	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.
 	// - Pr0nogo

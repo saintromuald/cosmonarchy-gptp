@@ -140,6 +140,31 @@ namespace
 		}
 	}
 
+	void __declspec(naked) stats_spidermine_count_wrapper() // 00426300
+	{
+		static b32 result;
+		static BinDlg* dialog;
+		static u16 index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV index, AX
+			POP EAX
+			MOV dialog, EAX
+			PUSHAD
+		}
+		result = hooks::stats_spidermine_count(dialog, index);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void __declspec(naked) set_tooltip_info_unit_case1_wrapper() { // 004594B0
 		static const u32 jmp_address = 0x00459635;
 		static u32 unit_id;
@@ -443,7 +468,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_stat_act_archon_wrapper() // 4273E0
+	void __declspec(naked) unit_stat_act_archon_wrapper() // 004273E0
 	{
 		static BinDlg* dialog;
 		__asm {
@@ -469,6 +494,7 @@ namespace hooks
 		jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
 		jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
 		jump_patch(stats_shield_level_wrapper,						0x00425510, 1);
+		jump_patch(stats_spidermine_count_wrapper,					0x00426300, 0);
 		jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
 		jump_patch(set_tooltip_info_unit_case5_wrapper,				0x0045952F, 4);
 		jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);
