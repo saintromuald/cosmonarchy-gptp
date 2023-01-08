@@ -657,7 +657,7 @@ namespace hooks
 		helper::disable_dialog(child);
 		StatusScreenState* user = child->stat_button_user;
 		GrpHead* grp = *g_cmdicons_grp;
-		child->graphic = 12;
+		child->graphic = 37 + (unit->mine_carrier.mine_count >= 10) + (unit->mine_carrier.mine_count >= 100);
 		user->button_grp = *g_cmdicons_grp;
 		user->grp_frame = 13;
 		user->type = 3;
