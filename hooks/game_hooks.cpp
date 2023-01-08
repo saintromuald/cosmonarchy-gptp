@@ -383,9 +383,7 @@ namespace hooks {
 							&& scbw::order_id_is_harvest_related(unit->main_order_id)) {
 							Unit* target_resource = unit->worker.target_resource.unit;
 							if (target_resource) {
-								Point16 target = target_resource->position;
-								// Ideally we would use a different color for gas, unfortunately GREEN color is already used
-								draw_simple_line(source, target_resource->position, graphics::CYAN);
+								draw_simple_line(source, target_resource->position, scbw::unit_id_is_gas_structure(target_resource->id) ? graphics::TEAL : graphics::CYAN);
 								ignore_resource_unit = target_resource;
 							}
 						}
