@@ -457,11 +457,21 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004D8A67, &tFontGame_ImageData);
 	memory_patch(0x004DD8C8, (u32)0x140);							// ...for "loadTFontPcx".
 	memory_patch(0x004DDB71, &tFontGame_ImageData);					// ...for "registerMenuFunctions".
-	jump_patch(hooks::write_font_apply_color_patch, 0x0041FDC6, 54);
+
+	// Extend and add per-player support for font colors.
+	jump_patch(hooks::writeFontApplyColour_patch, 0x0041FDC6);
 	jump_patch(hooks::get_color_handle, 0x0041F610, 4);
-	memory_patch(0x004200B6, (u8)0x2);								// Make <0B> tag a valid color, and add gap offset.
-	memory_patch(0x004200B9, (u32)0x04040404);						// Add gap offsets for <0E> to <11>.
-	memory_patch(0x004200BF, (u32)0x06060606);						// Make <14> and <1A> tags valid colors, and add gap offsets.
+	memory_patch(0x004200B6, (u8)0x00);								// <0B>
+	memory_patch(0x004200B9, (u32)0x05050505);						// tfont offsets for <0E> through <11>.
+	memory_patch(0x004200BF, (u8)0x00);								// <14>
+	memory_patch(0x004200C0, (u32)0x08080808);						// tfont offsets for <15> through <1F>.
+	memory_patch(0x004200C4, (u32)0x08080808);
+	memory_patch(0x004200C8, (u16)0x0808);
+	memory_patch(0x004200CA, (u8)0x08);
+	
+	memory_patch(0x0048CF34, (u8)0x1A);								// Change default in-game transmission text color.
+
+	// Orphans from previous font color work
 	memory_patch(0x004200C3, (u32)0x06060606);
 	memory_patch(0x004200C7, (u32)0x06060606);
 

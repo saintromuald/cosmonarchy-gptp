@@ -1,7 +1,7 @@
 #pragma once
 #include "SCBW/structures.h"
 
-u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
+u8 tFontGame_ImageData[320];//Larger tfont.pcx buffer to fit the new colors.
 namespace hooks
 {
 	void display_establishing_shot();					// 004D9200, hooked by X405
@@ -16,7 +16,7 @@ namespace hooks
 	void sub_4EF710();
 	void loadMenu_gluScore_pIcons();
 	void get_color_handle();
-	void write_font_apply_color_patch();
+	void writeFontApplyColour_patch();
 	void StatHangarCount_patch_25471();
 	void RestartGameMenu();
 	void sub_490E90_patch_90EC3();
