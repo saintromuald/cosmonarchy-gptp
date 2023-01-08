@@ -336,6 +336,176 @@ namespace hooks {
 		return false;
 	}
 
+	static Point16 get_target_point(Target target) {
+		return target.unit ? target.unit->position : target.pt;
+	}
+
+	static bool draw_simple_line(Point16 source, Point16 target, graphics::ColorId color) {
+		if (target.x != 0 || target.y != 0) {
+			graphics::draw_line(source.x, source.y, target.x, target.y, color, graphics::ON_MAP);
+			return true;
+		}
+		return false;
+	}
+
+	static Point16 draw_order_line(Point16 source, Target target, graphics::ColorId color, Unit* ignore_draw_unit = 0) {
+		Point16 target_pos = get_target_point(target);
+		if (target_pos.x != 0 || target_pos.y != 0) {
+			if (!ignore_draw_unit || target.unit != ignore_draw_unit) {
+				graphics::draw_line(source.x, source.y, target_pos.x, target_pos.y, color, graphics::ON_MAP);
+			}
+			return target_pos;
+		}
+		return source;
+	}
+
+	static void draw_custom_ui() {
+		// Draw selection info
+		Unit* selected = *g_active_portrait_unit;
+		if (selected) {
+			for (u32 i = 0; i < *g_client_selection_count; ++i) {
+				Unit* unit = g_client_selection_group->unit[i];
+				Point16 source = unit->position;
+
+				// Show connected Nyduses
+				if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
+					if (scbw::is_allied_to(unit->player, *g_local_nation_id) || helper::get_detecting_players(unit) & (1 << *g_local_nation_id)) {
+						draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
+					}
+				}
+
+				if (config.show_order_lines) {
+					Unit* ignore_resource_unit = 0;
+
+					if (scbw::is_in_replay() || *g_local_nation_id == unit->player) {
+						// Show worker harvest links
+						if (units_dat::base_property[unit->id] & UnitProperty::Worker
+							&& scbw::order_id_is_harvest_related(unit->main_order_id)) {
+							Unit* target_resource = unit->worker.target_resource.unit;
+							if (target_resource) {
+								Point16 target = target_resource->position;
+								// Ideally we would use a different color for gas, unfortunately GREEN color is already used
+								draw_simple_line(source, target_resource->position, graphics::CYAN);
+								ignore_resource_unit = target_resource;
+							}
+						}
+					}
+
+					if (scbw::is_in_replay() || scbw::is_allied_to(unit->player, *g_local_nation_id)) {
+						// Rally point
+						{
+							Point16 target = get_target_point(unit->rally);
+							if (target.x == unit->position.x &&
+								target.y == unit->position.y) {
+								target.x = 0;
+								target.y = 0;
+							}
+							if (draw_simple_line(source, target, graphics::WHITE)) {
+								source = target;
+							} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
+								source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
+							}
+						}
+
+						// Main Order
+						{
+							graphics::ColorId color = graphics::GREEN;
+							switch (unit->main_order_id) {
+								case OrderId::Patrol:
+								case OrderId::ReturnMinerals:
+								case OrderId::ReturnGas:
+								// TODO: Add more neutral orders
+								{
+									color = graphics::YELLOW;
+								} break;
+								case OrderId::AttackMove:
+								case OrderId::AttackUnit:
+								// TODO: Add more aggressive orders
+								{
+									color = graphics::RED;
+								} break;
+							}
+
+							source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
+						}
+
+						// Queued Orders
+						if (config.show_queued_order_lines && !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
+							for (Order* order = unit->order_queue_head; order; order = order->next) {
+								source = draw_order_line(source, order->target, graphics::GREY);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Draw transport UI
+		{
+			Point16 start_pos = {179, 333}; // {441, 203};
+			Point16 pos = start_pos;
+
+			if (transport_ui_unit) {
+				transport_ui_unit = 0;
+				helper::set_ingame_input_procs();
+			}
+
+			u32 x_count = 0;
+			for (u32 i = 0; i < *g_client_selection_count; ++i) {
+				Unit* transport = g_client_selection_group->unit[i];
+				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
+					for (u32 j = 0; j < TransportCap; ++j) {
+						Unit* cargo_unit = transport->get_loaded_unit(j);
+						if (cargo_unit) {
+							char buffer[128] = {};
+
+							Token unit_name = get_short_unit_name(cargo_unit->id);
+							if (cargo_unit->id == UnitId::TerranPhalanxSiegeMode) {
+								strcat_s(unit_name.data, " (Sieged)");
+								unit_name.size = strlen(unit_name.data);
+							}
+
+							bool own_unit = cargo_unit->player == *g_local_nation_id;
+							if (own_unit) {
+								snprintf(buffer, 128, BWTC_GREEN "%s", unit_name.data);
+							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
+								snprintf(buffer, 128, BWTC_YELLOW "%s", unit_name.data);
+							} else {
+								snprintf(buffer, 128, BWTC_RED "%s", unit_name.data);
+							}
+							u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+
+							RECT rect = {};
+							rect.left = pos.x;
+							rect.top = pos.y;
+							rect.right = rect.left + width;
+							rect.bottom = rect.top + 13;
+							bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
+							if (hover) {
+								snprintf(buffer, 128, BWTC_WHITE "%s", unit_name.data);
+								width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
+							}
+
+							graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+							if (hover && !transport_ui_unit) {
+								transport_ui_unit = cargo_unit;
+								helper::set_ingame_input_procs();
+							}
+
+							pos.x += width + 5;
+							x_count++;
+							if (x_count > 4) {
+								x_count = 0;
+								pos.x = start_pos.x;
+								pos.y -= 15; // += 15;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
@@ -519,157 +689,7 @@ namespace hooks {
 			hooks::update_buttonset();
 		}
 		
-		// Draw selection info
-		Unit* selected = *g_active_portrait_unit;
-		if (selected) {
-			/*
-			// For checking cargo-related elements. -Pr0nogo
-			if (selected) {
-				for (u32 i = 0; i < TransportCap; ++i) {
-					Unit* cargo_unit = selected->get_loaded_unit(i);
-					if (!cargo_unit) {
-						continue;
-					}
-					u32 unit_status = cargo_unit->status;
-					scbw::printf("0x%X", unit_status);
-				}
-			}
-			*/
-			/*
-			if (selected->sprite && selected->sprite->main_graphic) {
-				scbw::printf("Animation: %u", selected->sprite->main_graphic->animation);
-			}
-			*/
-		//	scbw::printf("Order id: %u", selected->main_order_id);
-		//	scbw::printf("Status: 0x%X", selected->status);
-
-			for (u32 i = 0; i < *g_client_selection_count; ++i) {
-				Unit* selected = g_client_selection_group->unit[i];
-				Point16 source = selected->position;
-
-				// Show connected Nyduses
-				if (selected->id == UnitId::ZergNydusCesiant && selected->building.nydus_exit
-				&& (scbw::is_allied_to(selected->player, *g_local_nation_id) || helper::get_detecting_players(selected) & (1 << *g_local_nation_id))) {
-					Point16 target = selected->building.nydus_exit->position;
-					graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREEN, graphics::ON_MAP);
-				}
-
-				if (config.show_order_lines) {
-					if (scbw::is_in_replay() || scbw::is_allied_to(selected->player, *g_local_nation_id)) {
-						// Show worker harvest links
-						Unit* ignore_unit = 0;
-						if (units_dat::base_property[selected->id] & UnitProperty::Worker
-							&& *g_local_nation_id == selected->player
-							&& scbw::order_id_is_harvest_related(selected->main_order_id)) {
-							if (selected->worker.target_resource.unit) {
-								Point16 target = selected->worker.target_resource.unit->position;
-								graphics::draw_line(source.x, source.y, target.x, target.y, graphics::CYAN, graphics::ON_MAP);
-								ignore_unit = selected->worker.target_resource.unit;
-							}
-						}
-
-						// Show order line
-						if (!selected->order_target.unit || selected->order_target.unit != ignore_unit) {
-							graphics::ColorId color = graphics::GREEN;
-							switch (selected->main_order_id) {
-								case OrderId::Patrol:
-								case OrderId::ReturnMinerals:
-								case OrderId::ReturnGas:
-								{
-									color = graphics::YELLOW;
-								} break;
-								case OrderId::AttackMove:
-								case OrderId::AttackUnit:
-								{
-									color = graphics::RED;
-								} break;
-							}
-
-							Point16 target = selected->order_target.unit ? selected->order_target.unit->position : selected->order_target.pt;
-							if (target.x != 0 || target.y != 0) {
-								graphics::draw_line(source.x, source.y, target.x, target.y, color, graphics::ON_MAP);
-								source = target;
-							}
-
-							if (config.show_queued_order_lines) {
-								for (Order* order = selected->order_queue_head; order; order = order->next) {
-									Point16 target = order->target.unit ? order->target.unit->position : order->target.pt;
-									if (target.x != 0 || target.y != 0) {
-										graphics::draw_line(source.x, source.y, target.x, target.y, graphics::GREY, graphics::ON_MAP);
-										source = target;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// Draw transport UI
-		{
-			Point16 start_pos = {179, 333}; // {441, 203};
-			Point16 pos = start_pos;
-
-			if (transport_ui_unit) {
-				transport_ui_unit = 0;
-				helper::set_ingame_input_procs();
-			}
-
-			u32 x_count = 0;
-			for (u32 i = 0; i < *g_client_selection_count; ++i) {
-				Unit* transport = g_client_selection_group->unit[i];
-				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
-					for (u32 j = 0; j < TransportCap; ++j) {
-						Unit* cargo_unit = transport->get_loaded_unit(j);
-						if (cargo_unit) {
-							char buffer[128] = {};
-
-							Token unit_name = get_short_unit_name(cargo_unit->id);
-							if (cargo_unit->id == UnitId::TerranPhalanxSiegeMode) {
-								strcat_s(unit_name.data, " (Sieged)");
-								unit_name.size = strlen(unit_name.data);
-							}
-
-							bool own_unit = cargo_unit->player == *g_local_nation_id;
-							if (own_unit) {
-								snprintf(buffer, 128, BWTC_GREEN "%s", unit_name.data);
-							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
-								snprintf(buffer, 128, BWTC_YELLOW "%s", unit_name.data);
-							} else {
-								snprintf(buffer, 128, BWTC_RED "%s", unit_name.data);
-							}
-							u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-
-							RECT rect = {};
-							rect.left = pos.x;
-							rect.top = pos.y;
-							rect.right = rect.left + width;
-							rect.bottom = rect.top + 13;
-							bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
-							if (hover) {
-								snprintf(buffer, 128, BWTC_WHITE "%s", unit_name.data);
-								width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-							}
-
-							graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-							if (hover && !transport_ui_unit) {
-								transport_ui_unit = cargo_unit;
-								helper::set_ingame_input_procs();
-							}
-
-							pos.x += width + 5;
-							x_count++;
-							if (x_count > 4) {
-								x_count = 0;
-								pos.x = start_pos.x;
-								pos.y -= 15; // += 15;
-							}
-						}
-					}
-				}
-			}
-		}
+		draw_custom_ui();
 
 		// Loop through bullets
 		for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next) {
