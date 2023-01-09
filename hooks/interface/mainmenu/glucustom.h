@@ -23,4 +23,6 @@ namespace hooks
 	void sub_490E90_patch_90ED1();
 	void UpdateOKButton2();
 	void sub_490E90_patch_90EDF();
+	void sub_4AABB0_new();
+	void minimap_style();
 }

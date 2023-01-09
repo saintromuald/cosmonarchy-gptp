@@ -589,4 +589,40 @@ namespace hooks
 			RETN
 		}
 	};
+
+	void __declspec(naked) sub_4AABB0_new() {
+		__asm {
+			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			TEST	AL, AL
+			JE		offset off_1
+			MOV		CL, ds : [0x00596874]//game_data.bAlliesEnabled
+			CMP		CL, AL
+			JNE		offset off_0
+			MOV		CL, ds : [0x00596877]//game_data.tournamentModeEnabled
+			TEST	CL, CL
+			JE		offset off_1
+
+			off_0 :
+			XOR		EAX, EAX
+
+				off_1 :
+			RETN
+		}
+	};
+
+	const char minimap_sp[] = "rez\\minimap_sp.bin";
+	void __declspec(naked) minimap_style() {
+		__asm {
+			PUSH[ESP]//Move the return address up the stack.
+			MOV		AL, ds: [0x0057F0B4]//multiplayer_mode
+			TEST	AL, AL
+			JNE		offset off_0
+			MOV		dword ptr[ESP + 4], offset minimap_sp//Store "minimap_sp.bin" address in the previous stack position.
+			RET
+
+			off_0 :
+			MOV		dword ptr[ESP + 4], 0x00504070//Store "minimap.bin" address in the previous stack position.
+				RET
+		}
+	};
 }
