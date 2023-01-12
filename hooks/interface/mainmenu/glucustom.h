@@ -19,10 +19,12 @@ namespace hooks
 	void writeFontApplyColour_patch();
 	void StatHangarCount_patch_25471();
 	void RestartGameMenu();
-	void sub_490E90_patch_90EC3();
-	void sub_490E90_patch_90ED1();
-	void UpdateOKButton2();
-	void sub_490E90_patch_90EDF();
+	
+	// Diplomacy
+	void sub_490300_patch_903CA();
 	void sub_4AABB0_new();
+	void sub_490E90_patch_90EC3();
+	void UpdateOKButton2();
 	void minimap_style();
+	void minimap_dlg_Create_patch_A5242();
 }

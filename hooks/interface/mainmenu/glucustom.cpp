@@ -450,7 +450,7 @@ namespace hooks
 				RETN
 
 		}
-	};
+	}
 
 	const u32 writeFontApplyColour_1FE01 = 0x0041FE01;
 	const u32 writeFontApplyColour_2000A = 0x0042000A;
@@ -485,7 +485,7 @@ namespace hooks
 				off_1FE01 :
 			JMP     writeFontApplyColour_1FE01
 		}
-	};
+	}
 
 	const u32 StatHangarCount_25477 = 0x00425477;
 	void __declspec(naked) StatHangarCount_patch_25471() {
@@ -511,7 +511,7 @@ namespace hooks
 				POP     EDX
 				JMP     StatHangarCount_25477
 		}
-	};
+	}
 	
 	const u32 load_dialog = 0x004F57A0;
 	void __declspec(naked) RestartGameMenu() {
@@ -521,72 +521,21 @@ namespace hooks
 			MOV		ECX, 0x0050294C//"rez\restart.bin"
 			JMP		load_dialog
 		}
-	};
+	}
 
-	const u32 sub_490E90_90EC8 = 0x00490EC8;
-	void __declspec(naked) sub_490E90_patch_90EC3() {
+	const u32 sub_490300_903D2 = 0x004903D2;
+	void __declspec(naked) sub_490300_patch_903CA() {
 		__asm {
-			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
-			SHL		EAX, 3
-			OR		EAX, 0x20000000
-			PUSH	EAX
-			JMP		sub_490E90_90EC8
-		}
-	};
+			LEA		EDX, [ECX * 4 + 0x0057EEE9]//playerTable[playerId].race
+			CMP		byte ptr[EDX], 7//Check if race is Inactive.
+			JE		offset off_0
+			DEC		EDX//playerTable[playerId].type
+			CMP		byte ptr[EDX], 3//Check if type is neither Human or Computer (Players of type 0 (Unused) have already been filtered out).
+			JBE		offset off_0//Zero-flag is naturally set if the previous CMP is equal, so don't need to CMP again to set it.
+			CMP		EDX, EDX//Set zero-flag if player type is 4+.
 
-	const u32 sub_490E90_90ED6 = 0x00490ED6;
-	void __declspec(naked) sub_490E90_patch_90ED1() {
-		__asm {
-			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
-			SHL		EAX, 3
-			OR		EAX, 0x20000000
-			PUSH	EAX
-			JMP		sub_490E90_90ED6
-		}
-	};
-
-	void __declspec(naked) UpdateOKButton2() {
-		__asm {
-			PUSH	EBP
-			MOV		EBP, ESP
-			CMP		word ptr[EAX + 0x22], 0
-			JE		offset off_00
-			MOV		EAX, [EAX + 0x32]
-			off_00:
-			MOV		EAX, [EAX + 0x42]
-				TEST	EAX, EAX
-				MOV		ECX, 0xFFFFFFFC//button id
-				off_01 :
-				CMP[EAX + 0x20], CX
-				JE		offset off_02
-				MOV		EAX, [EAX]
-				TEST	EAX, EAX
-				JNE		offset off_01
-				POP		EBP
-				RETN	8
-				off_02:
-			MOVZX	ECX, word ptr[EBP + 8]
-				MOV		DX, ds : [ECX * 2 + 0x00512768]//OKButtonGraphicIndex
-				MOV		ECX, [EBP + 0xC]
-				MOV[EAX + 0x24], DX
-				OR[EAX + 0x18], ECX
-				POP		EBP
-				RETN	8
-		}
-	};
-
-	void __declspec(naked) sub_490E90_patch_90EDF() {
-		__asm {
-			MOV		EAX, 1
-			XOR		EAX, ds: [0x0057F0B4]//multiplayer_mode
-			SHL		EAX, 3
-			OR		EAX, 0x20000000
-			PUSH	EAX
-			PUSH	4//button graphic style
-			MOV		EAX, EBX
-			CALL	UpdateOKButton2
-			POP		EBX
-			RETN
+			off_0 :
+			JMP sub_490300_903D2
 		}
 	};
 
@@ -608,13 +557,61 @@ namespace hooks
 				off_1 :
 			RETN
 		}
-	};
+	}
+
+	const u32 sub_490E90_90EC8 = 0x00490EC8;
+	void __declspec(naked) sub_490E90_patch_90EC3() {
+		__asm {
+			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			OR		EAX, ds : [0x006D0F14]//g_is_in_replay
+			SHL		EAX, 3
+			OR		EAX, 0x20000000
+			PUSH	EAX
+			JMP		sub_490E90_90EC8
+		}
+	}
+
+	void __declspec(naked) UpdateOKButton2() {
+		__asm {
+			PUSH	EBP
+			MOV		EBP, ESP
+			CMP		word ptr[EAX + 0x22], 0
+			JE		offset off_0
+			MOV		EAX, [EAX + 0x32]
+
+			off_0:
+			MOV		EAX, [EAX + 0x42]
+				TEST	EAX, EAX
+				MOV		ECX, 0xFFFFFFFC//button id
+
+				off_1 :
+				CMP[EAX + 0x20], CX
+				JE		offset off_2
+				MOV		EAX, [EAX]
+				TEST	EAX, EAX
+				JNE		offset off_1
+				POP		EBP
+				RETN	8
+
+				off_2:
+			MOVZX	ECX, word ptr[EBP + 8]
+				MOV		DX, ds : [ECX * 2 + 0x00512768]//OKButtonGraphicIndex
+				MOV		ECX, [EBP + 0xC]
+				MOV[EAX + 0x24], DX
+				OR[EAX + 0x18], ECX
+				POP		EBP
+				RETN	8
+		}
+	}
 
 	const char minimap_sp[] = "rez\\minimap_sp.bin";
 	void __declspec(naked) minimap_style() {
 		__asm {
 			PUSH[ESP]//Move the return address up the stack.
-			MOV		AL, ds: [0x0057F0B4]//multiplayer_mode
+			MOV		AL, ds: [0x006D0F14]//g_is_in_replay
+			TEST	AL, AL
+			JNE		offset off_0
+			MOV		AL, ds : [0x0057F0B4]//multiplayer_mode
 			TEST	AL, AL
 			JNE		offset off_0
 			MOV		dword ptr[ESP + 4], offset minimap_sp//Store "minimap_sp.bin" address in the previous stack position.
@@ -624,5 +621,28 @@ namespace hooks
 			MOV		dword ptr[ESP + 4], 0x00504070//Store "minimap.bin" address in the previous stack position.
 				RET
 		}
-	};
+	}
+
+	const u32 minimap_dlg_Create_A526E = 0x004A526E;
+	const u32 GetActivePlayerCount = 0x004C40F0;
+	void __declspec(naked) minimap_dlg_Create_patch_A5242() {
+		__asm {
+			MOV		ECX, ds: [0x006D0F14]//g_is_in_replay
+			TEST	ECX, ECX
+			MOV		CL, 6
+			JNE		offset off_0
+			MOV		AL, ds : [0x0057F0B4]//multiplayer_mode
+			SHL		EAX, CL
+			XOR		CL, CL
+
+			off_0 :
+			MOV		DX, ds : [ECX * 2 + 0x0051276A]//OKButtonGraphicIndex
+				ADD		EDX, EAX
+				MOV[ESI + 0x24], DX
+				CALL	GetActivePlayerCount
+				MOV		ECX, ds : [0x0057F0B4]//multiplayer_mode
+				XOR		EAX, ECX
+				JMP		minimap_dlg_Create_A526E
+		}
+	}
 }

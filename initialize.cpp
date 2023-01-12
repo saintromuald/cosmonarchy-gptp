@@ -492,35 +492,38 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x00484B44, (u32)0x00484B24);						// Default switch table case (do nothing) for load game shortcut.
 
 	// Diplomacy in singleplayer.
+	
 	//sub_490300 (0x00490300)
-	memory_patch(0x004903D1, (u8)0x03);								// List both computer and human players, and exclude the rest.
-	memory_patch(0x004903D3, (u8)0x83);								// Change JE to JAE.
+	jump_patch(hooks::sub_490300_patch_903CA, 0x004903CA, 3);		// Exclude players from the list if Race is set to Inactive or Type isn't Computer or Human.
 	memory_patch(0x00490481, (u16)0x7402);							// Disable "allies" checkboxes for non-humans.
 	memory_patch(0x004904F7, (u16)0x7402);							// Disable "shared vision" checkboxes for non-humans.
-
+	
 	//allyfltr_AllyVictoryBox (0x00490C40)
 	call_patch(hooks::sub_4AABB0_new, 0x00490D47);					// Disable allied victory checkbox for singleplayer mode.
 
 	//sub_490E90 (0x00490E90)
-	jump_patch(hooks::sub_490E90_patch_90EC3, 0x00490EC3);
-	jump_patch(hooks::sub_490E90_patch_90ED1, 0x00490ED1);
-	jump_patch(hooks::sub_490E90_patch_90EDF, 0x00490EDF);
+	jump_patch(hooks::sub_490E90_patch_90EC3, 0x00490EC3);			// Hide "Accept" button for singleplayer mode.
+
+	//Note on 490ED1: Don't need to check game mode again for "Cancel" button visibility flag because it should always be the same as the "Accept" button.
+	memory_patch(0x00490ED1, (u32)0x8B056A51);						// PUSH ECX; PUSH 05; MOV EAX, ...
+	memory_patch(0x00490ED5, (u16)0xE8C3);							// ...EBX; CALL ...
+	memory_patch(0x00490ED7, (u32)0x0003CB55);						// ...UpdateCancelButton (relative offset)
+
+	//Note on 490EDB: Again, don't need to check game mode. "Return to Game" button visibility flag is inverse of Accept/Cancel buttons.
+	memory_patch(0x00490EDB, (u32)0x5108F183);						// XOR ECX, 8; PUSH ECX;
+	memory_patch(0x00490EDF, (u32)0xC38B046A);						// PUSH 4; MOV EAX, EBX;
+	call_patch(hooks::UpdateOKButton2, 0x00490EE3);
+	memory_patch(0x00490EE8, (u16)0xC35B);							// POP EBX; RETN;
 
 	//minimap_dlg_Create (0x004A5230)
-	memory_patch(0x004A5252, (u32)0x4D148B66);						// MOV DX, [ECX * 2 + ...
-	memory_patch(0x004A5256, (u32)0x00512768);						// ...0x00512768];
-	memory_patch(0x004A525A, (u32)0x24568966);						// MOV [ESI + 24], DX;
-	memory_patch(0x004A525E, (u32)0x01EE8DE8);						// CALL 0x004C40F0;
-	memory_patch(0x004A5262, (u32)0xB40D8B00);						// MOV ECX, ...
-	memory_patch(0x004A5266, (u32)0x310057F0);						// ...[0057F0B4]; XOR EAX, ...
-	memory_patch(0x004A526A, (u32)0x909090C8);						// ...ECX; NOP; NOP; NOP;
+	jump_patch(hooks::minimap_dlg_Create_patch_A5242, 0x004A5242);
 	memory_patch(0x004A526E, (u8)0x74);								// Change JBE to JE.
-
+	
 	//load_gluMinimap (0x004A5A80)
 	call_patch(hooks::minimap_style, 0x004A5B82);
 	call_patch(hooks::minimap_style, 0x004A5BBB);
 	call_patch(hooks::minimap_style, 0x004A5C74);
-
+	
 	//genericBtnInteract (0x004E1C20)
 	memory_patch(0x004E1C38, (u16)0x73FC);
 	// DarkenedFantasies, end
