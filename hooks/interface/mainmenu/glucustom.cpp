@@ -95,6 +95,36 @@ namespace hooks
 		}
 	}
 
+	// Hooked to fix crash after removing save and load dialogs.
+	// Currently identical to IDA. -Pr0nogo
+	void hide_dialog(BinDlg* dialog) // 00418700
+	{
+		if (dialog->flags & 8)
+		{
+			DialogEvent dlg_event = {};
+			dlg_event.current.y = g_mouse->y;
+			dlg_event.number_order = 14;
+			dlg_event.user = 14;
+			dlg_event.field_4 = 0;
+			dlg_event.current.x = g_mouse->x;
+			if (((u32(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 14, 0))
+			{
+				dlg_event.current.x = g_mouse->x;
+				dlg_event.number_order = 14;
+				dlg_event.user = 6;
+				dlg_event.field_4 = 0;
+				dlg_event.current.y = g_mouse->y;
+				((void(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 6, 0);
+				u32 dialog_flags = dialog->flags;
+				if (!(dialog_flags & 1))
+				{
+					dialog->flags = dialog_flags | 1; // CTRL_UPDATE
+					helper::update_dialog(dialog);
+				}
+			}
+		}
+	}
+
 	// DarkenedFantasies - fix score screen bugs with extended color IDs \\
 
 	void __declspec(naked) sub_41D160() {
