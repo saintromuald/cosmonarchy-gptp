@@ -65,7 +65,6 @@ namespace hooks {
 	// Called (with a jump) as last instruction of update_buttonset
 	// Will update the buttonset for the currently unit active type, or handle special cases of mixed selections
 	void update_buttonset_ex() {
-		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
 		u8 count_workers = 0;
 		u8 count_burrowables = 0;
 		u8 count_larva = 0;
@@ -147,9 +146,9 @@ namespace hooks {
 							// Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal active as "connected active"
 							if (active_button_set->connected_unit == selected_button_set_id) {
 								active_button_set_id = selected_button_set_id;
-								*BUTTONSET_CURRENT_BUTTONSETID = selected_button_set_id;
+								*g_current_buttonset_id = selected_button_set_id;
 							} else {
-								*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
+								*g_current_buttonset_id = UnitId::Buttons_GroupMixed;
 							}
 						}
 					}
@@ -157,26 +156,26 @@ namespace hooks {
 			}
 		}
 		if (count_larva && count_larva + count_eggs == *g_client_selection_count) {
-			*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergLarva;
+			*g_current_buttonset_id = UnitId::ZergLarva;
 		}
 		if (count_ocsal_larva && count_ocsal_larva + count_eggs == *g_client_selection_count) {
-			*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergOcsalLarva;
+			*g_current_buttonset_id = UnitId::ZergOcsalLarva;
 		}
-		if (*BUTTONSET_CURRENT_BUTTONSETID != UnitId::Buttons_Blank) {
+		if (*g_current_buttonset_id != UnitId::Buttons_Blank) {
 			if (count_workers == *g_client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupPeons;
+				*g_current_buttonset_id = UnitId::Buttons_GroupPeons;
 			} else if (count_burrowables) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupBurrower;
+				*g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
 			} else if (count_hatches == *g_client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ZergHachirosk;
+				*g_current_buttonset_id = UnitId::ZergHachirosk;
 			} else if (count_mason_sources == *g_client_selection_count) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_MixedMasonTraining;
+				*g_current_buttonset_id = UnitId::Buttons_MixedMasonTraining;
 			} else if (count_lifted_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
+				*g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::ProtossWarden;
+				*g_current_buttonset_id = UnitId::ProtossWarden;
 			} else if (count_buildings) {
-				*BUTTONSET_CURRENT_BUTTONSETID = UnitId::TerranGoliathTurret;
+				*g_current_buttonset_id = UnitId::TerranGoliathTurret;
 			}
 		}
 	}
@@ -187,15 +186,10 @@ namespace hooks {
 	// Last function called within updateCurrentButtonSet
 	void highlight_button()
 	{
-		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
-		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
-		u16* const BUTTONSET_MAINBUTTONGRAPHIC = (u16*)0x0068C1BC;
-		u8* const BUTTONSET_UNIT_MAINORDERID = (u8*)0x0068C1E4;
-
-		u8 current_unit_main_order_id = *BUTTONSET_UNIT_MAINORDERID;
+		u8 current_unit_main_order_id = *g_buttonset_unit_order_id;
 		u16 current_unit_button_icon = orders_dat::button_icon[current_unit_main_order_id];
-		BinDlg* current_button_dialog = (*BUTTONSET_DIALOG)->child_dialog;
-		u8 current_subunit_main_order_id = *BUTTONSET_SUBUNIT_MAINORDERID;
+		BinDlg* current_button_dialog = (*g_buttonset_dialog)->child_dialog;
+		u8 current_subunit_main_order_id = *g_buttonset_subunit_order_id;
 
 		// if the subunit holds the weapon, get the icon from it
 		u16 current_subunit_button_icon = 0xFFFF;
@@ -246,7 +240,7 @@ namespace hooks {
 		}
 		if (!current_button_dialog)
 		{
-			*BUTTONSET_MAINBUTTONGRAPHIC = 0xFFFF;
+			*g_buttonset_main_button_graphic = 0xFFFF;
 		}
 		else
 		{
@@ -255,36 +249,32 @@ namespace hooks {
 				current_button_dialog->flags |= BinDlgFlags::Unknown0;
 				scbw::update_dialog(current_button_dialog);
 			}
-			*BUTTONSET_MAINBUTTONGRAPHIC = used_button_icon;
+			*g_buttonset_main_button_graphic = used_button_icon;
 		}
 	}
 
 	// 00458DE0
-	// Case when buttonset would use BUTTONSET_SPECIAL_BUTTONSETID
+	// Case when buttonset would use g_buttonset_special_buttonset_id
 	// Use update_buttonset_ex() for individual units and groups
 	// Called by update_current_buttonset and updateSelectedUnitData (004C38B0)
 	void update_buttonset()
 	{
-		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
-		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
-		u16* const BUTTONSET_SPECIAL_BUTTONSETID = (u16*)0x0068C1C8; // replay, cancel building...
-		b8* const bDoingCancellableTargetOrder = (b8*)0x00641694;
-		*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_Blank;
-		*BUTTONSET_PORTRAIT_BUTTONSETID = UnitId::Buttons_Blank;
+		*g_buttonset_special_buttonset_id = UnitId::Buttons_Blank;
+		*g_active_portrait_buttonset_id = UnitId::Buttons_Blank;
 		if (!scbw::is_in_replay())
 		{
 			if (*g_client_selection_count != 0)
 			{
-				if (*bDoingCancellableTargetOrder == 0)
+				if (*g_is_targeting == 0)
 				{
 					if (*g_is_placing_building)
 					{
-						*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_CancelPlaceBuilding;
+						*g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
 					}
 				}
 				else
 				{
-					*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_Cancel;
+					*g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
 				}
 			}
 		}
@@ -292,14 +282,14 @@ namespace hooks {
 		{
 			if (*g_is_replay_paused != 0)
 			{
-				*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_ReplayPaused;
+				*g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPaused;
 			}
 			else
 			{
-				*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_ReplayPlaying;
+				*g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPlaying;
 			}
 		}
-		*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_Blank;
+		*g_current_buttonset_id = UnitId::Buttons_Blank;
 		if ((*g_client_selection_count > 1) && (!scbw::is_in_replay()))
 		{
 			update_buttonset_ex();
@@ -313,185 +303,85 @@ namespace hooks {
 		return &(g_buttonset_table[index]);
 	}
 
-	// Main update_buttonset function because it call update_buttonset() and others
+	// Main update_buttonset function; calls update_buttonset() and others
 	void update_current_buttonset() // 004599A0
 	{
 		// Quick casting post handling
 		if (hooks::quickcasting_signal) {
 			hooks::quickcasting_signal = false;
-			*orders_buttonset = hooks::quickcasting_command_card;
+			*g_buttonset_special_buttonset_id = hooks::quickcasting_command_card;
 			*g_minimap_cursor = 0;
 		}
 
-		BinDlg** const BUTTONSET_DIALOG               = (BinDlg**)0x0068C148;
-		u16*     const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)    0x0068C14C;
-		u8*      const BUTTONSET_SUBUNIT_MAINORDERID  = (u8*)     0x0068C1B8;
-		u16*     const BUTTONSET_CURRENT_BUTTONSETID  = (u16*)    0x0068C1C4;
-		u16*     const BUTTONSET_SPECIAL_BUTTONSETID  = (u16*)    0x0068C1C8; // replay, cancel building...
-		u8*      const BUTTONSET_UNIT_MAINORDERID     = (u8*)     0x0068C1E4;
-		u32*     const bCanUpdateCurrentButtonSet     = (u32*)    0x0068C1B0;
-
-		bool jumpTo59A38 = false;
-		bool jumpTo59A9F = false;
-		bool jumpTo59A83 = false;
-		bool jumpTo59A86 = false;
-		u8 active_unit_main_order_id;
-		u8 active_subunit_main_order_id;
-		u16 CX_Holder;
-		if (!*bCanUpdateCurrentButtonSet)
+		u16 buttonset_id = *g_buttonset_special_buttonset_id;
+		b32 refresh = *g_force_button_refresh;
+		Unit* active_unit = *g_active_portrait_unit;
+		if (*g_force_button_refresh && (*g_buttonset_special_buttonset_id == UnitId::None || *g_is_in_replay))
 		{
-			// 004599B7
-			bool bNeedUpdateButtonSet = false;
-			if (*BUTTONSET_SPECIAL_BUTTONSETID != UnitId::Buttons_Blank)
+			helper::update_buttonset();
+			buttonset_id = *g_buttonset_special_buttonset_id;
+		}
+		if (buttonset_id == UnitId::None)
+		{
+			buttonset_id = *g_current_buttonset_id;
+			if (*g_current_buttonset_id == UnitId::None)
 			{
-				if (*g_is_in_replay)
+				if (!active_unit)
 				{
-					bNeedUpdateButtonSet = true;
+					goto highlight;
 				}
-			}
-			else
-			{
-				bNeedUpdateButtonSet = true;
-			}
-			if (bNeedUpdateButtonSet)
-			{
-				update_buttonset();
+				buttonset_id = active_unit->current_buttonset;
 			}
 		}
-		CX_Holder = *BUTTONSET_SPECIAL_BUTTONSETID;
-		if (*BUTTONSET_SPECIAL_BUTTONSETID == UnitId::Buttons_Blank)
+		if (*g_active_portrait_buttonset_id != buttonset_id)
 		{
-			CX_Holder = *BUTTONSET_CURRENT_BUTTONSETID;
-			if (*BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_Blank)
+			*g_active_portrait_buttonset_id = buttonset_id;
+			*g_force_button_refresh = true;
+		update_then_highlight:
+			helper::update_command_card();
+			helper::refresh_button_tooltip();
+			if (active_unit)
 			{
-				if (!*g_active_portrait_unit)
+				Unit* subunit = active_unit->subunit;
+				u8 unit_order_id = active_unit->main_order_id;
+				u8 subunit_order_id;
+				if (subunit)
 				{
-					jumpTo59A38 = true;
+					subunit_order_id = subunit->main_order_id;
 				}
 				else
 				{
-					CX_Holder = (*g_active_portrait_unit)->current_buttonset;
+					subunit_order_id = -1;
 				}
+				highlight_button();
+				*g_buttonset_unit_order_id = unit_order_id;
+				*g_buttonset_subunit_order_id = subunit_order_id;
+				highlight_button();
 			}
-		}
-
-		if (!jumpTo59A38)
-		{
-			if (*BUTTONSET_PORTRAIT_BUTTONSETID == CX_Holder)
-			{
-				jumpTo59A38 = true;
-			}
-			else
-			{
-				*BUTTONSET_PORTRAIT_BUTTONSETID = CX_Holder;
-				*bCanUpdateCurrentButtonSet = 1;
-			}
-			if (!jumpTo59A38)
-			{
-				helper::update_command_card();
-				helper::refresh_button_tooltip();
-				jumpTo59A9F = *g_active_portrait_unit;
-				if (!jumpTo59A9F)
-				{
-					active_unit_main_order_id = (*g_active_portrait_unit)->main_order_id;
-					CX_Holder = active_unit_main_order_id;
-					if (!(*g_active_portrait_unit)->subunit)
-					{
-						jumpTo59A83 = true;
-					}
-					else
-					{
-						active_subunit_main_order_id = (*g_active_portrait_unit)->subunit->main_order_id;
-						jumpTo59A86 = true;
-					}
-				}
-			}
-		}
-
-		if (jumpTo59A38)
-		{
-			if (*bCanUpdateCurrentButtonSet)
-			{
-				helper::update_command_card();
-				helper::refresh_button_tooltip();
-				jumpTo59A9F = !*g_active_portrait_unit;
-				if (!jumpTo59A9F)
-				{
-					active_unit_main_order_id = (*g_active_portrait_unit)->main_order_id;
-					CX_Holder = active_unit_main_order_id;
-					if (!(*g_active_portrait_unit)->subunit)
-					{
-						jumpTo59A83 = true;
-					}
-					else
-					{
-						active_subunit_main_order_id = (*g_active_portrait_unit)->subunit->main_order_id;
-						jumpTo59A86 = true;
-					}
-				}
-			}
-		}
-
-		if (!jumpTo59A83 && !jumpTo59A86 && !jumpTo59A9F)
-		{
-			// 00459A3C
-			if (*g_active_portrait_unit)
-			{
-				bool jumpTo59ABD = false;
-				active_unit_main_order_id = (*g_active_portrait_unit)->main_order_id;
-				if ((*g_active_portrait_unit)->subunit)
-				{
-					active_subunit_main_order_id = (*g_active_portrait_unit)->subunit->main_order_id;
-				}
-				else
-				{
-					active_subunit_main_order_id = 0xFF;
-				}
-				// 00459A55
-				if (*BUTTONSET_UNIT_MAINORDERID == active_unit_main_order_id)
-				{
-					// 00459A5D
-					if (*BUTTONSET_SUBUNIT_MAINORDERID == active_subunit_main_order_id)
-					{
-						jumpTo59ABD = true;
-					}
-				}
-				if (!jumpTo59ABD)
-				{
-					// 00459A65
-					// light up the button of the current order
-					highlight_button();
-					*BUTTONSET_UNIT_MAINORDERID = active_unit_main_order_id;
-					*BUTTONSET_SUBUNIT_MAINORDERID = active_subunit_main_order_id;
-					// light up the button of the current order
-					highlight_button();
-				}
-			}
-		}
-		if (jumpTo59A83) // cannot be set if a jump beyond is set
-		{
-			active_subunit_main_order_id = 0xFF;
-			jumpTo59A86 = true;
-		}
-		if (jumpTo59A86)
-		{
-			// light up the button of the current order
-			highlight_button();
-			*BUTTONSET_UNIT_MAINORDERID = active_unit_main_order_id;
-			*BUTTONSET_SUBUNIT_MAINORDERID = active_subunit_main_order_id;
-			// light up the button of the current order
-			highlight_button();
-			jumpTo59A9F = true;
-		}
-
-		if (jumpTo59A9F)
-		{
 			if (*g_is_in_replay)
 			{
-				helper::replay_stat_buttons(*BUTTONSET_DIALOG);
+				helper::replay_stat_buttons(*g_buttonset_dialog);
 			}
-			// 00459AB3
-			*bCanUpdateCurrentButtonSet = 0;
+			*g_force_button_refresh = false;
+			return;
+		}
+	highlight:
+		if (refresh)
+		{
+			goto update_then_highlight;
+		}
+		if (active_unit)
+		{
+			Unit* subunit_2 = active_unit->subunit;
+			u8 unit_order_id_2 = active_unit->main_order_id;
+			u8 subunit_order_id_2 = subunit_2 ? subunit_2->main_order_id : -1;
+			if (*g_buttonset_unit_order_id != active_unit->main_order_id || *g_buttonset_subunit_order_id != subunit_order_id_2)
+			{
+				highlight_button();
+				*g_buttonset_unit_order_id = unit_order_id_2;
+				*g_buttonset_subunit_order_id = subunit_order_id_2;
+				highlight_button();
+			}
 		}
 	}
 
@@ -507,10 +397,8 @@ namespace hooks {
 
 	void update_command_card()
 	{
-		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
-		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
-		auto buttonset_id = *BUTTONSET_PORTRAIT_BUTTONSETID;
-		BinDlg* current_dialog = *BUTTONSET_DIALOG;
+		auto buttonset_id = *g_active_portrait_buttonset_id;
+		BinDlg* current_dialog = *g_buttonset_dialog;
 
 		// Custom buttonset overrides
 		if (buttonset_id == UnitId::TerranTreasury)
@@ -559,7 +447,6 @@ namespace hooks {
 		}
 
 		ButtonSet* const current_buttonset = get_buttonset(buttonset_id);
-		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;
 		bool jumpto59336 = false;
 		bool jumpto5933C = false;
@@ -2762,7 +2649,7 @@ namespace hooks {
 						{
 							scbw::disable_dialog(current_dialog);
 							// 0045931C
-							if (*unknown_0066FF60 == 0x15)
+							if (*g_last_internal_error == 0x15)
 							{
 								current_button->action_string_id = 0x02FA; // Text: Not Implemented.
 								current_button++;	// select next button (advance by sizeof(Button)

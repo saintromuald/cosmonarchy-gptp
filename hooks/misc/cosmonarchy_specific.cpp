@@ -509,7 +509,7 @@ namespace hooks
 			unit->current_buttonset = temp_unit_id;
 		}
 
-		*force_button_refresh = 1;
+		*g_force_button_refresh = 1;
 		portrait_redraw[0] = 1;
 		*status_screen_redraw = 1;
 		*control_under_mouse = 0;

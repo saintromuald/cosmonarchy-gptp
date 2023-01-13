@@ -249,7 +249,7 @@ namespace hooks {
 
 		if (process_quickcasting()) {
 			quickcasting_signal = true;
-			quickcasting_command_card = *orders_buttonset;
+			quickcasting_command_card = *g_buttonset_special_buttonset_id;
 		}
 
 		if (transport_ui_unit) {
