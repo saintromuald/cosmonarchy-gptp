@@ -954,9 +954,9 @@ namespace hooks {
 							} break;
 							case UnitId::TerranParthenon:
 							{
-								if (current_button->requirement_var == UnitId::TerranTalos
+								if ((current_button->requirement_var == UnitId::TerranTalos
 								||  current_button->requirement_var == UnitId::TerranArmistice
-								||  current_button->requirement_var == UnitId::TerranPythean
+								||  current_button->requirement_var == UnitId::TerranPythean)
 								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
@@ -968,9 +968,9 @@ namespace hooks {
 							} break;
 							case UnitId::TerranMantle:
 							{
-								if (current_button->requirement_var == UnitId::TerranRamesses
+								if ((current_button->requirement_var == UnitId::TerranRamesses
 								||  current_button->requirement_var == UnitId::TerranDurendal
-								||  current_button->requirement_var == UnitId::TerranCataphract
+								||  current_button->requirement_var == UnitId::TerranCataphract)
 								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
@@ -982,9 +982,9 @@ namespace hooks {
 							} break;
 							case UnitId::TerranApothecary:
 							{
-								if (current_button->requirement_var == UnitId::TerranDilettante
+								if ((current_button->requirement_var == UnitId::TerranDilettante
 								||  current_button->requirement_var == UnitId::TerranSevenstep
-								||  current_button->requirement_var == UnitId::TerranHypnagogue
+								||  current_button->requirement_var == UnitId::TerranHypnagogue)
 								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
