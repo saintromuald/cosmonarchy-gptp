@@ -522,7 +522,9 @@ namespace hooks {
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
-		g_options_list->speed = 6; // Lock game speed at fastest
+		if (!scbw::is_in_replay()) {
+			g_options_list->speed = 6; // Lock game speed at fastest
+		}
 
 		update_discord(true);
 
