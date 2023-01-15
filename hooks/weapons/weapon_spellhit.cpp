@@ -72,7 +72,7 @@ namespace hooks {
 		unit->current_buttonset = 228;
 		*control_under_mouse = 0;
 		*control_under_mouse_value = 0;
-		*force_button_refresh = 1;
+		*g_force_button_refresh = 1;
 		portrait_redraw[0] = 1;
 		*status_screen_redraw = 1;
 		return result;

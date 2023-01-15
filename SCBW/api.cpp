@@ -894,7 +894,7 @@ namespace scbw {
 	}
 
 	void refresh_console() { // 004C36C0
-		*force_button_refresh      = 1;
+		*g_force_button_refresh      = 1;
 		*portrait_redraw           = 1;
 		*status_screen_redraw      = 1;
 		*control_under_mouse       = 0;

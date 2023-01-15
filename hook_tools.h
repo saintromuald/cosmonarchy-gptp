@@ -54,6 +54,24 @@ inline void call_patch(const void* target, DWORD position, u32 nops = 0)
 
 /// Patches the specified address with the given data using memcpy().
 template <typename T>
+void memory_patch_df(const u32 address, const T& data, unsigned char reps = 0)
+{
+	if (reps) {
+		u8* const data1 = new u8 [reps * sizeof(T)];
+
+		for (unsigned int i = 0; i < reps; ++i)
+		{
+			*(T*)(&data1[i * sizeof(T)]) = data;
+		}
+		memory_patch(address, data1, reps * sizeof(T));
+	}
+	else {
+		memory_patch(address, (u8*)&data, sizeof(T));
+	}
+}
+
+
+template <typename T>
 void memory_patch(const u32 address, const T& data)
 {
 	memory_patch(address, (u8*)&data, sizeof(T));

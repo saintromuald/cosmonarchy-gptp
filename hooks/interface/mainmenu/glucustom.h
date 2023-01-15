@@ -1,26 +1,38 @@
 #pragma once
 #include "SCBW/structures.h"
 
-u8 tFontGame_ImageData[320]; // Larger tfont.pcx buffer to fit the new colors.
+u8 tFontGame_ImageData[320];//Larger tfont.pcx buffer to fit the new colors.
 namespace hooks
 {
 	void display_establishing_shot();					// 004D9200, hooked by X405
 	void cmdact_game_speed(BinDlg* control);			// 00481EF0
+	void hide_dialog(BinDlg* dialog);					// 00418700
 
 	void inject_glucustom_hooks();
 
 	// DarkenedFantasies \\
 
+	// Score screen player color fixes
 	void sub_41D160();
 	void sub_4EF600();
 	void sub_4EF710();
 	void loadMenu_gluScore_pIcons();
+
+	// Player-colored font
 	void get_color_handle();
-	void write_font_apply_color_patch();
+	void writeFontApplyColour_patch();
+
+	// New stats_panel graphic handling
 	void StatHangarCount_patch_25471();
+	
+	// CTRL+R restart game hotkey
 	void RestartGameMenu();
+	
+	// Diplomacy
+	void sub_490300_patch_903CA();
+	void sub_4AABB0_new();
 	void sub_490E90_patch_90EC3();
-	void sub_490E90_patch_90ED1();
 	void UpdateOKButton2();
-	void sub_490E90_patch_90EDF();
+	void minimap_style();
+	void minimap_dlg_Create_patch_A5242();
 }

@@ -96,9 +96,7 @@ namespace hooks
 				else if (movable_state == MovableState::ReachedDestination)
 				{
 					scbw::refresh_console();
-					if (built_unit->connected_unit &&
-						built_unit->connected_unit != unit &&
-						(built_unit->connected_unit)->order_target.unit == built_unit)
+					if (built_unit->connected_unit && built_unit->connected_unit != unit && built_unit->connected_unit->order_target.unit == built_unit)
 					{
 						unit->order_to_idle(); // another worker is already on the job
 					}
@@ -242,13 +240,13 @@ namespace hooks
 
 			if (jump_to_switch_1)
 			{
-				u32 hpGain = built_unit->build_repair_hp_gain * modifier.multiplier;
+				u32 hp_gain = built_unit->build_repair_hp_gain * modifier.multiplier;
 				UnitExt* unitExt = get_unit_ext(built_unit);
 				if (*g_cheat_state & CheatFlags::OperationCwal)
 				{
-					hpGain *= 16;
+					hp_gain *= 16;
 				}
-				helper::progress_build(built_unit, hpGain, false);
+				helper::progress_build(built_unit, hp_gain, false);
 				if (modifier.decrease) {
 					if (built_unit->remaining_build_time > modifier.decrease) {
 						built_unit->remaining_build_time -= modifier.decrease;
@@ -285,8 +283,7 @@ namespace hooks
 						}
 						if (!jump_to_67F3C)
 						{
-							if (built_unit->id >= UnitId::ResourceMineralField &&
-								built_unit->id <= UnitId::ResourceMineralFieldType3)
+							if (built_unit->id >= UnitId::ResourceMineralField && built_unit->id <= UnitId::ResourceMineralFieldType3)
 							{
 								jump_to_67F3C = true;
 							}
@@ -342,8 +339,7 @@ namespace hooks
 				}
 				if (!jump_to_67F3C)
 				{
-					if (built_unit->id >= UnitId::ResourceMineralField &&
-						built_unit->id <= UnitId::ResourceMineralFieldType3)
+					if (built_unit->id >= UnitId::ResourceMineralField && built_unit->id <= UnitId::ResourceMineralFieldType3)
 					{
 						jump_to_67F3C = true;
 					}

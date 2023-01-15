@@ -457,13 +457,19 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004D8A67, &tFontGame_ImageData);
 	memory_patch(0x004DD8C8, (u32)0x140);							// ...for "loadTFontPcx".
 	memory_patch(0x004DDB71, &tFontGame_ImageData);					// ...for "registerMenuFunctions".
-	jump_patch(hooks::write_font_apply_color_patch, 0x0041FDC6, 54);
+
+	// Extend and add per-player support for font colors.
+	jump_patch(hooks::writeFontApplyColour_patch, 0x0041FDC6);
 	jump_patch(hooks::get_color_handle, 0x0041F610, 4);
-	memory_patch(0x004200B6, (u8)0x2);								// Make <0B> tag a valid color, and add gap offset.
-	memory_patch(0x004200B9, (u32)0x04040404);						// Add gap offsets for <0E> to <11>.
-	memory_patch(0x004200BF, (u32)0x06060606);						// Make <14> and <1A> tags valid colors, and add gap offsets.
-	memory_patch(0x004200C3, (u32)0x06060606);
-	memory_patch(0x004200C7, (u32)0x06060606);
+	memory_patch(0x004200B6, (u8)0x00);								// <0B>
+	memory_patch(0x004200B9, (u32)0x05050505);						// tfont offsets for <0E> through <11>.
+	memory_patch(0x004200BF, (u8)0x00);								// <14>
+	memory_patch(0x004200C0, (u32)0x08080808);						// tfont offsets for <15> through <1F>.
+	memory_patch(0x004200C4, (u32)0x08080808);
+	memory_patch(0x004200C8, (u16)0x0808);
+	memory_patch(0x004200CA, (u8)0x08);
+
+	memory_patch(0x0048CF34, (u8)0x1A);								// Change default in-game transmission text color.
 
 	// Enable ESC to skip triggers in campaign mode.
 	memory_patch(0x00489DAF, (u32)0x90909090);
@@ -477,30 +483,47 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Prevent pause triggers from indefinitely freezing replays.
 	memory_patch(0x0048885C, (u16)0x90C3);
 
-	// Pick appropriate icon size for hangar counts. Weapons, armor, and shields are handled in stats_panel_display.
+	// Pick appropriate icon size for hangar counts. Weapons, armor, shields, and spider mine counts are handled in stats_panel_display.
 	jump_patch(hooks::StatHangarCount_patch_25471, 0x00425471, 1);
 
-	call_patch(hooks::RestartGameMenu, 0x00484785); // Change leaderboard toggle shortcut action to mission restart shortcut action.
-	memory_patch(0x00484B40, (u32)0x00484B24); // Default switch table case (do nothing) for save game shortcut.
-	memory_patch(0x00484B44, (u32)0x00484B24); // Default switch table case (do nothing) for load game shortcut.
+	// Change quick in-game shortcuts.
+	call_patch(hooks::RestartGameMenu, 0x00484785);					// Change leaderboard toggle shortcut action to mission restart shortcut action.
+	memory_patch(0x00484B40, (u32)0x00484B24);						// Default switch table case (do nothing) for save game shortcut.
+	memory_patch(0x00484B44, (u32)0x00484B24);						// Default switch table case (do nothing) for load game shortcut.
 
-	// sub_490300 (0x00490300)
-	memory_patch(0x004903D1, (u8)0x02); // list computer players instead of humans
-	memory_patch(0x00490482, (u16)0x9090); // temporary global disable of "allies" and "shared vision" checkboxes
-	memory_patch(0x004904F8, (u16)0x9090);
+	// Diplomacy in singleplayer.
+	
+	//sub_490300 (0x00490300)
+	jump_patch(hooks::sub_490300_patch_903CA, 0x004903CA, 3);		// Exclude players from the list if Race is set to Inactive or Type isn't Computer or Human.
+	memory_patch(0x00490481, (u16)0x7402);							// Disable "allies" checkboxes for non-humans.
+	memory_patch(0x004904F7, (u16)0x7402);							// Disable "shared vision" checkboxes for non-humans.
+	
+	//allyfltr_AllyVictoryBox (0x00490C40)
+	call_patch(hooks::sub_4AABB0_new, 0x00490D47);					// Disable allied victory checkbox for singleplayer mode.
 
-	// allyfltr_AllyVictoryBox (0x00490C40)
-	memory_patch(0x00490D47, (u32)0x57F0B4A1); // disable allied victory checkbox for singleplayer mode
+	//sub_490E90 (0x00490E90)
+	jump_patch(hooks::sub_490E90_patch_90EC3, 0x00490EC3);			// Hide "Accept" button for singleplayer mode.
 
-	// minimap_dlg_Create (0x004A5230)
-	memory_patch(0x004A5252, (u32)0x000001B8); // show diplo button for singleplayer mode
-	memory_patch(0x004A5267, (u32)0x000002B8); // show diplo button even if there is only one human player
+	//Note on 490ED1: Don't need to check game mode again for "Cancel" button visibility flag because it should always be the same as the "Accept" button.
+	memory_patch(0x00490ED1, (u32)0x8B056A51);						// PUSH ECX; PUSH 05; MOV EAX, ...
+	memory_patch(0x00490ED5, (u16)0xE8C3);							// ...EBX; CALL ...
+	memory_patch(0x00490ED7, (u32)0x0003CB55);						// ...UpdateCancelButton (relative offset)
 
-	// sub_490E90 (0x00490E90)
-	jump_patch(hooks::sub_490E90_patch_90EC3, 0x00490EC3);
-	jump_patch(hooks::sub_490E90_patch_90ED1, 0x00490ED1);
-	jump_patch(hooks::sub_490E90_patch_90EDF, 0x00490EDF);
+	//Note on 490EDB: Again, don't need to check game mode. "Return to Game" button visibility flag is inverse of Accept/Cancel buttons.
+	memory_patch(0x00490EDB, (u32)0x5108F183);						// XOR ECX, 8; PUSH ECX;
+	memory_patch(0x00490EDF, (u32)0xC38B046A);						// PUSH 4; MOV EAX, EBX;
+	call_patch(hooks::UpdateOKButton2, 0x00490EE3);
+	memory_patch(0x00490EE8, (u16)0xC35B);							// POP EBX; RETN;
 
+	//minimap_dlg_Create (0x004A5230)
+	jump_patch(hooks::minimap_dlg_Create_patch_A5242, 0x004A5242);
+	memory_patch(0x004A526E, (u8)0x74);								// Change JBE to JE.
+	
+	//load_gluMinimap (0x004A5A80)
+	call_patch(hooks::minimap_style, 0x004A5B82);
+	call_patch(hooks::minimap_style, 0x004A5BBB);
+	call_patch(hooks::minimap_style, 0x004A5C74);
+	
 	//genericBtnInteract (0x004E1C20)
 	memory_patch(0x004E1C38, (u16)0x73FC);
 	// DarkenedFantasies, end

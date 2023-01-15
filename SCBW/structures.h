@@ -136,7 +136,7 @@ struct DialogEvent
 	u16		field_6;				// 0x6
 	u16		w_virtual_key;			// 0x8
 	u16		w_virtual_key_modifier;	// 0xA
-	u16		no;						// 0xC
+	u16		number_order;			// 0xC
 	Point16	current;				// 0xE
 	u16		field_12;				// 0x12
 };

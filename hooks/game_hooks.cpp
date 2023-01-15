@@ -249,7 +249,7 @@ namespace hooks {
 
 		if (process_quickcasting()) {
 			quickcasting_signal = true;
-			quickcasting_command_card = *orders_buttonset;
+			quickcasting_command_card = *g_buttonset_special_buttonset_id;
 		}
 
 		if (transport_ui_unit) {
@@ -1859,7 +1859,8 @@ namespace hooks {
 				{
 					unit_ext->timers[TimerMatadorHeal] = 1 * 24;
 				}
-				if (unit_ext->timers[TimerMatadorHeal] == 0 && !unit->sprite->get_overlay(ImageId::RestorationHit_Small)) {
+
+				if (unit->hitpoints != unit->get_max_hp_raw() && unit_ext->timers[TimerMatadorHeal] == 0 && !unit->sprite->get_overlay(ImageId::RestorationHit_Small)) {
 					unit->sprite->create_top_overlay(ImageId::RestorationHit_Small);
 				}
 			} break;

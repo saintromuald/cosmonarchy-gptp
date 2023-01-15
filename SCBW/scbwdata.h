@@ -414,7 +414,7 @@ SCBW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only 
 
 // For isUnitCloaked
 SCBW_DATA(Unit**,	first_invisible_unit,		0x0063FF5C);
-SCBW_DATA(s32*,		force_button_refresh,		0x0068C1B0);
+SCBW_DATA(s32*,		g_force_button_refresh,		0x0068C1B0);
 SCBW_DATA(s8*,		portrait_redraw,			0x0068AC74); // sizeof 4
 SCBW_DATA(s8*,		status_screen_redraw,		0x0068C1F8);
 SCBW_DATA(BinDlg**,	control_under_mouse,		0x0068C1E8);
@@ -422,7 +422,7 @@ SCBW_DATA(BinDlg**,	control_under_mouse_value,	0x0068C1EC); // void* in Neiv's l
 
 // For update_units
 SCBW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);
-SCBW_DATA(s8*,		g_is_targeting,							0x00641694);
+SCBW_DATA(b8*,		g_is_targeting,							0x00641694);
 SCBW_DATA(s32*,		g_order_timer_reassign_count,			0x0059CCA4);
 SCBW_DATA(s32*,		g_secondary_order_timer_reassign_count,	0x006283E8);
 SCBW_DATA(Unit**,	g_active_iscript_entity,				0x006D11F4);
@@ -982,13 +982,13 @@ SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
 SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
 
 // For btnsact_rally_point
-SCBW_DATA(char*,	g_order_id_ground,				0x00641691);
-SCBW_DATA(char*,	g_order_id_obstructed,			0x00641693);
-SCBW_DATA(char*,	g_order_id_unit,				0x00641692);
-SCBW_DATA(u16*,		orders_buttonset,				0x0068C1C8);
+SCBW_DATA(char*,	g_order_id_ground,					0x00641691);
+SCBW_DATA(char*,	g_order_id_obstructed,				0x00641693);
+SCBW_DATA(char*,	g_order_id_unit,					0x00641692);
+SCBW_DATA(u16*,		g_buttonset_special_buttonset_id,	0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
-SCBW_DATA(char*,	client_selection_changed,		0x0059723C);
+SCBW_DATA(char*,	client_selection_changed,			0x0059723C);
 
 // For set_ingame_input_procs
 SCBW_DATA(HACCEL*,				common_accelerator,		0x006D120C);
@@ -1113,6 +1113,12 @@ SCBW_DATA(char*,		g_draw_color_index,					0x006CF4AC);
 SCBW_DATA(void**,		g_repulse_handle,					0x006D5CD8);
 
 SCBW_DATA(u8*,			g_images_draw_if_cloaked,			0x00667718);
+
+// For buttonsets.cpp
+SCBW_DATA(BinDlg**,		g_buttonset_dialog,					0x0068C148);
+SCBW_DATA(u16*,			g_buttonset_main_button_graphic,	0x0068C1BC);
+SCBW_DATA(u8*,			g_buttonset_unit_order_id,			0x0068C1E4);
+SCBW_DATA(u8*,			g_buttonset_subunit_order_id,		0x0068C1B8);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 
