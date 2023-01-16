@@ -27,4 +27,5 @@ struct Player
 	static u32 number_of_units_of_id(u8 player, u16 unit_id);
 	static u32 number_of_completed_units_of_id(u8 player, u16 unit_id);
 	static u32 number_of_completed_landed_units_of_id(u8 player, u16 unit_id);
+	static u32 number_of_completed_addon_units_of_id(u8 player, u16 unit_id);
 };

@@ -1509,13 +1509,13 @@ namespace DeathSoundId
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranFulcrum
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranStarport
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranControlTower
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranScienceFacility
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranDaedala
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranCovertOps
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranPhysicsLab
 		{ SoundId::No_sound,  SoundId::No_sound },													//UnusedTerran1
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranMachineShop
 		{ SoundId::No_sound,  SoundId::No_sound },													//UnusedTerran2
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranEngineeringBay
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranAtlas
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranArmory
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranMissileTurret
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranBunker

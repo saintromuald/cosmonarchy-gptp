@@ -101,3 +101,18 @@ u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {
 	}
 	return count;
 }
+
+u32 Player::number_of_completed_addon_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->connected_unit) {
+				count++;
+			}
+		}
+	}
+	return count;
+}

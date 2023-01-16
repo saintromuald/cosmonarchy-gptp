@@ -2116,7 +2116,7 @@ namespace hooks {
 			case UnitId::TerranCovertOps:
 			case UnitId::TerranPhysicsLab:
 			{
-				unit_id = UnitId::TerranScienceFacility;
+				unit_id = UnitId::TerranDaedala;
 			} break;
 			case UnitId::TerranMachineShop:
 			{

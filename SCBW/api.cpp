@@ -2027,8 +2027,8 @@ namespace scbw {
 
 		switch (unit_id) {
 			// Terran
-			case UnitId::TerranEngineeringBay:
-			case UnitId::TerranScienceFacility:
+			case UnitId::TerranAtlas:
+			case UnitId::TerranDaedala:
 			case UnitId::TerranQuantumInstitute:
 		//	case UnitId::TerranCapitol:
 
@@ -2063,8 +2063,8 @@ namespace scbw {
 	b32 unit_id_is_tech_tier_structure(u32 unit_id) {
 		switch (unit_id) {
 			// Terran
-			case UnitId::TerranEngineeringBay:
-			case UnitId::TerranScienceFacility:
+			case UnitId::TerranAtlas:
+			case UnitId::TerranDaedala:
 			case UnitId::TerranQuantumInstitute:
 		//	case UnitId::TerranCapitol:
 

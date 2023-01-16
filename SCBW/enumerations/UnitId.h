@@ -88,6 +88,7 @@ namespace UnitId
 		TerranMunitionsBay									= 121,		// Repair Bay / Terran Unused 2
 		TerranIonCannon										= 127,		// Ion Cannon
 		TerranGuildhall										= 147,		// Overmind (With Shell)
+		TerranFountainhead									= 163,		// Citadel of Adun
 		TerranQuarry										= 174,		// Protoss Temple
 		TerranTinkerersTower								= 175,		// Xel'Naga Temple
 		TerranParticleAccelerator							= 189,		// Warp Gate
@@ -97,6 +98,7 @@ namespace UnitId
 		TerranScrapyard										= 200,		// Power Generator
 		TerranNaniteAssembly								= 203,		// Floor Missile Trap
 		TerranSentinel										= 209,		// Floor Gun Trap
+		TerranAtelier										= 213,		// Right Wall Flame Trap
 		TerranTreasury										= 215,		// Flag
 		TerranStarpad										= 254,
 		TerranFutureStation									= 257,
@@ -162,11 +164,9 @@ namespace UnitId
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
 		ProtossProstrationStage								= 159,		// Observatory
 		ProtossRogueGallery									= 161,		// Unused Protoss 2
-		ProtossWaywardLure									= 163,		// Citadel of Adun
 		ProtossArgosy										= 168,		// Stasis Chamber
 		ProtossAstralOmen									= 184,		// Independent Starport
 		ProtossCrucible										= 201,		// Overmind Cocoon
-		ProtossCosmicAltar									= 213,		// Right Wall Flame Trap
 		ProtossArdentAuthority								= 220,		// Mineral Chunk Type 1
 		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2
 		ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2
@@ -387,13 +387,13 @@ namespace UnitId
 		TerranFulcrum										= 113,
 		TerranStarport										= 114,
 		TerranControlTower									= 115,
-		TerranScienceFacility								= 116,
+		TerranDaedala										= 116,
 		TerranCovertOps										= 117,
 		TerranPhysicsLab									= 118,
 		UnusedTerran1										= 119,
 		TerranMachineShop									= 120,
 		UnusedTerran2										= 121,
-		TerranEngineeringBay								= 122,
+		TerranAtlas											= 122,
 		TerranArmory										= 123,
 		TerranWatchdog										= 124,
 		TerranBunker										= 125,

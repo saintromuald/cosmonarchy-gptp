@@ -901,18 +901,18 @@ namespace hooks {
 										case UnitId::TerranFulcrum:
 										case UnitId::TerranStarpad:
 										case UnitId::TerranBunker:
-										case UnitId::TerranEngineeringBay:
+										case UnitId::TerranAtlas:
 										{
 											current_button_state = Button_State::Enabled;
 										} break;
 										case UnitId::TerranTreasury:
 										case UnitId::TerranSentinel:
-										case UnitId::TerranScienceFacility:
+										case UnitId::TerranDaedala:
 										case UnitId::TerranCaptaincy:
 										case UnitId::TerranMantle:
 										case UnitId::TerranStarport:
 										{
-											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranEngineeringBay)) {
+											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
 												current_button_state = Button_State::Enabled;
 											}
 											else {
@@ -926,7 +926,7 @@ namespace hooks {
 										case UnitId::TerranIronFoundry:
 										case UnitId::TerranNaniteAssembly:
 										{
-											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranScienceFacility)) {
+											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranDaedala)) {
 												current_button_state = Button_State::Enabled;
 											}
 											else {
