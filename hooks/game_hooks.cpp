@@ -402,7 +402,7 @@ namespace hooks {
 								target.x = 0;
 								target.y = 0;
 							}
-							if (draw_simple_line(source, target, graphics::WHITE)) {
+							if (!hooks::can_make_psi_field(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
 								source = target;
 							} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
 								source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
