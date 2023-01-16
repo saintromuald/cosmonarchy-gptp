@@ -69,7 +69,7 @@ namespace hooks
 			case TechId::ControlledDemolition:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *g_active_player_id;
@@ -79,7 +79,7 @@ namespace hooks
 			case TechId::EmergencyDetonation:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *g_active_player_id;
@@ -105,7 +105,7 @@ namespace hooks
 					action = 0;
 				}
 				u8 buf[0xC] = {};
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *g_active_player_id;
@@ -115,7 +115,7 @@ namespace hooks
 			case TechId::ApostleLazarusAgent:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *g_active_player_id;
@@ -139,7 +139,7 @@ namespace hooks
 					action = 0;
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *g_active_player_id;
@@ -169,7 +169,7 @@ namespace hooks
 			case TechId::MatralethEnsnaringBrood:
 			{
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *g_active_player_id;
@@ -219,7 +219,7 @@ namespace hooks
 			case TechId::DemiurgeGodsMadeFlesh:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *g_active_player_id;
@@ -234,7 +234,7 @@ namespace hooks
 					action = 0;
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *g_active_player_id;
@@ -253,7 +253,7 @@ namespace hooks
 			{
 				auto firstInList = g_client_selection_group->unit[0];
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
-				buf[0] = 0x99;
+				buf[0] = 99;
 				buf[1] = NewGameCommand::IssueCTFCop2;
 				buf[2] = *g_active_player_id;
 				helper::queue_game_command(buf, 0xc);
@@ -286,7 +286,7 @@ namespace hooks
 				{
 					s32 action = 1;
 					u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
-					buf[0] = 0x99;
+					buf[0] = 99;
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *g_active_player_id;

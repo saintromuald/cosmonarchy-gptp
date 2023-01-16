@@ -599,12 +599,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// frame rate hack
 	nops(0x004D9923, 2);
 
-
 	// Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
 //	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
 
 	// allow all players addons to connect
 	nops(0x00440314, 6);
+
+	// Custom Aise Command Replay Support
+	u32 new_size = 0xC;
+	memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
 
 	// INJECTION \\
 

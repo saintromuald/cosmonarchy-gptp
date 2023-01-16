@@ -24,23 +24,23 @@ namespace NewGameCommand
 {
 	enum
 	{
-		ShamanAction					= 0x01,
-		CyprianAction					= 0x02,
-		RelicAction						= 0x03,
-		Aperture						= 0x04,
-		PhaseLink						= 0x05, // also Khaydarin Eclipse, obsolete
-		StarSovereignTheGriefOfAllGods	= 0x06,
-		CreateUnit						= 0x07,
-	//	KhaydarinControl				= 0x08, // obsolete
-		CarrierPrebuild					= 0x09,
+//		ShamanAction					= 0x01,
+//		CyprianAction					= 0x02,
+//		RelicAction						= 0x03,
+//		Aperture						= 0x04,
+//		PhaseLink						= 0x05, // also Khaydarin Eclipse, obsolete
+//		StarSovereignTheGriefOfAllGods	= 0x06,
+//		CreateUnit						= 0x07,
+//	//	KhaydarinControl				= 0x08, // obsolete
+//		CarrierPrebuild					= 0x09,
 
-		OverlordDamageField				= 0xA,
-		OverlordTurbomode				= 0xB,
-		OverlordCustomStim				= 0xC,
+//		OverlordDamageField				= 0xA,
+//		OverlordTurbomode				= 0xB,
+//		OverlordCustomStim				= 0xC,
 		GenericSwitchAbility			= 0x0D,
-		Observance						= 0xE,
+//		Observance						= 0xE,
 		IssueCTFCop2					= 0xF,
-		OverlordAltitudeChange			= 0x10,
+//		OverlordAltitudeChange			= 0x10,
 	};
 }
 
