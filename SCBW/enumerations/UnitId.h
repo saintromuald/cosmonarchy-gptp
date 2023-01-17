@@ -231,7 +231,7 @@ namespace UnitId
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp									= 153,		// Unused Zerg 2
 		ZergIzkagIteth										= 170,		// Arbiter Tribunal
-		ZergAlaszilArbor									= 181,		// Cantina
+		ZergIrulentIvoa										= 181,		// Cantina
 		ZergZorkizShroud									= 193,		// Protoss Marker
 		ZergVithrathHaunt									= 197,		// Zerg Flag Beacon
 		ZergLiivralPond										= 204,		// Floor Hatch

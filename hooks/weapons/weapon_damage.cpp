@@ -953,6 +953,9 @@ namespace hooks
 			}
 
 			u32 regression = scbw::get_zerg_regression(data.target->id);
+		//	if (data.target->id == UnitId::ZergOthstolOviform && data.target->previous_unit_type == UnitId::ZergIrulentIvoa) {
+		//		regression = UnitId::ZergIrulentIvoa;
+		//	}
 			if (data.damage > 0 && regression != UnitId::None) {
 				helper::replace_unit_with_id(data.target, regression);
 				data.target->set_hitpoints(data.target->get_max_hp_raw());

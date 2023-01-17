@@ -550,7 +550,7 @@ namespace SpriteId
 		ZergVorvalPond = 540,
 		ZergOthstolOviform = 541,
 		TerranQuantumInstitute = 542, // unused
-		ZergAlaszilArbor = 543,
+		ZergIrulentIvoa = 543,
 		ZergOthstoleth = 544,
 		ProtossGrandLibrary = 545,
 		ZergIrolIris = 546,

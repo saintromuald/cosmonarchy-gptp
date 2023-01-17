@@ -242,7 +242,7 @@ namespace flingy_id
 		ZergVorvalPond = 232,
 		ZergOthstolOviform = 233,
 		TerranQuantumInstitute = 234, // unused
-		ZergAlaszilArbor = 235,
+		ZergIrulentIvoa = 235,
 		ZergOthstoleth = 236,
 		ProtossGrandLibrary = 237,
 		ZergIrolIris = 238,

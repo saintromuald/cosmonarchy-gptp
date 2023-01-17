@@ -1282,7 +1282,6 @@ namespace hooks {
 									case UnitId::ZergAgrileth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
-										||  player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
 										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
 										{
 											current_button_state = Button_State::Enabled;
@@ -1414,8 +1413,8 @@ namespace hooks {
 									case UnitId::ZergIroleth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+										||  player_has_unit_id(unit->player, UnitId::ZergIrulentIvoa)
 										||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)
-										||  player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
 										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
 										{
 											current_button_state = Button_State::Enabled;
@@ -1428,19 +1427,6 @@ namespace hooks {
 									case UnitId::ZergGosvileth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
-										||  player_has_unit_id(unit->player, UnitId::ZergAlaszilArbor)
-										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
-										{
-											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
-											current_button_state = Button_State::Disabled;
-										}
-									} break;
-									case UnitId::ZergAlaszileth:
-									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlaszilArbor)
 										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
 										{
 											current_button_state = Button_State::Enabled;

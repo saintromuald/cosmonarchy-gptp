@@ -532,8 +532,9 @@ namespace scbw {
 			case UnitId::ZergSibraelosk:
 			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergAlaszilArbor:
+			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
@@ -555,6 +556,7 @@ namespace scbw {
 			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergHachirosk:
 			case UnitId::ZergIrolIris:
+			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergCagrantColony:
 			case UnitId::ZergQuazrokPool:
@@ -2035,7 +2037,7 @@ namespace scbw {
 			// Zerg
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergAlaszilArbor:
+			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergLiivralPond:
@@ -2071,7 +2073,7 @@ namespace scbw {
 			// Zerg
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergAlaszilArbor:
+			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOrbothOmlia:
 				return true;
 		}
@@ -2291,9 +2293,9 @@ namespace scbw {
 			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergSibraelosk:			return UnitId::ZergCaphrolosk;
 			case UnitId::ZergNephrilosk:			return UnitId::ZergGathtelosk;
+			case UnitId::ZergIrulentIvoa:			return UnitId::ZergIrolIris;
 			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
-			case UnitId::ZergAlaszilArbor:			return UnitId::ZergOthstolOviform;
-			case UnitId::ZergOrbothOmlia:			return UnitId::ZergAlaszilArbor;
+			case UnitId::ZergOrbothOmlia:			return UnitId::ZergOthstolOviform;
 			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
 			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
 			case UnitId::ZergGorgralSwamp:			return UnitId::ZergHydrokDen;
@@ -2500,8 +2502,8 @@ namespace scbw {
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergIrolIris:
+			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergAlaszilArbor:
 			case UnitId::ZergOrbothOmlia:
 			{
 				return true;
