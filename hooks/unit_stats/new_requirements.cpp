@@ -2883,18 +2883,25 @@ namespace hooks {
 					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergMatravilNest:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier2])
+						if (TierUnlocked[RaceId::Zerg][Tier2X])
 						{
 							return TECH_ACTIVE;
 						}
 						return TECH_LOCKED;
 					}
 					case UnitId::ZergNydusCesiant:
+					{
+						if (TierUnlocked[RaceId::Zerg][Tier3])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
 					case UnitId::ZergAxtothAxis:
 					case UnitId::ZergGeszkathGrotto:
 					case UnitId::ZergElthisthMound:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier3])
+						if (TierUnlocked[RaceId::Zerg][Tier3X])
 						{
 							return TECH_ACTIVE;
 						}
