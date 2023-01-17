@@ -16,6 +16,10 @@ static bool player_has_completed_landed_unit_id(s32 player_id, u32 unit_id) {
 	return Player::number_of_completed_landed_units_of_id(player_id, unit_id);
 }
 
+static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
+}
+
 // Example on how to create a custom button set.
 // This makes a copy of the Marine buttonset.
 // Note that the function would have to be duplicated for each custom buttonset
@@ -908,9 +912,6 @@ namespace hooks {
 										case UnitId::TerranTreasury:
 										case UnitId::TerranSentinel:
 										case UnitId::TerranDaedala:
-										case UnitId::TerranCaptaincy:
-										case UnitId::TerranMantle:
-										case UnitId::TerranStarport:
 										{
 											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
 												current_button_state = Button_State::Enabled;
@@ -919,12 +920,20 @@ namespace hooks {
 												current_button_state = Button_State::Disabled;
 											}
 										} break;
+										case UnitId::TerranCaptaincy:
+										case UnitId::TerranMantle:
+										case UnitId::TerranStarport:
+										{
+											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranFountainhead)) {
+												current_button_state = Button_State::Enabled;
+											}
+											else {
+												current_button_state = Button_State::Disabled;
+											}
+										} break;
 										case UnitId::TerranParthenon:
 										case UnitId::TerranIonCannon:
-										case UnitId::TerranQuantumInstitute:
 										case UnitId::TerranApothecary:
-										case UnitId::TerranIronFoundry:
-										case UnitId::TerranNaniteAssembly:
 										{
 											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranDaedala)) {
 												current_button_state = Button_State::Enabled;
@@ -933,18 +942,16 @@ namespace hooks {
 												current_button_state = Button_State::Disabled;
 											}
 										} break;
-										/*
-										case UnitId::TerranCapitol:
-										case UnitId::TerranAmphitheater:
+										case UnitId::TerranIronFoundry:
+										case UnitId::TerranNaniteAssembly:
 										{
-											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranQuantumInstitute)) {
+											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtelier)) {
 												current_button_state = Button_State::Enabled;
 											}
 											else {
 												current_button_state = Button_State::Disabled;
 											}
-										}
-										*/
+										} break;
 										default:
 										{
 											current_button_state = Button_State::Invisible;

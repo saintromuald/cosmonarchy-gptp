@@ -83,7 +83,7 @@ namespace hooks {
 
 		if (config.show_timer) {
 			char buffer[32] = {};
-			format_time(buffer, 32, "", *g_elapsed_time_frames / 24);
+			format_time(buffer, 32, "", *g_elapsed_time_frames * 0.042);
 			draw_ui_text(buffer, 7);
 		}
 

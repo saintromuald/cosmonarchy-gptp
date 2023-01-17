@@ -853,7 +853,7 @@ namespace hooks
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 				fatal_deal_damage = false;
-			}
+			} break;
 			case UnitId::TerranCuirass:
 			{
 				// Cuirass - Stonewall Protocol

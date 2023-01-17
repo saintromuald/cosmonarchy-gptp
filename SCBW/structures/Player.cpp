@@ -109,7 +109,7 @@ u32 Player::number_of_completed_addon_units_of_id(u8 player, u16 unit_id) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 		if (unit->id == unit_id) {
-			if (unit->connected_unit) {
+			if (unit->status & UnitStatus::Completed && unit->connected_unit) {
 				count++;
 			}
 		}
