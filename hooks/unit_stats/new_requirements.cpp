@@ -48,8 +48,15 @@ namespace hooks {
 		bool TierUnlocked[3][5];
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
-			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
-		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform);
+			|| player_has_unit_id(player_id, UnitId::ZergIrulentIvoa)
+			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform)
+			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
+		TierUnlocked[RaceId::Zerg][Tier2X] = player_has_completed_unit_id(player_id, UnitId::ZergIrulentIvoa)
+			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform)
+			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
+		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform)
+			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
+		TierUnlocked[RaceId::Zerg][Tier3X] = player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia);
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranAtlas);
@@ -1216,7 +1223,8 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIrolIris))
 		{
-			if (unit_id == UnitId::ZergOthstolOviform)
+			if (unit_id == UnitId::ZergIrulentIvoa
+			||	unit_id == UnitId::ZergOthstolOviform)
 			{
 				return true;
 			}
@@ -1239,6 +1247,13 @@ namespace hooks {
 				{
 					return true;
 				}
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform))
+		{
+			if (unit_id == UnitId::ZergOrbothOmlia)
+			{
+				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud))
