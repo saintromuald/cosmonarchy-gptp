@@ -605,9 +605,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// allow all players addons to connect
 	nops(0x00440314, 6);
 
-	// Custom Aise Command Replay Support
+	// Custom Aise game command replay support
 	u32 new_size = 0xC;
 	memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
+
+	// Remove minimap checksum checks
+	nops(0x0047CCB0, 22);
 
 	// INJECTION \\
 
