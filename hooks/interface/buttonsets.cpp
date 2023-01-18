@@ -2067,6 +2067,12 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergMortothrokor:
+								{
+									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Mortothrokor - Whetted Appetite
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergLakizilisk:
 								{
 									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed Attacker

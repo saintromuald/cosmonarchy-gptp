@@ -580,13 +580,10 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	u32 notify_ = notify ? 1 : 0;
 
 	if (attacker) {
-		UnitExt* attackerExt = get_unit_ext(attacker);
-		attackerExt->damage_dealt_timer = 0;
+		scbw::update_on_damage_dealt(attacker);
 	}
 
-	UnitExt* unitExt = get_unit_ext(this);
-	unitExt->shield_regen_timer = 0;
-	unitExt->damage_taken_timer = 0;
+	scbw::update_on_damage_receive(this);
 
 	if (attacker) {
 		TriggerEvent event = {};

@@ -311,6 +311,21 @@ void unit_destructor_special_cases(Unit* unit) {
 		}
 	}
 
+	{ // Mortothrokor - Whetted Appetite - Add stacks when in vision
+		EntryArray unit_array = {};
+		unit_search_radial(&unit_array, unit->position, units_dat::sight_range[UnitId::ZergMortothrokor] * 32);
+		unit_search_filter(&unit_array, unit, 0, {UnitId::ZergMortothrokor});
+
+		for (u32 i = 0; i < unit_array.count; ++i) {
+			Unit* mortothrokor = unit_array.units[i];
+			if (scbw::get_distance_fast(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
+				UnitExt* unit_ext = get_unit_ext(mortothrokor);
+				unit_ext->values[ValueMortothrokorStacks]++;
+				unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
+			}
+		}
+	}
+
 	// Alkajelisk Parasitic Spores
 	if (unit_ext->values[ValueAlkajeliskSpores] == 1) {
 		unit->order_target.pt.x = unit->position.x + 1;

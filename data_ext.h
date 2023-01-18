@@ -131,6 +131,7 @@ enum ExtValueId
 	ValueCustomImage,
 	ValueReclamationPlayer,
 	ValueAionLaunchPos,
+	ValueMortothrokorStacks,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -223,6 +224,7 @@ enum ExtTimerId
 	TimerTriumphantRiseDebuff,
 	TimerReclamation,
 	TimerMatadorHeal,
+	TimerMortothrokorPassive,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

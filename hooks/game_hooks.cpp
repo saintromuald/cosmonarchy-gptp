@@ -1868,6 +1868,12 @@ namespace hooks {
 					unit->sprite->create_top_overlay(ImageId::RestorationHit_Small);
 				}
 			} break;
+			case UnitId::ZergMortothrokor:
+			{
+				if (unit_ext->timers[TimerMortothrokorPassive] == 0) {
+					unit_ext->values[ValueMortothrokorStacks] = 0;
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma

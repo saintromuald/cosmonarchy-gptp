@@ -206,6 +206,13 @@ namespace hooks
 					}
 				}
 			} break;
+			case UnitId::ZergMortothrokor:
+			{
+				if (unit_ext->values[ValueMortothrokorStacks])
+				{
+					speed *= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);
+				}
+			} break;
 			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
