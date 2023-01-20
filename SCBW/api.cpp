@@ -1890,7 +1890,8 @@ namespace scbw {
 	}
 
 	bool unit_id_is_smaller_building(u16 unit_id) {
-		return units_dat::base_property[unit_id] & UnitProperty::Addon
+		return (units_dat::base_property[unit_id] & UnitProperty::Addon &&
+			(unit_id != UnitId::TerranFountainhead && unit_id != UnitId::TerranAtelier && unit_id != UnitId::TerranParticleAccelerator))
 			|| unit_id == UnitId::TerranSupplyDepot
 			|| unit_id == UnitId::TerranWatchdog
 			|| unit_id == UnitId::TerranBunker
@@ -2030,14 +2031,14 @@ namespace scbw {
 		switch (unit_id) {
 			// Terran
 			case UnitId::TerranAtlas:
+			case UnitId::TerranFountainhead:
 			case UnitId::TerranDaedala:
-			case UnitId::TerranQuantumInstitute:
-		//	case UnitId::TerranCapitol:
+			case UnitId::TerranAtelier:
 
 			// Zerg
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergIrulentIvoa:
+			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergLiivralPond:
@@ -2066,14 +2067,14 @@ namespace scbw {
 		switch (unit_id) {
 			// Terran
 			case UnitId::TerranAtlas:
+			case UnitId::TerranFountainhead:
 			case UnitId::TerranDaedala:
-			case UnitId::TerranQuantumInstitute:
-		//	case UnitId::TerranCapitol:
+			case UnitId::TerranAtelier:
 
 			// Zerg
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergIrulentIvoa:
+			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergOrbothOmlia:
 				return true;
 		}
@@ -2904,5 +2905,46 @@ namespace scbw {
 			}
 		}
 		return false;
+	}
+
+	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds)
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->damage_dealt_timer >= seconds * 24
+		&&	unit_ext->damage_taken_timer >= seconds * 24) {
+			return false;
+		}
+		return true;
+	}
+
+	void update_on_damage_dealt(Unit* unit)
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->damage_dealt_timer = 0;
+		switch (unit->id)
+		{
+			case UnitId::ZergMortothrokor:
+			{
+				if (unit_ext->timers[TimerMortothrokorPassive]) {
+					unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
+				}
+			} break;
+		}
+	}
+
+	void update_on_damage_receive(Unit* unit)
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->shield_regen_timer = 0;
+		unit_ext->damage_taken_timer = 0;
+		switch (unit->id)
+		{
+			case UnitId::ZergMortothrokor:
+			{
+				if (unit_ext->timers[TimerMortothrokorPassive]) {
+					unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
+				}
+			} break;
+		}
 	}
 }
