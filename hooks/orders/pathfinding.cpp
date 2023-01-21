@@ -15,8 +15,8 @@ namespace hooks
         Box32 box  = {};
         box.left   = unit->get_left()   - 1;
         box.top    = unit->get_top()    - 1;
-        box.right  = unit->get_right()  + 2;
-        box.bottom = unit->get_bottom() + 2;
+        box.right  = unit->get_right()  + 1;
+        box.bottom = unit->get_bottom() + 1;
         return box;
     }
 
@@ -35,17 +35,17 @@ namespace hooks
     static Point16 get_target_point(Unit* unit, Unit* target) {
         Point16 position = unit->position;
         Box32 box = get_unit_box(target);
-        if (position.x < box.left) {
-            position.x = box.left;
+        if (position.x < box.left - units_dat::unit_bounds[unit->id].right) {
+            position.x = box.left - units_dat::unit_bounds[unit->id].right;
         }
-        if (position.x > box.right) {
-            position.x = box.right;
+        if (position.x > box.right + units_dat::unit_bounds[unit->id].left) {
+            position.x = box.right + units_dat::unit_bounds[unit->id].left;
         }
-        if (position.y < box.top) {
-            position.y = box.top;
+        if (position.y < box.top - units_dat::unit_bounds[unit->id].bottom) {
+            position.y = box.top - units_dat::unit_bounds[unit->id].bottom;
         }
-        if (position.y > box.bottom) {
-            position.y = box.bottom;
+        if (position.y > box.bottom + units_dat::unit_bounds[unit->id].top) {
+            position.y = box.bottom + units_dat::unit_bounds[unit->id].top;
         }
         return position;
     }
