@@ -609,8 +609,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	u32 new_size = 0xC;
 	memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
 
-	// Remove minimap checksum checks
-//	nops(0x0047CCB0, 22);				// Disabled 21 January 2023 by Pr0nogo: may cause silent desyncs in AI games.
+	// Remove minimap checksum checks.
+	nops(0x0047CCB0, 22);
 
 	// INJECTION \\
 

@@ -110,7 +110,7 @@ const s32 AILanifectSeekRange = 8 * 32;
 const s32 AIWebTimer = 1 * 24;
 
 // Didact
-const s32 DidactStasisFieldTimer = 35; // roughly 12 seconds
+const s32 DidactStasisFieldTimer = 23; // roughly 8 seconds
 
 // Star Sovereign
 const s32 AIStarsovereignAbilSeekRange = 6 * 32;

@@ -1402,11 +1402,7 @@ namespace hooks {
 					case UnitId::TerranStarpad:
 					case UnitId::TerranAtlas:
 					{
-						if (player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					case UnitId::TerranTreasury:
 					case UnitId::TerranSentinel:
