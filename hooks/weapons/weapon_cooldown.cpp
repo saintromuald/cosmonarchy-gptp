@@ -34,7 +34,7 @@ namespace hooks {
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 
 		// Vassal Terminal Surge
-		if (unit_ext->timers[TimerTerminalSurge])
+		if (unit_ext->timers[TimerTerminalSurge] > 1)
 		{
 			cooldown /= 1.25;
 		}

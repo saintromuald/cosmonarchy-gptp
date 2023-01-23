@@ -1874,6 +1874,28 @@ namespace hooks {
 					unit_ext->values[ValueMortothrokorStacks] = 0;
 				}
 			} break;
+			case UnitId::ProtossSteward:
+			{
+				if (unit->hangar_unit.parent && unit->hitpoints < 20 * 256)
+				{
+					helper::issue_order_targeting_nothing(unit, OrderId::Return);
+				}
+			} break;
+			case UnitId::ProtossSolarion:
+			{
+				// Reduce Steward launch time
+				if (unit->order_queue_timer > 4) {
+					unit->order_queue_timer = 4;
+				}
+
+				// Auto-train Stewards
+				if (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12 && unit->build_queue[unit->build_queue_slot] != UnitId::ProtossSteward)
+				{
+					unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
+					unit->set_secondary_order(OrderId::TrainFighter);
+					unit->secondary_order_state = 0;
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma
@@ -2162,19 +2184,8 @@ namespace hooks {
 			unit_ext->values[ValuePetrificationStacks] = 0;
 		}
 
-		// Solarion - auto train
-		if (unit->id == UnitId::ProtossSolarion && unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12) {
-			unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
-			unit->set_secondary_order(OrderId::TrainFighter);
-		}
-
-		// Blissful Embrace - Creep Spread
+		// Blissful Embrace - Creep spread and Larva spawn
 		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			EntryArray akistrokors = {};
-			unit_search_radial(&akistrokors, unit->position, 6 * 32);
-			unit_search_filter(&akistrokors, unit, FilterAlly, {UnitId::ZergAkistrokor});
-			unit->hitpoints += akistrokors.count * 256.0 / 24.0;
-
 			if (!units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 				helper::secondary_order_spawning_larva(unit);
 			}
@@ -2606,11 +2617,14 @@ namespace hooks {
 			}
 		}
 
+		// Clear speed buffs for currently-moving flingy units. -Pr0nogo
+		if (unit_ext->timers[TimerTerminalSurge] == 1) {
+			unit->update_speed();
+		}
+
 		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
 		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		&&	unit->status & UnitStatus::InAir
-		&&	unit->main_order_id != OrderId::Liftoff
-		&&	unit->main_order_id != OrderId::BuildingLand) {
+		&&	unit->status & UnitStatus::InAir) {
 			unit->update_speed();
 		}
 

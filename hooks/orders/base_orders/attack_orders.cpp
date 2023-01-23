@@ -87,21 +87,21 @@ namespace hooks
 				// give orders to Stewards and Plasma Shells (through out_hangar_child)
 				helper::set_interceptors_to_standby(unit);
 
-				u8 newOrderId = 0;
+				u8 new_order_id = 0;
 				if (unit->id == UnitId::ProtossAccantorOld) {
 					if (unit->main_order_id == OrderId::ReaverHold) {
-						newOrderId = OrderId::ReaverHold;
+						new_order_id = OrderId::ReaverHold;
 					} else {
-						newOrderId = OrderId::ReaverFight;
+						new_order_id = OrderId::ReaverFight;
 					}
 				} else {
 					if (unit->main_order_id == OrderId::HoldPosition1) {
-						newOrderId = OrderId::HoldPosition1;
+						new_order_id = OrderId::HoldPosition1;
 					} else {
-						newOrderId = OrderId::CarrierFight;
+						new_order_id = OrderId::CarrierFight;
 					}
 				}
-				helper::prepend_order_targeting_unit(unit, target, newOrderId);
+				helper::prepend_order_targeting_unit(unit, target, new_order_id);
 				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost

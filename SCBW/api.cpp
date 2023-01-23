@@ -2588,23 +2588,14 @@ namespace scbw {
 
 	u32 unit_id_get_larva_type(u32 unit_id) {
 		switch (unit_id) {
-			case UnitId::ZergHachirosk:
-			case UnitId::ZergGathtelosk:
-			case UnitId::ZergNephrilosk:
-			case UnitId::ZergLarvoskColony:
-			case UnitId::ZergLarva:
-			{
-				return UnitId::ZergLarva;
-			} break;
 			case UnitId::ZergCaphrolosk:
-			case UnitId::ZergSibraelosk:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergOcsalLarva:
 			{
 				return UnitId::ZergOcsalLarva;
 			} break;
 		}
-		return UnitId::None;
+		return UnitId::ZergLarva;
 	}
 
 	u32 unit_id_swarmhold_value(u32 unit_id) {

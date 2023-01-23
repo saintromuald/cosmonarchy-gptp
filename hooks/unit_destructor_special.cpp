@@ -239,12 +239,12 @@ void unit_destructor_special_cases(Unit* unit) {
 					if (target->player == 11) {
 						return;
 					}
-					target_ext->timers[TimerTerminalSurge] = 48;
+					target_ext->timers[TimerTerminalSurge] = 48 + 1;
 					target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 					target->update_speed();
 					if (target->subunit) {
 						UnitExt* subunit_ext = get_unit_ext(target->subunit);
-						subunit_ext->timers[TimerTerminalSurge] = 48;
+						subunit_ext->timers[TimerTerminalSurge] = 48 + 1;
 					}
 				});
 			} break;

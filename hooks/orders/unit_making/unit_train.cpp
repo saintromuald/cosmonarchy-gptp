@@ -41,8 +41,8 @@ namespace hooks {
 			} else if (unit->secondary_order_state == 2) {
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit) {
-					u32 hpGain = helper::get_hp_gain_for_repair(built_unit);
-					helper::progress_build(built_unit, hpGain, FALSE);
+					u32 hp_gain = helper::get_hp_gain_for_repair(built_unit);
+					helper::progress_build(built_unit, hp_gain, FALSE);
 					if (built_unit->status & UnitStatus::Completed) {
 						helper::add_hangar_unit(unit, built_unit);
 						if (unit->status & UnitStatus::IsHallucination) {
@@ -178,15 +178,6 @@ namespace hooks {
 					// Solarion - start with 12 interceptors
 					if (built_unit && built_unit->id == UnitId::ProtossSolarion) {
 						scbw::create_hangar_units(built_unit, 12, UnitId::ProtossSteward);
-						
-						// s32 interceptors = 12;
-						// u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
-						// buf[0] = 0x99; // new general command
-						// buf[1] = NewGameCommand::CarrierPrebuild;
-						// buf[2] = interceptors;
-						// buf[3] = *g_active_player_id;
-						// memcpy(&buf[4], &built_unit, 4);
-						// helper::queue_game_command(buf, 0xc);
 					}
 					scbw::refresh_console();
 					unit->current_build_unit = nullptr;
