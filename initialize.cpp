@@ -526,14 +526,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	
 	//genericBtnInteract (0x004E1C20)
 	memory_patch(0x004E1C38, (u16)0x73FC);
-
-	// Cut Solarion-Steward launch timer in half
-	// orders_carrier (0x004666A0)
-//	memory_patch(0x004666C5, (u8)0x56);								// offset 0x46671C
-//	memory_patch(0x004666CC, (u8)0x4F);								// offset 0x46671C
-//	memory_patch(0x004666E4, (u8)0x37);								// offset 0x46671C
-//	memory_patch(0x00466716, (u32)0x00008587);						// MOV byte ptr [EDI+0x85], ...
-//	memory_patch(0x0046671A, (u32)0xC35E0400);						// ...04; POP ESI; RET;
 	// DarkenedFantasies, end
 
 	// FaRTy1billion, start

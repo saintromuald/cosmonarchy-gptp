@@ -1496,4 +1496,6 @@ namespace helper {
 	u32 get_visibility_mask_from_position_and_size(u32 y_pos, u32 height, u32 width, u32 x_pos);											// 00402570
 
 	Image* copy_image_palette_type(Image* image, Image* from);																				// 004D5E40
+
+	bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);																				// 00465A60
 }

@@ -361,7 +361,10 @@ namespace hooks
 		}
 
 		// only for fully-constructed units and buildings
-		if (unit->status & UnitStatus::Completed)
+		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
+		if (unit->status & UnitStatus::Completed
+		||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon
+		||	scbw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
 		{
 			bool bStopHere = false;
 

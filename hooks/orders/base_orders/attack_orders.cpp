@@ -75,7 +75,8 @@ namespace hooks
 		}
 	}
 
-	void orders_carrier_attack(Unit* unit) {
+	void orders_carrier_attack(Unit* unit) // 00465950
+	{
 		Unit* target = unit->order_target.unit;
 		if (!target) {
 			unit->order_to_idle();
@@ -1042,5 +1043,125 @@ namespace hooks
 			unit->next_target_waypoint.x = pos_x;
 			unit->next_target_waypoint.y = pos_y;
 		}
+	}
+
+	// Ported from GPTP to change the Solarion-Steward launch timer. -Pr0nogo
+	// Used when unit->mainOrderId is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPosition1
+	void orders_carrier_idle(Unit* unit) // 004666A0
+	{
+		if (helper::order_hangar_unit(unit, 0, unit->get_seek_range() * 32))
+		{
+			Unit* out_unit = release_fighter(unit);
+			if (out_unit) {
+				// Originally set shields to full.
+				out_unit->sprite->elevation = unit->sprite->elevation- 1;
+				out_unit->order_to(units_dat::attack_unit_order[UnitId::ProtossSteward], unit->order_target.unit);
+				unit->order_queue_timer = 4; // Originally unit->main_order_timer = 7;
+			}
+
+		}
+		else if (unit->unit_ai && unit->main_order_timer == 0)
+		{
+			unit->order_computer(OrderId::ComputerAI);
+		}
+	}
+
+	// Ported from GPTP as a dependency of orders_carrier_idle. -Pr0nogo
+	// Only used here, and making a modified copy could be useful,so hardcoded. Not using helpers, a copy should not reproduce that bad coding behavior. -GPTP
+	Unit* release_fighter(Unit* unit) // 00466440
+	{
+		Unit* launched_unit = unit->unit_with_hangar.in_hangar_child;
+		while (launched_unit && !(launched_unit->status & UnitStatus::Completed))
+		{
+			launched_unit = launched_unit->hangar_unit.hangar_link.prev;
+		}
+
+		if (launched_unit)
+		{
+			Unit* temp_unit = launched_unit->hangar_unit.hangar_link.prev;
+
+			while (temp_unit) {
+				if ((temp_unit->status & UnitStatus::Completed)
+				&&	(temp_unit->hitpoints > launched_unit->hitpoints))
+				{
+					launched_unit = temp_unit;
+				}
+				temp_unit = temp_unit->hangar_unit.hangar_link.prev;
+			}
+
+			if (launched_unit->id == UnitId::ProtossSteward) {
+				u32 max_hp = units_dat::max_hitpoints[UnitId::ProtossSteward];
+				if (max_hp < 0)
+				{
+					max_hp += 1;
+				}
+				if (launched_unit->hitpoints < max_hp / 2)
+				{
+					launched_unit = 0;
+				}
+			}
+
+			if (launched_unit) {
+				const u32 Func_InitUnitTrapDoodad = 0x004E6490; //move to helpers if making a modified copy
+				u32 x, y;
+
+				if (launched_unit->id == UnitId::ProtossPlasmaShell) {
+					const u32 Func_turnGraphic = 0x00495F20;	//move to helpers if making a modified copy
+					u8 direction = unit->current_direction_1;
+
+					x = unit->sprite->position.x + g_angle_distance[direction].x * 25 / 256;
+					y = unit->sprite->position.y + g_angle_distance[direction].y * 25 / 256;
+
+					//void turnGraphic(Unit* unit, u8 direction) @ 00495F20
+					__asm {
+						PUSHAD
+						MOV EAX, launched_unit
+						MOV BL, direction
+						CALL Func_turnGraphic
+						POPAD
+					}
+
+				}
+				else
+				{
+					x = unit->sprite->position.x;
+					y = unit->sprite->position.y;
+				}
+
+				scbw::refresh_console();
+				if (unit->unit_with_hangar.in_hangar_child == launched_unit)
+				{
+					unit->unit_with_hangar.in_hangar_child = launched_unit->hangar_unit.hangar_link.prev;
+				}
+				if (launched_unit->hangar_unit.hangar_link.prev)
+				{
+					(launched_unit->hangar_unit.hangar_link.prev)->hangar_unit.hangar_link.next = launched_unit->hangar_unit.hangar_link.next;
+				}
+				if (launched_unit->hangar_unit.hangar_link.next)
+				{
+					(launched_unit->hangar_unit.hangar_link.next)->hangar_unit.hangar_link.prev = launched_unit->hangar_unit.hangar_link.prev;
+				}
+				unit->unit_with_hangar.in_hangar_count--;
+				launched_unit->hangar_unit.hangar_link.prev = unit->unit_with_hangar.out_hangar_child;
+				launched_unit->hangar_unit.hangar_link.next = 0;
+				if (unit->unit_with_hangar.out_hangar_child)
+				{
+					(unit->unit_with_hangar.out_hangar_child)->hangar_unit.hangar_link.next = launched_unit;
+				}
+				unit->unit_with_hangar.out_hangar_child = launched_unit;
+				unit->unit_with_hangar.out_hangar_count++;
+
+				scbw::set_unit_position(launched_unit, x, y);
+				//void showAndEnableUnit(Unit* unit) @ 004E6490
+				__asm {
+					PUSHAD
+					MOV EDI, launched_unit
+					CALL Func_InitUnitTrapDoodad
+					POPAD
+				}
+				launched_unit->hangar_unit.is_outside_hangar = true;
+			}
+		}
+		return launched_unit;
 	}
 }

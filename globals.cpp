@@ -1544,18 +1544,18 @@ namespace scbw
 				if (it != links.end()) {
 					links.erase(it);
 				}
-				Unit* damageOriginUnit = data.attacker;
-				if (!damageOriginUnit) {
-					damageOriginUnit = unit;
+				Unit* damage_origin = data.attacker;
+				if (!damage_origin) {
+					damage_origin = unit;
 				}
-				s8 oldDirection = data.direction;
-				for (Unit* linkUnit : links) {
-					s32 unitDamage = std::min(divided, linkUnit->shields);
-					damage -= unitDamage;
-					data.direction = scbw::get_angle(damageOriginUnit->get_x(), damageOriginUnit->get_y(), linkUnit->get_x(), linkUnit->get_y());
-					link_damage(linkUnit, unitDamage, data);
+				s8 old_direction = data.direction;
+				for (Unit* linked_unit : links) {
+					s32 unit_damage = std::min(divided, linked_unit->shields);
+					damage -= unit_damage;
+					data.direction = scbw::get_angle(damage_origin->get_x(), damage_origin->get_y(), linked_unit->get_x(), linked_unit->get_y());
+					link_damage(linked_unit, unit_damage, data);
 				}
-				data.direction = oldDirection;
+				data.direction = old_direction;
 			}
 			link_damage(unit, damage, data);
 		}

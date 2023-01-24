@@ -23,16 +23,16 @@ namespace helper {
 
 	bool has_money_can_make(Unit* builder, u32 unitToBuild) {
 		const u32 Func_HasMoneyCanMake = 0x00467250;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH unitToBuild
 			MOV EDI, builder
 			CALL Func_HasMoneyCanMake
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// For loadRaceUI
@@ -1801,29 +1801,29 @@ namespace helper {
 
 	bool unit_cant_see_cloaked_target(Unit* unit, Unit* target) {
 		const u32 Func_unitCantSeeCloakedTarget = 0x00401D60;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, target
 			CALL Func_unitCantSeeCloakedTarget
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool unit_can_infest(Unit* unit) {
 		const u32 Func_CanInfest = 0x00402750;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_CanInfest
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void ai_attack_unit(Unit* unit) {
@@ -1852,17 +1852,17 @@ namespace helper {
 	bool ai_try_return_home(Unit* unit, u8 unknownByteValue) {
 		const u32 Func_Sub462EA0 = 0x00462EA0;
 		static u32 _unknownByteValue;
-		static b32 bPreResult;
+		static b32 result;
 		_unknownByteValue = unknownByteValue;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			PUSH _unknownByteValue
 			CALL Func_Sub462EA0
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void set_interceptors_to_standby(Unit* unit) {
@@ -1903,46 +1903,46 @@ namespace helper {
 
 	bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range) {
 		const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
 			MOV EAX, target
 			MOV ECX, range
 			CALL Func_isTargetWithinMinMovementRange
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool ai_is_unreachable_position(Unit* unit, s32 x, s32 y) {
 		const u32 Func_Sub476610 = 0x00476610;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EBX, x
 			MOV EDI, y
 			CALL Func_Sub476610
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool is_unit_in_weapon_range(Unit* unit, Unit* target) {
 		const u32 Func_isUnitInWeaponRange = 0x00476870;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, target
 			CALL Func_isUnitInWeaponRange
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void get_weapon_begin_iscriptt(Unit* unit, IscriptAnimation::Enum anim) {
@@ -1981,7 +1981,7 @@ namespace helper {
 
 	bool attack_move_react_to_attack(Unit* unit, u8 order_id) {
 		const u32 Func_Sub478370 = 0x00478370;
-		static b32 bPreResult;
+		static b32 result;
 		static u32 orderId_;
 		orderId_ = order_id;
 		__asm {
@@ -1989,23 +1989,23 @@ namespace helper {
 			MOV EAX, unit
 			PUSH orderId_
 			CALL Func_Sub478370
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool attack_unit_main(Unit* unit) {
 		const u32 Func_Sub478540 = 0x00478540;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub478540
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// 0x0047B450
@@ -2026,29 +2026,29 @@ namespace helper {
 
 	bool is_unit_visible(Unit* unit) {
 		const u32 Func_isUnitVisible = 0x004E5DB0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			CALL Func_isUnitVisible
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool is_target_visible(Unit* unit, Unit* target) {
 		const u32 Func_isTargetVisible = 0x004E5E30;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EAX, target
 			CALL Func_isTargetVisible
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// Identical to get_right_click_action_order @ 0x004E5EA0;
@@ -2082,31 +2082,31 @@ namespace helper {
 
 	bool move_to_target(Unit* target, Unit* unit) {
 		const u32 Func_moveToTarget = 0x004EB720;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EDI, target
 			CALL Func_moveToTarget
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool set_move_target_xy(Unit* unit, s32 x, s32 y) {
 		const u32 Func_SetMoveTarget_xy = 0x004EB820;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EBX, x
 			MOV EDI, y
 			CALL Func_SetMoveTarget_xy
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// Related to path/movement decision
@@ -2122,22 +2122,22 @@ namespace helper {
 
 	bool change_movement_target_move_target_2(Unit* unit, s32 x, s32 y) {
 		const u32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
 			MOV ECX, x
 			MOV EAX, y
 			CALL Func_changeMovementTargetMoveTarget2
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance) {
 		const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH x
@@ -2145,10 +2145,10 @@ namespace helper {
 			MOV EAX, y
 			MOV ECX, unit
 			CALL Func_isDistanceGreaterThanHaltDistance
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void check_unstack(Unit* unit) {
@@ -2163,15 +2163,15 @@ namespace helper {
 
 	bool begin_building(Unit* unit) {
 		const u32 Func_beginBuilding = 0x00467030;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_beginBuilding
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	Unit* begin_gas_building(Unit* unit, u32 unit_id) {
@@ -2260,15 +2260,15 @@ namespace helper {
 
 	bool set_thingy_visibility_flags(Thingy* thingy) {
 		const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, thingy
 			CALL Func_SetThingyVisibilityFlags
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player) {
@@ -2748,16 +2748,16 @@ namespace helper {
 
 	bool order_to_move_to_target(Unit* unit, Unit* target) {
 		const u32 Func__moveToTarget = 0x004EB980;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, target
 			MOV ECX, unit
 			CALL Func__moveToTarget
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return bPreResult != 0;
+		return result != 0;
 	}
 
 	b32 unk_terrain_collision_2(Unit* unit, s32 x, s32 y) {
@@ -3386,30 +3386,30 @@ namespace helper {
 
 	bool place_building_message(u32 result_function_473FB0) {
 		const u32 Func_placeBuildingMsg = 0x0048D930;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, result_function_473FB0
 			CALL Func_placeBuildingMsg
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool CMDRECV_place_building_allowed(Unit* unit, u8 order_id, u16 builtUnitId) {
 		const u32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV AX, builtUnitId
 			MOV DL, order_id
 			MOV ECX, unit
 			CALL Func_CMDRECV_PlaceBuildingAllowed
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void function_0048DE70(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId) {
@@ -3611,16 +3611,16 @@ namespace helper {
 
 	bool can_cast_spell(Unit* unit) {
 		const u32 Func_canCastSpell_0 = 0x00492140;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
 			CALL Func_canCastSpell_0
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
 		// 0 means "can cast spell"
-		return (bPreResult == 0);
+		return (result == 0);
 	}
 
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero) {
@@ -3809,15 +3809,15 @@ namespace helper {
 
 	bool is_unit_upgrade_available(Unit* unit) {
 		const u32 Func_isUnitUpgradeAvailable = 0x004033D0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_isUnitUpgradeAvailable
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void apply_speed_upgrade_from_upgrade_id(Unit* unit, u8 upgrade_id) {
@@ -3937,17 +3937,17 @@ namespace helper {
 	// return true if waiting for recent_order_timer to reach 0 or if setMoveTarget_xy returned true
 	bool delayed_set_move_target_xy(Unit* unit, u16 x, u16 y) {
 		const u32 Func_Sub4EB960 = 0x004EB960;
-		b32 bPreResult;
+		b32 result;
 		__asm {
 			PUSHAD
 			MOVSX EDI, y
 			MOVSX EBX, x
 			MOV EAX, unit
 			CALL Func_Sub4EB960
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	void set_all_overlay_directions_generic(Unit* unit, u32 unk) {
@@ -4506,16 +4506,16 @@ namespace helper {
 
 	bool stat_spidermine_count(BinDlg* dialog, u32 index) {
 		const u32 Func_StatSpidermineCount = 0x00426300;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			PUSH index
 			CALL Func_StatSpidermineCount
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// For get_unit_rank_string
@@ -4682,17 +4682,17 @@ namespace helper {
 		return 1; // Supply was removed
 
 		const u32 Func_hasSuppliesForUnit = 0x0042CF70;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH canShowErrorMessage
 			PUSH unit_id
 			PUSH player
 			CALL Func_hasSuppliesForUnit
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	Unit* zerg_dual_birth(Unit* unit) {
@@ -4733,7 +4733,7 @@ namespace helper {
 	// for orders_Hallucination1
 	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
 		const u32 Func_spellOrder = 0x004926D0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH techEnergyCost
@@ -4742,23 +4742,23 @@ namespace helper {
 			MOV EAX, error_message_index
 			MOV EBX, unit
 			CALL Func_spellOrder
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	bool place_hallucination(Unit* unit) {
 		const u32 Func_placeHallucination = 0x004F66D0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_placeHallucination
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// for create_hallucination
@@ -6335,32 +6335,32 @@ namespace helper {
 
 	bool subtract_repair_resources(Unit* worker, Unit* target) {
 		const u32 Func_ord_repair_subtract = 0x00466FB0;
-		static b32 bPreResult;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, worker
 			PUSH target
 			CALL Func_ord_repair_subtract
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	// display an error message and return false if not enough resources
 	bool verify_resources(u32 mineralCost, u32 gasCost, u32 player) {
 		const u32 Func_verifyResources = 0x00466EE0;
-		b32 bPreResult;
+		b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, mineralCost
 			PUSH gasCost
 			MOV ECX, player
 			CALL Func_verifyResources
-			MOV bPreResult, EAX
+			MOV result, EAX
 			POPAD
 		}
-		return (bPreResult != 0);
+		return (result != 0);
 	}
 
 	u8 getHangerTrainCount(Unit* unit) {
@@ -12575,5 +12575,20 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	bool order_hangar_unit(Unit* unit, u32 range1, u32 range2) {
+		static b32 result;
+		const u32 Func_Sub465A60 = 0x00465A60;
+		__asm {
+			PUSHAD
+			PUSH range1
+			PUSH range2
+			MOV EAX, unit
+			CALL Func_Sub465A60
+			MOV result, EAX
+			POPAD
+		}
+		return (result != 0);
 	}
 }
