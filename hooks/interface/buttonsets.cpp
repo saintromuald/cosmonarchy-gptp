@@ -2051,6 +2051,13 @@ namespace hooks {
 									}
 								}
 								break;
+								case UnitId::ProtossSteward:
+								{
+									if (current_button->icon_id == IconId::AntimatterMissiles) // Steward - Evasive Maneuvers
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 
 								// ZERG \\
 								
