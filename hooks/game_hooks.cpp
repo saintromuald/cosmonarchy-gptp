@@ -1883,11 +1883,6 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossSolarion:
 			{
-				// Reduce Steward launch time
-				if (unit->order_queue_timer > 4) {
-					unit->order_queue_timer = 4;
-				}
-
 				// Auto-train Stewards
 				if (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12 && unit->build_queue[unit->build_queue_slot] != UnitId::ProtossSteward)
 				{
