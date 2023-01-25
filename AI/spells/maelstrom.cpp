@@ -36,10 +36,6 @@ namespace AI
 			{
 				return false;
 			}
-			if (!(units_dat::base_property[target->id] & UnitProperty::Organic))
-			{
-				return false;
-			}
 			if (target->maelstrom_timer)
 			{
 				return false;

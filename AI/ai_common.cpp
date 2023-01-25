@@ -94,12 +94,12 @@ namespace AI
 
 	// In original functions:
 	// 0x00695604 would contains weapon_id
-	// 0x00695798 would contains totalEnemyLife
+	// 0x00695798 would contains total_enemy_life
 	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weapon_id)
 	{
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
-		s32 totalEnemyLife = 0;
+		s32 total_enemy_life = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
@@ -111,25 +111,24 @@ namespace AI
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weapon_id == WeaponId::Plague)
 				{
-					totalEnemyLife += target->get_current_hp_ingame();
+					total_enemy_life += target->get_current_hp_ingame();
 				}
 				else
 				// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom
 				if (weapon_id == WeaponId::MindTyrantMaelstrom)
 				{
-					if (units_dat::base_property[target->id] & UnitProperty::Organic &&
-						target->maelstrom_timer == 0)
+					if (target->maelstrom_timer == 0)
 					{
-						totalEnemyLife += target->get_current_life_ingame();
+						total_enemy_life += target->get_current_life_ingame();
 					}
 				}
 				else
 				{
-					totalEnemyLife += target->get_current_life_ingame();
+					total_enemy_life += target->get_current_life_ingame();
 				}
 			}
 		}
-		return totalEnemyLife;
+		return total_enemy_life;
 	}
 
 	// Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60

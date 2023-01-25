@@ -30,6 +30,13 @@ namespace hooks
 		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
 		}
+		if (unit->subunit)
+		{
+			if (unit->subunit->connected_unit && unit->subunit->connected_unit->id == UnitId::TerranBunker
+			&&	unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
+				return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
+			}
+		}
 
 		if (scbw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::HoldingPosition;
