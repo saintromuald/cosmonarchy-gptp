@@ -2619,7 +2619,7 @@ namespace hooks {
 
 		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
 		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		&&	unit->status & UnitStatus::InAir) {
+		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1) {
 			unit->update_speed();
 		}
 

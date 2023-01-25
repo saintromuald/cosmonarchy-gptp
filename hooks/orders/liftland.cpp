@@ -32,6 +32,8 @@ namespace hooks
 				unit->perform_another_order(OrderId::BuildingLand, unit_target.pt.x, unit_target.pt.y, unit_target.unit, UnitId::None);
 			}
 			unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, false);
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->timers[TimerLiftLandDelay] = 70 + 1;
 		} else if (unit->main_order_state == 0) {
 			// Plan vertical movement toward ground
 			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->vertical_offset);
@@ -181,14 +183,12 @@ namespace hooks
 	}
 
 	void orders_building_liftoff(Unit* unit) { // 004649B0
-		if ((unit->status & UnitStatus::GroundedBuilding)
-		&& (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
+		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
 		{
 			if (unit->building.addon) {
 				helper::disconnect_from_addon(unit);
 			}
 			if (unit->is_factory()) {
-				UnitExt* unitExt = get_unit_ext(unit);
 				unit->rally.unit = unit;
 			}
 
@@ -216,6 +216,9 @@ namespace hooks
 				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;
+
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->timers[TimerLiftLandDelay] = 70 + 1;
 		} else {
 			if (!unit->order_queue_head) {
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);

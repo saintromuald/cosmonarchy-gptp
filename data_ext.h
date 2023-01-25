@@ -225,6 +225,7 @@ enum ExtTimerId
 	TimerReclamation,
 	TimerMatadorHeal,
 	TimerMortothrokorPassive,
+	TimerLiftLandDelay,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
