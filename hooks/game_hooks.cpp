@@ -2507,7 +2507,7 @@ namespace hooks {
 		// Emergency Detonation - initial cast
 		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation)) {
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
-			unit_ext->timers[TimerEmergencyDetonation] = (u32)(0.5 * unit_ext->timers[TimerControlledDemolition]);
+			unit_ext->timers[TimerEmergencyDetonation] = 72 + 1;
 			unit_ext->timers[TimerControlledDemolition] = 0;
 			unit->sprite->remove_overlay(ImageId::ControlledDemolition);
 			unit->sprite->create_top_overlay(ImageId::EmergencyDetonation);

@@ -280,20 +280,34 @@ namespace hooks
 		//	} break;
 			case TechId::CancelNewAbility:
 			{
-				switch (players_selections->unit[*g_active_nation_id][0]->id)
+				Unit* selected = players_selections->unit[*g_active_nation_id][0];
+				if (selected)
 				{
-				case UnitId::TerranWyvern:
-				{
-					s32 action = 1;
-					u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
-					buf[0] = 99;
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *g_active_player_id;
-					buf[4] = RustId::CancelLandGrab;
-					helper::queue_game_command(buf, 0xc);
-				}
-				break;
+					switch (selected->id)
+					{
+						case UnitId::TerranWyvern:
+						{
+							s32 action = 1;
+							u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+							buf[0] = 99;
+							buf[1] = NewGameCommand::GenericSwitchAbility;
+							buf[2] = action;
+							buf[3] = *g_active_player_id;
+							buf[4] = RustId::CancelLandGrab;
+							helper::queue_game_command(buf, 0xc);
+						} break;
+					}
+					UnitExt* selected_ext = get_unit_ext(selected);
+					if (selected_ext->timers[TimerControlledDemolition])
+					{
+						selected_ext->timers[TimerControlledDemolition] = 0;
+						Image* overlay = selected->get_overlay(ImageId::ControlledDemolition);
+						if (overlay)
+						{
+							overlay->play_iscript_animation(IscriptAnimation::Death);
+						}
+					}
+
 				}
 			} break;
 		};

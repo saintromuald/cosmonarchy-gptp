@@ -2569,13 +2569,18 @@ namespace hooks {
 						if (current_button->action_var == TechId::CancelNewAbility)
 						{
 							bool can_cancel = false;
+							UnitExt* active_ext = get_unit_ext(unit);
 							if (unit->id == UnitId::TerranWyvern)
 							{
-								UnitExt* active_ext = get_unit_ext(unit);
 								if (active_ext->values[ValueWyvernLandGrabOn])
 								{
 									can_cancel = true;
 								}
+							}
+							
+							if (active_ext->timers[TimerControlledDemolition] && !active_ext->timers[TimerEmergencyDetonation]) {
+								can_cancel = true;
+								current_button_state = Button_State::Enabled;
 							}
 
 							if (!can_cancel)
