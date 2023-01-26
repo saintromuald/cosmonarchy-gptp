@@ -32,8 +32,6 @@ namespace hooks
 				unit->perform_another_order(OrderId::BuildingLand, unit_target.pt.x, unit_target.pt.y, unit_target.unit, UnitId::None);
 			}
 			unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, false);
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->timers[TimerLiftLandDelay] = 70 + 1;
 		} else if (unit->main_order_state == 0) {
 			// Plan vertical movement toward ground
 			helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y - unit->sprite->images.tail->vertical_offset);
@@ -66,7 +64,7 @@ namespace hooks
 					}
 					unit->order_to_idle();
 				} else {
-					// Use a AddFogMask() function after some coordinates calculations
+					// Use an AddFogMask() function after some coordinates calculations
 					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					unit->building.landing_timer = 1;
 
@@ -83,6 +81,8 @@ namespace hooks
 				}
 			}
 		} else if (unit->main_order_state == 2) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 			bool stop_there = false;
 			if (!helper::is_unit_positions_2_equal(unit)) {
 				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
@@ -218,7 +218,7 @@ namespace hooks
 			unit->main_order_id = OrderId::Liftoff;
 
 			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->timers[TimerLiftLandDelay] = 70 + 1;
+			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 		} else {
 			if (!unit->order_queue_head) {
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);
