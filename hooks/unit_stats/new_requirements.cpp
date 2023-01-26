@@ -90,6 +90,7 @@ namespace hooks {
 				case UnitId::TerranTreasury:
 				case UnitId::TerranSentinel:
 				case UnitId::TerranDaedala:
+				case UnitId::TerranFountainhead:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -107,6 +108,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranParthenon:
 				case UnitId::TerranIonCannon:
+				case UnitId::TerranAtelier:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier3])
 					{
