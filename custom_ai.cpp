@@ -28,6 +28,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 		}
 
 		u32 capped_id = UnitId::None;
+		// TODO: Add support for custom races. -Pr0nogo
 		switch (g_player_table[ai_town->player].race) {
 			case RaceId::Terran:  capped_id = UnitId::TerranReservoir; break;
 			case RaceId::Protoss: capped_id = UnitId::ProtossAquifer;  break;

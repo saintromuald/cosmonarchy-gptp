@@ -16,6 +16,7 @@ u32 get_gas_tier(Unit* unit) {
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
+			case UnitId::PoliceDispensary:
 				return 3;
 		}
 	}
@@ -30,13 +31,8 @@ namespace hooks {
 	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
 	// Identical to sub_469650
 	bool is_gas_container(u16 unit_id) {
-		if (unit_id == UnitId::ProtossAquifer) {
-			return true;
-		}
-		if (unit_id == UnitId::TerranReservoir) {
-			return true;
-		}
-		if (unit_id == UnitId::ZergExcisant) {
+		if (unit_id == UnitId::ProtossAquifer || unit_id == UnitId::TerranReservoir || unit_id == UnitId::ZergExcisant
+		||	unit_id == UnitId::PoliceDispensary) {
 			return true;
 		}
 		return false;
@@ -70,7 +66,7 @@ namespace hooks {
 			chunk_image_id = ImageId::ProtossGasOrbType1;
 		} else if (resource->id == UnitId::ZergExcisant) {
 			chunk_image_id = ImageId::ZergGasSacType1;
-		} else if (resource->id == UnitId::TerranReservoir) {
+		} else if (resource->id == UnitId::TerranReservoir || resource->id == UnitId::PoliceDispensary) {
 			chunk_image_id = ImageId::TerranGasTankType1;
 		} else if (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser) {
 			chunk_image_id = ImageId::GasRaw;
@@ -151,7 +147,9 @@ namespace hooks {
 			} break;
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
-			case UnitId::ZergExcisant: {
+			case UnitId::ZergExcisant:
+			case UnitId::PoliceDispensary:
+			{
 				if ((ignore_completed || node->status & UnitStatus::Completed) && node->player == worker->player) {
 					return true;
 				}
@@ -225,7 +223,8 @@ namespace hooks {
 		if (node) {
 			if (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser) {
 				valid_structure = true;
-			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant)
+			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
+			||			node->id == UnitId::PoliceDispensary)
 				&& node->player == unit->player) {
 				valid_structure = true;
 			}
@@ -260,9 +259,10 @@ namespace hooks {
 
 		u32 result;
 		char worker_resource_type;
-		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) {
+		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) { // is not mineral node
 			bool ignore_completed = true;
-			if (node->id == UnitId::TerranReservoir && !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
+			if ((node->id == UnitId::TerranReservoir || node->id == UnitId::PoliceDispensary)
+			&& !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
 				ignore_completed = false;
 			}
 
@@ -293,7 +293,7 @@ namespace hooks {
 					result = OrderId::None;
 				}
 			}
-		} else {
+		} else { // is not gas node
 			worker_resource_type = worker->resource_type;
 			if (!worker_resource_type || worker_resource_type & ResourceType::Either) {
 				result = OrderId::MoveToMinerals;

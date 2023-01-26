@@ -1759,7 +1759,8 @@ namespace scbw {
 				|| unit_id == UnitId::ResourceVespeneRidge
 				|| unit_id == UnitId::TerranReservoir
 				|| unit_id == UnitId::ProtossAquifer
-				|| unit_id == UnitId::ZergExcisant;
+				|| unit_id == UnitId::ZergExcisant
+				|| unit_id == UnitId::PoliceDispensary;
 		} else {
 			return unit_id == UnitId::ResourceMineralField
 				|| unit_id == UnitId::ResourceMineralFieldType2
@@ -1882,7 +1883,7 @@ namespace scbw {
 	}
 
 	bool unit_id_is_capped_gas_structure(u16 unit_id) {
-		return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExcisant;
+		return unit_id == UnitId::TerranReservoir || unit_id == UnitId::ProtossAquifer || unit_id == UnitId::ZergExcisant || unit_id == UnitId::PoliceDispensary;
 	}
 
 	bool unit_id_is_gas_structure(u16 unit_id) {
@@ -1905,7 +1906,8 @@ namespace scbw {
 			|| unit_id == UnitId::ZergLarvoskColony
 			|| unit_id == UnitId::ZergOcsalColony
 			|| unit_id == UnitId::ZergKazitrithColony
-			|| unit_id == UnitId::ZergNydusCesiant;
+			|| unit_id == UnitId::ZergNydusCesiant
+			|| unit_id == UnitId::PoliceDugout;
 	}
 
 	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
@@ -2400,7 +2402,9 @@ namespace scbw {
 			|| buttonset_id == UnitId::Buttons_LarvaControl
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaSwarm
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaAssault
-			|| buttonset_id == UnitId::Buttons_OcsalLarvaControl;
+			|| buttonset_id == UnitId::Buttons_OcsalLarvaControl
+			|| buttonset_id == UnitId::Buttons_BasicPoliceStructures
+			|| buttonset_id == UnitId::Buttons_AdvancedPoliceStructures;
 	}
 
 	bool unit_id_has_custom_air_weapon(u32 unit_id) {
@@ -2506,6 +2510,7 @@ namespace scbw {
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergOrbothOmlia:
+			case UnitId::PoliceDugout:
 			{
 				return true;
 			} break;
@@ -2937,5 +2942,26 @@ namespace scbw {
 				}
 			} break;
 		}
+	}
+
+	bool unit_id_is_vespene_node(u32 unit_id)
+	{
+		return unit_id == UnitId::ResourceVespeneRidge
+		||	   unit_id == UnitId::ResourceVespeneGeyser
+		||	   unit_id == UnitId::TerranReservoir
+		||	   unit_id == UnitId::ProtossAquifer
+		||	   unit_id == UnitId::ZergExcisant
+		||	   unit_id == UnitId::PoliceDispensary;
+	}
+
+	bool unit_id_is_ground_bunker(u32 unit_id)
+	{
+		return unit_id == UnitId::TerranBunker
+		||	   unit_id == UnitId::PoliceDugout;
+	}
+
+	bool unit_id_is_bunker(u32 unit_id)
+	{
+		return unit_id_is_ground_bunker(unit_id); // Will add more bunker types later. -Pr0nogo
 	}
 }

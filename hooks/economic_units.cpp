@@ -8,15 +8,15 @@ namespace hooks
 		u32 order = 0;
 		switch (unit_id)
 		{
-			case UnitId::TerranMason://0x7
-	/*		case UnitId::mole:
-			case UnitId::engineer:*/
+			case UnitId::TerranMason:
+			case UnitId::TerranTalos:
+			case UnitId::PoliceEngineer:
 				order = OrderId::BuildTerran;
 				break;
-			case UnitId::ZergDroleth://0x29
+			case UnitId::ZergDroleth:
 				order = OrderId::DroneStartBuild;
 				break;
-			case UnitId::ProtossScribe://0x40
+			case UnitId::ProtossScribe:
 				order = OrderId::BuildProtoss1;
 				break;
 			default:
@@ -96,6 +96,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
+			case UnitId::PoliceDispensary:
 				return true;
 			default:
 				break;
@@ -109,7 +110,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-				//		case UnitId::KelMorianGasPump:
+			case UnitId::PoliceDispensary:
 				return true;
 			default:
 				break;

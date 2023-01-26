@@ -3100,6 +3100,35 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
+
+			// POLICE
+			// Units
+			case UnitId::PoliceStation:
+			{
+				if (unit_id == UnitId::PoliceEngineer)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+
+			// Structures
+			case UnitId::PoliceEngineer:
+			{
+				if (unit->main_order_id == OrderId::ConstructingBuilding) {
+					return TECH_HIDDEN;
+				}
+				switch (unit_id)
+				{
+					case UnitId::PoliceStation:
+					case UnitId::PoliceDispensary:
+					case UnitId::PoliceAcademy:
+					{
+						return TECH_ACTIVE;
+					} break;
+					return TECH_HIDDEN;
+				}
+			}
 		}
 		return TECH_HIDDEN;
 	}

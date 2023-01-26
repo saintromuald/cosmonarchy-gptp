@@ -549,5 +549,19 @@ namespace UnitId
 		Buttons_OcsalLarvaControl							= 358,
 
 		Buttons_MixedMasonTraining							= 361,
+
+		Buttons_BasicPoliceStructures						= 368,
+		Buttons_AdvancedPoliceStructures					= 369,
+
+	// Todborne BW \\
+		
+	// Units
+		PoliceEngineer										= 367,
+
+	// Buildings
+		PoliceStation										= 364,
+		PoliceDispensary									= 365,
+		PoliceAcademy										= 366,
+		PoliceDugout										= 370,
 	};
 }

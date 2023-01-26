@@ -1,8 +1,6 @@
 #include "spells.h"
 #include <AI/ai_common.h>
 
-// V241 for VS2008
-
 namespace AI
 {
 
@@ -29,7 +27,7 @@ namespace AI
 				return false;
 			}
 			Unit* targetOfTarget;
-			if (target->id == UnitId::TerranBunker && target->has_loaded_unit())
+			if (scbw::unit_id_is_bunker(target->id) && target->has_loaded_unit())
 			{
 				targetOfTarget = target->get_first_loaded_unit()->order_target.unit;
 			}
@@ -59,9 +57,10 @@ namespace AI
 				return true;
 			}
 			if (target->id == UnitId::TerranWatchdog
-				|| target->id == UnitId::TerranBunker
-				|| target->id == UnitId::ZergSpraithColony
-				|| target->id == UnitId::ProtossWarden)
+			||  target->id == UnitId::TerranBunker
+			||  target->id == UnitId::PoliceDugout
+			||  target->id == UnitId::ZergSpraithColony
+			||  target->id == UnitId::ProtossWarden)
 			{
 				return true;
 			}

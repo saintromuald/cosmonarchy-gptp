@@ -517,9 +517,10 @@ namespace hooks {
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
 						if (buttonset_id == UnitId::ZergLarva
-						|| buttonset_id == UnitId::ZergOcsalLarva
-						|| buttonset_id == UnitId::TerranMason
-						|| buttonset_id == UnitId::TerranTalos)
+						||  buttonset_id == UnitId::ZergOcsalLarva
+						||  buttonset_id == UnitId::TerranMason
+						||  buttonset_id == UnitId::TerranTalos
+						||  buttonset_id == UnitId::PoliceEngineer)
 						{
 							if (unit->main_order_id != OrderId::ConstructingBuilding)
 							{
@@ -889,7 +890,8 @@ namespace hooks {
 							}
 						}
 
-						// Experiment to see if extended unit ids can be forced on lol
+						// As of late 2022, we must force build icons for extended unit ids to show up using this very dumb method that inlines requirements in yet another position.
+						// Not sure how to fix! -Pr0nogo
 						switch (unit->id)
 						{
 							case UnitId::TerranMason:
@@ -1661,6 +1663,21 @@ namespace hooks {
 								else
 								{
 									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::PoliceEngineer:
+							{
+								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
+									if (current_button->requirement_var == UnitId::PoliceStation
+									||  current_button->requirement_var == UnitId::PoliceDispensary
+									||  current_button->requirement_var == UnitId::PoliceAcademy)
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Invisible;
+									}
 								}
 							} break;
 							default:
@@ -2522,7 +2539,7 @@ namespace hooks {
 					// Attack overrides
 					if (current_button->action_func == (ActFunc*)ButtonActions::Attack)
 					{
-						if (unit->id == UnitId::TerranBunker)
+						if (unit->id == UnitId::TerranBunker || unit->id == UnitId::PoliceDugout)
 						{
 							int loaded = 0;
 							for (int i = 0; i < 8; ++i)

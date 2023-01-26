@@ -298,6 +298,7 @@ namespace hooks {
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
 				&&	  unit->id != UnitId::TerranBunker
+				&&	  unit->id != UnitId::PoliceDugout
 				&&	  unit->id != UnitId::ZergCagrantColony
 				&&	  unit->id != UnitId::ZergSpraithColony
 				&&	  unit->id != UnitId::ZergSurkithColony
@@ -489,7 +490,7 @@ namespace hooks {
 					}
 				}
 				helper::add_worker_structure_ai(result, parentTown);
-				if (result->id != UnitId::TerranBunker || *g_elapsed_time_seconds <= 60)
+				if (!scbw::unit_id_is_bunker(result->id) || *g_elapsed_time_seconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
@@ -740,46 +741,46 @@ namespace hooks {
 	}
 
 	// Hooked to investigate unit AI corruption - Pr0nogo
-	void ai_training_overlord(Unit* newUnit, Unit* oldUnit) { // 00435770
+	void ai_training_overlord(Unit* new_unit, Unit* oldUnit) { // 00435770
 		if (g_player_table[oldUnit->player].type == PlayerType::Computer) {
 			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
 			if (oldUnitAI) {
-				AiTown* oldUnitTown;
+				AiTown* old_unit_town;
 				if (oldUnitAI->type == AiType::Worker) {
 					WorkerAi* oldWorkerAi = (WorkerAi*)oldUnit->unit_ai;
-					oldUnitTown = oldWorkerAi->town;
+					old_unit_town = oldWorkerAi->town;
 				} else {
 					BuildingAi* oldBuildingAi = (BuildingAi*)oldUnit->unit_ai;
-					oldUnitTown = oldBuildingAi->town;
+					old_unit_town = oldBuildingAi->town;
 				}
 
-				if (oldUnit == newUnit) {
-					helper::ai_remove_from_towns(newUnit);
-					UnitAi* newUnitAI = (UnitAi*)newUnit->unit_ai;
+				if (oldUnit == new_unit) {
+					helper::ai_remove_from_towns(new_unit);
+					UnitAi* newUnitAI = (UnitAi*)new_unit->unit_ai;
 					if (newUnitAI) {
-						BuildingAi* newBuildingAi = (BuildingAi*)newUnit->unit_ai;
+						BuildingAi* newBuildingAi = (BuildingAi*)new_unit->unit_ai;
 						AiTown* newUnitTown = newBuildingAi->town;
 						delete_building_ai(newBuildingAi, &newUnitTown->buildings);
 						if (newUnitTown) {
-							if (newUnit == newUnitTown->building_scv) {
+							if (new_unit == newUnitTown->building_scv) {
 								newUnitTown->building_scv = 0;
 							}
-							if (newUnit == newUnitTown->main_building) {
+							if (new_unit == newUnitTown->main_building) {
 								newUnitTown->main_building = 0;
 							}
 						}
-						newUnit->unit_ai = 0;
+						new_unit->unit_ai = 0;
 					}
 				}
 
-				helper::add_worker_structure_ai(newUnit, oldUnitTown);
-				u16 newUnitId = newUnit->id;
-				if (newUnitId != UnitId::TerranBunker || *g_elapsed_time_seconds <= 60) {
-					if (newUnitId == UnitId::TerranWatchdog) {
+				helper::add_worker_structure_ai(new_unit, old_unit_town);
+				u16 new_unit_id = new_unit->id;
+				if (!scbw::unit_id_is_bunker(new_unit_id) || *g_elapsed_time_seconds <= 60) {
+					if (new_unit_id == UnitId::TerranWatchdog) {
 						u32 i;
 						BuildingAi* j;
 						s32 queuedCount;
-						Unit* oldFirstTownUnit = (Unit*)oldUnitTown->workers.first;
+						Unit* oldFirstTownUnit = (Unit*)old_unit_town->workers.first;
 						for (i = 0; oldFirstTownUnit; i += queuedCount) {
 							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->move_target.unit;
 							if (oldFirstTownMoveTarget->id == UnitId::TerranWatchdog)
@@ -795,7 +796,7 @@ namespace hooks {
 
 						Unit* iterateUnit;
 						s32 queuedCount2;
-						for (j = oldUnitTown->buildings.first; j; i += queuedCount2)
+						for (j = old_unit_town->buildings.first; j; i += queuedCount2)
 						{
 							iterateUnit = j->parent;
 							if (iterateUnit->id == UnitId::TerranWatchdog)
@@ -810,14 +811,14 @@ namespace hooks {
 						}
 						if (i >= 4)
 						{
-							helper::prepare_guard_ai(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
+							helper::prepare_guard_ai(new_unit->sprite->position.y, new_unit->player, 1, new_unit->sprite->position.x);
 						}
 					}
 				}
 				else
 				{
-					helper::prepare_guard_ai(newUnit->sprite->position.y, newUnit->player, 5, newUnit->sprite->position.x);
-					helper::prepare_guard_ai(newUnit->sprite->position.y, newUnit->player, 1, newUnit->sprite->position.x);
+					helper::prepare_guard_ai(new_unit->sprite->position.y, new_unit->player, 5, new_unit->sprite->position.x);
+					helper::prepare_guard_ai(new_unit->sprite->position.y, new_unit->player, 1, new_unit->sprite->position.x);
 				}
 			}
 		}

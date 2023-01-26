@@ -26,13 +26,13 @@ namespace hooks
 
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
-		if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranBunker
+		if (unit->connected_unit && scbw::unit_id_is_ground_bunker(unit->connected_unit->id)
 		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
 		}
 		if (unit->subunit)
 		{
-			if (unit->subunit->connected_unit && unit->subunit->connected_unit->id == UnitId::TerranBunker
+			if (unit->subunit->connected_unit && scbw::unit_id_is_ground_bunker(unit->subunit->connected_unit->id)
 			&&	unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 				return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
 			}
@@ -55,10 +55,10 @@ namespace hooks
 				Unit* target = unit->order_target.unit;
 				if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 					if (unit->connected_unit) {
-						UnitExt* bunkerExt = get_unit_ext(unit->connected_unit);
-						Unit* target = bunkerExt->units[UnitBunkerLockOn];
+						UnitExt* bunker_ext = get_unit_ext(unit->connected_unit);
+						Unit* target = bunker_ext->units[UnitBunkerLockOn];
 						if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
-							unit->order_target.unit = bunkerExt->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
+							unit->order_target.unit = bunker_ext->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
 						}
 					}
 

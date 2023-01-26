@@ -572,6 +572,7 @@ namespace hooks
 				priority = 90;
 			}
 			u8 race = g_player_table[player].race;
+			// TODO: Add handling for custom races. -Pr0nogo
 			u16 refinery_id = UnitId::TerranReservoir;
 			if (race == RaceId::Zerg)
 			{
@@ -799,6 +800,7 @@ namespace hooks
 		u32 race = g_player_table[player].race;
 		u32 builder_id = UnitId::None;
 		u32 main_building_id = UnitId::None;
+		// TODO: Add support for custom races. -Pr0nogo
 		switch (race) {
 			case RaceId::Terran: {
 				main_building_id = UnitId::TerranCommandCenter;
@@ -989,7 +991,8 @@ namespace hooks
 			build_pos = gas->position;
 		} else {
 			switch (unit_id) {
-				case UnitId::TerranBunker: {
+				case UnitId::TerranBunker:
+				case UnitId::PoliceDugout: {
 					if (!helper::get_bunker_position(player, &build_pos)) {
 						build_pos = town->position;
 					}
@@ -1000,7 +1003,7 @@ namespace hooks
 						return helper::ai_finish_unit(unit);
 					}
 
-					if (!helper::ai_manage_building_placement(unit, UnitId::TerranBunker, build_pos, &build_pos, 64)) {
+					if (!helper::ai_manage_building_placement(unit, unit_id, build_pos, &build_pos, 64)) {
 						g_aiscript_controller[player].failed_placement = true;
 						return helper::ai_finish_unit(unit);
 					}

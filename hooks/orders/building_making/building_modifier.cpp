@@ -8,7 +8,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 		return modifier;
 	}
 
-	UnitExt* buildingExt = get_unit_ext(building);
+	UnitExt* building_ext = get_unit_ext(building);
 	if (constructing) {
 		if ((builder && builder->id == UnitId::TerranTalos)
 			|| building->create_origin == UnitId::ProtossArtisan
@@ -16,20 +16,20 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 			modifier.multiplier *= 1.5;
 		}
 	} else {
-		modifier.multiplier *= 1 + 0.25 * buildingExt->unit_vectors[UnitVectorCrucibles].size();
+		modifier.multiplier *= 1 + 0.25 * building_ext->unit_vectors[UnitVectorCrucibles].size();
 	}
 
 	// First time this is called in a frame, update the value
-	if (buildingExt->building_tick_last_update != *g_elapsed_time_frames) {
-		buildingExt->building_tick_progress += (modifier.multiplier - 1);
-		buildingExt->building_tick_last_progress = buildingExt->building_tick_progress;
+	if (building_ext->building_tick_last_update != *g_elapsed_time_frames) {
+		building_ext->building_tick_progress += (modifier.multiplier - 1);
+		building_ext->building_tick_last_progress = building_ext->building_tick_progress;
 	}
-	buildingExt->building_tick_last_update = *g_elapsed_time_frames;
+	building_ext->building_tick_last_update = *g_elapsed_time_frames;
 
 	// Recall the value to calculate the new one and return properly
-	buildingExt->building_tick_progress = buildingExt->building_tick_last_progress;
-	while (buildingExt->building_tick_progress >= 1) {
-		buildingExt->building_tick_progress -= 1;
+	building_ext->building_tick_progress = building_ext->building_tick_last_progress;
+	while (building_ext->building_tick_progress >= 1) {
+		building_ext->building_tick_progress -= 1;
 		modifier.decrease += 1;
 	}
 

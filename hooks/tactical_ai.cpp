@@ -949,15 +949,15 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	if (target->id == UnitId::ProtossPylon) {
 		cost -= 25;
 	}
-	if (target->id == UnitId::TerranBunker && target->has_loaded_unit()) {
+	if (scbw::unit_id_is_bunker(target->id) && target->has_loaded_unit()) {
 		cost -= 15;
 	}
 
 	return cost;
 }
 
-void tactical_ai(Unit* unit, UnitExt* unitExt) {
-	if (unit->id == UnitId::TerranBunker && !unitExt->timers[TimerAI_GenericAbilityCooldown]) {
+void tactical_ai(Unit* unit, UnitExt* unit_ext) {
+	if (scbw::unit_id_is_bunker(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
 		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
 		EntryArray allies = {};
@@ -987,27 +987,27 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 					counter += units_dat::space_required[target->id];
 				}
 			}
-			unitExt->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
-			unitExt->values[ValueAI_BunkerCustom] = 1;
-		} else if (!unitExt->values[ValueIsNeutralBunker] && unitExt->values[ValueAI_BunkerCustom]) {
+			unit_ext->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
+			unit_ext->values[ValueAI_BunkerCustom] = 1;
+		} else if (!unit_ext->values[ValueIsNeutralBunker] && unit_ext->values[ValueAI_BunkerCustom]) {
 			for (u32 i = 0; i < bunker_capacity; ++i) {
 				Unit* target = unit->get_loaded_unit(i);
 				if (target && target->unit_ai) {
 					unit->order_to(OrderId::Unload);
 				}
 			}
-			unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-			unitExt->values[ValueAI_BunkerCustom] = 0;
+			unit_ext->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+			unit_ext->values[ValueAI_BunkerCustom] = 0;
 		}
 	}
 
 	if (unit->unit_ai && !helper::is_unit_loaded(unit) &&
 		g_player_table[unit->player].type != PlayerType::Human &&
 		g_player_table[unit->player].type != PlayerType::HumanDefeated) {
-		kiting_ai(unit, unitExt);
+		kiting_ai(unit, unit_ext);
 
 		if (unit->id == UnitId::TerranApostle) {
-			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unit_ext->timers[TimerAI_Lazarus] == 0)			
 			{
 				s32 count = 0;
 				cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
@@ -1021,7 +1021,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				if (count >= 5)
 				{
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
-					unitExt->timers[TimerAI_Lazarus] = ApostleAILastBreathTimer;
+					unit_ext->timers[TimerAI_Lazarus] = ApostleAILastBreathTimer;
 				}
 			}
 		} else if (unit->id == UnitId::TerranEidolon) {
@@ -1048,7 +1048,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
-			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0) {
+			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::MatralethParasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
 					s32 supply = 0;
@@ -1078,13 +1078,13 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 					if (supply >= 5)
 					{
 						unit->order_to(OrderId::CastParasite, group[0].first);
-						unitExt->timers[TimerAI_Parasite] = MatralethAIParasiteTimer;
+						unit_ext->timers[TimerAI_Parasite] = MatralethAIParasiteTimer;
 						return;
 					}
 				});
 			}
 
-			if (unit->has_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unitExt->timers[TimerAI_EnsnaringBrood] == 0) {
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unit_ext->timers[TimerAI_EnsnaringBrood] == 0) {
 				s32 enemy_count = cosmonarchyUnitCount(0, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
 				if (enemy_count >= 2) {
 					s32 count = 0;
@@ -1096,7 +1096,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 					});
 					if (count >= 5) {
 						scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 1);
-						unitExt->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
+						unit_ext->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
 					}
 				}
 			}
@@ -1139,7 +1139,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 				if (best_target) {
 					unit->order_to(OrderId::Move, best_target->position.x, best_target->position.y);
 					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
-					unitExt->timers[TimerAI_DisruptionField] = AIWebTimer;
+					unit_ext->timers[TimerAI_DisruptionField] = AIWebTimer;
 				}
 			}
 
@@ -1150,7 +1150,7 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 					unit->order_to_idle();
 				}
 			}
-		} else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0) {
+		} else if (unit->id == UnitId::ProtossStarSovereign && unit_ext->timers[TimerAI_GriefOfAllGods] == 0) {
 			auto enemyUnitsHealth = 0;
 			auto alliedUnitsHealth = 0;
 			bool alliedTownHalls = false;
@@ -1171,15 +1171,15 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 			});
 			if (!alliedTownHalls && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000
 				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
-				unitExt->timers[TimerAI_GriefOfAllGods] = 612;
-				unitExt->timers[TimerAI_KitingCooldown] = 5 * 24;
+				unit_ext->timers[TimerAI_GriefOfAllGods] = 612;
+				unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->order_computer(OrderId::KhaydarinEclipse);
 				unit->order_target.pt = unit->sprite->position;
 				unit->main_order_state = 0;
 			}
-		} else if (unit->id == UnitId::ProtossDemiurge && unitExt->timers[TimerAI_GenericAbilityCooldown] == 0) {
+		} else if (unit->id == UnitId::ProtossDemiurge && unit_ext->timers[TimerAI_GenericAbilityCooldown] == 0) {
 			if (unit->energy >= 50 * 256) {
-				auto& vec = unitExt->unit_vectors[UnitVectorWorshipersDemiurge];
+				auto& vec = unit_ext->unit_vectors[UnitVectorWorshipersDemiurge];
 
 				u32 totalCount = vec.size();
 				u32 inCombatCount = 0;
@@ -1193,12 +1193,12 @@ void tactical_ai(Unit* unit, UnitExt* unitExt) {
 
 				if (totalCount > 3 && inCombatCount > totalCount - inCombatCount) {
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 1);
-					unitExt->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
+					unit_ext->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
 				} else {
-					unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+					unit_ext->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 				}
 			} else {
-				unitExt->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
+				unit_ext->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 			}
 		} else if (unit->id == UnitId::ZergAkistrokor && unit->main_order_id != OrderId::BlissfulEmbrace) {
 			EntryArray targets = {};

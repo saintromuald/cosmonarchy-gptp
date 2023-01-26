@@ -112,7 +112,7 @@ namespace hooks
 							*g_last_internal_error = 11;
 							continue;
 						}
-						if (unit->id == UnitId::TerranMason && unit->main_order_id == OrderId::ConstructingBuilding
+						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos || unit->id == UnitId::PoliceEngineer) && unit->main_order_id == OrderId::ConstructingBuilding
 							|| scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*g_last_internal_error = 8;

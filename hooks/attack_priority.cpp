@@ -118,7 +118,7 @@ namespace hooks
 	{
 		Unit* actual_target = target;
 
-		if (target->id == UnitId::TerranBunker)
+		if (scbw::unit_id_is_bunker(target->id))
 		{
 			Unit* first_loaded_unit = target->get_first_loaded_unit();
 			if (first_loaded_unit)

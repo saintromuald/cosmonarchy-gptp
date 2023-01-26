@@ -273,7 +273,8 @@ namespace hooks
 						{
 							if (built_unit->id == UnitId::TerranReservoir
 							||  built_unit->id == UnitId::ProtossAquifer
-							||  built_unit->id == UnitId::ZergExcisant)
+							||  built_unit->id == UnitId::ZergExcisant
+							||	built_unit->id == UnitId::PoliceDispensary)
 							{
 								if (built_unit->player == unit->player)
 								{
@@ -325,7 +326,7 @@ namespace hooks
 			if (built_unit)
 			{
 				bool jump_to_67F3C = false;
-				built_unit->connected_unit = nullptr;
+				built_unit->connected_unit = 0;
 				helper::play_building_completed_sound(built_unit);
 				if (built_unit->status & UnitStatus::Completed)
 				{
@@ -390,8 +391,8 @@ namespace hooks
 					unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 					if (!unit->order_queue_head)
 					{
-						helper::add_order_targeting_nothing(unit, nullptr, OrderId::ResetCollision1);
-						helper::add_order_targeting_nothing(unit, nullptr, units_dat::return_to_idle_order[unit->id]);
+						helper::add_order_targeting_nothing(unit, 0, OrderId::ResetCollision1);
+						helper::add_order_targeting_nothing(unit, 0, units_dat::return_to_idle_order[unit->id]);
 					}
 					else
 					{
@@ -400,6 +401,10 @@ namespace hooks
 					if (unit->build_queue[unit->build_queue_slot] == UnitId::TerranReservoir)
 					{
 						built_unit = helper::begin_gas_building(unit, UnitId::TerranReservoir);
+					}
+					else if (unit->build_queue[unit->build_queue_slot] == UnitId::PoliceDispensary)
+					{
+						built_unit = helper::begin_gas_building(unit, UnitId::PoliceDispensary);
 					}
 					else
 					{
@@ -575,6 +580,9 @@ namespace hooks
 					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
 					{
 						sound_id = 136;
+					}
+					else if (unit->id == UnitId::PoliceEngineer) {
+						sound_id = 136; // Change this later
 					}
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);

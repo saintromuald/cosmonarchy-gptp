@@ -714,4 +714,7 @@ namespace scbw
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);
 	void update_on_damage_dealt(Unit* unit);
 	void update_on_damage_receive(Unit* unit);
+	bool unit_id_is_vespene_node(u32 unit_id);
+	bool unit_id_is_ground_bunker(u32 unit_id);
+	bool unit_id_is_bunker(u32 unit_id);
 }

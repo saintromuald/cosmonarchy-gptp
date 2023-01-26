@@ -118,9 +118,7 @@ namespace hooks
 		{
 			Unit* target = unit->order_target.unit;
 			Image* current_image;
-			if (!target
-				|| target->id != UnitId::ProtossAquifer
-				|| unit->order_queue_head)
+			if (!target || target->id != UnitId::ProtossAquifer || unit->order_queue_head)
 			{
 				unit->order_to_idle();
 			}

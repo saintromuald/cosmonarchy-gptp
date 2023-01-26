@@ -567,6 +567,7 @@ namespace hooks {
 		}
 
 		u16 unit_id = UnitId::None;
+		// TODO: Add support for custom races. -Pr0nogo
 		u8 race_id = g_player_table[player].race;
 		switch(race_id) {
 			case RaceId::Terran:
@@ -644,7 +645,7 @@ namespace hooks {
 			for (i = *first_player_unit[placementId].unit; i; i = i->player_link.next) {
 				if (i->sprite) {
 					if (i->main_order_id) {
-						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony) {
+						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony || i->id == UnitId::PoliceDugout) {
 							u32 iterator2 = 0;
 							if (region_max) {
 								do { // Distance from unit to region position
@@ -709,6 +710,7 @@ namespace hooks {
 							return;
 						}
 						case UnitId::TerranBunker:
+						case UnitId::PoliceDugout:
 						{
 							if (!helper::get_bunker_placement_position(player, &max_range)) {
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
@@ -879,7 +881,7 @@ namespace hooks {
 		if (!for_harvesting && unit->id == UnitId::ResourceVespeneGeyser) {
 			return 1;
 		}
-		if (unit->id == UnitId::ResourceVespeneRidge || unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExcisant) {
+		if (scbw::unit_id_is_vespene_node(unit->id)) {
 			return 2 + (unit->building.resource.resource_yield != 0);
 		}
 		return 0;
@@ -1232,6 +1234,7 @@ namespace hooks {
 			u32 gas_count = gas_percentage * town->worker_count / 100.0;
 
 			u32 worker_count = 0;
+			// TODO: Add support for custom races. -Pr0nogo
 			switch (g_player_table[town_player].race) {
 				case RaceId::Terran: {
 					worker_count += g_completed_unit_count_table[UnitId::TerranMason].player[town_player];
@@ -2123,6 +2126,7 @@ namespace hooks {
 				unit_id = UnitId::TerranFulcrum;
 			} break;
 			case UnitId::TerranBunker:
+			case UnitId::PoliceDugout:
 			{
 				if (get_bunker_placement_position(player_var, (u32*)&player)) {
 					placement_data_2 = 0;

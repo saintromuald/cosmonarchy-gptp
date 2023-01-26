@@ -7,6 +7,7 @@
 
 u32 get_racial_townhall(u32 raceId)
 {
+	// TODO: Add support for custom races. -Pr0nogo
 	if (raceId == RaceId::Zerg)
 	{
 		return UnitId::ZergHachirosk;
@@ -27,6 +28,7 @@ u32 get_racial_townhall(u32 raceId)
 
 u32 get_racial_worker(u32 raceId)
 {
+	// TODO: Add support for custom races. -Pr0nogo
 	if (raceId == RaceId::Zerg)
 	{
 		return UnitId::ZergDroleth;

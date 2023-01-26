@@ -416,9 +416,9 @@ namespace hooks
 		return 1;
 	}
 
-	s8 unit_create_allowed_logic(u16 unit_id, Unit* parentUnit, s32 playerID, u16* unitsDat, u16* requirementsTable)
+	s8 unit_create_allowed_logic(u16 unit_id, Unit* parent_unit, s32 playerID, u16* unitsDat, u16* requirementsTable)
 	{
-		//DebugOut("unit_create_allowed_logic: untitID %d, creatingUnit %d, playerID %d", unit_id, parentUnit->id, playerID);
+		//DebugOut("unit_create_allowed_logic: untitID %d, creatingUnit %d, playerID %d", unit_id, parent_unit->id, playerID);
 		// TODO map variables and rewrite process accordingly
 		s16 v5;
 		s16 v6;
@@ -454,38 +454,38 @@ namespace hooks
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (playerID != parentUnit->player)
+		if (playerID != parent_unit->player)
 		{
 			*g_last_internal_error = InternalErrors::UnknownError1;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (!(parentUnit->status & UnitStatus::Completed))
+		if (!(parent_unit->status & UnitStatus::Completed))
 		{
 			*g_last_internal_error = InternalErrors::UnknownError20;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (parentUnit->is_frozen())
+		if (parent_unit->is_frozen())
 		{
 			*g_last_internal_error = InternalErrors::UnitFrozen;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (!g_unit_availability->available[parentUnit->player][parentUnit->id])
+		if (!g_unit_availability->available[parent_unit->player][parent_unit->id])
 		{
 			*g_last_internal_error = InternalErrors::UnknownError2;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (parentUnit->is_queue_slot_active(4))
+		if (parent_unit->is_queue_slot_active(4))
 		{
 LABEL_86_ERROR_3_RETURN_0:
 			*g_last_internal_error = InternalErrors::UnknownError3;
 			//DebugOut(">Return NotAllowed");
 			return 0;
 		}
-		if (parentUnit->status & UnitStatus::IsHallucination)
+		if (parent_unit->status & UnitStatus::IsHallucination)
 		{
 			*g_last_internal_error = InternalErrors::UnknownError22;
 			//DebugOut(">Return Disallowed");
@@ -533,11 +533,11 @@ LABEL_18_ENTER_MAIN_BODY:
 					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
 					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
 					// an OR statement?) this is causing access violation reading g_completed_unit_counts. Work around this for now by checking unit Ids
-					if (Player::number_of_completed_units_of_id(parentUnit->player, nextOpcodeUnitId) > 0)
+					if (Player::number_of_completed_units_of_id(parent_unit->player, nextOpcodeUnitId) > 0)
 					{
 						v27 = 0;
 					}
-					if (nextOpcodeUnitId == parentUnit->id)
+					if (nextOpcodeUnitId == parent_unit->id)
 					{
 						v28 = 0;
 						v26 = 0;
@@ -571,7 +571,7 @@ LABEL_18_ENTER_MAIN_BODY:
 						}
 						else
 						{
-							Unit* addonUnit = parentUnit->building.addon;
+							Unit* addonUnit = parent_unit->building.addon;
 							if (addonUnit != nullptr)
 							{
 								if (addonUnit != nullptr || (++opcodeIndex, addonUnit->id != requirementsTable[opcodeIndex]))
@@ -593,7 +593,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotLiftedOff:
 				{
 					//DebugOut("IsNotLiftedOff (%d):", currentOpcode);
-					if (!(parentUnit->status & UnitStatus::GroundedBuilding))
+					if (!(parent_unit->status & UnitStatus::GroundedBuilding))
 					{
 						*g_last_internal_error = InternalErrors::UnknownError7;
 						//DebugOut(">Return NotAllowed");
@@ -606,7 +606,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotTrainingOrMorphing:
 				{
 					//DebugOut("IsNotTrainingOrMorphing (%d):", currentOpcode);
-					if (parentUnit->unit_is_training_or_morphing() || parentUnit->building.upgrade_id != TechId::None || parentUnit->building.tech_id != UpgradeId::None)
+					if (parent_unit->unit_is_training_or_morphing() || parent_unit->building.upgrade_id != TechId::None || parent_unit->building.tech_id != UpgradeId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -618,7 +618,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotConstructingAddon:
 				{
 					//DebugOut("IsNotConstructingAddon (%d):", currentOpcode);
-					if (parentUnit->is_constructing_addon() || parentUnit->is_attempting_protoss_build())
+					if (parent_unit->is_constructing_addon() || parent_unit->is_attempting_protoss_build())
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -630,7 +630,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotResearching:
 				{
 					//DebugOut("IsNotResearching (%d):", currentOpcode);
-					if (parentUnit->building.tech_id != TechId::None)
+					if (parent_unit->building.tech_id != TechId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -642,7 +642,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotUpgrading:
 				{
 					//DebugOut("IsNotUpgrading (%d):", currentOpcode);
-					if (parentUnit->building.upgrade_id != UpgradeId::None)
+					if (parent_unit->building.upgrade_id != UpgradeId::None)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -654,7 +654,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotConstructing:
 				{
 					//DebugOut("IsNotConstructing (%d):", currentOpcode);
-					if (parentUnit->id == UnitId::TerranMason && parentUnit->main_order_id == OrderId::ConstructingBuilding)
+					if ((parent_unit->id == UnitId::TerranMason || parent_unit->id == UnitId::TerranTalos || parent_unit->id == UnitId::PoliceEngineer) && parent_unit->main_order_id == OrderId::ConstructingBuilding)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;
@@ -666,7 +666,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::DoesNotHaveAddonAttached:
 				{
 					//DebugOut("DoesNotHaveAddonAttached (%d):", currentOpcode);
-					if (parentUnit->building.addon)
+					if (parent_unit->building.addon)
 					{
 						if (!v28)
 						{
@@ -715,22 +715,22 @@ LABEL_73_PERHAPS_FINAL_CHECK:
 				{
 					//DebugOut("HasHangarSpace (%d):", currentOpcode);
 					v18 = -1;
-					v19 = (parentUnit->id == UnitId::ProtossSolarion);
+					v19 = (parent_unit->id == UnitId::ProtossSolarion);
 					if (v19)
 					{
-						v20 = parentUnit->unit_with_hangar.in_hangar_count + parentUnit->get_hangar_train_count();
+						v20 = parent_unit->unit_with_hangar.in_hangar_count + parent_unit->get_hangar_train_count();
 					}
 					else
 					{
-						if (!parentUnit->id == UnitId::ProtossAccantorOld)
+						if (!parent_unit->id == UnitId::ProtossAccantorOld)
 						{
 							goto LABEL_51;
 						}
-						v20 = parentUnit->get_hangar_train_count();
+						v20 = parent_unit->get_hangar_train_count();
 					}
-					v18 = parentUnit->unit_with_hangar.in_hangar_count + v20;
+					v18 = parent_unit->unit_with_hangar.in_hangar_count + v20;
 LABEL_51:
-					if (v18 >= parentUnit->get_max_hangar_space())
+					if (v18 >= parent_unit->get_max_hangar_space())
 					{
 						//DebugOut(">False");
 						goto LABEL_86_ERROR_3_RETURN_0;
@@ -742,7 +742,7 @@ LABEL_51:
 				case RequirementOpcodes::DoesNotHaveArmedMissile:
 				{
 					//DebugOut("DoesNotHaveArmedMissile (%d):", currentOpcode);
-					if (parentUnit->building.silo.nuke)
+					if (parent_unit->building.silo.nuke)
 					{
 						//DebugOut(">False");
 						goto LABEL_86_ERROR_3_RETURN_0;
@@ -754,7 +754,7 @@ LABEL_51:
 				case RequirementOpcodes::IsNotBurrowed:
 				{
 					//DebugOut("IsNotBurrowed (%d):", currentOpcode);
-					if (parentUnit->status & UnitStatus::Burrowed)
+					if (parent_unit->status & UnitStatus::Burrowed)
 					{
 LABEL_87:
 						*g_last_internal_error = InternalErrors::UnknownError5;
@@ -794,7 +794,7 @@ LABEL_87:
 				{
 					//DebugOut("IsResearched (%d):", currentOpcode);
 					v10 = requirementsTable[opcodeIndex++];
-					if (scbw::has_tech_researched(parentUnit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
+					if (scbw::has_tech_researched(parent_unit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
 					{
 						*g_last_internal_error = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");
@@ -807,7 +807,7 @@ LABEL_87:
 				case RequirementOpcodes::IsBurrowed:
 				{
 					//DebugOut("IsBurrowed (%d):", currentOpcode);
-					if (!(parentUnit->status & UnitStatus::Burrowed))
+					if (!(parent_unit->status & UnitStatus::Burrowed))
 					{
 						*g_last_internal_error = InternalErrors::UnknownError5;
 						//DebugOut(">Return Gray");

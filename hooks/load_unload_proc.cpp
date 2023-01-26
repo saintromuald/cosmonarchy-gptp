@@ -71,9 +71,9 @@ namespace hooks
 		scbw::decloak_proc(transport);
 		scbw::decloak_proc(cargo_unit);
 		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
-		if (cargo_unit->id == UnitId::TerranMason)
+		if (cargo_unit->id == UnitId::TerranMason || cargo_unit->id == UnitId::PoliceEngineer)
 		{
-			if (cargo_unit->unit_ai != nullptr)
+			if (cargo_unit->unit_ai)
 			{
 				u32* pAI_0x14 = (u32*)((u32)cargo_unit->unit_ai + 0x14);
 				if (*pAI_0x14 == (u32)cargo_unit)
@@ -134,12 +134,12 @@ namespace hooks
 		}
 		special_load_unit(cargo_unit, transport);
 
-		if (transport->id == UnitId::TerranBunker)
+		if (scbw::unit_id_is_bunker(transport->id)) // Evacuation?
 		{
 			for (s32 i = 0; i < TransportCap; i++)
 			{
-				Unit* cargoUnit = transport->get_loaded_unit(i);
-				if (cargoUnit == nullptr) continue;
+				Unit* cargo_unit = transport->get_loaded_unit(i);
+				if (!cargo_unit) continue;
 				// TODO: Disable cargo units
 			}
 		}
@@ -418,7 +418,7 @@ namespace hooks
 								{
 									if (unit_reference->main_order_id)
 									{
-										if (transport->id != UnitId::TerranBunker
+										if (scbw::unit_id_is_bunker(transport->id)
 										||  !helper::unload_unit_proc(unit_reference))
 										{
 											helper::orders_self_destructing(unit_reference);

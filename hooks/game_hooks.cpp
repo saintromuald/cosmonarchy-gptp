@@ -770,6 +770,7 @@ namespace hooks {
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
+			case UnitId::PoliceDispensary:
 			{
 				unit->building.resource.resource_yield = 6;
 			} break;
@@ -1876,7 +1877,8 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossSteward:
 			{
-				if (unit->hangar_unit.parent && unit->hitpoints < 20 * 256)
+				// Evasive Maneuvers - Return to Solarion
+				if (unit->hangar_unit.parent && unit->hitpoints < 30 * 256)
 				{
 					helper::issue_order_targeting_nothing(unit, OrderId::Return);
 				}
@@ -2466,7 +2468,7 @@ namespace hooks {
 				switch (target->id) {
 					case UnitId::TerranSupplyDepot:
 					case UnitId::TerranBunker:
-					case UnitId::TerranReservoir: {
+					case UnitId::TerranReservoir: { // @Veeq7: What are these edge cases? -Pr0nogo
 						if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 							continue;
 						}
