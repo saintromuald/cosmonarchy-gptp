@@ -1058,7 +1058,7 @@ namespace hooks {
 							case UnitId::ProtossStridentStratum:
 							{
 								if (current_button->requirement_var == UnitId::ProtossArtisan
-								||  current_button->requirement_var == UnitId::ProtossClarion
+							//	||  current_button->requirement_var == UnitId::ProtossClarion
 								||  current_button->requirement_var == UnitId::ProtossMonogram)
 								{
 									current_button_state = Button_State::Enabled;
@@ -1670,7 +1670,8 @@ namespace hooks {
 								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
 									if (current_button->requirement_var == UnitId::PoliceStation
 									||  current_button->requirement_var == UnitId::PoliceDispensary
-									||  current_button->requirement_var == UnitId::PoliceAcademy)
+									||  current_button->requirement_var == UnitId::PoliceAcademy
+									||  current_button->requirement_var == UnitId::PoliceDugout)
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1678,6 +1679,54 @@ namespace hooks {
 									{
 										current_button_state = Button_State::Invisible;
 									}
+								}
+							} break;
+							case UnitId::PoliceStation:
+							{
+								if (current_button->requirement_var == UnitId::PoliceEngineer
+								||	current_button->requirement_var == UnitId::PoliceDeputy)
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::PoliceAcademy:
+							{
+								switch (current_button->requirement_var)
+								{
+									case UnitId::PoliceDeputy:
+									case UnitId::PoliceWATTrooper:
+									{
+										current_button_state = Button_State::Enabled;
+									} break;
+									case UnitId::PoliceSlapdash:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::PoliceDonutShack)) {
+											current_button_state = Button_State::Enabled;
+										}
+										current_button_state = Button_State::Disabled;
+									} break;
+									case UnitId::PoliceBarker:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::PoliceDoghouse)) {
+											current_button_state = Button_State::Enabled;
+										}
+										current_button_state = Button_State::Disabled;
+									} break;
+									case UnitId::PolicePriestess:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::PoliceMickenPyre)) {
+											current_button_state = Button_State::Enabled;
+										}
+										current_button_state = Button_State::Disabled;
+									} break;
+									default:
+									{
+										current_button_state = Button_State::Invisible;
+									} break;
 								}
 							} break;
 							default:

@@ -146,8 +146,8 @@ namespace hooks
 
 		if (transport->player == 11)
 		{
-			UnitExt* unitExt = get_unit_ext(transport);
-			unitExt->values[ValueIsNeutralBunker] = 1;
+			UnitExt* unit_ext = get_unit_ext(transport);
+			unit_ext->values[ValueIsNeutralBunker] = 1;
 			transport->give_to(cargo_unit->player);
 		}		
 
@@ -418,8 +418,7 @@ namespace hooks
 								{
 									if (unit_reference->main_order_id)
 									{
-										if (scbw::unit_id_is_bunker(transport->id)
-										||  !helper::unload_unit_proc(unit_reference))
+										if (!scbw::unit_id_is_bunker(transport->id) || !helper::unload_unit_proc(unit_reference))
 										{
 											helper::orders_self_destructing(unit_reference);
 										}

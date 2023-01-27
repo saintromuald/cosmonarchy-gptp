@@ -477,7 +477,7 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::ProtossArtisan:
-				case UnitId::ProtossClarion:
+			//	case UnitId::ProtossClarion:
 				case UnitId::ProtossMonogram:
 				{
 					return true;
@@ -1989,7 +1989,7 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::ProtossArtisan:
-					case UnitId::ProtossClarion:
+				//	case UnitId::ProtossClarion:
 					case UnitId::ProtossMonogram:
 					{
 						return TECH_ACTIVE;
@@ -3107,11 +3107,48 @@ namespace hooks {
 			// Units
 			case UnitId::PoliceStation:
 			{
-				if (unit_id == UnitId::PoliceEngineer)
+				if (unit_id == UnitId::PoliceEngineer
+				||	unit_id == UnitId::PoliceDeputy)
 				{
 					return TECH_ACTIVE;
 				}
 				return TECH_HIDDEN;
+			}
+			case UnitId::PoliceAcademy:
+			{
+				switch (unit_id)
+				{
+					case UnitId::PoliceDeputy:
+					case UnitId::PoliceWATTrooper:
+					{
+						return TECH_ACTIVE;
+					}
+					case UnitId::PoliceSlapdash:
+					{
+						if (player_has_completed_unit_id(player_id, UnitId::PoliceDonutShack)) {
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::PoliceBarker:
+					{
+						if (player_has_completed_unit_id(player_id, UnitId::PoliceDoghouse)) {
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::PolicePriestess:
+					{
+						if (player_has_completed_unit_id(player_id, UnitId::PoliceMickenPyre)) {
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					default:
+					{
+						return TECH_HIDDEN;
+					}
+				}
 			}
 
 			// Structures
@@ -3125,6 +3162,7 @@ namespace hooks {
 					case UnitId::PoliceStation:
 					case UnitId::PoliceDispensary:
 					case UnitId::PoliceAcademy:
+					case UnitId::PoliceDugout:
 					{
 						return TECH_ACTIVE;
 					} break;

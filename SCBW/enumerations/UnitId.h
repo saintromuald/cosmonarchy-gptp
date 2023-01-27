@@ -557,11 +557,19 @@ namespace UnitId
 		
 	// Units
 		PoliceEngineer										= 367,
+		PoliceDeputy										= 371,
+		PoliceWATTrooper									= 372,
+		PoliceSlapdash										= 373,
+		PoliceBarker										= 374,
+		PolicePriestess										= 375,
 
 	// Buildings
 		PoliceStation										= 364,
 		PoliceDispensary									= 365,
 		PoliceAcademy										= 366,
 		PoliceDugout										= 370,
+		PoliceDonutShack									= 376,
+		PoliceDoghouse										= 377,
+		PoliceMickenPyre									= 378,
 	};
 }

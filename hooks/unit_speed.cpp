@@ -81,7 +81,7 @@ namespace hooks
 		// Gorgon - Petrification behavior
 		if (unit_ext->timers[TimerPetrification])
 		{
-			speed *= 1 - (0.05 * unit_ext->values[ValuePetrificationStacks]);
+			speed *= 1 - (0.10 * unit_ext->values[ValuePetrificationStacks]);
 		}
 
 		// Claymore - Kelvin Munitions - slow affected targets

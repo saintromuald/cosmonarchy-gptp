@@ -1118,14 +1118,14 @@ namespace scbw {
 	void decloak_proc(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->status & UnitStatus::Burrowed) {
-			unit_ext->timers[TimerDecloakBurrow] = 48;
+			unit_ext->timers[TimerDecloakBurrow] = 60;
 		} else if (is_decloakable(unit)) {
 			if (unit_ext->timers[TimerDecloak] == 0) {
 				unit->detection_status = 0xff;
 				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
 			if (unit_ext->timers[TimerDecloak] != 1) {
-				unit_ext->timers[TimerDecloak] = 48 + 1;
+				unit_ext->timers[TimerDecloak] = 60 + 1;
 			}
 		}
 		if (unit->is_subunit() && unit->subunit) {
