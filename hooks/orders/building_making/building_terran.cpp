@@ -488,13 +488,13 @@ namespace hooks
 				buildPoint.x = x;
 				buildPoint.y = y;
 				helper::unk_building_placement_related(1, &buildPoint);
-				if (*is_placing_addon)
+				if (*g_is_placing_addon)
 				{
-					u32 unit_id = *place_building_unit_id - UnitId::TerranCommandCenter;
+					u32 unit_id = *g_place_building_unit_id - UnitId::TerranCommandCenter;
 					Point16 addon_point;
 					addon_point.x = units_dat::addon_placement[unit_id].x;
 					addon_point.y = units_dat::addon_placement[unit_id].y;
-					scbw::adjust_addon_coordinates(*place_building_unit_id, 0, &addon_point.x, &addon_point.y);
+					scbw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
 				result = helper::refresh_layers_3_and_4();
@@ -680,5 +680,18 @@ namespace hooks
 				}
 			}
 		}
+	}
+
+	// Hooked to enable more refinery types. -Pr0nogo
+	b32 unit_is_geyser(Unit* unit) // 004688B0
+	{
+		if (unit->status & UnitStatus::Completed)
+		{
+			if (scbw::unit_id_is_capped_gas_structure(unit->id))
+			{
+				return 1;
+			}
+		}
+		return 0;
 	}
 }

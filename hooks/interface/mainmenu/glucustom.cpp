@@ -9,7 +9,7 @@ namespace hooks
 	void display_establishing_shot() // 004D9200, hooked by X405
 	{
 		// This is the original original function which loads the establishing shots in campaigns:
-		if (!*multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index)
+		if (!*g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index)
 		{
 			for (s32 i = 0; i < 65; i++)
 			{
@@ -571,7 +571,7 @@ namespace hooks
 
 	void __declspec(naked) sub_4AABB0_new() {
 		__asm {
-			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			MOV		EAX, ds: [0x0057F0B4]//g_multiplayer_mode
 			TEST	AL, AL
 			JE		offset off_1
 			MOV		CL, ds : [0x00596874]//game_data.bAlliesEnabled
@@ -592,7 +592,7 @@ namespace hooks
 	const u32 sub_490E90_90EC8 = 0x00490EC8;
 	void __declspec(naked) sub_490E90_patch_90EC3() {
 		__asm {
-			MOV		EAX, ds: [0x0057F0B4]//multiplayer_mode
+			MOV		EAX, ds: [0x0057F0B4]//g_multiplayer_mode
 			OR		EAX, ds : [0x006D0F14]//g_is_in_replay
 			SHL		EAX, 3
 			OR		EAX, 0x20000000
@@ -641,7 +641,7 @@ namespace hooks
 			MOV		AL, ds: [0x006D0F14]//g_is_in_replay
 			TEST	AL, AL
 			JNE		offset off_0
-			MOV		AL, ds : [0x0057F0B4]//multiplayer_mode
+			MOV		AL, ds : [0x0057F0B4]//g_multiplayer_mode
 			TEST	AL, AL
 			JNE		offset off_0
 			MOV		dword ptr[ESP + 4], offset minimap_sp//Store "minimap_sp.bin" address in the previous stack position.
@@ -661,7 +661,7 @@ namespace hooks
 			TEST	ECX, ECX
 			MOV		CL, 6
 			JNE		offset off_0
-			MOV		AL, ds : [0x0057F0B4]//multiplayer_mode
+			MOV		AL, ds : [0x0057F0B4]//g_multiplayer_mode
 			SHL		EAX, CL
 			XOR		CL, CL
 
@@ -670,7 +670,7 @@ namespace hooks
 				ADD		EDX, EAX
 				MOV[ESI + 0x24], DX
 				CALL	GetActivePlayerCount
-				MOV		ECX, ds : [0x0057F0B4]//multiplayer_mode
+				MOV		ECX, ds : [0x0057F0B4]//g_multiplayer_mode
 				XOR		EAX, ECX
 				JMP		minimap_dlg_Create_A526E
 		}

@@ -25,16 +25,16 @@ namespace hooks
 			return result;
 		}
 		unused.x = g_mouse->y;
-		Point16 dims = units_dat::building_dimensions[*place_building_unit_id];
+		Point16 dims = units_dat::building_dimensions[*g_place_building_unit_id];
 		placement_pos.x = g_mouse->x - dims.x / 2;
 		placement_pos.y = g_mouse->y - dims.y / 2;
 		if (helper::init_placement_box_pos(&placement_pos)) {
 			*g_place_building_message_id = helper::update_placement_state_for_placement_box();
 			helper::refresh_layers_3_and_4();
 			helper::unk_building_placement_related(1, &placement_pos);
-			if (*is_placing_addon) {
-				placement_pos.x -= units_dat::addon_placement[*place_building_unit_id].x;
-				placement_pos.y -= units_dat::addon_placement[*place_building_unit_id].y;
+			if (*g_is_placing_addon) {
+				placement_pos.x -= units_dat::addon_placement[*g_place_building_unit_id].x;
+				placement_pos.y -= units_dat::addon_placement[*g_place_building_unit_id].y;
 				helper::unk_building_placement_related(0, &placement_pos);
 			}
 			return helper::refresh_layers_3_and_4();
@@ -49,16 +49,16 @@ namespace hooks
 			return 0;
 		}
 
-		u32 source = *place_building_base_type;
-		u32 target = *place_building_unit_id;
-		u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *place_building_unit_id - 212].x / 32);
-		u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *place_building_unit_id - 211].y / 32);
+		u32 source = *g_place_building_base_type;
+		u32 target = *g_place_building_unit_id;
+		u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *g_place_building_unit_id - 212].x / 32);
+		u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *g_place_building_unit_id - 211].y / 32);
 		scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
-		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, *place_building_x, *place_building_y, *place_building_unit_id, 1, 1, 0, 0);
-		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *placing_player, addon_x, addon_y, *place_building_base_type, 0, 1, 0, 0);
+		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, *place_building_x, *place_building_y, *g_place_building_unit_id, 1, 1, 0, 0);
+		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, addon_x, addon_y, *g_place_building_base_type, 0, 1, 0, 0);
 		// ^ this call might be needed, even if the result isn't returned, untested
-		if (!*is_placing_addon || can_build) {
+		if (!*g_is_placing_addon || can_build) {
 			result = can_build;
 		}
 		return result;
@@ -214,5 +214,143 @@ namespace hooks
 			scbw::prepare_building_area(builder->order_target.pt, building_id);
 			return 1;
 		}
+	}
+
+	// Hooked to enable more refinery types. -Pr0nogo
+	void place_building_refinery_check(Unit* result) // 0048E1E0
+	{
+		if (scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id))
+		{
+			if (helper::can_draw_placement_rect_maybe(*g_place_building_unit_id, result))
+			{
+				*can_draw_placement_preview = 1;
+			}
+		}
+	}
+
+	// Hooked to enable more refinery types. -Pr0nogo
+	void place_building_refinery_proc() // 0048E430
+	{
+		Unit* geyser = first_player_unit->unit[11];
+		if (geyser)
+		{
+			u16 id = *g_place_building_unit_id;
+			do
+			{
+				if (geyser->id == UnitId::ResourceVespeneGeyser
+				&&  scbw::unit_id_is_capped_gas_structure(id))
+				{
+					b32 can_draw = helper::can_draw_placement_rect_maybe(id, geyser);
+					id = *g_place_building_unit_id; // lol looping
+					if (can_draw)
+					{
+						*can_draw_placement_preview = 1;
+					}
+				}
+				geyser = geyser->player_link.next;
+			} while (geyser);
+		}
+	}
+
+	// Hooked to enable more refinery types. -Pr0nogo
+	void place_building_proc() // 0048E6E0
+	{
+		if (!(*g_is_placing_addon))
+		{
+			if (*can_draw_placement_preview)
+			{
+				helper::prepare_placement_preview();
+				*can_draw_placement_preview = 0;
+			}
+			if (!scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id))
+			{
+				if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
+				{
+					helper::place_building_normal_proc();
+				}
+			}
+			else
+			{
+				helper::place_building_refinery_proc();
+			}
+		}
+	}
+
+	// Hooked to enable more refinery types. -Pr0nogo
+	b32 unit_id_is_refinery(u16 unit_id) // 0047AFE0
+	{
+		return scbw::unit_id_is_capped_gas_structure(unit_id);
+	}
+
+	// Hooked to enable more refinery types. -Pr0nogo
+	char issue_place_building_order(char* unused, u32 unit_id, u32 order_id) // 0048E730 | last arg was char, but it is a stack arg!
+	{
+		*g_is_placing_building = 1;
+		*g_buttonset_special_buttonset_id = 230;
+		helper::update_current_buttonset();
+		*g_place_building_message_id = 0;
+		*g_place_building_order_id = order_id;
+		helper::prepare_placement_box(1, unit_id);
+		u32 message_thing = 2;
+		if (units_dat::base_property[unit_id] & UnitProperty::Addon)
+		{
+			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
+			*g_is_placing_addon = 1;
+		}
+		else if (scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id))
+		{
+			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
+			{
+				helper::place_building_normal_proc();
+			}
+		}
+		else
+		{
+			helper::place_building_refinery_proc();
+		}
+
+		const char* string;
+		if (*g_network_table > 0x3Fu)
+		{
+			string = (char*)g_network_table + g_network_table[64];
+		}
+		else
+		{
+			string = "";
+		}
+
+		char result;
+		helper::send_message_something(message_thing, string);
+		helper::set_ingame_input_procs();
+		Unit* active_unit = *g_active_portrait_unit;
+		if (!g_active_portrait_unit)
+		{
+			goto LABEL_21;
+		}
+
+		u32 active_id = active_unit->id;
+		if (!(units_dat::group_flags[active_id].is_zerg)) // This is lard. Should check for if it requires power.
+		{
+			if (units_dat::group_flags[active_id].is_protoss)
+			{
+				helper::create_pylon_aura();
+				active_unit = *g_active_portrait_unit;
+			}
+		}
+
+		if (active_unit)
+		{
+			*g_placing_player = active_unit->player;
+			result = helper::refresh_screen(active_id);
+			*g_minimap_cursor = 0;
+		}
+		else
+		{
+		LABEL_21:
+			*g_placing_player = -1;
+			result = helper::refresh_screen(active_id);
+			*g_minimap_cursor = 0;
+		}
+		return result;
 	}
 }

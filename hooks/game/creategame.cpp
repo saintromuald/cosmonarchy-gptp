@@ -25,7 +25,7 @@ namespace hooks
 	/*s32 singleplayerMeleeCreate() {
 		s32 v1; // esi
 
-		if (multiplayer_mode)
+		if (g_multiplayer_mode)
 			return 0;
 		if (custom_singleplayer[0])
 		{

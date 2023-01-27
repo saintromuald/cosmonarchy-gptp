@@ -437,6 +437,21 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) get_default_refinery_type_wrapper() { // 00435130
+		static u32 result;
+		static u32 player;
+		__asm {
+			MOV player, EAX
+			PUSHAD
+		}
+		result = hooks::get_default_refinery_type(player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -462,5 +477,6 @@ namespace hooks {
 	//	jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
 		jump_patch(has_resources_for_unit_wrapper,					0x004487B0, 1);
 	//	jump_patch(ai_make_guard_wrapper,							0x0043A010, 1);
+		jump_patch(get_default_refinery_type_wrapper,				0x004320D0, 5);
 	}
 }

@@ -22,6 +22,7 @@ namespace hooks
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos);																		// 00487A10
 	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit);											// 004769D0
 	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target_arg, u32 fow_unit_id);	// 0046F5B0
+	b32 fow_refinery_check(Unit* self, u16 fow_id);																		// 00474500
 
 	void inject_target_related_hooks();
 }

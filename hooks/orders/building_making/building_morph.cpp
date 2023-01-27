@@ -476,7 +476,7 @@ namespace hooks
 		if (!target) {
 			return 0;
 		}
-		if (*unk_sprite_related) {
+		if (*can_draw_placement_preview) {
 			helper::inherit_gas_overlays(target->sprite); // Guessed helper name, probably wrong
 		}
 		helper::increment_unit_scores_ex(target, -1, 1);

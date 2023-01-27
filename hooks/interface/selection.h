@@ -10,6 +10,9 @@ namespace hooks
 	void __stdcall get_selected_units_in_box(Box16* coords);														// 0046FA40
 	void create_unit_selection(Unit* unit, char index);																// 004E6180
 	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id);											// 004D7070
+	b32 is_human_player_on_same_team(u32 player_id);																// 0049A110
+	char illegal_team_check(Unit* unit);																			// 00485710
+	b32 game_is_team_game();																						// 00484F50
 
 	void inject_selection_hooks();
 }

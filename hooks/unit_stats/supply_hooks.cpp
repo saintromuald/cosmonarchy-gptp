@@ -65,7 +65,7 @@ namespace hooks
 		memset(g_unit_availability->available[0], 1, UnitsIdLimit * PLAYER_COUNT * sizeof(u8));
 
 		s32 result = 0;
-		if (*multiplayer_mode && game_data->teams_enabled)
+		if (*g_multiplayer_mode && game_data->teams_enabled)
 		{
 			s32 forceIterator = 1;
 			do

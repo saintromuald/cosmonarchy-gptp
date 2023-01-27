@@ -171,6 +171,49 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) is_human_player_on_same_team_wrapper() { // 0049A110
+		static b32 result;
+		static u32 player_id;
+		__asm {
+			MOV player_id, EAX
+			PUSHAD
+		}
+		result = hooks::is_human_player_on_same_team(player_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) illegal_team_check_wrapper() { // 00485710
+		static char result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::illegal_team_check(unit);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) game_is_team_game_wrapper() { // 00484F50
+		static b32 result;
+		__asm {
+			PUSHAD
+		}
+		result = hooks::game_is_team_game();
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -184,5 +227,8 @@ namespace hooks
 		jump_patch(get_selected_units_in_box,						0x0046FA40, 1);
 	//	jump_patch(create_unit_selection_wrapper,					0x004E6180, 0);
 	//	jump_patch(create_selection_circle_wrapper,					0x004D7070, 5);
+		jump_patch(is_human_player_on_same_team_wrapper,			0x0049A110, 1);
+		jump_patch(illegal_team_check_wrapper,						0x00485710, 0);
+		jump_patch(game_is_team_game_wrapper,						0x00484F50, 0);
 	}
 }

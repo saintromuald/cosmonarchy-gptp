@@ -315,6 +315,23 @@ namespace
 			RETN 0x10
 		}
 	}
+
+	void __declspec(naked) fow_refinery_check_wrapper() { // 004769D0
+		static b32 result;
+		static Unit* self;
+		static u16 fow_id;
+		__asm {
+			MOV fow_id, CX
+			MOV self, EAX
+			PUSHAD
+		}
+		result = hooks::fow_refinery_check(self, fow_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -339,6 +356,7 @@ namespace hooks
 		jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
 		jump_patch(is_better_target_wrapper,						0x004769D0, 0);
 	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1); // Crashes
+		jump_patch(fow_refinery_check_wrapper,						0x00474500, 5);
 	}
 
 	void inject_target_related_hooks()

@@ -70,7 +70,7 @@ namespace hooks {
 			}
 		}
 
-		if (*multiplayer_mode)
+		if (*g_multiplayer_mode)
 		{
 			if (game_data->teams_enabled)
 			{
@@ -171,7 +171,7 @@ namespace hooks {
 		}
 
 		u32 player_zeroed = 0;
-		if (*multiplayer_mode)
+		if (*g_multiplayer_mode)
 		{
 			if (game_data->teams_enabled)
 			{

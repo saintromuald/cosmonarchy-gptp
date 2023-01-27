@@ -760,4 +760,38 @@ namespace hooks
 		helper::create_selection_circle_image(last_free_circle, sprite, color, image_id);
 		return last_free_circle;
 	}
+
+	// Hooked to enable "archon mode". -Pr0nogo
+	b32 is_human_player_on_same_team(u32 player_id) // 0049A110
+	{
+		if (*g_multiplayer_mode // Originally also checked for a team game
+		&&   player_id != *g_local_human_id
+		&&   player_id < PlayerLimit
+		&&	 g_player_table[player_id].type == PlayerType::Human
+		&&   g_player_table[*g_local_human_id].type == PlayerType::Human)
+		{
+			return scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	// Hooked to not die to lard. -Pr0nogo
+	char illegal_team_check(Unit* unit) // 00485710
+	{
+		u32 player = (u32)unit;
+		if (scbw::is_allied_to(player, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player)) {
+			return 4;
+		}
+		return 0;
+	}
+
+	// Hooked to investigate "archon mode".
+	b32 game_is_team_game() // 00484F50
+	{
+		return *g_multiplayer_mode
+		&&	   game_data->teams_enabled;
+	}
 }

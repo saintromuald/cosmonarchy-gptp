@@ -216,7 +216,7 @@ SCBW_DATA(ForceFlags*,	player_force_flags,			0x0058D5B8); // array of 0x4
 SCBW_DATA(u8*,			player_force,				0x0059BDA8); // array of 0x8
 SCBW_DATA(u8*,			player_force_replay_sth,	0x006D11A1); // array of 0x8
 SCBW_DATA(FILE*,		load_game_file_handle,		0x006D1218);
-SCBW_DATA(u8*,			multiplayer_mode,			0x0057F0B4);
+SCBW_DATA(u8*,			g_multiplayer_mode,			0x0057F0B4);
 SCBW_DATA(u32*,			initial_seed,				0x0051CA10);
 SCBW_DATA(u32*,			replay_seed,				0x006D0F38);
 SCBW_DATA(u32*,			random_counts,				0x0051C610); // count of 0x400
@@ -285,12 +285,12 @@ SCBW_DATA(u32*,			level_cheat_unlocked,		0x006D11C0);
 SCBW_DATA(char*,		player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
-SCBW_DATA(u8*,		placing_player,					0x0064088C);
+SCBW_DATA(u8*,		g_placing_player,				0x0064088C);
 SCBW_DATA(u16*,		place_building_x,				0x00640890);
 SCBW_DATA(u16*,		place_building_y,				0x00640892);
-SCBW_DATA(u32*,		is_placing_addon,				0x00640884);
-SCBW_DATA(u16*,		place_building_unit_id,			0x0064088A);
-SCBW_DATA(u32*,		place_building_base_type,		0x00640888);
+SCBW_DATA(u32*,		g_is_placing_addon,				0x00640884);
+SCBW_DATA(u16*,		g_place_building_unit_id,		0x0064088A);
+SCBW_DATA(u32*,		g_place_building_base_type,		0x00640888);
 
 SCBW_DATA(u16*,		move_to_tile_x,					0x0057F1D0);
 SCBW_DATA(u16*,		move_to_tile_y,					0x0057F1D2);
@@ -923,7 +923,7 @@ struct _scTechs {
 };
 struct _bwTechs {
 	u8* is_enabled[PLAYER_COUNT];			// 0x0058F050
-	u8* is_researched[PLAYER_COUNT];			// 0x0058F140
+	u8* is_researched[PLAYER_COUNT];		// 0x0058F140
 };
 
 // Available and Researched techs are exactly next to each other, that's why with 2 entries structures, only 2 addresses are needed here when BWAPI got 4 of them.
@@ -1015,7 +1015,7 @@ SCBW_DATA(BinDlg**,		leaderboard_dialog,				0x00597284);
 SCBW_DATA(char*,		leaderboard_type,				0x0058D70C);
 
 // For begin_gas_building
-SCBW_DATA(char*,		unk_sprite_related,				0x006D5BE4);
+SCBW_DATA(char*,		can_draw_placement_preview,		0x006D5BE4);
 
 // For create_all_selection_circles
 SCBW_DATA(char**,		game_result_text,				0x00628668);
@@ -1120,6 +1120,9 @@ SCBW_DATA(BinDlg**,		g_buttonset_dialog,					0x0068C148);
 SCBW_DATA(u16*,			g_buttonset_main_button_graphic,	0x0068C1BC);
 SCBW_DATA(u8*,			g_buttonset_unit_order_id,			0x0068C1E4);
 SCBW_DATA(u8*,			g_buttonset_subunit_order_id,		0x0068C1B8);
+
+// For issue_place_building_order
+SCBW_DATA(u8*,			g_place_building_order_id,			0x0064088D);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

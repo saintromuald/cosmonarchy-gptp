@@ -1207,4 +1207,24 @@ namespace hooks
 			ai_region->defend_time = 45;
 		}
 	}
+
+	// Hooked to lay the groundwork for more refinery types. -Pr0nogo
+	u32 get_default_refinery_type(u32 player) // 004320D0
+	{
+		switch (g_player_table[player].race)
+		{
+			case RaceId::Zerg:
+			{
+				return UnitId::ZergExcisant;
+			}
+			case RaceId::Terran:
+			{
+				return UnitId::TerranReservoir;
+			}
+			case RaceId::Protoss:
+			{
+				return UnitId::ProtossAquifer;
+			}
+		}
+	}
 }

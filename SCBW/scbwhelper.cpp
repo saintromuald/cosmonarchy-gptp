@@ -12591,4 +12591,81 @@ namespace helper {
 		}
 		return (result != 0);
 	}
+
+	b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit)
+	{
+		static b32 result;
+		const u32 func_address = 0x00463A10;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV BX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Image* prepare_placement_preview()
+	{
+		static Image* result;
+		const u32 func_address = 0x004D5B60;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void place_building_normal_proc()
+	{
+		const u32 func_address = 0x0048E490;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void place_building_refinery_proc()
+	{
+		const u32 func_address = 0x0048E430;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 prepare_placement_box(b32 is_addon, u32 unit_id)
+	{
+		static u32 result;
+		static u32 func_address = 0x0048DAF0;
+		__asm {
+			PUSHAD
+			PUSH unit_id
+			PUSH is_addon
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char refresh_screen(u32 placement_box)
+	{
+		static char result;
+		const u32 func_address = 0x0048DDC0;
+		__asm {
+			PUSHAD
+			MOV ECX, placement_box
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

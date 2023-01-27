@@ -1498,4 +1498,10 @@ namespace helper {
 	Image* copy_image_palette_type(Image* image, Image* from);																				// 004D5E40
 
 	bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);																				// 00465A60
+	b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit);																				// 00436A10
+	Image* prepare_placement_preview();																										// 004D5B60
+	void place_building_normal_proc();																										// 0048E490
+	void place_building_refinery_proc();																									// 0048E430
+	u32 prepare_placement_box(b32 is_addon, u32 unit_id);																					// 0048DAF0
+	char refresh_screen(u32 placement_box);																									// 0048DDC0
 }

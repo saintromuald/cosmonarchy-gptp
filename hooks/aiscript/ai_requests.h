@@ -22,6 +22,7 @@ namespace hooks
 	s32 ai_make_detector_behavior(Unit* unit, u32 player_id);																// 00435130
 	bool has_resources_for_unit(u16 unit_id, u32 player);																	// 004487B0
 	void ai_make_guard(u32 player_id, Unit* unit);																			// 0043A010
+	u32 get_default_refinery_type(u32 player);																				// 004320D0
 
 	void inject_ai_request_hooks();
 }

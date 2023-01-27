@@ -190,6 +190,82 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) place_building_refinery_check_wrapper() { // 0048E1E0
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::place_building_refinery_check(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) place_building_refinery_proc_wrapper() { // 0048E430
+		__asm {
+			PUSHAD
+		}
+		hooks::place_building_refinery_proc();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) place_building_proc_wrapper() { // 0048E6E0
+		__asm {
+			PUSHAD
+		}
+		hooks::place_building_proc();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) unit_id_is_refinery_wrapper() { // 0047AFE0
+		static b32 result;
+		static u16 unit_id;
+		__asm {
+			MOV unit_id, AX
+			PUSHAD
+		}
+		result = hooks::unit_id_is_refinery(unit_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) issue_place_building_order_wrapper() { // 0048E730
+		static char result;
+		static char* unused;
+		static u32 unit_id;
+		static u32 order_id; // Was char, but it's a stack arg!
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV unit_id, ESI
+			MOV unused, EDI
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV order_id, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::issue_place_building_order(unused, unit_id, order_id);
+		__asm {
+			POPAD
+			MOV AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -203,5 +279,10 @@ namespace hooks
 		jump_patch(update_creep_building_placement_state_wrapper,			0x00473010, 1);
 		jump_patch(update_building_placement_state_map_tile_flags_wrapper,	0x00473A10, 1);
 		jump_patch(start_building_wrapper,									0x00467030, 1);
+		jump_patch(place_building_refinery_check_wrapper,					0x0048E1E0, 3);
+		jump_patch(place_building_refinery_proc_wrapper,					0x0048E430, 2);
+		jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
+		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
+	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 1);
 	}
 }

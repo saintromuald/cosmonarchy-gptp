@@ -89,7 +89,7 @@ namespace
 			MOV addonOffsetY, AX
 			PUSHAD
 		}
-		scbw::adjust_addon_y(*place_building_unit_id, *place_building_base_type, &addonOffsetY);
+		scbw::adjust_addon_y(*g_place_building_unit_id, *g_place_building_base_type, &addonOffsetY);
 		__asm
 		{
 			POPAD
@@ -108,7 +108,7 @@ namespace
 			MOV addonOffsetX, AX
 			PUSHAD
 		}
-		scbw::adjust_addon_x(*place_building_unit_id, *place_building_base_type, &addonOffsetX);
+		scbw::adjust_addon_x(*g_place_building_unit_id, *g_place_building_base_type, &addonOffsetX);
 		__asm
 		{
 			POPAD
@@ -167,6 +167,21 @@ namespace
 		}
 	}
 
+	void __declspec(naked) unit_is_geyser_wrapper() { // 004688B0
+		static b32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::unit_is_geyser(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	void placement_simple_wrappers()
 	{
 		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
@@ -209,9 +224,10 @@ namespace hooks
 	//	jump_patch(refresh_screen_wrapper,					0x0048DDC0, 4);
 	//	jump_patch(btnsact_place_addon_wrapper,				0x00423D10, 4);
 		jump_patch(play_building_complete_sound_wrapper,	0x0048F310, 3);
-	//	jump_patch(orders_place_addon_wrapper,				0x004E6880, 1);
+	//	jump_patch(orders_place_addon_wrapper,				0x004E6880, 1); // bugged, patched instead
+		jump_patch(unit_is_geyser_wrapper,					0x004688B0, 2);
 
-	//	placement_simple_wrappers(); // bugged
+	//	placement_simple_wrappers();										// bugged
 		jump_patch(orders_place_addon_patch,				0x004E6B8B, 1);
 		call_patch(complete_addon_patch,					0x00463D69, 0);
 	}

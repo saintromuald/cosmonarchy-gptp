@@ -1347,4 +1347,29 @@ LABEL_65:
 			}
 		}
 	}
+
+	// Hooked to add support for new refineries. -Pr0nogo
+	b32 fow_refinery_check(Unit* self, u16 fow_id) // 00474500
+	{
+		char race = self->get_race(); // TODO: Add support for custom races
+		switch (race)
+		{
+			case RaceId::Zerg:
+			{
+				return fow_id == UnitId::ZergExcisant;
+			}
+			case RaceId::Protoss:
+			{
+				return fow_id == UnitId::ProtossAquifer;
+			}
+			case RaceId::Terran:
+			{
+				return fow_id == UnitId::TerranReservoir;
+			}
+			default:
+			{
+				return 0;
+			}
+		}
+	}
 }
