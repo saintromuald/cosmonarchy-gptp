@@ -766,9 +766,7 @@ namespace hooks
 	{
 		if (*g_multiplayer_mode // Originally also checked for a team game
 		&&   player_id != *g_local_human_id
-		&&   player_id < PlayerLimit
-		&&	 g_player_table[player_id].type == PlayerType::Human
-		&&   g_player_table[*g_local_human_id].type == PlayerType::Human)
+		&&   player_id < PlayerLimit)
 		{
 			return scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id);
 		}

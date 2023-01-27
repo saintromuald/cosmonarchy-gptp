@@ -163,8 +163,8 @@ SCBW_DATA(u32*,		g_elapsed_time_seconds,		0x0058D6F8);
 SCBW_DATA(u8*,		g_game_type,				0x00596820);	// Compare with GameType::Enum
 SCBW_DATA(s32*,		g_active_nation_id,			0x00512678);
 SCBW_DATA(s32*,		g_active_player_id,			0x0051267C);	// Used by get_active_player_next_selection
-SCBW_DATA(s32*,		g_local_nation_id,			0x00512684);	// Actually stores the player ID
-SCBW_DATA(s32*,		g_local_human_id,			0x00512688);	// Invalid in replay games
+SCBW_DATA(s32*,		g_local_nation_id,			0x00512684);	// Actually stores the player ID, shared in team games
+SCBW_DATA(s32*,		g_local_human_id,			0x00512688);	// Invalid in replays, unique even in team games
 SCBW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - compare with TilesetType::Enum
 SCBW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
 SCBW_DATA(u32*,		g_provider_latency_calls,	0x0057F090);
