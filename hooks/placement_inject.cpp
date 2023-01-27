@@ -249,12 +249,12 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV unit_id, ESI
-			MOV unused, EDI
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV order_id, EAX
 			POP EAX
+			MOV unit_id, ESI
+			MOV unused, EDI
 			PUSHAD
 		}
 		result = hooks::issue_place_building_order(unused, unit_id, order_id);
@@ -264,6 +264,19 @@ namespace
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) play_building_placement_sound_wrapper() { // 0048F630
+		Unit* active_unit;
+		__asm {
+			MOV active_unit, EAX
+			PUSHAD
+		}
+		hooks::play_building_placement_sound(active_unit);
+		__asm {
+			POPAD
+			RETN
 		}
 	}
 }
@@ -284,5 +297,6 @@ namespace hooks
 		jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
 		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
 	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 1);
+		jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3);
 	}
 }

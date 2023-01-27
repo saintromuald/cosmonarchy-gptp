@@ -1,5 +1,6 @@
 #include "placement.h"
 #include "data_ext.h"
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -323,12 +324,12 @@ namespace hooks
 		helper::send_message_something(message_thing, string);
 		helper::set_ingame_input_procs();
 		Unit* active_unit = *g_active_portrait_unit;
-		if (!g_active_portrait_unit)
+		u32 active_id = active_unit->id;
+		if (!active_unit)
 		{
 			goto LABEL_21;
 		}
 
-		u32 active_id = active_unit->id;
 		if (!(units_dat::group_flags[active_id].is_zerg)) // This is lard. Should check for if it requires power.
 		{
 			if (units_dat::group_flags[active_id].is_protoss)
@@ -352,5 +353,35 @@ namespace hooks
 			*g_minimap_cursor = 0;
 		}
 		return result;
+	}
+
+	// Hooked to add support for custom rances. -Pr0nogo
+	void play_building_placement_sound(Unit* active_unit) // 0048F630
+	{
+		Unit* active_unit_var = active_unit;
+		if (!(*g_is_in_replay) && active_unit->player == *g_local_nation_id)
+		{
+			GroupFlag group_flags = units_dat::group_flags[active_unit->id];
+			u8 race;
+			if (group_flags.is_zerg)
+			{
+				race = 0;
+			}
+			else if (group_flags.is_protoss)
+			{
+				race = 2;
+			}
+			else
+			{
+				race = (group_flags.is_terran) != 0 ? 1 : 4;
+			}
+			u32 sound_id = race + 141;
+			if (helper::play_sound_from_unit(sound_id, active_unit_var, 1, 99))
+			{
+				helper::do_unit_event_notification(active_unit_var, 17,
+					sfx_dat::portrait_duration[sound_id] + 1000 * (*(u32*)&sfx_dat::sound_data[sound_id].duration_ms / 1000),
+					1, sound_id);
+			}
+		}
 	}
 }
