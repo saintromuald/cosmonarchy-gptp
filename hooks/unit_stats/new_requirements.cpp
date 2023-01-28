@@ -294,6 +294,7 @@ namespace hooks {
 			{
 				case UnitId::TerranDilettante:
 				case UnitId::TerranSevenstep:
+				case UnitId::TerranSilvertongue:
 				case UnitId::TerranHypnagogue:
 				{
 					return true;
@@ -1428,6 +1429,7 @@ namespace hooks {
 					}
 					case UnitId::TerranParthenon:
 					case UnitId::TerranIonCannon:
+					case UnitId::TerranApothecary:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier3])
 						{
@@ -1435,7 +1437,6 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::TerranApothecary:
 					case UnitId::TerranIronFoundry:
 					case UnitId::TerranNaniteAssembly:
 					{
@@ -1705,6 +1706,7 @@ namespace hooks {
 					{
 					case UnitId::TerranDilettante:
 					case UnitId::TerranSevenstep:
+					case UnitId::TerranSilvertongue:
 					case UnitId::TerranHypnagogue:
 					{
 						if (in_air)

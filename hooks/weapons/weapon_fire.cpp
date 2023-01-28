@@ -699,6 +699,16 @@ namespace hooks {
 				{
 					range = 160;
 				} break;
+				case WeaponId::SilvertongueWordsmithRailgun:
+				{
+					if (bullet->source_unit) {
+						UnitExt* source_ext = get_unit_ext(bullet->source_unit);
+						if (source_ext->timers[TimerDecloak] > 1)
+						{
+							range = 64;
+						}
+					}
+				} break;
 			}
 			Unit* collision_target = scbw::UnitFinder::get_nearest_target(
 				bullet->position.x - range,

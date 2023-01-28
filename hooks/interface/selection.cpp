@@ -761,7 +761,8 @@ namespace hooks
 		return last_free_circle;
 	}
 
-	// Hooked to enable "archon mode". -Pr0nogo
+	// Hooked to investigate "archon mode".
+	// Ended up being used for allied selection circles. -Pr0nogo
 	b32 is_human_player_on_same_team(u32 player_id) // 0049A110
 	{
 		if (*g_multiplayer_mode // Originally also checked for a team game
@@ -787,9 +788,9 @@ namespace hooks
 	}
 
 	// Hooked to investigate "archon mode".
+	// Seems to only be called from lobbies, so it's probably not related to what I want. -Pr0nogo
 	b32 game_is_team_game() // 00484F50
 	{
-		return *g_multiplayer_mode
-		&&	   game_data->teams_enabled;
+		return *g_multiplayer_mode && game_data->teams_enabled;
 	}
 }

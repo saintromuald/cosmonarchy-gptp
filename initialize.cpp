@@ -220,7 +220,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x00475B68 + 2, &none, sizeof(u8));
 	memory_patch(0x004C210A + 2, &none, sizeof(u8)); // Hooked but disabled
 
-	// rhynadon id hardcode
+	// Rhynadon id hardcode
 	memory_patch(0x0042E352 + 1, &none, sizeof(u8));
 	memory_patch(0x00431574 + 2, &none, sizeof(u8));
 	memory_patch(0x00431B37 + 2, &none, sizeof(u8));
@@ -230,7 +230,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047B7C9 + 2, &none, sizeof(u8));
 	memory_patch(0x004CBE49 + 2, &none, sizeof(u8));
 
-	// flag beacon id hardcode
+	// Flag Beacon id hardcode
 	const u8 jmp = 0xEB;
 	const u8 min = 0x00;
 	memory_patch(0x0042F134 + 2, &none, sizeof(u8));
@@ -266,7 +266,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	const u8 retn = 0xc3;
 //	memory_patch(0x004AAF23 + 5, &retn, 1);
 
-	// arbiter attack hardcode
+	// Didact attack hardcode
 	/*
 	nops(0x0043AEE0, 10);
 	nops(0x0043CF89, 4);
@@ -409,9 +409,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// CTF orders
 	u8 patchCTF1[] = {0xE9, 0xCC, 0x02, 0x00, 0x00};
-	memory_patch(0x004EC80A, patchCTF1, sizeof patchCTF1); // CTFCOPInit - wyvern?
+	memory_patch(0x004EC80A, patchCTF1, sizeof patchCTF1); // CTFCOPInit - Wyvern?
 	u8 patchCTF2[] = {0xE9, 0xC2, 0x02, 0x00, 0x00};
-	memory_patch(0x004EC814, patchCTF2, sizeof patchCTF2); // CTFCOP1 - essence drain
+	memory_patch(0x004EC814, patchCTF2, sizeof patchCTF2); // CTFCOP1 - Essence Drain (now unused)
 	// iquare, end
 
 	// DarkenedFantasies, start
@@ -528,15 +528,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004E1C38, (u16)0x73FC);
 
 	// Make all games "team games"
-//	memory_patch(0x004A932D, (u32)0x909001B0);
-//	memory_patch(0x004A9331, (u32)0x90);
-//	memory_patch(0x004D3A02, (u16)0x01B0);
-//	memory_patch(0x004D3A04, (u8)0x90);
+//	memory_patch(0x004A9DC2, (u32)0x909001B0);
+//	memory_patch(0x004A9DC6, (u8)0x90);
 	// DarkenedFantasies, end
-
-	// Pr0nogo, start
-//	memory_patch(0x004D3A03, (u32)1);
-	// Pr0nogo, end
 
 	// FaRTy1billion, start
 	// crash fix for irregular minimap sizes

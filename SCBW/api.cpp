@@ -1464,7 +1464,7 @@ namespace scbw {
 	// Player check added based on how others functions test it. Values above or equal to 8 means all players.
 	void move_screen_to_unit(Unit* unit, u32 player) { // 004E6020
 		const u32 Func_MoveScreen = 0x0049C440;
-		if (player >= 8 || player == *g_local_nation_id) {
+		if (player >= PlayerLimit || player == *g_local_nation_id) {
 			s32 x = unit->sprite->position.x;
 			s32 y = unit->sprite->position.y;
 			if (x < 0) {
@@ -1490,7 +1490,7 @@ namespace scbw {
 	// x and y are coords as gotten from unit->sprite->position
 	void minimap_ping(u32 x, u32 y, s32 color, u32 player) {
 		const u32 Func_minimapPing = 0x004A34C0;
-		if (player >= 8 || player == *g_local_nation_id) {
+		if (player >= PlayerLimit || player == *g_local_nation_id) {
 			__asm {
 				PUSHAD
 				PUSH color
@@ -1528,6 +1528,7 @@ namespace scbw {
 	bool weapon_pierces_targets(u16 weapon_id) {
 		switch (weapon_id) {
 			case WeaponId::SentinelCerberusRailgun:
+			case WeaponId::SilvertongueWordsmithRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:
 			case WeaponId::HippogriffChimeraCannons:

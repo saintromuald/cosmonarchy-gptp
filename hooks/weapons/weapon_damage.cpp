@@ -358,6 +358,12 @@ namespace hooks
 					data.damage = 0;
 				}
 			} break;
+			case UnitId::TerranSilvertongue:
+			{
+				if (target_ext->timers[TimerDecloak] > 2) {
+					target_ext->timers[TimerDecloak] = 2;
+				}
+			} break;
 		}
 
 		if (target_ext->timers[TimerTriumphantRiseDebuff])

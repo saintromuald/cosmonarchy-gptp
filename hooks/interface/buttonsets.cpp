@@ -993,7 +993,8 @@ namespace hooks {
 							{
 								if ((current_button->requirement_var == UnitId::TerranDilettante
 								||  current_button->requirement_var == UnitId::TerranSevenstep
-								||  current_button->requirement_var == UnitId::TerranHypnagogue)
+								||  current_button->requirement_var == UnitId::TerranHypnagogue
+								||  current_button->requirement_var == UnitId::TerranSilvertongue)
 								&&  unit->status & UnitStatus::GroundedBuilding)
 								{
 									current_button_state = Button_State::Enabled;
@@ -1863,7 +1864,14 @@ namespace hooks {
 								} break;
 								case UnitId::TerranSevenstep:
 								{
-									if (current_button->icon_id == IconId::DefensiveMatrix) // Virtuoso - Curtain Call
+									if (current_button->icon_id == IconId::DefensiveMatrix) // Sevenstep - Curtain Call
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								}
+								case UnitId::TerranSilvertongue:
+								{
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) // Silvertongue - Plot Twist
 									{
 										current_button_state = Button_State::Enabled;
 									}

@@ -206,6 +206,7 @@ namespace WeaponId {
 		HeirExcellencyLaserBatteries		= 181,
 		HorsemanHadesCannon					= 182,
 		HypnagogueThroughTheLookingGlass	= 183,	// Ability targeting
+		SilvertongueWordsmithRailgun		= 184,
 
 		// Protoss \\
 		

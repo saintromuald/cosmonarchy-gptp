@@ -212,7 +212,7 @@ enum TimeType {
 	TimeType_Hours,
 	TimeType_Minutes,
 	TimeType_Seconds,
-	TimeType_Miliseconds,
+	TimeType_Milliseconds,
 	TimeType_Ticks,
 	TimeType_Count,
 };
@@ -239,7 +239,7 @@ f32 parser_get_time_seconds(Parser* parser) {
 			add_to_total = true;
 		} else if (*parser->at == 'm') {
 			if (parser->at[1] == 's') {
-				time_type = TimeType_Miliseconds;
+				time_type = TimeType_Milliseconds;
 				add_to_total = true;
 
 				if (parser->token.size < MaxToken) {
@@ -271,7 +271,7 @@ f32 parser_get_time_seconds(Parser* parser) {
 				case TimeType_Seconds: {
 					total_time += time;
 				} break;
-				case TimeType_Miliseconds: {
+				case TimeType_Milliseconds: {
 					total_time += time / 1000;
 				} break;
 				case TimeType_Ticks: {
