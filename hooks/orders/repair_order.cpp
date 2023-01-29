@@ -8,7 +8,7 @@ namespace hooks
 	void orders_repair_1(Unit * unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
 		if  (target
-	//	&&   target->hitPoints < units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
+	//	&&   target->hitpoints < units_dat::max_hitpoints[target->id] // Disabled to allow tasking repair on full HP targets
 		&&   target->status & UnitStatus::Completed
 		&& !(unit->unit_ai && target->status & UnitStatus::Reacts && target->order_target.unit != unit)
 		&& !(target->status & UnitStatus::InTransport)
@@ -91,26 +91,28 @@ namespace hooks
 			}
 
 			// LABEL_35:
-			if (target->new_repair_timer) {
-				target->new_repair_timer--;
-			}
-			else {
-				if (!helper::subtract_repair_resources(unit, target)) {
-					unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
-					unit->order_to_idle();
-					return;
-				}
-			}
-			u32 hp_gain = target->build_repair_hp_gain;
-			if (*g_cheat_state & CheatFlags::OperationCwal) {
-				hp_gain *= 16;
-			}
-			if (unit->id == UnitId::TerranTalos) { // Talos - Advanced repair speed
-				hp_gain *= 1.5;
-			}
-			target->heal_hp(hp_gain, unit);
 			if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
-				return; // don't goto LABEL_43
+				if (target->new_repair_timer) {
+					target->new_repair_timer--;
+				}
+				else {
+					if (!helper::subtract_repair_resources(unit, target)) {
+						unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+						unit->order_to_idle();
+						return;
+					}
+				}
+				u32 hp_gain = target->build_repair_hp_gain;
+				if (*g_cheat_state & CheatFlags::OperationCwal) {
+					hp_gain *= 16;
+				}
+				if (unit->id == UnitId::TerranTalos) { // Talos - Advanced repair speed
+					hp_gain *= 1.5;
+				}
+				target->heal_hp(hp_gain, unit);
+				if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
+					return; // don't goto LABEL_43
+				}
 			}
 		}
 
