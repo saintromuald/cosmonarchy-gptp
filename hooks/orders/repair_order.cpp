@@ -7,13 +7,12 @@ namespace hooks
 {
 	void orders_repair_1(Unit * unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
-
-		if (target
-			//	&&  target->hitPoints < units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
-			&&  target->status & UnitStatus::Completed
-			&& !(unit->unit_ai && target->status & UnitStatus::Reacts && target->order_target.unit != unit)
-			&& !(target->status & UnitStatus::InTransport)
-			&& !target->stasis_timer)
+		if  (target
+	//	&&   target->hitPoints < units_dat::MaxHitPoints[target->id] // Disabled to allow tasking repair on full HP targets
+		&&   target->status & UnitStatus::Completed
+		&& !(unit->unit_ai && target->status & UnitStatus::Reacts && target->order_target.unit != unit)
+		&& !(target->status & UnitStatus::InTransport)
+		&&  !target->stasis_timer)
 		{
 			switch (unit->main_order_state)
 			{

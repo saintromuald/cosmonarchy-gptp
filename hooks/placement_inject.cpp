@@ -297,6 +297,6 @@ namespace hooks
 		jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
 		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
 	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 1);
-		jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3);
+	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Causes landing crash lol
 	}
 }
