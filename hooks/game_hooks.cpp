@@ -1074,15 +1074,15 @@ namespace hooks {
 						unit->position.x + radius,
 						unit->position.y + radius
 					);
-					bool enemiesDetected = false;
+					bool enemies_detected = false;
 					for (s32 i = 0; i < unit_finder.get_unit_count(); i++) {
 						Unit* picked_unit = unit_finder.get_unit(i);
 						if (match_func(picked_unit)) {
-							enemiesDetected = true;
+							enemies_detected = true;
 							break;
 						}
 					}
-					if (enemiesDetected) {
+					if (enemies_detected) {
 						unit_ext->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++) {
 							const LO_Header* loFile = lo_files->special_overlays[unit->sprite->main_graphic->id];
@@ -1096,9 +1096,9 @@ namespace hooks {
 							auto target_unit = unit->order_target.unit;
 							auto target_pos = unit->order_target.pt;
 							auto offset_direction = -40 + arc * 16;
-							auto maxRange = weapons_dat::max_range[WeaponId::StarSovereignInterventionMissiles];
-							auto polar_x = unit->get_x() + scbw::get_polar_x(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
-							auto polar_y = unit->get_y() + scbw::get_polar_y(maxRange, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto max_range = weapons_dat::max_range[WeaponId::StarSovereignInterventionMissiles];
+							auto polar_x = unit->get_x() + scbw::get_polar_x(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto polar_y = unit->get_y() + scbw::get_polar_y(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							unit->order_target.unit = 0;
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;

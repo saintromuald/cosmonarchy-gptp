@@ -139,7 +139,7 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 namespace
 {
 	typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
-	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
+	GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
 namespace hooks {
@@ -168,7 +168,7 @@ namespace hooks {
 			{
 				return;
 			}
-			getWeaponHitPos(unit, &x, &y);
+			get_weapon_hit_pos(unit, &x, &y);
 		}
 		else if (behavior == WeaponBehavior::AppearOnTargetSite)
 		{
@@ -188,6 +188,9 @@ namespace hooks {
 		// Cabalist has Silent Strikes, so the check has to be in weapon damage
 		if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
+		}
+		if (unit->id == UnitId::ProtossSteward && unit->hangar_unit.parent) {
+			scbw::decloak_proc(unit->hangar_unit.parent);
 		}
 
 		if (weapons_dat::flingy_id[weapon_id] != 0)
@@ -276,10 +279,6 @@ namespace hooks {
 					case WeaponId::PenumbraErebolShockCannon:
 					{
 						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaunchPos, 1, false);
-					} break;
-					case WeaponId::AionLazarusSalvo:
-					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueAionLaunchPos, 4, false);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
@@ -390,6 +389,24 @@ namespace hooks {
 					{
 						// Multi-Attack V
 						fire_multiple(unit, weapon_id, 5, Flags::Enemy);
+					} break;
+					case WeaponId::AionLazarusSalvo:
+					{
+						auto rotate = unit_ext->values[ValueAionLaunchPos];
+						if (rotate == 1)
+						{
+							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
+						}
+						else
+						{
+							scbw::range_modified_fire(weapon_id, unit, x, y, 32 + 32 * rotate);
+						}
+						rotate++;
+						if (rotate > 3)
+						{
+							rotate = 0;
+						}
+						unit_ext->values[ValueAionLaunchPos] = rotate;
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{

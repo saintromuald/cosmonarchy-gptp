@@ -531,9 +531,11 @@ void tick_effect(Effect* effect) {
 
 				for (u32 i = 0; i < effect_units.count; ++i) {
 					Unit* unit = effect_units.units[i];
-					UnitExt* unit_ext = get_unit_ext(unit);
-					unit_ext->timers[TimerReclamation] = effect_period + 1;
-					unit_ext->values[ValueReclamationPlayer] = effect->player;
+					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+						UnitExt* unit_ext = get_unit_ext(unit);
+						unit_ext->timers[TimerReclamation] = effect_period + 1;
+						unit_ext->values[ValueReclamationPlayer] = effect->player;
+					}
 				}
 			} break;
 		}
