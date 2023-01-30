@@ -717,4 +717,5 @@ namespace scbw
 	bool unit_id_is_vespene_node(u32 unit_id);
 	bool unit_id_is_ground_bunker(u32 unit_id);
 	bool unit_id_is_bunker(u32 unit_id);
+	bool is_team_game_map(const char* filename);
 }

@@ -186,8 +186,8 @@ typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
 SCBW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
 
 // Added from BWAPI Offsets.h
-SCBW_DATA(char*,		current_map_filename,	0x0057FD3C);
-SCBW_DATA(char*,		current_map_name,		0x0057FE40);
+SCBW_DATA(char*,		g_current_map_filename,	0x0057FD3C);
+SCBW_DATA(char*,		g_current_map_name,		0x0057FE40);
 SCBW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
 
 // Ping data

@@ -532,6 +532,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	memory_patch(0x004A9DC6, (u8)0x90);
 	// DarkenedFantasies, end
 
+	// Pr0nogo, start
+	// Enable "archon mode" based on map name
+	jump_patch(team_game_check_wrapper, 0x004A9DC2);	
+	// Pr0nogo, end
+
 	// FaRTy1billion, start
 	// crash fix for irregular minimap sizes
 	const u8 nop3[3] = {0x8d,0x76,0x00};

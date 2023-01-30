@@ -29,7 +29,7 @@ namespace hooks
 		SStrCopy(&FileName, g_maps_folder, 0x104u);
 		SStrNCat(&FileName, (const char*)(vector + 20), 0x104u);
 		strrchr(&FileName, 92);
-		SStrCopy(current_map_filename, &FileName, 0x104u);
+		SStrCopy(g_current_map_filename, &FileName, 0x104u);
 		*campaign_index = 0;
 		*dword_5994DC = 1;
 		if (!createDirectory(g_maps_folder))
@@ -76,9 +76,9 @@ namespace hooks
 				result = readChunkNodes(v6->chk_struct_count, v3, v6->chk_struct, v4, 0);
 			}
 		}
-		else if (current_map_filename[0])
+		else if (g_current_map_filename[0])
 		{
-			result = unkNetworkFunc(current_map_filename, a2, a3) != 0;
+			result = unkNetworkFunc(g_current_map_filename, a2, a3) != 0;
 		}
 		else
 		{

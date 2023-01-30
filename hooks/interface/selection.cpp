@@ -784,7 +784,7 @@ namespace hooks
 		if (scbw::is_allied_to(player, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player)) {
 			return 4;
 		}
-		return 0;
+		return 2;
 	}
 
 	// Hooked to investigate "archon mode".

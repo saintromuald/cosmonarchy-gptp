@@ -21,9 +21,9 @@ namespace hooks
 		}
 
 		// This addition enables establishing shots in custom scenarios:
-		else if (*campaign_index == 0 && current_map_filename)
+		else if (*campaign_index == 0 && g_current_map_filename)
 		{
-			helper::SFileOpenArchive(current_map_filename, 0, 0, map_archive_handle);
+			helper::SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
 			void* handle;
 			bool establishingShotExists = helper::SFileOpenFileEx(*map_archive_handle, "rez\\est.txt", 0, &handle);
 			if (handle)

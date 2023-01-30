@@ -121,7 +121,7 @@ namespace hooks {
 				sprintf_s(activity.assets.large_image, "cmbw");
 				activity.timestamps.start = time(0);
 				if (in_game) {
-					sprintf_s(activity.details, "%s", current_map_name);
+					sprintf_s(activity.details, "%s", g_current_map_name);
 					sprintf_s(activity.state, "In Game");
 					activity.instance = true;
 				} else {
@@ -539,6 +539,9 @@ namespace hooks {
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
+			if (game_data->teams_enabled) {
+				scbw::print("Teams are enabled.");
+			}
 			init_screen_locations();
 			hooks::init_actions();
 			globals.reset();

@@ -11,6 +11,7 @@
 #include "hooks/unit_ai.h"
 #include "ai_layouts.h"
 #include "config.h"
+#include <string>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -2969,5 +2970,10 @@ namespace scbw {
 	bool unit_id_is_bunker(u32 unit_id)
 	{
 		return unit_id_is_ground_bunker(unit_id); // Will add more bunker types later. -Pr0nogo
+	}
+
+	bool is_team_game_map(const char* map_name)
+	{
+		return strcmp(map_name, "Todas Complex") == 0;
 	}
 }

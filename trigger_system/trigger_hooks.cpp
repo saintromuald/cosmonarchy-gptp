@@ -282,17 +282,10 @@ const u32 init_players_4A9DCB = 0x004A9DCB;
 const u32 init_players_4A9DEE = 0x004A9DEE;
 void __declspec(naked) team_game_check_wrapper()
 {
-	bool is_team_game;
-	char* team_game_check;
 	__asm {
 		PUSHAD
 	}
-	is_team_game = false;
-	team_game_check = helper::get_chk_string(8);
-	if (team_game_check && team_game_check == "team_game true") {
-		is_team_game = true;
-	}
-	game_data->teams_enabled |= is_team_game;
+	game_data->teams_enabled |= scbw::is_team_game_map(g_current_map_name);
 	if (game_data->teams_enabled) {
 		__asm {
 			POPAD
@@ -307,7 +300,6 @@ void __declspec(naked) team_game_check_wrapper()
 	}
 }
 
-
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
@@ -315,6 +307,4 @@ void inject_trigger_system_hooks() {
 	call_patch(stop_sounds_partial_wrapper,					0x004BBF5C, 0);
 //	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
-
-	jump_patch(team_game_check_wrapper,						0x004A9DC2, 1);
 }

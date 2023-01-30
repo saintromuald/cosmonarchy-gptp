@@ -103,6 +103,21 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) create_initial_team_melee_units_wrapper() { // 0049D8E0
+		static u32 result;
+		static s32 player;
+		__asm {
+			MOV player, EDI
+			PUSHAD
+		}
+		result = hooks::create_initial_team_melee_units(player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -114,5 +129,6 @@ namespace hooks
 
 		jump_patch(create_unit_xy_wrapper,					0x004CD360, 4);
 		jump_patch(create_preplaced_unit_wrapper,			0x004CD740, 3);
+		jump_patch(create_initial_team_melee_units_wrapper,	0x0049D8E0, 1);
 	}
 }
