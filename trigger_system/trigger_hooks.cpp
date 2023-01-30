@@ -280,23 +280,27 @@ void __declspec(naked) pylon_placement_wrapper() { // 00446775
 
 const u32 init_players_4A9DCB = 0x004A9DCB;
 const u32 init_players_4A9DEE = 0x004A9DEE;
-void __declspec(naked) team_game_check_wrapper()
-{
+void __declspec(naked) team_game_check_wrapper() {
 	__asm {
 		PUSHAD
 	}
-	game_data->teams_enabled |= scbw::is_team_game_map(g_current_map_name);
+	if (scbw::is_team_game_map(g_current_map_name)) {
+		game_data->teams_enabled = true;
+	}
+
+	// Team game
 	if (game_data->teams_enabled) {
+		static const u32 init_players_team_game = 0x004A9DCB;
 		__asm {
 			POPAD
-			JMP		init_players_4A9DCB // call "init_team_game_players"
+			JMP init_players_team_game // this then calls "init_team_game_players"
 		}
 	}
-	else {
-		__asm {
-			POPAD
-			JMP		init_players_4A9DEE // else if ...
-		}
+	// or else...
+	static const u32 init_players_normal = 0x004A9DEE;
+	__asm {
+		POPAD
+		JMP init_players_normal
 	}
 }
 
