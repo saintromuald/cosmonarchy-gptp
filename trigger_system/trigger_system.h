@@ -55,7 +55,6 @@ enum Celebration {
 struct GlobalVars {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
-	u32 team_game;
 };
 
 extern GlobalVars global_vars;

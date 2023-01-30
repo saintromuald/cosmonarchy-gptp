@@ -278,32 +278,27 @@ void __declspec(naked) pylon_placement_wrapper() { // 00446775
 	}
 }
 
-const u32 init_players_4A9DCB = 0x004A9DCB;
-const u32 init_players_4A9DEE = 0x004A9DEE;
-void __declspec(naked) team_game_check_wrapper()
-{
-	bool is_team_game;
-	char* team_game_check;
+void __declspec(naked) team_game_check_wrapper() {
 	__asm {
 		PUSHAD
 	}
-	is_team_game = false;
-	team_game_check = helper::get_chk_string(8);
-	if (team_game_check && team_game_check == "team_game true") {
-		is_team_game = true;
+	if (strcmp(helper::get_chk_string(8), "team_game true") == 0) {
+		game_data->teams_enabled = true;
 	}
-	game_data->teams_enabled |= is_team_game;
+
+	// Team game
 	if (game_data->teams_enabled) {
+		static const u32 init_players_team_game = 0x004A9DCB;
 		__asm {
 			POPAD
-			JMP		init_players_4A9DCB // call "init_team_game_players"
+			JMP init_players_team_game // this then calls "init_team_game_players"
 		}
 	}
-	else {
-		__asm {
-			POPAD
-			JMP		init_players_4A9DEE // else if ...
-		}
+	// or else...
+	static const u32 init_players_normal = 0x004A9DEE;
+	__asm {
+		POPAD
+		JMP init_players_normal
 	}
 }
 
