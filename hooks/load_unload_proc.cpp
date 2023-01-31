@@ -236,14 +236,7 @@ namespace hooks
 				{
 					if (transport->id == UnitId::TerranTrojan)
 					{
-						if (transport->get_current_life_ingame() <= (transport->get_max_hp_ingame() * 0.5))
-						{
-							transport->main_order_timer = 7;
-						}
-						else
-						{
-							transport->main_order_timer = 10;
-						}
+						transport->main_order_timer = 7;
 					}
 					else
 					{

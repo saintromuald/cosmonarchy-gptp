@@ -18,7 +18,6 @@ namespace hooks
 			{
 				energy = 100;
 			} break;
-			case UnitId::TerranApostle:
 			case UnitId::TerranHypnagogue:
 			case UnitId::TerranAncile:
 			{
