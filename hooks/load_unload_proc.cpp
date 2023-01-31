@@ -155,7 +155,7 @@ namespace hooks
 		if (transport->status & UnitStatus::GroundedBuilding)
 		{
 			cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
-			if (cargo_unit->path != nullptr)
+			if (cargo_unit->path)
 			{
 				u32* path_0x4 = (u32*)((u32)cargo_unit->path + 4);
 				*path_0x4 = ((u32)cargo_unit->path - *u32_0x006BEE8C) / 128 + 1;
@@ -180,12 +180,12 @@ namespace hooks
 			{
 				cargo_unit->pathing_flags &= ~1;
 			}
-			if (cargo_unit->subunit != nullptr && units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
+			if (cargo_unit->subunit && units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
 			{
 				Unit* subunit = cargo_unit->subunit;
 				scbw::set_unit_position(subunit, transport->sprite->position.x, transport->sprite->position.y);
 				subunit->status = (subunit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
-				if (subunit->path != nullptr)
+				if (subunit->path)
 				{
 					u32* path_0x4 = (u32*)((u32)subunit->path + 4);
 					*path_0x4 = ((u32)subunit->path - *u32_0x006BEE8C) / 128 + 1;
@@ -221,7 +221,7 @@ namespace hooks
 	b32 unload_unit_proc(Unit* unit) // 004E7F70
 	{
 		b32 return_value = 0;
-		if (unit->connected_unit != nullptr)
+		if (unit->connected_unit)
 		{
 			Unit* transport = unit->connected_unit;
 			if ((transport->main_order_timer == 0 || units_dat::base_property[transport->id] & UnitProperty::Building)

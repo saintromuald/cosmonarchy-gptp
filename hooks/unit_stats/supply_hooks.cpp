@@ -197,7 +197,7 @@ namespace hooks
 			if (unit->status & UnitStatus::Completed) {
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 					workers += 2;
-				} else if (units_dat::group_flags[unit->id].is_men) {
+				} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
 					men += 2;
 				}
 			}
