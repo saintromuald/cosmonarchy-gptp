@@ -41,10 +41,10 @@ struct Sprite
 	Image* create_top_overlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0, Unit* palette_unit = 0); // Creates an image overlay on top of all other images of this sprite.
 	Image* create_top_underlay(u32 imageId, s8 offsetX = 0, s8 offsetY = 0, u32 direction = 0, Unit* palette_unit = 0);
 
-	void play_for_overlay(u32 imageId, u8 anim);	
-	void remove_overlay(u32 imageIdStart, u32 imageIdEnd); // Removes the first image overlay with an ID value between @p imageIdStart and @p imageIdEnd.
-	void remove_overlay(u32 imageId); // Removes the first image overlay with the given image ID.
-	Image* get_overlay(u16 imageId) const; // Returns the overlay image of this sprite that has the given @p imageId. If the image cannot be found, returns nullptr.
+	void play_for_overlay(u32 image_id, u8 anim);	
+	void remove_overlay(u32 image_id_start, u32 image_id_end); // Removes the first image overlay with an ID value between @p image_id_start and @p image_id_end.
+	void remove_overlay(u32 image_id); // Removes the first image overlay with the given image ID.
+	Image* get_overlay(u16 image_id) const; // Returns the overlay image of this sprite that has the given @p image_id. If the image cannot be found, returns nullptr.
 
 	bool is_visible_to(u8 player) const; // Checks whether this sprite is visible to @p player (i.e. not covered by the fog of war). This does NOT check detectability.
 

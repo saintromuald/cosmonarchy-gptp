@@ -293,4 +293,48 @@ namespace hooks
 			|| unit->plague_timer
 			|| unit_ext->timers[TimerDecloakBurrow];
 	}
+
+	// Hooked to disallow lifted Terran structures from being detectors. -Pr0nogo
+	b32 unit_is_clean_detector(Unit* unit) // 00403430
+	{
+		if ((units_dat::base_property[unit->id] & UnitProperty::Detector) && unit->status & UnitStatus::Completed)
+		{
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || (unit->status & UnitStatus::InAir)) // is not a building OR is a building and is not in air
+			{
+				if (!unit->is_frozen() && !unit->is_blind)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	// Hooked to hide new resource overlays when burrowed. -Pr0nogo
+	void refresh_carryable_sprite(Sprite* sprite) // 00497750
+	{
+		Image* overlay = scbw::get_powerup_overlay(sprite);
+		if (overlay) {
+			if (!(overlay->flags & ImageFlags::Invisible))
+			{
+				if (!(g_game_layer->has_been_refreshed & 1))
+				{
+					helper::refresh_image(overlay);
+				}
+				overlay->flags |= ImageFlags::Invisible;
+			}
+		}
+	}
+
+	// Hooked to show new resources after unburrowing. -Pr0nogo
+	void update_carryable_sprite_flags(Sprite* sprite) // 004981B0
+	{
+		Image* overlay = scbw::get_powerup_overlay(sprite);
+		if (overlay) {
+			if (overlay->flags & ImageFlags::Invisible)
+			{
+				overlay->flags = overlay->flags & 0xFFBF | 1;
+			}
+		}
+	}
 }

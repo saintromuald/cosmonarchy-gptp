@@ -718,4 +718,6 @@ namespace scbw
 	bool unit_id_is_ground_bunker(u32 unit_id);
 	bool unit_id_is_bunker(u32 unit_id);
 	bool is_team_game_map(const char* filename);
+	bool image_id_is_powerup(u32 image_id);
+	Image* get_powerup_overlay(Sprite* sprite);
 }

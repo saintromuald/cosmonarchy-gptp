@@ -2976,4 +2976,36 @@ namespace scbw {
 	{
 		return strcmp(map_name, "Todas Complex") == 0;
 	}
+
+	bool image_id_is_powerup(u32 image_id)
+	{
+		return image_id == ImageId::MineralChunkType1
+		||	   image_id == ImageId::MineralChunkType2
+		||	   image_id == ImageId::GasRaw
+		||	   image_id == ImageId::GasRaw2
+		||	   image_id == ImageId::TerranGasTankType1
+		||	   image_id == ImageId::TerranGasTankType2
+		||	   image_id == ImageId::ProtossGasOrbType1
+		||	   image_id == ImageId::ProtossGasOrbType2
+		||	   image_id == ImageId::ZergGasSacType1
+		||	   image_id == ImageId::ZergGasSacType2
+		||	   image_id == ImageId::Flag
+		||	   image_id == ImageId::KhaydarinCrystal
+		||	   image_id == ImageId::PsiEmitter
+		||	   image_id == ImageId::YoungChrysalis
+		||	   image_id == ImageId::DataDisc
+		||	   image_id == ImageId::Uraj
+		||	   image_id == ImageId::Khalis;
+	}
+
+	Image* get_powerup_overlay(Sprite* sprite)
+	{
+		for (Image* image = sprite->images.head; image; image = image->link.next)
+		{
+			if (scbw::image_id_is_powerup(image->id)) {
+				return image;
+			}
+		}
+		return 0;
+	}
 }

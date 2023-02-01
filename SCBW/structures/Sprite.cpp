@@ -268,13 +268,13 @@ Image* Sprite::create_top_underlay(u32 imageId, s8 offsetX, s8 offsetY, u32 dire
 //-------- Remove overlay --------//
 
 //Based on function @ 0x004E5CF0
-void Sprite::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
+void Sprite::remove_overlay(u32 image_id_start, u32 image_id_end)
 {
 	assert(this);
-	assert(imageIdStart <= imageIdEnd);
+	assert(image_id_start <= image_id_end);
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
-		if (imageIdStart <= image->id && image->id <= imageIdEnd)
+		if (image_id_start <= image->id && image->id <= image_id_end)
 		{
 			image->free();
 			return;
@@ -282,12 +282,12 @@ void Sprite::remove_overlay(u32 imageIdStart, u32 imageIdEnd)
 	}
 }
 
-void Sprite::remove_overlay(u32 imageId)
+void Sprite::remove_overlay(u32 image_id)
 {
 	assert(this);
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
-		if (image->id == imageId)
+		if (image->id == image_id)
 		{
 			image->free();
 			return;
@@ -295,12 +295,12 @@ void Sprite::remove_overlay(u32 imageId)
 	}
 }
 
-void Sprite::play_for_overlay(u32 imageId, u8 anim)
+void Sprite::play_for_overlay(u32 image_id, u8 anim)
 {
 	assert(this);
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
-		if (image->id == imageId)
+		if (image->id == image_id)
 		{
 			image->play_iscript_animation((IscriptAnimation::Enum)anim);
 			return;
@@ -311,17 +311,17 @@ void Sprite::play_for_overlay(u32 imageId, u8 anim)
 //-------- Get overlay --------//
 
 //Identical to function @ 0x00497460
-Image* Sprite::get_overlay(u16 imageId) const
+Image* Sprite::get_overlay(u16 image_id) const
 {
 	assert(this);
 	for (Image* image = this->images.head; image; image = image->link.next)
 	{
-		if (image->id == imageId)
+		if (image->id == image_id)
 		{
 			return image;
 		}
 	}
-	return nullptr;
+	return 0;
 }
 
 //-------- Other --------//
