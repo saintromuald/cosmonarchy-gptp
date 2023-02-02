@@ -224,11 +224,9 @@ namespace hooks
 		if (unit->connected_unit)
 		{
 			Unit* transport = unit->connected_unit;
-			if ((transport->main_order_timer == 0 || units_dat::base_property[transport->id] & UnitProperty::Building)
-			&& !(transport->status & UnitStatus::Frozen)
-			&&   transport->lockdown_timer == 0
-			&&   transport->stasis_timer == 0
-			&&   transport->maelstrom_timer == 0)
+			if ((transport->main_order_timer == 0
+			|| (units_dat::base_property[transport->id] & UnitProperty::Building && !(transport->status & UnitStatus::InAir))) // For Bunkers
+			&& !transport->is_frozen())
 			{
 				Point16 pos = {0, 0};
 				// probably check where unit can be spawned
@@ -256,7 +254,7 @@ namespace hooks
 					helper::ignore_all_scripts_and_go_to_idle(unit);
 					helper::unload_unit_ext(unit, 0);
 					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
-						if (unit->unit_ai == nullptr)
+						if (!unit->unit_ai)
 						{
 							unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						}
@@ -276,16 +274,16 @@ namespace hooks
 						}
 						else
 						{
-							bool isOwnerValid = true;
+							bool is_owner_valid = true;
 							for (u32 i = 0; i < 4; ++i)
 							{
-								Unit* cargoUnit = transport->get_loaded_unit(i);
-								if (cargoUnit && cargoUnit->player != unit->player)
+								Unit* cargo_unit = transport->get_loaded_unit(i);
+								if (cargo_unit && cargo_unit->player != unit->player)
 								{
-									isOwnerValid = false;
+									is_owner_valid = false;
 								}
 							}
-							if (!isOwnerValid)
+							if (!is_owner_valid)
 							{
 								transport->give_to(transport->get_first_loaded_unit()->player);
 							}
