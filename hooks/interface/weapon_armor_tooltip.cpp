@@ -612,12 +612,18 @@ namespace hooks
 		*/
 		if (units_dat::base_property[unit->id] & UnitProperty::Detector)
 		{
-			flags.push_back("Detector");
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
+			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)))
+			{
+				flags.push_back("Detector");
+			}
+			else {
+				flags.push_back("Detector (disabled)");
+			}
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding
-			|| (unit->id == UnitId::ZergBactalisk && unit->status & UnitStatus::Burrowed))
+		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding)
 		{
-			flags.push_back("Spreads Creep");
+			flags.push_back("Spreads creep");
 		}
 
 		std::string flag = format_string_vector(flags);
