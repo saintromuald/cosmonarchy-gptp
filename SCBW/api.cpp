@@ -821,7 +821,7 @@ namespace scbw {
 		if (count >= source->get_max_hangar_space()) {
 			return 0;
 		}
-
+	
 		Unit* unit = create_unit_in_game(unit_id, source->player, source->position.x, source->position.y, source, false);
 		if (!unit) {
 			return 0;

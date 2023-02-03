@@ -1047,6 +1047,39 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			} else if (parser_eqi(&parser, "christmas")) {
 				global_vars.celebration = Celebration_Christmas;
 			}
+		} else if (parser_eq(&parser, "spawn_cargo")) {
+			Area area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			s32 count = parser_get_s32(&parser, 0);
+			u32 unit_id = parser_get_unit_id(&parser);
+			s32 player = parser_get_s32(&parser, 0);
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				for (u32 j = 0; j < count; ++j) {
+					Unit* cargo_unit = scbw::create_unit_in_game(unit_id, player ? player : unit->player, 0, 0);
+					if (cargo_unit) {
+						helper::load_unit_proc(unit, cargo_unit);
+						if (cargo_unit->connected_unit != unit) {
+							cargo_unit->user_action_flags |= 0x4;
+							cargo_unit->remove();
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
