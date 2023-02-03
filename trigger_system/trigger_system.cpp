@@ -1054,6 +1054,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 count = parser_get_s32(&parser, 0);
 			u32 unit_id = parser_get_unit_id(&parser);
 			s32 player = parser_get_s32(&parser, 0);
+			bool force = parser_get_s32(&parser, 0);
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1071,8 +1072,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				for (u32 j = 0; j < count; ++j) {
 					Unit* cargo_unit = scbw::create_unit_in_game(unit_id, player ? player : unit->player, 0, 0);
 					if (cargo_unit) {
-						helper::load_unit_proc(unit, cargo_unit);
-						if (cargo_unit->connected_unit != unit) {
+						if (force ? !scbw::transport_is_full(unit) : scbw::can_be_entered_by(unit, cargo_unit)) {
+							helper::load_unit_proc(unit, cargo_unit);
+						} else {
 							cargo_unit->user_action_flags |= 0x4;
 							cargo_unit->remove();
 							break;
