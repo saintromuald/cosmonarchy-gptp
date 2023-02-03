@@ -572,6 +572,22 @@ namespace hooks {
 						}
 					}
 
+					if (current_button->icon_id == IconId::Liftoff) {
+						bool hide = false;
+						for (u32 i = 0; i < *g_client_selection_count; ++i) {
+							Unit* unit = g_client_selection_group->unit[i];
+							UnitExt* unit_ext = get_unit_ext(unit);
+							if (unit_ext->values[ValueIsNeutralBunker]) {
+								hide = true;
+								break;
+							}
+						}
+
+						if (hide) {
+							current_button_state = Button_State::Invisible;
+						}
+					}
+					
 					if (current_button->icon_id == IconId::SetRallyPoint) {
 						if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg)
 						{
