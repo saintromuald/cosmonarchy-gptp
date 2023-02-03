@@ -573,15 +573,12 @@ namespace hooks {
 					}
 
 					if (current_button->icon_id == IconId::Liftoff) {
-						bool hide = false;
+						bool hide = true;
 						for (u32 i = 0; i < *g_client_selection_count; ++i) {
 							Unit* unit = g_client_selection_group->unit[i];
-							if (!unit) {
-								continue; // Not sure if this array is already null protected...
-							}
 							UnitExt* unit_ext = get_unit_ext(unit);
-							if (unit_ext->values[ValueIsNeutralBunker]) {
-								hide = true;
+							if (!unit_ext->values[ValueIsNeutralBunker]) {
+								hide = false;
 								break;
 							}
 						}
