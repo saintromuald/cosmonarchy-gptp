@@ -26,7 +26,6 @@ namespace hooks
 
 	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
-		u32 loaded_index;
 		s32 counter = 0;
 		static const Unit* unitTable_0059CB58 = (Unit*)0x0059CB58;
 		static const Unit* unitTable_0059CB64 = (Unit*)0x0059CB64;
@@ -44,16 +43,16 @@ namespace hooks
 		{
 			for (;;)
 			{
-				u32* loadedUnitOffset = (u32*)&transport_ext->loaded_unit[counter];
-				if (*loadedUnitOffset == 0 ||
-					unitTable_0059CB64[transport_ext->loaded_unit[counter].index].link.prev == nullptr)
+				u32* loaded_unit_offset = (u32*)&transport_ext->loaded_unit[counter];
+				if (*loaded_unit_offset == 0 ||
+					unitTable_0059CB64[transport_ext->loaded_unit[counter].index].link.prev == 0)
 				{
 					break;
 				}
 
 				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport_ext->loaded_unit[counter].index]);
-				if ((current_loaded_unit->main_order_id == OrderId::Die && current_loaded_unit->main_order_state == 1) ||
-					current_loaded_unit->target_order_special != transport_ext->loaded_unit[counter].unit_id)
+				if ((current_loaded_unit->main_order_id == OrderId::Die && current_loaded_unit->main_order_state == 1)
+				||	 current_loaded_unit->target_order_special != transport_ext->loaded_unit[counter].unit_id)
 				{
 					break;
 				}
@@ -67,7 +66,6 @@ namespace hooks
 		}
 		
 		u8 unit_race_id = transport->get_race();
-
 		scbw::decloak_proc(transport);
 		scbw::decloak_proc(cargo_unit);
 		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
@@ -84,6 +82,7 @@ namespace hooks
 		}
 
 		// CCMU extender
+		u32 loaded_index;
 		auto new_table = g_unit_table;
 		if (globals.extended_unit_table == 1)
 		{
@@ -134,7 +133,7 @@ namespace hooks
 		}
 		special_load_unit(cargo_unit, transport);
 
-		if (scbw::unit_id_is_bunker(transport->id)) // Evacuation?
+		if (scbw::unit_id_is_bunker(transport->id))
 		{
 			for (s32 i = 0; i < TransportCap; i++)
 			{
@@ -152,7 +151,7 @@ namespace hooks
 		}		
 
 		scbw::refresh_console();
-		if (transport->status & UnitStatus::GroundedBuilding)
+		if (scbw::unit_id_is_bunker(transport->id))
 		{
 			cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
 			if (cargo_unit->path)
@@ -191,14 +190,14 @@ namespace hooks
 					*path_0x4 = ((u32)subunit->path - *u32_0x006BEE8C) / 128 + 1;
 					if (*u32_0x006BEE84 == 0)
 					{
-						subunit->path = nullptr;
+						subunit->path = 0;
 					}
 					else
 					{
 						subunit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 					}
 					*u32_0x006BEE84 = (u32)subunit->path;
-					subunit->path = nullptr;
+					subunit->path = 0;
 				}
 
 				subunit->movement_state = 0;

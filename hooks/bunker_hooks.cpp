@@ -90,13 +90,13 @@ namespace hooks
 
 	void create_bunker_attack_overlay(Unit* unit) { // 00477FD0
 		// Fixes units with subunits not attacking
-		Unit* unitVar = unit;
+		Unit* unit_var = unit;
 		if (unit->subunit) {
-			unitVar = unit->subunit;
+			unit_var = unit->subunit;
 		}
 
-		Image* bunkerImage = unitVar->connected_unit->sprite->main_graphic;
-		u8 frameDirection = (unitVar->current_direction_1 + 16) / 32 % 8;
+		Image* bunkerImage = unit_var->connected_unit->sprite->main_graphic;
+		u8 frameDirection = (unit_var->current_direction_1 + 16) / 32 % 8;
 		const LO_Header* loFile = lo_files->attack_overlays[bunkerImage->id];
 		Point8 offset = loFile->get_offset(bunkerImage->frame_index, frameDirection);
 
@@ -104,26 +104,26 @@ namespace hooks
 			offset.x = -offset.x;
 		}
 
-		u8 frameAngle = frameDirection * 32;
-		u16 spriteId = 377; // Bunker attack overlay
-		if (unitVar->id == UnitId::TerranHarakan) {
-			frameAngle = ((unitVar->current_direction_1 + 8) / 16 % 16) * 16;
-			spriteId = 378; // Firebat flamethrower graphics
+		u8 frame_angle = frameDirection * 32;
+		u16 sprite_id = 377; // Bunker attack overlay
+		if (unit_var->id == UnitId::TerranHarakan) {
+			frame_angle = ((unit_var->current_direction_1 + 8) / 16 % 16) * 16;
+			sprite_id = 378; // Firebat flamethrower graphics
 		}
 
-		scbw::decloak_proc(unitVar->connected_unit);
+		scbw::decloak_proc(unit_var->connected_unit);
 
 		// TODO: Fix effect nonsense with subunits
-		Thingy* bunkerAttackEffect = helper::create_thingy(spriteId, offset.x + unitVar->get_x(), offset.y + unitVar->get_y(), unitVar->player);
-		if (!bunkerAttackEffect) {
+		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + unit_var->get_x(), offset.y + unit_var->get_y(), unit_var->player);
+		if (!bunker_attack_effect) {
 			return;
 		}
 
-		bunkerAttackEffect->sprite->elevation = unitVar->sprite->elevation + 1;
-		for (Image* image = bunkerAttackEffect->sprite->images.head; image; image = image->link.next) {
-			helper::set_image_direction(image, frameAngle);
+		bunker_attack_effect->sprite->elevation = unit_var->sprite->elevation + 1;
+		for (Image* image = bunker_attack_effect->sprite->images.head; image; image = image->link.next) {
+			helper::set_image_direction(image, frame_angle);
 		}
-		helper::set_thingy_visibility_flags(bunkerAttackEffect);
+		helper::set_thingy_visibility_flags(bunker_attack_effect);
 	}
 
 	// Ported from public GPTP, and partially-unfucked, to remove randomness from attacks. -Pr0nogo
@@ -197,10 +197,11 @@ namespace hooks
 		*u32_0064DEB0 = 0;
 
 		// Previously had random delays here.
-		// Now applied in fire bullet and attack melee.
-		//cooldown = helper::get_weapon_cooldown(unit, weapon_id);
-		//unit->ground_weapon_cooldown = cooldown;
-		//unit->air_weapon_cooldown = cooldown;
+		
+		// Cooldown is now applied in fire bullet and attack melee.
+	//	cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+	//	unit->ground_weapon_cooldown = cooldown;
+	//	unit->air_weapon_cooldown = cooldown;
 
 		IscriptAnimation::Enum iscript_anim = IscriptAnimation::GndAttkRpt;
 		if (target->status & UnitStatus::InAir) {

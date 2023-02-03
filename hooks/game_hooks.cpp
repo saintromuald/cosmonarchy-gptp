@@ -367,6 +367,21 @@ namespace hooks {
 				Unit* unit = g_client_selection_group->unit[i];
 				Point16 source = unit->position;
 
+				// For checking cargo-related elements.
+				// This helped me solve a Bunker issue on 3/2/2023, please leave it here for the future. -Pr0nogo
+				/*
+				if (unit) {
+					for (u32 i = 0; i < TransportCap; ++i) {
+						Unit* cargo_unit = selected->get_loaded_unit(i);
+						if (!cargo_unit) {
+							continue;
+						}
+						u32 unit_order = cargo_unit->main_order_id;
+						scbw::printf("Order id %u", unit_order);
+					}
+				}
+				*/
+
 				// Show connected Nyduses
 				if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
 					if (scbw::is_allied_to(unit->player, *g_local_nation_id) || helper::get_detecting_players(unit) & (1 << *g_local_nation_id)) {
@@ -1894,6 +1909,21 @@ namespace hooks {
 					unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
 					unit->set_secondary_order(OrderId::TrainFighter);
 					unit->secondary_order_state = 0;
+				}
+			} break;
+			case UnitId::TerranBunker:
+			{
+				if (unit->status & UnitStatus::InAir) {
+					for (u32 i = 0; i < TransportCap; ++i) {
+						Unit* cargo_unit = unit->get_loaded_unit(i);
+						if (!cargo_unit) {
+							continue;
+						}
+						if (cargo_unit->main_order_id != OrderId::BunkerGuard) {
+							scbw::print("lol");
+							helper::order(1, cargo_unit, OrderId::BunkerGuard, cargo_unit->position, 0, UnitId::None);
+						}
+					}
 				}
 			} break;
 		}
