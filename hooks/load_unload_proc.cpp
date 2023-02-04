@@ -154,20 +154,23 @@ namespace hooks
 		if (scbw::unit_id_is_bunker(transport->id))
 		{
 			cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
+			if (cargo_unit->subunit) {
+				cargo_unit->subunit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
+			}
 			if (cargo_unit->path)
 			{
 				u32* path_0x4 = (u32*)((u32)cargo_unit->path + 4);
 				*path_0x4 = ((u32)cargo_unit->path - *u32_0x006BEE8C) / 128 + 1;
 				if (*u32_0x006BEE84 == 0)
 				{
-					cargo_unit->path = nullptr;
+					cargo_unit->path = 0;
 				}
 				else
 				{
 					cargo_unit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 				}
 				*u32_0x006BEE84 = (u32)cargo_unit->path;
-				cargo_unit->path = nullptr;
+				cargo_unit->path = 0;
 			}
 
 			cargo_unit->movement_state = 0;
