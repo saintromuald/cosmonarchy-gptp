@@ -1371,8 +1371,9 @@ namespace scbw
 		if (!unit->sprite || !target) {
 			return 0;
 		}
+
 		UnitExt* unit_ext = get_unit_ext(unit);
-		auto rotate = unit_ext->values[value_id];
+		u32 rotate = unit_ext->values[value_id];
 		Image* image = unit->sprite->main_graphic;
 		switch (unit->id) {
 			case UnitId::TerranWatchdog:
@@ -1388,7 +1389,8 @@ namespace scbw
 				image = unit->get_overlay(ImageId::IonCannonTurret);
 			} break;
 		}
-		const LO_Header* lo_file = lo_files->attack_overlays[image->id];
+
+		LO_Header* lo_file = lo_files->attack_overlays[image->id];
 		if (use_special_overlay) {
 			lo_file = lo_files->special_overlays[image->id];
 		}
@@ -1397,37 +1399,29 @@ namespace scbw
 		if (image->flags & ImageFlags::Omnidirectional) {
 			frameset_length = 32;
 		}
+
 		Point8 offset = lo_file->get_offset(image->direction + (frameset_length * frameset_offset), rotate);
-
-		/*
-		for (u32 i = 0; i < lo_file->frame_count; ++i) {
-			for (u32 j = 0; j < lo_file->overlay_count; ++j) {
-				Point8 offset = lo_file->get_offset(i, j);
-				scbw::printf_console("Frame %i #%i: X %i Y %i", i, j, (s32)offset.x, (s32)offset.y);
-			}
-		}
-		*/
-
-		if (image->flags & ImageFlags::Mirrored)
-		{
+		if (image->flags & ImageFlags::Mirrored) {
 			offset.x = -offset.x;
 		}
 		rotate++;
-		if (rotate > rotate_count - 1) {
+		if (rotate >= rotate_count) {
 			rotate = 0;
 		}
 		unit_ext->values[value_id] = rotate;
-		auto X = unit->get_x() + offset.x;
-		auto Y = unit->get_y() + offset.y;
+		u32 x = unit->get_x() + offset.x;
+		u32 y = unit->get_y() + offset.y;
+		u32 angle = scbw::get_angle(x, y, target->position.x, target->position.y);
 		Bullet* bullet = 0;
-		u32 angle = scbw::get_angle(X, Y, target->position.x, target->position.y);
 		if (apply_cooldown) {
-			bullet = create_bullet_ex(weapon_id, unit, X, Y, unit->player, angle);
+			bullet = create_bullet_ex(weapon_id, unit, x, y, unit->player, angle);
 		} else {
-			bullet = helper::create_bullet(weapon_id, unit, X, Y, unit->player, angle);
+			bullet = helper::create_bullet(weapon_id, unit, x, y, unit->player, angle);
 		}
 		if (bullet) {
-			scbw::set_bullet_target(bullet, target);
+			if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
+				scbw::set_bullet_target(bullet, target);
+			}
 			if (unit_ext->values[value_id] < fake_amount) {
 				bullet->hit_flags |= 0x1;
 			}
