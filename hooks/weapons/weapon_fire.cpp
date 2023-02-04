@@ -521,6 +521,8 @@ namespace hooks {
 		}
 
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
+
+		// Create explosions mid-flight
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
 		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
@@ -558,7 +560,7 @@ namespace hooks {
 		bool despawn_bullet = false;
 
 		// Accelerate missiles over time
-		if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage) {
+		if (scbw::weapon_id_accelerates(bullet->weapon_id)) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingy_top_speed *= 2;
@@ -566,6 +568,7 @@ namespace hooks {
 			}
 		}
 
+		// Split missiles
 		if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
 		&&  bullet->source_unit
 		&&  bullet->attack_target.unit
@@ -1369,12 +1372,12 @@ namespace hooks {
 		*g_active_iscript_bullet = 0;
 	}
 
-	// Hooked to investigate firstFreeBullet nonsense - Pr0nogo
+	// Hooked to investigate first_free_bullet nonsense - Pr0nogo
 	void bullet_behavior_reassign(Bullet* bullet) { // 0048BD50
 		while (2) { // xd
 			if (bullet->unknown_0x4E & 1) {
 				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
-				Image* bulletOverlay = nullptr;
+				Image* bullet_overlay = 0;
 				switch (weapons_dat::behavior[bullet->weapon_id]) {
 					case WeaponBehavior::AppearOnTargetUnit:
 					case WeaponBehavior::AppearOnTargetSite:
@@ -1386,7 +1389,7 @@ namespace hooks {
 							bullet->attack_target.pt.x = bullet->attack_target.unit->sprite->position.x;
 							bullet->attack_target.pt.y = bullet->attack_target.unit->sprite->position.y;
 						} else {
-							bullet->attack_target.unit = nullptr;
+							bullet->attack_target.unit = 0;
 						}
 						bullet->unknown_0x4E = 0;
 						bullet->some_unit_type = 228;
@@ -1417,24 +1420,24 @@ namespace hooks {
 					case WeaponBehavior::AttackNearbyArea:
 					{
 						helper::assign_weapon_data(bullet, 6);
-						Image* bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay) {
+						Image* bullet_overlay = bullet->sprite->images.head;
+						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bulletOverlay, 2);
-								bulletOverlay = bulletOverlay->link.next;
-							} while (bulletOverlay);
+								helper::play_image_iscript(bullet_overlay, 2);
+								bullet_overlay = bullet_overlay->link.next;
+							} while (bullet_overlay);
 						}
 					} break;
 					default:
 					{
 						helper::assign_weapon_data(bullet, 1);
-						Image* bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay) {
+						Image* bullet_overlay = bullet->sprite->images.head;
+						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bulletOverlay, 2);
-								bulletOverlay = bulletOverlay->link.next;
+								helper::play_image_iscript(bullet_overlay, 2);
+								bullet_overlay = bullet_overlay->link.next;
 							}
-							while (bulletOverlay);
+							while (bullet_overlay);
 						}
 					} break;
 				}
@@ -1479,7 +1482,7 @@ namespace hooks {
 	}
 
 	// Hooked to help with kiting AI. -Pr0nogo
-	// Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags -Veeq7
+	// Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags. -Veeq7
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim) // 00476ED0
 	{
 		*g_last_bullet_creator = 0;

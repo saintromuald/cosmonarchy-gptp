@@ -1104,8 +1104,8 @@ namespace hooks {
 						unit_ext->timers[TimerStarSovereignInterventionMissiles] = weapons_dat::cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++) {
 							const LO_Header* loFile = lo_files->special_overlays[unit->sprite->main_graphic->id];
-							u8 frameDirection = unit->sprite->main_graphic->direction;
-							Point8 offset = loFile->get_offset(frameDirection, 5 - arc);
+							u8 frame_direction = unit->sprite->main_graphic->direction;
+							Point8 offset = loFile->get_offset(frame_direction, 5 - arc);
 							if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored) {
 								offset.x = -offset.x;
 							}
@@ -2083,6 +2083,9 @@ namespace hooks {
 		// Disruption Web Clear
 		if (unit_ext->timers[TimerUnderDisruptionField] == 1) {
 			unit->status &= ~UnitStatus::CanNotAttack;
+			if (unit->subunit) {
+				unit->subunit->status &= ~UnitStatus::CanNotAttack;
+			}
 		}
 
 		// Madrigal - Dirge

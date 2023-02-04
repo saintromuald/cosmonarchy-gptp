@@ -497,8 +497,8 @@ void tick_effect(Effect* effect) {
 					break;
 				}
 
-				UnitExt* parentExt = get_unit_ext(effect->origin);
-				if (!parentExt->values[ValueDisruptionFieldOn]) {
+				UnitExt* parent_ext = get_unit_ext(effect->origin);
+				if (!parent_ext->values[ValueDisruptionFieldOn]) {
 					effect->current_time = 0;
 					break;
 				}
@@ -509,9 +509,12 @@ void tick_effect(Effect* effect) {
 					effect->position.x + 60,
 					effect->position.y + 40
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					UnitExt* unitExt = get_unit_ext(unit);
-					unitExt->timers[TimerUnderDisruptionField] = 8;
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->timers[TimerUnderDisruptionField] = 8;
 					unit->status |= UnitStatus::CanNotAttack;
+					if (unit->subunit) {
+						unit->subunit->status |= UnitStatus::CanNotAttack;
+					}
 					});
 			} break;
 			case EffectId_PlagueField: {
