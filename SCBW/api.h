@@ -720,4 +720,5 @@ namespace scbw
 	bool is_team_game_map(const char* filename);
 	bool image_id_is_powerup(u32 image_id);
 	Image* get_powerup_overlay(Sprite* sprite);
+	bool weapon_id_accelerates(u32 weapon_id);
 }

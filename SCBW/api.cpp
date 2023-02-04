@@ -3008,4 +3008,9 @@ namespace scbw {
 		}
 		return 0;
 	}
+
+	bool weapon_id_accelerates(u32 weapon_id)
+	{
+		return weapon_id == WeaponId::EmpyreanPlasmaBarrage;
+	}
 }
