@@ -18,9 +18,9 @@ namespace
 			Unit* target;
 		} hits[32][16];
 	};
-	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
-	u32* const spineHitRow = (u32*)(0x64EEC8);
-	u32* const spineHitCol = (u32*)(0x64DEA8);
+	SpineHitTable* const spine_hit_table = (SpineHitTable*)(0x0064DEC8);
+	u32* const spine_hit_row = (u32*)(0x64EEC8);
+	u32* const spine_hit_column = (u32*)(0x64DEA8);
 }
 
 namespace hooks {

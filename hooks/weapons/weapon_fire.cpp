@@ -1078,8 +1078,8 @@ namespace hooks {
 		return bullet;
 	}
 
-	// Hooked to stop Valkyries from being cucked by lardcode - Pr0nogo
-	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, char player, s32 angle) // 0048C260
+	// Hooked to stop Valkyries from being cucked by lardcode. - Pr0nogo
+	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle) // 0048C260
 	{
 		Bullet* free_bullet = *first_free_bullet;
 		if (!*first_free_bullet)
@@ -1148,7 +1148,7 @@ namespace hooks {
 		return result;
 	}
 
-	// Hooked so we don't need aise for Bactalisks - Pr0nogo
+	// Hooked so we don't need aise for Bactalisks. - Pr0nogo
 	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) { // 0048BEC0
 		if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], y, x, (Flingy*)bullet, player, angle)) { // Unit/Bullet/Flingy have a shared header, so this is presumably fine
 			return 0;
@@ -1271,7 +1271,7 @@ namespace hooks {
 				switch (weapon_id) {
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						bullet->remaining_bounces = 1; // Additional bounces added later
+						bullet->remaining_bounces = 1; // Additional bounces added later. -Veeq7
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
@@ -1316,7 +1316,7 @@ namespace hooks {
 		return 0;
 	}
 
-	// Hooked to investigate weaponsdat extender crashes - Pr0nogo
+	// Hooked to investigate weaponsdat extender crashes. Disabled! - Pr0nogo
 	void progress_bullet_frames() { // 0048C3D0
 		Bullet* bullet = *first_bullet;
 		Bullet* next_bullet = *first_bullet;
@@ -1372,7 +1372,7 @@ namespace hooks {
 		*g_active_iscript_bullet = 0;
 	}
 
-	// Hooked to investigate first_free_bullet nonsense - Pr0nogo
+	// Hooked to investigate first_free_bullet nonsense. Disabled! - Pr0nogo
 	void bullet_behavior_reassign(Bullet* bullet) { // 0048BD50
 		while (2) { // xd
 			if (bullet->unknown_0x4E & 1) {
@@ -1481,7 +1481,7 @@ namespace hooks {
 		}
 	}
 
-	// Hooked to help with kiting AI. -Pr0nogo
+	// Hooked to help with kiting AI. Disabled! -Pr0nogo
 	// Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags. -Veeq7
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim) // 00476ED0
 	{
