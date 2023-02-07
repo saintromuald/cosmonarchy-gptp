@@ -12667,4 +12667,15 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void update_unit_damage_overlay(Unit* unit)
+	{
+		const u32 func_address = 0x004E6090;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }
