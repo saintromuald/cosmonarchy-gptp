@@ -145,6 +145,7 @@ namespace hooks
 				buf[3] = *g_active_player_id;
 				buf[4] = RustId::ToggleTempoChange;
 				helper::queue_game_command(buf, 0xc);
+				helper::
 			} break;
 			case TechId::PaladinSkyfall:
 			{

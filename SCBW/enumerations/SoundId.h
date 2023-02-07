@@ -1381,6 +1381,9 @@ namespace SoundId
 		BlackjackAggressive02				= 2189,
 		BlackjackAggressive03				= 2190,
 		BlackjackAggressive04				= 2191,
+
+		MadrigalTempoChangeDown				= 2196,
+		MadrigalTempoChangeUp				= 2197,
 	};
 }
 
