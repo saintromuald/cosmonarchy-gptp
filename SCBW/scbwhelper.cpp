@@ -6179,7 +6179,6 @@ namespace helper {
 	}
 
 	// For targeted_order
-
 	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9) {
 		const u32 Func_queue_new_order = 0x00474B90;
 		static Order* result;

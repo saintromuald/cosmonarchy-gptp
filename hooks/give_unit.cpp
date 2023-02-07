@@ -14,7 +14,7 @@ namespace hooks
 			helper::remove_unit_ai(unit, 0);
 
 			bool is_morphing = false;
-			if (unit->isRemorphingBuilding())
+			if (unit->is_remorphing_building())
 			{
 				unit->status |= UnitStatus::Completed;
 				is_morphing = true;
