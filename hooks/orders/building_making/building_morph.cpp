@@ -341,7 +341,7 @@ namespace
 namespace hooks
 {
 	// Checks if @p unit_id is a building that can be morphed from another building.
-	// Note: This hook affects the behavior of Unit::isRemorphingBuilding().
+	// Note: This hook affects the behavior of Unit::is_remorphing_building().
 	bool is_morphed_building(u16 unit_id)
 	{
 		if (scbw::is_zerg_building_morph_result(unit_id))

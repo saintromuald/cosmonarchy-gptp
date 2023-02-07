@@ -261,7 +261,7 @@ namespace
 	s32 get_remaining_build_time_pct(Unit* unit)
 	{
 		u16 unit_id = unit->id;
-		if (scbw::is_zerg_egg_new(unit, true, false) || unit->isRemorphingBuilding())
+		if (scbw::is_zerg_egg_new(unit, true, false) || unit->is_remorphing_building())
 		{
 			unit_id = unit->build_queue[unit->build_queue_slot];
 		}

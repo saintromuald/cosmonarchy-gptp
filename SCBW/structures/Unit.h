@@ -112,7 +112,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the sight distance of this unit (with upgrades).
 	/// If @p isForSpellCasting is true, also factors in status effects.
-	u32 get_sight_range(bool isForSpellCasting = false) const;
+	u32 get_sight_range(bool is_for_spellcasting = false) const;
 
 	///Return true if:
 	/// * THE GATHERING cheat is enabled or
@@ -130,7 +130,7 @@ struct Unit : public UnitLayout
 
 	/// Check if the unit is a remorphing building (i.e. is a Lair, Hive,
 	/// Greater Spire, Sunken or Spore Colony under construction).
-	bool isRemorphingBuilding() const;
+	bool is_remorphing_building() const;
 
 	/// Checks if the current unit is a subunit (i.e. not nullptr and has the
 	/// UnitProperty::Subunit flag set).

@@ -230,24 +230,24 @@ extern const u32 Func_GetSeekRange = 0x00476000;
 u8 Unit::get_seek_range() const {
 	assert(this);
 
-	static u8 seekRange;
+	static u8 seek_range;
 
 	__asm {
 		PUSHAD
 		MOV EDX, this
 		CALL Func_GetSeekRange
-		MOV seekRange, AL
+		MOV seek_range, AL
 		POPAD
 	}
 
-	return seekRange;
+	return seek_range;
 }
 
 extern const u32 Func_GetSightRange = 0x004E5B40;
-u32 Unit::get_sight_range(bool isForSpellCasting) const {
+u32 Unit::get_sight_range(bool is_for_spellcasting) const {
 	assert(this);
 	static u32 sight_range;
-	b32 ignore_status_effects = (isForSpellCasting ? 0 : 1);
+	b32 ignore_status_effects = (is_for_spellcasting ? 0 : 1);
 	__asm {
 		PUSHAD
 		PUSH ignore_status_effects
@@ -273,8 +273,10 @@ bool Unit::has_weapon() const {
 	assert(this);
 
 	if (this->get_ground_weapon() != WeaponId::None
-		|| this->get_air_weapon() != WeaponId::None)
+	||  this->get_air_weapon() != WeaponId::None)
+	{
 		return true;
+	}
 
 	if (this->id == UnitId::ProtossSolarion) {
 		if ((this->unit_with_hangar.in_hangar_count + this->unit_with_hangar.out_hangar_count) > 0)
@@ -308,7 +310,7 @@ bool Unit::is_frozen() const {
 }
 
 extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
-bool Unit::isRemorphingBuilding() const {
+bool Unit::is_remorphing_building() const {
 	static b32 result;
 	assert(this);
 
