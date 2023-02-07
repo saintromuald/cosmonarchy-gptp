@@ -35,11 +35,12 @@ namespace hooks
 			if (active_unit->id != UnitId::ZergLakizilisk
 				|| active_unit->status & UnitStatus::Burrowed)
 			{
+				UnitExt* unit_ext = get_unit_ext(active_unit);
 				bool no_ground_weapon_display = false;
 				u32 ground_weapon;
 				u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
 				if (active_unit->id == UnitId::TerranMadrigal
-					&& scbw::get_generic_rust_value(active_unit, RustId::ToggleTempoChange)
+					&& unit_ext->values[ValueMadrigalTempoDown]
 					&& ground_weapon_main_unit == WeaponId::MadrigalFuriaMissiles)
 				{
 					ground_weapon_main_unit = WeaponId::MadrigalImperiosoMissiles;

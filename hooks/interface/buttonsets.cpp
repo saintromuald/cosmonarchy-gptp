@@ -1928,13 +1928,14 @@ namespace hooks {
 								} break;
 								case UnitId::TerranMadrigal:
 								{
+									UnitExt* unit_ext = get_unit_ext(unit);
 									if (current_button->icon_id == IconId::GeminiMissiles
-									&&	scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0) // Madrigal - Furia Salvo
+									&&	unit_ext->values[ValueMadrigalTempoDown] == 0) // Madrigal - Furia Salvo
 									{
 										current_button_state = Button_State::Enabled;
 									}
 									else if (current_button->icon_id == IconId::FusionCutterHarvest
-									&&		 scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) > 0) // Madrigal - Shrike Payload
+									&&  unit_ext->values[ValueMadrigalTempoDown] > 0) // Madrigal - Shrike Payload
 									{
 										current_button_state = Button_State::Enabled;
 									}

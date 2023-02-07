@@ -133,19 +133,13 @@ namespace hooks
 			} break;
 			case TechId::MadrigalTempoChange:
 			{
-				s32 action = 1;
-				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleTempoChange) == 1)
-				{
-					action = 0;
-				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
+				buf[2] = 1;
 				buf[3] = *g_active_player_id;
-				buf[4] = RustId::ToggleTempoChange;
+				buf[4] = RustId::CastToggleTempoChange;
 				helper::queue_game_command(buf, 0xc);
-				helper::
 			} break;
 			case TechId::PaladinSkyfall:
 			{

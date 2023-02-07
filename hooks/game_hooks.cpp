@@ -1926,6 +1926,28 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranMadrigal:
+			{
+				if (scbw::get_generic_rust_value(unit, RustId::CastToggleTempoChange)) {
+					scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 0);
+					if (!unit_ext->timers[TimerMadrigalTempoChange]) {
+						unit_ext->timers[TimerMadrigalTempoChange] = 12;
+						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown];
+						unit->status |= UnitStatus::CanNotAttack;
+						unit->sprite->create_overlay(SpriteId::CuirassStonewallProtocolOverlay);
+					}
+				}
+
+				if (unit_ext->timers[TimerMadrigalTempoChange] == 1) {
+					if (unit_ext->values[ValueMadrigalTempoDown]) {
+						helper::play_sound_from_unit(SoundId::MadrigalTempoChangeDown, unit);
+					} else {
+						helper::play_sound_from_unit(SoundId::MadrigalTempoChangeUp, unit);
+					}
+					unit->status &= ~UnitStatus::CanNotAttack;
+					unit->remove_overlay(SpriteId::CuirassStonewallProtocolOverlay);
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma

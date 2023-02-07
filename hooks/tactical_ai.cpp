@@ -1034,18 +1034,26 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
 			}
 		} else if (unit->id == UnitId::TerranMadrigal) {
-			f32 furiaDamagePotential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
-			furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
-			if (unit->order_target.unit) {
-				UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
-				furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
-			}
-			f32 dirgeDamagePotential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
+			if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown]) {
+				f32 furiaDamagePotential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
+				furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
+				if (unit->order_target.unit) {
+					UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
+					furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
+				}
+				f32 dirgeDamagePotential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
 
-			if (furiaDamagePotential > dirgeDamagePotential) {
-				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 0);
-			} else {
-				scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
+				if (furiaDamagePotential > dirgeDamagePotential) {
+					if (unit_ext->values[ValueMadrigalTempoDown] != 0) {
+						scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 1);
+						unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
+					}
+				} else {
+					if (unit_ext->values[ValueMadrigalTempoDown] == 0) {
+						scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 1);
+						unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
+					}
+				}
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {

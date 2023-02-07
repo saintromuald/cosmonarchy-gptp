@@ -14,7 +14,7 @@ namespace hooks
 		// Madrigal - Tempo Change
 		switch (unit->id) {
 			case UnitId::TerranMadrigal: {
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange)) {	
+				if (unit_ext->values[ValueMadrigalTempoDown]) {	
 					bonus_amount += 4;
 				}
 			} break;
@@ -65,7 +65,7 @@ namespace hooks
 		// Madrigal - Tempo Change
 		switch (unit->id) {
 			case UnitId::TerranMadrigal: {
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange)) {
+				if (unit_ext->values[ValueMadrigalTempoDown]) {
 					bonus_amount += 4 * 32;
 				}
 			} break;

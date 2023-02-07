@@ -132,6 +132,7 @@ enum ExtValueId
 	ValueReclamationPlayer,
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
+	ValueMadrigalTempoDown,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -226,6 +227,7 @@ enum ExtTimerId
 	TimerMatadorHeal,
 	TimerMortothrokorPassive,
 	TimerLiftLandDelay,
+	TimerMadrigalTempoChange,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -237,6 +239,7 @@ enum ExtTimerId
 	TimerAI_DisruptionField,
 	TimerAI_MadrigalTempoChangeTimer,
 	TimerAI_EnsnaringBrood,	
+	TimerAI_MadrigalTempoChangeCooldown,
 
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
 	TimerAI_KitingCooldown,
