@@ -781,6 +781,7 @@ namespace SpriteId
 		PlagueField = 773,
 		ZealotDeath = 810,
 		AntiMatterMissileHit = 829,
+		CuirassStonewallProtocolOverlay = 839,
 
 		// CORPSE \\
 			
