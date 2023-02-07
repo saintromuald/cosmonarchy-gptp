@@ -1162,6 +1162,11 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::ZergNydusCesiant:
+				{
+					if (TierUnlocked[RaceId::Zerg][Tier2X]) {
+						return true;
+					}
+				} break;
 				case UnitId::ZergAxtothAxis:
 				case UnitId::ZergGeszkathGrotto:
 				case UnitId::ZergElthisthMound:
@@ -2897,16 +2902,9 @@ namespace hooks {
 					case UnitId::ZergMuthrokSpire:
 					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergMatravilNest:
-					{
-						if (TierUnlocked[RaceId::Zerg][Tier2X])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 					case UnitId::ZergNydusCesiant:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier3])
+						if (TierUnlocked[RaceId::Zerg][Tier2X])
 						{
 							return TECH_ACTIVE;
 						}

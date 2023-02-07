@@ -261,7 +261,7 @@ namespace hooks
 				if (built_unit->status & UnitStatus::Completed)
 				{
 					Image* current_image = unit->sprite->images.head;
-					bool bEndThere = false;
+					bool end_there = false;
 					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
@@ -270,15 +270,13 @@ namespace hooks
 					if (built_unit)
 					{
 						bool jump_to_67F3C = false;
-						built_unit->connected_unit = nullptr;
+						built_unit->connected_unit = 0;
 						helper::play_building_completed_sound(unit);
+						helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
 
 						if (built_unit->status & UnitStatus::Completed)
 						{
-							if (built_unit->id == UnitId::TerranReservoir
-							||  built_unit->id == UnitId::ProtossAquifer
-							||  built_unit->id == UnitId::ZergExcisant
-							||	built_unit->id == UnitId::PoliceDispensary)
+							if (scbw::unit_id_is_capped_gas_structure(built_unit->id))
 							{
 								if (built_unit->player == unit->player)
 								{
@@ -296,10 +294,10 @@ namespace hooks
 						if (jump_to_67F3C)
 						{
 							unit->order_to(OrderId::Harvest1, built_unit);
-							bEndThere = true;
+							end_there = true;
 						}
 					}
-					if (!bEndThere)
+					if (!end_there)
 					{
 						if (unit->order_queue_head)
 						{

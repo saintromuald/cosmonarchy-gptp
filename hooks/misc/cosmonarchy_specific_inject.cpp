@@ -571,7 +571,7 @@ namespace hooks
 		jump_patch(drop_debugging_03, Hook_DropDebugging03);
 	}
 
-	void __declspec(naked) createDamageOverlay_Wrapper() // 004993C0
+	void __declspec(naked) create_damage_overlay_wrapper() // 004993C0
 	{
 		static Sprite* sprite;
 		__asm
@@ -621,7 +621,7 @@ namespace hooks
 
 	void damage_overlay_debug()
 	{
-//		jump_patch(createDamageOverlay_Wrapper, 0x004993C0);
+//		jump_patch(create_damage_overlay_wrapper, 0x004993C0);
 		jump_patch(newDamageOverlay_JmpWrapper, 0x004993DB, 3);
 	}
 
