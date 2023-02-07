@@ -83,8 +83,12 @@ namespace hooks
 			}
 			if (unit->main_order_state == 0)
 			{
-				if (helper::order_to_move_to_target(unit, built_unit))
+				if (helper::order_to_move_to_target(unit, built_unit)) {
 					unit->main_order_state = 2;
+
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->terran_build_pos = unit->position;
+				}
 			}
 			if (unit->main_order_state == 2)
 			{
@@ -317,45 +321,25 @@ namespace hooks
 		else
 		{
 			Image* current_image = unit->sprite->images.head;
-			bool bEndThere = false;
+			bool end_there = false;
 			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
-			if (built_unit)
-			{
-				bool jump_to_67F3C = false;
+			if (built_unit) {
+				UnitExt* unit_ext = get_unit_ext(unit);
+				helper::set_move_target_xy(unit, unit_ext->terran_build_pos.x, unit_ext->terran_build_pos.y);
+
 				built_unit->connected_unit = 0;
 				helper::play_building_completed_sound(built_unit);
-				if (built_unit->status & UnitStatus::Completed)
-				{
-					if (scbw::unit_id_is_capped_gas_structure(built_unit->id))
-					{
-						if (built_unit->player == unit->player)
-						{
-							UnitExt* unit_ext = get_unit_ext(unit);
-							unit->order_target.pt.x = unit_ext->terran_build_pos.x;
-							unit->order_target.pt.y = unit_ext->terran_build_pos.y;
-							helper::fix_target_location(&unit->order_target.pt, unit->id);
-							jump_to_67F3C = true;
-						}
-					}
-				}
-				if (!jump_to_67F3C)
-				{
-					if (built_unit->id >= UnitId::ResourceMineralField && built_unit->id <= UnitId::ResourceMineralFieldType3)
-					{
-						jump_to_67F3C = true;
-					}
-				}
-				if (jump_to_67F3C)
-				{
+				if ((built_unit->status & UnitStatus::Completed && scbw::unit_id_is_capped_gas_structure(built_unit->id) && built_unit->player == unit->player)
+				||	(built_unit->id >= UnitId::ResourceMineralField && built_unit->id <= UnitId::ResourceMineralFieldType3)) {
 					unit->order_to(OrderId::Harvest1, built_unit);
-					bEndThere = true;
+					end_there = true;
 				}
 			}
-			if (!bEndThere)
+			if (!end_there)
 			{
 				if (unit->order_queue_head)
 				{
@@ -392,6 +376,7 @@ namespace hooks
 				{
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit_ext->terran_build_pos = unit->position;
+
 					Unit* built_unit = 0;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevation = units_dat::elevation[unit->id] + 1;

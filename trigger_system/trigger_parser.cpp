@@ -302,7 +302,6 @@ u32 parser_get_time_ticks(Parser* parser) {
 }
 
 s32 parser_get_var_value(Parser* parser, bool is_timer) {
-	char* marker = parser_marker(parser);
 	if (parser_get_keyword(parser, "random")) {
 		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);

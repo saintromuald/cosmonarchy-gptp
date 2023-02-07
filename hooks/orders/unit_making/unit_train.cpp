@@ -128,9 +128,27 @@ namespace hooks {
 								built_units[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}
 
+							Vector32f rally_shift = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, unit->rally.pt));
+							f32 abs_x = abs(rally_shift.x);
+							f32 abs_y = abs(rally_shift.y);
+							if (abs_x > abs_y) {
+								rally_shift.x /= abs_x;
+								rally_shift.y /= abs_x;
+							} else {
+								rally_shift.x /= abs_y;
+								rally_shift.y /= abs_y;
+							}
+
+							u32 w = rally_shift.x < 0 ? (units_dat::unit_bounds[unit->id].left + units_dat::unit_bounds[built_unit->id].right)  : (units_dat::unit_bounds[unit->id].right  + units_dat::unit_bounds[built_unit->id].left);
+							u32 h = rally_shift.y < 0 ? (units_dat::unit_bounds[unit->id].top  + units_dat::unit_bounds[built_unit->id].bottom) : (units_dat::unit_bounds[unit->id].bottom + units_dat::unit_bounds[built_unit->id].top);
+							Point16 spawn_point = unit->position;
+							spawn_point.x += rally_shift.x * w;
+							spawn_point.y += rally_shift.y * h;
+
 							for (u32 i = 0; i < count; i++) {
 								Unit* new_unit = built_units[i];
 								if (new_unit) {
+									scbw::move_unit(new_unit, spawn_point.x, spawn_point.y);
 									helper::ai_training_unit(new_unit, unit);
 									if (built_unit->id == UnitId::TerranNuclearMissile)
 									{
