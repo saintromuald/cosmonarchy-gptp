@@ -108,10 +108,10 @@ namespace hooks {
 			} else if (unit->secondary_order_state == 2) {
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit) {
-					UnitExt* builtUnitExt = get_unit_ext(built_unit);
-					bool extraBuild = false;
+					UnitExt* built_unit_ext = get_unit_ext(built_unit);
+					bool extra_build = false;
 					BuildingModifier modifier = get_building_modifier(unit, 0, false);
-					u32 hpGain = helper::get_hp_gain_for_repair(built_unit) * modifier.multiplier;
+					u32 hp_gain = helper::get_hp_gain_for_repair(built_unit) * modifier.multiplier;
 					if (modifier.decrease) {
 						if (built_unit->remaining_build_time > modifier.decrease) {
 							built_unit->remaining_build_time -= modifier.decrease;
@@ -119,7 +119,7 @@ namespace hooks {
 							built_unit->remaining_build_time = 0;
 						}
 					}
-					if (extraBuild || helper::progress_build(built_unit, hpGain, TRUE)) {
+					if (extra_build || helper::progress_build(built_unit, hp_gain, TRUE)) {
 						if (built_unit->status & UnitStatus::Completed) {
 							u32 count = 1;
 							Unit* built_units[2] = {built_unit, 0};
@@ -148,8 +148,8 @@ namespace hooks {
 							jump_to_685D8 = true;
 						}
 					} else { // unit was canceled due to lack of space around the building
-						u32 queueSlot = unit->build_queue_slot % 5;
-						if (unit->build_queue[queueSlot] == UnitId::None) {
+						u32 queue_slot = unit->build_queue_slot % 5;
+						if (unit->build_queue[queue_slot] == UnitId::None) {
 							jump_to_685D8 = true;
 						} else {
 							u8 counter = 4;
