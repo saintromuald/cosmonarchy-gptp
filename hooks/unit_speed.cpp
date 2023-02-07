@@ -170,13 +170,13 @@ namespace hooks
 				if (unit->id == UnitId::ZergVorvrokor)
 				{
 					u32 range = unit->get_sight_range(false) * 32;
-					scbw::UnitFinder unitFinder(
+					scbw::UnitFinder unit_finder(
 						unit->get_x() - range,
 						unit->get_y() - range,
 						unit->get_x() + range,
 						unit->get_y() + range
 					);
-					unitFinder.for_each([&](Unit* target)
+					unit_finder.for_each([&](Unit* target)
 						{
 							if (scbw::is_allied_to(unit->player, target->player)
 								|| units_dat::base_property[target->id] & UnitProperty::Flyer)

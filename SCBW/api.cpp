@@ -3013,4 +3013,13 @@ namespace scbw {
 	{
 		return weapon_id == WeaponId::EmpyreanPlasmaBarrage;
 	}
+
+	bool weapon_id_is_melee_aoe(u32 weapon_id)
+	{
+		return weapon_id == WeaponId::NathrokorPlasmidBreath
+		|| weapon_id == WeaponId::GorgrokorSerratedCleavers
+		|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
+		|| weapon_id == WeaponId::TethzorokorSaberArray
+		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
+	}
 }

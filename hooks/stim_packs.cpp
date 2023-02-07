@@ -4,51 +4,48 @@
 
 namespace hooks
 {
+	const s32 MIN_HITPOINTS_FOR_STIMPACKS = 1280;
 
-	const s32 MIN_HITPOINTS_FOR_STIMPACKS = 2560;
-
-	// Equivalent to original code, only doubt is queue_game_command
-	// Local answer when using stimpacks (check units of selection,
-	// and can just display an error message without notifying others
-	// players of the attempt if no unit can do the stimpack action)
-	void cmdact_stimpack()
+	// Equivalent to original code, only doubt is queue_game_command.
+	// Local answer when using stimpacks (check units of selection, and can just display an error message without notifying others players
+	// of the attempt if no unit can do the stimpack action). -GPTP
+	void cmdact_stimpack() // 004234D0
 	{
-		Unit* currentClientSelectionUnit;
-		bool bFoundUnitAbleToStimpack = false;
+		Unit* current_client_selection_unit;
+		bool able_to_stim = false;
 
-		// original code used pointer comparison with g_client_selection_group_end
-		// and incrementing a pointer starting at g_client_selection_group
-		for (s32 i = 0; i < SelectionCap && !bFoundUnitAbleToStimpack; i++)
+		// Original code used pointer comparison with g_client_selection_group_end and incrementing a pointer starting at g_client_selection_group
+		for (s32 i = 0; i < SelectionCap && !able_to_stim; i++)
 		{
-			currentClientSelectionUnit = g_client_selection_group->unit[i];
-			if (currentClientSelectionUnit != nullptr &&
-				currentClientSelectionUnit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
+			current_client_selection_unit = g_client_selection_group->unit[i];
+			if (current_client_selection_unit
+			&&  current_client_selection_unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
-				bFoundUnitAbleToStimpack = true;
+				able_to_stim = true;
 			}
 		}
 
-		if (bFoundUnitAbleToStimpack)
+		if (able_to_stim)
 		{
-			static u8 opcode[] = {0x36};	// packet opcode for stimpack is 0x36, no others args
+			static u8 opcode[] = {0x36}; // packet opcode for stimpack is 0x36, no others args
 			helper::queue_game_command(&opcode[0], 1);
 		}
 		else
 		{
-			char* message = (char*)g_stat_txt_tbl_new->get_string(874); //not enough life remaining
+			char* message = (char*)g_stat_txt_tbl_new->get_string(874); // not enough life remaining
 			helper::get_stat_txt_string(*g_active_portrait_unit, *g_local_nation_id, message);
 		}
 	}
 
 	// Identical to StimpackSFXRand @ 004554A0
 	// code used by the AI (no questions about sync between players in that case)
-	void use_stimpack_ai(Unit* unit)
+	void use_stimpack_ai(Unit* unit) // 004554A0
 	{
-		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
-			&& unit->stim_timer == 0)
+		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS
+		&&  unit->stim_timer == 0)
 		{
 			helper::play_sound_from_unit(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
-			unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
+			unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
 			if (unit->stim_timer < 37)
 			{
 				unit->stim_timer = 37;
@@ -59,17 +56,16 @@ namespace hooks
 
 	// Identical to original code
 	// Global answer when applying the validated action of stimpack
-	// Check the active player selection and apply stimpack effect on
-	// each valid stimpack user
-	void cmdrecv_stimpack()
+	// Check the active player selection and apply stimpack effect on each valid stimpack user
+	void cmdrecv_stimpack() // 004C2F30
 	{
-		Unit* activePlayerCurrentSelection;
+		Unit* active_player_selection;
 		*unit_iterator_pos = 0;
-		activePlayerCurrentSelection = get_active_player_next_selection();
-		while (activePlayerCurrentSelection != nullptr)
+		active_player_selection = get_active_player_next_selection();
+		while (active_player_selection != nullptr)
 		{
-			if (activePlayerCurrentSelection->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1
-				&& activePlayerCurrentSelection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
+			if (active_player_selection->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1
+			&&  active_player_selection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;
 				if (!*g_is_in_game_loop)
@@ -87,15 +83,15 @@ namespace hooks
 				}
 				// if used random, should give a value between 0 and 1
 				random_value = (random_value + random_value) / 32768;
-				helper::play_sound_from_unit(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, activePlayerCurrentSelection, 1, 0);
-				activePlayerCurrentSelection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
-				if (activePlayerCurrentSelection->stim_timer < 37)
+				helper::play_sound_from_unit(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, active_player_selection, 1, 0);
+				active_player_selection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
+				if (active_player_selection->stim_timer < 37)
 				{
-					activePlayerCurrentSelection->stim_timer = 37;
-					activePlayerCurrentSelection->update_speed();
+					active_player_selection->stim_timer = 37;
+					active_player_selection->update_speed();
 				}
 			}
-			activePlayerCurrentSelection = get_active_player_next_selection();
+			active_player_selection = get_active_player_next_selection();
 		}
 	}
 }

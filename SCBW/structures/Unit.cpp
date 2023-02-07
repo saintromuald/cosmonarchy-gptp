@@ -539,10 +539,10 @@ void Unit::damage_with_custom(
 }
 
 void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction, bool ignore_damage_128_overflow) {
-	UnitExt* unitExt = get_unit_ext(this);
+	UnitExt* unit_ext = get_unit_ext(this);
 	auto damage = dmg;
 	s32 shield_reduce_amount = 0;
-	if (unitExt->timers[TimerGodsMadeFlesh]) {
+	if (unit_ext->timers[TimerGodsMadeFlesh]) {
 		return;
 	}
 	if (units_dat::shields_enabled[this->id]) {

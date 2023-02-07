@@ -188,7 +188,7 @@ namespace hooks
 	{
 		if (unit->id == UnitId::TerranVulture)
 		{
-			unit->mine_carrier.mine_count = 3;
+			unit->mine_carrier.mine_count = 1;
 		}
 	}
 

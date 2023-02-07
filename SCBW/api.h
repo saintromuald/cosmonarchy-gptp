@@ -721,4 +721,5 @@ namespace scbw
 	bool image_id_is_powerup(u32 image_id);
 	Image* get_powerup_overlay(Sprite* sprite);
 	bool weapon_id_accelerates(u32 weapon_id);
+	bool weapon_id_is_melee_aoe(u32 weapon_id);
 }

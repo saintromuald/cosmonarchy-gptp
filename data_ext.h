@@ -132,6 +132,7 @@ enum ExtValueId
 	ValueReclamationPlayer,
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
+	ValueBuildPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -322,6 +323,8 @@ struct UnitExt
 	u32						salvage_time;
 	f32						salvage_minerals;
 	f32						salvage_gas;
+
+	Point16					terran_build_pos;
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
 	u32						parasite_spawn_count[PlayerLimit];

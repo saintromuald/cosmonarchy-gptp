@@ -248,7 +248,7 @@ namespace hooks
 
 					special_unload_unit(unit, transport, &pos);
 					scbw::set_unit_position(unit, pos.x, pos.y);
-					if (unit->subunit != nullptr)
+					if (unit->subunit)
 					{
 						scbw::set_unit_position(unit->subunit, pos.x, pos.y);
 					}
@@ -266,8 +266,8 @@ namespace hooks
 						}
 					}
 
-					UnitExt* transportExt = get_unit_ext(transport);
-					if (transportExt->values[ValueIsNeutralBunker])
+					UnitExt* transport_ext = get_unit_ext(transport);
+					if (transport_ext->values[ValueIsNeutralBunker])
 					{
 						if (!transport->get_first_loaded_unit())
 						{
@@ -897,7 +897,6 @@ namespace hooks
 	{
 		u32 cargo_status = cargo->status;
 		Unit* cargo_subunit = 0;
-		bool is_not_subunit = true;
 		if (cargo_status & UnitStatus::InTransport)
 		{
 			if (transport_died && !cargo->connected_unit)
@@ -909,7 +908,6 @@ namespace hooks
 				{
 					return;
 				}
-				is_not_subunit = (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) == 0;
 				goto LABEL_24;
 			}
 			u32 cargo_index = cargo - g_unit_table + 1;
@@ -955,9 +953,8 @@ namespace hooks
 			cargo_subunit = cargo->subunit;
 			if (cargo_subunit)
 			{
-				is_not_subunit = (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) == 0;
 			LABEL_24:
-				if (!is_not_subunit)
+				if (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit)
 				{
 					helper::toggle_unit_pathing_properties(cargo_subunit);
 				}
@@ -974,16 +971,16 @@ namespace hooks
 		{
 			return 0;
 		}
-		u32 status_something = status | 0x8000;
+		u32 status_something = status | UnitStatus::CanNotAttack;
 		unit->status = status_something;
 		u32 unit_id = unit->id;
-		if (status_something & 0x40000000
+		if (status_something & UnitStatus::IsHallucination
 		|| !units_dat::space_provided[unit_id])
 		{
 			Unit* subunit = unit->subunit;
 			if (subunit)
 			{
-				subunit->status |= 0x8000u;
+				subunit->status |= UnitStatus::CanNotAttack;
 			}
 			return 0;
 		}

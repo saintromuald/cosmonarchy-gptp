@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) cmdact_stimpack_wrapper()
+	void __declspec(naked) cmdact_stimpack_wrapper() // 004234D0
 	{
 		__asm {
 			PUSH EBP
@@ -19,7 +19,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) use_stimpack_ai_wrapper()
+	void __declspec(naked) use_stimpack_ai_wrapper() // 004554A0
 	{
 		static Unit* unit;
 		__asm {
@@ -33,7 +33,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_stimpack_wrapper()
+	void __declspec(naked) cmdrecv_stimpack_wrapper() // 004C2F30
 	{
 		__asm
 		{
@@ -50,7 +50,7 @@ namespace
 
 namespace hooks
 {
-	void injectStimPacksHooks()
+	void inject_stim_packs_hooks()
 	{
 		jump_patch(cmdact_stimpack_wrapper,		0x004234D0, 4);
 		jump_patch(use_stimpack_ai_wrapper,		0x004554A0, 5);

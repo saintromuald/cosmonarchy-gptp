@@ -334,6 +334,10 @@ namespace hooks
 					{
 						if (built_unit->player == unit->player)
 						{
+							UnitExt* unit_ext = get_unit_ext(unit);
+							unit->order_target.pt.x = unit_ext->terran_build_pos.x;
+							unit->order_target.pt.y = unit_ext->terran_build_pos.y;
+							helper::fix_target_location(&unit->order_target.pt, unit->id);
 							jump_to_67F3C = true;
 						}
 					}
@@ -386,6 +390,8 @@ namespace hooks
 				&&	  helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
 				&&	  helper::begin_building(unit))
 				{
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->terran_build_pos = unit->position;
 					Unit* built_unit = 0;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
@@ -456,10 +462,10 @@ namespace hooks
 				unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
 				unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
 			}
+
 			move_target_result = helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-			if ((unit->order_target.pt.x != unit->next_target_waypoint.x ||
-				unit->order_target.pt.y != unit->next_target_waypoint.y)
-				&& !(unit->order_target.pt.x == 0 && unit->order_target.pt.y == 0))
+			if ((unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y)
+			&& !(unit->order_target.pt.x == 0 && unit->order_target.pt.y == 0))
 			{
 				unit->next_target_waypoint.x = unit->order_target.pt.x;
 				unit->next_target_waypoint.y = unit->order_target.pt.y;

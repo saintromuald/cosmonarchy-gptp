@@ -52,9 +52,9 @@ namespace hooks
 				}
 				x /= 32; y /= 32;
 
-				// Check for units occupying the landing zone before the final vertical movement started?
+				// Check for units occupying the landing zone before the final vertical movement started.
 				if (helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0)) {
-					// Probably play "landing sequence interrupted"
+					// Play "landing sequence interrupted".
 					helper::play_building_land_sound(unit);
 
 					if (unit->order_queue_head
@@ -64,7 +64,7 @@ namespace hooks
 					}
 					unit->order_to_idle();
 				} else {
-					// Use an AddFogMask() function after some coordinates calculations
+					// Use an add_fog_mask() function after some coordinates calculations
 					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					unit->building.landing_timer = 1;
 
@@ -154,7 +154,7 @@ namespace hooks
 					if (has_move_order) {
 						// This causes the landed building to immediately take off again to execute the queued move/follow order
 						helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::BuildingLiftoff);
-					}						
+					}
 				}
 				// Some units iterations, idle orders affectations, and unknown order assignment?
 				// Maybe affect another selected unit depending on attempt at giving order?
@@ -169,6 +169,20 @@ namespace hooks
 				if (addon) {
 					helper::complete_addon(unit, addon);
 				}
+
+				if (scbw::unit_id_is_bunker(unit->id))
+				{
+					for (s32 i = 0; i < TransportCap; i++)
+					{
+						Unit* cargo_unit = unit->get_loaded_unit(i);
+						if (!cargo_unit) continue;
+					//	scbw::set_unit_position(cargo_unit, unit->sprite->position.x, unit->sprite->position.y);
+						if (cargo_unit->subunit) {
+							scbw::set_unit_position(cargo_unit->subunit, unit->sprite->position.x, unit->sprite->position.y);
+						}
+					}
+				}
+
 				if (*g_is_placing_building) {
 					helper::place_building_proc();
 
