@@ -132,7 +132,6 @@ enum ExtValueId
 	ValueReclamationPlayer,
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
-	ValueBuildPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
