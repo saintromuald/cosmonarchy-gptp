@@ -569,10 +569,10 @@ LABEL_42:
 		u32 detecting_players = helper::get_detecting_players(unit);
 		if (unit->status & UnitStatus::Burrowed) {
 			Box32 rect = {};
-			rect.left	= unit->get_left();
-			rect.right	= unit->get_right();
-			rect.top	= unit->get_top();
-			rect.bottom = unit->get_bottom();
+			rect.left	= unit->get_left()	 - 16;
+			rect.right	= unit->get_right()	 + 16;
+			rect.top	= unit->get_top()	 - 16;
+			rect.bottom = unit->get_bottom() + 16;
 
 			EntryArray units = {};
 			unit_search_rect(&units, rect);
