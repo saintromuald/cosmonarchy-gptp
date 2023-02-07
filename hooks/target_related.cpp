@@ -543,19 +543,14 @@ LABEL_42:
 		return result;
 	}
 
-	void update_unit_visibility(Unit* unit)
-	{
-		if (*player_visions & unit->detection_status)
-		{
+	void update_unit_visibility(Unit* unit) {
+		if (*player_visions & unit->detection_status) {
 			helper::make_sprite_visible(unit->sprite);
 			Unit* subunit = unit->subunit;
-			if (subunit)
-			{
+			if (subunit) {
 				helper::make_sprite_visible(subunit->sprite);
 			}
-		}
-		else
-		{
+		} else {
 			if (unit->sprite->flags & SpriteFlags::Selected)
 			{
 				helper::update_building_land_unit_selection(unit->detection_status, unit);
@@ -563,37 +558,49 @@ LABEL_42:
 			helper::remove_selection_circle(unit->sprite);
 			helper::make_sprite_invisible(unit->sprite);
 			Unit* subunit = unit->subunit;
-			if (subunit)
-			{
+			if (subunit) {
 				helper::make_sprite_invisible(subunit->sprite);
 			}
 		}
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	void check_unit_visibility(Unit* unit) // 00443390
-	{
-		u32 detectingPlayers = helper::get_detecting_players(unit);
-		if (unit->detection_status != detectingPlayers)
-		{
-			if (unit->detection_status == 0x80000000)
-			{
-				unit->detection_status = ~(u8)detectingPlayers;
-			}
-			u32 v6 = unit->detection_status ^ detectingPlayers;
-			unit->detection_status = detectingPlayers;
+	void check_unit_visibility(Unit* unit) { // 00443390
+		u32 detecting_players = helper::get_detecting_players(unit);
+		if (unit->status & UnitStatus::Burrowed) {
+			Box32 rect = {};
+			rect.left	= unit->get_left();
+			rect.right	= unit->get_right();
+			rect.top	= unit->get_top();
+			rect.bottom = unit->get_bottom();
 
-			u32 v5 = v6 & ~detectingPlayers;
-			if (v5)
-			{
-				helper::iterate_player_units_something(v5, unit);
+			EntryArray units = {};
+			unit_search_rect(&units, rect);
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* found_unit = units.units[i];
+				if (found_unit->status & UnitStatus::InAir || found_unit->player > PlayerLimit) {
+					continue;
+				}
+				detecting_players |= (1 << found_unit->player) | player_vision->flags[found_unit->player];
 			}
+		}
 
-			if (*player_visions & v6)
-			{
+		if (unit->detection_status != detecting_players) {
+			if (unit->detection_status == 0x80000000) {
+				unit->detection_status = ~(u8)detecting_players;
+			}
+			u32 delta_flags = unit->detection_status ^ detecting_players;
+			unit->detection_status = detecting_players;
+
+			u32 was_hidden = delta_flags & ~detecting_players;
+			if (was_hidden) {
+				helper::iterate_player_units_something(was_hidden, unit);
+			}
+			if (*player_visions & delta_flags) {
 				update_unit_visibility(unit);
 			}
 		}
+
 	}
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
