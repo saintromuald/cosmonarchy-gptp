@@ -129,15 +129,9 @@ namespace hooks {
 							}
 
 							Vector32f rally_shift = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, unit->rally.pt));
-							f32 abs_x = abs(rally_shift.x);
-							f32 abs_y = abs(rally_shift.y);
-							if (abs_x > abs_y) {
-								rally_shift.x /= abs_x;
-								rally_shift.y /= abs_x;
-							} else {
-								rally_shift.x /= abs_y;
-								rally_shift.y /= abs_y;
-							}
+							f32 max_distance = std::max(abs(rally_shift.x), abs(rally_shift.y));
+							rally_shift.x /= max_distance;
+							rally_shift.y /= max_distance;
 
 							u32 w = rally_shift.x < 0 ? (units_dat::unit_bounds[unit->id].left + units_dat::unit_bounds[built_unit->id].right)  : (units_dat::unit_bounds[unit->id].right  + units_dat::unit_bounds[built_unit->id].left);
 							u32 h = rally_shift.y < 0 ? (units_dat::unit_bounds[unit->id].top  + units_dat::unit_bounds[built_unit->id].bottom) : (units_dat::unit_bounds[unit->id].bottom + units_dat::unit_bounds[built_unit->id].top);
