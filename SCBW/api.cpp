@@ -1228,6 +1228,7 @@ namespace scbw {
 			|| id == UnitId::TerranPythean
 			|| id == UnitId::TerranDilettante
 			|| id == UnitId::TerranSevenstep
+			|| id == UnitId::TerranSilvertongue
 			|| id == UnitId::TerranHypnagogue
 			|| id == UnitId::TerranPaladin
 			|| id == UnitId::TerranCuirass
@@ -1235,9 +1236,6 @@ namespace scbw {
 			|| id == UnitId::TerranCentaur
 			|| id == UnitId::TerranMinotaur
 			|| id == UnitId::TerranMagnetar;
-		//	|| id == UnitId::TerranAmbassador
-		//	|| id == UnitId::TerranHeir
-		//	|| id == UnitId::TerranHorseman
 	}
 
 	void apply_hallucinating(Unit* unit, u8 player, u32 time) {
@@ -2749,6 +2747,7 @@ namespace scbw {
 		if (weapon_id == WeaponId::CohortGaussPistols
 		||  weapon_id == WeaponId::HarakanFlameThrower
 		||  weapon_id == WeaponId::HypnagogueKaleidoscopeCannon
+		||  weapon_id == WeaponId::VultureFragmentationGrenade
 		||  weapon_id == WeaponId::PazuzuJupiterDriver
 		||  weapon_id == WeaponId::ZealotPsiBlades
 		||  weapon_id == WeaponId::LegionnairePsiSabers

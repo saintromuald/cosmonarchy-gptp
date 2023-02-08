@@ -935,6 +935,8 @@ namespace hooks {
 										case UnitId::TerranTreasury:
 										case UnitId::TerranSentinel:
 										case UnitId::TerranDaedala:
+										case UnitId::TerranCaptaincy:
+										case UnitId::TerranStarport:
 										{
 											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
 												current_button_state = Button_State::Enabled;
@@ -943,9 +945,7 @@ namespace hooks {
 												current_button_state = Button_State::Disabled;
 											}
 										} break;
-										case UnitId::TerranCaptaincy:
 										case UnitId::TerranMantle:
-										case UnitId::TerranStarport:
 										{
 											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranFountainhead)) {
 												current_button_state = Button_State::Enabled;
@@ -957,6 +957,7 @@ namespace hooks {
 										case UnitId::TerranParthenon:
 										case UnitId::TerranIonCannon:
 										case UnitId::TerranApothecary:
+										case UnitId::TerranIronFoundry:
 										{
 											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranDaedala)) {
 												current_button_state = Button_State::Enabled;
@@ -965,7 +966,6 @@ namespace hooks {
 												current_button_state = Button_State::Disabled;
 											}
 										} break;
-										case UnitId::TerranIronFoundry:
 										case UnitId::TerranNaniteAssembly:
 										{
 											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtelier)) {
