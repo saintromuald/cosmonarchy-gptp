@@ -1283,42 +1283,29 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranStriga:
 			case UnitId::ProtossLegionnaire:
 			{
-				// Striga - Transient Travels
 				// Legionnaire - Blade Vortex
 				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit)) {
 					Unit* target = unit->order_target.unit;
 					u32 distance = unit->get_distance_to_target(target);
 					bool do_teleport = false;
-					u32 imageId;
+					u32 image_id;
 					Point16 position;
 
 					if (unit->id == UnitId::ProtossLegionnaire) {
 						if (distance > 15 && distance <= 3 * 32 && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
-							imageId = ImageId::LegionnaireTeleportEffect;
+							image_id = ImageId::LegionnaireTeleportEffect;
 							position = target->sprite->position;
 						}
-					} else if (unit->id == UnitId::TerranStriga) {
-						if (distance > 3.5 * 32 && distance <= 5 * 32 && scbw::is_unit_isolated(target)) {
-							do_teleport = true;
-							imageId = ImageId::LegionnaireTeleportEffect;
-							Vector32 diff = scbw::get_vector_between_points(target->sprite->position, unit->sprite->position);
-							Vector32f displacement = scbw::get_normalized_vector(diff);
-							displacement.x *= 3 * 32;
-							displacement.y *= 3 * 32;
-							position = target->position;
-							position.x += displacement.x;
-							position.y += displacement.y;
-						}
 					}
+					// Striga was here - removed 7 February 2023. -Pr0nogo
 					if (do_teleport) {
 						position = scbw::clamp_point(position);
 						bool teleport = scbw::teleport(unit, position, 0, true);
-						if (!unit->get_overlay(imageId) && teleport) {
-							unit->sprite->create_top_overlay(imageId);
+						if (!unit->get_overlay(image_id) && teleport) {
+							unit->sprite->create_top_overlay(image_id);
 						}
 					}
 				}
@@ -1931,21 +1918,21 @@ namespace hooks {
 				if (scbw::get_generic_rust_value(unit, RustId::CastToggleTempoChange)) {
 					scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 0);
 					if (!unit_ext->timers[TimerMadrigalTempoChange]) {
-						unit_ext->timers[TimerMadrigalTempoChange] = 12;
+						unit_ext->timers[TimerMadrigalTempoChange] = 18;
 						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown];
 						unit->status |= UnitStatus::CanNotAttack;
-						unit->sprite->create_overlay(SpriteId::CuirassStonewallProtocolOverlay);
+						unit->sprite->create_overlay(ImageId::StonewallProtocolOverlay);
+						if (unit_ext->values[ValueMadrigalTempoDown]) {
+							helper::play_sound_from_unit(SoundId::MadrigalTempoChangeDown, unit);
+						}
+						else {
+							helper::play_sound_from_unit(SoundId::MadrigalTempoChangeUp, unit);
+						}
 					}
 				}
-
 				if (unit_ext->timers[TimerMadrigalTempoChange] == 1) {
-					if (unit_ext->values[ValueMadrigalTempoDown]) {
-						helper::play_sound_from_unit(SoundId::MadrigalTempoChangeDown, unit);
-					} else {
-						helper::play_sound_from_unit(SoundId::MadrigalTempoChangeUp, unit);
-					}
 					unit->status &= ~UnitStatus::CanNotAttack;
-					unit->remove_overlay(SpriteId::CuirassStonewallProtocolOverlay);
+					unit->remove_overlay(ImageId::StonewallProtocolOverlay);
 				}
 			} break;
 		}

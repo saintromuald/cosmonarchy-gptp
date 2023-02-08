@@ -396,7 +396,7 @@ void tick_effect(Effect* effect) {
 
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
-					target->damage_with_custom(20 * damage_multiplier, 3, effect->source, effect->player);
+					target->damage_with_custom(30 * damage_multiplier, 3, effect->source, effect->player);
 				}
 			} break;
 			case EffectId_Criticality: {

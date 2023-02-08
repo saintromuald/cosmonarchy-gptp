@@ -1170,6 +1170,10 @@ namespace SoundId
 		CentaurSunchaserMissilesFire02		= 1205,
 		CentaurSunchaserMissilesFire03		= 1206,
 		CentaurSunchaserMissilesFire04		= 1207,
+		MadrigalFuriaMissilesFire01			= 1208,
+		MadrigalFuriaMissilesFire02			= 1209,
+		MadrigalFuriaMissilesFire03			= 1210,
+		MadrigalFuriaMissilesFire04			= 1211,
 
 		AugurDeath01						= 1235,
 		AugurDeath02						= 1236,

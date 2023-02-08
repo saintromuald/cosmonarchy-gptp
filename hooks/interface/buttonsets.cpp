@@ -1851,10 +1851,6 @@ namespace hooks {
 									{
 										current_button_state = Button_State::Enabled;
 									}
-									else if (current_button->icon_id == IconId::EMPShockwave) // Striga - Transient Travels
-									{
-										current_button_state = Button_State::Enabled;
-									}
 								} break;
 								case UnitId::TerranOlympian:
 								{
