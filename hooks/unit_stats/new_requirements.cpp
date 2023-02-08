@@ -91,15 +91,15 @@ namespace hooks {
 				case UnitId::TerranSentinel:
 				case UnitId::TerranDaedala:
 				case UnitId::TerranFountainhead:
+				case UnitId::TerranCaptaincy:
+				case UnitId::TerranStarport:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
 						return true;
 					}
 				} break;
-				case UnitId::TerranCaptaincy:
 				case UnitId::TerranMantle:
-				case UnitId::TerranStarport:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2X])
 					{
@@ -109,14 +109,14 @@ namespace hooks {
 				case UnitId::TerranParthenon:
 				case UnitId::TerranIonCannon:
 				case UnitId::TerranAtelier:
+				case UnitId::TerranApothecary:
+				case UnitId::TerranIronFoundry:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier3])
 					{
 						return true;
 					}
 				} break;
-				case UnitId::TerranApothecary:
-				case UnitId::TerranIronFoundry:
 				case UnitId::TerranNaniteAssembly:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier3X])
@@ -264,6 +264,12 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranTinkerersTower:
+				{
+					if (TierUnlocked[RaceId::Terran][Tier2X])
+					{
+						return true;
+					}
+				} break;
 				case UnitId::TerranMadcap:
 				case UnitId::TerranHeracles:
 				case UnitId::TerranApostle:
@@ -353,8 +359,14 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranBioticBase:
+				case UnitId::TerranBioticBastion:
 				case UnitId::TerranFutureStation:
+				{
+					if (TierUnlocked[RaceId::Terran][Tier3X])
+					{
+						return true;
+					}
+				} break;
 				case UnitId::TerranPaladin:
 				case UnitId::TerranCuirass:
 				case UnitId::TerranPazuzu:
@@ -372,7 +384,7 @@ namespace hooks {
 				case UnitId::TerranAnticthon:
 				case UnitId::TerranAion:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranBioticBase))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranBioticBastion))
 					{
 						return true;
 					}
@@ -396,12 +408,9 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranMunitionsBay:
+				case UnitId::TerranCommandment:
 				{
-					return true;
-				} break;
-				case UnitId::TerranControlTower:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
+					if (TierUnlocked[RaceId::Terran][Tier2X])
 					{
 						return true;
 					}
@@ -412,18 +421,18 @@ namespace hooks {
 				{
 					return true;
 				} break;
-				case UnitId::TerranAzazel:
-				case UnitId::TerranSeraph:
-				{
-					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranControlTower))
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranSundog:
 				case UnitId::TerranSalamander:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranMunitionsBay))
+					{
+						return true;
+					}
+				} break;
+				case UnitId::TerranSeraph:
+				case UnitId::TerranAzazel:
+				{
+					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 					{
 						return true;
 					}
@@ -1415,6 +1424,8 @@ namespace hooks {
 					case UnitId::TerranTreasury:
 					case UnitId::TerranSentinel:
 					case UnitId::TerranDaedala:
+					case UnitId::TerranCaptaincy:
+					case UnitId::TerranStarport:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier2])
 						{
@@ -1422,9 +1433,7 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::TerranCaptaincy:
 					case UnitId::TerranMantle:
-					case UnitId::TerranStarport:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier2X])
 						{
@@ -1435,6 +1444,7 @@ namespace hooks {
 					case UnitId::TerranParthenon:
 					case UnitId::TerranIonCannon:
 					case UnitId::TerranApothecary:
+					case UnitId::TerranIronFoundry:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier3])
 						{
@@ -1442,7 +1452,6 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::TerranIronFoundry:
 					case UnitId::TerranNaniteAssembly:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier3X])
@@ -1665,7 +1674,11 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						return TECH_ACTIVE;
+						if (TierUnlocked[RaceId::Terran][Tier2X])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 					case UnitId::TerranMadcap:
 					case UnitId::TerranHeracles:
@@ -1804,14 +1817,18 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranBioticBase:
+					case UnitId::TerranBioticBastion:
 					case UnitId::TerranFutureStation:
 					{
 						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
-						return TECH_ACTIVE;
+						if (TierUnlocked[RaceId::Terran][Tier3X])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 					case UnitId::TerranPaladin:
 					case UnitId::TerranCuirass:
@@ -1843,7 +1860,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranBioticBase)
+						if (addon_id == UnitId::TerranBioticBastion)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1872,20 +1889,13 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranMunitionsBay:
+					case UnitId::TerranCommandment:
 					{
 						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}
-						return TECH_ACTIVE;
-					}
-					case UnitId::TerranControlTower:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier3])
+						if (TierUnlocked[RaceId::Terran][Tier2X])
 						{
 							return TECH_ACTIVE;
 						}
@@ -1921,7 +1931,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranControlTower)
+						if (addon_id == UnitId::TerranCommandment)
 						{
 							return TECH_ACTIVE;
 						}

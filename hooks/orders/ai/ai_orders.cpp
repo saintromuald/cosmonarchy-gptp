@@ -2112,7 +2112,7 @@ namespace hooks {
 			{
 				unit_id = UnitId::TerranCommandCenter;
 			} break;
-			case UnitId::TerranControlTower:
+			case UnitId::TerranCommandment:
 			{
 				unit_id = UnitId::TerranStarport;
 			} break;

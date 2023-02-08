@@ -1515,7 +1515,7 @@ namespace DeathSoundId
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranAcademy
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranFulcrum
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranStarport
-		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranControlTower
+		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranCommandment
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranDaedala
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranCovertOps
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav },								//TerranPhysicsLab

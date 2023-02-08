@@ -745,7 +745,7 @@ namespace hooks {
 								|| current_button->requirement_var == UnitId::TerranStriga)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower)
-									|| scbw::unit_queue_full(unit))
+								||  scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -803,11 +803,17 @@ namespace hooks {
 						// Iron Foundry buttonset handling
 						if (unit->id == UnitId::TerranIronFoundry)
 						{
-							if (current_button->requirement_var == UnitId::TerranFutureStation)
+							if (current_button->requirement_var == UnitId::TerranFutureStation
+							||	current_button->requirement_var == UnitId::TerranBioticBastion)
 							{
 								if (!has_addon && !is_training)
 								{
-									current_button_state = Button_State::Enabled;
+									if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtelier)) {
+										current_button_state = Button_State::Enabled;
+									}
+									else {
+										current_button_state = Button_State::Disabled;
+									}
 								}
 								else
 								{
@@ -830,7 +836,7 @@ namespace hooks {
 							else if (current_button->requirement_var == UnitId::TerranAnticthon
 							||		 current_button->requirement_var == UnitId::TerranAion)
 							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBase)
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBastion)
 								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
@@ -861,7 +867,7 @@ namespace hooks {
 							else if (current_button->requirement_var == UnitId::TerranAzazel
 								|| current_button->requirement_var == UnitId::TerranSeraph)
 							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranControlTower)
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment)
 									|| scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;

@@ -92,7 +92,7 @@ namespace UnitId
 		TerranQuarry										= 174,		// Protoss Temple
 		TerranTinkerersTower								= 175,		// Xel'Naga Temple
 		TerranParticleAccelerator							= 189,		// Warp Gate
-		TerranBioticBase									= 190,		// Psi Disruptor
+		TerranBioticBastion									= 190,		// Psi Disruptor
 		TerranIronFoundry									= 198,		// Terran Flag Beacon
 		TerranCaptaincy										= 199,		// Protoss Flag Beacon
 		TerranScrapyard										= 200,		// Power Generator
@@ -386,7 +386,7 @@ namespace UnitId
 		TerranAcademy										= 112,
 		TerranFulcrum										= 113,
 		TerranStarport										= 114,
-		TerranControlTower									= 115,
+		TerranCommandment									= 115,
 		TerranDaedala										= 116,
 		TerranCovertOps										= 117,
 		TerranPhysicsLab									= 118,

@@ -735,7 +735,7 @@ namespace SpriteId
 		TerranAnticthon = 727,
 		ProtossAnthelion = 728,
 		TerranTinkerersTower = 729,
-		TerranBioticBase = 730,
+		TerranBioticBastion = 730,
 		ProtossProstrationStage = 731,
 		ProtossRogueGallery = 732,
 		ProtossWaywardLure = 733,
