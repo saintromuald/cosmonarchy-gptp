@@ -26,7 +26,7 @@ namespace hooks
 		{
 			sight_range = BLIND_SIGHT_RANGE;
 		}
-		else if (unit->status & UnitStatus::Burrowed) {
+		else if (unit->status & UnitStatus::Burrowed && !scbw::unit_is_trap(unit)) {
 			sight_range = units_dat::sight_range[unit->id] / 2;
 		}
 		else
