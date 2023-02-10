@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "hooks/harvest.h"
+#include "graphics/graphics.h"
 
 bool trigger_game_paused;
 bool trigger_system_init;
@@ -1083,12 +1084,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		}
-		else if (parser_eq(&parser, "witness_mode")) {
+		else if (parser_eq(&parser, "witness_mode")) { // This could probably be refactored. -Pr0nogo
 			u32 player = parser_get_player(&parser);
 			s32 state = parser_get_s32(&parser);
-			if (player) {
-				player -= 1;
-				global_vars.players[player].is_witness = state;
+			if (player) { // Subtracting 1 from the player id causes bugs with the code in supply_hooks
+				if (!state && global_vars.players[player].is_witness) {
+					global_vars.players[player].is_witness = state;
+					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game
+				}
+				else {
+					// Have to else here because of stupid
+					global_vars.players[player].is_witness = state;
+				}
 			}
 		}
 	}

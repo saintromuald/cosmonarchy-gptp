@@ -427,7 +427,7 @@ namespace hooks
 					dialog_var = dialog_var->next;
 					helper::print_stat_res_info(dialog_var, 0, &StatRes_accrue_minerals[player_id], resources->minerals[player_id], FALSE);
 					dialog_var = dialog_var->next;
-					graphics::draw_stat_res_box(424, 2 + statres_row, 433, 11 + statres_row, g_player_minimap_colors[player_id]);
+					graphics::draw_stat_res_box(424, 5 + statres_row, 433, 14 + statres_row, g_player_minimap_colors[player_id]);
 					statres_row += 15;
 					//keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
 					helper::hide_dialog(dialog_var);
