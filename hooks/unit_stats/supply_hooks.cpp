@@ -21,23 +21,23 @@ namespace hooks
 
 	s32 get_supplies_remaining(u8 player, u16 unit_id) // 004889D0
 	{
-		u32 supplyAvailable = 0;
-		u32 supplyUsed = 0;
+		u32 supply_available = 0;
+		u32 supply_used = 0;
 		if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player])
 		{
-			supplyUsed = g_supplies_used_terran[player];
-			supplyAvailable = g_supplies_available_terran[player];
+			supply_used = g_supplies_used_terran[player];
+			supply_available = g_supplies_available_terran[player];
 		}
 		else
 		{
-			supplyUsed = g_supplies_used_terran[player];
-			supplyAvailable = hooks::get_supplies_max(unit_id, player);
+			supply_used = g_supplies_used_terran[player];
+			supply_available = hooks::get_supplies_max(unit_id, player);
 		}
-		if (*g_cheat_state & 0x20000)
+		if (*g_cheat_state & 0x20000) // Food for Thought
 		{
-			return g_supplies_max_terran[player] - supplyUsed;
+			return g_supplies_max_terran[player] - supply_used;
 		}
-		return supplyAvailable - supplyUsed;
+		return supply_available - supply_used;
 	}
 
 	s32 get_supplies_max(u16 unit_id, u8 player) // 00488990
@@ -67,52 +67,52 @@ namespace hooks
 		s32 result = 0;
 		if (*g_multiplayer_mode && game_data->teams_enabled)
 		{
-			s32 forceIterator = 1;
+			s32 force_iterator = 1;
 			do
 			{
-				result = unknown_57F41CB[(u8)forceIterator];
-				u8 iteratorResult = unknown_57F41CB[(u8)forceIterator];
+				result = unknown_57F41CB[(u8)force_iterator];
+				u8 iterator_result = unknown_57F41CB[(u8)force_iterator];
 				if ((s8)result != -1)
 				{
-					s32 supplyMax1 = 0;
-					s32 supplyMax2 = 0;
-					s32 supplyMax3 = 0;
+					s32 supply_max1 = 0;
+					s32 supply_max2 = 0;
+					s32 supply_max3 = 0;
 
-					if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 0) >= 400)
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0) >= 400)
 					{
-						supplyMax1 = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 0);
+						supply_max1 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0);
 					}
 					else
 					{
-						supplyMax1 = 400;
+						supply_max1 = 400;
 					}
 
-					supplyMax2 = iteratorResult;
-					g_supplies_max_terran[supplyMax2] = supplyMax1;
-					if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1) >= 400)
+					supply_max2 = iterator_result;
+					g_supplies_max_terran[supply_max2] = supply_max1;
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1) >= 400)
 					{
-						supplyMax3 = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 1);
+						supply_max3 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1);
 					}
 					else
 					{
-						supplyMax3 = 400;
+						supply_max3 = 400;
 					}
 
-					g_supplies_max_terran[supplyMax2] += supplyMax3;
-					if (400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2) >= 400)
+					g_supplies_max_terran[supply_max2] += supply_max3;
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2) >= 400)
 					{
-						result = 400 * (u8)helper::teamGame_CountRaces(forceIterator, (char*)0x190, 2);
+						result = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2);
 					}
 					else
 					{
 						result = 400;
 					}
 
-					g_supplies_max_terran[supplyMax2] += result;
+					g_supplies_max_terran[supply_max2] += result;
 				}
-				++forceIterator;
+				++force_iterator;
 			}
-			while (forceIterator <= 4);
+			while (force_iterator <= 4);
 		}
 		else
 		{
@@ -127,119 +127,6 @@ namespace hooks
 			while (result < (s32)g_supplies_available_protoss);
 		}
 		return result;
-	}
-
-	void stat_res_main_proc(BinDlg* dialog) // 004E5640
-	{
-		if (dialog->control_type)
-		{
-			dialog = dialog->parent;
-		}
-		BinDlg* dialogVar = dialog->child_dialog;
-		if (dialogVar)
-		{
-			while (dialogVar->index != 1)
-			{
-				dialogVar = dialogVar->next;
-				if (!dialogVar)
-				{
-					dialogVar = 0;
-					break;
-				}
-			}
-		}
-		else
-		{
-			dialogVar = 0;
-		}
-
-		s32 activePlayer = *g_local_nation_id;
-		s32 replay_switch_something = 0;
-		if (*g_is_in_replay)
-		{
-
-			if (*g_client_selection_count)
-			{
-				Unit* activeUnit = *g_active_portrait_unit;
-				if (*g_client_selection_count != 1)
-				{
-					activeUnit = g_client_selection_group->unit[0];
-				}
-				activePlayer = activeUnit->player;
-				if (activePlayer != 11)
-				{
-					activePlayer = activePlayer;
-					*g_local_nation_id = activePlayer;
-					if (activePlayer != *unknown_player_5153F8)
-					{
-						replay_switch_something = 1;
-					}
-					*unknown_player_5153F8 = activePlayer;
-				}
-			}
-			else
-			{
-				for (*unknown_player_5153F8 = -1; dialogVar; dialogVar = dialogVar->next)
-				{
-					if (dialogVar->index > 5)
-					{
-						break;
-					}
-					helper::hide_dialog(dialogVar);
-				}
-				return;
-			}
-		}
-
-		s32 workers = 0;
-		s32 men = 0;
-		for (Unit* unit = first_player_unit->unit[*g_local_nation_id]; unit; unit = unit->player_link.next) {
-			if (unit->status & UnitStatus::Completed) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-					workers += 2;
-				} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
-					men += 2;
-				}
-			}
-		}
-
-		if (g_player_table[activePlayer].race == RaceId::Zerg)
-		{
-			helper::showSupplyInfo(dialogVar, 4, workers, men);
-			dialogVar = dialogVar->next;
-		}
-		else if (g_player_table[activePlayer].race == RaceId::Terran)
-		{
-			helper::showSupplyInfo(dialogVar, 5, workers, men);
-			dialogVar = dialogVar->next;
-		}
-		else if (g_player_table[activePlayer].race == RaceId::Protoss)
-		{
-			helper::showSupplyInfo(dialogVar, 6, workers, men);
-			dialogVar = dialogVar->next;
-		}
-
-		helper::printStatResInfo(dialogVar, *console_index + 1, (char**)unknown_68C22C, (char*)g_game_vespene[*g_local_nation_id], replay_switch_something);
-		BinDlg* v18 = dialogVar->next;
-		helper::printStatResInfo(v18, 0, (char**)unknown_68C230, (char*)g_game_minerals[*g_local_nation_id], replay_switch_something);
-		BinDlg* v17 = v18->next;
-		if (v18->next)
-		{
-			do
-			{
-				if (v17->index > 5)
-				{
-					break;
-				}
-				helper::hide_dialog(v17);
-				v17 = v17->next;
-			}
-			while (v17);
-		}
-		if (*g_is_in_replay)
-		{
-			*g_local_nation_id = activePlayer;
-		}
 	}
 
 	s32 get_supplies_temp() // 004246D0
@@ -257,7 +144,7 @@ namespace hooks
 	{
 		if (!*g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id)
 		{
-			return helper::unitStatCond_Standard();
+			return helper::unit_stat_cond_standard();
 		}
 
 		u8 activePlayer = (*g_active_portrait_unit)->player;
@@ -449,7 +336,7 @@ namespace hooks
     }
 
     // Check if @p player has enough supplies to build @p unit_id.
-    bool has_supplies_for_unit(u8 player, u16 unit_id, bool canShowErrorMessage) {
+    bool has_supplies_for_unit(u8 player, u16 unit_id, bool can_show_error) {
         // Default StarCraft behavior
         s32 supply_cost = units_dat::supply_required[unit_id];
         if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
@@ -468,18 +355,120 @@ namespace hooks
         const u32 supply_used = g_race_supply[RaceId::Terran].used[player];
         // Must construct additional pylons
         if (supply_used + supply_cost > g_race_supply[RaceId::Terran].max[player]) {
-            if (canShowErrorMessage) {
+            if (can_show_error) {
                 scbw::show_error_message_with_sfx(player, 847 + race, 1 + race);
             }
             return false;
         }
         // Supply limit exceeded
         if (supply_cost > scbw::get_supply_remaining(player, RaceId::Terran)) {
-            if (canShowErrorMessage) {
+            if (can_show_error) {
                 scbw::show_error_message_with_sfx(player, 844 + race, 153 + race);
             }
             return false;
         }
         return true;
     }
+
+	// Hook edited by DarkenedFantasies for new replay UI. -Pr0nogo
+	void stat_res_main_proc(BinDlg* dialog) // 004E5640
+	{
+		if (dialog->control_type) {
+			dialog = dialog->parent;
+		}
+
+		BinDlg* dialog_var = dialog->child_dialog;
+
+		if (dialog_var) {
+			while (dialog_var->index != 1) {
+				dialog_var = dialog_var->next;
+
+				if (!dialog_var) {
+					dialog_var = 0;
+					break;
+				}
+			}
+		}
+		else {
+			dialog_var = 0;
+		}
+
+		s32 workers = 0;
+		s32 men = 0;
+
+		if (*g_is_in_replay || (u16)forceNames->force[g_player_table[*g_local_nation_id].force].name[0] == 130) {
+			u8 statres_row = 0;
+
+			graphics::reset_all_graphics();
+
+			for (u8 player_id = 0; player_id < 8; ++player_id) {
+				u8 player_type = g_player_table[player_id].type;
+
+				if (player_type == PlayerType::Computer || player_type == PlayerType::Human) {
+					u8 race_id = g_player_table[player_id].race;
+
+					for (Unit* unit = first_player_unit->unit[player_id]; unit; unit = unit->player_link.next) {
+						if (unit->status & UnitStatus::Completed) {
+							if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+								workers += 2;
+							}
+							else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
+								men += 2;
+							}
+						}
+					}
+
+					helper::show_supply_info(dialog_var, race_id + 4, workers, men);
+					dialog_var = dialog_var->next;
+					helper::print_stat_res_info(dialog_var, race_id + 1, &StatRes_accrue_gas[player_id], resources->gas[player_id], FALSE);
+					dialog_var = dialog_var->next;
+					helper::print_stat_res_info(dialog_var, 0, &StatRes_accrue_minerals[player_id], resources->minerals[player_id], FALSE);
+					dialog_var = dialog_var->next;
+					graphics::draw_filled_box(424, 2 + statres_row, 433, 11 + statres_row, g_player_minimap_colors[player_id]);
+					statres_row += 15;
+
+					//keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::drawFilleBox.
+					helper::hide_dialog(dialog_var);
+					dialog_var = dialog_var->next;
+				}
+			}
+
+			while (dialog_var && dialog_var->index <= 32) {
+				helper::hide_dialog(dialog_var);
+				dialog_var = dialog_var->next;
+			}
+		}
+		else {
+			s32 active_player = *g_local_nation_id;
+
+			for (Unit* unit = first_player_unit->unit[active_player]; unit; unit = unit->player_link.next) {
+				if (unit->status & UnitStatus::Completed) {
+					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+						workers += 2;
+					}
+					else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
+						men += 2;
+					}
+				}
+			}
+
+			helper::show_supply_info(dialog_var, g_player_table[active_player].race + 4, workers, men);
+			dialog_var = dialog_var->next;
+			helper::print_stat_res_info(dialog_var, *console_index + 1, unknown_68C22C, g_game_vespene[active_player], FALSE);
+			dialog_var = dialog_var->next;
+			helper::print_stat_res_info(dialog_var, 0, unknown_68C230, (u32)g_game_minerals[active_player], FALSE);
+			dialog_var = dialog_var->next;
+
+			if (dialog_var->next) {
+				do {
+					if (dialog_var->index > 31) {
+						break;
+					}
+
+					helper::hide_dialog(dialog_var);
+					dialog_var = dialog_var->next;
+				} while (dialog_var);
+			}
+		}
+	}
 }

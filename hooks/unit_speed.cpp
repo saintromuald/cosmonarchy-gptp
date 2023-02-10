@@ -234,6 +234,7 @@ namespace hooks
 			{
 				speed *= 1.1;
 			} break;
+			case UnitId::TerranCyclops:
 			case UnitId::TerranHeracles:
 			{
 				speed *= 1.15;

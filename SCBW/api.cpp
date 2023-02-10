@@ -3021,4 +3021,9 @@ namespace scbw {
 		|| weapon_id == WeaponId::TethzorokorSaberArray
 		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
 	}
+
+	bool unit_regens_in_combat(Unit* unit)
+	{
+		return unit->id == UnitId::TerranMatador; // Can update later with status checks and etc. -Pr0nogo
+	}
 }

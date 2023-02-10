@@ -485,8 +485,8 @@ SCBW_DATA(s8*,		unknown_57F41CB,				0x0057F1CB);
 
 // For stat_res_main_proc
 SCBW_DATA(s32*,		unknown_player_5153F8,			0x005153F8);
-SCBW_DATA(s32*,		unknown_68C22C,					0x0068C22C);
-SCBW_DATA(s32*,		unknown_68C230,					0x0068C230);
+SCBW_DATA(u32*,		unknown_68C22C,					0x0068C22C);
+SCBW_DATA(u32*,		unknown_68C230,					0x0068C230);
 
 // For get_supplies_temp
 SCBW_DATA(s16*,		g_supplies_used_temp,			0x006CA93E);
@@ -1123,6 +1123,9 @@ SCBW_DATA(u8*,			g_buttonset_subunit_order_id,		0x0068C1B8);
 
 // For issue_place_building_order
 SCBW_DATA(u8*,			g_place_building_order_id,			0x0064088D);
+
+// For replay/witness UI
+SCBW_DATA(ForceNames*, forceNames, 0x0058D5BC);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

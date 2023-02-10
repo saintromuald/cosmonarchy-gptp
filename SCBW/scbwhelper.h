@@ -940,14 +940,14 @@ namespace helper {
 	u32 get_tile_distance(s32 x, s32 y, s32 x2, s32 y2);													// 00444100
 
 	// For initialize_unit_counts
-	char teamGame_CountRaces(char force, char* bIsLegal, char race);										// 004857B0
+	char team_game_count_races(char force, char* bIsLegal, char race);										// 004857B0
 
 	// For stat_res_main_proc
-	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);									// 004E53B0
-	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething);				// 004E52E0
+	void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);								// 004E53B0
+	void print_stat_res_info(BinDlg* dialog, u32 icon_graphic, u32* accrued_value, u32 resource_count, b32 do_not_accrue);	// 004E52E0
 
 	// For redraw_supply_info
-	bool unitStatCond_Standard();																			// 00424980
+	bool unit_stat_cond_standard();																			// 00424980
 
 	// For draw_supply_unit_status
 	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex);										// 00425510

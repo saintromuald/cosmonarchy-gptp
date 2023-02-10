@@ -1388,6 +1388,33 @@ namespace SoundId
 
 		MadrigalTempoChangeDown				= 2196,
 		MadrigalTempoChangeUp				= 2197,
+
+		SalamanderReady01					= 2208,
+		SalamanderReady02					= 2209,
+		SalamanderReady03					= 2210,
+
+		SalamanderOrderAggressive01			= 2211,
+		SalamanderOrderAggressive02			= 2212,
+		SalamanderOrderAggressive03			= 2213,
+		SalamanderOrderAggressive04			= 2214,
+
+		AionReady01							= 2219,
+		AionReady02							= 2220,
+		AionReady03							= 2221,
+
+		AionOrderAggressive01				= 2230,
+		AionOrderAggressive02				= 2231,
+		AionOrderAggressive03				= 2232,
+		AionOrderAggressive04				= 2233,
+
+		CentaurReady01						= 2238,
+		CentaurReady02						= 2239,
+		CentaurReady03						= 2240,
+
+		CentaurOrderAggressive01			= 2241,
+		CentaurOrderAggressive02			= 2242,
+		CentaurOrderAggressive03			= 2243,
+		CentaurOrderAggressive04			= 2244,
 	};
 }
 

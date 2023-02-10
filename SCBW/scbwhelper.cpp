@@ -7851,7 +7851,7 @@ namespace helper {
 	}
 
 	// For initialize_unit_counts
-	char teamGame_CountRaces(char force, char* bIsLegal, char race) {
+	char team_game_count_races(char force, char* bIsLegal, char race) {
 		const u32 Func_teamGame_CountRaces = 0x004857B0;
 		s32 raceArg = race;
 		static char result;
@@ -7868,7 +7868,7 @@ namespace helper {
 	}
 
 	// For stat_res_main_proc
-	void showSupplyInfo(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB) {
+	void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB) {
 		const u32 Func_showSupplyInfo = 0x004E53B0;
 		s32 graphicArg = graphic;
 		s32 mathAArg = mathA;
@@ -7884,15 +7884,14 @@ namespace helper {
 		}
 	}
 
-	void printStatResInfo(BinDlg* dialog, s16 graphic, char** a3, char* a4, s32 bSomething) {
+	void print_stat_res_info(BinDlg* dialog, u32 icon_graphic, u32* accrued_value, u32 resource_count, b32 do_not_accrue) {
 		const u32 Func_printStatResInfo = 0x004E52E0;
-		s32 graphicArg = graphic;
 		__asm {
 			PUSHAD
-			PUSH bSomething
-			PUSH a4
-			PUSH a3
-			PUSH graphicArg
+			PUSH do_not_accrue
+			PUSH resource_count
+			PUSH accrued_value
+			PUSH icon_graphic
 			MOV EBX, dialog
 			CALL Func_printStatResInfo
 			POPAD
@@ -7900,7 +7899,7 @@ namespace helper {
 	}
 
 	// For redraw_supply_info
-	bool unitStatCond_Standard() {
+	bool unit_stat_cond_standard() {
 		const u32 Func_unitStatCondStandard = 0x00424980;
 		static bool result;
 		__asm {

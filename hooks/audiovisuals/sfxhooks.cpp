@@ -85,8 +85,14 @@ namespace hooks {
 				case UnitId::TerranPaladin: {
 					return helper::get_random_sfx_between(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
 				} break;
+				case UnitId::TerranAion: {
+					return helper::get_random_sfx_between(SoundId::AionOrderAggressive01, SoundId::AionOrderAggressive04);
+				} break;
 				case UnitId::TerranWyvern: {
 					return helper::get_random_sfx_between(SoundId::WyvernOrderAggressive01, SoundId::WyvernOrderAggressive04);
+				} break;
+				case UnitId::TerranSalamander: {
+					return helper::get_random_sfx_between(SoundId::SalamanderOrderAggressive01, SoundId::SalamanderOrderAggressive04);
 				} break;
 				case UnitId::TerranAzazel: {
 					return helper::get_random_sfx_between(SoundId::AzazelOrderAggressive01, SoundId::AzazelOrderAggressive04);
@@ -173,15 +179,28 @@ namespace hooks {
 					case UnitId::TerranPhalanxSiegeModeTurret: {
 						ready_sound = helper::get_random_sfx_between(SoundId::PhalanxReady01, SoundId::PhalanxReady02);
 					} break;
+					case UnitId::TerranCataphract: // TODO: Own lines
 					case UnitId::TerranPaladin: {
 						ready_sound = helper::get_random_sfx_between(SoundId::PaladinReady01, SoundId::PaladinReady03);
+					} break;
+					case UnitId::TerranAion: {
+						ready_sound = helper::get_random_sfx_between(SoundId::AionReady01, SoundId::AionReady03);
 					} break;
 					case UnitId::TerranWyvern: {
 						ready_sound = helper::get_random_sfx_between(SoundId::WyvernReady01, SoundId::WyvernReady03);
 					} break;
-					case UnitId::TerranAncile:
+					case UnitId::TerranSalamander: {
+						ready_sound = helper::get_random_sfx_between(SoundId::SalamanderReady01, SoundId::SalamanderReady03);
+					} break;
+					case UnitId::TerranAncile: // TODO: Own lines
 					case UnitId::TerranAzazel: {
 						ready_sound = helper::get_random_sfx_between(SoundId::AzazelReady01, SoundId::AzazelReady03);
+					} break;
+					case UnitId::TerranCentaur:
+					case UnitId::TerranMagnetar: // TODO: Own lines
+					case UnitId::TerranHippogriff: // TODO: Own lines
+					{
+						ready_sound = helper::get_random_sfx_between(SoundId::CentaurReady01, SoundId::CentaurReady03);
 					} break;
 					case UnitId::ProtossZealot: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ZealotReady01, SoundId::ZealotReady02);

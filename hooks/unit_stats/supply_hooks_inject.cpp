@@ -164,10 +164,10 @@ namespace
 		}
 	}
 
-	b32 __stdcall has_supplies_for_unit_wrapper(u8 player, u16 unit_id, b32 canShowErrorMessage)
+	b32 __stdcall has_supplies_for_unit_wrapper(u8 player, u16 unit_id, b32 can_show_error)
 	{
 		return 1;
-		if (hooks::has_supplies_for_unit(player, unit_id, canShowErrorMessage != 0))
+		if (hooks::has_supplies_for_unit(player, unit_id, can_show_error != 0))
 		{
 			return 1;
 		}

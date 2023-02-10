@@ -404,7 +404,7 @@ namespace hooks
 			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
 			&&	 unit->hitpoints > 0
 			&&	 unit->hitpoints != unit->get_max_hp_raw()
-			&&	 unit_ext->damage_taken_timer > 2 * 24)
+			&&	 unit_ext->damage_taken_timer > 2 * 24 || scbw::unit_regens_in_combat(unit))
 			{
 				s32 regen = 11; // 1 HP per second
 				if (unit->status & UnitStatus::Burrowed) {

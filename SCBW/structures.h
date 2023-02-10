@@ -1251,4 +1251,12 @@ struct ControlGroupPlayerArray {
 
 C_ASSERT(sizeof(ControlGroupPlayerArray) == 0x1B00);
 
+struct ForceNamesEntry {
+	char name[30];
+};
+
+struct ForceNames {
+	ForceNamesEntry force[4];
+};
+
 #pragma pack()
