@@ -43,6 +43,7 @@ extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 
 struct PlayerVars {
 	u32 temp;
+	b32 is_witness;
 };
 
 enum Celebration {

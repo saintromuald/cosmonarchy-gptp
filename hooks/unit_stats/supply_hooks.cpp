@@ -4,6 +4,7 @@
 #include <SCBW/scbwdata.h>
 #include <windows.h>
 #include <globals.h>
+#include "trigger_system/trigger_system.h"
 
 namespace hooks
 {
@@ -393,20 +394,22 @@ namespace hooks
 			dialog_var = 0;
 		}
 
+		// Track worker/military counts. -Veeq7
 		s32 workers = 0;
 		s32 men = 0;
 
-		if (*g_is_in_replay || (u16)forceNames->force[g_player_table[*g_local_nation_id].force].name[0] == 130) {
+		// Replay/witness UI. -DF
+		if (*g_is_in_replay || global_vars.players[*g_local_nation_id].is_witness) {
 			u8 statres_row = 0;
-
 			graphics::reset_stat_res_graphics();
 
-			for (u8 player_id = 0; player_id < 8; ++player_id) {
+			for (u8 player_id = 0; player_id < PlayerLimit; ++player_id) {
 				u8 player_type = g_player_table[player_id].type;
 
-				if (player_type == PlayerType::Computer || player_type == PlayerType::Human) {
+				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && global_vars.players[player_id].is_witness == false) {
 					u8 race_id = g_player_table[player_id].race;
-
+					workers = 0;
+					men = 0;
 					for (Unit* unit = first_player_unit->unit[player_id]; unit; unit = unit->player_link.next) {
 						if (unit->status & UnitStatus::Completed) {
 							if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
@@ -426,10 +429,12 @@ namespace hooks
 					dialog_var = dialog_var->next;
 					graphics::draw_stat_res_box(424, 2 + statres_row, 433, 11 + statres_row, g_player_minimap_colors[player_id]);
 					statres_row += 15;
-
-					//keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::drawFilleBox.
+					//keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
 					helper::hide_dialog(dialog_var);
 					dialog_var = dialog_var->next;
+				}
+				else {
+					scbw::printf("player %u is invalid", player_id);
 				}
 			}
 
@@ -438,9 +443,8 @@ namespace hooks
 				dialog_var = dialog_var->next;
 			}
 		}
-		else {
+		else { // Normal player UI. -Veeq7
 			s32 active_player = *g_local_nation_id;
-
 			for (Unit* unit = first_player_unit->unit[active_player]; unit; unit = unit->player_link.next) {
 				if (unit->status & UnitStatus::Completed) {
 					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {

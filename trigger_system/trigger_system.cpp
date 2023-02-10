@@ -1083,6 +1083,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		}
+		else if (parser_eq(&parser, "witness_mode")) {
+			u32 player = parser_get_player(&parser);
+			s32 state = parser_get_s32(&parser);
+			if (player) {
+				player -= 1;
+				global_vars.players[player].is_witness = state;
+			}
+		}
 	}
 
 	return true;
