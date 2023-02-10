@@ -120,4 +120,23 @@ namespace graphics {
 		draw_error_messages();
 		return shape_count;
 	}
+
+	Shape statres_boxes[8];
+	s32 stat_res_box_count = 0;
+
+	void reset_stat_res_graphics() {
+		stat_res_box_count = 0;
+	}
+
+	void draw_stat_res_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct) {
+		if (stat_res_box_count < 8)
+			statres_boxes[stat_res_box_count++].set_filled_box(left, top, right, bottom, color, ct);
+	}
+
+	s32 draw_stat_res_shapes() {
+		for (s32 i = 0; i < stat_res_box_count; ++i)
+			statres_boxes[i].draw();
+
+		return stat_res_box_count;
+	}
 }

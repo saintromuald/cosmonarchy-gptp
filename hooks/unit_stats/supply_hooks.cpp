@@ -399,7 +399,7 @@ namespace hooks
 		if (*g_is_in_replay || (u16)forceNames->force[g_player_table[*g_local_nation_id].force].name[0] == 130) {
 			u8 statres_row = 0;
 
-			graphics::reset_all_graphics();
+			graphics::reset_stat_res_graphics();
 
 			for (u8 player_id = 0; player_id < 8; ++player_id) {
 				u8 player_type = g_player_table[player_id].type;
@@ -424,7 +424,7 @@ namespace hooks
 					dialog_var = dialog_var->next;
 					helper::print_stat_res_info(dialog_var, 0, &StatRes_accrue_minerals[player_id], resources->minerals[player_id], FALSE);
 					dialog_var = dialog_var->next;
-					graphics::draw_filled_box(424, 2 + statres_row, 433, 11 + statres_row, g_player_minimap_colors[player_id]);
+					graphics::draw_stat_res_box(424, 2 + statres_row, 433, 11 + statres_row, g_player_minimap_colors[player_id]);
 					statres_row += 15;
 
 					//keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::drawFilleBox.

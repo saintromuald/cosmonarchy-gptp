@@ -2788,6 +2788,7 @@ namespace hooks {
 
 	bool game_end() {
 		end_threshold();
+		graphics::reset_stat_res_graphics();
 		return true;
 	}
 }

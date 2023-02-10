@@ -38,6 +38,9 @@ namespace
 		{
 			want_refresh = true;
 		}
+		if (graphics::draw_stat_res_shapes() > 0) {
+			want_refresh = true;
+		}
 	}
 }
 
