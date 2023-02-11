@@ -433,9 +433,6 @@ namespace hooks
 					helper::hide_dialog(dialog_var);
 					dialog_var = dialog_var->next;
 				}
-				else {
-					scbw::printf("player %u is invalid", player_id);
-				}
 			}
 
 			while (dialog_var && dialog_var->index <= 32) {

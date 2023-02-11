@@ -341,7 +341,7 @@ namespace ImageId {
 		BuildingExplosion_Large             = 334,
 		TerranBuildingRubble_Small          = 335,
 		TerranBuildingRubble_Large          = 336,
-		DarkSwarm                           = 337,
+		CarapaceSwarm                           = 337,
 		Ragnasaur_Ash                       = 338,
 		Ragnasaur_Ash_Shadow                = 339,
 		Rhynadon_Badlands                   = 340,

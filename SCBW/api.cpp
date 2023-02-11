@@ -1095,7 +1095,7 @@ namespace scbw {
 	// We should update the lardcode for Cosmonarchy
 	bool order_is_spell(s32 order_id) {
 		return order_id == OrderId::Plague
-			|| order_id == OrderId::DarkSwarm
+			|| order_id == OrderId::CarapaceSwarm
 //			|| order_id == OrderId::Ensnare				// Land Grab
 			|| order_id == OrderId::Irradiate
 			|| order_id == OrderId::StasisField

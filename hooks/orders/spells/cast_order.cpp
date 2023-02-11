@@ -84,7 +84,7 @@ namespace hooks
 			// Targeting ground
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
-			case TechId::DarkSwarm:
+			case TechId::CarapaceSwarm:
 			case TechId::Plague:
 			case TechId::Ensnare:
 			case TechId::PsionicStorm:

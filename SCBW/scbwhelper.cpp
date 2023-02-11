@@ -4369,7 +4369,7 @@ namespace helper {
 		if (unit->status & UnitStatus::GroundedBuilding && (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile)) {
 			return_value = true;
 		}
-		else if ((unit->id == UnitId::ZergIsthrathaleth) && order_id == OrderId::DarkSwarm) {
+		else if ((unit->id == UnitId::ZergIsthrathaleth) && order_id == OrderId::CarapaceSwarm) {
 			return_value = true;
 		}
 		else if (unit->status & UnitStatus::IsHallucination) {

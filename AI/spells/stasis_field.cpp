@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	Unit* findBestStasisFieldTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_stasis_field_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)

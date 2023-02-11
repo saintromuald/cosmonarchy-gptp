@@ -28,14 +28,14 @@ namespace AI
 				return false;
 			}
 
-			const s32 totalEnemyLife = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::PsiStorm);
-			if (!isUnderAttack && totalEnemyLife < 150)
+			const s32 total_enemy_life = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::PsiStorm);
+			if (!isUnderAttack && total_enemy_life < 150)
 			{
 				return false;
 			}
 
-			const s32 totalAllyLife = get_total_ally_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::PsiStorm);
-			if (totalAllyLife * 2 >= totalEnemyLife)
+			const s32 total_ally_life = get_total_ally_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::PsiStorm);
+			if (total_ally_life * 2 >= total_enemy_life)
 			{
 				return false;
 			}

@@ -35,7 +35,7 @@ namespace AI
 
 				if (scbw::get_active_tile_at_coords(targetX, targetY)->has_doodad_cover)
 				{
-					isUnderDarkSwarmStatus = OrderId::DarkSwarm; /*0x77*/
+					isUnderDarkSwarmStatus = OrderId::CarapaceSwarm; /*0x77*/
 				}
 				else
 				{
@@ -63,9 +63,9 @@ namespace AI
 			{
 				returnValue = isUnderDarkSwarmStatus;
 			}
-			else if (isUnderDarkSwarmStatus <= OrderId::DarkSwarm)	// code use 0x77, the order seems to fit, but maybe that's just an accident and it's unrelated
+			else if (isUnderDarkSwarmStatus <= OrderId::CarapaceSwarm)	// code use 0x77, the order seems to fit, but maybe that's just an accident and it's unrelated
 			{
-				returnValue = OrderId::DarkSwarm;
+				returnValue = OrderId::CarapaceSwarm;
 			}
 			else
 			{
@@ -148,7 +148,7 @@ namespace AI
 	}
 
 	// Based on AI_AssignBestDarkSwarmTarget @ 0x00442840
-	Unit* findBestDarkSwarmTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_carapace_swarm_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

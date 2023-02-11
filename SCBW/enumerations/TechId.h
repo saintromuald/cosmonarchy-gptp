@@ -50,7 +50,7 @@ namespace TechId {
 		Burrowing				= 11,
 		Infestation				= 12, // (default)
 		SpawnBroodlings			= 13,
-		DarkSwarm				= 14, // (default)
+		CarapaceSwarm				= 14, // (default)
 		Plague					= 15,
 		Consume					= 16,
 		Ensnare					= 17,
@@ -63,7 +63,7 @@ namespace TechId {
 		Restoration				= 24,
 		LanifectDisruptionField			= 25,
 		UnusedTech26			= 26, // (unused)
-		MindControl				= 27,
+		Tyranny				= 27,
 		DarkArchonMeld			= 28, // (default)
 		Feedback				= 29, // (default)
 		LuminaryAuralAssault	= 30,
@@ -104,7 +104,7 @@ namespace ScTech {
 		Burrowing         = 11,
 		Infestation       = 12,	// (default)
 		SpawnBroodlings   = 13,
-		DarkSwarm         = 14,	// (default)
+		CarapaceSwarm         = 14,	// (default)
 		Plague            = 15,
 		Consume           = 16,
 		Ensnare           = 17,
@@ -123,7 +123,7 @@ namespace BwTech {
 		Restoration       =  0,
 		LanifectDisruptionField     =  1,
 		UnusedTech26      =  2,	// (unused)
-		MindControl       =  3,
+		Tyranny       =  3,
 		DarkArchonMeld    =  4,	// (default)
 		Feedback          =  5,	// (default)
 		LuminaryAuralAssault      =  6,

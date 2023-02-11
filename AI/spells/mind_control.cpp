@@ -3,7 +3,7 @@
 
 namespace AI
 {
-	Unit* findBestMindControlTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_tyranny_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds = 32 * 32;
 		return scbw::UnitFinder::get_nearest_target(

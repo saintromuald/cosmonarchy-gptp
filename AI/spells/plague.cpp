@@ -3,7 +3,7 @@
 
 namespace AI
 {
-	Unit* findBestPlagueTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_plague_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)

@@ -4,7 +4,7 @@
 
 namespace AI {
 
-	Unit* findBestParasiteTarget(Unit* caster, bool is_under_attack) {
+	Unit* find_best_parasite_target(Unit* caster, bool is_under_attack) {
 		s32 bounds = 32 * 64;
 		if (is_under_attack) {
 			bounds = 32 * 9;

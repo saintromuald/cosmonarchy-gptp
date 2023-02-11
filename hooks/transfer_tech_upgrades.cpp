@@ -26,7 +26,7 @@ namespace {
 
 		// Zerg
 		{UnitId::ZergMatraleth, TechId::Infestation, TechId::MatralethParasite, TechId::SpawnBroodlings, TechId::Ensnare, TechId::None},
-		{UnitId::ZergIsthrathaleth, TechId::Burrowing, TechId::DarkSwarm, TechId::Plague, TechId::Consume, TechId::None},
+		{UnitId::ZergIsthrathaleth, TechId::Burrowing, TechId::CarapaceSwarm, TechId::Plague, TechId::Consume, TechId::None},
 		{UnitId::ZergDroleth, TechId::Burrowing, TechId::None},
 		{UnitId::ZergZethrokor, TechId::Burrowing, TechId::None},
 		{UnitId::ZergHydralisk, TechId::Burrowing, TechId::LurkerAspect, TechId::None},
@@ -37,7 +37,7 @@ namespace {
 		{UnitId::ProtossDidact, TechId::Recall, TechId::StasisField, TechId::None},
 		{UnitId::ProtossLanifect, TechId::LanifectDisruptionField, TechId::None},
 		{UnitId::ProtossCabalist, TechId::DarkArchonMeld, TechId::None},
-		{UnitId::ProtossMindTyrant, TechId::MindControl, TechId::Feedback, TechId::MindTyrantMaelstrom, TechId::None},
+		{UnitId::ProtossMindTyrant, TechId::Tyranny, TechId::Feedback, TechId::MindTyrantMaelstrom, TechId::None},
 	};
 
 	struct UpgradeTransferData {

@@ -242,7 +242,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	Unburrow               = 0x76, /**< Unburrow unit.
 					* Default Requirements: Unused. */
-	DarkSwarm              = 0x77, /**< Cast Spell: Dark Swarm.
+	CarapaceSwarm              = 0x77, /**< Cast Spell: Dark Swarm.
 					* Default Requirements: Unused. */
 	CastParasite           = 0x78, /**< Cast Spell: MatralethParasite.
 					* Default Requirements: Unused. */
@@ -368,7 +368,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	CastDisruptionWeb      = 0xB5, /**< Cast Spell: Disruption Web.
 					* Default Requirements: Unused. */
-	CastMindControl        = 0xB6, /**< Mind Control Cast on Target.
+	CastTyranny        = 0xB6, /**< Mind Control Cast on Target.
 					* Default Requirements: Unit must be Protoss Dark Archon. */
 	WarpingDarkArchon      = 0xB7, /**< Dark Archon Meld.
 					* Default Requirements: Unused. */

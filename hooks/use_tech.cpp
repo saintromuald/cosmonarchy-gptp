@@ -187,9 +187,9 @@ namespace hooks
 			{
 				helper::issue_tri_target_order(OrderId::CTFCOP1, 0, 0);
 			} break;
-			case TechId::DarkSwarm:
+			case TechId::CarapaceSwarm:
 			{
-				helper::issue_tri_target_order(OrderId::DarkSwarm, 0, 0);
+				helper::issue_tri_target_order(OrderId::CarapaceSwarm, 0, 0);
 			} break;
 			case TechId::Plague:
 			{
@@ -203,9 +203,9 @@ namespace hooks
 			{
 				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
 			} break;
-			case TechId::MindControl:
+			case TechId::Tyranny:
 			{
-				helper::issue_tri_target_order(OrderId::CastMindControl, 0, 0);
+				helper::issue_tri_target_order(OrderId::CastTyranny, 0, 0);
 			} break;
 			case TechId::MindTyrantMaelstrom:
 			{

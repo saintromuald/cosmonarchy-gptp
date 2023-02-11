@@ -17,7 +17,7 @@ namespace hooks
 			// Corresponding error message is "Invalid Target"
 
 			if (!unit->main_order_state) {
-				if (helper::spell_order(unit, TechId::MindControl, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
+				if (helper::spell_order(unit, TechId::Tyranny, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
 					// Start the channel
 					unit->play_iscript_animation(IscriptAnimation::Unused2);
 					unit->main_order_state = 1;

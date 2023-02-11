@@ -3,7 +3,7 @@
 
 namespace AI
 {
-	Unit* findBestYamatoGunTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_yamato_gun_target(Unit* caster, bool isUnderAttack)
 	{
 		auto match = [&](Unit* target)
 		{

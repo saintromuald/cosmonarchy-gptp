@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	Unit* findBestDefensiveMatrixTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_defensive_matrix_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

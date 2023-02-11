@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	Unit* findBestIrradiateTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_irradiate_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

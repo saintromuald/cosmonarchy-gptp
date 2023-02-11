@@ -5,7 +5,7 @@
 
 namespace AI
 {
-	Unit* findBestHallucinationTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_hallucination_target(Unit* caster, bool isUnderAttack)
 	{
 		if (isUnderAttack)
 		{

@@ -38,7 +38,7 @@ namespace hooks
 						stringId = 0; // valid target
 					}
 				} break;
-				case TechId::MindControl: {
+				case TechId::Tyranny: {
 					if (target->player == castingPlayerId)
 					{
 						stringId = 1327; // Must target enemy units<0>

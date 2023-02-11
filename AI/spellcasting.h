@@ -2,13 +2,9 @@
 #include <AI/ai_common.h>
 
 namespace AI {
-
-bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked);
-
-} //AI
+	bool ai_spellcaster_hook(Unit* unit, bool is_unit_being_attacked);
+}
 
 namespace hooks {
-
-void inject_spellcaster_ai_hooks();
-
-} //hooks
+	void inject_spellcaster_ai_hooks();
+}
