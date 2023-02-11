@@ -1415,6 +1415,15 @@ namespace SoundId
 		CentaurOrderAggressive02			= 2242,
 		CentaurOrderAggressive03			= 2243,
 		CentaurOrderAggressive04			= 2244,
+
+		MadrigalReady01						= 2249,
+		MadrigalReady02						= 2250,
+		MadrigalReady03						= 2251,
+
+		MadrigalOrderAggressive01			= 2260,
+		MadrigalOrderAggressive02			= 2261,
+		MadrigalOrderAggressive03			= 2262,
+		MadrigalOrderAggressive04			= 2263,
 	};
 }
 
