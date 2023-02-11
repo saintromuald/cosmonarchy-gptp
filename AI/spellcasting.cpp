@@ -41,6 +41,9 @@ namespace AI
 				// Launch Nuclear Missile
 				if (is_nuke_timer_ready(unit->player))
 				{
+					if (is_unit_being_attacked) {
+						return false;
+					}
 					Unit* silo = get_loaded_silo(unit);
 					if (!silo)
 					{
@@ -91,6 +94,9 @@ namespace AI
 				// Launch Nuclear Missile
 				if (is_nuke_timer_ready(unit->player))
 				{
+					if (is_unit_being_attacked) {
+						return false;
+					}
 					Unit* silo = get_loaded_silo(unit);
 					if (!silo)
 					{
@@ -178,8 +184,7 @@ namespace AI
 				if (unit->get_max_energy() == unit->energy && can_cast_spell_order(unit, TechId::Hallucination, OrderId::Hallucination1))
 				{
 					Unit* target = find_best_hallucination_target(unit, is_unit_being_attacked);
-					if (unit->main_order_id == OrderId::Hallucination1
-						&& unit->order_target.unit == target)
+					if (unit->main_order_id == OrderId::Hallucination1 && unit->order_target.unit == target)
 					{
 						return false;
 					}
