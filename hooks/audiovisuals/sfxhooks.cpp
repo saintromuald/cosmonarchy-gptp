@@ -94,6 +94,9 @@ namespace hooks {
 				case UnitId::TerranWyvern: {
 					return helper::get_random_sfx_between(SoundId::WyvernOrderAggressive01, SoundId::WyvernOrderAggressive04);
 				} break;
+				case UnitId::TerranSundog: {
+					return helper::get_random_sfx_between(SoundId::SundogOrderAggressive01, SoundId::SundogOrderAggressive04);
+				} break;
 				case UnitId::TerranSalamander: {
 					return helper::get_random_sfx_between(SoundId::SalamanderOrderAggressive01, SoundId::SalamanderOrderAggressive04);
 				} break;
@@ -194,6 +197,9 @@ namespace hooks {
 					} break;
 					case UnitId::TerranWyvern: {
 						ready_sound = helper::get_random_sfx_between(SoundId::WyvernReady01, SoundId::WyvernReady03);
+					} break;
+					case UnitId::TerranSundog: {
+						ready_sound = helper::get_random_sfx_between(SoundId::SundogReady01, SoundId::SundogReady03);
 					} break;
 					case UnitId::TerranSalamander: {
 						ready_sound = helper::get_random_sfx_between(SoundId::SalamanderReady01, SoundId::SalamanderReady03);

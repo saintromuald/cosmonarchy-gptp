@@ -1424,6 +1424,15 @@ namespace SoundId
 		MadrigalOrderAggressive02			= 2261,
 		MadrigalOrderAggressive03			= 2262,
 		MadrigalOrderAggressive04			= 2263,
+
+		SundogReady01						= 2268,
+		SundogReady02						= 2269,
+		SundogReady03						= 2270,
+
+		SundogOrderAggressive01				= 2279,
+		SundogOrderAggressive02				= 2280,
+		SundogOrderAggressive03				= 2281,
+		SundogOrderAggressive04				= 2282,
 	};
 }
 
