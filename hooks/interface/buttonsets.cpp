@@ -698,11 +698,13 @@ namespace hooks {
 					bool in_air = 0;
 					bool is_training = 0;
 					bool is_burrowed = 0;
+					bool is_adding_on = 0;
 					if (unit) {
 						has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
 						in_air = unit->status & UnitStatus::InAir;
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
+						is_adding_on = unit->building.addon_build_id;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
@@ -742,7 +744,7 @@ namespace hooks {
 						else if (unit->id == UnitId::TerranCaptaincy)
 						{
 							if (current_button->requirement_var == UnitId::TerranSiren
-								|| current_button->requirement_var == UnitId::TerranStriga)
+							||  current_button->requirement_var == UnitId::TerranStriga)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower)
 								||  scbw::unit_queue_full(unit))
@@ -755,10 +757,10 @@ namespace hooks {
 								}
 							}
 							else if (current_button->requirement_var == UnitId::TerranOlympian
-								|| current_button->requirement_var == UnitId::TerranAutocrat)
+							||		 current_button->requirement_var == UnitId::TerranAutocrat)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranGuildhall)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -806,7 +808,7 @@ namespace hooks {
 							if (current_button->requirement_var == UnitId::TerranFutureStation
 							||	current_button->requirement_var == UnitId::TerranBioticBastion)
 							{
-								if (!has_addon && !is_training)
+								if (!has_addon && !is_training && !is_adding_on)
 								{
 									if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtelier)) {
 										current_button_state = Button_State::Enabled;
@@ -824,7 +826,7 @@ namespace hooks {
 							||	current_button->requirement_var == UnitId::TerranPenumbra)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranFutureStation)
-								||	 scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit) || is_adding_on)
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -837,7 +839,7 @@ namespace hooks {
 							||		 current_button->requirement_var == UnitId::TerranAion)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBastion)
-								||	 scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit) || is_adding_on)
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -852,10 +854,10 @@ namespace hooks {
 						else if (unit->id == UnitId::TerranStarport)
 						{
 							if (current_button->requirement_var == UnitId::TerranSalamander
-								|| current_button->requirement_var == UnitId::TerranSundog)
+							||  current_button->requirement_var == UnitId::TerranSundog)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranMunitionsBay)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -865,10 +867,10 @@ namespace hooks {
 								}
 							}
 							else if (current_button->requirement_var == UnitId::TerranAzazel
-								|| current_button->requirement_var == UnitId::TerranSeraph)
+							||		 current_button->requirement_var == UnitId::TerranSeraph)
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment)
-									|| scbw::unit_queue_full(unit))
+								||	 scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}
@@ -884,7 +886,7 @@ namespace hooks {
 						{
 							if (current_button->requirement_var == UnitId::TerranParticleAccelerator)
 							{
-								if (!has_addon && !is_training)
+								if (!has_addon && !is_training && !is_adding_on)
 								{
 									current_button_state = Button_State::Enabled;
 								}
@@ -896,13 +898,13 @@ namespace hooks {
 							if (current_button->requirement_var == UnitId::TerranHippogriff
 							||	current_button->requirement_var == UnitId::TerranPhobos)
 							{
-								if (!scbw::all_selected_units_have_addon(UnitId::TerranParticleAccelerator))
-								{
-									current_button_state = Button_State::Disabled;
-								}
-								else if (scbw::unit_queue_full(unit))
+								if (scbw::unit_queue_full(unit) || is_adding_on)
 								{
 									current_button_state = Button_State::Invisible;
+								}
+								else if (!scbw::all_selected_units_have_addon(UnitId::TerranParticleAccelerator))
+								{
+									current_button_state = Button_State::Disabled;
 								}
 								else
 								{
@@ -911,8 +913,8 @@ namespace hooks {
 							}
 						}
 
-						// As of late 2022, we must force build icons for extended unit ids to show up using this very dumb method that inlines requirements in yet another position.
-						// Not sure how to fix! -Pr0nogo
+						// As of late 2022, we must force train/build icons for extended unit ids to show up using this very dumb method that
+						// inlines requirements in yet another position. Not sure how to fix! -Pr0nogo
 						switch (unit->id)
 						{
 							case UnitId::TerranMason:
