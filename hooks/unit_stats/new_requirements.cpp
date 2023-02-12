@@ -1393,7 +1393,7 @@ namespace hooks {
 		}
 		bool in_air = unit->status & UnitStatus::InAir;
 		bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
-		bool is_adding_on = unit->building.addon_build_id;
+		bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
 
 		switch (unit->id)
 		{

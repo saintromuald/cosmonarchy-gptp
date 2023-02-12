@@ -535,6 +535,22 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004E5509, (u8)0x20);				// statRes_Text_Update
 	memory_patch(0x004E5864, (u8)0x20);				// StatRes_CustomCtrl
 	memory_patch(0x004E58DE, &StatRes_fxnInteract);	// StatRes_RegisterCustomProcs
+
+	// Use new pcolor system for player messages.
+	call_patch(hooks::getColourID_new, 0x0048D2EC);
+	// BWFXN_DisplayText (0x0048D1C0)
+	memory_patch(0x0048D2F1, (u32)0x8A08E0C1);//SHL EAX, 8; MOV...
+	memory_patch(0x0048D2F5, (u32)0x48D47889);//...ECX, [ECX * 2 + 0x0048D478];
+	memory_patch(0x0048D2F9, (u32)0x66C10900);//OR ECX,EAX;
+	memory_patch(0x0048D2FD, (u32)0xEBFC4D89);//MOV [EBP - 4], CX; JMP...
+	memory_patch(0x0048D301, (u8)0x73);//...0x0048D376;
+	// DisplayTextMessage (0x0048CD30)
+	memory_patch(0x0048CDC0, (u8)0x8B);//change AL to EAX
+	call_patch(hooks::set_display_text_color, 0x0048CDC3, 1);
+	// drawGameText (0x0048CF60)
+	call_patch(hooks::get_display_text_color, 0x0048CFA3, 1);
+	// off_48D478
+	memory_patch(0x0048D478, (u32)0x0B0F1708);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

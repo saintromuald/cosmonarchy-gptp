@@ -723,4 +723,5 @@ namespace scbw
 	bool weapon_id_accelerates(u32 weapon_id);
 	bool weapon_id_is_melee_aoe(u32 weapon_id);
 	bool unit_regens_in_combat(Unit* unit);
+	bool unit_id_is_melee_air_unit(u32 unit_id);
 }

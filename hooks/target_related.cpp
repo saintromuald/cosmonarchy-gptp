@@ -939,7 +939,7 @@ LABEL_65:
 					return 0;
 				}
 			}
-			v25 = helper::has_ground_weapon_graphic(v2) == 0;
+			v25 = helper::should_stay_at_range(v2) == 0;
 			v24 = v2->order_target.unit;
 			if (!v25)
 			{

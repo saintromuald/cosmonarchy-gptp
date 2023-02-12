@@ -1536,4 +1536,22 @@ namespace hooks {
 		}
 		return true;
 	}
+
+	// Hooked to fix melee air unit performance. -Pr0nogo
+	b32 should_stay_at_range(Unit* unit) // 00475A10
+	{
+		if (scbw::unit_id_is_melee_air_unit(unit->id))
+		{
+			return 0;
+		}
+		u32 weapon_id = units_dat::ground_weapon[unit->id];
+		if (weapon_id == WeaponId::None)
+		{
+			return 1;
+		}
+		else
+		{
+			return weapons_dat::flingy_id[weapon_id] != 0;
+		}
+	}
 }

@@ -3026,4 +3026,13 @@ namespace scbw {
 	{
 		return unit->id == UnitId::TerranMatador; // Can update later with status checks and etc. -Pr0nogo
 	}
+
+	bool unit_id_is_melee_air_unit(u32 unit_id)
+	{
+		return unit_id == UnitId::ZergNathrokor
+		||	   unit_id == UnitId::ZergGorgrokor
+		||	   unit_id == UnitId::ZergTetcaerokor
+		||	   unit_id == UnitId::ZergAkistrokor
+		||	   unit_id == UnitId::ZergZarcavrokor;
+	}
 }

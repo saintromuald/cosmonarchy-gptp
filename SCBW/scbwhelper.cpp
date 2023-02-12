@@ -7304,7 +7304,7 @@ namespace helper {
 		return (s16)result;
 	}
 
-	bool has_ground_weapon_graphic(Unit* unit) {
+	bool should_stay_at_range(Unit* unit) {
 		const u32 Func_hasGroundWeaponGraphic = 0x00475A10;
 		static bool result;
 		__asm {

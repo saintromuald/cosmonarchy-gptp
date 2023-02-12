@@ -2,6 +2,7 @@
 #include "SCBW/structures.h"
 
 u8 tFontGame_ImageData[320];//Larger tfont.pcx buffer to fit the new colors.
+u16 display_text_color[11];
 namespace hooks
 {
 	void display_establishing_shot();					// 004D9200, hooked by X405
@@ -35,4 +36,7 @@ namespace hooks
 	void UpdateOKButton2();
 	void minimap_style();
 	void minimap_dlg_Create_patch_A5242();
+	void getColourID_new();
+	void set_display_text_color();
+	void get_display_text_color();
 }

@@ -900,7 +900,7 @@ namespace helper {
 	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior
-	bool has_ground_weapon_graphic(Unit* unit);
+	bool should_stay_at_range(Unit* unit);
 	bool is_unreachable(Unit* target, Unit* unit);
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);											// 00476430
 	s32 move_for_melee_range(Unit* target, Unit* unit);
