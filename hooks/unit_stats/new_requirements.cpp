@@ -1192,10 +1192,20 @@ namespace hooks {
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCagrantColony))
 		{
 			if (unit_id == UnitId::ZergSurkithColony
-				|| unit_id == UnitId::ZergSpraithColony
-				|| unit_id == UnitId::ZergLarvoskColony)
+			||  unit_id == UnitId::ZergSpraithColony
+			||  unit_id == UnitId::ZergLarvoskColony)
 			{
 				return true;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSpraithColony))
+		{
+			if (unit_id == UnitId::ZergSpirtithColony)
+			{
+				if (TierUnlocked[RaceId::Zerg][Tier2])
+				{
+					return true;
+				}
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHachirosk))
@@ -2988,10 +2998,22 @@ namespace hooks {
 			case UnitId::ZergCagrantColony:
 			{
 				if (unit_id == UnitId::ZergSurkithColony
-					|| unit_id == UnitId::ZergSpraithColony
-					|| unit_id == UnitId::ZergLarvoskColony)
+				||  unit_id == UnitId::ZergSpraithColony
+				||  unit_id == UnitId::ZergLarvoskColony)
 				{
 					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergSpraithColony:
+			{
+				if (unit_id == UnitId::ZergSpirtithColony)
+				{
+					if (TierUnlocked[RaceId::Zerg][Tier2])
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}

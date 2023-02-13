@@ -93,10 +93,10 @@ namespace hooks
 
 	void secondary_order_spread_creep_spawning_larva(Unit* unit) {
 		if (unit->id == UnitId::ZergHachirosk
-			|| unit->id == UnitId::ZergCaphrolosk
-			|| unit->id == UnitId::ZergGathtelosk
-			|| unit->id == UnitId::ZergSibraelosk
-			|| unit->id == UnitId::ZergLarvoskColony) {
+		||  unit->id == UnitId::ZergCaphrolosk
+		||  unit->id == UnitId::ZergGathtelosk
+		||  unit->id == UnitId::ZergLarvoskColony
+		||  unit->id == UnitId::ZergOcsalColony) {
 			secondary_order_spawning_larva(unit);
 		}
 		if (unit->building.creep_timer != 0) {
@@ -177,8 +177,6 @@ namespace hooks
 				bool can_spawn_larva = unit->id == UnitId::ZergHachirosk
 									|| unit->id == UnitId::ZergCaphrolosk
 									|| unit->id == UnitId::ZergGathtelosk
-									|| unit->id == UnitId::ZergSibraelosk
-									|| unit->id == UnitId::ZergNephrilosk
 									|| unit->id == UnitId::ZergLarvoskColony
 									|| unit->id == UnitId::ZergOcsalColony;
 

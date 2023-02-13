@@ -1689,6 +1689,27 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ZergSpraithColony:
+							{
+								if (current_button->requirement_var == UnitId::ZergSpirtithColony)
+								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+									||  player_has_unit_id(unit->player, UnitId::ZergIrulentIvoa)
+									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)
+									||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							}
 							case UnitId::PoliceEngineer:
 							{
 								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
@@ -2157,6 +2178,7 @@ namespace hooks {
 								
 								case UnitId::ZergMutalisk:
 								case UnitId::ZergTosgrilisk:
+								case UnitId::ZergSpirtithColony:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
 										current_button_state = Button_State::Enabled;
@@ -2580,19 +2602,13 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if ((unit->id == UnitId::ZergCaphrolosk				// Lair, Hive, Sire Larval Gestation
-								|| unit->id == UnitId::ZergGathtelosk
-								|| unit->id == UnitId::ZergSibraelosk) &&
-								current_button->icon_id == IconId::SuicideScourge)
+							else if ((unit->id == UnitId::ZergCaphrolosk		// Caphrolosk, Gathtelosk Larval Gestation
+							||		  unit->id == UnitId::ZergGathtelosk)
+							&&		  current_button->icon_id == IconId::SuicideScourge)
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergSibraelosk &&			// Sire Ectomorphic Accelerant
-								current_button->icon_id == IconId::ZergAdvancedBuildings)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergLarvoskColony &&	// Larval Colony Larval Gestation
+							else if (unit->id == UnitId::ZergLarvoskColony &&	// Larvosk Colony Larval Gestation
 								current_button->icon_id == IconId::MetasynapticNode)
 							{
 								current_button_state = Button_State::Enabled;
