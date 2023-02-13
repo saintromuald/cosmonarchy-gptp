@@ -830,7 +830,7 @@ LABEL_32:
 						goto LABEL_23;
 					result = 1;
 					break;
-				case OrderId::EmpShockwave:
+				case OrderId::EMPShockwave:
 					if (!v3)
 						goto LABEL_23;
 					ByteOperations::SetLowByte(v5, helper::isUnitCasterNotHallucination(v3));

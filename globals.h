@@ -150,9 +150,9 @@ struct Globals {
 	void init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town);
 	void remove_multihit_bullet(Bullet* bullet);
 	s32 get_divider(Bullet* bullet);
-	void clear_lakizilisk(Unit* lurker);
-	void add_lurker_spine_pair(Unit* lurker, Unit* target);
-	bool spine_pair_exists(Unit* lurker, Unit* target);
+	void clear_lakizilisk(Unit* lakizilisk);
+	void add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target);
+	bool spine_pair_exists(Unit* lakizilisk, Unit* target);
 };
 
 void apply_irradiate(Unit* unit, u8 player, u32 time);

@@ -180,7 +180,7 @@ namespace hooks {
 					break;
 				}
 				if (skip) continue;
-				globals.add_lurker_spine_pair(bullet->source_unit, target);
+				globals.add_lakizilisk_spine_pair(bullet->source_unit, target);
 			}
 			helper::weapon_bullet_shot(target, bullet, 1);
 		}

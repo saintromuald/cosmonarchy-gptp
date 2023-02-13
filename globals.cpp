@@ -776,23 +776,23 @@ void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 
 	reviving_units.push_back(reviving_unit);
 }
 
-void Globals::clear_lakizilisk(Unit* lurker)
+void Globals::clear_lakizilisk(Unit* lakizilisk)
 {
-	lurker_spine_hits[lurker].clear();
+	lurker_spine_hits[lakizilisk].clear();
 }
 
-void Globals::add_lurker_spine_pair(Unit* lurker, Unit* target)
+void Globals::add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target)
 {
-	lurker_spine_hits[lurker].push_back(target);
+	lurker_spine_hits[lakizilisk].push_back(target);
 }
 
-bool Globals::spine_pair_exists(Unit* lurker, Unit* target)
+bool Globals::spine_pair_exists(Unit* lakizilisk, Unit* target)
 {
 	for (auto a : lurker_spine_hits)
 	{
 		for (auto b : a.second)
 		{
-			if (a.first == lurker && b == target)
+			if (a.first == lakizilisk && b == target)
 			{
 				return true;
 			}
@@ -807,7 +807,7 @@ void __declspec(naked) globals_save_state_wrapper()
 	__asm {
 		PUSHAD
 	}
-	//	state = &globals.aise_save();
+//	state = &globals.aise_save();
 	globals.aise_save();
 	state = &saveState;
 	__asm {

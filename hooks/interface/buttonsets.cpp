@@ -2176,23 +2176,13 @@ namespace hooks {
 								} break;
 								case UnitId::ZergLakizilisk:
 								{
-									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed Attacker
+									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed attacker
 										if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow)
 										{
 											current_button_state = Button_State::Invisible;
 										}
 										else {
 											current_button_state = Button_State::Disabled;
-										}
-									}
-									else if (current_button->icon_id == IconId::PneumatizedCaparace) // Lakizilisk - armor bonus, reveal rule
-									{
-										if (unit->status & UnitStatus::Burrowed)
-										{
-											current_button_state = Button_State::Enabled;
-										}
-										else {
-											current_button_state = Button_State::Invisible;
 										}
 									}
 									else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) // Lakizilisk - Seismic Spines

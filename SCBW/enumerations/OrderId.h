@@ -246,7 +246,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	SummonBroodlings       = 0x79, /**< Cast Spell: Spawn Broodings.
 					* Default Requirements: Unused. */
-	EmpShockwave           = 0x7A, /**< Cast Spell: EMP Shockwave.
+	EMPShockwave           = 0x7A, /**< Cast Spell: EMP Shockwave.
 					* Default Requirements: Unused. */
 	NukeWait               = 0x7B, /**< Unknown.
 					* Default Requirements: Unit must be Terran Nuclear Missile. */

@@ -516,7 +516,7 @@ namespace WeaponEffect
 		NuclearMissile = 5,
 		Parasite = 6,
 		Broodlings = 7,
-		EmpShockwave = 8,
+		EMPShockwave = 8,
 		Irradiate = 9,
 		Ensnare = 10,
 		Plague = 11,
