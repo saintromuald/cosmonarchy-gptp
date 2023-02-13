@@ -287,7 +287,7 @@ namespace hooks {
 				ai->trainQueueTypes[4] = 0;
 
 				unit->unit_ai = (UnitAi*)ai;
-				if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk || unit->id == UnitId::ZergSibraelosk) {
+				if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
 					if (unit->status & UnitStatus::Completed) {
 						unit->order_computer(OrderId::ComputerAI);
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
@@ -302,6 +302,7 @@ namespace hooks {
 				&&	  unit->id != UnitId::ZergCagrantColony
 				&&	  unit->id != UnitId::ZergSpraithColony
 				&&	  unit->id != UnitId::ZergSurkithColony
+				&&	  unit->id != UnitId::ZergSpirtithColony
 				&&	  unit->id != UnitId::ProtossPylon
 				&&	  unit->id != UnitId::ProtossWarden)
 				{

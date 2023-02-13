@@ -810,7 +810,7 @@ namespace hooks
 
 			// Remove connected larva
 			u16 larva_id = UnitId::ZergLarva;
-			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergSibraelosk)
+			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalColony)
 			{
 				larva_id = UnitId::ZergOcsalLarva;
 			}

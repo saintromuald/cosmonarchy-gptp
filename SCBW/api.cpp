@@ -530,7 +530,6 @@ namespace scbw {
 
 	bool is_zerg_building_morph_result(u16 id) {
 		switch (id) {
-			case UnitId::ZergSibraelosk:
 			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergIrulentIvoa:
@@ -539,6 +538,7 @@ namespace scbw {
 			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
+			case UnitId::ZergSpirtithColony:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
 			case UnitId::ZergGorgralSwamp:
@@ -553,13 +553,12 @@ namespace scbw {
 
 	bool is_zerg_building_morph_source(u16 id) {
 		switch (id) {
-			case UnitId::ZergGathtelosk:
-			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergHachirosk:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergCagrantColony:
+			case UnitId::ZergSpraithColony:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergHydrokDen:
 			case UnitId::ZergMuthrokSpire:
@@ -1690,16 +1689,12 @@ namespace scbw {
 		if (town_center_only) {
 			return unit_id == UnitId::ZergHachirosk
 				|| unit_id == UnitId::ZergCaphrolosk
-				|| unit_id == UnitId::ZergGathtelosk
-				|| unit_id == UnitId::ZergSibraelosk
-				|| unit_id == UnitId::ZergNephrilosk;
+				|| unit_id == UnitId::ZergGathtelosk;
 		}
 		else {
 			return unit_id == UnitId::ZergHachirosk
 				|| unit_id == UnitId::ZergCaphrolosk
 				|| unit_id == UnitId::ZergGathtelosk
-				|| unit_id == UnitId::ZergSibraelosk
-				|| unit_id == UnitId::ZergNephrilosk
 				|| unit_id == UnitId::ZergLarvoskColony
 				|| unit_id == UnitId::ZergOcsalColony;
 		}
@@ -1710,9 +1705,7 @@ namespace scbw {
 			|| unit_id == UnitId::ProtossNexus
 			|| unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
-			|| unit_id == UnitId::ZergGathtelosk
-			|| unit_id == UnitId::ZergSibraelosk
-			|| unit_id == UnitId::ZergNephrilosk;
+			|| unit_id == UnitId::ZergGathtelosk;
 	}
 
 	bool unit_id_is_factional(u16 unit_id) {
@@ -1909,8 +1902,9 @@ namespace scbw {
 			|| unit_id == UnitId::ZergSurkithColony
 			|| unit_id == UnitId::ZergSpraithColony
 			|| unit_id == UnitId::ZergLarvoskColony
-			|| unit_id == UnitId::ZergOcsalColony
+			|| unit_id == UnitId::ZergSpirtithColony
 			|| unit_id == UnitId::ZergKazitrithColony
+			|| unit_id == UnitId::ZergOcsalColony
 			|| unit_id == UnitId::ZergNydusCesiant
 			|| unit_id == UnitId::PoliceDugout;
 	}
@@ -1987,7 +1981,7 @@ namespace scbw {
 
 		// Remove connected larva
 		u16 larva_id = UnitId::ZergLarva;
-		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergSibraelosk)
+		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergOcsalColony)
 		{
 			larva_id = UnitId::ZergOcsalLarva;
 		}
@@ -2292,15 +2286,14 @@ namespace scbw {
 
 	u32 get_zerg_regression(u32 unit_id) {
 		switch (unit_id) {
+			case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
+			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergSurkithColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergSpraithColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergLarvoskColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergKazitrithColony:		return UnitId::ZergCagrantColony;
 			case UnitId::ZergOcsalColony:			return UnitId::ZergCagrantColony;
-			case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
-			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
-			case UnitId::ZergSibraelosk:			return UnitId::ZergCaphrolosk;
-			case UnitId::ZergNephrilosk:			return UnitId::ZergGathtelosk;
+			case UnitId::ZergSpirtithColony:		return UnitId::ZergSpraithColony;
 			case UnitId::ZergIrulentIvoa:			return UnitId::ZergIrolIris;
 			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
 			case UnitId::ZergOrbothOmlia:			return UnitId::ZergOthstolOviform;
@@ -2422,9 +2415,6 @@ namespace scbw {
 			case UnitId::TerranTarasque: {
 				return WeaponId::TarasqueAcceleratedPlasmid;
 			}
-			case UnitId::TerranAmbassador: {
-				return WeaponId::AmbassadorSignatorySalvo;
-			}
 			case UnitId::TerranDurendal: {
 				return WeaponId::DurendalPhilistineAutogun;
 			}
@@ -2509,6 +2499,7 @@ namespace scbw {
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergSpirtithColony:
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergIrolIris:

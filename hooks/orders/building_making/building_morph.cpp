@@ -353,86 +353,82 @@ namespace hooks
 
 	// Determines the number of units which have @p unit_id and are being built by the
 	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
-	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignoreIncomplete)
+	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignore_incomplete)
 	{
-		s32 unitCount = BuildingHelper::get_unit_id_count(unit, unit_id, ignoreIncomplete);
+		s32 unit_count = BuildingHelper::get_unit_id_count(unit, unit_id, ignore_incomplete);
 
 		switch (unit_id)
 		{
 			case UnitId::ZergHachirosk:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergCaphrolosk, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
-			} break;
-
-			case UnitId::ZergCaphrolosk:
-			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
-			} break;
-
-			case UnitId::ZergGathtelosk:
-			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSibraelosk, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergCaphrolosk, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergCagrantColony:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSurkithColony, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpraithColony, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskColony, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSurkithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpraithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOcsalColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKazitrithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithColony, ignore_incomplete);
 			} break;
+
+			case UnitId::ZergSpraithColony:
+			{
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithColony, ignore_incomplete);
+			}
 
 			case UnitId::ZergIrolIris:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergIrulentIvoa, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergIrulentIvoa, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergIrulentIvoa:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergOthstolOviform:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergQuazrokPool:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLiivralPond, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLiivralPond, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergHydrokDen:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGorgralSwamp, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGorgralSwamp, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergMuthrokSpire:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergVithrathHaunt, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergVithrathHaunt, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergMatravilNest:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlmakisAntre, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlmakisAntre, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergGeszkathGrotto:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlkajChasm, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergZorkizShroud:
 			{
-				unitCount += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUltrokCavern, ignoreIncomplete); 
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUltrokCavern, ignore_incomplete); 
 			} break;
 		}
-		return unitCount;
+		return unit_count;
 	}
 
 	void set_special_state_1(Sprite* sprite)

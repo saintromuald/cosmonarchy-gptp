@@ -57,8 +57,6 @@ struct AiUnitEquivalent {
 const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHachirosk, UnitId::ZergCaphrolosk, 1},
 	{UnitId::ZergHachirosk, UnitId::ZergGathtelosk, 1},
-	{UnitId::ZergCaphrolosk, UnitId::ZergSibraelosk, 1},
-	{UnitId::ZergGathtelosk, UnitId::ZergNephrilosk, 1},
 
 	{UnitId::ZergIrolIris, UnitId::ZergIrulentIvoa, 2},
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
@@ -80,6 +78,9 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergCagrantColony, UnitId::ZergLarvoskColony, 0, true},
 	{UnitId::ZergCagrantColony, UnitId::ZergKazitrithColony, 0, true},
 	{UnitId::ZergCagrantColony, UnitId::ZergOcsalColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergSpirtithColony, 0, true},
+
+	{UnitId::ZergSpraithColony, UnitId::ZergSpirtithColony, 0, true},
 
 	{UnitId::ZergDroleth, UnitId::ZergGosvileth},
 	{UnitId::ZergOvileth, UnitId::ZergIroleth},

@@ -66,7 +66,6 @@ namespace UnitId
 		TerranHypnagogue									= 287,
 		TerranArmistice										= 289,
 		TerranPythean										= 290,
-		TerranAmbassador									= 292,
 		TerranHeir											= 293,
 		TerranHorseman										= 294,
 		TerranThespian										= 297,
@@ -227,7 +226,7 @@ namespace UnitId
 		ZergOcsalLarva										= 353,
 
 	// Zerg-Building
-		ZergOrbothOmlia										= 130,		// Infested Command Center // needs disabled lardcode for unitid infestation
+		ZergOrbothOmlia										= 130,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp									= 153,		// Unused Zerg 2
 		ZergIzkagIteth										= 170,		// Arbiter Tribunal
@@ -240,13 +239,14 @@ namespace UnitId
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
-		ZergRakzogthRoost									= 303,
-		ZergAxtothAxis										= 328,
-		ZergBegrozithBarrow									= 329,
-		ZergChokralgantChazsal								= 330,
-		ZergNephrilosk										= 350,		// Morphed from Gathtelosk
-		ZergOcsalColony										= 354,
-		ZergKazitrithColony									= 355,
+		ZergSpirtithColony									= 292,		// Morphed from Cagrant Colony
+		ZergRakzogthRoost									= 303,		// Unused
+		ZergAxtothAxis										= 328,		// Morphed from Droleth
+		ZergBegrozithBarrow									= 329,		// Unused
+		ZergChokralgantChazsal								= 330,		// Morphed from Izkag Iteth
+		ZergNephrilosk										= 350,		// Unused
+		ZergOcsalColony										= 354,		// Morphed from Cagrant Colony
+		ZergKazitrithColony									= 355,		// Morphed from Cagrant Colony
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
