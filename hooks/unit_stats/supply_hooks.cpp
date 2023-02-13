@@ -402,7 +402,7 @@ namespace hooks
 
 			for (u8 player_id = 0; player_id < PlayerLimit; ++player_id) {
 				u8 player_type = g_player_table[player_id].type;
-				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !global_vars.players[*g_local_nation_id].is_witness) {
+				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !global_vars.players[player_id].is_witness) {
 					u8 race_id = g_player_table[player_id].race;
 					workers = 0;
 					men = 0;
@@ -424,7 +424,7 @@ namespace hooks
 					dialog_var = dialog_var->next;
 					graphics::draw_stat_res_box(424, 5 + statres_row, 433, 14 + statres_row, g_player_minimap_colors[player_id]);
 					statres_row += 15;
-					//keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
+					// keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
 					helper::hide_dialog(dialog_var);
 					dialog_var = dialog_var->next;
 				}
