@@ -1743,7 +1743,8 @@ namespace hooks {
 
 						// Check if the unit can be shielded
 						Unit* target = bullet->attack_target.unit;
-						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) { // We skip flagged bullets, so we don't have an infinite cycle of redirecting
+						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1 || target->player == 11) {
+							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
 							continue;
 						}
 
