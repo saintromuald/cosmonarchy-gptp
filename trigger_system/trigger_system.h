@@ -43,7 +43,6 @@ extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 
 struct PlayerVars {
 	u32 temp;
-	b32 is_witness;
 };
 
 enum Celebration {
@@ -56,6 +55,7 @@ enum Celebration {
 struct GlobalVars {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
+	b32 witness_mode;
 };
 
 extern GlobalVars global_vars;

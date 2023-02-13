@@ -626,6 +626,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Remove minimap checksum checks.
 	nops(0x0047CCB0, 22);
 
+	// Update vision update timer to happen faster
+	memory_patch(0x004D94D0 + 6, 1);
+
 	// INJECTION \\
 
 	inject_globals_hooks();
