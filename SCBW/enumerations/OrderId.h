@@ -240,7 +240,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	Unburrow               = 0x76, /**< Unburrow unit.
 					* Default Requirements: Unused. */
-	CarapaceSwarm              = 0x77, /**< Cast Spell: Dark Swarm.
+	CarapaceSwarm          = 0x77, /**< Cast Spell: Dark Swarm.
 					* Default Requirements: Unused. */
 	CastParasite           = 0x78, /**< Cast Spell: MatralethParasite.
 					* Default Requirements: Unused. */
