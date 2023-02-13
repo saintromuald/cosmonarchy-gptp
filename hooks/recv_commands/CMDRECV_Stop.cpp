@@ -231,8 +231,8 @@ namespace hooks
 
 			if (current_unit->id == UnitId::TerranWyvern)
 			{
-				UnitExt* unitExt = get_unit_ext(current_unit);
-				unitExt->units[UnitWyvernTargetLock] = nullptr;
+				UnitExt* unit_ext = get_unit_ext(current_unit);
+				unit_ext->units[UnitWyvernTargetLock] = 0;
 			}				
 			current_unit = get_active_player_next_selection();
 		}
