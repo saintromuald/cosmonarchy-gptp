@@ -302,6 +302,7 @@ namespace hooks {
 				&&	  unit->id != UnitId::ZergCagrantColony
 				&&	  unit->id != UnitId::ZergSpraithColony
 				&&	  unit->id != UnitId::ZergSurkithColony
+				&&	  unit->id != UnitId::ZergSpirtithColony
 				&&	  unit->id != UnitId::ProtossPylon
 				&&	  unit->id != UnitId::ProtossWarden)
 				{

@@ -244,11 +244,15 @@ namespace hooks
 			case UnitId::ZergCagrantColony: {
 				return is_complete;
 			}
-			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergGathtelosk:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
-			case UnitId::ZergLarvoskColony: {
+			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergSpirtithColony:
+			case UnitId::ZergKazitrithColony:
+			case UnitId::ZergOcsalColony:
+			{
 				return true;
 			}
 		}

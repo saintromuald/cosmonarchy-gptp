@@ -1902,8 +1902,9 @@ namespace scbw {
 			|| unit_id == UnitId::ZergSurkithColony
 			|| unit_id == UnitId::ZergSpraithColony
 			|| unit_id == UnitId::ZergLarvoskColony
-			|| unit_id == UnitId::ZergOcsalColony
+			|| unit_id == UnitId::ZergSpirtithColony
 			|| unit_id == UnitId::ZergKazitrithColony
+			|| unit_id == UnitId::ZergOcsalColony
 			|| unit_id == UnitId::ZergNydusCesiant
 			|| unit_id == UnitId::PoliceDugout;
 	}
@@ -2498,6 +2499,7 @@ namespace scbw {
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergSpirtithColony:
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergIrolIris:
