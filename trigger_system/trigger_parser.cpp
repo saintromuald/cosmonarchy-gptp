@@ -455,7 +455,7 @@ u32 parser_get_player(Parser* parser, bool allow_neutral) {
 			return player;
 		}
 		if (player == 13) {
-			return *g_current_trigger_player_id;
+			return *g_current_trigger_player_id + 1;
 		}
 	}
 	return 0;

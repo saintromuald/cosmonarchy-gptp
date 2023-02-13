@@ -10,7 +10,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::orders_MedicHoldPosition(unit);
+		hooks::orders_medic_hold_position(unit);
 		__asm {
 			POPAD
 			RETN
@@ -27,7 +27,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_ReaverStop(unit);
+		hooks::orders_reaver_stop(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -43,7 +43,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::orders_Guard(unit);
+		hooks::orders_guard(unit);
 		__asm {
 			POPAD
 			RETN
@@ -71,7 +71,7 @@ namespace hooks
 	{
 	//	jump_patch(orders_MedicHoldPositionWrapper,		0x00464050, 0);
 	//	jump_patch(orders_ReaverStopWrapper,			0x004654B0, 1);
-	//	jump_patch(orders_GuardWrapper,					0x00475B90, 2);
+		jump_patch(orders_GuardWrapper,					0x00475B90, 2);
 		jump_patch(orders_player_guard_wrapper,			0x004774A0, 3);
 	}
 }
