@@ -1083,10 +1083,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "witness_mode")) { // This could probably be refactored. -Pr0nogo
-			s32 state = parser_get_s32(&parser);
-			if (global_vars.witness_mode != state) {
-				global_vars.witness_mode = state;
+		} else if (parser_eq(&parser, "witness_mode")) {
+			s32 state = parser_get_s32(&parser) != 0;
+			if (global_vars.players[trigger_player].is_witness != state) {
+				global_vars.players[trigger_player].is_witness = state;
 				if (!state) {
 					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game
 				}

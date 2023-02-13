@@ -372,14 +372,12 @@ namespace hooks
     }
 
 	// Hook edited by DarkenedFantasies for new replay UI. -Pr0nogo
-	void stat_res_main_proc(BinDlg* dialog) // 004E5640
-	{
+	void stat_res_main_proc(BinDlg* dialog) { // 004E5640
 		if (dialog->control_type) {
 			dialog = dialog->parent;
 		}
 
 		BinDlg* dialog_var = dialog->child_dialog;
-
 		if (dialog_var) {
 			while (dialog_var->index != 1) {
 				dialog_var = dialog_var->next;
@@ -389,8 +387,7 @@ namespace hooks
 					break;
 				}
 			}
-		}
-		else {
+		} else {
 			dialog_var = 0;
 		}
 
@@ -399,14 +396,13 @@ namespace hooks
 		s32 men = 0;
 
 		// Replay/witness UI. -DF
-		if (*g_is_in_replay || global_vars.witness_mode) {
+		if (*g_is_in_replay || global_vars.players[*g_local_nation_id].is_witness) {
 			u8 statres_row = 0;
 			graphics::reset_stat_res_graphics();
 
 			for (u8 player_id = 0; player_id < PlayerLimit; ++player_id) {
 				u8 player_type = g_player_table[player_id].type;
-
-				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !global_vars.witness_mode) {
+				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !global_vars.players[*g_local_nation_id].is_witness) {
 					u8 race_id = g_player_table[player_id].race;
 					workers = 0;
 					men = 0;
@@ -414,8 +410,7 @@ namespace hooks
 						if (unit->status & UnitStatus::Completed) {
 							if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 								workers += 2;
-							}
-							else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
+							} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
 								men += 2;
 							}
 						}
@@ -439,15 +434,13 @@ namespace hooks
 				helper::hide_dialog(dialog_var);
 				dialog_var = dialog_var->next;
 			}
-		}
-		else { // Normal player UI. -Veeq7
+		} else { // Normal player UI. -Veeq7
 			s32 active_player = *g_local_nation_id;
 			for (Unit* unit = first_player_unit->unit[active_player]; unit; unit = unit->player_link.next) {
 				if (unit->status & UnitStatus::Completed) {
 					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 						workers += 2;
-					}
-					else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
+					} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
 						men += 2;
 					}
 				}
