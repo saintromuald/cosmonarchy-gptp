@@ -3035,4 +3035,11 @@ namespace scbw {
 		||	   unit_id == UnitId::ZergAkistrokor
 		||	   unit_id == UnitId::ZergZarcavrokor;
 	}
+
+	bool weapon_id_is_for_harvesting(u32 weapon_id)
+	{
+		return	weapon_id == WeaponId::MasonFusionCutterHarvest
+		||		weapon_id == WeaponId::ScribeParticleBeamHarvest
+		||		weapon_id == WeaponId::DrolethSpinesHarvest;
+	}
 }

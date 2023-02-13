@@ -1743,7 +1743,7 @@ namespace hooks {
 
 						// Check if the unit can be shielded
 						Unit* target = bullet->attack_target.unit;
-						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1 || target->player == 11) {
+						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) {
 							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
 							continue;
 						}
@@ -1766,7 +1766,7 @@ namespace hooks {
 						}
 
 						scbw::create_shield_overlay(target, bullet->direction1);
-						scbw::set_bullet_target(bullet, unit);
+					//	scbw::set_bullet_target(bullet, unit);
 						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
 						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
