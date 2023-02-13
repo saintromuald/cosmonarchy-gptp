@@ -1561,35 +1561,8 @@ namespace hooks {
 		s32 result;
 		u32 status = unit->status;
 		Unit* target_unit = unit->order_target.unit;
-		if (status & UnitStatus::Disabled)
-		{
-			goto LABEL_23;
-		}
-		if (unit->lockdown_timer)
-		{
-			goto LABEL_23;
-		}
-		if (unit->stasis_timer)
-		{
-			goto LABEL_23;
-		}
-		if (unit->maelstrom_timer)
-		{
-			goto LABEL_23;
-		}
-		if (!target_unit)
-		{
-			goto LABEL_23;
-		}
-		if (target_unit->status & UnitStatus::Invincible)
-		{
-			goto LABEL_23;
-		}
-		if (target_unit->sprite->flags & 0x20)
-		{
-			goto LABEL_23;
-		}
-		if (helper::unit_can_see_cloaked_target(target_unit, unit))
+		if (unit->is_frozen() || unit->status & UnitStatus::Invincible || target_unit->sprite->flags & SpriteFlags::Hidden
+		||  helper::unit_can_see_cloaked_target(target_unit, unit))
 		{
 			goto LABEL_23;
 		}
@@ -1602,10 +1575,10 @@ namespace hooks {
 		{
 			goto LABEL_34;
 		}
-		// Used to handle Accantors
+		// Used to handle Accantors here
 		bool tism = false;
 		if (tism) { // Don't look Veeq! Shield your eyes!
-		LABEL_23:
+	LABEL_23:
 			Unit* target_unit2 = unit->order_target.unit;
 			if (!target_unit2 || unit->status & UnitStatus::HoldingPosition)
 			{
@@ -1640,7 +1613,7 @@ namespace hooks {
 			}
 			return result;
 		}
-		// Used to check for infestation potential
+		// Used to check for infestation potential here
 		if (unit->id == UnitId::ProtossDidact && unit->unit_ai)
 		{
 			goto LABEL_23;
