@@ -184,24 +184,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) order_attack_behavior_wrapper() // 00478540
-	{
-		static bool result;
-		static Unit* unit;
-		__asm
-		{
-			MOV unit, EAX
-			PUSHAD
-		}
-		result = hooks::order_attack_behavior(unit);
-		__asm
-		{
-			POPAD
-			MOV AL, result
-			RETN
-		}
-	}
-
 	void __declspec(naked) ai_attack_unit_wrapper() // 0043FFD0
 	{
 		static Unit* unit;
@@ -350,7 +332,6 @@ namespace hooks
 		jump_patch(check_unit_visibility_wrapper,					0x00443390, 3);
 	//	jump_patch(is_unit_cloaking_wrapper,						0x004916E0, 0);
 		jump_patch(unit_can_attack_target_wrapper,					0x00476730, 5);
-	//	jump_patch(order_attack_behavior_wrapper,					0x00478540, 0);
 		jump_patch(ai_attack_unit_wrapper,							0x0043FFD0, 1);
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
 		jump_patch(find_fow_target_wrapper,							0x00487A10, 5);

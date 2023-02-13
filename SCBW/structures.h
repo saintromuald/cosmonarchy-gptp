@@ -1259,4 +1259,13 @@ struct ForceNames {
 	ForceNamesEntry force[4];
 };
 
+
+struct HashPacket {
+	u8 id;
+	u8 sequence;
+	u16 sequence_hash;
+	u8 visibility_hash;
+	u8 visibility_id;
+	u8 minimap_box_count;
+};
 #pragma pack()

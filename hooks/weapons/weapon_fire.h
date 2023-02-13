@@ -22,6 +22,7 @@ namespace hooks
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0
 	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim);						// 00476C90
 	b32 should_stay_at_range(Unit* unit);																		// 00475A10
+	s32 order_attack_behavior(Unit* unit);																		// 00478540
 
 	void inject_weapon_fire_hooks();
 }

@@ -125,6 +125,31 @@ bool isGameOn = false;
 		}
 	}
 
+	void __declspec(naked) game_recv_wrapper() { // 004865D0
+		static char* cur_len;
+		static s32 data_len;
+		static bool as_replay;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV data_len, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV as_replay, AL
+			POP EAX
+			MOV cur_len, EAX
+			PUSHAD
+		}
+		hooks::game_recv(cur_len, data_len, as_replay);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
 //-------- Hook injector --------//
 
 namespace hooks {
@@ -132,6 +157,7 @@ namespace hooks {
 		jump_patch(on_game_start,						Hook_OnGameStart);
 		jump_patch(set_ingame_input_procs,				0x00484CC0, 0);
 		jump_patch(update_minimap_colors,				0x004A3A00, 0);
+		jump_patch(update_doodad_visibility_wrapper,	0x00487690, 1);
 		jump_patch(update_doodad_visibility_wrapper,	0x00487690, 1);
 
 		jump_patch(ui_button_click_wrapper,				0x004190ED, 2);

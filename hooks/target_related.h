@@ -16,7 +16,6 @@ namespace hooks
 	s32 is_unit_cloaking(Unit* unit);																					// 004916E0
 	void update_unit_visibility(Unit* unit);																			// Extracted part of check_unit_visibility
 	bool unit_can_attack_target(Unit* target, Unit* unit, int check_detection);											// 00476730
-	s32 order_attack_behavior(Unit *a1);																				// 00478540
 	void ai_attack_unit(Unit* unit);																					// 0043FFD0
 	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit);															// 00465810
 	Thingy* find_fow_target(u32 x_pos, u32 y_pos);																		// 00487A10
