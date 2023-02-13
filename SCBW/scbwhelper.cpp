@@ -7304,7 +7304,7 @@ namespace helper {
 		return (s16)result;
 	}
 
-	bool has_ground_weapon_graphic(Unit* unit) {
+	bool should_stay_at_range(Unit* unit) {
 		const u32 Func_hasGroundWeaponGraphic = 0x00475A10;
 		static bool result;
 		__asm {
@@ -12673,6 +12673,731 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	s32 is_string_valid(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type)
+	{
+		static s32 result;
+		const u32 func_address = 0x00485980;
+		__asm {
+			PUSHAD
+			PUSH string_type
+			PUSH string
+			MOV EBX, buffer
+			MOV ECX, data_len
+			MOV EAX, string_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_save_game(char* buffer)
+	{
+		const u32 func_address = 0x004C2910;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	FILE* CMDRECV_load_game(char* buffer)
+	{
+		static FILE* result;
+		const u32 func_address = 0x004CF950;
+		__asm {
+			PUSHAD
+			MOV EBX, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s8 CMDRECV_restart_game()
+	{
+		static u8 result;
+		const u32 func_address = 0x004BFB10;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_select(s32 buffer)
+	{
+		const u32 func_address = 0x004C2750;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void CMDRECV_shift_select(s32 buffer)
+	{
+		const u32 func_address = 0x004C2560;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void CMDRECV_shift_deselect(s32 buffer)
+	{
+		const u32 func_address = 0x004BFB40;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u16 CMDRECV_build(s8* buffer)
+	{
+		static u16 result;
+		const u32 func_address = 0x004C23C0;
+		__asm {
+			PUSHAD
+			MOV ESI, buffer
+			CALL func_address
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
+
+	s8* CMDRECV_vision(s8* buffer)
+	{
+		static s8* result;
+		const u32 func_address = 0x004BF9C0;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_ally(s32 buffer)
+	{
+		const u32 func_address = 0x004C28A0;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void CMDRECV_pause_game()
+	{
+		const u32 func_address = 0x004C0BC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void CMDRECV_resume_game()
+	{
+		const u32 func_address = 0x004C0B00;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
+
+	s32 CMDRECV_use_cheat(s32 buffer, char* cheat)
+	{
+		static s32 result;
+		const u32 func_address = 0x004C0AD0;
+		__asm {
+			PUSHAD
+			MOV EDI, cheat
+			MOV EDX, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u8 CMDRECV_hotkey(s32 buffer)
+	{
+		static u8 result;
+		const u32 func_address = 0x004C2870;
+		__asm {
+			PUSHAD
+			MOV ECX, buffer
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_right_click(Unit* unit)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C2370;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_target_command(char* buffer)
+	{
+		const u32 func_address = 0x004C2320;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	char CMDRECV_cancel_construction()
+	{
+		static char result;
+		const u32 func_address = 0x004C2EF0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_cancel_unit_morph()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C2EC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_stop(s8* buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C2190;
+		__asm {
+			PUSHAD
+			MOV EDI, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_carrier_stop()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1430;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_reaver_stop()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1240;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_nothing()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1050;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_return_cargo(s32 buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C2040;
+		__asm {
+			PUSHAD
+			MOV EDI, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s16 CMDRECV_train(char* buffer)
+	{
+		static s16 result;
+		const u32 func_address = 0x004C1C20;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
+
+	s16 CMDRECV_cancel_train(s8* buffer)
+	{
+		static s16 result;
+		const u32 func_address = 0x004C0100;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_cloak()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C0720;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_decloak()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C0660;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 CMDRECV_unit_morph(s32 buffer)
+	{
+		static s32 result;
+		const u32 func_address = 0x004C1990;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_unsiege()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1F10;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_siege(s32 buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1E80;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_train_fighter()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1800;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_unload_all(s8* buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1CC0;
+		__asm {
+			PUSHAD
+			MOV EDI, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char CMDRECV_unload(Unit* unit)
+	{
+		static char result;
+		const u32 func_address = 0x004C24F0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_merge_archon()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C0E90;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_hold_position(s32 buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C20C0;
+		__asm {
+			PUSHAD
+			MOV EDI, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_burrow(s32 buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1FA0;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_unburrow()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1AC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_cancel_nuke()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004BFCD0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_liftoff(s8* buffer)
+	{
+		const u32 func_address = 0x004C1620;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* CMDRECV_research(s32 buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1BA0;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_cancel_research()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C0070;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_upgrade(s32 buffer)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C1B20;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_cancel_upgrade()
+	{
+		const u32 func_address = 0x004BFFC0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* CMDRECV_cancel_addon()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004BFF30;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char CMDRECV_building_morph(s32 buffer)
+	{
+		static char result;
+		const u32 func_address = 0x004C1910;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_stim_pack()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C2F30;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 CMD_game_hash(HashPacket* packet)
+	{
+		static b32 result;
+		const u32 func_address = 0x0047CDD0;
+		__asm {
+			PUSHAD
+			MOV EDI, packet
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void CMDRECV_voice_enable(s8* buffer)
+	{
+		const u32 func_address = 0x004BF820;
+		__asm {
+			PUSHAD
+			MOV EDX, buffer
+			CALL func_address
+			POPAD
+		}
+	}
+
+	s32 CMDRECV_set_latency(s32 buffer, s32 amount)
+	{
+		static s32 result;
+		const u32 func_address = 0x00485E60;
+		__asm {
+			PUSHAD
+			MOV ESI, amount
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 CMDRECV_set_replay_speed(s32 buffer, u8 speed, u32 something)
+	{
+		static s32 result;
+		const u32 func_address = 0x004DEB90;
+		__asm {
+			PUSHAD
+			MOV ECX, something
+			MOV DL, speed
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char CMDRECV_leave_game(s32 buffer)
+	{
+		static char result;
+		const u32 func_address = 0x004C2E90;
+		__asm {
+			PUSHAD
+			PUSH buffer
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	char CMDRECV_minimap_ping(s32 buffer)
+	{
+		static char result;
+		const u32 func_address = 0x004BF7A0;
+		__asm {
+			PUSHAD
+			MOV EAX, buffer
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* CMDRECV_merge_dark_archon()
+	{
+		static Unit* result;
+		const u32 func_address = 0x004C0CD0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void bwfxn_display_text(s32 result, s32 buffer, s32 is_replay)
+	{
+		const u32 func_address = 0x0048D1C0;
+		__asm {
+			PUSHAD
+			PUSH is_replay
+			PUSH buffer
+			MOV EAX, result
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player)
+	{
+		s32 player_xd = player;
+		const u32 func_address = 0x004CDE70;
+		__asm {
+			PUSHAD
+			PUSH player_xd
+			MOV EDI, action_size
+			MOV EBX, buffer
+			MOV EAX, game_actions
 			CALL func_address
 			POPAD
 		}

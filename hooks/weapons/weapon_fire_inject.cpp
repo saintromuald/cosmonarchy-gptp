@@ -289,6 +289,38 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) should_stay_at_range_wrapper() // 00475A10
+	{
+		static b32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::should_stay_at_range(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) order_attack_behavior_wrapper() // 00478540
+	{
+		static s32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::order_attack_behavior(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 extern const u32 Func_FireUnitWeapon;
@@ -309,5 +341,7 @@ namespace hooks
 		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
+		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
+	//	jump_patch(order_attack_behavior_wrapper,			0x00478540, 0);
 	}
 }

@@ -1743,7 +1743,8 @@ namespace hooks {
 
 						// Check if the unit can be shielded
 						Unit* target = bullet->attack_target.unit;
-						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) { // We skip flagged bullets, so we don't have an infinite cycle of redirecting
+						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) {
+							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
 							continue;
 						}
 
@@ -1765,7 +1766,7 @@ namespace hooks {
 						}
 
 						scbw::create_shield_overlay(target, bullet->direction1);
-						scbw::set_bullet_target(bullet, unit);
+					//	scbw::set_bullet_target(bullet, unit);
 						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
 						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
@@ -2790,5 +2791,630 @@ namespace hooks {
 		end_threshold();
 		graphics::reset_stat_res_graphics();
 		return true;
+	}
+
+	// Hooked to explore custom game commands. -Pr0nogo
+	void game_recv(char* cur_len, u32 data_len, bool as_replay) // 004865D0
+	{
+		// TODO: Cleanup
+		s32 is_valid_string;
+		s32 data_len3;
+		s32 is_valid_string2;
+		s32 v11;
+		s32 v12;
+		s32 v13;
+		s32 v14;
+		s32 v15;
+		s32 v16;
+		u8 v17;
+		s32 data_len1;
+		s32 data_len2;
+		s32 dataLenc;
+
+		char* buffer = cur_len;
+		u32 command_id;
+		u32 size;
+		if (data_len)
+		{
+			b32 is_in_replay = *g_is_in_replay;
+			while (1)
+			{
+				command_id = *buffer;
+				if (!is_in_replay || as_replay)
+				{
+					break;
+				}
+				switch (command_id)
+				{
+				case 5u:
+				case 8u:
+				case 0x10u:
+				case 0x11u:
+				case 0x37u:
+				case 0x38u:
+				case 0x39u:
+				case 0x3Au:
+				case 0x3Bu:
+				case 0x55u:
+				case 0x56u:
+					goto LABEL_11;
+				default:
+					command_id = command_id;
+					u32 command_size = g_turn_command_size[command_id];
+					if (command_id >= 9 && command_id <= 11)
+					{
+						command_size = 2 * buffer[1] + 2;
+					}
+					data_len -= command_size;
+					if (data_len < 0)
+					{
+						return;
+					}
+				_continue:
+					if (!data_len)
+					{
+						return;
+					}
+					break;
+				}
+			}
+		LABEL_11:
+			switch (command_id)
+			{
+				case 5u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						++(*g_sequence);
+						goto continue_end;
+					}
+					break;
+				case 6u:
+					data_len2 = data_len - 5;
+					if (data_len - 5 >= 0)
+					{
+						is_valid_string = helper::is_string_valid(28u, data_len2, 0, buffer + 5, 0);
+						if (is_valid_string)
+						{
+							size = is_valid_string + 5;
+							data_len1 = data_len2 - is_valid_string;
+							helper::CMDRECV_save_game(buffer);
+							goto continue_end;
+						}
+					}
+					break;
+				case 7u:
+					data_len3 = data_len - 5;
+					dataLenc = data_len3;
+					if (data_len3 >= 0)
+					{
+						is_valid_string2 = helper::is_string_valid(28u, data_len3, 0, buffer + 5, 0);
+						if (is_valid_string2)
+						{
+							size = is_valid_string2 + 5;
+							data_len1 = dataLenc - is_valid_string2;
+							if (!g_multiplayer_mode)
+							{
+								helper::CMDRECV_load_game(buffer + 5);
+							}
+							goto continue_end;
+						}
+					}
+					break;
+				case 8u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_restart_game();
+						goto continue_end;
+					}
+					break;
+				case 9u:
+					v11 = data_len - 2;
+					if (v11 >= 0)
+					{
+						v12 = 2 * (u8)buffer[1];
+						data_len1 = v11 - v12;
+						if (v11 - v12 >= 0)
+						{
+							size = v12 + 2;
+							helper::CMDRECV_select((s32)buffer);
+							goto continue_end;
+						}
+					}
+					break;
+				case 10u:
+					v13 = data_len - 2;
+					if (v13 >= 0)
+					{
+						v14 = 2 * (u8)buffer[1];
+						data_len1 = v13 - v14;
+						if (v13 - v14 >= 0)
+						{
+							size = v14 + 2;
+							helper::CMDRECV_shift_select((s32)buffer);
+							goto continue_end;
+						}
+					}
+					break;
+				case 11u:
+					v15 = data_len - 2;
+					if (v15 >= 0)
+					{
+						v16 = 2 * (u8)buffer[1];
+						data_len1 = v15 - v16;
+						if (v15 - v16 >= 0)
+						{
+							size = v16 + 2;
+							helper::CMDRECV_shift_deselect((s32)buffer);
+							goto continue_end;
+						}
+					}
+					break;
+				case 12u:
+					size = 8;
+					data_len1 = data_len - 8;
+					if (data_len - 8 >= 0)
+					{
+						helper::CMDRECV_build((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 13u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_vision((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 14u:
+					size = 5;
+					data_len1 = data_len - 5;
+					if (data_len - 5 >= 0)
+					{
+						helper::CMDRECV_ally((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 15u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						v17 = buffer[1];
+						if (v17 < 7u && !g_multiplayer_mode)
+						{
+							(*g_options_list).speed = v17;
+						}
+						goto continue_end;
+					}
+					break;
+				case 16u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_pause_game();
+						goto continue_end;
+					}
+					break;
+				case 17u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_resume_game();
+						goto continue_end;
+					}
+					break;
+				case 18u:
+					size = 5;
+					data_len1 = data_len - 5;
+					if (data_len - 5 >= 0)
+					{
+						helper::CMDRECV_use_cheat((s32)buffer, (char*)g_is_in_replay);
+						goto continue_end;
+					}
+					break;
+				case 19u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_hotkey((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 20u:
+					size = 10;
+					data_len1 = data_len - 10;
+					if (data_len - 10 >= 0)
+					{
+						helper::CMDRECV_right_click((Unit*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 21u:
+					size = 11;
+					data_len1 = data_len - 11;
+					if (data_len - 11 >= 0)
+					{
+						helper::CMDRECV_target_command(buffer);
+						goto continue_end;
+					}
+					break;
+				case 24u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_cancel_construction();
+						goto continue_end;
+					}
+					break;
+				case 25u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_cancel_unit_morph();
+						goto continue_end;
+					}
+					break;
+				case 26u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_stop((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 27u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_carrier_stop();
+						goto continue_end;
+					}
+					break;
+				case 28u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_reaver_stop();
+						goto continue_end;
+					}
+					break;
+				case 29u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_nothing();
+						goto continue_end;
+					}
+					break;
+				case 30u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_return_cargo((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 31u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_train(buffer);
+						goto continue_end;
+					}
+					break;
+				case 32u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_cancel_train((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 33u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_cloak();
+						goto continue_end;
+					}
+					break;
+				case 34u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_decloak();
+						goto continue_end;
+					}
+					break;
+				case 35u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_unit_morph((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 37u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_unsiege();
+						goto continue_end;
+					}
+					break;
+				case 38u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_siege((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 39u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_train_fighter();
+						goto continue_end;
+					}
+					break;
+				case 40u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_unload_all((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 41u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_unload((Unit*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 42u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_merge_archon();
+						goto continue_end;
+					}
+					break;
+				case 43u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_hold_position((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 44u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_burrow((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 45u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_unburrow();
+						goto continue_end;
+					}
+					break;
+				case 46u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_cancel_nuke();
+						goto continue_end;
+					}
+					break;
+				case 47u:
+					size = 5;
+					data_len1 = data_len - 5;
+					if (data_len - 5 >= 0)
+					{
+						helper::CMDRECV_liftoff((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 48u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_research((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 49u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_cancel_research();
+						goto continue_end;
+					}
+					break;
+				case 50u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_upgrade((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 51u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_cancel_upgrade();
+						goto continue_end;
+					}
+					break;
+				case 52u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_cancel_addon();
+						goto continue_end;
+					}
+					break;
+				case 53u:
+					size = 3;
+					data_len1 = data_len - 3;
+					if (data_len - 3 >= 0)
+					{
+						helper::CMDRECV_building_morph((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 54u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_stim_pack();
+						goto continue_end;
+					}
+					break;
+				case 55u:
+					size = 7;
+					data_len1 = data_len - 7;
+					if (data_len - 7 >= 0)
+					{
+						if (!is_in_replay && !helper::CMD_game_hash((HashPacket*)buffer))
+						{
+							*g_is_bad_hash = 1;
+							g_array_player_status[*g_active_storm_id] = 0x10000;
+						}
+						++(*g_sequence);
+						goto continue_end;
+					}
+					break;
+				case 56u:
+				case 57u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_voice_enable((s8*)buffer);
+						goto continue_end;
+					}
+					break;
+				case 58u:
+				case 59u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						goto continue_end;
+					}
+					break;
+				case 85u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_set_latency((int)buffer, (int)buffer);
+						goto continue_end;
+					}
+					break;
+				case 86u:
+					size = 10;
+					data_len1 = data_len - 10;
+					if (data_len - 10 >= 0)
+					{
+						if (is_in_replay)
+						{
+							helper::CMDRECV_set_replay_speed(*(s32*)(buffer + 2), buffer[1], *(s32*)(buffer + 6));
+						}
+						goto continue_end;
+					}
+					break;
+				case 87u:
+					size = 2;
+					data_len1 = data_len - 2;
+					if (data_len - 2 >= 0)
+					{
+						helper::CMDRECV_leave_game((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 88u:
+					size = 5;
+					data_len1 = data_len - 5;
+					if (data_len - 5 >= 0)
+					{
+						helper::CMDRECV_minimap_ping((s32)buffer);
+						goto continue_end;
+					}
+					break;
+				case 90u:
+					size = 1;
+					data_len1 = data_len - 1;
+					if (data_len - 1 >= 0)
+					{
+						helper::CMDRECV_merge_dark_archon();
+						goto continue_end;
+					}
+					break;
+				case 92u:
+					size = 82;
+					data_len1 = data_len - 82;
+					if (data_len - 82 >= 0)
+					{
+						helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), as_replay);
+					continue_end:
+						helper::save_replay_action(g_replay_data, buffer, size, *g_active_storm_id);
+						data_len = data_len1;
+						buffer += size;
+						is_in_replay = *g_is_in_replay;
+						goto _continue;
+					}
+					break;
+				default:
+					return;
+			}
+		}
 	}
 }

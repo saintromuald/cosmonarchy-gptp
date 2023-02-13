@@ -140,7 +140,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x00492850,	/*OrderId::CarapaceSwarm*/				Func_Type::EAX,	2},
 	{ 0x00492850,	/*OrderId::CastParasite*/			Func_Type::EAX,	2},
 	{ 0x00492850,	/*OrderId::SummonBroodlings*/		Func_Type::EAX,	2},
-	{ 0x00492850,	/*OrderId::EmpShockwave*/			Func_Type::EAX,	2},
+	{ 0x00492850,	/*OrderId::EMPShockwave*/			Func_Type::EAX,	2},
 	{ NOTVALID,		/*OrderId::NukeWait*/				Func_Type::EAX,	0},
 	{ 0x004E6700,	/*OrderId::NukeTrain*/				Func_Type::EAX,	1},
 	{ 0x00464730,	/*OrderId::NukeLaunch*/				Func_Type::EAX,	2},

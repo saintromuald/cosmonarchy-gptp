@@ -290,7 +290,7 @@ namespace hooks
 
 						if (unit->get_spell_countdown() == 0
 						&&	gcd_condition // new
-						&&	helper::is_ready_to_attack(unit, order_weapon_id) // is ready to fire weapon (angle,distance...) maybe?
+						&&	helper::is_ready_to_attack(unit, order_weapon_id) // is ready to fire weapon (angle, distance...) maybe?
 						&&	!(unit->movement_flags & MovementFlags::Accelerating)
 						&&	unit->get_movable_state() != 0)
 						{

@@ -406,116 +406,170 @@ namespace hooks
 
 	void __declspec(naked) get_color_handle() {
 		__asm {
-			CMP     AL, 0x1
-			JNE     offset isNewColor
-			CMP     dword ptr ds : [0x006CE0E8] , offset tFontGame_ImageData + 0x130//Use saved font pColor if savedFontColor is also pColor.
-			JNE     offset skip_0
-			ADD     dword ptr ds : [0x006CE0E8] , 8
+			CMP		AL, 0x1
+			JNE		offset isNewColor
+			CMP		dword ptr ds : [0x006CE0E8] , offset tFontGame_ImageData + 0x130//Use saved font pColor if savedFontColor is also pColor.
+			JNE		offset skip_0
+			ADD		dword ptr ds : [0x006CE0E8] , 8
 			skip_0 :
-			MOV     EAX, ds : [0x006CE0E8]//<Set savedFontColor to currentFontColor if <01>.
-			MOV     ds : [0x006CE0C0] , EAX
+			MOV		EAX, ds : [0x006CE0E8]//<Set savedFontColor to currentFontColor if <01>.
+			MOV		ds : [0x006CE0C0] , EAX
 			RETN
 
 			isNewColor :
-			CMP     AL, 0x0B
-				JE      offset isPlayerColor_0
-				CMP     AL, 0x14
-				JE      offset isPlayerColor_0
-				MOV     ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
-				MOV     ds : [0x006CE0E8] , ECX
-				MOVZX   EAX, AL
-				DEC     AL
-				CMP     AL, 0xA//No tfont offset adjustment for <02> through <0A> tags.
-				JB      offset off_2
-				CMP     AL, 0x1F//tfont offsets for <0B> through <1F> tags.
-				JB      offset off_1
-				SUB     AL, 0x77//tfont offsets for <8F> through <9F> tags.
-				CMP     AL, 0x22//Decrement 1 more if above <99>.
-				JB      offset off_2
-				DEC     AL
-				JMP     offset off_2
+			CMP		AL, 0x0B
+				JE		offset isPlayerColor_0
+				CMP		AL, 0x14
+				JE		offset isPlayerColor_0
+				MOV		ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
+				MOV		ds : [0x006CE0E8] , ECX
+				MOVZX	EAX, AL
+				DEC		AL
+				CMP		AL, 0xA//No tfont offset adjustment for <02> through <0A> tags.
+				JB		offset off_2
+				CMP		AL, 0x1F//tfont offsets for <0B> through <1F> tags.
+				JB		offset off_1
+				SUB		AL, 0x77//tfont offsets for <8F> through <9F> tags.
+				CMP		AL, 0x22//Decrement 1 more if above <99>.
+				JB		offset off_2
+				DEC		AL
+				JMP		offset off_2
 
 				off_1 :
-			SUB     AL, ds : [EAX + 0x004200AC]
+			SUB		AL, ds : [EAX + 0x004200AC]
 
 				off_2 :
-				DEC     AL
-				LEA     EAX, [EAX * 8 + tFontGame_ImageData]//Set new font color to currentFontColor.
-				MOV     ds : [0x006CE0C0] , EAX
+				DEC		AL
+				LEA		EAX, [EAX * 8 + tFontGame_ImageData]//Set new font color to currentFontColor.
+				MOV		ds : [0x006CE0C0] , EAX
 				RETN
 
 				isPlayerColor_0 :
-			MOV     CL, [ESI + 1]
-				CMP     CL, 0x08
-				JBE     offset isPlayerColor_2
-				SUB     CL, 0x0E
-				CMP     CL, 0x03
-				JBE     offset isPlayerColor_1
+			TEST	AH, AH
+				JNE		offset isPlayerMessage_0
+				MOV		CL, [ESI + 1]
+				CMP		CL, 0x08
+				JBE		offset isPlayerColor_2
+				SUB		CL, 0x0E
+				CMP		CL, 0x03
+				JBE		offset isPlayerColor_1
 				ADD[ESP], 6
 				RETN
 
+				isPlayerMessage_0 :
+			SHR		EAX, 8
+				JMP		offset isPlayerMessage_1
+
 				isPlayerColor_1 :
-			ADD     CL, 0x09
+			ADD		CL, 0x09
 
 				isPlayerColor_2 :
-				INC     ESI
-				MOV     AL, CL
-				DEC     AL
-				MOV     ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
-				MOV     ds : [0x006CE0E8] , ECX
-				MOV     EDX, offset tFontGame_ImageData + 0x130//Set player-colored font to currentFontColor.
-				MOV     ds : [0x006CE0C0] , EDX
-				MOVZX   EAX, AL
-				LEA     EAX, [EAX * 8 + 0x00581D74]//Unit color table
-				MOV     EBX, [EDX + 1]
+				INC		ESI
+				MOV		AL, CL
+
+				isPlayerMessage_1 :
+			DEC		AL
+				MOV		ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
+				MOV		ds : [0x006CE0E8] , ECX
+				PUSH	EDX
+				MOV		EDX, offset tFontGame_ImageData + 0x130//Set player-colored font to currentFontColor.
+				MOV		ds : [0x006CE0C0] , EDX
+				MOVZX	EAX, AL
+				LEA		EAX, [EAX * 8 + 0x00581D74]//Unit color table
+				PUSH	EBX
+				MOV		EBX, [EDX + 1]
 				MOV[EDX + 9], EBX
 
 				loop_0 :
-			ADD     EAX, 2
-				INC     EDX
-				MOV     BL, [EAX]
+			ADD		EAX, 2
+				INC		EDX
+				MOV		BL, [EAX]
 				MOV[EDX], BL
-				CMP     EDX, offset tFontGame_ImageData + 0x134
-				JNE     offset loop_0
+				CMP		EDX, offset tFontGame_ImageData + 0x134
+				JNE		offset loop_0
+				POP		EBX
+				POP		EDX
 				RETN
-
 		}
-	}
+	};
 
 	const u32 writeFontApplyColour_1FE01 = 0x0041FE01;
 	const u32 writeFontApplyColour_2000A = 0x0042000A;
 	void __declspec(naked) writeFontApplyColour_patch() {
 		__asm {
 			//CL is -1 from actual character ASCII code to naturally exclude <00>.
-			CMP     CL, 0x1F//Include <01> to <1F>.
-			JB      offset off_3
-			CMP     CL, 0x9E//Exclude <A0> to <FF>.
-			JA      offset off_1FE01
-			CMP     CL, 0x8E//Exclude <20> to <8E>.
-			JB      offset off_1FE01
-			CMP     CL, 0x98//Exclude <99>.
-			JE      offset off_1FE01
-			JMP     offset off_4
+			CMP		CL, 0x1F//Include <01> to <1F>.
+			JB		offset off_3
+			CMP		CL, 0x9E//Exclude <A0> to <FF>.
+			JA		offset off_1FE01
+			CMP		CL, 0x8E//Exclude <20> to <8E>.
+			JB		offset off_1FE01
+			CMP		CL, 0x98//Exclude <99>.
+			JE		offset off_1FE01
+			JMP		offset off_4
 
 			off_3 :
-			CMP     byte ptr ds : [ECX + 0x004200AC] , 0x1//Exclude the non-color tags (newlines, aligns, etc).
-				JE      offset off_1FE01
-				MOV     CL, ds : [0x006D5DE0]//dword_6D5DE0
-				TEST    CL, CL
-				JNE     offset off_2000A
-				CMP     dword ptr ds : [0x006CE0C0] , offset tFontGame_ImageData[0x18]//Make grey color override subsequent tags.
-				JE      off_2000A
+			CMP		byte ptr ds : [ECX + 0x004200AC] , 0x1//Exclude the non-color tags (newlines, aligns, etc).
+			JE		offset off_1FE01
+			MOV		CL, ds : [0x006D5DE0]//dword_6D5DE0
+			TEST	CL, CL
+			JNE		offset off_2000A
+			CMP		dword ptr ds : [0x006CE0C0] , offset tFontGame_ImageData[0x18]//Make grey color override subsequent tags.
+			JE		off_2000A
 
-				off_4 :
-			CALL    get_color_handle
+			off_4 :
+			MOVZX	EAX, AL
+			CALL	get_color_handle
 
-				off_2000A :
-			JMP     writeFontApplyColour_2000A
+			off_2000A :
+			JMP		writeFontApplyColour_2000A
 
-				off_1FE01 :
-			JMP     writeFontApplyColour_1FE01
+			off_1FE01 :
+			JMP		writeFontApplyColour_1FE01
 		}
-	}
+	};
+
+	void __declspec(naked) getColourID_new() {
+		__asm {
+			MOV		ECX, 3
+			CMP		byte ptr ds : [0x006D5BBE] , 2//g_minimap_state
+			JNE		offset locret_49B124
+			MOV		ECX, ds : [0x00512684]//g_local_nation_id
+			MOVZX	EAX, AL
+			CMP		ECX, EAX
+			JNE		offset loc_49B0FA
+			MOV		AL, 2
+			JMP		offset loc_49B10E
+
+			loc_49B0FA :
+			LEA		ECX, [ECX + ECX * 2]
+				MOV		DL, [EAX + ECX * 4 + 0x0058D634]//player_alliance
+				TEST	DL, DL
+				SETE	AL
+
+				loc_49B10E :
+			MOV		CL, AL
+				XOR		EAX, EAX
+
+				locret_49B124 :
+			INC		EAX
+				RET
+		}
+	};
+
+	void __declspec(naked) set_display_text_color() {
+		__asm {
+			MOV[EDX * 2 + display_text_color], AX
+			RET
+		}
+	};
+
+	void __declspec(naked) get_display_text_color() {
+		__asm {
+			MOV		AX, [EBX * 2 + display_text_color]
+			RET
+		}
+	};
 
 	const u32 StatHangarCount_25477 = 0x00425477;
 	void __declspec(naked) StatHangarCount_patch_25471() {

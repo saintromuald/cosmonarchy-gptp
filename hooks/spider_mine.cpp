@@ -16,8 +16,7 @@ namespace hooks
 			return 0;
 		}
 		range = 32 * mine->get_seek_range();
-		return
-			scbw::UnitFinder::get_nearest_target(
+		return scbw::UnitFinder::get_nearest_target(
 				mine->get_x() - range, mine->get_y() - range,
 				mine->get_x() + range, mine->get_y() + range,
 				mine, [&](Unit* target)
@@ -40,6 +39,9 @@ namespace hooks
 			// Don't attack hovering units
 			if (units_dat::movement_flags[target->id] == MovementFlags::HoverUnit)
 			{
+				return false;
+			}
+			if (!target->is_visible_to(mine->player)) {
 				return false;
 			}
 			return true;

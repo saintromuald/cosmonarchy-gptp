@@ -85,9 +85,9 @@ namespace hooks
 
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target)
 	{
-		const u32 unitOffset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
+		const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
 		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unitOffset
+			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
 			&& unit->can_attack_target(target);
 	}
 
@@ -129,12 +129,13 @@ namespace hooks
 
 		// Wyvern Reverse Thrust - fire while moving
 		if (unit->id == UnitId::TerranWyvern
+		&&	unit->status & UnitStatus::Completed
 		&&  unit_ext->timers[TimerWyvernAttackCooldown] == 0)
 		{
 			auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
-			s32 forwardOffset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
-			auto x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
-			auto y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1);
+			s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
+			auto x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
+			auto y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
 
 			bool seek_unit = true;
 			if (unit_ext->values[ValueWyvernLandGrabOn] == 1)
@@ -163,10 +164,10 @@ namespace hooks
 					&& unit->main_order_id != OrderId::Patrol
 					&& unit->main_order_id != OrderId::WyvernLandGrab)
 				{
-					Unit* newTarget = unit->order_target.unit;
-					if (wyvern_can_fire_at(unit, newTarget))
+					Unit* new_target = unit->order_target.unit;
+					if (wyvern_can_fire_at(unit, new_target))
 					{
-						unit_ext->units[UnitWyvernTargetLock] = newTarget;
+						unit_ext->units[UnitWyvernTargetLock] = new_target;
 					}
 				}
 				Unit* target = unit_ext->units[UnitWyvernTargetLock];

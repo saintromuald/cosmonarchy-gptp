@@ -1099,7 +1099,7 @@ namespace scbw {
 //			|| order_id == OrderId::Ensnare				// Land Grab
 			|| order_id == OrderId::Irradiate
 			|| order_id == OrderId::StasisField
-			|| order_id == OrderId::EmpShockwave		// Observance
+			|| order_id == OrderId::EMPShockwave		// Observance
 			|| order_id == OrderId::MagnaPulse			// Lobotomy Mine
 			|| order_id == OrderId::PsiStorm
 //			|| order_id == OrderId::SummonBroodlings	// unused
@@ -1119,7 +1119,7 @@ namespace scbw {
 	void decloak_proc(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->status & UnitStatus::Burrowed) {
-			unit_ext->timers[TimerDecloakBurrow] = 60;
+		//	unit_ext->timers[TimerDecloakBurrow] = 60;
 		} else if (is_decloakable(unit)) {
 			if (unit_ext->timers[TimerDecloak] == 0) {
 				unit->detection_status = 0xff;
@@ -3025,5 +3025,21 @@ namespace scbw {
 	bool unit_regens_in_combat(Unit* unit)
 	{
 		return unit->id == UnitId::TerranMatador; // Can update later with status checks and etc. -Pr0nogo
+	}
+
+	bool unit_id_is_melee_air_unit(u32 unit_id)
+	{
+		return unit_id == UnitId::ZergNathrokor
+		||	   unit_id == UnitId::ZergGorgrokor
+		||	   unit_id == UnitId::ZergTetcaerokor
+		||	   unit_id == UnitId::ZergAkistrokor
+		||	   unit_id == UnitId::ZergZarcavrokor;
+	}
+
+	bool weapon_id_is_for_harvesting(u32 weapon_id)
+	{
+		return	weapon_id == WeaponId::MasonFusionCutterHarvest
+		||		weapon_id == WeaponId::ScribeParticleBeamHarvest
+		||		weapon_id == WeaponId::DrolethSpinesHarvest;
 	}
 }

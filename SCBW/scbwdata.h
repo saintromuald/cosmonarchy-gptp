@@ -232,8 +232,8 @@ SCBW_DATA(u32*,			save_load_success,			0x006D5A68);
 SCBW_DATA(u32*,			g_elapsed_time_modified,	0x006D5BCC);
 SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
 SCBW_DATA(Options*,		g_options_list,				0x006CDFD4);
-SCBW_DATA(ReplayData*,	replay_data,				0x00596BBC);
-SCBW_DATA(u32*,			turn_command_size,			0x005005F8);
+SCBW_DATA(ReplayData*,	g_replay_data,				0x00596BBC);
+SCBW_DATA(u32*,			g_turn_command_size,		0x005005F8);
 SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
 SCBW_DATA(u32*,			g_replay_reveal_all,		0x006D0F1C);
@@ -1125,7 +1125,13 @@ SCBW_DATA(u8*,			g_buttonset_subunit_order_id,		0x0068C1B8);
 SCBW_DATA(u8*,			g_place_building_order_id,			0x0064088D);
 
 // For replay/witness UI
-SCBW_DATA(ForceNames*, forceNames, 0x0058D5BC);
+SCBW_DATA(ForceNames*,	force_names,						0x0058D5BC);
+
+// For 
+SCBW_DATA(u32*,			g_sequence,							0x006556E8);
+SCBW_DATA(u32*,			g_active_storm_id,					0x00512680);
+SCBW_DATA(s32*,			g_is_bad_hash,						0x006552A8);
+SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 
