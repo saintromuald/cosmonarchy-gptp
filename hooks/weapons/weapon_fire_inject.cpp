@@ -1,6 +1,7 @@
 #include "weapon_fire.h"
 #include <hook_tools.h>
 #include <SCBW/UnitFinder.h>
+#include "SCBW/api.h"
 
 namespace
 {
@@ -306,21 +307,20 @@ namespace
 		}
 	}
 
-	void __declspec(naked) order_attack_behavior_wrapper() // 00478540
-	{
-		static s32 result;
-		static Unit* unit;
+	void __declspec(naked) unit_id_is_melee_air_unit_wrapper() {
+		u32 unit_id;
+		bool is_air_unit;
+
 		__asm {
-			MOV unit, EAX
-			PUSHAD
+			MOVZX	EAX, word ptr[ESI + 0x64]
+			MOV		unit_id, EAX
 		}
-		result = hooks::order_attack_behavior(unit);
+		is_air_unit = scbw::unit_id_is_melee_air_unit(unit_id);
 		__asm {
-			POPAD
-			MOV EAX, result
-			RETN
+			CMP		is_air_unit, 1
+			RET
 		}
-	}
+	}	
 }
 
 extern const u32 Func_FireUnitWeapon;
@@ -342,6 +342,8 @@ namespace hooks
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
-	//	jump_patch(order_attack_behavior_wrapper,			0x00478540, 0);
+
+		call_patch(unit_id_is_melee_air_unit_wrapper,		0x00475A10, 3);
+		call_patch(unit_id_is_melee_air_unit_wrapper,		0x004788AB);
 	}
 }
