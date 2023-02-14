@@ -511,8 +511,8 @@ namespace helper {
 	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
 	// for can_cast_ordered_spell_now
-	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target);
-	s32 getFlingyHaltDistance(s32 a1);
+	bool is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);														// 00430F10
+	s32 get_flingy_halt_distance(Unit* unit);																						// 00494F90
 
 	// for orders_watch_target
 	void unknown_orders_func(s32 a1, __int16 a2, __int16 a3);
@@ -903,7 +903,7 @@ namespace helper {
 	bool should_stay_at_range(Unit* unit);
 	bool is_unreachable(Unit* target, Unit* unit);
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);											// 00476430
-	s32 move_for_melee_range(Unit* target, Unit* unit);
+	void move_for_melee_range(Unit* target, Unit* unit);													// 00477F10
 
 	// For create_upgrade_level_tooltip
 	s16 create_tooltip(char* text);																			// 004591A6
@@ -912,14 +912,14 @@ namespace helper {
 	// lobby.cpp
 	
 	// For init_game
-	void switch_all_available_computer_slots_to_open();															// 004DBBE0
-	bool set_last_open_slot_to_computer(s8 race);																// 004DBB70
+	void switch_all_available_computer_slots_to_open();														// 004DBBE0
+	bool set_last_open_slot_to_computer(s8 race);															// 004DBB70
 
 	// For start_game
 	s32 boot_reason(u8 player);																				// 004B8870
-	s32 is_authorized_map(void* a1);																				// 004C4870
+	s32 is_authorized_map(void* a1);																		// 004C4870
 	void set_timer_func();																					// 00472E00
-	s32 get_tick_count();																						// 004FE0C4
+	s32 get_tick_count();																					// 004FE0C4
 
 	// For initialize_bullet
 	Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);		// 00496360

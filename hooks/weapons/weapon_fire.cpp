@@ -1554,4 +1554,41 @@ namespace hooks {
 			return weapons_dat::flingy_id[weapon_id] != 0;
 		}
 	}
+
+	// Hooked to fix melee air unit performance.
+	void move_for_melee_range(Unit* target, Unit* attacker) // 00477F10
+	{
+		if (!helper::is_target_visible(attacker, target) || !(target->movement_flags & MovementFlags::Accelerating))
+		{
+			helper::move_towards(attacker, target);
+			return;
+		}
+
+		Sprite* target_sprite = target->sprite;
+		s32 tgt_x = target_sprite->position.x;
+		s32 tgt_y = target_sprite->position.y;
+
+		s32 attacker_halt = helper::get_flingy_halt_distance(attacker);
+		s32 target_vel = target->velocity_direction_1;
+		s32 attacker_halt_off1 = 3 * attacker_halt;
+		s32 attacker_halt_off2 = 3 * attacker_halt * g_angle_distance[target_vel].x;
+		u32 tgt_x_final = tgt_x + (attacker_halt_off2 >> 16);
+		u32 tgt_y_final = tgt_y + (attacker_halt_off1 * g_angle_distance[target_vel].y >> 16);
+
+		if (tgt_x_final >= *g_map_width_pixels || tgt_y_final >= *g_map_height_pixels)
+		{
+			tgt_y_final = tgt_y;
+		}
+		else
+		{
+			tgt_x_final = tgt_x;
+		}
+
+		// Disabled to make the chasing more responsive. -Pr0nogo
+	//	char timer = attacker->recent_order_timer;
+	//	if (!timer)
+	//	{
+			helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
+	//	}
+	}
 }

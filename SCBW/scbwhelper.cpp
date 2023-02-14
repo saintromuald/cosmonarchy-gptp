@@ -2038,17 +2038,17 @@ namespace helper {
 	}
 
 	bool is_target_visible(Unit* unit, Unit* target) {
-		const u32 Func_isTargetVisible = 0x004E5E30;
 		static b32 result;
+		const u32 func_address = 0x004E5E30;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EAX, target
-			CALL Func_isTargetVisible
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
-		return (result != 0);
+		return (bool)result;
 	}
 
 	// Identical to get_right_click_action_order @ 0x004E5EA0;
@@ -4047,31 +4047,30 @@ namespace helper {
 	}
 
 	// for can_cast_ordered_spell_now
-
-	bool is_target_within_min_range(Unit* unit, u32 minRange, Unit* target) {
-		const u32 Func_isTargetWithinMinRange = 0x00430F10;
+	bool is_target_within_min_range(Unit* unit, u32 min_range, Unit* target) {
+		const u32 func_address = 0x00430F10;
 		static s32 result;
 		static bool result2;
 
 		__asm {
 			PUSHAD
 			PUSH target
-			PUSH minRange
+			PUSH min_range
 			MOV ECX, unit
-			CALL Func_isTargetWithinMinRange
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result = (bool)result;
 	}
 
-	s32 getFlingyHaltDistance(s32 a1) {
-		const u32 Func_getFlingyHaltDistaince = 0x00494F90;
+	s32 get_flingy_halt_distance(Unit* unit) {
 		static s32 result;
+		const u32 func_address = 0x00494F90;
 		__asm {
 			PUSHAD
-			PUSH a1
-			CALL Func_getFlingyHaltDistaince
+			MOV ECX, unit
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4106,13 +4105,13 @@ namespace helper {
 	}
 
 	s32 move_towards(Unit* unit, Unit* target) {
-		const u32 Func_moveTowards = 0x004EB900;
+		const u32 func_address = 0x004EB900;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
 			MOV EAX, target
-			CALL Func_moveTowards
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -7345,18 +7344,15 @@ namespace helper {
 		return result;
 	}
 
-	s32 move_for_melee_range(Unit* target, Unit* unit) {
-		const u32 Func_moveForMeleeRange = 0x00477F10;
-		static s32 result;
+	void move_for_melee_range(Unit* target, Unit* unit) {
+		const u32 func_address = 0x00477F10;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, target
-			CALL Func_moveForMeleeRange
-			MOV result, EAX
+			CALL func_address
 			POPAD
 		}
-		return result;
 	}
 
 	// For create_unit

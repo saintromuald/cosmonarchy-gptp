@@ -160,7 +160,7 @@ namespace hooks
 						v5 = 256 - v5;
 					if (v5 > 32)
 						LABEL_14:
-					v4 += helper::getFlingyHaltDistance((s32)v1) >> 8;
+					v4 += helper::get_flingy_halt_distance(v1) >> 8;
 				}
 				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)is_target_within_min_range(v1, v4, v3)); // Needs fixing
 			}
@@ -169,7 +169,7 @@ namespace hooks
 				v6 = v1->order_target.pt.y;
 				v7 = v1->order_target.pt.x;
 				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::order_weapon_id[(unsigned __int8)v1->main_order_id]);
-				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
+				v9 = (helper::get_flingy_halt_distance(v1) >> 8) + v8;
 				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
 		}

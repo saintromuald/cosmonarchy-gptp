@@ -307,6 +307,29 @@ namespace
 		}
 	}
 
+	void __declspec(naked) move_for_melee_range_wrapper() // 00477F10
+	{
+		static Unit* target;
+		static Unit* attacker;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV attacker, EAX
+			POP EAX
+			MOV target, EAX
+			PUSHAD
+		}
+		hooks::move_for_melee_range(target, attacker);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void __declspec(naked) unit_id_is_melee_air_unit_wrapper() {
 		u32 unit_id;
 		bool is_air_unit;
@@ -320,7 +343,7 @@ namespace
 			CMP		is_air_unit, 1
 			RET
 		}
-	}	
+	}
 }
 
 extern const u32 Func_FireUnitWeapon;
@@ -342,6 +365,7 @@ namespace hooks
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
+		jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
 
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x00475A10, 3);
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x004788AB);
