@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	void cmdrecv_building_morph(u16 unit_id) {
+	void cmdrecv_building_morph(u16 unit_id) { // 004C1910
 		*unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (unit->id != UnitId::None

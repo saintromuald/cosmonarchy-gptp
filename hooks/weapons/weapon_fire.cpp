@@ -1527,9 +1527,9 @@ namespace hooks {
 
 		// Previously had randomized values and cooldown handling.
 		// Now applied in fire bullet and attack melee.
-		//u8 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
-		//unit->ground_weapon_cooldown = cooldown;
-		//unit->air_weapon_cooldown = cooldown;
+	//	u8 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
+	//	unit->ground_weapon_cooldown = cooldown;
+	//	unit->air_weapon_cooldown = cooldown;
 
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 			helper::play_image_iscript(image, iscript_anim);

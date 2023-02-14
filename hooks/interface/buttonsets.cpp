@@ -511,8 +511,7 @@ namespace hooks {
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set))
 				{
-					current_button_state = helper::req_check((u32)current_button->requirement_func, (u8)current_button->requirement_var, (u8)*g_local_nation_id, unit);
-
+					current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, *g_local_nation_id, unit);
 					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
@@ -1709,7 +1708,7 @@ namespace hooks {
 								{
 									current_button_state = Button_State::Invisible;
 								}
-							}
+							} break;
 							case UnitId::PoliceEngineer:
 							{
 								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
