@@ -643,7 +643,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	nops(0x0047CCB0, 22);
 
 	// Update vision update timer to happen faster
-	memory_patch(0x004D94D0 + 6, 1);
+//	memory_patch(0x004D94D0 + 6, 1);	// Breaks death animations for hostile units
 
 	// INJECTION \\
 
