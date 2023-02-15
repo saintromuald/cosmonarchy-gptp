@@ -365,7 +365,7 @@ namespace hooks
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
-		jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
+	//	jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
 
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x00475A10, 3);
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x004788AB);

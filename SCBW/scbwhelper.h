@@ -722,12 +722,12 @@ namespace helper {
 	void disableUnitFunc(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
 	void set_all_image_group_flags_palette_11(Sprite* sprite);														// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords);						// 004E8280
-	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords);									// 004E8280
+	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);									// 004E8280
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);								// 004E8280
-	void createEnsnareOverlay(Unit* a1);																			// 004F45E0
+	void create_ensnare_overlay(Unit* a1);																			// 004F45E0
 
 	// For create_scanner
 	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay = 1, s32 minVolume = 0);							// 0048ED50

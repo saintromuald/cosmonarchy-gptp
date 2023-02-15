@@ -209,8 +209,8 @@ namespace hooks {
 	//	x and y from bullet->sprite->position
 	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
 		scbw::create_and_init_thingy(ImageId::DefensiveMatrixFront_Small, x, y, 11, 19);
-		static u16* const maxBoxRightValue = (u16*)0x00628450;	// should usually be g_map_tile_size->width * 32
-		static u16* const maxBoxBottomValue = (u16*)0x006284B4;	// should usually be g_map_tile_size->height * 32
+		static u16* const max_box_right_value = (u16*)0x00628450;	// should usually be g_map_tile_size->width * 32
+		static u16* const max_box_bottom_value = (u16*)0x006284B4;	// should usually be g_map_tile_size->height * 32
 
 		// define the base box of effect
 		Box16 aoe = {};
@@ -222,14 +222,14 @@ namespace hooks {
 		// check and fix effect if beyond width of map
 		if (aoe.left < 0) {
 			aoe.left = 0;
-		} else if (aoe.right > *maxBoxRightValue) {
-			aoe.right = *maxBoxRightValue;
+		} else if (aoe.right > *max_box_right_value) {
+			aoe.right = *max_box_right_value;
 		}
 		// check and fix effect if beyond height of map
 		if (aoe.top < 0) {
 			aoe.top = 0;
-		} else if (aoe.bottom > *maxBoxBottomValue) {
-			aoe.bottom = *maxBoxBottomValue;
+		} else if (aoe.bottom > *max_box_bottom_value) {
+			aoe.bottom = *max_box_bottom_value;
 		}
 
 		// find all units in box of effect and pick the first
@@ -241,8 +241,9 @@ namespace hooks {
 				if (current_unit->status & UnitStatus::IsHallucination) {
 					current_unit->remove();
 				} else if (current_unit->stasis_timer == 0) { // don't affect units in stasis
-					current_unit->energy -= 100;
-					current_unit->shields -= 100;
+				//	current_unit->energy -= 100;
+				//	current_unit->shields -= 100;
+					// Disable damage on 15 February 2023 because Irradiate should not EMP anymore (just using it ). -Pr0nogo
 					if (current_unit->sprite->flags & SpriteFlags::Selected && current_unit->sprite) { // Follows original code, though this order of tests doesn't make sense
 						helper::set_all_image_group_flags_palette_11(current_unit->sprite); // redraw the unit
 					}
@@ -312,7 +313,7 @@ namespace hooks {
 		coords.right = x + 64;
 		coords.left = x - 64;
 		coords.bottom = y + 64;
-		helper::IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
+		helper::iterate_units_at_location_target_proc_ensnare(attacker, &coords);
 	}
 
 	s32 ensnare_proc(Unit* target, Unit* attacker) {
@@ -320,7 +321,7 @@ namespace hooks {
 			&& !(units_dat::base_property[target->id] & UnitProperty::Building)
 			&& target->id != UnitId::ZergInfestedTerran) {
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed)) {
-				helper::createEnsnareOverlay(target);
+				helper::create_ensnare_overlay(target);
 			}
 		}
 		return 0;
@@ -360,7 +361,7 @@ namespace hooks {
 		current.x -= 2;
 		current.y -= 2;
 		while (broodlings_to_spawn > 0) {
-			// Check various conditions before attempting to create a broodling
+			// Check various conditions before attempting to create Broodspawn
 			if (helper::can_unit_id_fit_at_xy(current.x, current.y, UnitId::ZergRilirokor)) {
 				Point16 in_pos = current;
 				Point16 out_pos = {};

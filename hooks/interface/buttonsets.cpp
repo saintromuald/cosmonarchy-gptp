@@ -703,7 +703,7 @@ namespace hooks {
 						in_air = unit->status & UnitStatus::InAir;
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
-						is_adding_on = unit->building.addon_build_id;
+						is_adding_on = unit->building.addon_build_id && unit->main_order_id == OrderId::BuildAddon;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)

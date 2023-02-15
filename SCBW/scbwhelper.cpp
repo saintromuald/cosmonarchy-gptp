@@ -5660,7 +5660,7 @@ namespace helper {
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords) {
+	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords) {
 		const u32 EnsnareProc_function = 0x004F46C0;
 		__asm {
 			PUSHAD
@@ -5719,7 +5719,7 @@ namespace helper {
 		}
 	}	
 
-	void createEnsnareOverlay(Unit* a1) {
+	void create_ensnare_overlay(Unit* a1) {
 		const u32 Func_createEnsnareOverlay = 0x004F45E0;
 		__asm {
 			PUSHAD
