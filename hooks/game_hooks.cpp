@@ -368,7 +368,7 @@ namespace hooks {
 				Point16 source = unit->position;
 
 				// For checking cargo-related elements.
-				// This helped me solve a Bunker issue on 3/2/2023, please leave it here for the future. -Pr0nogo
+				// This helped me solve a Bunker issue on 3 February 2023, please leave it here for the future. -Pr0nogo
 				/*
 				if (unit) {
 					for (u32 i = 0; i < TransportCap; ++i) {
@@ -389,7 +389,7 @@ namespace hooks {
 					}
 				}
 
-				if (config.show_order_lines || global_vars.players[*g_local_nation_id].is_witness) {
+				if (config.show_order_lines || global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay) {
 					Unit* ignore_resource_unit = 0;
 
 					if (scbw::is_in_replay() || *g_local_nation_id == unit->player) {

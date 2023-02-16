@@ -773,12 +773,11 @@ namespace hooks
 			{
 				return true;
 			}
-			return false;
 		}
-		else
-		{
-			return false;
+		if (*g_is_in_replay) {
+			return true;
 		}
+		return false;
 	}
 
 	// Hooked to not die to lard. -Pr0nogo
