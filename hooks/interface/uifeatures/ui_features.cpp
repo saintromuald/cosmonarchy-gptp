@@ -412,7 +412,7 @@ LABEL_15:
 		*g_minimap_box_checksum = 0;
 		u32 index = 12;
 		while (index) {
-			if (--index < 8) {
+			if (--index < PlayerLimit) {
 				if (player != index || *g_is_in_replay) {
 					helper::draw_minimap_unit_box_2(index);
 				}
@@ -598,16 +598,17 @@ LABEL_15:
 		}
 	}
 
-	// Hooked to investigate crashes on Fraudscendance. -Pr0nogo
-	/*
-	u8* draw_vertical_line(u32 unused, u16 iterations, u16 width_offset, u16 buffer_multiplier) // 0041D7D0
+	// Hooked to safeguard against empty string crashes. -Pr0nogo
+	s8* draw_vertical_line(s32 unused, u16 iterations, s16 width_offset, u16 buffer_multiplier) // 0041D7D0
 	{
 		Bitmap* surface = *g_current_surface;
-	//	u8* result = (*g_current_surface)->buffer[buffer_multiplier * (*g_current_surface)->width + width_offset]; // Dunno how this is supposed to be accessed.
+		s32 surface_width = (*g_current_surface)->width + width_offset;
+		s32 buffer_index = buffer_multiplier * surface_width;
+		s8* result = (s8*)&(*g_current_surface)->buffer[&buffer_index];
 		if (iterations)
 		{
-			u32 iterations_var = iterations;
-			u8 index = *g_draw_color_index;
+			s32 iterations_var = iterations;
+			s8 index = *g_draw_color_index;
 			do
 			{
 				*result = index;
@@ -617,5 +618,4 @@ LABEL_15:
 		}
 		return result;
 	}
-	*/
 }

@@ -22,7 +22,7 @@ namespace hooks {
 	void draw_all_minimap_boxes();																				// 004A4AC0
 	u32 get_cursor_type();																						// 004D1460
 	void cmdact_right_click_minimap(DialogEvent* dlg_event);													// 004563A0
-	u8* draw_vertical_line(u32 unused, u16 iterations, u16 width_offset, u16 buffer_multiplier);				// 0041D7D0
+	s8* draw_vertical_line(s32 unused, u16 iterations, s16 width_offset, u16 buffer_multiplier);				// 0041D7D0
 
 	void inject_ui_features_hooks();
 
