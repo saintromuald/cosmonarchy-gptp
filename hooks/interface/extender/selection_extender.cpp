@@ -108,7 +108,7 @@ namespace hooks {
 												while (1)
 												{
 													if (underlay->id >= ImageId::SelectionCircleDashed_22pixels
-														&& underlay->id <= ImageId::SelectionCircleDashed_224pixels)
+													&&  underlay->id <= ImageId::SelectionCircleDashed_224pixels)
 													{
 														break;
 													}
@@ -138,7 +138,7 @@ namespace hooks {
 									}
 								}
 								result = i_3 + 1;
-								player_selection = (Unit*)((char*)player_selection + 4);
+								player_selection = player_selection->link.next;
 							}
 						}
 					}

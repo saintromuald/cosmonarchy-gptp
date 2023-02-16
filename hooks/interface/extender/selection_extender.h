@@ -50,8 +50,6 @@ Notes:
 
 	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo
 
-	Line 230073: 0x0049A328   .  BF B8846200   MOV EDI,006284B8							// 0049A320 very small function; https://pastebin.com/raw/jC5bW6LM
-
 	Line 231207: 0x0049AE48   .  BE B8846200   MOV ESI,006284B8							// 0049AE40 create_new_unit_selections_from_list; hooked in selection
 	Line 231229: 0x0049AE92   .  89349D B88462>MOV DWORD PTR DS:[EBX*4+6284B8],ESI		//
 	Line 231238: 0x0049AEB6   .  890C85 B88462>MOV DWORD PTR DS:[EAX*4+6284B8],ECX		//
@@ -68,15 +66,11 @@ Notes:
 
 	Line 318679: 0x004D603C  |.  8B3C8D B88462>MOV EDI,DWORD PTR DS:[ECX*4+6284B8]		// 004D6010 compile_health_bar; unhooked
 
-	Line 342125: 0x004E627D   .  89148D B88462>MOV DWORD PTR DS:[ECX*4+6284B8],EDX		// 004E6260 very small function; https://pastebin.com/raw/40Xexh8u
-
 	Line 355391: 0x004EED18  |.  BF B8846200   MOV EDI,006284B8							// 004EED10 load_game_core; unhooked
 */
 
 /*
 	Active Selection Group
-
-	Line 306884: 0x004CE709   .  BF 7C6B5900   MOV EDI,00596B7C							// 004CE700 very small function; https://pastebin.com/raw/6kTCBkgS
 
 	Line 309870: 0x004D083D  |.  BE 7C6B5900   MOV ESI,00596B7C							// 004D0820 lose_sight_selection; unhooked
 
@@ -93,8 +87,6 @@ Notes:
 	Line 229961: 0x0049A241  |.  C7048D E88462>MOV DWORD PTR DS:[ECX*4+6284E8],0		//
 
 	Line 230048: 0x0049A303  |.  81FA E8846200 |CMP EDX,006284E8						// 0049A2C0 is_selected_unit_group_enabled; hooked by Pr0nogo
-
-	Line 230076: 0x0049A334   .  BF E8846200   MOV EDI,006284E8							// 0049A320 very small function; https://pastebin.com/raw/jC5bW6LM
 
 	Line 230481: 0x0049A758  |.  81C7 E8846200 ADD EDI,006284E8							// 0049A740 clear_selection; unhooked
 	Line 230490: 0x0049A770  |.  81C6 E8846200 ADD ESI,006284E8							//
@@ -121,8 +113,6 @@ Notes:
 	Line 307541: 0x004CEE03  |.  BF E8846200   MOV EDI,006284E8							// 004CEE00 pack_all_player_selection_groups; unhooked
 
 	Line 309288: 0x004D013E  |.  68 E8846200   PUSH 006284E8							// 004CFEF0 load_game_full; unhooked
-
-	Line 309712: 0x004D068D  |.  B8 E8846200   MOV EAX,006284E8							// 004D02D0 large function; should check ghidra, not shown in ida; https://pastebin.com/raw/nbyBkBSP
 
 	Line 355394: 0x004EED24  |.  BF E8846200   MOV EDI,006284E8							// 004EED10 load_game_core; unhooked
 	Line 355440: 0x004EEDD1  |.  81C6 E8846200 ADD ESI,006284E8							//

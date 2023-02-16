@@ -35,7 +35,8 @@ namespace
 			POPAD
 			MOVZX EAX, result
 			RETN
-		}}
+		}
+	}
 
 	void __declspec(naked) select_unit_initial_wrapper() { // 0049B690
 		static char result;
