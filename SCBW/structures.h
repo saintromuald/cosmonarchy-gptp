@@ -1180,7 +1180,7 @@ struct PaletteEntry {
 struct Bitmap {
 	u16			width;		// 0x0
 	u16			height;		// 0x2
-	u32			buffer;		// 0x4
+	u8*			buffer;		// 0x4
 };
 
 struct IDirectSoundBuffer;
