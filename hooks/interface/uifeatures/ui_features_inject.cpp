@@ -313,7 +313,7 @@ namespace
 	}
 
 	void __declspec(naked) draw_vertical_line_wrapper() {
-		static s8* result;
+		static u8* result;
 		static u32 unused;
 		static u16 iterations;
 		static u16 width_offset;
