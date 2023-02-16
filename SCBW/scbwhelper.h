@@ -1562,4 +1562,6 @@ namespace helper {
 	Unit* CMDRECV_merge_dark_archon();																										// 004C0CD0
 	void bwfxn_display_text(s32 result, s32 buffer, s32 is_replay);																			// 0048D1C0
 	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player);												// 004CDE70
+
+	char create_dashed_selection(u32 player, Sprite* sprite, char color);																	// 00499A10
 }

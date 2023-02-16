@@ -13,6 +13,7 @@ namespace hooks
 	b32 is_human_player_on_same_team(u32 player_id);																// 0049A110
 	char illegal_team_check(Unit* unit);																			// 00485710
 	b32 game_is_team_game();																						// 00484F50
+	char create_dashed_selection_main(Unit* unit, u32 player);														// 004E65CD
 
 	void inject_selection_hooks();
 }

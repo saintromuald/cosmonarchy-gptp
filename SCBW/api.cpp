@@ -1542,7 +1542,7 @@ namespace scbw {
 	}
 
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt) {
-		unit->sprite->create_top_overlay(ImageId::ArcliteShockCannon_Damageless);
+		unit->sprite->create_top_overlay(ImageId::MadrigalDirgeProc);
 		const u32 radius = 2 * 32;
 		scbw::UnitFinder(
 			unit->get_x() - radius,

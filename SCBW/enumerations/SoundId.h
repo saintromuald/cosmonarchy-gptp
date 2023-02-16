@@ -1433,6 +1433,15 @@ namespace SoundId
 		SundogOrderAggressive02				= 2280,
 		SundogOrderAggressive03				= 2281,
 		SundogOrderAggressive04				= 2282,
+
+		PhobosReady01						= 2287,
+		PhobosReady02						= 2288,
+		PhobosReady03						= 2289,
+
+		PhobosOrderAggressive01				= 2298,
+		PhobosOrderAggressive02				= 2299,
+		PhobosOrderAggressive03				= 2300,
+		PhobosOrderAggressive04				= 2301,
 	};
 }
 

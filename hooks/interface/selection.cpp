@@ -1,6 +1,7 @@
 #include "selection.h"
 #include <SCBW/api.h>
 #include "hooks/rally_point.h"
+#include "trigger_system/trigger_system.h"
 
 namespace hooks
 {
@@ -765,15 +766,18 @@ namespace hooks
 	// Ended up being used for allied selection circles. -Pr0nogo
 	b32 is_human_player_on_same_team(u32 player_id) // 0049A110
 	{
-		if (*g_multiplayer_mode // Originally also checked for a team game
-		&&   player_id != *g_local_human_id
-		&&   player_id < PlayerLimit)
+		if (player_id != *g_local_human_id
+		&&  player_id < PlayerLimit) // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
 		{
-			return scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id);
+			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !global_vars.players[player_id].is_witness)
+			{
+				return true;
+			}
+			return false;
 		}
 		else
 		{
-			return 0;
+			return false;
 		}
 	}
 
@@ -781,7 +785,7 @@ namespace hooks
 	char illegal_team_check(Unit* unit) // 00485710
 	{
 		u32 player = (u32)unit;
-		if (scbw::is_allied_to(player, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player)) {
+		if (scbw::is_allied_to(player, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player) && !global_vars.players[player].is_witness) {
 			return 4;
 		}
 		return 2;
@@ -792,5 +796,14 @@ namespace hooks
 	b32 game_is_team_game() // 00484F50
 	{
 		return *g_multiplayer_mode && game_data->teams_enabled;
+	}
+
+	// Hooked to forbid witness selections from showing. -Pr0nogo
+	char create_dashed_selection_main(Unit* unit, u32 player) // 004E65CD
+	{
+		if (global_vars.players[player].is_witness) {
+			return false;
+		}
+		return helper::create_dashed_selection(player, unit->sprite, g_selection_circle_color[unit->player]);
 	}
 }

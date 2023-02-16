@@ -13398,4 +13398,21 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	char create_dashed_selection(u32 player, Sprite* sprite, char color)
+	{
+		static char result;
+		static s32 color_xd = color;
+		const u32 func_address = 0x00499A10;
+		__asm {
+			PUSHAD
+			PUSH color_xd
+			MOV ESI, sprite
+			MOV EDI, player
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

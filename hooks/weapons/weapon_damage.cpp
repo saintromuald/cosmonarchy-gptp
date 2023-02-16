@@ -698,7 +698,7 @@ namespace hooks
 					case WeaponId::MagisterNeutronCannon:
 					{
 						// Stellar Enforcement - Magister behavior
-						if (!target_ext->values[ValueStellarEnforcement]) {
+						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->values[ValueStellarEnforcement]) {
 							target_ext->values[ValueStellarEnforcement] = 1;
 							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
 							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo

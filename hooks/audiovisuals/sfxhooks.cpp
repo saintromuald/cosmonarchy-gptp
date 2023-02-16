@@ -103,6 +103,9 @@ namespace hooks {
 				case UnitId::TerranAzazel: {
 					return helper::get_random_sfx_between(SoundId::AzazelOrderAggressive01, SoundId::AzazelOrderAggressive04);
 				} break;
+				case UnitId::TerranPhobos: {
+					return helper::get_random_sfx_between(SoundId::PhobosOrderAggressive01, SoundId::PhobosOrderAggressive04);
+				} break;
 				case UnitId::ProtossEcclesiast: {
 					return helper::get_random_sfx_between(SoundId::EcclesiastOrderAggressive01, SoundId::EcclesiastOrderAggressive04);
 				} break;
@@ -207,6 +210,9 @@ namespace hooks {
 					case UnitId::TerranAncile: // TODO: Own lines
 					case UnitId::TerranAzazel: {
 						ready_sound = helper::get_random_sfx_between(SoundId::AzazelReady01, SoundId::AzazelReady03);
+					} break;
+					case UnitId::TerranPhobos: {
+						ready_sound = helper::get_random_sfx_between(SoundId::PhobosReady01, SoundId::PhobosReady03);
 					} break;
 					case UnitId::TerranCentaur:
 					case UnitId::TerranMagnetar: // TODO: Own lines

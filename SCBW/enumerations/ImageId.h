@@ -1189,6 +1189,8 @@ namespace ImageId {
 		Christmas_VespeneChunk2						= 1678,
 		HarakanApollyoidAdhesiveOverlay				= 1679,
 
+		MadrigalDirgeProc							= 1698,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

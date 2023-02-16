@@ -214,6 +214,23 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) create_dashed_selection_main_wrapper() { // 004E65CD
+		static char result;
+		static Unit* unit;
+		static s32 player;
+		__asm {
+			MOV player, EDI
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::create_dashed_selection_main(unit, player);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -230,5 +247,6 @@ namespace hooks
 		jump_patch(is_human_player_on_same_team_wrapper,			0x0049A110, 1);
 		jump_patch(illegal_team_check_wrapper,						0x00485710, 0);
 		jump_patch(game_is_team_game_wrapper,						0x00484F50, 0);
+	//	jump_patch(create_dashed_selection_main_wrapper,			0x004E65CD, 1);
 	}
 }
