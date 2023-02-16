@@ -313,30 +313,27 @@ namespace
 	}
 
 	void __declspec(naked) draw_vertical_line_wrapper() {
-		static u8* result;
-		static u32 unused;
-		static u16 iterations;
-		static u16 width_offset;
-		static u16 buffer_multiplier;
+		static u16 size_;
+		static u16 x;
+		static u16 y;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV width_offset, AX
+			MOV x, AX
 			MOV EAX, [EBP + 0x0C]
-			MOV buffer_multiplier, AX
+			MOV y, AX
 			POP EAX
-			MOV iterations, DX
-			MOV unused, ECX
+			MOV size_, DX
 			PUSHAD
 		}
-		result = hooks::draw_vertical_line(unused, iterations, width_offset, buffer_multiplier);
+		hooks::draw_vertical_line(size_, x, y);
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			MOV EAX, result
+			MOV EAX, 0
 			RETN 0x08
 		}
 	}
