@@ -551,6 +551,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	call_patch(hooks::get_display_text_color, 0x0048CFA3, 1);
 	// off_48D478
 	memory_patch(0x0048D478, (u32)0x0B0F1708);
+
+	// Show map preview in UMS. Temporary until we can do so conditionally.
+	nops(0x004B9D48, 4);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
