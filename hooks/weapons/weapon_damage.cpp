@@ -181,6 +181,10 @@ namespace hooks
 			armor_total -= target_ext->values[ValueControlledOpposition];
 
 			armor_total = std::max(armor_total, 0);
+
+			// Observance Armor Reduction (can go to the negatives)
+			armor_total -= target_ext->values[ValueObservanceRend];
+
 			data.damage -= std::min(data.damage, armor_total * 256);
 		}
 
@@ -264,9 +268,6 @@ namespace hooks
 		if (carapace_swarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor)) {
 			data.damage_type = DamageType::Independent;
 		}
-
-		// Observance armor reduction
-		data.damage += 256 * target_ext->values[ValueObservanceRend];
 
 		switch (data.weapon_id) { // Damage divisor calc
 			case WeaponId::ArchitectDispersiveSalvo:

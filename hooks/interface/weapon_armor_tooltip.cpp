@@ -357,10 +357,10 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 		f32 bonus_armor = base_armor + unit->get_armor_bonus();
 		bonus_armor -= unit_ext->values[ValueControlledOpposition];
-		bonus_armor -= unit_ext->values[ValueObservanceRend];
 		if (bonus_armor < 0) {
 			bonus_armor = 0;
 		}
+		bonus_armor -= unit_ext->values[ValueObservanceRend];
 		bonus_armor -= base_armor;
 		return bonus_armor;
 	}
