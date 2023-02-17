@@ -1535,7 +1535,7 @@ namespace helper {
 	Unit* CMDRECV_cloak();																													// 004C0720
 	Unit* CMDRECV_decloak();																												// 004C0660
 	s32 CMDRECV_unit_morph(char* buffer);																									// 004C1990
-	Unit* CMDRECV_unsiege();																												// 004C1F10
+	Unit* CMDRECV_unsiege(s32 buffer);																										// 004C1F10
 	Unit* CMDRECV_siege(char* buffer);																										// 004C1E80
 	Unit* CMDRECV_train_fighter();																											// 004C1800
 	Unit* CMDRECV_unload_all(s8* buffer);																									// 004C1CC0

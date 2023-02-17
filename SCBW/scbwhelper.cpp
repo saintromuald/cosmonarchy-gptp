@@ -13037,12 +13037,13 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_unsiege()
+	Unit* CMDRECV_unsiege(s32 buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C1F10;
 		__asm {
 			PUSHAD
+			PUSH buffer
 			CALL func_address
 			MOV result, EAX
 			POPAD
