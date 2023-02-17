@@ -412,7 +412,7 @@ LABEL_15:
 		*g_minimap_box_checksum = 0;
 		u32 index = 12;
 		while (index) {
-			if (--index < 8) {
+			if (--index < PlayerLimit) {
 				if (player != index || *g_is_in_replay) {
 					helper::draw_minimap_unit_box_2(index);
 				}
