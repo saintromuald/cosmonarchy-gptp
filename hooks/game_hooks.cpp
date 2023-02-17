@@ -3100,7 +3100,7 @@ namespace hooks {
 				{
 					command_size = 2;
 					if (size - command_size >= 0) {
-						helper::CMDRECV_unsiege((s32)buffer);
+						helper::CMDRECV_unsiege(buffer);
 						goto next_command;
 					}
 				} break;
