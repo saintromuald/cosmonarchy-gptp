@@ -1516,12 +1516,15 @@ namespace scbw
 	}
 
 	bool has_clarion_links(Unit* unit) {
-		UnitExt* unitExt = get_unit_ext(unit);
-		return unitExt->unit_vectors[UnitVectorPhaseLinkClarions].size();
+		UnitExt* unit_ext = get_unit_ext(unit);
+		return unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size();
 	}
 
 	void link_damage(Unit* unit, s32 damage, hooks::WeaponDamageData& data) {
 		hooks::WeaponDamageData new_data = data;
+		new_data.damage = damage;
+		new_data.shield_reduce_amount = 0;
+		new_data.target = unit;
 		new_data.dont_proc_link_damage = true;
 		hooks::weapon_damage_root(new_data);
 	}
