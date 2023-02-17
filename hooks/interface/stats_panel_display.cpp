@@ -506,7 +506,7 @@ namespace hooks
 		GrpHead* icons_grp = *g_cmdicons_grp;
 		StatusScreenState* state = child->stat_button_user;
 		Unit* active_unit = *g_active_portrait_unit;
-		child->graphic = 37 + (armor_value >= 10) + (armor_value >= 100);
+		child->graphic = 37 + (armor_value >= 10 || armor_value < 0) + (armor_value >= 100 || armor_value <= -10);
 		state->button_grp = icons_grp;
 		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
 		if (active_unit->status & UnitStatus::Completed || scbw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
