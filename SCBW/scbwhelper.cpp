@@ -12730,7 +12730,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_select(s32 buffer)
+	void CMDRECV_select(char* buffer)
 	{
 		const u32 func_address = 0x004C2750;
 		__asm {
@@ -12741,7 +12741,7 @@ namespace helper {
 		}
 	}
 
-	void CMDRECV_shift_select(s32 buffer)
+	void CMDRECV_shift_select(char* buffer)
 	{
 		const u32 func_address = 0x004C2560;
 		__asm {
@@ -12752,7 +12752,7 @@ namespace helper {
 		}
 	}
 
-	void CMDRECV_shift_deselect(s32 buffer)
+	void CMDRECV_shift_deselect(char* buffer)
 	{
 		const u32 func_address = 0x004BFB40;
 		__asm {
@@ -12791,7 +12791,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_ally(s32 buffer)
+	void CMDRECV_ally(char* buffer)
 	{
 		const u32 func_address = 0x004C28A0;
 		__asm {
@@ -12822,7 +12822,7 @@ namespace helper {
 		}
 	}
 
-	s32 CMDRECV_use_cheat(s32 buffer, char* cheat)
+	s32 CMDRECV_use_cheat(char* buffer, char* cheat)
 	{
 		static s32 result;
 		const u32 func_address = 0x004C0AD0;
@@ -12837,7 +12837,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 CMDRECV_hotkey(s32 buffer)
+	u8 CMDRECV_hotkey(char* buffer)
 	{
 		static u8 result;
 		const u32 func_address = 0x004C2870;
@@ -12955,7 +12955,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_return_cargo(s32 buffer)
+	Unit* CMDRECV_return_cargo(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C2040;
@@ -13023,7 +13023,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 CMDRECV_unit_morph(s32 buffer)
+	s32 CMDRECV_unit_morph(char* buffer)
 	{
 		static s32 result;
 		const u32 func_address = 0x004C1990;
@@ -13050,7 +13050,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_siege(s32 buffer)
+	Unit* CMDRECV_siege(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C1E80;
@@ -13118,7 +13118,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_hold_position(s32 buffer)
+	Unit* CMDRECV_hold_position(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C20C0;
@@ -13132,7 +13132,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_burrow(s32 buffer)
+	Unit* CMDRECV_burrow(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C1FA0;
@@ -13183,7 +13183,7 @@ namespace helper {
 		}
 	}
 
-	Unit* CMDRECV_research(s32 buffer)
+	Unit* CMDRECV_research(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C1BA0;
@@ -13210,7 +13210,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_upgrade(s32 buffer)
+	Unit* CMDRECV_upgrade(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C1B20;
@@ -13247,7 +13247,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_building_morph(s32 buffer)
+	char CMDRECV_building_morph(char* buffer)
 	{
 		static char result;
 		const u32 func_address = 0x004C1910;
@@ -13299,13 +13299,13 @@ namespace helper {
 		}
 	}
 
-	s32 CMDRECV_set_latency(s32 buffer, s32 amount)
+	s32 CMDRECV_set_latency(char* buffer, s32 unused)
 	{
 		static s32 result;
 		const u32 func_address = 0x00485E60;
 		__asm {
 			PUSHAD
-			MOV ESI, amount
+			MOV ESI, unused
 			MOV EAX, buffer
 			CALL func_address
 			MOV result, EAX
@@ -13314,15 +13314,15 @@ namespace helper {
 		return result;
 	}
 
-	s32 CMDRECV_set_replay_speed(s32 buffer, u8 speed, u32 something)
+	s32 CMDRECV_set_replay_speed(s32 speed, u8 is_paused, u32 modifier)
 	{
 		static s32 result;
 		const u32 func_address = 0x004DEB90;
 		__asm {
 			PUSHAD
-			MOV ECX, something
-			MOV DL, speed
-			MOV EAX, buffer
+			MOV ECX, modifier
+			MOV DL, is_paused
+			MOV EAX, speed
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13330,7 +13330,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_leave_game(s32 buffer)
+	char CMDRECV_leave_game(char* buffer)
 	{
 		static char result;
 		const u32 func_address = 0x004C2E90;
@@ -13344,7 +13344,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_minimap_ping(s32 buffer)
+	char CMDRECV_minimap_ping(char* buffer)
 	{
 		static char result;
 		const u32 func_address = 0x004BF7A0;
@@ -13371,14 +13371,14 @@ namespace helper {
 		return result;
 	}
 
-	void bwfxn_display_text(s32 result, s32 buffer, s32 is_replay)
+	void bwfxn_display_text(s32 player, s32 text, s32 is_replay)
 	{
 		const u32 func_address = 0x0048D1C0;
 		__asm {
 			PUSHAD
 			PUSH is_replay
-			PUSH buffer
-			MOV EAX, result
+			PUSH text
+			MOV EAX, player
 			CALL func_address
 			POPAD
 		}

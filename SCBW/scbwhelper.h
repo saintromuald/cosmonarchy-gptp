@@ -1511,16 +1511,16 @@ namespace helper {
 	void CMDRECV_save_game(char* buffer);																									// 004C2910
 	FILE* CMDRECV_load_game(char* buffer);																									// 004CF950
 	s8 CMDRECV_restart_game();																												// 004BFB10
-	void CMDRECV_select(s32 buffer);																										// 004C2750
-	void CMDRECV_shift_select(s32 buffer);																									// 004C2560
-	void CMDRECV_shift_deselect(s32 buffer);																								// 004BFB40
+	void CMDRECV_select(char* buffer);																										// 004C2750
+	void CMDRECV_shift_select(char* buffer);																								// 004C2560
+	void CMDRECV_shift_deselect(char* buffer);																								// 004BFB40
 	u16 CMDRECV_build(s8* buffer);																											// 004C23C0
 	s8* CMDRECV_vision(s8* buffer);																											// 004BF9C0
-	void CMDRECV_ally(s32 buffer);																											// 004C28A0
+	void CMDRECV_ally(char* buffer);																										// 004C28A0
 	void CMDRECV_pause_game();																												// 004C0BC0
 	void CMDRECV_resume_game();																												// 004C0B00
-	s32 CMDRECV_use_cheat(s32 buffer, char* cheat);																							// 004C0AD0
-	u8 CMDRECV_hotkey(s32 buffer);																											// 004C2870
+	s32 CMDRECV_use_cheat(char* buffer, char* cheat);																						// 004C0AD0
+	u8 CMDRECV_hotkey(char* buffer);																										// 004C2870
 	Unit* CMDRECV_right_click(Unit* unit);																									// 004C2370
 	void CMDRECV_target_command(char* buffer);																								// 004C2320
 	char CMDRECV_cancel_construction();																										// 004C2EF0
@@ -1529,38 +1529,38 @@ namespace helper {
 	Unit* CMDRECV_carrier_stop();																											// 004C1430
 	Unit* CMDRECV_reaver_stop();																											// 004C1240
 	Unit* CMDRECV_nothing();																												// 004C1050
-	Unit* CMDRECV_return_cargo(s32 buffer);																									// 004C2040
+	Unit* CMDRECV_return_cargo(char* buffer);																								// 004C2040
 	s16 CMDRECV_train(char* buffer);																										// 004C1C20
 	s16 CMDRECV_cancel_train(s8* buffer);																									// 004C0100
 	Unit* CMDRECV_cloak();																													// 004C0720
 	Unit* CMDRECV_decloak();																												// 004C0660
-	s32 CMDRECV_unit_morph(s32 buffer);																										// 004C1990
+	s32 CMDRECV_unit_morph(char* buffer);																									// 004C1990
 	Unit* CMDRECV_unsiege();																												// 004C1F10
-	Unit* CMDRECV_siege(s32 buffer);																										// 004C1E80
+	Unit* CMDRECV_siege(char* buffer);																										// 004C1E80
 	Unit* CMDRECV_train_fighter();																											// 004C1800
 	Unit* CMDRECV_unload_all(s8* buffer);																									// 004C1CC0
 	char CMDRECV_unload(Unit* unit);																										// 004C24F0
 	Unit* CMDRECV_merge_archon();																											// 004C0E90
-	Unit* CMDRECV_hold_position(s32 buffer);																								// 004C20C0
-	Unit* CMDRECV_burrow(s32 buffer);																										// 004C1FA0
+	Unit* CMDRECV_hold_position(char* buffer);																								// 004C20C0
+	Unit* CMDRECV_burrow(char* buffer);																										// 004C1FA0
 	Unit* CMDRECV_unburrow();																												// 004C1AC0
 	Unit* CMDRECV_cancel_nuke();																											// 004BFCD0
 	void CMDRECV_liftoff(s8* buffer);																										// 004C1620
-	Unit* CMDRECV_research(s32 buffer);																										// 004C1BA0
+	Unit* CMDRECV_research(char* buffer);																									// 004C1BA0
 	Unit* CMDRECV_cancel_research();																										// 004C0070
-	Unit* CMDRECV_upgrade(s32 buffer);																										// 004C1B20
+	Unit* CMDRECV_upgrade(char* buffer);																									// 004C1B20
 	void CMDRECV_cancel_upgrade();																											// 004BFFC0
 	Unit* CMDRECV_cancel_addon();																											// 004BFF30
-	char CMDRECV_building_morph(s32 buffer);																								// 004C1910
+	char CMDRECV_building_morph(char* buffer);																								// 004C1910
 	Unit* CMDRECV_stim_pack();																												// 004C2F30
 	b32 CMD_game_hash(HashPacket* packet);																									// 0047CDD0
 	void CMDRECV_voice_enable(s8* buffer);																									// 004BF820
-	s32 CMDRECV_set_latency(s32 buffer, s32 amount);																						// 00485E60
-	s32 CMDRECV_set_replay_speed(s32 buffer, u8 speed, u32 something);																		// 004DEB90
-	char CMDRECV_leave_game(s32 buffer);																									// 004C2E90
-	char CMDRECV_minimap_ping(s32 buffer);																									// 004BF7A0
+	s32 CMDRECV_set_latency(char* buffer, s32 unused);																						// 00485E60
+	s32 CMDRECV_set_replay_speed(s32 speed, u8 is_paused, u32 modifier);																	// 004DEB90
+	char CMDRECV_leave_game(char* buffer);																									// 004C2E90
+	char CMDRECV_minimap_ping(char* buffer);																								// 004BF7A0
 	Unit* CMDRECV_merge_dark_archon();																										// 004C0CD0
-	void bwfxn_display_text(s32 result, s32 buffer, s32 is_replay);																			// 0048D1C0
+	void bwfxn_display_text(s32 player, s32 text, s32 is_replay);																			// 0048D1C0
 	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player);												// 004CDE70
 
 	char create_dashed_selection(u32 player, Sprite* sprite, char color);																	// 00499A10

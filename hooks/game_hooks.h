@@ -9,7 +9,7 @@ namespace hooks {
 
 	void __cdecl update_minimap_colors();							// 004A3A00
 	b32 update_doodad_visibility(Thingy* thingy);					// 00487690
-	void game_recv(char* cur_len, u32 data_len, bool as_replay);	// 004865D0
+	void game_recv(char* buffer, s32 size, bool as_replay);			// 004865D0
 
 	void init_unit(Unit* unit);
 	void tick_unit(Unit* unit, bool unit_is_hidden);
