@@ -353,9 +353,9 @@ namespace hooks
 		}
 	}
 
-	static f32 get_bonus_armor(Unit* unit, u8 base_armor) {
+	s32 get_bonus_armor(Unit* unit, u8 base_armor) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		f32 bonus_armor = base_armor + unit->get_armor_bonus();
+		s32 bonus_armor = base_armor + unit->get_armor_bonus();
 		bonus_armor -= unit_ext->values[ValueControlledOpposition];
 		if (bonus_armor < 0) {
 			bonus_armor = 0;
@@ -380,7 +380,7 @@ namespace hooks
 		const char* size_text = "";
 
 		const u8 base_armor = units_dat::armor_amount[unit->id];
-		f32 bonus_armor = get_bonus_armor(unit, base_armor);
+		s32 bonus_armor = get_bonus_armor(unit, base_armor);
 
 		const u8 transport_space = units_dat::space_required[unit->id];
 		const s32 sight_range = units_dat::sight_range[unit->id];
@@ -564,9 +564,9 @@ namespace hooks
 
 		/* // Can't see armor icons on eggs yet
 		if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
-		if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep) {
-		add_status(statuses, "Biogenesis");
-		}
+			if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep) {
+				add_status(statuses, "Biogenesis");
+			}
 		}
 		*/
 
@@ -674,7 +674,7 @@ namespace hooks
 		const char* armor_text = g_stat_txt_tbl_new->get_string(778); // "Armor:"
 
 		const u8 base_armor = units_dat::armor_amount[unit->id];
-		f32 bonus_armor = get_bonus_armor(unit, base_armor);
+		s32 bonus_armor = get_bonus_armor(unit, base_armor);
 
 		std::string text = "\004" + std::string(shield_upgrade_name) + "\002";
 		text += "\n" + std::string(armor_text) + " ";

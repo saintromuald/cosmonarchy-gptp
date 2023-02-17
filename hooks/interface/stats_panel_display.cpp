@@ -5,6 +5,8 @@
 #include "trigger_system/trigger_system.h"
 #include "DatExtend/datext.h"
 
+#include "hooks/interface/weapon_armor_tooltip.h"
+
 namespace hooks
 {
 	// Attempting to be true to the original result in unoptimized code
@@ -473,8 +475,9 @@ namespace hooks
 	{
 		// Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit.
 		BinDlg* dialog_var = dialog;
-		u8 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current armor using g_active_portrait_unit
-		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
+		Unit* portrait_unit = *g_active_portrait_unit;
+		s32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
+		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%i", armor_value);
 		if (dialog_var->control_type)
 		{
 			dialog_var = dialog_var->parent;
