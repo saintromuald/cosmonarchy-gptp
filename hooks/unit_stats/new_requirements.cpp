@@ -814,7 +814,7 @@ namespace hooks {
 				case UnitId::ZergCikralisk:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergVithrathHaunt)
-						|| player_has_completed_unit_id(player_id, UnitId::ZergMuthrokSpire))
+					||  player_has_completed_unit_id(player_id, UnitId::ZergMuthrokSpire))
 					{
 						return true;
 					}
@@ -1162,8 +1162,6 @@ namespace hooks {
 					return true;
 				} break;
 				case UnitId::ZergMuthrokSpire:
-				case UnitId::ZergIzkagIteth:
-				case UnitId::ZergMatravilNest:
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -1171,6 +1169,8 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::ZergNydusCesiant:
+				case UnitId::ZergIzkagIteth:
+				case UnitId::ZergMatravilNest:
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2X]) {
 						return true;
@@ -1180,7 +1180,7 @@ namespace hooks {
 				case UnitId::ZergGeszkathGrotto:
 				case UnitId::ZergElthisthMound:
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier3])
+					if (TierUnlocked[RaceId::Zerg][Tier3X])
 					{
 						return true;
 					}
@@ -2920,9 +2920,16 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::ZergMuthrokSpire:
+					{
+						if (TierUnlocked[RaceId::Zerg][Tier2])
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::ZergNydusCesiant:
 					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergMatravilNest:
-					case UnitId::ZergNydusCesiant:
 					{
 						if (TierUnlocked[RaceId::Zerg][Tier2X])
 						{
