@@ -20,17 +20,17 @@ namespace
 
 	void __declspec(naked) cmdrecv_unit_morph_wrapper() // 004C1990
 	{
-		static u16 wUnitType;
+		static char* buffer;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV wUnitType, AX
+			MOV buffer, EAX
 			POP EAX
 			PUSHAD
 		}
-		hooks::cmdrecv_unit_morph(wUnitType);
+		hooks::cmdrecv_unit_morph(*(u16*)&buffer[1]);
 		__asm {
 			POPAD
 			MOV ESP, EBP

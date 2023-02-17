@@ -8,15 +8,10 @@
 #include "trigger_system/trigger_objectives.h"
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
+#include "trigger_system/trigger_system.h"
 
-#define ActionSampleTime 10
-#define MaxActions 2000
-struct ClientAction {
-	u32 time;
-};
-u32 total_client_actions;
-u32 client_actions_count;
-ClientAction client_actions[MaxActions];
+ApmCounter local_apm_counter;
+ApmCounter player_apm_counter[PlayerLimit];
 
 s32* const fonts = (s32*)0x006CE0F4;
 char* const printXYAlignment = (char*)0x006CE110;
@@ -46,32 +41,39 @@ namespace hooks {
 
 	void draw_ui_text(const char* text, u8 color) {
 		draw_text(text, ui_text_pos.x, ui_text_pos.y, 300, ui_text_height * 4, color);
-		//ui_text_pos.y += ui_text_height;
+	//	ui_text_pos.y += ui_text_height;
 		ui_text_pos.y = *printXYPosY;
 	}
 
-	void register_action(u8 type) {
+	void register_action(ApmCounter* counter, u8 type) {
 		switch (type) {
 			case 84: // Start game?
 			case 55: // Create preplaced unit?
 				return;
 		}
-		total_client_actions++;
-		client_actions[client_actions_count++].time = *g_elapsed_time_frames;
+		if (counter->action_count < MaxActions) {
+			counter->action_time[counter->action_count++] = *g_elapsed_time_frames;
+		}
 	}
 
 	void init_actions() {
-		total_client_actions = 0;
-		client_actions_count = 0;
-		memset(client_actions, 0, sizeof(client_actions));
+		memset(&local_apm_counter, 0, sizeof(local_apm_counter));
+		memset(player_apm_counter, 0, sizeof(player_apm_counter));
+	}
+
+	void update_apm_counter(ApmCounter* counter) {
+		for (u32 i = 0; i < counter->action_count; ++i) {
+			s32 delta = *g_elapsed_time_frames - counter->action_time[i];
+			if (delta >= ActionSampleTime * 24) {
+				counter->action_time[i--] = counter->action_time[--counter->action_count];
+			}
+		}
 	}
 
 	void update_actions() {
-		for (u32 i = 0; i < client_actions_count; ++i) {
-			s32 delta = *g_elapsed_time_frames - client_actions[i].time;
-			if (delta >= ActionSampleTime * 24) {
-				client_actions[i--] = client_actions[--client_actions_count];
-			}
+		update_apm_counter(&local_apm_counter);
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			update_apm_counter(&player_apm_counter[i]);
 		}
 	}
 
@@ -89,14 +91,21 @@ namespace hooks {
 
 		if (config.show_apm) {
 			char buffer[32] = {};
-
-			u32 apm = client_actions_count / (ActionSampleTime / 60.0);
+			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
 			draw_ui_text(buffer, 7);
+		}
 
-			//u32 total_apm = total_client_actions / (*g_elapsed_time_frames / 24.0 / 60.0);
-			//sprintf_s(buffer, "AVG APM: %u", total_apm);
-			//draw_ui_text(buffer, 7);
+		if (global_vars.players[*g_local_human_id].is_witness) {
+			for (u32 i = 0; i < PlayerLimit; ++i) {
+				if (global_vars.players[i].is_witness || g_player_table[i].type != PlayerType::Human) {
+					continue;
+				}
+				char buffer[32] = {};
+				u32 apm = player_apm_counter[i].action_count / (ActionSampleTime / 60.0);
+				sprintf_s(buffer, "%s APM: %u", g_player_table[i].name, apm);
+				draw_ui_text(buffer, 7);
+			}
 		}
 
 		for (u32 i = 0; i < objectives_count; ++i) {
@@ -118,7 +127,7 @@ namespace hooks {
 
 	void queue_game_command(u8* data, u32 size) {
 		if (*g_command_queue_size + size <= *g_provider_max_buffer) {
-			register_action(data[0]);
+			register_action(&local_apm_counter, data[0]);
 			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
 			*g_command_queue_size += size;
 			return;
@@ -133,7 +142,7 @@ namespace hooks {
 			if (turns >= 16 - *g_provider_latency_calls) {
 				return;
 			}
-			register_action(data[0]);
+			register_action(&local_apm_counter, data[0]);
 			helper::send_turn();
 			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
 			*g_command_queue_size += size;

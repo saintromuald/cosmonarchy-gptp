@@ -232,7 +232,7 @@ SCBW_DATA(u32*,			save_load_success,			0x006D5A68);
 SCBW_DATA(u32*,			g_elapsed_time_modified,	0x006D5BCC);
 SCBW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
 SCBW_DATA(Options*,		g_options_list,				0x006CDFD4);
-SCBW_DATA(ReplayData*,	g_replay_data,				0x00596BBC);
+SCBW_DATA(ReplayData**,	g_replay_data,				0x00596BBC);
 SCBW_DATA(u32*,			g_turn_command_size,		0x005005F8);
 SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);

@@ -37,7 +37,7 @@
 #include "weapons/weapon_fire.h"
 #include "harvest.h"
 #include "hooks/weapons/weapon_cooldown.h"
-#include <ctime>
+#include <time.h>
 #include "trigger_system/trigger_system.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
@@ -3317,7 +3317,10 @@ namespace hooks {
 					if (size - command_size >= 0) {
 						helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
 					next_command:
-						helper::save_replay_action(g_replay_data, buffer, command_size, *g_active_storm_id);
+						if (*g_active_nation_id < PlayerLimit) {
+							hooks::register_action(&player_apm_counter[*g_active_nation_id], command_id);
+						}
+						helper::save_replay_action(*g_replay_data, buffer, command_size, *g_active_storm_id);
 						size -= command_size;
 						buffer += command_size;
 						is_in_replay = *g_is_in_replay;

@@ -2,6 +2,17 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
 
+#define ActionSampleTime 10
+#define MaxActions 2000
+
+struct ApmCounter {
+	u32 action_count;
+	u32 action_time[MaxActions];
+};
+
+extern ApmCounter local_apm_counter;
+extern ApmCounter player_apm_counter[PlayerLimit];
+
 const u32 ui_text_height = 15;
 extern Point16 ui_text_pos;
 
@@ -26,7 +37,7 @@ namespace hooks {
 
 	void inject_ui_features_hooks();
 
-	void register_action(u8 type);
+	void register_action(ApmCounter* counter, u8 type);
 	void init_actions();
 	void update_actions();
 	void draw_ui_features();
