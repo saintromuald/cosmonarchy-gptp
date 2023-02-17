@@ -13037,7 +13037,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_unsiege(s32 buffer)
+	Unit* CMDRECV_unsiege(char* buffer)
 	{
 		static Unit* result;
 		const u32 func_address = 0x004C1F10;
