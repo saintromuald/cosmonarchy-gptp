@@ -1081,7 +1081,7 @@ namespace hooks {
 							case UnitId::ProtossStridentStratum:
 							{
 								if (current_button->requirement_var == UnitId::ProtossArtisan
-							//	||  current_button->requirement_var == UnitId::ProtossClarion
+								||  current_button->requirement_var == UnitId::ProtossClarion
 								||  current_button->requirement_var == UnitId::ProtossMonogram)
 								{
 									current_button_state = Button_State::Enabled;

@@ -487,7 +487,7 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::ProtossArtisan:
-			//	case UnitId::ProtossClarion:
+				case UnitId::ProtossClarion:
 				case UnitId::ProtossMonogram:
 				{
 					return true;
@@ -2016,7 +2016,7 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::ProtossArtisan:
-				//	case UnitId::ProtossClarion:
+					case UnitId::ProtossClarion:
 					case UnitId::ProtossMonogram:
 					{
 						return TECH_ACTIVE;
