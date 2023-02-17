@@ -89,14 +89,8 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		if (config.show_apm) {
-			char buffer[32] = {};
-			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
-			sprintf_s(buffer, "APM: %u", apm);
-			draw_ui_text(buffer, 7);
-		}
 
-		if (global_vars.players[*g_local_human_id].is_witness) {
+		if (global_vars.players[*g_local_human_id].is_witness || *g_is_in_replay) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (global_vars.players[i].is_witness || g_player_table[i].type != PlayerType::Human) {
 					continue;
@@ -106,6 +100,11 @@ namespace hooks {
 				sprintf_s(buffer, "%s APM: %u", g_player_table[i].name, apm);
 				draw_ui_text(buffer, 7);
 			}
+		} else if (config.show_apm) {
+			char buffer[32] = {};
+			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
+			sprintf_s(buffer, "APM: %u", apm);
+			draw_ui_text(buffer, 7);
 		}
 
 		for (u32 i = 0; i < objectives_count; ++i) {
