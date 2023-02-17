@@ -89,8 +89,8 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-
-		if (global_vars.players[*g_local_human_id].is_witness || *g_is_in_replay) {
+		bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
+		if (in_replay_or_witness && config.witness_show_apm) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (global_vars.players[i].is_witness || g_player_table[i].type != PlayerType::Human) {
 					continue;
@@ -100,7 +100,7 @@ namespace hooks {
 				sprintf_s(buffer, "%s APM: %u", g_player_table[i].name, apm);
 				draw_ui_text(buffer, 7);
 			}
-		} else if (config.show_apm) {
+		} else if (!in_replay_or_witness && config.show_apm) {
 			char buffer[32] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);

@@ -17,6 +17,9 @@ struct Config {
 	bool show_unique_gas_order_line_color = false;
 	bool always_show_extended_tooltips = false;
 
+	bool witness_show_apm = true;
+	bool witness_show_order_lines = true;
+
 	// Visuals
 	bool celebrations_enabled = true;
 

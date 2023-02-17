@@ -388,8 +388,8 @@ namespace hooks {
 						draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 					}
 				}
-
-				if (config.show_order_lines || global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay) {
+				bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
+				if ((!in_replay_or_witness && config.show_order_lines) || (in_replay_or_witness && config.witness_show_order_lines)) {
 					Unit* ignore_resource_unit = 0;
 
 					if (scbw::is_in_replay() || *g_local_nation_id == unit->player) {
