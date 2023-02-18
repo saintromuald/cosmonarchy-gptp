@@ -553,9 +553,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0048D478, (u32)0x0B0F1708);
 
 	// Show map preview in UMS. Temporary until we can do so conditionally.
-	nops(0x004B9D48, 4);
-	memory_patch(0x004CC91D, (u8)0xB0);
-	memory_patch(0x004CC91E, (u32)0x90909001);
+	// gluChat_Main (0x004B9C20)
+	memory_patch(0x004B9D48, (u32)0x90909090);
+	// preview_minimap (0x004EEFD0)
+	jump_patch(hooks::preview_minimap_patch_EF066, 0x004EF066);	
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

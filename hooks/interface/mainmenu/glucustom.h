@@ -39,4 +39,7 @@ namespace hooks
 	void getColourID_new();
 	void set_display_text_color();
 	void get_display_text_color();
+
+	// Preview minimap with UMS
+	void preview_minimap_patch_EF066();
 }

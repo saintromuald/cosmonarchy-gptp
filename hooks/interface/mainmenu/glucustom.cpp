@@ -729,4 +729,15 @@ namespace hooks
 				JMP		minimap_dlg_Create_A526E
 		}
 	}
+
+	const u32 preview_minimap_patch_EF06B = 0x004EF06B;
+	const u32 LoadMap = 0x004BF520;
+	void __declspec(naked) preview_minimap_patch_EF066() {
+		__asm {
+			OR		byte ptr ds : [0x00596871] , 0x80//game_data.startingUnits
+			CALL	LoadMap
+			AND		byte ptr ds : [0x00596871] , 0x7F//game_data.startingUnits
+			JMP		preview_minimap_patch_EF06B
+		}
+	}
 }
