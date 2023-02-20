@@ -1284,4 +1284,9 @@ struct SightRange { // From IDA and neiv's list
 	u32 tile_count;
 	SightTile* tiles;
 };
+
+struct SightCallbacks { // From IDA
+	void(__fastcall** ground)(s32, s32, s32, s32, s32, s32);
+	void(__fastcall** air)(s32, s32, s32, s32, s32, s32);
+};
 #pragma pack()

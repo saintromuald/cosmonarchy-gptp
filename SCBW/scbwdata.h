@@ -1127,11 +1127,16 @@ SCBW_DATA(u8*,			g_place_building_order_id,			0x0064088D);
 // For replay/witness UI
 SCBW_DATA(ForceNames*,	force_names,						0x0058D5BC);
 
-// For 
+// For game_recv
 SCBW_DATA(u32*,			g_sequence,							0x006556E8);
 SCBW_DATA(u32*,			g_active_storm_id,					0x00512680);
 SCBW_DATA(s32*,			g_is_bad_hash,						0x006552A8);
 SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
+
+// For reveal_sight_at_location
+SCBW_DATA(SightRange*,		g_sight_values,					0x00513A18);
+SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
+
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 
