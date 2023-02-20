@@ -1268,4 +1268,20 @@ struct HashPacket {
 	u8 visibility_id;
 	u8 minimap_box_count;
 };
+
+struct SightTile { // From neiv's list
+	u32 unk_00;
+	u32 unk_04;
+	u32 relative_tile;
+};
+
+struct SightRange { // From IDA and neiv's list
+	u32 tile_sight_width;
+	u32 tile_sight_height;
+	u32 unk_08;
+	u32 unk_0C;
+	u32 unk_10;
+	u32 tile_count;
+	SightTile* tiles;
+};
 #pragma pack()
