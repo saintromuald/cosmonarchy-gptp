@@ -447,7 +447,8 @@ namespace hooks {
 						}
 
 						// Queued Orders
-						if (config.show_queued_order_lines && !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
+						if ((config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines)
+						&& !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
 							for (Order* order = unit->order_queue_head; order; order = order->next) {
 								source = draw_order_line(source, order->target, graphics::GREY);
 							}
