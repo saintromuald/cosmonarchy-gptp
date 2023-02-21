@@ -299,7 +299,8 @@ namespace hooks
 							target = unit->order_target.unit;
 							if (unit->unit_ai != nullptr && target != nullptr)
 							{
-								if (order_weapon_id <= WeaponId::MindTyrantMaelstrom || order_weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) // Maelstrom is the last spell-related weapon
+								if (order_weapon_id <= WeaponId::MindTyrantMaelstrom
+								||  order_weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) // Maelstrom is the last spell-related weapon, by default
 								{
 									// array bound to the function
 									const u8* const array_00492B44 = (u8*)(0x00492B44);

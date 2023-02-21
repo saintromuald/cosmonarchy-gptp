@@ -95,17 +95,46 @@ namespace
 			RETN
 		}
 	}
+
+	const u32 UpdateSpriteImagesForCloak_98AC1 = 0x00498AC1;
+	void __declspec(naked) update_sprite_images_for_cloak_patch_498ABB() {
+		__asm {
+			AND		DL, 0xFD
+			CMP		word ptr[ECX + 8], 0xD3
+			JE		offset isWarpAnchor
+			INC		DL
+			isWarpAnchor:
+			ADD		DL, 6
+			JMP		UpdateSpriteImagesForCloak_98AC1
+		}
+	}
+
+	const u32 DoCloak_9B4CC = 0x0049B4CC;
+	void __declspec(naked) do_cloak_patch_49B4C6() {
+		__asm {
+			PUSH EDI
+			MOV	EDI, [EDI + 0x18]
+			CMP	word ptr[EDI + 8], 0xD3
+			POP EDI
+			JE	offset isWarpAnchor
+			OR	ECX, 0x200
+			isWarpAnchor:
+			JMP	DoCloak_9B4CC
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_update_status_effects_hooks()
 	{
-		jump_patch(update_status_effects_wrapper,			0x00492F70, 5);
-		jump_patch(ai_burrower_wrapper,						0x004A1340, 4);
-		jump_patch(unit_is_always_detected_wrapper,			0x00491810, 3);
-		jump_patch(unit_is_clean_detector_wrapper,			0x00403430,	6);
-		jump_patch(refresh_carryable_sprite_wrapper,		0x00497750,	0);
-		jump_patch(update_carryable_sprite_flags_wrapper,	0x004981B0,	0);
+		jump_patch(update_status_effects_wrapper,				0x00492F70, 5);
+		jump_patch(ai_burrower_wrapper,							0x004A1340, 4);
+		jump_patch(unit_is_always_detected_wrapper,				0x00491810, 3);
+		jump_patch(unit_is_clean_detector_wrapper,				0x00403430,	6);
+		jump_patch(refresh_carryable_sprite_wrapper,			0x00497750,	0);
+		jump_patch(update_carryable_sprite_flags_wrapper,		0x004981B0,	0);
+		jump_patch(update_sprite_images_for_cloak_patch_498ABB,	0x00498ABB, 1);
+		jump_patch(do_cloak_patch_49B4C6,						0x0049B4C6, 1);
 	}
 }

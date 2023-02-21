@@ -59,7 +59,7 @@ namespace hooks
 
 				if (!jump_to_9AD7E)
 				{ // 0049ABC4:
-					if (helper::function_0049A410(current_unit, bActionOrder) == 0)
+					if (helper::can_do_targeted_order(current_unit, bActionOrder) == 0)
 					{
 						jump_to_9AD7E = true;
 					}
