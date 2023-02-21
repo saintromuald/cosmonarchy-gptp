@@ -34,8 +34,8 @@ namespace ButtonRequirements {
         Upgrade_Not_At_Max_Level = 0x00429450,								//BTNSCOND_CanUpgrade
         Can_Cloak = 0x004293E0,												//BTNSCOND_CanCloak_0
         Can_Decloak = 0x00429370,											//BTNSCOND_IsCloaked_0
-        Can_Cloak_Mixed = 0x004292C0,										//BTNSCOND_CanCloak
-        Can_Decloak_Mixed = 0x00429210,										//BTNSCOND_IsCloaked
+        Can_Cloak_Mixed = 0x004292C0,										//btnscond_can_cloak
+        Can_Decloak_Mixed = 0x00429210,										//btnscond_is_cloaked
         Tank_Is_In_Tank_Mode = 0x004291C0,									//BTNSCOND_IsUnsieged
         Tank_Is_In_Siege_Mode = 0x00429170,									//BTNSCOND_IsSieged
         Tank_Is_In_Tank_Mode_Move = 0x00428860,								//BTNSCOND_TankMove
