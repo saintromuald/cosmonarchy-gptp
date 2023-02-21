@@ -1285,8 +1285,9 @@ struct SightRange { // From IDA and neiv's list
 	SightTile* tiles;
 };
 
+typedef void __fastcall sight_callback_t(u32 tile_x, u32 tile_y, SightRange* sight_range, u32 active_tile_int, u32 relative_flags, u32 new_flags);
 struct SightCallbacks { // From IDA
-	void(__fastcall** ground)(s32, s32, s32, s32, s32, s32);
-	void(__fastcall** air)(s32, s32, s32, s32, s32, s32);
+	sight_callback_t* ground[2];
+	sight_callback_t* air[2];
 };
 #pragma pack()
