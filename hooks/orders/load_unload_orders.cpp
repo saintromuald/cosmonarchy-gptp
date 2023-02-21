@@ -469,14 +469,6 @@ namespace hooks
 
 	void orders_unload(Unit* unit)
 	{
-		static Unit* unitTable_0059CB58 = (Unit*)(0x0059CB58);
-		static Unit* unitTable_0059CB64 = (Unit*)(0x0059CB64);
-		if (globals.extended_unit_table == 1)
-		{
-			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
-			unitTable_0059CB58 = (Unit*)index_start;
-			unitTable_0059CB64 = (Unit*)(index_start + 12);
-		}
 		if (unit->status & UnitStatus::GroundedBuilding
 		||  unit->main_order_timer == 0)
 		{
@@ -493,9 +485,9 @@ namespace hooks
 			while (!bEndLoop)
 			{
 				loadedUnitOffset = (u32*)&unit_ext->loaded_unit[counter];
-				if (*loadedUnitOffset != 0 && unitTable_0059CB64[unit_ext->loaded_unit[counter].index].link.prev != nullptr) // sprite check
+				if (*loadedUnitOffset != 0 && g_unit_references2[unit_ext->loaded_unit[counter].index].link.prev != nullptr) // sprite check
 				{
-					Unit* unitToUnload = &(unitTable_0059CB58[unit_ext->loaded_unit[counter].index]);
+					Unit* unitToUnload = &(g_unit_references[unit_ext->loaded_unit[counter].index]);
 					if (unitToUnload->main_order_id != 0 || unitToUnload->main_order_state != 1)
 					{
 						if (unit_ext->loaded_unit[counter].unit_id == unitToUnload->target_order_special)

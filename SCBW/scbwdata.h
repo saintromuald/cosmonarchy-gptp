@@ -1137,6 +1137,9 @@ SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
 SCBW_DATA(SightRange*,		g_sight_values,					0x00513A18);
 SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
 
+SCBW_DATA(Unit*,			g_unit_references,				0x0059CB58);
+SCBW_DATA(Unit*,			g_unit_references2,				0x0059CB64);
+
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

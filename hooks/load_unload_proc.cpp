@@ -27,14 +27,6 @@ namespace hooks
 	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
 		s32 counter = 0;
-		static const Unit* unitTable_0059CB58 = (Unit*)0x0059CB58;
-		static const Unit* unitTable_0059CB64 = (Unit*)0x0059CB64;
-		if (globals.extended_unit_table == 1)
-		{
-			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
-			unitTable_0059CB58 = (Unit*)index_start;
-			unitTable_0059CB64 = (Unit*)(index_start + 12);
-		}
 		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
 		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
 
@@ -45,12 +37,12 @@ namespace hooks
 			{
 				u32* loaded_unit_offset = (u32*)&transport_ext->loaded_unit[counter];
 				if (*loaded_unit_offset == 0 ||
-					unitTable_0059CB64[transport_ext->loaded_unit[counter].index].link.prev == 0)
+					g_unit_references2[transport_ext->loaded_unit[counter].index].link.prev == 0)
 				{
 					break;
 				}
 
-				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[transport_ext->loaded_unit[counter].index]);
+				Unit* current_loaded_unit = (Unit*)&(g_unit_references[transport_ext->loaded_unit[counter].index]);
 				if ((current_loaded_unit->main_order_id == OrderId::Die && current_loaded_unit->main_order_state == 1)
 				||	 current_loaded_unit->target_order_special != transport_ext->loaded_unit[counter].unit_id)
 				{
@@ -84,10 +76,6 @@ namespace hooks
 		// CCMU extender
 		u32 loaded_index;
 		auto new_table = g_unit_table;
-		if (globals.extended_unit_table == 1)
-		{
-			new_table = (Unit*)&new_unit_table.units[0];
-		}
 
 		__asm
 		{
@@ -687,14 +675,6 @@ namespace hooks
 	// Moved from Unit.cpp
 	Unit* get_unit_from_index(u16 index)
 	{
-		if (globals.extended_unit_table == 1)
-		{
-			if (1 <= index && index <= UNIT_ARRAY_LENGTH)
-			{
-				return (Unit*)&new_unit_table.units[index - 1];
-			}
-			return nullptr;
-		}
 		if (1 <= index && index <= UNIT_ARRAY_LENGTH)
 		{
 			return &g_unit_table[index - 1];

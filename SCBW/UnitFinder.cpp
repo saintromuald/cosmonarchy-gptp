@@ -38,37 +38,21 @@ namespace scbw
 
 	UnitFinderData* UnitFinder::get_start_x()
 	{
-		if (globals.extended_unit_table)
-		{
-			return new_unit_table.orderingX;
-		}
 		return g_unit_ordering_x;
 	}
 
 	UnitFinderData* UnitFinder::get_start_y()
 	{
-		if (globals.extended_unit_table)
-		{
-			return new_unit_table.orderingY;
-		}
 		return g_unit_ordering_y;
 	}
 
 	UnitFinderData* UnitFinder::get_end_x()
 	{
-		if (globals.extended_unit_table)
-		{
-			return new_unit_table.orderingX + *g_unit_ordering_count;
-		}
 		return g_unit_ordering_x + *g_unit_ordering_count;
 	}
 
 	UnitFinderData* UnitFinder::get_end_y()
 	{
-		if (globals.extended_unit_table)
-		{
-			return new_unit_table.orderingY + *g_unit_ordering_count;
-		}
 		return g_unit_ordering_y + *g_unit_ordering_count;
 	}
 

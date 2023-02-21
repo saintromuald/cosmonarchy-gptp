@@ -1159,12 +1159,6 @@ void Unit::fireWeapon(u8 weapon_id) const {
 }
 
 Unit* Unit::get_unit_from_index(u16 index) {
-	if (globals.extended_unit_table == 1) {
-		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/) {
-			return (Unit*)&new_unit_table.units[index - 1];
-		}
-		return nullptr;
-	}
 	if (1 <= index && index <= UNIT_ARRAY_LENGTH) {
 		return &g_unit_table[index - 1];
 	}
@@ -1173,9 +1167,6 @@ Unit* Unit::get_unit_from_index(u16 index) {
 
 u16 Unit::get_unit_index() const {
 	assert(this);
-	if (globals.extended_unit_table == 1) {
-		return this - (Unit*)&new_unit_table.units[0] + 1;
-	}
 	return this - g_unit_table + 1;
 }
 

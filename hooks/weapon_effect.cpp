@@ -289,27 +289,13 @@ namespace hooks {
 						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weaponIdLoop])
 							&& target == bullet->attack_target.unit)
 						{
-							if (globals.extended_unit_table)
-							{
-								new_unit_table.air_splash_results[0] = target;
-							}
-							else
-							{
-								g_air_splash_list[0] = target;
-							}
+							g_air_splash_list[0] = target;
 							result = 1;
 							*g_air_splash_list_count = 1;
 							break;
 						}
 						listCount = *g_air_splash_list_count;
-						if (globals.extended_unit_table)
-						{
-							new_unit_table.air_splash_results[*g_air_splash_list_count] = target;
-						}
-						else
-						{
-							g_air_splash_list[*g_air_splash_list_count] = target;
-						}
+						g_air_splash_list[*g_air_splash_list_count] = target;
 						*g_air_splash_list_count = listCount + 1;
 					}
 				}
@@ -326,14 +312,7 @@ namespace hooks {
 			{
 				list = helper::randomize_short(58) % *g_air_splash_list_count;
 			}
-			if (globals.extended_unit_table)
-			{
-				helper::weapon_bullet_shot(target, bullet, (s32)new_unit_table.air_splash_results[list]);
-			}
-			else
-			{
-				helper::weapon_bullet_shot(target, bullet, (s32)g_air_splash_list[list]);
-			}
+			helper::weapon_bullet_shot(target, bullet, (s32)g_air_splash_list[list]);
 		}
 		// airSplashProc2
 		splash(bullet, weapon_id, SplashType::FriendlyNew);

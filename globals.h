@@ -104,7 +104,6 @@ struct Globals {
 	f64 updateUnitStateDbg;
 	f64 updateStatusEffectsDbg;*/
 	// Serializable data
-	u32 extended_unit_table;
 	u32 extended_sfx;
 	bool tbl_extender;
 	bool unitid_extender;
@@ -117,7 +116,6 @@ struct Globals {
 	AttackExtender attackers;
 
 	Globals() {
-		extended_unit_table = 0;
 		extended_sfx = 0;
 		tbl_extender = false;
 		unitid_extender = false;
