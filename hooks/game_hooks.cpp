@@ -1347,7 +1347,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergLakizilisk:
 			{
-				// Lakizilisk - play new_sound on attack, hardcoded here to facilitate a different new_sound on return
+				// Lakizilisk - play sound on attack, hardcoded here to facilitate a different sound on return
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);

@@ -3,10 +3,9 @@
 
 namespace hooks
 {
-
 	// Returns the tech ID used by this unit for the cloaking spell.
 	// For the cloaking energy consumption, see energy_regeneration.cpp
-	u8 getCloakingTech(Unit* unit)
+	u8 get_cloaking_tech(Unit* unit) // 00491A50
 	{
 		//if (unit->id == UnitId::TerranEidolon)
 		//{
@@ -17,91 +16,61 @@ namespace hooks
 		//{
 		//	return TechId::CloakingField;
 		//}
-
 		return TechId::None;
-
 	}
 
-#ifndef TRUE
-#define TRUE 1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-	b32 BTNSCOND_IsCloaked(Unit* unit, u32 player, u16 requirement_var)
+	b32 btnscond_is_cloaked(Unit* unit, u32 player, u16 requirement_var)
 	{
-
-		b32 bReturnValue = TRUE;
+		b32 result = true;
 		Unit* unit_from_selection;
-
-
-		for (s32 i = 0; i < SelectionCap && (bReturnValue == TRUE); i++)
+		for (s32 i = 0; i < SelectionCap && (result == true); i++)
 		{
-
 			unit_from_selection = g_client_selection_group->unit[i];
-
-			if (unit_from_selection != nullptr)
+			if (unit_from_selection)
 			{
-
-				//original code is hardcoded, not using a function
-				u8 techId = getCloakingTech(unit_from_selection);
-
-				if (unit_from_selection->can_use_tech(techId, player) == TRUE)
+				// Original code is hardcoded, not using a function
+				u8 tech_id = get_cloaking_tech(unit_from_selection);
+				if (unit_from_selection->can_use_tech(tech_id, player) == true)
 				{
-
-					if (
-						unit_from_selection->status & UnitStatus::CloakingForFree &&
-						!(unit_from_selection->status & UnitStatus::Burrowed)
-						)
-						bReturnValue = FALSE;
-					else
-						if (!(unit_from_selection->status & UnitStatus::RequiresDetection))
-							bReturnValue = FALSE;
-
+					if  (unit_from_selection->status & UnitStatus::CloakingForFree
+					&& !(unit_from_selection->status & UnitStatus::Burrowed)) {
+						result = false;
+					}
+					else if (!(unit_from_selection->status & UnitStatus::RequiresDetection))
+					{
+						result = false;
+					}
 				}
 				else
-					bReturnValue = FALSE;
-
+				{
+					result = false;
+				}
 			}
-
 		}
+		return result;
+	}
 
-		return bReturnValue;
-
-	} //b32 BTNSCOND_IsCloaked(Unit* unit, u32 player, u16 requirement_var)
-
-	b32 BTNSCOND_CanCloak(Unit* unit, u32 player, u16 requirement_var)
+	b32 btnscond_can_cloak(Unit* unit, u32 player, u16 requirement_var)
 	{
-
-		b32 bReturnValue = FALSE;
+		b32 result = false;
 		Unit* unit_from_selection;
-
-		for (s32 i = 0; i < SelectionCap && (bReturnValue == FALSE); i++)
+		for (s32 i = 0; i < SelectionCap && (result == false); i++)
 		{
-
 			unit_from_selection = g_client_selection_group->unit[i];
-
-			if (unit_from_selection != nullptr)
+			if (unit_from_selection)
 			{
+				// Original code is hardcoded, not using a function
+				u8 tech_id = get_cloaking_tech(unit_from_selection);
 
-				//original code is hardcoded, not using a function
-				u8 techId = getCloakingTech(unit_from_selection);
-
-				if (
-					unit_from_selection->can_use_tech(techId, player) == TRUE &&				//must be able to use cloaking tech for more checks to be necessary
-					(!(unit_from_selection->status & UnitStatus::CloakingForFree) ||	//to cloak, unit should not already be cloaked for free
-						unit_from_selection->status & UnitStatus::Burrowed) &&				//if burrowed, cloaking for free, but still allowed to cloak
-					!(unit_from_selection->status & UnitStatus::RequiresDetection)			//if unit doesn't already require detection
-					)
-					bReturnValue = TRUE;
-
+				if     (unit_from_selection->can_use_tech(tech_id, player) == true		// must be able to use cloaking tech for more checks to be necessary
+				&&	 (!(unit_from_selection->status & UnitStatus::CloakingForFree)		// to cloak, unit should not already be cloaked for free
+				||		unit_from_selection->status & UnitStatus::Burrowed)				// if burrowed, cloaking for free, but still allowed to cloak
+				&&	  !(unit_from_selection->status & UnitStatus::RequiresDetection))	// if unit doesn't already require detection
+				{
+					result = true;
+				}
 			}
-
 		}
-
-		return bReturnValue;
-
-	} //b32 BTNSCOND_CanCloak(Unit* unit, u32 player, u16 requirement_var)
-
-} //hooks
+		return result;
+	}
+}

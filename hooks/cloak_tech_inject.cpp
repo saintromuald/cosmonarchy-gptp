@@ -3,24 +3,23 @@
 #include "../SCBW/api.h"
 #include "../hook_tools.h"
 #include "globals.h"
-/*
 
+/*
 There are 9 places where StarCraft checks unit ID for cloaking.
 
-* 0x00429210: BTNSCOND_IsCloaked  (Used by Infested Kerrigan, Infested Duran, and Mixed Cloakable Group)
-* 0x004292C0: BTNSCOND_CanCloak   (Used by Infested Kerrigan, Infested Duran, and Mixed Cloakable Group)
+* 0x00429210: btnscond_is_cloaked  (Used by Infested Kerrigan, Infested Duran, and Mixed Cloakable Group)
+* 0x004292C0: btnscond_can_cloak   (Used by Infested Kerrigan, Infested Duran, and Mixed Cloakable Group)
 * 0x00491B30: ApplyCloakingOrder  (Used by all spell-cloaking units)
 * 0x004C0720: CMDRECV_Cloak       (Used by all spell-cloaking units)
 * 0x0043B970: ai_order_unit_cloaking(Used by AI-controlled units)
 * 0x004C0660: CMDRECV_Decloak     (Used by all spell-cloaking units)
-* 0x00491A50: getCloakingTech     (Used by "Create Unit With Properties" in StarEdit + create_unit opcode in aiscript.bin)
+* 0x00491A50: get_cloaking_tech     (Used by "Create Unit With Properties" in StarEdit + create_unit opcode in aiscript.bin)
 * 0x00491A90: getCloakingEnergyConsumption (Used by energy regen; This is editable from the energy hook stuff)
 * 0x00423540: currentUnitSelectionCanCloak(Called by CMDACT_Cloak for all units; also checks energy amount)
 
 Note that Wraiths and Ghosts use BTNSCOND_CanCloak_0 and BTNSCOND_IsCloaked_0,
 which does NOT check unit IDs at all. (FireGraft has it wrong when it says that
 Wraiths use "Can Cloak" and Infested Kerrigan uses "Can Cloak - Mixed")
-
 */
 
 namespace
@@ -28,11 +27,11 @@ namespace
 	//-------- Button conditions --------//
 
 	//0x00429210
-	void __declspec(naked) cloakingTechWrapper_IsCloaked()
+	void __declspec(naked) cloaking_tech_wrapper_is_cloaked()
 	{
 		static b32 return_value;
 		static u32 player;
-		static Unit* unit;	// unused in original function
+		static Unit* unit;			// unused in original function
 		static u16 requirement_var;	// unused in original function
 		__asm {
 			PUSH EBP
@@ -43,7 +42,7 @@ namespace
 			MOV requirement_var, CX
 			PUSHAD
 		}
-		return_value = hooks::BTNSCOND_IsCloaked(unit, player, requirement_var);
+		return_value = hooks::btnscond_is_cloaked(unit, player, requirement_var);
 		__asm {
 			POPAD
 			MOV EAX, return_value
@@ -54,11 +53,11 @@ namespace
 	}
 
 	//0x004292C0
-	void __declspec(naked) cloakingTechWrapper_CanCloak()
+	void __declspec(naked) cloaking_tech_wrapper_can_cloak()
 	{
 		static b32 return_value;
 		static u32 player;
-		static Unit* unit;	// unused in original function
+		static Unit* unit;			// unused in original function
 		static u16 requirement_var;	// unused in original function
 		__asm {
 			PUSH EBP
@@ -69,7 +68,7 @@ namespace
 			MOV requirement_var, CX
 			PUSHAD
 		}
-		return_value = hooks::BTNSCOND_CanCloak(unit, player, requirement_var);
+		return_value = hooks::btnscond_can_cloak(unit, player, requirement_var);
 		__asm {
 			POPAD
 			MOV EAX, return_value
@@ -82,69 +81,71 @@ namespace
 	//-------- Actual cloak orders --------//
 
 	//equivalent to 00491B30 ApplyCloakingOrder, not injected
-	void applyCloakingOrderHook(Unit* unit)
+	void apply_cloaking_order_hook(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->status & UnitStatus::RequiresDetection)
 		{
 			return;
 		}
 
-		// original code is hardcoded instead of using a function like getCloakingTech
-		const u16 energyCost = techdata_dat::energy_cost[hooks::getCloakingTech(unit)] * 256;
+		// original code is hardcoded instead of using a function like get_cloaking_tech
+		const u16 energyCost = techdata_dat::energy_cost[hooks::get_cloaking_tech(unit)] * 256;
 
 		if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || unit->energy >= energyCost)
 		{
 			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
 			{
 				bool spend = true;
-				if (unitExt->values[ValueAICloakGimmick] == 1)
+				if (unit_ext->values[ValueAICloakGimmick] == 1)
 				{
 					spend = false;
 				}
 				if (unit->unit_ai != nullptr)
 				{
-					unitExt->values[ValueAICloakGimmick] = 1;
+					unit_ext->values[ValueAICloakGimmick] = 1;
 				}
 				if (spend)
 				{
 					unit->spend_unit_energy(energyCost);
 				}
 			}
-			//original code is hardcoded instead of using a function like set_secondary_order
+			// original code is hardcoded instead of using a function like set_secondary_order
 			if (unit->secondary_order_id != OrderId::Cloak)
 			{
 				unit->set_secondary_order(OrderId::Cloak);
 			}
 			else if (unit->unit_ai != nullptr)
 			{
-				unitExt->values[ValueAICloakGimmick] = 0;
+				unit_ext->values[ValueAICloakGimmick] = 0;
 			}
 		}
 	}
 
-	void __cdecl cloakingTechWrapper_CMDRECV_Cloak()
+	void __cdecl cloaking_tech_wrapper_cmdrecv_cloak()
 	{
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (unit->can_use_tech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
-				applyCloakingOrderHook(unit);
+			if (unit->can_use_tech(hooks::get_cloaking_tech(unit), *g_active_nation_id) == 1)
+			{
+				apply_cloaking_order_hook(unit);
+			}
 		}
 	}
 
-	const u32 Func_ApplyCloak = 0x00491B30;
-	void applyCloakingOrderFunc(Unit* unit)
+	const u32 func_apply_cloak = 0x00491B30;
+	void apply_cloaking_order_func(Unit* unit)
 	{
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_ApplyCloak
+			CALL func_apply_cloak
 			POPAD
 		}
 	}
 
-	void __declspec(naked) cloakingTechWrapper_AI_cloakUnit()
+	void __declspec(naked) cloaking_tech_wrapper_ai_cloak_unit()
 	{
 		static Unit* unit;
 		__asm {
@@ -153,11 +154,9 @@ namespace
 		}
 		if (!(unit->status & UnitStatus::RequiresDetection))
 		{
-			if (unit->can_use_tech(hooks::getCloakingTech(unit), unit->player) == 1)
+			if (unit->can_use_tech(hooks::get_cloaking_tech(unit), unit->player) == 1)
 			{
-				applyCloakingOrderHook(unit);
-				//applyCloakingOrderFunc(unit);
-
+				apply_cloaking_order_hook(unit);
 			}
 		}
 		__asm {
@@ -166,19 +165,21 @@ namespace
 		}
 	}
 
-	void __cdecl cloakingTechWrapper_CMDRECV_Decloak()
+	void __cdecl cloaking_tech_wrapper_cmdrecv_decloak()
 	{
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
-			if (unit->can_use_tech(hooks::getCloakingTech(unit), *g_active_nation_id) == 1)
+			if (unit->can_use_tech(hooks::get_cloaking_tech(unit), *g_active_nation_id) == 1)
+			{
 				unit->set_secondary_order(OrderId::Decloak);
+			}
 		}
 	}
 
 	//-------- Other wrappers --------//
 
-	void __declspec(naked) getCloakingTechWrapper()
+	void __declspec(naked) get_cloaking_tech_wrapper()
 	{
 		static Unit* unit;
 		static u8 result;
@@ -186,7 +187,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::getCloakingTech(unit);
+		result = hooks::get_cloaking_tech(unit);
 		__asm {
 			POPAD
 			MOV AL, result
@@ -194,21 +195,21 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cloakingTech_ApplyCloakingOrder()
+	void __declspec(naked) cloaking_tech_apply_cloaking_orders()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		applyCloakingOrderHook(unit);
+		apply_cloaking_order_hook(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	b32 __cdecl currentUnitSelectionCanCloakWrapper()
+	b32 __cdecl current_unit_selection_can_cloak_wrapper()
 	{
 		RaceId::Enum race;
 		for (s32 i = 0; i < SelectionCap; ++i)
@@ -217,7 +218,7 @@ namespace
 			if (unit != nullptr)
 			{
 				if (scbw::is_cheat_enabled(CheatFlags::TheGathering)
-					|| unit->energy >= techdata_dat::energy_cost[hooks::getCloakingTech(unit)] * 256)
+					|| unit->energy >= techdata_dat::energy_cost[hooks::get_cloaking_tech(unit)] * 256)
 				{
 					return true;
 				}
@@ -233,13 +234,13 @@ namespace hooks
 {
 	void inject_cloaking_tech_hooks()
 	{
-//		jump_patch(cloakingTechWrapper_IsCloaked,       0x00429210, 1);
-//		jump_patch(cloakingTechWrapper_CanCloak,        0x004292C0, 1);
-		jump_patch(cloakingTechWrapper_CMDRECV_Cloak,	0x004C0720, 3);
-		jump_patch(cloakingTechWrapper_AI_cloakUnit,	0x0043B970, 1);
-//		jump_patch(cloakingTech_ApplyCloakingOrder,		0x00491B30, 5);
-//		jump_patch(cloakingTechWrapper_CMDRECV_Decloak, 0x004C0660, 3);
-		jump_patch(getCloakingTechWrapper,              0x00491A50, 3);
-//		jump_patch(currentUnitSelectionCanCloakWrapper, 0x00423540, 1);
+//		jump_patch(cloaking_tech_wrapper_is_cloaked,			0x00429210, 1);
+//		jump_patch(cloaking_tech_wrapper_can_cloak,				0x004292C0, 1);
+		jump_patch(cloaking_tech_wrapper_cmdrecv_cloak,			0x004C0720, 3);
+		jump_patch(cloaking_tech_wrapper_ai_cloak_unit,			0x0043B970, 1);
+//		jump_patch(cloaking_tech_apply_cloaking_orders,			0x00491B30, 5);
+//		jump_patch(cloaking_tech_wrapper_cmdrecv_decloak,		0x004C0660, 3);
+		jump_patch(get_cloaking_tech_wrapper,					0x00491A50, 3);
+//		jump_patch(current_unit_selection_can_cloak_wrapper,	0x00423540, 1);
 	}
 }
