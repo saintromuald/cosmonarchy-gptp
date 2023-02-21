@@ -6,16 +6,12 @@ namespace
 	// Note: acid spores management is normally done in function @ 004F42C0, jumped in at the end of this one, but the hook merges both
 	void __declspec(naked) update_status_effects_wrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::update_status_effects(unit);
-
 		__asm {
 			POPAD
 			RETN
