@@ -187,7 +187,7 @@ namespace hooks
 				Image* current_image;
 				building->order_signal &= ~1;
 				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
-			//	building->sprite->main_graphic->flags &= 0xBF; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
+				building->sprite->main_graphic->flags &= 0xBF; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
 				current_image = building->sprite->images.head;
 				while (current_image)
 				{

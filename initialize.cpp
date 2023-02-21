@@ -557,6 +557,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004B9D48, (u32)0x90909090);
 	// preview_minimap (0x004EEFD0)
 	jump_patch(hooks::preview_minimap_patch_EF066, 0x004EF066);	
+
+
+	memory_patch(0x004DB6F1, (u8)0xB8);
+	memory_patch(0x004DB6F2, (u32)7);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
