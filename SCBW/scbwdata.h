@@ -405,7 +405,7 @@ SCBW_DATA(s32*, scenarioCHKSize,			0x006D0F20);
 
 // For game_loop
 SCBW_DATA(s32*, visionUpdateCount,			0x0051CE98);
-SCBW_DATA(s8*, visionUpdated,				0x0051CE9C);
+SCBW_DATA(s8*, g_vision_updated,				0x0051CE9C);
 
 // X405: For displayEstablishing Shot
 SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);

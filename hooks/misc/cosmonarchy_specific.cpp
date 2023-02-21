@@ -350,7 +350,7 @@ namespace hooks
 		}
 		v0 = *visionUpdateCount == 1;
 		*visionUpdateCount -= 1;
-		*visionUpdated = v0;
+		*g_vision_updated = v0;
 		sw.Start();
 		if (v0)
 		{

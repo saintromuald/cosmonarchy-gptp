@@ -509,190 +509,120 @@ namespace hooks
 	};
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
-	void update_units() // 004ED000
-	{
+	void update_units() { // 004ED000
 		*g_interceptor_focused_this_frame = 0;
-		if (helper::is_selected_unit_group_enabled())
-		{
-			if (*g_is_placing_building)
-			{
+
+		if (helper::is_selected_unit_group_enabled()) {
+			if (*g_is_placing_building) {
 				helper::refresh_layers_3_and_4();
 				helper::end_building_placement();
 			}
-			if (*g_is_targeting)
-			{
+			if (*g_is_targeting) {
 				helper::cancel_target_order();
 			}
 		}
-		Unit* first_visible_unit = *g_first_visible_unit;
-		if (!--(*g_order_timer_reassign_count))
-		{
+
+		if (!--(*g_order_timer_reassign_count)) {
 			char visible_timer = 0;
-			if (first_visible_unit)
-			{
-				do
-				{
-					first_visible_unit->order_queue_timer = visible_timer++;
-					if (visible_timer == 8)
-					{
-						visible_timer = 0;
-					}
-					first_visible_unit = first_visible_unit->link.next;
+			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+				unit->order_queue_timer = visible_timer++;
+				if (visible_timer == 8) {
+					visible_timer = 0;
 				}
-				while (first_visible_unit);
-				first_visible_unit = *g_first_visible_unit;
 			}
 			*g_order_timer_reassign_count = 150;
 		}
-		if (!--(*g_secondary_order_timer_reassign_count))
-		{
-			for (char i = 0; first_visible_unit; first_visible_unit = first_visible_unit->link.next)
-			{
-				first_visible_unit->secondary_order_timer = i++;
-				if (i == 30)
-				{
+
+		if (!--(*g_secondary_order_timer_reassign_count)) {
+			u32 i = 0;
+			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+				unit->secondary_order_timer = i;
+				if (++i == 30) {
 					i = 0;
 				}
 			}
 			*g_secondary_order_timer_reassign_count = 300;
 		}
+
 		// Now handled in global effect
 	//	helper::update_disruption_web_status();
-		Unit* dying_unit = *g_first_dying_unit;
-		if (*g_first_dying_unit)
-		{
-			Unit* next_dying_unit = dying_unit->link.next;
-			do
-			{
-				next_dying_unit = dying_unit->link.next;
-				*g_active_iscript_entity = dying_unit;
-				*g_active_iscript_unit = dying_unit;
-				helper::progress_dying_unit_frame(dying_unit);
-				if (dying_unit->sprite)
-				{
-					if (*visionUpdated)
-					{
-						if (g_player_table[dying_unit->player].type == 2) // PLAYER_OCCUPIED
-						{
-							helper::reveal_sight_at_location(1, player_vision->flags[dying_unit->player], dying_unit->sprite->position.x, dying_unit->sprite->position.y, (dying_unit->status >> 2) & 1); // is air unit
-						}
-					}
-					helper::update_visibility(dying_unit);
-				}
-				dying_unit = next_dying_unit;
-			}
-			while (next_dying_unit);
-		}
-		first_visible_unit = *g_first_visible_unit;
-		if (first_visible_unit)
-		{
-			do
-			{
-				*g_active_iscript_entity = first_visible_unit;
-				*g_active_iscript_unit = first_visible_unit;
-				helper::progress_active_unit_frame(first_visible_unit);
-				first_visible_unit = first_visible_unit->link.next;
-			}
-			while (first_visible_unit);
-			first_visible_unit = *g_first_visible_unit;
-		}
-		Unit* scanner_sweep = *first_scanner_sweep;
-		if (*visionUpdated)
-		{
-			if (scanner_sweep)
-			{
-				Unit* next_scanner_sweep = scanner_sweep->link.next;
-				do
-				{
-					next_scanner_sweep = scanner_sweep->link.next;
-					*g_active_iscript_entity = scanner_sweep;
-					*g_active_iscript_unit = scanner_sweep;
-					helper::refresh_unit_vision(scanner_sweep);
-					scanner_sweep = next_scanner_sweep;
-				}
-				while (next_scanner_sweep);
-				first_visible_unit = *g_first_visible_unit;
-			}
-		}
-		if (first_visible_unit)
-		{
-			UnitExt* unitExt = get_unit_ext(first_visible_unit);
-			do
-			{
-				helper::update_visibility(first_visible_unit);
-				if (first_visible_unit->status & 0x300 || unitExt->timers[TimerDecloak] == 1)
-				{
-					first_visible_unit->is_cloaked = 0;
-					if (first_visible_unit->secondary_order_timer)
-					{
-						first_visible_unit->secondary_order_timer = first_visible_unit->secondary_order_timer - 1;
-					}
-					else
-					{
-						helper::check_unit_visibility(first_visible_unit);
-						first_visible_unit->secondary_order_timer = 30;
+
+		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next (especially when the unit dies or gets hidden etc)
+		for (Unit* unit = *g_first_dying_unit; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			*g_active_iscript_entity = unit;
+			*g_active_iscript_unit   = unit;
+			helper::progress_dying_unit_frame(unit);
+			if (unit->sprite) {
+				if (*g_vision_updated) {
+					if (g_player_table[unit->player].type == PlayerType::Human) {
+						helper::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir); // is air unit
 					}
 				}
-				first_visible_unit = first_visible_unit->link.next;
+				helper::update_visibility(unit);
 			}
-			while (first_visible_unit);
-			first_visible_unit = *g_first_visible_unit;
 		}
-		if (first_visible_unit)
-		{
-			Unit* next_visible_unit = first_visible_unit->link.next;
-			do
-			{
-				next_visible_unit = first_visible_unit->link.next;
-				*g_active_iscript_entity = first_visible_unit;
-				*g_active_iscript_unit = first_visible_unit;
-				helper::progress_unit_frame(first_visible_unit);
-				first_visible_unit = next_visible_unit;
+
+		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			*g_active_iscript_entity = unit;
+			*g_active_iscript_unit = unit;
+			helper::progress_active_unit_frame(unit);
+		}
+
+		if (*g_vision_updated) {
+			for (Unit* unit = *first_scanner_sweep; unit; unit = next_unit) {
+				next_unit = unit->link.next;
+				*g_active_iscript_entity = unit;
+				*g_active_iscript_unit = unit;
+				helper::refresh_unit_vision(unit);
 			}
-			while (next_visible_unit);
 		}
-		Unit* hidden_unit = *g_first_hidden_unit;
-		if (hidden_unit)
-		{
-			Unit* next_hidden_unit = hidden_unit->link.next;
-			do
-			{
-				next_hidden_unit = hidden_unit->link.next;
-				if (hidden_unit->status & 0x300)
-				{
-					hidden_unit->is_cloaked = 0;
-				}
-				*g_active_iscript_entity = hidden_unit;
-				*g_active_iscript_unit = hidden_unit;
-				helper::unit_update(hidden_unit);
-				hidden_unit = next_hidden_unit;
+
+		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			UnitExt* unit_ext = get_unit_ext(unit);
+			helper::update_visibility(unit);
+			if (unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked) || unit_ext->timers[TimerDecloak]) {
+				unit->is_cloaked = 0;
+				helper::check_unit_visibility(unit);
 			}
-			while (next_hidden_unit);
 		}
+
+		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			*g_active_iscript_entity = unit;
+			*g_active_iscript_unit = unit;
+			helper::progress_unit_frame(unit);
+		}
+
+		for (Unit* unit = *g_first_hidden_unit; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			if (unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
+				unit->is_cloaked = 0;
+			}
+			*g_active_iscript_entity = unit;
+			*g_active_iscript_unit = unit;
+			helper::unit_update(unit);
+		}
+
 		helper::update_burrowing_cloaking_units();
 		helper::update_unit_power();
 		s32 lurker_splash_index = (*g_lurker_splash_list_index)++ + 1;
-		if (*g_lurker_splash_list_index == 32)
-		{
+		if (*g_lurker_splash_list_index == 32) {
 			lurker_splash_index = 0;
 			*g_lurker_splash_list_index = 0;
 		}
 		memset(&g_lurker_splash_list[32 * lurker_splash_index], 0, 0x80u);
 		*g_last_bullet_index = 0;
-		scanner_sweep = *first_scanner_sweep;
-		if (scanner_sweep)
-		{
-			Unit* next_scanner_sweep_2 = scanner_sweep->link.next;
-			do
-			{
-				next_scanner_sweep_2 = scanner_sweep->link.next;
-				*g_active_iscript_entity = scanner_sweep;
-				*g_active_iscript_unit = scanner_sweep;
-				helper::progress_unit_frame(scanner_sweep);
-				scanner_sweep = next_scanner_sweep_2;
-			}
-			while (next_scanner_sweep_2);
+
+		for (Unit* unit = *first_scanner_sweep; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			*g_active_iscript_entity = unit;
+			*g_active_iscript_unit = unit;
+			helper::progress_unit_frame(unit);
 		}
+
 		*g_active_iscript_entity = 0;
 		*g_active_iscript_unit = 0;
 	}
