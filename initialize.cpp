@@ -187,6 +187,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	DatExt::extend_data();
 
+	// Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
+//	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
+
 	// Veeq7, start
 	// Quicker drop timeout
 	memory_patch(0x004A345D + 2, (u32)0);
@@ -202,9 +205,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Frame rate hack
 	nops(0x004D9923, 2);
-
-	// Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
-//	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
 
 	// Allow all players addons to connect
 	nops(0x00440314, 6);
@@ -226,8 +226,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	nops(0x004D1FAE, 6);
 
 	// Disable worker wandering
-	jump_patch((void*)0x00442F8E, 0x00442F73, 0);
-	jump_patch((void*)0x0046940B, 0x00469393, 1);
+//	jump_patch((void*)0x00442F8E, 0x00442F73, 0);
+//	jump_patch((void*)0x0046940B, 0x00469393, 1);
 	// Veeq7, end
 
 	// iquare, start
