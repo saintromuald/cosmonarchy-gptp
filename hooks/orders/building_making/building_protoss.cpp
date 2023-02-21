@@ -187,14 +187,14 @@ namespace hooks
 				Image* current_image;
 				building->order_signal &= ~1;
 				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
+			//	building->sprite->main_graphic->flags &= 0xBF; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
 				current_image = building->sprite->images.head;
 				while (current_image)
 				{
 					if (current_image->flags & ImageFlags::Flag04)
 					{
-						const u32* u32_006D1200 = (u32*)0x006D1200;
 						current_image->animation = IscriptAnimation::WarpIn;
-						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x32);
+						current_image->iscript_offset = *(u16*)(*g_iscript_data + current_image->iscript_header_offset + 0x32);
 						current_image->wait = 0;
 						current_image->return_address = 0;
 						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
