@@ -492,7 +492,8 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
 		scbw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, x, y, 11, 17);
-
+		Point16 position = {x, y};
+		helper::play_sound_at_pos(SoundId::Protoss_ARBITER_PAbCag00_WAV, position, 1, 0);
 		Box16 coords = {};
 		coords.left = x - 48;
 		coords.top = y - 48;

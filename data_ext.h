@@ -228,6 +228,7 @@ enum ExtTimerId
 	TimerMortothrokorPassive,
 	TimerLiftLandDelay,
 	TimerMadrigalTempoChange,
+	TimerDidactStasisFieldOverlay,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

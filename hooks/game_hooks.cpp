@@ -1937,20 +1937,6 @@ namespace hooks {
 					unit->remove_overlay(ImageId::StonewallProtocolOverlay);
 				}
 			} break;
-			case UnitId::ProtossDidact:
-			{
-				// Stasis Field channel
-				if (unit->get_overlay(ImageId::StasisFieldHit)) {
-					if (unit->main_order_id != OrderId::StasisField) {
-						unit->remove_overlay(ImageId::StasisFieldHit);
-					}
-				}
-				else {
-					if (unit->main_order_id == OrderId::StasisField && unit->sprite->main_graphic->animation == IscriptAnimation::Unused2) {
-						unit->sprite->create_underlay(ImageId::StasisFieldHit); // TODO: Make smaller/more fitting
-					}
-				}
-			}
 		}
 
 		// Gladius Binding Plasma
