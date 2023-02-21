@@ -187,8 +187,48 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	DatExt::extend_data();
 
-	// quick drop timeout -- Veeq7
+
+	// Veeq7, start
+	// Quick drop timeout
 	memory_patch(0x004A345D + 2, (u32)0);
+
+	// Allow starting the game alone (singleplayer)
+	jump_patch((void*)(0x004AEE9E), 0x004AEE83, 2);
+	jump_patch((void*)(0x004A8222), 0x004A81CA, 0);
+
+	// Allow starting the game alone (multiplayer)
+	const u8 human_slots = 0x01;
+	memory_patch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
+	memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
+
+	// Frame rate hack
+	nops(0x004D9923, 2);
+
+	// Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
+//	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
+
+	// Allow all players addons to connect
+	nops(0x00440314, 6);
+
+	// Custom Aise game command replay support
+	u32 new_size = 0xC;
+	memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
+
+	// Remove minimap checksum checks.
+	nops(0x0047CCB0, 22);
+
+	// Update vision update timer to happen faster
+//	memory_patch(0x004D94D0 + 6, 1);	// Breaks death animations for hostile units
+
+	// Remove mouse/keyboard conflict
+	nops(0x004D21A3, 2);
+	nops(0x004D2264, 2);
+	nops(0x004D1F26, 2);
+	nops(0x004D1FAE, 6);
+
+	// Disable worker wandering
+	jump_patch((void*)0x00442F94, 0x00442F73, 0);
+	// Veeq7, end
 
 	// iquare, start
 	// disable powerup hardcode
@@ -622,40 +662,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch((void*)(0x0047DED5 + 3), &bFF, sizeof(u8));
 	memory_patch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
 	// FaRTy1billion, end
-
-	// allow starting the game alone (singleplayer)
-	jump_patch((void*)(0x004AEE9E), 0x004AEE83, 2);
-	jump_patch((void*)(0x004A8222), 0x004A81CA, 0);
-
-	// allow starting the game alone (multiplayer)
-	const u8 human_slots = 0x01;
-	memory_patch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
-	memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
-
-	// frame rate hack
-	nops(0x004D9923, 2);
-
-	// Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
-//	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
-
-	// allow all players addons to connect
-	nops(0x00440314, 6);
-
-	// Custom Aise game command replay support
-	u32 new_size = 0xC;
-	memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
-
-	// Remove minimap checksum checks.
-	nops(0x0047CCB0, 22);
-
-	// Update vision update timer to happen faster
-//	memory_patch(0x004D94D0 + 6, 1);	// Breaks death animations for hostile units
-
-	// Remove mouse/keyboard conflict
-	nops(0x004D21A3, 2);
-	nops(0x004D2264, 2);
-	nops(0x004D1F26, 2);
-	nops(0x004D1FAE, 6);
 
 	// INJECTION \\
 
