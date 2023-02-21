@@ -786,5 +786,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	inject_trigger_system_hooks();
 	hooks::inject_hp_bars_hooks();
 
+	// Limits - most likely needs to be patched in aise, aice, and mtl
+//	hooks::inject_unit_extender();
+//	hooks::inject_sprite_extender();
+//	hooks::inject_order_extender();
+//	hooks::inject_image_extender();
+
 	return TRUE;
 }

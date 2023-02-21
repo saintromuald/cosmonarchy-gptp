@@ -1,6 +1,6 @@
 #pragma once
-#pragma pack(1)
-#include "SCBW\structures.h"
+#include "scbw/structures.h"
+
 #include "extender.h"
 #include <vector>
 
@@ -38,3 +38,32 @@ namespace hooks
 }
 
 extern CCMUExtender new_unit_table;
+
+
+/* // DF - start
+
+#define UnitLimit 4095
+#define UnitIDMask 0xFFF // Happens to be the same value as UnitLimit here, but it doesn't necessarily have to be.
+extern Unit newer_unit_table[UnitLimit];
+extern UnitFinderData new_unit_finderX[UnitLimit * 2];
+extern UnitFinderData new_unit_finderY[UnitLimit * 2];
+extern int new_get_all_units_in_bounds_list[UnitLimit + 1];
+
+#define SpriteLimit 8875 // Must be a multiple of 5, as well as a multiple of 3 when decremented by one.
+extern Sprite new_sprite_table[SpriteLimit];
+
+#define OrderLimit 4080
+#define newCheckLimit OrderLimit - (OrderLimit / 10) // Reserve 10% of order array for non-queued orders.
+extern Order new_order_table[OrderLimit];
+
+#define ImageLimit 16385 // Must be a multiple of 5.
+extern Image new_image_table[ImageLimit];
+
+namespace hooks {
+	void inject_unit_extender();
+	void inject_sprite_extender();
+	void inject_order_extender();
+	void inject_image_extender();
+}
+
+*/
