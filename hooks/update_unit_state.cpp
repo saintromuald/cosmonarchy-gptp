@@ -522,27 +522,27 @@ namespace hooks
 			}
 		}
 
-		if (!--(*g_order_timer_reassign_count)) {
-			char visible_timer = 0;
-			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-				unit->order_queue_timer = visible_timer++;
-				if (visible_timer == 8) {
-					visible_timer = 0;
-				}
-			}
-			*g_order_timer_reassign_count = 150;
-		}
+	//	if (!--(*g_order_timer_reassign_count)) {
+	//		char visible_timer = 0;
+	//		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+	//			unit->order_queue_timer = visible_timer++;
+	//			if (visible_timer == 8) {
+	//				visible_timer = 0;
+	//			}
+	//		}
+	//		*g_order_timer_reassign_count = 150;
+	//	}
 
-		if (!--(*g_secondary_order_timer_reassign_count)) {
-			u32 i = 0;
-			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-				unit->secondary_order_timer = i;
-				if (++i == 30) {
-					i = 0;
-				}
-			}
-			*g_secondary_order_timer_reassign_count = 300;
-		}
+	//	if (!--(*g_secondary_order_timer_reassign_count)) {
+	//		u32 i = 0;
+	//		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+	//			unit->secondary_order_timer = i;
+	//			if (++i == 30) {
+	//				i = 0;
+	//			}
+	//		}
+	//		*g_secondary_order_timer_reassign_count = 300;
+	//	}
 
 		// Now handled in global effect
 	//	helper::update_disruption_web_status();
