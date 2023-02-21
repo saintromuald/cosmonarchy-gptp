@@ -45,7 +45,6 @@ namespace
 			RETN 4
 		}
 	}
-
 }
 
 namespace hooks
