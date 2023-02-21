@@ -187,8 +187,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	DatExt::extend_data();
 
-	// quick drop timeout -- Veeq7
+	// Veeq7, start
+	// Quicker drop timeout
 	memory_patch(0x004A345D + 2, (u32)0);
+
+	// Disable worker wandering
+//	jump_patch((void*)0x00442F94, 0x00442F73, 0);
+	// Veeq7, end
 
 	// iquare, start
 	// disable powerup hardcode
@@ -558,7 +563,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// preview_minimap (0x004EEFD0)
 	jump_patch(hooks::preview_minimap_patch_EF066, 0x004EF066);	
 
-
+	// Disable mode selection after activating singleplayer/multiplayer in the main menu
 	memory_patch(0x004DB6F1, (u8)0xB8);
 	memory_patch(0x004DB6F2, (u32)7);
 	// DarkenedFantasies, end
