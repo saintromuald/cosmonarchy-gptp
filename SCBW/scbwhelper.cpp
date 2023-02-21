@@ -4348,14 +4348,14 @@ namespace helper {
 		}
 	}
 
-	u32 function_0049A410(Unit* unit, u8 order_id) {
-		const u32 Func_Sub49A410 = 0x0049A410;
+	u32 can_do_targeted_order(Unit* unit, u8 order_id) {
+		const u32 func_address = 0x0049A410;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOV DL, order_id
-			CALL Func_Sub49A410
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

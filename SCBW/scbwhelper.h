@@ -545,7 +545,7 @@ namespace helper {
 	//// receive_command
 	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
 	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 bCommandType);												// 004756E0
-	u32 function_0049A410(Unit* unit, u8 order_id);																					// 0049A410
+	u32 can_do_targeted_order(Unit* unit, u8 order_id);																					// 0049A410
 	bool can_target_self(Unit* unit, u8 order_id);																					// 0049A480
 	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
