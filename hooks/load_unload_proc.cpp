@@ -399,8 +399,9 @@ namespace hooks
 								{
 									if (unit_reference->main_order_id)
 									{
-										if (!scbw::unit_id_is_bunker(transport->id) || !helper::unload_unit_proc(unit_reference))
-										{
+										if (scbw::unit_id_is_bunker(transport->id) && helper::unload_unit_proc(unit_reference)) {
+											transport->main_order_timer = 0;
+										} else {
 											helper::orders_self_destructing(unit_reference);
 										}
 										*index = transport_ext->loaded_unit[0].value;
