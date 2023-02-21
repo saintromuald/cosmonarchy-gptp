@@ -192,7 +192,7 @@ const char* Unit::get_name() const {
 }
 
 #include "SCBW/stat_txt_spec.h"
-//Based on function @ 0x0047B090
+// Based on function @ 0x0047B090
 const char* Unit::get_name(u16 unit_id) {
 	assert(unit_id < UNIT_TYPE_COUNT);
 	if (unit_id >= UNIT_TYPE_COUNT) {
@@ -211,7 +211,7 @@ RaceId::Enum Unit::get_race() const {
 	return get_race(this->id);
 }
 
-//Based on function at 0x0047B150
+// Based on function at 0x0047B150
 RaceId::Enum Unit::get_race(u16 unit_id) {
 	assert(unit_id < UNIT_TYPE_COUNT);
 
@@ -268,7 +268,7 @@ bool Unit::has_energy(u32 energy) const {
 	return false;
 }
 
-//Identical to function Unit__SpendEnergy @ 0x00476180
+// Identical to function Unit__SpendEnergy @ 0x00476180
 bool Unit::has_weapon() const {
 	assert(this);
 
