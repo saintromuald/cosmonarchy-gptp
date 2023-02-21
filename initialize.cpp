@@ -226,7 +226,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	nops(0x004D1FAE, 6);
 
 	// Disable worker wandering
-	jump_patch((void*)0x00442F94, 0x00442F73, 0);
+	jump_patch((void*)0x00442F8E, 0x00442F73, 0);
+	jump_patch((void*)0x0046940B, 0x00469393, 1);
 	// Veeq7, end
 
 	// iquare, start

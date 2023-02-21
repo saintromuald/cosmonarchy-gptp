@@ -938,14 +938,12 @@ namespace hooks {
 			if (unit->building.resource.resource_group != ai_town->resarea) {
 				continue;
 			}
-			if (unit->building.resource.next_gatherer) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[ValueAssignedHarvesters] >= 2) {
 				continue;
 			}
 
-			u32 score = unit->building.resource.resource_yield;
-			if (unit->building.resource.is_mining || unit->building.resource.resource_belongs_to_ai) {
-				score -= 1;
-			}
+			u32 score = unit->building.resource.resource_yield - unit_ext->values[ValueAssignedHarvesters];
 			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;

@@ -133,6 +133,7 @@ enum ExtValueId
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
 	ValueMadrigalTempoDown,
+	ValueAssignedHarvesters,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

@@ -726,6 +726,24 @@ namespace hooks {
 
 		process_quickbuilding();
 
+		// Count workers
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (!scbw::unit_id_is_resource_node(unit->id, true)) {
+				continue;
+			}
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->values[ValueAssignedHarvesters] = 0;
+		}
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
+				continue;
+			}
+			if (unit->worker.harvest_target) {
+				UnitExt* target_ext = get_unit_ext(unit->worker.harvest_target);
+				target_ext->values[ValueAssignedHarvesters] += 1;
+			}
+		}
+
 		// Loop through all visible units in the game.
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			tick_unit(unit, false);
