@@ -260,6 +260,26 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) should_worker_wander_wrapper() {
+		static Unit* unit;
+		__asm {
+			MOV unit, EBX
+			PUSHAD
+		}
+		if (unit->building.resource.next_gatherer) {
+			static const u32 yes_address = 0x0046939D; 
+			__asm {
+				POPAD
+				JMP yes_address
+			}
+		}
+		static const u32 no_address = 0x0046940B; 
+		__asm {
+			POPAD
+			JMP no_address
+		}
+	}
 }
 
 namespace hooks {
@@ -280,6 +300,8 @@ namespace hooks {
 		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
 		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
 		jump_patch(update_mineral_field_image_wrapper,						0x00468830,	6);
+
+		jump_patch(should_worker_wander_wrapper,							0x00469393,	1);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 	}
