@@ -738,8 +738,8 @@ namespace hooks {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 				continue;
 			}
-			if (unit->worker.harvest_target) {
-				UnitExt* target_ext = get_unit_ext(unit->worker.harvest_target);
+			if (unit->worker.target_resource.unit) {
+				UnitExt* target_ext = get_unit_ext(unit->worker.target_resource.unit);
 				target_ext->values[ValueAssignedHarvesters] += 1;
 			}
 		}
@@ -848,6 +848,29 @@ namespace hooks {
 		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
 			UnitExt* addon_ext = get_unit_ext(unit->building.addon);
 			addon_ext->units[UnitAddonParent] = unit;
+		}
+
+		if (scbw::unit_id_is_resource_node(unit->id, true)) {
+			bool show = GetAsyncKeyState(VK_MENU);
+			if (!show) {
+				for (u32 i = 0; i < *g_client_selection_count; ++i) {
+					if (unit == g_client_selection_group->unit[i]) {
+						show = true;
+						break;
+					}
+				}
+			}
+			if (show) {
+				u32 count = unit_ext->values[ValueAssignedHarvesters];
+				const u32 radius = 2;
+				const u32 gap = 3;
+				u32 w = count * radius * 2 + (count - 1) * gap;
+				Point16 pos = { unit->position.x - w / 2, unit->get_bottom() };
+				for (u32 i = 0; i < count; ++i) {
+					graphics::draw_filled_circle(pos.x, pos.y, radius, graphics::CYAN, graphics::ON_MAP);
+					pos.x += radius * 2 + gap;
+				}
+			}
 		}
 
 		if (!unit_is_hidden && unit->sprite) {
