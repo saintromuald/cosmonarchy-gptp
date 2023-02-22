@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include <hook_tools.h>
 #include <logger.h>
+#include <config.h>
 
 bool isGameOn = false;
 
@@ -150,6 +151,39 @@ bool isGameOn = false;
 		}
 	}
 
+	void __declspec(naked) sp_save_directory_wrapper() { // 004AE9E2
+		static const u32 jmp_address = 0x004AEA15;
+		static char* buffer;
+		__asm {
+			PUSH EAX
+			LEA EAX, [EBP - 0x104]
+			MOV buffer, EAX
+			POP EAX
+			PUSHAD
+		}
+		strcat(buffer, "\\");
+		strcat(buffer, config.default_map_directory.c_str());
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
+	void __declspec(naked) mp_save_directory_wrapper() { // 0044CCF7
+		static const u32 jmp_address = 0x0044CD25;
+		static char* buffer;
+		__asm {
+			MOV buffer, EDX
+			PUSHAD
+		}
+		strcat(buffer, "\\");
+		strcat(buffer, config.default_map_directory.c_str());
+		__asm {
+			POPAD
+			JMP jmp_address
+		}
+	}
+
 //-------- Hook injector --------//
 
 namespace hooks {
@@ -165,5 +199,8 @@ namespace hooks {
 		call_patch(on_game_end,							0x004EE983, 0);
 		call_patch(next_frame_hook,						0x004D974E, 0);
 		call_patch(next_ui_frame_hook,					0x004DE433, 0);
+
+		jump_patch(sp_save_directory_wrapper, 0x004AE9E2, 0);
+		jump_patch(mp_save_directory_wrapper, 0x0044CCF7, 1);
 	}
 }

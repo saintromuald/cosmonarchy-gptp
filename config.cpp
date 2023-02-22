@@ -39,6 +39,8 @@ void load_config() {
 		LoadField(config_node, "verbose", config.verbose);
 		GPTP::doLogging = config.verbose;
 
+		LoadField(config_node, "default-map-directory", config.default_map_directory);
+
 		auto grid_node = config_node["grid-hotkeys"];
 		if (grid_node) {
 			LoadField(grid_node, "enabled", config.grid_hotkeys);
@@ -52,14 +54,14 @@ void save_config() {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 
-	out << YAML::Comment("Cosmonarchy config");
+	out << YAML::Comment("Cosmonarchy Config");
 	out << YAML::Newline << YAML::Newline;
 	out << YAML::Comment("Launch");
 	write_field(out, "disable-wmode-prompt", config.disable_wmode_prompt);
 	write_field(out, "prefer-wmode", config.prefer_wmode);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("UI");
+	out << YAML::Comment("In-Game UI");
 	write_field(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 	write_field(out, "show-timer", config.show_timer);
 	write_field(out, "show-apm", config.show_apm);
@@ -69,6 +71,7 @@ void save_config() {
 	write_field(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 	out << YAML::Newline << YAML::Newline;
 
+	out << YAML::Comment("Witness UI");
 	write_field(out, "witness-show-apm", config.witness_show_apm);
 	write_field(out, "witness-show-order-lines", config.witness_show_order_lines);
 	out << YAML::Newline << YAML::Newline;
@@ -91,6 +94,15 @@ void save_config() {
 		out << str;
 	}
 	out << YAML::EndSeq << YAML::EndMap;
+
+	out << YAML::Comment("Debug");
+	write_field(out, "verbose", config.verbose);
+	out << YAML::Newline << YAML::Newline;
+
+	out << YAML::Comment("Saves");
+	out << YAML::Newline << YAML::Comment("Use single backslashes for paths!");
+	write_field(out, "default-map-directory", config.default_map_directory);
+	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::EndMap;
 	std::ofstream config_file(CONFIG_FILENAME);
