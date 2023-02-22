@@ -130,7 +130,9 @@ namespace hooks
 		jump_patch(unit_is_clean_detector_wrapper,				0x00403430,	6);
 		jump_patch(refresh_carryable_sprite_wrapper,			0x00497750,	0);
 		jump_patch(update_carryable_sprite_flags_wrapper,		0x004981B0,	0);
+
+		// From DarkenedFantasies - for fixing cloak-warp anchor interactions.
 		jump_patch(update_sprite_images_for_cloak_patch_498ABB,	0x00498ABB, 1);
-		jump_patch(do_cloak_patch_49B4C6,						0x0049B4C6, 1);
+	//	jump_patch(do_cloak_patch_49B4C6,						0x0049B4C6, 1); // Achieved with a nops in initialize.cpp
 	}
 }
