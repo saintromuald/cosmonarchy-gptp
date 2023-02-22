@@ -943,7 +943,7 @@ namespace hooks {
 				continue;
 			}
 
-			u32 score = unit->building.resource.resource_yield - unit_ext->values[ValueAssignedHarvesters];
+			u32 score = unit->building.resource.resource_yield;
 			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
