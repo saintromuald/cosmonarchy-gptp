@@ -1880,6 +1880,7 @@ namespace hooks {
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround, false, false, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::OptectonWeaponfireSecondary01, SoundId::OptectonWeaponfireSecondary03), unit, 1, 0);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
