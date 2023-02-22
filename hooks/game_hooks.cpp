@@ -850,6 +850,7 @@ namespace hooks {
 			addon_ext->units[UnitAddonParent] = unit;
 		}
 
+		/*
 		if (scbw::unit_id_is_resource_node(unit->id, true)) {
 			bool show = GetAsyncKeyState(VK_MENU);
 			if (!show) {
@@ -872,6 +873,7 @@ namespace hooks {
 				}
 			}
 		}
+		*/
 
 		if (!unit_is_hidden && unit->sprite) {
 			for (u32 i = 0; i < PlayerLimit; ++i) {
