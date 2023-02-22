@@ -597,6 +597,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Disable mode selection after activating singleplayer/multiplayer in the main menu
 	memory_patch(0x004DB6F1, (u8)0xB8);
 	memory_patch(0x004DB6F2, (u32)7);
+
+	// Fix target acquisition for decloaking units
+	memory_patch(0x0049B4C3, (u8)0xFC);
+	memory_patch(0x0049B4EA, (u8)0xFC);
+	nops(0x0049B4C6, 6);
+	nops(0x0049B4ED, 6);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
