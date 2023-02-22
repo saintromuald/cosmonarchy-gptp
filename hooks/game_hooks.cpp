@@ -392,66 +392,63 @@ namespace hooks {
 				if ((!in_replay_or_witness && config.show_order_lines) || (in_replay_or_witness && config.witness_show_order_lines)) {
 					Unit* ignore_resource_unit = 0;
 
-					if (scbw::is_in_replay() || *g_local_nation_id == unit->player) {
-						// Show worker harvest links
-						if (units_dat::base_property[unit->id] & UnitProperty::Worker
-							&& scbw::order_id_is_harvest_related(unit->main_order_id)) {
-							Unit* target_resource = unit->worker.target_resource.unit;
-							if (target_resource) {
-								graphics::ColorId color = graphics::CYAN;
-								if (config.show_unique_gas_order_line_color && scbw::unit_id_is_gas_structure(target_resource->id)) {
-									color = graphics::GREEN;
-								}
-								draw_simple_line(source, target_resource->position, color);
-								ignore_resource_unit = target_resource;
+					// Worker harvest links
+					if (units_dat::base_property[unit->id] & UnitProperty::Worker
+						&& scbw::order_id_is_harvest_related(unit->main_order_id)) {
+						Unit* target_resource = unit->worker.target_resource.unit;
+						if (target_resource) {
+							graphics::ColorId color = graphics::CYAN;
+							if (config.show_unique_gas_order_line_color && scbw::unit_id_is_gas_structure(target_resource->id)) {
+								color = graphics::GREEN;
 							}
+							draw_simple_line(source, target_resource->position, color);
+							ignore_resource_unit = target_resource;
 						}
 					}
 
-					if (scbw::is_in_replay() || scbw::is_allied_to(unit->player, *g_local_nation_id)) {
-						// Rally point
+					// Rally points
+					{
+						Point16 target = get_target_point(unit->rally);
+						if (target.x == unit->position.x &&
+							target.y == unit->position.y) {
+							target.x = 0;
+							target.y = 0;
+						}
+						if (!hooks::can_make_psi_field(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
+							source = target;
+						}
+						else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
+							source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
+						}
+					}
+
+					// Main orders
+					{
+						graphics::ColorId color = graphics::GREEN;
+						switch (unit->main_order_id) {
+						case OrderId::Patrol:
+						case OrderId::ReturnMinerals:
+						case OrderId::ReturnGas:
+							// TODO: Add more neutral orders
 						{
-							Point16 target = get_target_point(unit->rally);
-							if (target.x == unit->position.x &&
-								target.y == unit->position.y) {
-								target.x = 0;
-								target.y = 0;
-							}
-							if (!hooks::can_make_psi_field(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
-								source = target;
-							} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
-								source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
-							}
+							color = graphics::YELLOW;
+						} break;
+						case OrderId::AttackMove:
+						case OrderId::AttackUnit:
+							// TODO: Add more aggressive orders
+						{
+							color = graphics::RED;
+						} break;
 						}
 
-						// Main Order
-						{
-							graphics::ColorId color = graphics::GREEN;
-							switch (unit->main_order_id) {
-								case OrderId::Patrol:
-								case OrderId::ReturnMinerals:
-								case OrderId::ReturnGas:
-								// TODO: Add more neutral orders
-								{
-									color = graphics::YELLOW;
-								} break;
-								case OrderId::AttackMove:
-								case OrderId::AttackUnit:
-								// TODO: Add more aggressive orders
-								{
-									color = graphics::RED;
-								} break;
-							}
+						source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
+					}
 
-							source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
-						}
-
-						// Queued Orders
-						if ((config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines)
+					// Queued orders
+					if ((config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines)
 						&& !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
-							for (Order* order = unit->order_queue_head; order; order = order->next) {
-								source = draw_order_line(source, order->target, graphics::GREY);
-							}
+						for (Order* order = unit->order_queue_head; order; order = order->next) {
+							source = draw_order_line(source, order->target, graphics::GREY);
 						}
 					}
 				}
