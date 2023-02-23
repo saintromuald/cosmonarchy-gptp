@@ -742,7 +742,7 @@ namespace hooks {
 				if (bullet->attack_target.unit == unit) {
 					return false;
 				}
-				if (scbw::is_allied_to(bullet->player, unit->player)) {
+				if (scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
 					return false;
 				}
 				Box16 box = units_dat::unit_bounds[unit->id];

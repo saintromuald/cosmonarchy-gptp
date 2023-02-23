@@ -2732,26 +2732,36 @@ namespace scbw {
 	// Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
 	u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit)
 	{
-		if (weapon_id == WeaponId::CohortGaussPistols
-		||  weapon_id == WeaponId::HarakanFlameThrower
-		||  weapon_id == WeaponId::HypnagogueKaleidoscopeCannon
-		||  weapon_id == WeaponId::VultureFragmentationGrenade
-		||  weapon_id == WeaponId::PazuzuJupiterDriver
-		||  weapon_id == WeaponId::ZealotPsiBlades
-		||  weapon_id == WeaponId::LegionnairePsiSabers
-		||  weapon_id == WeaponId::AmaranthPsiCleaver
-		||  weapon_id == WeaponId::GolemBloodlessAssault
-		||  weapon_id == WeaponId::PariahIconoclastBlades
-		||  weapon_id == WeaponId::StarSovereignCelestialCannon
-		||  weapon_id == WeaponId::LiiraliskHollowedSpores
-		||  weapon_id == WeaponId::MortothrokorWickedIncisors
-		||  weapon_id == WeaponId::BactaliskCorrosiveAcid
-		||  weapon_id == WeaponId::AlmaksaliskPiercingSpines
-		||  weapon_id == WeaponId::KeskathalorScreamingVenom)
+		switch (weapon_id)
 		{
-			return 2;
+			case WeaponId::CohortGaussPistols:
+			case WeaponId::HarakanFlameThrower:
+			case WeaponId::HypnagogueKaleidoscopeCannon:
+			case WeaponId::VultureFragmentationGrenade:
+			case WeaponId::PazuzuJupiterDriver:
+			case WeaponId::ZealotPsiBlades:
+			case WeaponId::LegionnairePsiSabers:
+			case WeaponId::AmaranthPsiCleaver:
+			case WeaponId::GolemBloodlessAssault:
+			case WeaponId::PariahIconoclastBlades:
+			case WeaponId::StarSovereignCelestialCannon:
+			case WeaponId::LiiraliskHollowedSpores:
+			case WeaponId::MortothrokorWickedIncisors:
+			case WeaponId::BactaliskCorrosiveAcid:
+			case WeaponId::AlmaksaliskPiercingSpines:
+			case WeaponId::KeskathalorScreamingVenom:
+			{
+				return 2;
+			}
+			case WeaponId::OptectonSkybondRay:
+			{
+				return 1;
+			}
+			default:
+			{
+				return weapons_dat::damage_factor[weapon_id];
+			}
 		}
-		return weapons_dat::damage_factor[weapon_id];
 	}
 
 	void delete_ai_script(AiScript* ai_script) {

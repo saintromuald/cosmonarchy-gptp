@@ -99,7 +99,7 @@ void save_config() {
 	write_field(out, "verbose", config.verbose);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("Saves");
+	out << YAML::Comment("Maps");
 	out << YAML::Newline << YAML::Comment("Use single backslashes for paths!");
 	write_field(out, "default-map-directory", config.default_map_directory);
 	out << YAML::Newline << YAML::Newline;

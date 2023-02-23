@@ -774,7 +774,7 @@ namespace hooks
 				return true;
 			}
 		}
-		if (*g_is_in_replay) {
+		if (*g_is_in_replay || !global_vars.players[player_id].is_witness) {
 			return true;
 		}
 		return false;

@@ -1370,6 +1370,10 @@ namespace SoundId
 		EnergyRegenStart					= 2120,
 		EnergyRegenEnd						= 2121,
 
+		OptectonWeaponfireSecondary01		= 2136,
+		OptectonWeaponfireSecondary02		= 2137,
+		OptectonWeaponfireSecondary03		= 2138,
+
 		DurendalSecondaryFire01				= 2164,
 		DurendalSecondaryFire02				= 2165,
 		DurendalSecondaryFire03				= 2166,
