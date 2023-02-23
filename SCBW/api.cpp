@@ -1760,6 +1760,12 @@ namespace scbw {
 		}
 	}
 
+	bool unit_id_is_minerals(u16 unit_id) {
+		return unit_id == UnitId::ResourceMineralField
+			|| unit_id == UnitId::ResourceMineralFieldType2
+			|| unit_id == UnitId::ResourceMineralFieldType3;
+	}
+
 	void set_cmbw_ai_preference(u16 unit_id, u32 player) {
 		g_unit_deaths_table[unit_id].player[player] = 1;
 	}

@@ -621,6 +621,7 @@ namespace scbw
 	bool transport_is_empty(Unit* transport);
 	bool unit_id_uses_xlarge_overlays(u16 unit_id);
 	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures);
+	bool unit_id_is_minerals(u16 unit_id);
 
 	inline u32 get_region_id(Point16 position) {
 		return helper::get_region_id(position.x, position.y);

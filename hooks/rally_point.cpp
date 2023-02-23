@@ -5,22 +5,36 @@
 
 namespace hooks
 {
+	static void move_to_rally(Unit* unit, Target rally) {
+		if (rally.unit) {
+			/*
+			bool is_worker = units_dat::base_property[unit->id] & UnitProperty::Worker;
+			if (is_worker && scbw::unit_id_is_minerals(rally.unit->id)) {
+				unit->order_to(OrderId::MoveToMinerals, rally.unit);
+			} else if (is_worker && scbw::unit_id_is_gas_structure(rally.unit->id)) {
+				unit->order_to(OrderId::HarvestGas1, rally.unit);
+			} else
+			*/
+			if (scbw::is_allied_to(unit->player, rally.unit->player)) {
+				unit->order_to(OrderId::Follow, rally.unit);
+			} else {
+				unit->order_to(OrderId::AttackUnit, rally.unit);
+			}
+		} else {
+			unit->order_to(OrderId::Move, rally.pt.x, rally.pt.y);
+		}
+	}
+
 	// Orders newly-produced units to rally, based upon the properties of the building that produced it.
 	// @param  unit      The unit that needs to receive rally orders.
 	// @param  factory   The unit (building) that created the given unit.
 	// Identical to sub_466F50 @ 00466F50
-
 	void order_new_unit_to_rally(Unit* unit, Unit* factory) {
 		// Egg rally
 		if (unit) {
 			if ((!unit->rally.unit || (unit->rally.unit != unit && unit->rally.unit != factory))
-			&&  unit->rally.pt.x != 0) {
-				// Following should be allowed only on friendly units
-				if (unit->rally.unit && scbw::is_allied_to((unit->rally.unit)->player, unit->player)) {
-					unit->order_to(OrderId::Follow, unit->rally.unit);
-				}  else {
-					unit->order_to(OrderId::Move, unit->rally.pt.x, unit->rally.pt.y);
-				}
+			&&  (unit->rally.pt.x != 0 || unit->rally.pt.y != 0)) {
+				move_to_rally(unit, unit->rally);
 				unit->rally = {};
 				return;
 			}
@@ -29,13 +43,8 @@ namespace hooks
 		if (factory
 		&&  factory->is_factory()
 		&&  (!factory->rally.unit || (factory->rally.unit != unit && factory->rally.unit != factory))
-		&&  factory->rally.pt.x != 0) {
-			// Following should be allowed only on friendly units
-			if (factory->rally.unit && scbw::is_allied_to((factory->rally.unit)->player, unit->player)) {
-				unit->order_to(OrderId::Follow, factory->rally.unit);
-			} else {
-				unit->order_to(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
-			}
+		&&  (factory->rally.pt.x != 0 || factory->rally.pt.y != 0)) {
+			move_to_rally(unit, factory->rally);
 		}
 	}
 
