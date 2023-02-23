@@ -4,44 +4,11 @@
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
-
-void irradiate_proc(Unit* unit, Unit* target) {
-	if (!unit) {
-		return;
-	}
-	// Check if the unit is within distance, or is inside the same transport
-	if (unit->status & UnitStatus::InTransport
-	||  unit->get_distance_to_target(target) <= 32) {
-		target->damage_with_custom(50.0 * 256.0 / 15.5, -1, unit->irradiate_caster, unit->irradiate_player_id);
-	}
-}
 	
 namespace hooks
 {
 	void do_irradiate_damage(Unit* unit) {
-		if (unit->status & UnitStatus::InTransport) {
-			// If inside a transport, damage all units loaded within
-			Unit* transport = unit->connected_unit;
-			if (transport) {
-				for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i) {
-					Unit* loaded_unit = transport->get_loaded_unit(i);
-					if (loaded_unit) {
-						irradiate_proc(unit, loaded_unit);
-					}
-				}
-			}
-		} else {
-			// Find and iterate nearby units
-			// TODO: unit search radial
-			scbw::UnitFinder(
-				unit->get_x() - 160,
-				unit->get_y() - 160,
-				unit->get_x() + 160,
-				unit->get_y() + 160
-			).for_each([&](Unit* target) {
-				irradiate_proc(unit, target);
-			});
-		}
+		unit->damage_with_custom(50.0 * 256.0 / 15.5, -1, unit->irradiate_caster, unit->irradiate_player_id);
 	}
 
 	static bool safety_unburrow_check(Unit* unit, Unit* target)
