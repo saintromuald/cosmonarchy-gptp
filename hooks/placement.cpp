@@ -9,11 +9,8 @@ namespace hooks
 			return 0;
 		}
 
-		u32 tile_x = (placement_pos->x + 16) / 32;
-		u32 tile_y = (placement_pos->y + 16) / 32;
-
-		*place_building_x = tile_x + *move_to_tile_x;
-		*place_building_y = tile_y + *move_to_tile_y;
+		*place_building_x = (*g_move_to_x + placement_pos->x + 16) / 32;
+		*place_building_y = (*g_move_to_y + placement_pos->y + 16) / 32;
 		placement_pos->x = *place_building_x * 32 - *g_move_to_x;
 		placement_pos->y = *place_building_y * 32 - *g_move_to_y;
 		return 1;
