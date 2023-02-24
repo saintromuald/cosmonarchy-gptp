@@ -434,8 +434,8 @@ LABEL_15:
 		
 		for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
 			if (thingy->unit_id != UnitId::Spell_DarkSwarm) {
-				u32 is_visible = helper::thingy_is_visible(1, thingy);
-				if (!*g_is_in_replay || !is_visible) {
+				bool not_visible = helper::thingy_visiblity_check(1, thingy) && !scbw::unit_id_is_resource_node(thingy->unit_id, true);
+				if (!*g_is_in_replay || !not_visible) {
 					Sprite* sprite = thingy->sprite;
 
 					char color = g_palette_index_reference[25];

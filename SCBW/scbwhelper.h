@@ -1396,7 +1396,7 @@ namespace helper {
 	void draw_minimap_unit_box_2(u32 player);																// 004A47B0
 	char draw_minimap_unit_box(u32 player);																	// 004A4650
 	void draw_all_minimap_unit_boxes(u32 player);															// 004A48E0
-	u32 thingy_is_visible(u32 some_bool, Thingy* thingy);													// 00487CF0
+	u32 thingy_visiblity_check(u32 check_not_visible, Thingy* thingy);										// 00487CF0
 
 	u16 get_remaining_build_time_percentage(Unit* unit);													// 004669E0
 

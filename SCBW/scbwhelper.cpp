@@ -11576,7 +11576,7 @@ namespace helper {
 		}
 	}
 
-	u32 thingy_is_visible(u32 some_bool, Thingy* thingy) {
+	u32 thingy_visiblity_check(u32 some_bool, Thingy* thingy) {
 		static u32 result;
 		const u32 func_address = 0x00487CF0;
 		__asm {

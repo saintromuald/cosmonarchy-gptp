@@ -652,14 +652,13 @@ namespace hooks {
 					for (u32 y = 0; y < g_map_tile_size->height; y++) {
 						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
 						tile.exploredFlags &= ~reveal_flag;
-						tile.exploredFlags &= ~reveal_flag;
 					}
 				}
 				*/
 
 				// Reveal resources
 				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-					if (unit->player == 11 && units_dat::base_property[unit->id] & UnitProperty::Building) {
+					if (scbw::unit_id_is_resource_node(unit->id, false)) {
 						unit->sprite->visibility_status |= reveal_flag;
 					}
 				}
