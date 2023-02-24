@@ -389,7 +389,8 @@ namespace hooks {
 					}
 				}
 				bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
-				if ((!in_replay_or_witness && config.show_order_lines) || (in_replay_or_witness && config.witness_show_order_lines)) {
+				if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
+				||   (in_replay_or_witness && config.witness_show_order_lines)) {
 					Unit* ignore_resource_unit = 0;
 
 					// Worker harvest links
@@ -468,7 +469,8 @@ namespace hooks {
 			u32 x_count = 0;
 			for (u32 i = 0; i < *g_client_selection_count; ++i) {
 				Unit* transport = g_client_selection_group->unit[i];
-				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
+				bool is_replay_or_witness = *g_is_in_replay || global_vars.players[*g_local_human_id].is_witness;
+				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id) || is_replay_or_witness) {
 					for (u32 j = 0; j < TransportCap; ++j) {
 						Unit* cargo_unit = transport->get_loaded_unit(j);
 						if (cargo_unit) {
@@ -481,7 +483,7 @@ namespace hooks {
 							}
 
 							bool own_unit = cargo_unit->player == *g_local_nation_id;
-							if (own_unit) {
+							if (own_unit || is_replay_or_witness) {
 								snprintf(buffer, 128, BWTC_GREEN "%s", unit_name.data);
 							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
 								snprintf(buffer, 128, BWTC_YELLOW "%s", unit_name.data);
@@ -2419,9 +2421,9 @@ namespace hooks {
 
 		// Game rule - Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 		if (unit->main_order_id == OrderId::Harvest1
-			|| unit->main_order_id == OrderId::HarvestGas1
-			|| unit->main_order_id == OrderId::ReturnMinerals
-			|| unit->main_order_id == OrderId::ReturnGas) {
+		||  unit->main_order_id == OrderId::HarvestGas1
+		||  unit->main_order_id == OrderId::ReturnMinerals
+		||  unit->main_order_id == OrderId::ReturnGas) {
 			if (unit->status & UnitStatus::IsGathering) {
 				unit->status |= UnitStatus::NoCollide;
 			} else {
