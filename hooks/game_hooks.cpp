@@ -469,7 +469,8 @@ namespace hooks {
 			u32 x_count = 0;
 			for (u32 i = 0; i < *g_client_selection_count; ++i) {
 				Unit* transport = g_client_selection_group->unit[i];
-				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id)) {
+				bool is_replay_or_witness = *g_is_in_replay || global_vars.players[*g_local_human_id].is_witness;
+				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id) || is_replay_or_witness) {
 					for (u32 j = 0; j < TransportCap; ++j) {
 						Unit* cargo_unit = transport->get_loaded_unit(j);
 						if (cargo_unit) {
@@ -482,7 +483,7 @@ namespace hooks {
 							}
 
 							bool own_unit = cargo_unit->player == *g_local_nation_id;
-							if (own_unit) {
+							if (own_unit || is_replay_or_witness) {
 								snprintf(buffer, 128, BWTC_GREEN "%s", unit_name.data);
 							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
 								snprintf(buffer, 128, BWTC_YELLOW "%s", unit_name.data);
