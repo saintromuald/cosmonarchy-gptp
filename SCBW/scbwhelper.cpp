@@ -4131,20 +4131,24 @@ namespace helper {
 		return result;
 	}
 
-	s32 get_direction_from_points(s32 a1, s32 a2, s32 a3, s32 a4) {
+	s32 get_direction_from_points(s32 dest_y, s32 x, s32 dest_x, s32 y) {
 		const u32 Func_getDirectionFromPoints = 0x00495300;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH a4
-			MOV EAX, a1
-			MOV EDX, a2
-			MOV ECX, a3
+			PUSH y
+			MOV EAX, dest_y
+			MOV EDX, x
+			MOV ECX, dest_x
 			CALL Func_getDirectionFromPoints
 			MOV result, EAX
 			POPAD
 		}
 		return result;
+	}
+
+	s32 get_direction_from_points(Point16 a, Point16 b) {
+		return get_direction_from_points(b.y, a.x, b.x, a.y);
 	}
 	
 	void set_secondary_waypoint(Unit* unit, s32 x, s32 y) {

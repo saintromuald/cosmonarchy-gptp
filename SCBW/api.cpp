@@ -2440,6 +2440,15 @@ namespace scbw {
 		return WeaponId::None;
 	}
 
+	void set_bullet_target(Bullet* bullet, Point16 target) {
+		bullet->attack_target.unit = 0;
+		bullet->attack_target.pt   = target;
+		bullet->move_target.unit   = 0;
+		bullet->move_target.pt     = target;
+		bullet->targetPosition     = target;
+		bullet->targetPosition2    = target;
+	}
+
 	void set_bullet_target(Bullet* bullet, Unit* target) {
 		bullet->attack_target.unit = target;
 		bullet->attack_target.pt   = target->position;
@@ -2449,13 +2458,17 @@ namespace scbw {
 		bullet->targetPosition2    = target->position;
 	}
 
-	void set_bullet_target(Bullet* bullet, Point16 target) {
-		bullet->attack_target.unit = 0;
-		bullet->attack_target.pt   = target;
-		bullet->move_target.unit   = 0;
-		bullet->move_target.pt     = target;
-		bullet->targetPosition     = target;
-		bullet->targetPosition2    = target;
+	void set_bullet_direction(Bullet* bullet, Point16 target) {
+		u32 direction = helper::get_direction_from_points(bullet->position, target);
+		bullet->direction1 = direction;
+		bullet->direction2 = direction;
+		for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
+			helper::set_image_direction(image, direction);
+		}
+	}
+
+	void set_bullet_direction(Bullet* bullet, Unit* target) {
+		return set_bullet_direction(bullet, target->position);
 	}
 
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region) {

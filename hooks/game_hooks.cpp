@@ -1795,6 +1795,7 @@ namespace hooks {
 						}
 
 						scbw::set_bullet_target(bullet, unit);
+						scbw::set_bullet_direction(bullet, unit);
 						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
 						if (scbw::weapon_id_is_standard_weapon(bullet->weapon_id)) {
 							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
