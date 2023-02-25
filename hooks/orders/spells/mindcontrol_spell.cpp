@@ -23,6 +23,7 @@ namespace hooks
 					unit->main_order_state = 1;
 					unit->main_order_timer = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
+					unit->spend_unit_energy(tech_energy_cost);
 				}
 			} else {
 				// Cancel when way out of range or lost sight of target
@@ -50,9 +51,6 @@ namespace hooks
 					}
 					helper::mind_control_hit(unit, target);
 					target->order_to_idle();
-				}
-				if (!(*g_cheat_state & CheatFlags::TheGathering)) {
-					unit->spend_unit_energy(tech_energy_cost);
 				}
 				helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 				unit->order_to_idle();
