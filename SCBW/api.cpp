@@ -2440,6 +2440,15 @@ namespace scbw {
 		return WeaponId::None;
 	}
 
+	void set_bullet_target(Bullet* bullet, Point16 target) {
+		bullet->attack_target.unit = 0;
+		bullet->attack_target.pt   = target;
+		bullet->move_target.unit   = 0;
+		bullet->move_target.pt     = target;
+		bullet->targetPosition     = target;
+		bullet->targetPosition2    = target;
+	}
+
 	void set_bullet_target(Bullet* bullet, Unit* target) {
 		bullet->attack_target.unit = target;
 		bullet->attack_target.pt   = target->position;
@@ -2449,13 +2458,17 @@ namespace scbw {
 		bullet->targetPosition2    = target->position;
 	}
 
-	void set_bullet_target(Bullet* bullet, Point16 target) {
-		bullet->attack_target.unit = 0;
-		bullet->attack_target.pt   = target;
-		bullet->move_target.unit   = 0;
-		bullet->move_target.pt     = target;
-		bullet->targetPosition     = target;
-		bullet->targetPosition2    = target;
+	void set_bullet_direction(Bullet* bullet, Point16 target) {
+		u32 direction = helper::get_direction_from_points(bullet->position, target);
+		bullet->direction1 = direction;
+		bullet->direction2 = direction;
+		for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
+			helper::set_image_direction(image, direction);
+		}
+	}
+
+	void set_bullet_direction(Bullet* bullet, Unit* target) {
+		return set_bullet_direction(bullet, target->position);
 	}
 
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
@@ -2913,8 +2926,7 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds)
-	{
+	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->damage_dealt_timer >= seconds * 24
 		&&	unit_ext->damage_taken_timer >= seconds * 24) {
@@ -2923,14 +2935,11 @@ namespace scbw {
 		return true;
 	}
 
-	void update_on_damage_dealt(Unit* unit)
-	{
+	void update_on_damage_dealt(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->damage_dealt_timer = 0;
-		switch (unit->id)
-		{
-			case UnitId::ZergMortothrokor:
-			{
+		switch (unit->id) {
+			case UnitId::ZergMortothrokor: {
 				if (unit_ext->timers[TimerMortothrokorPassive]) {
 					unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
 				}
@@ -2938,15 +2947,12 @@ namespace scbw {
 		}
 	}
 
-	void update_on_damage_receive(Unit* unit)
-	{
+	void update_on_damage_receive(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->shield_regen_timer = 0;
 		unit_ext->damage_taken_timer = 0;
-		switch (unit->id)
-		{
-			case UnitId::ZergMortothrokor:
-			{
+		switch (unit->id) {
+			case UnitId::ZergMortothrokor: {
 				if (unit_ext->timers[TimerMortothrokorPassive]) {
 					unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
 				}
@@ -2954,57 +2960,51 @@ namespace scbw {
 		}
 	}
 
-	bool unit_id_is_vespene_node(u32 unit_id)
-	{
+	bool unit_id_is_vespene_node(u32 unit_id) {
 		return unit_id == UnitId::ResourceVespeneRidge
-		||	   unit_id == UnitId::ResourceVespeneGeyser
-		||	   unit_id == UnitId::TerranReservoir
-		||	   unit_id == UnitId::ProtossAquifer
-		||	   unit_id == UnitId::ZergExcisant
-		||	   unit_id == UnitId::PoliceDispensary;
+			|| unit_id == UnitId::ResourceVespeneGeyser
+			|| unit_id == UnitId::TerranReservoir
+			|| unit_id == UnitId::ProtossAquifer
+			|| unit_id == UnitId::ZergExcisant
+			|| unit_id == UnitId::PoliceDispensary;
 	}
 
-	bool unit_id_is_ground_bunker(u32 unit_id)
-	{
+	bool unit_id_is_ground_bunker(u32 unit_id) {
 		return unit_id == UnitId::TerranBunker
-		||	   unit_id == UnitId::PoliceDugout;
+			|| unit_id == UnitId::PoliceDugout;
 	}
 
-	bool unit_id_is_bunker(u32 unit_id)
-	{
+	bool unit_id_is_bunker(u32 unit_id) {
 		return unit_id_is_ground_bunker(unit_id); // Will add more bunker types later. -Pr0nogo
 	}
 
-	bool is_team_game_map(const char* map_name)
-	{
+	bool is_team_game_map(const char* map_name) {
 		return strcmp(map_name, "Todas Complex") == 0;
 	}
 
 	bool image_id_is_powerup(u32 image_id)
 	{
 		return image_id == ImageId::MineralChunkType1
-		||	   image_id == ImageId::MineralChunkType2
-		||	   image_id == ImageId::GasRaw
-		||	   image_id == ImageId::GasRaw2
-		||	   image_id == ImageId::TerranGasTankType1
-		||	   image_id == ImageId::TerranGasTankType2
-		||	   image_id == ImageId::ProtossGasOrbType1
-		||	   image_id == ImageId::ProtossGasOrbType2
-		||	   image_id == ImageId::ZergGasSacType1
-		||	   image_id == ImageId::ZergGasSacType2
-		||	   image_id == ImageId::Flag
-		||	   image_id == ImageId::KhaydarinCrystal
-		||	   image_id == ImageId::PsiEmitter
-		||	   image_id == ImageId::YoungChrysalis
-		||	   image_id == ImageId::DataDisc
-		||	   image_id == ImageId::Uraj
-		||	   image_id == ImageId::Khalis;
+			|| image_id == ImageId::MineralChunkType2
+			|| image_id == ImageId::GasRaw
+			|| image_id == ImageId::GasRaw2
+			|| image_id == ImageId::TerranGasTankType1
+			|| image_id == ImageId::TerranGasTankType2
+			|| image_id == ImageId::ProtossGasOrbType1
+			|| image_id == ImageId::ProtossGasOrbType2
+			|| image_id == ImageId::ZergGasSacType1
+			|| image_id == ImageId::ZergGasSacType2
+			|| image_id == ImageId::Flag
+			|| image_id == ImageId::KhaydarinCrystal
+			|| image_id == ImageId::PsiEmitter
+			|| image_id == ImageId::YoungChrysalis
+			|| image_id == ImageId::DataDisc
+			|| image_id == ImageId::Uraj
+			|| image_id == ImageId::Khalis;
 	}
 
-	Image* get_powerup_overlay(Sprite* sprite)
-	{
-		for (Image* image = sprite->images.head; image; image = image->link.next)
-		{
+	Image* get_powerup_overlay(Sprite* sprite) {
+		for (Image* image = sprite->images.head; image; image = image->link.next) {
 			if (scbw::image_id_is_powerup(image->id)) {
 				return image;
 			}
@@ -3012,18 +3012,17 @@ namespace scbw {
 		return 0;
 	}
 
-	bool weapon_id_accelerates(u32 weapon_id)
-	{
+	bool weapon_id_accelerates(u32 weapon_id) {
 		return weapon_id == WeaponId::EmpyreanPlasmaBarrage;
 	}
 
 	bool weapon_id_is_melee_aoe(u32 weapon_id)
 	{
 		return weapon_id == WeaponId::NathrokorPlasmidBreath
-		|| weapon_id == WeaponId::GorgrokorSerratedCleavers
-		|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
-		|| weapon_id == WeaponId::TethzorokorSaberArray
-		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
+			|| weapon_id == WeaponId::GorgrokorSerratedCleavers
+			|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
+			|| weapon_id == WeaponId::TethzorokorSaberArray
+			|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
 	}
 
 	bool unit_regens_in_combat(Unit* unit)
@@ -3031,19 +3030,39 @@ namespace scbw {
 		return unit->id == UnitId::TerranMatador; // Can update later with status checks and etc. -Pr0nogo
 	}
 
-	bool unit_id_is_melee_air_unit(u32 unit_id)
-	{
+	bool unit_id_is_melee_air_unit(u32 unit_id) {
 		return unit_id == UnitId::ZergNathrokor
-		||	   unit_id == UnitId::ZergGorgrokor
-		||	   unit_id == UnitId::ZergTetcaerokor
-		||	   unit_id == UnitId::ZergAkistrokor
-		||	   unit_id == UnitId::ZergZarcavrokor;
+			|| unit_id == UnitId::ZergGorgrokor
+			|| unit_id == UnitId::ZergTetcaerokor
+			|| unit_id == UnitId::ZergAkistrokor
+			|| unit_id == UnitId::ZergZarcavrokor;
 	}
 
-	bool weapon_id_is_for_harvesting(u32 weapon_id)
-	{
+	bool weapon_id_is_for_harvesting(u32 weapon_id) {
 		return	weapon_id == WeaponId::MasonFusionCutterHarvest
-		||		weapon_id == WeaponId::ScribeParticleBeamHarvest
-		||		weapon_id == WeaponId::DrolethSpinesHarvest;
+			|| weapon_id == WeaponId::ScribeParticleBeamHarvest
+			|| weapon_id == WeaponId::DrolethSpinesHarvest;
+	}
+
+	bool weapon_id_is_standard_weapon(u32 weapon_id) {
+		// Use this switch for weird exceptions:
+		/*
+		switch (weapon_id) {
+			case WeaponId::XD:
+				return true;
+
+			case WeaponId::XD2:
+				return false;
+		}
+		*/
+		switch (weapons_dat::explosion_type[weapon_id]) {
+			case WeaponEffect::NormalHit:
+			case WeaponEffect::SplashRadial:
+			case WeaponEffect::SplashEnemy:
+			case WeaponEffect::SplashAir:
+			case WeaponEffect::Unknown_Crash:
+				return true;
+		}
+		return false;
 	}
 }

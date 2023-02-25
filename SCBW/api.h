@@ -688,8 +688,10 @@ namespace scbw
 	bool buttonset_id_is_submenu(u32 buttonset_id);
 	bool unit_id_has_custom_air_weapon(u32 unit_id);
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
-	void set_bullet_target(Bullet* bullet, Unit* target);
 	void set_bullet_target(Bullet* bullet, Point16 target);
+	void set_bullet_target(Bullet* bullet, Unit* target);
+	void set_bullet_direction(Bullet* bullet, Point16 target);
+	void set_bullet_direction(Bullet* bullet, Unit* target);
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region);
 	bool unit_id_can_regenerate_shields(u32 unit_id);
 	bool unit_id_is_stackable_building(u32 unit_id); // Allows the AI to place the building to be placed more closely
@@ -726,4 +728,5 @@ namespace scbw
 	bool unit_regens_in_combat(Unit* unit);
 	bool unit_id_is_melee_air_unit(u32 unit_id);
 	bool weapon_id_is_for_harvesting(u32 weapon_id);
+	bool weapon_id_is_standard_weapon(u32 weapon_id);
 }

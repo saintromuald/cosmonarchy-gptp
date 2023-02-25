@@ -1753,18 +1753,16 @@ namespace hooks {
 					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 				}
 			} break;
-			case UnitId::TerranAncile:{
+			case UnitId::TerranAncile: {
 				// Ancile - Providence
 				if (unit->energy >= 1 * 256) {
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
 
+					const u32 radius = 2 * 32;
 					EntryArray bullets = {};
-					bullet_search_radial(&bullets, unit->position, 2 * 32);
-
-					bool area_units_init = false; // we delay the unit search until it's needed
-					EntryArray area_units = {};
+					bullet_search_radial(&bullets, unit->position, radius);
 					for (u32 i = 0; i < bullets.count; i++) {
 						Bullet* bullet = bullets.bullets[i];
 
@@ -1785,32 +1783,23 @@ namespace hooks {
 
 						// Check if the unit can be shielded
 						Unit* target = bullet->attack_target.unit;
-						if (!target || !scbw::is_allied_to(unit->player, target->player) || bullet->hit_flags & 1) {
+						if ((target && !scbw::is_allied_to(unit->player, target->player)) || bullet->hit_flags & 1) {
 							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
 							continue;
 						}
 
-						// Check if the unit is actually shielded (in area)
-						bool valid = false;
-						if (!area_units_init) {
-							area_units_init = true;
-							unit_search_radial(&area_units, unit->position, 2 * 32);
-						}
-						for (u32 j = 0; j < area_units.count; ++j) {
-							Unit* area_unit = area_units.units[j];
-							if (area_unit == target) {
-								valid = true;
-								break;
-							}
-						}
-						if (!valid) {
+						// Check if the target is actually shielded (in area)
+						Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
+						if (scbw::get_distance_fast(unit->position, target_position) > radius) {
 							continue;
 						}
 
-						scbw::create_shield_overlay(target, bullet->direction1);
-					//	scbw::set_bullet_target(bullet, unit);
+						scbw::set_bullet_target(bullet, unit);
+						scbw::set_bullet_direction(bullet, unit);
 						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
-						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
+						if (scbw::weapon_id_is_standard_weapon(bullet->weapon_id)) {
+							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
+						}
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 
 						if (unit->energy < 1 * 256) {

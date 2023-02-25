@@ -520,7 +520,8 @@ namespace helper {
 	// for orders_stay_in_range
 	void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
 	s32 orders_hold_position_suicidal(Unit* a1);
-	s32 get_direction_from_points(s32 a1, s32 a2, s32 a3, s32 a4);
+	s32 get_direction_from_points(s32 dest_y, s32 x, s32 dest_x, s32 y);
+	s32 get_direction_from_points(Point16 a, Point16 b);
 
 	// for ai_attack_unit
 	void stimpack_proc(Unit* unit);																									// 004554A0
