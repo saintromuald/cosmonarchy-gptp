@@ -729,4 +729,5 @@ namespace scbw
 	bool unit_id_is_melee_air_unit(u32 unit_id);
 	bool weapon_id_is_for_harvesting(u32 weapon_id);
 	bool weapon_id_is_standard_weapon(u32 weapon_id);
+	bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 }

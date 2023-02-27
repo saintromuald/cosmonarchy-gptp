@@ -3065,4 +3065,11 @@ namespace scbw {
 		}
 		return false;
 	}
+
+	bool unit_id_is_morphed_from_double_unit(u32 unit_id)
+	{
+		return unit_id == UnitId::ZergVorvrokor
+			|| unit_id == UnitId::ZergKalkalisk
+			|| unit_id == UnitId::ZergGhitorokor;
+	}
 }

@@ -150,7 +150,7 @@ namespace
 
 	void __fastcall cancel_unit_wrapper(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		if (unit->is_dead())
 		{
@@ -162,7 +162,7 @@ namespace
 			return;
 		}
 
-		if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit != nullptr)
+		if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)
 		{
 			return;
 		}
@@ -212,7 +212,7 @@ namespace
 				Unit* silo = unit->connected_unit;
 				if (silo)
 				{
-					silo->building.silo.nuke = nullptr;
+					silo->building.silo.nuke = 0;
 					silo->main_order_state = 0;
 				}
 				scbw::refresh_console();
@@ -222,17 +222,14 @@ namespace
 		else
 		{
 			change_unit_type(unit, cancel_change_unit_id);
-			unit->energy = unitExt->values[ValuePreMorphEnergy];
-			unitExt->units[UnitMorphConnectedUnit] = unit->connected_unit;
+			unit->energy = unit_ext->values[ValuePreMorphEnergy];
+			unit_ext->units[UnitMorphConnectedUnit] = unit->connected_unit;
 			unit->remaining_build_time = 0;
 			unit->build_queue[unit->build_queue_slot] = UnitId::None;
 			
-//			replace_sprite_images(unit->sprite, sprites_dat::image_id[flingy_dat::sprite_id[units_dat::graphic[unit->previous_unit_type]]], 0);
-			auto index = units_dat::graphic[unit->previous_unit_type];
-//			replace_sprite_images(unit->sprite, sprites_dat::image_id[scbw::get_flingy_data(FlingyDatEntries::SpriteId, index)], 0);
-			auto fl_sId = flingy_dat::sprite_id[index];
-//			scbw::get_sprite_data(SpritesDatEntries::image_id,building->sprite->sprite_id),
-			replace_sprite_images(unit->sprite, sprites_dat::image_id[fl_sId], 0);
+			u32 index = units_dat::graphic[unit->previous_unit_type];
+			u32 flingy_sprite_id = flingy_dat::sprite_id[index];
+			replace_sprite_images(unit->sprite, sprites_dat::image_id[flingy_sprite_id], 0);
 			unit->order_signal &= ~0x4;
 			if (unit->id == UnitId::ZergZethrokor
 			||  unit->id == UnitId::ZergVorvrokor
@@ -243,7 +240,7 @@ namespace
 			else if (unit->id == UnitId::ZergQuazilisk)
 			{
 				unit->play_iscript_animation(IscriptAnimation::CastSpell);
-				unitExt->timers[TimerQuaziliskCancel] = 4;
+				unit_ext->timers[TimerQuaziliskCancel] = 4;
 			}
 			else
 			{

@@ -60,7 +60,7 @@ namespace hooks
 	}
 
 	// Hooked because the default code didn't allow for multiple units
-	void cmdrecv_cancel_train(u16 wUnitID) {
+	void cmdrecv_cancel_train(u16 unit_id) {
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->id != UnitId::ZergLarva
@@ -73,13 +73,13 @@ namespace hooks
 			&&  unit->id != UnitId::ZergCagrantColony
 			&&  unit->status & UnitStatus::Completed
 			&&  unit->player == *g_active_nation_id) {
-				if (wUnitID == 0xFE) {
+				if (unit_id == 0xFE) {
 					helper::cancel_last_training(unit);
 					scbw::refresh_console();
-				} else if (wUnitID == 0xFF) {
+				} else if (unit_id == 0xFF) {
 					scbw::refresh_console();
 				} else {
-					helper::refund_queue_slot(unit, wUnitID);
+					helper::refund_queue_slot(unit, unit_id);
 					scbw::refresh_console();
 				}
 			}
