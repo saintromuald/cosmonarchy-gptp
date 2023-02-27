@@ -85,6 +85,9 @@ namespace hooks {
 
 			u32 extra_count = unit_ext->values[ValueSwarmhold];
 			unit_ext->values[ValueSwarmhold] = 0;
+			if (unit->id == UnitId::ZergVorvrokor && unit->create_origin == UnitId::ZergOcsalLarva) { // Kinda stupid. -Pr0nogo
+				extra_count++;
+			}
 
 			Unit* twin_unit = 0;
 			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
