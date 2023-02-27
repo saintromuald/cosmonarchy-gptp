@@ -397,7 +397,7 @@ void tick_effect(Effect* effect) {
 					target->damage_with_custom(30 * damage_multiplier, 3, effect->source, effect->player);
 				}
 			} break;
-			case EffectId_Criticality: {
+			case EffectId_AspirantCriticality: {
 				scbw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
@@ -410,7 +410,7 @@ void tick_effect(Effect* effect) {
 					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect->source, true);
 					});
 			} break;
-			case EffectId_CausticDischarge: {
+			case EffectId_KeskathalorCausticDischarge: {
 				scbw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
@@ -420,12 +420,12 @@ void tick_effect(Effect* effect) {
 					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
-					UnitExt* unitExt = get_unit_ext(unit);
+					UnitExt* unit_ext = get_unit_ext(unit);
 					unit->damage_with_custom(30 * damage_multiplier, -1, effect->source, effect->player);
-					unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
+					unit_ext->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 			} break;
-			case EffectId_IonField: {
+			case EffectId_IonCannonIonField: {
 				scbw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
@@ -435,9 +435,9 @@ void tick_effect(Effect* effect) {
 					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
-					UnitExt* unitExt = get_unit_ext(unit);
+					UnitExt* unit_ext = get_unit_ext(unit);
 					unit->damage_with_custom(100 * damage_multiplier, -1, effect->source, effect->player);
-					unitExt->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
+					unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 					});
 			} break;
 			case EffectId_HallucinatingField: {
@@ -450,7 +450,6 @@ void tick_effect(Effect* effect) {
 					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
-					UnitExt* unitExt = get_unit_ext(unit);
 					scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
 					});
 			} break;
@@ -467,7 +466,7 @@ void tick_effect(Effect* effect) {
 					apply_irradiate(unit, effect->player, 15);
 					});
 			} break;
-			case EffectId_GroundZero: {
+			case EffectId_NuclearMissileGroundZero: {
 				const u32 delta = effect->max_time - effect->current_time;
 				const u32 stage = delta / effect_period;
 
@@ -489,7 +488,7 @@ void tick_effect(Effect* effect) {
 					} break;
 				}
 			} break;
-			case EffectId_DisruptionField: {
+			case EffectId_LanifectDisruptionField: {
 				if (!effect->origin) {
 					effect->current_time = 0;
 					break;
@@ -515,7 +514,7 @@ void tick_effect(Effect* effect) {
 					}
 					});
 			} break;
-			case EffectId_PlagueField: {
+			case EffectId_IsthrathalethPlagueField: {
 				scbw::UnitFinder(
 					effect->position.x - 1.5 * 32,
 					effect->position.y - 1 * 32,
@@ -525,7 +524,7 @@ void tick_effect(Effect* effect) {
 					helper::plague_proc(unit, 0);
 					});
 			} break;
-			case EffectId_ReclamationField: {
+			case EffectId_AionReclamationField: {
 				EntryArray effect_units = {};
 				unit_search_radial(&effect_units, effect->position, effect->radius);
 				unit_search_filter(&effect_units, 0);

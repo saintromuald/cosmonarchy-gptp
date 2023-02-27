@@ -398,7 +398,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 				value -= 1000;
 			}
 		} break;
-		case EffectId_IonField: {
+		case EffectId_IonCannonIonField: {
 			if (!flyer) {
 				if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldAttackSpeed] < 1 * 24) {
 					value += 100;
@@ -407,12 +407,12 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 				}
 			}
 		} break;
-		case EffectId_Criticality: {
+		case EffectId_AspirantCriticality: {
 			if (!flyer && hp_percentage < 1) {
 				value += 100;
 			}
 		} break;
-		case EffectId_CausticDischarge: {
+		case EffectId_KeskathalorCausticDischarge: {
 			if (!flyer) {
 				if (total_hp > 50 && hp_percentage > 0.5 && type == KiterType_Melee && unit_ext->timers[TimerCausticDischargeSpeed] < 1 * 24) {
 					value += 100;
@@ -427,15 +427,15 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		case EffectId_HallucinatingField: {
 			value -= 100;
 		} break;
-		case EffectId_GroundZero: {
+		case EffectId_NuclearMissileGroundZero: {
 			value -= 100;
 		} break;
-		case EffectId_DisruptionField: {
+		case EffectId_LanifectDisruptionField: {
 			if (unit->has_weapon()) {
 				value -= 100;
 			}
 		} break;
-		case EffectId_PlagueField: {
+		case EffectId_IsthrathalethPlagueField: {
 			value -= 100;
 		} break;
 	}

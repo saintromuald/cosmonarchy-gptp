@@ -27,17 +27,17 @@ struct SaveState
 };
 
 enum EffectId {
-	EffectId_GroundZero,
-	EffectId_IonField,
+	EffectId_NuclearMissileGroundZero,
+	EffectId_IonCannonIonField,
 	EffectId_SalamanderFire,
 	EffectId_Irradiate,
-	EffectId_Criticality,
+	EffectId_AspirantCriticality,
 	EffectId_HallucinatingField,
-	EffectId_DisruptionField,
+	EffectId_LanifectDisruptionField,
 	EffectId_StarSovereignTheGriefOfAllGods,
-	EffectId_CausticDischarge,
-	EffectId_PlagueField,
-	EffectId_ReclamationField,
+	EffectId_KeskathalorCausticDischarge,
+	EffectId_IsthrathalethPlagueField,
+	EffectId_AionReclamationField,
 
 	EffectId_Count,
 };
