@@ -287,7 +287,7 @@ namespace hooks
 				helper::replace_unit_with_id(unit, UnitId::ProtossMindTyrant);
 
 				//update stuff related to the beginning of merge process I think
-				helper::anim_decloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				helper::end_cloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 
 				unit->sprite->flags &= ~SpriteFlags::IscriptCode; //disable the flag if set
 

@@ -470,7 +470,7 @@ namespace helper {
 
 	//// trap_hooks
 	// For update_unit_strength_and_apply_default_orders
-	void anim_cloak(Unit* a1, s32 a2);																								// 0049B5B0
+	void begin_cloak(Unit* unit, s32 sound_id);																						// 0049B5B0
 	void refresh_unit_vision(Unit* a1);																								// 004E5F30
 	void init_unit_trap_doodad(Unit* a1);																							// 004E6490
 	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
@@ -493,7 +493,7 @@ namespace helper {
 	void order_immediate(Unit* unit, u8 order);																						// 00474B40
 	void play_morphing_complete_sound(Unit* unit);																					// 0048F440
 	void merge_status_into_unit(Unit* unit_dst, Unit* unit_src);																	// 00493180
-	void anim_decloak(Unit* unit, u32 soundId);			 																			// 0049B440
+	void end_cloak(Unit* unit, u32 sound_id);			 																			// 0049B440
 	bool delayed_set_move_target_xy(Unit* unit, u16 x, u16 y);																		// 004EB960
 
 	//// nuke_orders

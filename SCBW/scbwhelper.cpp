@@ -3717,12 +3717,12 @@ namespace helper {
 	}
 
 	// For update_unit_strength_and_apply_default_orders
-	void anim_cloak(Unit* a1, s32 a2) {
+	void begin_cloak(Unit* unit, s32 sound_id) {
 		const u32 Func_AnimCloak = 0x0049B5B0;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
+			MOV EAX, unit
+			MOV ECX, sound_id
 			CALL Func_AnimCloak
 			POPAD
 		}
@@ -3923,11 +3923,11 @@ namespace helper {
 		}
 	}
 
-	void anim_decloak(Unit* unit, u32 soundId) {
+	void end_cloak(Unit* unit, u32 sound_id) {
 		const u32 Func_animDecloak = 0x0049B440;
 		__asm {
 			PUSHAD
-			MOV EBX, soundId
+			MOV EBX, sound_id
 			MOV EAX, unit
 			CALL Func_animDecloak
 			POPAD
