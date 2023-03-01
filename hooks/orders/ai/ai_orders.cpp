@@ -55,6 +55,7 @@ namespace hooks {
 		}
 		if (target->status & UnitStatus::CloakingForFree) {
 			if (!(target->status & UnitStatus::Burrowed)) {
+				return; // As of 28 Feb 2023, disabling this because it results in a silent crash, and didn't work anyway. -Pr0nogo
 				target = helper::check_arbiter_cloaking_range(unit, UnitId::ProtossDidact);
 				if (!target) {
 					return;

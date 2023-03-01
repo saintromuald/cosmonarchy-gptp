@@ -25,7 +25,7 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
 		&& weapon_id != WeaponId::Custom;
 }
 
-bool irradiateTarget(Unit* unit)
+bool irradiate_target(Unit* unit)
 {
 	return true; // Originally prohibited targeting eggs
 }

@@ -1234,7 +1234,7 @@ namespace scbw {
 	}
 
 	void apply_hallucinating(Unit* unit, u8 player, u32 time) {
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		Unit* context = unit->subunit ? unit->subunit : unit;
 		if (!context->get_overlay(ImageId::HallucinationHit)) {
@@ -1242,7 +1242,7 @@ namespace scbw {
 			context->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
 
 			// Sound
-			if (!unitExt->timers[TimerHallucinating]) {
+			if (!unit_ext->timers[TimerHallucinating]) {
 				helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
 			} else {
 				helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
@@ -1250,7 +1250,7 @@ namespace scbw {
 		}
 		
 		// Value
-		unitExt->timers[TimerHallucinating] = time;
+		unit_ext->timers[TimerHallucinating] = time;
 	}
 
 	bool can_be_entered_by(Unit* transport, Unit* unit) {
@@ -3063,5 +3063,12 @@ namespace scbw {
 				return true;
 		}
 		return false;
+	}
+
+	bool unit_id_is_morphed_from_double_unit(u32 unit_id)
+	{
+		return unit_id == UnitId::ZergVorvrokor
+			|| unit_id == UnitId::ZergKalkalisk
+			|| unit_id == UnitId::ZergGhitorokor;
 	}
 }

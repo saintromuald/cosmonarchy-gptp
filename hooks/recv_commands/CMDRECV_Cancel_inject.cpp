@@ -53,16 +53,16 @@ namespace
 
 	void __declspec(naked) cmdrecv_cancel_train_wrapper()
 	{
-		static u16 wUnitID;
+		static u16 unit_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV AX, [EAX + 0x01]
-			MOV wUnitID, AX
+			MOV unit_id, AX
 			PUSHAD
 		}
-		hooks::cmdrecv_cancel_train(wUnitID);
+		hooks::cmdrecv_cancel_train(unit_id);
 		__asm {
 			POPAD
 			POP EBP
