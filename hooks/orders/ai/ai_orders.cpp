@@ -21,8 +21,6 @@ void sort_gas_buildings(AiTown* town) {
 namespace hooks {
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
 	// TODO: finish and cleanup
-	// End brace fuckery on 14 Aug 2022, check carefully
-	// Tidied, refactored, and corrected with IDA on 31 Oct 2022, not tested -Veeq7 
 	void ai_unit_was_hit(Unit* unit, Unit* attacker, s32 main_target_reactions, s32 dont_call_help) { // 0043F320
 		if (g_player_table[unit->player].type != PlayerType::Computer || unit->player >= PlayerLimit) {
 			return;
@@ -55,7 +53,6 @@ namespace hooks {
 		}
 		if (target->status & UnitStatus::CloakingForFree) {
 			if (!(target->status & UnitStatus::Burrowed)) {
-				return; // As of 28 Feb 2023, disabling this because it results in a silent crash, and didn't work anyway. -Pr0nogo
 				target = helper::check_arbiter_cloaking_range(unit, UnitId::ProtossDidact);
 				if (!target) {
 					return;
@@ -273,16 +270,16 @@ namespace hooks {
 		return;
 
 		/*
-		s32 unitStatus = unit->status;
-		if (!(unitStatus & 0x100)) {
-			s8 techId;
+		s32 unit_status = unit->status;
+		if (!(unit_status & 0x100)) {
+			s8 tech_id;
 			if (unit->id == UnitId::TerranEidolon) {
-				techId = TechId::PersonnelCloaking;
+				tech_id = TechId::PersonnelCloaking;
 			} else if (unit->id == UnitId::TerranWraith) {
-				techId = TechId::CloakingField;
+				tech_id = TechId::CloakingField;
 			}
-			if (helper::tech_use_allowed(unit, techId, unit->player) == 1) {
-				helper::applyCloakingOrder(unit);
+			if (helper::tech_use_allowed(unit, tech_id, unit->player) == 1) {
+				helper::apply_cloaking_order(unit);
 			}
 		}
 		*/

@@ -1257,13 +1257,14 @@ namespace helper {
 	}
 
 	Unit* check_arbiter_cloaking_range(Unit* unit, u16 id) {
-		const u32 Func_checkArbiterCloakingRange = 0x004410C0;
+		static u32 id_xd = id;
+		const u32 func_address = 0x004410C0;
 		static Unit* result;
 		__asm {
 			PUSHAD
-			PUSH id
+			PUSH id_xd
 			MOV EAX, unit
-			CALL Func_checkArbiterCloakingRange
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
