@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "hooks/game_hooks.h"
 #include "hooks/grafting/button_functions.h"
+#include "config.h"
 
 static bool player_has_unit_id(s32 player_id, u32 unit_id) {
 	return Player::number_of_units_of_id(player_id, unit_id);
@@ -399,6 +400,15 @@ namespace hooks {
 		return button_a->icon_id - button_b->icon_id;
 	}
 
+	static char* find_hotkey_char(char* label) {
+		for (char* c = label; *c; ++c) {
+			if (c[0] == 1 && c[1] == '(' && c[2] == 03 && c[3] && c[4] == 1 && c[5] == ')') {
+				return c + 3;
+			}
+		}
+		return 0;
+	}
+
 	void update_command_card()
 	{
 		auto buttonset_id = *g_active_portrait_buttonset_id;
@@ -451,7 +461,7 @@ namespace hooks {
 		}
 
 		ButtonSet* const current_buttonset = get_buttonset(buttonset_id);
-		bool bStopThere = false;
+		bool stop_there = false;
 		bool jumpto59336 = false;
 		bool jumpto5933C = false;
 		bool jumpto5934E = false;
@@ -493,14 +503,33 @@ namespace hooks {
 		}
 		if (!current_dialog || current_dialog->index != 1)
 		{
-			bStopThere = true;
+			stop_there = true;
 		}
-		while (!bStopThere)
+
+		if (!stop_there) {
+			if (config.grid_hotkeys) {
+				for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
+					if (dialog->index > 0 &&
+						dialog->control_type == DialogControlTypes::Button &&
+						dialog->button_user &&
+						dialog->button_user->requirement_string_id) {					
+						char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
+						char* hotkey_char = find_hotkey_char(label + 2);
+						if (hotkey_char) {
+							u32 index = dialog->index - 1;
+							*hotkey_char = toupper(config.layout[index / 3].at(index % 3));
+						}
+					}
+				}
+			}
+		}
+
+		while (!stop_there)
 		{
 			// 00459230
 			if (current_dialog->index < 1)
 			{
-				bStopThere = true;
+				stop_there = true;
 			}
 			else if (current_dialog->index > 9)
 			{
@@ -2709,7 +2738,7 @@ namespace hooks {
 			}
 
 			// 00459278
-			if (!bStopThere && !jumpto5934E)
+			if (!stop_there && !jumpto5934E)
 			{
 				jumpto5933C = (!*g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != *g_local_nation_id);
 				// TODO: Reenable and test
@@ -2792,7 +2821,7 @@ namespace hooks {
 					}
 				}
 			}
-			if (!bStopThere && !jumpto5934E)
+			if (!stop_there && !jumpto5934E)
 			{
 				// 0045933C
 				scbw::hide_dialog(current_dialog);
@@ -2803,7 +2832,7 @@ namespace hooks {
 			current_dialog = current_dialog->next;
 			if (current_dialog == nullptr)
 			{
-				bStopThere = true;
+				stop_there = true;
 			}
 			jumpto59336 = false;
 			jumpto5933C = false;
