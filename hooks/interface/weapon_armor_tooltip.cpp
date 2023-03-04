@@ -310,7 +310,12 @@ namespace hooks
 	static void add_status(std::vector<std::string>& vec, std::string name, s32 value = -1, s32 max_value = 0, s32 timer = -1, TimerType timer_type = TimerType::Vanilla) {
 		if (timer > 0 || value > 0) {
 			std::string text = name;
-			bool show_value = value > 0 && max_value != 1;
+			bool show_value = false;
+			if (max_value <= 0) {
+				show_value = value > 1;
+			} else if (max_value > 1)  {
+				show_value = value > 0;
+			}
 			if (timer > 0 || show_value) {
 				text += " (";
 				if (timer > 0) {
@@ -490,16 +495,12 @@ namespace hooks
 		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenPlayer] > 0, 1);
 		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 
-		if (unit_ext->units[UnitMindController])
-		{
-			switch (unit_ext->units[UnitMindController]->id)
-			{
-				case UnitId::ProtossMindTyrant:
-				{
+		if (unit_ext->units[UnitMindController]) {
+			switch (unit_ext->units[UnitMindController]->id) {
+				case UnitId::ProtossMindTyrant: {
 					add_status(statuses, "Tyranny", 1, 1);
 				} break;
-				case UnitId::ProtossDemiurge:
-				{
+				case UnitId::ProtossDemiurge: {
 					add_status(statuses, "Worshiping", 1, 1);
 				} break;
 			}

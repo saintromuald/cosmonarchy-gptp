@@ -14,37 +14,36 @@ bool file_exists(std::string file) {
 }
 
 void load_config() {
-	if (file_exists(CONFIG_FILENAME))
-	{
+	if (file_exists(CONFIG_FILENAME)) {
 		YAML::Node config_node = YAML::LoadFile(CONFIG_FILENAME);
 
-		LoadField(config_node, "disable-wmode-prompt", config.disable_wmode_prompt);
-		LoadField(config_node, "prefer-wmode", config.prefer_wmode);
+		load_field(config_node, "disable-wmode-prompt", config.disable_wmode_prompt);
+		load_field(config_node, "prefer-wmode", config.prefer_wmode);
 
-		LoadField(config_node, "extended-camera-hotkeys", config.extended_camera_hotkeys);
-		LoadField(config_node, "show-timer", config.show_timer);
-		LoadField(config_node, "show-apm", config.show_apm);
-		LoadField(config_node, "show-order-lines", config.show_order_lines);
-		LoadField(config_node, "show-queued-order-lines", config.show_queued_order_lines);
-		LoadField(config_node, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
-		LoadField(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+		load_field(config_node, "extended-camera-hotkeys", config.extended_camera_hotkeys);
+		load_field(config_node, "show-timer", config.show_timer);
+		load_field(config_node, "show-apm", config.show_apm);
+		load_field(config_node, "show-order-lines", config.show_order_lines);
+		load_field(config_node, "show-queued-order-lines", config.show_queued_order_lines);
+		load_field(config_node, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
+		load_field(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 
-		LoadField(config_node, "witness-show-apm", config.witness_show_apm);
-		LoadField(config_node, "witness-show-order-lines", config.witness_show_order_lines);
+		load_field(config_node, "witness-show-apm", config.witness_show_apm);
+		load_field(config_node, "witness-show-order-lines", config.witness_show_order_lines);
 
-		LoadField(config_node, "quick-casting", config.quick_casting);
-		LoadField(config_node, "quick-building", config.quick_building);
+		load_field(config_node, "quick-casting", config.quick_casting);
+		load_field(config_node, "quick-building", config.quick_building);
 
-		LoadField(config_node, "celebrations-enabled", config.celebrations_enabled);
-		LoadField(config_node, "verbose", config.verbose);
+		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
+		load_field(config_node, "verbose", config.verbose);
 		GPTP::doLogging = config.verbose;
 
-		LoadField(config_node, "default-map-directory", config.default_map_directory);
+		load_field(config_node, "default-map-directory", config.default_map_directory);
 
 		auto grid_node = config_node["grid-hotkeys"];
 		if (grid_node) {
-			LoadField(grid_node, "enabled", config.grid_hotkeys);
-			LoadField(grid_node, "layout", config.layout);
+			load_field(grid_node, "enabled", config.grid_hotkeys);
+			load_field(grid_node, "layout", config.layout);
 		}
 	}
 	save_config();

@@ -2,7 +2,7 @@
 #include "yaml-cpp/yaml.h"
 
 template<typename T>
-void LoadField(const YAML::Node& node, const std::string& key, T& variable) {
+void load_field(const YAML::Node& node, const std::string& key, T& variable) {
 	if (node[key]) {
 		variable = node[key].as<T>();
 	}

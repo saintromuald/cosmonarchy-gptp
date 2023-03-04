@@ -211,15 +211,14 @@ LABEL_15:
 		}
 
 		char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
-		if (*label == 27 && hotkey == label[0]) {  // escape handling for grid hotkeys
+		if (*label == VK_ESCAPE && hotkey == label[0]) { // escape handling for grid hotkeys
 			return 1;
 		}
-
+		
 		if (config.grid_hotkeys && dialog->index > 0) {
-			int index = dialog->index - 1;
-			int x = index % 3;
-			int y = index / 3;
-			return hotkey == tolower(config.layout[y].at(x));
+			u32 index = dialog->index - 1;
+			char grid_hotkey = tolower(config.layout[index / 3].at(index % 3));
+			return hotkey == grid_hotkey;
 		}
 
 		return hotkey == label[0];
