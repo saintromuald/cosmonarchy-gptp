@@ -789,8 +789,8 @@ namespace hooks
 			fatal_deal_damage = false;
 			data.target->hitpoints = 0;
 			data.target->shields = 0;
-			data.target->heal_hp_then_shields(target_ext->values[ValueEmpressPassiveStacks] * 256 * 2.5, target_ext->units[UnitEmpressSource]);
-			data.target->remove_timer = 1 + target_ext->values[ValueEmpressPassiveStacks] * 24 * 0.25;
+			data.target->heal_hp_then_shields(target_ext->values[ValueEmpressPassiveStacks] * 256 * 5, target_ext->units[UnitEmpressSource]);
+			data.target->remove_timer = 1 + target_ext->values[ValueEmpressPassiveStacks] * 24 * 1;
 			data.target->give_to(target_ext->values[ValueEmpressSourcePlayer]);
 			target_ext->values[ValueEmpressPassiveStacks] = 0;
 			target_ext->values[ValueIsZombified] = 1;
@@ -1036,7 +1036,7 @@ namespace hooks
 		}
 
 		// Effect
-		unit->ensnare_timer = 37;
+		unit->ensnare_timer = 5;
 		unit->update_speed();
 	}
 

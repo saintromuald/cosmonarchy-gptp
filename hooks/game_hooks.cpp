@@ -1476,38 +1476,30 @@ namespace hooks {
 			case UnitId::InfestedKerriganExt:
 			{
 				// Matraleth - Ensnaring Brood
-				if (scbw::get_generic_rust_value(unit, RustId::CastEnsnaringBrood) == 1) {
-					u32 energy = techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256;
-					if (unit->has_energy(energy)) {
-						unit->spend_unit_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256);
-						scbw::decloak_proc(unit);
-						Point16 pos = unit->position;
-						s32 radius = 6 * 32;
-						scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 0);
-						// TODO: unit search
-						scbw::UnitFinder(
-							pos.x - radius,
-							pos.y - radius,
-							pos.x + radius,
-							pos.y + radius
-						).for_each([&](Unit* target) {
-							if (!(scbw::is_allied_to(target->player, unit->player))) {
-								return;
-							}
-							if (units_dat::base_property[target->id] & UnitProperty::Building
-								|| !(target->status & UnitStatus::Completed)) {
-								return;
-							}
-							// Overlays
-							if (target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
-								target->remove_overlay(ImageId::EnsnaringBroodOverlay);
-							}
-							UnitExt* targetExt = get_unit_ext(target);
-							targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
-							target->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
-						});
+				Point16 pos = unit->position;
+				s32 radius = 5 * 32;
+				// TODO: unit search
+				scbw::UnitFinder(
+					pos.x - radius,
+					pos.y - radius,
+					pos.x + radius,
+					pos.y + radius
+				).for_each([&](Unit* target) {
+					if (!(scbw::is_allied_to(target->player, unit->player))) {
+						return;
 					}
-				}
+					if  (units_dat::base_property[target->id] & UnitProperty::Building
+					|| !(target->status & UnitStatus::Completed)) {
+						return;
+					}
+
+					// Overlays
+					UnitExt* target_ext = get_unit_ext(target);
+					target_ext->timers[TimerEnsnaringBrood] = 3;
+					if (!target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
+						target->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
+					}
+					});
 			} break;
 			case UnitId::ProtossClarion:
 			{

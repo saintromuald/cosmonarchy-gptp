@@ -466,8 +466,6 @@ namespace hooks
 		}
 
 		// Gptp Timer
-		// TODO: Add egg boost timers eventually (currently can't read tooltips from eggs)
-		add_status(statuses, "Ensnaring Brood", -1, 1, unit_ext->timers[TimerEnsnaringBrood], TimerType::Gptp);
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
 		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
 		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
@@ -480,12 +478,12 @@ namespace hooks
 		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 
 		// Gptp Value
+		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
 		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
 		add_status(statuses, "Nemean Reactors", unit_ext->values[ValueNemeanReactorsStack], 0);
 		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueSublimeShepherd], 0);
 		add_status(statuses, "Lazarus Agent", unit_ext->values[ValueLazarusAgent], 0);
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
-		add_status(statuses, "Expanded Storage", unit_ext->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
 		add_status(statuses, "Stellar Enforcement", unit_ext->values[ValueStellarEnforcement], 1);

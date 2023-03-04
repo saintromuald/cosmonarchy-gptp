@@ -2217,6 +2217,12 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergMatraleth:
+								{
+									if (current_button->icon_id == IconId::Ensnare) { // Matraleth - Ensnaring Brood
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergZarcavrokor:
 								{
 									if (current_button->icon_id == IconId::RoarUnused) { // Zarcavrokor - Fan of Teeth
