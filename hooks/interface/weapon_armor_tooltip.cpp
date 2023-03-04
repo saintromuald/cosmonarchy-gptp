@@ -272,84 +272,68 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 namespace hooks
 {
 	// Returns the C-string for the tooltip text of the unit's weapon grp_frame.
-	const char* get_weapon_tooltip_string(u8 weapon_id, Unit* unit)
-	{
+	const char* get_weapon_tooltip_string(u8 weapon_id, Unit* unit) {
 		return get_damage_tootlip_string(weapon_id, unit, weapons_dat::label[weapon_id]);
 	}
 
-	static std::string timerToString(s32 timer)
-	{
+	static std::string vanilla_timer_to_string(s32 timer) {
 		std::stringstream builder;
 		builder << std::setprecision(4);
 		builder << ceil(timer * 0.042 * 8.0) << "s";
 		return builder.str();
 	}
 
-	static std::string gptpTimerToString(s32 timer)
-	{
+	static std::string gptp_timer_to_string(s32 timer) {
 		std::stringstream builder;
 		builder << std::setprecision(4);
 		builder << ceil((timer - 1) / 24.0) << "s";
 		return builder.str();
 	}
 
-	static std::string removeTimerToString(s32 timer)
-	{
+	static std::string remove_timer_to_string(s32 timer) {
 		std::stringstream builder;
 		builder << std::setprecision(4);
 		builder << ceil(timer / 24.0) << "s";
 		return builder.str();
 	}
 
-	enum struct TimerType
-	{
+	enum struct TimerType {
 		Vanilla = 0,
 		Gptp,
 		RemoveTimer
 	};
 
-	// maxValue						value format
+	// max_value					value format
 	// 0  - unlimited stacks		x
 	// 1  - binary true / false
 	// >1 - limited stacks			x/max
-	static void add_status(std::vector<std::string>& vec, std::string name, s32 value = -1, s32 maxValue = 0, s32 timer = -1, TimerType timerType = TimerType::Vanilla)
-	{
-		if (timer > 0 || value > 0)
-		{
+	static void add_status(std::vector<std::string>& vec, std::string name, s32 value = -1, s32 max_value = 0, s32 timer = -1, TimerType timer_type = TimerType::Vanilla) {
+		if (timer > 0 || value > 0) {
 			std::string text = name;
-			if (timer > 0 || value > 1 || (value > 0 && maxValue != 1))
-			{
+			bool show_value = value > 0 && max_value != 1;
+			if (timer > 0 || show_value) {
 				text += " (";
-				if (timer > 0)
-				{
-					if (timerType == TimerType::Vanilla)
-					{
-						text += timerToString(timer);
+				if (timer > 0) {
+					if (timer_type == TimerType::Vanilla) {
+						text += vanilla_timer_to_string(timer);
+					} else if (timer_type == TimerType::Gptp) {
+						text += gptp_timer_to_string(timer);
+					} else {
+						text += remove_timer_to_string(timer);
 					}
-					else if (timerType == TimerType::Gptp)
-					{
-						text += gptpTimerToString(timer);
-					}
-					else
-					{
-						text += removeTimerToString(timer);
-					}
-					if (value > 0 && maxValue != 1)
-					{
+					if (show_value) {
 						text += ", ";
 					}
 				}
-				if (value > 0 && maxValue != 1)
-				{
+				if (show_value) {
 					text += std::to_string(value);
-					if (maxValue > 1)
-					{
-						text += "/" + std::to_string(maxValue);
+					if (max_value > 1) {
+						text += "/" + std::to_string(max_value);
 					}
 				}
 				text += ")";
 			}
-			vec.push_back(text);
+			vec.emplace_back(text);
 		}
 	}
 
@@ -365,8 +349,7 @@ namespace hooks
 		return bonus_armor;
 	}
 
-	const char* get_armor_tooltip_string(Unit* unit)
-	{
+	const char* get_armor_tooltip_string(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
@@ -387,21 +370,21 @@ namespace hooks
 
 		/*
 		switch (unit_size) {
-		case UnitSize::Light: {
-		size_text = BWTC_TEAL "Light" BWTC_RESET;
-		} break;
-		case UnitSize::Medium: {
-		size_text = BWTC_YELLOW "Medium" BWTC_RESET;
-		} break;
-		case UnitSize::Heavy: {
-		size_text = BWTC_ORANGE "Heavy" BWTC_RESET;
-		} break;
-		case UnitSize::Titanic: {
-		size_text = BWTC_RED "Titanic" BWTC_RESET;
-		} break;
-		default: {
-		size_text = BWTC_WHITE "Unknown" BWTC_RESET;
-		} break;
+			case UnitSize::Light: {
+				size_text = BWTC_TEAL "Light" BWTC_RESET;
+			} break;
+			case UnitSize::Medium: {
+				size_text = BWTC_YELLOW "Medium" BWTC_RESET;
+			} break;
+			case UnitSize::Heavy: {
+				size_text = BWTC_ORANGE "Heavy" BWTC_RESET;
+			} break;
+			case UnitSize::Titanic: {
+				size_text = BWTC_RED "Titanic" BWTC_RESET;
+			} break;
+			default: {
+				size_text = BWTC_WHITE "Unknown" BWTC_RESET;
+			} break;
 		}
 		*/
 
@@ -503,7 +486,7 @@ namespace hooks
 		add_status(statuses, "Kelvin Munitions", unit_ext->values[ValueKelvinMunitionsSlow] > 0, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
-		add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
+	//	add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
 		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenPlayer] > 0, 1);
 		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 
@@ -526,7 +509,7 @@ namespace hooks
 		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
 		add_status(statuses, "Counter-Proposal Active", unit_ext->timers[TimerAnticthonRevive] > 0, 1);
-		add_status(statuses, "Godlike", unit_ext->timers[TimerGodsMadeFlesh] > 0, 1);
+	//	add_status(statuses, "Godlike", unit_ext->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
 		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 200, unit->defensive_matrix_timer);

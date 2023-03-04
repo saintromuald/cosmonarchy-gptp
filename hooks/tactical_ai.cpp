@@ -1091,23 +1091,6 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				});
 			}
-
-			if (unit->has_energy(techdata_dat::energy_cost[TechId::MatralethEnsnaringBrood] * 256) && unit_ext->timers[TimerAI_EnsnaringBrood] == 0) {
-				s32 enemy_count = cosmonarchyUnitCount(0, unit->position, 256, Flags::NoBuilding | Flags::Enemy | Flags::CanAttackOrCast, {});
-				if (enemy_count >= 2) {
-					s32 count = 0;
-					cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally | Flags::CanAttackOrCast, {}, [&](Unit* u) {
-						UnitExt* uExt = get_unit_ext(u);
-						if (!uExt->values[TimerEnsnaringBrood]) {
-							count++;
-						}
-					});
-					if (count >= 5) {
-						scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 1);
-						unit_ext->timers[TimerAI_EnsnaringBrood] = MatralethAIEnsnaringBroodTimer;
-					}
-				}
-			}
 		} else if (unit->id == UnitId::ProtossLanifect) {
 			u32 web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
 			u32 lanifects = 0;
@@ -1184,29 +1167,6 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				unit->order_computer(OrderId::KhaydarinEclipse);
 				unit->order_target.pt = unit->sprite->position;
 				unit->main_order_state = 0;
-			}
-		} else if (unit->id == UnitId::ProtossDemiurge && unit_ext->timers[TimerAI_GenericAbilityCooldown] == 0) {
-			if (unit->energy >= 50 * 256) {
-				auto& vec = unit_ext->unit_vectors[UnitVectorWorshipersDemiurge];
-
-				u32 totalCount = vec.size();
-				u32 inCombatCount = 0;
-				for (Unit* worshiper : vec) {
-					UnitExt* worshiperExt = get_unit_ext(worshiper);
-					if (worshiperExt->damage_dealt_timer < 4 * 24 || worshiperExt->damage_taken_timer < 4 * 24)
-					{
-						inCombatCount++;
-					}
-				}
-
-				if (totalCount > 3 && inCombatCount > totalCount - inCombatCount) {
-					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 1);
-					unit_ext->timers[TimerAI_GenericAbilityCooldown] = 10 * 24;
-				} else {
-					unit_ext->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
-				}
-			} else {
-				unit_ext->timers[TimerAI_GenericAbilityCooldown] = 1 * 24;
 			}
 		} else if (unit->id == UnitId::ZergAkistrokor && unit->main_order_id != OrderId::BlissfulEmbrace) {
 			EntryArray targets = {};

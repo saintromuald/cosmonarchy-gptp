@@ -104,10 +104,10 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (target_ext->timers[TimerGodsMadeFlesh]) {
-			data.damage = 0;
-			data.damage_type = DamageType::Independent;
-		}
+	//	if (target_ext->timers[TimerGodsMadeFlesh]) {
+	//		data.damage = 0;
+	//		data.damage_type = DamageType::Independent;
+	//	}
 
 		// TODO: remove this
 		bool can_damage = true; // debug only!

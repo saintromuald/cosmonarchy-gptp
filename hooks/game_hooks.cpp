@@ -1511,27 +1511,27 @@ namespace hooks {
 			case UnitId::ProtossDemiurge:
 			{
 				// Demiurge - Gods Made Flesh - initial cast
-				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh) && !unit_ext->values[ValueGodsMadeFleshActive]) {
-					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
-					scbw::decloak_proc(unit);
-					unit_ext->values[ValueGodsMadeFleshActive] = 1;
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
-					unit->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
-				}
+			//	if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh) && !unit_ext->values[ValueGodsMadeFleshActive]) {
+			//		scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
+			//		scbw::decloak_proc(unit);
+			//		unit_ext->values[ValueGodsMadeFleshActive] = 1;
+			//		helper::play_sound_from_unit(scbw::rand_between(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
+			//		unit->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
+			//	}
 				// Demiurge - Gods Made Flesh - apply link
-				if (unit_ext->values[ValueGodsMadeFleshActive]) {
-					for (Unit* target : unit_ext->unit_vectors[UnitVectorWorshipersDemiurge]) {
-						UnitExt* targetExt = get_unit_ext(target);
-						targetExt->timers[TimerGodsMadeFlesh] = 3;
-						u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
-						if (!target->get_overlay(overlay)) {
-							target->sprite->create_top_overlay(overlay);
-						}
-					}
-					if (!unit->energy) {
-						unit_ext->values[ValueGodsMadeFleshActive] = 0;
-					}
-				}
+			//	if (unit_ext->values[ValueGodsMadeFleshActive]) {
+			//		for (Unit* target : unit_ext->unit_vectors[UnitVectorWorshipersDemiurge]) {
+			//			UnitExt* targetExt = get_unit_ext(target);
+			//		//	targetExt->timers[TimerGodsMadeFlesh] = 3;
+			//			u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
+			//			if (!target->get_overlay(overlay)) {
+			//				target->sprite->create_top_overlay(overlay);
+			//			}
+			//		}
+			//		if (!unit->energy) {
+			//			unit_ext->values[ValueGodsMadeFleshActive] = 0;
+			//		}
+			//	}
 			} break;
 			case UnitId::TerranMaverick:
 			{
@@ -2606,18 +2606,18 @@ namespace hooks {
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner
-		if (unit_ext->values[ValueWorshipStack] && !unit_ext->units[UnitMindController]) {
-			helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
-			unit->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
-			unit_ext->values[ValueWorshipStack] = 0;
-			unit_ext->timers[TimerGodsMadeFlesh] = 0;
-			scbw::recede_mind_control(unit);
-		}
+	//	if (unit_ext->values[ValueWorshipStack] && !unit_ext->units[UnitMindController]) {
+	//		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
+	//		unit->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+	//		unit_ext->values[ValueWorshipStack] = 0;
+	//		unit_ext->timers[TimerGodsMadeFlesh] = 0;
+	//		scbw::recede_mind_control(unit);
+	//	}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
-		if (unit_ext->timers[TimerGodsMadeFlesh] == 1 && unit_ext->units[UnitMindController]) {
-			unit->remove();
-		}
+	//	if (unit_ext->timers[TimerGodsMadeFlesh] == 1 && unit_ext->units[UnitMindController]) {
+	//		unit->remove();
+	//	}
 
 		// Alaszileth - Dermal Accelerant - remove overlays
 		if (!unit_ext->timers[TimerAlaszilethRegenBoost]) {

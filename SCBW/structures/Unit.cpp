@@ -544,9 +544,9 @@ void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool not
 	UnitExt* unit_ext = get_unit_ext(this);
 	auto damage = dmg;
 	s32 shield_reduce_amount = 0;
-	if (unit_ext->timers[TimerGodsMadeFlesh]) {
-		return;
-	}
+//	if (unit_ext->timers[TimerGodsMadeFlesh]) {
+//		return;
+//	}
 	if (units_dat::shields_enabled[this->id]) {
 		shield_reduce_amount = std::min(damage, this->shields);
 		damage -= shield_reduce_amount;

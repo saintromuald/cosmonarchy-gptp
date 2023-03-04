@@ -63,8 +63,8 @@ enum ExtValueId
 	ValueWorshipStack,
 	ValueMindControlOriginalPlayer,
 	ValuePreMorphEnergy,
-	ValueGodsMadeFleshCast,
-	ValueGodsMadeFleshActive,
+//	ValueGodsMadeFleshCast,
+//	ValueGodsMadeFleshActive,
 	ValueLurkerPickTarget,
 	ValueKelvinMunitionsSlow,
 	ValueRaceSupplyType,
@@ -163,7 +163,7 @@ enum ExtTimerId
 	TimerIonFieldAttackSpeed,
 	TimerReconstitutionCooldown,
 	TimerBindingGrip,							// unused
-	TimerGodsMadeFlesh,
+//	TimerGodsMadeFlesh,
 	TimerControlledDemolition,
 	TimerEmergencyDetonation,
 	TimerNemeanReactors,
@@ -240,7 +240,6 @@ enum ExtTimerId
 	TimerAI_GriefOfAllGods,
 	TimerAI_DisruptionField,
 	TimerAI_MadrigalTempoChangeTimer,
-	TimerAI_EnsnaringBrood,	
 	TimerAI_MadrigalTempoChangeCooldown,
 
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities

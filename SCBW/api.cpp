@@ -1677,7 +1677,7 @@ namespace scbw {
 		targetExt->values[ValueMindControlOriginalPlayer] = 0;
 
 		targetExt->values[ValueWorshipStack] = 0;
-		targetExt->timers[TimerGodsMadeFlesh] = 0;
+	//	targetExt->timers[TimerGodsMadeFlesh] = 0;
 		targetExt->values[ValueTyrannyPlayer] = 0;
 	}
 

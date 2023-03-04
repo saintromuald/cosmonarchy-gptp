@@ -34,10 +34,10 @@ namespace hooks
 		*/
 
 		// Spend energy for Gods Made Flesh
-		if (unit_ext->values[ValueGodsMadeFleshActive]) {
-			unit->spend_unit_energy(GodsMadeFleshEnergyDrain);
-			dont_regen = true;
-		}
+	//	if (unit_ext->values[ValueGodsMadeFleshActive]) {
+	//		unit->spend_unit_energy(GodsMadeFleshEnergyDrain);
+	//		dont_regen = true;
+	//	}
 
 		// Spend energy for Phobos Discharge
 		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
