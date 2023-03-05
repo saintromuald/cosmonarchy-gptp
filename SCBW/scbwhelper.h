@@ -161,7 +161,7 @@ namespace helper {
 	u32 get_default_refinery_type(u32 player);
 
 	// for ai_unit_was_hit // some of these should probably be methods in api/etc
-	char ai_cancel_structure(Unit* structure);
+	char cancel_unit(Unit* structure);
 	Unit* ai_get_actual_target(Unit* attacker, Unit* target);
 	Unit* check_arbiter_cloaking_range(Unit* unit, u16 id);
 	void ai_order_unit_cloaking(Unit* unit);
@@ -224,7 +224,7 @@ namespace helper {
 	void ai_finish_region_accessibility(char* regionData);
 	s32 ai_set_attack_grouping_region(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
 		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
-	char ai_cancel_structure(Unit* structure);
+	char cancel_unit(Unit* structure);
 
 	bool unit_cant_see_cloaked_target(Unit* unit, Unit* target);											// 00401D60
 	bool unit_can_infest(Unit* unit);																		// 00402750

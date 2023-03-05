@@ -1229,7 +1229,7 @@ namespace helper {
 
 	// For ai_unit_was_hit
 	// Some of these should probably be methods in api/etc
-	char ai_cancel_structure(Unit* structure) {
+	char cancel_unit(Unit* structure) {
 		const u32 Func_AI_cancel_structure = 0x00468280;
 		static u32 result;
 		__asm {

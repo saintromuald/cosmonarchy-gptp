@@ -175,7 +175,7 @@ namespace hooks {
 						} else {
 							u8 counter = 4;
 							if (unit->current_build_unit) {
-								helper::ai_cancel_structure(unit->current_build_unit);
+								helper::cancel_unit(unit->current_build_unit);
 							} else if (!units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) {
 								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot % 5], unit->player);
 							}

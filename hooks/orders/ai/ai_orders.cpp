@@ -37,7 +37,7 @@ namespace hooks {
 					&& !(unit->status & UnitStatus::Completed)) {
 					u32 threshold = std::max(10, unit->get_total_hp_plus_shields() / 16); // Used to be divided by 4 -Veeq7
 					if (unit->get_current_life_ingame() < threshold) {
-						helper::ai_cancel_structure(unit);
+						helper::cancel_unit(unit);
 						return;
 					}
 				}
