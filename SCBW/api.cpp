@@ -2764,6 +2764,7 @@ namespace scbw {
 			case WeaponId::PariahIconoclastBlades:
 			case WeaponId::StarSovereignCelestialCannon:
 			case WeaponId::LiiraliskHollowedSpores:
+			case WeaponId::CikraliskAcidSalvo:
 			case WeaponId::MortothrokorWickedIncisors:
 			case WeaponId::BactaliskCorrosiveAcid:
 			case WeaponId::AlmaksaliskPiercingSpines:

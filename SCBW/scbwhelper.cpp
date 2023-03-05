@@ -2482,7 +2482,7 @@ namespace helper {
 		}
 	}
 
-	char switchSpriteId(Sprite* sprite, s32 spriteId) {
+	char switch_sprite_id(Sprite* sprite, s32 spriteId) {
 		const u32 Func_switchSpriteId = 0x00499860;
 		static s32 result;
 		__asm {

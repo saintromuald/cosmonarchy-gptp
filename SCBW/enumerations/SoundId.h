@@ -1446,6 +1446,9 @@ namespace SoundId
 		PhobosOrderAggressive02				= 2299,
 		PhobosOrderAggressive03				= 2300,
 		PhobosOrderAggressive04				= 2301,
+
+		SpiderMineDeploy01					= 2314,
+		TerranBuildingLand01				= 2315,
 	};
 }
 

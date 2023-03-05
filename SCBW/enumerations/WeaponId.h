@@ -274,6 +274,7 @@ namespace WeaponId {
 		EvigriliskBrutishTendrils			= 146,
 		ZarcavrokorBisectingBlades			= 152,
 		ZarcavrokorBonesofReflection		= 153,	// Zarcavrokor passive weapon
+		CikraliskAcidSalvo					= 161,
 		TethzorokorSaberArray				= 162,
 		ProtathalorPungentSpores			= 163,
 		VilgorokorDissolvingSabers			= 164,

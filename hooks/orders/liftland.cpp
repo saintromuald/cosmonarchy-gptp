@@ -78,6 +78,7 @@ namespace hooks
 					unit->flingy_top_speed = 256;
 					helper::set_unit_movement_speed(unit, 256);
 					unit->main_order_state = 2;
+					helper::play_sound_from_unit(SoundId::TerranBuildingLand01, unit, 1, 0);
 				}
 			}
 		} else if (unit->main_order_state == 2) {

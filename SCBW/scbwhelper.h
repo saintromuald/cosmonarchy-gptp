@@ -290,7 +290,7 @@ namespace helper {
 
 	// For burrow_generic
 	void toggle_unit_path(Unit* unit);									                                    // 004E42A0
-	char switchSpriteId(Sprite* sprite, s32 spriteId);														// 00499860
+	char switch_sprite_id(Sprite* sprite, s32 spriteId);														// 00499860
 
 	//// building_morph
 	void refund_building_cost(u16 unit_id, u8 player);														// 002CE70

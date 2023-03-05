@@ -52,6 +52,7 @@ namespace hooks
 	{
 		if (unit->main_order_state == 0)
 		{
+			helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
 			unit->ground_weapon_cooldown = MineBurrowTime;
 			unit->main_order_state = 1;
 		}
@@ -117,8 +118,8 @@ namespace hooks
 		// unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
 		else if (unit->main_order_state == 5)
 		{
-			bool bIsCompletelyInRange = false;
-			bool bEndThere = false;
+			bool is_completely_in_range = false;
+			bool not_movable = false;
 			helper::unburrow_generic(unit); // related to movement, similar to function_004E9A30
 			if (unit->order_target.unit)
 			{
@@ -129,29 +130,29 @@ namespace hooks
 					helper::move_to_collide(unit, unit->order_target.unit);
 					if (unit->is_target_within_min_range(unit->order_target.unit, MineDetonateRange))
 					{
-						bIsCompletelyInRange = true; // jump to 00463F22
+						is_completely_in_range = true; // jump to 00463F22
 					}
 					else if (unit->get_movable_state() != 2) // unit not unmovable
 					{
-						bEndThere = true;
+						not_movable = true;
 					}
 				}
 			}
-			if (!bEndThere && !bIsCompletelyInRange) // 00463F14
+			if (!not_movable && !is_completely_in_range) // 00463F14
 			{
 				helper::set_resource_target(unit);
 				unit->main_order_state = 1;
 			}
 
-			if (bIsCompletelyInRange) // 00463F22
+			if (is_completely_in_range) // 00463F22
 			{
 				Image* current_image;
-				unit->order_target.unit = nullptr;
+				unit->order_target.unit = 0;
 				unit->order_target.pt.x = unit->sprite->position.x;
 				unit->order_target.pt.y = unit->sprite->position.y;
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
-				while (current_image != nullptr)
+				while (current_image)
 				{
 					current_image->play_iscript_animation(anim);
 					current_image = current_image->link.next;
@@ -171,109 +172,90 @@ namespace hooks
 		}
 	}
 
+	// Not tested yet. -Pr0nogo
 	void orders_place_mine(Unit* unit) // 00464FD0
 	{
-		Unit* v1;
-		Unit* target;
-		s32 v3;
-		Sprite* v4;
-		s32 v5;
-		s32 v6;
-		Unit* v7;
-		s32 v8;
-		s32 v9;
-		s32 v10;
-		Sprite* v11;
-		__int16 v12;
-		Unit* v13;
-		Unit* v14;
-		Point16 a2;
-		v1 = unit;
 		if (unit->main_order_state)
 		{
-			if (helper::tech_use_allowed(unit, 3u, unit->player)
-				&& ((v11 = v1->sprite, v1->move_target.pt.x != v11->position.x)
-					|| v1->move_target.pt.y != v11->position.y
-					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
+			Sprite* unit_sprite = unit->sprite;
+			if  (helper::tech_use_allowed(unit, 3u, unit->player)
+			&&  (unit->move_target.pt.x != unit_sprite->position.x) || unit->move_target.pt.y != unit_sprite->position.y || ((unit->status & UnitStatus::Unmovable) != 0) != 1)
 			{
-				if ((helper::get_distance_fast(v1->halt.x, v1->order_target.pt.x << 8, v1->halt.y, v1->order_target.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
-				{
-					helper::orders_hold_pos_suicidal(v1);
-					v12 = v1->order_target.pt.y;
-					a2.x = v1->order_target.pt.x;
-					a2.y = v12;
-					helper::fix_target_location(&a2, 0xDu);
-					v13 = helper::create_unit(0xDu, a2.x, a2.y, (unsigned __int8)v1->player);
-					v14 = v13;
-					if (v13)
+				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 0x1400) {
+					helper::orders_hold_pos_suicidal(unit);
+					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
+					helper::fix_target_location(&target_pos, UnitId::TerranSpiderMine);
+					Unit* mine = helper::create_unit(UnitId::TerranSpiderMine, target_pos.x, target_pos.y, unit->player);
+					if (mine)
 					{
-						helper::update_unit_stats_and_finish_building(v13);
-						helper::update_unit_strength_and_apply_default_orders(v14);
-						v14->sprite->player = v1->sprite->player;
-						helper::turn_unit(v14, v1->current_direction_1);
-						v1->mine_carrier.mine_count -= 1;
+						helper::update_unit_stats_and_finish_building(mine);
+						helper::update_unit_strength_and_apply_default_orders(mine);
+						mine->sprite->player = unit->sprite->player;
+						helper::turn_unit(mine, unit->current_direction_1);
+						unit->mine_carrier.mine_count -= 1;
 					}
 					else
 					{
-						helper::display_last_network_error_for_player(v1->player);
+						helper::display_last_network_error_for_player(unit->player);
 					}
-					helper::to_idle(v1);
+					helper::to_idle(unit);
 				}
-				else if (v1->unit_ai)
+				else if (unit->unit_ai)
 				{
-					if (helper::is_unit_movable(v1))
-						helper::to_idle(v1);
+					if (helper::is_unit_movable(unit))
+					{
+						helper::to_idle(unit);
+					}
 				}
 			}
-			else if (v1->order_queue_head)
+			else if (unit->order_queue_head)
 			{
-				v1->user_action_flags |= 1u;
-				helper::orders_nothing_2(v1);
+				unit->user_action_flags |= 1;
+				helper::orders_nothing_2(unit);
 			}
-			else if (v1->unit_ai)
+			else if (unit->unit_ai)
 			{
-				helper::issue_order_targeting_nothing(v1, 0x9Cu);
+				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 			}
 			else
 			{
-				helper::issue_order_targeting_nothing(v1, units_dat::return_to_idle_order[(unsigned __int16)v1->id]);
+				helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
 			}
 		}
 		else
 		{
-			target = unit->order_target.unit;
+			Unit* target = unit->order_target.unit;
 			if (target)
 			{
-				v3 = helper::move_to_target(target, unit);
-				v4 = target->sprite;
-				v5 = v4->position.y;
-				v6 = v4->position.x;
-				if (v6 != v1->next_target_waypoint.x || v5 != v1->next_target_waypoint.y)
+				bool can_move = helper::move_to_target(target, unit);
+				Sprite* target_sprite = target->sprite;
+				s32 sprite_pos_x = target_sprite->position.x;
+				s32 sprite_pos_y = target_sprite->position.y;
+				if (sprite_pos_x != unit->next_target_waypoint.x || sprite_pos_y != unit->next_target_waypoint.y)
 				{
-					v1->next_target_waypoint.x = v6;
-					v1->next_target_waypoint.y = v5;
+					unit->next_target_waypoint.x = sprite_pos_x;
+					unit->next_target_waypoint.y = sprite_pos_y;
 				}
-				if (v3)
+				if (can_move)
 				{
-					v7 = v1->order_target.unit;
-					v1->order_target.pt.x = v7->sprite->position.x;
-					v1->order_target.pt.y = v7->sprite->position.y;
-					v1->main_order_state = 1;
+					unit->order_target.pt.x = target->sprite->position.x;
+					unit->order_target.pt.y = target->sprite->position.y;
+					unit->main_order_state = 1;
 				}
 			}
 			else
 			{
-				v8 = unit->order_target.pt.y;
-				v9 = unit->order_target.pt.x;
-				ByteOperations::SetLowByte(v10, helper::set_move_target_xy(unit, v9, v8));
-				if (v9 != v1->next_target_waypoint.x || v8 != v1->next_target_waypoint.y)
+				s32 sprite_pos_x = unit->order_target.pt.x;
+				s32 sprite_pos_y = unit->order_target.pt.y;
+				bool move_target = helper::set_move_target_xy(unit, sprite_pos_x, sprite_pos_y);
+				if (sprite_pos_x != unit->next_target_waypoint.x || sprite_pos_y != unit->next_target_waypoint.y)
 				{
-					v1->next_target_waypoint.x = v9;
-					v1->next_target_waypoint.y = v8;
+					unit->next_target_waypoint.x = sprite_pos_x;
+					unit->next_target_waypoint.y = sprite_pos_y;
 				}
-				if (v10)
+				if (move_target)
 				{
-					v1->main_order_state = 1;
+					unit->main_order_state = 1;
 				}
 			}
 		}
@@ -297,12 +279,12 @@ namespace hooks
 		if (unit_var->id == UnitId::ZergLakizilisk)
 		{
 			// Warning, tism detected
-			// ByteOperations::SetLowByte(new_sprite, switchSpriteId(old_sprite, SpriteId::White_Circle_Invisible));
+			// ByteOperations::SetLowByte(new_sprite, switch_sprite_id(old_sprite, SpriteId::White_Circle_Invisible));
 			unit_var->sprite->elevation = 1;
 		}
 		else
 		{
-			helper::switchSpriteId(old_sprite, SpriteId::White_Circle_Invisible);
+			helper::switch_sprite_id(old_sprite, SpriteId::White_Circle_Invisible);
 			new_sprite = unit_var->sprite;
 			new_sprite->elevation = 1;
 		}
