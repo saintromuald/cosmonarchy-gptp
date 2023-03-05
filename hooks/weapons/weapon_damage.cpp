@@ -964,19 +964,24 @@ namespace hooks
 		//		regression = UnitId::ZergIrulentIvoa;
 		//	}
 			if (data.damage > 0 && regression != UnitId::None) {
-				helper::replace_unit_with_id(data.target, regression);
-				data.target->set_hitpoints(data.target->get_max_hp_raw());
+				helper::cancel_unit(data.target);
+				// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
+				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
+				if (data.target) {
+					helper::replace_unit_with_id(data.target, regression);
+					data.target->set_hitpoints(data.target->get_max_hp_raw());
 
-				u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-				if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
-					effect_image_id = ImageId::ZergBuildingExplosion;
-				} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
-					effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+					u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+					if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
+						effect_image_id = ImageId::ZergBuildingExplosion;
+					} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
+						effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+					}
+					data.target->sprite->create_overlay(effect_image_id);
+					helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
+
+					fatal_deal_damage = false;
 				}
-				data.target->sprite->create_overlay(effect_image_id);
-				helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
-
-				fatal_deal_damage = false;
 			}
 		}
 

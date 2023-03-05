@@ -91,7 +91,7 @@ namespace hooks
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->player == *g_active_nation_id) {
-				helper::ai_cancel_structure(unit);
+				helper::cancel_unit(unit);
 			}
 		}
 	}
@@ -101,7 +101,7 @@ namespace hooks
 		*unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->player == *g_active_nation_id) {
-				helper::ai_cancel_structure(unit);
+				helper::cancel_unit(unit);
 			}
 		}
 	}
