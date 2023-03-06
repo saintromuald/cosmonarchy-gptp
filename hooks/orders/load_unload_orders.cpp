@@ -18,7 +18,7 @@ namespace hooks
 			helper::prepend_order_targeting_unit(unit, unitToLoad, OrderId::Pickup2);
 			prepare_for_next_order(unit);
 		}
-		else if (unit->unit_ai != nullptr)
+		else if (unit->unit_ai)
 		{
 			Point16 pos = {0,0};
 			unit->user_action_flags |= 1;
@@ -620,6 +620,9 @@ namespace hooks
 		}
 		if (scbw::transport_is_full(transport))
 		{
+			return 0;
+		}
+		if (unit->status & UnitStatus::InAir) {
 			return 0;
 		}
 

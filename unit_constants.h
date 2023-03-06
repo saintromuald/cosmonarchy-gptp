@@ -53,7 +53,7 @@ const s32 ApostleAILastBreathTimer = 24;
 const s32 OlympianMeleeDistance = 30;
 
 // Mines
-const s32 MineBurrowTime = 60;
+const s32 MineBurrowTime = 72;
 const s32 MineSeekRange = 576;
 const s32 MineDetonateRange = 30;
 const s32 LobotomyMineLockdownTimer = 12; // 4 seconds
