@@ -506,19 +506,16 @@ namespace hooks {
 			stop_there = true;
 		}
 
-		if (!stop_there) {
-			if (config.grid_hotkeys) {
-				for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
-					if (dialog->index > 0 &&
-						dialog->control_type == DialogControlTypes::Button &&
-						dialog->button_user &&
-						dialog->button_user->requirement_string_id) {					
-						char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
-						char* hotkey_char = find_hotkey_char(label + 2);
-						if (hotkey_char) {
-							u32 index = dialog->index - 1;
-							*hotkey_char = toupper(config.layout[index / 3].at(index % 3));
-						}
+		if (!stop_there && config.grid_hotkeys) {
+			for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
+				if (dialog->index > 0 && dialog->index <= 9 &&
+					dialog->control_type == DialogControlTypes::Button &&
+					dialog->button_user && dialog->button_user->requirement_string_id) {					
+					char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
+					char* hotkey_char = find_hotkey_char(label + 2);
+					if (hotkey_char) {
+						u32 index = dialog->index - 1;
+						*hotkey_char = toupper(config.layout[index / 3].at(index % 3));
 					}
 				}
 			}
