@@ -173,24 +173,17 @@ namespace hooks {
 		return Point16{(u16)(startX + offsetX), (u16)(startY + offsetY)};
 	}
 
-	void create_initial_melee_units()
-	{
-		u32 player;
-		u8* raceIdOffset;
+	void create_initial_melee_units() {
+		u32 player = 8;
+		u8* raceIdOffset = (u8*)0x0057F009;
 
-		player = 8;
-		raceIdOffset = (u8*)0x0057F009;
-
-		while (raceIdOffset != (u8*)0x0057EEE9)
-		{
+		while (raceIdOffset != (u8*)0x0057EEE9) {
 			raceIdOffset -= 0x24;
 			player--;
 
-			if (*(raceIdOffset - 1) == 2 || *(raceIdOffset - 1) == 1)
-			{
+			if (*(raceIdOffset - 1) == 2 || *(raceIdOffset - 1) == 1) {
 				// 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
 				u8 starting_units = (u8)(*(u16*)(0x00596871));
-
 				static u8* victory_conditions = (u8*)0x0059686D;
 				static u8* tournament_mode = (u8*)0x00596877;
 				static u8* user_select_slots = (u8*)0x0059BDA8;
@@ -200,44 +193,37 @@ namespace hooks {
 					&& *tournament_mode == 0					// tournament mode off
 					&& player < 8
 					&& (user_select_slots[player]) != 0		// race selected instead of using map settings?
-					)
-				{
+					) {
 					starting_units = 2;
 				}
 
-				if (starting_units == 2)
-				{
+				if (starting_units == 2) {
 					create_initial_melee_buildings(*raceIdOffset, player);
-					if (*raceIdOffset == RaceId::Zerg)
-					{
+					if (*raceIdOffset == RaceId::Zerg) {
 						create_initial_ovileth(player);
 					}
 				}
 
-				if (starting_units == 1 || starting_units == 2)
-				{
+				if (starting_units == 1 || starting_units == 2) {
 					u32 unit_id = get_racial_worker(*raceIdOffset);
-					u8 townhallId = get_racial_townhall(*raceIdOffset);
-					Unit* created_unit;
+					u8 townhall_id = get_racial_townhall(*raceIdOffset);
 
-					if (unit_id != UnitId::None)
-					{
-						Point16 startPos = g_start_positions[player];
+					if (unit_id != UnitId::None) {
+						Point16 start_pos = g_start_positions[player];
 						bool horizontal = true;
-						Point16 pos = find_worker_spawn_positions(townhallId, startPos.x, startPos.y, horizontal);
+						Point16 pos = find_worker_spawn_positions(townhall_id, start_pos.x, start_pos.y, horizontal);
 
-						for (s32 i = 0; i < 6; i++)
-						{
-							const s32 correctionOffset = 1;
-							const s32 unitWidth = units_dat::unit_bounds[unit_id].left + units_dat::unit_bounds[unit_id].right + correctionOffset;
-							const s32 unitHeight = units_dat::unit_bounds[unit_id].bottom + units_dat::unit_bounds[unit_id].top + correctionOffset;
+						s32 dx = 0;
+						s32 dy = 0;
+						if (horizontal) dx = units_dat::unit_bounds[unit_id].left   + units_dat::unit_bounds[unit_id].right + 1;
+						else            dy = units_dat::unit_bounds[unit_id].bottom + units_dat::unit_bounds[unit_id].top   + 1;
 
-							if (horizontal) pos.x += unitWidth;
-							else pos.y -= unitHeight;
+						for (s32 i = 0; i < 6; i++) {
+							pos.x += dx;
+							pos.y -= dy;
 
-							created_unit = helper::create_unit(unit_id, pos.x, pos.y, player);
-							if (created_unit)
-							{
+							Unit* created_unit = helper::create_unit(unit_id, pos.x, pos.y, player);
+							if (created_unit) {
 								scbw::teleport(created_unit, pos);
 								helper::update_unit_stats_and_finish_building(created_unit);
 								if (helper::show_finished_unit(created_unit) != 0)
