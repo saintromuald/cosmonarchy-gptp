@@ -425,7 +425,7 @@ namespace ImageId {
 		PsiEmitterShadow_Carried            = 418,
 		AcidSpray_Unused                    = 419,
 		PlasmaDrip_Unused                   = 420,
-		HarakanFlameThrower                 = 421,
+		HarakanFlamethrower                 = 421,
 		Longbolt_GeminiMissilesTrail        = 422,
 		BurrowingDust                       = 423,
 		ShieldOverlay                       = 424,

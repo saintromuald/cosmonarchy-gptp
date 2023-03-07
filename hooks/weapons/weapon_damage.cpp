@@ -20,7 +20,7 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
 	return scbw::is_under_dark_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
-		&& weapon_id != WeaponId::HarakanFlameThrower
+		&& weapon_id != WeaponId::HarakanFlamethrower
 		&& weapon_id != WeaponId::LakiziliskSubterraneanSpines
 		&& weapon_id != WeaponId::Custom;
 }
@@ -461,7 +461,7 @@ namespace hooks
 
 			// These bypass Carapace Swarm
 			switch (data.weapon_id) {
-				case WeaponId::HarakanFlameThrower:
+				case WeaponId::HarakanFlamethrower:
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;

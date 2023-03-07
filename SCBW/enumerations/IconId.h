@@ -338,7 +338,7 @@ namespace IconId
 		/*014C*/	WraithBurstLasers,
 		/*014D*/	ATSLaserBattery,
 		/*014E*/	ATALaserBattery,
-		/*014F*/	HarakanFlameThrower,
+		/*014F*/	HarakanFlamethrower,
 		/*0150*/	PhalanxArcliteShockCannon,
 		/*0151*/	WatchdogLongboltMissile,
 		/*0152*/	ZethrokorClaws,

@@ -2277,7 +2277,7 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::TerranSalamander &&  
-								current_button->icon_id == IconId::HarakanFlameThrower) // Salamander Incendiary Payload
+								current_button->icon_id == IconId::HarakanFlamethrower) // Salamander Incendiary Payload
 							{
 								current_button_state = Button_State::Enabled;
 							}

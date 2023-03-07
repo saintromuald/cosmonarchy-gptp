@@ -95,20 +95,34 @@ namespace hooks
 			unit_var = unit->subunit;
 		}
 
-		Image* bunkerImage = unit_var->connected_unit->sprite->main_graphic;
-		u8 frameDirection = (unit_var->current_direction_1 + 16) / 32 % 8;
-		const LO_Header* loFile = lo_files->attack_overlays[bunkerImage->id];
-		Point8 offset = loFile->get_offset(bunkerImage->frame_index, frameDirection);
+		Image* bunker_image = unit_var->connected_unit->sprite->main_graphic;
+		u8 frame_direction = (unit_var->current_direction_1 + 16) / 32 % 8;
+		const LO_Header* attack_overlay = lo_files->attack_overlays[bunker_image->id];
+		Point8 offset = attack_overlay->get_offset(bunker_image->frame_index, frame_direction);
 
-		if (bunkerImage->flags & ImageFlags::Mirrored) { // Is inverted
+		if (bunker_image->flags & ImageFlags::Mirrored) { // Is inverted
 			offset.x = -offset.x;
 		}
 
-		u8 frame_angle = frameDirection * 32;
-		u16 sprite_id = 377; // Bunker attack overlay
+		u8 frame_angle = frame_direction * 32;
+		u16 sprite_id = SpriteId::BunkerAttackOverlay_Orange; // Bunker attack overlay
+		switch (unit_var->get_race())
+		{
+			case RaceId::Zerg:
+			{
+				sprite_id = SpriteId::BunkerAttackOverlay_Green;
+			} break;
+			case RaceId::Protoss:
+			{
+				sprite_id = SpriteId::BunkerAttackOverlay_Blue;
+			} break;
+			default:
+			{
+			} break;
+		}
 		if (unit_var->id == UnitId::TerranHarakan) {
 			frame_angle = ((unit_var->current_direction_1 + 8) / 16 % 16) * 16;
-			sprite_id = 378; // Firebat flamethrower graphics
+			sprite_id = SpriteId::HarakanFlamethrower;
 		}
 
 		scbw::decloak_proc(unit_var->connected_unit);

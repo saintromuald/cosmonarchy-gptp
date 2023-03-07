@@ -2753,7 +2753,7 @@ namespace scbw {
 		switch (weapon_id)
 		{
 			case WeaponId::CohortGaussPistols:
-			case WeaponId::HarakanFlameThrower:
+			case WeaponId::HarakanFlamethrower:
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
 			case WeaponId::PazuzuJupiterDriver:

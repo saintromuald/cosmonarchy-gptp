@@ -27,7 +27,7 @@ namespace WeaponId {
 		ATA_LaserBattery_Norad_II_Mengsk_DuGalle = 0x16,
 		ATS_LaserBattery_Hyperion = 0x17,
 		ATA_LaserBattery_Hyperion = 0x18,
-		HarakanFlameThrower = 0x19,
+		HarakanFlamethrower = 0x19,
 		FlameThrower_GuiMontag = 0x1A,
 		PhalanxArcliteShockCannon = 0x1B,
 		ArcliteShockCannon_EdmundDuke = 0x1C,

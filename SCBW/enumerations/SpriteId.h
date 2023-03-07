@@ -383,8 +383,8 @@ namespace SpriteId
 		Hallucination_Death1 = 374,
 		Hallucination_Death2 = 375,
 		Hallucination_Death3 = 376,
-		Bunker_Overlay = 377,
-		HarakanFlameThrower = 378,
+		BunkerAttackOverlay_Orange = 377,
+		HarakanFlamethrower = 378,
 		Recall_Field = 379,
 		Scanner_Sweep_Hit = 380,
 		Left_Upper_Level_Door = 381,
@@ -782,6 +782,8 @@ namespace SpriteId
 		ZealotDeath = 810,
 		AntiMatterMissileHit = 829,
 		CuirassStonewallProtocolOverlay = 839,
+		BunkerAttackOverlay_Green = 842,
+		BunkerAttackOverlay_Blue = 843,
 
 		// CORPSE \\
 			
