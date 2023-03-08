@@ -2361,7 +2361,7 @@ namespace scbw {
 				return CorpseConsume_Parasite;
 			}
 		}
-		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
+		if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
 			return CorpseConsume_Revive;
 		}
 		return CorpseConsume_None;
@@ -3078,18 +3078,15 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_id_is_morphed_from_double_unit(u32 unit_id)
-	{
+	bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
 		return unit_id == UnitId::ZergVorvrokor
 			|| unit_id == UnitId::ZergKalkalisk
 			|| unit_id == UnitId::ZergGhitorokor;
 	}
 
-	Image* get_addon_connector_image(Unit* unit)
-	{
+	Image* get_addon_connector_image(Unit* unit) {
 		u16 image_id = 0;
-		switch (unit->id)
-		{
+		switch (unit->id) {
 			case UnitId::TerranMedbay:
 			{
 				image_id = ImageId::MedbayConnector;
@@ -3109,10 +3106,62 @@ namespace scbw {
 				image_id = ImageId::CommandmentConnector;
 			} break;
 		}
-		if (image_id)
-		{
+		if (image_id) {
 			return unit->get_overlay(image_id);
 		}
 		return 0;
+	}
+
+	bool can_revive_corpse(u32 player, Thingy* corpse) {
+		if (!corpse->sprite || !scbw::sprite_id_is_corpse(corpse->sprite->id) || corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) {
+			return false;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		if (!scbw::is_allied_to(player, corpse_ext->corpse_player)) {
+			return false;
+		}
+
+		u32 unit_id = corpse_ext->corpse_unit_id;
+		if (units_dat::base_property[unit_id] & UnitProperty::Building
+			||	unit_id == UnitId::ZergLarva
+			||  unit_id == UnitId::ZergOcsalLarva
+			||  unit_id == UnitId::ZergEgg
+			||  unit_id == UnitId::ZergCocoon
+			||  unit_id == UnitId::ProtossPlasmaShell
+			||  unit_id == UnitId::ProtossSteward) {
+			return false;
+		}
+
+		return true;
+	}
+
+	Unit* revive_corpse(u32 player, Thingy* corpse) {
+		if (!can_revive_corpse(player, corpse)) {
+			return 0;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		Point16 pos = corpse->sprite->position;
+		Unit* unit = scbw::create_unit_in_game(corpse_ext->corpse_unit_id, corpse_ext->corpse_player, pos.x, pos.y);
+		if (unit) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+			unit->play_iscript_animation(IscriptAnimation::Unused1);
+			unit_ext->values[ValueReviveStarted] = 1;
+			unit_ext->timers[TimerReviveFlagClearMin] = 3;
+			unit_ext->timers[TimerReviveFlagClearMax] = 14;
+			switch (unit->id) {
+				case UnitId::ZergRililisk:
+				case UnitId::ZergRilirokor:
+				{
+					unit->remove_timer = BroodspawnTimer;
+				}
+			}
+
+			corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+			corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+		}
+		return unit;
 	}
 }

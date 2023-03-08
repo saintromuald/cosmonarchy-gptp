@@ -1093,12 +1093,6 @@ namespace scbw
 			child_ext->values[ValueDirgeStacks] = parent_ext->values[ValueDirgeStacks];
 		}
 
-		// Inherit Lazarus Agent
-		if (parent_ext->values[ValueLazarusAgent])
-		{
-			child_ext->values[ValueLazarusAgent] = parent_ext->values[ValueLazarusAgent];
-		}
-
 		// Inherit Empress Passive Stacks
 		if (parent_ext->values[ValueEmpressPassiveStacks])
 		{

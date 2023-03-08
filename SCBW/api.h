@@ -740,4 +740,6 @@ namespace scbw
 	bool weapon_id_is_standard_weapon(u32 weapon_id);
 	bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 	Image* get_addon_connector_image(Unit* unit);
+	bool can_revive_corpse(u32 player, Thingy* corpse);
+	Unit* revive_corpse(u32 player, Thingy* thingy);
 }

@@ -45,6 +45,8 @@ SCBW_DATA(Units12*, first_player_unit, 0x006283F8); // Indexed by player Id
 SCBW_DATA(Units12*,			g_completed_factory_counts,		0x0068A9D8);
 SCBW_DATA(Units12*,			g_trigger_factory_counts,		0x0068A9A8);
 
+SCBW_DATA(Thingy*,			g_thingy_table,					0x006509D8); // lone sprites, not fow sprites!
+
 SCBW_DATA(Unit*,			g_unit_table,					0x0059CCA8);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
 SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table); // 0x0064B2E8

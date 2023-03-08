@@ -1040,7 +1040,7 @@ namespace hooks {
 						//	scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unit_ext->timers[TimerReconstitutionCooldown] = 1 * 24;
 						scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, corpse->sprite->position);
@@ -1061,7 +1061,7 @@ namespace hooks {
 						unit->update_speed();
 
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						break;
 					}
@@ -1084,7 +1084,7 @@ namespace hooks {
 				corpse_search_rect(&corpses, {unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
 				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
-					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
+					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
 							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
@@ -1093,7 +1093,7 @@ namespace hooks {
 							UnitExt* eggExt = get_unit_ext(egg);
 							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
 						}
-						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 					}
 				}
@@ -1253,21 +1253,20 @@ namespace hooks {
 					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 					helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0);
 				}
+				// Apply Lazarus Agent
 				if (unit_ext->timers[TimerLazarusCasting] == 1) {
-					EntryArray units = {};
-					unit_search_radial(&units, unit->position, 4 * 32);
-					unit_search_filter(&units, unit, FilterNoBuilding | FilterAlly | FilterIncludingSelf | FilterNoTrap | FilterNoHallucination);
-					for (u32 i = 0; i < units.count; i++) {
-						// Apply Lazarus Agent
-						Unit* target = units.units[i];
-						if (target->id == UnitId::ZergLarva || target->id == UnitId::ZergOcsalLarva || target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon
-						||  target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward) {
-							continue;
+					helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
+
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, unit->position, 4 * 32);
+					for (u32 i = 0; i < corpses.count; i++) {
+						Thingy* corpse = corpses.corpses[i];
+						Unit* revived = scbw::revive_corpse(unit->player, corpse);
+						if (revived) {
+						//	scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, unit->player, unit->sprite->elevation + 1);
+							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
 						}
-						UnitExt* target_ext = get_unit_ext(target);
-						target_ext->values[ValueLazarusAgent] += 1;
-						target->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-						helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
 					}
 					if (unit_ext->values[ValueLazarusRecasts]) {
 						unit_ext->values[ValueLazarusRecasts]--;
@@ -2650,7 +2649,7 @@ namespace hooks {
 		}
 
 		// Anticthon - Counter-Proposal - add overlay
-		if ((unit_ext->timers[TimerAnticthonRevive] || unit_ext->values[ValueLazarusAgent]) && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+		if (unit_ext->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 
