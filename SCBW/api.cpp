@@ -943,26 +943,7 @@ namespace scbw {
 					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
 						unit->remove_timer = remove_timer;
 					}
-					u32 range = 6 * 32;
-					scbw::UnitFinder(
-						unit->get_x() - range,
-						unit->get_y() - range,
-						unit->get_x() + range,
-						unit->get_y() + range
-					).for_each([&](Unit* target) {
-						if (target->id != UnitId::ZergMatraleth) {
-							return;
-						}
-						if (!scbw::is_allied_to(unit->player, target->player)) {
-							return;
-						}
-						if (target->energy < 200 * 256) {
-							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->get_max_energy());
-							target->sprite->create_underlay(425);
-						}
-					});
-					break;
-				}
+				} break;
 				case UnitId::ProtossSimulacrum: {
 					if (creator) {
 						unit->hitpoints = std::max(256, creator->hitpoints);
@@ -970,7 +951,7 @@ namespace scbw {
 						scbw::inherit_debuffs(creator, unit);
 					}
 					helper::play_sound_from_unit(SoundId::Simulacrum_Clone_01, unit, 1, 0);
-				}
+				} break;
 			}
 		}
 	}
