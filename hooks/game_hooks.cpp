@@ -1758,7 +1758,20 @@ namespace hooks {
 					for (u32 i = 0; i < bullets.count; i++) {
 						Bullet* bullet = bullets.bullets[i];
 
-						// Hitscan attacks are handled in weapon damage
+						// Check if the unit can be shielded
+						Unit* target = bullet->attack_target.unit;
+						if ((target && (!scbw::is_allied_to(unit->player, target->player) || target->player == NeutralPlayer)) || bullet->hit_flags & 1) {
+							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
+							continue;
+						}
+
+						// Check if the target is actually shielded (in area)
+						Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
+						if (scbw::get_distance_fast(unit->position, target_position) > radius) {
+							continue;
+						}
+
+						// Redirect the hitscan bullet, hitscan attacks themselves are handled in weapon damage
 						switch (weapons_dat::behavior[bullet->weapon_id]) {
 							case WeaponBehavior::AppearOnAttacker:
 							case WeaponBehavior::AppearOnTargetSite:
@@ -1773,19 +1786,10 @@ namespace hooks {
 							} break;
 						}
 
-						// Check if the unit can be shielded
-						Unit* target = bullet->attack_target.unit;
-						if ((target && !scbw::is_allied_to(unit->player, target->player)) || bullet->hit_flags & 1) {
-							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
-							continue;
+						// Redirect
+						if (target) {
+							scbw::create_shield_overlay(target, bullet->direction1);
 						}
-
-						// Check if the target is actually shielded (in area)
-						Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
-						if (scbw::get_distance_fast(unit->position, target_position) > radius) {
-							continue;
-						}
-
 						scbw::set_bullet_target(bullet, unit);
 						scbw::set_bullet_direction(bullet, unit);
 						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
