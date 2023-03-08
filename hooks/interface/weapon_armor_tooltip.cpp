@@ -468,6 +468,7 @@ namespace hooks
 		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
+		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
 
 		// Gptp Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -525,13 +526,7 @@ namespace hooks
 		add_status(statuses, "Stasis", -1, 1, unit->stasis_timer);
 		add_status(statuses, "Timed Life", -1, 1, unit->remove_timer, TimerType::RemoveTimer);
 
-		u32 parasite_spawn_count = 0;
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			parasite_spawn_count += unit_ext->parasite_spawn_count[i];
-		}
-
 		// Vanilla Value
-		add_status(statuses, "Parasited", parasite_spawn_count, 0);
 		add_status(statuses, "Blinded", unit->is_blind != 0, 1);
 		add_status(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
 		add_status(statuses, "Cannot Attack", unit_ext->timers[TimerUnderDisruptionField] > 0, 1);

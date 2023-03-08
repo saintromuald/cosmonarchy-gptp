@@ -98,7 +98,6 @@ enum ExtValueId
 	ValueSpraithColonyLaunchPos,
 	ValueMissileSiloLoaded,
 	ValueSovrolethLinkCount,
-	ValueParasiteArmPlayer,
 	ValueDisableAutoBurrow,
 	ValueSentinelLaunchPos,
 	ValueWardenLaunchPos,
@@ -182,7 +181,6 @@ enum ExtTimerId
 	TimerDecloakBurrow,
 	TimerResourceBoostedRegen,
 	TimerAdrenal,
-	TimerParasiteArm,
 	TimerSwitchModeGimmick,
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
@@ -237,7 +235,6 @@ enum ExtTimerId
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
 	TimerAI_Clarion,
-	TimerAI_Parasite,
 	TimerAI_Skyfall,
 	TimerAI_GriefOfAllGods,
 	TimerAI_DisruptionField,
@@ -332,7 +329,6 @@ struct UnitExt
 	Point16					terran_build_pos;
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
-	u32						parasite_spawn_count[PlayerLimit];
 
 	CargoUnit				loaded_unit[TransportCap];
 

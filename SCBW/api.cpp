@@ -916,15 +916,15 @@ namespace scbw {
 	}
 
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
-		for (s32 i = 0; i < count; i++) {
-			u32 remove_timer = 0;
-			switch (unit_id) {
-				case UnitId::ZergRililisk:
-				case UnitId::ZergRilirokor:
-				{
-					remove_timer = BroodspawnTimer;
-				}
+		u32 remove_timer = 0;
+		switch (unit_id) {
+			case UnitId::ZergRililisk:
+			case UnitId::ZergRilirokor: {
+				remove_timer = BroodspawnTimer;
 			}
+		}
+
+		for (s32 i = 0; i < count; i++) {
 			Unit* unit = scbw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false);
 			if (!unit) {
 				return;
@@ -2354,17 +2354,12 @@ namespace scbw {
 			|| order_id == OrderId::TurretAttack;
 	}
 
-	CorpseConsume unit_get_corpse_consume(Unit* unit) {
+	bool unit_has_corpse_consume(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unit_ext->parasite_spawn_count[i]) {
-				return CorpseConsume_Parasite;
-			}
-		}
 		if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
-			return CorpseConsume_Revive;
+			return true;
 		}
-		return CorpseConsume_None;
+		return false;
 	}
 
 	bool ai_unit_id_can_flee_three_quarters(u32 unit_id) {
@@ -3112,16 +3107,12 @@ namespace scbw {
 		return 0;
 	}
 
-	bool can_revive_corpse(u32 player, Thingy* corpse) {
-		if (!corpse->sprite || !scbw::sprite_id_is_corpse(corpse->sprite->id) || corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) {
+	bool can_consume_corpse(Thingy* corpse) {
+		if (!scbw::sprite_id_is_corpse(corpse->sprite->id) || corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) {
 			return false;
 		}
 
 		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		if (!scbw::is_allied_to(player, corpse_ext->corpse_player)) {
-			return false;
-		}
-
 		u32 unit_id = corpse_ext->corpse_unit_id;
 		if (units_dat::base_property[unit_id] & UnitProperty::Building
 			||	unit_id == UnitId::ZergLarva
@@ -3130,6 +3121,19 @@ namespace scbw {
 			||  unit_id == UnitId::ZergCocoon
 			||  unit_id == UnitId::ProtossPlasmaShell
 			||  unit_id == UnitId::ProtossSteward) {
+			return false;
+		}
+
+		return true;
+	}
+
+	bool can_revive_corpse(u32 player, Thingy* corpse) {
+		if (!can_consume_corpse(corpse)) {
+			return false;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		if (!scbw::is_allied_to(player, corpse_ext->corpse_player)) {
 			return false;
 		}
 
@@ -3158,10 +3162,13 @@ namespace scbw {
 					unit->remove_timer = BroodspawnTimer;
 				}
 			}
-
-			corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-			corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+			scbw::consume_corpse(corpse);
 		}
 		return unit;
+	}
+
+	void consume_corpse(Thingy* corpse) {
+		corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 	}
 }

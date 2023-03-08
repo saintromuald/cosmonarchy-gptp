@@ -839,7 +839,7 @@ namespace hooks {
 		if (unit->sprite) {
 			SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
 			sprite_ext->owner = unit;
-			sprite_ext->should_consume_corpse = scbw::unit_get_corpse_consume(unit) != 0;
+			sprite_ext->should_consume_corpse = scbw::unit_has_corpse_consume(unit) != 0;
 		}
 
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -1263,7 +1263,6 @@ namespace hooks {
 						Thingy* corpse = corpses.corpses[i];
 						Unit* revived = scbw::revive_corpse(unit->player, corpse);
 						if (revived) {
-						//	scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, unit->player, unit->sprite->elevation + 1);
 							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
 						}
@@ -2101,11 +2100,6 @@ namespace hooks {
 		if (*g_elapsed_time_frames % 10 == 0
 			&& unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
-		}
-
-		// MatralethParasite
-		if (unit_ext->timers[TimerParasiteArm] == 1) {
-			unit_ext->parasite_spawn_count[unit_ext->values[ValueParasiteArmPlayer]] += 2;
 		}
 
 		// Incubation

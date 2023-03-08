@@ -650,17 +650,14 @@ namespace hooks
 						}
 					} break;
 					case WeaponId::KonviliskSowingSpines:
-					{
-						// Fertile Spines
-						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
-					} break;
 					case WeaponId::TetcaerokorCleavingMaw:
 					{
-						// Virile Coating - incubate
-						if (!target_ext->timers[TimerParasiteArm] && !target_ext->timers[TimerIncubationArm]) {
+						// scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
+						// Fertile Spines, Virile Coating - incubate
+						if (!target_ext->timers[TimerIncubationArm] && !(units_dat::base_property[data.target->id] & UnitProperty::Invincible)) {
 							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
-							target_ext->timers[TimerIncubationArm] = 48 + 1;
-							data.target->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
+							target_ext->timers[TimerIncubationArm] = DefaultArmParasiteTimer;
+							data.target->sprite->create_overlay(ImageId::ParasiteOverlay);
 						}
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
@@ -986,8 +983,7 @@ namespace hooks
 		}
 
 		// Anticthon, Aion - Revive (Must be last!)
-		if (fatal_deal_damage && data.damage >= data.target->hitpoints && (target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
-			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
+		if (fatal_deal_damage && data.damage >= data.target->hitpoints && (target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])) {
 			u32 max_hp = data.target->get_max_hp_raw();
 
 			u32 hp = max_hp; // Reclamation

@@ -21,9 +21,6 @@ namespace AI {
 			}
 
 			UnitExt* target_ext = get_unit_ext(target);
-			if (target_ext->timers[TimerParasiteArm]) {
-				return false;
-			}
 
 			if (!scbw::can_weapon_target_unit(WeaponId::MatralethParasite, target, caster)) {
 				return false;

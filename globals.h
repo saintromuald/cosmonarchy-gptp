@@ -172,7 +172,6 @@ namespace scbw
 	void inherit_debuffs(Unit* parent, Unit* child);
 	bool is_debuffed(Unit* unit);
 	void restore_func(Unit* unit);
-	void apply_parasite(Unit* unit, u8 playerID, Unit* queen);
 	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound = true);
 
 	void clear_clarion_links(Unit* unit);

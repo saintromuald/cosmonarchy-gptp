@@ -1078,6 +1078,8 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
+			// Currently done in spellcasting, if that doesn't work copy the code from there here -Veeq7
+			/*
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::MatralethParasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
@@ -1113,6 +1115,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				});
 			}
+			*/
 		} else if (unit->id == UnitId::ProtossLanifect) {
 			u32 web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
 			u32 lanifects = 0;

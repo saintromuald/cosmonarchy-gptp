@@ -335,22 +335,26 @@ namespace hooks {
 		helper::weapon_bullet_shot(bullet->attack_target.unit, bullet, 1);
 	}
 
-	void parasite(Bullet* bullet, u32 weapon_id)
-	{
-		if (!bullet->source_unit)
-		{
+	void parasite(Bullet* bullet, u32 weapon_id) {
+		if (!bullet->source_unit) {
 			return;
 		}
-		constexpr u32 radius = 96;
-		scbw::UnitFinder(
-			bullet->position.x - radius / 2,
-			bullet->position.y - radius / 2,
-			bullet->position.x + radius / 2,
-			bullet->position.y + radius / 2
-		).for_each([&](Unit* unit)
-		{
-			scbw::apply_parasite(unit, bullet->source_unit->player, bullet->source_unit);
-		});
+
+		EntryArray corpses = {};
+		corpse_search_radial(&corpses, bullet->position, 3 * 32);
+		for (u32 i = 0; i < corpses.count; ++i) {
+			Thingy* corpse = corpses.corpses[i];
+			if (scbw::can_consume_corpse(corpse)) {
+				ThingyExt* corpse_ext = get_thingy_ext(corpse);
+				u32 unit_id = corpse_ext->corpse_unit_id;
+				u32 broodspawn_id = units_dat::base_property[unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
+				scbw::create_unit_from_ability(broodspawn_id, 2, bullet->player, corpse->sprite->position);
+
+				Point16 pos = corpse->sprite->position;
+				scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, bullet->player, corpse->sprite->elevation + 1);
+				scbw::consume_corpse(corpse);
+			}
+		}
 	}
 
 	void broodlings(Bullet* bullet, u32 weapon_id)
