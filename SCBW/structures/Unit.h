@@ -51,7 +51,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the amount of shield points displayed in-game. This is equal to
 	/// unit->shields / 256.
-	u32 getCurrentShieldsInGame() const;
+	u32 get_current_shields_ingame() const;
 
 	/// Returns the amount of HP + shields displayed in game. If the unit does not
 	/// have shields enabled, this returns the amount of HP displayed.

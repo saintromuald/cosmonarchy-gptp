@@ -737,7 +737,7 @@ namespace hooks
 			case WeaponId::AxitriliskSearingVenom:
 			{
 				// Axitrilisk passive
-				const s32 shields = data.attacker->getCurrentShieldsInGame();
+				const s32 shields = data.attacker->get_current_shields_ingame();
 				const s32 max_shields = data.attacker->get_max_shields_in_game();
 				u32 life_heal = damage_dealt * MathUtils::map(shields, 0, max_shields, 1.0, 0.0, true);
 				data.attacker->heal_hp(life_heal, data.attacker);

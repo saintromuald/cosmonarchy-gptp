@@ -165,7 +165,7 @@ namespace AI
 				caster->is_target_enemy(target) &&
 				units_dat::shields_enabled[target->id])
 			{
-				totalEnemyShields += target->getCurrentShieldsInGame();
+				totalEnemyShields += target->get_current_shields_ingame();
 			}
 		}
 		return totalEnemyShields;

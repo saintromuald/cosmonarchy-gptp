@@ -35,7 +35,7 @@ u32 Unit::get_current_hp_ingame() const {
 	return (this->hitpoints + 255) >> 8;
 }
 
-u32 Unit::getCurrentShieldsInGame() const {
+u32 Unit::get_current_shields_ingame() const {
 	assert(this);
 	return this->shields >> 8;
 }
@@ -44,7 +44,7 @@ u32 Unit::getCurrentShieldsInGame() const {
 u32 Unit::get_current_life_ingame() const {
 	assert(this);
 	if (units_dat::shields_enabled[this->id]) {
-		return get_current_hp_ingame() + getCurrentShieldsInGame();
+		return get_current_hp_ingame() + get_current_shields_ingame();
 	}
 	return get_current_hp_ingame();
 }
@@ -137,7 +137,7 @@ u32 Unit::get_max_shields_in_game() const {
 
 	u32 maxShields = units_dat::max_shield_points[this->id];
 	if (maxShields == 0) {
-		maxShields = this->getCurrentShieldsInGame();
+		maxShields = this->get_current_shields_ingame();
 		if (maxShields == 0)
 		{
 			maxShields = 1;

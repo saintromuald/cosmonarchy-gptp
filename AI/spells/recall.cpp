@@ -25,9 +25,9 @@ namespace AI
 			}
 
 			if (target->id == UnitId::ProtossSolarion
-				|| target->id == UnitId::ProtossAccantorOld)
+			||  target->id == UnitId::ProtossAccantorOld)
 			{
-				if (target->getCurrentShieldsInGame() <= 10)
+				if (target->get_current_shields_ingame() <= 10)
 				{
 					return true;
 				}

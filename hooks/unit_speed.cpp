@@ -216,7 +216,7 @@ namespace hooks
 			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
-				speed *= 1.1;
+				speed *= 1.2;
 				if (unit_ext->timers[TimerKaiserRampage])
 				{
 					speed *= 2;

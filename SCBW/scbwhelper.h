@@ -270,7 +270,7 @@ namespace helper {
 	void set_unit_stat_txt_error_message(char* message);									                // 0048CCB0
 	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
-	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords);							// 004E8280
+	u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords);							// 004E8280
 	void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
 	//// spider_mine

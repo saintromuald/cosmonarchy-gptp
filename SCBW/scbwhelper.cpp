@@ -5638,7 +5638,7 @@ namespace helper {
 	}
 
 	// hardcodes the recall targets selection function
-	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords) {
+	u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords) {
 		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 		static u32 return_value;
 		__asm {

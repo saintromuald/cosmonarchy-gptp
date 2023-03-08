@@ -7,7 +7,7 @@ namespace hooks
 
 	// Originally known as sub_4942D0
 	// Function performed on each target of Recall
-	// by IterateUnitsAtLocationTargetProc_RecallTargets
+	// by iterate_units_at_location_target_proc_recall_targets
 	// that was validated throug spells_Recall_ActionOnTargetInRange
 	// Do the actual unit movement
 	void spells_Recall_ActionOnValidTargetForRecall(Unit* target, Unit* caster) {
@@ -66,7 +66,7 @@ namespace hooks
 
 	// Originally known as sub_494400
 	// Function performed on each target of Recall
-	// by IterateUnitsAtLocationTargetProc_RecallTargets
+	// by iterate_units_at_location_target_proc_recall_targets
 	// to choose if the unit can have the Recall effect
 	// cast on it or no, and if yes, calling another function
 	// to do the Recall effect.
@@ -86,7 +86,7 @@ namespace hooks
 	}
 
 	void orders_Recall(Unit* unit) {
-		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
+		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
 
 		// Unit has started casting Recall (== went through the other condition)
 		if (unit->main_order_state == 1) {
@@ -100,12 +100,12 @@ namespace hooks
 				spell_location.right = unit->order_target.pt.x + 64;
 				spell_location.bottom = unit->order_target.pt.y + 64;
 
-				*bAtLeast1UnitWasRecalled = 0;
+				*at_least_1_unit_was_recalled = 0;
 
 				// Apply the recal effect on each valid target found in spell_location
-				helper::IterateUnitsAtLocationTargetProc_RecallTargets(unit, &spell_location);
+				helper::iterate_units_at_location_target_proc_recall_targets(unit, &spell_location);
 
-				if (*bAtLeast1UnitWasRecalled != 0) {
+				if (*at_least_1_unit_was_recalled != 0) {
 
 					// Original code added (randomize_short(0x12) & 1) to the base new_sound
 					// id Protoss_ARBITER_PAbFol02_WAV then called the playSound function
@@ -181,7 +181,7 @@ namespace hooks
 
 				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
-				unit->main_order_timer = 3 * 24; // used to be 22
+				unit->main_order_timer = 5 * 24; // used to be 22
 				unit->main_order_state = 1;
 			}
 		}
