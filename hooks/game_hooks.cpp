@@ -1329,7 +1329,7 @@ namespace hooks {
 			{
 				// Legionnaire - Blade Vortex
 				// Striga was here - removed 7 February 2023. -Pr0nogo
-				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit)) {
+				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
 					Unit* target = unit->order_target.unit;
 					u32 distance = unit->get_distance_to_target(target);
 					bool do_teleport = false;
