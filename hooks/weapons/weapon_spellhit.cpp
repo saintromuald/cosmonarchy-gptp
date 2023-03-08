@@ -170,7 +170,7 @@ namespace hooks {
 	}
 
 	void iscript_attackmelee(Unit* attacker) { // 00479B40
-		UnitExt* attackerExt = get_unit_ext(attacker);
+		UnitExt* attacker_ext = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
 		if (target) {
 			u8 weapon_id;
@@ -182,14 +182,14 @@ namespace hooks {
 			} else {
 				weapon_id = WeaponId::None;
 			}
-			attackerExt->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
-			attackerExt->values[ValueAI_PreventTargeting] = 0;
+			attacker_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
+			attacker_ext->values[ValueAI_PreventTargeting] = 0;
 
 			// Previously checked for Hallucination status, but there was no functional difference in the code!
 			// Refactored 15 Sep 2022. -Pr0nogo
 			u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
 			damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
-			if (attackerExt->values[ValueDeconstruction]) {
+			if (attacker_ext->values[ValueDeconstruction]) {
 				scbw::do_deconstruction_damage(attacker, weapon_id);
 			}
 			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
@@ -424,14 +424,14 @@ namespace hooks {
 		//	coords.bottom = y + distance;
 		//	helper::iterate_units_at_location_target_proc_plague(attacker, &coords);
 		//
-		//	UnitExt* attackerExt = get_unit_ext(attacker);
+		//	UnitExt* attacker_ext = get_unit_ext(attacker);
 		//	scbw::UnitFinder(
 		//		x - distance,
 		//		y - distance,
 		//		x + distance,
 		//		y + distance
 		//	).for_each([&](Unit* unit) {
-		//		if (attacker && attackerExt->timers[TimerEnsnaringBrood] > 0
+		//		if (attacker && attacker_ext->timers[TimerEnsnaringBrood] > 0
 		//			&& !(units_dat::base_property[unit->id] & UnitProperty::Building))
 		//		{
 		//			scbw::apply_ensnare(unit);

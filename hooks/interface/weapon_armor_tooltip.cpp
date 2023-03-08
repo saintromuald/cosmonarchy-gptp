@@ -441,6 +441,8 @@ namespace hooks
 			unit_ext->timers[TimerDirgeFuse], TimerType::Gptp);
 		add_status(statuses, "Petrification", unit_ext->values[ValuePetrificationStacks], 0,
 			unit_ext->timers[TimerPetrification], TimerType::Gptp);
+		add_status(statuses, "Deconstruction", unit_ext->values[ValueDeconstruction], 0,
+			unit_ext->timers[TimerDeconstruction], TimerType::Gptp);
 
 		if (unit_ext->values[ValueSignifyStacks] < 5)
 		{
@@ -464,6 +466,8 @@ namespace hooks
 		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
 		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext->timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
 		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
+		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
+		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
 
 		// Gptp Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -474,13 +478,11 @@ namespace hooks
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
-		add_status(statuses, "Stellar Enforcement", unit_ext->values[ValueStellarEnforcement], 1);
 		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueControlledOpposition], 0);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressPassiveStacks], 0);
 		add_status(statuses, "Counter-Proposal", unit_ext->values[ValueAnticthonStacks], 0);
 		add_status(statuses, "Fragmentary Shells", unit_ext->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
-		add_status(statuses, "Deconstructing", unit_ext->values[ValueDeconstruction], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
 
 		// Gptp Value - Gimmicked
@@ -488,7 +490,6 @@ namespace hooks
 		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && unit_ext->values[ValueMadrigalTempoDown] == 0, 1);
 		add_status(statuses, "Tempo Down", unit_ext->values[ValueMadrigalTempoDown] == 1, 1);
-		add_status(statuses, "Kelvin Munitions", unit_ext->values[ValueKelvinMunitionsSlow] > 0, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 	//	add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);

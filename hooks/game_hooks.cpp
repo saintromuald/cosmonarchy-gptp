@@ -2145,12 +2145,24 @@ namespace hooks {
 		}
 
 		// Play addon work animations when related units are being trained by parent structure
-		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
+		{
+			// Wait for addon connector extension sequence to finish before animating
+			// Have to find a working method... -Pr0nogo
+		/*
+			Image* connector = scbw::get_addon_connector_image(unit->building.addon);
+			bool connector_is_extended = (connector && connector->animation != IscriptAnimation::Landing);
+			if (!connector) // For addons without connectors, don't wait for anything
+			{
+				connector_is_extended = true;
+			}
+		*/
+			bool connector_is_extended = true;
 			u16 unit_id = unit->build_queue[unit->build_queue_slot];
-			if (unit_id != UnitId::None && !scbw::unit_id_is_available_without_an_addon(unit_id)) {
+			if (unit_id != UnitId::None && !scbw::unit_id_is_available_without_an_addon(unit_id) && connector_is_extended) {
 				unit_ext->values[ValuePlayingAddonWorkingAnim] = 1;
 				unit->building.addon->sprite->play_iscript_animation(IscriptAnimation::IsWorking);
-			} else if (unit_ext->values[ValuePlayingAddonWorkingAnim]) {
+			} else if (unit_ext->values[ValuePlayingAddonWorkingAnim] && connector_is_extended) {
 				unit_ext->values[ValuePlayingAddonWorkingAnim] = 0;
 				unit->building.addon->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle);
 			}
@@ -2651,13 +2663,19 @@ namespace hooks {
 		}
 
 		// Magister - Stellar Enforcement - Handle overlay looping
-		if (unit_ext->values[ValueStellarEnforcement] && unit_ext->timers[TimerStellarEnforcementOverlay] == 1) {
+		if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] == 1) {
 			unit_ext->timers[TimerStellarEnforcementOverlay] = 30;
 			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
 		}
 		// Handle overlays after effect is cleansed
-		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && !unit_ext->values[ValueStellarEnforcement]) {
+		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unit_ext->timers[TimerStellarEnforcement] >= 1) {
 			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		}
+
+		// Clear Deconstruction on timer end
+		if (unit_ext->values[ValueDeconstruction] && unit_ext->timers[TimerDeconstruction] <= 1) {
+			unit_ext->values[ValueDeconstruction] = 0;
+			unit->sprite->remove_overlay(ImageId::DeconstructionSmall + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Patriarch - Astral Rule

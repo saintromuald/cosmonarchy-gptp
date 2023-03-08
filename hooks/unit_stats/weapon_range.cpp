@@ -24,7 +24,7 @@ namespace hooks
 		bonus_amount += unit_ext->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
-		if (!target || get_unit_ext(target)->values[ValueStellarEnforcement]) {
+		if (!target || get_unit_ext(target)->timers[TimerStellarEnforcement]) {
 			bonus_amount += 2;
 		}
 
@@ -79,7 +79,7 @@ namespace hooks
 		// Stellar Enforcement - Magister behavior
 		if (target && weapons_dat::max_range[weapon_id] > 32) {
 			UnitExt* target_ext = get_unit_ext(target);
-			if (target_ext->values[ValueStellarEnforcement]) {
+			if (target_ext->timers[TimerStellarEnforcement]) {
 				bonus_amount += 64;
 			}
 		}

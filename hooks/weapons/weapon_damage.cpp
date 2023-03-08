@@ -542,11 +542,13 @@ namespace hooks
 						// Deconstruction - Pazuzu behavior - apply stack
 						if (!scbw::unit_id_is_pacifist(data.target)) {
 							target_ext->values[ValueDeconstruction]++;
+							target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 							s32 overlayOffset = scbw::get_overlay_offset(data.target->id);
 							if (data.target->subunit) {
 								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
 								subunit_ext->values[ValueDeconstruction]++;
+								subunit_ext->timers[TimerDeconstruction] = 3 * 24 + 1;
 								subunit_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset)) {
 									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
@@ -561,9 +563,7 @@ namespace hooks
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
 						// Claymore - Kelvin Munitions - Slow primary target
-						if (!target_ext->values[ValueKelvinMunitionsSlow]) {
-							target_ext->values[ValueKelvinMunitionsSlow] = 1;
-						}
+						target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 					} break;
 					case WeaponId::GorgonArtificeBattery:
 					{
@@ -699,8 +699,8 @@ namespace hooks
 					case WeaponId::MagisterNeutronCannon:
 					{
 						// Stellar Enforcement - Magister behavior
-						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->values[ValueStellarEnforcement]) {
-							target_ext->values[ValueStellarEnforcement] = 1;
+						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->values[TimerStellarEnforcement]) {
+							target_ext->timers[TimerStellarEnforcement] = 3 * 24 + 1;
 							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
 							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}

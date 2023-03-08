@@ -782,8 +782,8 @@ namespace hooks {
 
 						// slow pierced targets
 						UnitExt* collision_target_ext = get_unit_ext(collision_target);
-						if (!collision_target_ext->values[ValueKelvinMunitionsSlow]) {
-							collision_target_ext->values[ValueKelvinMunitionsSlow] = 1;
+						if (!collision_target_ext->timers[TimerKelvinMunitions]) {
+							collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 						}
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
