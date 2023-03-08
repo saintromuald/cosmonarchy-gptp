@@ -3072,4 +3072,35 @@ namespace scbw {
 			|| unit_id == UnitId::ZergKalkalisk
 			|| unit_id == UnitId::ZergGhitorokor;
 	}
+
+	Image* get_addon_connector_image(Unit* unit)
+	{
+		u16 image_id = 0;
+		switch (unit->id)
+		{
+			case UnitId::TerranMedbay:
+			{
+				image_id = ImageId::MedbayConnector;
+			} break;
+			case UnitId::TerranCovertOps:
+			{
+				image_id = ImageId::CovertOpsConnector;
+			} break;
+			case UnitId::TerranScrapyard:
+			case UnitId::TerranMachineShop:
+			case UnitId::TerranMunitionsBay:
+			{
+				image_id = ImageId::MachineShopConnector;
+			} break;
+			case UnitId::TerranCommandment:
+			{
+				image_id = ImageId::CommandmentConnector;
+			} break;
+		}
+		if (image_id)
+		{
+			return unit->get_overlay(image_id);
+		}
+		return 0;
+	}
 }
