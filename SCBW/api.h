@@ -43,7 +43,8 @@ namespace scbw
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt);
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 	std::string read_samase_file(char* name);
-	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
+	bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id = 0, bool preserve_order = false);
+	bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id = 0, bool preserve_order = false);
 	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
 	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees);
@@ -149,64 +150,72 @@ namespace scbw
 	/// (distance, angle), using StarCraft's internal data.
 	inline s32 get_polar_y(s32 distance, u8 angle);
 
-	inline Point16 clamp_point(Point16 point)
-	{
-		if (point.x < 0)
-		{
+	inline Point16 clamp_point(Point16 point) {
+		if (point.x < 0) {
 			point.x = 0;
-		}
-		else if (point.x > g_map_tile_size->width * 32)
-		{
+		} else if (point.x > g_map_tile_size->width * 32) {
 			point.x = g_map_tile_size->width * 32;
 		}
 
-		if (point.y < 0)
-		{
+		if (point.y < 0) {
 			point.y = 0;
-		}
-		else if (point.y > g_map_tile_size->height * 32)
-		{
+		} else if (point.y > g_map_tile_size->height * 32) {
 			point.y = g_map_tile_size->height * 32;
 		}
 
 		return point;
 	}
 
-	inline Box32 clampRect(Box32 rect)
-	{
-		if (rect.left < 0)
-		{
+	inline Box16 clamp_box16(Box16 rect) {
+		if (rect.left < 0) {
 			rect.left = 0;
-		}
-		else if (rect.left > g_map_tile_size->width * 32)
-		{
+		} else if (rect.left > g_map_tile_size->width * 32) {
 			rect.left = g_map_tile_size->width * 32;
 		}
 		
-		if (rect.right < 0)
-		{
+		if (rect.right < 0) {
 			rect.right = 0;
-		}
-		else if (rect.right > g_map_tile_size->width * 32)
-		{
+		} else if (rect.right > g_map_tile_size->width * 32) {
 			rect.right = g_map_tile_size->width * 32;
 		}
 
-		if (rect.top < 0)
-		{
+		if (rect.top < 0) {
 			rect.top = 0;
-		}
-		else if (rect.top > g_map_tile_size->height * 32)
-		{
+		} else if (rect.top > g_map_tile_size->height * 32) {
 			rect.top = g_map_tile_size->height * 32;
 		}
 
-		if (rect.bottom < 0)
-		{
+		if (rect.bottom < 0) {
 			rect.bottom = 0;
+		} else if (rect.bottom > g_map_tile_size->height * 32) {
+			rect.bottom = g_map_tile_size->height * 32;
 		}
-		else if (rect.bottom > g_map_tile_size->height * 32)
-		{
+
+		return rect;
+	}
+
+	inline Box32 clamp_box32(Box32 rect) {
+		if (rect.left < 0) {
+			rect.left = 0;
+		} else if (rect.left > g_map_tile_size->width * 32) {
+			rect.left = g_map_tile_size->width * 32;
+		}
+		
+		if (rect.right < 0) {
+			rect.right = 0;
+		} else if (rect.right > g_map_tile_size->width * 32) {
+			rect.right = g_map_tile_size->width * 32;
+		}
+
+		if (rect.top < 0) {
+			rect.top = 0;
+		} else if (rect.top > g_map_tile_size->height * 32) {
+			rect.top = g_map_tile_size->height * 32;
+		}
+
+		if (rect.bottom < 0) {
+			rect.bottom = 0;
+		} else if (rect.bottom > g_map_tile_size->height * 32) {
 			rect.bottom = g_map_tile_size->height * 32;
 		}
 

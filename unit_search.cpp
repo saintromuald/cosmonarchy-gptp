@@ -69,7 +69,7 @@ static void search_index_add(SearchIndex* index, Point16 position, void* data) {
 }
 
 static void index_search_rect(EntryArray* entry_array, SearchIndex* index, Box32 rect) {
-	rect = scbw::clampRect(rect);
+	rect = scbw::clamp_box32(rect);
 	const u32 x1 = rect.left / CELL_PX_SIZE;
 	const u32 y1 = rect.top / CELL_PX_SIZE;
 	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
@@ -110,7 +110,7 @@ static void index_search_radial(EntryArray* entry_array, SearchIndex* index, Poi
 		center.x + radius,
 		center.y + radius
 	};
-	dims = scbw::clampRect(dims);
+	dims = scbw::clamp_box32(dims);
 
 	const u32 x1 = dims.left / CELL_PX_SIZE;
 	const u32 y1 = dims.top / CELL_PX_SIZE;

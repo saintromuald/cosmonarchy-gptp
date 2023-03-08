@@ -44,52 +44,64 @@ namespace scbw {
 		artificial_bullet_from(weapon_id, player, source, target, tgt);
 	}
 
-	bool teleport(Unit* u, Point16 target, u16 sprite_id, bool preserveOrder) {
-		Point16 previous_pos = u->sprite->position;
-		Point16 new_pos = {};
-		bool result = false;
+	void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
+		// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
+		scbw::prepare_unit_move(unit, false);
+		if (!preserve_order) {
+			unit->order_target.unit = 0;
+		}
+		scbw::set_unit_position(unit, target.x, target.y);
+		scbw::refresh_unit_after_move(unit);
 
-		// Identical code to set_unit_position() but for some reason, is using another function to do exactly the same thing
-		helper::move_unit_duplicate(u, target.x, target.y);
+		// Stop some currently active orders
+		if (unit->id != UnitId::ZergCocoon && !preserve_order) {
+			unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+		}
 
-		if (!scbw::check_unit_collision_pos(u, &(u->sprite->position), &new_pos, nullptr, false, 0)) {
-			// Collision detected, cancel the movement
-			scbw::set_unit_position(u, previous_pos.x, previous_pos.y);
-		} else {
-			result = true;
-
-			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
-			scbw::prepare_unit_move(u, false);
-			if (!preserveOrder) {
-				u->order_target.unit = 0;
-			}
-			scbw::set_unit_position(u, new_pos.x, new_pos.y);
-			scbw::refresh_unit_after_move(u);
-
-			// Stop some currently active orders
-			if (u->id != UnitId::ZergCocoon && !preserveOrder) {
-				u->order_computer(units_dat::return_to_idle_order[u->id]);
+		// Create the Recall animation over the unit
+		if (sprite_id) {
+			Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, target.x, target.y, 0);
+			if (recall_effect_sprite) {
+				recall_effect_sprite->sprite->elevation = unit->sprite->elevation + 1;
+				helper::set_thingy_visibility_flags(recall_effect_sprite);
 			}
 
-			// Create the Recall animation over the unit
-			if (sprite_id) {
-				Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, new_pos.x, new_pos.y, 0);
-				if (recall_effect_sprite) {
-					recall_effect_sprite->sprite->elevation = u->sprite->elevation + 1;
-					helper::set_thingy_visibility_flags(recall_effect_sprite);
-				}
+		}
 
-			}
-
-			// Disconnect a nuke from a unit using it
-			if (scbw::unit_can_nuke(u)) {
-				if (u->connected_unit && u->connected_unit->id == UnitId::TerranNuclearMissile) {
-					u->connected_unit->connected_unit = 0;
-					u->connected_unit = 0;
-				}
+		// Disconnect a nuke from a unit using it
+		if (scbw::unit_can_nuke(unit)) {
+			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranNuclearMissile) {
+				unit->connected_unit->connected_unit = 0;
+				unit->connected_unit = 0;
 			}
 		}
-		return result;
+	}
+
+	bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
+		Point16 new_pos = {};
+		if (!scbw::check_unit_collision_pos(unit, &target, &new_pos, 0, false, 0)) {
+			return false;
+		}
+
+		teleport_internal(unit, new_pos, sprite_id, preserve_order);
+		return true;
+	}
+
+	bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id, bool preserve_order) {
+		Box16 move_area = {};
+		move_area.left   = target->get_left()   - radius;
+		move_area.top    = target->get_top()    - radius;
+		move_area.right  = target->get_right()  + radius;
+		move_area.bottom = target->get_bottom() + radius;
+		move_area = clamp_box16(move_area);
+
+		Point16 new_pos = {};
+		if (!scbw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
+			return false;
+		}
+
+		teleport_internal(unit, new_pos, sprite_id, preserve_order);
+		return true;
 	}
 
 	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player, s32 elevation_level) {
@@ -1409,13 +1421,13 @@ namespace scbw {
 			PUSHAD
 			PUSH someFlag;
 			PUSH _hideErrorMsg
-				PUSH outPos
-				PUSH inPos
-				PUSH unit
-				MOV EAX, moveArea
-				CALL Func_CheckUnitCollisionPos
-				MOV result, EAX
-				POPAD
+			PUSH outPos
+			PUSH inPos
+			PUSH unit
+			MOV EAX, moveArea
+			CALL Func_CheckUnitCollisionPos
+			MOV result, EAX
+			POPAD
 		}
 		return result != 0;
 	}

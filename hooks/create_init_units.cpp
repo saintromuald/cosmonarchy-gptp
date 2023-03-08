@@ -224,7 +224,7 @@ namespace hooks {
 
 							Unit* created_unit = helper::create_unit(unit_id, pos.x, pos.y, player);
 							if (created_unit) {
-								scbw::teleport(created_unit, pos);
+								scbw::teleport_to_point(created_unit, pos);
 								helper::update_unit_stats_and_finish_building(created_unit);
 								if (helper::show_finished_unit(created_unit) != 0)
 								{

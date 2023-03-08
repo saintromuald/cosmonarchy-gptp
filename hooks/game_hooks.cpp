@@ -1328,24 +1328,25 @@ namespace hooks {
 			case UnitId::ProtossLegionnaire:
 			{
 				// Legionnaire - Blade Vortex
+				// Striga was here - removed 7 February 2023. -Pr0nogo
 				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit)) {
 					Unit* target = unit->order_target.unit;
 					u32 distance = unit->get_distance_to_target(target);
 					bool do_teleport = false;
-					u32 image_id;
-					Point16 position;
+					u32 image_id = 0;
+
+					const u32 min_radius = 15;
+					const u32 max_radius = 3 * 32;
 
 					if (unit->id == UnitId::ProtossLegionnaire) {
-						if (distance > 15 && distance <= 3 * 32 && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
+						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
-							position = target->sprite->position;
 						}
 					}
-					// Striga was here - removed 7 February 2023. -Pr0nogo
+
 					if (do_teleport) {
-						position = scbw::clamp_point(position);
-						bool teleport = scbw::teleport(unit, position, 0, true);
+						bool teleport = scbw::teleport_to_unit(unit, target, min_radius, 0, true);
 						if (!unit->get_overlay(image_id) && teleport) {
 							unit->sprite->create_top_overlay(image_id);
 						}
@@ -1631,7 +1632,7 @@ namespace hooks {
 
 						if (unit_ext->timers[TimerAnthelionEndlessEclipse] == 1) {
 							Point16 old_pos = unit->position;
-							bool teleport = scbw::teleport(unit, unit->move_target.pt, 0, true);
+							bool teleport = scbw::teleport_to_point(unit, unit->move_target.pt, 0, true);
 							if (teleport) {
 								scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, old_pos.x, old_pos.y, unit->player, 11);
 								helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
@@ -1852,9 +1853,9 @@ namespace hooks {
 						if (units_dat::base_property[target->id] & UnitProperty::Building || !(target->status & UnitStatus::Completed)) {
 							return;
 						}
-						scbw::teleport(target, target_pos);
+						scbw::teleport_to_point(target, target_pos);
 					});
-					scbw::teleport(unit, target_pos);
+					scbw::teleport_to_point(unit, target_pos);
 				}
 			} break;
 			case UnitId::ProtossOptecton:
