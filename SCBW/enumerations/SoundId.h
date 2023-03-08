@@ -1449,6 +1449,15 @@ namespace SoundId
 
 		SpiderMineDeploy01					= 2314,
 		TerranBuildingLand01				= 2315,
+
+		MatadorReady01						= 2316,
+		MatadorReady02						= 2317,
+		MatadorReady03						= 2318,
+
+		MatadorOrderAggressive01			= 2327,
+		MatadorOrderAggressive02			= 2328,
+		MatadorOrderAggressive03			= 2329,
+		MatadorOrderAggressive04			= 2330,
 	};
 }
 

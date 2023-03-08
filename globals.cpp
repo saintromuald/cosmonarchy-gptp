@@ -921,22 +921,22 @@ namespace scbw
 
 	void inherit_debuffs(Unit* parent, Unit* child)
 	{
-		UnitExt* parentExt = get_unit_ext(parent);
-		UnitExt* childExt = get_unit_ext(child);
+		UnitExt* parent_ext = get_unit_ext(parent);
+		UnitExt* child_ext = get_unit_ext(child);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Get overlay info
-		s32 overlayOffset = get_overlay_offset(child->id);
+		s32 overlay_offset = get_overlay_offset(child->id);
 
 		// Inherit Ensnare
 		if (parent->ensnare_timer != 0)
 		{
 			child->ensnare_timer = parent->ensnare_timer;
-			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlayOffset)))
+			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlay_offset)))
 			{
-				child->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlayOffset);
+				child->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlay_offset);
 			}
 			child->update_speed();
 		}
@@ -945,43 +945,43 @@ namespace scbw
 		if (parent->plague_timer != 0)
 		{
 			child->plague_timer = parent->plague_timer;
-			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlayOffset)))
+			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlay_offset)))
 			{
-				child->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlayOffset);
+				child->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlay_offset);
 			}
 		}
 
 		// Inherit MatralethParasite
 		child->parasite_flags = parent->parasite_flags;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			childExt->parasite_spawn_count[i] = parentExt->parasite_spawn_count[i];
+			child_ext->parasite_spawn_count[i] = parent_ext->parasite_spawn_count[i];
 		}
 
 		// Inherit Observance
-		if (parentExt->timers[TimerObservanceDebuff] > 0)
+		if (parent_ext->timers[TimerObservanceDebuff] > 0)
 		{
-			childExt->timers[TimerObservanceDebuff] = parentExt->timers[TimerObservanceDebuff];
-			childExt->timers[TimerObservancePeriod] = parentExt->timers[TimerObservancePeriod];
-			childExt->values[ValueObservanceRend] = parentExt->values[ValueObservanceRend];
+			child_ext->timers[TimerObservanceDebuff] = parent_ext->timers[TimerObservanceDebuff];
+			child_ext->timers[TimerObservancePeriod] = parent_ext->timers[TimerObservancePeriod];
+			child_ext->values[ValueObservanceRend] = parent_ext->values[ValueObservanceRend];
 		}
 
 		// Inherit Knockout Drivers
-		if (parentExt->timers[TimerPetrification] > 0)
+		if (parent_ext->timers[TimerPetrification] > 0)
 		{
-			childExt->timers[TimerPetrification] = parentExt->timers[TimerPetrification];
+			child_ext->timers[TimerPetrification] = parent_ext->timers[TimerPetrification];
 		}
 
 		// Inherit Hallucination
-		if (parentExt->timers[TimerHallucinating]  > 0)
+		if (parent_ext->timers[TimerHallucinating]  > 0)
 		{
-			childExt->timers[TimerHallucinating] = parentExt->timers[TimerHallucinating];
+			child_ext->timers[TimerHallucinating] = parent_ext->timers[TimerHallucinating];
 		}
 
 		// Inherit Captivating ZethrokorClaws
-		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
+		if (auto timer = parent_ext->timers[TimerCaptivatingClaws])
 		{
-			childExt->timers[TimerCaptivatingClaws] = timer;
-			parentExt->unit_vectors[UnitVectorCaptivatingClaws] = childExt->unit_vectors[UnitVectorCaptivatingClaws];
+			child_ext->timers[TimerCaptivatingClaws] = timer;
+			parent_ext->unit_vectors[UnitVectorCaptivatingClaws] = child_ext->unit_vectors[UnitVectorCaptivatingClaws];
 		}
 
 		// Inherit Lockdown
@@ -997,10 +997,10 @@ namespace scbw
 		}
 
 		// Inherit Devourer Corrosive Spores
-		if (parentExt->timers[TimerCorrosiveTouch])
+		if (parent_ext->timers[TimerCorrosiveTouch])
 		{
-			childExt->values[ValueCorrosiveTouchStacks] = parentExt->values[ValueCorrosiveTouchStacks];
-			childExt->timers[TimerCorrosiveTouch] = parentExt->timers[TimerCorrosiveTouch];
+			child_ext->values[ValueCorrosiveTouchStacks] = parent_ext->values[ValueCorrosiveTouchStacks];
+			child_ext->timers[TimerCorrosiveTouch] = parent_ext->timers[TimerCorrosiveTouch];
 		}
 
 		// Inherit Irradiate
@@ -1022,103 +1022,105 @@ namespace scbw
 		}
 
 		// Inherit Deconstruction
-		if (parentExt->values[ValueDeconstruction])
+		if (parent_ext->values[ValueDeconstruction])
 		{
-			childExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
+			child_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
+			child_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
 			Sprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
-				UnitExt* subunitExt = get_unit_ext(child->subunit);
-				subunitExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
+				UnitExt* subunit_ext = get_unit_ext(child->subunit);
+				subunit_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
+				subunit_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
 				sprite = child->subunit->sprite;
 			}
-			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset))
+			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset))
 			{
-				sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
+				sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
 			}
 		}
 
 		// Inherit Entropy Gauntlets
-		if (parentExt->values[ValueEntropyGauntlets])
+		if (parent_ext->values[ValueEntropyGauntlets])
 		{
-			childExt->values[ValueEntropyGauntlets] = parentExt->values[ValueEntropyGauntlets];
-			if (!(child->sprite->get_overlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
+			child_ext->values[ValueEntropyGauntlets] = parent_ext->values[ValueEntropyGauntlets];
+			if (!(child->sprite->get_overlay(ImageId::EntropyGauntletsOverlaySmall + overlay_offset)))
 			{
-				child->sprite->create_overlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
+				child->sprite->create_overlay(ImageId::EntropyGauntletsOverlaySmall + overlay_offset);
 			}
 		}
 
 		// Inherit Sublime Shepherd
-		if (parentExt->values[ValueSublimeShepherd])
+		if (parent_ext->values[ValueSublimeShepherd])
 		{
-			childExt->values[ValueSublimeShepherd] = parentExt->values[ValueSublimeShepherd];
+			child_ext->values[ValueSublimeShepherd] = parent_ext->values[ValueSublimeShepherd];
 		}
 
 		// Inherit Terminal Surge
-		if (parentExt->values[ValueTerminalSurge])
+		if (parent_ext->values[ValueTerminalSurge])
 		{
-			childExt->values[ValueTerminalSurge] = parentExt->values[ValueTerminalSurge];
+			child_ext->values[ValueTerminalSurge] = parent_ext->values[ValueTerminalSurge];
 		}
 
 		// Inherit Stellar Enforcement
-		if (parentExt->values[ValueStellarEnforcement])
+		if (parent_ext->timers[TimerStellarEnforcement])
 		{
-			childExt->values[ValueStellarEnforcement] = parentExt->values[ValueStellarEnforcement];
+			child_ext->timers[TimerStellarEnforcement] = parent_ext->timers[TimerStellarEnforcement];
 		}
 
 		// Inherit Swarming Omen
-		if (parentExt->values[ValueSwarmingOmenPlayer])
+		if (parent_ext->values[ValueSwarmingOmenPlayer])
 		{
-			childExt->values[ValueSwarmingOmenPlayer] = parentExt->values[ValueSwarmingOmenPlayer];
+			child_ext->values[ValueSwarmingOmenPlayer] = parent_ext->values[ValueSwarmingOmenPlayer];
 		}
 
 		// Inherit Kaiser Rampage
-		if (parentExt->timers[TimerKaiserRampage])
+		if (parent_ext->timers[TimerKaiserRampage])
 		{
-			childExt->timers[TimerKaiserRampage] = parentExt->timers[TimerKaiserRampage];
+			child_ext->timers[TimerKaiserRampage] = parent_ext->timers[TimerKaiserRampage];
 		}
 
 		// Inherit Kelvin Munitions
-		if (parentExt->values[ValueKelvinMunitionsSlow])
+		if (parent_ext->timers[TimerKelvinMunitions])
 		{
-			childExt->values[ValueKelvinMunitionsSlow] = parentExt->values[ValueKelvinMunitionsSlow];
+			child_ext->timers[TimerKelvinMunitions] = parent_ext->timers[TimerKelvinMunitions];
 		}
 
 		// Inherit Dirge
-		if (parentExt->timers[TimerDirgeFuse])
+		if (parent_ext->timers[TimerDirgeFuse])
 		{
-			childExt->timers[TimerDirgeFuse] = parentExt->timers[TimerDirgeFuse];
-			childExt->values[ValueDirgeStacks] = parentExt->values[ValueDirgeStacks];
+			child_ext->timers[TimerDirgeFuse] = parent_ext->timers[TimerDirgeFuse];
+			child_ext->values[ValueDirgeStacks] = parent_ext->values[ValueDirgeStacks];
 		}
 
 		// Inherit Lazarus Agent
-		if (parentExt->values[ValueLazarusAgent])
+		if (parent_ext->values[ValueLazarusAgent])
 		{
-			childExt->values[ValueLazarusAgent] = parentExt->values[ValueLazarusAgent];
+			child_ext->values[ValueLazarusAgent] = parent_ext->values[ValueLazarusAgent];
 		}
 
 		// Inherit Empress Passive Stacks
-		if (parentExt->values[ValueEmpressPassiveStacks])
+		if (parent_ext->values[ValueEmpressPassiveStacks])
 		{
-			childExt->values[ValueEmpressPassiveStacks] = parentExt->values[ValueEmpressPassiveStacks];
-			childExt->values[ValueEmpressSourcePlayer] = parentExt->values[ValueEmpressSourcePlayer];
+			child_ext->values[ValueEmpressPassiveStacks] = parent_ext->values[ValueEmpressPassiveStacks];
+			child_ext->values[ValueEmpressSourcePlayer] = parent_ext->values[ValueEmpressSourcePlayer];
 		}
 
 		// Inherit Anticthon
-		childExt->values[ValueAnticthonStacks] = parentExt->values[ValueAnticthonStacks];
+		child_ext->values[ValueAnticthonStacks] = parent_ext->values[ValueAnticthonStacks];
 
 		// Inherit Hierophant Signify
-		childExt->timers[TimerSignify] = parentExt->timers[TimerSignify];
-		childExt->values[ValueSignifyStacks] = parentExt->values[ValueSignifyStacks];
-		childExt->value_vectors[ValueVectorSignifySourcePlayer] = parentExt->value_vectors[ValueVectorSignifySourcePlayer];
-		scbw::update_signify_status(child, childExt);
+		child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
+		child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];
+		child_ext->value_vectors[ValueVectorSignifySourcePlayer] = parent_ext->value_vectors[ValueVectorSignifySourcePlayer];
+		scbw::update_signify_status(child, child_ext);
 
 		scbw::refresh_console();
 	}
 
 	// TODO: update
 	bool is_debuffed(Unit* unit) {
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		bool has_parasite = false;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (!scbw::is_allied_to(i, unit->player)) {
@@ -1126,13 +1128,13 @@ namespace scbw
 			}
 		}
 
-		return unitExt->timers[TimerPetrification]
-			|| unitExt->timers[TimerObservancePeriod]
-			|| unitExt->timers[TimerCorrosiveTouch]
-			|| unitExt->values[ValueDeconstruction]
-			|| unitExt->values[ValueEntropyGauntlets]
-			|| unitExt->values[ValueKelvinMunitionsSlow]
-			|| unitExt->values[ValueSignifyStacks]
+		return unit_ext->timers[TimerPetrification]
+			|| unit_ext->timers[TimerObservancePeriod]
+			|| unit_ext->timers[TimerCorrosiveTouch]
+			|| unit_ext->values[ValueDeconstruction]
+			|| unit_ext->values[ValueEntropyGauntlets]
+			|| unit_ext->timers[TimerKelvinMunitions] >= 1
+			|| unit_ext->values[ValueSignifyStacks]
 			|| captivating_claws_get_timer(unit) > 0
 			|| unit->irradiate_timer != 0
 			|| unit->ensnare_timer != 0
@@ -1144,7 +1146,7 @@ namespace scbw
 	}
 
 	void restore_func(Unit* unit) {
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		Unit* overlayTargetUnit = unit;
 		if (unit->subunit != nullptr)
@@ -1157,13 +1159,13 @@ namespace scbw
 		// remove status effects and corresponding overlays
 
 		// Remove MatralethParasite
-		if (!scbw::is_allied_to(unitExt->values[ValueParasiteArmPlayer], unit->player) && unitExt->timers[TimerParasiteArm]) {
-			unitExt->timers[TimerParasiteArm] = 0;
+		if (!scbw::is_allied_to(unit_ext->values[ValueParasiteArmPlayer], unit->player) && unit_ext->timers[TimerParasiteArm]) {
+			unit_ext->timers[TimerParasiteArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (!scbw::is_allied_to(i, unit->player)) {
-				unitExt->parasite_spawn_count[i] = 0;
+				unit_ext->parasite_spawn_count[i] = 0;
 			}
 		}
 
@@ -1172,8 +1174,8 @@ namespace scbw
 		unit->is_blind = 0;
 
 		// Remove Blind
-		if (unitExt->timers[TimerAuralAssaultBlind]) {
-			unitExt->timers[TimerAuralAssaultBlind] = 0;
+		if (unit_ext->timers[TimerAuralAssaultBlind]) {
+			unit_ext->timers[TimerAuralAssaultBlind] = 0;
 
 			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
 			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
@@ -1208,51 +1210,51 @@ namespace scbw
 		}
 
 		// Remove Observance
-		if (unitExt->timers[TimerObservanceDebuff])
+		if (unit_ext->timers[TimerObservanceDebuff])
 		{
-			unitExt->timers[TimerObservanceDebuff] = 1;
+			unit_ext->timers[TimerObservanceDebuff] = 1;
 		}
 
 		// Remove Knockout Drivers
-		if (unitExt->timers[TimerPetrification])
+		if (unit_ext->timers[TimerPetrification])
 		{
-			unitExt->timers[TimerPetrification] = 1;
+			unit_ext->timers[TimerPetrification] = 1;
 		}
 
 		// Remove Hallucination
-		if (unitExt->timers[TimerHallucinating])
+		if (unit_ext->timers[TimerHallucinating])
 		{
-			unitExt->timers[TimerHallucinating] = 1;
+			unit_ext->timers[TimerHallucinating] = 1;
 		}
 
 		// Remove Captivating ZethrokorClaws
-		if (unitExt->timers[TimerCaptivatingClaws])
+		if (unit_ext->timers[TimerCaptivatingClaws])
 		{
-			unitExt->timers[TimerCaptivatingClaws] = 1;
-			unitExt->unit_vectors[UnitVectorCaptivatingClaws] = {};
+			unit_ext->timers[TimerCaptivatingClaws] = 1;
+			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
 		// Remove Entropy Gauntlets
-		if (unitExt->values[ValueEntropyGauntlets])
+		if (unit_ext->values[ValueEntropyGauntlets])
 		{
-			unitExt->values[ValueEntropyGauntlets] = 0;
-			u32 overlayOffset = scbw::get_overlay_offset(unit->id);
-			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
-			if (unit->subunit != nullptr)
+			unit_ext->values[ValueEntropyGauntlets] = 0;
+			u32 overlay_offset = scbw::get_overlay_offset(unit->id);
+			u32 overlay_image_id = ImageId::EntropyGauntletsOverlaySmall - overlay_offset;
+			if (unit->subunit)
 			{
-				unit->subunit->sprite->remove_overlay(overlayImageId);
+				unit->subunit->sprite->remove_overlay(overlay_image_id);
 			}
 			else
 			{
-				unit->sprite->remove_overlay(overlayImageId);
+				unit->sprite->remove_overlay(overlay_image_id);
 			}
 		}
 
 		// Remove Controlled Opposition
-		unitExt->values[ValueControlledOpposition] = 0;
+		unit_ext->values[ValueControlledOpposition] = 0;
 
 		// Remove Empress stacks
-		unitExt->values[ValueEmpressPassiveStacks] = 0;
+		unit_ext->values[ValueEmpressPassiveStacks] = 0;
 
 		// Remove Lockdown
 		unit->remove_lockdown();
@@ -1264,36 +1266,38 @@ namespace scbw
 		unit->remove_acid_spores();
 
 		// Remove Deconstruction
-		unitExt->values[ValueDeconstruction] = 0;
+		unit_ext->values[ValueDeconstruction] = 0;
+		unit_ext->timers[TimerDeconstruction] = 0;
 		unit->remove_overlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit)
 		{
-			UnitExt* subunitExt = get_unit_ext(unit->subunit);
-			subunitExt->values[ValueDeconstruction] = 0;
+			UnitExt* subunit_ext = get_unit_ext(unit->subunit);
+			subunit_ext->values[ValueDeconstruction] = 0;
+			subunit_ext->timers[TimerDeconstruction] = 0;
 			unit->subunit->remove_overlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
 
 		// Remove Kelvin Munitions
-		if (unitExt->values[ValueKelvinMunitionsSlow])
+		if (unit_ext->timers[TimerKelvinMunitions])
 		{
-			unitExt->values[ValueKelvinMunitionsSlow] = 0;
+			unit_ext->timers[TimerKelvinMunitions] = 0;
 		}
 
 		// Remove Dirge
-		if (unitExt->timers[TimerDirgeFuse])
+		if (unit_ext->timers[TimerDirgeFuse])
 		{
-			unitExt->timers[TimerDirgeFuse] = 0;
-			unitExt->values[ValueDirgeStacks] = 0;
+			unit_ext->timers[TimerDirgeFuse] = 0;
+			unit_ext->values[ValueDirgeStacks] = 0;
 		}
 
 		// Remove Hierophant Signify
-		unitExt->timers[TimerSignify] = 0;
-		unitExt->values[ValueSignifyStacks] = 0;
-		unitExt->value_vectors[ValueVectorSignifySourcePlayer] = {};
-		scbw::update_signify_status(unit, unitExt);
+		unit_ext->timers[TimerSignify] = 0;
+		unit_ext->values[ValueSignifyStacks] = 0;
+		unit_ext->value_vectors[ValueVectorSignifySourcePlayer] = {};
+		scbw::update_signify_status(unit, unit_ext);
 
 		// Remove Stellar Enforcement
-		unitExt->values[ValueStellarEnforcement] = 0;
+		unit_ext->timers[TimerStellarEnforcement] = 0;
 
 		scbw::refresh_console();
 	}
@@ -1314,29 +1318,29 @@ namespace scbw
 
 	bool is_slowed(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		if (unit->ensnare_timer)
 		{
 			return true;
 		}
 
-		if (unitExt->timers[TimerSignify])
+		if (unit_ext->timers[TimerSignify])
 		{
 			return true;
 		}
 
-		if (unitExt->timers[TimerPetrification])
+		if (unit_ext->timers[TimerPetrification])
 		{
 			return true;
 		}
 
-		if (unitExt->timers[TimerCaptivatingClaws])
+		if (unit_ext->timers[TimerCaptivatingClaws])
 		{
 			return true;
 		}
 
-		if (unitExt->values[ValueKelvinMunitionsSlow])
+		if (unit_ext->timers[TimerKelvinMunitions] >= 1)
 		{
 			return true;
 		}
@@ -1346,20 +1350,19 @@ namespace scbw
 
 	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
-
 		// Deconstruction - Pazuzu passive
-		f64 selfDamage = (unitExt->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
-		auto deconstructionTarget = unit;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		f64 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
+		Unit* deconstruction_target = unit;
 		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
 		{
-			deconstructionTarget = unitExt->units[UnitTurretParentLink]; // TODO: port as unit
-			if (deconstructionTarget == nullptr)
+			deconstruction_target = unit_ext->units[UnitTurretParentLink]; // TODO: port as unit
+			if (!deconstruction_target)
 			{
 				return;
 			}
 		}
-		hooks::weapon_damage(selfDamage, deconstructionTarget, weapon_id, deconstructionTarget, deconstructionTarget->player, 0, 1);
+		hooks::weapon_damage(self_damage, deconstruction_target, weapon_id, deconstruction_target, deconstruction_target->player, 0, 1);
 		if (playSound)
 		{
 			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);

@@ -2662,13 +2662,19 @@ namespace hooks {
 		}
 
 		// Magister - Stellar Enforcement - Handle overlay looping
-		if (unit_ext->values[ValueStellarEnforcement] && unit_ext->timers[TimerStellarEnforcementOverlay] == 1) {
+		if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] == 1) {
 			unit_ext->timers[TimerStellarEnforcementOverlay] = 30;
 			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
 		}
 		// Handle overlays after effect is cleansed
-		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && !unit_ext->values[ValueStellarEnforcement]) {
+		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unit_ext->timers[TimerStellarEnforcement] >= 1) {
 			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		}
+
+		// Clear Deconstruction on timer end
+		if (unit_ext->values[ValueDeconstruction] && unit_ext->timers[TimerDeconstruction] <= 1) {
+			unit_ext->values[ValueDeconstruction] = 0;
+			unit->sprite->remove_overlay(ImageId::DeconstructionSmall + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Patriarch - Astral Rule

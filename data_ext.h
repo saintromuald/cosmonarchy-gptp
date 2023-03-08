@@ -39,7 +39,7 @@ enum ExtValueId
 	ValueCentaurLaunchPos,
 	ValueLazarusAgent,
 	ValueRepententChorus,
-	ValueStellarEnforcement,
+//	ValueStellarEnforcement,
 	ValueAlkajeliskSpores,
 	ValueAlkajeliskSporesPlayer,
 	ValueSovereignLaunchPos,
@@ -66,7 +66,7 @@ enum ExtValueId
 //	ValueGodsMadeFleshCast,
 //	ValueGodsMadeFleshActive,
 	ValueLurkerPickTarget,
-	ValueKelvinMunitionsSlow,
+//	ValueKelvinMunitionsSlow,
 	ValueRaceSupplyType,
 	ValueExemplarLaunchPos,
 	ValueClaymoreLaunchPos,
@@ -230,6 +230,9 @@ enum ExtTimerId
 	TimerLiftLandDelay,
 	TimerMadrigalTempoChange,
 	TimerDidactStasisFieldOverlay,
+	TimerStellarEnforcement,
+	TimerDeconstruction,
+	TimerKelvinMunitions,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
