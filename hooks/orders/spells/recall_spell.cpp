@@ -8,9 +8,9 @@ namespace hooks
 	// Originally known as sub_4942D0
 	// Function performed on each target of Recall
 	// by iterate_units_at_location_target_proc_recall_targets
-	// that was validated throug spells_Recall_ActionOnTargetInRange
+	// that was validated throug spells_recall_action_on_target_in_range
 	// Do the actual unit movement
-	void spells_Recall_ActionOnValidTargetForRecall(Unit* target, Unit* caster) {
+	void spells_recall_action_on_valid_target_for_recall(Unit* target, Unit* caster) {
 		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
 		Point16 previous_pos = {};
 		Point16 new_pos = {};
@@ -37,7 +37,7 @@ namespace hooks
 
 			// Originally created a Recall thingy over the unit
 
-			// Disconnect a nuke from a ghost using it
+			// Disconnect a nuke from a nuker
 			if (scbw::unit_can_nuke(target)) {
 				if (target->connected_unit && target->connected_unit->id == UnitId::TerranNuclearMissile) {
 					target->connected_unit->connected_unit = 0;
@@ -50,18 +50,18 @@ namespace hooks
 
 	// Function performed on each target of Recall by iterate_units_at_location_target_proc_recall_targets
 	// to choose if the unit can have the Recall effect cast on it or no, and if yes, calling another function to do the Recall effect.
-	void spells_Recall_ActionOnTargetInRange(Unit* target, Unit* caster) {
-		if (!(target->sprite->flags & SpriteFlags::Hidden) &&
-			(target->player == caster->player || scbw::is_allied_to(target->player, caster->player)) &&
-			!(units_dat::base_property[target->id] & UnitProperty::Building) &&
-			!(target->status & UnitStatus::Invincible) &&
-			!(target->status & UnitStatus::Burrowed) &&
-			target->id != UnitId::ZergLarva &&
-			target->id != UnitId::ZergOcsalLarva &&
-			target->id != UnitId::ZergEgg &&
-			!(target->status & UnitStatus::IsHallucination) &&
-			target != caster) {
-			spells_Recall_ActionOnValidTargetForRecall(target, caster);
+	void spells_recall_action_on_target_in_range(Unit* target, Unit* caster) {
+		if (!(target->sprite->flags & SpriteFlags::Hidden)
+		&&	 (target->player == caster->player || scbw::is_allied_to(target->player, caster->player))
+		&&	!(units_dat::base_property[target->id] & UnitProperty::Building)
+		&&	!(target->status & UnitStatus::Invincible)
+		&&	!(target->status & UnitStatus::Burrowed)
+		&&	  target->id != UnitId::ZergLarva
+		&&	  target->id != UnitId::ZergOcsalLarva
+		&&	  target->id != UnitId::ZergEgg
+		&&	!(target->status & UnitStatus::IsHallucination)
+		&&	  target != caster) {
+			spells_recall_action_on_valid_target_for_recall(target, caster);
 		}
 	}
 

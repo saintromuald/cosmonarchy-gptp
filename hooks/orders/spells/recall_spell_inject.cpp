@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) spells_Recall_ActionOnValidTargetForRecallWrapper()
+	void __declspec(naked) spells_recall_action_on_valid_target_for_recall_wrapper()
 	{
 		static Unit* target;
 		static Unit* caster;
@@ -15,7 +15,7 @@ namespace
 			MOV target, EBX
 			PUSHAD
 		}
-		hooks::spells_Recall_ActionOnValidTargetForRecall(target, caster);
+		hooks::spells_recall_action_on_valid_target_for_recall(target, caster);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -24,7 +24,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) spells_Recall_ActionOnTargetInRangeWrapper()
+	void __declspec(naked) spells_recall_action_on_target_in_range_wrapper()
 	{
 		static Unit* target;
 		static Unit* caster;
@@ -33,7 +33,7 @@ namespace
 			MOV caster, EDX
 			PUSHAD
 		}
-		hooks::spells_Recall_ActionOnTargetInRange(target, caster);
+		hooks::spells_recall_action_on_target_in_range(target, caster);
 		__asm {
 			POPAD
 			XOR EAX, EAX // EAX is cleared regardless of the result, keeping it for safety
@@ -41,7 +41,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_RecallWrapper()
+	void __declspec(naked) orders_recall_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -51,7 +51,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Recall(unit);
+		hooks::orders_recall(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -65,8 +65,8 @@ namespace hooks
 {
 	void inject_recall_spell_hooks()
 	{
-		jump_patch(spells_Recall_ActionOnValidTargetForRecallWrapper,	0x004942D0, 1);
-		jump_patch(spells_Recall_ActionOnTargetInRangeWrapper,			0x00494400, 3);
-		jump_patch(orders_RecallWrapper,								0x00494470, 1);
+		jump_patch(spells_recall_action_on_valid_target_for_recall_wrapper,	0x004942D0, 1);
+		jump_patch(spells_recall_action_on_target_in_range_wrapper,			0x00494400, 3);
+		jump_patch(orders_recall_wrapper,									0x00494470, 1);
 	}
 }
