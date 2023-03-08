@@ -65,7 +65,7 @@ namespace hooks
 		}
 	}
 
-	void orders_Recall(Unit* unit) {
+	void orders_recall(Unit* unit) {
 		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
 
 		// Unit has started casting Recall (== went through the other condition)

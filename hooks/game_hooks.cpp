@@ -2167,7 +2167,7 @@ namespace hooks {
 			}
 		}
 
-		// Correct vanilla timers - THIS IS TEMPORARY! -Pr0nogo
+		// Correct vanilla timers. -Pr0nogo
 		if (unit->defensive_matrix_timer > AzazelDefensiveMatrixTimer) {
 			unit->defensive_matrix_timer = AzazelDefensiveMatrixTimer;
 		}
