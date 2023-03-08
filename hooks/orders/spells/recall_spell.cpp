@@ -11,25 +11,22 @@ namespace hooks
 	// that was validated throug spells_Recall_ActionOnTargetInRange
 	// Do the actual unit movement
 	void spells_Recall_ActionOnValidTargetForRecall(Unit* target, Unit* caster) {
-		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
-
+		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
 		Point16 previous_pos = {};
 		Point16 new_pos = {};
-
 		previous_pos.x = target->sprite->position.x;
 		previous_pos.y = target->sprite->position.y;
 
-		// Identical code to set_unit_position() but for some reason, is
-		// using another function to do exactly the same thing
+		// Identical code to set_unit_position(), but for some reason, is using another function to do exactly the same thing
 		helper::move_unit_duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
 
-		if (!scbw::check_unit_collision_pos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0)) {
+		if (!scbw::check_unit_collision_pos(target, &(caster->sprite->position), &new_pos, 0, false, 0)) {
 			// Collision detected, cancel the movement
 			scbw::set_unit_position(target, previous_pos.x, previous_pos.y);
 		} else {
 			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepare_unit_move(target, false);
-			target->order_target.unit = nullptr;
+			target->order_target.unit = 0;
 			scbw::set_unit_position(target, new_pos.x, new_pos.y);
 			scbw::refresh_unit_after_move(target);
 
@@ -38,38 +35,21 @@ namespace hooks
 				target->order_computer(units_dat::return_to_idle_order[target->id]);
 			}
 
-			// Create the Recall animation over the unit
-			//Thingy* recall_effect_sprite = helper::create_thingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
-			//if (recall_effect_sprite)
-			//{
-			//	recall_effect_sprite->sprite->elevation = target->sprite->elevation + 1;
-			//	helper::set_thingy_visibility_flags(recall_effect_sprite);
-			//}
+			// Originally created a Recall thingy over the unit
 
 			// Disconnect a nuke from a ghost using it
-			if (target->id == UnitId::TerranEidolon ||
-				target->id == UnitId::Hero_SarahKerrigan ||
-				target->id == UnitId::Hero_AlexeiStukov ||
-				target->id == UnitId::Hero_SamirDuran ||
-				target->id == UnitId::Hero_InfestedDuran) {
-
+			if (scbw::unit_can_nuke(target)) {
 				if (target->connected_unit && target->connected_unit->id == UnitId::TerranNuclearMissile) {
-					target->connected_unit->connected_unit = nullptr;
-					target->connected_unit = nullptr;
+					target->connected_unit->connected_unit = 0;
+					target->connected_unit = 0;
 				}
-
 			}
-
-			*bAtLeast1UnitWasRecalled = 1;
+			*at_least_1_unit_was_recalled = 1;
 		}
 	}
 
-	// Originally known as sub_494400
-	// Function performed on each target of Recall
-	// by iterate_units_at_location_target_proc_recall_targets
-	// to choose if the unit can have the Recall effect
-	// cast on it or no, and if yes, calling another function
-	// to do the Recall effect.
+	// Function performed on each target of Recall by iterate_units_at_location_target_proc_recall_targets
+	// to choose if the unit can have the Recall effect cast on it or no, and if yes, calling another function to do the Recall effect.
 	void spells_Recall_ActionOnTargetInRange(Unit* target, Unit* caster) {
 		if (!(target->sprite->flags & SpriteFlags::Hidden) &&
 			(target->player == caster->player || scbw::is_allied_to(target->player, caster->player)) &&
