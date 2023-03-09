@@ -1007,21 +1007,43 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 		kiting_ai(unit, unit_ext);
 
 		if (unit->id == UnitId::TerranApostle) {
-			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unit_ext->timers[TimerAI_Lazarus] == 0)			
-			{
-				s32 count = 0;
-				cosmonarchyFinderLoop(0, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
-				{
-					UnitExt* uExt = get_unit_ext(u);
-					if (uExt->values[ValueLazarusAgent] != 1)
-					{
-						count++;
+			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unit_ext->timers[TimerAI_Lazarus] == 0) {
+				const u32 radius = 4 * 32;
+
+				bool should_cast = true;
+
+				EntryArray units = {};
+				unit_search_radial(&units, unit->position, radius / 2);
+				unit_search_filter(&units, unit, FilterAlly, {UnitId::TerranApostle});
+				for (u32 i = 0; i < units.count; ++i) {
+					Unit* other = units.units[i];
+					if (!scbw::is_allied_to(other->player, unit->player)) {
+						continue;
 					}
-				});
-				if (count >= 5)
-				{
-					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
-					unit_ext->timers[TimerAI_Lazarus] = ApostleAILastBreathTimer;
+					UnitExt* other_ext = get_unit_ext(other);
+					if (!other_ext->timers[TimerLazarusCasting]) {
+						continue;
+					}
+					should_cast = false;
+					break;
+				}
+
+				if (should_cast) {
+					u32 count = 0;
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, unit->position, radius);
+					for (u32 i = 0; i < corpses.count; i++) {
+						Thingy* corpse = corpses.corpses[i];
+						if (scbw::can_revive_corpse(unit->player, corpse)) {
+							count += 1;
+							break;
+						}
+					}
+
+					if (count) {
+						scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
+						unit_ext->timers[TimerAI_Lazarus] = ApostleAILazarusAgentTimer;
+					}
 				}
 			}
 		} else if (unit->id == UnitId::TerranEidolon) {
@@ -1056,6 +1078,8 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
+			// Currently done in spellcasting, if that doesn't work copy the code from there here -Veeq7
+			/*
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::MatralethParasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
@@ -1091,6 +1115,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				});
 			}
+			*/
 		} else if (unit->id == UnitId::ProtossLanifect) {
 			u32 web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
 			u32 lanifects = 0;

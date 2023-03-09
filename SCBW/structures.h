@@ -15,6 +15,7 @@ const s32 UNIT_ARRAY_LENGTH = 1700;
 const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100;
 const s32 SPRITE_ARRAY_LENGTH = 2500;
 const s32 IMAGE_ARRAY_LENGTH = 5000;
+const s32 THINGY_ARRAY_LENGTH = 500;
 const s32 SelectionCap = 12;
 
 /*
@@ -172,7 +173,7 @@ struct GameData // taken from IDA and from https://gist.githubusercontent.com/ne
 	u8		max_player_count;			// 0x25
 	u8		game_speed;					// 0x26
 	u8		game_state;					// 0x27
-	u16		g_game_type;					// 0x28
+	u16		g_game_type;				// 0x28
 	u16		game_subtype;				// 0x2A
 	u32		cdkey_hash;					// 0x2C
 	u16		tileset;					// 0x30

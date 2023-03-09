@@ -548,7 +548,7 @@ namespace hooks
 							if (data.target->subunit) {
 								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
 								subunit_ext->values[ValueDeconstruction]++;
-								subunit_ext->timers[TimerDeconstruction] = 3 * 24 + 1;
+								subunit_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 								subunit_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset)) {
 									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
@@ -650,17 +650,14 @@ namespace hooks
 						}
 					} break;
 					case WeaponId::KonviliskSowingSpines:
-					{
-						// Fertile Spines
-						scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
-					} break;
 					case WeaponId::TetcaerokorCleavingMaw:
 					{
-						// Virile Coating - incubate
-						if (!target_ext->timers[TimerParasiteArm] && !target_ext->timers[TimerIncubationArm]) {
+						// scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
+						// Fertile Spines, Virile Coating - incubate
+						if (!target_ext->timers[TimerIncubationArm] && !(units_dat::base_property[data.target->id] & UnitProperty::Invincible)) {
 							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
-							target_ext->timers[TimerIncubationArm] = 48 + 1;
-							data.target->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
+							target_ext->timers[TimerIncubationArm] = DefaultArmParasiteTimer;
+							data.target->sprite->create_overlay(ImageId::ParasiteOverlay);
 						}
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
@@ -985,38 +982,34 @@ namespace hooks
 			}
 		}
 
-		// Apostle, Anticthon, Aion - Revive (Must be last!)
-		if (fatal_deal_damage && data.damage >= data.target->hitpoints && (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])
-			&& scbw::unit_get_corpse_consume(data.target) == CorpseConsume_Revive) {
+		// Anticthon, Aion - Revive (Must be last!)
+		if (fatal_deal_damage && data.damage >= data.target->hitpoints && (target_ext->timers[TimerAnticthonRevive] || target_ext->timers[TimerReclamation])) {
 			u32 max_hp = data.target->get_max_hp_raw();
 
 			u32 hp = max_hp; // Reclamation
-			if (target_ext->values[ValueLazarusAgent] || target_ext->timers[TimerAnticthonRevive]) {
-				hp = target_ext->values[ValueLazarusAgent] * ApostleLazarusAgentHeal;
-
-				if (target_ext->timers[TimerAnticthonRevive]) {
-					hp += 1 * 256;
-					const u32 radius = 8 * 32;
-					scbw::UnitFinder(
-						data.target->get_x() - radius,
-						data.target->get_y() - radius,
-						data.target->get_x() + radius,
-						data.target->get_y() + radius
-					).for_each([&](Unit* unit) {
-						UnitExt* unit_ext = get_unit_ext(unit);
-						u32 distance = scbw::get_distance_fast(data.target->position, unit->position);
-						if (unit->id == UnitId::TerranAnticthon && distance <= 4 * 32) {
-							if (scbw::is_allied_to(data.target->player, unit->player)) {
-								hp += (unit_ext->values[ValueAnticthonStacks]) * 256;
-								unit_ext->values[ValueAnticthonStacks]++;
-							}
+			if (target_ext->timers[TimerAnticthonRevive]) {
+				hp = 1 * 256;
+				const u32 radius = 8 * 32;
+				scbw::UnitFinder(
+					data.target->get_x() - radius,
+					data.target->get_y() - radius,
+					data.target->get_x() + radius,
+					data.target->get_y() + radius
+				).for_each([&](Unit* unit) {
+					UnitExt* unit_ext = get_unit_ext(unit);
+					u32 distance = scbw::get_distance_fast(data.target->position, unit->position);
+					if (unit->id == UnitId::TerranAnticthon && distance <= 4 * 32) {
+						if (scbw::is_allied_to(data.target->player, unit->player)) {
+							hp += (unit_ext->values[ValueAnticthonStacks]) * 256;
+							unit_ext->values[ValueAnticthonStacks]++;
 						}
-					});
-				}
+					}
+				});
+				
 			}
 
 			u32 player = data.target->player;
-			if (target_ext->timers[TimerReclamation] && !target_ext->values[ValueLazarusAgent] && !target_ext->timers[TimerAnticthonRevive]) {
+			if (target_ext->timers[TimerReclamation] && !target_ext->timers[TimerAnticthonRevive]) {
 				player = target_ext->values[ValueReclamationPlayer];
 			}
 

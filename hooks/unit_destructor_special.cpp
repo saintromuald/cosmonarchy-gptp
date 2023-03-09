@@ -343,9 +343,9 @@ void unit_destructor_special_cases(Unit* unit) {
 	}
 
 	// Imply revive (Lazarus Agent, Counter-Proposal)
-	if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive]) {
+	if (unit_ext->timers[TimerAnticthonRevive]) {
 		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
-		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit, 1, 0);
+		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
 	}
 
 	// Apostle Last Breath behavior
@@ -369,15 +369,6 @@ void unit_destructor_special_cases(Unit* unit) {
 			target->heal_energy(ApostleLastBreathEnergyGain);
 			target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 		});
-	}
-
-	// Matraleth Parasite - Broodspawn on death
-	if (scbw::unit_get_corpse_consume(unit) == CorpseConsume_Parasite) {
-		bool is_air = units_dat::base_property[unit->id] & UnitProperty::Flyer || unit->status & UnitStatus::InAir;
-		u16 type = is_air ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			scbw::create_unit_from_ability(type, unit_ext->parasite_spawn_count[i], i, unit->position);
-		}
 	}
 
 	// Metastasis - Plague spreads when a unit dies
@@ -441,6 +432,13 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	if (thingy) {
 		if (scbw::sprite_id_is_corpse(id)) {
 			thingy->sprite->player = sprite->player;
+
+			Unit* unit = *g_active_iscript_unit;
+			if (unit) {
+				ThingyExt* thingy_ext = get_thingy_ext(thingy);
+				thingy_ext->corpse_player = unit->player;
+				thingy_ext->corpse_unit_id = unit->id;
+			}
 		}
 		thingy->sprite->elevation = elevation;
 		helper::set_thingy_visibility_flags(thingy);

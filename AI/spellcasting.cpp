@@ -6,6 +6,7 @@ namespace
 {
 	bool can_cast_spell_order(Unit* unit, u8 tech_id, u8 order_id);
 	bool ai_cast_spell_order(Unit* unit, Unit* target, u8 order_id, u8 ai_action_flag = 1);
+	bool ai_cast_spell_order_pos(Unit* unit, Point16 pos, u8 order_id, u8 ai_action_flag);
 	u16 get_order_energy_cost(u8 order_id);
 	bool is_nuke_timer_ready(u8 player);
 	Unit* get_loaded_silo(Unit* nuker, b32 check_nuke_available_for_nuker = 1);
@@ -114,19 +115,25 @@ namespace AI
 			case UnitId::ZergMatraleth:
 			{
 				// Parasite
-				if (unit->energy >= unit->get_max_energy() / 2)
-				{
-					if (can_cast_spell_order(unit, TechId::MatralethParasite, OrderId::CastParasite))
-					{
-						Unit* target = find_best_parasite_target(unit, is_unit_being_attacked);
+				if (unit->energy >= unit->get_max_energy() / 2) {
+					if (can_cast_spell_order(unit, TechId::MatralethParasite, OrderId::CastParasite)) {
+						Thingy* target = 0;
+						u32 radius = is_unit_being_attacked ? 9 * 32 : 64 * 32;
 
-						if (unit->main_order_id == OrderId::CastParasite
-							&& unit->order_target.unit == target)
-						{
+						EntryArray corpses = {};
+						corpse_search_radial(&corpses, unit->position, radius);
+						for (u32 i = 0; i < corpses.count; ++i) {
+							Thingy* corpse = corpses.corpses[i];
+							if (scbw::can_consume_corpse(corpse)) {
+								target = corpse;
+								break;
+							}
+						}
+
+						if (unit->main_order_id == OrderId::CastParasite && unit->order_target.pt == target->sprite->position) {
 							return false;
 						}
-						if (ai_cast_spell_order(unit, target, OrderId::CastParasite, 4))
-						{
+						if (ai_cast_spell_order_pos(unit, target->sprite->position, OrderId::CastParasite, 4)) {
 							return true;
 						}
 						return false;
@@ -285,16 +292,20 @@ namespace
 	}
 
 	// Logically equivalent to function @ 0x004A1290
-	bool ai_cast_spell_order(Unit* unit, Unit* target, u8 order_id, u8 ai_action_flag)
-	{
-		if (!target || target->ai_action_flags & ai_action_flag)
-		{
+	bool ai_cast_spell_order(Unit* unit, Unit* target, u8 order_id, u8 ai_action_flag) {
+		if (!target || target->ai_action_flags & ai_action_flag) {
 			return false;
 		}
-		if (unit->main_order_id != order_id)
-		{
+		if (unit->main_order_id != order_id) {
 			unit->order_to(order_id, target);
 			target->ai_action_flags |= ai_action_flag;
+		}
+		return true;
+	}
+
+	bool ai_cast_spell_order_pos(Unit* unit, Point16 pos, u8 order_id, u8 ai_action_flag) {
+		if (unit->main_order_id != order_id) {
+			unit->order_to(order_id, pos.x, pos.y);
 		}
 		return true;
 	}

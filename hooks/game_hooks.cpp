@@ -839,7 +839,7 @@ namespace hooks {
 		if (unit->sprite) {
 			SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
 			sprite_ext->owner = unit;
-			sprite_ext->should_consume_corpse = scbw::unit_get_corpse_consume(unit) != 0;
+			sprite_ext->should_consume_corpse = scbw::unit_has_corpse_consume(unit) != 0;
 		}
 
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -1040,7 +1040,7 @@ namespace hooks {
 						//	scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 						}
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						unit_ext->timers[TimerReconstitutionCooldown] = 1 * 24;
 						scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, corpse->sprite->position);
@@ -1061,7 +1061,7 @@ namespace hooks {
 						unit->update_speed();
 
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 						break;
 					}
@@ -1084,7 +1084,7 @@ namespace hooks {
 				corpse_search_rect(&corpses, {unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
 				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
-					if (!(corpse->sprite->flags & SpriteFlags::Flag04)) {
+					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
 							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
@@ -1093,7 +1093,7 @@ namespace hooks {
 							UnitExt* eggExt = get_unit_ext(egg);
 							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
 						}
-						corpse->sprite->flags |= SpriteFlags::Flag04;
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 					}
 				}
@@ -1253,21 +1253,19 @@ namespace hooks {
 					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 					helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0);
 				}
+				// Apply Lazarus Agent
 				if (unit_ext->timers[TimerLazarusCasting] == 1) {
-					EntryArray units = {};
-					unit_search_radial(&units, unit->position, 4 * 32);
-					unit_search_filter(&units, unit, FilterNoBuilding | FilterAlly | FilterIncludingSelf | FilterNoTrap | FilterNoHallucination);
-					for (u32 i = 0; i < units.count; i++) {
-						// Apply Lazarus Agent
-						Unit* target = units.units[i];
-						if (target->id == UnitId::ZergLarva || target->id == UnitId::ZergOcsalLarva || target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon
-						||  target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward) {
-							continue;
+					helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
+
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, unit->position, 4 * 32);
+					for (u32 i = 0; i < corpses.count; i++) {
+						Thingy* corpse = corpses.corpses[i];
+						Unit* revived = scbw::revive_corpse(unit->player, corpse);
+						if (revived) {
+							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
 						}
-						UnitExt* target_ext = get_unit_ext(target);
-						target_ext->values[ValueLazarusAgent] += 1;
-						target->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-						helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
 					}
 					if (unit_ext->values[ValueLazarusRecasts]) {
 						unit_ext->values[ValueLazarusRecasts]--;
@@ -1328,24 +1326,25 @@ namespace hooks {
 			case UnitId::ProtossLegionnaire:
 			{
 				// Legionnaire - Blade Vortex
-				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit)) {
+				// Striga was here - removed 7 February 2023. -Pr0nogo
+				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
 					Unit* target = unit->order_target.unit;
 					u32 distance = unit->get_distance_to_target(target);
 					bool do_teleport = false;
-					u32 image_id;
-					Point16 position;
+					u32 image_id = 0;
+
+					const u32 min_radius = 15;
+					const u32 max_radius = 3 * 32;
 
 					if (unit->id == UnitId::ProtossLegionnaire) {
-						if (distance > 15 && distance <= 3 * 32 && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
+						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
-							position = target->sprite->position;
 						}
 					}
-					// Striga was here - removed 7 February 2023. -Pr0nogo
+
 					if (do_teleport) {
-						position = scbw::clamp_point(position);
-						bool teleport = scbw::teleport(unit, position, 0, true);
+						bool teleport = scbw::teleport_to_unit(unit, target, min_radius, 0, true);
 						if (!unit->get_overlay(image_id) && teleport) {
 							unit->sprite->create_top_overlay(image_id);
 						}
@@ -1631,7 +1630,7 @@ namespace hooks {
 
 						if (unit_ext->timers[TimerAnthelionEndlessEclipse] == 1) {
 							Point16 old_pos = unit->position;
-							bool teleport = scbw::teleport(unit, unit->move_target.pt, 0, true);
+							bool teleport = scbw::teleport_to_point(unit, unit->move_target.pt, 0, true);
 							if (teleport) {
 								scbw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, old_pos.x, old_pos.y, unit->player, 11);
 								helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
@@ -1852,9 +1851,9 @@ namespace hooks {
 						if (units_dat::base_property[target->id] & UnitProperty::Building || !(target->status & UnitStatus::Completed)) {
 							return;
 						}
-						scbw::teleport(target, target_pos);
+						scbw::teleport_to_point(target, target_pos);
 					});
-					scbw::teleport(unit, target_pos);
+					scbw::teleport_to_point(unit, target_pos);
 				}
 			} break;
 			case UnitId::ProtossOptecton:
@@ -2101,11 +2100,6 @@ namespace hooks {
 		if (*g_elapsed_time_frames % 10 == 0
 			&& unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
-		}
-
-		// MatralethParasite
-		if (unit_ext->timers[TimerParasiteArm] == 1) {
-			unit_ext->parasite_spawn_count[unit_ext->values[ValueParasiteArmPlayer]] += 2;
 		}
 
 		// Incubation
@@ -2649,7 +2643,7 @@ namespace hooks {
 		}
 
 		// Anticthon - Counter-Proposal - add overlay
-		if ((unit_ext->timers[TimerAnticthonRevive] || unit_ext->values[ValueLazarusAgent]) && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+		if (unit_ext->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 

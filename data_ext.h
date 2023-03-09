@@ -37,7 +37,6 @@ enum ExtValueId
 	ValuePhobosLaunchPos,
 	ValueIncubationPlayer,
 	ValueCentaurLaunchPos,
-	ValueLazarusAgent,
 	ValueRepententChorus,
 //	ValueStellarEnforcement,
 	ValueAlkajeliskSpores,
@@ -99,7 +98,6 @@ enum ExtValueId
 	ValueSpraithColonyLaunchPos,
 	ValueMissileSiloLoaded,
 	ValueSovrolethLinkCount,
-	ValueParasiteArmPlayer,
 	ValueDisableAutoBurrow,
 	ValueSentinelLaunchPos,
 	ValueWardenLaunchPos,
@@ -183,7 +181,6 @@ enum ExtTimerId
 	TimerDecloakBurrow,
 	TimerResourceBoostedRegen,
 	TimerAdrenal,
-	TimerParasiteArm,
 	TimerSwitchModeGimmick,
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
@@ -238,7 +235,6 @@ enum ExtTimerId
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
 	TimerAI_Clarion,
-	TimerAI_Parasite,
 	TimerAI_Skyfall,
 	TimerAI_GriefOfAllGods,
 	TimerAI_DisruptionField,
@@ -333,7 +329,6 @@ struct UnitExt
 	Point16					terran_build_pos;
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
-	u32						parasite_spawn_count[PlayerLimit];
 
 	CargoUnit				loaded_unit[TransportCap];
 
@@ -368,6 +363,11 @@ struct ImageExt {
 	u32 return_address;
 };
 
+struct ThingyExt {
+	u32 corpse_player;
+	u32 corpse_unit_id;
+};
+
 void init_ext_variables();
 void update_ext_variables();
 
@@ -385,5 +385,8 @@ void reset_sprite_ext(Sprite* sprite); // TODO: call on new sprite creation!!!
 
 ImageExt* get_image_ext(Image* image);
 void reset_image_ext(Image* image); // TODO: call on new image creation!!!
+
+ThingyExt* get_thingy_ext(Thingy* thingy);
+void reset_thingy_ext(Thingy* thingy); // TODO: call on new thingy creation!!!
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player);

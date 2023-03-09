@@ -5,6 +5,7 @@ static TileExt tile_ext_array[256][256];
 static BulletExt bullet_ext_array[BULLET_ARRAY_LENGTH];
 static SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
 static ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
+static ThingyExt thingy_ext_array[THINGY_ARRAY_LENGTH];
 
 void init_ext_variables() {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
@@ -19,6 +20,9 @@ void init_ext_variables() {
 	}
 	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
 		reset_image_ext(&g_image_table[i]);
+	}
+	for (u32 i = 0; i < THINGY_ARRAY_LENGTH; ++i) {
+		reset_thingy_ext(&g_thingy_table[i]);
 	}
 }
 
@@ -85,6 +89,11 @@ void update_ext_variables() {
 	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
 
 	}
+
+	// Thingies
+	for (u32 i = 0; i < THINGY_ARRAY_LENGTH; ++i) {
+
+	}
 }
 
 UnitExt* get_unit_ext(Unit* unit) {
@@ -144,6 +153,17 @@ ImageExt* get_image_ext(Image* image) {
 void reset_image_ext(Image* image) {
 	ImageExt* image_ext = get_image_ext(image);
 	*image_ext = {};
+}
+
+ThingyExt* get_thingy_ext(Thingy* thingy) {
+	s32 index = thingy - g_thingy_table;
+	assert(thingy && index >= 0 && index < THINGY_ARRAY_LENGTH);
+	return &thingy_ext_array[index];
+}
+
+void reset_thingy_ext(Thingy* thingy) {
+	ThingyExt* thingy_ext = get_thingy_ext(thingy);
+	*thingy_ext = {};
 }
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {

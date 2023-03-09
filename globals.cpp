@@ -951,10 +951,11 @@ namespace scbw
 			}
 		}
 
-		// Inherit MatralethParasite
-		child->parasite_flags = parent->parasite_flags;
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			child_ext->parasite_spawn_count[i] = parent_ext->parasite_spawn_count[i];
+		// Inherit Incubation
+		if (child_ext->timers[TimerIncubationArm]) {
+			child_ext->timers[TimerIncubationArm] = parent_ext->timers[TimerIncubationArm];
+			child_ext->values[ValueIncubationPlayer] = parent_ext->values[ValueIncubationPlayer];
+			child->sprite->create_overlay(ImageId::ParasiteOverlay);
 		}
 
 		// Inherit Observance
@@ -1093,12 +1094,6 @@ namespace scbw
 			child_ext->values[ValueDirgeStacks] = parent_ext->values[ValueDirgeStacks];
 		}
 
-		// Inherit Lazarus Agent
-		if (parent_ext->values[ValueLazarusAgent])
-		{
-			child_ext->values[ValueLazarusAgent] = parent_ext->values[ValueLazarusAgent];
-		}
-
 		// Inherit Empress Passive Stacks
 		if (parent_ext->values[ValueEmpressPassiveStacks])
 		{
@@ -1158,15 +1153,10 @@ namespace scbw
 
 		// remove status effects and corresponding overlays
 
-		// Remove MatralethParasite
-		if (!scbw::is_allied_to(unit_ext->values[ValueParasiteArmPlayer], unit->player) && unit_ext->timers[TimerParasiteArm]) {
-			unit_ext->timers[TimerParasiteArm] = 0;
+		// Remove Incubation
+		if (!scbw::is_allied_to(unit_ext->values[ValueIncubationPlayer], unit->player) && unit_ext->timers[TimerIncubationArm]) {
+			unit_ext->timers[TimerIncubationArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
-		}
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (!scbw::is_allied_to(i, unit->player)) {
-				unit_ext->parasite_spawn_count[i] = 0;
-			}
 		}
 
 		// Remove default flags
@@ -1299,20 +1289,6 @@ namespace scbw
 		// Remove Stellar Enforcement
 		unit_ext->timers[TimerStellarEnforcement] = 0;
 
-		scbw::refresh_console();
-	}
-
-	void apply_parasite(Unit* unit, u8 player, Unit* queen) {
-		if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
-			return;
-		}
-		UnitExt* unitExt = get_unit_ext(unit);
-		if (!unitExt->timers[TimerParasiteArm] && !unitExt->timers[TimerIncubationArm]) {
-			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
-			unitExt->values[ValueParasiteArmPlayer] = player;
-			unit->sprite->create_overlay(ImageId::ParasiteOverlay, 0, 0, 0);
-		}
-		// unit->parasite_flags |= 1 << player; // No longer using this, since we don't want vision or UI junk
 		scbw::refresh_console();
 	}
 

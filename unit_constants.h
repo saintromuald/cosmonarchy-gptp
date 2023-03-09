@@ -45,9 +45,8 @@ const s32 MadcapMaxStacks = 10;
 const f64 MadcapAttackSpeedPerStack = 0.05;
 
 // Apostle
-const s32 ApostleLazarusAgentHeal = 30 * 256;
 const s32 ApostleLastBreathEnergyGain = 5 * 256;
-const s32 ApostleAILastBreathTimer = 24;
+const s32 ApostleAILazarusAgentTimer = 24;
 
 // Olympian
 const s32 OlympianMeleeDistance = 30;

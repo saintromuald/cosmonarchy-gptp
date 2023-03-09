@@ -163,6 +163,7 @@ namespace hooks
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->main_order_timer = 5 * 24; // used to be 22
 				unit->main_order_state = 1;
+				helper::make_to_hold_position(unit);
 			}
 		}
 	}

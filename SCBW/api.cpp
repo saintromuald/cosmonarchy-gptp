@@ -44,52 +44,64 @@ namespace scbw {
 		artificial_bullet_from(weapon_id, player, source, target, tgt);
 	}
 
-	bool teleport(Unit* u, Point16 target, u16 sprite_id, bool preserveOrder) {
-		Point16 previous_pos = u->sprite->position;
-		Point16 new_pos = {};
-		bool result = false;
+	void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
+		// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
+		scbw::prepare_unit_move(unit, false);
+		if (!preserve_order) {
+			unit->order_target.unit = 0;
+		}
+		scbw::set_unit_position(unit, target.x, target.y);
+		scbw::refresh_unit_after_move(unit);
 
-		// Identical code to set_unit_position() but for some reason, is using another function to do exactly the same thing
-		helper::move_unit_duplicate(u, target.x, target.y);
+		// Stop some currently active orders
+		if (unit->id != UnitId::ZergCocoon && !preserve_order) {
+			unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+		}
 
-		if (!scbw::check_unit_collision_pos(u, &(u->sprite->position), &new_pos, nullptr, false, 0)) {
-			// Collision detected, cancel the movement
-			scbw::set_unit_position(u, previous_pos.x, previous_pos.y);
-		} else {
-			result = true;
-
-			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
-			scbw::prepare_unit_move(u, false);
-			if (!preserveOrder) {
-				u->order_target.unit = 0;
-			}
-			scbw::set_unit_position(u, new_pos.x, new_pos.y);
-			scbw::refresh_unit_after_move(u);
-
-			// Stop some currently active orders
-			if (u->id != UnitId::ZergCocoon && !preserveOrder) {
-				u->order_computer(units_dat::return_to_idle_order[u->id]);
+		// Create the Recall animation over the unit
+		if (sprite_id) {
+			Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, target.x, target.y, 0);
+			if (recall_effect_sprite) {
+				recall_effect_sprite->sprite->elevation = unit->sprite->elevation + 1;
+				helper::set_thingy_visibility_flags(recall_effect_sprite);
 			}
 
-			// Create the Recall animation over the unit
-			if (sprite_id) {
-				Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, new_pos.x, new_pos.y, 0);
-				if (recall_effect_sprite) {
-					recall_effect_sprite->sprite->elevation = u->sprite->elevation + 1;
-					helper::set_thingy_visibility_flags(recall_effect_sprite);
-				}
+		}
 
-			}
-
-			// Disconnect a nuke from a unit using it
-			if (scbw::unit_can_nuke(u)) {
-				if (u->connected_unit && u->connected_unit->id == UnitId::TerranNuclearMissile) {
-					u->connected_unit->connected_unit = 0;
-					u->connected_unit = 0;
-				}
+		// Disconnect a nuke from a unit using it
+		if (scbw::unit_can_nuke(unit)) {
+			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranNuclearMissile) {
+				unit->connected_unit->connected_unit = 0;
+				unit->connected_unit = 0;
 			}
 		}
-		return result;
+	}
+
+	bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
+		Point16 new_pos = {};
+		if (!scbw::check_unit_collision_pos(unit, &target, &new_pos, 0, false, 0)) {
+			return false;
+		}
+
+		teleport_internal(unit, new_pos, sprite_id, preserve_order);
+		return true;
+	}
+
+	bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id, bool preserve_order) {
+		Box16 move_area = {};
+		move_area.left   = target->get_left()   - radius;
+		move_area.top    = target->get_top()    - radius;
+		move_area.right  = target->get_right()  + radius;
+		move_area.bottom = target->get_bottom() + radius;
+		move_area = clamp_box16(move_area);
+
+		Point16 new_pos = {};
+		if (!scbw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
+			return false;
+		}
+
+		teleport_internal(unit, new_pos, sprite_id, preserve_order);
+		return true;
 	}
 
 	Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player, s32 elevation_level) {
@@ -904,15 +916,15 @@ namespace scbw {
 	}
 
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
-		for (s32 i = 0; i < count; i++) {
-			u32 remove_timer = 0;
-			switch (unit_id) {
-				case UnitId::ZergRililisk:
-				case UnitId::ZergRilirokor:
-				{
-					remove_timer = BroodspawnTimer;
-				}
+		u32 remove_timer = 0;
+		switch (unit_id) {
+			case UnitId::ZergRililisk:
+			case UnitId::ZergRilirokor: {
+				remove_timer = BroodspawnTimer;
 			}
+		}
+
+		for (s32 i = 0; i < count; i++) {
 			Unit* unit = scbw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false);
 			if (!unit) {
 				return;
@@ -931,26 +943,7 @@ namespace scbw {
 					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
 						unit->remove_timer = remove_timer;
 					}
-					u32 range = 6 * 32;
-					scbw::UnitFinder(
-						unit->get_x() - range,
-						unit->get_y() - range,
-						unit->get_x() + range,
-						unit->get_y() + range
-					).for_each([&](Unit* target) {
-						if (target->id != UnitId::ZergMatraleth) {
-							return;
-						}
-						if (!scbw::is_allied_to(unit->player, target->player)) {
-							return;
-						}
-						if (target->energy < 200 * 256) {
-							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->get_max_energy());
-							target->sprite->create_underlay(425);
-						}
-					});
-					break;
-				}
+				} break;
 				case UnitId::ProtossSimulacrum: {
 					if (creator) {
 						unit->hitpoints = std::max(256, creator->hitpoints);
@@ -958,7 +951,7 @@ namespace scbw {
 						scbw::inherit_debuffs(creator, unit);
 					}
 					helper::play_sound_from_unit(SoundId::Simulacrum_Clone_01, unit, 1, 0);
-				}
+				} break;
 			}
 		}
 	}
@@ -1409,13 +1402,13 @@ namespace scbw {
 			PUSHAD
 			PUSH someFlag;
 			PUSH _hideErrorMsg
-				PUSH outPos
-				PUSH inPos
-				PUSH unit
-				MOV EAX, moveArea
-				CALL Func_CheckUnitCollisionPos
-				MOV result, EAX
-				POPAD
+			PUSH outPos
+			PUSH inPos
+			PUSH unit
+			MOV EAX, moveArea
+			CALL Func_CheckUnitCollisionPos
+			MOV result, EAX
+			POPAD
 		}
 		return result != 0;
 	}
@@ -2342,17 +2335,12 @@ namespace scbw {
 			|| order_id == OrderId::TurretAttack;
 	}
 
-	CorpseConsume unit_get_corpse_consume(Unit* unit) {
+	bool unit_has_corpse_consume(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unit_ext->parasite_spawn_count[i]) {
-				return CorpseConsume_Parasite;
-			}
+		if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
+			return true;
 		}
-		if (unit_ext->values[ValueLazarusAgent] || unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
-			return CorpseConsume_Revive;
-		}
-		return CorpseConsume_None;
+		return false;
 	}
 
 	bool ai_unit_id_can_flee_three_quarters(u32 unit_id) {
@@ -3066,18 +3054,15 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_id_is_morphed_from_double_unit(u32 unit_id)
-	{
+	bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
 		return unit_id == UnitId::ZergVorvrokor
 			|| unit_id == UnitId::ZergKalkalisk
 			|| unit_id == UnitId::ZergGhitorokor;
 	}
 
-	Image* get_addon_connector_image(Unit* unit)
-	{
+	Image* get_addon_connector_image(Unit* unit) {
 		u16 image_id = 0;
-		switch (unit->id)
-		{
+		switch (unit->id) {
 			case UnitId::TerranMedbay:
 			{
 				image_id = ImageId::MedbayConnector;
@@ -3097,10 +3082,74 @@ namespace scbw {
 				image_id = ImageId::CommandmentConnector;
 			} break;
 		}
-		if (image_id)
-		{
+		if (image_id) {
 			return unit->get_overlay(image_id);
 		}
 		return 0;
+	}
+
+	bool can_consume_corpse(Thingy* corpse) {
+		if (!scbw::sprite_id_is_corpse(corpse->sprite->id) || corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) {
+			return false;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		u32 unit_id = corpse_ext->corpse_unit_id;
+		if (units_dat::base_property[unit_id] & UnitProperty::Building
+			||	unit_id == UnitId::ZergLarva
+			||  unit_id == UnitId::ZergOcsalLarva
+			||  unit_id == UnitId::ZergEgg
+			||  unit_id == UnitId::ZergCocoon
+			||  unit_id == UnitId::ProtossPlasmaShell
+			||  unit_id == UnitId::ProtossSteward) {
+			return false;
+		}
+
+		return true;
+	}
+
+	bool can_revive_corpse(u32 player, Thingy* corpse) {
+		if (!can_consume_corpse(corpse)) {
+			return false;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		if (!scbw::is_allied_to(player, corpse_ext->corpse_player)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	Unit* revive_corpse(u32 player, Thingy* corpse) {
+		if (!can_revive_corpse(player, corpse)) {
+			return 0;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		Point16 pos = corpse->sprite->position;
+		Unit* unit = scbw::create_unit_in_game(corpse_ext->corpse_unit_id, corpse_ext->corpse_player, pos.x, pos.y);
+		if (unit) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+			unit->play_iscript_animation(IscriptAnimation::Unused1);
+			unit_ext->values[ValueReviveStarted] = 1;
+			unit_ext->timers[TimerReviveFlagClearMin] = 3;
+			unit_ext->timers[TimerReviveFlagClearMax] = 14;
+			switch (unit->id) {
+				case UnitId::ZergRililisk:
+				case UnitId::ZergRilirokor:
+				{
+					unit->remove_timer = BroodspawnTimer;
+				}
+			}
+			scbw::consume_corpse(corpse);
+		}
+		return unit;
+	}
+
+	void consume_corpse(Thingy* corpse) {
+		corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 	}
 }

@@ -15,7 +15,7 @@ namespace SpriteFlags
 		Flag01 = 0x02,			// flag 1:
 		Flag02 = 0x04,			// flag 2:
 		Selected = 0x08,		// flag 3: Selected
-		Flag04 = 0x10,			// flag 4:
+		RemoveAfterDeath = 0x10,			// flag 4:
 		Hidden = 0x20,			// flag 5: Hidden
 		Burrowed = 0x40,		// flag 6: Burrowed
 		IscriptCode = 0x80,		// flag 7: Iscript unbreakable code section
