@@ -2757,8 +2757,8 @@ namespace scbw {
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
 			case WeaponId::PazuzuJupiterDriver:
-			case WeaponId::ZealotPsiBlades:
-			case WeaponId::LegionnairePsiSabers:
+			case WeaponId::ZealotPhaseBlades:
+			case WeaponId::LegionnairePhaseSpear:
 			case WeaponId::AmaranthPsiCleaver:
 			case WeaponId::GolemBloodlessAssault:
 			case WeaponId::PariahIconoclastBlades:

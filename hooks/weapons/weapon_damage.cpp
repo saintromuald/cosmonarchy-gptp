@@ -232,7 +232,7 @@ namespace hooks
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
 		// Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
-		if (data.target && data.weapon_id == WeaponId::LegionnairePsiSabers) {
+		if (data.target && data.weapon_id == WeaponId::LegionnairePhaseSpear) {
 			UnitExt* target_ext = get_unit_ext(data.target);
 			target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
 		}
