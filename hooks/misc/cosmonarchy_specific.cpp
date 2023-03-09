@@ -610,89 +610,68 @@ namespace hooks
 	}
 
 	// Hooked to help with corpse-related abilities. -Pr0nogo
-	Thingy* create_thingy(s32 sprite_id, Point16 location, char player) // 00488210
-	{
-		Thingy* first_unused_thingy = *g_first_unused_thingy;
-		if (!*g_first_unused_thingy)
-		{
+	Thingy* create_thingy(u32 sprite_id, Point16 location, u8 player) { // 00488210
+		Thingy* thingy = *g_first_free_thingy;
+		if (!thingy) {
 			return 0;
 		}
-		Thingy* next_unused_thingy = (*g_first_unused_thingy)->next;
-		*g_first_unused_thingy = (*g_first_unused_thingy)->next;
-		if (*g_last_unused_thingy == first_unused_thingy)
-		{
-			*g_last_unused_thingy = first_unused_thingy->prev;
+
+		*g_first_free_thingy = thingy->next;
+		if (*g_last_free_thingy == thingy) {
+			*g_last_free_thingy = thingy->prev;
 		}
-		if (first_unused_thingy->prev)
-		{
-			first_unused_thingy->prev->next = next_unused_thingy->prev;
+		if (thingy->prev) {
+			thingy->prev->next = thingy->next;
 		}
-		if (next_unused_thingy->prev)
-		{
-			next_unused_thingy->prev->prev = first_unused_thingy->prev;
+		if (thingy->next) {
+			thingy->next->prev = thingy->prev;
 		}
 
-		Thingy* result;
-		first_unused_thingy->prev = 0;
-		next_unused_thingy->prev = 0;
-		first_unused_thingy->unit_id = 1;
-		Sprite* new_sprite = helper::create_sprite(sprite_id, location.x, location.y, player);
-		first_unused_thingy->sprite = new_sprite;
-		Thingy* first_unused_thingy_2;
-		Thingy* next_unused_thingy_2;
-		Thingy* next_used_thingy;
-		if (new_sprite)
-		{
-			Thingy* first_used_thingy = *g_first_lone_sprite;
-			if (*g_first_lone_sprite)
-			{
-				if (*g_first_lone_sprite == *g_first_lone_sprite)
-				{
-					*g_first_lone_sprite = first_unused_thingy;
+		thingy->prev = 0;
+		thingy->next = 0;
+		thingy->unit_id = 1;
+		Sprite* sprite = helper::create_sprite(sprite_id, location.x, location.y, player);
+		thingy->sprite = sprite;
+		if (sprite) {
+			Thingy* first_used_thingy = *g_first_thingy;
+			if (first_used_thingy) {
+				if (*g_last_thingy == first_used_thingy) {
+					*g_last_thingy = thingy;
 				}
-				first_unused_thingy->prev = *g_first_lone_sprite;
-				next_unused_thingy->prev = first_used_thingy->next;
-				next_used_thingy = first_used_thingy->next;
-				if (next_used_thingy)
-				{
-					next_used_thingy->prev = first_unused_thingy;
+				thingy->prev = *g_first_thingy;
+				thingy->next = first_used_thingy->next;
+				if (first_used_thingy->next) {
+					first_used_thingy->next->prev = thingy;
 				}
-				first_used_thingy->next = first_unused_thingy;
-				result = first_unused_thingy;
+				first_used_thingy->next = thingy;
+
+				reset_thingy_ext(thingy);
+				return thingy;
 			}
-			else
-			{
-				*g_last_lone_sprite = first_unused_thingy;
-				*g_first_lone_sprite = first_unused_thingy;
-				result = first_unused_thingy;
-			}
+
+			*g_first_thingy = thingy;
+			*g_last_thingy = thingy;
+
+			reset_thingy_ext(thingy);
+			return thingy;
 		}
-		else
-		{
-			first_unused_thingy_2 = *g_first_unused_thingy;
-			if (*g_first_unused_thingy)
-			{
-				if (*g_last_unused_thingy == *g_first_unused_thingy)
-				{
-					*g_last_unused_thingy = first_unused_thingy;
-				}
-				first_unused_thingy->prev = *g_first_unused_thingy;
-				next_unused_thingy->prev = first_unused_thingy_2->next;
-				next_unused_thingy_2 = first_unused_thingy_2->next;
-				if (next_unused_thingy_2)
-				{
-					next_unused_thingy_2->prev = first_unused_thingy;
-				}
-				first_unused_thingy_2->next = first_unused_thingy;
-				result = 0;
+
+		Thingy* first_free_thingy = *g_first_free_thingy;
+		if (first_free_thingy) {
+			if (*g_last_free_thingy == first_free_thingy) {
+				*g_last_free_thingy = thingy;
 			}
-			else
-			{
-				*g_last_unused_thingy = first_unused_thingy;
-				*g_first_unused_thingy = first_unused_thingy;
-				result = 0;
+			thingy->prev = first_free_thingy;
+			thingy->next = first_free_thingy->next;
+			if (first_free_thingy->next) {
+				first_free_thingy->next->prev = thingy;
 			}
+			first_free_thingy->next = thingy;
+			return 0;
 		}
-		return result;
+
+		*g_last_free_thingy = thingy;
+		*g_first_free_thingy = thingy;
+		return 0;
 	}
 }

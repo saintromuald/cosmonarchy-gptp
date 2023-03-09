@@ -742,9 +742,9 @@ namespace hooks
 
 	void __declspec(naked) create_thingy_wrapper() { // 00488210
 		static Thingy* result;
-		static s32 sprite_id;
+		static u32 sprite_id;
 		static Point16 location;
-		static s32 player; // was char
+		static u8 player;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -753,18 +753,18 @@ namespace hooks
 			MOV sprite_id, EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV location, EAX
-			MOV EAX, [EBP + 0x10]
-			MOV player, EAX
+			MOV AL, [EBP + 0x10]
+			MOV player, AL
 			POP EAX
 			PUSHAD
 		}
 		result = hooks::create_thingy(sprite_id, location, player);
 		__asm {
 			POPAD
-			MOV EAX, 0
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x0C
+			RET 0x0C
 		}
 	}
 
@@ -795,6 +795,6 @@ namespace hooks
 		jump_patch(turn_unit_wrapper,							0x00495F20, 1);
 		jump_patch(init_damage_overlay_counts_wrapper,			0x004D5C20, 1);
 		jump_patch(create_unit_building_sprite_validity_array,	0x00497110, 1);
-	//	jump_patch(create_thingy_wrapper,						0x00488210, 5);
+		jump_patch(create_thingy_wrapper,						0x00488210, 5);
 	}
 }

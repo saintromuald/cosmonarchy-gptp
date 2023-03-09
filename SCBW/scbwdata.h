@@ -62,8 +62,8 @@ SCBW_DATA_REF(UnitDeaths*,	g_completed_unit_count_table,	0x00584DE4);
 SCBW_DATA_REF(UnitDeaths*,	g_all_unit_count_table,			0x00582324);
 SCBW_DATA(UnitDeaths*,		g_all_unit_count_table_original,0x00582324);
 
-SCBW_DATA(Thingy**,			g_first_lone_sprite,			0x00654874);
-SCBW_DATA(Thingy**,			g_last_lone_sprite,				0x0065291C);
+SCBW_DATA(Thingy**,			g_first_thingy,					0x00654874);
+SCBW_DATA(Thingy**,			g_last_thingy,					0x0065291C);
 
 // From locations.cpp
 SCBW_DATA(MapSize*,			g_map_tile_size,				0x0057F1D4);
@@ -1144,8 +1144,8 @@ SCBW_DATA(Unit*,			g_unit_references,				0x0059CB58);
 SCBW_DATA(Unit*,			g_unit_references2,				0x0059CB64);
 
 // For create_thingy
-SCBW_DATA(Thingy**,			g_first_unused_thingy,			0x00654878);
-SCBW_DATA(Thingy**,			g_last_unused_thingy,			0x0065487C);
+SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);
+SCBW_DATA(Thingy**,			g_last_free_thingy,				0x0065487C);
 
 
 //-------- Format strings used by Starcraft implementations of printf --------//
