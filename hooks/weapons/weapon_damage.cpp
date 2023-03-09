@@ -548,7 +548,7 @@ namespace hooks
 							if (data.target->subunit) {
 								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
 								subunit_ext->values[ValueDeconstruction]++;
-								subunit_ext->timers[TimerDeconstruction] = 3 * 24 + 1;
+								subunit_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 								subunit_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
 								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset)) {
 									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
