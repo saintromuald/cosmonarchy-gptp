@@ -28,6 +28,7 @@ namespace hooks
 	void turn_unit(Unit* unit, char direction);														// 00495F20
 	void init_damage_overlay_counts();																// 004D5C20
 	void __cdecl create_unit_building_sprite_validity_array();										// 00497110
+	Thingy* create_thingy(s32 sprite_id, Point16 location, char player);							// 00488210
 }
 
 namespace hooks
