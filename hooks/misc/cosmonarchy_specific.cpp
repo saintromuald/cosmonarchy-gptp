@@ -610,7 +610,7 @@ namespace hooks
 	}
 
 	// Hooked to help with corpse-related abilities. -Pr0nogo
-	Thingy* create_thingy(u32 sprite_id, Point16 location, u8 player) { // 00488210
+	Thingy* create_thingy(u32 sprite_id, Point16 position, u8 player) { // 00488210
 		Thingy* thingy = *g_first_free_thingy;
 		if (!thingy) {
 			return 0;
@@ -630,20 +630,20 @@ namespace hooks
 		thingy->prev = 0;
 		thingy->next = 0;
 		thingy->unit_id = 1;
-		Sprite* sprite = helper::create_sprite(sprite_id, location.x, location.y, player);
+		Sprite* sprite = helper::create_sprite(sprite_id, position.x, position.y, player);
 		thingy->sprite = sprite;
 		if (sprite) {
-			Thingy* first_used_thingy = *g_first_thingy;
-			if (first_used_thingy) {
-				if (*g_last_thingy == first_used_thingy) {
+			Thingy* first_thingy = *g_first_thingy;
+			if (first_thingy) {
+				if (*g_last_thingy == first_thingy) {
 					*g_last_thingy = thingy;
 				}
-				thingy->prev = *g_first_thingy;
-				thingy->next = first_used_thingy->next;
-				if (first_used_thingy->next) {
-					first_used_thingy->next->prev = thingy;
+				thingy->prev = first_thingy;
+				thingy->next = first_thingy->next;
+				if (first_thingy->next) {
+					first_thingy->next->prev = thingy;
 				}
-				first_used_thingy->next = thingy;
+				first_thingy->next = thingy;
 
 				reset_thingy_ext(thingy);
 				return thingy;
@@ -670,8 +670,8 @@ namespace hooks
 			return 0;
 		}
 
-		*g_last_free_thingy = thingy;
 		*g_first_free_thingy = thingy;
+		*g_last_free_thingy = thingy;
 		return 0;
 	}
 }

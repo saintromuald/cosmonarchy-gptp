@@ -743,7 +743,7 @@ namespace hooks
 	void __declspec(naked) create_thingy_wrapper() { // 00488210
 		static Thingy* result;
 		static u32 sprite_id;
-		static Point16 location;
+		static Point16 position;
 		static u8 player;
 		__asm {
 			PUSH EBP
@@ -751,14 +751,15 @@ namespace hooks
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV sprite_id, EAX
-			MOV EAX, [EBP + 0x0C]
-			MOV location, EAX
-			MOV AL, [EBP + 0x10]
+			MOV AX,  [EBP + 0x0C]
+			MOV position.x, AX
+			MOV AL,  [EBP + 0x10]
 			MOV player, AL
 			POP EAX
+			MOV position.y, DI
 			PUSHAD
 		}
-		result = hooks::create_thingy(sprite_id, location, player);
+		result = hooks::create_thingy(sprite_id, position, player);
 		__asm {
 			POPAD
 			MOV EAX, result
