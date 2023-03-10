@@ -18,9 +18,16 @@ extern Order new_order_table[OrderLimit];
 #define ImageLimit 16385 // Must be a multiple of 5.
 extern Image new_image_table[ImageLimit];
 
+#define ThingyLimit1 2048
+#define ThingyLimit2 2048
+
+extern Thingy new_thingy_table1[ThingyLimit1];	// 0x006509D8
+extern Thingy new_thingy_table2[ThingyLimit2];	// 0x00652928
+
 namespace hooks {
 	void inject_unit_extender();
 	void inject_sprite_extender();
 	void inject_order_extender();
 	void inject_image_extender();
+	void inject_thingy_extender();
 }
