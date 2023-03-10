@@ -839,6 +839,7 @@ namespace SpriteId
 		Corpse_ProtossUnitSmall		= 847,
 		Corpse_ZergUnitMedium		= 848,
 		Corpse_ZergUnitSmall		= 849,
+		Corpse_ZergUnitTiny			= 850,
 
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
