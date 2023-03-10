@@ -70,15 +70,6 @@ struct MultihitBullet {
 	MultihitBullet(Bullet* bullet, std::vector<Unit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
 };
 
-struct RevivingUnit {
-	Vector32 position;
-	u32 timer;
-	u32 unit_id;
-	u8 player;
-	u32 energy;
-	u32 hp;
-};
-
 struct AttackExtender {
 	//	std::vector<std::vector<u16>> attacks;
 	u16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
@@ -111,7 +102,6 @@ struct Globals {
 	std::vector<Effect> effects;
 	std::vector<PariahHit> pariah_hits;
 	std::vector<MultihitBullet> multihit_bullets;
-	std::vector<RevivingUnit> reviving_units;
 	std::unordered_map<Unit*, std::vector<Unit*>> lurker_spine_hits;
 	AttackExtender attackers;
 
@@ -145,7 +135,6 @@ struct Globals {
 	void add_multihit_empty_bullet(Bullet* bullet, s32 divider);
 	void add_bullet_multihit(Bullet* bullet, Unit* target);
 	void add_incremental_bullet_multihit(Bullet* bullet, Unit* target);
-	void init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town);
 	void remove_multihit_bullet(Bullet* bullet);
 	s32 get_divider(Bullet* bullet);
 	void clear_lakizilisk(Unit* lakizilisk);

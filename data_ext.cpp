@@ -30,6 +30,10 @@ void update_ext_variables() {
 	// Units
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
 		UnitExt* unit_ext = &unit_ext_array[i];
+		if (unit_ext->pause_timers) {
+			continue;
+		}
+
 		if (unit_ext->energy_regen_timer != UINT_MAX) {
 			++unit_ext->energy_regen_timer;
 		}
@@ -63,7 +67,7 @@ void update_ext_variables() {
 			}
 			unit_ext->timer_vectors[j].erase(std::remove_if(unit_ext->timer_vectors[j].begin(), unit_ext->timer_vectors[j].end(), [&](u32& timer) {
 				return timer == 0;
-				}), unit_ext->timer_vectors[j].end());
+			}), unit_ext->timer_vectors[j].end());
 		}
 	}
 
@@ -92,7 +96,13 @@ void update_ext_variables() {
 
 	// Thingies
 	for (u32 i = 0; i < THINGY_ARRAY_LENGTH; ++i) {
+		Thingy* thingy = &g_thingy_table[i];
+		if (!thingy->sprite) {
+			continue;
+		}
 
+		ThingyExt* thingy_ext = get_thingy_ext(thingy);
+		// ...
 	}
 }
 
@@ -112,6 +122,38 @@ void reset_unit_ext(Unit* unit) {
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		unit_ext->last_seen_timer[i] = UINT_MAX;
 	}
+}
+
+void unit_death_start(Unit* unit) {
+	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) { // set dead unit pointers to nullptr and erase them from unit vectors
+		UnitExt* other_ext = &unit_ext_array[i];
+		for (u32 i = 0; i < UnitCount; ++i) {
+			if (other_ext->units[i] == unit) {
+				other_ext->units[i] = nullptr;
+			}
+		}
+
+		for (u32 i = 0; i < UnitVectorCount; ++i) {
+			auto& vec = other_ext->unit_vectors[i];
+			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](Unit* vecUnit) {
+				return vecUnit == unit;
+			}), vec.end());
+		}
+	}
+
+	UnitExt* unit_ext = get_unit_ext(unit);
+	unit_ext->pause_timers = true;
+
+	if (unit->sprite) {
+		SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
+		if (sprite_ext->owner == unit) {
+			sprite_ext->owner = 0;
+		}
+	}
+}
+
+void unit_death_end(Unit* unit) {
+	reset_unit_ext(unit);
 }
 
 TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y) {

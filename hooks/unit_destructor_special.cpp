@@ -342,12 +342,6 @@ void unit_destructor_special_cases(Unit* unit) {
 		scbw::madrigal_dirge_fuse(unit, unit_ext);
 	}
 
-	// Imply revive (Lazarus Agent, Counter-Proposal)
-	if (unit_ext->timers[TimerAnticthonRevive]) {
-		scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, unit->sprite->position.x, unit->sprite->position.y - 12);
-		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-	}
-
 	// Apostle Last Breath behavior
 	{
 		u32 range = 4 * 32;
@@ -400,9 +394,8 @@ void unit_destructor_special_cases(Unit* unit) {
 
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
-	if (unit->id != UnitId::ProtossVagrant) {
-		globals.unit_death(unit);
-	}
+	globals.unit_death(unit);
+	unit_death_start(unit);
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
@@ -421,13 +414,8 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) { // 004D7120 
 	Sprite* sprite = image->parent_sprite;
 	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
-	u32 pos_y = y + image->vertical_offset + sprite->position.y;
-	if (scbw::sprite_id_is_corpse(id)) {
-		SpriteExt* sprite_ext = get_sprite_ext(sprite);
-		if (sprite_ext->should_consume_corpse) {
-			return false;
-		}
-	}
+	u32 pos_y = y + image->vertical_offset   + sprite->position.y;
+
 	Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);
 	if (thingy) {
 		if (scbw::sprite_id_is_corpse(id)) {
@@ -436,8 +424,49 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 			Unit* unit = *g_active_iscript_unit;
 			if (unit) {
 				ThingyExt* thingy_ext = get_thingy_ext(thingy);
-				thingy_ext->corpse_player = unit->player;
-				thingy_ext->corpse_unit_id = unit->id;
+				thingy_ext->original_player = unit->player;
+				thingy_ext->unit_id = unit->id;
+
+				UnitExt* unit_ext = get_unit_ext(unit);
+				if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
+					u32 max_hp = unit->get_max_hp_raw();
+
+					u32 hp = 1 * 256;
+					if (unit_ext->timers[TimerAnticthonRevive]) { // Counter Proposal
+						const u32 radius = 8 * 32;
+						scbw::UnitFinder(
+							unit->get_x() - radius,
+							unit->get_y() - radius,
+							unit->get_x() + radius,
+							unit->get_y() + radius
+						).for_each([&](Unit* other) {
+							UnitExt* other_ext = get_unit_ext(unit);
+							u32 distance = scbw::get_distance_fast(unit->position, other->position);
+							if (unit->id == UnitId::TerranAnticthon && distance <= 4 * 32) {
+								if (scbw::is_allied_to(other->player, unit->player)) {
+									hp += (unit_ext->values[ValueAnticthonStacks]) * 256;
+									unit_ext->values[ValueAnticthonStacks]++;
+								}
+							}
+						});
+					} else if (unit_ext->timers[TimerReclamation]) { // Reclamation
+						u32 hp = max_hp;
+					}
+
+					u32 player = unit->player;
+					if (unit_ext->timers[TimerReclamation] && !unit_ext->timers[TimerAnticthonRevive]) {
+						player = unit_ext->values[ValueReclamationPlayer];
+					}
+
+					Unit* revived = scbw::revive_corpse(thingy, player);
+					if (revived) {
+						revived->shields = 0;
+						revived->set_hitpoints(1);
+						revived->heal_hp_then_shields(hp, 0, false, false);
+						revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+						helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
+					}
+				}
 			}
 		}
 		thingy->sprite->elevation = elevation;

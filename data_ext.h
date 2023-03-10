@@ -303,6 +303,7 @@ enum ExtTimerVectorId
 
 struct UnitExt
 {
+	bool					pause_timers;
 	u32						energy_regen_timer;
 	u32						shield_regen_timer;
 	u32						damage_taken_timer;
@@ -353,7 +354,6 @@ struct BulletExt {
 
 struct SpriteExt {
 	bool is_fow_sprite;
-	bool should_consume_corpse;
 	Unit* owner;
 };
 
@@ -364,8 +364,8 @@ struct ImageExt {
 };
 
 struct ThingyExt {
-	u32 corpse_player;
-	u32 corpse_unit_id;
+	u32 original_player;
+	u32 unit_id;
 };
 
 void init_ext_variables();
@@ -373,6 +373,9 @@ void update_ext_variables();
 
 UnitExt* get_unit_ext(Unit* unit);
 void reset_unit_ext(Unit* unit);
+
+void unit_death_start(Unit* unit);
+void unit_death_end(Unit* unit);
 
 TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y);
 TileExt* get_tile_ext_at_coords(u32 x, u32 y);

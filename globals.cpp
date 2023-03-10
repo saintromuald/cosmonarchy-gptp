@@ -57,17 +57,6 @@ void Globals::aise_save()
 		stream.write(reinterpret_cast<const char*>(&pariah_hits[i].target), sizeof(pariah_hits[i].target));
 	}
 
-	u32 apostleCount = reviving_units.size();
-	for (s32 i = 0; i < apostleCount; i++)
-	{
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].energy), sizeof(reviving_units[i].energy));
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].player), sizeof(reviving_units[i].player));
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].position.x), sizeof(reviving_units[i].position.x));
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].position.y), sizeof(reviving_units[i].position.y));
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].timer), sizeof(reviving_units[i].timer));
-		stream.write(reinterpret_cast<const char*>(&reviving_units[i].unit_id), sizeof(reviving_units[i].unit_id));
-	}
-
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
 	{
 		for (s32 j = 0; j < ATTACK_LIMIT; i++)
@@ -204,20 +193,6 @@ void Globals::aise_load(const char* ptr, u32 len)
 		pariah_hits.push_back(hit);
 	}
 
-	u32 apostleCount = 0;
-	stream.read(reinterpret_cast<char*>(&apostleCount), sizeof(apostleCount));
-	for (s32 i = 0; i < pariahHitsCount; i++)
-	{
-		RevivingUnit agent;
-		stream.read(reinterpret_cast<char*>(&agent.energy), sizeof(agent.energy));
-		stream.read(reinterpret_cast<char*>(&agent.player), sizeof(agent.player));
-		stream.read(reinterpret_cast<char*>(&agent.position.x), sizeof(agent.position.x));
-		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
-		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
-		stream.read(reinterpret_cast<char*>(&agent.unit_id), sizeof(agent.unit_id));
-		reviving_units.push_back(agent);
-	}
-
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
 	{
 		for (s32 j = 0; j < ATTACK_LIMIT; i++)
@@ -301,36 +276,10 @@ void Globals::reset() {
 	effects.clear();
 	pariah_hits.clear();
 	multihit_bullets.clear();
-	reviving_units.clear();
 	lurker_spine_hits.clear();
 }
 
 void Globals::unit_death(Unit* unit) {
-	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j) { // set dead unit pointers to nullptr and erase them from unit vectors
-		UnitExt* ext = &unit_ext_array[j];
-
-		for (u32 i = 0; i < UnitCount; ++i) {
-			if (ext->units[i] == unit) {
-				ext->units[i] = nullptr;
-			}
-		}
-
-		for (u32 i = 0; i < UnitVectorCount; ++i) {
-			auto& vec = ext->unit_vectors[i];
-			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](Unit* vecUnit) {
-				return vecUnit == unit;
-			}), vec.end());
-		}
-	}
-
-	reset_unit_ext(unit);
-	if (unit->sprite) {
-		SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
-		if (sprite_ext->owner == unit) {
-			sprite_ext->owner = 0;
-		}
-	}
-
 	for (s32 i = 0; i < this->effects.size(); i++) {
 		Effect* effect = &effects[i];
 		if (effect->source == unit) {
@@ -568,37 +517,6 @@ void Globals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 s
 }
 
 void Globals::frame_hook() {
-	// Lazarus Agent and Counter-Proposal
-	for (s32 i = 0; i < reviving_units.size(); ++i) {
-		auto& reviving_unit = reviving_units[i];
-		if (reviving_unit.timer > 0) {
-			reviving_unit.timer--;
-		} else {
-			Unit* revived = scbw::create_unit_in_game(reviving_unit.unit_id, reviving_unit.player, reviving_unit.position.x, reviving_unit.position.y, nullptr, false);
-			if (revived) {
-				UnitExt* revived_ext = get_unit_ext(revived);
-				revived->hitpoints = 1;
-				revived->shields = 0;
-				revived->heal_hp_then_shields(reviving_unit.hp);
-				revived->energy = reviving_unit.energy;
-				revived->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
-				revived->play_iscript_animation(IscriptAnimation::Unused1);
-				revived_ext->values[ValueReviveStarted] = 1;
-				revived_ext->timers[TimerReviveFlagClearMin] = 3;
-				revived_ext->timers[TimerReviveFlagClearMax] = 14;
-				switch (revived->id) {
-					case UnitId::ZergRililisk:
-					case UnitId::ZergRilirokor:
-					{
-						revived->remove_timer = BroodspawnTimer;
-					}
-				}
-			}
-			reviving_units.erase(reviving_units.begin() + i);
-			i--;
-		}
-	}
-
 	for (s32 i = 0; i < effects.size(); i++) {
 		Effect* effect = &effects[i];
 		effect->current_time--;
@@ -759,18 +677,6 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	}
 	MultihitBullet gb(bullet, {}, divider);
 	multihit_bullets.push_back(gb);
-}
-
-void Globals::init_revive(s32 x, s32 y, u8 player, u32 unit_id, u32 energy, u32 hp, AiTown* town) {
-	RevivingUnit reviving_unit = {};
-	reviving_unit.player = player;
-	reviving_unit.position.x = x;
-	reviving_unit.position.y = y;
-	reviving_unit.timer = 2 * 24;
-	reviving_unit.unit_id = unit_id;
-	reviving_unit.energy = energy;
-	reviving_unit.hp = hp;
-	reviving_units.push_back(reviving_unit);
 }
 
 void Globals::clear_lakizilisk(Unit* lakizilisk)

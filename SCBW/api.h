@@ -683,7 +683,6 @@ namespace scbw
 	bool unit_is_allied_or_detected(Unit* unit, u32 player);
 	u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
 	bool order_id_is_aggressive(u32 order_id);
-	bool unit_has_corpse_consume(Unit* unit);
 	bool ai_unit_id_can_flee_three_quarters(u32 unit_id);
 	bool ai_unit_id_can_flee_two_thirds(u32 unit_id);
 	bool unit_id_is_protoss_warp_factory(u32 unit_id);
@@ -734,7 +733,8 @@ namespace scbw
 	bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 	Image* get_addon_connector_image(Unit* unit);
 	bool can_consume_corpse(Thingy* corpse);
-	bool can_revive_corpse(u32 player, Thingy* corpse);
-	Unit* revive_corpse(u32 player, Thingy* thingy);
+	Unit* revive_corpse(Thingy* corpse, u32 player);
+	bool can_revive_allied_corpse(u32 reviving_player, Thingy* corpse);
+	Unit* revive_allied_corpse(u32 reviving_player, Thingy* corpse);
 	void consume_corpse(Thingy* corpse);
 }

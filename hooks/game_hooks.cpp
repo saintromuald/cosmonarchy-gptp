@@ -839,7 +839,6 @@ namespace hooks {
 		if (unit->sprite) {
 			SpriteExt* sprite_ext = get_sprite_ext(unit->sprite);
 			sprite_ext->owner = unit;
-			sprite_ext->should_consume_corpse = scbw::unit_has_corpse_consume(unit) != 0;
 		}
 
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -1261,7 +1260,7 @@ namespace hooks {
 					corpse_search_radial(&corpses, unit->position, 4 * 32);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						Unit* revived = scbw::revive_corpse(unit->player, corpse);
+						Unit* revived = scbw::revive_allied_corpse(unit->player, corpse);
 						if (revived) {
 							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);

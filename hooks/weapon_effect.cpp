@@ -346,8 +346,7 @@ namespace hooks {
 			Thingy* corpse = corpses.corpses[i];
 			if (scbw::can_consume_corpse(corpse)) {
 				ThingyExt* corpse_ext = get_thingy_ext(corpse);
-				u32 unit_id = corpse_ext->corpse_unit_id;
-				u32 broodspawn_id = units_dat::base_property[unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
+				u32 broodspawn_id = units_dat::base_property[corpse_ext->unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
 				scbw::create_unit_from_ability(broodspawn_id, 2, bullet->player, corpse->sprite->position);
 
 				Point16 pos = corpse->sprite->position;
