@@ -480,7 +480,6 @@ namespace hooks
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
 		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueControlledOpposition], 0);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressPassiveStacks], 0);
-		add_status(statuses, "Counter-Proposal", unit_ext->values[ValueAnticthonStacks], 0);
 		add_status(statuses, "Fragmentary Shells", unit_ext->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);

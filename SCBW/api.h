@@ -734,7 +734,5 @@ namespace scbw
 	Image* get_addon_connector_image(Unit* unit);
 	bool can_consume_corpse(Thingy* corpse);
 	Unit* revive_corpse(Thingy* corpse, u32 player);
-	bool can_revive_allied_corpse(u32 reviving_player, Thingy* corpse);
-	Unit* revive_allied_corpse(u32 reviving_player, Thingy* corpse);
 	void consume_corpse(Thingy* corpse);
 }

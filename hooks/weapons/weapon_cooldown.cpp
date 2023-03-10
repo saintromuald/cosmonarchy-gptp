@@ -27,9 +27,6 @@ namespace hooks {
 		// Crucible Aura
 		cooldown /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 
-		// Anticthon - Counter-Proposal
-		cooldown /= 1 + 0.02 * unit_ext->values[ValueAnticthonStacks];
-
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 

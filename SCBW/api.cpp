@@ -3135,28 +3135,6 @@ namespace scbw {
 		return unit;
 	}
 
-	bool can_revive_allied_corpse(u32 reviving_player, Thingy* corpse) {
-		if (!can_consume_corpse(corpse)) {
-			return false;
-		}
-
-		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		if (!scbw::is_allied_to(reviving_player, corpse_ext->original_player)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	Unit* revive_allied_corpse(u32 reviving_player, Thingy* corpse) {
-		if (!can_revive_allied_corpse(reviving_player, corpse)) {
-			return 0;
-		}
-
-		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		return revive_corpse(corpse, corpse_ext->original_player);
-	}
-
 	void consume_corpse(Thingy* corpse) {
 		corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);

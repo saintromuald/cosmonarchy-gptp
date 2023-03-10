@@ -1034,7 +1034,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					corpse_search_radial(&corpses, unit->position, radius);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						if (scbw::can_revive_allied_corpse(unit->player, corpse)) {
+						if (scbw::can_consume_corpse(corpse)) {
 							count += 1;
 							break;
 						}

@@ -81,7 +81,6 @@ enum ExtValueId
 	ValueControlledOpposition,
 	ValueEmpressPassiveStacks,
 	ValueEmpressSourcePlayer,
-	ValueAnticthonStacks,
 	ValueAxitriliskLaunchPos,
 	ValueBactaliskLaunchPos,
 	ValueCharlatanLaunchPos,

@@ -1007,9 +1007,6 @@ namespace scbw
 			child_ext->values[ValueEmpressSourcePlayer] = parent_ext->values[ValueEmpressSourcePlayer];
 		}
 
-		// Inherit Anticthon
-		child_ext->values[ValueAnticthonStacks] = parent_ext->values[ValueAnticthonStacks];
-
 		// Inherit Hierophant Signify
 		child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
 		child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];

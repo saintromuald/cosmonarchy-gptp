@@ -429,29 +429,6 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 
 				UnitExt* unit_ext = get_unit_ext(unit);
 				if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
-					u32 max_hp = unit->get_max_hp_raw();
-
-					u32 hp = 1 * 256;
-					if (unit_ext->timers[TimerAnticthonRevive]) { // Counter Proposal
-						const u32 radius = 8 * 32;
-						scbw::UnitFinder(
-							unit->get_x() - radius,
-							unit->get_y() - radius,
-							unit->get_x() + radius,
-							unit->get_y() + radius
-						).for_each([&](Unit* other) {
-							if (other->id == UnitId::TerranAnticthon && scbw::is_allied_to(other->player, unit->player)) {
-								if (scbw::get_distance_fast(unit->position, other->position) <= 4 * 32) {
-									UnitExt* other_ext = get_unit_ext(other);
-									hp += other_ext->values[ValueAnticthonStacks] * 256;
-									other_ext->values[ValueAnticthonStacks]++;
-								}
-							}
-						});
-					} else if (unit_ext->timers[TimerReclamation]) { // Reclamation
-						hp = max_hp;
-					}
-
 					u32 player = unit->player;
 					if (unit_ext->timers[TimerReclamation] && !unit_ext->timers[TimerAnticthonRevive]) {
 						player = unit_ext->values[ValueReclamationPlayer];
@@ -460,8 +437,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 					Unit* revived = scbw::revive_corpse(thingy, player);
 					if (revived) {
 						revived->shields = 0;
-						revived->set_hitpoints(0);
-						revived->heal_hp_then_shields(hp, 0, false, false);
+						revived->set_hitpoints(revived->get_max_hp_raw() / 2);
 						revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 						helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
 					}

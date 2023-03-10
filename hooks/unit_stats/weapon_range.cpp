@@ -35,9 +35,6 @@ namespace hooks
 
 		f32 scale = 1;
 
-		// Anticthon - Passive
-		scale += 0.02 * unit_ext->values[ValueAnticthonStacks];
-
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];
@@ -85,9 +82,6 @@ namespace hooks
 		}
 
 		f32 scale = 1;
-
-		// Anticthon - Passive
-		scale += 0.02 * unit_ext->values[ValueAnticthonStacks];
 
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
