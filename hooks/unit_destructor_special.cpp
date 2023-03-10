@@ -450,7 +450,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 							}
 						});
 					} else if (unit_ext->timers[TimerReclamation]) { // Reclamation
-						u32 hp = max_hp;
+						hp = max_hp;
 					}
 
 					u32 player = unit->player;
