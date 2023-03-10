@@ -1561,7 +1561,7 @@ namespace hooks {
 			case UnitId::TerranAnticthon:
 			{
 				// Revive status
-				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
+				u32 flags = Flags::NotSelf | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
 				u32 radius = 4 * 32;
 				if (!unit_ext->values[ValueReviveStarted]) {
 					// TODO: unit search
