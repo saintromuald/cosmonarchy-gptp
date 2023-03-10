@@ -1445,7 +1445,7 @@ namespace hooks {
 	void inject_thingy_extender() {
 		//packThingyData (0x00487540)
 		memory_patch(0x00487542, &new_thingy_table1[0].next);
-		memory_patch(0x00487546, ThingyLimit1);
+		memory_patch(0x00487547, ThingyLimit1);
 		memory_patch(0x00487573, &new_thingy_table1);
 		memory_patch(0x00487585, &new_thingy_table1);
 		memory_patch(0x00487596, &new_thingy_table2[0].next);

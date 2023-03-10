@@ -2187,7 +2187,14 @@ namespace scbw {
 			case SpriteId::Corpse_ProtossBuildingSmall:
 			case SpriteId::Corpse_ZergBuildingLarge:
 			case SpriteId::Corpse_ZergBuildingSmall:
-			case SpriteId::Corpse_Aspirant: {
+			case SpriteId::Corpse_Aspirant:
+			case SpriteId::Corpse_TerranUnitMedium:
+			case SpriteId::Corpse_TerranUnitSmall:
+			case SpriteId::Corpse_ProtossUnitMedium:
+			case SpriteId::Corpse_ProtossUnitSmall:
+			case SpriteId::Corpse_ZergUnitMedium:
+			case SpriteId::Corpse_ZergUnitSmall:
+			{
 				return true;
 			} break;
 		}
