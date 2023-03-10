@@ -2343,14 +2343,6 @@ namespace scbw {
 			|| order_id == OrderId::TurretAttack;
 	}
 
-	bool unit_has_corpse_consume(Unit* unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
-			return true;
-		}
-		return false;
-	}
-
 	bool ai_unit_id_can_flee_three_quarters(u32 unit_id) {
 		// Just like default, for now... -Pr0nogo
 		return unit_id == UnitId::ProtossDidact
@@ -3102,41 +3094,28 @@ namespace scbw {
 		}
 
 		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		u32 unit_id = corpse_ext->corpse_unit_id;
+		u32 unit_id = corpse_ext->unit_id;
 		if (units_dat::base_property[unit_id] & UnitProperty::Building
-			||	unit_id == UnitId::ZergLarva
-			||  unit_id == UnitId::ZergOcsalLarva
-			||  unit_id == UnitId::ZergEgg
-			||  unit_id == UnitId::ZergCocoon
-			||  unit_id == UnitId::ProtossPlasmaShell
-			||  unit_id == UnitId::ProtossSteward) {
+		||	unit_id == UnitId::ZergLarva
+		||  unit_id == UnitId::ZergOcsalLarva
+		||  unit_id == UnitId::ZergEgg
+		||  unit_id == UnitId::ZergCocoon
+		||  unit_id == UnitId::ProtossPlasmaShell
+		||  unit_id == UnitId::ProtossSteward) {
 			return false;
 		}
 
 		return true;
 	}
 
-	bool can_revive_corpse(u32 player, Thingy* corpse) {
+	Unit* revive_corpse(Thingy* corpse, u32 player) {
 		if (!can_consume_corpse(corpse)) {
 			return false;
 		}
 
 		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		if (!scbw::is_allied_to(player, corpse_ext->corpse_player)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	Unit* revive_corpse(u32 player, Thingy* corpse) {
-		if (!can_revive_corpse(player, corpse)) {
-			return 0;
-		}
-
-		ThingyExt* corpse_ext = get_thingy_ext(corpse);
 		Point16 pos = corpse->sprite->position;
-		Unit* unit = scbw::create_unit_in_game(corpse_ext->corpse_unit_id, corpse_ext->corpse_player, pos.x, pos.y);
+		Unit* unit = scbw::create_unit_in_game(corpse_ext->unit_id, player, pos.x, pos.y);
 		if (unit) {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
@@ -3154,6 +3133,28 @@ namespace scbw {
 			scbw::consume_corpse(corpse);
 		}
 		return unit;
+	}
+
+	bool can_revive_allied_corpse(u32 reviving_player, Thingy* corpse) {
+		if (!can_consume_corpse(corpse)) {
+			return false;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		if (!scbw::is_allied_to(reviving_player, corpse_ext->original_player)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	Unit* revive_allied_corpse(u32 reviving_player, Thingy* corpse) {
+		if (!can_revive_allied_corpse(reviving_player, corpse)) {
+			return 0;
+		}
+
+		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		return revive_corpse(corpse, corpse_ext->original_player);
 	}
 
 	void consume_corpse(Thingy* corpse) {
