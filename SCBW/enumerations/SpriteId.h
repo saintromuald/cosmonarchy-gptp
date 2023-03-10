@@ -833,6 +833,13 @@ namespace SpriteId
 		Corpse_Wraith				= 822,
 		Corpse_Zoryusthaleth		= 832,
 
+		Corpse_TerranUnitMedium		= 844,
+		Corpse_TerranUnitSmall		= 845,
+		Corpse_ProtossUnitMedium	= 846,
+		Corpse_ProtossUnitSmall		= 847,
+		Corpse_ZergUnitMedium		= 848,
+		Corpse_ZergUnitSmall		= 849,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};

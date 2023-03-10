@@ -20,6 +20,9 @@ Order new_order_table[OrderLimit];
 Image new_image_table[ImageLimit];
 int new_image_list_pointers[ImageLimit]; // 0x006C4A38, a DWORD leads this array at 6C4A30, but I've never seen it be accessed.
 
+Thingy new_thingy_table1[ThingyLimit1]; // 0x006509D8
+Thingy new_thingy_table2[ThingyLimit2]; // 0x00652928
+
 namespace hooks {
 	void inject_unit_extender() {
 		// unit "unique identifier" bitshift, don't feel like organizing them into the categories below atm
@@ -1435,5 +1438,62 @@ namespace hooks {
 		memory_patch(0x004D6D19, &new_image_table[0].link.next);
 		memory_patch(0x004D6D22, &new_image_table[0].link.next);
 		memory_patch(0x004D6D2D, &new_image_table[0].link.next);
+	}
+}
+
+namespace hooks {
+	void inject_thingy_extender() {
+		//packThingyData (0x00487540)
+		memory_patch(0x00487542, &new_thingy_table1[0].next);
+		memory_patch(0x00487547, ThingyLimit1);
+		memory_patch(0x00487573, &new_thingy_table1);
+		memory_patch(0x00487585, &new_thingy_table1);
+		memory_patch(0x00487596, &new_thingy_table2[0].next);
+		memory_patch(0x0048759B, ThingyLimit2);
+		memory_patch(0x004875C3, &new_thingy_table2);
+		memory_patch(0x004875D5, &new_thingy_table2);
+
+		//unpack_thingy_data (0x004875F0)
+		memory_patch(0x004875F1, &new_thingy_table1[0].next);
+		memory_patch(0x004875F6, ThingyLimit1);
+		memory_patch(0x0048763F, &new_thingy_table2[0].next);
+		memory_patch(0x00487644, ThingyLimit2);
+
+		//initialize_thingy_arrays (0x00487990)
+		memory_patch(0x00487996, &new_thingy_table1);
+		memory_patch(0x004879A5, ThingyLimit1);
+		memory_patch(0x004879B4, &new_thingy_table1);
+		memory_patch(0x004879C3, ThingyLimit1);
+		memory_patch(0x004879D2, &new_thingy_table2);
+		memory_patch(0x004879E1, ThingyLimit2);
+		memory_patch(0x004879F0, &new_thingy_table2);
+		memory_patch(0x004879FF, ThingyLimit2);
+
+		//read_thingy_arrays (0x00488100)
+		memory_patch(0x00488101, ThingyLimit1);
+		memory_patch(0x00488106, &new_thingy_table1);
+		memory_patch(0x00488115, ThingyLimit2);
+		memory_patch(0x0048811A, &new_thingy_table2);
+
+		//InitializeThingyArray (0x00488550)
+		memory_patch(0x00488556, &new_thingy_table2);
+		memory_patch(0x0048855B, sizeof(new_thingy_table2) / 4);
+		memory_patch(0x00488560, &new_thingy_table1);
+		memory_patch(0x00488567, sizeof(new_thingy_table1) / 4);
+		memory_patch(0x00488572, &new_thingy_table1);
+		memory_patch(0x0048857C, &new_thingy_table1);
+		memory_patch(0x004885AB, &new_thingy_table1[1]);
+		memory_patch(0x004885B0, ThingyLimit1 - 1);
+		memory_patch(0x004885E9, &new_thingy_table2[1]);
+		memory_patch(0x004885EE, ThingyLimit2 - 1);
+
+		//cmdrecv_save_game (0x004C2910)
+		memory_patch(0x004C2B78, ThingyLimit1);
+		memory_patch(0x004C2B7D, &new_thingy_table1);
+		memory_patch(0x004C2B88, ThingyLimit2);
+		memory_patch(0x004C2B8D, &new_thingy_table2);
+
+		//pack_unit_data (0x004E3410)
+		memory_patch(0x004E3927, &new_thingy_table1);
 	}
 }
