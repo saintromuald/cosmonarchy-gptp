@@ -440,12 +440,11 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 							unit->get_x() + radius,
 							unit->get_y() + radius
 						).for_each([&](Unit* other) {
-							UnitExt* other_ext = get_unit_ext(unit);
-							u32 distance = scbw::get_distance_fast(unit->position, other->position);
-							if (unit->id == UnitId::TerranAnticthon && distance <= 4 * 32) {
-								if (scbw::is_allied_to(other->player, unit->player)) {
-									hp += (unit_ext->values[ValueAnticthonStacks]) * 256;
-									unit_ext->values[ValueAnticthonStacks]++;
+							if (other->id == UnitId::TerranAnticthon && scbw::is_allied_to(other->player, unit->player)) {
+								if (scbw::get_distance_fast(unit->position, other->position) <= 4 * 32) {
+									UnitExt* other_ext = get_unit_ext(other);
+									hp += other_ext->values[ValueAnticthonStacks] * 256;
+									other_ext->values[ValueAnticthonStacks]++;
 								}
 							}
 						});
@@ -461,7 +460,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 					Unit* revived = scbw::revive_corpse(thingy, player);
 					if (revived) {
 						revived->shields = 0;
-						revived->set_hitpoints(1);
+						revived->set_hitpoints(0);
 						revived->heal_hp_then_shields(hp, 0, false, false);
 						revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 						helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
