@@ -2194,6 +2194,7 @@ namespace scbw {
 			case SpriteId::Corpse_ProtossUnitSmall:
 			case SpriteId::Corpse_ZergUnitMedium:
 			case SpriteId::Corpse_ZergUnitSmall:
+			case SpriteId::Corpse_ZergUnitTiny:
 			{
 				return true;
 			} break;
