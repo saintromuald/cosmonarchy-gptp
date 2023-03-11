@@ -66,7 +66,6 @@ namespace UnitId
 		TerranHypnagogue									= 287,
 		TerranArmistice										= 289,
 		TerranPythean										= 290,
-		TerranHeir											= 293,
 		TerranHorseman										= 294,
 		TerranThespian										= 297,
 		TerranSilvertongue									= 298,
