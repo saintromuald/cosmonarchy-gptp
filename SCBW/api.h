@@ -24,6 +24,10 @@
 
 #define PI 3.14159
 
+#define Min(a, b) ((a) < (b) ? a : b)
+#define Max(a, b) ((a) > (b) ? a : b)
+#define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
+
 namespace scbw
 {
 	bool is_any_morph_result(u16 id);
@@ -157,6 +161,13 @@ namespace scbw
 			point.y = g_map_tile_size->height * 32;
 		}
 
+		return point;
+	}
+
+	inline Point16 to_point16(Vector32f vector) {
+		Point16 point = {};
+		point.x = Clamp(vector.x, 0, g_map_tile_size->width * 32);
+		point.y = Clamp(vector.y, 0, g_map_tile_size->height * 32);
 		return point;
 	}
 

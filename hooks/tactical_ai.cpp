@@ -65,13 +65,6 @@ one another. Attempt to group as many units as possible during the channel.
 #define LocalGroupRadius (6 * 32)
 #define GroupRadius (12 * 32)
 #define CrowdCalcRadius (2 * 32)
-#define KiteZoneCount 9
-
-const Vector32f KiteOffsets[KiteZoneCount] = {
-	{-0.7, -0.7}, { 0, -1.0}, {+0.7, -0.7},
-	{-1.0,    0}, { 0,    0}, {+1.0,    0},	
-	{-0.7, +0.7}, { 0, +1.0}, {+0.7, +0.7},
-};
 
 struct KitePositions {
 	bool targets_found;
@@ -82,12 +75,6 @@ struct KitePositions {
 	u32 ally_strength;
 	u32 hostile_strength;
 
-	f32 hostile_biases[KiteZoneCount];
-	f32 forward_biases[KiteZoneCount];
-	f32 backward_biases[KiteZoneCount];
-	f32 effect_biases[KiteZoneCount];
-	u32 forward_index;
-	u32 backward_index;
 	Point16 forward_pos;
 	Point16 backward_pos;
 };
@@ -110,14 +97,12 @@ static bool is_melee_attacker(u32 unit_id) {
 	return get_max_range(unit_id) <= 32;
 }
 
-static void adjust_biases(f32* biases, Unit* unit, Point16 position, s32 value) {
-	Vector32f delta = {};
-	delta.x = position.x - unit->position.x;
-	delta.y = position.y - unit->position.y;
-	delta = scbw::get_normalized_vector(delta);
-	for (u32 i = 0; i < KiteZoneCount; ++i) {
-		biases[i] += scbw::dot_product(delta, KiteOffsets[i]) * value;
-	}
+static void adjust_vector(Vector32f* vector, Unit* unit, Point16 position, s32 value) {
+	Vector32f delta = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, position));
+	delta.x *= value;
+	delta.y *= value;
+	vector->x += delta.x;
+	vector->y += delta.y;
 }
 
 static bool unit_has_min_range(Unit* unit) {
@@ -484,8 +469,12 @@ static bool unit_in_combat(Unit* unit, bool strict) {
 
 static KitePositions get_kite_positions(Unit* unit) {
 	KitePositions result = {};
-	result.targets_found = false;
 	result.distance = get_max_range(unit->id);
+
+	Vector32f hostile_vector = {};
+	Vector32f forward_vector = {};
+	Vector32f backward_vector = {};
+	Vector32f effect_vector = {};
 
 	EntryArray hostiles = {};
 	unit_search_square(&hostiles, unit->position, GroupRadius);
@@ -511,17 +500,17 @@ static KitePositions get_kite_positions(Unit* unit) {
 		if (strength) {
 			result.targets_found = true;
 			if (units_dat::base_property[hostile->id] & UnitProperty::Building) {
-				adjust_biases(result.forward_biases, unit, hostile->position, strength);
+				adjust_vector(&forward_vector, unit, hostile->position, strength);
 			} else {
-				adjust_biases(result.hostile_biases, unit, hostile->position, strength);
+				adjust_vector(&hostile_vector, unit, hostile->position, strength);
 				if (should_kite_back_against(unit, hostile)) {
 					result.backward_found = true;
-					adjust_biases(result.backward_biases, unit, hostile->position, strength);
+					adjust_vector(&backward_vector, unit, hostile->position, -strength);
 				}
 			}
 			if (unit_has_min_range(unit)) {
 				result.forward_found = true;
-				adjust_biases(result.forward_biases, unit, hostile->position, strength);
+				adjust_vector(&forward_vector, unit, hostile->position, strength);
 			}
 		}
 	}
@@ -551,7 +540,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 			Point16 position = {};
 			position.x = effect->position.x;
 			position.y = effect->position.y;
-			adjust_biases(result.effect_biases, unit, position, value);
+			adjust_vector(&effect_vector, unit, position, value);
 		}
 	}
 
@@ -566,42 +555,35 @@ static KitePositions get_kite_positions(Unit* unit) {
 				position.x = corpse->sprite->position.x;
 				position.y = corpse->sprite->position.y;
 				result.forward_found = true;
-				adjust_biases(result.forward_biases, unit, position, 100);
+				adjust_vector(&forward_vector, unit, position, 100);
 			}
 		}
 	}
 
 	if (result.targets_found) {
-		// Default to center region
-		result.forward_index = KiteZoneCount / 2;
-		result.backward_index = KiteZoneCount / 2;
+		Vector32f forward_pos = forward_vector;
+		forward_pos.x += hostile_vector.x;
+		forward_pos.y += hostile_vector.y;
+		forward_pos.x -= effect_vector.x;
+		forward_pos.y -= effect_vector.y;
+		forward_pos = scbw::get_normalized_vector(forward_pos);
+		forward_pos.x *= MoveRadius;
+		forward_pos.y *= MoveRadius;
+		forward_pos.x += unit->position.x;
+		forward_pos.y += unit->position.y;
+		result.forward_pos = scbw::to_point16(forward_pos);
 
-		s32 forward_scores[KiteZoneCount] = {};
-		s32 backward_scores[KiteZoneCount] = {};
-
-		for (u32 i = 0; i < KiteZoneCount; i++) {
-			s32 forward_score = result.effect_biases[i] + result.hostile_biases[i] + result.forward_biases[i];
-			if (forward_score > forward_scores[result.forward_index]) {
-				result.forward_index = i;
-				forward_scores[i] = forward_score;
-			}
-
-			s32 backward_score = result.effect_biases[i] - result.hostile_biases[i] + result.backward_biases[i];
-			if (backward_score > backward_scores[result.backward_index]) {
-				result.backward_index = i;
-				backward_scores[i] = backward_score;
-			}
-		}
-
-		result.forward_pos = unit->position;
-		result.forward_pos.x += KiteOffsets[result.forward_index].x * MoveRadius;
-		result.forward_pos.y += KiteOffsets[result.forward_index].y * MoveRadius;
-		result.forward_pos = scbw::clamp_point(result.forward_pos);
-
-		result.backward_pos = unit->position;
-		result.backward_pos.x += KiteOffsets[result.backward_index].x * MoveRadius;
-		result.backward_pos.y += KiteOffsets[result.backward_index].y * MoveRadius;
-		result.backward_pos = scbw::clamp_point(result.backward_pos);
+		Vector32f backward_pos = backward_vector;
+		backward_pos.x -= hostile_vector.x;
+		backward_pos.y -= hostile_vector.y;
+		backward_pos.x -= effect_vector.x;
+		backward_pos.y -= effect_vector.y;
+		backward_pos = scbw::get_normalized_vector(forward_pos);
+		backward_pos.x *= MoveRadius;
+		backward_pos.y *= MoveRadius;
+		backward_pos.x += unit->position.x;
+		backward_pos.y += unit->position.y;
+		result.backward_pos = scbw::to_point16(backward_pos);
 	}
 	return result;
 }
@@ -609,18 +591,6 @@ static KitePositions get_kite_positions(Unit* unit) {
 static bool unit_could_kite(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool in_combat = unit_in_combat(unit, false);
-
-	/*
-	if (unit->id == UnitId::ZergLakizilisk) {
-		if (!(unit->status & UnitStatus::Burrowed)) {
-			return false;
-		}
-	} else {
-		if (unit->status & UnitStatus::Burrowed) {
-			return false;
-		}
-	}
-	*/
 
 	if (unit->id == UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed) {
 		return false;
@@ -631,6 +601,7 @@ static bool unit_could_kite(Unit* unit) {
 		&& !unit->is_frozen()
 		&& unit->status & UnitStatus::Completed
 		&& !(unit->movement_flags & MovementFlags::StartingAttack)	
+		&& !(units_dat::base_property[unit->id] & UnitProperty::Worker) // used to be supported, but it was really terrible for AI performance in general, disabled for now -Veeq7
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
