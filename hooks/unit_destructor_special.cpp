@@ -208,7 +208,7 @@ void unit_destructor_special_cases(Unit* unit) {
 			case UnitId::TerranMissileSilo:
 			{
 				// Missile Silo - death while armed
-				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition]) {
+				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {
 					scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
 				}
