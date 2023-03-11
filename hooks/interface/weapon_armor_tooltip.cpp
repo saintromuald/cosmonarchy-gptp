@@ -509,7 +509,6 @@ namespace hooks
 		// Gptp Timers - Gimmicked
 		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
-		add_status(statuses, "Reclamation Active", unit_ext->timers[TimerReclamation] > 0, 1);
 	//	add_status(statuses, "Godlike", unit_ext->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
