@@ -550,6 +550,7 @@ namespace scbw {
 			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
+			case UnitId::ZergSkortrithColony:
 			case UnitId::ZergSpirtithColony:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
@@ -1897,6 +1898,7 @@ namespace scbw {
 			|| unit_id == UnitId::ZergSurkithColony
 			|| unit_id == UnitId::ZergSpraithColony
 			|| unit_id == UnitId::ZergLarvoskColony
+			|| unit_id == UnitId::ZergSkortrithColony
 			|| unit_id == UnitId::ZergSpirtithColony
 			|| unit_id == UnitId::ZergKazitrithColony
 			|| unit_id == UnitId::ZergOcsalColony
@@ -2296,6 +2298,7 @@ namespace scbw {
 			case UnitId::ZergLarvoskColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergKazitrithColony:		return UnitId::ZergCagrantColony;
 			case UnitId::ZergOcsalColony:			return UnitId::ZergCagrantColony;
+			case UnitId::ZergSkortrithColony:		return UnitId::ZergSurkithColony;
 			case UnitId::ZergSpirtithColony:		return UnitId::ZergSpraithColony;
 			case UnitId::ZergIrulentIvoa:			return UnitId::ZergIrolIris;
 			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
@@ -2502,6 +2505,7 @@ namespace scbw {
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergSkortrithColony:
 			case UnitId::ZergSpirtithColony:
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:

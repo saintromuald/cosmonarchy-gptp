@@ -78,8 +78,10 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergCagrantColony, UnitId::ZergLarvoskColony, 0, true},
 	{UnitId::ZergCagrantColony, UnitId::ZergKazitrithColony, 0, true},
 	{UnitId::ZergCagrantColony, UnitId::ZergOcsalColony, 0, true},
+	{UnitId::ZergCagrantColony, UnitId::ZergSkortrithColony, 0, true},
 	{UnitId::ZergCagrantColony, UnitId::ZergSpirtithColony, 0, true},
 
+	{UnitId::ZergSurkithColony, UnitId::ZergSkortrithColony, 0, true},
 	{UnitId::ZergSpraithColony, UnitId::ZergSpirtithColony, 0, true},
 
 	{UnitId::ZergDroleth, UnitId::ZergGosvileth},

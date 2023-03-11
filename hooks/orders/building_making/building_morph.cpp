@@ -372,8 +372,14 @@ namespace hooks
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskColony, ignore_incomplete);
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOcsalColony, ignore_incomplete);
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKazitrithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithColony, ignore_incomplete);
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithColony, ignore_incomplete);
 			} break;
+
+			case UnitId::ZergSurkithColony:
+			{
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithColony, ignore_incomplete);
+			}
 
 			case UnitId::ZergSpraithColony:
 			{

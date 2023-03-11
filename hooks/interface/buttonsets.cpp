@@ -1714,6 +1714,27 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ZergSurkithColony:
+							{
+								if (current_button->requirement_var == UnitId::ZergSkortrithColony)
+								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+									||  player_has_unit_id(unit->player, UnitId::ZergIrulentIvoa)
+									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)
+									||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									else
+									{
+										current_button_state = Button_State::Disabled;
+									}
+								}
+								else
+								{
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
 							case UnitId::ZergSpraithColony:
 							{
 								if (current_button->requirement_var == UnitId::ZergSpirtithColony)
@@ -2258,6 +2279,12 @@ namespace hooks {
 								case UnitId::ZergTetcaerokor:
 								{
 									if (current_button->icon_id == IconId::RoarUnused) { // Tetcaerokor - Virile Coating
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergSkortrithColony:
+								{
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Skortrith Colony - Tendril Amitosis
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
