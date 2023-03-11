@@ -951,27 +951,30 @@ namespace hooks {
 					Unit* target = unit->order_target.unit;
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
-							UnitExt* targetExt = get_unit_ext(target);
-							targetExt->timers[TimerSalvageStunTimer] = 2 * 24;
+							UnitExt* target_ext = get_unit_ext(target);
+							target_ext->timers[TimerSalvageStunTimer] = 2 * 24;
 							
 							u32 time = units_dat::time_cost[target->id] / 2;
-							targetExt->salvage_time += 1;
+							target_ext->salvage_time += 1;
 							
-							targetExt->salvage_minerals += (f32)units_dat::mineral_cost[target->id] / time;
-							while (targetExt->salvage_minerals > 1) {
-								targetExt->salvage_minerals -= 1;
+							target_ext->salvage_minerals += (f32)units_dat::mineral_cost[target->id] / time;
+							while (target_ext->salvage_minerals > 1) {
+								target_ext->salvage_minerals -= 1;
 								resources->minerals[unit->player] += 1;
 							}
 							
-							targetExt->salvage_gas += (f32)units_dat::vespene_cost[target->id] / time;
-							while (targetExt->salvage_gas > 1) {
-								targetExt->salvage_gas -= 1;
+							target_ext->salvage_gas += (f32)units_dat::vespene_cost[target->id] / time;
+							while (target_ext->salvage_gas > 1) {
+								target_ext->salvage_gas -= 1;
 								resources->gas[unit->player] += 1;
 							}
 							
-							if (targetExt->salvage_time >= time) {
-								resources->minerals[unit->player] += ceilf(targetExt->salvage_minerals);
-								resources->gas[unit->player] += ceilf(targetExt->salvage_gas);
+							if (target_ext->salvage_time >= time) {
+								resources->minerals[unit->player] += ceilf(target_ext->salvage_minerals);
+								resources->gas[unit->player] += ceilf(target_ext->salvage_gas);
+								if (target->id == UnitId::TerranMissileSilo && target->building.silo.is_ready) {
+									target->building.silo.is_ready = 0;
+								}
 								target->remove();
 							}
 
@@ -1524,8 +1527,8 @@ namespace hooks {
 				// Demiurge - Gods Made Flesh - apply link
 			//	if (unit_ext->values[ValueGodsMadeFleshActive]) {
 			//		for (Unit* target : unit_ext->unit_vectors[UnitVectorWorshipersDemiurge]) {
-			//			UnitExt* targetExt = get_unit_ext(target);
-			//		//	targetExt->timers[TimerGodsMadeFlesh] = 3;
+			//			UnitExt* target_ext = get_unit_ext(target);
+			//		//	target_ext->timers[TimerGodsMadeFlesh] = 3;
 			//			u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
 			//			if (!target->get_overlay(overlay)) {
 			//				target->sprite->create_top_overlay(overlay);
