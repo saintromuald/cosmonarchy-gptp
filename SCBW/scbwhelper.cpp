@@ -4653,8 +4653,8 @@ namespace helper {
 		const u32 Helper_WeaponBulletShot = 0x00479AE0;
 		if (bullet) {
 			BulletExt* bullet_ext = get_bullet_ext(bullet);
-			if (bullet_ext->overwrite_divisor) {
-				dmgDivisor *= bullet_ext->overwrite_divisor;
+			if (bullet_ext->divisor_overwrite) {
+				dmgDivisor *= bullet_ext->divisor_overwrite;
 			}
 		}
 		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {

@@ -14,8 +14,8 @@ Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target = 0, WeaponOffsets* weapon_offsets = 0, bool apply_cooldown = true);
 void apply_weapon_cooldown(Unit* unit, u8 weapon_id);
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown = true);
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags,
-	bool ignore_main = false, bool use_weapon_factor = true, bool apply_cooldown = true, WeaponOffsets* weapon_offsets = 0);
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 filters,
+	bool ignore_main = false, bool use_weapon_factor = true, bool apply_cooldown = true, WeaponOffsets* weapon_offsets = 0, bool center_on_target = false, u32 range_overwrite = 0, u32 divisor_overwrite = 0);
 
 namespace hooks
 {

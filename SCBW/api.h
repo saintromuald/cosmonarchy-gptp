@@ -702,6 +702,7 @@ namespace scbw
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
 	void set_bullet_target(Bullet* bullet, Point16 target);
 	void set_bullet_target(Bullet* bullet, Unit* target);
+	void set_bullet_target(Bullet* bullet, Target target);
 	void set_bullet_direction(Bullet* bullet, Point16 target);
 	void set_bullet_direction(Bullet* bullet, Unit* target);
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region);

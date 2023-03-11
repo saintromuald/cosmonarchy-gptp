@@ -89,8 +89,9 @@ Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 }
 
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weapon_offsets, bool apply_cooldown) {
+	Unit* order_target = unit->order_target.unit;
 	if (!target) {
-		target = unit->order_target.unit;
+		target = order_target;
 	}
 	if (!unit->sprite || !target) {
 		return 0;
@@ -108,7 +109,9 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	}
 
 	s32 angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
+	unit->order_target.unit = target;
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, pos.x, pos.y, unit->player, angle, apply_cooldown);
+	unit->order_target.unit = order_target;
 	if (bullet) {
 		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
 			scbw::set_bullet_target(bullet, target);
@@ -132,11 +135,12 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
 	if (bullet) {
-		if (source && apply_cooldown) {
+		scbw::decloak_proc(source);
+		if (apply_cooldown) {
 			apply_weapon_cooldown(source, weapon_id);
 		}
 		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
-			scbw::set_bullet_target(bullet, bullet->attack_target.pt);
+			scbw::set_bullet_target(bullet, bullet->attack_target);
 		}
 
 		UnitExt* source_ext = get_unit_ext(source);
@@ -147,76 +151,67 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 	return bullet;
 }
 
-void process_fire_multiple_bullet(Bullet* bullet) {
-	BulletExt* bullet_ext = get_bullet_ext(bullet);
-	if (bullet->weapon_id == WeaponId::SkortrithColonySkortraTendril) {
-		bullet_ext->overwrite_divisor = 2;
-	}
-}
-
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown, WeaponOffsets* weapon_offsets) {
-	u32 attack_range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
+bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool ignore_main, bool use_weapon_factor, bool apply_cooldown, WeaponOffsets* weapon_offsets, bool center_on_target, u32 range_overwrite, u32 divisor_overwrite) {
+	u32 attack_range = range_overwrite ? range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
-	std::unordered_set<Unit*> units_fired = {};
 
-	Unit* order_target = attacker->order_target.unit;
+	bool fired = false;
+	Unit* order_target = unit->order_target.unit;
 	if (!ignore_main
 		&& order_target
-		&& attacker->main_order_id != OrderId::Follow
-		&& attacker->main_order_id != OrderId::Patrol
-		&& attacker->is_target_within_min_range(order_target, attack_range)
-		&& attacker->can_attack_target(order_target)) {
-		auto unit_filter = cosmonarchy_finder_match(attacker, flags & ~(Flags::Ally | Flags::Enemy), {}); // We want to attack the order target regardless of alliance flags
-		if (unit_filter(order_target)) {
+		&& unit->main_order_id != OrderId::Follow
+		&& unit->main_order_id != OrderId::Patrol
+		&& unit->is_target_within_min_range(order_target, attack_range)
+		&& unit->can_attack_target(order_target)) {
+		if (unit_flag_match(order_target, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			for (u32 i = 0; i < factor; i++) {
-				Bullet* bullet = fire_bullet(attacker, weapon_id, order_target, weapon_offsets, apply_cooldown);
+				Bullet* bullet = fire_bullet(unit, weapon_id, order_target, weapon_offsets, apply_cooldown);
 				if (bullet) {
-					process_fire_multiple_bullet(bullet);
+					fired = true;
+					BulletExt* bullet_ext = get_bullet_ext(bullet);
+					bullet_ext->divisor_overwrite = divisor_overwrite;
 				}
 			}
-			units_fired.insert(order_target);
 		}
 	}
 	
-	auto unit_filter = cosmonarchy_finder_match(attacker, flags, {});
-	for (u32 i = 0; i < max_targets || max_targets <= 0; i++) {
-		Unit* new_target = scbw::UnitFinder::get_nearest_target(
-			attacker->get_x() - attack_range,
-			attacker->get_y() - attack_range,
-			attacker->get_x() + attack_range,
-			attacker->get_y() + attack_range,
-			order_target ? order_target : attacker, [&](Unit* target) {
-				if (target == attacker
-				||  target == order_target
-				||  units_fired.find(target) != units_fired.end()
-				||  scbw::is_allied_to(attacker->player, target->player)
-				|| !attacker->is_target_within_min_range(target, attack_range)
-				|| !attacker->can_attack_target(target)
-				|| !unit_filter(target)
-				|| (units_fired.size() >= max_targets && max_targets > 0)) {
-					return false;
-				}
-				return true;
-			});
-		if ((units_fired.size() >= max_targets && max_targets > 0) || !new_target) {
-			break;
+	if (center_on_target && !order_target) {
+		return false;
+	}
+
+	Point16 search_center = center_on_target ? order_target->position : unit->position;
+	Point16 sort_center   = order_target     ? order_target->position : unit->position;
+
+	EntryArray targets = {};
+	unit_search_radial(&targets, search_center, attack_range);
+	unit_search_filter(&targets, unit, filters);
+	unit_search_sort_by_distance(&targets, sort_center);
+
+	u32 count = targets.count;
+	if (max_targets && count > max_targets) {
+		count = max_targets;
+	}
+
+	for (u32 i = 0; i < count; ++i) {
+		Unit* target = targets.units[i];
+		if (target == unit
+		||  target == order_target
+		||  scbw::is_allied_to(unit->player, target->player)
+		|| !unit->can_attack_target(target)) {
+			continue;
 		}
 
-		attacker->order_target.unit = new_target;
 		for (u32 i = 0; i < factor; i++) {
-			Bullet* bullet = fire_bullet(attacker, weapon_id, new_target, weapon_offsets, apply_cooldown);
+			Bullet* bullet = fire_bullet(unit, weapon_id, target, weapon_offsets, apply_cooldown);
 			if (bullet) {
-				process_fire_multiple_bullet(bullet);
+				fired = true;
+				BulletExt* bullet_ext = get_bullet_ext(bullet);
+				bullet_ext->divisor_overwrite = divisor_overwrite;
 			}
 		}
-		units_fired.insert(new_target);
 	}
-	attacker->order_target.unit = order_target;
-	if (units_fired.size()) {
-		scbw::decloak_proc(attacker);
-		return true;
-	}
-	return false;
+
+	return fired;
 }
 
 namespace
@@ -554,12 +549,12 @@ namespace hooks {
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueCataphractLaunchPos;
 						offsets.count = 4;
-						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc, false, true, true, &offsets);
+						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, &offsets);
 					} break;
 					case WeaponId::AnticthonEncirclingMirror:
 					{
 						// Multi-Attack V
-						fire_multiple(unit, weapon_id, 5, Flags::Enemy);
+						fire_multiple(unit, weapon_id, 5, FilterEnemy);
 					} break;
 					case WeaponId::AionLazarusSalvo:
 					{
@@ -601,7 +596,7 @@ namespace hooks {
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
 						// Monoceros Targeting - Minotaur
-						fire_multiple(unit, weapon_id, 5, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, weapon_id, 5, FilterEnemy | FilterFrontalArc);
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
@@ -629,17 +624,17 @@ namespace hooks {
 						}
 
 						// Tertiary Eyes - Siren
-						fire_multiple(unit, weapon_id, 1 + count, Flags::Enemy | Flags::FrontalArc);
+						fire_multiple(unit, weapon_id, 1 + count, FilterEnemy | FilterFrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
-						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy);
+						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy);
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
 						// Crushing Tide - Izirokor
-						fire_multiple(unit, weapon_id, 3, Flags::Enemy);
+						fire_multiple(unit, weapon_id, 3, FilterEnemy);
 					} break;
 					case WeaponId::MatrixKhaydarinRay:
 					{
@@ -647,17 +642,17 @@ namespace hooks {
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueWardenLaunchPos;
 						offsets.count = 4;
-						fire_multiple(unit, weapon_id, 4, Flags::Enemy, false, false, true, &offsets);
+						fire_multiple(unit, weapon_id, 4, FilterEnemy, false, false, true, &offsets);
 					} break;
 					case WeaponId::BarghestRayOfAgony:
 					{
 						// Multi-Attack III
-						fire_multiple(unit, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
+						fire_multiple(unit, weapon_id, 3, FilterEnemy | FilterFrontalArc, false, false);
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril:
 					{
 						fire_bullet(unit, weapon_id);
-						fire_multiple(unit, weapon_id, 2, Flags::Enemy | Flags::FrontalArc, true, false, false);
+						fire_multiple(unit, weapon_id, 2, FilterEnemy, true, false, false, 0, true, 2 * 32, 2);
 					} break;
 					default:
 					{
