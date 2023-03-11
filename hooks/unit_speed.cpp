@@ -229,6 +229,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranHarakan:
 			case UnitId::TerranSavant:
+			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
 			case UnitId::ProtossIdol:
 			case UnitId::ZergKonvilisk:
