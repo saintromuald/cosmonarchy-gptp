@@ -416,6 +416,16 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
 	u32 pos_y = y + image->vertical_offset   + sprite->position.y;
 
+	if (scbw::sprite_id_is_corpse(id)) {
+		Unit* unit = *g_active_iscript_unit;
+		if (unit) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[ValueNoCorpse]) {
+				return 0;
+			}
+		}
+	}
+
 	Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);
 	if (thingy) {
 		if (scbw::sprite_id_is_corpse(id)) {

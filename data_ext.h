@@ -130,6 +130,7 @@ enum ExtValueId
 	ValueMortothrokorStacks,
 	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
+	ValueNoCorpse,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

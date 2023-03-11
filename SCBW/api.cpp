@@ -3144,6 +3144,13 @@ namespace scbw {
 				}
 			}
 			scbw::consume_corpse(corpse);
+
+			unit->shields = 0;
+			unit->set_hitpoints(unit->get_max_hp_raw() / 2);
+			unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+			helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
+
+			unit_ext->values[ValueNoCorpse] = true;
 		}
 		return unit;
 	}

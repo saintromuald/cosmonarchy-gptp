@@ -1257,16 +1257,10 @@ namespace hooks {
 					helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
 
 					EntryArray corpses = {};
-					corpse_search_radial(&corpses, unit->position, 4 * 32);
+					corpse_search_radial(&corpses, unit->position, 3 * 32);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						Unit* revived = scbw::revive_corpse(corpse, unit->player);
-						if (revived) {
-							revived->shields = 0;
-							revived->set_hitpoints(revived->get_max_hp_raw() / 2);
-							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
-						}
+						scbw::revive_corpse(corpse, unit->player);
 					}
 					if (unit_ext->values[ValueLazarusRecasts]) {
 						unit_ext->values[ValueLazarusRecasts]--;
@@ -1569,13 +1563,7 @@ namespace hooks {
 					corpse_search_radial(&corpses, unit->position, 3 * 32);
 					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
-						Unit* revived = scbw::revive_corpse(corpse, unit->player);
-						if (revived) {
-							revived->shields = 0;
-							revived->set_hitpoints(revived->get_max_hp_raw() / 2);
-							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
-						}
+						scbw::revive_corpse(corpse, unit->player);
 					}
 				}
 			} break;

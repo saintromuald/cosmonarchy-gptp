@@ -478,13 +478,7 @@ void tick_effect(Effect* effect) {
 				corpse_search_radial(&corpses, effect->position, effect->radius);
 				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
-					Unit* revived = scbw::revive_corpse(corpse, effect->player);
-					if (revived) {
-						revived->shields = 0;
-						revived->set_hitpoints(revived->get_max_hp_raw() / 2);
-						revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-						helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
-					}
+					scbw::revive_corpse(corpse, effect->player);
 				}
 			} break;
 		}
