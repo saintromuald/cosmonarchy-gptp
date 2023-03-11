@@ -536,8 +536,10 @@ namespace hooks {
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
-					//	scbw::set_missile_source_pos(unit, weapon_id, ValueCataphractLaunchPos, 1, false);
-						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueCataphractLaunchPos;
+						offsets.count = 4;
+						fire_multiple(unit, weapon_id, 4, Flags::Enemy | Flags::FrontalArc, false, true, true, &offsets);
 					} break;
 					case WeaponId::AnticthonEncirclingMirror:
 					{
