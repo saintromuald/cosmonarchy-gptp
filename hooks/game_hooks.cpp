@@ -972,9 +972,6 @@ namespace hooks {
 							if (target_ext->salvage_time >= time) {
 								resources->minerals[unit->player] += ceilf(target_ext->salvage_minerals);
 								resources->gas[unit->player] += ceilf(target_ext->salvage_gas);
-								if (target->id == UnitId::TerranMissileSilo && target->building.silo.is_ready) {
-									target->building.silo.is_ready = 0;
-								}
 								target->remove();
 							}
 
