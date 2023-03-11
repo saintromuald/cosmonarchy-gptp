@@ -2877,7 +2877,10 @@ namespace scbw {
 			|| unit_id == UnitId::ZergRililisk;
 	}
 
-	void binding_plasma_proc(Unit* victim, u32 player) {
+	void binding_plasma_proc(Unit* victim) {
+		UnitExt* victim_ext = get_unit_ext(victim);
+		u32 player = victim_ext->values[ValueGladiusBindingPlasmaPlayer];
+
 		EntryArray targets = {};
 		unit_search_radial(&targets, victim->position, 3 * 32);
 		unit_search_filter(&targets, victim, FilterNotSelf | FilterNotSubunit | FilterVisible);
@@ -2889,7 +2892,6 @@ namespace scbw {
 		}
 		unit_search_sort_by_distance(&targets, victim->position);
 
-		UnitExt* victim_ext = get_unit_ext(victim);
 		if (!targets.count) {
 			victim_ext->timers[TimerGladiusBindingPlasma] = 0;
 			victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
@@ -2909,6 +2911,10 @@ namespace scbw {
 
 			scbw::set_bullet_target(bullet, target);
 			victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
+		}
+
+		if (!victim_ext->values[ValueGladiusBindingPlasmaStacks]) {
+			victim_ext->timers[TimerGladiusBindingPlasma] = 0;
 		}
 	}
 

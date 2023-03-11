@@ -376,6 +376,22 @@ namespace hooks
 	static void weapon_damage_behaviors(const WeaponDamageData& data) {
 		UnitExt* target_ext = get_unit_ext(data.target);
 
+		// No attacker here
+		switch (data.weapon_id) {
+			case WeaponId::GladiusPlasmaFlurry: {
+				if (target_ext->timers[TimerGladiusBindingPlasma]) {
+					u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
+					if (scbw::is_allied_to(data.attacking_player_id, source_player)) {
+						target_ext->values[ValueGladiusBindingPlasmaStacks]++;
+					}
+				} else {
+					target_ext->timers[TimerGladiusBindingPlasma] = 12;
+					target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
+					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
+				}
+			} break;
+		}
+
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 
@@ -463,18 +479,6 @@ namespace hooks
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
-				} break;
-				case WeaponId::GladiusPlasmaFlurry: {
-					if (target_ext->timers[TimerGladiusBindingPlasma]) {
-						u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
-						if (scbw::is_allied_to(data.attacking_player_id, source_player)) {
-							target_ext->values[ValueGladiusBindingPlasmaStacks]++;
-						}
-					} else {
-						target_ext->timers[TimerGladiusBindingPlasma] = 12;
-						target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
-						target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
-					}
 				} break;
 				case WeaponId::ZethrokorClaws:
 				{

@@ -1983,7 +1983,7 @@ namespace hooks {
 				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
-					scbw::binding_plasma_proc(unit, source_player);
+					scbw::binding_plasma_proc(unit);
 				}
 			} else {
 				unit_ext->timers[TimerGladiusBindingPlasma] = 0;

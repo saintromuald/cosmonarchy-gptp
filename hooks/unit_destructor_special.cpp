@@ -379,7 +379,7 @@ void unit_destructor_special_cases(Unit* unit) {
 
 	// Gladius - Binding Plasma - proc on death
 	if (unit_ext->timers[TimerGladiusBindingPlasma]) {
-		scbw::binding_plasma_proc(unit, unit_ext->values[ValueGladiusBindingPlasmaPlayer]);
+		scbw::binding_plasma_proc(unit);
 		// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
 	}
 
