@@ -18,9 +18,9 @@ struct Bullet
 	/*0x0C*/ Sprite*      sprite; // sprite pointer
 	/*0x10*/ Target       move_target; //address? animation related? changes a during the same bullet
 	/*0x18*/ Point16      target_position;
-	/*0x1C*/ Point16      target_position2; //usually same as target_position
+	/*0x1C*/ Point16      target_position_2; //usually same as target_position
 	/*0x20*/ u8           movement_flags; //usually holds 0x09 for probes, 0x0b for dragoons, 0x11 for mutas
-	/*0x21*/ u8           direction1; //not sure how this and direction2 differ from current_direction and velocity_direction
+	/*0x21*/ u8           direction_1; //not sure how this and direction2 differ from current_direction and velocity_direction
 	/*0x22*/ u8           flingy_turn_rate;
 	/*0x23*/ u8           direction2;
 	/*0x24*/ u16          type;
