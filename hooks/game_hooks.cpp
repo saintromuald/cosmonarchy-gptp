@@ -1783,7 +1783,7 @@ namespace hooks {
 
 						// Redirect
 						if (target) {
-							scbw::create_shield_overlay(target, bullet->direction1);
+							scbw::create_shield_overlay(target, bullet->direction_1);
 						}
 						scbw::set_bullet_target(bullet, unit);
 						scbw::set_bullet_direction(bullet, unit);
