@@ -60,8 +60,10 @@ namespace AI
 			||  target->id == UnitId::TerranBunker
 			||  target->id == UnitId::PoliceDugout
 			||  target->id == UnitId::ZergSpraithColony
+			||  target->id == UnitId::ZergSkortrithColony
 			||  target->id == UnitId::ZergSpirtithColony
-			||  target->id == UnitId::ProtossWarden)
+			||  target->id == UnitId::ProtossWarden
+			||  target->id == UnitId::ProtossMatrix)
 			{
 				return true;
 			}

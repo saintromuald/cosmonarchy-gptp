@@ -1198,6 +1198,16 @@ namespace hooks {
 				return true;
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSurkithColony))
+		{
+			if (unit_id == UnitId::ZergSkortrithColony)
+			{
+				if (TierUnlocked[RaceId::Zerg][Tier2])
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSpraithColony))
 		{
 			if (unit_id == UnitId::ZergSpirtithColony)
@@ -3009,6 +3019,18 @@ namespace hooks {
 				||  unit_id == UnitId::ZergLarvoskColony)
 				{
 					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergSurkithColony:
+			{
+				if (unit_id == UnitId::ZergSkortrithColony)
+				{
+					if (TierUnlocked[RaceId::Zerg][Tier2])
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}

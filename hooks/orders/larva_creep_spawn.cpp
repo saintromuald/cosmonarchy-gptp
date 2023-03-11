@@ -249,6 +249,7 @@ namespace hooks
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergLarvoskColony:
+			case UnitId::ZergSkortrithColony:
 			case UnitId::ZergSpirtithColony:
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:
