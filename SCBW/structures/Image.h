@@ -89,8 +89,8 @@ struct Image
 	/*0x0A*/  u8						palette_type;				// Use PaletteType::Enum
 	/*0x0B*/  u8						direction;
 	/*0x0C*/  u16						flags;						// Use ImageFlags::Enum
-	/*0x0E*/  u8						horizontal_offset;
-	/*0x0F*/  u8						vertical_offset;
+	/*0x0E*/  s8						horizontal_offset;
+	/*0x0F*/  s8						vertical_offset;
 	/*0x10*/  u16						iscript_header_offset;
 	/*0x12*/  u16						iscript_offset;
 	/*0x14*/  u16						return_address;
