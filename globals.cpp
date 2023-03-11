@@ -474,14 +474,17 @@ void tick_effect(Effect* effect) {
 					});
 			} break;
 			case EffectId_AionReclamationField: {
-				EntryArray targets = {};
-				unit_search_radial(&targets, effect->position, effect->radius);
-				unit_search_filter(&targets, 0, FilterNoBuilding | FilterNoTrap | FilterNoHallucination | FilterNoEgg | FilterNoLarva | FilterNoHangar);
-				for (u32 i = 0; i < targets.count; ++i) {
-					Unit* target = targets.units[i];
-					UnitExt* target_ext = get_unit_ext(target);
-					target_ext->timers[TimerReclamation] = effect_period + 1;
-					target_ext->values[ValueReclamationPlayer] = effect->player;
+				EntryArray corpses = {};
+				corpse_search_radial(&corpses, effect->position, effect->radius);
+				for (u32 i = 0; i < corpses.count; ++i) {
+					Thingy* corpse = corpses.corpses[i];
+					Unit* revived = scbw::revive_corpse(corpse, effect->player);
+					if (revived) {
+						revived->shields = 0;
+						revived->set_hitpoints(revived->get_max_hp_raw() / 2);
+						revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+						helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
+					}
 				}
 			} break;
 		}

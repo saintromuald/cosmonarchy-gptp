@@ -3134,7 +3134,7 @@ namespace scbw {
 			unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 			unit->play_iscript_animation(IscriptAnimation::Unused1);
 			unit_ext->values[ValueReviveStarted] = 1;
-			unit_ext->timers[TimerReviveFlagClearMin] = 3;
+			unit_ext->timers[TimerReviveFlagClearMin] = 14; // 3;
 			unit_ext->timers[TimerReviveFlagClearMax] = 14;
 			switch (unit->id) {
 				case UnitId::ZergRililisk:

@@ -1565,14 +1565,17 @@ namespace hooks {
 			{
 				// Revive status
 				if (!unit_ext->values[ValueReviveStarted]) {
-					EntryArray targets = {};
-					unit_search_radial(&targets, unit->position, 3 * 32);
-					unit_search_filter(&targets, unit, FilterNotSelf | FilterNoBuilding | FilterNoTrap | FilterNoHallucination | FilterNoEgg | FilterNoLarva | FilterNoHangar);
-					for (u32 i = 0; i < targets.count; ++i) {
-						Unit* target = targets.units[i];
-						UnitExt* target_ext = get_unit_ext(target);
-						target_ext->timers[TimerReclamation] = 2;
-						target_ext->values[ValueReclamationPlayer] = unit->player;
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, unit->position, 3 * 32);
+					for (u32 i = 0; i < corpses.count; ++i) {
+						Thingy* corpse = corpses.corpses[i];
+						Unit* revived = scbw::revive_corpse(corpse, unit->player);
+						if (revived) {
+							revived->shields = 0;
+							revived->set_hitpoints(revived->get_max_hp_raw() / 2);
+							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
+						}
 					}
 				}
 			} break;
@@ -2641,11 +2644,6 @@ namespace hooks {
 		if (unit_ext->values[ValueAI_WorkerChosenForExpansion] && unit->resource_type == ResourceType::None) {
 			unit_ext->values[ValueAI_WorkerChosenForExpansion] = false;
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
-		}
-
-		// Reclamation - add overlay
-		if (unit_ext->timers[TimerReclamation] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
-			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 
 		// Legionnaire - Blade Vortex - Handle debuff overlay

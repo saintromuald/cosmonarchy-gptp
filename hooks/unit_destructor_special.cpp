@@ -428,15 +428,9 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 				thingy_ext->unit_id = unit->id;
 
 				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->timers[TimerReclamation]) {
-					Unit* revived = scbw::revive_corpse(thingy, unit_ext->values[ValueReclamationPlayer]);
-					if (revived) {
-						revived->shields = 0;
-						revived->set_hitpoints(revived->get_max_hp_raw() / 2);
-						revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-						helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
-					}
-				}
+				// Can do interesting things with unit ext here,
+				// since unit ext deletion is delayed until death finishes,
+				// and timers during death are paused -Veeq7
 			}
 		}
 		thingy->sprite->elevation = elevation;
