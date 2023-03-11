@@ -147,6 +147,13 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 	return bullet;
 }
 
+void process_fire_multiple_bullet(Bullet* bullet) {
+	BulletExt* bullet_ext = get_bullet_ext(bullet);
+	if (bullet->weapon_id == WeaponId::SkortrithColonySkortraTendril) {
+		bullet_ext->overwrite_divisor = 2;
+	}
+}
+
 bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown, WeaponOffsets* weapon_offsets) {
 	u32 attack_range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
 	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
@@ -161,8 +168,9 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		&& attacker->can_attack_target(order_target)) {
 		auto unit_filter = cosmonarchy_finder_match(attacker, flags & ~(Flags::Ally | Flags::Enemy), {}); // We want to attack the order target regardless of alliance flags
 		if (unit_filter(order_target)) {
-			for (u32 j = 0; j < factor; j++) {
-				fire_bullet(attacker, weapon_id, order_target, weapon_offsets, apply_cooldown);
+			for (u32 i = 0; i < factor; i++) {
+				Bullet* bullet = fire_bullet(attacker, weapon_id, order_target, weapon_offsets, apply_cooldown);
+				process_fire_multiple_bullet(bullet);
 			}
 			units_fired.insert(order_target);
 		}
@@ -175,13 +183,15 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 			attacker->get_y() - attack_range,
 			attacker->get_x() + attack_range,
 			attacker->get_y() + attack_range,
-			attacker, [&](Unit* target) {
+			order_target ? order_target : attacker, [&](Unit* target) {
 				if (target == attacker
-					||  units_fired.find(target) != units_fired.end()
-					||  scbw::is_allied_to(attacker->player, target->player)
-					|| !attacker->can_attack_target(target)
-					|| !unit_filter(target)
-					|| (units_fired.size() >= max_targets && max_targets > 0)) {
+				||  target == order_target
+				||  units_fired.find(target) != units_fired.end()
+				||  scbw::is_allied_to(attacker->player, target->player)
+				|| !attacker->is_target_within_min_range(target, attack_range)
+				|| !attacker->can_attack_target(target)
+				|| !unit_filter(target)
+				|| (units_fired.size() >= max_targets && max_targets > 0)) {
 					return false;
 				}
 				return true;
@@ -191,8 +201,9 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		}
 
 		attacker->order_target.unit = new_target;
-		for (u32 j = 0; j < factor; j++) {
-			fire_bullet(attacker, weapon_id, new_target, weapon_offsets, apply_cooldown);
+		for (u32 i = 0; i < factor; i++) {
+			Bullet* bullet = fire_bullet(attacker, weapon_id, new_target, weapon_offsets, apply_cooldown);
+			process_fire_multiple_bullet(bullet);
 		}
 		units_fired.insert(new_target);
 	}
@@ -639,6 +650,11 @@ namespace hooks {
 						// Multi-Attack III
 						fire_multiple(unit, weapon_id, 3, Flags::Enemy | Flags::FrontalArc, false, false);
 					} break;
+					case WeaponId::SkortrithColonySkortraTendril:
+					{
+						fire_bullet(unit, weapon_id);
+						fire_multiple(unit, weapon_id, 2, Flags::Enemy | Flags::FrontalArc, true, false, false);
+					} break;
 					default:
 					{
 						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
@@ -698,7 +714,7 @@ namespace hooks {
 					} else if (distance <= weapons_dat::medium_splash_radius[bullet->weapon_id]) {
 						divisor = 2;
 					}
-					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->currentDirection);
+					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->currentDirection, divisor);
 				}
 			}
 		}

@@ -283,5 +283,6 @@ namespace WeaponId {
 		ZobrioliskRapidSpines				= 167,
 		TetcaerokorCleavingMaw				= 177,
 		MortothrokorWickedIncisors			= 192,
+		SkortrithColonySkortraTendril		= 180,
 	};
 }

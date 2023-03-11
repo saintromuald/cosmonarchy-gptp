@@ -247,6 +247,7 @@ namespace UnitId
 		ZergNephrilosk										= 350,		// Unused
 		ZergOcsalColony										= 354,		// Morphed from Cagrant Colony
 		ZergKazitrithColony									= 355,		// Morphed from Cagrant Colony
+		ZergSkortrithColony									= 293,		// Morphed from Surkith Colony
 
 	// Special-Unit
 		TerranCivilianExt									= 332,

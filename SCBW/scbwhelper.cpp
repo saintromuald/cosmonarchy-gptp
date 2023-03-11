@@ -4651,7 +4651,13 @@ namespace helper {
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor) {
 		const u32 Helper_WeaponBulletShot = 0x00479AE0;
-		if (bullet != nullptr && target != nullptr && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
+		if (bullet) {
+			BulletExt* bullet_ext = get_bullet_ext(bullet);
+			if (bullet_ext->overwrite_divisor) {
+				dmgDivisor *= bullet_ext->overwrite_divisor;
+			}
+		}
+		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
 			if (!globals.was_hit_by_pariah(bullet->source_unit, target)) {
 				globals.register_pariah_hit(bullet->source_unit, target);
 			}
