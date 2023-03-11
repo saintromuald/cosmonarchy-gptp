@@ -22,26 +22,25 @@ namespace hooks
 				mine, [&](Unit* target)
 		{
 			// Don't attack friendly or allied units
-			if (!mine->is_target_enemy(target))
-			{
+			if (!mine->is_target_enemy(target)) {
 				return false;
 			}
 			// Don't attack invincible units
-			if (target->status & UnitStatus::Invincible)
-			{
+			if (target->status & UnitStatus::Invincible) {
 				return false;
 			}
 			// Don't attack air units / buildings
-			if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))
-			{
+			if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding)) {
 				return false;
 			}
 			// Don't attack hovering units
-			if (units_dat::movement_flags[target->id] == MovementFlags::HoverUnit)
-			{
+			if (units_dat::movement_flags[target->id] == MovementFlags::HoverUnit) {
 				return false;
 			}
 			if (!target->is_visible_to(mine->player)) {
+				return false;
+			}
+			if (scbw::get_distance_fast(mine->position, target->position) > range) {
 				return false;
 			}
 			return true;

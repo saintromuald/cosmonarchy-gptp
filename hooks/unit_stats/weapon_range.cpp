@@ -28,11 +28,6 @@ namespace hooks
 			bonus_amount += 2;
 		}
 
-		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32) {
-			bonus_amount = 0;
-		}
-
 		f32 scale = 1;
 
 		// Sovroleth - Writhing Web
@@ -42,6 +37,12 @@ namespace hooks
 
 		// Height advantage
 		bonus_amount += scbw::get_cliff_advantage(unit, target, 0);
+
+		// Ignore bonus distance for melee units
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit->id == UnitId::TerranSpiderMine) {
+			scale = 1;
+			bonus_amount = 0;
+		}
 
 		// Compile variable for use in height advantage calculations
 		return units_dat::seek_range[unit->id] * scale + bonus_amount;
@@ -90,6 +91,12 @@ namespace hooks
 
 		// Height advantage
 		bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
+
+		// Ignore bonus distance for melee units
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit->id == UnitId::TerranSpiderMine) {
+			scale = 1;
+			bonus_amount = 0;
+		}
 
 		return weapons_dat::max_range[weapon_id] * scale + bonus_amount;
 	}
