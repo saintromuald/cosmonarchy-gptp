@@ -47,6 +47,82 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	return true;
 }
 
+Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	u32 rotate = unit_ext->values[weapon_offsets->value_id];
+	Image* image = unit->sprite->main_graphic;
+	switch (unit->id) {
+		case UnitId::TerranWatchdog:
+		{
+			image = unit->get_overlay(ImageId::MissileTurret_Turret);
+		} break;
+		case UnitId::TerranSentinel:
+		{
+			image = unit->get_overlay(ImageId::SentinelTurret);
+		} break;
+		case UnitId::TerranIonCannon:
+		{
+			image = unit->get_overlay(ImageId::IonCannonTurret);
+		} break;
+	}
+
+	LO_Header* lo_file = lo_files->attack_overlays[image->id];
+	if (weapon_offsets->use_special_overlay) {
+		lo_file = lo_files->special_overlays[image->id];
+	}
+
+	u32 frameset_length = 17;
+	if (image->flags & ImageFlags::Omnidirectional) {
+		frameset_length = 32;
+	}
+
+	Point8 offset = lo_file->get_offset(image->direction + (frameset_length * weapon_offsets->frameset_offset), rotate);
+	if (image->flags & ImageFlags::Mirrored) {
+		offset.x = -offset.x;
+	}
+	rotate++;
+	if (rotate >= weapon_offsets->count) {
+		rotate = 0;
+	}
+	unit_ext->values[weapon_offsets->value_id] = rotate;
+	return offset;
+}
+
+Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weapon_offsets, bool apply_cooldown) {
+	if (!target) {
+		target = unit->order_target.unit;
+	}
+	if (!unit->sprite || !target) {
+		return 0;
+	}
+
+	Point16 pos = unit->position;
+	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::AppearOnTargetUnit) {
+		pos = target->position;
+	}
+
+	if (weapon_offsets) {
+		Point8 offset = get_next_bullet_offset(unit, weapon_offsets);
+		pos.x += offset.x;
+		pos.y += offset.y;
+	}
+
+	s32 angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
+	Bullet* bullet = create_bullet_ex(weapon_id, unit, pos.x, pos.y, unit->player, angle, apply_cooldown);
+	if (bullet) {
+		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
+			scbw::set_bullet_target(bullet, target);
+		}
+		if (weapon_offsets) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[weapon_offsets->value_id] < weapon_offsets->fake_count) {
+				bullet->hit_flags |= 0x1;
+			}
+		}
+	}
+	return bullet;
+}
+
 void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 	u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 	unit->ground_weapon_cooldown = cooldown;
@@ -62,24 +138,16 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
 			scbw::set_bullet_target(bullet, bullet->attack_target.pt);
 		}
+
+		UnitExt* source_ext = get_unit_ext(source);
+		if (source_ext->values[ValueDeconstruction]) {
+			scbw::do_deconstruction_damage(source, weapon_id, false);
+		}
 	}
 	return bullet;
 }
 
-void launch_missile(Unit* attacker, Unit* target, u8 weapon_id, bool apply_cooldown) {
-	Point16 pos = attacker->position;
-	if (weapons_dat::behavior[weapon_id] & WeaponBehavior::AppearOnTargetUnit) {
-		pos = target->position;
-	}
-	auto new_angle = scbw::get_angle(attacker->get_x(), attacker->get_y(), target->get_x(), target->get_y());
-	create_bullet_ex(weapon_id, attacker, pos.x, pos.y, attacker->player, new_angle, apply_cooldown);
-	UnitExt* attacker_ext = get_unit_ext(attacker);
-	if (attacker_ext->values[ValueDeconstruction]) {
-		scbw::do_deconstruction_damage(attacker, weapon_id, false);
-	}
-}
-
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown) {
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bool ignore_main, bool use_weapon_factor, bool apply_cooldown, WeaponOffsets* weapon_offsets) {
 	u32 attack_range = hooks::get_max_weapon_range(attacker, weapon_id, 0);
 	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 	std::unordered_set<Unit*> units_fired = {};
@@ -94,7 +162,7 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		auto unit_filter = cosmonarchy_finder_match(attacker, flags & ~(Flags::Ally | Flags::Enemy), {}); // We want to attack the order target regardless of alliance flags
 		if (unit_filter(order_target)) {
 			for (u32 j = 0; j < factor; j++) {
-				launch_missile(attacker, order_target, weapon_id, apply_cooldown);
+				fire_bullet(attacker, weapon_id, order_target, weapon_offsets, apply_cooldown);
 			}
 			units_fired.insert(order_target);
 		}
@@ -124,7 +192,7 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 
 		attacker->order_target.unit = new_target;
 		for (u32 j = 0; j < factor; j++) {
-			launch_missile(attacker, new_target, weapon_id, apply_cooldown);
+			fire_bullet(attacker, weapon_id, new_target, weapon_offsets, apply_cooldown);
 		}
 		units_fired.insert(new_target);
 	}
@@ -254,43 +322,74 @@ namespace hooks {
 					// Missile spawn positions start
 					case WeaponId::SentinelCerberusRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSentinelLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueSentinelLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::IonCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueIonCannonLaunchPos, 1, true);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueIonCannonLaunchPos;
+						offsets.count = 1;
+						offsets.use_special_overlay = true;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::GoliathContenderMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueGoliathLaunchPos, 2, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueGoliathLaunchPos;
+						offsets.count = 2;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::RamessesPharoahCannons:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueRamessesLaunchPos, 2, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueRamessesLaunchPos;
+						offsets.count = 2;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePaladinLaunchPos, 5, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePaladinLaunchPos;
+						offsets.count = 5;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueClaymoreLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueClaymoreLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::PenumbraErebolShockCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePenumbraLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePenumbraLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWraithLaunchPos, 2, false, 0, 1);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueWraithLaunchPos;
+						offsets.count = 2;
+						offsets.fake_count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::SundogBlindsideRockets:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSundogLaunchPos, 3, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueSundogLaunchPos;
+						offsets.count = 3;
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCentaurLaunchPos, 4, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueCentaurLaunchPos;
+						offsets.count = 4;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
@@ -307,75 +406,130 @@ namespace hooks {
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePhobosLaunchPos, 4, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePhobosLaunchPos;
+						offsets.count = 4;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::WardenPrismaticCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueWardenLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueCharlatanLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueCharlatanLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::OptectonSunsplitBeam:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueOptectonLaunchPos1, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueOptectonLaunchPos1;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::PositronAntimatterMissile:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePositronLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePositronLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::AccantorPlasmaShell:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueAccantorLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueAccantorLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::PanoptusPlasmaMissiles:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValuePanoptusLaunchPos, 2, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePanoptusLaunchPos;
+						offsets.count = 2;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueExemplarLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueExemplarLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::EpigraphLitanyCannons:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEpigraphLaunchPos, 4, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueEpigraphLaunchPos;
+						offsets.count = 4;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueEmpyreanLaunchPos, 4, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueEmpyreanLaunchPos;
+						offsets.count = 4;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::StarSovereignCelestialCannon:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSovereignLaunchPos, 2, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueSovereignLaunchPos;
+						offsets.count = 2;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::SpraithColonySeekerSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSpraithColonyLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueSpraithColonyLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueLiiraliskLaunchPos, 2, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueLiiraliskLaunchPos;
+						offsets.count = 2;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKalkaliskLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueKalkaliskLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::AxitriliskSearingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueAxitriliskLaunchPos, 1, true);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueAxitriliskLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::SkithrokorSkitteringSpores:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueSkithrokorLaunchPos, 1, false);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueSkithrokorLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueBactaliskLaunchPos, 2, true);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueBactaliskLaunchPos;
+						offsets.count = 2;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
-						scbw::set_missile_source_pos(unit, weapon_id, ValueKeskathalorLaunchPos, 2, false, 0, 1);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueKeskathalorLaunchPos;
+						offsets.count = 2;
+						offsets.fake_count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					// Missile spawn positions end
 
@@ -473,8 +627,10 @@ namespace hooks {
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
-						scbw::set_missile_source_pos(unit, weapon_id, ValueWardenLaunchPos, 4, false);
-						fire_multiple(unit, weapon_id, 4, Flags::Enemy);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueWardenLaunchPos;
+						offsets.count = 4;
+						fire_multiple(unit, weapon_id, 4, Flags::Enemy, false, false, true, &offsets);
 					} break;
 					case WeaponId::BarghestRayOfAgony:
 					{
@@ -487,12 +643,6 @@ namespace hooks {
 					} break;
 				}
 			}
-		}
-
-		// Deconstruction - Pazuzu passive
-		if (unit_ext->values[ValueDeconstruction])
-		{
-			scbw::do_deconstruction_damage(unit, weapon_id);
 		}
 	}
 

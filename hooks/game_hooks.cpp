@@ -1459,7 +1459,10 @@ namespace hooks {
 				if (target && unit_ext->values[ValueCentaurSecondaryWeaponCount] && !unit_ext->timers[TimerCentaurSecondaryWeaponStagger]) {
 					unit_ext->values[ValueCentaurSecondaryWeaponCount]--;
 					unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = hooks::get_modified_cooldown(unit, 4, false);
-					scbw::set_missile_source_pos(unit, WeaponId::CentaurSunchaserMissiles, ValueCentaurLaunchPos, 4, false, 0, 0, target, false);
+					WeaponOffsets offsets = {};
+					offsets.value_id = ValueCentaurLaunchPos;
+					offsets.count = 4;
+					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, target, &offsets, false);
 				}
 			} break;
 			case UnitId::TerranOlympian:

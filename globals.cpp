@@ -1245,69 +1245,6 @@ namespace scbw
 		}
 	}
 
-	Bullet* set_missile_source_pos(Unit* unit, u32 weapon_id, u32 value_id, s32 rotate_count, bool use_special_overlay, u32 frameset_offset, u32 fake_amount, Unit* override_target, bool apply_cooldown) {
-		Unit* target = override_target ? override_target : unit->order_target.unit;
-		if (!unit->sprite || !target) {
-			return 0;
-		}
-
-		UnitExt* unit_ext = get_unit_ext(unit);
-		u32 rotate = unit_ext->values[value_id];
-		Image* image = unit->sprite->main_graphic;
-		switch (unit->id) {
-			case UnitId::TerranWatchdog:
-			{
-				image = unit->get_overlay(ImageId::MissileTurret_Turret);
-			} break;
-			case UnitId::TerranSentinel:
-			{
-				image = unit->get_overlay(ImageId::SentinelTurret);
-			} break;
-			case UnitId::TerranIonCannon:
-			{
-				image = unit->get_overlay(ImageId::IonCannonTurret);
-			} break;
-		}
-
-		LO_Header* lo_file = lo_files->attack_overlays[image->id];
-		if (use_special_overlay) {
-			lo_file = lo_files->special_overlays[image->id];
-		}
-
-		u32 frameset_length = 17;
-		if (image->flags & ImageFlags::Omnidirectional) {
-			frameset_length = 32;
-		}
-
-		Point8 offset = lo_file->get_offset(image->direction + (frameset_length * frameset_offset), rotate);
-		if (image->flags & ImageFlags::Mirrored) {
-			offset.x = -offset.x;
-		}
-		rotate++;
-		if (rotate >= rotate_count) {
-			rotate = 0;
-		}
-		unit_ext->values[value_id] = rotate;
-		u32 x = unit->get_x() + offset.x;
-		u32 y = unit->get_y() + offset.y;
-		u32 angle = scbw::get_angle(x, y, target->position.x, target->position.y);
-		Bullet* bullet = 0;
-		if (apply_cooldown) {
-			bullet = create_bullet_ex(weapon_id, unit, x, y, unit->player, angle);
-		} else {
-			bullet = helper::create_bullet(weapon_id, unit, x, y, unit->player, angle);
-		}
-		if (bullet) {
-			if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
-				scbw::set_bullet_target(bullet, target);
-			}
-			if (unit_ext->values[value_id] < fake_amount) {
-				bullet->hit_flags |= 0x1;
-			}
-		}
-		return bullet;
-	}
-
 	void remove_overlays_2(u32 from, u32 to, Unit* unit)
 	{
 		const u32 Func_RemoveOverlays2 = 0x00492370;
