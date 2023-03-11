@@ -2368,10 +2368,10 @@ namespace hooks {
 					if (!seraph) {
 						continue;
 					}
-					UnitExt* seraphExt = get_unit_ext(seraph);
-					if (!seraphExt->timers[TimerObservanceOverlay]) {
+					UnitExt* seraph_ext = get_unit_ext(seraph);
+					if (!seraph_ext->timers[TimerObservanceOverlay]) {
 						seraph->sprite->create_overlay(ImageId::SeraphRedOverlay);
-						seraphExt->timers[TimerObservanceOverlay] = 18;
+						seraph_ext->timers[TimerObservanceOverlay] = 18;
 					}
 				}
 			}
