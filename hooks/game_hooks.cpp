@@ -1334,7 +1334,7 @@ namespace hooks {
 					bool do_teleport = false;
 					u32 image_id = 0;
 
-					const u32 min_radius = 15;
+					const u32 min_radius = 0.75 * 32;
 					const u32 max_radius = 3 * 32;
 
 					if (unit->id == UnitId::ProtossLegionnaire) {
