@@ -475,6 +475,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterNoHangar && (target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward)) {
 		return false;
 	}
+	if (flags & FilterVisible && !target->is_visible_to(center->player)) {
+		return false;
+	}
 	return true;
 }
 

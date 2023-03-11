@@ -465,14 +465,15 @@ namespace hooks
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
 				} break;
 				case WeaponId::GladiusPlasmaFlurry: {
-					Unit* source_unit = target_ext->units[UnitGladiusBindingPlasmaSource];
-					if (source_unit && target_ext->timers[TimerGladiusBindingPlasma]) {
-						if (scbw::is_allied_to(data.attacking_player_id, source_unit->player)) {
-							target_ext->values[ValueGladiusBindingPlasmaRecasts]++;
+					if (target_ext->timers[TimerGladiusBindingPlasma]) {
+						u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
+						if (scbw::is_allied_to(data.attacking_player_id, source_player)) {
+							target_ext->values[ValueGladiusBindingPlasmaStacks]++;
 						}
 					} else {
-						target_ext->timers[TimerGladiusBindingPlasma] = 24;
-						target_ext->units[UnitGladiusBindingPlasmaSource] = data.attacker;
+						target_ext->timers[TimerGladiusBindingPlasma] = 12;
+						target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
+						target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 					}
 				} break;
 				case WeaponId::ZethrokorClaws:

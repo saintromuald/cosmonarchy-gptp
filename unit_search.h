@@ -35,6 +35,7 @@ enum SearchFilter
 	FilterNoEgg				= 1 << 26,
 	FilterNoLarva			= 1 << 27,
 	FilterNoHangar			= 1 << 28,
+	FilterVisible			= 1 << 29,
 };
 
 #define ScoreInvalidUnit INT_MIN

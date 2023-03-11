@@ -1963,19 +1963,34 @@ namespace hooks {
 		}
 
 		// Gladius Binding Plasma
-		{
-			Unit* source_unit = unit_ext->units[UnitGladiusBindingPlasmaSource];
-			if (source_unit) {
+		if (unit_ext->timers[TimerGladiusBindingPlasma]) {
+			u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];
+
+			bool has_source = false;
+			EntryArray sources = {};
+			unit_search_radial(&sources, unit->position, 8 * 32);
+			for (u32 i = 0; i < sources.count; ++i) {
+				Unit* source = sources.units[i];
+				if (source->id == UnitId::ProtossGladius && scbw::is_allied_to(source->player, source_player)) {
+					has_source = true;
+					break;
+				}
+			}
+
+			if (has_source) {
 				if (unit_ext->timers[TimerGladiusBindingPlasma] % 12 == 11) {
 					unit->sprite->create_overlay(ImageId::BindingPlasmaOverlay);
 				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
-					scbw::binding_plasma_proc(unit, source_unit);
+					scbw::binding_plasma_proc(unit, source_player);
 				}
 			} else {
-				unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
+				unit_ext->timers[TimerGladiusBindingPlasma] = 0;
+				unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 			}
+		} else {
+			unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 		}
 
 		// Tyranny

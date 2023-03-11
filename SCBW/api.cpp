@@ -2877,27 +2877,38 @@ namespace scbw {
 			|| unit_id == UnitId::ZergRililisk;
 	}
 
-	void binding_plasma_proc(Unit* victim, Unit* source) {
-		UnitExt* unit_ext = get_unit_ext(victim);
-		EntryArray units = {};
-		unit_search_radial(&units, victim->position, 3 * 32);
-		unit_search_filter(&units, source, FilterEnemy | FilterNoBuilding | FilterNotSubunit);
-		unit_search_filter(&units, victim, FilterNotSelf);
-		unit_search_sort_by_distance(&units, victim->position);
-
-		Unit* target = units.count ? units.units[0] : 0;
-		if (source && target) {
-			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
-			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, source, victim->position.x, victim->position.y, source->player, angle);
-			if (bullet) {
-				scbw::set_bullet_target(bullet, target);
-				if (unit_ext->values[ValueGladiusBindingPlasmaRecasts]) {
-					unit_ext->values[ValueGladiusBindingPlasmaRecasts]--;
-					unit_ext->timers[TimerGladiusBindingPlasma] = 24;
-				}
+	void binding_plasma_proc(Unit* victim, u32 player) {
+		EntryArray targets = {};
+		unit_search_radial(&targets, victim->position, 3 * 32);
+		unit_search_filter(&targets, victim, FilterNotSelf | FilterNotSubunit | FilterVisible);
+		for (u32 i = 0; i < targets.count; ++i) {
+			Unit* target = targets.units[i];
+			if (scbw::is_allied_to(player, target->player)) {
+				entry_array_remove(&targets, i--);
 			}
-		} else {
-			unit_ext->values[ValueGladiusBindingPlasmaRecasts] = 0;
+		}
+		unit_search_sort_by_distance(&targets, victim->position);
+
+		UnitExt* victim_ext = get_unit_ext(victim);
+		if (!targets.count) {
+			victim_ext->timers[TimerGladiusBindingPlasma] = 0;
+			victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
+			return;
+		}
+
+		u32 target_index = 0;
+		while (victim_ext->values[ValueGladiusBindingPlasmaStacks]) {
+			Unit* target = targets.units[target_index];
+			target_index = (target_index + 1) % targets.count;
+
+			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
+			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, victim, victim->position.x, victim->position.y, player, angle);
+			if (!bullet) {
+				break; 
+			}
+
+			scbw::set_bullet_target(bullet, target);
+			victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
 		}
 	}
 

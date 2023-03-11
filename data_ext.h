@@ -115,7 +115,8 @@ enum ExtValueId
 	ValueThroughTheLookingGlassX,
 	ValueThroughTheLookingGlassY,
 	ValueLazarusRecasts,
-	ValueGladiusBindingPlasmaRecasts,
+	ValueGladiusBindingPlasmaStacks,
+	ValueGladiusBindingPlasmaPlayer,
 	ValueCentaurSecondaryWeaponCount,
 	ValueAccantorLaunchPos,
 	ValuePatriarchAstralRulePlayer,
@@ -265,7 +266,6 @@ enum ExtUnitId
 	UnitMorphConnectedUnit,
 	UnitAddonParent,
 	UnitResponseTarget,
-	UnitGladiusBindingPlasmaSource,
 	UnitCentaurSecondaryWeaponTarget,
 
 	UnitCount,

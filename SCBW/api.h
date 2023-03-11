@@ -724,7 +724,7 @@ namespace scbw
 	void delete_town(AiTown* ai_town);
 	void delete_fow_sprite(Thingy* thingy);
 	bool unit_id_is_broodspawn(u32 unit_id);
-	void binding_plasma_proc(Unit* victim, Unit* source);
+	void binding_plasma_proc(Unit* victim, u32 player);
 	bool order_id_is_harvest_related(u32 order_id);
 	bool player_has_transport(u32 player);
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);
