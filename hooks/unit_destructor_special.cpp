@@ -428,13 +428,8 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 				thingy_ext->unit_id = unit->id;
 
 				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->timers[TimerAnticthonRevive] || unit_ext->timers[TimerReclamation]) {
-					u32 player = unit->player;
-					if (unit_ext->timers[TimerReclamation] && !unit_ext->timers[TimerAnticthonRevive]) {
-						player = unit_ext->values[ValueReclamationPlayer];
-					}
-
-					Unit* revived = scbw::revive_corpse(thingy, player);
+				if (unit_ext->timers[TimerReclamation]) {
+					Unit* revived = scbw::revive_corpse(thingy, unit_ext->values[ValueReclamationPlayer]);
 					if (revived) {
 						revived->shields = 0;
 						revived->set_hitpoints(revived->get_max_hp_raw() / 2);

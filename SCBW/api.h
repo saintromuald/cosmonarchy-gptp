@@ -733,6 +733,6 @@ namespace scbw
 	bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 	Image* get_addon_connector_image(Unit* unit);
 	bool can_consume_corpse(Thingy* corpse);
-	Unit* revive_corpse(Thingy* corpse, u32 player);
 	void consume_corpse(Thingy* corpse);
+	Unit* revive_corpse(Thingy* corpse, u32 player);
 }

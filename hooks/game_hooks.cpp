@@ -1561,20 +1561,16 @@ namespace hooks {
 			case UnitId::TerranAnticthon:
 			{
 				// Revive status
-				u32 flags = Flags::NotSelf | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
-				u32 radius = 4 * 32;
 				if (!unit_ext->values[ValueReviveStarted]) {
-					// TODO: unit search
-					auto match = cosmonarchy_finder_match(unit, flags, {});
-					scbw::UnitFinder(
-						unit->get_x() - radius,
-						unit->get_y() - radius,
-						unit->get_x() + radius,
-						unit->get_y() + radius
-					).for_each_in_match(match, [&](Unit* target) {
-						UnitExt* targetExt = get_unit_ext(target);
-						targetExt->timers[TimerAnticthonRevive] = 2;
-					});
+					EntryArray targets = {};
+					unit_search_radial(&targets, unit->position, 4 * 32);
+					unit_search_filter(&targets, unit, FilterNotSelf | FilterNoBuilding | FilterNoTrap | FilterNoHallucination | FilterNoEgg | FilterNoLarva | FilterNoHangar);
+					for (u32 i = 0; i < targets.count; ++i) {
+						Unit* target = targets.units[i];
+						UnitExt* target_ext = get_unit_ext(target);
+						target_ext->timers[TimerReclamation] = 2;
+						target_ext->values[ValueReclamationPlayer] = unit->player;
+					}
 				}
 			} break;
 			case UnitId::ProtossAnthelion:
@@ -1860,7 +1856,7 @@ namespace hooks {
 			case UnitId::ProtossOptecton:
 			{
 				// Optecton - Forward March
-				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown] && unit->movement_flags & (MovementFlags::Accelerating | MovementFlags::Moving)) {
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, Flags::Enemy | Flags::NoGround, false, false, false)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::OptectonWeaponfireSecondary01, SoundId::OptectonWeaponfireSecondary03), unit, 1, 0);
@@ -1881,12 +1877,13 @@ namespace hooks {
 					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
-					}
+					} 
 					for (u32 i = 0; i < unit_array.count; ++i) {
 						Unit* target = unit_array.units[i];
 						if (target->shields < unit->shields) {
 							shields -= target->heal_shields(shields, unit, false, false);
 							unit->shields -= shields;
+							unit->set_hitpoints(unit->hitpoints);
 							break;
 						}
 					}
@@ -2643,8 +2640,8 @@ namespace hooks {
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
 		}
 
-		// Anticthon - Counter-Proposal - add overlay
-		if (unit_ext->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+		// Reclamation - add overlay
+		if (unit_ext->timers[TimerReclamation] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 

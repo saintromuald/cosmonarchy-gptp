@@ -3108,14 +3108,27 @@ namespace scbw {
 		return true;
 	}
 
+	void consume_corpse(Thingy* corpse) {
+		corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+	}
+
 	Unit* revive_corpse(Thingy* corpse, u32 player) {
 		if (!can_consume_corpse(corpse)) {
 			return false;
 		}
 
 		ThingyExt* corpse_ext = get_thingy_ext(corpse);
+		u32 unit_id = corpse_ext->unit_id;
 		Point16 pos = corpse->sprite->position;
-		Unit* unit = scbw::create_unit_in_game(corpse_ext->unit_id, player, pos.x, pos.y);
+		if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
+			if (pos.y > 42) {
+				pos.y -= 42;
+			} else {
+				pos.y = 0;
+			}
+		}
+		Unit* unit = scbw::create_unit_in_game(unit_id, player, pos.x, pos.y);
 		if (unit) {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
@@ -3133,10 +3146,5 @@ namespace scbw {
 			scbw::consume_corpse(corpse);
 		}
 		return unit;
-	}
-
-	void consume_corpse(Thingy* corpse) {
-		corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 	}
 }

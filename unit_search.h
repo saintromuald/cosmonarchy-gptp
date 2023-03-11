@@ -32,6 +32,9 @@ enum SearchFilter
 	FilterNotWorker			= 1 << 23,
 	FilterNotSubunit		= 1 << 24,
 	FilterBuilding			= 1 << 25,
+	FilterNoEgg				= 1 << 26,
+	FilterNoLarva			= 1 << 27,
+	FilterNoHangar			= 1 << 28,
 };
 
 #define ScoreInvalidUnit INT_MIN

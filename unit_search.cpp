@@ -466,6 +466,15 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterNotSubunit && units_dat::base_property[target->id] & UnitProperty::Subunit) {
 		return false;
 	}
+	if (flags & FilterNoEgg && (target->id == UnitId::ZergEgg || target->id == UnitId::ZergCocoon)) {
+		return false;
+	}
+	if (flags & FilterNoLarva && (target->id == UnitId::ZergLarva || target->id == UnitId::ZergOcsalLarva)) {
+		return false;
+	}
+	if (flags & FilterNoHangar && (target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward)) {
+		return false;
+	}
 	return true;
 }
 

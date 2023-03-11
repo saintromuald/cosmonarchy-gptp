@@ -192,7 +192,6 @@ enum ExtTimerId
 	TimerAlliedInvFrames,
 	TimerIncubationArm,
 	TimerAuralAssaultBlind,
-	TimerAnticthonRevive,
 	TimerAnthelionGravityWell,
 	TimerAnthelionEndlessEclipse,
 	TimerAnthelionAttackCooldown,
