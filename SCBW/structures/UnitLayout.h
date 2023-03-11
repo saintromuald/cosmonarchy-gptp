@@ -230,7 +230,7 @@ struct UnitLayout
 	/*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
 	/*0x022*/ u8        flingy_turn_speed;				// AKA flingy turn radius
 	/*0x023*/ u8        velocity_direction_1;			/*
-															This usually only differs from the currentDirection field for units that can accelerate
+															This usually only differs from the current_direction field for units that can accelerate
 															and travel in a different direction than they are facing. For example Mutalisks can change
 															the direction they are facing faster than then can change the direction they are moving.
 														*/
