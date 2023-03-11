@@ -1265,7 +1265,7 @@ namespace hooks {
 					corpse_search_radial(&corpses, unit->position, 2.5 * 32);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						scbw::revive_corpse(corpse, unit->player, true);
+						scbw::reclaim_corpse(corpse, unit->player);
 					}
 					if (unit_ext->values[ValueLazarusRecasts]) {
 						unit_ext->values[ValueLazarusRecasts]--;
@@ -1568,7 +1568,7 @@ namespace hooks {
 					corpse_search_radial(&corpses, unit->position, 3 * 32);
 					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
-						scbw::revive_corpse(corpse, unit->player, false);
+						scbw::reclaim_corpse(corpse, unit->player);
 					}
 				}
 			} break;
@@ -1783,7 +1783,7 @@ namespace hooks {
 
 						// Redirect
 						if (target) {
-							scbw::create_shield_overlay(target, bullet->direction_1);
+							scbw::create_shield_overlay(target, bullet->direction1);
 						}
 						scbw::set_bullet_target(bullet, unit);
 						scbw::set_bullet_direction(bullet, unit);

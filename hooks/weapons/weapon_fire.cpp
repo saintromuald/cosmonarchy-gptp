@@ -967,7 +967,7 @@ namespace hooks {
 							bullet->move_target.unit = bullet->attack_target.unit;
 							if (bullet->move_target.unit) {
 								bullet->target_position = bullet->move_target.unit->position;
-								bullet->target_position_2 = bullet->move_target.unit->position;
+								bullet->target_position2 = bullet->move_target.unit->position;
 							}
 						}
 					} break;
@@ -1360,8 +1360,8 @@ namespace hooks {
 				launch_spin_variance = -(s8)launch_spin;
 			}
 			char launch_spin_direction = launch_spin_variance + bullet->direction2;
+			bullet->direction1 = launch_spin_direction;
 			bullet->direction2 = launch_spin_direction;
-			bullet->direction_1 = launch_spin_direction;
 			*g_last_bullet_creator = parent;
 		}
 
@@ -1474,8 +1474,8 @@ namespace hooks {
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
-				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->direction_1].x) >> 16);
-				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->direction_1].y) >> 16);
+				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->direction1].x) >> 16);
+				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->direction1].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}

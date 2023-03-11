@@ -135,12 +135,12 @@ namespace hooks {
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
 		if (bullet->hit_flags & 2) {
 			if (bullet->source_unit) {
-				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction_1, damage_divisor);
+				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction1, damage_divisor);
 			} else {
-				helper::attack_overlay_and_notify(bullet->source_unit, target, bullet->weapon_id, bullet->direction_1); // no damage, but still ask for retaliation
+				helper::attack_overlay_and_notify(bullet->source_unit, target, bullet->weapon_id, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		} else {
-			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction_1, damage_divisor);
+			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->direction1, damage_divisor);
 		}
 	}
 
