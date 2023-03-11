@@ -886,6 +886,11 @@ namespace hooks {
 			tactical_ai(unit, unit_ext);
 		}
 
+		// No Corpse Overlay
+		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
+			unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+		}
+
 		u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
 		if (creep_spreader_id != UnitId::None && unit->player < PlayerLimit) {
 			Box32 creep_area = {};
