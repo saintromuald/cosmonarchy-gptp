@@ -397,12 +397,12 @@ namespace hooks
 							{
 								if (unit_reference->sprite)
 								{
-									if (unit_reference->main_order_id)
+								//	if (unit_reference->main_order_id) // We unload anyways, since we want to see corpses! -Veeq7
 									{
 										transport->main_order_timer = 0;
 										if (helper::unload_unit_proc(unit_reference)) {
 											if (!scbw::unit_id_is_bunker(transport->id)) {
-												helper::orders_self_destructing(unit_reference);
+												helper::orders_self_destructing(unit_reference); // Just kill it! -Veeq7
 											}
 										} else {
 											helper::orders_self_destructing(unit_reference);
