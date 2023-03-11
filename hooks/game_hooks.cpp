@@ -1560,7 +1560,7 @@ namespace hooks {
 			{
 				// Revive status
 				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
-				u32 radius = 4 * 32;
+				u32 radius = 3 * 32;
 				if (!unit_ext->values[ValueReviveStarted]) {
 					// TODO: unit search
 					auto match = cosmonarchy_finder_match(unit, flags, {});
@@ -2668,12 +2668,6 @@ namespace hooks {
 		if (unit_ext->values[ValueDeconstruction] && unit_ext->timers[TimerDeconstruction] <= 1) {
 			unit_ext->values[ValueDeconstruction] = 0;
 			unit->sprite->remove_overlay(ImageId::DeconstructionSmall + scbw::get_overlay_offset(unit->id));
-		}
-
-		// Patriarch - Astral Rule
-		if (unit_ext->timers[TimerPatriarchAstralRule] == 1) {
-			scbw::astral_blessing_proc(unit, unit_ext->values[ValuePatriarchAstralRulePlayer], WeaponId::PatriarchIronhandWeaver);
-			unit_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
 		}
 
 		// Harakan - Apollyoid Adhesive

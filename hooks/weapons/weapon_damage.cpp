@@ -381,7 +381,6 @@ namespace hooks
 
 			// Ignore Carapace Swarm!
 			// START
-
 			switch (data.attacker->id) {
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack
@@ -417,7 +416,6 @@ namespace hooks
 			&&  !scbw::is_under_dark_swarm(data.target)) {
 				apply_ensnare(data.target);
 			}
-
 			// Ignore Carapace Swarm!
 			// END
 
@@ -502,6 +500,15 @@ namespace hooks
 			}
 
 			if (!scbw::is_under_dark_swarm(data.target)) {
+				// Astral Rule - Patriarch behavior
+				if (target_ext->timers[TimerPatriarchAstralRule] > 1
+				&&  units_dat::shields_enabled[data.attacker->id]
+				&&	data.attacker->shields < units_dat::max_shield_points[data.attacker->id] * 256)
+				{
+					data.attacker->heal_shields(5 * 256);
+					helper::add_overlay_below_main(data.attacker->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+				}
+
 				switch (data.weapon_id) {
 					case WeaponId::AutocratEminanceRifle:
 					{
@@ -601,7 +608,8 @@ namespace hooks
 					{
 						// Demiurge - Worship
 						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
-						&&  data.target->hitpoints > data.damage) {
+						&&  data.target->hitpoints > data.damage)
+						{
 							scbw::mind_control(data.attacker, data.target);
 						}
 					} break;
@@ -687,8 +695,9 @@ namespace hooks
 					case WeaponId::PatriarchIronhandWeaver:
 					{
 						if (data.attacking_player_id != data.target->player
-							&& !scbw::is_allied_to(data.attacking_player_id, data.target->player)
-							&& target_ext->timers[TimerPatriarchAstralRule] == 0) {
+						&& !scbw::is_allied_to(data.attacking_player_id, data.target->player)
+						&&  target_ext->timers[TimerPatriarchAstralRule] == 0)
+						{
 							target_ext->values[ValuePatriarchAstralRulePlayer] = data.attacking_player_id;
 							target_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
 						}
@@ -727,9 +736,9 @@ namespace hooks
 			{
 				// Eternal Service - Amaranth behavior
 				const s32 hp = data.attacker->hitpoints / 256;
-				const s32 maxHp = data.attacker->get_max_hp_ingame();
-				u32 shieldsHeal = damage_dealt * MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-				data.attacker->heal_shields(shieldsHeal, data.attacker);
+				const s32 max_hp = data.attacker->get_max_hp_ingame();
+				u32 shields_heal = damage_dealt * MathUtils::map(hp, max_hp / 4, max_hp, 0.5, 0.2, true);
+				data.attacker->heal_shields(shields_heal, data.attacker);
 			} break;
 			case WeaponId::AxitriliskSearingVenom:
 			{
