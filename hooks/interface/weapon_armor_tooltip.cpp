@@ -483,7 +483,7 @@ namespace hooks
 		add_status(statuses, "Fragmentary Shells", unit_ext->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
-		add_status(statuses, "Reclaimed", unit_ext->values[ValueNoCorpse], 1);
+		add_status(statuses, "Decaying", unit_ext->values[ValueNoCorpse], 1);
 
 		// Gptp Value - Gimmicked
 		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
