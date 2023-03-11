@@ -1260,8 +1260,10 @@ namespace hooks {
 					corpse_search_radial(&corpses, unit->position, 4 * 32);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						Unit* revived = scbw::revive_allied_corpse(unit->player, corpse);
+						Unit* revived = scbw::revive_corpse(corpse, unit->player);
 						if (revived) {
+							revived->shields = 0;
+							revived->set_hitpoints(revived->get_max_hp_raw() / 2);
 							revived->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentProc, revived);
 						}
@@ -1559,20 +1561,16 @@ namespace hooks {
 			case UnitId::TerranAnticthon:
 			{
 				// Revive status
-				u32 flags = Flags::NotSelf | Flags::Ally | Flags::NoBuilding | Flags::NoTrap | Flags::NoHallucination | Flags::NoEgg | Flags::NoLarva | Flags::NoHangar;
-				u32 radius = 3 * 32;
 				if (!unit_ext->values[ValueReviveStarted]) {
-					// TODO: unit search
-					auto match = cosmonarchy_finder_match(unit, flags, {});
-					scbw::UnitFinder(
-						unit->get_x() - radius,
-						unit->get_y() - radius,
-						unit->get_x() + radius,
-						unit->get_y() + radius
-					).for_each_in_match(match, [&](Unit* target) {
-						UnitExt* targetExt = get_unit_ext(target);
-						targetExt->timers[TimerAnticthonRevive] = 2;
-					});
+					EntryArray targets = {};
+					unit_search_radial(&targets, unit->position, 3 * 32);
+					unit_search_filter(&targets, unit, FilterNotSelf | FilterNoBuilding | FilterNoTrap | FilterNoHallucination | FilterNoEgg | FilterNoLarva | FilterNoHangar);
+					for (u32 i = 0; i < targets.count; ++i) {
+						Unit* target = targets.units[i];
+						UnitExt* target_ext = get_unit_ext(target);
+						target_ext->timers[TimerReclamation] = 2;
+						target_ext->values[ValueReclamationPlayer] = unit->player;
+					}
 				}
 			} break;
 			case UnitId::ProtossAnthelion:
@@ -1879,12 +1877,13 @@ namespace hooks {
 					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
-					}
+					} 
 					for (u32 i = 0; i < unit_array.count; ++i) {
 						Unit* target = unit_array.units[i];
 						if (target->shields < unit->shields) {
 							shields -= target->heal_shields(shields, unit, false, false);
 							unit->shields -= shields;
+							unit->set_hitpoints(unit->hitpoints);
 							break;
 						}
 					}
@@ -2641,8 +2640,8 @@ namespace hooks {
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
 		}
 
-		// Anticthon - Counter-Proposal - add overlay
-		if (unit_ext->timers[TimerAnticthonRevive] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
+		// Reclamation - add overlay
+		if (unit_ext->timers[TimerReclamation] && !unit->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_underlay(ImageId::CreepMorphOverlay, 0, 2);
 		}
 

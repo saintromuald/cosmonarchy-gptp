@@ -94,7 +94,7 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		auto unit_filter = cosmonarchy_finder_match(attacker, flags & ~(Flags::Ally | Flags::Enemy), {}); // We want to attack the order target regardless of alliance flags
 		if (unit_filter(order_target)) {
 			for (u32 j = 0; j < factor; j++) {
-				launch_missile(attacker, order_target, weapon_id);
+				launch_missile(attacker, order_target, weapon_id, apply_cooldown);
 			}
 			units_fired.insert(order_target);
 		}

@@ -474,17 +474,14 @@ void tick_effect(Effect* effect) {
 					});
 			} break;
 			case EffectId_AionReclamationField: {
-				EntryArray effect_units = {};
-				unit_search_radial(&effect_units, effect->position, effect->radius);
-				unit_search_filter(&effect_units, 0);
-
-				for (u32 i = 0; i < effect_units.count; ++i) {
-					Unit* unit = effect_units.units[i];
-					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
-						UnitExt* unit_ext = get_unit_ext(unit);
-						unit_ext->timers[TimerReclamation] = effect_period + 1;
-						unit_ext->values[ValueReclamationPlayer] = effect->player;
-					}
+				EntryArray targets = {};
+				unit_search_radial(&targets, effect->position, effect->radius);
+				unit_search_filter(&targets, 0, FilterNoBuilding | FilterNoTrap | FilterNoHallucination | FilterNoEgg | FilterNoLarva | FilterNoHangar);
+				for (u32 i = 0; i < targets.count; ++i) {
+					Unit* target = targets.units[i];
+					UnitExt* target_ext = get_unit_ext(target);
+					target_ext->timers[TimerReclamation] = effect_period + 1;
+					target_ext->values[ValueReclamationPlayer] = effect->player;
 				}
 			} break;
 		}
@@ -1006,9 +1003,6 @@ namespace scbw
 			child_ext->values[ValueEmpressPassiveStacks] = parent_ext->values[ValueEmpressPassiveStacks];
 			child_ext->values[ValueEmpressSourcePlayer] = parent_ext->values[ValueEmpressSourcePlayer];
 		}
-
-		// Inherit Anticthon
-		child_ext->values[ValueAnticthonStacks] = parent_ext->values[ValueAnticthonStacks];
 
 		// Inherit Hierophant Signify
 		child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
