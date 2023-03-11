@@ -3113,7 +3113,7 @@ namespace scbw {
 		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 	}
 
-	Unit* revive_corpse(Thingy* corpse, u32 player) {
+	Unit* revive_corpse(Thingy* corpse, u32 player, bool no_corpse) {
 		if (!can_consume_corpse(corpse)) {
 			return false;
 		}
@@ -3150,7 +3150,9 @@ namespace scbw {
 			unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 			helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
 
-			unit_ext->values[ValueNoCorpse] = true;
+			if (no_corpse) {
+				unit_ext->values[ValueNoCorpse] = true;
+			}
 		}
 		return unit;
 	}

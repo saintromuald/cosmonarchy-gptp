@@ -1262,10 +1262,10 @@ namespace hooks {
 					helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
 
 					EntryArray corpses = {};
-					corpse_search_radial(&corpses, unit->position, 3 * 32);
+					corpse_search_radial(&corpses, unit->position, 2.5 * 32);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						scbw::revive_corpse(corpse, unit->player);
+						scbw::revive_corpse(corpse, unit->player, true);
 					}
 					if (unit_ext->values[ValueLazarusRecasts]) {
 						unit_ext->values[ValueLazarusRecasts]--;
@@ -1568,7 +1568,7 @@ namespace hooks {
 					corpse_search_radial(&corpses, unit->position, 3 * 32);
 					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
-						scbw::revive_corpse(corpse, unit->player);
+						scbw::revive_corpse(corpse, unit->player, false);
 					}
 				}
 			} break;

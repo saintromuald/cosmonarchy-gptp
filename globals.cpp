@@ -478,7 +478,7 @@ void tick_effect(Effect* effect) {
 				corpse_search_radial(&corpses, effect->position, effect->radius);
 				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
-					scbw::revive_corpse(corpse, effect->player);
+					scbw::revive_corpse(corpse, effect->player, false);
 				}
 			} break;
 		}
