@@ -1443,6 +1443,32 @@ namespace hooks {
 
 namespace hooks {
 	void inject_thingy_extender() {
+		//0x00487310
+		memory_patch(0x00487316, &new_thingy_table2);
+
+		//0x00487320
+		memory_patch(0x0048732A, &new_thingy_table2[-1]);
+
+		//0x00487330
+		memory_patch(0x00487336, &new_thingy_table1);
+
+		//0x00487340
+		memory_patch(0x0048734A, &new_thingy_table1[-1]);
+
+		//0x00487350
+		memory_patch(0x0048737D, &new_thingy_table1[-1]);
+		memory_patch(0x00487398, &new_thingy_table1[-1]);
+		memory_patch(0x004873A5, &new_thingy_table2);
+		memory_patch(0x004873B6, &new_thingy_table2[-1]);
+		memory_patch(0x004873C8, &new_thingy_table2[-1]);
+
+		//0x004873E0
+		memory_patch(0x00487410, &new_thingy_table1);
+		memory_patch(0x0048742B, &new_thingy_table1);
+		memory_patch(0x0048743C, &new_thingy_table2);
+		memory_patch(0x00487449, &new_thingy_table2);
+		memory_patch(0x0048745B, &new_thingy_table2);
+
 		//packThingyData (0x00487540)
 		memory_patch(0x00487542, &new_thingy_table1[0].next);
 		memory_patch(0x00487547, ThingyLimit1);
@@ -1456,8 +1482,12 @@ namespace hooks {
 		//unpack_thingy_data (0x004875F0)
 		memory_patch(0x004875F1, &new_thingy_table1[0].next);
 		memory_patch(0x004875F6, ThingyLimit1);
+		memory_patch(0x00487620, &new_thingy_table1[-1]);
+		memory_patch(0x00487632, &new_thingy_table1[-1]);
 		memory_patch(0x0048763F, &new_thingy_table2[0].next);
 		memory_patch(0x00487644, ThingyLimit2);
+		memory_patch(0x00487668, &new_thingy_table2[-1]);
+		memory_patch(0x0048767A, &new_thingy_table2[-1]);
 
 		//initialize_thingy_arrays (0x00487990)
 		memory_patch(0x00487996, &new_thingy_table1);
@@ -1474,6 +1504,12 @@ namespace hooks {
 		memory_patch(0x00488106, &new_thingy_table1);
 		memory_patch(0x00488115, ThingyLimit2);
 		memory_patch(0x0048811A, &new_thingy_table2);
+
+		//0x00488140
+		memory_patch(0x00488147, ThingyLimit1);
+		memory_patch(0x0048814C, &new_thingy_table1);
+		memory_patch(0x00488157, ThingyLimit2);
+		memory_patch(0x0048815C, &new_thingy_table2);
 
 		//InitializeThingyArray (0x00488550)
 		memory_patch(0x00488556, &new_thingy_table2);
@@ -1492,6 +1528,15 @@ namespace hooks {
 		memory_patch(0x004C2B7D, &new_thingy_table1);
 		memory_patch(0x004C2B88, ThingyLimit2);
 		memory_patch(0x004C2B8D, &new_thingy_table2);
+
+		//0x004D02D0
+		memory_patch(0x004D04E3, ThingyLimit1);
+		memory_patch(0x004D04E8, &new_thingy_table1);
+		memory_patch(0x004D04F3, ThingyLimit2);
+		memory_patch(0x004D04F8, &new_thingy_table2);
+
+		//unpack_unit_data (0x004E2E20)
+		memory_patch(0x004E3178, &new_thingy_table1[-1]);
 
 		//pack_unit_data (0x004E3410)
 		memory_patch(0x004E3927, &new_thingy_table1);

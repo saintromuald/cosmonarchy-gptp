@@ -1566,7 +1566,7 @@ namespace hooks {
 				// Revive status
 				if (!unit_ext->values[ValueReviveStarted]) {
 					EntryArray targets = {};
-					unit_search_radial(&targets, unit->position, 4 * 32);
+					unit_search_radial(&targets, unit->position, 3 * 32);
 					unit_search_filter(&targets, unit, FilterNotSelf | FilterNoBuilding | FilterNoTrap | FilterNoHallucination | FilterNoEgg | FilterNoLarva | FilterNoHangar);
 					for (u32 i = 0; i < targets.count; ++i) {
 						Unit* target = targets.units[i];
@@ -2371,10 +2371,10 @@ namespace hooks {
 					if (!seraph) {
 						continue;
 					}
-					UnitExt* seraphExt = get_unit_ext(seraph);
-					if (!seraphExt->timers[TimerObservanceOverlay]) {
+					UnitExt* seraph_ext = get_unit_ext(seraph);
+					if (!seraph_ext->timers[TimerObservanceOverlay]) {
 						seraph->sprite->create_overlay(ImageId::SeraphRedOverlay);
-						seraphExt->timers[TimerObservanceOverlay] = 18;
+						seraph_ext->timers[TimerObservanceOverlay] = 18;
 					}
 				}
 			}
@@ -2670,12 +2670,6 @@ namespace hooks {
 		if (unit_ext->values[ValueDeconstruction] && unit_ext->timers[TimerDeconstruction] <= 1) {
 			unit_ext->values[ValueDeconstruction] = 0;
 			unit->sprite->remove_overlay(ImageId::DeconstructionSmall + scbw::get_overlay_offset(unit->id));
-		}
-
-		// Patriarch - Astral Rule
-		if (unit_ext->timers[TimerPatriarchAstralRule] == 1) {
-			scbw::astral_blessing_proc(unit, unit_ext->values[ValuePatriarchAstralRulePlayer], WeaponId::PatriarchIronhandWeaver);
-			unit_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
 		}
 
 		// Harakan - Apollyoid Adhesive
