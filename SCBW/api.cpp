@@ -2435,8 +2435,8 @@ namespace scbw {
 		bullet->attack_target.pt   = target;
 		bullet->move_target.unit   = 0;
 		bullet->move_target.pt     = target;
-		bullet->targetPosition     = target;
-		bullet->targetPosition2    = target;
+		bullet->target_position     = target;
+		bullet->target_position2    = target;
 	}
 
 	void set_bullet_target(Bullet* bullet, Unit* target) {
@@ -2444,8 +2444,8 @@ namespace scbw {
 		bullet->attack_target.pt   = target->position;
 		bullet->move_target.unit   = target;
 		bullet->move_target.pt     = target->position;
-		bullet->targetPosition     = target->position;
-		bullet->targetPosition2    = target->position;
+		bullet->target_position     = target->position;
+		bullet->target_position2    = target->position;
 	}
 
 	void set_bullet_target(Bullet* bullet, Target target) {
@@ -3142,7 +3142,7 @@ namespace scbw {
 		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 	}
 
-	Unit* revive_corpse(Thingy* corpse, u32 player, bool no_corpse) {
+	Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		if (!can_consume_corpse(corpse)) {
 			return false;
 		}
@@ -3178,10 +3178,7 @@ namespace scbw {
 			unit->set_hitpoints(unit->get_max_hp_raw() / 2);
 			unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 			helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-
-			if (no_corpse) {
-				unit_ext->values[ValueNoCorpse] = true;
-			}
+			unit_ext->values[ValueNoCorpse] = true;
 		}
 		return unit;
 	}

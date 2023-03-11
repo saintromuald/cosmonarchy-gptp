@@ -713,7 +713,7 @@ namespace hooks {
 					} else if (distance <= weapons_dat::medium_splash_radius[bullet->weapon_id]) {
 						divisor = 2;
 					}
-					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->currentDirection, divisor);
+					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->current_direction, divisor);
 				}
 			}
 		}
@@ -966,8 +966,8 @@ namespace hooks {
 						} else {
 							bullet->move_target.unit = bullet->attack_target.unit;
 							if (bullet->move_target.unit) {
-								bullet->targetPosition = bullet->move_target.unit->position;
-								bullet->targetPosition2 = bullet->move_target.unit->position;
+								bullet->target_position = bullet->move_target.unit->position;
+								bullet->target_position2 = bullet->move_target.unit->position;
 							}
 						}
 					} break;
@@ -1459,7 +1459,7 @@ namespace hooks {
 			}
 			case WeaponBehavior::AttackNearbyArea:
 			{
-				bullet->cyclicMissileIndex = parent->offset_index_3_by_3;
+				bullet->cyclic_missile_index = parent->offset_index_3_by_3;
 				bullet->attack_target.pt.x -= (s16)g_attack_curve[parent->offset_index_3_by_3].x;
 				bullet->attack_target.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
