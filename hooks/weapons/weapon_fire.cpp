@@ -170,7 +170,9 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		if (unit_filter(order_target)) {
 			for (u32 i = 0; i < factor; i++) {
 				Bullet* bullet = fire_bullet(attacker, weapon_id, order_target, weapon_offsets, apply_cooldown);
-				process_fire_multiple_bullet(bullet);
+				if (bullet) {
+					process_fire_multiple_bullet(bullet);
+				}
 			}
 			units_fired.insert(order_target);
 		}
@@ -203,7 +205,9 @@ bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 flags, bo
 		attacker->order_target.unit = new_target;
 		for (u32 i = 0; i < factor; i++) {
 			Bullet* bullet = fire_bullet(attacker, weapon_id, new_target, weapon_offsets, apply_cooldown);
-			process_fire_multiple_bullet(bullet);
+			if (bullet) {
+				process_fire_multiple_bullet(bullet);
+			}
 		}
 		units_fired.insert(new_target);
 	}
