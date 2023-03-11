@@ -2444,8 +2444,8 @@ namespace scbw {
 		bullet->attack_target.pt   = target->position;
 		bullet->move_target.unit   = target;
 		bullet->move_target.pt     = target->position;
-		bullet->target_position     = target->position;
-		bullet->target_position_2    = target->position;
+		bullet->target_position    = target->position;
+		bullet->target_position_2  = target->position;
 	}
 
 	void set_bullet_target(Bullet* bullet, Target target) {
