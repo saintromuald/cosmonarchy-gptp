@@ -7,10 +7,10 @@ namespace AI
 	{
 		s32 bounds = 32 * 32;
 		return scbw::UnitFinder::get_nearest_target(
-			caster->get_x() - bounds,
-			caster->get_y() - bounds,
-			caster->get_x() + bounds,
-			caster->get_y() + bounds,
+			caster->position.x - bounds,
+			caster->position.y - bounds,
+			caster->position.x + bounds,
+			caster->position.y + bounds,
 			caster,
 			[&](Unit* target)
 		{
