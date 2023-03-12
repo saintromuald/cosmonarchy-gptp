@@ -2436,7 +2436,7 @@ namespace scbw {
 		bullet->move_target.unit   = 0;
 		bullet->move_target.pt     = target;
 		bullet->target_position    = target;
-		bullet->target_position2   = target;
+		bullet->target_position_2   = target;
 	}
 
 	void set_bullet_target(Bullet* bullet, Unit* target) {
@@ -2445,7 +2445,7 @@ namespace scbw {
 		bullet->move_target.unit   = target;
 		bullet->move_target.pt     = target->position;
 		bullet->target_position     = target->position;
-		bullet->target_position2    = target->position;
+		bullet->target_position_2    = target->position;
 	}
 
 	void set_bullet_target(Bullet* bullet, Target target) {
@@ -2458,7 +2458,7 @@ namespace scbw {
 
 	void set_bullet_direction(Bullet* bullet, Point16 target) {
 		u32 direction = helper::get_direction_from_points(bullet->position, target);
-		bullet->direction1 = direction;
+		bullet->direction_1 = direction;
 		bullet->direction2 = direction;
 		for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
 			helper::set_image_direction(image, direction);
