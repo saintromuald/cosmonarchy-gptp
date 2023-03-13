@@ -16,8 +16,7 @@ namespace hooks
 		Unit* active_unit = *g_active_portrait_unit;
 		u32 index = 0;
 
-		if (!(active_unit->status & UnitStatus::IsHallucination)
-			|| (!*g_is_in_replay && active_unit->player != *g_local_nation_id))
+		if (!(active_unit->status & UnitStatus::IsHallucination) || (!*g_is_in_replay && active_unit->player != *g_local_nation_id))
 		{
 			bool no_air_weapon_display;
 			u32 air_weapon;
@@ -34,16 +33,15 @@ namespace hooks
 				helper::stats_shield_level(dialog, index);
 				index++;
 			}
-			if (active_unit->id != UnitId::ZergLakizilisk
-				|| active_unit->status & UnitStatus::Burrowed)
+			if (active_unit->id != UnitId::ZergLakizilisk || active_unit->status & UnitStatus::Burrowed)
 			{
 				UnitExt* unit_ext = get_unit_ext(active_unit);
 				bool no_ground_weapon_display = false;
 				u32 ground_weapon;
 				u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
 				if (active_unit->id == UnitId::TerranMadrigal
-					&& unit_ext->values[ValueMadrigalTempoDown]
-					&& ground_weapon_main_unit == WeaponId::MadrigalFuriaMissiles)
+				&&  unit_ext->values[ValueMadrigalTempoDown]
+				&&  ground_weapon_main_unit == WeaponId::MadrigalFuriaMissiles)
 				{
 					ground_weapon_main_unit = WeaponId::MadrigalImperiosoMissiles;
 				}

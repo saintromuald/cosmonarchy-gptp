@@ -2509,7 +2509,7 @@ namespace scbw {
 			case UnitId::ProtossPylon:
 			case UnitId::ProtossWarden:
 			case UnitId::ProtossMatrix:
-			case UnitId::ZergCagrantColony:
+		//	case UnitId::ZergCagrantColony: // Disabled to prevent spamming. -Pr0nogo
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergLarvoskColony:
