@@ -392,7 +392,8 @@ namespace hooks {
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueSundogLaunchPos;
-						offsets.count = 3;
+						offsets.count = 4;
+						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
@@ -600,8 +601,8 @@ namespace hooks {
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
+						// Tertiary Eyes - Siren
 						u32 count = 0;
-
 						s32 radius = 3 * 32;
 						scbw::UnitFinder(
 							unit->position.x - radius,
@@ -616,14 +617,11 @@ namespace hooks {
 							{
 								return;
 							}
-
 							count += 1;
 						});
 						if (count) {
 							helper::play_sound_from_unit(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
 						}
-
-						// Tertiary Eyes - Siren
 						fire_multiple(unit, weapon_id, 1 + count, FilterEnemy | FilterFrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:

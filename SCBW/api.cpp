@@ -3182,4 +3182,10 @@ namespace scbw {
 		}
 		return unit;
 	}
+
+	bool unit_id_is_power_generator(u32 unit_id)
+	{
+		return unit_id == UnitId::ProtossPylon
+		||	   unit_id == UnitId::ProtossCrucible;
+	}
 }
