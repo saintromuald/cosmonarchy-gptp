@@ -202,7 +202,7 @@ namespace hooks
 					}
 					else
 					{
-						speed * 1.3;
+						speed * 1.2;
 					}
 				}
 			} break;
@@ -254,13 +254,13 @@ namespace hooks
 			case UnitId::ProtossZealot:
 			case UnitId::ProtossSycophant:
 			case UnitId::ProtossManifold:
+			case UnitId::ZergZethrokor:
 			{
 				speed *= 1.25;
 			} break;
 			case UnitId::ProtossAmaranth:
-			case UnitId::ZergZethrokor:
 			{
-				speed *= 1.3;
+				speed *= 1.4;
 			} break;
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ProtossVagrantShade:
