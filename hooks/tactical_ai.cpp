@@ -284,6 +284,8 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		    || units_dat::group_flags[target->id].is_factory
 		    || scbw::unit_id_is_tech(target->id)) {
 		cost -= 25;
+	} else if (target->id == UnitId::ProtossCrucible) {
+		cost -= 15;
 	}
 
 	{

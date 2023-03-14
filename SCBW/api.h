@@ -747,4 +747,5 @@ namespace scbw
 	bool can_consume_corpse(Thingy* corpse);
 	void consume_corpse(Thingy* corpse);
 	Unit* reclaim_corpse(Thingy* corpse, u32 player);
+	bool unit_id_is_power_generator(u32 unit_id);
 }

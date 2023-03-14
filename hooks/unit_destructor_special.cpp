@@ -166,6 +166,7 @@ void unit_destructor_special_cases(Unit* unit) {
 			}
 		} break;
 		case UnitId::ProtossPylon:
+		case UnitId::ProtossCrucible:
 		{
 			// code from hooks::remove_psi_field(Unit* unit)
 			// copied because the content is hardcoded here

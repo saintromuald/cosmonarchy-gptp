@@ -2509,7 +2509,7 @@ namespace scbw {
 			case UnitId::ProtossPylon:
 			case UnitId::ProtossWarden:
 			case UnitId::ProtossMatrix:
-			case UnitId::ZergCagrantColony:
+		//	case UnitId::ZergCagrantColony: // Disabled to prevent spamming. -Pr0nogo
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergLarvoskColony:
@@ -3181,5 +3181,11 @@ namespace scbw {
 			unit_ext->values[ValueNoCorpse] = true;
 		}
 		return unit;
+	}
+
+	bool unit_id_is_power_generator(u32 unit_id)
+	{
+		return unit_id == UnitId::ProtossPylon
+		||	   unit_id == UnitId::ProtossCrucible;
 	}
 }
