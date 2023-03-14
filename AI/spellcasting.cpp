@@ -129,6 +129,9 @@ namespace AI
 								break;
 							}
 						}
+						if (!target) {
+							return false;
+						}
 
 						if (unit->main_order_id == OrderId::CastParasite && unit->order_target.pt == target->sprite->position) {
 							return false;

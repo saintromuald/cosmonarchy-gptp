@@ -105,10 +105,10 @@ static void index_search_square(EntryArray* entry_array, SearchIndex* index, Poi
 
 static void index_search_radial(EntryArray* entry_array, SearchIndex* index, Point16 center, u32 radius) {
 	Box32 dims = {
-		center.x - radius,
-		center.y - radius,
-		center.x + radius,
-		center.y + radius
+		center.x - (s32)radius,
+		center.y - (s32)radius,
+		center.x + (s32)radius,
+		center.y + (s32)radius
 	};
 	dims = scbw::clamp_box32(dims);
 
@@ -200,7 +200,7 @@ void bullet_search_radial(EntryArray* entry_array, Point16 center, u32 radius) {
 static void filter_corpse_array(EntryArray* entry_array) {
 	for (u32 i = 0; i < entry_array->count; ++i) {
 		Thingy* corpse = entry_array->corpses[i];
-		if (corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) {
+		if (corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) { // corpse->sprite and corpse->id typically doesn't change during a tick
 			entry_array_remove(entry_array, i--);
 		}
 	}
@@ -334,7 +334,7 @@ void update_search_index() {
 
 	// Add corpses
 	for (Thingy* thingy = *g_first_thingy; thingy; thingy = thingy->next) {
-		if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id)) {
+		if (thingy->sprite && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath) && scbw::sprite_id_is_corpse(thingy->sprite->id)) {
 			search_index_add(&corpse_index, thingy->sprite->position, thingy);
 		}
 	}

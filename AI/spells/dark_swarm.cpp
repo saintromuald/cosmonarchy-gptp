@@ -166,10 +166,10 @@ namespace AI
 		}
 		// Based on AI_BestUnit @ 0x004E8740 and canHitUnit @ 0x00441870
 		Unit* result = scbw::UnitFinder::get_nearest_target(
-			caster->get_x() - bounds,
-			caster->get_y() - bounds,
-			caster->get_x() + bounds,
-			caster->get_y() + bounds,
+			caster->position.x - bounds,
+			caster->position.y - bounds,
+			caster->position.x + bounds,
+			caster->position.y + bounds,
 			caster,
 			[&](Unit* target)
 		{
