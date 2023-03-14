@@ -200,7 +200,7 @@ void bullet_search_radial(EntryArray* entry_array, Point16 center, u32 radius) {
 static void filter_corpse_array(EntryArray* entry_array) {
 	for (u32 i = 0; i < entry_array->count; ++i) {
 		Thingy* corpse = entry_array->corpses[i];
-		if (corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) { // corpse->sprite and corpse->id typically doesn't change during a tick
+		if (corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) { // corpse->sprite and corpse->sprite->id typically doesn't change during a tick
 			entry_array_remove(entry_array, i--);
 		}
 	}
