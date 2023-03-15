@@ -817,7 +817,7 @@ namespace hooks
 		}
 
 		helper::init_building(unit, 1);
-		unit->remaining_build_time = units_dat::time_cost[unit->main_order_id];
+		unit->remaining_build_time = units_dat::time_cost[unit_id];
 		unit->user_action_flags |= 1;
 		if (unit->main_order_id) {
 			for (Order* order = unit->order_queue_tail; order; order = unit->order_queue_tail) {
