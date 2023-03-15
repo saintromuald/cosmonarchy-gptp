@@ -780,72 +780,57 @@ namespace hooks
 	}
 
 	// Hooked to troubleshoot multi-building select queuing building mutation orders. -Pr0nogo
-	void orders_morph2(Unit* unit) // 0045D0D0
-	{
+	void orders_morph2(Unit* unit) { // 0045D0D0
 		u32 player = unit->player;
-		u32 queue_id = unit->build_queue[unit->build_queue_slot];
-		g_ai_minerals_reserve[player] = units_dat::mineral_cost[queue_id];
-		g_ai_vespene_reserve[player] = units_dat::vespene_cost[queue_id];
-		if (!helper::has_supplies_for_unit(player, queue_id, 1))
-		{
-			helper::order(0, unit, units_dat::return_to_idle_order[unit->id], {}, 0, UnitId::None);
+		u32 unit_id = unit->build_queue[unit->build_queue_slot];
+		g_ai_minerals_reserve[player] = units_dat::mineral_cost[unit_id];
+		g_ai_vespene_reserve[player] = units_dat::vespene_cost[unit_id];
+		if (!helper::has_supplies_for_unit(player, unit_id, 1)) {
+			unit->build_queue[unit->build_queue_slot] = UnitId::None;
+			unit->order_to_idle();
 			return;
 		}
+		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
+			u32 err_string_id = 850;
+			u32 err_reason = *g_console_index + 0x93;
+			helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
 
-		s32 err_string_id;
-		s32 err_reason;
-		if (g_game_minerals[player] < g_ai_minerals_reserve[player])
-		{
-			err_string_id = 850;
-			err_reason = *(s32*)g_console_index + 0x93;
-			helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
-			helper::order(0, unit, units_dat::return_to_idle_order[unit->id], {}, 0, UnitId::None);
+			unit->build_queue[unit->build_queue_slot] = UnitId::None;
+			unit->order_to_idle();
 			return;
 		}
-		if (g_game_vespene[player] < g_ai_vespene_reserve[player])
-		{
-			err_string_id = 851;
-			err_reason = *(s32*)g_console_index + 0x96;
+		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
+			u32 err_string_id = 851;
+			u32 err_reason = *g_console_index + 0x96;
 			helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
-			helper::order(0, unit, units_dat::return_to_idle_order[unit->id], {}, 0, UnitId::None);
+
+			unit->build_queue[unit->build_queue_slot] = UnitId::None;
+			unit->order_to_idle();
 			return;
 		}
 
 		g_game_minerals[player] -= g_ai_minerals_reserve[player];
 		g_game_vespene[player] -= g_ai_vespene_reserve[player];
-		unit->status = unit->status & 0xFFFFFFFE;
-		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building)
-		{
-			unit->current_buttonset = 236;
+		unit->status = unit->status & ~UnitStatus::Completed;
+		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building) {
+			unit->current_buttonset = UnitId::Buttons_HatcheryMorphing;
 		}
 
 		helper::init_building(unit, 1);
-		u32 order_id = unit->main_order_id;
-		unit->remaining_build_time = units_dat::time_cost[queue_id];
-		unit->user_action_flags |= 1u;
-		if (order_id)
-		{
-			while (1)
-			{
-				Order* order_tail = unit->order_queue_tail;
-				if (!order_tail)
-				{
+		unit->remaining_build_time = units_dat::time_cost[unit->main_order_id];
+		unit->user_action_flags |= 1;
+		if (unit->main_order_id) {
+			for (Order* order = unit->order_queue_tail; order; order = unit->order_queue_tail) {
+				if (!orders_dat::can_be_interrupted[order->order_id] && order->order_id != OrderId::ZergBuildSelf) {
 					break;
 				}
-				u32 tail_order_id = order_tail->order_id;
-				if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::ZergBuildSelf)
-				{
-					break;
-				}
-				helper::remove_order_from_unit_queue(order_tail, unit);
+				helper::remove_order_from_unit_queue(order, unit);
 			}
 			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit, UnitId::None, {}, 0);
-			unit = unit;
 		}
 		helper::orders_nothing_2(unit);
-		for (Image* unit_image = unit->sprite->images.head; unit_image; unit_image = unit_image->link.next)
-		{
-			play_image_iscript(unit_image, 13);
+		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+			play_image_iscript(image, IscriptAnimation::SpecialState1);
 		}
 		scbw::refresh_console();
 	}
