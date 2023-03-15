@@ -155,7 +155,7 @@ namespace hooks
 					g_ai_vespene_reserve[unit->player] = units_dat::vespene_cost[target_unit_id];
 					if (helper::has_supplies_for_unit(unit->player, target_unit_id, 1))
 					{
-						u8 console_index_var = *console_index; // aids
+						u8 console_index_var = *g_console_index; // aids
 						if (g_game_minerals[unit->player] >= g_ai_minerals_reserve[unit->player])
 						{
 							if (g_game_vespene[unit->player] >= g_ai_vespene_reserve[unit->player])

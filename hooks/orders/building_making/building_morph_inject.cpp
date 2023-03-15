@@ -448,6 +448,27 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) orders_morph2_wrapper() // 0045D0D0
+	{
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::orders_morph2(unit);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 extern const u32 Func_IsRemorphingBuilding;
@@ -475,5 +496,6 @@ namespace hooks
 		jump_patch(begin_gas_building_wrapper,											0x004678A0, 0);
 	//	jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
 	//	jump_patch(orders_drone_land_wrapper,											0x004E9AA0, 1);
+		jump_patch(orders_morph2_wrapper,												0x0045D0D0, 2);
 	}
 }

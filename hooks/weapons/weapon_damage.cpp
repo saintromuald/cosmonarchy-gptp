@@ -1066,7 +1066,7 @@ namespace hooks
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
 						*notify_cooldown = 100;
 
-						u32 sound_id = *console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
+						u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
 						if (!(unit->status & UnitStatus::GroundedBuilding)) {
 							u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 							u32 sound_last = units_dat::sound_annoyed_last[unit->id];

@@ -269,11 +269,11 @@ SCBW_DATA(u32*,			selection_sound_counter,	0x00640548);
 SCBW_DATA(u32*,			g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_ui
-SCBW_DATA(u8*,			console_index,				0x0057F1E2);
-SCBW_DATA(u16*,			current_music_id,			0x0057F1DE);
-SCBW_DATA(char*,		campaign_first_mission_bw,	0x005122C0);
-SCBW_DATA(char*,		campaign_first_mission,		0x005122BC);
-SCBW_DATA(u32*,			console_race_specific,		0x0051A3B4);
+SCBW_DATA(u8*,			g_console_index,				0x0057F1E2);
+SCBW_DATA(u16*,			g_current_music_id,				0x0057F1DE);
+SCBW_DATA(char*,		g_campaign_first_mission_bw,	0x005122C0);
+SCBW_DATA(char*,		g_campaign_first_mission,		0x005122BC);
+SCBW_DATA(u32*,			g_console_race_specific,		0x0051A3B4);
 
 // For load_game_create
 SCBW_DATA(u32*,			is_host,					0x00596888);

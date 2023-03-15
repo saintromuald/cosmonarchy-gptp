@@ -536,11 +536,11 @@ namespace hooks
 						*/
 					} else if (!errored) {
 						errored = true;
-						helper::display_error_message_id_with_sfx(player, 851, console_index[150]);
+						helper::display_error_message_id_with_sfx(player, 851, g_console_index[150]);
 					}
 				} else if (!errored) {
 					errored = true;
-					helper::display_error_message_id_with_sfx(player, 850, console_index[147]);
+					helper::display_error_message_id_with_sfx(player, 850, g_console_index[147]);
 				}
 			}
 		}
@@ -634,13 +634,13 @@ namespace hooks
 			g_ai_vespene_reserve[player] = units_dat::vespene_cost[addon_id];
 			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
 			{
-				helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
+				helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
 				helper::to_idle(unit);
 				return;
 			}
 			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
 			{
-				helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
+				helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
 				helper::to_idle(unit);
 				return;
 			}

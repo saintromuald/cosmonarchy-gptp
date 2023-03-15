@@ -90,13 +90,13 @@ namespace hooks
 									}
 									else
 									{
-										console_var = console_index;
+										console_var = g_console_index;
 										helper::display_error_message_id_with_sfx((u8)player, 851, *console_var + 150);
 									}
 								}
 								else
 								{
-									console_var = console_index;
+									console_var = g_console_index;
 									helper::display_error_message_id_with_sfx((u8)player, 850, *console_var + 147);
 								}
 							}
@@ -1152,11 +1152,11 @@ namespace hooks
 		g_ai_supply_reserved[player] = 0;
 		// Originally also checked supplies.
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
+			helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
 			return false;
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
+			helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
 			return false;
 		}
 		if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player]

@@ -195,11 +195,11 @@ namespace hooks
 
 		// Originally had code checking for supplies.
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 850, (s32)*console_index + 147); // Not enough minerals...mine more minerals.<0>
+			helper::display_error_message_id_with_sfx(player, 850, (s32)*g_console_index + 147); // Not enough minerals...mine more minerals.<0>
 			return 0;
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 851, (s32)*console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
+			helper::display_error_message_id_with_sfx(player, 851, (s32)*g_console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
 			return 0;
 		}
 		if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {

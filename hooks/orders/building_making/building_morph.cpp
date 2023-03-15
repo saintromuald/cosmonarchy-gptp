@@ -552,7 +552,7 @@ namespace hooks
 			// @Todo: Tidy this into not being inlined
 			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
 			{
-				helper::display_error_message_id_with_sfx(player, 850, *console_index + 147);
+				helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
 				helper::set_shadow_y(builder->sprite, 7);
 				helper::refresh_sprite_data(builder->sprite);
 				helper::order_immediate(builder, OrderId::ResetCollision1);
@@ -560,7 +560,7 @@ namespace hooks
 			}
 			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
 			{
-				helper::display_error_message_id_with_sfx(player, 851, *console_index + 150);
+				helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
 				helper::set_shadow_y(builder->sprite, 7);
 				helper::refresh_sprite_data(builder->sprite);
 				helper::order_immediate(builder, OrderId::ResetCollision1);
@@ -777,5 +777,76 @@ namespace hooks
 				unit->main_order_state = 1;
 			}
 		}
+	}
+
+	// Hooked to troubleshoot multi-building select queuing building mutation orders. -Pr0nogo
+	void orders_morph2(Unit* unit) // 0045D0D0
+	{
+		u32 player = unit->player;
+		u32 queue_id = unit->build_queue[unit->build_queue_slot];
+		g_ai_minerals_reserve[player] = units_dat::mineral_cost[queue_id];
+		g_ai_vespene_reserve[player] = units_dat::vespene_cost[queue_id];
+		if (!helper::has_supplies_for_unit(player, queue_id, 1))
+		{
+			helper::order(0, unit, units_dat::return_to_idle_order[unit->id], {}, 0, UnitId::None);
+			return;
+		}
+
+		s32 err_string_id;
+		s32 err_reason;
+		if (g_game_minerals[player] < g_ai_minerals_reserve[player])
+		{
+			err_string_id = 850;
+			err_reason = *(s32*)g_console_index + 0x93;
+			helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
+			helper::order(0, unit, units_dat::return_to_idle_order[unit->id], {}, 0, UnitId::None);
+			return;
+		}
+		if (g_game_vespene[player] < g_ai_vespene_reserve[player])
+		{
+			err_string_id = 851;
+			err_reason = *(s32*)g_console_index + 0x96;
+			helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
+			helper::order(0, unit, units_dat::return_to_idle_order[unit->id], {}, 0, UnitId::None);
+			return;
+		}
+
+		g_game_minerals[player] -= g_ai_minerals_reserve[player];
+		g_game_vespene[player] -= g_ai_vespene_reserve[player];
+		unit->status = unit->status & 0xFFFFFFFE;
+		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building)
+		{
+			unit->current_buttonset = 236;
+		}
+
+		helper::init_building(unit, 1);
+		u32 order_id = unit->main_order_id;
+		unit->remaining_build_time = units_dat::time_cost[queue_id];
+		unit->user_action_flags |= 1u;
+		if (order_id)
+		{
+			while (1)
+			{
+				Order* order_tail = unit->order_queue_tail;
+				if (!order_tail)
+				{
+					break;
+				}
+				u32 tail_order_id = order_tail->order_id;
+				if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::ZergBuildSelf)
+				{
+					break;
+				}
+				helper::remove_order_from_unit_queue(order_tail, unit);
+			}
+			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit, UnitId::None, {}, 0);
+			unit = unit;
+		}
+		helper::orders_nothing_2(unit);
+		for (Image* unit_image = unit->sprite->images.head; unit_image; unit_image = unit_image->link.next)
+		{
+			play_image_iscript(unit_image, 13);
+		}
+		scbw::refresh_console();
 	}
 }

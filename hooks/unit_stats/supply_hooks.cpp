@@ -448,7 +448,7 @@ namespace hooks
 
 			helper::show_supply_info(dialog_var, g_player_table[active_player].race + 4, workers, men);
 			dialog_var = dialog_var->next;
-			helper::print_stat_res_info(dialog_var, *console_index + 1, unknown_68C22C, g_game_vespene[active_player], FALSE);
+			helper::print_stat_res_info(dialog_var, *g_console_index + 1, unknown_68C22C, g_game_vespene[active_player], FALSE);
 			dialog_var = dialog_var->next;
 			helper::print_stat_res_info(dialog_var, 0, unknown_68C230, (u32)g_game_minerals[active_player], FALSE);
 			dialog_var = dialog_var->next;

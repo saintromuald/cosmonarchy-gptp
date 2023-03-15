@@ -751,7 +751,7 @@ namespace hooks
 			if (value) {
 				u8 stat_icon = grp_stat_res_icon_mapping[i];
 				if (stat_icon == 1) {
-					stat_icon = *console_index + 1;
+					stat_icon = *g_console_index + 1;
 				}
 				if (stat_icon >= icons_grp->frame_count) {
 					stat_icon = 0;
