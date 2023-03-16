@@ -193,8 +193,8 @@ void update_trigger_system(bool in_game) {
 }
 
 b32 parse_comment_condition(TriggerAction* action) {
-	bool is_local_player = *g_current_trigger_player_id == *g_local_nation_id;
 	u32 trigger_player = *g_current_trigger_player_id;
+	bool is_local_player = trigger_player == *g_local_nation_id;
 	Parser parser = {};
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
@@ -401,8 +401,8 @@ b32 parse_comment_condition(TriggerAction* action) {
 }
 
 b32 __fastcall parse_comment_action(TriggerAction* action) {
-	bool is_local_player = *g_current_trigger_player_id == *g_local_nation_id;
 	u32 trigger_player = *g_current_trigger_player_id;
+	bool is_local_player = trigger_player == *g_local_nation_id;
 	Parser parser = {};
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
@@ -494,7 +494,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "recolor_loop_clear") && is_local_player) {
 			memset(&recolor_system.recolor_list, 0, sizeof(recolor_system.recolor_list));
-		} else if (parser_eq(&parser, "objective_set")) {
+		} else if (parser_eq(&parser, "objective_set") && is_local_player) {
 			s32 key = parser_get_s32(&parser);
 			Token text = parser_get_string(&parser);
 
