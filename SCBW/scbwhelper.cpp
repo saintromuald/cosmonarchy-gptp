@@ -13427,4 +13427,33 @@ namespace helper {
 		}
 		return result;
 	}
+
+	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2)
+	{
+		static b32 result;
+		const u32 func_address = 0x004AAFA0;
+		__asm {
+			PUSHAD
+			MOV DL, game_type
+			MOV CX, game_type_param
+			MOV BL, game_type_2
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Player* randomize_player_slot()
+	{
+		static Player* result;
+		const u32 func_address = 0x004A9A30;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

@@ -45,6 +45,24 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) init_singleplayer_custom_wrapper() // 004AD850
+	{
+		static Player* result;
+		static BinDlg* dialog;
+		__asm
+		{
+			MOV dialog, EAX
+			PUSHAD
+		}
+		result = hooks::init_singleplayer_custom(dialog);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -52,7 +70,8 @@ namespace hooks
 
 	void inject_lobby_hooks()
 	{
-		jump_patch(init_game_wrapper,	0x004EE110, 0);
-		jump_patch(start_game_wrapper,	0x00472060, 4);
+		jump_patch(init_game_wrapper,					0x004EE110, 0);
+		jump_patch(start_game_wrapper,					0x00472060, 4);
+	//	jump_patch(init_singleplayer_custom_wrapper,	0x004AD850, 0);
 	}
 }

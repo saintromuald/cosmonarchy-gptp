@@ -1565,4 +1565,7 @@ namespace helper {
 	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player);												// 004CDE70
 
 	char create_dashed_selection(u32 player, Sprite* sprite, char color);																	// 00499A10
+
+	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2);																// 004AAFA0
+	Player* randomize_player_slot();																										// 004A9A30
 }

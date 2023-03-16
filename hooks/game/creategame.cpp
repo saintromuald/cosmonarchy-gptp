@@ -27,17 +27,17 @@ namespace hooks
 
 		if (g_multiplayer_mode)
 			return 0;
-		if (custom_singleplayer[0])
+		if (g_custom_singleplayer[0])
 		{
 			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
 			{
 				switchComputerToOpen();
-				g_player_table[*g_local_nation_id].race = selected_singleplayer_race[0];
+				g_player_table[*g_local_nation_id].race = g_selected_singleplayer_race[0];
 				v1 = 0;
 				do
 				{
-					if (selected_singleplayer_race[v1 + 1] != 7) // RACE_Inactive
-						set_last_open_slot_to_computer(selected_singleplayer_race[v1 + 1]);
+					if (g_selected_singleplayer_race[v1 + 1] != 7) // RACE_Inactive
+						set_last_open_slot_to_computer(g_selected_singleplayer_race[v1 + 1]);
 					++v1;
 				} while (v1 < 8);
 			}

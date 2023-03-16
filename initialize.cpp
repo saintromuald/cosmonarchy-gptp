@@ -435,9 +435,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	memory_patch(0x004F6938 + 4, patch_last_unit, 1);
 
 	nops(0x0049EEBD, 0xa); // disable beacon collision hardcode
-//	u8 p8a = { 0x8a };
-
-	// This code is a replacement for the code above
 	u8 p8a = {0x8a};
 	u8 ff = {0xff};
 	memory_patch(0x00497764 + 3, &p8a, sizeof(u8));

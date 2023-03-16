@@ -204,10 +204,10 @@ SCBW_DATA(StringMap_w*,	single_type_select,			0x0051AAA8);
 SCBW_DATA(u16*,			g_network_table,			0x006D1220);
 
 // For init_singleplayer_custom
-SCBW_DATA(u32*,			selected_game_type,			0x0059BA64);
-SCBW_DATA(u16*,			selected_game_type_param,	0x0059BA5C);
-SCBW_DATA(char*,		selected_singleplayer_race,	0x0057F266);
-SCBW_DATA(char*,		custom_singleplayer,		0x0057F1E3);
+SCBW_DATA(u32*,			g_selected_game_type,			0x0059BA64);
+SCBW_DATA(u16*,			g_selected_game_type_param,		0x0059BA5C);
+SCBW_DATA(char*,		g_selected_singleplayer_race,	0x0057F266);
+SCBW_DATA(char*,		g_custom_singleplayer,			0x0057F1E3);
 
 // For Lobotomy Mine
 SCBW_DATA(char**,		g_status_screen_info_button_unk,	0x00519F40);

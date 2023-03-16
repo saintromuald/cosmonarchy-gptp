@@ -619,14 +619,14 @@ struct BinDlg
 	union {
 		struct
 		{
-			/*0x46*/  Point16	textPos;
+			/*0x46*/  Point16	text_pos;
 			/*0x4A*/  u16		response_area_width;
 			/*0x4C*/  u16		response_area_height;
 			/*0x4E*/  unk_t     unk_4e[8];
-		} initialVersion0x46;
+		} initial_version_0x46;
 		struct
 		{
-			/*0x46*/  Point16	textPos;				// unverified filler
+			/*0x46*/  Point16	text_pos;				// unverified filler
 			/*0x4A*/  u32		unk4a;
 			/*0x4E*/  unk_t     unk_4e[8];				// unverified filler
 		} onInitDialog0x46;
