@@ -174,17 +174,24 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 			}
 		}
 	}
-	
-	if (center_on_target && !order_target) {
-		return false;
-	}
-
-	Point16 search_center = center_on_target ? order_target->position : unit->position;
-	Point16 sort_center   = order_target     ? order_target->position : unit->position;
 
 	EntryArray targets = {};
-	unit_search_radial(&targets, search_center, attack_range);
+	if (center_on_target) {
+		if (!order_target) {
+			return fired;
+		}
+		unit_search_radial(&targets, order_target->position, attack_range);
+	} else {
+		Box32 area = {
+			unit->get_left()   - attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
+			unit->get_top()    - attack_range - 8 * 32, // so we will just use an additional constant offset here.
+			unit->get_right()  + attack_range + 8 * 32, // This is not really meant to be a rect area, more like rect extended circle, just like normal weapons,
+			unit->get_bottom() + attack_range + 8 * 32,	// for both of those reasons we later check the min range between units -Veeq7
+		};
+		unit_search_rect(&targets, area);
+	}
 	unit_search_filter(&targets, unit, filters);
+	Point16 sort_center   = order_target ? order_target->position : unit->position;
 	unit_search_sort_by_distance(&targets, sort_center);
 
 	u32 count = targets.count;
@@ -197,7 +204,8 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		if (target == unit
 		||  target == order_target
 		||  scbw::is_allied_to(unit->player, target->player)
-		|| !unit->can_attack_target(target)) {
+		|| !unit->can_attack_target(target)
+		|| !unit->is_target_within_min_range(target, attack_range)) {
 			continue;
 		}
 
