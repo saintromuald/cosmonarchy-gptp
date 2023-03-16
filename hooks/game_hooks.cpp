@@ -2585,6 +2585,7 @@ namespace hooks {
 			unit->sprite->create_overlay(ImageId::ControlledDemolition);
 		}
 
+		// Start overlay fade
 		if (unit_ext->timers[TimerControlledDemolition] == 7) {
 			Image* overlay = unit->get_overlay(ImageId::ControlledDemolition);
 			overlay->play_iscript_animation(IscriptAnimation::Death);
@@ -2604,6 +2605,7 @@ namespace hooks {
 			unit->sprite->create_top_overlay(ImageId::EmergencyDetonation);
 		}
 
+		// Start overlay fade
 		if (unit_ext->timers[TimerEmergencyDetonation] == 7) {
 			Image* overlay = unit->get_overlay(ImageId::EmergencyDetonation);
 			overlay->play_iscript_animation(IscriptAnimation::Death);
@@ -2641,14 +2643,7 @@ namespace hooks {
 	//		unit->remove();
 	//	}
 
-		// Alaszileth - Dermal Accelerant - remove overlays
-		if (!unit_ext->timers[TimerAlaszilethRegenBoost]) {
-			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
-			if (unit->get_overlay(overlay)) {
-				unit->remove_overlay(overlay);
-			}
-		}
-
+		// Silly way of pathing workers to expansion site
 		if (unit_ext->values[ValueAI_WorkerChosenForExpansion] && unit->resource_type == ResourceType::None) {
 			unit_ext->values[ValueAI_WorkerChosenForExpansion] = false;
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
@@ -2658,12 +2653,12 @@ namespace hooks {
 		u32 blade_vortex = unit_ext->timers[TimerBladeVortex];
 		if (blade_vortex > 1 && !unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id))) {
 			unit->sprite->create_top_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
-		} else if (unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id)) && blade_vortex < 1) {
-			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
+		} else if (blade_vortex < 1) {
+			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall, ImageId::BladeVortexDebuffLarge);
 		}
 
 		// Magister - Stellar Enforcement - Handle overlay looping
-		if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] == 1) {
+		if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] <= 1) {
 			unit_ext->timers[TimerStellarEnforcementOverlay] = 30;
 			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
 		}
