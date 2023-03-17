@@ -580,7 +580,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		backward_pos.y -= hostile_vector.y;
 		backward_pos.x -= effect_vector.x;
 		backward_pos.y -= effect_vector.y;
-		backward_pos = scbw::get_normalized_vector(forward_pos);
+		backward_pos = scbw::get_normalized_vector(backward_pos);
 		backward_pos.x *= MoveRadius;
 		backward_pos.y *= MoveRadius;
 		backward_pos.x += unit->position.x;
@@ -593,7 +593,6 @@ static KitePositions get_kite_positions(Unit* unit) {
 static bool unit_could_kite(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool in_combat = unit_in_combat(unit, false);
-
 	if (unit->id == UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed) {
 		return false;
 	}
@@ -622,8 +621,7 @@ static bool unit_could_kite(Unit* unit) {
 
 static bool unit_can_kite(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueAI_KitingSignal] < 256
-		&& unit->id != UnitId::ProtossSolarion) {
+	if (unit_ext->values[ValueAI_KitingSignal] < 256 && unit->id != UnitId::ProtossSolarion) {
 		return false;
 	}
 	// ComputerReturn was patched away, still keeping the unreliable hardcode just in case
@@ -777,23 +775,23 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 			bool sync = false;
 			bool update_sync = false;
-			//if (unit->id == UnitId::ProtossSolarion) {
-			//	sync = true;
-			//} else if (unit_ext->timers[TimerAI_KitingSync]) {
-			//	sync = true;
-			//} else {
-			//	u32 signal_sum = 0;
-			//	local_group.for_each([&](Unit* local_unit) {
-			//		UnitExt* local_unit_ext = get_unit_ext(local_unit);
-			//		if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
-			//			signal_sum += 1;
-			//		}
-			//	});
-			//	if (signal_sum >= local_group.unitCount * 0.4) {
-			//		sync = true;
-			//		update_sync = true;
-			//	}
-			//}
+		//	if (unit->id == UnitId::ProtossSolarion) {
+		//		sync = true;
+		//	} else if (unit_ext->timers[TimerAI_KitingSync]) {
+		//		sync = true;
+		//	} else {
+		//		u32 signal_sum = 0;
+		//		local_group.for_each([&](Unit* local_unit) {
+		//			UnitExt* local_unit_ext = get_unit_ext(local_unit);
+		//			if (local_unit_ext->values[ValueAI_KitingSignal] >= 256) {
+		//				signal_sum += 1;
+		//			}
+		//		});
+		//		if (signal_sum >= local_group.unitCount * 0.4) {
+		//			sync = true;
+		//			update_sync = true;
+		//		}
+		//	}
 
 			// For now we test without sync
 			sync = true;
