@@ -2650,11 +2650,14 @@ namespace hooks {
 		}
 
 		// Legionnaire - Blade Vortex - Handle debuff overlay
-		u32 blade_vortex = unit_ext->timers[TimerBladeVortex];
-		if (blade_vortex > 1 && !unit->get_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id))) {
-			unit->sprite->create_top_overlay(ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id));
-		} else if (blade_vortex < 1) {
-			unit->sprite->remove_overlay(ImageId::BladeVortexDebuffSmall, ImageId::BladeVortexDebuffLarge);
+		{
+			u32 blade_vortex = unit_ext->timers[TimerBladeVortex];
+			u32 image_id = ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id);
+			if (blade_vortex > 1 && !unit->get_overlay(image_id)) {
+				unit->sprite->create_top_overlay(image_id);
+			} else if (blade_vortex <= 1 && unit->get_overlay(image_id)) {
+				unit->sprite->remove_overlay(image_id);
+			}
 		}
 
 		// Magister - Stellar Enforcement - Handle overlay looping

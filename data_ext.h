@@ -300,7 +300,6 @@ enum ExtTimerVectorId
 
 struct UnitExt
 {
-	bool					pause_timers;
 	u32						energy_regen_timer;
 	u32						shield_regen_timer;
 	u32						damage_taken_timer;
@@ -372,8 +371,7 @@ void update_ext_variables();
 UnitExt* get_unit_ext(Unit* unit);
 void reset_unit_ext(Unit* unit);
 
-void unit_death_start(Unit* unit);
-void unit_death_end(Unit* unit);
+void unit_death(Unit* unit);
 
 TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y);
 TileExt* get_tile_ext_at_coords(u32 x, u32 y);

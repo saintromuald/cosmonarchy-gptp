@@ -231,12 +231,6 @@ namespace hooks
 		// New AI defense logic -Veeq7
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
-		// Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
-		if (data.target && data.weapon_id == WeaponId::LegionnairePhaseSpear) {
-			UnitExt* target_ext = get_unit_ext(data.target);
-			target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
-		}
-
 		// Reduce shields
 		if (data.shield_reduce_amount && can_damage) {
 			data.target->shields -= data.shield_reduce_amount;
@@ -389,6 +383,9 @@ namespace hooks
 					target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
 					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 				}
+			} break;
+			case WeaponId::LegionnairePhaseSpear: {
+				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
 		}
 

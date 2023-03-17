@@ -393,7 +393,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
 	globals.unit_death(unit);
-	unit_death_start(unit);
+	unit_death(unit);
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
@@ -434,11 +434,6 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 				ThingyExt* thingy_ext = get_thingy_ext(thingy);
 				thingy_ext->original_player = unit->player;
 				thingy_ext->unit_id = unit->id;
-
-				UnitExt* unit_ext = get_unit_ext(unit);
-				// Can do interesting things with unit ext here,
-				// since unit ext deletion is delayed until death finishes,
-				// and timers during death are paused -Veeq7
 			}
 		}
 		thingy->sprite->elevation = elevation;
