@@ -30,7 +30,7 @@ struct Area {
 };
 
 struct PlayerBitset {
-	bool set[PlayerLimit];
+	bool set[FullPlayerLimit];
 };
 
 struct UnitIdBitset {

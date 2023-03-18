@@ -215,6 +215,9 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
+						if (event->source_player >= FullPlayerLimit || event->target_player >= FullPlayerLimit) {
+							continue;
+						}
 						if ((!source_players.set[event->source_player] || !source_unit_ids.set[event->source_unit_id] || !target_players.set[event->target_player] || !target_unit_ids.set[event->target_unit_id])
 						&&  (!source_players.set[event->target_player] || !source_unit_ids.set[event->target_unit_id] || !target_players.set[event->source_player] || !target_unit_ids.set[event->source_unit_id])) {
 							continue;
@@ -248,13 +251,13 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						if (!source_players.set[event->source_player]) {
+						if (event->source_player >= FullPlayerLimit || !source_players.set[event->source_player]) {
 							continue;
 						}
 						if (!source_unit_ids.set[event->source_unit_id]) {
 							continue;
 						}
-						if (!target_players.set[event->target_player]) {
+						if (event->target_player >= FullPlayerLimit || !target_players.set[event->target_player]) {
 							continue;
 						}
 						if (!target_unit_ids.set[event->target_unit_id]) {
@@ -291,7 +294,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						if (!players.set[event->target_player]) {
+						if (event->target_player >= FullPlayerLimit || !players.set[event->target_player]) {
 							continue;
 						}
 						if (!unit_ids.set[event->target_unit_id]) {
@@ -340,7 +343,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 						if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
 							continue;
 						}
-						if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+						if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
 							continue;
 						}
 						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
@@ -640,7 +643,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				sound_replacements[sound_replacements_count++] = sound_replacement;
 			}
 		// Bitset Local Only Triggers
-		} else if (parser_eq(&parser, "play_sound")) {
+		} else if (parser_eq(&parser, "play_sound") && is_local_player) {
 			Token path = parser_get_string(&parser);
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			Point16 position = parser_get_position(&parser);
