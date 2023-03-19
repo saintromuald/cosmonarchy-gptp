@@ -149,6 +149,9 @@ namespace hooks {
 		memory_patch(0x004EB20C, (u8)0xC);
 		memory_patch(0x004EB3AE, (u8)0xC);
 
+		// Added to prevent writes to index bitfield variable as a safety -Veeq7
+		memory_patch(0x004A03F2, (u8)0xF);
+
 		// update_unit_transport_data (0x00401EA0)
 		memory_patch(0x00401EF0, &new_unit_table);
 		memory_patch(0x00401F07, UnitLimit);
