@@ -323,7 +323,7 @@ namespace hooks
 				u32 loaded_index = 0;
 				if (cargo_index <= UnitLimit)
 				{
-					loaded_index = cargo_index | (cargo->target_order_special << 11);
+					loaded_index = cargo_index | (cargo->target_order_special << 12);
 				}
 				u32 i = 0;
 				if (units_dat::space_provided[cargo_transport->id])
@@ -393,7 +393,7 @@ namespace hooks
 						if (unit_reference->sprite)
 						{
 							if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
-								&& unit_reference->target_order_special == *index_2 >> 11)
+								&& unit_reference->target_order_special == *index_2 >> 12)
 							{
 								if (unit_reference->sprite)
 								{
@@ -568,7 +568,7 @@ namespace hooks
 								if (unit_reference->main_order_id || unit_reference->main_order_state != 1)
 								{
 									u8 order_special = unit_reference->target_order_special;
-									if (order_special == index_lowbyte >> 11)
+									if (order_special == index_lowbyte >> 12)
 									{
 										*trig_killing_additional_unit = 1;
 										helper::kill_units_at_location_proc(unit_reference, args_func); // Was &args_func, now the address of is in the var
@@ -641,7 +641,7 @@ namespace hooks
 		if (!loaded_index
 		||  !result->sprite
 		||  !result->main_order_id && result->main_order_state == 1
-		||   result->target_order_special != loaded_index >> 11)
+		||   result->target_order_special != loaded_index >> 12)
 		{
 			result = 0;
 		}
@@ -706,7 +706,7 @@ namespace hooks
 				if (func_transport->sprite)
 				{
 					if ((func_transport->main_order_id || func_transport->main_order_state != 1)
-					&&   func_transport->target_order_special == index_var >> 11
+					&&   func_transport->target_order_special == index_var >> 12
 					&&   func(func_transport, cargo)
 						)
 					{
@@ -739,7 +739,7 @@ namespace hooks
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
-						&& unit_reference->target_order_special == index_var >> 11
+						&& unit_reference->target_order_special == index_var >> 12
 						&& units_dat::base_property[unit_reference->id] & UnitProperty::Worker)
 					{
 						break;
@@ -786,7 +786,7 @@ namespace hooks
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
-						&& unit_reference->target_order_special == index_var >> 11)
+						&& unit_reference->target_order_special == index_var >> 12)
 					{
 						if (units_dat::base_property[unit_reference->id] & UnitProperty::Worker)
 						{
@@ -830,7 +830,7 @@ namespace hooks
 				if (array_result)
 				{
 					if ((reference->main_order_id || reference->main_order_state != 1)
-						&& reference->target_order_special == index_var >> 11)
+						&& reference->target_order_special == index_var >> 12)
 					{
 						break;
 					}
@@ -864,7 +864,7 @@ namespace hooks
 				if (array_result_1)
 				{
 					if ((reference_1->main_order_id || reference_1->main_order_state != 1)
-						&& reference_1->target_order_special == index_var_1 >> 11)
+						&& reference_1->target_order_special == index_var_1 >> 12)
 					{
 						result += units_dat::space_required[reference_1->id];
 					}
@@ -898,7 +898,7 @@ namespace hooks
 			u32 target_order_shifted = 0;
 			if (cargo_index <= UnitLimit)
 			{
-				target_order_shifted = cargo_index | (cargo->target_order_special << 11);
+				target_order_shifted = cargo_index | (cargo->target_order_special << 12);
 			}
 			Unit* connected_unit = cargo->connected_unit;
 			UnitExt* connected_unit_ext = get_unit_ext(connected_unit);
@@ -982,7 +982,7 @@ namespace hooks
 				if (array_result)
 				{
 					if ((reference->main_order_id || reference->main_order_state != 1)
-						&& reference->target_order_special == index_var >> 11)
+						&& reference->target_order_special == index_var >> 12)
 					{
 						reference->status |= 0x8000u;
 					}

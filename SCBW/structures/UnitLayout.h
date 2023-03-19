@@ -209,8 +209,8 @@ namespace MovementFlags
 #define OldTransportCap 8
 union CargoUnit {
 	struct {
-		u16 index   : 11;								// 1-based index in the unit table.
-		u16 unit_id : 5;
+		u16 index   : 12; // btw, used to be 11, but CMMU extender made it 12 btw. 1-based index in the unit table. 
+		u16 unit_id : 4;
 	};
 	u16 value;
 };
