@@ -49,6 +49,7 @@ SCBW_DATA(Units12*,			g_trigger_factory_counts,		0x0068A9A8);
 SCBW_DATA(Thingy*,			g_thingy_table,					new_thingy_table); // lone sprites, not fow sprites!
 
 SCBW_DATA(Unit*,			g_unit_table,					new_unit_table);
+SCBW_DATA(Order*,			g_order_table,					new_order_table);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
 SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table); // 0x0064B2E8
 SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
@@ -369,8 +370,8 @@ SCBW_DATA(Unit**,	g_bullet_bounce_missile_target,	0x0064EED0);
 SCBW_DATA(Unit**,	g_bullet_bounce_missile_next,	0x0064EED4);
 
 // For setUnderDisruptionWeb
-SCBW_DATA(void**,	unk_array_59CB64,				0x0059CB64);	// count of 252
-SCBW_DATA(Unit*,	g_unit_reference,				0x0059CB58);
+SCBW_DATA(Unit*,	g_unit_reference,				&new_unit_table[-1]);
+SCBW_DATA(void**,	unk_array_59CB64,				&new_unit_table[-1].sprite);	// count of 252
 
 // For start_game
 SCBW_DATA(s8*,		g_game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
@@ -383,7 +384,7 @@ SCBW_DATA(s32*,		g_is_in_game,					0x006D5BC8);
 SCBW_DATA(s32*,		g_countdown_time_remaining,		0x0059CC78);
 
 // For air_splash
-SCBW_DATA(Unit**,	g_air_splash_list,				new_air_splash_list);	// count of 1700
+SCBW_DATA(Unit**,	g_air_splash_list,				new_air_splash_list);
 SCBW_DATA(s32*,		g_air_splash_list_count,		0x0046DEB4);
 SCBW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);
 
@@ -838,10 +839,10 @@ SCBW_DATA(Vector32*,		g_angle_distance,		0x00512D28);
 SCBW_DATA(u16*,				g_megatile_count,		0x005998E0);
 
 // Used internally by Starcraft to manage temporary units lists
-SCBW_DATA(Unit***, g_temp_units_lists_array, 0x006BB938);
+SCBW_DATA(Unit***, g_temp_units_lists_array, new_get_all_units_in_bounds_list);
 SCBW_DATA(u32*, g_temp_units_list_current_array_count, 0x006BEE64);
 SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list_last_index, 0x006BEE6C);
-SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list, 0x006BEE70);
+SCBW_DATA(u32*, g_temp_units_list_arrays_counts_list, new_get_all_units_in_bounds_index);
 
 // Font & Drawing
 namespace graphics {

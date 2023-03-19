@@ -562,7 +562,7 @@ namespace hooks
 						{
 							u32 dumbness = 336 * (index_lowbyte & 0x7FF);
 							void* array_insanity = unk_array_59CB64[dumbness / 4];
-							Unit* unit_reference = &g_unit_reference[dumbness / 0x150];
+							Unit* unit_reference = &g_unit_references[dumbness / 0x150];
 							if (array_insanity)
 							{
 								if (unit_reference->main_order_id || unit_reference->main_order_state != 1)
