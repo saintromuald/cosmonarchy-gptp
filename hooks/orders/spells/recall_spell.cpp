@@ -88,7 +88,7 @@ namespace hooks
 				unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
 				for (u32 i = 0; i < targets.count; ++i) {
 					Unit* target = targets.units[i];
-					spells_recall_action_on_valid_target_for_recall(target, unit);
+					spells_recall_action_on_target_in_range(target, unit);
 				}
 
 				if (*recall_successful) {
