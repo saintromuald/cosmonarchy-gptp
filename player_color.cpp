@@ -7,7 +7,7 @@ static bool can_randomize_player_colors;
 static bool has_custom_color[PlayerLimit];
 static u8 tminimap_colors[MinimapColorCount];
 static u8 tunit_colors[UnitColorCount];
-static u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+static u8 player_color_list[PlayerLimit];
 
 static std::vector<u32> get_player_tints_from_color(u32 color);
 static bool can_use_player_color(u32 color, u32 last_player);
@@ -212,6 +212,7 @@ static void init_player_colors() {
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
 	}
 	memset(has_custom_color, 0, sizeof(has_custom_color));
+	memset(player_color_list, 0, sizeof(player_color_list));
 }
 
 void load_player_colors() {
