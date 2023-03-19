@@ -227,7 +227,6 @@ namespace hooks
 			{
 				speed *= 0.9;
 			} break;
-			case UnitId::TerranHarakan:
 			case UnitId::TerranSavant:
 			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
@@ -241,6 +240,7 @@ namespace hooks
 			{
 				speed *= 1.15;
 			} break;
+			case UnitId::TerranHarakan:
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossCabalist:
