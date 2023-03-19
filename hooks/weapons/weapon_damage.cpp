@@ -732,15 +732,14 @@ namespace hooks
 			case WeaponId::UltrokorKaiserBlades:
 			{
 				// Ultrokor Saber Siphon passive
-				data.attacker->heal_hp(damage_dealt * 0.5, data.attacker);
+				data.attacker->heal_hp(damage_dealt, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
 				const s32 hp = data.attacker->hitpoints / 256;
 				const s32 max_hp = data.attacker->get_max_hp_ingame();
-				u32 shields_heal = damage_dealt * MathUtils::map(hp, max_hp / 4, max_hp, 0.5, 0.2, true);
-				data.attacker->heal_shields(shields_heal, data.attacker);
+				data.attacker->heal_shields(damage_dealt, data.attacker);
 			} break;
 			case WeaponId::AxitriliskSearingVenom:
 			{
