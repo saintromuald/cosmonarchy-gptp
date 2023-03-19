@@ -1349,7 +1349,7 @@ static void spawn_sequence_units() {
 				}
 
 				// Spawn a unit
-				if (sequence->unit_index < unit_count && *g_unit_count < 1700) {
+				if (sequence->unit_index < unit_count && *g_unit_count < UnitLimit) {
 					FraudSpawnSource* source = &sequence->location->sources[sequence->source_index % sequence->location->source_count];
 					FraudSpawnUnit* spawn_unit = &sequence->spawn_array.units[sequence->unit_index];
 					u32 unit_id = spawn_unit->unit_id;

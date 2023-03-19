@@ -39,7 +39,7 @@ enum SearchFilter
 };
 
 #define ScoreInvalidUnit INT_MIN
-#define EntryLimit 1700
+#define EntryLimit UnitLimit
 
 struct EntryArray {
 	u32 count;

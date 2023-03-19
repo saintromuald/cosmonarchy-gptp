@@ -807,7 +807,7 @@ namespace scbw {
 	//-------- Utility functions --------//
 
 	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI) {
-		if (*g_unit_count >= 1700) {
+		if (*g_unit_count >= UnitLimit) {
 			return 0; // Prevent crashes, move to create unit later. -Veeq7
 		}
 		Point16 pos = {x, y};

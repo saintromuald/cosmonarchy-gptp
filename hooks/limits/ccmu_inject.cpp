@@ -13,15 +13,15 @@ int new_get_all_units_in_bounds_list[UnitLimit + 1]; // Both arrays require an e
 int new_get_all_units_in_bounds_index[UnitLimit + 1];
 
 Sprite new_sprite_table[SpriteLimit];
-int new_sprite_list_pointers[SpriteLimit];// 0x006C2318
+Sprite* new_sprite_list_pointers[SpriteLimit];// 0x006C2318
 
 Order new_order_table[OrderLimit];
 
 Image new_image_table[ImageLimit];
 int new_image_list_pointers[ImageLimit]; // 0x006C4A38, a DWORD leads this array at 6C4A30, but I've never seen it be accessed.
 
-Thingy new_thingy_table1[ThingyLimit1]; // 0x006509D8
-Thingy new_thingy_table2[ThingyLimit2]; // 0x00652928
+Thingy new_thingy_table[ThingyLimit]; // 0x006509D8
+Thingy new_fow_sprite_table[FowSpriteLimit]; // 0x00652928
 
 namespace hooks {
 	void inject_unit_extender() {
@@ -1444,101 +1444,101 @@ namespace hooks {
 namespace hooks {
 	void inject_thingy_extender() {
 		//0x00487310
-		memory_patch(0x00487316, &new_thingy_table2);
+		memory_patch(0x00487316, &new_fow_sprite_table);
 
 		//0x00487320
-		memory_patch(0x0048732A, &new_thingy_table2[-1]);
+		memory_patch(0x0048732A, &new_fow_sprite_table[-1]);
 
 		//0x00487330
-		memory_patch(0x00487336, &new_thingy_table1);
+		memory_patch(0x00487336, &new_thingy_table);
 
 		//0x00487340
-		memory_patch(0x0048734A, &new_thingy_table1[-1]);
+		memory_patch(0x0048734A, &new_thingy_table[-1]);
 
 		//0x00487350
-		memory_patch(0x0048737D, &new_thingy_table1[-1]);
-		memory_patch(0x00487398, &new_thingy_table1[-1]);
-		memory_patch(0x004873A5, &new_thingy_table2);
-		memory_patch(0x004873B6, &new_thingy_table2[-1]);
-		memory_patch(0x004873C8, &new_thingy_table2[-1]);
+		memory_patch(0x0048737D, &new_thingy_table[-1]);
+		memory_patch(0x00487398, &new_thingy_table[-1]);
+		memory_patch(0x004873A5, &new_fow_sprite_table);
+		memory_patch(0x004873B6, &new_fow_sprite_table[-1]);
+		memory_patch(0x004873C8, &new_fow_sprite_table[-1]);
 
 		//0x004873E0
-		memory_patch(0x00487410, &new_thingy_table1);
-		memory_patch(0x0048742B, &new_thingy_table1);
-		memory_patch(0x0048743C, &new_thingy_table2);
-		memory_patch(0x00487449, &new_thingy_table2);
-		memory_patch(0x0048745B, &new_thingy_table2);
+		memory_patch(0x00487410, &new_thingy_table);
+		memory_patch(0x0048742B, &new_thingy_table);
+		memory_patch(0x0048743C, &new_fow_sprite_table);
+		memory_patch(0x00487449, &new_fow_sprite_table);
+		memory_patch(0x0048745B, &new_fow_sprite_table);
 
 		//packThingyData (0x00487540)
-		memory_patch(0x00487542, &new_thingy_table1[0].next);
-		memory_patch(0x00487547, ThingyLimit1);
-		memory_patch(0x00487573, &new_thingy_table1);
-		memory_patch(0x00487585, &new_thingy_table1);
-		memory_patch(0x00487596, &new_thingy_table2[0].next);
-		memory_patch(0x0048759B, ThingyLimit2);
-		memory_patch(0x004875C3, &new_thingy_table2);
-		memory_patch(0x004875D5, &new_thingy_table2);
+		memory_patch(0x00487542, &new_thingy_table[0].next);
+		memory_patch(0x00487547, ThingyLimit);
+		memory_patch(0x00487573, &new_thingy_table);
+		memory_patch(0x00487585, &new_thingy_table);
+		memory_patch(0x00487596, &new_fow_sprite_table[0].next);
+		memory_patch(0x0048759B, FowSpriteLimit);
+		memory_patch(0x004875C3, &new_fow_sprite_table);
+		memory_patch(0x004875D5, &new_fow_sprite_table);
 
 		//unpack_thingy_data (0x004875F0)
-		memory_patch(0x004875F1, &new_thingy_table1[0].next);
-		memory_patch(0x004875F6, ThingyLimit1);
-		memory_patch(0x00487620, &new_thingy_table1[-1]);
-		memory_patch(0x00487632, &new_thingy_table1[-1]);
-		memory_patch(0x0048763F, &new_thingy_table2[0].next);
-		memory_patch(0x00487644, ThingyLimit2);
-		memory_patch(0x00487668, &new_thingy_table2[-1]);
-		memory_patch(0x0048767A, &new_thingy_table2[-1]);
+		memory_patch(0x004875F1, &new_thingy_table[0].next);
+		memory_patch(0x004875F6, ThingyLimit);
+		memory_patch(0x00487620, &new_thingy_table[-1]);
+		memory_patch(0x00487632, &new_thingy_table[-1]);
+		memory_patch(0x0048763F, &new_fow_sprite_table[0].next);
+		memory_patch(0x00487644, FowSpriteLimit);
+		memory_patch(0x00487668, &new_fow_sprite_table[-1]);
+		memory_patch(0x0048767A, &new_fow_sprite_table[-1]);
 
 		//initialize_thingy_arrays (0x00487990)
-		memory_patch(0x00487996, &new_thingy_table1);
-		memory_patch(0x004879A5, ThingyLimit1);
-		memory_patch(0x004879B4, &new_thingy_table1);
-		memory_patch(0x004879C3, ThingyLimit1);
-		memory_patch(0x004879D2, &new_thingy_table2);
-		memory_patch(0x004879E1, ThingyLimit2);
-		memory_patch(0x004879F0, &new_thingy_table2);
-		memory_patch(0x004879FF, ThingyLimit2);
+		memory_patch(0x00487996, &new_thingy_table);
+		memory_patch(0x004879A5, ThingyLimit);
+		memory_patch(0x004879B4, &new_thingy_table);
+		memory_patch(0x004879C3, ThingyLimit);
+		memory_patch(0x004879D2, &new_fow_sprite_table);
+		memory_patch(0x004879E1, FowSpriteLimit);
+		memory_patch(0x004879F0, &new_fow_sprite_table);
+		memory_patch(0x004879FF, FowSpriteLimit);
 
 		//read_thingy_arrays (0x00488100)
-		memory_patch(0x00488101, ThingyLimit1);
-		memory_patch(0x00488106, &new_thingy_table1);
-		memory_patch(0x00488115, ThingyLimit2);
-		memory_patch(0x0048811A, &new_thingy_table2);
+		memory_patch(0x00488101, ThingyLimit);
+		memory_patch(0x00488106, &new_thingy_table);
+		memory_patch(0x00488115, FowSpriteLimit);
+		memory_patch(0x0048811A, &new_fow_sprite_table);
 
 		//0x00488140
-		memory_patch(0x00488147, ThingyLimit1);
-		memory_patch(0x0048814C, &new_thingy_table1);
-		memory_patch(0x00488157, ThingyLimit2);
-		memory_patch(0x0048815C, &new_thingy_table2);
+		memory_patch(0x00488147, ThingyLimit);
+		memory_patch(0x0048814C, &new_thingy_table);
+		memory_patch(0x00488157, FowSpriteLimit);
+		memory_patch(0x0048815C, &new_fow_sprite_table);
 
 		//InitializeThingyArray (0x00488550)
-		memory_patch(0x00488556, &new_thingy_table2);
-		memory_patch(0x0048855B, sizeof(new_thingy_table2) / 4);
-		memory_patch(0x00488560, &new_thingy_table1);
-		memory_patch(0x00488567, sizeof(new_thingy_table1) / 4);
-		memory_patch(0x00488572, &new_thingy_table1);
-		memory_patch(0x0048857C, &new_thingy_table1);
-		memory_patch(0x004885AB, &new_thingy_table1[1]);
-		memory_patch(0x004885B0, ThingyLimit1 - 1);
-		memory_patch(0x004885E9, &new_thingy_table2[1]);
-		memory_patch(0x004885EE, ThingyLimit2 - 1);
+		memory_patch(0x00488556, &new_fow_sprite_table);
+		memory_patch(0x0048855B, sizeof(new_fow_sprite_table) / 4);
+		memory_patch(0x00488560, &new_thingy_table);
+		memory_patch(0x00488567, sizeof(new_thingy_table) / 4);
+		memory_patch(0x00488572, &new_thingy_table);
+		memory_patch(0x0048857C, &new_thingy_table);
+		memory_patch(0x004885AB, &new_thingy_table[1]);
+		memory_patch(0x004885B0, ThingyLimit - 1);
+		memory_patch(0x004885E9, &new_fow_sprite_table[1]);
+		memory_patch(0x004885EE, FowSpriteLimit - 1);
 
 		//cmdrecv_save_game (0x004C2910)
-		memory_patch(0x004C2B78, ThingyLimit1);
-		memory_patch(0x004C2B7D, &new_thingy_table1);
-		memory_patch(0x004C2B88, ThingyLimit2);
-		memory_patch(0x004C2B8D, &new_thingy_table2);
+		memory_patch(0x004C2B78, ThingyLimit);
+		memory_patch(0x004C2B7D, &new_thingy_table);
+		memory_patch(0x004C2B88, FowSpriteLimit);
+		memory_patch(0x004C2B8D, &new_fow_sprite_table);
 
 		//0x004D02D0
-		memory_patch(0x004D04E3, ThingyLimit1);
-		memory_patch(0x004D04E8, &new_thingy_table1);
-		memory_patch(0x004D04F3, ThingyLimit2);
-		memory_patch(0x004D04F8, &new_thingy_table2);
+		memory_patch(0x004D04E3, ThingyLimit);
+		memory_patch(0x004D04E8, &new_thingy_table);
+		memory_patch(0x004D04F3, FowSpriteLimit);
+		memory_patch(0x004D04F8, &new_fow_sprite_table);
 
 		//unpack_unit_data (0x004E2E20)
-		memory_patch(0x004E3178, &new_thingy_table1[-1]);
+		memory_patch(0x004E3178, &new_thingy_table[-1]);
 
 		//pack_unit_data (0x004E3410)
-		memory_patch(0x004E3927, &new_thingy_table1);
+		memory_patch(0x004E3927, &new_thingy_table);
 	}
 }

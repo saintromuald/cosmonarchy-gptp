@@ -1,28 +1,23 @@
 #pragma once
 #include "scbw/structures.h"
 
-#define UnitLimit 4095
-#define UnitIDMask 0xFFF // Happens to be the same value as UnitLimit here, but it doesn't necessarily have to be.
 extern Unit new_unit_table[UnitLimit];
+extern int new_air_splash_list[UnitLimit];
 extern UnitFinderData new_unit_finder_x[UnitLimit * 2];
 extern UnitFinderData new_unit_finder_y[UnitLimit * 2];
 extern int new_get_all_units_in_bounds_list[UnitLimit + 1];
+extern int new_get_all_units_in_bounds_index[UnitLimit + 1];
 
-#define SpriteLimit 8875 // Must be a multiple of 5, as well as a multiple of 3 when decremented by one.
 extern Sprite new_sprite_table[SpriteLimit];
+extern Sprite* new_sprite_list_pointers[SpriteLimit];
 
-#define OrderLimit 4080
-#define NewCheckLimit (OrderLimit - (OrderLimit / 10)) // Reserve 10% of order array for non-queued orders.
 extern Order new_order_table[OrderLimit];
 
-#define ImageLimit 16385 // Must be a multiple of 5.
 extern Image new_image_table[ImageLimit];
+extern int new_image_list_pointers[ImageLimit]; // 0x006C4A38, a DWORD leads this array at 6C4A30, but I've never seen it be accessed.
 
-#define ThingyLimit1 2048
-#define ThingyLimit2 2048
-
-extern Thingy new_thingy_table1[ThingyLimit1];	// 0x006509D8
-extern Thingy new_thingy_table2[ThingyLimit2];	// 0x00652928
+extern Thingy new_thingy_table[ThingyLimit];
+extern Thingy new_fow_sprite_table[FowSpriteLimit];
 
 namespace hooks {
 	void inject_unit_extender();

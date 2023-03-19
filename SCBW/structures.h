@@ -5,17 +5,28 @@
 #pragma once
 #include "types.h"
 
+// New Extender Limits
+#define UnitLimit 4095
+#define UnitIDMask 0xFFF // Happens to be the same value as UnitLimit here, but it doesn't necessarily have to be.
+#define SpriteLimit 8875 // Must be a multiple of 5, as well as a multiple of 3 when decremented by one.
+#define OrderLimit 4080
+#define NewCheckLimit (OrderLimit - (OrderLimit / 10)) // Reserve 10% of order array for non-queued orders.
+#define ImageLimit 16385 // Must be a multiple of 5.
+#define ThingyLimit 2048
+#define FowSpriteLimit 2048
+#define BulletLimit 2048
+
+// Const Limits (Do not modify!)
 #define AiTownLimit 100
 #define ResAreaLimit 250
-#define BulletLimit 2048
 
 const s32 PLAYER_COUNT = 12;
 const s32 PLAYABLE_PLAYER_COUNT = 8;
-const s32 UNIT_ARRAY_LENGTH = 1700;
-const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100;
-const s32 SPRITE_ARRAY_LENGTH = 2500;
-const s32 IMAGE_ARRAY_LENGTH = 5000;
-const s32 THINGY_ARRAY_LENGTH = 500;
+const s32 UNIT_ARRAY_LENGTH = UnitLimit; // 1700
+const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100
+const s32 SPRITE_ARRAY_LENGTH = SpriteLimit; // 2500
+const s32 IMAGE_ARRAY_LENGTH = ImageLimit; // 5000
+const s32 THINGY_ARRAY_LENGTH = ThingyLimit; // 500;
 const s32 SelectionCap = 12;
 
 /*

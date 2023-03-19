@@ -3,6 +3,7 @@
 #include "structures.h"
 #include "scbwhelper.h"
 #include "bullet_extender.h"
+#include "hooks/limits/ccmu.h"
 #pragma pack(1)
 
 // Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
@@ -45,16 +46,16 @@ SCBW_DATA(Units12*, first_player_unit, 0x006283F8); // Indexed by player Id
 SCBW_DATA(Units12*,			g_completed_factory_counts,		0x0068A9D8);
 SCBW_DATA(Units12*,			g_trigger_factory_counts,		0x0068A9A8);
 
-SCBW_DATA(Thingy*,			g_thingy_table,					0x006509D8); // lone sprites, not fow sprites!
+SCBW_DATA(Thingy*,			g_thingy_table,					new_thingy_table); // lone sprites, not fow sprites!
 
-SCBW_DATA(Unit*,			g_unit_table,					0x0059CCA8);
+SCBW_DATA(Unit*,			g_unit_table,					new_unit_table);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
 SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table); // 0x0064B2E8
 SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
-SCBW_DATA(Sprite*,			g_sprite_table,					0x00629D98);
+SCBW_DATA(Sprite*,			g_sprite_table,					new_sprite_table);
 SCBW_DATA(u32*,				g_sprite_count,					0x006C4A2C);
-SCBW_DATA(Sprite**,			g_sprite_refs,					0x006C2318);
-SCBW_DATA(Image*,			g_image_table,					0x0052F568);
+SCBW_DATA(Sprite**,			g_sprite_refs,					new_sprite_list_pointers);
+SCBW_DATA(Image*,			g_image_table,					new_image_table);
 SCBW_DATA_REF(UnitDeaths*,	g_unit_killed_table,			0x005878A4);
 
 SCBW_DATA_REF(UnitDeaths*,	g_completed_unit_count_table,	0x00584DE4);
@@ -382,7 +383,7 @@ SCBW_DATA(s32*,		g_is_in_game,					0x006D5BC8);
 SCBW_DATA(s32*,		g_countdown_time_remaining,		0x0059CC78);
 
 // For air_splash
-SCBW_DATA(Unit**,	g_air_splash_list,				0x0064EEE0);	// count of 1700
+SCBW_DATA(Unit**,	g_air_splash_list,				new_air_splash_list);	// count of 1700
 SCBW_DATA(s32*,		g_air_splash_list_count,		0x0046DEB4);
 SCBW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);
 
@@ -829,8 +830,8 @@ SCBW_DATA(u16**,			megatileArray,			0x00628494);
 //SCBW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only
 
 // Stores an ordered list of all units currently in the game.
-SCBW_DATA(UnitFinderData*,	g_unit_ordering_x,		0x0066FF78);
-SCBW_DATA(UnitFinderData*,	g_unit_ordering_y,		0x006769B8);
+SCBW_DATA(UnitFinderData*,	g_unit_ordering_x,		new_unit_finder_x);
+SCBW_DATA(UnitFinderData*,	g_unit_ordering_y,		new_unit_finder_y);
 SCBW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
 SCBW_DATA(Vector32*,		g_angle_distance,		0x00512D28);
@@ -1140,8 +1141,8 @@ SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
 SCBW_DATA(SightRange*,		g_sight_values,					0x00513A18);
 SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
 
-SCBW_DATA(Unit*,			g_unit_references,				0x0059CB58);
-SCBW_DATA(Unit*,			g_unit_references2,				0x0059CB64);
+SCBW_DATA(Unit*,			g_unit_references,				&new_unit_table[-1]);
+SCBW_DATA(Unit*,			g_unit_references2,				&new_unit_table[-1].sprite);
 
 // For create_thingy
 SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);

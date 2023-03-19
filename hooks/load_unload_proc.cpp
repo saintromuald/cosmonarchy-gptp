@@ -321,7 +321,7 @@ namespace hooks
 				UnitExt* cargo_transport_ext = get_unit_ext(cargo_transport);
 				u32 cargo_index = cargo - g_unit_table + 1;
 				u32 loaded_index = 0;
-				if (cargo_index <= 1700)
+				if (cargo_index <= UnitLimit)
 				{
 					loaded_index = cargo_index | (cargo->target_order_special << 11);
 				}
@@ -896,7 +896,7 @@ namespace hooks
 			}
 			u32 cargo_index = cargo - g_unit_table + 1;
 			u32 target_order_shifted = 0;
-			if (cargo_index <= 1700)
+			if (cargo_index <= UnitLimit)
 			{
 				target_order_shifted = cargo_index | (cargo->target_order_special << 11);
 			}
