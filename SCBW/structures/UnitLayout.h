@@ -151,6 +151,7 @@ namespace RustId
 		CastToggleTempoChange,
 
 		CancelLandGrab,
+		CancelRecall,
 		CancelAttachment,
 
 		ToggleSavantOnhit,

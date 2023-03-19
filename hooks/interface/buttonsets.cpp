@@ -2724,14 +2724,16 @@ namespace hooks {
 						}
 
 						// Cancel new abilities!
-						if (current_button->action_var == TechId::CancelNewAbility)
-						{
+						if (current_button->action_var == TechId::CancelNewAbility) {
 							bool can_cancel = false;
 							UnitExt* active_ext = get_unit_ext(unit);
-							if (unit->id == UnitId::TerranWyvern)
-							{
-								if (active_ext->values[ValueWyvernLandGrabOn])
-								{
+							if (unit->id == UnitId::TerranWyvern) {
+								if (active_ext->values[ValueWyvernLandGrabOn]) {
+									can_cancel = true;
+								}
+							}
+							if (unit->id == UnitId::ProtossDidact) {
+								if (active_ext->values[ValueDidactRecalling]) {
 									can_cancel = true;
 								}
 							}
@@ -2741,8 +2743,7 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 
-							if (!can_cancel)
-							{
+							if (!can_cancel) {
 								current_button_state = Button_State::Invisible;
 							}
 						}

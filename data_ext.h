@@ -133,6 +133,7 @@ enum ExtValueId
 	ValueAssignedHarvesters,
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
+	ValueDidactRecalling,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

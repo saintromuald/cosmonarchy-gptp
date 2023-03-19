@@ -78,6 +78,11 @@ namespace hooks
 		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
 			if (unit->main_order_timer == 0) {
+				if (!unit_ext->values[ValueDidactRecalling]) {
+					unit_ext->values[ValueDidactRecalling] = true;
+					scbw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
+				}
+
 				*recall_successful = false;
 				EntryArray targets = {};
 				unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
@@ -110,11 +115,16 @@ namespace hooks
 				scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation + 1);
 
 				unit->spend_unit_energy(5 * 256 / 24 * 9);
-				if (unit->energy == 0) {
+				if (unit->energy == 0 || scbw::get_generic_rust_value(unit, RustId::CancelRecall)) {
+					scbw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
+					unit_ext->values[ValueDidactRecalling] = false;
+
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->order_to_idle();
 				}
 			} else {
+				unit_ext->energy_regen_timer = 0; // Prevent energy regen during channel
+
 				u32 index = unit_ext->values[ValueDidactChannelIndex] % 8;
 				unit_ext->values[ValueDidactChannelIndex] += 1;
 
@@ -166,6 +176,7 @@ namespace hooks
 												 // for the channel animation, which is the unit order execution interval
 				helper::make_to_hold_position(unit);
 				unit_ext->values[ValueDidactChannelIndex] = 0;
+				unit_ext->values[ValueDidactRecalling] = false;
 			}
 		}
 	}
