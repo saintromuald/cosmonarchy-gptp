@@ -8594,17 +8594,17 @@ namespace helper {
 		}
 	}
 
-	static u32 __cdecl removeCreepAtUnit_nop(u32 x_tile, u32 y_tile, Box32* rect) {
+	static u32 __cdecl remove_creep_at_unit_nop(u32 x_tile, u32 y_tile, Box32* rect) {
 		return 0;
 	}
 
 	// For unit_destructor_special
-	s32 removeCreepAtUnit(s32 left, s32 top, s16 unit_id) {
+	s32 remove_creep_at_unit(s32 left, s32 top, s16 unit_id) {
 		const u32 Func_removeCreepAtUnit = 0x00414560;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH removeCreepAtUnit_nop
+			PUSH remove_creep_at_unit_nop
 			MOV DX, unit_id
 			MOV EAX, top
 			MOV ECX, left
@@ -13455,5 +13455,16 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void place_building_refinery_check(Unit* unit)
+	{
+		const u32 func_address = 0x0048E1E0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

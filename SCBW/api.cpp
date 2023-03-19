@@ -1777,7 +1777,7 @@ namespace scbw {
 			for (u32 y = 0; y < area.h / 32; ++y) {
 				u32 final_x = area.x + x * 32;
 				u32 final_y = area.y + y * 32;
-				helper::removeCreepAtUnit(final_x, final_y, UnitId::ZergEgg);
+				helper::remove_creep_at_unit(final_x, final_y, UnitId::ZergEgg);
 				// TODO: update creep so it respreads if possible, also maybe don't remove creep from underneath zerg structures?
 			}
 		}
