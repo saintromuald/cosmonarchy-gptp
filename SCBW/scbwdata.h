@@ -369,10 +369,6 @@ SCBW_DATA(Unit**,	g_bullet_bounce_missile_source,	0x0064EECC);
 SCBW_DATA(Unit**,	g_bullet_bounce_missile_target,	0x0064EED0);
 SCBW_DATA(Unit**,	g_bullet_bounce_missile_next,	0x0064EED4);
 
-// For setUnderDisruptionWeb
-SCBW_DATA(Unit*,	g_unit_reference,				&new_unit_table[-1]);
-SCBW_DATA(void**,	unk_array_59CB64,				&new_unit_table[-1].sprite);	// count of 252
-
 // For start_game
 SCBW_DATA(s8*,		g_game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
 SCBW_DATA(Player*,	g_player_replay_watchers,		0x00640970);
@@ -1141,9 +1137,6 @@ SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
 // For reveal_sight_at_location
 SCBW_DATA(SightRange*,		g_sight_values,					0x00513A18);
 SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
-
-SCBW_DATA(Unit*,			g_unit_references,				&new_unit_table[-1]);
-SCBW_DATA(Unit*,			g_unit_references2,				&new_unit_table[-1].sprite);
 
 // For create_thingy
 SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);

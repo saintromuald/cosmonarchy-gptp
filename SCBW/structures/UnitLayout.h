@@ -209,8 +209,8 @@ namespace MovementFlags
 #define OldTransportCap 8
 union CargoUnit {
 	struct {
-		u16 index   : 12; // btw, used to be 11, but CMMU extender made it 12 btw. 1-based index in the unit table. 
-		u16 unit_id : 4;
+		u16 index     : 12; // btw, used to be 11, but CMMU extender made it 12 btw. 1-based index in the unit table. 
+		u16 unique_id : 4;
 	};
 	u16 value;
 };
@@ -312,7 +312,7 @@ struct UnitLayout
 														// Note that it doesn't begin with index 0, but with #build_queue_slot index.
 	/*0x0A2*/ u16       energy;							// Energy Points // officially "xwMagic"
 	/*0x0A4*/ u8        build_queue_slot;				// Index of active unit in build_queue.
-	/*0x0A5*/ u8        target_order_special;			// A byte used to determine the target ID for the unit (found in units in transports)
+	/*0x0A5*/ u8        unique_id;						// A byte used to determine the target ID for the unit (found in units in transports)
 	/*0x0A6*/ u8        secondary_order_id;				// (Build addon verified) @todo verify (Cloak, Build, ExpandCreep suggested by EUDDB)
 	/*0x0A7*/ u8        damage_overlay_state;			// 0 means the building has the largest amount of fire/blood
 	/*0x0A8*/ u16       build_repair_hp_gain;			// Also HP amount increased per frame when a unit/building its constructed/repaired

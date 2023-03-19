@@ -1,4 +1,5 @@
 #include "load_unload_orders.h"
+#include "hooks\load_unload_proc.h"
 #include <SCBW/api.h>
 #include <logger.h>
 #include "globals.h"
@@ -472,7 +473,6 @@ namespace hooks
 		if (unit->status & UnitStatus::GroundedBuilding
 		||  unit->main_order_timer == 0)
 		{
-			s32 counter = 0;
 			u32 result_E7F70 = 0;
 			bool bEndLoop = false;
 			bool bFoundUnitToUnload = false;
@@ -481,33 +481,13 @@ namespace hooks
 			bool jump_to_E8195 = false;
 			bool jump_to_E81AD = false;
 
-			UnitExt* unit_ext = get_unit_ext(unit);
-			while (!bEndLoop)
-			{
-				loadedUnitOffset = (u32*)&unit_ext->loaded_unit[counter];
-				if (*loadedUnitOffset != 0 && g_unit_references2[unit_ext->loaded_unit[counter].index].link.prev != nullptr) // sprite check
-				{
-					Unit* unitToUnload = &(g_unit_references[unit_ext->loaded_unit[counter].index]);
-					if (unitToUnload->main_order_id != 0 || unitToUnload->main_order_state != 1)
-					{
-						if (unit_ext->loaded_unit[counter].unit_id == unitToUnload->target_order_special)
-						{
-							bFoundUnitToUnload = true;
-							result_E7F70 = helper::unload_unit_proc(unitToUnload);
-							if (!(unit->status & UnitStatus::GroundedBuilding))
-							{
-								bEndLoop = true;
-							}
-						}
-					}
-				}
-
-				if (!bEndLoop)
-				{
-					counter++;
-					if (counter >= TransportCap)
-					{
-						bEndLoop = true;
+			for (u32 i = 0; i < TransportCap; ++i) {
+				Unit* cargo = get_loaded_unit_from_index(unit, i);
+				if (cargo) {
+					bFoundUnitToUnload = true;
+					result_E7F70 = helper::unload_unit_proc(cargo);
+					if (!(cargo->status & UnitStatus::GroundedBuilding)) {
+						break;
 					}
 				}
 			}
