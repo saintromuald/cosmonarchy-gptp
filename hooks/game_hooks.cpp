@@ -2858,7 +2858,7 @@ namespace hooks {
 					default: {
 						command_id = command_id;
 						u32 command_size = g_turn_command_size[command_id];
-						if (command_id >= 9 && command_id <= 11) {
+						if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
 							command_size = 2 * buffer[1] + 2;
 						}
 						size -= command_size;
