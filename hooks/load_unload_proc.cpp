@@ -389,7 +389,7 @@ namespace hooks
 				{
 					if (index_2)
 					{
-						Unit* unit_reference = &g_unit_reference[*index_2 & 0x7FF];
+						Unit* unit_reference = &g_unit_reference[*index_2 & UnitIDMask];
 						if (unit_reference->sprite)
 						{
 							if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -560,9 +560,9 @@ namespace hooks
 						index_lowbyte = index_lowbyte;
 						if (index_lowbyte)
 						{
-							u32 dumbness = 336 * (index_lowbyte & 0x7FF);
+							u32 dumbness = 336 * (index_lowbyte & UnitIDMask);
 							void* array_insanity = unk_array_59CB64[dumbness / 4];
-							Unit* unit_reference = &g_unit_references[dumbness / 0x150];
+							Unit* unit_reference = &g_unit_reference[dumbness / 0x150];
 							if (array_insanity)
 							{
 								if (unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -637,7 +637,7 @@ namespace hooks
 	{
 		UnitExt* transport_ext = get_unit_ext(transport);
 		int loaded_index = transport_ext->loaded_unit[index].value;
-		Unit* result = &g_unit_reference[loaded_index & 0x7FF];
+		Unit* result = &g_unit_reference[loaded_index & UnitIDMask];
 		if (!loaded_index
 		||  !result->sprite
 		||  !result->main_order_id && result->main_order_state == 1
@@ -702,7 +702,7 @@ namespace hooks
 			u16 index_var = *index;
 			if (*index)
 			{
-				Unit* func_transport = &g_unit_reference[index_var & 0x7FF];
+				Unit* func_transport = &g_unit_reference[index_var & UnitIDMask];
 				if (func_transport->sprite)
 				{
 					if ((func_transport->main_order_id || func_transport->main_order_state != 1)
@@ -735,7 +735,7 @@ namespace hooks
 			u16 index_var = *index;
 			if (*index)
 			{
-				Unit* unit_reference = &g_unit_reference[index_var & 0x7FF];
+				Unit* unit_reference = &g_unit_reference[index_var & UnitIDMask];
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -782,7 +782,7 @@ namespace hooks
 			u16 index_var = *index;
 			if (*index)
 			{
-				Unit* unit_reference = &::g_unit_reference[index_var & 0x7FF];
+				Unit* unit_reference = &::g_unit_reference[index_var & UnitIDMask];
 				if (unit_reference->sprite)
 				{
 					if ((unit_reference->main_order_id || unit_reference->main_order_state != 1)
@@ -824,7 +824,7 @@ namespace hooks
 			u32 index_var = *index;
 			if (*index)
 			{
-				u32 array_insanity = 336 * (index_var & 0x7FF);
+				u32 array_insanity = 336 * (index_var & UnitIDMask);
 				void* array_result = unk_array_59CB64[array_insanity / 4];
 				Unit* reference = &g_unit_reference[array_insanity / 0x150];
 				if (array_result)
@@ -858,7 +858,7 @@ namespace hooks
 			u32 index_var_1 = *index_1;
 			if (index_var_1)
 			{
-				u32 array_insanity_1 = 336 * (index_var_1 & 0x7FF);
+				u32 array_insanity_1 = 336 * (index_var_1 & UnitIDMask);
 				void* array_result_1 = unk_array_59CB64[array_insanity_1 / 4];
 				Unit* reference_1 = &g_unit_reference[array_insanity_1 / 0x150];
 				if (array_result_1)
@@ -976,7 +976,7 @@ namespace hooks
 			u32 index_var = *index;
 			if (*index)
 			{
-				u32 array_insanity = 336 * (index_var & 0x7FF);
+				u32 array_insanity = 336 * (index_var & UnitIDMask);
 				void* array_result = unk_array_59CB64[array_insanity / 4];
 				Unit* reference = &g_unit_reference[array_insanity / 0x150];
 				if (array_result)
