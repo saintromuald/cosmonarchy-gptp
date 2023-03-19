@@ -1061,7 +1061,7 @@ namespace hooks
 				if (helper::unit_is_in_notify_range(unit)) {
 					if (!unit->attack_notify_timer) {
 						helper::reset_all_unit_attack_notify_timers_in_range(unit);
-						*notify_cooldown = 100;
+						*notify_cooldown = 20;
 
 						u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
 						if (!(unit->status & UnitStatus::GroundedBuilding)) {
