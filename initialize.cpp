@@ -600,6 +600,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0049B4EA, (u8)0xFC);
 	nops(0x0049B4C6, 6);
 	nops(0x0049B4ED, 6);
+
+	// Allow setting slots to Computer in UMS lobbies
+	memory_patch(0x00451134, (u32)5);
+	nops(0x00451A2E, 2);
+	nops(0x00451A6D, 2);
+
+	// Allow switching to forces with Computer slots
+	memory_patch(0x004523D9, (u8)0xFF);
+	memory_patch(0x0045A939, (u8)0xFF);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

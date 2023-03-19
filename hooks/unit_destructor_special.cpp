@@ -393,7 +393,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
 	globals.unit_death(unit);
-	unit_death(unit);
+	unit_death_start(unit);
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
@@ -440,6 +440,101 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 		helper::set_thingy_visibility_flags(thingy);
 	}
 	return thingy;
+}
+
+// Hooked to make new refineries regress correctly. -Pr0nogo
+s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
+{
+	u32 id = unit->id;
+	if (units_dat::base_property[id] & UnitProperty::Subunit)
+	{
+		Unit* first_dying_u = *g_first_dying_unit;
+		if (*g_first_dying_unit)
+		{
+			if (*g_unknown_unit_ptr_related == *g_first_dying_unit)
+			{
+				*g_unknown_unit_ptr_related = unit;
+			}
+			unit->link.prev = *g_first_dying_unit;
+			unit->link.next = first_dying_u->link.next;
+			Unit* next_dying_u = first_dying_u->link.next;
+			if (next_dying_u)
+			{
+				next_dying_u->link.prev = unit;
+			}
+			first_dying_u->link.next = unit;
+		}
+		else
+		{
+			*g_unknown_unit_ptr_related = unit;
+			*g_first_dying_unit = unit;
+		}
+
+		Unit* previous_player_u = unit->player_link.prev;
+		if (previous_player_u)
+		{
+			previous_player_u->player_link.next = unit->player_link.next;
+		}
+		Unit* next_player_u = unit->player_link.next;
+		if (next_player_u)
+		{
+			next_player_u->player_link.prev = unit->player_link.prev;
+		}
+
+		s32 player = unit->player;
+		if (unit == first_player_unit->unit[player])
+		{
+			first_player_unit->unit[player] = unit->player_link.next;
+		}
+		unit->player_link.prev = 0;
+		unit->player_link.next = 0;
+		helper::increment_unit_scores(unit, -1);
+		unit->subunit = 0;
+		return 1;
+	}
+
+	Sprite* sprite = unit->sprite;
+	if (sprite->flags & SpriteFlags::Hidden)
+	{
+		return 0;
+	}
+	if (id != UnitId::TerranReservoir)
+	{
+		if (id == UnitId::ZergExcisant)
+		{
+			helper::remove_creep_at_unit(sprite->position.x, sprite->position.y, id);
+		}
+		else if (id != UnitId::ProtossAquifer)
+		{
+			return 0;
+		}
+	}
+
+	if (unit->status & UnitStatus::Completed)
+	{
+		helper::increment_unit_scores_ex(unit, -1, 0);
+	}
+
+	unit->status &= ~UnitStatus::Completed;
+	helper::replace_unit_with_id(unit, UnitId::ResourceVespeneGeyser);
+	id = unit->id;
+	unit->main_order_id = units_dat::human_idle_order[id];
+	unit->order_target.unit = 0;
+	unit->order_target.pt.y = 0;
+	unit->order_target.pt.x = 0;
+	unit->main_order_state = 0;
+	unit->order_unit_id = UnitId::None; // Was LOWORD(order_unit_id) = UnitId::None
+	unit->hitpoints = units_dat::max_hitpoints[id];
+	helper::give_unit(unit, 11, 0);
+	helper::give_sprite(unit, 11);
+	unit->status |= 1u;
+	helper::increment_unit_scores_ex(unit, 1, 1);
+
+	if (g_is_placing_building)
+	{
+		helper::place_building_refinery_check(unit);
+	}
+	return 1;
 }
 
 //-------- Actual hooking --------//
@@ -520,11 +615,27 @@ void __declspec(naked) iscript_create_sprite_wrapper() {
 	}
 }
 
+void __declspec(naked) remove_subunit_or_gas_container_wrapper() {
+	static s32 result;
+	static Unit* unit;
+	__asm {
+		MOV unit, EAX
+		PUSHAD
+	}
+	result = remove_subunit_or_gas_container(unit);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+
 namespace hooks {
 	void inject_unit_destructor_special_hooks() {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
 		jump_patch(iscript_create_sprite_wrapper,			0x004D7120, 1);
+	//	jump_patch(remove_subunit_or_gas_container_wrapper,	0x004A0080, 3);
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 	}

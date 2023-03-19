@@ -1142,6 +1142,9 @@ SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
 SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);
 SCBW_DATA(Thingy**,			g_last_free_thingy,				0x0065487C);
 
+// For remove_subunit_or_gas_container
+SCBW_DATA(Unit**,			g_unknown_unit_ptr_related,		0x004A00AA);
+
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

@@ -30,6 +30,10 @@ void update_ext_variables() {
 	// Units
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
 		UnitExt* unit_ext = &unit_ext_array[i];
+		if (unit_ext->pause_timers) {
+			continue;
+		}
+
 		if (unit_ext->energy_regen_timer != UINT_MAX) {
 			++unit_ext->energy_regen_timer;
 		}
@@ -120,7 +124,7 @@ void reset_unit_ext(Unit* unit) {
 	}
 }
 
-void unit_death(Unit* unit) {
+void unit_death_start(Unit* unit) {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) { // set dead unit pointers to nullptr and erase them from unit vectors
 		UnitExt* other_ext = &unit_ext_array[i];
 		for (u32 i = 0; i < UnitCount; ++i) {
@@ -144,6 +148,16 @@ void unit_death(Unit* unit) {
 		}
 	}
 
+	UnitExt* unit_ext = get_unit_ext(unit);
+	unit_ext->pause_timers = true;
+	if (unit->id == UnitId::TerranReservoir ||
+		unit->id == UnitId::ProtossAquifer ||
+		unit->id == UnitId::ZergExcisant) {
+		unit_death_end(unit);
+	}
+}
+
+void unit_death_end(Unit* unit) {
 	reset_unit_ext(unit);
 }
 

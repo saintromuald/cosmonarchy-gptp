@@ -1038,7 +1038,7 @@ namespace helper {
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
 
 	// For unit_destructor_special
-	s32 removeCreepAtUnit(s32 left, s32 top, s16 unit_id);																		// 00414560
+	s32 remove_creep_at_unit(s32 left, s32 top, s16 unit_id);																		// 00414560
 
 	//// For direct_sound
 
@@ -1568,4 +1568,6 @@ namespace helper {
 
 	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2);																// 004AAFA0
 	Player* randomize_player_slot();																										// 004A9A30
+
+	void place_building_refinery_check(Unit* unit);																							// 0048E1E0
 }

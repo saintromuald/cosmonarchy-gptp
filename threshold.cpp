@@ -839,7 +839,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit_next) {
 		unit_next = unit->player_link.next;
 		if (map_start) {
-			helper::removeCreepAtUnit(unit->position.x, unit->position.y, unit->id);
+			helper::remove_creep_at_unit(unit->position.x, unit->position.y, unit->id);
 			unit->user_action_flags |= 4; // silent remove
 		}
 		unit->remove();

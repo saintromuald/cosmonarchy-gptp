@@ -560,6 +560,8 @@ namespace hooks
 					}
 				}
 				helper::update_visibility(unit);
+			} else {
+				unit_death_end(unit);
 			}
 		}
 
