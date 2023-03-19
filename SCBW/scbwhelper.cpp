@@ -13000,7 +13000,7 @@ namespace helper {
 		const u32 func_address = 0x004C0100;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			PUSH buffer
 			CALL func_address
 			MOV result, AX
 			POPAD
