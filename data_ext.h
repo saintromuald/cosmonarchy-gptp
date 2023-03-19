@@ -132,6 +132,7 @@ enum ExtValueId
 	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
 	ValueNoCorpse,
+	ValueDidactChannelIndex,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

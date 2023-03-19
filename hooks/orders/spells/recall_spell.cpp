@@ -51,64 +51,95 @@ namespace hooks
 	// Function performed on each target of Recall by iterate_units_at_location_target_proc_recall_targets
 	// to choose if the unit can have the Recall effect cast on it or no, and if yes, calling another function to do the Recall effect.
 	void spells_recall_action_on_target_in_range(Unit* target, Unit* caster) {
-		if (!(target->sprite->flags & SpriteFlags::Hidden)
-		&&	 (target->player == caster->player || scbw::is_allied_to(target->player, caster->player))
-		&&	!(units_dat::base_property[target->id] & UnitProperty::Building)
-		&&	!(target->status & UnitStatus::Invincible)
-		&&	!(target->status & UnitStatus::Burrowed)
-		&&	  target->id != UnitId::ZergLarva
-		&&	  target->id != UnitId::ZergOcsalLarva
-		&&	  target->id != UnitId::ZergEgg
-		&&	!(target->status & UnitStatus::IsHallucination)
-		&&	  target != caster) {
-			spells_recall_action_on_valid_target_for_recall(target, caster);
+		if (target->sprite->flags & SpriteFlags::Hidden || !scbw::is_allied_to(target->player, caster->player) || target == caster) {
+			return;
 		}
+		if (units_dat::base_property[target->id] & UnitProperty::Building) {
+			return;
+		}
+		if (target->id == UnitId::ZergLarva ||
+			target->id == UnitId::ZergOcsalLarva ||
+			target->id == UnitId::ZergEgg ||
+			target->id == UnitId::ZergCocoon) {
+			return;
+		}
+		if (target->status & UnitStatus::Invincible ||
+			target->status & UnitStatus::Burrowed ||
+			target->status & UnitStatus::IsHallucination) {
+			return;
+		}
+		spells_recall_action_on_valid_target_for_recall(target, caster);
 	}
 
 	void orders_recall(Unit* unit) {
-		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
-
+		static b32* const recall_successful = (b32*)(0x0063FF50);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		// Unit has started casting Recall (== went through the other condition)
 		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
 			if (unit->main_order_timer == 0) {
-				unit->status &= ~UnitStatus::CanNotReceiveOrders;
-				Box16 spell_location;
-
-				spell_location.left = unit->order_target.pt.x - 64;
-				spell_location.top = unit->order_target.pt.y - 64;
-				spell_location.right = unit->order_target.pt.x + 64;
-				spell_location.bottom = unit->order_target.pt.y + 64;
-
-				*at_least_1_unit_was_recalled = 0;
-
-				// Apply the recal effect on each valid target found in spell_location
-				helper::iterate_units_at_location_target_proc_recall_targets(unit, &spell_location);
-
-				if (*at_least_1_unit_was_recalled != 0) {
-
-					// Original code added (randomize_short(0x12) & 1) to the base new_sound
-					// id Protoss_ARBITER_PAbFol02_WAV then called the playSound function
-					// using that value, but since there are only 2 sounds, it's easier to 
-					// see what new_sound is used that way.
-					// The compiler may make it back like the original anyway.
-
-					if ((helper::randomize_short(0x12) & 1) == 0) {
-						helper::play_sound_from_unit(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit, 1, 0);
-					} else {
-						helper::play_sound_from_unit(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit, 1, 0);
-					}
-
-					Point16 center = {unit->position.x, unit->position.y};
-					Point16 top = center;
-					top.y -= 3 * 32;
-					scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, center.x, center.y, unit->player, unit->sprite->elevation - 1);
-					for (u32 i = 0; i < 8; ++i) {
-						Point16 next = scbw::rotate_point(center, top, i * (360 / 8));
-						scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, next.x, next.y, unit->player, unit->sprite->elevation - 1);
-					}
+				*recall_successful = false;
+				EntryArray targets = {};
+				unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
+				for (u32 i = 0; i < targets.count; ++i) {
+					Unit* target = targets.units[i];
+					spells_recall_action_on_valid_target_for_recall(target, unit);
 				}
-				unit->order_to_idle();
+
+				if (*recall_successful) {
+					u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol02_WAV;
+					u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol03_WAV;
+					if (scbw::random() % 2 == 0) {
+						sound_id_source = SoundId::Protoss_ARBITER_PAbFol03_WAV;
+						sound_id_target = SoundId::Protoss_ARBITER_PAbFol02_WAV;
+					}
+					helper::play_sound_at_pos(sound_id_source, unit->position);
+					helper::play_sound_at_pos(sound_id_target, unit->order_target.pt);
+				} else {
+					u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+					u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+					if (scbw::random() % 2 == 0) {
+						sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+						sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+					}
+					helper::play_sound_at_pos(sound_id_source, unit->position);
+					helper::play_sound_at_pos(sound_id_target, unit->order_target.pt);
+				}
+
+				scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->position.x, unit->position.y, unit->player, unit->sprite->elevation - 1);
+				scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation + 1);
+
+				unit->spend_unit_energy(5 * 256 / 24 * 9);
+				if (unit->energy == 0) {
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+					unit->order_to_idle();
+				}
+			} else {
+				u32 index = unit_ext->values[ValueDidactChannelIndex] % 8;
+				unit_ext->values[ValueDidactChannelIndex] += 1;
+
+				Point16 source_origin = {unit->position.x, unit->position.y};
+				Point16 target_origin = {unit->order_target.pt.x, unit->order_target.pt.y};
+
+				Point16 source = source_origin;
+				Point16 target = target_origin;
+				source.y -= 1 * 32;
+				target.y -= 1 * 32;
+
+				source = scbw::rotate_point(source_origin, source, index * (360 / 8));
+				target = scbw::rotate_point(target_origin, target, index * (360 / 8));
+
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, source.x, source.y, unit->player, unit->sprite->elevation - 1);
+				scbw::create_and_init_thingy(SpriteId::Recall_Field, target.x, target.y, unit->player, unit->sprite->elevation + 1);
+
+				u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+				u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+				if (scbw::random() % 2 == 0) {
+					sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+					sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+				}
+				helper::play_sound_at_pos(sound_id_source, source);
+				helper::play_sound_at_pos(sound_id_target, target);
 			}
 		} else {
 			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::Recall] * 256) {
@@ -124,46 +155,17 @@ namespace hooks
 				}
 
 				if (unit->order_target.unit) {
-					unit->order_target.pt.x = unit->order_target.unit->sprite->position.x;
-					unit->order_target.pt.y = unit->order_target.unit->sprite->position.y;
+					unit->order_target.pt.x = unit->order_target.unit->position.x;
+					unit->order_target.pt.y = unit->order_target.unit->position.y;
 				}
-
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->position.x, unit->position.y, unit->player, unit->sprite->elevation - 1);
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation + 1);
-
-				u32 random_value = 0;
-				if (*g_is_in_game_loop) {
-					// Hardcoded (not using a function) RNG use, like the original code did
-					static u32* const u32_0051C654 = (u32*)0x0051C654;
-					static u32* const u32_0051CA18 = (u32*)0x0051CA18;
-
-					*u32_0051C654 = *u32_0051C654 + 1;
-					*u32_0051CA18 = *u32_0051CA18 + 1;
-					*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
-
-					random_value = ((*g_last_random_number) / 65536) & 0x7FFF;
-				}
-
-				// Original code added (random_value & 1) to the base new_sound
-				// id Protoss_ARBITER_PAbFol00_WAV then called the playSound function
-				// using that value, but since there are only 2 sounds, it's easier to 
-				// see what new_sound is used that way.
-				// The compiler may make it back like the original anyway.
-
-				u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
-				u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
-				if (random_value & 1 == 0) {
-					sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
-					sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
-				}
-				helper::play_sound_at_pos(sound_id_source, unit->position, 1, 0);
-				helper::play_sound_at_pos(sound_id_target, unit->order_target.pt, 1, 0);
 
 				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
-				unit->main_order_timer = 5 * 24; // used to be 22
 				unit->main_order_state = 1;
+				unit->main_order_timer = 10 * 9; // 3.75s, this is not very flexible, but the interval of 9 is required
+												 // for the channel animation, which is the unit order execution interval
 				helper::make_to_hold_position(unit);
+				unit_ext->values[ValueDidactChannelIndex] = 0;
 			}
 		}
 	}
