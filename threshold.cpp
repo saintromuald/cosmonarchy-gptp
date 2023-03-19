@@ -1241,7 +1241,7 @@ void spawn_new_frauds() {
 				continue;
 			}
 			if (threshold_config.initial_count) {
-				if (*g_unit_count < 1600 && place_fraud(player, FraudClass_Fraud, true)) {
+				if (*g_unit_count < (UnitLimit - 100) && place_fraud(player, FraudClass_Fraud, true)) {
 					threshold_config.initial_count -= 1;
 					break;
 				}
@@ -1299,7 +1299,7 @@ void spawn_new_frauds() {
 				continue;
 			}
 			FraudSpawnSequence* sequence = &threshold.sequence[player];
-			if (!fraud_is_alive(player) && *g_unit_count < 1600) {
+			if (!fraud_is_alive(player) && *g_unit_count < (UnitLimit - 100)) {
 				if (place_fraud(player, fraud_class, false)) {
 					++alive_count;
 					break;
