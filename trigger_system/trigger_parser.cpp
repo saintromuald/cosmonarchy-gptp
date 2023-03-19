@@ -462,7 +462,7 @@ u32 parser_get_player(Parser* parser, bool allow_neutral) {
 }
 
 static PlayerBitset player_bitset_combine(PlayerBitset a, PlayerBitset b) {
-	for (u32 i = 0; i < PlayerLimit; ++i) {
+	for (u32 i = 0; i < FullPlayerLimit; ++i) {
 		a.set[i] = a.set[i] || b.set[i];
 	}
 	return a;
@@ -472,12 +472,8 @@ static void player_bitset_set(PlayerBitset* bitset, u32 i, bool value, bool mask
 	if (negate) {
 		value = !value;
 	}
-	if (value) {
-		if (!mask) {
-			bitset->set[i] = true;
-		}
-	} else if (mask) {
-		bitset->set[i] = false;
+	if (value != mask) {
+		bitset->set[i] = value;
 	}
 }
 
@@ -490,45 +486,45 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 		char* marker = parser_marker(parser);
 		s32 value = parser_get_s32(parser);
 		if (parser_eq(parser, "*")) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, true, mask, negate);
 			}
 		} else if (value == 14) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 15) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, !scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 16) {
 			// wasn't used in aise, but we can do something here later?
 		} else if (value == 17) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, true, mask, negate);
 			}
 		} else if (value == 18) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 1, mask, negate);
 			}
 		} else if (value == 19) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 2, mask, negate);
 			}
 		} else if (value == 20) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 3, mask, negate);
 			}
 		} else if (value == 21) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
+			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
 		} else {
 			parser_unwind(parser, marker);
-			s32 player = parser_get_player(parser);
+			s32 player = parser_get_player(parser, true);
 			if (player) {
 				player -= 1;
-				for (u32 i = 0; i < PlayerLimit; ++i) {
+				for (u32 i = 0; i < FullPlayerLimit; ++i) {
 					player_bitset_set(&current_bitset, i, i == player, mask, negate);
 				}
 			}

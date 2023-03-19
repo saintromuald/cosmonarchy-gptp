@@ -7,7 +7,7 @@ static bool can_randomize_player_colors;
 static bool has_custom_color[PlayerLimit];
 static u8 tminimap_colors[MinimapColorCount];
 static u8 tunit_colors[UnitColorCount];
-static u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+static u8 player_color_list[PlayerLimit];
 
 static std::vector<u32> get_player_tints_from_color(u32 color);
 static bool can_use_player_color(u32 color, u32 last_player);
@@ -148,7 +148,7 @@ static bool has_enough_colors() {
 			banned_race_tints_count = race.size();
 		}
 	}
-	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PLAYABLE_PLAYER_COUNT) {
+	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PlayerLimit) {
 		return false;
 	}
 	return true;
@@ -181,8 +181,8 @@ static void randomize_player_color(u32 player) {
 static void match_color_of(u32 player) {
 	for (u32 color = 0; color < ColorSetCount; ++color) {
 		bool match = true;
-		for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; ++i) {
-			if (g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] != tunit_colors[color * PLAYABLE_PLAYER_COUNT + i]) {
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (g_player_in_game_colors[player * PlayerLimit + i] != tunit_colors[color * PlayerLimit + i]) {
 				match = false;
 				break;
 			}
@@ -200,8 +200,8 @@ void set_player_color(u32 player, u32 color) {
 	player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
 	g_player_scorescreen_colors[player] = color;
-	for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		g_player_in_game_colors[player * PLAYABLE_PLAYER_COUNT + i] = tunit_colors[color * ColorSetSize + i];
+	for (u32 i = 0; i < PlayerLimit; i++) {
+		g_player_in_game_colors[player * PlayerLimit + i] = tunit_colors[color * ColorSetSize + i];
 	}
 }
 
@@ -212,11 +212,12 @@ static void init_player_colors() {
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
 	}
 	memset(has_custom_color, 0, sizeof(has_custom_color));
+	memset(player_color_list, 0, sizeof(player_color_list));
 }
 
 void load_player_colors() {
 	can_randomize_player_colors = has_enough_colors();
-	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; ++player) {
+	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (player_wants_to_randomize(player) && player_can_randomize(player)) {
 			randomize_player_color(player);
 		} else {
@@ -227,8 +228,7 @@ void load_player_colors() {
 
 static bool can_get_player_name(u32 player) {
 	if (!has_custom_player_name[player]
-	&&   g_player_table[player].type == PlayerType::Computer)
-	{
+	&&   g_player_table[player].type == PlayerType::Computer) {
 		return true;
 	}
 	return false;
