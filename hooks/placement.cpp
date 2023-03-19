@@ -5,12 +5,18 @@
 namespace hooks
 {
 	s32 init_placement_box_pos(s32 unused, Point16* placement_pos) { // 0048D660
-		if (placement_pos->x >= 640 || placement_pos->y >= 400) {
+		if (g_mouse->x < 0 || g_mouse->x >= 640 ||
+			g_mouse->y < 0 || g_mouse->y >= 400) {
 			return 0;
 		}
 
-		*place_building_x = (*g_move_to_x + placement_pos->x + 16) / 32;
-		*place_building_y = (*g_move_to_y + placement_pos->y + 16) / 32;
+		Vector32 pos = *g_mouse;
+		Point16 dims = units_dat::building_dimensions[*g_place_building_unit_id];
+		pos.x -= dims.x / 2;
+		pos.y -= dims.y / 2;
+
+		*place_building_x = (*g_move_to_x + pos.x + 16) / 32;
+		*place_building_y = (*g_move_to_y + pos.y + 16) / 32;
 		placement_pos->x = *place_building_x * 32 - *g_move_to_x;
 		placement_pos->y = *place_building_y * 32 - *g_move_to_y;
 		return 1;
@@ -23,9 +29,6 @@ namespace hooks
 			return result;
 		}
 		unused.x = g_mouse->y;
-		Point16 dims = units_dat::building_dimensions[*g_place_building_unit_id];
-		placement_pos.x = g_mouse->x - dims.x / 2;
-		placement_pos.y = g_mouse->y - dims.y / 2;
 		if (helper::init_placement_box_pos(&placement_pos)) {
 			*g_place_building_message_id = helper::update_placement_state_for_placement_box();
 			helper::refresh_layers_3_and_4();
