@@ -393,7 +393,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	// Globals memory management
 	globals.remove_unit_from_pariah_table(unit, false);
 	globals.unit_death(unit);
-	unit_death(unit);
+	unit_death_start(unit);
 }
 
 void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 tile_x, s32 tile_y) {
