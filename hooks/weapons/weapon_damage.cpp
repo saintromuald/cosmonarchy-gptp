@@ -737,8 +737,6 @@ namespace hooks
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
-				const s32 hp = data.attacker->hitpoints / 256;
-				const s32 max_hp = data.attacker->get_max_hp_ingame();
 				data.attacker->heal_shields(damage_dealt, data.attacker);
 			} break;
 			case WeaponId::AxitriliskSearingVenom:
