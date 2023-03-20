@@ -479,7 +479,7 @@ namespace hooks {
 				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
 					|| units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 					button->position = 6;
-				} else if (buttonset_id == UnitId::ProtossLanifect) {
+				} else if (buttonset_id == UnitId::ProtossLanifect || buttonset_id == UnitId::ProtossDidact) {
 					button->position = 7;
 				} else {
 					button->position = 9;
@@ -2735,10 +2735,11 @@ namespace hooks {
 							
 							if (unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerEmergencyDetonation]) {
 								can_cancel = true;
-								current_button_state = Button_State::Enabled;
 							}
 
-							if (!can_cancel) {
+							if (can_cancel) {
+								current_button_state = Button_State::Enabled;
+							} else {
 								current_button_state = Button_State::Invisible;
 							}
 						}
