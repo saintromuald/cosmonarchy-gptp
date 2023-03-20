@@ -521,6 +521,7 @@ namespace hooks {
 			}
 		}
 
+		UnitExt* unit_ext = get_unit_ext(unit);
 		while (!stop_there)
 		{
 			// 00459230
@@ -2504,14 +2505,14 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well
-							current_button->icon_id == IconId::Recall)
+								current_button->icon_id == IconId::Recall)
 							{
-							current_button_state = Button_State::Enabled;
+								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well
-							current_button->icon_id == IconId::ArgusJewel)
+								current_button->icon_id == IconId::ArgusJewel)
 							{
-							current_button_state = Button_State::Enabled;
+								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ProtossMatrix &&  // Matrix Multi-Attack IV
 								current_button->icon_id == IconId::ApialSensors)
@@ -2678,67 +2679,61 @@ namespace hooks {
 					}
 
 					// Attack overrides
-					if (current_button->action_func == (ActFunc*)ButtonActions::Attack)
-					{
-						if (unit->id == UnitId::TerranBunker || unit->id == UnitId::PoliceDugout)
-						{
-							int loaded = 0;
-							for (int i = 0; i < 8; ++i)
-							{								
+					if (current_button->action_func == (ActFunc*)ButtonActions::Attack) {
+						if (unit->id == UnitId::TerranBunker || unit->id == UnitId::PoliceDugout) {
+							u32 loaded = 0;
+							for (u32 i = 0; i < 8; ++i) {								
 								Unit* bunkerUnit = unit->get_loaded_unit(i);
-								if (bunkerUnit && scbw::unit_is_ranged_attacker(bunkerUnit))
-								{
+								if (bunkerUnit && scbw::unit_is_ranged_attacker(bunkerUnit)) {
 									loaded++;
 								}
 							}
-							if (loaded)
-							{
+							if (loaded) {
 								current_button_state = Button_State::Enabled;
-							}
-							else
-							{
+							} else {
 								current_button_state = Button_State::Disabled;
 							}
 						}
 					}
 
 					// Form switch/mode change?
-					if (current_button->action_func == (ActFunc*)ButtonActions::Use_Technology)
-					{
-						if (unit->id != UnitId::ProtossMindTyrant)
-						{
-							for (s32 i = 0; i < generictoggles; i++)
-							{
-								if (current_button->action_var == toggle_abilities[i])
-								{
-									if (scbw::get_generic_rust_value(unit, toggle_values[i]) == 1)
-									{
+					if (current_button->action_func == (ActFunc*)ButtonActions::Use_Technology) {
+						if (unit->id != UnitId::ProtossMindTyrant) {
+							for (s32 i = 0; i < generictoggles; i++) {
+								if (current_button->action_var == toggle_abilities[i]) {
+									if (scbw::get_generic_rust_value(unit, toggle_values[i]) == 1) {
 										current_button->icon_id = button_toggle_off[i];
-									}
-									else
-									{
+									} else {
 										current_button->icon_id = button_toggle_on[i];
 									}
 								}
 							}
 						}
 
+						// Hide recall, since cancel is the same slot
+						if (unit->id == UnitId::ProtossDidact && current_button->action_var == TechId::Recall) {
+							if (unit_ext->values[ValueDidactRecalling]) {
+								current_button_state = Button_State::Invisible;
+							} else {
+								current_button_state = Button_State::Enabled;
+							}
+						}
+
 						// Cancel new abilities!
 						if (current_button->action_var == TechId::CancelNewAbility) {
 							bool can_cancel = false;
-							UnitExt* active_ext = get_unit_ext(unit);
 							if (unit->id == UnitId::TerranWyvern) {
-								if (active_ext->values[ValueWyvernLandGrabOn]) {
+								if (unit_ext->values[ValueWyvernLandGrabOn]) {
 									can_cancel = true;
 								}
 							}
 							if (unit->id == UnitId::ProtossDidact) {
-								if (active_ext->values[ValueDidactRecalling]) {
+								if (unit_ext->values[ValueDidactRecalling]) {
 									can_cancel = true;
 								}
 							}
 							
-							if (active_ext->timers[TimerControlledDemolition] && !active_ext->timers[TimerEmergencyDetonation]) {
+							if (unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerEmergencyDetonation]) {
 								can_cancel = true;
 								current_button_state = Button_State::Enabled;
 							}
