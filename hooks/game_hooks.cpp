@@ -1278,9 +1278,11 @@ namespace hooks {
 					} else if (unit->is_frozen()) {
 						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 					}
-					scbw::decloak_proc(unit);
 				} else {
 					unit_ext->values[ValueDisruptionFieldOn] = 0;
+				}
+				if (unit_ext->values[ValueDisruptionFieldOn]) {
+					scbw::decloak_proc(unit);
 				}
 			} break;
 			case UnitId::TerranMadcap:
@@ -1944,11 +1946,13 @@ namespace hooks {
 						unit->sprite->create_overlay(ImageId::StonewallProtocolOverlay);
 						if (unit_ext->values[ValueMadrigalTempoDown]) {
 							helper::play_sound_from_unit(SoundId::MadrigalTempoChangeDown, unit);
-						}
-						else {
+						} else {
 							helper::play_sound_from_unit(SoundId::MadrigalTempoChangeUp, unit);
 						}
 					}
+				}
+				if (unit_ext->timers[TimerMadrigalTempoChange]) {
+					scbw::decloak_proc(unit);
 				}
 				if (unit_ext->timers[TimerMadrigalTempoChange] == 1) {
 					unit->status &= ~UnitStatus::CanNotAttack;
