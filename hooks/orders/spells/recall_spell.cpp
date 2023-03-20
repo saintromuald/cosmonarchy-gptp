@@ -71,6 +71,35 @@ namespace hooks
 		spells_recall_action_on_valid_target_for_recall(target, caster);
 	}
 
+	void tick_recall_channel_anim(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u32 index = unit_ext->values[ValueDidactChannelIndex] % 8;
+		unit_ext->values[ValueDidactChannelIndex] += 1;
+
+		Point16 source_origin = {unit->position.x, unit->position.y};
+		Point16 target_origin = {unit->order_target.pt.x, unit->order_target.pt.y};
+
+		Point16 source = source_origin;
+		Point16 target = target_origin;
+		source.y -= 1 * 32;
+		target.y -= 1 * 32;
+
+		source = scbw::rotate_point(source_origin, source, index * (360 / 6));
+		target = scbw::rotate_point(target_origin, target, index * (360 / 6));
+
+		scbw::create_and_init_thingy(SpriteId::Recall_Field, source.x, source.y, unit->player, unit->sprite->elevation - 1);
+		scbw::create_and_init_thingy(SpriteId::Recall_Field, target.x, target.y, unit->player, unit->sprite->elevation + 1);
+
+		u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+		u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+		if (scbw::random() % 2 == 0) {
+			sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+			sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+		}
+		helper::play_sound_at_pos(sound_id_source, source);
+		helper::play_sound_at_pos(sound_id_target, target);
+	}
+
 	void orders_recall(Unit* unit) {
 		static b32* const recall_successful = (b32*)(0x0063FF50);
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -124,32 +153,7 @@ namespace hooks
 				}
 			} else {
 				unit_ext->energy_regen_timer = 0; // Prevent energy regen during channel
-
-				u32 index = unit_ext->values[ValueDidactChannelIndex] % 8;
-				unit_ext->values[ValueDidactChannelIndex] += 1;
-
-				Point16 source_origin = {unit->position.x, unit->position.y};
-				Point16 target_origin = {unit->order_target.pt.x, unit->order_target.pt.y};
-
-				Point16 source = source_origin;
-				Point16 target = target_origin;
-				source.y -= 1 * 32;
-				target.y -= 1 * 32;
-
-				source = scbw::rotate_point(source_origin, source, index * (360 / 8));
-				target = scbw::rotate_point(target_origin, target, index * (360 / 8));
-
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, source.x, source.y, unit->player, unit->sprite->elevation - 1);
-				scbw::create_and_init_thingy(SpriteId::Recall_Field, target.x, target.y, unit->player, unit->sprite->elevation + 1);
-
-				u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
-				u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
-				if (scbw::random() % 2 == 0) {
-					sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
-					sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
-				}
-				helper::play_sound_at_pos(sound_id_source, source);
-				helper::play_sound_at_pos(sound_id_target, target);
+				tick_recall_channel_anim(unit);
 			}
 		} else {
 			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::Recall] * 256) {
@@ -172,11 +176,12 @@ namespace hooks
 				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->main_order_state = 1;
-				unit->main_order_timer = 10 * 9; // 3.75s, this is not very flexible, but the interval of 9 is required
-												 // for the channel animation, which is the unit order execution interval
+				unit->main_order_timer = 6 * 9; // 2.25s, this is not very flexible, but the interval of 9 is required
+												// for the channel animation (and the order processing anyways), which is the unit order execution interval
 				helper::make_to_hold_position(unit);
 				unit_ext->values[ValueDidactChannelIndex] = 0;
 				unit_ext->values[ValueDidactRecalling] = false;
+				tick_recall_channel_anim(unit);
 			}
 		}
 	}
