@@ -769,8 +769,8 @@ namespace hooks
 	// Hooked to not die to lard. -Pr0nogo
 	char get_team_size(u32 selecting_player) { // 00485710
 		if ((selecting_player < PlayerLimit && global_vars.players[selecting_player].is_witness)
-		||	!scbw::is_allied_to(selecting_player, *g_local_nation_id) 
-		||	!scbw::is_allied_to(*g_local_nation_id, selecting_player)) {
+		||	!scbw::is_allied_to(selecting_player, *g_local_human_id) 
+		||	!scbw::is_allied_to(*g_local_human_id, selecting_player)) {
 			return 1;
 		}
 		return 4;
