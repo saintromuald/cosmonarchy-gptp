@@ -1239,21 +1239,20 @@ namespace hooks {
 				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1) {
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 
-					u32 energy = techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256;
-					if (unit->has_energy(energy)) {
-						unit->spend_unit_energy(energy);
-						scbw::decloak_proc(unit);	
-						if (unit_ext->timers[TimerLazarusCasting]) {
-							unit_ext->values[ValueLazarusRecasts]++;
-						} else {
+					if (!unit_ext->timers[TimerLazarusCasting]) {
+						u32 energy = techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256;
+						if (unit->has_energy(energy)) {
+							unit->spend_unit_energy(energy);
 							unit_ext->timers[TimerLazarusCasting] = 2 * 24;
+							unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+							helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0);
 						}
 					}
 				}
-				if (unit_ext->timers[TimerLazarusCasting] == 2 * 24) {
-					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-					helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0);
-				} else if (unit_ext->timers[TimerLazarusCasting] % 12 == 11) {
+				if (unit_ext->timers[TimerLazarusCasting]) {
+					scbw::decloak_proc(unit);	
+				}
+				if (unit_ext->timers[TimerLazarusCasting] % 12 == 1) {
 					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 					helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0);
 				}
@@ -1266,10 +1265,6 @@ namespace hooks {
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
 						scbw::reclaim_corpse(corpse, unit->player);
-					}
-					if (unit_ext->values[ValueLazarusRecasts]) {
-						unit_ext->values[ValueLazarusRecasts]--;
-						unit_ext->timers[TimerLazarusCasting] = 2 * 24;
 					}
 				}
 			} break;

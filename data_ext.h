@@ -114,7 +114,6 @@ enum ExtValueId
 	ValuePanoptusLaunchPos,
 	ValueThroughTheLookingGlassX,
 	ValueThroughTheLookingGlassY,
-	ValueLazarusRecasts,
 	ValueGladiusBindingPlasmaStacks,
 	ValueGladiusBindingPlasmaPlayer,
 	ValueCentaurSecondaryWeaponCount,
