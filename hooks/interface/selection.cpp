@@ -784,7 +784,7 @@ namespace hooks
 
 	// Hooked to forbid witness selections from showing. -Pr0nogo
 	char create_dashed_selection_main(Unit* unit, u32 selecting_player) { // 004E65CD
-		if (unit->player == selecting_player || global_vars.players[selecting_player].is_witness) {
+		if (unit->player == selecting_player || (selecting_player < PlayerLimit && global_vars.players[selecting_player].is_witness)) {
 			return false;
 		}
 		return helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
