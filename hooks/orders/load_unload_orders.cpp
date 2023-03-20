@@ -486,7 +486,7 @@ namespace hooks
 				if (cargo) {
 					bFoundUnitToUnload = true;
 					result_E7F70 = helper::unload_unit_proc(cargo);
-					if (!(cargo->status & UnitStatus::GroundedBuilding)) {
+					if (!(unit->status & UnitStatus::GroundedBuilding)) {
 						break;
 					}
 				}
