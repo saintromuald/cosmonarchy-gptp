@@ -4,9 +4,9 @@
 
 namespace hooks
 {
-	void orders_cast_mind_control(Unit* unit)
-	{
-		UnitExt* unitExt = get_unit_ext(unit);
+	void orders_cast_mind_control(Unit* unit) {
+		scbw::decloak_proc(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		Unit* target = unit->order_target.unit;
 		if (!target || unit->player == target->player || scbw::is_allied_to(unit->player, target->player)) {
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;

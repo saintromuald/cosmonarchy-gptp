@@ -162,22 +162,19 @@ namespace hooks
 		}
 	}
 
-	void orders_spell(Unit* unit)
-	{
+	void orders_spell(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u8 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
-		if (unit->id == UnitId::TerranPaladin)
-		{
-			if (unit->order_signal & 0x20)
-			{
+		if (unit->id == UnitId::TerranPaladin) {
+			scbw::decloak_proc(unit);
+			if (unit->order_signal & 0x20) {
 				unit->order_signal &= ~0x20;
 				unit_ext->timers[TimerSkyfall] = 3;
 				unit_ext->values[ValueSkyfallStacks] = 0;
 				auto pt = unit->order_target.pt;
-				if (unit->order_target.unit != nullptr)
-				{
+				if (unit->order_target.unit != nullptr) {
 					pt = unit->order_target.unit->position;
 					unit->order_target.unit = nullptr;
 				}
@@ -186,78 +183,58 @@ namespace hooks
 			}
 		}
 
-		if (unit->id == UnitId::TerranWyvern)
-		{
+		if (unit->id == UnitId::TerranWyvern) {
 			unit_ext->values[ValueWyvernLandGrabOn] = 1;
 			unit_ext->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
 			unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 		}
 
-		if (unit->main_order_state == 2)
-		{
-			if (unit->order_signal & 2)
-			{
+		if (unit->main_order_state == 2) {
+			if (unit->order_signal & 2) {
 				unit->order_signal -= 2;
 				unit->order_to_idle();
-			}
-			else // 00492886
-			{
-				if (target != nullptr)
-				{
+			} else { // 00492886
+				if (target) {
 					unit->order_target.pt.x = target->sprite->position.x;
 					unit->order_target.pt.y = target->sprite->position.y;
 
 					if (target->sprite->position.x != unit->next_target_waypoint.x
-					||	target->sprite->position.y != unit->next_target_waypoint.y) // 004928C1
-					{
+					||	target->sprite->position.y != unit->next_target_waypoint.y) { // 004928C1
 						unit->next_target_waypoint.x = target->sprite->position.x;
 						unit->next_target_waypoint.y = target->sprite->position.y;
 					}
 				}
 			}
-		}
-		else // 004928CF
-		{
-			if (!helper::can_cast_spell(unit))
-			{
+		} else { // 004928CF
+			if (!helper::can_cast_spell(unit)) {
 				char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
 				// do the actual transmission corresponding to the message
 				helper::get_stat_txt_string(unit, unit->player, message);
 				// make the unit stop since the order failed
 				helper::set_resource_target(unit);
 				unit->order_to_idle();
-			}
-			else // 0049291A
-			{
+			} else { // 0049291A
 				u8 techUsed = orders_dat::tech_used[unit->main_order_id];
 				s32 spell_cost;
-				if (techUsed == TechId::None)
-				{
+				if (techUsed == TechId::None) {
 					spell_cost = 0;
-				}
-				else
-				{
+				} else {
 					spell_cost = techdata_dat::energy_cost[techUsed] * 256;
 				}
 
 				if (!(*g_cheat_state & CheatFlags::TheGathering) &&
-					unit->energy < spell_cost)
-				{
+					unit->energy < spell_cost) {
 					u8 raceId = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId); // Not enough energy
-					if (message != nullptr)
-					{
+					if (message) {
 						// display an error message only for the owner of the unit
 						if (*g_local_nation_id == unit->player
-						&&	*g_active_player_id == *g_local_human_id)
-						{
+						&&	*g_active_player_id == *g_local_human_id) {
 							helper::set_unit_stat_txt_error_message(message);
 						}
 					}
 					unit->order_to_idle();
-				}
-				else // 004929C2
-				{
+				} else { // 004929C2
 					u32 result_00492620;
 					// may initiate movement from unit depending on main_order_state
 					if (unit->main_order_state == 0)

@@ -101,7 +101,7 @@ namespace hooks
 	}
 
 	void orders_recall(Unit* unit) {
-		static b32* const recall_successful = (b32*)(0x0063FF50);
+		scbw::decloak_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 		// Unit has started casting Recall (== went through the other condition)
 		if (unit->main_order_state == 1) {
@@ -112,6 +112,7 @@ namespace hooks
 					scbw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 				}
 
+				static b32* const recall_successful = (b32*)(0x0063FF50);
 				*recall_successful = false;
 				EntryArray targets = {};
 				unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
@@ -173,7 +174,6 @@ namespace hooks
 					unit->order_target.pt.y = unit->order_target.unit->position.y;
 				}
 
-				scbw::decloak_proc(unit);
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->main_order_state = 1;
 				unit->main_order_timer = 6 * 9; // 2.25s, this is not very flexible, but the interval of 9 is required
