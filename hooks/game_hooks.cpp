@@ -2858,7 +2858,7 @@ namespace hooks {
 					default: {
 						u32 command_size = g_turn_command_size[command_id];
 						if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
-							command_size = 2 * buffer[1] + 2;
+							command_size = 2 * (u8)buffer[1] + 2;
 						}
 						size -= command_size;
 					maybe_process_command:
