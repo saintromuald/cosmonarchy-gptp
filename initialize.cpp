@@ -224,6 +224,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	nops(0x004D2264, 2);
 	nops(0x004D1F26, 2);
 	nops(0x004D1FAE, 6);
+
+	// Fix irradiate field being created on replace unit with type call
+	nops(0x00454EB9, 7);
 	// Veeq7, end
 
 	// iquare, start
