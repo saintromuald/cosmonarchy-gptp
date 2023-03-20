@@ -189,12 +189,12 @@ namespace
 
 	void __declspec(naked) illegal_team_check_wrapper() { // 00485710
 		static char result;
-		static Unit* unit;
+		static u32 unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::illegal_team_check(unit);
+		result = hooks::get_team_size(unit);
 		__asm {
 			POPAD
 			MOV AL, result

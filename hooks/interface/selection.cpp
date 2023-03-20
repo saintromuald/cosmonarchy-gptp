@@ -703,36 +703,29 @@ namespace hooks
 	}
 
 	// Hooked to help debug hpbars.cpp hooks. -Pr0nogo
-	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id) // 004D7070
-	{
+	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id) { // 004D7070
 		Image* last_free_circle = *g_last_free_selection_circle;
-		if (*g_last_free_selection_circle == 0)
-		{
+		if (*g_last_free_selection_circle == 0) {
 			return 0;
 		}
 		
 		Image* next_free_circle = (*g_last_free_selection_circle)->link.next;
 		*g_last_free_selection_circle = (*g_last_free_selection_circle)->link.next;
-		if (*g_first_free_selection_circle == last_free_circle)
-		{
+		if (*g_first_free_selection_circle == last_free_circle) {
 			*g_first_free_selection_circle = last_free_circle->link.prev;
 		}
-		if (last_free_circle->link.prev)
-		{
+		if (last_free_circle->link.prev) {
 			last_free_circle->link.prev->link.next = next_free_circle;
 		}
-		if (next_free_circle)
-		{
+		if (next_free_circle) {
 			next_free_circle->link.prev = last_free_circle->link.prev;
 		}
 		last_free_circle->link.prev = 0;
 		next_free_circle = 0;
 
 		Image* tail = sprite->images.tail;
-		if (tail->palette_type == 10)
-		{
-			if (sprite->images.head == tail)
-			{
+		if (tail->palette_type == 10) {
+			if (sprite->images.head == tail) {
 				sprite->images.head = last_free_circle;
 			}
 			last_free_circle->link.prev = tail->link.prev;
@@ -742,18 +735,14 @@ namespace hooks
 				tail->link.prev->link.next = last_free_circle;
 			}
 			tail->link.prev = last_free_circle;
-		}
-		else
-		{
-			if (sprite->images.tail == tail)
-			{
+		} else {
+			if (sprite->images.tail == tail) {
 				sprite->images.tail = last_free_circle;
 			}
 			last_free_circle->link.prev = tail;
 			next_free_circle = tail->link.next;
 			Image* next_tail = tail->link.next;
-			if (next_tail)
-			{
+			if (next_tail) {
 				next_tail->link.prev = last_free_circle;
 			}
 			tail->link.next = last_free_circle;
@@ -764,13 +753,10 @@ namespace hooks
 
 	// Hooked to investigate "archon mode".
 	// Ended up being used for allied selection circles. -Pr0nogo
-	b32 is_human_player_on_same_team(u32 player_id) // 0049A110
-	{
+	b32 is_human_player_on_same_team(u32 player_id) { // 0049A110
 		if (player_id != *g_local_human_id
-		&&  player_id < PlayerLimit) // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
-		{
-			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !global_vars.players[player_id].is_witness)
-			{
+		&&  player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
+			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !global_vars.players[player_id].is_witness) {
 				return true;
 			}
 		}
@@ -781,28 +767,26 @@ namespace hooks
 	}
 
 	// Hooked to not die to lard. -Pr0nogo
-	char illegal_team_check(Unit* unit) // 00485710
-	{
-		u32 player = (u32)unit;
-		if (scbw::is_allied_to(player, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player) && !global_vars.players[player].is_witness) {
-			return 4;
+	char get_team_size(u32 selecting_player) { // 00485710
+		if ((selecting_player < PlayerLimit && global_vars.players[selecting_player].is_witness)
+		||	!scbw::is_allied_to(selecting_player, *g_local_nation_id) 
+		||	!scbw::is_allied_to(*g_local_nation_id, selecting_player)) {
+			return 1;
 		}
-		return 2;
+		return 4;
 	}
 
 	// Hooked to investigate "archon mode".
 	// Seems to only be called from lobbies, so it's probably not related to what I want. -Pr0nogo
-	b32 game_is_team_game() // 00484F50
-	{
+	b32 game_is_team_game() { // 00484F50
 		return *g_multiplayer_mode && game_data->teams_enabled;
 	}
 
 	// Hooked to forbid witness selections from showing. -Pr0nogo
-	char create_dashed_selection_main(Unit* unit, u32 player) // 004E65CD
-	{
-		if (global_vars.players[player].is_witness) {
+	char create_dashed_selection_main(Unit* unit, u32 selecting_player) { // 004E65CD
+		if (unit->player == selecting_player || global_vars.players[selecting_player].is_witness) {
 			return false;
 		}
-		return helper::create_dashed_selection(player, unit->sprite, g_selection_circle_color[unit->player]);
+		return helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
 	}
 }
