@@ -2856,17 +2856,13 @@ namespace hooks {
 						goto process_command;
 					}
 					default: {
-						command_id = command_id;
 						u32 command_size = g_turn_command_size[command_id];
 						if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
 							command_size = 2 * buffer[1] + 2;
 						}
 						size -= command_size;
-						if (size < 0) {
-							return;
-						}
 					maybe_process_command:
-						if (!size) {
+						if (size <= 0) {
 							return;
 						}
 					} break;
@@ -2877,18 +2873,18 @@ namespace hooks {
 				case GameCommand_Sequence:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
-						++(*g_sequence);
+					if (size >= command_size) {
+						++*g_sequence;
 						goto next_command;
 					}
 				} break;
 				case GameCommand_SaveGame:
 				{
 					command_size = 5;
-					if (size - command_size >= 0) {
-						s32 is_valid_string = helper::is_string_valid(28u, size - command_size, 0, buffer + 5, 0);
-						if (is_valid_string) {
-							command_size += is_valid_string;
+					if (size >= command_size) {
+						s32 string_size = helper::get_recv_string(28u, size - command_size, 0, buffer + 5, 0);
+						if (string_size) {
+							command_size += string_size;
 							helper::CMDRECV_save_game(buffer);
 							goto next_command;
 						}
@@ -2897,10 +2893,10 @@ namespace hooks {
 				case GameCommand_LoadGame:
 				{
 					command_size = 5;
-					if (size - command_size >= 0) {
-						s32 is_valid_string = helper::is_string_valid(28u, size - command_size, 0, buffer + 5, 0);
-						if (is_valid_string) {
-							command_size += is_valid_string;
+					if (size >= command_size) {
+						s32 string_size = helper::get_recv_string(28u, size - command_size, 0, buffer + 5, 0);
+						if (string_size) {
+							command_size += string_size;
 							if (!*g_multiplayer_mode) {
 								helper::CMDRECV_load_game(buffer + 5);
 							}
@@ -2911,7 +2907,7 @@ namespace hooks {
 				case GameCommand_RestartGame:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_restart_game();
 						goto next_command;
 					}
@@ -2919,10 +2915,9 @@ namespace hooks {
 				case GameCommand_Select:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
-						u32 select_size = 2 * (u8)buffer[1];
-						command_size += select_size;
-						if (size - command_size >= 0) {
+					if (size >= command_size) {
+						command_size += 2 * (u8)buffer[1];
+						if (size >= command_size) {
 							helper::CMDRECV_select(buffer);
 							goto next_command;
 						}
@@ -2931,10 +2926,9 @@ namespace hooks {
 				case GameCommand_ShiftSelect:
 				{
 					command_size = 2;
-					if (command_size >= 0) {
-						u32 select_size = 2 * (u8)buffer[1];
-						command_size += select_size;
-						if (size - command_size >= 0) {
+					if (size >= command_size) {
+						command_size += 2 * (u8)buffer[1];
+						if (size >= command_size) {
 							helper::CMDRECV_shift_select(buffer);
 							goto next_command;
 						}
@@ -2943,10 +2937,9 @@ namespace hooks {
 				case GameCommand_ShiftDeselect:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
-						u32 select_size = 2 * (u8)buffer[1];
-						command_size += select_size;
-						if (size - command_size >= 0) {
+					if (size >= command_size) {
+						command_size += 2 * (u8)buffer[1];
+						if (size >= command_size) {
 							helper::CMDRECV_shift_deselect(buffer);
 							goto next_command;
 						}
@@ -2955,7 +2948,7 @@ namespace hooks {
 				case GameCommand_Build:
 				{
 					command_size = 8;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_build(buffer);
 						goto next_command;
 					}
@@ -2963,7 +2956,7 @@ namespace hooks {
 				case GameCommand_Vision:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_vision(buffer);
 						goto next_command;
 					}
@@ -2971,8 +2964,7 @@ namespace hooks {
 				case GameCommand_Ally:
 				{
 					command_size = 5;
-					if (size - command_size >= 0)
-					{
+					if (size >= command_size) {
 						helper::CMDRECV_ally(buffer);
 						goto next_command;
 					}
@@ -2980,7 +2972,7 @@ namespace hooks {
 				case GameCommand_GameSpeed:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						u32 speed = buffer[1];
 						if (speed < 7 && !*g_multiplayer_mode) {
 							(*g_options_list).speed = speed;
@@ -2991,7 +2983,7 @@ namespace hooks {
 				case GameCommand_PauseGame:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_pause_game();
 						goto next_command;
 					}
@@ -2999,7 +2991,7 @@ namespace hooks {
 				case GameCommand_ResumeGame:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_resume_game();
 						goto next_command;
 					}
@@ -3007,7 +2999,7 @@ namespace hooks {
 				case GameCommand_UseCheat:
 				{
 					command_size = 5;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_use_cheat(buffer, (char*)g_is_in_replay);
 						goto next_command;
 					}
@@ -3015,7 +3007,7 @@ namespace hooks {
 				case GameCommand_Hotkey:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_hotkey(buffer);
 						goto next_command;
 					}
@@ -3023,7 +3015,7 @@ namespace hooks {
 				case GameCommand_RightClick:
 				{
 					command_size = 10;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_right_click((Unit*)buffer);
 						goto next_command;
 					}
@@ -3031,7 +3023,7 @@ namespace hooks {
 				case GameCommand_TargetCommand:
 				{
 					command_size = 11;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_target_command(buffer);
 						goto next_command;
 					}
@@ -3039,7 +3031,7 @@ namespace hooks {
 				case GameCommand_CancelConstruction:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_construction();
 						goto next_command;
 					}
@@ -3047,7 +3039,7 @@ namespace hooks {
 				case GameCommand_CancelUnitMorph:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_unit_morph();
 						goto next_command;
 					}
@@ -3055,7 +3047,7 @@ namespace hooks {
 				case GameCommand_Stop:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_stop(buffer);
 						goto next_command;
 					}
@@ -3063,7 +3055,7 @@ namespace hooks {
 				case GameCommand_CarrierStop:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_carrier_stop();
 						goto next_command;
 					}
@@ -3071,7 +3063,7 @@ namespace hooks {
 				case GameCommand_ReaverStop:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_reaver_stop();
 						goto next_command;
 					}
@@ -3079,7 +3071,7 @@ namespace hooks {
 				case GameCommand_Nothing:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_nothing();
 						goto next_command;
 					}
@@ -3087,7 +3079,7 @@ namespace hooks {
 				case GameCommand_ReturnCargo:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_return_cargo(buffer);
 						goto next_command;
 					}
@@ -3095,7 +3087,7 @@ namespace hooks {
 				case GameCommand_Train:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_train(buffer);
 						goto next_command;
 					}
@@ -3103,7 +3095,7 @@ namespace hooks {
 				case GameCommand_CancelTrain:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_train(buffer);
 						goto next_command;
 					}
@@ -3111,7 +3103,7 @@ namespace hooks {
 				case GameCommand_Cloak:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cloak();
 						goto next_command;
 					}
@@ -3119,7 +3111,7 @@ namespace hooks {
 				case GameCommand_Decloak:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_decloak();
 						goto next_command;
 					}
@@ -3127,7 +3119,7 @@ namespace hooks {
 				case GameCommand_UnitMorph:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_unit_morph(buffer);
 						goto next_command;
 					}
@@ -3135,7 +3127,7 @@ namespace hooks {
 				case GameCommand_Unsiege:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_unsiege(buffer);
 						goto next_command;
 					}
@@ -3143,7 +3135,7 @@ namespace hooks {
 				case GameCommand_Siege:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_siege(buffer);
 						goto next_command;
 					}
@@ -3151,7 +3143,7 @@ namespace hooks {
 				case GameCommand_TrainFighter:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_train_fighter();
 						goto next_command;
 					}
@@ -3159,7 +3151,7 @@ namespace hooks {
 				case GameCommand_UnloadAll:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_unload_all(buffer);
 						goto next_command;
 					}
@@ -3167,7 +3159,7 @@ namespace hooks {
 				case GameCommand_Unload:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_unload((Unit*)buffer);
 						goto next_command;
 					}
@@ -3175,7 +3167,7 @@ namespace hooks {
 				case GameCommand_MergeArchon:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_merge_archon();
 						goto next_command;
 					}
@@ -3183,7 +3175,7 @@ namespace hooks {
 				case GameCommand_HoldPosition:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_hold_position(buffer);
 						goto next_command;
 					}
@@ -3191,7 +3183,7 @@ namespace hooks {
 				case GameCommand_Burrow:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_burrow(buffer);
 						goto next_command;
 					}
@@ -3199,7 +3191,7 @@ namespace hooks {
 				case GameCommand_Unburrow:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_unburrow();
 						goto next_command;
 					}
@@ -3207,7 +3199,7 @@ namespace hooks {
 				case GameCommand_CancelNuke:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_nuke();
 						goto next_command;
 					}
@@ -3215,7 +3207,7 @@ namespace hooks {
 				case GameCommand_Liftoff:
 				{
 					command_size = 5;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_liftoff(buffer);
 						goto next_command;
 					}
@@ -3223,7 +3215,7 @@ namespace hooks {
 				case GameCommand_Research:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_research(buffer);
 						goto next_command;
 					}
@@ -3231,7 +3223,7 @@ namespace hooks {
 				case GameCommand_CancelResearch:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_research();
 						goto next_command;
 					}
@@ -3239,7 +3231,7 @@ namespace hooks {
 				case GameCommand_Upgrade:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_upgrade(buffer);
 						goto next_command;
 					}
@@ -3247,7 +3239,7 @@ namespace hooks {
 				case GameCommand_CancelUpgrade:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_upgrade();
 						goto next_command;
 					}
@@ -3255,7 +3247,7 @@ namespace hooks {
 				case GameCommand_CancelAddon:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_cancel_addon();
 						goto next_command;
 					}
@@ -3263,7 +3255,7 @@ namespace hooks {
 				case GameCommand_BuildingMorph:
 				{
 					command_size = 3;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_building_morph(buffer);
 						goto next_command;
 					}
@@ -3271,7 +3263,7 @@ namespace hooks {
 				case GameCommand_Stimpack:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_stim_pack();
 						goto next_command;
 					}
@@ -3279,7 +3271,7 @@ namespace hooks {
 				case GameCommand_Hash:
 				{
 					command_size = 7;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						if (!is_in_replay && !helper::CMD_game_hash((HashPacket*)buffer)) {
 							*g_is_bad_hash = 1;
 							g_array_player_status[*g_active_storm_id] = 0x10000;
@@ -3292,7 +3284,7 @@ namespace hooks {
 				case GameCommand_VoiceEnable2:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_voice_enable(buffer);
 						goto next_command;
 					}
@@ -3301,14 +3293,14 @@ namespace hooks {
 				case GameCommand_Unused2:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						goto next_command;
 					}
 				} break;
 				case GameCommand_SetLatency:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_set_latency(buffer, 0);
 						goto next_command;
 					}
@@ -3316,7 +3308,7 @@ namespace hooks {
 				case GameCommand_SetReplaySpeed:
 				{
 					command_size = 10;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						if (is_in_replay) {
 							helper::CMDRECV_set_replay_speed(*(s32*)(buffer + 2), buffer[1], *(s32*)(buffer + 6));
 						}
@@ -3326,7 +3318,7 @@ namespace hooks {
 				case GameCommand_LeaveGame:
 				{
 					command_size = 2;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_leave_game(buffer);
 						goto next_command;
 					}
@@ -3334,7 +3326,7 @@ namespace hooks {
 				case GameCommand_MinimapPing:
 				{
 					command_size = 5;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_minimap_ping(buffer);
 						goto next_command;
 					}
@@ -3342,7 +3334,7 @@ namespace hooks {
 				case GameCommand_MergeDarkArchon:
 				{
 					command_size = 1;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::CMDRECV_merge_dark_archon();
 						goto next_command;
 					}
@@ -3350,7 +3342,7 @@ namespace hooks {
 				case GameCommand_DisplaySomeText:
 				{
 					command_size = 82;
-					if (size - command_size >= 0) {
+					if (size >= command_size) {
 						helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
 					next_command:
 						if (*g_active_nation_id < PlayerLimit) {

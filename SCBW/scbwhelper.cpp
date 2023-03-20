@@ -12685,7 +12685,7 @@ namespace helper {
 		}
 	}
 
-	s32 is_string_valid(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type)
+	s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type)
 	{
 		static s32 result;
 		const u32 func_address = 0x00485980;

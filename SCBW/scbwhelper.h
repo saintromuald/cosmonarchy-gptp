@@ -1508,7 +1508,7 @@ namespace helper {
 
 	void update_unit_damage_overlay(Unit* unit);																							// 004E6090
 
-	s32 is_string_valid(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type);											// 00485980
+	s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type);											// 00485980
 	void CMDRECV_save_game(char* buffer);																									// 004C2910
 	FILE* CMDRECV_load_game(char* buffer);																									// 004CF950
 	s8 CMDRECV_restart_game();																												// 004BFB10
