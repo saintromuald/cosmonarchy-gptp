@@ -84,8 +84,8 @@ namespace hooks {
 		}
 
 		if (config.show_timer) {
-			char buffer[32] = {};
-			format_time(buffer, 32, "", *g_elapsed_time_frames * 0.042);
+			char buffer[48] = {};
+			format_time(buffer, 48, "", *g_elapsed_time_frames / 24);
 			draw_ui_text(buffer, 7);
 		}
 
@@ -95,13 +95,13 @@ namespace hooks {
 				if (global_vars.players[i].is_witness || g_player_table[i].type != PlayerType::Human) {
 					continue;
 				}
-				char buffer[32] = {};
+				char buffer[48] = {};
 				u32 apm = player_apm_counter[i].action_count / (ActionSampleTime / 60.0);
 				sprintf_s(buffer, "%s APM: %u", g_player_table[i].name, apm);
 				draw_ui_text(buffer, 7);
 			}
 		} else if (!in_replay_or_witness && config.show_apm) {
-			char buffer[32] = {};
+			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
 			draw_ui_text(buffer, 7);
