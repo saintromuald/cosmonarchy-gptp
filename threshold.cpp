@@ -956,7 +956,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			g_unit_deaths_table[UnitId::ProtossPlasmaShell].player[player] = threshold.frauds[fraud][race].build_type;
 			g_unit_deaths_table[UnitId::Spell_DarkSwarm].player[player] = threshold.frauds[fraud][race].build_order;
 			set_player_color(player, threshold.frauds[fraud][race].color);
-			set_player_name(player, (char*)fraud_names[fraud]);
+			set_player_name(player, (char*)fraud_names[fraud], true);
 			set_player_force_name(player, (char*)fraud_class_names[fraud_class]);
 
 			s32 alliance = find_alliance(fraud);

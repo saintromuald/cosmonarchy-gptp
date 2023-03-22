@@ -4,6 +4,7 @@
 #include "hooks/interface/buttonsets.h"
 #include "trigger_system/trigger_system.h"
 #include "DatExtend/datext.h"
+#include "player_color.h"
 
 #include "hooks/interface/weapon_armor_tooltip.h"
 
@@ -254,20 +255,14 @@ namespace hooks
 	}
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* get_unit_rank_string(Unit* unit) // 0042F370
-	{
-		u16 unit_id = unit->id;
-		if (units_dat::base_property[unit_id] & UnitProperty::NeutralAccessories)
-		{
-			return 0;
-		}
-
-		if (unit->player == 11) {
+	char* get_unit_rank_string(Unit* unit) { // 0042F370
+		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) {
 			return "";
 		}
-		else {
-			return g_player_name_list->player[unit->player].player_name;
+		if (unit->player < PlayerLimit) {
+			return player_data.full_player_names[unit->player].data;
 		}
+		return "";
 
 		/*
 		// Originally had Gantrithor - Tassadar hardcode here
@@ -290,13 +285,11 @@ namespace hooks
 		*/
 	}
 
-	void draw_unit_kills_string(BinDlg* dialog) // 00425DD0
-	{
+	void draw_unit_kills_string(BinDlg* dialog) { // 00425DD0
 		Unit* unit = *g_active_portrait_unit;
-
-		static char buffer[256] = {};
-		strcpy_s(buffer, g_player_name_list->player[unit->player].force_name);
-		helper::add_text_to_dialog(dialog, -21, buffer);
+		if (unit->player < PlayerLimit) {
+			helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
+		}
 
 		/*
 		if  (unit->player == *g_local_nation_id && !*is_in_replay)

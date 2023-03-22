@@ -28,7 +28,6 @@ SoundReplacement sound_replacements[SoundReplacementCap];
 u32 sprite_replacements_count;
 SpriteReplacement sprite_replacements[SpriteReplacementCap];
 
-bool has_custom_player_name[PlayerLimit];
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 
 GlobalVars global_vars;
@@ -60,7 +59,6 @@ void init_trigger_system() {
 	sprite_replacements_count = 0;
 	memset(sprite_replacements, 0, sizeof(sprite_replacements));
 
-	memset(has_custom_player_name, 0, sizeof(has_custom_player_name));
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
 	memset(&global_vars, 0, sizeof(global_vars));
 
@@ -458,13 +456,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 ignore_human_name = parser_get_s32(&parser);
 			if (player) {
 				player -= 1;
-				has_custom_player_name[player] = true;
 				if (!ignore_human_name && (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated)) {
-					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
-						"%s (%s)", name.data, g_player_table[player].name);
+					FullName buffer = {};
+					snprintf(buffer.data, FullNameCap, "%s (%s)", name.data, g_player_table[player].name);
+					set_player_name(player, buffer.data, true);
 				} else {
-					snprintf(g_player_name_list->player[player].player_name, sizeof(g_player_name_list->player[player].player_name),
-						"%s", name.data);
+					set_player_name(player, name.data, true);
 				}
 			}
 		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
@@ -472,8 +469,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token name = parser_get_string(&parser);
 			if (player) {
 				player -= 1;
-				snprintf(g_player_name_list->player[player].force_name, sizeof(g_player_name_list->player[player].force_name),
-					"%s", name.data);
+				set_player_force_name(player, name.data);
 			}
 		} else if (parser_eq(&parser, "recolor") && is_local_player) {
 			TimedRecolor recolor = {};
@@ -916,7 +912,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "set_player_color")) {
 			u32 player = parser_get_player(&parser);
-			u32 player_color = parser_get_enum(&parser, playerColorNames, ARRAY_SIZE(playerColorNames));
+			u32 player_color = parser_get_enum(&parser, player_color_names, ARRAY_SIZE(player_color_names));
 
 			if (player) {
 				player -= 1;

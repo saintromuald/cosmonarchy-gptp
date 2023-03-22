@@ -219,7 +219,6 @@ namespace graphics
 					case '\f':    // 12   formfeed
 						break;
 					case '\r':    // 13   carriage return
-					case 26:
 						continue;
 					case 18:      // right align
 						Xoffset += this->getWidth() - fnt->getTextWidth(pszStr) - x;

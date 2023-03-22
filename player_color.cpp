@@ -3,11 +3,10 @@
 #include "color_palette.h"
 
 static bool loaded_colors;
-static bool can_randomize_player_colors;
-static bool has_custom_color[PlayerLimit];
-static u8 tminimap_colors[MinimapColorCount];
-static u8 tunit_colors[UnitColorCount];
-static u8 player_color_list[PlayerLimit];
+u8 tminimap_colors[MinimapColorCount];
+u8 tunit_colors[UnitColorCount];
+
+PlayerData player_data;
 
 static std::vector<u32> get_player_tints_from_color(u32 color);
 static bool can_use_player_color(u32 color, u32 last_player);
@@ -17,10 +16,10 @@ static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
 
 static bool player_wants_to_randomize(u32 player) {
-	if (has_custom_color[player]) {
+	if (player_data.has_custom_color[player]) {
 		return false;
 	}
-	if (can_randomize_player_colors) {
+	if (player_data.can_randomize_player_colors) {
 		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
 		if (g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
 			randomize = !randomize;
@@ -104,7 +103,7 @@ static bool can_use_player_color(u32 color, u32 player) {
 			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
 				continue;
 			}
-			u32 delta = get_color_delta(color, player_color_list[other_player]);
+			u32 delta = get_color_delta(color, player_data.player_color_list[other_player]);
 			u32 threshold = g_player_table[player].race == g_player_table[other_player].race ? 192 : 128;
 			if (delta < threshold) {
 				return false;
@@ -189,7 +188,7 @@ static void match_color_of(u32 player) {
 		}
 		if (match) {
 			set_player_color(player, color);
-			has_custom_color[player] = false;
+			player_data.has_custom_color[player] = false;
 			break;
 		}
 	}
@@ -201,8 +200,8 @@ u8 get_player_color_index(u32 player, u32 index) {
 }
 
 void set_player_color(u32 player, u32 color) {
-	has_custom_color[player] = true;
-	player_color_list[player] = color;
+	player_data.has_custom_color[player] = true;
+	player_data.player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
 	g_player_scorescreen_colors[player] = color;
 	for (u32 i = 0; i < ColorSetSize; i++) {
@@ -216,12 +215,11 @@ static void init_player_colors() {
 		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MinimapColorCount, 0, 0, 0);
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
 	}
-	memset(has_custom_color, 0, sizeof(has_custom_color));
-	memset(player_color_list, 0, sizeof(player_color_list));
+	memset(&player_data, 0, sizeof(player_data));
 }
 
 void load_player_colors() {
-	can_randomize_player_colors = has_enough_colors();
+	player_data.can_randomize_player_colors = has_enough_colors();
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (player_wants_to_randomize(player) && player_can_randomize(player)) {
 			randomize_player_color(player);
@@ -232,7 +230,7 @@ void load_player_colors() {
 }
 
 static bool can_get_player_name(u32 player) {
-	if (!has_custom_player_name[player]
+	if (!player_data.has_custom_player_name[player]
 	&&   g_player_table[player].type == PlayerType::Computer) {
 		return true;
 	}
@@ -245,7 +243,7 @@ static bool is_valid_name(u32 player, char* name) {
 	}
 	for (u32 i = 0; i < PlayerLimit; ++i) {
 		if (i != player && can_get_player_name(i)) {
-			if (strcmp(g_player_name_list->player[i].player_name, name) == 0) {
+			if (strcmp(g_player_name_list->player[i].player_name, name) == 0) { // Will use the player name list, since full names constain player unique color code chars
 				return false;
 			}
 		}
@@ -265,18 +263,22 @@ static u32 get_name_count(u32 race, u32 personality) {
 	return count;
 }
 
-void set_player_name(u32 player, char* name) {
-	has_custom_player_name[player] = true;
-	strncpy(g_player_name_list->player[player].player_name, name, 24);
-	g_player_name_list->player[player].player_name[24] = 0;
+void set_player_name(u32 player, char* name, bool prevent_overwrites) {
+	if (prevent_overwrites) {
+		player_data.has_custom_player_name[player] = true;
+	}
+	strncpy(g_player_name_list->player[player].player_name, name, 25);
+	strncpy(player_data.full_player_names[player].data, name, FullNameCap);
 }
 
 void set_player_force_name(u32 player, char* name) {
-	strncpy(g_player_name_list->player[player].force_name, name, 29);
-	g_player_name_list->player[player].force_name[29] = 0;
+	strncpy(g_player_name_list->player[player].force_name, name, 30);
+	strncpy(player_data.full_force_names[player].data, name, FullNameCap);
 }
 
 static void update_player_name(u32 player) {
+	set_player_name(player, g_player_name_list->player[player].player_name, false);
+	set_player_force_name(player, g_player_name_list->player[player].force_name);
 	if (!can_get_player_name(player)) {
 		return;
 	}
@@ -288,13 +290,12 @@ static void update_player_name(u32 player) {
 			u32 random = scbw::rand_between(0, PlayerPesonalityMaxNames - 1);
 			char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
-				set_player_name(player, name);
+				set_player_name(player, name, true);
 				return;
 			}
 		}
 	}
-	set_player_name(player, "Computer");
-	has_custom_player_name[player] = false; // Here is where we want to remove this
+	set_player_name(player, "Computer", false);
 }
 
 void load_player_names() {

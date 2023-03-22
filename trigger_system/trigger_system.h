@@ -38,7 +38,6 @@ extern SoundReplacement sound_replacements[SoundReplacementCap];
 extern u32 sprite_replacements_count;
 extern SpriteReplacement sprite_replacements[SpriteReplacementCap];
 
-extern bool has_custom_player_name[PlayerLimit];
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 
 struct PlayerVars {

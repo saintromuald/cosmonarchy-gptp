@@ -601,9 +601,25 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 #define MinimapColorCount (ColorSetCount * TilesetType::Count)
 #define UnitColorCount 2048
 
+#define FullNameCap 64
+struct FullName {
+	char data[FullNameCap];
+};
+
+struct PlayerData {
+	bool can_randomize_player_colors;
+	bool has_custom_color[PlayerLimit];
+	bool has_custom_player_name[PlayerLimit];
+	u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+
+	FullName full_player_names[PlayerLimit];
+	FullName full_force_names[PlayerLimit];
+};
+
 extern u8 tminimap_colors[MinimapColorCount];
 extern u8 tunit_colors[UnitColorCount];
-extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+
+extern PlayerData player_data;
 
 u8 get_player_color_index(u32 player, u32 index);
 
@@ -612,5 +628,5 @@ void init_player_colors();
 void load_player_colors();
 
 void load_player_names();
-void set_player_name(u32 player, char* name);
+void set_player_name(u32 player, char* name, bool prevent_overwrites);
 void set_player_force_name(u32 player, char* name);

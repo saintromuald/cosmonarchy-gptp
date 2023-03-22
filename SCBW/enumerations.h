@@ -942,7 +942,7 @@ namespace PlayerColor
 	};
 }
 
-static const char* playerColorNames[] =
+static const char* player_color_names[] =
 {
 	"Red",
 	"Blue",

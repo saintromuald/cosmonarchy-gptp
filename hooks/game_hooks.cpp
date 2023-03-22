@@ -411,7 +411,6 @@ namespace hooks {
 					slot->count = 1;
 				}
 			}
-			
 
 			if (!cargo_slots_count) {
 				continue;
