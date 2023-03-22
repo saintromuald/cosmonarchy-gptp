@@ -686,14 +686,10 @@ namespace hooks {
 
 			// Check deaths
 			u8 reveal_flag = 0;
-			bool do_ping[PlayerLimit] = {};
 			for (u32 player_id = 0; player_id < PlayerLimit; ++player_id) {
 				u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
 				if (flags & VespeneDeaths_Reveal) {
 					reveal_flag |= 1 << player_id;
-				}
-				if (flags & VespeneDeaths_Ping) {
-					do_ping[player_id] = true;
 				}
 			}
 
@@ -718,7 +714,7 @@ namespace hooks {
 			}
 
 			for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
-				if (do_ping[target]) {
+				if (!global_vars.players[target].is_witness) {
 					u32 color = 0; // red
 					if (scbw::is_allied_to(*g_local_nation_id, target)) {
 						color = 8; // green
