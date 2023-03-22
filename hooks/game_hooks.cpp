@@ -479,96 +479,93 @@ namespace hooks {
 
 	static void draw_custom_ui() {
 		// Draw selection info
-		Unit* selected = *g_active_portrait_unit;
-		if (selected) {
-			for (u32 i = 0; i < *g_client_selection_count; ++i) {
-				Unit* unit = g_client_selection_group->unit[i];
-				Point16 source = unit->position;
+		for (u32 i = 0; i < *g_client_selection_count; ++i) {
+			Unit* unit = g_client_selection_group->unit[i];
+			Point16 source = unit->position;
 
-				// For checking cargo-related elements.
-				// This helped me solve a Bunker issue on 3 February 2023, please leave it here for the future. -Pr0nogo
-				/*
-				if (unit) {
-					for (u32 i = 0; i < TransportCap; ++i) {
-						Unit* cargo_unit = selected->get_loaded_unit(i);
-						if (!cargo_unit) {
-							continue;
+			// For checking cargo-related elements.
+			// This helped me solve a Bunker issue on 3 February 2023, please leave it here for the future. -Pr0nogo
+			/*
+			if (unit) {
+				for (u32 i = 0; i < TransportCap; ++i) {
+					Unit* cargo_unit = selected->get_loaded_unit(i);
+					if (!cargo_unit) {
+						continue;
+					}
+					u32 unit_order = cargo_unit->main_order_id;
+					scbw::printf("Order id %u", unit_order);
+				}
+			}
+			*/
+
+			// Show connected Nyduses
+			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
+				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
+					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
+				}
+			}
+			bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
+			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
+			||   (in_replay_or_witness && config.witness_show_order_lines)) {
+				Unit* ignore_resource_unit = 0;
+
+				// Worker harvest links
+				if (units_dat::base_property[unit->id] & UnitProperty::Worker
+					&& scbw::order_id_is_harvest_related(unit->main_order_id)) {
+					Unit* target_resource = unit->worker.target_resource.unit;
+					if (target_resource) {
+						graphics::ColorId color = graphics::CYAN;
+						if (config.show_unique_gas_order_line_color && scbw::unit_id_is_gas_structure(target_resource->id)) {
+							color = graphics::GREEN;
 						}
-						u32 unit_order = cargo_unit->main_order_id;
-						scbw::printf("Order id %u", unit_order);
+						draw_simple_line(source, target_resource->position, color);
+						ignore_resource_unit = target_resource;
 					}
 				}
-				*/
 
-				// Show connected Nyduses
-				if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
-					if (scbw::is_allied_to(unit->player, *g_local_nation_id) || helper::get_detecting_players(unit) & (1 << *g_local_nation_id)) {
-						draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
+				// Rally points
+				{
+					Point16 target = get_target_point(unit->rally);
+					if (target.x == unit->position.x &&
+						target.y == unit->position.y) {
+						target.x = 0;
+						target.y = 0;
+					}
+					if (!hooks::can_make_psi_field(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
+						source = target;
+					}
+					else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
+						source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
 					}
 				}
-				bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
-				if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
-				||   (in_replay_or_witness && config.witness_show_order_lines)) {
-					Unit* ignore_resource_unit = 0;
 
-					// Worker harvest links
-					if (units_dat::base_property[unit->id] & UnitProperty::Worker
-						&& scbw::order_id_is_harvest_related(unit->main_order_id)) {
-						Unit* target_resource = unit->worker.target_resource.unit;
-						if (target_resource) {
-							graphics::ColorId color = graphics::CYAN;
-							if (config.show_unique_gas_order_line_color && scbw::unit_id_is_gas_structure(target_resource->id)) {
-								color = graphics::GREEN;
-							}
-							draw_simple_line(source, target_resource->position, color);
-							ignore_resource_unit = target_resource;
-						}
-					}
-
-					// Rally points
+				// Main orders
+				{
+					graphics::ColorId color = graphics::GREEN;
+					switch (unit->main_order_id) {
+					case OrderId::Patrol:
+					case OrderId::ReturnMinerals:
+					case OrderId::ReturnGas:
+						// TODO: Add more neutral orders
 					{
-						Point16 target = get_target_point(unit->rally);
-						if (target.x == unit->position.x &&
-							target.y == unit->position.y) {
-							target.x = 0;
-							target.y = 0;
-						}
-						if (!hooks::can_make_psi_field(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
-							source = target;
-						}
-						else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
-							source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
-						}
-					}
-
-					// Main orders
+						color = graphics::YELLOW;
+					} break;
+					case OrderId::AttackMove:
+					case OrderId::AttackUnit:
+						// TODO: Add more aggressive orders
 					{
-						graphics::ColorId color = graphics::GREEN;
-						switch (unit->main_order_id) {
-						case OrderId::Patrol:
-						case OrderId::ReturnMinerals:
-						case OrderId::ReturnGas:
-							// TODO: Add more neutral orders
-						{
-							color = graphics::YELLOW;
-						} break;
-						case OrderId::AttackMove:
-						case OrderId::AttackUnit:
-							// TODO: Add more aggressive orders
-						{
-							color = graphics::RED;
-						} break;
-						}
-
-						source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
+						color = graphics::RED;
+					} break;
 					}
 
-					// Queued orders
-					if ((config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines)
-						&& !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
-						for (Order* order = unit->order_queue_head; order; order = order->next) {
-							source = draw_order_line(source, order->target, graphics::GREY);
-						}
+					source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
+				}
+
+				// Queued orders
+				if ((config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines)
+					&& !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
+					for (Order* order = unit->order_queue_head; order; order = order->next) {
+						source = draw_order_line(source, order->target, graphics::GREY);
 					}
 				}
 			}
@@ -688,9 +685,9 @@ namespace hooks {
 			}
 
 			// Check deaths
-			u8 reveal_flag = 0x00;
-			bool do_ping[PLAYABLE_PLAYER_COUNT] = {};
-			for (u32 player_id = 0; player_id < PLAYABLE_PLAYER_COUNT; ++player_id) {
+			u8 reveal_flag = 0;
+			bool do_ping[PlayerLimit] = {};
+			for (u32 player_id = 0; player_id < PlayerLimit; ++player_id) {
 				u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player_id];
 				if (flags & VespeneDeaths_Reveal) {
 					reveal_flag |= 1 << player_id;
@@ -726,7 +723,6 @@ namespace hooks {
 					if (scbw::is_allied_to(*g_local_nation_id, target)) {
 						color = 8; // green
 					}
-
 					scbw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
 				}
 			}
