@@ -4,6 +4,8 @@
 #include "../SCBW/scbwdata.h"
 #include <cassert>
 #include <algorithm>
+#include <SCBW/api.h>
+#include <player_color.h>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -164,39 +166,46 @@ namespace graphics
 	bool Bitmap::blitString(const char* pszStr, s32 x, s32 y, u8 size)
 	{
 		// verify valid count index
-		if (size > 3 || !pszStr)
+		if (size > 3 || !pszStr) {
 			return false;
+		}
 
 		// localize pointer
 		Font* fnt = font_base[size];
-		if (!fnt)
+		if (!fnt) {
 			return false;
+		}
 
 		// verify if drawing should be done
 		if (x + fnt->getTextWidth(pszStr) < 0 ||
 			y + fnt->getTextHeight(pszStr) < 0 ||
-			x >= this->getWidth() || y >= this->getHeight())
+			x >= this->getWidth() || y >= this->getHeight()) {
 			return false;
+		}
 
 		// Reference an unsigned character array
 		const u8* pbChars = (u8*)pszStr;
 
-		u8 lastColor = 0, color = 0;
+		struct DrawColor {
+			u8 color;
+			bool is_ingame_color;
+		};
+
+		DrawColor last_color = {};
+		DrawColor color = {};
 		s32 Xoffset = x, Yoffset = y;
 
 		// Iterate all characters in the message
-		for (s32 c = 0; pbChars[c]; ++c)
-		{
+		for (s32 c = 0; pbChars[c]; ++c) {
+			char prev_c = c > 0 ? pbChars[c - 1] : 0;
 			// Perform control character and whitespace functions
-			if (pbChars[c] <= ' ')
-			{
-				switch (pbChars[c])
-				{
+			if (pbChars[c] <= ' ' || pbChars[c] == PlayerColorByte) {
+				switch (pbChars[c]) {
 					case 1:       // restore last colour
-						color = lastColor;
+						color = last_color;
 						continue;
 					case '\t':    // 9    tab
-						Xoffset += fnt->getCharWidth(pbChars[c]);
+						Xoffset += fnt->getCharWidth(pbChars[c], prev_c);
 						continue;
 					case '\n':    // 10   newline
 						Xoffset = x;
@@ -204,7 +213,8 @@ namespace graphics
 						continue;
 					case 11:      // invisible
 					case 20:
-						color = (u8)~0;
+						color.color = (u8)~0;
+						color.is_ingame_color = false;
 						continue;
 					case '\f':    // 12   formfeed
 						break;
@@ -220,35 +230,44 @@ namespace graphics
 					case ' ':     // space
 						Xoffset += fnt->maxWidth() / 2;
 						continue;
+					case PlayerColorByte: // player color
+						last_color = color;
+						color.color = pbChars[++c] - 1;
+						color.is_ingame_color = true;
+						continue;
 					default:      // colour code
-						lastColor = color;
-						color = gbColorTable[pbChars[c]];
+						last_color = color;
+						color.color = gbColorTable[pbChars[c]];
+						color.is_ingame_color = false;
 						continue;
 				}
 			}
 
-			//Korean support
+			// We don't use Korean. I am not updating this code, unless it becomes a necessity -Veeq7
+			/*
+			// Korean support
 			if (GetUserDefaultLangID() == MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN)
 				&& IsDBCSLeadByte(pbChars[c])
 				&& !(pbChars[c] == 169 || pbChars[c] == 153))
 			{
-				this->blitKoreanChar((char*)&pbChars[c], Xoffset, Yoffset, size, color);
-				if (pbChars[++c])
+				this->blitKoreanChar((char*)&pbChars[c], Xoffset, Yoffset, size, color.color);
+				if (pbChars[++c]) {
 					continue;
+				}
 				break;
 			}
+			*/
 
 			// Skip if the character is not supported by the font
 			FontChar* fntChr = fnt->getChar(pbChars[c]);
-			if (!fntChr)
+			if (!fntChr) {
 				continue;
+			}
 
 			// If the colour is not "invisible"
-			if (color != ~0)
-			{
+			if (color.color != ~0) {
 				// begin drawing character process
-				for (s32 i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos)
-				{
+				for (s32 i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos) {
 					// font position
 					pos += fntChr->pixelOffset(i);
 
@@ -268,7 +287,14 @@ namespace graphics
 					if (offset < 0) continue;
 
 					// Plot pixel
-					this->data[offset] = gbFontColors[color][fntChr->colorMask(i)];
+					u32 mask_index = fntChr->colorMask(i);
+					if (mask_index) {
+						if (color.is_ingame_color) {
+							this->data[offset] = get_player_color_index(color.color, mask_index);
+						} else {
+							this->data[offset] = gbFontColors[color.color][mask_index];
+						}
+					}
 				}
 			} // invis colour
 

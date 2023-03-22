@@ -521,7 +521,7 @@ namespace hooks {
 			}
 		}
 
-		UnitExt* unit_ext = get_unit_ext(unit);
+		UnitExt* unit_ext = unit ? get_unit_ext(unit) : 0;
 		while (!stop_there)
 		{
 			// 00459230

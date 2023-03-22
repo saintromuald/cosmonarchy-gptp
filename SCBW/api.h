@@ -28,6 +28,11 @@
 #define Max(a, b) ((a) > (b) ? a : b)
 #define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
+#define PlayerColorByte 0x99 // TODO: Update to match with DF's implementation
+struct PlayerColorCode {
+	char data[3];
+};
+
 namespace scbw
 {
 	bool is_any_morph_result(u16 id);
@@ -748,4 +753,5 @@ namespace scbw
 	void consume_corpse(Thingy* corpse);
 	Unit* reclaim_corpse(Thingy* corpse, u32 player);
 	bool unit_id_is_power_generator(u32 unit_id);
+	PlayerColorCode get_player_color_code(u32 player);
 }

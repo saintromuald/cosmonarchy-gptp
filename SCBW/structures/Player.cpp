@@ -8,66 +8,49 @@
 // Return the proper ColorId to use a player color with graphics function
 // ----------------------------------------------------------------------------//
 
-graphics::ColorId Player::get_color()
-{
+graphics::ColorId Player::get_color() {
 	assert(this);
 	return g_player_minimap_colors[(u8)this->id];
 }
 
-graphics::ColorId Player::get_color(u8 player)
-{
-	if (player < PLAYER_COUNT)
-	{
+graphics::ColorId Player::get_color(u8 player) {
+	if (player < PLAYER_COUNT) {
 		return g_player_minimap_colors[player];
-	}
-	else
-	{
+	} else {
 		return graphics::BLACK; // return 0/Black if error
 	}
 }
 
-graphics::ColorId Player::get_faction_color()
-{
+graphics::ColorId Player::get_faction_color() {
 	assert(this);
 	return get_faction_color(this->id);
 }
 
-graphics::ColorId Player::get_faction_color(u8 player)
-{
+graphics::ColorId Player::get_faction_color(u8 player) {
 	// store a player until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
 
 	// for normal players, apply colors switching
-	if (player < PLAYABLE_PLAYER_COUNT)
-	{
+	if (player < PLAYABLE_PLAYER_COUNT) {
 		// get the proper player in multiplayer game (don't break campaigns/UMS)
 		return_value = factionsColorsOrdering[player];
 
 		// fix BROWN to GREEN color swap in Desert map
-		if (*g_current_tileset == TilesetType::Desert && return_value == 5)
-		{
+		if (*g_current_tileset == TilesetType::Desert && return_value == 5) {
 			return_value = 8;
 		}
 
 		// fix WHITE to GREEN color swap in Ice map
-		if (*g_current_tileset == TilesetType::Ice && return_value == 6)
-		{
+		if (*g_current_tileset == TilesetType::Ice && return_value == 6) {
 			return_value = 8;
 		}
-	}
-
-	else
-	{
+	} else {
 		return_value = player;
 	}
 
-	if (player < PLAYER_COUNT)
-	{
+	if (player < PLAYER_COUNT) {
 		return_value = graphics::standardColors[return_value];
-	}
-
-	else
-	{
+	} else {
 		return_value = graphics::BLACK; // return 0/Black if error
 	}
 	return return_value;

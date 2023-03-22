@@ -2,6 +2,7 @@
 #include "Font.h"
 #include "../SCBW/scbwdata.h"
 #include <cassert>
+#include <SCBW/api.h>
 
 namespace graphics
 {
@@ -16,30 +17,35 @@ namespace graphics
 		return nullptr;
 	}
 
-	s32 Font::getCharWidth(char c) const
-	{
-		switch (c)
-		{
+	s32 Font::getCharWidth(char c, char prev_c) const {
+		if (prev_c == PlayerColorByte) {
+			return 0;
+		}
+		switch (c) {
 			case '\t':
 				return this->maxWidth() * 2;
 			case ' ':
 				return this->maxWidth() / 2;
+			case PlayerColorByte: 
+				return 0;
 			default:
 				return this->getChar(c)->getWidth();
 		}
 	}
 
 	// ----------------- GET WIDTH ---------------------
-	s32 Font::getTextWidth(const char* pszStr) const
-	{
+	s32 Font::getTextWidth(const char* pszStr) const {
 		// verify valid count index
 		assert(this);
 		if (!pszStr) return 0;
 
 		// Retrieve count
 		s32 size = 0;
-		for (; *pszStr; ++pszStr)
-			size += this->getCharWidth(*pszStr);
+		char prev_c = 0;
+		for (; *pszStr; ++pszStr) {
+			size += this->getCharWidth(*pszStr, prev_c);
+			prev_c = *pszStr;
+		}
 		return size;
 	}
 

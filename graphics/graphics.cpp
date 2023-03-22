@@ -21,7 +21,6 @@ namespace graphics {
 		clear_errors();
 	}
 
-
 	void draw_text(s32 x, s32 y, const std::string& str, FontSize fontSize, CoordType ct) {
 		if (string_count >= MAX_STRINGS) {
 			set_error(ERR_TOO_MANY_STRINGS);
@@ -129,13 +128,15 @@ namespace graphics {
 	}
 
 	void draw_stat_res_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct) {
-		if (stat_res_box_count < 8)
+		if (stat_res_box_count < 8) {
 			statres_boxes[stat_res_box_count++].set_filled_box(left, top, right, bottom, color, ct);
+		}
 	}
 
 	s32 draw_stat_res_shapes() {
-		for (s32 i = 0; i < stat_res_box_count; ++i)
+		for (s32 i = 0; i < stat_res_box_count; ++i) {
 			statres_boxes[i].draw();
+		}
 
 		return stat_res_box_count;
 	}

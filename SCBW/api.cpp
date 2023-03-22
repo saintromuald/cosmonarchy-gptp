@@ -3183,9 +3183,15 @@ namespace scbw {
 		return unit;
 	}
 
-	bool unit_id_is_power_generator(u32 unit_id)
-	{
+	bool unit_id_is_power_generator(u32 unit_id) {
 		return unit_id == UnitId::ProtossPylon
-		||	   unit_id == UnitId::ProtossCrucible;
+			|| unit_id == UnitId::ProtossCrucible;
+	}
+
+	PlayerColorCode get_player_color_code(u32 player) {
+		PlayerColorCode code = {};
+		code.data[0] = PlayerColorByte;
+		code.data[1] = player + 1;
+		return code;
 	}
 }

@@ -23,7 +23,7 @@ struct Font {
       FontChar* getChar(char c) const;
     s32 getTextWidth(const char *pszStr) const;
     s32 getTextHeight(const char *pszStr) const;
-    s32 getCharWidth(char c) const;
+    s32 getCharWidth(char c, char prev_c) const;
     s32 maxWidth() const;
     s32 maxHeight() const;
     static s32 getTextWidth(const char *pszStr, s32 size);

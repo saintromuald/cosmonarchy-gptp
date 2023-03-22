@@ -3,13 +3,13 @@
 #include "graphics.h"
 #include <string>
 
-//V241 for VS2008
+// V241 for VS2008
 
 namespace graphics {
 
-//Speed-efficient non-virtual struct for storing shapes that will be drawn.
-//All shape setter methods merely copy data and contain no actual logic.
-//All coordinates are relative to screen.
+// Speed-efficient non-virtual struct for storing shapes that will be drawn.
+// All shape setter methods merely copy data and contain no actual logic.
+// All coordinates are relative to screen.
 struct Shape {
     void set_text(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType);
     void set_dot(s32 x, s32 y, ColorId color, CoordType coordType);
@@ -23,7 +23,7 @@ struct Shape {
     void set_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
     void draw() const;
 
-      enum ShapeType {
+    enum ShapeType {
       NONE,
       Text,
       DOT,
@@ -36,6 +36,7 @@ struct Shape {
       DOTTED_LINE,
       DOTTED_ELLIPSE
     } type;
+
     CoordType coordType;
     Vector32 p1;
     Vector32 p2;

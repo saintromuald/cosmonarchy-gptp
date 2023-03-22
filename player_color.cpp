@@ -195,13 +195,18 @@ static void match_color_of(u32 player) {
 	}
 }
 
+u8 get_player_color_index(u32 player, u32 index) {
+	index %= ColorSetSize;
+	return g_player_in_game_colors[player * ColorSetSize + index];
+}
+
 void set_player_color(u32 player, u32 color) {
 	has_custom_color[player] = true;
 	player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
 	g_player_scorescreen_colors[player] = color;
-	for (u32 i = 0; i < PlayerLimit; i++) {
-		g_player_in_game_colors[player * PlayerLimit + i] = tunit_colors[color * ColorSetSize + i];
+	for (u32 i = 0; i < ColorSetSize; i++) {
+		g_player_in_game_colors[player * ColorSetSize + i] = tunit_colors[color * ColorSetSize + i];
 	}
 }
 

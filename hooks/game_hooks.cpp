@@ -223,6 +223,10 @@ namespace hooks {
 		return 0;
 	}
 
+	int nop_click() {
+		return 0;
+	}
+
 	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
 	u32 __cdecl set_ingame_input_procs() { // 00484CC0
 		helper::initialize_input_procs();
@@ -254,7 +258,7 @@ namespace hooks {
 
 		if (transport_ui_unit) {
 			*left_click_proc  = (InputProcsFunc*)transport_ui_click;
-			*right_click_proc = (InputProcsFunc*)transport_ui_click;
+			*right_click_proc = (InputProcsFunc*)nop_click;
 		} else if (*g_is_placing_building) {
 			*left_click_proc  = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x00484600; // input_place_building_right_mouse_click;
@@ -359,6 +363,125 @@ namespace hooks {
 		return source;
 	}
 
+	static void draw_transport_ui() {
+		Point16 start_pos = {179, 333};
+		Point16 pos = start_pos;
+
+		if (transport_ui_unit) {
+			transport_ui_unit = 0;
+			helper::set_ingame_input_procs();
+		}
+
+		for (u32 i = 0; i < *g_client_selection_count; ++i) {
+			Unit* transport = g_client_selection_group->unit[i];
+			bool is_replay_or_witness = *g_is_in_replay || global_vars.players[*g_local_human_id].is_witness;
+			if (!scbw::unit_is_allied_or_detected(transport, *g_local_nation_id) && !is_replay_or_witness) {
+				continue;
+			}
+
+			u32 space_used = 0;
+			struct CargoSlot {
+				Unit* unit;
+				u16 count;
+			};
+			u32 cargo_slots_count = 0;
+			CargoSlot cargo_slots[TransportCap];
+
+			for (u32 j = 0; j < TransportCap; ++j) {
+				Unit* cargo_unit = transport->get_loaded_unit(j);
+				if (cargo_unit) {
+					space_used += units_dat::space_required[cargo_unit->id];
+
+					bool own_unit = cargo_unit->player == *g_local_nation_id;
+					for (u32 k = 0; k < cargo_slots_count; ++k) {
+						if (cargo_slots[k].unit->id == cargo_unit->id &&
+							cargo_slots[k].unit->player == cargo_unit->player) {
+							cargo_slots[k].count++;
+							goto next_unit;
+						}
+					}
+
+					if (cargo_slots_count >= TransportCap) {
+					next_unit:
+						continue;
+					}
+
+					CargoSlot* slot = &cargo_slots[cargo_slots_count++];
+					slot->unit = cargo_unit;
+					slot->count = 1;
+				}
+			}
+			
+
+			if (!cargo_slots_count) {
+				continue;
+			}
+			pos.y -= (cargo_slots_count / 4) * 13;
+			Point16 local_pos = pos;
+			pos.y -= 2;
+
+			Token short_unit_name = get_short_unit_name(transport->id);
+			if (transport->id == UnitId::TerranPhalanxSiegeMode) {
+				strcat_s(short_unit_name.data, " (Sieged)");
+				short_unit_name.size = strlen(short_unit_name.data);
+			}
+
+			char unit_name[MaxToken + 1] = {};
+			snprintf(unit_name, 128, "%s%s [%u/%u]:", scbw::get_player_color_code(transport->player).data, short_unit_name.data, space_used, units_dat::space_provided[transport->id]);
+			graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+			local_pos.y += 13;
+
+			u32 x_count = 0;
+			for (u32 j = 0; j < cargo_slots_count; ++j) {
+				CargoSlot cargo_slot = cargo_slots[j];
+
+				Token short_unit_name = get_short_unit_name(cargo_slot.unit->id);
+				if (cargo_slot.unit->id == UnitId::TerranPhalanxSiegeMode) {
+					strcat_s(short_unit_name.data, " (Sieged)");
+					short_unit_name.size = strlen(short_unit_name.data);
+				}
+				char unit_name[MaxToken + 1] = {};
+				if (cargo_slot.count > 1) {
+					snprintf(unit_name, 128, "%s%s (%u)", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data, cargo_slot.count);
+				} else {
+					snprintf(unit_name, 128, "%s%s", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data);
+				}
+				u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
+
+				RECT rect = {};
+				rect.left = local_pos.x;
+				rect.top = local_pos.y;
+				rect.right = rect.left + width;
+				rect.bottom = rect.top + 12;
+				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && PtInRect(&rect, *(POINT*) g_mouse);
+				if (hover) {
+					if (cargo_slot.count > 1) {
+						snprintf(unit_name, 128, BWTC_WHITE "%s (%u)", short_unit_name.data, cargo_slot.count);
+					} else {
+						snprintf(unit_name, 128, BWTC_WHITE "%s", short_unit_name.data);
+					}
+					width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
+				}
+
+				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+				if (hover && !transport_ui_unit) {
+					transport_ui_unit = cargo_slot.unit;
+					helper::set_ingame_input_procs();
+				}
+
+				if (j < cargo_slots_count - 1) {
+					local_pos.x += width + 5;
+					x_count++;
+					if (x_count > 4) {
+						x_count = 0;
+						local_pos.x = start_pos.x;
+						local_pos.y += 13;
+					}
+				}
+			}
+		}
+	}
+
 	static void draw_custom_ui() {
 		// Draw selection info
 		Unit* selected = *g_active_portrait_unit;
@@ -456,71 +579,7 @@ namespace hooks {
 			}
 		}
 
-		// Draw transport UI
-		{
-			Point16 start_pos = {179, 333}; // {441, 203};
-			Point16 pos = start_pos;
-
-			if (transport_ui_unit) {
-				transport_ui_unit = 0;
-				helper::set_ingame_input_procs();
-			}
-
-			u32 x_count = 0;
-			for (u32 i = 0; i < *g_client_selection_count; ++i) {
-				Unit* transport = g_client_selection_group->unit[i];
-				bool is_replay_or_witness = *g_is_in_replay || global_vars.players[*g_local_human_id].is_witness;
-				if (scbw::unit_is_allied_or_detected(transport, *g_local_nation_id) || is_replay_or_witness) {
-					for (u32 j = 0; j < TransportCap; ++j) {
-						Unit* cargo_unit = transport->get_loaded_unit(j);
-						if (cargo_unit) {
-							char buffer[128] = {};
-
-							Token unit_name = get_short_unit_name(cargo_unit->id);
-							if (cargo_unit->id == UnitId::TerranPhalanxSiegeMode) {
-								strcat_s(unit_name.data, " (Sieged)");
-								unit_name.size = strlen(unit_name.data);
-							}
-
-							bool own_unit = cargo_unit->player == *g_local_nation_id;
-							if (own_unit || is_replay_or_witness) {
-								snprintf(buffer, 128, BWTC_GREEN "%s", unit_name.data);
-							} else if (scbw::is_allied_to(*g_local_nation_id, cargo_unit->player)) {
-								snprintf(buffer, 128, BWTC_YELLOW "%s", unit_name.data);
-							} else {
-								snprintf(buffer, 128, BWTC_RED "%s", unit_name.data);
-							}
-							u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-
-							RECT rect = {};
-							rect.left = pos.x;
-							rect.top = pos.y;
-							rect.right = rect.left + width;
-							rect.bottom = rect.top + 13;
-							bool hover = own_unit && PtInRect(&rect, *(POINT*)g_mouse);
-							if (hover) {
-								snprintf(buffer, 128, BWTC_WHITE "%s", unit_name.data);
-								width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(buffer);
-							}
-
-							graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-							if (hover && !transport_ui_unit) {
-								transport_ui_unit = cargo_unit;
-								helper::set_ingame_input_procs();
-							}
-
-							pos.x += width + 5;
-							x_count++;
-							if (x_count > 4) {
-								x_count = 0;
-								pos.x = start_pos.x;
-								pos.y -= 15; // += 15;
-							}
-						}
-					}
-				}
-			}
-		}
+		draw_transport_ui();
 	}
 
 	/// This hook is called every frame

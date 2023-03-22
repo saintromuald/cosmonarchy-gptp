@@ -137,8 +137,8 @@ namespace hooks
 			JB      short loc_41D16F
 			XOR		AL, AL
 
-		loc_41D16F :*/
-			MOVZX   EAX, AX//formerly AL
+		loc_41D16F: */
+			MOVZX   EAX, AX // formerly AL
 			MOVZX   SI, byte ptr[ECX + EAX * 0x8 + 0x6]
 			LEA     EAX, [ECX + EAX * 0x8 + 0x6]
 			PUSH    EDI
@@ -163,7 +163,7 @@ namespace hooks
 			AND		EAX, 0x7FFFFFFF
 			ADD     ESI, 0x100
 
-		loc_41D1C3 :
+		loc_41D1C3:
 			ADD     EAX, ECX
 			MOV		[EDX], SI
 			MOV		[EDX + 0x4], EAX
@@ -189,7 +189,7 @@ namespace hooks
 			PUSH    EDX
 			LEA     EAX, [EBP - 0x8]
 			PUSH    EAX
-			MOV     AX, [EBP + 0x8]//formerly AL
+			MOV     AX, [EBP + 0x8] // formerly AL
 			LEA     EDX, [EBP - 0x18]
 			CALL    sub_41D160
 			MOV     ECX, [EBP + 0xC]
@@ -205,7 +205,7 @@ namespace hooks
 			JG      short loc_4EF64A
 			MOV		[EBP - 0x10], AX
 
-		loc_4EF64A :
+		loc_4EF64A:
 			MOVSX   EAX, word ptr[ESI + 0x2]
 			PUSH    EBX
 			MOVZX   EBX, DI
@@ -214,7 +214,7 @@ namespace hooks
 			JG      short loc_4EF65E
 			MOV		[EBP - 0xE], AX
 
-		loc_4EF65E :
+		loc_4EF65E:
 			MOVZX   EAX, word ptr[EBP + 0xA]
 			ADD     EAX, ECX
 			MOVSX   ECX, word ptr[ESI + 0x4]
@@ -223,7 +223,7 @@ namespace hooks
 			JL      short loc_4EF674
 			MOV     word ptr[EBP - 0xC], CX
 
-		loc_4EF674 :
+		loc_4EF674:
 			MOVZX   ECX, word ptr[EBP - 0x4]
 			LEA     EAX, [ECX + EBX]
 			MOVSX   ECX, word ptr[ESI + 0x6]
@@ -233,7 +233,7 @@ namespace hooks
 			JL      short loc_4EF68C
 			MOV     word ptr[EBP - 0xC + 0x2], CX
 
-		loc_4EF68C :
+		loc_4EF68C:
 			MOVSX   EAX, word ptr[EBP - 0xE]
 			MOVSX   ECX, DI
 			SUB     EAX, ECX
@@ -303,7 +303,7 @@ namespace hooks
 			JLE     short loc_4EF78F
 			MOV     EBX, EAX
 
-		loc_4EF766 :
+		loc_4EF766:
 			MOV     EAX, [EBP + 0x14]
 			MOV     ECX, [EBP + 0xC]
 			MOV     EDX, [EBP - 0x8]
@@ -322,7 +322,7 @@ namespace hooks
 			MOV     ECX, [EBP + 0x8]
 			MOV     ESI, [EBP + 0x10]
 
-		loc_4EF78F :
+		loc_4EF78F:
 			MOV     DX, [EBP - 0x4] // formerly DL
 			ADD     word ptr[EBP - 0xC], DI
 			INC     DX // formerly DL
@@ -336,7 +336,7 @@ namespace hooks
 			JG      short loc_4EF7B2
 			MOV     word ptr[EBP - 0x10], AX
 
-		loc_4EF7B2 :
+		loc_4EF7B2:
 			MOV     EDX, [EBP + 0x14]
 			MOV     EAX, [EBP + 0xC]
 			PUSH    EDX
@@ -349,7 +349,7 @@ namespace hooks
 			LEA     ESI, [EBP - 0x10]
 			CALL    sub_4EF600
 
-		loc_4EF7CB :
+		loc_4EF7CB:
 			POP     ESI
 			POP     EBX
 			MOV     ESP, EBP
@@ -373,28 +373,28 @@ namespace hooks
 				DEC		EDI
 				LEA		ESP, [ESP]	// For some reason this opcode had an offset of +0x0.
 
-			LOC_4B4BA0 :
+			LOC_4B4BA0:
 				MOV		AL, [EDI + 0x1]
 				INC		EDI
 				TEST	AL, AL
 				JNZ		short LOC_4B4BA0
-				MOV		EDX, dword ptr ds : pIcons_grp
-				MOV		EAX, dword ptr ds : pIcons_grp + 0x4
-				MOV		CX, word ptr ds : pIcons_grp + 0x8
+				MOV		EDX, dword ptr ds: pIcons_grp
+				MOV		EAX, dword ptr ds: pIcons_grp + 0x4
+				MOV		CX, word ptr ds: pIcons_grp + 0x8
 				MOV		[EDI], EDX
-			//	MOV		DL, byte ptr ds : aIscore_grp + 0xA
+			 // 	MOV		DL, byte ptr ds: aIscore_grp + 0xA
 				MOV		[EDI + 0x4], EAX
 				MOV		[EDI + 0x8], CX
 				PUSH	0x560
 				MOV		[EDI + 0xA], 0x0	// formerly DL, would grab the string's null terminator from the above commented-out line.
-				PUSH	0x005034D8			// PUSH offset 0x005034D8//"Starcraft\SWAR\lang\gluScore.cpp"
+				PUSH	0x005034D8			// PUSH offset 0x005034D8 // "Starcraft\SWAR\lang\gluScore.cpp"
 				XOR		EDX, EDX
 				LEA		ECX, [EBP - 0x10C]
 				CALL	LoadGraphic
-				MOV		ds : [0x0059B72C] , EAX
+				MOV		ds: [0x0059B72C], EAX
 				XOR		EAX, EAX
 
-			LOC_4B4B80_iScore :
+			LOC_4B4B80_iScore:
 				MOV		CL, [EAX + 0x0059B628]
 				MOV		[EBP + EAX - 0x10C], CL
 				INC		EAX
@@ -408,88 +408,88 @@ namespace hooks
 		__asm {
 			CMP		AL, 0x1
 			JNE		offset isNewColor
-			CMP		dword ptr ds : [0x006CE0E8] , offset tFontGame_ImageData + 0x130//Use saved font pColor if savedFontColor is also pColor.
+			CMP		dword ptr ds: [0x006CE0E8], offset tFontGame_ImageData + 0x130 // Use saved font pColor if savedFontColor is also pColor.
 			JNE		offset skip_0
-			ADD		dword ptr ds : [0x006CE0E8] , 8
-			skip_0 :
-			MOV		EAX, ds : [0x006CE0E8]//<Set savedFontColor to currentFontColor if <01>.
-			MOV		ds : [0x006CE0C0] , EAX
+			ADD		dword ptr ds: [0x006CE0E8], 8
+			skip_0:
+			MOV		EAX, ds: [0x006CE0E8] // <Set savedFontColor to currentFontColor if <01>.
+			MOV		ds: [0x006CE0C0], EAX
 			RETN
 
-			isNewColor :
+		isNewColor:
 			CMP		AL, 0x0B
-				JE		offset isPlayerColor_0
-				CMP		AL, 0x14
-				JE		offset isPlayerColor_0
-				MOV		ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
-				MOV		ds : [0x006CE0E8] , ECX
-				MOVZX	EAX, AL
-				DEC		AL
-				CMP		AL, 0xA//No tfont offset adjustment for <02> through <0A> tags.
-				JB		offset off_2
-				CMP		AL, 0x1F//tfont offsets for <0B> through <1F> tags.
-				JB		offset off_1
-				SUB		AL, 0x77//tfont offsets for <8F> through <9F> tags.
-				CMP		AL, 0x22//Decrement 1 more if above <99>.
-				JB		offset off_2
-				DEC		AL
-				JMP		offset off_2
+			JE		offset isPlayerColor_0
+			CMP		AL, 0x14
+			JE		offset isPlayerColor_0
+			MOV		ECX, ds: [0x006CE0C0] // Save currentFontColor to savedFontColor.
+			MOV		ds: [0x006CE0E8], ECX
+			MOVZX	EAX, AL
+			DEC		AL
+			CMP		AL, 0xA // No tfont offset adjustment for <02> through <0A> tags.
+			JB		offset off_2
+			CMP		AL, 0x1F // tfont offsets for <0B> through <1F> tags.
+			JB		offset off_1
+			SUB		AL, 0x77 // tfont offsets for <8F> through <9F> tags.
+			CMP		AL, 0x22 // Decrement 1 more if above <99>.
+			JB		offset off_2
+			DEC		AL
+			JMP		offset off_2
 
-				off_1 :
-			SUB		AL, ds : [EAX + 0x004200AC]
+		off_1:
+			SUB		AL, ds: [EAX + 0x004200AC]
 
-				off_2 :
-				DEC		AL
-				LEA		EAX, [EAX * 8 + tFontGame_ImageData]//Set new font color to currentFontColor.
-				MOV		ds : [0x006CE0C0] , EAX
-				RETN
+		off_2:
+			DEC		AL
+			LEA		EAX, [EAX * 8 + tFontGame_ImageData] // Set new font color to currentFontColor.
+			MOV		ds: [0x006CE0C0], EAX
+			RETN
 
-				isPlayerColor_0 :
+		isPlayerColor_0:
 			TEST	AH, AH
-				JNE		offset isPlayerMessage_0
-				MOV		CL, [ESI + 1]
-				CMP		CL, 0x08
-				JBE		offset isPlayerColor_2
-				SUB		CL, 0x0E
-				CMP		CL, 0x03
-				JBE		offset isPlayerColor_1
-				ADD[ESP], 6
-				RETN
+			JNE		offset isPlayerMessage_0
+			MOV		CL, [ESI + 1]
+			CMP		CL, 0x08
+			JBE		offset isPlayerColor_2
+			SUB		CL, 0x0E
+			CMP		CL, 0x03
+			JBE		offset isPlayerColor_1
+			ADD[ESP], 6
+			RETN
 
-				isPlayerMessage_0 :
+		isPlayerMessage_0:
 			SHR		EAX, 8
-				JMP		offset isPlayerMessage_1
+			JMP		offset isPlayerMessage_1
 
-				isPlayerColor_1 :
+		isPlayerColor_1:
 			ADD		CL, 0x09
 
-				isPlayerColor_2 :
-				INC		ESI
-				MOV		AL, CL
+		isPlayerColor_2:
+			INC		ESI
+			MOV		AL, CL
 
-				isPlayerMessage_1 :
+		isPlayerMessage_1:
 			DEC		AL
-				MOV		ECX, ds : [0x006CE0C0]//Save currentFontColor to savedFontColor.
-				MOV		ds : [0x006CE0E8] , ECX
-				PUSH	EDX
-				MOV		EDX, offset tFontGame_ImageData + 0x130//Set player-colored font to currentFontColor.
-				MOV		ds : [0x006CE0C0] , EDX
-				MOVZX	EAX, AL
-				LEA		EAX, [EAX * 8 + 0x00581D74]//Unit color table
-				PUSH	EBX
-				MOV		EBX, [EDX + 1]
-				MOV[EDX + 9], EBX
+			MOV		ECX, ds: [0x006CE0C0] // Save currentFontColor to savedFontColor.
+			MOV		ds: [0x006CE0E8], ECX
+			PUSH	EDX
+			MOV		EDX, offset tFontGame_ImageData + 0x130 // Set player-colored font to currentFontColor.
+			MOV		ds: [0x006CE0C0], EDX
+			MOVZX	EAX, AL
+			LEA		EAX, [EAX * 8 + 0x00581D74] // Unit color table
+			PUSH	EBX
+			MOV		EBX, [EDX + 1]
+			MOV[EDX + 9], EBX
 
-				loop_0 :
+		loop_0:
 			ADD		EAX, 2
-				INC		EDX
-				MOV		BL, [EAX]
-				MOV[EDX], BL
-				CMP		EDX, offset tFontGame_ImageData + 0x134
-				JNE		offset loop_0
-				POP		EBX
-				POP		EDX
-				RETN
+			INC		EDX
+			MOV		BL, [EAX]
+			MOV[EDX], BL
+			CMP		EDX, offset tFontGame_ImageData + 0x134
+			JNE		offset loop_0
+			POP		EBX
+			POP		EDX
+			RETN
 		}
 	};
 
@@ -497,34 +497,34 @@ namespace hooks
 	const u32 writeFontApplyColour_2000A = 0x0042000A;
 	void __declspec(naked) writeFontApplyColour_patch() {
 		__asm {
-			//CL is -1 from actual character ASCII code to naturally exclude <00>.
-			CMP		CL, 0x1F//Include <01> to <1F>.
+			// CL is -1 from actual character ASCII code to naturally exclude <00>.
+			CMP		CL, 0x1F // Include <01> to <1F>.
 			JB		offset off_3
-			CMP		CL, 0x9E//Exclude <A0> to <FF>.
+			CMP		CL, 0x9E // Exclude <A0> to <FF>.
 			JA		offset off_1FE01
-			CMP		CL, 0x8E//Exclude <20> to <8E>.
+			CMP		CL, 0x8E // Exclude <20> to <8E>.
 			JB		offset off_1FE01
-			CMP		CL, 0x98//Exclude <99>.
+			CMP		CL, 0x98 // Exclude <99>.
 			JE		offset off_1FE01
 			JMP		offset off_4
 
-			off_3 :
-			CMP		byte ptr ds : [ECX + 0x004200AC] , 0x1//Exclude the non-color tags (newlines, aligns, etc).
+		off_3:
+			CMP		byte ptr ds: [ECX + 0x004200AC], 0x1 // Exclude the non-color tags (newlines, aligns, etc).
 			JE		offset off_1FE01
-			MOV		CL, ds : [0x006D5DE0]//dword_6D5DE0
+			MOV		CL, ds: [0x006D5DE0] // dword_6D5DE0
 			TEST	CL, CL
 			JNE		offset off_2000A
-			CMP		dword ptr ds : [0x006CE0C0] , offset tFontGame_ImageData[0x18]//Make grey color override subsequent tags.
+			CMP		dword ptr ds: [0x006CE0C0], offset tFontGame_ImageData[0x18] // Make grey color override subsequent tags.
 			JE		off_2000A
 
-			off_4 :
+		off_4:
 			MOVZX	EAX, AL
 			CALL	get_color_handle
 
-			off_2000A :
+		off_2000A:
 			JMP		writeFontApplyColour_2000A
 
-			off_1FE01 :
+		off_1FE01:
 			JMP		writeFontApplyColour_1FE01
 		}
 	};
@@ -532,28 +532,28 @@ namespace hooks
 	void __declspec(naked) getColourID_new() {
 		__asm {
 			MOV		ECX, 3
-			CMP		byte ptr ds : [0x006D5BBE] , 2//g_minimap_state
+			CMP		byte ptr ds: [0x006D5BBE], 2 // g_minimap_state
 			JNE		offset locret_49B124
-			MOV		ECX, ds : [0x00512684]//g_local_nation_id
+			MOV		ECX, ds: [0x00512684] // g_local_nation_id
 			MOVZX	EAX, AL
 			CMP		ECX, EAX
 			JNE		offset loc_49B0FA
 			MOV		AL, 2
 			JMP		offset loc_49B10E
 
-			loc_49B0FA :
+		loc_49B0FA:
 			LEA		ECX, [ECX + ECX * 2]
-				MOV		DL, [EAX + ECX * 4 + 0x0058D634]//player_alliance
-				TEST	DL, DL
-				SETE	AL
+			MOV		DL, [EAX + ECX * 4 + 0x0058D634] // player_alliance
+			TEST	DL, DL
+			SETE	AL
 
-				loc_49B10E :
+		loc_49B10E:
 			MOV		CL, AL
-				XOR		EAX, EAX
+			XOR		EAX, EAX
 
-				locret_49B124 :
+		locret_49B124:
 			INC		EAX
-				RET
+			RET
 		}
 	};
 
@@ -576,33 +576,35 @@ namespace hooks
 		__asm {
 			PUSH    EDX
 			XOR     BL, BL
-			MOV     EDX, ds: [0x00597248]//activePortraitUnit
-			MOV     EAX, [EDX + 0x64]//unit->id
-			CMP     AX, 0x48//Carrier
+			MOV     EDX, ds: [0x00597248] // activePortraitUnit
+			MOV     EAX, [EDX + 0x64] // unit->id
+			CMP     AX, 0x48 // Carrier
 			JE      offset loc_isCarrier
-			CMP     AX, 0x52//Gantrithor
+			CMP     AX, 0x52 // Gantrithor
 			JNE     offset loc_notCarrier
-			loc_isCarrier :
-			ADD     BL, [EDX + 0xC9]//unit->inHangarCount
-				loc_notCarrier :
-				ADD     BL, [EDX + 0xC8]//unit->outHangarCount
-				MOV     AX, 0x26
-				CMP     BL, 0xA
-				JAE     offset dont_dec
-				DEC     AX
-				dont_dec :
+
+		loc_isCarrier:
+			ADD     BL, [EDX + 0xC9] // unit->inHangarCount
+
+		loc_notCarrier:
+			ADD     BL, [EDX + 0xC8] // unit->outHangarCount
+			MOV     AX, 0x26
+			CMP     BL, 0xA
+			JAE     offset dont_dec
+			DEC     AX
+			dont_dec:
 			MOV     word ptr[ESI + 0x24], AX
-				POP     EDX
-				JMP     StatHangarCount_25477
+			POP     EDX
+			JMP     StatHangarCount_25477
 		}
 	}
 	
 	const u32 load_dialog = 0x004F57A0;
 	void __declspec(naked) RestartGameMenu() {
 		__asm {
-			MOV		dword ptr ds : [0x006D1234] , 0x004C9530//last_bindlg_menu_function = CMDACT_RestartGame
-			MOV		EDX, 0x004CA240//game_menu_dialog_interact
-			MOV		ECX, 0x0050294C//"rez\restart.bin"
+			MOV		dword ptr ds: [0x006D1234], 0x004C9530 // last_bindlg_menu_function = CMDACT_RestartGame
+			MOV		EDX, 0x004CA240 // game_menu_dialog_interact
+			MOV		ECX, 0x0050294C // "rez\restart.bin"
 			JMP		load_dialog
 		}
 	}
@@ -610,35 +612,35 @@ namespace hooks
 	const u32 sub_490300_903D2 = 0x004903D2;
 	void __declspec(naked) sub_490300_patch_903CA() {
 		__asm {
-			LEA		EDX, [ECX * 4 + 0x0057EEE9]//playerTable[playerId].race
-			CMP		byte ptr[EDX], 7//Check if race is Inactive.
+			LEA		EDX, [ECX * 4 + 0x0057EEE9] // playerTable[playerId].race
+			CMP		byte ptr[EDX], 7 // Check if race is Inactive.
 			JE		offset off_0
-			DEC		EDX//playerTable[playerId].type
-			CMP		byte ptr[EDX], 3//Check if type is neither Human or Computer (Players of type 0 (Unused) have already been filtered out).
-			JBE		offset off_0//Zero-flag is naturally set if the previous CMP is equal, so don't need to CMP again to set it.
-			CMP		EDX, EDX//Set zero-flag if player type is 4+.
+			DEC		EDX // playerTable[playerId].type
+			CMP		byte ptr[EDX], 3 // Check if type is neither Human or Computer (Players of type 0 (Unused) have already been filtered out).
+			JBE		offset off_0 // Zero-flag is naturally set if the previous CMP is equal, so don't need to CMP again to set it.
+			CMP		EDX, EDX // Set zero-flag if player type is 4+.
 
-			off_0 :
+			off_0:
 			JMP sub_490300_903D2
 		}
 	};
 
 	void __declspec(naked) sub_4AABB0_new() {
 		__asm {
-			MOV		EAX, ds: [0x0057F0B4]//g_multiplayer_mode
+			MOV		EAX, ds: [0x0057F0B4] // g_multiplayer_mode
 			TEST	AL, AL
 			JE		offset off_1
-			MOV		CL, ds : [0x00596874]//game_data.bAlliesEnabled
+			MOV		CL, ds: [0x00596874] // game_data.bAlliesEnabled
 			CMP		CL, AL
 			JNE		offset off_0
-			MOV		CL, ds : [0x00596877]//game_data.tournamentModeEnabled
+			MOV		CL, ds: [0x00596877] // game_data.tournamentModeEnabled
 			TEST	CL, CL
 			JE		offset off_1
 
-			off_0 :
+			off_0:
 			XOR		EAX, EAX
 
-				off_1 :
+				off_1:
 			RETN
 		}
 	}
@@ -646,8 +648,8 @@ namespace hooks
 	const u32 sub_490E90_90EC8 = 0x00490EC8;
 	void __declspec(naked) sub_490E90_patch_90EC3() {
 		__asm {
-			MOV		EAX, ds: [0x0057F0B4]//g_multiplayer_mode
-			OR		EAX, ds : [0x006D0F14]//g_is_in_replay
+			MOV		EAX, ds: [0x0057F0B4] // g_multiplayer_mode
+			OR		EAX, ds: [0x006D0F14] // g_is_in_replay
 			SHL		EAX, 3
 			OR		EAX, 0x20000000
 			PUSH	EAX
@@ -663,47 +665,47 @@ namespace hooks
 			JE		offset off_0
 			MOV		EAX, [EAX + 0x32]
 
-			off_0:
+		off_0:
 			MOV		EAX, [EAX + 0x42]
-				TEST	EAX, EAX
-				MOV		ECX, 0xFFFFFFFC//button id
+			TEST	EAX, EAX
+			MOV		ECX, 0xFFFFFFFC // button id
 
-				off_1 :
-				CMP[EAX + 0x20], CX
-				JE		offset off_2
-				MOV		EAX, [EAX]
-				TEST	EAX, EAX
-				JNE		offset off_1
-				POP		EBP
-				RETN	8
+		off_1:
+			CMP[EAX + 0x20], CX
+			JE		offset off_2
+			MOV		EAX, [EAX]
+			TEST	EAX, EAX
+			JNE		offset off_1
+			POP		EBP
+			RETN	8
 
-				off_2:
+		off_2:
 			MOVZX	ECX, word ptr[EBP + 8]
-				MOV		DX, ds : [ECX * 2 + 0x00512768]//OKButtonGraphicIndex
-				MOV		ECX, [EBP + 0xC]
-				MOV[EAX + 0x24], DX
-				OR[EAX + 0x18], ECX
-				POP		EBP
-				RETN	8
+			MOV		DX, ds: [ECX * 2 + 0x00512768] // OKButtonGraphicIndex
+			MOV		ECX, [EBP + 0xC]
+			MOV[EAX + 0x24], DX
+			OR[EAX + 0x18], ECX
+			POP		EBP
+			RETN	8
 		}
 	}
 
 	const char minimap_sp[] = "rez\\minimap_sp.bin";
 	void __declspec(naked) minimap_style() {
 		__asm {
-			PUSH[ESP]//Move the return address up the stack.
-			MOV		AL, ds: [0x006D0F14]//g_is_in_replay
+			PUSH	[ESP] // Love the return address up the stack.
+			MOV		AL, ds: [0x006D0F14] // g_is_in_replay
 			TEST	AL, AL
 			JNE		offset off_0
-			MOV		AL, ds : [0x0057F0B4]//g_multiplayer_mode
+			MOV		AL, ds: [0x0057F0B4] // g_multiplayer_mode
 			TEST	AL, AL
 			JNE		offset off_0
-			MOV		dword ptr[ESP + 4], offset minimap_sp//Store "minimap_sp.bin" address in the previous stack position.
+			MOV		dword ptr[ESP + 4], offset minimap_sp // Store "minimap_sp.bin" address in the previous stack position.
 			RET
 
-			off_0 :
-			MOV		dword ptr[ESP + 4], 0x00504070//Store "minimap.bin" address in the previous stack position.
-				RET
+		off_0:
+			MOV		dword ptr[ESP + 4], 0x00504070 // Store "minimap.bin" address in the previous stack position.
+			RET
 		}
 	}
 
@@ -711,22 +713,22 @@ namespace hooks
 	const u32 GetActivePlayerCount = 0x004C40F0;
 	void __declspec(naked) minimap_dlg_Create_patch_A5242() {
 		__asm {
-			MOV		ECX, ds: [0x006D0F14]//g_is_in_replay
+			MOV		ECX, ds: [0x006D0F14] // g_is_in_replay
 			TEST	ECX, ECX
 			MOV		CL, 6
 			JNE		offset off_0
-			MOV		AL, ds : [0x0057F0B4]//g_multiplayer_mode
+			MOV		AL, ds: [0x0057F0B4] // g_multiplayer_mode
 			SHL		EAX, CL
 			XOR		CL, CL
 
-			off_0 :
-			MOV		DX, ds : [ECX * 2 + 0x0051276A]//OKButtonGraphicIndex
-				ADD		EDX, EAX
-				MOV[ESI + 0x24], DX
-				CALL	GetActivePlayerCount
-				MOV		ECX, ds : [0x0057F0B4]//g_multiplayer_mode
-				XOR		EAX, ECX
-				JMP		minimap_dlg_Create_A526E
+		off_0:
+			MOV		DX, ds: [ECX * 2 + 0x0051276A] // OKButtonGraphicIndex
+			ADD		EDX, EAX
+			MOV[ESI + 0x24], DX
+			CALL	GetActivePlayerCount
+			MOV		ECX, ds: [0x0057F0B4] // g_multiplayer_mode
+			XOR		EAX, ECX
+			JMP		minimap_dlg_Create_A526E
 		}
 	}
 
@@ -734,9 +736,9 @@ namespace hooks
 	const u32 LoadMap = 0x004BF520;
 	void __declspec(naked) preview_minimap_patch_EF066() {
 		__asm {
-			OR		byte ptr ds : [0x00596871] , 0x80//game_data.startingUnits
+			OR		byte ptr ds: [0x00596871], 0x80 // game_data.startingUnits
 			CALL	LoadMap
-			AND		byte ptr ds : [0x00596871] , 0x7F//game_data.startingUnits
+			AND		byte ptr ds: [0x00596871], 0x7F // game_data.startingUnits
 			JMP		preview_minimap_patch_EF06B
 		}
 	}

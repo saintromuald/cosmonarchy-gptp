@@ -605,6 +605,8 @@ extern u8 tminimap_colors[MinimapColorCount];
 extern u8 tunit_colors[UnitColorCount];
 extern u8 player_color_list[PLAYABLE_PLAYER_COUNT];
 
+u8 get_player_color_index(u32 player, u32 index);
+
 void set_player_color(u32 player, u32 color);
 void init_player_colors();
 void load_player_colors();
