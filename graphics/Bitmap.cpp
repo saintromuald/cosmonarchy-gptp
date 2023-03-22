@@ -211,7 +211,7 @@ namespace graphics
 						Xoffset = x;
 						Yoffset += fnt->maxHeight();
 						continue;
-					case 11:      // invisible
+				//	case 11:      // invisible
 					case 20:
 						color.color = (u8)~0;
 						color.is_ingame_color = false;
@@ -219,6 +219,7 @@ namespace graphics
 					case '\f':    // 12   formfeed
 						break;
 					case '\r':    // 13   carriage return
+					case 26:
 						continue;
 					case 18:      // right align
 						Xoffset += this->getWidth() - fnt->getTextWidth(pszStr) - x;

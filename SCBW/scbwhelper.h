@@ -1570,4 +1570,6 @@ namespace helper {
 	Player* randomize_player_slot();																										// 004A9A30
 
 	void place_building_refinery_check(Unit* unit);																							// 0048E1E0
+
+	void move_screen(Point16 pos);																											// 0049C440
 }

@@ -28,7 +28,7 @@
 #define Max(a, b) ((a) > (b) ? a : b)
 #define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
-#define PlayerColorByte 0x1A
+#define PlayerColorByte 0x0B
 struct PlayerColorCode {
 	char data[3];
 };

@@ -1086,7 +1086,46 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 state = parser_get_s32(&parser) != 0;
 			if (global_vars.players[trigger_player].is_witness != state) {
 				global_vars.players[trigger_player].is_witness = state;
-				if (!state) {
+				if (state) {
+					if (*g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
+						u32 first_player = 0;
+						for (u32 i = 0; i < PlayerLimit; ++i) {
+							if (global_vars.players[i].is_witness) {
+								continue;
+							}
+							if (g_player_table[i].type == PlayerType::Human) {
+								first_player = i + 1;
+								break;
+							}
+						}
+						if (!first_player) {
+							for (u32 i = 0; i < PlayerLimit; ++i) {
+								if (global_vars.players[i].is_witness) {
+									continue;
+								}
+								if (g_player_table[i].type == PlayerType::Computer) {
+									first_player = i + 1;
+									break;
+								}
+							}
+						}
+						if (first_player) {
+							first_player -= 1;
+							Point16 pos = g_start_positions[first_player];
+							if (pos.x > 320) {
+								pos.x -= 320;
+							} else {
+								pos.x = 0;
+							}
+							if (pos.y > 200) {
+								pos.y -= 200;
+							} else {
+								pos.y = 0;
+							}
+							helper::move_screen(pos);
+						}
+					}
+				} else {
 					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game
 				}
 			}

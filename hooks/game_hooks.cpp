@@ -713,13 +713,17 @@ namespace hooks {
 				}
 			}
 
-			for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
-				if (!global_vars.players[target].is_witness) {
-					u32 color = 0; // red
-					if (scbw::is_allied_to(*g_local_nation_id, target)) {
-						color = 8; // green
+			if (local_flags & VespeneDeaths_Ping) {
+				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
+					if (!global_vars.players[target].is_witness) {
+						u32 color = 0; // red
+						if (global_vars.players[*g_local_nation_id].is_witness) {
+							color = 7; // yellow
+						} else if (scbw::is_allied_to(*g_local_nation_id, target)) {
+							color = 8; // green
+						}
+						scbw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
 					}
-					scbw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
 				}
 			}
 		}

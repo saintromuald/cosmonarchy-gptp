@@ -297,8 +297,8 @@ SCBW_DATA(u32*,		g_is_placing_addon,				0x00640884);
 SCBW_DATA(u16*,		g_place_building_unit_id,		0x0064088A);
 SCBW_DATA(u32*,		g_place_building_base_type,		0x00640888);
 
-SCBW_DATA(u16*,		move_to_tile_x,					0x0057F1D0);
-SCBW_DATA(u16*,		move_to_tile_y,					0x0057F1D2);
+SCBW_DATA(u16*,		g_move_to_tile_x,					0x0057F1D0);
+SCBW_DATA(u16*,		g_move_to_tile_y,					0x0057F1D2);
 
 // For increment_unit_scores_ex
 SCBW_DATA(u32*,		factories_owned,				0x005820B4); // Array of 12	btw

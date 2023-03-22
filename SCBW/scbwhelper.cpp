@@ -12358,8 +12358,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 get_bunker_position(u32 player, Point16* return_pos)
-	{
+	s32 get_bunker_position(u32 player, Point16* return_pos) {
 		static s32 result;
 		const u32 func_address = 0x004376F0;
 		__asm {
@@ -12386,8 +12385,7 @@ namespace helper {
 		}
 	}
 
-	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles)
-	{
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles) {
 		static s32 result;
 		const u32 func_address = 0x004465C0;
 		__asm {
@@ -12404,8 +12402,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 ai_finish_unit(Unit* unit)
-	{
+	u32 ai_finish_unit(Unit* unit) {
 		static u32 result;
 		const u32 func_address = 0x00433640;
 		__asm {
@@ -12418,8 +12415,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 get_turret_position(u32 player, Point16* out_pos)
-	{
+	s32 get_turret_position(u32 player, Point16* out_pos) {
 		static s32 result;
 		const u32 func_address = 0x00437670;
 		__asm {
@@ -12433,8 +12429,7 @@ namespace helper {
 		return result;
 	}
 
-	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y)
-	{
+	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y) {
 		const u32 func_address = 0x00444630;
 		__asm {
 			PUSHAD
@@ -12446,8 +12441,7 @@ namespace helper {
 		}
 	}
 
-	char update_buttonset()
-	{
+	char update_buttonset() {
 		static char result;
 		const u32 func_address = 0x00458DE0;
 		__asm {
@@ -12459,8 +12453,7 @@ namespace helper {
 		return result;
 	}
 
-	void refresh_image(Image* image)
-	{
+	void refresh_image(Image* image) {
 		const u32 func_address = 0x004970A0;
 		__asm {
 			PUSHAD
@@ -12470,8 +12463,7 @@ namespace helper {
 		}
 	}
 
-	void compile_healthbar(Image* image, Sprite* sprite)
-	{
+	void compile_healthbar(Image* image, Sprite* sprite) {
 		const u32 func_address = 0x004D6010;
 		__asm {
 			PUSHAD
@@ -12482,8 +12474,7 @@ namespace helper {
 		}
 	}
 
-	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id)
-	{
+	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id) {
 		const u32 func_address = 0x004D6810;
 		__asm {
 			PUSHAD
@@ -12496,8 +12487,7 @@ namespace helper {
 		}
 	}
 
-	b32 return_interceptor_if_cannot_attack(Unit* steward)
-	{
+	b32 return_interceptor_if_cannot_attack(Unit* steward) {
 		static b32 result;
 		const u32 func_address = 0x00465810;
 		__asm {
@@ -12510,8 +12500,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos)
-	{
+	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos) {
 		static u32 result;
 		const u32 func_address = 0x00465D30;
 		__asm {
@@ -12526,8 +12515,7 @@ namespace helper {
 		return result;
 	}
 
-	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation)
-	{
+	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation) {
 		const u32 func_address = 0x00476ED0;
 		__asm {
 			PUSHAD
@@ -12538,8 +12526,7 @@ namespace helper {
 		}
 	}
 
-	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation)
-	{
+	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation) {
 		static b32 result;
 		const u32 func_address = 0x0042D600;
 		__asm {
@@ -12597,8 +12584,7 @@ namespace helper {
 		return (result != 0);
 	}
 
-	b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit)
-	{
+	b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit) {
 		static b32 result;
 		const u32 func_address = 0x00463A10;
 		__asm {
@@ -12612,8 +12598,7 @@ namespace helper {
 		return result;
 	}
 
-	Image* prepare_placement_preview()
-	{
+	Image* prepare_placement_preview() {
 		static Image* result;
 		const u32 func_address = 0x004D5B60;
 		__asm {
@@ -12625,8 +12610,7 @@ namespace helper {
 		return result;
 	}
 
-	void place_building_normal_proc()
-	{
+	void place_building_normal_proc() {
 		const u32 func_address = 0x0048E490;
 		__asm {
 			PUSHAD
@@ -12635,8 +12619,7 @@ namespace helper {
 		}
 	}
 
-	void place_building_refinery_proc()
-	{
+	void place_building_refinery_proc() {
 		const u32 func_address = 0x0048E430;
 		__asm {
 			PUSHAD
@@ -12645,8 +12628,7 @@ namespace helper {
 		}
 	}
 
-	u32 prepare_placement_box(b32 is_addon, u32 unit_id)
-	{
+	u32 prepare_placement_box(b32 is_addon, u32 unit_id) {
 		static u32 result;
 		static u32 func_address = 0x0048DAF0;
 		__asm {
@@ -12660,8 +12642,7 @@ namespace helper {
 		return result;
 	}
 
-	char refresh_screen(u32 placement_box)
-	{
+	char refresh_screen(u32 placement_box) {
 		static char result;
 		const u32 func_address = 0x0048DDC0;
 		__asm {
@@ -12674,8 +12655,7 @@ namespace helper {
 		return result;
 	}
 
-	void update_unit_damage_overlay(Unit* unit)
-	{
+	void update_unit_damage_overlay(Unit* unit) {
 		const u32 func_address = 0x004E6090;
 		__asm {
 			PUSHAD
@@ -12685,8 +12665,7 @@ namespace helper {
 		}
 	}
 
-	s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type)
-	{
+	s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type) {
 		static s32 result;
 		const u32 func_address = 0x00485980;
 		__asm {
@@ -12703,8 +12682,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_save_game(char* buffer)
-	{
+	void CMDRECV_save_game(char* buffer) {
 		const u32 func_address = 0x004C2910;
 		__asm {
 			PUSHAD
@@ -12714,8 +12692,7 @@ namespace helper {
 		}
 	}
 
-	FILE* CMDRECV_load_game(char* buffer)
-	{
+	FILE* CMDRECV_load_game(char* buffer) {
 		static FILE* result;
 		const u32 func_address = 0x004CF950;
 		__asm {
@@ -12728,8 +12705,7 @@ namespace helper {
 		return result;
 	}
 
-	s8 CMDRECV_restart_game()
-	{
+	s8 CMDRECV_restart_game() {
 		static u8 result;
 		const u32 func_address = 0x004BFB10;
 		__asm {
@@ -12741,8 +12717,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_select(char* buffer)
-	{
+	void CMDRECV_select(char* buffer) {
 		const u32 func_address = 0x004C2750;
 		__asm {
 			PUSHAD
@@ -12752,8 +12727,7 @@ namespace helper {
 		}
 	}
 
-	void CMDRECV_shift_select(char* buffer)
-	{
+	void CMDRECV_shift_select(char* buffer) {
 		const u32 func_address = 0x004C2560;
 		__asm {
 			PUSHAD
@@ -12763,8 +12737,7 @@ namespace helper {
 		}
 	}
 
-	void CMDRECV_shift_deselect(char* buffer)
-	{
+	void CMDRECV_shift_deselect(char* buffer) {
 		const u32 func_address = 0x004BFB40;
 		__asm {
 			PUSHAD
@@ -12774,8 +12747,7 @@ namespace helper {
 		}
 	}
 
-	u16 CMDRECV_build(s8* buffer)
-	{
+	u16 CMDRECV_build(s8* buffer) {
 		static u16 result;
 		const u32 func_address = 0x004C23C0;
 		__asm {
@@ -12788,8 +12760,7 @@ namespace helper {
 		return result;
 	}
 
-	s8* CMDRECV_vision(s8* buffer)
-	{
+	s8* CMDRECV_vision(s8* buffer) {
 		static s8* result;
 		const u32 func_address = 0x004BF9C0;
 		__asm {
@@ -12802,8 +12773,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_ally(char* buffer)
-	{
+	void CMDRECV_ally(char* buffer) {
 		const u32 func_address = 0x004C28A0;
 		__asm {
 			PUSHAD
@@ -12813,8 +12783,7 @@ namespace helper {
 		}
 	}
 
-	void CMDRECV_pause_game()
-	{
+	void CMDRECV_pause_game() {
 		const u32 func_address = 0x004C0BC0;
 		__asm {
 			PUSHAD
@@ -12823,8 +12792,7 @@ namespace helper {
 		}
 	}
 
-	void CMDRECV_resume_game()
-	{
+	void CMDRECV_resume_game() {
 		const u32 func_address = 0x004C0B00;
 		__asm {
 			PUSHAD
@@ -12833,8 +12801,7 @@ namespace helper {
 		}
 	}
 
-	s32 CMDRECV_use_cheat(char* buffer, char* cheat)
-	{
+	s32 CMDRECV_use_cheat(char* buffer, char* cheat) {
 		static s32 result;
 		const u32 func_address = 0x004C0AD0;
 		__asm {
@@ -12848,8 +12815,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 CMDRECV_hotkey(char* buffer)
-	{
+	u8 CMDRECV_hotkey(char* buffer) {
 		static u8 result;
 		const u32 func_address = 0x004C2870;
 		__asm {
@@ -12862,8 +12828,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_right_click(Unit* unit)
-	{
+	Unit* CMDRECV_right_click(Unit* unit) {
 		static Unit* result;
 		const u32 func_address = 0x004C2370;
 		__asm {
@@ -12876,8 +12841,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_target_command(char* buffer)
-	{
+	void CMDRECV_target_command(char* buffer) {
 		const u32 func_address = 0x004C2320;
 		__asm {
 			PUSHAD
@@ -12887,8 +12851,7 @@ namespace helper {
 		}
 	}
 
-	char CMDRECV_cancel_construction()
-	{
+	char CMDRECV_cancel_construction() {
 		static char result;
 		const u32 func_address = 0x004C2EF0;
 		__asm {
@@ -12900,8 +12863,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_cancel_unit_morph()
-	{
+	Unit* CMDRECV_cancel_unit_morph() {
 		static Unit* result;
 		const u32 func_address = 0x004C2EC0;
 		__asm {
@@ -12913,8 +12875,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_stop(s8* buffer)
-	{
+	Unit* CMDRECV_stop(s8* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C2190;
 		__asm {
@@ -12927,8 +12888,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_carrier_stop()
-	{
+	Unit* CMDRECV_carrier_stop() {
 		static Unit* result;
 		const u32 func_address = 0x004C1430;
 		__asm {
@@ -12940,8 +12900,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_reaver_stop()
-	{
+	Unit* CMDRECV_reaver_stop() {
 		static Unit* result;
 		const u32 func_address = 0x004C1240;
 		__asm {
@@ -12953,8 +12912,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_nothing()
-	{
+	Unit* CMDRECV_nothing() {
 		static Unit* result;
 		const u32 func_address = 0x004C1050;
 		__asm {
@@ -12966,8 +12924,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_return_cargo(char* buffer)
-	{
+	Unit* CMDRECV_return_cargo(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C2040;
 		__asm {
@@ -12980,8 +12937,7 @@ namespace helper {
 		return result;
 	}
 
-	s16 CMDRECV_train(char* buffer)
-	{
+	s16 CMDRECV_train(char* buffer) {
 		static s16 result;
 		const u32 func_address = 0x004C1C20;
 		__asm {
@@ -12994,8 +12950,7 @@ namespace helper {
 		return result;
 	}
 
-	s16 CMDRECV_cancel_train(s8* buffer)
-	{
+	s16 CMDRECV_cancel_train(s8* buffer) {
 		static s16 result;
 		const u32 func_address = 0x004C0100;
 		__asm {
@@ -13008,8 +12963,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_cloak()
-	{
+	Unit* CMDRECV_cloak() {
 		static Unit* result;
 		const u32 func_address = 0x004C0720;
 		__asm {
@@ -13021,8 +12975,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_decloak()
-	{
+	Unit* CMDRECV_decloak() {
 		static Unit* result;
 		const u32 func_address = 0x004C0660;
 		__asm {
@@ -13034,8 +12987,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 CMDRECV_unit_morph(char* buffer)
-	{
+	s32 CMDRECV_unit_morph(char* buffer) {
 		static s32 result;
 		const u32 func_address = 0x004C1990;
 		__asm {
@@ -13048,8 +13000,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_unsiege(char* buffer)
-	{
+	Unit* CMDRECV_unsiege(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C1F10;
 		__asm {
@@ -13062,8 +13013,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_siege(char* buffer)
-	{
+	Unit* CMDRECV_siege(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C1E80;
 		__asm {
@@ -13076,8 +13026,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_train_fighter()
-	{
+	Unit* CMDRECV_train_fighter() {
 		static Unit* result;
 		const u32 func_address = 0x004C1800;
 		__asm {
@@ -13089,8 +13038,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_unload_all(s8* buffer)
-	{
+	Unit* CMDRECV_unload_all(s8* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C1CC0;
 		__asm {
@@ -13103,8 +13051,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_unload(Unit* unit)
-	{
+	char CMDRECV_unload(Unit* unit) {
 		static char result;
 		const u32 func_address = 0x004C24F0;
 		__asm {
@@ -13117,8 +13064,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_merge_archon()
-	{
+	Unit* CMDRECV_merge_archon() {
 		static Unit* result;
 		const u32 func_address = 0x004C0E90;
 		__asm {
@@ -13130,8 +13076,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_hold_position(char* buffer)
-	{
+	Unit* CMDRECV_hold_position(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C20C0;
 		__asm {
@@ -13144,8 +13089,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_burrow(char* buffer)
-	{
+	Unit* CMDRECV_burrow(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C1FA0;
 		__asm {
@@ -13158,8 +13102,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_unburrow()
-	{
+	Unit* CMDRECV_unburrow() {
 		static Unit* result;
 		const u32 func_address = 0x004C1AC0;
 		__asm {
@@ -13171,8 +13114,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_cancel_nuke()
-	{
+	Unit* CMDRECV_cancel_nuke() {
 		static Unit* result;
 		const u32 func_address = 0x004BFCD0;
 		__asm {
@@ -13184,8 +13126,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_liftoff(s8* buffer)
-	{
+	void CMDRECV_liftoff(s8* buffer) {
 		const u32 func_address = 0x004C1620;
 		__asm {
 			PUSHAD
@@ -13195,8 +13136,7 @@ namespace helper {
 		}
 	}
 
-	Unit* CMDRECV_research(char* buffer)
-	{
+	Unit* CMDRECV_research(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C1BA0;
 		__asm {
@@ -13209,8 +13149,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_cancel_research()
-	{
+	Unit* CMDRECV_cancel_research() {
 		static Unit* result;
 		const u32 func_address = 0x004C0070;
 		__asm {
@@ -13222,8 +13161,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_upgrade(char* buffer)
-	{
+	Unit* CMDRECV_upgrade(char* buffer) {
 		static Unit* result;
 		const u32 func_address = 0x004C1B20;
 		__asm {
@@ -13236,8 +13174,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_cancel_upgrade()
-	{
+	void CMDRECV_cancel_upgrade() {
 		const u32 func_address = 0x004BFFC0;
 		__asm {
 			PUSHAD
@@ -13246,8 +13183,7 @@ namespace helper {
 		}
 	}
 
-	Unit* CMDRECV_cancel_addon()
-	{
+	Unit* CMDRECV_cancel_addon() {
 		static Unit* result;
 		const u32 func_address = 0x004BFF30;
 		__asm {
@@ -13259,8 +13195,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_building_morph(char* buffer)
-	{
+	char CMDRECV_building_morph(char* buffer) {
 		static char result;
 		const u32 func_address = 0x004C1910;
 		__asm {
@@ -13273,8 +13208,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_stim_pack()
-	{
+	Unit* CMDRECV_stim_pack() {
 		static Unit* result;
 		const u32 func_address = 0x004C2F30;
 		__asm {
@@ -13286,8 +13220,7 @@ namespace helper {
 		return result;
 	}
 
-	b32 CMD_game_hash(HashPacket* packet)
-	{
+	b32 CMD_game_hash(HashPacket* packet) {
 		static b32 result;
 		const u32 func_address = 0x0047CDD0;
 		__asm {
@@ -13300,8 +13233,7 @@ namespace helper {
 		return result;
 	}
 
-	void CMDRECV_voice_enable(s8* buffer)
-	{
+	void CMDRECV_voice_enable(s8* buffer) {
 		const u32 func_address = 0x004BF820;
 		__asm {
 			PUSHAD
@@ -13311,8 +13243,7 @@ namespace helper {
 		}
 	}
 
-	s32 CMDRECV_set_latency(char* buffer, s32 unused)
-	{
+	s32 CMDRECV_set_latency(char* buffer, s32 unused) {
 		static s32 result;
 		const u32 func_address = 0x00485E60;
 		__asm {
@@ -13326,8 +13257,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 CMDRECV_set_replay_speed(s32 speed, u8 is_paused, u32 modifier)
-	{
+	s32 CMDRECV_set_replay_speed(s32 speed, u8 is_paused, u32 modifier) {
 		static s32 result;
 		const u32 func_address = 0x004DEB90;
 		__asm {
@@ -13342,8 +13272,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_leave_game(char* buffer)
-	{
+	char CMDRECV_leave_game(char* buffer) {
 		static char result;
 		const u32 func_address = 0x004C2E90;
 		__asm {
@@ -13356,8 +13285,7 @@ namespace helper {
 		return result;
 	}
 
-	char CMDRECV_minimap_ping(char* buffer)
-	{
+	char CMDRECV_minimap_ping(char* buffer) {
 		static char result;
 		const u32 func_address = 0x004BF7A0;
 		__asm {
@@ -13370,8 +13298,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* CMDRECV_merge_dark_archon()
-	{
+	Unit* CMDRECV_merge_dark_archon() {
 		static Unit* result;
 		const u32 func_address = 0x004C0CD0;
 		__asm {
@@ -13383,8 +13310,7 @@ namespace helper {
 		return result;
 	}
 
-	void bwfxn_display_text(s32 player, s32 text, s32 is_replay)
-	{
+	void bwfxn_display_text(s32 player, s32 text, s32 is_replay) {
 		const u32 func_address = 0x0048D1C0;
 		__asm {
 			PUSHAD
@@ -13396,8 +13322,7 @@ namespace helper {
 		}
 	}
 
-	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player)
-	{
+	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player) {
 		s32 player_xd = player;
 		const u32 func_address = 0x004CDE70;
 		__asm {
@@ -13411,8 +13336,7 @@ namespace helper {
 		}
 	}
 
-	char create_dashed_selection(u32 player, Sprite* sprite, char color)
-	{
+	char create_dashed_selection(u32 player, Sprite* sprite, char color) {
 		static char result;
 		static s32 color_xd = color;
 		const u32 func_address = 0x00499A10;
@@ -13428,8 +13352,7 @@ namespace helper {
 		return result;
 	}
 
-	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2)
-	{
+	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2) {
 		static b32 result;
 		const u32 func_address = 0x004AAFA0;
 		__asm {
@@ -13444,8 +13367,7 @@ namespace helper {
 		return result;
 	}
 
-	Player* randomize_player_slot()
-	{
+	Player* randomize_player_slot() {
 		static Player* result;
 		const u32 func_address = 0x004A9A30;
 		__asm {
@@ -13457,12 +13379,22 @@ namespace helper {
 		return result;
 	}
 
-	void place_building_refinery_check(Unit* unit)
-	{
+	void place_building_refinery_check(Unit* unit) {
 		const u32 func_address = 0x0048E1E0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void move_screen(Point16 pos) {
+		const u32 func_address = 0x0049C440;
+		__asm {
+			PUSHAD 
+			MOVZX EAX, pos.x
+			MOVZX ECX, pos.y
 			CALL func_address
 			POPAD
 		}
