@@ -364,7 +364,7 @@ namespace hooks {
 	}
 
 	static void draw_transport_ui() {
-		Point16 start_pos = {179, 333};
+		Point16 start_pos = {179, 346};
 		Point16 pos = start_pos;
 
 		if (transport_ui_unit) {
@@ -415,20 +415,18 @@ namespace hooks {
 			if (!cargo_slots_count) {
 				continue;
 			}
-			pos.y -= (cargo_slots_count / 4) * 13;
+
+			pos.y -= 13 + ((cargo_slots_count + 3) / 4) * 13;
 			Point16 local_pos = pos;
-			pos.y -= 2;
+			pos.y -= 4;
 
-			Token short_unit_name = get_short_unit_name(transport->id);
-			if (transport->id == UnitId::TerranPhalanxSiegeMode) {
-				strcat_s(short_unit_name.data, " (Sieged)");
-				short_unit_name.size = strlen(short_unit_name.data);
+			{
+				Token short_unit_name = get_short_unit_name(transport->id);
+				char unit_name[MaxToken] = {};
+				snprintf(unit_name, MaxToken, "%s%s [%u/%u]:", scbw::get_player_color_code(transport->player).data, short_unit_name.data, space_used, units_dat::space_provided[transport->id]);
+				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+				local_pos.y += 13;
 			}
-
-			char unit_name[MaxToken + 1] = {};
-			snprintf(unit_name, 128, "%s%s [%u/%u]:", scbw::get_player_color_code(transport->player).data, short_unit_name.data, space_used, units_dat::space_provided[transport->id]);
-			graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-			local_pos.y += 13;
 
 			u32 x_count = 0;
 			for (u32 j = 0; j < cargo_slots_count; ++j) {
@@ -439,11 +437,11 @@ namespace hooks {
 					strcat_s(short_unit_name.data, " (Sieged)");
 					short_unit_name.size = strlen(short_unit_name.data);
 				}
-				char unit_name[MaxToken + 1] = {};
+				char unit_name[MaxToken] = {};
 				if (cargo_slot.count > 1) {
-					snprintf(unit_name, 128, "%s%s (%u)", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data, cargo_slot.count);
+					snprintf(unit_name, MaxToken, "%s%s (%u)", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data, cargo_slot.count);
 				} else {
-					snprintf(unit_name, 128, "%s%s", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data);
+					snprintf(unit_name, MaxToken, "%s%s", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data);
 				}
 				u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
 
@@ -451,13 +449,13 @@ namespace hooks {
 				rect.left = local_pos.x;
 				rect.top = local_pos.y;
 				rect.right = rect.left + width;
-				rect.bottom = rect.top + 12;
+				rect.bottom = rect.top + 11;
 				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && PtInRect(&rect, *(POINT*) g_mouse);
 				if (hover) {
 					if (cargo_slot.count > 1) {
-						snprintf(unit_name, 128, BWTC_WHITE "%s (%u)", short_unit_name.data, cargo_slot.count);
+						snprintf(unit_name, MaxToken, BWTC_WHITE "%s (%u)", short_unit_name.data, cargo_slot.count);
 					} else {
-						snprintf(unit_name, 128, BWTC_WHITE "%s", short_unit_name.data);
+						snprintf(unit_name, MaxToken, BWTC_WHITE "%s", short_unit_name.data);
 					}
 					width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
 				}
@@ -468,14 +466,12 @@ namespace hooks {
 					helper::set_ingame_input_procs();
 				}
 
-				if (j < cargo_slots_count - 1) {
-					local_pos.x += width + 5;
-					x_count++;
-					if (x_count > 4) {
-						x_count = 0;
-						local_pos.x = start_pos.x;
-						local_pos.y += 13;
-					}
+				local_pos.x += width + 8;
+				x_count++;
+				if (x_count >= 4) {
+					x_count = 0;
+					local_pos.x = start_pos.x;
+					local_pos.y += 13;
 				}
 			}
 		}
