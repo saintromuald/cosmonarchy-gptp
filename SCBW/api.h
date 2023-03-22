@@ -630,6 +630,7 @@ namespace scbw
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);
 	bool unit_id_is_zerg_supply(u16 unit_id);
+	void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
 	bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only = false);

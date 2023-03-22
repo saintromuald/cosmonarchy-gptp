@@ -1598,6 +1598,42 @@ namespace scbw {
 			|| unit_id == UnitId::ZergAlaszileth);
 	}
 
+	void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
+		UnitExt* target_ext = get_unit_ext(target);
+		target_ext->units[UnitMindController] = 0;
+		target_ext->values[ValueMindControlOriginalPlayer] = 0;
+
+		// Recurse
+		for (u32 i = 0; i < TransportCap; ++i) {
+			Unit* unit = target->get_loaded_unit(i);
+			if (unit) {
+				empress_zombify(player, source, unit, stacks);
+			}
+		}
+		for (Unit* unit : target_ext->unit_vectors[UnitVectorMindControlling]) {
+			empress_zombify(player, source, unit, stacks);
+		}
+		target_ext->unit_vectors[UnitVectorMindControlling].clear();
+
+		// Obtain control
+		target->give_to(player);
+
+		target->hitpoints = 0;
+		target->shields = 0;
+		target->heal_hp_then_shields(stacks * 256 * 5, source);
+		target->remove_timer = 1 + stacks * 24 * 1;
+
+		target->give_to(player);
+		target_ext->values[ValueEmpressPassiveStacks] = 0;
+		target_ext->values[ValueIsZombified] = 1;
+		target_ext->values[ValueAlliedInvPlayer] = player;
+		target_ext->timers[TimerAlliedInvFrames] = 24;
+
+		// Audio Visuals
+		target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
+		helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), target);
+	}
+
 	void mind_control(Unit* source, Unit* target) {
 		if (!source || !target || source->player == target->player || scbw::is_allied_to(source->player, target->player)) {
 			return;
@@ -1613,23 +1649,16 @@ namespace scbw {
 		}
 
 		// Recurse
-		for (u32 i = 0; i < 8; ++i) {
+		for (u32 i = 0; i < TransportCap; ++i) {
 			Unit* unit = target->get_loaded_unit(i);
-			mind_control(source, unit);
+			if (unit) {
+				mind_control(source, unit);
+			}
 		}
 		for (Unit* unit : target_ext->unit_vectors[UnitVectorMindControlling]) {
 			mind_control(source, unit);
 		}
 		target_ext->unit_vectors[UnitVectorMindControlling].clear();
-
-		// Demiurge - apply behavior
-		if (source->id == UnitId::ProtossDemiurge) {
-			auto& vec = source_ext->unit_vectors[UnitVectorWorshipersDemiurge];
-			if (std::find(vec.begin(), vec.end(), target) == vec.end()) {
-				vec.push_back(target);
-			}
-			target_ext->values[ValueWorshipStack] = 1;
-		}
 
 		// Mind Tyrant - apply behavior
 		if (source->id == UnitId::ProtossMindTyrant) {
@@ -1639,15 +1668,16 @@ namespace scbw {
 
 		// Obtain control
 		target->give_to(source->player);
+		target_ext->values[ValueAlliedInvPlayer] = source->player;
+		target_ext->timers[TimerAlliedInvFrames] = 24;
 
 		// Audio Visuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
-			u32 offset = scbw::get_overlay_offset(target->id);
 			if (source->id == UnitId::ProtossDemiurge) {
-				target->sprite->create_top_overlay(ImageId::Worship_Small + offset, 0, 0, 0);
+				target->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(target->id), 0, 0, 0);
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 			} else if (source->id == UnitId::ProtossMindTyrant) {
-				target->sprite->create_top_overlay(ImageId::MindControlHit_Small + offset, 0, 0, 0);
+				target->sprite->create_top_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id), 0, 0, 0);
 			}
 		}
 	}
@@ -1657,22 +1687,20 @@ namespace scbw {
 			return;
 		}
 
-		UnitExt* targetExt = get_unit_ext(target);
-		Unit* mind_controller = targetExt->units[UnitMindController];
-		targetExt->units[UnitMindController] = 0;
-
+		UnitExt* target_ext = get_unit_ext(target);
+		Unit* mind_controller = target_ext->units[UnitMindController];
 		if (mind_controller) {
 			UnitExt* mind_controller_ext = get_unit_ext(mind_controller);
 			auto& vec = mind_controller_ext->unit_vectors[UnitVectorMindControlling];
 			vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
 		}
+		target_ext->units[UnitMindController] = 0;
 
-		target->give_to(targetExt->values[ValueMindControlOriginalPlayer] - 1);
-		targetExt->values[ValueMindControlOriginalPlayer] = 0;
-
-		targetExt->values[ValueWorshipStack] = 0;
-	//	targetExt->timers[TimerGodsMadeFlesh] = 0;
-		targetExt->values[ValueTyrannyPlayer] = 0;
+		if (target_ext->values[ValueMindControlOriginalPlayer]) {
+			target->give_to(target_ext->values[ValueMindControlOriginalPlayer] - 1);
+			target_ext->values[ValueMindControlOriginalPlayer] = 0;
+		}
+		target_ext->values[ValueTyrannyPlayer] = 0;
 	}
 
 	bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
@@ -1680,8 +1708,7 @@ namespace scbw {
 			return unit_id == UnitId::ZergHachirosk
 				|| unit_id == UnitId::ZergCaphrolosk
 				|| unit_id == UnitId::ZergGathtelosk;
-		}
-		else {
+		} else {
 			return unit_id == UnitId::ZergHachirosk
 				|| unit_id == UnitId::ZergCaphrolosk
 				|| unit_id == UnitId::ZergGathtelosk

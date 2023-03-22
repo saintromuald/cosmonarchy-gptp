@@ -59,7 +59,6 @@ enum ExtValueId
 	ValueEntropyGauntlets,
 	ValueDeconstruction,
 	ValueDeconstructionPlayer,
-	ValueWorshipStack,
 	ValueMindControlOriginalPlayer,
 	ValuePreMorphEnergy,
 //	ValueGodsMadeFleshCast,
@@ -284,7 +283,6 @@ enum ExtUnitVectorId
 	UnitVectorCaptivatingClaws,
 	UnitVectorPhaseLink,
 	UnitVectorPhaseLinkClarions,
-	UnitVectorWorshipersDemiurge,
 	UnitVectorCrucibles,
 	UnitVectorMindControlling,
 

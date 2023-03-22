@@ -610,8 +610,7 @@ namespace hooks
 					{
 						// Demiurge - Worship
 						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
-						&&  data.target->hitpoints > data.damage)
-						{
+						&&  data.target->hitpoints > data.damage) {
 							scbw::mind_control(data.attacker, data.target);
 						}
 					} break;
@@ -792,17 +791,7 @@ namespace hooks
 		// Empress - Anodyne Annex - zombify target
 		if (target_ext->values[ValueEmpressPassiveStacks] && !target_ext->values[ValueIsZombified]) {
 			fatal_deal_damage = false;
-			data.target->hitpoints = 0;
-			data.target->shields = 0;
-			data.target->heal_hp_then_shields(target_ext->values[ValueEmpressPassiveStacks] * 256 * 5, target_ext->units[UnitEmpressSource]);
-			data.target->remove_timer = 1 + target_ext->values[ValueEmpressPassiveStacks] * 24 * 1;
-			data.target->give_to(target_ext->values[ValueEmpressSourcePlayer]);
-			target_ext->values[ValueEmpressPassiveStacks] = 0;
-			target_ext->values[ValueIsZombified] = 1;
-			target_ext->values[ValueAlliedInvPlayer] = target_ext->values[ValueEmpressSourcePlayer];
-			target_ext->timers[TimerAlliedInvFrames] = 24;
-			data.target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(data.target->id));
-			helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), data.target, 1, 0);
+			scbw::empress_zombify(target_ext->values[ValueEmpressSourcePlayer], target_ext->units[UnitEmpressSource], data.target, target_ext->values[ValueEmpressPassiveStacks]);
 		}
 
 		if (target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
