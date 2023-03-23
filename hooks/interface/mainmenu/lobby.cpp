@@ -93,6 +93,7 @@ namespace hooks
 		*g_countdown_time_remaining = result;
 
 		// Convert open slots to computers (multiplayer)
+		/*
 		for (s32 i = 0; i < 8; i++)
 		{
 			if (g_player_table[i].type == PlayerType::OpenSlot)
@@ -100,6 +101,7 @@ namespace hooks
 				g_player_table[i].type = PlayerType::Computer;
 			}
 		}
+		*/
 
 		return result;
 	}
