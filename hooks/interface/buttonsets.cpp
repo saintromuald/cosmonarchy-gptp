@@ -952,15 +952,15 @@ namespace hooks {
 										case UnitId::TerranCommandCenter:
 										case UnitId::TerranWatchdog:
 										case UnitId::TerranReservoir:
+										case UnitId::TerranBunker:
+										case UnitId::TerranTreasury:
+										case UnitId::TerranAtlas:
 										case UnitId::TerranBarracks:
 										case UnitId::TerranFulcrum:
 										case UnitId::TerranStarpad:
-										case UnitId::TerranBunker:
-										case UnitId::TerranAtlas:
 										{
 											current_button_state = Button_State::Enabled;
 										} break;
-										case UnitId::TerranTreasury:
 										case UnitId::TerranSentinel:
 										case UnitId::TerranDaedala:
 										case UnitId::TerranCaptaincy:
