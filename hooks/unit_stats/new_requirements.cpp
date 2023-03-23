@@ -80,14 +80,14 @@ namespace hooks {
 				case UnitId::TerranReservoir:
 				case UnitId::TerranWatchdog:
 				case UnitId::TerranBunker:
+				case UnitId::TerranTreasury:
+				case UnitId::TerranAtlas:
 				case UnitId::TerranBarracks:
 				case UnitId::TerranFulcrum:
 				case UnitId::TerranStarpad:
-				case UnitId::TerranAtlas:
 				{
 					return true;
 				} break;
-				case UnitId::TerranTreasury:
 				case UnitId::TerranSentinel:
 				case UnitId::TerranDaedala:
 				case UnitId::TerranFountainhead:
@@ -1431,17 +1431,14 @@ namespace hooks {
 					case UnitId::TerranReservoir:
 					case UnitId::TerranWatchdog:
 					case UnitId::TerranBunker:
-					{
-						return TECH_ACTIVE;
-					}
+					case UnitId::TerranTreasury:
+					case UnitId::TerranAtlas:
 					case UnitId::TerranBarracks:
 					case UnitId::TerranFulcrum:
 					case UnitId::TerranStarpad:
-					case UnitId::TerranAtlas:
 					{
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranTreasury:
 					case UnitId::TerranSentinel:
 					case UnitId::TerranDaedala:
 					case UnitId::TerranCaptaincy:
