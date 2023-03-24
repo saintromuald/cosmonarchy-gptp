@@ -236,7 +236,7 @@ namespace hooks
 			}
 			else
 			{
-				order_type = units_dat::right_click_action[id];
+				order_type = helper::get_right_click_action_order(unit);
 				if (!order_type)
 				{
 					if (hooks::unit_can_rally(unit)) {
@@ -259,16 +259,16 @@ namespace hooks
 				{
 					if (hooks::unit_can_have_rally(unit))
 					{
-						Unit* rallyTarget = target;
-						if (!rallyTarget)
+						Unit* rally_target = target;
+						if (!rally_target)
 						{
-							rallyTarget = unit;
+							rally_target = unit;
 						}
 
 						UnitExt* unitExt = get_unit_ext(unit);
-						unit->rally.unit = rallyTarget;
-						unit->rally.pt.x = rallyTarget->sprite->position.x;
-						unit->rally.pt.y = rallyTarget->sprite->position.y;
+						unit->rally.unit = rally_target;
+						unit->rally.pt.x = rally_target->sprite->position.x;
+						unit->rally.pt.y = rally_target->sprite->position.y;
 					}
 				}
 				else if (unit != target)

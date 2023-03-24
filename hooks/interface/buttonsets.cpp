@@ -1064,6 +1064,7 @@ namespace hooks {
 								||  current_button->requirement_var == UnitId::ProtossCrucible
 								||  current_button->requirement_var == UnitId::ProtossMatrix
 								||  current_button->requirement_var == UnitId::ProtossStridentStratum
+							//	||  current_button->requirement_var == UnitId::ProtossEngram
 								||  current_button->requirement_var == UnitId::ProtossGateway
 								||  current_button->requirement_var == UnitId::ProtossCenotaph
 								||  current_button->requirement_var == UnitId::ProtossGrandLibrary

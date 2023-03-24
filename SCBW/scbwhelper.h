@@ -22,22 +22,22 @@ namespace helper {
 	SCBW_FUNC(0x0049B870, bool __cdecl, update_alliances);
 	SCBW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
 
-	bool has_money_can_make(Unit* builder, u32 unitToBuild);
+	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
 	// For loadRaceUI
 	void get_race_sound_list(s8 a1);
 	s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32));
-	void load_graphic(s8 a1, s32 a2, s32 a3, s8 a4, s32 a5);
+	void load_graphic(char* a1, s32 a2, s32 a3, char* log_filename, s32 log_line);
 
 	s32 rand_func();
 	bool unit_hp_below_33_percent(Unit* a1);
-	bool unit_hp_between_33_66_percent(s32 a1, Unit* a2);
+	bool unit_hp_between_33_66_percent(s32 a1, Unit* unit);
 	s32 get_max_hp(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* unit);
 	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text);
 	void draw_energy(BinDlg* a1);
 	void hide_optional_status_screen_controls(BinDlg* a1);
-	void show_control_group(BinDlg* dialog, s16 firstId, s16 lastId);
+	void show_control_group(BinDlg* dialog, u16 firstId, u16 lastId);
 	void hide_dialog(BinDlg* dialog);
 
 	// For draw_supply_unit_info

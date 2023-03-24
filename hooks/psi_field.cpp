@@ -1,6 +1,7 @@
 #include "psi_field.h"
 #include "../SCBW/scbwdata.h"
 #include "SCBW/api.h"
+#include "trigger_system/trigger_system.h"
 
 namespace hooks
 {
@@ -20,7 +21,11 @@ namespace hooks
 
 	// Conditions on which the power field should be showed
 	bool unit_can_show_power_for(Unit* unit, u32 player) {
-		if (!scbw::is_allied_to(unit->player, player)) {
+		if (global_vars.players[player].is_witness || *g_is_in_replay) {
+			return true;
+		}
+		if (!scbw::is_allied_to(unit->player, player))
+		{
 			return false;
 		}
 		return true;
@@ -51,7 +56,7 @@ namespace hooks
 		return false;
 	}
 
-	// Hooked to show allied power fields -Veeq7
+	// Hooked to show allied power fields. -Veeq7
 	b32 show_power_sprite(Unit* unit) { // 00493BF0
 		Sprite* sprite = helper::create_sprite(SpriteId::PsiFieldRightUpper, unit->sprite->position.x, unit->sprite->position.y, unit->player); // Originally player was 0
 		unit->building.pylon_aura = sprite;

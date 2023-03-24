@@ -374,7 +374,7 @@ namespace hooks
 						if (jump_to_77C78)
 						{
 							if ((unit->subunit)->main_order_id == units_dat::attack_unit_order[(unit->subunit)->id]
-								&& helper::get_right_click_action_order(unit->subunit) != RightClickActions::NoMove_NormalAttack)
+							&&   helper::get_right_click_action_order(unit->subunit) != RightClickActions::NoMove_NormalAttack)
 							{
 								jump_to_77CA1 = true;
 							}

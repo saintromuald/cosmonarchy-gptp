@@ -325,7 +325,6 @@ static KiterType get_kiter_type(u32 unit_id) {
 			return KiterType_TargetingOnly;
 		} break;
 
-		case UnitId::TerranHorseman:
 		case UnitId::TerranSilvertongue:
 		case UnitId::TerranCataphract:
 		case UnitId::TerranPaladin:
