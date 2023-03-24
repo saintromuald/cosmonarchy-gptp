@@ -401,7 +401,7 @@ namespace hooks
 			bool show_apm = false;
 			if (config.witness_show_apm) {
 				for (u8 player = 0; player < PlayerLimit; ++player) {
-					if (g_player_table[player].type == PlayerType::Human) {
+					if (g_player_table[player].type == PlayerType::Human && !global_vars.players[player].is_witness) {
 						show_apm = true;
 						break;
 					}
