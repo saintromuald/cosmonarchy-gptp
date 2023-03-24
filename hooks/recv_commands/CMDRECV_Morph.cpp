@@ -76,7 +76,7 @@ namespace hooks
 		u16 unit_id = *(u16*)(buffer + 1);
 		for (u32 i = 0; i < size; ++i) {
 			Unit* unit = selection[i];
-			if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id)) {
+			if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id) == 1) {
 				if (helper::has_money_can_make(unit, unit_id)) {
 					helper::set_secondary_order(unit, OrderId::Train);
 				}
