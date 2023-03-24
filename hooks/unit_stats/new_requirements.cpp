@@ -755,6 +755,7 @@ namespace hooks {
 					case UnitId::ProtossEmbassy:
 					case UnitId::ProtossCrucible:
 					case UnitId::ProtossStridentStratum:
+					case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:
 					case UnitId::ProtossGrandLibrary:
@@ -2313,10 +2314,11 @@ namespace hooks {
 					case UnitId::ProtossPylon:
 					case UnitId::ProtossAquifer:
 					case UnitId::ProtossWarden:
-					case UnitId::ProtossMatrix:
 					case UnitId::ProtossEmbassy:
+					case UnitId::ProtossMatrix:
 					case UnitId::ProtossCrucible:
 					case UnitId::ProtossStridentStratum:
+					case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:
 					case UnitId::ProtossGrandLibrary:
