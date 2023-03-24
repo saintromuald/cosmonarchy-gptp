@@ -21,7 +21,7 @@ struct Shape {
     void set_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
     void set_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType);
     void set_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
-    void draw() const;
+    void draw(bool is_statres) const;
 
     enum ShapeType {
       NONE,

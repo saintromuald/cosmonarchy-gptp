@@ -4,6 +4,7 @@
 #include "scbwhelper.h"
 #include "bullet_extender.h"
 #include "hooks/limits/ccmu.h"
+#include "graphics\Font.h"
 #pragma pack(1)
 
 // Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.

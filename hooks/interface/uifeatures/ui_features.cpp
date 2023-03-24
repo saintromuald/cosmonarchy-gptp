@@ -13,10 +13,10 @@
 ApmCounter local_apm_counter;
 ApmCounter player_apm_counter[PlayerLimit];
 
-s32* const fonts = (s32*)0x006CE0F4;
-char* const printXYAlignment = (char*)0x006CE110;
-u32* const printXYPosY = (u32*)0x006CE0E0;
-Box16* const drawTextBox = (Box16*)0x006CE0C8;
+s32* const fonts = (s32*) 0x006CE0F4;
+char* const printXYAlignment = (char*) 0x006CE110;
+u32* const printXYPosY = (u32*) 0x006CE0E0;
+Box16* const drawTextBox = (Box16*) 0x006CE0C8;
 
 Point16 ui_text_pos;
 
@@ -41,7 +41,7 @@ namespace hooks {
 
 	void draw_ui_text(const char* text, u8 color) {
 		draw_text(text, ui_text_pos.x, ui_text_pos.y, 300, ui_text_height * 4, color);
-	//	ui_text_pos.y += ui_text_height;
+		//	ui_text_pos.y += ui_text_height;
 		ui_text_pos.y = *printXYPosY;
 	}
 
@@ -78,7 +78,7 @@ namespace hooks {
 	}
 
 	void draw_ui_features() {
-		ui_text_pos = {10, 3};
+		ui_text_pos = { 10, 3 };
 		if (*leaderboard_type) {
 			ui_text_pos.x += 80;
 		}
@@ -89,18 +89,8 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
-		if (in_replay_or_witness && config.witness_show_apm) {
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (global_vars.players[i].is_witness || g_player_table[i].type != PlayerType::Human) {
-					continue;
-				}
-				char buffer[48] = {};
-				u32 apm = player_apm_counter[i].action_count / (ActionSampleTime / 60.0);
-				sprintf_s(buffer, "%s APM: %u", g_player_table[i].name, apm);
-				draw_ui_text(buffer, 7);
-			}
-		} else if (!in_replay_or_witness && config.show_apm) {
+		bool is_replay_or_witness = *g_is_in_replay || global_vars.players[*g_local_nation_id].is_witness;
+		if (!is_replay_or_witness && config.show_apm) {
 			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
@@ -118,7 +108,6 @@ namespace hooks {
 				} else {
 					snprintf(buffer, 256, "- %s", objective->text);
 				}
-
 				draw_ui_text(buffer, 7);
 			}
 		}

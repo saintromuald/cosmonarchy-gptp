@@ -28,6 +28,8 @@
 #define Max(a, b) ((a) > (b) ? a : b)
 #define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
+#define HarvestTimer 125
+
 #define PlayerColorByte 0x0B
 struct PlayerColorCode {
 	char data[3];
@@ -302,26 +304,22 @@ namespace scbw
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
-	inline bool is_brood_war_mode()
-	{
+	inline bool is_brood_war_mode() {
 		return (*g_is_brood_war) != 0;
 	}
 
 	/// Checks whether the given cheat flag is enabled.
-	inline bool is_cheat_enabled(u32 cheatFlag)
-	{
+	inline bool is_cheat_enabled(u32 cheatFlag) {
 		return ((*g_cheat_state) & cheatFlag) != 0;
 	}
 
 	/// Checks whether the game is paused.
-	inline bool is_game_paused()
-	{
+	inline bool is_game_paused() {
 		return (*g_is_game_paused) != 0;
 	}
 
 	/// Checks whether the game is in replay mode.
-	inline bool is_in_replay()
-	{
+	inline bool is_in_replay() {
 		return (*g_is_in_replay) != 0;
 	}
 

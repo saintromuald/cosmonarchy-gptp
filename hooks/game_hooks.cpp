@@ -2862,6 +2862,9 @@ namespace hooks {
 	bool game_on() {
 		set_max_sight_range<20>();
 
+		// Update harvest time for mineral fields
+		memory_patch(0x004698BC + 3, (u8)HarvestTimer);
+
 		chk_cache_size = 0;
 		memset(chk_cache, 0, sizeof(chk_cache));
 

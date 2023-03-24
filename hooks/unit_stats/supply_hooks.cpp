@@ -5,6 +5,8 @@
 #include <windows.h>
 #include <globals.h>
 #include "trigger_system/trigger_system.h"
+#include "config.h"
+#include "hooks/interface/uifeatures/ui_features.h"
 
 namespace hooks
 {
@@ -391,22 +393,28 @@ namespace hooks
 			dialog_var = 0;
 		}
 
-		// Track worker/military counts. -Veeq7
-		s32 workers = 0;
-		s32 men = 0;
-
 		// Replay/witness UI. -DF
 		if (*g_is_in_replay || global_vars.players[*g_local_nation_id].is_witness) {
 			u8 statres_row = 0;
 			graphics::reset_stat_res_graphics();
 
-			for (u8 player_id = 0; player_id < PlayerLimit; ++player_id) {
-				u8 player_type = g_player_table[player_id].type;
-				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !global_vars.players[player_id].is_witness) {
-					u8 race_id = g_player_table[player_id].race;
-					workers = 0;
-					men = 0;
-					for (Unit* unit = first_player_unit->unit[player_id]; unit; unit = unit->player_link.next) {
+			bool show_apm = false;
+			if (config.witness_show_apm) {
+				for (u8 player = 0; player < PlayerLimit; ++player) {
+					if (g_player_table[player].type == PlayerType::Human) {
+						show_apm = true;
+						break;
+					}
+				}
+			}
+
+			Point16 pos = { 420, 3 };
+			for (u8 player = 0; player < PlayerLimit; ++player) {
+				if ((g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::Human) && !global_vars.players[player].is_witness) {
+					// Track worker/military counts. -Veeq7
+					u32 workers = 0;
+					u32 men = 0;
+					for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 						if (unit->status & UnitStatus::Completed) {
 							if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 								workers += 2;
@@ -416,14 +424,33 @@ namespace hooks
 						}
 					}
 
-					helper::show_supply_info(dialog_var, race_id + 4, workers, men);
+					helper::show_supply_info(dialog_var, g_player_table[player].race + 4, workers, men);
 					dialog_var = dialog_var->next;
-					helper::print_stat_res_info(dialog_var, race_id + 1, &StatRes_accrue_gas[player_id], resources->gas[player_id], FALSE);
+					helper::print_stat_res_info(dialog_var, g_player_table[player].race + 1, &StatRes_accrue_gas[player], resources->gas[player], FALSE);
 					dialog_var = dialog_var->next;
-					helper::print_stat_res_info(dialog_var, 0, &StatRes_accrue_minerals[player_id], resources->minerals[player_id], FALSE);
+					helper::print_stat_res_info(dialog_var, 0, &StatRes_accrue_minerals[player], resources->minerals[player], FALSE);
 					dialog_var = dialog_var->next;
-					graphics::draw_stat_res_box(424, 5 + statres_row, 433, 14 + statres_row, g_player_minimap_colors[player_id]);
-					statres_row += 15;
+
+					Point16 local_pos = pos;
+					if (show_apm) {
+						local_pos.x -= 40;
+						if (g_player_table[player].type == PlayerType::Human) {
+							u32 apm = player_apm_counter[player].action_count / (ActionSampleTime / 60.0);
+							char buffer[48] = {};
+							sprintf_s(buffer, BWTC_GREEN "APM: %u", apm);
+							graphics::draw_statres_text(local_pos.x, local_pos.y, buffer, graphics::FONT_MEDIUM);
+						}
+						local_pos.x -= 17;
+					}
+
+					char buffer[48] = {};
+					sprintf_s(buffer, "%s%s", scbw::get_player_color_code(player).data, g_player_table[player].name);
+					u32 width = font_base[graphics::FONT_MEDIUM]->getTextWidth(buffer);
+					graphics::draw_statres_text(local_pos.x - width, local_pos.y, buffer, graphics::FONT_MEDIUM);
+					graphics::draw_statres_box(local_pos.x + 4, local_pos.y + 2, local_pos.x + 13, local_pos.y + 11, g_player_minimap_colors[player]);
+
+					pos.y += 15;
+
 					// keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
 					helper::hide_dialog(dialog_var);
 					dialog_var = dialog_var->next;
@@ -435,7 +462,9 @@ namespace hooks
 				dialog_var = dialog_var->next;
 			}
 		} else { // Normal player UI. -Veeq7
-			s32 active_player = *g_local_nation_id;
+			u32 active_player = *g_local_nation_id;
+			u32 workers = 0;
+			u32 men = 0;
 			for (Unit* unit = first_player_unit->unit[active_player]; unit; unit = unit->player_link.next) {
 				if (unit->status & UnitStatus::Completed) {
 					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {

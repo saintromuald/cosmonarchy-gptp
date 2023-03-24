@@ -199,7 +199,7 @@ namespace hooks {
 				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
 				unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				unit->main_order_state = 5;
-				unit->main_order_timer = 75;
+				unit->main_order_timer = HarvestTimer;
 			}
 		} else {
 			helper::set_resource_target(unit);
