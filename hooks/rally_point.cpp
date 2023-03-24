@@ -575,6 +575,16 @@ namespace hooks
 			return 3;
 		}
 
+		// Try fixing right-click orders for landed Terran towers. Unsuccessful for now.
+		if (unit->id == UnitId::TerranWatchdog || unit->id == UnitId::TerranSentinel) {
+			if (unit->status & UnitStatus::InAir) {
+				return 1;
+			}
+			else {
+				return 3;
+			}
+		}
+
 		char right_click_order = units_dat::right_click_action[unit->id];
 		if (!right_click_order) {
 			if (hooks::unit_can_have_rally(unit)) {
