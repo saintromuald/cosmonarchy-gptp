@@ -1,5 +1,6 @@
 #pragma once
 #include "SCBW/api.h"
+#include "trigger_parser.h"
 
 struct Sound;
 
@@ -22,7 +23,7 @@ struct SpriteReplacement {
 	u32 sprite_id;
 };
 
-const char* race_names[] = {
+static const char* race_names[] = {
 	"Zerg",
 	"Protoss",
 	"Terran",
