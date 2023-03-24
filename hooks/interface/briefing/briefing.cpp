@@ -10,12 +10,12 @@ namespace hooks
 	void update_mission_objectives() // 0046CD30 | doesn't work currently due to null check late in the function
 	{
 		BinDlg* ready_room_var = *g_ready_room_dialog;
-		if ((*g_ready_room_dialog)->control_type)
+		if (ready_room_var->control_type)
 		{
 			ready_room_var = (*g_ready_room_dialog)->parent;
 		}
 
-		BinDlg* objective_dialog = 0;
+		BinDlg* objective_dialog;
 		BinDlg* child_dialog = ready_room_var->child_dialog;
 		if (child_dialog)
 		{
@@ -36,12 +36,13 @@ namespace hooks
 		}
 
 		const char* objective_text;
-		if (g_map_string_tbl)
+		u32 string_count = g_map_string_tbl->get_string_count();
+		if (string_count)
 		{
-			u16 map_string_id = *((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id) - 1;
-			if (*((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id))
+			u16 map_string_id = *((u16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id) - 1;
+			if (map_string_id)
 			{
-				if (map_string_id < *(s16*)g_map_string_tbl)
+				if (map_string_id < string_count)
 				{
 					objective_text = (char*)g_map_string_tbl + *((u16*)g_map_string_tbl + map_string_id + 1);
 				}
