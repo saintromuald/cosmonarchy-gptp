@@ -7,7 +7,7 @@
 namespace hooks
 {
 	// Hooked in case we need it later - Pr0nogo
-	void update_mission_objectives() // 0046CD30 | doesn't work currently due to null check late in the function
+	void update_mission_objectives() // 0046CD30 | doesn't work currently
 	{
 		BinDlg* ready_room_var = *g_ready_room_dialog;
 		if (ready_room_var->control_type)
@@ -42,7 +42,7 @@ namespace hooks
 			u16 map_string_id = *((u16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id) - 1;
 			if (map_string_id)
 			{
-				if (map_string_id < string_count)
+				if (map_string_id < string_count) // This check always fails. Probably something to do with g_map_string_tbl being improperly accessed!
 				{
 					objective_text = (char*)g_map_string_tbl + *((u16*)g_map_string_tbl + map_string_id + 1);
 				}
