@@ -1132,7 +1132,7 @@ namespace hooks
 					}
 				}
 
-				// Note: original code recalculated unitId/builtUnitId, not done here to optimize things. -GPTP
+				// Note: original code recalculated unitId/built_unit_id, not done here to optimize things. -GPTP
 				if (scbw::unit_id_is_protoss_warp_factory(unit_id)) // TODO: Revisit this, probably a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
 				{
 					progress_string_id = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
@@ -1169,16 +1169,16 @@ namespace hooks
 				{
 					struct
 					{
-						u32 unknown_value;		//[EBP-0x20]	[00]
-						u32 always_zero_here;	//[EBP-0x1C]	[04]
-						u32 not_allocated_2;	//[EBP-0x18]	[08]
-						u16 always_14_here;		//[EBP-0x14]	[0C]
-						s16 mouseX;				//[EBP-0x12]	[0E]
-						s16 mouseY;				//[EBP-0x10]	[10]
-						u32 ignored_3;			//[EBP-0x0C]	[14] //used to store a queueSlot+1 value from earlier
-						u16 not_allocated_1;	//[EBP-0x0A]	[16]
-						u16 ignored_2;			//[EBP-0x08]	[18] //used to store builtUnitId value from earlier
-						u32 ignored_1;			//[EBP-0x04]	[1C] //used to store queueSlot value from earlier
+						u32 unknown_value;		// [EBP-0x20]	[00]
+						u32 always_zero_here;	// [EBP-0x1C]	[04]
+						u32 not_allocated_2;	// [EBP-0x18]	[08]
+						u16 always_14_here;		// [EBP-0x14]	[0C]
+						s16 mouse_x;			// [EBP-0x12]	[0E]
+						s16 mouse_y;			// [EBP-0x10]	[10]
+						u32 ignored_3;			// [EBP-0x0C]	[14] //used to store a queueSlot+1 value from earlier
+						u16 not_allocated_1;	// [EBP-0x0A]	[16]
+						u16 ignored_2;			// [EBP-0x08]	[18] //used to store built_unit_id value from earlier
+						u32 ignored_1;			// [EBP-0x04]	[1C] //used to store queueSlot value from earlier
 					} stack_placeholder;
 
 					// Not allocated on original code, but result is probably more true to the original like this. -GPTP
@@ -1190,11 +1190,11 @@ namespace hooks
 					stack_placeholder.ignored_2 = 0;
 					stack_placeholder.ignored_3 = 0;
 
-					stack_placeholder.mouseY = g_mouse->y;
+					stack_placeholder.mouse_y = g_mouse->y;
 					stack_placeholder.always_14_here = 14;
 					stack_placeholder.unknown_value = 13;
 					stack_placeholder.always_zero_here = 0;
-					stack_placeholder.mouseX = g_mouse->x;
+					stack_placeholder.mouse_x = g_mouse->x;
 
 					if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Unknown0))
 					{
@@ -1234,24 +1234,24 @@ namespace hooks
 			{
 				struct
 				{
-					u32 unknown_value;		//[EBP-0x14]	[00]
-					u32 always_zero_here;	//[EBP-0x10]	[04]
-					u32 not_allocated_2;	//[EBP-0x0C]	[08]
-					u16 always_14_here;		//[EBP-0x08]	[0C]
-					s16 mouseX;				//[EBP-0x06]	[0E]
-					s16 mouseY;				//[EBP-0x04]	[10]
-					u16 not_allocated_1;	//[EBP-0x02]	[12]
+					u32 unknown_value;		// [EBP-0x14]	[00]
+					u32 always_zero_here;	// [EBP-0x10]	[04]
+					u32 not_allocated_2;	// [EBP-0x0C]	[08]
+					u16 always_14_here;		// [EBP-0x08]	[0C]
+					s16 mouse_x;			// [EBP-0x06]	[0E]
+					s16 mouse_y;			// [EBP-0x04]	[10]
+					u16 not_allocated_1;	// [EBP-0x02]	[12]
 				} stack_placeholder;
 
 				// Not allocated on original code, but result is probably more true to the original like this. -GPTP
 				stack_placeholder.not_allocated_1 = 0;
 				stack_placeholder.not_allocated_2 = 0;
 
-				stack_placeholder.mouseY = g_mouse->y;
+				stack_placeholder.mouse_y = g_mouse->y;
 				stack_placeholder.always_14_here = 14;
 				stack_placeholder.unknown_value = 13;
 				stack_placeholder.always_zero_here = 0;
-				stack_placeholder.mouseX = g_mouse->x;
+				stack_placeholder.mouse_x = g_mouse->x;
 
 				if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Unknown0))
 				{
@@ -1350,20 +1350,20 @@ namespace hooks
 			}
 
 			u32 progress = 0;
-			u16 builtUnitId = 0;
+			u16 built_unit_id = 0;
 			if (target)
 			{
 				progress = helper::get_remaining_build_time_percentage(target);
-				builtUnitId = target->id;
+				built_unit_id = target->id;
 			}
 			helper::dialog_set_progress_bar_value(dialog, 7, progress);
 			helper::bw_sprintf_s(g_queues_buffers[0], 8, FORMATSTRING_VALUE_SPACE, 1); // active slot number display
 
 			current_dialog->graphic = 2;
 			current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
-			current_dialog->stat_button_user->grp_frame = builtUnitId;
+			current_dialog->stat_button_user->grp_frame = built_unit_id;
 			current_dialog->stat_button_user->type = PanelTooltipTypes::SpecialPanelTooltip;
-			current_dialog->stat_button_user->id = builtUnitId;
+			current_dialog->stat_button_user->id = built_unit_id;
 			helper::enable_control(current_dialog);
 			current_dialog->psz_text = g_queues_buffers[0];
 			helper::show_dialog(current_dialog);

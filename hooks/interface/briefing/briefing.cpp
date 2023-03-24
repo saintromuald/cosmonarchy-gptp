@@ -6,74 +6,74 @@
 
 namespace hooks
 {
-    // Hooked in case we need it later - Pr0nogo
-	void updateMissionObjectives() // 0046CD30 | doesn't work currently due to null check late in the function
+	// Hooked in case we need it later - Pr0nogo
+	void update_mission_objectives() // 0046CD30 | doesn't work currently due to null check late in the function
 	{
-        BinDlg* readyRoomVar = *g_ready_room_dialog;
-        if ((*g_ready_room_dialog)->control_type)
-        {
-            readyRoomVar = (*g_ready_room_dialog)->parent;
-        }
+		BinDlg* ready_room_var = *g_ready_room_dialog;
+		if ((*g_ready_room_dialog)->control_type)
+		{
+			ready_room_var = (*g_ready_room_dialog)->parent;
+		}
 
-        BinDlg* objectiveDlg = nullptr;
-        BinDlg* childDlg = readyRoomVar->child_dialog;
-        if (childDlg)
-        {
-            while (childDlg->index != -11)
-            {
-                childDlg = childDlg->next;
-                if (!childDlg)
-                {
-                    goto LABEL_6;
-                }
-            }
-            objectiveDlg = childDlg;
-        }
-        else
-        {
-LABEL_6:
-            objectiveDlg = nullptr;
-        }
+		BinDlg* objective_dialog = 0;
+		BinDlg* child_dialog = ready_room_var->child_dialog;
+		if (child_dialog)
+		{
+			while (child_dialog->index != -11)
+			{
+				child_dialog = child_dialog->next;
+				if (!child_dialog)
+				{
+					goto LABEL_6;
+				}
+			}
+			objective_dialog = child_dialog;
+		}
+		else
+		{
+		LABEL_6:
+			objective_dialog = 0;
+		}
 
-        const char* objectiveText;
-        if (g_map_string_tbl)
-        {
-            u16 mapStringID = *((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id) - 1;
-            if (*((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id))
-            {
-                if (mapStringID < *(s16*)g_map_string_tbl)
-                {
-                    objectiveText = (char*)g_map_string_tbl + *((u16*)g_map_string_tbl + mapStringID + 1);
-                }
-                else
-                {
-                    objectiveText = "";
-                }
-            }
-            else
-            {
-                objectiveText = 0;
-            }
-        }
-        else
-        {
-            objectiveText = 0;
-        }
+		const char* objective_text;
+		if (g_map_string_tbl)
+		{
+			u16 map_string_id = *((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id) - 1;
+			if (*((s16*)&g_mission_objectives_string_index + 2 * *g_local_nation_id))
+			{
+				if (map_string_id < *(s16*)g_map_string_tbl)
+				{
+					objective_text = (char*)g_map_string_tbl + *((u16*)g_map_string_tbl + map_string_id + 1);
+				}
+				else
+				{
+					objective_text = "";
+				}
+			}
+			else
+			{
+				objective_text = 0;
+			}
+		}
+		else
+		{
+			objective_text = 0;
+		}
 
-        if (objectiveDlg == nullptr)
-        {
-            return;
-        }
-        else
-        {
-            objectiveDlg->psz_text = (char*)objectiveText;
-            helper::show_dialog(objectiveDlg);
-            s32 objectiveDlgFlags = objectiveDlg->flags;
-            if (!(objectiveDlgFlags & 1))
-            {
-                objectiveDlg->flags = objectiveDlgFlags | 1;
-                helper::update_dialog(objectiveDlg);
-            }
-        }
+		if (!objective_dialog)
+		{
+			return;
+		}
+		else
+		{
+			objective_dialog->psz_text = (char*)objective_text;
+			helper::show_dialog(objective_dialog);
+			s32 objective_flags = objective_dialog->flags;
+			if (!(objective_flags & BinDlgFlags::Unknown0))
+			{
+				objective_dialog->flags = objective_flags | BinDlgFlags::Unknown0;
+				helper::update_dialog(objective_dialog);
+			}
+		}
 	}
 }
