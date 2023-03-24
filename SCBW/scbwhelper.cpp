@@ -21,14 +21,14 @@ namespace helper {
 		return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
 	}
 
-	bool has_money_can_make(Unit* builder, u32 unitToBuild) {
-		const u32 Func_HasMoneyCanMake = 0x00467250;
+	bool has_money_can_make(Unit* builder, u32 unit_to_build) {
+		const u32 func_address = 0x00467250;
 		static b32 result;
 		__asm {
 			PUSHAD
-			PUSH unitToBuild
+			PUSH unit_to_build
 			MOV EDI, builder
-			CALL Func_HasMoneyCanMake
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

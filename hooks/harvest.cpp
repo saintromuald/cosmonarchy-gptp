@@ -304,7 +304,7 @@ namespace hooks {
 		return result;
 	}
 
-	// Hooked to resolve delay on first-time multi-worker vespene harvesting. -Pr0nogo
+	// Hooked to resolve delay on initial multi-worker vespene harvesting. -Pr0nogo
 	void orders_harvest4(Unit* worker) { // 00468ED0
 		if (worker->worker.harvest_target) {
 			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvest_target);

@@ -22,7 +22,7 @@ namespace helper {
 	SCBW_FUNC(0x0049B870, bool __cdecl, update_alliances);
 	SCBW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
 
-	bool has_money_can_make(Unit* builder, u32 unitToBuild);
+	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
 	// For loadRaceUI
 	void get_race_sound_list(s8 a1);
