@@ -942,6 +942,9 @@ namespace hooks {
 			}
 
 			u32 score = unit->building.resource.resource_yield;
+			if (unit_ext->values[ValueAssignedHarvesters]) {
+				score /= 2;
+			}
 			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
@@ -1376,6 +1379,9 @@ namespace hooks {
 			if (resource && (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser || resource->status & UnitStatus::Completed)) {
 				helper::assign_order_with_target(resource, worker, OrderId::Harvest1);
 				resource->building.resource.resource_belongs_to_ai = 1;
+
+				UnitExt* resource_ext = get_unit_ext(resource);
+				resource_ext->values[ValueAssignedHarvesters] += 1; // Update assigned harvesters for this frame for the sake of mineral field priority calcs...
 			}
 		}
 	}
