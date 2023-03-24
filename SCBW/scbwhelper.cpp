@@ -2052,20 +2052,15 @@ namespace helper {
 		return (bool)result;
 	}
 
-	// Identical to get_right_click_action_order @ 0x004E5EA0;
 	u8 get_right_click_action_order(Unit* unit) {
-		u8 result;
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
-			result = RightClickActions::NoMove_NormalAttack;
-		}
-		else {
-			u8 temp_result = units_dat::right_click_action[unit->id];
-			if (temp_result == 0 && unit->status & UnitStatus::GroundedBuilding && unit->is_factory()) {
-				result = RightClickActions::NormalMove_NoAttack;
-			}
-			else {
-				result = temp_result;
-			}
+		static u8 result;
+		const u32 func_address = 0x004E5EA0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
 		}
 		return result;
 	}

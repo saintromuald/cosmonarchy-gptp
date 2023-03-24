@@ -370,7 +370,7 @@ namespace hooks
 				}
 				else
 				{
-					char right_click_order = units_dat::right_click_action[unit_id];
+					char right_click_order = helper::get_right_click_action_order(unit);
 					if (!right_click_order)
 					{
 						if (hooks::unit_can_rally(unit)) {
