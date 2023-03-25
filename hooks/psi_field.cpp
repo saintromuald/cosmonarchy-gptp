@@ -32,7 +32,7 @@ namespace hooks
 	}
 
 	// Hooked to allow allies to benefit from power -Veeq7
-	bool unit_has_power(u32 unit_id, s32 x, s32 y, u32 player) { // 004936B0
+	bool unit_has_power(u32 unit_id, s32 x, s32 y, u8 player) { // 004936B0
 		if (!(units_dat::base_property[unit_id] & UnitProperty::RequiredPsi)) {
 			return true;
 		}

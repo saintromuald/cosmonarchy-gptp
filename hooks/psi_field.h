@@ -11,7 +11,7 @@ namespace hooks {
 	bool can_make_psi_field(u16 unit_id);
 	bool unit_can_show_power_for(Unit* unit, u32 player);
 
-	bool unit_has_power(u32 unit_id, s32 x, s32 y, u32 player);		// 004936B0
+	bool unit_has_power(u32 unit_id, s32 x, s32 y, u8 player);		// 004936B0
 	b32 show_power_sprite(Unit* unit);								// 00493BF0
 	void create_pylon_aura();										// 00493640
 

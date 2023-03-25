@@ -120,7 +120,7 @@ void __declspec(naked) unit_has_power_wrapper() { // 004936B0
 	static u16 unit_id;
 	static u32 x;
 	static u32 y;
-	static u32 player;
+	static u8 player;
 	__asm {
 		PUSH EBP
 		MOV EBP, ESP
@@ -130,7 +130,7 @@ void __declspec(naked) unit_has_power_wrapper() { // 004936B0
 		MOV EAX, [EBP + 0xC]
 		MOV y, EAX
 		MOV EAX, [EBP + 0x10]
-		MOV player, EAX
+		MOV player, AL
 		POP EAX
 		MOV unit_id, AX
 		PUSHAD

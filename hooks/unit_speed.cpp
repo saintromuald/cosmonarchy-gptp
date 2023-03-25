@@ -223,7 +223,10 @@ namespace hooks
 				}
 			} break;
 			// Hardcode ideal movement speeds
+			case UnitId::TerranMason:
 			case UnitId::TerranClaymore:
+			case UnitId::ProtossScribe:
+			case UnitId::ZergDroleth:
 			{
 				speed *= 0.9;
 			} break;
