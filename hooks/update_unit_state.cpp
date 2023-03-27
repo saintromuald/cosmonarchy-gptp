@@ -639,9 +639,9 @@ namespace hooks
 		s32 v4;
 		s32 v5;
 
-		v0 = *first_invisible_unit;
+		v0 = *g_first_invisible_unit;
 		v1 = 0;
-		if (*first_invisible_unit)
+		if (*g_first_invisible_unit)
 		{
 			while (1)
 			{
@@ -676,10 +676,10 @@ namespace hooks
 					if (v1)
 					{
 						*g_force_button_refresh = 1;
-						portrait_redraw[0] = 1;
-						*status_screen_redraw = 1;
-						*control_under_mouse = 0;
-						*control_under_mouse_value = 0;
+						g_portrait_redraw[0] = 1;
+						*g_status_screen_redraw = 1;
+						*g_control_under_mouse = 0;
+						*g_control_under_mouse_value = 0;
 					}
 					return;
 				}
@@ -698,10 +698,10 @@ namespace hooks
 		if (!*g_is_in_replay && unitVar->player == *g_local_nation_id)
 		{
 			*g_force_button_refresh = 1;
-			portrait_redraw[0] = 1;
-			*status_screen_redraw = 1;
-			*control_under_mouse = 0;
-			*control_under_mouse_value = 0;
+			g_portrait_redraw[0] = 1;
+			*g_status_screen_redraw = 1;
+			*g_control_under_mouse = 0;
+			*g_control_under_mouse_value = 0;
 		}
 		if (unitVar->status & UnitStatus::Burrowed)
 		{

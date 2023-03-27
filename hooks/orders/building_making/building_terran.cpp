@@ -683,4 +683,25 @@ namespace hooks
 		}
 		return 0;
 	}
+
+	// Hooked by mistake. -Pr0nogo
+	b32 is_constructing_addon(Unit* unit) // 004E66B0
+	{
+		b32 result = 0;
+		if (unit->secondary_order_id == OrderId::BuildAddon)
+		{
+			if (unit->status & UnitStatus::GroundedBuilding)
+			{
+				Unit* build_unit = unit->current_build_unit;
+				if (build_unit)
+				{
+					if (!(build_unit->status & UnitStatus::Completed))
+					{
+						result = 1;
+					}
+				}
+			}
+		}
+		return result;
+	}
 }

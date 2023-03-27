@@ -182,6 +182,21 @@ namespace
 		}
 	}
 
+	void __declspec(naked) is_constructing_addon_wrapper() { // 004E66B0
+		static b32 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::is_constructing_addon(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	void placement_simple_wrappers()
 	{
 		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
@@ -226,6 +241,7 @@ namespace hooks
 		jump_patch(play_building_complete_sound_wrapper,	0x0048F310, 3);
 	//	jump_patch(orders_place_addon_wrapper,				0x004E6880, 1); // bugged, patched instead
 		jump_patch(unit_is_geyser_wrapper,					0x004688B0, 2);
+	//	jump_patch(is_constructing_addon_wrapper,			0x004E66B0, 2); // Probably fine, but not necessary
 
 	//	placement_simple_wrappers();										// bugged
 		jump_patch(orders_place_addon_patch,				0x004E6B8B, 1);
