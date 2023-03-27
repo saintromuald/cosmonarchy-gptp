@@ -21,7 +21,7 @@ namespace hooks {
 			helper::create_new_unit_selections_from_list((Unit**)selection_array, result + 1);
 			helper::cmdact_select(selection_array, selection_index);
 			result = 1;
-			*client_selection_changed = 1;
+			*g_client_selection_changed = 1;
 			scbw::refresh_console();
 		}
 		return result;

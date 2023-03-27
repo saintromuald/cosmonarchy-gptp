@@ -416,12 +416,12 @@ SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 SCBW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ever written to.
 
 // For isUnitCloaked
-SCBW_DATA(Unit**,	first_invisible_unit,		0x0063FF5C);
-SCBW_DATA(s32*,		g_force_button_refresh,		0x0068C1B0);
-SCBW_DATA(s8*,		portrait_redraw,			0x0068AC74); // sizeof 4
-SCBW_DATA(s8*,		status_screen_redraw,		0x0068C1F8);
-SCBW_DATA(BinDlg**,	control_under_mouse,		0x0068C1E8);
-SCBW_DATA(BinDlg**,	control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
+SCBW_DATA(Unit**,	g_first_invisible_unit,			0x0063FF5C);
+SCBW_DATA(s32*,		g_force_button_refresh,			0x0068C1B0);
+SCBW_DATA(s8*,		g_portrait_redraw,				0x0068AC74); // sizeof 4
+SCBW_DATA(s8*,		g_status_screen_redraw,			0x0068C1F8);
+SCBW_DATA(BinDlg**,	g_control_under_mouse,			0x0068C1E8);
+SCBW_DATA(BinDlg**,	g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
 
 // For update_units
 SCBW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);
@@ -991,7 +991,7 @@ SCBW_DATA(char*,	g_order_id_unit,					0x00641692);
 SCBW_DATA(u16*,		g_buttonset_special_buttonset_id,	0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
-SCBW_DATA(char*,	client_selection_changed,			0x0059723C);
+SCBW_DATA(char*,	g_client_selection_changed,			0x0059723C);
 
 // For set_ingame_input_procs
 SCBW_DATA(HACCEL*,				common_accelerator,		0x006D120C);
@@ -1146,6 +1146,8 @@ SCBW_DATA(Thingy**,			g_last_free_thingy,				0x0065487C);
 // For remove_subunit_or_gas_container
 SCBW_DATA(Unit**,			g_unknown_unit_ptr_related,		0x004A00AA);
 
+// For unit_selection_click
+SCBW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

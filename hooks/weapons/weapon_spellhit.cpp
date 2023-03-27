@@ -70,11 +70,11 @@ namespace hooks {
 			}
 		}
 		unit->current_buttonset = 228;
-		*control_under_mouse = 0;
-		*control_under_mouse_value = 0;
+		*g_control_under_mouse = 0;
+		*g_control_under_mouse_value = 0;
 		*g_force_button_refresh = 1;
-		portrait_redraw[0] = 1;
-		*status_screen_redraw = 1;
+		g_portrait_redraw[0] = 1;
+		*g_status_screen_redraw = 1;
 		return result;
 	}
 

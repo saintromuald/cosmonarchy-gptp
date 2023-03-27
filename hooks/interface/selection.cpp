@@ -30,17 +30,13 @@ namespace hooks
 	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
 	{
 		sort_unit_selection(units_in_bounds);
-
-		const u32* VISIBILITY_CHECK_0057F0B0 = (u32*)0x0057F0B0;
 		Unit* current_unit;
-		Unit* backup_current_unit;
+		Unit* backup_current_unit = 0;
 		u32 current_index_in_unit_list;
-
-		bool bStopBigLoop = false;
-		bool bKeepForEmptyListCase = false;
-		bool dontAddToList = false;
-		backup_current_unit = 0;
-
+		bool stop_big_loop = false;
+		bool keep_for_empty_list_case = false;
+		bool dont_add_to_list = false;
+		
 		// if unit not null, become first entry of unit_list
 		if (unit) {
 			unit_list[0] = unit;
@@ -69,23 +65,23 @@ namespace hooks
 		current_unit = *units_in_bounds;
 		if (!current_unit)
 		{
-			bStopBigLoop = true;
+			stop_big_loop = true;
 		}
-		while (!bStopBigLoop)
+		while (!stop_big_loop)
 		{
 			if (current_unit != unit)
 			{
 				if (has_units) {
 					if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
-						dontAddToList = true;
+						dont_add_to_list = true;
 					}
 				} else if (has_buildings) {
 					if (!(units_dat::base_property[current_unit->id] & UnitProperty::Building)) {
-						dontAddToList = true;
+						dont_add_to_list = true;
 					}
 				}
 
-				if (!dontAddToList) {
+				if (!dont_add_to_list) {
 					// if current_unit == unit, then it's already in
 					// unit_list
 					if (current_unit->subunit)
@@ -106,52 +102,52 @@ namespace hooks
 								// if the unit is already in the list, skip it
 								if (unit_list[index] == current_unit)
 								{
-									dontAddToList = true;
+									dont_add_to_list = true;
 								}
 							}
-							while (index != 0 && !dontAddToList);
+							while (index != 0 && !dont_add_to_list);
 						}
 					}
 				}
 
-				if (!dontAddToList)
+				if (!dont_add_to_list)
 				{
 					// 0046F161
 					// if the unit sprite is visible, perform additionnal visibility test, else skip the unit
-					if (current_unit->sprite->visibility_status & (u8)*VISIBILITY_CHECK_0057F0B0)
+					if (current_unit->sprite->visibility_status & (u8)*g_player_visions)
 					{
 						// if the unit is cloaked and visibility status test (detection by detectors units probably) fail, the unit is skipped
 						if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 						{
-							if (!(current_unit->detection_status & *VISIBILITY_CHECK_0057F0B0))
+							if (!(current_unit->detection_status & *g_player_visions))
 							{
-								dontAddToList = true;
+								dont_add_to_list = true;
 							}
 						}
 					}
 					else
 					{
-						dontAddToList = true;
+						dont_add_to_list = true;
 					}
 
-					if (!dontAddToList)
+					if (!dont_add_to_list)
 					{
 						// 0046F18C
 						if (helper::unit_is_unselectable(current_unit->id))
 						{
-							dontAddToList = true;
+							dont_add_to_list = true;
 						}
 						else if (!helper::unit_is_standard_and_movable(current_unit))
 						{
-							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
 						}
 						else if (*g_is_in_replay)
 						{
-							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
 						}
 						else if (current_unit->player != *g_local_nation_id)
 						{
-							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
 						}
 						else
 						{
@@ -161,12 +157,12 @@ namespace hooks
 								// all units should belong to the same player (the one owning the clicked unit)
 								if (unit->player != current_unit->player)
 								{
-									dontAddToList = true;
+									dont_add_to_list = true;
 								}
 								// select only units with same Id
 								else if (unit->id != current_unit->id)
 								{
-									dontAddToList = true;
+									dont_add_to_list = true;
 								}
 								else
 								{
@@ -180,36 +176,36 @@ namespace hooks
 									// burrowed state differ from the one of unit.
 									if (mixed_flags & UnitStatus::Burrowed)
 									{
-										dontAddToList = true;
+										dont_add_to_list = true;
 									}
 
 									// Same thing for hallucinations
 									if (mixed_flags & UnitStatus::IsHallucination)
 									{
-										dontAddToList = true;
+										dont_add_to_list = true;
 									}
 
 									// Same thing for completed
 									if (mixed_flags & UnitStatus::Completed)
 									{
-										dontAddToList = true;
+										dont_add_to_list = true;
 									}
 
 									// Same thing for lifted
 									if (mixed_flags & UnitStatus::InAir)
 									{
-										dontAddToList = true;
+										dont_add_to_list = true;
 									}
 								}
 							}
 
-							if (!dontAddToList)
+							if (!dont_add_to_list)
 							{
 								// 0046F203
 								// 0x0046F208 (use of SelectionCap)
 								if (current_index_in_unit_list >= SelectionCap) // action when unit_list is full
 								{
-									bStopBigLoop = true; // This was added, so sorting by cursor is respected, not sure what was the role of the original call
+									stop_big_loop = true; // This was added, so sorting by cursor is respected, not sure what was the role of the original call
 
 									// helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 								}
@@ -232,7 +228,7 @@ namespace hooks
 				}
 			}
 
-			if (bKeepForEmptyListCase)
+			if (keep_for_empty_list_case)
 			{
 				backup_current_unit = current_unit;
 			}
@@ -241,13 +237,13 @@ namespace hooks
 			// select next unit in bounds
 			units_in_bounds += 1; // this actually advance by 4 bytes
 			current_unit = *units_in_bounds;
-			bKeepForEmptyListCase = false;
-			dontAddToList = false;
+			keep_for_empty_list_case = false;
+			dont_add_to_list = false;
 
 			// continue until current_unit is nullptr
 			if (!current_unit)
 			{
-				bStopBigLoop = true;
+				stop_big_loop = true;
 			}
 		}
 
@@ -280,7 +276,7 @@ namespace hooks
 				else
 				{
 					unit_list[0] = backup_current_unit;
-					current_index_in_unit_list = 1; // return 1 (an unit preserved by bKeepForEmptyListCase)
+					current_index_in_unit_list = 1; // return 1 (an unit preserved by keep_for_empty_list_case)
 				}
 			}
 		}	
@@ -291,35 +287,21 @@ namespace hooks
 	/// Function used by Click on unit (possibly with key pressed)
 	void unit_selection_click(Unit* clicked_unit)
 	{
-		b32* const IS_DOUBLE_CLICKING = (b32*)0x0066FF58;
-
-		b8* const bCanUpdateSelectedUnitData = (b8*)0x0059723C;
-		b8* const bCanUpdateSelectedUnitPortrait = (b8*)0x0068AC74;
-		b32* const bCanUpdateCurrentButtonSet = (b32*)0x0068C1B0;
-		BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8; // related to MouseOver?
-		b8* const bCanUpdateStatDataDialog = (b8*)0x0068C1F8;
-		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC; // related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
-
 		Unit* local_temp_array_1[SelectionCap];	// used instead of an array starting from [EBP-3C]
 		Unit* local_temp_array_2[SelectionCap];	// used instead of an array starting from [EBP-6C]
-
-		Box16 local_temp_box16_structure;	// used instead of using from [EBP-0C] to [EBP-06]
-
-		bool isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit =
-			*g_is_holding_ctrl || (*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & SpriteFlags::Selected));
-
+		Box16 local_temp_box16_structure;		// used instead of using from [EBP-0C] to [EBP-06]
+		bool holding_ctrl_or_double_clicking = *g_is_holding_ctrl || (*g_is_double_clicking && (clicked_unit->sprite->flags & SpriteFlags::Selected));
 		for (s32 i = 0; i < SelectionCap; i++)
 		{
 			local_temp_array_1[i] = 0;
 		}
 
-		if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit
-			|| (*g_is_holding_shift && active_player_selection->unit[0]))
+		if (holding_ctrl_or_double_clicking || (*g_is_holding_shift && active_player_selection->unit[0]))
 		{
 			if (!*g_is_holding_shift)
 			{
 				// 0046FE07
-				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit)
+				if (holding_ctrl_or_double_clicking)
 				{
 					// Ctrl+click on unit or f64-click on already
 					// it unit without other key
@@ -358,7 +340,7 @@ namespace hooks
 			else
 			{
 				// holding SHIFT (if not holding CTRL, then there's an active unit_list too)
-				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit)
+				if (holding_ctrl_or_double_clicking)
 				{
 					// {Ctrl+Shift+click on unit} OR {Shift+f64-click on 
 					// it unit WHILE having an active unit_list}
@@ -402,29 +384,29 @@ namespace hooks
 					// 0046FCF6
 
 					// Shift + click while there's an existing unit_list (because hold on CTRL case was already dealt with so there's an existing unit_list at this point) add/remove unit from unit_list
-					s32 arrayIndex;
+					s32 array_index;
 					// copy the existing unit_list into the local array
-					for (arrayIndex = 0; arrayIndex < SelectionCap && active_player_selection->unit[arrayIndex]; arrayIndex++)
+					for (array_index = 0; array_index < SelectionCap && active_player_selection->unit[array_index]; array_index++)
 					{
-						local_temp_array_1[arrayIndex] = active_player_selection->unit[arrayIndex];
+						local_temp_array_1[array_index] = active_player_selection->unit[array_index];
 					}
 
 					if (!(clicked_unit->sprite->flags & SpriteFlags::Selected))
 					{
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
 						// unit not it, so it's added to current unit_list if valid
-						if (arrayIndex < SelectionCap
+						if (array_index < SelectionCap
 							&& helper::unit_is_standard_and_movable(local_temp_array_1[0])
 							&& helper::unit_is_owned_by_current_player(local_temp_array_1[0])
 							&& helper::unit_is_standard_and_movable(clicked_unit)
 							&& helper::unit_is_owned_by_current_player(clicked_unit))
 						{
 							// new unit is added at end of array, and the index is increased to be used as new array length
-							local_temp_array_1[arrayIndex] = clicked_unit;
-							arrayIndex++;
+							local_temp_array_1[array_index] = clicked_unit;
+							array_index++;
 
 							// turn local_temp_array_1 as the newly applied unit_list
-							helper::select_units_if_alt_not_held(local_temp_array_1, arrayIndex, 1, 1);
+							helper::select_units_if_alt_not_held(local_temp_array_1, array_index, 1, 1);
 						}
 					}
 					else
@@ -435,17 +417,17 @@ namespace hooks
 						bool bUpdateSelection = true;
 
 						// decrease it so it's equal to the index of last element
-						arrayIndex--;
+						array_index--;
 						// each element is 4 bytes, multiply it by the number of elements after the one to remove
-						memcpy_size = (arrayIndex - clicked_unit->sprite->selection_index) * 4;
+						memcpy_size = (array_index - clicked_unit->sprite->selection_index) * 4;
 
 						// Copy the elements on the right of the one to delete one step left to overwrite the one to delete
 						helper::sc_memcpy_0((u32)&local_temp_array_1[clicked_unit->sprite->selection_index], (u32)&local_temp_array_1[clicked_unit->sprite->selection_index + 1], memcpy_size);
 
 						// either erase the element to delete or one that was repeated after memcpy
-						local_temp_array_1[arrayIndex] = 0;
+						local_temp_array_1[array_index] = 0;
 
-						if (arrayIndex == 1)
+						if (array_index == 1)
 						{
 							if (*g_is_holding_alt)
 							{
@@ -466,16 +448,16 @@ namespace hooks
 						{
 							// Create a new unit unit_list (since the clicked unit is unselected)
 							// and choose it as current unit_list)
-							helper::create_new_unit_selections_from_list(local_temp_array_1, arrayIndex);
-							helper::cmdact_select(local_temp_array_1, arrayIndex);
+							helper::create_new_unit_selections_from_list(local_temp_array_1, array_index);
+							helper::cmdact_select(local_temp_array_1, array_index);
 
 							// tell the GUI to update stuff
-							*someDialogUnknown = 0;
-							*someDialogUnknownUser = 0;
-							*bCanUpdateSelectedUnitData = 1;
-							*bCanUpdateCurrentButtonSet = 1;
-							*bCanUpdateSelectedUnitPortrait = 1;
-							*bCanUpdateStatDataDialog = 1;
+							*g_control_under_mouse = 0;
+							*g_control_under_mouse_value = 0;
+							*g_client_selection_changed = 1;
+							*g_force_button_refresh = 1;
+							*g_portrait_redraw = 1;
+							*g_status_screen_redraw = 1;
 
 						}
 					}
@@ -487,7 +469,7 @@ namespace hooks
 		{
 			// 0046FBB7
 			// Simple click...almost (there's still ALT key)
-			bool bRecreatedSelectionThroughAltClick = false;
+			bool recreated_selection_via_alt_click = false;
 			if (*g_is_holding_alt)
 			{
 				// Recall the unit_list the unit belong to if there's one
@@ -496,11 +478,11 @@ namespace hooks
 				u32 temp_unit_index = helper::unit_to_unit_id(clicked_unit);
 				if (helper::select_single_unit_from_id(temp_unit_index) != 0)
 				{
-					bRecreatedSelectionThroughAltClick = true;
+					recreated_selection_via_alt_click = true;
 				}
 			}
 
-			if (!bRecreatedSelectionThroughAltClick)
+			if (!recreated_selection_via_alt_click)
 			{
 				// 0046FBD1
 				// Create a new unit_list containing only the clicked unit
@@ -511,12 +493,12 @@ namespace hooks
 				helper::cmdact_select(&clicked_unit, 1);
 
 				// tell the GUI to update stuff
-				*bCanUpdateSelectedUnitData = 1;
-				*bCanUpdateCurrentButtonSet = 1;
-				*bCanUpdateSelectedUnitPortrait = 1;
-				*bCanUpdateStatDataDialog = 1;
-				*someDialogUnknown = 0;
-				*someDialogUnknownUser = 0;
+				*g_client_selection_changed = 1;
+				*g_force_button_refresh = 1;
+				*g_portrait_redraw = 1;
+				*g_status_screen_redraw = 1;
+				*g_control_under_mouse = 0;
+				*g_control_under_mouse_value = 0;
 			}
 
 			// 0046FC2C
@@ -586,7 +568,7 @@ namespace hooks
 		if (send_command) {
 			helper::cmdact_select(unit_list, count);
 		}
-		*client_selection_changed = 1;
+		*g_client_selection_changed = 1;
 		scbw::refresh_console();
 		return 1;
 	}

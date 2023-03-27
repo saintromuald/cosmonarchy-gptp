@@ -817,10 +817,10 @@ namespace hooks
 					return 1;
 				} break;
 				case 6: {
-					if (dialog == *control_under_mouse)
+					if (dialog == *g_control_under_mouse)
 					{
 						helper::refresh_selection_screen();
-						*control_under_mouse = 0;
+						*g_control_under_mouse = 0;
 					}
 				} break;
 			}

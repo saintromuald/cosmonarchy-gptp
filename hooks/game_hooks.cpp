@@ -2461,7 +2461,7 @@ namespace hooks {
 		// Low-yield Mineral Fields - No collision
 		if (unit->id >= UnitId::ResourceMineralField
 		&&  unit->id <= UnitId::ResourceMineralFieldType3
-		&&  unit->building.resource.resource_yield <= 2) {
+		&&  unit->building.resource.resource_yield <= 4) {
 			unit->status |= UnitStatus::NoCollide;
 			unit->sprite->elevation = 0;
 		}

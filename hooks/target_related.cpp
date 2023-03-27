@@ -612,9 +612,9 @@ LABEL_42:
 		}
 
 		s32 redraw = 0;
-		if (*first_invisible_unit == unit)
+		if (*g_first_invisible_unit == unit)
 		{
-			*first_invisible_unit = unit->burrow_link.next;
+			*g_first_invisible_unit = unit->burrow_link.next;
 			redraw = 1;
 		}
 
@@ -639,10 +639,10 @@ LABEL_42:
 		if (redraw)
 		{
 			*g_force_button_refresh = 1;
-			portrait_redraw[0] = (s8)1;
-			*status_screen_redraw = 1;
-			*control_under_mouse = 0;
-			*control_under_mouse_value = 0;
+			g_portrait_redraw[0] = (s8)1;
+			*g_status_screen_redraw = 1;
+			*g_control_under_mouse = 0;
+			*g_control_under_mouse_value = 0;
 		}
 		return 1;
 	}
