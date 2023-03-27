@@ -450,7 +450,7 @@ namespace hooks {
 				rect.top = local_pos.y;
 				rect.right = rect.left + width;
 				rect.bottom = rect.top + 11;
-				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && PtInRect(&rect, *(POINT*) g_mouse);
+				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && !*g_is_in_replay && PtInRect(&rect, *(POINT*) g_mouse);
 				if (hover) {
 					if (cargo_slot.count > 1) {
 						snprintf(unit_name, MaxToken, BWTC_WHITE "%s (%u)", short_unit_name.data, cargo_slot.count);

@@ -6,6 +6,7 @@
 #include <globals.h>
 #include "trigger_system/trigger_system.h"
 #include "config.h"
+#include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 
 namespace hooks
@@ -444,7 +445,7 @@ namespace hooks
 					}
 
 					char buffer[48] = {};
-					sprintf_s(buffer, "%s%s", scbw::get_player_color_code(player).data, g_player_table[player].name);
+					sprintf_s(buffer, "%s%s", scbw::get_player_color_code(player).data, player_data.full_player_names[player].data);
 					u32 width = font_base[graphics::FONT_MEDIUM]->getTextWidth(buffer);
 					graphics::draw_statres_text(local_pos.x - width, local_pos.y, buffer, graphics::FONT_MEDIUM);
 					graphics::draw_statres_box(local_pos.x + 4, local_pos.y + 2, local_pos.x + 13, local_pos.y + 11, g_player_minimap_colors[player]);
