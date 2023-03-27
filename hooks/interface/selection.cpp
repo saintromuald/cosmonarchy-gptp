@@ -767,11 +767,11 @@ namespace hooks
 	}
 
 	// Hooked to not die to lard. -Pr0nogo
-	char get_team_size(u32 selecting_player) { // 00485710
+	u8 get_team_size(u32 selecting_player) { // 00485710
 		if ((selecting_player < PlayerLimit && global_vars.players[selecting_player].is_witness)
 		||	!scbw::is_allied_to(selecting_player, *g_local_human_id) 
 		||	!scbw::is_allied_to(*g_local_human_id, selecting_player)) {
-			return 1;
+			return 2;
 		}
 		return 4;
 	}
@@ -783,10 +783,13 @@ namespace hooks
 	}
 
 	// Hooked to forbid witness selections from showing. -Pr0nogo
-	char create_dashed_selection_main(Unit* unit, u32 selecting_player) { // 004E65CD
-		if (unit->player == selecting_player || (selecting_player < PlayerLimit && global_vars.players[selecting_player].is_witness)) {
-			return false;
+	void create_dashed_selection_main(Unit* unit, u32 selecting_player) { // 004E65CD
+		if (!*g_is_in_replay && *g_local_human_id == selecting_player) {
+			return;
 		}
-		return helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
+		if (selecting_player < PlayerLimit && global_vars.players[selecting_player].is_witness) {
+			return;
+		}
+		helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
 	}
 }

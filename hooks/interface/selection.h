@@ -11,9 +11,9 @@ namespace hooks
 	void create_unit_selection(Unit* unit, char index);																// 004E6180
 	Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id);											// 004D7070
 	b32 is_human_player_on_same_team(u32 player_id);																// 0049A110
-	char get_team_size(u32 player);																			// 00485710
+	u8 get_team_size(u32 player);																			// 00485710
 	b32 game_is_team_game();																						// 00484F50
-	char create_dashed_selection_main(Unit* unit, u32 player);														// 004E65CD
+	void create_dashed_selection_main(Unit* unit, u32 player);														// 004E65CD
 
 	void inject_selection_hooks();
 }
