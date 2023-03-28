@@ -785,7 +785,7 @@ namespace
 			MOVZX EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x4
+			RETN 0x04
 		}
 	}
 
@@ -801,6 +801,29 @@ namespace
 			POPAD
 			MOV EAX, result
 			RETN
+		}
+	}
+
+	void __declspec(naked) ai_get_oldpeons_wrapper() { // 004355C0
+		static AiTown* town;
+		static u32 count;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV town, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV count, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_get_oldpeons(town, count);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
 		}
 	}
 }
@@ -857,6 +880,7 @@ namespace hooks
 		jump_patch(ai_can_travel_to_region_wrapper,				0x0043A790, 1);
 		jump_patch(is_ground_map_wrapper,						0x00433110, 5);
 	//	jump_patch(ai_remove_from_towns_wrapper,				0x00432760, 6); // Not tested.
+	//	jump_patch(ai_get_oldpeons_wrapper,						0x004355C0, 0); // Not tested.
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 
