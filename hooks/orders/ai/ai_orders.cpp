@@ -2722,4 +2722,109 @@ namespace hooks {
 		}
 		return result;
 	}
+
+	// Hooked to improve functionality, specifically picking closer workers. -Pr0nogo
+	void ai_get_oldpeons(AiTown* town, u32 count) // 004355C0
+	{
+		AiTown* town_var = town;
+		if (!town->in_battle)
+		{
+			u8 current_workers = town->worker_count;
+			if (current_workers)
+			{
+				u8 max_workers = town->worker_limit;
+				if (current_workers >= max_workers)
+				{
+					return;
+				}
+				if (current_workers + count > max_workers)
+				{
+					count = max_workers - current_workers;
+				}
+			}
+			if (count)
+			{
+				AiTown* first_town = g_ai_town_list[town->player].first;
+				if (first_town)
+				{
+					AiTown* first_previous_town = first_town->prev;
+					if (first_town->prev)
+					{
+						do
+						{
+							first_town = first_previous_town;
+							first_previous_town = first_previous_town->prev;
+						} while (first_previous_town);
+					}
+					AiTown* first_town_copy = first_town;
+					AiTown* first_town_copy_2 = first_town;
+					while (1)
+					{
+						if (first_town_copy != town_var)
+						{
+							u8 first_town_current_workers = first_town_copy->worker_count;
+							if (first_town_current_workers > 1u)
+							{
+								Unit* first_town_main_building = first_town_copy->main_building;
+								if (first_town_main_building)
+								{
+									if (helper::unit_is_active_resource_depot(first_town_main_building))
+									{
+										if (!town_var->worker_count || first_town_current_workers > first_town_copy->worker_limit)
+										{
+											WorkerAiList first_town_workers = first_town_copy->workers;
+											/*
+											if (first_town_workers.array) // not sure
+											{
+												while (first_town_workers.array) // not sure
+												{
+													Unit* first_worker = first_town_workers.first;
+													// Need help starting here
+													Unit* first_town_previous_worker = first_town_workers.array;
+													u32 main_order_id = first_worker->main_order_id;
+													if (main_order_id != OrderId::HarvestGas3
+													&&  main_order_id != OrderId::MiningMinerals
+													&&  main_order_id != OrderId::HarvestInterrupt
+													&&  main_order_id != OrderId::BuildTerran
+													&&  main_order_id != OrderId::ConstructingBuilding
+													&&  main_order_id != OrderId::BuildProtoss1
+													&&  main_order_id != OrderId::DroneLand
+													&&  main_order_id != OrderId::DroneBuild
+													&&  main_order_id != OrderId::DroneStartBuild)
+													{
+														if (first_worker->status & UnitStatus::Completed)
+														{
+															helper::remove_worker_or_building_ai(first_worker, 0);
+															helper::add_worker_structure_ai(first_worker, town);
+															if (!--count)
+															{
+																return;
+															}
+														}
+													}
+													town_var = town;
+													first_town_workers = first_town_previous_worker;
+													first_town_copy = first_town_copy_2;
+													if (!first_town_copy_2->workers)
+													{
+														break;
+													}
+												}
+											}*/
+										}
+									}
+								}
+							}
+						}
+						first_town_copy_2 = first_town_copy->next;
+						if (!first_town_copy_2)
+						{
+							break;
+						}
+						first_town_copy = first_town_copy->next;
+					}
+				}
+			}
+		}
+	}
 }

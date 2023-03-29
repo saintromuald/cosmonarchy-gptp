@@ -59,6 +59,7 @@ namespace hooks {
 	bool is_ground_map(Point16 position, u32 player);																	// 00433110
 
 	AiTown* ai_remove_from_towns(Unit* unit);																			// 00432760
+	void ai_get_oldpeons(AiTown* town, u32 count);																		// 004355C0
 
 	void inject_ai_orders_hooks();
 }
