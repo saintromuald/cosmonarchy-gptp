@@ -15,5 +15,7 @@ namespace hooks
 	b32 game_is_team_game();																						// 00484F50
 	void create_dashed_selection_main(Unit* unit, u32 player);														// 004E65C0
 
+	bool can_add_unit_to_active_selection(Unit* unit, u32 slot);													// partial helper
+
 	void inject_selection_hooks();
 }

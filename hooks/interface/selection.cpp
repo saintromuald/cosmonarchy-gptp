@@ -546,6 +546,38 @@ namespace hooks
 		}
 		return count;
 	}
+
+	bool can_add_unit_to_active_selection(Unit* unit, u32 slot) {
+		u32 player = *g_active_player_id;
+		bool has_buildings = false;
+		bool has_units = false;
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			UnitIndex unit_index = control_group_array->player[player].control_group[slot].unit_index[i];
+			if (!unit_index.index) {
+				continue;
+			}
+			Unit* unit = &g_unit_table[unit_index.index - 1];
+			if (!unit || !unit->sprite || unit->unique_id != unit_index.unique_id || !unit->main_order_id) {
+				continue;
+			}
+			if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+				has_buildings = true;
+			} else {
+				has_units = true;
+			}
+		}
+
+		if ((has_units && has_buildings) || !has_units) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+				return true;
+			}
+		} else if (!has_buildings) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	// Hooked to forbid buildings. -Pr0nogo
 	s32 select_multiple_units_from_unit_list(u32 count, Unit** unit_list, char play_sound, u32 send_command) { // 0049AEF0
