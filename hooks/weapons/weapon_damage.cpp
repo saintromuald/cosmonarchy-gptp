@@ -450,6 +450,7 @@ namespace hooks
 				{
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
+					&&	!(data.attacker->status != UnitStatus::Burrowed)
 					&&   !scbw::is_under_dark_swarm(data.target)) {
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
@@ -586,9 +587,11 @@ namespace hooks
 					{
 						// Magnetar - Law of Attraction - Pull target to attacker
 						if (!(units_dat::base_property[data.target->id] & UnitProperty::Building)
-							|| (data.target->status & UnitStatus::InAir
+							||    (data.target->status & UnitStatus::InAir
 								&& data.target->main_order_id != OrderId::Liftoff
-								&& data.target->main_order_id != OrderId::BuildingLand)) {
+								&& data.target->main_order_id != OrderId::BuildingLand)
+						&& !(data.target->status & UnitStatus::Burrowed))
+						{
 							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacement_time = 5;
 							Vector32 diff = scbw::get_vector_between_points(data.target->sprite->position, data.attacker->sprite->position);

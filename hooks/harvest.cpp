@@ -24,7 +24,7 @@ u32 get_gas_tier(Unit* unit) {
 }
 
 u32 get_harvest_amount(Unit* unit) {
-	return unit ? unit->building.resource.resource_yield : 0; // For now we were albe to simplify this function to reading resource yield field -Veeq7
+	return unit ? unit->building.resource.resource_yield : 0; // We were able to simplify this function to reading resource yield field, for now. -Veeq7
 }
 
 namespace hooks {
