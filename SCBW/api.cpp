@@ -2529,6 +2529,7 @@ namespace scbw {
 	}
 
 	bool unit_id_is_stackable_building(u32 unit_id) {
+		return false; // Disabled to see if it improves AI base layouts. -Pr0nogo
 		switch (unit_id) {
 			case UnitId::TerranWatchdog:
 			case UnitId::TerranBunker:

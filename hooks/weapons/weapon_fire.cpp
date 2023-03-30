@@ -1728,7 +1728,7 @@ namespace hooks {
 		}
 	}
 
-	// Hooked to fix melee air unit performance.
+	// Hooked to fix melee air unit performance. -Pr0nogo
 	void move_for_melee_range(Unit* target, Unit* attacker) // 00477F10
 	{
 		if (!helper::is_target_visible(attacker, target) || !(target->movement_flags & MovementFlags::Accelerating))
