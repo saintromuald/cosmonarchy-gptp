@@ -15,12 +15,12 @@ namespace hooks {
 			UnitIndex* index = &control_group->unit_index[i];
 			if (control_group->unit_index[i].index) {
 				Unit* old_unit = &g_unit_table[index->index - 1];
-				if (old_unit->unique_id == index->target_order_special) {
+				if (old_unit->unique_id == index->unique_id) {
 					continue;
 				}
 			}
 			index->index = unit->get_unit_index();
-			index->target_order_special = unit->unique_id;
+			index->unique_id = unit->unique_id;
 			break;
 		}
 	}

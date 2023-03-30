@@ -1,5 +1,6 @@
 #include "selection.h"
 #include <hook_tools.h>
+#include "SCBW\scbwdata.h"
 
 namespace
 {
@@ -230,6 +231,31 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) set_control_group_partial() { // 00496766
+		static const u32 continue_address = 0x0049676D;
+		static u8 slot;
+		static UnitIndex index;
+		static u32 byte_offset;
+		__asm {
+			MOV slot, AL // THIS IS WRONG AND NEEDS CORRECTION
+			MOV index, EBX
+			MOV byte_offset, EDX															 
+			PUSHAD																			 
+		}
+		if (hooks::can_add_unit_to_active_selection(g_unit_table + index.index - 1, slot)) {
+			control_group_array->player[0].control_group[0].unit_index[byte_offset] = index;
+			__asm {
+				POPAD 
+				JMP continue_address
+			}																				 
+		}
+		__asm {
+			POPAD
+			DEC EDI
+			JMP continue_address
+		}
+	}
 }
 
 namespace hooks
@@ -247,5 +273,6 @@ namespace hooks
 		jump_patch(illegal_team_check_wrapper,						0x00485710, 0);
 		jump_patch(game_is_team_game_wrapper,						0x00484F50, 0);
 		jump_patch(create_dashed_selection_main_wrapper,			0x004E65C0, 1);
+	//	jump_patch(set_control_group_partial,						0x00496766, 2); // Unfinished -Veeq7
 	}
 }

@@ -1238,8 +1238,8 @@ struct IscriptProgram {
 
 union UnitIndex {
 	struct {
-		u32 index : 11;
-		u32 target_order_special : 21;
+		u32 index : 12; // btw. Updated with CCMU extender
+		u32 unique_id : 20;
 	};
 	u32 value;
 };

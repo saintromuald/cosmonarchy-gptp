@@ -442,7 +442,9 @@ namespace hooks {
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
-		scbw::decloak_proc(attacker);
+		if (attacker) {
+			scbw::decloak_proc(attacker);
+		}
 
 		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite) {
