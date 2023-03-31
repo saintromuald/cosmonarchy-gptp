@@ -101,7 +101,6 @@ enum ExtValueId
 	ValueCowardiceOverlay,
 	ValueUnitResponseOrder,
 	ValuePaladinLaunchPos,
-	ValuePegasusLaunchPos2, // unused
 	ValueGoliathLaunchPos,
 	ValueSundogLaunchPos,
 	ValueEpigraphLaunchPos,
@@ -131,6 +130,8 @@ enum ExtValueId
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
 	ValueDidactRecalling,
+	ValueIonCannonTargetPosX,
+	ValueIonCannonTargetPosY,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

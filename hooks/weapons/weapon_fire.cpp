@@ -114,7 +114,16 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	unit->order_target.unit = order_target;
 	if (bullet) {
 		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
-			scbw::set_bullet_target(bullet, target);
+			if (unit->id == UnitId::TerranIonCannon) {
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Target ion_target = {};
+				ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
+				ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+				scbw::set_bullet_target(bullet, ion_target);
+			}
+			else {
+				scbw::set_bullet_target(bullet, target);
+			}
 		}
 		if (weapon_offsets) {
 			UnitExt* unit_ext = get_unit_ext(unit);

@@ -2058,7 +2058,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranWraith:
 								{
-									// TODO: replace with permancloak icon
+									// TODO: replace with permacloak icon
 									if (current_button->icon_id == IconId::WraithBurstLasers) // Wraith - Capacitors
 									{
 										current_button_state = Button_State::Enabled;
@@ -2328,17 +2328,17 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranMagnetar &&  
+							else if (unit->id == UnitId::TerranMagnetar &&
 								current_button->icon_id == IconId::ArchonPsionicShockwave) // Magnetar Law of Attraction
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranClaymore &&   
+							else if (unit->id == UnitId::TerranClaymore &&
 								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Claymore Prolonged Arms
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranClaymore &&   
+							else if (unit->id == UnitId::TerranClaymore &&
 								current_button->icon_id == IconId::FusionCutterHarvest) // Claymore Kelvin Munitions
 							{
 								current_button_state = Button_State::Enabled;
