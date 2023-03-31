@@ -248,8 +248,8 @@ namespace hooks {
 					}
 					helper::ai_update_attack_target(unit, 0, 1, 0);
 				} else if (unit->unit_ai) {
-					Point16 flee_pos = {};
-					if (unit_order_id != OrderId::AIPatrol || (flee_pos = helper::ai_prepare_to_flee(target, unit)) == unit->position) {
+					Target flee_target = {};
+					if (unit_order_id != OrderId::AIPatrol || (flee_target = helper::ai_prepare_to_flee(target, unit), flee_target.pt == unit->position)) {
 						if (main_target_reactions) {
 							if (unit->id != UnitId::TerranCleric) {
 								if (!unit->order_target.unit || !helper::unit_can_attack_target(unit->order_target.unit, unit->order_target.unit, 1)) {
@@ -258,7 +258,7 @@ namespace hooks {
 							}
 						}
 					} else {
-						helper::order_interrupt(unit, 0, flee_pos.x, flee_pos.y, OrderId::Move);
+						helper::order_interrupt(unit, flee_target.unit, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}
 				}
 			}
