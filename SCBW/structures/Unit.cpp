@@ -1128,15 +1128,15 @@ s32 Unit::can_use_tech(u8 techId, u8 player) const {
 bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 	assert(this);
 	assert(target);
-	const u32 Func_CanUnitAttackTarget = 0x00476730;
-	u32 _checkVisibility = check_visibility ? 1 : 0;
+	const u32 func_address = 0x00476730;
+	u32 check_visibility_xd = check_visibility ? 1 : 0;
 	static u32 result;
 	__asm {
 		PUSHAD
-		PUSH _checkVisibility
+		PUSH check_visibility_xd
 		MOV EBX, target
 		MOV ESI, this
-		CALL Func_CanUnitAttackTarget
+		CALL func_address
 		MOV result, EAX
 		POPAD
 	}
@@ -1144,16 +1144,16 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 	return result;
 }
 
-extern const u32 Func_FireUnitWeapon = 0x00479C90;
 void Unit::fireWeapon(u8 weapon_id) const {
 	assert(this);
-	static u32 weaponId_;
-	weaponId_ = weapon_id;
+	const u32 func_address = 0x00479C90;
+	static u32 weapon_id_xd;
+	weapon_id_xd = weapon_id;
 	__asm {
 		PUSHAD
-		PUSH weaponId_
+		PUSH weapon_id_xd
 		MOV ESI, this
-		CALL Func_FireUnitWeapon
+		CALL func_address
 		POPAD
 	}
 }

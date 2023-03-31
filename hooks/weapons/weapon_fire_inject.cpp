@@ -346,12 +346,11 @@ namespace
 	}
 }
 
-extern const u32 Func_FireUnitWeapon;
 namespace hooks
 {
 	void inject_weapon_fire_hooks()
 	{
-		jump_patch(fire_weapon_wrapper,						Func_FireUnitWeapon, 0);
+		jump_patch(fire_weapon_wrapper,						0x00479C90, 0);
 		jump_patch(progress_bullet_flight_wrapper,			0x0048B3B0, 3);
 		jump_patch(bullet_behavior_bounce_wrapper,			0x0048B2D0, 0);
 		jump_patch(find_next_bounce_target_proc_wrapper,	0x0048AFD0, 3);

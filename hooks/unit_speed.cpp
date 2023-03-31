@@ -227,6 +227,9 @@ namespace hooks
 			{
 				speed *= 0.9;
 			} break;
+			case UnitId::TerranMason:
+			case UnitId::ProtossScribe:
+			case UnitId::ZergDroleth:
 			case UnitId::TerranSavant:
 			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
