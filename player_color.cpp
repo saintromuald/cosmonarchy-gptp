@@ -34,6 +34,9 @@ static bool player_can_randomize(u32 player) {
 	if (g_player_table[player].type == PlayerType::Computer && !personality) {
 		return false; // Don't randomize AI players that don't have personality yet
 	}
+	if (global_vars.players[player].is_witness) {
+		return false;
+	}
 	return true;
 
 }
@@ -66,18 +69,6 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 			}
 		}
 	}
-	//for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-	//	if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
-	//		if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
-	//			continue;
-	//		}
-	//		for (u32 other_tint : get_player_tints_from_color(player_color_list[other_player])) {
-	//			if (color_tint == other_tint) {
-	//				return false;
-	//			}
-	//		}
-	//	}
-	//}
 	return true;
 }
 
@@ -99,7 +90,7 @@ static bool can_use_player_color(u32 color, u32 player) {
 		}
 	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-		if (other_player != player && (other_player < player || !player_wants_to_randomize(other_player))) {
+		if (other_player != player && !global_vars.players[other_player].is_witness && (other_player < player || !player_wants_to_randomize(other_player))) {
 			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
 				continue;
 			}
@@ -169,11 +160,11 @@ static void randomize_player_color(u32 player) {
 		do {
 			tint = get_random_tint();
 			tint_attempts += 1;
-		} while (!can_use_player_tint(tint, player) && tint_attempts < 100);
+		} while (!can_use_player_tint(tint, player) && tint_attempts < 300);
 
 		color = get_random_color_from_tint(tint);
 		color_attempts += 1;
-	} while (!can_use_player_color(color, player) && color_attempts < 100);
+	} while (!can_use_player_color(color, player) && color_attempts < 300);
 	set_player_color(player, color);
 }
 
@@ -287,7 +278,7 @@ static void update_player_name(u32 player) {
 	u32 personality = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player];
 	u32 count = get_name_count(race, personality);
 	if (count) {
-		for (u32 tries = 0; tries < 20; ++tries) {
+		for (u32 tries = 0; tries < 100; ++tries) {
 			u32 random = scbw::rand_between(0, PlayerPesonalityMaxNames - 1);
 			char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
