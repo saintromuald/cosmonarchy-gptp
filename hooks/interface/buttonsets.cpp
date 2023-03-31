@@ -2154,6 +2154,19 @@ namespace hooks {
 										current_button_state = Button_State::Invisible;
 									}
 								} break;
+								case UnitId::TerranIonCannon:
+								{
+									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
+									||  current_button->icon_id == IconId::DidactPassiveShroudOfAdun)	// Ion Cannon - Artillery Targeting
+									{
+										if (unit->status & UnitStatus::GroundedBuilding) {
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Invisible;
+										}
+									}
+								} break;
 
 								// PROTOSS \\
 
@@ -2379,16 +2392,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::TerranSentinel &&  
 								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Sentinel Prolonged Arms
-							{
-								if (unit->status & UnitStatus::GroundedBuilding) {
-									current_button_state = Button_State::Enabled;
-								}
-								else {
-									current_button_state = Button_State::Invisible;
-								}
-							}
-							else if (unit->id == UnitId::TerranIonCannon &&   
-								current_button->icon_id == IconId::OpticalFlare) // Ion Cannon Ion Field
 							{
 								if (unit->status & UnitStatus::GroundedBuilding) {
 									current_button_state = Button_State::Enabled;

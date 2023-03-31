@@ -132,6 +132,8 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
 			if (is_ion) {
 				scbw::set_bullet_target(bullet, ion_target);
+				UnitExt* unit_ext = get_unit_ext(unit); // Avoiding this in global scope for every call may not be as beneficial as only calling the function once... -Pr0nogo
+				unit->order_target.unit = unit_ext->units[UnitIonCannonTarget];
 			}
 			else {
 				scbw::set_bullet_target(bullet, target);
@@ -356,7 +358,8 @@ namespace hooks {
 						offsets.count = 1;
 						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
-					case WeaponId::IonCannon:
+					case WeaponId::IonCannonIonCannon:
+					case WeaponId::IonCannonHammerfallBeacon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueIonCannonLaunchPos;

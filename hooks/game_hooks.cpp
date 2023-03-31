@@ -2003,12 +2003,12 @@ namespace hooks {
 			} break;
 			case UnitId::TerranIonCannon:
 			{
-				if (unit->order_signal & 0x40)
+				if (unit->order_signal & 0x20)
 				{
-					unit->order_signal &= ~0x40;
-					if (unit_ext->units[UnitIonCannonTarget]) {
-						unit->order_target.unit = unit_ext->units[UnitIonCannonTarget];
-					}
+					unit->order_signal &= ~0x20;
+					unit->order_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
+					unit->order_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+					helper::create_bullet(WeaponId::IonCannonHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
 		}

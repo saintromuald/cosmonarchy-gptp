@@ -182,7 +182,7 @@ namespace WeaponId {
 		OlympianMountainGun					= 124,
 		WyvernJacksonCannon					= 125,
 		PaladinSkyfall						= 126,	// Ability targeting
-		IonCannon							= 129,
+		IonCannonHammerfallBeacon			= 129,	// Main weapon precursor
 		EmergencyDetonationExplosion		= 140,
 		MagnetarNewtonianShockCannon		= 141,
 		SentinelCerberusRailgun				= 147,
@@ -207,6 +207,7 @@ namespace WeaponId {
 		HorsemanHadesCannon					= 182,
 		HypnagogueThroughTheLookingGlass	= 183,	// Ability targeting
 		SilvertongueWordsmithRailgun		= 184,
+		IonCannonIonCannon					= 198,
 
 		// Protoss \\
 		
