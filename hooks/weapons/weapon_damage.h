@@ -64,6 +64,7 @@ namespace hooks {
 	void unit_attack_notify(Unit* unit);							// 0048F230
 	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal);	// 004795D0
 	u32 ask_for_help(Unit* attacker, Unit* helper);					// 00476E60
+	void react_to_hit(Unit* attacker, Unit* victim);				// 004776C0
 
 	void inject_weapon_damage_hooks();
 }

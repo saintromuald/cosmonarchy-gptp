@@ -1175,8 +1175,8 @@ namespace hooks
 						&&  helper::is_at_home(victim)
 						&&  helper::is_under_carapace_swarm(victim) != 255)
 						{
-							Point16 flee_pos = helper::ai_prepare_to_flee(attacker, victim);
-							helper::order_interrupt(victim, attacker, flee_pos.x, flee_pos.y, OrderId::Move);
+							Target flee_target = helper::ai_prepare_to_flee(attacker, victim);
+							helper::order_interrupt(victim, flee_target.unit, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 						}
 					}
 				}
