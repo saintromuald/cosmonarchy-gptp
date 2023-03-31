@@ -267,6 +267,7 @@ enum ExtUnitId
 	UnitAddonParent,
 	UnitResponseTarget,
 	UnitCentaurSecondaryWeaponTarget,
+	UnitIonCannonTarget,
 
 	UnitCount,
 };

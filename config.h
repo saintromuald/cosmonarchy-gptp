@@ -32,7 +32,7 @@ struct Config {
 	// Debug
 	bool verbose = false;
 
-	// Saves
+	// Map directory
 	std::string default_map_directory = "BroodWar"; // std::string is awful, but the yaml library requires it for text... -Veeq7
 };
 extern Config config;

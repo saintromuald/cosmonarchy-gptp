@@ -2003,11 +2003,11 @@ namespace hooks {
 			} break;
 			case UnitId::TerranIonCannon:
 			{
-				if (unit->order_signal & 0x20) {
-					unit->order_signal &= ~0x20;
-					if (unit->order_target.unit) { // This check may not be necessary, since this order signal is only true at the start of GndAttkRpt. -Pr0nogo
-						unit_ext->values[ValueIonCannonTargetPosX] = unit->order_target.unit->position.x;
-						unit_ext->values[ValueIonCannonTargetPosY] = unit->order_target.unit->position.y;
+				if (unit->order_signal & 0x40)
+				{
+					unit->order_signal &= ~0x40;
+					if (unit_ext->units[UnitIonCannonTarget]) {
+						unit->order_target.unit = unit_ext->units[UnitIonCannonTarget];
 					}
 				}
 			} break;

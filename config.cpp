@@ -100,6 +100,8 @@ void save_config() {
 
 	out << YAML::Comment("Maps");
 	out << YAML::Newline << YAML::Comment("Use single backslashes for paths!");
+	out << YAML::Newline << YAML::Comment("The map directory must be within Starcraft's 'maps' folder.");
+	out << YAML::Newline << YAML::Comment("Example: BroodWar\\CMBW-maps");
 	write_field(out, "default-map-directory", config.default_map_directory);
 	out << YAML::Newline << YAML::Newline;
 

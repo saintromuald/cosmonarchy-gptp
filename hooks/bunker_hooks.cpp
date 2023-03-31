@@ -202,13 +202,19 @@ namespace hooks
 			return 0;
 		}
 		
-		static u32* u32_0064DEB0 = (u32*)0x0064DEB0;
+		if (unit->id == UnitId::TerranIonCannon) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->values[ValueIonCannonTargetPosX] = unit->order_target.unit->position.x;
+			unit_ext->values[ValueIonCannonTargetPosY] = unit->order_target.unit->position.y;
+			unit_ext->units[UnitIonCannonTarget] = unit->order_target.unit;
+			unit->order_target.unit = 0;
+		}
 		if (unit->status & UnitStatus::InBuilding)
 		{
 			helper::create_bunker_attack_overlay(unit);
 		}
 		unit->movement_flags |= MovementFlags::StartingAttack;
-		*u32_0064DEB0 = 0;
+		*g_last_bullet_creator = 0;
 
 		// Previously had random delays here.
 		

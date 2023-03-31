@@ -93,13 +93,19 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	if (!target) {
 		target = order_target;
 	}
-	if (!unit->sprite || !target) {
+	if (!unit->sprite) {
 		return 0;
+	}
+	bool is_ion = unit->id == UnitId::TerranIonCannon;
+	if (!target) {
+		if (!is_ion) {
+			return 0;
+		}
 	}
 
 	Point16 pos = unit->position;
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::AppearOnTargetUnit) {
-		pos = target->position;
+		pos = target->position; // No risk since Ion Cannon doesn't use this weapon behavior
 	}
 
 	if (weapon_offsets) {
@@ -108,17 +114,23 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 		pos.y += offset.y;
 	}
 
-	s32 angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
+	s32 angle = 0;
+	Target ion_target = {};
+	if (is_ion) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
+		ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+		angle = scbw::get_angle(pos.x, pos.y, ion_target.pt.x, ion_target.pt.y);
+	}
+	else {
+		angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
+	}
 	unit->order_target.unit = target;
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, pos.x, pos.y, unit->player, angle, apply_cooldown);
 	unit->order_target.unit = order_target;
 	if (bullet) {
 		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
-			if (unit->id == UnitId::TerranIonCannon) {
-				UnitExt* unit_ext = get_unit_ext(unit);
-				Target ion_target = {};
-				ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
-				ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+			if (is_ion) {
 				scbw::set_bullet_target(bullet, ion_target);
 			}
 			else {

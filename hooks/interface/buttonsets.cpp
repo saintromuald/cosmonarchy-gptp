@@ -1843,6 +1843,18 @@ namespace hooks {
 							current_button_state = Button_State::Disabled;
 							switch (unit->id)
 							{
+								// GLOBAL \\
+
+								case UnitId::TerranWraith:
+								case UnitId::TerranSundog:
+								case UnitId::ProtossWitness:
+								{
+									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+// 
 								// FACTIONAL \\
 
 								case UnitId::TerranCohort:
@@ -2056,14 +2068,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranWraith:
-								{
-									// TODO: replace with permacloak icon
-									if (current_button->icon_id == IconId::WraithBurstLasers) // Wraith - Capacitors
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::TerranTrojan:
 								{
 									if (current_button->icon_id == IconId::Land) // Trojan - Hotdrop
@@ -2160,8 +2164,23 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossCabalist:
+								{
+									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									if (current_button->icon_id == IconId::ProtossGroundWeapons) // Cabalist - Silent Strikes
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossBarghest:
 								{
+									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
 									if (current_button->icon_id == IconId::ApialSensors) // Barghest - Multi-Attack III
 									{
 										current_button_state = Button_State::Enabled;
@@ -2413,11 +2432,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossVagrant &&  // Vagrant Nihilism
 								current_button->icon_id == IconId::MindControlUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossCabalist &&  // Cabalist Silent Strikes
-								current_button->icon_id == IconId::ProtossGroundWeapons)
 							{
 								current_button_state = Button_State::Enabled;
 							}
