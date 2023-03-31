@@ -13423,4 +13423,16 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void iscript_fireweapon(Unit* unit, u8 weapon_id)
+	{
+		const u32 func_address = 0x00479D40;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV BL, weapon_id
+			CALL func_address
+			POPAD
+		}
+	}
 }

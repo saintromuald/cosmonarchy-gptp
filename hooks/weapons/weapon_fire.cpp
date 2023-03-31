@@ -238,7 +238,6 @@ namespace
 }
 
 namespace hooks {
-	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
@@ -309,7 +308,7 @@ namespace hooks {
 				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
 				unit_ext->values[ValueSpineX] = targ_x;
 				unit_ext->values[ValueSpineY] = targ_y;
-				if (unit->order_target.unit != nullptr)
+				if (unit->order_target.unit)
 				{
 					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
 				}

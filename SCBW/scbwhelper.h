@@ -1575,4 +1575,6 @@ namespace helper {
 
 	b32 is_at_home(Unit* unit);																												// 00462930
 	u32 is_under_carapace_swarm(Unit* unit);																								// 00476210
+
+	void iscript_fireweapon(Unit* unit, u8 weapon_id);																						// 00479D40
 }
