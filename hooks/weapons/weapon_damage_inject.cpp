@@ -136,6 +136,21 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) react_to_hit_wrapper() { // 00476E60
+		static Unit* attacker;
+		static Unit* victim;
+		__asm {
+			MOV victim, ECX
+			MOV attacker, EAX
+			PUSHAD
+		}
+		hooks::react_to_hit(attacker, victim);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -148,5 +163,6 @@ namespace hooks
 		jump_patch(unit_attack_notify_wrapper,			0x0048F230, 3);
 		jump_patch(unit_was_hit_wrapper,				0x004795D0, 1);
 		jump_patch(ask_for_help_wrapper,				0x00476E60, 2);
+		jump_patch(react_to_hit_wrapper,				0x004776C0, 1);
 	}
 }

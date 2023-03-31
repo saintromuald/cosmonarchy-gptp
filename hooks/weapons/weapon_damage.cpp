@@ -1143,4 +1143,48 @@ namespace hooks
 		}
 		return false;
 	}
+
+	// Hooked to stop damage from forcing units to unburrow. -Pr0nogo
+	void react_to_hit(Unit* attacker, Unit* victim) // 004776C0
+	{
+		if (victim->id != UnitId::ZergLarva && victim->id != UnitId::ZergOcsalLarva)
+		{
+			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || victim->id == UnitId::ZergLakizilisk)
+			{
+				if  (units_dat::base_property[victim->id] & UnitProperty::Building || helper::unit_can_attack_target(attacker, victim, 1)
+				&& !(units_dat::base_property[victim->id] & UnitProperty::Worker))
+				{
+					Unit* subunit = victim->subunit;
+					victim->auto_target_unit = attacker;
+					if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit)
+					{
+						subunit->last_attacking_player = victim->last_attacking_player;
+						victim->subunit->auto_target_unit = attacker;
+					}
+				}
+				else
+				{
+					if (victim->id != UnitId::ZergLakizilisk || !(victim->status & UnitStatus::Burrowed) || victim->unit_ai && !victim->irradiate_timer)
+					{
+						if (units_dat::base_property[victim->id] & UnitProperty::Subunit)
+						{
+							victim = victim->subunit;
+						}
+						if (orders_dat::Unknown11[victim->main_order_id]
+						&&  victim->status & UnitStatus::Reacts
+						&&  helper::is_at_home(victim)
+						&&  helper::is_under_carapace_swarm(victim) != 255)
+						{
+							Target flee_target = helper::ai_prepare_to_flee(attacker, victim);
+							helper::order_interrupt(victim, flee_target.unit, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
+						}
+					}
+				}
+			}
+			else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable)
+			{
+			//	helper::unburrow(victim); // Disabled to prevent damage forcing units to unburrow. -Pr0nogo
+			}
+		}
+	}
 }
