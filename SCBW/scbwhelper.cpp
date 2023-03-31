@@ -11827,15 +11827,16 @@ namespace helper {
 		return result;
 	}
 
-	Point16 ai_prepare_to_flee(Unit* target, Unit* unit) {
-		static Point16 result;
+	Target ai_prepare_to_flee(Unit* target, Unit* unit) {
+		static Target result;
 		const u32 func_address = 0x00476A50;
 		__asm {
 			PUSHAD
 			PUSH target
 			MOV EAX, unit
 			CALL func_address
-			MOV result, EAX
+			MOV dword ptr [offset result.pt], EAX
+			MOV dword ptr [offset result.unit], EDX
 			POPAD
 		}
 		return result;
