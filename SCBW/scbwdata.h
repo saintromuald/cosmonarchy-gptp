@@ -752,7 +752,7 @@ namespace orders_dat {
 	SCBW_DATA_REF(u8*,		can_be_queued,				ordersDat[8].address);	// 00665700
 	SCBW_DATA_REF(u8*,		disabling_keeps_target,		ordersDat[9].address);	// 006651C0
 	SCBW_DATA_REF(u8*,		can_be_obstructed,			ordersDat[10].address);	// 006654C0
-//	SCBW_DATA_REF(u8*,		???,						ordersDat[11].address);	// 00664C80
+	SCBW_DATA_REF(u8*,		Unknown11,					ordersDat[11].address);	// 00664C80
 //	SCBW_DATA_REF(u8*,		???,						ordersDat[12].address);	// 00664BC0 // May be "Order requires moving"
 	SCBW_DATA_REF(u8*,		order_weapon_id,			ordersDat[13].address);	// 00665880
 	SCBW_DATA_REF(u8*,		tech_used,					ordersDat[14].address);	// 00664E00

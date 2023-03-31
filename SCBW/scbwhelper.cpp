@@ -13394,4 +13394,32 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	b32 is_at_home(Unit* unit)
+	{
+		const u32 func_address = 0x00462930;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 is_under_carapace_swarm(Unit* unit)
+	{
+		const u32 func_address = 0x00476210;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

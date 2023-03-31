@@ -1572,4 +1572,7 @@ namespace helper {
 	void place_building_refinery_check(Unit* unit);																							// 0048E1E0
 
 	void move_screen(Point16 pos);																											// 0049C440
+
+	b32 is_at_home(Unit* unit);																												// 00462930
+	u32 is_under_carapace_swarm(Unit* unit);																								// 00476210
 }
