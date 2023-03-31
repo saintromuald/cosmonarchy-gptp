@@ -1344,14 +1344,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranHeracles:
-			{
-				// Heracles Nemean Reactors - remove stacks when out of combat
-				if (unit_ext->values[ValueNemeanReactorsStack] > 0
-				&&  unit_ext->timers[TimerNemeanReactors] <= 1) {
-					unit_ext->values[ValueNemeanReactorsStack] = 0;
-				}
-			} break;
 			case UnitId::TerranCuirass:
 			{
 				if (unit_ext->values[ValueCuirassIsSelfReviving]) {

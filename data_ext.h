@@ -55,7 +55,6 @@ enum ExtValueId
 	ValueReconstitution,
 	ValueSimulacrumClone,
 	ValueProtectiveInstinctsStatus,
-	ValueNemeanReactorsStack,
 	ValueEntropyGauntlets,
 	ValueDeconstruction,
 	ValueDeconstructionPlayer,

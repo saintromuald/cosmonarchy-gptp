@@ -311,18 +311,9 @@ namespace hooks {
 			&&  unit->id != UnitId::ProtossAnthelion)
 			{
 				// Madrigal Tempo Change weapon switch
-				if (weapon_id == WeaponId::MadrigalFuriaMissiles
-				&&  unit_ext->values[ValueMadrigalTempoDown] == 1)
+				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)
 				{
 					weapon_id = WeaponId::MadrigalImperiosoMissiles;
-				}
-
-				// Nemean Reactors - Heracles behavior - Refresh timer on attack and add stack
-				if (weapon_id == WeaponId::HeraclesJavelinCannons)
-				{
-					unit_ext->values[ValueNemeanReactorsStack]++;
-					unit_ext->timers[TimerNemeanReactors] = 49;
-				//	helper::play_sound_from_unit(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive

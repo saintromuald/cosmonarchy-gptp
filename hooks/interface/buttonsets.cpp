@@ -1908,13 +1908,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranHeracles:
-								{
-									if (current_button->icon_id == IconId::TitanReactor) // Heracles Nemean Reactors passive
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::TerranApostle:
 								{
 									if (current_button->icon_id == IconId::SuicideScourge) // Apostle Last Breath passive
@@ -2088,6 +2081,34 @@ namespace hooks {
 								case UnitId::TerranGorgon:
 								{
 									if (current_button->icon_id == IconId::ArgusJewel) // Gorgon - Petrification
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranWyvern:
+								{
+									if (current_button->icon_id == IconId::AfterburnersOnUnused) // Wyvern - Reverse Thrust
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranValkyrie:
+								{
+									if (current_button->icon_id == IconId::GraviticBoosters) // Valkyrie - Odin Afterburners
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranSalamander:
+								{
+									if (current_button->icon_id == IconId::HarakanFlamethrower) // Salamander - Incendiary Payload
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAzazel:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Azazel - Sublime Shepherd
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2292,27 +2313,7 @@ namespace hooks {
 								} break;
 							}
 
-							if (unit->id == UnitId::TerranValkyrie &&  
-								current_button->icon_id == IconId::GraviticBoosters) // Valkyrie Charon Afterburners
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranWyvern &&  
-								current_button->icon_id == IconId::AfterburnersOnUnused) // Wyvern Reverse Thrust
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranSalamander &&  
-								current_button->icon_id == IconId::HarakanFlamethrower) // Salamander Incendiary Payload
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranAzazel &&  
-								current_button->icon_id == IconId::Restoration_Research) // Azazel Innervating Matrices
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranCentaur &&  
+							if (unit->id == UnitId::TerranCentaur &&  
 								current_button->icon_id == IconId::GeminiMissiles) // Centaur Sunchaser Salvo
 							{
 								current_button_state = Button_State::Enabled;

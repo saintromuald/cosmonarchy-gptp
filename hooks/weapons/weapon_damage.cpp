@@ -286,13 +286,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case WeaponId::HeraclesJavelinCannons:
-			{
-				if (data.attacker) {
-					UnitExt* attacker_ext = get_unit_ext(data.attacker);
-					data.damage += (attacker_ext->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
-				}
-			} break;
 			case WeaponId::CharlatanFerventBlaster:
 			case WeaponId::EmpressFadingBioplasma:
 			case WeaponId::LiiraliskHollowedSpores:
