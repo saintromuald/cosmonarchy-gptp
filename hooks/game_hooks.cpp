@@ -1971,7 +1971,6 @@ namespace hooks {
 							continue;
 						}
 						if (cargo_unit->main_order_id != OrderId::BunkerGuard) {
-							scbw::print("lol");
 							helper::order(1, cargo_unit, OrderId::BunkerGuard, cargo_unit->position, 0, UnitId::None);
 						}
 					}
@@ -1983,7 +1982,7 @@ namespace hooks {
 					scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 0);
 					if (!unit_ext->timers[TimerMadrigalTempoChange]) {
 						unit_ext->timers[TimerMadrigalTempoChange] = 18;
-						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown];
+						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown]; // Fuck you visual studio
 						unit->status |= UnitStatus::CanNotAttack;
 						unit->sprite->create_overlay(ImageId::StonewallProtocolOverlay);
 						if (unit_ext->values[ValueMadrigalTempoDown]) {
@@ -2003,6 +2002,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranIonCannon:
 			{
+				// Fire Hammerfall Beacon for weapon targeting
 				if (unit->order_signal & 0x20)
 				{
 					unit->order_signal &= ~0x20;
