@@ -2082,9 +2082,10 @@ namespace hooks {
 
 		// Fix animation bug with acceleration movement flag
 		if (!(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
-			&& unit->movement_flags & MovementFlags::Accelerating
-			&& unit->sprite->main_graphic->animation != IscriptAnimation::Walking
-			&& unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle) {
+		&&    unit->movement_flags & MovementFlags::Accelerating
+		&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
+		&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle)
+		{
 			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
@@ -2092,8 +2093,18 @@ namespace hooks {
 		if (unit->status & UnitStatus::Unmovable
 		&&  unit->main_order_id & OrderId::AttackUnit
 		&& !unit->movement_flags
-		&&  unit->movement_state == 0x0A) {
+		&&  unit->movement_state == 0x0A)
+		{
 			unit->status ^= UnitStatus::Unmovable;
+		}
+
+		// Temp fix for iscript-based workers getting stuck - DarkenedFantasies
+		if ((unit->id == UnitId::TerranMason || unit->id == UnitId::ProtossScribe || unit->id == UnitId::ZergDroleth)
+		&&	unit->flingy_acceleration == 0
+		&&	unit->flingy_top_speed == 0
+		&&	unit->movement_flags & MovementFlags::Accelerating)
+		{
+			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
 		// Sublime Shepherd - Check tagged units for nearby Azazels

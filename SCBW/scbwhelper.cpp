@@ -4408,7 +4408,7 @@ namespace helper {
 		}
 	}
 
-	char ignore_all_scripts_and_go_to_idle(Unit* unit) {
+	char ignore_iscript_go_to_idle(Unit* unit) {
 		static char result;
 		const u32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
 		__asm {

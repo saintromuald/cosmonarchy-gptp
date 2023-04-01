@@ -62,7 +62,7 @@ namespace hooks {
 			unit->order_target.unit = 0;
 		}
 		char result;
-		result = helper::ignore_all_scripts_and_go_to_idle(unit);
+		result = helper::ignore_iscript_go_to_idle(unit);
 		Sprite* sprite = unit->sprite;
 		if (sprite->flags & 8) {
 			if (*g_client_selection_count > 1u) {
