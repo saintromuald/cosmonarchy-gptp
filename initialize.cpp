@@ -700,7 +700,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::inject_larva_creep_spawn_hooks();
 	hooks::inject_lift_land_hooks();
-//	hooks::inject_attack_orders_hooks();
 //	hooks::inject_stop_hold_position_orders_hooks();
 	hooks::inject_recall_spell_hooks();
 	hooks::inject_enter_nydus_hooks();
@@ -813,17 +812,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	inject_trigger_system_hooks();
 	hooks::inject_hp_bars_hooks();
 
+	// Limits - most likely needs to be patched in aise, aice, and mtl
 	hooks::inject_unit_extender();
 	hooks::inject_sprite_extender();
 	hooks::inject_order_extender();
 	hooks::inject_image_extender();
 	hooks::inject_thingy_extender();
-
-	// Limits - most likely needs to be patched in aise, aice, and mtl
-//	hooks::inject_unit_extender();
-//	hooks::inject_sprite_extender();
-//	hooks::inject_order_extender();
-//	hooks::inject_image_extender();
 
 	return TRUE;
 }

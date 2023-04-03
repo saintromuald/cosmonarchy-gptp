@@ -5,7 +5,7 @@
 namespace hooks
 {
 	// This function receives the Attack/Attack Move commands and the spell commands, maybe more. -GPTP
-	void receive_command(s32 x, s32 y, Unit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType)
+	void receive_command(s32 x, s32 y, Unit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType) // 0049AB00
 	{
 		u8 array_of_data[0x30];
 		u16* saved_x = (u16*)&array_of_data[0];					//[EBP-0x30]

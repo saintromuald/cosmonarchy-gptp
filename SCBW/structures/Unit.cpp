@@ -8,25 +8,22 @@
 #include "hooks\load_unload_proc.h"
 #include "trigger_system/trigger_events.h"
 #include <DatExtend/datext.h>
-
 #include "math_utils.h"
-//-------- Unit stats and properties --------//
 
-extern const u32 Func_CanDetect = 0x00403430; // unitHasNoStatusAilments
+//-------- Unit stats and properties --------//
 
 // Behavior can be modified with detector hook
 bool Unit::can_detect() const {
 	assert(this);
 	static u32 result;
-
+	const u32 func_address = 0x00403430;
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_CanDetect
+		CALL func_address
 		MOV result, EAX
 		POPAD
 	}
-
 	return result != 0;
 }
 
