@@ -423,7 +423,6 @@ namespace hooks
 			program_state->wait -= 1;
 			return;
 		}
-
 		while (2)
 		{
 			IscriptOpcodes::Enum opcode = take_iscript_datum<IscriptOpcodes::Enum>(program_state);
@@ -673,18 +672,18 @@ namespace hooks
 				}
 				case IscriptOpcodes::opc_sprul:
 				{
-					u16 v61 = take_iscript_datum<u16>(program_state);
-					char v63 = take_iscript_datum<char>(program_state);
-					char v64 = take_iscript_datum<char>(program_state);
+					u16 sprite_id = take_iscript_datum<u16>(program_state);
+					char x = take_iscript_datum<char>(program_state);
+					char y = take_iscript_datum<char>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					if (*g_active_iscript_unit && ((*g_active_iscript_unit)->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) && !images_dat::draw_if_cloaked[sprites_dat::image_id[v61]])
+					if (*g_active_iscript_unit && ((*g_active_iscript_unit)->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) && !images_dat::draw_if_cloaked[sprites_dat::image_id[sprite_id]])
 					{
 						break;
 					}
-					if (Thingy* thingy = iscript_create_sprite(image, v61, v63, v64, image->parent_sprite->elevation - 1))
+					if (Thingy* thingy = iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation - 1))
 					{
 						helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
 					}
@@ -693,13 +692,13 @@ namespace hooks
 				case IscriptOpcodes::opc_sproluselo:
 				{
 					u16 sprite_id = take_iscript_datum<u16>(program_state);
-					char v62 = take_iscript_datum<char>(program_state);
+					char arg3 = take_iscript_datum<char>(program_state);
 					if (noop)
 					{
 						break;
 					}
 					Point16 pt;
-					helper::iscript_use_lo_file(&pt, image, v62, 0);
+					helper::iscript_use_lo_file(&pt, image, arg3, 0);
 					if (Thingy* thingy = iscript_create_sprite(image, sprite_id, pt.x, pt.y, image->parent_sprite->elevation + 1))
 					{
 						helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
@@ -952,17 +951,17 @@ namespace hooks
 				}
 				case IscriptOpcodes::opc_engset:
 				{
-					u8 v89 = take_iscript_datum<char>(program_state);
+					u8 frame = take_iscript_datum<char>(program_state);
 					if (noop)
 					{
 						break;
 					}
-					Image* v88 = image->parent_sprite->main_graphic;
-					image->direction = v88->direction;
-					image->frameset = v88->frameset + v89 * (v88->grp_file->frame_count & 0x7FFF);
-					image->flags ^= ((image->flags ^ v88->flags) & ImageFlags::Mirrored);
-					Image* v86 = helper::set_image_palette_type(image, image->palette_type);
-					helper::update_image_frame_index(v86);
+					Image* main_graphic = image->parent_sprite->main_graphic;
+					image->direction = main_graphic->direction;
+					image->frameset = main_graphic->frameset + frame * (main_graphic->grp_file->frame_count & 0x7FFF);
+					image->flags ^= ((image->flags ^ main_graphic->flags) & ImageFlags::Mirrored);
+					Image* palette_type = helper::set_image_palette_type(image, image->palette_type);
+					helper::update_image_frame_index(palette_type);
 					break;
 				}
 				case IscriptOpcodes::opc___2d:
@@ -1092,20 +1091,20 @@ namespace hooks
 				}
 				case IscriptOpcodes::opc_trgtrangecondjmp:
 				{
-					u16 v95 = take_iscript_datum<u16>(program_state);
-					u16 v97 = take_iscript_datum<unsigned short>(program_state);
+					u16 distance = take_iscript_datum<u16>(program_state);
+					u16 jump_pos = take_iscript_datum<unsigned short>(program_state);
 					if (noop)
 					{
 						break;
 					}
 					if ((*g_active_iscript_unit)->order_target.unit)
 					{
-						u32 a3;
-						u32 a4;
-						helper::get_closest_point_of_target(*g_active_iscript_unit, (u32)&a4, (u32)&a3);
-						if (helper::is_distance_greater_than_halt_distance(*g_active_iscript_unit, a3, a4, v95))
+						u32 final_y;
+						u32 final_x;
+						helper::get_closest_point_of_target(*g_active_iscript_unit, (u32)&final_x, (u32)&final_y);
+						if (helper::is_distance_greater_than_halt_distance(*g_active_iscript_unit, final_y, final_x, distance))
 						{
-							program_state->program_counter = v97;
+							program_state->program_counter = jump_pos;
 						}
 					}
 					break;
@@ -1161,14 +1160,14 @@ namespace hooks
 				}
 				case IscriptOpcodes::opc_liftoffcondjmp:
 				{
-					u16 new_pc = take_iscript_datum<u16>(program_state);
+					u16 jump_pos = take_iscript_datum<u16>(program_state);
 					if (noop)
 					{
 						break;
 					}
 					if ((*g_active_iscript_unit)->status & UnitStatus::InAir)
 					{
-						program_state->program_counter = new_pc;
+						program_state->program_counter = jump_pos;
 					}
 					break;
 				}
