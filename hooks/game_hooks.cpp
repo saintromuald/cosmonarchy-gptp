@@ -2100,8 +2100,8 @@ namespace hooks {
 
 		// Temp fix for iscript-based workers getting stuck - DarkenedFantasies
 		if ((unit->id == UnitId::TerranMason || unit->id == UnitId::ProtossScribe || unit->id == UnitId::ZergDroleth)
-		&&	unit->flingy_acceleration == 0
-		&&	unit->flingy_top_speed == 0
+		&&	unit->current_speed_1 == 0
+		&&	unit->current_speed_2 == 0
 		&&	unit->movement_flags & MovementFlags::Accelerating)
 		{
 			unit->movement_flags &= ~MovementFlags::Accelerating;

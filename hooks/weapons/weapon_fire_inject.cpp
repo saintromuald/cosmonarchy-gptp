@@ -217,37 +217,6 @@ namespace
 		}
 	}
 
-	const u32 BulletDamageJmpBack = 0x0048B77A;
-	void __declspec(naked) bullet_damage_bullet_nullcheck()
-	{
-		static Bullet* bullet; 
-		__asm
-		{
-			PUSH EBP
-			MOV EBP, ESP
-			SUB ESP, 8
-			PUSH EBX
-			MOV EBX, [EBP + 0x08]
-			MOV bullet, EBX
-			PUSHAD
-		}
-		if (bullet != nullptr)
-		{
-			__asm
-			{
-				POPAD
-				JMP BulletDamageJmpBack
-			}
-		}
-		__asm
-		{
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
-		}
-	}
-
 	void __declspec(naked) get_weapon_iscript_init_wrapper() { // 00476ED0
 		static Unit* unit;
 		static char iscript_anim;
@@ -330,6 +299,37 @@ namespace
 		}
 	}
 
+	const u32 BulletDamageJmpBack = 0x0048B77A;
+	void __declspec(naked) bullet_damage_bullet_nullcheck()
+	{
+		static Bullet* bullet;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 8
+			PUSH EBX
+			MOV EBX, [EBP + 0x08]
+			MOV bullet, EBX
+			PUSHAD
+		}
+		if (bullet != nullptr)
+		{
+			__asm
+			{
+				POPAD
+				JMP BulletDamageJmpBack
+			}
+		}
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
 	void __declspec(naked) unit_id_is_melee_air_unit_wrapper() {
 		u32 unit_id;
 		bool is_air_unit;
@@ -360,12 +360,12 @@ namespace hooks
 	//	jump_patch(progress_bullet_frames_wrapper,			0x0048C3D0, 2);
 	//	jump_patch(find_next_bounce_target_wrapper,			0x0048B1E0, 1);
 	//	jump_patch(bullet_behavior_reassign_wrapper,		0x00488D50, 1);
-		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
 	//	jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
-
+		
+		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x00475A10, 3);
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x004788AB);
 	}
