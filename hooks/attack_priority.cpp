@@ -179,8 +179,7 @@ namespace hooks
 	}
 
 	// Searches for the best attack target nearby for the @p unit.
-	Unit* find_best_attack_target(Unit* unit)
-	{
+	Unit* find_best_attack_target(Unit* unit) {
 		attackPriorityData.reset();
 		s32 seek_range = unit->get_seek_range() * 32;
 
@@ -202,8 +201,7 @@ namespace hooks
 			unit->get_x() - search_range, unit->get_y() - search_range,
 			unit->get_x() + search_range, unit->get_y() + search_range);
 
-		attackTargetFinder.for_each([&](Unit* target)
-		{
+		attackTargetFinder.for_each([&](Unit* target) {
 			s32 target_seek_range = hooks::get_seek_range(unit, target) * 32;
 			if (check_attackable_target(unit, target, target_seek_range + offset, min_range)) {
 				attackPriorityData.add_target(target, get_attack_priority(target, unit));

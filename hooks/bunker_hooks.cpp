@@ -39,9 +39,9 @@ namespace hooks
 		}
 
 		if (scbw::unit_is_ranged_attacker(unit)) {
-			unit->status |= UnitStatus::HoldingPosition;
+			unit->status |= UnitStatus::AttackMove;
 			if (unit->subunit) {
-				unit->subunit->status |= UnitStatus::HoldingPosition;
+				unit->subunit->status |= UnitStatus::AttackMove;
 			}
 			if (helper::attack_apply_cooldown(unit)) {
 				if (unit->order_target.pt.x != unit->next_target_waypoint.x

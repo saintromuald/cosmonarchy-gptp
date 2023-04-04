@@ -1154,104 +1154,66 @@ LABEL_42:
 	}
 
 	// Hooked to fix infinite attack range on hold position. -Pr0nogo
-	void pick_new_target_if_needed(Unit* unit) // 00477510, unused Unit* arg1
-	{
-		if (unit->status & UnitStatus::HoldingPosition)
-		{
-			Unit* order_target_unit = unit->order_target.unit;
-			s32 threat_1 = 0;
-			s32 threat_2 = 0;
-			if (order_target_unit)
-			{
-				if (unit->unit_ai && !helper::is_unit_enemy(unit, order_target_unit))
-				{
+	void pick_new_target_if_needed(Unit* unit) { // 00477510, unused Unit* arg1
+		if (unit->status & UnitStatus::AttackMove) {
+			Unit* best_target = 0;
+			s32 best_score = INT_MAX;
+
+			Unit* order_target = unit->order_target.unit;
+			if (order_target) {
+				if (unit->unit_ai && !helper::is_unit_enemy(unit, order_target)) {
 					return;
 				}
-				if (unit_can_attack_target(order_target_unit, unit, 1))
-				{
-					if (helper::is_ai_target_related(unit, order_target_unit))
-					{
-						order_target_unit = 0;
-						threat_1 = 0x7FFFFFFF;
-					}
-					else
-					{
-						threat_1 = helper::get_threat_level(unit, order_target_unit);
-						if (!threat_1)
-						{
-							if (helper::is_unit_in_weapon_range(order_target_unit, unit))
-							{
+				if (unit_can_attack_target(order_target, unit, true)) {
+					if (!helper::is_ai_target_related(unit, order_target)) {
+						best_target = order_target;
+						best_score = helper::get_target_priority(unit, order_target);
+						if (!best_score) {
+							if (helper::is_unit_in_weapon_range(order_target, unit)) {
 								return;
 							}
-							threat_1 = 1;
+							best_score = 1;
 						}
-						unit = unit;
 					}
 				}
-				else
-				{
-					order_target_unit = 0;
-					threat_1 = 0x7FFFFFFF;
-				}
-			}
-			else
-			{
-				threat_1 = 0x7FFFFFFF;
 			}
 
 			Unit* auto_target = unit->auto_target_unit;
-			if (auto_target)
-			{
+			if (auto_target) {
 				if (helper::unit_can_attack_target(auto_target, unit, 1)
 				&&  helper::is_unit_enemy(unit, unit->auto_target_unit)
-				&& !helper::is_ai_target_related(unit, auto_target))
-				{
-					threat_2 = helper::get_threat_level(unit, unit->auto_target_unit);
-					if (!threat_2)
-					{
-						if (!helper::is_unit_in_weapon_range(unit->auto_target_unit, unit))
-						{
-							threat_2 = 1;
-						}
+				&& !helper::is_ai_target_related(unit, auto_target)) {
+					s32 auto_target_score = helper::get_target_priority(unit, unit->auto_target_unit);
+					if (!auto_target_score && !helper::is_unit_in_weapon_range(unit->auto_target_unit, unit)) {
+						auto_target_score = 1;
 					}
-					unit = unit;
-					if (threat_2 < threat_1)
-					{
-						order_target_unit = unit->auto_target_unit;
-						threat_1 = threat_2;
+					if (auto_target_score < best_score) {
+						best_target = unit->auto_target_unit;
+						best_score = auto_target_score;
 					}
-				}
-				else
-				{
+				} else {
 					unit->auto_target_unit = 0;
 				}
 			}
-			if (!order_target_unit || threat_1)
-			{
-				if (unit->unit_ai && helper::ai_update_attack_target(unit, 0, 1, 0))
-				{
+
+			if (!best_target || best_score) {
+				if (unit->unit_ai && helper::ai_update_attack_target(unit, 0, 1, 0)) {
 					return;
 				}
 				Unit* best_attack_target = helper::find_best_attack_target(unit);
-				if (best_attack_target)
-				{
-					unit = unit;
-					if (helper::get_threat_level(unit, best_attack_target) < threat_1)
-					{
-						order_target_unit = best_attack_target;
+				if (best_attack_target) {
+					if (helper::get_target_priority(unit, best_attack_target) < best_score) {
+						best_target = best_attack_target;
 					}
 				}
 			}
-			if (!order_target_unit || helper::unit_can_attack_target(order_target_unit, unit, 1))
-			{
-				unit->order_target.unit = order_target_unit;
-				Unit* unit_sub = unit->subunit;
-				if (unit_sub)
-				{
-					u32 sub_order_id = unit_sub->main_order_id;
-					if (sub_order_id == units_dat::attack_unit_order[unit_sub->id] || sub_order_id == OrderId::HoldPosition2)
-					{
-						unit_sub->order_target.unit = order_target_unit;
+
+			if (!best_target || helper::unit_can_attack_target(best_target, unit, true)) {
+				unit->order_target.unit = best_target;
+				Unit* subunit = unit->subunit;
+				if (subunit) {
+					if (subunit->main_order_id == units_dat::attack_unit_order[subunit->id] || subunit->main_order_id == OrderId::HoldPosition2) {
+						subunit->order_target.unit = best_target;
 					}
 				}
 			}

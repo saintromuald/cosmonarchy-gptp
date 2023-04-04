@@ -9721,7 +9721,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 get_threat_level(Unit* attacker, Unit* target) {
+	s32 get_target_priority(Unit* attacker, Unit* target) {
 		static s32 result;
 		const u32 func_address = 0x00442160;
 		__asm {
