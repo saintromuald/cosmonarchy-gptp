@@ -248,8 +248,8 @@ namespace hooks {
 					}
 					helper::ai_update_attack_target(unit, 0, 1, 0);
 				} else if (unit->unit_ai) {
-					Target flee_target = {};
-					if (unit_order_id != OrderId::AIPatrol || (flee_target = helper::ai_prepare_to_flee(target, unit), flee_target.pt == unit->position)) {
+					Target flee_target = helper::ai_prepare_to_flee(target, unit);
+					if (unit_order_id != OrderId::AIPatrol || flee_target.pt == unit->position) {
 						if (main_target_reactions) {
 							if (unit->id != UnitId::TerranCleric) {
 								if (!unit->order_target.unit || !helper::unit_can_attack_target(unit->order_target.unit, unit->order_target.unit, 1)) {

@@ -541,18 +541,18 @@ namespace hooks
 							target_ext->values[ValueDeconstruction]++;
 							target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
-							s32 overlayOffset = scbw::get_overlay_offset(data.target->id);
+							s32 overlay_offset = scbw::get_overlay_offset(data.target->id);
 							if (data.target->subunit) {
 								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
 								subunit_ext->values[ValueDeconstruction]++;
 								subunit_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 								subunit_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
-								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset)) {
-									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
+								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
+									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
 								}
 							} else {
-								if (!data.target->sprite->get_overlay(ImageId::DeconstructionSmall + overlayOffset)) {
-									data.target->sprite->create_overlay(ImageId::DeconstructionSmall + overlayOffset);
+								if (!data.target->sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
+									data.target->sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
 								}
 							}
 						}
@@ -944,6 +944,7 @@ namespace hooks
 			}
 
 			u32 regression = scbw::get_zerg_regression(data.target->id);
+			// TODO: Allow Irulent to be regressed to from Othstol, if Othstol was mutated from Irulent instead of Irol
 		//	if (data.target->id == UnitId::ZergOthstolOviform && data.target->previous_unit_type == UnitId::ZergIrulentIvoa) {
 		//		regression = UnitId::ZergIrulentIvoa;
 		//	}
