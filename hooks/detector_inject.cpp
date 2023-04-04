@@ -1,8 +1,6 @@
 #include "detector.h"
 #include "../hook_tools.h"
 
-extern const u32 Func_CanDetect; // Defined in Unit.cpp
-
 namespace
 {
 	void __declspec(naked) unit_can_detect_wrapper()
@@ -45,7 +43,7 @@ namespace hooks
 {
 	void inject_detector_hooks()
 	{
-		jump_patch(unit_can_detect_wrapper,					Func_CanDetect);
+		jump_patch(unit_can_detect_wrapper,					0x00403430, 6);
 		jump_patch(get_cloaked_target_visibility_wrapper,	0x004408A0, 9);
 	}
 }

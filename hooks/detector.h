@@ -2,10 +2,9 @@
 #include "../SCBW/structures/Unit.h"
 
 struct DetectorCheckParam {
-  u32 visionFlags;
+  u32 vision_flags;
   Unit* target;
 };
-
 C_ASSERT(sizeof(DetectorCheckParam) == 8);
 
 namespace hooks

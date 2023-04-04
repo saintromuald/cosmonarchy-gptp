@@ -1344,14 +1344,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranHeracles:
-			{
-				// Heracles Nemean Reactors - remove stacks when out of combat
-				if (unit_ext->values[ValueNemeanReactorsStack] > 0
-				&&  unit_ext->timers[TimerNemeanReactors] <= 1) {
-					unit_ext->values[ValueNemeanReactorsStack] = 0;
-				}
-			} break;
 			case UnitId::TerranCuirass:
 			{
 				if (unit_ext->values[ValueCuirassIsSelfReviving]) {
@@ -1979,7 +1971,6 @@ namespace hooks {
 							continue;
 						}
 						if (cargo_unit->main_order_id != OrderId::BunkerGuard) {
-							scbw::print("lol");
 							helper::order(1, cargo_unit, OrderId::BunkerGuard, cargo_unit->position, 0, UnitId::None);
 						}
 					}
@@ -1991,7 +1982,7 @@ namespace hooks {
 					scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 0);
 					if (!unit_ext->timers[TimerMadrigalTempoChange]) {
 						unit_ext->timers[TimerMadrigalTempoChange] = 18;
-						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown];
+						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown]; // Fuck you visual studio
 						unit->status |= UnitStatus::CanNotAttack;
 						unit->sprite->create_overlay(ImageId::StonewallProtocolOverlay);
 						if (unit_ext->values[ValueMadrigalTempoDown]) {
@@ -2007,6 +1998,17 @@ namespace hooks {
 				if (unit_ext->timers[TimerMadrigalTempoChange] == 1) {
 					unit->status &= ~UnitStatus::CanNotAttack;
 					unit->remove_overlay(ImageId::StonewallProtocolOverlay);
+				}
+			} break;
+			case UnitId::TerranIonCannon:
+			{
+				// Fire Hammerfall Beacon for weapon targeting
+				if (unit->order_signal & 0x20)
+				{
+					unit->order_signal &= ~0x20;
+					unit->order_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
+					unit->order_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+					helper::create_bullet(WeaponId::IonCannonHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
 		}
@@ -2080,9 +2082,10 @@ namespace hooks {
 
 		// Fix animation bug with acceleration movement flag
 		if (!(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
-			&& unit->movement_flags & MovementFlags::Accelerating
-			&& unit->sprite->main_graphic->animation != IscriptAnimation::Walking
-			&& unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle) {
+		&&    unit->movement_flags & MovementFlags::Accelerating
+		&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
+		&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle)
+		{
 			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
@@ -2090,8 +2093,18 @@ namespace hooks {
 		if (unit->status & UnitStatus::Unmovable
 		&&  unit->main_order_id & OrderId::AttackUnit
 		&& !unit->movement_flags
-		&&  unit->movement_state == 0x0A) {
+		&&  unit->movement_state == 0x0A)
+		{
 			unit->status ^= UnitStatus::Unmovable;
+		}
+
+		// Temp fix for iscript-based workers getting stuck - DarkenedFantasies
+		if ((unit->id == UnitId::TerranMason || unit->id == UnitId::ProtossScribe || unit->id == UnitId::ZergDroleth)
+		&&	unit->current_speed_1 == 0
+		&&	unit->current_speed_2 == 0
+		&&	unit->movement_flags & MovementFlags::Accelerating)
+		{
+			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
 		// Sublime Shepherd - Check tagged units for nearby Azazels

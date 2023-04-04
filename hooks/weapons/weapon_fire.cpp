@@ -93,13 +93,19 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	if (!target) {
 		target = order_target;
 	}
-	if (!unit->sprite || !target) {
+	if (!unit->sprite) {
 		return 0;
+	}
+	bool is_ion = unit->id == UnitId::TerranIonCannon;
+	if (!target) {
+		if (!is_ion) {
+			return 0;
+		}
 	}
 
 	Point16 pos = unit->position;
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::AppearOnTargetUnit) {
-		pos = target->position;
+		pos = target->position; // No risk since Ion Cannon doesn't use this weapon behavior
 	}
 
 	if (weapon_offsets) {
@@ -108,13 +114,30 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 		pos.y += offset.y;
 	}
 
-	s32 angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
+	s32 angle = 0;
+	Target ion_target = {};
+	if (is_ion) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
+		ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+		angle = scbw::get_angle(pos.x, pos.y, ion_target.pt.x, ion_target.pt.y);
+	}
+	else {
+		angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
+	}
 	unit->order_target.unit = target;
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, pos.x, pos.y, unit->player, angle, apply_cooldown);
 	unit->order_target.unit = order_target;
 	if (bullet) {
 		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
-			scbw::set_bullet_target(bullet, target);
+			if (is_ion) {
+				scbw::set_bullet_target(bullet, ion_target);
+				UnitExt* unit_ext = get_unit_ext(unit); // Avoiding this in global scope for every call may not be as beneficial as only calling the function once... -Pr0nogo
+				unit->order_target.unit = unit_ext->units[UnitIonCannonTarget];
+			}
+			else {
+				scbw::set_bullet_target(bullet, target);
+			}
 		}
 		if (weapon_offsets) {
 			UnitExt* unit_ext = get_unit_ext(unit);
@@ -229,7 +252,6 @@ namespace
 }
 
 namespace hooks {
-	// Fires a weapon from the @p unit.
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
@@ -300,7 +322,7 @@ namespace hooks {
 				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
 				unit_ext->values[ValueSpineX] = targ_x;
 				unit_ext->values[ValueSpineY] = targ_y;
-				if (unit->order_target.unit != nullptr)
+				if (unit->order_target.unit)
 				{
 					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
 				}
@@ -311,18 +333,9 @@ namespace hooks {
 			&&  unit->id != UnitId::ProtossAnthelion)
 			{
 				// Madrigal Tempo Change weapon switch
-				if (weapon_id == WeaponId::MadrigalFuriaMissiles
-				&&  unit_ext->values[ValueMadrigalTempoDown] == 1)
+				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)
 				{
 					weapon_id = WeaponId::MadrigalImperiosoMissiles;
-				}
-
-				// Nemean Reactors - Heracles behavior - Refresh timer on attack and add stack
-				if (weapon_id == WeaponId::HeraclesJavelinCannons)
-				{
-					unit_ext->values[ValueNemeanReactorsStack]++;
-					unit_ext->timers[TimerNemeanReactors] = 49;
-				//	helper::play_sound_from_unit(1372, unit, 1, 0);
 				}
 
 				// Madcap - Maverick Feeders passive
@@ -345,7 +358,8 @@ namespace hooks {
 						offsets.count = 1;
 						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
-					case WeaponId::IonCannon:
+					case WeaponId::IonCannonIonCannon:
+					case WeaponId::IonCannonHammerfallBeacon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueIonCannonLaunchPos;

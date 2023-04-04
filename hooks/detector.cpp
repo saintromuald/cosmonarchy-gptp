@@ -4,9 +4,8 @@
 
 namespace hooks
 {
-	/// Determines whether this unit can detect cloaked/burrowed units.
-	/// This affects Unit::can_detect().
-	/// This overrides the EXE edit settings for Detectors in FireGraft.
+	// Determines whether this unit can detect cloaked/burrowed units. This affects Unit::can_detect().
+	// This overrides the EXE edit settings for Detectors in FireGraft.
 	bool unit_can_detect(Unit* unit)
 	{
 		return  (units_dat::base_property[unit->id] & UnitProperty::Detector
@@ -19,8 +18,7 @@ namespace hooks
 	}
 
 	// Check related to the question of the @p detector being able to see the @p param->target (assuming target is cloaked).
-	// Used in a IterateUnitsAtLocation function (thus the special structure)
-	// Part of bigger logic, probably should not be touched
+	// Used in a IterateUnitsAtLocation function (thus the special structure). Part of bigger logic, probably should not be touched
 	void get_cloaked_target_visibility(Unit* detector, DetectorCheckParam* param)
 	{
 		Unit* target = param->target;
@@ -41,8 +39,8 @@ namespace hooks
 				}
 				if (detector->is_target_within_min_range(target, detection_range))
 				{
-					//update visionFlags for current target eval
-					param->visionFlags |=
+					//update vision_flags for current target eval
+					param->vision_flags |=
 						detector->parasite_flags					// detector's parasites player owner flags (8 bits)
 					|	player_vision->flags[detector->player]		// default visibility (32 bits)
 					|	visibility_flags;							// detector's player flag (8 bits)

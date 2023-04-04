@@ -4408,7 +4408,7 @@ namespace helper {
 		}
 	}
 
-	char ignore_all_scripts_and_go_to_idle(Unit* unit) {
+	char ignore_iscript_go_to_idle(Unit* unit) {
 		static char result;
 		const u32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
 		__asm {
@@ -13422,5 +13422,17 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void iscript_fireweapon(Unit* unit, u8 weapon_id)
+	{
+		const u32 func_address = 0x00479D40;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV BL, weapon_id
+			CALL func_address
+			POPAD
+		}
 	}
 }

@@ -270,7 +270,7 @@ namespace helper {
 	void set_unit_stat_txt_error_message(char* message);									                // 0048CCB0
 	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
-	u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords);							// 004E8280
+	u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords);					// 004E8280
 	void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
 	//// spider_mine
@@ -290,14 +290,14 @@ namespace helper {
 
 	// For burrow_generic
 	void toggle_unit_path(Unit* unit);									                                    // 004E42A0
-	char switch_sprite_id(Sprite* sprite, s32 spriteId);														// 00499860
+	char switch_sprite_id(Sprite* sprite, s32 spriteId);													// 00499860
 
 	//// building_morph
 	void refund_building_cost(u16 unit_id, u8 player);														// 002CE70
 	void update_building_ai(Unit* unit);																	// 0033FE0
-	bool is_valid_building_morph(u16 buildingId);																	// 005CC60
+	bool is_valid_building_morph(u16 buildingId);															// 005CC60
 	void spread_initial_creep(u32 id, s32 x, s32 y);														// 005CE90
-	void cancel_zerg_building_morph(Unit* unit);																	// 005D410
+	void cancel_zerg_building_morph(Unit* unit);															// 005D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 007D770
 	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);										// 0088D50
 	void play_building_completed_sound(Unit* building);														// 008F310
@@ -552,7 +552,7 @@ namespace helper {
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
 	//// load_unload_proc
-	char ignore_all_scripts_and_go_to_idle(Unit* unit);																				// 00476550
+	char ignore_iscript_go_to_idle(Unit* unit);																				// 00476550
 	u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
 	void unload_unit_ext(Unit* unit, u32 unk);																						// 004E7E10
 
@@ -1575,4 +1575,6 @@ namespace helper {
 
 	b32 is_at_home(Unit* unit);																												// 00462930
 	u32 is_under_carapace_swarm(Unit* unit);																								// 00476210
+
+	void iscript_fireweapon(Unit* unit, u8 weapon_id);																						// 00479D40
 }

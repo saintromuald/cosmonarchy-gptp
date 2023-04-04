@@ -1843,6 +1843,18 @@ namespace hooks {
 							current_button_state = Button_State::Disabled;
 							switch (unit->id)
 							{
+								// GLOBAL \\
+
+								case UnitId::TerranWraith:
+								case UnitId::TerranSundog:
+								case UnitId::ProtossWitness:
+								{
+									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+// 
 								// FACTIONAL \\
 
 								case UnitId::TerranCohort:
@@ -1904,13 +1916,6 @@ namespace hooks {
 								case UnitId::TerranMadcap:
 								{
 									if (current_button->icon_id == IconId::GoliathTwinAutocannons) // Madcap Maverick Feeders passive
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::TerranHeracles:
-								{
-									if (current_button->icon_id == IconId::TitanReactor) // Heracles Nemean Reactors passive
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2063,14 +2068,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranWraith:
-								{
-									// TODO: replace with permancloak icon
-									if (current_button->icon_id == IconId::WraithBurstLasers) // Wraith - Capacitors
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::TerranTrojan:
 								{
 									if (current_button->icon_id == IconId::Land) // Trojan - Hotdrop
@@ -2088,6 +2085,34 @@ namespace hooks {
 								case UnitId::TerranGorgon:
 								{
 									if (current_button->icon_id == IconId::ArgusJewel) // Gorgon - Petrification
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranWyvern:
+								{
+									if (current_button->icon_id == IconId::AfterburnersOnUnused) // Wyvern - Reverse Thrust
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranValkyrie:
+								{
+									if (current_button->icon_id == IconId::GraviticBoosters) // Valkyrie - Odin Afterburners
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranSalamander:
+								{
+									if (current_button->icon_id == IconId::HarakanFlamethrower) // Salamander - Incendiary Payload
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAzazel:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Azazel - Sublime Shepherd
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2129,6 +2154,19 @@ namespace hooks {
 										current_button_state = Button_State::Invisible;
 									}
 								} break;
+								case UnitId::TerranIonCannon:
+								{
+									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
+									||  current_button->icon_id == IconId::DidactPassiveShroudOfAdun)	// Ion Cannon - Artillery Targeting
+									{
+										if (unit->status & UnitStatus::GroundedBuilding) {
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Invisible;
+										}
+									}
+								} break;
 
 								// PROTOSS \\
 
@@ -2139,8 +2177,23 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossCabalist:
+								{
+									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
+									if (current_button->icon_id == IconId::ProtossGroundWeapons) // Cabalist - Silent Strikes
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossBarghest:
 								{
+									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
 									if (current_button->icon_id == IconId::ApialSensors) // Barghest - Multi-Attack III
 									{
 										current_button_state = Button_State::Enabled;
@@ -2292,27 +2345,7 @@ namespace hooks {
 								} break;
 							}
 
-							if (unit->id == UnitId::TerranValkyrie &&  
-								current_button->icon_id == IconId::GraviticBoosters) // Valkyrie Charon Afterburners
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranWyvern &&  
-								current_button->icon_id == IconId::AfterburnersOnUnused) // Wyvern Reverse Thrust
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranSalamander &&  
-								current_button->icon_id == IconId::HarakanFlamethrower) // Salamander Incendiary Payload
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranAzazel &&  
-								current_button->icon_id == IconId::Restoration_Research) // Azazel Innervating Matrices
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranCentaur &&  
+							if (unit->id == UnitId::TerranCentaur &&  
 								current_button->icon_id == IconId::GeminiMissiles) // Centaur Sunchaser Salvo
 							{
 								current_button_state = Button_State::Enabled;
@@ -2327,17 +2360,17 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranMagnetar &&  
+							else if (unit->id == UnitId::TerranMagnetar &&
 								current_button->icon_id == IconId::ArchonPsionicShockwave) // Magnetar Law of Attraction
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranClaymore &&   
+							else if (unit->id == UnitId::TerranClaymore &&
 								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Claymore Prolonged Arms
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::TerranClaymore &&   
+							else if (unit->id == UnitId::TerranClaymore &&
 								current_button->icon_id == IconId::FusionCutterHarvest) // Claymore Kelvin Munitions
 							{
 								current_button_state = Button_State::Enabled;
@@ -2359,16 +2392,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::TerranSentinel &&  
 								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Sentinel Prolonged Arms
-							{
-								if (unit->status & UnitStatus::GroundedBuilding) {
-									current_button_state = Button_State::Enabled;
-								}
-								else {
-									current_button_state = Button_State::Invisible;
-								}
-							}
-							else if (unit->id == UnitId::TerranIonCannon &&   
-								current_button->icon_id == IconId::OpticalFlare) // Ion Cannon Ion Field
 							{
 								if (unit->status & UnitStatus::GroundedBuilding) {
 									current_button_state = Button_State::Enabled;
@@ -2412,11 +2435,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossVagrant &&  // Vagrant Nihilism
 								current_button->icon_id == IconId::MindControlUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossCabalist &&  // Cabalist Silent Strikes
-								current_button->icon_id == IconId::ProtossGroundWeapons)
 							{
 								current_button_state = Button_State::Enabled;
 							}

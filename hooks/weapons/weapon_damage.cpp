@@ -76,12 +76,12 @@ namespace hooks
 	}
 
 	void weapon_damage_root(WeaponDamageData& data) {
-		UnitExt* target_ext = get_unit_ext(data.target);
-
 		// The unit must neither be already dead nor invincible
 		if (!data.target || data.target->hitpoints == 0 || data.target->status & UnitStatus::Invincible) {
 			return;
 		}
+
+		UnitExt* target_ext = get_unit_ext(data.target);
 
 		// Ancile - Providence - Hitscan handling
 		switch (weapons_dat::behavior[data.weapon_id]) {
@@ -103,12 +103,6 @@ namespace hooks
 			} break;
 		}
 
-		// Demiurge - Gods Made Flesh - target is impervious to damage
-	//	if (target_ext->timers[TimerGodsMadeFlesh]) {
-	//		data.damage = 0;
-	//		data.damage_type = DamageType::Independent;
-	//	}
-
 		// TODO: remove this
 		bool can_damage = true; // debug only!
 
@@ -116,7 +110,7 @@ namespace hooks
 		if (data.target->unit_ai) {
 			// Ai_ReactToHit crash - null town
 			WorkerAi* ai = (WorkerAi*)data.target->unit_ai;
-			if (ai->type == 2 || ai->type == 3) {
+			if (ai->type == AiType::Worker || ai->type == AiType::Building) {
 				if (!ai->town) {
 					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 																   data.attacker->id, data.attacker->player, data.target->id, data.target->player);
@@ -182,13 +176,13 @@ namespace hooks
 
 			armor_total = std::max(armor_total, 0);
 
-			// Observance Armor Reduction (can go to the negatives)
+			// Observance armor reduction (can go to the negatives)
 			armor_total -= target_ext->values[ValueObservanceRend];
 
 			data.damage -= std::min(data.damage, armor_total * 256);
 		}
 
-		// Reduce Plasma Shields
+		// Reduce shields
 		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
 			data.shield_reduce_amount = std::min(data.damage, data.target->shields);
 			if (data.shield_reduce_amount < 256) {
@@ -284,13 +278,6 @@ namespace hooks
 						data.damage += energy / 2;
 						helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attacking_player_id);
 					}
-				}
-			} break;
-			case WeaponId::HeraclesJavelinCannons:
-			{
-				if (data.attacker) {
-					UnitExt* attacker_ext = get_unit_ext(data.attacker);
-					data.damage += (attacker_ext->values[ValueNemeanReactorsStack] * 256 / 2) - 256; // Messy formula to fix weapon factor + first attack issues. -Pr0nogo
 				}
 			} break;
 			case WeaponId::CharlatanFerventBlaster:
@@ -1168,8 +1155,9 @@ namespace hooks
 						helper::order_interrupt(victim, flee_target.unit, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}
 				}
-			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable) {
-			//	helper::unburrow(victim); // Disabled to prevent damage forcing units to unburrow. -Pr0nogo
+			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable
+				&& g_player_table[victim->player].type == PlayerType::Computer) { // For now, we unburrow AI units only. -Pr0nogo
+				helper::unburrow(victim);
 			}
 		}
 	}

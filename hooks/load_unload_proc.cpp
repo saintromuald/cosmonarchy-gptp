@@ -221,7 +221,7 @@ namespace hooks
 						scbw::set_unit_position(unit->subunit, pos.x, pos.y);
 					}
 
-					helper::ignore_all_scripts_and_go_to_idle(unit);
+					helper::ignore_iscript_go_to_idle(unit);
 					helper::unload_unit_ext(unit, 0);
 					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 						if (!unit->unit_ai)

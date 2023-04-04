@@ -14,7 +14,6 @@ namespace
 		static u32 weapon_id;
 		static u32 damage_divisor;
 		static u32 attacking_player_id;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -29,14 +28,13 @@ namespace
 			MOV EAX, [EBP + 0x14]
 			MOV attacker, EAX				// Unit 1
 			MOV EAX, [EBP + 0x18]
-			MOV attacking_player_id, EAX		// Var 2
+			MOV attacking_player_id, EAX	// Var 2
 			PUSHAD
 		}
 		if (direction == 33333) {
 			result = parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, weapon_id, attacking_player_id, damage);
 		} else {
-			hooks::weapon_damage(damage, target, weapon_id, attacker, attacking_player_id,
-				direction, damage_divisor);
+			hooks::weapon_damage(damage, target, weapon_id, attacker, attacking_player_id, direction, damage_divisor);
 			result = 0;
 		}
 		__asm {

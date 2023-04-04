@@ -109,6 +109,11 @@ namespace hooks
 								helper::stats_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
 								index++;
 							} break;
+							case UnitId::TerranIonCannon:
+							{
+								helper::stats_weapon_level(dialog, index, WeaponId::IonCannonHammerfallBeacon);
+								index++;
+							} break;
 							case UnitId::ProtossOptecton:
 							{
 								helper::stats_weapon_level(dialog, index, WeaponId::OptectonSkybondRay);

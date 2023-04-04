@@ -214,7 +214,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
 
 	// Remove minimap checksum checks.
-//	nops(0x0047CCB0, 22);
+//	nops(0x0047CCB0, 22);				// Allows for silent desyncs
 
 	// Update vision update timer to happen faster
 //	memory_patch(0x004D94D0 + 6, 1);	// Breaks death animations for hostile units
@@ -700,7 +700,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::inject_larva_creep_spawn_hooks();
 	hooks::inject_lift_land_hooks();
-//	hooks::inject_attack_orders_hooks();
 //	hooks::inject_stop_hold_position_orders_hooks();
 	hooks::inject_recall_spell_hooks();
 	hooks::inject_enter_nydus_hooks();
@@ -750,7 +749,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	hooks::inject_rally_hooks();
 	hooks::inject_infestation_hooks();
-	//hooks::inject_receive_command_hooks();
+//	hooks::inject_receive_command_hooks();
 
 	hooks::inject_recharge_shields_hooks();
 	hooks::inject_spider_mine_hooks();
@@ -813,17 +812,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	inject_trigger_system_hooks();
 	hooks::inject_hp_bars_hooks();
 
+	// Limits - most likely needs to be patched in aise, aice, and mtl
 	hooks::inject_unit_extender();
 	hooks::inject_sprite_extender();
 	hooks::inject_order_extender();
 	hooks::inject_image_extender();
 	hooks::inject_thingy_extender();
-
-	// Limits - most likely needs to be patched in aise, aice, and mtl
-//	hooks::inject_unit_extender();
-//	hooks::inject_sprite_extender();
-//	hooks::inject_order_extender();
-//	hooks::inject_image_extender();
 
 	return TRUE;
 }
