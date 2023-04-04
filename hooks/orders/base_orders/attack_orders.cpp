@@ -40,7 +40,7 @@ namespace hooks
 			}
 			else
 			{
-				u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
+				u32 status_saved = (unit->status & UnitStatus::AttackMove) + (unit->status & UnitStatus::Disabled);
 				u8 newOrderId;
 
 				if (unit->id == UnitId::ProtossAccantorOld)
@@ -69,7 +69,7 @@ namespace hooks
 				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
-				unit->status &= ~(UnitStatus::Disabled | UnitStatus::HoldingPosition);
+				unit->status &= ~(UnitStatus::Disabled | UnitStatus::AttackMove);
 				unit->status = status_saved | unit->status;
 			}
 		}
@@ -84,7 +84,7 @@ namespace hooks
 			if (!unit->can_attack_target(target, true)) {
 				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 			} else {
-				u32 status_saved = (unit->status & UnitStatus::Disabled) | (unit->status & UnitStatus::HoldingPosition);
+				u32 status_saved = (unit->status & UnitStatus::Disabled) | (unit->status & UnitStatus::AttackMove);
 				// give orders to Stewards and Plasma Shells (through out_hangar_child)
 				helper::set_interceptors_to_standby(unit);
 
@@ -106,7 +106,7 @@ namespace hooks
 				prepare_for_next_order(unit);
 
 				// restore the "disabled" and "holding position" status if they were lost
-				unit->status &= ~(UnitStatus::Disabled | UnitStatus::HoldingPosition);
+				unit->status &= ~(UnitStatus::Disabled | UnitStatus::AttackMove);
 				unit->status = status_saved | unit->status;
 			}
 		}

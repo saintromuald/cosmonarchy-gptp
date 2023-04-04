@@ -1179,7 +1179,7 @@ namespace helper {
 	u32 load_scenario_singleplayer(char* title, u32 unused, char* error, char* player, u32 speed);		// 004A8590
 	u32 get_ground_height_at_px(s32 y, s32 x);															// 004BD0F0
 	s32 is_ai_target_related(Unit* attacker, Unit* target);												// 004A1140
-	s32 get_threat_level(Unit* attacker, Unit* target);													// 00442160
+	s32 get_target_priority(Unit* attacker, Unit* target);												// 00442160
 	u32 add_unit_to_possible_targets(s32 threat_level, Unit* unit);										// 00440160
 
 	void enable_doodad_state(Unit* unit);																// 0047BA00
