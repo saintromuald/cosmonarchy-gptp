@@ -1642,7 +1642,7 @@ namespace hooks {
 					if (attacked) {
 						unit_ext->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
 						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
-						helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire04), unit, 1, 0);
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03), unit, 1, 0);
 					}
 				}
 
