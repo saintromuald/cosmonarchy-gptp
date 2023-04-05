@@ -127,13 +127,17 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, pos.x, pos.y, unit->player, angle, apply_cooldown);
 	unit->order_target.unit = order_target;
 	if (bullet) {
-		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
-			if (is_ion_cannon) {
-				scbw::set_bullet_target(bullet, ion_target);
-				unit->order_target = ion_target;
-			} else {
-				scbw::set_bullet_target(bullet, target);
-			}
+		if (weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
+			u32 max_range = weapons_dat::max_range[weapon_id];
+			Point16 target_point = unit->position;
+			target_point.x += scbw::get_polar_x(max_range, angle);
+			target_point.y += scbw::get_polar_y(max_range, angle);
+			scbw::set_bullet_target(bullet, target_point);
+		} else if (is_ion_cannon) {
+			scbw::set_bullet_target(bullet, ion_target);
+			unit->order_target = ion_target;
+		} else {
+			scbw::set_bullet_target(bullet, target);
 		}
 		if (weapon_offsets) {
 			UnitExt* unit_ext = get_unit_ext(unit);
