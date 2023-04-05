@@ -1364,6 +1364,7 @@ namespace hooks
 
 	void __declspec(naked) iscript_opcode_cases_wrapper() { // 004D74C0
 		static Image* image;
+		static void* data;
 		static IscriptProgram* program_state;
 		static u32 noop;
 		static u32* distance_moved;
@@ -1378,6 +1379,7 @@ namespace hooks
 			MOV EAX, [EBP + 0x10]
 			MOV distance_moved, EAX
 			POP EAX
+			MOV data, EDX		// ignored, unused
 			MOV image, ECX
 			PUSHAD
 		}
