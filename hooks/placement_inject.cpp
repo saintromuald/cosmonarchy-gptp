@@ -245,13 +245,13 @@ namespace
 		static char result;
 		static char* unused;
 		static u32 unit_id;
-		static u32 order_id; // Was char, but it's a stack arg!
+		static u8 order_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV order_id, EAX
+			MOV order_id, AL
 			POP EAX
 			MOV unit_id, ESI
 			MOV unused, EDI
@@ -296,7 +296,7 @@ namespace hooks
 		jump_patch(place_building_refinery_proc_wrapper,					0x0048E430, 2);
 		jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
 		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
-	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 1);
+	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
 	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Causes landing crash lol
 	}
 }

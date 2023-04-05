@@ -284,7 +284,7 @@ namespace hooks
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	char issue_place_building_order(char* unused, u32 unit_id, u32 order_id) // 0048E730 | last arg was char, but it is a stack arg!
+	char issue_place_building_order(char* unused, u32 unit_id, u8 order_id) // 0048E730
 	{
 		*g_is_placing_building = 1;
 		*g_buttonset_special_buttonset_id = 230;
