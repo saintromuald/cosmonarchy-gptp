@@ -63,7 +63,7 @@ namespace hooks
 		// Madrigal - Tempo Change
 		switch (unit->id) {
 			case UnitId::TerranMadrigal: {
-				if (unit_ext->values[ValueMadrigalTempoDown]) {
+				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown]) {
 					bonus_amount += 4 * 32;
 				}
 			} break;
