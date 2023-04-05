@@ -96,11 +96,9 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	if (!unit->sprite) {
 		return 0;
 	}
-	bool is_ion = unit->id == UnitId::TerranIonCannon;
-	if (!target) {
-		if (!is_ion) {
-			return 0;
-		}
+	bool is_ion_cannon = unit->id == UnitId::TerranIonCannon;
+	if (!target && !is_ion_cannon) {
+		return 0;
 	}
 
 	Point16 pos = unit->position;
@@ -116,13 +114,13 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 
 	s32 angle = 0;
 	Target ion_target = {};
-	if (is_ion) {
+	if (is_ion_cannon) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
 		ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+		ion_target.unit = unit_ext->units[UnitIonCannonTarget];
 		angle = scbw::get_angle(pos.x, pos.y, ion_target.pt.x, ion_target.pt.y);
-	}
-	else {
+	} else {
 		angle = scbw::get_angle(pos.x, pos.y, target->position.x, target->position.y);
 	}
 	unit->order_target.unit = target;
@@ -130,12 +128,10 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target, WeaponOffsets* weap
 	unit->order_target.unit = order_target;
 	if (bullet) {
 		if (weapons_dat::behavior[weapon_id] != WeaponBehavior::GoToMaxRange) {
-			if (is_ion) {
+			if (is_ion_cannon) {
 				scbw::set_bullet_target(bullet, ion_target);
-				UnitExt* unit_ext = get_unit_ext(unit); // Avoiding this in global scope for every call may not be as beneficial as only calling the function once... -Pr0nogo
-				unit->order_target.unit = unit_ext->units[UnitIonCannonTarget];
-			}
-			else {
+				unit->order_target = ion_target;
+			} else {
 				scbw::set_bullet_target(bullet, target);
 			}
 		}
