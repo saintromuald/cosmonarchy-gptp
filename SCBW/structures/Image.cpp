@@ -297,6 +297,7 @@ namespace hooks
 		}
 	}
 
+	// STUPID
 	template<typename T>
 	T* take_iscript_data(IscriptProgram* program_state, u32 count)
 	{
@@ -352,7 +353,6 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	// Local only.
 	void iscript_fireweapon(Unit* unit, u8 weapon_id) // 00479D40
 	{
 		helper::fire_unit_weapon(unit, weapon_id);
@@ -363,7 +363,6 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	// Previously local-only, turned into a hook on 30 March 2023 for the Ion Cannon revision.
 	void iscript_attackwith(Unit* attacker, u8 is_ground_weapon) // 00479D60
 	{
 		if (attacker->order_target.unit || attacker->id == UnitId::TerranIonCannon)
@@ -399,7 +398,6 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	// Previously local-only, turned into a hook on 31 March 2023 for the Ion Cannon revision.
 	void iscript_nobrkcodeend(Unit* unit) // 004753E0
 	{
 		unit->status &= ~UnitStatus::NoBrkCodeStart;
@@ -880,7 +878,7 @@ namespace hooks
 					}
 					if ((*g_active_iscript_unit)->order_target.unit && ((*g_active_iscript_unit)->order_target.unit->status & UnitStatus::InAir))
 					{
-						iscript_fireweapon(*g_active_iscript_unit, units_dat::air_weapon[(*g_active_iscript_unit)->id]);
+						helper::iscript_fireweapon(*g_active_iscript_unit, units_dat::air_weapon[(*g_active_iscript_unit)->id]);
 					}
 					else
 					{
@@ -894,7 +892,7 @@ namespace hooks
 					}
 					if (orders_dat::order_weapon_id[(*g_active_iscript_unit)->main_order_id] != WeaponId::None && !helper::can_cast_spell(*g_active_iscript_unit))
 					{
-						iscript_fireweapon(*g_active_iscript_unit, orders_dat::order_weapon_id[(*g_active_iscript_unit)->main_order_id]);
+						helper::iscript_fireweapon(*g_active_iscript_unit, orders_dat::order_weapon_id[(*g_active_iscript_unit)->main_order_id]);
 					}
 					break;
 				case IscriptOpcodes::opc_useweapon:
@@ -1392,6 +1390,21 @@ namespace hooks
 		}
 	}
 
+	void __declspec(naked) iscript_fireweapon_wrapper() { // 00479D40
+		static Unit* unit;
+		static u8 weapon_id;
+		__asm {
+			MOV weapon_id, BL
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::iscript_fireweapon(unit, weapon_id);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) iscript_attackwith_wrapper() { // 004D74C0
 		static Unit* attacker;
 		static u8 is_ground_weapon;
@@ -1459,6 +1472,7 @@ namespace hooks
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
 	//	jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
 	//	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
+		jump_patch(iscript_fireweapon_wrapper,		0x00479D40, 4);
 		jump_patch(iscript_attackwith_wrapper,		0x00479D60, 1);
 		jump_patch(iscript_useweapon_wrapper,		0x00479C30, 3);
 		jump_patch(iscript_nobrkcodeend_wrapper,	0x004753E0, 4);
