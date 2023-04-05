@@ -14,7 +14,7 @@ namespace hooks
 	void place_building_refinery_proc();										// 0048E430
 	void place_building_proc();													// 0048E6E0
 	b32 unit_id_is_refinery(u16 unit_id);										// 0047AFE0
-	char issue_place_building_order(char* unused, u32 unit_id, u8 order_id);	// 0048E730
+	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id);	// 0048E730
 	void play_building_placement_sound(Unit* active_unit);						// 0048F630
 
 	void inject_placement_hooks();

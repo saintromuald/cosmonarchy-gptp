@@ -122,7 +122,7 @@ namespace hooks
 	{
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next)
 		{
-			if (hooks::can_make_psi_field(unit->id))
+			if (scbw::unit_id_is_psi_provider(unit->id))
 			{
 				assert(is_valid_psi_provider_type(unit->id));
 

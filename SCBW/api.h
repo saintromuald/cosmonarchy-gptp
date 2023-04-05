@@ -753,4 +753,5 @@ namespace scbw
 	Unit* reclaim_corpse(Thingy* corpse, u32 player);
 	bool unit_id_is_power_generator(u32 unit_id);
 	PlayerColorCode get_player_color_code(u32 player);
+	bool unit_id_is_psi_provider(u16 unit_id);
 }

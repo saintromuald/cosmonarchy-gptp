@@ -5,18 +5,9 @@
 
 namespace hooks
 {
-	// Check if the given unit id can generate psi fields
-	bool can_make_psi_field(u16 unit_id) {
-		if (unit_id == UnitId::ProtossPylon
-		||	unit_id == UnitId::ProtossCrucible) {
-			return true;
-		}
-		return false;
-	}
-
 	// Actual state check whether a unit can generate a psi field
 	bool is_ready_to_make_psi_field(Unit* unit) {
-		return can_make_psi_field(unit->id);
+		return scbw::unit_id_is_psi_provider(unit->id);
 	}
 
 	// Conditions on which the power field should be showed

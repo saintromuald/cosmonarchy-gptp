@@ -284,7 +284,7 @@ namespace hooks
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	char issue_place_building_order(char* unused, u32 unit_id, u8 order_id) // 0048E730
+	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id) // 0048E730
 	{
 		*g_is_placing_building = 1;
 		*g_buttonset_special_buttonset_id = 230;
@@ -311,7 +311,7 @@ namespace hooks
 		}
 
 		const char* string;
-		if (*g_network_table > 0x3Fu)
+		if (*g_network_table > 63)
 		{
 			string = (char*)g_network_table + g_network_table[64];
 		}
@@ -325,18 +325,18 @@ namespace hooks
 		helper::set_ingame_input_procs();
 		Unit* active_unit = *g_active_portrait_unit;
 		u32 active_id = active_unit->id;
-		if (!active_unit)
+		if (!active_unit) // wtf?
 		{
-			goto LABEL_21;
+			*g_placing_player = -1;
+			*g_minimap_cursor = 0;
+			return helper::refresh_screen(active_id);
 		}
 
-		if (!(units_dat::group_flags[active_id].is_zerg)) // This is lard. Should check for if it requires power.
+		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi
+		||  scbw::unit_id_is_psi_provider(unit_id))
 		{
-			if (units_dat::group_flags[active_id].is_protoss)
-			{
-				helper::create_pylon_aura();
-				active_unit = *g_active_portrait_unit;
-			}
+			helper::create_pylon_aura();
+			active_unit = *g_active_portrait_unit;
 		}
 
 		if (active_unit)
@@ -347,7 +347,6 @@ namespace hooks
 		}
 		else
 		{
-		LABEL_21:
 			*g_placing_player = -1;
 			result = helper::refresh_screen(active_id);
 			*g_minimap_cursor = 0;

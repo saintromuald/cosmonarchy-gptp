@@ -3222,4 +3222,12 @@ namespace scbw {
 		code.data[1] = player + 1;
 		return code;
 	}
+
+	bool unit_id_is_psi_provider(u16 unit_id) {
+		if (unit_id == UnitId::ProtossPylon
+			|| unit_id == UnitId::ProtossCrucible) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -244,7 +244,7 @@ namespace
 	void __declspec(naked) issue_place_building_order_wrapper() { // 0048E730
 		static char result;
 		static char* unused;
-		static u32 unit_id;
+		static u16 unit_id;
 		static u8 order_id;
 		__asm {
 			PUSH EBP
@@ -253,7 +253,7 @@ namespace
 			MOV EAX, [EBP + 0x08]
 			MOV order_id, AL
 			POP EAX
-			MOV unit_id, ESI
+			MOV unit_id, SI
 			MOV unused, EDI
 			PUSHAD
 		}

@@ -531,7 +531,7 @@ namespace hooks {
 						target.x = 0;
 						target.y = 0;
 					}
-					if (!hooks::can_make_psi_field(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
+					if (!scbw::unit_id_is_psi_provider(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
 						source = target;
 					}
 					else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
