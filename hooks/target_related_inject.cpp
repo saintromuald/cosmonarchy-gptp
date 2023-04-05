@@ -334,20 +334,6 @@ namespace
 			RETN 0x04
 		}
 	}
-
-	const u32 pick_new_target_if_needed_77697 = 0x00477697;
-	const u32 pick_new_target_if_needed_776B1 = 0x004776B1;
-	void __declspec(naked) pick_new_target_if_needed_patch_7768E() {
-		__asm {
-			CMP		byte ptr[EDI + 0x4D], 0x6B		// unit->main_order_id == OrderId::HoldPosition2
-			JNE		offset isHoldingPosition
-			MOV		ECX, [EBP - 4]
-			MOV		[EDI + 0x5C], ECX				// unit->order_target.unit
-			JMP		pick_new_target_if_needed_77697
-			isHoldingPosition:
-			JMP		pick_new_target_if_needed_776B1
-		}
-	}
 }
 
 namespace hooks
@@ -373,8 +359,6 @@ namespace hooks
 	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1); // Crashes
 		jump_patch(fow_refinery_check_wrapper,						0x00474500, 5);
 		jump_patch(pick_new_target_if_needed_wrapper,				0x00477510, 1);
-
-	//	jump_patch(pick_new_target_if_needed_patch_7768E, 0x0047768E, 1); // Fixes hold pos infinite range bug, from DarkenedFantasies
 	}
 
 	void inject_target_related_hooks()

@@ -211,7 +211,7 @@ namespace hooks
 					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit) {
 						final_anim = IscriptAnimation::GndAttkInit;
 					}
-				} else if  (animation == IscriptAnimation::AirAttkRpt
+				} else if  (animation  == IscriptAnimation::AirAttkRpt
 				&&			image_anim != IscriptAnimation::AirAttkRpt
 				&&			image_anim != IscriptAnimation::AirAttkInit) {
 					final_anim = IscriptAnimation::AirAttkInit;
@@ -386,7 +386,6 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	// Local only.
 	void iscript_useweapon(Unit* unit, u8 weapon_id) // 00479C30
 	{
 		if (weapons_dat::flingy_id[weapon_id])
@@ -416,7 +415,7 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved) // 004D74C0
+	void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved) // 004D74C0 | arg2 iscript_data unused, omitted
 	{
 		if (program_state->wait)
 		{
@@ -905,7 +904,7 @@ namespace hooks
 					{
 						break;
 					}
-					iscript_useweapon(*g_active_iscript_unit, weapon_id);
+					helper::iscript_useweapon(*g_active_iscript_unit, weapon_id);
 					break;
 				}
 				case IscriptOpcodes::opc_move:
@@ -1374,13 +1373,14 @@ namespace hooks
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV program_state, EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV noop, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV distance_moved, EAX
 			POP EAX
 			MOV image, ECX
-			MOV program_state, EDX
 			PUSHAD
 		}
 		hooks::iscript_opcode_cases(image, program_state, noop, distance_moved);
@@ -1388,7 +1388,7 @@ namespace hooks
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x08
+			RETN 0x0C
 		}
 	}
 
@@ -1406,6 +1406,28 @@ namespace hooks
 			PUSHAD
 		}
 		hooks::iscript_attackwith(attacker, is_ground_weapon);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) iscript_useweapon_wrapper() { // 00479C30
+		static Unit* unit;
+		static u16 weapon_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV weapon_id, AX
+			POP EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::iscript_useweapon(unit, weapon_id);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -1438,6 +1460,7 @@ namespace hooks
 	//	jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
 	//	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
 		jump_patch(iscript_attackwith_wrapper,		0x00479D60, 1);
+		jump_patch(iscript_useweapon_wrapper,		0x00479C30, 3);
 		jump_patch(iscript_nobrkcodeend_wrapper,	0x004753E0, 4);
 	}
 }

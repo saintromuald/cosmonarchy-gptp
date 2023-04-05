@@ -281,7 +281,7 @@ namespace hooks
 
 	u32 get_modified_unit_speed(Unit* unit, u32 baseSpeed) // 0047B5F0
 	{
-		if (unit == nullptr)
+		if (!unit)
 		{
 			return 1;
 		}

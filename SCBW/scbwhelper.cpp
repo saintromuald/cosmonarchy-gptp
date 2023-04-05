@@ -2231,13 +2231,13 @@ namespace helper {
 		}
 	}
 
-	void iscript_opcode_cases(Image* image, void* script, u32 dont_modify_image, u32 out_speed) {
+	void iscript_opcode_cases(Image* image, void* iscript_header, u32 dont_modify_image, u32 out_value) {
 		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
 		__asm {
 			PUSHAD
-			PUSH out_speed
+			PUSH out_value
 			PUSH dont_modify_image
-			PUSH script
+			PUSH iscript_header
 			MOV ECX, image
 			CALL Func_iscript_OpcodeCases
 			POPAD
@@ -6483,12 +6483,12 @@ namespace helper {
 		if (!unit) {
 			return false;
 		}
-		const u32 Func_addPsiFieldSprite = 0x00493BF0;
+		const u32 func_address = 0x00493BF0;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_addPsiFieldSprite
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -13431,6 +13431,19 @@ namespace helper {
 			PUSHAD
 			MOV EAX, unit
 			MOV BL, weapon_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void iscript_useweapon(Unit* unit, u16 weapon_id)
+	{
+		const u32 func_address = 0x00479C30;
+		static u32 weapon_id_xd = weapon_id;
+		__asm {
+			PUSHAD
+			PUSH weapon_id_xd
+			MOV ESI, unit
 			CALL func_address
 			POPAD
 		}

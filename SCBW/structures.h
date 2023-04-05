@@ -1232,13 +1232,13 @@ struct IscriptProgram {
 	u16 iscript_header;					// 0x0
 	u16 program_counter;				// 0x2
 	u16 unsigned4;						// 0x4
-	IscriptAnimation::Enum animation;	// 0x5
-	u8 wait;							// 0x6
+	IscriptAnimation::Enum animation;	// 0x6
+	u8 wait;							// 0x7
 };
 
 union UnitIndex {
 	struct {
-		u32 index : 12; // btw. Updated with CCMU extender
+		u32 index : 12;			// btw. Updated with CCMU extender
 		u32 unique_id : 20;
 	};
 	u32 value;
@@ -1250,8 +1250,8 @@ struct ControlGroup {
 	UnitIndex unit_index[12];
 };
 
-#define TotalControlGroups 18 // Control groups + Recent selections?
-#define UiControlGroups 10 // Control groups
+#define TotalControlGroups 18	// Control groups + Recent selections
+#define UiControlGroups 10		// Control groups
 
 struct ControlGroupPlayer {
 	ControlGroup control_group[TotalControlGroups];

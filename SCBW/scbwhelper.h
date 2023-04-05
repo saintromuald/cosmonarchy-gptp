@@ -263,7 +263,7 @@ namespace helper {
 	void replace_sprite_images(Sprite* sprite, u32 imageId, u32 imageDirection);							// 00499BB0
 	void display_last_network_error_for_player(u32 player);										            // 0049E530
 	void update_unit_strength(Unit* unit);												                    // 0049FA40
-	void iscript_opcode_cases(Image* image, void* script, u32 dont_modify_image, u32 out_speed);			// 004D74C0
+	void iscript_opcode_cases(Image* image, void* iscript_header, u32 dont_modify_image, u32 out_value);	// 004D74C0
 	void switch_to_warp_texture(Image* image);																// 004D8500
 	bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);		    								// 00488210
@@ -1577,4 +1577,5 @@ namespace helper {
 	u32 is_under_carapace_swarm(Unit* unit);																								// 00476210
 
 	void iscript_fireweapon(Unit* unit, u8 weapon_id);																						// 00479D40
+	void iscript_useweapon(Unit* unit, u16 weapon_id);																						// 00479C30
 }
