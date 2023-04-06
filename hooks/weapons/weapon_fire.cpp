@@ -909,6 +909,9 @@ namespace hooks {
 			unit_search_radial(&collisions, bullet->position, range);
 			unit_search_filter(&collisions, 0);
 			for (u32 i = 0; i < collisions.count; ++i) {
+				if (bullet->time_remaining == 0) {
+					break;
+				}
 				Unit* collision_target = collisions.units[i];
 				if (collision_target->status & UnitStatus::Invincible) {
 					continue;
@@ -925,7 +928,7 @@ namespace hooks {
 					{
 						// Penumbra - Shroud Piercer - pierce targets
 						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
 						hooks::weapon_bullet_hit(bullet, collision_target, 2);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
@@ -933,7 +936,7 @@ namespace hooks {
 						// Claymore - Kelvin Munitions
 						// pierce targets
 						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->player);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
 						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 
 						// slow pierced targets
@@ -947,12 +950,11 @@ namespace hooks {
 						// Kalkalisk - Ablative Spores
 						globals.add_incremental_bullet_multihit(bullet, collision_target);
 						auto count = globals.get_multihit_count(bullet);
-						helper::create_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
+						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
 						collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
 						if (count >= 4) {
 							bullet->time_remaining = 0;
-							break;
 						} else {
 							bullet->move_target.unit = bullet->attack_target.unit;
 							if (bullet->move_target.unit) {
@@ -964,13 +966,13 @@ namespace hooks {
 					case WeaponId::ZarcavrokorBonesofReflection:
 					{
 						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->player);
+						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
 						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 					} break;
 					default:
 					{
 						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, bullet->position.x, bullet->position.y, bullet->player);
+						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
 						hooks::weapon_bullet_hit(bullet, collision_target, 1);
 					}
 				}
