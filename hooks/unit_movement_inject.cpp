@@ -45,9 +45,9 @@ namespace
 	const u32 playIdleIscript_978D8 = 0x004978D8;
 	void __declspec(naked) play_idle_iscript_patch_978D3() {
 		__asm {
-			MOV		DL, [ESI + 0x20]
+			MOV		DL, [EBX + 0x20]
 			AND		DL, 0xFD
-			MOV		byte ptr[ESI + 0x20], DL	// unit->movement_flags &= ~MovementFlags::Accelerating
+			MOV		byte ptr[EBX + 0x20], DL	// unit->movement_flags &= ~MovementFlags::Accelerating
 			MOV		ESI, [EAX + 0x1C]
 			TEST	ESI, ESI
 			JMP		playIdleIscript_978D8

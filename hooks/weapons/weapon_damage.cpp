@@ -1056,10 +1056,9 @@ namespace hooks
 				}
 			}
 			else if (scbw::players_are_mutual_alies(*g_local_nation_id, unit->player)) {
-				// Disabling this for now because we need to be using parallel timers for this, else allied transmissions will disable own transmissions. -Pr0nogo
 				return;
 				unit->last_event_color = g_palette_index_reference[20];
-				unit->last_event_timer = 20;
+				unit->last_event_timer = 40;
 				if (!*notify_cooldown)
 				{
 					if (helper::unit_is_in_notify_range(unit)) {
