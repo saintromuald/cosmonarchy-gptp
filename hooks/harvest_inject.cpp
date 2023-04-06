@@ -224,6 +224,38 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) update_mineral_field_image_wrapper() { // 00468830
+		static u16 unused;
+		static Unit* unit;
+		__asm {
+			MOV unused, AX
+			MOV unit, ECX
+			PUSHAD
+		}
+		hooks::update_mineral_field_image(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) return_cargo_to_best_depot_proc_wrapper() { // 00440FA0
+		static b32 result;
+		static Unit* depot;
+		static Unit* worker;
+		__asm {
+			MOV worker, EDX
+			MOV depot, ECX
+			PUSHAD
+		}
+		result = hooks::return_cargo_to_best_depot_proc(depot, worker);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	b32 death_geyser_check(Unit* unit) {
 		if (scbw::unit_id_is_gas_structure(unit->id)) {
 			return true;
@@ -242,21 +274,6 @@ namespace {
 		__asm {
 			POPAD
 			MOV EAX, result
-			RETN
-		}
-	}
-
-	void __declspec(naked) update_mineral_field_image_wrapper() { // 00468830
-		static u16 unused;
-		static Unit* unit;
-		__asm {
-			MOV unused, AX
-			MOV unit, ECX
-			PUSHAD
-		}
-		hooks::update_mineral_field_image(unit);
-		__asm {
-			POPAD
 			RETN
 		}
 	}
@@ -300,9 +317,9 @@ namespace hooks {
 		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
 		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
 		jump_patch(update_mineral_field_image_wrapper,						0x00468830,	6);
-
-		jump_patch(should_worker_wander_wrapper,							0x00469393,	1);
+		jump_patch(return_cargo_to_best_depot_proc_wrapper,					0x00440FA0,	1);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
+		jump_patch(should_worker_wander_wrapper,							0x00469393,	1);
 	}
 }

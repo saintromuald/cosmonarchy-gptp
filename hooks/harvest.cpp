@@ -535,4 +535,22 @@ namespace hooks {
 			unit->sprite->play_iscript_animation(anim);
 		}
 	}
+
+	// Hooked to enable returns to allied town centers. -Pr0nogo
+	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker) // 00440FA0
+	{
+		if (helper::unit_is_active_resource_depot(depot))
+		{
+			if (depot->player == worker->player
+			||		(scbw::is_allied_to(worker->player, depot->player)
+				&&	 scbw::is_allied_to(depot->player, worker->player)))
+			{
+				if (!(worker->pathing_flags & 1) || helper::unit_has_path_to_destination(worker, depot->get_x(), depot->get_y()))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
