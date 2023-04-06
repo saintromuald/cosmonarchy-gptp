@@ -131,6 +131,8 @@ struct UnitsSel {
 SCBW_DATA(UnitsSel*,		g_client_selection_group,		0x00597208);
 SCBW_DATA(Unit*,			g_client_selection_group_end,	0x00597238);
 SCBW_DATA(u8*,				g_client_selection_count,		0x0059723D);
+SCBW_DATA(Point16*,			g_selection_start,				0x0066FF4C);
+SCBW_DATA(Box16*,			g_selection_box,				0x0066FF50);
 
 // Screen position relative to the map
 SCBW_DATA(s32*,				g_screen_x,				0x00628448);

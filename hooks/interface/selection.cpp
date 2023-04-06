@@ -10,8 +10,8 @@ namespace hooks
 		Unit* ub = *(Unit**)b;
 
 		Point16 mouse_pos = {};
-		mouse_pos.x = *g_move_to_x + g_mouse->x;
-		mouse_pos.y = *g_move_to_y + g_mouse->y;
+		mouse_pos.x = *g_move_to_x + g_selection_start->x;
+		mouse_pos.y = *g_move_to_y + g_selection_start->y;
 
 		s32 distance_a = scbw::get_distance_fast(ua->position, mouse_pos);
 		s32 distance_b = scbw::get_distance_fast(ub->position, mouse_pos);
