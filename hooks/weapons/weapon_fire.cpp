@@ -913,24 +913,22 @@ namespace hooks {
 					}
 				} break;
 			}
-			Unit* collision_target = scbw::UnitFinder::get_nearest_target(
-				bullet->position.x - range,
-				bullet->position.y - range,
-				bullet->position.x + range,
-				bullet->position.y + range,
-				bullet, [&](Unit* unit) {
-				if (unit->status & UnitStatus::Invincible) {
-					return false;
+
+			EntryArray collisions = {};
+			unit_search_radial(&collisions, bullet->position, range);
+			unit_search_filter(&collisions, 0);
+			for (u32 i = 0; i < collisions.count; ++i) {
+				Unit* collision_target = collisions.units[i];
+				if (collision_target->status & UnitStatus::Invincible) {
+					continue;
 				}
-				if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
-					return false;
+				if (bullet->attack_target.unit != collision_target && scbw::is_allied_to(bullet->player, collision_target->player)) { // TODO: Consider what to do with unsafe projectiles
+					continue;
 				}
-				if (globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
-					return false;
+				if (globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
+					continue;
 				}
-				return true;
-			});
-			if (collision_target) {
+
 				switch (bullet->weapon_id) {
 					case WeaponId::PenumbraErebolShockCannon:
 					{
@@ -963,6 +961,7 @@ namespace hooks {
 
 						if (count >= 4) {
 							bullet->time_remaining = 0;
+							break;
 						} else {
 							bullet->move_target.unit = bullet->attack_target.unit;
 							if (bullet->move_target.unit) {
