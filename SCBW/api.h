@@ -754,4 +754,6 @@ namespace scbw
 	bool unit_id_is_power_generator(u32 unit_id);
 	PlayerColorCode get_player_color_code(u32 player);
 	bool unit_id_is_psi_provider(u16 unit_id);
+	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
+	void move_camera(Point16 pos);
 }

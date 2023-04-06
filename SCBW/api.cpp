@@ -3230,4 +3230,40 @@ namespace scbw {
 		}
 		return false;
 	}
+
+	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units) {
+		if (!unit_index.index) {
+			return 0;
+		}
+
+		Unit* unit = &g_unit_table[unit_index.index - 1];
+		if (unit->unique_id != unit_index.unique_id) {
+			return 0;
+		}
+		if (!unit->sprite || unit->sprite->flags & SpriteFlags::Hidden) {
+			return 0;
+		}
+		if (unit->main_order_id == OrderId::Die && unit->main_order_state == 1) {
+			return 0;
+		}
+		if (!allow_non_standard_units && !helper::unit_is_standard_and_movable(unit)) {
+			return 0;
+		}
+
+		return unit;
+	}
+
+	void move_camera(Point16 pos) {
+		if (pos.x >= 320) {
+			pos.x -= 320;
+		} else {
+			pos.x = 0;
+		}
+		if (pos.y >= 200) {
+			pos.y -= 200;
+		} else {
+			pos.y = 0;
+		}
+		helper::move_screen(pos);
+	}
 }

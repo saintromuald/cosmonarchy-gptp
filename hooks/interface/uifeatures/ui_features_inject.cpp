@@ -361,5 +361,6 @@ namespace hooks
 	//	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in sprite ext
 		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Needed to clear sprite ext on sprite destruction
 	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4);
+		jump_patch(centerview_unit_group,					0x004967E0, 1);
 	}
 }
