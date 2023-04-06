@@ -348,10 +348,11 @@ namespace hooks
 
 		helper::generic_status_update_drawn_values();
 		if (unit->id == UnitId::ResourceMineralField 
-			|| unit->id == UnitId::ResourceMineralFieldType2
-			|| unit->id == UnitId::ResourceMineralFieldType3
-			|| unit->id == UnitId::ResourceVespeneRidge
-			|| unit->id == UnitId::ResourceVespeneGeyser) {
+		||  unit->id == UnitId::ResourceMineralFieldType2
+		||  unit->id == UnitId::ResourceMineralFieldType3
+		||  unit->id == UnitId::ResourceVespeneRidge
+		||  unit->id == UnitId::ResourceVespeneGeyser)
+		{
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
@@ -380,7 +381,12 @@ namespace hooks
 			helper::draw_nuke_silo_info(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			draw_new_building_info(dialog, unit);
+			if (unit->main_order_id == OrderId::NukeTrain) {
+				helper::draw_armor(dialog, unit->id, 0);
+			}
+			else {
+				draw_new_building_info(dialog, unit);
+			}
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
@@ -392,7 +398,7 @@ namespace hooks
 			}
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			draw_new_building_info(dialog, unit); // for now we show this, but later when we have the real transport ui we won't
+			draw_new_building_info(dialog, unit); // For now we show this, but later when we have the real transport UI, we won't. -Veeq7
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
@@ -469,7 +475,7 @@ namespace hooks
 	// Hooked to draw new values to icons. -- Pr0nogo
 	void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index) // 00425600
 	{
-		// Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit.
+		// Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit. -Pr0nogo
 		BinDlg* dialog_var = dialog;
 		Unit* portrait_unit = *g_active_portrait_unit;
 		s32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);

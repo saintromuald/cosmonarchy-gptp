@@ -51,8 +51,8 @@ namespace helper {
 	// For draw_building_info
 	s32 ui_needs_redraw();
 	Unit* generic_status_update_drawn_values();
-	void draw_progress_bar(BinDlg* a1);
-	void draw_nuke_silo_info(BinDlg* a1);
+	void draw_progress_bar(BinDlg* dialog);
+	void draw_nuke_silo_info(BinDlg* dialog);
 	bool unit_is_active_transport(Unit* a1);
 	bool is_queue_slot_active(Unit* unit, s32 slot);
 	void draw_training_progress(BinDlg* dialog);					// 004268D0
