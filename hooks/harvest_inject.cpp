@@ -278,13 +278,20 @@ namespace {
 		}
 	}
 
+	bool should_worker_wander(Unit* resource) {
+		if (resource->building.resource.next_gatherer) {
+			return true;
+		}
+		return false;
+	}
+
 	void __declspec(naked) should_worker_wander_wrapper() {
-		static Unit* unit;
+		static Unit* resource;
 		__asm {
-			MOV unit, EBX
+			MOV resource, EBX
 			PUSHAD
 		}
-		if (unit->building.resource.next_gatherer) {
+		if (should_worker_wander(resource)) {
 			static const u32 yes_address = 0x0046939D; 
 			__asm {
 				POPAD
