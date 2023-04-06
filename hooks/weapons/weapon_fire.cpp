@@ -918,6 +918,9 @@ namespace hooks {
 			unit_search_radial(&collisions, bullet->position, range);
 			unit_search_filter(&collisions, 0);
 			for (u32 i = 0; i < collisions.count; ++i) {
+				if (bullet->time_remaining == 0) {
+					break;
+				}
 				Unit* collision_target = collisions.units[i];
 				if (collision_target->status & UnitStatus::Invincible) {
 					continue;
@@ -961,7 +964,6 @@ namespace hooks {
 
 						if (count >= 4) {
 							bullet->time_remaining = 0;
-							break;
 						} else {
 							bullet->move_target.unit = bullet->attack_target.unit;
 							if (bullet->move_target.unit) {
