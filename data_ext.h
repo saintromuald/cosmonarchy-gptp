@@ -130,6 +130,7 @@ enum ExtValueId
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
 	ValueDidactRecalling,
+	ValueIonCannonTargeting,
 	ValueIonCannonTargetPosX,
 	ValueIonCannonTargetPosY,
 

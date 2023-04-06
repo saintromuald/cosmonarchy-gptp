@@ -204,13 +204,13 @@ namespace hooks
 		
 		if (unit->id == UnitId::TerranIonCannon) {
 			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->values[ValueIonCannonTargetPosX] = unit->order_target.unit->position.x;
-			unit_ext->values[ValueIonCannonTargetPosY] = unit->order_target.unit->position.y;
-			unit_ext->units[UnitIonCannonTarget] = unit->order_target.unit;
+			unit_ext->values[ValueIonCannonTargeting] = true;
+			unit_ext->units[UnitIonCannonTarget] = target;
+			unit_ext->values[ValueIonCannonTargetPosX] = target->position.x;
+			unit_ext->values[ValueIonCannonTargetPosY] = target->position.y;
 			unit->order_target.unit = 0;
 		}
-		if (unit->status & UnitStatus::InBuilding)
-		{
+		if (unit->status & UnitStatus::InBuilding) {
 			helper::create_bunker_attack_overlay(unit);
 		}
 		unit->movement_flags |= MovementFlags::StartingAttack;

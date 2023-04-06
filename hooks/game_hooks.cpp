@@ -481,6 +481,7 @@ namespace hooks {
 		// Draw selection info
 		for (u32 i = 0; i < *g_client_selection_count; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
+			UnitExt* unit_ext = get_unit_ext(unit);
 			Point16 source = unit->position;
 
 			// For checking cargo-related elements.
@@ -533,29 +534,44 @@ namespace hooks {
 					}
 					if (!scbw::unit_id_is_psi_provider(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
 						source = target;
-					}
-					else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
+					} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
 						source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
 					}
 				}
 
 				// Main orders
-				{
+				if (unit_ext->values[ValueIonCannonTargeting]) {
+					Target ion_target = {};
+					ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
+					ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+					source = draw_order_line(source, ion_target, graphics::RED, ignore_resource_unit);
+
+					if (config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines) {
+						ion_target.unit = unit_ext->units[UnitIonCannonTarget];
+						source = draw_order_line(source, ion_target, graphics::GREY, ignore_resource_unit);
+					}
+				} else {
 					graphics::ColorId color = graphics::GREEN;
 					switch (unit->main_order_id) {
-					case OrderId::Patrol:
-					case OrderId::ReturnMinerals:
-					case OrderId::ReturnGas:
-						// TODO: Add more neutral orders
-					{
-						color = graphics::YELLOW;
-					} break;
-					case OrderId::AttackMove:
-					case OrderId::AttackUnit:
-						// TODO: Add more aggressive orders
-					{
-						color = graphics::RED;
-					} break;
+						case OrderId::Patrol:
+						case OrderId::ReturnMinerals:
+						case OrderId::ReturnGas:
+							// TODO: Add more neutral orders
+						{
+							color = graphics::YELLOW;
+						} break;
+						case OrderId::Attack1:
+						case OrderId::Attack2:
+						case OrderId::AttackMove:
+						case OrderId::AttackUnit:
+						case OrderId::AttackFixedRange:
+						case OrderId::AttackTile:
+						case OrderId::TowerGuard:
+						case OrderId::TowerAttack:
+							// TODO: Add more aggressive orders
+						{
+							color = graphics::RED;
+						} break;
 					}
 
 					source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
@@ -2003,8 +2019,7 @@ namespace hooks {
 			case UnitId::TerranIonCannon:
 			{
 				// Fire Hammerfall Beacon for weapon targeting
-				if (unit->order_signal & 0x20)
-				{
+				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
 					unit->order_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
 					unit->order_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
