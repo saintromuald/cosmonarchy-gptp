@@ -28,8 +28,6 @@ u32 get_harvest_amount(Unit* unit) {
 }
 
 namespace hooks {
-	// Harvests minerals/gas from the @p resource and returns the amount that a worker should carry.
-	// Identical to sub_469650
 	bool is_gas_container(u16 unit_id) {
 		if (unit_id == UnitId::ProtossAquifer || unit_id == UnitId::TerranReservoir || unit_id == UnitId::ZergExcisant
 		||	unit_id == UnitId::PoliceDispensary) {
@@ -150,7 +148,9 @@ namespace hooks {
 			case UnitId::ZergExcisant:
 			case UnitId::PoliceDispensary:
 			{
-				if ((ignore_completed || node->status & UnitStatus::Completed) && node->player == worker->player) {
+				if ((ignore_completed || node->status & UnitStatus::Completed)
+				&&  node->player == worker->player || (scbw::is_allied_to(node->player, worker->player) && scbw::is_allied_to(worker->player, node->player)))
+				{
 					return true;
 				}
 			} break;
@@ -169,8 +169,9 @@ namespace hooks {
 		}
 
 		if (unit->sprite->flags & SpriteFlags::Hidden || node
-			&& unit_is_geyser_ex(node, unit)
-			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
+		&&  unit_is_geyser_ex(node, unit)
+		&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either))
+		{
 			helper::set_gathering_flags(unit);
 			if (unit->main_order_state) {
 				if (unit->main_order_state == 5 && !unit->main_order_timer) {
@@ -225,7 +226,8 @@ namespace hooks {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
 			||			node->id == UnitId::PoliceDispensary)
-				&& node->player == unit->player) {
+				&&		node->player == unit->player || (scbw::is_allied_to(node->player, unit->player) && scbw::is_allied_to(unit->player, node->player)))
+			{
 				valid_structure = true;
 			}
 		}
@@ -274,7 +276,8 @@ namespace hooks {
 					result = OrderId::Move;
 				}
 			} else {
-				if (!helper::unit_is_active_resource_depot(node) || node->player != worker->player)
+				if (!helper::unit_is_active_resource_depot(node)
+				||   node->player != worker->player && (!scbw::is_allied_to(node->player, worker->player) || !scbw::is_allied_to(worker->player, node->player)))
 				{
 					result = OrderId::None;
 					return result;
