@@ -2475,12 +2475,18 @@ namespace scbw {
 		bullet->target_position_2  = target->position;
 	}
 
-	void set_bullet_target(Bullet* bullet, Target target) {
+	void set_bullet_target_follow(Bullet* bullet, Target target) {
 		if (target.unit) {
 			set_bullet_target(bullet, target.unit);
 		} else {
 			set_bullet_target(bullet, target.pt);
 		}
+	}
+
+	void set_bullet_target_absolute(Bullet* bullet, Target target) {
+		set_bullet_target(bullet, target.pt);
+		bullet->attack_target.unit = target.unit;	
+		bullet->move_target.unit = target.unit;	
 	}
 
 	void set_bullet_direction(Bullet* bullet, Point16 target) {
