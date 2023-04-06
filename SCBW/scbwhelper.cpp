@@ -276,21 +276,21 @@ namespace helper {
 		return result;
 	}
 
-	void draw_progress_bar(BinDlg* a1) {
+	void draw_progress_bar(BinDlg* dialog) {
 		const u32 Func_drawProgressBar = 0x004260C0;
 		__asm {
 			PUSHAD
-			MOV EDI, a1
+			MOV EDI, dialog
 			CALL Func_drawProgressBar
 			POPAD
 		}
 	}
 
-	void draw_nuke_silo_info(BinDlg* a1) {
+	void draw_nuke_silo_info(BinDlg* dialog) {
 		const u32 Func_drawNukeSiloInfo = 0x00426FF0;
 		__asm {
 			PUSHAD
-			PUSH a1
+			PUSH dialog
 			CALL Func_drawNukeSiloInfo
 			POPAD
 		}
