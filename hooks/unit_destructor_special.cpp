@@ -343,29 +343,6 @@ void unit_destructor_special_cases(Unit* unit) {
 		scbw::madrigal_dirge_fuse(unit, unit_ext);
 	}
 
-	// Apostle Last Breath behavior
-	{
-		u32 range = 4 * 32;
-		scbw::UnitFinder(
-			unit->get_x() - range,
-			unit->get_y() - range,
-			unit->get_x() + range,
-			unit->get_y() + range
-		).for_each([&](Unit* target) {
-			if (target->id != UnitId::TerranApostle) {
-				return;
-			}
-			if (target == unit) {
-				return;
-			}
-			if (!scbw::is_allied_to(unit->player, target->player)) {
-				return;
-			}
-			target->heal_energy(ApostleLastBreathEnergyGain);
-			target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-		});
-	}
-
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plague_timer) {
 		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);

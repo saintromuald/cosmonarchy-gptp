@@ -1928,13 +1928,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranApostle:
-								{
-									if (current_button->icon_id == IconId::SuicideScourge) // Apostle Last Breath passive
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::TerranStriga:
 								{
 									if (current_button->icon_id == IconId::PsiAssault) // Striga - Fleeting Focus
