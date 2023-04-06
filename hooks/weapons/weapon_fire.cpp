@@ -131,7 +131,11 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target_unit, WeaponOffsets*
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, apply_cooldown);
 	unit->order_target = original_target;
 	if (bullet) {
-		scbw::set_bullet_target(bullet, target);
+		if (weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
+			scbw::set_bullet_target_absolute(bullet, target);
+		} else {
+			scbw::set_bullet_target_follow(bullet, target);
+		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (is_ion_cannon) {
 			unit_ext->values[ValueIonCannonTargeting] = false;
@@ -156,9 +160,6 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 		scbw::decloak_proc(source);
 		if (apply_cooldown) {
 			apply_weapon_cooldown(source, weapon_id);
-		}
-		if (weapon_id == WeaponId::ZarcavrokorBonesofReflection) {
-			scbw::set_bullet_target(bullet, bullet->attack_target);
 		}
 
 		UnitExt* source_ext = get_unit_ext(source);
