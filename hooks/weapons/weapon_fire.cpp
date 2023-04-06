@@ -974,7 +974,10 @@ namespace hooks {
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-			if (target && target->sprite && !scbw::weapon_pierces_targets(bullet->weapon_id)) {
+			if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
+				apply_bullet_piercing(bullet, bullet->position, 16);
+				bullet->attack_target.unit = 0;
+			} else if (target && target->sprite) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {
