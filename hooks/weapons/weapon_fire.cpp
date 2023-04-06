@@ -925,19 +925,6 @@ namespace hooks {
 				if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
 					return false;
 				}
-				Box16 box = units_dat::unit_bounds[unit->id];
-				if (bullet->position.x < unit->get_left()) {
-					return false;
-				}
-				if (bullet->position.x > unit->get_right()) {
-					return false;
-				}
-				if (bullet->position.y < unit->get_top()) {
-					return false;
-				}
-				if (bullet->position.y > unit->get_bottom()) {
-					return false;
-				}
 				if (globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
 					return false;
 				}
