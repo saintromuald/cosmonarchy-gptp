@@ -276,21 +276,21 @@ namespace helper {
 		return result;
 	}
 
-	void draw_progress_bar(BinDlg* a1) {
+	void draw_progress_bar(BinDlg* dialog) {
 		const u32 Func_drawProgressBar = 0x004260C0;
 		__asm {
 			PUSHAD
-			MOV EDI, a1
+			MOV EDI, dialog
 			CALL Func_drawProgressBar
 			POPAD
 		}
 	}
 
-	void draw_nuke_silo_info(BinDlg* a1) {
+	void draw_nuke_silo_info(BinDlg* dialog) {
 		const u32 Func_drawNukeSiloInfo = 0x00426FF0;
 		__asm {
 			PUSHAD
-			PUSH a1
+			PUSH dialog
 			CALL Func_drawNukeSiloInfo
 			POPAD
 		}
@@ -559,13 +559,13 @@ namespace helper {
 	}
 
 	s32 unit_shields_clump_in_area_accumulator_proc(Unit* a1, Unit* a2) {
-		const u32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
+		const u32 func_address = 0x00440A60;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
 			MOV EDX, a2
-			CALL Func_unitShieldsClumpInAreaAccumulatorProc
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -574,35 +574,35 @@ namespace helper {
 
 	// For hallucinationHit
 	void unit_was_hit(Unit* a1, Unit* a2, s32 a3) {
-		const u32 Func_unitWasHit = 0x004795D0;
+		const u32 func_address = 0x004795D0;
 		__asm {
 			PUSHAD
 			PUSH a3
 			PUSH a2
 			MOV EBX, a1
-			CALL Func_unitWasHit
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void unit_attack_notify(Unit* unit) {
-		const u32 Func_doAttackNotifyEvent = 0x0048F230;
+		const u32 func_address = 0x0048F230;
 		__asm {
 			PUSHAD
 			PUSH unit
-			CALL Func_doAttackNotifyEvent
+			CALL func_address
 			POPAD
 		}
 	}
 
 	Image* create_shield_overlay(s32 a1, Unit* a2) {
-		const u32 Func_createShieldOverlay = 0x004E6140;
+		const u32 func_address = 0x004E6140;
 		static Image* result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
 			MOV ECX, a2
-			CALL Func_createShieldOverlay
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

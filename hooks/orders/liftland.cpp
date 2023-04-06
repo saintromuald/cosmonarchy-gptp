@@ -127,7 +127,7 @@ namespace hooks
 				}
 				helper::create_landing_dust(unit->sprite);
 				scbw::refresh_console();
-				helper::crush_immobile_units(unit);
+			//	helper::crush_immobile_units(unit);
 				scbw::prepare_building_area(unit->position, unit->id);
 
 				if (units_dat::base_property[unit->id] & UnitProperty::Attack) {

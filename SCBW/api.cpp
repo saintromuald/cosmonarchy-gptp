@@ -3272,4 +3272,14 @@ namespace scbw {
 		}
 		helper::move_screen(pos);
 	}
+
+	bool players_are_mutual_alies(u32 player1, u32 player2)
+	{
+		if (scbw::is_allied_to(player1, player2) && scbw::is_allied_to(player2, player1)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

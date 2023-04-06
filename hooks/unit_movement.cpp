@@ -3,28 +3,14 @@
 
 namespace hooks
 {
-
 	s32 unit_movement_dormant(Unit* unit) // 0046A8D0
 	{
-		s32 flags; // edx
-		Sprite* sprite; // ecx
-
-		flags = unit->status;
-		/*      if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {
-					sprite = unit->sprite;
-					if (unit->move_target.pt.x == sprite->position.x
-						&& unit->move_target.pt.y == sprite->position.y
-						&& ((flags & UnitStatus::Unmovable) != 0) != -1
-						&& unit->next_target_waypoint.x == unit->position.x
-						&& unit->next_target_waypoint.y == unit->position.y) {
-						return 0;
-					}
-				}
-				*/
+		u32 flags = unit->status;
 		if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal))
 		{
-			sprite = unit->sprite;
-			if  (sprite != nullptr && unit->move_target.pt.x == sprite->position.x
+			Sprite* sprite = unit->sprite;
+			if  (sprite
+            &&   unit->move_target.pt.x == sprite->position.x
 			&&   unit->move_target.pt.y == sprite->position.y
 			&& ((flags & UnitStatus::Unmovable) != 0) != -1
 			&&   unit->next_target_waypoint.x == unit->position.x
