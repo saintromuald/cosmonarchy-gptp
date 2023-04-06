@@ -529,17 +529,17 @@ namespace hooks
 			return 0;
 		}
 
-		unit->status &= 0xFFFFDFFF;
+		unit->status &= ~UnitStatus::NoBrkCodeStart;
 		Unit* active_entity = *g_active_iscript_entity;
 		Unit* active_subunit = *g_active_iscript_unit;
-		unit_sprite->flags &= 0x7Fu;
+		unit_sprite->flags &= ~UnitStatus::CanBeChased;
 		*g_active_iscript_unit = unit;
 		*g_active_iscript_entity = unit;
 		helper::play_idle_iscript(unit_sprite);
 		char movement_flags = unit->movement_flags;
 		*g_active_iscript_unit = active_subunit;
 
-		char result = movement_flags & 0xF7;
+		char result = movement_flags & MovementFlags::StartingAttack;
 		*g_active_iscript_entity = active_entity;
 		unit->movement_flags = result;
 		return result;
