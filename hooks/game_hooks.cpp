@@ -2095,15 +2095,6 @@ namespace hooks {
 			}
 		}
 
-		// Fix animation bug with acceleration movement flag
-		if (!(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
-		&&    unit->movement_flags & MovementFlags::Accelerating
-		&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
-		&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle)
-		{
-			unit->movement_flags &= ~MovementFlags::Accelerating;
-		}
-
 		// Fix AI melee units freezing - DarkenedFantasies
 		if (unit->status & UnitStatus::Unmovable
 		&&  unit->main_order_id & OrderId::AttackUnit

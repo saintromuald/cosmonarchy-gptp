@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) unitMovementDormant_Wrapper() // 0046A8D0
+	void __declspec(naked) unit_movement_dormant_wrapper() // 0046A8D0
 	{
 		static Unit* unit;
 		static s32 result;
@@ -21,7 +21,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) MoveUnit_Wrapper() // 004EB9F0
+	void __declspec(naked) move_unit_wrapper() // 004EB9F0
 	{
 		static Unit* unit;
 		static s16 x;
@@ -41,13 +41,27 @@ namespace
 			RETN
 		}
 	}
+
+	const u32 playIdleIscript_978D8 = 0x004978D8;
+	void __declspec(naked) play_idle_iscript_patch_978D3() {
+		__asm {
+			MOV		DL, [ESI + 0x20]
+			AND		DL, 0xFD
+			MOV		byte ptr[ESI + 0x20], DL	// unit->movement_flags &= ~MovementFlags::Accelerating
+			MOV		ESI, [EAX + 0x1C]
+			TEST	ESI, ESI
+			JMP		playIdleIscript_978D8
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_unit_movement_hooks()
 	{
-		jump_patch(unitMovementDormant_Wrapper,	0x0046A8D0, 1);
-	//	jump_patch(MoveUnit_Wrapper,			0x004EB9F0, 1); // breaks sprite sorting
+		jump_patch(unit_movement_dormant_wrapper,	0x0046A8D0, 1);
+	//	jump_patch(move_unit_wrapper,				0x004EB9F0, 1); // breaks sprite sorting
+
+		jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}
 }

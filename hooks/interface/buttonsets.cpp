@@ -733,6 +733,14 @@ namespace hooks {
 						is_adding_on = unit->building.addon_build_id && unit->main_order_id == OrderId::BuildAddon;
 					}
 
+					if (unit && unit->id == UnitId::TerranBunker && !(unit->status & UnitStatus::InAir)) {
+						if (current_button->icon_id == IconId::Stop
+						||	current_button->icon_id == IconId::Attack)
+						{
+							current_button_state = Button_State::Disabled;
+						}
+					}
+
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
 					{
 						// Barracks buttonset handling
