@@ -922,10 +922,7 @@ namespace hooks {
 				if (unit->status & UnitStatus::Invincible) {
 					return false;
 				}
-				if (bullet->attack_target.unit == unit) {
-					return false;
-				}
-				if (scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
+				if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
 					return false;
 				}
 				Box16 box = units_dat::unit_bounds[unit->id];
@@ -1006,7 +1003,7 @@ namespace hooks {
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-			if (target && target->sprite) {
+			if (target && target->sprite && !scbw::weapon_pierces_targets(bullet->weapon_id)) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {
