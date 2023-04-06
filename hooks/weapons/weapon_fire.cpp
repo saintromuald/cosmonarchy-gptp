@@ -679,6 +679,81 @@ namespace hooks {
 		}
 	}
 
+	static void apply_bullet_piercing(Bullet* bullet, Point16 pos, u32 range) {
+		EntryArray collisions = {};
+		unit_search_radial(&collisions, pos, range);
+		unit_search_filter(&collisions, 0);
+		for (u32 i = 0; i < collisions.count; ++i) {
+			if (bullet->time_remaining == 0) {
+				break;
+			}
+			Unit* collision_target = collisions.units[i];
+			if (collision_target->status & UnitStatus::Invincible) {
+				continue;
+			}
+			if (bullet->attack_target.unit != collision_target && scbw::is_allied_to(bullet->player, collision_target->player)) { // TODO: Consider what to do with unsafe projectiles
+				continue;
+			}
+			if (globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
+				continue;
+			}
+
+			switch (bullet->weapon_id) {
+				case WeaponId::PenumbraErebolShockCannon:
+				{
+					// Penumbra - Shroud Piercer - pierce targets
+					globals.add_bullet_multihit(bullet, collision_target);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collision_target, 2);
+				} break;
+				case WeaponId::ClaymoreHarpoonRailgun:
+				{
+					// Claymore - Kelvin Munitions
+					// pierce targets
+					globals.add_bullet_multihit(bullet, collision_target);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+
+					// slow pierced targets
+					UnitExt* collision_target_ext = get_unit_ext(collision_target);
+					if (!collision_target_ext->timers[TimerKelvinMunitions]) {
+						collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
+					}
+				} break;
+				case WeaponId::KalkaliskViscousAcid:
+				{
+					// Kalkalisk - Ablative Spores
+					globals.add_incremental_bullet_multihit(bullet, collision_target);
+					auto count = globals.get_multihit_count(bullet);
+					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
+					collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
+
+					if (count >= 4) {
+						bullet->time_remaining = 0;
+					} else {
+						bullet->move_target.unit = bullet->attack_target.unit;
+						if (bullet->move_target.unit) {
+							bullet->target_position = bullet->move_target.unit->position;
+							bullet->target_position_2 = bullet->move_target.unit->position;
+						}
+					}
+				} break;
+				case WeaponId::ZarcavrokorBonesofReflection:
+				{
+					globals.add_bullet_multihit(bullet, collision_target);
+					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+				} break;
+				default:
+				{
+					globals.add_bullet_multihit(bullet, collision_target);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+				}
+			}
+		}
+	}
+
 	void progress_bullet_flight(Bullet* bullet) { // 0048B3B0
 		Point16 old_position = bullet->position;
 		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
@@ -880,101 +955,18 @@ namespace hooks {
 			}
 		} else if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
 			// Prolonged Arms - for projectiles hitting targets mid-flight
-			u32 range = 0;
-			switch (bullet->weapon_id) {
-				case WeaponId::SentinelCerberusRailgun:
-				case WeaponId::ClaymoreHarpoonRailgun:
-				case WeaponId::PenumbraErebolShockCannon:
-				case WeaponId::HippogriffChimeraCannons:
-				case WeaponId::OptectonSunsplitBeam:
-				case WeaponId::PatriarchIronhandWeaver:
-				case WeaponId::KalkaliskViscousAcid:
-				case WeaponId::ZarcavrokorBonesofReflection:
-				{
-					range = 64;
-				} break;
-				case WeaponId::SilvertongueWordsmithRailgun:
-				{
-					if (bullet->source_unit) {
-						UnitExt* source_ext = get_unit_ext(bullet->source_unit);
-						if (source_ext->timers[TimerDecloak] > 1)
-						{
-							range = 32;
-						}
-					}
-				} break;
+			bool enabled = true;
+			if (bullet->weapon_id == WeaponId::SilvertongueWordsmithRailgun) {
+				enabled = bullet->source_unit && get_unit_ext(bullet->source_unit)->timers[TimerDecloak] > 1;
 			}
 
-			EntryArray collisions = {};
-			unit_search_radial(&collisions, bullet->position, range);
-			unit_search_filter(&collisions, 0);
-			for (u32 i = 0; i < collisions.count; ++i) {
-				if (bullet->time_remaining == 0) {
-					break;
-				}
-				Unit* collision_target = collisions.units[i];
-				if (collision_target->status & UnitStatus::Invincible) {
-					continue;
-				}
-				if (bullet->attack_target.unit != collision_target && scbw::is_allied_to(bullet->player, collision_target->player)) { // TODO: Consider what to do with unsafe projectiles
-					continue;
-				}
-				if (globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
-					continue;
-				}
-
-				switch (bullet->weapon_id) {
-					case WeaponId::PenumbraErebolShockCannon:
-					{
-						// Penumbra - Shroud Piercer - pierce targets
-						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
-						hooks::weapon_bullet_hit(bullet, collision_target, 2);
-					} break;
-					case WeaponId::ClaymoreHarpoonRailgun:
-					{
-						// Claymore - Kelvin Munitions
-						// pierce targets
-						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
-						hooks::weapon_bullet_hit(bullet, collision_target, 1);
-
-						// slow pierced targets
-						UnitExt* collision_target_ext = get_unit_ext(collision_target);
-						if (!collision_target_ext->timers[TimerKelvinMunitions]) {
-							collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
-						}
-					} break;
-					case WeaponId::KalkaliskViscousAcid:
-					{
-						// Kalkalisk - Ablative Spores
-						globals.add_incremental_bullet_multihit(bullet, collision_target);
-						auto count = globals.get_multihit_count(bullet);
-						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
-						collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
-
-						if (count >= 4) {
-							bullet->time_remaining = 0;
-						} else {
-							bullet->move_target.unit = bullet->attack_target.unit;
-							if (bullet->move_target.unit) {
-								bullet->target_position = bullet->move_target.unit->position;
-								bullet->target_position_2 = bullet->move_target.unit->position;
-							}
-						}
-					} break;
-					case WeaponId::ZarcavrokorBonesofReflection:
-					{
-						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
-						hooks::weapon_bullet_hit(bullet, collision_target, 1);
-					} break;
-					default:
-					{
-						globals.add_bullet_multihit(bullet, collision_target);
-						scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
-						hooks::weapon_bullet_hit(bullet, collision_target, 1);
-					}
+			if (enabled) {
+				Vector32 diff = scbw::get_vector_between_points(old_position, bullet->position); 
+				for (u32 i = 1; i <= 4; ++i) {
+					Point16 position = old_position;
+					position.x += diff.x * i / 4;
+					position.y += diff.y * i / 4;
+					apply_bullet_piercing(bullet, position, 16);
 				}
 			}
 		}
