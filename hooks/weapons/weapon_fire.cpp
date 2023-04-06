@@ -883,24 +883,15 @@ namespace hooks {
 			u32 range = 0;
 			switch (bullet->weapon_id) {
 				case WeaponId::SentinelCerberusRailgun:
-				case WeaponId::ZarcavrokorBonesofReflection:
-				{
-					range = 64;
-				} break;
+				case WeaponId::ClaymoreHarpoonRailgun:
+				case WeaponId::PenumbraErebolShockCannon:
+				case WeaponId::HippogriffChimeraCannons:
 				case WeaponId::OptectonSunsplitBeam:
 				case WeaponId::PatriarchIronhandWeaver:
 				case WeaponId::KalkaliskViscousAcid:
+				case WeaponId::ZarcavrokorBonesofReflection:
 				{
-					range = 96;
-				} break;
-				case WeaponId::PenumbraErebolShockCannon:
-				case WeaponId::HippogriffChimeraCannons:
-				{
-					range = 128;
-				} break;
-				case WeaponId::ClaymoreHarpoonRailgun:
-				{
-					range = 160;
+					range = 64;
 				} break;
 				case WeaponId::SilvertongueWordsmithRailgun:
 				{
@@ -908,7 +899,7 @@ namespace hooks {
 						UnitExt* source_ext = get_unit_ext(bullet->source_unit);
 						if (source_ext->timers[TimerDecloak] > 1)
 						{
-							range = 64;
+							range = 32;
 						}
 					}
 				} break;
