@@ -757,5 +757,5 @@ namespace scbw
 	bool unit_id_is_psi_provider(u16 unit_id);
 	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
 	void move_camera(Point16 pos);
-	bool players_are_mutual_alies(u32 player1, u32 player2);
+	bool players_are_mutual_allies(u32 player1, u32 player2);
 }

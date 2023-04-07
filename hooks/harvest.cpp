@@ -148,8 +148,7 @@ namespace hooks {
 			case UnitId::ZergExcisant:
 			case UnitId::PoliceDispensary:
 			{
-				if ((ignore_completed || node->status & UnitStatus::Completed)
-				&&  node->player == worker->player || (scbw::is_allied_to(node->player, worker->player) && scbw::is_allied_to(worker->player, node->player)))
+				if ((ignore_completed || node->status & UnitStatus::Completed) && (node->player == worker->player || scbw::players_are_mutual_allies(node->player, worker->player)))
 				{
 					return true;
 				}
@@ -226,7 +225,7 @@ namespace hooks {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
 			||			node->id == UnitId::PoliceDispensary)
-				&&		node->player == unit->player || (scbw::is_allied_to(node->player, unit->player) && scbw::is_allied_to(unit->player, node->player)))
+				&&		(node->player == unit->player || scbw::players_are_mutual_allies(node->player, unit->player)))
 			{
 				valid_structure = true;
 			}
@@ -544,9 +543,7 @@ namespace hooks {
 	{
 		if (helper::unit_is_active_resource_depot(depot))
 		{
-			if (depot->player == worker->player
-			||		(scbw::is_allied_to(worker->player, depot->player)
-				&&	 scbw::is_allied_to(depot->player, worker->player)))
+			if (depot->player == worker->player || (scbw::players_are_mutual_allies(depot->player, worker->player)))
 			{
 				if (!(worker->pathing_flags & 1) || helper::unit_has_path_to_destination(worker, depot->get_x(), depot->get_y()))
 				{

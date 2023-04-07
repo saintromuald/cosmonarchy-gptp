@@ -3273,7 +3273,7 @@ namespace scbw {
 		helper::move_screen(pos);
 	}
 
-	bool players_are_mutual_alies(u32 player1, u32 player2)
+	bool players_are_mutual_allies(u32 player1, u32 player2)
 	{
 		if (scbw::is_allied_to(player1, player2) && scbw::is_allied_to(player2, player1)) {
 			return true;
