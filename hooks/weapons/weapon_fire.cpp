@@ -667,7 +667,7 @@ namespace hooks {
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril:
 					{
-						fire_bullet(unit, weapon_id);
+						fire_bullet(unit, weapon_id, unit->order_target.unit);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, true, false, false, 0, true, 2 * 32, 2);
 					} break;
 					default:

@@ -172,19 +172,19 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	{
 		target_flags.push_back("Air");
 	}
-	if (weapons_dat::target_flags[weapon_id].mechanical || weapons_dat::target_flags[weapon_id].orgOrMech)
+	if (weapons_dat::target_flags[weapon_id].mechanical || weapons_dat::target_flags[weapon_id].organic_or_mechanical)
 	{
 		target_flags.push_back("Mechanical");
 	}
-	if (weapons_dat::target_flags[weapon_id].organic || weapons_dat::target_flags[weapon_id].orgOrMech)
+	if (weapons_dat::target_flags[weapon_id].organic || weapons_dat::target_flags[weapon_id].organic_or_mechanical)
 	{
 		target_flags.push_back("Organic");
 	}
-	if (weapons_dat::target_flags[weapon_id].nonBuilding)
+	if (weapons_dat::target_flags[weapon_id].non_building)
 	{
 		target_flags.push_back("Not Building");
 	}
-	if (weapons_dat::target_flags[weapon_id].nonRobotic)
+	if (weapons_dat::target_flags[weapon_id].non_robotic)
 	{
 		target_flags.push_back("Not Robotic");
 	}

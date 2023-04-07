@@ -526,11 +526,11 @@ struct TargetFlag
 	u16 ground : 1;
 	u16 mechanical : 1;
 	u16 organic : 1;
-	u16 nonBuilding : 1;
-	u16 nonRobotic : 1;
+	u16 non_building : 1;
+	u16 non_robotic : 1;
 	u16 terrain : 1;
-	u16 orgOrMech : 1;
-	u16 playerOwned : 1;
+	u16 organic_or_mechanical : 1;
+	u16 player_owned : 1;
 };
 C_ASSERT(sizeof(TargetFlag) == 2);
 //static_assert(sizeof(TargetFlag) == 2, "The count of the TargetFlag structure is invalid");

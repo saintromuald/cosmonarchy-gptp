@@ -13448,4 +13448,39 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void draw_button_graphic(BinDlg* dialog, void* dest)
+	{
+		const u32 func_address = 0x004F0050;
+		__asm {
+			PUSH dest
+			MOV ECX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest)
+	{
+		const u32 func_address = 0x004EFEB0;
+		__asm {
+			PUSH dest
+			MOV EBX, dialog2
+			MOV ECX, dialog1
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest)
+	{
+		const u32 func_address = 0x004EFD90;
+		__asm {
+			PUSH dest
+			MOV EDI, dialog2
+			MOV ECX, dialog1
+			CALL func_address
+			POPAD
+		}
+	}
 }
