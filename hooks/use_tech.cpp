@@ -275,7 +275,7 @@ namespace hooks
 		//	} break;
 			case TechId::CancelNewAbility:
 			{
-				Unit* selected = players_selections->unit[*g_active_nation_id][0];
+				Unit* selected = *g_active_portrait_unit;
 				if (selected)
 				{
 					switch (selected->id)
