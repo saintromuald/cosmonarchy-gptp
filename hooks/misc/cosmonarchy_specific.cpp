@@ -535,13 +535,10 @@ namespace hooks
 		*g_active_iscript_unit = unit;
 		*g_active_iscript_entity = unit;
 		helper::play_idle_iscript(unit->sprite);
-		char movement_flags = unit->movement_flags;
 		*g_active_iscript_unit = active_subunit;
-
-		char result = movement_flags & MovementFlags::StartingAttack;
 		*g_active_iscript_entity = active_entity;
-		unit->movement_flags = result;
-		return result;
+		unit->movement_flags &= ~MovementFlags::StartingAttack;
+		return unit->movement_flags;
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
