@@ -532,7 +532,7 @@ namespace hooks
 		unit->status &= ~UnitStatus::NoBrkCodeStart;
 		Unit* active_entity = *g_active_iscript_entity;
 		Unit* active_subunit = *g_active_iscript_unit;
-		unit_sprite->flags &= ~UnitStatus::CanBeChased;
+		unit_sprite->flags &= ~SpriteFlags::IscriptCode;
 		*g_active_iscript_unit = unit;
 		*g_active_iscript_entity = unit;
 		helper::play_idle_iscript(unit_sprite);
