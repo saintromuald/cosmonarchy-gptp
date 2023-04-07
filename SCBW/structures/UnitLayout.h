@@ -152,7 +152,7 @@ namespace RustId
 
 		CancelLandGrab,
 		CancelRecall,
-		CancelAttachment,
+		CancelControlledDemolition,
 
 		ToggleSavantOnhit,
 		ToggleReverseThrust,

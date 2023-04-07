@@ -758,4 +758,5 @@ namespace scbw
 	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
 	void move_camera(Point16 pos);
 	bool players_are_mutual_allies(u32 player1, u32 player2);
+	bool unit_id_can_do_controlled_demolition(u32 unit_id);
 }

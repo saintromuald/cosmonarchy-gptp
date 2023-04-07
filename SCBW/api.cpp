@@ -3282,4 +3282,11 @@ namespace scbw {
 			return false;
 		}
 	}
+
+	bool unit_id_can_do_controlled_demolition(u32 unit_id)
+	{
+		return  units_dat::base_property[unit_id] & UnitProperty::Addon
+		||		unit_id == UnitId::TerranReservoir;
+	//	||		unit_id == UnitId::TerranWellbore;
+	}
 }

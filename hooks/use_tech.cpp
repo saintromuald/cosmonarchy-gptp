@@ -303,17 +303,16 @@ namespace hooks
 							helper::queue_game_command(buf, 0xc);
 						} break;
 					}
-					UnitExt* selected_ext = get_unit_ext(selected);
-					if (selected_ext->timers[TimerControlledDemolition])
-					{
-						selected_ext->timers[TimerControlledDemolition] = 0;
-						Image* overlay = selected->get_overlay(ImageId::ControlledDemolition);
-						if (overlay)
-						{
-							overlay->play_iscript_animation(IscriptAnimation::Death);
-						}
+					if (scbw::unit_id_can_do_controlled_demolition(selected->id)) {
+						s32 action = 1;
+						u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+						buf[0] = 99;
+						buf[1] = NewGameCommand::GenericSwitchAbility;
+						buf[2] = action;
+						buf[3] = *g_active_player_id;
+						buf[4] = RustId::CancelControlledDemolition;
+						helper::queue_game_command(buf, 0xc);
 					}
-
 				}
 			} break;
 		};

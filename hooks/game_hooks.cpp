@@ -2674,6 +2674,22 @@ namespace hooks {
 			unit->remove();
 		}
 
+		// Controlled Demolition - cancel
+		if (scbw::unit_id_can_do_controlled_demolition(unit->id)) {
+			if (scbw::get_generic_rust_value(unit, RustId::CancelControlledDemolition)) {
+				scbw::set_generic_rust_value(unit, RustId::CancelControlledDemolition, 0);
+				if (unit_ext->timers[TimerControlledDemolition])
+				{
+					unit_ext->timers[TimerControlledDemolition] = 0;
+					Image* overlay = unit->get_overlay(ImageId::ControlledDemolition);
+					if (overlay)
+					{
+						overlay->play_iscript_animation(IscriptAnimation::Death);
+					}
+				}
+			}
+		}
+
 		// Emergency Detonation - initial cast
 		if (scbw::get_generic_rust_value(unit, RustId::CastEmergencyDetonation)) {
 			scbw::set_generic_rust_value(unit, RustId::CastEmergencyDetonation, 0);
