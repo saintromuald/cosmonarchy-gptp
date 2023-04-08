@@ -133,6 +133,7 @@ enum ExtValueId
 	ValueIonCannonTargeting,
 	ValueIonCannonTargetPosX,
 	ValueIonCannonTargetPosY,
+	ValueWorshipStack,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

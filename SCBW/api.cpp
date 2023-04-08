@@ -1665,6 +1665,10 @@ namespace scbw {
 			target_ext->values[ValueTyrannyPlayer] = source->player + 1;
 			target_ext->timers[TimerTyrannyRecede] = 5 * 24;
 		}
+		// Demiurge - apply behavior
+		if (source->id == UnitId::ProtossDemiurge) {
+			target_ext->values[ValueWorshipStack] = 1;
+		}
 
 		// Obtain control
 		target->give_to(source->player);

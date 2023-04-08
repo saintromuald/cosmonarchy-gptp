@@ -2723,14 +2723,14 @@ namespace hooks {
 			unit->remove();
 		}
 
-		// Demiurge - Gods Made Flesh - return units to original owner
-	//	if (unit_ext->values[ValueWorshipStack] && !unit_ext->units[UnitMindController]) {
-	//		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
-	//		unit->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
-	//		unit_ext->values[ValueWorshipStack] = 0;
-	//		unit_ext->timers[TimerGodsMadeFlesh] = 0;
-	//		scbw::recede_mind_control(unit);
-	//	}
+		// Demiurge - Worship - return units to original owner
+		if (unit_ext->values[ValueWorshipStack] && !unit_ext->units[UnitMindController]) {
+			helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
+			unit->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+			unit_ext->values[ValueWorshipStack] = 0;
+		//	unit_ext->timers[TimerGodsMadeFlesh] = 0;
+			scbw::recede_mind_control(unit);
+		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
 	//	if (unit_ext->timers[TimerGodsMadeFlesh] == 1 && unit_ext->units[UnitMindController]) {
