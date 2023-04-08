@@ -5501,12 +5501,12 @@ namespace helper {
 	}
 
 	Unit** get_all_units_in_bounds(Box16* coords) {
-		const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
+		const u32 func_address = 0x0042FF80;
 		static Unit** units_in_bounds;
 		__asm {
 			PUSHAD
 			MOV EAX, coords
-			CALL Func_GetAllUnitsInBounds
+			CALL func_address
 			MOV units_in_bounds, EAX
 			POPAD
 		}

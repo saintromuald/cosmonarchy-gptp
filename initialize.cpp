@@ -612,6 +612,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Allow switching to forces with Computer slots
 	memory_patch(0x004523D9, (u8)0xFF);
 	memory_patch(0x0045A939, (u8)0xFF);
+
+	// Real-time minimap updates
+	nops(0x004A580B, 5);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
