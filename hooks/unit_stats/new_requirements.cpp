@@ -1409,7 +1409,7 @@ namespace hooks {
 		s32 addon_id = -1; 
 		if (unit->building.addon)
 		{
-			if (!(unit->building.addon >= new_unit_table)) { // This is a crash case when Vultures are group-selected with buildings! -Pr0nogo
+			if (!(unit->building.addon >= g_unit_table)) { // This is a crash case when Vultures are group-selected with buildings! -Pr0nogo
 				return TECH_HIDDEN;
 			}
 			has_addon = true;

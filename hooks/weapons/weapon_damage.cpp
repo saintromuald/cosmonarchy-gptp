@@ -1126,7 +1126,7 @@ namespace hooks
 						}
 						unit = units_in_bounds[1];
 					}
-					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--g_temp_units_list_arrays_counts_list_last_index[0]];
+					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--*g_temp_units_list_arrays_counts_list_last_index];
 				}
 			}
 		}
