@@ -68,7 +68,7 @@ namespace hooks
 		switch (tech) {
 			case TechId::ControlledDemolition:
 			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -78,7 +78,7 @@ namespace hooks
 			} break;
 			case TechId::EmergencyDetonation:
 			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -114,7 +114,7 @@ namespace hooks
 			} break;
 			case TechId::ApostleLazarusAgent:
 			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -133,7 +133,7 @@ namespace hooks
 			} break;
 			case TechId::MadrigalTempoChange:
 			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -163,7 +163,7 @@ namespace hooks
 			} break;
 			case TechId::MatralethEnsnaringBrood:
 			{
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -213,7 +213,7 @@ namespace hooks
 			} break;
 			case TechId::DemiurgeGodsMadeFlesh:
 			{
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -224,11 +224,10 @@ namespace hooks
 			case TechId::LanifectDisruptionField:
 			{
 				s32 action = 1;
-				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1)
-				{
+				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1) {
 					action = 0;
 				}
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -247,7 +246,7 @@ namespace hooks
 			case TechId::StarSovereignTheGriefOfAllGods:
 			{
 				auto firstInList = g_client_selection_group->unit[0];
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::IssueCTFCop2;
 				buf[2] = *g_active_player_id;
@@ -276,39 +275,34 @@ namespace hooks
 			case TechId::CancelNewAbility:
 			{
 				Unit* selected = *g_active_portrait_unit;
-				if (selected)
-				{
-					switch (selected->id)
-					{
+				if (selected) {
+					switch (selected->id) {
 						case UnitId::TerranWyvern:
 						{
-							s32 action = 1;
-							u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+							u8 buf[0xc] = {};
 							buf[0] = 99;
 							buf[1] = NewGameCommand::GenericSwitchAbility;
-							buf[2] = action;
+							buf[2] = 1;
 							buf[3] = *g_active_player_id;
 							buf[4] = RustId::CancelLandGrab;
 							helper::queue_game_command(buf, 0xc);
 						} break;
 						case UnitId::ProtossDidact:
 						{
-							s32 action = 1;
-							u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+							u8 buf[0xc] = {};
 							buf[0] = 99;
 							buf[1] = NewGameCommand::GenericSwitchAbility;
-							buf[2] = action;
+							buf[2] = 1;
 							buf[3] = *g_active_player_id;
 							buf[4] = RustId::CancelRecall;
 							helper::queue_game_command(buf, 0xc);
 						} break;
 					}
 					if (scbw::unit_id_can_do_controlled_demolition(selected->id)) {
-						s32 action = 1;
-						u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 };
+						u8 buf[0xc] = {};
 						buf[0] = 99;
 						buf[1] = NewGameCommand::GenericSwitchAbility;
-						buf[2] = action;
+						buf[2] = 1;
 						buf[3] = *g_active_player_id;
 						buf[4] = RustId::CancelControlledDemolition;
 						helper::queue_game_command(buf, 0xc);
