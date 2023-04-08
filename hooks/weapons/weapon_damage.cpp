@@ -1165,7 +1165,7 @@ namespace hooks
 					&&  helper::is_at_home(victim)
 					&&  helper::is_under_carapace_swarm(victim) != 255) {
 						Target flee_target = helper::ai_prepare_to_flee(attacker, victim);
-						helper::order_interrupt(victim, flee_target.unit, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
+						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}
 				}
 			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable
