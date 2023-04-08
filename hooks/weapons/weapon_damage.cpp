@@ -1111,22 +1111,14 @@ namespace hooks
 					helper::react_to_hit(attacker, victim);
 				}
 				if (!victim->unit_ai) {
-					Point16 pos = victim->sprite->position;
-
-					Box16 bounds = {};
-					bounds.x = pos.x - 96;
-					bounds.y = pos.y - 96;
-					bounds.w = pos.x + 96;
-					bounds.h = pos.y + 96;
-
-					Unit** units_in_bounds = helper::get_all_units_in_bounds(&bounds);
-					for (Unit* unit = *units_in_bounds; unit; ++units_in_bounds) {
+					EntryArray units_in_bounds = {};
+					unit_search_radial(&units_in_bounds, victim->position, 96);
+					for (u32 i = 0; i < units_in_bounds.count; ++i) {
+						Unit* unit = units_in_bounds.units[i];
 						if (unit != victim && unit->player == victim->player) {
 							helper::ask_for_help(attacker, unit);
 						}
-						unit = units_in_bounds[1];
 					}
-					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[--*g_temp_units_list_arrays_counts_list_last_index];
 				}
 			}
 		}
