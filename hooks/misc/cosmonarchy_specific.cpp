@@ -523,8 +523,7 @@ namespace hooks
 		{
 			return 0;
 		}
-		Sprite* unit_sprite = unit->sprite;
-		if (!unit_sprite)
+		if (!unit->sprite)
 		{
 			return 0;
 		}
@@ -532,17 +531,14 @@ namespace hooks
 		unit->status &= ~UnitStatus::NoBrkCodeStart;
 		Unit* active_entity = *g_active_iscript_entity;
 		Unit* active_subunit = *g_active_iscript_unit;
-		unit_sprite->flags &= ~UnitStatus::CanBeChased;
+		unit->sprite->flags &= ~SpriteFlags::IscriptCode;
 		*g_active_iscript_unit = unit;
 		*g_active_iscript_entity = unit;
-		helper::play_idle_iscript(unit_sprite);
-		char movement_flags = unit->movement_flags;
+		helper::play_idle_iscript(unit->sprite);
 		*g_active_iscript_unit = active_subunit;
-
-		char result = movement_flags & MovementFlags::StartingAttack;
 		*g_active_iscript_entity = active_entity;
-		unit->movement_flags = result;
-		return result;
+		unit->movement_flags &= ~MovementFlags::StartingAttack;
+		return unit->movement_flags;
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo

@@ -1578,4 +1578,8 @@ namespace helper {
 
 	void iscript_fireweapon(Unit* unit, u8 weapon_id);																						// 00479D40
 	void iscript_useweapon(Unit* unit, u16 weapon_id);																						// 00479C30
+
+	void draw_button_graphic(BinDlg* dialog, void* dest);																					// 004F0050
+	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFEB0
+	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFD90
 }

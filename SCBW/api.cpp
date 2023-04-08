@@ -194,16 +194,16 @@ namespace scbw {
 		if (target_flags.organic && !(targetProps & UnitProperty::Organic)) {
 			return false;
 		}
-		if (target_flags.nonBuilding && targetProps & UnitProperty::Building) {
+		if (target_flags.non_building && targetProps & UnitProperty::Building) {
 			return false;
 		}
-		if (target_flags.nonRobotic && targetProps & UnitProperty::RoboticUnit) {
+		if (target_flags.non_robotic && targetProps & UnitProperty::RoboticUnit) {
 			return false;
 		}
-		if (target_flags.orgOrMech && !(targetProps & (UnitProperty::Organic | UnitProperty::Mechanical))) {
+		if (target_flags.organic_or_mechanical && !(targetProps & (UnitProperty::Organic | UnitProperty::Mechanical))) {
 			return false;
 		}
-		if (target_flags.playerOwned && target->player != attacker->player) {
+		if (target_flags.player_owned && target->player != attacker->player) {
 			return false;
 		}
 		return true;
@@ -3273,7 +3273,7 @@ namespace scbw {
 		helper::move_screen(pos);
 	}
 
-	bool players_are_mutual_alies(u32 player1, u32 player2)
+	bool players_are_mutual_allies(u32 player1, u32 player2)
 	{
 		if (scbw::is_allied_to(player1, player2) && scbw::is_allied_to(player2, player1)) {
 			return true;
@@ -3281,5 +3281,12 @@ namespace scbw {
 		else {
 			return false;
 		}
+	}
+
+	bool unit_id_can_do_controlled_demolition(u32 unit_id)
+	{
+		return  units_dat::base_property[unit_id] & UnitProperty::Addon
+		||		unit_id == UnitId::TerranReservoir;
+	//	||		unit_id == UnitId::TerranWellbore;
 	}
 }

@@ -70,9 +70,9 @@ namespace hooks
 			objective_dialog->psz_text = (char*)objective_text;
 			helper::show_dialog(objective_dialog);
 			s32 objective_flags = objective_dialog->flags;
-			if (!(objective_flags & BinDlgFlags::Unknown0))
+			if (!(objective_flags & BinDlgFlags::Highlighted))
 			{
-				objective_dialog->flags = objective_flags | BinDlgFlags::Unknown0;
+				objective_dialog->flags = objective_flags | BinDlgFlags::Highlighted;
 				helper::update_dialog(objective_dialog);
 			}
 		}

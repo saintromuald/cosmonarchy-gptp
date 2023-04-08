@@ -312,7 +312,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) draw_vertical_line_wrapper() {
+	void __declspec(naked) draw_vertical_line_wrapper() { // 0041D7D0
 		static u16 size_;
 		static u16 x;
 		static u16 y;
@@ -358,9 +358,10 @@ namespace hooks
 		// Allow units in fow (seems to desync)
 	//	jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites
 	//	jump_patch(include_sprite_in_vischeck_wrapper,		0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
-	//	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in sprite ext
-		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Needed to clear sprite ext on sprite destruction
-	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4);
+	//	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in SpriteExt
+
+		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
+	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4); // crashes
 		jump_patch(centerview_unit_group,					0x004967E0, 1);
 	}
 }

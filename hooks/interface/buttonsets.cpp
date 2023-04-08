@@ -249,9 +249,9 @@ namespace hooks {
 		}
 		else
 		{
-			if (!(current_button_dialog->flags & BinDlgFlags::Unknown0))
+			if (!(current_button_dialog->flags & BinDlgFlags::Highlighted))
 			{
-				current_button_dialog->flags |= BinDlgFlags::Unknown0;
+				current_button_dialog->flags |= BinDlgFlags::Highlighted;
 				scbw::update_dialog(current_button_dialog);
 			}
 			*g_buttonset_main_button_graphic = used_button_icon;
@@ -412,8 +412,6 @@ namespace hooks {
 	void update_command_card()
 	{
 		auto buttonset_id = *g_active_portrait_buttonset_id;
-		BinDlg* current_dialog = *g_buttonset_dialog;
-
 		// Custom buttonset overrides
 		if (buttonset_id == UnitId::TerranTreasury)
 		{
@@ -491,11 +489,11 @@ namespace hooks {
 			qsort(current_buttonset->first_button, current_buttonset->buttons_in_set, sizeof(Button), compare_button);
 		}
 
+		BinDlg* current_dialog = *g_buttonset_dialog;
 		if (current_dialog->control_type != DialogControlTypes::DialogBoxDC)
 		{
 			current_dialog = current_dialog->parent;
 		}
-		// 00459203:
 		current_dialog = current_dialog->child_dialog;
 		while (current_dialog && current_dialog->index != 1)
 		{
@@ -506,6 +504,7 @@ namespace hooks {
 			stop_there = true;
 		}
 
+		// Overwrite mnemonic hotkey text with grid hotkeys, if applicable
 		if (!stop_there && config.grid_hotkeys) {
 			for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
 				if (dialog->index > 0 && dialog->index <= 9 &&
@@ -731,14 +730,6 @@ namespace hooks {
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
 						is_adding_on = unit->building.addon_build_id && unit->main_order_id == OrderId::BuildAddon;
-					}
-
-					if (unit && unit->id == UnitId::TerranBunker && !(unit->status & UnitStatus::InAir)) {
-						if (current_button->icon_id == IconId::Stop
-						||	current_button->icon_id == IconId::Attack)
-						{
-							current_button_state = Button_State::Disabled;
-						}
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
@@ -1928,9 +1919,9 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranApostle:
+								case UnitId::TerranSiren:
 								{
-									if (current_button->icon_id == IconId::SuicideScourge) // Apostle Last Breath passive
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Siren - Discovered Attacks
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2061,6 +2052,14 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranClaymore:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon  // Claymore - Prolonged Arms
+									||	current_button->icon_id == IconId::FusionCutterHarvest)				// Claymore - Kelvin Munitions
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranAnticthon:
 								{
 									if (current_button->icon_id == IconId::RilirokorToxicSpores // Anticthon - Counter-Proposal
@@ -2139,6 +2138,27 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranCentaur:
+								{
+									if (current_button->icon_id == IconId::GeminiMissiles) { // Centaur - Sunchaser Salvo
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranMinotaur:
+								{
+									if (current_button->icon_id == IconId::TerranShipPlating  // Minotaur - Fore Castle
+									||  current_button->icon_id == IconId::SingularityCharge) // Minotaur - Monoceros Targeting
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranMagnetar:
+								{
+									if (current_button->icon_id == IconId::ArchonPsionicShockwave) // Magnetar Law of Attraction
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranHippogriff:
 								{
 									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Hippogriff - Prolonged Arms
@@ -2146,9 +2166,42 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranMissileSilo:
+								{
+									if (current_button->icon_id == IconId::RadioactiveUnused2) // Missile Silo - Scorched Earth
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranSentinel:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Sentinel - Prolonged Arms
+									{
+										if (unit->status & UnitStatus::GroundedBuilding) {
+											current_button_state = Button_State::Enabled;
+										}
+										else {
+											current_button_state = Button_State::Invisible;
+										}
+									}
+								} break;
+								case UnitId::TerranIonCannon:
+								{
+									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
+									|| current_button->icon_id == IconId::DidactPassiveShroudOfAdun)	// Ion Cannon - Artillery Targeting
+									{
+										if (unit->status & UnitStatus::GroundedBuilding)
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Invisible;
+										}
+									}
+								} break;
 								case UnitId::TerranBarracks:
 								case UnitId::TerranCaptaincy:
-								case UnitId::TerranIronCouncil:
 								case UnitId::TerranFulcrum:
 								case UnitId::TerranIronFoundry:
 								case UnitId::TerranStarport:
@@ -2160,19 +2213,6 @@ namespace hooks {
 									}
 									else {
 										current_button_state = Button_State::Invisible;
-									}
-								} break;
-								case UnitId::TerranIonCannon:
-								{
-									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
-									||  current_button->icon_id == IconId::DidactPassiveShroudOfAdun)	// Ion Cannon - Artillery Targeting
-									{
-										if (unit->status & UnitStatus::GroundedBuilding) {
-											current_button_state = Button_State::Enabled;
-										}
-										else {
-											current_button_state = Button_State::Invisible;
-										}
 									}
 								} break;
 
@@ -2353,65 +2393,9 @@ namespace hooks {
 								} break;
 							}
 
-							if (unit->id == UnitId::TerranCentaur &&  
-								current_button->icon_id == IconId::GeminiMissiles) // Centaur Sunchaser Salvo
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranMinotaur &&   
-								current_button->icon_id == IconId::TerranShipPlating) // Minotaur Fore Castle
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranMinotaur &&   
-								current_button->icon_id == IconId::SingularityCharge) // Minotaur Monoceros Targeting
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranMagnetar &&
-								current_button->icon_id == IconId::ArchonPsionicShockwave) // Magnetar Law of Attraction
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranClaymore &&
-								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Claymore Prolonged Arms
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranClaymore &&
-								current_button->icon_id == IconId::FusionCutterHarvest) // Claymore Kelvin Munitions
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranSiren &&   
-								current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Siren Discovered Attacks
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranMissileSilo &&  
-								current_button->icon_id == IconId::RadioactiveUnused2) // Missile Silo Scorched Earth
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranQuarry &&   
-								current_button->icon_id == IconId::ArgusJewel) // Quarry Meskalloid Stimulant
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::TerranSentinel &&  
-								current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Sentinel Prolonged Arms
-							{
-								if (unit->status & UnitStatus::GroundedBuilding) {
-									current_button_state = Button_State::Enabled;
-								}
-								else {
-									current_button_state = Button_State::Invisible;
-								}
-							}
-
 							// PROTOSS \\
 							
-							else if (unit->id == UnitId::ProtossArtisan &&  // Artisan Concordance Field
+							if (unit->id == UnitId::ProtossArtisan &&  // Artisan Concordance Field
 								current_button->icon_id == IconId::KhaydarinCore)
 							{
 								current_button_state = Button_State::Enabled;
@@ -2700,18 +2684,26 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 
+							if  (current_button_state == Button_State::Enabled
+							&& !(current_dialog->flags & BinDlgFlags::AlternateStyleWC2))
+							{
+								current_dialog->flags |= BinDlgFlags::AlternateStyleWC2;
+								helper::update_dialog(current_dialog);
+							}
+
 							// Passive icons: END \\
 
 						}
 					}
 
 					// Attack overrides
-					if (current_button->action_func == (ActFunc*)ButtonActions::Attack) {
-						if (unit->id == UnitId::TerranBunker || unit->id == UnitId::PoliceDugout) {
+					if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building)
+					{
+						if ((unit->id == UnitId::TerranBunker || unit->id == UnitId::PoliceDugout)) {
 							u32 loaded = 0;
 							for (u32 i = 0; i < 8; ++i) {								
-								Unit* bunkerUnit = unit->get_loaded_unit(i);
-								if (bunkerUnit && scbw::unit_is_ranged_attacker(bunkerUnit)) {
+								Unit* bunker_unit = unit->get_loaded_unit(i);
+								if (bunker_unit && scbw::unit_is_ranged_attacker(bunker_unit)) {
 									loaded++;
 								}
 							}
@@ -2723,7 +2715,7 @@ namespace hooks {
 						}
 					}
 
-					// Form switch/mode change?
+					// Form switch, mode change, toggles, and related overrides
 					if (current_button->action_func == (ActFunc*)ButtonActions::Use_Technology) {
 						if (unit->id != UnitId::ProtossMindTyrant) {
 							for (s32 i = 0; i < generictoggles; i++) {
@@ -2794,8 +2786,7 @@ namespace hooks {
 				if (!jumpto5933C)
 				{
 					// 0045929A
-					if (buttons_count >= current_buttonset->buttons_in_set
-						|| current_dialog->index < current_button->position)
+					if (buttons_count >= current_buttonset->buttons_in_set || current_dialog->index < current_button->position)
 					{
 						jumpto5933C = true;
 					}
@@ -2819,9 +2810,9 @@ namespace hooks {
 								ButtonSet* buttonset;	//[EBP-04]	[18]
 							} stack_placeholder;
 							current_dialog->graphic = current_button->icon_id;
-							if (!(current_dialog->flags & BinDlgFlags::Unknown0))
+							if (!(current_dialog->flags & BinDlgFlags::Highlighted))
 							{
-								current_dialog->flags |= BinDlgFlags::Unknown0;
+								current_dialog->flags |= BinDlgFlags::Highlighted;
 								scbw::update_dialog(current_dialog);
 							}
 							stack_placeholder.not_allocated = 0;

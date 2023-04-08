@@ -992,8 +992,8 @@ namespace hooks
 			current_dialog->stat_button_user->type = 3;
 			current_dialog->stat_button_user->id = slot_unit_id;
 
-			if (!(current_dialog->flags & BinDlgFlags::Unknown0)) {
-				current_dialog->flags |= BinDlgFlags::Unknown0;
+			if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
+				current_dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(current_dialog);
 			}
 			u32 textId = 0x313 + built_unit->get_race(); // "Mutating", "Adding On", "Opening Warp Rift"
@@ -1117,8 +1117,8 @@ namespace hooks
 						current_dialog->psz_text = 0;
 					}
 
-					if (!(current_dialog->flags & BinDlgFlags::Unknown0)) {
-						current_dialog->flags |= BinDlgFlags::Unknown0;
+					if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
+						current_dialog->flags |= BinDlgFlags::Highlighted;
 						helper::update_dialog(current_dialog);
 					}
 					current_dialog = current_dialog->next;
@@ -1207,15 +1207,15 @@ namespace hooks
 					stack_placeholder.always_zero_here = 0;
 					stack_placeholder.mouse_x = g_mouse->x;
 
-					if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Unknown0))
+					if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted))
 					{
-						current_dialog->flags |= BinDlgFlags::Unknown0;
+						current_dialog->flags |= BinDlgFlags::Highlighted;
 						helper::update_dialog(current_dialog);
 					}
 				}
-				if (!(current_dialog->flags & BinDlgFlags::Unknown0))
+				if (!(current_dialog->flags & BinDlgFlags::Highlighted))
 				{
-					current_dialog->flags |= BinDlgFlags::Unknown0;
+					current_dialog->flags |= BinDlgFlags::Highlighted;
 					helper::update_dialog(current_dialog);
 				}
 			}
@@ -1264,9 +1264,9 @@ namespace hooks
 				stack_placeholder.always_zero_here = 0;
 				stack_placeholder.mouse_x = g_mouse->x;
 
-				if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Unknown0))
+				if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted))
 				{
-					current_dialog->flags |= BinDlgFlags::Unknown0;
+					current_dialog->flags |= BinDlgFlags::Highlighted;
 					helper::update_dialog(current_dialog);
 				}
 			}
@@ -1379,9 +1379,9 @@ namespace hooks
 			current_dialog->psz_text = g_queues_buffers[0];
 			helper::show_dialog(current_dialog);
 
-			if (!(current_dialog->flags & BinDlgFlags::Unknown0))
+			if (!(current_dialog->flags & BinDlgFlags::Highlighted))
 			{
-				current_dialog->flags |= BinDlgFlags::Unknown0;
+				current_dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(current_dialog);
 			}
 			helper::add_text_to_dialog(dialog, -15, (char*)g_stat_txt_tbl_new->get_string(0x303 + unit->get_race())); // Zerg: "Morphing", Terran: "Building", Protoss: "Opening Warp Gate"
