@@ -1151,6 +1151,9 @@ SCBW_DATA(Unit**,			g_unknown_unit_ptr_related,		0x004A00AA);
 // For unit_selection_click
 SCBW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);
 
+// For assign_player_names
+SCBW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
