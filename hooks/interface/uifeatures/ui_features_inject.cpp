@@ -1,6 +1,7 @@
 #include "ui_features.h"
 #include "hook_tools.h"
 #include "data_ext.h"
+#include "config.h"
 
 namespace
 {
@@ -337,6 +338,25 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	// Non-hooks \\
+
+	const u32 replayStatBtns_27AB5 = 0x00427AB5;
+	const u32 replayStatBtns_27AE4 = 0x00427AE4;
+	void __declspec(naked) replayStatBtns_patch_27AB0() {
+		static b32 cfg_value = config.show_replay_progress_bar;
+		__asm {
+			MOV		EAX, cfg_value
+			TEST	EAX, EAX
+			JE		offset hide_progress_bar
+			CALL	ds : [0x00586A0]			// show_dialog
+			JMP		replayStatBtns_27AB5
+			hide_progress_bar:
+			MOV		byte ptr[EBP - 3], 0
+			MOV		byte ptr[EBP - 4], 3
+			JMP		replayStatBtns_27AE4
+		}
+	}
 }
 
 namespace hooks
@@ -363,5 +383,7 @@ namespace hooks
 		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
 	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4); // crashes
 		jump_patch(centerview_unit_group,					0x004967E0, 1);
+
+		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 	}
 }

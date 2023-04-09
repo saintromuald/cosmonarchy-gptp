@@ -603,7 +603,7 @@ LABEL_15:
 		}
 	}
 
-	// Hooked to improve functionality
+	// Hooked to improve functionality. -Veeq7
 	void __fastcall centerview_unit_group(u8 slot) { // 004967E0
 		u32 player = *g_local_human_id;
 		ControlGroup* group = &control_group_array->player[player].control_group[slot];

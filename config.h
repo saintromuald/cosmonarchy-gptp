@@ -19,6 +19,7 @@ struct Config {
 
 	bool witness_show_apm = true;
 	bool witness_show_order_lines = true;
+	bool show_replay_progress_bar = true;
 
 	// Visuals
 	bool celebrations_enabled = true;
