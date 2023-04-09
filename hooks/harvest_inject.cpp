@@ -278,30 +278,71 @@ namespace {
 		}
 	}
 
-	bool should_worker_wander(Unit* resource) {
-		if (resource->building.resource.next_gatherer) {
-			return true;
+	Unit* find_better_node(Unit* worker, Unit* current_node) {
+		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
+		Unit* best_node = current_node;
+		u32 best_worker_count = get_unit_ext(current_node)->values[ValueAssignedHarvesters] - 1; // we don't want to count the current worker
+		u32 best_distance = 0;
+
+		EntryArray nodes = {};
+		unit_search_radial(&nodes, current_node->position, 8 * 32);
+		for (u32 i = 0; i < nodes.count; ++i) {
+			Unit* node = nodes.units[i];
+			if (node->id < UnitId::ResourceMineralField || node->id > UnitId::ResourceMineralField) {
+				continue;
+			}
+			if (worker->pathing_flags & 1) {
+				u32 group_id = scbw::get_region(node->position)->group_index;
+				if (original_group_id != group_id) {
+					continue;
+				}
+			}
+
+			u32 worker_count = get_unit_ext(node)->values[ValueAssignedHarvesters];
+			u32 distance = scbw::get_distance_fast(current_node->position, node->position);
+			if (worker_count < best_worker_count || (best_node != current_node && worker_count == best_worker_count && distance < best_distance)) {
+				best_node = node;
+				best_worker_count = worker_count;
+				best_distance = distance;
+			}
 		}
-		return false;
+
+		return best_node;
 	}
 
-	void __declspec(naked) should_worker_wander_wrapper() {
+	void worker_wandering(Unit* worker, Unit* current_node) {
+		if (!helper::move_to_target(current_node, worker)) {
+			return;
+		}
+		Unit* new_node = find_better_node(worker, current_node);
+		if (new_node && new_node != current_node) {
+			get_unit_ext(current_node)->values[ValueAssignedHarvesters] -= 1;
+			get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
+			worker->order_target.unit = new_node;
+			worker->order_target.pt.x = new_node->position.x;
+			worker->order_target.pt.y = new_node->position.y;
+			worker->worker.target_resource.unit = new_node;
+			worker->worker.target_resource.pt.x = new_node->position.x;
+			worker->worker.target_resource.pt.y = new_node->position.y;
+			helper::move_to_target(new_node, worker);
+			return;
+		}
+		worker->main_order_state = 3;
+	}
+
+	void __declspec(naked) worker_wandering_wrapper() {
+		static const u32 jump_address = 0x0046940F; 
+		static Unit* worker;
 		static Unit* resource;
 		__asm {
+			MOV worker, ESI
 			MOV resource, EBX
 			PUSHAD
 		}
-		if (should_worker_wander(resource)) {
-			static const u32 yes_address = 0x0046939D; 
-			__asm {
-				POPAD
-				JMP yes_address
-			}
-		}
-		static const u32 no_address = 0x0046940B; 
+		worker_wandering(worker, resource);
 		__asm {
 			POPAD
-			JMP no_address
+			JMP jump_address
 		}
 	}
 }
@@ -327,6 +368,6 @@ namespace hooks {
 		jump_patch(return_cargo_to_best_depot_proc_wrapper,					0x00440FA0,	1);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
-		jump_patch(should_worker_wander_wrapper,							0x00469393,	1);
+		jump_patch(worker_wandering_wrapper,								0x00469393,	1);
 	}
 }
