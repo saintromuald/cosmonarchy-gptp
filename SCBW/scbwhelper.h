@@ -1425,7 +1425,7 @@ namespace helper {
 
 	bool unit_is_morphing(Unit* unit);																		// 0045CD00
 	char cmdact_unload(Unit* unit);																			// 004BFDB0
-	Target ai_prepare_to_flee(Unit* target, Unit* unit);													// 00476A50
+	Target ai_prepare_to_flee(Unit* target, Unit* attacker);												// 00476A50
 
 	bool unit_is_enemy(Unit* other);																		// 004D1380
 

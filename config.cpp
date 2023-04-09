@@ -6,8 +6,7 @@
 
 Config config;
 
-// NOTE: this code is pretty gross, the yaml library is pretty bad, so not sure what to do about it
-// it would probably be better to have a custom config format
+// This code is pretty gross, the yaml library is pretty bad. It would probably be better to have a custom config format. -Veeq7
 
 bool file_exists(std::string file) {
 	return std::ifstream(file).good();
@@ -30,6 +29,7 @@ void load_config() {
 
 		load_field(config_node, "witness-show-apm", config.witness_show_apm);
 		load_field(config_node, "witness-show-order-lines", config.witness_show_order_lines);
+		load_field(config_node, "show-replay-progress-bar", config.show_replay_progress_bar);
 
 		load_field(config_node, "quick-casting", config.quick_casting);
 		load_field(config_node, "quick-building", config.quick_building);
@@ -73,6 +73,7 @@ void save_config() {
 	out << YAML::Comment("Witness UI");
 	write_field(out, "witness-show-apm", config.witness_show_apm);
 	write_field(out, "witness-show-order-lines", config.witness_show_order_lines);
+	write_field(out, "show-replay-progress-bar", config.show_replay_progress_bar);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Visuals");

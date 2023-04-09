@@ -1164,7 +1164,7 @@ namespace hooks
 					&&  victim->status & UnitStatus::Reacts
 					&&  helper::is_at_home(victim)
 					&&  helper::is_under_carapace_swarm(victim) != 255) {
-						Target flee_target = helper::ai_prepare_to_flee(attacker, victim);
+						Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
 						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}
 				}

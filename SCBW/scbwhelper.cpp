@@ -11827,13 +11827,13 @@ namespace helper {
 		return result;
 	}
 
-	Target ai_prepare_to_flee(Unit* target, Unit* unit) {
+	Target ai_prepare_to_flee(Unit* target, Unit* attacker) {
 		static Target result;
 		const u32 func_address = 0x00476A50;
 		__asm {
 			PUSHAD
 			PUSH target
-			MOV EAX, unit
+			MOV EAX, attacker
 			CALL func_address
 			MOV dword ptr [offset result.pt], EAX
 			MOV dword ptr [offset result.unit], EDX

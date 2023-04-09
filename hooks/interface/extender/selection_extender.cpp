@@ -133,7 +133,7 @@ namespace hooks {
 										if ((sprite_flags_4 & (SpriteFlags::Flag01 | SpriteFlags::Flag02)) <= 2
 										&&  !helper::create_selection_circle(previous_sprite_2, g_selection_circle_color[previous_player], ImageId::SelectionCircleDashed_22pixels))
 										{
-											previous_sprite_2->flags &= 0xF9u;
+											previous_sprite_2->flags &= ~(SpriteFlags::Flag01 | SpriteFlags::Flag02);
 										}
 									}
 								}
