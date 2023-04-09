@@ -802,8 +802,9 @@ namespace hooks {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 				continue;
 			}
-			if (unit->worker.target_resource.unit) {
-				UnitExt* target_ext = get_unit_ext(unit->worker.target_resource.unit);
+			Unit* target = unit->worker.target_resource.unit;
+			if (target) {
+				UnitExt* target_ext = get_unit_ext(target);
 				target_ext->values[ValueAssignedHarvesters] += 1;
 			}
 		}

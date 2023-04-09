@@ -288,7 +288,7 @@ namespace {
 		unit_search_radial(&nodes, current_node->position, 8 * 32);
 		for (u32 i = 0; i < nodes.count; ++i) {
 			Unit* node = nodes.units[i];
-			if (node->id < UnitId::ResourceMineralField || node->id > UnitId::ResourceMineralField) {
+			if (node->id < UnitId::ResourceMineralField || node->id > UnitId::ResourceMineralFieldType3) {
 				continue;
 			}
 			if (worker->pathing_flags & 1) {
@@ -300,7 +300,7 @@ namespace {
 
 			u32 worker_count = get_unit_ext(node)->values[ValueAssignedHarvesters];
 			u32 distance = scbw::get_distance_fast(current_node->position, node->position);
-			if (worker_count < best_worker_count || (best_node != current_node && worker_count == best_worker_count && distance < best_distance)) {
+			if (worker_count < best_worker_count || (worker_count == best_worker_count && distance < best_distance)) {
 				best_node = node;
 				best_worker_count = worker_count;
 				best_distance = distance;
