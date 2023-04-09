@@ -256,6 +256,21 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) find_best_return_cargo_target_wrapper() { // 00441310
+		static Unit* result;
+		static Unit* worker;
+		__asm {
+			MOV worker, EAX
+			PUSHAD
+		}
+		result = hooks::find_best_return_cargo_target(worker);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	b32 death_geyser_check(Unit* unit) {
 		if (scbw::unit_id_is_gas_structure(unit->id)) {
 			return true;
@@ -368,6 +383,7 @@ namespace hooks {
 		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
 		jump_patch(update_mineral_field_image_wrapper,						0x00468830,	6);
 		jump_patch(return_cargo_to_best_depot_proc_wrapper,					0x00440FA0,	1);
+		jump_patch(find_best_return_cargo_target_wrapper,					0x00441310,	2);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 		jump_patch(worker_wandering_wrapper,								0x00469393,	1);
