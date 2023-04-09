@@ -279,6 +279,7 @@ namespace {
 	}
 
 	Unit* find_better_node(Unit* worker, Unit* current_node) {
+		bool is_pathing = worker->pathing_flags & 1;
 		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
 		Unit* best_node = current_node;
 		u32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters] - 1; // we don't want to count the current worker
@@ -291,7 +292,7 @@ namespace {
 			if (node->id < UnitId::ResourceMineralField || node->id > UnitId::ResourceMineralFieldType3) {
 				continue;
 			}
-			if (worker->pathing_flags & 1) {
+			if (is_pathing) {
 				u32 group_id = scbw::get_region(node->position)->group_index;
 				if (original_group_id != group_id) {
 					continue;
@@ -299,7 +300,7 @@ namespace {
 			}
 
 			u32 worker_count = get_unit_ext(node)->values[ValueActiveHarvesters];
-			u32 distance = scbw::get_distance_fast(worker->position, node->position);
+			u32 distance = is_pathing ? helper::get_path_distance_to(worker, node->position) : scbw::get_distance_fast(worker->position, node->position);
 			if (worker_count < best_worker_count || (worker_count == best_worker_count && distance < best_distance)) {
 				best_node = node;
 				best_worker_count = worker_count;
