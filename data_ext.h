@@ -127,6 +127,7 @@ enum ExtValueId
 	ValueMortothrokorStacks,
 	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
+	ValueActiveHarvesters,
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
 	ValueDidactRecalling,

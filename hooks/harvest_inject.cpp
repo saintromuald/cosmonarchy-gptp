@@ -281,7 +281,7 @@ namespace {
 	Unit* find_better_node(Unit* worker, Unit* current_node) {
 		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
 		Unit* best_node = current_node;
-		u32 best_worker_count = get_unit_ext(current_node)->values[ValueAssignedHarvesters] - 1; // we don't want to count the current worker
+		u32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters] - 1; // we don't want to count the current worker
 		u32 best_distance = 0;
 
 		EntryArray nodes = {};
@@ -298,7 +298,7 @@ namespace {
 				}
 			}
 
-			u32 worker_count = get_unit_ext(node)->values[ValueAssignedHarvesters];
+			u32 worker_count = get_unit_ext(node)->values[ValueActiveHarvesters];
 			u32 distance = scbw::get_distance_fast(current_node->position, node->position);
 			if (worker_count < best_worker_count || (worker_count == best_worker_count && distance < best_distance)) {
 				best_node = node;
@@ -317,7 +317,9 @@ namespace {
 		Unit* new_node = find_better_node(worker, current_node);
 		if (new_node && new_node != current_node) {
 			get_unit_ext(current_node)->values[ValueAssignedHarvesters] -= 1;
+			get_unit_ext(current_node)->values[ValueActiveHarvesters] -= 1;
 			get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
+			get_unit_ext(new_node)->values[ValueActiveHarvesters] += 1;
 			worker->order_target.unit = new_node;
 			worker->order_target.pt.x = new_node->position.x;
 			worker->order_target.pt.y = new_node->position.y;

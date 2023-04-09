@@ -797,15 +797,23 @@ namespace hooks {
 			}
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->values[ValueAssignedHarvesters] = 0;
+			unit_ext->values[ValueActiveHarvesters] = 0;
 		}
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
+				continue;
+			}
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (!scbw::order_id_is_harvest_related(unit->main_order_id)) {
 				continue;
 			}
 			Unit* target = unit->worker.target_resource.unit;
 			if (target) {
 				UnitExt* target_ext = get_unit_ext(target);
 				target_ext->values[ValueAssignedHarvesters] += 1;
+				if (unit->main_order_id != OrderId::ReturnMinerals && unit->main_order_id != OrderId::ReturnGas) {
+					target_ext->values[ValueActiveHarvesters] += 1;
+				}
 			}
 		}
 
