@@ -334,9 +334,7 @@ namespace {
 			Unit* new_node = find_better_node(worker, current_node);
 			if (new_node && new_node != current_node) {
 				get_unit_ext(current_node)->values[ValueAssignedHarvesters] -= 1;
-				get_unit_ext(current_node)->values[ValueActiveHarvesters] -= 1;
 				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
-				get_unit_ext(new_node)->values[ValueActiveHarvesters] += 1;
 				worker->order_target.unit = new_node;
 				worker->order_target.pt.x = new_node->position.x;
 				worker->order_target.pt.y = new_node->position.y;
