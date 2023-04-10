@@ -790,6 +790,29 @@ namespace hooks {
 
 		process_quickbuilding();
 
+		// Sync camera
+		struct SyncCameraCommand {
+			u8 type;
+			u8 subtype;
+			u8 player;
+			Point16 pos;
+			u8 padding[5];
+		};
+		assert(sizeof(SyncCameraCommand) == 0xc);
+
+		Point16 camera = {};
+		camera.x = *g_move_to_x;
+		camera.y = *g_move_to_y;
+		camera.x += 320;
+		camera.y += 200;
+
+		SyncCameraCommand command = {};
+		command.type = GameCommand_Custom;
+		command.subtype = NewGameCommand::CameraSync;
+		command.player = *g_local_human_id;
+		command.pos = scbw::clamp_point(camera);
+		helper::queue_game_command((u8*)&command, 0xc);
+
 		// Count workers
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!scbw::unit_id_is_resource_node(unit->id, true)) {
@@ -3472,6 +3495,11 @@ namespace hooks {
 									}
 									unit->order_to(OrderId::CTFCOP2, unit->position.x, unit->position.y);
 								}
+							} break;
+							case NewGameCommand::CameraSync: {
+								u32 player = buffer[2];
+								Point16 pos = *(Point16*)(buffer + 2);
+								global_vars.players[player].camera = pos;
 							} break;
 						}
 						goto next_command;

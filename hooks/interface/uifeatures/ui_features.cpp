@@ -401,6 +401,23 @@ LABEL_15:
 
 	// Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
 	void draw_all_minimap_boxes() { // 004A4AC0
+		for (u8 player = 0; player < PlayerLimit; ++player) {
+			if (g_player_table[player].type != PlayerType::Human || global_vars.players[player].is_witness) {
+				continue;
+			}
+			if (player == *g_local_nation_id) {
+			//	continue;
+			}
+			if (!*g_is_in_replay && !global_vars.players[*g_local_nation_id].is_witness && !scbw::is_allied_to(player, *g_local_nation_id)) {
+				continue;
+			}
+			Point16 camera = global_vars.players[player].camera;
+			if (camera.x || camera.y) {
+				scbw::printf("%u %u", camera.x, camera.y);
+				helper::draw_unit_box(camera.x, camera.y, 640, 400, g_player_minimap_colors[player], true);
+			}
+		}
+
 		Bitmap* surface = *g_current_surface;
 		u32 player = *g_local_nation_id;
 		*g_current_surface = g_minimap_surface_2;
@@ -581,16 +598,6 @@ LABEL_15:
 					helper::ground_attack_init(mouse_pos_y, mouse_pos_x);
 				}
 			}
-		}
-	}
-
-	bool is_newline(char c) {
-		return c == '\r' || c == '\n';
-	}
-
-	void skip_newlines(char** c) {
-		while (is_newline(**c)) {
-			*c += 1;
 		}
 	}
 

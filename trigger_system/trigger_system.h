@@ -43,6 +43,7 @@ extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 
 struct PlayerVars {
 	bool is_witness;
+	Point16 camera;
 };
 
 enum Celebration {
