@@ -340,13 +340,13 @@ namespace scbw {
 		assert(raceId <= 2);
 		assert(player < PLAYER_COUNT);
 
-		s32 supplyProvided;
+		s32 supply_provided;
 		if (is_cheat_enabled(CheatFlags::FoodForThought)) {
-			supplyProvided = g_race_supply[RaceId::Terran].max[player];
+			supply_provided = g_race_supply[RaceId::Terran].max[player];
 		} else {
-			supplyProvided = std::min(g_race_supply[RaceId::Terran].max[player], g_race_supply[RaceId::Terran].provided[player]);
+			supply_provided = std::min(g_race_supply[RaceId::Terran].max[player], g_race_supply[RaceId::Terran].provided[player]);
 		}
-		return supplyProvided - g_race_supply[RaceId::Terran].used[player];
+		return supply_provided - g_race_supply[RaceId::Terran].used[player];
 	}
 
 	bool has_tech_researched(u8 player, u16 techId) {
@@ -1248,13 +1248,13 @@ namespace scbw {
 	}
 
 	bool can_be_entered_by(Unit* transport, Unit* unit) {
-		const u32 Func_CanBeEnteredBy = 0x004E6E00; // AKA CanEnterTransport()
+		const u32 func_address = 0x004E6E00; // AKA CanEnterTransport()
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, transport
 			PUSH unit
-			CALL Func_CanBeEnteredBy
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1262,41 +1262,41 @@ namespace scbw {
 	}
 
 	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId) {
-		const u32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
+		const u32 func_address = 0x0048EE30;
 		__asm {
 			PUSHAD
 			MOV ESI, sfxId
 			MOV EDI, statTxtId
 			MOV EBX, player
-			CALL Func_ShowErrorMessageWithSfx
+			CALL func_address
 			POPAD
 		}
 	}
 
 	u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId) {
-		const u32 Func_GetTechUseErrorMessage = 0x00491E80;
-		static u32 techId_;
-		static u16 errorMessage;
-		techId_ = techId;
+		const u32 func_address = 0x00491E80;
+		static u32 tech_id_xd;
+		static u16 error_message_xd;
+		tech_id_xd = techId;
 		__asm {
 			PUSHAD
-			PUSH techId_
+			PUSH tech_id_xd
 			MOV BL, castingPlayer
 			MOV EAX, target
-			CALL Func_GetTechUseErrorMessage
-			MOV errorMessage, AX
+			CALL func_address
+			MOV error_message_xd, AX
 			POPAD
 		}
-		return errorMessage;
+		return error_message_xd;
 	}
 
 	u16 get_last_queue_slot_id(Unit* a1) {
-		const u32 Func_getLastQueueSlotType = 0x0047B270;
+		const u32 func_address = 0x0047B270;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, a1
-			CALL Func_getLastQueueSlotType
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1304,23 +1304,23 @@ namespace scbw {
 	}
 
 	void set_offset_to_parent_special_overlay(Image* image) {
-		const u32 Func_updateImagePositionOffset = 0x004D5A00;
+		const u32 func_address = 0x004D5A00;
 		__asm {
 			PUSHAD
 			MOV ECX, image
-			CALL Func_updateImagePositionOffset
+			CALL func_address
 			POPAD
 		}
 	}
 
 	u32 get_ground_height_at_pos(s32 x, s32 y) {
-		const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;
+		const u32 func_address = 0x004BD0F0;
 		static u32 height;
 		__asm {
 			PUSHAD
 			MOV EAX, y
 			MOV ECX, x
-			CALL Func_GetGroundHeightAtPos
+			CALL func_address
 			MOV height, EAX
 			POPAD
 		}
@@ -1328,86 +1328,86 @@ namespace scbw {
 	}
 
 	void disable_dialog(BinDlg* dialog) {
-		const u32 Func_DisableDialog = 0x00418640;
+		const u32 func_address = 0x00418640;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
-			CALL Func_DisableDialog
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void show_dialog(BinDlg* dialog) {
-		const u32 Func_ShowDialog = 0x004186A0;
+		const u32 func_address = 0x004186A0;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
-			CALL Func_ShowDialog
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void hide_dialog(BinDlg* dialog) {
-		const u32 Func_HideDialog = 0x00418700;
+		const u32 func_address = 0x00418700;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
-			CALL Func_HideDialog
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void enable_control(BinDlg* dialog) {
-		const u32 Func_Sub418E00 = 0x00418E00;
+		const u32 func_address = 0x00418E00;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
-			CALL Func_Sub418E00
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void update_dialog(BinDlg* dialog) {
-		const u32 Func_UpdateDialog = 0x0041C400;
+		const u32 func_address = 0x0041C400;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
-			CALL Func_UpdateDialog
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void prepare_unit_move(Unit* unit, bool hideUnit) {
-		const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
+		const u32 func_address = 0x00493CA0;
 		assert(unit);
-		static b32 _hideUnit;
-		_hideUnit = hideUnit ? 1 : 0;
+		static b32 hide_unit_xd;
+		hide_unit_xd = hideUnit ? 1 : 0;
 		__asm {
 			PUSHAD
-			PUSH _hideUnit
+			PUSH hide_unit_xd
 			MOV EDI, unit
-			CALL Func_PrepareUnitMoveClearRefs
+			CALL func_address
 			POPAD
 		}
 	}
 
 	bool check_unit_collision_pos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag) {
-		const u32 Func_CheckUnitCollisionPos = 0x0049D3E0;
+		const u32 func_address = 0x0049D3E0;
 		assert(unit);
 		assert(inPos);
 		assert(outPos);
 		static u32 result;
-		static u32 _hideErrorMsg;
-		_hideErrorMsg = hideErrorMsg;
+		static u32 hide_error_message_xd;
+		hide_error_message_xd = hideErrorMsg;
 		__asm {
 			PUSHAD
 			PUSH someFlag;
-			PUSH _hideErrorMsg
+			PUSH hide_error_message_xd
 			PUSH outPos
 			PUSH inPos
 			PUSH unit
 			MOV EAX, moveArea
-			CALL Func_CheckUnitCollisionPos
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1451,7 +1451,7 @@ namespace scbw {
 
 	// Player check added based on how others functions test it. Values above or equal to 8 means all players.
 	void move_screen_to_unit(Unit* unit, u32 player) { // 004E6020
-		const u32 Func_MoveScreen = 0x0049C440;
+		const u32 func_address = 0x0049C440;
 		if (player >= PlayerLimit || player == *g_local_nation_id) {
 			s32 x = unit->sprite->position.x;
 			s32 y = unit->sprite->position.y;
@@ -1467,7 +1467,7 @@ namespace scbw {
 				PUSHAD
 				MOV ECX, y
 				MOV EAX, x
-				CALL Func_MoveScreen
+				CALL func_address
 				POPAD
 			}
 		}
@@ -1477,14 +1477,14 @@ namespace scbw {
 	// Values above or equal to 8 means all players
 	// x and y are coords as gotten from unit->sprite->position
 	void minimap_ping(u32 x, u32 y, s32 color, u32 player) {
-		const u32 Func_minimapPing = 0x004A34C0;
+		const u32 func_address = 0x004A34C0;
 		if (player >= PlayerLimit || player == *g_local_nation_id) {
 			__asm {
 				PUSHAD
 				PUSH color
 				PUSH y
 				PUSH x
-				CALL Func_minimapPing
+				CALL func_address
 				POPAD
 			}
 		}
