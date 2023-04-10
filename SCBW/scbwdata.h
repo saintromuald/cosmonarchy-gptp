@@ -1158,8 +1158,8 @@ SCBW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
 SCBW_DATA(Box16*,			g_full_map_pixel_dimensions,	0x006284A0);
 
 // For draw_unit_box
-SCBW_DATA(u16*,				g_ping_zoom_x,					0x0059CC68);
-SCBW_DATA(u16*,				g_ping_zoom_y,					0x0059C1B0);
+SCBW_DATA(u16*,				g_ping_zoom_div,					0x0059CC68);
+SCBW_DATA(u16*,				g_ping_zoom_lshift,					0x0059C1B0);
 SCBW_DATA(u16*,				g_map_height,					0x0059CC74);
 SCBW_DATA(u16*,				g_map_width,					0x0059CC64);
 

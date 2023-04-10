@@ -399,30 +399,69 @@ LABEL_15:
 		}
 	}
 
+	// Mirrored from IDA to draw camera positions. -Pr0nogo
+	static void draw_camera_box(s32 x, s32 y, u8 color) { // based on 004A3FD0
+		u32 w = 640;
+		u32 h = 400;
+		x -= w / 2;
+		y -= h / 2;
+		if (x < 0) {
+			x = 0;
+		}
+		if (y < 0) {
+			y = 0;
+		}
+
+		Box32 box = {};
+		box.x = (x << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.y = (y << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.w = (w << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.h = (h << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+
+		if (box.x < 0) {
+			box.x = 0;
+		}
+		if (box.y < 0) {
+			box.y = 0;
+		}
+		if (box.x + box.w >= *g_map_width) {
+			box.w = *g_map_width - box.x - 1;
+		}
+		if (box.y + box.h >= *g_map_height) {
+			box.h = *g_map_height - box.y - 1;
+		}
+
+		*g_draw_color_index = color;
+		helper::draw_box(box.x,             box.y,         box.w, 1);
+		helper::draw_box(box.x,             box.y,         1,     box.h);
+		helper::draw_box(box.x + box.w - 1, box.y,         1,     box.h);
+		helper::draw_box(box.x,             box.y + box.h - 1, box.w, 1);
+	}
+
 	// Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
 	void draw_all_minimap_boxes() { // 004A4AC0
+		Bitmap* surface = *g_current_surface;
+		u32 player = *g_local_nation_id;
+		*g_current_surface = g_minimap_surface_2;
+		*g_minimap_unit_box_count = 0;
+		*g_minimap_box_checksum = 0;
+
 		for (u8 player = 0; player < PlayerLimit; ++player) {
 			if (g_player_table[player].type != PlayerType::Human || global_vars.players[player].is_witness) {
 				continue;
 			}
 			if (player == *g_local_nation_id) {
-			//	continue;
+				continue;
 			}
 			if (!*g_is_in_replay && !global_vars.players[*g_local_nation_id].is_witness && !scbw::is_allied_to(player, *g_local_nation_id)) {
 				continue;
 			}
 			Point16 camera = global_vars.players[player].camera;
 			if (camera.x || camera.y) {
-				scbw::printf("%u %u", camera.x, camera.y);
-				helper::draw_unit_box(camera.x, camera.y, 640, 400, g_player_minimap_colors[player], true);
+				draw_camera_box(camera.x, camera.y, g_player_minimap_colors[player]);
 			}
 		}
 
-		Bitmap* surface = *g_current_surface;
-		u32 player = *g_local_nation_id;
-		*g_current_surface = g_minimap_surface_2;
-		*g_minimap_unit_box_count = 0;
-		*g_minimap_box_checksum = 0;
 		u32 index = 12;
 		while (index) {
 			if (--index < PlayerLimit) {
@@ -685,94 +724,5 @@ LABEL_15:
 		avg_pos.x /= avg_count;
 		avg_pos.y /= avg_count;
 		scbw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
-	}
-
-	// Mirrored from IDA to draw camera positions. -Pr0nogo
-	u32 draw_unit_box(u32 x, u8 color, u32 y, u8 w, u8 h, u8 is_building) // 004A3FD0
-	{
-		u32 w_half = w >> 1;
-		*g_draw_color_index = color;
-		if (x < w_half)
-		{
-			x = w >> 1;
-		}
-		u32 h_half = h >> 1;
-		if (y < h_half)
-		{
-			y = h >> 1;
-		}
-		u32 x_pixel = ((x - w_half) << *g_ping_zoom_y) / *g_ping_zoom_x >> 5;
-		Point16 pos1 = {}; // x and y
-		pos1.x = x_pixel;
-		pos1.y = ((y - h_half) << *g_ping_zoom_y) / *g_ping_zoom_x >> 5;
-
-		Point16 pos2 = {}; // width and height
-		u32 w_pixel = (w << *g_ping_zoom_y) / *g_ping_zoom_x / 32;
-		pos2.x = w_pixel;
-		u32 h_pixel = (h << *g_ping_zoom_y) / *g_ping_zoom_x / 32;
-		pos2.y = h_pixel;
-		if (w_pixel < 2)
-		{
-		LABEL_10:
-			pos2.x = 2;
-			goto LABEL_11;
-		}
-		if (!is_building)
-		{
-			if (w_pixel <= 2)
-			{
-				goto LABEL_11;
-			}
-			goto LABEL_10;
-		}
-		if (w_pixel > 4)
-		{
-			pos2.x = 4;
-		}
-	LABEL_11:
-		if (h_pixel < 2)
-		{
-		LABEL_16:
-			pos2.y = 2;
-			goto LABEL_17;
-		}
-		if (!is_building)
-		{
-			if (h_pixel <= 2)
-			{
-				goto LABEL_17;
-			}
-			goto LABEL_16;
-		}
-		if (h_pixel > 4)
-		{
-			pos2.y = 4;
-		}
-	LABEL_17:
-		u32 bounds_check = *(u32*)&pos2 + *(u32*)&pos1 - 1;
-		if ((x_pixel & 0x8000u) == 0)
-		{
-			if (bounds_check >= *g_map_height)
-			{
-				pos2.x = *g_map_height - x_pixel;
-			}
-		}
-		else
-		{
-			pos1.x = 0;
-		}
-		if (pos1.y >= 0)
-		{
-			if ((signed __int16)(pos2.y + pos1.y - 1) >= *g_map_width)
-			{
-				pos2.y = *g_map_width - pos1.y;
-			}
-			helper::draw_box(pos1.x, pos1.y, pos2.x, pos2.y);
-		}
-		else
-		{
-			helper::draw_box(pos1.x, 0, pos2.x, pos2.y);
-		}
-		return *g_minimap_unit_box_count += 2;
 	}
 }

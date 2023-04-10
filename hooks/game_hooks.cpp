@@ -3498,7 +3498,7 @@ namespace hooks {
 							} break;
 							case NewGameCommand::CameraSync: {
 								u32 player = buffer[2];
-								Point16 pos = *(Point16*)(buffer + 2);
+								Point16 pos = *(Point16*)(buffer + 3);
 								global_vars.players[player].camera = pos;
 							} break;
 						}

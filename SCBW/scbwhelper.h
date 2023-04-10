@@ -1585,5 +1585,5 @@ namespace helper {
 	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFD90
 	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);									// 004E8740
 
-	u32 draw_box(u16 x, u16 y, u16 w, u16 h);																								// 004E1D20
+	u32 draw_box(u32 x, u32 y, u32 w, u32 h);																								// 004E1D20
 }

@@ -13501,7 +13501,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 draw_box(u16 x, u16 y, u16 w, u16 h)
+	u32 draw_box(u32 x, u32 y, u32 w, u32 h)
 	{
 		static u32 result;
 		const u32 func_address = 0x004E1D20;
