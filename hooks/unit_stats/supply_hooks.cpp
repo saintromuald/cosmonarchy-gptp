@@ -374,124 +374,139 @@ namespace hooks
         return true;
     }
 
-	// Hook edited by DarkenedFantasies for new replay UI. -Pr0nogo
-	void stat_res_main_proc(BinDlg* dialog) { // 004E5640
-		if (dialog->control_type) {
-			dialog = dialog->parent;
+	static void draw_player_stats(BinDlg** dialog_ptr, Point16* pos, u32 player, bool can_show_apm, bool show_name) {
+		// Track worker/military counts. -Veeq7
+		u32 workers = 0;
+		u32 men = 0;
+		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+			if (unit->status & UnitStatus::Completed) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+					workers += 2;
+				} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
+					men += 2;
+				}
+			}
 		}
 
-		BinDlg* dialog_var = dialog->child_dialog;
-		if (dialog_var) {
-			while (dialog_var->index != 1) {
-				dialog_var = dialog_var->next;
+		helper::show_supply_info(*dialog_ptr, g_player_table[player].race + 4, workers, men);
+		*dialog_ptr = (*dialog_ptr)->next;
+		helper::print_stat_res_info(*dialog_ptr, g_player_table[player].race + 1, &StatRes_accrue_gas[player], resources->gas[player], FALSE);
+		*dialog_ptr = (*dialog_ptr)->next;
+		helper::print_stat_res_info(*dialog_ptr, 0, &StatRes_accrue_minerals[player], resources->minerals[player], FALSE);
+		*dialog_ptr = (*dialog_ptr)->next;
 
-				if (!dialog_var) {
-					dialog_var = 0;
+		Point16 local_pos = *pos;
+		local_pos.x -= 3;
+		graphics::draw_statres_box(local_pos.x + 4, local_pos.y + 2, local_pos.x + 13, local_pos.y + 11, g_player_minimap_colors[player]);
+		local_pos.x -= 3;
+
+		bool show_apm = can_show_apm && g_player_table[player].type == PlayerType::Human;
+		if (show_name || show_apm) {
+			char buffer[64] = {};
+			u32 apm = player_apm_counter[player].action_count / (ActionSampleTime / 60.0);
+			if (show_name && show_apm) {
+				sprintf_s(buffer, "%s%s | %u", scbw::get_player_color_code(player).data, player_data.full_player_names[player].data, apm);
+			} else if (show_apm) {
+				sprintf_s(buffer, "%s%u", scbw::get_player_color_code(player).data, apm);
+			} else {
+				sprintf_s(buffer, "%s%s", scbw::get_player_color_code(player).data, player_data.full_player_names[player].data);
+			}
+			u32 width = font_base[graphics::FONT_MEDIUM]->getTextWidth(buffer);
+			graphics::draw_statres_text(local_pos.x - width, local_pos.y, buffer, graphics::FONT_MEDIUM);
+		}
+
+		pos->y += 15;
+
+		// keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
+		helper::hide_dialog(*dialog_ptr);
+		*dialog_ptr = (*dialog_ptr)->next;
+	}
+
+	// Hook edited by DarkenedFantasies for new replay UI. -Pr0nogo
+	void stat_res_main_proc(BinDlg* parent_dialog) { // 004E5640
+		if (parent_dialog->control_type) {
+			parent_dialog = parent_dialog->parent;
+		}
+
+		BinDlg* dialog = parent_dialog->child_dialog;
+		if (dialog) {
+			while (dialog->index != 1) {
+				dialog = dialog->next;
+
+				if (!dialog) {
+					dialog = 0;
 					break;
 				}
 			}
 		} else {
-			dialog_var = 0;
+			dialog = 0;
 		}
 
 		// Replay/witness UI. -DF
+		Point16 pos = { 420, 3 };
 		if (*g_is_in_replay || global_vars.players[*g_local_nation_id].is_witness) {
-			u8 statres_row = 0;
 			graphics::reset_stat_res_graphics();
 
-			bool show_apm = false;
+			bool can_show_apm = false;
 			if (config.witness_show_apm) {
 				for (u8 player = 0; player < PlayerLimit; ++player) {
 					if (g_player_table[player].type == PlayerType::Human && !global_vars.players[player].is_witness) {
-						show_apm = true;
+						can_show_apm = true;
 						break;
 					}
 				}
 			}
 
-			Point16 pos = { 420, 3 };
 			for (u8 player = 0; player < PlayerLimit; ++player) {
-				if ((g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::Human) && !global_vars.players[player].is_witness) {
-					// Track worker/military counts. -Veeq7
-					u32 workers = 0;
-					u32 men = 0;
-					for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-						if (unit->status & UnitStatus::Completed) {
-							if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-								workers += 2;
-							} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
-								men += 2;
-							}
-						}
-					}
-
-					helper::show_supply_info(dialog_var, g_player_table[player].race + 4, workers, men);
-					dialog_var = dialog_var->next;
-					helper::print_stat_res_info(dialog_var, g_player_table[player].race + 1, &StatRes_accrue_gas[player], resources->gas[player], FALSE);
-					dialog_var = dialog_var->next;
-					helper::print_stat_res_info(dialog_var, 0, &StatRes_accrue_minerals[player], resources->minerals[player], FALSE);
-					dialog_var = dialog_var->next;
-
-					Point16 local_pos = pos;
-					if (show_apm) {
-						local_pos.x -= 40;
-						if (g_player_table[player].type == PlayerType::Human) {
-							u32 apm = player_apm_counter[player].action_count / (ActionSampleTime / 60.0);
-							char buffer[48] = {};
-							sprintf_s(buffer, BWTC_GREEN "APM: %u", apm);
-							graphics::draw_statres_text(local_pos.x, local_pos.y, buffer, graphics::FONT_MEDIUM);
-						}
-						local_pos.x -= 17;
-					}
-
-					char buffer[48] = {};
-					sprintf_s(buffer, "%s%s", scbw::get_player_color_code(player).data, player_data.full_player_names[player].data);
-					u32 width = font_base[graphics::FONT_MEDIUM]->getTextWidth(buffer);
-					graphics::draw_statres_text(local_pos.x - width, local_pos.y, buffer, graphics::FONT_MEDIUM);
-					graphics::draw_statres_box(local_pos.x + 4, local_pos.y + 2, local_pos.x + 13, local_pos.y + 11, g_player_minimap_colors[player]);
-
-					pos.y += 15;
-
-					// keeping this 4th dialog box for later, if i ever manage to use the native DrawBox function for it instead of graphics::draw_filled_box. -DF
-					helper::hide_dialog(dialog_var);
-					dialog_var = dialog_var->next;
+				if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
+					continue;
 				}
+				if (global_vars.players[player].is_witness) {
+					continue;
+				}
+				draw_player_stats(&dialog, &pos, player, config.witness_show_apm, true);
 			}
 
-			while (dialog_var && dialog_var->index <= 32) {
-				helper::hide_dialog(dialog_var);
-				dialog_var = dialog_var->next;
+			while (dialog && dialog->index <= 32) {
+				helper::hide_dialog(dialog);
+				dialog = dialog->next;
 			}
 		} else { // Normal player UI. -Veeq7
-			u32 active_player = *g_local_nation_id;
-			u32 workers = 0;
-			u32 men = 0;
-			for (Unit* unit = first_player_unit->unit[active_player]; unit; unit = unit->player_link.next) {
-				if (unit->status & UnitStatus::Completed) {
-					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-						workers += 2;
-					} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
-						men += 2;
-					}
+			graphics::reset_stat_res_graphics();
+
+			bool can_show_apm = config.show_apm;
+			u32 local_player = *g_local_nation_id;
+			for (u8 player = 0; player < PlayerLimit; ++player) {
+				if (g_player_table[player].type == PlayerType::Human && !global_vars.players[player].is_witness && player != local_player) {
+					can_show_apm = true;
+					break;
 				}
 			}
+			draw_player_stats(&dialog, &pos, local_player, config.show_apm, true);
 
-			helper::show_supply_info(dialog_var, g_player_table[active_player].race + 4, workers, men);
-			dialog_var = dialog_var->next;
-			helper::print_stat_res_info(dialog_var, *g_console_index + 1, unknown_68C22C, g_game_vespene[active_player], FALSE);
-			dialog_var = dialog_var->next;
-			helper::print_stat_res_info(dialog_var, 0, unknown_68C230, (u32)g_game_minerals[active_player], FALSE);
-			dialog_var = dialog_var->next;
+			// Wrap this for in a config option
+			for (u8 player = 0; player < PlayerLimit; ++player) {
+				if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
+					continue;
+				}
+				if (global_vars.players[player].is_witness) {
+					continue;
+				}
+				if (player == local_player || !scbw::is_allied_to(player, local_player)) {
+					continue;
+				}
+				draw_player_stats(&dialog, &pos, player, config.show_apm, true);
+			}
 
-			if (dialog_var->next) {
+			if (dialog->next) {
 				do {
-					if (dialog_var->index > 31) {
+					if (dialog->index > 31) {
 						break;
 					}
 
-					helper::hide_dialog(dialog_var);
-					dialog_var = dialog_var->next;
-				} while (dialog_var);
+					helper::hide_dialog(dialog);
+					dialog = dialog->next;
+				} while (dialog);
 			}
 		}
 	}

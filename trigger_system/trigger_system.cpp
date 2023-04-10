@@ -1090,6 +1090,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					// Store this for returning from witness to previous player type, if necessary.
 					g_player_name_list->player[trigger_player].type = 0;
 					*g_score_screen_player_count -= 1;
+					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game. -Pr0nogo
 					if (*g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
 						u32 first_player = 0;
 						for (u32 i = 0; i < PlayerLimit; ++i) {
