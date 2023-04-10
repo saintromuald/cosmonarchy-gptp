@@ -216,6 +216,7 @@ namespace hooks
 			return;
 		}
 		scbw::decloak_proc(unit);
+		unit->order_target.pt = unit->position;
 
 		UnitExt* unit_ext = get_unit_ext(unit);
 		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
