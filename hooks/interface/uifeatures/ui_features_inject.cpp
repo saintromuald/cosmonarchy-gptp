@@ -343,7 +343,7 @@ namespace
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
 	const u32 replayStatBtns_27AE4 = 0x00427AE4;
-	const u32 show_dialog = 0x00586A0;
+	const u32 show_dialog = 0x004186A0;
 	void __declspec(naked) replayStatBtns_patch_27AB0() {
 		static b32 cfg_value = config.show_replay_progress_bar;
 		__asm {
