@@ -7281,7 +7281,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range) {
+	s32 spell_order_move_towards_target(Unit* caster, u32 range) {
 		const u32 Func_spellOrder_MoveTowardsTarget = 0x00492450;
 		static s32 result;
 		__asm {
@@ -13494,6 +13494,23 @@ namespace helper {
 			PUSH func
 			PUSH dimensions
 			MOV ESI, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 draw_box(u16 x, u16 y, u16 w, u16 h)
+	{
+		static u32 result;
+		const u32 func_address = 0x004E1D20;
+		__asm {
+			PUSHAD
+			PUSH h
+			PUSH w
+			PUSH y
+			PUSH x
 			CALL func_address
 			MOV result, EAX
 			POPAD

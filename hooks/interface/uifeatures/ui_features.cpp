@@ -686,4 +686,93 @@ LABEL_15:
 		avg_pos.y /= avg_count;
 		scbw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
 	}
+
+	// Mirrored from IDA to draw camera positions. -Pr0nogo
+	u32 draw_unit_box(u32 x, u8 color, u32 y, u8 w, u8 h, u8 is_building) // 004A3FD0
+	{
+		u32 w_half = w >> 1;
+		*g_draw_color_index = color;
+		if (x < w_half)
+		{
+			x = w >> 1;
+		}
+		u32 h_half = h >> 1;
+		if (y < h_half)
+		{
+			y = h >> 1;
+		}
+		u32 x_pixel = ((x - w_half) << *g_ping_zoom_y) / *g_ping_zoom_x >> 5;
+		Point16 pos1 = {}; // x and y
+		pos1.x = x_pixel;
+		pos1.y = ((y - h_half) << *g_ping_zoom_y) / *g_ping_zoom_x >> 5;
+
+		Point16 pos2 = {}; // width and height
+		u32 w_pixel = (w << *g_ping_zoom_y) / *g_ping_zoom_x / 32;
+		pos2.x = w_pixel;
+		u32 h_pixel = (h << *g_ping_zoom_y) / *g_ping_zoom_x / 32;
+		pos2.y = h_pixel;
+		if (w_pixel < 2)
+		{
+		LABEL_10:
+			pos2.x = 2;
+			goto LABEL_11;
+		}
+		if (!is_building)
+		{
+			if (w_pixel <= 2)
+			{
+				goto LABEL_11;
+			}
+			goto LABEL_10;
+		}
+		if (w_pixel > 4)
+		{
+			pos2.x = 4;
+		}
+	LABEL_11:
+		if (h_pixel < 2)
+		{
+		LABEL_16:
+			pos2.y = 2;
+			goto LABEL_17;
+		}
+		if (!is_building)
+		{
+			if (h_pixel <= 2)
+			{
+				goto LABEL_17;
+			}
+			goto LABEL_16;
+		}
+		if (h_pixel > 4)
+		{
+			pos2.y = 4;
+		}
+	LABEL_17:
+		u32 bounds_check = *(u32*)&pos2 + *(u32*)&pos1 - 1;
+		if ((x_pixel & 0x8000u) == 0)
+		{
+			if (bounds_check >= *g_map_height)
+			{
+				pos2.x = *g_map_height - x_pixel;
+			}
+		}
+		else
+		{
+			pos1.x = 0;
+		}
+		if (pos1.y >= 0)
+		{
+			if ((signed __int16)(pos2.y + pos1.y - 1) >= *g_map_width)
+			{
+				pos2.y = *g_map_width - pos1.y;
+			}
+			helper::draw_box(pos1.x, pos1.y, pos2.x, pos2.y);
+		}
+		else
+		{
+			helper::draw_box(pos1.x, 0, pos2.x, pos2.y);
+		}
+		return *g_minimap_unit_box_count += 2;
+	}
 }
