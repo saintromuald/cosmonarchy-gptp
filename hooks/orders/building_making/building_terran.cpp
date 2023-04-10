@@ -144,16 +144,21 @@ namespace hooks
 					y_max = 0;
 				}
 
-				unit->order_target.pt.x = helper::rand_between(x_min, x_max, 9); // DF: Can't tell what effect the third value has on the randomization.
-				unit->order_target.pt.y = helper::rand_between(y_min, y_max, 9);
-				helper::fix_target_location(&unit->order_target.pt,unit->id);
-				if (helper::unk_terrain_collision_2(unit, unit->order_target.pt.x - unit->sprite->position.x, unit->order_target.pt.y - unit->sprite->position.y) != 0)
-				{
-					unit->order_target.pt.x = helper::rand_between(x_min, x_max, 9);
-					unit->order_target.pt.y = helper::rand_between(y_min, y_max, 9);
-					helper::fix_target_location(&unit->order_target.pt, unit->id);
+				// DF: New, RNG-free pattern
+				if (unit->position.y >= y_max) {
+					unit->order_target.pt.x = x_min;
+				}
+				else {
+					unit->order_target.pt.x = x_max;
 				}
 
+				if (unit->position.x <= x_min) {
+					unit->order_target.pt.y = y_min;
+				}
+				else {
+					unit->order_target.pt.y = y_max;
+				}
+				helper::fix_target_location(&unit->order_target.pt,unit->id);
 				if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) != 0)
 				{
 					unit->main_order_state = 5;
@@ -167,7 +172,7 @@ namespace hooks
 			}
 			else if (unit->main_order_state == 6)
 			{
-				if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 20))
+				if (unit->position != unit->next_target_waypoint)
 				{
 					jump_to_switch_1 = true;
 				}
@@ -198,9 +203,8 @@ namespace hooks
 					}
 					else
 					{
-						u8 rand_value = helper::randomize_short(10);
 						Image* current_image = unit->sprite->images.head;
-						unit->main_order_timer = (rand_value & 63) + 30;
+						unit->main_order_timer = 30;
 						while (current_image)
 						{
 							current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
@@ -212,9 +216,8 @@ namespace hooks
 				}
 				else
 				{
-					u8 rand_value = helper::randomize_short(10);
 					Image* current_image = unit->sprite->images.head;
-					unit->main_order_timer = (rand_value & 63) + 30;
+					unit->main_order_timer = 30;
 					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
