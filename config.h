@@ -21,6 +21,11 @@ struct Config {
 	bool witness_show_order_lines = true;
 	bool show_replay_progress_bar = true;
 
+	bool show_team_camera = true;
+	bool show_team_ui = true;
+	bool show_team_ui_apm = true;
+	bool show_team_ui_names = false;
+
 	// Visuals
 	bool celebrations_enabled = true;
 

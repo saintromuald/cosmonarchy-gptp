@@ -490,19 +490,21 @@ LABEL_15:
 			}
 		}
 
-		for (u8 player = 0; player < PlayerLimit; ++player) {
-			if (g_player_table[player].type != PlayerType::Human || global_vars.players[player].is_witness) {
-				continue;
-			}
-			if (player == *g_local_nation_id) {
-				continue;
-			}
-			if (!*g_is_in_replay && !global_vars.players[*g_local_nation_id].is_witness && !scbw::is_allied_to(player, *g_local_nation_id)) {
-				continue;
-			}
-			Point16 camera = global_vars.players[player].camera;
-			if (camera.x || camera.y) {
-				draw_camera_box(camera.x, camera.y, g_player_minimap_colors[player]);
+		if (config.show_team_camera) {
+			for (u8 player = 0; player < PlayerLimit; ++player) {
+				if (g_player_table[player].type != PlayerType::Human || global_vars.players[player].is_witness) {
+					continue;
+				}
+				if (player == *g_local_nation_id) {
+					continue;
+				}
+				if (!*g_is_in_replay && !global_vars.players[*g_local_nation_id].is_witness && !scbw::is_allied_to(player, *g_local_nation_id)) {
+					continue;
+				}
+				Point16 camera = global_vars.players[player].camera;
+				if (camera.x || camera.y) {
+					draw_camera_box(camera.x, camera.y, g_player_minimap_colors[player]);
+				}
 			}
 		}
 

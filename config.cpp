@@ -31,6 +31,11 @@ void load_config() {
 		load_field(config_node, "witness-show-order-lines", config.witness_show_order_lines);
 		load_field(config_node, "show-replay-progress-bar", config.show_replay_progress_bar);
 
+		load_field(config_node, "show-team-camera", config.show_team_camera);
+		load_field(config_node, "show-team-ui", config.show_team_ui);
+		load_field(config_node, "show-team-ui-apm", config.show_team_ui_apm);
+		load_field(config_node, "show-team-ui-names", config.show_team_ui_names);
+
 		load_field(config_node, "quick-casting", config.quick_casting);
 		load_field(config_node, "quick-building", config.quick_building);
 
@@ -74,6 +79,13 @@ void save_config() {
 	write_field(out, "witness-show-apm", config.witness_show_apm);
 	write_field(out, "witness-show-order-lines", config.witness_show_order_lines);
 	write_field(out, "show-replay-progress-bar", config.show_replay_progress_bar);
+	out << YAML::Newline << YAML::Newline;
+
+	out << YAML::Comment("Team UI");
+	write_field(out, "show-team-camera", config.show_team_camera);
+	write_field(out, "show-team-ui", config.show_team_ui);
+	write_field(out, "show-team-ui-apm", config.show_team_ui_apm);
+	write_field(out, "show-team-ui-names", config.show_team_ui_names);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Visuals");

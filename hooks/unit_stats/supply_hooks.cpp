@@ -482,20 +482,21 @@ namespace hooks
 					break;
 				}
 			}
-			draw_player_stats(&dialog, &pos, local_player, config.show_apm, true);
+			draw_player_stats(&dialog, &pos, local_player, config.show_team_ui_apm, config.show_team_ui_names);
 
-			// Wrap this for in a config option
-			for (u8 player = 0; player < PlayerLimit; ++player) {
-				if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
-					continue;
+			if (config.show_team_ui) {
+				for (u8 player = 0; player < PlayerLimit; ++player) {
+					if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
+						continue;
+					}
+					if (global_vars.players[player].is_witness) {
+						continue;
+					}
+					if (player == local_player || !scbw::is_allied_to(player, local_player)) {
+						continue;
+					}
+					draw_player_stats(&dialog, &pos, player, config.show_team_ui_apm, config.show_team_ui_names);
 				}
-				if (global_vars.players[player].is_witness) {
-					continue;
-				}
-				if (player == local_player || !scbw::is_allied_to(player, local_player)) {
-					continue;
-				}
-				draw_player_stats(&dialog, &pos, player, config.show_apm, true);
 			}
 
 			if (dialog->next) {
