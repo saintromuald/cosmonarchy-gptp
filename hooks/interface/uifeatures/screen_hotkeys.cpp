@@ -31,7 +31,7 @@ void handle_screen_hotkeys() {
 	for (s32 i = 0; i < CameraCap; i++) {
 		// Unfortunately `g_is_keycode_used` doesn't fetch the F keys,
 		// using that would have been way easier as it's current frame specific and already checks if the game is in focus
-		if (GetAsyncKeyState(VK_F1 + i) & 0x1) {
+		if (GetAsyncKeyState(VK_F1 + i)) {
 			if (*g_is_holding_ctrl || *g_is_holding_shift) {
 				hooks::save_screen_location(i);
 			} else {
