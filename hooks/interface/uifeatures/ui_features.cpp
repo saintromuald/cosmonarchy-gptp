@@ -412,9 +412,9 @@ LABEL_15:
 		box.w = ((x + w) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
 		box.h = ((y + h) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
 
-		box.x = Clamp(box.x, 0, *g_map_width - 1);
-		box.y = Clamp(box.y, 0, *g_map_width - 1);
-		box.w = Clamp(box.w, 0, *g_map_height - 1);
+		box.x = Clamp(box.x, 0, *g_map_width  - 1);
+		box.y = Clamp(box.y, 0, *g_map_height - 1);
+		box.w = Clamp(box.w, 0, *g_map_width  - 1);
 		box.h = Clamp(box.h, 0, *g_map_height - 1);
 
 		box.w -= box.x;
