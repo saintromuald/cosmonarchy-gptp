@@ -7,10 +7,10 @@ namespace TechId {
 	// Shared
 		TargetGround						= 17, // Ensnare
 		UnusedAnticthonFailureMode			= 23, // Archon Warp
-		CancelNewAbility					= 26, // Unused Tech 26 | used for: Land Grab, Mind Control, Enthralling Assault, Conjoining Root
+		CancelNewAbility					= 26, // Unused Tech 26 | used for: Land Grab, Recall, Controlled Demolition
 
 	// Terran
-		EidolonLobotomyMine					=  1, // Lockdown
+		UnusedLobotomyMine					=  1, // Lockdown, unused
 		ControlledDemolition				=  2, // EMP Shockwave
 		SavantOnhitToggle					= 24, // Restoration
 		ApostleLazarusAgent					= 32, // Lurker Aspect

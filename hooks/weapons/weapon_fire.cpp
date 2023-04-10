@@ -347,20 +347,11 @@ namespace hooks {
 				switch (weapon_id)
 				{
 					// Missile spawn positions start
-					case WeaponId::SentinelCerberusRailgun:
+					case WeaponId::CyprianTwinRailguns:
 					{
 						WeaponOffsets offsets = {};
-						offsets.value_id = ValueSentinelLaunchPos;
-						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
-					} break;
-					case WeaponId::IonCannonIonCannon:
-					case WeaponId::IonCannonHammerfallBeacon:
-					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueIonCannonLaunchPos;
-						offsets.count = 1;
-						offsets.use_special_overlay = true;
+						offsets.value_id = ValueCyprianLaunchPos;
+						offsets.count = 2;
 						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::GoliathContenderMissiles:
@@ -438,6 +429,22 @@ namespace hooks {
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValuePhobosLaunchPos;
 						offsets.count = 4;
+						fire_bullet(unit, weapon_id, 0, &offsets);
+					} break;
+					case WeaponId::SentinelCerberusRailgun:
+					{
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueSentinelLaunchPos;
+						offsets.count = 1;
+						fire_bullet(unit, weapon_id, 0, &offsets);
+					} break;
+					case WeaponId::IonCannonIonCannon:
+					case WeaponId::IonCannonHammerfallBeacon:
+					{
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValueIonCannonLaunchPos;
+						offsets.count = 1;
+						offsets.use_special_overlay = true;
 						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
 					case WeaponId::WardenPrismaticCannon:
@@ -699,9 +706,15 @@ namespace hooks {
 			}
 
 			switch (bullet->weapon_id) {
+				case WeaponId::CyprianTwinRailguns: // Same as default, but orange effect
+				{
+					globals.add_bullet_multihit(bullet, collision_target);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+				} break;
 				case WeaponId::PenumbraErebolShockCannon:
 				{
-					// Penumbra - Shroud Piercer - pierce targets
+					// Penumbra - Shroud Piercer
 					globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 2);

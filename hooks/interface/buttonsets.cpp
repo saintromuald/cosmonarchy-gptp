@@ -1889,6 +1889,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranCyprian:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranShaman:
 								{
 									if (current_button->icon_id == IconId::Restoration) { // Shaman - Nanite Field

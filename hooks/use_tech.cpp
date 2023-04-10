@@ -40,7 +40,7 @@ namespace hooks
 				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1) {
 				TechCapableUnit = true;
 			}
-			if (tech == TechId::EidolonLobotomyMine) {
+			if (tech == TechId::UnusedLobotomyMine) {
 				TechCapableUnit = true;
 			}
 		}
@@ -124,7 +124,7 @@ namespace hooks
 			} break;
 			case TechId::HypnagogueThroughTheLookingGlass:
 			{
-				scbw::print("issue order");
+				scbw::print("select target");
 				helper::issue_tri_target_order(OrderId::CastThroughTheLookingGlass, 0, 0);
 			} break;
 			case TechId::SpiderMines:

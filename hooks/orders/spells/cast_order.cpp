@@ -10,15 +10,12 @@ namespace hooks
 	{
 		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)default_order_string;
-		if (tech_id == TechId::Hallucination
-		||	tech_id == TechId::LuminaryAuralAssault
-		||	tech_id == TechId::HypnagogueThroughTheLookingGlass
+		if (!scbw::tech_id_needs_target(tech_id)
 		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
-			char cheat_flags = *g_cheat_state;
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
 			*energy_cost = tech_cost;
-			if ((cheat_flags & CheatFlags::TheGathering || caster->energy >= tech_cost))
+			if (caster->energy >= tech_cost) // Used to check for TheGathering cheat.
 			{
 				if (tech_id == TechId::Hallucination && !order_target) {
 					Point16 target_pos = caster->order_target.pt;
@@ -35,7 +32,7 @@ namespace hooks
 
 					return 1;
 				}
-				return helper::spellOrder_MoveTowardsTarget(caster, range);
+				return helper::spell_order_move_towards_target(caster, range);
 			}
 
 			GroupFlag caster_group_flags = units_dat::group_flags[caster->id];
@@ -62,14 +59,14 @@ namespace hooks
 		} else {
 			final_string = 0;
 		}
-		helper::get_stat_txt_string(caster, (u8) caster->player, final_string);
+		helper::get_stat_txt_string(caster, caster->player, final_string);
 
 		if (caster->order_queue_head) {
-			caster->user_action_flags |= 1u;
+			caster->user_action_flags |= 1;
 			helper::orders_nothing_2(caster);
 		} else {
 			if (caster->unit_ai) {
-				helper::issue_order_targeting_nothing(caster, 0x9Cu);
+				helper::issue_order_targeting_nothing(caster, OrderId::ComputerAI);
 			} else {
 				helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
 			}
@@ -91,9 +88,9 @@ namespace hooks
 			case TechId::Hallucination: // New
 			case TechId::Recall:
 			case TechId::StasisField:
-			case TechId::LanifectDisruptionField:
+		//	case TechId::LanifectDisruptionField:
 			case TechId::MindTyrantMaelstrom:
-			case TechId::LuminaryAuralAssault: // New, Aural Assault for Luminary
+			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
 			{
 				return 1;
@@ -101,7 +98,8 @@ namespace hooks
 			default:
 			{
 				if (tech_id != TechId::SpiderMines
-					&& tech_id != TechId::EidolonLobotomyMine) {
+				&&  tech_id != TechId::UnusedLobotomyMine)
+				{
 					bool has_target = false;
 					u16 error_stat_string = 0;
 					if (target) {

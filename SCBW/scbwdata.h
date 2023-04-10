@@ -1157,6 +1157,12 @@ SCBW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
 // For find_best_cargo_return_to_target
 SCBW_DATA(Box16*,			g_full_map_pixel_dimensions,	0x006284A0);
 
+// For draw_unit_box
+SCBW_DATA(u16*,				g_ping_zoom_x,					0x0059CC68);
+SCBW_DATA(u16*,				g_ping_zoom_y,					0x0059C1B0);
+SCBW_DATA(u16*,				g_map_height,					0x0059CC74);
+SCBW_DATA(u16*,				g_map_width,					0x0059CC64);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

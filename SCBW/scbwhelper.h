@@ -455,7 +455,7 @@ namespace helper {
 
 	// For spell_order
 	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7);												// 00492020
-	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																		// 00492450
+	s32 spell_order_move_towards_target(Unit* caster, u32 range);																		// 00492450
 
 	// For can_target_spell
 	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id);																			// 004914B0
@@ -1584,4 +1584,6 @@ namespace helper {
 	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFEB0
 	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFD90
 	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);									// 004E8740
+
+	u32 draw_box(u16 x, u16 y, u16 w, u16 h);																								// 004E1D20
 }

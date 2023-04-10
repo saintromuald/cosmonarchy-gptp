@@ -1439,12 +1439,12 @@ namespace scbw {
 	}
 
 	void make_to_hold_position(Unit* unit) {
-		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+		const u32 func_address = 0x004EB5B0;
 		__asm
 		{
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_OrdersHoldPositionSuicidal
+			CALL func_address
 			POPAD
 		}
 	}
@@ -1515,11 +1515,12 @@ namespace scbw {
 
 	bool weapon_pierces_targets(u16 weapon_id) {
 		switch (weapon_id) {
-			case WeaponId::SentinelCerberusRailgun:
+			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::SilvertongueWordsmithRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
+			case WeaponId::SentinelCerberusRailgun:
 			case WeaponId::OptectonSunsplitBeam:
 			case WeaponId::PatriarchIronhandWeaver:
 			case WeaponId::KalkaliskViscousAcid:
@@ -3292,5 +3293,12 @@ namespace scbw {
 		return  units_dat::base_property[unit_id] & UnitProperty::Addon
 		||		unit_id == UnitId::TerranReservoir;
 	//	||		unit_id == UnitId::TerranWellbore;
+	}
+
+	bool tech_id_needs_target(u32 tech_id)
+	{
+		return  tech_id != TechId::Hallucination
+			&&	tech_id != TechId::LuminaryAuralAssault
+			&&	tech_id != TechId::HypnagogueThroughTheLookingGlass;
 	}
 }

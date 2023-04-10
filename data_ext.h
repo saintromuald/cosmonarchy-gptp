@@ -135,6 +135,7 @@ enum ExtValueId
 	ValueIonCannonTargetPosX,
 	ValueIonCannonTargetPosY,
 	ValueWorshipStack,
+	ValueCyprianLaunchPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
