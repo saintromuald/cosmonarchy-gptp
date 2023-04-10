@@ -402,15 +402,15 @@ LABEL_15:
 	}
 
 	// Mirrored from IDA to draw camera positions. -Pr0nogo
-	static void draw_camera_box(s32 x, s32 y, u8 color) { // based on 004A3FD0
-		u32 w_half = 640 / 2;
-		u32 h_half = 400 / 2;
+	static void draw_camera_box(u32 x, u32 y, u8 color) { // based on 004A3FD0
+		u32 w = 640;
+		u32 h = 400;
 
 		Box32 box = {};
-		box.x = ((x - w_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
-		box.y = ((y - h_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
-		box.w = ((x + w_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
-		box.h = ((y + h_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.x = (x       << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.y = (y       << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.w = ((x + w) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.h = ((y + h) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
 
 		box.x = Clamp(box.x, 0, *g_map_width - 1);
 		box.y = Clamp(box.y, 0, *g_map_width - 1);

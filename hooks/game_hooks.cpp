@@ -803,14 +803,12 @@ namespace hooks {
 		Point16 camera = {};
 		camera.x = *g_move_to_x;
 		camera.y = *g_move_to_y;
-		camera.x += 320;
-		camera.y += 200;
 
 		SyncCameraCommand command = {};
 		command.type = GameCommand_Custom;
 		command.subtype = NewGameCommand::CameraSync;
 		command.player = *g_local_human_id;
-		command.pos = scbw::clamp_point(camera);
+		command.pos = camera;
 		helper::queue_game_command((u8*)&command, 0xc);
 
 		// Count workers
