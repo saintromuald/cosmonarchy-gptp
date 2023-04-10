@@ -403,37 +403,22 @@ LABEL_15:
 
 	// Mirrored from IDA to draw camera positions. -Pr0nogo
 	static void draw_camera_box(s32 x, s32 y, u8 color) { // based on 004A3FD0
-		u32 w = 640;
-		u32 h = 400;
-		x -= w / 2;
-		y -= h / 2;
-		if (x < 0) {
-			x = 0;
-		}
-		if (y < 0) {
-			y = 0;
-		}
+		u32 w_half = 640 / 2;
+		u32 h_half = 400 / 2;
 
 		Box32 box = {};
-		box.x = (x << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
-		box.y = (y << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
-		box.w = (w << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
-		box.h = (h << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.x = ((x - w_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.y = ((y - h_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.w = ((x + w_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
+		box.h = ((y + h_half) << *g_ping_zoom_lshift) / *g_ping_zoom_div / 32;
 
-		if (box.x < 0) {
-			box.x = 0;
-		}
-		if (box.y < 0) {
-			box.y = 0;
-		}
+		box.x = Clamp(box.x, 0, *g_map_width - 1);
+		box.y = Clamp(box.y, 0, *g_map_width - 1);
+		box.w = Clamp(box.w, 0, *g_map_height - 1);
+		box.h = Clamp(box.h, 0, *g_map_height - 1);
 
-		if (box.x + box.w - 1 >= *g_map_width) {
-			scbw::printf("Clamping to %u tiles width", *g_map_width);
-			box.w = *g_map_width - box.x;
-		}
-		if (box.y + box.h - 1 >= *g_map_height) {
-			box.h = *g_map_height - box.y;
-		}
+		box.w -= box.x;
+		box.h -= box.y;
 
 		*g_draw_color_index = color;
 		helper::draw_box(box.x,             box.y,             box.w, 1);
