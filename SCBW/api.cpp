@@ -1491,12 +1491,12 @@ namespace scbw {
 	}
 
 	u8 has_overlay(Unit* unit) {
-		const u32 Func_hasOverlay = 0x0047B720;
+		const u32 func_address = 0x0047B720;
 		static u8 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_hasOverlay
+			CALL func_address
 			MOV result, AL
 			POPAD
 		}
@@ -1504,11 +1504,11 @@ namespace scbw {
 	}
 
 	void hide_and_disable_unit(Unit* unit) {
-		const u32 Func_unitDeathSomething_0 = 0x004E6340;
+		const u32 func_address = 0x004E6340;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_unitDeathSomething_0
+			CALL func_address
 			POPAD
 		}
 	}

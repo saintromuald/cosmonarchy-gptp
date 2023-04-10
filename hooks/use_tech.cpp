@@ -31,33 +31,33 @@ namespace hooks
 
 	void btnsact_use_tech(u16 tech, GrpHead* head) { // 00423F70
 		// Replacement for proc @ 00423660. -iquare
-		bool TechCapableUnit = false;
-		Unit* firstInList = players_selections->unit[*g_active_nation_id][0];
-		if (firstInList) {
+		bool tech_capable_unit = false;
+		Unit* first_in_list = players_selections->unit[*g_active_nation_id][0];
+		if (first_in_list) {
 			// Initial check for energy-based switch abilities
-			// Not sure if Lanifect needs this anymore
 			if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::ProtossLanifect
-				&& scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1) {
-				TechCapableUnit = true;
+			&&  scbw::get_generic_rust_value(first_in_list, RustId::ToggleDisruptionField) == 1)
+			{
+				tech_capable_unit = true;
 			}
 			if (tech == TechId::UnusedLobotomyMine) {
-				TechCapableUnit = true;
+				tech_capable_unit = true;
 			}
 		}
-		if (!TechCapableUnit) {
+		if (!tech_capable_unit) {
 			if (helper::check_energy_for_tech_use(tech)) {
-				TechCapableUnit = true;
+				tech_capable_unit = true;
 			}
-			if (firstInList) {
+			if (first_in_list) {
 				/*
 				if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::TerranAzazel
-					&& scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
+					&& scbw::get_generic_rust_value(first_in_list, RustId::ToggleSublimeShepherd) == 1)
 				{
-					TechCapableUnit = true;
+					tech_capable_unit = true;
 				}
 				*/
 			}
-			if (!TechCapableUnit)
+			if (!tech_capable_unit)
 			{
 				char* message = (char*)g_stat_txt_tbl_new->get_string(864);
 				Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
@@ -101,7 +101,7 @@ namespace hooks
 			case TechId::SavantOnhitToggle:
 			{
 				s32 action = 1;
-				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleSavantOnhit)) {
+				if (scbw::get_generic_rust_value(first_in_list, RustId::ToggleSavantOnhit)) {
 					action = 0;
 				}
 				u8 buf[0xC] = {};
@@ -161,16 +161,6 @@ namespace hooks
 			{
 				helper::issue_tri_target_order(OrderId::Consume, 0, 0);
 			} break;
-			case TechId::MatralethEnsnaringBrood:
-			{
-				u8 buf[0xc] = {};
-				buf[0] = 99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *g_active_player_id;
-				buf[4] = RustId::CastEnsnaringBrood;
-				helper::queue_game_command(buf, 0xc);
-			} break;
 			case TechId::MatralethParasite:
 			{
 				helper::issue_tri_target_order(OrderId::CastParasite, 0, 0);
@@ -211,20 +201,10 @@ namespace hooks
 			{
 				helper::issue_tri_target_order(OrderId::CastMaelstrom, 0, 0);
 			} break;
-			case TechId::DemiurgeGodsMadeFlesh:
-			{
-				u8 buf[0xc] = {};
-				buf[0] = 99;
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = 1;
-				buf[3] = *g_active_player_id;
-				buf[4] = RustId::CastGodsMadeFlesh;
-				helper::queue_game_command(buf, 0xc);
-			} break;
 			case TechId::LanifectDisruptionField:
 			{
 				s32 action = 1;
-				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionField) == 1) {
+				if (scbw::get_generic_rust_value(first_in_list, RustId::ToggleDisruptionField) == 1) {
 					action = 0;
 				}
 				u8 buf[0xc] = {};
@@ -245,7 +225,6 @@ namespace hooks
 			} break;
 			case TechId::StarSovereignTheGriefOfAllGods:
 			{
-				auto firstInList = g_client_selection_group->unit[0];
 				u8 buf[0xc] = {};
 				buf[0] = 99;
 				buf[1] = NewGameCommand::IssueCTFCop2;
