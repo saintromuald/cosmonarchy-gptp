@@ -426,17 +426,18 @@ LABEL_15:
 		if (box.y < 0) {
 			box.y = 0;
 		}
-		if (box.x + box.w >= *g_map_width) {
-			box.w = *g_map_width - box.x - 1;
+
+		if (box.x + box.w - 1 >= *g_map_width) {
+			box.w = *g_map_width - box.x;
 		}
-		if (box.y + box.h >= *g_map_height) {
-			box.h = *g_map_height - box.y - 1;
+		if (box.y + box.h - 1 >= *g_map_height) {
+			box.h = *g_map_height - box.y;
 		}
 
 		*g_draw_color_index = color;
-		helper::draw_box(box.x,             box.y,         box.w, 1);
-		helper::draw_box(box.x,             box.y,         1,     box.h);
-		helper::draw_box(box.x + box.w - 1, box.y,         1,     box.h);
+		helper::draw_box(box.x,             box.y,             box.w, 1);
+		helper::draw_box(box.x,             box.y,             1,     box.h);
+		helper::draw_box(box.x + box.w - 1, box.y,             1,     box.h);
 		helper::draw_box(box.x,             box.y + box.h - 1, box.w, 1);
 	}
 
