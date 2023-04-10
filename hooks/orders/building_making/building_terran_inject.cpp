@@ -79,44 +79,6 @@ namespace
 		}
 	}
 
-	const u32 update_placement_wrapper_jump_1 = 0x0048DD49;
-	void __declspec(naked) update_placement_simple_wrapper()
-	{
-		static u16 addonOffsetY;
-		__asm
-		{
-			MOVSX EAX, [ECX + 0x6626E2] // y
-			MOV addonOffsetY, AX
-			PUSHAD
-		}
-		scbw::adjust_addon_y(*g_place_building_unit_id, *g_place_building_base_type, &addonOffsetY);
-		__asm
-		{
-			POPAD
-			MOV AX, addonOffsetY
-			JMP update_placement_wrapper_jump_1
-		}
-	}
-
-	const u32 update_placement_wrapper_jump_2 = 0x0048DD68;
-	void __declspec(naked) update_placement_simple_wrapper_2()
-	{
-		static u16 addonOffsetX;
-		__asm
-		{
-			MOVSX EAX, [ECX + 0x6626E0] // x
-			MOV addonOffsetX, AX
-			PUSHAD
-		}
-		scbw::adjust_addon_x(*g_place_building_unit_id, *g_place_building_base_type, &addonOffsetX);
-		__asm
-		{
-			POPAD
-			MOV AX, addonOffsetX
-			JMP update_placement_wrapper_jump_2
-		}
-	}
-
 	void __declspec(naked) btnsact_place_addon_wrapper() {
 		static char* buffer;
 		static u16 unit_id;
@@ -197,12 +159,6 @@ namespace
 		}
 	}
 
-	void placement_simple_wrappers()
-	{
-		jump_patch(update_placement_simple_wrapper,		0x0048DD42, 2);
-		jump_patch(update_placement_simple_wrapper_2,	0x0048DD61, 2);
-	}
-
 	const u32 orders_place_addon_E6891 = 0x004E6B91;
 	void __declspec(naked) orders_place_addon_patch() {
 		__asm {
@@ -227,6 +183,26 @@ namespace
 			RET
 		}
 	}
+
+	const u32 decollide_unit_F2E3A = 0x004F2E3A;
+	const u32 decollide_unit_F2E4C = 0x004F2E4C;
+	void __declspec(naked) decollide_unit_F2E35() {
+		__asm {
+			PUSH	EBX//unit
+			PUSH	EDI//unit->velocity_direction_1
+			CMP		word ptr[ESI + 0x64], 7//unit->id == UnitId::TerranMason
+			JNE		offset isNotSCV
+			MOV		EAX, [ESI + 0xE8]
+			TEST	EAX, EAX//unit->secondaryOrderPos != null
+			JE		offset isNotSCV
+			MOV[EBP - 4], EAX//unit->sprite->position = unit->secondaryOrderPos
+			XOR[ESI + 0xE8], EAX//unit->secondaryOrderPos = null
+			JMP		decollide_unit_F2E4C
+			isNotSCV :
+			LEA		ECX, [EBP - 4]
+			JMP		decollide_unit_F2E3A
+		}
+	}
 }
 
 namespace hooks
@@ -243,8 +219,8 @@ namespace hooks
 		jump_patch(unit_is_geyser_wrapper,					0x004688B0, 2);
 	//	jump_patch(is_constructing_addon_wrapper,			0x004E66B0, 2); // Probably fine, but not necessary
 
-	//	placement_simple_wrappers();										// bugged
 		jump_patch(orders_place_addon_patch,				0x004E6B8B, 1);
 		call_patch(complete_addon_patch,					0x00463D69, 0);
+		jump_patch(decollide_unit_F2E35,					0x004F2E35);	// Make Masons return to their initial point of construction after completion. -DF
 	}
 }

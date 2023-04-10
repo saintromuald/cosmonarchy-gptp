@@ -111,6 +111,7 @@ namespace hooks
 						unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 						unit->order_simple(OrderId::ResetCollision1, false);
 						unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
+						unit->secondary_order_pos = unit->position;
 						// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
 						//    the randomized order_target is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 						//if (helper::ChangeMovementTargetMoveTarget2(unit, built_unit->sprite->position.x, built_unit->sprite->position.y))
@@ -389,10 +390,12 @@ namespace hooks
 					}
 					if (unit->build_queue[unit->build_queue_slot] == UnitId::TerranReservoir)
 					{
+						unit->secondary_order_pos = unit->position;
 						built_unit = helper::begin_gas_building(unit, UnitId::TerranReservoir);
 					}
 					else if (unit->build_queue[unit->build_queue_slot] == UnitId::PoliceDispensary)
 					{
+						unit->secondary_order_pos = unit->position;
 						built_unit = helper::begin_gas_building(unit, UnitId::PoliceDispensary);
 					}
 					else
