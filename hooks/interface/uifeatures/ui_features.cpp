@@ -45,11 +45,13 @@ namespace hooks {
 		ui_text_pos.y = *printXYPosY;
 	}
 
-	void register_action(ApmCounter* counter, u8 type) {
-		switch (type) {
+	void register_action(ApmCounter* counter, char* buffer) {
+		switch (buffer[0]) {
 			case 84: // Start game?
 			case 55: // Create preplaced unit?
 				return;
+			case 99: // Custom
+				if (buffer[1] == NewGameCommand::CameraSync) return;
 		}
 		if (counter->action_count < MaxActions) {
 			counter->action_time[counter->action_count++] = *g_elapsed_time_frames;
@@ -115,7 +117,7 @@ namespace hooks {
 
 	void queue_game_command(u8* data, u32 size) {
 		if (*g_command_queue_size + size <= *g_provider_max_buffer) {
-			register_action(&local_apm_counter, data[0]);
+			register_action(&local_apm_counter, (char*)data);
 			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
 			*g_command_queue_size += size;
 			return;
@@ -130,7 +132,7 @@ namespace hooks {
 			if (turns >= 16 - *g_provider_latency_calls) {
 				return;
 			}
-			register_action(&local_apm_counter, data[0]);
+			register_action(&local_apm_counter, (char*)data);
 			helper::send_turn();
 			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
 			*g_command_queue_size += size;

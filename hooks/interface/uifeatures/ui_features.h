@@ -38,7 +38,7 @@ namespace hooks {
 
 	void inject_ui_features_hooks();
 
-	void register_action(ApmCounter* counter, u8 type);
+	void register_action(ApmCounter* counter, char* buffer);
 	void init_actions();
 	void update_actions();
 	void draw_ui_features();
