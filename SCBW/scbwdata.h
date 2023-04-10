@@ -1154,6 +1154,9 @@ SCBW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);
 // For assign_player_names
 SCBW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
 
+// For find_best_cargo_return_to_target
+SCBW_DATA(Box16*,			g_full_map_pixel_dimensions,	0x006284A0);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

@@ -13483,4 +13483,21 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2)
+	{
+		static Unit* result;
+		const u32 func_address = 0x004E8740;
+		__asm {
+			PUSHAD
+			PUSH unit2
+			PUSH func
+			PUSH dimensions
+			MOV ESI, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

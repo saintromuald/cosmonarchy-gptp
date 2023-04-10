@@ -553,4 +553,22 @@ namespace hooks {
 		}
 		return false;
 	}
+
+	// Hooked to make workers always return to the closest town center by relative distance. -Pr0nogo
+	Unit* find_best_return_cargo_target(Unit* worker) // 00441310
+	{
+		u32 player = worker->player;
+		Unit* result = 0;
+		if (g_completed_unit_count_table[UnitId::TerranCommandCenter].player[player]
+		||  g_completed_unit_count_table[UnitId::TerranTreasury].player[player]
+		||  g_completed_unit_count_table[UnitId::ProtossNexus].player[player]
+		||  g_completed_unit_count_table[UnitId::ProtossCrucible].player[player]
+		||  g_completed_unit_count_table[UnitId::ZergHachirosk].player[player]
+		||  g_completed_unit_count_table[UnitId::ZergCaphrolosk].player[player]
+		||  g_completed_unit_count_table[UnitId::ZergGathtelosk].player[player])
+		{
+			result = helper::get_best_unit(worker, g_full_map_pixel_dimensions, helper::return_cargo_to_best_depot_proc, worker);
+		}
+		return result;
+	}
 }

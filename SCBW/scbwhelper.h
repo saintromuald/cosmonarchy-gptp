@@ -21,6 +21,7 @@ namespace helper {
 	SCBW_FUNC(0x0045D040, s32 __stdcall, select_new_unit, Unit* unit);
 	SCBW_FUNC(0x0049B870, bool __cdecl, update_alliances);
 	SCBW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
+	SCBW_FUNC(0x00440FA0, bool __fastcall, return_cargo_to_best_depot_proc, Unit* depot, Unit* worker);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
@@ -1582,4 +1583,5 @@ namespace helper {
 	void draw_button_graphic(BinDlg* dialog, void* dest);																					// 004F0050
 	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFEB0
 	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFD90
+	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);									// 004E8740
 }
