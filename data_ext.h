@@ -128,6 +128,7 @@ enum ExtValueId
 	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
 	ValueActiveHarvesters,
+	ValueIsActiveHarvester,
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
 	ValueDidactRecalling,

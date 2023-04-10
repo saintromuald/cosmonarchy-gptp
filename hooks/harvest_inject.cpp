@@ -297,7 +297,10 @@ namespace {
 		bool is_pathing = worker->pathing_flags & 1;
 		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
 		Unit* best_node = current_node;
-		u32 best_worker_count = get_unit_ext(current_node)->values[ValueAssignedHarvesters] - 1; // we don't want to count the current worker
+		s32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters];
+		if (get_unit_ext(worker)->values[ValueIsActiveHarvester]) {
+			best_worker_count -= 1; // we don't want to count the current worker
+		}
 		u32 best_distance = 0; // we don't want to change the current node on distance alone
 
 		EntryArray nodes = {};
@@ -330,10 +333,11 @@ namespace {
 		if (!helper::move_to_target(current_node, worker)) {
 			return;
 		}
-		if (current_node->building.resource.is_mining) {
+		UnitExt* current_node_ext = get_unit_ext(current_node);
+		if (current_node_ext->values[ValueActiveHarvesters]) {
 			Unit* new_node = find_better_node(worker, current_node);
 			if (new_node && new_node != current_node) {
-				get_unit_ext(current_node)->values[ValueAssignedHarvesters] -= 1;
+				current_node_ext->values[ValueAssignedHarvesters] -= 1;
 				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
 				worker->order_target.unit = new_node;
 				worker->order_target.pt.x = new_node->position.x;
