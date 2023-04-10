@@ -428,6 +428,7 @@ LABEL_15:
 		}
 
 		if (box.x + box.w - 1 >= *g_map_width) {
+			scbw::printf("Clamping to %u tiles width", *g_map_width);
 			box.w = *g_map_width - box.x;
 		}
 		if (box.y + box.h - 1 >= *g_map_height) {
