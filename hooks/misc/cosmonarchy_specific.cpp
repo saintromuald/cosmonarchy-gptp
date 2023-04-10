@@ -211,100 +211,48 @@ namespace hooks
 	}
 
 	// replaces CTFCop2 order
-	void order_phase_link(Unit* unit)
-	{
-		UnitExt* unitExt = get_unit_ext(unit);
-		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
-		u32 status = 0;
-		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;
-
+	void order_phase_link(Unit* unit) {
+		if (unit->id != UnitId::ProtossStarSovereign) {
+			return;
+		}
 		scbw::decloak_proc(unit);
-		if (unit->id == UnitId::ProtossStarSovereign)
-		{
-			if (order_state == 0)
-			{
-				if (unit->movement_flags & MovementFlags::Accelerating)
-				{
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
+			case 0: {
+				if (unit->movement_flags & MovementFlags::Accelerating) {
 					scbw::make_to_hold_position(unit);
 				}
-				unitExt->values[ValueProtossSwitchOrderState] = 1;
-			}
-			else if (order_state == 1)
-			{
+				unit_ext->values[ValueProtossSwitchOrderState] = 1;
+			} break;
+			case 1: {
 				if (!(unit->movement_flags & MovementFlags::Accelerating)
 					&& unit->sprite->main_graphic->animation != IscriptAnimation::Walking
 					&& unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle
-					&& unitExt->timers[TimerPlanetCrackerDelay] == 0)
-				{
-					unitExt->timers[TimerPlanetCrackerDelay] = 24;
+					&& unit_ext->timers[TimerPlanetCrackerDelay] == 0) {
+					unit_ext->timers[TimerPlanetCrackerDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
-					unitExt->values[ValueProtossSwitchOrderState] = 2;
+					unit_ext->values[ValueProtossSwitchOrderState] = 2;
 				}
-			}
-			else if (order_state == 2)
-			{
-				unit->play_iscript_animation(anim);
-				unitExt->timers[TimerPlanetCrackerChannel] = 121;
-				unitExt->values[ValueProtossSwitchOrderState] = 3;
-			}
-			else if (order_state == 3)
-			{
-				if (unitExt->timers[TimerPlanetCrackerChannel] != 0 && unitExt->timers[TimerPlanetCrackerDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell)
-				{
-					unit->play_iscript_animation(anim);
-					unitExt->timers[TimerPlanetCrackerChannel] = 121;
-				}
-				else if (unit->order_signal & 4)
-				{
+			} break;
+			case 2: {
+				unit->play_iscript_animation(IscriptAnimation::CastSpell);
+				unit_ext->timers[TimerPlanetCrackerChannel] = 121;
+				unit_ext->values[ValueProtossSwitchOrderState] = 3;
+			} break;
+			case 3: {
+				if (unit_ext->timers[TimerPlanetCrackerChannel] != 0 && unit_ext->timers[TimerPlanetCrackerDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell) {
+					unit->play_iscript_animation(IscriptAnimation::CastSpell);
+					unit_ext->timers[TimerPlanetCrackerChannel] = 121;
+				} else if (unit->order_signal & 4) {
 					unit->order_signal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
-					unitExt->values[ValueProtossSwitchOrderState] = 0;
+					unit_ext->values[ValueProtossSwitchOrderState] = 0;
 					unit->order_to_idle();
 				}
-			}
-			return;
-		}
-
-		if (order_state == 0)
-		{
-			if (unit->movement_flags & MovementFlags::Accelerating)
-			{
-				scbw::make_to_hold_position(unit);
-			}
-			unitExt->values[ValueProtossSwitchOrderState] = 1;
-		}
-		else if (order_state == 1)
-		{
-			if (!(unit->movement_flags & MovementFlags::Accelerating))
-			{
-				unit->play_iscript_animation(anim);
-				unitExt->timers[TimerSwitchModeGimmick] = 5;
-				unitExt->values[ValueProtossSwitchOrderState] = 2;
-			}
-		}
-		else if (order_state == 2)
-		{
-			if (unitExt->timers[TimerSwitchModeGimmick] == 0)
-			{
-				unit->order_signal &= ~0x4;
-				unitExt->values[ValueProtossSwitchOrderState] = 0;
-				if (unit->id == UnitId::ProtossClarion)
-				{
-					if (status == 0)
-					{
-						scbw::place_clarion_links(unit);
-					}
-					else
-					{
-						scbw::place_clarion_links(unit);
-						scbw::clear_clarion_links(unit);
-					}
-				}
-				unit->update_speed();
-				unit->order_to_idle(); // do next queued order
-			}
+			} break;
 		}
 	}
 

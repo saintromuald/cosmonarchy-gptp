@@ -334,7 +334,7 @@ void tick_effect(Effect* effect) {
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
 					unit->damage_with_custom(2500 * damage_multiplier, -1, effect->source, effect->player);
-					});
+				});
 			} break;
 			case EffectId_SalamanderFire: {
 				EntryArray unit_array = {};
@@ -357,7 +357,7 @@ void tick_effect(Effect* effect) {
 						return;
 					}
 					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect->source, true);
-					});
+				});
 			} break;
 			case EffectId_KeskathalorCausticDischarge: {
 				scbw::UnitFinder(
@@ -372,7 +372,7 @@ void tick_effect(Effect* effect) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit->damage_with_custom(30 * damage_multiplier, -1, effect->source, effect->player);
 					unit_ext->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
-					});
+				});
 			} break;
 			case EffectId_IonCannonIonField: {
 				scbw::UnitFinder(
@@ -387,7 +387,7 @@ void tick_effect(Effect* effect) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit->damage_with_custom(100 * damage_multiplier, -1, effect->source, effect->player);
 					unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
-					});
+				});
 			} break;
 			case EffectId_HallucinatingField: {
 				scbw::UnitFinder(
@@ -400,7 +400,7 @@ void tick_effect(Effect* effect) {
 						return;
 					}
 					scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
-					});
+				});
 			} break;
 			case EffectId_Irradiate: {
 				scbw::UnitFinder(
@@ -413,7 +413,7 @@ void tick_effect(Effect* effect) {
 						return;
 					}
 					apply_irradiate(unit, effect->player, 15);
-					});
+				});
 			} break;
 			case EffectId_NuclearMissileGroundZero: {
 				const u32 delta = effect->max_time - effect->current_time;
@@ -461,7 +461,7 @@ void tick_effect(Effect* effect) {
 					if (unit->subunit) {
 						unit->subunit->status |= UnitStatus::CanNotAttack;
 					}
-					});
+				});
 			} break;
 			case EffectId_IsthrathalethPlagueField: {
 				scbw::UnitFinder(
@@ -471,7 +471,7 @@ void tick_effect(Effect* effect) {
 					effect->position.y + 1 * 32
 				).for_each([&](Unit* unit) {
 					helper::plague_proc(unit, 0);
-					});
+				});
 			} break;
 			case EffectId_AionReclamationField: {
 				EntryArray corpses = {};
