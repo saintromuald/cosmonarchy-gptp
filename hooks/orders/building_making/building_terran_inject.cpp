@@ -190,8 +190,12 @@ namespace
 		__asm {
 			PUSH	EBX//unit
 			PUSH	EDI//unit->velocity_direction_1
-			CMP		word ptr[ESI + 0x64], 7//unit->id == UnitId::TerranMason
+			MOV		AX, [ESI + 0x64]
+			CMP		AX, 20//unit->id == UnitId::TerranTalos
+			JE		offset isTalos
+			CMP		AX, 7//unit->id == UnitId::TerranMason
 			JNE		offset isNotSCV
+			isTalos :
 			MOV		EAX, [ESI + 0xE8]
 			TEST	EAX, EAX//unit->secondaryOrderPos != null
 			JE		offset isNotSCV

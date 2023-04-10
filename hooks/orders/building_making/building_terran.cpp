@@ -403,6 +403,7 @@ namespace hooks
 					}
 					else
 					{
+					//	unit->secondary_order_pos = {0,0};
 						built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 					}
 					if (built_unit) {
