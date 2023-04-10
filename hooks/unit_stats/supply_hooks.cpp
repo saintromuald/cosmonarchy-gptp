@@ -374,7 +374,7 @@ namespace hooks
         return true;
     }
 
-	static void draw_player_stats(BinDlg** dialog_ptr, Point16* pos, u32 player, bool can_show_apm, bool show_name) {
+	static void draw_player_stats(BinDlg** dialog_ptr, Point16* pos, u32 player, char* color, bool can_show_apm, bool show_name) {
 		// Track worker/military counts. -Veeq7
 		u32 workers = 0;
 		u32 men = 0;
@@ -396,20 +396,20 @@ namespace hooks
 		*dialog_ptr = (*dialog_ptr)->next;
 
 		Point16 local_pos = *pos;
-		local_pos.x -= 3;
+		local_pos.x -= 2;
 		graphics::draw_statres_box(local_pos.x + 4, local_pos.y + 2, local_pos.x + 13, local_pos.y + 11, g_player_minimap_colors[player]);
-		local_pos.x -= 3;
+		local_pos.x -= 2;
 
 		bool show_apm = can_show_apm && g_player_table[player].type == PlayerType::Human;
 		if (show_name || show_apm) {
 			char buffer[64] = {};
 			u32 apm = player_apm_counter[player].action_count / (ActionSampleTime / 60.0);
 			if (show_name && show_apm) {
-				sprintf_s(buffer, "%s%s | %u", scbw::get_player_color_code(player).data, player_data.full_player_names[player].data, apm);
+				sprintf_s(buffer, "%s%s | %u", color, player_data.full_player_names[player].data, apm);
 			} else if (show_apm) {
-				sprintf_s(buffer, "%s%u", scbw::get_player_color_code(player).data, apm);
+				sprintf_s(buffer, "%s%u", color, apm);
 			} else {
-				sprintf_s(buffer, "%s%s", scbw::get_player_color_code(player).data, player_data.full_player_names[player].data);
+				sprintf_s(buffer, "%s%s", color, player_data.full_player_names[player].data);
 			}
 			u32 width = font_base[graphics::FONT_MEDIUM]->getTextWidth(buffer);
 			graphics::draw_statres_text(local_pos.x - width, local_pos.y, buffer, graphics::FONT_MEDIUM);
@@ -464,7 +464,7 @@ namespace hooks
 				if (global_vars.players[player].is_witness) {
 					continue;
 				}
-				draw_player_stats(&dialog, &pos, player, config.witness_show_apm, true);
+				draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player).data, config.witness_show_apm, true);
 			}
 
 			while (dialog && dialog->index <= 32) {
@@ -482,7 +482,8 @@ namespace hooks
 					break;
 				}
 			}
-			draw_player_stats(&dialog, &pos, local_player, config.show_team_ui_apm, config.show_team_ui_names);
+
+			draw_player_stats(&dialog, &pos, local_player, BWTC_GREEN, config.show_team_ui_apm, config.show_team_ui_names);
 
 			if (config.show_team_ui) {
 				for (u8 player = 0; player < PlayerLimit; ++player) {
@@ -495,7 +496,7 @@ namespace hooks
 					if (player == local_player || !scbw::is_allied_to(player, local_player)) {
 						continue;
 					}
-					draw_player_stats(&dialog, &pos, player, config.show_team_ui_apm, config.show_team_ui_names);
+					draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player).data, config.show_team_ui_apm, config.show_team_ui_names);
 				}
 			}
 
