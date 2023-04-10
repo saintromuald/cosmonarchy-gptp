@@ -3445,6 +3445,38 @@ namespace hooks {
 						goto next_command;
 					}
 				} break;
+				case GameCommand_Custom:
+				{
+					command_size = 12;
+					if (size >= command_size) {
+						u32 type = buffer[1];
+						switch (type) {
+							case NewGameCommand::GenericSwitchAbility: {
+								u32 value = buffer[2];
+								u32 player = buffer[3];
+								u32 rust_id = buffer[4];
+								for (u32 i = 0; i < SelectionCap; ++i) {
+									Unit* unit = players_selections->unit[player][i];
+									if (!unit) {
+										continue;
+									}
+									scbw::set_generic_rust_value(unit, rust_id, value);
+								}
+							} break;
+							case NewGameCommand::IssueCTFCop2: {
+								u32 player = buffer[2];
+								for (u32 i = 0; i < SelectionCap; ++i) {
+									Unit* unit = players_selections->unit[player][i];
+									if (!unit || !unit->sprite || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
+										continue;
+									}
+									unit->order_to(OrderId::CTFCOP2, unit->position.x, unit->position.y);
+								}
+							} break;
+						}
+						goto next_command;
+					}
+				} break;
 				case GameCommand_DisplaySomeText:
 				{
 					command_size = 82;

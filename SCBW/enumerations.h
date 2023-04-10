@@ -1376,4 +1376,5 @@ enum GameCommand {
 	GameCommand_MinimapPing			= 88,
 	GameCommand_MergeDarkArchon		= 90,
 	GameCommand_DisplaySomeText		= 92,
+	GameCommand_Custom				= 99,
 };
