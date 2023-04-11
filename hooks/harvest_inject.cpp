@@ -296,6 +296,7 @@ namespace {
 	Unit* find_better_node(Unit* worker, Unit* current_node) {
 		bool is_pathing = worker->pathing_flags & 1;
 		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
+		u32 original_height = scbw::get_active_tile_at_coords(current_node->position)->ground_height;
 		Unit* best_node = current_node;
 		s32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters];
 		if (get_unit_ext(worker)->values[ValueIsActiveHarvester]) {
@@ -312,7 +313,11 @@ namespace {
 			}
 			if (is_pathing) {
 				u32 group_id = scbw::get_region(node->position)->group_index;
-				if (original_group_id != group_id) {
+				if (group_id != original_group_id) {
+					continue;
+				}
+				u32 height = scbw::get_active_tile_at_coords(current_node->position)->ground_height;
+				if (height != original_height) {
 					continue;
 				}
 			}
