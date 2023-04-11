@@ -35,6 +35,7 @@ void load_config() {
 		load_field(config_node, "show-team-ui", config.show_team_ui);
 		load_field(config_node, "show-team-ui-apm", config.show_team_ui_apm);
 		load_field(config_node, "show-team-ui-names", config.show_team_ui_names);
+		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
 		load_field(config_node, "quick-casting", config.quick_casting);
 		load_field(config_node, "quick-building", config.quick_building);
@@ -86,6 +87,7 @@ void save_config() {
 	write_field(out, "show-team-ui", config.show_team_ui);
 	write_field(out, "show-team-ui-apm", config.show_team_ui_apm);
 	write_field(out, "show-team-ui-names", config.show_team_ui_names);
+	write_field(out, "show-team-ui-self", config.show_team_ui_self);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Visuals");

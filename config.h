@@ -25,6 +25,7 @@ struct Config {
 	bool show_team_ui = true;
 	bool show_team_ui_apm = true;
 	bool show_team_ui_names = false;
+	bool show_team_ui_self = false;
 
 	// Visuals
 	bool celebrations_enabled = true;

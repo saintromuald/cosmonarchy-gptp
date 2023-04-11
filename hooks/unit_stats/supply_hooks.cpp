@@ -483,8 +483,7 @@ namespace hooks
 				}
 			}
 
-			draw_player_stats(&dialog, &pos, local_player, BWTC_GREEN, config.show_team_ui_apm, config.show_team_ui_names);
-
+			draw_player_stats(&dialog, &pos, local_player, BWTC_GREEN, config.show_team_ui_self && config.show_team_ui_apm, config.show_team_ui_self && config.show_team_ui_names);
 			if (config.show_team_ui) {
 				for (u8 player = 0; player < PlayerLimit; ++player) {
 					if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
