@@ -10,7 +10,6 @@
 #include "hooks/unit_stats/weapon_range.h"
 #include "weapon_damage.h"
 #include "weapon_spellhit.h"
-#include <set>
 #include "weapon_cooldown.h"
 
 static bool madrigal_furia_match(Unit* madrigal, Unit* unit)
@@ -119,7 +118,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target_unit, WeaponOffsets*
 	}
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(launch_pos, target.pt));
-		u32 max_range = weapons_dat::max_range[weapon_id];
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit);
 		target.pt = launch_pos;
 		target.pt.x += diff.x * max_range;
 		target.pt.y += diff.y * max_range;
