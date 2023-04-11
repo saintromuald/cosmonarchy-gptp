@@ -1055,7 +1055,7 @@ namespace hooks
 					}
 				}
 			}
-			else if (scbw::players_are_mutual_allies(*g_local_nation_id, unit->player)) {
+			else if (scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
 				return;
 				unit->last_event_color = g_palette_index_reference[20];
 				unit->last_event_timer = 40;

@@ -330,21 +330,22 @@ namespace scbw
 
 	/// Checks whether @p playerB is recognized by @p playerA as an ally.
 	/// Warning: The opposite may not necessarily be true!
-	inline bool is_allied_to(u8 playerA, u8 playerB)
-	{
-		return 0 != player_alliance[playerA].flags[playerB];
+	inline bool is_allied_to(u8 a, u8 b) {
+		return player_alliance[a].flags[b];
 	}
 
-	inline bool is_vision_allied_to(u8 playerA, u8 playerB)
-	{
-		return player_vision->flags[playerA] & (1 << playerB);
+	inline bool is_vision_allied_to(u8 a, u8 b) {
+		return player_vision->flags[a] & (1 << b);
+	}
+
+	inline bool are_mutual_allies(u32 a, u32 b) {
+		return scbw::is_allied_to(a, b) && scbw::is_allied_to(b, a);
 	}
 
 	/// Checks whether the @p unit is recognized by @p player as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
 	/// @see Unit::is_target_enemy().
-	inline bool is_unit_enemy(u8 player, Unit* unit)
-	{
+	inline bool is_unit_enemy(u8 player, Unit* unit) {
 		//Identical to function @ 0x0047B740
 		u8 unitOwner = unit->player;
 		if (unitOwner == 11)
@@ -757,7 +758,7 @@ namespace scbw
 	bool unit_id_is_psi_provider(u16 unit_id);
 	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
 	void move_camera(Point16 pos);
-	bool players_are_mutual_allies(u32 player1, u32 player2);
+	bool are_mutual_allies(u32 player1, u32 player2);
 	bool unit_id_can_do_controlled_demolition(u32 unit_id);
 	bool tech_id_needs_target(u32 tech_id);
 }

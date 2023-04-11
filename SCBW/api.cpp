@@ -3278,27 +3278,15 @@ namespace scbw {
 		helper::move_screen(pos);
 	}
 
-	bool players_are_mutual_allies(u32 player1, u32 player2)
-	{
-		if (scbw::is_allied_to(player1, player2) && scbw::is_allied_to(player2, player1)) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	bool unit_id_can_do_controlled_demolition(u32 unit_id) {
+		return units_dat::base_property[unit_id] & UnitProperty::Addon
+			|| unit_id == UnitId::TerranReservoir;
+	//		|| unit_id == UnitId::TerranWellbore;
 	}
 
-	bool unit_id_can_do_controlled_demolition(u32 unit_id)
-	{
-		return  units_dat::base_property[unit_id] & UnitProperty::Addon
-		||		unit_id == UnitId::TerranReservoir;
-	//	||		unit_id == UnitId::TerranWellbore;
-	}
-
-	bool tech_id_needs_target(u32 tech_id)
-	{
-		return  tech_id != TechId::Hallucination
-			&&	tech_id != TechId::LuminaryAuralAssault
-			&&	tech_id != TechId::HypnagogueThroughTheLookingGlass;
+	bool tech_id_needs_target(u32 tech_id) {
+		return tech_id != TechId::Hallucination
+			&& tech_id != TechId::LuminaryAuralAssault
+			&& tech_id != TechId::HypnagogueThroughTheLookingGlass;
 	}
 }

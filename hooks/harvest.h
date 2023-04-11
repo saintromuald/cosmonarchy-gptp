@@ -19,6 +19,7 @@ namespace hooks {
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);								// 004686D0
 	void remove_harvesters(Unit* node);															// 00468770
 	void update_mineral_field_image(Unit* unit);												// 00468830
+	void worker_wandering(Unit* worker, Unit* current_node);									// 00469393 partial
 	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker);								// 00440FA0
 	Unit* find_best_return_cargo_target(Unit* worker);											// 00441310
 
