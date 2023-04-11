@@ -616,7 +616,7 @@ namespace hooks {
 		return false;
 	}
 
-	// Hooked to make workers always return to the closest town center by relative distance. -Pr0nogo
+	// Hooked to make workers always return to the closest town center by pathing distance. -Pr0nogo
 	Unit* find_best_return_cargo_target(Unit* worker) { // 00441310
 		Unit* best_depot = 0;
 		u32 best_distance = UINT_MAX;
