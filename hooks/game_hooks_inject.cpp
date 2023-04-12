@@ -3,6 +3,8 @@
 #include <hook_tools.h>
 #include <logger.h>
 #include <config.h>
+#include <trigger_system\trigger_system.h>
+#include <player_color.h>
 
 bool isGameOn = false;
 
@@ -184,6 +186,68 @@ bool isGameOn = false;
 		}
 	}
 
+	static bool save_replay(char* name) {
+		char module[MAX_PATH] = {};
+		if (GetModuleFileNameA(0, module, MAX_PATH) ) {
+			char* c = strrchr(module, '\\');
+			if (c) {
+				*c = 0;
+			}
+		}
+		char path[MAX_PATH] = {};
+		sprintf_s(path, "%s\\maps\\replays\\%s.rep", module, name);
+		if (!file_exists(path)) {
+			helper::copy_last_replay_to(name);
+			return true;
+		}
+		return false;
+	}
+
+	void replay_save() {
+		char name[MAX_PATH] = {};
+		sprintf_s(name, "%s - ", g_current_map_name);
+
+		bool add_comma = false;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
+				continue;
+			}
+			if (global_vars.players[i].is_witness) {
+				continue;
+			}
+			if (add_comma) {
+				strcat_s(name, ", ");
+			}
+			strcat_s(name, player_data.full_player_names[i].data);
+			add_comma = true;
+		}
+
+		if (save_replay(name)) {
+			return;
+		}
+
+		char alt_name[MAX_PATH] = {};
+		for (u32 i = 1; i < 1000; ++i) {
+			sprintf_s(alt_name, "%s %u", name, i);
+			if (save_replay(alt_name)) {
+				break;
+			}
+		}
+	}
+
+	void __declspec(naked) replay_save_wrapper() { // 004EEBEA
+		static const u32 jmp_address = 0x004EEBF0;
+		__asm {
+			PUSHAD
+		}
+		replay_save();
+		__asm {
+			POPAD
+			CMP bl, [0x629268] // original code
+			JMP jmp_address
+		}
+	}
+
 //-------- Hook injector --------//
 
 namespace hooks {
@@ -202,5 +266,6 @@ namespace hooks {
 
 		jump_patch(sp_save_directory_wrapper, 0x004AE9E2, 0);
 		jump_patch(mp_save_directory_wrapper, 0x0044CCF7, 1);
+		jump_patch(replay_save_wrapper, 0x004EEBEA, 1);
 	}
 }

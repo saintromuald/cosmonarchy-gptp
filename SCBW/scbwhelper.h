@@ -1586,4 +1586,6 @@ namespace helper {
 	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);									// 004E8740
 
 	u32 draw_box(u32 x, u32 y, u32 w, u32 h);																								// 004E1D20
+	s32 save_replay(char* name);																											// 004DFAB0
+	s32 copy_last_replay_to(char* name);																									// 004DFD70
 }

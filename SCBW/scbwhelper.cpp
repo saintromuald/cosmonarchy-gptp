@@ -13396,8 +13396,7 @@ namespace helper {
 		}
 	}
 
-	b32 is_at_home(Unit* unit)
-	{
+	b32 is_at_home(Unit* unit) {
 		const u32 func_address = 0x00462930;
 		static b32 result;
 		__asm {
@@ -13410,8 +13409,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 is_under_carapace_swarm(Unit* unit)
-	{
+	u32 is_under_carapace_swarm(Unit* unit) {
 		const u32 func_address = 0x00476210;
 		static u32 result;
 		__asm {
@@ -13424,8 +13422,7 @@ namespace helper {
 		return result;
 	}
 
-	void iscript_fireweapon(Unit* unit, u8 weapon_id)
-	{
+	void iscript_fireweapon(Unit* unit, u8 weapon_id) {
 		const u32 func_address = 0x00479D40;
 		__asm {
 			PUSHAD
@@ -13436,8 +13433,7 @@ namespace helper {
 		}
 	}
 
-	void iscript_useweapon(Unit* unit, u16 weapon_id)
-	{
+	void iscript_useweapon(Unit* unit, u16 weapon_id) {
 		const u32 func_address = 0x00479C30;
 		static u32 weapon_id_xd = weapon_id;
 		__asm {
@@ -13449,8 +13445,7 @@ namespace helper {
 		}
 	}
 
-	void draw_button_graphic(BinDlg* dialog, void* dest)
-	{
+	void draw_button_graphic(BinDlg* dialog, void* dest) {
 		const u32 func_address = 0x004F0050;
 		__asm {
 			PUSH dest
@@ -13460,8 +13455,7 @@ namespace helper {
 		}
 	}
 
-	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest)
-	{
+	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest) {
 		const u32 func_address = 0x004EFEB0;
 		__asm {
 			PUSH dest
@@ -13472,8 +13466,7 @@ namespace helper {
 		}
 	}
 
-	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest)
-	{
+	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest) {
 		const u32 func_address = 0x004EFD90;
 		__asm {
 			PUSH dest
@@ -13484,8 +13477,7 @@ namespace helper {
 		}
 	}
 
-	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2)
-	{
+	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2) {
 		static Unit* result;
 		const u32 func_address = 0x004E8740;
 		__asm {
@@ -13501,8 +13493,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 draw_box(u32 x, u32 y, u32 w, u32 h)
-	{
+	u32 draw_box(u32 x, u32 y, u32 w, u32 h) {
 		static u32 result;
 		const u32 func_address = 0x004E1D20;
 		__asm {
@@ -13511,6 +13502,34 @@ namespace helper {
 			PUSH w
 			PUSH y
 			PUSH x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 save_replay(char* name) {
+		static u32 result;
+		const u32 func_address = 0x004DFAB0;
+		__asm {
+			PUSHAD
+			PUSH 1
+			MOV EDX, 0
+			MOV EAX, name
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 copy_last_replay_to(char* name) {
+		static u32 result;
+		const u32 func_address = 0x004DFD70;
+		__asm {
+			PUSHAD
+			MOV EDI, name
 			CALL func_address
 			MOV result, EAX
 			POPAD
