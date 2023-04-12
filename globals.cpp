@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <unordered_set>
 #include <Utils/captivating_claws.h>
-Globals globals;
+IquareGlobals iquare_globals;
 
-void Globals::refresh_debugging_info()
+void IquareGlobals::refresh_debugging_info()
 {
 	/*	
 	unitSpeedDbg = 0;
@@ -21,7 +21,7 @@ void Globals::refresh_debugging_info()
 
 static SaveState saveState;
 
-void Globals::aise_save()
+void IquareGlobals::aise_save()
 {
 	scbw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
 	return;
@@ -147,7 +147,7 @@ void Globals::aise_save()
 	// return state;
 }
 
-void Globals::aise_load(const char* ptr, u32 len)
+void IquareGlobals::aise_load(const char* ptr, u32 len)
 {
 	this->reset();
 	return;
@@ -272,14 +272,14 @@ void Globals::aise_load(const char* ptr, u32 len)
 	}
 }
 
-void Globals::reset() {
+void IquareGlobals::reset() {
 	effects.clear();
 	pariah_hits.clear();
 	multihit_bullets.clear();
 	lurker_spine_hits.clear();
 }
 
-void Globals::unit_death(Unit* unit) {
+void IquareGlobals::unit_death(Unit* unit) {
 	for (s32 i = 0; i < this->effects.size(); i++) {
 		Effect* effect = &effects[i];
 		if (effect->source == unit) {
@@ -421,7 +421,7 @@ void tick_effect(Effect* effect) {
 
 				switch (stage) {
 					case 0: {
-						globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+						iquare_globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 					} break;
 					case 1:
 					case 2: {
@@ -432,7 +432,7 @@ void tick_effect(Effect* effect) {
 						new_pos.x += distance;
 						for (u32 j = 0; j < count; ++j) {
 							new_pos = scbw::rotate_point(effect->position, new_pos, (360.0 / count));
-							globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+							iquare_globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						}
 					} break;
 				}
@@ -485,7 +485,7 @@ void tick_effect(Effect* effect) {
 	}
 }
 
-void Globals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent) {
+void IquareGlobals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent) {
 	Effect effect = {};
 	effect.id = id;
 	effect.position = position;
@@ -510,7 +510,7 @@ void Globals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 s
 	effects.push_back(effect);
 }
 
-void Globals::frame_hook() {
+void IquareGlobals::frame_hook() {
 	for (s32 i = 0; i < effects.size(); i++) {
 		Effect* effect = &effects[i];
 		effect->current_time--;
@@ -533,7 +533,7 @@ void Globals::frame_hook() {
 	}
 }
 
-void Globals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
+void IquareGlobals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
 {
 	for (s32 i = 0; i < pariah_hits.size(); i++)
 	{
@@ -545,7 +545,7 @@ void Globals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
 	}
 }
 
-void Globals::remove_multihit_bullet(Bullet* bullet)
+void IquareGlobals::remove_multihit_bullet(Bullet* bullet)
 {
 	for (s32 i = 0; i < multihit_bullets.size(); i++)
 	{
@@ -557,7 +557,7 @@ void Globals::remove_multihit_bullet(Bullet* bullet)
 	}
 }
 
-bool Globals::was_hit_by_pariah(Unit* source, Unit* target)
+bool IquareGlobals::was_hit_by_pariah(Unit* source, Unit* target)
 {
 	for (auto a : pariah_hits)
 	{
@@ -569,7 +569,7 @@ bool Globals::was_hit_by_pariah(Unit* source, Unit* target)
 	return false;
 }
 
-void Globals::register_pariah_hit(Unit* source, Unit* target)
+void IquareGlobals::register_pariah_hit(Unit* source, Unit* target)
 {
 	PariahHit hit;
 	hit.source = source;
@@ -577,7 +577,7 @@ void Globals::register_pariah_hit(Unit* source, Unit* target)
 	pariah_hits.push_back(hit);
 }
 
-bool Globals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
+bool IquareGlobals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -595,7 +595,7 @@ bool Globals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
 	return false;
 }
 
-bool Globals::multihit_bullet_is_set(Bullet* bullet)
+bool IquareGlobals::multihit_bullet_is_set(Bullet* bullet)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -607,7 +607,7 @@ bool Globals::multihit_bullet_is_set(Bullet* bullet)
 	return false;
 }
 
-void Globals::add_bullet_multihit(Bullet* bullet, Unit* target)
+void IquareGlobals::add_bullet_multihit(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -621,7 +621,7 @@ void Globals::add_bullet_multihit(Bullet* bullet, Unit* target)
 	multihit_bullets.push_back(gb);
 }
 
-void Globals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target)
+void IquareGlobals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -635,7 +635,7 @@ void Globals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target)
 	multihit_bullets.push_back(gb);
 }
 
-s32 Globals::get_divider(Bullet* bullet)
+s32 IquareGlobals::get_divider(Bullet* bullet)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -647,7 +647,7 @@ s32 Globals::get_divider(Bullet* bullet)
 	return 1;
 }
 
-u32 Globals::get_multihit_count(Bullet* bullet)
+u32 IquareGlobals::get_multihit_count(Bullet* bullet)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -659,7 +659,7 @@ u32 Globals::get_multihit_count(Bullet* bullet)
 	return 0;
 }
 
-void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
+void IquareGlobals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 {
 	for (auto& a : multihit_bullets)
 	{
@@ -673,17 +673,17 @@ void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihit_bullets.push_back(gb);
 }
 
-void Globals::clear_lakizilisk(Unit* lakizilisk)
+void IquareGlobals::clear_lakizilisk(Unit* lakizilisk)
 {
 	lurker_spine_hits[lakizilisk].clear();
 }
 
-void Globals::add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target)
+void IquareGlobals::add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target)
 {
 	lurker_spine_hits[lakizilisk].push_back(target);
 }
 
-bool Globals::spine_pair_exists(Unit* lakizilisk, Unit* target)
+bool IquareGlobals::spine_pair_exists(Unit* lakizilisk, Unit* target)
 {
 	for (auto a : lurker_spine_hits)
 	{
@@ -705,7 +705,7 @@ void __declspec(naked) globals_save_state_wrapper()
 		PUSHAD
 	}
 //	state = &globals.aise_save();
-	globals.aise_save();
+	iquare_globals.aise_save();
 	state = &saveState;
 	__asm {
 		POPAD
@@ -723,7 +723,7 @@ void __declspec(naked) globals_load_state_wrapper()
 		MOV pointer, EAX
 		PUSHAD
 	}
-	globals.aise_load(pointer, len);
+	iquare_globals.aise_load(pointer, len);
 	__asm {
 		POPAD
 		RETN

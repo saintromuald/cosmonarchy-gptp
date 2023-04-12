@@ -53,12 +53,21 @@ enum Celebration {
 	Celebration_Count,
 };
 
-struct GlobalVars {
-	PlayerVars players[PlayerLimit];
-	u32 celebration;
+struct AlertState {
+	u16 sound_id;
+	u8 play_timer;
+	u8 own_cooldown;
+	u8 ally_cooldown;
 };
 
-extern GlobalVars global_vars;
+struct Globals {
+	PlayerVars players[PlayerLimit];
+	u32 celebration;
+
+	AlertState alert;
+};
+
+extern Globals globals;
 
 void init_trigger_system();
 void update_trigger_system(bool in_game);

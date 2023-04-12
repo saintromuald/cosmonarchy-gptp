@@ -374,7 +374,7 @@ namespace hooks {
 
 		for (u32 i = 0; i < *g_client_selection_count; ++i) {
 			Unit* transport = g_client_selection_group->unit[i];
-			bool is_replay_or_witness = *g_is_in_replay || global_vars.players[*g_local_human_id].is_witness;
+			bool is_replay_or_witness = *g_is_in_replay || globals.players[*g_local_human_id].is_witness;
 			if (!scbw::unit_is_allied_or_detected(transport, *g_local_nation_id) && !is_replay_or_witness) {
 				continue;
 			}
@@ -505,7 +505,7 @@ namespace hooks {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}
-			bool in_replay_or_witness = global_vars.players[*g_local_nation_id].is_witness || *g_is_in_replay;
+			bool in_replay_or_witness = globals.players[*g_local_nation_id].is_witness || *g_is_in_replay;
 			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
 			||   (in_replay_or_witness && config.witness_show_order_lines)) {
 				Unit* ignore_resource_unit = 0;
@@ -626,7 +626,7 @@ namespace hooks {
 			}
 			init_screen_locations();
 			hooks::init_actions();
-			globals.reset();
+			iquare_globals.reset();
 			init_ext_variables();
 
 			for (s32 i = 0; i < 8; i++) {
@@ -731,9 +731,9 @@ namespace hooks {
 
 			if (local_flags & VespeneDeaths_Ping) {
 				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
-					if (!global_vars.players[target].is_witness) {
+					if (!globals.players[target].is_witness) {
 						u32 color = 0; // red
-						if (global_vars.players[*g_local_nation_id].is_witness) {
+						if (globals.players[*g_local_nation_id].is_witness) {
 							color = 7; // yellow
 						} else if (scbw::is_allied_to(*g_local_nation_id, target)) {
 							color = 8; // green
@@ -755,7 +755,7 @@ namespace hooks {
 
 		reset_search_index();
 		update_search_index();
-		globals.frame_hook();
+		iquare_globals.frame_hook();
 		update_search_index_effects();
 		update_ext_variables();
 		update_threshold();
@@ -783,7 +783,7 @@ namespace hooks {
 			if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
 				if (bullet->order_signal & 0x80) {
 					bullet->order_signal &= ~0x80;
-					globals.remove_multihit_bullet(bullet);
+					iquare_globals.remove_multihit_bullet(bullet);
 				}
 			}
 		}
@@ -1012,7 +1012,7 @@ namespace hooks {
 
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20) {
 			unit->order_signal &= ~0x20;
-			globals.remove_unit_from_pariah_table(unit, true);
+			iquare_globals.remove_unit_from_pariah_table(unit, true);
 		}
 		//hooks::show_health_bar(unit);
 
@@ -1276,7 +1276,7 @@ namespace hooks {
 
 				// Star Sovereign - Grief of All Gods
 				if (unit_ext->timers[TimerPlanetCrackerChannel] == 1) {
-					globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation, unit->player, unit, unit);
+					iquare_globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation, unit->player, unit, unit);
 				}
 
 				// blast effects
@@ -1374,7 +1374,7 @@ namespace hooks {
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField)) {
 					if (!unit_ext->values[ValueDisruptionFieldOn]) {
 						unit_ext->values[ValueDisruptionFieldOn] = 1;
-						globals.create_effect(EffectId_LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
+						iquare_globals.create_effect(EffectId_LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
 					} else if (unit->is_frozen()) {
 						scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 					}
@@ -1496,7 +1496,7 @@ namespace hooks {
 					unit->position = position;
 					unit->sprite->position = spr_position;
 					auto spineCount = 0;
-					globals.clear_lakizilisk(unit);
+					iquare_globals.clear_lakizilisk(unit);
 				}
 			} break;
 			case UnitId::TerranShaman:
@@ -2835,7 +2835,7 @@ namespace hooks {
 			unit->update_speed();
 		}
 
-		if (global_vars.celebration == Celebration_Christmas) {
+		if (globals.celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {
 				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
 			} else if (unit->id == UnitId::ZergEgg || unit->status & UnitStatus::Completed) {
@@ -3501,7 +3501,7 @@ namespace hooks {
 							case NewGameCommand::CameraSync: {
 								u32 player = buffer[2];
 								Point16 pos = *(Point16*)(buffer + 3);
-								global_vars.players[player].camera = pos;
+								globals.players[player].camera = pos;
 							} break;
 						}
 						goto next_command;

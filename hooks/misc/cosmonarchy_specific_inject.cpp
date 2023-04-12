@@ -37,7 +37,7 @@ namespace hooks
 		}
 		topSpeed = hooks::real_top_speed(flingy, flingy_id);
 		acceleration = hooks::real_acceleration(flingy, flingy_id);
-		globals.flingy_init_bullet_id = -1;
+		iquare_globals.flingy_init_bullet_id = -1;
 		__asm {
 			POPAD
 			MOV ECX, topSpeed

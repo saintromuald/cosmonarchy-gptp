@@ -342,7 +342,7 @@ void update_search_index() {
 
 void update_search_index_effects() {
 	// Add effects
-	for (Effect& effect : globals.effects) {
+	for (Effect& effect : iquare_globals.effects) {
 		Point16 position = {};
 		position.x = effect.position.x;
 		position.y = effect.position.y;

@@ -56,7 +56,7 @@ namespace hooks {
 
 		if (resource->id >= UnitId::ResourceMineralField && resource->id <= UnitId::ResourceMineralFieldType3) {
 			chunk_image_id = ImageId::MineralChunkType1;
-			if (global_vars.celebration == Celebration_Christmas) {
+			if (globals.celebration == Celebration_Christmas) {
 				chunk_image_id = ImageId::Christmas_MineralChunk1;
 			}
 			is_mineral = true;
@@ -73,7 +73,7 @@ namespace hooks {
 		}
 
 		if (!no_chunk_image) {
-			if (global_vars.celebration == Celebration_Christmas) {
+			if (globals.celebration == Celebration_Christmas) {
 				if (!is_mineral) {
 					chunk_image_id = ImageId::Christmas_VespeneChunk1;
 				}

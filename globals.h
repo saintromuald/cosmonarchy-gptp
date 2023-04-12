@@ -12,7 +12,7 @@
 
 #define ATTACK_LIMIT 64
 
-struct Globals;
+struct IquareGlobals;
 
 struct SaveState
 {
@@ -86,7 +86,7 @@ struct AttackExtender {
 	}
 };
 
-struct Globals {
+struct IquareGlobals {
 	std::string output;
 	// Debugging data
 /*	f64 unitSpeedDbg;
@@ -105,7 +105,7 @@ struct Globals {
 	std::unordered_map<Unit*, std::vector<Unit*>> lurker_spine_hits;
 	AttackExtender attackers;
 
-	Globals() {
+	IquareGlobals() {
 		extended_sfx = 0;
 		tbl_extender = false;
 		unitid_extender = false;
@@ -146,7 +146,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time);
 
 void inject_globals_hooks();
 
-extern Globals globals;
+extern IquareGlobals iquare_globals;
 
 namespace hooks
 {

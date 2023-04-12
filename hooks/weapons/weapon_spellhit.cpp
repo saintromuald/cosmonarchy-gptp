@@ -79,7 +79,7 @@ namespace hooks {
 	}
 
 	void irradiate_hit(Unit* attacker, Point16 target, u8 attacking_player_id) {
-		globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
+		iquare_globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
@@ -413,7 +413,7 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void plague_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
 		if (attacker) {
-			globals.create_effect(EffectId_IsthrathalethPlagueField, 10 * 32, {(u16)x, (u16)y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
+			iquare_globals.create_effect(EffectId_IsthrathalethPlagueField, 10 * 32, {(u16)x, (u16)y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
 		}
 		//if (attacker) {
 		//	u32 distance = 64;

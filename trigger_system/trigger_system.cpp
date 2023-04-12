@@ -30,7 +30,7 @@ SpriteReplacement sprite_replacements[SpriteReplacementCap];
 
 Token custom_unit_names[PlayerLimit][UnitId::Count];
 
-GlobalVars global_vars;
+Globals globals;
 
 static void init_auto_celebration() {
 	if (!config.celebrations_enabled) {
@@ -42,9 +42,9 @@ static void init_auto_celebration() {
 	u32 month = ltm->tm_mon + 1;
 
 	if (month == 12) {
-		global_vars.celebration = Celebration_Christmas;
+		globals.celebration = Celebration_Christmas;
 	} else {
-		global_vars.celebration = Celebration_None;
+		globals.celebration = Celebration_None;
 	}
 }
 
@@ -60,7 +60,7 @@ void init_trigger_system() {
 	memset(sprite_replacements, 0, sizeof(sprite_replacements));
 
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
-	memset(&global_vars, 0, sizeof(global_vars));
+	memset(&globals, 0, sizeof(globals));
 
 	init_auto_celebration();
 	init_recolors();
@@ -101,7 +101,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		return sprite_replacement->sprite_id;
 	}
 
-	if (global_vars.celebration == Celebration_Christmas) {
+	if (globals.celebration == Celebration_Christmas) {
 		switch (unit->id) {
 			case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
 			case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
@@ -185,6 +185,19 @@ void update_trigger_system(bool in_game) {
 			}
 			u32 sprite_id = unit_get_desired_sprite_id(unit);
 			replace_sprite(unit, sprite_id);
+		}
+
+		if (globals.alert.own_cooldown) {
+			globals.alert.own_cooldown--;
+		}
+		if (globals.alert.ally_cooldown) {
+			globals.alert.ally_cooldown--;
+		}
+		if (globals.alert.play_timer) {
+			globals.alert.play_timer--;
+			if (!globals.alert.play_timer) {
+				helper::play_sound_from_unit(globals.alert.sound_id, 0);
+			}
 		}
 	}
 	trigger_game_paused = paused;
@@ -1043,9 +1056,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (parser_eqi(&parser, "auto")) {
 				init_auto_celebration();
 			} else if (parser_eqi(&parser, "none")) {
-				global_vars.celebration = Celebration_None;
+				globals.celebration = Celebration_None;
 			} else if (parser_eqi(&parser, "christmas")) {
-				global_vars.celebration = Celebration_Christmas;
+				globals.celebration = Celebration_Christmas;
 			}
 		} else if (parser_eq(&parser, "spawn_cargo")) {
 			Area area = parser_get_area(&parser);
@@ -1084,8 +1097,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "witness_mode")) {
 			s32 state = parser_get_s32(&parser) != 0;
-			if (global_vars.players[trigger_player].is_witness != state) {
-				global_vars.players[trigger_player].is_witness = state;
+			if (globals.players[trigger_player].is_witness != state) {
+				globals.players[trigger_player].is_witness = state;
 				if (state) {
 					// Store this for returning from witness to previous player type, if necessary.
 					g_player_name_list->player[trigger_player].type = 0;
@@ -1094,7 +1107,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (*g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
 						u32 first_player = 0;
 						for (u32 i = 0; i < PlayerLimit; ++i) {
-							if (global_vars.players[i].is_witness) {
+							if (globals.players[i].is_witness) {
 								continue;
 							}
 							if (g_player_table[i].type == PlayerType::Human) {
@@ -1104,7 +1117,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						}
 						if (!first_player) {
 							for (u32 i = 0; i < PlayerLimit; ++i) {
-								if (global_vars.players[i].is_witness) {
+								if (globals.players[i].is_witness) {
 									continue;
 								}
 								if (g_player_table[i].type == PlayerType::Computer) {

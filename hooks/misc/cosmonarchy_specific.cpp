@@ -142,8 +142,8 @@ namespace hooks
 
 	u32 weapon_flingy(u32 weapon_id, u8 player_id)
 	{
-		globals.flingy_init_bullet_id = weapon_id;
-		globals.flingy_init_player_id = player_id;
+		iquare_globals.flingy_init_bullet_id = weapon_id;
+		iquare_globals.flingy_init_player_id = player_id;
 		return weapons_dat::flingy_id[weapon_id];
 	}
 

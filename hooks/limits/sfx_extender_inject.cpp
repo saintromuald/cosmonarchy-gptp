@@ -13,7 +13,7 @@ namespace sfx_dat {
 namespace hooks
 {
 	void sfxExtenderGetCount() {
-		globals.extended_sfx = 1;
+		iquare_globals.extended_sfx = 1;
 	}
 
 	void newSfxExtender() {

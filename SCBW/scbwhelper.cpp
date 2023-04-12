@@ -4653,8 +4653,8 @@ namespace helper {
 			}
 		}
 		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
-			if (!globals.was_hit_by_pariah(bullet->source_unit, target)) {
-				globals.register_pariah_hit(bullet->source_unit, target);
+			if (!iquare_globals.was_hit_by_pariah(bullet->source_unit, target)) {
+				iquare_globals.register_pariah_hit(bullet->source_unit, target);
 			}
 			else {
 				return;

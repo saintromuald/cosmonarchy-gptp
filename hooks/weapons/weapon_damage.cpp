@@ -1029,48 +1029,51 @@ namespace hooks
 		return 0;
 	}
 
+	static void play_alert(Unit* unit, u32 sound_id) {
+		u32 alert_id = SoundId::AlertZerg - *g_console_index;
+		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
+		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
+
+		globals.alert.sound_id = sound_id;
+		globals.alert.play_timer = 12; 
+	}
+
 	// Hooked to fix one-shots not notifying owners. -Pr0nogo
 	void unit_attack_notify(Unit* unit) { // 0048F230
-		if (!*g_is_in_replay) {
-			if (unit->player == *g_local_nation_id) {
-				unit->last_event_color = g_palette_index_reference[20];
-				unit->last_event_timer = 20;
-				if (!*notify_cooldown) {
-					if (helper::unit_is_in_notify_range(unit)) {
-						if (!unit->attack_notify_timer) {
-							helper::reset_all_unit_attack_notify_timers_in_range(unit);
-							*notify_cooldown = 20;
+		if (*g_is_in_replay) {
+			return;
+		}
+		if (unit->player == *g_local_nation_id) {
+			unit->last_event_color = g_palette_index_reference[20];
+			unit->last_event_timer = 20;
+			if (!globals.alert.own_cooldown) {
+				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
+					helper::reset_all_unit_attack_notify_timers_in_range(unit);
 
-							u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
-							if (!(unit->status & UnitStatus::GroundedBuilding)) {
-								u32 sound_first = units_dat::sound_annoyed_first[unit->id];
-								u32 sound_last = units_dat::sound_annoyed_last[unit->id];
-								if (sound_first && sound_last) {
-									sound_id = scbw::rand_between_local(sound_first, sound_last);
-								}
-							}
-							helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
-							helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+					globals.alert.own_cooldown = 20;
+
+					u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
+					if (!(unit->status & UnitStatus::GroundedBuilding)) {
+						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
+						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
+						if (sound_first && sound_last) {
+							sound_id = scbw::rand_between_local(sound_first, sound_last);
 						}
 					}
+					play_alert(unit, sound_id);
 				}
 			}
-			else if (scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
-				return;
-				unit->last_event_color = g_palette_index_reference[20];
-				unit->last_event_timer = 40;
-				if (!*notify_cooldown)
-				{
-					if (helper::unit_is_in_notify_range(unit)) {
-						if (!unit->attack_notify_timer) {
-							helper::reset_all_unit_attack_notify_timers_in_range(unit);
-							*notify_cooldown = 40; // I would like allied transmissions to occur less often than own transmissions. -Pr0nogo
+		} else if (scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
+			unit->last_event_color = g_palette_index_reference[20]; // should make this orange
+			unit->last_event_timer = 20; // We want to use the minimum here, since that unit might want to play own alert -Veeq7
+			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
+				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
+					helper::reset_all_unit_attack_notify_timers_in_range(unit);
 
-							u32 sound_id = *g_console_index + 117; // TODO: Replace with new sound ids. -Pr0nogo
-							helper::play_sound_from_unit(sound_id, 0, g_options_list->flags & 1, 0);
-							helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
-						}
-					}
+					globals.alert.ally_cooldown = 40;
+
+					u32 sound_id = SoundId::Zerg_Advisor_ZAdUpd00_WAV + *g_console_index; // TODO: Replace with new sound ids. -Pr0nogo
+					play_alert(unit, sound_id);
 				}
 			}
 		}

@@ -321,7 +321,7 @@ namespace hooks {
 				{
 					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
 				}
-				globals.clear_lakizilisk(unit);
+				iquare_globals.clear_lakizilisk(unit);
 			}
 
 			if (unit->id != UnitId::TerranWyvern // disable default weapon for custom behaviors
@@ -700,21 +700,21 @@ namespace hooks {
 			if (bullet->attack_target.unit != collision_target && scbw::is_allied_to(bullet->player, collision_target->player)) { // TODO: Consider what to do with unsafe projectiles
 				continue;
 			}
-			if (globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
+			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
 				continue;
 			}
 
 			switch (bullet->weapon_id) {
 				case WeaponId::CyprianTwinRailguns: // Same as default, but orange effect
 				{
-					globals.add_bullet_multihit(bullet, collision_target);
+					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 1);
 				} break;
 				case WeaponId::PenumbraErebolShockCannon:
 				{
 					// Penumbra - Shroud Piercer
-					globals.add_bullet_multihit(bullet, collision_target);
+					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 2);
 				} break;
@@ -722,7 +722,7 @@ namespace hooks {
 				{
 					// Claymore - Kelvin Munitions
 					// pierce targets
-					globals.add_bullet_multihit(bullet, collision_target);
+					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 1);
 
@@ -735,8 +735,8 @@ namespace hooks {
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					// Kalkalisk - Ablative Spores
-					globals.add_incremental_bullet_multihit(bullet, collision_target);
-					auto count = globals.get_multihit_count(bullet);
+					iquare_globals.add_incremental_bullet_multihit(bullet, collision_target);
+					auto count = iquare_globals.get_multihit_count(bullet);
 					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
 					collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
@@ -752,13 +752,13 @@ namespace hooks {
 				} break;
 				case WeaponId::ZarcavrokorBonesofReflection:
 				{
-					globals.add_bullet_multihit(bullet, collision_target);
+					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 1);
 				} break;
 				default:
 				{
-					globals.add_bullet_multihit(bullet, collision_target);
+					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 1);
 				}
@@ -848,7 +848,7 @@ namespace hooks {
 			const u32 distance_from_source = bullet_ext->distance_traveled;
 			const u32 distance_from_target = scbw::get_distance_fast(bullet->position, main_target->position);
 			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
-				if (!globals.multihit_bullet_is_set(bullet)) {
+				if (!iquare_globals.multihit_bullet_is_set(bullet)) {
 					Unit* old_target = bullet->source_unit->order_target.unit;
 					Point16 old_sprite_pos = bullet->source_unit->sprite->position;
 					Point16 old_pos = bullet->source_unit->position;
@@ -860,7 +860,7 @@ namespace hooks {
 						main_target->position.y - radius,
 						main_target->position.x + radius,
 						main_target->position.y + radius);
-					globals.add_multihit_empty_bullet(bullet, 1);
+					iquare_globals.add_multihit_empty_bullet(bullet, 1);
 					u32 fired = 0;
 					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 						Unit* target = units_in_splash.get_unit(i);
@@ -883,7 +883,7 @@ namespace hooks {
 						if (new_bullet) {
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							new_bullet->position = bullet->position;
-							globals.add_multihit_empty_bullet(new_bullet, 1);
+							iquare_globals.add_multihit_empty_bullet(new_bullet, 1);
 							if (++fired == 2) {
 								break;
 							}
@@ -1036,7 +1036,7 @@ namespace hooks {
 			}
 
 			bullet->remaining_bounces = next_bounce;
-			globals.bounce_bullet = bullet;
+			iquare_globals.bounce_bullet = bullet;
 			Unit* target = helper::find_next_bounce_target(bullet);
 			bullet->next_bounce_unit = bullet->attack_target.unit;
 			if (next_bounce && target) {
@@ -1046,7 +1046,7 @@ namespace hooks {
 				bullet->attack_target.unit = target;
 			} else {
 				if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
-					globals.remove_multihit_bullet(bullet);
+					iquare_globals.remove_multihit_bullet(bullet);
 				}
 				target_unit = bullet->attack_target.unit;
 				bullet->behavior_type_internal = 5;
@@ -1145,19 +1145,19 @@ namespace hooks {
 		}
 
 		// Gladius Binding Plasma behavior
-		if (globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
+		if (iquare_globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
 			if (target != nullptr && *g_bullet_bounce_missile_next != nullptr
 				&& (*g_bullet_bounce_missile_next)->sprite != nullptr
 				&& target_var->sprite != nullptr)
 			{
-				if (globals.was_already_hit_by_multihit_bullet(globals.bounce_bullet, target_var))
+				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target_var))
 				{
 					return false;
 				}
 				else
 				{
-					globals.add_bullet_multihit(globals.bounce_bullet, target_var);
+					iquare_globals.add_bullet_multihit(iquare_globals.bounce_bullet, target_var);
 					return *g_bullet_bounce_missile_next != target_var;
 
 				}
@@ -1239,7 +1239,7 @@ namespace hooks {
 				*first_free_bullet = bullet;
 				*bullet_count -= 1;
 			}
-			globals.remove_multihit_bullet(bullet);
+			iquare_globals.remove_multihit_bullet(bullet);
 		}
 		return bullet;
 	}
