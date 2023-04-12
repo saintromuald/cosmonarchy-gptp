@@ -197,7 +197,7 @@ bool isGameOn = false;
 		char path[MAX_PATH] = {};
 		sprintf_s(path, "%s\\maps\\replays\\%s.rep", module, name);
 		if (!file_exists(path)) {
-			helper::copy_last_replay_to(name);
+			helper::save_replay(name);
 			return true;
 		}
 		return false;
