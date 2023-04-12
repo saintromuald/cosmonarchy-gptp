@@ -1063,7 +1063,7 @@ namespace hooks
 				}
 			}
 		} else if (scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
-			unit->last_event_color = g_palette_index_reference[20]; // should make this orange
+			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
 			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
