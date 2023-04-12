@@ -1458,6 +1458,10 @@ namespace SoundId
 		MatadorOrderAggressive02			= 2328,
 		MatadorOrderAggressive03			= 2329,
 		MatadorOrderAggressive04			= 2330,
+
+		AlertProtoss						= 2335,
+		AlertTerran							= 2336,
+		AlertZerg							= 2337,
 	};
 }
 
