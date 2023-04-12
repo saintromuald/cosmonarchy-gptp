@@ -186,7 +186,7 @@ bool isGameOn = false;
 		}
 	}
 
-	static bool save_replay(char* name) {
+	static char* get_replay_path(char* name) {
 		char module[MAX_PATH] = {};
 		if (GetModuleFileNameA(0, module, MAX_PATH) ) {
 			char* c = strrchr(module, '\\');
@@ -194,20 +194,22 @@ bool isGameOn = false;
 				*c = 0;
 			}
 		}
-		char path[MAX_PATH] = {};
+		static char path[MAX_PATH] = {};
 		sprintf_s(path, "%s\\maps\\replays\\%s.rep", module, name);
-		if (!file_exists(path)) {
-			helper::save_replay(name);
-			return true;
-		}
-		return false;
+		return path;
 	}
 
 	void replay_save() {
-		char name[MAX_PATH] = {};
-		sprintf_s(name, "%s - ", g_current_map_name);
+		char date[28] = {};
+		time_t now = time(0);
+		tm* ltm = localtime(&now);
+		strftime(date, 28, "%y-%m-%d %H;%M", ltm);
 
-		bool add_comma = false;
+		char name[28] = {};
+		snprintf(name, 28, "%s %s", date, g_current_map_name);
+
+		/*
+		bool first = true;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
 				continue;
@@ -215,23 +217,18 @@ bool isGameOn = false;
 			if (global_vars.players[i].is_witness) {
 				continue;
 			}
-			if (add_comma) {
+			if (first) {
 				strcat_s(name, ", ");
+			} else {
+				strcat_s(name, " - ");
 			}
 			strcat_s(name, player_data.full_player_names[i].data);
-			add_comma = true;
+			first = false;
 		}
+		*/
 
-		if (save_replay(name)) {
-			return;
-		}
-
-		char alt_name[MAX_PATH] = {};
-		for (u32 i = 1; i < 1000; ++i) {
-			sprintf_s(alt_name, "%s %u", name, i);
-			if (save_replay(alt_name)) {
-				break;
-			}
+		if (!file_exists(get_replay_path(name))) {
+			helper::copy_last_replay(name);
 		}
 	}
 

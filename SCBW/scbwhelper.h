@@ -1587,5 +1587,5 @@ namespace helper {
 
 	u32 draw_box(u32 x, u32 y, u32 w, u32 h);																								// 004E1D20
 	s32 save_replay(char* name);																											// 004DFAB0
-	s32 copy_last_replay_to(char* name);																									// 004DFD70
+	s32 copy_last_replay(char* name);																										// 004DED30
 }
