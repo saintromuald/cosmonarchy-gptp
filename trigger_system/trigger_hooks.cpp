@@ -81,8 +81,8 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 	}
 	
 	if (sfx_dat::sound_file[sound_id]) {
-		char buffer[256] = {};
-		snprintf(buffer, 256, "sound\\%s", sfx_dat::sound_file[sound_id]);
+		char buffer[MAX_PATH] = {};
+		snprintf(buffer, MAX_PATH, "sound\\%s", sound_paths[sound_id]); // sfx_dat::sound_file[sound_id]);
 		Sound* sound = get_sound(buffer);
 		if (sound) {
 			u32 flags = sfx_dat::sound_flags[sound_id];

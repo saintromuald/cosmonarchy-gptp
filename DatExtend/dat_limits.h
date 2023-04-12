@@ -8,6 +8,6 @@
 #define UpgradesIdLimit 61
 #define TechdataIdLimit 100
 #define OrdersIdLimit 500
-#define SfxdataIdLimit 20000
+#define SoundIdLimit 20000
 #define PortdataIdLimit 1000
 #define MapdataIdLimit 65

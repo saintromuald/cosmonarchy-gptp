@@ -1,4 +1,5 @@
 #include "trigger_sound.h"
+#include "hooks\limits\sfx_extender.h"
 
 LPDIRECTSOUND direct_sound;
 DupChannel dup_channels[MaxDupChannels];
@@ -10,9 +11,49 @@ Sound* loaded_sounds_hash_table[MaxSoundHash];
 Playlist current_playlist;
 Playback playback;
 
+static bool sound_paths_init;
+char sound_paths[SoundIdLimit][MAX_PATH];
+
+static void init_sound_paths() {
+	LoadedFile file = load_entire_sfile("arr\\sounds.txt");
+
+	u16 sound_id = 0;
+	u16 char_index = 0;
+	for (char* c = file.data; *c; ++c) {
+		if (c[0] == '\r' && c[1] == '\n') {
+			char_index = 0;
+			++sound_id;
+			++c; // skip both
+			continue;
+		}
+		if (c[0] == '\r' || c[0] == '\n') {
+			char_index = 0;
+			++sound_id;
+			continue;
+		}
+
+		if (char_index < MAX_PATH) {
+			sound_paths[sound_id][char_index++] = *c;
+		}
+	}
+
+	free_loaded_file(&file);
+
+	FILE* a = fopen("a.txt", "wb");
+	FILE* b = fopen("b.txt", "wb");
+	for (u32 i = 0; i < SoundIdLimit; ++i) {
+		fprintf(a, "%s\n", sfx_dat::sound_file[i]);
+		fprintf(b, "%s\n", sound_paths[i]);
+	}
+}
+
 void init_sound() {
 	if (!direct_sound) {
 		init_direct_sound();
+	}
+	if (!sound_paths_init) {
+		sound_paths_init = true;
+		init_sound_paths();
 	}
 
 	for (u32 i = 0; i < MaxDupChannels; ++i) {

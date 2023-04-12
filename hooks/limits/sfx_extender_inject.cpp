@@ -17,7 +17,7 @@ namespace hooks
 	}
 
 	void newSfxExtender() {
-		NEW_SOUND_TYPE_COUNT = 20000; // Define your length here (change later to custom func reading sfxdata)
+		NEW_SOUND_TYPE_COUNT = SoundIdLimit; // Define your length here (change later to custom func reading sfxdata)
 		sfx_dat::volume = new u8[NEW_SOUND_TYPE_COUNT];
 		sfx_dat::sound_flags = new u8[NEW_SOUND_TYPE_COUNT];
 		sfx_dat::portrait_duration = new u16[NEW_SOUND_TYPE_COUNT];

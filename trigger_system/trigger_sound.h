@@ -49,7 +49,7 @@ struct WaveData {
 #pragma pack(pop)
 
 #define MaxPath 256
-#define MaxSound 5000
+#define MaxSound (SoundIdLimit + 5000)
 #define MaxSoundHash 512
 #define MaxDupChannels 256
 
@@ -94,6 +94,8 @@ extern Sound* loaded_sounds_hash_table[MaxSoundHash];
 
 extern Playlist current_playlist;
 extern Playback playback;
+
+extern char sound_paths[SoundIdLimit][MAX_PATH];
 
 void init_sound();
 void init_direct_sound();
