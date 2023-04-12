@@ -1049,7 +1049,6 @@ namespace hooks
 			if (!globals.alert.own_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					helper::reset_all_unit_attack_notify_timers_in_range(unit);
-
 					globals.alert.own_cooldown = 20;
 
 					u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
@@ -1065,11 +1064,10 @@ namespace hooks
 			}
 		} else if (scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
 			unit->last_event_color = g_palette_index_reference[20]; // should make this orange
-			unit->last_event_timer = 20; // We want to use the minimum here, since that unit might want to play own alert -Veeq7
+			unit->last_event_timer = 20;
 			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					helper::reset_all_unit_attack_notify_timers_in_range(unit);
-
 					globals.alert.ally_cooldown = 40;
 
 					u32 sound_id = SoundId::Zerg_Advisor_ZAdUpd00_WAV + *g_console_index; // TODO: Replace with new sound ids. -Pr0nogo
