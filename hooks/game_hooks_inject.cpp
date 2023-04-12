@@ -228,7 +228,7 @@ bool isGameOn = false;
 		*/
 
 		if (!file_exists(get_replay_path(name))) {
-			helper::copy_last_replay(name);
+			helper::save_replay(name);
 		}
 	}
 
