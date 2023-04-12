@@ -13524,7 +13524,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 copy_last_replay_to(char* name) {
+	s32 copy_last_replay(char* name) {
 		static u32 result;
 		const u32 func_address = 0x004DFD70;
 		__asm {
