@@ -38,13 +38,6 @@ static void init_sound_paths() {
 	}
 
 	free_loaded_file(&file);
-
-	FILE* a = fopen("a.txt", "wb");
-	FILE* b = fopen("b.txt", "wb");
-	for (u32 i = 0; i < SoundIdLimit; ++i) {
-		fprintf(a, "%s\n", sfx_dat::sound_file[i]);
-		fprintf(b, "%s\n", sound_paths[i]);
-	}
 }
 
 void init_sound() {
