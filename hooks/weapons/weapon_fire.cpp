@@ -990,7 +990,6 @@ namespace hooks {
 			bool hit = true;
 			if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
 				apply_bullet_piercing(bullet, bullet->position, 16);
-
 				if (target) {
 					if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, target)
 					||  target->get_distance_to_point(bullet->position) > 16) {
