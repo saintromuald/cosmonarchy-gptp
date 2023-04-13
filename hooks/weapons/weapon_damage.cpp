@@ -1051,7 +1051,7 @@ namespace hooks
 					helper::reset_all_unit_attack_notify_timers_in_range(unit);
 					globals.alert.own_cooldown = 20;
 
-					u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
+					u32 sound_id = (unit->status & UnitStatus::GroundedBuilding ? SoundId::Zerg_Advisor_ZAdUpd00_WAV : SoundId::Zerg_Advisor_ZAdUpd01_WAV) + *g_console_index;
 					if (!(unit->status & UnitStatus::GroundedBuilding)) {
 						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
@@ -1070,7 +1070,8 @@ namespace hooks
 					helper::reset_all_unit_attack_notify_timers_in_range(unit);
 					globals.alert.ally_cooldown = 40;
 
-					u32 sound_id = SoundId::Zerg_Advisor_ZAdUpd00_WAV + *g_console_index; // TODO: Replace with new sound ids. -Pr0nogo
+					// TODO: Replace with new sound ids. -Pr0nogo
+					u32 sound_id = (unit->status & UnitStatus::GroundedBuilding ? SoundId::Zerg_Advisor_ZAdUpd00_WAV : SoundId::Zerg_Advisor_ZAdUpd01_WAV) + *g_console_index;
 					play_alert(unit, sound_id);
 				}
 			}
