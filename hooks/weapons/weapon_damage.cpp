@@ -1052,7 +1052,7 @@ namespace hooks
 					globals.alert.own_cooldown = 20;
 
 					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = (is_building ? SoundId::Zerg_Advisor_ZAdUpd00_WAV : SoundId::Zerg_Advisor_ZAdUpd01_WAV) + *g_console_index;
+					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
 					if (!is_building) {
 						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
@@ -1073,7 +1073,7 @@ namespace hooks
 
 					// TODO: Replace with new sound ids. -Pr0nogo
 					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = (is_building ? SoundId::Zerg_Advisor_ZAdUpd00_WAV : SoundId::Zerg_Advisor_ZAdUpd01_WAV) + *g_console_index;
+					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
 					play_alert(unit, sound_id);
 				}
 			}
