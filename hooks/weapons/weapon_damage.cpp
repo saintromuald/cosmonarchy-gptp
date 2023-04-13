@@ -1051,8 +1051,9 @@ namespace hooks
 					helper::reset_all_unit_attack_notify_timers_in_range(unit);
 					globals.alert.own_cooldown = 20;
 
-					u32 sound_id = *g_console_index + (unit->status & UnitStatus::GroundedBuilding ? 117 : 120);
-					if (!(unit->status & UnitStatus::GroundedBuilding)) {
+					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
+					u32 sound_id = *g_console_index + (is_building ? 117 : 120);
+					if (!is_building) {
 						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
 						if (sound_first && sound_last) {
