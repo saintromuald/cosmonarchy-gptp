@@ -279,6 +279,45 @@ namespace
 			RETN
 		}
 	}
+
+	// Patches \\
+
+	const u32 TTBaseUnitType_6E19A = 0x0046E19A;
+	void __declspec(naked) TTBaseUnitType_patch_6E1A6() {
+		__asm {
+		//	MOV		DX, [EAX * 2 + units_req + 2]
+			CMP		DX, CX//UnitId
+			JE		offset finishChecking
+			CMP		word ptr[EAX * 2 + requirements::units + 4], 0xFF01//reqOpcode_Or
+			JE		offset checkNextItem
+			finishChecking :
+			MOV		AX, DX
+			RET
+			checkNextItem :
+			ADD		EAX, 3//Go to next requirement.
+			JMP		TTBaseUnitType_6E19A
+		}
+	}
+
+	const u32 do_place_building_checking_8E247 = 0x0048E247;
+	const u32 do_place_building_checking_8E26F = 0x0048E26F;
+	const u32 do_place_building_checking_8E305 = 0x0048E305;
+	void __declspec(naked) do_place_building_checking_patch_8E253() {
+		__asm {
+		//	MOV		CX, [EAX * 2 + units_req + 2]
+			CMP		CX, ds: [0x0064088A]//placeBuildingUnitType
+			JE		offset finishChecking
+			CMP		word ptr[EAX * 2 + requirements::units + 4], 0xFF01//reqOpcode_Or
+			JE		offset checkNextItem
+			JMP		do_place_building_checking_8E305//No matching IDs.
+			finishChecking :
+			MOV		AX, CX
+			JMP		do_place_building_checking_8E26F//Found a match.
+			checkNextItem :
+			ADD		EAX, 3//Go to next requirement.
+			JMP		do_place_building_checking_8E247
+		}
+	}
 }
 
 namespace hooks
@@ -298,5 +337,9 @@ namespace hooks
 		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
 	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
 	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Causes landing crash lol
+
+		// DF - Fix Treasury being unable to claim addons
+	//	jump_patch(TTBaseUnitType_patch_6E1A6, 0x0046E1A6, 3);				// TTBaseUnitType (0x0046E170)
+	//	jump_patch(do_place_building_checking_patch_8E253, 0x0048E253, 3);	// do_place_building_checking (0x0048E210)
 	}
 }
