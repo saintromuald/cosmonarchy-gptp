@@ -1034,6 +1034,29 @@ u32 Unit::get_distance_to_target(Unit* target) const {
 	return scbw::get_distance_fast(0, 0, dx, dy);
 }
 
+u32 Unit::get_distance_to_point(Point16 point) const {
+	assert(this);
+	Unit* unit = (Unit*)this;
+	if (this->is_subunit()) {
+		unit = this->subunit; // Current unit is a turret, so use it's base instead
+	}
+	s32 dx = unit->get_left() - point.x - 1;
+	if (dx < 0) {
+		dx = point.x - unit->get_right() - 1;
+		if (dx < 0) {
+			dx = 0;
+		}
+	}
+	s32 dy = unit->get_top() - point.y - 1;
+	if (dy < 0) {
+		dy = point.y - unit->get_bottom() - 1;
+		if (dy < 0) {
+			dy = 0;
+		}
+	}
+	return scbw::get_distance_fast(0, 0, dx, dy);
+}
+
 bool Unit::has_path_to_pos(u32 x, u32 y) const {
 	const u32 Func_HasPathToPos = 0x0049CB60;
 	assert(this);

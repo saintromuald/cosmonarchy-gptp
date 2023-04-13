@@ -320,6 +320,7 @@ struct Unit : public UnitLayout
 	/// collision count in units.dat into account.
 	/// Internally, this function uses scbw::get_distance_fast().
 	u32 get_distance_to_target(Unit* target) const;
+	u32 get_distance_to_point(Point16 point) const;
 
 	/// Checks whether this unit can reach the target position. This checks only
 	/// for terrain, and does not consider obstacles (units and buildings).
