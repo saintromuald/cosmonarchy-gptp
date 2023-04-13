@@ -986,10 +986,16 @@ namespace hooks {
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
+
+			bool hit = true;
 			if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
 				apply_bullet_piercing(bullet, bullet->position, 16);
-				bullet->attack_target.unit = 0;
-			} else if (target && target->sprite) {
+				if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, bullet->attack_target.unit)) {
+					hit = false;
+				}
+			}
+
+			if (target && target->sprite && hit) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {
