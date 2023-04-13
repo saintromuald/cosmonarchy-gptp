@@ -217,8 +217,11 @@ namespace hooks
 			}
 			data.target->damage_hp(data.damage, data.attacker, data.attacking_player_id, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		
-			if (!data.target->hitpoints && data.attacking_player_id != data.target->player) {
-				helper::unit_attack_notify(data.target);
+
+			if (!scbw::is_allied_to(*g_local_nation_id, data.attacking_player_id)) {
+				if (!data.target->hitpoints || data.target->player != *g_local_nation_id) {
+					helper::unit_attack_notify(data.target);
+				}
 			}
 		}
 
