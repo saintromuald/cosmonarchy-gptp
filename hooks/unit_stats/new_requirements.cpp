@@ -3250,6 +3250,8 @@ namespace hooks {
 			if (requirements::units[++dat_req_offset] != RequirementOpcodes::Or) {
 				break;
 			}
+
+			++dat_req_offset;
 		}
 
 		return UnitId::None;

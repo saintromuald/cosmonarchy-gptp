@@ -831,7 +831,7 @@ namespace SpriteId
 		Corpse_Cyprian				= 820,
 		Corpse_Shaman				= 821,
 		Corpse_Wraith				= 822,
-		Corpse_Zoryusthaleth		= 832,
+		Corpse_Zoryusthaleth		= 823,
 
 		Corpse_TerranUnitMedium		= 844,
 		Corpse_TerranUnitSmall		= 845,
