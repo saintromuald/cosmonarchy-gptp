@@ -700,6 +700,9 @@ namespace hooks {
 			if (bullet->attack_target.unit != collision_target && scbw::is_allied_to(bullet->player, collision_target->player)) { // TODO: Consider what to do with unsafe projectiles
 				continue;
 			}
+			if (!scbw::can_weapon_target_unit(bullet->weapon_id, collision_target)) {
+				continue;
+			}
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
 				continue;
 			}
