@@ -285,10 +285,12 @@ namespace
 	const u32 TTBaseUnitType_6E19A = 0x0046E19A;
 	void __declspec(naked) TTBaseUnitType_patch_6E1A6() {
 		__asm {
-		//	MOV		DX, [EAX * 2 + units_req + 2]
+			LEA		ESI, [EAX * 2 + units_req + 2]
+			MOV		DX, [ESI]
 			CMP		DX, CX//UnitId
 			JE		offset finishChecking
-			CMP		word ptr[EAX * 2 + requirements::units + 4], 0xFF01//reqOpcode_Or
+			LEA		ESI, [EAX * 2 + units_req + 4]
+			CMP		word ptr[ESI], 0xFF01//reqOpcode_Or
 			JE		offset checkNextItem
 			finishChecking :
 			MOV		AX, DX
@@ -304,17 +306,23 @@ namespace
 	const u32 do_place_building_checking_8E305 = 0x0048E305;
 	void __declspec(naked) do_place_building_checking_patch_8E253() {
 		__asm {
-		//	MOV		CX, [EAX * 2 + units_req + 2]
+			PUSH	EDI
+			LEA		EDI, [EAX * 2 + units_req + 2]
+			MOV		CX, [EDI]
 			CMP		CX, ds: [0x0064088A]//placeBuildingUnitType
 			JE		offset finishChecking
-			CMP		word ptr[EAX * 2 + requirements::units + 4], 0xFF01//reqOpcode_Or
+			LEA		EDI, [EAX * 2 + units_req + 4]
+			CMP		word ptr[EDI], 0xFF01//reqOpcode_Or
 			JE		offset checkNextItem
+			POP		EDI
 			JMP		do_place_building_checking_8E305//No matching IDs.
 			finishChecking :
 			MOV		AX, CX
+			POP		EDI
 			JMP		do_place_building_checking_8E26F//Found a match.
 			checkNextItem :
 			ADD		EAX, 3//Go to next requirement.
+			POP		EDI
 			JMP		do_place_building_checking_8E247
 		}
 	}
@@ -339,7 +347,7 @@ namespace hooks
 	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Causes landing crash lol
 
 		// DF - Fix Treasury being unable to claim addons
-	//	jump_patch(TTBaseUnitType_patch_6E1A6, 0x0046E1A6, 3);				// TTBaseUnitType (0x0046E170)
-	//	jump_patch(do_place_building_checking_patch_8E253, 0x0048E253, 3);	// do_place_building_checking (0x0048E210)
+	//	jump_patch(TTBaseUnitType_patch_6E1A6,								0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)
+	//	jump_patch(do_place_building_checking_patch_8E253,					0x0048E253, 3); //do_place_building_checking (0x0048E210)
 	}
 }

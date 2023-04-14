@@ -13,7 +13,7 @@ namespace
 	const u32 load_offsets_unit[] = {
 		0,  0x0046E134 + 4, 0x0046E19A + 4, 0x0046E2D4 + 4, 0x0046E382 + 4, 0x0046E560 + 4, 0x0046E58F + 4, 0x0048E247 + 4,  0,
 		2,  0x0046E100 + 3, 0x0046E13E + 4, 0x0046E1A6 + 4, 0x0046E320 + 4, 0x0046E4DB + 4, 0x0046E51B + 4, 0x0046E56C + 4, 0x0048E253 + 4,  0,
-		0,0
+		0,0									// prank																		// prank
 	};
 	
 	const u32 load_offsets_upgrade[] = {
