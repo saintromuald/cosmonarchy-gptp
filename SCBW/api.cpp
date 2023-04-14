@@ -2775,6 +2775,7 @@ namespace scbw {
 	bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
 		if (bullet && bullet->source_unit) {
 			switch (weapon_id) {
+				case WeaponId::GolemBloodlessAssault:
 				case WeaponId::NathrokorPlasmidBreath:
 				case WeaponId::GorgrokorSerratedCleavers:
 				case WeaponId::ZarcavrokorBisectingBlades:
@@ -3083,7 +3084,7 @@ namespace scbw {
 
 	bool unit_regens_in_combat(Unit* unit)
 	{
-		return unit->id == UnitId::TerranMatador; // Can update later with status checks and etc. -Pr0nogo
+		return false; // Can update later with status checks and etc. -Pr0nogo
 	}
 
 	bool unit_id_is_melee_air_unit(u32 unit_id) {

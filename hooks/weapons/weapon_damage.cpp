@@ -464,6 +464,7 @@ namespace hooks
 			// These bypass Carapace Swarm
 			switch (data.weapon_id) {
 				case WeaponId::HarakanFlamethrower:
+				case WeaponId::MatadorTwinstrikeFlamethrowers:
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
