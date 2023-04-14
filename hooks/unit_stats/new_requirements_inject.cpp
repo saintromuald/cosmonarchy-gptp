@@ -61,7 +61,10 @@ namespace
 
 		__asm {
 			PUSHAD
+			TEST ECX, ECX//The register is null only for preplaced buildings (on mission start). Otherwise it already holds the unit id, in which case the stack field stores something different and shouldn't be used.
+			JNE offset isLanding
 			MOV ECX, [EBP - 8]
+			isLanding:
 			MOV EBP, ESP
 			MOV unit_id, CX
 			MOV dat_req_offset, EAX
@@ -101,7 +104,7 @@ namespace hooks {
 		jump_patch(create_unit_allowed_partial_wrapper,			0x0046E1C0, 1);
 		jump_patch(can_set_rally_opcode_wrapper,				0x0046D8AF, 2);
 
-	//	jump_patch(unitreq_base_unit_type_patch_wrapper,		0x0046E1A6, 3);
-	//	jump_patch(do_place_building_checking_patch_wrapper,	0x0048E253, 3);
+		call_patch(unitreq_base_unit_type_patch_wrapper,		0x0046E1A6, 3);
+		call_patch(do_place_building_checking_patch_wrapper,	0x0048E253, 3);
 	}
 }
