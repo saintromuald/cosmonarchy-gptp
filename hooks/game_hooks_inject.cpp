@@ -262,7 +262,7 @@ bool isGameOn = false;
 		static u8 is_league = *g_is_league_game;
 		__asm {
 			POPAD
-			CMP bl, is_league
+			CMP bl, is_league // original code
 			JMP jmp_address
 		}
 	}
