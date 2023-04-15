@@ -1144,7 +1144,7 @@ namespace hooks {
 										pos.x += units_dat::unit_bounds[target->id].right * 0.75;
 										pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
 									} break;
-								}							
+								}
 								helper::set_move_target_xy(unit, pos.x, pos.y);
 							}
 							unit_ext->values[ValueTalosAnimationTimer] += 1;
