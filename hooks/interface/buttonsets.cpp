@@ -2024,6 +2024,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranRamesses:
+								{
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Ramesses - Prolonged Arms
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranDurendal:
 								{
 									if (current_button->icon_id == IconId::TerranShipWeapons) // Durendal - Forward March

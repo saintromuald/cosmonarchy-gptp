@@ -21,6 +21,8 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
 		&& weapon_id != WeaponId::HarakanFlamethrower
+		&& weapon_id != WeaponId::MatadorTwinstrikeFlamethrowers
+		&& weapon_id != WeaponId::DurendalAbaddonFlamethrowers
 		&& weapon_id != WeaponId::LakiziliskSubterraneanSpines
 		&& weapon_id != WeaponId::Custom;
 }
@@ -453,6 +455,7 @@ namespace hooks
 			switch (data.weapon_id) {
 				case WeaponId::HarakanFlamethrower:
 				case WeaponId::MatadorTwinstrikeFlamethrowers:
+				case WeaponId::DurendalAbaddonFlamethrowers:
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;

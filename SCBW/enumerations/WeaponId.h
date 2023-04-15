@@ -195,7 +195,7 @@ namespace WeaponId {
 		OberonAcheronMissiles				= 158,
 		AionLazarusSalvo					= 159,
 		RamessesPharoahCannons				= 170,
-		DurendalFistOfAbaddon				= 171,
+		DurendalAbaddonFlamethrowers				= 171,
 		DurendalPhilistineAutogun			= 172,
 		CataphractLonginiusCannons			= 173,
 		DilettanteUpstartRifle				= 174,
