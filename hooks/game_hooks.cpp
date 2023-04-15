@@ -1046,7 +1046,27 @@ namespace hooks {
 					}
 				}
 
-				unit_ext->values[ValueIsOcsalMorph] = unit->id == UnitId::ZergOcsalLarva;
+				unit_ext->values[ValueOriginatedFromOcsalLarva] = unit->id == UnitId::ZergOcsalLarva;
+			} break;
+			case UnitId::ZergDroleth:
+			case UnitId::ZergGosvileth:
+			{
+				unit_ext->values[ValueOriginatedFromGosvileth] = unit->id == UnitId::ZergGosvileth;
+
+				if (unit->id == UnitId::ZergDroleth) {
+					// Temporary? fix for order queue insanity. -Pr0nogo
+					// DOES NOT FIX AI!
+					if (unit->main_order_id == OrderId::Morph1
+					&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
+					&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth) {
+						unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
+					}
+				}
+			} break;
+			case UnitId::ZergIrolIris:
+			case UnitId::ZergIrulentIvoa:
+			{
+				unit_ext->values[ValueOriginatedFromIrulent] = unit->id == UnitId::ZergIrulentIvoa;
 			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
@@ -1825,16 +1845,6 @@ namespace hooks {
 						unit_ext->values[ValueMissileSiloLoaded] = 0;
 						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Built);
 					}
-				}
-			} break;
-			case UnitId::ZergDroleth:
-			{
-				// Temporary? fix for order queue insanity. -Pr0nogo
-				// DOES NOT FIX AI!
-				if (unit->main_order_id == OrderId::Morph1
-				&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
-				&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth) {
-					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 				}
 			} break;
 			case UnitId::TerranAncile: {

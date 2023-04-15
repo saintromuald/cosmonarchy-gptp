@@ -140,7 +140,9 @@ enum ExtValueId
 	ValueSavantEntropyGauntlets,
 	ValueSavantPowerSiphonBuff,
 	ValueSavantPowerSiphonDebuff,
-	ValueIsOcsalMorph,
+	ValueOriginatedFromOcsalLarva,
+	ValueOriginatedFromGosvileth,
+	ValueOriginatedFromIrulent,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
