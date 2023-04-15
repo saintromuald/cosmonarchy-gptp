@@ -1250,7 +1250,7 @@ namespace hooks {
 						helper::play_morphing_complete_sound(unit);
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 						helper::init_building(unit, 1);
-						unit_ext->values[ValueSpecialSovrolethBirth] = true;
+						unit_ext->values[ValueSpecialSovrolethBirth] = morph_unit_id == UnitId::ZergSovroleth;
 						unit->order_computer(OrderId::ZergBirth);
 					}
 				}
