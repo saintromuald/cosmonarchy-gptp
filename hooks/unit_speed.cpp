@@ -156,14 +156,6 @@ namespace hooks
 				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
 				speed *= 1.0 + fraction / 2;
 			} break;
-			case UnitId::ProtossGolem:
-			{
-				// Golem Deathless Procession: gains increased movespeed based on missing shields
-				const u32 health = unit->shields / 256;
-				const u32 maxHealth = units_dat::max_shield_points[unit->id];
-				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
-				speed *= multiplier;
-			} break;
 			case UnitId::ZergVorvrokor:
 			{
 				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
@@ -224,6 +216,7 @@ namespace hooks
 			} break;
 			// Hardcode ideal movement speeds
 			case UnitId::TerranClaymore:
+			case UnitId::ProtossSimulacrum:
 			{
 				speed *= 0.9;
 			} break;

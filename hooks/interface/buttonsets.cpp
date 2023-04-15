@@ -1991,8 +1991,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranMatador:
 								{
-									if (current_button->icon_id == IconId::PhotonCannonWeapon) // Matador - Automedicus
-									{
+									if (current_button->icon_id == IconId::FlyerAttack) { // Matador - Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2295,13 +2294,6 @@ namespace hooks {
 								case UnitId::ProtossVassal:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Vassal - Terminal Surge
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::ProtossGolem:
-								{
-									if (current_button->icon_id == IconId::LegEnhancements) // Golem - Deathless Procession
 									{
 										current_button_state = Button_State::Enabled;
 									}

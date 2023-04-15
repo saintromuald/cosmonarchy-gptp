@@ -411,14 +411,6 @@ namespace hooks
 				if (unit->status & UnitStatus::Burrowed) {
 					regen *= 2;
 				}
-				if (unit->id == UnitId::TerranMatador) {
-					if (unit_ext->timers[TimerMatadorHeal] == 0) {
-						regen *= 5;
-					}
-					else {
-						regen = 0;
-					}
-				}
 
 				regen *= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 				unit->heal_hp(regen, 0, false);

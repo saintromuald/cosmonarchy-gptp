@@ -1977,17 +1977,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranMatador:
-			{
-				if (unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving)
-				{
-					unit_ext->timers[TimerMatadorHeal] = 1 * 24;
-				}
-
-				if (unit->hitpoints != unit->get_max_hp_raw() && unit_ext->timers[TimerMatadorHeal] == 0 && !unit->sprite->get_overlay(ImageId::RestorationHit_Small)) {
-					unit->sprite->create_top_overlay(ImageId::RestorationHit_Small);
-				}
-			} break;
 			case UnitId::ZergMortothrokor:
 			{
 				if (unit_ext->timers[TimerMortothrokorPassive] == 0) {
@@ -2374,7 +2363,7 @@ namespace hooks {
 				unit_search_radial(&units, unit->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* target = units.units[i];
-					target->damage_with_custom(5 * 256, 2);
+					target->damage_with_custom(4 * 256, 0);
 					target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 				}
 			}
