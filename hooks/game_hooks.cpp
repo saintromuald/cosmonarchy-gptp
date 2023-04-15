@@ -1219,11 +1219,7 @@ namespace hooks {
 					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
-							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
-							egg->build_queue[egg->build_queue_slot] = UnitId::ZergSovroleth;
-
-							UnitExt* eggExt = get_unit_ext(egg);
-							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
+							scbw::set_custom_egg(egg, UnitId::ZergSovroleth);
 						}
 						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
@@ -1240,11 +1236,11 @@ namespace hooks {
 						unit->play_iscript_animation(IscriptAnimation::CastSpell);
 					}
 				}
-				if (unit_ext->timers[TimerCorpseCocoonHatch] == 1 + 19) {
-					unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+				if (unit_ext->timers[TimerCustomEggHatch] == 1 + 19) {
+					unit->play_iscript_animation(IscriptAnimation::GndAttkInit); // TODO: Figure out how to play the correct animation
 				}
-				if (unit_ext->timers[TimerCorpseCocoonHatch] == 1) {
-					helper::replace_unit_with_id(unit, UnitId::ZergSovroleth);
+				if (unit_ext->timers[TimerCustomEggHatch] == 1) {
+					helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
 					scbw::give_ai_ex(unit);
 					helper::play_morphing_complete_sound(unit);
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;

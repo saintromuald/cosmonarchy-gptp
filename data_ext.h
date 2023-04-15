@@ -213,7 +213,7 @@ enum ExtTimerId
 	TimerMagnetarAttraction,
 	TimerSalvageStunTimer,
 	TimerCreepMorphOverlay,
-	TimerCorpseCocoonHatch,
+	TimerCustomEggHatch,
 	TimerTyrannyRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,

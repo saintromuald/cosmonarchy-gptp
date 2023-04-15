@@ -264,8 +264,7 @@ namespace hooks {
 					unit->main_order_state = 1;
 					auto origin = unit->create_origin;
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
-					switch (origin)
-					{
+					switch (origin) {
 						case UnitId::ZergLarva:
 						case UnitId::ZergOcsalLarva:
 						{

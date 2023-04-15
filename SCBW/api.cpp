@@ -2358,7 +2358,7 @@ namespace scbw {
 			// Base Structures
 			case UnitId::ZergHachirosk:
 			case UnitId::ZergCagrantColony:
-		//	case UnitId::ZergExcisant:
+			case UnitId::ZergExcisant:
 			case UnitId::ZergIrolIris:				
 			case UnitId::ZergNydusCesiant:			
 			case UnitId::ZergQuazrokPool:			
@@ -2370,7 +2370,7 @@ namespace scbw {
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
 			case UnitId::ZergElthisthMound:			
-				return unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::None : UnitId::ZergDroleth;
+				return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Mophs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
@@ -3337,5 +3337,13 @@ namespace scbw {
 		return tech_id != TechId::Hallucination
 			&& tech_id != TechId::LuminaryAuralAssault
 			&& tech_id != TechId::HypnagogueThroughTheLookingGlass;
+	}
+
+	void set_custom_egg(Unit* egg, u32 unit_id) {
+		egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
+		egg->build_queue[egg->build_queue_slot] = unit_id;
+
+		UnitExt* egg_ext = get_unit_ext(egg);
+		egg_ext->timers[TimerCustomEggHatch] = 2 * 24;
 	}
 }

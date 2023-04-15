@@ -931,8 +931,24 @@ namespace hooks
 				// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
 				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 				if (data.target) {
-					helper::replace_unit_with_id(data.target, regression);
-					data.target->set_hitpoints(data.target->get_max_hp_raw());
+					u32 regress_to = regression;
+					bool is_egg = false;
+					if (!(units_dat::base_property[regression] & UnitProperty::Building)) {
+						regress_to = data.target->status & UnitStatus::InAir ? UnitId::ZergCocoon : UnitId::ZergEgg;
+						is_egg = true;
+					}
+
+					Unit* new_unit = data.target;
+					if (data.target->id == UnitId::ZergExcisant) {
+						new_unit = scbw::create_unit_in_game(regress_to, data.target->player, data.target->position.x, data.target->position.y);
+					} else {
+						fatal_deal_damage = false;
+						helper::replace_unit_with_id(new_unit, regress_to);
+						data.target->set_hitpoints(new_unit->get_max_hp_raw());
+					}
+					if (is_egg) {
+						scbw::set_custom_egg(new_unit, regression);
+					}
 
 					u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
 					if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
@@ -942,10 +958,6 @@ namespace hooks
 					}
 					data.target->sprite->create_overlay(effect_image_id);
 					helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
-
-					target_ext->timers[TimerStun] += 2 * 24;
-
-					fatal_deal_damage = false;
 				}
 			}
 		}
