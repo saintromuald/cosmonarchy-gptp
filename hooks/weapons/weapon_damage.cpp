@@ -925,7 +925,7 @@ namespace hooks
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 
-			u32 regression = scbw::get_zerg_regression(data.target->id);
+			u32 regression = scbw::get_zerg_regression(data.target);
 			// TODO: Allow Irulent to be regressed to from Othstol, if Othstol was mutated from Irulent instead of Irol
 		//	if (data.target->id == UnitId::ZergOthstolOviform && data.target->previous_unit_type == UnitId::ZergIrulentIvoa) {
 		//		regression = UnitId::ZergIrulentIvoa;
