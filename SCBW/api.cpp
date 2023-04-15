@@ -2325,9 +2325,9 @@ namespace scbw {
 
 	u32 get_zerg_regression(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueIsOcsalMorph]) {
+		if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
 			// Ocsal Units
-			return unit->id != UnitId::ZergOcsalLarva ? UnitId::ZergOcsalLarva : UnitId::None;
+			return UnitId::None;
 		}
 
 		switch (unit->id) {
@@ -2342,7 +2342,7 @@ namespace scbw {
 			case UnitId::ZergSkortrithColony:		return UnitId::ZergSurkithColony;
 			case UnitId::ZergSpirtithColony:		return UnitId::ZergSpraithColony;
 			case UnitId::ZergIrulentIvoa:			return UnitId::ZergIrolIris;
-			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
+			case UnitId::ZergOthstolOviform:		return unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergIrulentIvoa : UnitId::ZergIrolIris;
 			case UnitId::ZergOrbothOmlia:			return UnitId::ZergOthstolOviform;
 			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
 			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
@@ -2353,22 +2353,24 @@ namespace scbw {
 			case UnitId::ZergUltrokCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
+			// TODO: Allow Irulent to be regressed to from Othstol, if Othstol was mutated from Irulent instead of Irol
 
 			// Base Structures
-			case UnitId::ZergHachirosk:				return UnitId::ZergDroleth;
-			case UnitId::ZergCagrantColony:			return UnitId::ZergDroleth;
-		//	case UnitId::ZergExcisant:				return UnitId::ZergDroleth;
-			case UnitId::ZergIrolIris:				return UnitId::ZergDroleth;
-			case UnitId::ZergNydusCesiant:			return UnitId::ZergDroleth;
-			case UnitId::ZergQuazrokPool:			return UnitId::ZergDroleth;
-			case UnitId::ZergMuthrokSpire:			return UnitId::ZergDroleth;
-			case UnitId::ZergAxtothAxis:			return UnitId::ZergDroleth;
-			case UnitId::ZergHydrokDen:				return UnitId::ZergDroleth;
-			case UnitId::ZergIzkagIteth:			return UnitId::ZergDroleth;
-			case UnitId::ZergGeszkathGrotto:		return UnitId::ZergDroleth;
-			case UnitId::ZergZorkizShroud:			return UnitId::ZergDroleth;
-			case UnitId::ZergMatravilNest:			return UnitId::ZergDroleth;
-			case UnitId::ZergElthisthMound:			return UnitId::ZergDroleth;
+			case UnitId::ZergHachirosk:
+			case UnitId::ZergCagrantColony:
+			case UnitId::ZergExcisant:
+			case UnitId::ZergIrolIris:				
+			case UnitId::ZergNydusCesiant:			
+			case UnitId::ZergQuazrokPool:			
+			case UnitId::ZergMuthrokSpire:			
+			case UnitId::ZergAxtothAxis:			
+			case UnitId::ZergHydrokDen:				
+			case UnitId::ZergIzkagIteth:			
+			case UnitId::ZergGeszkathGrotto:		
+			case UnitId::ZergZorkizShroud:			
+			case UnitId::ZergMatravilNest:			
+			case UnitId::ZergElthisthMound:			
+				return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Mophs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
@@ -3335,5 +3337,13 @@ namespace scbw {
 		return tech_id != TechId::Hallucination
 			&& tech_id != TechId::LuminaryAuralAssault
 			&& tech_id != TechId::HypnagogueThroughTheLookingGlass;
+	}
+
+	void set_custom_egg(Unit* egg, u32 unit_id) {
+		egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
+		egg->build_queue[egg->build_queue_slot] = unit_id;
+
+		UnitExt* egg_ext = get_unit_ext(egg);
+		egg_ext->timers[TimerCustomEggHatch] = 2 * 24;
 	}
 }

@@ -140,8 +140,10 @@ enum ExtValueId
 	ValueSavantEntropyGauntlets,
 	ValueSavantPowerSiphonBuff,
 	ValueSavantPowerSiphonDebuff,
-	ValueIsOcsalMorph,
 	ValuePhalanxSiegeModeLaunchPos,
+	ValueOriginatedFromOcsalLarva,
+	ValueOriginatedFromGosvileth,
+	ValueOriginatedFromIrulent,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -212,7 +214,7 @@ enum ExtTimerId
 	TimerMagnetarAttraction,
 	TimerSalvageStunTimer,
 	TimerCreepMorphOverlay,
-	TimerCorpseCocoonHatch,
+	TimerCustomEggHatch,
 	TimerTyrannyRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
@@ -240,6 +242,7 @@ enum ExtTimerId
 	TimerKelvinMunitions,
 	TimerSavantPowerSiphonBuff,
 	TimerSavantPowerSiphonDebuff,
+	TimerStun,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

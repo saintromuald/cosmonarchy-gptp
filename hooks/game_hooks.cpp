@@ -1027,6 +1027,12 @@ namespace hooks {
 			}
 		}
 
+		if (unit_ext->timers[TimerStun] > 1) {
+			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+		} else if (unit_ext->timers[TimerStun] == 1) {
+			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+		}
+
 		switch (unit->id) {
 			case UnitId::ZergLarva:
 			case UnitId::ZergOcsalLarva:
@@ -1040,7 +1046,27 @@ namespace hooks {
 					}
 				}
 
-				unit_ext->values[ValueIsOcsalMorph] = unit->id == UnitId::ZergOcsalLarva;
+				unit_ext->values[ValueOriginatedFromOcsalLarva] = unit->id == UnitId::ZergOcsalLarva;
+			} break;
+			case UnitId::ZergDroleth:
+			case UnitId::ZergGosvileth:
+			{
+				unit_ext->values[ValueOriginatedFromGosvileth] = unit->id == UnitId::ZergGosvileth;
+
+				if (unit->id == UnitId::ZergDroleth) {
+					// Temporary? fix for order queue insanity. -Pr0nogo
+					// DOES NOT FIX AI!
+					if (unit->main_order_id == OrderId::Morph1
+					&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
+					&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth) {
+						unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
+					}
+				}
+			} break;
+			case UnitId::ZergIrolIris:
+			case UnitId::ZergIrulentIvoa:
+			{
+				unit_ext->values[ValueOriginatedFromIrulent] = unit->id == UnitId::ZergIrulentIvoa;
 			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
@@ -1193,11 +1219,7 @@ namespace hooks {
 					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
-							egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
-							egg->build_queue[egg->build_queue_slot] = UnitId::ZergSovroleth;
-
-							UnitExt* eggExt = get_unit_ext(egg);
-							eggExt->timers[TimerCorpseCocoonHatch] = 2 * 24;
+							scbw::set_custom_egg(egg, UnitId::ZergSovroleth);
 						}
 						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
@@ -1214,11 +1236,11 @@ namespace hooks {
 						unit->play_iscript_animation(IscriptAnimation::CastSpell);
 					}
 				}
-				if (unit_ext->timers[TimerCorpseCocoonHatch] == 1 + 19) {
-					unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+				if (unit_ext->timers[TimerCustomEggHatch] == 1 + 19) {
+					unit->play_iscript_animation(IscriptAnimation::GndAttkInit); // TODO: Figure out how to play the correct animation
 				}
-				if (unit_ext->timers[TimerCorpseCocoonHatch] == 1) {
-					helper::replace_unit_with_id(unit, UnitId::ZergSovroleth);
+				if (unit_ext->timers[TimerCustomEggHatch] == 1) {
+					helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
 					scbw::give_ai_ex(unit);
 					helper::play_morphing_complete_sound(unit);
 					unit->build_queue[unit->build_queue_slot] = UnitId::None;
@@ -1819,16 +1841,6 @@ namespace hooks {
 						unit_ext->values[ValueMissileSiloLoaded] = 0;
 						unit->sprite->main_graphic->play_iscript_animation(IscriptAnimation::Built);
 					}
-				}
-			} break;
-			case UnitId::ZergDroleth:
-			{
-				// Temporary? fix for order queue insanity. -Pr0nogo
-				// DOES NOT FIX AI!
-				if (unit->main_order_id == OrderId::Morph1
-				&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
-				&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth) {
-					unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 				}
 			} break;
 			case UnitId::TerranAncile: {
