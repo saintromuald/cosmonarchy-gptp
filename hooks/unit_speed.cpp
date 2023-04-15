@@ -215,6 +215,7 @@ namespace hooks
 				}
 			} break;
 			// Hardcode ideal movement speeds
+			case UnitId::TerranSiren:
 			case UnitId::TerranClaymore:
 			case UnitId::ProtossSimulacrum:
 			{

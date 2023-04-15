@@ -169,7 +169,7 @@ namespace WeaponId {
 		CyprianTwinRailguns					= 26,
 		PenumbraErebolShockCannon			= 39,
 		PazuzuJupiterDriver					= 51,
-		SavantPowerSiphon					= 57,	// Savant ability targeting
+		TalosSalvage						= 57,	// Talos ability targeting
 		SavantDiscoidRailgun				= 88,
 		LobotomyMineExplosion				= 89,
 		CyclopsFlakCannons					= 93,
@@ -209,6 +209,7 @@ namespace WeaponId {
 		HypnagogueThroughTheLookingGlass	= 183,	// Ability targeting
 		SilvertongueWordsmithRailgun		= 184,
 		IonCannonIonCannon					= 198,
+		SavantDiscoidRailgunPiercing		= 199,
 
 		// Protoss \\
 		

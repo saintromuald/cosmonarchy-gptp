@@ -1462,6 +1462,15 @@ namespace SoundId
 		AlertProtoss						= 2335,
 		AlertTerran							= 2336,
 		AlertZerg							= 2337,
+		AdvisorZergUnderAttackZerg			= 2338,
+		AdvisorZergUnderAttackTerran		= 2339,
+		AdvisorZergUnderAttackProtoss		= 2340,
+		AdvisorTerranUnderAttackZerg		= 2341,
+		AdvisorTerranUnderAttackTerran		= 2342,
+		AdvisorTerranUnderAttackProtoss		= 2343,
+		AdvisorProtossUnderAttackZerg		= 2344,
+		AdvisorProtossUnderAttackTerran		= 2345,
+		AdvisorProtossUnderAttackProtoss	= 2346,
 	};
 }
 

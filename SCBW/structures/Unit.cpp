@@ -728,21 +728,15 @@ void Unit::remove_acid_spores() {
 
 /// Identical to Unit__SpendEnergy @ 0x00491460
 /// May underflow if alone
-void Unit::spend_unit_energy(u32 energySpent) {
-	if (!(*g_cheat_state & CheatFlags::TheGathering)) {
-		if (this->energy > energySpent) {
-			this->energy -= energySpent;
-		} else {
-			this->energy = 0;
-		}
+void Unit::spend_unit_energy(u32 energy_spent) {
+	if (this->energy > energy_spent) {
+		this->energy -= energy_spent;
+	}
+	else {
+		this->energy = 0;
 	}
 	UnitExt* unit_ext = get_unit_ext(this);
 	unit_ext->energy_regen_timer = 0;
-
-	// TODO: fix Entropy Gauntlets bug
-	if (unit_ext->values[ValueEntropyGauntlets] > 0) {
-		this->inflict_damage(energySpent * unit_ext->values[ValueEntropyGauntlets] * 0.1, unit_ext->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
-	}
 }
 
 void Unit::add_unit_energy(u32 energy) {

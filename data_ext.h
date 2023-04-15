@@ -137,6 +137,9 @@ enum ExtValueId
 	ValueIonCannonTargetPosY,
 	ValueWorshipStack,
 	ValueCyprianLaunchPos,
+	ValueSavantEntropyGauntlets,
+	ValueSavantPowerSiphonBuff,
+	ValueSavantPowerSiphonDebuff,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -233,6 +236,8 @@ enum ExtTimerId
 	TimerStellarEnforcement,
 	TimerDeconstruction,
 	TimerKelvinMunitions,
+	TimerSavantPowerSiphonBuff,
+	TimerSavantPowerSiphonDebuff,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

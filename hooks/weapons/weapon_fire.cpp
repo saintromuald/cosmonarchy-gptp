@@ -261,7 +261,7 @@ namespace hooks {
 		// Retrieve the spawning position for the bullet.
 		s32 x, y;
 		u8 behavior = weapons_dat::behavior[weapon_id];
-		if (weapon_id == WeaponId::SavantPowerSiphon)
+		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass)
 		{
 			behavior = WeaponBehavior::AppearOnTargetSite;
 		}
@@ -310,7 +310,7 @@ namespace hooks {
 			// Lakizilisk Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
-				unit_ext->timers[TimerLakiziliskETA] = 17;
+				unit_ext->timers[TimerLakiziliskETA] = 17; // Note possible issue with range bonuses not being accounted for. -Pr0nogo
 				auto range = weapons_dat::max_range[weapon_id] + 16;
 				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
 				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
@@ -327,7 +327,7 @@ namespace hooks {
 			if (unit->id != UnitId::TerranWyvern // disable default weapon for custom behaviors
 			&&  unit->id != UnitId::ProtossAnthelion)
 			{
-				// Madrigal Tempo Change weapon switch
+				// Madrigal - Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)
 				{
 					weapon_id = WeaponId::MadrigalImperiosoMissiles;
@@ -345,7 +345,6 @@ namespace hooks {
 
 				switch (weapon_id)
 				{
-					// Missile spawn positions start
 					case WeaponId::CyprianTwinRailguns:
 					{
 						WeaponOffsets offsets = {};
@@ -566,8 +565,25 @@ namespace hooks {
 						offsets.fake_count = 1;
 						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
-					// Missile spawn positions end
-
+					case WeaponId::SavantDiscoidRailgun:
+					{
+						// Entropy Gauntlets
+						if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
+							u32 energy = 10 * 256;
+							if (unit->energy >= energy) {
+								unit->spend_unit_energy(energy);
+								helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
+								fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing);
+							}
+							else {
+								unit_ext->energy_regen_timer = 0;
+								fire_bullet(unit, weapon_id);
+							}
+						}
+						else {
+							fire_bullet(unit, weapon_id);
+						}
+					} break;
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
@@ -626,27 +642,7 @@ namespace hooks {
 					case WeaponId::SirenCharybdalRifle:
 					{
 						// Tertiary Eyes - Siren
-						u32 count = 0;
-						s32 radius = 3 * 32;
-						scbw::UnitFinder(
-							unit->position.x - radius,
-							unit->position.y - radius,
-							unit->position.x + radius,
-							unit->position.y + radius
-						).for_each([&](Unit* pickedUnit) {
-							if (!(pickedUnit->status & UnitStatus::Completed)
-								|| unit == pickedUnit
-								|| scbw::is_allied_to(pickedUnit->player, unit->player)
-								|| scbw::get_distance_fast(unit->position, pickedUnit->position) > radius)
-							{
-								return;
-							}
-							count += 1;
-						});
-						if (count) {
-							helper::play_sound_from_unit(SoundId::SirenTertiaryEyesCast01, unit, 1, 0);
-						}
-						fire_multiple(unit, weapon_id, 1 + count, FilterEnemy | FilterFrontalArc);
+						fire_multiple(unit, weapon_id, 5, FilterEnemy | FilterFrontalArc);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
@@ -708,10 +704,18 @@ namespace hooks {
 			}
 
 			switch (bullet->weapon_id) {
-				case WeaponId::CyprianTwinRailguns: // Same as default, but orange effect
+				// Same as default, but orange effect
+				case WeaponId::CyprianTwinRailguns:
 				{
 					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+				} break;
+				// Same as default, but red effect
+				case WeaponId::SavantDiscoidRailgunPiercing:
+				{
+					iquare_globals.add_bullet_multihit(bullet, collision_target);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
 					hooks::weapon_bullet_hit(bullet, collision_target, 1);
 				} break;
 				case WeaponId::PenumbraErebolShockCannon:
@@ -773,7 +777,8 @@ namespace hooks {
 		Point16 old_position = bullet->position;
 		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
 			if (!bullet->attack_target.unit) {
-				u32 range = AlkajeliskParasiticSporesSeekRange; // seek distance
+				u32 range = AlkajeliskParasiticSporesSeekRange;
+				// TODO: Unit search
 				auto seek_target = scbw::UnitFinder::get_nearest_target(
 					bullet->position.x - range,
 					bullet->position.y - range,
@@ -968,7 +973,7 @@ namespace hooks {
 				bullet->attack_target.unit = collision_target;
 				despawn_bullet = true;
 			}
-		} else if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
+		} else if (scbw::bullet_pierces_target(bullet)) {
 			// Prolonged Arms - for projectiles hitting targets mid-flight
 			bool enabled = true;
 			if (bullet->weapon_id == WeaponId::SilvertongueWordsmithRailgun) {
@@ -991,7 +996,7 @@ namespace hooks {
 			bullet->behavior_type_internal = 5;
 
 			bool hit = true;
-			if (scbw::weapon_pierces_targets(bullet->weapon_id)) {
+			if (scbw::bullet_pierces_target(bullet)) {
 				apply_bullet_piercing(bullet, bullet->position, 16);
 				if (target) {
 					if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, target)

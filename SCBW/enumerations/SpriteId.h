@@ -785,6 +785,8 @@ namespace SpriteId
 		BunkerAttackOverlay_Green = 842,
 		BunkerAttackOverlay_Blue = 843,
 
+		BurstLasersImpactRed_Damageless = 858,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

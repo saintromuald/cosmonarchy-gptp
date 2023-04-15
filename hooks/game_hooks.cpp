@@ -2049,6 +2049,13 @@ namespace hooks {
 					helper::create_bullet(WeaponId::IonCannonHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
+			case UnitId::TerranSavant:
+			{
+				// Clear Power Siphon buff
+				if (unit_ext->timers[TimerSavantPowerSiphonBuff] == 1) {
+					unit_ext->values[ValueSavantPowerSiphonBuff] = 0;
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma
@@ -2500,17 +2507,12 @@ namespace hooks {
 			unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 		}
 
-		// Zethrokor - Adrenal Glands
-		if (unit_ext->timers[TimerAdrenal] == 1) {
-			unit_ext->values[ValueAdrenalStacks] = 0;
-		}
-
 		// Vorvrokor - Captivating Claws
 		if (unit_ext->timers[TimerCaptivatingClaws] == 1) {
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
 		}
 
-		// Low-yield Mineral Fields - No collision
+		// Low yield Mineral Fields - No collision
 		if (unit->id >= UnitId::ResourceMineralField
 		&&  unit->id <= UnitId::ResourceMineralFieldType3
 		&&  unit->building.resource.resource_yield <= 4) {
@@ -2822,6 +2824,11 @@ namespace hooks {
 		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
 		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1) {
 			unit->update_speed();
+		}
+
+		// Clear Power Siphon debuff
+		if (unit_ext->timers[TimerSavantPowerSiphonDebuff] == 1) {
+			unit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
 		}
 
 		if (globals.celebration == Celebration_Christmas) {
