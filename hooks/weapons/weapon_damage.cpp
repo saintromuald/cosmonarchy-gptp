@@ -1062,7 +1062,7 @@ namespace hooks
 					play_alert(unit, sound_id);
 				}
 			}
-		} else if (scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
+		} else if (unit->player != 11 && scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
 			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
