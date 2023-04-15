@@ -229,7 +229,6 @@ namespace hooks
 			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
 			case UnitId::ProtossIdol:
-			case UnitId::ZergKonvilisk:
 			{
 				speed *= 1.1;
 			} break;
