@@ -259,9 +259,10 @@ bool isGameOn = false;
 			PUSHAD
 		}
 		replay_save();
+		static u8 is_league = *g_is_league_game;
 		__asm {
 			POPAD
-			CMP bl, [0x629268] // original code
+			CMP bl, is_league
 			JMP jmp_address
 		}
 	}
