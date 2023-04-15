@@ -1517,6 +1517,7 @@ namespace scbw {
 		switch (bullet->weapon_id) {
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::SavantDiscoidRailgunPiercing:
+			case WeaponId::SirenCharybdalRifle:
 			case WeaponId::SilvertongueWordsmithRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:

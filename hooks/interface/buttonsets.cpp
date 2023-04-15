@@ -1928,7 +1928,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranSiren:
 								{
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Siren - Discovered Attacks
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon			// Siren - Discovered Attacks
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)		// Siren - Prolonged Arms
 									{
 										current_button_state = Button_State::Enabled;
 									}
