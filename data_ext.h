@@ -143,6 +143,7 @@ enum ExtValueId
 	ValueOriginatedFromOcsalLarva,
 	ValueOriginatedFromGosvileth,
 	ValueOriginatedFromIrulent,
+	ValueCustomEggHatchMax,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

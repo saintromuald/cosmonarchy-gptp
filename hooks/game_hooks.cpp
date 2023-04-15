@@ -1219,7 +1219,7 @@ namespace hooks {
 					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
-							scbw::set_custom_egg(egg, UnitId::ZergSovroleth);
+							scbw::set_custom_egg(egg, UnitId::ZergSovroleth, 2 * 24);
 						}
 						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
@@ -1236,17 +1236,23 @@ namespace hooks {
 						unit->play_iscript_animation(IscriptAnimation::CastSpell);
 					}
 				}
-				if (unit_ext->timers[TimerCustomEggHatch] == 1 + 19) {
-					unit->play_iscript_animation(IscriptAnimation::GndAttkInit); // TODO: Figure out how to play the correct animation
-				}
-				if (unit_ext->timers[TimerCustomEggHatch] == 1) {
-					helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
-					scbw::give_ai_ex(unit);
-					helper::play_morphing_complete_sound(unit);
-					unit->build_queue[unit->build_queue_slot] = UnitId::None;
-					helper::init_building(unit, 1);
-					unit_ext->values[ValueSpecialSovrolethBirth] = true;
-					unit->order_computer(OrderId::ZergBirth);
+				if (unit_ext->timers[TimerCustomEggHatch]) {
+					u32 morph_unit_id = unit->build_queue[unit->build_queue_slot];
+					f32 factor = unit_ext->timers[TimerCustomEggHatch] / (f32)unit_ext->values[ValueCustomEggHatchMax];
+					unit->remaining_build_time = units_dat::time_cost[morph_unit_id] * factor;
+
+					if (unit_ext->timers[TimerCustomEggHatch] == 1 + 19 && morph_unit_id == UnitId::ZergSovroleth) {
+						unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+					}
+					if (unit_ext->timers[TimerCustomEggHatch] == 1) {
+						helper::replace_unit_with_id(unit, morph_unit_id);
+						scbw::give_ai_ex(unit);
+						helper::play_morphing_complete_sound(unit);
+						unit->build_queue[unit->build_queue_slot] = UnitId::None;
+						helper::init_building(unit, 1);
+						unit_ext->values[ValueSpecialSovrolethBirth] = true;
+						unit->order_computer(OrderId::ZergBirth);
+					}
 				}
 			} break;
 			case UnitId::ProtossStarSovereign:

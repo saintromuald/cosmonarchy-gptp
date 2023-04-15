@@ -947,7 +947,7 @@ namespace hooks
 						data.target->set_hitpoints(new_unit->get_max_hp_raw());
 					}
 					if (is_egg) {
-						scbw::set_custom_egg(new_unit, regression);
+						scbw::set_custom_egg(new_unit, regression, 2 * 24);
 					}
 
 					u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
