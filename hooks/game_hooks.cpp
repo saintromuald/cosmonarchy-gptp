@@ -1039,6 +1039,8 @@ namespace hooks {
 						helper::replace_unit_with_id(unit, unit_id);
 					}
 				}
+
+				unit_ext->values[ValueIsOcsalMorph] = unit->id == UnitId::ZergOcsalLarva;
 			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
