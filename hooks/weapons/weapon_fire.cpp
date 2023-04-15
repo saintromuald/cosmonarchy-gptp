@@ -359,6 +359,14 @@ namespace hooks {
 						offsets.count = 2;
 						fire_bullet(unit, weapon_id, 0, &offsets);
 					} break;
+					case WeaponId::PhalanxArcliteShockCannon:
+					{
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePhalanxSiegeModeLaunchPos;
+						offsets.count = 1;
+						offsets.use_special_overlay = true;
+						fire_bullet(unit, weapon_id, 0, &offsets);
+					} break;
 					case WeaponId::RamessesPharoahCannons:
 					{
 						WeaponOffsets offsets = {};

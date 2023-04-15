@@ -140,6 +140,7 @@ enum ExtValueId
 	ValueSavantEntropyGauntlets,
 	ValueSavantPowerSiphonBuff,
 	ValueSavantPowerSiphonDebuff,
+	ValuePhalanxSiegeModeLaunchPos,
 	ValueOriginatedFromOcsalLarva,
 	ValueOriginatedFromGosvileth,
 	ValueOriginatedFromIrulent,
