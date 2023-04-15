@@ -2352,6 +2352,7 @@ namespace scbw {
 			case UnitId::ZergUltrokCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
+			// TODO: Allow Irulent to be regressed to from Othstol, if Othstol was mutated from Irulent instead of Irol
 
 			// Base Structures
 			case UnitId::ZergHachirosk:				return UnitId::ZergDroleth;

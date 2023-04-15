@@ -926,10 +926,6 @@ namespace hooks
 			}
 
 			u32 regression = scbw::get_zerg_regression(data.target);
-			// TODO: Allow Irulent to be regressed to from Othstol, if Othstol was mutated from Irulent instead of Irol
-		//	if (data.target->id == UnitId::ZergOthstolOviform && data.target->previous_unit_type == UnitId::ZergIrulentIvoa) {
-		//		regression = UnitId::ZergIrulentIvoa;
-		//	}
 			if (data.damage > 0 && regression != UnitId::None) {
 				helper::cancel_unit(data.target);
 				// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
@@ -946,6 +942,8 @@ namespace hooks
 					}
 					data.target->sprite->create_overlay(effect_image_id);
 					helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
+
+					target_ext->timers[TimerStun] += 2 * 24;
 
 					fatal_deal_damage = false;
 				}

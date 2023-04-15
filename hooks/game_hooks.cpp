@@ -1027,6 +1027,12 @@ namespace hooks {
 			}
 		}
 
+		if (unit_ext->timers[TimerStun] > 1) {
+			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+		} else if (unit_ext->timers[TimerStun] == 1) {
+			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+		}
+
 		switch (unit->id) {
 			case UnitId::ZergLarva:
 			case UnitId::ZergOcsalLarva:

@@ -239,6 +239,7 @@ enum ExtTimerId
 	TimerKelvinMunitions,
 	TimerSavantPowerSiphonBuff,
 	TimerSavantPowerSiphonDebuff,
+	TimerStun,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
