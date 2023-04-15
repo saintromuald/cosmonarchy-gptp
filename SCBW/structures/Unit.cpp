@@ -451,7 +451,7 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore, bool proc_flash_sh
 
 	// If heals to full, clear debuffs
 	if (restore && this->shields == this->get_max_shields_raw()) {
-		scbw::restore_func(this);
+	//	scbw::restore_func(this);
 	}
 
 	// Activate flash shielding
