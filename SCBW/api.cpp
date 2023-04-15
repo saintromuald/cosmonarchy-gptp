@@ -2321,8 +2321,15 @@ namespace scbw {
 		fclose(file);
 	}
 
-	u32 get_zerg_regression(u32 unit_id) {
-		switch (unit_id) {
+	u32 get_zerg_regression(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueIsOcsalMorph]) {
+			// Ocsal Units
+			return UnitId::ZergOcsalLarva;
+		}
+
+		switch (unit->id) {
+			// Structure Morphs
 			case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergSurkithColony:			return UnitId::ZergCagrantColony;
@@ -2344,6 +2351,29 @@ namespace scbw {
 			case UnitId::ZergUltrokCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
+
+			// Base Structures
+			case UnitId::ZergHachirosk:				return UnitId::ZergDroleth;
+			case UnitId::ZergCagrantColony:			return UnitId::ZergDroleth;
+			case UnitId::ZergIrolIris:				return UnitId::ZergDroleth;
+			case UnitId::ZergQuazrokPool:			return UnitId::ZergDroleth;
+			case UnitId::ZergMuthrokSpire:			return UnitId::ZergDroleth;
+			case UnitId::ZergHydrokDen:				return UnitId::ZergDroleth;
+			case UnitId::ZergAxtothAxis:			return UnitId::ZergDroleth;
+			case UnitId::ZergGeszkathGrotto:		return UnitId::ZergDroleth;
+			case UnitId::ZergIzkagIteth:			return UnitId::ZergDroleth;
+			case UnitId::ZergZorkizShroud:			return UnitId::ZergDroleth;
+			case UnitId::ZergMatravilNest:			return UnitId::ZergDroleth;
+			case UnitId::ZergElthisthMound:			return UnitId::ZergDroleth;
+
+			// Unit Mophs
+			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
+			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
+			// TODO: Add all Unit Mophs (outside of two per req) and remove this comment
+
+			// Base Units
+			case UnitId::ZergQuazilisk:				return UnitId::ZergLarva;
+			// TODO: Add all Base Units (outside of two per req) and remove this comment
 		}
 		return UnitId::None;
 	}
