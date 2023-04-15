@@ -1519,6 +1519,7 @@ namespace scbw {
 			case WeaponId::SavantDiscoidRailgunPiercing:
 			case WeaponId::SirenCharybdalRifle:
 			case WeaponId::SilvertongueWordsmithRailgun:
+			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
@@ -2844,6 +2845,8 @@ namespace scbw {
 			case WeaponId::HarakanFlamethrower:
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
+			case WeaponId::MatadorTwinstrikeFlamethrowers:
+			case WeaponId::DurendalAbaddonFlamethrowers:
 			case WeaponId::PazuzuJupiterDriver:
 			case WeaponId::ZealotPhaseBlades:
 			case WeaponId::LegionnairePhaseSpear:

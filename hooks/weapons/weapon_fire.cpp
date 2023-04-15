@@ -714,6 +714,7 @@ namespace hooks {
 			switch (bullet->weapon_id) {
 				// Same as default, but orange effect
 				case WeaponId::CyprianTwinRailguns:
+				case WeaponId::RamessesPharoahCannons:
 				{
 					iquare_globals.add_bullet_multihit(bullet, collision_target);
 					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
