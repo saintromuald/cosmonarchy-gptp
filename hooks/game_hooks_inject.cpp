@@ -199,6 +199,27 @@ bool isGameOn = false;
 		return path;
 	}
 
+	void copy_last_replay(char* name) {
+		FILE* from = fopen(get_replay_path("LastReplay"), "rb");
+		if (!from) {
+			return;
+		}
+
+		FILE* to = fopen(get_replay_path(name), "wb");
+		if (!to) {
+			fclose(from);
+			return;
+		}
+
+		char buffer[4096] = {};
+		while (u32 bytes_read = fread(buffer, 1, 4096, from)) {
+			fwrite(buffer, 1, bytes_read, to);
+		}
+
+		fclose(from);
+		fclose(to);
+	}
+
 	void replay_save() {
 		char date[28] = {};
 		time_t now = time(0);
@@ -228,7 +249,7 @@ bool isGameOn = false;
 		*/
 
 		if (!file_exists(get_replay_path(name))) {
-			helper::save_replay(name);
+			copy_last_replay(name);
 		}
 	}
 
