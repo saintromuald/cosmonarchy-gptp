@@ -2371,11 +2371,23 @@ namespace scbw {
 			// Unit Mophs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
-			// TODO: Add all Unit Mophs (outside of two per req) and remove this comment
-
-			// Base Units
-			case UnitId::ZergQuazilisk:				return UnitId::ZergLarva;
-			// TODO: Add all Base Units (outside of two per req) and remove this comment
+			case UnitId::ZergKalkalisk:				return UnitId::ZergNathrokor;
+			case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
+			case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
+			case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
+			case UnitId::ZergTethzorokor:			return UnitId::ZergIzirokor;
+			case UnitId::ZergVithrilisk:			return UnitId::ZergSkithrokor;
+			case UnitId::ZergCherbrathalor:			return UnitId::ZergKagralisk;
+			case UnitId::ZergOkrimnilisk:			return UnitId::ZergEvigrilisk;
+			case UnitId::ZergAlgoztalisk:			return UnitId::ZergAlmaksalisk;
+			case UnitId::ZergKethrostalor:			return UnitId::ZergKeskathalor;
+			case UnitId::ZergAlkajelisk:			return UnitId::ZergGeszithalor;
+			case UnitId::ZergUltrokor:				return UnitId::ZergZoryusthaleth;
+			case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
+			case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
+			case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
+			case UnitId::ZergSelkerilisk:			return UnitId::ZergVilgorokor;
+			case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 		}
 		return UnitId::None;
 	}
