@@ -925,17 +925,16 @@ namespace hooks
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 
-			u32 regression = scbw::get_zerg_regression(data.target);
-			if (data.damage > 0 && regression != UnitId::None) {
+			u32 regression_id = scbw::get_zerg_regression(data.target);
+			if (data.damage > 0 && regression_id != UnitId::None) {
 				helper::cancel_unit(data.target);
 				// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
 				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 				if (data.target) {
-					u32 regress_to = regression;
-					bool is_egg = false;
-					if (!(units_dat::base_property[regression] & UnitProperty::Building)) {
-						regress_to = data.target->status & UnitStatus::InAir ? UnitId::ZergCocoon : UnitId::ZergEgg;
-						is_egg = true;
+					bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
+					u32 regress_to = regression_id;
+					if (!is_building) {
+						regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
 					}
 
 					Unit* new_unit = data.target;
@@ -946,8 +945,13 @@ namespace hooks
 						helper::replace_unit_with_id(new_unit, regress_to);
 						data.target->set_hitpoints(new_unit->get_max_hp_raw());
 					}
-					if (is_egg) {
-						scbw::set_custom_egg(new_unit, regression, 2 * 24);
+					if (new_unit) {
+						if (is_building) {
+							UnitExt* new_unit_ext = get_unit_ext(new_unit);
+							new_unit_ext->timers[TimerStun] = 2 * 24;
+						} else {
+							scbw::set_custom_egg(new_unit, regression_id, 2 * 24);
+						}
 					}
 
 					u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;

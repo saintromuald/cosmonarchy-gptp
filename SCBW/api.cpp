@@ -3341,7 +3341,7 @@ namespace scbw {
 
 	void set_custom_egg(Unit* egg, u32 unit_id, u32 time) {
 		egg->order_to_idle();
-		egg->sprite->play_iscript_animation(unit_id == UnitId::ZergCocoon ? IscriptAnimation::Init : IscriptAnimation::Walking, true);
+		egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
 		egg->build_queue[egg->build_queue_slot] = unit_id;
 
 		UnitExt* egg_ext = get_unit_ext(egg);
