@@ -49,7 +49,7 @@ namespace hooks {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
 				const u32 health = unit->hitpoints / 256;
 				const u32 max_health = unit->get_max_hp_ingame();
-				const f64 multiplier = MathUtils::map(health, (u32)0, max_health, 0.66, 1.0, true); // nice casting tbh
+				const f64 multiplier = MathUtils::map(health, (u32)0, max_health, 0.66, 1.0, true);
 				cooldown /= multiplier;
 			} break;
 			case UnitId::TerranPhobos: {
@@ -98,9 +98,12 @@ namespace hooks {
 			cooldown += 2;
 		}
 
-		u32 adrenal_stacks = unit_ext->values[ValueAdrenalStacks];
-		if (adrenal_stacks) {
-			cooldown -= adrenal_stacks / 2;
+		// Power Siphon
+		if (unit_ext->values[ValueSavantPowerSiphonBuff]) {
+			cooldown /= 1 + (0.1 * unit_ext->values[ValueSavantPowerSiphonBuff]);
+		}
+		if (unit_ext->values[ValueSavantPowerSiphonDebuff]) {
+			cooldown *= 1 + (0.1 * unit_ext->values[ValueSavantPowerSiphonDebuff]);
 		}
 
 		if (clamp) {

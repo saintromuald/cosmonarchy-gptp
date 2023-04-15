@@ -429,20 +429,22 @@ namespace hooks
 		}
 
 		// Gptp Timer + Value
-		add_status(statuses, "Adrenal Glands", unit_ext->values[ValueAdrenalStacks], 4,
-			unit_ext->timers[TimerAdrenal], TimerType::Gptp);
-		add_status(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
-			captivating_claws_get_timer(unit), TimerType::Gptp);
-		add_status(statuses, "Observance", unit_ext->values[ValueObservanceRend], 0,
-			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
-		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
-			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
+		add_status(statuses, "Empowered", unit_ext->values[ValueSavantPowerSiphonBuff], 0,
+			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
+		add_status(statuses, "Power Siphoned", unit_ext->values[ValueSavantPowerSiphonDebuff], 0,
+			unit_ext->timers[TimerSavantPowerSiphonDebuff], TimerType::Gptp);
 		add_status(statuses, "Dirge Fuse", unit_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
 			unit_ext->timers[TimerDirgeFuse], TimerType::Gptp);
-		add_status(statuses, "Petrification", unit_ext->values[ValuePetrificationStacks], 0,
-			unit_ext->timers[TimerPetrification], TimerType::Gptp);
 		add_status(statuses, "Deconstruction", unit_ext->values[ValueDeconstruction], 0,
 			unit_ext->timers[TimerDeconstruction], TimerType::Gptp);
+		add_status(statuses, "Petrification", unit_ext->values[ValuePetrificationStacks], 0,
+			unit_ext->timers[TimerPetrification], TimerType::Gptp);
+		add_status(statuses, "Observance", unit_ext->values[ValueObservanceRend], 0,
+			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
+		add_status(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
+			captivating_claws_get_timer(unit), TimerType::Gptp);
+		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
+			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
 
 		if (unit_ext->values[ValueSignifyStacks] < 5)
 		{

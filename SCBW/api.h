@@ -613,7 +613,7 @@ namespace scbw
 	s32 get_upgrade_type(Unit* unit);
 	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
-	bool unit_id_is_pacifist(Unit* unit);
+	bool unit_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 order_id);
 	void create_shield_overlay(Unit* unit, u32 attackDirection);
 	void decloak_proc(Unit* unit);
@@ -624,7 +624,7 @@ namespace scbw
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void apply_hallucinating(Unit* unit, u8 player, u32 time);
-	bool weapon_pierces_targets(u16 weapon_id);
+	bool bullet_pierces_target(Bullet* bullet);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);

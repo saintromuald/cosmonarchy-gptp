@@ -10,6 +10,7 @@ namespace hooks
 		u32 energy = 200;
 		switch (unit->id)
 		{
+			case UnitId::TerranSavant:
 			case UnitId::TerranSevenstep:
 			{
 				energy = 100;

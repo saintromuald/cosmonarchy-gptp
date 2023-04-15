@@ -2542,11 +2542,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergZethrokor &&  // Zethrokor Adrenal Glands
-								current_button->icon_id == IconId::AdrenalGlands)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::ZergVorvrokor && // Vorvrokor Adrenal Surge
 								current_button->icon_id == IconId::MetabolicBoost)
 							{

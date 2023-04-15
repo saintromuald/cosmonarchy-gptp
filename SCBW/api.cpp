@@ -1078,7 +1078,7 @@ namespace scbw {
 	}
 
 	// I may need to make this function more flexible later -- Pr0nogo
-	bool unit_id_is_pacifist(Unit* unit) {
+	bool unit_is_pacifist(Unit* unit) {
 		return !unit->has_weapon()
 		&&		unit->id != UnitId::ZergLakizilisk; // LAME
 	}
@@ -1513,9 +1513,10 @@ namespace scbw {
 		}
 	}
 
-	bool weapon_pierces_targets(u16 weapon_id) {
-		switch (weapon_id) {
+	bool bullet_pierces_target(Bullet* bullet) {
+		switch (bullet->weapon_id) {
 			case WeaponId::CyprianTwinRailguns:
+			case WeaponId::SavantDiscoidRailgunPiercing:
 			case WeaponId::SilvertongueWordsmithRailgun:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:

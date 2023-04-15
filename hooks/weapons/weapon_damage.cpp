@@ -271,18 +271,6 @@ namespace hooks
 				// Searing Acid - Geszithalor behavior
 				data.damage += data.damage_divisor * 10 * 256;
 			} break;
-			case WeaponId::SavantDiscoidRailgun:
-			{
-				// Entropy Gauntlets
-				if (!scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-					u32 energy = std::min(data.attacker->energy, (u16)(10 * 256));
-					if (energy) {
-						data.attacker->spend_unit_energy(energy);
-						data.damage += energy / 2;
-						helper::create_thingy(SpriteId::EntropyGauntletsOverlay, data.attacker->position.x, data.attacker->position.y, data.attacking_player_id);
-					}
-				}
-			} break;
 			case WeaponId::CharlatanFerventBlaster:
 			case WeaponId::EmpressFadingBioplasma:
 			case WeaponId::LiiraliskHollowedSpores:
@@ -469,14 +457,6 @@ namespace hooks
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
 				} break;
-				case WeaponId::ZethrokorClaws:
-				{
-					// Adrenal Glands - Zethrokor behavior
-					if (attacker_ext->values[ValueAdrenalStacks] < 4) {
-						attacker_ext->values[ValueAdrenalStacks] += 1;
-					}
-					attacker_ext->timers[TimerAdrenal] = ZethrokorAdrenalGlandsTimer;
-				} break;
 				case WeaponId::VorvalClaws:
 				{
 					// Captivating Claws - Vorvrokor behavior
@@ -512,16 +492,14 @@ namespace hooks
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						// Power Siphon
-						if (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)) {
-							if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
-								u32 energy = std::min(data.target->energy, (u16)(10 * 256));
-								if (energy) {
-									data.target->spend_unit_energy(energy);
-									data.attacker->heal_energy(energy);
-									u32 target_offset = scbw::get_overlay_offset(data.target->id);
-									helper::create_thingy(SpriteId::Feedback_Hit_Small + target_offset, data.target->position.x, data.target->position.y, data.attacking_player_id);
-								}
-							}
+						if  (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)
+						&&	!scbw::unit_is_pacifist(data.target))
+						{
+							attacker_ext->values[ValueSavantPowerSiphonBuff]++;
+							attacker_ext->timers[TimerSavantPowerSiphonBuff] = 2 * 24 + 1;
+							target_ext->values[ValueSavantPowerSiphonDebuff]++;
+							target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
+							helper::create_thingy(SpriteId::Feedback_Hit_Small + scbw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
 						}
 					} break;
 					case WeaponId::CyclopsFlakCannons:
@@ -541,7 +519,7 @@ namespace hooks
 					case WeaponId::PazuzuJupiterDriver:
 					{
 						// Deconstruction - Pazuzu behavior - apply stack
-						if (!scbw::unit_id_is_pacifist(data.target)) {
+						if (!scbw::unit_is_pacifist(data.target)) {
 							target_ext->values[ValueDeconstruction]++;
 							target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
@@ -1073,11 +1051,10 @@ namespace hooks
 			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					helper::reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.ally_cooldown = 40;
+					globals.alert.ally_cooldown = 60;
 
-					// TODO: Replace with new sound ids. -Pr0nogo
 					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
+					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
 					play_alert(unit, sound_id);
 				}
 			}
