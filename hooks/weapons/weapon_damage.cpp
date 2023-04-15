@@ -13,6 +13,7 @@
 #include "hooks/limits/sfx_extender.h"
 #include "DatExtend/datext.h"
 #include "weapon_fire.h"
+#include "trigger_system\trigger_system.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -34,6 +35,72 @@ bool irradiate_target(Unit* unit)
 
 namespace hooks
 {
+
+	static void play_alert(Unit* unit, u32 sound_id) {
+		u32 alert_id = SoundId::AlertZerg - *g_console_index;
+		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
+		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
+
+		globals.alert.sound_id = sound_id;
+		globals.alert.play_timer = 12; 
+	}
+
+
+	static void reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
+		EntryArray units = {};
+		unit_search_radial(&units, unit->position, 11 * 32);
+		for (u32 i = 0; i < units.count; ++i) {
+			Unit* other = units.units[i];
+			other->attack_notify_timer = other->player == unit->player ? 100 : 200;
+		}
+	}
+
+	static bool ignore_alert;
+
+	// Hooked to fix one-shots not notifying owners. -Pr0nogo
+	void unit_attack_notify(Unit* unit) { // 0048F230
+		if (!ignore_alert) {
+			return;
+		}
+		u32 local_player = *g_local_nation_id;
+		if (*g_is_in_replay || globals.players[local_player].is_witness || unit->player == 11) {
+			return;
+		}
+		if (unit->player == local_player) {
+			unit->last_event_color = g_palette_index_reference[20];
+			unit->last_event_timer = 20;
+			if (!globals.alert.own_cooldown) {
+				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
+					reset_all_unit_attack_notify_timers_in_range(unit);
+					globals.alert.own_cooldown = 20;
+
+					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
+					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
+					if (!is_building) {
+						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
+						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
+						if (sound_first && sound_last) {
+							sound_id = scbw::rand_between_local(sound_first, sound_last);
+						}
+					}
+					play_alert(unit, sound_id);
+				}
+			}
+		} else if (scbw::are_mutual_allies(local_player, unit->player)) {
+			unit->last_event_color = g_palette_index_reference[20];
+			unit->last_event_timer = 20;
+			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
+				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
+					reset_all_unit_attack_notify_timers_in_range(unit);
+					globals.alert.ally_cooldown = 60;
+
+					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
+					play_alert(unit, sound_id);
+				}
+			}
+		}
+	}
+
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data);
 	static void weapon_damage_lifesteal(const WeaponDamageData& data);
 	static void weapon_damage_behaviors(const WeaponDamageData& data);
@@ -217,13 +284,11 @@ namespace hooks
 			if (data.target->status & UnitStatus::IsHallucination) {
 				data.damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
 			}
+			ignore_alert = true;
 			data.target->damage_hp(data.damage, data.attacker, data.attacking_player_id, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
-		
-
-			if (!scbw::is_allied_to(*g_local_nation_id, data.attacking_player_id)) {
-				if (!data.target->hitpoints || data.target->player != *g_local_nation_id) {
-					helper::unit_attack_notify(data.target);
-				}
+			ignore_alert = false;
+			if (data.weapon_id != WeaponId::Irradiate) {
+				unit_attack_notify(data.target);
 			}
 		}
 
@@ -1026,56 +1091,6 @@ namespace hooks
 
 		target_ext->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		return 0;
-	}
-
-	static void play_alert(Unit* unit, u32 sound_id) {
-		u32 alert_id = SoundId::AlertZerg - *g_console_index;
-		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
-		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
-
-		globals.alert.sound_id = sound_id;
-		globals.alert.play_timer = 12; 
-	}
-
-	// Hooked to fix one-shots not notifying owners. -Pr0nogo
-	void unit_attack_notify(Unit* unit) { // 0048F230
-		if (*g_is_in_replay) {
-			return;
-		}
-		if (unit->player == *g_local_nation_id) {
-			unit->last_event_color = g_palette_index_reference[20];
-			unit->last_event_timer = 20;
-			if (!globals.alert.own_cooldown) {
-				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
-					helper::reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.own_cooldown = 20;
-
-					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
-					if (!is_building) {
-						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
-						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
-						if (sound_first && sound_last) {
-							sound_id = scbw::rand_between_local(sound_first, sound_last);
-						}
-					}
-					play_alert(unit, sound_id);
-				}
-			}
-		} else if (unit->player != 11 && scbw::are_mutual_allies(*g_local_nation_id, unit->player)) {
-			unit->last_event_color = g_palette_index_reference[20];
-			unit->last_event_timer = 20;
-			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
-				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
-					helper::reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.ally_cooldown = 60;
-
-					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
-					play_alert(unit, sound_id);
-				}
-			}
-		}
 	}
 
 	// Hooked to reveal fog around attackers when they attack allies. -Pr0nogo
