@@ -224,10 +224,10 @@ bool isGameOn = false;
 		char date[28] = {};
 		time_t now = time(0);
 		tm* ltm = localtime(&now);
-		strftime(date, 28, "%y-%m-%d %H;%M", ltm);
+		strftime(date, 28, "%y-%m-%d_%H-%M", ltm);
 
 		char name[28] = {};
-		snprintf(name, 28, "%s %s", date, g_current_map_name);
+		snprintf(name, 28, "%s_%s", date, g_current_map_name);
 
 		/*
 		bool first = true;
