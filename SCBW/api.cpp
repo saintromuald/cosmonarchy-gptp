@@ -2357,13 +2357,15 @@ namespace scbw {
 			// Base Structures
 			case UnitId::ZergHachirosk:				return UnitId::ZergDroleth;
 			case UnitId::ZergCagrantColony:			return UnitId::ZergDroleth;
+		//	case UnitId::ZergExcisant:				return UnitId::ZergDroleth;
 			case UnitId::ZergIrolIris:				return UnitId::ZergDroleth;
+			case UnitId::ZergNydusCesiant:			return UnitId::ZergDroleth;
 			case UnitId::ZergQuazrokPool:			return UnitId::ZergDroleth;
 			case UnitId::ZergMuthrokSpire:			return UnitId::ZergDroleth;
-			case UnitId::ZergHydrokDen:				return UnitId::ZergDroleth;
 			case UnitId::ZergAxtothAxis:			return UnitId::ZergDroleth;
-			case UnitId::ZergGeszkathGrotto:		return UnitId::ZergDroleth;
+			case UnitId::ZergHydrokDen:				return UnitId::ZergDroleth;
 			case UnitId::ZergIzkagIteth:			return UnitId::ZergDroleth;
+			case UnitId::ZergGeszkathGrotto:		return UnitId::ZergDroleth;
 			case UnitId::ZergZorkizShroud:			return UnitId::ZergDroleth;
 			case UnitId::ZergMatravilNest:			return UnitId::ZergDroleth;
 			case UnitId::ZergElthisthMound:			return UnitId::ZergDroleth;
