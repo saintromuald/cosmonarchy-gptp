@@ -2327,7 +2327,7 @@ namespace scbw {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->values[ValueIsOcsalMorph]) {
 			// Ocsal Units
-			return UnitId::ZergOcsalLarva;
+			return unit->id != UnitId::ZergOcsalLarva ? UnitId::ZergOcsalLarva : UnitId::None;
 		}
 
 		switch (unit->id) {
