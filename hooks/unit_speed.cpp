@@ -216,6 +216,7 @@ namespace hooks
 			} break;
 			// Hardcode ideal movement speeds
 			case UnitId::TerranSiren:
+			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranClaymore:
 			case UnitId::ProtossSimulacrum:
 			{

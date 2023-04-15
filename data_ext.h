@@ -141,6 +141,7 @@ enum ExtValueId
 	ValueSavantPowerSiphonBuff,
 	ValueSavantPowerSiphonDebuff,
 	ValueIsOcsalMorph,
+	ValuePhalanxSiegeModeLaunchPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
