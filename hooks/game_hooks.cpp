@@ -1582,7 +1582,7 @@ namespace hooks {
 					WeaponOffsets offsets = {};
 					offsets.value_id = ValueCentaurLaunchPos;
 					offsets.count = 4;
-					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, target, &offsets, false);
+					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, make_target(target), &offsets, false);
 				}
 			} break;
 			case UnitId::TerranOlympian:

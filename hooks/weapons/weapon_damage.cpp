@@ -512,7 +512,7 @@ namespace hooks
 				} break;
 				case UnitId::ZergZarcavrokor:
 				{
-					fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, data.attacker);
+					fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker));
 				} break;
 			}
 

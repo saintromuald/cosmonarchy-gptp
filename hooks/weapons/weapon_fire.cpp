@@ -46,6 +46,13 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	return true;
 }
 
+Target make_target(Unit* unit, Point16 pos) {
+	if (unit) {
+		pos = unit->position; 
+	}
+	return {pos, unit};
+}
+
 Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 rotate = unit_ext->values[weapon_offsets->value_id];
@@ -87,29 +94,24 @@ Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 	return offset;
 }
 
-Bullet* fire_bullet(Unit* unit, u32 weapon_id, Unit* target_unit, WeaponOffsets* weapon_offsets, bool apply_cooldown) {
+Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown) {
 	if (!unit->sprite) {
 		return 0;
 	}
 
 	bool is_ion_cannon = unit->id == UnitId::TerranIonCannon;
-	Target target = unit->order_target;
 	if (is_ion_cannon) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		target.unit = 0;
 		target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
 		target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
-	} else if (target_unit) {
-		target.unit = target_unit;
-		target.pt = target_unit->position;
-	}
-	if (!target.unit && !is_ion_cannon) {
-		return 0;
+	} else if (target.unit) {
+		target.pt = target.unit->position;
 	}
 
 	Point16 launch_pos = unit->position;
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::AppearOnTargetUnit) {
-		launch_pos = target_unit->position;
+		launch_pos = target.pt;
 	}
 	if (weapon_offsets) {
 		Point8 offset = get_next_bullet_offset(unit, weapon_offsets);
@@ -169,21 +171,35 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 	return bullet;
 }
 
+void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, WeaponOffsets* weapon_offsets) {
+	Target order_target = unit->order_target;
+	fire_bullet(unit, weapon_id, unit->order_target);
+
+	Point16 initial_pos = unit->order_target.pt;
+	for (s32 i = 1; i <= side_count; ++i) {
+		Point16 left = scbw::rotate_point(unit->position, initial_pos, 360 - (i * angle_spread));
+		fire_bullet(unit, weapon_id, make_target(0, left), weapon_offsets);
+
+		Point16 right = scbw::rotate_point(unit->position, initial_pos, i * angle_spread);
+		fire_bullet(unit, weapon_id, make_target(0, right), weapon_offsets);
+	}
+}
+
 bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool ignore_main, bool use_weapon_factor, bool apply_cooldown, WeaponOffsets* weapon_offsets, bool center_on_target, u32 range_overwrite, u32 divisor_overwrite) {
 	u32 attack_range = range_overwrite ? range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
 	bool fired = false;
-	Unit* order_target = unit->order_target.unit;
+	Unit* order_target_unit = unit->order_target.unit;
 	if (!ignore_main
-		&& order_target
+		&& order_target_unit
 		&& unit->main_order_id != OrderId::Follow
 		&& unit->main_order_id != OrderId::Patrol
-		&& unit->is_target_within_min_range(order_target, attack_range)
-		&& unit->can_attack_target(order_target)) {
-		if (unit_flag_match(order_target, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
+		&& unit->is_target_within_min_range(order_target_unit, attack_range)
+		&& unit->can_attack_target(order_target_unit)) {
+		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			for (u32 i = 0; i < factor; i++) {
-				Bullet* bullet = fire_bullet(unit, weapon_id, order_target, weapon_offsets, apply_cooldown);
+				Bullet* bullet = fire_bullet(unit, weapon_id, unit->order_target, weapon_offsets, apply_cooldown);
 				if (bullet) {
 					fired = true;
 					BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -195,10 +211,10 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 
 	EntryArray targets = {};
 	if (center_on_target) {
-		if (!order_target) {
+		if (!order_target_unit) {
 			return fired;
 		}
-		unit_search_radial(&targets, order_target->position, attack_range);
+		unit_search_radial(&targets, order_target_unit->position, attack_range);
 	} else {
 		Box32 area = {
 			unit->get_left()   - attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
@@ -209,7 +225,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		unit_search_rect(&targets, area);
 	}
 	unit_search_filter(&targets, unit, filters);
-	Point16 sort_center   = order_target ? order_target->position : unit->position;
+	Point16 sort_center   = order_target_unit ? order_target_unit->position : unit->position;
 	unit_search_sort_by_distance(&targets, sort_center);
 
 	u32 count = targets.count;
@@ -220,7 +236,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 	for (u32 i = 0; i < count; ++i) {
 		Unit* target = targets.units[i];
 		if (target == unit
-		||  target == order_target
+		||  target == order_target_unit
 		||  scbw::is_allied_to(unit->player, target->player)
 		|| !unit->can_attack_target(target)
 		|| !unit->is_target_within_min_range(target, attack_range)) {
@@ -228,7 +244,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		}
 
 		for (u32 i = 0; i < factor; i++) {
-			Bullet* bullet = fire_bullet(unit, weapon_id, target, weapon_offsets, apply_cooldown);
+			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), weapon_offsets, apply_cooldown);
 			if (bullet) {
 				fired = true;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -350,14 +366,14 @@ namespace hooks {
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueCyprianLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::GoliathContenderMissiles:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueGoliathLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::PhalanxArcliteShockCannon:
 					{
@@ -365,35 +381,35 @@ namespace hooks {
 						offsets.value_id = ValuePhalanxSiegeModeLaunchPos;
 						offsets.count = 1;
 						offsets.use_special_overlay = true;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::RamessesPharoahCannons:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueRamessesLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValuePaladinLaunchPos;
 						offsets.count = 5;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueClaymoreLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::PenumbraErebolShockCannon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValuePenumbraLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
@@ -401,21 +417,21 @@ namespace hooks {
 						offsets.value_id = ValueWraithLaunchPos;
 						offsets.count = 2;
 						offsets.fake_count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::SundogBlindsideRockets:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueSundogLaunchPos;
 						offsets.count = 4;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueCentaurLaunchPos;
 						offsets.count = 4;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
@@ -435,14 +451,14 @@ namespace hooks {
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValuePhobosLaunchPos;
 						offsets.count = 4;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::SentinelCerberusRailgun:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueSentinelLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::IonCannonIonCannon:
 					case WeaponId::IonCannonHammerfallBeacon:
@@ -451,119 +467,119 @@ namespace hooks {
 						offsets.value_id = ValueIonCannonLaunchPos;
 						offsets.count = 1;
 						offsets.use_special_overlay = true;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::WardenPrismaticCannon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueWardenLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueCharlatanLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::OptectonSunsplitBeam:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueOptectonLaunchPos1;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::PositronAntimatterMissile:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValuePositronLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::AccantorPlasmaShell:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueAccantorLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::PanoptusPlasmaMissiles:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValuePanoptusLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueExemplarLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::EpigraphLitanyCannons:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueEpigraphLaunchPos;
 						offsets.count = 4;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueEmpyreanLaunchPos;
 						offsets.count = 4;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::StarSovereignCelestialCannon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueSovereignLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::SpraithColonySeekerSpores:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueSpraithColonyLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueLiiraliskLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueKalkaliskLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::AxitriliskSearingVenom:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueAxitriliskLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::SkithrokorSkitteringSpores:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueSkithrokorLaunchPos;
 						offsets.count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueBactaliskLaunchPos;
 						offsets.count = 2;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
@@ -571,7 +587,7 @@ namespace hooks {
 						offsets.value_id = ValueKeskathalorLaunchPos;
 						offsets.count = 2;
 						offsets.fake_count = 1;
-						fire_bullet(unit, weapon_id, 0, &offsets);
+						fire_bullet(unit, weapon_id, unit->order_target, &offsets);
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
@@ -581,15 +597,15 @@ namespace hooks {
 							if (unit->energy >= energy) {
 								unit->spend_unit_energy(energy);
 								helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
-								fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing);
+								fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
 							}
 							else {
 								unit_ext->energy_regen_timer = 0;
-								fire_bullet(unit, weapon_id);
+								fire_bullet(unit, weapon_id, unit->order_target);
 							}
 						}
 						else {
-							fire_bullet(unit, weapon_id);
+							fire_bullet(unit, weapon_id, unit->order_target);
 						}
 					} break;
 					case WeaponId::CataphractLonginiusCannons:
@@ -608,17 +624,13 @@ namespace hooks {
 					case WeaponId::AionLazarusSalvo:
 					{
 						auto rotate = unit_ext->values[ValueAionLaunchPos];
-						if (rotate == 1)
-						{
+						if (rotate == 1) {
 							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
-						}
-						else
-						{
+						} else {
 							scbw::range_modified_fire(weapon_id, unit, x, y, 32 + 32 * rotate);
 						}
 						rotate++;
-						if (rotate > 3)
-						{
+						if (rotate > 3) {
 							rotate = 0;
 						}
 						unit_ext->values[ValueAionLaunchPos] = rotate;
@@ -627,17 +639,13 @@ namespace hooks {
 					{
 						// Salamander missile target positions
 						auto rotate = unit_ext->values[ValueSalamanderLaunchPos];
-						if (rotate == 1)
-						{
+						if (rotate == 1) {
 							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
-						}
-						else
-						{
+						} else {
 							scbw::range_modified_fire(weapon_id, unit, x, y, 32 - 32 * rotate);
 						}
 						rotate++;
-						if (rotate > 2)
-						{
+						if (rotate > 2) {
 							rotate = 0;
 						}
 						unit_ext->values[ValueSalamanderLaunchPos] = rotate;
@@ -649,8 +657,8 @@ namespace hooks {
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
-						// Tertiary Eyes - Siren
-						fire_multiple(unit, weapon_id, 5, FilterEnemy | FilterFrontalArc);
+						// Discovered Attacks - Siren
+						fire_shotgun(unit, weapon_id, 2, 10);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
@@ -677,7 +685,7 @@ namespace hooks {
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril:
 					{
-						fire_bullet(unit, weapon_id, unit->order_target.unit);
+						fire_bullet(unit, weapon_id, unit->order_target);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, true, false, false, 0, true, 2 * 32, 2);
 					} break;
 					default:
