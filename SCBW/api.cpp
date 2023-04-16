@@ -2343,7 +2343,7 @@ namespace scbw {
 			case UnitId::ZergSkortrithColony:		return UnitId::ZergSurkithColony;
 			case UnitId::ZergSpirtithColony:		return UnitId::ZergSpraithColony;
 			case UnitId::ZergIrulentIvoa:			return UnitId::ZergIrolIris;
-			case UnitId::ZergOthstolOviform:		return unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergIrulentIvoa : UnitId::ZergIrolIris;
+			case UnitId::ZergOthstolOviform:		return unit_ext->values[ValueOriginatedFromIrulent] ? UnitId::ZergIrulentIvoa : UnitId::ZergIrolIris;
 			case UnitId::ZergOrbothOmlia:			return UnitId::ZergOthstolOviform;
 			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
 			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
@@ -2354,7 +2354,6 @@ namespace scbw {
 			case UnitId::ZergUltrokCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
-			// TODO: Allow Irulent to be regressed to from Othstol, if Othstol was mutated from Irulent instead of Irol
 
 			// Base Structures
 			case UnitId::ZergHachirosk:
@@ -2371,7 +2370,8 @@ namespace scbw {
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
 			case UnitId::ZergElthisthMound:			
-				return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+				return UnitId::None;
+			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Mophs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;

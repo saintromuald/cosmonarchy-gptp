@@ -43,17 +43,17 @@ namespace
 	void __declspec(naked) get_modified_unit_turn_speed_wrapper()
 	{
 		static Unit* unit;
-		static u32 turnSpeed;
+		static u32 result;
 		__asm
 		{
 			MOV unit, ECX
 			PUSHAD
 		}
-		turnSpeed = hooks::get_modified_unit_turn_speed(unit);
+		result = hooks::get_modified_unit_turn_speed(unit);
 		__asm
 		{
 			POPAD
-			MOV EAX, turnSpeed
+			MOV EAX, result
 			RETN
 		}
 	}

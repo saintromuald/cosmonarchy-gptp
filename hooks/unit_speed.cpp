@@ -273,7 +273,7 @@ namespace hooks
 		return speed;
 	}
 
-	u32 get_modified_unit_speed(Unit* unit, u32 baseSpeed) // 0047B5F0
+	u32 get_modified_unit_speed(Unit* unit, u32 base_speed) // 0047B5F0
 	{
 		if (!unit)
 		{
@@ -286,7 +286,7 @@ namespace hooks
 			case UnitId::ProtossPanoptus:
 			{
 				// Leftover movement speed code
-				baseSpeed = 1707;
+				base_speed = 1707;
 			} break;
 			default:
 			{
@@ -295,16 +295,16 @@ namespace hooks
 				{
 					for (s32 i = 0; i < increase; i++)
 					{
-						baseSpeed *= 1.5;
+						base_speed *= 1.5;
 					}
-					if (baseSpeed < 853)
+					if (base_speed < 853)
 					{
-						baseSpeed = 853;
+						base_speed = 853;
 					}
 				}
 			}
 		}
-		return baseSpeed * get_speed_multiplier(unit);
+		return base_speed * get_speed_multiplier(unit);
 	}
 
 	u32 get_modified_unit_acceleration(Unit* unit)
