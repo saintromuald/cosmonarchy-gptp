@@ -78,7 +78,7 @@ namespace hooks {
 							return;
 						}
 						else {
-							helper::refund_unit_train_cost(unit->id, unit->player);
+							helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
 							helper::display_last_network_error_for_player(unit->player);
 						}
 					}
