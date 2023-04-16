@@ -92,7 +92,7 @@ namespace hooks
 			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.ally_cooldown = 60;
+					globals.alert.ally_cooldown = 150;
 
 					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
 					play_alert(unit, sound_id);
@@ -1019,6 +1019,7 @@ namespace hooks
 							new_unit_ext->timers[TimerStun] = 2 * 24;
 						} else {
 							scbw::set_custom_egg(new_unit, regression_id, 2 * 24);
+							new_unit->set_hitpoints(75 * 256);
 						}
 					}
 
