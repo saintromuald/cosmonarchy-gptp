@@ -1010,16 +1010,15 @@ namespace hooks
 						new_unit = scbw::create_unit_in_game(regress_to, data.target->player, data.target->position.x, data.target->position.y);
 					} else {
 						fatal_deal_damage = false;
-						helper::replace_unit_with_id(new_unit, regress_to);
-						data.target->set_hitpoints(new_unit->get_max_hp_raw());
+						helper::replace_unit_with_id(data.target, regress_to);
+						data.target->set_hitpoints(data.target->get_max_hp_raw());
 					}
 					if (new_unit) {
 						if (is_building) {
 							UnitExt* new_unit_ext = get_unit_ext(new_unit);
 							new_unit_ext->timers[TimerStun] = 2 * 24;
 						} else {
-							scbw::set_custom_egg(new_unit, regression_id, 2 * 24);
-							new_unit->set_hitpoints(75 * 256);
+							scbw::set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256);
 						}
 					}
 

@@ -761,5 +761,5 @@ namespace scbw
 	bool are_mutual_allies(u32 player1, u32 player2);
 	bool unit_id_can_do_controlled_demolition(u32 unit_id);
 	bool tech_id_needs_target(u32 tech_id);
-	void set_custom_egg(Unit* egg, u32 unit_id, u32 time);
+	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
 }

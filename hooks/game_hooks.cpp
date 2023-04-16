@@ -1238,14 +1238,16 @@ namespace hooks {
 				}
 				if (unit_ext->timers[TimerCustomEggHatch]) {
 					u32 morph_unit_id = unit->build_queue[unit->build_queue_slot];
-					f32 factor = unit_ext->timers[TimerCustomEggHatch] / (f32)unit_ext->values[ValueCustomEggHatchMax];
-					unit->remaining_build_time = units_dat::time_cost[morph_unit_id] * factor;
+					f32 time_factor = unit_ext->timers[TimerCustomEggHatch] / (f32)unit_ext->values[ValueCustomEggHatchMax];
+					unit->remaining_build_time = units_dat::time_cost[morph_unit_id] * time_factor;
 
 					if (unit_ext->timers[TimerCustomEggHatch] == 1 + 19 && morph_unit_id == UnitId::ZergSovroleth) {
 						unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
 					}
 					if (unit_ext->timers[TimerCustomEggHatch] == 1) {
+						f32 hp_factor = (f32)unit->hitpoints / unit_ext->values[ValueCustomEggHpMax];
 						helper::replace_unit_with_id(unit, morph_unit_id);
+						unit->set_hitpoints(units_dat::max_hitpoints[morph_unit_id] * hp_factor);
 						scbw::give_ai_ex(unit);
 						helper::play_morphing_complete_sound(unit);
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;

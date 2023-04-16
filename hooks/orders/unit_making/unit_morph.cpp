@@ -63,7 +63,8 @@ namespace hooks {
 			Point16 pos = {};
 			bool no_two_units = false;
 			if (units_dat::base_property[unit->create_origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
-			||  unit_ext->values[ValueSpecialSovrolethBirth]) {
+			||  unit_ext->values[ValueSpecialSovrolethBirth]
+			||  unit_ext->values[ValueCustomEggActive]) {
 				no_two_units = true;
 			}
 
@@ -75,7 +76,7 @@ namespace hooks {
 			if (unit_ext->values[ValueSpecialSovrolethBirth]) {
 				offset_unit = true;
 			}
-			unit_ext->values[ValueSpecialSovrolethBirth] = 0;
+			unit_ext->values[ValueSpecialSovrolethBirth] = false;
 
 			Unit* factory = 0;
 			if ((unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
@@ -117,7 +118,14 @@ namespace hooks {
 				helper::ai_training_unit(unit, unit);
 			}
 			helper::init_building(unit, 0);
-			helper::update_unit_stats_and_finish_building(unit);
+			if (unit_ext->values[ValueCustomEggActive]) {
+				unit_ext->values[ValueCustomEggActive] = false;
+				u32 hp = unit->hitpoints;
+				helper::update_unit_stats_and_finish_building(unit);
+				unit->set_hitpoints(hp);
+			} else {
+				helper::update_unit_stats_and_finish_building(unit);
+			}
 			helper::update_unit_strength(unit);
 
 			pos.x = unit->sprite->position.x;

@@ -3342,13 +3342,16 @@ namespace scbw {
 			&& tech_id != TechId::HypnagogueThroughTheLookingGlass;
 	}
 
-	void set_custom_egg(Unit* egg, u32 unit_id, u32 time) {
+	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
 		egg->order_to_idle();
 		egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
 		egg->build_queue[egg->build_queue_slot] = unit_id;
+		egg->set_hitpoints(hp);
 
 		UnitExt* egg_ext = get_unit_ext(egg);
+		egg_ext->values[ValueCustomEggActive]   = true;
 		egg_ext->timers[TimerCustomEggHatch]    = time;
 		egg_ext->values[ValueCustomEggHatchMax] = time;
+		egg_ext->values[ValueCustomEggHpMax]    = hp;
 	}
 }
