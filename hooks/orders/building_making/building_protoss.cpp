@@ -3,314 +3,218 @@
 #include <SCBW/api.h>
 #include <globals.h>
 
-namespace hooks
-{
-	void orders_probe_build(Unit* unit)
-	{
-		if (unit->unit_ai)
-		{
+namespace hooks {
+	void orders_probe_build(Unit* unit) { // 004E4D00
+		if (unit->unit_ai) {
 			unit->status |= UnitStatus::IsGathering;
 		}
 
-		if (unit->main_order_state == 0)
-		{
-			if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
-			{
-				unit->main_order_state = 1;
-			}
-		}
-		else if (unit->main_order_state == 1)
-		{
-			u32 distance, distance_wanted;
-			distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
-			if (unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer)
-			{
-				distance_wanted = 88;
-			}
-			else
-			{
-				distance_wanted = 70;
+		switch (unit->main_order_state) {
+		case 0:
+			if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
+				++unit->main_order_state;
 			}
 
-			if (distance / 256 > distance_wanted)
-			{
-				if (unit->get_movable_state() != 0)
-				{
+			return;
+		case 1:
+		{
+			u32 distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+			u32 distance_wanted = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer ? 88 : 70;
+
+			if (distance / 256 > distance_wanted) {
+				if (unit->get_movable_state() != MovableState::NotReachedDestination) {
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 			}
-			else
-			{
+			else {
 				helper::make_to_hold_position(unit);
-				unit->main_order_state = 2;
+				++unit->main_order_state;
 			}
 		}
-		else if (unit->main_order_state == 2)
-		{
-			if (!(unit->movement_flags & MovementFlags::Accelerating))
-			{
-				u32 distance_wanted;
-				bool is_building_aquifer = (unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer);
-				if (is_building_aquifer)
-				{
-					distance_wanted = 88;
-				}
-				else
-				{
-					distance_wanted = 70;
-				}
-				if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted))
-				{
-					if (unit->get_movable_state() != 0)
-					{
+
+		return;
+		case 2:
+			if (!(unit->movement_flags & MovementFlags::Accelerating)) {
+				bool is_building_aquifer = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer;
+				u32 distance_wanted = is_building_aquifer ? 88 : 70;
+
+				if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted)) {
+					if (unit->get_movable_state() != MovableState::NotReachedDestination) {
 						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					}
 				}
-				else
-				{
-					if (helper::begin_building(unit))
-					{
-						Unit* built_unit = 0;
+				else {
+					if (helper::begin_building(unit)) {
+						Unit* built_unit;
+
 						if (is_building_aquifer) {
 							built_unit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
-						} else {
+						}
+						else {
 							built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 						}
-						if (built_unit) {
-							built_unit->create_origin = unit->id;
-						}
 
-						u32 unit_id = unit->build_queue[unit->build_queue_slot];
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
-						if (!built_unit)
-						{
-							helper::refund_unit_train_cost(unit_id, unit->player);
-							helper::display_last_network_error_for_player(unit->player);
-							unit->order_to_idle();
-						}
-						else
-						{
+
+						if (built_unit) {
 							if (units_dat::shields_enabled[built_unit->id]) {
 								built_unit->shields += 3 * 256;
 							}
+
+							built_unit->create_origin = unit->id;
 							built_unit->sprite->player = unit->sprite->player;
 							helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
-							if (is_building_aquifer)
-							{
+
+							if (is_building_aquifer) {
 								built_unit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
 							}
+
 							built_unit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 							unit->order_target.unit = built_unit;
-							helper::ai_training_overlord(built_unit, unit);
+							helper::ai_training_overlord(unit, built_unit);
 							built_unit->order_computer(OrderId::BuildSelf2);
 							helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
-							unit->main_order_state = 3;
+							++unit->main_order_state;
+							return;
+						}
+						else {
+							helper::refund_unit_train_cost(unit->id, unit->player);
+							helper::display_last_network_error_for_player(unit->player);
 						}
 					}
-					else
-					{
-						unit->order_to_idle();
-					}
+
+					unit->order_to_idle();
 				}
 			}
-		}
-		else if (unit->main_order_state == 3)
+
+			return;
+		case 3:
 		{
 			Unit* target = unit->order_target.unit;
-			Image* current_image;
-			if (!target || target->id != UnitId::ProtossAquifer || unit->order_queue_head)
-			{
+
+			if (!target || target->id != UnitId::ProtossAquifer || unit->order_queue_head) {
 				unit->order_to_idle();
 			}
-			else
-			{
+			else {
 				unit->order_to(OrderId::CanEnterGasMine, target);
 			}
-			current_image = unit->sprite->images.head;
-			while (current_image)
-			{
+
+			Image* current_image = unit->sprite->images.head;
+
+			while (current_image) {
 				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
 		}
+
+		default:
+			return;
+		}
 	}
 
 	// Protoss self-building
-	void orders_build_self_2(Unit* building) // 004E4F40
-	{
-		bool jump_to_E50EE = false;
-		if (building->main_order_state > 3)
-		{
-			jump_to_E50EE = true;
-		}
-		else if (building->main_order_state == 0)
-		{
-			if (building->remaining_build_time == 0)
-			{
+	void orders_build_self_2(Unit* building) { // 004E4F40
+		switch (building->main_order_state) {
+		case 0:
+			if (!building->remaining_build_time) {
 				Image* current_image = building->sprite->images.head;
-				while (current_image)
-				{
-					if (current_image->flags & ImageFlags::Flag04)
-					{
-						const u32* u32_006D1200 = (u32*)0x006D1200;
+
+				while (current_image) {
+					if (current_image->flags & ImageFlags::Flag04) {
 						current_image->animation = IscriptAnimation::SpecialState1;
-						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x22);
+						current_image->iscript_offset = *(u16*)(*g_iscript_data + current_image->iscript_header_offset + 0x22);
 						current_image->wait = 0;
 						current_image->return_address = 0;
 						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 					}
+
 					current_image = current_image->link.next;
 				}
+
 				helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
-				building->main_order_state = 1;
-				jump_to_E50EE = true;
+				++building->main_order_state;
 			}
-			else
-			{
-				jump_to_E50EE = true;
-			}
-		}
-		else if (building->main_order_state == 1)
-		{
-			if (building->order_signal & 1)
-			{
-				building->order_signal &= ~1;
+
+			break;
+		case 1:
+			if (building->order_signal & 1) {
+				--building->order_signal;
 				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
 				helper::switch_to_warp_texture(building->sprite->main_graphic);
-				building->main_order_state = 3; // DF: Skip state 2 as it's now redundant.
+				++building->main_order_state;
 			}
-		}
-		else if (building->main_order_state == 2) // DF: Could theorically comment out this entire if block, but I haven't extensively checked/tested if it's truly not used by anything else. Your call.
-		{
-			if (building->order_signal & 1)
-			{
-				Image* current_image;
-				building->order_signal &= ~1;
+
+			return;
+		case 2:
+			if (building->order_signal & 1) {
+				--building->order_signal;
 				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
 				building->sprite->main_graphic->flags &= 0xBF; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
-				current_image = building->sprite->images.head;
-				while (current_image)
-				{
-					if (current_image->flags & ImageFlags::Flag04)
-					{
+				helper::update_unit_stats_and_finish_building(building);
+				helper::update_unit_strength(building);
+				helper::check_unstack(building);
+				Image* current_image = building->sprite->images.head;
+
+				while (current_image) {
+					if (current_image->flags & ImageFlags::Flag04) {
 						current_image->animation = IscriptAnimation::WarpIn;
 						current_image->iscript_offset = *(u16*)(*g_iscript_data + current_image->iscript_header_offset + 0x32);
 						current_image->wait = 0;
 						current_image->return_address = 0;
 						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 					}
-					current_image = current_image->link.next;
-				}
-				building->main_order_state = 3;
-				building->order_signal |= 1; // DF: This is what skipped the warp fadeout animation.
-			}
-		}
-		else if (building->main_order_state == 3)
-		{
-			if (building->order_signal & 1)
-			{
-				Image* current_image; // DF: Copied over from state 2.
-				building->order_signal &= ~1;
-				helper::update_unit_stats_and_finish_building(building); // DF: Copying over replace_sprite_images is not necessary because of this function.
-				helper::update_unit_strength(building);
-				helper::check_unstack(building);
-				current_image = building->sprite->images.head; // DF: Copied over from state 2.
-				while (current_image) // DF: Copied over from state 2.
-				{
-					if (current_image->flags & ImageFlags::Flag04)
-					{
-						const u32* u32_006D1200 = (u32*)0x006D1200;
-						current_image->animation = IscriptAnimation::WarpIn;
-						current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x32);
-						current_image->wait = 0;
-						current_image->return_address = 0;
-						helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
-					}
+
 					current_image = current_image->link.next;
 				}
 
-				if (building->status & UnitStatus::Frozen)
-				{
+				if (building->status & UnitStatus::Frozen) {
 					Image* current_image = building->sprite->images.head;
-					while (current_image)
-					{
-						if (current_image->flags & ImageFlags::Flag04)
-						{
-							const u32* u32_006D1200 = (u32*)0x006D1200;
+
+					while (current_image) {
+						if (current_image->flags & ImageFlags::Flag04) {
 							current_image->animation = IscriptAnimation::Disable;
-							current_image->iscript_offset = *(u16*)(*u32_006D1200 + current_image->iscript_header_offset + 0x38);
+							current_image->iscript_offset = *(u16*)(*g_iscript_data + current_image->iscript_header_offset + 0x38);
 							current_image->wait = 0;
 							current_image->return_address = 0;
 							helper::iscript_opcode_cases(current_image, &current_image->iscript_header_offset, 0, 0);
 						}
+
 						current_image = current_image->link.next;
 					}
-					jump_to_E50EE = true;
 				}
-				else
-				{
-					jump_to_E50EE = true;
+
+				helper::update_unit_damage_overlay(building);
+			}
+
+		default:
+			return;
+		}
+
+		BuildingModifier modifier = get_building_modifier(building, 0, true);
+		u16 hp_gain = building->build_repair_hp_gain * modifier.multiplier;
+		u16 shield_gain = building->shield_gain * modifier.multiplier;
+		s32 max_shields = units_dat::max_shield_points[building->id] << 8;
+
+		if (building->remaining_build_time) {
+			--building->remaining_build_time;
+
+			if (modifier.decrease) {
+				if (building->remaining_build_time > modifier.decrease) {
+					building->remaining_build_time -= modifier.decrease;
+				}
+				else {
+					building->remaining_build_time = 0;
 				}
 			}
 		}
 
-		if (jump_to_E50EE)
-		{
-			u32 hpGain, shield_gain;			
-			BuildingModifier modifier = get_building_modifier(building, 0, true);
-			if (building->remaining_build_time != 0)
-			{
-				if (*g_cheat_state & CheatFlags::OperationCwal)
-				{
-					if (building->remaining_build_time > 16)
-					{
-						building->remaining_build_time -= 16;
-					}
-					else
-					{
-						building->remaining_build_time = 0;
-					}
-				}
-				else
-				{
-					building->remaining_build_time--;
-					if (modifier.decrease) {
-						if (building->remaining_build_time > modifier.decrease) {
-							building->remaining_build_time -= modifier.decrease;
-						} else {
-							building->remaining_build_time = 0;
-						}
-					}
-				}
-			}
+		building->set_hitpoints(building->hitpoints + hp_gain);
 
-			if (*g_cheat_state & CheatFlags::OperationCwal)
-			{
-				hpGain = building->build_repair_hp_gain * 16;
-			}
-			else
-			{
-				hpGain = building->build_repair_hp_gain * modifier.multiplier;
-			}
-			building->set_hitpoints(building->hitpoints + hpGain);
-
-			if (*g_cheat_state & CheatFlags::OperationCwal)
-			{
-				shield_gain = building->shield_gain * 16;
-			}
-			else
-			{
-				shield_gain = building->shield_gain * modifier.multiplier;
-			}
-
-			if (building->shields + shield_gain >= (u32)units_dat::max_shield_points[building->id] * 256)
-			{
-				building->shields = units_dat::max_shield_points[building->id] * 256;
-			}
-			else
-			{
-				building->shields += shield_gain;
-			}
+		if (building->shields + shield_gain >= max_shields) {
+			building->shields = max_shields;
+		}
+		else {
+			building->shields += shield_gain;
 		}
 	}
 }
