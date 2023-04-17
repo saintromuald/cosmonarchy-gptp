@@ -728,7 +728,7 @@ namespace helper {
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
-	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords);								// 004E8280
+	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);								// 004E8280
 	void create_ensnare_overlay(Unit* a1);																			// 004F45E0
 
 	// For create_scanner

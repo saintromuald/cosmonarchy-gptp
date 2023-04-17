@@ -1333,8 +1333,7 @@ namespace hooks {
 									case UnitId::ZergOthstoleth:
 									case UnitId::ZergAgrileth:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
-										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1465,9 +1464,7 @@ namespace hooks {
 									case UnitId::ZergIroleth:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
-										||  player_has_unit_id(unit->player, UnitId::ZergIrulentIvoa)
-										||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)
-										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+										||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1478,8 +1475,7 @@ namespace hooks {
 									} break;
 									case UnitId::ZergGosvileth:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)
-										||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -1720,9 +1716,7 @@ namespace hooks {
 								if (current_button->requirement_var == UnitId::ZergSkortrithColony)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
-									||  player_has_unit_id(unit->player, UnitId::ZergIrulentIvoa)
-									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)
-									||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1741,9 +1735,7 @@ namespace hooks {
 								if (current_button->requirement_var == UnitId::ZergSpirtithColony)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
-									||  player_has_unit_id(unit->player, UnitId::ZergIrulentIvoa)
-									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)
-									||  player_has_unit_id(unit->player, UnitId::ZergOrbothOmlia))
+									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 									{
 										current_button_state = Button_State::Enabled;
 									}
