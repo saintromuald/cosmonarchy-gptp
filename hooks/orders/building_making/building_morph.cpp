@@ -8,309 +8,167 @@
 #include "logger.h"
 #include <globals.h>
 
-namespace hooks
-{
-	bool is_morphing(Unit* building)
-	{
-		bool bIsMorphing;
-		if (!(building->status & UnitStatus::Completed))
-		{
-			// was hardcoded instead of using is_valid_morph in original code
-			bIsMorphing = helper::is_valid_building_morph(building->build_queue[building->build_queue_slot]);
-		}
-		else
-		{
-			bIsMorphing = false;
-		}
-		return bIsMorphing;
+namespace hooks {
+	bool is_morphing(Unit* building) {
+		return !(building->status & UnitStatus::Completed) && helper::is_valid_building_morph(building->build_queue[building->build_queue_slot]);
 	}
 
 	void orders_zerg_build_self(Unit* building) {
+		u16 building_id = building->build_queue[building->build_queue_slot];
 		bool is_nydus = building->id == UnitId::ZergNydusCesiant && building->building.nydus_exit;
 		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_building_morph(building->id) || is_nydus) ? false : true);
+
 		if (is_nydus) {
 			BuildingModifier nydus_modifier = get_building_modifier(building->building.nydus_exit, 0, false);
 			modifier.decrease += nydus_modifier.decrease;
 			modifier.multiplier *= nydus_modifier.multiplier;
 		}
 
-		const s32 OPCWAL_PROGRESS_INCREASE = 16;
-		u16 buildingId;
-		bool jump_to_5D56C = false;
-		bool jump_to_5D718 = false;
-		bool jump_to_5D720 = false;
-		buildingId = building->build_queue[building->build_queue_slot];
-
-		if (!scbw::is_zerg_building_morph_result(buildingId))
-		{
-			buildingId = building->id;
+		if (!scbw::is_zerg_building_morph_result(building_id)) {
+			building_id = building->id;
 		}
 
-		// Remove statuses if the source Droleth had them before morphing
-		if (building->status & UnitStatus::NoCollide)
-		{
+		switch (building->main_order_state) {
+		case 0:
+			// Remove statuses if the source Droleth had them before morphing
 			building->status &= ~UnitStatus::NoCollide;
-		}
-		if (building->status & UnitStatus::IsGathering)
-		{
 			building->status &= ~UnitStatus::IsGathering;
-		}
 
-		if (building->main_order_state == 0)
-		{
-			if (helper::is_valid_building_morph(buildingId)) {
+			if (helper::is_valid_building_morph(building_id)) {
 				building->create_origin = building->id;
 			}
-			if (building->remaining_build_time < (units_dat::time_cost[buildingId] * 3 / 4))
-			{
-				building->main_order_state = 1;
-			}
-			jump_to_5D56C = true;
-		}
-		else if (building->main_order_state > 6)
-		{
-			jump_to_5D56C = true;
-		}
 
-		if (jump_to_5D56C)
-		{ // 0045D56C
-			jump_to_5D56C = false;
-			if (building->remaining_build_time == 0)
-			{
-				jump_to_5D720 = true;
-			}
-			else if (!scbw::is_cheat_enabled(CheatFlags::OperationCwal))
-			{
-				jump_to_5D718 = true;
-			}
-			else
-			{					
-				if (building->remaining_build_time >= OPCWAL_PROGRESS_INCREASE)
-				{
-					building->remaining_build_time -= OPCWAL_PROGRESS_INCREASE;
-				}
-				else
-				{
-					building->remaining_build_time = 0;
-				}
-				jump_to_5D720 = true;
-			}
-		}
-		else if (building->main_order_state == 1)
-		{ // 0045D5AE
-			if (building->id == UnitId::ZergExcisant)
-			{
-				Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
-				if (overlay)
-				{
-					overlay->free();
-				}
-			}
-			building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
-			building->main_order_state = 2;
-			jump_to_5D56C = true;
-		}
-		else if (building->main_order_state == 2)
-		{ // 0045D5E2
-			if (building->remaining_build_time < units_dat::time_cost[buildingId] / 2)
-			{
-				building->main_order_state = 3;
-			}
-			jump_to_5D56C = true;
-		}
-		else if (building->main_order_state == 3)
-		{ // 0045D603
-			building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
-			building->main_order_state = 4;
-			jump_to_5D56C = true;
+			++building->main_order_state;
+		case 1:
+			if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
+				if (building->id == UnitId::ZergExcisant) {
+					Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
 
-		}
-		else if (building->main_order_state == 4)
-		{ // 0045D618
-			if (building->remaining_build_time == 0)
-			{
-				building->main_order_state = 5;
-			}
-			jump_to_5D56C = true;
-		}
-		else if (building->main_order_state == 5)
-		{ // 005D62F
-			building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
-			building->main_order_state = 6;
-			helper::play_building_completed_sound(building);
-			jump_to_5D56C = true;
+					if (overlay) {
+						overlay->free();
+					}
+				}
 
-			// TODO: Cleanup
-			/*
-			bool sEnd = false;
-			if (building->order_signal & 0x1)
-			{
+				building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
+				++building->main_order_state;
+			}
+
+			break;
+		case 2:
+			if (building->remaining_build_time < units_dat::time_cost[building_id] >> 1) {
+				building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
+				++building->main_order_state;
+			}
+
+			break;
+		case 3:
+			if (!building->remaining_build_time) {
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
-				sEnd = true;
-				replaceSpriteImages_copy(building->sprite, scbw::get_sprite_data(SpritesDatEntries::ImageId, building->sprite->id), 0);
-				helper::switch_to_warp_texture(building->sprite->main_graphic);
+				helper::play_building_completed_sound(building);
+				++building->main_order_state;
 			}
 
-			if (sEnd)
-			{
-				building->order_signal |= 4;
-				building->main_order_state = 6;
-				play_building_completed_sound(building);
-			}
-			jump_to_5D56C = true;
-			*/
-		}
-		else if (building->main_order_state == 6)
-		{ // 005D64B
-			bool ordCondition = false;
-			if (building->order_signal & 0x4)
-			{
-				ordCondition = true;
-			}
-			if (building->order_signal & 4)
-			{
-				s32 hpAfterMorph;
-				Image* current_image;
-				building->order_signal &= ~4;
-				if (helper::is_valid_building_morph(buildingId)) {
+			break;
+		case 4:
+			if (building->order_signal & 0x4) {
+				building->order_signal &= ~0x4;
+
+				if (helper::is_valid_building_morph(building_id)) {
 					// save hp before some functions modify them
-					hpAfterMorph = building->hitpoints;
+					s32 hp_after_morph = building->hitpoints;
 					u32 save_shields = building->shields;
 					// update score
 					building->status |= UnitStatus::Completed;
 					helper::increment_unit_scores_ex(building, -1, 0);
-
 					// do the building change
 					building->status &= ~UnitStatus::Completed;
-					helper::replace_unit_with_id(building, buildingId);
-
+					helper::replace_unit_with_id(building, building_id);
 					// newHp = newHpMax - oldHpMax + oldHp
-					hpAfterMorph = units_dat::max_hitpoints[buildingId] - units_dat::max_hitpoints[building->previous_unit_type] + hpAfterMorph;
-					if (hpAfterMorph < 256) {
-						hpAfterMorph = 256;
+					hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
+
+					if (hp_after_morph < 256) {
+						hp_after_morph = 256;
 					}
-					building->set_hitpoints(hpAfterMorph);
+
+					building->set_hitpoints(hp_after_morph);
 					building->remaining_build_time = 0;
-				} else if (building->create_origin == UnitId::ZergGosvileth) {
+				}
+				else if (building->create_origin == UnitId::ZergGosvileth) {
 					Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
+
 					if (worker) {
-						worker->set_hitpoints(building->previous_hitpoints * 256);
+						worker->set_hitpoints(building->previous_hitpoints << 8);
 					}
 				}
-				// 0045D6CD
+
 				helper::update_unit_stats_and_finish_building(building);
 				helper::update_unit_strength(building);
-				current_image = building->sprite->images.head;
-				while (current_image != nullptr)
-				{
+				Image* current_image = building->sprite->images.head;
+
+				while (current_image) {
 					current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
-				helper::spread_initial_creep(buildingId, building->sprite->position.x, building->sprite->position.y);
+
+				helper::spread_initial_creep(building_id, building->sprite->position.x, building->sprite->position.y);
 			}
+
+		default:
+			return;
 		}
 
-		if (jump_to_5D56C)
-		{ // 0045D56C
-			jump_to_5D56C = false;
-			if (building->remaining_build_time == 0)
-			{
-				jump_to_5D720 = true;
-			}
-			else if (!scbw::is_cheat_enabled(CheatFlags::OperationCwal))
-			{
-				jump_to_5D718 = true;
-			}
-			else
-			{
-				if (building->remaining_build_time >= OPCWAL_PROGRESS_INCREASE)
-				{
-					building->remaining_build_time -= OPCWAL_PROGRESS_INCREASE;
-				}
-				else
-				{
-					building->remaining_build_time = 0;
-				}
-				jump_to_5D720 = true;
-			}
-		}
+		u16 hp_gain = building->build_repair_hp_gain * modifier.multiplier;
+		if (building->remaining_build_time) {
+			--building->remaining_build_time;
 
-		if (jump_to_5D718)
-		{
-			jump_to_5D718 = false;
-			building->remaining_build_time--;
 			if (modifier.decrease) {
 				if (building->remaining_build_time > modifier.decrease) {
 					building->remaining_build_time -= modifier.decrease;
-				} else {
+				}
+				else {
 					building->remaining_build_time = 0;
 				}
 			}
-			jump_to_5D720 = true;
 		}
 
-		if (jump_to_5D720)
-		{
-			jump_to_5D720 = false;
-			if (!scbw::is_zerg_building_morph_result(buildingId))
-			{
-				s32 hpGain = building->build_repair_hp_gain * modifier.multiplier;
-				// Originally had code for operation cwal cheat
-				building->set_hitpoints(building->hitpoints + hpGain);
-			}
+		if (!scbw::is_zerg_building_morph_result(building_id)) {
+			building->set_hitpoints(building->hitpoints + hp_gain);
 		}
 	}
 
-	void cancel_zerg_building(Unit* unit) // 0045DA40
-	{
-		bool bStopThere = false;
-		if (!(unit->status & UnitStatus::Completed)) {
-			u16 built_unit_id = unit->build_queue[unit->build_queue_slot];
-			// original code was hardcoded instead of using is_valid_morph
-			if (helper::is_valid_building_morph(built_unit_id)) {
-				if (unit->get_race() == RaceId::Zerg) {
-					helper::cancel_zerg_building_morph(unit);
-				}
-				bStopThere = true;
-			}
-		}
-		if (!bStopThere) {
-			static u32* const u32_00581E44 = (u32*)0x00581E44;
-			static u32* const u32_00581ED4 = (u32*)0x00581ED4;
-			static u16* const u16_0066345A = (u16*)0x0066345A;
+	void cancel_zerg_building(Unit* unit) { // 0045DA40
+		if (unit->status & UnitStatus::Completed || !helper::is_valid_building_morph(unit->build_queue[unit->build_queue_slot])) {
 			helper::refund_building_cost(unit->id, unit->player);
-
-			// possibly related to scores?
-			u32_00581ED4[unit->player] = u32_00581ED4[unit->player] - *u16_0066345A;
-			u32_00581E44[unit->player] = u32_00581E44[unit->player] - 1;
+			unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth];
+			--units_owned[unit->player];
 
 			if (unit->id == UnitId::ZergExcisant) {
 				Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
-				if (!worker) {
-					helper::refund_unit_train_cost(unit->create_origin, unit->player);
-					helper::display_last_network_error_for_player(unit->player);
-					unit->remove();
-					bStopThere = true;
-				} else {
+
+				if (worker) {
 					helper::update_unit_stats_and_finish_building(worker);
 					helper::update_unit_strength(worker);
-					worker->set_hitpoints(unit->previous_hitpoints * 256);
+					worker->set_hitpoints(unit->previous_hitpoints << 8);
 					worker->sprite->player = unit->sprite->player;
-					unit->remove();
-					bStopThere = true;
 				}
-			}
+				else {
+					helper::refund_unit_train_cost(unit->create_origin, unit->player);
+					helper::display_last_network_error_for_player(unit->player);
+				}
 
-			if (!bStopThere) {
+				unit->remove();
+			}
+			else {
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
+
 				if (thingy) {
 					thingy->sprite->elevation = unit->sprite->elevation + 1;
 					helper::set_thingy_visibility_flags(thingy);
 				}
-				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 
 				u32 previous_unit_id = unit->id;
-				u32 previous_hitpoints = unit->previous_hitpoints * 256;
+				u32 previous_hitpoints = unit->previous_hitpoints << 8;
+				helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 				helper::replace_unit_with_id(unit, unit->create_origin);
 				helper::update_building_ai(unit);
 				helper::update_unit_stats_and_finish_building(unit);
@@ -325,9 +183,11 @@ namespace hooks
 				unit->order_computer(OrderId::ResetCollision1);
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
 				unit->set_hitpoints(previous_hitpoints);
-
 				helper::update_creep_disappearance_unit_id(previous_unit_id, unit->get_x(), unit->get_y(), false);
 			}
+		}
+		else {
+			helper::cancel_zerg_building_morph(unit);
 		}
 	}
 }

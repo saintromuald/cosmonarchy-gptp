@@ -503,7 +503,7 @@ namespace hooks {
 		coords.top = y - 48;
 		coords.right = x + 48;
 		coords.bottom = y + 48;
-		helper::IterateUnitsAtLocationTargetProc_StasisField(attacker, &coords);
+		helper::iterate_units_at_location_target_proc_stasis_field(attacker, &coords);
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
@@ -524,9 +524,8 @@ namespace hooks {
 			// update various stats (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(disruption_web_unit);
 			helper::update_unit_strength(disruption_web_unit);
-			if (disruption_web_unit->remove_timer == 0
-				|| disruption_web_unit->remove_timer > 360) {
-				disruption_web_unit->remove_timer = 360; // 0x0168
+			if (disruption_web_unit->remove_timer == 0 || disruption_web_unit->remove_timer > 360) {
+				disruption_web_unit->remove_timer = 360;
 			}
 		}
 		return disruption_web_unit;

@@ -48,15 +48,8 @@ namespace hooks {
 		bool TierUnlocked[3][5];
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
-			|| player_has_unit_id(player_id, UnitId::ZergIrulentIvoa)
-			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform)
-			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
-		TierUnlocked[RaceId::Zerg][Tier2X] = player_has_completed_unit_id(player_id, UnitId::ZergIrulentIvoa)
-			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform)
-			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
-		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform)
-			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
-		TierUnlocked[RaceId::Zerg][Tier3X] = player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia);
+										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
+		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform);
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranAtlas);
@@ -1159,6 +1152,9 @@ namespace hooks {
 				case UnitId::ZergHydrokDen:
 				case UnitId::ZergZorkizShroud:
 				case UnitId::ZergIrolIris:
+				case UnitId::ZergNydusCesiant:
+				case UnitId::ZergIzkagIteth:
+				case UnitId::ZergMatravilNest:
 				{
 					return true;
 				} break;
@@ -1169,19 +1165,11 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::ZergNydusCesiant:
-				case UnitId::ZergIzkagIteth:
-				case UnitId::ZergMatravilNest:
-				{
-					if (TierUnlocked[RaceId::Zerg][Tier2X]) {
-						return true;
-					}
-				} break;
 				case UnitId::ZergAxtothAxis:
 				case UnitId::ZergGeszkathGrotto:
 				case UnitId::ZergElthisthMound:
 				{
-					if (TierUnlocked[RaceId::Zerg][Tier3X])
+					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
 						return true;
 					}
@@ -1261,8 +1249,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIrolIris))
 		{
-			if (unit_id == UnitId::ZergIrulentIvoa
-			||	unit_id == UnitId::ZergOthstolOviform)
+			if (unit_id == UnitId::ZergOthstolOviform)
 			{
 				return true;
 			}
@@ -1285,13 +1272,6 @@ namespace hooks {
 				{
 					return true;
 				}
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform))
-		{
-			if (unit_id == UnitId::ZergOrbothOmlia)
-			{
-				return true;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud))
@@ -1378,15 +1358,8 @@ namespace hooks {
 		bool TierUnlocked[3][5];
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
-			|| player_has_unit_id(player_id, UnitId::ZergIrulentIvoa)
-			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform)
-			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
-		TierUnlocked[RaceId::Zerg][Tier2X] = player_has_completed_unit_id(player_id, UnitId::ZergIrulentIvoa)
-			|| player_has_unit_id(player_id, UnitId::ZergOthstolOviform)
-			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
-		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform)
-			|| player_has_unit_id(player_id, UnitId::ZergOrbothOmlia);
-		TierUnlocked[RaceId::Zerg][Tier3X] = player_has_completed_unit_id(player_id, UnitId::ZergOrbothOmlia);
+										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
+		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform);
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranAtlas);
@@ -2932,18 +2905,11 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::ZergMuthrokSpire:
-					{
-						if (TierUnlocked[RaceId::Zerg][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 					case UnitId::ZergNydusCesiant:
 					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergMatravilNest:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier2X])
+						if (TierUnlocked[RaceId::Zerg][Tier2])
 						{
 							return TECH_ACTIVE;
 						}
@@ -2953,7 +2919,7 @@ namespace hooks {
 					case UnitId::ZergGeszkathGrotto:
 					case UnitId::ZergElthisthMound:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier3X])
+						if (TierUnlocked[RaceId::Zerg][Tier3])
 						{
 							return TECH_ACTIVE;
 						}
@@ -2989,6 +2955,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::ZergMuthrokSpire:
+					case UnitId::ZergNydusCesiant:
 					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergMatravilNest:
 					{
@@ -2998,7 +2965,6 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::ZergNydusCesiant:
 					case UnitId::ZergAxtothAxis:
 					case UnitId::ZergGeszkathGrotto:
 					case UnitId::ZergElthisthMound:
@@ -3106,15 +3072,6 @@ namespace hooks {
 			}
 			case UnitId::ZergIrolIris:
 			{
-				if (unit_id == UnitId::ZergIrulentIvoa
-				||	unit_id == UnitId::ZergOthstolOviform)
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
-			}
-			case UnitId::ZergIrulentIvoa:
-			{
 				if (unit_id == UnitId::ZergOthstolOviform)
 				{
 					return TECH_ACTIVE;
@@ -3142,14 +3099,6 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					return TECH_LOCKED;
-				}
-				return TECH_HIDDEN;
-			}
-			case UnitId::ZergOthstolOviform:
-			{
-				if (unit_id == UnitId::ZergOrbothOmlia)
-				{
-					return TECH_ACTIVE;
 				}
 				return TECH_HIDDEN;
 			}

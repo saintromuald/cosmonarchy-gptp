@@ -5713,7 +5713,7 @@ namespace helper {
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords) {
+	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords) {
 		const u32 StasisFieldProc_function = 0x004F68D0;
 		__asm {
 			PUSHAD
