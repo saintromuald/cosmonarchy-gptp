@@ -648,8 +648,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token path = parser_get_string(&parser);
 			sound_replacement.new_sound = get_sound(path.data);
 			sound_replacement.replace = parser_get_s32(&parser);
-			if (sound_replacements_count < SoundReplacementCap) {
-				sound_replacements[sound_replacements_count++] = sound_replacement;
+
+			parser_get_word(&parser);
+			if (parser_eq(&parser, "clear")) {
+				for (u32 i = 0; i < sound_replacements_count; ++i) {
+					if (memcmp(&sound_replacement, &sound_replacements[i], sizeof(SoundReplacement)) == 0) {
+						sound_replacements[i--] = sound_replacements[--sound_replacements_count];
+					}
+				}
+			} else {
+				if (sound_replacements_count < SoundReplacementCap) {
+					sound_replacements[sound_replacements_count++] = sound_replacement;
+				}
 			}
 		// Bitset Local Only Triggers
 		} else if (parser_eq(&parser, "play_sound") && is_local_player) {

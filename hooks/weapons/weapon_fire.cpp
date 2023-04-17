@@ -695,7 +695,7 @@ namespace hooks {
 
 	static void apply_bullet_piercing(Bullet* bullet, Point16 pos, u32 range) {
 		EntryArray collisions = {};
-		unit_search_radial(&collisions, pos, range);
+		unit_search_radial(&collisions, pos, range * 4);
 		unit_search_filter(&collisions, 0);
 		for (u32 i = 0; i < collisions.count; ++i) {
 			if (bullet->time_remaining == 0) {
@@ -712,6 +712,9 @@ namespace hooks {
 				continue;
 			}
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
+				continue;
+			}
+			if (collision_target->get_distance_to_point(bullet->position) > range) {
 				continue;
 			}
 
@@ -1013,7 +1016,7 @@ namespace hooks {
 				apply_bullet_piercing(bullet, bullet->position, 16);
 				if (target) {
 					if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, target)
-					||  target->get_distance_to_point(bullet->position) > 16) {
+					||  target->get_distance_to_point(bullet->position) > 4) {
 						hit = false;
 					}
 				}
