@@ -1,6 +1,7 @@
 #include "new_requirements.h"
 #include <hook_tools.h>
 #include "hooks/rally_point.h"
+#include "trigger_system/trigger_system.h"
 
 namespace hooks {
 	enum {
@@ -1753,6 +1754,21 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
+					case UnitId::TerranAspirant:
+					{
+						if (globals.players[player_id].faction == Faction_TerranGoldenRepublic)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							if (addon_id == UnitId::TerranScrapyard)
+							{
+								return TECH_ACTIVE;
+							}
+						}
+						return TECH_HIDDEN;
+					} break;
 					case UnitId::TerranVulture:
 					case UnitId::TerranGoliath:
 					case UnitId::TerranCyclops:

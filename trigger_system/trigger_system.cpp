@@ -1158,8 +1158,58 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game. -Pr0nogo
 				}
 			}
+		} else if (parser_eq(&parser, "set_faction")) {
+			u32 player = parser_get_player(&parser);
+			if (player) {
+				player -= 1;
+			}
+			parser_get_word(&parser);
+			if (parser_eqi(&parser, "hecaton_coalition")) {
+				globals.players[player].faction = Faction_TerranHecatonCoalition;
+			}
+			else if (parser_eqi(&parser, "orion_imperium")) {
+				globals.players[player].faction = Faction_TerranOrionImperium;
+			}
+			else if (parser_eqi(&parser, "futurist_federation")) {
+				globals.players[player].faction = Faction_TerranFuturistFederation;
+			}
+			else if (parser_eqi(&parser, "golden_republic")) {
+				globals.players[player].faction = Faction_TerranGoldenRepublic;
+			}
+			else if (parser_eqi(&parser, "nydus_trinity")) {
+				globals.players[player].faction = Faction_TerranNydusTrinity;
+			}
+			else if (parser_eqi(&parser, "divine_primacy")) {
+				globals.players[player].faction = Faction_ProtossDivinePrimacy;
+			}
+			else if (parser_eqi(&parser, "order_of_the_sacred_templar")) {
+				globals.players[player].faction = Faction_ProtossOrderOfTheSacredTemplar;
+			}
+			else if (parser_eqi(&parser, "khalendric_knights")) {
+				globals.players[player].faction = Faction_ProtossKhalendricKnights;
+			}
+			else if (parser_eqi(&parser, "starbound")) {
+				globals.players[player].faction = Faction_ProtossStarbound;
+			}
+			else if (parser_eqi(&parser, "imicren")) {
+				globals.players[player].faction = Faction_ZergImicrenTendril;
+			}
+			else if (parser_eqi(&parser, "orkoti")) {
+				globals.players[player].faction = Faction_ZergOrkotiTendril;
+			}
+			else if (parser_eqi(&parser, "goszirith")) {
+				globals.players[player].faction = Faction_ZergGoszirithTendril;
+			}
+			else if (parser_eqi(&parser, "ataltreth")) {
+				globals.players[player].faction = Faction_ZergAtaltrethTendril;
+			}
+			else if (parser_eqi(&parser, "zorthos")) {
+				globals.players[player].faction = Faction_ZergZorthosTendril;
+			}
+			else {
+				globals.players[player].faction = Faction_None;
+			}
 		}
 	}
-
 	return true;
 }

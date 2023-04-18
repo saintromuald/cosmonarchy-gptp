@@ -4,6 +4,7 @@
 #include "hooks/game_hooks.h"
 #include "hooks/grafting/button_functions.h"
 #include "config.h"
+#include "trigger_system/trigger_system.h"
 
 static bool player_has_unit_id(s32 player_id, u32 unit_id) {
 	return Player::number_of_units_of_id(player_id, unit_id);
@@ -817,6 +818,19 @@ namespace hooks {
 							{
 								if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop)
 								||	 scbw::unit_queue_full(unit))
+								{
+									current_button_state = Button_State::Invisible;
+								}
+								else
+								{
+									current_button_state = Button_State::Enabled;
+								}
+							}
+							else if (current_button->requirement_var == UnitId::TerranAspirant
+							&&		 globals.players[unit->player].faction == Faction_TerranGoldenRepublic)
+							{
+								if (!scbw::all_selected_units_have_addon(UnitId::TerranScrapyard)
+								||  scbw::unit_queue_full(unit))
 								{
 									current_button_state = Button_State::Invisible;
 								}

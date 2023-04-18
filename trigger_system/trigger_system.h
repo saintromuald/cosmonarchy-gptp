@@ -44,6 +44,7 @@ extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 struct PlayerVars {
 	bool is_witness;
 	Point16 camera;
+	u8 faction;
 };
 
 enum Celebration {
@@ -51,6 +52,29 @@ enum Celebration {
 	Celebration_Christmas,
 
 	Celebration_Count,
+};
+
+enum Faction {
+	Faction_None,
+
+	Faction_TerranHecatonCoalition,
+	Faction_TerranOrionImperium,
+	Faction_TerranFuturistFederation,
+	Faction_TerranGoldenRepublic,
+	Faction_TerranNydusTrinity,
+
+	Faction_ProtossDivinePrimacy,
+	Faction_ProtossOrderOfTheSacredTemplar,
+	Faction_ProtossKhalendricKnights,
+	Faction_ProtossStarbound,
+
+	Faction_ZergImicrenTendril,
+	Faction_ZergOrkotiTendril,
+	Faction_ZergGoszirithTendril,
+	Faction_ZergAtaltrethTendril,
+	Faction_ZergZorthosTendril,
+
+	Faction_Count,
 };
 
 struct AlertState {
