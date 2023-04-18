@@ -1161,6 +1161,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "set_faction")) {
 			u32 player = parser_get_player(&parser);
 			u32 faction = parser_get_enum(&parser, faction_symbol_names, ARRAY_SIZE(faction_symbol_names));
+
 			if (player) {
 				player -= 1;
 				globals.players[player].faction = faction;
