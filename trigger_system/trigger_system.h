@@ -77,7 +77,7 @@ enum Faction {
 	Faction_Count,
 };
 
-static const char* faction_symbol_names[] = {
+static const char* faction_symbol_names[] = { // This array needs to the same size and order as Faction enum
 	"none",
 
 	"hecaton_coalition",
