@@ -77,6 +77,28 @@ enum Faction {
 	Faction_Count,
 };
 
+static const char* faction_symbol_names[] = {
+	"none",
+
+	"hecaton_coalition",
+	"orion_imperium",
+	"futurist_federation",
+	"golden_republic",
+	"nydus_trinity",
+
+	"divine_primacy",
+	"order_of_the_sacred_templar",
+	"khalendric_knights",
+	"starbound",
+
+	"imicren_tendril",
+	"orkoti_tendril",
+	"goszirith_tendril",
+	"ataltreth_tendril",
+	"zorthos_tendril",
+};
+C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
+
 struct AlertState {
 	u16 sound_id;
 	u8 play_timer;
