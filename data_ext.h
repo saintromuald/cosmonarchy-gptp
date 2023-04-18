@@ -143,7 +143,6 @@ enum ExtValueId
 	ValuePhalanxSiegeModeLaunchPos,
 	ValueOriginatedFromOcsalLarva,
 	ValueOriginatedFromGosvileth,
-	ValueOriginatedFromIrulent,
 	ValueCustomEggActive,
 	ValueCustomEggHatchMax,
 	ValueCustomEggHpMax,

@@ -72,19 +72,21 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 
 	bool replace = false;
 	if (unit && sprite->main_graphic == image) {
-		u32 index = 0;
 		u32 valid_count = valid_sound_replacement_count(image, sound_id, unit);
-		u32 target_index = scbw::rand_between_local(0, valid_count - 1);
-		for (u32 i = 0; i < sound_replacements_count; ++i) {
-			SoundReplacement* sound_replacement = &sound_replacements[i];
-			if (sound_replacement_match(sound_replacement, image, sound_id, unit)) {
-				if (index == target_index) {
-					play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
-					if (sound_replacement->replace) {
-						replace = true;
+		if (valid_count) {
+			u32 target_index = scbw::rand_between_local(0, valid_count - 1);
+			u32 index = 0;
+			for (u32 i = 0; i < sound_replacements_count; ++i) {
+				SoundReplacement* sound_replacement = &sound_replacements[i];
+				if (sound_replacement_match(sound_replacement, image, sound_id, unit)) {
+					if (index == target_index) {
+						play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
+						if (sound_replacement->replace) {
+							replace = true;
+						}
+					} else {
+						index++;
 					}
-				} else {
-					index++;
 				}
 			}
 		}

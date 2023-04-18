@@ -2342,9 +2342,7 @@ namespace scbw {
 			case UnitId::ZergOcsalColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergSkortrithColony:		return UnitId::ZergSurkithColony;
 			case UnitId::ZergSpirtithColony:		return UnitId::ZergSpraithColony;
-			case UnitId::ZergIrulentIvoa:			return UnitId::ZergIrolIris;
-			case UnitId::ZergOthstolOviform:		return unit_ext->values[ValueOriginatedFromIrulent] ? UnitId::ZergIrulentIvoa : UnitId::ZergIrolIris;
-			case UnitId::ZergOrbothOmlia:			return UnitId::ZergOthstolOviform;
+			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
 			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
 			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
 			case UnitId::ZergGorgralSwamp:			return UnitId::ZergHydrokDen;

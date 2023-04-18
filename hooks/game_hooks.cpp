@@ -1063,11 +1063,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
-			{
-				unit_ext->values[ValueOriginatedFromIrulent] = unit->id == UnitId::ZergIrulentIvoa;
-			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;
