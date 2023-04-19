@@ -50,7 +50,9 @@ namespace hooks {
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
 										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
+		TierUnlocked[RaceId::Zerg][Tier2X] = false;
 		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform);
+		TierUnlocked[RaceId::Zerg][Tier3X] = false;
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranAtlas);

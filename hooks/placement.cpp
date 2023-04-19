@@ -354,7 +354,7 @@ namespace hooks
 		return result;
 	}
 
-	// Hooked to add support for custom rances. -Pr0nogo
+	// Hooked to add support for custom races. -Pr0nogo
 	void play_building_placement_sound(Unit* active_unit) // 0048F630
 	{
 		Unit* active_unit_var = active_unit;
