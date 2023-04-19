@@ -3353,4 +3353,100 @@ namespace scbw {
 		egg_ext->values[ValueCustomEggHatchMax] = time;
 		egg_ext->values[ValueCustomEggHpMax]    = hp;
 	}
+
+	Line make_line(Point16 from, Point16 to) {
+		Line result = {};
+		result.from.x = from.x;
+		result.from.y = from.y;
+		result.to.x = to.x;
+		result.to.y = to.y;
+		return result;
+	}
+
+	Line make_line(Vector32f from, Vector32f to) {
+		return {from, to};
+	}
+
+	static Vector32f line_lerp(Line line, f32 t) {
+		Vector32f result = {};
+		result.x = line.from.x * t + line.to.x * (1 - t);
+		result.y = line.from.y * t + line.to.y * (1 - t);
+		return result;
+	}
+
+	// Based on https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment -Veeq7
+	bool line_intersects_line(Line a, Line b, Vector32f* out) {
+		Point16 intersection = {};
+	
+		f32 x1 = a.from.x;
+		f32 x2 = a.to.x;
+		f32 x3 = b.from.x;
+		f32 x4 = b.to.x;
+
+		f32 y1 = a.from.y;
+		f32 y2 = a.to.y;
+		f32 y3 = b.from.y;
+		f32 y4 = b.to.y;
+
+		f32 t_top  = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4);
+		f32 u_top  = (x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2);
+		f32 bottom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+		if (bottom) {
+			f32 t = t_top / bottom;
+			f32 u = u_top / bottom;
+			if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+				if (out) {
+					Vector32f result = line_lerp(a, t);
+					out->x = result.x;
+					out->y = result.y;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool line_intersects_rect(Line line, f32 w, Box16 box) {
+		Vector32f line_diff = get_normalized_vector(get_vector_between_points(line.from, line.to));
+		Vector32f p = {-line_diff.y * w / 2, line_diff.x * w / 2};
+
+		Vector32f line_corners[4] = {};
+		line_corners[0] = line.from;
+		line_corners[0].x += p.x;
+		line_corners[0].y += p.y;
+
+		line_corners[1] = line.from;
+		line_corners[1].x -= p.x;
+		line_corners[1].y -= p.y;
+
+		line_corners[2] = line.to;
+		line_corners[2].x += p.x;
+		line_corners[2].y += p.y;
+
+		line_corners[3] = line.to;
+		line_corners[3].x -= p.x;
+		line_corners[3].y -= p.y;
+
+		Vector32f box_corners[4] = {};
+		box_corners[0].x = box.x;
+		box_corners[0].y = box.y;
+		box_corners[1].x = box.x + box.w;
+		box_corners[1].y = box.y;
+		box_corners[2].x = box.x;
+		box_corners[2].y = box.y + box.h;
+		box_corners[3].x = box.x + box.w;
+		box_corners[3].y = box.y + box.h;
+
+		for (u32 i = 0; i < 3; ++i) {
+			Line a = make_line(line_corners[i], line_corners[i+1]);
+			for (u32 j = 0; j < 3; ++j) {
+				Line b = make_line(box_corners[i], box_corners[i+1]);
+				if (line_intersects_line(a, b)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

@@ -693,9 +693,18 @@ namespace hooks {
 		}
 	}
 
-	static void apply_bullet_piercing(Bullet* bullet, Point16 pos, u32 range) {
+	static void apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
+		Line line = scbw::make_line(old_position, bullet->position);
+
+		u32 search_margin = 6 * 32;
+		Box32 search_area = {};
+		search_area.x = Min(old_position.x, bullet->position.x) - search_margin;
+		search_area.y = Min(old_position.y, bullet->position.y) - search_margin;
+		search_area.w = Max(old_position.x, bullet->position.x) + search_margin * 2;
+		search_area.h = Max(old_position.y, bullet->position.y) + search_margin * 2;
+
 		EntryArray collisions = {};
-		unit_search_radial(&collisions, pos, range * 4);
+		unit_search_rect(&collisions, search_area);
 		unit_search_filter(&collisions, 0);
 		for (u32 i = 0; i < collisions.count; ++i) {
 			if (bullet->time_remaining == 0) {
@@ -714,7 +723,13 @@ namespace hooks {
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
 				continue;
 			}
-			if (collision_target->get_distance_to_point(pos) > range) {
+
+			Box16 box = {};
+			box.x = collision_target->get_left();
+			box.y = collision_target->get_top();
+			box.w = collision_target->get_right()  - box.x;
+			box.h = collision_target->get_bottom() - box.y;
+			if (!scbw::line_intersects_rect(line, line_width, box)) {
 				continue;
 			}
 
@@ -996,26 +1011,20 @@ namespace hooks {
 				enabled = bullet->source_unit && get_unit_ext(bullet->source_unit)->timers[TimerDecloak] > 1;
 			}
 
+			f32 line_width = 16;
+			switch (bullet->weapon_id) {
+				// add your cases here...
+			}
+
 			if (enabled) {
-				Vector32 diff = scbw::get_vector_between_points(old_position, bullet->position); 
-				for (u32 i = 1; i <= 4; ++i) {
-					Point16 position = old_position;
-					position.x += diff.x * i / 4;
-					position.y += diff.y * i / 4;
-					apply_bullet_piercing(bullet, position, 16);
-				}
+				apply_bullet_piercing(bullet, old_position, line_width);
 			}
 		}
 
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-
-			if (scbw::bullet_pierces_target(bullet)) {
-				apply_bullet_piercing(bullet, bullet->position, 16);
-			}
-
-			if (target && target->sprite) {
+			if (target && target->sprite && !scbw::bullet_pierces_target(bullet)) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {

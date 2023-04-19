@@ -241,16 +241,21 @@ namespace scbw
 		return vec;
 	}
 
-	inline Vector32 get_vector_between_points(Point16 source, Point16 target)
-	{
+	inline Vector32 get_vector_between_points(Point16 source, Point16 target) {
 		Vector32 diff = { target.x, target.y };
 		diff.x -= source.x;
 		diff.y -= source.y;
 		return diff;
 	}
 
-	inline Vector32f get_normalized_vector(Vector32 vector)
-	{
+	inline Vector32f get_vector_between_points(Vector32f source, Vector32f target) {
+		Vector32f diff = { target.x, target.y };
+		diff.x -= source.x;
+		diff.y -= source.y;
+		return diff;
+	}
+
+	inline Vector32f get_normalized_vector(Vector32 vector) {
 		f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 		if (!dist) {
 			return {};
@@ -258,8 +263,7 @@ namespace scbw
 		return { vector.x / dist, vector.y / dist };
 	}
 
-	inline Vector32f get_normalized_vector(Vector32f vector)
-	{
+	inline Vector32f get_normalized_vector(Vector32f vector) {
 		f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 		if (!dist) {
 			return {};
@@ -267,8 +271,7 @@ namespace scbw
 		return { vector.x / dist, vector.y / dist };
 	}
 
-	inline f32 dot_product(Vector32f a, Vector32f b)
-	{
+	inline f32 dot_product(Vector32f a, Vector32f b) {
 		return a.x * b.x + a.y * b.y;
 	}
 
@@ -282,20 +285,19 @@ namespace scbw
 		return true;
 	}
 
-	inline f32 get_vector_distance(Vector32 vector)
-	{
+	inline f32 get_vector_distance(Vector32 vector) {
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
-	inline f32 get_vector_distance(Vector32f vector)
-	{
+	inline f32 get_vector_distance(Vector32f vector) {
 		return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	}
 
-	inline Vector32f get_unit_direction_vector(Unit* unit)
-	{
-		return { (f32)sin(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
-			(f32)-cos(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f) };
+	inline Vector32f get_unit_direction_vector(Unit* unit) {
+		return {
+			(f32)  sin(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
+			(f32) -cos(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f)
+		};
 	}
 
 	//////////////////////////////////////////////////////////////// @}
@@ -762,4 +764,8 @@ namespace scbw
 	bool unit_id_can_do_controlled_demolition(u32 unit_id);
 	bool tech_id_needs_target(u32 tech_id);
 	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
+	Line make_line(Point16 from, Point16 to);
+	Line make_line(Vector32f from, Vector32f to);
+	bool line_intersects_line(Line a, Line b, Vector32f* out = 0);
+	bool line_intersects_rect(Line line, f32 w, Box16 box);
 }
