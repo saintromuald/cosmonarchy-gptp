@@ -149,7 +149,7 @@ namespace hooks {
 			if (building->order_signal & 1) {
 				--building->order_signal;
 				helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
-				building->sprite->main_graphic->flags &= 0xBF; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
+				building->sprite->main_graphic->flags &= ~ImageFlags::Invisible; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
 				helper::update_unit_stats_and_finish_building(building);
 				helper::update_unit_strength(building);
 				helper::check_unstack(building);
