@@ -5,22 +5,7 @@
 #include "hooks/grafting/button_functions.h"
 #include "config.h"
 #include "trigger_system/trigger_system.h"
-
-static bool player_has_unit_id(s32 player_id, u32 unit_id) {
-	return Player::number_of_units_of_id(player_id, unit_id);
-}
-
-static bool player_has_completed_unit_id(s32 player_id, u32 unit_id) {
-	return Player::number_of_completed_units_of_id(player_id, unit_id);
-}
-
-static bool player_has_completed_landed_unit_id(s32 player_id, u32 unit_id) {
-	return Player::number_of_completed_landed_units_of_id(player_id, unit_id);
-}
-
-static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
-	return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
-}
+#include "req_table.h"
 
 // Example on how to create a custom button set.
 // This makes a copy of the Marine buttonset.
@@ -410,8 +395,9 @@ namespace hooks {
 		return 0;
 	}
 
-	void update_command_card()
-	{
+	void update_command_card() {
+		init_req_table();
+
 		auto buttonset_id = *g_active_portrait_buttonset_id;
 		// Custom buttonset overrides
 		if (buttonset_id == UnitId::TerranTreasury)
