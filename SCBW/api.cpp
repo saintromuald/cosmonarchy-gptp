@@ -3355,8 +3355,8 @@ namespace scbw {
 	}
 
 	static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
-		for (u32 i = 0; i < a_count - 1; ++i) {
-			Vector32f diff = scbw::get_vector_between_points(a[i], a[i + 1]);
+		for (u32 i = 0; i < a_count; ++i) {
+			Vector32f diff = scbw::get_vector_between_points(a[i], a[(i + 1) % a_count]);
 			Vector32f proj = {};
 			proj.x = -diff.y;
 			proj.y = diff.x;
