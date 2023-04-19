@@ -1013,7 +1013,18 @@ namespace hooks {
 
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
-				// add your cases here...
+				case WeaponId::SavantDiscoidRailgunPiercing:
+				case WeaponId::SilvertongueWordsmithRailgun:
+				case WeaponId::ClaymoreHarpoonRailgun:
+				case WeaponId::SentinelCerberusRailgun:
+				{
+					line_width = 32;
+				} break;
+				case WeaponId::PenumbraErebolShockCannon:
+				case WeaponId::HippogriffChimeraCannons:
+				{
+					line_width = 48;
+				} break;
 			}
 
 			if (enabled) {
