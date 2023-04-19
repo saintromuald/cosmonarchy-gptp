@@ -764,8 +764,6 @@ namespace scbw
 	bool unit_id_can_do_controlled_demolition(u32 unit_id);
 	bool tech_id_needs_target(u32 tech_id);
 	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
-	Line make_line(Point16 from, Point16 to);
-	Line make_line(Vector32f from, Vector32f to);
-	bool line_intersects_line(Line a, Line b, Vector32f* out = 0);
-	bool line_intersects_rect(Line line, f32 w, Box16 box);
+	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count);
+	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect);
 }

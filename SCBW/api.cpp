@@ -3354,99 +3354,67 @@ namespace scbw {
 		egg_ext->values[ValueCustomEggHpMax]    = hp;
 	}
 
-	Line make_line(Point16 from, Point16 to) {
-		Line result = {};
-		result.from.x = from.x;
-		result.from.y = from.y;
-		result.to.x = to.x;
-		result.to.y = to.y;
-		return result;
-	}
+	static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
+		for (u32 i = 0; i < a_count - 1; ++i) {
+			Vector32f diff = scbw::get_vector_between_points(a[i], a[i + 1]);
+			Vector32f proj = {};
+			proj.x = -diff.y;
+			proj.y = diff.x;
+			
+			f32 min_r1 = INFINITY;
+			f32 max_r1 = -INFINITY;
+			for (u32 j = 0; j < a_count; ++j) {
+				Vector32f point = a[j];
+				f32 dot = point.x * proj.x - point.y * proj.y;
+				if (dot < min_r1) min_r1 = dot;
+				if (dot > max_r1) max_r1 = dot;
+			}
+			
+			f32 min_r2 = INFINITY;
+			f32 max_r2 = -INFINITY;
+			for (u32 j = 0; j < b_count; ++j) {
+				Vector32f point = b[j];
+				f32 dot = point.x * proj.x - point.y * proj.y;
+				if (dot < min_r2) min_r2 = dot;
+				if (dot > max_r2) max_r2 = dot;
+			}
 
-	Line make_line(Vector32f from, Vector32f to) {
-		return {from, to};
-	}
-
-	static Vector32f line_lerp(Line line, f32 t) {
-		Vector32f result = {};
-		result.x = line.from.x * t + line.to.x * (1 - t);
-		result.y = line.from.y * t + line.to.y * (1 - t);
-		return result;
-	}
-
-	// Based on https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment -Veeq7
-	bool line_intersects_line(Line a, Line b, Vector32f* out) {
-		Point16 intersection = {};
-	
-		f32 x1 = a.from.x;
-		f32 x2 = a.to.x;
-		f32 x3 = b.from.x;
-		f32 x4 = b.to.x;
-
-		f32 y1 = a.from.y;
-		f32 y2 = a.to.y;
-		f32 y3 = b.from.y;
-		f32 y4 = b.to.y;
-
-		f32 t_top  = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4);
-		f32 u_top  = (x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2);
-		f32 bottom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-
-		if (bottom) {
-			f32 t = t_top / bottom;
-			f32 u = u_top / bottom;
-			if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
-				if (out) {
-					Vector32f result = line_lerp(a, t);
-					out->x = result.x;
-					out->y = result.y;
-				}
-				return true;
+			if (max_r2 < min_r1 || max_r1 < min_r2) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
-	bool line_intersects_rect(Line line, f32 w, Box16 box) {
-		Vector32f line_diff = get_normalized_vector(get_vector_between_points(line.from, line.to));
-		Vector32f p = {-line_diff.y * w / 2, line_diff.x * w / 2};
+	// Based on https://www.youtube.com/watch?v=7Ik2vowGcU0 -Veeq7
+	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
+		return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
+	}
+
+	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect) {
+		Vector32f line_diff = get_normalized_vector(get_vector_between_points(from, to));
+		Vector32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
 
 		Vector32f line_corners[4] = {};
-		line_corners[0] = line.from;
-		line_corners[0].x += p.x;
-		line_corners[0].y += p.y;
-
-		line_corners[1] = line.from;
-		line_corners[1].x -= p.x;
-		line_corners[1].y -= p.y;
-
-		line_corners[2] = line.to;
-		line_corners[2].x += p.x;
-		line_corners[2].y += p.y;
-
-		line_corners[3] = line.to;
-		line_corners[3].x -= p.x;
-		line_corners[3].y -= p.y;
+		line_corners[0].x = from.x - p.x;
+		line_corners[0].y = from.y - p.y;
+		line_corners[1].x = to.x - p.x;
+		line_corners[1].y = to.y - p.y;
+		line_corners[2].x = to.x + p.x;
+		line_corners[2].y = to.y + p.y;
+		line_corners[3].x = from.x + p.x;
+		line_corners[3].y = from.y + p.y;
 
 		Vector32f box_corners[4] = {};
-		box_corners[0].x = box.x;
-		box_corners[0].y = box.y;
-		box_corners[1].x = box.x + box.w;
-		box_corners[1].y = box.y;
-		box_corners[2].x = box.x;
-		box_corners[2].y = box.y + box.h;
-		box_corners[3].x = box.x + box.w;
-		box_corners[3].y = box.y + box.h;
+		box_corners[0].x = rect.x;
+		box_corners[0].y = rect.y;
+		box_corners[1].x = rect.x + rect.w;
+		box_corners[1].y = rect.y;
+		box_corners[2].x = rect.x + rect.w;
+		box_corners[2].y = rect.y + rect.h;
+		box_corners[3].x = rect.x;
+		box_corners[3].y = rect.y + rect.h;
 
-		for (u32 i = 0; i < 3; ++i) {
-			Line a = make_line(line_corners[i], line_corners[i+1]);
-			for (u32 j = 0; j < 3; ++j) {
-				Line b = make_line(box_corners[i], box_corners[i+1]);
-				if (line_intersects_line(a, b)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return sat_collision(line_corners, 4, box_corners, 4);
 	}
 }

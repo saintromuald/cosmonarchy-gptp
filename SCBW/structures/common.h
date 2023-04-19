@@ -37,11 +37,6 @@ struct Vector32f
 	f32 y;
 };
 
-struct Line {
-	Vector32f from;
-	Vector32f to;
-};
-
 struct Box16
 {
 	union

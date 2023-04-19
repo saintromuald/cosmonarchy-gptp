@@ -694,8 +694,6 @@ namespace hooks {
 	}
 
 	static void apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
-		Line line = scbw::make_line(old_position, bullet->position);
-
 		u32 search_margin = 6 * 32;
 		Box32 search_area = {};
 		search_area.x = Min(old_position.x, bullet->position.x) - search_margin;
@@ -729,7 +727,7 @@ namespace hooks {
 			box.y = collision_target->get_top();
 			box.w = collision_target->get_right()  - box.x;
 			box.h = collision_target->get_bottom() - box.y;
-			if (!scbw::line_intersects_rect(line, line_width, box)) {
+			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, box)) {
 				continue;
 			}
 
