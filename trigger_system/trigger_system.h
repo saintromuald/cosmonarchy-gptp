@@ -91,11 +91,11 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 	"khalendric_knights",
 	"starbound",
 
-	"imicren_tendril",
-	"orkoti_tendril",
-	"goszirith_tendril",
-	"ataltreth_tendril",
-	"zorthos_tendril",
+	"imicren",
+	"orkoti",
+	"goszirith",
+	"ataltreth",
+	"zorthos",
 };
 C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
 
