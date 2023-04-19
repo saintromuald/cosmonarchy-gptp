@@ -3365,7 +3365,7 @@ namespace scbw {
 			f32 max_r1 = -INFINITY;
 			for (u32 j = 0; j < a_count; ++j) {
 				Vector32f point = a[j];
-				f32 dot = point.x * proj.x - point.y * proj.y;
+				f32 dot = point.x * proj.x + point.y * proj.y;
 				if (dot < min_r1) min_r1 = dot;
 				if (dot > max_r1) max_r1 = dot;
 			}
@@ -3374,7 +3374,7 @@ namespace scbw {
 			f32 max_r2 = -INFINITY;
 			for (u32 j = 0; j < b_count; ++j) {
 				Vector32f point = b[j];
-				f32 dot = point.x * proj.x - point.y * proj.y;
+				f32 dot = point.x * proj.x + point.y * proj.y;
 				if (dot < min_r2) min_r2 = dot;
 				if (dot > max_r2) max_r2 = dot;
 			}
