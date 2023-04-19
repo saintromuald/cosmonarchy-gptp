@@ -7,39 +7,47 @@ static bool req_table_init;
 
 static ReqEntry* last_unit_req_entry;
 
-static void add_req_entry(u16 factory_unit_id, u16 unit_id) {
+static ReqEntry* add_req_entry(u16 factory_unit_id, u16 unit_id) {
 	ReqTableEntry* entry = &req_table[factory_unit_id];
 	if (entry->units_count >= ReqEntryCap) {
-		return;
+		return 0;
 	}
 	ReqEntry* unit = &entry->units[entry->units_count++];
 	unit->unit_id = unit_id;
 	last_unit_req_entry = unit;
+	return unit;
 }
 
-static void require_unit(u16 unit_id, bool landed, bool completed) {
-	ReqEntry* unit = last_unit_req_entry;
-	if (unit->require_units_count >= RequireUnitCap) {
-		return;
+static RequireUnit* require_unit(u16 unit_id) {
+	ReqEntry* req_entry = last_unit_req_entry;
+	if (req_entry->require_units_count >= RequireUnitCap) {
+		return 0;
 	}
-	RequireUnit* require_unit = &unit->require_units[unit->require_units_count++];
-	require_unit->unit_id = unit_id;
-	if (completed) {
-		require_unit->flags |= RequireUnitFlags_Completed;
-	}
-	if (landed) {
-		require_unit->flags |= RequireUnitFlags_Landed;
+	RequireUnit* unit = &req_entry->require_units[req_entry->require_units_count++];
+	unit->unit_id = unit_id;
+	unit->flags = RequireUnitFlags_Completed;
+	return unit;
+}
+
+static RequireUnit* require_addon(u16 unit_id) {
+	RequireUnit* unit = require_unit(unit_id);
+	if (unit) {
+		unit->flags |= RequireUnitFlags_Connected;
 	}
 }
 
-static void require_addon(u16 addon) {
-	ReqEntry* unit = last_unit_req_entry;
-	if (unit->require_units_count >= RequireUnitCap) {
-		return;
+static RequireUnit* require_landed(u16 unit_id) {
+	RequireUnit* unit = require_unit(unit_id);
+	if (unit) {
+		unit->flags |= RequireUnitFlags_Landed;
 	}
-	RequireUnit* require_unit = &unit->require_units[unit->require_units_count++];
-	require_unit->unit_id = addon;
-	require_unit->flags = RequireUnitFlags_Connected;
+}
+
+static RequireUnit* require_not_completed(u16 unit_id) {
+	RequireUnit* unit = require_unit(unit_id);
+	if (unit) {
+		unit->flags &= ~RequireUnitFlags_Completed;
+	}
 }
 
 void init_req_table() {
@@ -48,7 +56,18 @@ void init_req_table() {
 	}
 	req_table_init = true;
 
+	add_req_entry(UnitId::TerranParthenon, UnitId::TerranTalos);
+	add_req_entry(UnitId::TerranParthenon, UnitId::TerranArmistice);
+	add_req_entry(UnitId::TerranParthenon, UnitId::TerranPythean);
+
 	add_req_entry(UnitId::TerranMantle, UnitId::TerranRamesses);
+	add_req_entry(UnitId::TerranMantle, UnitId::TerranDurendal);
+	add_req_entry(UnitId::TerranMantle, UnitId::TerranCataphract);
+
+	add_req_entry(UnitId::TerranApothecary, UnitId::TerranDilettante);
+	add_req_entry(UnitId::TerranApothecary, UnitId::TerranSevenstep);
+	add_req_entry(UnitId::TerranApothecary, UnitId::TerranHypnagogue);
+	add_req_entry(UnitId::TerranApothecary, UnitId::TerranSilvertongue);
 }
 
 static u32 button_state_compare_value(Button_State::Enum state) {
