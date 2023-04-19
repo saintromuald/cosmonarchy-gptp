@@ -1003,9 +1003,10 @@ namespace scbw {
 
 	bool can_use_cliff_advantage(Unit* unit, u8 weapon) {
 		return !(unit->status & UnitStatus::InAir)
-		&&		 unit->id != UnitId::ProtossPlasmaShell
 		&&	   (!weapon || weapons_dat::max_range[weapon] > 32)
-		&&		 unit->id != UnitId::TerranHarakan;
+		&&		 unit->id != UnitId::TerranHarakan
+		&&		 unit->id != UnitId::TerranMatador
+		&&		 weapon != WeaponId::DurendalAbaddonFlamethrowers;
 	}
 
 	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon) {
