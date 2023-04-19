@@ -433,7 +433,7 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 
 	// If heals to full clear debuffs
 	if (restore && this->hitpoints == this->get_max_hp_raw()) {
-		scbw::restore_func(this);
+	//	scbw::restore_func(this);
 	}
 
 	return value;
