@@ -3355,38 +3355,28 @@ namespace scbw {
 	}
 
 	static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
+		f32 max_separation = -INFINITY;
 		for (u32 i = 0; i < a_count; ++i) {
 			Vector32f diff = scbw::get_vector_between_points(a[i], a[(i + 1) % a_count]);
-			Vector32f proj = {};
-			proj.x = -diff.y;
-			proj.y = diff.x;
-			
-			f32 min_r1 = INFINITY;
-			f32 max_r1 = -INFINITY;
-			for (u32 j = 0; j < a_count; ++j) {
-				Vector32f point = a[j];
-				f32 dot = point.x * proj.x + point.y * proj.y;
-				if (dot < min_r1) min_r1 = dot;
-				if (dot > max_r1) max_r1 = dot;
-			}
-			
-			f32 min_r2 = INFINITY;
-			f32 max_r2 = -INFINITY;
+			Vector32f proj = {diff.y, -diff.x};
+
+			f32 min_separation = INFINITY;
 			for (u32 j = 0; j < b_count; ++j) {
-				Vector32f point = b[j];
-				f32 dot = point.x * proj.x + point.y * proj.y;
-				if (dot < min_r2) min_r2 = dot;
-				if (dot > max_r2) max_r2 = dot;
+				Vector32f point = scbw::get_vector_between_points(a[i], b[j]);
+				f32 dot = scbw::dot_product(point, proj);
+				if (dot < min_separation) {
+					min_separation = dot;
+				}
 			}
 
-			if (max_r2 < min_r1 || max_r1 < min_r2) {
-				return false;
+			if (min_separation > max_separation) {
+				max_separation = min_separation;
 			}
 		}
-		return true;
+		return max_separation <= 0;
 	}
 
-	// Based on https://www.youtube.com/watch?v=7Ik2vowGcU0 -Veeq7
+	// Based on https://www.youtube.com/watch?v=-EsWKT7Doww -Veeq7
 	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
 		return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 	}
