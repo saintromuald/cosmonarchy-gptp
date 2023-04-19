@@ -907,7 +907,6 @@ namespace hooks {
 							} break;
 						}
 
-
 						// As of late 2022, we must force train/build icons for extended unit ids to show up using this very dumb method that
 						// inlines requirements in yet another position. Not sure how to fix! -Pr0nogo
 						switch (unit->id)
