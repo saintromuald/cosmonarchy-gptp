@@ -714,7 +714,7 @@ namespace hooks {
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
 				continue;
 			}
-			if (collision_target->get_distance_to_point(bullet->position) > range) {
+			if (collision_target->get_distance_to_point(pos) > range) {
 				continue;
 			}
 
@@ -1011,18 +1011,11 @@ namespace hooks {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
 
-			bool hit = true;
 			if (scbw::bullet_pierces_target(bullet)) {
 				apply_bullet_piercing(bullet, bullet->position, 16);
-				if (target) {
-					if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, target)
-					||  target->get_distance_to_point(bullet->position) > 4) {
-						hit = false;
-					}
-				}
 			}
 
-			if (target && target->sprite && hit) {
+			if (target && target->sprite) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {
