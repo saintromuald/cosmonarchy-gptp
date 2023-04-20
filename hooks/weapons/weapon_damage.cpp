@@ -392,13 +392,6 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
-			case WeaponId::SevenstepGeometricRifle: {
-				if (!target_ext->timers[TimerSevenstepMindMatter])
-				{
-					target_ext->timers[TimerSevenstepMindMatter] = 24 + 1;
-				}
-				target_ext->units[UnitSevenstepMindMatterSource] = data.attacker;
-			} break;
 			case WeaponId::LegionnairePhaseSpear: {
 				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
@@ -534,12 +527,6 @@ namespace hooks
 				}
 
 				switch (data.weapon_id) {
-					case WeaponId::AutocratEminenceRifle:
-					{
-						// Apply Controlled Opposition
-						target_ext->values[ValueControlledOpposition]++;
-						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
-					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						// Power Siphon
@@ -551,6 +538,24 @@ namespace hooks
 							target_ext->values[ValueSavantPowerSiphonDebuff]++;
 							target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
 							helper::create_thingy(SpriteId::Feedback_Hit_Small + scbw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
+						}
+					} break;
+					case WeaponId::AutocratEminenceRifle:
+					{
+						// Apply Controlled Opposition
+						target_ext->values[ValueControlledOpposition]++;
+						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
+					} break;
+					case WeaponId::SevenstepGeometricRifle:
+					case WeaponId::SevenstepGeometricRiflePiercing: {
+						if (!target_ext->timers[TimerSevenstepMindMatter])
+						{
+							target_ext->timers[TimerSevenstepMindMatter] = 24 + 1;
+						}
+						if (attacker_ext->units[UnitSevenstepMindMatterSource]) {
+							target_ext->units[UnitSevenstepMindMatterSource] = attacker_ext->units[UnitSevenstepMindMatterSource];
+						} else {
+							target_ext->units[UnitSevenstepMindMatterSource] = data.attacker;
 						}
 					} break;
 					case WeaponId::CyclopsFlakCannons:
