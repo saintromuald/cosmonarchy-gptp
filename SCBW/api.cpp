@@ -1118,7 +1118,7 @@ namespace scbw {
 			if (unit_ext->timers[TimerDecloak] != 1) {
 				unit_ext->timers[TimerDecloak] = 60 + 1;
 			}
-			unit_ext->timers[TimerSilvertongueCloak] = 0;
+			unit_ext->timers[TimerSilvertonguePlotTwist] = 0;
 		}
 		if (unit->is_subunit() && unit->subunit) {
 			decloak_proc(unit->subunit);

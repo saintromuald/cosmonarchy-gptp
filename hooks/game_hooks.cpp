@@ -1065,7 +1065,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranSilvertongue:
 			{
-				if (!unit_ext->timers[TimerSilvertongueCloak]) {
+				if (!unit_ext->timers[TimerSilvertonguePlotTwist]) {
 					scbw::decloak_proc(unit);
 				}
 			} break;

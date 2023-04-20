@@ -247,7 +247,7 @@ enum ExtTimerId
 	TimerStun,
 	TimerAutocratControlledOpposition,
 	TimerSevenstepMindMatter,
-	TimerSilvertongueCloak,
+	TimerSilvertonguePlotTwist,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

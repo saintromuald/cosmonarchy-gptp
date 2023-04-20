@@ -402,7 +402,7 @@ namespace hooks
 
 		switch (data.target->id) {
 			case UnitId::TerranSilvertongue: {
-				target_ext->timers[TimerSilvertongueCloak] = 2 * 24;
+				target_ext->timers[TimerSilvertonguePlotTwist] = 2 * 24;
 				if (target_ext->timers[TimerDecloak] > 2) {
 					target_ext->timers[TimerDecloak] = 2;
 				}
