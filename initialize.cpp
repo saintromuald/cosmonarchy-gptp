@@ -615,6 +615,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Real-time minimap updates
 	nops(0x004A580B, 5);
+
+	// Fix crash on alt-F4 while 'save replay' dialog is open
+	u8 Score_tMinimap[128];
+	memory_patch(0x004B3918, &Score_tMinimap);
+	memory_patch(0x004B4C3C, &Score_tMinimap);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
