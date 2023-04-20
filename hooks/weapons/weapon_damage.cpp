@@ -222,7 +222,7 @@ namespace hooks
 		// Apply armor
 		bool shield_overlay = false;
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
-			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.weapon_id) + data.bonus_armor_pen;
+			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
 
 			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
@@ -370,21 +370,6 @@ namespace hooks
 					}
 				}
 			} break;
-		}
-
-		if (data.attacker) {
-			switch (data.attacker->id) {
-				case UnitId::TerranOlympian: {
-					// Olympian Dishonorable Discharge - deal +3 damage to targets facing away from the Olympian
-					if (!units_dat::group_flags[data.target->id].is_building) {
-						if (!scbw::unit_is_facing_position(data.target, data.attacker->position)) {
-							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
-							// TODO: Overlay
-							data.bonus_armor_pen += 3;
-						}
-					}
-				} break;
-			}
 		}
 
 		switch (data.target->id) {

@@ -279,10 +279,14 @@ namespace scbw
 		Vector32f angle = scbw::get_direction_vector_from_unit(unit);
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, position));
 		f32 dot = scbw::dot_product(angle, diff);
-		if (dot < 0.5) {
-			return false;
-		}
-		return true;
+		return dot >= 0.5;
+	}
+
+	inline bool unit_is_exposed_to_position(Unit* unit, Point16 position) {
+		Vector32f angle = scbw::get_direction_vector_from_unit(unit);
+		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, position));
+		f32 dot = scbw::dot_product(angle, diff);
+		return dot <= -0.5;
 	}
 
 	inline f32 get_vector_distance(Vector32 vector) {

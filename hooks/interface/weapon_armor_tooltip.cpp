@@ -84,7 +84,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];
 	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
-	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, weapon_id);
+	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, 0, weapon_id);
 	if (bonus_armor_pen < 0) {
 		bonus_armor_pen = 0;
 	}
