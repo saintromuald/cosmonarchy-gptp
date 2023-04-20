@@ -388,16 +388,6 @@ namespace hooks
 		}
 
 		switch (data.target->id) {
-			case UnitId::TerranDilettante:
-			{
-				target_ext->values[ValueDilettanteLuck]++;
-				if (target_ext->values[ValueDilettanteLuck] >= 4) {
-					// @Todo: Visuals
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::DilettanteDodge01, SoundId::DilettanteDodge03), data.target, 1, 0);
-					target_ext->values[ValueDilettanteLuck] = 0;
-					data.damage = 0;
-				}
-			} break;
 			case UnitId::TerranSilvertongue:
 			{
 				if (target_ext->timers[TimerDecloak] > 2) {

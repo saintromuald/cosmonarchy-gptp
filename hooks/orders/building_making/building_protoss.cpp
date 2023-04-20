@@ -64,7 +64,7 @@ namespace hooks {
 
 								built_unit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
 								unit->order_target.unit = built_unit;
-								helper::ai_training_overlord(unit, built_unit);
+								helper::ai_training_overlord(built_unit, unit);
 								built_unit->order_computer(OrderId::BuildSelf2);
 								helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 								++unit->main_order_state;

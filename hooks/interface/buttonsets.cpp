@@ -1919,13 +1919,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranDilettante:
-								{
-									if (current_button->icon_id == IconId::ApialSensors) // Dilettante - Beginner's Luck
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::TerranSevenstep:
 								{
 									if (current_button->icon_id == IconId::DefensiveMatrix) // Sevenstep - Curtain Call
