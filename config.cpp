@@ -45,6 +45,7 @@ void load_config() {
 		GPTP::doLogging = config.verbose;
 
 		load_field(config_node, "default-map-directory", config.default_map_directory);
+		load_field(config_node, "auto-save-replays", config.auto_save_replays);
 
 		auto grid_node = config_node["grid-hotkeys"];
 		if (grid_node) {
@@ -118,6 +119,7 @@ void save_config() {
 	out << YAML::Newline << YAML::Comment("The map directory must be within Starcraft's 'maps' folder.");
 	out << YAML::Newline << YAML::Comment("Example: BroodWar\\CMBW-maps");
 	write_field(out, "default-map-directory", config.default_map_directory);
+	write_field(out, "auto-save-replays", config.auto_save_replays);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::EndMap;

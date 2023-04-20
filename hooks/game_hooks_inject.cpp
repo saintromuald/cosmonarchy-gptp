@@ -221,6 +221,10 @@ bool isGameOn = false;
 	}
 
 	void replay_save() {
+		if (!config.auto_save_replays) {
+			return;
+		}
+
 		char date[28] = {};
 		time_t now = time(0);
 		tm* ltm = localtime(&now);
