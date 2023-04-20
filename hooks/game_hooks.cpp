@@ -2849,6 +2849,11 @@ namespace hooks {
 			unit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
 		}
 
+		// Clear Autocrat debuff
+		if (unit_ext->timers[TimerAutocratControlledOpposition] == 1) {
+			unit_ext->values[ValueControlledOpposition] = 0;
+		}
+
 		if (globals.celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {
 				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);

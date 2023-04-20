@@ -245,6 +245,7 @@ enum ExtTimerId
 	TimerSavantPowerSiphonBuff,
 	TimerSavantPowerSiphonDebuff,
 	TimerStun,
+	TimerAutocratControlledOpposition,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
