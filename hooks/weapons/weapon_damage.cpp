@@ -400,6 +400,15 @@ namespace hooks
 			} break;
 		}
 
+		switch (data.target->id) {
+			case UnitId::TerranSilvertongue: {
+				target_ext->timers[TimerSilvertongueCloak] = 2 * 24;
+				if (target_ext->timers[TimerDecloak] > 2) {
+					target_ext->timers[TimerDecloak] = 2;
+				}
+			} break;
+		}
+
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 

@@ -1063,6 +1063,12 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranSilvertongue:
+			{
+				if (!unit_ext->timers[TimerSilvertongueCloak]) {
+					scbw::decloak_proc(unit);
+				}
+			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;
