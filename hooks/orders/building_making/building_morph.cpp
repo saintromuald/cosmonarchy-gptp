@@ -29,92 +29,89 @@ namespace hooks {
 		}
 
 		switch (building->main_order_state) {
-		case 0:
-			// Remove statuses if the source Droleth had them before morphing
-			building->status &= ~UnitStatus::NoCollide;
-			building->status &= ~UnitStatus::IsGathering;
-
-			if (helper::is_valid_building_morph(building_id)) {
-				building->create_origin = building->id;
-			}
-
-			++building->main_order_state;
-		case 1:
-			if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
-				if (building->id == UnitId::ZergExcisant) {
-					Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
-
-					if (overlay) {
-						overlay->free();
-					}
-				}
-
-				building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
-				++building->main_order_state;
-			}
-
-			break;
-		case 2:
-			if (building->remaining_build_time < units_dat::time_cost[building_id] >> 1) {
-				building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
-				++building->main_order_state;
-			}
-
-			break;
-		case 3:
-			if (!building->remaining_build_time) {
-				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
-				helper::play_building_completed_sound(building);
-				++building->main_order_state;
-			}
-
-			break;
-		case 4:
-			if (building->order_signal & 0x4) {
-				building->order_signal &= ~0x4;
+			case 0: {
+				// Remove statuses if the source Droleth had them before morphing
+				building->status &= ~UnitStatus::NoCollide;
+				building->status &= ~UnitStatus::IsGathering;
 
 				if (helper::is_valid_building_morph(building_id)) {
-					// save hp before some functions modify them
-					s32 hp_after_morph = building->hitpoints;
-					u32 save_shields = building->shields;
-					// update score
-					building->status |= UnitStatus::Completed;
-					helper::increment_unit_scores_ex(building, -1, 0);
-					// do the building change
-					building->status &= ~UnitStatus::Completed;
-					helper::replace_unit_with_id(building, building_id);
-					// newHp = newHpMax - oldHpMax + oldHp
-					hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
+					building->create_origin = building->id;
+				}
 
-					if (hp_after_morph < 256) {
-						hp_after_morph = 256;
+				++building->main_order_state;
+			} // fall
+			case 1: {
+				if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
+					if (building->id == UnitId::ZergExcisant) {
+						Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
+
+						if (overlay) {
+							overlay->free();
+						}
 					}
 
-					building->set_hitpoints(hp_after_morph);
-					building->remaining_build_time = 0;
+					building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
+					++building->main_order_state;
 				}
-				else if (building->create_origin == UnitId::ZergGosvileth) {
-					Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
 
-					if (worker) {
-						worker->set_hitpoints(building->previous_hitpoints << 8);
+			} break;
+			case 2: {
+				if (building->remaining_build_time < units_dat::time_cost[building_id] >> 1) {
+					building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
+					++building->main_order_state;
+				}
+			} break;
+			case 3: {
+				if (!building->remaining_build_time) {
+					building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
+					helper::play_building_completed_sound(building);
+					++building->main_order_state;
+				}
+			} break;
+			case 4: {
+				if (building->order_signal & 0x4) {
+					building->order_signal &= ~0x4;
+
+					if (helper::is_valid_building_morph(building_id)) {
+						// save hp before some functions modify them
+						s32 hp_after_morph = building->hitpoints;
+						u32 save_shields = building->shields;
+						// update score
+						building->status |= UnitStatus::Completed;
+						helper::increment_unit_scores_ex(building, -1, 0);
+						// do the building change
+						building->status &= ~UnitStatus::Completed;
+						helper::replace_unit_with_id(building, building_id);
+						// newHp = newHpMax - oldHpMax + oldHp
+						hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
+
+						if (hp_after_morph < 256) {
+							hp_after_morph = 256;
+						}
+
+						building->set_hitpoints(hp_after_morph);
+						building->remaining_build_time = 0;
+					} else if (building->create_origin == UnitId::ZergGosvileth) {
+						Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
+						if (worker) {
+							worker->set_hitpoints(building->previous_hitpoints << 8);
+						}
 					}
+
+					helper::update_unit_stats_and_finish_building(building);
+					helper::update_unit_strength(building);
+
+					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
+						image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
+					}
+
+					helper::spread_initial_creep(building_id, building->sprite->position.x, building->sprite->position.y);
 				}
-
-				helper::update_unit_stats_and_finish_building(building);
-				helper::update_unit_strength(building);
-				Image* current_image = building->sprite->images.head;
-
-				while (current_image) {
-					current_image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
-					current_image = current_image->link.next;
-				}
-
-				helper::spread_initial_creep(building_id, building->sprite->position.x, building->sprite->position.y);
-			}
-
-		default:
-			return;
+				return;
+			} break;
+			default: {
+				return;
+			} break;
 		}
 
 		u16 hp_gain = building->build_repair_hp_gain * modifier.multiplier;
@@ -124,8 +121,7 @@ namespace hooks {
 			if (modifier.decrease) {
 				if (building->remaining_build_time > modifier.decrease) {
 					building->remaining_build_time -= modifier.decrease;
-				}
-				else {
+				} else {
 					building->remaining_build_time = 0;
 				}
 			}
@@ -150,15 +146,13 @@ namespace hooks {
 					helper::update_unit_strength(worker);
 					worker->set_hitpoints(unit->previous_hitpoints << 8);
 					worker->sprite->player = unit->sprite->player;
-				}
-				else {
+				} else {
 					helper::refund_unit_train_cost(unit->create_origin, unit->player);
 					helper::display_last_network_error_for_player(unit->player);
 				}
 
 				unit->remove();
-			}
-			else {
+			} else {
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 
 				if (thingy) {
@@ -185,8 +179,7 @@ namespace hooks {
 				unit->set_hitpoints(previous_hitpoints);
 				helper::update_creep_disappearance_unit_id(previous_unit_id, unit->get_x(), unit->get_y(), false);
 			}
-		}
-		else {
+		} else {
 			helper::cancel_zerg_building_morph(unit);
 		}
 	}
@@ -297,16 +290,11 @@ namespace hooks
 		return unit_count;
 	}
 
-	void set_special_state_1(Sprite* sprite)
-	{
-		Image* current_image = sprite->images.head;
-		while (current_image != nullptr)
-		{
-			if (current_image->id != ImageId::StargateOverlay)
-			{
-				current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
+	void set_special_state_1(Sprite* sprite) {
+		for (Image* image = sprite->images.head; image; image = image->link.next) {
+			if (image->id != ImageId::StargateOverlay) {
+				image->play_iscript_animation(IscriptAnimation::SpecialState1);
 			}
-			current_image = current_image->link.next;
 		}
 	}
 
@@ -356,33 +344,25 @@ namespace hooks
 	}
 
 	// Hooked to clear placement area (and maybe fix the AI stacked Droleth bug). -Pr0nogo
-	void orders_drone_build(Unit* builder) // 0045E090
-	{
+	void orders_drone_build(Unit* builder) { // 0045E090
 		Sprite* builder_sprite = builder->sprite;
 		Image* underlay = builder_sprite->images.tail;
 		if (builder_sprite->position.x != builder->order_target.pt.x
-		||  builder_sprite->position.y != builder->order_target.pt.y)
-		{
+		||  builder_sprite->position.y != builder->order_target.pt.y) {
 			// Change shadow pos
-			if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
-			{
+			if (underlay->palette_type == 10 && underlay->vertical_offset != 7) {
 				underlay->flags |= ImageFlags::Redraw;
 				underlay->vertical_offset = 7;
 			}
 			helper::refresh_sprite_data(builder->sprite);
 			Order* order_head = builder->order_queue_head;
-			if (order_head)
-			{
+			if (order_head) {
 				helper::insert_order_before(builder, order_head, OrderId::ResetCollision1, 0, 0, 0, 228);
-			}
-			else
-			{
+			} else {
 				helper::perform_another_order(OrderId::ResetCollision1, 0, builder, 228, {}, 0);
 			}
 			helper::force_order_done(builder);
-		}
-		else
-		{
+		} else {
 			u32 building_id = builder->build_queue[builder->build_queue_slot];
 			u16 pos_x = builder_sprite->position.x;
 			u16 pos_y = builder_sprite->position.y;
@@ -394,8 +374,7 @@ namespace hooks
 			|| builder_sprite->position.y != builder->order_target.pt.y)
 			{
 				helper::play_worker_error_sound(builder, 856);
-				if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
-				{
+				if (underlay->palette_type == 10 && underlay->vertical_offset != 7) {
 					underlay->flags |= ImageFlags::Redraw;
 					underlay->vertical_offset = 7;
 				}
@@ -410,16 +389,14 @@ namespace hooks
 			g_ai_vespene_reserve[player] = units_dat::vespene_cost[building_id];
 
 			// @Todo: Tidy this into not being inlined
-			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
-			{
+			if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
 				helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
 				helper::set_shadow_y(builder->sprite, 7);
 				helper::refresh_sprite_data(builder->sprite);
 				helper::order_immediate(builder, OrderId::ResetCollision1);
 				helper::force_order_done(builder);
 			}
-			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
-			{
+			if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
 				helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
 				helper::set_shadow_y(builder->sprite, 7);
 				helper::refresh_sprite_data(builder->sprite);
@@ -429,61 +406,45 @@ namespace hooks
 
 			helper::subtract_queue_cost(builder->player);
 			Unit* powerup = helper::get_unit_powerup(builder);
-			if (powerup)
-			{
+			if (powerup) {
 				helper::drop_powerup(builder);
 			}
-			if (building_id == UnitId::ZergExcisant)
-			{
+			if (building_id == UnitId::ZergExcisant) {
 				helper::droleth_build_excisant(builder);
-			}
-			else
-			{
+			} else {
 				drone_morph_standard(builder, building_id);
 			}
-			if (powerup)
-			{
+			if (powerup) {
 				helper::move_unit(powerup, powerup->powerup_origin.x, powerup->powerup_origin.y);
 			}
 		}
 	}
 
 	// Hooked to clear placement area (and maybe fix the AI stacked Droleth bug). -Pr0nogo
-	void orders_drone_land(Unit* unit) // 004E9AA0
-	{
-		if (unit->unit_ai)
-		{
+	void orders_drone_land(Unit* unit) { // 004E9AA0
+		if (unit->unit_ai) {
 			unit->status |= UnitStatus::IsGathering;
 		}
 		u32 order_state = unit->main_order_state;
-		if (unit->main_order_state)
-		{
+		if (unit->main_order_state) {
 			order_state -= 1;
-			if (order_state)
-			{
-				if (order_state == 1)
-				{
+			if (order_state) {
+				if (order_state == 1) {
 					Sprite* unit_sprite = unit->sprite;
-					if (unit->move_target.pt.x == unit_sprite->position.x && unit->move_target.pt.y == unit_sprite->position.y)
-					{
+					if (unit->move_target.pt.x == unit_sprite->position.x && unit->move_target.pt.y == unit_sprite->position.y) {
 						u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
-						if (((unit->status & UnitStatus::Unmovable) != 0) != -1)
-						{
+						if (((unit->status & UnitStatus::Unmovable) != 0) != -1) {
 							Image* underlay = unit_sprite->images.tail;
-							if (underlay->palette_type == 10)
-							{
-								if (underlay->vertical_offset)
-								{
+							if (underlay->palette_type == 10) {
+								if (underlay->vertical_offset) {
 									underlay->flags |= ImageFlags::Redraw;
 									underlay->vertical_offset = 0;
 								}
 							}
-							if (unit->sprite->images.tail->palette_type == 10) // Deliberately not using underlay var
-							{
+							if (unit->sprite->images.tail->palette_type == 10) { // Deliberately not using underlay var
 								unit->sprite->images.tail->flags &= 0xFBu;
 							}
-							if (unmovable == 2)
-							{
+							if (unmovable == 2) {
 								helper::play_building_land_sound(unit);
 								Order* order_queue = unit->order_queue_head;
 								if (order_queue)
@@ -494,24 +455,18 @@ namespace hooks
 									}
 								}
 								underlay = unit->sprite->images.tail;
-								if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
-								{
+								if (underlay->palette_type == 10 && underlay->vertical_offset != 7) {
 									underlay->flags |= ImageFlags::Redraw;
 									underlay->vertical_offset = 7;
 								}
 								helper::refresh_sprite_data(unit->sprite);
 								helper::order_immediate(unit, OrderId::ResetCollision1);
 								helper::force_order_done(unit);
-							}
-							else
-							{
+							} else {
 								Order* order_queue = unit->order_queue_head;
-								if (order_queue && order_queue->order_id == OrderId::DroneBuild)
-								{
+								if (order_queue && order_queue->order_id == OrderId::DroneBuild) {
 									helper::move_unit(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-								}
-								else
-								{
+								} else {
 									underlay = unit->sprite->images.tail;
 									if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
 									{
@@ -533,26 +488,21 @@ namespace hooks
 				}
 				return;
 			}
-			if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y)
-			{
+			if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
 				u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
-				if (((unit->status & UnitStatus::Unmovable) != 0) != -1)
-				{
+				if (((unit->status & UnitStatus::Unmovable) != 0) != -1) {
 					u32 queue_slot_id = unit->build_queue[unit->build_queue_slot];
-					u32 can_build = helper::can_build_on_tile_location(unit, unit->player,  (unit->order_target.pt.x - units_dat::building_dimensions[queue_slot_id].x / 2) / 32,
-																							(unit->order_target.pt.y - units_dat::building_dimensions[queue_slot_id].y / 2) / 32,
-																							 queue_slot_id, 0, 0, 1, 1);
-					if (queue_slot_id != UnitId::ZergExcisant || unmovable != 1)
-					{
-						if (!can_build && unmovable != 2)
-						{
-							if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128))
-							{
-								if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) // Was BYTE1(unit->status)
-								{
+					u32 can_build = helper::can_build_on_tile_location(unit, unit->player,
+						(unit->order_target.pt.x - units_dat::building_dimensions[queue_slot_id].x / 2) / 32,
+						(unit->order_target.pt.y - units_dat::building_dimensions[queue_slot_id].y / 2) / 32,
+						queue_slot_id, 0, 0, 1, 1
+					);
+					if (queue_slot_id != UnitId::ZergExcisant || unmovable != 1) {
+						if (!can_build && unmovable != 2) {
+							if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)) {
+								if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) { // Was BYTE1(unit->status)
 									Image* underlay = unit->sprite->images.tail;
-									if (underlay->palette_type == 10)
-									{
+									if (underlay->palette_type == 10) {
 										underlay->flags |= ImageFlags::DontUpdate;
 									}
 									u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
@@ -562,32 +512,25 @@ namespace hooks
 								return;
 							}
 						}
-					}
-					else if (!can_build)
-					{
+					} else if (!can_build) {
 						Unit* unit_at_tile = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, 188);
-						if (unit_at_tile && helper::is_target_within_min_range(unit, 32, unit_at_tile))
-						{
+						if (unit_at_tile && helper::is_target_within_min_range(unit, 32, unit_at_tile)) {
 							u32 builder_id = unit->id;
 							unit->status &= 0xFFEFFFFF;
 							unit->sprite->elevation = units_dat::elevation[builder_id] + 1;
 							helper::order_targeting_nothing(0x96u, unit, 0);
 							helper::order_targeting_nothing(units_dat::return_to_idle_order[unit->id], unit, 0);
-							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
-							{
+							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
 								u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
 								unit->main_order_state = 2;
 								unit->status = status;
 							}
 							return;
 						}
-						if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128))
-						{
-							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) // Was BYTE1(unit->status)
-							{
+						if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)) {
+							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) { // Was BYTE1(unit->status)
 								Image* underlay = unit->sprite->images.tail;
-								if (underlay->palette_type == 10)
-								{
+								if (underlay->palette_type == 10) {
 									underlay->flags |= ImageFlags::DontUpdate;
 								}
 								u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
@@ -598,10 +541,8 @@ namespace hooks
 						}
 						helper::play_building_land_sound(unit);
 						Order* order_queue = unit->order_queue_head;
-						if (order_queue)
-						{
-							if (order_queue->order_id == OrderId::DroneBuild)
-							{
+						if (order_queue) {
+							if (order_queue->order_id == OrderId::DroneBuild) {
 								helper::remove_order_from_unit_queue(order_queue, unit);
 							}
 						}
@@ -610,10 +551,8 @@ namespace hooks
 					}
 					helper::play_building_land_sound(unit);
 					Order* order_queue = unit->order_queue_head;
-					if (order_queue)
-					{
-						if (order_queue->order_id == OrderId::DroneBuild)
-						{
+					if (order_queue) {
+						if (order_queue->order_id == OrderId::DroneBuild) {
 							helper::remove_order_from_unit_queue(order_queue, unit);
 						}
 					}
@@ -621,19 +560,15 @@ namespace hooks
 					return;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			u32 tgt_x = unit->order_target.pt.x;
 			u32 tgt_y = unit->order_target.pt.y - 7;
 			bool move_target = helper::set_move_target_xy(unit, tgt_x, tgt_y);
-			if (tgt_x != unit->next_target_waypoint.x || tgt_y != unit->next_target_waypoint.y)
-			{
+			if (tgt_x != unit->next_target_waypoint.x || tgt_y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = tgt_x;
 				unit->next_target_waypoint.y = tgt_y;
 			}
-			if (move_target)
-			{
+			if (move_target) {
 				unit->main_order_state = 1;
 			}
 		}
