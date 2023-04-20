@@ -935,7 +935,8 @@ namespace hooks {
 
 		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
 			despawn_bullet = true;
-		} else if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage || bullet->weapon_id == WeaponId::ValkyrieHaloRockets) {
+		}
+		if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage || bullet->weapon_id == WeaponId::ValkyrieHaloRockets) {
 			// Missile interception - Empyrean Heavenly Passage, Valkyrie Charon Afterburners
 			u32 range = 128;
 			auto collision_target = scbw::UnitFinder::get_nearest_target(

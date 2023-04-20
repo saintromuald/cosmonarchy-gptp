@@ -109,8 +109,8 @@ namespace hooks {
 		if (clamp) {
 			if (cooldown > 250) { // Max cutoff
 				cooldown = 250;
-			} else if (cooldown < 3) { // Min cutoff (previously 5)
-				cooldown = 3;
+			} else if (cooldown < 1) { // Min cutoff (previously 5)
+				cooldown = 1;
 			}
 		}
 
