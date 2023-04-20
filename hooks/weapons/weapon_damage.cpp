@@ -372,15 +372,6 @@ namespace hooks
 			} break;
 		}
 
-		switch (data.target->id) {
-			case UnitId::TerranSilvertongue:
-			{
-				if (target_ext->timers[TimerDecloak] > 2) {
-					target_ext->timers[TimerDecloak] = 2;
-				}
-			} break;
-		}
-
 		if (target_ext->timers[TimerTriumphantRiseDebuff])
 		{
 			scbw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);

@@ -1521,7 +1521,6 @@ namespace scbw {
 			case WeaponId::SirenCharybdalRifle:
 			case WeaponId::AutocratEminenceRifle:
 			case WeaponId::SevenstepGeometricRiflePiercing:
-			case WeaponId::SilvertongueWordsmithRailgun:
 			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::ClaymoreHarpoonRailgun:
 			case WeaponId::PenumbraErebolShockCannon:

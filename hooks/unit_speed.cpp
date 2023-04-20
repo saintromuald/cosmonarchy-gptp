@@ -240,6 +240,7 @@ namespace hooks
 			case UnitId::TerranHarakan:
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
+			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:

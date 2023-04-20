@@ -735,7 +735,6 @@ namespace hooks {
 				// Same as default, but orange effect
 				case WeaponId::CyprianTwinRailguns:
 				case WeaponId::AutocratEminenceRifle:
-				case WeaponId::SilvertongueWordsmithRailgun:
 				case WeaponId::RamessesPharoahCannons:
 				{
 					iquare_globals.add_bullet_multihit(bullet, collision_target);
@@ -1007,10 +1006,7 @@ namespace hooks {
 			}
 		} else if (scbw::bullet_pierces_target(bullet)) {
 			// Prolonged Arms - for projectiles hitting targets mid-flight
-			bool enabled = true;
-			if (bullet->weapon_id == WeaponId::SilvertongueWordsmithRailgun) {
-				enabled = bullet->source_unit && get_unit_ext(bullet->source_unit)->timers[TimerDecloak] > 1;
-			}
+			bool enabled = true; // Can disable for any desired condition
 
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
@@ -1020,7 +1016,6 @@ namespace hooks {
 				} break;
 				case WeaponId::SavantDiscoidRailgunPiercing:
 				case WeaponId::AutocratEminenceRifle:
-				case WeaponId::SilvertongueWordsmithRailgun:
 				case WeaponId::ClaymoreHarpoonRailgun:
 				case WeaponId::SentinelCerberusRailgun:
 				{
