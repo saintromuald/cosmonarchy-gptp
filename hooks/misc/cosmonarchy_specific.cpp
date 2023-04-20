@@ -407,10 +407,6 @@ namespace hooks
 		} else {
 			unit->energy = 0;
 		}
-		if (unit_id == UnitId::TerranSevenstep)
-		{
-			unit->shields = 0;
-		}
 		unit->status = unit->status & ~UnitStatus::Frozen;
 		u32 new_hp = (hp * units_dat::max_hitpoints[unit->id]) / 256;
 		u32 max_hp = units_dat::max_hitpoints[unit->previous_unit_type] / 256;

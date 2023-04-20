@@ -210,6 +210,7 @@ namespace WeaponId {
 		SilvertongueWordsmithRailgun		= 184,
 		IonCannonIonCannon					= 198,
 		SavantDiscoidRailgunPiercing		= 199,
+		SevenstepGeometricRiflePiercing		= 200,
 
 		// Protoss \\
 		

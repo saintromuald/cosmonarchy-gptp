@@ -246,6 +246,7 @@ enum ExtTimerId
 	TimerSavantPowerSiphonDebuff,
 	TimerStun,
 	TimerAutocratControlledOpposition,
+	TimerSevenstepMindMatter,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -286,6 +287,7 @@ enum ExtUnitId
 	UnitResponseTarget,
 	UnitCentaurSecondaryWeaponTarget,
 	UnitIonCannonTarget,
+	UnitSevenstepMindMatterSource,
 
 	UnitCount,
 };

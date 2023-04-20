@@ -2853,6 +2853,14 @@ namespace hooks {
 		if (unit_ext->timers[TimerAutocratControlledOpposition] == 1) {
 			unit_ext->values[ValueControlledOpposition] = 0;
 		}
+		
+		// Sevenstep - Mind Matter - Discharge projectile
+		{
+			Unit* sevenstep = unit_ext->units[UnitSevenstepMindMatterSource];
+			if (sevenstep && unit_ext->timers[TimerSevenstepMindMatter] == 1) {
+				scbw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, sevenstep->player, unit, 0, sevenstep->position);
+			}
+		}
 
 		if (globals.celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {

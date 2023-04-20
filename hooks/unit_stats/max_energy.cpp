@@ -11,7 +11,6 @@ namespace hooks
 		switch (unit->id)
 		{
 			case UnitId::TerranSavant:
-			case UnitId::TerranSevenstep:
 			{
 				energy = 100;
 			} break;

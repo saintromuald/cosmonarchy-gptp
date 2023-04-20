@@ -392,6 +392,16 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
+			case WeaponId::SevenstepGeometricRifle: {
+				if (!target_ext->timers[TimerSevenstepMindMatter])
+				{
+					target_ext->timers[TimerSevenstepMindMatter] = 24 + 1;
+				}
+				target_ext->units[UnitSevenstepMindMatterSource] = data.attacker;
+			} break;
+			case WeaponId::LegionnairePhaseSpear: {
+				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
+			} break;
 			case WeaponId::GladiusPlasmaFlurry: {
 				if (target_ext->timers[TimerGladiusBindingPlasma]) {
 					u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
@@ -403,9 +413,6 @@ namespace hooks
 					target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
 					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 				}
-			} break;
-			case WeaponId::LegionnairePhaseSpear: {
-				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
 		}
 
@@ -736,14 +743,6 @@ namespace hooks
 	static void weapon_damage_lifesteal(const WeaponDamageData& data) {
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
 		switch (data.weapon_id) {
-			case WeaponId::SevenstepGeometricRifle:
-			{
-				// Sevenstep Mind Matter passive - heal energy, then shields
-				if (data.attacker->energy == data.attacker->get_max_energy() && data.attacker->shields != data.attacker->get_max_shields_raw()) {
-					helper::play_sound_from_unit(SoundId::SevenstepShieldHeal01, data.attacker, 1, 0);
-				}
-				data.attacker->heal_energy_then_shields(damage_dealt / 2, data.attacker);
-			} break;
 			case WeaponId::UltrokorKaiserBlades:
 			{
 				// Ultrokor Saber Siphon passive
@@ -882,14 +881,6 @@ namespace hooks
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}
-			} break;
-			case UnitId::TerranSevenstep:
-			{
-				// Sevenstep Mind Matter passive - Convert energy into emergency health
-				// TODO: Visuals
-				helper::play_sound_from_unit(SoundId::SevenstepRevive01, data.target, 1, 0);
-				data.target->heal_hp(data.target->energy / 2, data.target, false);
-				data.target->spend_unit_energy(data.target->energy);
 			} break;
 			case UnitId::ProtossArchon:
 			{

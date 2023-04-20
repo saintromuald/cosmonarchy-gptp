@@ -1520,6 +1520,7 @@ namespace scbw {
 			case WeaponId::SavantDiscoidRailgunPiercing:
 			case WeaponId::SirenCharybdalRifle:
 			case WeaponId::AutocratEminenceRifle:
+			case WeaponId::SevenstepGeometricRiflePiercing:
 			case WeaponId::SilvertongueWordsmithRailgun:
 			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::ClaymoreHarpoonRailgun:
@@ -2584,8 +2585,7 @@ namespace scbw {
 	}
 
 	bool unit_id_can_regenerate_shields(u32 unit_id) {
-		return unit_id != UnitId::TerranSevenstep
-			&& unit_id != UnitId::ProtossVagrantShade;
+		return unit_id != UnitId::ProtossVagrantShade;
 	}
 
 	bool unit_id_is_stackable_building(u32 unit_id) {
