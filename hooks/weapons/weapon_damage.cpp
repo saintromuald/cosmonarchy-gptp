@@ -375,12 +375,12 @@ namespace hooks
 		if (data.attacker) {
 			switch (data.attacker->id) {
 				case UnitId::TerranOlympian: {
-					// Olympian Dishonorable Discharge - deal +5 damage to targets facing away from the Olympian
+					// Olympian Dishonorable Discharge - deal +3 damage to targets facing away from the Olympian
 					if (!units_dat::group_flags[data.target->id].is_building) {
 						if (!scbw::unit_is_facing_position(data.target, data.attacker->position)) {
 							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
 							// TODO: Overlay
-							data.damage += 5 * 256;
+							data.bonus_armor_pen += 3;
 						}
 					}
 				} break;
@@ -552,10 +552,11 @@ namespace hooks
 				}
 
 				switch (data.weapon_id) {
-					case WeaponId::AutocratEminanceRifle:
+					case WeaponId::AutocratEminenceRifle:
 					{
 						// Apply Controlled Opposition
 						target_ext->values[ValueControlledOpposition]++;
+						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{

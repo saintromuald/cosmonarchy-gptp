@@ -140,20 +140,6 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 				if (!scbw::unit_is_facing_position(center, target->position)) {
 					return false;
 				}
-
-				/*
-				u16 angle = scbw::get_angle(center->position.x, center->position.y,
-					unit->position.x, unit->position.y);
-				u16 unit_angle = center->velocity_direction_1;
-				s32 arc = (f64)45 / 1.40625;
-				//90 degrees
-				s32 delta = unit_angle - angle;
-				delta = abs((delta + 128) % 256 - 128);
-				if (delta > arc)
-				{
-					return false;
-				}
-				*/
 			}
 			if (context & Flags::Own && target->player != center->player)
 			{

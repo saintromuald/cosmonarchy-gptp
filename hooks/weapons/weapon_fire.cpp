@@ -734,6 +734,8 @@ namespace hooks {
 			switch (bullet->weapon_id) {
 				// Same as default, but orange effect
 				case WeaponId::CyprianTwinRailguns:
+				case WeaponId::AutocratEminenceRifle:
+				case WeaponId::SilvertongueWordsmithRailgun:
 				case WeaponId::RamessesPharoahCannons:
 				{
 					iquare_globals.add_bullet_multihit(bullet, collision_target);
@@ -1012,7 +1014,12 @@ namespace hooks {
 
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
+				case WeaponId::SirenCharybdalRifle:
+				{
+					line_width = 8;
+				} break;
 				case WeaponId::SavantDiscoidRailgunPiercing:
+				case WeaponId::AutocratEminenceRifle:
 				case WeaponId::SilvertongueWordsmithRailgun:
 				case WeaponId::ClaymoreHarpoonRailgun:
 				case WeaponId::SentinelCerberusRailgun:

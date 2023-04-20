@@ -175,7 +175,7 @@ namespace WeaponId {
 		CyclopsFlakCannons					= 93,
 		PhobosArgosLaserBatteries			= 94,
 		SirenCharybdalRifle					= 96,
-		AutocratEminanceRifle				= 116,
+		AutocratEminenceRifle				= 116,
 		ClaymoreHarpoonRailgun				= 120,
 		UnusedSeraphObservance				= 122,	// Was Seraph ability targeting
 		OlympianTitansFist					= 123,
