@@ -6,23 +6,36 @@
 #include "globals.h"
 
 namespace hooks {
-	u32 get_modified_armor_pen(Unit* unit, u8 weapon_id) {
+	u32 get_modified_armor_pen(Unit* unit, Unit* target, u8 weapon_id) {
 		u32 armor_pen = weapons_dat::armor_pen[weapon_id];
 		if (!unit) {
 			return armor_pen;
 		}
 
-		// TODO: Insert your armor pen modifications here and remove this comment
+		switch (unit->id) {
+			case UnitId::TerranOlympian: {
+				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
+				if (target && !units_dat::group_flags[target->id].is_building) {
+					if (scbw::unit_is_exposed_to_position(target, unit->position)) {
+						helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
+						// TODO: Overlay
+						armor_pen += 3;
+					}
+				}
+			} break;
+		}
 
 		return armor_pen;
 	}
 
-	u32 get_modified_cooldown(Unit* unit, u32 cooldown, bool clamp) {
+	u32 get_modified_cooldown(Unit* unit, u32 cooldown_param, bool clamp) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
 		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? 1 : 0)
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
+
+		f32 cooldown = cooldown_param;
 
 		// Crucible Aura
 		cooldown /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
@@ -31,8 +44,7 @@ namespace hooks {
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 
 		// Vassal Terminal Surge
-		if (unit_ext->timers[TimerTerminalSurge] > 1)
-		{
+		if (unit_ext->timers[TimerTerminalSurge] > 1) {
 			cooldown /= 1.25;
 		}
 
