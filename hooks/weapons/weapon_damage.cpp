@@ -437,7 +437,7 @@ namespace hooks
 					if (halu_unit) {
 						halu_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 						if (!helper::place_hallucination(halu_unit)) {
-							helper::UnitDestructor(halu_unit);
+							helper::remove_unit(halu_unit);
 						}
 					}
 				}

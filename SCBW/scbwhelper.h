@@ -147,7 +147,7 @@ namespace helper {
 	void hide_unit(Unit* unit);
 
 	// For AI_TrainingBroodling
-	void ai_set_region_state(s32 region_type, AiRegion* region);							// 004390A0
+	void ai_set_region_state(s32 region_type, AiRegion* region);									// 004390A0
 	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region);						// 0043DA20
 
 	// For ai_training_worker
@@ -362,14 +362,14 @@ namespace helper {
 	Unit* set_unit_movement_speed(Unit* unit, u32 speed);																			// 004951C0
 	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset);																		// 00498150
 	void create_landing_dust(Sprite* sprite);																						// 004997E0
-	void function_004C3B40(Unit* unit);																								// 004C3B40
+	void remove_from_selection(Unit* unit);																							// 004C3B40
 
 	//// create_init_units
 	b32 spreads_creep(u32 unit_id, b32 defaultReturn);																				// 00413870
 	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u32 unit_id);															// 004148F0
 	void create_building_larva(Unit* main_building);																				// 0049D660
 	b32 show_finished_unit(Unit* unit);																								// 0049EC30
-	Unit* find_best_unit(Box16* coords, u32 searchProc);																				// 004E8830
+	Unit* find_best_unit(Box16* coords, u32 searchProc);																			// 004E8830
 
 	//// larva_creep_spawn
 	u8 spread_creep(u32 unit_id, s32 x, s32 y);																						// 00414680
@@ -389,16 +389,16 @@ namespace helper {
 	typedef bool(*SetCreepRelationalData_callback)(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg);
 	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
 
-	u32 getNumSurroundingCreepTiles(u32 x, u32 y);																					// 00414290
-	void setCreepRelationalData(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg);									// 00413FA0
-	u32 iterateDirectionalCreepData(u32 x, u32 y, u32 callback, u32 arg);															// 00413B30
+	u32 get_num_surrounding_creep_tiles(u32 x, u32 y);																				// 00414290
+	void set_creep_relational_data(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg);								// 00413FA0
+	u32 iterate_directional_creep_data(u32 x, u32 y, u32 callback, u32 arg);														// 00413B30
 
 	// TODO: add helpers for these functions
 	// for apply_creep_at_location_from_unit_id
 	
 	typedef s32 __stdcall CreepChange(s32, s32, s32, s32, s32);
 
-	s32 modifyCreepState(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param);												// 00413FA0
+	s32 modify_creep_state(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param);											// 00413FA0
 	s32 run_creep_randomizer(s16* originalTile, s32 creepTileBorders, s32* outCreepStatus, s16* currentTile, s32 unused);			// 004140A0 // "note possible desync"
 	s32 unkCreepBorders(s32 a1, s32 a2);																							// 006D0C78
 	u32 forEachAdjacentTile(s32(__stdcall* callback)(s32, s32, s32, s32, void*), void* param, s32 x_tile, s32 y_tile);				// 00413B30
@@ -410,10 +410,10 @@ namespace helper {
 	void targeted_order(Unit* unit, u32 unit_id, u32 unk1, u32 unk2, u32 order_id, u32 unk3, u32 unk4, u32 unk5);					// 004754F0
 
 	//// die_order
-	void clearUnitSprites(Sprite* unit_sprite, Sprite* subunit_sprite);																// 00496F00
-	void refresh_all_visible_images_at_screen_pos(Sprite* thingySprite, u32 visibility_flags);																// 00497480
-	void _UnitDestructor(Unit* unit);																								// 004A0740
-	void UnitDestructor(Unit* unit);																								// 004A0990
+	void clear_unit_sprites(Sprite* unit_sprite, Sprite* subunit_sprite);															// 00496F00
+	void refresh_all_visible_images_at_screen_pos(Sprite* thingy_sprite, u32 visibility_flags);										// 00497480
+	void unit_die(Unit* unit);																										// 004A0740
+	void remove_unit(Unit* unit);																									// 004A0990
 	void hide_and_disable_unit(Unit* unit);																							// 004E6340
 
 	//// CMDRECV_Cancel
@@ -427,7 +427,7 @@ namespace helper {
 	b32 order_is_allowed(Unit* unit, u16 order, u32 nationID);																		// 0046DC20
 	bool place_building_message(u32 result_function_473FB0);																		// 0048D930
 	bool CMDRECV_place_building_allowed(Unit* unit, u8 order_id, u16 builtUnitId);													// 0048DBD0
-	void function_0048DE70(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId);								// 0048DE70
+	void process_building_placement(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId);						// 0048DE70
 	void CMDRECV_place_building(s16 x, s16 y, u8 order_id, u16 builtUnitId);														// 0048E190
 
 	//// CMDRECV_MergeArchon
@@ -455,10 +455,10 @@ namespace helper {
 
 	// For spell_order
 	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7);												// 00492020
-	s32 spell_order_move_towards_target(Unit* caster, u32 range);																		// 00492450
+	s32 spell_order_move_towards_target(Unit* caster, u32 range);																	// 00492450
 
 	// For can_target_spell
-	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id);																			// 004914B0
+	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id);																		// 004914B0
 
 	void increment_unit_death_scores(Unit* unit, u8 player);																		// 00488AF0
 	void give_sprite(Unit* unit, u8 player);																						// 0049E4E0
@@ -603,7 +603,7 @@ namespace helper {
 	// for orders_Hallucination1
 	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);							// 004926D0
 
-	void UnitDestructor(Unit* unit);
+	void remove_unit(Unit* unit);
 	bool place_hallucination(Unit* unit);																							// 004F66D0
 
 	// for create_hallucination
@@ -651,7 +651,7 @@ namespace helper {
 	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																	// 004748E0
 	void update_target_something(Unit* unit, Unit* target, u8 order_id);															// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id);														// 00474C30
-	void unit_order_move_to_target_unit(Unit* unit, Unit* target);																		// 00479FE0
+	void unit_order_move_to_target_unit(Unit* unit, Unit* target);																	// 00479FE0
 
 	//// load_unload_orders
 	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																		// 00438E70
@@ -668,9 +668,9 @@ namespace helper {
 
 	//// siege_transform
 	void set_unit_retreat_point(Unit* unit, u8 angleValue);																			// 004011A0
-	bool get_closer_to_destination(Unit* unit);																				// 00402BE0
-	void order_return_to_idle(Unit* unit);																								// 00463770
-	bool check_for_close_unit(Unit* unit);																								// 00464290
+	bool get_closer_to_destination(Unit* unit);																						// 00402BE0
+	void order_return_to_idle(Unit* unit);																							// 00463770
+	bool check_for_close_unit(Unit* unit);																							// 00464290
 	void play_subunit_iscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
@@ -698,7 +698,7 @@ namespace helper {
 	s32 can_be_infested(Unit* a1, Unit* a2);																						// 00402210
 
 	// For find_next_bounce_target
-	Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);								// 004E8280
+	Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);							// 004E8280
 
 	// For create_bullet
 	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weapon_id, s32 x, s32 angle);					// 0048BEC0
@@ -723,12 +723,12 @@ namespace helper {
 	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);													// 00491E80
 	void disableUnitFunc(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
 	void set_all_image_group_flags_palette_11(Sprite* sprite);														// 00497430
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords);						// 004E8280
-	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);									// 004E8280
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords);					// 004E8280
+	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);								// 004E8280
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
-	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);								// 004E8280
+	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);							// 004E8280
 	void create_ensnare_overlay(Unit* a1);																			// 004F45E0
 
 	// For create_scanner
@@ -769,7 +769,7 @@ namespace helper {
 	void secondary_order_cloak(Unit* unit);																			// 00491790
 
 	//// update_unit_state
-	bool unit_hp_is_in_redzone(Unit* unit);																				// 004022C0
+	bool unit_hp_is_in_redzone(Unit* unit);																			// 004022C0
 	void restore_all_unit_stats(Unit* unit);																		// 00492F70 (hooked by hooks\update_status_effects.cpp)
 
 	// For update_units
@@ -826,8 +826,8 @@ namespace helper {
 
 	//// repair_order
 
-	void get_repair_info(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);			// 00466D10
-	bool verify_resources(u32 mineralCost, u32 gasCost, u32 player);													// 00466EE0
+	void get_repair_info(Unit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);		// 00466D10
+	bool verify_resources(u32 mineralCost, u32 gasCost, u32 player);												// 00466EE0
 	bool subtract_repair_resources(Unit* worker, Unit* target);														// 00466FB0
 
 	// For is_order_valid
@@ -964,7 +964,7 @@ namespace helper {
 	void bullet_behavior_area(Bullet* bullet);																// 0048B440
 
 	// For give_unit_to_player
-	void give_all_unit_properties_to_player(Unit* unit, s8 player);												// 0047C9F0
+	void give_all_unit_properties_to_player(Unit* unit, s8 player);											// 0047C9F0
 	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
 	bool unitHasHanger(Unit* unit);																			// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
@@ -972,7 +972,7 @@ namespace helper {
 
 	// For UnitMove
 	void move_sprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
-	u32 update_unit_sorting_info(u32 x_diff, Unit* unit, u32 y_diff);											// 0046A000
+	u32 update_unit_sorting_info(u32 x_diff, Unit* unit, u32 y_diff);										// 0046A000
 
 	// For bullet_behavior_reassign
 	void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
@@ -1039,7 +1039,7 @@ namespace helper {
 	void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
 
 	// For unit_destructor_special
-	s32 remove_creep_at_unit(s32 left, s32 top, s16 unit_id);																		// 00414560
+	s32 remove_creep_at_unit(s32 left, s32 top, s16 unit_id);																	// 00414560
 
 	//// For direct_sound
 
@@ -1088,7 +1088,7 @@ namespace helper {
 	AI_Main* ai_pop_spending_request(s32 player);																				// 004476D0
 	Unit* AI_GetHydraliskForMorph(s32 player);																					// 00437570
 	s32 is_unit_id_race_equal_to_unit_race(u16 unit_id, Unit* unit);															// 00432480
-	bool has_resources_for_unit(u16 unit_id, s32 player);																			// 004487B0
+	bool has_resources_for_unit(u16 unit_id, s32 player);																		// 004487B0
 	char ai_perform_task(Unit* unit);																							// 004361A0
 	s32 ai_get_request_build_type(s32 player);																					// 00447590
 	bool ai_train_unit(Unit* unit, u16 unit_id, char requestId, void* value);													// 004672F0

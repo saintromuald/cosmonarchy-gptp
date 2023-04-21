@@ -40,13 +40,11 @@ namespace hooks
 
 	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 builtUnitId)
 	{
-		Unit* builder;
-		u32 result_function_00473FB0;
 		*unit_iterator_pos = 0;
-		builder = get_active_player_next_selection();
-		result_function_00473FB0 = helper::can_build_on_tile_location(builder, builder->player, x, y, builtUnitId, 1, 0, 0, 0);
+		Unit* builder = get_active_player_next_selection();
+		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, builtUnitId, 1, 0, 0, 0);
 
-		if (helper::place_building_message(result_function_00473FB0))
+		if (helper::place_building_message(can_build))
 		{
 			s32 DimensionX, DimensionY;
 			DimensionX = (s16)units_dat::building_dimensions[builtUnitId].x;
@@ -63,7 +61,7 @@ namespace hooks
 			}
 			DimensionY /= 2;
 			DimensionY += (y * 32);
-			helper::function_0048DE70(builder, order_id, DimensionX, DimensionY, builtUnitId);
+			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, builtUnitId);
 		}
 	}
 
@@ -114,7 +112,7 @@ namespace hooks
 			DimensionY /= 2;
 			addonPlaceY *= 32;
 			DimensionY += addonPlaceY;
-			helper::function_0048DE70(builder, order_id, DimensionX, DimensionY, builtUnitId);
+			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, builtUnitId);
 		}
 	}
 
