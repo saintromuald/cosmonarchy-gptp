@@ -268,10 +268,10 @@ struct Unit : public UnitLayout
 	void order_to_idle();
 
 	/// Issues a new order to the unit.
-	void order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders);
+	void order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bool stop_previous_orders);
 
 	/// Probably add the @p order to the orders queue
-	void perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
+	void perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id, u32 unk = 0);
 
 	/// Used by several hooks, details not completely understood.
 	void set_secondary_order(u8 order_id);

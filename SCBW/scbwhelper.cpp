@@ -13508,4 +13508,54 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y)
+	{
+		const u32 func_address = 0x00474790;
+		static u32 pos_x_xd = pos_x;
+		static u32 pos_y_xd = pos_y;
+		__asm {
+			PUSHAD
+			PUSH pos_y_xd
+			PUSH pos_x_xd
+			MOV ESI, unit
+			MOV EDI, order
+			MOVZX BL, order_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target)
+	{
+		const u32 func_address = 0x00479FA0;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV ECX, target
+			MOVZX DL, order_id
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX		// Returns a Unit* according to IDA, value unused though. -Pr0nogo
+			POPAD
+		}
+	}
+
+	void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 unit_id, u16 pos_x, u16 pos_y)
+	{
+		const u32 func_address = 0x00474FB0;
+		static u32 order_id_xd = order_id;
+		static u32 pos_x_xd = pos_x;
+		static u32 pos_y_xd = pos_y;
+		__asm {
+			PUSHAD
+			PUSH pos_y_xd
+			PUSH pos_x_xd
+			PUSH unit_id
+			PUSH order_id_xd
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

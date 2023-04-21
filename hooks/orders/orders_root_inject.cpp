@@ -40,6 +40,19 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) do_next_queued_order_wrapper() {
+		static Unit* unit;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		hooks::do_next_queued_order(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -47,5 +60,6 @@ namespace hooks {
 		jump_patch(orders_id_cases_wrapper,			0x004EBED0,	5);
 		jump_patch(secondary_orders_root_wrapper,	0x004EC170,	1);
 		jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
+		jump_patch(do_next_queued_order_wrapper,	0x00475000,	1);
 	}
 }

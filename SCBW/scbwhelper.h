@@ -1588,4 +1588,8 @@ namespace helper {
 	u32 draw_box(u32 x, u32 y, u32 w, u32 h);																								// 004E1D20
 	s32 save_replay(char* name);																											// 004DFAB0
 	s32 copy_last_replay(char* name);																										// 004DED30
+
+	void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y);									// 00474790
+	void unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target);												// 00479FA0
+	void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 fow_unit_id, u16 pos_x, u16 pos_y);											// 00474FB0
 }
