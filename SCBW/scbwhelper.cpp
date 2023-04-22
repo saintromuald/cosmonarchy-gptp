@@ -2432,11 +2432,11 @@ namespace helper {
 		}
 	}
 
-	void to_idle(Unit* a1) {
+	void to_idle(Unit* unit) {
 		const u32 Func_toIdle = 0x004753A0;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, unit
 			CALL Func_toIdle
 			POPAD
 		}

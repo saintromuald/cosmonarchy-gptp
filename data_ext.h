@@ -248,6 +248,7 @@ enum ExtTimerId
 	TimerAutocratControlledOpposition,
 	TimerSevenstepMindMatter,
 	TimerSilvertonguePlotTwist,
+	TimerClaymoreKelvinMunitionsZap,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

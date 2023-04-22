@@ -285,7 +285,7 @@ namespace helper {
 	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_hold_pos_suicidal(Unit* a1);												                    // 004EB5B0
 	void turn_unit(Unit* a1, char a2);													                    // 00495F20
-	void to_idle(Unit* a1);																                    // 004753A0
+	void to_idle(Unit* unit);																                // 004753A0
 	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
 	void orders_nothing_2(Unit* a1);																		// 00475000
 

@@ -486,9 +486,9 @@ namespace hooks {
 							if (unit->id != UnitId::TerranSpiderMine
 							&& (unit->id != UnitId::ZergLakizilisk || order_queue_id != OrderId::Guard && order_queue_id != OrderId::AttackFixedRange))
 							{
-								helper::insert_order_targeting_ground_before(OrderId::Burrow, queue_head, unit, unit->sprite->position.x, unit->sprite->position.y);
+								helper::insert_order_targeting_ground_before(OrderId::Unburrow, queue_head, unit, unit->sprite->position.x, unit->sprite->position.y);
 								unit->status &= ~UnitStatus::CanNotReceiveOrders;
-								unit->order_to_idle();
+								helper::to_idle(unit);
 								return;
 							}
 						}

@@ -2868,6 +2868,22 @@ namespace hooks {
 			}
 		}
 
+		// Claymore - Kelvin Munitions - Create overlays
+		if (unit_ext->timers[TimerKelvinMunitions] > 1)
+		{
+			u32 width = units_dat::unit_bounds[unit->id].x * 0.75;
+			u32 height = units_dat::unit_bounds[unit->id].y * 0.75;
+
+			s32 x_offset = scbw::random() % width - width / 2;
+			s32 y_offset = scbw::random() % height - height / 2;
+
+			x_offset = MathUtils::clamp(x_offset, -127, 128);
+			y_offset = MathUtils::clamp(y_offset, -127, 128);
+
+			unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+			unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 20;
+		}
+
 		if (globals.celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {
 				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
