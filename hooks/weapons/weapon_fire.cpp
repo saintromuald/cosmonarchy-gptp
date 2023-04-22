@@ -720,7 +720,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::Invincible) {
 				continue;
 			}
-			if (scbw::is_allied_to(bullet->player, unit->player)) {
+			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
 			if (intercept_type == InterceptType_GroundOnly) {
@@ -851,7 +851,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::Invincible) {
 				continue;
 			}
-			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
+			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
 			if (!scbw::can_weapon_target_unit(bullet->weapon_id, unit)) {
@@ -1086,7 +1086,7 @@ namespace hooks {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
 			if (!despawn_bullet_special) {
-				if (target && target->sprite) {
+				if (target && target->sprite && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
 					bullet->attack_target.pt.x = target->sprite->position.x;
 					bullet->attack_target.pt.y = target->sprite->position.y;
 				} else {
