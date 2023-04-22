@@ -332,7 +332,7 @@ namespace hooks
 							&& ((s16)v6 + 1 == g_map_tile_size->height
 								|| !(*activeTileArray[(s16)v9 + g_map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
 						{
-							modifyCreepState(
+							modify_creep_state(
 								v9,
 								v6,
 								(s32(__stdcall*)(s32, s32, s32, s32, s32))run_creep_randomizer,

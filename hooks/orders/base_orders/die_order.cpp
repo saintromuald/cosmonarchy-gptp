@@ -14,15 +14,15 @@ namespace hooks
 
 		if (unit->subunit != nullptr)
 		{
-			helper::clearUnitSprites(unit->sprite, unit->subunit->sprite);
+			helper::clear_unit_sprites(unit->sprite, unit->subunit->sprite);
 			if (unit->subunit->subunit != nullptr)
 			{
 				if (units_dat::base_property[(unit->subunit->subunit)->id] & UnitProperty::Subunit)
 				{
-					helper::UnitDestructor(unit->subunit->subunit);
+					helper::remove_unit(unit->subunit->subunit);
 					unit->subunit->subunit = nullptr;
 				}
-				helper::_UnitDestructor(unit->subunit);
+				helper::unit_die(unit->subunit);
 				unit->subunit->sprite->free();
 				unit->subunit->sprite = nullptr;
 				unit->subunit = nullptr;
@@ -67,18 +67,18 @@ namespace hooks
 			{
 				if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
 				{
-					helper::UnitDestructor(unit->subunit);
+					helper::remove_unit(unit->subunit);
 					unit->subunit = nullptr;
 				}
 			}
-			helper::_UnitDestructor(unit);
+			helper::unit_die(unit);
 			unit->sprite->free();
 			unit->sprite = nullptr;
 		}
 		else
 		{
 			unit->sprite->play_iscript_animation(IscriptAnimation::Death, true);
-			helper::_UnitDestructor(unit);
+			helper::unit_die(unit);
 		}
 	}
 }

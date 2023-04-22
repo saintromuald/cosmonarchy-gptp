@@ -801,7 +801,7 @@ void Unit::order_to(u8 order_id, Unit* target) {
 void Unit::order_to(u8 order_id, u16 x, u16 y) {
 	assert(this);
 	this->user_action_flags |= 0x1;
-	this->order(order_id, x, y, nullptr, UnitId::None, true);
+	this->order(order_id, x, y, 0, UnitId::None, true);
 	prepare_for_next_order(this);
 }
 
@@ -809,19 +809,19 @@ void Unit::order_to(u8 order_id, u16 x, u16 y) {
 // used in hooks so not doing assert, mind it if used in mods
 void Unit::order_computer(u8 order_id) {
 	this->user_action_flags |= 0x1;
-	this->order(order_id, 0, 0, nullptr, UnitId::None, true);
+	this->order(order_id, 0, 0, 0, UnitId::None, true);
 	prepare_for_next_order(this);
 }
 
 // Equivalent to 00474D60 __order function
 void Unit::order_simple(u8 order_id, bool stopPreviousOrders) {
-	this->order(order_id, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+	this->order(order_id, 0, 0, 0, UnitId::None, stopPreviousOrders);
 }
 
 // Equivalent to 00474D10 issue_queued_order_target function
 void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders) {
-	if (target == nullptr) {
-		this->order(order_id, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+	if (!target) {
+		this->order(order_id, 0, 0, 0, UnitId::None, stopPreviousOrders);
 	} else {
 		this->order(order_id, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
 	}
@@ -840,19 +840,19 @@ void Unit::order_to_idle() {
 	}
 }
 
-void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders) {
+void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bool stop_previous_orders) {
 	assert(this);
 	const u32 Func_Order = 0x00474810;
 	static Point16 pos;
-	static u32 targetUnitId_;
+	static u32 target_unit_id_xd;
 	pos.x = x, pos.y = y;
-	targetUnitId_ = targetUnitId;
+	target_unit_id_xd = target_unit_id;
 	__asm {
 		PUSHAD
-		PUSH targetUnitId_
+		PUSH target_unit_id_xd
 		PUSH target
 		PUSH pos
-		MOVZX EAX, stopPreviousOrders
+		MOVZX EAX, stop_previous_orders
 		MOV CL, order_id
 		MOV EDX, this
 		CALL Func_Order
@@ -860,8 +860,8 @@ void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 targetUnitId, bool
 	}
 }
 
-void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk) {
-	const u32 Func_PerformAnotherOrder = 0x004745F0;
+void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id, u32 unk) {
+	const u32 func_address = 0x004745F0;
 	static Point16 pos;
 	pos.x = x; pos.y = y;
 	__asm {
@@ -869,10 +869,10 @@ void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 ta
 		PUSH target
 		PUSH pos
 		MOV BL, order_id
-		MOVZX EDX, targetUnitId
+		MOVZX EDX, target_unit_id
 		MOV ESI, this
 		MOV EDI, unk
-		CALL Func_PerformAnotherOrder
+		CALL func_address
 		POPAD
 	}
 }

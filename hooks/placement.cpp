@@ -253,6 +253,34 @@ namespace hooks
 		}
 	}
 
+	// Local function to explore Dedications. -Pr0nogo
+	void place_custom_building_proc() // 0048E430
+	{
+		u32 player = *g_local_nation_id;
+		Unit* parent = 0;
+		switch (*g_place_building_unit_id)
+		{
+			case UnitId::ProtossPylon:
+			{
+				parent = first_player_unit->unit[player];
+				if (parent) {
+					UnitExt* parent_ext = get_unit_ext(parent);
+					u16 id = *g_place_building_unit_id;
+					do {
+						if (parent->id == UnitId::ProtossGateway) {
+							b32 can_draw = helper::can_draw_placement_rect_maybe(id, parent);
+							id = *g_place_building_unit_id; // lol looping
+							if (can_draw)
+							{
+								*can_draw_placement_preview = 1;
+							}
+						}
+					} while (parent);
+				}
+			} break;
+		}
+	}
+
 	// Hooked to enable more refinery types. -Pr0nogo
 	void place_building_proc() // 0048E6E0
 	{
@@ -263,15 +291,15 @@ namespace hooks
 				helper::prepare_placement_preview();
 				*can_draw_placement_preview = 0;
 			}
-			if (!scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id))
-			{
+
+			/*if (*g_place_building_unit_id == UnitId::ProtossPylon) {
+				place_custom_building_proc();
+			} else*/if (!scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 				if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 				{
 					helper::place_building_normal_proc();
 				}
-			}
-			else
-			{
+			} else {
 				helper::place_building_refinery_proc();
 			}
 		}
@@ -293,20 +321,19 @@ namespace hooks
 		*g_place_building_order_id = order_id;
 		helper::prepare_placement_box(1, unit_id);
 		u32 message_thing = 2;
+
 		if (units_dat::base_property[unit_id] & UnitProperty::Addon)
 		{
 			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
 			*g_is_placing_addon = 1;
-		}
-		else if (scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id))
-		{
+		}/* else if (*g_place_building_unit_id == UnitId::ProtossPylon) {
+			place_custom_building_proc();
+		}*/ else if (scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 			{
 				helper::place_building_normal_proc();
 			}
-		}
-		else
-		{
+		} else {
 			helper::place_building_refinery_proc();
 		}
 

@@ -2432,11 +2432,11 @@ namespace helper {
 		}
 	}
 
-	void to_idle(Unit* a1) {
+	void to_idle(Unit* unit) {
 		const u32 Func_toIdle = 0x004753A0;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, unit
 			CALL Func_toIdle
 			POPAD
 		}
@@ -2466,7 +2466,6 @@ namespace helper {
 	}
 
 	// For burrow_generic
-
 	void toggle_unit_path(Unit* unit) {
 		const u32 Func_toggleUnitPath = 0x004E42A0;
 		__asm {
@@ -2489,31 +2488,6 @@ namespace helper {
 			POPAD
 		}
 		return (char)result;
-	}
-
-	void iscript_OpcodeCases_copy(Image* image, u32 offset_, u32 unk1, u32 unk2) {
-		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
-		__asm {
-			PUSHAD
-			PUSH unk1
-			PUSH unk2
-			PUSH offset_
-			MOV ECX, image
-			CALL Func_iscript_OpcodeCases
-			POPAD
-		}
-	}
-
-	void replaceSpriteImages_copy(Sprite* sprite, u32 imageId, u32 imageDirection) {
-		const u32 Func_Sub499BB0 = 0x00499BB0;
-		__asm {
-			PUSHAD
-			PUSH imageDirection
-			PUSH imageId
-			MOV EAX, sprite
-			CALL Func_Sub499BB0
-			POPAD
-		}
 	}
 
 	void refund_building_cost(u16 unit_id, u8 player) {
@@ -2772,7 +2746,6 @@ namespace helper {
 	}
 
 	// For update_placement_state_for_placement_box
-
 	s32 can_build_on_tile_location(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision) {
 		const u32 Func_canBuildOnTileLocation = 0x00473FB0;
 		static s32 result;
@@ -2795,7 +2768,6 @@ namespace helper {
 	}
 
 	// For refresh_screen
-
 	s32 update_placement_state_for_placement_box() {
 		const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
 		static s32 result;
@@ -2979,7 +2951,7 @@ namespace helper {
 		}
 	}
 
-	s32 modifyCreepState(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param) {
+	s32 modify_creep_state(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param) {
 		const u32 func_address = 0x00413FA0;
 		static s32 result;
 		__asm {
@@ -3086,7 +3058,7 @@ namespace helper {
 		}
 	}
 
-	void function_004C3B40(Unit* unit) {
+	void remove_from_selection(Unit* unit) {
 		const u32 Func_Sub4C3B40 = 0x004C3B40;
 		__asm {
 			PUSHAD
@@ -3198,7 +3170,7 @@ namespace helper {
 		return (return_pre_value != 0);
 	}
 
-	u32 getNumSurroundingCreepTiles(u32 x, u32 y) {
+	u32 get_num_surrounding_creep_tiles(u32 x, u32 y) {
 		const u32 Func_getNumSurroundingCreepTiles = 0x00414290;
 		static u32 return_val;
 		__asm {
@@ -3212,7 +3184,7 @@ namespace helper {
 		return return_val;
 	}
 
-	void setCreepRelationalData(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg) {
+	void set_creep_relational_data(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg) {
 		const u32 Func_setCreepRelationalData = 0x00413FA0;
 		__asm {
 			PUSHAD
@@ -3225,7 +3197,7 @@ namespace helper {
 		}
 	}
 
-	u32 iterateDirectionalCreepData(u32 x, u32 y, u32 callback, u32 arg) {
+	u32 iterate_directional_creep_data(u32 x, u32 y, u32 callback, u32 arg) {
 		const u32 Func_iterateDirectionalCreepData = 0x00413B30;
 		static u32 return_val;
 		__asm {
@@ -3262,7 +3234,7 @@ namespace helper {
 		}
 	}
 
-	void clearUnitSprites(Sprite* unit_sprite, Sprite* subunit_sprite) {
+	void clear_unit_sprites(Sprite* unit_sprite, Sprite* subunit_sprite) {
 		const u32 Func_clearUnitSprites = 0x00496F00;
 		__asm {
 			PUSHAD
@@ -3273,18 +3245,18 @@ namespace helper {
 		}
 	}
 
-	void refresh_all_visible_images_at_screen_pos(Sprite* thingySprite, u32 visibility_flags) {
+	void refresh_all_visible_images_at_screen_pos(Sprite* thingy_sprite, u32 visibility_flags) {
 		const u32 Func_Sub497480 = 0x00497480;
 		__asm {
 			PUSHAD
-			MOV EBX, thingySprite
+			MOV EBX, thingy_sprite
 			PUSH visibility_flags
 			CALL Func_Sub497480
 			POPAD
 		}
 	}
 
-	void _UnitDestructor(Unit* unit) {
+	void unit_die(Unit* unit) {
 		const u32 Func__UnitDestructor = 0x004A0740;
 		__asm {
 			PUSHAD
@@ -3294,7 +3266,7 @@ namespace helper {
 		}
 	}
 
-	void UnitDestructor(Unit* unit) {
+	void remove_unit(Unit* unit) {
 		const u32 Func_UnitDestructor = 0x004A0990;
 		__asm {
 			PUSHAD
@@ -3408,7 +3380,7 @@ namespace helper {
 		return (result != 0);
 	}
 
-	void function_0048DE70(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId) {
+	void process_building_placement(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId) {
 		const u32 Func_Sub48DE70 = 0x0048DE70;
 		static Point16 dim;
 		dim.x = dimensionX; dim.y = dimensionY;
@@ -13535,5 +13507,55 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y)
+	{
+		const u32 func_address = 0x00474790;
+		static u32 pos_x_xd = pos_x;
+		static u32 pos_y_xd = pos_y;
+		__asm {
+			PUSHAD
+			PUSH pos_y_xd
+			PUSH pos_x_xd
+			MOV ESI, unit
+			MOV EDI, order
+			MOVZX BL, order_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target)
+	{
+		const u32 func_address = 0x00479FA0;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV ECX, target
+			MOVZX DL, order_id
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX		// Returns a Unit* according to IDA, value unused though. -Pr0nogo
+			POPAD
+		}
+	}
+
+	void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 unit_id, u16 pos_x, u16 pos_y)
+	{
+		const u32 func_address = 0x00474FB0;
+		static u32 order_id_xd = order_id;
+		static u32 pos_x_xd = pos_x;
+		static u32 pos_y_xd = pos_y;
+		__asm {
+			PUSHAD
+			PUSH pos_y_xd
+			PUSH pos_x_xd
+			PUSH unit_id
+			PUSH order_id_xd
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

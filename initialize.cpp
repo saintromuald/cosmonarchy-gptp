@@ -117,6 +117,7 @@
 	#include "DatExtend/datext.h"
 	#include "hooks/interface/hpbars/hpbars.h"
 	#include "SCBW/structures/Image.h"
+	#include "hooks/orders/orders_root.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -826,6 +827,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_order_extender();
 	hooks::inject_image_extender();
 	hooks::inject_thingy_extender();
+
+	hooks::inject_orders_root_hooks();
 
 	return TRUE;
 }

@@ -747,7 +747,7 @@ namespace orders_dat {
 	SCBW_DATA_REF(u8*,		use_weapon_targeting,		ordersDat[1].address);	// 00664B00
 //	SCBW_DATA_REF(u8*,		???,						ordersDat[2].address);	// 00665940 // May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
 	SCBW_DATA_REF(u8*,		Unused3,					ordersDat[3].address);	// 00665A00 // May be "Non-subunit" used for debug only
-//	SCBW_DATA_REF(u8*,		???,						ordersDat[4].address);	// 00664A40
+	SCBW_DATA_REF(u8*,		Unknown4,					ordersDat[4].address);	// 00664A40
 //	SCBW_DATA_REF(u8*,		???,						ordersDat[5].address);	// 006657C0 // May be "Subunit can use" used for debug only
 	SCBW_DATA_REF(b8*,		can_be_interrupted,			ordersDat[6].address);	// 00665040
 	SCBW_DATA_REF(u8*,		Unknown7,					ordersDat[7].address);	// 00665100
