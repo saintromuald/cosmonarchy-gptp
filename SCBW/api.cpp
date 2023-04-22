@@ -3391,7 +3391,7 @@ namespace scbw {
 				if (dot > b_max) b_max = dot;
 			}
 
-			if (a_max < b_min || b_max < b_min) {
+			if (a_max < b_min || b_max < a_min) {
 				return false;
 			}
 		}
