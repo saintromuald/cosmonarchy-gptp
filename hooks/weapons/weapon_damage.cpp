@@ -689,9 +689,11 @@ namespace hooks
 					case WeaponId::KonviliskSowingSpines:
 					case WeaponId::TetcaerokorCleavingMaw:
 					{
-						// scbw::apply_parasite(data.target, data.attacker->player, data.attacker);
 						// Fertile Spines, Virile Coating - incubate
-						if (!target_ext->timers[TimerIncubationArm] && !(units_dat::base_property[data.target->id] & UnitProperty::Invincible)) {
+						if (!target_ext->timers[TimerIncubationArm]
+						&& !(units_dat::base_property[data.target->id] & UnitProperty::Invincible)
+						&&  !scbw::unit_id_is_broodspawn(data.target->id))
+						{
 							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
 							target_ext->timers[TimerIncubationArm] = DefaultArmParasiteTimer;
 							data.target->sprite->create_overlay(ImageId::ParasiteOverlay);
