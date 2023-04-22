@@ -693,6 +693,58 @@ namespace hooks {
 		}
 	}
 
+	static Unit* find_bullet_interception(Bullet* bullet, Point16 old_position, f32 line_width) {
+		u32 intercept_type = scbw::weapon_id_intercepts(bullet->weapon_id);
+
+		u32 search_margin = 6 * 32;
+		Box32 search_area = {};
+		search_area.x = Min(old_position.x, bullet->position.x) - search_margin;
+		search_area.y = Min(old_position.y, bullet->position.y) - search_margin;
+		search_area.w = Max(old_position.x, bullet->position.x) + search_margin * 2;
+		search_area.h = Max(old_position.y, bullet->position.y) + search_margin * 2;
+
+		Unit* best_unit = 0;
+		f32 best_t = INFINITY;
+
+		EntryArray collisions = {};
+		unit_search_rect(&collisions, search_area);
+		unit_search_filter(&collisions, 0);
+		for (u32 i = 0; i < collisions.count; ++i) {
+			Unit* unit = collisions.units[i];
+			if (unit->status & UnitStatus::Invincible) {
+				continue;
+			}
+			if (scbw::is_allied_to(bullet->player, unit->player)) {
+				continue;
+			}
+			if (intercept_type == InterceptType_GroundOnly) {
+				if (unit->status & UnitStatus::InAir) {
+					continue;
+				}
+			} else if (intercept_type == InterceptType_AirOnly) {
+				if (!(unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+			}
+
+			Box16 box = {};
+			box.x = unit->get_left();
+			box.y = unit->get_top();
+			box.w = unit->get_right()  - box.x;
+			box.h = unit->get_bottom() - box.y;
+			f32 t = 0;
+			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, box, &t)) {
+				continue;
+			}
+			if (t < best_t) {
+				best_t = t;
+				best_unit = unit;
+			}
+		}
+
+		return best_unit;
+	}
+
 	static void apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
 		u32 search_margin = 6 * 32;
 		Box32 search_area = {};
@@ -705,9 +757,6 @@ namespace hooks {
 		unit_search_rect(&collisions, search_area);
 		unit_search_filter(&collisions, 0);
 		for (u32 i = 0; i < collisions.count; ++i) {
-			if (bullet->time_remaining == 0) {
-				break;
-			}
 			Unit* collision_target = collisions.units[i];
 			if (collision_target->status & UnitStatus::Invincible) {
 				continue;
@@ -779,6 +828,7 @@ namespace hooks {
 
 					if (count >= 4) {
 						bullet->time_remaining = 0;
+						return;
 					} else {
 						bullet->move_target.unit = bullet->attack_target.unit;
 						if (bullet->move_target.unit) {
@@ -963,77 +1013,18 @@ namespace hooks {
 		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
 			despawn_bullet = true;
 		}
-		if (bullet->weapon_id == WeaponId::EmpyreanPlasmaBarrage || bullet->weapon_id == WeaponId::ValkyrieHaloRockets) {
-			// Missile interception - Empyrean Heavenly Passage, Valkyrie Charon Afterburners
-			u32 range = 128;
-			auto collision_target = scbw::UnitFinder::get_nearest_target(
-				bullet->position.x - range, bullet->position.y - range,
-				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](Unit* unit) {
-				if (!(unit->status & UnitStatus::InAir)) {
-					return false;
-				}
-				if (unit->status & UnitStatus::Invincible) {
-					return false;
-				}
-				if (scbw::is_allied_to(bullet->player, unit->player)) {
-					return false;
-				}
-				auto box = units_dat::unit_bounds[unit->id];
-				if (bullet->position.x < unit->get_left()) {
-					return false;
-				}
-				if (bullet->position.x > unit->get_right()) {
-					return false;
-				}
-				if (bullet->position.y < unit->get_top()) {
-					return false;
-				}
-				if (bullet->position.y > unit->get_bottom()) {
-					return false;
-				}
-				return true;
-			});
-			if (collision_target) {
-				bullet->attack_target.unit = collision_target;
-				despawn_bullet = true;
+		if (scbw::weapon_id_intercepts(bullet->weapon_id)) {
+			f32 line_width = 16;
+			switch (bullet->weapon_id) {
+				// add special line_width cases here
 			}
-		} else if (bullet->weapon_id == WeaponId::StarSovereignInterventionMissiles) {
-			// Star Sovereign Intervention
-			u32 range = 128;
-			auto collision_target = scbw::UnitFinder::get_nearest_target(
-				bullet->position.x - range, bullet->position.y - range,
-				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](Unit* unit) {
-				if (unit->status & UnitStatus::Invincible) {
-					return false;
-				}
-				if (scbw::is_allied_to(bullet->player, unit->player)) {
-					return false;
-				}
-				auto box = units_dat::unit_bounds[unit->id];
-				if (bullet->position.x < unit->get_left()) {
-					return false;
-				}
-				if (bullet->position.x > unit->get_right()) {
-					return false;
-				}
-				if (bullet->position.y < unit->get_top()) {
-					return false;
-				}
-				if (bullet->position.y > unit->get_bottom()) {
-					return false;
-				}
-				return true;
-			});
-			if (collision_target) {
-				bullet->attack_target.unit = collision_target;
-				despawn_bullet = true;
-			}
-		} else if (scbw::bullet_pierces_target(bullet)) {
-			// Prolonged Arms - for projectiles hitting targets mid-flight
-			bool enabled = true; // Can disable for any desired condition
 
+			Unit* collision_target = find_bullet_interception(bullet, old_position, line_width);
+			if (collision_target) {
+				bullet->attack_target.unit = collision_target;
+				despawn_bullet = true;
+			}
+		} else if (scbw::weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
 				case WeaponId::SirenCharybdalRifle:
@@ -1054,15 +1045,13 @@ namespace hooks {
 				} break;
 			}
 
-			if (enabled) {
-				apply_bullet_piercing(bullet, old_position, line_width);
-			}
+			apply_bullet_piercing(bullet, old_position, line_width);
 		}
 
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-			if (target && target->sprite && !scbw::bullet_pierces_target(bullet)) {
+			if (target && target->sprite && !scbw::weapon_id_pierces(bullet->weapon_id)) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {
