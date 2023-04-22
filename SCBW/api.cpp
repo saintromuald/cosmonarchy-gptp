@@ -1515,8 +1515,25 @@ namespace scbw {
 		}
 	}
 
-	bool bullet_pierces_target(Bullet* bullet) {
-		switch (bullet->weapon_id) {
+	bool weapon_id_intercepts_any_target(u32 weapon_id) {
+		switch (weapon_id) {
+			case WeaponId::StarSovereignInterventionMissiles:
+				return true;
+		}
+		return false;
+	}
+
+	bool weapon_id_intercepts_air_targets(u32 weapon_id) {
+		switch (weapon_id) {
+			case WeaponId::EmpyreanPlasmaBarrage:
+			case WeaponId::ValkyrieHaloRockets:
+				return true;
+		}
+		return false;
+	}
+
+	bool weapon_id_pierces_target(u32 weapon_id) {
+		switch (weapon_id) {
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::SavantDiscoidRailgunPiercing:
 			case WeaponId::SirenCharybdalRifle:
@@ -1531,9 +1548,7 @@ namespace scbw {
 			case WeaponId::PatriarchIronhandWeaver:
 			case WeaponId::KalkaliskViscousAcid:
 			case WeaponId::ZarcavrokorBonesofReflection:
-			{
 				return true;
-			}
 		}
 		return false;
 	}
@@ -3356,33 +3371,38 @@ namespace scbw {
 	}
 
 	static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
-		f32 max_separation = -INFINITY;
 		for (u32 i = 0; i < a_count; ++i) {
 			Vector32f diff = scbw::get_vector_between_points(a[i], a[(i + 1) % a_count]);
-			Vector32f proj = {diff.y, -diff.x};
+			Vector32f proj = {-diff.y, diff.x};
 
-			f32 min_separation = INFINITY;
-			for (u32 j = 0; j < b_count; ++j) {
-				Vector32f point = scbw::get_vector_between_points(a[i], b[j]);
-				f32 dot = scbw::dot_product(point, proj);
-				if (dot < min_separation) {
-					min_separation = dot;
-				}
+			f32 a_min = INFINITY;
+			f32 a_max = -INFINITY;
+			for (u32 j = 0; j < a_count; ++j) {
+				f32 dot = scbw::dot_product(a[j], proj);
+				if (dot < a_min) a_min = dot;
+				if (dot > a_max) a_max = dot;
 			}
 
-			if (min_separation > max_separation) {
-				max_separation = min_separation;
+			f32 b_min = INFINITY;
+			f32 b_max = -INFINITY;
+			for (u32 j = 0; j < b_count; ++j) {
+				f32 dot = scbw::dot_product(b[j], proj);
+				if (dot < b_min) b_min = dot;
+				if (dot > b_max) b_max = dot;
+			}
+
+			if (a_max < b_min || b_max < b_min) {
+				return false;
 			}
 		}
-		return max_separation <= 0;
+		return true;
 	}
-
-	// Based on https://www.youtube.com/watch?v=-EsWKT7Doww -Veeq7
+	
 	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
 		return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 	}
 
-	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect) {
+	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* min_t) {
 		Vector32f line_diff = get_normalized_vector(get_vector_between_points(from, to));
 		Vector32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
 
@@ -3406,6 +3426,23 @@ namespace scbw {
 		box_corners[3].x = rect.x;
 		box_corners[3].y = rect.y + rect.h;
 
-		return sat_collision(line_corners, 4, box_corners, 4);
+		if (sat_collision(line_corners, 4, box_corners, 4)) {
+			if (min_t) {
+				*min_t = INFINITY;
+
+				Vector32f proj = {};
+				proj.x = to.x - from.x;
+				proj.y = to.y - from.y;
+
+				for (u32 i = 0; i < 4; ++i) {
+					f32 t = scbw::dot_product(box_corners[i], proj);
+					if (t < *min_t) {
+						*min_t = t;
+					}
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 }

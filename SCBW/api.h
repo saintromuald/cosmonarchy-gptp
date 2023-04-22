@@ -630,7 +630,9 @@ namespace scbw
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void apply_hallucinating(Unit* unit, u8 player, u32 time);
-	bool bullet_pierces_target(Bullet* bullet);
+	bool weapon_id_intercepts_any_target(u32 weapon_id);
+	bool weapon_id_intercepts_air_targets(u32 weapon_id);
+	bool weapon_id_pierces_target(u32 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);
@@ -769,5 +771,5 @@ namespace scbw
 	bool tech_id_needs_target(u32 tech_id);
 	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
 	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count);
-	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect);
+	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* min_t = 0);
 }
