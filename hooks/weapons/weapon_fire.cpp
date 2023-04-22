@@ -874,15 +874,16 @@ namespace hooks {
 
 		for (u32 i = 0; i < targets_count; ++i) {
 			UnitPiercingEntry* target = &targets[i];
-			apply_bullet_effect(bullet, target->cp, target->unit);
-
 			if (scbw::weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
 				u32 armor = units_dat::armor_amount[target->unit->id] + hooks::get_armor_bonus(target->unit);
 				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
 				if (armor > armor_pen) {
+					bullet->attack_target.pt = target->cp;
+					bullet->attack_target.unit = target->unit;
 					return true;
 				}
 			}
+			apply_bullet_effect(bullet, target->cp, target->unit);
 		}
 		return false;
 	}
@@ -975,7 +976,6 @@ namespace hooks {
 				time = 0;
 			}
 		}
-		bool despawn_bullet = false;
 
 		// Accelerate missiles over time
 		if (scbw::weapon_id_accelerates(bullet->weapon_id)) {
@@ -1044,6 +1044,8 @@ namespace hooks {
 			}
 		}
 
+		bool despawn_bullet = false;
+		bool despawn_bullet_special = false;
 		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
 			despawn_bullet = true;
 		}
@@ -1055,6 +1057,7 @@ namespace hooks {
 
 			if (apply_bullet_interception(bullet, old_position, line_width)) {
 				despawn_bullet = true;
+				despawn_bullet_special = true;
 			}
 		} else if (scbw::weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
@@ -1075,17 +1078,20 @@ namespace hooks {
 
 			if (apply_bullet_piercing(bullet, old_position, line_width)) {
 				despawn_bullet = true;
+				despawn_bullet_special = true;
 			}
 		}
 
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-			if (target && target->sprite && !scbw::weapon_id_pierces(bullet->weapon_id)) {
-				bullet->attack_target.pt.x = target->sprite->position.x;
-				bullet->attack_target.pt.y = target->sprite->position.y;
-			} else {
-				bullet->attack_target.unit = 0;
+			if (!despawn_bullet_special) {
+				if (target && target->sprite) {
+					bullet->attack_target.pt.x = target->sprite->position.x;
+					bullet->attack_target.pt.y = target->sprite->position.y;
+				} else {
+					bullet->attack_target.unit = 0;
+				}
 			}
 			Sprite* bullet_sprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
