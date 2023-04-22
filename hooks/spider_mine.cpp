@@ -72,8 +72,8 @@ namespace hooks
 			{
 				if (!(unit->status & UnitStatus::IsHallucination))
 				{
-					helper::burrow_generic(unit); // related to movement
-					helper::instant_cloak(unit); // related to cloaking/stealth
+					helper::burrow_generic(unit);
+					helper::instant_cloak(unit);
 				}
 				unit->main_order_state = 3;
 			}
@@ -119,7 +119,7 @@ namespace hooks
 		{
 			bool is_completely_in_range = false;
 			bool not_movable = false;
-			helper::unburrow_generic(unit); // related to movement, similar to function_004E9A30
+			helper::unburrow_generic(unit);
 			if (unit->order_target.unit)
 			{
 				if (unit->is_target_within_min_range(unit->order_target.unit, MineSeekRange))

@@ -275,36 +275,36 @@ namespace helper {
 	void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
 
 	//// spider_mine
-	Unit* spider_mine_acquire_target(Unit* spiderMine);									                    // 00441270
+	Unit* spider_mine_acquire_target(Unit* mine);										                    // 00441270
 	void instant_cloak(Unit* unit);												                            // 0049B1E0
 	void unburrow_generic(Unit* unit);												                        // 004E99D0
 	void burrow_generic(Unit* unit);																		// 004E9A30
 
 	// For orders_place_mine
-	s32 tech_use_allowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
+	s32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player);							                    // 0046DD80
 	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
-	s32 orders_hold_pos_suicidal(Unit* a1);												                    // 004EB5B0
-	void turn_unit(Unit* a1, char a2);													                    // 00495F20
+	s32 orders_hold_pos_suicidal(Unit* unit);												                // 004EB5B0
+	void turn_unit(Unit* unit, s8 direction);													            // 00495F20
 	void to_idle(Unit* unit);																                // 004753A0
-	s32 is_unit_movable(Unit* a1);														                    // 00401DC0
-	void orders_nothing_2(Unit* a1);																		// 00475000
+	s32 is_unit_movable(Unit* unit);														                // 00401DC0
+	void orders_nothing_2(Unit* unit);																		// 00475000
 
 	// For burrow_generic
 	void toggle_unit_path(Unit* unit);									                                    // 004E42A0
-	char switch_sprite_id(Sprite* sprite, s32 spriteId);													// 00499860
+	char switch_sprite_id(Sprite* sprite, s32 sprite_id);													// 00499860
 
 	//// building_morph
-	void refund_building_cost(u16 unit_id, u8 player);														// 002CE70
-	void update_building_ai(Unit* unit);																	// 0033FE0
-	bool is_valid_building_morph(u16 buildingId);															// 005CC60
-	void spread_initial_creep(u32 id, s32 x, s32 y);														// 005CE90
-	void cancel_zerg_building_morph(Unit* unit);															// 005D410
-	void stop_creep_disappearing_at_building(Unit* unit);												    // 007D770
-	void increment_unit_scores_ex(Unit* building, s32 unk1, s32 unk2);										// 0088D50
-	void play_building_completed_sound(Unit* building);														// 008F310
-	void refresh_sprite_data(Sprite* sprite);																// 00983A0
-	void display_last_network_error_for_player(u32 player);									                // 009E530
-	void replace_unit_with_id(Unit* unit, u16 newUnitId);													// 009FED0
+	void refund_building_cost(u16 unit_id, u8 player);														// 0042CE70
+	void update_building_ai(Unit* unit);																	// 00433FE0
+	bool is_valid_building_morph(u16 buildingId);															// 0045CC60
+	void spread_initial_creep(u32 id, s32 x, s32 y);														// 0045CE90
+	void cancel_zerg_building_morph(Unit* unit);															// 0045D410
+	void stop_creep_disappearing_at_building(Unit* unit);												    // 0047D770
+	void increment_unit_scores_ex(Unit* unit, s32 count, b32 update_morph_merge_unit_score);				// 00488D50
+	void play_building_completed_sound(Unit* building);														// 0048F310
+	void refresh_sprite_data(Sprite* sprite);																// 004983A0
+	void display_last_network_error_for_player(u32 player);									                // 0049E530
+	void replace_unit_with_id(Unit* unit, u16 new_unit_id);													// 0049FED0
 
 	//// building_terran
 	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);					// 00401240
@@ -441,7 +441,7 @@ namespace helper {
 	//// give_unit
 	void apply_speed_upgrade_from_unit_type(Unit* unit);																			// 00454370
 	void recheck_attacks(Unit* unit);																								// 00476D30
-	void increment_unit_scores(Unit* unit, s32 unkScore);																			// 00488BF0
+	void increment_unit_scores(Unit* unit, s32 count);																				// 00488BF0
 	void create_unit_selection(Unit* unit, u32 selection_index);																	// 004E6180
 	void destroy_unit_selection(Unit* unit);																						// 004E6290
 	void drop_powerup(Unit* powerup);																								// 004F3B70
@@ -727,12 +727,12 @@ namespace helper {
 	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);								// 004E8280
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
-	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
+	void iterate_units_at_location_target_proc_maelstrom(Unit* attacker, Box16* coords);							// 004E8280
 	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);							// 004E8280
-	void create_ensnare_overlay(Unit* a1);																			// 004F45E0
+	void create_ensnare_overlay(Unit* unit);																		// 004F45E0
 
 	// For create_scanner
-	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay = 1, s32 minVolume = 0);							// 0048ED50
+	s32 play_sound_from_unit(s32 sound_id, Unit* unit, s32 play = 1, s32 min_volume = 0);							// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
 
 	// For maelstrom_proc
@@ -752,7 +752,7 @@ namespace helper {
 
 	//// selection
 	bool unit_is_owned_by_current_player(Unit* unit); 																// 00401170
-	bool isUnitBurrowed(Unit* unit);																				// 00402A70
+	bool is_unit_burrowed(Unit* unit);																				// 00402A70
 	void sc_memcpy_0(u32 dest, u32 src, u32 memsize);																// 00408FD0
 	void show_rally_target(Unit* unit);																				// 00468670
 	bool unit_is_unselectable(u16 unit_id);																			// 0046ED80
