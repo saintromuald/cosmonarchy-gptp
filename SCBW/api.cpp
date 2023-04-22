@@ -1524,6 +1524,7 @@ namespace scbw {
 			case WeaponId::ValkyrieHaloRockets:
 				return InterceptType_AirOnly;
 
+			case WeaponId::SirenCharybdalRifle:
 			case WeaponId::StarSovereignInterventionMissiles:
 				return InterceptType_Any;
 		}
@@ -1534,7 +1535,6 @@ namespace scbw {
 		switch (weapon_id) {
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::SavantDiscoidRailgunPiercing:
-			case WeaponId::SirenCharybdalRifle:
 			case WeaponId::AutocratEminenceRifle:
 			case WeaponId::SevenstepGeometricRiflePiercing:
 			case WeaponId::RamessesPharoahCannons:
