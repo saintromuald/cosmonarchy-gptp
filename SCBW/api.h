@@ -653,6 +653,7 @@ namespace scbw
 	void apply_hallucinating(Unit* unit, u8 player, u32 time);
 	u32 weapon_id_intercepts(u32 weapon_id);
 	bool weapon_id_pierces(u32 weapon_id);
+	bool weapon_id_piercing_stops_on_armor(u32 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);

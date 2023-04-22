@@ -1551,6 +1551,14 @@ namespace scbw {
 		return false;
 	}
 
+	bool weapon_id_piercing_stops_on_armor(u32 weapon_id) {
+		switch (weapon_id) {
+			case WeaponId::PenumbraErebolShockCannon:
+				return false;
+		}
+		return true;
+	}
+
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt) {
 		unit->sprite->create_top_overlay(ImageId::MadrigalDirgeProc);
 		const u32 radius = 2 * 32;

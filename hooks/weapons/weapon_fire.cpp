@@ -8,6 +8,7 @@
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"
+#include "hooks/unit_stats/armor_bonus.h"
 #include "weapon_damage.h"
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
@@ -752,7 +753,95 @@ namespace hooks {
 		return false;
 	}
 
-	static void apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
+	static void apply_bullet_effect(Bullet* bullet, Point16 cp, Unit* unit) {
+		switch (bullet->weapon_id) {
+			// Same as default, but orange effect
+			case WeaponId::CyprianTwinRailguns:
+			case WeaponId::AutocratEminenceRifle:
+			case WeaponId::RamessesPharoahCannons:
+			{
+				iquare_globals.add_bullet_multihit(bullet, unit);
+				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, unit, 1);
+			} break;
+			// Same as default, but red effect
+			case WeaponId::SavantDiscoidRailgunPiercing:
+			{
+				iquare_globals.add_bullet_multihit(bullet, unit);
+				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, unit, 1);
+			} break;
+			case WeaponId::PenumbraErebolShockCannon:
+			{
+				// Penumbra - Shroud Piercer
+				iquare_globals.add_bullet_multihit(bullet, unit);
+				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, unit, 2);
+			} break;
+			case WeaponId::ClaymoreHarpoonRailgun:
+			{
+				// Claymore - Kelvin Munitions
+				// pierce targets
+				iquare_globals.add_bullet_multihit(bullet, unit);
+				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, unit, 1);
+
+				// slow pierced targets
+				UnitExt* collision_target_ext = get_unit_ext(unit);
+				if (!collision_target_ext->timers[TimerKelvinMunitions]) {
+					collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
+				}
+			} break;
+			case WeaponId::KalkaliskViscousAcid:
+			{
+				// Kalkalisk - Ablative Spores
+				iquare_globals.add_incremental_bullet_multihit(bullet, unit);
+				auto count = iquare_globals.get_multihit_count(bullet);
+				scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
+				unit->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
+
+				if (count >= 4) {
+					bullet->time_remaining = 0;
+					return;
+				} else {
+					bullet->move_target.unit = bullet->attack_target.unit;
+					if (bullet->move_target.unit) {
+						bullet->target_position = bullet->move_target.unit->position;
+						bullet->target_position_2 = bullet->move_target.unit->position;
+					}
+				}
+			} break;
+			case WeaponId::ZarcavrokorBonesofReflection:
+			{
+				iquare_globals.add_bullet_multihit(bullet, unit);
+				scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, unit, 1);
+			} break;
+			default:
+			{
+				iquare_globals.add_bullet_multihit(bullet, unit);
+				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, unit, 1);
+			}
+		}
+	}
+
+	struct UnitPiercingEntry {
+		Unit* unit;
+		Point16 cp;
+		f32 t;
+	};
+
+	static s32 compare_unit_entry(const void* va, const void* vb) {
+		UnitPiercingEntry* a = (UnitPiercingEntry*)va;
+		UnitPiercingEntry* b = (UnitPiercingEntry*)vb;
+		return a->t - b->t;
+	}
+
+	static bool apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
+		u32 targets_count = 0;
+		UnitPiercingEntry targets[32] = {};
+
 		Box32 search_area = get_line_search_area(bullet, old_position);
 		EntryArray units = {};
 		unit_search_rect(&units, search_area);
@@ -772,82 +861,30 @@ namespace hooks {
 				continue;
 			}
 
+			f32 t = 0;
 			Point16 cp = {};
-			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), 0, &cp)) {
+			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 
-			switch (bullet->weapon_id) {
-				// Same as default, but orange effect
-				case WeaponId::CyprianTwinRailguns:
-				case WeaponId::AutocratEminenceRifle:
-				case WeaponId::RamessesPharoahCannons:
-				{
-					iquare_globals.add_bullet_multihit(bullet, unit);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, unit, 1);
-				} break;
-				// Same as default, but red effect
-				case WeaponId::SavantDiscoidRailgunPiercing:
-				{
-					iquare_globals.add_bullet_multihit(bullet, unit);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, unit, 1);
-				} break;
-				case WeaponId::PenumbraErebolShockCannon:
-				{
-					// Penumbra - Shroud Piercer
-					iquare_globals.add_bullet_multihit(bullet, unit);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, unit, 2);
-				} break;
-				case WeaponId::ClaymoreHarpoonRailgun:
-				{
-					// Claymore - Kelvin Munitions
-					// pierce targets
-					iquare_globals.add_bullet_multihit(bullet, unit);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, unit, 1);
+			if (targets_count < 32) {
+				targets[targets_count++] = {unit, cp, t};
+			}
+		}
 
-					// slow pierced targets
-					UnitExt* collision_target_ext = get_unit_ext(unit);
-					if (!collision_target_ext->timers[TimerKelvinMunitions]) {
-						collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
-					}
-				} break;
-				case WeaponId::KalkaliskViscousAcid:
-				{
-					// Kalkalisk - Ablative Spores
-					iquare_globals.add_incremental_bullet_multihit(bullet, unit);
-					auto count = iquare_globals.get_multihit_count(bullet);
-					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
-					unit->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
+		for (u32 i = 0; i < targets_count; ++i) {
+			UnitPiercingEntry* target = &targets[i];
+			apply_bullet_effect(bullet, target->cp, target->unit);
 
-					if (count >= 4) {
-						bullet->time_remaining = 0;
-						return;
-					} else {
-						bullet->move_target.unit = bullet->attack_target.unit;
-						if (bullet->move_target.unit) {
-							bullet->target_position = bullet->move_target.unit->position;
-							bullet->target_position_2 = bullet->move_target.unit->position;
-						}
-					}
-				} break;
-				case WeaponId::ZarcavrokorBonesofReflection:
-				{
-					iquare_globals.add_bullet_multihit(bullet, unit);
-					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, unit, 1);
-				} break;
-				default:
-				{
-					iquare_globals.add_bullet_multihit(bullet, unit);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, unit, 1);
+			if (scbw::weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
+				u32 armor = units_dat::armor_amount[target->unit->id] + hooks::get_armor_bonus(target->unit);
+				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
+				if (armor > armor_pen) {
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 	void progress_bullet_flight(Bullet* bullet) { // 0048B3B0
@@ -1040,7 +1077,9 @@ namespace hooks {
 				} break;
 			}
 
-			apply_bullet_piercing(bullet, old_position, line_width);
+			if (apply_bullet_piercing(bullet, old_position, line_width)) {
+				despawn_bullet = true;
+			}
 		}
 
 		if (despawn_bullet) {
