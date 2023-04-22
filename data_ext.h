@@ -367,8 +367,9 @@ struct BulletExt {
 	Point16 bullet_source;
 	u32 distance_traveled;
 	u32 time_traveled;
-	bool bounced;
 	u32 divisor_overwrite;
+	u32 current_z_displacement;
+	bool bounced;
 };
 
 struct SpriteExt {

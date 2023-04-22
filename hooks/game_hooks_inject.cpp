@@ -239,7 +239,7 @@ bool isGameOn = false;
 			if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
 				continue;
 			}
-			if (global_vars.players[i].is_witness) {
+			if (globals.players[i].is_witness) {
 				continue;
 			}
 			if (first) {

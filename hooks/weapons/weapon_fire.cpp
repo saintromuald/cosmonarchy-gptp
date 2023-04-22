@@ -805,6 +805,22 @@ namespace hooks {
 
 	void progress_bullet_flight(Bullet* bullet) { // 0048B3B0
 		Point16 old_position = bullet->position;
+		BulletExt* bullet_ext = get_bullet_ext(bullet);
+
+		f32 z_climb = 0;
+		switch (bullet->weapon_id) {
+			case WeaponId::PhalanxArcliteShockCannon: {
+				z_climb = 0.2;
+			} break;
+		}
+
+		// Unsimulate Z
+		if (bullet_ext->current_z_displacement) {
+			bullet->position.y += bullet_ext->current_z_displacement;
+			bullet->sprite->set_position(bullet->position.x, bullet->position.y);
+			bullet_ext->current_z_displacement = 0;
+		}
+
 		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
 			if (!bullet->attack_target.unit) {
 				u32 range = AlkajeliskParasiticSporesSeekRange;
@@ -828,12 +844,22 @@ namespace hooks {
 			helper::progress_bullet_movement(bullet);
 		}
 
-		BulletExt* bullet_ext = get_bullet_ext(bullet);
-
-		// Create explosions mid-flight
+		// Simulate Z
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
 		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
+		if (z_climb) {
+			f32 distance_from_source = scbw::get_distance_fast(bullet_ext->bullet_source, bullet->position);
+			f32 distance_to_target = scbw::get_distance_fast(bullet->position, bullet->target_position);
+			f32 total_distance = distance_from_source + distance_to_target;
+			f32 factor = distance_to_target / total_distance;
+
+			bullet_ext->current_z_displacement = total_distance * z_climb * sin(factor * PI);
+			bullet->position.y -= bullet_ext->current_z_displacement;
+			bullet->sprite->set_position(bullet->position.x, bullet->position.y);
+		}
+
+		// Create explosions mid-flight
 		if (bullet->weapon_id == WeaponId::PositronAntimatterMissile) {
 			u32 period = 2 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
