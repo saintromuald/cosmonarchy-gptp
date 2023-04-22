@@ -251,18 +251,29 @@ namespace scbw
 		return vec;
 	}
 
-	inline Vector32 get_vector_between_points(Point16 source, Point16 target) {
+	inline Vector32 get_vector_between(Point16 source, Point16 target) {
 		Vector32 diff = { target.x, target.y };
 		diff.x -= source.x;
 		diff.y -= source.y;
 		return diff;
 	}
 
-	inline Vector32f get_vector_between_points(Vector32f source, Vector32f target) {
+	inline Vector32f get_vectorf_between(Point16 source, Point16 target) {
 		Vector32f diff = { target.x, target.y };
 		diff.x -= source.x;
 		diff.y -= source.y;
 		return diff;
+	}
+
+	inline Vector32f get_vectorf_between(Vector32f source, Vector32f target) {
+		Vector32f diff = { target.x, target.y };
+		diff.x -= source.x;
+		diff.y -= source.y;
+		return diff;
+	}
+
+	inline f32 get_distance_between(Vector32f a, Vector32f b) {
+		return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 	}
 
 	inline Vector32f get_normalized_vector(Vector32 vector) {
@@ -287,14 +298,14 @@ namespace scbw
 
 	inline bool unit_is_facing_position(Unit* unit, Point16 position) {
 		Vector32f angle = scbw::get_direction_vector_from_unit(unit);
-		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, position));
+		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, position));
 		f32 dot = scbw::dot_product(angle, diff);
 		return dot >= 0.5;
 	}
 
 	inline bool unit_is_exposed_to_position(Unit* unit, Point16 position) {
 		Vector32f angle = scbw::get_direction_vector_from_unit(unit);
-		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, position));
+		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, position));
 		f32 dot = scbw::dot_product(angle, diff);
 		return dot <= -0.5;
 	}
@@ -779,6 +790,9 @@ namespace scbw
 	bool unit_id_can_do_controlled_demolition(u32 unit_id);
 	bool tech_id_needs_target(u32 tech_id);
 	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
+	Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
+	Quad quad_from_rect(Box16 rect);
 	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count);
-	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* min_t = 0);
+	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp);
+	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 }

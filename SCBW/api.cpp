@@ -3368,9 +3368,37 @@ namespace scbw {
 		egg_ext->values[ValueCustomEggHpMax]    = hp;
 	}
 
+	Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
+		Vector32f line_diff = get_normalized_vector(get_vector_between(from, to));
+		Vector32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
+		Quad quad = {};
+		quad.corners[0].x = from.x - p.x;
+		quad.corners[0].y = from.y - p.y;
+		quad.corners[1].x = to.x - p.x;
+		quad.corners[1].y = to.y - p.y;
+		quad.corners[2].x = to.x + p.x;
+		quad.corners[2].y = to.y + p.y;
+		quad.corners[3].x = from.x + p.x;
+		quad.corners[3].y = from.y + p.y;
+		return quad;
+	}
+
+	Quad quad_from_rect(Box16 rect) {
+		Quad box_quad = {};
+		box_quad.top_left.x = rect.left;
+		box_quad.top_left.y = rect.top;
+		box_quad.top_right.x = rect.right;
+		box_quad.top_right.y = rect.top;
+		box_quad.bottom_right.x = rect.right;
+		box_quad.bottom_right.y = rect.bottom;
+		box_quad.bottom_left.x = rect.left;
+		box_quad.bottom_left.y = rect.bottom;
+		return box_quad;
+	}
+
 	static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
 		for (u32 i = 0; i < a_count; ++i) {
-			Vector32f diff = scbw::get_vector_between_points(a[i], a[(i + 1) % a_count]);
+			Vector32f diff = scbw::get_vectorf_between(a[i], a[(i + 1) % a_count]);
 			Vector32f proj = {-diff.y, diff.x};
 
 			f32 a_min = INFINITY;
@@ -3400,45 +3428,77 @@ namespace scbw {
 		return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 	}
 
-	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* min_t) {
-		Vector32f line_diff = get_normalized_vector(get_vector_between_points(from, to));
-		Vector32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
+	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp) {
+		Vector32f ab = scbw::get_vectorf_between(from, to);
+		Vector32f ap = scbw::get_vectorf_between(from, point);
 
-		Vector32f line_corners[4] = {};
-		line_corners[0].x = from.x - p.x;
-		line_corners[0].y = from.y - p.y;
-		line_corners[1].x = to.x - p.x;
-		line_corners[1].y = to.y - p.y;
-		line_corners[2].x = to.x + p.x;
-		line_corners[2].y = to.y + p.y;
-		line_corners[3].x = from.x + p.x;
-		line_corners[3].y = from.y + p.y;
+		f32 dot = scbw::dot_product(ab, ap);
+		dot /= scbw::dot_product(ab, ab);
+		dot = Clamp(dot, 0, 1);
 
-		Vector32f box_corners[4] = {};
-		box_corners[0].x = rect.x;
-		box_corners[0].y = rect.y;
-		box_corners[1].x = rect.x + rect.w;
-		box_corners[1].y = rect.y;
-		box_corners[2].x = rect.x + rect.w;
-		box_corners[2].y = rect.y + rect.h;
-		box_corners[3].x = rect.x;
-		box_corners[3].y = rect.y + rect.h;
+		Vector32f cp = from;
+		cp.x += ab.x * dot;
+		cp.y += ab.y * dot;
+		if (out_cp) {
+			*out_cp = cp;
+		}
 
-		if (sat_collision(line_corners, 4, box_corners, 4)) {
-			if (min_t) {
-				*min_t = INFINITY;
+		return scbw::get_distance_between(cp, point);
+	}
 
-				Vector32f proj = {};
-				proj.x = to.x - from.x;
-				proj.y = to.y - from.y;
-
-				for (u32 i = 0; i < 4; ++i) {
-					f32 t = scbw::dot_product(box_corners[i], proj);
-					if (t < *min_t) {
-						*min_t = t;
+	static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vector32f proj, f32* best_distance, Vector32f* best_cp, f32* best_t) {
+		for (u32 i = 0; i < 4; ++i) {
+			Vector32f line0 = quad_a.corners[i];
+			Vector32f line1 = quad_a.corners[(i + 1) % 4];
+			for (u32 j = 0; j < 4; ++j) {
+				Vector32f point = quad_b.corners[j];
+				Vector32f cp = {};
+				f32 distance = line_to_point_distance(line0, line1, point, &cp);
+				f32 t = scbw::dot_product(cp, proj);
+				if (abs(distance - *best_distance) < 1) {
+					if (t < *best_t) {
+						*best_distance = distance;
+						*best_cp = cp;
+						*best_t = t;
 					}
+				} else if (distance < *best_distance) {
+					*best_distance = distance;
+					*best_cp = cp;
+					*best_t = t;
 				}
 			}
+		}
+	}
+
+	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t, Point16* out_cp) {
+		Quad line_quad = quad_from_line(from, to, line_width);
+		Quad box_quad = quad_from_rect(rect);
+		if (sat_collision(line_quad.corners, 4, box_quad.corners, 4)) {
+			if (!out_t && !out_cp) {
+				return true;
+			}
+
+			f32 best_distance = INFINITY;
+			Vector32f best_cp = {};
+			best_cp.x = rect.left   + (rect.right - rect.left) / 2;
+			best_cp.y = rect.bottom + (rect.top   - rect.bottom) / 2;
+			f32 best_t = INFINITY;
+
+			Vector32f proj = {};
+			proj.x = to.x - from.x;
+			proj.y = to.y - from.y;
+
+			line_intersects_rect_internal(line_quad, box_quad, proj, &best_distance, &best_cp, &best_t);
+			line_intersects_rect_internal(box_quad, line_quad, proj, &best_distance, &best_cp, &best_t);
+
+			if (out_cp) {
+				out_cp->x = best_cp.x;
+				out_cp->y = best_cp.y;
+			}
+			if (out_t) {
+				*out_t = scbw::dot_product(best_cp, proj);
+			}
+
 			return true;
 		}
 		return false;

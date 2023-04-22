@@ -171,6 +171,8 @@ struct Unit : public UnitLayout
 	/// Returns the position of the bottom edge of the unit's collision box.
 	s16 get_bottom() const;
 
+	Box16 Unit::get_box() const;
+
 	//////////////////////////////////////////////////////////////// @}
 
 	/// @name Modifying Unit State

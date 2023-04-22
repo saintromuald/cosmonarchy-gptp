@@ -159,7 +159,7 @@ namespace hooks
                 }
 
                 Vector32f diff = {};
-                diff = scbw::get_normalized_vector(scbw::get_vector_between_points(target->position, unit->position));
+                diff = scbw::get_normalized_vector(scbw::get_vector_between(target->position, unit->position));
                 if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
                     continue;
                 }

@@ -98,7 +98,7 @@ static bool is_melee_attacker(u32 unit_id) {
 }
 
 static void adjust_vector(Vector32f* vector, Unit* unit, Point16 position, s32 value) {
-	Vector32f delta = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, position));
+	Vector32f delta = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, position));
 	delta.x *= value;
 	delta.y *= value;
 	vector->x += delta.x;

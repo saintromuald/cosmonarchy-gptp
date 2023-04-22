@@ -2364,7 +2364,7 @@ namespace hooks {
 		if (unit_ext->timers[TimerAnthelionGravityWell] && unit_ext->units[UnitAnthelionGravityWellSource]) {
 			Point16 target_pos = unit_ext->units[UnitAnthelionGravityWellSource]->position;
 			if (unit->position != target_pos && !(unit->status & UnitStatus::Burrowed)) {
-				Vector32 diff = scbw::get_vector_between_points(unit->position, target_pos);
+				Vector32 diff = scbw::get_vector_between(unit->position, target_pos);
 				if (scbw::get_vector_distance(diff) < 2) {
 					scbw::move_unit_improved(unit, target_pos.x, target_pos.y);
 				} else {

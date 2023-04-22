@@ -131,7 +131,7 @@ namespace hooks {
 							bool spawn_point_set = false;
 							Point16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Vector32f rally_shift = scbw::get_normalized_vector(scbw::get_vector_between_points(unit->position, unit->rally.pt));
+								Vector32f rally_shift = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, unit->rally.pt));
 								f32 max_distance = std::max(abs(rally_shift.x), abs(rally_shift.y));
 								if (max_distance) {
 									rally_shift.x /= max_distance;

@@ -117,7 +117,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		launch_pos.y += offset.y;
 	}
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
-		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between_points(launch_pos, target.pt));
+		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit);
 		target.pt = launch_pos;
 		target.pt.x += diff.x * max_range;
@@ -693,24 +693,29 @@ namespace hooks {
 		}
 	}
 
-	static Unit* find_bullet_interception(Bullet* bullet, Point16 old_position, f32 line_width) {
-		u32 intercept_type = scbw::weapon_id_intercepts(bullet->weapon_id);
-
+	static Box32 get_line_search_area(Bullet* bullet, Point16 old_position) {
 		u32 search_margin = 6 * 32;
 		Box32 search_area = {};
-		search_area.x = Min(old_position.x, bullet->position.x) - search_margin;
-		search_area.y = Min(old_position.y, bullet->position.y) - search_margin;
-		search_area.w = Max(old_position.x, bullet->position.x) + search_margin * 2;
-		search_area.h = Max(old_position.y, bullet->position.y) + search_margin * 2;
+		search_area.left   = Min(old_position.x, bullet->position.x) - search_margin;
+		search_area.top    = Min(old_position.y, bullet->position.y) - search_margin;
+		search_area.right  = Max(old_position.x, bullet->position.x) + search_margin;
+		search_area.bottom = Max(old_position.y, bullet->position.y) + search_margin;
+		return search_area;
+	}
+
+	static bool apply_bullet_interception(Bullet* bullet, Point16 old_position, f32 line_width) {
+		u32 intercept_type = scbw::weapon_id_intercepts(bullet->weapon_id);
 
 		Unit* best_unit = 0;
 		f32 best_t = INFINITY;
+		Point16 best_cp = {};
 
-		EntryArray collisions = {};
-		unit_search_rect(&collisions, search_area);
-		unit_search_filter(&collisions, 0);
-		for (u32 i = 0; i < collisions.count; ++i) {
-			Unit* unit = collisions.units[i];
+		Box32 search_area = get_line_search_area(bullet, old_position);
+		EntryArray units = {};
+		unit_search_rect(&units, search_area);
+		unit_search_filter(&units, 0);
+		for (u32 i = 0; i < units.count; ++i) {
+			Unit* unit = units.units[i];
 			if (unit->status & UnitStatus::Invincible) {
 				continue;
 			}
@@ -727,56 +732,48 @@ namespace hooks {
 				}
 			}
 
-			Box16 box = {};
-			box.x = unit->get_left();
-			box.y = unit->get_top();
-			box.w = unit->get_right()  - box.x;
-			box.h = unit->get_bottom() - box.y;
 			f32 t = 0;
-			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, box, &t)) {
+			Point16 cp = {};
+			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 			if (t < best_t) {
 				best_t = t;
+				best_cp = cp;
 				best_unit = unit;
 			}
 		}
 
-		return best_unit;
+		if (best_unit) {
+			bullet->attack_target.pt = best_cp;
+			bullet->attack_target.unit = best_unit;
+			return true;
+		}
+		return false;
 	}
 
 	static void apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
-		u32 search_margin = 6 * 32;
-		Box32 search_area = {};
-		search_area.x = Min(old_position.x, bullet->position.x) - search_margin;
-		search_area.y = Min(old_position.y, bullet->position.y) - search_margin;
-		search_area.w = Max(old_position.x, bullet->position.x) + search_margin * 2;
-		search_area.h = Max(old_position.y, bullet->position.y) + search_margin * 2;
-
-		EntryArray collisions = {};
-		unit_search_rect(&collisions, search_area);
-		unit_search_filter(&collisions, 0);
-		for (u32 i = 0; i < collisions.count; ++i) {
-			Unit* collision_target = collisions.units[i];
-			if (collision_target->status & UnitStatus::Invincible) {
+		Box32 search_area = get_line_search_area(bullet, old_position);
+		EntryArray units = {};
+		unit_search_rect(&units, search_area);
+		unit_search_filter(&units, 0);
+		for (u32 i = 0; i < units.count; ++i) {
+			Unit* unit = units.units[i];
+			if (unit->status & UnitStatus::Invincible) {
 				continue;
 			}
-			if (bullet->attack_target.unit != collision_target && scbw::is_allied_to(bullet->player, collision_target->player)) { // TODO: Consider what to do with unsafe projectiles
+			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) { // TODO: Consider what to do with unsafe projectiles
 				continue;
 			}
-			if (!scbw::can_weapon_target_unit(bullet->weapon_id, collision_target)) {
+			if (!scbw::can_weapon_target_unit(bullet->weapon_id, unit)) {
 				continue;
 			}
-			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, collision_target)) {
+			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
 				continue;
 			}
 
-			Box16 box = {};
-			box.x = collision_target->get_left();
-			box.y = collision_target->get_top();
-			box.w = collision_target->get_right()  - box.x;
-			box.h = collision_target->get_bottom() - box.y;
-			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, box)) {
+			Point16 cp = {};
+			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), 0, &cp)) {
 				continue;
 			}
 
@@ -786,34 +783,34 @@ namespace hooks {
 				case WeaponId::AutocratEminenceRifle:
 				case WeaponId::RamessesPharoahCannons:
 				{
-					iquare_globals.add_bullet_multihit(bullet, collision_target);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+					iquare_globals.add_bullet_multihit(bullet, unit);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, unit, 1);
 				} break;
 				// Same as default, but red effect
 				case WeaponId::SavantDiscoidRailgunPiercing:
 				{
-					iquare_globals.add_bullet_multihit(bullet, collision_target);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+					iquare_globals.add_bullet_multihit(bullet, unit);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, unit, 1);
 				} break;
 				case WeaponId::PenumbraErebolShockCannon:
 				{
 					// Penumbra - Shroud Piercer
-					iquare_globals.add_bullet_multihit(bullet, collision_target);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collision_target, 2);
+					iquare_globals.add_bullet_multihit(bullet, unit);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, unit, 2);
 				} break;
 				case WeaponId::ClaymoreHarpoonRailgun:
 				{
 					// Claymore - Kelvin Munitions
 					// pierce targets
-					iquare_globals.add_bullet_multihit(bullet, collision_target);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, collision_target->position.x, collision_target->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+					iquare_globals.add_bullet_multihit(bullet, unit);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, unit, 1);
 
 					// slow pierced targets
-					UnitExt* collision_target_ext = get_unit_ext(collision_target);
+					UnitExt* collision_target_ext = get_unit_ext(unit);
 					if (!collision_target_ext->timers[TimerKelvinMunitions]) {
 						collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 					}
@@ -821,10 +818,10 @@ namespace hooks {
 				case WeaponId::KalkaliskViscousAcid:
 				{
 					// Kalkalisk - Ablative Spores
-					iquare_globals.add_incremental_bullet_multihit(bullet, collision_target);
+					iquare_globals.add_incremental_bullet_multihit(bullet, unit);
 					auto count = iquare_globals.get_multihit_count(bullet);
-					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
-					collision_target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
+					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
+					unit->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
 					if (count >= 4) {
 						bullet->time_remaining = 0;
@@ -839,15 +836,15 @@ namespace hooks {
 				} break;
 				case WeaponId::ZarcavrokorBonesofReflection:
 				{
-					iquare_globals.add_bullet_multihit(bullet, collision_target);
-					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, collision_target->position.x, collision_target->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+					iquare_globals.add_bullet_multihit(bullet, unit);
+					scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, unit, 1);
 				} break;
 				default:
 				{
-					iquare_globals.add_bullet_multihit(bullet, collision_target);
-					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, collision_target->position.x, collision_target->position.y, bullet->player);
-					hooks::weapon_bullet_hit(bullet, collision_target, 1);
+					iquare_globals.add_bullet_multihit(bullet, unit);
+					scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
+					hooks::weapon_bullet_hit(bullet, unit, 1);
 				}
 			}
 		}
@@ -1019,9 +1016,7 @@ namespace hooks {
 				// add special line_width cases here
 			}
 
-			Unit* collision_target = find_bullet_interception(bullet, old_position, line_width);
-			if (collision_target) {
-				bullet->attack_target.unit = collision_target;
+			if (apply_bullet_interception(bullet, old_position, line_width)) {
 				despawn_bullet = true;
 			}
 		} else if (scbw::weapon_id_pierces(bullet->weapon_id)) {
