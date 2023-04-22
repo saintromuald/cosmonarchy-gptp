@@ -393,6 +393,16 @@ s16 Unit::get_bottom() const {
 	return this->get_y() + units_dat::unit_bounds[this->id].bottom;
 }
 
+Box16 Unit::get_box() const {
+	assert(this);
+	Box16 box = {};
+	box.left   = this->get_left();
+	box.top    = this->get_top();
+	box.right  = this->get_right();
+	box.bottom = this->get_bottom();
+	return box;
+}
+
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;

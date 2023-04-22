@@ -123,7 +123,7 @@ namespace hooks
 					return false;
 				}
 
-				Vector32 diff = scbw::get_vector_between_points(enemy->position, unit->position);
+				Vector32 diff = scbw::get_vector_between(enemy->position, unit->position);
 				Vector32f target = scbw::get_normalized_vector(diff);
 				f32 dot = scbw::dot_product(dir, target);
 
