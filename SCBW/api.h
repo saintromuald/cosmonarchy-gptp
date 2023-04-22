@@ -35,6 +35,16 @@ struct PlayerColorCode {
 	char data[3];
 };
 
+enum InterceptType {
+	InterceptType_None,
+
+	InterceptType_GroundOnly,
+	InterceptType_AirOnly,
+	InterceptType_Any,
+
+	InterceptType_Count,
+};
+
 namespace scbw
 {
 	bool is_any_morph_result(u16 id);
@@ -630,9 +640,8 @@ namespace scbw
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void apply_hallucinating(Unit* unit, u8 player, u32 time);
-	bool weapon_id_intercepts_any_target(u32 weapon_id);
-	bool weapon_id_intercepts_air_targets(u32 weapon_id);
-	bool weapon_id_pierces_target(u32 weapon_id);
+	u32 weapon_id_intercepts(u32 weapon_id);
+	bool weapon_id_pierces(u32 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
 	void update_signify_status(Unit* unit, UnitExt* unitExt);
 	bool is_unit_isolated(Unit* unit);

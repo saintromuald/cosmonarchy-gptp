@@ -1515,24 +1515,22 @@ namespace scbw {
 		}
 	}
 
-	bool weapon_id_intercepts_any_target(u32 weapon_id) {
+	u32 weapon_id_intercepts(u32 weapon_id) {
 		switch (weapon_id) {
-			case WeaponId::StarSovereignInterventionMissiles:
-				return true;
-		}
-		return false;
-	}
+			case WeaponId::AccantorPlasmaShell:
+				return InterceptType_GroundOnly;
 
-	bool weapon_id_intercepts_air_targets(u32 weapon_id) {
-		switch (weapon_id) {
 			case WeaponId::EmpyreanPlasmaBarrage:
 			case WeaponId::ValkyrieHaloRockets:
-				return true;
+				return InterceptType_AirOnly;
+
+			case WeaponId::StarSovereignInterventionMissiles:
+				return InterceptType_Any;
 		}
-		return false;
+		return InterceptType_None;
 	}
 
-	bool weapon_id_pierces_target(u32 weapon_id) {
+	bool weapon_id_pierces(u32 weapon_id) {
 		switch (weapon_id) {
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::SavantDiscoidRailgunPiercing:

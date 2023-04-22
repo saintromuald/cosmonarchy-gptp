@@ -693,7 +693,9 @@ namespace hooks {
 		}
 	}
 
-	static Unit* apply_bullet_interception(Bullet* bullet, Point16 old_position, f32 line_width) {
+	static Unit* find_bullet_interception(Bullet* bullet, Point16 old_position, f32 line_width) {
+		u32 intercept_type = scbw::weapon_id_intercepts(bullet->weapon_id);
+
 		u32 search_margin = 6 * 32;
 		Box32 search_area = {};
 		search_area.x = Min(old_position.x, bullet->position.x) - search_margin;
@@ -715,7 +717,11 @@ namespace hooks {
 			if (scbw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
-			if (scbw::weapon_id_intercepts_air_targets(bullet->weapon_id)) {
+			if (intercept_type == InterceptType_GroundOnly) {
+				if (unit->status & UnitStatus::InAir) {
+					continue;
+				}
+			} else if (intercept_type == InterceptType_AirOnly) {
 				if (!(unit->status & UnitStatus::InAir)) {
 					continue;
 				}
@@ -1007,18 +1013,18 @@ namespace hooks {
 		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
 			despawn_bullet = true;
 		}
-		if (scbw::weapon_id_intercepts_any_target(bullet->weapon_id) || scbw::weapon_id_intercepts_air_targets(bullet->weapon_id)) { // Having two seperate functions is dumb, revise this before adding 3rd function!
+		if (scbw::weapon_id_intercepts(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
 				// add special line_width cases here
 			}
 
-			Unit* collision_target = apply_bullet_interception(bullet, old_position, line_width);
+			Unit* collision_target = find_bullet_interception(bullet, old_position, line_width);
 			if (collision_target) {
 				bullet->attack_target.unit = collision_target;
 				despawn_bullet = true;
 			}
-		} else if (scbw::weapon_id_pierces_target(bullet->weapon_id)) {
+		} else if (scbw::weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
 				case WeaponId::SirenCharybdalRifle:
@@ -1045,7 +1051,7 @@ namespace hooks {
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
-			if (target && target->sprite && !scbw::weapon_id_pierces_target(bullet->weapon_id)) {
+			if (target && target->sprite && !scbw::weapon_id_pierces(bullet->weapon_id)) {
 				bullet->attack_target.pt.x = target->sprite->position.x;
 				bullet->attack_target.pt.y = target->sprite->position.y;
 			} else {
