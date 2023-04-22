@@ -727,12 +727,12 @@ namespace helper {
 	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);								// 004E8280
 	void iterate_units_at_location_target_proc_plague(Unit* attacker, Box16* coords);								// 004E8280
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
-	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords);									// 004E8280
+	void iterate_units_at_location_target_proc_maelstrom(Unit* attacker, Box16* coords);							// 004E8280
 	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);							// 004E8280
-	void create_ensnare_overlay(Unit* a1);																			// 004F45E0
+	void create_ensnare_overlay(Unit* unit);																		// 004F45E0
 
 	// For create_scanner
-	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay = 1, s32 minVolume = 0);							// 0048ED50
+	s32 play_sound_from_unit(s32 sound_id, Unit* unit, s32 play = 1, s32 min_volume = 0);							// 0048ED50
 	void return_all_interceptors(Unit* unit);																		// 004655F0
 
 	// For maelstrom_proc
@@ -752,7 +752,7 @@ namespace helper {
 
 	//// selection
 	bool unit_is_owned_by_current_player(Unit* unit); 																// 00401170
-	bool isUnitBurrowed(Unit* unit);																				// 00402A70
+	bool is_unit_burrowed(Unit* unit);																				// 00402A70
 	void sc_memcpy_0(u32 dest, u32 src, u32 memsize);																// 00408FD0
 	void show_rally_target(Unit* unit);																				// 00468670
 	bool unit_is_unselectable(u16 unit_id);																			// 0046ED80

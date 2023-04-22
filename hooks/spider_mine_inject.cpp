@@ -35,12 +35,12 @@ namespace
 
 	void __declspec(naked) orders_place_mine_wrapper() // 00464FD0
 	{
-		static Unit* a1;
+		static Unit* unit;
 		__asm {
-			MOV a1, EAX
+			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_place_mine(a1);
+		hooks::orders_place_mine(unit);
 		__asm {
 			POPAD
 			RETN

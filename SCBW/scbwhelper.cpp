@@ -5671,58 +5671,58 @@ namespace helper {
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords) {
-		const u32 MaelstromProc_function = 0x004F6760;
+	void iterate_units_at_location_target_proc_maelstrom(Unit* attacker, Box16* coords) {
+		const u32 func_address = 0x004F6760;
 		__asm {
 			PUSHAD
 			PUSH attacker
 			MOV EAX, coords
-			MOV EBX, MaelstromProc_function
+			MOV EBX, func_address
 			CALL Func_IterateUnitsAtLocationTargetProc
 			POPAD
 		}
 	}
 
 	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords) {
-		const u32 StasisFieldProc_function = 0x004F68D0;
+		const u32 func_address = 0x004F68D0;
 		__asm {
 			PUSHAD
 			PUSH attacker
 			MOV EAX, coords
-			MOV EBX, StasisFieldProc_function
+			MOV EBX, func_address
 			CALL Func_IterateUnitsAtLocationTargetProc
 			POPAD
 		}
 	}	
 
-	void create_ensnare_overlay(Unit* a1) {
-		const u32 Func_createEnsnareOverlay = 0x004F45E0;
+	void create_ensnare_overlay(Unit* unit) {
+		const u32 func_address = 0x004F45E0;
 		__asm {
 			PUSHAD
-			MOV EDI, a1
-			CALL Func_createEnsnareOverlay
+			MOV EDI, unit
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// For create_scanner
-	s32 play_sound_from_unit(s32 soundId, Unit* unit, s32 bPlay, s32 minVolume) {
-		const u32 Func_playSoundFromSource = 0x0048ED50;
+	s32 play_sound_from_unit(s32 sound_id, Unit* unit, s32 play, s32 min_volume) {
+		const u32 func_address = 0x0048ED50;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH minVolume
-			PUSH bPlay
+			PUSH min_volume
+			PUSH play
 			MOV ESI, unit
-			MOV EBX, soundId
-			CALL Func_playSoundFromSource
+			MOV EBX, sound_id
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	//Identical to 0x00401170
+	// 0x00401170
 	bool unit_is_owned_by_current_player(Unit* unit) {
 		bool return_value;
 		if (*g_is_in_replay != 0 || unit->player != *g_local_nation_id) {
@@ -5734,8 +5734,8 @@ namespace helper {
 		return return_value;
 	}
 
-	//Identical to 0x00402A70
-	bool isUnitBurrowed(Unit* unit) {
+	// 0x00402A70
+	bool is_unit_burrowed(Unit* unit) {
 		return (unit->status & (UnitStatus::CloakingForFree + UnitStatus::Burrowed)) != 0;
 	}
 
