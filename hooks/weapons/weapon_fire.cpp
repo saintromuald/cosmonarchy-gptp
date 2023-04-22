@@ -387,13 +387,6 @@ namespace hooks {
 						offsets.count = 2;
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
-					case WeaponId::PaladinCrusaderMissiles:
-					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePaladinLaunchPos;
-						offsets.count = 5;
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
 						WeaponOffsets offsets = {};
@@ -618,9 +611,16 @@ namespace hooks {
 						// Multi-Attack V
 						fire_multiple(unit, weapon_id, 5, FilterEnemy);
 					} break;
+					case WeaponId::PaladinCrusaderMissiles:
+					{
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePaladinLaunchPos;
+						offsets.count = 5;
+						fire_bullet(unit, weapon_id, weapon_target, &offsets);
+					} break;
 					case WeaponId::AionLazarusSalvo:
 					{
-						auto rotate = unit_ext->values[ValueAionLaunchPos];
+						auto rotate = unit_ext->values[ValueProjectilePattern];
 						if (rotate == 1) {
 							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						} else {
@@ -630,12 +630,12 @@ namespace hooks {
 						if (rotate > 3) {
 							rotate = 0;
 						}
-						unit_ext->values[ValueAionLaunchPos] = rotate;
+						unit_ext->values[ValueProjectilePattern] = rotate;
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{
 						// Salamander missile target positions
-						auto rotate = unit_ext->values[ValueSalamanderLaunchPos];
+						auto rotate = unit_ext->values[ValueProjectilePattern];
 						if (rotate == 1) {
 							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						} else {
@@ -645,7 +645,7 @@ namespace hooks {
 						if (rotate > 2) {
 							rotate = 0;
 						}
-						unit_ext->values[ValueSalamanderLaunchPos] = rotate;
+						unit_ext->values[ValueProjectilePattern] = rotate;
 					} break;
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
@@ -894,7 +894,7 @@ namespace hooks {
 		f32 z_climb = 0;
 		switch (bullet->weapon_id) {
 			case WeaponId::PhalanxArcliteShockCannon: {
-				z_climb = 0.2;
+				z_climb = 0.25;
 			} break;
 		}
 
@@ -1059,10 +1059,6 @@ namespace hooks {
 		} else if (scbw::weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
-				case WeaponId::SirenCharybdalRifle:
-				{
-					line_width = 8;
-				} break;
 				case WeaponId::SavantDiscoidRailgunPiercing:
 				case WeaponId::AutocratEminenceRifle:
 				case WeaponId::ClaymoreHarpoonRailgun:

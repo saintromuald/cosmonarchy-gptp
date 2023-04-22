@@ -146,6 +146,7 @@ enum ExtValueId
 	ValueCustomEggActive,
 	ValueCustomEggHatchMax,
 	ValueCustomEggHpMax,
+	ValueProjectilePattern,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

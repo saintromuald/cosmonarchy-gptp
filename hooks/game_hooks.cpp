@@ -1479,7 +1479,7 @@ namespace hooks {
 				if (unit_ext->timers[TimerSkyfall] == 1 && !unit->is_frozen()) {
 					u8 missile = unit_ext->values[ValueSkyfallStacks];
 					unit_ext->values[ValueSkyfallStacks]++;
-					if (missile == 20) {
+					if (missile == 10) {
 						unit_ext->values[ValueSkyfallStacks] = 0;
 					} else {
 						unit_ext->timers[TimerSkyfall] = 2 + 1;
@@ -1498,9 +1498,9 @@ namespace hooks {
 						missile_target.x = target_x + product.x;
 						missile_target.y = target_y + product.y;
 
-						s32 forwardOffset = weapons_dat::forward_offset[10];
-						auto source_x = unit->get_x() + scbw::get_polar_x(forwardOffset, unit->current_direction_1);
-						auto source_y = unit->get_y() + scbw::get_polar_y(forwardOffset, unit->current_direction_1) - weapons_dat::vertical_offset[10];
+						s32 forward_offset = weapons_dat::forward_offset[10];
+						auto source_x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
+						auto source_y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[10];
 						unit->order_target.unit = 0;
 						unit->order_target.pt = missile_target;
 						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->current_direction_1);
