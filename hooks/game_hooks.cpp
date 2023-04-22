@@ -2869,7 +2869,8 @@ namespace hooks {
 		}
 
 		// Claymore - Kelvin Munitions - Create overlays
-		if (unit_ext->timers[TimerKelvinMunitions] > 1)
+		if (unit_ext->timers[TimerKelvinMunitions] > 1
+		&& !unit_ext->timers[TimerClaymoreKelvinMunitionsZap])
 		{
 			u32 width = units_dat::unit_bounds[unit->id].x * 0.75;
 			u32 height = units_dat::unit_bounds[unit->id].y * 0.75;
@@ -2881,7 +2882,7 @@ namespace hooks {
 			y_offset = MathUtils::clamp(y_offset, -127, 128);
 
 			unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
-			unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 20;
+			unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 		}
 
 		if (globals.celebration == Celebration_Christmas) {
