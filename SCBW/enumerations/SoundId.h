@@ -1472,6 +1472,28 @@ namespace SoundId
 		AdvisorProtossUnderAttackZerg		= 2344,
 		AdvisorProtossUnderAttackTerran		= 2345,
 		AdvisorProtossUnderAttackProtoss	= 2346,
+
+		HeraclesReady01						= 2351,
+		HeraclesReady02						= 2352,
+		HeraclesReady03						= 2353,
+
+		HeraclesOrderAggressive01			= 2362,
+		HeraclesOrderAggressive02			= 2363,
+		HeraclesOrderAggressive03			= 2364,
+		HeraclesOrderAggressive04			= 2365,
+
+		MadcapReady01						= 2370,
+		MadcapReady02						= 2371,
+		MadcapReady03						= 2372,
+		
+		AnticthonReady01					= 2376,
+		AnticthonReady02					= 2377,
+		AnticthonReady03					= 2378,
+
+		AnticthonOrderAggressive01			= 2379,
+		AnticthonOrderAggressive02			= 2380,
+		AnticthonOrderAggressive03			= 2381,
+		AnticthonOrderAggressive04			= 2382,
 	};
 }
 

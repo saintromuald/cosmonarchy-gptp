@@ -76,6 +76,9 @@ namespace hooks {
 				case UnitId::TerranMadcap: {
 					return helper::get_random_sfx_between(SoundId::MadcapOrderAggressive01, SoundId::MadcapOrderAggressive04);
 				} break;
+				case UnitId::TerranHeracles: {
+					return helper::get_random_sfx_between(SoundId::HeraclesOrderAggressive01, SoundId::HeraclesOrderAggressive04);
+				} break;
 				case UnitId::TerranApostle: {
 					return helper::get_random_sfx_between(SoundId::ApostleOrderAggressive01, SoundId::ApostleOrderAggressive04);
 				} break;
@@ -90,6 +93,9 @@ namespace hooks {
 				} break;
 				case UnitId::TerranPaladin: {
 					return helper::get_random_sfx_between(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
+				} break;
+				case UnitId::TerranAnticthon: {
+					return helper::get_random_sfx_between(SoundId::AnticthonOrderAggressive01, SoundId::AnticthonOrderAggressive04);
 				} break;
 				case UnitId::TerranAion: {
 					return helper::get_random_sfx_between(SoundId::AionOrderAggressive01, SoundId::AionOrderAggressive04);
@@ -179,6 +185,12 @@ namespace hooks {
 					case UnitId::TerranShaman: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ShamanReady01, SoundId::ShamanReady03);
 					} break;
+					case UnitId::TerranMadcap: {
+						ready_sound = helper::get_random_sfx_between(SoundId::MadcapReady01, SoundId::MadcapReady03);
+					} break;
+					case UnitId::TerranHeracles: {
+						ready_sound = helper::get_random_sfx_between(SoundId::HeraclesReady01, SoundId::HeraclesReady03);
+					} break;
 					case UnitId::TerranApostle: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ApostleReady01, SoundId::ApostleReady03);
 					} break;
@@ -200,6 +212,9 @@ namespace hooks {
 					} break;
 					case UnitId::TerranMadrigal: {
 						ready_sound = helper::get_random_sfx_between(SoundId::MadrigalReady01, SoundId::MadrigalReady03);
+					} break;
+					case UnitId::TerranAnticthon: {
+						ready_sound = helper::get_random_sfx_between(SoundId::AnticthonReady01, SoundId::AnticthonReady03);
 					} break;
 					case UnitId::TerranAion: {
 						ready_sound = helper::get_random_sfx_between(SoundId::AionReady01, SoundId::AionReady03);
