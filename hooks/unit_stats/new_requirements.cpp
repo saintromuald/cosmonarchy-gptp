@@ -104,6 +104,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranParthenon:
 				case UnitId::TerranIonCannon:
+				case UnitId::TerranWellbore:
 				case UnitId::TerranAtelier:
 				case UnitId::TerranApothecary:
 				case UnitId::TerranIronFoundry:
@@ -751,7 +752,7 @@ namespace hooks {
 					case UnitId::ProtossEmbassy:
 					case UnitId::ProtossCrucible:
 					case UnitId::ProtossStridentStratum:
-					case UnitId::ProtossEngram:
+				//	case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:
 					case UnitId::ProtossGrandLibrary:
@@ -1220,6 +1221,16 @@ namespace hooks {
 				}
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergExcisant))
+		{
+			if (unit_id == UnitId::ZergEzigrisant)
+			{
+				if (TierUnlocked[RaceId::Zerg][Tier3])
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazrokPool))
 		{
 			if (unit_id == UnitId::ZergLiivralPond)
@@ -1440,6 +1451,7 @@ namespace hooks {
 					}
 					case UnitId::TerranParthenon:
 					case UnitId::TerranIonCannon:
+					case UnitId::TerranWellbore:
 					case UnitId::TerranApothecary:
 					case UnitId::TerranIronFoundry:
 					{
@@ -2312,7 +2324,7 @@ namespace hooks {
 					case UnitId::ProtossMatrix:
 					case UnitId::ProtossCrucible:
 					case UnitId::ProtossStridentStratum:
-					case UnitId::ProtossEngram:
+				//	case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:
 					case UnitId::ProtossGrandLibrary:
@@ -3052,6 +3064,18 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
+			case UnitId::ZergExcisant:
+			{
+				if (unit_id == UnitId::ZergEzigrisant)
+				{
+					if (TierUnlocked[RaceId::Zerg][Tier3])
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
+				}
+				return TECH_HIDDEN;
+			}
 			case UnitId::ZergQuazrokPool:
 			{
 				if (unit_id == UnitId::ZergLiivralPond)
@@ -3131,73 +3155,6 @@ namespace hooks {
 					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
-			}
-
-			// POLICE
-			// Units
-			case UnitId::PoliceStation:
-			{
-				if (unit_id == UnitId::PoliceEngineer
-				||	unit_id == UnitId::PoliceDeputy)
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
-			}
-			case UnitId::PoliceAcademy:
-			{
-				switch (unit_id)
-				{
-					case UnitId::PoliceDeputy:
-					case UnitId::PoliceWATTrooper:
-					{
-						return TECH_ACTIVE;
-					}
-					case UnitId::PoliceSlapdash:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::PoliceDonutShack)) {
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::PoliceBarker:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::PoliceDoghouse)) {
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::PolicePriestess:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::PoliceMickenPyre)) {
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					default:
-					{
-						return TECH_HIDDEN;
-					}
-				}
-			}
-
-			// Structures
-			case UnitId::PoliceEngineer:
-			{
-				if (unit->main_order_id == OrderId::ConstructingBuilding) {
-					return TECH_HIDDEN;
-				}
-				switch (unit_id)
-				{
-					case UnitId::PoliceStation:
-					case UnitId::PoliceDispensary:
-					case UnitId::PoliceAcademy:
-					case UnitId::PoliceDugout:
-					{
-						return TECH_ACTIVE;
-					} break;
-					return TECH_HIDDEN;
-				}
 			}
 		}
 		return TECH_HIDDEN;

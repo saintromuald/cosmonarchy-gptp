@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	Unit* findBestOpticalFlareTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_optical_flare_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	Unit* findBestEnsnareTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_ensnare_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

@@ -654,7 +654,7 @@ LABEL_18_ENTER_MAIN_BODY:
 				case RequirementOpcodes::IsNotConstructing:
 				{
 					//DebugOut("IsNotConstructing (%d):", currentOpcode);
-					if ((parent_unit->id == UnitId::TerranMason || parent_unit->id == UnitId::TerranTalos || parent_unit->id == UnitId::PoliceEngineer) && parent_unit->main_order_id == OrderId::ConstructingBuilding)
+					if ((parent_unit->id == UnitId::TerranMason || parent_unit->id == UnitId::TerranTalos) && parent_unit->main_order_id == OrderId::ConstructingBuilding)
 					{
 						//DebugOut(">False");
 						goto LABEL_87;

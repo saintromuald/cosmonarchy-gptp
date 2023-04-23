@@ -309,7 +309,7 @@ namespace hooks
 					}
 					else
 					{
-						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos || unit->id == UnitId::PoliceEngineer) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
+						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
 						|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)

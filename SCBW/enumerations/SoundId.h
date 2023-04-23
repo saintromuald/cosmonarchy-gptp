@@ -1494,5 +1494,12 @@ namespace SoundId
 		AnticthonOrderAggressive02			= 2380,
 		AnticthonOrderAggressive03			= 2381,
 		AnticthonOrderAggressive04			= 2382,
+
+		SavantSwitchSteal01					= 2387,
+		SavantSwitchSteal02					= 2388,
+		SavantSwitchSteal03					= 2389,
+		SavantSwitchPierce01				= 2390,
+		SavantSwitchPierce02				= 2391,
+		SavantSwitchPierce03				= 2392,
 	};
 }

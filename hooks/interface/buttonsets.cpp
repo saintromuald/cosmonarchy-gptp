@@ -531,8 +531,7 @@ namespace hooks {
 						if (buttonset_id == UnitId::ZergLarva
 						||  buttonset_id == UnitId::ZergOcsalLarva
 						||  buttonset_id == UnitId::TerranMason
-						||  buttonset_id == UnitId::TerranTalos
-						||  buttonset_id == UnitId::PoliceEngineer)
+						||  buttonset_id == UnitId::TerranTalos)
 						{
 							if (unit->main_order_id != OrderId::ConstructingBuilding)
 							{
@@ -952,6 +951,7 @@ namespace hooks {
 										} break;
 										case UnitId::TerranParthenon:
 										case UnitId::TerranIonCannon:
+										case UnitId::TerranWellbore:
 										case UnitId::TerranApothecary:
 										case UnitId::TerranIronFoundry:
 										{
@@ -1439,9 +1439,7 @@ namespace hooks {
 										||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1450,9 +1448,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1462,9 +1458,7 @@ namespace hooks {
 										||  player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1474,9 +1468,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergLiivralPond))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1487,9 +1479,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1500,9 +1490,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1513,9 +1501,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1526,9 +1512,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralgantChazsal))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1539,9 +1523,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1551,9 +1533,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlkajChasm))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1563,9 +1543,7 @@ namespace hooks {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergRakzogthRoost))
 										{
 											current_button_state = Button_State::Enabled;
-										}
-										else
-										{
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
@@ -1582,14 +1560,10 @@ namespace hooks {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1600,14 +1574,10 @@ namespace hooks {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1618,14 +1588,10 @@ namespace hooks {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1636,14 +1602,10 @@ namespace hooks {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1654,14 +1616,10 @@ namespace hooks {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1672,14 +1630,10 @@ namespace hooks {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1691,14 +1645,10 @@ namespace hooks {
 									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
@@ -1710,79 +1660,25 @@ namespace hooks {
 									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 									{
 										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
+									} else {
 										current_button_state = Button_State::Disabled;
 									}
-								}
-								else
-								{
+								} else {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
-							case UnitId::PoliceEngineer:
+							case UnitId::ZergExcisant:
 							{
-								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
-									if (current_button->requirement_var == UnitId::PoliceStation
-									||  current_button->requirement_var == UnitId::PoliceDispensary
-									||  current_button->requirement_var == UnitId::PoliceAcademy
-									||  current_button->requirement_var == UnitId::PoliceDugout)
-									{
-										current_button_state = Button_State::Enabled;
-									}
-									else
-									{
-										current_button_state = Button_State::Invisible;
-									}
-								}
-							} break;
-							case UnitId::PoliceStation:
-							{
-								if (current_button->requirement_var == UnitId::PoliceEngineer
-								||	current_button->requirement_var == UnitId::PoliceDeputy)
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								else
+								if (current_button->requirement_var == UnitId::ZergEzigrisant)
 								{
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform))
+									{
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
 									current_button_state = Button_State::Invisible;
-								}
-							} break;
-							case UnitId::PoliceAcademy:
-							{
-								switch (current_button->requirement_var)
-								{
-									case UnitId::PoliceDeputy:
-									case UnitId::PoliceWATTrooper:
-									{
-										current_button_state = Button_State::Enabled;
-									} break;
-									case UnitId::PoliceSlapdash:
-									{
-										if (player_has_completed_unit_id(unit->player, UnitId::PoliceDonutShack)) {
-											current_button_state = Button_State::Enabled;
-										}
-										current_button_state = Button_State::Disabled;
-									} break;
-									case UnitId::PoliceBarker:
-									{
-										if (player_has_completed_unit_id(unit->player, UnitId::PoliceDoghouse)) {
-											current_button_state = Button_State::Enabled;
-										}
-										current_button_state = Button_State::Disabled;
-									} break;
-									case UnitId::PolicePriestess:
-									{
-										if (player_has_completed_unit_id(unit->player, UnitId::PoliceMickenPyre)) {
-											current_button_state = Button_State::Enabled;
-										}
-										current_button_state = Button_State::Disabled;
-									} break;
-									default:
-									{
-										current_button_state = Button_State::Invisible;
-									} break;
 								}
 							} break;
 							default:
@@ -2658,7 +2554,7 @@ namespace hooks {
 					// Attack overrides
 					if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building)
 					{
-						if ((unit->id == UnitId::TerranBunker || unit->id == UnitId::PoliceDugout)) {
+						if (scbw::unit_id_is_bunker) {
 							u32 loaded = 0;
 							for (u32 i = 0; i < 8; ++i) {								
 								Unit* bunker_unit = unit->get_loaded_unit(i);

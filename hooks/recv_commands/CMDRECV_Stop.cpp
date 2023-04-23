@@ -38,7 +38,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x0B;
 			}
-			else if ((current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos || current_unit->id == UnitId::PoliceEngineer)
+			else if ((current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos)
 			&&		 current_unit->main_order_id == OrderId::ConstructingBuilding)
 			{
 				*u32_0066FF60 = 0x08;
@@ -122,8 +122,7 @@ namespace hooks
 			{
 				*u32_0066FF60 = 0x0B;
 			}
-			else if (current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos || current_unit->id == UnitId::PoliceEngineer
-				&& current_unit->main_order_id == OrderId::ConstructingBuilding)
+			else if (current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos && current_unit->main_order_id == OrderId::ConstructingBuilding)
 			{
 				*u32_0066FF60 = 0x08;
 			}

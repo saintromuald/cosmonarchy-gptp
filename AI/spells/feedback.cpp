@@ -5,7 +5,7 @@
 
 namespace AI
 {
-	Unit* findBestFeedbackTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_feedback_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

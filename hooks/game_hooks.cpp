@@ -902,10 +902,13 @@ namespace hooks {
 				}
 				update_mineral_field_image(unit);
 			} break;
+			case UnitId::TerranWellbore:
+			{
+				unit->building.resource.resource_yield = 10;
+			} break;
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
 			{
 				unit->building.resource.resource_yield = 6;
 			} break;

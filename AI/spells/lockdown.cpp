@@ -3,7 +3,7 @@
 
 namespace AI
 {
-	Unit* findBestLockdownTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_lockdown_target(Unit* caster, bool isUnderAttack)
 	{
 		if (caster->mine_carrier.mine_count == 0)
 		{
