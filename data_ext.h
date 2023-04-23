@@ -291,6 +291,7 @@ enum ExtUnitId
 	UnitCentaurSecondaryWeaponTarget,
 	UnitIonCannonTarget,
 	UnitSevenstepMindMatterSource,
+	UnitPennant,
 
 	UnitCount,
 };

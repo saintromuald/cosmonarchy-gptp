@@ -2539,6 +2539,7 @@ namespace hooks {
 								current_button_state = Button_State::Enabled;
 							}
 
+							// TODO: Find a way to colorize passive icons.
 							if  (current_button_state == Button_State::Enabled
 							&& !(current_dialog->flags & BinDlgFlags::AlternateStyleWC2))
 							{
@@ -2554,7 +2555,7 @@ namespace hooks {
 					// Attack overrides
 					if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building)
 					{
-						if (scbw::unit_id_is_bunker) {
+						if (unit->id == UnitId::TerranBunker) {
 							u32 loaded = 0;
 							for (u32 i = 0; i < 8; ++i) {								
 								Unit* bunker_unit = unit->get_loaded_unit(i);

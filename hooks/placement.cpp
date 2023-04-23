@@ -238,7 +238,7 @@ namespace hooks
 			u16 id = *g_place_building_unit_id;
 			do
 			{
-				if (geyser->id == UnitId::ResourceVespeneGeyser && scbw::unit_id_is_capped_gas_structure(id))
+				if (geyser->id == UnitId::ResourceVespeneGeyser && scbw::unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant)
 				{
 					b32 can_draw = helper::can_draw_placement_rect_maybe(id, geyser);
 					id = *g_place_building_unit_id; // lol looping

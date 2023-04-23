@@ -3098,7 +3098,8 @@ namespace scbw {
 			|| unit_id == UnitId::TerranReservoir
 			|| unit_id == UnitId::TerranWellbore
 			|| unit_id == UnitId::ProtossAquifer
-			|| unit_id == UnitId::ZergExcisant;
+			|| unit_id == UnitId::ZergExcisant
+			|| unit_id == UnitId::ZergEzigrisant;
 	}
 
 	bool unit_id_is_ground_bunker(u32 unit_id) {
@@ -3513,5 +3514,26 @@ namespace scbw {
 			return true;
 		}
 		return false;
+	}
+
+	bool unit_paths_over_small_units(Unit* unit)
+	{
+		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
+		return unit->id == UnitId::TerranPenumbra;
+	}
+
+	bool unit_collides_with_titanic(Unit* unit)
+	{
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			return unit->id != UnitId::ProtossPylon && !scbw::unit_id_is_minerals(unit->id);
+		}
+		return unit->id == UnitId::TerranClaymore
+			|| unit->id == UnitId::TerranPenumbra
+			|| unit->id == UnitId::TerranAion
+			|| unit->id == UnitId::ProtossOptecton
+			|| unit->id == UnitId::ProtossDemiurge
+			|| unit->id == UnitId::ZergKeskathalor
+			|| unit->id == UnitId::ZergKethrostalor
+			|| unit->id == UnitId::ZergUltrokor;
 	}
 }
