@@ -54,7 +54,7 @@ Target make_target(Unit* unit, Point16 pos) {
 	return {pos, unit};
 }
 
-Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
+Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 rotate = unit_ext->values[weapon_offsets->value_id];
 	Image* image = unit->sprite->main_graphic;
@@ -87,6 +87,13 @@ Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 	if (image->flags & ImageFlags::Mirrored) {
 		offset.x = -offset.x;
 	}
+	return offset;
+}
+
+Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
+	Point8 offset = peek_bullet_offset(unit, weapon_offsets);
+	UnitExt* unit_ext = get_unit_ext(unit);
+	u32 rotate = unit_ext->values[weapon_offsets->value_id];
 	rotate++;
 	if (rotate >= weapon_offsets->count) {
 		rotate = 0;
@@ -95,7 +102,13 @@ Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 	return offset;
 }
 
-Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown) {
+Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
+	unit_position.x += offset.x;
+	unit_position.y += offset.y;
+	return unit_position;
+}
+
+Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range) {
 	if (!unit->sprite) {
 		return 0;
 	}
@@ -113,11 +126,9 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		launch_pos = target.pt;
 	}
 	if (weapon_offsets) {
-		Point8 offset = get_next_bullet_offset(unit, weapon_offsets);
-		launch_pos.x += offset.x;
-		launch_pos.y += offset.y;
+		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
-	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
+	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit);
 		target.pt = launch_pos;
@@ -170,15 +181,50 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingP
 	return bullet;
 }
 
-void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, WeaponOffsets* weapon_offsets) {
-	Target target = unit->order_target;
-	fire_bullet(unit, weapon_id, target);
-	for (s32 i = 1; i <= side_count; ++i) {
-		Point16 left = scbw::rotate_point(unit->position, target.pt, 360 - (i * angle_spread));
-		fire_bullet(unit, weapon_id, make_target(target.unit, left), weapon_offsets);
+static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
+	Vector32f vector = scbw::get_vectorf_between(origin, point);
+	f32 old_distance = scbw::get_vector_distance(vector);
 
-		Point16 right = scbw::rotate_point(unit->position, target.pt, i * angle_spread);
-		fire_bullet(unit, weapon_id, make_target(target.unit, right), weapon_offsets);
+	vector.x *= distance / old_distance;
+	vector.y *= distance / old_distance;
+
+	Point16 result = origin;
+	result.x += vector.x;
+	result.y += vector.y;
+	return result;
+}
+
+void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
+	u32 max_range = weapons_dat::max_range[weapon_id];
+	Target target = unit->order_target;
+	{
+		Point16 launch_pos = unit->position;
+		if (weapon_offsets) {
+			launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, weapon_offsets));
+		}
+		target.pt = set_target_range(launch_pos, target.pt, max_range);
+		fire_bullet(unit, weapon_id, target);
+	}
+
+	for (s32 i = 1; i <= side_count; ++i) {
+		s32 current_scatter = vertical_scatter * i;
+		if (i % 2 == 1) {
+			current_scatter *= -1;
+		}
+		u32 current_range = max_range + current_scatter;
+
+		for (u32 j = 0; j < 2; ++j) {
+			Point16 launch_pos = unit->position;
+			if (weapon_offsets) {
+				launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, weapon_offsets));
+			}
+			f64 angle = i * angle_spread;
+			if (j == 0) {
+				angle = 360 - angle;
+			}
+			Point16 target_pt = scbw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, current_range), angle);
+			fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), weapon_offsets, true, true);
+		}
 	}
 }
 
@@ -655,7 +701,7 @@ namespace hooks {
 					case WeaponId::SirenCharybdalRifle:
 					{
 						// Discovered Attacks - Siren
-						fire_shotgun(unit, weapon_id, 2, 10);
+						fire_shotgun(unit, weapon_id, 2, 5, 10);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
