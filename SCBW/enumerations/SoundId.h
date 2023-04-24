@@ -1501,5 +1501,13 @@ namespace SoundId
 		SavantSwitchPierce01				= 2390,
 		SavantSwitchPierce02				= 2391,
 		SavantSwitchPierce03				= 2392,
+
+		SavantReady01						= 2403,
+		SavantReady02						= 2404,
+		SavantReady03						= 2405,
+		SavantOrderAggressive01				= 2406,
+		SavantOrderAggressive02				= 2407,
+		SavantOrderAggressive03				= 2408,
+		SavantOrderAggressive04				= 2409,
 	};
 }
