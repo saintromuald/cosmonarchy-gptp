@@ -474,13 +474,13 @@ namespace hooks
 					&&   !scbw::is_under_dark_swarm(data.target)) {
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
-							const u32 displacementTime = 5;
+							const u32 displacement_time = 5;
 							Vector32 diff = scbw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
 							Vector32f displacement = scbw::get_normalized_vector(diff);
-							displacement.x *= 1 * 32.0 / displacementTime;
-							displacement.y *= 1 * 32.0 / displacementTime;
+							displacement.x *= 1 * 32.0 / displacement_time;
+							displacement.y *= 1 * 32.0 / displacement_time;
 
-							attacker_ext->timers[TimerStrigaRepulsion] = displacementTime;
+							attacker_ext->timers[TimerStrigaRepulsion] = displacement_time;
 							attacker_ext->repulsion_vector = displacement;
 						}
 					}
