@@ -3454,7 +3454,7 @@ namespace scbw {
 		return scbw::get_distance_between(cp, point);
 	}
 
-	static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vector32f proj, f32* best_distance, Vector32f* best_cp, f32* best_t) {
+	static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vector32f axis, f32* best_distance, Vector32f* best_cp, f32* best_t) {
 		for (u32 i = 0; i < 4; ++i) {
 			Vector32f line0 = quad_a.corners[i];
 			Vector32f line1 = quad_a.corners[(i + 1) % 4];
@@ -3462,7 +3462,7 @@ namespace scbw {
 				Vector32f point = quad_b.corners[j];
 				Vector32f cp = {};
 				f32 distance = line_to_point_distance(line0, line1, point, &cp);
-				f32 t = scbw::dot_product(cp, proj);
+				f32 t = scbw::dot_product(cp, axis);
 				if (abs(distance - *best_distance) < 1) {
 					if (t < *best_t) {
 						*best_distance = distance;
@@ -3486,25 +3486,22 @@ namespace scbw {
 				return true;
 			}
 
+			Vector32f axis = scbw::get_vectorf_between(from, to);
 			f32 best_distance = INFINITY;
 			Vector32f best_cp = {};
-			best_cp.x = rect.left   + (rect.right - rect.left) / 2;
+			best_cp.x = rect.left   + (rect.right - rect.left)   / 2;
 			best_cp.y = rect.bottom + (rect.top   - rect.bottom) / 2;
 			f32 best_t = INFINITY;
 
-			Vector32f proj = {};
-			proj.x = to.x - from.x;
-			proj.y = to.y - from.y;
-
-			line_intersects_rect_internal(line_quad, box_quad, proj, &best_distance, &best_cp, &best_t);
-			line_intersects_rect_internal(box_quad, line_quad, proj, &best_distance, &best_cp, &best_t);
+			line_intersects_rect_internal(line_quad, box_quad, axis, &best_distance, &best_cp, &best_t);
+			line_intersects_rect_internal(box_quad, line_quad, axis, &best_distance, &best_cp, &best_t);
 
 			if (out_cp) {
 				out_cp->x = best_cp.x;
 				out_cp->y = best_cp.y;
 			}
 			if (out_t) {
-				*out_t = scbw::dot_product(best_cp, proj);
+				*out_t = scbw::dot_product(best_cp, axis);
 			}
 
 			return true;

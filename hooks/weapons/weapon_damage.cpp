@@ -470,7 +470,7 @@ namespace hooks
 				{
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
-					&&	!(data.attacker->status != UnitStatus::Burrowed)
+					&&	!(data.attacker->status & UnitStatus::Burrowed)
 					&&   !scbw::is_under_dark_swarm(data.target)) {
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
