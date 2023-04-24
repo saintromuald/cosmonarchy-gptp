@@ -877,7 +877,7 @@ namespace hooks
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 				fatal_deal_damage = false;
 			} break;
-			case UnitId::TerranCuirass:
+			case UnitId::TerranCuirassTankMode:
 			{
 				// Cuirass - Stonewall Protocol
 				if (!target_ext->values[ValueCuirassIsSelfReviving]) {

@@ -1447,7 +1447,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranCuirass:
+			case UnitId::TerranCuirassTankMode:
 			{
 				if (unit_ext->values[ValueCuirassIsSelfReviving]) {
 					if (unit->hitpoints + CuirassSelfHeal >= unit->get_max_hp_raw()) {

@@ -805,6 +805,7 @@ namespace hooks {
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::AutocratEminenceRifle:
 			case WeaponId::RamessesPharoahCannons:
+			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
 			{
 				iquare_globals.add_bullet_multihit(bullet, unit);

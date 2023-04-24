@@ -1920,7 +1920,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranCuirass:
+								case UnitId::TerranCuirassTankMode:
 								{
 									if (current_button->icon_id == IconId::MoebiusReactor) // Cuirass - Stonewall Protocol
 									{

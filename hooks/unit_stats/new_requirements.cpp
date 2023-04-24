@@ -365,7 +365,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranPaladin:
-				case UnitId::TerranCuirass:
+				case UnitId::TerranCuirassTankMode:
 				case UnitId::TerranPazuzu:
 				{
 					return true;
@@ -1855,7 +1855,7 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::TerranPaladin:
-					case UnitId::TerranCuirass:
+					case UnitId::TerranCuirassTankMode:
 					case UnitId::TerranPazuzu:
 					{
 						if (in_air || is_adding_on)
