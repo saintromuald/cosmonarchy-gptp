@@ -408,7 +408,7 @@ namespace hooks
 		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
 	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4); // crashes
 		jump_patch(centerview_unit_group,					0x004967E0, 1);
-		jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2);
+	//	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2);
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 	}

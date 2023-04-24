@@ -518,7 +518,7 @@ namespace hooks
 		state->grp_frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
 		state->type = 1;
 		state->id = units_dat::armor_upgrade[final_unit_id];
-		child->psz_text = g_status_screen_info_button_unk[status_screen_index];
+		child->text = g_status_screen_info_button_unk[status_screen_index];
 		u32 flags = child->flags;
 		if (!(flags & UnitStatus::Completed))
 		{
@@ -570,7 +570,7 @@ namespace hooks
 		state->id = weapon_id;
 
 		u32 flags = child->flags;
-		child->psz_text = g_status_screen_info_button_unk[status_screen_index];
+		child->text = g_status_screen_info_button_unk[status_screen_index];
 		if (!(flags & 1))
 		{
 			child->flags = flags | 1;
@@ -619,7 +619,7 @@ namespace hooks
 		state->id = 15;
 
 		u32 flags = child->flags;
-		child->psz_text = g_status_screen_info_button_unk[status_screen_index];
+		child->text = g_status_screen_info_button_unk[status_screen_index];
 		if (!(flags & 1))
 		{
 			child->flags = flags | 1;
@@ -670,7 +670,7 @@ namespace hooks
 		user->id = 13;
 
 		u32 flags = child->flags;
-		child->psz_text = g_status_screen_info_button_unk[index];
+		child->text = g_status_screen_info_button_unk[index];
 		if (!(flags & 1))
 		{
 			child->flags = flags | 1;
@@ -1106,7 +1106,7 @@ namespace hooks
 						current_dialog->stat_button_user->type = 3;
 						current_dialog->stat_button_user->id = slotUnitId;
 						helper::enable_control(current_dialog);
-						current_dialog->psz_text = g_queues_buffers[queueSlot];
+						current_dialog->text = g_queues_buffers[queueSlot];
 					}
 					else
 					{
@@ -1114,7 +1114,7 @@ namespace hooks
 						current_dialog->stat_button_user->grp_frame = queueSlot + 6;
 						current_dialog->stat_button_user->type = 6;
 						helper::disable_dialog(current_dialog);
-						current_dialog->psz_text = 0;
+						current_dialog->text = 0;
 					}
 
 					if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
@@ -1172,7 +1172,7 @@ namespace hooks
 			}
 			// Spoiler: it didn't work.
 			if (current_dialog) { // This nullcheck wasn't in the original code. Currently we crash if this is removed, and text status_text is not written to any visible dialog. IDA was not helpful. -Pr0nogo
-				current_dialog->psz_text = status_text;
+				current_dialog->text = status_text;
 			}
 			while (current_dialog)
 			{
@@ -1376,7 +1376,7 @@ namespace hooks
 			current_dialog->stat_button_user->type = PanelTooltipTypes::SpecialPanelTooltip;
 			current_dialog->stat_button_user->id = built_unit_id;
 			helper::enable_control(current_dialog);
-			current_dialog->psz_text = g_queues_buffers[0];
+			current_dialog->text = g_queues_buffers[0];
 			helper::show_dialog(current_dialog);
 
 			if (!(current_dialog->flags & BinDlgFlags::Highlighted))

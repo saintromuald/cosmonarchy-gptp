@@ -157,7 +157,7 @@ namespace hooks {
 	}
 
 	void ui_button_click(BinDlg* dialog) {
-		if (dialog->parent && dialog->parent->psz_text && strcmp(dialog->parent->psz_text, "StatBtn") == 0) {
+		if (dialog->parent && dialog->parent->text && strcmp(dialog->parent->text, "StatBtn") == 0) {
 			hooks::quickcasting_timeout  = 5;
 			hooks::quickbuilding_timeout = 5;
 		}

@@ -557,7 +557,7 @@ struct BinDlg
 	/*0x00*/  BinDlg*		next;
 	/*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
 	/*0x10*/  u8*			buffer;
-	/*0x14*/  char*			psz_text;
+	/*0x14*/  char*			text;
 	/*0x18*/  u32			flags;			// use BinDlgFlags::Enum
 	/*0x1C*/  u32			unk_1c;
 	/*0x20*/  u16			index;
