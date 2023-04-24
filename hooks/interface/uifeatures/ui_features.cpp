@@ -717,4 +717,66 @@ LABEL_15:
 		avg_pos.y /= avg_count;
 		scbw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
 	}
+
+	// Hooked to explore colorizing passive icons. -Pr0nogo
+	void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest) // 004EFD90
+	{
+		u32 flags_2 = button2->flags;
+		BinDlg* parent = button2->parent;
+		BinDlg* button_unk = parent->initialVersion0x36.unk_3e;
+		u32 final_flags;
+		if  (flags_2 & BinDlgFlags::Disabled
+		|| !(flags_2 & BinDlgFlags::Visible)
+		||   button2 != button_unk && (button2->control_type != 1 || button_unk || parent->flags & BinDlgFlags::UseAlternateStyle))
+		{
+			final_flags = flags_2 & ~BinDlgFlags::Unknown12;
+		}
+		else
+		{
+			final_flags = flags_2 | BinDlgFlags::Unknown12;
+		}
+		button2->flags = final_flags;
+		if (!(final_flags & BinDlgFlags::RemoveStyles))
+		{
+			u8 graphic;
+			if (final_flags & BinDlgFlags::Disabled)
+			{
+				graphic = button2->graphic;
+			}
+			else
+			{
+				if (final_flags & BinDlgFlags::NoClickSound)
+				{
+					u32 VEEQTISM = (((u8)button1->graphic + 2) & 0xFF) | (u32)button1 & 0xFF00;
+					final_flags = helper::draw_clamped_dialog_image(dest, VEEQTISM, button2->bounds.x, button2->bounds.y, final_flags);
+					goto LABEL_16;
+				}
+				graphic = button2->graphic + 1;
+			}
+			final_flags = helper::draw_clamped_dialog_image(dest, graphic, button2->bounds.x, button2->bounds.y, final_flags);
+		}
+	LABEL_16:
+		u32 x_min = button2->bounds.x;
+		u32 x_max = button2->bounds.w;
+		u32 y_min = button2->bounds.y;
+		u32 y_max = button2->bounds.h;
+
+		if (button2->control_type == 1)
+		{
+			*g_draw_color_index = g_palette_index_reference[5];
+			helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
+		}
+		flags_2 = button2->flags;
+		if (flags_2 & BinDlgFlags::Unknown12)
+		{
+			*g_draw_color_index = g_palette_index_reference[16];
+			helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
+		}
+		if (button2->psz_text)
+		{
+			bool highlight = button2->flags & BinDlgFlags::HighlightText;
+			*g_print_xy_alignment = 34;
+			helper::dialog_draw_text(0, button2, highlight, highlight);
+		}
+	}
 }
