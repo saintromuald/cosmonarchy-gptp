@@ -42,6 +42,28 @@ namespace
 		}
 	}
 
+	void __declspec(naked) can_collide_with_wrapper() {
+		static Unit* unit;
+		static Unit* colliding_unit;
+		static bool result;
+
+		__asm {
+			MOV unit, EDX
+			MOV colliding_unit, ESI
+			PUSHAD
+		}
+
+		result = hooks::can_collide_with(unit, colliding_unit);
+
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	};
+
+	// Patches \\
+
 	const u32 playIdleIscript_978D8 = 0x004978D8;
 	void __declspec(naked) play_idle_iscript_patch_978D3() {
 		__asm {
@@ -61,6 +83,7 @@ namespace hooks
 	{
 		jump_patch(unit_movement_dormant_wrapper,	0x0046A8D0, 1);
 	//	jump_patch(move_unit_wrapper,				0x004EB9F0, 1); // breaks sprite sorting
+		jump_patch(can_collide_with_wrapper,		0x0042DEE0, 2);
 
 	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}

@@ -246,7 +246,7 @@ namespace hooks
 						}
 
 						u16 gas_building_id = unit->build_queue[unit->build_queue_slot];
-						if (gas_building_id == UnitId::TerranReservoir || gas_building_id == UnitId::PoliceDispensary) {
+						if (gas_building_id == UnitId::TerranReservoir || gas_building_id == UnitId::TerranWellbore) {
 							unit->secondary_order_pos = unit->position;
 							built_unit = helper::begin_gas_building(unit, gas_building_id);
 						} else {
@@ -410,9 +410,6 @@ namespace hooks
 					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
 					{
 						sound_id = 136;
-					}
-					else if (unit->id == UnitId::PoliceEngineer) {
-						sound_id = 136; // Change this later
 					}
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);

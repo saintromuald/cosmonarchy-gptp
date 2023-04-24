@@ -288,7 +288,7 @@ void unit_destructor_special_cases(Unit* unit) {
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
+			case UnitId::TerranWellbore:
 			{
 				free_resource_container(unit);
 			} break;

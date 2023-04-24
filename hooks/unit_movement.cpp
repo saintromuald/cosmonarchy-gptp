@@ -54,4 +54,43 @@ namespace hooks
             }
         }
 	}
+
+	// Hooked by DarkenendFantasies to allow selectively enabling or disabling new collisions.
+	bool can_collide_with(Unit* unit, Unit* colliding_unit) // 0042DEE0
+	{
+		u32 collider_status = colliding_unit->status;
+		if (collider_status & UnitStatus::UNKNOWN5) {
+			u8 player = colliding_unit->player;
+			if (player == 11) {
+				player = colliding_unit->sprite->player;
+			}
+
+			if (!scbw::are_mutual_allies(unit->player, player)) {
+				return false;
+			}
+		}
+		if (scbw::unit_paths_over_small_units(unit) || scbw::unit_paths_over_small_units(colliding_unit))
+		{
+			if ((scbw::unit_collides_with_titanic(colliding_unit) && !scbw::unit_collides_with_titanic(unit))
+			||   scbw::unit_collides_with_titanic(unit)			  && !scbw::unit_collides_with_titanic(colliding_unit)) {
+				return false;
+			}
+		}
+
+		u16 unit_id = unit->id;
+		u16 collider_id = colliding_unit->id;
+		if ((unit_id == UnitId::ZergLarva && !(collider_status & UnitStatus::GroundedBuilding)) || collider_id == UnitId::ZergLarva) {
+			return false;
+		}
+
+		if (!(unit->status & UnitStatus::IsGathering) || collider_status & UnitStatus::GroundedBuilding) {
+			return true;
+		}
+
+		if (!(collider_status & UnitStatus::IsGathering) || unit->main_order_id == OrderId::ReturnGas) {
+			return false;
+		}
+
+		return colliding_unit->main_order_id == OrderId::CanEnterGasMine;
+	}
 }

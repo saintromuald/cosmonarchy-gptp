@@ -7,7 +7,7 @@
 namespace AI
 {
 
-	Unit* findBestRestorationTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_restoration_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds = 32 * 32;
@@ -39,7 +39,7 @@ namespace AI
 	}
 
 
-	Unit* findBestRestorationTargetSituational(Unit* caster, bool isUnderAttack)
+	Unit* find_best_restoration_target_ex(Unit* caster, bool isUnderAttack)
 	{
 
 		if (isUnderAttack)

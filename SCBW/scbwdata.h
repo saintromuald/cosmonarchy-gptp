@@ -1166,6 +1166,9 @@ SCBW_DATA(u16*,				g_map_height,						0x0059CC64);
 // For replay autosaves
 SCBW_DATA(u8*,				g_is_league_game,					0x00629268);
 
+// For draw_standard_button_graphic
+SCBW_DATA(char*,			g_print_xy_alignment,				0x006CE110);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

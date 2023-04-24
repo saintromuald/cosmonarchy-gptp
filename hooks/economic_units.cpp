@@ -10,13 +10,14 @@ namespace hooks
 		{
 			case UnitId::TerranMason:
 			case UnitId::TerranTalos:
-			case UnitId::PoliceEngineer:
 				order = OrderId::BuildTerran;
 				break;
 			case UnitId::ZergDroleth:
+			case UnitId::ZergGosvileth:
 				order = OrderId::DroneStartBuild;
 				break;
 			case UnitId::ProtossScribe:
+			case UnitId::ProtossArtisan:
 				order = OrderId::BuildProtoss1;
 				break;
 			default:
@@ -96,7 +97,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
+			case UnitId::TerranWellbore:
 				return true;
 			default:
 				break;
@@ -110,7 +111,7 @@ namespace hooks
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
+			case UnitId::TerranWellbore:
 				return true;
 			default:
 				break;

@@ -35,6 +35,7 @@ namespace hooks {
 	void cmdact_right_click_minimap(DialogEvent* dlg_event);													// 004563A0
 	void draw_vertical_line(u16 size, u16 x, u16 y);															// 0041D7D0
 	void __fastcall centerview_unit_group(u8 slot);																// 004967E0
+	void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);							// 004EFD90
 
 	void inject_ui_features_hooks();
 

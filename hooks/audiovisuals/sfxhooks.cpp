@@ -73,6 +73,9 @@ namespace hooks {
 				case UnitId::TerranCyprian: {
 					return helper::get_random_sfx_between(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
 				} break;
+				case UnitId::TerranSavant: {
+					return helper::get_random_sfx_between(SoundId::SavantOrderAggressive01, SoundId::SavantOrderAggressive04);
+				} break;
 				case UnitId::TerranMadcap: {
 					return helper::get_random_sfx_between(SoundId::MadcapOrderAggressive01, SoundId::MadcapOrderAggressive04);
 				} break;
@@ -184,6 +187,9 @@ namespace hooks {
 					} break;
 					case UnitId::TerranShaman: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ShamanReady01, SoundId::ShamanReady03);
+					} break;
+					case UnitId::TerranSavant: {
+						ready_sound = helper::get_random_sfx_between(SoundId::SavantReady01, SoundId::SavantReady03);
 					} break;
 					case UnitId::TerranMadcap: {
 						ready_sound = helper::get_random_sfx_between(SoundId::MadcapReady01, SoundId::MadcapReady03);

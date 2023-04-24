@@ -44,7 +44,7 @@ namespace hooks
 		scbw::decloak_proc(transport);
 		scbw::decloak_proc(cargo_unit);
 		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
-		if (cargo_unit->id == UnitId::TerranMason || cargo_unit->id == UnitId::PoliceEngineer) {
+		if (cargo_unit->id == UnitId::TerranMason || cargo_unit->id == UnitId::TerranTalos) {
 			if (cargo_unit->unit_ai) {
 				AiTown* town = cargo_unit->unit_ai->worker_ai.town;
 				if (town->building_scv == cargo_unit) {

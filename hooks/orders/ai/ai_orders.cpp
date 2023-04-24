@@ -643,7 +643,7 @@ namespace hooks {
 			for (i = *first_player_unit[placementId].unit; i; i = i->player_link.next) {
 				if (i->sprite) {
 					if (i->main_order_id) {
-						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony || i->id == UnitId::PoliceDugout) {
+						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony) {
 							u32 iterator2 = 0;
 							if (region_max) {
 								do { // Distance from unit to region position
@@ -708,7 +708,7 @@ namespace hooks {
 							return;
 						}
 						case UnitId::TerranBunker:
-						case UnitId::PoliceDugout:
+					//	case UnitId::TerranTencendur:
 						{
 							if (!helper::get_bunker_placement_position(player, &max_range)) {
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
@@ -2128,7 +2128,7 @@ namespace hooks {
 				unit_id = UnitId::TerranFulcrum;
 			} break;
 			case UnitId::TerranBunker:
-			case UnitId::PoliceDugout:
+		//	case UnitId::TerranTencendur:
 			{
 				if (get_bunker_placement_position(player_var, (u32*)&player)) {
 					placement_data_2 = 0;

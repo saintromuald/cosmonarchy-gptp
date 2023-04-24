@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	Unit* findBestEmpShockwaveTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_emp_shockwave_target(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;

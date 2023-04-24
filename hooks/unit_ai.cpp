@@ -298,7 +298,7 @@ namespace hooks {
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
 				&&	  unit->id != UnitId::TerranBunker
-				&&	  unit->id != UnitId::PoliceDugout
+			//	&&	  unit->id != UnitId::TerranTencendur
 				&&	  unit->id != UnitId::ZergCagrantColony
 				&&	  unit->id != UnitId::ZergSpraithColony
 				&&	  unit->id != UnitId::ZergSurkithColony

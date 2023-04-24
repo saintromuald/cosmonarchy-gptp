@@ -805,6 +805,7 @@ namespace hooks {
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::AutocratEminenceRifle:
 			case WeaponId::RamessesPharoahCannons:
+			case WeaponId::HippogriffChimeraCannons:
 			{
 				iquare_globals.add_bullet_multihit(bullet, unit);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);

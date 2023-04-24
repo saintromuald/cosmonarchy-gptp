@@ -4,6 +4,7 @@
 #include "hook_tools.h"
 #include "SCBW/stat_txt_spec.h"
 #include "hooks/interface/select_larva.h"
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -111,6 +112,10 @@ namespace hooks
 				buf[3] = *g_active_player_id;
 				buf[4] = RustId::ToggleSavantOnhit;
 				helper::queue_game_command(buf, 0xC);
+
+				u32 action_sound = action ? helper::get_random_sfx_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03) : helper::get_random_sfx_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03);
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 			} break;
 			case TechId::ApostleLazarusAgent:
 			{

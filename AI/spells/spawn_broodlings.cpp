@@ -3,7 +3,7 @@
 
 namespace AI
 {
-	Unit* findBestSpawnBroodlingsTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_broodspawn_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)

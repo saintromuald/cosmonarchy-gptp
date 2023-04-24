@@ -796,4 +796,6 @@ namespace scbw
 	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count);
 	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp);
 	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
+	bool unit_paths_over_small_units(Unit* unit);
+	bool unit_collides_with_titanic(Unit* unit);
 }

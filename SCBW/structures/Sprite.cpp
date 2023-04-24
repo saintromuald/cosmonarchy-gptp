@@ -92,19 +92,19 @@ void Sprite::set_position(u16 x, u16 y)
 		return;
 	}
 
-	const s32 oldTileY = CLAMP(this->position.y / 32, 0, g_map_tile_size->height - 1);
-	const s32 newTileY = CLAMP(y / 32, 0, g_map_tile_size->height - 1);
+	const s32 old_tile_y = CLAMP(this->position.y / 32, 0, g_map_tile_size->height - 1);
+	const s32 new_tile_y = CLAMP(y / 32, 0, g_map_tile_size->height - 1);
 
 	this->position.x = x;
 	this->position.y = y;
 
-	if (oldTileY != newTileY)
+	if (old_tile_y != new_tile_y)
 	{
 		const ListExtern<Sprite, &Sprite::link>
-			spritesOnOldTileRow(spritesOnTileRow->heads[oldTileY],
-				spritesOnTileRow->tails[oldTileY]),
-			spritesOnNewTileRow(spritesOnTileRow->heads[newTileY],
-				spritesOnTileRow->tails[newTileY]);
+			spritesOnOldTileRow(spritesOnTileRow->heads[old_tile_y],
+				spritesOnTileRow->tails[old_tile_y]),
+			spritesOnNewTileRow(spritesOnTileRow->heads[new_tile_y],
+				spritesOnTileRow->tails[new_tile_y]);
 
 		spritesOnOldTileRow.unlink(this);
 		spritesOnNewTileRow.insertAfterHead(this);

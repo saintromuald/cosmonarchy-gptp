@@ -992,7 +992,8 @@ namespace hooks
 		} else {
 			switch (unit_id) {
 				case UnitId::TerranBunker:
-				case UnitId::PoliceDugout: {
+			//	case UnitId::TerranTencendur:
+				{
 					if (!helper::get_bunker_position(player, &build_pos)) {
 						build_pos = town->position;
 					}

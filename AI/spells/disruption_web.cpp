@@ -3,8 +3,7 @@
 
 namespace AI
 {
-
-	Unit* findBestDisruptionWebTarget(Unit* caster, bool isUnderAttack)
+	Unit* find_best_disruption_field_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)
@@ -58,7 +57,7 @@ namespace AI
 			}
 			if (target->id == UnitId::TerranWatchdog
 			||  target->id == UnitId::TerranBunker
-			||  target->id == UnitId::PoliceDugout
+		//	||  target->id == UnitId::TerranTencendur
 			||  target->id == UnitId::ZergSpraithColony
 			||  target->id == UnitId::ZergSkortrithColony
 			||  target->id == UnitId::ZergSpirtithColony
@@ -70,5 +69,4 @@ namespace AI
 			return false;
 		});
 	}
-
-} //AI
+}

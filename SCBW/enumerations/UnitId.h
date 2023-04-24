@@ -107,6 +107,7 @@ namespace UnitId
 		TerranIronCouncil									= 295,
 		TerranAmphitheater									= 296,
 		TerranThroneroom									= 299,
+		TerranWellbore										= 365,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan
@@ -239,6 +240,7 @@ namespace UnitId
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
 		ZergSpirtithColony									= 292,		// Morphed from Cagrant Colony
+		ZergSkortrithColony									= 293,		// Morphed from Surkith Colony
 		ZergRakzogthRoost									= 303,		// Unused
 		ZergAxtothAxis										= 328,		// Morphed from Droleth
 		ZergBegrozithBarrow									= 329,		// Unused
@@ -246,7 +248,7 @@ namespace UnitId
 		ZergNephrilosk										= 350,		// Unused
 		ZergOcsalColony										= 354,		// Morphed from Cagrant Colony
 		ZergKazitrithColony									= 355,		// Morphed from Cagrant Colony
-		ZergSkortrithColony									= 293,		// Morphed from Surkith Colony
+		ZergEzigrisant										= 364,		// Morphed from Cagrant Colony
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
@@ -550,26 +552,7 @@ namespace UnitId
 
 		Buttons_MixedMasonTraining							= 361,
 
-		Buttons_BasicPoliceStructures						= 368,
-		Buttons_AdvancedPoliceStructures					= 369,
-
-	// Todborne BW \\
-		
-	// Units
-		PoliceEngineer										= 367,
-		PoliceDeputy										= 371,
-		PoliceWATTrooper									= 372,
-		PoliceSlapdash										= 373,
-		PoliceBarker										= 374,
-		PolicePriestess										= 375,
-
-	// Buildings
-		PoliceStation										= 364,
-		PoliceDispensary									= 365,
-		PoliceAcademy										= 366,
-		PoliceDugout										= 370,
-		PoliceDonutShack									= 376,
-		PoliceDoghouse										= 377,
-		PoliceMickenPyre									= 378,
+		Buttons_BasicPoliceStructures						= 368,	// unused
+		Buttons_AdvancedPoliceStructures					= 369,	// unused
 	};
 }

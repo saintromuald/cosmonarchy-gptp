@@ -902,20 +902,40 @@ namespace hooks {
 				}
 				update_mineral_field_image(unit);
 			} break;
+			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
+			{
+				unit->building.resource.resource_yield = 10;
+				if (unit_ext->units[UnitPennant])
+				{
+					unit->building.resource.resource_yield += 2;
+				}
+			} break;
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
 			{
 				unit->building.resource.resource_yield = 6;
+				if (unit_ext->units[UnitPennant])
+				{
+					unit->building.resource.resource_yield += 2;
+				}
 			} break;
 			case UnitId::ResourceVespeneGeyser:
 			{
 				unit->building.resource.resource_yield = 4;
+				if (unit_ext->units[UnitPennant])
+				{
+					unit->building.resource.resource_yield += 2;
+				}
 			} break;
 			case UnitId::ResourceVespeneRidge:
 			{
 				unit->building.resource.resource_yield = 3;
+				if (unit_ext->units[UnitPennant])
+				{
+					unit->building.resource.resource_yield += 2;
+				}
 			} break;
 		}
 	}

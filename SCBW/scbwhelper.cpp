@@ -13556,4 +13556,53 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	b32 draw_clamped_dialog_image(BinDlg* dest, u32 veeqtism, u32 pos_x, u32 pos_y, u32 flags)
+	{
+		const u32 func_address = 0x004EF600;
+		static b32 result;
+		__asm {
+			PUSHAD
+			PUSH flags
+			PUSH pos_y
+			PUSH pos_x
+			PUSH veeqtism
+			MOV ESI, dest
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u8* bw_draw(u16 x_pos, u32 y_pos, u32 x_clamp, u16 y_clamp)
+	{
+		const u32 func_address = 0x004E1C70;
+		static u8* result;
+		static u32 y_clamp_xd = y_clamp;
+		__asm {
+			PUSHAD
+			PUSH y_clamp_xd
+			PUSH x_clamp
+			PUSH y_pos
+			MOVZX SI, x_pos
+			CALL func_address
+			POPAD
+		}
+		return result;
+	}
+
+	void dialog_draw_text(void* arg, BinDlg* button, u32 flag1, u32 flag2)
+	{
+		const u32 func_address = 0x004EF870;
+		__asm {
+			PUSHAD
+			PUSH flag2
+			PUSH flag1
+			MOV ECX, button
+			MOV EAX, arg
+			CALL func_address
+			POPAD
+		}
+	}
 }

@@ -16,7 +16,7 @@ u32 get_gas_tier(Unit* unit) {
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
+			case UnitId::TerranWellbore:
 				return 3;
 		}
 	}
@@ -30,7 +30,7 @@ u32 get_harvest_amount(Unit* unit) {
 namespace hooks {
 	bool is_gas_container(u16 unit_id) {
 		if (unit_id == UnitId::ProtossAquifer || unit_id == UnitId::TerranReservoir || unit_id == UnitId::ZergExcisant
-		||	unit_id == UnitId::PoliceDispensary) {
+		||	unit_id == UnitId::TerranWellbore) {
 			return true;
 		}
 		return false;
@@ -64,7 +64,7 @@ namespace hooks {
 			chunk_image_id = ImageId::ProtossGasOrbType1;
 		} else if (resource->id == UnitId::ZergExcisant) {
 			chunk_image_id = ImageId::ZergGasSacType1;
-		} else if (resource->id == UnitId::TerranReservoir || resource->id == UnitId::PoliceDispensary) {
+		} else if (resource->id == UnitId::TerranReservoir || resource->id == UnitId::TerranWellbore) {
 			chunk_image_id = ImageId::TerranGasTankType1;
 		} else if (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser) {
 			chunk_image_id = ImageId::GasRaw;
@@ -146,7 +146,7 @@ namespace hooks {
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::PoliceDispensary:
+			case UnitId::TerranWellbore:
 			{
 				if ((ignore_completed || node->status & UnitStatus::Completed) && (node->player == worker->player || scbw::are_mutual_allies(node->player, worker->player)))
 				{
@@ -224,7 +224,7 @@ namespace hooks {
 			if (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser) {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
-			||			node->id == UnitId::PoliceDispensary)
+			||			node->id == UnitId::TerranWellbore)
 				&&		(node->player == unit->player || scbw::are_mutual_allies(node->player, unit->player)))
 			{
 				valid_structure = true;
@@ -262,7 +262,7 @@ namespace hooks {
 		char worker_resource_type;
 		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) { // is not mineral node
 			bool ignore_completed = true;
-			if ((node->id == UnitId::TerranReservoir || node->id == UnitId::PoliceDispensary)
+			if ((node->id == UnitId::TerranReservoir || node->id == UnitId::TerranWellbore)
 			&& !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
 				ignore_completed = false;
 			}

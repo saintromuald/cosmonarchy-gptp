@@ -544,6 +544,7 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergEzigrisant:
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergOrbothOmlia:
@@ -567,6 +568,7 @@ namespace scbw {
 	bool is_zerg_building_morph_source(u16 id) {
 		switch (id) {
 			case UnitId::ZergHachirosk:
+			case UnitId::ZergExcisant:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
@@ -586,13 +588,13 @@ namespace scbw {
 	}
 
 	std::string read_samase_file(char* name) {
-		const char* data = nullptr;
+		const char* data = 0;
 		u32 len = 0;
 		auto data_ptr = &data;
 		auto len_ptr = &len;
 		u32 val = reinterpret_cast<u32>(name);
-		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
-		char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
+		auto length = scbw::get_aise_value(0, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
+		char* buf = (char*)scbw::get_aise_value(0, 0, AiseId::ReadSamaseFile_Ptr, 0, 0);
 		std::string str;
 		if (length == 0) {
 			return str;
@@ -1800,9 +1802,10 @@ namespace scbw {
 				|| unit_id == UnitId::ResourceVespeneGeyser
 				|| unit_id == UnitId::ResourceVespeneRidge
 				|| unit_id == UnitId::TerranReservoir
+				|| unit_id == UnitId::TerranWellbore
 				|| unit_id == UnitId::ProtossAquifer
 				|| unit_id == UnitId::ZergExcisant
-				|| unit_id == UnitId::PoliceDispensary;
+				|| unit_id == UnitId::ZergEzigrisant;
 		} else {
 			return unit_id == UnitId::ResourceMineralField
 				|| unit_id == UnitId::ResourceMineralFieldType2
@@ -1932,9 +1935,10 @@ namespace scbw {
 
 	bool unit_id_is_capped_gas_structure(u16 unit_id) {
 		return unit_id == UnitId::TerranReservoir
+		||	   unit_id == UnitId::TerranWellbore
 		||	   unit_id == UnitId::ProtossAquifer
 		||	   unit_id == UnitId::ZergExcisant
-		||	   unit_id == UnitId::PoliceDispensary;
+		||	   unit_id == UnitId::ZergEzigrisant;
 	}
 
 	bool unit_id_is_gas_structure(u16 unit_id) {
@@ -1961,8 +1965,7 @@ namespace scbw {
 			|| unit_id == UnitId::ZergSpirtithColony
 			|| unit_id == UnitId::ZergKazitrithColony
 			|| unit_id == UnitId::ZergOcsalColony
-			|| unit_id == UnitId::ZergNydusCesiant
-			|| unit_id == UnitId::PoliceDugout;
+			|| unit_id == UnitId::ZergNydusCesiant;
 	}
 
 	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
@@ -2359,6 +2362,7 @@ namespace scbw {
 			// Structure Morphs
 			case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
+			case UnitId::ZergEzigrisant:			return UnitId::ZergExcisant;
 			case UnitId::ZergSurkithColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergSpraithColony:			return UnitId::ZergCagrantColony;
 			case UnitId::ZergLarvoskColony:			return UnitId::ZergCagrantColony;
@@ -2392,7 +2396,7 @@ namespace scbw {
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
 			case UnitId::ZergElthisthMound:			
-				return UnitId::None;
+				return UnitId::None; // TODO: Fix misc null sprite issues with regression into Droleth
 			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Mophs
@@ -2630,7 +2634,6 @@ namespace scbw {
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergOrbothOmlia:
-			case UnitId::PoliceDugout:
 			{
 				return true;
 			} break;
@@ -3093,14 +3096,15 @@ namespace scbw {
 		return unit_id == UnitId::ResourceVespeneRidge
 			|| unit_id == UnitId::ResourceVespeneGeyser
 			|| unit_id == UnitId::TerranReservoir
+			|| unit_id == UnitId::TerranWellbore
 			|| unit_id == UnitId::ProtossAquifer
 			|| unit_id == UnitId::ZergExcisant
-			|| unit_id == UnitId::PoliceDispensary;
+			|| unit_id == UnitId::ZergEzigrisant;
 	}
 
 	bool unit_id_is_ground_bunker(u32 unit_id) {
-		return unit_id == UnitId::TerranBunker
-			|| unit_id == UnitId::PoliceDugout;
+		return unit_id == UnitId::TerranBunker;
+		//	|| unit_id == UnitId::TerranTencendur;
 	}
 
 	bool unit_id_is_bunker(u32 unit_id) {
@@ -3108,7 +3112,7 @@ namespace scbw {
 	}
 
 	bool is_team_game_map(const char* map_name) {
-		return strcmp(map_name, "Todas Complex") == 0;
+		return strcmp(map_name, "Todas Complex") == 0; // This was for CB2023, should be reworked into a custom trigger. -Pr0nogo
 	}
 
 	bool image_id_is_powerup(u32 image_id)
@@ -3353,8 +3357,8 @@ namespace scbw {
 
 	bool unit_id_can_do_controlled_demolition(u32 unit_id) {
 		return units_dat::base_property[unit_id] & UnitProperty::Addon
-			|| unit_id == UnitId::TerranReservoir;
-	//		|| unit_id == UnitId::TerranWellbore;
+			|| unit_id == UnitId::TerranReservoir
+			|| unit_id == UnitId::TerranWellbore;
 	}
 
 	bool tech_id_needs_target(u32 tech_id) {
@@ -3507,5 +3511,26 @@ namespace scbw {
 			return true;
 		}
 		return false;
+	}
+
+	bool unit_paths_over_small_units(Unit* unit)
+	{
+		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
+		return unit->id == UnitId::TerranPenumbra;
+	}
+
+	bool unit_collides_with_titanic(Unit* unit)
+	{
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			return unit->id != UnitId::ProtossPylon && !scbw::unit_id_is_minerals(unit->id);
+		}
+		return unit->id == UnitId::TerranClaymore
+			|| unit->id == UnitId::TerranPenumbra
+			|| unit->id == UnitId::TerranAion
+			|| unit->id == UnitId::ProtossOptecton
+			|| unit->id == UnitId::ProtossDemiurge
+			|| unit->id == UnitId::ZergKeskathalor
+			|| unit->id == UnitId::ZergKethrostalor
+			|| unit->id == UnitId::ZergUltrokor;
 	}
 }
