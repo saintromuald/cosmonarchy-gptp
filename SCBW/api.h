@@ -798,4 +798,7 @@ namespace scbw
 	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 	bool unit_paths_over_small_units(Unit* unit);
 	bool unit_collides_with_titanic(Unit* unit);
+	bool unit_has_fore_castle(Unit* unit);
+	bool unit_id_is_siege_mode(u32 unit_id);
+	bool unit_id_is_tank_mode(u32 unit_id);
 }

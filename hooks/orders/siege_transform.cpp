@@ -6,70 +6,80 @@ namespace hooks
 {
 	void orders_tank_mode(Unit* unit) // 00464AE0
 	{
-		bool bStopThere = false;
+		bool stop_there = false;
+		Unit* subunit = unit->subunit;
 		if (unit->main_order_state == 0)
 		{
-			if (unit->id == UnitId::TerranPhalanxSiegeMode)
+			if (scbw::unit_id_is_siege_mode(unit->id))
 			{
-				if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
-				{
-					unit->subunit->order_to(OrderId::Nothing3, unit);
-					helper::set_unit_retreat_point(unit->subunit, units_dat::start_direction[unit->subunit->id]);
-					helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
-					unit->main_order_state = 2;
-					scbw::decloak_proc(unit);
+				unit->main_order_state = 2;
+				scbw::decloak_proc(unit);
+				if (subunit) {
+					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
+					{
+						unit->subunit->order_to(OrderId::Nothing3, unit);
+						helper::set_unit_retreat_point(unit->subunit, units_dat::start_direction[unit->subunit->id]);
+						helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
+						unit->main_order_state = 2;
+						scbw::decloak_proc(unit);
+					}
 				}
-			}
-			else
-			{
-				bStopThere = true;
+			} else {
+				stop_there = true;
 				unit->order_to_idle();
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 2)
+		if (!stop_there && unit->main_order_state == 2)
 		{
-			if (helper::get_closer_to_destination(unit->subunit))
+			if ((subunit && helper::get_closer_to_destination(unit->subunit)) || helper::get_closer_to_destination(unit))
 			{
 				Image* current_image = unit->sprite->images.head;
-				while (current_image != nullptr)
+				while (current_image)
 				{
 					current_image->play_iscript_animation(IscriptAnimation::SpecialState2);
 					current_image = current_image->link.next;
 				}
-				helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState2);
+				if (subunit) {
+					helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState2);
+				}
 				unit->order_signal &= ~0x01; // if bit 1 is set, unset it
 				unit->main_order_state = 3;
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 3)
+		if (!stop_there && unit->main_order_state == 3)
 		{
 			if (unit->order_signal & 1)
 			{
-				u16 unitNewId;
+				u16 new_id = unit->id;
 				unit->order_signal -= 1;
-				if (unit->id == UnitId::TerranPhalanxSiegeMode)
+				switch (unit->id)
 				{
-					unitNewId = UnitId::TerranPhalanxTankMode;
+					case UnitId::TerranMatadorCinderMode:
+					{
+						new_id = UnitId::TerranMatadorTankMode;
+					} break;
+					case UnitId::TerranPhalanxSiegeMode:
+					{
+						new_id = UnitId::TerranPhalanxTankMode;
+					} break;
 				}
-				else
-				{
-					unitNewId = unit->id;
-				}
-				helper::replace_unit_with_id(unit, unitNewId);
+				helper::replace_unit_with_id(unit, new_id);
 				helper::order_return_to_idle(unit);
-				helper::order_return_to_idle(unit->subunit);
+				if (subunit) {
+					helper::order_return_to_idle(unit->subunit);
+				}
 			}
 		}
 	}
 	
 	void orders_siege_mode(Unit* unit) // 00464BD0
 	{
-		bool bStopThere = false;
+		bool stop_there = false;
 		if (unit->main_order_state == 0)
 		{
-			if (unit->id == UnitId::TerranPhalanxTankMode)
+			if (scbw::unit_id_is_tank_mode(unit->id))
 			{
 				if (unit->movement_flags & MovementFlags::Accelerating)
 				{
@@ -80,74 +90,88 @@ namespace hooks
 			else
 			{
 				unit->order_to_idle();
-				bStopThere = true;
+				stop_there = true;
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 1)
+		Unit* subunit = unit->subunit;
+		if (!stop_there && unit->main_order_state == 1)
 		{
 			if (!(unit->movement_flags & MovementFlags::Accelerating))
 			{
-				if (!(unit->subunit->movement_flags & MovementFlags::Accelerating))
-				{
-					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
+				if (subunit) {
+					if (!(subunit->movement_flags & MovementFlags::Accelerating))
 					{
-						helper::set_unit_retreat_point(unit, units_dat::start_direction[unit->id]);
-						unit->subunit->order_to(OrderId::Nothing3, unit);
-						helper::set_unit_retreat_point(unit->subunit, units_dat::start_direction[unit->subunit->id]);
-						helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
-						unit->main_order_state = 2;
-						if (helper::check_for_close_unit(unit))
+						if (!(subunit->status & UnitStatus::NoBrkCodeStart))
 						{
-							bStopThere = true;
+							helper::set_unit_retreat_point(unit, units_dat::start_direction[unit->id]);
+							subunit->order_to(OrderId::Nothing3, unit);
+							helper::set_unit_retreat_point(subunit, units_dat::start_direction[subunit->id]);
+							helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
 						}
 					}
+				} else {
+					helper::set_unit_retreat_point(unit, units_dat::start_direction[unit->id]);
+				}
+				unit->main_order_state = 2;
+				if (helper::check_for_close_unit(unit))
+				{
+					stop_there = true;
 				}
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 2)
+		if (!stop_there && unit->main_order_state == 2)
 		{
 			if (helper::get_closer_to_destination(unit))
 			{
-				if (helper::get_closer_to_destination(unit->subunit))
+				u16 new_id = unit->id;
+				switch (unit->id)
 				{
-					u16 new_unit_id = unit->id;
-					// identical to @00463310
-					if (unit->id == UnitId::TerranPhalanxTankMode)
+					case UnitId::TerranMatadorTankMode:
 					{
-						new_unit_id = UnitId::TerranPhalanxSiegeMode;
-					}
-					else
+						new_id = UnitId::TerranMatadorCinderMode;
+					} break;
+					case UnitId::TerranPhalanxTankMode:
 					{
-						new_unit_id = unit->id;
-					}
-					helper::replace_unit_with_id(unit, new_unit_id);
+						new_id = UnitId::None;
+						if (helper::get_closer_to_destination(subunit))
+						{
+							new_id = UnitId::TerranPhalanxSiegeMode;
+						}
+					} break;
+				}
+				if (new_id != UnitId::None) {
+					helper::replace_unit_with_id(unit, new_id);
 					unit->main_order_state = 3;
 					scbw::decloak_proc(unit);
 				}
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 3)
+		if (!stop_there && unit->main_order_state == 3)
 		{
 			if (unit->order_signal & 1)
 			{
 				unit->order_signal -= 1;
-				if (unit->order_queue_head != nullptr)
+				if (unit->order_queue_head)
 				{
 					if (!(unit->order_queue_head->order_id == OrderId::WatchTarget))
 					{
 						unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						helper::force_order_done(unit);
-						helper::order_return_to_idle(unit->subunit);
-						bStopThere = true;
+						if (subunit) {
+							helper::order_return_to_idle(subunit);
+						}
+						stop_there = true;
 					}
 				}
-				if (!bStopThere)
+				if (!stop_there)
 				{
 					helper::order_return_to_idle(unit);
-					helper::order_return_to_idle(unit->subunit);
+					if (subunit) {
+						helper::order_return_to_idle(subunit);
+					}
 				}
 			}
 		}

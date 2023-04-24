@@ -11,6 +11,10 @@ namespace hooks
 			bonus_armor += unit_ext->values[ValueSublimeShepherd];
 		}
 		switch (unit->id) {
+			case UnitId::TerranMatadorCinderMode:
+			{
+				bonus_armor += 1;
+			} break;
 			case UnitId::TerranPhalanxTankMode:
 			{
 				bonus_armor += 4;

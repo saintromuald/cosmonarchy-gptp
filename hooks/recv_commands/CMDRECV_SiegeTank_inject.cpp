@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) CMDRECV_SiegeWrapper()
+	void __declspec(naked) CMDRECV_siege_wrapper()
 	{
 		static u8 command_type;
 		__asm {
@@ -22,7 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) CMDRECV_UnsiegeWrapper()
+	void __declspec(naked) CMDRECV_unsiege_wrapper()
 	{
 		static u8 command_type;
 		__asm {
@@ -46,7 +46,7 @@ namespace hooks
 {
 	void inject_cmdrecv_siege_tank_hooks()
 	{
-		jump_patch(CMDRECV_SiegeWrapper,	0x004C1E80, 6);
-		jump_patch(CMDRECV_UnsiegeWrapper,	0x004C1F10, 6);
+		jump_patch(CMDRECV_siege_wrapper,	0x004C1E80, 6);
+		jump_patch(CMDRECV_unsiege_wrapper,	0x004C1F10, 6);
 	}
 }

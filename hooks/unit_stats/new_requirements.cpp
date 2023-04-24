@@ -323,7 +323,7 @@ namespace hooks {
 					return true;
 				} break;
 				case UnitId::TerranBlackjack:
-				case UnitId::TerranMatador:
+				case UnitId::TerranMatadorTankMode:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
 					{
@@ -1794,7 +1794,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranBlackjack:
-					case UnitId::TerranMatador:
+					case UnitId::TerranMatadorTankMode:
 					{
 						if (in_air || is_adding_on)
 						{

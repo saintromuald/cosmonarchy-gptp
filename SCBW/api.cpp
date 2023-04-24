@@ -1007,7 +1007,7 @@ namespace scbw {
 		return !(unit->status & UnitStatus::InAir)
 		&&	   (!weapon || weapons_dat::max_range[weapon] > 32)
 		&&		 unit->id != UnitId::TerranHarakan
-		&&		 unit->id != UnitId::TerranMatador
+		&&		 unit->id != UnitId::TerranMatadorCinderMode
 		&&		 weapon != WeaponId::DurendalAbaddonFlamethrowers;
 	}
 
@@ -1224,7 +1224,7 @@ namespace scbw {
 			|| id == UnitId::TerranSilvertongue
 			|| id == UnitId::TerranHypnagogue
 			|| id == UnitId::TerranPaladin
-			|| id == UnitId::TerranCuirass
+			|| id == UnitId::TerranCuirassTankMode
 			|| id == UnitId::TerranPazuzu
 			|| id == UnitId::TerranCentaur
 			|| id == UnitId::TerranMinotaur
@@ -3535,5 +3535,25 @@ namespace scbw {
 			|| unit->id == UnitId::ZergKeskathalor
 			|| unit->id == UnitId::ZergKethrostalor
 			|| unit->id == UnitId::ZergUltrokor;
+	}
+
+	bool unit_has_fore_castle(Unit* unit)
+	{
+		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
+		return unit->id == UnitId::TerranMinotaur;
+	}
+
+	bool unit_id_is_siege_mode(u32 unit_id)
+	{
+		return unit_id == UnitId::TerranMatadorCinderMode
+			|| unit_id == UnitId::TerranPhalanxSiegeMode
+			|| unit_id == UnitId::TerramCuirassTrenchMode;
+	}
+
+	bool unit_id_is_tank_mode(u32 unit_id)
+	{
+		return unit_id == UnitId::TerranMatadorTankMode
+			|| unit_id == UnitId::TerranPhalanxTankMode
+			|| unit_id == UnitId::TerranCuirassTankMode;
 	}
 }

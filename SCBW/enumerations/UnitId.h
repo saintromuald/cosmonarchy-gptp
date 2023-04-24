@@ -27,7 +27,7 @@ namespace UnitId
 		TerranApostle										= 10,		// Gui Montag
 		TerranShaman										= 15,		// Civilian
 		TerranMadcap										= 18,		// Alan Schezar Turret
-		TerranCuirass										= 19,		// Raynor Vulture
+		TerranCuirassTankMode								= 19,		// Raynor Vulture
 		TerranTalos											= 20,		// Raynor Marine
 		TerranSalamander									= 22,		// Magellan
 		TerranGorgon										= 23,		// Edmund Duke Tank
@@ -53,7 +53,7 @@ namespace UnitId
 		TerranAnticthon										= 211,		// Left Wall Flame Trap
 		TerranSundog										= 253,
 		TerranAncile										= 255,
-		TerranMatador										= 256,
+		TerranMatadorTankMode								= 256,
 		TerranPegasus										= 261,
 		TerranHippogriff									= 262,
 		TerranOberon										= 263,
@@ -70,6 +70,8 @@ namespace UnitId
 		TerranSilvertongue									= 298,
 		TerranEmperor										= 300,
 		TerranJester										= 301,
+		TerranMatadorCinderMode								= 371,
+		TerramCuirassTrenchMode								= 372,
 
 	// Terran-Unit-Factional
 		TerranCohort										= 50,		// Infested Terran

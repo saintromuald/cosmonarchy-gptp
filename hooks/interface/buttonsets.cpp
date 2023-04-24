@@ -705,6 +705,22 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
+					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Siege_Mode) {
+						if (scbw::unit_id_is_siege_mode(unit->id)) {
+							current_button_state = Button_State::Enabled;
+						} else {
+							current_button_state = Button_State::Invisible;
+						}
+					}
+
+					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Tank_Mode) {
+						if (scbw::unit_id_is_tank_mode(unit->id)) {
+							current_button_state = Button_State::Enabled;
+						} else {
+							current_button_state = Button_State::Invisible;
+						}
+					}
+
 					bool has_addon = 0;
 					bool in_air = 0;
 					bool is_training = 0;
@@ -779,7 +795,7 @@ namespace hooks {
 								switch (current_button->requirement_var)
 								{
 									case UnitId::TerranBlackjack:
-									case UnitId::TerranMatador:
+									case UnitId::TerranMatadorTankMode:
 									{
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranScrapyard) || scbw::unit_queue_full(unit))
 										{
@@ -1843,7 +1859,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranMatador:
+								case UnitId::TerranMatadorTankMode:
+								{
+									if (current_button->icon_id == IconId::FlyerAttack) { // Matador - Apollyoid Adhesive
+										current_button_state = Button_State::Disabled;
+									}
+								} break;
+								case UnitId::TerranMatadorCinderMode:
 								{
 									if (current_button->icon_id == IconId::FlyerAttack) { // Matador - Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
@@ -1860,7 +1882,7 @@ namespace hooks {
 								{
 									if (current_button->icon_id == IconId::TerranVehiclePlating) // Phalanx - Babylon Plating
 									{
-										current_button_state = Button_State::Disabled; // Disable while sieged
+										current_button_state = Button_State::Disabled;
 									}
 								} break;
 								case UnitId::TerranMadrigal:

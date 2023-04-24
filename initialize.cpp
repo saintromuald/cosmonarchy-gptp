@@ -736,7 +736,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_create_initial_units_hooks();
 	hooks::inject_give_unit_hooks();
 	hooks::inject_train_cmdrecv_hooks();
-//	hooks::inject_cmdrecv_siege_tank_hooks();
+	hooks::inject_cmdrecv_siege_tank_hooks();
 //	hooks::injectCMDRECV_MergeArchonHooks();
 
 	hooks::inject_cmdrecv_morph_hooks();

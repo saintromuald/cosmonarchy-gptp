@@ -195,7 +195,7 @@ namespace WeaponId {
 		OberonAcheronMissiles				= 158,
 		AionLazarusSalvo					= 159,
 		RamessesPharoahCannons				= 170,
-		DurendalAbaddonFlamethrowers				= 171,
+		DurendalAbaddonFlamethrowers		= 171,
 		DurendalPhilistineAutogun			= 172,
 		CataphractLonginiusCannons			= 173,
 		DilettanteUpstartRifle				= 174,
@@ -211,6 +211,7 @@ namespace WeaponId {
 		IonCannonIonCannon					= 198,
 		SavantDiscoidRailgunPiercing		= 199,
 		SevenstepGeometricRiflePiercing		= 200,
+		MatadorTwinstrikeCannons			= 201,
 
 		// Protoss \\
 		

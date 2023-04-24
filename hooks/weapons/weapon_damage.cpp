@@ -227,14 +227,14 @@ namespace hooks
 			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
 				armor_total += scbw::get_aise_value(data.target, 0, AiseId::GetShepherds, 0, 0);
-				if (data.target->id == UnitId::TerranMinotaur) {
+				if (scbw::unit_has_fore_castle(data.target)) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
-						armor_total += 2;
+						armor_total *= 1.5;
 						shield_overlay = true;
 					}
 				}
