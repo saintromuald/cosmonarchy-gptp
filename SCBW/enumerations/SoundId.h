@@ -1510,12 +1510,12 @@ namespace SoundId
 		SavantOrderAggressive03				= 2408,
 		SavantOrderAggressive04				= 2409,
 
-		SirenReady01						= 2414,
-		SirenReady02						= 2415,
-		SirenReady03						= 2416,
-		SirenOrderAggressive01				= 2417,
-		SirenOrderAggressive02				= 2418,
-		SirenOrderAggressive03				= 2419,
-		SirenOrderAggressive04				= 2420,
+		SirenReady01						= 2418,
+		SirenReady02						= 2419,
+		SirenReady03						= 2420,
+		SirenOrderAggressive01				= 2421,
+		SirenOrderAggressive02				= 2422,
+		SirenOrderAggressive03				= 2423,
+		SirenOrderAggressive04				= 2424,
 	};
 }
