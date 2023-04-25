@@ -78,25 +78,21 @@ u8 Unit::get_armor() const {
 extern const u32 Func_GetArmorBonus = 0x00453FC0;
 u8 Unit::get_armor_bonus() const {
 	assert(this);
-
-	static u8 armorBonus;
+	static u8 armor_bonus;
 	__asm {
 		PUSHAD
 		MOV EAX, this
 		CALL Func_GetArmorBonus
-		MOV armorBonus, AL
+		MOV armor_bonus, AL
 		POPAD
 	}
-
-	return armorBonus;
+	return armor_bonus;
 }
 
 extern const u32 Func_GetMaxEnergy = 0x00491870;
 u16 Unit::get_max_energy() const {
 	assert(this);
-
 	static u16 result;
-
 	__asm {
 		PUSHAD
 		MOV EAX, this
@@ -104,7 +100,6 @@ u16 Unit::get_max_energy() const {
 		MOV result, AX
 		POPAD
 	}
-
 	return result;
 }
 
