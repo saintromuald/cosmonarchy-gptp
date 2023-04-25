@@ -1111,7 +1111,6 @@ namespace hooks {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
 				case WeaponId::SavantDiscoidRailgunPiercing:
-				case WeaponId::AutocratEminenceRifle:
 				case WeaponId::ClaymoreHarpoonRailgun:
 				case WeaponId::SentinelCerberusRailgun:
 				{

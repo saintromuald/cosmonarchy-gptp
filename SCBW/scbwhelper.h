@@ -667,7 +667,7 @@ namespace helper {
 	void issue_order_targeting_ground(Unit* unit, u32 order_id, u32 x, u32 y);														// 00475260
 
 	//// siege_transform
-	void set_unit_retreat_point(Unit* unit, u8 angleValue);																			// 004011A0
+	void set_unit_retreat_point(Unit* unit, u8 angle);																				// 004011A0
 	bool get_closer_to_destination(Unit* unit);																						// 00402BE0
 	void order_return_to_idle(Unit* unit);																							// 00463770
 	bool check_for_close_unit(Unit* unit);																							// 00464290
@@ -1596,4 +1596,6 @@ namespace helper {
 	b32 draw_clamped_dialog_image(BinDlg* dest, u32 veeqtism, u32 pos_x, u32 pos_y, u32 flags);												// 004EF600
 	u8* bw_draw(u16 x_pos, u32 y_pos, u32 x_clamp, u16 y_clamp);																			// 004E1C70
 	void dialog_draw_text(void* arg, BinDlg* button, u32 flag1, u32 flag2);																	// 004EF870
+
+	b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags);														// 004EF440
 }

@@ -654,8 +654,8 @@ namespace scbw
 	u32 weapon_id_intercepts(u32 weapon_id);
 	bool weapon_id_pierces(u32 weapon_id);
 	bool weapon_id_piercing_stops_on_armor(u32 weapon_id);
-	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt);
-	void update_signify_status(Unit* unit, UnitExt* unitExt);
+	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext);
+	void update_signify_status(Unit* unit, UnitExt* unit_ext);
 	bool is_unit_isolated(Unit* unit);
 	bool unit_id_is_zerg_supply(u16 unit_id);
 	void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks);

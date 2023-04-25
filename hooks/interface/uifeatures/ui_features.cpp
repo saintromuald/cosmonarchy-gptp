@@ -767,4 +767,15 @@ LABEL_15:
 			helper::dialog_draw_text(0, button, highlight, highlight);
 		}
 	}
+
+	// Hooked to explore colorizing passive icons. -Pr0nogo
+	b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims) // 004EF590
+	{
+		if (button->buffer)
+		{
+			return helper::draw_dialog_image(dims, &button->bounds.width, width, height, 0); // second arg seems wrong
+		}
+		*g_draw_color_index = (button->flags & BinDlgFlags::TransparentHideColor) == 0 ? g_palette_index_reference[12] : 0;
+		return helper::draw_box(dims->x, dims->y, dims->w - dims->x + 1, dims->h - dims->y + 1);
+	}
 }

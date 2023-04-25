@@ -1562,37 +1562,37 @@ namespace scbw {
 		return true;
 	}
 
-	void madrigal_dirge_fuse(Unit* unit, UnitExt* unitExt) {
+	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
 		unit->sprite->create_top_overlay(ImageId::MadrigalDirgeProc);
 		const u32 radius = 2 * 32;
+		// TODO: Unit search
 		scbw::UnitFinder(
 			unit->get_x() - radius,
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
-		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&unitExt](Unit* target) {
-			target->damage_with_custom(unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, 5, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer]);
+		).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&unit_ext](Unit* target) {
+			target->damage_with_custom(unit_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, 5, unit_ext->units[UnitDirgeSource], unit_ext->values[ValueDirgeSourcePlayer]);
 		});
-		unitExt->values[ValueDirgeStacks] = 0;
+		unit_ext->values[ValueDirgeStacks] = 0;
 	}
 
-	void update_signify_status(Unit* unit, UnitExt* unitExt) {
+	void update_signify_status(Unit* unit, UnitExt* unit_ext) {
 		unit->update_speed();
 
-		const u32 cowardiceId = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-		const u32 maliceId = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
-
-		if (unitExt->values[ValueSignifyStacks] == 0) {
+		const u32 cowardice_id = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
+		const u32 malice_id = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
+		if (unit_ext->values[ValueSignifyStacks] == 0) {
 			unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 			unit->remove_overlay(ImageId::Malice_Small, ImageId::Malice_Large);
 		} else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
 				|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
 				|| unit->has_weapon()) {
-			if (unitExt->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardiceId)) {
-				unit->sprite->create_top_overlay(cowardiceId);
-			} else if (unitExt->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(maliceId)) {
+			if (unit_ext->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardice_id)) {
+				unit->sprite->create_top_overlay(cowardice_id);
+			} else if (unit_ext->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(malice_id)) {
 				unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
-				unit->sprite->create_top_overlay(maliceId);
+				unit->sprite->create_top_overlay(malice_id);
 			}
 		}
 	}

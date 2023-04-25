@@ -110,7 +110,10 @@ namespace hooks
 							helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
 						}
 					}
-				} else {
+				} else if (images_dat::is_turnable[unit->sprite->main_graphic->id]) {
+					helper::set_unit_retreat_point(unit, unit->current_direction_1);
+				}
+				else {
 					helper::set_unit_retreat_point(unit, units_dat::start_direction[unit->id]);
 				}
 				unit->main_order_state = 2;

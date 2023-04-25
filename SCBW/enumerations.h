@@ -636,7 +636,7 @@ namespace BinDlgFlags
 		SmallestFontSize10			= 0x00000400,
 		LargerFontSize16			= 0x00000800,
 		Unknown12					= 0x00001000,
-		TransparentHideColor0		= 0x00002000,
+		TransparentHideColor		= 0x00002000,
 		LargestFontSize16x			= 0x00004000,
 		AlternateStyleWC2			= 0x00008000,
 		SmallerFontSize14			= 0x00010000,

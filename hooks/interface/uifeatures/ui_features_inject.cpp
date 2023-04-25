@@ -363,6 +363,35 @@ namespace
 		}
 	}
 
+	void __declspec(naked) generic_dialog_update_wrapper() { // 004EF590
+		static b32 result;
+		static BinDlg* button;
+		static u32 width;
+		static u32 height;
+		static Box16* dims;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV height, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV dims, EAX
+			POP EAX
+			MOV width, EDX
+			MOV button, ECX
+			PUSHAD
+		}
+		result = hooks::generic_dialog_update(button, width, height, dims);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -408,7 +437,8 @@ namespace hooks
 		jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
 	//	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4); // crashes
 		jump_patch(centerview_unit_group,					0x004967E0, 1);
-	//	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2);
+	//	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2); // not needed
+		jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 	}

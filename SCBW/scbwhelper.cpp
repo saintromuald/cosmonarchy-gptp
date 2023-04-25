@@ -5165,42 +5165,38 @@ namespace helper {
 	}
 
 	b32 unload_unit_proc(Unit* unit) {
-		const u32 Func_Sub4E7F70 = 0x004E7F70;
+		const u32 func_address = 0x004E7F70;
 		static b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub4E7F70
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
 		return return_value;
 	}
 
-	// angleValue is a guess
-	void set_unit_retreat_point(Unit* unit, u8 angleValue) {
-		const u32 Func_UnitSetRetreatPoint = 0x004011A0;
+	void set_unit_retreat_point(Unit* unit, u8 angle) {
+		const u32 func_address = 0x004011A0;
 		__asm {
 			PUSHAD
-			MOVZX EAX, angleValue
+			MOVZX EAX, angle
 			MOV EDX, unit
-			CALL Func_UnitSetRetreatPoint
+			CALL func_address
 			POPAD
 		}
 	}
 
-	//return true when unit reached next_target_waypoint either at call
-	//or after some action inside the function, else return false
-	//At least that's what I think it does (not sure what I called
-	//"action inside the function" is, and how it's used to return
-	//true
+	// Return true when unit reached next_target_waypoint either at call or after some action inside the function, else return false
+	// At least that's what I think it does (not sure what I called "action inside the function" is, and how it's used to return true -GPTP
 	bool get_closer_to_destination(Unit* unit) {
-		const u32 Func_Sub402BE0_GetCloserToDestination = 0x00402BE0;
+		const u32 func_address = 0x00402BE0;
 		static b32 bResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_Sub402BE0_GetCloserToDestination
+			CALL func_address
 			MOV bResult, EAX
 			POPAD
 		}
@@ -5208,11 +5204,11 @@ namespace helper {
 	}
 
 	void order_return_to_idle(Unit* unit) {
-		const u32 Func_OrderReturnToIdle = 0x00463770;
+		const u32 func_address = 0x00463770;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_OrderReturnToIdle
+			CALL func_address
 			POPAD
 		}
 	}
@@ -13604,5 +13600,23 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags)
+	{
+		const u32 func_address = 0x004EF440;
+		static b32 result;
+		__asm {
+			PUSHAD
+			PUSH flags
+			PUSH height
+			PUSH width
+			PUSH bitmap
+			MOV ECX, dims
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
