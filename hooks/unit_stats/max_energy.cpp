@@ -11,6 +11,7 @@ namespace hooks
 		switch (unit->id)
 		{
 			case UnitId::TerranSavant:
+			case UnitId::TerranPhobos:
 			{
 				energy = 100;
 			} break;
@@ -24,6 +25,7 @@ namespace hooks
 			{
 				energy = 175;
 			} break;
+			case UnitId::TerranMagnetar:
 			case UnitId::ProtossMindTyrant:
 			{
 				energy = 250;
