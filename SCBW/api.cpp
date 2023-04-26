@@ -3554,4 +3554,41 @@ namespace scbw {
 			|| unit_id == UnitId::TerranPhalanxTankMode
 			|| unit_id == UnitId::TerranCuirassTankMode;
 	}
+
+	void transform_unit(Unit* unit, u16 unit_id) // Written by DarkenedFantasies for siege transformation.
+	{
+		Unit* subunit = unit->subunit;
+		s8 subunit_hoffset = 0;
+		s8 subunit_voffset = 0;
+		Image* main_graphic = 0;
+		if (subunit) {
+			main_graphic = subunit->sprite->main_graphic;
+			subunit_hoffset = main_graphic->horizontal_offset;
+			subunit_voffset = main_graphic->vertical_offset;
+		} else {
+			subunit_voffset = subunit_hoffset = -1;
+		}
+
+		helper::replace_unit_with_id(unit, unit_id);
+		u8 direction = unit->current_direction_1 = unit->current_direction_2;
+		unit->velocity_direction_1 = unit->velocity_direction_2;
+		helper::set_image_direction(unit->sprite->main_graphic, direction);
+		subunit = unit->subunit;
+
+		if (subunit) {
+			direction = subunit->current_direction_2;
+			if (subunit->id == UnitId::TerranPhalanxTankModeTurret || subunit->id == UnitId::TerranPhalanxSiegeModeTurret)
+			{
+				direction += 128; // Flip facing direction for phalanx turret.
+				subunit->current_direction_2 = direction;
+			}
+			subunit->current_direction_1 = direction;
+			subunit->velocity_direction_1 = direction;
+			subunit->velocity_direction_2 = direction;
+			helper::set_image_direction(subunit->sprite->main_graphic, direction);
+			main_graphic = subunit->sprite->main_graphic;
+			main_graphic->horizontal_offset = subunit_hoffset;
+			main_graphic->vertical_offset = subunit_voffset;
+		}
+	}
 }

@@ -801,4 +801,5 @@ namespace scbw
 	bool unit_has_fore_castle(Unit* unit);
 	bool unit_id_is_siege_mode(u32 unit_id);
 	bool unit_id_is_tank_mode(u32 unit_id);
+	void transform_unit(Unit* unit, u16 unit_id);
 }
