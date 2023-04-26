@@ -1517,5 +1517,13 @@ namespace SoundId
 		SirenOrderAggressive02				= 2422,
 		SirenOrderAggressive03				= 2423,
 		SirenOrderAggressive04				= 2424,
+
+		StrigaReady01						= 2431,
+		StrigaReady02						= 2432,
+		StrigaReady03						= 2433,
+		StrigaOrderAggressive01				= 2434,
+		StrigaOrderAggressive02				= 2435,
+		StrigaOrderAggressive03				= 2436,
+		StrigaOrderAggressive04				= 2437,
 	};
 }
