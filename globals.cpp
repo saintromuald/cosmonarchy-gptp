@@ -951,12 +951,6 @@ namespace scbw
 			}
 		}
 
-		// Inherit Sublime Shepherd
-		if (parent_ext->values[ValueSublimeShepherd])
-		{
-			child_ext->values[ValueSublimeShepherd] = parent_ext->values[ValueSublimeShepherd];
-		}
-
 		// Inherit Terminal Surge
 		if (parent_ext->values[ValueTerminalSurge])
 		{

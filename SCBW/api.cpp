@@ -1008,6 +1008,7 @@ namespace scbw {
 		&&	   (!weapon || weapons_dat::max_range[weapon] > 32)
 		&&		 unit->id != UnitId::TerranHarakan
 		&&		 unit->id != UnitId::TerranMatadorCinderMode
+		&&		 unit->id != UnitId::TerranMatadorTurretCinderMode
 		&&		 weapon != WeaponId::DurendalAbaddonFlamethrowers;
 	}
 
@@ -1158,8 +1159,10 @@ namespace scbw {
 			case UnitId::TerranPhalanxSiegeMode:
 			case UnitId::TerranPhalanxTankModeTurret:
 			case UnitId::TerranPhalanxSiegeModeTurret:
-			case UnitId::ProtossAccantorOld:
-			case UnitId::ProtossPlasmaShell:
+			case UnitId::TerranMatadorTankMode:
+			case UnitId::TerranMatadorCinderMode:
+			case UnitId::TerranMatadorTurretTankMode:
+			case UnitId::TerranMatadorTurretCinderMode:
 			{
 				return true;
 			} break;
@@ -3537,8 +3540,18 @@ namespace scbw {
 
 	bool unit_has_fore_castle(Unit* unit)
 	{
-		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
-		return unit->id == UnitId::TerranMinotaur;
+		switch (unit->id)
+		{
+			case UnitId::TerranMinotaur:
+			{
+				return true;
+			}
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueHasSublimeShepherd]) {
+			return true;
+		}
+		return false;
 	}
 
 	bool unit_id_is_siege_mode(u32 unit_id)
@@ -3579,7 +3592,7 @@ namespace scbw {
 			direction = subunit->current_direction_2;
 			if (subunit->id == UnitId::TerranPhalanxTankModeTurret || subunit->id == UnitId::TerranPhalanxSiegeModeTurret)
 			{
-				direction += 128; // Flip facing direction for phalanx turret.
+				direction += 128; // Flip facing direction for the Phalanx turret. -DF
 				subunit->current_direction_2 = direction;
 			}
 			subunit->current_direction_1 = direction;

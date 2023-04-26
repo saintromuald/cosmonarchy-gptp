@@ -1875,7 +1875,7 @@ namespace hooks {
 			case UnitId::TerranAncile: {
 				// Ancile - Providence
 				if (unit->energy >= 1 * 256) {
-					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
+					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
 						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
 					}
 
@@ -1929,7 +1929,7 @@ namespace hooks {
 							break;
 						}
 					}
-				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) {
+				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
 					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
 					helper::play_sound_from_unit(SoundId::AncileProvidenceDeactivate, unit, 1, 0);
 				}
@@ -2196,26 +2196,6 @@ namespace hooks {
 			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
 
-		// Sublime Shepherd - Check tagged units for nearby Azazels
-		unit_ext->values[ValueSublimeShepherd] = 0;
-		if (unit_ext->values[ValueHasSublimeShepherd]) {
-			unit_ext->values[ValueHasSublimeShepherd] = 0;
-			scbw::UnitFinder(
-				unit->get_x() - 128,
-				unit->get_y() - 128,
-				unit->get_x() + 128,
-				unit->get_y() + 128
-			).for_each([&](Unit* target) {
-				if (target == unit) {
-					return;
-				}
-				if (target->id != UnitId::TerranAzazel) {
-					return;
-				}
-				unit_ext->values[ValueSublimeShepherd]++;
-			});
-		}
-
 		// Zoryusthaleth - Swarming Omen marking
 		if (unit_ext->values[ValueSwarmingOmenPlayer]) {
 			u32 player = unit_ext->values[ValueSwarmingOmenPlayer] - 1;
@@ -2232,9 +2212,9 @@ namespace hooks {
 		}
 
 		// Azazel - Sublime Shepherd overlay
-		if (unit_ext->values[ValueSublimeShepherd] && !unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id))) {
+		if (unit_ext->values[ValueHasSublimeShepherd] && !unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id))) {
 			unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
-		} else if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unit_ext->values[ValueSublimeShepherd]) {
+		} else if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unit_ext->values[ValueHasSublimeShepherd]) {
 			unit->sprite->remove_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
 
