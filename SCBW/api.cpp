@@ -3583,8 +3583,7 @@ namespace scbw {
 		}
 
 		helper::replace_unit_with_id(unit, unit_id);
-		u8 direction = unit->current_direction_1 = unit->current_direction_2;
-		unit->velocity_direction_1 = unit->velocity_direction_2;
+		u8 direction = unit->current_direction_1 = unit->velocity_direction_1 = unit->current_direction_2;
 		helper::set_image_direction(unit->sprite->main_graphic, direction);
 		subunit = unit->subunit;
 
@@ -3595,13 +3594,11 @@ namespace scbw {
 				direction += 128; // Flip facing direction for the Phalanx turret. -DF
 				subunit->current_direction_2 = direction;
 			}
-			subunit->current_direction_1 = direction;
-			subunit->velocity_direction_1 = direction;
-			subunit->velocity_direction_2 = direction;
-			helper::set_image_direction(subunit->sprite->main_graphic, direction);
+			subunit->current_direction_1 = subunit->velocity_direction_1 = subunit->velocity_direction_2 = direction;
 			main_graphic = subunit->sprite->main_graphic;
 			main_graphic->horizontal_offset = subunit_hoffset;
 			main_graphic->vertical_offset = subunit_voffset;
+			helper::set_image_direction(main_graphic, direction);
 		}
 	}
 }
