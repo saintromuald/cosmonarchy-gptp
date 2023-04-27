@@ -372,6 +372,11 @@ namespace hooks
 		subunit->subunit = unit;
 		helper::get_image_attack_frame(&attack_frame, unit->sprite, 0, 2u);
 		helper::set_sprite_main_image_offset(subunit->sprite, attack_frame.x, attack_frame.y);
+
+		// New
+		if (subunit) {
+			helper::turn_unit(subunit, 96);
+		}
 		return unit;
 	}
 
