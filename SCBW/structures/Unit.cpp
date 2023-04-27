@@ -107,17 +107,17 @@ u16 Unit::get_max_energy() const {
 u32 Unit::get_max_hp_ingame() const {
 	assert(this);
 
-	u32 maxHp = units_dat::max_hitpoints[this->id];
-	if (maxHp == 0) {
-		maxHp = this->get_current_hp_ingame();
-		if (maxHp == 0)
+	u32 max_hp = units_dat::max_hitpoints[this->id];
+	if (max_hp == 0) {
+		max_hp = this->get_current_hp_ingame();
+		if (max_hp == 0)
 		{
-			maxHp = 1;
+			max_hp = 1;
 		}
 	} else {
-		maxHp = maxHp >> 8;
+		max_hp = max_hp >> 8;
 	}
-	return maxHp;
+	return max_hp;
 }
 
 u32 Unit::get_max_shields_in_game() const {
@@ -127,15 +127,15 @@ u32 Unit::get_max_shields_in_game() const {
 		return 0;
 	}
 
-	u32 maxShields = units_dat::max_shield_points[this->id];
-	if (maxShields == 0) {
-		maxShields = this->get_current_shields_ingame();
-		if (maxShields == 0)
+	u32 max_shields = units_dat::max_shield_points[this->id];
+	if (max_shields == 0) {
+		max_shields = this->get_current_shields_ingame();
+		if (max_shields == 0)
 		{
-			maxShields = 1;
+			max_shields = 1;
 		}
 	}
-	return maxShields;
+	return max_shields;
 }
 
 u32 Unit::get_max_hp_raw() const {
@@ -166,16 +166,16 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const {
 
 	assert(weapon_id < WEAPON_TYPE_COUNT);
 
-	static u32 maxWeaponRange;
+	static u32 max_weapon_range;
 	__asm {
 		PUSHAD
 		MOV BL, weapon_id
 		MOV EAX, this
 		CALL Func_GetMaxWeaponRange
-		MOV maxWeaponRange, EAX
+		MOV max_weapon_range, EAX
 		POPAD
 	}
-	return maxWeaponRange;
+	return max_weapon_range;
 }
 
 const char* Unit::get_name() const {

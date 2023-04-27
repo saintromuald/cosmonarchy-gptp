@@ -74,6 +74,7 @@ namespace UnitId
 		TerramCuirassTrenchMode								= 372,
 		TerranMatadorTurretTankMode							= 373,
 		TerranMatadorTurretCinderMode						= 374,
+		TerranWyvernTurret									= 376,
 
 	// Terran-Unit-Factional
 		TerranCohort										= 50,		// Infested Terran
