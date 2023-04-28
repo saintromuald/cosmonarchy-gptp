@@ -577,16 +577,11 @@ void IquareGlobals::register_pariah_hit(Unit* source, Unit* target)
 	pariah_hits.push_back(hit);
 }
 
-bool IquareGlobals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
-{
-	for (auto& a : multihit_bullets)
-	{
-		if (bullet == a.bullet)
-		{
-			for (auto b : a.already_hit)
-			{
-				if (b == target)
-				{
+bool IquareGlobals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target) {
+	for (auto& a : multihit_bullets) {
+		if (bullet == a.bullet) {
+			for (auto b : a.already_hit) {
+				if (b == target) {
 					return true;
 				}
 			}
@@ -595,24 +590,18 @@ bool IquareGlobals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* tar
 	return false;
 }
 
-bool IquareGlobals::multihit_bullet_is_set(Bullet* bullet)
-{
-	for (auto& a : multihit_bullets)
-	{
-		if (bullet == a.bullet)
-		{
+bool IquareGlobals::multihit_bullet_is_set(Bullet* bullet) {
+	for (auto& a : multihit_bullets) {
+		if (bullet == a.bullet) {
 			return true;
 		}
 	}
 	return false;
 }
 
-void IquareGlobals::add_bullet_multihit(Bullet* bullet, Unit* target)
-{
-	for (auto& a : multihit_bullets)
-	{
-		if (a.bullet == bullet)
-		{
+void IquareGlobals::add_bullet_multihit(Bullet* bullet, Unit* target) {
+	for (auto& a : multihit_bullets) {
+		if (a.bullet == bullet) {
 			a.already_hit.push_back(target);
 			return;
 		}
@@ -635,36 +624,27 @@ void IquareGlobals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target
 	multihit_bullets.push_back(gb);
 }
 
-s32 IquareGlobals::get_divider(Bullet* bullet)
-{
-	for (auto& a : multihit_bullets)
-	{
-		if (a.bullet == bullet && a.divider != 0)
-		{
+s32 IquareGlobals::get_divider(Bullet* bullet) {
+	for (auto& a : multihit_bullets) {
+		if (a.bullet == bullet && a.divider != 0) {
 			return a.divider;
 		}
 	}
 	return 1;
 }
 
-u32 IquareGlobals::get_multihit_count(Bullet* bullet)
-{
-	for (auto& a : multihit_bullets)
-	{
-		if (a.bullet == bullet)
-		{
+u32 IquareGlobals::get_multihit_count(Bullet* bullet) {
+	for (auto& a : multihit_bullets) {
+		if (a.bullet == bullet) {
 			return a.already_hit.size();
 		}
 	}
 	return 0;
 }
 
-void IquareGlobals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
-{
-	for (auto& a : multihit_bullets)
-	{
-		if (a.bullet == bullet)
-		{
+void IquareGlobals::add_multihit_empty_bullet(Bullet* bullet, s32 divider) {
+	for (auto& a : multihit_bullets) {
+		if (a.bullet == bullet) {
 			a.divider = divider;
 			return;
 		}
@@ -673,24 +653,18 @@ void IquareGlobals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 	multihit_bullets.push_back(gb);
 }
 
-void IquareGlobals::clear_lakizilisk(Unit* lakizilisk)
-{
+void IquareGlobals::clear_lakizilisk(Unit* lakizilisk) {
 	lurker_spine_hits[lakizilisk].clear();
 }
 
-void IquareGlobals::add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target)
-{
+void IquareGlobals::add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target) {
 	lurker_spine_hits[lakizilisk].push_back(target);
 }
 
-bool IquareGlobals::spine_pair_exists(Unit* lakizilisk, Unit* target)
-{
-	for (auto a : lurker_spine_hits)
-	{
-		for (auto b : a.second)
-		{
-			if (a.first == lakizilisk && b == target)
-			{
+bool IquareGlobals::spine_pair_exists(Unit* lakizilisk, Unit* target) {
+	for (auto a : lurker_spine_hits) {
+		for (auto b : a.second) {
+			if (a.first == lakizilisk && b == target) {
 				return true;
 			}
 		}

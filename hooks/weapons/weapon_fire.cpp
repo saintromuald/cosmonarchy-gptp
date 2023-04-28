@@ -472,11 +472,9 @@ namespace hooks {
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
 						// Phobos - Argent Capacitors passive
-						if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] == 0)
-						{
+						if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] == 0) {
 							unit->add_unit_energy(5 * 256);
-							if (unit->energy == unit->get_max_energy())
-							{
+							if (unit->energy == unit->get_max_energy()) {
 								unit_ext->values[ValuePhobosDischarge] = 1;
 								unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
 								unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
@@ -799,7 +797,7 @@ namespace hooks {
 		return false;
 	}
 
-	static void apply_bullet_effect(Bullet* bullet, Point16 cp, Unit* unit) {
+	static void apply_bullet_effect(Bullet* bullet, Point16 cp, Unit* target) {
 		switch (bullet->weapon_id) {
 			// Same as default, but orange effect
 			case WeaponId::CyprianTwinRailguns:
@@ -808,34 +806,34 @@ namespace hooks {
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
 			{
-				iquare_globals.add_bullet_multihit(bullet, unit);
+				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-				hooks::weapon_bullet_hit(bullet, unit, 1);
+				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			// Same as default, but red effect
 			case WeaponId::SavantDiscoidRailgunPiercing:
 			{
-				iquare_globals.add_bullet_multihit(bullet, unit);
+				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
-				hooks::weapon_bullet_hit(bullet, unit, 1);
+				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			case WeaponId::PenumbraErebolShockCannon:
 			{
 				// Penumbra - Shroud Piercer
-				iquare_globals.add_bullet_multihit(bullet, unit);
+				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-				hooks::weapon_bullet_hit(bullet, unit, 2);
+				hooks::weapon_bullet_hit(bullet, target, bullet->attack_target.unit == target ? 1 : 2);
 			} break;
 			case WeaponId::ClaymoreHarpoonRailgun:
 			{
 				// Claymore - Kelvin Munitions
 				// pierce targets
-				iquare_globals.add_bullet_multihit(bullet, unit);
+				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-				hooks::weapon_bullet_hit(bullet, unit, 1);
+				hooks::weapon_bullet_hit(bullet, target, 1);
 
 				// slow pierced targets
-				UnitExt* collision_target_ext = get_unit_ext(unit);
+				UnitExt* collision_target_ext = get_unit_ext(target);
 				if (!collision_target_ext->timers[TimerKelvinMunitions]) {
 					collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 				}
@@ -843,10 +841,10 @@ namespace hooks {
 			case WeaponId::KalkaliskViscousAcid:
 			{
 				// Kalkalisk - Ablative Spores
-				iquare_globals.add_incremental_bullet_multihit(bullet, unit);
+				iquare_globals.add_incremental_bullet_multihit(bullet, target);
 				auto count = iquare_globals.get_multihit_count(bullet);
 				scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
-				unit->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
+				target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
 				if (count >= 4) {
 					bullet->time_remaining = 0;
@@ -861,15 +859,15 @@ namespace hooks {
 			} break;
 			case WeaponId::ZarcavrokorBonesofReflection:
 			{
-				iquare_globals.add_bullet_multihit(bullet, unit);
+				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
-				hooks::weapon_bullet_hit(bullet, unit, 1);
+				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			default:
 			{
-				iquare_globals.add_bullet_multihit(bullet, unit);
+				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
-				hooks::weapon_bullet_hit(bullet, unit, 1);
+				hooks::weapon_bullet_hit(bullet, target, 1);
 			}
 		}
 	}
@@ -917,6 +915,8 @@ namespace hooks {
 
 			if (targets_count < 32) {
 				targets[targets_count++] = {unit, cp, t};
+			} else {
+				break;
 			}
 		}
 
@@ -1133,9 +1133,9 @@ namespace hooks {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
 			if (!despawn_bullet_special) {
-				if (target && target->sprite && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
-					bullet->attack_target.pt.x = target->sprite->position.x;
-					bullet->attack_target.pt.y = target->sprite->position.y;
+				if (target && target->sprite
+				&&  !iquare_globals.was_already_hit_by_multihit_bullet(bullet, bullet->attack_target.unit)) {
+					bullet->attack_target.pt = target->sprite->position;
 				} else {
 					bullet->attack_target.unit = 0;
 				}
