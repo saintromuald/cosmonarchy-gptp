@@ -282,8 +282,7 @@ namespace images_dat {
 	SCBW_DATA_DEF(const u32*, lo_liftoff,		imagesDat[13].address);	// 0066D8C0
 } //images_dat (last entry at 0x005140AC)
 
-namespace requirements
-{
+namespace requirements {
 	SCBW_DATA_DEF(u16*, units,		units_req);
 	SCBW_DATA_DEF(u16*, orders,		upgrades_req);
 	SCBW_DATA_DEF(u16*, research,	research_req);

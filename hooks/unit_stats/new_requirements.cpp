@@ -3164,8 +3164,7 @@ namespace hooks {
 		return hooks::unit_can_rally(unit);
 	}
 
-	u16 addon_datreq_fix(u32 dat_req_offset, u16 unit_id) // Hooked to fix Treasuries being unable to claim addons. -DarkenedFantasies
-	{
+	u16 addon_datreq_fix(u32 dat_req_offset, u16 unit_id) { // Hooked to fix Treasuries being unable to claim addons. -DarkenedFantasies
 		while (requirements::units[dat_req_offset] == RequirementOpcodes::CurrentUnitIs) {
 			if (requirements::units[++dat_req_offset] == unit_id) {
 				return unit_id;

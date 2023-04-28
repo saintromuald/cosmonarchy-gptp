@@ -787,8 +787,8 @@ LABEL_15:
 
 		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
-		s16 frame_index = state->grp_frame;
-		if (frame_index < 0) {
+		u16 frame_index = state->grp_frame;
+		if (frame_index >= grp->frame_count) {
 			frame_index = 0;
 		}
 		GrpFrame* frame = &grp->frames[frame_index];
@@ -796,10 +796,12 @@ LABEL_15:
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 
+		void* image_data = (char*)grp + frame->data_offset;
+
 		helper::image_render_fxn_0_0(
 			dialog->bounds.left + (dialog->bounds.right  - dialog->bounds.left - frame->w + 1) / 2,
 			dialog->bounds.top  + (dialog->bounds.bottom - dialog->bounds.top  - frame->h + 1) / 2,
-			frame, &rect, 0);
+			frame, &rect, (u32)image_data);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;
@@ -813,19 +815,19 @@ LABEL_15:
 			use_alternate_style = 0; // Was LOWORD, presumably a flag negation
 		}
 
-		GrpFrame* cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdbtns_handle + 8 * use_alternate_style + 6);
+		GrpFrame* frame = (GrpFrame*)((char*)g_cmdbtns_handle + 8 * use_alternate_style + 6);
 		u32 bound_horizontal = button->bounds.right - button->bounds.left + 1;
-		if (cmdbtn_frame->w < bound_horizontal) {
-			bound_horizontal = cmdbtn_frame->w;
+		if (frame->w < bound_horizontal) {
+			bound_horizontal = frame->w;
 		}
 		u32 bound_vertical = button->bounds.top - button->bounds.bottom + 1;
-		if (cmdbtn_frame->h < bound_vertical) {
-			bound_vertical = cmdbtn_frame->h;
+		if (frame->h < bound_vertical) {
+			bound_vertical = frame->h;
 		}
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, bound_horizontal, bound_vertical);
 		if (!*g_is_in_replay) {
-			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, (GrpFrame*)&cmdbtn_frame, &rect, 0);
+			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, (GrpFrame*)&frame, &rect, 0);
 		}
 
 		u32 flags = button->flags;
@@ -844,8 +846,8 @@ LABEL_15:
 			button_graphic = 0;
 		}
 
-		cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdicons_grp + 8 * button_graphic + 6);
-		SetRect((LPRECT)&rect, 0, 0, cmdbtn_frame->w, cmdbtn_frame->h);
+		frame = (GrpFrame*)((char*)g_cmdicons_grp + 8 * button_graphic + 6);
+		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 		s32 offset_x = 0;
 		s32 offset_y = 0;
 		if (*g_is_in_replay) {
@@ -866,10 +868,12 @@ LABEL_15:
 			}
 		}
 
+		void* image_data = (char*)g_cmdicons_grp + frame->data_offset;
+
 		helper::image_render_fxn_0_0(
-			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - cmdbtn_frame->w + 1) / 2,
-			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.top - button->bounds.bottom - cmdbtn_frame->h + 1) / 2,
-			(GrpFrame*)&cmdbtn_frame, &rect, 0);
+			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - frame->w + 1) / 2,
+			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.top - button->bounds.bottom - frame->h + 1) / 2,
+			image_data, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;

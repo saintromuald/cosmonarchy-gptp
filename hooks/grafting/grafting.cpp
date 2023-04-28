@@ -182,45 +182,45 @@ namespace hooks {
 		void* data = 0;
 
 		data = FastFileRead("datreq\\units.graft", 0, true, 0, 0);
-		if (!data) {
+		if (data) {
 			inject_grafting_data(data, GraftType::units_req);
-			if (!units_req) {
+			if (units_req) {
 				SMemFree(units_req, "grafting.cpp", __LINE__, 0);
 			}
 			units_req = (REQ_SCRIPT*)data;
 		}
 
 		data = FastFileRead("datreq\\upgrades.graft", 0, true, 0, 0);
-		if (!data) {
+		if (data) {
 			inject_grafting_data(data, GraftType::upgrades_req);
-			if (!upgrades_req) {
+			if (upgrades_req) {
 				SMemFree(upgrades_req, "grafting.cpp", __LINE__, 0);
 			}
 			upgrades_req = (REQ_SCRIPT*)data;
 		}
 
 		data = FastFileRead("datreq\\research.graft", 0, true, 0, 0);
-		if (!data) {
+		if (data) {
 			inject_grafting_data(data, GraftType::research_req);
-			if (!research_req) {
+			if (research_req) {
 				SMemFree(research_req, "grafting.cpp", __LINE__, 0);
 			}
 			research_req = (REQ_SCRIPT*)data;
 		}
 
 		data = FastFileRead("datreq\\tech.graft", 0, true, 0, 0);
-		if (!data) {
+		if (data) {
 			inject_grafting_data(data, GraftType::tech_req);
-			if (!tech_req) {
+			if (tech_req) {
 				SMemFree(tech_req, "grafting.cpp", __LINE__, 0);
 			}
 			tech_req = (REQ_SCRIPT*)data;
 		}
 
 		data = FastFileRead("datreq\\orders.graft", 0, true, 0, 0);
-		if (!data) {
+		if (data) {
 			inject_grafting_data(data, GraftType::orders_req);
-			if (!orders_req) {
+			if (orders_req) {
 				SMemFree(orders_req, "grafting.cpp", __LINE__, 0);
 			}
 			orders_req = (REQ_SCRIPT*)data;
@@ -317,7 +317,7 @@ namespace hooks {
 		inject_grafting_data(button_sets_new, GraftType::buttons);
 		inject_grafting_data(stat_info_new, GraftType::statInfo);
 
-		if (!buttons_data) {
+		if (buttons_data) {
 			free(buttons_data);
 		}
 		buttons_data = new_data;
