@@ -224,6 +224,7 @@ namespace hooks
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranClaymore:
+			case UnitId::ProtossOptecton:
 			case UnitId::ProtossSimulacrum:
 			{
 				speed *= 0.9;

@@ -444,25 +444,13 @@ namespace hooks
 			// END
 
 			switch (data.target->id) {
-				case UnitId::ProtossSimulacrum:
-				{
-					// Autovitality - Simulacrum behavior
-					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
-					&&  !scbw::is_under_dark_swarm(data.target)
-					&&   data.shield_reduce_amount >= data.target->shields
-					&&   data.damage
-					&&   target_ext->timers[TimerSimulacrumClone] == 0) {
-						target_ext->timers[TimerSimulacrumClone] = 4 * 24;
-						data.target->sprite->create_top_overlay(ImageId::LegionnaireTeleportEffect);
-						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
-					}
-				} break;
 				case UnitId::TerranStriga:
 				{
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
 					&&	!(data.attacker->status & UnitStatus::Burrowed)
-					&&   !scbw::is_under_dark_swarm(data.target)) {
+					&&   !scbw::is_under_dark_swarm(data.target))
+					{
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
 							const u32 displacement_time = 5;
@@ -476,8 +464,28 @@ namespace hooks
 						}
 					}
 				} break;
+				case UnitId::ProtossSimulacrum:
+				{
+					// Autovitality - Simulacrum behavior
+					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
+					&&  !scbw::is_under_dark_swarm(data.target)
+					&&   data.shield_reduce_amount >= data.target->shields
+					&&   data.damage
+					&&   target_ext->timers[TimerSimulacrumClone] == 0)
+					{
+						target_ext->timers[TimerSimulacrumClone] = 4 * 24;
+						data.target->sprite->create_top_overlay(ImageId::LegionnaireTeleportEffect);
+						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
+					}
+				} break;
+				case UnitId::ProtossAnalogue:
+				{
+					// Empathy Core - Analogue behavior
+					fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+				} break;
 				case UnitId::ZergZarcavrokor:
 				{
+					// Fan of Teeth - Zarcavrokor behavior
 					fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker));
 				} break;
 			}

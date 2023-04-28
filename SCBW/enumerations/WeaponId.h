@@ -252,6 +252,7 @@ namespace WeaponId {
 		ServitorRecycledBlaster				= 193,
 		PositronAntimatterMissile			= 194,
 		SycophantSparringSaber				= 195,
+		AnalogueCylindricalBlaster			= 202,
 
 		// Zerg \\
 					
