@@ -4,17 +4,17 @@
 #include "button_functions.h"
 
 // Pointers to current data so it can be freed if overwritten
-REQ_SCRIPT* units_req = NULL;
-REQ_SCRIPT* upgrades_req = NULL;
-REQ_SCRIPT* research_req = NULL;
-REQ_SCRIPT* tech_req = NULL;
-REQ_SCRIPT* orders_req = NULL;
+REQ_SCRIPT* units_req = 0;
+REQ_SCRIPT* upgrades_req = 0;
+REQ_SCRIPT* research_req = 0;
+REQ_SCRIPT* tech_req = 0;
+REQ_SCRIPT* orders_req = 0;
 
-void* buttons_data = NULL;
+void* buttons_data = 0;
 
 namespace
 {
-	u32 buttonReqFuncs[] = {
+	u32 button_req_funcs[] = {
 		ButtonRequirements::Slow_Down_Replay,
 		ButtonRequirements::Speed_Up_Replay,
 		ButtonRequirements::PlayorPause_Replay,
@@ -83,9 +83,9 @@ namespace
 		ButtonRequirements::Terran_Advanced_Buildings,
 		ButtonRequirements::Nuke_Train
 	};
-	u32 buttonReqCount = sizeof(buttonReqFuncs) / sizeof(u32);
+	u32 button_req_count = sizeof(button_req_funcs) / sizeof(u32);
 
-	u32 buttonActFuncs[] = {
+	u32 button_act_funcs[] = {
 		ButtonActions::Cancel_Infestation,
 		ButtonActions::Rally_Point,
 		ButtonActions::Select_Larva,
@@ -147,9 +147,9 @@ namespace
 		ButtonActions::Cancel_Place_Building,
 		ButtonActions::Change_Displayed_Buttons,
 	};
-	u32 buttonActCount = sizeof(buttonActFuncs) / sizeof(u32);
+	u32 button_act_count = sizeof(button_act_funcs) / sizeof(u32);
 
-	u32 statFunctions[] = {
+	u32 stat_functions[] = {
 		0x00424500, // Status Function 1
 		0x00424980, // Status Function 2
 		0x00425180, // Status Function 3
@@ -160,9 +160,9 @@ namespace
 		0x00425900, // Status Function 8
 		0x00424520  // Status Function 9
 	};
-	u32 statFuncCount = sizeof(statFunctions) / sizeof(u32);
+	u32 statFuncCount = sizeof(stat_functions) / sizeof(u32);
 
-	u32 dispFunctions[] = {
+	u32 disp_functions[] = {
 		0x00426F50, // Display Function 1
 		0x00427890, // Display Function 2
 		0x00427C90, // Display Function 3
@@ -173,167 +173,153 @@ namespace
 		0x00426EE0, // Display Function 8
 		0x00425EE0  // Display Function 9
 	};
-	u32 dispFuncCount = sizeof(dispFunctions) / sizeof(u32);
+	u32 disp_func_count = sizeof(disp_functions) / sizeof(u32);
 };
 
 namespace hooks {
 
-	void load_req_grafts()
-	{
-		void* data = NULL;
+	void load_req_grafts() {
+		void* data = 0;
 
-		data = FastFileRead("datreq\\units.graft", NULL, true, 0, NULL);
-		if (data != NULL)
-		{
+		data = FastFileRead("datreq\\units.graft", 0, true, 0, 0);
+		if (!data) {
 			inject_grafting_data(data, GraftType::units_req);
-			if (units_req != NULL)
-			{
+			if (!units_req) {
 				SMemFree(units_req, "grafting.cpp", __LINE__, 0);
 			}
 			units_req = (REQ_SCRIPT*)data;
 		}
 
-		data = FastFileRead("datreq\\upgrades.graft", NULL, true, 0, NULL);
-		if (data != NULL)
-		{
+		data = FastFileRead("datreq\\upgrades.graft", 0, true, 0, 0);
+		if (!data) {
 			inject_grafting_data(data, GraftType::upgrades_req);
-			if (upgrades_req != NULL)
-			{
+			if (!upgrades_req) {
 				SMemFree(upgrades_req, "grafting.cpp", __LINE__, 0);
 			}
 			upgrades_req = (REQ_SCRIPT*)data;
 		}
 
-		data = FastFileRead("datreq\\research.graft", NULL, true, 0, NULL);
-		if (data != NULL)
-		{
+		data = FastFileRead("datreq\\research.graft", 0, true, 0, 0);
+		if (!data) {
 			inject_grafting_data(data, GraftType::research_req);
-			if (research_req != NULL)
-			{
+			if (!research_req) {
 				SMemFree(research_req, "grafting.cpp", __LINE__, 0);
 			}
 			research_req = (REQ_SCRIPT*)data;
 		}
 
-		data = FastFileRead("datreq\\tech.graft", NULL, true, 0, NULL);
-		if (data != NULL)
-		{
+		data = FastFileRead("datreq\\tech.graft", 0, true, 0, 0);
+		if (!data) {
 			inject_grafting_data(data, GraftType::tech_req);
-			if (tech_req != NULL)
-			{
+			if (!tech_req) {
 				SMemFree(tech_req, "grafting.cpp", __LINE__, 0);
 			}
 			tech_req = (REQ_SCRIPT*)data;
 		}
 
-		data = FastFileRead("datreq\\orders.graft", NULL, true, 0, NULL);
-		if (data != NULL)
-		{
+		data = FastFileRead("datreq\\orders.graft", 0, true, 0, 0);
+		if (!data) {
 			inject_grafting_data(data, GraftType::orders_req);
-			if (orders_req != NULL)
-			{
+			if (!orders_req) {
 				SMemFree(orders_req, "grafting.cpp", __LINE__, 0);
 			}
 			orders_req = (REQ_SCRIPT*)data;
 		}
 	}
 
-	void load_button_grafts()
-	{
-		void* data = FastFileRead("datreq\\buttons.graft", NULL, true, 0, NULL);
+	void load_button_grafts() {
+		void* data = FastFileRead("datreq\\buttons.graft", 0, true, 0, 0);
 		// File not found
-		if (data == NULL)
-		{
+		if (!data) {
 			return;
 		}
 
 		// unpack data
-		u32 buttonCount = ((u32*)data)[0];
-		u32 unitCount = ((u32*)data)[1];
-		u32 unitStatCount = ((u32*)data)[2];
+		u32 button_count = ((u32*)data)[0];
+		u32 unit_count = ((u32*)data)[1];
+		u32 unit_stat_count = ((u32*)data)[2];
 		Button* buttons = (Button*)(&(((u32*)data)[3]));
-		ButtonSet* buttonSets = (ButtonSet*)(&buttons[buttonCount]);
-		UnitStatFuncArrayEntry* statInfo = (UnitStatFuncArrayEntry*)(&buttonSets[unitCount]);
+		ButtonSet* button_sets = (ButtonSet*)(&buttons[button_count]);
+		UnitStatFuncArrayEntry* stat_info = (UnitStatFuncArrayEntry*)(&button_sets[unit_count]);
 
 		// allocate new, possibly larger, data
-		u32 unitCountNew = std::max(unitCount, (u32)UNIT_TYPE_COUNT);
-		u32 unitStatCountNew = std::max(unitStatCount, (u32)UNIT_TYPE_COUNT);
-		u32 dataSize = buttonCount*sizeof(Button) + unitCountNew*sizeof(ButtonSet) + unitStatCountNew*sizeof(UnitStatFuncArrayEntry);
-		void* newData = malloc(dataSize);
-		Button* buttonsNew = (Button*)newData;
-		ButtonSet* buttonSetsNew = (ButtonSet*)(&buttonsNew[buttonCount]);
-		UnitStatFuncArrayEntry* statInfoNew = (UnitStatFuncArrayEntry*)(&buttonSetsNew[unitCountNew]);
+		u32 unitCountNew = std::max(unit_count, (u32)UNIT_TYPE_COUNT);
+		u32 unitStatCountNew = std::max(unit_stat_count, (u32)UNIT_TYPE_COUNT);
+		u32 dataSize = button_count*sizeof(Button) + unitCountNew*sizeof(ButtonSet) + unitStatCountNew*sizeof(UnitStatFuncArrayEntry);
+		void* new_data = malloc(dataSize);
+		Button* buttons_new = (Button*)new_data;
+		ButtonSet* button_sets_new = (ButtonSet*)(&buttons_new[button_count]);
+		UnitStatFuncArrayEntry* stat_info_new = (UnitStatFuncArrayEntry*)(&button_sets_new[unitCountNew]);
 
 		// Copy data to new, possibly larger, buffer
-		memcpy(buttonsNew, buttons, buttonCount * sizeof(Button));
-		memcpy(buttonSetsNew, buttonSets, unitCount * sizeof(ButtonSet));
-		memcpy(statInfoNew, statInfo, unitStatCount * sizeof(UnitStatFuncArrayEntry));
+		memcpy(buttons_new, buttons, button_count * sizeof(Button));
+		memcpy(button_sets_new, button_sets, unit_count * sizeof(ButtonSet));
+		memcpy(stat_info_new, stat_info, unit_stat_count * sizeof(UnitStatFuncArrayEntry));
 
 		// Remove file buffer
 		SMemFree(data, "grafting.cpp", __LINE__, 0);
 
 		// Convert function ID's to pointers
-		for (u32 i = 0; i < buttonCount; i++) {
-			if ((u32)(buttonsNew[i].requirement_func) < buttonReqCount) {
-				buttonsNew[i].requirement_func = (ReqFunc*)(buttonReqFuncs[(u32)(buttonsNew[i].requirement_func)]);
+		for (u32 i = 0; i < button_count; i++) {
+			if ((u32)(buttons_new[i].requirement_func) < button_req_count) {
+				buttons_new[i].requirement_func = (ReqFunc*)(button_req_funcs[(u32)(buttons_new[i].requirement_func)]);
 			} else {
-			// what to do here?
+				// what to do here?
 			}
-			if ((u32)(buttonsNew[i].action_func) < buttonActCount) {
-				buttonsNew[i].action_func = (ActFunc*)(buttonActFuncs[(u32)(buttonsNew[i].action_func)]);
+			if ((u32)(buttons_new[i].action_func) < button_act_count) {
+				buttons_new[i].action_func = (ActFunc*)(button_act_funcs[(u32)(buttons_new[i].action_func)]);
 			} else {
-			// what to do here?
+				// what to do here?
 			}
 		}
 
 		// Convert button ID's to pointers
-		for (u32 i = 0; i < unitCount; i++) {
-			if (buttonSetsNew[i].buttons_in_set != 0) {
-				buttonSetsNew[i].first_button = &buttonsNew[(u32)(buttonSetsNew[i].first_button)];
+		for (u32 i = 0; i < unit_count; i++) {
+			if (button_sets_new[i].buttons_in_set != 0) {
+				button_sets_new[i].first_button = &buttons_new[(u32)(button_sets_new[i].first_button)];
 			}
 		}
 
 		// Convert function ID's to pointers
-		for (u32 i = 0; i < unitStatCount; i++) {
-			if (statInfoNew[i].unit_stat_cond_func < statFuncCount) {
-				statInfoNew[i].unit_stat_cond_func = statFunctions[statInfoNew[i].unit_stat_cond_func];
+		for (u32 i = 0; i < unit_stat_count; i++) {
+			if (stat_info_new[i].unit_stat_cond_func < statFuncCount) {
+				stat_info_new[i].unit_stat_cond_func = stat_functions[stat_info_new[i].unit_stat_cond_func];
 			} else {
-			// what to do here?
+				// what to do here?
 			}
-			if (statInfoNew[i].unit_stat_act_func < dispFuncCount) {
-				statInfoNew[i].unit_stat_act_func = dispFunctions[statInfoNew[i].unit_stat_act_func];
+			if (stat_info_new[i].unit_stat_act_func < disp_func_count) {
+				stat_info_new[i].unit_stat_act_func = disp_functions[stat_info_new[i].unit_stat_act_func];
 			} else {
-			// what to do here?
+				// what to do here?
 			}
 		}
 
 		// Fill in any undefined IDs
-		for (u32 i = unitCount; i < unitCountNew; i++) {
-			buttonSetsNew[i].buttons_in_set = 0;
-			buttonSetsNew[i].first_button = NULL;
-			buttonSetsNew[i].connected_unit = 65535;
+		for (u32 i = unit_count; i < unitCountNew; i++) {
+			button_sets_new[i].buttons_in_set = 0;
+			button_sets_new[i].first_button = 0;
+			button_sets_new[i].connected_unit = 65535;
 		}
 
-		for (u32 i = unitStatCount; i < unitStatCountNew; i++) {
+		for (u32 i = unit_stat_count; i < unitStatCountNew; i++) {
 			if (i < 250) { // Unselectable, unusable
-				statInfoNew[i].unit_id = 0;
-				statInfoNew[i].unit_stat_cond_func = statInfoNew[4].unit_stat_cond_func;
-				statInfoNew[i].unit_stat_act_func = statInfoNew[4].unit_stat_act_func;
+				stat_info_new[i].unit_id = 0;
+				stat_info_new[i].unit_stat_cond_func = stat_info_new[4].unit_stat_cond_func;
+				stat_info_new[i].unit_stat_act_func = stat_info_new[4].unit_stat_act_func;
 			} else { // Normal
-				statInfoNew[i].unit_id = i;
-				statInfoNew[i].unit_stat_cond_func = statInfoNew[0].unit_stat_cond_func;
-				statInfoNew[i].unit_stat_act_func = statInfoNew[0].unit_stat_act_func;
+				stat_info_new[i].unit_id = i;
+				stat_info_new[i].unit_stat_cond_func = stat_info_new[0].unit_stat_cond_func;
+				stat_info_new[i].unit_stat_act_func = stat_info_new[0].unit_stat_act_func;
 			}
 		}
 
 		// Inject data
-		inject_grafting_data(buttonSetsNew, GraftType::buttons);
-		inject_grafting_data(statInfoNew, GraftType::statInfo);
+		inject_grafting_data(button_sets_new, GraftType::buttons);
+		inject_grafting_data(stat_info_new, GraftType::statInfo);
 
-		if (buttons_data != NULL)
-		{
+		if (!buttons_data) {
 			free(buttons_data);
 		}
-		buttons_data = newData;
+		buttons_data = new_data;
 	}
 }
