@@ -133,74 +133,78 @@ namespace hooks
 		&&  unit_ext->timers[TimerWyvernAttackCooldown] == 0)
 		{
 			UnitExt* parent_ext = get_unit_ext(unit->subunit);
-			auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
-			s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
-			auto x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-			auto y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
+			if (parent_ext->timers[TimerWyvernAttackCooldown] == 0) {				
+				auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
+				s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
+				auto x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
+				auto y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
 
-			bool seek_unit = true;
-			if (parent_ext->values[ValueWyvernLandGrabOn] == 1)
-			{
-				auto targ_x = parent_ext->values[ValueWyvernLandGrabX];
-				auto targ_y = parent_ext->values[ValueWyvernLandGrabY];
-				auto direction = scbw::get_angle(x, y, targ_x, targ_y);
-				if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
+				bool seek_unit = true;
+				if (parent_ext->values[ValueWyvernLandGrabOn] == 1)
 				{
-					u32 sound = scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
-					helper::play_sound_from_unit(sound, unit, 1, 0);
-					scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, 0, targ_x, targ_y);
-					unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
-					seek_unit = false;
-				} else {
-					parent_ext->values[ValueWyvernLandGrabOn] = 0;
-				}
-			}
-
-			if (seek_unit)
-			{
-				if (unit->order_target.unit
-				&&  unit->main_order_id != OrderId::Follow
-				&&  unit->main_order_id != OrderId::Patrol
-				&&  unit->main_order_id != OrderId::WyvernLandGrab)
-				{
-					Unit* new_target = unit->order_target.unit;
-					if (wyvern_can_fire_at(unit, new_target))
+					auto targ_x = parent_ext->values[ValueWyvernLandGrabX];
+					auto targ_y = parent_ext->values[ValueWyvernLandGrabY];
+					auto direction = scbw::get_angle(x, y, targ_x, targ_y);
+					if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 					{
-						parent_ext->units[UnitWyvernTargetLock] = new_target;
+						u32 sound = scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
+						helper::play_sound_from_unit(sound, unit, 1, 0);
+						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, 0, targ_x, targ_y);
+						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+						parent_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+						seek_unit = false;
+					} else {
+						parent_ext->values[ValueWyvernLandGrabOn] = 0;
 					}
 				}
-				Unit* target = parent_ext->units[UnitWyvernTargetLock];
-				if (!target || !wyvern_can_fire_at(unit, target))
+
+				if (seek_unit)
 				{
-					target = scbw::UnitFinder::get_nearest_target(
-						unit->get_x() - range,
-						unit->get_y() - range,
-						unit->get_x() + range,
-						unit->get_y() + range,
-						unit, [&](Unit* target)
+					if (unit->order_target.unit
+					&&  unit->main_order_id != OrderId::Follow
+					&&  unit->main_order_id != OrderId::Patrol
+					&&  unit->main_order_id != OrderId::WyvernLandGrab)
 					{
-						if (target == unit)
+						Unit* new_target = unit->order_target.unit;
+						if (wyvern_can_fire_at(unit, new_target))
 						{
-							return false;
+							parent_ext->units[UnitWyvernTargetLock] = new_target;
 						}
-						if (scbw::is_allied_to(unit->player, target->player))
+					}
+					Unit* target = parent_ext->units[UnitWyvernTargetLock];
+					if (!target || !wyvern_can_fire_at(unit, target))
+					{
+						target = scbw::UnitFinder::get_nearest_target(
+							unit->get_x() - range,
+							unit->get_y() - range,
+							unit->get_x() + range,
+							unit->get_y() + range,
+							unit, [&](Unit* target)
 						{
-							return false;
-						}
-						if (!wyvern_can_fire_at(unit, target))
-						{
-							return false;
-						}
-						return true;
-					});	
-				}
-				
-				if (target)
-				{
-					auto direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
-					scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
-					unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+							if (target == unit)
+							{
+								return false;
+							}
+							if (scbw::is_allied_to(unit->player, target->player))
+							{
+								return false;
+							}
+							if (!wyvern_can_fire_at(unit, target))
+							{
+								return false;
+							}
+							return true;
+						});	
+					}
+					
+					if (target)
+					{
+						auto direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
+						helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
+						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
+						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+						parent_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+					}
 				}
 			}
 		}

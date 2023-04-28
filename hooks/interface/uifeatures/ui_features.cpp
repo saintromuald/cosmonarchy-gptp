@@ -865,6 +865,7 @@ LABEL_15:
 				} break;
 			}
 		}
+
 		helper::image_render_fxn_0_0(
 			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - cmdbtn_frame->w + 1) / 2,
 			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.top - button->bounds.bottom - cmdbtn_frame->h + 1) / 2,
