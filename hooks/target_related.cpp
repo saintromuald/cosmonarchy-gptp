@@ -402,40 +402,33 @@ LABEL_42:
 
 	s32 generic_right_click_unit_proc_2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID) // 00455E00
 	{
-		s32 result;
-		Unit* targetVar;
-
+		s32 result = 0;
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			if (unit->is_factory())
+			{
 				result = OrderId::RallyPointToTile - (target != 0);
-			else
+			} else {
 				result = OrderId::Nothing2;
+			}
 			return result;
 		}
-		targetVar = target;
-		if (!target)
-		{
-			if ((unit->id == UnitId::ZergMatraleth) && unitID != UnitId::None)
-			{
-				return OrderId::Rightclickaction;
-			}
+		if (!target) {
 			return OrderId::Move;
 		}
-		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, targetVar, 0))
+		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target, 0)) {
 			return OrderId::Pickup2;
-		if (helper::unit_is_active_transport(targetVar) && helper::can_enter_transport(targetVar, unit))
-			return OrderId::EnterTransport;
-		if (targetVar->status & UnitStatus::Burrowed)
-			return OrderId::Move;
-		if (unit->id != UnitId::ZergMatraleth
-			|| targetVar->status & UnitStatus::Invincible
-			|| helper::getUnitAbilityErrorStatString(targetVar, unit->player, 12) != 0)
-		{
-			result = (u8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
 		}
-		else
+		if (helper::unit_is_active_transport(target) && helper::can_enter_transport(target, unit)) {
+			return OrderId::EnterTransport;
+		}
+		if (target->status & UnitStatus::Burrowed) {
+			return OrderId::Move;
+		}
+		if (target->status & UnitStatus::Invincible || helper::get_unit_ability_error_stat_string(target, unit->player, 12) != 0)
 		{
+			result = (unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
+		} else {
 			result = OrderId::InfestMine2;
 		}
 		return result;
@@ -443,43 +436,26 @@ LABEL_42:
 
 	Unit* cmdrecv_hold_position(s32 a1) // 004C20C0
 	{
-		Unit* result;
-		Unit* i;
-		s16 unit_id;
-		u8 order_id;
-
 		*((s8*)&g_map_height_pixels + 2) = 0;
-		result = helper::get_active_player_next_selection();
-		for (i = result; result; i = result)
+		Unit* result = helper::get_active_player_next_selection();
+		for (Unit* i = result; result; i = result)
 		{
-			unit_id = i->id;
+			u32 unit_id = i->id;
+			u32 order_id = 0;
 			if (unit_id != UnitId::ProtossSolarion)
 			{
 				if (unit_id != UnitId::ProtossAccantorOld)
 				{
-					if (unit_id != UnitId::ZergMatraleth)
+					if (unit_id == UnitId::TerranCleric)
 					{
-						if (unit_id == UnitId::TerranCleric)
-						{
-							order_id = OrderId::MedicHoldPosition;
-						}
-						else
-						{
-							order_id = OrderId::HoldPosition4;
-						}
+						order_id = OrderId::MedicHoldPosition;
+					} else {
+						order_id = OrderId::HoldPosition4;
 					}
-					else
-					{
-						order_id = OrderId::HoldPosition3;
-					}
-				}
-				else
-				{
+				} else {
 					order_id = OrderId::ReaverHold;
 				}
-			}
-			else
-			{
+			} else {
 				order_id = OrderId::HoldPosition1;
 			}
 			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1)

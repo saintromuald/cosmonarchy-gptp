@@ -4150,7 +4150,7 @@ namespace helper {
 		return result;
 	}
 
-	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3) {
+	u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3) {
 		const u32 Func_getUnitAbilityErrorStatString = 0x00491E80;
 		static u32 result;
 		__asm {

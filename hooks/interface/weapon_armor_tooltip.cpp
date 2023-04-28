@@ -471,6 +471,7 @@ namespace hooks
 		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
 		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
+		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
 
 		// Gptp Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);

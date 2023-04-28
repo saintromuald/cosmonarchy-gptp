@@ -469,7 +469,7 @@ namespace hooks
 	//	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2); // not needed
 		jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
 	//	jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);	// Needs work, crashes when render_fxn is enabled
-		jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);	// Needs work
+	//	jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);	// Needs work
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 	}

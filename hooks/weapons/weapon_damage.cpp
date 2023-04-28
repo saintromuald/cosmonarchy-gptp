@@ -436,6 +436,10 @@ namespace hooks
 			&&  !scbw::is_under_dark_swarm(data.target)) {
 				apply_ensnare(data.target);
 			}
+
+			if (data.weapon_id == WeaponId::MindTyrantTyranny) {
+				helper::mind_control_hit(data.attacker, data.target);
+			}
 			// Ignore Carapace Swarm!
 			// END
 

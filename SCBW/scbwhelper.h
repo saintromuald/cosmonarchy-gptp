@@ -529,7 +529,7 @@ namespace helper {
 
 	// for generic_right_click_unit_proc_2
 	s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error);											// 00474D90
-	u16 getUnitAbilityErrorStatString(Unit* a1, char a2, s32 a3);																	// 00491E80
+	u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);																	// 00491E80
 
 	// for cmdrecv_hold_position
 	Unit* get_active_player_next_selection();																						// 0049A850

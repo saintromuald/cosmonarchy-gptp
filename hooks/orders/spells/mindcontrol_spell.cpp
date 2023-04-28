@@ -1,10 +1,11 @@
 #include "recall_spell.h"
 #include <SCBW/api.h>
 #include "globals.h"
+#include "hooks/weapons/weapon_fire.h"
 
 namespace hooks
 {
-	void orders_cast_mind_control(Unit* unit) {
+	void orders_cast_tyranny(Unit* unit) {
 		scbw::decloak_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 		Unit* target = unit->order_target.unit;
@@ -13,9 +14,6 @@ namespace hooks
 			unit->order_to_idle();
 		} else {
 			u16 tech_energy_cost = 0;
-			// Energy cost is initialized in this function
-			// Corresponding error message is "Invalid Target"
-
 			if (!unit->main_order_state) {
 				if (helper::spell_order(unit, TechId::Tyranny, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
 					// Start the channel
@@ -38,21 +36,8 @@ namespace hooks
 				if (unit->main_order_timer) {
 					return;
 				}
+				fire_bullet(unit, WeaponId::MindTyrantTyranny, {unit->order_target.pt, target});
 				unit->status &= ~UnitStatus::CanNotReceiveOrders;
-
-				if (target->status & UnitStatus::IsHallucination) {
-					target->remove();
-				} else {
-					u32 overlayId = scbw::has_overlay(target) + ImageId::MindControlHit_Small;
-					if (target->subunit) {
-						target->subunit->sprite->create_top_overlay(overlayId, 0, 0, 0);
-					} else {
-						target->sprite->create_top_overlay(overlayId, 0, 0, 0);
-					}
-					helper::mind_control_hit(unit, target);
-					target->order_to_idle();
-				}
-				helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 				unit->order_to_idle();
 			}
 		}

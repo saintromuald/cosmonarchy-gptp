@@ -107,7 +107,7 @@ namespace WeaponId {
 		Restoration = 0x66,
 		ValkyrieHaloRockets = 0x67,
 		VithriliskCorrosiveSpores = 0x68,
-		Tyranny = 0x69,
+		MindTyrantTyranny = 0x69,
 		Feedback = 0x6A,
 		LuminaryAuralAssault = 0x6B,
 		MindTyrantMaelstrom = 0x6C,

@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_cast_mind_control_wrapper()
+	void __declspec(naked) orders_cast_tyranny_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -13,7 +13,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_cast_mind_control(unit);
+		hooks::orders_cast_tyranny(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -24,7 +24,7 @@ namespace
 
 	const u32 give_units = 0x004C8040;
 	const u32 MindControl_Hit_F6938 = 0x004F6938;
-	void __declspec(naked) MindControl_Hit_patch() {
+	void __declspec(naked) tyranny_hit_patch() {
 		__asm {
 			CALL	give_units
 			PUSH	EAX
@@ -51,7 +51,8 @@ namespace hooks
 {
 	void inject_tyranny_spell_hooks()
 	{
-		jump_patch(orders_cast_mind_control_wrapper,	0x004F6950, 0);
-		jump_patch(MindControl_Hit_patch, 0x004F6933);
+		jump_patch(orders_cast_tyranny_wrapper,	0x004F6950, 0);
+
+		jump_patch(tyranny_hit_patch, 0x004F6933);	// No longer used since we have this hooked, stopped Tyrants from draining controlled Tyrants
 	}
 }

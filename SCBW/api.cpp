@@ -1497,7 +1497,7 @@ namespace scbw {
 		}
 	}
 
-	u8 has_overlay(Unit* unit) {
+	u8 overlay_size(Unit* unit) {
 		const u32 func_address = 0x0047B720;
 		static u8 result;
 		__asm {

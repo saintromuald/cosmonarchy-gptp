@@ -382,10 +382,6 @@ namespace hooks
 
 		Unit* target_unit = *target;
 		if (!target_unit) {
-			if ((unit->id == UnitId::ZergMatraleth) && fow_unit_id != UnitId::None)
-			{
-				return OrderId::Rightclickaction;
-			}
 			return OrderId::Move;
 		}
 		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target_unit, 0)) {
@@ -397,13 +393,7 @@ namespace hooks
 		if (target_unit->status & UnitStatus::Burrowed) {
 			return OrderId::Move;
 		}
-
-		if  (unit->id == UnitId::ZergMatraleth
-		&& !(target_unit->status & UnitStatus::Invincible)
-		&&   helper::get_target_unit_ability_error_stat_string(target_unit, unit->player, 12) == 0)
-		{
-			return OrderId::InfestMine2;
-		}
+		// Previously had Matraleth infest code
 		if (unit->id == UnitId::TerranCleric) {
 			return OrderId::HealMove;
 		}

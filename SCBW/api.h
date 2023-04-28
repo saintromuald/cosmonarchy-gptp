@@ -84,7 +84,7 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	u8 has_overlay(Unit* unit);
+	u8 overlay_size(Unit* unit);
 
 	void disable_dialog(BinDlg* dialog);															//18640
 	void show_dialog(BinDlg* dialog);															//186A0

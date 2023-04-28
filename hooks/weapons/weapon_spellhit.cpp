@@ -481,13 +481,22 @@ namespace hooks {
 	}
 
 	// No bullet because this function is called in another context without the bullet.
-	void mind_control_hit(Unit* attacker, Unit* target) {
+	void mind_control_hit(Unit* attacker, Unit* target) { // 004F6910
 		scbw::decloak_proc(attacker);
 		if (target->status & UnitStatus::IsHallucination) {
 			target->remove();
 		} else {
+			u32 overlay_id = scbw::overlay_size(target) + ImageId::MindControlHit_Small;
+			if (target->subunit) {
+				target->subunit->sprite->create_top_overlay(overlay_id, 0, 0, 0);
+			} else {
+				target->sprite->create_top_overlay(overlay_id, 0, 0, 0);
+			}
+			target->order_to_idle();
 			scbw::mind_control(attacker, target);
 		}
+		helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
+		target->order_to_idle();
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
