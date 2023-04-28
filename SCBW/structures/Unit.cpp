@@ -92,6 +92,7 @@ u8 Unit::get_armor_bonus() const {
 u16 Unit::get_max_energy() const {
 	static u32 func_address = 0x00491870;
 	assert(this);
+	assert(this);
 	static u16 result;
 	__asm {
 		PUSHAD

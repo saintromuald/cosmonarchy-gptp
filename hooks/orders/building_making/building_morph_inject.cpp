@@ -471,7 +471,6 @@ namespace
 	}
 }
 
-extern const u32 Func_IsRemorphingBuilding;
 namespace hooks
 {
 	void inject_building_morph_hooks()
@@ -481,7 +480,7 @@ namespace hooks
 		jump_patch(cancel_zerg_building_wrapper,										0x0045DA40, 1);
 		jump_patch(begin_gas_building_patch,											0x0046790A);
 
-		jump_patch(is_remorphing_building_wrapper,										Func_IsRemorphingBuilding);
+		jump_patch(is_remorphing_building_wrapper,										0x0045CD00);
 		jump_patch(is_morphed_building_wrapper_ai_morph_behavior,						0x0043505F);
 		jump_patch(is_morphed_building_wrapper_console_wireframe_update,				0x00456911);
 		jump_patch(is_morphed_building_wrapper_zerg_build_self_get_id,					0x0045D505);

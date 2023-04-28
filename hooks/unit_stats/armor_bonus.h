@@ -4,5 +4,6 @@
 namespace hooks
 {
 	u8 get_armor_bonus(Unit* unit);
+
 	void inject_armor_bonus_hooks();
 }

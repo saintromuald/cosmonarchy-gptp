@@ -1,7 +1,6 @@
 #include "armor_bonus.h"
 #include <hook_tools.h>
 
-extern const u32 Func_GetArmorBonus; // Defined in fuck you visual studio.cpp
 namespace
 {
 	void __declspec(naked) get_armor_bonus_wrapper()
@@ -27,6 +26,6 @@ namespace hooks
 {
 	void inject_armor_bonus_hooks()
 	{
-		jump_patch(get_armor_bonus_wrapper, Func_GetArmorBonus, 1);
+		jump_patch(get_armor_bonus_wrapper, 0x00453FC0, 1);
 	}
 }

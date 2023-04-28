@@ -1,7 +1,6 @@
 #include "max_energy.h"
 #include <hook_tools.h>
 
-extern const u32 Func_GetMaxEnergy; // Defined in Unit.cpp
 namespace
 {
 	void __declspec(naked) get_unit_max_energy_wrapper()
@@ -27,6 +26,6 @@ namespace hooks
 {
 	void inject_unit_max_energy_hooks()
 	{
-		jump_patch(get_unit_max_energy_wrapper, Func_GetMaxEnergy, 7);
+		jump_patch(get_unit_max_energy_wrapper, 0x00491870, 7);
 	}
 }
