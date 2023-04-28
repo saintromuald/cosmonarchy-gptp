@@ -75,28 +75,28 @@ u8 Unit::get_armor() const {
 	return units_dat::armor_amount[this->id] + this->get_armor_bonus();
 }
 
-extern const u32 Func_GetArmorBonus = 0x00453FC0;
 u8 Unit::get_armor_bonus() const {
+	static u32 func_address = 0x00453FC0;
 	assert(this);
 	static u8 armor_bonus;
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_GetArmorBonus
+		CALL func_address
 		MOV armor_bonus, AL
 		POPAD
 	}
 	return armor_bonus;
 }
 
-extern const u32 Func_GetMaxEnergy = 0x00491870;
 u16 Unit::get_max_energy() const {
+	static u32 func_address = 0x00491870;
 	assert(this);
 	static u16 result;
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_GetMaxEnergy
+		CALL func_address
 		MOV result, AX
 		POPAD
 	}
@@ -156,8 +156,8 @@ u8 Unit::get_spell_countdown() const {
 	return this->spell_cooldown;
 }
 
-extern const u32 Func_GetMaxWeaponRange = 0x00475870;
 u32 Unit::get_max_weapon_range(u8 weapon_id) const {
+	static u32 func_address = 0x00475870;
 	assert(this);
 
 	if (weapon_id == WeaponId::None) {
@@ -171,7 +171,7 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const {
 		PUSHAD
 		MOV BL, weapon_id
 		MOV EAX, this
-		CALL Func_GetMaxWeaponRange
+		CALL func_address
 		MOV max_weapon_range, EAX
 		POPAD
 	}
@@ -186,8 +186,8 @@ const char* Unit::get_name() const {
 #include "SCBW/stat_txt_spec.h"
 // Based on function @ 0x0047B090
 const char* Unit::get_name(u16 unit_id) {
-	assert(unit_id < UNIT_TYPE_COUNT);
-	if (unit_id >= UNIT_TYPE_COUNT) {
+	assert(unit_id < UnitsIdLimit);
+	if (unit_id >= UnitsIdLimit) {
 		return (char*)g_string_empty;
 	} else if (units_dat::map_string_id[unit_id] != 0) {
 		return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
@@ -205,7 +205,7 @@ RaceId::Enum Unit::get_race() const {
 
 // Based on function at 0x0047B150
 RaceId::Enum Unit::get_race(u16 unit_id) {
-	assert(unit_id < UNIT_TYPE_COUNT);
+	assert(unit_id < UnitsIdLimit);
 
 	if (units_dat::group_flags[unit_id].is_zerg) {
 		return RaceId::Zerg;
@@ -218,8 +218,8 @@ RaceId::Enum Unit::get_race(u16 unit_id) {
 	}
 }
 
-extern const u32 Func_GetSeekRange = 0x00476000;
 u8 Unit::get_seek_range() const {
+	static u32 func_address = 0x00476000;
 	assert(this);
 
 	static u8 seek_range;
@@ -227,7 +227,7 @@ u8 Unit::get_seek_range() const {
 	__asm {
 		PUSHAD
 		MOV EDX, this
-		CALL Func_GetSeekRange
+		CALL func_address
 		MOV seek_range, AL
 		POPAD
 	}
@@ -235,8 +235,8 @@ u8 Unit::get_seek_range() const {
 	return seek_range;
 }
 
-extern const u32 Func_GetSightRange = 0x004E5B40;
 u32 Unit::get_sight_range(bool is_for_spellcasting) const {
+	static u32 func_get_sight_range = 0x004E5B40;
 	assert(this);
 	static u32 sight_range;
 	b32 ignore_status_effects = (is_for_spellcasting ? 0 : 1);
@@ -244,7 +244,7 @@ u32 Unit::get_sight_range(bool is_for_spellcasting) const {
 		PUSHAD
 		PUSH ignore_status_effects
 		MOV EDX, this
-		CALL Func_GetSightRange
+		CALL func_get_sight_range
 		MOV sight_range, EAX
 		POPAD
 	}
@@ -301,15 +301,15 @@ bool Unit::is_frozen() const {
 	return scbw::unit_is_stunned((Unit*)this);
 }
 
-extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
 bool Unit::is_remorphing_building() const {
+	static u32 func_address = 0x0045CD00;
 	static b32 result;
 	assert(this);
 
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_IsRemorphingBuilding
+		CALL func_address
 		MOV result, EAX
 		POPAD
 	}
@@ -317,7 +317,7 @@ bool Unit::is_remorphing_building() const {
 	return result != 0;
 }
 
-//Identical to function @ 0x00401D40
+// Identical to function @ 0x00401D40
 bool Unit::is_subunit() const {
 	return (this && units_dat::base_property[this->id] & UnitProperty::Subunit);
 }
@@ -333,10 +333,10 @@ bool Unit::is_valid_caster() const {
 	return units_dat::base_property[this->id] & UnitProperty::Spellcaster && !(this->status & UnitStatus::IsHallucination);
 }
 
-//Identical to function @ 0x00401DC0
-//Returns:	0 - Unit has not reached destination
-//					1 - Unit has reached destination
-//					2 - Unit cannot move
+// Identical to function @ 0x00401DC0
+// Returns:	0 - Unit has not reached destination
+//			1 - Unit has reached destination
+//			2 - Unit cannot move
 u32 Unit::get_movable_state() {
 	if (this->move_target.pt != this->sprite->position)
 		return 0; else if (!(this->status & UnitStatus::Unmovable))
@@ -400,15 +400,15 @@ Box16 Unit::get_box() const {
 
 //-------- Modifying unit state --------//
 
-const u32 Func_SetUnitHp = 0x00467340;
 void Unit::set_hitpoints(s32 hitpoints) {
+	static u32 func_address = 0x00467340;
 	assert(this);
 
 	__asm {
 		PUSHAD
 		MOV EAX, this
 		MOV ECX, hitpoints
-		CALL Func_SetUnitHp
+		CALL func_address
 		POPAD
 	}
 }
@@ -492,10 +492,10 @@ u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore, bool p
 	return heal_shields(heal_energy(value, source), source, restore, proc_flash_shielding);
 }
 
-const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
 void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damage_divisor) {
+	const u32 func_address = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
 	assert(this);
-	assert(weapon_id < WEAPON_TYPE_COUNT);
+	assert(weapon_id < WeaponsIdLimit);
 //	assert(damage_divisor != 0);
 	if (damage < 0) {
 		damage = weapons_dat::damage_amount[weapon_id] * 256;
@@ -509,7 +509,7 @@ void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPla
 		PUSH direction
 		PUSH damage_divisor
 		PUSH weapon_id
-		CALL Func_DoWeaponDamage
+		CALL func_address
 		POPAD
 	}
 }

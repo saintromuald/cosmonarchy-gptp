@@ -173,7 +173,7 @@ namespace scbw {
 
 	// Identical to function @ 0x00475CE0
 	bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
-		if (weapon_id >= WEAPON_TYPE_COUNT) {
+		if (weapon_id >= WeaponsIdLimit) {
 			return false;
 		}
 		if (!target) {
