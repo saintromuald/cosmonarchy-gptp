@@ -1302,4 +1302,9 @@ struct SightCallbacks { // From IDA
 	sight_callback_t* ground[2];
 	sight_callback_t* air[2];
 };
+
+struct CmdBtnPalette {
+	char colors[16];
+};
+
 #pragma pack()
