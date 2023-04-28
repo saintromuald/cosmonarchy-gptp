@@ -1133,8 +1133,9 @@ namespace hooks {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type_internal = 5;
 			if (!despawn_bullet_special) {
-				if (target && target->sprite) {
-					bullet->attack_target.pt = target->sprite->position;
+				if (target && target->sprite && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
+					bullet->attack_target.pt.x = target->sprite->position.x;
+					bullet->attack_target.pt.y = target->sprite->position.y;
 				} else {
 					bullet->attack_target.unit = 0;
 				}
