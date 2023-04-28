@@ -607,6 +607,37 @@ void __declspec(naked) remove_subunit_or_gas_container_wrapper() {
 	}
 }
 
+	// PATCHES \\
+
+void __declspec(naked) clear_bullet_targets_patch_8AACC() {
+	__asm {
+		loc_48AAD0:
+		CMP[EAX + 0x5C], ECX//bullet->attack_target.unit != unit
+		JNE		offset loc_48AAEE
+		MOV		ESI, [ECX + 0xC]
+		MOV		DX, [ESI + 0x14]
+		MOV[EAX + 0x58], DX//bullet->attack_target.pt.x = unit->sprite->position.x
+		MOV		DX, [ESI + 0x16]
+		MOV[EAX + 0x5A], DX//bullet->attack_target.pt.y = unit->sprite->position.y
+		XOR		EDX, EDX
+		MOV[EAX + 0x5C], EDX//bullet->attack_target.unit = NULL
+
+		loc_48AAEE :
+		CMP[EAX + 0x64], ECX//bullet->source_unit != unit
+		JNE		offset loc_48AAF6
+		CMP[ECX + 0x64], 103//unit->id == UnitId::ZergLakizilisk
+		JE		offset loc_48AAF6
+		MOV[EAX + 0x64], EDX//bullet-source_unit = NULL
+
+		loc_48AAF6 :
+		MOV		EAX, [EAX + 4]//bullet = bullet->link.next
+		CMP		EAX, EDX//bullet != NULL
+		JNE		offset loc_48AAD0
+		POP		ESI
+		RET
+	}
+}	
+
 namespace hooks {
 	void inject_unit_destructor_special_hooks() {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
@@ -615,5 +646,6 @@ namespace hooks {
 	//	jump_patch(remove_subunit_or_gas_container_wrapper,	0x004A0080, 3);
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
+		jump_patch(clear_bullet_targets_patch_8AACC,		0x0048AACC, 2); // DF: Fix bug where dying Lakizilisks sometimes deal double damage
 	}
 }

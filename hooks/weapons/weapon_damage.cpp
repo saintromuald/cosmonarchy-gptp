@@ -226,7 +226,6 @@ namespace hooks
 
 			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
-				armor_total += scbw::get_aise_value(data.target, 0, AiseId::GetShepherds, 0, 0);
 				if (scbw::unit_has_fore_castle(data.target)) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
@@ -611,10 +610,8 @@ namespace hooks
 					case WeaponId::MagnetarNewtonianShockCannon:
 					{
 						// Magnetar - Law of Attraction - Pull target to attacker
-						if (!(units_dat::base_property[data.target->id] & UnitProperty::Building)
-							||    (data.target->status & UnitStatus::InAir
-								&& data.target->main_order_id != OrderId::Liftoff
-								&& data.target->main_order_id != OrderId::BuildingLand)
+						if ((!(units_dat::base_property[data.target->id] & UnitProperty::Building)
+						||    (data.target->status & UnitStatus::InAir && data.target->main_order_id != OrderId::Liftoff && data.target->main_order_id != OrderId::BuildingLand))
 						&& !(data.target->status & UnitStatus::Burrowed))
 						{
 							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());

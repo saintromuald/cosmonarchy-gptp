@@ -37,6 +37,7 @@ namespace hooks {
 	void __fastcall centerview_unit_group(u8 slot);																// 004967E0
 	void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);							// 004EFD90
 	b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);								// 004EF590
+	void draw_stat_button_image(BinDlg* dialog);																// 00456C30
 
 	void inject_ui_features_hooks();
 

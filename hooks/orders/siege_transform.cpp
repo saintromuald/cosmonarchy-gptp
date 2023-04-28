@@ -6,176 +6,131 @@ namespace hooks
 {
 	void orders_tank_mode(Unit* unit) // 00464AE0
 	{
-		bool stop_there = false;
-		Unit* subunit = unit->subunit;
-		if (unit->main_order_state == 0)
+		u16 unit_id = unit->id;
+		if (!unit->main_order_state)
 		{
-			if (scbw::unit_id_is_siege_mode(unit->id))
-			{
-				unit->main_order_state = 2;
-				scbw::decloak_proc(unit);
-				if (subunit) {
-					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart))
-					{
-						unit->subunit->order_to(OrderId::Nothing3, unit);
-						helper::set_unit_retreat_point(unit->subunit, units_dat::start_direction[unit->subunit->id]);
-						helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
-						unit->main_order_state = 2;
-						scbw::decloak_proc(unit);
-					}
-				}
-			} else {
-				stop_there = true;
+			if (!scbw::unit_id_is_siege_mode(unit_id)) {
 				unit->order_to_idle();
+				return;
 			}
+
+			scbw::decloak_proc(unit);
+			Unit* subunit = unit->subunit;
+			if (unit->status & UnitStatus::NoBrkCodeStart || (subunit && subunit->status & UnitStatus::NoBrkCodeStart)) {
+				return;
+			}
+
+			if (subunit) {
+				subunit->order_to(OrderId::Nothing3, unit);
+				helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
+				scbw::decloak_proc(subunit);
+			}
+			for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+				image->play_iscript_animation(IscriptAnimation::SpecialState2);
+			}
+			if (subunit) {
+				helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState2);
+			}
+			unit->order_signal &= ~1;
+			++unit->main_order_state;
 		}
 
-		if (!stop_there && unit->main_order_state == 2)
-		{
-			if ((subunit && helper::get_closer_to_destination(unit->subunit)) || helper::get_closer_to_destination(unit))
-			{
-				Image* current_image = unit->sprite->images.head;
-				while (current_image)
-				{
-					current_image->play_iscript_animation(IscriptAnimation::SpecialState2);
-					current_image = current_image->link.next;
-				}
-				if (subunit) {
-					helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState2);
-				}
-				unit->order_signal &= ~0x01; // if bit 1 is set, unset it
-				unit->main_order_state = 3;
-			}
-		}
+		if (unit->main_order_state && unit->order_signal & 1) {
+			unit->order_signal &= ~1;
 
-		if (!stop_there && unit->main_order_state == 3)
-		{
-			if (unit->order_signal & 1)
+			switch (unit_id)
 			{
-				u16 new_id = unit->id;
-				unit->order_signal -= 1;
-				switch (unit->id)
+				case UnitId::TerranMatadorCinderMode:
 				{
-					case UnitId::TerranMatadorCinderMode:
-					{
-						new_id = UnitId::TerranMatadorTankMode;
-					} break;
-					case UnitId::TerranPhalanxSiegeMode:
-					{
-						new_id = UnitId::TerranPhalanxTankMode;
-					} break;
-				}
-				helper::replace_unit_with_id(unit, new_id);
-				helper::order_return_to_idle(unit);
-				if (subunit) {
-					helper::order_return_to_idle(unit->subunit);
-				}
+					unit_id = UnitId::TerranMatadorTankMode;
+				} break;
+				case UnitId::TerranPhalanxSiegeMode:
+				{
+					unit_id = UnitId::TerranPhalanxTankMode;
+				} break;
+			}
+
+			scbw::transform_unit(unit, unit_id);
+			helper::order_return_to_idle(unit);
+			if (unit->subunit) {
+				helper::order_return_to_idle(unit->subunit);
 			}
 		}
 	}
 	
 	void orders_siege_mode(Unit* unit) // 00464BD0
 	{
-		bool stop_there = false;
-		if (unit->main_order_state == 0)
+		u16 unit_id = unit->id;
+		switch (unit->main_order_state)
 		{
-			if (scbw::unit_id_is_tank_mode(unit->id))
+			case 0:
 			{
-				if (unit->movement_flags & MovementFlags::Accelerating)
-				{
+				if (!scbw::unit_id_is_tank_mode(unit_id)) {
+					unit->order_to_idle();
+					return;
+				}
+				if (unit->movement_flags & MovementFlags::Accelerating) {
 					helper::make_to_hold_position(unit);
 				}
-				unit->main_order_state = 1;
+				++unit->main_order_state;
 			}
-			else
+			case 1:
 			{
-				unit->order_to_idle();
-				stop_there = true;
-			}
-		}
-
-		Unit* subunit = unit->subunit;
-		if (!stop_there && unit->main_order_state == 1)
-		{
-			if (!(unit->movement_flags & MovementFlags::Accelerating))
-			{
-				if (subunit) {
-					if (!(subunit->movement_flags & MovementFlags::Accelerating))
-					{
-						if (!(subunit->status & UnitStatus::NoBrkCodeStart))
-						{
-							helper::set_unit_retreat_point(unit, units_dat::start_direction[unit->id]);
-							subunit->order_to(OrderId::Nothing3, unit);
-							helper::set_unit_retreat_point(subunit, units_dat::start_direction[subunit->id]);
-							helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
-						}
-					}
-				} else if (images_dat::is_turnable[unit->sprite->main_graphic->id]) {
-					helper::set_unit_retreat_point(unit, unit->current_direction_1);
+				if (unit->movement_flags & MovementFlags::Accelerating) {
+					return;
 				}
-				else {
-					helper::set_unit_retreat_point(unit, units_dat::start_direction[unit->id]);
-				}
-				unit->main_order_state = 2;
-				if (helper::check_for_close_unit(unit))
+				Unit* subunit = unit->subunit;
+				if (subunit && (subunit->movement_flags & MovementFlags::Accelerating || subunit->status & UnitStatus::NoBrkCodeStart))
 				{
-					stop_there = true;
+					return;
+				}
+				if (subunit) {
+					subunit->order_to(OrderId::Nothing3, unit);
+					helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
+				}
+				++unit->main_order_state;
+				if (helper::check_for_close_unit(unit)) {
+					return;
 				}
 			}
-		}
-
-		if (!stop_there && unit->main_order_state == 2)
-		{
-			if (helper::get_closer_to_destination(unit))
+			case 2:
 			{
-				u16 new_id = unit->id;
-				switch (unit->id)
+				switch (unit_id)
 				{
 					case UnitId::TerranMatadorTankMode:
 					{
-						new_id = UnitId::TerranMatadorCinderMode;
-					} break;
+						unit_id = UnitId::TerranMatadorCinderMode;
+						break;
+					}
 					case UnitId::TerranPhalanxTankMode:
 					{
-						new_id = UnitId::None;
-						if (helper::get_closer_to_destination(subunit))
-						{
-							new_id = UnitId::TerranPhalanxSiegeMode;
-						}
+						unit_id = UnitId::TerranPhalanxSiegeMode;
 					} break;
 				}
-				if (new_id != UnitId::None) {
-					helper::replace_unit_with_id(unit, new_id);
-					unit->main_order_state = 3;
-					scbw::decloak_proc(unit);
+				scbw::transform_unit(unit, unit_id);
+				++unit->main_order_state;
+			}
+			case 3:
+			{
+				if (unit->order_signal & 1)
+				{
+					Order* order_queue_head = unit->order_queue_head;
+					unit->order_signal &= ~1;
+					if (order_queue_head && !(order_queue_head->order_id == OrderId::WatchTarget)) {
+						unit->order_computer(units_dat::return_to_idle_order[unit_id]);
+						helper::force_order_done(unit);
+					} else {
+						helper::order_return_to_idle(unit);
+					}
+
+					if (unit->subunit) {
+						helper::order_return_to_idle(unit->subunit);
+					}
 				}
 			}
-		}
-
-		if (!stop_there && unit->main_order_state == 3)
-		{
-			if (unit->order_signal & 1)
+			default:
 			{
-				unit->order_signal -= 1;
-				if (unit->order_queue_head)
-				{
-					if (!(unit->order_queue_head->order_id == OrderId::WatchTarget))
-					{
-						unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-						helper::force_order_done(unit);
-						if (subunit) {
-							helper::order_return_to_idle(subunit);
-						}
-						stop_there = true;
-					}
-				}
-				if (!stop_there)
-				{
-					helper::order_return_to_idle(unit);
-					if (subunit) {
-						helper::order_return_to_idle(subunit);
-					}
-				}
+				return;
 			}
 		}
 	}

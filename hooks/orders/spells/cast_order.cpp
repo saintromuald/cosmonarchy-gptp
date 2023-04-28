@@ -165,16 +165,17 @@ namespace hooks
 		u8 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
+		// Paladin Skyfall
 		if (unit->id == UnitId::TerranPaladin) {
 			scbw::decloak_proc(unit);
 			if (unit->order_signal & 0x20) {
 				unit->order_signal &= ~0x20;
 				unit_ext->timers[TimerSkyfall] = 3;
 				unit_ext->values[ValueSkyfallStacks] = 0;
-				auto pt = unit->order_target.pt;
-				if (unit->order_target.unit != nullptr) {
+				Point16 pt = unit->order_target.pt;
+				if (unit->order_target.unit) {
 					pt = unit->order_target.unit->position;
-					unit->order_target.unit = nullptr;
+					unit->order_target.unit = 0;
 				}
 				unit_ext->values[ValueSkyfallX] = unit->order_target.pt.x;
 				unit_ext->values[ValueSkyfallY] = unit->order_target.pt.y;
@@ -191,57 +192,55 @@ namespace hooks
 			if (unit->order_signal & 2) {
 				unit->order_signal -= 2;
 				unit->order_to_idle();
-			} else { // 00492886
+			} else {
 				if (target) {
 					unit->order_target.pt.x = target->sprite->position.x;
 					unit->order_target.pt.y = target->sprite->position.y;
 
 					if (target->sprite->position.x != unit->next_target_waypoint.x
-					||	target->sprite->position.y != unit->next_target_waypoint.y) { // 004928C1
+					||	target->sprite->position.y != unit->next_target_waypoint.y)
+					{
 						unit->next_target_waypoint.x = target->sprite->position.x;
 						unit->next_target_waypoint.y = target->sprite->position.y;
 					}
 				}
 			}
-		} else { // 004928CF
+		} else {
 			if (!helper::can_cast_spell(unit)) {
 				char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
-				// do the actual transmission corresponding to the message
-				helper::get_stat_txt_string(unit, unit->player, message);
-				// make the unit stop since the order failed
-				helper::set_resource_target(unit);
+				helper::get_stat_txt_string(unit, unit->player, message); // do the actual transmission corresponding to the message
+				helper::set_resource_target(unit); // make the unit stop since the order failed
 				unit->order_to_idle();
-			} else { // 0049291A
-				u8 techUsed = orders_dat::tech_used[unit->main_order_id];
+			} else {
+				u8 tech_used = orders_dat::tech_used[unit->main_order_id];
 				s32 spell_cost;
-				if (techUsed == TechId::None) {
+				if (tech_used == TechId::None) {
 					spell_cost = 0;
 				} else {
-					spell_cost = techdata_dat::energy_cost[techUsed] * 256;
+					spell_cost = techdata_dat::energy_cost[tech_used] * 256;
 				}
 
-				if (!(*g_cheat_state & CheatFlags::TheGathering) &&
-					unit->energy < spell_cost) {
+				if (!(*g_cheat_state & CheatFlags::TheGathering) && unit->energy < spell_cost)
+				{
 					u8 raceId = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId); // Not enough energy
 					if (message) {
-						// display an error message only for the owner of the unit
 						if (*g_local_nation_id == unit->player
-						&&	*g_active_player_id == *g_local_human_id) {
-							helper::set_unit_stat_txt_error_message(message);
+						&&	*g_active_player_id == *g_local_human_id)
+						{
+							helper::set_unit_stat_txt_error_message(message); // display an error message only for the owner of the unit
 						}
 					}
 					unit->order_to_idle();
-				} else { // 004929C2
-					u32 result_00492620;
-					// may initiate movement from unit depending on main_order_state
+				} else {
+					u32 progress_moving; // may initiate movement from unit depending on main_order_state
 					if (unit->main_order_state == 0)
 					{
-						result_00492620 = helper::ordered_spell_progress_moving(unit, 1);
+						progress_moving = helper::ordered_spell_progress_moving(unit, 1);
 					}
 					else
 					{
-						result_00492620 = helper::ordered_spell_progress_moving(unit, 0);
+						progress_moving = helper::ordered_spell_progress_moving(unit, 0);
 					}
 
 					if (unit->main_order_state == 0)
@@ -253,23 +252,20 @@ namespace hooks
 					{
 						gcd_condition = false; // new
 					}
-					if (result_00492620 == 0)
+					if (progress_moving == 0)
 					{
 						if (unit->get_movable_state() == MovableState::UnmovableAtDestination)
 						{
 							unit->order_to_idle();
 						}
-					}
-					else
-					{
-
+					} else {
 						if (unit->get_spell_countdown() == 0
 						&&	gcd_condition // new
 						&&	helper::is_ready_to_attack(unit, order_weapon_id) // is ready to fire weapon (angle, distance...) maybe?
 						&&	!(unit->movement_flags & MovementFlags::Accelerating)
 						&&	unit->get_movable_state() != 0)
 						{
-							bool bStopHere = false;
+							bool idiot = false;
 							// in case it was modified by a previous function, relinking
 							target = unit->order_target.unit;
 							if (unit->unit_ai != nullptr && target != nullptr)
@@ -310,12 +306,12 @@ namespace hooks
 										if (analyzed_target_status != 0)
 										{
 											unit->order_to_idle();
-											bStopHere = true;
+											idiot = true;
 										}
 									}
 								}
 							}
-							if (!bStopHere)
+							if (!idiot)
 							{
 								unit->spend_unit_energy(spell_cost);
 
@@ -333,7 +329,7 @@ namespace hooks
 								{
 									Image* current_image = unit->sprite->images.head;
 									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::order_animation[unit->main_order_id];
-									if (techUsed == TechId::Lockdown && unit->mine_carrier.mine_count > 0)
+									if (tech_used == TechId::Lockdown && unit->mine_carrier.mine_count > 0)
 									{
 										unit->mine_carrier.mine_count--;
 									}

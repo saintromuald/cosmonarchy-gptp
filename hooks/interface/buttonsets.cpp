@@ -1804,8 +1804,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranSiren:
 								{
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon			// Siren - Discovered Attacks
-									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)		// Siren - Prolonged Arms
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Siren - Prolonged Arms
+									||  current_button->icon_id == IconId::PsiAssault)							// Siren - Offset: Cone
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1901,7 +1901,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranRamesses:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Ramesses - Prolonged Arms
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Ramesses - Kinetic Penetration
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1943,7 +1943,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranClaymore:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon  // Claymore - Prolonged Arms
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon  // Claymore - Kinetic Penetration
 									||	current_button->icon_id == IconId::FusionCutterHarvest)				// Claymore - Kelvin Munitions
 									{
 										current_button_state = Button_State::Enabled;
@@ -2043,14 +2043,15 @@ namespace hooks {
 								} break;
 								case UnitId::TerranMagnetar:
 								{
-									if (current_button->icon_id == IconId::ArchonPsionicShockwave) // Magnetar Law of Attraction
+									if (current_button->icon_id == IconId::ArchonPsionicShockwave			// Magnetar Law of Attraction
+									||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Magnetar - Kinetic Penetration
 									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranHippogriff:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Hippogriff - Prolonged Arms
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Hippogriff - Kinetic Penetration
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2064,7 +2065,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranSentinel:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Sentinel - Prolonged Arms
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Sentinel - Kinetic Penetration
 									{
 										if (unit->status & UnitStatus::GroundedBuilding) {
 											current_button_state = Button_State::Enabled;
@@ -2145,7 +2146,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossOptecton:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon // Optecton - Prolonged Arms
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon // Optecton - Kinetic Penetration
 									||	current_button->icon_id == IconId::TerranShipWeapons) // Optecton - Forward March
 									{
 										current_button_state = Button_State::Enabled;
@@ -2154,7 +2155,7 @@ namespace hooks {
 								case UnitId::ProtossPatriarch:
 								{
 									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
-									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Patriarch - Prolonged Arms
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Patriarch - Kinetic Penetration
 									{
 										current_button_state = Button_State::Enabled;
 									}

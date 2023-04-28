@@ -979,7 +979,7 @@ SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
 
 // For stat_data_unit_wireframe_select_update
 SCBW_DATA(char**,	off_68C1FC,						0x0068C1FC);
-SCBW_DATA(char**,	default_grp_remap,				0x0050CDC1);
+SCBW_DATA(char*,	g_current_grp_remap,			0x0050CDC1);
 
 // For kill_units_at_location_proc
 SCBW_DATA(u32*,		trig_remove_unit_active,		0x005971DC);
@@ -1168,6 +1168,9 @@ SCBW_DATA(u8*,				g_is_league_game,					0x00629268);
 
 // For draw_standard_button_graphic
 SCBW_DATA(char*,			g_print_xy_alignment,				0x006CE110);
+
+// For draw_stat_button_image
+SCBW_DATA(char*,			g_cmdbtn_palette,					0x0068C150);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

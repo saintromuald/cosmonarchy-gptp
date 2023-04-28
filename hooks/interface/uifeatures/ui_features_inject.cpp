@@ -392,6 +392,20 @@ namespace
 		}
 	}
 
+	void __declspec(naked) draw_stat_button_image_wrapper() { // 00456C30
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, ESI
+			PUSHAD
+		}
+		hooks::draw_stat_button_image(dialog);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			RETN
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -439,6 +453,7 @@ namespace hooks
 		jump_patch(centerview_unit_group,					0x004967E0, 1);
 	//	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2); // not needed
 		jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
+		jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 	}

@@ -475,7 +475,7 @@ namespace hooks
 		// Gptp Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
 		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
-		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueSublimeShepherd], 0);
+		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueHasSublimeShepherd], 1);
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
@@ -539,18 +539,10 @@ namespace hooks
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 
-		/* // Can't see armor icons on eggs yet
-		if ((unit->id == UnitId::ZergEgg && !scbw::is_larval_egg(unit)) || unit->id == UnitId::ZergCocoon) {
-			if (scbw::get_active_tile_at(unit->position.x, unit->position.y).hasCreep) {
-				add_status(statuses, "Biogenesis");
-			}
-		}
-		*/
-
 		std::string status = format_string_vector(statuses);
 
 		// TODO Statuses
-		// mind control on target, last orders
+		// Tyranny on target, Last Orders
 		// color code source player if possible
 
 		std::vector<std::string> flags; // TODO: replace with something not gay

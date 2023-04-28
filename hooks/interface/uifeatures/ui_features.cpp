@@ -776,4 +776,38 @@ LABEL_15:
 		*g_draw_color_index = (button->flags & BinDlgFlags::TransparentHideColor) == 0 ? g_palette_index_reference[12] : 0;
 		return helper::draw_box(dims->x, dims->y, dims->w - dims->x + 1, dims->h - dims->y + 1);
 	}
+
+	// Hooked to explore colorizing passive icons. -Pr0nogo
+	void draw_stat_button_image(BinDlg* dialog) // 00456C30
+	{
+		StatusScreenState* state = dialog->stat_button_user;
+		u8 offset = 3;
+		if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != 2)
+		{
+			offset = 4;
+		}
+
+		char* remap = &g_cmdbtn_palette[16 * offset];
+		memcpy(g_current_grp_remap, remap, 32);		
+		u16 frame_index = state->grp_frame;
+		GrpHead* grp = state->button_grp;
+		if (frame_index >= (grp->frame_count & ~0x8000u))
+		{
+			frame_index = 0;
+		}
+		GrpFrame* frame = &grp->frames[frame_index];
+	//	GrpHead* v11 = (GrpHead*)((char*)grp + grp->frames[frame_index].data_offset); // unused
+		Box32 rect = {};
+		SetRect((LPRECT)&rect, 0, 0, frame->width, frame->height);
+		helper::image_render_fxn_0_0(dialog->bounds.left + (dialog->bounds.right - frame->width - dialog->bounds.left + 1) / 2,
+									 dialog->bounds.top + (dialog->bounds.bottom - frame->height - dialog->bounds.top + 1) / 2,
+									 frame, &rect, 0);
+
+		char iterations = 0;
+		do
+		{
+			g_current_grp_remap[iterations] = iterations;
+			++iterations;
+		} while (iterations < 16);
+	}
 }

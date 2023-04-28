@@ -1008,6 +1008,7 @@ namespace scbw {
 		&&	   (!weapon || weapons_dat::max_range[weapon] > 32)
 		&&		 unit->id != UnitId::TerranHarakan
 		&&		 unit->id != UnitId::TerranMatadorCinderMode
+		&&		 unit->id != UnitId::TerranMatadorTurretCinderMode
 		&&		 weapon != WeaponId::DurendalAbaddonFlamethrowers;
 	}
 
@@ -1158,8 +1159,10 @@ namespace scbw {
 			case UnitId::TerranPhalanxSiegeMode:
 			case UnitId::TerranPhalanxTankModeTurret:
 			case UnitId::TerranPhalanxSiegeModeTurret:
-			case UnitId::ProtossAccantorOld:
-			case UnitId::ProtossPlasmaShell:
+			case UnitId::TerranMatadorTankMode:
+			case UnitId::TerranMatadorCinderMode:
+			case UnitId::TerranMatadorTurretTankMode:
+			case UnitId::TerranMatadorTurretCinderMode:
 			{
 				return true;
 			} break;
@@ -3537,8 +3540,18 @@ namespace scbw {
 
 	bool unit_has_fore_castle(Unit* unit)
 	{
-		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
-		return unit->id == UnitId::TerranMinotaur;
+		switch (unit->id)
+		{
+			case UnitId::TerranMinotaur:
+			{
+				return true;
+			}
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueHasSublimeShepherd]) {
+			return true;
+		}
+		return false;
 	}
 
 	bool unit_id_is_siege_mode(u32 unit_id)
@@ -3553,5 +3566,39 @@ namespace scbw {
 		return unit_id == UnitId::TerranMatadorTankMode
 			|| unit_id == UnitId::TerranPhalanxTankMode
 			|| unit_id == UnitId::TerranCuirassTankMode;
+	}
+
+	void transform_unit(Unit* unit, u16 unit_id) // Written by DarkenedFantasies for siege transformation.
+	{
+		Unit* subunit = unit->subunit;
+		s8 subunit_hoffset = 0;
+		s8 subunit_voffset = 0;
+		Image* main_graphic = 0;
+		if (subunit) {
+			main_graphic = subunit->sprite->main_graphic;
+			subunit_hoffset = main_graphic->horizontal_offset;
+			subunit_voffset = main_graphic->vertical_offset;
+		} else {
+			subunit_voffset = subunit_hoffset = -1;
+		}
+
+		helper::replace_unit_with_id(unit, unit_id);
+		u8 direction = unit->current_direction_1 = unit->velocity_direction_1 = unit->current_direction_2;
+		helper::set_image_direction(unit->sprite->main_graphic, direction);
+		subunit = unit->subunit;
+
+		if (subunit) {
+			direction = subunit->current_direction_2;
+			if (subunit->id == UnitId::TerranPhalanxTankModeTurret || subunit->id == UnitId::TerranPhalanxSiegeModeTurret)
+			{
+				direction += 128; // Flip facing direction for the Phalanx turret. -DF
+				subunit->current_direction_2 = direction;
+			}
+			subunit->current_direction_1 = subunit->velocity_direction_1 = subunit->velocity_direction_2 = direction;
+			main_graphic = subunit->sprite->main_graphic;
+			main_graphic->horizontal_offset = subunit_hoffset;
+			main_graphic->vertical_offset = subunit_voffset;
+			helper::set_image_direction(main_graphic, direction);
+		}
 	}
 }

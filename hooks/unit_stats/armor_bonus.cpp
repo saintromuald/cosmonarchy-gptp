@@ -7,9 +7,6 @@ namespace hooks
 	u8 get_armor_bonus(Unit* unit) {
 		u8 bonus_armor = 0;
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueSublimeShepherd]) {
-			bonus_armor += unit_ext->values[ValueSublimeShepherd];
-		}
 		switch (unit->id) {
 			case UnitId::TerranMatadorCinderMode:
 			{
