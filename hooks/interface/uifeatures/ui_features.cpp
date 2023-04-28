@@ -778,36 +778,31 @@ LABEL_15:
 	}
 
 	// Hooked to explore colorizing passive icons. -Pr0nogo
-	void draw_stat_button_image(BinDlg* dialog) // 00456C30
-	{
-		StatusScreenState* state = dialog->stat_button_user;
-		u8 offset = 3;
-		if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != 2)
-		{
-			offset = 4;
+	void draw_stat_button_image(BinDlg* dialog) { // 00456C30
+		u8 pallete_index = 3;
+		if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlTypes::Button) {
+			pallete_index = 4;
 		}
+		memcpy(g_current_grp_remap, g_cmdbtn_palette[pallete_index].colors, 16);		
 
-		char* remap = &g_cmdbtn_palette[16 * offset];
-		memcpy(g_current_grp_remap, remap, 32);		
-		u16 frame_index = state->grp_frame;
+		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
-		if (frame_index >= (grp->frame_count & ~0x8000u))
-		{
+		u16 frame_index = state->grp_frame;
+		if (frame_index >= (grp->frame_count & ~0x8000)) {
 			frame_index = 0;
 		}
 		GrpFrame* frame = &grp->frames[frame_index];
-	//	GrpHead* v11 = (GrpHead*)((char*)grp + grp->frames[frame_index].data_offset); // unused
+
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, frame->width, frame->height);
-		helper::image_render_fxn_0_0(dialog->bounds.left + (dialog->bounds.right - frame->width - dialog->bounds.left + 1) / 2,
-									 dialog->bounds.top + (dialog->bounds.bottom - frame->height - dialog->bounds.top + 1) / 2,
-									 frame, &rect, 0);
 
-		char iterations = 0;
-		do
-		{
-			g_current_grp_remap[iterations] = iterations;
-			++iterations;
-		} while (iterations < 16);
+		helper::image_render_fxn_0_0(
+			dialog->bounds.left + (dialog->bounds.right  - frame->x - dialog->bounds.left + 1) / 2,
+			dialog->bounds.top  + (dialog->bounds.bottom - frame->y - dialog->bounds.top  + 1) / 2,
+			frame, &rect, 0);
+
+		for (u32 i = 0; i < 16; ++i) {
+			g_current_grp_remap[i] = i;
+		}
 	}
 }
