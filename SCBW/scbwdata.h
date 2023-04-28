@@ -1121,7 +1121,7 @@ SCBW_DATA(u8*,			g_images_draw_if_cloaked,			0x00667718);
 
 // For buttonsets.cpp
 SCBW_DATA(BinDlg**,		g_buttonset_dialog,					0x0068C148);
-SCBW_DATA(u16*,			g_buttonset_main_button_graphic,	0x0068C1BC);
+SCBW_DATA(u16*,			g_highlighted_icon,					0x0068C1BC);
 SCBW_DATA(u8*,			g_buttonset_unit_order_id,			0x0068C1E4);
 SCBW_DATA(u8*,			g_buttonset_subunit_order_id,		0x0068C1B8);
 
