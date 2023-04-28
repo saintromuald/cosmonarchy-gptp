@@ -818,7 +818,7 @@ LABEL_15:
 		if (cmdbtn_frame->w < bound_horizontal) {
 			bound_horizontal = cmdbtn_frame->w;
 		}
-		u32 bound_vertical = button->bounds.bottom - button->bounds.top + 1;
+		u32 bound_vertical = button->bounds.top - button->bounds.bottom + 1;
 		if (cmdbtn_frame->h < bound_vertical) {
 			bound_vertical = cmdbtn_frame->h;
 		}
@@ -867,7 +867,7 @@ LABEL_15:
 		}
 		helper::image_render_fxn_0_0(
 			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - cmdbtn_frame->w + 1) / 2,
-			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.bottom - button->bounds.top - cmdbtn_frame->h + 1) / 2,
+			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.top - button->bounds.bottom - cmdbtn_frame->h + 1) / 2,
 			(GrpFrame*)&cmdbtn_frame, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
