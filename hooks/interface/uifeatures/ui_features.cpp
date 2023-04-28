@@ -796,10 +796,10 @@ LABEL_15:
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 
-	//	helper::image_render_fxn_0_0(
-	//		dialog->bounds.left + (dialog->bounds.right  - dialog->bounds.left - frame->w + 1) / 2,
-	//		dialog->bounds.top  + (dialog->bounds.bottom - dialog->bounds.top  - frame->h + 1) / 2,
-	//		frame, &rect, 0);
+		helper::image_render_fxn_0_0(
+			dialog->bounds.left + (dialog->bounds.right  - dialog->bounds.left - frame->w + 1) / 2,
+			dialog->bounds.top  + (dialog->bounds.bottom - dialog->bounds.top  - frame->h + 1) / 2,
+			frame, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;

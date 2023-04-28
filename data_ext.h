@@ -250,6 +250,7 @@ enum ExtTimerId
 	TimerSevenstepMindMatter,
 	TimerSilvertonguePlotTwist,
 	TimerClaymoreKelvinMunitionsZap,
+	TimerMindTyrantMaelstromSlow,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -373,6 +374,7 @@ struct BulletExt {
 	u32 divisor_overwrite;
 	u32 current_z_displacement;
 	bool bounced;
+	bool is_phantom;
 };
 
 struct SpriteExt {

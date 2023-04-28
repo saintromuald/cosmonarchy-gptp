@@ -2886,6 +2886,15 @@ namespace hooks {
 			unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 		}
 
+		// Remove Maelstrom overlays
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] == 1)
+		{
+			unit->sprite->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+			if (unit->subunit) {
+				unit->subunit->sprite->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+			}
+		}
+
 		if (globals.celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {
 				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);

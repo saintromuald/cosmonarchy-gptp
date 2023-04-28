@@ -473,7 +473,7 @@ namespace hooks {
 		} else {
 			if (target != source && !(unit_status & UnitStatus::Invincible)) {
 				if (!(unit_status & UnitStatus::Burrowed)) {
-					helper::set_maelstrom_timer(target, MindTyrantMaelstromTimer);
+					helper::set_maelstrom_timer(target, 4 * 24);
 				}
 			}
 		}
@@ -482,9 +482,6 @@ namespace hooks {
 
 	// No bullet because this function is called in another context without the bullet.
 	void mind_control_hit(Unit* attacker, Unit* target) {
-		if (scbw::unit_is_stunned(target)) {
-			attacker->heal_energy(techdata_dat::energy_cost[TechId::Tyranny] * 256, attacker);
-		}
 		scbw::decloak_proc(attacker);
 		if (target->status & UnitStatus::IsHallucination) {
 			target->remove();
@@ -688,24 +685,23 @@ namespace hooks {
 	}
 
 	// Hooked to investigate Maelstrom double-calling disable_unit. -Pr0nogo
-	char set_maelstrom_timer(Unit* unit, u8 duration) // 004553F0
+	void set_maelstrom_timer(Unit* unit, u8 duration) // 004553F0
 	{
-		if (!unit->maelstrom_timer)
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (!unit_ext->timers[TimerMindTyrantMaelstromSlow])
 		{
-			u32 overlay_offset = scbw::get_overlay_offset(unit->id);
 			Unit* final_unit = unit->subunit;
 			if (!final_unit)
 			{
 				final_unit = unit;
 			}
-			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + overlay_offset, 0, 0, 0);
+			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
-		u32 timer = unit->maelstrom_timer;
+		u32 timer = unit_ext->timers[TimerMindTyrantMaelstromSlow];
 		if (duration > timer)
 		{
 			timer = duration;
 		}
-		unit->maelstrom_timer = timer;
-		return hooks::disable_unit(unit);
+		unit_ext->timers[TimerMindTyrantMaelstromSlow] = timer;
 	}
 }

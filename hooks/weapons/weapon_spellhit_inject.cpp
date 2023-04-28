@@ -583,7 +583,6 @@ namespace
 	{
 		static Unit* unit;
 		static u32 duration;
-		static char result;
 		__asm
 		{
 			PUSH EBP
@@ -595,11 +594,11 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		result = hooks::set_maelstrom_timer(unit, duration);
+		hooks::set_maelstrom_timer(unit, duration);
 		__asm
 		{
 			POPAD
-			MOV AL, result
+			MOV AL, 0
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04

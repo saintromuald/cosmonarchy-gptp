@@ -1,24 +1,8 @@
 #pragma once
 #include "../../SCBW/structures/Unit.h"
 
-/*
-struct {
-	s32 damage_type;
-	s32 unit_size_factor[5];	 // Order: {independent, small, medium, large, titanic}
-} const damage_factors[] = {
-	{0, 0, 0,	0,	 0,   0},			// Independent
-	{1, 0, 128, 192, 256, 192},			// Explosive
-	{2, 0, 256, 192, 128, 64},			// Concussive
-	{3, 0, 256, 256, 192, 128},			// Normal
-	{4, 0, 256, 256, 256, 256},			// IgnoreArmor
-	{5, 0, 256, 256, 256, 256},			// Chronal
-};
-*/
-
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
-
 namespace hooks {
-
 	void weapon_damage(
 		s32 damage,
 		Unit* target,

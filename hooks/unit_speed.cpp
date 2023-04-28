@@ -96,6 +96,7 @@ namespace hooks
 			auto match = cosmonarchy_finder_match(unit, 0, {});
 			Vector32f dir = scbw::get_unit_direction_vector(unit);
 
+			// TODO: unit search / optimize
 			const u32 radius = 6 * 32;
 			Unit* enemy_unit = scbw::UnitFinder::get_nearest_target(
 				unit->get_x() - radius,
@@ -138,6 +139,11 @@ namespace hooks
 			{
 				speed *= 0.5;
 			}
+		}
+
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1)
+		{
+			speed *= 0.5;
 		}
 
 		switch (unit->id)

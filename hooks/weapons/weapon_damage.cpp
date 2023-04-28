@@ -421,24 +421,12 @@ namespace hooks
 				} break;
 			}
 
-			// Cantavis - Hallucinating
+			// Fire a phantom strike at hallucinating targets
 			if (target_ext->timers[TimerHallucinating] >= 1) {
-				Unit* halu_attacker = data.attacker;
-				if ((halu_attacker->id == UnitId::ProtossSteward || halu_attacker->id == UnitId::ProtossPlasmaShell) && data.attacker->hangar_unit.parent) {
-					halu_attacker = data.attacker->hangar_unit.parent;
-				}
-				UnitExt* halu_attacker_ext = get_unit_ext(halu_attacker);
-				if (!(halu_attacker->status & UnitStatus::IsHallucination)) {
-					if (scbw::is_allied_to(halu_attacker->player, data.target->player)) {
-						return;
-					}
-					Unit* halu_unit = hooks::create_hallucination(halu_attacker, halu_attacker->player, target_ext->timers[TimerHallucinating]);
-					if (halu_unit) {
-						halu_unit->sprite->create_overlay(ImageId::HallucinationDeath3);
-						if (!helper::place_hallucination(halu_unit)) {
-							helper::remove_unit(halu_unit);
-						}
-					}
+				if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
+					data.attacker->sprite->create_overlay(ImageId::HallucinationDeath3);
+					Bullet* phantom = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
+					BulletExt* phantom_ext = get_bullet_ext(phantom);
 				}
 			}
 
