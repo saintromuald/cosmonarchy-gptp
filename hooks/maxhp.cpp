@@ -948,7 +948,7 @@ LABEL_23:
 		v3 = active_player_selection->unit[*(u8*)(a2 + 11)];
 		v4 = sprites_dat::is_visible[v2 + 390];
 		*(s8*)(a1 + 15) = sprites_dat::hp_bar_size[v2 + 262]
-			+ (g_image_grp_graphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+			+ (g_image_grp_graphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].h >> 1)
 			+ 8;
 		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
 		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;

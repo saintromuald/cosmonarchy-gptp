@@ -783,7 +783,7 @@ LABEL_15:
 		if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlTypes::Button) {
 			pallete_index = 4;
 		}
-		memcpy(g_current_grp_remap, g_cmdbtn_palette[pallete_index].colors, 16);		
+		memcpy(g_palette_remap, g_cmdbtn_palette[pallete_index].colors, 16);		
 
 		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
@@ -794,15 +794,15 @@ LABEL_15:
 		GrpFrame* frame = &grp->frames[frame_index];
 
 		Box32 rect = {};
-		SetRect((LPRECT)&rect, 0, 0, frame->width, frame->height);
+		SetRect((LPRECT)&rect, 0, 0, frame->y, frame->w);
 
 		helper::image_render_fxn_0_0(
-			dialog->bounds.left + (dialog->bounds.right  - frame->x - dialog->bounds.left + 1) / 2,
-			dialog->bounds.top  + (dialog->bounds.bottom - frame->y - dialog->bounds.top  + 1) / 2,
+			dialog->bounds.left + (dialog->bounds.right  - frame->y - dialog->bounds.left + 1) / 2,
+			dialog->bounds.top  + (dialog->bounds.bottom - frame->x - dialog->bounds.top  + 1) / 2,
 			frame, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
-			g_current_grp_remap[i] = i;
+			g_palette_remap[i] = i;
 		}
 	}
 }

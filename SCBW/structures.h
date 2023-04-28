@@ -431,8 +431,8 @@ struct GrpFrame
 {
 	s8  x;
 	s8  y;
-	s8  width;
-	s8  height;
+	s8  w;
+	s8  h;
 	u32 data_offset; // might be u16* (but as a pointer, would still fit in u32)
 };
 C_ASSERT(sizeof(GrpFrame) == 8);

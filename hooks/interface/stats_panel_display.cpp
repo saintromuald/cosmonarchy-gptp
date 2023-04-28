@@ -760,8 +760,8 @@ namespace hooks
 				if (stat_icon >= icons_grp->frame_count) {
 					stat_icon = 0;
 				}
-				u16 width = icons_grp->frames[stat_icon].width;
-				u16 height = icons_grp->frames[stat_icon].height;
+				u16 width = icons_grp->frames[stat_icon].w;
+				u16 height = icons_grp->frames[stat_icon].h;
 				s32 icon_index = icons_grp->frames[stat_icon].data_offset;
 				if (icon_index < 0) {
 					icon_index &= 0x7FFFFFFFu;

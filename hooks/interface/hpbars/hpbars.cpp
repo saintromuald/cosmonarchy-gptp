@@ -22,20 +22,20 @@ namespace hooks
 	{
 		Unit* selection = active_player_selection->unit[sprite->selection_index];
 		u8 is_visible = sprites_dat::is_visible[sprite->id + 390]; // Not sure what these id offsets are --v
-		image->vertical_offset = sprites_dat::hp_bar_size[sprite->id + 262] + (g_image_grp_graphics[orders_dat::Unused3[sprite->id + 62] + 561]->frames[0].height >> 1) + 8;
+		image->vertical_offset = sprites_dat::hp_bar_size[sprite->id + 262] + (g_image_grp_graphics[orders_dat::Unused3[sprite->id + 62] + 561]->frames[0].h >> 1) + 8;
 		image->grp_file->frames[0].x = 0;
 		image->grp_file->frames[0].y = 0;
-		image->grp_file->frames[0].width = is_visible - (is_visible - 1) % 3;
+		image->grp_file->frames[0].w = is_visible - (is_visible - 1) % 3;
 
 		GrpHead* grp_file = image->grp_file;
-		if (grp_file->frames[0].width < 0x13u)
+		if (grp_file->frames[0].w < 0x13u)
 		{
-			grp_file->frames[0].width = 19;
+			grp_file->frames[0].w = 19;
 		}
 
 		// Prepare height based on energy
-		image->grp_file->frames[0].height = 0;
-		u8 grp_height = grp_file->frames[0].height;
+		image->grp_file->frames[0].h = 0;
+		u8 grp_height = grp_file->frames[0].h;
 		if (units_dat::base_property[selection->id] & UnitProperty::Spellcaster && !(selection->status & UnitStatus::IsHallucination) || selection->status & UnitStatus::IsHallucination || scbw::unit_id_is_broodspawn(selection->id))
 		{
 			grp_height += 6;
@@ -49,9 +49,9 @@ namespace hooks
 		{
 			grp_height += 5;
 		}
-		grp_file->frames[0].height = grp_height;
-		image->grp_file->width = image->grp_file->frames[0].width;
-		image->grp_file->height = image->grp_file->frames[0].height;
+		grp_file->frames[0].h = grp_height;
+		image->grp_file->width = image->grp_file->frames[0].w;
+		image->grp_file->height = image->grp_file->frames[0].h;
 		image->parent_sprite = sprite;
 		image->flags = 0;
 
