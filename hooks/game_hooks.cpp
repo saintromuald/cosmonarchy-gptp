@@ -1962,7 +1962,9 @@ namespace hooks {
 					unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
 					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
-				//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256); // Please add unit->has_energy(...) check if this is reenabled -Veeq7
+					if (unit->has_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256)) {
+					//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+					}
 				}
 				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {
 					Point16 target_pos = {};
@@ -2176,7 +2178,6 @@ namespace hooks {
 		{
 			unit->movement_flags &= ~MovementFlags::Accelerating;
 		}
-
 
 		// Fix AI melee units freezing - DarkenedFantasies
 		if (unit->status & UnitStatus::Unmovable

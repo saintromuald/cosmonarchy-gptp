@@ -1160,36 +1160,30 @@ namespace scbw
 	bool is_slowed(Unit* unit)
 	{
 		UnitExt* unit_ext = get_unit_ext(unit);
-
 		if (unit->ensnare_timer)
 		{
 			return true;
 		}
-
 		if (unit_ext->timers[TimerSignify])
 		{
 			return true;
 		}
-
 		if (unit_ext->timers[TimerPetrification])
 		{
 			return true;
 		}
-
 		if (unit_ext->timers[TimerCaptivatingClaws])
 		{
 			return true;
 		}
-
 		if (unit_ext->timers[TimerKelvinMunitions] >= 1)
 		{
 			return true;
 		}
-
 		return false;
 	}
 
-	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool playSound)
+	void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound)
 	{
 		// Deconstruction - Pazuzu passive
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -1204,7 +1198,7 @@ namespace scbw
 			}
 		}
 		hooks::weapon_damage(self_damage, deconstruction_target, weapon_id, deconstruction_target, deconstruction_target->player, 0, 1);
-		if (playSound)
+		if (play_sound)
 		{
 			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 		}
