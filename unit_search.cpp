@@ -176,7 +176,7 @@ void seen_unit_search_radial(EntryArray* entry_array, u32 player, Point16 center
 static void filter_bullet_array(EntryArray* entry_array) {
 	for (u32 i = 0; i < entry_array->count; ++i) {
 		Bullet* bullet = entry_array->bullets[i];
-		if (!bullet->exists) { // TODO: vet this check is correct
+		if (!bullet->hitpoints) { // TODO: vet this check is correct
 			entry_array_remove(entry_array, i--);
 		}
 	}

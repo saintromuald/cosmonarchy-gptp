@@ -368,7 +368,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	helper::kill_all_loaded_units(unit);
 
 	// Globals memory management
-	iquare_globals.remove_unit_from_pariah_table(unit, false);
+	iquare_globals.remove_unit_from_line_attack_table(unit, false);
 	iquare_globals.unit_death(unit);
 	unit_death_start(unit);
 }

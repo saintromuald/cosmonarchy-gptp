@@ -35,7 +35,7 @@ namespace graphics
 
 		if (errorFlags & ERR_UNKNOWN_COORD_TYPE)
 		{
-			g_game_screen_buffer->blitString("Error: Unknown coordinate type found.", 10, 100, 2);
+			g_game_screen_buffer->blitString("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
 		}
 #endif
 

@@ -1142,8 +1142,8 @@ namespace hooks {
 			}
 			Sprite* bullet_sprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
-			bullet->unknown_0x4E = 0;
-			bullet->some_unit_type = 228;
+			bullet->main_order_state = 0;
+			bullet->order_unit_id = 228;
 			for (Image* image = bullet_sprite->images.head; image; image = image->link.next) {
 				helper::play_image_iscript(image, IscriptAnimation::Death);
 			}
@@ -1202,8 +1202,8 @@ namespace hooks {
 					bullet->attack_target.unit = 0;
 				}
 				Sprite* sprite = bullet->sprite;
-				bullet->unknown_0x4E = 0;
-				bullet->some_unit_type = UnitId::None;
+				bullet->main_order_state = 0;
+				bullet->order_unit_id = UnitId::None;
 
 				for (Image* image = sprite->images.head; image; image = image->link.next) {
 					helper::play_image_iscript(image, IscriptAnimation::Death);
@@ -1466,15 +1466,15 @@ namespace hooks {
 		}
 
 		bullet->player = player;
-		bullet->some_unit_type = UnitId::None;
-		bullet->unknown_0x4E = 0;
+		bullet->order_unit_id = UnitId::None;
+		bullet->main_order_state = 0;
 		bullet->attack_target.unit = nullptr;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
-		bullet->unknown_0x54 = 0;
+		bullet->main_order_timer = 0;
 		bullet->weapon_id = weapon_id;
 		bullet->time_remaining = weapons_dat::remove_after[weapon_id];
-		bullet->some_unit_type = UnitId::None;
+		bullet->order_unit_id = UnitId::None;
 		bullet->remaining_bounces = 0;
 		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
@@ -1482,7 +1482,7 @@ namespace hooks {
 		bullet->attack_target.unit = nullptr;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
-		bullet->unknown_0x4E = 0;
+		bullet->main_order_state = 0;
 		hooks::bullet_behavior_reassign(bullet);
 		reset_bullet_ext(bullet);
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -1503,9 +1503,9 @@ namespace hooks {
 			if (invert_spin) {
 				launch_spin_variance = -(s8)launch_spin;
 			}
-			char launch_spin_direction = launch_spin_variance + bullet->direction2;
-			bullet->direction_1 = launch_spin_direction;
-			bullet->direction2 = launch_spin_direction;
+			char launch_spin_direction = launch_spin_variance + bullet->velocity_direction_1;
+			bullet->current_direction_1 = launch_spin_direction;
+			bullet->velocity_direction_1 = launch_spin_direction;
 			*g_last_bullet_creator = parent;
 		}
 
@@ -1618,8 +1618,8 @@ namespace hooks {
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
-				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->direction_1].x) >> 16);
-				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->direction_1].y) >> 16);
+				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16);
+				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
@@ -1686,8 +1686,8 @@ namespace hooks {
 	// Hooked to investigate first_free_bullet nonsense. Disabled! - Pr0nogo
 	void bullet_behavior_reassign(Bullet* bullet) { // 0048BD50
 		while (2) { // xd
-			if (bullet->unknown_0x4E & 1) {
-				bullet->unknown_0x4E = bullet->unknown_0x4E & 0xFE;
+			if (bullet->main_order_state & 1) {
+				bullet->main_order_state = bullet->main_order_state & 0xFE;
 				Image* bullet_overlay = 0;
 				switch (weapons_dat::behavior[bullet->weapon_id]) {
 					case WeaponBehavior::AppearOnTargetUnit:
@@ -1702,8 +1702,8 @@ namespace hooks {
 						} else {
 							bullet->attack_target.unit = 0;
 						}
-						bullet->unknown_0x4E = 0;
-						bullet->some_unit_type = 228;
+						bullet->main_order_state = 0;
+						bullet->order_unit_id = 228;
 						helper::play_sprite_iscript(bullet->sprite, 1, 1);
 					} break;
 					case WeaponBehavior::Fly_FollowTarget:

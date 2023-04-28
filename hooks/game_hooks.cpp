@@ -1032,7 +1032,7 @@ namespace hooks {
 
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20) {
 			unit->order_signal &= ~0x20;
-			iquare_globals.remove_unit_from_pariah_table(unit, true);
+			iquare_globals.remove_unit_from_line_attack_table(unit, true);
 		}
 		//hooks::show_health_bar(unit);
 
@@ -1915,7 +1915,7 @@ namespace hooks {
 
 						// Redirect
 						if (target) {
-							scbw::create_shield_overlay(target, bullet->direction_1);
+							scbw::create_shield_overlay(target, bullet->current_direction_1);
 						}
 						scbw::set_bullet_target(bullet, unit);
 						scbw::set_bullet_direction(bullet, unit);

@@ -50,11 +50,11 @@ void IquareGlobals::aise_save()
 		//stream.write(reinterpret_cast<const char*>(&effect->thingy), sizeof(effect->thingy));
 	}
 
-	u32 pariahHitCount = pariah_hits.size();
+	u32 pariahHitCount = line_attack_hits.size();
 	for (s32 i = 0; i < pariahHitCount; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&pariah_hits[i].source), sizeof(pariah_hits[i].source));
-		stream.write(reinterpret_cast<const char*>(&pariah_hits[i].target), sizeof(pariah_hits[i].target));
+		stream.write(reinterpret_cast<const char*>(&line_attack_hits[i].source), sizeof(line_attack_hits[i].source));
+		stream.write(reinterpret_cast<const char*>(&line_attack_hits[i].target), sizeof(line_attack_hits[i].target));
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -190,7 +190,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 		PariahHit hit;
 		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
 		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
-		pariah_hits.push_back(hit);
+		line_attack_hits.push_back(hit);
 	}
 
 	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
@@ -274,7 +274,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 
 void IquareGlobals::reset() {
 	effects.clear();
-	pariah_hits.clear();
+	line_attack_hits.clear();
 	multihit_bullets.clear();
 	lurker_spine_hits.clear();
 }
@@ -533,13 +533,13 @@ void IquareGlobals::frame_hook() {
 	}
 }
 
-void IquareGlobals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
+void IquareGlobals::remove_unit_from_line_attack_table(Unit* unit, bool source_only)
 {
-	for (s32 i = 0; i < pariah_hits.size(); i++)
+	for (s32 i = 0; i < line_attack_hits.size(); i++)
 	{
-		if (pariah_hits[i].source == unit || (pariah_hits[i].target == unit && !sourceOnly))
+		if (line_attack_hits[i].source == unit || (line_attack_hits[i].target == unit && !source_only))
 		{
-			pariah_hits.erase(pariah_hits.begin() + i);
+			line_attack_hits.erase(line_attack_hits.begin() + i);
 			i--;
 		}
 	}
@@ -557,9 +557,9 @@ void IquareGlobals::remove_multihit_bullet(Bullet* bullet)
 	}
 }
 
-bool IquareGlobals::was_hit_by_pariah(Unit* source, Unit* target)
+bool IquareGlobals::was_hit_by_line_attack(Unit* source, Unit* target)
 {
-	for (auto a : pariah_hits)
+	for (auto a : line_attack_hits)
 	{
 		if (source == a.source && target == a.target)
 		{
@@ -569,12 +569,12 @@ bool IquareGlobals::was_hit_by_pariah(Unit* source, Unit* target)
 	return false;
 }
 
-void IquareGlobals::register_pariah_hit(Unit* source, Unit* target)
+void IquareGlobals::register_line_attack_hit(Unit* source, Unit* target)
 {
 	PariahHit hit;
 	hit.source = source;
 	hit.target = target;
-	pariah_hits.push_back(hit);
+	line_attack_hits.push_back(hit);
 }
 
 bool IquareGlobals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target) {

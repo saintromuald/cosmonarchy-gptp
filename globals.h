@@ -100,7 +100,7 @@ struct IquareGlobals {
 	bool unitid_extender;
 
 	std::vector<Effect> effects;
-	std::vector<PariahHit> pariah_hits;
+	std::vector<PariahHit> line_attack_hits;
 	std::vector<MultihitBullet> multihit_bullets;
 	std::unordered_map<Unit*, std::vector<Unit*>> lurker_spine_hits;
 	AttackExtender attackers;
@@ -124,11 +124,11 @@ struct IquareGlobals {
 	void reset();
 	void frame_hook();
 	void unit_death(Unit* unit);
-	void remove_unit_from_pariah_table(Unit* unit, bool sourceOnly);
-	bool was_hit_by_pariah(Unit* source, Unit* target);
+	void remove_unit_from_line_attack_table(Unit* unit, bool source_only);
+	bool was_hit_by_line_attack(Unit* source, Unit* target);
 
-	void register_pariah_hit(Unit* source, Unit* target);
-	void create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent = nullptr);
+	void register_line_attack_hit(Unit* source, Unit* target);
+	void create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent = 0);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

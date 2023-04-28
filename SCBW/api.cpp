@@ -2575,8 +2575,8 @@ namespace scbw {
 
 	void set_bullet_direction(Bullet* bullet, Point16 target) {
 		u32 direction = helper::get_direction_from_points(bullet->position, target);
-		bullet->direction_1 = direction;
-		bullet->direction2 = direction;
+		bullet->current_direction_1 = direction;
+		bullet->velocity_direction_1 = direction;
 		for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
 			helper::set_image_direction(image, direction);
 		}
