@@ -779,27 +779,27 @@ LABEL_15:
 
 	// Hooked to explore colorizing passive icons. -Pr0nogo
 	void draw_stat_button_image(BinDlg* dialog) { // 00456C30
-		u8 pallete_index = 3;
+		u8 palette_type = 3;
 		if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlTypes::Button) {
-			pallete_index = 4;
+			palette_type = 4;
 		}
-		memcpy(g_palette_remap, g_cmdbtn_palette[pallete_index].colors, 16);		
+		memcpy(g_palette_remap, g_cmdbtn_palette[palette_type].colors, 16);		
 
 		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
-		u16 frame_index = state->grp_frame;
-		if (frame_index >= (grp->frame_count & ~0x8000)) {
+		s16 frame_index = state->grp_frame;
+		if (frame_index < 0) {
 			frame_index = 0;
 		}
 		GrpFrame* frame = &grp->frames[frame_index];
 
 		Box32 rect = {};
-		SetRect((LPRECT)&rect, 0, 0, frame->y, frame->w);
+		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 
-		helper::image_render_fxn_0_0(
-			dialog->bounds.left + (dialog->bounds.right  - frame->y - dialog->bounds.left + 1) / 2,
-			dialog->bounds.top  + (dialog->bounds.bottom - frame->x - dialog->bounds.top  + 1) / 2,
-			frame, &rect, 0);
+	//	helper::image_render_fxn_0_0(
+	//		dialog->bounds.left + (dialog->bounds.right  - dialog->bounds.left - frame->w + 1) / 2,
+	//		dialog->bounds.top  + (dialog->bounds.bottom - dialog->bounds.top  - frame->h + 1) / 2,
+	//		frame, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;
@@ -807,32 +807,24 @@ LABEL_15:
 	}
 
 	// Hooked to explore colorizing passive icons. -Pr0nogo
-	void* statbtn_button_update(BinDlg* button, s32 unused1, s32 unused2) // 00458900
-	{
-		u32 flag_is_true = (button->flags >> 30) & 1;
-		if (flag_is_true >= (*(u16*)g_cmdbtns_handle & 0x7FFF))
-		{
-			flag_is_true = 0; // Was LOWORD, presumably a flag negation
+	void statbtn_button_update(BinDlg* button) { // 00458900
+		u32 use_alternate_style = (button->flags & BinDlgFlags::UseAlternateStyle) != 0;
+		if (use_alternate_style >= (*(u16*)g_cmdbtns_handle & ~0x8000)) {
+			use_alternate_style = 0; // Was LOWORD, presumably a flag negation
 		}
 
-	//	char* unused_stupid = (char*)g_cmdbtns_handle + *(s32*)((char*)g_cmdbtns_handle + 8 * flag_is_true + 10); // unused
-
-		GrpFrame* cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdbtns_handle + 8 * flag_is_true + 6);
-		u32 left = button->bounds.left;
-		u32 bound_horizontal = button->bounds.right - left + 1;
-		if (cmdbtn_frame->width < bound_horizontal)
-		{
-			bound_horizontal = cmdbtn_frame->width;
+		GrpFrame* cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdbtns_handle + 8 * use_alternate_style + 6);
+		u32 bound_horizontal = button->bounds.right - button->bounds.left + 1;
+		if (cmdbtn_frame->w < bound_horizontal) {
+			bound_horizontal = cmdbtn_frame->w;
 		}
 		u32 bound_vertical = button->bounds.bottom - button->bounds.top + 1;
-		if (cmdbtn_frame->height < bound_vertical)
-		{
-			bound_vertical = cmdbtn_frame->height;
+		if (cmdbtn_frame->h < bound_vertical) {
+			bound_vertical = cmdbtn_frame->h;
 		}
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, bound_horizontal, bound_vertical);
-		if (!(*g_is_in_replay))
-		{
+		if (!*g_is_in_replay) {
 			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, (GrpFrame*)&cmdbtn_frame, &rect, 0);
 		}
 
@@ -846,61 +838,40 @@ LABEL_15:
 			palette_type = button->graphic != *g_highlighted_icon ? 0 : 2;
 		}
 
-		char* remap = &g_cmdbtn_palette[16 * palette_type];
-		u32 remap_2 = *((s32*)remap + 1);
-		*(s32*)g_current_grp_remap = *(s32*)remap;
-		u32 remap_3 = *((s32*)remap + 2);
-		*(s32*)&g_current_grp_remap[4] = remap_2;
-		*(s32*)&g_current_grp_remap[12] = *((s32*)remap + 3);
-		*(s32*)&g_current_grp_remap[8] = remap_3;
-		u16 button_graphic = button->graphic;
-		if (button_graphic >= (*(u16*)g_cmdicons_grp & 0x7FFF))
-		{
+		memcpy(g_palette_remap, g_cmdbtn_palette[palette_type].colors, 16);		
+		s16 button_graphic = button->graphic;
+		if (button_graphic < 0) {
 			button_graphic = 0;
 		}
 
 		cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdicons_grp + 8 * button_graphic + 6);
-	//	unused_stupid = (char*)g_cmdicons_grp + *(s32*)((char*)g_cmdicons_grp + 8 * button_graphic + 10); // unused
-		SetRect((LPRECT)&rect, 0, 0, cmdbtn_frame->width, cmdbtn_frame->height);
-		u32 left_2 = button->bounds.left;
-		u32 flag_is_true_2 = (button->flags >> 30) & 1;
-		u32 bound_vertical_2 = button->bounds.bottom - button->bounds.top;
-		u32 bound_horizontal_2 = button->bounds.right - left_2 + 1;
-		u32 bounds_top_2 = button->bounds.top;
-		u32 bound_vertical_3 = bound_vertical_2 + 1;
-		u32 offset_1 = 0;
-		u32 offset_2 = 0;
-		if (*g_is_in_replay)
-		{
-			switch (button->graphic)
-			{
-				case 386:
-				case 387:
-				{
-					offset_1 = -2;
-					offset_2 = 3;
+		SetRect((LPRECT)&rect, 0, 0, cmdbtn_frame->w, cmdbtn_frame->h);
+		s32 offset_x = 0;
+		s32 offset_y = 0;
+		if (*g_is_in_replay) {
+			switch (button->graphic) {
+				case IconId::PlayReplay:
+				case IconId::PauseReplay: {
+					offset_x = -2;
+					offset_y = 3;
 				} break;
-				case 388:
-				{
-					offset_1 = -4;
-					offset_2 = 3;
+				case IconId::SpeedUpReplay: {
+					offset_x = -4;
+					offset_y = 3;
 				} break;
-				case 389:
-				{
-					offset_1 = -3;
-					offset_2 = 3;
+				case IconId::SlowDownReplay: {
+					offset_x = -3;
+					offset_y = 3;
 				} break;
 			}
 		}
-		helper::image_render_fxn_0_0(flag_is_true_2 + offset_1 + left_2 + (bound_horizontal_2 - cmdbtn_frame->width) / 2,
-									 flag_is_true_2 + offset_2 + bounds_top_2 + (bound_vertical_3 - cmdbtn_frame->height) / 2,
-									(GrpFrame*)&cmdbtn_frame, &rect, 0);
-		u32 result = 0;
-		do
-		{
-			g_current_grp_remap[result] = result;
-			++result;
-		} while (result < 16);
-		return (void*)result;
+		helper::image_render_fxn_0_0(
+			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - cmdbtn_frame->w + 1) / 2,
+			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.bottom - button->bounds.top - cmdbtn_frame->h + 1) / 2,
+			(GrpFrame*)&cmdbtn_frame, &rect, 0);
+
+		for (u32 i = 0; i < 16; ++i) {
+			g_palette_remap[i] = i;
+		}
 	}
 }

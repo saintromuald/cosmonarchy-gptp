@@ -38,7 +38,7 @@ namespace hooks {
 	void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);							// 004EFD90
 	b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);								// 004EF590
 	void draw_stat_button_image(BinDlg* dialog);																// 00456C30
-	void* statbtn_button_update(BinDlg* button, s32 unused1, s32 unused2);										// 00458900
+	void statbtn_button_update(BinDlg* button);										// 00458900
 
 	void inject_ui_features_hooks();
 

@@ -409,26 +409,14 @@ namespace
 	void __declspec(naked) statbtn_button_update_wrapper() { // 00458900
 		static void* result;
 		static BinDlg* dialog;
-		static u32 unused1;
-		static u32 unused2;
 		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV unused1, EAX
-			MOV EAX, [EBP + 0x0C]
-			MOV unused2, EAX
-			POP EAX
 			MOV dialog, ECX
 			PUSHAD
 		}
-		result = hooks::statbtn_button_update(dialog, unused1, unused2);
+		hooks::statbtn_button_update(dialog);
 		__asm {
 			POPAD
-			MOV EAX, result
-			MOV ESP, EBP
-			POP EBP
+			MOV EAX, 0
 			RETN 0x08
 		}
 	}
