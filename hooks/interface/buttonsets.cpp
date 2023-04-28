@@ -231,7 +231,7 @@ namespace hooks {
 		}
 		if (!current_button_dialog)
 		{
-			*g_buttonset_main_button_graphic = 0xFFFF;
+			*g_highlighted_icon = 0xFFFF;
 		}
 		else
 		{
@@ -240,7 +240,7 @@ namespace hooks {
 				current_button_dialog->flags |= BinDlgFlags::Highlighted;
 				scbw::update_dialog(current_button_dialog);
 			}
-			*g_buttonset_main_button_graphic = used_button_icon;
+			*g_highlighted_icon = used_button_icon;
 		}
 	}
 

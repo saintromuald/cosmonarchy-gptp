@@ -812,4 +812,102 @@ LABEL_15:
 			++iterations;
 		} while (iterations < 16);
 	}
+
+	// Hooked to explore colorizing passive icons. -Pr0nogo
+	void* statbtn_button_update(BinDlg* button, s32 unused1, s32 unused2) // 00458900
+	{
+		u32 flag_is_true = (button->flags >> 30) & 1;
+		if (flag_is_true >= (*(u16*)g_cmdbtns_handle & 0x7FFF))
+		{
+			flag_is_true = 0; // Was LOWORD, presumably a flag negation
+		}
+
+	//	char* unused_stupid = (char*)g_cmdbtns_handle + *(s32*)((char*)g_cmdbtns_handle + 8 * flag_is_true + 10); // unused
+
+		GrpFrame* cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdbtns_handle + 8 * flag_is_true + 6);
+		u32 left = button->bounds.left;
+		u32 bound_horizontal = button->bounds.right - left + 1;
+		if (cmdbtn_frame->width < bound_horizontal)
+		{
+			bound_horizontal = cmdbtn_frame->width;
+		}
+		u32 bound_vertical = button->bounds.bottom - button->bounds.top + 1;
+		if (cmdbtn_frame->height < bound_vertical)
+		{
+			bound_vertical = cmdbtn_frame->height;
+		}
+		Box32 rect = {};
+		SetRect((LPRECT)&rect, 0, 0, bound_horizontal, bound_vertical);
+		if (!(*g_is_in_replay))
+		{
+			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, (GrpFrame*)&cmdbtn_frame, &rect, 0);
+		}
+
+		u32 flags = button->flags;
+		s32 palette_type = 0;
+		if (flags & BinDlgFlags::Disabled) {
+			palette_type = 1;
+		} else if (flags & BinDlgFlags::NoClickSound) {
+			palette_type = 2;
+		} else {
+			palette_type = button->graphic != *g_highlighted_icon ? 0 : 2;
+		}
+
+		char* remap = &g_cmdbtn_palette[16 * palette_type];
+		u32 remap_2 = *((s32*)remap + 1);
+		*(s32*)g_current_grp_remap = *(s32*)remap;
+		u32 remap_3 = *((s32*)remap + 2);
+		*(s32*)&g_current_grp_remap[4] = remap_2;
+		*(s32*)&g_current_grp_remap[12] = *((s32*)remap + 3);
+		*(s32*)&g_current_grp_remap[8] = remap_3;
+		u16 button_graphic = button->graphic;
+		if (button_graphic >= (*(u16*)g_cmdicons_grp & 0x7FFF))
+		{
+			button_graphic = 0;
+		}
+
+		cmdbtn_frame = &*(GrpFrame*)((char*)g_cmdicons_grp + 8 * button_graphic + 6);
+	//	unused_stupid = (char*)g_cmdicons_grp + *(s32*)((char*)g_cmdicons_grp + 8 * button_graphic + 10); // unused
+		SetRect((LPRECT)&rect, 0, 0, cmdbtn_frame->width, cmdbtn_frame->height);
+		u32 left_2 = button->bounds.left;
+		u32 flag_is_true_2 = (button->flags >> 30) & 1;
+		u32 bound_vertical_2 = button->bounds.bottom - button->bounds.top;
+		u32 bound_horizontal_2 = button->bounds.right - left_2 + 1;
+		u32 bounds_top_2 = button->bounds.top;
+		u32 bound_vertical_3 = bound_vertical_2 + 1;
+		u32 offset_1 = 0;
+		u32 offset_2 = 0;
+		if (*g_is_in_replay)
+		{
+			switch (button->graphic)
+			{
+				case 386:
+				case 387:
+				{
+					offset_1 = -2;
+					offset_2 = 3;
+				} break;
+				case 388:
+				{
+					offset_1 = -4;
+					offset_2 = 3;
+				} break;
+				case 389:
+				{
+					offset_1 = -3;
+					offset_2 = 3;
+				} break;
+			}
+		}
+		helper::image_render_fxn_0_0(flag_is_true_2 + offset_1 + left_2 + (bound_horizontal_2 - cmdbtn_frame->width) / 2,
+									 flag_is_true_2 + offset_2 + bounds_top_2 + (bound_vertical_3 - cmdbtn_frame->height) / 2,
+									(GrpFrame*)&cmdbtn_frame, &rect, 0);
+		u32 result = 0;
+		do
+		{
+			g_current_grp_remap[result] = result;
+			++result;
+		} while (result < 16);
+		return (void*)result;
+	}
 }
