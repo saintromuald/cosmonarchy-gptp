@@ -2,6 +2,23 @@
 #include "DatExtend/datext.h"
 #include "hooks/grafting/grafting.h"
 
+static u16* find_req_id(u16* req_table, u32 req_id) {
+	u16* current = req_table + 1;
+	while (true) {
+		u32 current_id = *current;
+		if (current_id == req_id) {
+			return current + 1;
+		}
+		if (current_id == 0xffff) {
+			return 0;
+		}
+		while (*current != 0xffff) {
+			current++;
+		}
+		current++;
+	}
+}
+
 u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
 	switch (type) {
 		case AiseSignal_GetTransportCargoCount: {
@@ -38,13 +55,13 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			return (u32)g_stat_txt_tbl;
 		} break;
 		case AiseSignal_GetUnitReq: {
-			return (u32)&requirements::units[units_dat::requirement_offsets[v1]];
+			return (u32)find_req_id(requirements::units, v1);
 		} break;
 		case AiseSignal_GetUpgradesReq: {
-			return (u32)&requirements::upgrade[upgrades_dat::requirement_offsets[v1]];
+			return (u32)find_req_id(requirements::upgrade, v1);
 		} break;
 		case AiseSignal_GetResearchReq: {
-			return (u32)&requirements::research[techdata_dat::requirement_offsets[v1]];
+			return (u32)find_req_id(requirements::research, v1);
 		} break;
 	}
 	return 0;
