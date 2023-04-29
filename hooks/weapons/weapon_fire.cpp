@@ -383,7 +383,8 @@ namespace hooks {
 				iquare_globals.clear_lakizilisk(unit);
 			}
 
-			if (unit->id != UnitId::TerranWyvernTurret // disable default weapon for custom behaviors
+			if (unit->id != UnitId::TerranWyvern
+			&&	unit->id != UnitId::TerranWyvernTurret // disable default weapon for custom behaviors
 			&&  unit->id != UnitId::ProtossAnthelion)
 			{
 				// Madrigal - Tempo Change weapon switch
