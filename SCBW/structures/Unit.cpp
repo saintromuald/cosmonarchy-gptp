@@ -1090,6 +1090,9 @@ bool Unit::has_path_to_unit(Unit* target) const {
 }
 
 bool Unit::is_target_within_min_range(Unit* target, u32 range) {
+	if (!this->sprite) {
+		return false;
+	}
 	const u32 Func_IsTargetWithinMinRange = 0x00430F10;
 	static b32 bPreResult;
 	__asm {
