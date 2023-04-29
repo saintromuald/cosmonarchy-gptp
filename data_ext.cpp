@@ -150,9 +150,7 @@ void unit_death_start(Unit* unit) {
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit_ext->pause_timers = true;
-	if (unit->id == UnitId::TerranReservoir ||
-		unit->id == UnitId::ProtossAquifer ||
-		unit->id == UnitId::ZergExcisant) {
+	if (scbw::unit_id_is_capped_gas_structure(unit->id)) {
 		unit_death_end(unit);
 	}
 }

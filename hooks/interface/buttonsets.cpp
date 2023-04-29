@@ -1812,7 +1812,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranStriga:
 								{
-									if (current_button->icon_id == IconId::PsiAssault) // Striga - Fleeting Focus
+									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Striga - Projection
+									||	current_button->icon_id == IconId::PsiAssault)				// Striga - Fleeting Focus
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1920,6 +1921,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranPaladin:
+								{
+									if (current_button->icon_id == IconId::StewardPulseCannon)	// Paladin - Offset: Linear
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranCuirassTankMode:
 								{
 									if (current_button->icon_id == IconId::MoebiusReactor) // Cuirass - Stonewall Protocol
@@ -1959,7 +1967,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranAion:
 								{
-									if (current_button->icon_id == IconId::RechargeShields) // Aion - Reclamation Fields
+									if (current_button->icon_id == IconId::RechargeShields		// Aion - Reclamation Fields
+									||	current_button->icon_id == IconId::StewardPulseCannon)	// Aion - Offset: Linear
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1994,14 +2003,15 @@ namespace hooks {
 								} break;
 								case UnitId::TerranValkyrie:
 								{
-									if (current_button->icon_id == IconId::GraviticBoosters) // Valkyrie - Odin Afterburners
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Valkyrie - Prolonged Arms
 									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSalamander:
 								{
-									if (current_button->icon_id == IconId::HarakanFlamethrower) // Salamander - Incendiary Payload
+									if (current_button->icon_id == IconId::HarakanFlamethrower	// Salamander - Incendiary Payload
+									||	current_button->icon_id == IconId::StewardPulseCannon)	// Salamander - Offset: Linear
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2137,6 +2147,14 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossPariah:
+								{
+									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Pariah - Projection
+									||	current_button->icon_id == IconId::MindControlUnused)		// Pariah - Heretical Bedlam
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossSycophant:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Sycophant - Idolatry
@@ -2189,6 +2207,20 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossAccantor:
+								{
+									if (current_button->icon_id == IconId::AntimatterMissiles) // Accantor - Interception
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossArchitect:
+								{
+									if (current_button->icon_id == IconId::AntimatterMissiles) // Architect - Reactive Payload
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossEmpress:
 								{
 									if (current_button->icon_id == IconId::ParticleBeamHarvest // Empress - Anodyne Annex
@@ -2213,6 +2245,12 @@ namespace hooks {
 								case UnitId::ZergSpirtithColony:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergGhitorokor:
+								{
+									if (current_button->icon_id == IconId::SuicideScourge) { // Ghitorokor - Relentless Aggression
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2343,20 +2381,10 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ProtossPariah &&  // Pariah Heretical Bedlam
-								current_button->icon_id == IconId::DracadinPhaseDisruptor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::ProtossClarion &&  // Clarion Phase Link
 							current_button->icon_id == IconId::RechargeShields)
 							{
 							current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossArchitect &&  // Architect Reactive Payload
-								current_button->icon_id == IconId::AntimatterMissiles)
-							{
-								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ProtossDemiurge &&  // Demiurge Worship
 								current_button->icon_id == IconId::DemiurgePassiveWorship)

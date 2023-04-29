@@ -646,9 +646,15 @@ namespace hooks
 						target_ext->values[ValueEmpressPassiveStacks]++;
 						target_ext->values[ValueEmpressSourcePlayer] = data.attacking_player_id;
 					} break;
+					case WeaponId::GhitorokorGnashingTendrils:
+					{
+						attacker_ext->values[ValueGhitorokorRelentlessAggressionStacks]++;
+						attacker_ext->timers[TimerGhitorokorRelentlessAggression] = 48 + 1;
+					} break;
 					case WeaponId::VithriliskCorrosiveSpores:
 					{
 						// Vithrilisk - Critical Mass
+						// TODO: Unit search
 						if (target_ext->values[ValueCorrosiveTouchStacks]) {
 							s32 range = 160;
 							scbw::UnitFinder(

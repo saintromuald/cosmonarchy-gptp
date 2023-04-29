@@ -1522,14 +1522,16 @@ namespace scbw {
 
 	u32 weapon_id_intercepts(u32 weapon_id) {
 		switch (weapon_id) {
+			case WeaponId::OptectonSunsplitBeam:
 			case WeaponId::AccantorPlasmaShell:
 				return InterceptType_GroundOnly;
 
-			case WeaponId::EmpyreanPlasmaBarrage:
 			case WeaponId::ValkyrieHaloRockets:
+			case WeaponId::EmpyreanPlasmaBarrage:
 				return InterceptType_AirOnly;
 
 			case WeaponId::SirenCharybdalRifle:
+			case WeaponId::PatriarchIronhandWeaver:
 			case WeaponId::StarSovereignInterventionMissiles:
 				return InterceptType_Any;
 		}
@@ -1548,8 +1550,6 @@ namespace scbw {
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
 			case WeaponId::SentinelCerberusRailgun:
-			case WeaponId::OptectonSunsplitBeam:
-			case WeaponId::PatriarchIronhandWeaver:
 			case WeaponId::KalkaliskViscousAcid:
 			case WeaponId::ZarcavrokorBonesofReflection:
 				return true;

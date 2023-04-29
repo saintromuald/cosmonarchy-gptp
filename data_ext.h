@@ -147,6 +147,7 @@ enum ExtValueId
 	ValueCustomEggHatchMax,
 	ValueCustomEggHpMax,
 	ValueProjectilePattern,
+	ValueGhitorokorRelentlessAggressionStacks,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -251,6 +252,7 @@ enum ExtTimerId
 	TimerSilvertonguePlotTwist,
 	TimerClaymoreKelvinMunitionsZap,
 	TimerMindTyrantMaelstromSlow,
+	TimerGhitorokorRelentlessAggression,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

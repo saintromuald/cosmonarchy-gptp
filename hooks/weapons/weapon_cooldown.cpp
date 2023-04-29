@@ -73,8 +73,17 @@ namespace hooks {
 			case UnitId::ProtossVagrantShade: {
 				cooldown /= 1.5;
 			} break;
+			case UnitId::ZergGhitorokor:
+			{
+				// Relentless Aggression
+				if (unit_ext->values[ValueGhitorokorRelentlessAggressionStacks])
+				{
+					cooldown /= 1 + (0.10 * unit_ext->values[ValueGhitorokorRelentlessAggressionStacks]);
+				}
+			} break;
 			case UnitId::ZergMortothrokor:
 			{
+				// Whetted Appetite
 				if (unit_ext->values[ValueMortothrokorStacks])
 				{
 					cooldown /= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);

@@ -1228,8 +1228,6 @@ namespace hooks {
 					unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
 					unit_ext->values[ValueSovrolethLinkCount] = sovroleths.count;
 				}
-
-				// Update Speed
 				unit->update_speed();
 
 				// Corpse Cocoon
@@ -1242,6 +1240,8 @@ namespace hooks {
 						if (egg) {
 							scbw::set_custom_egg(egg, UnitId::ZergSovroleth, 2 * 24);
 						}
+						UnitExt* egg_ext = get_unit_ext(egg);
+						egg_ext->values[ValueNoCorpse] = true;
 						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 					}
@@ -1747,7 +1747,14 @@ namespace hooks {
 						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03), unit, 1, 0);
 					}
-				}
+				} break;
+				case UnitId::ZergGhitorokor:
+				{
+					// Clear Relentless Aggression
+					if (unit_ext->timers[TimerGhitorokorRelentlessAggression] == 1) {
+						unit_ext->values[ValueGhitorokorRelentlessAggressionStacks] = 0;
+					}
+				} break;
 
 				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit) {
 					unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
@@ -2327,9 +2334,6 @@ namespace hooks {
 		}
 		if (unit->stasis_timer > DidactStasisFieldTimer) {
 			unit->stasis_timer = DidactStasisFieldTimer;
-		}
-		if (unit->maelstrom_timer > MindTyrantMaelstromTimer) {
-			unit->maelstrom_timer = MindTyrantMaelstromTimer;
 		}
 		if (unit->plague_timer > IsthrathalethPlagueTimer) {
 			unit->plague_timer = IsthrathalethPlagueTimer;
