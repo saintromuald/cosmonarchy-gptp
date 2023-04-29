@@ -562,7 +562,7 @@ namespace hooks {
 				if (group_id != original_group_id) {
 					continue;
 				}
-				u32 height = scbw::get_active_tile_at_coords(current_node->position)->ground_height;
+				u32 height = scbw::get_active_tile_at_coords(node->position)->ground_height;
 				if (height != original_height) {
 					continue;
 				}
