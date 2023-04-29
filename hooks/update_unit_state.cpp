@@ -83,8 +83,7 @@ namespace hooks
 		}
 	}
 
-	static bool wyvern_can_fire_at(Unit* unit, Unit* target)
-	{
+	static bool wyvern_can_fire_at(Unit* unit, Unit* target) {
 		const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
 		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
 			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
@@ -92,118 +91,98 @@ namespace hooks
 	}
 
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
-	void update_unit_state(Unit* unit) // 004EC290
-	{
-		UnitExt* unit_ext = get_unit_ext(unit);
-
+	void update_unit_state(Unit* unit) { // 004EC290
 		// Timers
-		if (unit->main_order_timer)
-		{
+		if (unit->main_order_timer) {
 			unit->main_order_timer--;
 		}
-		if (unit->ground_weapon_cooldown)
-		{
+		if (unit->ground_weapon_cooldown) {
 			unit->ground_weapon_cooldown--;
 		}
-		if (unit->air_weapon_cooldown)
-		{
+		if (unit->air_weapon_cooldown) {
 			unit->air_weapon_cooldown--;
 		}
-		if (unit->spell_cooldown)
-		{
+		if (unit->spell_cooldown) {
 			unit->spell_cooldown--;
 		}
 
-		// Wyvern - clear target if owner becomes allied
-		if (unit->id == UnitId::TerranWyvern
-		&&  unit_ext->units[UnitWyvernTargetLock])
-		{
-			Unit* target = unit_ext->units[UnitWyvernTargetLock];
-			UnitExt* target_ext = get_unit_ext(target);
-			if (target_ext->timers[TimerOwnerChangedRecently]
-			&&  scbw::is_allied_to(unit->player, target->player))
-			{
-				unit_ext->units[UnitWyvernTargetLock] = 0;
-			}
-		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit->id == UnitId::TerranWyvern) {
+			Unit* turret = unit->subunit;
 
-		// Wyvern Reverse Thrust - fire while moving
-		if (unit->id == UnitId::TerranWyvernTurret
-		&&	unit->status & UnitStatus::Completed
-		&&  unit_ext->timers[TimerWyvernAttackCooldown] == 0)
-		{
-			UnitExt* parent_ext = get_unit_ext(unit->subunit);
-			if (parent_ext->timers[TimerWyvernAttackCooldown] == 0) {				
-				auto range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
+			// Wyvern - clear target if owner becomes allied
+			if (unit_ext->units[UnitWyvernTargetLock]) {
+				Unit* target = unit_ext->units[UnitWyvernTargetLock];
+				UnitExt* target_ext = get_unit_ext(target);
+				if (target_ext->timers[TimerOwnerChangedRecently]
+				&&  scbw::is_allied_to(unit->player, target->player)) {
+					unit_ext->units[UnitWyvernTargetLock] = 0;
+				}
+			}
+
+			// Wyvern Reverse Thrust - fire while moving
+			if (unit->status & UnitStatus::Completed && unit_ext->timers[TimerWyvernAttackCooldown] == 0) {
+				u32 range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 				s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
-				auto x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-				auto y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
+				u32 x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
+				u32 y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
 
 				bool seek_unit = true;
-				if (parent_ext->values[ValueWyvernLandGrabOn] == 1)
-				{
-					auto targ_x = parent_ext->values[ValueWyvernLandGrabX];
-					auto targ_y = parent_ext->values[ValueWyvernLandGrabY];
-					auto direction = scbw::get_angle(x, y, targ_x, targ_y);
-					if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
-					{
+				if (unit_ext->values[ValueWyvernLandGrabOn] == 1) {
+					u32 targ_x = unit_ext->values[ValueWyvernLandGrabX];
+					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
+					s32 direction = scbw::get_angle(x, y, targ_x, targ_y);
+					if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						u32 sound = scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
-						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, 0, targ_x, targ_y);
+						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
-						parent_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+						turret->order_target.pt.x = targ_x;
+						turret->order_target.pt.y = targ_y;
+						turret->order_target.unit = 0;
 						seek_unit = false;
 					} else {
-						parent_ext->values[ValueWyvernLandGrabOn] = 0;
+						unit_ext->values[ValueWyvernLandGrabOn] = 0;
 					}
 				}
 
-				if (seek_unit)
-				{
-					if (unit->order_target.unit
-					&&  unit->main_order_id != OrderId::Follow
-					&&  unit->main_order_id != OrderId::Patrol
-					&&  unit->main_order_id != OrderId::WyvernLandGrab)
-					{
-						Unit* new_target = unit->order_target.unit;
-						if (wyvern_can_fire_at(unit, new_target))
-						{
-							parent_ext->units[UnitWyvernTargetLock] = new_target;
+				if (seek_unit) {
+					if (turret->order_target.unit
+					&&  turret->main_order_id != OrderId::Follow
+					&&  turret->main_order_id != OrderId::Patrol
+					&&  turret->main_order_id != OrderId::WyvernLandGrab) {
+						Unit* new_target = turret->order_target.unit;
+						if (wyvern_can_fire_at(unit, new_target)) {
+							unit_ext->units[UnitWyvernTargetLock] = new_target;
 						}
 					}
-					Unit* target = parent_ext->units[UnitWyvernTargetLock];
-					if (!target || !wyvern_can_fire_at(unit, target))
-					{
-						target = scbw::UnitFinder::get_nearest_target(
-							unit->get_x() - range,
-							unit->get_y() - range,
-							unit->get_x() + range,
-							unit->get_y() + range,
-							unit, [&](Unit* target)
-						{
-							if (target == unit)
-							{
-								return false;
+					Unit* target = unit_ext->units[UnitWyvernTargetLock];
+					if (!target || !wyvern_can_fire_at(unit, target)) {
+						EntryArray units = {};
+						unit_search_radial(&units, unit->position, range);
+						unit_search_sort_by_distance(&units, unit->position);
+
+						for (u32 i = 0; i < units.count; ++i) {
+							Unit* it = units.units[i];
+							if (it == unit) {
+								continue;
 							}
-							if (scbw::is_allied_to(unit->player, target->player))
-							{
-								return false;
+							if (scbw::is_allied_to(unit->player, it->player)) {
+								continue;
 							}
-							if (!wyvern_can_fire_at(unit, target))
-							{
-								return false;
+							if (!wyvern_can_fire_at(unit, it)) {
+								continue;
 							}
-							return true;
-						});	
+							target = unit;
+							break;
+						}
 					}
 					
-					if (target)
-					{
-						auto direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
+					if (target) {
+						s32 direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
-						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, unit->player, unit, target, target->position);
+						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
-						parent_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					}
 				}
 			}
