@@ -792,16 +792,14 @@ LABEL_15:
 			frame_index = 0;
 		}
 		GrpFrame* frame = &grp->frames[frame_index];
+		void* image_data = (char*)grp + frame->data_offset;
 
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
-
-		void* image_data = (char*)grp + frame->data_offset;
-
 		helper::image_render_fxn_0_0(
 			dialog->bounds.left + (dialog->bounds.right  - dialog->bounds.left - frame->w + 1) / 2,
 			dialog->bounds.top  + (dialog->bounds.bottom - dialog->bounds.top  - frame->h + 1) / 2,
-			frame, &rect, (u32)image_data);
+			frame, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;
@@ -841,8 +839,8 @@ LABEL_15:
 		}
 
 		memcpy(g_palette_remap, g_cmdbtn_palette[palette_type].colors, 16);		
-		s16 button_graphic = button->graphic;
-		if (button_graphic < 0) {
+		u16 button_graphic = button->graphic;
+		if (button_graphic >= (*g_cmdicons_grp)->frame_count) {
 			button_graphic = 0;
 		}
 
@@ -873,7 +871,7 @@ LABEL_15:
 		helper::image_render_fxn_0_0(
 			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - frame->w + 1) / 2,
 			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.top - button->bounds.bottom - frame->h + 1) / 2,
-			image_data, &rect, 0);
+			frame, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;

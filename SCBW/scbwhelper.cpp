@@ -13621,4 +13621,18 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data) {
+		const u32 func_address = 0x0040ABBE;
+		__asm {
+			PUSHAD
+			PUSH color_data
+			PUSH rect
+			PUSH image_data
+			MOV EDX, screen_y
+			MOV ECX, screen_x
+			CALL func_address
+			POPAD
+		}
+	}
 }

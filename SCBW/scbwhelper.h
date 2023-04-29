@@ -13,7 +13,6 @@ namespace helper {
 	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, b32 unit_was_killed);
 	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
 	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
-	SCBW_FUNC(0x0040ABBE, void __fastcall, image_render_fxn_0_0, u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 colorData);
 	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
 	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
 	SCBW_FUNC(0x00425B50, void __stdcall, draw_unit_status_string, BinDlg* dialog);
@@ -1598,4 +1597,6 @@ namespace helper {
 	void dialog_draw_text(void* arg, BinDlg* button, u32 flag1, u32 flag2);																	// 004EF870
 
 	b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags);														// 004EF440
+
+	void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);									// 0040ABBE
 }
