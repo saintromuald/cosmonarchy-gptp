@@ -58,7 +58,7 @@ const s32 MineDetonateRange = 30;
 const s32 LobotomyMineLockdownTimer = 12; // 4 seconds
 
 // Cuirass
-const u32 CuirassSelfReviveHP = 125 * 256;
+const u32 CuirassSelfReviveHP = 50 * 256;
 const s32 CuirassSelfHeal = 160; // (15 * 256) / 24 = 160
 
 // Madrigal
