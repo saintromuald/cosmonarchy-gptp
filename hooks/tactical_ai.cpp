@@ -433,7 +433,7 @@ static bool should_kite_back_against(Unit* unit, Unit* target) {
 		f32 factor = 1.0 / 343.0;
 		f32 kiter_speed = unit->flingy_top_speed;
 		f32 target_speed = target->flingy_top_speed;
-		f32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_speed) * 2 * factor;
+		f32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_rate) * 2 * factor;
 		if (kiter_speed > target_speed && get_max_range(target->id) > get_max_range(unit->id) + kiting_time) {
 			return true;
 		}
@@ -635,7 +635,7 @@ static bool unit_kiting_can_attack(Unit* unit) {
 	if (unit->id == UnitId::ProtossSolarion) {
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
-	if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_speed < 35) {
+	if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_rate < 35) {
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.75;
 	}
 	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
@@ -819,7 +819,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 				if (unit->id == UnitId::ProtossSolarion) {
 					unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
-				} else if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_speed < 35) {
+				} else if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_rate < 35) {
 					unit_ext->timers[TimerAI_KitingCooldown] = 2;
 				} else {
 					unit_ext->timers[TimerAI_KitingCooldown] = 6;
@@ -872,7 +872,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 						}
 					} break;
 					case KiterType_Flagship: {
-						bool dont_turn = unit->flingy_turn_speed < 15;
+						bool dont_turn = unit->flingy_turn_rate < 15;
 						if (!prefer_kiting_forward && !dont_turn
 							&& (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
 							unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);

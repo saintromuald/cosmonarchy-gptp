@@ -89,7 +89,7 @@ namespace hooks
 				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!stop_there) {
-				unit->flingy_turn_speed = 127; // Fix turning structures having difficulty landing
+				unit->flingy_turn_rate = 127; // Fix turning structures having difficulty landing
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
 				unit->main_order_state = 3;
 			}
@@ -240,7 +240,7 @@ namespace hooks
 
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
-			unit->flingy_turn_speed = 127; // Fix turning structures having difficulty lifting
+			unit->flingy_turn_rate = 127; // Fix turning structures having difficulty lifting
 		} else {
 			if (!unit->order_queue_head) {
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);

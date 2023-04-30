@@ -286,9 +286,10 @@ void unit_destructor_special_cases(Unit* unit) {
 			case UnitId::ResourceMineralFieldType3:
 			case UnitId::ResourceVespeneGeyser:
 			case UnitId::TerranReservoir:
+			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
 			{
 				free_resource_container(unit);
 			} break;
@@ -334,7 +335,7 @@ void unit_destructor_special_cases(Unit* unit) {
 		unit->order_target.pt.y = unit->position.y;
 		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskSporesPlayer], 0);
 		if (bullet) {
-			bullet->time_remaining = 255;
+			bullet->remove_timer = 255;
 		}
 	}
 

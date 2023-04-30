@@ -95,9 +95,10 @@ namespace hooks
 		switch (unit_id)
 		{
 			case UnitId::TerranReservoir:
+			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
 				return true;
 			default:
 				break;
@@ -109,9 +110,10 @@ namespace hooks
 		switch (unit_id)
 		{
 			case UnitId::TerranReservoir:
+			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
 				return true;
 			default:
 				break;

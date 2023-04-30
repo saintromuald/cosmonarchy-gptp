@@ -13,9 +13,9 @@ struct Bullet // With several 2023 contributions by DarkenedFantasies
 	/*0x08*/ u32          hitpoints;				// Usually holds 1
 	/*0x0C*/ Sprite*      sprite;
 	/*0x10*/ Target       move_target;
-	/*0x18*/ Point16      target_position;
-	/*0x1C*/ Point16      target_position_2;		// Usually same as target_position
-	/*0x20*/ u8           movement_flags;			// Usually holds 0x09 for probes, 0x0b for dragoons, 0x11 for mutas
+	/*0x18*/ Point16      target_position_1;
+	/*0x1C*/ Point16      target_position_2;		// Usually same as target_position_1
+	/*0x20*/ u8           movement_flags;			// Usually holds 0x09 for Scribes, 0x0b for Dracadins, 0x11 for Mutalisks
 	/*0x21*/ u8           current_direction_1;
 	/*0x22*/ u8           flingy_turn_rate;
 	/*0x23*/ u8           velocity_direction_1;
@@ -29,16 +29,10 @@ struct Bullet // With several 2023 contributions by DarkenedFantasies
 	/*0x3C*/ u32          current_speed_2;
 	/*0x40*/ Vector32     current_velocity;
 	/*0x48*/ u16          flingy_acceleration;
-	/*0x4A*/ u8           current_direction;
-	/*0x4B*/ u8           velocity_direction;
+	/*0x4A*/ u8           current_direction_2;
+	/*0x4B*/ u8           velocity_direction_2;
 	/*0x4C*/ u8           player;
-	/*0x4D*/ u8           behavior_type_internal;	// 0 = none
-													// 1 = fly
-													// 2 = fly & follow target
-													// 3 = bounce
-													// 4 = persist on site
-													// 5 = appear on target/instant
-													// 6 = attack target box
+	/*0x4D*/ u8           behavior_type;			// See BulletBehaviorType enum
 	/*0x4E*/ u8           main_order_state;			// Likely not used
 	/*0x4F*/ u8           order_signal;
 	/*0x50*/ u16          order_unit_id;
@@ -48,7 +42,7 @@ struct Bullet // With several 2023 contributions by DarkenedFantasies
 	// ^-- SHARED Bullet/Unit STRUCTURE END
 
 	/*0x60*/ u8           weapon_id;
-	/*0x61*/ u8           time_remaining;
+	/*0x61*/ u8           remove_timer;
 	/*0x62*/ u8           hit_flags;				// 0x01 = miss target; 0x02 = no damage (hallucination)
 	/*0x63*/ u8           remaining_bounces;		// Bounce count for mutalisk weapon
 	/*0x64*/ Unit*		  source_unit;
@@ -58,5 +52,15 @@ struct Bullet // With several 2023 contributions by DarkenedFantasies
 
 C_ASSERT(sizeof(Bullet) == 112);
 //static_assert(sizeof(Bullet) == 112, "The count of the Bullet structure is invalid");
+
+enum BulletBehaviorType {
+	BulletBehaviorType_None,
+	BulletBehaviorType_Fly,
+	BulletBehaviorType_FlyFollowTarget,
+	BulletBehaviorType_Bounce,
+	BulletBehaviorType_PersistOnSite,
+	BulletBehaviorType_AppearOnTarget,
+	BulletBehaviorType_AttackTargetBox,
+};
 
 #pragma pack()

@@ -368,7 +368,7 @@ namespace hooks {
 
 	void lockdown(Bullet* bullet, u32 weapon_id)
 	{
-		auto targPos = bullet->target_position;
+		auto targPos = bullet->target_position_1;
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;

@@ -19,7 +19,7 @@ struct Flingy
 	/*0x01C*/ Point16   next_target_waypoint;    ///< The desired position
 	/*0x020*/ u8        movement_flags;		   /// sound_flags specifying movement type, movement_flags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;	   /// The current direction the unit is facing
-	/*0x022*/ u8        flingy_turn_speed;       //AKA flingy turn radius
+	/*0x022*/ u8        flingy_turn_rate;       //AKA flingy turn radius
 	/*0x023*/ u8        velocity_direction_1;
 	/*0x024*/ u16       flingy_id;
 	/*0x026*/ u8        _unknown_0x026;

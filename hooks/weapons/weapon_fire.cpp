@@ -848,12 +848,12 @@ namespace hooks {
 				target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
 
 				if (count >= 4) {
-					bullet->time_remaining = 0;
+					bullet->remove_timer = 0;
 					return;
 				} else {
 					bullet->move_target.unit = bullet->attack_target.unit;
 					if (bullet->move_target.unit) {
-						bullet->target_position = bullet->move_target.unit->position;
+						bullet->target_position_1 = bullet->move_target.unit->position;
 						bullet->target_position_2 = bullet->move_target.unit->position;
 					}
 				}
@@ -984,7 +984,7 @@ namespace hooks {
 		bullet_ext->time_traveled += 1;
 		if (z_climb) {
 			f32 distance_from_source = scbw::get_distance_fast(bullet_ext->bullet_source, bullet->position);
-			f32 distance_to_target = scbw::get_distance_fast(bullet->position, bullet->target_position);
+			f32 distance_to_target = scbw::get_distance_fast(bullet->position, bullet->target_position_1);
 			f32 total_distance = distance_from_source + distance_to_target;
 			f32 factor = distance_to_target / total_distance;
 
@@ -1014,14 +1014,14 @@ namespace hooks {
 					} else if (distance <= weapons_dat::medium_splash_radius[bullet->weapon_id]) {
 						divisor = 2;
 					}
-					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->current_direction, divisor);
+					target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->current_direction_2, divisor);
 				}
 			}
 		}
 
-		u8 time = bullet->time_remaining--;
+		u8 time = bullet->remove_timer--;
 		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
-			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && !bullet->attack_target.unit) {
+			if (bullet->remove_timer < AlkajeliskParasiticSporesTimer && !bullet->attack_target.unit) {
 				time = 0;
 			}
 		}
@@ -1132,7 +1132,7 @@ namespace hooks {
 
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
-			bullet->behavior_type_internal = 5;
+			bullet->behavior_type = 5;
 			if (!despawn_bullet_special) {
 				if (target && target->sprite && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
 					bullet->attack_target.pt.x = target->sprite->position.x;
@@ -1195,7 +1195,7 @@ namespace hooks {
 					iquare_globals.remove_multihit_bullet(bullet);
 				}
 				target_unit = bullet->attack_target.unit;
-				bullet->behavior_type_internal = 5;
+				bullet->behavior_type = 5;
 				if (target_unit) {
 					bullet->attack_target.pt.x = target_unit->sprite->position.x;
 					bullet->attack_target.pt.y = target_unit->sprite->position.y;
@@ -1474,12 +1474,12 @@ namespace hooks {
 		bullet->attack_target.pt.x = 0;
 		bullet->main_order_timer = 0;
 		bullet->weapon_id = weapon_id;
-		bullet->time_remaining = weapons_dat::remove_after[weapon_id];
+		bullet->remove_timer = weapons_dat::remove_after[weapon_id];
 		bullet->order_unit_id = UnitId::None;
 		bullet->remaining_bounces = 0;
 		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
-		bullet->behavior_type_internal = 0;
+		bullet->behavior_type = 0;
 		bullet->attack_target.unit = nullptr;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
@@ -1646,7 +1646,7 @@ namespace hooks {
 					bullet->sprite = 0;
 				}
 			}
-			u32 bullet_behavior = (u8)bullet->behavior_type_internal;
+			u32 bullet_behavior = (u8)bullet->behavior_type;
 			switch (bullet_behavior)
 			{
 				case 0:
@@ -1696,7 +1696,7 @@ namespace hooks {
 					case WeaponBehavior::AppearOnAttacker:
 					case WeaponBehavior::AttackAndSelfDestruct:
 					{
-						bullet->behavior_type_internal = WeaponBehavior::AppearOnAttacker;
+						bullet->behavior_type = WeaponBehavior::AppearOnAttacker;
 						if (bullet->attack_target.unit) {
 							bullet->attack_target.pt.x = bullet->attack_target.unit->sprite->position.x;
 							bullet->attack_target.pt.y = bullet->attack_target.unit->sprite->position.y;
@@ -1754,7 +1754,7 @@ namespace hooks {
 					} break;
 				}
 
-				switch (bullet->behavior_type_internal) {
+				switch (bullet->behavior_type) {
 					case 0:
 					{
 						continue;

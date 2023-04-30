@@ -3,7 +3,7 @@
 
 #include "trigger_system/trigger_system.h"
 
-// Used for AI calcs (currently supported values: 3, 2, 1)
+// Used for AI calcs (currently supported values: 3, 2, 1) -- TODO: Add support for 4
 u32 get_gas_tier(Unit* unit) {
 	if (unit) {
 		switch (unit->id) {
@@ -14,9 +14,10 @@ u32 get_gas_tier(Unit* unit) {
 				return 2;
 
 			case UnitId::TerranReservoir:
+			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
 				return 3;
 		}
 	}
@@ -29,8 +30,7 @@ u32 get_harvest_amount(Unit* unit) {
 
 namespace hooks {
 	bool is_gas_container(u16 unit_id) {
-		if (unit_id == UnitId::ProtossAquifer || unit_id == UnitId::TerranReservoir || unit_id == UnitId::ZergExcisant
-		||	unit_id == UnitId::TerranWellbore) {
+		if (scbw::unit_id_is_capped_gas_structure(unit_id)) {
 			return true;
 		}
 		return false;
@@ -62,7 +62,7 @@ namespace hooks {
 			is_mineral = true;
 		} else if (resource->id == UnitId::ProtossAquifer) {
 			chunk_image_id = ImageId::ProtossGasOrbType1;
-		} else if (resource->id == UnitId::ZergExcisant) {
+		} else if (resource->id == UnitId::ZergExcisant || resource->id == UnitId::ZergEzigrisant) {
 			chunk_image_id = ImageId::ZergGasSacType1;
 		} else if (resource->id == UnitId::TerranReservoir || resource->id == UnitId::TerranWellbore) {
 			chunk_image_id = ImageId::TerranGasTankType1;
@@ -144,9 +144,10 @@ namespace hooks {
 				return true;
 			} break;
 			case UnitId::TerranReservoir:
+			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
 			{
 				if ((ignore_completed || node->status & UnitStatus::Completed) && (node->player == worker->player || scbw::are_mutual_allies(node->player, worker->player)))
 				{
@@ -224,7 +225,7 @@ namespace hooks {
 			if (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser) {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
-			||			node->id == UnitId::TerranWellbore)
+			||			node->id == UnitId::TerranWellbore	|| node->id == UnitId::ZergEzigrisant)
 				&&		(node->player == unit->player || scbw::are_mutual_allies(node->player, unit->player)))
 			{
 				valid_structure = true;
@@ -438,7 +439,6 @@ namespace hooks {
 	Unit* remove_references_node_worker(Unit* node, Unit* worker) // 00468EF0
 	{
 		Unit* result = 0;
-
 		if (worker->worker.is_harvesting)
 		{
 			worker->worker.is_harvesting = 0;
@@ -452,9 +452,7 @@ namespace hooks {
 					return (Unit*)helper::begin_harvest(next_harvester, node);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			Unit* next_gatherer = node->building.resource.next_gatherer;
 			if (next_gatherer)
 			{

@@ -216,7 +216,7 @@ struct UnitLayout
 	/*0x01C*/ Point16   next_target_waypoint;			// The desired position
 	/*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, MovementFlags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
-	/*0x022*/ u8        flingy_turn_speed;				// AKA flingy turn radius
+	/*0x022*/ u8        flingy_turn_rate;				// AKA flingy turn radius
 	/*0x023*/ u8        velocity_direction_1;			/*
 															This usually only differs from the current_direction field for units that can accelerate
 															and travel in a different direction than they are facing. For example Mutalisks can change
