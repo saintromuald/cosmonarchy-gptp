@@ -158,9 +158,9 @@ struct Unit : public UnitLayout
 	u16 get_y() const;
 
 	/// Returns the X position of the tile that the unit's sprite is on.
-	u16 getTileX() const;
+	u16 get_tile_x() const;
 	/// Returns the Y position of the tile that the unit's sprite is on.
-	u16 getTileY() const;
+	u16 get_tile_y() const;
 
 	/// Returns the position of the left edge of the unit's collision box.
 	s16 get_left() const;
@@ -245,233 +245,153 @@ struct Unit : public UnitLayout
 	void add_unit_energy(u32 energy);
 	void add_unit_energy_capped(u32 energy, u32 max);
 
-	//////////////////////////////////////////////////////////////// @}
-
-	/// @name Unit Orders
-	//////////////////////////////////////////////////////////////// @{
-
-	/// Issue the @p order to the unit, using the given @p target unit.
+	// Issue the @p order to the unit, using the given @p target unit.
 	void order_to(u8 order_id, Unit* target = nullptr);
 
-	/// Issue the @p order to the unit, using the given position as the target.
+	// Issue the @p order to the unit, using the given position as the target.
 	void order_to(u8 order_id, u16 x, u16 y);
 
-	//  Issue the @p order to the unit, without a target
+	// Issue the @p order to the unit, without a target
 	void order_computer(u8 order_id);
 
-	//  Issue the @p order to the unit and specify if previous orders should be stopped
+	// Issue the @p order to the unit and specify if previous orders should be stopped
 	void order_simple(u8 order_id, bool stopPreviousOrders);
 
-	//  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
+	// Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
 	void issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders);
 
 	// Original documentation was a lie: Causes the unit to become idle.
 	// Finishes the current order and issues appropriate idle order if no order is in the queue.
 	void order_to_idle();
 
-	/// Issues a new order to the unit.
+	// Issues a new order to the unit.
 	void order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bool stop_previous_orders);
 
-	/// Probably add the @p order to the orders queue
+	// Probably add the @p order to the orders queue
 	void perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id, u32 unk = 0);
 
-	/// Used by several hooks, details not completely understood.
+	// Used by several hooks, details not completely understood.
 	void set_secondary_order(u8 order_id);
 
-	//////////////////////////////////////////////////////////////// @}
-
-	/// @name Graphics and Animations
-	/// Note: See Sprite::create_overlay() and Sprite::create_top_overlay() for
-	///       creating image overlays.
-	//////////////////////////////////////////////////////////////// @{
-
-	/// Returns the overlay image of this unit's sprite (or its subunit's sprite)
-	/// that matches the @p imageId. If the image cannot be found, returns nullptr.
+	// Returns the overlay image of this unit's sprite (or its subunit's sprite) that matches the @p imageId. If the image cannot be found, returns nullptr.
 	Image* get_overlay(u16 imageId) const;
 	s32 max_shields() const;
 	bool shields_enabled() const;
 
-	/// Makes the unit's sprite play the specified Iscript animation entry.
+	// Makes the unit's sprite play the specified Iscript animation entry.
 	void play_iscript_animation(IscriptAnimation::Enum animation);
 
-	/// Removes the first image overlay with an ID value between @p imageIdStart
-	/// and @p imageIdEnd.
+	// Removes the first image overlay with an ID value between @p imageIdStart and @p imageIdEnd.
 	void remove_overlay(u32 imageIdStart, u32 imageIdEnd);
 
-	/// Removes the first image overlay with the given image ID.
+	// Removes the first image overlay with the given image ID.
 	void remove_overlay(u32 imageId);
 
-	/// Get the faction (brood,tribe,squad...) color of current unit
+	// Get the faction (brood,tribe,squad...) color of current unit
 	graphics::ColorId get_faction_color();
 
-	/// Get the faction (brood,tribe,squad...) color of an unit
+	// Get the faction (brood,tribe,squad...) color of an unit
 	static graphics::ColorId get_faction_color(Unit* unit);
 
-	/// Get the (possibly non-standard) color of current unit
+	// Get the (possibly non-standard) color of current unit
 	graphics::ColorId get_color();
 
-	/// Get the (possibly non-standard) color of an unit
+	// Get the (possibly non-standard) color of an unit
 	static graphics::ColorId get_color(Unit* unit);
 
-	//////////////////////////////////////////////////////////////// @}
-
-	/// @name Distances and Terrain
-	//////////////////////////////////////////////////////////////// @{
-
-	/// Returns the distance between this unit and the @p target, taking unit
-	/// collision count in units.dat into account.
-	/// Internally, this function uses scbw::get_distance_fast().
+	// Returns the distance between this unit and the @p target, taking unit collision count in units.dat into account.
+	// Internally, this function uses scbw::get_distance_fast().
 	u32 get_distance_to_target(Unit* target) const;
 	u32 get_distance_to_point(Point16 point) const;
 
-	/// Checks whether this unit can reach the target position. This checks only
-	/// for terrain, and does not consider obstacles (units and buildings).
+	// Checks whether this unit can reach the target position. This checks only for terrain, and does not consider obstacles (units and buildings).
 	bool has_path_to_pos(u32 x, u32 y) const;
 
-	/// Checks whether this unit can reach the @p target unit. This checks only
-	/// for terrain, and does not consider obstacles (units and buildings).
+	// Checks whether this unit can reach the @p target unit. This checks only for terrain, and does not consider obstacles (units and buildings).
 	bool has_path_to_unit(Unit* target) const;
 
 	///  Checks whether the @p target unit is within the @p distance from the unit.
 	bool is_target_within_min_range(Unit* target, u32 range);
 
-	//////////////////////////////////////////////////////////////// @}
-
-	/// @name DAT Requirements
-	//////////////////////////////////////////////////////////////// @{
-
-	/// Checks if the @p unit can build / train / morph into @p unit_id. This checks:
-	/// * If the unit is actually owned by the commanding @p player
-	/// * Whether the unit is stunned / disabled.
-	///
-	/// If the unit can build / train / morph, returns 1. If the tech needs to be
-	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
+	// Checks if the @p unit can build / train / morph into @p unit_id. This checks:
+	// * If the unit is actually owned by the commanding @p player
+	// * Whether the unit is stunned / disabled.
+	// If the unit can build / train / morph, returns 1. If the tech needs to be researched, returns -1. If the unit cannot use the tech at all, returns 0.
 	s32 can_make_unit(u16 unit_id, u8 player) const;
 
-	/// Checks the following:
-	///  * If the unit is actually owned by the commanding @p player
-	///  * If the unit's owning player has the @p techId researched
-	///  * If the unit has enough energy (or energy cheat is enabled)
-	///  * If the unit is not stunned / is a hallucination / is being built
-	///  * If the unit meets the Use Tech Requirements (editable in FireGraft)
-	///
-	/// If the unit can use the tech, returns 1. If the tech needs to be
-	/// researched, returns -1. If the unit cannot use the tech at all, returns 0.
+	// Checks the following:
+	//  * If the unit is actually owned by the commanding @p player
+	//  * If the unit's owning player has the @p techId researched
+	//  * If the unit has enough energy (or energy cheat is enabled)
+	//  * If the unit is not stunned / is a hallucination / is being built
+	//  * If the unit meets the Use Tech Requirements (editable in FireGraft)
+	// If the unit can use the tech, returns 1. If the tech needs to be researched, returns -1. If the unit cannot use the tech at all, returns 0.
 	s32 can_use_tech(u8 techId, u8 player) const;
 
-	//////////////////////////////////////////////////////////////// @}
-
-	/// @name Utility Methods
-	//////////////////////////////////////////////////////////////// @{
-
-	/// Returns true if the current unit is not frozen and the @p target unit is
-	/// not invincible and can be attacked or infested. If @p checkVisibility is
-	/// set to false, the function will not check whether the unit can see the
-	/// @p target (i.e. it is being detected properly). Additionally:
-	///
-	/// * Queens (and Matriarchs) return true only if the @p target is an
-	///   infestable Command Center.
-	/// * Reavers (and Warbringers) return true only if they have a ground path
-	///   to the @p target unit.
-	/// * AI-controlled Arbiters (not including Danimoths) always return false.
+	// Returns true if the current unit is not frozen and the @p target unit is not invincible and can be attacked or infested.
+	// If @p checkVisibility is set to false, the function will not check whether the unit can see the @p target (i.e. it is being detected properly).
 	bool can_attack_target(Unit* target, bool checkVisibility = true) const;
 
-	/// Makes the unit use the specified weapon to attack its current target unit
-	/// stored in the Unit::order_target.unit member. This does not affect the
-	/// unit's weapon cooldown. The spawned weapon sprite obeys the weapon
-	/// behavior properties in weapons.dat.
-	/// Note: This function is affected by the Fire Weapon hook module.
-	void fireWeapon(u8 weapon_id) const;
+	// Makes the unit use the specified weapon to attack its current target unit stored in the Unit::order_target.unit member. This does not affect the unit's weapon cooldown. 
+	// The spawned weapon sprite obeys the weapon behavior properties in weapons.dat. Affected by fire_weapon.cpp
+	void fire_weapon(u8 weapon_id) const;
 
-	/// Retrieves the unit pointer by @p index from the unit table (first unit is
-	/// indexed at 1). If invalid, returns nullptr instead.
+	// Retrieves the unit pointer by @p index from the unit table (first unit is indexed at 1). If invalid, returns nullptr instead.
 	static Unit* get_unit_from_index(u16 index);
 
-	/// Returns the index of this unit in the unit table. First unit == index 1.
+	// Returns the index of this unit in the unit table. First unit == index 1.
 	inline u16 get_unit_index() const;
 
-	/// Returns the ID of the last player to own this unit. This is usually the
-	/// same as Unit::player, but if the unit belongs to a defeated player,
-	/// this returns the correct player ID (instead of 11).
-	/// @deprecated   Will be removed in v2.42. Use Unit::is_target_enemy().
+	// Returns the ID of the last player to own this unit. This is usually the same as Unit::player, but if the unit belongs to a defeated player,
+	// this returns the correct player ID (instead of 11).
 	u8 get_last_owner_id() const;
 
-	/// Returns the loaded unit at @p index (value between 0-7). If no unit is
-	/// loaded at the slot, returns nullptr instead.
+	// Returns the loaded unit at @p index (value between 0-7). If no unit is loaded at the slot, returns nullptr instead.
 	Unit* get_loaded_unit(s32 index);
 
-	/// Returns the first unit loaded in this unit. If this unit is not a
-	/// transport, or has no units inside, this function returns nullptr instead.
+	// Returns the first unit loaded in this unit. If this unit is not a transport, or has no units inside, this function returns nullptr instead.
 	Unit* get_first_loaded_unit();
 
-	/// Checks if this unit has other units loaded inside.
+	// Checks if this unit has other units loaded inside.
 	bool has_loaded_unit();
 
-	/// Transfers ownership of this unit to @p player. This function is
-	/// identical to Mind Control and the "Give Units To Player" trigger action.
-	/// @return   true if successful, false otherwise.
+	// Transfers ownership of this unit to @p player. This function is identical to Mind Control and the "Give Units To Player" trigger action.
+	// @return   true if successful, false otherwise.
 	bool give_to(u8 player);
 
-	/// Checks if the unit has an associated sprite and is not running the
-	/// OrderId::Die order.
+	// Checks if the unit has an associated sprite and is not running the OrderId::Die order.
 	bool is_dead() const;
 
-	/// Checks whether the @p target unit is an enemy of this unit.
-	/// Internally, this calls scbw::is_unit_enemy().
+	// Checks whether the @p target unit is an enemy of this unit. Internally, this calls scbw::is_unit_enemy().
 	bool is_target_enemy(Unit* target) const;
 
-	/// Checks whether this unit can be seen by @player (i.e. not covered by the
-	/// fog-of-war and is detectable).
+	/// Checks whether this unit can be seen by @player (i.e. not covered by the fog-of-war and is detectable).
 	bool is_visible_to(u8 player) const;
 
-	/// Updates the unit's actual speed. This function should be called after
-	/// changing any properties and status effects that affect movement speed.
+	// Updates the unit's actual speed. This function should be called after changing any properties and status effects that affect movement speed.
 	void update_speed();
 
-	/// For Wyvern Land Grab
+	// For Wyvern - Land Grab
 	u8 get_spell_countdown() const;
 
-	//////////////////////////////////////////////////////////////// @}
-	
 	u32 get_supply_provided();
 	void set_supply_provided(u8 amount);
 	void reset_supply_provided();
-
 	s32 get_total_hp_plus_shields();
 	s32 is_unit_ai_non_building();
-
-	/// Returns whether the unit is currently constructing a Protoss building
 	bool is_attempting_protoss_build();
-
-	/// Returns whether the unit is currently constructing an addon
 	bool is_constructing_addon();
-
-	/// Returns the number of hangar units currently being trained by the unit
 	u8 get_hangar_train_count();
-
-	/// Returns the maximum hangar space for the unit
 	u8 get_max_hangar_space();
-
-	/// Returns whether the unit is of type Reaver (incl. hero Reaver)
 	bool is_reaver();
-
-	/// Returns whether the unit is of type Carrier (incl. hero Carrier)
 	bool is_carrier();
-
-	/// Returns whether the unit is currently constructing a Protoss building
 	bool unit_is_training_or_morphing();
-
-	/// Returns whether the unit is currently constructing a Protoss building
 	bool is_queue_slot_active(int slot);
-
-	// Returns the right click action for the given unit
 	u8 get_right_click_action_order();
-
 	inline u32 get_strength() {
 		return this->ground_strength >= this->air_strength ? this->ground_strength : this->air_strength;
 	}
 };
-
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));
 //static_assert(sizeof(Unit) == sizeof(UnitLayout), "The count of the Unit structure is invalid");

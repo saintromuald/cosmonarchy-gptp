@@ -1244,48 +1244,43 @@ namespace hooks {
 		}
 		if (!(helper::unit_is_carrier(bounce_source)))
 		{
-			bool miscBool;
+			bool misc;
 			if (helper::unit_is_reaver(bounce_source))
 			{
 				if (target_var->status & UnitStatus::InAir)
 				{
 					return 0;
 				}
-				miscBool = helper::unit_has_path_to_unit(bounce_source, target_var);
+				misc = helper::unit_has_path_to_unit(bounce_source, target_var);
 			}
 			else
 			{
 				if (helper::unit_can_infest(bounce_source))
 				{
-					Unit* unusedUnit = nullptr;
-					miscBool = helper::can_be_infested(unusedUnit, target_var) != 0; // unusedUnit is not used..?
-				}
-				else
-				{
+					misc = helper::can_be_infested(0, target_var) != 0; // First arg is stupid?
+				} else {
 					if (target_var->status & UnitStatus::InAir)
 					{
-						miscBool = units_dat::air_weapon[(u16)bounce_source_unit->id] != -126;
-					}
-					else
-					{
-						miscBool = units_dat::ground_weapon[(u16)bounce_source_unit->id] != -126;
+						misc = units_dat::air_weapon[(u16)bounce_source_unit->id] != WeaponId::None;
+					} else {
+						misc = units_dat::ground_weapon[(u16)bounce_source_unit->id] != WeaponId::None;
 					}
 				}
 			}
-			if (!miscBool)
+			if (!misc)
 			{
 				return 0;
 			}
 		}
 
-		s32 unitStatus = target_var->status;
-		if (unitStatus & 0x300 && !((1 << bounce_source->player) & target_var->detection_status))
+		s32 status = target_var->status;
+		if (status & 0x300 && !((1 << bounce_source->player) & target_var->detection_status))
 		{
 			return 0;
 		}
 
 		s8 player = target_var->player == 11 ? target_var->sprite->player : target_var->player;
-		if (player_alliance[(u8)bounce_source->player].flags[player] || *g_bullet_bounce_missile_target == target_var)
+		if (player_alliance[bounce_source->player].flags[player] || *g_bullet_bounce_missile_target == target_var)
 		{
 			return 0;
 		}
@@ -1293,24 +1288,15 @@ namespace hooks {
 		// Gladius Binding Plasma behavior
 		if (iquare_globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
-			if (target != nullptr && *g_bullet_bounce_missile_next != nullptr
-				&& (*g_bullet_bounce_missile_next)->sprite != nullptr
-				&& target_var->sprite != nullptr)
+			if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target_var->sprite)
 			{
 				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target_var))
 				{
 					return false;
-				}
-				else
-				{
+				} else {
 					iquare_globals.add_bullet_multihit(iquare_globals.bounce_bullet, target_var);
 					return *g_bullet_bounce_missile_next != target_var;
-
 				}
-			}
-			else
-			{
-//				scbw::print("bad bullet");
 			}
 		}
 		return *g_bullet_bounce_missile_next != target_var;

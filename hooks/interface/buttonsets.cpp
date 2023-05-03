@@ -2180,8 +2180,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossCharlatan:
 								{
-									if (current_button->icon_id == IconId::DemiurgePassiveWorship // Charlatan - Leading the Blind
-									||	current_button->icon_id == IconId::GeszithalorAcidSpore) // Charlatan - Lithe Organelle
+									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2223,8 +2222,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossEmpress:
 								{
-									if (current_button->icon_id == IconId::ParticleBeamHarvest // Empress - Anodyne Annex
-									|| current_button->icon_id == IconId::GeszithalorAcidSpore) // Empress - Lithe Organelle
+									if (current_button->icon_id == IconId::ParticleBeamHarvest) // Empress - Anodyne Annex
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2240,6 +2238,7 @@ namespace hooks {
 
 								// ZERG \\
 								
+								case UnitId::ZergLiiralisk:
 								case UnitId::ZergMutalisk:
 								case UnitId::ZergTosgrilisk:
 								case UnitId::ZergSpirtithColony:
@@ -2486,11 +2485,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ZergBactalisk && // Bactalisk Caustic Fission
 								current_button->icon_id == IconId::GeszithalorAcidSpore) {
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergLiiralisk && // Liiralisk Lithe Organelle
-								current_button->icon_id == IconId::GeszithalorAcidSpore)
-							{
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergGorgrokor &&  // Gorgrokor Probing Incisors

@@ -337,21 +337,17 @@ namespace hooks
 				// Searing Acid - Geszithalor behavior
 				data.damage += data.damage_divisor * 10 * 256;
 			} break;
-			case WeaponId::CharlatanFerventBlaster:
-			case WeaponId::EmpressFadingBioplasma:
-			case WeaponId::LiiraliskHollowedSpores:
-			case WeaponId::MutaliskGlaveWurm:
-			{
-				// Lithe Organelle - bounce damage
-				data.damage *= 1 - data.damage_divisor * 0.33;
-				if (data.damage < 0) {
-					data.damage = 0;
-				}
-			} break;
 			default:
 			{
-				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
-				data.damage /= divisor;
+				if (scbw::weapon_id_bounces_lithe_organelle(data.weapon_id)) {
+					data.damage *= 1 - data.damage_divisor * 0.33;
+					if (data.damage < 0) {
+						data.damage = 0;
+					}
+				} else {
+					u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
+					data.damage /= divisor;
+				}
 			}
 		}
 		data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;

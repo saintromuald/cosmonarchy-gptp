@@ -359,12 +359,12 @@ u16 Unit::get_y() const {
 	return this->sprite->position.y;
 };
 
-u16 Unit::getTileX() const {
+u16 Unit::get_tile_x() const {
 	assert(this);
 	return this->get_x() / 32;
 };
 
-u16 Unit::getTileY() const {
+u16 Unit::get_tile_y() const {
 	assert(this);
 	return this->get_y() / 32;
 };
@@ -1167,7 +1167,7 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 	return result;
 }
 
-void Unit::fireWeapon(u8 weapon_id) const {
+void Unit::fire_weapon(u8 weapon_id) const {
 	assert(this);
 	const u32 func_address = 0x00479C90;
 	static u32 weapon_id_xd;

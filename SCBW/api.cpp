@@ -3601,4 +3601,13 @@ namespace scbw {
 			helper::set_image_direction(main_graphic, direction);
 		}
 	}
+
+	bool weapon_id_bounces_lithe_organelle(u32 weapon_id)
+	{
+		return weapon_id == WeaponId::MutaliskGlaveWurm
+			|| weapon_id == WeaponId::LiiraliskHollowedSpores
+			|| weapon_id == WeaponId::TosgriliskExplosiveSpores
+			|| weapon_id == WeaponId::SpirtithColonySpirtilSpores
+			;
+	}
 }
