@@ -2118,6 +2118,56 @@ namespace hooks {
 
 								// PROTOSS \\
 
+								case UnitId::ProtossArtisan:
+								{
+									if (current_button->icon_id == IconId::KhaydarinCore) // Artisan - Concordance Field
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossClarion:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Clarion - Phase Link
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossEcclesiast:
+								{
+									if (current_button->icon_id == IconId::ProtossGroundWeapons) // Ecclesiast - Astral Blessing
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossLegionnaire:
+								{
+									if (current_button->icon_id == IconId::PsiAssault) // Legionnaire - Blade Vortex
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossHierophant:
+								{
+									if (current_button->icon_id == IconId::PhotonCannonWeapon			// Hierophant - Cowardice
+									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon)	// Hierophant - Malice
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossVagrant:
+								{
+									if (current_button->icon_id == IconId::MindControlUnused) // Vagrant - Nihilism
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossAmaranth:
+								{
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Amaranth - Eternal Service
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossHerald:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Herald - Triumphant Rise
@@ -2158,6 +2208,13 @@ namespace hooks {
 								case UnitId::ProtossSycophant:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Sycophant - Idolatry
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossArchon:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Archon - Astral Aegis
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2206,6 +2263,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossAnalogue:
+								{
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Analogue - Empathy Core
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossAccantor:
 								{
 									if (current_button->icon_id == IconId::AntimatterMissiles) // Accantor - Interception
@@ -2216,6 +2280,13 @@ namespace hooks {
 								case UnitId::ProtossArchitect:
 								{
 									if (current_button->icon_id == IconId::AntimatterMissiles) // Architect - Reactive Payload
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossDemiurge:
+								{
+									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Demiurge - Worship
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2231,6 +2302,20 @@ namespace hooks {
 								case UnitId::ProtossSteward:
 								{
 									if (current_button->icon_id == IconId::AntimatterMissiles) // Steward - Evasive Maneuvers
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossMatrix:
+								{
+									if (current_button->icon_id == IconId::ApialSensors) // Matrix - Multi-Attack IV
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossCrucible:
+								{
+									if (current_button->icon_id == IconId::KhaydarinCore) // Crucible - Khaydarin Charge
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2315,82 +2400,7 @@ namespace hooks {
 
 							// PROTOSS \\
 							
-							if (unit->id == UnitId::ProtossArtisan &&  // Artisan Concordance Field
-								current_button->icon_id == IconId::KhaydarinCore)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossEcclesiast &&  // Ecclesiast Astral Blessing 
-								current_button->icon_id == IconId::ProtossGroundWeapons)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossLegionnaire && // Legionnaire Unified Strikes
-								current_button->icon_id == IconId::ProtossGroundWeapons)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossLegionnaire &&  // Legionnaire Blade Vortex
-								current_button->icon_id == IconId::PsiAssault)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossHierophant && // Hierophant Cowardice
-								current_button->icon_id == IconId::PhotonCannonWeapon)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossHierophant && // Hierophant Malice
-								current_button->icon_id == IconId::DidactPhaseDisruptorCannon)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossVagrant &&  // Vagrant Nihilism
-								current_button->icon_id == IconId::MindControlUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossCantavis &&  // Cantavis Ascendancy
-								current_button->icon_id == IconId::MindControlUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossCantavis &&  // Cantavis Ephemeral Blades
-								current_button->icon_id == IconId::ProtossGroundWeapons)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossAmaranth &&  // Amaranth Eternal Service 
-								current_button->icon_id == IconId::DidactPhaseDisruptorCannon)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossAtreus &&  // Atreus Stalwart Stance
-								current_button->icon_id == IconId::PlasmaShields)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossArchon &&  // Archon Astral Aegis
-								current_button->icon_id == IconId::RechargeShields)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossAugur &&  // Augur Final Hour
-								current_button->icon_id == IconId::ArchonPsionicShockwave)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossClarion &&  // Clarion Phase Link
-							current_button->icon_id == IconId::RechargeShields)
-							{
-							current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossDemiurge &&  // Demiurge Worship
-								current_button->icon_id == IconId::DemiurgePassiveWorship)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossAurora &&  // Aurora Last Orders
+							if (unit->id == UnitId::ProtossAurora &&  // Aurora Last Orders
 								current_button->icon_id == IconId::MojoScout)
 							{
 								current_button_state = Button_State::Enabled;
@@ -2432,16 +2442,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well
 								current_button->icon_id == IconId::ArgusJewel)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossMatrix &&  // Matrix Multi-Attack IV
-								current_button->icon_id == IconId::ApialSensors)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossCrucible &&  // Crucible Khaydarin Charge
-								current_button->icon_id == IconId::KhaydarinCore)
 							{
 								current_button_state = Button_State::Enabled;
 							}
