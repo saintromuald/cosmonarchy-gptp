@@ -20,6 +20,8 @@ Box16* const drawTextBox = (Box16*) 0x006CE0C8;
 
 Point16 ui_text_pos;
 
+CmdBtnPalette new_cmdbtn_palette[tIconCount];
+
 void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
 	u32 sec = seconds % 60;
 	u32 min = seconds / 60 % 60;
@@ -783,23 +785,23 @@ LABEL_15:
 		if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlTypes::Button) {
 			palette_type = 4;
 		}
-		memcpy(g_palette_remap, g_cmdbtn_palette[palette_type].colors, 16);		
 
+		memcpy(g_palette_remap, new_cmdbtn_palette[palette_type].colors, 16);
 		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
 		u16 frame_index = state->grp_frame;
-		if (frame_index >= grp->frame_count) {
+		if (frame_index >= grp->frame_count) {//Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
 			frame_index = 0;
 		}
-		GrpFrame* frame = &grp->frames[frame_index];
-		void* image_data = (char*)grp + frame->data_offset;
 
+		GrpFrame* frame = &grp->frames[frame_index];
+		void* image_data = (char*)grp + frame->data_offset;//I believe it's necessary for image_data to be assigned immediately after frame, to get the correct address offset for image_render_fxn_0_0 (including in the second hook).
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 		helper::image_render_fxn_0_0(
-			dialog->bounds.left + (dialog->bounds.right  - dialog->bounds.left - frame->w + 1) / 2,
-			dialog->bounds.top  + (dialog->bounds.bottom - dialog->bounds.top  - frame->h + 1) / 2,
-			frame, &rect, 0);
+			dialog->bounds.left + (dialog->bounds.right - dialog->bounds.left - frame->w + 1) / 2,
+			dialog->bounds.top + (dialog->bounds.bottom - dialog->bounds.top - frame->h + 1) / 2,
+			&image_data - 1, &rect, 0);
 
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;
@@ -808,12 +810,13 @@ LABEL_15:
 
 	// Hooked to explore colorizing passive icons. -Pr0nogo
 	void statbtn_button_update(BinDlg* button) { // 00458900
-		u32 use_alternate_style = (button->flags & BinDlgFlags::UseAlternateStyle) != 0;
-		if (use_alternate_style >= (*(u16*)g_cmdbtns_handle & ~0x8000)) {
-			use_alternate_style = 0; // Was LOWORD, presumably a flag negation
+		u32 is_clicked = (button->flags & BinDlgFlags::NoClickSound) != 0;
+		if (is_clicked >= (*g_cmdbtns_handle)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
+			is_clicked = 0; // Was LOWORD, presumably a flag negation
 		}
 
-		GrpFrame* frame = (GrpFrame*)((char*)g_cmdbtns_handle + 8 * use_alternate_style + 6);
+		GrpFrame* frame = &(*g_cmdbtns_handle)->frames[is_clicked];
+		void* image_data = (char*)*g_cmdbtns_handle + frame->data_offset;
 		u32 bound_horizontal = button->bounds.right - button->bounds.left + 1;
 		if (frame->w < bound_horizontal) {
 			bound_horizontal = frame->w;
@@ -822,10 +825,11 @@ LABEL_15:
 		if (frame->h < bound_vertical) {
 			bound_vertical = frame->h;
 		}
+
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, bound_horizontal, bound_vertical);
 		if (!*g_is_in_replay) {
-			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, (GrpFrame*)&frame, &rect, 0);
+			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, &image_data - 1, &rect, 0);
 		}
 
 		u32 flags = button->flags;
@@ -834,47 +838,124 @@ LABEL_15:
 			palette_type = 1;
 		} else if (flags & BinDlgFlags::NoClickSound) {
 			palette_type = 2;
+		} else if (button->button_user->requirement_var == TechId::Healing && button->button_user->icon_id != IconId::Heal) { // Passive icons
+			palette_type = 6;
 		} else {
 			palette_type = button->graphic != *g_highlighted_icon ? 0 : 2;
 		}
 
-		memcpy(g_palette_remap, g_cmdbtn_palette[palette_type].colors, 16);		
+		memcpy(g_palette_remap, new_cmdbtn_palette[palette_type].colors, 16);
 		u16 button_graphic = button->graphic;
-		if (button_graphic >= (*g_cmdicons_grp)->frame_count) {
+		if (button_graphic >= (*g_cmdicons_grp)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
 			button_graphic = 0;
 		}
 
-		frame = (GrpFrame*)((char*)g_cmdicons_grp + 8 * button_graphic + 6);
+		frame = &(*g_cmdicons_grp)->frames[button_graphic];
+		image_data = (char*)*g_cmdicons_grp + frame->data_offset;
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 		s32 offset_x = 0;
 		s32 offset_y = 0;
 		if (*g_is_in_replay) {
-			switch (button->graphic) {
-				case IconId::PlayReplay:
-				case IconId::PauseReplay: {
-					offset_x = -2;
-					offset_y = 3;
-				} break;
-				case IconId::SpeedUpReplay: {
-					offset_x = -4;
-					offset_y = 3;
-				} break;
-				case IconId::SlowDownReplay: {
-					offset_x = -3;
-					offset_y = 3;
-				} break;
+			switch (button_graphic) {
+			case IconId::PlayReplay:
+			case IconId::PauseReplay:
+				offset_x = -2;
+				break;
+			case IconId::SpeedUpReplay:
+				offset_x = -4;
+				break;
+			case IconId::SlowDownReplay:
+				offset_x = -3;
+			default:
+				break;
 			}
+			offset_y = 3;
 		}
 
-		void* image_data = (char*)g_cmdicons_grp + frame->data_offset;
-
 		helper::image_render_fxn_0_0(
-			use_alternate_style + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - frame->w + 1) / 2,
-			use_alternate_style + offset_y + button->bounds.top  + (button->bounds.top - button->bounds.bottom - frame->h + 1) / 2,
-			frame, &rect, 0);
-
+			is_clicked + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - frame->w + 1) / 2,
+			is_clicked + offset_y + button->bounds.top + (button->bounds.bottom - button->bounds.top - frame->h + 1) / 2,
+			&image_data - 1, &rect, 0);
 		for (u32 i = 0; i < 16; ++i) {
 			g_palette_remap[i] = i;
 		}
+	}
+
+	// Hooked to extend g_cmdbtn_palette. -Pr0nogo
+	void load_statdata_bin() // 00459B90
+	{
+		*g_active_portrait_buttonset_id = 228;
+		*g_buttonset_special_buttonset_id = 228;
+		*g_current_buttonset_id = 228;
+		u32 console_offset = aztp[*g_console_index];
+		*g_highlighted_icon = -1;
+
+		char filename;
+		sprintf_s(&filename, 260, "%s%ccmdbtns.grp", "unit\\cmdbtns\\", console_offset);
+		*g_cmdbtns_handle = (GrpHead*)helper::load_graphic(&filename, 0, 260, "Starcraft\\SWAR\\lang\\statcmd.cpp", 1086);
+		*g_cmdicons_grp = (GrpHead*)helper::load_graphic("unit\\cmdbtns\\cmdicons.grp", 0, 260, "Starcraft\\SWAR\\lang\\statcmd.cpp", 1089);
+		if (!helper::sbmp_load_image("unit\\cmdbtns\\ticon.pcx", 0, "", 96, 0, 0, 0))
+		{
+			u32 error = helper::serr_get_last_error();
+			helper::syswarn_file_not_found(error, "unit\\cmdbtns\\ticon.pcx");
+		}
+
+		char n_u;
+		if (*g_is_in_replay)
+		{
+			n_u = 'n';
+		}
+		else
+		{
+			n_u = aztp[*g_console_index];
+		}
+
+		sprintf_s(&filename, 260, "rez\\statbtn%c.bin", n_u);
+		HANDLE* statdata_bin;
+		if (!helper::sfile_open_file_ex(0, &filename, 0, &statdata_bin))
+		{
+			u32 error_2 = helper::serr_get_last_error();
+			helper::syswarn_file_not_found(error_2, &filename);
+		}
+
+		u32 size = helper::SFileGetFileSize(statdata_bin, 0);
+		if (size == -1)
+		{
+			u32 error_3 = GetLastError();
+			helper::file_fatal(statdata_bin, error_3);
+		}
+		if (!size)
+		{
+			helper::syswarn_file_not_found(0x18u, &filename);
+		}
+
+		BinDlg* dialog = (BinDlg*)helper::SMemAlloc(size, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);
+		u32 read;
+		if (!helper::sfile_read_file(statdata_bin, dialog, size, &read, 0)) // LPDWORD is supposed to be address of so it assigns value to it...
+		{
+			if (GetLastError() == 38)
+			{
+				helper::file_fatal(statdata_bin, 0x18u);
+			}
+			u32 error_4 = GetLastError();
+			helper::file_fatal(statdata_bin, error_4);
+		}
+		if (read != size)
+		{
+			helper::file_fatal(statdata_bin, 0x18u);
+		}
+
+		helper::SFileCloseFile(statdata_bin);
+		BinDlg* final_dialog = 0;
+		if (dialog)
+		{
+			dialog->flags |= 4u;
+			helper::alloc_init_dialog_data(dialog, (void(__fastcall*)(u32, u32, u32, u32, u32))helper::alloc_background_image, "Starcraft\\SWAR\\lang\\statcmd.cpp", 1096);
+			final_dialog = dialog;
+		} else {
+			final_dialog = 0;
+		}
+		*g_buttonset_dialog = final_dialog;
+		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::statbtn_dialog_interact, final_dialog);
 	}
 }

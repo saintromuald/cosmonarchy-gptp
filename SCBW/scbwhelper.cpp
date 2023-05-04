@@ -64,18 +64,21 @@ namespace helper {
 		return result;
 	}
 
-	void load_graphic(char* a1, s32 a2, s32 a3, char* log_filename, s32 log_line) {
+	void* load_graphic(char* a1, u32 a2, u32 a3, char* log_filename, u32 log_line) {
+		static void* result;
 		const u32 func_address = 0x004D2B30;
 		__asm {
 			PUSHAD
 			PUSH log_line
 			PUSH log_filename
-			MOVZX ECX, a1
-			MOV EDX, a2
 			MOV ESI, a3
+			MOV EDX, a2
+			MOV ECX, a1
 			CALL func_address
+			MOV result, EAX
 			POPAD
 		}
+		return result;
 	}
 
 	s32 rand_func() {
@@ -8285,7 +8288,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile) {
+	bool sfile_open_file_ex(void* hMPQ, const char* szFileName, u32 dwSearchScope, HANDLE** phFile) {
 		const u32 Func_SFileOpenFileEx = 0x004100C4;
 		static u32 result;
 		__asm {
@@ -11604,12 +11607,12 @@ namespace helper {
 		return result;
 	}
 
-	const u32 Func__SysWarn_FileNotFound = 0x004212C0;
-	void SysWarn_FileNotFound(u32 code, const char* filename) {
+	void syswarn_file_not_found(u32 code, const char* filename) {
+		const u32 func_address = 0x004212C0;
 		__asm {
 			MOV EBX, code
 			PUSH filename
-			CALL Func__SysWarn_FileNotFound
+			CALL func_address
 		}
 	}
 
@@ -13634,5 +13637,61 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	void file_fatal(HANDLE* file, u32 something)
+	{
+		const u32 func_address = 0x004D2880;
+		__asm {
+			PUSHAD
+			MOV EBX, something
+			MOV ECX, file
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void alloc_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line)
+	{
+		const u32 func_address = 0x004194E0;
+		__asm {
+			PUSHAD
+			PUSH log_line
+			PUSH log_filename
+			PUSH function
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog)
+	{
+		const u32 func_address = 0x00419D20;
+		__asm {
+			PUSHAD
+			MOV ESI, dialog
+			MOV EAX, function
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5)
+	{
+		static u32 result;
+		const u32 func_address = 0x00410148;
+		__asm {
+			PUSHAD
+			PUSH arg5
+			PUSH read
+			PUSH size_arg
+			PUSH item
+			PUSH file
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

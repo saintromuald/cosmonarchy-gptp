@@ -118,5 +118,6 @@ namespace hooks
 		jump_patch(update_command_card_wrapper,			0x004591D0, 1);
 		jump_patch(update_current_buttonset_wrapper,	0x004599A0, 6);
 		jump_patch(statbtn_bin_custom_ctrl_id_wrapper,	0x00459AD0, 2);
+
 	}
 }

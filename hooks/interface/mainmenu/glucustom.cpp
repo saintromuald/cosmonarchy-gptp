@@ -24,14 +24,14 @@ namespace hooks
 		else if (*campaign_index == 0 && g_current_map_filename)
 		{
 			helper::SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
-			void* handle;
-			bool establishingShotExists = helper::SFileOpenFileEx(*map_archive_handle, "rez\\est.txt", 0, &handle);
+			HANDLE* handle;
+			bool shot_exists = helper::sfile_open_file_ex(*map_archive_handle, "rez\\est.txt", 0, &handle);
 			if (handle)
 			{
 				helper::SFileCloseFile(handle);
 			}
 
-			if (establishingShotExists)
+			if (shot_exists)
 			{
 				helper::load_init_credits_bin("est");
 			}

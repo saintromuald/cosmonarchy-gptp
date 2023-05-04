@@ -21,13 +21,16 @@ namespace helper {
 	SCBW_FUNC(0x0049B870, bool __cdecl, update_alliances);
 	SCBW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
 	SCBW_FUNC(0x00440FA0, bool __fastcall, return_cargo_to_best_depot_proc, Unit* depot, Unit* worker);
+	SCBW_FUNC(0x004D27A0, void* __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, u32 buffer, u32 arg4, u32 arg5);
+	SCBW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
+	SCBW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, void* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
 	// For loadRaceUI
 	void get_race_sound_list(s8 a1);
 	s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32));
-	void load_graphic(char* a1, s32 a2, s32 a3, char* log_filename, s32 log_line);
+	void* load_graphic(char* a1, u32 a2, u32 a3, char* log_filename, u32 log_line);
 
 	s32 rand_func();
 	bool unit_hp_below_33_percent(Unit* a1);
@@ -1006,7 +1009,7 @@ namespace helper {
 	void* load_init_credits_bin(char* a1);																	// 004D8DF0
 	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);				// 004100B2
 	bool SFileCloseArchive(void* archive);																	// 004100BE
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);				// 004100C4
+	bool sfile_open_file_ex(void* hMPQ, const char* szFileName, u32 dwSearchScope, HANDLE** phFile);		// 004100C4
 //	bool SFileCloseFile(void* hFile);																		// 004100C4
 
 	// For ai_are_on_connected_regions
@@ -1404,7 +1407,7 @@ namespace helper {
 	s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
 	s32 get_sfx_pan_from_screen_distance(u32 x);															// 0048E850
 
-	void SysWarn_FileNotFound(u32 code, const char* filename);												// 004212C0
+	void syswarn_file_not_found(u32 code, const char* filename);												// 004212C0
 
 	void EAX_order(Unit* unit, u32 order_func_offset);
 	void EBX_order(Unit* unit, u32 order_func_offset);
@@ -1599,4 +1602,9 @@ namespace helper {
 	b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags);														// 004EF440
 
 	void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);									// 0040ABBE
+
+	void file_fatal(HANDLE* file, u32 something);																								// 004D2880
+	void alloc_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line);	// 004194E0
+	void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
+	u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5);															// 00410148
 }

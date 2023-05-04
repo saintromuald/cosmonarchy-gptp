@@ -39,11 +39,7 @@ namespace hooks
 		}
 		else
 		{
-			helper::dialog_grp_construct(
-				173,
-				(s32)"Starcraft\\SWAR\\lang\\game.cpp",
-				(s32)"dlgs\\zerg.grp",
-				(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
+			helper::dialog_grp_construct(173, (s32)"Starcraft\\SWAR\\lang\\game.cpp", (s32)"dlgs\\zerg.grp", (s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
 			*g_current_music_id = 1;
 		}
 		v0 = *campaign_index;

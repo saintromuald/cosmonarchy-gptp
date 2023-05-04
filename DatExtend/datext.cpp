@@ -174,7 +174,7 @@ namespace DatExt {
 	void extend_data() {
 		for (u32 i = 0; i < DatFile::COUNT; ++i) {
 			if (!setDatSize((DatLoad*)datFiles[i].datTablePtr, datFiles[i].newLimit * datFiles[i].entrySize)) {
-				helper::SysWarn_FileNotFound(24, (char*)datFiles[i].name); // invalid file
+				helper::syswarn_file_not_found(24, (char*)datFiles[i].name); // invalid file
 			}
 		}
 	}

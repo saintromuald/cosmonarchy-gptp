@@ -39,6 +39,7 @@ namespace hooks {
 	b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);								// 004EF590
 	void draw_stat_button_image(BinDlg* dialog);																// 00456C30
 	void statbtn_button_update(BinDlg* button);																	// 00458900
+	void load_statdata_bin();																					// 00459B90
 
 	void inject_ui_features_hooks();
 
@@ -47,3 +48,6 @@ namespace hooks {
 	void update_actions();
 	void draw_ui_features();
 }
+
+#define tIconCount 7
+extern CmdBtnPalette new_cmdbtn_palette[tIconCount];

@@ -421,6 +421,18 @@ namespace
 		}
 	}
 
+	void __declspec(naked) load_statdata_bin_wrapper() // 00459B90
+	{
+		__asm {
+			PUSHAD
+		}
+		hooks::load_statdata_bin();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -468,9 +480,16 @@ namespace hooks
 		jump_patch(centerview_unit_group,					0x004967E0, 1);
 	//	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2); // not needed
 		jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
-	//	jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);	// Needs work, crashes when render_fxn is enabled
-	//	jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);	// Needs work
+		jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);
+		jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);
+	//	jump_patch(load_statdata_bin_wrapper,				0x00459B90, 4);
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
+
+		// Passive icon colorization -- extension of color remaps. -DF
+		memory_patch(0x00459C1D, (u8)0x70);//Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.
+		memory_patch(0x00456C59, &new_cmdbtn_palette);
+		memory_patch(0x004589D5, &new_cmdbtn_palette);
+		memory_patch(0x00459C1F, &new_cmdbtn_palette);
 	}
 }

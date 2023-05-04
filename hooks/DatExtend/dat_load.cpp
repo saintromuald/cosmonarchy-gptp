@@ -27,7 +27,7 @@ namespace hooks {
 		// Note now every patch happens immediately with size being in DatExt::extend_data()
 	//	if (DatExt::setDatSize(datTable, size) == false)
 	//	{
-	//		helper::SysWarn_FileNotFound(24, filename); // invalid file
+	//		helper::syswarn_file_not_found(24, filename); // invalid file
 	//	}
 		
 		for (i = 0; datTable[i].address != NULL; i++)
@@ -41,7 +41,7 @@ namespace hooks {
 		
 		if (size != 0)
 		{
-			helper::SysWarn_FileNotFound(24, filename);
+			helper::syswarn_file_not_found(24, filename);
 		}
 		
 		SMemFree(data, "Starcraft\\SWAR\\lang\\gamedata.cpp", 402, 0);

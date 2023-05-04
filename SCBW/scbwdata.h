@@ -1172,6 +1172,9 @@ SCBW_DATA(char*,			g_print_xy_alignment,				0x006CE110);
 // For draw_stat_button_image
 SCBW_DATA(CmdBtnPalette*,	g_cmdbtn_palette,					0x0068C150);
 
+// For load_statdata_bin
+SCBW_DATA(char*,			aztp,								0x00512700);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
