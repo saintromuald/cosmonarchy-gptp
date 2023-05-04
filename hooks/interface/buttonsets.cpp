@@ -2478,23 +2478,13 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergKalkalisk && // Kalkalisk Lithe Organelle
+							else if (unit->id == UnitId::ZergKalkalisk && // Kalkalisk - Ablative Spores
 								current_button->icon_id == IconId::GeszithalorAcidSpore)
 							{
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergBactalisk && // Bactalisk Caustic Fission
 								current_button->icon_id == IconId::GeszithalorAcidSpore) {
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergGorgrokor &&  // Gorgrokor Probing Incisors
-								current_button->icon_id == IconId::UltrokorKaiserBlades)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergGorgrokor &&  // Gorgrokor Ravening Mandible
-								current_button->icon_id == IconId::RoarUnused)
-							{
 								current_button_state = Button_State::Enabled;
 							}
 							else if (unit->id == UnitId::ZergVithrilisk &&  // Vithrlisk Corrosive Touch

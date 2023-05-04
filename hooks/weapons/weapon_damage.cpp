@@ -477,7 +477,10 @@ namespace hooks
 				case UnitId::ProtossAnalogue:
 				{
 					// Empathy Core - Analogue behavior
-					fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+					if (data.target->energy >= data.damage + data.shield_reduce_amount) {
+						data.target->spend_unit_energy(data.damage + data.shield_reduce_amount);
+						fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+					}
 				} break;
 				case UnitId::ZergZarcavrokor:
 				{
@@ -499,15 +502,6 @@ namespace hooks
 				{
 					// Captivating Claws - Vorvrokor behavior
 					captivating_claws_apply(data.attacker, data.target);
-				} break;
-				case WeaponId::GorgrokorSerratedCleavers:
-				{
-					// Essence Drain - Gorgrokor energy steal
-					if (units_dat::base_property[data.target->id] & UnitProperty::Spellcaster) {
-						u16 energy = std::min(data.target->energy, (u16)(data.damage + data.shield_reduce_amount));
-						data.target->spend_unit_energy(energy);
-						data.attacker->heal_energy(energy);
-					}
 				} break;
 			}
 

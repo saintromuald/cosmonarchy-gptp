@@ -65,7 +65,7 @@ struct UnitStatFuncArrayEntry {
 
 struct UnitPath
 {
-	s32		start;					 // 0x00
+	Point16	start;					 // 0x00
 	s32		next;					 // 0x04
 	s32		finish;					 // 0x08
 	s32		time_started;			 // 0x0C

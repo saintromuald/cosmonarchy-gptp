@@ -18,6 +18,7 @@ namespace hooks
 			case UnitId::TerranHypnagogue:
 			case UnitId::TerranAncile:
 			case UnitId::ProtossCantavis:
+			case UnitId::ProtossAnalogue:
 			{
 				energy = 150;
 			} break;
