@@ -821,7 +821,7 @@ LABEL_15:
 		if (frame->w < bound_horizontal) {
 			bound_horizontal = frame->w;
 		}
-		u32 bound_vertical = button->bounds.top - button->bounds.bottom + 1;
+		u32 bound_vertical = button->bounds.bottom - button->bounds.top + 1;
 		if (frame->h < bound_vertical) {
 			bound_vertical = frame->h;
 		}

@@ -90,7 +90,7 @@ enum ExtValueId
 	ValueBlissfulEmbraceOriginalHealth,
 	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
-	ValueTyrannyPlayer,
+	ValueMindControlPlayer,
 	ValueNewRepairTimer,
 	ValueSpraithColonyLaunchPos,
 	ValueMissileSiloLoaded,
@@ -219,7 +219,7 @@ enum ExtTimerId
 	TimerSalvageStunTimer,
 	TimerCreepMorphOverlay,
 	TimerCustomEggHatch,
-	TimerTyrannyRecede,
+	ValueMindControlRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
 	TimerAddonAnimation,
@@ -253,6 +253,7 @@ enum ExtTimerId
 	TimerClaymoreKelvinMunitionsZap,
 	TimerMindTyrantMaelstromSlow,
 	TimerGhitorokorRelentlessAggression,
+	TimerDemiurgeWorship,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -295,6 +296,7 @@ enum ExtUnitId
 	UnitIonCannonTarget,
 	UnitSevenstepMindMatterSource,
 	UnitPennant,
+	UnitDemiurge,
 
 	UnitCount,
 };

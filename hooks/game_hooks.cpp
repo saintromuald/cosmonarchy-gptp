@@ -1652,31 +1652,6 @@ namespace hooks {
 					scbw::send_gptp_aise_command(unit, 0, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				}
 			} break;
-			case UnitId::ProtossDemiurge:
-			{
-				// Demiurge - Gods Made Flesh - initial cast
-			//	if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh) && !unit_ext->values[ValueGodsMadeFleshActive]) {
-			//		scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
-			//		scbw::decloak_proc(unit);
-			//		unit_ext->values[ValueGodsMadeFleshActive] = 1;
-			//		helper::play_sound_from_unit(scbw::rand_between(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
-			//		unit->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(unit->id));
-			//	}
-				// Demiurge - Gods Made Flesh - apply link
-			//	if (unit_ext->values[ValueGodsMadeFleshActive]) {
-			//		for (Unit* target : unit_ext->unit_vectors[UnitVectorWorshipersDemiurge]) {
-			//			UnitExt* target_ext = get_unit_ext(target);
-			//		//	target_ext->timers[TimerGodsMadeFlesh] = 3;
-			//			u32 overlay = ImageId::GodsMadeFlesh_Small + scbw::get_overlay_offset(target->id);
-			//			if (!target->get_overlay(overlay)) {
-			//				target->sprite->create_top_overlay(overlay);
-			//			}
-			//		}
-			//		if (!unit->energy) {
-			//			unit_ext->values[ValueGodsMadeFleshActive] = 0;
-			//		}
-			//	}
-			} break;
 			case UnitId::TerranMaverick:
 			{
 				// Decloak on Stimpack activation
@@ -1747,15 +1722,7 @@ namespace hooks {
 						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03), unit, 1, 0);
 					}
-				} break;
-				case UnitId::ZergGhitorokor:
-				{
-					// Clear Relentless Aggression
-					if (unit_ext->timers[TimerGhitorokorRelentlessAggression] == 1) {
-						unit_ext->values[ValueGhitorokorRelentlessAggressionStacks] = 0;
-					}
-				} break;
-
+				}
 				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit) {
 					unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
@@ -2108,6 +2075,13 @@ namespace hooks {
 					unit_ext->values[ValueSavantPowerSiphonBuff] = 0;
 				}
 			} break;
+			case UnitId::ZergGhitorokor:
+			{
+				// Clear Relentless Aggression
+				if (unit_ext->timers[TimerGhitorokorRelentlessAggression] == 1) {
+					unit_ext->values[ValueGhitorokorRelentlessAggressionStacks] = 0;
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma
@@ -2142,38 +2116,38 @@ namespace hooks {
 		}
 
 		// Tyranny
-		if (unit_ext->values[ValueTyrannyPlayer]) {
-			EntryArray mind_tyrants = {};
-			unit_search_radial(&mind_tyrants, unit->position, 8 * 32);
-			unit_search_filter(&mind_tyrants, unit, 0, {UnitId::ProtossMindTyrant});
-			unit_search_custom_filter(&mind_tyrants, [=](Unit* mind_tyrant) {
-				if (scbw::is_allied_to(mind_tyrant->player, unit_ext->values[ValueTyrannyPlayer] - 1)) {
+		if (unit_ext->values[ValueMindControlPlayer]) {
+			EntryArray masters = {};
+			unit_search_radial(&masters, unit->position, 8 * 32);
+			unit_search_filter(&masters, unit, 0, {UnitId::ProtossMindTyrant, UnitId::ProtossDemiurge, UnitId::ProtossEmpress});
+			unit_search_custom_filter(&masters, [=](Unit* mind_tyrant) {
+				if (scbw::is_allied_to(mind_tyrant->player, unit_ext->values[ValueMindControlPlayer] - 1)) {
 					return true;
 				}
 				return false;
 			});
 
-			if (mind_tyrants.count) {
-				if (unit_ext->timers[TimerTyrannyRecede] <= 4 * 24) {
+			if (masters.count) {
+				if (unit_ext->timers[ValueMindControlRecede] <= 4 * 24) {
 					unit->unfreeze();
 					u32 offset = scbw::get_overlay_offset(unit->id, true);
 					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				}
-				unit_ext->timers[TimerTyrannyRecede] = 5 * 24;
+				unit_ext->timers[ValueMindControlRecede] = 5 * 24;
 			}
-			if (unit_ext->timers[TimerTyrannyRecede] <= 4 * 24) {
+			if (unit_ext->timers[ValueMindControlRecede] <= 4 * 24) {
 				unit->freeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				if (!unit->get_overlay(ImageId::TyrannyStunSmall + offset)) {
 					unit->sprite->create_top_overlay(ImageId::TyrannyStunSmall + offset);
 				}
 			}
-			if (!unit_ext->timers[TimerTyrannyRecede]) {
+			if (!unit_ext->timers[ValueMindControlRecede]) {
 				unit->unfreeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				scbw::recede_mind_control(unit);
-				unit_ext->values[ValueTyrannyPlayer] = 0;
+				unit_ext->values[ValueMindControlPlayer] = 0;
 			}
 		}
 
@@ -2776,19 +2750,10 @@ namespace hooks {
 			unit->remove();
 		}
 
-		// Demiurge - Worship - return units to original owner
-		if (unit_ext->values[ValueWorshipStack] && !unit_ext->units[UnitMindController]) {
-			helper::play_sound_from_unit(SoundId::DemiurgeWorship01, unit, 1, 0);
-			unit->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
-			unit_ext->values[ValueWorshipStack] = 0;
-		//	unit_ext->timers[TimerGodsMadeFlesh] = 0;
-			scbw::recede_mind_control(unit);
+		// Demiurge - Worship - Control unit when timer reaches 0
+		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
+			scbw::mind_control(unit_ext->units[UnitDemiurge], unit);
 		}
-
-		// Demiurge - Gods Made Flesh - kill unit when the effect ends
-	//	if (unit_ext->timers[TimerGodsMadeFlesh] == 1 && unit_ext->units[UnitMindController]) {
-	//		unit->remove();
-	//	}
 
 		// Silly way of pathing workers to expansion site
 		if (unit_ext->values[ValueAI_WorkerChosenForExpansion] && unit->resource_type == ResourceType::None) {

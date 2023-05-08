@@ -472,6 +472,7 @@ namespace hooks
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
 		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
 		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
+		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
 
 		// Gptp Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -494,7 +495,6 @@ namespace hooks
 		add_status(statuses, "Tempo Down", unit_ext->values[ValueMadrigalTempoDown] == 1, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
-	//	add_status(statuses, "Making Gods from Flesh", unit_ext->values[ValueGodsMadeFleshActive] > 0, 1);
 		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenPlayer] > 0, 1);
 		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 
@@ -506,13 +506,15 @@ namespace hooks
 				case UnitId::ProtossDemiurge: {
 					add_status(statuses, "Worshiping", 1, 1);
 				} break;
+				case UnitId::ProtossEmpress: {
+					add_status(statuses, "Zombified", 1, 1);
+				} break;
 			}
 		}
 
 		// Gptp Timers - Gimmicked
 		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
-	//	add_status(statuses, "Godlike", unit_ext->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
 		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 200, unit->defensive_matrix_timer);
@@ -571,20 +573,6 @@ namespace hooks
 		{
 			flags.push_back("Invincible");
 		}
-		/* // Disabled since they mean nothing now. -Pr0nogo
-		if (units_dat::base_property[unit->id] & UnitProperty::Organic)
-		{
-		flags.push_back("Organic");
-		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Mechanical)
-		{
-		flags.push_back("Mechanical");
-		}
-		if (units_dat::base_property[unit->id] & UnitProperty::RoboticUnit)
-		{
-		flags.push_back("Robotic");
-		}
-		*/
 		if (units_dat::base_property[unit->id] & UnitProperty::Detector)
 		{
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
@@ -607,7 +595,6 @@ namespace hooks
 		text += "\n" + std::string(armor_text) + " ";
 		append_tooltip_value(text, base_armor, bonus_armor, extended);
 
-	//	text += "\nSize: " + std::string(size_text);
 		text += "\nPlane: " + plane;
 	//	text += "\nMove Speed: " + movement_speed;
 		text += "\nStatus: " + status;

@@ -1663,12 +1663,17 @@ namespace scbw {
 		target_ext->values[ValueAlliedInvPlayer] = player;
 		target_ext->timers[TimerAlliedInvFrames] = 24;
 
-		// Audio Visuals
+		// Audiovisuals
 		target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
 		helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), target);
 	}
 
 	void mind_control(Unit* source, Unit* target) {
+		// Caveat 7 May 2023 - Pr0nogo
+		// Demiurges which are killed before the Worship timer expires will NOT pass the first return check. If we wanted to fix this,
+		// we would need to create a version of this function that somehow works with only the attacking player and unit id, and pass
+		// those details through unit_ext... or so I think.
+		
 		if (!source || !target || source->player == target->player || scbw::is_allied_to(source->player, target->player)) {
 			return;
 		}
@@ -1694,22 +1699,16 @@ namespace scbw {
 		}
 		target_ext->unit_vectors[UnitVectorMindControlling].clear();
 
-		// Mind Tyrant - apply behavior
-		if (source->id == UnitId::ProtossMindTyrant) {
-			target_ext->values[ValueTyrannyPlayer] = source->player + 1;
-			target_ext->timers[TimerTyrannyRecede] = 5 * 24;
-		}
-		// Demiurge - apply behavior
-		if (source->id == UnitId::ProtossDemiurge) {
-			target_ext->values[ValueWorshipStack] = 1;
-		}
+		// Global recede timer for all control abilities
+		target_ext->values[ValueMindControlPlayer] = source->player + 1;
+		target_ext->timers[ValueMindControlRecede] = 5 * 24;
 
 		// Obtain control
 		target->give_to(source->player);
 		target_ext->values[ValueAlliedInvPlayer] = source->player;
 		target_ext->timers[TimerAlliedInvFrames] = 24;
 
-		// Audio Visuals
+		// Audiovisuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
 			if (source->id == UnitId::ProtossDemiurge) {
 				target->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(target->id), 0, 0, 0);
@@ -1738,7 +1737,7 @@ namespace scbw {
 			target->give_to(target_ext->values[ValueMindControlOriginalPlayer] - 1);
 			target_ext->values[ValueMindControlOriginalPlayer] = 0;
 		}
-		target_ext->values[ValueTyrannyPlayer] = 0;
+		target_ext->values[ValueMindControlPlayer] = 0;
 	}
 
 	bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {

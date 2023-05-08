@@ -158,6 +158,9 @@ namespace hooks
 			case WeaponBehavior::AppearOnTargetSite:
 			case WeaponBehavior::AppearOnTargetUnit:
 			{
+				if (data.weapon_id == WeaponId::SpiderMines) {
+					return;
+				}
 				EntryArray units = {};
 				unit_search_radial(&units, data.target->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
@@ -624,10 +627,14 @@ namespace hooks
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship
-						if (data.target->get_current_hp_ingame() <= data.target->get_max_hp_ingame() / 2
-						&&  data.target->hitpoints > data.damage) {
-							scbw::mind_control(data.attacker, data.target);
+						if (target_ext->timers[TimerDemiurgeWorship] > 25) {
+							target_ext->timers[TimerDemiurgeWorship] -= 25;
+						} else if (!target_ext->timers[TimerDemiurgeWorship]) {
+							target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
+						} else {
+							target_ext->timers[TimerDemiurgeWorship] = 1;
 						}
+						target_ext->units[UnitDemiurge] = data.attacker;
 					} break;
 					case WeaponId::EmpressFadingBioplasma:
 					{
