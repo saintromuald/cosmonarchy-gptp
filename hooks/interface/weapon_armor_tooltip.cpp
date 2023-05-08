@@ -373,26 +373,6 @@ namespace hooks
 		const u8 transport_space = units_dat::space_required[unit->id];
 		const s32 sight_range = units_dat::sight_range[unit->id];
 
-		/*
-		switch (unit_size) {
-			case UnitSize::Light: {
-				size_text = BWTC_TEAL "Light" BWTC_RESET;
-			} break;
-			case UnitSize::Medium: {
-				size_text = BWTC_YELLOW "Medium" BWTC_RESET;
-			} break;
-			case UnitSize::Heavy: {
-				size_text = BWTC_ORANGE "Heavy" BWTC_RESET;
-			} break;
-			case UnitSize::Titanic: {
-				size_text = BWTC_RED "Titanic" BWTC_RESET;
-			} break;
-			default: {
-				size_text = BWTC_WHITE "Unknown" BWTC_RESET;
-			} break;
-		}
-		*/
-
 		std::stringstream builder;
 		builder << std::setprecision(4);
 
@@ -428,7 +408,7 @@ namespace hooks
 			statuses.push_back("Cloaked");
 		}
 
-		// Gptp Timer + Value
+		// GPTP Timer + Value
 		add_status(statuses, "Empowered", unit_ext->values[ValueSavantPowerSiphonBuff], 0,
 			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
 		add_status(statuses, "Power Siphoned", unit_ext->values[ValueSavantPowerSiphonDebuff], 0,
@@ -457,7 +437,7 @@ namespace hooks
 				unit_ext->timers[TimerSignify], TimerType::Gptp);
 		}
 
-		// Gptp Timer
+		// GPTP Timer
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
 		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
 		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
@@ -474,7 +454,7 @@ namespace hooks
 		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
 		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
 
-		// Gptp Value
+		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
 		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
 		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueHasSublimeShepherd], 1);
@@ -488,7 +468,7 @@ namespace hooks
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueNoCorpse], 1);
 
-		// Gptp Value - Gimmicked
+		// GPTP Value - Gimmicked
 		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
 		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && unit_ext->values[ValueMadrigalTempoDown] == 0, 1);
@@ -512,7 +492,7 @@ namespace hooks
 			}
 		}
 
-		// Gptp Timers - Gimmicked
+		// GPTP Timers - Gimmicked
 		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
 
