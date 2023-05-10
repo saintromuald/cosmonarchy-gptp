@@ -384,8 +384,8 @@ namespace hooks {
 			}
 
 			if (unit->id != UnitId::TerranWyvern
-			&&	unit->id != UnitId::TerranWyvernTurret // disable default weapon for custom behaviors
-			&&  unit->id != UnitId::ProtossAnthelion)
+			&&	unit->id != UnitId::TerranWyvernTurret
+			&&  unit->id != UnitId::ProtossAnthelion) // disable default weapon for custom behaviors
 			{
 				// Madrigal - Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)

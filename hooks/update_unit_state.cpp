@@ -178,7 +178,7 @@ namespace hooks
 						}
 					}
 					
-					if (target) {
+					if (target && wyvern_can_fire_at(unit, target)) {
 						s32 direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
 						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
