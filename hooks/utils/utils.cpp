@@ -69,7 +69,7 @@ namespace hooks
 	bool unit_is_standard_and_movable(Unit* unit) { // 0047B770
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories
 		||	unit->status & UnitStatus::Frozen
-		||	unit->id == UnitId::TerranSpiderMine
+		||	scbw::unit_is_trap(unit)
 		||	unit->id == UnitId::Spell_DarkSwarm
 		||	unit->id == UnitId::Spell_DisruptionWeb
 		||	unit->id == UnitId::Special_PitDoor

@@ -483,7 +483,7 @@ namespace hooks {
 					{
 						if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI)
 						{
-							if (unit->id != UnitId::TerranSpiderMine
+							if (!scbw::unit_is_trap(unit)
 							&& (unit->id != UnitId::ZergLakizilisk || order_queue_id != OrderId::Guard && order_queue_id != OrderId::AttackFixedRange))
 							{
 								helper::insert_order_targeting_ground_before(OrderId::Unburrow, queue_head, unit, unit->sprite->position.x, unit->sprite->position.y);

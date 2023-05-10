@@ -622,26 +622,27 @@ namespace hooks
 		return buffer;
 	}
 
-	// Returns the C-string for the tooltip text of the Interceptor grp_frame (Carriers), Scarab grp_frame (Reavers), Nuclear Missile grp_frame (Nuclear Silos), and Spider Mine grp_frame (Vultures).
+	// Returns the string for the tooltip text of various special cases.
 	const char* get_special_tooltip_string(u16 icon_unit_id, Unit* unit)
 	{
-		if (icon_unit_id == UnitId::ProtossSteward)
+		switch (icon_unit_id)
 		{
-			return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);				// "Stewards"
+			case UnitId::TerranSpiderMine:
+			{
+				// Check unit->id if unique traps are added
+				return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Lobotomy Mines"
+			}
+			case UnitId::TerranNuclearMissile:
+			{
+				return g_stat_txt_tbl_new->get_string(793);									// "Missiles"
+			}
+			case UnitId::ProtossSteward:
+			{
+				return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);	// "Stewards"
+			}
+			default: {
+				return ""; // Should never reach here
+			}
 		}
-		if (icon_unit_id == UnitId::ProtossPlasmaShell)
-		{
-			return get_damage_tootlip_string(WeaponId::Scarab, unit, 792);						// "Plasma Shells"
-		}
-		if (icon_unit_id == UnitId::TerranNuclearMissile)
-		{
-			return g_stat_txt_tbl_new->get_string(793);											// "Missiles"
-		}
-		if (icon_unit_id == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture)
-		{
-			return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);				// "Spider Mines"
-		}
-		// Should never reach here
-		return "";
 	}
 }

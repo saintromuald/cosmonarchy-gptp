@@ -2193,7 +2193,7 @@ namespace hooks {
 			}
 		}
 
-		// Fix target clearing bug
+		// Fix target clearing bug - Doesn't work yet...
 		/*
 		if (unit->order_target.unit
 			&& !(unit->order_target.unit->detection_status & (1 << unit->player))) {
@@ -2214,7 +2214,7 @@ namespace hooks {
 		}
 		*/
 
-		// Phase Link Overlay
+		// Phase Link - overlay
 		if (*g_elapsed_time_frames % 10 == 0
 			&& unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
 			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
@@ -2230,7 +2230,7 @@ namespace hooks {
 			scbw::create_unit_from_ability(unit_id, 2, unit_ext->values[ValueIncubationPlayer], unit->position);
 		}
 
-		// Disruption Web Clear
+		// Disruption Field - clear status
 		if (unit_ext->timers[TimerUnderDisruptionField] == 1) {
 			unit->status &= ~UnitStatus::CanNotAttack;
 			if (unit->subunit) {
@@ -2295,7 +2295,7 @@ namespace hooks {
 			}
 		}
 
-		// Correct vanilla timers. -Pr0nogo
+		// Correct vanilla timers -Pr0nogo
 		if (unit->defensive_matrix_timer > AzazelDefensiveMatrixTimer) {
 			unit->defensive_matrix_timer = AzazelDefensiveMatrixTimer;
 		}
@@ -2371,7 +2371,7 @@ namespace hooks {
 			}
 		}
 
-		// Gorgon - Petrification
+		// Gorgon - Petrification - clear stacks
 		if (unit_ext->timers[TimerPetrification] == 1) {
 			unit_ext->values[ValuePetrificationStacks] = 0;
 		}
@@ -2416,7 +2416,7 @@ namespace hooks {
 			}
 		}
 
-		// Reviving
+		// Reclamation
 		if (((!unit_ext->timers[TimerReviveFlagClearMin] && !(unit->status & UnitStatus::NoBrkCodeStart)) || !unit_ext->timers[TimerReviveFlagClearMax])
 			&& unit_ext->values[ValueReviveStarted]) {
 			unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);

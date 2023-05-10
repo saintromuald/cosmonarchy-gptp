@@ -2759,7 +2759,7 @@ namespace scbw {
 				helper::unburrow(unit);
 			}
 
-			if (unit->id == UnitId::TerranSpiderMine) {
+			if (scbw::unit_is_trap(unit)) {
 				unit->remove();
 			}
 		}

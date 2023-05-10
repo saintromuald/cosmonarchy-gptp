@@ -368,19 +368,16 @@ namespace hooks {
 
 	void lockdown(Bullet* bullet, u32 weapon_id)
 	{
-		auto targPos = bullet->target_position_1;
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
 		r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
-		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
+		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
+		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
 		{
-			Unit* target = unitsInSplash.get_unit(i);
-			if (!target->is_dead()
-				&& !units_dat::group_flags[target->id].is_building
-				&& !(units_dat::base_property[target->id] & UnitProperty::ResourceContainer)
-				&& target->id != UnitId::TerranSpiderMine)
+			Unit* target = units_in_splash.get_unit(i);
+			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
+			&& !(units_dat::base_property[target->id] & UnitProperty::ResourceContainer) && target->id != UnitId::TerranSpiderMine)
 			{
 				hooks::lockdown_hit(target, LobotomyMineLockdownTimer, bullet);
 			}
