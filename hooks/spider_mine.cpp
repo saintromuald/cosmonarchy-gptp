@@ -10,7 +10,7 @@ namespace hooks
 	Unit* find_best_mine_target(Unit* mine) // 00441270
 	{
 		s32 range;
-		// Don't search for a target if the mine is under a Disruption Web
+		// Don't search for a target if the mine is under a Disruption Field
 		if (mine->status & UnitStatus::CanNotAttack)
 		{
 			return 0;
@@ -106,9 +106,7 @@ namespace hooks
 					helper::move_to_collide(unit, unit->order_target.unit);
 
 					unit->main_order_state = 5;
-				}
-				else
-				{
+				} else {
 					unit->main_order_state = 1;
 				}
 			}
@@ -151,6 +149,10 @@ namespace hooks
 				unit->order_target.pt.y = unit->sprite->position.y;
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
+				if (unit->id == UnitId::TerranLobotomyMine) {
+					// This is really stupid, but it works, because the weapon is actually hardcoded within iscript. -Pr0nogo
+					anim = IscriptAnimation::Unused2;
+				}
 				while (current_image)
 				{
 					current_image->play_iscript_animation(anim);
@@ -160,8 +162,7 @@ namespace hooks
 			}
 		}
 
-		// unlike state 5 with state 4, state 6 can be chained from
-		// state 5, so no else here
+		// Unlike state 5 with state 4, state 6 can be chained from state 5, so no else here
 		if (unit->main_order_state == 6)
 		{
 			if (unit->order_signal & 1)
@@ -177,14 +178,15 @@ namespace hooks
 		if (unit->main_order_state)
 		{
 			Sprite* unit_sprite = unit->sprite;
-			if  (helper::tech_use_allowed(unit, 3u, unit->player)
+			if  (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player)
 			&&  (unit->move_target.pt.x != unit_sprite->position.x) || unit->move_target.pt.y != unit_sprite->position.y || ((unit->status & UnitStatus::Unmovable) != 0) != 1)
 			{
-				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 0x1400) {
+				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);
 					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
-					helper::fix_target_location(&target_pos, UnitId::TerranSpiderMine);
-					Unit* mine = helper::create_unit(UnitId::TerranSpiderMine, target_pos.x, target_pos.y, unit->player);
+					u32 mine_id = scbw::get_trap_id(unit);
+					helper::fix_target_location(&target_pos, mine_id);
+					Unit* mine = helper::create_unit(mine_id, target_pos.x, target_pos.y, unit->player);
 					if (mine)
 					{
 						helper::update_unit_stats_and_finish_building(mine);
@@ -192,37 +194,24 @@ namespace hooks
 						mine->sprite->player = unit->sprite->player;
 						helper::turn_unit(mine, unit->current_direction_1);
 						unit->mine_carrier.mine_count -= 1;
-					}
-					else
-					{
+					} else {
 						helper::display_last_network_error_for_player(unit->player);
 					}
 					helper::to_idle(unit);
-				}
-				else if (unit->unit_ai)
-				{
-					if (helper::is_unit_movable(unit))
-					{
+				} else if (unit->unit_ai) {
+					if (helper::is_unit_movable(unit)) {
 						helper::to_idle(unit);
 					}
 				}
-			}
-			else if (unit->order_queue_head)
-			{
+			} else if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
 				helper::orders_nothing_2(unit);
-			}
-			else if (unit->unit_ai)
-			{
+			} else if (unit->unit_ai) {
 				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
-			}
-			else
-			{
+			} else {
 				helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
 			}
-		}
-		else
-		{
+		} else {
 			Unit* target = unit->order_target.unit;
 			if (target)
 			{
@@ -241,9 +230,7 @@ namespace hooks
 					unit->order_target.pt.y = target->sprite->position.y;
 					unit->main_order_state = 1;
 				}
-			}
-			else
-			{
+			} else {
 				s32 sprite_pos_x = unit->order_target.pt.x;
 				s32 sprite_pos_y = unit->order_target.pt.y;
 				bool move_target = helper::set_move_target_xy(unit, sprite_pos_x, sprite_pos_y);

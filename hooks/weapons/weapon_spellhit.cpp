@@ -129,6 +129,8 @@ namespace hooks {
 		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
 		// May have an effect on selection. Performs scbw::refresh_console() code at the end
 		disable_unit(target);
+		UnitExt* target_ext = get_unit_ext(target);
+		target_ext->timers[TimerLobotomySlow] = 6 * 24 + 1;
 	}
 
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor) { // 00479AE0

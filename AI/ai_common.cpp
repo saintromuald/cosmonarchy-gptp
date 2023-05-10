@@ -24,8 +24,7 @@ namespace AI
 		{
 			return false;
 		}
-		if (target->id == UnitId::ProtossPlasmaShell
-		||  target->id == UnitId::TerranSpiderMine
+		if (scbw::unit_is_trap(target)
 		||  target->id == UnitId::ProtossSteward)
 		{
 			return false;

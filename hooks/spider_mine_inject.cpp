@@ -68,7 +68,7 @@ namespace hooks
 	{
 		jump_patch(find_best_mine_target_wrapper,		0x00441270, 1);
 		jump_patch(orders_terran_mine_wrapper,			0x00463DF0, 2);
-	//	jump_patch(orders_place_mine_wrapper,			0x00464FD0, 1);
+		jump_patch(orders_place_mine_wrapper,			0x00464FD0, 1);
 	//	jump_patch(burrow_generic_wrapper,				0x004E9A30, 3);
 	}
 }

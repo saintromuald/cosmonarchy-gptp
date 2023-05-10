@@ -74,6 +74,7 @@ namespace UnitId
 		TerramCuirassTrenchMode								= 372,
 		TerranMatadorTurretTankMode							= 373,
 		TerranMatadorTurretCinderMode						= 374,
+		TerranLobotomyMine									= 375,
 		TerranWyvernTurret									= 376,
 
 	// Terran-Unit-Factional

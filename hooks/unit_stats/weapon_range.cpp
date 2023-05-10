@@ -39,7 +39,7 @@ namespace hooks
 		bonus_amount += scbw::get_cliff_advantage(unit, target, 0);
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit->id == UnitId::TerranSpiderMine) {
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
 			scale = 1;
 			bonus_amount = 0;
 		}
@@ -93,7 +93,7 @@ namespace hooks
 		bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit->id == UnitId::TerranSpiderMine) {
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
 			scale = 1;
 			bonus_amount = 0;
 		}

@@ -377,7 +377,7 @@ namespace hooks {
 		{
 			Unit* target = units_in_splash.get_unit(i);
 			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
-			&& !(units_dat::base_property[target->id] & UnitProperty::ResourceContainer) && target->id != UnitId::TerranSpiderMine)
+			&& !(units_dat::base_property[target->id] & UnitProperty::ResourceContainer) && !scbw::unit_is_trap(target))
 			{
 				hooks::lockdown_hit(target, LobotomyMineLockdownTimer, bullet);
 			}

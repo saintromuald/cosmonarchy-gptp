@@ -1719,7 +1719,8 @@ namespace hooks {
 							switch (unit->id)
 							{
 								// GLOBAL \\
-
+								
+								case UnitId::TerranEidolon:
 								case UnitId::TerranWraith:
 								case UnitId::TerranSundog:
 								case UnitId::ProtossWitness:
@@ -1729,7 +1730,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-// 
+
 								// FACTIONAL \\
 
 								case UnitId::TerranCohort:
@@ -1775,12 +1776,6 @@ namespace hooks {
 								case UnitId::TerranShaman:
 								{
 									if (current_button->icon_id == IconId::Restoration) { // Shaman - Nanite Field
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::TerranEidolon:
-								{
-									if (current_button->icon_id == IconId::OcularImplants) { // Eidolon - Somatic Implants
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -1846,6 +1841,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								}
+								case UnitId::TerranLobotomyMine:
+								{
+									if (current_button->icon_id == IconId::UseSpiderMines) // Lobotomy Mine - Dazing Detonation
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranCyclops:
 								{
 									if (current_button->icon_id == IconId::VultureFragmentationGrenade) // Cyclops - Fragmentary Shells

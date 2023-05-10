@@ -1138,7 +1138,17 @@ namespace scbw {
 	}
 
 	bool unit_is_trap(Unit* unit) {
-		return (unit->id == UnitId::TerranSpiderMine);
+		return unit->id == UnitId::TerranSpiderMine
+			|| unit->id == UnitId::TerranLobotomyMine;
+	}
+
+	u32 get_trap_id(Unit* unit)
+	{
+		u32 id = UnitId::TerranSpiderMine;
+		if (unit->id == UnitId::TerranVulture) {
+			id = UnitId::TerranLobotomyMine;
+		}
+		return UnitId::TerranLobotomyMine;
 	}
 
 	bool unit_is_ranged_attacker(Unit* unit) {

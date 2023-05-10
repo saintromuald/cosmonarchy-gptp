@@ -438,21 +438,22 @@ namespace hooks
 		}
 
 		// GPTP Timer
-		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
-		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
 		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
 		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
-		add_status(statuses, "Binding Grip", -1, 1, unit_ext->timers[TimerBindingGrip], TimerType::Gptp);
-		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
-		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
-		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext->timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
-		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
-		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
+		add_status(statuses, "Lobotomized", -1, 1, unit_ext->timers[TimerLobotomySlow], TimerType::Gptp);
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
-		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
+		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
+		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext->timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
+		add_status(statuses, "Binding Grip", -1, 1, unit_ext->timers[TimerBindingGrip], TimerType::Gptp);
 		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
+		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
+		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
+		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
+		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
+		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
+		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -628,9 +629,13 @@ namespace hooks
 		switch (icon_unit_id)
 		{
 			case UnitId::TerranSpiderMine:
+			case UnitId::TerranLobotomyMine:
 			{
-				// Check unit->id if unique traps are added
-				return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Lobotomy Mines"
+				if (unit->id == UnitId::TerranVulture) {
+					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363);		// "Lobotomy Mines"
+				} else {
+					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Spider Mines"
+				}
 			}
 			case UnitId::TerranNuclearMissile:
 			{

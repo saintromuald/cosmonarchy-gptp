@@ -13,7 +13,6 @@ namespace hooks
 	u32 get_flingy_halt_distance(Flingy* flingy);
 	bool is_unused_order(u8 order_id);
 	void set_up_spider_mines(Unit* unit);
-	u32 get_mine_id(Unit* unit);
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId);
 	void order_phase_link(Unit* unit);
 	bool can_attack_target_end_chunk(Unit* source, u32 target_flags);

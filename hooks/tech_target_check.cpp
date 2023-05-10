@@ -47,7 +47,7 @@ namespace hooks
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
-					else if (target->id == UnitId::TerranSpiderMine
+					else if (scbw::unit_is_trap(target)
 					||		 target->id == UnitId::ZergLarva
 					||		 target->id == UnitId::ZergOcsalLarva
 					||		 target->id == UnitId::ZergEgg

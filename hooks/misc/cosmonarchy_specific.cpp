@@ -192,12 +192,6 @@ namespace hooks
 		}
 	}
 
-	u32 get_mine_id(Unit* unit)
-	{
-		// Add more traps here if necessary
-		return UnitId::TerranSpiderMine;
-	}
-
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId)
 	{
 		if (orig_result == 0) // Valid target

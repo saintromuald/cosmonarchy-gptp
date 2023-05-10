@@ -2489,7 +2489,7 @@ namespace hooks {
 		}
 
 		// Spider Mine - No collision
-		if (unit->id == UnitId::TerranSpiderMine) {
+		if (scbw::unit_is_trap(unit)) {
 			unit->status |= UnitStatus::NoCollide;
 		}
 
@@ -2805,7 +2805,7 @@ namespace hooks {
 		}
 
 		// Claymore - Kelvin Munitions - Create overlays
-		if (unit_ext->timers[TimerKelvinMunitions] > 1
+		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1) // Piggybacking overlay from Claymore, for now. -Pr0nogo
 		&& !unit_ext->timers[TimerClaymoreKelvinMunitionsZap])
 		{
 			u32 width = units_dat::unit_bounds[unit->id].x * 0.75;

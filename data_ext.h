@@ -168,7 +168,7 @@ enum ExtTimerId
 	TimerObservanceDebuff,
 	TimerObservancePeriod,
 	TimerLakiziliskETA,
-	TimerLobotomySlow,							// unused
+	TimerLobotomySlow,							
 	TimerPlanetCrackerChannel,
 	TimerPlanetCrackerDelay,
 	TimerStarSovereignInterventionMissiles,

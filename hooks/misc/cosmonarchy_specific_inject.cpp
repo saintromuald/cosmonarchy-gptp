@@ -157,7 +157,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::get_mine_id(unit);
+		result = scbw::get_trap_id(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -174,7 +174,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::get_mine_id(unit);
+		result = scbw::get_trap_id(unit);
 		__asm {
 			POPAD
 			MOV ECX, result

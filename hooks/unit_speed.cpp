@@ -17,7 +17,7 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		f64 speed = 1;
-		// Set additives based on status effects and movespeed upgrades
+		// Set additives based on status effects
 		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		s32 decrease = (unit->ensnare_timer ? 1 : 0);
 
@@ -29,33 +29,42 @@ namespace hooks
 			}
 		}
 
-		// Sovroleth - Writhing Web
-		if (unit->id == UnitId::ZergSovroleth) {
-			speed *= pow(0.95, unit_ext->values[ValueSovrolethLinkCount]);
-		}
-
-		// Crucible Aura
-		speed /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
-
-		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
-		if (unit_ext->timers[TimerTerminalSurge] > 1)
+		// Lobotomy Mine - slow
+		if (unit_ext->timers[TimerLobotomySlow] >= 1)
 		{
-			speed *= 1.25;
+			speed *= 0.666;
 		}
 
-		// Vorvrokor Captivating Claws: reduces movement speed by 25% per unique attacker
+		// Claymore - Kelvin Munitions - slow
+		if (unit_ext->timers[TimerKelvinMunitions] >= 1)
+		{
+			speed *= 0.666;
+		}
+
+		// Gorgon - Petrification - slow
+		if (unit_ext->timers[TimerPetrification])
+		{
+			speed *= 1 - (0.10 * unit_ext->values[ValuePetrificationStacks]);
+		}
+
+		// Vorvrokor - Captivating Claws - reduces movement speed by 25% per unique attacker
 		if (captivating_claws_get_timer(unit) > 0)
 		{
 			speed *= 1 - 0.25 * captivating_claws_get_stacks(unit);
 		}
 
-		// Keskathalor Caustic Discharge: Speed Buff
+		// Sovroleth - Writhing Web - slow more based on proximal Sovroleths
+		if (unit->id == UnitId::ZergSovroleth) {
+			speed *= pow(0.95, unit_ext->values[ValueSovrolethLinkCount]);
+		}
+
+		// Keskathalor - Caustic Discharge - speed up
 		if (unit_ext->timers[TimerCausticDischargeSpeed] > 0)
 		{
 			speed *= 1.5;
 		}
 
-		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
+		// Zoryusthaleth - Swarming Omen - 125% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			bool accelerate = false;
 			EntryArray targets = {};
@@ -78,16 +87,13 @@ namespace hooks
 			}
 		}
 
-		// Gorgon - Petrification behavior
-		if (unit_ext->timers[TimerPetrification])
-		{
-			speed *= 1 - (0.10 * unit_ext->values[ValuePetrificationStacks]);
-		}
+		// Crucible - speed up
+		speed /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 
-		// Claymore - Kelvin Munitions - slow affected targets
-		if (unit_ext->timers[TimerKelvinMunitions] >= 1)
+		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
+		if (unit_ext->timers[TimerTerminalSurge] > 1)
 		{
-			speed *= 0.666;
+			speed *= 1.25;
 		}
 
 		// Hierophant Signify: Cowardice
@@ -141,6 +147,7 @@ namespace hooks
 			}
 		}
 
+		// Mind Tyrant - Malestrom - slow
 		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1)
 		{
 			speed *= 0.5;
