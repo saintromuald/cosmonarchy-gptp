@@ -1782,26 +1782,6 @@ namespace hooks {
 					}
 				});
 			} break;
-			case UnitId::TerranAzazel:
-			{
-				// Tag nearby units for Sublime Shepherd
-				// TODO: unit search
-				scbw::UnitFinder(
-					unit->get_x() - 128,
-					unit->get_y() - 128,
-					unit->get_x() + 128,
-					unit->get_y() + 128
-				).for_each([&](Unit* target) {
-					if (target == unit) {
-						return;
-					}
-					if (scbw::unit_id_is_resource_node(target->id, false)) {
-						return;
-					}
-					UnitExt* targetExt = get_unit_ext(target);
-					targetExt->values[ValueHasSublimeShepherd] = 1;
-				});
-			} break;
 			case UnitId::ZergAxitrilisk:
 			{
 				// Axitrilisk - play new_sound on shield loss, timer of 5 seconds per unit
@@ -2193,11 +2173,24 @@ namespace hooks {
 			}
 		}
 
-		// Azazel - Sublime Shepherd overlay
-		if (unit_ext->values[ValueHasSublimeShepherd] && !unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id))) {
-			unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
-		} else if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id)) && !unit_ext->values[ValueHasSublimeShepherd]) {
-			unit->sprite->remove_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
+		// Azazel - Sublime Shepherd
+		{
+			EntryArray azazels = {};
+			unit_search_radial(&azazels, unit->position, 4 * 32);
+			unit_search_filter(&azazels, unit, 0, {UnitId::TerranAzazel});
+			if (!azazels.count) {
+				if (unit_ext->values[ValueHasSublimeShepherd]) {
+					unit_ext->values[ValueHasSublimeShepherd] = 0;
+					if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id))) {
+						unit->sprite->remove_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
+					}
+				}
+			} else {
+				unit_ext->values[ValueHasSublimeShepherd] = 1;
+				if (!unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id))) {
+					unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlaySmall - scbw::get_overlay_offset(unit->id));
+				}
+			}
 		}
 
 		// Fix target clearing bug
@@ -2433,33 +2426,6 @@ namespace hooks {
 			scbw::give_ai_ex(unit);
 		}
 
-		// Alaszileth - Dermal Accelerant
-		Point16 pos = unit->position;
-		s32 radius = 7 * 32;
-		scbw::UnitFinder(
-			pos.x - radius,
-			pos.y - radius,
-			pos.x + radius,
-			pos.y + radius
-		).for_each([&](Unit* foundUnit) {
-			if (!(scbw::is_allied_to(foundUnit->player, unit->player))) {
-				return;
-			}
-			if (foundUnit->id != UnitId::ZergAlaszileth) {
-				return;
-			}
-			if (scbw::unit_id_is_resource_node(unit->id, false)) {
-				return;
-			}
-			unit_ext->timers[TimerAlaszilethRegenBoost] = 2;
-
-			// Create overlay
-			s32 overlay = ImageId::DermalAccelerantSmall + scbw::get_overlay_offset(unit->id, true);
-			if (!unit->get_overlay(overlay)) {
-				unit->sprite->create_top_overlay(overlay);
-			}
-		});
-
 		// Seraph - Observance
 		if (unit_ext->timers[TimerObservanceDebuff] > 1) {
 			const auto range = 6 * 32;
@@ -2540,9 +2506,9 @@ namespace hooks {
 		}
 
 		// Hallucinating visual effect
-		u32 hallucinatingTimer = unit_ext->timers[TimerHallucinating];
+		u32 halluc_timer = unit_ext->timers[TimerHallucinating];
 		if (unit && unit->sprite) {
-			if (hallucinatingTimer % 24 == 1) {
+			if (halluc_timer % 24 == 1) {
 				Sprite* sprite;
 				if (unit->subunit) {
 					sprite = unit->subunit->sprite;
