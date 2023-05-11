@@ -158,15 +158,11 @@ namespace hooks
 			case WeaponBehavior::AppearOnTargetSite:
 			case WeaponBehavior::AppearOnTargetUnit:
 			{
-				EntryArray units = {};
+				EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checkign for it later? Is that more or less performant? -Pr0nogo
 				unit_search_radial(&units, data.target->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* unit = units.units[i];
 					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && scbw::is_allied_to(unit->player, data.target->player)) {
-						// Lazy fix for now. -Pr0nogo
-						if (data.weapon_id == WeaponId::SpiderMines) {
-							return;
-						}
 						scbw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
