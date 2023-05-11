@@ -3616,7 +3616,6 @@ namespace scbw {
 		return weapon_id == WeaponId::MutaliskGlaveWurm
 			|| weapon_id == WeaponId::LiiraliskHollowedSpores
 			|| weapon_id == WeaponId::TosgriliskExplosiveSpores
-			|| weapon_id == WeaponId::SpirtithColonySpirtilSpores
-			;
+			|| weapon_id == WeaponId::SpirtithColonySpirtilSpores;
 	}
 }

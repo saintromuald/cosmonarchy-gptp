@@ -262,7 +262,7 @@ namespace hooks
 			}
 			unit_var->user_action_flags |= 1u;
 			helper::order(1, unit_var, idle_order, {}, 0, 228);
-			helper::orders_nothing_2(unit_var);
+			helper::do_next_queued_order(unit_var);
 			return;
 		}
 		if (!(unitStatus & 0x40) && !helper::ai_update_attack_target(unit_var, 0, 0, 1))
@@ -315,7 +315,7 @@ namespace hooks
 			{
 				scbw::print("target not within min range");
 				helper::prepend_order_targeting_unit(unit_var, order_target, 0x5Eu);
-				helper::orders_nothing_2(order_target);
+				helper::do_next_queued_order(order_target);
 				if (helper::ai_are_on_connected_regions(unit_var, order_target->sprite->position.x, order_target->sprite->position.y))
 				{
 					scbw::print("set waypoint");

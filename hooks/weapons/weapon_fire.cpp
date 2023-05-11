@@ -1251,7 +1251,7 @@ namespace hooks {
 				{
 					return 0;
 				}
-				misc = helper::unit_has_path_to_unit(bounce_source, target_var);
+				misc = helper::unit_has_path_to_target(bounce_source, target_var);
 			}
 			else
 			{

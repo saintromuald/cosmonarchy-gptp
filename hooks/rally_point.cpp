@@ -696,7 +696,7 @@ namespace hooks
 			}
 			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit, UnitId::None, {}, 0);
 		}
-		helper::orders_nothing_2(unit);
+		helper::do_next_queued_order(unit);
 		unit->build_queue[unit->build_queue_slot] = UnitId::None;
 	}
 }

@@ -63,7 +63,7 @@ namespace hooks
 
 		if (caster->order_queue_head) {
 			caster->user_action_flags |= 1;
-			helper::orders_nothing_2(caster);
+			helper::do_next_queued_order(caster);
 		} else {
 			if (caster->unit_ai) {
 				helper::issue_order_targeting_nothing(caster, OrderId::ComputerAI);
@@ -361,7 +361,7 @@ namespace hooks
 		}
 		unit->user_action_flags |= 1u;
 		unit->order(id, coord_x, coord_y, 0, UnitId::None, true);
-		helper::orders_nothing_2(unit);
+		helper::do_next_queued_order(unit);
 	}
 
 	// Hooked to investigate custom abilities. -Pr0nogo

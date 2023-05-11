@@ -289,7 +289,7 @@ namespace helper {
 	void turn_unit(Unit* unit, s8 direction);													            // 00495F20
 	void to_idle(Unit* unit);																                // 004753A0
 	s32 is_unit_movable(Unit* unit);														                // 00401DC0
-	void orders_nothing_2(Unit* unit);																		// 00475000
+	void do_next_queued_order(Unit* unit);																	// 00475000
 
 	// For burrow_generic
 	void toggle_unit_path(Unit* unit);									                                    // 004E42A0
@@ -695,8 +695,8 @@ namespace helper {
 	// For find_next_bounce_target_proc
 	bool unit_is_subunit(Unit* a1);																									// 00401D40
 	bool unit_is_carrier(Unit* a1);																									// 00401470
-	bool unit_is_reaver(Unit* a1);																									// 00401490
-	bool unit_has_path_to_unit(Unit* a1, Unit* a2);																					// 0049CBB0
+	bool unit_is_reaver(Unit* unit);																								// 00401490
+	bool unit_has_path_to_target(Unit* unit, Unit* target);																			// 0049CBB0
 	s32 can_be_infested(Unit* a1, Unit* a2);																						// 00402210
 
 	// For find_next_bounce_target

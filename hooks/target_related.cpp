@@ -387,7 +387,7 @@ LABEL_42:
 			if (v1->order_queue_head)
 			{
 				v1->user_action_flags |= 1u;
-				helper::orders_nothing_2(v1);
+				helper::do_next_queued_order(v1);
 			}
 			else if (v1->unit_ai)
 			{
@@ -653,7 +653,7 @@ LABEL_42:
 
 		if (helper::unit_is_reaver(attacker)) {
 			if (!(target->status & UnitStatus::InAir)) {
-				if (helper::unit_has_path_to_unit(attacker, target)) {
+				if (helper::unit_has_path_to_target(attacker, target)) {
 					return true;
 				}
 			}
@@ -854,7 +854,7 @@ LABEL_42:
 				}
 				helper::perform_another_order(OrderId::Return, 0, hangar_unit, UnitId::None, {}, 0);
 			}
-			helper::orders_nothing_2(hangar_unit);
+			helper::do_next_queued_order(hangar_unit);
 			result = 0;
 		}
 		return result;

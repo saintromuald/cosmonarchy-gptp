@@ -2457,7 +2457,7 @@ namespace helper {
 		return result;
 	}
 
-	void orders_nothing_2(Unit* unit) {
+	void do_next_queued_order(Unit* unit) {
 		const u32 func_address = 0x00475000;
 		__asm {
 			PUSHAD
@@ -5386,44 +5386,20 @@ namespace helper {
 
 	bool unit_is_carrier(Unit* a1) {
 		return a1->id == UnitId::ProtossSolarion;
-		/*
-		const u32 Func_unitIsCarrier = 0x00401470;
-		static s32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_unitIsCarrier
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-		*/
 	}
 
-	bool unit_is_reaver(Unit* a1) {
-		return a1->id == UnitId::ProtossAccantorOld;
-		/*
-		const u32 Func_unitIsReaver = 0x00401490;
-		static s32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_unitIsReaver
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-		*/
+	bool unit_is_reaver(Unit* unit) {
+		return unit->id == UnitId::ProtossAccantorOld;
 	}
 
-	bool unit_has_path_to_unit(Unit* a1, Unit* a2) {
-		const u32 Func_unitHasPathToUnit = 0x0049CBB0;
+	bool unit_has_path_to_target(Unit* unit, Unit* target) {
+		const u32 func_address = 0x0049CBB0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_unitHasPathToUnit
+			MOV EAX, unit
+			MOV ECX, target
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

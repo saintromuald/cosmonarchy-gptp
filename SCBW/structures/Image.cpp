@@ -408,7 +408,7 @@ namespace hooks
 				return;
 			}
 			helper::ignore_iscript_go_to_idle(unit);
-			helper::orders_nothing_2(unit);
+			helper::do_next_queued_order(unit);
 		}
 	}
 

@@ -130,28 +130,22 @@ namespace hooks
 		helper::pick_new_target_if_needed(unit);
 		target = unit->order_target.unit;
 
-		if (target != nullptr)
+		if (target)
 		{
-			unit->order_target.pt.x = target->sprite->position.x;
-			unit->order_target.pt.y = target->sprite->position.y;
+			unit->order_target.pt.x = target->position.x;
+			unit->order_target.pt.y = target->position.y;
 		}
 
-		if (unit->is_frozen()
-			|| target == nullptr
-			|| target->status & UnitStatus::Invincible
-			|| target->sprite->flags & SpriteFlags::Hidden
-			|| helper::unit_cant_see_cloaked_target(unit, target))
+		if (unit->is_frozen() || !target || target->status & UnitStatus::Invincible
+		|| (target->sprite && target->sprite->flags & SpriteFlags::Hidden)
+		||  helper::unit_cant_see_cloaked_target(unit, target))
 		{
 			jump_to_77A45 = true;
-		}
-		else
-		{
+		} else {
 			if ((unit->subunit)->is_subunit())
 			{
 				current_unit = unit->subunit;
-			}
-			else
-			{
+			} else {
 				current_unit = unit;
 			}
 
@@ -159,22 +153,13 @@ namespace hooks
 			if (unit->id == UnitId::ProtossSolarion)
 			{
 				jump_to_77AFE = true;
-			}
-			// identical to check performed by unit_is_reaver @ 0x00401490, using if(!unit_is_reaver())
-			else if (!(unit->id == UnitId::ProtossAccantorOld))
-			{
+			} else if (!(unit->id == UnitId::ProtossAccantorOld)) {
 				jump_to_77A9D = true;
-			}
-			else if (target->status & UnitStatus::InAir)
-			{
+			} else if (target->status & UnitStatus::InAir) {
 				jump_to_77A45 = true;
-			}
-			else if (unit->has_path_to_unit(target))
-			{
+			} else if (unit->has_path_to_unit(target)) {
 				jump_to_77AFE = true;
-			}
-			else
-			{
+			} else {
 				jump_to_77A45 = true;
 			}
 		}
@@ -188,9 +173,7 @@ namespace hooks
 				if (unit->main_order_id == OrderId::Die)
 				{
 					prepare_for_next_order(unit);
-				}
-				else
-				{
+				} else {
 					jump_to_77A70 = true;
 				}
 			}
@@ -205,9 +188,7 @@ namespace hooks
 						unit->order_queue_tail->order_id != OrderId::TurretGuard)
 					{
 						bStopLoop77A70 = true;
-					}
-					else
-					{
+					} else {
 						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
 					}
 				}
@@ -222,15 +203,11 @@ namespace hooks
 					if (helper::is_infestable_unit(target))
 					{
 						jump_to_77AFE = true;
-					}
-					else
-					{
+					} else {
 						jump_to_77A45 = true;
 						bJumpToEarlierCode = true;
 					}
-				}
-				else
-				{
+				} else {
 					jump_to_77AB7 = true;
 				}
 			}
@@ -241,9 +218,7 @@ namespace hooks
 				if (target->status & UnitStatus::InAir)
 				{
 					current_unit_weaponId = units_dat::air_weapon[current_unit->id];
-				}
-				else
-				{
+				} else {
 					current_unit_weaponId = current_unit->get_ground_weapon();
 				}
 				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
@@ -254,9 +229,7 @@ namespace hooks
 				{
 					jump_to_77A45 = true;
 					bJumpToEarlierCode = true;
-				}
-				else
-				{
+				} else {
 					jump_to_77AFE = true;
 				}
 			}
@@ -268,9 +241,7 @@ namespace hooks
 				{
 					jump_to_77A45 = true;
 					bJumpToEarlierCode = true;
-				}
-				else
-				{
+				} else {
 					Unit* current_subunit = unit->subunit;
 					bool jump_to_77BD7 = false;
 
@@ -280,25 +251,19 @@ namespace hooks
 					|| !helper::is_unit_visible(unit))
 					{
 						jump_to_77BD7 = true;
-					}
-					else
-					{
+					} else {
 						u32 result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxSiegeModeTurret]);
 						if (!helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange))
 						{
 							jump_to_77BD7 = true;
-						}
-						else
-						{
+						} else {
 							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxTankModeTurret]);
 
 							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
 							||  helper::is_unit_critter(target))
 							{
 								jump_to_77BD7 = true;
-							}
-							else
-							{
+							} else {
 								unit->order_computer(OrderId::Nothing2);
 
 								// this order_id is hardcoded, not calculated 
@@ -905,7 +870,7 @@ namespace hooks
 			} else {
 				helper::order(1, out_hangar_child, attack_order, {}, 0, UnitId::None);
 			}
-			helper::orders_nothing_2(out_hangar_child);
+			helper::do_next_queued_order(out_hangar_child);
 		}
 	}
 
@@ -1164,5 +1129,177 @@ namespace hooks
 			}
 		}
 		return launched_unit;
+	}
+
+	// Hooked to fix null sprite crash. -Pr0nogo
+	s32 order_attack_behavior(Unit* unit) // 0047840
+	{
+		u32 status = unit->status;
+		Unit* target_unit = unit->order_target.unit;
+		if (unit->is_frozen()
+		|| !target_unit || !target_unit->sprite // Nullcheck is new.
+		||  target_unit->status & UnitStatus::Invincible
+		||  target_unit->sprite->flags & SpriteFlags::Hidden
+		||  helper::unit_can_see_cloaked_target(target_unit, unit))
+		{
+			goto cannot_attack;
+		}
+
+		if (helper::unit_is_carrier(unit))
+		{
+			goto process_attack;
+		}
+		if (!(target_unit->status & UnitStatus::InAir) && helper::unit_has_path_to_target(unit, target_unit))
+		{
+			goto process_attack;
+		}
+
+		if (unit->id == UnitId::ProtossAccantorOld) // Here to preserve old flow control.
+		{
+		cannot_attack:
+			s32 result = 0;
+			if (!target_unit || unit->status & UnitStatus::AttackMove)
+			{
+				helper::set_resource_target(unit);
+				if (unit->order_queue_head)
+				{
+					unit->user_action_flags |= 1u;
+					helper::do_next_queued_order(unit);
+					result = 0;
+				} else {
+					if (unit->unit_ai)
+					{
+						helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
+					} else {
+						helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
+					}
+					result = 0;
+				}
+			} else {
+				if (!unit->unit_ai)
+				{
+					helper::prepend_order_targeting_ground(OrderId::Move, target_unit->position.x, target_unit->position.y, unit); // Originally passed sprite position.
+				}
+				helper::to_idle(unit);
+				result = 0;
+			}
+			return result;
+		}
+
+		// Originally handled Matraleth infest fail case, and AI Didact, neither of which apply anymore. -Pr0nogo
+
+		b32 has_weapon = false;
+		Unit* final_unit = unit->subunit;
+		if (!helper::unit_is_subunit(unit->subunit))
+		{
+			final_unit = unit;
+		}
+		if (target_unit->status & UnitStatus::InAir)
+		{
+			has_weapon = units_dat::air_weapon[final_unit->id] != WeaponId::None;
+		} else {
+			has_weapon = units_dat::ground_weapon[final_unit->id] != WeaponId::None;
+		}
+		if (!has_weapon)
+		{
+			goto cannot_attack;
+		}
+
+	process_attack:
+		u16 target_x = target_unit->position.x; // Originally checked for sprite position.
+		u16 target_y = target_unit->position.y; // ^
+		unit->order_target.pt.x = target_x;
+		unit->order_target.pt.y = target_y;
+		if (target_x != unit->next_target_waypoint.x || target_y != unit->next_target_waypoint.y)
+		{
+			unit->next_target_waypoint.x = target_x;
+			unit->next_target_waypoint.y = target_y;
+		}
+		if (!unit->main_order_state)
+		{
+			if (!target_unit)
+			{
+				unit->main_order_state = 1;
+				return 1;
+			}
+			if (helper::is_target_visible(unit, target_unit))
+			{
+				final_unit = unit->subunit;
+				if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit))
+				{
+					final_unit = unit;
+				}
+
+				u32 weapon_id = WeaponId::None;
+				if (target_unit->status & UnitStatus::InAir)
+				{
+					weapon_id = units_dat::air_weapon[final_unit->id];
+				} else {
+					if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
+					{
+						weapon_id = units_dat::ground_weapon[final_unit->id];
+					} else {
+						weapon_id = WeaponId::None;
+					}
+				}
+				if (weapon_id != WeaponId::None)
+				{
+					u32 min_range = weapons_dat::min_range[weapon_id];
+					if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target_unit))
+					{
+						u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
+						if (helper::is_target_within_min_movement_range(final_unit, target_unit, max_range))
+						{
+							unit->main_order_state = 1;
+							return 1;
+						}
+					}
+				}
+			}
+			if (helper::move_to_target(unit->order_target.unit, unit))
+			{
+				unit->main_order_state = 1;
+				return 1;
+			}
+			return 0;
+		}
+		if (helper::is_unit_target_out_of_max_range(unit, target_unit))
+		{
+			if (unit->unit_ai)
+			{
+				if (helper::is_unreachable(unit->order_target.unit, unit) || helper::is_unit_movable(unit) == 2)
+				{
+					if (helper::ai_update_attack_target(unit, 0, 1, 0))
+					{
+						return 0;
+					}
+					helper::make_to_hold_position(unit);
+					helper::to_idle(unit);
+					return 0;
+				}
+			} else {
+				if (unit->status & UnitStatus::AttackMove && !(unit->status & (UnitStatus::Disabled | UnitStatus::InAir))
+				&&  unit->order_target.unit->status & UnitStatus::InAir || helper::is_unit_movable(unit) == 2)
+				{
+					helper::make_to_hold_position(unit);
+					helper::to_idle(unit);
+					return 0;
+				}
+			}
+			if (helper::should_stay_at_range(unit))
+			{
+				helper::move_towards(unit, target_unit);
+				return 0;
+			}
+			helper::move_for_melee_range(target_unit, unit);
+			return 0;
+		}
+		if (scbw::unit_id_is_melee_air_unit(unit->id))
+		{
+			helper::move_for_melee_range(unit->order_target.unit, unit);
+		} else {
+			helper::set_resource_target(unit);
+		}
+		return 1;
 	}
 }

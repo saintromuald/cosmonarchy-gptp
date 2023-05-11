@@ -1369,7 +1369,7 @@ namespace hooks {
 				}
 				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, 228, {}, 0);
 			}
-			helper::orders_nothing_2(worker);
+			helper::do_next_queued_order(worker);
 		} else if (worker->resource_type & ResourceType::VespeneGas) {
 			helper::issue_order_targeting_nothing(worker, OrderId::ReturnGas);
 		} else {
@@ -1458,7 +1458,7 @@ namespace hooks {
 			}
 			helper::perform_another_order(OrderId::Repair1, 0, worker, UnitId::None, repairee_pos, repairee);
 		}
-		helper::orders_nothing_2(worker);
+		helper::do_next_queued_order(worker);
 		repairee->connected_unit = worker;
 		return 1;
 	}
@@ -1921,7 +1921,7 @@ namespace hooks {
 								}
 								helper::perform_another_order(OrderId::ComputerReturn, 0, unit_to_order_1, UnitId::None, victim_pos, 0);
 							}
-							helper::orders_nothing_2(unit_to_order_1);
+							helper::do_next_queued_order(unit_to_order_1);
 						}
 					}
 					return;

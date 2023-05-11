@@ -599,7 +599,7 @@ namespace hooks {
 				LABEL_15:
 						if (v1->order_queue_head) {
 							v1->user_action_flags |= 1u;
-							helper::orders_nothing_2(v1);
+							helper::do_next_queued_order(v1);
 						} else if (v1->unit_ai) {
 							helper::issue_order_targeting_nothing(v1, 0x9Cu);
 						} else {

@@ -205,7 +205,7 @@ namespace hooks
 				}
 			} else if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
-				helper::orders_nothing_2(unit);
+				helper::do_next_queued_order(unit);
 			} else if (unit->unit_ai) {
 				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 			} else {

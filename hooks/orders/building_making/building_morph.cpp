@@ -623,7 +623,7 @@ namespace hooks
 			}
 			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit, UnitId::None, {}, 0);
 		}
-		helper::orders_nothing_2(unit);
+		helper::do_next_queued_order(unit);
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 			play_image_iscript(image, IscriptAnimation::SpecialState1);
 		}

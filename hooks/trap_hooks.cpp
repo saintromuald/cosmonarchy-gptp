@@ -180,7 +180,7 @@ namespace hooks
 				}
 				helper::perform_another_order(OrderId::RescuePassive, 0, v1, 228, {}, 0);
 			}
-			helper::orders_nothing_2(v1);
+			helper::do_next_queued_order(v1);
 		}
 		else
 		{
@@ -208,7 +208,7 @@ namespace hooks
 			v16 = units_dat::human_idle_order[v13];
 			v1->user_action_flags |= 1u;
 			helper::order(1, v1, v16, {}, 0, 228);
-			helper::orders_nothing_2(v1);
+			helper::do_next_queued_order(v1);
 		}
 		v1->air_strength = helper::get_unit_strength(v1, v13, 0);
 		result = helper::get_unit_strength(v1, v18, 1);

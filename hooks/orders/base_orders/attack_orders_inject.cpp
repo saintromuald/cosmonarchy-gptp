@@ -213,6 +213,23 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) order_attack_behavior_wrapper() { // 00478540
+		static s32 result;
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::order_attack_behavior(unit);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -231,5 +248,6 @@ namespace hooks {
 	//	jump_patch(orders_strafe_unit_wrapper,			0x00465F60, 0);
 	//	jump_patch(get_next_strafe_position_wrapper,	0x00465D30, 0);
 		jump_patch(orders_carrier_idle_wrapper,			0x004666A0, 0);
+		jump_patch(order_attack_behavior_wrapper,		0x00478540, 0);
 	}
 }
