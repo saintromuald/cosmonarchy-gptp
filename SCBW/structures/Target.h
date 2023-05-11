@@ -6,7 +6,7 @@ struct Unit;
 struct Target
 {
   Point16       pt;
-  Unit         *unit;
+  Unit*         unit;
 };
 
 #pragma pack()
