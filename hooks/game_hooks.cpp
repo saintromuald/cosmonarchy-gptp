@@ -2716,8 +2716,9 @@ namespace hooks {
 			unit->remove();
 		}
 
-		// Demiurge - Worship - Control unit when timer reaches 0
+		// Demiurge - Worship - Control unit when timer is up
 		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
+			scbw::print("control");
 			scbw::mind_control(unit_ext->units[UnitDemiurge], unit);
 		}
 

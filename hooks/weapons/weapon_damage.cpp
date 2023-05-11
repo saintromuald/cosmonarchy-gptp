@@ -628,14 +628,21 @@ namespace hooks
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship
-						if (target_ext->timers[TimerDemiurgeWorship] > 25) {
-							target_ext->timers[TimerDemiurgeWorship] -= 25;
-						} else if (!target_ext->timers[TimerDemiurgeWorship]) {
-							target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
-						} else {
-							target_ext->timers[TimerDemiurgeWorship] = 1;
+						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
+								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
+								scbw::print("assign timer");
+							}
+							else if (target_ext->timers[TimerDemiurgeWorship] > 24) {
+								target_ext->timers[TimerDemiurgeWorship] -= 24;
+								scbw::print("decrement timer");
+							}
+							else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
+								target_ext->timers[TimerDemiurgeWorship] = 2;
+								scbw::print("expire timer");
+							}
+							target_ext->units[UnitDemiurge] = data.attacker;
 						}
-						target_ext->units[UnitDemiurge] = data.attacker;
 					} break;
 					case WeaponId::EmpressFadingBioplasma:
 					{
