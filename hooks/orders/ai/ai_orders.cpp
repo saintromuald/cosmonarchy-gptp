@@ -2829,7 +2829,7 @@ namespace hooks {
 	}
 
 	// Hooked to add sprite nullcheck. -Pr0nogo
-	Target ai_prepare_to_flee(Unit* unit, Unit* target) // 00467A50
+	Target ai_prepare_to_flee(Unit* unit, Unit* target) // 00476A50
 	{
 		s32 diff_pos_x = target->position.x - unit->position.x;
 		s32 diff_pos_y = target->position.y - unit->position.y;
@@ -2857,7 +2857,7 @@ namespace hooks {
 		s32 target_pos_y_1;
 		s32 width;
 		s32 height;
-		s32 pos_x_2;
+		s32 pos_x_1;
 		s32 pos_y_1;
 		while (1)
 		{
@@ -2940,7 +2940,7 @@ namespace hooks {
 		Target result = {};
 		result.pt.x = pos_x_1;
 		result.pt.y = pos_y_1;
-		result.unit = 0;		// Always 0
+		result.unit = 0;		// Always 0?
 		return result;
 	}
 }

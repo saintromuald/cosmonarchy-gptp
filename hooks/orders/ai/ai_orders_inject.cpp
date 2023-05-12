@@ -826,6 +826,31 @@ namespace
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) ai_prepare_to_flee_wrapper() { // 00467A50
+		static Target result;
+		static Unit* unit;
+		static Unit* target;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV target, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::ai_prepare_to_flee(unit, target);
+		__asm {
+			POPAD
+			MOV dword ptr[offset result.pt], EAX
+			MOV dword ptr[offset result.unit], EDX
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -881,6 +906,8 @@ namespace hooks
 		jump_patch(is_ground_map_wrapper,						0x00433110, 5);
 	//	jump_patch(ai_remove_from_towns_wrapper,				0x00432760, 6); // Not tested.
 	//	jump_patch(ai_get_oldpeons_wrapper,						0x004355C0, 0); // Not tested.
+
+		jump_patch(ai_prepare_to_flee_wrapper,					0x00476A50, 1);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 
