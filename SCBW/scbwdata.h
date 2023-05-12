@@ -1175,6 +1175,9 @@ SCBW_DATA(CmdBtnPalette*,	g_cmdbtn_palette,					0x0068C150);
 // For load_statdata_bin
 SCBW_DATA(char*,			aztp,								0x00512700);
 
+// For ai_prepare_to_flee
+SCBW_DATA(u32*,				unk_static,							0x0051ABFC);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

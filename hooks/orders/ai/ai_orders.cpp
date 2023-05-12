@@ -2827,4 +2827,120 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked to add sprite nullcheck. -Pr0nogo
+	Target ai_prepare_to_flee(Unit* unit, Unit* target) // 00467A50
+	{
+		s32 diff_pos_x = target->position.x - unit->position.x;
+		s32 diff_pos_y = target->position.y - unit->position.y;
+		s32 fastest_dist_math = 0;
+		if (diff_pos_x)
+		{
+			u32 diff_pos_div = (diff_pos_y << 8) / diff_pos_x;
+			if (diff_pos_x < 0)
+			{
+				s32 fastest_dist = helper::get_fastest_distance(diff_pos_div);
+				fastest_dist_math = fastest_dist == 64 ? 0 : fastest_dist + 192;
+			} else {
+				fastest_dist_math = helper::get_fastest_distance(diff_pos_div) + 64;
+			}
+		} else {
+			fastest_dist_math = diff_pos_y <= 0 ? 0 : 0x80;
+		}
+		target->sprite = target->sprite;
+		u32 target_pos_x = target->position.x;
+		u32 target_pos_y = target->position.y;
+		Point16 angle_distance = { g_angle_distance[fastest_dist_math].x , g_angle_distance[fastest_dist_math].y };
+		u32 iterations = 0;
+
+		s32 target_pos_x_1;
+		s32 target_pos_y_1;
+		s32 width;
+		s32 height;
+		s32 pos_x_2;
+		s32 pos_y_1;
+		while (1)
+		{
+			u32 static_var = unk_static[iterations];
+			target_pos_x_1 = target->position.x + (static_var * angle_distance.x >> 8);
+			target_pos_y_1 = target->position.y + (static_var * angle_distance.y >> 8);
+			width = target->position.x + (static_var * angle_distance.x >> 8);
+			height = target->position.y + (static_var * angle_distance.y >> 8);
+			if (target_pos_x_1 >= 0)
+			{
+				if (target_pos_x_1 < *g_map_width_pixels)
+				{
+					goto LABEL_12;
+				}
+				width = *g_map_width_pixels - 1;
+			}
+			else
+			{
+				width = 0;
+			}
+			target_pos_x_1 = width;
+		LABEL_12:
+			if (target_pos_y_1 >= 0)
+			{
+				if (target_pos_y_1 < *g_map_height_pixels)
+				{
+					goto LABEL_17;
+				}
+				height = *g_map_height_pixels - 1;
+			}
+			else
+			{
+				height = 0;
+			}
+			target_pos_y_1 = height;
+		LABEL_17:
+			if (!(target->pathing_flags & PathingFlags::PathingFlags_ProvidesCollision))
+			{
+				goto LABEL_23;
+			}
+			u32 region_id_home = helper::get_region_id(target->position.x, target->position.y);
+			u32 region_id_away = helper::get_region_id(target_pos_x_1, target_pos_y_1);
+			if ((*g_sai_paths)->regions[region_id_home].group_index == (*g_sai_paths)->regions[region_id_away].group_index) // Not sure if this is accurate
+			{
+				u32 region_id_2 = helper::get_region_id(target->sprite->position.x, target->sprite->position.y);
+				u32 target_player = target->player;
+				u32 region_id_2_1 = region_id_2;
+				u32 region_id_3 = helper::get_region_id(target_pos_x_1, target_pos_y_1);
+				if (helper::ai_regions_are_connected(target_player, region_id_3, region_id_2_1))
+				{
+					break;
+				}
+			}
+			++iterations;
+			if (iterations >= 5)
+			{
+				goto LABEL_26;
+			}
+		}
+		target_pos_x_1 = width;		// was LOWORD
+		target_pos_y_1 = height;	// was LOWORD
+	LABEL_23:
+		UnitAi* unit_ai = target->unit_ai;
+		target_pos_x = target_pos_x_1;
+		if (!unit_ai)
+		{
+		LABEL_26:
+			pos_x_1 = target_pos_x;
+			pos_y_1 = target_pos_y;	// was HIWORD
+			goto LABEL_27;
+		}
+		pos_y_1 = target_pos_y;		// was HIWORD
+		pos_x_1 = target_pos_x_1;
+		if (unit_ai->type == AiType::Guard)
+		{
+			unit_ai->guard_ai.current_home.x = target_pos_x_1;
+			unit_ai->guard_ai.current_home.y = target_pos_y_1;
+		}
+	LABEL_27:
+		Target result = {};
+		result.pt.x = pos_x_1;
+		result.pt.y = pos_y_1;
+		result.unit = 0;		// Always 0
+		return result;
+	}
 }

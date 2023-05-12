@@ -1607,4 +1607,6 @@ namespace helper {
 	void alloc_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line);	// 004194E0
 	void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
 	u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5);															// 00410148
+
+	s32 get_fastest_distance(u32 angle);																										// 00494C10
 }

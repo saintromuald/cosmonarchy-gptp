@@ -13670,4 +13670,18 @@ namespace helper {
 		}
 		return result;
 	}
+
+	s32 get_fastest_distance(u32 angle)
+	{
+		static s32 result;
+		const u32 func_address = 0x00494C10;
+		__asm {
+			PUSHAD
+			MOV EAX, angle
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
