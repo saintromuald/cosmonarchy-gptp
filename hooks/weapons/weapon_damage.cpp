@@ -978,6 +978,7 @@ namespace hooks
 				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 				if (data.target) {
 					bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
+					is_building = true; // Disable custom eggs for now
 					u32 regress_to = regression_id;
 					if (!is_building) {
 						regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
