@@ -995,7 +995,7 @@ namespace hooks
 					if (new_unit) {
 						if (is_building) {
 							UnitExt* new_unit_ext = get_unit_ext(new_unit);
-							new_unit_ext->timers[TimerStun] = 2 * 24;
+							new_unit_ext->timers[TimerStun] = 1 * 24;
 						} else {
 							scbw::set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256);
 						}
