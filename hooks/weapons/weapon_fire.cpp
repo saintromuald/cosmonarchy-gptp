@@ -310,15 +310,17 @@ namespace hooks {
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return;
 		}
+
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unit_ext->values[ValueAI_PreventTargeting] = 0;
+
 		// Retrieve the spawning position for the bullet.
-		s32 x, y;
+		s32 x = 0;
+		s32 y = 0;
 		u8 behavior = weapons_dat::behavior[weapon_id];
 		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass)
 		{
@@ -331,19 +333,14 @@ namespace hooks {
 				return;
 			}
 			get_weapon_hit_pos(unit, &x, &y);
-		}
-		else if (behavior == WeaponBehavior::AppearOnTargetSite)
-		{
+		} else if (behavior == WeaponBehavior::AppearOnTargetSite) {
 			x = unit->order_target.pt.x;
 			y = unit->order_target.pt.y;
 		}
-		else
-		{
+		else {
 			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
-
 			x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1)
-				- weapons_dat::vertical_offset[weapon_id];
+			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
 		}
 
 		// Cloaked units - decloak
@@ -360,8 +357,7 @@ namespace hooks {
 			if (unit->id == UnitId::TerranSavant) {
 				if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
-				}
-				else {
+				} else {
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
 				}
 			}
