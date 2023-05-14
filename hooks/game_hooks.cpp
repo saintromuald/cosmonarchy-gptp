@@ -1535,20 +1535,18 @@ namespace hooks {
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
 				// Lakizilisk - Seismic Spines
-				if (unit->sprite && unit->main_order_id != OrderId::Die
-					&& unit_ext->timers[TimerLakiziliskETA] == 1) {
-					auto position = unit->position; // new target
-					auto spr_position = unit->sprite->position;
-					Point16 pos;
-					pos.x = unit_ext->values[ValueSpineX];
-					pos.y = unit_ext->values[ValueSpineY];
+				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerLakiziliskETA] == 1)
+				{
+					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
+					Point16 position = unit->position;
+					Point16 spr_position = unit->sprite->position;
+					Point16 pos = { unit_ext->values[ValueSpineX], unit_ext->values[ValueSpineY] };
 					unit->position = pos;
 					unit->sprite->position = pos;
 					scbw::artificial_bullet_from(WeaponId::LakiziliskSubterraneanSpines, unit->player, unit, 0, spr_position);
 					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
-					auto spineCount = 0;
 					iquare_globals.clear_lakizilisk(unit);
 				}
 			} break;
@@ -2718,7 +2716,6 @@ namespace hooks {
 
 		// Demiurge - Worship - Control unit when timer is up
 		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
-			scbw::print("control");
 			scbw::mind_control(unit_ext->units[UnitDemiurge], unit);
 		}
 

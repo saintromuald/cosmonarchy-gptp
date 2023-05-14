@@ -148,19 +148,18 @@ namespace hooks {
 			if (target == bullet->source_unit) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player
-//			if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 			if (splash == SplashType::Enemy) {
 				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
 			} else if (splash == SplashType::FriendlyNew) {
-				bool lurkerOverride = false;
+				bool lakizilisk_override = false;
 				if (bullet->source_unit) {
-					UnitExt* bulletSourceExt = get_unit_ext(bullet->source_unit);
-					if ((Unit*)bulletSourceExt->values[ValueLurkerPickTarget] == target) {
-						lurkerOverride = true;
+					UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
+					if ((Unit*)bullet_source_ext->values[ValueLurkerPickTarget] == target) {
+						lakizilisk_override = true;
 					}
 				}
 					
-				if (scbw::is_unit_enemy(bullet->player, target) == false && !lurkerOverride && target != bullet->attack_target.unit) {
+				if (scbw::is_unit_enemy(bullet->player, target) == false && !lakizilisk_override && target != bullet->attack_target.unit) {
 					continue;
 				}
 			}

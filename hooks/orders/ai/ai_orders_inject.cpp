@@ -844,8 +844,8 @@ namespace
 		result = hooks::ai_prepare_to_flee(unit, target);
 		__asm {
 			POPAD
-			MOV dword ptr[offset result.pt], EAX
-			MOV dword ptr[offset result.unit], EDX
+			MOV EAX, dword ptr[offset result.pt]
+			MOV EDX, dword ptr[offset result.unit]
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04
@@ -907,7 +907,7 @@ namespace hooks
 	//	jump_patch(ai_remove_from_towns_wrapper,				0x00432760, 6); // Not tested.
 	//	jump_patch(ai_get_oldpeons_wrapper,						0x004355C0, 0); // Not tested.
 
-		jump_patch(ai_prepare_to_flee_wrapper,					0x00476A50, 1);
+	//	jump_patch(ai_prepare_to_flee_wrapper,					0x00476A50, 1);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 

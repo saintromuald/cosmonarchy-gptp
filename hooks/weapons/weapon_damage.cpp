@@ -627,15 +627,12 @@ namespace hooks
 						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
 							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
 								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
-								scbw::print("assign timer");
 							}
 							else if (target_ext->timers[TimerDemiurgeWorship] > 24) {
 								target_ext->timers[TimerDemiurgeWorship] -= 24;
-								scbw::print("decrement timer");
 							}
 							else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
 								target_ext->timers[TimerDemiurgeWorship] = 2;
-								scbw::print("expire timer");
 							}
 							target_ext->units[UnitDemiurge] = data.attacker;
 						}

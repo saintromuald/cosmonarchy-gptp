@@ -78,7 +78,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_iscript_speed_wrapper() // 004951C0
+	void __declspec(naked) update_iscript_speed_wrapper() // 0042D8C0
 	{
 		static Unit* unit;
 		__asm

@@ -21,11 +21,10 @@
 namespace scbw {
 
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
-		auto target_unit = source->order_target.unit;
-		auto target_pos = source->order_target.pt;
+		Unit* target_unit = source->order_target.unit;
+		Point16 target_pos = source->order_target.pt;
 		source->order_target.unit = target;
 		source->order_target.pt = target_pt;
-		Point16 pick;
 		if (target && target_unit) {
 			source->order_target.pt = target_unit->sprite->position;
 		} else {
@@ -65,7 +64,6 @@ namespace scbw {
 				recall_effect_sprite->sprite->elevation = unit->sprite->elevation + 1;
 				helper::set_thingy_visibility_flags(recall_effect_sprite);
 			}
-
 		}
 
 		// Disconnect a nuke from a unit using it
@@ -911,7 +909,7 @@ namespace scbw {
 	}
 
 	void refresh_console() { // 004C36C0
-		*g_force_button_refresh    = 1;
+		*g_force_button_refresh		 = 1;
 		*g_portrait_redraw           = 1;
 		*g_status_screen_redraw      = 1;
 		*g_control_under_mouse       = 0;

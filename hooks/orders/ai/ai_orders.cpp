@@ -2831,116 +2831,118 @@ namespace hooks {
 	// Hooked to add sprite nullcheck. -Pr0nogo
 	Target ai_prepare_to_flee(Unit* unit, Unit* target) // 00476A50
 	{
+		// Currently has bad angle calculation 
 		s32 diff_pos_x = target->position.x - unit->position.x;
 		s32 diff_pos_y = target->position.y - unit->position.y;
-		s32 fastest_dist_math = 0;
+		s32 direction = 0;
 		if (diff_pos_x)
 		{
-			u32 diff_pos_div = (diff_pos_y << 8) / diff_pos_x;
+			u32 diff_pos_div = (diff_pos_y * 256) / diff_pos_x;
 			if (diff_pos_x < 0)
 			{
 				s32 fastest_dist = helper::get_fastest_distance(diff_pos_div);
-				fastest_dist_math = fastest_dist == 64 ? 0 : fastest_dist + 192;
+				direction = fastest_dist == 64 ? 0 : fastest_dist + 192;
 			} else {
-				fastest_dist_math = helper::get_fastest_distance(diff_pos_div) + 64;
+				direction = helper::get_fastest_distance(diff_pos_div) + 64;
 			}
 		} else {
-			fastest_dist_math = diff_pos_y <= 0 ? 0 : 0x80;
+			direction = diff_pos_y <= 0 ? 0 : 0x80;
 		}
-		target->sprite = target->sprite;
+
 		u32 target_pos_x = target->position.x;
 		u32 target_pos_y = target->position.y;
-		Point16 angle_distance = { g_angle_distance[fastest_dist_math].x , g_angle_distance[fastest_dist_math].y };
-		u32 iterations = 0;
+		Point16 angle_distance = { g_angle_distance[direction].x , g_angle_distance[direction].y };
+		Target result = {};
 
-		s32 target_pos_x_1;
-		s32 target_pos_y_1;
-		s32 width;
-		s32 height;
-		s32 pos_x_1;
-		s32 pos_y_1;
-		while (1)
+		u32 target_pos_x_1 = 0;
+		u32 target_pos_y_1 = 0;
+		s32 x_distance = 0;
+		s32 y_distance = 0;
+		u32 pos_x_1 = 0;
+		u32 pos_y_1 = 0;
+		
+		u32 iterations = 0;
+		for (; iterations >= 5; iterations++)
 		{
-			u32 static_var = unk_static[iterations];
-			target_pos_x_1 = target->position.x + (static_var * angle_distance.x >> 8);
-			target_pos_y_1 = target->position.y + (static_var * angle_distance.y >> 8);
-			width = target->position.x + (static_var * angle_distance.x >> 8);
-			height = target->position.y + (static_var * angle_distance.y >> 8);
+			u32 distance_factor = unk_static[iterations];
+			target_pos_x_1 = target->position.x + (distance_factor * angle_distance.x / 2);
+			target_pos_y_1 = target->position.y + (distance_factor * angle_distance.y / 2);
+			x_distance = target->position.x + (distance_factor * angle_distance.x / 2); // was LOWORD
+			y_distance = target->position.y + (distance_factor * angle_distance.y / 2);
 			if (target_pos_x_1 >= 0)
 			{
-				if (target_pos_x_1 < *g_map_width_pixels)
+				if (target_pos_x_1 >= *g_map_width_pixels)
 				{
-					goto LABEL_12;
+					goto y_coord_check;
 				}
-				width = *g_map_width_pixels - 1;
+				x_distance = *g_map_width_pixels - 1;
+			} else {
+				x_distance = 0;
 			}
-			else
-			{
-				width = 0;
-			}
-			target_pos_x_1 = width;
-		LABEL_12:
+			target_pos_x_1 = x_distance;
+		y_coord_check:
 			if (target_pos_y_1 >= 0)
 			{
 				if (target_pos_y_1 < *g_map_height_pixels)
 				{
-					goto LABEL_17;
+					goto pathing_check;
 				}
-				height = *g_map_height_pixels - 1;
+				y_distance = *g_map_height_pixels - 1;
+			} else {
+				y_distance = 0;
 			}
-			else
-			{
-				height = 0;
-			}
-			target_pos_y_1 = height;
-		LABEL_17:
+			target_pos_y_1 = y_distance;
+		pathing_check:
 			if (!(target->pathing_flags & PathingFlags::PathingFlags_ProvidesCollision))
 			{
-				goto LABEL_23;
+				goto skip_collision;
 			}
 			u32 region_id_home = helper::get_region_id(target->position.x, target->position.y);
 			u32 region_id_away = helper::get_region_id(target_pos_x_1, target_pos_y_1);
 			if ((*g_sai_paths)->regions[region_id_home].group_index == (*g_sai_paths)->regions[region_id_away].group_index) // Not sure if this is accurate
 			{
-				u32 region_id_2 = helper::get_region_id(target->sprite->position.x, target->sprite->position.y);
 				u32 target_player = target->player;
-				u32 region_id_2_1 = region_id_2;
-				u32 region_id_3 = helper::get_region_id(target_pos_x_1, target_pos_y_1);
-				if (helper::ai_regions_are_connected(target_player, region_id_3, region_id_2_1))
+				u32 connected_region_1 = helper::get_region_id(target_pos_x_1, target_pos_y_1);
+				u32 connected_region_2 = helper::get_region_id(target->position.x, target->position.y);
+				if (helper::ai_regions_are_connected(target_player, connected_region_1, connected_region_2))
 				{
 					break;
 				}
 			}
-			++iterations;
-			if (iterations >= 5)
-			{
-				goto LABEL_26;
-			}
 		}
-		target_pos_x_1 = width;		// was LOWORD
-		target_pos_y_1 = height;	// was LOWORD
-	LABEL_23:
+		if (iterations >= 5) {
+			pos_x_1 = target_pos_x;
+			pos_y_1 = target_pos_y;		// was HIWORD
+			result.pt.x = pos_x_1;
+			result.pt.y = pos_y_1;
+			result.unit = 0;
+			return result;
+		}
+
+		target_pos_x_1 = x_distance;	// was LOWORD
+		target_pos_y_1 = y_distance;	// was LOWORD
+	skip_collision:
 		UnitAi* unit_ai = target->unit_ai;
 		target_pos_x = target_pos_x_1;
 		if (!unit_ai)
 		{
-		LABEL_26:
 			pos_x_1 = target_pos_x;
-			pos_y_1 = target_pos_y;	// was HIWORD
-			goto LABEL_27;
+			pos_y_1 = target_pos_y;		// was HIWORD
+			result.pt.x = pos_x_1;
+			result.pt.y = pos_y_1;
+			result.unit = 0;
+			return result;
 		}
-		pos_y_1 = target_pos_y;		// was HIWORD
-		pos_x_1 = target_pos_x_1;
+		pos_x_1 = target_pos_x;
+		pos_y_1 = target_pos_y;			// was HIWORD
 		if (unit_ai->type == AiType::Guard)
 		{
 			unit_ai->guard_ai.current_home.x = target_pos_x_1;
 			unit_ai->guard_ai.current_home.y = target_pos_y_1;
 		}
-	LABEL_27:
-		Target result = {};
 		result.pt.x = pos_x_1;
 		result.pt.y = pos_y_1;
-		result.unit = 0;		// Always 0?
+		result.unit = 0;
 		return result;
 	}
 }

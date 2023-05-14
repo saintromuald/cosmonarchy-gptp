@@ -673,7 +673,7 @@ namespace hooks {
 		if (helper::unit_is_active_transport(unit)) {
 			helper::iterateLoadedUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player_id_var);
 		}
-		if (helper::unitHasHanger(unit)) {
+		if (helper::unit_has_hangar(unit)) {
 			helper::forHangarUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player_id_var);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding) {

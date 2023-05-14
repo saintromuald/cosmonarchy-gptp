@@ -662,32 +662,26 @@ namespace hooks
 	}
 
 	// Hooked for cloak rewrite animations - Pr0nogo
-	void do_cloak(Unit* unit, s32 soundId) // 0049B440
+	void do_cloak(Unit* unit, s32 sound_id) // 0049B440
 	{
-		Unit* unitVar = unit;
 		if (!(unit->status & UnitStatus::Burrowed))
 		{
-			helper::play_sound_from_unit(soundId, unit, 1, 0);
+			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
-		if (!*g_is_in_replay && unitVar->player == *g_local_nation_id)
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
 		{
-			*g_force_button_refresh = 1;
-			g_portrait_redraw[0] = 1;
-			*g_status_screen_redraw = 1;
-			*g_control_under_mouse = 0;
-			*g_control_under_mouse_value = 0;
+			scbw::refresh_console();
 		}
-		if (unitVar->status & UnitStatus::Burrowed)
+
+		if (unit->status & UnitStatus::Burrowed)
 		{
-			helper::update_sprite_flag_on_palette(unitVar->sprite);
-			helper::show_images_hidden_by_cloak(unitVar->sprite);
-			unitVar->status &= 0xFFFFFCFF;
-		}
-		else
-		{
-			helper::update_sprite_images_for_cloak(unitVar->sprite);
-			unitVar->status = unitVar->status & 0xFFFFFEFF | UnitStatus::Cloaked;
-			Unit* unitSubunit = unitVar->subunit;
+			helper::update_sprite_flag_on_palette(unit->sprite);
+			helper::show_images_hidden_by_cloak(unit->sprite);
+			unit->status &= 0xFFFFFCFF;
+		} else {
+			helper::update_sprite_images_for_cloak(unit->sprite);
+			unit->status = unit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+			Unit* unitSubunit = unit->subunit;
 			if (unitSubunit)
 			{
 				helper::update_sprite_images_for_cloak(unitSubunit->sprite);
@@ -736,10 +730,8 @@ namespace hooks
 		Image* image = sprite->images.head;
 		Image* next_image = 0;
 		u32 data = 0; // unused arg of iscript_opcode_cases?
-		if (image)
-		{
-			do
-			{
+		if (image) {
+			do {
 				next_image = image->link.next;
 				((void(__thiscall*)(Image*))image->update_fxn)(image);
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
@@ -752,11 +744,10 @@ namespace hooks
 						{
 							pos_y = *g_map_tile_height - 1;
 						}
-					}
-					else
-					{
+					} else {
 						pos_y = 0;
 					}
+
 					if (g_horizontal_sprite_lines_begin[pos_y] == sprite)
 					{
 						g_horizontal_sprite_lines_begin[pos_y] = sprite->link.next;
@@ -769,11 +760,13 @@ namespace hooks
 					{
 						sprite->link.prev->link.next = sprite->link.next;
 					}
+
 					Sprite* next_sprite = sprite->link.next;
 					if (next_sprite)
 					{
 						next_sprite->link.prev = sprite->link.prev;
 					}
+
 					sprite->link.prev = 0;
 					sprite->link.next = 0;
 					Sprite* first_free = g_free_sprites->head;
@@ -791,9 +784,7 @@ namespace hooks
 							next_free->link.prev = sprite;
 						}
 						first_free->link.next = sprite;
-					}
-					else
-					{
+					} else {
 						g_free_sprites->head = sprite;
 						g_free_sprites->tail = sprite;
 					}

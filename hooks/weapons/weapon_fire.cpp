@@ -346,7 +346,7 @@ namespace hooks {
 				- weapons_dat::vertical_offset[weapon_id];
 		}
 
-		// Cloaked Units - Decloak
+		// Cloaked units - decloak
 		// Cabalist has Silent Strikes, so the check has to be in weapon damage
 		if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
@@ -369,13 +369,14 @@ namespace hooks {
 			// Lakizilisk Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
-				unit_ext->timers[TimerLakiziliskETA] = 17; // Note possible issue with range bonuses not being accounted for. -Pr0nogo
-				auto range = weapons_dat::max_range[weapon_id] + 16;
-				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
-				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
-				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
-				unit_ext->values[ValueSpineX] = targ_x;
-				unit_ext->values[ValueSpineY] = targ_y;
+				unit_ext->timers[TimerLakiziliskETA] = 17;
+				u32 range = weapons_dat::max_range[weapon_id] + 16;
+			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
+				Point16 unit_pos = { unit->get_x(), unit->get_y() };
+				Point16 target_pos = { unit->order_target.unit->get_x(), unit->order_target.unit->get_y() };
+				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
+				unit_ext->values[ValueSpineX] = unit_pos.x + scbw::get_polar_x(range, angle);
+				unit_ext->values[ValueSpineY] = unit_pos.y + scbw::get_polar_y(range, angle);
 				if (unit->order_target.unit)
 				{
 					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
@@ -1435,9 +1436,7 @@ namespace hooks {
 			first_bullet_var->next = free_bullet;
 			++*bullet_count;
 			result = free_bullet;
-		}
-		else
-		{
+		} else {
 			++*bullet_count;
 			*last_bullet = free_bullet;
 			*first_bullet = free_bullet;
@@ -1595,16 +1594,16 @@ namespace hooks {
 				bullet->attack_target.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 
-				s16 finalOffset = parent->offset_index_3_by_3 + 1;
-				if (!g_attack_curve[finalOffset].x) {
-					finalOffset = 0;
+				s16 final_offset = parent->offset_index_3_by_3 + 1;
+				if (!g_attack_curve[final_offset].x) {
+					final_offset = 0;
 				}
-				parent->offset_index_3_by_3 = finalOffset;
+				parent->offset_index_3_by_3 = final_offset;
 				return 1;
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
-				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
+				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
 				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16);
 				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);

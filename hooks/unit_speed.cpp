@@ -350,22 +350,23 @@ namespace hooks
 				77999802 0018FFD4 0001:00029802 C:\Windows\SysWOW64\ntdll.dll
 				779997D5 0018FFEC 0001:000297D5 C:\Windows\SysWOW64\ntdll.dll
 		*/
-		bool speed_is_equal = unit->current_speed_1 == speed;
-		unit->current_speed_2 = speed;
-		if (!speed_is_equal)
-		{
-			u32 direction = unit->current_direction_2;
-			unit->current_speed_1 = speed;
-			unit->current_velocity.x = speed * g_angle_distance[direction].x >> 8;
-			unit->current_velocity.y = speed * g_angle_distance[direction].y >> 8;
+		if (unit) { // Nullcheck is new.
+			unit->current_speed_2 = speed;
+			if (unit->current_speed_1 != speed)
+			{
+				u32 direction = unit->current_direction_2;
+				unit->current_speed_1 = speed;
+				unit->current_velocity.x = (speed * g_angle_distance[direction].x) >> 8;
+				unit->current_velocity.y = (speed * g_angle_distance[direction].y) >> 8;
+			}
+			return unit;
 		}
-		return unit;
 	}
 
 	// Hooked to fix the speed tooltip for iscript units. -Pr0nogo
 	void update_iscript_speed(Unit* unit) // 0042D8C0
 	{
-		if (unit->flingy_movement_type == 2) // Uses iscript for movement
+		if (unit->flingy_movement_type == MovementType::MovementType_Iscript)
 		{
 			Image* image = unit->sprite->main_graphic;
 			*g_temp_iscript_header = image->iscript_header_offset;
@@ -373,18 +374,18 @@ namespace hooks
 			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking))
 			{
 				Unit* active_unit = *g_active_iscript_unit;
-				u32 v10 = 0;
+				u32 iteration_factor = 0;
 				u32 opcode_value = 0;
 				u32 tile_size = 32;
 				bool tile_size_bool = 0;
 				u32 base_speed = 0;
-				do
-				{
+				do {
 					Image* loop_image = unit->sprite->main_graphic;
 					*g_active_iscript_unit = unit;
 				//	helper::iscript_opcode_cases(loop_image, g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
 					char stim_timer = unit->stim_timer;
-					u32 opcode_value_copy = opcode_value;
+					u32 opcode_value_final = opcode_value;
+
 					u32 buff_or_debuff = 0;
 					*g_active_iscript_unit = active_unit;
 					if (stim_timer)
@@ -399,20 +400,19 @@ namespace hooks
 					{
 						--buff_or_debuff;
 					}
+
 					if (buff_or_debuff <= 0)
 					{
 						if (buff_or_debuff < 0)
 						{
-							opcode_value_copy = opcode_value - (opcode_value >> 2);
+							opcode_value_final = opcode_value - (opcode_value >> 2);
 						}
+					} else {
+						opcode_value_final = 2 * opcode_value;
 					}
-					else
-					{
-						opcode_value_copy = 2 * opcode_value;
-					}
-					base_speed = opcode_value_copy + v10;
+					base_speed = opcode_value_final + iteration_factor;
 					tile_size_bool = tile_size == 1;
-					v10 += opcode_value_copy;
+					iteration_factor += opcode_value_final;
 					opcode_value = 0;
 					--tile_size;
 				} while (!tile_size_bool);

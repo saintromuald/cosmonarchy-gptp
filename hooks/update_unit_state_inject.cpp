@@ -58,13 +58,13 @@ namespace
 	void __declspec(naked) do_cloak_wrapper() // 0049B440
 	{
 		static Unit* unit;
-		static s32 soundId;
+		static s32 sound_id;
 		__asm {
-			MOV soundId, EBX
+			MOV sound_id, EBX
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::do_cloak(unit, soundId);
+		hooks::do_cloak(unit, sound_id);
 		__asm {
 			POPAD
 			RETN
