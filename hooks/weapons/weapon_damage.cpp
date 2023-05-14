@@ -975,6 +975,7 @@ namespace hooks
 				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 				if (data.target) {
 					bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
+					is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes
 					u32 regress_to = regression_id;
 					if (!is_building) {
 						regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
@@ -991,9 +992,10 @@ namespace hooks
 					if (new_unit) {
 						if (is_building) {
 							UnitExt* new_unit_ext = get_unit_ext(new_unit);
-							new_unit_ext->timers[TimerStun] = 2 * 24;
+							new_unit_ext->timers[TimerStun] = 1 * 24;
+							// TODO: Add stun audio visuals
 						} else {
-							scbw::set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256);
+							scbw::set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
 						}
 					}
 
