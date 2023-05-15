@@ -915,7 +915,7 @@ namespace hooks {
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
 			{
-				unit->building.resource.resource_yield = 6;
+				unit->building.resource.resource_yield = 8;
 				if (unit_ext->units[UnitPennant])
 				{
 					unit->building.resource.resource_yield += 2;
@@ -923,7 +923,7 @@ namespace hooks {
 			} break;
 			case UnitId::ResourceVespeneGeyser:
 			{
-				unit->building.resource.resource_yield = 4;
+				unit->building.resource.resource_yield = 6;
 				if (unit_ext->units[UnitPennant])
 				{
 					unit->building.resource.resource_yield += 2;
@@ -931,7 +931,7 @@ namespace hooks {
 			} break;
 			case UnitId::ResourceVespeneRidge:
 			{
-				unit->building.resource.resource_yield = 3;
+				unit->building.resource.resource_yield = 4;
 				if (unit_ext->units[UnitPennant])
 				{
 					unit->building.resource.resource_yield += 2;

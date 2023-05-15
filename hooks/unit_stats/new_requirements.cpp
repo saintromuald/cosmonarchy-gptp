@@ -73,7 +73,6 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranCommandCenter:
-				case UnitId::TerranReservoir:
 				case UnitId::TerranWatchdog:
 				case UnitId::TerranBunker:
 				case UnitId::TerranTreasury:
@@ -84,6 +83,7 @@ namespace hooks {
 				{
 					return true;
 				} break;
+				case UnitId::TerranReservoir:
 				case UnitId::TerranSentinel:
 				case UnitId::TerranDaedala:
 				case UnitId::TerranFountainhead:
@@ -1151,18 +1151,18 @@ namespace hooks {
 			{
 				case UnitId::ZergHachirosk:
 				case UnitId::ZergCagrantColony:
-				case UnitId::ZergExcisant:
 				case UnitId::ZergQuazrokPool:
 				case UnitId::ZergHydrokDen:
 				case UnitId::ZergZorkizShroud:
 				case UnitId::ZergIrolIris:
-				case UnitId::ZergNydusCesiant:
-				case UnitId::ZergIzkagIteth:
-				case UnitId::ZergMatravilNest:
 				{
 					return true;
 				} break;
+				case UnitId::ZergExcisant:
+				case UnitId::ZergNydusCesiant:
 				case UnitId::ZergMuthrokSpire:
+				case UnitId::ZergIzkagIteth:
+				case UnitId::ZergMatravilNest:
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -1419,7 +1419,6 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranCommandCenter:
-					case UnitId::TerranReservoir:
 					case UnitId::TerranWatchdog:
 					case UnitId::TerranBunker:
 					case UnitId::TerranTreasury:
@@ -1430,6 +1429,7 @@ namespace hooks {
 					{
 						return TECH_ACTIVE;
 					}
+					case UnitId::TerranReservoir:
 					case UnitId::TerranSentinel:
 					case UnitId::TerranDaedala:
 					case UnitId::TerranCaptaincy:
@@ -2926,7 +2926,6 @@ namespace hooks {
 				{
 					case UnitId::ZergHachirosk:
 					case UnitId::ZergCagrantColony:
-					case UnitId::ZergExcisant:
 					case UnitId::ZergQuazrokPool:
 					case UnitId::ZergHydrokDen:
 					case UnitId::ZergZorkizShroud:
@@ -2934,8 +2933,9 @@ namespace hooks {
 					{
 						return TECH_ACTIVE;
 					}
-					case UnitId::ZergMuthrokSpire:
+					case UnitId::ZergExcisant:
 					case UnitId::ZergNydusCesiant:
+					case UnitId::ZergMuthrokSpire:
 					case UnitId::ZergIzkagIteth:
 					case UnitId::ZergMatravilNest:
 					{
