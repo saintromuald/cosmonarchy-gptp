@@ -540,17 +540,15 @@ namespace scbw {
 
 	bool is_zerg_building_morph_result(u16 id) {
 		switch (id) {
-			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergGathtelosk:
 			case UnitId::ZergEzigrisant:
-			case UnitId::ZergIrulentIvoa:
-			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSkortrithColony:
 			case UnitId::ZergSpirtithColony:
+			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
 			case UnitId::ZergGorgralSwamp:
@@ -567,18 +565,16 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergHachirosk:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
-			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergCagrantColony:
+			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
+			case UnitId::ZergIrolIris:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergHydrokDen:
 			case UnitId::ZergMuthrokSpire:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
-			case UnitId::ZergGeszkathGrotto:
-			case UnitId::ZergElthisthMound: {
+			case UnitId::ZergGeszkathGrotto: {
 				return true;
 			}
 		}
@@ -2110,7 +2106,6 @@ namespace scbw {
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergMuthrokSpire:
@@ -2144,9 +2139,7 @@ namespace scbw {
 
 			// Zerg
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 				return true;
 		}
 		return false;
@@ -2406,9 +2399,8 @@ namespace scbw {
 			case UnitId::ZergGeszkathGrotto:		
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
-			case UnitId::ZergElthisthMound:			
-				return UnitId::None; // TODO: Fix misc null sprite issues with regression into Droleth
-			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+			case UnitId::ZergElthisthMound:
+				return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Mophs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
@@ -2642,9 +2634,7 @@ namespace scbw {
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 			{
 				return true;
 			} break;

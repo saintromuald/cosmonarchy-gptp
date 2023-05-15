@@ -58,10 +58,7 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHachirosk, UnitId::ZergCaphrolosk, 1},
 	{UnitId::ZergHachirosk, UnitId::ZergGathtelosk, 1},
 
-	{UnitId::ZergIrolIris, UnitId::ZergIrulentIvoa, 2},
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
-	{UnitId::ZergIrulentIvoa, UnitId::ZergOthstolOviform, 2},
-	{UnitId::ZergOthstolOviform, UnitId::ZergOrbothOmlia, 2},
 
 	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, 1},
 	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, 1},

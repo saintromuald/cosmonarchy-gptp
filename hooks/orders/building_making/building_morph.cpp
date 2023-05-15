@@ -241,20 +241,7 @@ namespace hooks
 
 			case UnitId::ZergIrolIris:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergIrulentIvoa, ignore_incomplete);
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignore_incomplete);
-			} break;
-
-			case UnitId::ZergIrulentIvoa:
-			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignore_incomplete);
-			} break;
-
-			case UnitId::ZergOthstolOviform:
-			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOrbothOmlia, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergQuazrokPool:

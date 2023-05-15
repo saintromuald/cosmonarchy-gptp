@@ -232,7 +232,7 @@ namespace UnitId
 		ZergOcsalLarva										= 353,
 
 	// Zerg-Building
-		ZergOrbothOmlia										= 130,		// Infested Command Center
+		ZergAxtothAxis										= 328,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp									= 153,		// Unused Zerg 2
 		ZergIzkagIteth										= 170,		// Arbiter Tribunal
@@ -248,7 +248,6 @@ namespace UnitId
 		ZergSpirtithColony									= 292,		// Morphed from Cagrant Colony
 		ZergSkortrithColony									= 293,		// Morphed from Surkith Colony
 		ZergRakzogthRoost									= 303,		// Unused
-		ZergAxtothAxis										= 328,		// Morphed from Droleth
 		ZergBegrozithBarrow									= 329,		// Unused
 		ZergChokralgantChazsal								= 330,		// Morphed from Izkag Iteth
 		ZergNephrilosk										= 350,		// Unused
