@@ -230,9 +230,10 @@ namespace UnitId
 		ZergKethrostalor									= 326,
 		ZergRakzilisk										= 327,
 		ZergOcsalLarva										= 353,
+		ZergAxitriliskWeaponless							= 377,
 
 	// Zerg-Building
-		ZergAxtothAxis										= 328,		// Infested Command Center
+		ZergAxtothAxis										= 130,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp									= 153,		// Unused Zerg 2
 		ZergIzkagIteth										= 170,		// Arbiter Tribunal

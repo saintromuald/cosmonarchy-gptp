@@ -2238,12 +2238,13 @@ namespace scbw {
 			case SpriteId::Corpse_Droleth:
 			case SpriteId::Corpse_Zethrokor:
 			case SpriteId::Corpse_Quazilisk:
+			case SpriteId::Corpse_Mortothrokor:
 			case SpriteId::Corpse_Hydralisk:
 			case SpriteId::Corpse_Izirokor:
-			case SpriteId::Corpse_Zoryusthaleth:
 			case SpriteId::Corpse_Bactalisk:
 			case SpriteId::Corpse_Kagralisk:
 			case SpriteId::Corpse_Evigrilisk:
+			case SpriteId::Corpse_Zoryusthaleth:
 			case SpriteId::Corpse_Lakizilisk:
 			case SpriteId::Corpse_Konvilisk:
 			case SpriteId::Corpse_Rilirokor:
@@ -2402,7 +2403,7 @@ namespace scbw {
 			case UnitId::ZergElthisthMound:
 				return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
-			// Unit Mophs
+			// Unit Morphs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
 			case UnitId::ZergKalkalisk:				return UnitId::ZergNathrokor;
@@ -2851,6 +2852,7 @@ namespace scbw {
 			switch (weapon_id) {
 				case WeaponId::GolemBloodlessAssault:
 				case WeaponId::NathrokorPlasmidBreath:
+				case WeaponId::MortothrokorWickedIncisors:
 				case WeaponId::GorgrokorSerratedCleavers:
 				case WeaponId::ZarcavrokorBisectingBlades:
 				case WeaponId::TethzorokorSaberArray:
@@ -3203,6 +3205,7 @@ namespace scbw {
 	bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
 		return unit_id == UnitId::ZergVorvrokor
 			|| unit_id == UnitId::ZergKalkalisk
+			|| unit_id == UnitId::ZergTosgrilisk
 			|| unit_id == UnitId::ZergGhitorokor;
 	}
 

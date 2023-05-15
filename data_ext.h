@@ -254,6 +254,7 @@ enum ExtTimerId
 	TimerMindTyrantMaelstromSlow,
 	TimerGhitorokorRelentlessAggression,
 	TimerDemiurgeWorship,
+	TimerAxitriliskPerpetualWind,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

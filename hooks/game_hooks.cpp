@@ -2060,6 +2060,15 @@ namespace hooks {
 					unit_ext->values[ValueGhitorokorRelentlessAggressionStacks] = 0;
 				}
 			} break;
+			case UnitId::ZergAxitriliskWeaponless:
+			{
+				// Perpetual Wind
+				if (unit_ext->timers[TimerAxitriliskPerpetualWind] == 1) {
+					unit->sprite->create_top_overlay(ImageId::ZergAirExplosionSmall_Reversed);
+					helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, unit, 1, 0);
+					helper::replace_unit_with_id(unit, UnitId::ZergAxitrilisk);
+				}
+			} break;
 		}
 
 		// Gladius Binding Plasma

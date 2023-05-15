@@ -1414,6 +1414,19 @@ namespace hooks {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
+									case UnitId::ZergAxitrilisk:
+									case UnitId::ZergMortothrokor:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergAxtothAxis)
+										||  player_has_unit_id(unit->player, UnitId::ZergBegrozithBarrow))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
 									case UnitId::ZergKeskathalor:
 									case UnitId::ZergGeszithalor:
 									{
@@ -2341,6 +2354,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergAxitrilisk:
+								case UnitId::ZergAxitriliskWeaponless:
 								{
 									if (current_button->icon_id == IconId::RoarUnused) { // Axitrilisk - Perpetual Wind
 										current_button_state = Button_State::Enabled;

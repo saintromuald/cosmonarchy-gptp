@@ -869,15 +869,6 @@ namespace hooks
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
-			case UnitId::ProtossVagrant:
-			{
-				helper::increment_unit_death_scores(data.target, data.target->player);
-				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
-				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
-				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
-				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
-				fatal_deal_damage = false;
-			} break;
 			case UnitId::TerranCuirassTankMode:
 			{
 				// Cuirass - Stonewall Protocol
@@ -889,6 +880,15 @@ namespace hooks
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}
+			} break;
+			case UnitId::ProtossVagrant:
+			{
+				helper::increment_unit_death_scores(data.target, data.target->player);
+				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
+				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
+				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
+				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
+				fatal_deal_damage = false;
 			} break;
 			case UnitId::ProtossArchon:
 			{
@@ -946,6 +946,16 @@ namespace hooks
 						data.target->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small);
 					}
 				}
+			} break;
+			case UnitId::ZergAxitrilisk:
+			{
+				helper::increment_unit_death_scores(data.target, data.target->player);
+				helper::replace_unit_with_id(data.target, UnitId::ZergAxitriliskWeaponless);
+				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
+				data.target->sprite->create_top_overlay(ImageId::ZergAirDeathExplosion_Small);
+				helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, data.target, 1, 0);
+				target_ext->timers[TimerAxitriliskPerpetualWind] = 8 * 24 + 1;
+				fatal_deal_damage = false;
 			} break;
 		}
 

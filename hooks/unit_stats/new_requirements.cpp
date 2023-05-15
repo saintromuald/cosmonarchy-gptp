@@ -821,7 +821,7 @@ namespace hooks {
 				case UnitId::ZergMortothrokor:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergAxtothAxis)
-						|| player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
+					||  player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
 					{
 						return true;
 					}

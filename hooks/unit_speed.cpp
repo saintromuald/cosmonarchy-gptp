@@ -213,6 +213,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergMortothrokor:
 			{
+				speed *= 1.3; // Hardcoded ideal
 				if (unit_ext->values[ValueMortothrokorStacks])
 				{
 					speed *= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);
@@ -267,6 +268,7 @@ namespace hooks
 			case UnitId::ProtossSycophant:
 			case UnitId::ProtossManifold:
 			case UnitId::ZergZethrokor:
+			case UnitId::ZergAxitrilisk:
 			{
 				speed *= 1.25;
 			} break;
@@ -276,6 +278,7 @@ namespace hooks
 			} break;
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ProtossVagrantShade:
+			case UnitId::ZergAxitriliskWeaponless:
 			case UnitId::ZergHydralisk:
 			{
 				speed *= 1.5;
