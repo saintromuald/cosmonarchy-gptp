@@ -2401,7 +2401,8 @@ namespace scbw {
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
 			case UnitId::ZergElthisthMound:
-				return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+				return UnitId::None;			// Bugs: Larva don't unlink, creep doesn't recede
+			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Morphs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
