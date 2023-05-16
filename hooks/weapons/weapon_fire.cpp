@@ -195,21 +195,32 @@ static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
 }
 
 // Fly & Follow is unsupported
-void fire_line(Unit* unit, u32 weapon_id, u32 count, u32 spread, WeaponOffsets* weapon_offsets) {
+void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 index = unit_ext->values[ValueProjectilePattern];
 	if (index == 0) {
 		unit_ext->values[ValueProjectileAngle] = unit->current_direction_1;
 		unit_ext->projectile_pattern_target = unit->order_target;
 	}
-	Target target = unit_ext->projectile_pattern_target;
 
-	s32 offset = (spread * index) - (spread * (count - 1) / 2);
-	u32 angle = unit_ext->values[ValueProjectileAngle];
-	target.pt.x += scbw::get_polar_x(offset, angle);
-	target.pt.y += scbw::get_polar_y(offset, angle);
+	Target target = unit_ext->projectile_pattern_target;
+	u32 forward_index = index / lines;
+	u32 forward_count = total_count / lines;
+	s32 forward_offset = (forward_spread * forward_index) - (forward_spread * (forward_count - 1) / 2);
+	u32 forward_angle = unit_ext->values[ValueProjectileAngle];
+	target.pt.x += scbw::get_polar_x(forward_offset, forward_angle);
+	target.pt.y += scbw::get_polar_y(forward_offset, forward_angle);
+
+	if (lines > 1) {
+		u32 side_index = index % lines;
+		s32 side_offset = (side_spread * side_index) + (side_spread * (lines - 1) / 2);
+		u32 side_angle = (forward_angle + 64) % 256;
+		target.pt.x -= scbw::get_polar_x(side_offset, side_angle);
+		target.pt.y -= scbw::get_polar_y(side_offset, side_angle);
+	}
+
 	fire_bullet(unit, weapon_id, target, weapon_offsets, true, false, true);
-	unit_ext->values[ValueProjectilePattern] = (index + 1) % count;
+	unit_ext->values[ValueProjectilePattern] = (index + 1) % total_count;
 }
 
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
@@ -326,8 +337,7 @@ namespace
 namespace hooks {
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
-	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
-	{
+	void fire_weapon(Unit* unit, u8 weapon_id) { // 00479C90
 		if (!unit) {
 			return;
 		}
@@ -340,22 +350,18 @@ namespace hooks {
 		s32 x = 0;
 		s32 y = 0;
 		u8 behavior = weapons_dat::behavior[weapon_id];
-		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass)
-		{
+		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
 			behavior = WeaponBehavior::AppearOnTargetSite;
 		}
-		if (behavior == WeaponBehavior::AppearOnTargetUnit)
-		{
-			if (!unit->order_target.unit)
-			{
+		if (behavior == WeaponBehavior::AppearOnTargetUnit) {
+			if (!unit->order_target.unit) {
 				return;
 			}
 			get_weapon_hit_pos(unit, &x, &y);
 		} else if (behavior == WeaponBehavior::AppearOnTargetSite) {
 			x = unit->order_target.pt.x;
 			y = unit->order_target.pt.y;
-		}
-		else {
+		} else {
 			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
 			x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
 			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
@@ -674,22 +680,20 @@ namespace hooks {
 					case WeaponId::PaladinCrusaderMissiles:
 					{
 						// Paladin - Offset: Linear
-						fire_line(unit, weapon_id, 10, 32);
-						// Can we do offsets with fire_line? -Pr0nogo
-					//	WeaponOffsets offsets = {};
-					//	offsets.value_id = ValuePaladinLaunchPos;
-					//	offsets.count = 5;
-					//	fire_bullet(unit, weapon_id, weapon_target, &offsets);
+						WeaponOffsets offsets = {};
+						offsets.value_id = ValuePaladinLaunchPos;
+						offsets.count = 5;
+						fire_line(unit, weapon_id, 10, 32, 2, 16, &offsets);
 					} break;
 					case WeaponId::AionLazarusSalvo:
 					{
 						// Aion - Offset: Linear
-						fire_line(unit, weapon_id, 4, 32);
+						fire_line(unit, weapon_id, 4, 32, 1, 0);
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{
 						// Salamander - Offset: Linear
-						fire_line(unit, weapon_id, 3, 32);
+						fire_line(unit, weapon_id, 3, 32, 1, 0);
 					} break;
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
@@ -1506,14 +1510,13 @@ namespace hooks {
 		bullet->next_bounce_unit = 0;
 
 		Unit* target_unit = parent->order_target.unit;
-		if (target_unit) {
+		bullet->attack_target.unit = target_unit;
+		if (target_unit->sprite) {
 			bullet->sprite->elevation = target_unit->sprite->elevation + 1;
-			bullet->attack_target.unit = target_unit;
 			bullet->attack_target.pt.x = target_unit->sprite->position.x;
 			bullet->attack_target.pt.y = target_unit->sprite->position.y;
 		} else {
 			bullet->sprite->elevation = parent->sprite->elevation + 1;
-			bullet->attack_target.unit = 0;
 			bullet->attack_target.pt.x = parent->order_target.pt.x;
 			bullet->attack_target.pt.y = parent->order_target.pt.y;
 		}
