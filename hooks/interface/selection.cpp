@@ -770,11 +770,11 @@ namespace hooks
 	b32 is_human_player_on_same_team(u32 player_id) { // 0049A110
 		if (player_id != *g_local_human_id
 		&&  player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
-			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !globals.players[player_id].is_witness) {
+			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !globals.players[player_id].witness_mode) {
 				return true;
 			}
 		}
-		if (*g_is_in_replay || globals.players[*g_local_human_id].is_witness) {
+		if (*g_is_in_replay || globals.players[*g_local_human_id].witness_mode) {
 			return true;
 		}
 		return false;
@@ -782,7 +782,7 @@ namespace hooks
 
 	// Hooked to not die to lard. -Pr0nogo
 	u8 get_team_size(u32 selecting_player) { // 00485710
-		if ((selecting_player < PlayerLimit && globals.players[selecting_player].is_witness)
+		if ((selecting_player < PlayerLimit && globals.players[selecting_player].witness_mode)
 		||	!scbw::is_allied_to(selecting_player, *g_local_human_id) 
 		||	!scbw::is_allied_to(*g_local_human_id, selecting_player)) {
 			return 2;
@@ -801,7 +801,7 @@ namespace hooks
 		if (!*g_is_in_replay && *g_local_human_id == selecting_player) {
 			return;
 		}
-		if (selecting_player < PlayerLimit && globals.players[selecting_player].is_witness) {
+		if (selecting_player < PlayerLimit && globals.players[selecting_player].witness_mode) {
 			return;
 		}
 		helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
