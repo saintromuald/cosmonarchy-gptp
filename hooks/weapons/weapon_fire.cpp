@@ -130,7 +130,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
-		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 32;
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 		target.pt = launch_pos;
 		target.pt.x += diff.x * max_range;
 		target.pt.y += diff.y * max_range;
@@ -213,15 +213,15 @@ void fire_line(Unit* unit, u32 weapon_id, u32 count, u32 spread, WeaponOffsets* 
 }
 
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
-	u32 max_range = weapons_dat::max_range[weapon_id];
 	Target target = unit->order_target;
+	u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 	{
 		Point16 launch_pos = unit->position;
 		if (weapon_offsets) {
 			launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, weapon_offsets));
 		}
 		target.pt = set_target_range(launch_pos, target.pt, max_range);
-		fire_bullet(unit, weapon_id, target);
+		fire_bullet(unit, weapon_id, target, weapon_offsets);
 	}
 
 	for (s32 i = 1; i <= side_count; ++i) {
@@ -241,7 +241,7 @@ void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u
 				angle = 360 - angle;
 			}
 			Point16 target_pt = scbw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, current_range), angle);
-			fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), weapon_offsets, true, true);
+			fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), weapon_offsets, true, true, true);
 		}
 	}
 }
