@@ -147,6 +147,7 @@ enum ExtValueId
 	ValueCustomEggHatchMax,
 	ValueCustomEggHpMax,
 	ValueProjectilePattern,
+	ValueProjectileAngle,
 	ValueGhitorokorRelentlessAggressionStacks,
 
 	ValueAI_WorkerChosenForExpansion,
@@ -219,7 +220,7 @@ enum ExtTimerId
 	TimerSalvageStunTimer,
 	TimerCreepMorphOverlay,
 	TimerCustomEggHatch,
-	ValueMindControlRecede,
+	TimerMindControlRecede,
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
 	TimerAddonAnimation,
@@ -339,6 +340,7 @@ struct UnitExt
 	Vector32f				repulsion_vector;
 	Point16					last_bullet_launch_position;
 	Point16					ai_kiting_origin;
+	Target                  projectile_pattern_target;
 	Vector32f				last_repulsion;
 //	Target					rally;
 

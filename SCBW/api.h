@@ -621,7 +621,6 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	void range_modified_fire(u8 weapon_id, Unit* unit, s16 x, s16 y, u32 offset);
 	bool can_spawn_broodling(Unit* target);
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator = nullptr);
 	u16 get_last_queue_slot_id(Unit* a1);

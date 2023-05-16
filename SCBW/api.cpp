@@ -953,24 +953,6 @@ namespace scbw {
 		}
 	}
 
-	void range_modified_fire(u8 weapon_id, Unit* unit, s16 x, s16 y, u32 offset) {
-		auto target_unit = unit->order_target.unit;
-		auto target_pos = unit->order_target.pt;
-		auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.unit->position.x, unit->order_target.unit->position.y);
-		distance += offset;
-		if (distance < 0) {
-			distance = 0;
-		}
-		auto polar_x = unit->get_x() + scbw::get_polar_x(distance, unit->current_direction_1);
-		auto polar_y = unit->get_y() + scbw::get_polar_y(distance, unit->current_direction_1);
-		unit->order_target.unit = nullptr;
-		unit->order_target.pt.x = polar_x;
-		unit->order_target.pt.y = polar_y;
-		helper::create_bullet(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
-		unit->order_target.unit = target_unit;
-		unit->order_target.pt = target_pos;
-	}
-
 	bool can_spawn_broodling(Unit* target) {
 		if (units_dat::group_flags[target->id].is_building) return false;
 		return true;
@@ -1705,7 +1687,7 @@ namespace scbw {
 
 		// Global recede timer for all control abilities
 		target_ext->values[ValueMindControlPlayer] = source->player + 1;
-		target_ext->timers[ValueMindControlRecede] = 5 * 24;
+		target_ext->timers[TimerMindControlRecede] = 5 * 24;
 
 		// Obtain control
 		target->give_to(source->player);
@@ -2547,7 +2529,7 @@ namespace scbw {
 		bullet->attack_target.pt   = target;
 		bullet->move_target.unit   = 0;
 		bullet->move_target.pt     = target;
-		bullet->target_position_1    = target;
+		bullet->target_position_1  = target;
 		bullet->target_position_2  = target;
 	}
 
@@ -2556,7 +2538,7 @@ namespace scbw {
 		bullet->attack_target.pt   = target->position;
 		bullet->move_target.unit   = target;
 		bullet->move_target.pt     = target->position;
-		bullet->target_position_1    = target->position;
+		bullet->target_position_1  = target->position;
 		bullet->target_position_2  = target->position;
 	}
 

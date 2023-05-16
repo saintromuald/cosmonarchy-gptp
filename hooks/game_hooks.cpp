@@ -2115,21 +2115,21 @@ namespace hooks {
 			});
 
 			if (masters.count) {
-				if (unit_ext->timers[ValueMindControlRecede] <= 4 * 24) {
+				if (unit_ext->timers[TimerMindControlRecede] <= 4 * 24) {
 					unit->unfreeze();
 					u32 offset = scbw::get_overlay_offset(unit->id, true);
 					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
 				}
-				unit_ext->timers[ValueMindControlRecede] = 5 * 24;
+				unit_ext->timers[TimerMindControlRecede] = 5 * 24;
 			}
-			if (unit_ext->timers[ValueMindControlRecede] <= 4 * 24) {
+			if (unit_ext->timers[TimerMindControlRecede] <= 4 * 24) {
 				unit->freeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				if (!unit->get_overlay(ImageId::TyrannyStunSmall + offset)) {
 					unit->sprite->create_top_overlay(ImageId::TyrannyStunSmall + offset);
 				}
 			}
-			if (!unit_ext->timers[ValueMindControlRecede]) {
+			if (!unit_ext->timers[TimerMindControlRecede]) {
 				unit->unfreeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				unit->remove_overlay(ImageId::TyrannyStunSmall + offset);

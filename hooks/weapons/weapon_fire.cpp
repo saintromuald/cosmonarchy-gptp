@@ -194,6 +194,24 @@ static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
 	return result;
 }
 
+// Fly & Follow is unsupported
+void fire_line(Unit* unit, u32 weapon_id, u32 count, u32 spread, WeaponOffsets* weapon_offsets) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	u32 index = unit_ext->values[ValueProjectilePattern];
+	if (index == 0) {
+		unit_ext->values[ValueProjectileAngle] = unit->current_direction_1;
+		unit_ext->projectile_pattern_target = unit->order_target;
+	}
+	Target target = unit_ext->projectile_pattern_target;
+
+	s32 offset = (spread * index) - (spread * (count - 1) / 2);
+	u32 angle = unit_ext->values[ValueProjectileAngle];
+	target.pt.x += scbw::get_polar_x(offset, angle);
+	target.pt.y += scbw::get_polar_y(offset, angle);
+	fire_bullet(unit, weapon_id, target, weapon_offsets, true, false);
+	unit_ext->values[ValueProjectilePattern] = (index + 1) % count;
+}
+
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
 	u32 max_range = weapons_dat::max_range[weapon_id];
 	Target target = unit->order_target;
@@ -662,32 +680,13 @@ namespace hooks {
 					} break;
 					case WeaponId::AionLazarusSalvo:
 					{
-						auto rotate = unit_ext->values[ValueProjectilePattern];
-						if (rotate == 1) {
-							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
-						} else {
-							scbw::range_modified_fire(weapon_id, unit, x, y, 32 + 32 * rotate);
-						}
-						rotate++;
-						if (rotate > 3) {
-							rotate = 0;
-						}
-						unit_ext->values[ValueProjectilePattern] = rotate;
+						// Aion - Pattern: Line
+						fire_line(unit, weapon_id, 4, 32);
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{
-						// Salamander missile target positions
-						auto rotate = unit_ext->values[ValueProjectilePattern];
-						if (rotate == 1) {
-							create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
-						} else {
-							scbw::range_modified_fire(weapon_id, unit, x, y, 32 - 32 * rotate);
-						}
-						rotate++;
-						if (rotate > 2) {
-							rotate = 0;
-						}
-						unit_ext->values[ValueProjectilePattern] = rotate;
+						// Salamander - Pattern: Line
+						fire_line(unit, weapon_id, 3, 32);
 					} break;
 					case WeaponId::MinotaurAsterionLaserBattery:
 					{
