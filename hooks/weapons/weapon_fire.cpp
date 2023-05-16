@@ -673,19 +673,22 @@ namespace hooks {
 					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePaladinLaunchPos;
-						offsets.count = 5;
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
+						// Paladin - Offset: Linear
+						fire_line(unit, weapon_id, 10, 32);
+						// Can we do offsets with fire_line? -Pr0nogo
+					//	WeaponOffsets offsets = {};
+					//	offsets.value_id = ValuePaladinLaunchPos;
+					//	offsets.count = 5;
+					//	fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::AionLazarusSalvo:
 					{
-						// Aion - Pattern: Line
+						// Aion - Offset: Linear
 						fire_line(unit, weapon_id, 4, 32);
 					} break;
 					case WeaponId::SalamanderPerditionBarrage:
 					{
-						// Salamander - Pattern: Line
+						// Salamander - Offset: Linear
 						fire_line(unit, weapon_id, 3, 32);
 					} break;
 					case WeaponId::MinotaurAsterionLaserBattery:
