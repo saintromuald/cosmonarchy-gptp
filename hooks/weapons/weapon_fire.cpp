@@ -130,7 +130,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
-		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit);
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 8;
 		target.pt = launch_pos;
 		target.pt.x += diff.x * max_range;
 		target.pt.y += diff.y * max_range;
