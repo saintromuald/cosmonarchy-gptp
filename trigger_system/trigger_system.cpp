@@ -1111,7 +1111,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				globals.players[trigger_player].is_witness = state;
 				if (state) {
 					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game. -Pr0nogo
-					if (state == 1) { // "Pure" Witness, i.e. not a defeated human
+					if (state == 1) { // "Pure" Witness, i.e. not a defeated player
 						g_player_name_list->player[trigger_player].type = 0;
 						*g_score_screen_player_count -= 1;
 					}
