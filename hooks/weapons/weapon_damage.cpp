@@ -495,7 +495,8 @@ namespace hooks
 							fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
 						} else {
 							u32 inv_direction = 255 - data.direction;
-							data.target->sprite->create_overlay(image_id, 0, 0, inv_direction);
+							// attkshiftproj probably does something specific that avoids the iscript errors. -Pr0nogo
+						//	data.target->sprite->create_overlay(image_id, 0, 0, inv_direction);
 							if (data.attacker) {
 								data.attacker->damage_with(data.weapon_id, -1, data.attacker, data.attacking_player_id, inv_direction, data.damage_divisor);
 							}

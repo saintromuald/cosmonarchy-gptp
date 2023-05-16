@@ -3585,7 +3585,11 @@ namespace scbw {
 
 	ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 		switch (weapon_id) {
-			case WeaponId::HarakanFlamethrower:		return ImageId::HarakanFlamethrower;
+			case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
+			case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
+			case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
+			case WeaponId::StrigaPhaseSaber:				return ImageId::PhaseLineBlast;
+			case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
 		}
 		return ImageId::None;
 	}
