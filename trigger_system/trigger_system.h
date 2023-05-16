@@ -41,20 +41,20 @@ extern SpriteReplacement sprite_replacements[SpriteReplacementCap];
 
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 
-struct PlayerVars {
-	bool is_witness;
-	Point16 camera;
-	u8 faction;
+enum WitnessMode: u8 {
+	WitnessMode_Disabled = 0,   // Normal Player
+	WitnessMode_Pure,			// Pure Witness,    Witness Mode && hidden on scoreboard
+	WitnessMode_Defeated,		// Defeated Player, Witness Mode && shown on scoreboard
 };
 
-enum Celebration {
+enum Celebration: u8 {
 	Celebration_None,
 	Celebration_Christmas,
 
 	Celebration_Count,
 };
 
-enum Faction {
+enum Faction: u8 {
 	Faction_None,
 
 	Faction_TerranHecatonCoalition,
@@ -98,6 +98,12 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 	"zorthos",
 };
 C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
+
+struct PlayerVars {
+	Point16 camera;
+	WitnessMode witness_mode;
+	Faction faction;
+};
 
 struct AlertState {
 	u16 sound_id;

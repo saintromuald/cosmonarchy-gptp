@@ -446,13 +446,13 @@ namespace hooks
 
 		// Replay/witness UI. -DF
 		Point16 pos = { 420, 3 };
-		if (*g_is_in_replay || globals.players[*g_local_nation_id].is_witness) {
+		if (*g_is_in_replay || globals.players[*g_local_nation_id].witness_mode) {
 			graphics::reset_stat_res_graphics();
 
 			bool can_show_apm = false;
 			if (config.witness_show_apm) {
 				for (u8 player = 0; player < PlayerLimit; ++player) {
-					if (g_player_table[player].type == PlayerType::Human && !globals.players[player].is_witness) {
+					if (g_player_table[player].type == PlayerType::Human && !globals.players[player].witness_mode) {
 						can_show_apm = true;
 						break;
 					}
@@ -463,7 +463,7 @@ namespace hooks
 				if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
 					continue;
 				}
-				if (globals.players[player].is_witness) {
+				if (globals.players[player].witness_mode) {
 					continue;
 				}
 				draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player).data, config.witness_show_apm, true, true);
@@ -479,7 +479,7 @@ namespace hooks
 			bool can_show_apm = config.show_apm;
 			u32 local_player = *g_local_nation_id;
 			for (u8 player = 0; player < PlayerLimit; ++player) {
-				if (g_player_table[player].type == PlayerType::Human && !globals.players[player].is_witness && player != local_player) {
+				if (g_player_table[player].type == PlayerType::Human && !globals.players[player].witness_mode && player != local_player) {
 					can_show_apm = true;
 					break;
 				}
@@ -491,7 +491,7 @@ namespace hooks
 					if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::Human) {
 						continue;
 					}
-					if (globals.players[player].is_witness) {
+					if (globals.players[player].witness_mode) {
 						continue;
 					}
 					if (player == local_player || !scbw::is_allied_to(player, local_player)) {

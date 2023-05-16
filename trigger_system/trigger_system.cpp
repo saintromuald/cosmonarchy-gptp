@@ -1106,63 +1106,53 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "witness_mode")) {
-			s32 state = parser_get_s32(&parser) != 0;
-			if (globals.players[trigger_player].is_witness != state) {
-				globals.players[trigger_player].is_witness = state;
-				if (state) {
-					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game. -Pr0nogo
-					if (state == 1) { // "Pure" Witness, i.e. not a defeated player
-						g_player_name_list->player[trigger_player].type = 0;
-						*g_score_screen_player_count -= 1;
+			WitnessMode new_value = (WitnessMode)parser_get_s32(&parser);
+
+			PlayerVars* player_vars = &globals.players[trigger_player];
+			WitnessMode old_value = player_vars->witness_mode;
+			if (old_value != new_value) {
+				globals.players[trigger_player].witness_mode = new_value;
+				graphics::reset_stat_res_graphics(); // Must call this to reset custom graphics data for statres display. -Veeq7
+				if (new_value == WitnessMode_Pure) {
+					// Hide Pure Witnesses from scoreboard
+					g_player_name_list->player[trigger_player].type = 0;
+					*g_score_screen_player_count -= 1;
+				} else if (old_value == WitnessMode_Pure) {
+					// Unhide from scoreboard
+					g_player_name_list->player[trigger_player].type = g_player_table[trigger_player].type; // This stores the old player type, resets to CPU or human, etc. -Pr0nogo
+					*g_score_screen_player_count += 1;
+				}
+
+				if (new_value && *g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
+					u32 first_player = 0;
+					for (u32 i = 0; i < PlayerLimit; ++i) {
+						if (globals.players[i].witness_mode) continue;
+						if (g_player_table[i].type == PlayerType::Human) {
+							first_player = i + 1;
+							break;
+						}
 					}
-					if (*g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
-						u32 first_player = 0;
+					if (!first_player) {
 						for (u32 i = 0; i < PlayerLimit; ++i) {
-							if (globals.players[i].is_witness) {
-								continue;
-							}
-							// Store this for returning from witness to previous player type, if necessary.
-							if (g_player_table[i].type == PlayerType::Human) {
+							if (globals.players[i].witness_mode) continue;
+							if (g_player_table[i].type == PlayerType::Computer) {
 								first_player = i + 1;
 								break;
 							}
 						}
-						if (!first_player) {
-							for (u32 i = 0; i < PlayerLimit; ++i) {
-								if (globals.players[i].is_witness) {
-									continue;
-								}
-								if (g_player_table[i].type == PlayerType::Computer) {
-									first_player = i + 1;
-									break;
-								}
-							}
-						}
-						if (first_player) {
-							first_player -= 1;
-							Point16 pos = g_start_positions[first_player];
-							if (pos.x > 320) {
-								pos.x -= 320;
-							} else {
-								pos.x = 0;
-							}
-							if (pos.y > 200) {
-								pos.y -= 200;
-							} else {
-								pos.y = 0;
-							}
-							helper::move_screen(pos);
-						}
 					}
-				} else {
-					g_player_name_list->player[trigger_player].type = g_player_table[trigger_player].type; // This stores the old player type, resets to CPU or human, etc. -Pr0nogo
-					*g_score_screen_player_count += 1;
-					graphics::reset_stat_res_graphics(); // Must reset this to show player-colored boxes mid-game. -Pr0nogo
+					if (first_player) {
+						first_player -= 1;
+						Point16 pos = g_start_positions[first_player];
+						pos.x = pos.x > 320 ? pos.x - 320 : 0;
+						pos.y = pos.y > 200 ? pos.y - 200 : 0;
+						helper::move_screen(pos);
+					}
 				}
 			}
 		} else if (parser_eq(&parser, "set_faction")) {
 			u32 player = parser_get_player(&parser);
-			u32 faction = parser_get_enum(&parser, faction_symbol_names, ARRAY_SIZE(faction_symbol_names));
+			Faction faction = (Faction)parser_get_enum(&parser, faction_symbol_names, ARRAY_SIZE(faction_symbol_names));
 
 			if (player) {
 				player -= 1;

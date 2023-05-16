@@ -374,7 +374,7 @@ namespace hooks {
 
 		for (u32 i = 0; i < *g_client_selection_count; ++i) {
 			Unit* transport = g_client_selection_group->unit[i];
-			bool is_replay_or_witness = *g_is_in_replay || globals.players[*g_local_human_id].is_witness;
+			bool is_replay_or_witness = *g_is_in_replay || globals.players[*g_local_human_id].witness_mode;
 			if (!scbw::unit_is_allied_or_detected(transport, *g_local_nation_id) && !is_replay_or_witness) {
 				continue;
 			}
@@ -505,7 +505,7 @@ namespace hooks {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}
-			bool in_replay_or_witness = globals.players[*g_local_nation_id].is_witness || *g_is_in_replay;
+			bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
 			||   (in_replay_or_witness && config.witness_show_order_lines)) {
 				Unit* ignore_resource_unit = 0;
@@ -731,9 +731,9 @@ namespace hooks {
 
 			if (local_flags & VespeneDeaths_Ping) {
 				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
-					if (!globals.players[target].is_witness) {
+					if (!globals.players[target].witness_mode) {
 						u32 color = 0; // red
-						if (globals.players[*g_local_nation_id].is_witness) {
+						if (globals.players[*g_local_nation_id].witness_mode) {
 							color = 7; // yellow
 						} else if (scbw::is_allied_to(*g_local_nation_id, target)) {
 							color = 8; // green

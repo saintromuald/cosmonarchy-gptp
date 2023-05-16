@@ -63,7 +63,7 @@ namespace hooks
 			return;
 		}
 		u32 local_player = *g_local_nation_id;
-		if (*g_is_in_replay || globals.players[local_player].is_witness || unit->player == 11) {
+		if (*g_is_in_replay || globals.players[local_player].witness_mode || unit->player == 11) {
 			return;
 		}
 		if (unit->player == local_player) {

@@ -34,7 +34,7 @@ static bool player_can_randomize(u32 player) {
 	if (g_player_table[player].type == PlayerType::Computer && !personality) {
 		return false; // Don't randomize AI players that don't have personality yet
 	}
-	if (globals.players[player].is_witness) {
+	if (globals.players[player].witness_mode) {
 		return false;
 	}
 	return true;
@@ -90,7 +90,7 @@ static bool can_use_player_color(u32 color, u32 player) {
 		}
 	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-		if (other_player != player && !globals.players[other_player].is_witness && (other_player < player || !player_wants_to_randomize(other_player))) {
+		if (other_player != player && !globals.players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player))) {
 			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
 				continue;
 			}
