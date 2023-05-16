@@ -204,7 +204,7 @@ namespace hooks
 			return 0;
 		}
 		
-		if (unit->id == UnitId::TerranIonCannon) {
+		if (unit->id == UnitId::TerranDiadem) {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->values[ValueIonCannonTargeting] = true;
 			unit_ext->units[UnitIonCannonTarget] = target;

@@ -1110,16 +1110,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (globals.players[trigger_player].is_witness != state) {
 				globals.players[trigger_player].is_witness = state;
 				if (state) {
-					// Store this for returning from witness to previous player type, if necessary.
-					g_player_name_list->player[trigger_player].type = 0;
-					*g_score_screen_player_count -= 1;
 					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game. -Pr0nogo
+					if (state == 1) { // "Pure" Witness, i.e. not a defeated human
+						g_player_name_list->player[trigger_player].type = 0;
+						*g_score_screen_player_count -= 1;
+					}
 					if (*g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
 						u32 first_player = 0;
 						for (u32 i = 0; i < PlayerLimit; ++i) {
 							if (globals.players[i].is_witness) {
 								continue;
 							}
+							// Store this for returning from witness to previous player type, if necessary.
 							if (g_player_table[i].type == PlayerType::Human) {
 								first_player = i + 1;
 								break;
@@ -1155,7 +1157,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				} else {
 					g_player_name_list->player[trigger_player].type = g_player_table[trigger_player].type; // This stores the old player type, resets to CPU or human, etc. -Pr0nogo
 					*g_score_screen_player_count += 1;
-					graphics::reset_stat_res_graphics(); // Must reset this to remove player-colored boxes mid-game. -Pr0nogo
+					graphics::reset_stat_res_graphics(); // Must reset this to show player-colored boxes mid-game. -Pr0nogo
 				}
 			}
 		} else if (parser_eq(&parser, "set_faction")) {

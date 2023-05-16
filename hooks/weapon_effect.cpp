@@ -56,7 +56,7 @@ namespace hooks {
 
 			// Create effect fields
 			switch (weapon_id) {
-				case WeaponId::IonCannonIonCannon: {
+				case WeaponId::DiademIonCannon: {
 					iquare_globals.create_effect(EffectId_IonCannonIonField, 10 * 24, {pos.x, pos.y}, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
 				} break;
 				case WeaponId::AionLazarusSalvo: {

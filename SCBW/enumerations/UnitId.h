@@ -89,7 +89,7 @@ namespace UnitId
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
 		TerranMunitionsBay									= 121,		// Repair Bay / Terran Unused 2
-		TerranIonCannon										= 127,		// Ion Cannon
+		TerranDiadem										= 127,		// Ion Cannon
 		TerranGuildhall										= 147,		// Overmind (With Shell)
 		TerranFountainhead									= 163,		// Citadel of Adun
 		TerranQuarry										= 174,		// Protoss Temple

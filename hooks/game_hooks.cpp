@@ -2036,14 +2036,14 @@ namespace hooks {
 					unit->remove_overlay(ImageId::StonewallProtocolOverlay);
 				}
 			} break;
-			case UnitId::TerranIonCannon:
+			case UnitId::TerranDiadem:
 			{
 				// Fire Hammerfall Beacon for weapon targeting
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
 					unit->order_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
 					unit->order_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
-					helper::create_bullet(WeaponId::IonCannonHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
+					helper::create_bullet(WeaponId::DiademHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
 			case UnitId::TerranSavant:

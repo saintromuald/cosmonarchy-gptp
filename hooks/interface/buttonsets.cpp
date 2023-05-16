@@ -966,7 +966,7 @@ namespace hooks {
 											}
 										} break;
 										case UnitId::TerranParthenon:
-										case UnitId::TerranIonCannon:
+										case UnitId::TerranDiadem:
 										case UnitId::TerranWellbore:
 										case UnitId::TerranApothecary:
 										case UnitId::TerranIronFoundry:
@@ -2100,7 +2100,7 @@ namespace hooks {
 										}
 									}
 								} break;
-								case UnitId::TerranIonCannon:
+								case UnitId::TerranDiadem:
 								{
 									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
 									|| current_button->icon_id == IconId::DidactPassiveShroudOfAdun)	// Ion Cannon - Artillery Targeting

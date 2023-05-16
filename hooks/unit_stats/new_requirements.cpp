@@ -103,7 +103,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranParthenon:
-				case UnitId::TerranIonCannon:
+				case UnitId::TerranDiadem:
 				case UnitId::TerranWellbore:
 				case UnitId::TerranAtelier:
 				case UnitId::TerranApothecary:
@@ -1450,7 +1450,7 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::TerranParthenon:
-					case UnitId::TerranIonCannon:
+					case UnitId::TerranDiadem:
 					case UnitId::TerranWellbore:
 					case UnitId::TerranApothecary:
 					case UnitId::TerranIronFoundry:

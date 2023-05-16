@@ -67,9 +67,9 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 		{
 			image = unit->get_overlay(ImageId::SentinelTurret);
 		} break;
-		case UnitId::TerranIonCannon:
+		case UnitId::TerranDiadem:
 		{
-			image = unit->get_overlay(ImageId::IonCannonTurret);
+			image = unit->get_overlay(ImageId::DiademTurret);
 		} break;
 	}
 
@@ -113,7 +113,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		return 0;
 	}
 
-	bool is_ion_cannon = unit->id == UnitId::TerranIonCannon;
+	bool is_ion_cannon = unit->id == UnitId::TerranDiadem;
 	if (is_ion_cannon) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		target.unit = 0;
@@ -492,8 +492,8 @@ namespace hooks {
 						offsets.count = 1;
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
-					case WeaponId::IonCannonIonCannon:
-					case WeaponId::IonCannonHammerfallBeacon:
+					case WeaponId::DiademIonCannon:
+					case WeaponId::DiademHammerfallBeacon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueIonCannonLaunchPos;
