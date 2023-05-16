@@ -497,7 +497,7 @@ LABEL_15:
 				if (g_player_table[player].type != PlayerType::Human || globals.players[player].is_witness) {
 					continue;
 				}
-				if (player == *g_local_nation_id) {
+				if (!*g_is_in_replay && player == *g_local_nation_id) {
 					continue;
 				}
 				if (!*g_is_in_replay && !globals.players[*g_local_nation_id].is_witness && !scbw::is_allied_to(player, *g_local_nation_id)) {
