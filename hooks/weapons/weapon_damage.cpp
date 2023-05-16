@@ -106,6 +106,13 @@ namespace hooks
 	static void weapon_damage_behaviors(const WeaponDamageData& data);
 	static bool weapon_damage_fatal(const WeaponDamageData& data);
 
+	static bool weapon_damage_is_lethal(const WeaponDamageData& data) {
+		if (data.damage_type == DamageType::Independent) return false;
+		// Also proc on deaths for hallucinations, since we know they always die in one hit
+		if (data.target->status & UnitStatus::IsHallucination) return true;
+		return data.damage >= data.target->hitpoints;
+	}
+
 	/// Hooks into the Unit::damage_with() function.
 	void weapon_damage(s32 damage, Unit* target, u8 weapon_id, Unit* attacker, u8 attacking_player_id, s8 direction, u8 damage_divisor) {
 		WeaponDamageData data = {};
@@ -271,7 +278,7 @@ namespace hooks
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
-		if (data.damage >= data.target->hitpoints || data.target->status & UnitStatus::IsHallucination) { // Also proc on deaths for hallucinations, since we know they always die in one hit
+		if (weapon_damage_is_lethal(data)) {
 			if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
 				data.damage = 0;
 				data.damage_type = DamageType::Independent;
@@ -477,6 +484,9 @@ namespace hooks
 				case UnitId::ProtossAnalogue:
 				{
 					// Empathy Core - Analogue behavior
+					if (weapon_damage_is_lethal(data)) {
+						break;
+					}
 					if (data.target->energy >= data.damage + data.shield_reduce_amount) {
 						data.target->spend_unit_energy(data.damage + data.shield_reduce_amount);
 						fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
