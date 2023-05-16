@@ -21,11 +21,10 @@
 namespace scbw {
 
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
-		auto target_unit = source->order_target.unit;
-		auto target_pos = source->order_target.pt;
+		Unit* target_unit = source->order_target.unit;
+		Point16 target_pos = source->order_target.pt;
 		source->order_target.unit = target;
 		source->order_target.pt = target_pt;
-		Point16 pick;
 		if (target && target_unit) {
 			source->order_target.pt = target_unit->sprite->position;
 		} else {
@@ -65,7 +64,6 @@ namespace scbw {
 				recall_effect_sprite->sprite->elevation = unit->sprite->elevation + 1;
 				helper::set_thingy_visibility_flags(recall_effect_sprite);
 			}
-
 		}
 
 		// Disconnect a nuke from a unit using it
@@ -542,17 +540,15 @@ namespace scbw {
 
 	bool is_zerg_building_morph_result(u16 id) {
 		switch (id) {
-			case UnitId::ZergGathtelosk:
 			case UnitId::ZergCaphrolosk:
+			case UnitId::ZergGathtelosk:
 			case UnitId::ZergEzigrisant:
-			case UnitId::ZergIrulentIvoa:
-			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergLarvoskColony:
 			case UnitId::ZergSpraithColony:
 			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSkortrithColony:
 			case UnitId::ZergSpirtithColony:
+			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
 			case UnitId::ZergGorgralSwamp:
@@ -569,18 +565,16 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergHachirosk:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
-			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergCagrantColony:
+			case UnitId::ZergSurkithColony:
 			case UnitId::ZergSpraithColony:
+			case UnitId::ZergIrolIris:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergHydrokDen:
 			case UnitId::ZergMuthrokSpire:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
-			case UnitId::ZergGeszkathGrotto:
-			case UnitId::ZergElthisthMound: {
+			case UnitId::ZergGeszkathGrotto: {
 				return true;
 			}
 		}
@@ -911,7 +905,7 @@ namespace scbw {
 	}
 
 	void refresh_console() { // 004C36C0
-		*g_force_button_refresh    = 1;
+		*g_force_button_refresh		 = 1;
 		*g_portrait_redraw           = 1;
 		*g_status_screen_redraw      = 1;
 		*g_control_under_mouse       = 0;
@@ -2112,7 +2106,6 @@ namespace scbw {
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergMuthrokSpire:
@@ -2146,9 +2139,7 @@ namespace scbw {
 
 			// Zerg
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 				return true;
 		}
 		return false;
@@ -2247,12 +2238,13 @@ namespace scbw {
 			case SpriteId::Corpse_Droleth:
 			case SpriteId::Corpse_Zethrokor:
 			case SpriteId::Corpse_Quazilisk:
+			case SpriteId::Corpse_Mortothrokor:
 			case SpriteId::Corpse_Hydralisk:
 			case SpriteId::Corpse_Izirokor:
-			case SpriteId::Corpse_Zoryusthaleth:
 			case SpriteId::Corpse_Bactalisk:
 			case SpriteId::Corpse_Kagralisk:
 			case SpriteId::Corpse_Evigrilisk:
+			case SpriteId::Corpse_Zoryusthaleth:
 			case SpriteId::Corpse_Lakizilisk:
 			case SpriteId::Corpse_Konvilisk:
 			case SpriteId::Corpse_Rilirokor:
@@ -2408,11 +2400,11 @@ namespace scbw {
 			case UnitId::ZergGeszkathGrotto:		
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
-			case UnitId::ZergElthisthMound:			
-				return UnitId::None; // TODO: Fix misc null sprite issues with regression into Droleth
+			case UnitId::ZergElthisthMound:
+				return UnitId::None;			// Bugs: Larva don't unlink, creep doesn't recede
 			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
-			// Unit Mophs
+			// Unit Morphs
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
 			case UnitId::ZergKalkalisk:				return UnitId::ZergNathrokor;
@@ -2644,9 +2636,7 @@ namespace scbw {
 			case UnitId::ZergKazitrithColony:
 			case UnitId::ZergOcsalColony:
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergOrbothOmlia:
 			{
 				return true;
 			} break;
@@ -2863,6 +2853,7 @@ namespace scbw {
 			switch (weapon_id) {
 				case WeaponId::GolemBloodlessAssault:
 				case WeaponId::NathrokorPlasmidBreath:
+				case WeaponId::MortothrokorWickedIncisors:
 				case WeaponId::GorgrokorSerratedCleavers:
 				case WeaponId::ZarcavrokorBisectingBlades:
 				case WeaponId::TethzorokorSaberArray:
@@ -3215,6 +3206,7 @@ namespace scbw {
 	bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
 		return unit_id == UnitId::ZergVorvrokor
 			|| unit_id == UnitId::ZergKalkalisk
+			|| unit_id == UnitId::ZergTosgrilisk
 			|| unit_id == UnitId::ZergGhitorokor;
 	}
 

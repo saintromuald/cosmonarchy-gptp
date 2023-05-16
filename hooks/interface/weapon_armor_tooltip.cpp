@@ -423,6 +423,8 @@ namespace hooks
 			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
 		add_status(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
 			captivating_claws_get_timer(unit), TimerType::Gptp);
+		add_status(statuses, "Whetted Appetite", unit_ext->values[ValueMortothrokorStacks], 0,
+			unit_ext->timers[TimerMortothrokorPassive], TimerType::Gptp);
 		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
 

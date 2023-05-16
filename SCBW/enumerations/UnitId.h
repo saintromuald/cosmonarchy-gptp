@@ -89,7 +89,7 @@ namespace UnitId
 	// Terran-Building
 		TerranMedbay										= 119,		// Starbase / Terran Unused 1
 		TerranMunitionsBay									= 121,		// Repair Bay / Terran Unused 2
-		TerranIonCannon										= 127,		// Ion Cannon
+		TerranDiadem										= 127,		// Ion Cannon
 		TerranGuildhall										= 147,		// Overmind (With Shell)
 		TerranFountainhead									= 163,		// Citadel of Adun
 		TerranQuarry										= 174,		// Protoss Temple
@@ -230,9 +230,10 @@ namespace UnitId
 		ZergKethrostalor									= 326,
 		ZergRakzilisk										= 327,
 		ZergOcsalLarva										= 353,
+		ZergAxitriliskWeaponless							= 377,
 
 	// Zerg-Building
-		ZergOrbothOmlia										= 130,		// Infested Command Center
+		ZergAxtothAxis										= 130,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
 		ZergGorgralSwamp									= 153,		// Unused Zerg 2
 		ZergIzkagIteth										= 170,		// Arbiter Tribunal
@@ -248,7 +249,6 @@ namespace UnitId
 		ZergSpirtithColony									= 292,		// Morphed from Cagrant Colony
 		ZergSkortrithColony									= 293,		// Morphed from Surkith Colony
 		ZergRakzogthRoost									= 303,		// Unused
-		ZergAxtothAxis										= 328,		// Morphed from Droleth
 		ZergBegrozithBarrow									= 329,		// Unused
 		ZergChokralgantChazsal								= 330,		// Morphed from Izkag Iteth
 		ZergNephrilosk										= 350,		// Unused

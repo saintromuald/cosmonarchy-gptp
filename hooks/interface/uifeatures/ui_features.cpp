@@ -838,7 +838,10 @@ LABEL_15:
 			palette_type = 1;
 		} else if (flags & BinDlgFlags::NoClickSound) {
 			palette_type = 2;
-		} else if (button->button_user->requirement_var == TechId::Healing && button->button_user->icon_id != IconId::Heal) { // Passive icons
+		} else if (button->button_user->requirement_var == TechId::Healing
+		&& button->button_user->icon_id != IconId::Heal 
+		&& button->button_user->icon_id != IconId::Medic) // Passive icons
+		{
 			palette_type = 6;
 		} else {
 			palette_type = button->graphic != *g_highlighted_icon ? 0 : 2;

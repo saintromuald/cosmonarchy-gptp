@@ -915,7 +915,7 @@ namespace hooks {
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
 			{
-				unit->building.resource.resource_yield = 6;
+				unit->building.resource.resource_yield = 8;
 				if (unit_ext->units[UnitPennant])
 				{
 					unit->building.resource.resource_yield += 2;
@@ -923,7 +923,7 @@ namespace hooks {
 			} break;
 			case UnitId::ResourceVespeneGeyser:
 			{
-				unit->building.resource.resource_yield = 4;
+				unit->building.resource.resource_yield = 6;
 				if (unit_ext->units[UnitPennant])
 				{
 					unit->building.resource.resource_yield += 2;
@@ -931,7 +931,7 @@ namespace hooks {
 			} break;
 			case UnitId::ResourceVespeneRidge:
 			{
-				unit->building.resource.resource_yield = 3;
+				unit->building.resource.resource_yield = 4;
 				if (unit_ext->units[UnitPennant])
 				{
 					unit->building.resource.resource_yield += 2;
@@ -1535,20 +1535,18 @@ namespace hooks {
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
 				// Lakizilisk - Seismic Spines
-				if (unit->sprite && unit->main_order_id != OrderId::Die
-					&& unit_ext->timers[TimerLakiziliskETA] == 1) {
-					auto position = unit->position; // new target
-					auto spr_position = unit->sprite->position;
-					Point16 pos;
-					pos.x = unit_ext->values[ValueSpineX];
-					pos.y = unit_ext->values[ValueSpineY];
+				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerLakiziliskETA] == 1)
+				{
+					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
+					Point16 position = unit->position;
+					Point16 spr_position = unit->sprite->position;
+					Point16 pos = { unit_ext->values[ValueSpineX], unit_ext->values[ValueSpineY] };
 					unit->position = pos;
 					unit->sprite->position = pos;
 					scbw::artificial_bullet_from(WeaponId::LakiziliskSubterraneanSpines, unit->player, unit, 0, spr_position);
 					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
-					auto spineCount = 0;
 					iquare_globals.clear_lakizilisk(unit);
 				}
 			} break;
@@ -2038,14 +2036,14 @@ namespace hooks {
 					unit->remove_overlay(ImageId::StonewallProtocolOverlay);
 				}
 			} break;
-			case UnitId::TerranIonCannon:
+			case UnitId::TerranDiadem:
 			{
 				// Fire Hammerfall Beacon for weapon targeting
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
 					unit->order_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
 					unit->order_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
-					helper::create_bullet(WeaponId::IonCannonHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
+					helper::create_bullet(WeaponId::DiademHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
 			case UnitId::TerranSavant:
@@ -2060,6 +2058,15 @@ namespace hooks {
 				// Clear Relentless Aggression
 				if (unit_ext->timers[TimerGhitorokorRelentlessAggression] == 1) {
 					unit_ext->values[ValueGhitorokorRelentlessAggressionStacks] = 0;
+				}
+			} break;
+			case UnitId::ZergAxitriliskWeaponless:
+			{
+				// Perpetual Wind
+				if (unit_ext->timers[TimerAxitriliskPerpetualWind] == 1) {
+					unit->sprite->create_top_overlay(ImageId::ZergAirExplosionSmall_Reversed);
+					helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, unit, 1, 0);
+					helper::replace_unit_with_id(unit, UnitId::ZergAxitrilisk);
 				}
 			} break;
 		}
@@ -2718,7 +2725,6 @@ namespace hooks {
 
 		// Demiurge - Worship - Control unit when timer is up
 		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
-			scbw::print("control");
 			scbw::mind_control(unit_ext->units[UnitDemiurge], unit);
 		}
 

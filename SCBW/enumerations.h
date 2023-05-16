@@ -1390,3 +1390,9 @@ enum PathingFlags {
 	PathingFlags_IsStacked			= 0x2,
 	PathingFlags_DoDecollide		= 0x4,
 };
+
+enum MovementType {
+	MovementType_Flingy				= 0x0,
+	MovementType_Partial			= 0x1,
+	MovementType_Iscript			= 0x2,
+};

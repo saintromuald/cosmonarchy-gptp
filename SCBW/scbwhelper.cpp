@@ -4799,9 +4799,9 @@ namespace helper {
 			PUSH radius;
 			PUSH bullet;
 			MOV ECX, target
-				CALL Helper_IsUnitDistanceWithin
-				MOV result, EAX
-				POPAD
+			CALL Helper_IsUnitDistanceWithin
+			MOV result, EAX
+			POPAD
 		}
 		return result;
 	}
@@ -4826,7 +4826,7 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV EAX, radius
-			MOV EBX, bullet
+			MOV EBX, result
 			MOV EDI, func
 			CALL func_address
 			MOV result, EAX
@@ -5303,35 +5303,33 @@ namespace helper {
 	}
 
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
-		const u32 Helper_CreateBullet = 0x0048C260;
-		static u32 new_attackingPlayer;
-		static u32 new_direction;
-		static s32 new_x;
-		static s32 new_y;
-		new_attackingPlayer = attackingPlayer;
-		new_direction = direction;
-		new_x = x;
-		new_y = y;
+		const u32 func_address = 0x0048C260;
+		static u32 attacking_player_xd;
+		static u32 direction_xd;
+		static s32 x_xd;
+		static s32 y_xd;
+		attacking_player_xd = attackingPlayer;
+		direction_xd = direction;
+		x_xd = x;
+		y_xd = y;
 
-		static Bullet* bullet;
+		static Bullet* result;
 		__asm {
 			PUSHAD
-			PUSH new_direction
-			PUSH new_attackingPlayer
-			PUSH new_y
-			PUSH new_x
+			PUSH direction_xd
+			PUSH attacking_player_xd
+			PUSH y_xd
+			PUSH x_xd
 			MOV EAX, source
 			MOVZX ECX, weapon_id
-			CALL Helper_CreateBullet
-			MOV bullet, EAX
+			CALL func_address
+			MOV result, EAX
 			POPAD
 		}
-
-		return bullet;
+		return result;
 	}
 
 	// For progress_bullet_movement
-
 	void progress_bullet_movement(Bullet* a1) {
 		const u32 Func_progressBulletMovement = 0x0048B250;
 		__asm {
@@ -5420,8 +5418,7 @@ namespace helper {
 		return result;
 	}
 
-	//for progressBullet
-
+	//for progress_bullet
 	void do_missile_damage(Bullet* bullet) {
 		const u32 func_doMissileDmg = 0x0048B770;
 		__asm {
@@ -6941,7 +6938,7 @@ namespace helper {
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EDX, bullet
+			MOV EDX, result
 			MOV ECX, unit
 			CALL Func_airSplashProc
 			MOV result, EAX
@@ -6955,7 +6952,7 @@ namespace helper {
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EDX, bullet
+			MOV EDX, result
 			MOV ECX, unit
 			CALL Func_airSplashProc2
 			MOV result, EAX
@@ -7409,7 +7406,7 @@ namespace helper {
 	}
 
 	// For create_bullet
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weapon_id, s32 x, s32 angle) {
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) {
 		const u32 Func_initializeBullet = 0x0048BEC0;
 		static s32 result;
 		__asm {
@@ -7417,7 +7414,7 @@ namespace helper {
 			PUSH angle
 			PUSH x
 			PUSH weapon_id
-			PUSH bulletResult
+			PUSH bullet
 			MOVZX DX, y
 			MOV EAX, parent
 			MOVZX CL, player
@@ -7938,54 +7935,54 @@ namespace helper {
 	}
 
 	void bullet_behavior_area(Bullet* bullet) {
-		const u32 Func_bulletBehaviorArea = 0x0048B440;
+		const u32 func_address = 0x0048B440;
 		__asm {
 			PUSHAD
 			MOV EAX, bullet
-			CALL Func_bulletBehaviorArea
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// For give_unit_to_player
 	void give_all_unit_properties_to_player(Unit* unit, s8 player) {
-		const u32 Func_giveAllUnitPropertiesToPlayer = 0x0047C9F0;
-		s32 playerIdArg = player;
+		const u32 func_address = 0x0047C9F0;
+		s32 player_id_xd = player;
 		__asm {
 			PUSHAD
-			PUSH playerIdArg
+			PUSH player_id_xd
 			MOV EAX, unit
-			CALL Func_giveAllUnitPropertiesToPlayer
+			CALL func_address
 			POPAD
 		}
 	}
 
 	Unit* get_hidden_miner(Unit* unit) {
-		const u32 Func_getHiddenMiner = 0x00468A60;
+		const u32 func_address = 0x00468A60;
 		static Unit* result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_getHiddenMiner
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	bool unitHasHanger(Unit* unit) {
-		return unit->id == UnitId::ProtossAccantorOld || unit->id == UnitId::ProtossSolarion;
+	bool unit_has_hangar(Unit* unit) {
+		return unit->id == UnitId::ProtossSolarion;
 	}
 
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg) {
-		const u32 Func_forHangarUnits = 0x00465200;
+		const u32 func_address = 0x00465200;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH arg
 			PUSH func
 			MOV EDI, unit
-			CALL Func_forHangarUnits
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

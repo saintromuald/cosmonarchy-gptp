@@ -365,7 +365,7 @@ namespace hooks
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
 	void iscript_attackwith(Unit* attacker, u8 is_ground_weapon) // 00479D60
 	{
-		if (attacker->order_target.unit || attacker->id == UnitId::TerranIonCannon)
+		if (attacker->order_target.unit || attacker->id == UnitId::TerranDiadem)
 		{
 			u32 weapon_id;
 			if (is_ground_weapon != 1)
@@ -404,7 +404,7 @@ namespace hooks
 		unit->sprite->flags &= ~SpriteFlags::IscriptCode;
 		if (unit->order_queue_head && (unit->user_action_flags & 1))
 		{
-			if (unit->id == UnitId::TerranIonCannon) {
+			if (unit->id == UnitId::TerranDiadem) {
 				return;
 			}
 			helper::ignore_iscript_go_to_idle(unit);

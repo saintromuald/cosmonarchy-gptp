@@ -67,9 +67,9 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 		{
 			image = unit->get_overlay(ImageId::SentinelTurret);
 		} break;
-		case UnitId::TerranIonCannon:
+		case UnitId::TerranDiadem:
 		{
-			image = unit->get_overlay(ImageId::IonCannonTurret);
+			image = unit->get_overlay(ImageId::DiademTurret);
 		} break;
 	}
 
@@ -113,7 +113,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		return 0;
 	}
 
-	bool is_ion_cannon = unit->id == UnitId::TerranIonCannon;
+	bool is_ion_cannon = unit->id == UnitId::TerranDiadem;
 	if (is_ion_cannon) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		target.unit = 0;
@@ -310,15 +310,17 @@ namespace hooks {
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) // 00479C90
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return;
 		}
+
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unit_ext->values[ValueAI_PreventTargeting] = 0;
+
 		// Retrieve the spawning position for the bullet.
-		s32 x, y;
+		s32 x = 0;
+		s32 y = 0;
 		u8 behavior = weapons_dat::behavior[weapon_id];
 		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass)
 		{
@@ -331,22 +333,17 @@ namespace hooks {
 				return;
 			}
 			get_weapon_hit_pos(unit, &x, &y);
-		}
-		else if (behavior == WeaponBehavior::AppearOnTargetSite)
-		{
+		} else if (behavior == WeaponBehavior::AppearOnTargetSite) {
 			x = unit->order_target.pt.x;
 			y = unit->order_target.pt.y;
 		}
-		else
-		{
+		else {
 			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
-
 			x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1)
-				- weapons_dat::vertical_offset[weapon_id];
+			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
 		}
 
-		// Cloaked Units - Decloak
+		// Cloaked units - decloak
 		// Cabalist has Silent Strikes, so the check has to be in weapon damage
 		if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
@@ -360,8 +357,7 @@ namespace hooks {
 			if (unit->id == UnitId::TerranSavant) {
 				if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
-				}
-				else {
+				} else {
 					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
 				}
 			}
@@ -369,13 +365,14 @@ namespace hooks {
 			// Lakizilisk Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
-				unit_ext->timers[TimerLakiziliskETA] = 17; // Note possible issue with range bonuses not being accounted for. -Pr0nogo
-				auto range = weapons_dat::max_range[weapon_id] + 16;
-				s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), unit->order_target.unit->get_x(), unit->order_target.unit->get_y());
-				s32 targ_x = unit->get_x() + scbw::get_polar_x(range, angle);
-				s32 targ_y = unit->get_y() + scbw::get_polar_y(range, angle);
-				unit_ext->values[ValueSpineX] = targ_x;
-				unit_ext->values[ValueSpineY] = targ_y;
+				unit_ext->timers[TimerLakiziliskETA] = 17;
+				u32 range = weapons_dat::max_range[weapon_id] + 16;
+			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
+				Point16 unit_pos = { unit->get_x(), unit->get_y() };
+				Point16 target_pos = { unit->order_target.unit->get_x(), unit->order_target.unit->get_y() };
+				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
+				unit_ext->values[ValueSpineX] = unit_pos.x + scbw::get_polar_x(range, angle);
+				unit_ext->values[ValueSpineY] = unit_pos.y + scbw::get_polar_y(range, angle);
 				if (unit->order_target.unit)
 				{
 					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
@@ -495,8 +492,8 @@ namespace hooks {
 						offsets.count = 1;
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
-					case WeaponId::IonCannonIonCannon:
-					case WeaponId::IonCannonHammerfallBeacon:
+					case WeaponId::DiademIonCannon:
+					case WeaponId::DiademHammerfallBeacon:
 					{
 						WeaponOffsets offsets = {};
 						offsets.value_id = ValueIonCannonLaunchPos;
@@ -1435,9 +1432,7 @@ namespace hooks {
 			first_bullet_var->next = free_bullet;
 			++*bullet_count;
 			result = free_bullet;
-		}
-		else
-		{
+		} else {
 			++*bullet_count;
 			*last_bullet = free_bullet;
 			*first_bullet = free_bullet;
@@ -1595,16 +1590,16 @@ namespace hooks {
 				bullet->attack_target.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 
-				s16 finalOffset = parent->offset_index_3_by_3 + 1;
-				if (!g_attack_curve[finalOffset].x) {
-					finalOffset = 0;
+				s16 final_offset = parent->offset_index_3_by_3 + 1;
+				if (!g_attack_curve[final_offset].x) {
+					final_offset = 0;
 				}
-				parent->offset_index_3_by_3 = finalOffset;
+				parent->offset_index_3_by_3 = final_offset;
 				return 1;
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
-				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) << 8;
+				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
 				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16);
 				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16);
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);

@@ -703,7 +703,7 @@ namespace helper {
 	Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);							// 004E8280
 
 	// For create_bullet
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bulletResult, s32 weapon_id, s32 x, s32 angle);					// 0048BEC0
+	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle);						// 0048BEC0
 
 	// For writeBullets
 	/*
@@ -968,7 +968,7 @@ namespace helper {
 	// For give_unit_to_player
 	void give_all_unit_properties_to_player(Unit* unit, s8 player);											// 0047C9F0
 	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
-	bool unitHasHanger(Unit* unit);																			// identical to 004014B0
+	bool unit_has_hangar(Unit* unit);																			// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
 

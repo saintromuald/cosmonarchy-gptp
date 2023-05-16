@@ -934,7 +934,6 @@ namespace hooks {
 									{
 										case UnitId::TerranCommandCenter:
 										case UnitId::TerranWatchdog:
-										case UnitId::TerranReservoir:
 										case UnitId::TerranBunker:
 										case UnitId::TerranTreasury:
 										case UnitId::TerranAtlas:
@@ -944,6 +943,7 @@ namespace hooks {
 										{
 											current_button_state = Button_State::Enabled;
 										} break;
+										case UnitId::TerranReservoir:
 										case UnitId::TerranSentinel:
 										case UnitId::TerranDaedala:
 										case UnitId::TerranCaptaincy:
@@ -966,7 +966,7 @@ namespace hooks {
 											}
 										} break;
 										case UnitId::TerranParthenon:
-										case UnitId::TerranIonCannon:
+										case UnitId::TerranDiadem:
 										case UnitId::TerranWellbore:
 										case UnitId::TerranApothecary:
 										case UnitId::TerranIronFoundry:
@@ -1406,6 +1406,19 @@ namespace hooks {
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergMatravilNest)
 										||  player_has_unit_id(unit->player, UnitId::ZergAlmakisAntre))
+										{
+											current_button_state = Button_State::Enabled;
+										}
+										else
+										{
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergAxitrilisk:
+									case UnitId::ZergMortothrokor:
+									{
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergAxtothAxis)
+										||  player_has_unit_id(unit->player, UnitId::ZergBegrozithBarrow))
 										{
 											current_button_state = Button_State::Enabled;
 										}
@@ -2087,7 +2100,7 @@ namespace hooks {
 										}
 									}
 								} break;
-								case UnitId::TerranIonCannon:
+								case UnitId::TerranDiadem:
 								{
 									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
 									|| current_button->icon_id == IconId::DidactPassiveShroudOfAdun)	// Ion Cannon - Artillery Targeting
@@ -2341,6 +2354,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergAxitrilisk:
+								case UnitId::ZergAxitriliskWeaponless:
 								{
 									if (current_button->icon_id == IconId::RoarUnused) { // Axitrilisk - Perpetual Wind
 										current_button_state = Button_State::Enabled;
