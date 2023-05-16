@@ -108,7 +108,7 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 	return unit_position;
 }
 
-Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range) {
+Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
 	if (!unit->sprite) {
 		return 0;
 	}
@@ -130,7 +130,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
-		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 8;
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 16;
 		target.pt = launch_pos;
 		target.pt.x += diff.x * max_range;
 		target.pt.y += diff.y * max_range;
@@ -142,7 +142,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, apply_cooldown);
 	unit->order_target = original_target;
 	if (bullet) {
-		if (weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
+		if (dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 			scbw::set_bullet_target_absolute(bullet, target);
 		} else {
 			scbw::set_bullet_target_follow(bullet, target);
@@ -208,7 +208,7 @@ void fire_line(Unit* unit, u32 weapon_id, u32 count, u32 spread, WeaponOffsets* 
 	u32 angle = unit_ext->values[ValueProjectileAngle];
 	target.pt.x += scbw::get_polar_x(offset, angle);
 	target.pt.y += scbw::get_polar_y(offset, angle);
-	fire_bullet(unit, weapon_id, target, weapon_offsets, true, false);
+	fire_bullet(unit, weapon_id, target, weapon_offsets, true, false, true);
 	unit_ext->values[ValueProjectilePattern] = (index + 1) % count;
 }
 
