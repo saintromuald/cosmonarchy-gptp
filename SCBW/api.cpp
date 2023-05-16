@@ -3500,14 +3500,12 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_paths_over_small_units(Unit* unit)
-	{
+	bool unit_paths_over_small_units(Unit* unit) {
 		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
 		return unit->id == UnitId::TerranPenumbra;
 	}
 
-	bool unit_collides_with_titanic(Unit* unit)
-	{
+	bool unit_collides_with_titanic(Unit* unit) {
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			return unit->id != UnitId::ProtossPylon && !scbw::unit_id_is_minerals(unit->id);
 		}
@@ -3521,12 +3519,9 @@ namespace scbw {
 			|| unit->id == UnitId::ZergUltrokor;
 	}
 
-	bool unit_has_fore_castle(Unit* unit)
-	{
-		switch (unit->id)
-		{
-			case UnitId::TerranMinotaur:
-			{
+	bool unit_has_fore_castle(Unit* unit) {
+		switch (unit->id) {
+			case UnitId::TerranMinotaur: {
 				return true;
 			}
 		}
@@ -3537,22 +3532,19 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_id_is_siege_mode(u32 unit_id)
-	{
+	bool unit_id_is_siege_mode(u32 unit_id) {
 		return unit_id == UnitId::TerranMatadorCinderMode
 			|| unit_id == UnitId::TerranPhalanxSiegeMode
 			|| unit_id == UnitId::TerramCuirassTrenchMode;
 	}
 
-	bool unit_id_is_tank_mode(u32 unit_id)
-	{
+	bool unit_id_is_tank_mode(u32 unit_id) {
 		return unit_id == UnitId::TerranMatadorTankMode
 			|| unit_id == UnitId::TerranPhalanxTankMode
 			|| unit_id == UnitId::TerranCuirassTankMode;
 	}
 
-	void transform_unit(Unit* unit, u16 unit_id) // Written by DarkenedFantasies for siege transformation.
-	{
+	void transform_unit(Unit* unit, u16 unit_id) { // Written by DarkenedFantasies for siege transformation.
 		Unit* subunit = unit->subunit;
 		s8 subunit_hoffset = 0;
 		s8 subunit_voffset = 0;
@@ -3572,8 +3564,7 @@ namespace scbw {
 
 		if (subunit) {
 			direction = subunit->current_direction_2;
-			if (subunit->id == UnitId::TerranPhalanxTankModeTurret || subunit->id == UnitId::TerranPhalanxSiegeModeTurret)
-			{
+			if (subunit->id == UnitId::TerranPhalanxTankModeTurret || subunit->id == UnitId::TerranPhalanxSiegeModeTurret) {
 				direction += 128; // Flip facing direction for the Phalanx turret. -DF
 				subunit->current_direction_2 = direction;
 			}
@@ -3585,11 +3576,17 @@ namespace scbw {
 		}
 	}
 
-	bool weapon_id_bounces_lithe_organelle(u32 weapon_id)
-	{
+	bool weapon_id_bounces_lithe_organelle(u32 weapon_id) {
 		return weapon_id == WeaponId::MutaliskGlaveWurm
 			|| weapon_id == WeaponId::LiiraliskHollowedSpores
 			|| weapon_id == WeaponId::TosgriliskExplosiveSpores
 			|| weapon_id == WeaponId::SpirtithColonySpirtilSpores;
+	}
+
+	ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
+		switch (weapon_id) {
+			case WeaponId::HarakanFlamethrower:		return ImageId::HarakanFlamethrower;
+		}
+		return ImageId::None;
 	}
 }

@@ -489,7 +489,17 @@ namespace hooks
 					}
 					if (data.target->energy >= data.damage + data.shield_reduce_amount) {
 						data.target->spend_unit_energy(data.damage + data.shield_reduce_amount);
-						fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+
+						u32 image_id = scbw::analogue_image_id_overwrite(data.weapon_id);
+						if (image_id == ImageId::None) {
+							fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+						} else {
+							u32 inv_direction = 255 - data.direction;
+							data.target->sprite->create_overlay(image_id, 0, 0, inv_direction);
+							if (data.attacker) {
+								data.attacker->damage_with(data.weapon_id, -1, data.attacker, data.attacking_player_id, inv_direction, data.damage_divisor);
+							}
+						}
 					}
 				} break;
 				case UnitId::ZergZarcavrokor:
