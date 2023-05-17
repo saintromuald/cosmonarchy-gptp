@@ -1194,7 +1194,8 @@ namespace hooks
 					}
 				}
 			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable
-				&& g_player_table[victim->player].type == PlayerType::Computer) { // For now, we unburrow AI units only. -Pr0nogo
+					&& g_player_table[victim->player].type == PlayerType::Computer) // For now, we unburrow AI units only. -Pr0nogo
+			{
 				helper::unburrow(victim);
 			}
 		}

@@ -1790,15 +1790,11 @@ namespace hooks {
 			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir)
 			{
 				helper::use_weapon_iscript(unit, units_dat::air_weapon[unit->id], 2, iscript_anim + 1);
-			}
-			else
-			{
+			} else {
 				if (unit->id != UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed)
 				{
 					helper::use_weapon_iscript(unit, units_dat::ground_weapon[unit->id], 1, iscript_anim);
-				}
-				else
-				{
+				} else {
 					helper::use_weapon_iscript(unit, WeaponId::None, 1, iscript_anim);
 				}
 			}
@@ -1846,9 +1842,7 @@ namespace hooks {
 		if (weapon_id == WeaponId::None)
 		{
 			return 1;
-		}
-		else
-		{
+		} else {
 			return weapons_dat::flingy_id[weapon_id] != 0;
 		}
 	}
@@ -1876,17 +1870,10 @@ namespace hooks {
 		if (tgt_x_final >= *g_map_width_pixels || tgt_y_final >= *g_map_height_pixels)
 		{
 			tgt_y_final = tgt_y;
-		}
-		else
-		{
+		} else {
 			tgt_x_final = tgt_x;
 		}
-
-		// Disabled to make the chasing more responsive. -Pr0nogo
-	//	char timer = attacker->recent_order_timer;
-	//	if (!timer)
-	//	{
-			helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
-	//	}
+		// Originally delayed the chasing using order timer. -Pr0nogo
+		helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
 	}
 }

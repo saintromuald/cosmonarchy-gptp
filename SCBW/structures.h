@@ -131,14 +131,14 @@ struct unk_62
 
 struct StringMap_b
 {
-	u8		value;				// 0x0
-	u8		id;					// 0x1
+	u8		value;					// 0x0
+	u8		id;						// 0x1
 };
 
 struct StringMap_w
 {
-	u16		tbl_string;			// 0x0
-	u16		index;				// 0x2
+	u16		tbl_string;				// 0x0
+	u16		index;					// 0x2
 };
 
 struct DialogEvent

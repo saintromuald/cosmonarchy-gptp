@@ -20,7 +20,7 @@ struct AttackPriorityData
 	void reset();
 
 	Unit* targets[ATTACK_PRIORITY_LEVELS][ATTACK_PRIORITY_GROUP_SIZE];
-	u32 targetCounts[ATTACK_PRIORITY_LEVELS];
+	u32 target_counts[ATTACK_PRIORITY_LEVELS];
 };
 
 // Global variables (bad practice, but it's faster)
@@ -244,22 +244,22 @@ namespace hooks
 Unit* AttackPriorityData::find_random_target() const
 {
 	s32 priority = 0;
-	while (targetCounts[priority] == 0)
+	while (target_counts[priority] == 0)
 	{
 		++priority;
-		if (priority >= countof(targetCounts))
+		if (priority >= countof(target_counts))
 		{
 			return nullptr;
 		}
 	}
 
-	if (targetCounts[priority] == 1)
+	if (target_counts[priority] == 1)
 	{
 		return targets[priority][0];
 	}
 	else
 	{
-		return targets[priority][scbw::random() % targetCounts[priority]];
+		return targets[priority][scbw::random() % target_counts[priority]];
 	}
 }
 
@@ -268,40 +268,40 @@ Unit* AttackPriorityData::find_random_target() const
 Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 {
 	s32 priority = 0;
-	while (targetCounts[priority] == 0)
+	while (target_counts[priority] == 0)
 	{
 		++priority;
-		if (priority >= countof(targetCounts))
+		if (priority >= countof(target_counts))
 		{
 			return nullptr;
 		}
 	}
 
-	if (targetCounts[priority] == 1)
+	if (target_counts[priority] == 1)
 	{
 		return targets[priority][0];
 	}
 
 	// Prepare for search
-	Unit* bestTarget = targets[priority][0];
+	Unit* best_target = targets[priority][0];
 
 	// AI auto-targeted units with high shields/hp when using Skrylings, but we don't have them anymore, and we already handle that in tactical_ai! -Pr0nogo
 	
 	// Find the nearest target (don't use unit box sizes)
-	u32 bestTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), bestTarget->get_x(), bestTarget->get_y());
+	u32 best_target_distance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
 
-	for (u32 i = 1; i < targetCounts[priority]; ++i)
+	for (u32 i = 1; i < target_counts[priority]; ++i)
 	{
-		Unit* currentTarget = targets[priority][i];
-		const u32 currentTargetDistance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), currentTarget->get_x(), currentTarget->get_y());
+		Unit* current_target = targets[priority][i];
+		const u32 current_target_distance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
 
-		if (currentTargetDistance < bestTargetDistance)
+		if (current_target_distance < best_target_distance)
 		{
-			bestTarget = currentTarget;
-			bestTargetDistance = currentTargetDistance;
+			best_target = current_target;
+			best_target_distance = current_target_distance;
 		}
 	}
-	return bestTarget;
+	return best_target;
 }
 
 //-------- The following function definitions should not be touched. --------//
@@ -310,26 +310,25 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 void AttackPriorityData::add_target(Unit* target, u32 attackPriority)
 {
 	assert(target);
-	assert(attackPriority < countof(targetCounts));
+	assert(attackPriority < countof(target_counts));
 
-	if (targetCounts[attackPriority] < ATTACK_PRIORITY_GROUP_SIZE)
+	if (target_counts[attackPriority] < ATTACK_PRIORITY_GROUP_SIZE)
 	{
-		targets[attackPriority][targetCounts[attackPriority]] = target;
-		targetCounts[attackPriority] += 1;
+		targets[attackPriority][target_counts[attackPriority]] = target;
+		target_counts[attackPriority] += 1;
 	}
 }
 
 void AttackPriorityData::reset()
 {
-	for (s32 i = 0; i < countof(targetCounts); ++i)
-		targetCounts[i] = 0;
+	for (s32 i = 0; i < countof(target_counts); ++i) {
+		target_counts[i] = 0;
+	}
 }
 
 namespace
 {
-
-	//Identical to function @ 0x00475BE0
-	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id)
+	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id) // 00475BE0
 	{
 		assert(unit);
 
@@ -341,12 +340,14 @@ namespace
 			return true;
 		}
 
-		s32 angleDiff = unit->current_direction_1 - angle;
-		if (angleDiff < 0)
-			angleDiff += 128;
-		if (angleDiff > 128)
-			angleDiff = 256 - angleDiff;
-		return angleDiff <= weapons_dat::attack_angle[weapon_id];
+		s32 angle_difference = unit->current_direction_1 - angle;
+		if (angle_difference < 0) {
+			angle_difference += 128;
+		}
+		if (angle_difference > 128) {
+			angle_difference = 256 - angle_difference;
+		}
+		return angle_difference <= weapons_dat::attack_angle[weapon_id];
 	}
 
 	const u32 Func_CannotChaseTarget = 0x004A1140;
@@ -370,42 +371,32 @@ namespace
 
 	u32 get_minimum_range(Unit* unit) // 00440520
 	{
-		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
+		u8 ground_weapon = unit->get_ground_weapon();
+		if (ground_weapon == WeaponId::None && unit->subunit)
 		{
-			return 0;
-		}
-		u8 groundWeapon = unit->get_ground_weapon();
-		if (groundWeapon == WeaponId::None && unit->subunit)
-		{
-			groundWeapon = unit->subunit->get_ground_weapon();
+			ground_weapon = unit->subunit->get_ground_weapon();
 		}
 
-		u8 airWeapon = unit->get_air_weapon();
-		if (airWeapon == WeaponId::None && unit->subunit)
+		u8 air_weapon = unit->get_air_weapon();
+		if (air_weapon == WeaponId::None && unit->subunit)
 		{
-			airWeapon = unit->subunit->get_air_weapon();
+			air_weapon = unit->subunit->get_air_weapon();
 		}
 
-		if (groundWeapon == WeaponId::None)
+		if (ground_weapon == WeaponId::None)
 		{
-			if (airWeapon == WeaponId::None)
+			if (air_weapon == WeaponId::None)
 			{
 				return 0;
+			} else {
+				return weapons_dat::min_range[air_weapon];
 			}
-			else
+		} else {
+			if (air_weapon == WeaponId::None)
 			{
-				return weapons_dat::min_range[airWeapon];
-			}
-		}
-		else
-		{
-			if (airWeapon == WeaponId::None)
-			{
-				return weapons_dat::min_range[groundWeapon];
-			}
-			else
-			{
-				return std::min(weapons_dat::min_range[groundWeapon], weapons_dat::min_range[airWeapon]);
+				return weapons_dat::min_range[ground_weapon];
+			} else {
+				return std::min(weapons_dat::min_range[ground_weapon], weapons_dat::min_range[air_weapon]);
 			}
 		}
 	}

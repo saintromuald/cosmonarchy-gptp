@@ -185,19 +185,21 @@ namespace hooks {
 					}
 					*/
 
-					if (unit->id == UnitId::ZergLakizilisk
-						&& !(unit->status & UnitStatus::Burrowed)
-						&& unit_order_id != OrderId::Burrow
-						&& unit_order_id != OrderId::Unburrow) {
+					if  (unit->id == UnitId::ZergLakizilisk
+					&& !(unit->status & UnitStatus::Burrowed)
+					&&   unit_order_id != OrderId::Burrow
+					&&   unit_order_id != OrderId::Unburrow)
+					{
 						if (helper::ai_flee(unit, target)) {
 							return;
 						}
 					}
 
 					if (!is_unbreakable
-						&& unit->status & UnitStatus::Reacts
-						&& !helper::unit_has_ground_path(unit, target->position.x, target->position.y)
-						&& helper::ai_flee(unit, target)) {
+					&&   unit->status & UnitStatus::Reacts
+					&&  !helper::unit_has_ground_path(unit, target->position.x, target->position.y)
+					&&   helper::ai_flee(unit, target))
+					{
 						return;
 					}
 				}
@@ -206,7 +208,7 @@ namespace hooks {
 					return;
 				}
 
-				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible -Veeq7)
+				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible for this) -Veeq7
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker
 					/* && !(units_dat::base_property[target->id] & UnitProperty::Worker)
 					&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id

@@ -254,11 +254,11 @@ namespace hooks
 		helper::toggle_unit_path(unit);
 
 		Sprite* unit_sprite = unit_var->sprite;
-		char unitPathing = unit_var->pathing_flags;
+		char pathing_flags = unit_var->pathing_flags;
 		unit_var->movement_state = 0;
-		unit_var->pathing_flags = (unitPathing ^ (unit_sprite->elevation < 12u)) & 1 ^ unitPathing;
+		unit_var->pathing_flags = (pathing_flags ^ (unit_sprite->elevation < 12u)) & 1 ^ pathing_flags;
 		unit_var->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
-		unit_sprite->flags |= 0x40u; // image is hidden
+		unit_sprite->flags |= SpriteFlags::Burrowed;
 
 		Sprite* old_sprite = unit_var->sprite;
 		Sprite* new_sprite = 0;
@@ -267,9 +267,7 @@ namespace hooks
 			// Warning, tism detected
 			// ByteOperations::SetLowByte(new_sprite, switch_sprite_id(old_sprite, SpriteId::White_Circle_Invisible));
 			unit_var->sprite->elevation = 1;
-		}
-		else
-		{
+		} else {
 			helper::switch_sprite_id(old_sprite, SpriteId::White_Circle_Invisible);
 			new_sprite = unit_var->sprite;
 			new_sprite->elevation = 1;
