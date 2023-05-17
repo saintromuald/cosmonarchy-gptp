@@ -129,7 +129,7 @@ namespace hooks
 			if (unit->irradiate_timer == 0)
 			{
 				unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
-				unit->irradiate_caster = nullptr;
+				unit->irradiate_caster = 0;
 				unit->irradiate_player_id = 8;
 			}
 		}

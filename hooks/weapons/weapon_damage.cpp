@@ -477,7 +477,7 @@ namespace hooks
 					&&   target_ext->timers[TimerSimulacrumClone] == 0)
 					{
 						target_ext->timers[TimerSimulacrumClone] = 4 * 24;
-						data.target->sprite->create_top_overlay(ImageId::LegionnaireTeleportEffect);
+						scbw::manage_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
 						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
 				} break;
@@ -572,7 +572,7 @@ namespace hooks
 					{
 						// Cyclops - Flak Cannons
 						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
-						data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryArming);
+						scbw::manage_unit_overlay(data.target, ImageId::CyclopsFragmentaryArming);
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
 					{
@@ -589,18 +589,18 @@ namespace hooks
 							target_ext->values[ValueDeconstruction]++;
 							target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
-							s32 overlay_offset = scbw::get_overlay_offset(data.target->id);
+							u32 overlay = ImageId::DeconstructionSmall + scbw::get_overlay_offset(data.target->id);
 							if (data.target->subunit) {
 								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
 								subunit_ext->values[ValueDeconstruction]++;
 								subunit_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 								subunit_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
-								if (!data.target->subunit->sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
-									data.target->subunit->sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
+								if (!data.target->subunit->sprite->get_overlay(overlay)) {
+									data.target->subunit->sprite->create_overlay(overlay);
 								}
 							} else {
-								if (!data.target->sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
-									data.target->sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
+								if (!data.target->sprite->get_overlay(overlay)) {
+									data.target->sprite->create_overlay(overlay);
 								}
 							}
 						}
@@ -717,8 +717,8 @@ namespace hooks
 						&&  !scbw::unit_id_is_broodspawn(data.target->id))
 						{
 							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
-							target_ext->timers[TimerIncubationArm] = DefaultArmParasiteTimer;
-							data.target->sprite->create_overlay(ImageId::ParasiteOverlay);
+							target_ext->timers[TimerIncubationArm] = 2 * 24 + 1;
+							scbw::manage_unit_overlay(data.target, ImageId::ParasiteOverlay);
 						}
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
@@ -886,7 +886,7 @@ namespace hooks
 			if (scbw::unit_id_is_smaller_building(data.target->id)) {
 				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
-			data.target->remove_overlay(infested_image_id);
+			scbw::manage_unit_overlay(data.target, infested_image_id);
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT

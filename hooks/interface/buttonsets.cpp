@@ -2245,7 +2245,7 @@ namespace hooks {
 								case UnitId::ProtossPatriarch:
 								{
 									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
-									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Patriarch - Kinetic Penetration
+									||	current_button->icon_id == IconId::AntimatterMissiles) // Patriarch - Interception
 									{
 										current_button_state = Button_State::Enabled;
 									}

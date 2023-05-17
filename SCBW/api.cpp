@@ -1552,7 +1552,7 @@ namespace scbw {
 	}
 
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
-		unit->sprite->create_top_overlay(ImageId::MadrigalDirgeProc);
+		scbw::manage_unit_overlay(unit, ImageId::MadrigalDirgeProc);
 		const u32 radius = 2 * 32;
 		// TODO: Unit search
 		scbw::UnitFinder(
@@ -1572,16 +1572,17 @@ namespace scbw {
 		const u32 cowardice_id = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 		const u32 malice_id = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 		if (unit_ext->values[ValueSignifyStacks] == 0) {
-			unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
-			unit->remove_overlay(ImageId::Malice_Small, ImageId::Malice_Large);
+			scbw::manage_unit_overlay(unit, cowardice_id, true);
+			scbw::manage_unit_overlay(unit, malice_id, true);
 		} else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-				|| units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-				|| unit->has_weapon()) {
+				  || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+				  || unit->has_weapon())
+		{
 			if (unit_ext->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardice_id)) {
-				unit->sprite->create_top_overlay(cowardice_id);
+				scbw::manage_unit_overlay(unit, cowardice_id);
 			} else if (unit_ext->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(malice_id)) {
-				unit->remove_overlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
-				unit->sprite->create_top_overlay(malice_id);
+				scbw::manage_unit_overlay(unit, cowardice_id, true);
+				scbw::manage_unit_overlay(unit, malice_id);
 			}
 		}
 	}
@@ -1697,10 +1698,10 @@ namespace scbw {
 		// Audiovisuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
 			if (source->id == UnitId::ProtossDemiurge) {
-				target->sprite->create_top_overlay(ImageId::Worship_Small + scbw::get_overlay_offset(target->id), 0, 0, 0);
+				scbw::manage_unit_overlay(target, ImageId::Worship_Small + scbw::get_overlay_offset(target->id));
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 			} else if (source->id == UnitId::ProtossMindTyrant) {
-				target->sprite->create_top_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id), 0, 0, 0);
+				scbw::manage_unit_overlay(target, ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
 			}
 		}
 	}
@@ -2050,7 +2051,7 @@ namespace scbw {
 			infested_image_id = ImageId::InfestedOverlay_Small;
 		}
 		if (!unit->get_overlay(infested_image_id)) {
-			unit->sprite->create_top_overlay(infested_image_id);
+			scbw::manage_unit_overlay(unit, infested_image_id);
 		}
 
 		// Spawn effect overlay | TODO: Make this a sprite
@@ -3592,5 +3593,23 @@ namespace scbw {
 			case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
 		}
 		return ImageId::None;
+	}
+
+	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove, bool underlay)
+	{
+		Unit* final_unit = unit;
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+			final_unit = unit->subunit;
+		}
+
+		if (remove) {
+			final_unit->sprite->remove_overlay(image_id);
+		} else {
+			if (underlay) {
+				final_unit->sprite->create_underlay(image_id);
+			} else {
+				final_unit->sprite->create_top_overlay(image_id);
+			}
+		}
 	}
 }
