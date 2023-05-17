@@ -664,6 +664,11 @@ namespace hooks {
 							fire_bullet(unit, weapon_id, unit->order_target);
 						}
 					} break;
+					case WeaponId::SouthpawKnockoutDrivers:
+					{
+						// Southpaw - Offset: Linear
+						fire_line(unit, weapon_id, 3, 24, 1, 0);
+					} break;
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
@@ -672,11 +677,6 @@ namespace hooks {
 						offsets.count = 4;
 						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, &offsets);
 					} break;
-					case WeaponId::AnticthonEncirclingMirror:
-					{
-						// Multi-Attack V
-						fire_multiple(unit, weapon_id, 5, FilterEnemy);
-					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
 						// Paladin - Offset: Linear
@@ -684,6 +684,11 @@ namespace hooks {
 						offsets.value_id = ValuePaladinLaunchPos;
 						offsets.count = 5;
 						fire_line(unit, weapon_id, 10, 32, 2, 16, &offsets);
+					} break;
+					case WeaponId::AnticthonEncirclingMirror:
+					{
+						// Multi-Attack V
+						fire_multiple(unit, weapon_id, 5, FilterEnemy);
 					} break;
 					case WeaponId::AionLazarusSalvo:
 					{

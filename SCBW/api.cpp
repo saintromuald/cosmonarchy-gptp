@@ -1187,34 +1187,38 @@ namespace scbw {
 	bool unit_id_is_available_without_an_addon(u16 id) {
 		return id == UnitId::TerranMason
 			|| id == UnitId::TerranTalos
+			|| id == UnitId::TerranArmistice
+			|| id == UnitId::TerranPythean
+
 			|| id == UnitId::TerranMaverick
 			|| id == UnitId::TerranHarakan
 			|| id == UnitId::TerranCyprian
-			|| id == UnitId::TerranVulture
-			|| id == UnitId::TerranCyclops
-			|| id == UnitId::TerranGoliath
-			|| id == UnitId::TerranWraith
-			|| id == UnitId::TerranAncile
-			|| id == UnitId::TerranTrojan
 			|| id == UnitId::TerranMadcap
 			|| id == UnitId::TerranHeracles
 			|| id == UnitId::TerranApostle
-			|| id == UnitId::TerranRamesses
-			|| id == UnitId::TerranDurendal
-			|| id == UnitId::TerranCataphract
-			|| id == UnitId::TerranGorgon
-			|| id == UnitId::TerranWyvern
-			|| id == UnitId::TerranValkyrie
-			|| id == UnitId::TerranTalos
-			|| id == UnitId::TerranArmistice
-			|| id == UnitId::TerranPythean
 			|| id == UnitId::TerranDilettante
 			|| id == UnitId::TerranSevenstep
 			|| id == UnitId::TerranSilvertongue
 			|| id == UnitId::TerranHypnagogue
+
+			|| id == UnitId::TerranVulture
+			|| id == UnitId::TerranCyclops
+			|| id == UnitId::TerranGoliath
+			|| id == UnitId::TerranSouthpaw
+			|| id == UnitId::TerranRamesses
+			|| id == UnitId::TerranDurendal
+			|| id == UnitId::TerranCataphract
 			|| id == UnitId::TerranPaladin
 			|| id == UnitId::TerranCuirassTankMode
 			|| id == UnitId::TerranPazuzu
+
+			|| id == UnitId::TerranWraith
+			|| id == UnitId::TerranAncile
+			|| id == UnitId::TerranWendigo
+			|| id == UnitId::TerranTrojan
+			|| id == UnitId::TerranGorgon
+			|| id == UnitId::TerranWyvern
+			|| id == UnitId::TerranValkyrie
 			|| id == UnitId::TerranCentaur
 			|| id == UnitId::TerranMinotaur
 			|| id == UnitId::TerranMagnetar;

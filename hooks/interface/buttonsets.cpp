@@ -824,6 +824,13 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
+
+									case UnitId::TerranGoliath:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+											current_button_state = Button_State::Invisible;
+										}
+									}
 								}
 							} break;
 							case UnitId::TerranIronFoundry:
@@ -862,6 +869,18 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
+										}
+									} break;
+								}
+							} break;
+							case UnitId::TerranStarpad:
+							{
+								switch (current_button->requirement_var)
+								{
+									case UnitId::TerranAncile:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+											current_button_state = Button_State::Invisible;
 										}
 									} break;
 								}
@@ -1749,6 +1768,13 @@ namespace hooks {
 								case UnitId::TerranCohort:
 								{
 									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Cohort - Servile Vigor
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranSouthpaw:
+								{
+									if (current_button->icon_id == IconId::StewardPulseCannon)	// Southpaw - Offset: Linear
+									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

@@ -62,6 +62,7 @@ enum Faction: u8 {
 	Faction_TerranFuturistFederation,
 	Faction_TerranGoldenRepublic,
 	Faction_TerranNydusTrinity,
+	Faction_TerranUpstart,
 
 	Faction_ProtossDivinePrimacy,
 	Faction_ProtossOrderOfTheSacredTemplar,
@@ -85,6 +86,7 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 	"futurist_federation",
 	"golden_republic",
 	"nydus_trinity",
+	"upstart_terran",
 
 	"divine_primacy",
 	"order_of_the_sacred_templar",

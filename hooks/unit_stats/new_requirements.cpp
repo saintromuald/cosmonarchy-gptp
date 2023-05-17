@@ -1784,7 +1784,6 @@ namespace hooks {
 						return TECH_HIDDEN;
 					} break;
 					case UnitId::TerranVulture:
-					case UnitId::TerranGoliath:
 					case UnitId::TerranCyclops:
 					{
 						if (in_air || is_adding_on)
@@ -1792,6 +1791,28 @@ namespace hooks {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranGoliath:
+					{
+						if (globals.players[player_id].faction != Faction_TerranUpstart)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+					}
+					case UnitId::TerranSouthpaw:
+					{
+						if (globals.players[player_id].faction == Faction_TerranUpstart)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
 					}
 					case UnitId::TerranBlackjack:
 					case UnitId::TerranMatadorTankMode:
@@ -1897,7 +1918,6 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranWraith:
-					case UnitId::TerranAncile:
 					case UnitId::TerranTrojan:
 					{
 						if (in_air)
@@ -1905,6 +1925,28 @@ namespace hooks {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranAncile:
+					{
+						if (globals.players[player_id].faction != Faction_TerranUpstart)
+						{
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+					}
+					case UnitId::TerranWendigo:
+					{
+						if (globals.players[player_id].faction == Faction_TerranUpstart)
+						{
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
 					}
 				}
 			}

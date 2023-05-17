@@ -5,9 +5,9 @@
 
 namespace hooks
 {
-	s32 canHitTargetCheck(Unit* a1, Unit* a2)
+	s32 can_hit_target_check(Unit* target, Unit* attacker)
 	{
-		if (scbw::is_under_dark_swarm(a1)) return 255;
+		if (scbw::is_under_dark_swarm(target)) return 255;
 		return 0;
 	};
 }
