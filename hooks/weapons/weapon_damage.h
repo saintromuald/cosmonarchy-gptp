@@ -1,7 +1,10 @@
 #pragma once
 #include "../../SCBW/structures/Unit.h"
 
+extern Bullet* weapon_damage_current_bullet;
+
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
+
 namespace hooks {
 	void weapon_damage(
 		s32 damage,

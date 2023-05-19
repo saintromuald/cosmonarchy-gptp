@@ -17,6 +17,8 @@
 
 #include "SCBW\UnitFinder.h"
 
+Bullet* weapon_damage_current_bullet;
+
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
 	return scbw::is_under_dark_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
@@ -429,7 +431,10 @@ namespace hooks
 				if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
 					data.attacker->sprite->create_overlay(ImageId::HallucinationDeath3);
 					Bullet* phantom = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
-					BulletExt* phantom_ext = get_bullet_ext(phantom);
+					if (phantom) {
+						BulletExt* phantom_ext = get_bullet_ext(phantom);
+						phantom_ext->is_phantom = true;
+					}
 				}
 			}
 

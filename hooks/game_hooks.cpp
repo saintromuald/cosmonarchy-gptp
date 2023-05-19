@@ -39,6 +39,7 @@
 #include "hooks/weapons/weapon_cooldown.h"
 #include <time.h>
 #include "trigger_system/trigger_system.h"
+#include "hooks/weapons/weapon_damage.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -2951,6 +2952,8 @@ namespace hooks {
 
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
+
+		weapon_damage_current_bullet = 0;
 
 		init_threshold();
 		return true;
