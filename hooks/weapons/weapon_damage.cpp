@@ -376,9 +376,22 @@ namespace hooks
 			} break;
 		}
 
-		if (target_ext->timers[TimerTriumphantRiseDebuff])
-		{
-			scbw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
+		// Hallucinating targets - fire a phantom strike
+		if (target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
+			if (weapon_damage_current_bullet) {
+				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+				if (!current_bullet_ext->is_phantom) {
+					data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
+					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
+					if (phantom_strike) {
+						BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
+						phantom_ext->is_phantom = true;
+					}
+				}
+			} else {
+				data.damage *= 1.5; // Currently doesn't proc onhits with this solution! -Pr0nogo
+				data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
+			}
 		}
 	}
 
@@ -424,23 +437,6 @@ namespace hooks
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
 					attacker_ext->shield_regen_timer = 0;
 				} break;
-			}
-
-			// Check for global bullet for various interactions
-			if (weapon_damage_current_bullet) {
-				BulletExt* current_ext = get_bullet_ext(weapon_damage_current_bullet);
-
-				// Hallucinating targets - fire a phantom strike
-				if (!current_ext->is_phantom && target_ext->timers[TimerHallucinating] >= 1) {
-					if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
-						data.attacker->sprite->create_overlay(ImageId::HallucinationDeath3);
-						Bullet* phantom = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
-						if (phantom) {
-							BulletExt* phantom_ext = get_bullet_ext(phantom);
-							phantom_ext->is_phantom = true;
-						}
-					}
-				}
 			}
 
 			// Ensnaring Brood - Matraleth enchantment ability
@@ -544,6 +540,11 @@ namespace hooks
 				{
 					data.attacker->heal_shields(5 * 256);
 					helper::add_overlay_below_main(data.attacker->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+				}
+
+				if (target_ext->timers[TimerTriumphantRiseDebuff])
+				{
+					scbw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
 				}
 
 				switch (data.weapon_id) {

@@ -47,12 +47,12 @@ namespace
 
 	void __declspec(naked) apply_ensnare_wrapper()
 	{
-		static Unit* a1;
+		static Unit* unit;
 		__asm {
-			MOV a1, EDI
+			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::apply_ensnare(a1);
+		hooks::apply_ensnare(unit);
 		__asm {
 			POPAD
 			RETN

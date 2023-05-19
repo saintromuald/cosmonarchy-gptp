@@ -1192,6 +1192,8 @@ namespace ImageId {
 		HarakanApollyoidAdhesiveOverlay				= 1679,
 
 		MadrigalDirgeProc							= 1698,
+			
+		PhantomStrikeProc		                    = 1738,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
