@@ -621,6 +621,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	u8 Score_tMinimap[128];
 	memory_patch(0x004B3918, &Score_tMinimap);
 	memory_patch(0x004B4C3C, &Score_tMinimap);
+
+	// Show player slots in singleplayer UMS previews. Not working yet.
+//	memory_patch(0x004AAFD4, (u32)0x339001B2);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

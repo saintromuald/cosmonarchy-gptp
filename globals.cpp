@@ -307,9 +307,9 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	}
 	// if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed)) {
-		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
+		u32 irradiate_image_id = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
 		Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
-		overlay_unit->sprite->create_top_overlay(irradiateImageId, 0, 0, 0);
+		overlay_unit->sprite->create_top_overlay(irradiate_image_id, 0, 0, 0);
 	}
 	unit->irradiate_caster = 0;
 	unit->irradiate_player_id = player;
@@ -915,16 +915,6 @@ namespace scbw
 			}
 		}
 
-		// Inherit Entropy Gauntlets
-		if (parent_ext->values[ValueEntropyGauntlets])
-		{
-			child_ext->values[ValueEntropyGauntlets] = parent_ext->values[ValueEntropyGauntlets];
-			if (!(child->sprite->get_overlay(ImageId::EntropyGauntletsOverlaySmall + overlay_offset)))
-			{
-				child->sprite->create_overlay(ImageId::EntropyGauntletsOverlaySmall + overlay_offset);
-			}
-		}
-
 		// Inherit Terminal Surge
 		if (parent_ext->values[ValueTerminalSurge])
 		{
@@ -1059,8 +1049,8 @@ namespace scbw
 			unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 			unit->irradiate_timer = 0;
 
-			//specific updates following irradiate removal
-			unit->irradiate_caster = nullptr;
+			// specific updates following irradiate removal
+			unit->irradiate_caster = 0;
 			unit->irradiate_player_id = 8;
 		}
 
@@ -1082,27 +1072,11 @@ namespace scbw
 			unit_ext->timers[TimerHallucinating] = 1;
 		}
 
-		// Remove Captivating ZethrokorClaws
+		// Remove Captivating Claws
 		if (unit_ext->timers[TimerCaptivatingClaws])
 		{
 			unit_ext->timers[TimerCaptivatingClaws] = 1;
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
-		}
-
-		// Remove Entropy Gauntlets
-		if (unit_ext->values[ValueEntropyGauntlets])
-		{
-			unit_ext->values[ValueEntropyGauntlets] = 0;
-			u32 overlay_offset = scbw::get_overlay_offset(unit->id);
-			u32 overlay_image_id = ImageId::EntropyGauntletsOverlaySmall - overlay_offset;
-			if (unit->subunit)
-			{
-				unit->subunit->sprite->remove_overlay(overlay_image_id);
-			}
-			else
-			{
-				unit->sprite->remove_overlay(overlay_image_id);
-			}
 		}
 
 		// Remove Controlled Opposition

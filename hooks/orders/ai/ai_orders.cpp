@@ -185,19 +185,21 @@ namespace hooks {
 					}
 					*/
 
-					if (unit->id == UnitId::ZergLakizilisk
-						&& !(unit->status & UnitStatus::Burrowed)
-						&& unit_order_id != OrderId::Burrow
-						&& unit_order_id != OrderId::Unburrow) {
+					if  (unit->id == UnitId::ZergLakizilisk
+					&& !(unit->status & UnitStatus::Burrowed)
+					&&   unit_order_id != OrderId::Burrow
+					&&   unit_order_id != OrderId::Unburrow)
+					{
 						if (helper::ai_flee(unit, target)) {
 							return;
 						}
 					}
 
 					if (!is_unbreakable
-						&& unit->status & UnitStatus::Reacts
-						&& !helper::unit_has_ground_path(unit, target->position.x, target->position.y)
-						&& helper::ai_flee(unit, target)) {
+					&&   unit->status & UnitStatus::Reacts
+					&&  !helper::unit_has_ground_path(unit, target->position.x, target->position.y)
+					&&   helper::ai_flee(unit, target))
+					{
 						return;
 					}
 				}
@@ -206,7 +208,7 @@ namespace hooks {
 					return;
 				}
 
-				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible -Veeq7)
+				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible for this) -Veeq7
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker
 					/* && !(units_dat::base_property[target->id] & UnitProperty::Worker)
 					&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
@@ -314,14 +316,13 @@ namespace hooks {
 				}
 
 				UnitAi* unit_ai = unit->unit_ai;
-				if (!unit_ai
-					|| helper::unit_is_active_transport(unit)
-					|| unit->status & UnitStatus::InBuilding
-					&& !(g_aiscript_controller[player].ai_flags.is_use_map_settings)) {
+				if (!unit_ai || helper::unit_is_active_transport(unit) || unit->status & UnitStatus::InBuilding
+				&& !(g_aiscript_controller[player].ai_flags.is_use_map_settings))
+				{
 					continue;
 				}
 
-				s16 region_id = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+				s16 region_id = helper::get_region_id(unit->position.x, unit->position.y);
 				AiRegion* region = &g_ai_region_captains[player][region_id];
 				if (unit_ai->type == AiType::Guard) {
 					GuardAi* guard_ai = &unit->unit_ai->guard_ai;
@@ -349,7 +350,7 @@ namespace hooks {
 				memset(g_aiscript_controller[player].attackers, 0, sizeof(g_aiscript_controller[player].attackers));
 				g_aiscript_controller[player].ai_attack_group_region = 0;
 				helper::ai_attack_clear(player);
-				if (!helper::ai_attack_manager(player, unit->sprite->position.x, unit->sprite->position.y, 0, 1)) {
+				if (!helper::ai_attack_manager(player, unit->position.x, unit->position.y, 0, 1)) {
 					g_aiscript_controller[player].strategic_suicide = 24;
 					region_index = (u16)g_aiscript_controller[player].ai_attack_group_region - 1;
 					ai_region = &g_ai_region_captains[player][region_index];
@@ -452,7 +453,7 @@ namespace hooks {
 		if (!unit || !unit->sprite) {
 			return false;
 		}
-		return helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+		return helper::get_region_id(unit->position.x, unit->position.y);
 	}
 
 	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repair_target) { // 004402B0
@@ -496,8 +497,11 @@ namespace hooks {
 		for (; military_ai; military_ai = military_ai->link.prev) {
 			Unit* unit_it = (Unit*)military_ai->unit;
 			if (unit_it && unit_it->sprite && unit_it != unit) {
-				u32 distance = helper::get_distance_fast(unit_it->sprite->position.x, unit->sprite->position.x, unit_it->sprite->position.y, unit->sprite->position.y);
-				if (distance <= 0x180 && helper::ai_are_on_connected_regions(unit_it, unit) && !(helper::ai_check_military_grouping(unit_it)) && distance > 0x100) {
+				u32 distance = helper::get_distance_fast(unit_it->position.x, unit->position.x, unit_it->position.y, unit->position.y);
+				if  (distance <= 384
+				&&   helper::ai_are_on_connected_regions(unit_it, unit)
+				&& !(helper::ai_check_military_grouping(unit_it)) && distance > 384)
+				{
 					return 1;
 				}
 			}
@@ -588,9 +592,9 @@ namespace hooks {
 
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_is_building_safe(Unit* unit) { // 00438910
-		if (unit && unit->sprite) {
+		if (unit) {
 			if (unit->main_order_id) {
-				s16 regionId = helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y);
+				s16 regionId = helper::get_region_id(unit->position.x, unit->position.y);
 				AiRegion* playerRegions = g_ai_region_captains[unit->player];
 				char regionState = playerRegions[regionId].state;
 				AiRegion* region = &playerRegions[regionId];
@@ -604,16 +608,16 @@ namespace hooks {
 
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2) { // 00438E10
-		if (!unit1 || !unit2 || !unit1->sprite || !unit2->sprite) {
+		if (!unit1 || !unit2) {
 			return 0;
 		}
-		u16 region_id = helper::get_region_id(unit2->sprite->position.x, unit2->sprite->position.y);
-		u16 region_id2 = helper::get_region_id(unit1->sprite->position.x, unit1->sprite->position.y);
+		u16 region_id = helper::get_region_id(unit2->position.x, unit2->position.y);
+		u16 region_id2 = helper::get_region_id(unit1->position.x, unit1->position.y);
 		return helper::ai_regions_are_connected(unit2->player, region_id2, region_id);
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	s32 get_bunker_placement_position(u32 placementId, u32* regionId) { // 004442E0
+	s32 get_bunker_placement_position(u32 placement_id, u32* region_id) { // 004442E0
 		u32 region_max = *g_region_ids_count;
 		if (!g_region_ids_count) {
 			return 0;
@@ -621,36 +625,36 @@ namespace hooks {
 
 		s32 result;
 		if (*g_region_ids_count == 1) {
-			*regionId = g_region_ids[0];
+			*region_id = g_region_ids[0];
 			result = 1;
 		} else {
 			u32 iterator1 = 0;
-			Point16 regionPositions[24];
-			u32 tileDistances[24];
+			Point16 region_positions[24];
+			u32 tile_distances[24];
 			if (g_region_ids_count) {
-				memset(tileDistances, 99999999, *g_region_ids_count);
+				memset(tile_distances, 99999999, *g_region_ids_count);
 				RegionArray* _paths = *g_sai_paths;
 				do {
-					u32 regionOffset = g_region_ids[iterator1] << 6;
-					u32 region_x = *(u32*)((char*)&_paths->regions[0].region_center_x + regionOffset) >> 8;
-					u32 region_y = *(u32*)((char*)&_paths->regions[0].region_center_y + regionOffset) >> 8;
-					regionPositions[iterator1].x = region_x;
-					regionPositions[iterator1++].y = region_y;
+					u32 region_offset = g_region_ids[iterator1] << 6;
+					u32 region_x = *(u32*)((char*)&_paths->regions[0].region_center_x + region_offset) >> 8;
+					u32 region_y = *(u32*)((char*)&_paths->regions[0].region_center_y + region_offset) >> 8;
+					region_positions[iterator1].x = region_x;
+					region_positions[iterator1++].y = region_y;
 				} while (iterator1 < region_max);
 			}
 
 			Unit* i;
-			for (i = *first_player_unit[placementId].unit; i; i = i->player_link.next) {
+			for (i = *first_player_unit[placement_id].unit; i; i = i->player_link.next) {
 				if (i->sprite) {
 					if (i->main_order_id) {
-						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony) {
+						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony || i->id == UnitId::ZergSkortrithColony) {
 							u32 iterator2 = 0;
 							if (region_max) {
 								do { // Distance from unit to region position
-									u32 newTileDistance = helper::get_tile_distance(i->sprite->position.x, i->sprite->position.y, regionPositions[iterator2].x, regionPositions[iterator2].y);
-									if (newTileDistance < tileDistances[iterator2])
+									u32 new_tile_distance = helper::get_tile_distance(i->sprite->position.x, i->sprite->position.y, region_positions[iterator2].x, region_positions[iterator2].y);
+									if (new_tile_distance < tile_distances[iterator2])
 									{
-										tileDistances[iterator2] = newTileDistance;
+										tile_distances[iterator2] = new_tile_distance;
 									}
 									region_max = *g_region_ids_count;
 									++iterator2;
@@ -661,16 +665,16 @@ namespace hooks {
 				}
 			}
 
-			u32 bestTileDistance = tileDistances[0];
-			u32 currentRegionId = 1;
-			u32 bestRegionId;
-			for (bestRegionId = 0; currentRegionId < region_max; ++currentRegionId) {
-				if (tileDistances[currentRegionId] > bestTileDistance) {
-					bestTileDistance = tileDistances[currentRegionId];
-					bestRegionId = currentRegionId;
+			u32 best_tile_distance = tile_distances[0];
+			u32 current_region_id = 1;
+			u32 best_region_id;
+			for (best_region_id = 0; current_region_id < region_max; ++current_region_id) {
+				if (tile_distances[current_region_id] > best_tile_distance) {
+					best_tile_distance = tile_distances[current_region_id];
+					best_region_id = current_region_id;
 				}
 			}
-			*regionId = g_region_ids[bestRegionId];
+			*region_id = g_region_ids[best_region_id];
 			result = 1;
 		}
 		return result;

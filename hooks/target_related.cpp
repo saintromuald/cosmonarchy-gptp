@@ -714,48 +714,48 @@ LABEL_42:
 		u16 unit_id = unit->id;
 		if (!unit_id || unit_id == 32)
 		{
-			Unit* unitTarget = unit->order_target.unit;
-			if (unitTarget)
+			Unit* unit_target = unit->order_target.unit;
+			if (unit_target)
 			{
-				s32 cooldownVar = 0;
+				s32 cooldown = 0;
 				if (unit->stim_timer)
 				{
-					cooldownVar = 1;
+					cooldown = 1;
 				}
 				if (unit->status & UnitStatus::SpeedUpgrade)
 				{
-					++cooldownVar;
+					++cooldown;
 				}
 				if (unit->ensnare_timer)
 				{
-					--cooldownVar;
+					--cooldown;
 				}
-				if (cooldownVar <= 0)
+				if (cooldown <= 0)
 				{
-					s32 unitHP = units_dat::max_hitpoints[unit_id] >> 8;
-					if (!unitHP)
+					s32 unit_hp = units_dat::max_hitpoints[unit_id] >> 8;
+					if (!unit_hp)
 					{
-						unitHP = (unit->hitpoints + 255) >> 8;
-						if (!unitHP)
+						unit_hp = (unit->hitpoints + 255) >> 8;
+						if (!unit_hp)
 						{
-							unitHP = 1;
+							unit_hp = 1;
 						}
 					}
-					if ((unit->hitpoints + 255) >> 8 >= unitHP / 2)
+					if ((unit->hitpoints + 255) >> 8 >= unit_hp / 2)
 					{
-						if (unit_can_attack_target(unit, unitTarget, 1))
+						if (unit_can_attack_target(unit, unit_target, 1))
 						{
-							unitTarget = unit->order_target.unit;
-							if (!unitTarget)
+							unit_target = unit->order_target.unit;
+							if (!unit_target)
 							{
 								if (helper::tech_use_allowed(unit, 0, unit->player) == 1
-								  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
+								&&  helper::get_current_hp_plus_shields(unit_target) >= 100)
 								{
 									helper::stimpack_proc(unit);
 								}
 								return;
 							}
-							if (helper::is_target_visible(unitTarget, unit))
+							if (helper::is_target_visible(unit_target, unit))
 							{
 								Unit* subunit = unit->subunit;
 								if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit))
@@ -763,33 +763,29 @@ LABEL_42:
 									subunit = unit;
 								}
 
-								u8 airWeapon;
-								if (unitTarget->status & 4)
+								u8 air_weapon;
+								if (unit_target->status & 4)
 								{
-									airWeapon = units_dat::air_weapon[subunit->id];
-								}
-								else
-								{
-									u16 subunitId = subunit->id;
-									if (subunitId != UnitId::ZergLakizilisk || subunit->status & 0x10)
+									air_weapon = units_dat::air_weapon[subunit->id];
+								} else {
+									u16 subunit_id = subunit->id;
+									if (subunit_id != UnitId::ZergLakizilisk || subunit->status & 0x10)
 									{
-										airWeapon = units_dat::ground_weapon[subunitId];
-									}
-									else
-									{
-										airWeapon = WeaponId::None;
+										air_weapon = units_dat::ground_weapon[subunit_id];
+									} else {
+										air_weapon = WeaponId::None;
 									}
 								}
-								if (airWeapon != WeaponId::None)
+								if (air_weapon != WeaponId::None)
 								{
-									u32 airWeaponMinRange = weapons_dat::min_range[airWeapon];
-									if (!airWeaponMinRange || !(helper::is_target_within_min_range(subunit, airWeaponMinRange, unitTarget)))
+									u32 air_min_range = weapons_dat::min_range[air_weapon];
+									if (!air_min_range || !(helper::is_target_within_min_range(subunit, air_min_range, unit_target)))
 									{
-										s32 airWeaponMaxRange = weapons_dat::max_range[airWeapon];
-										if (helper::is_target_within_min_movement_range(unitTarget, subunit, airWeaponMaxRange))
+										s32 air_max_range = weapons_dat::max_range[air_weapon];
+										if (helper::is_target_within_min_movement_range(unit_target, subunit, air_max_range))
 										{
 											if (helper::tech_use_allowed(unit, 0, unit->player) == 1
-											  && helper::get_current_hp_plus_shields(unitTarget) >= 100)
+											&&  helper::get_current_hp_plus_shields(unit_target) >= 100)
 											{
 												helper::stimpack_proc(unit);
 											}

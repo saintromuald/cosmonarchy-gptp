@@ -43,12 +43,7 @@
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
-		u32 overlay = ImageId::ShamanNaniteField;
-		Unit* target_context = target;
-		if (target->subunit) {
-			target_context = target->subunit;
-		}
-		target_context->sprite->create_top_overlay(overlay, 0, 0, 0);
+		scbw::manage_unit_overlay(target, ImageId::ShamanNaniteField);
 	}
 	target->heal_hp(heal * 256, shaman);
 }
@@ -1142,12 +1137,17 @@ namespace hooks {
 								x_offset = MathUtils::clamp(x_offset, -127, 128);
 								y_offset = MathUtils::clamp(y_offset, -127, 128);
 
-								target->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+								Unit* final_target = unit;
+								if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+									final_target = unit->subunit;
+								}
+								final_target->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
 								unit_ext->timers[TimerTalosAnimationSubtimer] = scbw::rand_between(3, 7);
 							}
 
 							if (!unit_ext->values[ValueTalosAnimationTimer]
-							||  unit_ext->values[ValueTalosAnimationTimer] % 128 == 0) {
+							||   unit_ext->values[ValueTalosAnimationTimer] % 128 == 0)
+							{
 								Point16 pos = target->sprite->position;
 								switch (scbw::random() % 4) {
 									case 0: {
@@ -1489,7 +1489,7 @@ namespace hooks {
 					if (do_teleport) {
 						bool teleport = scbw::teleport_to_unit(unit, target, min_radius, 0, true);
 						if (!unit->get_overlay(image_id) && teleport) {
-							unit->sprite->create_top_overlay(image_id);
+							scbw::manage_unit_overlay(unit, image_id);
 						}
 					}
 				}
@@ -1640,7 +1640,7 @@ namespace hooks {
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerEnsnaringBrood] = 3;
 					if (!target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
-						target->sprite->create_top_overlay(ImageId::EnsnaringBroodOverlay);
+						scbw::manage_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
 					}
 					});
 			} break;
@@ -1829,7 +1829,7 @@ namespace hooks {
 				// Ancile - Providence
 				if (unit->energy >= 1 * 256) {
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
-						unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlayLarge);
+						scbw::manage_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge);
 					}
 
 					const u32 radius = 2 * 32;
@@ -1883,7 +1883,7 @@ namespace hooks {
 						}
 					}
 				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
-					unit->remove_overlay(ImageId::SublimeShepherdOverlayLarge);
+					scbw::manage_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge, true);
 					helper::play_sound_from_unit(SoundId::AncileProvidenceDeactivate, unit, 1, 0);
 				}
 			} break;
@@ -2089,8 +2089,7 @@ namespace hooks {
 
 			if (has_source) {
 				if (unit_ext->timers[TimerGladiusBindingPlasma] % 12 == 11) {
-					unit->sprite->create_overlay(ImageId::BindingPlasmaOverlay);
-				//	helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0); // TODO: Audio
+					scbw::manage_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio					
 				}
 				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
 					scbw::binding_plasma_proc(unit);
@@ -2119,7 +2118,7 @@ namespace hooks {
 				if (unit_ext->timers[TimerMindControlRecede] <= 4 * 24) {
 					unit->unfreeze();
 					u32 offset = scbw::get_overlay_offset(unit->id, true);
-					unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
+					scbw::manage_unit_overlay(unit, ImageId::TyrannyStunSmall + offset, true);
 				}
 				unit_ext->timers[TimerMindControlRecede] = 5 * 24;
 			}
@@ -2127,13 +2126,13 @@ namespace hooks {
 				unit->freeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
 				if (!unit->get_overlay(ImageId::TyrannyStunSmall + offset)) {
-					unit->sprite->create_top_overlay(ImageId::TyrannyStunSmall + offset);
+					scbw::manage_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
 				}
 			}
 			if (!unit_ext->timers[TimerMindControlRecede]) {
 				unit->unfreeze();
 				u32 offset = scbw::get_overlay_offset(unit->id, true);
-				unit->remove_overlay(ImageId::TyrannyStunSmall + offset);
+				scbw::manage_unit_overlay(unit, ImageId::TyrannyStunSmall + offset, true);
 				scbw::recede_mind_control(unit);
 				unit_ext->values[ValueMindControlPlayer] = 0;
 			}
@@ -2223,9 +2222,8 @@ namespace hooks {
 		*/
 
 		// Phase Link - overlay
-		if (*g_elapsed_time_frames % 10 == 0
-			&& unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
-			unit->sprite->create_overlay(ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+		if (*g_elapsed_time_frames % 10 == 0 && unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
+			scbw::manage_unit_overlay(unit, ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Incubation
@@ -2474,7 +2472,7 @@ namespace hooks {
 				}
 			}
 		} else if (unit_ext->timers[TimerObservanceDebuff] == 1) {
-			unit->sprite->remove_overlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
+			scbw::manage_unit_overlay(unit, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(unit->id));
 		}
 
 		// Vithrilisk - Corrosive Touch clear
@@ -2517,13 +2515,7 @@ namespace hooks {
 		u32 halluc_timer = unit_ext->timers[TimerHallucinating];
 		if (unit && unit->sprite) {
 			if (halluc_timer % 24 == 1) {
-				Sprite* sprite;
-				if (unit->subunit) {
-					sprite = unit->subunit->sprite;
-				} else {
-					sprite = unit->sprite;
-				}
-				sprite->create_overlay(ImageId::HallucinationOverlay, 0, 0, 0);
+				scbw::manage_unit_overlay(unit, ImageId::HallucinationOverlay);
 			}
 		}
 
@@ -2574,7 +2566,7 @@ namespace hooks {
 
 			u32 offset = scbw::get_overlay_offset(unit->id);
 			if (!unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
-				unit->sprite->create_top_overlay(ImageId::SalvageDisableSmall + offset);
+				scbw::manage_unit_overlay(unit, ImageId::SalvageDisableSmall + offset);
 			}
 			if (!unit_ext->timers[TimerTalosSoundLoopTimer]) {
 				helper::play_sound_from_unit(SoundId::TalosSalvageLoop, unit, 1, 0);
@@ -2586,7 +2578,7 @@ namespace hooks {
 
 			u32 offset = scbw::get_overlay_offset(unit->id);
 			if (unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
-				unit->sprite->remove_overlay(ImageId::SalvageDisableSmall + offset);
+				scbw::manage_unit_overlay(unit, ImageId::SalvageDisableSmall + offset, true);
 			}
 		}
 
@@ -2604,7 +2596,7 @@ namespace hooks {
 
 		// Remove Ensnaring Brood overlay
 		if (unit_ext->timers[TimerEnsnaringBrood] == 1) {
-			unit->remove_overlay(ImageId::EnsnaringBroodOverlay);
+			scbw::manage_unit_overlay(unit, ImageId::EnsnaringBroodOverlay, true);
 		}
 
 		// Crucible stacks clear
@@ -2613,7 +2605,7 @@ namespace hooks {
 			for (auto it = crucibles.begin(); it != crucibles.end(); ++it) {
 				Unit* target = *it;
 				if (scbw::get_distance_fast(unit->position, target->position) > 8 * 32) {
-					target->remove_overlay(ImageId::CrucibleKhaydarinChargeOverlay);
+					scbw::manage_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, true);
 					crucibles.erase(it);
 					--it;
 				}
@@ -2651,7 +2643,7 @@ namespace hooks {
 					vec.push_back(unit);
 				}
 				if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-					target->sprite->create_underlay(ImageId::CrucibleKhaydarinChargeOverlay, 0, 0, 0);
+					scbw::manage_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, false, true);
 				}
 			}
 		}
@@ -2740,26 +2732,30 @@ namespace hooks {
 			u32 blade_vortex = unit_ext->timers[TimerBladeVortex];
 			u32 image_id = ImageId::BladeVortexDebuffSmall + scbw::get_overlay_offset(unit->id);
 			if (blade_vortex > 1 && !unit->get_overlay(image_id)) {
-				unit->sprite->create_top_overlay(image_id);
+				scbw::manage_unit_overlay(unit, image_id);
 			} else if (blade_vortex <= 1 && unit->get_overlay(image_id)) {
-				unit->sprite->remove_overlay(image_id);
+				scbw::manage_unit_overlay(unit, image_id, true);
 			}
 		}
 
 		// Magister - Stellar Enforcement - Handle overlay looping
-		if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] <= 1) {
-			unit_ext->timers[TimerStellarEnforcementOverlay] = 30;
-			unit->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
-		}
-		// Handle overlays after effect is cleansed
-		if (unit->get_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true)) && unit_ext->timers[TimerStellarEnforcement] >= 1) {
-			unit->sprite->remove_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true));
+		{
+			u32 overlay_id = ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(unit->id, true);
+			if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] <= 1) {
+				unit_ext->timers[TimerStellarEnforcementOverlay] = 30;
+				scbw::manage_unit_overlay(unit, overlay_id);
+			}
+
+			// Handle overlays after effect is cleansed
+			if (unit->get_overlay(overlay_id) && unit_ext->timers[TimerStellarEnforcement] >= 1) {
+				scbw::manage_unit_overlay(unit, overlay_id, true);
+			}
 		}
 
 		// Clear Deconstruction on timer end
 		if (unit_ext->values[ValueDeconstruction] && unit_ext->timers[TimerDeconstruction] <= 1) {
 			unit_ext->values[ValueDeconstruction] = 0;
-			unit->sprite->remove_overlay(ImageId::DeconstructionSmall + scbw::get_overlay_offset(unit->id));
+			scbw::manage_unit_overlay(unit, ImageId::DeconstructionSmall + scbw::get_overlay_offset(unit->id), true);
 		}
 
 		// Harakan - Apollyoid Adhesive
@@ -2767,7 +2763,7 @@ namespace hooks {
 			u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
 			if (unit_ext->timers[TimerApollyoidAdhesive] >= 1) {
 				if (!unit->sprite->get_overlay(image_id)) {
-					unit->sprite->create_top_overlay(image_id);
+					scbw::manage_unit_overlay(unit, image_id);
 				}
 				if (!unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod]) {
 					unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] = 24;
@@ -2777,7 +2773,7 @@ namespace hooks {
 				}
 			}
 			if (unit_ext->timers[TimerApollyoidAdhesive] == 1) {
-				unit->remove_overlay(image_id);
+				scbw::manage_unit_overlay(unit, image_id, true);
 				unit_ext->values[ValueApollyoidAdhesiveStacks] = 0;
 			}
 		}
@@ -2825,7 +2821,11 @@ namespace hooks {
 			x_offset = MathUtils::clamp(x_offset, -127, 128);
 			y_offset = MathUtils::clamp(y_offset, -127, 128);
 
-			unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+			Unit* final_unit = unit;
+			if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+				final_unit = unit->subunit;
+			}
+			final_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
 			unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 		}
 

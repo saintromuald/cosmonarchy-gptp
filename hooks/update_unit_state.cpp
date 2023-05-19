@@ -73,7 +73,7 @@ namespace hooks
 			}
 
 			if (!unit->get_overlay(overlay_id)) {
-				unit->sprite->create_top_overlay(overlay_id);
+				scbw::manage_unit_overlay(unit, overlay_id);
 				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
 		} else if (unit->sprite->get_overlay(overlay_id)) {
@@ -305,11 +305,11 @@ namespace hooks
 				}
 
 				if (!unit->get_overlay(overlay_id)) {
-					unit->sprite->create_top_overlay(overlay_id);
+					scbw::manage_unit_overlay(unit, overlay_id);
 					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 				}
 			} else if (unit->sprite->get_overlay(overlay_id)) {
-				unit->sprite->remove_overlay(overlay_id);
+				scbw::manage_unit_overlay(unit, overlay_id, true);
 				if (unit->shields >= max_shields) {
 					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
 				} else {

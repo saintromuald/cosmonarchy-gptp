@@ -3,17 +3,17 @@
 
 namespace
 {
-	s32 __declspec(naked) canHitTargetCheck_Wrapper() // 004765B0
+	s32 __declspec(naked) can_hit_target_check_wrapper() // 004765B0
 	{
-		static Unit* a1;
-		static Unit* a2;
+		static Unit* target;
+		static Unit* attacker;
 		static s32 result;
 		__asm {
+			MOV target, EAX
+			MOV attacker, ECX
 			PUSHAD
-			MOV a1, EAX
-			MOV a2, ECX
 		}
-		result = hooks::canHitTargetCheck(a1, a2);
+		result = hooks::can_hit_target_check(target, attacker);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -24,11 +24,10 @@ namespace
 
 namespace hooks
 {
-
 	void inject_miss_chance_hooks()
 	{
 		// remove miss change from height disadvantage
-		jump_patch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
+		jump_patch(can_hit_target_check_wrapper, 0x004765B0, 1);
 
 		// remove miss chance for non-projectile attacks
 		memory_patch(0x0048C0C7, (u8)0x90);

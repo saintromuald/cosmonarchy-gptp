@@ -136,20 +136,16 @@ namespace WeaponId {
 		// Internal entries, not real IDs
 		Custom = 0x100,
 
-		// Cosmonarchy \\
+		// Cosmonarchy BW \\
 
-		// Shared \\
+		// Factional \\
 			
 		CohortGaussPistols					= 20,
 		AspirantPotentiumCannon				= 69,
-		CharlatanFerventBlaster				= 101,
 		LuminaryIcarusMissiles				= 131,
-		StrigaPhaseSaber					= 133,
-		AxitriliskSearingVenom				= 134,
 		TarasqueHedonCannon					= 135,
 		TarasqueAcceleratedPlasmid			= 136,	// Tarasque mobile weapon
-		AnticthonEncirclingMirror			= 137,
-		EmpressFadingBioplasma				= 138,
+		SouthpawKnockoutDrivers				= 169,
 
 		// Terran \\
 			
@@ -183,6 +179,8 @@ namespace WeaponId {
 		WyvernJacksonCannon					= 125,
 		PaladinSkyfall						= 126,	// Ability targeting
 		DiademHammerfallBeacon				= 129,	// Main weapon precursor
+		StrigaPhaseSaber					= 133,
+		AnticthonEncirclingMirror			= 137,
 		EmergencyDetonationExplosion		= 140,
 		MagnetarNewtonianShockCannon		= 141,
 		SentinelCerberusRailgun				= 147,
@@ -231,6 +229,7 @@ namespace WeaponId {
 		EcclesiastAstralBlaster				= 97,
 		AtreusDauntlessDisruptorCannon		= 98,
 		AmaranthPsiCleaver					= 99,
+		CharlatanFerventBlaster				= 101,
 		DemiurgeGalacticWeaver				= 106,
 		CantavisHallucinationCast			= 107,	// Ability targeting
 		IdolPrismaticBlaster				= 112,
@@ -241,6 +240,7 @@ namespace WeaponId {
 		ArchitectDispersiveSalvo			= 119,
 		AugurFinalHour						= 128,
 		EpigraphLitanyCannons				= 132,
+		EmpressFadingBioplasma				= 138,
 		AnthelionEventHorizon				= 139,
 		VagrantVapidBlaster					= 148,
 		MatrixKhaydarinRay					= 149,
@@ -275,6 +275,7 @@ namespace WeaponId {
 		AlmaksaliskPiercingSpines			= 110,
 		KalkaliskViscousAcid				= 117,
 		AkistrokorBlissfulEmbrace			= 127,	// Akistrokor ability targeting
+		AxitriliskSearingVenom				= 134,
 		IzirokorEnergizedBioplasma			= 142,
 		KagraliskRepeatingVenom				= 145,
 		EvigriliskBrutishTendrils			= 146,

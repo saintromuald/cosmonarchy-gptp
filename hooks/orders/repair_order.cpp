@@ -301,14 +301,10 @@ namespace hooks
 					{
 						*g_last_internal_error = 10;
 						result = 0;
-					}
-					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && order_id != OrderId::Unburrow)
-					{
+					} else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && order_id != OrderId::Unburrow) {
 						*g_last_internal_error = 11;
 						result = 0;
-					}
-					else
-					{
+					} else {
 						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
 						|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
@@ -316,34 +312,24 @@ namespace hooks
 						{
 							*g_last_internal_error = 8;
 							result = 0;
-						}
-						else
-						{
+						} else {
 							if (orders_dat::req_offset[order_id])
 							{
 								result = helper::parse_requirement_opcodes(unit, order_id, player, g_orders_requirement_tree, orders_dat::req_offset[order_id]);
-							}
-							else
-							{
+							} else {
 								*g_last_internal_error = 23;
 							}
 						}
 					}
-				}
-				else
-				{
+				} else {
 					*g_last_internal_error = 20;
 					result = 0;
 				}
-			}
-			else
-			{
+			} else {
 				*g_last_internal_error = 1;
 				result = 0;
 			}
-		}
-		else
-		{
+		} else {
 			*g_last_internal_error = 15;
 			result = 0;
 		}
@@ -367,9 +353,7 @@ namespace hooks
 				if (unit_id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
 				{
 					action = RightClickActions::NoMove_NormalAttack;
-				}
-				else
-				{
+				} else {
 					char right_click_order = helper::get_right_click_action_order(unit);
 					if (!right_click_order)
 					{
@@ -432,9 +416,7 @@ namespace hooks
 							}
 							text_id = 889;
 						}
-					}
-					else
-					{
+					} else {
 						text_id = 879;
 					}
 					sfx_id = unit->get_race() + 138;
@@ -452,9 +434,7 @@ namespace hooks
 					{
 					//	sfx_id = unit->get_race() + 1;
 					//	text_id = unit->get_race()  + 893;
-					}
-					else
-					{
+					} else {
 						if (!helper::is_unit_enemy(*g_active_portrait_unit, target))
 						{
 							return 1;
@@ -494,9 +474,7 @@ namespace hooks
 							{
 								max_volume = sfx_dat::volume[sfx_id];
 							}
-						}
-						else
-						{
+						} else {
 							max_volume = 0;
 						}
 					}

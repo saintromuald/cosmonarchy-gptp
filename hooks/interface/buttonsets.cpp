@@ -824,6 +824,13 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
+
+									case UnitId::TerranGoliath:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+											current_button_state = Button_State::Invisible;
+										}
+									}
 								}
 							} break;
 							case UnitId::TerranIronFoundry:
@@ -862,6 +869,18 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
+										}
+									} break;
+								}
+							} break;
+							case UnitId::TerranStarpad:
+							{
+								switch (current_button->requirement_var)
+								{
+									case UnitId::TerranAncile:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+											current_button_state = Button_State::Invisible;
 										}
 									} break;
 								}
@@ -1752,6 +1771,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranSouthpaw:
+								{
+									if (current_button->icon_id == IconId::StewardPulseCannon)	// Southpaw - Offset: Linear
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranAspirant:
 								{
 									if (current_button->icon_id == IconId::ScarabDamage) { // Aspirant - Criticality
@@ -2245,7 +2271,7 @@ namespace hooks {
 								case UnitId::ProtossPatriarch:
 								{
 									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
-									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Patriarch - Kinetic Penetration
+									||	current_button->icon_id == IconId::AntimatterMissiles) // Patriarch - Interception
 									{
 										current_button_state = Button_State::Enabled;
 									}

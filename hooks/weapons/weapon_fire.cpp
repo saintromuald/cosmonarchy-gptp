@@ -664,6 +664,11 @@ namespace hooks {
 							fire_bullet(unit, weapon_id, unit->order_target);
 						}
 					} break;
+					case WeaponId::SouthpawKnockoutDrivers:
+					{
+						// Southpaw - Offset: Linear
+						fire_line(unit, weapon_id, 3, 24, 1, 0);
+					} break;
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
@@ -672,11 +677,6 @@ namespace hooks {
 						offsets.count = 4;
 						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, &offsets);
 					} break;
-					case WeaponId::AnticthonEncirclingMirror:
-					{
-						// Multi-Attack V
-						fire_multiple(unit, weapon_id, 5, FilterEnemy);
-					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
 						// Paladin - Offset: Linear
@@ -684,6 +684,11 @@ namespace hooks {
 						offsets.value_id = ValuePaladinLaunchPos;
 						offsets.count = 5;
 						fire_line(unit, weapon_id, 10, 32, 2, 16, &offsets);
+					} break;
+					case WeaponId::AnticthonEncirclingMirror:
+					{
+						// Multi-Attack V
+						fire_multiple(unit, weapon_id, 5, FilterEnemy);
 					} break;
 					case WeaponId::AionLazarusSalvo:
 					{
@@ -1511,10 +1516,10 @@ namespace hooks {
 
 		Unit* target_unit = parent->order_target.unit;
 		bullet->attack_target.unit = target_unit;
-		if (target_unit->sprite) {
+		if (target_unit && target_unit->sprite) {
 			bullet->sprite->elevation = target_unit->sprite->elevation + 1;
-			bullet->attack_target.pt.x = target_unit->sprite->position.x;
-			bullet->attack_target.pt.y = target_unit->sprite->position.y;
+			bullet->attack_target.pt.x = target_unit->position.x;
+			bullet->attack_target.pt.y = target_unit->position.y;
 		} else {
 			bullet->sprite->elevation = parent->sprite->elevation + 1;
 			bullet->attack_target.pt.x = parent->order_target.pt.x;
@@ -1790,15 +1795,11 @@ namespace hooks {
 			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir)
 			{
 				helper::use_weapon_iscript(unit, units_dat::air_weapon[unit->id], 2, iscript_anim + 1);
-			}
-			else
-			{
+			} else {
 				if (unit->id != UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed)
 				{
 					helper::use_weapon_iscript(unit, units_dat::ground_weapon[unit->id], 1, iscript_anim);
-				}
-				else
-				{
+				} else {
 					helper::use_weapon_iscript(unit, WeaponId::None, 1, iscript_anim);
 				}
 			}
@@ -1846,9 +1847,7 @@ namespace hooks {
 		if (weapon_id == WeaponId::None)
 		{
 			return 1;
-		}
-		else
-		{
+		} else {
 			return weapons_dat::flingy_id[weapon_id] != 0;
 		}
 	}
@@ -1876,17 +1875,10 @@ namespace hooks {
 		if (tgt_x_final >= *g_map_width_pixels || tgt_y_final >= *g_map_height_pixels)
 		{
 			tgt_y_final = tgt_y;
-		}
-		else
-		{
+		} else {
 			tgt_x_final = tgt_x;
 		}
-
-		// Disabled to make the chasing more responsive. -Pr0nogo
-	//	char timer = attacker->recent_order_timer;
-	//	if (!timer)
-	//	{
-			helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
-	//	}
+		// Originally delayed the chasing using order timer. -Pr0nogo
+		helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
 	}
 }

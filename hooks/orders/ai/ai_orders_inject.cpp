@@ -266,8 +266,8 @@ namespace
 
 	void __declspec(naked) get_bunker_placement_position_wrapper() // 004442E0
 	{
-		static u32 placementId;
-		static u32* regionId;
+		static u32 placement_id;
+		static u32* region_id;
 		static s32 result;
 		__asm
 		{
@@ -275,13 +275,13 @@ namespace
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV placementId, EAX
+			MOV placement_id, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV regionId, EAX
+			MOV region_id, EAX
 			POP EAX
 			PUSHAD
 		}
-		result = hooks::get_bunker_placement_position(placementId, regionId);
+		result = hooks::get_bunker_placement_position(placement_id, region_id);
 		__asm
 		{
 			POPAD
