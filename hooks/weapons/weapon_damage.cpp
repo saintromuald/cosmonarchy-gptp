@@ -426,14 +426,19 @@ namespace hooks
 				} break;
 			}
 
-			// Fire a phantom strike at hallucinating targets
-			if (target_ext->timers[TimerHallucinating] >= 1) {
-				if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
-					data.attacker->sprite->create_overlay(ImageId::HallucinationDeath3);
-					Bullet* phantom = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
-					if (phantom) {
-						BulletExt* phantom_ext = get_bullet_ext(phantom);
-						phantom_ext->is_phantom = true;
+			// Check for global bullet for various interactions
+			if (weapon_damage_current_bullet) {
+				BulletExt* current_ext = get_bullet_ext(weapon_damage_current_bullet);
+
+				// Hallucinating targets - fire a phantom strike
+				if (!current_ext->is_phantom && target_ext->timers[TimerHallucinating] >= 1) {
+					if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
+						data.attacker->sprite->create_overlay(ImageId::HallucinationDeath3);
+						Bullet* phantom = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
+						if (phantom) {
+							BulletExt* phantom_ext = get_bullet_ext(phantom);
+							phantom_ext->is_phantom = true;
+						}
 					}
 				}
 			}
@@ -442,7 +447,7 @@ namespace hooks
 			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
 			&&  !scbw::is_under_dark_swarm(data.target)) {
-				apply_ensnare(data.target);
+				 apply_ensnare(data.target);
 			}
 
 			if (data.weapon_id == WeaponId::MindTyrantTyranny) {
