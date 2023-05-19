@@ -18,7 +18,7 @@ namespace hooks {
 	bool ai_is_building_safe(Unit* unit);																				// 00438910
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);															// 00438E10
 
-	s32 get_bunker_placement_position(u32 placementId, u32* regionId);													// 004442E0
+	s32 get_bunker_placement_position(u32 placement_id, u32* region_id);												// 004442E0
 	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range);		// 004461B0
 	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag);	// 00443AC0
 	bool ai_check_military_grouping(Unit* unit);																		// 00439550
