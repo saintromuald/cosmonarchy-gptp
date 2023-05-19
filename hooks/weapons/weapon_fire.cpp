@@ -1516,7 +1516,7 @@ namespace hooks {
 
 		Unit* target_unit = parent->order_target.unit;
 		bullet->attack_target.unit = target_unit;
-		if (target_unit->sprite) {
+		if (target_unit && target_unit->sprite) {
 			bullet->sprite->elevation = target_unit->sprite->elevation + 1;
 			bullet->attack_target.pt.x = target_unit->sprite->position.x;
 			bullet->attack_target.pt.y = target_unit->sprite->position.y;
