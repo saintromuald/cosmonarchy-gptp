@@ -753,7 +753,7 @@ namespace hooks
 					{
 						// Charlatan - Leading the Blind passive
 						if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
-							scbw::apply_hallucinating(data.target, data.attacker->player, HallucinatingTimer);
+							scbw::apply_hallucinating(data.target, data.attacker->player, 25);
 						}
 					} break;
 					case WeaponId::PatriarchIronhandWeaver:

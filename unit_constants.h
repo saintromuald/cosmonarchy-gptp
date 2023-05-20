@@ -25,11 +25,8 @@ const s32 StimpackOffset = 5 * 256;
 const s32 StimpackTimer = 37;
 const s32 MindControlEnergyGain = 5 * 256;
 
-// Shared
+// Factional
 const s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
-
-// Hallucinating
-const s32 HallucinatingTimer = 3 * 24;
 
 // TERRAN \\
 

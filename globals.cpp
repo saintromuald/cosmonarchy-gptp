@@ -399,7 +399,7 @@ void tick_effect(Effect* effect) {
 					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
-					scbw::apply_hallucinating(unit, effect->player, HallucinatingTimer);
+					scbw::apply_hallucinating(unit, effect->player, 3 * 24 + 1);
 				});
 			} break;
 			case EffectId_Irradiate: {
@@ -717,7 +717,7 @@ namespace scbw
 {
 	void refresh_debuffs(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
@@ -737,21 +737,21 @@ namespace scbw
 		}
 
 		// Refresh Observance
-		if (unitExt->timers[TimerObservanceDebuff])
+		if (unit_ext->timers[TimerObservanceDebuff])
 		{
-			unitExt->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
+			unit_ext->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
 		}
 
 		// Refresh Hallucination
-		if (unitExt->timers[TimerHallucinating])
+		if (unit_ext->timers[TimerHallucinating])
 		{
-			unitExt->timers[TimerHallucinating] = HallucinatingTimer;
+			unit_ext->timers[TimerHallucinating] = 3 * 24 + 1;
 		}
 
 		// Refresh Captivating ZethrokorClaws
-		if (unitExt->timers[TimerCaptivatingClaws])
+		if (unit_ext->timers[TimerCaptivatingClaws])
 		{
-			unitExt->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
+			unit_ext->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
 		}
 
 		// Refresh Lockdown
@@ -767,9 +767,9 @@ namespace scbw
 		}
 
 		// Refresh Devourer Corrosive Spores
-		if (unitExt->timers[TimerCorrosiveTouch])
+		if (unit_ext->timers[TimerCorrosiveTouch])
 		{
-			unitExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
+			unit_ext->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		}
 
 		// Refresh Irradiate
@@ -778,15 +778,15 @@ namespace scbw
 		}
 
 		// Refresh Dirge
-		if (unitExt->timers[TimerDirgeFuse])
+		if (unit_ext->timers[TimerDirgeFuse])
 		{
-			unitExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
+			unit_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
 		}
 
 		// Refresh Hierophant Signify
-		if (unitExt->timers[TimerSignify])
+		if (unit_ext->timers[TimerSignify])
 		{
-			unitExt->timers[TimerSignify] = 3 * 24 + 1;
+			unit_ext->timers[TimerSignify] = 3 * 24 + 1;
 		}
 
 		//was hardcoded in original code
