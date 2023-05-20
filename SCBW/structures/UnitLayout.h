@@ -126,7 +126,6 @@ namespace RustId
 {
 	enum
 	{
-		CastLazarusAgent,
 		CastEnsnaringBrood,
 		CastGodsMadeFlesh,
 		CastEnthrallingAssault,
@@ -140,6 +139,7 @@ namespace RustId
 		CancelRecall,
 		CancelControlledDemolition,
 
+		ToggleLazarusAgent,
 		ToggleSavantOnhit,
 		ToggleReverseThrust,
 		ToggleDisruptionField,
@@ -156,7 +156,9 @@ const u32 button_toggle_on[] = {IconId::DisruptionWeb2, IconId::AfterburnersOnUn
 const u32 button_toggle_off[] = {IconId::Cancel, IconId::AfterburnersOffUnused, IconId::Feedback};
 const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleSavantOnhit};
 const u32 toggle_abilities[] = {TechId::LanifectDisruptionField, TechId::SavantOnhitToggle};
-const u32 generictoggles = 2;
+const u32 generictoggles = ARRAY_SIZE(toggle_values);
+
+C_ASSERT(ARRAY_SIZE(toggle_values) == ARRAY_SIZE(toggle_abilities));
 
 namespace CosmonarchyFlags1
 {

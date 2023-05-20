@@ -262,13 +262,23 @@ void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
 }
 
 static Point16 temp_center;
-static s32 distance_compare_func(void const* a, void const* b) {
+static s32 unit_distance_compare_func(void const* a, void const* b) {
 	return scbw::get_distance_fast(temp_center, ((Unit*)a)->position) > scbw::get_distance_fast(temp_center, ((Unit*)b)->position);	
+}
+
+static s32 corpse_distance_compare_func(void const* a, void const* b) {
+	if (!((Thingy*)a)->sprite || !((Thingy*)b)->sprite) return 0;
+	return scbw::get_distance_fast(temp_center, ((Thingy*)a)->sprite->position) > scbw::get_distance_fast(temp_center, ((Thingy*)b)->sprite->position);	
 }
 
 void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center) {
 	temp_center = center;
-	qsort(unit_array->units, unit_array->count, sizeof(Unit*), distance_compare_func);
+	qsort(unit_array->units, unit_array->count, sizeof(Unit*), unit_distance_compare_func);
+}
+
+void corpse_search_sort_by_distance(EntryArray* corpse_array, Point16 center) {
+	temp_center = center;
+	qsort(corpse_array->corpses, corpse_array->count, sizeof(Thingy*), corpse_distance_compare_func);
 }
 
 Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func) {

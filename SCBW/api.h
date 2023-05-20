@@ -779,7 +779,9 @@ namespace scbw
 	bool weapon_id_is_standard_weapon(u32 weapon_id);
 	bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 	Image* get_addon_connector_image(Unit* unit);
-	bool can_consume_corpse(Thingy* corpse);
+	bool is_any_corpse(Thingy* thingy);
+	bool is_inactive_corpse(Thingy* thingy);
+	bool is_active_corpse(Thingy* thingy);
 	void consume_corpse(Thingy* corpse);
 	Unit* reclaim_corpse(Thingy* corpse, u32 player);
 	bool unit_id_is_power_generator(u32 unit_id);

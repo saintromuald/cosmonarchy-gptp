@@ -476,9 +476,12 @@ void tick_effect(Effect* effect) {
 			case EffectId_AionReclamationField: {
 				EntryArray corpses = {};
 				corpse_search_radial(&corpses, effect->position, effect->radius);
+				corpse_search_sort_by_distance(&corpses, effect->position);
 				for (u32 i = 0; i < corpses.count; ++i) {
 					Thingy* corpse = corpses.corpses[i];
 					scbw::reclaim_corpse(corpse, effect->player);
+					effect->current_time = 0;
+					break;
 				}
 			} break;
 		}
@@ -524,6 +527,7 @@ void IquareGlobals::frame_hook() {
 		tick_effect(effect);
 		if (effect->current_time == 0) {
 			if (effect->thingy && effect->thingy->sprite) {
+				effect->thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 				effect->thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 			}
 

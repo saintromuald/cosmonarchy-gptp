@@ -409,9 +409,14 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 
 			Unit* unit = *g_active_iscript_unit;
 			if (unit) {
+				UnitExt* unit_ext = get_unit_ext(unit);
 				ThingyExt* thingy_ext = get_thingy_ext(thingy);
 				thingy_ext->original_player = unit->player;
 				thingy_ext->unit_id = unit->id;
+
+				if (unit_ext->timers[TimerAutocratControlledOpposition]) {
+					scbw::reclaim_corpse(thingy, unit_ext->values[ValueControlledOppositionPlayer]);
+				}
 			}
 		}
 		thingy->sprite->elevation = elevation;

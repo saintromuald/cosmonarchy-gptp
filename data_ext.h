@@ -77,6 +77,7 @@ enum ExtValueId
 	ValueLiiraliskLaunchPos,
 	ValueAlliedInvPlayer,
 	ValueControlledOpposition,
+	ValueControlledOppositionPlayer,
 	ValueEmpressPassiveStacks,
 	ValueEmpressSourcePlayer,
 	ValueAxitriliskLaunchPos,
@@ -149,6 +150,7 @@ enum ExtValueId
 	ValueProjectilePattern,
 	ValueProjectileAngle,
 	ValueGhitorokorRelentlessAggressionStacks,
+	ValueDecaying,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -231,7 +233,7 @@ enum ExtTimerId
 	TimerBindingPlasma,
 	TimerHypnagogueChannel,
 	TimerSecondaryWeaponCooldown,
-	TimerLazarusCasting,
+	TimerReclaimInterval,
 	TimerGladiusBindingPlasma,
 	TimerCentaurSecondaryWeaponStagger,
 	TimerPatriarchAstralRule,
@@ -256,6 +258,8 @@ enum ExtTimerId
 	TimerGhitorokorRelentlessAggression,
 	TimerDemiurgeWorship,
 	TimerAxitriliskPerpetualWind,
+	TimerReclaiming,
+	TimerDecaySafe,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -398,6 +402,7 @@ struct ImageExt {
 struct ThingyExt {
 	u32 original_player;
 	u32 unit_id;
+	u32 activity_timer;
 };
 
 void init_ext_variables();

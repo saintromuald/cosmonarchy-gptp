@@ -977,6 +977,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 		kiting_ai(unit, unit_ext);
 
 		if (unit->id == UnitId::TerranApostle) {
+			/*
 			if (unit->has_energy(techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256) && unit_ext->timers[TimerAI_Lazarus] == 0) {
 				const u32 radius = 4 * 32;
 
@@ -1004,18 +1005,19 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					corpse_search_radial(&corpses, unit->position, radius);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						if (scbw::can_consume_corpse(corpse)) {
+						if (scbw::is_active_corpse(corpse)) {
 							count += 1;
 							break;
 						}
 					}
 
 					if (count) {
-						scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
+						scbw::set_generic_rust_value(unit, RustId::ToggleLazarusAgent, 1);
 						unit_ext->timers[TimerAI_Lazarus] = ApostleAILazarusAgentTimer;
 					}
 				}
 			}
+			*/
 		} else if (unit->id == UnitId::TerranEidolon) {
 			// mines
 		} else if (unit->id == UnitId::TerranSavant) {

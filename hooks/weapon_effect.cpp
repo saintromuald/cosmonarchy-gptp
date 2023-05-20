@@ -343,7 +343,7 @@ namespace hooks {
 		corpse_search_radial(&corpses, bullet->position, 3 * 32);
 		for (u32 i = 0; i < corpses.count; ++i) {
 			Thingy* corpse = corpses.corpses[i];
-			if (scbw::can_consume_corpse(corpse)) {
+			if (scbw::is_active_corpse(corpse)) {
 				ThingyExt* corpse_ext = get_thingy_ext(corpse);
 				u32 broodspawn_id = units_dat::base_property[corpse_ext->unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
 				scbw::create_unit_from_ability(broodspawn_id, 2, bullet->player, corpse->sprite->position);

@@ -3225,11 +3225,11 @@ namespace scbw {
 		return 0;
 	}
 
-	bool can_consume_corpse(Thingy* corpse) {
-		if (!scbw::sprite_id_is_corpse(corpse->sprite->id) || corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) {
-			return false;
-		}
+	bool is_any_corpse(Thingy* thingy) {
+		return thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath);
+	}
 
+	static bool internal_is_corpse_active(Thingy* corpse) {
 		ThingyExt* corpse_ext = get_thingy_ext(corpse);
 		u32 unit_id = corpse_ext->unit_id;
 		if (units_dat::base_property[unit_id] & UnitProperty::Building
@@ -3241,8 +3241,21 @@ namespace scbw {
 		||  unit_id == UnitId::ProtossSteward) {
 			return false;
 		}
+		return corpse_ext->activity_timer <= 15 * 24;
+	}
 
-		return true;
+	bool is_inactive_corpse(Thingy* thingy) {
+		if (!is_any_corpse(thingy)) {
+			return false;
+		}
+		return !internal_is_corpse_active(thingy);
+	}
+
+	bool is_active_corpse(Thingy* thingy) {
+		if (!is_any_corpse(thingy)) {
+			return false;
+		}
+		return internal_is_corpse_active(thingy);
 	}
 
 	void consume_corpse(Thingy* corpse) {
@@ -3251,7 +3264,7 @@ namespace scbw {
 	}
 
 	Unit* reclaim_corpse(Thingy* corpse, u32 player) {
-		if (!can_consume_corpse(corpse)) {
+		if (!scbw::is_active_corpse(corpse)) {
 			return false;
 		}
 
@@ -3283,10 +3296,14 @@ namespace scbw {
 			scbw::consume_corpse(corpse);
 
 			unit->shields = 0;
-			unit->set_hitpoints(unit->get_max_hp_raw() / 2);
+			unit->set_hitpoints(25 * 256);
 			unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 			helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-			unit_ext->values[ValueNoCorpse] = true;
+			unit_ext->timers[TimerReclaiming] = 2 * 24;
+			unit_ext->timers[TimerStun]       = 2 * 24;
+			unit_ext->timers[TimerDecaySafe]  = 3;
+			unit_ext->values[ValueDecaying] = true;
+		//	unit_ext->values[ValueNoCorpse] = true;
 		}
 		return unit;
 	}

@@ -1007,6 +1007,65 @@ namespace hooks {
 			unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
 		}
 
+		// Reclamation
+		{
+			// Reclaimer Tagging
+			switch (unit->id) {
+				case UnitId::TerranApostle:
+				case UnitId::TerranAutocrat:
+				case UnitId::TerranAnticthon:
+				case UnitId::TerranAion: {
+					EntryArray targets = {};
+					unit_search_radial(&targets, unit->position, unit->get_sight_range() * 32);
+					unit_search_filter(&targets, unit, FilterAlly | FilterInvincible);
+					for (u32 i = 0; i < targets.count; ++i) {
+						UnitExt* target_ext = get_unit_ext(targets.units[i]);
+						target_ext->timers[TimerDecaySafe] = 3;
+					}
+				} break;
+			}
+
+			// Decaying
+			if (unit_ext->values[ValueDecaying]) {
+				if (!unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
+					unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+				}
+
+				if (!unit_ext->timers[TimerDecaySafe]) {
+					// TODO: Add decay reads?
+					unit->damage_hp((5 * 256) / 24, 0, unit->player, false);
+				}
+			}
+
+			// Reclaiming
+			if (unit_ext->timers[TimerReclaiming]) {
+				if (unit_ext->timers[TimerDecaySafe]) {
+					unit->heal_hp((25 * 256) / (2 * 24));
+				}
+				if (unit_ext->timers[TimerReclaiming] == 1) {
+					unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+					// Play sound for the end of healing and stun
+				} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
+					unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+					// Play sound for healing and stun
+				}
+			}
+		}
+
+		// Revive
+		if (((!unit_ext->timers[TimerReviveFlagClearMin] && !(unit->status & UnitStatus::NoBrkCodeStart)) || !unit_ext->timers[TimerReviveFlagClearMax])
+			&& unit_ext->values[ValueReviveStarted]) {
+			if (unit_ext->timers[TimerStun]) {
+				unit->status &= ~UnitStatus::Invincible;
+			} else {
+				unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+			}
+			unit_ext->timers[TimerReviveFlagClearMin] = 0;
+			unit_ext->timers[TimerReviveFlagClearMax] = 0;
+			unit_ext->values[ValueReviveStarted] = 0;
+			scbw::give_ai_ex(unit);
+		}
+
 		u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
 		if (creep_spreader_id != UnitId::None && unit->player < PlayerLimit) {
 			Box32 creep_area = {};
@@ -1030,7 +1089,6 @@ namespace hooks {
 			unit->order_signal &= ~0x20;
 			iquare_globals.remove_unit_from_line_attack_table(unit, true);
 		}
-		//hooks::show_health_bar(unit);
 
 		if (unit->unit_ai) {
 			if (unit->main_order_id == OrderId::ComputerAI) {
@@ -1390,35 +1448,27 @@ namespace hooks {
 			case UnitId::TerranApostle:
 			{
 				// Apostle - Lazarus Agent cast
-				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1) {
-					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
-
-					if (!unit_ext->timers[TimerLazarusCasting]) {
-						u32 energy = techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256;
-						if (unit->has_energy(energy)) {
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleLazarusAgent) == 1) {
+					u32 energy = techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256;
+					if (unit->has_energy(energy)) {
+						if (!unit_ext->timers[TimerReclaimInterval]) {
+							unit_ext->timers[TimerReclaimInterval] = 24;
+							scbw::decloak_proc(unit);	
 							unit->spend_unit_energy(energy);
-							unit_ext->timers[TimerLazarusCasting] = 2 * 24;
 							unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-							helper::play_sound_from_unit(SoundId::LazarusAgentCastStart, unit, 1, 0);
-						}
-					}
-				}
-				if (unit_ext->timers[TimerLazarusCasting]) {
-					scbw::decloak_proc(unit);	
-				}
-				if (unit_ext->timers[TimerLazarusCasting] % 12 == 1) {
-					unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-					helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0);
-				}
-				// Apply Lazarus Agent
-				if (unit_ext->timers[TimerLazarusCasting] == 1) {
-					helper::play_sound_from_unit(SoundId::LazarusAgentCastEnd, unit, 1, 0);
+							helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0); // TODO: Use Start and End when applicable
 
-					EntryArray corpses = {};
-					corpse_search_radial(&corpses, unit->position, 2.5 * 32);
-					for (u32 i = 0; i < corpses.count; i++) {
-						Thingy* corpse = corpses.corpses[i];
-						scbw::reclaim_corpse(corpse, unit->player);
+							EntryArray corpses = {};
+							corpse_search_radial(&corpses, unit->position, 3 * 32);
+							corpse_search_sort_by_distance(&corpses, unit->position);
+							for (u32 i = 0; i < corpses.count; i++) {
+								Thingy* corpse = corpses.corpses[i];
+								scbw::reclaim_corpse(corpse, unit->player);
+								break;
+							}
+						}
+					} else {
+						scbw::set_generic_rust_value(unit, RustId::ToggleLazarusAgent, 0);
 					}
 				}
 			} break;
@@ -1679,12 +1729,15 @@ namespace hooks {
 			case UnitId::TerranAnticthon:
 			{
 				// Revive status
-				if (!unit_ext->values[ValueReviveStarted]) {
+				if (!unit_ext->values[ValueReviveStarted] && !unit_ext->timers[TimerReclaimInterval]) {
+					unit_ext->timers[TimerReclaimInterval] = 24;
 					EntryArray corpses = {};
 					corpse_search_radial(&corpses, unit->position, 3 * 32);
+					corpse_search_sort_by_distance(&corpses, unit->position);
 					for (u32 i = 0; i < corpses.count; ++i) {
 						Thingy* corpse = corpses.corpses[i];
 						scbw::reclaim_corpse(corpse, unit->player);
+						break;
 					}
 				}
 			} break;
@@ -2420,16 +2473,6 @@ namespace hooks {
 			} else {
 				unit->order_signal &= ~0x2;
 			}
-		}
-
-		// Reclamation
-		if (((!unit_ext->timers[TimerReviveFlagClearMin] && !(unit->status & UnitStatus::NoBrkCodeStart)) || !unit_ext->timers[TimerReviveFlagClearMax])
-			&& unit_ext->values[ValueReviveStarted]) {
-			unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
-			unit_ext->timers[TimerReviveFlagClearMin] = 0;
-			unit_ext->timers[TimerReviveFlagClearMax] = 0;
-			unit_ext->values[ValueReviveStarted] = 0;
-			scbw::give_ai_ex(unit);
 		}
 
 		// Seraph - Observance

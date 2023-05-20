@@ -559,6 +559,7 @@ namespace hooks
 					{
 						// Apply Controlled Opposition
 						target_ext->values[ValueControlledOpposition]++;
+						target_ext->values[ValueControlledOppositionPlayer] = data.attacking_player_id;
 						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
