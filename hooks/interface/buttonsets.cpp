@@ -762,6 +762,23 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
+
+									case UnitId::TerranCyprian:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranNydusTrinity) {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+
+									case UnitId::TerranCohort:
+									{
+										if (scbw::unit_queue_full(unit) || globals.players[unit->player].faction != Faction_TerranNydusTrinity)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 								}
 							} break;
 							case UnitId::TerranCaptaincy:
@@ -804,7 +821,6 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
-									case UnitId::TerranPhalanxTankMode:
 									case UnitId::TerranMadrigal:
 									{
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit))
@@ -814,10 +830,19 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
-									case UnitId::TerranAspirant:
+
+									case UnitId::TerranGoliath:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranScrapyard) || scbw::unit_queue_full(unit)
-										||   globals.players[unit->player].faction != Faction_TerranGoldenRepublic)
+										if (globals.players[unit->player].faction == Faction_TerranGoldenRepublic
+										||	globals.players[unit->player].faction == Faction_TerranUpstart)
+										{
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranPhalanxTankMode:
+									{
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit)
+										||	 globals.players[unit->player].faction == Faction_TerranNydusTrinity)
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -825,12 +850,25 @@ namespace hooks {
 										}
 									} break;
 
-									case UnitId::TerranGoliath:
+									case UnitId::TerranAspirant:
 									{
-										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+										if (scbw::unit_queue_full(unit) || globals.players[unit->player].faction != Faction_TerranGoldenRepublic)
+										{
 											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
 										}
-									}
+									} break;
+									case UnitId::TerranTarasque:
+									{
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit)
+										||  globals.players[unit->player].faction != Faction_TerranNydusTrinity)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 								}
 							} break;
 							case UnitId::TerranIronFoundry:
