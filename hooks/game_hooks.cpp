@@ -1670,7 +1670,7 @@ namespace hooks {
 			{
 				// Matraleth - Ensnaring Brood
 				Point16 pos = unit->position;
-				s32 radius = 5 * 32;
+				s32 radius = 4 * 32;
 				// TODO: unit search
 				scbw::UnitFinder(
 					pos.x - radius,
