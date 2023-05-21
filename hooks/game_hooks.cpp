@@ -1009,22 +1009,6 @@ namespace hooks {
 
 		// Reclamation
 		{
-			// Reclaimer Tagging
-			switch (unit->id) {
-				case UnitId::TerranApostle:
-				case UnitId::TerranAutocrat:
-				case UnitId::TerranAnticthon:
-				case UnitId::TerranAion: {
-					EntryArray targets = {};
-					unit_search_radial(&targets, unit->position, unit->get_sight_range() * 32);
-					unit_search_filter(&targets, unit, FilterAlly | FilterInvincible);
-					for (u32 i = 0; i < targets.count; ++i) {
-						UnitExt* target_ext = get_unit_ext(targets.units[i]);
-						target_ext->timers[TimerDecaySafe] = 3;
-					}
-				} break;
-			}
-
 			// Decaying
 			if (unit_ext->values[ValueDecaying]) {
 				if (!unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
@@ -1107,7 +1091,71 @@ namespace hooks {
 			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 		}
 
+		// Unit Behavior Groups
+		const static u32 broodspawn_max_time = 5 * 24; // TODO: move to unit consts?
 		switch (unit->id) {
+			// Reclaimers
+			case UnitId::TerranApostle:
+			case UnitId::TerranAutocrat:
+			case UnitId::TerranAnticthon:
+			case UnitId::TerranAion: {
+				EntryArray targets = {};
+				unit_search_radial(&targets, unit->position, unit->get_sight_range() * 32);
+				unit_search_filter(&targets, unit, FilterAlly | FilterInvincible);
+				for (u32 i = 0; i < targets.count; ++i) {
+					UnitExt* target_ext = get_unit_ext(targets.units[i]);
+					target_ext->timers[TimerDecaySafe] = 3;
+				}
+			} break;
+
+			// Sires
+			case UnitId::ZergZoryusthaleth:
+			case UnitId::ZergKonvilisk:
+			case UnitId::ZergVilgorokor:
+			case UnitId::ZergMatraleth:
+			case UnitId::ZergTetcaerokor:
+			{
+				EntryArray broodspawns = {};
+				unit_search_radial(&broodspawns, unit->position, unit->get_sight_range() * 32);
+				unit_search_filter(&broodspawns, unit, FilterAlly, {UnitId::ZergRilirokor, UnitId::ZergRililisk});
+				for (u32 i = 0; i < broodspawns.count; ++i) {
+					Unit* broodspawn = broodspawns.units[i];
+					broodspawn->remove_timer = broodspawn_max_time;
+				}
+			} break;
+			// Broodspawn
+			case UnitId::ZergRilirokor:
+			case UnitId::ZergRililisk:
+			{
+				if (unit->remove_timer > broodspawn_max_time) {
+					unit->remove_timer = broodspawn_max_time;
+				}
+			} break;
+
+			// Masters
+		}
+
+		// Unit Specific
+		switch (unit->id) {
+			case UnitId::ZergVilgoleth: {
+				if (!unit_ext->timers[TimerVilgolethSpawn]) {
+					Thingy* corpse = scbw::get_closest_active_corpse(unit->position, 5 * 32);
+					if (corpse) {
+						unit_ext->timers[TimerVilgolethSpawn] = 24;
+						Point16 pos = corpse->sprite->position;
+						scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, pos);
+						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, unit->player, corpse->sprite->elevation + 1);
+						scbw::consume_corpse(corpse);
+					}
+				}
+
+				if (!unit_ext->timers[TimerVilgolethTimedLife]) {
+					unit_ext->timers[TimerVilgolethTimedLife] = 10 * 24;
+				} else if (unit_ext->timers[TimerVilgolethTimedLife] == 1) {
+					iquare_globals.create_effect(EffectId_VilgolethHeal, 5 * 24, unit->position, 3 * 32, SpriteId::KeskathalorMissileImpact, unit->sprite->elevation + 1, unit->player, unit);
+					unit->remove();
+				}
+			} break;
 			case UnitId::ZergLarva:
 			case UnitId::ZergOcsalLarva:
 			{
@@ -1458,11 +1506,8 @@ namespace hooks {
 							unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0); // TODO: Use Start and End when applicable
 
-							EntryArray corpses = {};
-							corpse_search_radial(&corpses, unit->position, 3 * 32);
-							corpse_search_sort_by_distance(&corpses, unit->position);
-							for (u32 i = 0; i < corpses.count; i++) {
-								Thingy* corpse = corpses.corpses[i];
+							Thingy* corpse = scbw::get_closest_active_corpse(unit->position, 3 * 32);
+							if (corpse) {
 								scbw::reclaim_corpse(corpse, unit->player);
 								break;
 							}
@@ -1731,11 +1776,8 @@ namespace hooks {
 				// Revive status
 				if (!unit_ext->values[ValueReviveStarted] && !unit_ext->timers[TimerReclaimInterval]) {
 					unit_ext->timers[TimerReclaimInterval] = 24;
-					EntryArray corpses = {};
-					corpse_search_radial(&corpses, unit->position, 3 * 32);
-					corpse_search_sort_by_distance(&corpses, unit->position);
-					for (u32 i = 0; i < corpses.count; ++i) {
-						Thingy* corpse = corpses.corpses[i];
+					Thingy* corpse = scbw::get_closest_active_corpse(unit->position, 3 * 32);
+					if (corpse) {
 						scbw::reclaim_corpse(corpse, unit->player);
 						break;
 					}
@@ -2281,12 +2323,9 @@ namespace hooks {
 
 		// Incubation
 		if (unit_ext->timers[TimerIncubationArm] == 1) {
-			u32 unit_id = UnitId::ZergRilirokor;
-			if (units_dat::base_property[unit->id] & UnitProperty::Flyer
-			||  unit->status & UnitStatus::InAir) {
-				unit_id = UnitId::ZergRililisk;
+			for (u32 i = 0; i < unit_ext->values[ValueIncubationCount]; ++i) {
+				scbw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], 2, unit_ext->values[ValueIncubationPlayer], unit->position);
 			}
-			scbw::create_unit_from_ability(unit_id, 2, unit_ext->values[ValueIncubationPlayer], unit->position);
 		}
 
 		// Disruption Field - clear status

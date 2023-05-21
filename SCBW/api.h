@@ -783,6 +783,7 @@ namespace scbw
 	bool is_inactive_corpse(Thingy* thingy);
 	bool is_active_corpse(Thingy* thingy);
 	void consume_corpse(Thingy* corpse);
+	Thingy* get_closest_active_corpse(Point16 position, u32 radius);
 	Unit* reclaim_corpse(Thingy* corpse, u32 player);
 	bool unit_id_is_power_generator(u32 unit_id);
 	PlayerColorCode get_player_color_code(u32 player);
@@ -807,4 +808,5 @@ namespace scbw
 	bool weapon_id_bounces_lithe_organelle(u32 weapon_id);
 	ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
 	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove = false, bool underlay = false);
+	void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
 }

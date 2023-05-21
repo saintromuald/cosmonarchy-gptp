@@ -35,6 +35,8 @@ enum ExtValueId
 	ValueSalamanderLaunchPos,
 	ValueNaniteField,
 	ValuePhobosLaunchPos,
+	ValueIncubationCount,
+	ValueIncubationUnitId,
 	ValueIncubationPlayer,
 	ValueCentaurLaunchPos,
 	ValueRepententChorus,
@@ -260,6 +262,8 @@ enum ExtTimerId
 	TimerAxitriliskPerpetualWind,
 	TimerReclaiming,
 	TimerDecaySafe,
+	TimerVilgolethSpawn,
+	TimerVilgolethTimedLife,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

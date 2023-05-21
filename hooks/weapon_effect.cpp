@@ -339,20 +339,7 @@ namespace hooks {
 			return;
 		}
 
-		EntryArray corpses = {};
-		corpse_search_radial(&corpses, bullet->position, 3 * 32);
-		for (u32 i = 0; i < corpses.count; ++i) {
-			Thingy* corpse = corpses.corpses[i];
-			if (scbw::is_active_corpse(corpse)) {
-				ThingyExt* corpse_ext = get_thingy_ext(corpse);
-				u32 broodspawn_id = units_dat::base_property[corpse_ext->unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
-				scbw::create_unit_from_ability(broodspawn_id, 2, bullet->player, corpse->sprite->position);
-
-				Point16 pos = corpse->sprite->position;
-				scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, bullet->player, corpse->sprite->elevation + 1);
-				scbw::consume_corpse(corpse);
-			}
-		}
+		scbw::create_unit_in_game(UnitId::ZergVilgoleth, bullet->player, bullet->position.x, bullet->position.y);
 	}
 
 	void broodlings(Bullet* bullet, u32 weapon_id)

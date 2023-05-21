@@ -317,9 +317,15 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 }
 
 void tick_effect(Effect* effect) {
+	if (effect->current_time && effect->sprite_id >= 0) {
+		if (!effect->thingy || !effect->thingy->sprite) {
+			effect->thingy = scbw::create_and_init_thingy(effect->sprite_id, effect->position.x, effect->position.y, effect->player, effect->elevation);
+		}
+	}
 	const s32 effect_period = 6;
 	if (effect->current_time % effect_period == 0) {
-		const f64 damage_multiplier = 256.0 * (f64)effect_period / effect->max_time;
+		const f64 tick_scalar  = 256.0 * (f64)effect_period / 24;
+		const f64 total_scalar = 256.0 * (f64)effect_period / effect->max_time;
 		switch (effect->id) {
 			case EffectId_StarSovereignTheGriefOfAllGods: {
 				if (!effect->origin) {
@@ -333,17 +339,17 @@ void tick_effect(Effect* effect) {
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					unit->damage_with_custom(2500 * damage_multiplier, -1, effect->source, effect->player);
+					unit->damage_with_custom(2500 * total_scalar, -1, effect->source, effect->player);
 				});
 			} break;
 			case EffectId_SalamanderFire: {
 				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, {(u16)effect->position.x, (u16)effect->position.y}, effect->radius);
-				unit_search_filter(&unit_array, nullptr, FilterNoAir);
+				unit_search_radial(&unit_array, effect->position, effect->radius);
+				unit_search_filter(&unit_array, 0, FilterNoAir);
 
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
-					target->damage_with_custom(30 * damage_multiplier, 3, effect->source, effect->player);
+					target->damage_with_custom(30 * total_scalar, 3, effect->source, effect->player);
 				}
 			} break;
 			case EffectId_AspirantCriticality: {
@@ -370,7 +376,7 @@ void tick_effect(Effect* effect) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(30 * damage_multiplier, -1, effect->source, effect->player);
+					unit->damage_with_custom(30 * total_scalar, -1, effect->source, effect->player);
 					unit_ext->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 				});
 			} break;
@@ -385,7 +391,7 @@ void tick_effect(Effect* effect) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(100 * damage_multiplier, -1, effect->source, effect->player);
+					unit->damage_with_custom(100 * total_scalar, -1, effect->source, effect->player);
 					unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 				});
 			} break;
@@ -474,14 +480,21 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_AionReclamationField: {
-				EntryArray corpses = {};
-				corpse_search_radial(&corpses, effect->position, effect->radius);
-				corpse_search_sort_by_distance(&corpses, effect->position);
-				for (u32 i = 0; i < corpses.count; ++i) {
-					Thingy* corpse = corpses.corpses[i];
+				Thingy* corpse = scbw::get_closest_active_corpse(effect->position, effect->radius);
+				if (corpse) {
 					scbw::reclaim_corpse(corpse, effect->player);
 					effect->current_time = 0;
 					break;
+				}
+			} break;
+			case EffectId_VilgolethHeal: {
+				EntryArray unit_array = {};
+				unit_search_radial(&unit_array, effect->position, effect->radius);
+				unit_search_filter(&unit_array, 0, FilterNoAir);
+
+				for (u32 j = 0; j < unit_array.count; j++) {
+					Unit* target = unit_array.units[j];
+					target->heal_hp(10 * tick_scalar);
 				}
 			} break;
 		}
@@ -498,17 +511,10 @@ void IquareGlobals::create_effect(u8 id, u32 time, Point16 position, u32 radius,
 	effect.sprite_id = sprite_id;
 	effect.elevation = elevation;
 	effect.player = player;
-	effect.thingy = nullptr;
+	effect.thingy = 0;
 	effect.source = source;
 	effect.origin = parent;
 
-	if (effect.sprite_id >= 0) {
-		Thingy* thingy = scbw::create_and_init_thingy(effect.sprite_id, effect.position.x, effect.position.y, player);
-		if (!thingy) {
-			return;
-		}
-		effect.thingy = thingy;
-	}
 	tick_effect(&effect);
 	effects.push_back(effect);
 }
@@ -832,6 +838,8 @@ namespace scbw
 		// Inherit Incubation
 		if (child_ext->timers[TimerIncubationArm]) {
 			child_ext->timers[TimerIncubationArm] = parent_ext->timers[TimerIncubationArm];
+			child_ext->values[ValueIncubationCount] = parent_ext->values[ValueIncubationCount];
+			child_ext->values[ValueIncubationUnitId] = parent_ext->values[ValueIncubationUnitId];
 			child_ext->values[ValueIncubationPlayer] = parent_ext->values[ValueIncubationPlayer];
 			child->sprite->create_overlay(ImageId::ParasiteOverlay);
 		}

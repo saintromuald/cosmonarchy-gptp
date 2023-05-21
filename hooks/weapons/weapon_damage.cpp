@@ -424,6 +424,10 @@ namespace hooks
 					target_ext->timers[TimerDecloak] = 2;
 				}
 			} break;
+			case UnitId::ZergZoryusthaleth: {
+				// Zoryusthaleth - Incubate on damage taken
+				scbw::incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+			} break;
 		}
 
 		if (data.attacker) {
@@ -712,26 +716,19 @@ namespace hooks
 							});
 						}
 					} break;
-					case WeaponId::ZoryusthalethMonstrousMaw:
-					{
+					case WeaponId::ZoryusthalethMonstrousMaw: {
 						// Zoryusthaleth - Swarming Omen
-						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player))
-						{
+						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
 							target_ext->values[ValueSwarmingOmenPlayer] = data.attacking_player_id + 1;
 						}
 					} break;
-					case WeaponId::KonviliskSowingSpines:
-					case WeaponId::TetcaerokorCleavingMaw:
-					{
-						// Fertile Spines, Virile Coating - incubate
-						if (!target_ext->timers[TimerIncubationArm]
-						&& !(units_dat::base_property[data.target->id] & UnitProperty::Invincible)
-						&&  !scbw::unit_id_is_broodspawn(data.target->id))
-						{
-							target_ext->values[ValueIncubationPlayer] = data.attacker->player;
-							target_ext->timers[TimerIncubationArm] = 2 * 24 + 1;
-							scbw::manage_unit_overlay(data.target, ImageId::ParasiteOverlay);
-						}
+					case WeaponId::KonviliskSowingSpines: {
+						// Fertile Spines - incubate
+						scbw::incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
+					} break;
+					case WeaponId::TetcaerokorCleavingMaw: {
+						// Virile Coating - incubate
+						scbw::incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
 					{
@@ -785,7 +782,10 @@ namespace hooks
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
 		switch (data.weapon_id) {
 			case WeaponId::UltrokorKaiserBlades:
+			case WeaponId::RililiskSwarmingSpores:
+			case WeaponId::RilirokorToxicSpores:
 			{
+				// Broodspawn lifesteal
 				// Ultrokor Saber Siphon passive
 				data.attacker->heal_hp(damage_dealt, data.attacker);
 			} break;
@@ -902,6 +902,13 @@ namespace hooks
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
+			case UnitId::ZergVilgorokor: {
+				// Vilgorokor - On Death behavior
+				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
+				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
+				data.target->set_hitpoints(data.target->get_max_hp_raw());
+				fatal_deal_damage = false;
+			} break;
 			case UnitId::TerranCuirassTankMode:
 			{
 				// Cuirass - Stonewall Protocol

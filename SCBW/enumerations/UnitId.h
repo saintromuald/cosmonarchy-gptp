@@ -231,6 +231,7 @@ namespace UnitId
 		ZergRakzilisk										= 327,
 		ZergOcsalLarva										= 353,
 		ZergAxitriliskWeaponless							= 377,
+		ZergVilgoleth										= 696, // TODO: Update
 
 	// Zerg-Building
 		ZergAxtothAxis										= 130,		// Infested Command Center

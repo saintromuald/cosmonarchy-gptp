@@ -35,16 +35,16 @@ void update_ext_variables() {
 		}
 
 		if (unit_ext->energy_regen_timer != UINT_MAX) {
-			++unit_ext->energy_regen_timer;
+			unit_ext->energy_regen_timer++;
 		}
 		if (unit_ext->shield_regen_timer != UINT_MAX) {
-			++unit_ext->shield_regen_timer;
+			unit_ext->shield_regen_timer++;
 		}
 		if (unit_ext->damage_taken_timer != UINT_MAX) {
-			++unit_ext->damage_taken_timer;
+			unit_ext->damage_taken_timer++;
 		}
 		if (unit_ext->damage_dealt_timer != UINT_MAX) {
-			++unit_ext->damage_dealt_timer;
+			unit_ext->damage_dealt_timer++;
 		}
 		for (u32 j = 0; j < PlayerLimit; ++j) {
 			if (unit_ext->last_seen_timer[j] != UINT_MAX) {

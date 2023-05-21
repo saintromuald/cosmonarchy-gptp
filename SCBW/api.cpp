@@ -3263,6 +3263,19 @@ namespace scbw {
 		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 	}
 
+	Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
+		EntryArray corpses = {};
+		corpse_search_radial(&corpses, position, radius);
+		corpse_search_sort_by_distance(&corpses, position);
+		for (u32 i = 0; i < corpses.count; ++i) {
+			Thingy* corpse = corpses.corpses[i];
+			if (is_active_corpse(corpse)) {
+				return corpse;
+			}
+		}
+		return 0;
+	}
+
 	Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		if (!scbw::is_active_corpse(corpse)) {
 			return false;
@@ -3616,8 +3629,7 @@ namespace scbw {
 		return ImageId::None;
 	}
 
-	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove, bool underlay)
-	{
+	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove, bool underlay) {
 		Unit* final_unit = unit;
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
 			final_unit = unit->subunit;
@@ -3632,5 +3644,19 @@ namespace scbw {
 				final_unit->sprite->create_top_overlay(image_id);
 			}
 		}
+	}
+
+	void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
+		UnitExt* target_ext = get_unit_ext(target);
+		if (target_ext->timers[TimerIncubationArm]
+		||  units_dat::base_property[target->id] & UnitProperty::Invincible
+		||  scbw::unit_id_is_broodspawn(target->id)) {
+			return;
+		}
+		target_ext->values[ValueIncubationCount] = count; 
+		target_ext->values[ValueIncubationUnitId] = unit_id; 
+		target_ext->values[ValueIncubationPlayer] = player;
+		target_ext->timers[TimerIncubationArm] = 2 * 24 + 1;
+		scbw::manage_unit_overlay(target, ImageId::ParasiteOverlay);
 	}
 }

@@ -38,6 +38,7 @@ enum EffectId {
 	EffectId_KeskathalorCausticDischarge,
 	EffectId_IsthrathalethPlagueField,
 	EffectId_AionReclamationField,
+	EffectId_VilgolethHeal,
 
 	EffectId_Count,
 };
