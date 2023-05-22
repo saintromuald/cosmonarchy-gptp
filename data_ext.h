@@ -72,6 +72,7 @@ enum ExtValueId
 	ValueDirgeSourcePlayer,
 	ValueDirgeStacks,
 	ValueSignifyStacks,
+	ValueSignifyPlayer,
 	ValueReviveStarted,
 	ValuePreMorphHP,
 	ValueSkithrokorLaunchPos,
@@ -153,6 +154,7 @@ enum ExtValueId
 	ValueProjectileAngle,
 	ValueGhitorokorRelentlessAggressionStacks,
 	ValueDecaying,
+	ValuePariahHitPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -264,6 +266,10 @@ enum ExtTimerId
 	TimerDecaySafe,
 	TimerVilgolethSpawn,
 	TimerVilgolethTimedLife,
+	TimerAvenge,
+	TimerAscend,
+	TimerPariahHit,
+	TimerHeraldAvenge,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -313,7 +319,7 @@ enum ExtUnitId
 
 enum ExtValueVectorId
 {
-	ValueVectorSignifySourcePlayer,
+	ValueVectorPleaseDontUseVectors,
 
 	ValueVectorCount,
 };
@@ -404,9 +410,11 @@ struct ImageExt {
 };
 
 struct ThingyExt {
-	u32 original_player;
+	u32 player;
 	u32 unit_id;
 	u32 activity_timer;
+	u32 avenge_or_ascend_player; // TODO: Find a shorter name
+	u32 sight_range_before_death;
 };
 
 void init_ext_variables();

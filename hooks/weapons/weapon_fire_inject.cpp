@@ -338,7 +338,7 @@ namespace
 			MOVZX	EAX, word ptr[ESI + 0x64]
 			MOV		unit_id, EAX
 		}
-		is_air_unit = scbw::unit_id_is_melee_air_unit(unit_id);
+		is_air_unit = unit_id_is_melee_air_unit(unit_id);
 		__asm {
 			CMP		is_air_unit, 1
 			RET

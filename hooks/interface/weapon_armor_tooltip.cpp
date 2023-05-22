@@ -154,10 +154,9 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 			splash_type_value = BWTC_YELLOW "Air Only" BWTC_RESET;
 		} break;
 		default: {
-			if (scbw::weapon_id_is_melee_aoe(weapon_id)) {
+			if (weapon_id_is_melee_aoe(weapon_id)) {
 				splash_type_value = BWTC_GREEN "Ally Safe" BWTC_RESET;
-			}
-			else {
+			} else {
 				splash_type_value = BWTC_WHITE "Normal Hit" BWTC_RESET;
 			}
 		} break;

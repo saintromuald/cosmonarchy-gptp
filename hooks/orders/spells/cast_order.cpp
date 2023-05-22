@@ -10,7 +10,7 @@ namespace hooks
 	{
 		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)default_order_string;
-		if (!scbw::tech_id_needs_target(tech_id)
+		if (!tech_id_needs_target(tech_id)
 		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;

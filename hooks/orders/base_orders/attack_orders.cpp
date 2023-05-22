@@ -1294,7 +1294,7 @@ namespace hooks
 			helper::move_for_melee_range(target_unit, unit);
 			return 0;
 		}
-		if (scbw::unit_id_is_melee_air_unit(unit->id))
+		if (unit_id_is_melee_air_unit(unit->id))
 		{
 			helper::move_for_melee_range(unit->order_target.unit, unit);
 		} else {

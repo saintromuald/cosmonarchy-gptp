@@ -84,7 +84,7 @@ void __declspec(naked) pack_unit_data_psi_provider() { // 004E3935
 		MOV unit, ESI
 		PUSHAD
 	}
-	if (scbw::unit_id_is_psi_provider(unit_id)) {
+	if (unit_id_is_psi_provider(unit_id)) {
 		if (unit->building.pylon_aura) {
 			*((u32*)&unit->building.pylon_aura) = (unit->building.pylon_aura - g_sprite_table) / sizeof(Sprite) + 1;
 		}
@@ -104,7 +104,7 @@ void __declspec(naked) unpack_unit_data_psi_provider() { // 004E3182
 		MOV unit, ESI
 		PUSHAD
 	}
-	if (scbw::unit_id_is_psi_provider(unit_id)) {
+	if (unit_id_is_psi_provider(unit_id)) {
 		if (unit->building.pylon_aura) {
 			unit->building.pylon_aura = &g_sprite_table[(s32)unit->building.pylon_aura];
 		}

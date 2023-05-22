@@ -99,7 +99,7 @@ namespace hooks {
 					count_burrowables++;
 				}
 
-				if (scbw::unit_id_is_zerg_production(selected->id)) {
+				if (unit_id_is_zerg_production(selected->id)) {
 					count_hatches++;
 				}
 
@@ -706,7 +706,7 @@ namespace hooks {
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Siege_Mode) {
-						if (scbw::unit_id_is_siege_mode(unit->id)) {
+						if (unit_id_is_siege_mode(unit->id)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -714,7 +714,7 @@ namespace hooks {
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Tank_Mode) {
-						if (scbw::unit_id_is_tank_mode(unit->id)) {
+						if (unit_id_is_tank_mode(unit->id)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;

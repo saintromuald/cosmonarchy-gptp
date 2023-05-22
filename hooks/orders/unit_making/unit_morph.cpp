@@ -86,7 +86,7 @@ namespace hooks {
 
 			u32 extra_count = unit_ext->values[ValueSwarmhold];
 			unit_ext->values[ValueSwarmhold] = 0;
-			if (scbw::unit_id_is_morphed_from_double_unit(unit->id) && unit->create_origin == UnitId::ZergOcsalLarva) { // Kinda stupid. -Pr0nogo
+			if (unit_id_is_morphed_from_double_unit(unit->id) && unit->create_origin == UnitId::ZergOcsalLarva) { // Kinda stupid. -Pr0nogo
 				extra_count++;
 			}
 

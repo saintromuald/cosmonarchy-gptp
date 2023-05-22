@@ -707,7 +707,7 @@ namespace hooks
 			{
 				if (unit->status & UnitStatus::Completed)
 				{
-					if (scbw::unit_id_is_power_generator(unit->id))
+					if (unit_id_is_power_generator(unit->id))
 					{
 						helper::create_pylon_aura();
 					}

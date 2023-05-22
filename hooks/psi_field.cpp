@@ -7,7 +7,7 @@ namespace hooks
 {
 	// Actual state check whether a unit can generate a psi field
 	bool is_ready_to_make_psi_field(Unit* unit) {
-		return scbw::unit_id_is_psi_provider(unit->id);
+		return unit_id_is_psi_provider(unit->id);
 	}
 
 	// Conditions on which the power field should be showed

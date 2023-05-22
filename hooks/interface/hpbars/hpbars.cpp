@@ -36,7 +36,7 @@ namespace hooks
 		// Prepare height based on energy
 		image->grp_file->frames[0].h = 0;
 		u8 grp_height = grp_file->frames[0].h;
-		if (units_dat::base_property[selection->id] & UnitProperty::Spellcaster && !(selection->status & UnitStatus::IsHallucination) || selection->status & UnitStatus::IsHallucination || scbw::unit_id_is_broodspawn(selection->id))
+		if (units_dat::base_property[selection->id] & UnitProperty::Spellcaster && !(selection->status & UnitStatus::IsHallucination) || selection->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(selection->id))
 		{
 			grp_height += 6;
 		}

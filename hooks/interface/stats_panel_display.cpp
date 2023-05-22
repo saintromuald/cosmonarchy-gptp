@@ -1144,7 +1144,7 @@ namespace hooks
 				}
 
 				// Note: original code recalculated unitId/built_unit_id, not done here to optimize things. -GPTP
-				if (scbw::unit_id_is_protoss_warp_factory(unit_id)) // TODO: Revisit this, probably a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
+				if (unit_id_is_protoss_warp_factory(unit_id)) // TODO: Revisit this, probably a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
 				{
 					progress_string_id = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
 				}

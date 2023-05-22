@@ -650,23 +650,23 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			}
 		} else if (parser_eqi(parser, "tech")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_tech(i), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_is_tech(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "tech_tier")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_tech_tier_structure(i), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_is_tech_tier_structure(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Terran), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_race_check(i, RaceId::Terran), mask, negate);
 			}
 		} else if (parser_eqi(parser, "protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Protoss), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_race_check(i, RaceId::Protoss), mask, negate);
 			}
 		} else if (parser_eqi(parser, "zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_race_check(i, RaceId::Zerg), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
 		} else if (parser_eqi(parser, "combatants")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -685,11 +685,11 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			}
 		} else if (parser_eqi(parser, "transports")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_transport(i), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_is_transport(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "townhalls")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_town_center(i), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_is_town_center(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "depots")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -701,7 +701,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			}
 		} else if (parser_eqi(parser, "factional")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, scbw::unit_id_is_factional(i), mask, negate);
+				unit_id_bitset_set(&current_bitset, i, unit_id_is_factional(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {

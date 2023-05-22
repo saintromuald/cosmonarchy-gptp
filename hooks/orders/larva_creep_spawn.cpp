@@ -8,7 +8,7 @@ namespace hooks
 {
 	helper::SetCreepRelationalData_callback run_creep_randomizer_ptr = &run_creep_randomizer;
 	void create_building_larva(Unit* building) {
-		u32 unit_id = scbw::unit_id_get_larva_type(building->id);
+		u32 unit_id = unit_id_get_larva_type(building->id);
 		if (unit_id == UnitId::None) {
 			return;
 		}
@@ -285,8 +285,8 @@ namespace hooks
 	}
 
 	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) { // 00429740
-		if (scbw::unit_id_is_zerg_production(unit->id)
-			|| scbw::unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot])) {
+		if (unit_id_is_zerg_production(unit->id)
+			|| unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot])) {
 			return helper::btnscond_rally(unused, player, unit);
 		} else {
 			return 0;

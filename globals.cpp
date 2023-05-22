@@ -341,6 +341,8 @@ void tick_effect(Effect* effect) {
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
 					unit->damage_with_custom(2500 * total_scalar, -1, effect->source, effect->player);
 				});
+				
+				avenge_or_ascend_corpses_in_area(effect->position, effect->radius, effect->player);
 			} break;
 			case EffectId_SalamanderFire: {
 				EntryArray unit_array = {};
@@ -480,9 +482,9 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_AionReclamationField: {
-				Thingy* corpse = scbw::get_closest_active_corpse(effect->position, effect->radius);
+				Thingy* corpse = get_closest_active_corpse(effect->position, effect->radius);
 				if (corpse) {
-					scbw::reclaim_corpse(corpse, effect->player);
+					reclaim_corpse(corpse, effect->player);
 					effect->current_time = 0;
 					break;
 				}
@@ -974,7 +976,7 @@ namespace scbw
 		// Inherit Hierophant Signify
 		child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
 		child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];
-		child_ext->value_vectors[ValueVectorSignifySourcePlayer] = parent_ext->value_vectors[ValueVectorSignifySourcePlayer];
+		child_ext->values[ValueSignifyPlayer] = parent_ext->values[ValueSignifyPlayer];
 		scbw::update_signify_status(child, child_ext);
 
 		scbw::refresh_console();
@@ -1134,7 +1136,7 @@ namespace scbw
 		// Remove Hierophant Signify
 		unit_ext->timers[TimerSignify] = 0;
 		unit_ext->values[ValueSignifyStacks] = 0;
-		unit_ext->value_vectors[ValueVectorSignifySourcePlayer] = {};
+		unit_ext->values[ValueSignifyPlayer] = 0;
 		scbw::update_signify_status(unit, unit_ext);
 
 		// Remove Stellar Enforcement

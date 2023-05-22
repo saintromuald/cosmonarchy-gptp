@@ -1034,7 +1034,7 @@ namespace scbw {
 	}
 
 	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed) {
-		if (xlarge_allowed && scbw::unit_id_uses_xlarge_overlays(unit_id)) {
+		if (xlarge_allowed && unit_id_uses_xlarge_overlays(unit_id)) {
 			return 3;
 		}
 		if (units_dat::base_property[unit_id] & UnitProperty::LargeOverlay) {
@@ -1510,53 +1510,8 @@ namespace scbw {
 		}
 	}
 
-	u32 weapon_id_intercepts(u32 weapon_id) {
-		switch (weapon_id) {
-			case WeaponId::OptectonSunsplitBeam:
-			case WeaponId::AccantorPlasmaShell:
-				return InterceptType_GroundOnly;
-
-			case WeaponId::ValkyrieHaloRockets:
-			case WeaponId::EmpyreanPlasmaBarrage:
-				return InterceptType_AirOnly;
-
-			case WeaponId::SirenCharybdalRifle:
-			case WeaponId::PatriarchIronhandWeaver:
-			case WeaponId::StarSovereignInterventionMissiles:
-				return InterceptType_Any;
-		}
-		return InterceptType_None;
-	}
-
-	bool weapon_id_pierces(u32 weapon_id) {
-		switch (weapon_id) {
-			case WeaponId::CyprianTwinRailguns:
-			case WeaponId::SavantDiscoidRailgunPiercing:
-			case WeaponId::AutocratEminenceRifle:
-			case WeaponId::SevenstepGeometricRiflePiercing:
-			case WeaponId::RamessesPharoahCannons:
-			case WeaponId::ClaymoreHarpoonRailgun:
-			case WeaponId::PenumbraErebolShockCannon:
-			case WeaponId::MagnetarNewtonianShockCannon:
-			case WeaponId::HippogriffChimeraCannons:
-			case WeaponId::SentinelCerberusRailgun:
-			case WeaponId::KalkaliskViscousAcid:
-			case WeaponId::ZarcavrokorBonesofReflection:
-				return true;
-		}
-		return false;
-	}
-
-	bool weapon_id_piercing_stops_on_armor(u32 weapon_id) {
-		switch (weapon_id) {
-			case WeaponId::PenumbraErebolShockCannon:
-				return false;
-		}
-		return true;
-	}
-
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
-		scbw::manage_unit_overlay(unit, ImageId::MadrigalDirgeProc);
+		scbw::add_unit_overlay(unit, ImageId::MadrigalDirgeProc);
 		const u32 radius = 2 * 32;
 		// TODO: Unit search
 		scbw::UnitFinder(
@@ -1576,17 +1531,17 @@ namespace scbw {
 		const u32 cowardice_id = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
 		const u32 malice_id = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
 		if (unit_ext->values[ValueSignifyStacks] == 0) {
-			scbw::manage_unit_overlay(unit, cowardice_id, true);
-			scbw::manage_unit_overlay(unit, malice_id, true);
+			scbw::remove_unit_overlay(unit, cowardice_id);
+			scbw::remove_unit_overlay(unit, malice_id);
 		} else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
 				  || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
 				  || unit->has_weapon())
 		{
 			if (unit_ext->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardice_id)) {
-				scbw::manage_unit_overlay(unit, cowardice_id);
+				scbw::add_unit_overlay(unit, cowardice_id);
 			} else if (unit_ext->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(malice_id)) {
-				scbw::manage_unit_overlay(unit, cowardice_id, true);
-				scbw::manage_unit_overlay(unit, malice_id);
+				scbw::remove_unit_overlay(unit, cowardice_id);
+				scbw::add_unit_overlay(unit, malice_id);
 			}
 		}
 	}
@@ -1614,13 +1569,6 @@ namespace scbw {
 		});
 
 		return ally_count < enemy_count;
-	}
-
-	bool unit_id_is_zerg_supply(u16 unit_id) {
-		return (unit_id == UnitId::ZergOvileth
-			|| unit_id == UnitId::ZergIroleth
-			|| unit_id == UnitId::ZergOthstoleth
-			|| unit_id == UnitId::ZergAlaszileth);
 	}
 
 	void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
@@ -1702,10 +1650,10 @@ namespace scbw {
 		// Audiovisuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
 			if (source->id == UnitId::ProtossDemiurge) {
-				scbw::manage_unit_overlay(target, ImageId::Worship_Small + scbw::get_overlay_offset(target->id));
+				scbw::add_unit_overlay(target, ImageId::Worship_Small + scbw::get_overlay_offset(target->id));
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 			} else if (source->id == UnitId::ProtossMindTyrant) {
-				scbw::manage_unit_overlay(target, ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
+				scbw::add_unit_overlay(target, ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
 			}
 		}
 	}
@@ -1731,35 +1679,6 @@ namespace scbw {
 		target_ext->values[ValueMindControlPlayer] = 0;
 	}
 
-	bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
-		if (town_center_only) {
-			return unit_id == UnitId::ZergHachirosk
-				|| unit_id == UnitId::ZergCaphrolosk
-				|| unit_id == UnitId::ZergGathtelosk;
-		} else {
-			return unit_id == UnitId::ZergHachirosk
-				|| unit_id == UnitId::ZergCaphrolosk
-				|| unit_id == UnitId::ZergGathtelosk
-				|| unit_id == UnitId::ZergLarvoskColony
-				|| unit_id == UnitId::ZergOcsalColony;
-		}
-	}
-	
-	bool unit_id_is_town_center(u16 unit_id) {
-		return unit_id == UnitId::TerranCommandCenter
-			|| unit_id == UnitId::ProtossNexus
-			|| unit_id == UnitId::ZergHachirosk
-			|| unit_id == UnitId::ZergCaphrolosk
-			|| unit_id == UnitId::ZergGathtelosk;
-	}
-
-	bool unit_id_is_factional(u16 unit_id) {
-		return unit_id == UnitId::TerranAspirant
-			|| unit_id == UnitId::TerranCohort
-			|| unit_id == UnitId::TerranLuminary
-			|| unit_id == UnitId::TerranTarasque;
-	}
-
 	bool transport_is_full(Unit* transport) {
 		UnitExt* transport_ext = get_unit_ext(transport);
 		for (u32 i = 0; i < TransportCap; ++i) {
@@ -1778,41 +1697,6 @@ namespace scbw {
 			}
 		}
 		return true;
-	}
-
-	bool unit_id_uses_xlarge_overlays(u16 unit_id) {
-		return unit_id == UnitId::TerranPenumbra
-			|| unit_id == UnitId::TerranPhobos
-			|| unit_id == UnitId::ProtossStarSovereign
-			|| unit_id == UnitId::ZergOthstoleth
-			|| unit_id == UnitId::ZergAlkajelisk;
-	}
-
-	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
-		if (count_gas_structures) {
-			return unit_id == UnitId::ResourceMineralField
-				|| unit_id == UnitId::ResourceMineralFieldType2
-				|| unit_id == UnitId::ResourceMineralFieldType3
-				|| unit_id == UnitId::ResourceVespeneGeyser
-				|| unit_id == UnitId::ResourceVespeneRidge
-				|| unit_id == UnitId::TerranReservoir
-				|| unit_id == UnitId::TerranWellbore
-				|| unit_id == UnitId::ProtossAquifer
-				|| unit_id == UnitId::ZergExcisant
-				|| unit_id == UnitId::ZergEzigrisant;
-		} else {
-			return unit_id == UnitId::ResourceMineralField
-				|| unit_id == UnitId::ResourceMineralFieldType2
-				|| unit_id == UnitId::ResourceMineralFieldType3
-				|| unit_id == UnitId::ResourceVespeneGeyser
-				|| unit_id == UnitId::ResourceVespeneRidge;
-		}
-	}
-
-	bool unit_id_is_minerals(u16 unit_id) {
-		return unit_id == UnitId::ResourceMineralField
-			|| unit_id == UnitId::ResourceMineralFieldType2
-			|| unit_id == UnitId::ResourceMineralFieldType3;
 	}
 
 	void set_cmbw_ai_preference(u16 unit_id, u32 player) {
@@ -1927,41 +1811,6 @@ namespace scbw {
 		}
 	}
 
-	bool unit_id_is_capped_gas_structure(u16 unit_id) {
-		return unit_id == UnitId::TerranReservoir
-		||	   unit_id == UnitId::TerranWellbore
-		||	   unit_id == UnitId::ProtossAquifer
-		||	   unit_id == UnitId::ZergExcisant
-		||	   unit_id == UnitId::ZergEzigrisant;
-	}
-
-	bool unit_id_is_gas_structure(u16 unit_id) {
-		return unit_id_is_capped_gas_structure(unit_id)
-		||	   unit_id == UnitId::ResourceVespeneRidge
-		||	   unit_id == UnitId::ResourceVespeneGeyser;
-	}
-
-	bool unit_id_is_smaller_building(u16 unit_id) {
-		return (units_dat::base_property[unit_id] & UnitProperty::Addon &&
-			(unit_id != UnitId::TerranFountainhead && unit_id != UnitId::TerranAtelier && unit_id != UnitId::TerranParticleAccelerator))
-			|| unit_id == UnitId::TerranSupplyDepot
-			|| unit_id == UnitId::TerranWatchdog
-			|| unit_id == UnitId::TerranBunker
-			|| unit_id == UnitId::TerranSentinel
-			|| unit_id == UnitId::ProtossPylon
-			|| unit_id == UnitId::ProtossWarden
-			|| unit_id == UnitId::ProtossMatrix
-			|| unit_id == UnitId::ZergCagrantColony
-			|| unit_id == UnitId::ZergSurkithColony
-			|| unit_id == UnitId::ZergSpraithColony
-			|| unit_id == UnitId::ZergLarvoskColony
-			|| unit_id == UnitId::ZergSkortrithColony
-			|| unit_id == UnitId::ZergSpirtithColony
-			|| unit_id == UnitId::ZergKazitrithColony
-			|| unit_id == UnitId::ZergOcsalColony
-			|| unit_id == UnitId::ZergNydusCesiant;
-	}
-
 	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
 		u32 w = units_dat::building_dimensions[unit_id].x / 32;
 		u32 h = units_dat::building_dimensions[unit_id].y / 32;
@@ -2051,11 +1900,11 @@ namespace scbw {
 
 		// Spawn infested overlay
 		u32 infested_image_id = ImageId::InfestedOverlay_Large;
-		if (scbw::unit_id_is_smaller_building(unit->id)) {
+		if (unit_id_is_smaller_building(unit->id)) {
 			infested_image_id = ImageId::InfestedOverlay_Small;
 		}
 		if (!unit->get_overlay(infested_image_id)) {
-			scbw::manage_unit_overlay(unit, infested_image_id);
+			scbw::add_unit_overlay(unit, infested_image_id);
 		}
 
 		// Spawn effect overlay | TODO: Make this a sprite
@@ -2069,67 +1918,6 @@ namespace scbw {
 
 		// Play sound
 		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
-	}
-
-	b32 unit_id_is_tech(u32 unit_id) {
-		if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
-			switch (unit_id) {
-				case UnitId::TerranComsatStation:
-				case UnitId::TerranMissileSilo:
-				case UnitId::TerranQuarry:
-					return false;
-			}
-			return true;
-		}
-
-		switch (unit_id) {
-			// Terran
-			case UnitId::TerranAtlas:
-			case UnitId::TerranFountainhead:
-			case UnitId::TerranDaedala:
-			case UnitId::TerranAtelier:
-
-			// Zerg
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergIrulentIvoa:
-			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergQuazrokPool:
-			case UnitId::ZergLiivralPond:
-			case UnitId::ZergMuthrokSpire:
-			case UnitId::ZergVithrathHaunt:
-			case UnitId::ZergAxtothAxis:
-			case UnitId::ZergBegrozithBarrow:
-			case UnitId::ZergHydrokDen:
-			case UnitId::ZergGorgralSwamp:
-			case UnitId::ZergIzkagIteth:
-			case UnitId::ZergChokralgantChazsal:
-			case UnitId::ZergGeszkathGrotto:
-			case UnitId::ZergAlkajChasm:
-			case UnitId::ZergZorkizShroud:
-			case UnitId::ZergUltrokCavern:
-			case UnitId::ZergMatravilNest:
-			case UnitId::ZergAlmakisAntre:
-			case UnitId::ZergElthisthMound:
-			case UnitId::ZergRakzogthRoost:
-				return true;
-		}
-		return false;
-	}
-
-	b32 unit_id_is_tech_tier_structure(u32 unit_id) {
-		switch (unit_id) {
-			// Terran
-			case UnitId::TerranAtlas:
-			case UnitId::TerranFountainhead:
-			case UnitId::TerranDaedala:
-			case UnitId::TerranAtelier:
-
-			// Zerg
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergOthstolOviform:
-				return true;
-		}
-		return false;
 	}
 
 	AiScript* run_ai(u32 player, Box32 area, s32 name) {
@@ -2291,44 +2079,6 @@ namespace scbw {
 		return unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer;
 	}
 
-	bool unit_id_is_transport(u32 unit_id) {
-		return unit_id == UnitId::TerranTrojan
-			|| unit_id == UnitId::TerranPythean
-			|| unit_id == UnitId::ProtossEnvoy
-			|| unit_id == UnitId::ZergOvileth
-			|| unit_id == UnitId::ZergIroleth
-			|| unit_id == UnitId::ZergOthstoleth;
-	}
-
-	bool unit_id_race_check(u32 unit_id, u32 race) {
-		switch (race) {
-			case RaceId::Terran: {
-				if (units_dat::group_flags[unit_id].is_terran) {
-					return true;
-				}
-				switch (unit_id) {
-					case UnitId::TerranCohort:
-					case UnitId::TerranAspirant:
-					case UnitId::TerranTarasque:
-					case UnitId::TerranLuminary: {
-						return true;
-					}
-				}
-			} break;
-			case RaceId::Protoss: {
-				if (units_dat::group_flags[unit_id].is_protoss) {
-					return true;
-				}
-			} break;
-			case RaceId::Zerg: {
-				if (units_dat::group_flags[unit_id].is_zerg) {
-					return true;
-				}
-			} break;
-		}
-		return false;
-	}
-
 	void dump_sync_data() {
 		FILE* file = fopen("desync.text", "wb");
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -2459,22 +2209,6 @@ namespace scbw {
 			|| unit_id == UnitId::ProtossPanoptus;
 	}
 
-	bool unit_id_is_protoss_warp_factory(u32 unit_id) {
-		return unit_id == UnitId::ProtossGateway
-			|| unit_id == UnitId::ProtossCenotaph
-			|| unit_id == UnitId::ProtossGrandLibrary
-			|| unit_id == UnitId::ProtossRogueGallery
-			|| unit_id == UnitId::ProtossProstrationStage
-			|| unit_id == UnitId::ProtossSanctumOfSorrow
-			|| unit_id == UnitId::ProtossAncestralArchives
-			|| unit_id == UnitId::ProtossHallOfHeretics
-			|| unit_id == UnitId::ProtossStargate
-			|| unit_id == UnitId::ProtossAstralOmen
-			|| unit_id == UnitId::ProtossArgosy
-			|| unit_id == UnitId::ProtossFleetBeacon
-			|| unit_id == UnitId::ProtossMonumentOfSin;
-	}
-
 	bool buttonset_id_is_submenu(u32 buttonset_id) {
 		return buttonset_id == UnitId::Buttons_BasicZergBuildings
 			|| buttonset_id == UnitId::Buttons_AdvancedZergBuildings
@@ -2600,55 +2334,6 @@ namespace scbw {
 		}
 		return false;
 	}
-
-	bool unit_id_can_regenerate_shields(u32 unit_id) {
-		return unit_id != UnitId::ProtossVagrantShade;
-	}
-
-	bool unit_id_is_stackable_building(u32 unit_id) {
-		return false; // Disabled to see if it improves AI base layouts. -Pr0nogo
-		switch (unit_id) {
-			case UnitId::TerranWatchdog:
-			case UnitId::TerranBunker:
-			case UnitId::TerranSentinel:
-			case UnitId::ProtossPylon:
-			case UnitId::ProtossWarden:
-			case UnitId::ProtossMatrix:
-		//	case UnitId::ZergCagrantColony: // Disabled to prevent spamming. -Pr0nogo
-			case UnitId::ZergSurkithColony:
-			case UnitId::ZergSpraithColony:
-			case UnitId::ZergLarvoskColony:
-			case UnitId::ZergSkortrithColony:
-			case UnitId::ZergSpirtithColony:
-			case UnitId::ZergKazitrithColony:
-			case UnitId::ZergOcsalColony:
-			case UnitId::ZergIrolIris:
-			case UnitId::ZergOthstolOviform:
-			{
-				return true;
-			} break;
-		}
-		return false;
-	}
-
-	bool unit_id_has_addon(u32 unit_id) {
-		switch (unit_id) {
-			case UnitId::TerranCommandCenter:
-			case UnitId::TerranTreasury:
-			case UnitId::TerranBarracks:
-			case UnitId::TerranCaptaincy:
-			case UnitId::TerranIronCouncil:
-			case UnitId::TerranFulcrum:
-			case UnitId::TerranIronFoundry:
-			case UnitId::TerranStarport:
-			case UnitId::TerranNaniteAssembly:
-			{
-				return true;
-			} break;
-		}
-		return false;
-	}
-
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
 		u32 heal_amount = 2;
 		u32 range = 64;
@@ -2702,25 +2387,6 @@ namespace scbw {
 			}
 		}
 		return false;
-	}
-
-	u32 unit_id_get_larva_type(u32 unit_id) {
-		switch (unit_id) {
-			case UnitId::ZergCaphrolosk:
-			case UnitId::ZergOcsalColony:
-			case UnitId::ZergOcsalLarva:
-			{
-				return UnitId::ZergOcsalLarva;
-			} break;
-		}
-		return UnitId::ZergLarva;
-	}
-
-	u32 unit_id_swarmhold_value(u32 unit_id) {
-		switch (unit_id) {
-			case UnitId::ZergGathtelosk: return 1; // 1 extra unit per egg
-		}
-		return 0;
 	}
 
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
@@ -2833,22 +2499,6 @@ namespace scbw {
 			guard_ai->original_home = position;
 		}
 		return guard_ai;
-	}
-
-	bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
-		if (bullet && bullet->source_unit) {
-			switch (weapon_id) {
-				case WeaponId::GolemBloodlessAssault:
-				case WeaponId::NathrokorPlasmidBreath:
-				case WeaponId::MortothrokorWickedIncisors:
-				case WeaponId::GorgrokorSerratedCleavers:
-				case WeaponId::ZarcavrokorBisectingBlades:
-				case WeaponId::TethzorokorSaberArray:
-				case WeaponId::TetcaerokorCleavingMaw:
-					return true;
-			}
-		}
-		return false;
 	}
 
 	// Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
@@ -2978,11 +2628,6 @@ namespace scbw {
 		}
 	}
 
-	bool unit_id_is_broodspawn(u32 unit_id) {
-		return unit_id == UnitId::ZergRilirokor
-			|| unit_id == UnitId::ZergRililisk;
-	}
-
 	void binding_plasma_proc(Unit* victim) {
 		UnitExt* victim_ext = get_unit_ext(victim);
 		u32 player = victim_ext->values[ValueGladiusBindingPlasmaPlayer];
@@ -3024,25 +2669,9 @@ namespace scbw {
 		}
 	}
 
-	bool order_id_is_harvest_related(u32 order_id) {
-		return order_id == OrderId::Harvest1
-			|| order_id == OrderId::Harvest5
-			|| order_id == OrderId::MoveToMinerals
-			|| order_id == OrderId::HarvestGas1
-			|| order_id == OrderId::HarvestGas3
-			|| order_id == OrderId::HarvestFinish
-			|| order_id == OrderId::ReturnGas
-			|| order_id == OrderId::ReturnMinerals
-			|| order_id == OrderId::MiningMinerals
-			|| order_id == OrderId::CanHarvestOre
-			|| order_id == OrderId::CanEnterGasMine
-			|| order_id == OrderId::ResetCollision2
-			|| order_id == OrderId::MoveToHarvestObscured;
-	}
-
 	bool player_has_transport(u32 player) {
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-			if (scbw::unit_id_is_transport(unit->id)) {
+			if (unit_id_is_transport(unit->id)) {
 				return true;
 			}
 		}
@@ -3083,118 +2712,17 @@ namespace scbw {
 		}
 	}
 
-	bool unit_id_is_vespene_node(u32 unit_id) {
-		return unit_id == UnitId::ResourceVespeneRidge
-			|| unit_id == UnitId::ResourceVespeneGeyser
-			|| unit_id == UnitId::TerranReservoir
-			|| unit_id == UnitId::TerranWellbore
-			|| unit_id == UnitId::ProtossAquifer
-			|| unit_id == UnitId::ZergExcisant
-			|| unit_id == UnitId::ZergEzigrisant;
-	}
-
-	bool unit_id_is_ground_bunker(u32 unit_id) {
-		return unit_id == UnitId::TerranBunker;
-		//	|| unit_id == UnitId::TerranTencendur;
-	}
-
-	bool unit_id_is_bunker(u32 unit_id) {
-		return unit_id_is_ground_bunker(unit_id); // Will add more bunker types later. -Pr0nogo
-	}
-
 	bool is_team_game_map(const char* map_name) {
 		return strcmp(map_name, "Todas Complex") == 0; // This was for CB2023, should be reworked into a custom trigger. -Pr0nogo
 	}
 
-	bool image_id_is_powerup(u32 image_id)
-	{
-		return image_id == ImageId::MineralChunkType1
-			|| image_id == ImageId::MineralChunkType2
-			|| image_id == ImageId::GasRaw
-			|| image_id == ImageId::GasRaw2
-			|| image_id == ImageId::TerranGasTankType1
-			|| image_id == ImageId::TerranGasTankType2
-			|| image_id == ImageId::ProtossGasOrbType1
-			|| image_id == ImageId::ProtossGasOrbType2
-			|| image_id == ImageId::ZergGasSacType1
-			|| image_id == ImageId::ZergGasSacType2
-			|| image_id == ImageId::Flag
-			|| image_id == ImageId::KhaydarinCrystal
-			|| image_id == ImageId::PsiEmitter
-			|| image_id == ImageId::YoungChrysalis
-			|| image_id == ImageId::DataDisc
-			|| image_id == ImageId::Uraj
-			|| image_id == ImageId::Khalis;
-	}
-
 	Image* get_powerup_overlay(Sprite* sprite) {
 		for (Image* image = sprite->images.head; image; image = image->link.next) {
-			if (scbw::image_id_is_powerup(image->id)) {
+			if (image_id_is_powerup(image->id)) {
 				return image;
 			}
 		}
 		return 0;
-	}
-
-	bool weapon_id_accelerates(u32 weapon_id) {
-		return weapon_id == WeaponId::EmpyreanPlasmaBarrage;
-	}
-
-	bool weapon_id_is_melee_aoe(u32 weapon_id)
-	{
-		return weapon_id == WeaponId::NathrokorPlasmidBreath
-			|| weapon_id == WeaponId::GorgrokorSerratedCleavers
-			|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
-			|| weapon_id == WeaponId::TethzorokorSaberArray
-			|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
-	}
-
-	bool unit_regens_in_combat(Unit* unit)
-	{
-		return false; // Can update later with status checks and etc. -Pr0nogo
-	}
-
-	bool unit_id_is_melee_air_unit(u32 unit_id) {
-		return unit_id == UnitId::ZergNathrokor
-			|| unit_id == UnitId::ZergGorgrokor
-			|| unit_id == UnitId::ZergTetcaerokor
-			|| unit_id == UnitId::ZergAkistrokor
-			|| unit_id == UnitId::ZergZarcavrokor;
-	}
-
-	bool weapon_id_is_for_harvesting(u32 weapon_id) {
-		return	weapon_id == WeaponId::MasonFusionCutterHarvest
-			|| weapon_id == WeaponId::ScribeParticleBeamHarvest
-			|| weapon_id == WeaponId::DrolethSpinesHarvest;
-	}
-
-	bool weapon_id_is_standard_weapon(u32 weapon_id) {
-		// Use this switch for weird exceptions:
-		/*
-		switch (weapon_id) {
-			case WeaponId::XD:
-				return true;
-
-			case WeaponId::XD2:
-				return false;
-		}
-		*/
-		switch (weapons_dat::explosion_type[weapon_id]) {
-			case WeaponEffect::NormalHit:
-			case WeaponEffect::SplashRadial:
-			case WeaponEffect::SplashEnemy:
-			case WeaponEffect::SplashAir:
-			case WeaponEffect::Unknown_Crash:
-				return true;
-		}
-		return false;
-	}
-
-	bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
-		return unit_id == UnitId::ZergVorvrokor
-			|| unit_id == UnitId::ZergKalkalisk
-			|| unit_id == UnitId::ZergTosgrilisk
-			|| unit_id == UnitId::ZergGhitorokor;
 	}
 
 	Image* get_addon_connector_image(Unit* unit) {
@@ -3225,120 +2753,11 @@ namespace scbw {
 		return 0;
 	}
 
-	bool is_any_corpse(Thingy* thingy) {
-		return thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath);
-	}
-
-	static bool internal_is_corpse_active(Thingy* corpse) {
-		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		u32 unit_id = corpse_ext->unit_id;
-		if (units_dat::base_property[unit_id] & UnitProperty::Building
-		||	unit_id == UnitId::ZergLarva
-		||  unit_id == UnitId::ZergOcsalLarva
-		||  unit_id == UnitId::ZergEgg
-		||  unit_id == UnitId::ZergCocoon
-		||  unit_id == UnitId::ProtossPlasmaShell
-		||  unit_id == UnitId::ProtossSteward) {
-			return false;
-		}
-		return corpse_ext->activity_timer <= 15 * 24;
-	}
-
-	bool is_inactive_corpse(Thingy* thingy) {
-		if (!is_any_corpse(thingy)) {
-			return false;
-		}
-		return !internal_is_corpse_active(thingy);
-	}
-
-	bool is_active_corpse(Thingy* thingy) {
-		if (!is_any_corpse(thingy)) {
-			return false;
-		}
-		return internal_is_corpse_active(thingy);
-	}
-
-	void consume_corpse(Thingy* corpse) {
-		corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-		corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
-	}
-
-	Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
-		EntryArray corpses = {};
-		corpse_search_radial(&corpses, position, radius);
-		corpse_search_sort_by_distance(&corpses, position);
-		for (u32 i = 0; i < corpses.count; ++i) {
-			Thingy* corpse = corpses.corpses[i];
-			if (is_active_corpse(corpse)) {
-				return corpse;
-			}
-		}
-		return 0;
-	}
-
-	Unit* reclaim_corpse(Thingy* corpse, u32 player) {
-		if (!scbw::is_active_corpse(corpse)) {
-			return false;
-		}
-
-		ThingyExt* corpse_ext = get_thingy_ext(corpse);
-		u32 unit_id = corpse_ext->unit_id;
-		Point16 pos = corpse->sprite->position;
-		if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
-			if (pos.y > 42) {
-				pos.y -= 42;
-			} else {
-				pos.y = 0;
-			}
-		}
-		Unit* unit = scbw::create_unit_in_game(unit_id, player, pos.x, pos.y);
-		if (unit) {
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
-			unit->play_iscript_animation(IscriptAnimation::Unused1);
-			unit_ext->values[ValueReviveStarted] = 1;
-			unit_ext->timers[TimerReviveFlagClearMin] = 14; // 3;
-			unit_ext->timers[TimerReviveFlagClearMax] = 14;
-			switch (unit->id) {
-				case UnitId::ZergRililisk:
-				case UnitId::ZergRilirokor:
-				{
-					unit->remove_timer = BroodspawnTimer;
-				}
-			}
-			scbw::consume_corpse(corpse);
-
-			unit->shields = 0;
-			unit->set_hitpoints(25 * 256);
-			unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
-			helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-			unit_ext->timers[TimerReclaiming] = 2 * 24;
-			unit_ext->timers[TimerStun]       = 2 * 24;
-			unit_ext->timers[TimerDecaySafe]  = 3;
-			unit_ext->values[ValueDecaying] = true;
-		//	unit_ext->values[ValueNoCorpse] = true;
-		}
-		return unit;
-	}
-
-	bool unit_id_is_power_generator(u32 unit_id) {
-		return unit_id == UnitId::ProtossPylon
-			|| unit_id == UnitId::ProtossCrucible;
-	}
-
 	PlayerColorCode get_player_color_code(u32 player) {
 		PlayerColorCode code = {};
 		code.data[0] = PlayerColorByte;
 		code.data[1] = player + 1;
 		return code;
-	}
-
-	bool unit_id_is_psi_provider(u16 unit_id) {
-		if (unit_id == UnitId::ProtossPylon
-			|| unit_id == UnitId::ProtossCrucible) {
-			return true;
-		}
-		return false;
 	}
 
 	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units) {
@@ -3375,31 +2794,6 @@ namespace scbw {
 			pos.y = 0;
 		}
 		helper::move_screen(pos);
-	}
-
-	bool unit_id_can_do_controlled_demolition(u32 unit_id) {
-		return units_dat::base_property[unit_id] & UnitProperty::Addon
-			|| unit_id == UnitId::TerranReservoir
-			|| unit_id == UnitId::TerranWellbore;
-	}
-
-	bool tech_id_needs_target(u32 tech_id) {
-		return tech_id != TechId::Hallucination
-			&& tech_id != TechId::LuminaryAuralAssault
-			&& tech_id != TechId::HypnagogueThroughTheLookingGlass;
-	}
-
-	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
-		egg->order_to_idle();
-		egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
-		egg->build_queue[egg->build_queue_slot] = unit_id;
-		egg->set_hitpoints(hp);
-
-		UnitExt* egg_ext = get_unit_ext(egg);
-		egg_ext->values[ValueCustomEggActive]   = true;
-		egg_ext->timers[TimerCustomEggHatch]    = time;
-		egg_ext->values[ValueCustomEggHatchMax] = time;
-		egg_ext->values[ValueCustomEggHpMax]    = hp;
 	}
 
 	Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
@@ -3535,50 +2929,6 @@ namespace scbw {
 		return false;
 	}
 
-	bool unit_paths_over_small_units(Unit* unit) {
-		// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
-		return unit->id == UnitId::TerranPenumbra;
-	}
-
-	bool unit_collides_with_titanic(Unit* unit) {
-		if (unit->status & UnitStatus::GroundedBuilding) {
-			return unit->id != UnitId::ProtossPylon && !scbw::unit_id_is_minerals(unit->id);
-		}
-		return unit->id == UnitId::TerranClaymore
-			|| unit->id == UnitId::TerranPenumbra
-			|| unit->id == UnitId::TerranAion
-			|| unit->id == UnitId::ProtossOptecton
-			|| unit->id == UnitId::ProtossDemiurge
-			|| unit->id == UnitId::ZergKeskathalor
-			|| unit->id == UnitId::ZergKethrostalor
-			|| unit->id == UnitId::ZergUltrokor;
-	}
-
-	bool unit_has_fore_castle(Unit* unit) {
-		switch (unit->id) {
-			case UnitId::TerranMinotaur: {
-				return true;
-			}
-		}
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueHasSublimeShepherd]) {
-			return true;
-		}
-		return false;
-	}
-
-	bool unit_id_is_siege_mode(u32 unit_id) {
-		return unit_id == UnitId::TerranMatadorCinderMode
-			|| unit_id == UnitId::TerranPhalanxSiegeMode
-			|| unit_id == UnitId::TerramCuirassTrenchMode;
-	}
-
-	bool unit_id_is_tank_mode(u32 unit_id) {
-		return unit_id == UnitId::TerranMatadorTankMode
-			|| unit_id == UnitId::TerranPhalanxTankMode
-			|| unit_id == UnitId::TerranCuirassTankMode;
-	}
-
 	void transform_unit(Unit* unit, u16 unit_id) { // Written by DarkenedFantasies for siege transformation.
 		Unit* subunit = unit->subunit;
 		s8 subunit_hoffset = 0;
@@ -3611,52 +2961,23 @@ namespace scbw {
 		}
 	}
 
-	bool weapon_id_bounces_lithe_organelle(u32 weapon_id) {
-		return weapon_id == WeaponId::MutaliskGlaveWurm
-			|| weapon_id == WeaponId::LiiraliskHollowedSpores
-			|| weapon_id == WeaponId::TosgriliskExplosiveSpores
-			|| weapon_id == WeaponId::SpirtithColonySpirtilSpores;
-	}
-
-	ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
-		switch (weapon_id) {
-			case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
-			case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
-			case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
-			case WeaponId::StrigaPhaseSaber:				return ImageId::PhaseLineBlast;
-			case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
-		}
-		return ImageId::None;
-	}
-
-	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove, bool underlay) {
-		Unit* final_unit = unit;
+	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay) {
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-			final_unit = unit->subunit;
+			unit = unit->subunit;
 		}
 
-		if (remove) {
-			final_unit->sprite->remove_overlay(image_id);
+		if (underlay) {
+			unit->sprite->create_underlay(image_id);
 		} else {
-			if (underlay) {
-				final_unit->sprite->create_underlay(image_id);
-			} else {
-				final_unit->sprite->create_top_overlay(image_id);
-			}
+			unit->sprite->create_top_overlay(image_id);
 		}
 	}
 
-	void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
-		UnitExt* target_ext = get_unit_ext(target);
-		if (target_ext->timers[TimerIncubationArm]
-		||  units_dat::base_property[target->id] & UnitProperty::Invincible
-		||  scbw::unit_id_is_broodspawn(target->id)) {
-			return;
+	void remove_unit_overlay(Unit* unit, u32 image_id) {
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+			unit = unit->subunit;
 		}
-		target_ext->values[ValueIncubationCount] = count; 
-		target_ext->values[ValueIncubationUnitId] = unit_id; 
-		target_ext->values[ValueIncubationPlayer] = player;
-		target_ext->timers[TimerIncubationArm] = 2 * 24 + 1;
-		scbw::manage_unit_overlay(target, ImageId::ParasiteOverlay);
+
+		unit->sprite->remove_overlay(image_id);
 	}
 }

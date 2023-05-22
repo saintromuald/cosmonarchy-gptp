@@ -616,7 +616,7 @@ namespace hooks
 
 		if (strict) {
 			// Skip transports
-			if (scbw::unit_id_is_transport(unit->id)) {
+			if (unit_id_is_transport(unit->id)) {
 				return false;
 			}
 
@@ -1191,10 +1191,10 @@ namespace hooks
 			}
 		}
 		if ((unit->status & UnitStatus::Completed
-		||	 scbw::unit_id_is_zerg_production(unit->id, true)
+		||	 unit_id_is_zerg_production(unit->id, true)
 		||   unit->id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
 		&&   unit->status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::ResourceDepot)
-		||	 scbw::unit_id_is_town_center(unit->id)) { // Originally checked for race, so Terran would only accept Command Center, etc
+		||	 unit_id_is_town_center(unit->id)) { // Originally checked for race, so Terran would only accept Command Center, etc
 			if (g_aiscript_controller[player].ai_flags.is_use_map_settings) {
 				ai_region->ground_strength_needed = 6 * g_aiscript_controller[player].default_min;
 				ai_region->air_strength_needed = 6 * g_aiscript_controller[player].default_min;

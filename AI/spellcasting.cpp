@@ -124,7 +124,7 @@ namespace AI
 						corpse_search_radial(&corpses, unit->position, radius);
 						for (u32 i = 0; i < corpses.count; ++i) {
 							Thingy* corpse = corpses.corpses[i];
-							if (scbw::is_active_corpse(corpse)) {
+							if (is_active_corpse(corpse)) {
 								target = corpse;
 								break;
 							}

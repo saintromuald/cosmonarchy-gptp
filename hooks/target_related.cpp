@@ -671,7 +671,7 @@ LABEL_42:
 		}
 		*/
 
-		if (scbw::unit_id_is_bunker(attacker->id)) {
+		if (unit_id_is_bunker(attacker->id)) {
 			u32 max_range = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
 				Unit* cargo_unit = attacker->get_loaded_unit(i);

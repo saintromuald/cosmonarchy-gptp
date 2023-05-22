@@ -492,7 +492,7 @@ namespace hooks {
 					}
 				}
 				helper::add_worker_structure_ai(result, parentTown);
-				if (!scbw::unit_id_is_bunker(result->id) || *g_elapsed_time_seconds <= 60)
+				if (!unit_id_is_bunker(result->id) || *g_elapsed_time_seconds <= 60)
 				{
 					if (result->id == UnitId::TerranWatchdog)
 					{
@@ -777,7 +777,7 @@ namespace hooks {
 
 				helper::add_worker_structure_ai(new_unit, old_unit_town);
 				u16 new_unit_id = new_unit->id;
-				if (!scbw::unit_id_is_bunker(new_unit_id) || *g_elapsed_time_seconds <= 60) {
+				if (!unit_id_is_bunker(new_unit_id) || *g_elapsed_time_seconds <= 60) {
 					if (new_unit_id == UnitId::TerranWatchdog) {
 						u32 i;
 						BuildingAi* j;

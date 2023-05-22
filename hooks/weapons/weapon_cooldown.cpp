@@ -48,6 +48,11 @@ namespace hooks {
 			cooldown /= 1.25;
 		}
 
+		// Protoss Cornerstone: Ascend - speed
+		if (unit_ext->timers[TimerAscend]) {
+			cooldown /= 1.25;
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranMadcap: {
 				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary

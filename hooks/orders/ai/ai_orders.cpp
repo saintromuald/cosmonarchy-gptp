@@ -883,7 +883,7 @@ namespace hooks {
 		if (!for_harvesting && unit->id == UnitId::ResourceVespeneGeyser) {
 			return 1;
 		}
-		if (scbw::unit_id_is_vespene_node(unit->id)) {
+		if (unit_id_is_vespene_node(unit->id)) {
 			return 2 + (unit->building.resource.resource_yield != 0);
 		}
 		return 0;
@@ -1657,7 +1657,7 @@ namespace hooks {
 
 				// Add padding on top and left
 				// Stackable buildings don't have padding between each other
-				if (!scbw::unit_id_is_stackable_building(unit_id) || !scbw::unit_id_is_stackable_building(unit->id)) {
+				if (!unit_id_is_stackable_building(unit_id) || !unit_id_is_stackable_building(unit->id)) {
 					unit_x -= 1;
 					unit_y -= 1;
 					w += 1;
@@ -1665,10 +1665,10 @@ namespace hooks {
 				}
 
 				// Handle addons
-				if (scbw::unit_id_has_addon(unit->id)) {
+				if (unit_id_has_addon(unit->id)) {
 					w += 2;
 				}
-				if (scbw::unit_id_has_addon(unit_id)) {
+				if (unit_id_has_addon(unit_id)) {
 					unit_x -= 2;
 					w += 2;
 				}
@@ -1949,7 +1949,7 @@ namespace hooks {
 	}
 
 	b32 ai_is_unit_id_unit_race(u16 unit_id, Unit* unit) {
-		if (scbw::unit_id_race_check(unit_id, unit->get_race())) {
+		if (unit_id_race_check(unit_id, unit->get_race())) {
 			return 1;
 		}
 		*g_last_internal_error = 25;
@@ -2031,7 +2031,7 @@ namespace hooks {
 			}
 
 			// Skip transports
-			if (scbw::unit_id_is_transport(unit->id)) {
+			if (unit_id_is_transport(unit->id)) {
 				continue;
 			}
 

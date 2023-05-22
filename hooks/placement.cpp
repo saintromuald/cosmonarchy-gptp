@@ -220,7 +220,7 @@ namespace hooks
 	// Hooked to enable more refinery types. -Pr0nogo
 	void place_building_refinery_check(Unit* result) // 0048E1E0
 	{
-		if (scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id))
+		if (unit_id_is_capped_gas_structure(*g_place_building_unit_id))
 		{
 			if (helper::can_draw_placement_rect_maybe(*g_place_building_unit_id, result))
 			{
@@ -238,7 +238,7 @@ namespace hooks
 			u16 id = *g_place_building_unit_id;
 			do
 			{
-				if (geyser->id == UnitId::ResourceVespeneGeyser && scbw::unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant)
+				if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant)
 				{
 					b32 can_draw = helper::can_draw_placement_rect_maybe(id, geyser);
 					id = *g_place_building_unit_id; // lol looping
@@ -293,7 +293,7 @@ namespace hooks
 
 			/*if (*g_place_building_unit_id == UnitId::ProtossPylon) {
 				place_custom_building_proc();
-			} else*/if (!scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+			} else*/if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 				if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 				{
 					helper::place_building_normal_proc();
@@ -307,7 +307,7 @@ namespace hooks
 	// Hooked to enable more refinery types. -Pr0nogo
 	b32 unit_id_is_refinery(u16 unit_id) // 0047AFE0
 	{
-		return scbw::unit_id_is_capped_gas_structure(unit_id);
+		return unit_id_is_capped_gas_structure(unit_id);
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
@@ -327,7 +327,7 @@ namespace hooks
 			*g_is_placing_addon = 1;
 		}/* else if (*g_place_building_unit_id == UnitId::ProtossPylon) {
 			place_custom_building_proc();
-		}*/ else if (scbw::unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+		}*/ else if (unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 			{
 				helper::place_building_normal_proc();
@@ -359,7 +359,7 @@ namespace hooks
 		}
 
 		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi
-		||  scbw::unit_id_is_psi_provider(unit_id))
+		||  unit_id_is_psi_provider(unit_id))
 		{
 			helper::create_pylon_aura();
 			active_unit = *g_active_portrait_unit;

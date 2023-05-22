@@ -217,7 +217,7 @@ namespace hooks
 					return 0;
 				}
 				error_string_id = 896;
-				if (unit->player != target->player && scbw::unit_id_is_capped_gas_structure(target->id))
+				if (unit->player != target->player && unit_id_is_capped_gas_structure(target->id))
 				{
 					if (bErrorFlag)
 					{

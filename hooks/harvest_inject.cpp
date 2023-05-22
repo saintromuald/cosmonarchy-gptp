@@ -278,7 +278,7 @@ namespace {
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = scbw::unit_id_is_gas_structure(unit->id);
+		result = unit_id_is_gas_structure(unit->id);
 		__asm {
 			POPAD
 			MOV EAX, result

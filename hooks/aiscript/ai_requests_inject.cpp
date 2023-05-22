@@ -235,10 +235,10 @@ namespace
 	}
 
 	static u32 ai_player_need_priority(u32 unit_id) {
-		if (scbw::unit_id_is_tech_tier_structure(unit_id)) {
+		if (unit_id_is_tech_tier_structure(unit_id)) {
 			return 120;
 		}
-		if (scbw::unit_id_is_tech(unit_id)) {
+		if (unit_id_is_tech(unit_id)) {
 			return 110;
 		}
 		if (units_dat::group_flags[unit_id].is_factory)

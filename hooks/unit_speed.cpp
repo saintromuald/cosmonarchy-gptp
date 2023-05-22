@@ -12,8 +12,7 @@
 
 namespace hooks
 {
-	f64 get_speed_multiplier(Unit* unit)
-	{
+	f64 get_speed_multiplier(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		f64 speed = 1;
@@ -21,12 +20,15 @@ namespace hooks
 		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		s32 decrease = (unit->ensnare_timer ? 1 : 0);
 
-		if (decrease > 0)
-		{
-			for (s32 i = 0; i < decrease; i++)
-			{
+		if (decrease > 0) {
+			for (s32 i = 0; i < decrease; i++) {
 				speed *= 0.5;
 			}
+		}
+
+		// Protoss Cornerstone: Avenge - speed
+		if (unit_ext->timers[TimerAvenge]) {
+			speed *= 1.25;
 		}
 
 		// Lobotomy Mine - slow
@@ -97,8 +99,7 @@ namespace hooks
 		}
 
 		// Hierophant Signify: Cowardice
-		if (unit_ext->values[ValueSignifyStacks])
-		{
+		if (unit_ext->values[ValueSignifyStacks]) {
 			auto match = cosmonarchy_finder_match(unit, 0, {});
 			Vector32f dir = scbw::get_unit_direction_vector(unit);
 
@@ -110,51 +111,34 @@ namespace hooks
 				unit->get_x() + radius,
 				unit->get_y() + radius,
 				unit,
-				[&](Unit* enemy)
-			{
-				if (!match(enemy))
-				{
+			[&](Unit* enemy) {
+				if (!match(enemy)) {
 					return false;
 				}
-				bool valid_player = false;
-				for (auto player : unit_ext->value_vectors[ValueVectorSignifySourcePlayer])
-				{
-					if (scbw::is_allied_to(player, enemy->player))
-					{
-						valid_player = true;
-						break;
-					}
-				}
-				if(!valid_player)
-				{
+				if (!scbw::is_allied_to(unit_ext->values[ValueSignifyPlayer], enemy->player)) {
 					return false;
 				}
 
 				Vector32 diff = scbw::get_vector_between(enemy->position, unit->position);
 				Vector32f target = scbw::get_normalized_vector(diff);
 				f32 dot = scbw::dot_product(dir, target);
-
-				if (dot < 0)
-				{
+				if (dot < 0) {
 					return false;
 				}
 				return true;
 			});
 
-			if (enemy_unit)
-			{
+			if (enemy_unit) {
 				speed *= 0.5;
 			}
 		}
 
 		// Mind Tyrant - Malestrom - slow
-		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1)
-		{
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1) {
 			speed *= 0.5;
 		}
 
-		switch (unit->id)
-		{
+		switch (unit->id) {
 			case UnitId::TerranBlackjack:
 			{
 				// Blackjack Wear and Tear: reduce movement speed based on missing health

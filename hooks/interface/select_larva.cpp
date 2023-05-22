@@ -9,7 +9,7 @@ namespace hooks
 		u32 unit_id = UnitId::None;
 		Unit* original = *g_active_portrait_unit;
 		if (original) {
-			unit_id = scbw::unit_id_get_larva_type(original->id);
+			unit_id = unit_id_get_larva_type(original->id);
 		}
 		if (unit_id == UnitId::None) {
 			unit_id = UnitId::ZergLarva;

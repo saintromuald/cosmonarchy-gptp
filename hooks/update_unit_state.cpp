@@ -73,7 +73,7 @@ namespace hooks
 			}
 
 			if (!unit->get_overlay(overlay_id)) {
-				scbw::manage_unit_overlay(unit, overlay_id);
+				scbw::add_unit_overlay(unit, overlay_id);
 				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
 		} else if (unit->sprite->get_overlay(overlay_id)) {
@@ -276,7 +276,7 @@ namespace hooks
 		*/
 
 		// Flash shielding (regeneration)
-		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && scbw::unit_id_can_regenerate_shields(unit->id)) {
+		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && unit_id_can_regenerate_shields(unit->id)) {
 			s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 			u32 overlay_id = ImageId::RechargeShields_Small;
@@ -305,11 +305,11 @@ namespace hooks
 				}
 
 				if (!unit->get_overlay(overlay_id)) {
-					scbw::manage_unit_overlay(unit, overlay_id);
+					scbw::add_unit_overlay(unit, overlay_id);
 					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 				}
 			} else if (unit->sprite->get_overlay(overlay_id)) {
-				scbw::manage_unit_overlay(unit, overlay_id, true);
+				scbw::remove_unit_overlay(unit, overlay_id);
 				if (unit->shields >= max_shields) {
 					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
 				} else {
@@ -387,7 +387,7 @@ namespace hooks
 			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
 			&&	 unit->hitpoints > 0
 			&&	 unit->hitpoints != unit->get_max_hp_raw()
-			&&	 unit_ext->damage_taken_timer > 2 * 24 || scbw::unit_regens_in_combat(unit))
+			&&	 unit_ext->damage_taken_timer > 2 * 24 || unit_regens_in_combat(unit))
 			{
 				s32 regen = 11; // 1 HP per second
 				if (unit->status & UnitStatus::Burrowed) {
@@ -428,13 +428,10 @@ namespace hooks
 			}
 
 			// Last Orders - Aurora passive
-			if (unit->id == UnitId::ProtossAurora)
-			{
-				if (unit_ext->values[ValueLastOrdersInit] == 1)
-				{
+			if (unit->id == UnitId::ProtossAurora) {
+				if (unit_ext->values[ValueLastOrdersInit] == 1) {
 					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
-					if (distance < 32)
-					{
+					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
 						// TODO: unit search radial
 						auto match = cosmonarchy_finder_match(unit, Flags::NoAir | Flags::Enemy, {});
@@ -444,21 +441,18 @@ namespace hooks
 							unit->get_y() - radius,
 							unit->get_x() + radius,
 							unit->get_y() + radius
-						).for_each_in_match(match, [&](Unit* target)
-						{
+						).for_each_in_match(match, [&](Unit* target) {
 							u32 dist = scbw::get_distance_fast(unit->position, target->position);
 							u32 damage = 20 * 256;
-							if (dist > 48)
-							{
+							if (dist > 48) {
 								damage /= 4;
-							}
-							else if (dist > 32)
-							{
+							} else if (dist > 32) {
 								damage /= 2;
 							}
 							target->damage_with_custom(damage, -1, unit, unit->player);
 						});
 						unit->remove();
+						avenge_or_ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
 						bStopHere = true;
 					}
 				}

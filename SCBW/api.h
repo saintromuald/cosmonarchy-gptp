@@ -8,6 +8,8 @@
 #include <math.h>
 #include <unit_search.h>
 
+#include "CMBW\cmbw.h"
+
 #include "utility.h"
 
 #define NOMINMAX
@@ -651,24 +653,14 @@ namespace scbw
 	void play_work_animation(Unit* unit);
 	bool unit_id_is_available_without_an_addon(u16 id);
 	void apply_hallucinating(Unit* unit, u8 player, u32 time);
-	u32 weapon_id_intercepts(u32 weapon_id);
-	bool weapon_id_pierces(u32 weapon_id);
-	bool weapon_id_piercing_stops_on_armor(u32 weapon_id);
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext);
 	void update_signify_status(Unit* unit, UnitExt* unit_ext);
 	bool is_unit_isolated(Unit* unit);
-	bool unit_id_is_zerg_supply(u16 unit_id);
 	void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks);
 	void mind_control(Unit* source, Unit* target);
 	void recede_mind_control(Unit* target);
-	bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only = false);
-	bool unit_id_is_town_center(u16 unit_id);
-	bool unit_id_is_factional(u16 unit_id);
 	bool transport_is_full(Unit* transport);
 	bool transport_is_empty(Unit* transport);
-	bool unit_id_uses_xlarge_overlays(u16 unit_id);
-	bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures);
-	bool unit_id_is_minerals(u16 unit_id);
 
 	inline u32 get_region_id(Point16 position) {
 		return helper::get_region_id(position.x, position.y);
@@ -701,9 +693,6 @@ namespace scbw
 	u32 get_ai_region_military_count(AiRegion* region);
 	void ai_defend(u32 player, u32 region_id);
 	void ask_for_ai_help(Unit* victim, Unit* attacker);
-	bool unit_id_is_capped_gas_structure(u16 unit_id);
-	bool unit_id_is_gas_structure(u16 unit_id);
-	bool unit_id_is_smaller_building(u16 unit_id);
 
 	void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep);
 	void spawn_custom_creep(Unit* unit);
@@ -713,16 +702,12 @@ namespace scbw
 	AiScript* run_ai(u32 player, Box32 area, s32 name);
 	AiScript* run_ai(u32 player, Point16 pos, s32 name);
 	AiScript* run_default_ai(u32 player, Point16 pos);
-	b32 unit_id_is_tech(u32 unit_id);
-	b32 unit_id_is_tech_tier_structure(u32 unit_id);
 	void give_ai_ex(Unit* unit);
 	u32 unit_get_creep_spreader_id(Unit* unit);
 	bool sprite_id_is_corpse(u32 sprite_id);
 	bool unit_queue_full(Unit* unit);
 	bool all_selected_units_have_addon(u32 unit_id);
 	bool unit_is_stunned(Unit* unit);
-	bool unit_id_is_transport(u32 unit_id);
-	bool unit_id_race_check(u32 unit_id, u32 race);
 	void dump_sync_data();
 	u32 get_zerg_regression(Unit* unit);
 	bool unit_is_allied_or_detected(Unit* unit, u32 player);
@@ -730,7 +715,6 @@ namespace scbw
 	bool order_id_is_aggressive(u32 order_id);
 	bool ai_unit_id_can_flee_three_quarters(u32 unit_id);
 	bool ai_unit_id_can_flee_two_thirds(u32 unit_id);
-	bool unit_id_is_protoss_warp_factory(u32 unit_id);
 	bool buttonset_id_is_submenu(u32 buttonset_id);
 	bool unit_id_has_custom_air_weapon(u32 unit_id);
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
@@ -741,72 +725,36 @@ namespace scbw
 	void set_bullet_direction(Bullet* bullet, Point16 target);
 	void set_bullet_direction(Bullet* bullet, Unit* target);
 	bool move_unit_ai(Unit* unit, AiRegion* ai_region);
-	bool unit_id_can_regenerate_shields(u32 unit_id);
-	bool unit_id_is_stackable_building(u32 unit_id); // Allows the AI to place the building to be placed more closely
-	bool unit_id_has_addon(u32 unit_id); // Allows the AI to reserve space for addon
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id);
 	bool is_attack_region(AiRegion* ai_region);
-	u32 unit_id_get_larva_type(u32 unit_id);
-	u32 unit_id_swarmhold_value(u32 unit_id);
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
 	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority, bool request_base = true);
 	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base = true);
 	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base = true);
 	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position);
-	bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
 	u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit);
 	void delete_ai_script(AiScript* ai_script);
 	void delete_town(AiTown* ai_town);
 	void delete_fow_sprite(Thingy* thingy);
-	bool unit_id_is_broodspawn(u32 unit_id);
 	void binding_plasma_proc(Unit* victim);
-	bool order_id_is_harvest_related(u32 order_id);
 	bool player_has_transport(u32 player);
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);
 	void update_on_damage_dealt(Unit* unit);
 	void update_on_damage_receive(Unit* unit);
-	bool unit_id_is_vespene_node(u32 unit_id);
-	bool unit_id_is_ground_bunker(u32 unit_id);
-	bool unit_id_is_bunker(u32 unit_id);
 	bool is_team_game_map(const char* filename);
-	bool image_id_is_powerup(u32 image_id);
 	Image* get_powerup_overlay(Sprite* sprite);
-	bool weapon_id_accelerates(u32 weapon_id);
-	bool weapon_id_is_melee_aoe(u32 weapon_id);
-	bool unit_regens_in_combat(Unit* unit);
-	bool unit_id_is_melee_air_unit(u32 unit_id);
-	bool weapon_id_is_for_harvesting(u32 weapon_id);
-	bool weapon_id_is_standard_weapon(u32 weapon_id);
-	bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 	Image* get_addon_connector_image(Unit* unit);
-	bool is_any_corpse(Thingy* thingy);
-	bool is_inactive_corpse(Thingy* thingy);
-	bool is_active_corpse(Thingy* thingy);
-	void consume_corpse(Thingy* corpse);
-	Thingy* get_closest_active_corpse(Point16 position, u32 radius);
-	Unit* reclaim_corpse(Thingy* corpse, u32 player);
-	bool unit_id_is_power_generator(u32 unit_id);
 	PlayerColorCode get_player_color_code(u32 player);
-	bool unit_id_is_psi_provider(u16 unit_id);
 	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
 	void move_camera(Point16 pos);
 	bool are_mutual_allies(u32 player1, u32 player2);
-	bool unit_id_can_do_controlled_demolition(u32 unit_id);
-	bool tech_id_needs_target(u32 tech_id);
-	void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
 	Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
 	Quad quad_from_rect(Box16 rect);
 	bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count);
 	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp);
 	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
-	bool unit_paths_over_small_units(Unit* unit);
-	bool unit_collides_with_titanic(Unit* unit);
-	bool unit_has_fore_castle(Unit* unit);
-	bool unit_id_is_siege_mode(u32 unit_id);
-	bool unit_id_is_tank_mode(u32 unit_id);
 	void transform_unit(Unit* unit, u16 unit_id);
-	bool weapon_id_bounces_lithe_organelle(u32 weapon_id);
-	ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
-	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove = false, bool underlay = false);
-	void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
+
+	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay = false);
+	void remove_unit_overlay(Unit* unit, u32 image_id);
 }

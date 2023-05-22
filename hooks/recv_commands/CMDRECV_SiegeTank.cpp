@@ -7,7 +7,7 @@ namespace hooks
 		*unit_iterator_pos = 0;
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
-			if (scbw::unit_id_is_tank_mode(unit->id) && unit->main_order_id != OrderId::SiegeMode) {
+			if (unit_id_is_tank_mode(unit->id) && unit->main_order_id != OrderId::SiegeMode) {
 				if (unit->can_use_tech(TechId::TankSiegeMode, *g_active_nation_id) == 1) {
 					if (command_type) {
 						unit->issue_queued_order_target(OrderId::SiegeMode, 0, false);
@@ -24,7 +24,7 @@ namespace hooks
 		*unit_iterator_pos = 0;
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
-			if (scbw::unit_id_is_siege_mode(unit->id) && unit->main_order_id != OrderId::TankMode) {
+			if (unit_id_is_siege_mode(unit->id) && unit->main_order_id != OrderId::TankMode) {
 				if (unit->can_use_tech(TechId::TankSiegeMode, *g_active_nation_id) == 1) {
 					if (command_type) {
 						unit->issue_queued_order_target(OrderId::TankMode, 0, false);

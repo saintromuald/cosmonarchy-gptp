@@ -17,7 +17,7 @@ namespace AI
 				return true;
 			}
 
-			if (scbw::unit_id_is_bunker(target->id) && target->has_loaded_unit())
+			if (unit_id_is_bunker(target->id) && target->has_loaded_unit())
 			{
 				return true;
 			}

@@ -552,7 +552,7 @@ static u32 get_unit_class(u32 unit_id) {
 	||  unit_id == UnitId::ZergSpirtithColony) {
 		return 2;
 	}
-	if (units_dat::group_flags[unit_id].is_factory || scbw::unit_id_is_tech(unit_id)) {
+	if (units_dat::group_flags[unit_id].is_factory || unit_id_is_tech(unit_id)) {
 		return 1;
 	}
 	return 0;

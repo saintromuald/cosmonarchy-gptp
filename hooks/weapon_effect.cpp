@@ -187,7 +187,7 @@ namespace hooks {
 
 	// clone of 'Normal' damage for reference
 	void normal_damage(Bullet* bullet, u32 weapon_id) {
-		if (scbw::weapon_is_melee_with_aoe(bullet, weapon_id)) {
+		if (weapon_is_melee_with_aoe(bullet, weapon_id)) {
 			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attack_target.unit);
 			return;
 		}

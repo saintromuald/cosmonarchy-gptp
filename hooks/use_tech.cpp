@@ -210,7 +210,7 @@ namespace hooks
 							queue_generic_ability(RustId::CancelRecall, 1);
 						} break;
 					}
-					if (scbw::unit_id_can_do_controlled_demolition(selected->id)) {
+					if (unit_id_can_do_controlled_demolition(selected->id)) {
 						queue_generic_ability(RustId::CancelControlledDemolition, 1);
 					}
 				}

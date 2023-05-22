@@ -69,10 +69,10 @@ namespace hooks
 				return false;
 			}
 		}
-		if (scbw::unit_paths_over_small_units(unit) || scbw::unit_paths_over_small_units(colliding_unit))
+		if (unit_paths_over_small_units(unit) || unit_paths_over_small_units(colliding_unit))
 		{
-			if ((scbw::unit_collides_with_titanic(colliding_unit) && !scbw::unit_collides_with_titanic(unit))
-			||   scbw::unit_collides_with_titanic(unit)			  && !scbw::unit_collides_with_titanic(colliding_unit)) {
+			if ((unit_collides_with_titanic(colliding_unit) && !unit_collides_with_titanic(unit))
+			||   unit_collides_with_titanic(unit)		    && !unit_collides_with_titanic(colliding_unit)) {
 				return false;
 			}
 		}

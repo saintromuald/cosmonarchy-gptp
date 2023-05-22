@@ -103,9 +103,13 @@ void update_ext_variables() {
 
 		ThingyExt* thingy_ext = get_thingy_ext(thingy);
 		thingy_ext->activity_timer++;
-		if (scbw::is_inactive_corpse(thingy)) { // For now let's just remove inactive corpses immediately, we should replace this with recoloring
+		if (is_inactive_corpse(thingy)) { // For now let's just remove inactive corpses immediately, we should replace this with recoloring
 			thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 			thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
+		}
+
+		if (thingy_ext->avenge_or_ascend_player && thingy_ext->activity_timer >= 24) {
+			avenge_or_ascend_corpse(thingy, thingy_ext->avenge_or_ascend_player - 1);
 		}
 	}
 }
@@ -154,7 +158,7 @@ void unit_death_start(Unit* unit) {
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit_ext->pause_timers = true;
-	if (scbw::unit_id_is_capped_gas_structure(unit->id)) {
+	if (unit_id_is_capped_gas_structure(unit->id)) {
 		unit_death_end(unit);
 	}
 }

@@ -9,7 +9,7 @@ namespace hooks
 		u16 unit_id = unit->id;
 		if (!unit->main_order_state)
 		{
-			if (!scbw::unit_id_is_siege_mode(unit_id)) {
+			if (!unit_id_is_siege_mode(unit_id)) {
 				unit->order_to_idle();
 				return;
 			}
@@ -65,7 +65,7 @@ namespace hooks
 		{
 			case 0:
 			{
-				if (!scbw::unit_id_is_tank_mode(unit_id)) {
+				if (!unit_id_is_tank_mode(unit_id)) {
 					unit->order_to_idle();
 					return;
 				}

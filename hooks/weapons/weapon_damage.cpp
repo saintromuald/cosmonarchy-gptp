@@ -235,7 +235,7 @@ namespace hooks
 
 			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
-				if (scbw::unit_has_fore_castle(data.target)) {
+				if (unit_has_fore_castle(data.target)) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
@@ -348,7 +348,7 @@ namespace hooks
 			} break;
 			default:
 			{
-				if (scbw::weapon_id_bounces_lithe_organelle(data.weapon_id)) {
+				if (weapon_id_bounces_lithe_organelle(data.weapon_id)) {
 					data.damage *= 1 - data.damage_divisor * 0.33;
 					if (data.damage < 0) {
 						data.damage = 0;
@@ -415,6 +415,10 @@ namespace hooks
 					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 				}
 			} break;
+			case WeaponId::PariahIconoclastBlades: {
+				target_ext->timers[TimerPariahHit] = 2 * 24;
+				target_ext->values[ValuePariahHitPlayer] = data.attacking_player_id;
+			} break;
 		}
 
 		switch (data.target->id) {
@@ -426,7 +430,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Incubate on damage taken
-				scbw::incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+				incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
 			} break;
 		}
 
@@ -487,7 +491,7 @@ namespace hooks
 					&&   target_ext->timers[TimerSimulacrumClone] == 0)
 					{
 						target_ext->timers[TimerSimulacrumClone] = 4 * 24;
-						scbw::manage_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
+						scbw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
 						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
 				} break;
@@ -500,7 +504,7 @@ namespace hooks
 					if (data.target->energy >= data.damage + data.shield_reduce_amount) {
 						data.target->spend_unit_energy(data.damage + data.shield_reduce_amount);
 
-						u32 image_id = scbw::analogue_image_id_overwrite(data.weapon_id);
+						u32 image_id = analogue_image_id_overwrite(data.weapon_id);
 						if (image_id == ImageId::None) {
 							fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
 						} else {
@@ -588,7 +592,7 @@ namespace hooks
 					{
 						// Cyclops - Flak Cannons
 						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
-						scbw::manage_unit_overlay(data.target, ImageId::CyclopsFragmentaryArming);
+						scbw::add_unit_overlay(data.target, ImageId::CyclopsFragmentaryArming);
 					} break;
 					case WeaponId::MadrigalImperiosoMissiles:
 					{
@@ -724,20 +728,17 @@ namespace hooks
 					} break;
 					case WeaponId::KonviliskSowingSpines: {
 						// Fertile Spines - incubate
-						scbw::incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
+						incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
 					} break;
 					case WeaponId::TetcaerokorCleavingMaw: {
 						// Virile Coating - incubate
-						scbw::incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
+						incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
 					{
 						target_ext->values[ValueSignifyStacks]++;
 						target_ext->timers[TimerSignify] = 3 * 24 + 1;
-						auto& vec = target_ext->value_vectors[ValueVectorSignifySourcePlayer];
-						if (std::find(vec.begin(), vec.end(), data.attacking_player_id) == vec.end()) {
-							vec.push_back(data.attacking_player_id);
-						}
+						target_ext->values[ValueSignifyPlayer] = data.attacking_player_id;
 						scbw::update_signify_status(data.target, target_ext);
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
@@ -895,10 +896,10 @@ namespace hooks
 
 			// Create busy overlays for buildings only
 			u32 infested_image_id = ImageId::InfestedOverlay_Large;
-			if (scbw::unit_id_is_smaller_building(data.target->id)) {
+			if (unit_id_is_smaller_building(data.target->id)) {
 				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
-			scbw::manage_unit_overlay(data.target, infested_image_id);
+			scbw::add_unit_overlay(data.target, infested_image_id);
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
@@ -1045,7 +1046,7 @@ namespace hooks
 							new_unit_ext->timers[TimerStun] = 1 * 24;
 							// TODO: Add stun audio visuals
 						} else {
-							scbw::set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+							set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
 						}
 					}
 

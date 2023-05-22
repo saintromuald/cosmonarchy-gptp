@@ -143,6 +143,10 @@ void unit_destructor_special_cases(Unit* unit) {
 
 	// These do not require the unit to be completed
 	switch (unit->id) {
+		case UnitId::ProtossHerald:
+		{
+			ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
+		} break;
 		case UnitId::TerranEidolon:
 		case UnitId::TerranSeraph:
 		{
@@ -409,13 +413,15 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 
 			Unit* unit = *g_active_iscript_unit;
 			if (unit) {
-				UnitExt* unit_ext = get_unit_ext(unit);
 				ThingyExt* thingy_ext = get_thingy_ext(thingy);
-				thingy_ext->original_player = unit->player;
+				thingy_ext->player = unit->player;
 				thingy_ext->unit_id = unit->id;
+				thingy_ext->sight_range_before_death = unit->get_sight_range();
+				thingy_ext->avenge_or_ascend_player = unit_avenges_or_ascends(unit);
 
+				UnitExt* unit_ext = get_unit_ext(unit);
 				if (unit_ext->timers[TimerAutocratControlledOpposition]) {
-					scbw::reclaim_corpse(thingy, unit_ext->values[ValueControlledOppositionPlayer]);
+					reclaim_corpse(thingy, unit_ext->values[ValueControlledOppositionPlayer]);
 				}
 			}
 		}

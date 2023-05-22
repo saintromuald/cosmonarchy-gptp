@@ -259,6 +259,8 @@
     <ClCompile Include="aise_signal.cpp" />
     <ClCompile Include="ai_layouts.cpp" />
     <ClCompile Include="bullet_extender.cpp" />
+    <ClCompile Include="CMBW\cmbw_behaviors.cpp" />
+    <ClCompile Include="CMBW\cmbw_ids.cpp" />
     <ClCompile Include="color_palette.cpp" />
     <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
@@ -616,6 +618,9 @@
     <ClInclude Include="aise_signal.h" />
     <ClInclude Include="ai_layouts.h" />
     <ClInclude Include="bullet_extender.h" />
+    <ClInclude Include="CMBW\cmbw.h" />
+    <ClInclude Include="CMBW\cmbw_behaviors.h" />
+    <ClInclude Include="CMBW\cmbw_ids.h" />
     <ClInclude Include="color_palette.h" />
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />

@@ -469,6 +469,7 @@ namespace hooks {
 		).for_each([attacker](Unit* unit) {
 			maelstrom_proc(unit, attacker);
 		});
+		avenge_or_ascend_corpses_in_area(bullet->position, 2 * 32, bullet->player);
 	}
 
 	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280 - Pr0nogo

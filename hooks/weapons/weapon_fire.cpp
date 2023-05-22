@@ -758,7 +758,7 @@ namespace hooks {
 	}
 
 	static bool apply_bullet_interception(Bullet* bullet, Point16 old_position, f32 line_width) {
-		u32 intercept_type = scbw::weapon_id_intercepts(bullet->weapon_id);
+		u32 intercept_type = weapon_id_intercepts(bullet->weapon_id);
 
 		Unit* best_unit = 0;
 		f32 best_t = INFINITY;
@@ -931,7 +931,7 @@ namespace hooks {
 
 		for (u32 i = 0; i < targets_count; ++i) {
 			UnitPiercingEntry* target = &targets[i];
-			if (scbw::weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
+			if (weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
 				u32 armor = units_dat::armor_amount[target->unit->id] + hooks::get_armor_bonus(target->unit);
 				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
 				if (armor > armor_pen) {
@@ -1035,7 +1035,7 @@ namespace hooks {
 		}
 
 		// Accelerate missiles over time
-		if (scbw::weapon_id_accelerates(bullet->weapon_id)) {
+		if (weapon_id_accelerates(bullet->weapon_id)) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingy_top_speed *= 2;
@@ -1106,7 +1106,7 @@ namespace hooks {
 		if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
 			despawn_bullet = true;
 		}
-		if (scbw::weapon_id_intercepts(bullet->weapon_id)) {
+		if (weapon_id_intercepts(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
 				// add special line_width cases here
@@ -1116,7 +1116,7 @@ namespace hooks {
 				despawn_bullet = true;
 				despawn_bullet_special = true;
 			}
-		} else if (scbw::weapon_id_pierces(bullet->weapon_id)) {
+		} else if (weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
 				case WeaponId::SavantDiscoidRailgunPiercing:
@@ -1837,16 +1837,13 @@ namespace hooks {
 	}
 
 	// Hooked to fix melee air unit performance. -Pr0nogo
-	b32 should_stay_at_range(Unit* unit) // 00475A10
-	{
-		if (scbw::unit_id_is_melee_air_unit(unit->id))
-		{
-			return 0;
+	b32 should_stay_at_range(Unit* unit) { // 00475A10
+		if (unit_id_is_melee_air_unit(unit->id)) {
+			return false;
 		}
 		u32 weapon_id = units_dat::ground_weapon[unit->id];
-		if (weapon_id == WeaponId::None)
-		{
-			return 1;
+		if (weapon_id == WeaponId::None) {
+			return true;
 		} else {
 			return weapons_dat::flingy_id[weapon_id] != 0;
 		}

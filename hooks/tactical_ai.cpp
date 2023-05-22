@@ -282,7 +282,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		    || units_dat::base_property[target->id] & UnitProperty::ResourceDepot
 		    || units_dat::base_property[target->id] & UnitProperty::Worker
 		    || units_dat::group_flags[target->id].is_factory
-		    || scbw::unit_id_is_tech(target->id)) {
+		    || unit_id_is_tech(target->id)) {
 		cost -= 25;
 	} else if (target->id == UnitId::ProtossCrucible) {
 		cost -= 15;
@@ -913,13 +913,13 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	if (units_dat::base_property[target->id] & UnitProperty::ResourceDepot) {
 		cost -= 25;
 	}
-	if (scbw::unit_id_is_tech(target->id)) {
+	if (unit_id_is_tech(target->id)) {
 		cost -= 25;
 	}
 	if (target->id == UnitId::ProtossPylon) {
 		cost -= 25;
 	}
-	if (scbw::unit_id_is_bunker(target->id) && target->has_loaded_unit()) {
+	if (unit_id_is_bunker(target->id) && target->has_loaded_unit()) {
 		cost -= 15;
 	}
 
@@ -927,7 +927,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 }
 
 void tactical_ai(Unit* unit, UnitExt* unit_ext) {
-	if (scbw::unit_id_is_bunker(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
+	if (unit_id_is_bunker(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
 		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
 		EntryArray allies = {};

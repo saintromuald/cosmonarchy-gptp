@@ -30,7 +30,7 @@ u32 get_harvest_amount(Unit* unit) {
 
 namespace hooks {
 	bool is_gas_container(u16 unit_id) {
-		if (scbw::unit_id_is_capped_gas_structure(unit_id)) {
+		if (unit_id_is_capped_gas_structure(unit_id)) {
 			return true;
 		}
 		return false;
