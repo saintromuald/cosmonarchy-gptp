@@ -1657,7 +1657,8 @@ namespace hooks {
 					iquare_globals.clear_lakizilisk(unit);
 				}
 			} break;
-			case UnitId::TerranShaman:
+			case UnitId::TerranShamanSupportMode:
+			case UnitId::TerranShamanVisionaryMode:
 			{
 				// Shaman - Nanite Field
 				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted]) {
@@ -1666,9 +1667,10 @@ namespace hooks {
 				u32 timer = unit_ext->timers[TimerNaniteField];
 				if (!timer) {
 					unit_ext->timers[TimerNaniteField] = 24;
-
-					u32 overlay = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);
-					overlay_unit->sprite->create_overlay(overlay);
+					if (unit->id == UnitId::TerranShamanVisionaryMode) {
+						unit_ext->timers[TimerNaniteField] = 12;
+					}
+					scbw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id));
 
 					EntryArray unit_array = {};
 					unit_search_radial(&unit_array, unit->position, 4 * 32);

@@ -269,13 +269,15 @@ bool unit_id_can_do_controlled_demolition(u32 unit_id) {
 }
 
 bool unit_id_is_siege_mode(u32 unit_id) {
-	return unit_id == UnitId::TerranMatadorCinderMode
+	return unit_id == UnitId::TerranShamanVisionaryMode
+		|| unit_id == UnitId::TerranMatadorCinderMode
 		|| unit_id == UnitId::TerranPhalanxSiegeMode
 		|| unit_id == UnitId::TerramCuirassTrenchMode;
 }
 
 bool unit_id_is_tank_mode(u32 unit_id) {
-	return unit_id == UnitId::TerranMatadorTankMode
+	return unit_id == UnitId::TerranShamanSupportMode
+		|| unit_id == UnitId::TerranMatadorTankMode
 		|| unit_id == UnitId::TerranPhalanxTankMode
 		|| unit_id == UnitId::TerranCuirassTankMode;
 }
@@ -359,7 +361,6 @@ bool unit_id_is_zerg_supply(u16 unit_id) {
 bool unit_regens_in_combat(Unit* unit) {
 	return false; // Can update later with status checks and etc. -Pr0nogo
 }
-
 bool unit_paths_over_small_units(Unit* unit) {
 	// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
 	return unit->id == UnitId::TerranPenumbra;

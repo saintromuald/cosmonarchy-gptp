@@ -754,7 +754,6 @@ namespace scbw
 	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp);
 	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 	void transform_unit(Unit* unit, u16 unit_id);
-
-	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay = false);
-	void remove_unit_overlay(Unit* unit, u32 image_id);
+	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay = false); // Does NOT calculate overlay offset!
+	void remove_unit_overlay(Unit* unit, u32 image_id);						// Does NOT calculate overlay offset!
 }

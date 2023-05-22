@@ -743,7 +743,7 @@ namespace hooks {
 								switch (current_button->requirement_var)
 								{
 									case UnitId::TerranCleric:
-									case UnitId::TerranShaman:
+									case UnitId::TerranShamanSupportMode:
 									{
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranMedbay) || scbw::unit_queue_full(unit))
 										{
@@ -1850,7 +1850,8 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranShaman:
+								case UnitId::TerranShamanSupportMode:
+								case UnitId::TerranShamanVisionaryMode:
 								{
 									if (current_button->icon_id == IconId::Restoration) { // Shaman - Nanite Field
 										current_button_state = Button_State::Enabled;

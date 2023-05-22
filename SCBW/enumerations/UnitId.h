@@ -25,7 +25,7 @@ namespace UnitId
 
 	// Terran-Unit
 		TerranApostle										= 10,		// Gui Montag
-		TerranShaman										= 15,		// Civilian
+		TerranShamanSupportMode								= 15,		// Civilian
 		TerranMadcap										= 18,		// Alan Schezar Turret
 		TerranCuirassTankMode								= 19,		// Raynor Vulture
 		TerranTalos											= 20,		// Raynor Marine
@@ -76,6 +76,7 @@ namespace UnitId
 		TerranMatadorTurretCinderMode						= 374,
 		TerranLobotomyMine									= 375,
 		TerranWyvernTurret									= 376,
+		TerranShamanVisionaryMode							= 379,
 
 	// Terran-Unit-Factional
 		TerranCohort										= 50,		// Infested Terran
@@ -231,7 +232,7 @@ namespace UnitId
 		ZergRakzilisk										= 327,
 		ZergOcsalLarva										= 353,
 		ZergAxitriliskWeaponless							= 377,
-		ZergVilgoleth										= 696, // TODO: Update
+		ZergVilgoleth										= 378,
 
 	// Zerg-Building
 		ZergAxtothAxis										= 130,		// Infested Command Center

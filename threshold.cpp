@@ -1485,7 +1485,7 @@ static void init_threshold_units() {
 	threshold.frauds[Fraud_knightoftherealm][RaceId::Terran] = {AiPersonality_TerranRaider, AiBuildType_Rush, AiBuildOrder_None, PlayerColor::Aero};
 	fraud_add_unit(Fraud_knightoftherealm, RaceId::Terran, {4, UnitId::TerranMaverick});
 	fraud_add_unit(Fraud_knightoftherealm, RaceId::Terran, {4, UnitId::TerranCyprian});
-	fraud_add_unit(Fraud_knightoftherealm, RaceId::Terran, {1, UnitId::TerranShaman});
+	fraud_add_unit(Fraud_knightoftherealm, RaceId::Terran, {1, UnitId::TerranShamanSupportMode});
 
 	// KKKhris
 	threshold.frauds[Fraud_KKKhris][RaceId::Terran] = {AiPersonality_TerranGeneral, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Brown};

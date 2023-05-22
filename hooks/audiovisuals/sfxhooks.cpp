@@ -191,7 +191,7 @@ namespace hooks {
 					case UnitId::TerranCyprian: {
 						ready_sound = helper::get_random_sfx_between(SoundId::CyprianReady01, SoundId::CyprianReady03);
 					} break;
-					case UnitId::TerranShaman: {
+					case UnitId::TerranShamanSupportMode: {
 						ready_sound = helper::get_random_sfx_between(SoundId::ShamanReady01, SoundId::ShamanReady03);
 					} break;
 					case UnitId::TerranSavant: {
