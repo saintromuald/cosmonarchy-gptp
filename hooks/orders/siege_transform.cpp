@@ -40,6 +40,10 @@ namespace hooks
 
 			switch (unit_id)
 			{
+				case UnitId::TerranShamanVisionaryMode:
+				{
+					unit_id = UnitId::TerranShamanSupportMode;
+				} break;
 				case UnitId::TerranMatadorCinderMode:
 				{
 					unit_id = UnitId::TerranMatadorTankMode;
@@ -97,6 +101,11 @@ namespace hooks
 			{
 				switch (unit_id)
 				{
+					case UnitId::TerranShamanSupportMode:
+					{
+						unit_id = UnitId::TerranShamanVisionaryMode;
+						break;
+					}
 					case UnitId::TerranMatadorTankMode:
 					{
 						unit_id = UnitId::TerranMatadorCinderMode;

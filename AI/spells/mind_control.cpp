@@ -40,7 +40,8 @@ namespace AI
 				case UnitId::TerranSeraph:
 				case UnitId::TerranMinotaur:
 				case UnitId::TerranCleric:
-				case UnitId::TerranShaman:
+				case UnitId::TerranShamanSupportMode:
+				case UnitId::TerranShamanVisionaryMode:
 				case UnitId::ZergOvileth:
 				case UnitId::ZergUltrokor:
 				case UnitId::ZergMatraleth:
@@ -58,7 +59,7 @@ namespace AI
 				default:
 				{
 					if (units_dat::mineral_cost[target->id] >= units_dat::mineral_cost[UnitId::ProtossCabalist]
-						&& units_dat::vespene_cost[target->id] >= units_dat::vespene_cost[UnitId::ProtossCabalist])
+					&&  units_dat::vespene_cost[target->id] >= units_dat::vespene_cost[UnitId::ProtossCabalist])
 					{
 						return true;
 					}

@@ -807,6 +807,6 @@ namespace scbw
 	void transform_unit(Unit* unit, u16 unit_id);
 	bool weapon_id_bounces_lithe_organelle(u32 weapon_id);
 	ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
-	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove = false, bool underlay = false);
+	void manage_unit_overlay(Unit* unit, u32 image_id, bool remove = false, bool underlay = false); // Does NOT calculate overlay offset!
 	void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
 }

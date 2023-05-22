@@ -232,7 +232,7 @@ namespace hooks {
 					return true;
 				} break;
 				case UnitId::TerranCleric:
-				case UnitId::TerranShaman:
+				case UnitId::TerranShamanSupportMode:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranMedbay))
 					{
@@ -1633,7 +1633,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranCleric:
-					case UnitId::TerranShaman:
+					case UnitId::TerranShamanSupportMode:
 					{
 						if (in_air)
 						{

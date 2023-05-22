@@ -3568,13 +3568,15 @@ namespace scbw {
 	}
 
 	bool unit_id_is_siege_mode(u32 unit_id) {
-		return unit_id == UnitId::TerranMatadorCinderMode
+		return unit_id == UnitId::TerranShamanVisionaryMode
+			|| unit_id == UnitId::TerranMatadorCinderMode
 			|| unit_id == UnitId::TerranPhalanxSiegeMode
 			|| unit_id == UnitId::TerramCuirassTrenchMode;
 	}
 
 	bool unit_id_is_tank_mode(u32 unit_id) {
-		return unit_id == UnitId::TerranMatadorTankMode
+		return unit_id == UnitId::TerranShamanSupportMode
+			|| unit_id == UnitId::TerranMatadorTankMode
 			|| unit_id == UnitId::TerranPhalanxTankMode
 			|| unit_id == UnitId::TerranCuirassTankMode;
 	}
