@@ -2431,6 +2431,22 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergZoryusthaleth:
+								{
+									if (current_button->icon_id == IconId::Rilirokor		// Zoryusthaleth - Mitosis
+									||	current_button->icon_id == IconId::MetabolicBoost)	// Zoryusthaleth - Swarming Omen
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergRilirokor:
+								case UnitId::ZergRililisk:
+								{
+									if (current_button->icon_id == IconId::RoarUnused) // Broodspawn - Death Cycle
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergLakizilisk:
 								{
 									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed attacker
@@ -2447,9 +2463,24 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergKonvilisk:
+								{
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) // Konvilisk - Fertile Spines
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergVilgorokor:
 								{
-									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Vilgorokor - Reconstitution
+									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Vilgorokor - Autophagy
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergVilgoleth:
+								{
+									if (current_button->icon_id == IconId::SuicideScourge		// Vilgoleth - Host Autophagy
+									||	current_button->icon_id == IconId::PneumatizedCaparace)	// Vilgoleth - Corpse Autophagy
+									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2583,21 +2614,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergMatraleth &&  // Matraleth Gamete Meiosis
-								current_button->icon_id == IconId::GameteMeiosis)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergRilirokor &&  // Broodling Incubators
-								current_button->icon_id == IconId::RoarUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergKonvilisk &&  // Konvilisk Fertile Spines
-								current_button->icon_id == IconId::SunkenColonySubterraneanTentacle)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if (unit->id == UnitId::ZergUltrokor &&  // Ultrakor Saber Siphon
 								current_button->icon_id == IconId::UltrokorKaiserBlades)
 							{
@@ -2615,11 +2631,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ZergAlkajelisk &&  // Alkajelisk Parasitic Spores
 								current_button->icon_id == IconId::SpraithColonySeekerSpores)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergZoryusthaleth &&  // Zoryusthaleth Swarming Omen
-								current_button->icon_id == IconId::MetabolicBoost)
 							{
 								current_button_state = Button_State::Enabled;
 							}
@@ -2713,15 +2724,26 @@ namespace hooks {
 						// Cancel new abilities!
 						if (current_button->action_var == TechId::CancelNewAbility) {
 							bool can_cancel = false;
-							if (unit->id == UnitId::TerranWyvern) {
-								if (unit_ext->values[ValueWyvernLandGrabOn]) {
-									can_cancel = true;
-								}
-							}
-							if (unit->id == UnitId::ProtossDidact) {
-								if (unit_ext->values[ValueDidactRecalling]) {
-									can_cancel = true;
-								}
+							switch (unit->id)
+							{
+								case UnitId::TerranApostle:
+								{
+									if (scbw::get_generic_rust_value(unit, RustId::ToggleLazarusAgent) == 1) {
+										can_cancel = true;
+									}
+								} break;
+								case UnitId::TerranWyvern:
+								{
+									if (unit_ext->values[ValueWyvernLandGrabOn]) {
+										can_cancel = true;
+									}
+								} break;
+								case UnitId::ProtossDidact:
+								{
+									if (unit_ext->values[ValueDidactRecalling]) {
+										can_cancel = true;
+									}
+								} break;
 							}
 							
 							if (unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerEmergencyDetonation]) {

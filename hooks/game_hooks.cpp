@@ -1112,6 +1112,7 @@ namespace hooks {
 			case UnitId::ZergZoryusthaleth:
 			case UnitId::ZergKonvilisk:
 			case UnitId::ZergVilgorokor:
+			case UnitId::ZergVilgoleth:
 			case UnitId::ZergMatraleth:
 			case UnitId::ZergTetcaerokor:
 			{
@@ -1512,7 +1513,7 @@ namespace hooks {
 					if (unit->has_energy(energy)) {
 						if (!unit_ext->timers[TimerReclaimInterval]) {
 							unit_ext->timers[TimerReclaimInterval] = 24;
-							scbw::decloak_proc(unit);	
+							scbw::decloak_proc(unit);
 							unit->spend_unit_energy(energy);
 							unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0); // TODO: Use Start and End when applicable
@@ -1679,7 +1680,7 @@ namespace hooks {
 
 					for (u32 i = 0; i < unit_array.count; ++i) {
 						Unit* target = unit_array.units[i];
-						shaman_nanite_field_proc(unit, ShamanHeal, target);
+						shaman_nanite_field_proc(unit, 4, target);
 					}
 				}
 			} break;
@@ -2337,7 +2338,7 @@ namespace hooks {
 		// Incubation
 		if (unit_ext->timers[TimerIncubationArm] == 1) {
 			for (u32 i = 0; i < unit_ext->values[ValueIncubationCount]; ++i) {
-				scbw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], 2, unit_ext->values[ValueIncubationPlayer], unit->position);
+				scbw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], 1, unit_ext->values[ValueIncubationPlayer], unit->position);
 			}
 		}
 

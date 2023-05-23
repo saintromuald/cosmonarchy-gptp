@@ -307,7 +307,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	{ // Spellcaster - restore energy on enemy death
 		EntryArray unit_array = {};
 		unit_search_radial(&unit_array, unit->position, unit->get_sight_range() * 32);
-		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
+		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster); // TODO: Remove Rilirokor, Rililisk
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* caster = unit_array.units[i];
