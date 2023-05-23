@@ -1413,4 +1413,51 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
 		}
 	}
+
+	// Ported from GPTP. -Pr0nogo
+	const int TEXTLABELINDEX_KILLS = -21;
+	const int TEXTLABELINDEX_UNITSTATUS = -20;
+	const int TEXTLABELINDEX_ENERGY_TIMER = -8;
+	const int TEXTLABELINDEX_HP_SHIELDS = -7;
+	
+	// Ported from GPTP to show timed life beneath Rililisks. -Pr0nogo
+	void stats_text_energy_timer(BinDlg* dialog) { // 00425A30
+		Unit* unit = *g_active_portrait_unit;
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
+		||	  unit->status & UnitStatus::IsHallucination
+		||	(*g_is_in_replay == 0
+		  &&  unit->player != *g_local_nation_id)) // TODO: Add "is detected" check.
+		{
+			if ((unit->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(unit->id))
+			&&	(*g_is_in_replay != 0 || unit->player == *g_local_nation_id))
+			{
+				u32 timer_max = 0; // 1/10 of internal value for display
+				if (unit->status & UnitStatus::IsHallucination)
+				{
+					timer_max = 135;
+				} else if (unit_id_is_broodspawn(unit->id)) {
+					timer_max = 11;
+				}
+
+				u32 current_timer = unit->remove_timer / 10;
+				if (current_timer < 0)
+				{
+					current_timer++;
+				}
+				if (timer_max < 0)
+				{
+					timer_max++;
+				}
+
+				helper::SC_sprintf_s_2(g_text_buffer, 32, FORMATSTRING_COLORWHITE_CURRENTVALUE_MAXVALUE, current_timer, timer_max);
+				helper::add_text_to_dialog(dialog, TEXTLABELINDEX_ENERGY_TIMER, g_text_buffer);
+
+			} else {
+				helper::add_text_to_dialog(dialog, TEXTLABELINDEX_ENERGY_TIMER, 0);
+			}
+		} else {
+			helper::SC_sprintf_s_2(g_text_buffer, 32, FORMATSTRING_COLORWHITE_CURRENTVALUE_MAXVALUE, unit->energy / 256, unit->get_max_energy() / 256 );
+			helper::add_text_to_dialog(dialog, TEXTLABELINDEX_ENERGY_TIMER, g_text_buffer);
+		}
+	}
 }

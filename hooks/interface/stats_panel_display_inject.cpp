@@ -481,6 +481,20 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) stats_text_energy_timer_wrapper() // 00425A30
+	{
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, EBX
+			PUSHAD
+		}
+		hooks::stats_text_energy_timer(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -515,6 +529,8 @@ namespace hooks
 	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1); // Breaks unit training tooltips
 	//	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
 	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
+
+		jump_patch(stats_text_energy_timer_wrapper,					0x00425A30, 2);
 
 		// Disable player checks for progress bar functions
 		nops(0x0042690C, 2);

@@ -1178,12 +1178,18 @@ SCBW_DATA(char*,			aztp,								0x00512700);
 // For ai_prepare_to_flee
 SCBW_DATA(u32*,				unk_static,							0x0051ABFC);
 
+SCBW_DATA(char*,			g_text_buffer,						0x006CA76C);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
 SCBW_DATA(const char*, FORMATSTRING_COLORYELLOW_VALUE_COLORCYAN_SPACE, 0x00505708); //"\x03%d\x01 "
 SCBW_DATA(const char*, FORMATSTRING_VALUE_SPACE, 0x00505710); //"%d "
 SCBW_DATA(const char*, FORMATSTRING_CURRENTVALUE1_MAXVALUE1_COLOR_CURRENTVALUE2_MAXVALUE2, 0x00505714); //"%d/%d %c%d/%d"
+SCBW_DATA(const char*, FORMATSTRING_COLOR_CURRENTVALUE_MAXVALUE, 0x00505724); //"%c%d/%d"
+SCBW_DATA(const char*, FORMATSTRING_COLORWHITE_CURRENTVALUE_MAXVALUE, 0x0050572C); //"\x04%d/%d"
+SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE_IN_PARENTHESIS, 0x00505734); //"%s (%d)"
+SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE, 0x0050573C); //"%s %d"
 
 //////////////////////////////////////////////////////////////// @}
 
