@@ -2214,7 +2214,8 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossEcclesiast:
 								{
-									if (current_button->icon_id == IconId::ProtossGroundWeapons) // Ecclesiast - Astral Blessing
+									if (current_button->icon_id == IconId::ProtossGroundWeapons	// Ecclesiast - Astral Blessing
+									||	current_button->icon_id == IconId::LegEnhancements)		// Ecclesiast - Vengeance
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2229,7 +2230,8 @@ namespace hooks {
 								case UnitId::ProtossHierophant:
 								{
 									if (current_button->icon_id == IconId::PhotonCannonWeapon			// Hierophant - Cowardice
-									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon)	// Hierophant - Malice
+									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Hierophant - Malice
+									||  current_button->icon_id == IconId::ProtossGroundWeapons)		// Hierophant - Ascension
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2250,7 +2252,8 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossHerald:
 								{
-									if (current_button->icon_id == IconId::RechargeShields) // Herald - Triumphant Rise
+									if (current_button->icon_id == IconId::RechargeShields	// Herald - Triumphant Rise
+									||	current_button->icon_id == IconId::KhaydarinCore)	// Herald - Transcendent Fall
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2280,7 +2283,7 @@ namespace hooks {
 								case UnitId::ProtossPariah:
 								{
 									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Pariah - Projection
-									||	current_button->icon_id == IconId::MindControlUnused)		// Pariah - Heretical Bedlam
+									||	current_button->icon_id == IconId::PsiAssault)				// Pariah - Heretical Bedlam
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2294,7 +2297,8 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossArchon:
 								{
-									if (current_button->icon_id == IconId::RechargeShields) // Archon - Astral Aegis
+									if (current_button->icon_id == IconId::RechargeShields	// Archon - Astral Aegis
+									||	current_button->icon_id == IconId::LegEnhancements)	// Archon - Vengeance
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2330,8 +2334,9 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossVassal:
+								case UnitId::ProtossServitor:
 								{
-									if (current_button->icon_id == IconId::RechargeShields) // Vassal - Terminal Surge
+									if (current_button->icon_id == IconId::LegEnhancements) // Vassal - Vengeance
 									{
 										current_button_state = Button_State::Enabled;
 									}

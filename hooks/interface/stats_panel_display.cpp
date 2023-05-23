@@ -1425,8 +1425,7 @@ namespace hooks
 		Unit* unit = *g_active_portrait_unit;
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 		||	  unit->status & UnitStatus::IsHallucination
-		||	(*g_is_in_replay == 0
-		  &&  unit->player != *g_local_nation_id)) // TODO: Add "is detected" check.
+		||	(*g_is_in_replay == 0 && unit->player != *g_local_nation_id))
 		{
 			if ((unit->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(unit->id))
 			&&	(*g_is_in_replay != 0 || unit->player == *g_local_nation_id))

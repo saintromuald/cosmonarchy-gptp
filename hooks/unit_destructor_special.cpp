@@ -227,32 +227,32 @@ void unit_destructor_special_cases(Unit* unit) {
 				// Phase Link
 				scbw::clear_clarion_links(unit);
 			} break;
-			case UnitId::ProtossVassal:
-			{
-				// Terminal Surge
-				u32 range = 5 * 32;
-				scbw::UnitFinder(
-					unit->get_x() - range,
-					unit->get_y() - range,
-					unit->get_x() + range,
-					unit->get_y() + range
-				).for_each([&](Unit* target) {
-					UnitExt* target_ext = get_unit_ext(target);
-					if (!scbw::is_allied_to(unit->player, target->player)) {
-						return;
-					}
-					if (target->player == 11) {
-						return;
-					}
-					target_ext->timers[TimerTerminalSurge] = 48 + 1;
-					target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-					target->update_speed();
-					if (target->subunit) {
-						UnitExt* subunit_ext = get_unit_ext(target->subunit);
-						subunit_ext->timers[TimerTerminalSurge] = 48 + 1;
-					}
-				});
-			} break;
+		//	case UnitId::ProtossVassal:
+		//	{
+		//		// Terminal Surge
+		//		u32 range = 5 * 32;
+		//		scbw::UnitFinder(
+		//			unit->get_x() - range,
+		//			unit->get_y() - range,
+		//			unit->get_x() + range,
+		//			unit->get_y() + range
+		//		).for_each([&](Unit* target) {
+		//			UnitExt* target_ext = get_unit_ext(target);
+		//			if (!scbw::is_allied_to(unit->player, target->player)) {
+		//				return;
+		//			}
+		//			if (target->player == 11) {
+		//				return;
+		//			}
+		//			target_ext->timers[TimerTerminalSurge] = 48 + 1;
+		//			target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+		//			target->update_speed();
+		//			if (target->subunit) {
+		//				UnitExt* subunit_ext = get_unit_ext(target->subunit);
+		//				subunit_ext->timers[TimerTerminalSurge] = 48 + 1;
+		//			}
+		//		});
+		//	} break;
 			case UnitId::ProtossAccantorOld:
 			case UnitId::ProtossSolarion:
 			{
