@@ -2858,6 +2858,10 @@ namespace hooks {
 			}
 		}
 
+		if (unit_ext->timers[TimerAscend] == 1) {
+			should_update_speed = true;
+		}
+
 		if (should_update_speed) {
 			unit->update_speed();
 		}
