@@ -1609,4 +1609,6 @@ namespace helper {
 	u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5);															// 00410148
 
 	s32 get_fastest_distance(u32 angle);																										// 00494C10
+
+	void SC_sprintf_s_2(char* buffer, int buffer_size, const char* format_string, int value1, int value2);										// 0041F1B0
 }

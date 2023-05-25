@@ -13681,4 +13681,19 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void SC_sprintf_s_2(char* buffer, int buffer_size, const char* format_string, int value1, int value2) {
+		const u32 func_address = 0x0041F1B0;
+		__asm {
+			PUSHAD
+			PUSH value2
+			PUSH value1
+			PUSH format_string
+			MOV ESI, buffer_size
+			MOV EDI, buffer
+			CALL func_address
+			ADD ESP, 0x0C
+			POPAD
+		}
+	}
 }

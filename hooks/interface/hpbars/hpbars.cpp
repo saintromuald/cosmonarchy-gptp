@@ -21,32 +21,32 @@ namespace hooks
 	void compile_healthbar(Image* image, Sprite* sprite) // 004D6010
 	{
 		Unit* selection = active_player_selection->unit[sprite->selection_index];
-		u8 is_visible = sprites_dat::is_visible[sprite->id + 390]; // Not sure what these id offsets are --v
-		image->vertical_offset = sprites_dat::hp_bar_size[sprite->id + 262] + (g_image_grp_graphics[orders_dat::Unused3[sprite->id + 62] + 561]->frames[0].h >> 1) + 8;
+		u8 is_visible = sprites_dat::is_visible[sprite->id];
+		image->vertical_offset = sprites_dat::selection_circle_offset[sprite->id] + 16;
 		image->grp_file->frames[0].x = 0;
 		image->grp_file->frames[0].y = 0;
-		image->grp_file->frames[0].w = is_visible - (is_visible - 1) % 3;
+		image->grp_file->frames[0].w = sprites_dat::hp_bar_size[sprite->id];
 
 		GrpHead* grp_file = image->grp_file;
-		if (grp_file->frames[0].w < 0x13u)
+		if (grp_file->frames[0].w < 19)
 		{
 			grp_file->frames[0].w = 19;
 		}
+		image->grp_file->frames[0].h = 0;
 
 		// Prepare height based on energy
-		image->grp_file->frames[0].h = 0;
 		u8 grp_height = grp_file->frames[0].h;
-		if (units_dat::base_property[selection->id] & UnitProperty::Spellcaster && !(selection->status & UnitStatus::IsHallucination) || selection->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(selection->id))
+		if  (units_dat::base_property[selection->id] & UnitProperty::Spellcaster
+		||   selection->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(selection->id))
 		{
 			grp_height += 6;
 		}
+
 		// Prepare height based on shields
 		if (units_dat::shields_enabled[selection->id])
 		{
 			grp_height += 7;
-		}
-		else
-		{
+		} else {
 			grp_height += 5;
 		}
 		grp_file->frames[0].h = grp_height;

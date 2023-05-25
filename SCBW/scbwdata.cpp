@@ -255,12 +255,12 @@ namespace orders_dat {
 namespace sprites_dat {
 	SCBW_DATA(const DatLoad*, spritesDat, 0x00513FB8);
 	
-	SCBW_DATA_DEF(u16*,		image_id,			spritesDat[0].address);	// 00666160
-	SCBW_DATA_DEF(s8*,		hp_bar_size,		spritesDat[1].address);	// 00665E50
-//	SCBW_DATA_DEF(s8*,		???,				spritesDat[2].address);	// 00666570
-	SCBW_DATA_DEF(u8*,		is_visible,			spritesDat[3].address);	// 00665C48
-//	SCBW_DATA_DEF(s8*,		???,				spritesDat[4].address);	// 00665AC0 //"Selection Circle" according to EUDDB, not starting at 0
-//	SCBW_DATA_DEF(s8*,		???,				spritesDat[5].address);	// 00665FD8 //"Selection Vertical Offset" according to EUDDB
+	SCBW_DATA_DEF(u16*,		image_id,					spritesDat[0].address);	// 00666160
+	SCBW_DATA_DEF(s8*,		hp_bar_size,				spritesDat[1].address);	// 00665E50
+//	SCBW_DATA_DEF(s8*,		???,						spritesDat[2].address);	// 00666570
+	SCBW_DATA_DEF(u8*,		is_visible,					spritesDat[3].address);	// 00665C48
+	SCBW_DATA_DEF(s8*,		selection_circle_image,		spritesDat[4].address);	// 00665AC0
+	SCBW_DATA_DEF(s8*,		selection_circle_offset,	spritesDat[5].address);	// 00665FD8
 } //sprites_dat (last entry at 0x00513FF4)
 
 namespace images_dat {

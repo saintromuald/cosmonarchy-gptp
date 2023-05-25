@@ -111,7 +111,7 @@ namespace hooks
 				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 			} break;
 			case TechId::ApostleLazarusAgent: {
-				queue_toggle_ability(RustId::ToggleLazarusAgent, unit);
+				queue_generic_ability(RustId::ToggleLazarusAgent, 1);
 			} break;
 			case TechId::HypnagogueThroughTheLookingGlass: {
 				scbw::print("select target");
@@ -203,6 +203,10 @@ namespace hooks
 				Unit* selected = *g_active_portrait_unit;
 				if (selected) {
 					switch (selected->id) {
+						case UnitId::TerranApostle:
+						{
+							queue_generic_ability(RustId::ToggleLazarusAgent, 0);
+						} break;
 						case UnitId::TerranWyvern: {
 							queue_generic_ability(RustId::CancelLandGrab, 1);
 						} break;
@@ -210,6 +214,7 @@ namespace hooks
 							queue_generic_ability(RustId::CancelRecall, 1);
 						} break;
 					}
+
 					if (unit_id_can_do_controlled_demolition(selected->id)) {
 						queue_generic_ability(RustId::CancelControlledDemolition, 1);
 					}

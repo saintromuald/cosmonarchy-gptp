@@ -57,8 +57,8 @@ namespace UpgradeId {
 		ArgusTalisman = 0x31,			// Dark Archon energy
 		ApollyoidAdhesive = 0x32,		// Firebat normal damage to buildings
 		CaduceusReactor = 0x33,			// Medic energy
-		ChitinousPlating = 0x34,		// Ultralisk armor
-		AnabolicSynthesis = 0x35,		// Ultralisk movespeed
+		ChitinousPlating = 0x34,		// Ultrokor armor
+		AnabolicSynthesis = 0x35,		// Ultrokor movespeed
 		CharonBooster = 0x36,			// Goliath attack distance
 		SignifyMalice = 0x37,			// Hierophant attack speed slow
 		BladeVortex = 0x38,				// Legionnaire teleport to target
@@ -98,8 +98,8 @@ namespace UpgradeId {
 		FinalHour = 88,					// Augur projectile death
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
 		TectonicClaws = 90,				// Lurker burrow speed
-		SaberSiphon = 91,				// Ultralisk lifesteal
-		KaiserRampage = 92,				// Ultralisk movement and attack speed on kill
+		SaberSiphon = 91,				// Ultrokor lifesteal
+		KaiserRampage = 92,				// Ultrokor movement and attack speed on kill
 		CorrosiveDispersion = 93,		// Basilisk attack distance on creep
 		SynapticGrowth = 94,			// Chasmal Colony energy
 		LastOrders = 95,				// Scout crash on death

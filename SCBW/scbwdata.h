@@ -767,12 +767,12 @@ namespace orders_dat {
 namespace sprites_dat {
 //	SCBW_DATA(const DatLoad*,	spritesDat,		0x00513FB8); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u16*,		image_id,					spritesDat[0].address);		//00666160
-	SCBW_DATA_REF(s8*,		hp_bar_size,				spritesDat[1].address);		//00665E50
-//	SCBW_DATA_REF(s8*,		???,						spritesDat[2].address);		//00666570
-	SCBW_DATA_REF(u8*,		is_visible,					spritesDat[3].address);		//00665C48
-//	SCBW_DATA_REF(s8*,		???,						spritesDat[4].address);		//00665AC0 // "Selection Circle" according to EUDDB, not starting at 0
-//	SCBW_DATA_REF(s8*,		???,						spritesDat[5].address);		//00665FD8 // "Selection Vertical Offset" according to EUDDB
+	SCBW_DATA_REF(u16*,		image_id,					spritesDat[0].address);	// 00666160
+	SCBW_DATA_REF(s8*,		hp_bar_size,				spritesDat[1].address);	// 00665E50
+//	SCBW_DATA_REF(s8*,		???,						spritesDat[2].address);	// 00666570
+	SCBW_DATA_REF(u8*,		is_visible,					spritesDat[3].address);	// 00665C48
+	SCBW_DATA_REF(s8*,		selection_circle_image,		spritesDat[4].address);	// 00665AC0
+	SCBW_DATA_REF(s8*,		selection_circle_offset,	spritesDat[5].address);	// 00665FD8
 } //sprites_dat (last entry at 0x00513FF4)
 
 namespace images_dat {
@@ -1178,12 +1178,18 @@ SCBW_DATA(char*,			aztp,								0x00512700);
 // For ai_prepare_to_flee
 SCBW_DATA(u32*,				unk_static,							0x0051ABFC);
 
+SCBW_DATA(char*,			g_text_buffer,						0x006CA76C);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
 SCBW_DATA(const char*, FORMATSTRING_COLORYELLOW_VALUE_COLORCYAN_SPACE, 0x00505708); //"\x03%d\x01 "
 SCBW_DATA(const char*, FORMATSTRING_VALUE_SPACE, 0x00505710); //"%d "
 SCBW_DATA(const char*, FORMATSTRING_CURRENTVALUE1_MAXVALUE1_COLOR_CURRENTVALUE2_MAXVALUE2, 0x00505714); //"%d/%d %c%d/%d"
+SCBW_DATA(const char*, FORMATSTRING_COLOR_CURRENTVALUE_MAXVALUE, 0x00505724); //"%c%d/%d"
+SCBW_DATA(const char*, FORMATSTRING_COLORWHITE_CURRENTVALUE_MAXVALUE, 0x0050572C); //"\x04%d/%d"
+SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE_IN_PARENTHESIS, 0x00505734); //"%s (%d)"
+SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE, 0x0050573C); //"%s %d"
 
 //////////////////////////////////////////////////////////////// @}
 

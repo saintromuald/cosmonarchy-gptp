@@ -227,32 +227,32 @@ void unit_destructor_special_cases(Unit* unit) {
 				// Phase Link
 				scbw::clear_clarion_links(unit);
 			} break;
-			case UnitId::ProtossVassal:
-			{
-				// Terminal Surge
-				u32 range = 5 * 32;
-				scbw::UnitFinder(
-					unit->get_x() - range,
-					unit->get_y() - range,
-					unit->get_x() + range,
-					unit->get_y() + range
-				).for_each([&](Unit* target) {
-					UnitExt* target_ext = get_unit_ext(target);
-					if (!scbw::is_allied_to(unit->player, target->player)) {
-						return;
-					}
-					if (target->player == 11) {
-						return;
-					}
-					target_ext->timers[TimerTerminalSurge] = 48 + 1;
-					target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-					target->update_speed();
-					if (target->subunit) {
-						UnitExt* subunit_ext = get_unit_ext(target->subunit);
-						subunit_ext->timers[TimerTerminalSurge] = 48 + 1;
-					}
-				});
-			} break;
+		//	case UnitId::ProtossVassal:
+		//	{
+		//		// Terminal Surge
+		//		u32 range = 5 * 32;
+		//		scbw::UnitFinder(
+		//			unit->get_x() - range,
+		//			unit->get_y() - range,
+		//			unit->get_x() + range,
+		//			unit->get_y() + range
+		//		).for_each([&](Unit* target) {
+		//			UnitExt* target_ext = get_unit_ext(target);
+		//			if (!scbw::is_allied_to(unit->player, target->player)) {
+		//				return;
+		//			}
+		//			if (target->player == 11) {
+		//				return;
+		//			}
+		//			target_ext->timers[TimerTerminalSurge] = 48 + 1;
+		//			target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+		//			target->update_speed();
+		//			if (target->subunit) {
+		//				UnitExt* subunit_ext = get_unit_ext(target->subunit);
+		//				subunit_ext->timers[TimerTerminalSurge] = 48 + 1;
+		//			}
+		//		});
+		//	} break;
 			case UnitId::ProtossAccantorOld:
 			case UnitId::ProtossSolarion:
 			{
@@ -307,7 +307,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	{ // Spellcaster - restore energy on enemy death
 		EntryArray unit_array = {};
 		unit_search_radial(&unit_array, unit->position, unit->get_sight_range() * 32);
-		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster);
+		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster); // TODO: Remove Rilirokor, Rililisk
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* caster = unit_array.units[i];
