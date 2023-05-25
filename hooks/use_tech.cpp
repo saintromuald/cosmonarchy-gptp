@@ -111,6 +111,9 @@ namespace hooks
 				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 			} break;
 			case TechId::ApostleLazarusAgent: {
+				u32 action_sound = helper::get_random_sfx_between(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03);
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 				queue_generic_ability(RustId::ToggleLazarusAgent, 1);
 			} break;
 			case TechId::HypnagogueThroughTheLookingGlass: {
@@ -157,12 +160,21 @@ namespace hooks
 				helper::issue_tri_target_order(OrderId::Plague, 0, 0);
 			} break;
 			case TechId::PsionicStorm: {
+				u32 action_sound = helper::get_random_sfx_between(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV);
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
 			} break;
 			case TechId::Hallucination: {
+				u32 action_sound = SoundId::Protoss_TEMPLAR_PTePss03_WAV;
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
 			} break;
 			case TechId::Tyranny: {
+				u32 action_sound = helper::get_random_sfx_between(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV);
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 				helper::issue_tri_target_order(OrderId::CastTyranny, 0, 0);
 			} break;
 			case TechId::MindTyrantMaelstrom: {
@@ -172,6 +184,9 @@ namespace hooks
 				queue_toggle_ability(RustId::ToggleDisruptionField, unit);
 			} break;
 			case TechId::Recall: {
+				u32 action_sound = SoundId::Protoss_ARBITER_PAbPss00_WAV;
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 				helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
 			} break;
 			case TechId::StasisField: {

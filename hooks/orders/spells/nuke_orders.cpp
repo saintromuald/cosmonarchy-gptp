@@ -1,5 +1,6 @@
 #include "nuke_orders.h"
 #include <SCBW/api.h>
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -11,7 +12,7 @@ namespace hooks
 			{
 				if (unit->connected_unit == nullptr
 				||	unit->connected_unit->main_order_state == 5)
-				{ // 00464D3F
+				{
 					Image* current_image = unit->sprite->images.head;
 					if (unit->order_queue_head == nullptr)
 					{
@@ -22,36 +23,33 @@ namespace hooks
 					helper::change_unit_buttonset(unit, unit->id);
 					scbw::refresh_console();
 
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 						current_image = current_image->link.next;
 					}
 
-					if (unit->building.nuke_missile != nullptr)
+					if (unit->building.nuke_missile)
 					{
 						current_image = (unit->building.nuke_missile)->sprite->images.head;
-						while (current_image != nullptr)
+						while (current_image)
 						{
 							current_image->play_iscript_animation(IscriptAnimation::Death);
 							current_image = current_image->link.next;
 						}
-						unit->building.nuke_missile = nullptr;
+						unit->building.nuke_missile = 0;
 					}
-					// 00464DD6
 					helper::ai_return_to_nearest_base_forced(unit);
 				}
 			}
-		}
-		else
-		{ // 00464DE3
+		} else {
 			unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
-			Thingy* nukeDot = helper::create_thingy(SpriteId::Nuke_Target_Dot, (unit->connected_unit)->order_target.pt.x, (unit->connected_unit)->order_target.pt.y, unit->player);
-			unit->building.nuke_missile = (Unit*)nukeDot;
-			if (nukeDot != nullptr)
+			Thingy* nuke_dot = helper::create_thingy(SpriteId::Nuke_Target_Dot, (unit->connected_unit)->order_target.pt.x, (unit->connected_unit)->order_target.pt.y, unit->player);
+			unit->building.nuke_missile = (Unit*)nuke_dot;
+			if (nuke_dot)
 			{
-				nukeDot->sprite->elevation = unit->sprite->elevation + 1;
-				helper::set_thingy_visibility_flags(nukeDot);
+				nuke_dot->sprite->elevation = unit->sprite->elevation + 1;
+				helper::set_thingy_visibility_flags(nuke_dot);
 			}
 			unit->main_order_state = 6;
 			scbw::decloak_proc(unit);
@@ -60,76 +58,63 @@ namespace hooks
 
 	void orders_nuke_ground(Unit* unit)
 	{
-		u32 sightRange, distance;
 		if (unit->next_target_waypoint.x != unit->order_target.pt.x
 		||	unit->next_target_waypoint.y != unit->order_target.pt.y)
 		{
 			unit->next_target_waypoint.x = unit->order_target.pt.x;
 			unit->next_target_waypoint.y = unit->order_target.pt.y;
 		}
-
-		sightRange = unit->get_sight_range(false) * 32;
-		if (unit->unit_ai != nullptr)
+		u32 distance;
+		u32 sight_range = unit->get_sight_range(false) * 32;
+		if (unit->unit_ai)
 		{
 			distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
-			if (distance / 256 <= sightRange * 3)
+			if (distance / 256 <= sight_range * 3)
 			{
 				helper::ai_order_unit_cloaking(unit);
 			}
 		}
 
-		// 00479267
 		distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
-		if (distance / 256 > sightRange)
+		if (distance / 256 > sight_range)
 		{
 			if (unit->recent_order_timer == 0)
 			{
 				helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 			}
-		}
-		else
-		{ // 004792AE
+		} else {
 			s32 direction;
-			bool bEndThere = false;
+			bool end_there_idiot = false;
 			helper::set_resource_target(unit);
 			if (unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
 			{
 				direction = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 				if (direction < -1 || direction > 1)
 				{
-					bEndThere = true;
+					end_there_idiot = true;
 				}
 			}
-
-			// 004792F9
-			if (!bEndThere)
+			if (!end_there_idiot)
 			{
-				bool bLoopEnd = false;
+				bool end_again_idiot = false;
 				Unit* current_unit = first_player_unit->unit[unit->player];
-				while (!bLoopEnd)
+				while (!end_again_idiot)
 				{
-					if (current_unit == nullptr)
+					if (!current_unit)
 					{
-						bLoopEnd = true;
-					}
-					else if (current_unit->id == UnitId::TerranMissileSilo
-					&&		 current_unit->building.silo.is_ready)
-					{
-						bLoopEnd = true;
-					}
-					else
-					{
+						end_again_idiot = true;
+					} else if (current_unit->id == UnitId::TerranMissileSilo && current_unit->building.silo.is_ready) {
+						end_again_idiot = true;
+					} else {
 						current_unit = current_unit->player_link.next;
 					}
 				}
-				if (current_unit == nullptr)
+				if (!current_unit)
 				{
 					unit->order_to_idle();
-				}
-				else
-				{ // 00479333
+				} else {
 					Unit* nuke = current_unit->building.silo.nuke;
-					current_unit->building.silo.nuke = nullptr;
+					current_unit->building.silo.nuke = 0;
 					current_unit->building.silo.is_ready = false;
 					helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
 					nuke->order_to(OrderId::NukeLaunch, unit->order_target.pt.x, unit->order_target.pt.y);
@@ -138,17 +123,16 @@ namespace hooks
 					helper::show_and_enable_unit(nuke);
 					unit->connected_unit = nuke;
 					unit->order_to(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
-					if (unit->is_frozen())
-					{ // 004793C4
-						if (units_dat::base_property[unit->id] & UnitProperty::Building)
-						{
+					if (unit->is_frozen()) {
+						if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 							unit->current_buttonset = UnitId::Buttons_CancelNukeStrike;
 						}
-					}
-					else
-					{
+					} else {
 						unit->current_buttonset = UnitId::Buttons_CancelNukeStrike;
 					}
+					u32 action_sound = helper::get_random_sfx_between(SoundId::Terran_GHOST_TGhPss00_wav, SoundId::Terran_GHOST_TGhPss01_wav);
+					helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+					helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 					scbw::refresh_console();
 				}
 			}

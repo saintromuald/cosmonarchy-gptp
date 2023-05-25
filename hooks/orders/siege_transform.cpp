@@ -1,6 +1,7 @@
 #include "siege_transform.h"
 #include <SCBW/api.h>
 #include <cassert>
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -33,6 +34,23 @@ namespace hooks
 			}
 			unit->order_signal &= ~1;
 			++unit->main_order_state;
+
+			u32 action_sound = 0;
+			switch (unit_id)
+			{
+				case UnitId::TerranShamanVisionaryMode:
+				{
+					action_sound = SoundId::ShamanSupport01;
+				} break;
+				case UnitId::TerranPhalanxSiegeMode:
+				{
+					action_sound = SoundId::Terran_TANK_TTaYes00_WAV;
+				} break;
+			}
+			if (action_sound) {
+				helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+			}
 		}
 
 		if (unit->main_order_state && unit->order_signal & 1) {
@@ -99,11 +117,13 @@ namespace hooks
 			}
 			case 2:
 			{
+				u32 action_sound = 0;
 				switch (unit_id)
 				{
 					case UnitId::TerranShamanSupportMode:
 					{
 						unit_id = UnitId::TerranShamanVisionaryMode;
+						action_sound = helper::get_random_sfx_between(SoundId::ShamanVisionary01, SoundId::ShamanVisionary02);
 						break;
 					}
 					case UnitId::TerranMatadorTankMode:
@@ -114,10 +134,15 @@ namespace hooks
 					case UnitId::TerranPhalanxTankMode:
 					{
 						unit_id = UnitId::TerranPhalanxSiegeMode;
+						action_sound = SoundId::Terran_TANK_TTaPss00_WAV;
 					} break;
 				}
 				scbw::transform_unit(unit, unit_id);
 				++unit->main_order_state;
+				if (action_sound) {
+					helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
+					helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+				}
 			}
 			case 3:
 			{

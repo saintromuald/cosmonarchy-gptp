@@ -1528,5 +1528,11 @@ namespace SoundId
 
 		CancelStructureProtoss				= 2468,
 		CancelStructureTerran				= 2469,
+		ApostleToggleLazarus01				= 2470,
+		ApostleToggleLazarus02				= 2471,
+		ApostleToggleLazarus03				= 2472,
+		ShamanVisionary01					= 2473,
+		ShamanVisionary02					= 2474,
+		ShamanSupport01						= 2475,
 	};
 }

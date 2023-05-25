@@ -12,8 +12,9 @@ bool is_any_corpse(Thingy* thingy) {
 		||  unit_id == UnitId::ZergCocoon
 		||  unit_id == UnitId::ProtossPlasmaShell
 		||  unit_id == UnitId::ProtossSteward) {
-			return true;
+			return false;
 		}
+		return true;
 	}
 	return false;
 }
