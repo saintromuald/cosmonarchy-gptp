@@ -4,6 +4,7 @@
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "globals.h"
+#include "math_utils.h"
 
 namespace
 {
@@ -151,30 +152,15 @@ namespace
 	void __fastcall cancel_unit_wrapper(Unit* unit)
 	{
 		UnitExt* unit_ext = get_unit_ext(unit);
-
-		if (unit->is_dead())
+		if (unit->is_dead()
+		||	unit->status & UnitStatus::Completed
+		||	unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)
 		{
 			return;
 		}
 
-		if (unit->status & UnitStatus::Completed)
-		{
-			return;
-		}
-
-		if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)
-		{
-			return;
-		}
-
-		// Don't bother if unit is not morphed yet
-		if (scbw::is_conventional_unit_morph_source(unit->id, false, false))
-		{
-			return;
-		}
-
-		// Don't bother if unit has finished morphing
-		if (scbw::is_conventional_unit_morph_result(unit->id))
+		if (scbw::is_conventional_unit_morph_source(unit->id, false, false)
+		||	scbw::is_conventional_unit_morph_result(unit->id))
 		{
 			return;
 		}
@@ -188,16 +174,12 @@ namespace
 			}
 			resources->minerals[unit->player] += units_dat::mineral_cost[unit->id] * 3 / 4;
 			resources->gas[unit->player] += units_dat::vespene_cost[unit->id] * 3 / 4;
-		}
-		else
-		{
+		} else {
 			u16 refund_unit_id;
 			if (scbw::is_zerg_egg_new(unit, true, false))
 			{
 				refund_unit_id = unit->build_queue[unit->build_queue_slot % 5];
-			}
-			else
-			{
+			} else {
 				refund_unit_id = unit->id;
 			}
 			resources->minerals[unit->player] += units_dat::mineral_cost[refund_unit_id];
@@ -207,20 +189,40 @@ namespace
 		u16 cancel_change_unit_id = hooks::get_cancel_morph_revert_id(unit);
 		if (cancel_change_unit_id == UnitId::None)
 		{
-			if (unit->id == UnitId::TerranNuclearMissile)
-			{
-				Unit* silo = unit->connected_unit;
-				if (silo)
-				{
-					silo->building.silo.nuke = 0;
-					silo->main_order_state = 0;
+			if (unit->get_race() == RaceId::Protoss) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+					helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
+					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
+					unit->remove();
 				}
-				scbw::refresh_console();
+			} else if (unit->get_race() == RaceId::Terran) {
+				if (unit->id == UnitId::TerranNuclearMissile)
+				{
+					Unit* silo = unit->connected_unit;
+					if (silo)
+					{
+						silo->building.silo.nuke = 0;
+						silo->main_order_state = 0;
+					}
+					scbw::refresh_console();
+				} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+					helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
+					for (u32 i = 0; i < 3; i++)
+					{
+						u32 width = units_dat::building_dimensions[unit->id].x * 0.75;
+						u32 height = units_dat::building_dimensions[unit->id].y * 0.75;
+						s32 x_offset = scbw::random() % width - width / 2;
+						s32 y_offset = scbw::random() % height - height / 2;
+						x_offset = MathUtils::clamp(x_offset, -127, 128);
+						y_offset = MathUtils::clamp(y_offset, -127, 128);
+						unit->sprite->create_top_overlay(ImageId::TerranCancelStructure, x_offset, y_offset);
+					}
+					unit->remove();
+				}
+			} else {
+				unit->remove();
 			}
-			unit->remove();
-		}
-		else
-		{
+		} else {
 			change_unit_type(unit, cancel_change_unit_id);
 			unit->energy = unit_ext->values[ValuePreMorphEnergy];
 			unit_ext->units[UnitMorphConnectedUnit] = unit->connected_unit;
@@ -236,14 +238,10 @@ namespace
 			||  unit->id == UnitId::ZergNathrokor)
 			{
 				unit->play_iscript_animation(IscriptAnimation::Unused2);
-			}
-			else if (unit->id == UnitId::ZergQuazilisk)
-			{
+			} else if (unit->id == UnitId::ZergQuazilisk) {
 				unit->play_iscript_animation(IscriptAnimation::CastSpell);
 				unit_ext->timers[TimerQuaziliskCancel] = 4;
-			}
-			else
-			{
+			} else {
 				unit->play_iscript_animation(IscriptAnimation::SpecialState2);
 			}
 			unit->rally.pt = unit->position;

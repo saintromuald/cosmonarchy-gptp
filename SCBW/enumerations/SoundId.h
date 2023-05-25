@@ -1525,5 +1525,8 @@ namespace SoundId
 		StrigaOrderAggressive02				= 2435,
 		StrigaOrderAggressive03				= 2436,
 		StrigaOrderAggressive04				= 2437,
+
+		CancelStructureProtoss				= 2468,
+		CancelStructureTerran				= 2469,
 	};
 }

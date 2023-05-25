@@ -787,6 +787,8 @@ namespace SpriteId
 
 		BurstLasersImpactRed_Damageless = 858,
 
+		TerranCancelStructure	= 870,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,
