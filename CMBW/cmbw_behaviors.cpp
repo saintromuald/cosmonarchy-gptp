@@ -2,21 +2,24 @@
 #include "SCBW\api.h"
 
 bool is_any_corpse(Thingy* thingy) {
-	return thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath);
-}
-
-static bool internal_is_corpse_active(Thingy* corpse) {
-	ThingyExt* corpse_ext = get_thingy_ext(corpse);
-	u32 unit_id = corpse_ext->unit_id;
-	if (units_dat::base_property[unit_id] & UnitProperty::Building
+	if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
+		ThingyExt* corpse_ext = get_thingy_ext(thingy);
+		u32 unit_id = corpse_ext->unit_id;
+		if (units_dat::base_property[unit_id] & UnitProperty::Building
 		||	unit_id == UnitId::ZergLarva
 		||  unit_id == UnitId::ZergOcsalLarva
 		||  unit_id == UnitId::ZergEgg
 		||  unit_id == UnitId::ZergCocoon
 		||  unit_id == UnitId::ProtossPlasmaShell
 		||  unit_id == UnitId::ProtossSteward) {
-		return false;
+			return true;
+		}
 	}
+	return false;
+}
+
+static bool internal_is_corpse_active(Thingy* corpse) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
 	return corpse_ext->activity_timer <= 15 * 24;
 }
 
