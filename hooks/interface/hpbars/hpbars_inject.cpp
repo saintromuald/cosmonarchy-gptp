@@ -63,7 +63,7 @@ namespace hooks
 {
 	void inject_hp_bars_hooks()
 	{
-	//	jump_patch(compile_healthbar_wrapper,	0x004D6010, 1);
+	//	jump_patch(compile_healthbar_wrapper,	0x004D6010, 1);	// Something about the hpbar placement doesn't take into account the unit's size correctly.
 		jump_patch(remove_healthbar_wrapper,	0x004D5030, 2);
 	//	jump_patch(create_healthbar_wrapper,	0x004D6420, 2); // Causes a crash after returning the value, but wrapper seems correct...
 	}
