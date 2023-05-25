@@ -207,16 +207,7 @@ namespace
 					scbw::refresh_console();
 				} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
-					for (u32 i = 0; i < 3; i++)
-					{
-						u32 width = units_dat::building_dimensions[unit->id].x * 0.75;
-						u32 height = units_dat::building_dimensions[unit->id].y * 0.75;
-						s32 x_offset = scbw::random() % width - width / 2;
-						s32 y_offset = scbw::random() % height - height / 2;
-						x_offset = MathUtils::clamp(x_offset, -127, 128);
-						y_offset = MathUtils::clamp(y_offset, -127, 128);
-						unit->sprite->create_top_overlay(ImageId::TerranCancelStructure, x_offset, y_offset);
-					}
+					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player); // TODO: Find working Terran-themed overlay
 					unit->remove();
 				}
 			} else {
