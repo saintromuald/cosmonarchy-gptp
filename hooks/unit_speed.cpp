@@ -28,7 +28,7 @@ namespace hooks
 
 		// Protoss Cornerstone: Avenge - speed
 		if (unit_ext->timers[TimerAvenge]) {
-			speed *= 1.25;
+			speed *= 1.33;
 		}
 
 		// Lobotomy Mine - slow

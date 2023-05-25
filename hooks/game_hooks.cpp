@@ -1002,7 +1002,7 @@ namespace hooks {
 			tactical_ai(unit, unit_ext);
 		}
 
-		// No Corpse Overlay
+		// Overlay for units which do not leave behind corpses
 		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
 			unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
 		}
@@ -1069,6 +1069,7 @@ namespace hooks {
 			}
 		}
 
+		// Handle custom line attacks
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20) {
 			unit->order_signal &= ~0x20;
 			iquare_globals.remove_unit_from_line_attack_table(unit, true);
@@ -1091,7 +1092,7 @@ namespace hooks {
 			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 		}
 
-		// Unit Behavior Groups
+		// Unit behavior groups
 		const static u32 broodspawn_max_time = 5 * 24; // TODO: move to unit consts?
 		switch (unit->id) {
 			// Reclaimers
@@ -1136,7 +1137,9 @@ namespace hooks {
 			// Masters
 		}
 
-		// Unit Specific
+		bool should_update_speed = false;
+
+		// Unit-specific
 		switch (unit->id) {
 			case UnitId::ProtossHerald: {
 				EntryArray allies = {};
@@ -1192,7 +1195,8 @@ namespace hooks {
 					// DOES NOT FIX AI!
 					if (unit->main_order_id == OrderId::Morph1
 					&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
-					&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth) {
+					&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
+					{
 						unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 					}
 				}
@@ -1294,32 +1298,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ZergVilgorokor: {
-				// Vilgorokor - Reconstitution
-				if (!unit_ext->timers[TimerReconstitutionCooldown]) {
-					u32 radius = 5 * 32;
-					EntryArray corpses = {};
-					corpse_search_radial(&corpses, unit->position, radius);
-					for (u32 i = 0; i < corpses.count; ++i) {
-						Thingy* corpse = corpses.corpses[i];
-						EntryArray targets = {};
-						unit_search_radial(&targets, unit->position, radius);
-						unit_search_filter(&targets, unit, FilterAlly);
-						for (u32 i = 0; i < targets.count; ++i) {
-							Unit* target = targets.units[i];
-							target->heal_hp(ZoryusthalethReconstitutionHealing, unit);
-							target->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-						//	scbw::create_and_init_thingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
-						}
-						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
-						unit_ext->timers[TimerReconstitutionCooldown] = 1 * 24;
-						scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, corpse->sprite->position);
-						break;
-					}
-				}
-			} break;
 			case UnitId::ZergUltrokor: {
 				// Kaiser Rampage - Ultrokor behavior
 				if (!unit_ext->timers[TimerKaiserRampageTimeout]) {
@@ -1330,7 +1308,7 @@ namespace hooks {
 						Thingy* corpse = corpses.corpses[i];
 						unit_ext->timers[TimerKaiserRampageTimeout] = 0.5 * 24;
 						unit_ext->timers[TimerKaiserRampage] = 1 + (2 * 24);
-						unit->update_speed();
+						should_update_speed = true;
 
 						scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
@@ -1347,7 +1325,7 @@ namespace hooks {
 					unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
 					unit_ext->values[ValueSovrolethLinkCount] = sovroleths.count;
 				}
-				unit->update_speed();
+				should_update_speed = true;
 
 				// Corpse Cocoon
 				EntryArray corpses = {};
@@ -1598,40 +1576,6 @@ namespace hooks {
 						if (!unit->get_overlay(image_id) && teleport) {
 							scbw::add_unit_overlay(unit, image_id);
 						}
-					}
-				}
-			} break;
-			case UnitId::TerranPaladin:
-			{
-				// Paladin - Skyfall
-				if (unit_ext->timers[TimerSkyfall] == 1 && !unit->is_frozen()) {
-					u8 missile = unit_ext->values[ValueSkyfallStacks];
-					unit_ext->values[ValueSkyfallStacks]++;
-					if (missile == 10) {
-						unit_ext->values[ValueSkyfallStacks] = 0;
-					} else {
-						unit_ext->timers[TimerSkyfall] = 2 + 1;
-						u32 target_x = unit_ext->values[ValueSkyfallX];
-						u32 target_y = unit_ext->values[ValueSkyfallY];
-
-						u32 column = missile / 4;
-						u32 row = missile % 4;
-						u32 distance = scbw::get_distance_fast(unit->get_x(), unit->get_y(), target_x, target_y);
-						f64 angle = scbw::bw_angle_to_normal(scbw::get_angle(unit->get_x(), unit->get_y(), target_x, target_y));
-						Vector32 rotation_pt = {0, 0};
-						rotation_pt.x += 16 + (row - 2) * 32;
-						rotation_pt.y -= (column - 2) * 32;
-						auto product = scbw::rotate_point({0, 0}, rotation_pt, angle);
-						Point16 missile_target;
-						missile_target.x = target_x + product.x;
-						missile_target.y = target_y + product.y;
-
-						s32 forward_offset = weapons_dat::forward_offset[10];
-						auto source_x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-						auto source_y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[10];
-						unit->order_target.unit = 0;
-						unit->order_target.pt = missile_target;
-						helper::create_bullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->player, unit->current_direction_1);
 					}
 				}
 			} break;
@@ -2089,6 +2033,7 @@ namespace hooks {
 				if (unit_ext->timers[TimerMortothrokorPassive] == 0) {
 					unit_ext->values[ValueMortothrokorStacks] = 0;
 				}
+				should_update_speed = true;
 			} break;
 			case UnitId::ProtossSteward:
 			{
@@ -2181,8 +2126,8 @@ namespace hooks {
 			} break;
 		}
 
-		// Gladius Binding Plasma
-		if (unit_ext->timers[TimerGladiusBindingPlasma]) {
+		// Protoss - Binding Plasma
+		if (unit_ext->timers[TimerBindingPlasma]) {
 			u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];
 
 			bool has_source = false;
@@ -2197,14 +2142,14 @@ namespace hooks {
 			}
 
 			if (has_source) {
-				if (unit_ext->timers[TimerGladiusBindingPlasma] % 12 == 11) {
+				if (unit_ext->timers[TimerBindingPlasma] % 12 == 11) {
 					scbw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio					
 				}
-				if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
+				if (unit_ext->timers[TimerBindingPlasma] == 1) {
 					scbw::binding_plasma_proc(unit);
 				}
 			} else {
-				unit_ext->timers[TimerGladiusBindingPlasma] = 0;
+				unit_ext->timers[TimerBindingPlasma] = 0;
 				unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 			}
 		} else {
@@ -2330,7 +2275,7 @@ namespace hooks {
 		}
 		*/
 
-		// Phase Link - overlay
+		// Clarion - Phase Link - overlay
 		if (*g_elapsed_time_frames % 10 == 0 && unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
 			scbw::add_unit_overlay(unit, ImageId::PhaseLinkSmall + scbw::get_overlay_offset(unit->id));
 		}
@@ -2360,6 +2305,7 @@ namespace hooks {
 			unit_ext->values[ValueSignifyStacks] = 0;
 			unit_ext->values[ValueSignifyPlayer] = 0;
 			scbw::update_signify_status(unit, unit_ext);
+			should_update_speed = true;
 		}
 
 		// Decloak on stun
@@ -2402,7 +2348,8 @@ namespace hooks {
 				x_offset = MathUtils::clamp(x_offset, -127, 128);
 				y_offset = MathUtils::clamp(y_offset, -127, 128);
 
-				unit->sprite->create_overlay(ImageId::FusionCutterHitDamageless, x_offset, y_offset); // TODO: Figure out why changing a construction frame freezes these overlays.
+				// TODO: Figure out why changing a construction frame freezes this overlay.
+				unit->sprite->create_overlay(ImageId::FusionCutterHitDamageless, x_offset, y_offset);
 				unit_ext->timers[TimerAddonAnimation] = scbw::rand_between(16, 20);
 			}
 		}
@@ -2486,6 +2433,7 @@ namespace hooks {
 		// Gorgon - Petrification - clear stacks
 		if (unit_ext->timers[TimerPetrification] == 1) {
 			unit_ext->values[ValuePetrificationStacks] = 0;
+			should_update_speed = true;
 		}
 
 		// Blissful Embrace - Creep spread and Larva spawn
@@ -2530,6 +2478,7 @@ namespace hooks {
 
 		// Seraph - Observance
 		if (unit_ext->timers[TimerObservanceDebuff] > 1) {
+			// TODO: unit search
 			const auto range = 6 * 32;
 			auto seraphs = scbw::UnitFinder(
 				unit->get_x() - range,
@@ -2580,9 +2529,10 @@ namespace hooks {
 		// Vorvrokor - Captivating Claws
 		if (unit_ext->timers[TimerCaptivatingClaws] == 1) {
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
+			should_update_speed = true;
 		}
 
-		// Low yield Mineral Fields - No collision
+		// Low-yield Mineral Fields - No collision
 		if (unit->id >= UnitId::ResourceMineralField
 		&&  unit->id <= UnitId::ResourceMineralFieldType3
 		&&  unit->building.resource.resource_yield <= 4) {
@@ -2590,7 +2540,7 @@ namespace hooks {
 			unit->sprite->elevation = 0;
 		}
 
-		// Spider Mine - No collision
+		// Terran traps - No collision
 		if (scbw::unit_is_trap(unit)) {
 			unit->status |= UnitStatus::NoCollide;
 		}
@@ -2623,6 +2573,7 @@ namespace hooks {
 				overlay_unit->sprite->create_top_overlay(overlay, 0, 0, 0);
 			}
 			if (unit->main_order_id != OrderId::AttackUnit) {
+				// TODO: Unit search
 				const u32 radius = unit->get_seek_range() * 32 + 4 * 32;
 				auto match = cosmonarchy_finder_match(unit, 0, {});
 				Unit* best_target = scbw::UnitFinder::get_nearest_target(
@@ -2876,14 +2827,16 @@ namespace hooks {
 
 		// Clear speed buffs for currently-moving flingy units. -Pr0nogo
 		if (unit_ext->timers[TimerTerminalSurge] == 1
-		||	unit_ext->timers[TimerCausticDischargeSpeed] == 1) {
-			unit->update_speed();
+		||	unit_ext->timers[TimerCausticDischargeSpeed] == 1)
+		{
+			should_update_speed = true;
 		}
 
 		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
 		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1) {
-			unit->update_speed();
+		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)
+		{
+			should_update_speed = true;
 		}
 
 		// Clear Power Siphon debuff
@@ -2932,6 +2885,10 @@ namespace hooks {
 			if (unit->subunit) {
 				unit->subunit->sprite->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 			}
+		}
+
+		if (should_update_speed) {
+			unit->update_speed();
 		}
 
 		if (globals.celebration == Celebration_Christmas) {

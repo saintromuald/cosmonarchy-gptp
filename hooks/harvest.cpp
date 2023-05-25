@@ -606,7 +606,7 @@ namespace hooks {
 	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker) { // 00440FA0
 		if (helper::unit_is_active_resource_depot(depot)) {
 			if (depot->player == worker->player || scbw::are_mutual_allies(depot->player, worker->player)) {
-				if (!(worker->pathing_flags & 1) || helper::unit_has_path_to_destination(worker, depot->position.x, depot->position.y)) {
+				if (!(worker->pathing_flags & PathingFlags::PathingFlags_ProvidesCollision) || helper::unit_has_path_to_destination(worker, depot->position.x, depot->position.y)) {
 					return true;
 				}
 			}

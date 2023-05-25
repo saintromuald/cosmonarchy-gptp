@@ -1374,11 +1374,11 @@ namespace scbw {
 		}
 	}
 
-	void prepare_unit_move(Unit* unit, bool hideUnit) {
+	void prepare_unit_move(Unit* unit, bool hide_unit) {
 		const u32 func_address = 0x00493CA0;
 		assert(unit);
 		static b32 hide_unit_xd;
-		hide_unit_xd = hideUnit ? 1 : 0;
+		hide_unit_xd = hide_unit ? 1 : 0;
 		__asm {
 			PUSHAD
 			PUSH hide_unit_xd
@@ -1388,22 +1388,22 @@ namespace scbw {
 		}
 	}
 
-	bool check_unit_collision_pos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag) {
+	bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_pos, Box16* move_area, bool hide_error_message, u32 some_flag) {
 		const u32 func_address = 0x0049D3E0;
 		assert(unit);
-		assert(inPos);
-		assert(outPos);
+		assert(in_pos);
+		assert(out_pos);
 		static u32 result;
 		static u32 hide_error_message_xd;
-		hide_error_message_xd = hideErrorMsg;
+		hide_error_message_xd = hide_error_message;
 		__asm {
 			PUSHAD
-			PUSH someFlag;
+			PUSH some_flag;
 			PUSH hide_error_message_xd
-			PUSH outPos
-			PUSH inPos
+			PUSH out_pos
+			PUSH in_pos
 			PUSH unit
-			MOV EAX, moveArea
+			MOV EAX, move_area
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -2644,7 +2644,7 @@ namespace scbw {
 		unit_search_sort_by_distance(&targets, victim->position);
 
 		if (!targets.count) {
-			victim_ext->timers[TimerGladiusBindingPlasma] = 0;
+			victim_ext->timers[TimerBindingPlasma] = 0;
 			victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 			return;
 		}
@@ -2665,7 +2665,7 @@ namespace scbw {
 		}
 
 		if (!victim_ext->values[ValueGladiusBindingPlasmaStacks]) {
-			victim_ext->timers[TimerGladiusBindingPlasma] = 0;
+			victim_ext->timers[TimerBindingPlasma] = 0;
 		}
 	}
 

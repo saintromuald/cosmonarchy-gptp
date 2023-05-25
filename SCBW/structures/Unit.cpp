@@ -335,14 +335,14 @@ bool Unit::is_valid_caster() const {
 }
 
 // Identical to function @ 0x00401DC0
-// Returns:	0 - Unit has not reached destination
-//			1 - Unit has reached destination
-//			2 - Unit cannot move
 u32 Unit::get_movable_state() {
-	if (this->move_target.pt != this->sprite->position)
-		return 0; else if (!(this->status & UnitStatus::Unmovable))
-		return 1; else
-		return 2;
+	if (this->move_target.pt != this->position) {
+		return MovableState::NotReachedDestination;
+	} else if (!(this->status & UnitStatus::Unmovable)) {
+		return MovableState::ReachedDestination;
+	} else {
+		return MovableState::UnmovableAtDestination;
+	}
 }
 
 //-------- Positions and dimensions --------//

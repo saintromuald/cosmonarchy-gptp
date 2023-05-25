@@ -404,13 +404,13 @@ namespace hooks
 				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
 			case WeaponId::GladiusPlasmaFlurry: {
-				if (target_ext->timers[TimerGladiusBindingPlasma]) {
+				if (target_ext->timers[TimerBindingPlasma]) {
 					u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
 					if (scbw::is_allied_to(data.attacking_player_id, source_player)) {
 						target_ext->values[ValueGladiusBindingPlasmaStacks]++;
 					}
 				} else {
-					target_ext->timers[TimerGladiusBindingPlasma] = 12;
+					target_ext->timers[TimerBindingPlasma] = 12;
 					target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
 					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 				}
