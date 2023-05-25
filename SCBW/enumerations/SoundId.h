@@ -1166,6 +1166,8 @@ namespace SoundId
 		AncilePassiveProc02					= 1155,
 		AncilePassiveProc03					= 1156,
 
+		ZealotRevive01						= 1187,
+
 		CentaurSunchaserMissilesFire01		= 1204,
 		CentaurSunchaserMissilesFire02		= 1205,
 		CentaurSunchaserMissilesFire03		= 1206,

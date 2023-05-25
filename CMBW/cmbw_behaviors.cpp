@@ -109,8 +109,8 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 	}
 
 	Point16 pos = corpse->sprite->position;
-	scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
-	helper::play_sound_at_pos(SoundId::LazarusAgentProc, pos);
+	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	helper::play_sound_at_pos(SoundId::ZealotRevive01, pos);
 		
 	EntryArray units = {};
 	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
@@ -121,6 +121,8 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAvenge] = 3 * 24;
+		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+		unit->update_speed();
 	}
 
 	consume_corpse(corpse);
@@ -134,8 +136,8 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 	}
 
 	Point16 pos = corpse->sprite->position;
-	scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
-	helper::play_sound_at_pos(SoundId::LazarusAgentProc, pos);
+	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, pos);
 
 	EntryArray units = {};
 	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
@@ -146,7 +148,7 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAscend] = 3 * 24;
-		unit->update_speed();
+		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 	}
 
 	consume_corpse(corpse);
