@@ -223,7 +223,7 @@ namespace flingy_id
 		ZergIroleth = 213,
 		ZergMutationPit = 214, // unused
 		TerranPaladin = 215,
-		TerranMadrigal = 216,
+		TerranMadrigalImperiosoMode = 216,
 		TerranSavant = 217,
 		TerranParticleAccelerator = 218,
 		TerranMunitionsBay = 219,

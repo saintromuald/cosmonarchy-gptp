@@ -343,11 +343,6 @@ void unit_destructor_special_cases(Unit* unit) {
 		}
 	}
 
-	// Madrigal - Dirge
-	if (unit_ext->timers[TimerDirgeFuse]) {
-		scbw::madrigal_dirge_fuse(unit, unit_ext);
-	}
-
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plague_timer) {
 		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);

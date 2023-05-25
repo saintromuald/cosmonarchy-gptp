@@ -208,7 +208,7 @@ enum ExtTimerId
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
 	TimerWyvernAttackCooldown,
-	TimerDirgeFuse,
+	TimerDirgeFuse,								// unused
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,

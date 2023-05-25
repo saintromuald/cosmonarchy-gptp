@@ -412,8 +412,6 @@ namespace hooks
 			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
 		add_status(statuses, "Power Siphoned", unit_ext->values[ValueSavantPowerSiphonDebuff], 0,
 			unit_ext->timers[TimerSavantPowerSiphonDebuff], TimerType::Gptp);
-		add_status(statuses, "Dirge Fuse", unit_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
-			unit_ext->timers[TimerDirgeFuse], TimerType::Gptp);
 		add_status(statuses, "Deconstruction", unit_ext->values[ValueDeconstruction], 0,
 			unit_ext->timers[TimerDeconstruction], TimerType::Gptp);
 		add_status(statuses, "Petrification", unit_ext->values[ValuePetrificationStacks], 0,
@@ -473,7 +471,7 @@ namespace hooks
 		// GPTP Value - Gimmicked
 		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
 		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
-		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && unit_ext->values[ValueMadrigalTempoDown] == 0, 1);
+		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode && unit_ext->values[ValueMadrigalTempoDown] == 0, 1);
 		add_status(statuses, "Tempo Down", unit_ext->values[ValueMadrigalTempoDown] == 1, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);

@@ -96,7 +96,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->timers[TimerStun]       = 2 * 24;
 		unit_ext->timers[TimerDecaySafe]  = 3;
 		unit_ext->values[ValueDecaying] = true;
-		//	unit_ext->values[ValueNoCorpse] = true;
+	//	unit_ext->values[ValueNoCorpse] = true;
 	}
 	return unit;
 }
@@ -146,6 +146,7 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAscend] = 3 * 24;
+		unit->update_speed();
 	}
 
 	consume_corpse(corpse);

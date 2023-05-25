@@ -70,6 +70,10 @@ namespace hooks
 				{
 					unit_id = UnitId::TerranPhalanxTankMode;
 				} break;
+				case UnitId::TerranMadrigalFuriaMode:
+				{
+					unit_id = UnitId::TerranMadrigalImperiosoMode;
+				} break;
 			}
 
 			scbw::transform_unit(unit, unit_id);
@@ -135,6 +139,10 @@ namespace hooks
 					{
 						unit_id = UnitId::TerranPhalanxSiegeMode;
 						action_sound = SoundId::Terran_TANK_TTaPss00_WAV;
+					} break;
+					case UnitId::TerranMadrigalImperiosoMode:
+					{
+						unit_id = UnitId::TerranMadrigalFuriaMode;
 					} break;
 				}
 				scbw::transform_unit(unit, unit_id);

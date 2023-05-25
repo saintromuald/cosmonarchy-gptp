@@ -821,7 +821,7 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
-									case UnitId::TerranMadrigal:
+									case UnitId::TerranMadrigalImperiosoMode:
 									{
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit))
 										{
@@ -1966,16 +1966,16 @@ namespace hooks {
 										current_button_state = Button_State::Disabled;
 									}
 								} break;
-								case UnitId::TerranMadrigal:
+								case UnitId::TerranMadrigalImperiosoMode:
 								{
-									UnitExt* unit_ext = get_unit_ext(unit);
-									if (current_button->icon_id == IconId::GeminiMissiles
-									&&	unit_ext->values[ValueMadrigalTempoDown] == 0) // Madrigal - Furia Salvo
+									if (current_button->icon_id == IconId::FusionCutterHarvest) // Madrigal - Dirge
 									{
 										current_button_state = Button_State::Enabled;
 									}
-									else if (current_button->icon_id == IconId::FusionCutterHarvest
-									&&  unit_ext->values[ValueMadrigalTempoDown] > 0) // Madrigal - Shrike Payload
+								} break;
+								case UnitId::TerranMadrigalFuriaMode:
+								{
+									if (current_button->icon_id == IconId::GeminiMissiles) // Madrigal - Furia Salvo
 									{
 										current_button_state = Button_State::Enabled;
 									}

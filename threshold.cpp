@@ -1915,7 +1915,7 @@ static void init_threshold_units() {
 	// Steve Miller
 	threshold.frauds[FraudHero_SteveMiller][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_None, AiBuildOrder_TerranArmor_2FulcVult, PlayerColor::White};
 	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {6, UnitId::TerranPhalanxTankMode});
-	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {2, UnitId::TerranMadrigal});
+	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {2, UnitId::TerranMadrigalImperiosoMode});
 	fraud_add_unit(FraudHero_SteveMiller, RaceId::Terran, {2, UnitId::TerranPaladin});
 
 	// Torros
@@ -1988,7 +1988,7 @@ static void init_threshold_units() {
 	threshold.frauds[FraudSuper_Tolrim][RaceId::Terran] = {AiPersonality_TerranArmor, AiBuildType_Timing, AiBuildOrder_None, PlayerColor::Redwood};
 	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {4, UnitId::TerranEidolon});
 	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {2, UnitId::TerranAutocrat});
-	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {6, UnitId::TerranMadrigal});
+	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {6, UnitId::TerranMadrigalImperiosoMode});
 	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {4, UnitId::TerranPaladin});
 	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {6, UnitId::TerranPazuzu});
 	fraud_add_unit(FraudSuper_Tolrim, RaceId::Terran, {4, UnitId::TerranClaymore});

@@ -331,7 +331,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranPhalanxTankMode:
-				case UnitId::TerranMadrigal:
+				case UnitId::TerranMadrigalImperiosoMode:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranMachineShop))
 					{
@@ -1828,7 +1828,7 @@ namespace hooks {
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranPhalanxTankMode:
-					case UnitId::TerranMadrigal:
+					case UnitId::TerranMadrigalImperiosoMode:
 					{
 						if (in_air || is_adding_on)
 						{

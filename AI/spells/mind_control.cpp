@@ -36,7 +36,7 @@ namespace AI
 			{
 				case UnitId::TerranPhalanxTankMode:
 				case UnitId::TerranPhalanxSiegeMode:
-				case UnitId::TerranMadrigal:
+				case UnitId::TerranMadrigalImperiosoMode:
 				case UnitId::TerranSeraph:
 				case UnitId::TerranMinotaur:
 				case UnitId::TerranCleric:

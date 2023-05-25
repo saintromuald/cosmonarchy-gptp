@@ -2067,30 +2067,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranMadrigal:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::CastToggleTempoChange)) {
-					scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 0);
-					if (!unit_ext->timers[TimerMadrigalTempoChange]) {
-						unit_ext->timers[TimerMadrigalTempoChange] = 18;
-						unit_ext->values[ValueMadrigalTempoDown] = !unit_ext->values[ValueMadrigalTempoDown]; // Fuck you visual studio
-						unit->status |= UnitStatus::CanNotAttack;
-						unit->sprite->create_overlay(ImageId::StonewallProtocolOverlay);
-						if (unit_ext->values[ValueMadrigalTempoDown]) {
-							helper::play_sound_from_unit(SoundId::MadrigalTempoChangeDown, unit);
-						} else {
-							helper::play_sound_from_unit(SoundId::MadrigalTempoChangeUp, unit);
-						}
-					}
-				}
-				if (unit_ext->timers[TimerMadrigalTempoChange]) {
-					scbw::decloak_proc(unit);
-				}
-				if (unit_ext->timers[TimerMadrigalTempoChange] == 1) {
-					unit->status &= ~UnitStatus::CanNotAttack;
-					unit->remove_overlay(ImageId::StonewallProtocolOverlay);
-				}
-			} break;
 			case UnitId::TerranDiadem:
 			{
 				// Fire Hammerfall Beacon for weapon targeting
@@ -2203,7 +2179,7 @@ namespace hooks {
 
 		// Fix AI melee units freezing - DarkenedFantasies
 		if (unit->status & UnitStatus::Unmovable
-		&&  unit->main_order_id & OrderId::AttackUnit
+		&&  unit->main_order_id == OrderId::AttackUnit
 		&& !unit->movement_flags
 		&&  unit->movement_state == 0x0A)
 		{
@@ -2293,11 +2269,6 @@ namespace hooks {
 			if (unit->subunit) {
 				unit->subunit->status &= ~UnitStatus::CanNotAttack;
 			}
-		}
-
-		// Madrigal - Dirge
-		if (unit_ext->timers[TimerDirgeFuse] == 1) {
-			scbw::madrigal_dirge_fuse(unit, unit_ext);
 		}
 
 		// Hierophant Signify Reset

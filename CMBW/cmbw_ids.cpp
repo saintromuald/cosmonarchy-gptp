@@ -272,6 +272,7 @@ bool unit_id_is_siege_mode(u32 unit_id) {
 	return unit_id == UnitId::TerranShamanVisionaryMode
 		|| unit_id == UnitId::TerranMatadorCinderMode
 		|| unit_id == UnitId::TerranPhalanxSiegeMode
+		|| unit_id == UnitId::TerranMadrigalFuriaMode
 		|| unit_id == UnitId::TerramCuirassTrenchMode;
 }
 
@@ -279,6 +280,7 @@ bool unit_id_is_tank_mode(u32 unit_id) {
 	return unit_id == UnitId::TerranShamanSupportMode
 		|| unit_id == UnitId::TerranMatadorTankMode
 		|| unit_id == UnitId::TerranPhalanxTankMode
+		|| unit_id == UnitId::TerranMadrigalImperiosoMode
 		|| unit_id == UnitId::TerranCuirassTankMode;
 }
 
@@ -454,6 +456,7 @@ bool weapon_id_pierces(u32 weapon_id) {
 		case WeaponId::SavantDiscoidRailgunPiercing:
 		case WeaponId::AutocratEminenceRifle:
 		case WeaponId::SevenstepGeometricRiflePiercing:
+		case WeaponId::MadrigalImperiosoMissiles:
 		case WeaponId::RamessesPharoahCannons:
 		case WeaponId::ClaymoreHarpoonRailgun:
 		case WeaponId::PenumbraErebolShockCannon:
@@ -542,4 +545,19 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 		case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
 	}
 	return ImageId::None;
+}
+
+bool weapon_id_procs_phantom_strike(u32 weapon_id) {
+	return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
+		&& weapon_id != WeaponId::SpiderMines
+		&& weapon_id != WeaponId::LobotomyMineExplosion
+		&& weapon_id != WeaponId::Irradiate
+		&& weapon_id != WeaponId::YamatoGun
+		&& weapon_id != WeaponId::PsiStorm
+		&& weapon_id != WeaponId::CantavisHallucinationCast
+		&& weapon_id != WeaponId::MindTyrantTyranny
+		&& weapon_id != WeaponId::MindTyrantMaelstrom
+		&& weapon_id != WeaponId::StasisField
+		&& weapon_id != WeaponId::MatralethParasite
+		&& weapon_id != WeaponId::Plague;
 }

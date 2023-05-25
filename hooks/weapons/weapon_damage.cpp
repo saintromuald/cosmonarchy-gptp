@@ -377,7 +377,7 @@ namespace hooks
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
+		if (weapon_id_procs_phantom_strike(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
 			if (weapon_damage_current_bullet) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {
@@ -397,6 +397,7 @@ namespace hooks
 
 	static void weapon_damage_behaviors(const WeaponDamageData& data) {
 		UnitExt* target_ext = get_unit_ext(data.target);
+		bool should_update_speed = false;
 
 		// No attacker here
 		switch (data.weapon_id) {
@@ -450,7 +451,8 @@ namespace hooks
 			// Ensnaring Brood - Matraleth enchantment ability
 			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
-			&&  !scbw::is_under_dark_swarm(data.target)) {
+			&&  !scbw::is_under_dark_swarm(data.target))
+			{
 				 apply_ensnare(data.target);
 			}
 
@@ -593,14 +595,6 @@ namespace hooks
 						// Cyclops - Flak Cannons
 						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
 						scbw::add_unit_overlay(data.target, ImageId::CyclopsFragmentaryArming);
-					} break;
-					case WeaponId::MadrigalImperiosoMissiles:
-					{
-						// Dirge - Madrigal behavior
-						target_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
-						target_ext->values[ValueDirgeStacks] += 1;
-						target_ext->values[ValueDirgeSourcePlayer] = data.attacking_player_id;
-						target_ext->units[UnitDirgeSource] = data.attacker;
 					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{

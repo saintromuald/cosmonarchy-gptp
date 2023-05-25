@@ -789,12 +789,6 @@ namespace scbw
 			unit->irradiate_timer = SeraphIrradiateTimer;
 		}
 
-		// Refresh Dirge
-		if (unit_ext->timers[TimerDirgeFuse])
-		{
-			unit_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
-		}
-
 		// Refresh Hierophant Signify
 		if (unit_ext->timers[TimerSignify])
 		{
@@ -959,13 +953,6 @@ namespace scbw
 			child_ext->timers[TimerKelvinMunitions] = parent_ext->timers[TimerKelvinMunitions];
 		}
 
-		// Inherit Dirge
-		if (parent_ext->timers[TimerDirgeFuse])
-		{
-			child_ext->timers[TimerDirgeFuse] = parent_ext->timers[TimerDirgeFuse];
-			child_ext->values[ValueDirgeStacks] = parent_ext->values[ValueDirgeStacks];
-		}
-
 		// Inherit Empress Passive Stacks
 		if (parent_ext->values[ValueEmpressPassiveStacks])
 		{
@@ -1124,13 +1111,6 @@ namespace scbw
 		if (unit_ext->timers[TimerKelvinMunitions])
 		{
 			unit_ext->timers[TimerKelvinMunitions] = 0;
-		}
-
-		// Remove Dirge
-		if (unit_ext->timers[TimerDirgeFuse])
-		{
-			unit_ext->timers[TimerDirgeFuse] = 0;
-			unit_ext->values[ValueDirgeStacks] = 0;
 		}
 
 		// Remove Hierophant Signify
