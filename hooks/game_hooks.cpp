@@ -2783,12 +2783,6 @@ namespace hooks {
 				if (!unit->sprite->get_overlay(image_id)) {
 					scbw::add_unit_overlay(unit, image_id);
 				}
-				if (!unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod]) {
-					unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] = 24;
-				}
-				if (unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] == 1) {
-					unit->damage_with_custom(unit_ext->values[ValueApollyoidAdhesiveStacks] * 256, 2);
-				}
 			}
 			if (unit_ext->timers[TimerApollyoidAdhesive] == 1) {
 				scbw::remove_unit_overlay(unit, image_id);

@@ -249,6 +249,7 @@ namespace hooks
 			}
 
 			// Autocrat Controlled Opposition
+			armor_total -= target_ext->values[ValueApollyoidAdhesiveStacks];
 			armor_total -= target_ext->values[ValueControlledOpposition];
 
 			armor_total = std::max(armor_total, 0);
