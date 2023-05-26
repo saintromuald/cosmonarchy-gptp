@@ -2965,6 +2965,9 @@ namespace scbw {
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
 			unit = unit->subunit;
 		}
+		if (unit->get_overlay(image_id)) {
+			return;
+		}
 
 		if (underlay) {
 			unit->sprite->create_underlay(image_id);

@@ -21,7 +21,7 @@ bool is_any_corpse(Thingy* thingy) {
 
 static bool internal_is_corpse_active(Thingy* corpse) {
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
-	return corpse_ext->activity_timer <= 15 * 24;
+	return corpse_ext->activity_timer <= 10 * 24;
 }
 
 bool is_inactive_corpse(Thingy* thingy) {
