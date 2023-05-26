@@ -743,6 +743,7 @@ namespace hooks {
 			// Same as default, but orange effect
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::AutocratEminenceRifle:
+			case WeaponId::MadrigalImperiosoMissiles:
 			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
