@@ -379,16 +379,13 @@ namespace hooks
 
 		// Hallucinating targets - fire a phantom strike
 		if (weapon_id_procs_phantom_strike(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
-			if (weapon_damage_current_bullet) {
+			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry) {
 				WeaponOffsets offsets = get_weapon_offsets(data.weapon_id);
 				// Temporarily doing this to prevent crashes!
 				if (offsets.count || offsets.fake_count || offsets.value_id || offsets.frameset_offset || offsets.use_special_overlay) {
 					data.damage *= 1.5;
 					data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
 				} else {
-					if (data.weapon_id == WeaponId::GladiusPlasmaFlurry) {
-						weapon_damage_current_bullet->remaining_bounces = 0;
-					}
 					BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 					if (!current_bullet_ext->is_phantom) {
 						data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
