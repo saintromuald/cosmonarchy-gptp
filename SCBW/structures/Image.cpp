@@ -204,16 +204,19 @@ namespace hooks
 	void play_image_iscript(Image* image, u8 animation) { // 004D8470
 		char final_anim = animation;
 		if ((animation != IscriptAnimation::Death || image->animation != IscriptAnimation::Death)
-		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death)) {
+		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death))
+		{
 			char image_anim = image->animation;
 			if (animation != image_anim || animation != IscriptAnimation::Walking && animation != IscriptAnimation::IsWorking) {
 				if (animation == IscriptAnimation::GndAttkRpt) {
-					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit) {
+					if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit)
+					{
 						final_anim = IscriptAnimation::GndAttkInit;
 					}
-				} else if  (animation  == IscriptAnimation::AirAttkRpt
-				&&			image_anim != IscriptAnimation::AirAttkRpt
-				&&			image_anim != IscriptAnimation::AirAttkInit) {
+				} else if (animation  == IscriptAnimation::AirAttkRpt
+				&&		   image_anim != IscriptAnimation::AirAttkRpt
+				&&		   image_anim != IscriptAnimation::AirAttkInit)
+				{
 					final_anim = IscriptAnimation::AirAttkInit;
 				}
 				u32 offset = image->iscript_header_offset;
