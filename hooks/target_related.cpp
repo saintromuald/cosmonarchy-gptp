@@ -135,7 +135,7 @@ namespace hooks
 				return 0;
 			}
 		}
-		u32 max_range = helper::get_unit_max_weapon_range(attacker, weapon_id);
+		u32 max_range = hooks::get_max_weapon_range(attacker, weapon_id, final_target);
 		return helper::is_target_within_min_movement_range(final_target, final_attacker, max_range);
 	}
 
