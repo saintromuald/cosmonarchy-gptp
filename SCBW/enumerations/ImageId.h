@@ -1195,6 +1195,8 @@ namespace ImageId {
 			
 		PhantomStrikeProc		                    = 1738,
 
+		TerranCancelStructure						= 1740,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

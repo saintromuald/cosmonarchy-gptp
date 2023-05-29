@@ -3,121 +3,100 @@
 
 namespace hooks
 {
-	// Necessary to assign enterNydusCanal order to units that normally can't use it (without changing this here,
-	// changing identical tests in order function is useless since the unit won't even use that function)
-	bool canEnterNydusCanal(Unit* unit, Unit* nydusCanal)
+	// Necessary to assign the Enter Nydus order to units that normally can't use it
+	bool can_enter_nydus(Unit* unit, Unit* nydus)
 	{
-		Unit* const nydus_exit = nydusCanal->building.nydus_exit;
-		return (nydusCanal->status & UnitStatus::Completed)
-			&& nydus_exit != nullptr
-			&& (nydus_exit->status & UnitStatus::Completed)
-			&& (unit->player == nydusCanal->player
-				|| scbw::is_allied_to(unit->player, nydusCanal->player))
-			&& !(units_dat::base_property[unit->id] & UnitProperty::Flyer);
+		Unit* const nydus_exit = nydus->building.nydus_exit;
+		if  (nydus->status & UnitStatus::Completed
+		&&	 nydus_exit && nydus_exit->status & UnitStatus::Completed
+		&&	(unit->player == nydus->player || scbw::is_allied_to(unit->player, nydus->player))
+		&& !(units_dat::base_property[unit->id] & UnitProperty::Flyer)) {
+			return true;
+		}
+		return false;
 	}
 
-	// Perform the Nydus Canal teleport effect on an unit that validated the conditions within the orders_EnterNydusCanal function
-	void enterNydusCanal_Effect(Unit* unit, Unit* nydusCanal)
+	// Perform the Nydus Canal teleport effect on an unit that validated the conditions within the orders_enter_nydus function
+	void enter_nydus_effect(Unit* unit, Unit* nydus)
 	{
-		Point16 oldPos, aimedPos, finalPos;
-		oldPos.x = unit->sprite->position.x;
-		oldPos.y = unit->sprite->position.y;
-		if (nydusCanal->building.nydus_exit->sprite == nullptr)
+		if (!nydus->building.nydus_exit->sprite)
 		{
-			//scbw::print("null sprite of nydus exit!");
-			nydusCanal->building.nydus_exit = nullptr;
+			nydus->building.nydus_exit = 0;
 			return;
 		}
-		aimedPos.x = (nydusCanal->building.nydus_exit)->sprite->position.x;
-		aimedPos.y = (nydusCanal->building.nydus_exit)->sprite->position.y;
+
+		Point16 old_pos = { unit->position.x, unit->position.y };
+		Point16 aimed_pos = { (nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y };
+		Point16 final_pos = {};
 		scbw::prepare_unit_move(unit, true);
-		scbw::set_unit_position(unit, aimedPos.x, aimedPos.y);
-		if (scbw::check_unit_collision_pos(unit, &aimedPos, &finalPos, nullptr, false, 0))
-		{ // 004EA201
-			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal, 1, 0);
-			scbw::set_unit_position(unit, finalPos.x, finalPos.y);
+		scbw::set_unit_position(unit, aimed_pos.x, aimed_pos.y);
+		if (scbw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0))
+		{
+			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus, 1, 0);
+			scbw::set_unit_position(unit, final_pos.x, final_pos.y);
 			scbw::refresh_unit_after_move(unit);
-			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydusCanal->building.nydus_exit, 1, 0);
-			if (unit->order_queue_head != nullptr)
+			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus->building.nydus_exit, 1, 0);
+			if (unit->order_queue_head)
 			{
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
-			}
-			else
-			{ // 004EA253
-
-				if (unit->unit_ai != nullptr)
+			} else {
+				if (unit->unit_ai)
 				{
 					unit->order_computer(OrderId::ComputerAI);
-				}
-				else
-				{
+				} else {
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
-		}
-		else
-		{	// collision detected, restore old position
-			scbw::set_unit_position(unit, oldPos.x, oldPos.y);
+		} else {
+			// collision detected, restore old position
+			scbw::set_unit_position(unit, old_pos.x, old_pos.y);
 			scbw::refresh_unit_after_move(unit);
 		}
 	}
 
-	void orders_EnterNydusCanal(Unit* unit)
+	void orders_enter_nydus(Unit* unit)
 	{
-		Unit* nydusCanal;
-		nydusCanal = unit->order_target.unit;
-		// same tests as canEnterNydusCanal but left hardcoded like the original code
-		if (nydusCanal == nullptr
-			|| !(nydusCanal->status & UnitStatus::Completed)
-			|| nydusCanal->building.nydus_exit == nullptr
-			|| !((nydusCanal->building.nydus_exit)->status & UnitStatus::Completed)
-			|| (!scbw::is_allied_to(unit->player, nydusCanal->player))
-			|| units_dat::base_property[unit->id] & UnitProperty::Flyer)
-		{ // 004EA478
-			if (unit->order_queue_head != nullptr)
+		Unit* nydus;
+		nydus = unit->order_target.unit;
+		if  (!nydus
+		||  !(nydus->status & UnitStatus::Completed)
+		||   !nydus->building.nydus_exit
+		|| !((nydus->building.nydus_exit)->status & UnitStatus::Completed)
+		||  (!scbw::is_allied_to(unit->player, nydus->player))
+		||    units_dat::base_property[unit->id] & UnitProperty::Flyer)
+		{
+			if (unit->order_queue_head)
 			{
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
-			}
-			else
-			{ // 004EA497
-				if (unit->unit_ai != nullptr)
+			} else {
+				if (unit->unit_ai)
 				{
 					unit->order_computer(OrderId::ComputerAI);
-				}
-				else
-				{
+				} else {
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
-		}
-		else
-		{ // 004EA428
+		} else {
 			if (unit->main_order_state == 0)
-			{	// 004EA464
-				if (helper::order_to_move_to_target(unit, nydusCanal))
+			{
+				if (helper::order_to_move_to_target(unit, nydus))
 				{
 					unit->main_order_state = 1;
 				}
-			}
-			else
-				if (unit->main_order_state == 1)
-				{ // 004EA43B
-					u8 movableState = unit->get_movable_state();
-					if (movableState == 1)	// reached destination
+			} else if (unit->main_order_state == 1) {
+					u8 movable_state = unit->get_movable_state();
+					if (movable_state == MovableState::ReachedDestination)
 					{
 						unit->main_order_state = 2;
+					} else if (movable_state != 0) { // (value is probably 2 == unmovable)
+						unit->order_to_idle();
 					}
-					else
-						if (movableState != 0)	// (value is probably 2 == unmovable)
-						{
-							unit->order_to_idle();
-						}
 				}
-			if (unit->main_order_state == 2) // 004EA458
+			if (unit->main_order_state == 2)
 			{
-				enterNydusCanal_Effect(unit, nydusCanal);
+				enter_nydus_effect(unit, nydus);
 			}
 		}
 	}

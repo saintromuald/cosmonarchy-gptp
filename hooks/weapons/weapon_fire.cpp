@@ -428,67 +428,47 @@ namespace hooks {
 				switch (weapon_id) {
 					case WeaponId::CyprianTwinRailguns:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueCyprianLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::GoliathContenderMissiles:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueGoliathLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::PhalanxArcliteShockCannon:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePhalanxSiegeModeLaunchPos;
-						offsets.count = 1;
-						offsets.use_special_overlay = true;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::RamessesPharoahCannons:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueRamessesLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueClaymoreLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::PenumbraErebolShockCannon:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePenumbraLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::WraithBurstLasers:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueWraithLaunchPos;
-						offsets.count = 2;
-						offsets.fake_count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::SundogBlindsideRockets:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueSundogLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::CentaurSunchaserMissiles:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueCentaurLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
@@ -504,145 +484,103 @@ namespace hooks {
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePhobosLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::SentinelCerberusRailgun:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueSentinelLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::DiademIonCannon:
 					case WeaponId::DiademHammerfallBeacon:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueIonCannonLaunchPos;
-						offsets.count = 1;
-						offsets.use_special_overlay = true;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::WardenPrismaticCannon:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueWardenLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueCharlatanLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::OptectonSunsplitBeam:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueOptectonLaunchPos1;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::PositronAntimatterMissile:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePositronLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::AccantorPlasmaShell:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueAccantorLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::PanoptusPlasmaMissiles:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePanoptusLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::ExemplarPlasmaTorpedo:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueExemplarLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::EpigraphLitanyCannons:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueEpigraphLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::EmpyreanPlasmaBarrage:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueEmpyreanLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::StarSovereignCelestialCannon:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueSovereignLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::SpraithColonySeekerSpores:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueSpraithColonyLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::LiiraliskHollowedSpores:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueLiiraliskLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::KalkaliskViscousAcid:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueKalkaliskLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::AxitriliskSearingVenom:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueAxitriliskLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::SkithrokorSkitteringSpores:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueSkithrokorLaunchPos;
-						offsets.count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::BactaliskCorrosiveAcid:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueBactaliskLaunchPos;
-						offsets.count = 2;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::KeskathalorScreamingVenom:
 					{
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueKeskathalorLaunchPos;
-						offsets.count = 2;
-						offsets.fake_count = 1;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
@@ -672,17 +610,13 @@ namespace hooks {
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueCataphractLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, &offsets);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
 						// Paladin - Offset: Linear
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValuePaladinLaunchPos;
-						offsets.count = 5;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_line(unit, weapon_id, 10, 32, 2, 16, &offsets);
 					} break;
 					case WeaponId::AnticthonEncirclingMirror:
@@ -723,9 +657,7 @@ namespace hooks {
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
-						WeaponOffsets offsets = {};
-						offsets.value_id = ValueWardenLaunchPos;
-						offsets.count = 4;
+						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_multiple(unit, weapon_id, 4, FilterEnemy, false, false, true, &offsets);
 					} break;
 					case WeaponId::BarghestRayOfAgony:
@@ -811,6 +743,7 @@ namespace hooks {
 			// Same as default, but orange effect
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::AutocratEminenceRifle:
+			case WeaponId::MadrigalImperiosoMissiles:
 			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons:

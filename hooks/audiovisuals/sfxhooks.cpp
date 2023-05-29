@@ -97,7 +97,7 @@ namespace hooks {
 				case UnitId::TerranMatadorTankMode: {
 					return helper::get_random_sfx_between(SoundId::MatadorOrderAggressive01, SoundId::MatadorOrderAggressive04);
 				} break;
-				case UnitId::TerranMadrigal: {
+				case UnitId::TerranMadrigalImperiosoMode: {
 					return helper::get_random_sfx_between(SoundId::MadrigalOrderAggressive01, SoundId::MadrigalOrderAggressive04);
 				} break;
 				case UnitId::TerranPaladin: {
@@ -228,7 +228,7 @@ namespace hooks {
 					case UnitId::TerranPaladin: {
 						ready_sound = helper::get_random_sfx_between(SoundId::PaladinReady01, SoundId::PaladinReady03);
 					} break;
-					case UnitId::TerranMadrigal: {
+					case UnitId::TerranMadrigalImperiosoMode: {
 						ready_sound = helper::get_random_sfx_between(SoundId::MadrigalReady01, SoundId::MadrigalReady03);
 					} break;
 					case UnitId::TerranAnticthon: {

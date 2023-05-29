@@ -40,7 +40,7 @@ namespace hooks
 				bool no_ground_weapon_display = false;
 				u32 ground_weapon;
 				u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
-				if (active_unit->id == UnitId::TerranMadrigal
+				if (active_unit->id == UnitId::TerranMadrigalImperiosoMode
 				&&  unit_ext->values[ValueMadrigalTempoDown]
 				&&  ground_weapon_main_unit == WeaponId::MadrigalFuriaMissiles)
 				{

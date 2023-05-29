@@ -32,7 +32,7 @@ namespace UnitId
 		TerranSalamander									= 22,		// Magellan
 		TerranGorgon										= 23,		// Edmund Duke Tank
 		TerranPhobos										= 24,		// Edmund Duke Tank Turret
-		TerranMadrigal										= 27,		// Mengsk Battlecruiser
+		TerranMadrigalImperiosoMode										= 27,		// Mengsk Battlecruiser
 		TerranCentaur										= 28,		// Hyperion
 		TerranPazuzu										= 49,		// Matriarch Queen
 		TerranPenumbra										= 53,		// Hunter Killer
@@ -77,6 +77,9 @@ namespace UnitId
 		TerranLobotomyMine									= 375,
 		TerranWyvernTurret									= 376,
 		TerranShamanVisionaryMode							= 379,
+		TerranMadrigalTurretImperiosoMode					= 380,
+		TerranMadrigalFuriaMode								= 381,
+		TerranMadrigalTurretFuriaMode						= 382,
 
 	// Terran-Unit-Factional
 		TerranCohort										= 50,		// Infested Terran

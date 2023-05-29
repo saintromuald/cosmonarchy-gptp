@@ -530,7 +530,7 @@ namespace SpriteId
 		ZergIroleth = 520,
 		ZergMutationPit = 521, // unused
 		TerranPaladin = 522,
-		TerranMadrigal = 523,
+		TerranMadrigalImperiosoMode = 523,
 		TerranSavant = 524,
 		TerranParticleAccelerator = 525,
 		TerranMunitionsBay = 526,
@@ -786,6 +786,8 @@ namespace SpriteId
 		BunkerAttackOverlay_Blue = 843,
 
 		BurstLasersImpactRed_Damageless = 858,
+
+		TerranCancelStructure	= 870,
 
 		// CORPSE \\
 			

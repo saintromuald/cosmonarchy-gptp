@@ -12,15 +12,16 @@ bool is_any_corpse(Thingy* thingy) {
 		||  unit_id == UnitId::ZergCocoon
 		||  unit_id == UnitId::ProtossPlasmaShell
 		||  unit_id == UnitId::ProtossSteward) {
-			return true;
+			return false;
 		}
+		return true;
 	}
 	return false;
 }
 
 static bool internal_is_corpse_active(Thingy* corpse) {
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
-	return corpse_ext->activity_timer <= 15 * 24;
+	return corpse_ext->activity_timer <= 10 * 24;
 }
 
 bool is_inactive_corpse(Thingy* thingy) {
@@ -95,7 +96,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->timers[TimerStun]       = 2 * 24;
 		unit_ext->timers[TimerDecaySafe]  = 3;
 		unit_ext->values[ValueDecaying] = true;
-		//	unit_ext->values[ValueNoCorpse] = true;
+	//	unit_ext->values[ValueNoCorpse] = true;
 	}
 	return unit;
 }
@@ -108,8 +109,8 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 	}
 
 	Point16 pos = corpse->sprite->position;
-	scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
-	helper::play_sound_at_pos(SoundId::LazarusAgentProc, pos);
+	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	helper::play_sound_at_pos(SoundId::ZealotRevive01, pos);
 		
 	EntryArray units = {};
 	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
@@ -120,6 +121,8 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAvenge] = 3 * 24;
+		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+		unit->update_speed();
 	}
 
 	consume_corpse(corpse);
@@ -133,8 +136,8 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 	}
 
 	Point16 pos = corpse->sprite->position;
-	scbw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
-	helper::play_sound_at_pos(SoundId::LazarusAgentProc, pos);
+	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, pos);
 
 	EntryArray units = {};
 	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
@@ -145,6 +148,7 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAscend] = 3 * 24;
+		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 	}
 
 	consume_corpse(corpse);

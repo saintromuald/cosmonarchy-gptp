@@ -208,7 +208,7 @@ enum ExtTimerId
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
 	TimerWyvernAttackCooldown,
-	TimerDirgeFuse,
+	TimerDirgeFuse,								// unused
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
@@ -234,11 +234,10 @@ enum ExtTimerId
 	TimerBladeVortex,
 	TimerStellarEnforcementOverlay,
 	TimerSwarmingOmenSearch,
-	TimerBindingPlasma,
 	TimerHypnagogueChannel,
 	TimerSecondaryWeaponCooldown,
 	TimerReclaimInterval,
-	TimerGladiusBindingPlasma,
+	TimerBindingPlasma,
 	TimerCentaurSecondaryWeaponStagger,
 	TimerPatriarchAstralRule,
 	TimerTerminalSurge,
@@ -413,7 +412,7 @@ struct ThingyExt {
 	u32 player;
 	u32 unit_id;
 	u32 activity_timer;
-	u32 avenge_or_ascend_player; // TODO: Find a shorter name
+	u32 avenge_or_ascend_player;
 	u32 sight_range_before_death;
 };
 

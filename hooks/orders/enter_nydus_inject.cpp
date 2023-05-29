@@ -1,4 +1,3 @@
-//Injector source file for the Enter Nydus Order hook module.
 #include "enter_nydus.h"
 #include <hook_tools.h>
 
@@ -7,26 +6,24 @@ namespace
 	void __declspec(naked) canEnterNydusCanalWrapper()
 	{
 		static Unit* unit;
-		static Unit* nydusCanal;
-		static b32 bReturnValue;
+		static Unit* nydus;
+		static b32 result;
 		__asm
 		{
 			MOV unit, EAX
-			MOV nydusCanal, EDX
+			MOV nydus, EDX
 			PUSHAD
 		}
-		if (hooks::canEnterNydusCanal(unit, nydusCanal))
+		if (hooks::can_enter_nydus(unit, nydus))
 		{
-			bReturnValue = 1;
-		}
-		else
-		{
-			bReturnValue = 0;
+			result = 1;
+		} else {
+			result = 0;
 		}
 		__asm
 		{
 			POPAD
-			MOV EAX, bReturnValue
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -34,16 +31,16 @@ namespace
 	void __declspec(naked) enterNydusCanal_EffectWrapper()
 	{
 		static Unit* unit;
-		static Unit* nydusCanal;
+		static Unit* nydus;
 		__asm
 		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, ECX
-			MOV nydusCanal, EAX
+			MOV nydus, EAX
 			PUSHAD
 		}
-		hooks::enterNydusCanal_Effect(unit, nydusCanal);
+		hooks::enter_nydus_effect(unit, nydus);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -60,7 +57,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_EnterNydusCanal(unit);
+		hooks::orders_enter_nydus(unit);
 		__asm
 		{
 			POPAD

@@ -1,5 +1,6 @@
 #pragma once
 #include "SCBW\scbwdata.h"
+#include "hooks\weapons\weapon_fire.h"
 
 bool unit_id_is_capped_gas_structure(u16 unit_id);
 bool unit_id_is_gas_structure(u16 unit_id);
@@ -56,3 +57,5 @@ bool tech_id_needs_target(u32 tech_id);
 
 bool image_id_is_powerup(u32 image_id);
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
+bool weapon_id_procs_phantom_strike(u32 weapon_id);
+WeaponOffsets get_weapon_offsets(u32 weapon_id);

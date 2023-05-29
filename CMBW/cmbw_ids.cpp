@@ -1,5 +1,6 @@
 #include "cmbw_ids.h"
 #include "SCBW\api.h"
+#include "hooks\weapons\weapon_fire.h"
 
 bool unit_id_is_capped_gas_structure(u16 unit_id) {
 	return unit_id == UnitId::TerranReservoir
@@ -272,6 +273,7 @@ bool unit_id_is_siege_mode(u32 unit_id) {
 	return unit_id == UnitId::TerranShamanVisionaryMode
 		|| unit_id == UnitId::TerranMatadorCinderMode
 		|| unit_id == UnitId::TerranPhalanxSiegeMode
+		|| unit_id == UnitId::TerranMadrigalFuriaMode
 		|| unit_id == UnitId::TerramCuirassTrenchMode;
 }
 
@@ -279,6 +281,7 @@ bool unit_id_is_tank_mode(u32 unit_id) {
 	return unit_id == UnitId::TerranShamanSupportMode
 		|| unit_id == UnitId::TerranMatadorTankMode
 		|| unit_id == UnitId::TerranPhalanxTankMode
+		|| unit_id == UnitId::TerranMadrigalImperiosoMode
 		|| unit_id == UnitId::TerranCuirassTankMode;
 }
 
@@ -454,6 +457,7 @@ bool weapon_id_pierces(u32 weapon_id) {
 		case WeaponId::SavantDiscoidRailgunPiercing:
 		case WeaponId::AutocratEminenceRifle:
 		case WeaponId::SevenstepGeometricRiflePiercing:
+		case WeaponId::MadrigalImperiosoMissiles:
 		case WeaponId::RamessesPharoahCannons:
 		case WeaponId::ClaymoreHarpoonRailgun:
 		case WeaponId::PenumbraErebolShockCannon:
@@ -542,4 +546,198 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 		case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
 	}
 	return ImageId::None;
+}
+
+bool weapon_id_procs_phantom_strike(u32 weapon_id) {
+	return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
+		&& weapon_id != WeaponId::SpiderMines
+		&& weapon_id != WeaponId::LobotomyMineExplosion
+		&& weapon_id != WeaponId::Irradiate
+		&& weapon_id != WeaponId::YamatoGun
+		&& weapon_id != WeaponId::PsiStorm
+		&& weapon_id != WeaponId::CantavisHallucinationCast
+		&& weapon_id != WeaponId::MindTyrantTyranny
+		&& weapon_id != WeaponId::MindTyrantMaelstrom
+		&& weapon_id != WeaponId::StasisField
+		&& weapon_id != WeaponId::MatralethParasite
+		&& weapon_id != WeaponId::Plague
+		&& weapon_id != WeaponId::Custom;
+}
+
+WeaponOffsets get_weapon_offsets(u32 weapon_id)
+{
+	WeaponOffsets offsets = {};
+	switch (weapon_id)
+	{
+		case WeaponId::CyprianTwinRailguns:
+		{
+			offsets.value_id = ValueCyprianLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::GoliathContenderMissiles:
+		{
+			offsets.value_id = ValueGoliathLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::PhalanxArcliteShockCannon:
+		{
+			offsets.value_id = ValuePhalanxSiegeModeLaunchPos;
+			offsets.count = 1;
+			offsets.use_special_overlay = true;
+		} break;
+		case WeaponId::RamessesPharoahCannons:
+		{
+			offsets.value_id = ValueRamessesLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::ClaymoreHarpoonRailgun:
+		{
+			offsets.value_id = ValueClaymoreLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::PenumbraErebolShockCannon:
+		{
+			offsets.value_id = ValuePenumbraLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::WraithBurstLasers:
+		{
+			offsets.value_id = ValueWraithLaunchPos;
+			offsets.count = 2;
+			offsets.fake_count = 1;
+		} break;
+		case WeaponId::SundogBlindsideRockets:
+		{
+			offsets.value_id = ValueSundogLaunchPos;
+			offsets.count = 4;
+		} break;
+		case WeaponId::CentaurSunchaserMissiles:
+		{
+			offsets.value_id = ValueCentaurLaunchPos;
+			offsets.count = 4;
+		} break;
+		case WeaponId::PhobosArgosLaserBatteries:
+		{
+			offsets.value_id = ValuePhobosLaunchPos;
+			offsets.count = 4;
+		} break;
+		case WeaponId::SentinelCerberusRailgun:
+		{
+			offsets.value_id = ValueSentinelLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::DiademIonCannon:
+		case WeaponId::DiademHammerfallBeacon:
+		{
+			offsets.value_id = ValueIonCannonLaunchPos;
+			offsets.count = 1;
+			offsets.use_special_overlay = true;
+		} break;
+		case WeaponId::WardenPrismaticCannon:
+		{
+			offsets.value_id = ValueWardenLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::CharlatanFerventBlaster:
+		{
+			offsets.value_id = ValueCharlatanLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::OptectonSunsplitBeam:
+		{
+			offsets.value_id = ValueOptectonLaunchPos1;
+			offsets.count = 1;
+		} break;
+		case WeaponId::PositronAntimatterMissile:
+		{
+			offsets.value_id = ValuePositronLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::AccantorPlasmaShell:
+		{
+			offsets.value_id = ValueAccantorLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::PanoptusPlasmaMissiles:
+		{
+			offsets.value_id = ValuePanoptusLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::ExemplarPlasmaTorpedo:
+		{
+			offsets.value_id = ValueExemplarLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::EpigraphLitanyCannons:
+		{
+			offsets.value_id = ValueEpigraphLaunchPos;
+			offsets.count = 4;
+		} break;
+		case WeaponId::EmpyreanPlasmaBarrage:
+		{
+			offsets.value_id = ValueEmpyreanLaunchPos;
+			offsets.count = 4;
+		} break;
+		case WeaponId::StarSovereignCelestialCannon:
+		{
+			offsets.value_id = ValueSovereignLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::SpraithColonySeekerSpores:
+		{
+			offsets.value_id = ValueSpraithColonyLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::LiiraliskHollowedSpores:
+		{
+			offsets.value_id = ValueLiiraliskLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::KalkaliskViscousAcid:
+		{
+			offsets.value_id = ValueKalkaliskLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::AxitriliskSearingVenom:
+		{
+			offsets.value_id = ValueAxitriliskLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::SkithrokorSkitteringSpores:
+		{
+			offsets.value_id = ValueSkithrokorLaunchPos;
+			offsets.count = 1;
+		} break;
+		case WeaponId::BactaliskCorrosiveAcid:
+		{
+			offsets.value_id = ValueBactaliskLaunchPos;
+			offsets.count = 2;
+		} break;
+		case WeaponId::KeskathalorScreamingVenom:
+		{
+			offsets.value_id = ValueKeskathalorLaunchPos;
+			offsets.count = 2;
+			offsets.fake_count = 1;
+		} break;
+		case WeaponId::CataphractLonginiusCannons:
+		{
+			offsets.value_id = ValueCataphractLaunchPos;
+			offsets.count = 4;
+		} break;
+		case WeaponId::PaladinCrusaderMissiles:
+		{
+			offsets.value_id = ValuePaladinLaunchPos;
+			offsets.count = 5;
+		} break;
+		case WeaponId::MatrixKhaydarinRay:
+		{
+			offsets.value_id = ValueWardenLaunchPos;
+			offsets.count = 4;
+		} break;
+		default:
+		{
+			return {};
+		}
+	}
+	return offsets;
 }

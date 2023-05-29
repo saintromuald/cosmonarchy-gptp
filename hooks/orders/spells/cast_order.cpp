@@ -222,8 +222,8 @@ namespace hooks
 
 				if (!(*g_cheat_state & CheatFlags::TheGathering) && unit->energy < spell_cost)
 				{
-					u8 raceId = unit->get_race();
-					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId); // Not enough energy
+					u8 race_id = unit->get_race();
+					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 					if (message) {
 						if (*g_local_nation_id == unit->player
 						&&	*g_active_player_id == *g_local_human_id)
@@ -237,9 +237,7 @@ namespace hooks
 					if (unit->main_order_state == 0)
 					{
 						progress_moving = helper::ordered_spell_progress_moving(unit, 1);
-					}
-					else
-					{
+					} else {
 						progress_moving = helper::ordered_spell_progress_moving(unit, 0);
 					}
 
@@ -333,6 +331,7 @@ namespace hooks
 									{
 										unit->mine_carrier.mine_count--;
 									}
+
 									while (current_image)
 									{
 										current_image->play_iscript_animation(anim);
@@ -355,8 +354,7 @@ namespace hooks
 	// Hooked to safeguard against crashes. -Pr0nogo
 	void issue_order_targeting_ground(Unit* unit, u32 id, u16 coord_x, u16 coord_y) // 00475260
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return;
 		}
 		unit->user_action_flags |= 1u;

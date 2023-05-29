@@ -137,7 +137,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004E9E60,	/*OrderId::Burrow*/					Func_Type::EAX,	2},
 	{ 0x004E9860,	/*OrderId::Burrowed*/				Func_Type::EAX,	2},
 	{ 0x004EA670,	/*OrderId::Unburrow*/				Func_Type::EAX,	2},
-	{ 0x00492850,	/*OrderId::CarapaceSwarm*/				Func_Type::EAX,	2},
+	{ 0x00492850,	/*OrderId::CarapaceSwarm*/			Func_Type::EAX,	2},
 	{ 0x00492850,	/*OrderId::CastParasite*/			Func_Type::EAX,	2},
 	{ 0x00492850,	/*OrderId::SummonBroodlings*/		Func_Type::EAX,	2},
 	{ 0x00492850,	/*OrderId::EMPShockwave*/			Func_Type::EAX,	2},
@@ -183,7 +183,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004A1C20,	/*OrderId::Neutral*/				Func_Type::EDI,	2},
 	{ 0x00478490,	/*OrderId::ComputerReturn*/			Func_Type::EAX,	2},
 	{ 0x00493F70,	/*OrderId::InitPsiProvider*/		Func_Type::EAX,	2},
-	{ 0x00475710,	/*OrderId::SelfDestructing*/			Func_Type::EAX,	1},
+	{ 0x00475710,	/*OrderId::SelfDestructing*/		Func_Type::EAX,	1},
 	{ 0x0047C3C0,	/*OrderId::Critter*/				Func_Type::EAX,	1},
 	{ 0x0047BF80,	/*OrderId::HiddenGun*/				Func_Type::EAX,	2},
 	{ 0x0047BCD0,	/*OrderId::OpenDoor*/				Func_Type::ESI,	2},
@@ -200,7 +200,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x00463740,	/*OrderId::MedicHeal2*/				Func_Type::EDI,	1},
 	{ 0x00492850,	/*OrderId::Restoration*/			Func_Type::EAX,	2},
 	{ 0x00492850,	/*OrderId::CastDisruptionWeb*/		Func_Type::EAX,	2},
-	{ 0x004F6950,	/*OrderId::CastTyranny*/		Func_Type::PUSH,2},
+	{ 0x004F6950,	/*OrderId::CastTyranny*/			Func_Type::PUSH,2},
 	{ 0x00494690,	/*OrderId::WarpingDarkArchon*/		Func_Type::EAX,	1},
 	{ 0x004F6D40,	/*OrderId::CastFeedback*/			Func_Type::PUSH,2},
 	{ 0x00492850,	/*OrderId::CastOpticalFlare*/		Func_Type::EAX,	2},
@@ -350,25 +350,15 @@ namespace hooks {
 		if (unit->main_order_id == OrderId::Die)
 		{
 			helper::PUSH_order(unit, mainOrder_func_offsets[OrderId::Die][0]);
-		}
-		else if (unit->main_order_id == OrderId::BuildSelf2)
-		{
+		} else if (unit->main_order_id == OrderId::BuildSelf2) {
 			helper::EAX_order(unit, mainOrder_func_offsets[OrderId::BuildSelf2][0]);
-		}
-		else if (unit->main_order_id == OrderId::NukeTrack)
-		{
+		} else if (unit->main_order_id == OrderId::NukeTrack) {
 			helper::EBX_order(unit, mainOrder_func_offsets[OrderId::NukeTrack][0]);
-		}
-		else if (unit->main_order_id == OrderId::Warpin)
-		{
+		} else if (unit->main_order_id == OrderId::Warpin) {
 			helper::EDI_order(unit, mainOrder_func_offsets[OrderId::Warpin][0]);
-		}
-		else if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack))
-		{
+		} else if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
 			helper::EAX_order(unit, 0x0043FF00); //known as "getMaelstromTarget", though don't make much sense in this context
-		}
-		else
-		{
+		} else {
 			// 2nd part is functions that are used if not one of those of the 1st part and not disabled unit.
 			// Ignore orderQueueTimer, and if they change the mainOrderId to something that can be used in the 3rd part, then both the 2nd and 3rd part functions would indeed be used.
 			if (mainOrder_func_offsets[unit->main_order_id][2] == 1 && mainOrder_func_offsets[unit->main_order_id][0] != NOTVALID)
@@ -405,9 +395,7 @@ namespace hooks {
 			if (unit->order_queue_timer != 0)
 			{
 				unit->order_queue_timer--;
-			}
-			else
-			{	
+			} else {	
 				// 3rd part, executed after the 2nd part (whether it did something or not) only if unit->orderQueueTimer was 0.
 				// Execute "getTargetSomething" before, and has some special cases, otherwise work pretty much like 2nd part
 	
@@ -422,20 +410,16 @@ namespace hooks {
 						helper::ESI_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
 						unit->main_order_state = 1;
 					}	
-					if (unit->order_queue_head != NULL)
+					if (unit->order_queue_head)
 					{
 						helper::ECX_order(unit, mainOrder_func_offsets[OrderId::Nothing2][0]);
 					}	
-				}
-				else if (unit->main_order_id == OrderId::Nothing2)
-				{
-					if (unit->order_queue_head != NULL)
+				} else if (unit->main_order_id == OrderId::Nothing2) {
+					if (unit->order_queue_head)
 					{
 						helper::ECX_order(unit, mainOrder_func_offsets[OrderId::Nothing2][0]);
 					}
-				}
-				else if (mainOrder_func_offsets[unit->main_order_id][2] == 2)
-				{
+				} else if (mainOrder_func_offsets[unit->main_order_id][2] == 2) {
 					switch (mainOrder_func_offsets[unit->main_order_id][1])
 					{
 						case Func_Type::EAX:

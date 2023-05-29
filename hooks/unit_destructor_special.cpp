@@ -343,11 +343,6 @@ void unit_destructor_special_cases(Unit* unit) {
 		}
 	}
 
-	// Madrigal - Dirge
-	if (unit_ext->timers[TimerDirgeFuse]) {
-		scbw::madrigal_dirge_fuse(unit, unit_ext);
-	}
-
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plague_timer) {
 		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);
@@ -361,7 +356,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	}
 
 	// Gladius - Binding Plasma - proc on death
-	if (unit_ext->timers[TimerGladiusBindingPlasma]) {
+	if (unit_ext->timers[TimerBindingPlasma]) {
 		scbw::binding_plasma_proc(unit);
 		// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
 	}
@@ -416,7 +411,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 				ThingyExt* thingy_ext = get_thingy_ext(thingy);
 				thingy_ext->player = unit->player;
 				thingy_ext->unit_id = unit->id;
-				thingy_ext->sight_range_before_death = unit->get_sight_range();
+				thingy_ext->sight_range_before_death = unit->get_sight_range() * 32;
 				thingy_ext->avenge_or_ascend_player = unit_avenges_or_ascends(unit);
 
 				UnitExt* unit_ext = get_unit_ext(unit);

@@ -1027,7 +1027,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			} else {
 				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
 			}
-		} else if (unit->id == UnitId::TerranMadrigal) {
+		}/* else if (unit->id == UnitId::TerranMadrigalImperiosoMode) {
 			if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown]) {
 				f32 furiaDamagePotential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
 				furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
@@ -1049,7 +1049,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				}
 			}
-		} else if (unit->id == UnitId::ZergMatraleth) {
+		}*/else if (unit->id == UnitId::ZergMatraleth) {
 			// Currently done in spellcasting, if that doesn't work copy the code from there here -Veeq7
 			/*
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {

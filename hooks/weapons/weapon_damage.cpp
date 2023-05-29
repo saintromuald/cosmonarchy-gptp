@@ -249,6 +249,7 @@ namespace hooks
 			}
 
 			// Autocrat Controlled Opposition
+			armor_total -= target_ext->values[ValueApollyoidAdhesiveStacks];
 			armor_total -= target_ext->values[ValueControlledOpposition];
 
 			armor_total = std::max(armor_total, 0);
@@ -377,15 +378,22 @@ namespace hooks
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
-			if (weapon_damage_current_bullet) {
-				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
-				if (!current_bullet_ext->is_phantom) {
+		if (weapon_id_procs_phantom_strike(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
+			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry) {
+				WeaponOffsets offsets = get_weapon_offsets(data.weapon_id);
+				// Temporarily doing this to prevent crashes!
+				if (offsets.count || offsets.fake_count || offsets.value_id || offsets.frameset_offset || offsets.use_special_overlay) {
+					data.damage *= 1.5;
 					data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
-					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
-					if (phantom_strike) {
-						BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
-						phantom_ext->is_phantom = true;
+				} else {
+					BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+					if (!current_bullet_ext->is_phantom) {
+						data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
+						Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, &offsets, false);
+						if (phantom_strike) {
+							BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
+							phantom_ext->is_phantom = true;
+						}
 					}
 				}
 			} else {
@@ -397,6 +405,7 @@ namespace hooks
 
 	static void weapon_damage_behaviors(const WeaponDamageData& data) {
 		UnitExt* target_ext = get_unit_ext(data.target);
+		bool should_update_speed = false;
 
 		// No attacker here
 		switch (data.weapon_id) {
@@ -404,13 +413,13 @@ namespace hooks
 				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
 			case WeaponId::GladiusPlasmaFlurry: {
-				if (target_ext->timers[TimerGladiusBindingPlasma]) {
+				if (target_ext->timers[TimerBindingPlasma]) {
 					u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
 					if (scbw::is_allied_to(data.attacking_player_id, source_player)) {
 						target_ext->values[ValueGladiusBindingPlasmaStacks]++;
 					}
 				} else {
-					target_ext->timers[TimerGladiusBindingPlasma] = 12;
+					target_ext->timers[TimerBindingPlasma] = 12;
 					target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
 					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 				}
@@ -450,7 +459,8 @@ namespace hooks
 			// Ensnaring Brood - Matraleth enchantment ability
 			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
 			&& !(units_dat::base_property[data.target->id] & UnitProperty::Building)
-			&&  !scbw::is_under_dark_swarm(data.target)) {
+			&&  !scbw::is_under_dark_swarm(data.target))
+			{
 				 apply_ensnare(data.target);
 			}
 
@@ -593,14 +603,6 @@ namespace hooks
 						// Cyclops - Flak Cannons
 						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
 						scbw::add_unit_overlay(data.target, ImageId::CyclopsFragmentaryArming);
-					} break;
-					case WeaponId::MadrigalImperiosoMissiles:
-					{
-						// Dirge - Madrigal behavior
-						target_ext->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
-						target_ext->values[ValueDirgeStacks] += 1;
-						target_ext->values[ValueDirgeSourcePlayer] = data.attacking_player_id;
-						target_ext->units[UnitDirgeSource] = data.attacker;
 					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{

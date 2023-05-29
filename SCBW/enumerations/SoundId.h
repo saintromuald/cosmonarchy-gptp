@@ -1166,6 +1166,8 @@ namespace SoundId
 		AncilePassiveProc02					= 1155,
 		AncilePassiveProc03					= 1156,
 
+		ZealotRevive01						= 1187,
+
 		CentaurSunchaserMissilesFire01		= 1204,
 		CentaurSunchaserMissilesFire02		= 1205,
 		CentaurSunchaserMissilesFire03		= 1206,
@@ -1525,5 +1527,14 @@ namespace SoundId
 		StrigaOrderAggressive02				= 2435,
 		StrigaOrderAggressive03				= 2436,
 		StrigaOrderAggressive04				= 2437,
+
+		CancelStructureProtoss				= 2468,
+		CancelStructureTerran				= 2469,
+		ApostleToggleLazarus01				= 2470,
+		ApostleToggleLazarus02				= 2471,
+		ApostleToggleLazarus03				= 2472,
+		ShamanVisionary01					= 2473,
+		ShamanVisionary02					= 2474,
+		ShamanSupport01						= 2475,
 	};
 }

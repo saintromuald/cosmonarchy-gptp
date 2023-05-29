@@ -103,7 +103,7 @@ void update_ext_variables() {
 
 		ThingyExt* thingy_ext = get_thingy_ext(thingy);
 		thingy_ext->activity_timer++;
-		if (is_inactive_corpse(thingy)) { // For now let's just remove inactive corpses immediately, we should replace this with recoloring
+		if (is_inactive_corpse(thingy)) {
 			thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 			thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 		}
