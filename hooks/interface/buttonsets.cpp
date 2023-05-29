@@ -2305,7 +2305,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossOptecton:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon // Optecton - Kinetic Penetration
+									if (current_button->icon_id == IconId::AntimatterMissiles // Optecton - Interception
 									||	current_button->icon_id == IconId::TerranShipWeapons) // Optecton - Forward March
 									{
 										current_button_state = Button_State::Enabled;
@@ -2314,7 +2314,7 @@ namespace hooks {
 								case UnitId::ProtossPatriarch:
 								{
 									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
-									||	current_button->icon_id == IconId::AntimatterMissiles) // Patriarch - Interception
+									||	current_button->icon_id == IconId::AntimatterMissiles)	// Patriarch - Interception
 									{
 										current_button_state = Button_State::Enabled;
 									}
