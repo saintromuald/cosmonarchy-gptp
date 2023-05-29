@@ -4,6 +4,30 @@
 
 namespace
 {
+	void __declspec(naked) is_unit_in_weapon_range_wrapper() { // 00476870
+		static Unit* target;
+		static Unit* attacker;
+		static bool result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV attacker, EAX
+			POP EAX
+			MOV target, EAX
+			PUSHAD
+		}
+		result = hooks::is_unit_in_weapon_range(target, attacker);
+		__asm {
+			POPAD
+			MOVZX AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	void __declspec(naked) generic_right_click_unit_proc_2_wrapper() // 00455E00
 	{
 		static s32 result;
@@ -381,6 +405,7 @@ namespace hooks
 	//	nops(0x004EB176, 8);
 	//	nops(0x004EB316, 2);
 
+		jump_patch(is_unit_in_weapon_range_wrapper,					0x00476870, 2);
 	//	jump_patch(generic_right_click_unit_proc_2_wrapper,			0x00455E00, 1);
 	//	jump_patch(cmdrecv_hold_position_wrapper,					0x004C20C0, 0);
 	//	jump_patch(unit_can_see_cloaked_target_wrapper,				0x00401D60, 4);

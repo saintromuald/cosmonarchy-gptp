@@ -85,50 +85,58 @@ namespace hooks
 		}
 		return 1;
 	}
-
-	bool is_unit_in_weapon_range(Unit* a1, Unit* a2) // 00476870
+	
+	// Hooked to fix hold position and cliff advantage. -Pr0nogo
+	bool is_unit_in_weapon_range(Unit* target, Unit* attacker) // 00476870
 	{
-		Unit* v2; // edi
-		Unit* v4; // esi
-		unsigned __int8 v5; // bl
-		unsigned __int16 v6; // ax
-		u32 v7; // eax
-		s32 v8; // eax
-
-		v2 = a1;
-		if (!a1)
+		Unit* final_target = target;
+		if (!target)
 		{
-			v2 = a2->order_target.unit;
-			if (!v2)
+			final_target = attacker->order_target.unit;
+			if (!final_target)
+			{
 				return 1;
+			}
 		}
-		if (!is_target_visible(v2, a2))
+		if (!is_target_visible(final_target, attacker))
+		{
 			return 0;
-		v4 = a2->subunit;
-		if (!v4 || !(units_dat::group_flags[(unsigned __int16)v4->id].is_building))
-			v4 = a2;
-		if (v2->status & UnitStatus::InAir)
-		{
-			v5 = units_dat::air_weapon[(unsigned __int16)v4->id];
 		}
-		else
+
+		Unit* final_attacker = attacker->subunit;
+		if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit))
 		{
-			v6 = v4->id;
-			if (v6 != UnitId::ZergLakizilisk || v4->status & 0x10)
-				v5 = units_dat::ground_weapon[v6];
-			else
-				v5 = -126;
+			final_attacker = attacker;
 		}
-		if (v5 >= (unsigned __int8)0x82)
+
+		u32 weapon_id = WeaponId::None;
+		if (final_target->status & UnitStatus::InAir)
+		{
+			weapon_id = units_dat::air_weapon[final_attacker->id];
+		} else {
+			u32 attacker_id = final_attacker->id;
+			if (attacker_id != UnitId::ZergLakizilisk || final_attacker->status & UnitStatus::Burrowed)
+			{
+				weapon_id = units_dat::ground_weapon[attacker_id];
+			} else {
+				weapon_id = WeaponId::None;
+			}
+		}
+
+		if (weapon_id == WeaponId::None)
+		{
 			return 0;
-		v7 = weapons_dat::min_range[v5];
-		if (v7)
+		}
+		u32 min_range = weapons_dat::min_range[weapon_id];
+		if (min_range)
 		{
-			if (helper::is_target_within_min_range(v4, v7, v2))
+			if (helper::is_target_within_min_range(final_attacker, min_range, final_target))
+			{
 				return 0;
+			}
 		}
-		v8 = helper::get_unit_max_weapon_range(a2, v5);
-		return helper::is_target_within_min_movement_range(v2, v4, v8);
+		u32 max_range = helper::get_unit_max_weapon_range(attacker, weapon_id);
+		return helper::is_target_within_min_movement_range(final_target, final_attacker, max_range);
 	}
 
 	char can_cast_ordered_spell_now(Unit* a1) // 00491DB0
