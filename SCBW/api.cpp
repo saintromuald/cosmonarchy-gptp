@@ -12,6 +12,7 @@
 #include "ai_layouts.h"
 #include "config.h"
 #include <string>
+#include <hooks/limits/sfx_extender.h>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -2982,5 +2983,11 @@ namespace scbw {
 		}
 
 		unit->sprite->remove_overlay(image_id);
+	}
+
+	void play_action_sound(u32 sound_id, Unit* unit)
+	{
+		helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
+		helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
 	}
 }
