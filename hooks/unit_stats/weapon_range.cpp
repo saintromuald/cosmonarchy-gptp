@@ -36,7 +36,7 @@ namespace hooks
 		}
 
 		// Height advantage
-		bonus_amount += scbw::get_cliff_advantage(unit, target, 0);
+		bonus_amount += scbw::get_cliff_advantage(unit, target, 0, true);
 
 		// Ignore bonus distance for melee units
 		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
@@ -90,7 +90,7 @@ namespace hooks
 		}
 
 		// Height advantage
-		bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id) * 32;
+		bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id, false) * 32;
 
 		// Ignore bonus distance for melee units
 		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {

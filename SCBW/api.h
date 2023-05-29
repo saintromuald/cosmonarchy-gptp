@@ -628,7 +628,7 @@ namespace scbw
 	u16 get_last_queue_slot_id(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
 	bool can_use_cliff_advantage(Unit* unit, u8 weapon);
-	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon);
+	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus);
 	void set_offset_to_parent_special_overlay(Image* image);
 	bool is_slowed(Unit* unit);
 	void hide_and_disable_unit(Unit* unit);
