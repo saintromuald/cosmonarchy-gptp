@@ -383,7 +383,8 @@ namespace hooks
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {
 					data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
-					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, &get_weapon_offsets(data.weapon_id), false);
+				//	WeaponOffsets offsets = get_weapon_offsets(data.weapon_id);
+					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
 					if (phantom_strike) {
 						BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
 						phantom_ext->is_phantom = true;
