@@ -406,14 +406,6 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergOthstoleth:
-			{
-				if (morph_unit_id == UnitId::ZergAlaszileth)
-				{
-					return true;
-				}
-				return false;
-			} break;
 			case UnitId::ZergZethrokor:
 			{
 				if (morph_unit_id == UnitId::ZergVorvrokor)

@@ -486,7 +486,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 				unit->id != UnitId::ResourceVespeneGeyser && unit->id != UnitId::ResourceVespeneRidge) {
 				continue;
 			}
-			if (unit->building.resource.resource_group != resarea) {
+			if (unit->building.resource.resarea != resarea) {
 				continue;
 			}
 

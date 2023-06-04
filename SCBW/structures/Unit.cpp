@@ -1297,14 +1297,6 @@ u32 Unit::get_supply_provided() { // overwrites previous supply provided
 		{
 			supply = units_dat::supply_provided[UnitId::ZergOvileth];
 		}
-		if (build_queue[build_queue_slot % 5] == UnitId::ZergOthstoleth)
-		{
-			supply = units_dat::supply_provided[UnitId::ZergIroleth];
-		}
-		if (build_queue[build_queue_slot % 5] == UnitId::ZergAlaszileth)
-		{
-			supply = units_dat::supply_provided[UnitId::ZergOthstoleth];
-		}
 	}
 	return supply;
 }

@@ -363,8 +363,8 @@ namespace hooks {
 			y = unit->order_target.pt.y;
 		} else {
 			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
-			x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-			y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
+			x = unit->position.x + scbw::get_polar_x(forward_offset, unit->current_direction_1);
+			y = unit->position.y + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
 		}
 
 		// Cloaked units - decloak
@@ -392,8 +392,8 @@ namespace hooks {
 				unit_ext->timers[TimerLakiziliskETA] = 17;
 				u32 range = weapons_dat::max_range[weapon_id] + 16;
 			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
-				Point16 unit_pos = { unit->get_x(), unit->get_y() };
-				Point16 target_pos = { unit->order_target.unit->get_x(), unit->order_target.unit->get_y() };
+				Point16 unit_pos = { unit->position.x, unit->position.y };
+				Point16 target_pos = { unit->order_target.unit->position.x, unit->order_target.unit->position.y };
 				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
 				unit_ext->values[ValueSpineX] = unit_pos.x + scbw::get_polar_x(range, angle);
 				unit_ext->values[ValueSpineY] = unit_pos.y + scbw::get_polar_y(range, angle);
@@ -1015,7 +1015,7 @@ namespace hooks {
 							continue;
 						}
 						bullet->source_unit->order_target.unit = target;
-						s32 new_angle = scbw::get_angle(bullet->position.x, bullet->position.y, target->get_x(), target->get_y());
+						s32 new_angle = scbw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
 						Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo,
 							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
 						if (new_bullet) {

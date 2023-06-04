@@ -353,7 +353,7 @@ struct UnitLayout
 					/*0x0D2*/		u8      resource_iscript;
 					/*0x0D3*/		u8      is_mining;
 					/*0x0D4*/		Unit*	next_gatherer;			// pointer to the next worker unit waiting in line to gather
-					/*0x0D8*/		u8      resource_group;
+					/*0x0D8*/		u8      resarea;
 					/*0x0D9*/		u8      resource_belongs_to_ai;
 				} resource; // When the unit is resource container
 				/*0x0D0*/			Unit*	nydus_exit;				// connected nydus canal

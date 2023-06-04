@@ -525,15 +525,15 @@ namespace hooks {
 				if (unit->sprite) {
 					if (unit->main_order_id) {
 						if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
-							unit->building.resource.resource_group = 0;
+							unit->building.resource.resarea = 0;
 						}
 					}
 				}
 			}
 
-			u8 resource_area = town->resarea;
-			if (resource_area) {
-				g_base_array[resource_area].flags &= ~0x2;
+			u8 resarea = town->resarea;
+			if (resarea) {
+				g_base_array[resarea].flags &= ~0x2;
 			}
 
 			s32 player = (u8)town->player;
@@ -949,7 +949,7 @@ namespace hooks {
 			if (unit->id < UnitId::ResourceMineralField || unit->id > UnitId::ResourceMineralFieldType3) {
 				continue;
 			}
-			if (unit->building.resource.resource_group != ai_town->resarea) {
+			if (unit->building.resource.resarea != ai_town->resarea) {
 				continue;
 			}
 
@@ -2815,6 +2815,96 @@ namespace hooks {
 		result.pt.x = pos_x_1;
 		result.pt.y = pos_y_1;
 		result.unit = 0;
+		return result;
+	}
+
+	// Hooked to improve AI gas harvesting. -Pr0nogo
+	Unit* __stdcall get_resource_area_gas(u32 resarea, Unit** geyser_array, Unit** geyser_1, Unit** geyser_2) // 00444460
+	{
+		*geyser_array = 0;
+		*geyser_1 = 0;
+		*geyser_2 = 0;
+
+		ResourceArea* i = 0;
+		Unit* first_visible = *g_first_visible_unit;
+		for (i = &g_base_array[resarea]; first_visible; first_visible = first_visible->link.next)
+		{
+			if (first_visible->sprite)
+			{
+				if (first_visible->main_order_id)
+				{
+					if (units_dat::base_property[first_visible->id] & UnitProperty::ResourceContainer)
+					{
+						if (!unit_id_is_minerals(first_visible->id) && first_visible->building.resource.resarea == resarea)
+						{
+							if (*geyser_array)
+							{
+								if (*geyser_1)
+								{
+									*geyser_2 = first_visible;
+								} else {
+									*geyser_1 = first_visible;
+								}
+							} else {
+								*geyser_array = first_visible;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		u32 distance_1_final = 99999999;
+		u32 distance_2_final = 99999999;
+		u32 distance_3_final = 99999999;
+
+		if (geyser_array[0])
+		{
+			distance_1_final = helper::get_distance_fast(i->position.x, (*geyser_array)->sprite->position.x, i->position.y, geyser_array[0]->sprite->position.y);
+		} else {
+			distance_1_final = 99999999;
+		}
+
+		if (*geyser_1)
+		{
+			distance_2_final = helper::get_distance_fast(i->position.x, (*geyser_1)->sprite->position.x, i->position.y, (*geyser_1)->sprite->position.y);
+		} else {
+			distance_2_final = 99999999;
+		}
+
+		if (*geyser_2)
+		{
+			distance_3_final = helper::get_distance_fast(i->position.x, (*geyser_2)->sprite->position.x, i->position.y, (*geyser_2)->sprite->position.y);
+		} else {
+			distance_3_final = 99999999;
+		}
+
+		if (distance_1_final > distance_2_final)
+		{
+			u32 temp = distance_1_final;
+			distance_1_final = distance_2_final;
+			distance_2_final = temp;
+
+			Unit* geyser_array_unit = geyser_array[0];
+			*geyser_array = (Unit*)*geyser_1;
+			geyser_1 = geyser_1;
+			*geyser_1 = geyser_array_unit;
+		}
+
+		Unit* result = 0;
+		if (distance_2_final > distance_3_final)
+		{
+			distance_2_final = distance_3_final;
+			result = *geyser_1;
+			*geyser_1 = *geyser_2;
+			*geyser_2 = result;
+		}
+		if (distance_1_final > distance_2_final)
+		{
+			result = *geyser_array;
+			*geyser_array = (Unit*)*geyser_1;
+			*geyser_1 = result;
+		}
 		return result;
 	}
 }

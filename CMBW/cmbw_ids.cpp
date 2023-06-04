@@ -357,8 +357,7 @@ bool unit_id_is_minerals(u16 unit_id) {
 bool unit_id_is_zerg_supply(u16 unit_id) {
 	return (unit_id == UnitId::ZergOvileth
 		|| unit_id == UnitId::ZergIroleth
-		|| unit_id == UnitId::ZergOthstoleth
-		|| unit_id == UnitId::ZergAlaszileth);
+		|| unit_id == UnitId::ZergOthstoleth);
 }
 
 bool unit_regens_in_combat(Unit* unit) {
