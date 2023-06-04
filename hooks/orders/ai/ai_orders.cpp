@@ -15,7 +15,8 @@ static s32 compare_gas_buildings(const void* a, const void* b) {
 }
 
 void sort_gas_buildings(AiTown* town) {
-	qsort(town->gas_buildings, 3, sizeof(Unit*), compare_gas_buildings);
+	AiTownExt* town_ext = get_town_ext(town);
+	qsort(town_ext->gas_buildings, town_ext->gas_buildings_count, sizeof(Unit*), compare_gas_buildings);
 }
 
 namespace hooks {
@@ -554,6 +555,8 @@ namespace hooks {
 				g_ai_town_list[player].array->first_free->next = town;
 			}
 			g_ai_town_list[player].array->first_free = town;
+
+			reset_town_ext(town);
 		}
 		return result;
 	}
@@ -900,26 +903,35 @@ namespace hooks {
 		}
 		*/
 
+		AiTownExt* town_ext = get_town_ext(town);
 		u32 counter = 0;
-		for (u32 i = 0; i < 3; ++i) {
-			Unit* gas_building = town->gas_buildings[i];
-			if (gas_building && ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 3) {
+		for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+			Unit* gas_building = town_ext->gas_buildings[i];
+			if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 4) {
 				if (index == ++counter) {
 					return gas_building;
 				}
 			}
 		}
-		for (u32 i = 0; i < 3; ++i) {
-			Unit* gas_building = town->gas_buildings[i];
-			if (gas_building && ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 2) {
+		for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+			Unit* gas_building = town_ext->gas_buildings[i];
+			if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 3) {
 				if (index == ++counter) {
 					return gas_building;
 				}
 			}
 		}
-		for (u32 i = 0; i < 3; ++i) {
-			Unit* gas_building = town->gas_buildings[i];
-			if (gas_building && ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 1) {
+		for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+			Unit* gas_building = town_ext->gas_buildings[i];
+			if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 2) {
+				if (index == ++counter) {
+					return gas_building;
+				}
+			}
+		}
+		for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+			Unit* gas_building = town_ext->gas_buildings[i];
+			if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 1) {
 				if (index == ++counter) {
 					return gas_building;
 				}
@@ -940,6 +952,7 @@ namespace hooks {
 			if (unit->building.resource.resarea != ai_town->resarea) {
 				continue;
 			}
+
 			UnitExt* unit_ext = get_unit_ext(unit);
 			if (unit_ext->values[ValueAssignedHarvesters] >= 2) {
 				continue;
@@ -949,6 +962,7 @@ namespace hooks {
 			if (unit_ext->values[ValueAssignedHarvesters]) {
 				score /= 2;
 			}
+
 			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
@@ -957,6 +971,40 @@ namespace hooks {
 			}
 		}
 		return best_mineral_field;
+	}
+
+	static Unit* get_best_gas_refinery(AiTown* ai_town) {
+		u32 best_score = 0;
+		u32 best_distance = UINT_MAX;
+		Unit* best_gas_refinery = 0;
+		AiTownExt* town_ext = get_town_ext(ai_town);
+		for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+			Unit* unit = town_ext->gas_buildings[i];
+			if (!(unit->status & UnitStatus::Completed)) {
+				continue;
+			}
+			if (unit->building.resource.resarea != ai_town->resarea) {
+				continue;
+			}
+
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[ValueAssignedAiGasHarvesters] >= 2) {
+				continue;
+			}
+
+			u32 score = unit->building.resource.resource_yield;
+			if (unit_ext->values[ValueAssignedAiGasHarvesters]) {
+				score /= 2;
+			}
+
+			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
+			if (score > best_score || (score == best_score && distance < best_distance)) {
+				best_score = score;
+				best_distance = distance;
+				best_gas_refinery = unit;
+			}
+		}
+		return best_gas_refinery;
 	}
 
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
@@ -983,7 +1031,7 @@ namespace hooks {
 							town->mineral = best_mineral_field;
 						}
 
-						if (worker_ai->target_resource == 1) {
+						if (worker_ai->target_resource == AiTargetResource_Mineral) {
 							Unit* target_resource = worker->worker.target_resource.unit;
 							if (target_resource && helper::unit_is_mineral_field(target_resource)) {
 								helper::ai_auto_harvest(target_resource, worker, 0);
@@ -999,157 +1047,12 @@ namespace hooks {
 										town_mineral = town->mineral;
 									}
 								}
-								Unit* ai_refinery = get_ai_refinery(town, 3, 1, true);
-								if (!ai_refinery) {
-									ai_refinery = get_ai_refinery(town, 2, 1, true);
-								}
-								helper::ai_auto_harvest(town_mineral, worker, ai_refinery);
+								helper::ai_auto_harvest(town_mineral, worker, 0);
 							}
-							return;
+						} else if (worker_ai->target_resource == AiTargetResource_Gas) {
+							Unit* ai_refinery = get_best_gas_refinery(town);
+							helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 						}
-
-						if (worker_ai->target_resource == 2) {
-							Unit* ai_refinery = get_ai_refinery(town, 3, 1, true);
-							if (ai_refinery) {
-								helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
-								return;
-							}
-							goto exit;
-						}
-
-						u32 gas_iterator = 0;
-						u32 gas_type = 0;
-						town_gas = town->gas_buildings[0];
-						if (worker_ai->target_resource == 3) {
-							if (town_gas) {
-								if (ai_get_vespene_type(town_gas, town->player, true) == 3) {
-									gas_iterator = 1;
-								}
-							}
-							town_gas_2 = town->gas_buildings[1];
-							gas_type = ai_get_vespene_type(town->gas_buildings[1], town->player, true);
-							if (town_gas_2 && gas_type == 3) {
-								++gas_iterator;
-							}
-							if (!town_gas_2 || gas_type != 3 || gas_iterator != 2) {
-								town_gas_2 = town->gas_buildings[2];
-								gas_type = ai_get_vespene_type(town->gas_buildings[2], town->player, true);
-								if (!town_gas_2 || gas_type != 3) {
-									goto exit;
-								}
-								if (gas_iterator != 1) {
-									goto exit;
-								}
-								if (town_gas_2) {
-									helper::ai_auto_harvest(town_gas_2, worker, town->mineral);
-									return;
-								}
-								goto exit;
-							}
-						} else {
-							if (town_gas) {
-								if (ai_get_vespene_type(town_gas, town->player, true) == 3) {
-									gas_iterator = 1;
-								}
-							}
-							town_gas_2 = town->gas_buildings[1];
-							u32 gas_type = ai_get_vespene_type(town->gas_buildings[1], town->player, true);
-							if (town_gas_2 && gas_type == 3) {
-								++gas_iterator;
-							}
-							if (!town_gas_2 || gas_type != 3 || gas_iterator != 2) {
-								town_gas_2 = town->gas_buildings[2];
-								gas_type = ai_get_vespene_type(town->gas_buildings[2], town->player, true);
-								if (!town_gas_2 || gas_type != 3) {
-									goto exit;
-								}
-								if (gas_iterator != 2) {
-									goto exit;
-								}
-								if (town_gas_2) {
-									helper::ai_auto_harvest(town_gas_2, worker, town->mineral);
-									return;
-								}
-								goto exit;
-							}
-						}
-						if (town_gas_2) {
-							helper::ai_auto_harvest(town_gas_2, worker, town->mineral);
-							return;
-						}
-					exit:
-						Unit* ai_refinery = get_ai_refinery(town, 3, 1, true);
-						if (!ai_refinery) {
-							Unit* town_gas_final = town->gas_buildings[0];
-							u32 gas_iterator_final = 0;
-							if (town_gas_final) {
-								if (ai_get_vespene_type(town_gas_final, town->player, true) == 3) {
-									gas_iterator_final = 1;
-								}
-							}
-							town_gas_final = town->gas_buildings[1];
-							if ((!town_gas_final
-								|| ai_get_vespene_type(town->gas_buildings[1], town->player, true) != 3
-								|| (++gas_iterator_final, gas_iterator_final != 2))
-								&& ((town_gas_final = town->gas_buildings[2]) == 0
-									|| ai_get_vespene_type(town->gas_buildings[2], town->player, true) != 3
-									|| gas_iterator_final != 1)
-								|| (ai_refinery = town_gas_final) == 0) {
-								town_gas_final = town->gas_buildings[0];
-								gas_iterator_final = 0;
-								if (town_gas_final) {
-									if (ai_get_vespene_type(town_gas_final, town->player, true) == 3) {
-										gas_iterator_final = 1;
-									}
-								}
-								town_gas_final = town->gas_buildings[1];
-								if ((!town_gas_final
-									|| ai_get_vespene_type(town->gas_buildings[1], town->player, true) != 3
-									|| (++gas_iterator_final, gas_iterator_final != 3))
-									&& ((town_gas_final = town->gas_buildings[2]) == 0
-										|| ai_get_vespene_type(town->gas_buildings[2], town->player, true) != 3
-										|| gas_iterator_final != 2)
-									|| (ai_refinery = town_gas_final) == 0) {
-									ai_refinery = get_ai_refinery(town, 2, 1, true);
-									if (!ai_refinery) {
-										town_gas_final = town->gas_buildings[0];
-										gas_iterator_final = 0;
-										if (town_gas_final) {
-											if (ai_get_vespene_type(town_gas_final, town->player, true) == 2) {
-												gas_iterator_final = 1;
-											}
-										}
-										town_gas_final = town->gas_buildings[1];
-										if ((!town_gas_final
-											|| ai_get_vespene_type(town->gas_buildings[1], town->player, true) != 2
-											|| (++gas_iterator_final, gas_iterator_final != 2))
-											&& ((town_gas_final = town->gas_buildings[2]) == 0
-												|| ai_get_vespene_type(town->gas_buildings[2], town->player, true) != 2
-												|| gas_iterator_final != 1)
-											|| (ai_refinery = town_gas_final) == 0) {
-											gas_iterator_final = 0;
-											if (town_gas_final) {
-												if (ai_get_vespene_type(town_gas_final, town->player, true) == 2) {
-													gas_iterator_final = 1;
-												}
-											}
-											Unit* town_gas_2_copy_4 = town->gas_buildings[1];
-											if (town_gas_2_copy_4
-												&& ai_get_vespene_type(town->gas_buildings[1], town->player, true) == 2
-												&& (++gas_iterator_final, gas_iterator_final == 3)
-												|| (town_gas_2_copy_4 = town->gas_buildings[2]) != 0
-												&& ai_get_vespene_type(town->gas_buildings[2], town->player, true) == 2
-												&& gas_iterator_final == 2) {
-												ai_refinery = town_gas_2_copy_4;
-											} else {
-												ai_refinery = 0;
-											}
-										}
-									}
-								}
-							}
-						}
-						helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 					}
 				}
 			}
@@ -1180,6 +1083,25 @@ namespace hooks {
 		return false;
 	}
 
+	// Hooked to improve AI gas harvesting. -Pr0nogo
+	Unit* get_resource_area_gas(u32 resarea_id, AiTown* town) { // based on 00444460
+		AiTownExt* town_ext = get_town_ext(town);
+		town_ext->gas_buildings_count = 0;
+
+		ResourceArea* resarea = &g_base_array[resarea_id];
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
+				if (!unit_id_is_minerals(unit->id) && unit->building.resource.resarea == resarea_id) {
+					if (town_ext->gas_buildings_count < GasBuildingsCap) {
+						town_ext->gas_buildings[town_ext->gas_buildings_count++] = unit;
+					}
+				}
+			}
+		}
+		sort_gas_buildings(town);
+		return 0;
+	}
+
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	char ai_reassign_worker_resources(AiTown* town) { // 00435900, unused int arg
 		u8 result = 0;
@@ -1192,15 +1114,14 @@ namespace hooks {
 				}
 			}
 
+			AiTownExt* town_ext = get_town_ext(town);
 			u32 resarea = town->resarea;
 			if (town->resource_units_not_set) {
 				town->resource_units_not_set = 0;
-				helper::get_resource_area_gas(resarea, &town->gas_buildings[0], &town->gas_buildings[1], &town->gas_buildings[2]);
+				get_resource_area_gas(resarea, town);
 				sort_gas_buildings(town);
-				for (u32 i = 0; i < 3; ++i) {
-					if (town->gas_buildings[i]) {
-						helper::ai_make_guard(town->player, town->gas_buildings[i]);
-					}
+				for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+					helper::ai_make_guard(town->player, town_ext->gas_buildings[i]);
 				}
 			}
 			if (!town->mineral) {
@@ -1222,8 +1143,7 @@ namespace hooks {
 			u8 mineral_value = 1;
 			u8 gas_value = 2;
 			if (get_ai_refinery(town, 3, 1, true) || get_ai_refinery(town, 2, 1, true)) {
-				if (!town->mineral)
-				{
+				if (!town->mineral) {
 					mineral_value = 2;
 				}
 			} else {
@@ -1255,8 +1175,7 @@ namespace hooks {
 
 			AI_Main* ai_player = &g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->vespene_needed - ai_player->vespene_available;
-			u32 new_gas_count = gas_delta > 0 ? gas_delta / 50 : 0;
-			new_gas_count += worker_count / 5;
+			u32 new_gas_count = gas_delta / 150 + worker_count / 7;
 			if (gas_count < new_gas_count) {
 				gas_count = new_gas_count;
 			}
@@ -1266,12 +1185,10 @@ namespace hooks {
 
 			// New limit
 			u32 max_gas_worker_count = 0;
-			u8 gas_worker_counts[3] = {};
-			for (u32 i = 0; i < 3; ++i) {
-				Unit* gas = town->gas_buildings[i];
-				if (gas && gas->status & UnitStatus::Completed) {
-					gas_worker_counts[i] = 2;
-					max_gas_worker_count += gas_worker_counts[i];
+			for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+				Unit* gas = town_ext->gas_buildings[i];
+				if (gas->status & UnitStatus::Completed) {
+					max_gas_worker_count += 2;
 				}
 			}
 			if (gas_count > max_gas_worker_count) {
@@ -1327,29 +1244,15 @@ namespace hooks {
 					if (gas_count) {
 						--gas_count;
 					}
-					if (*target_resource_type != 1) {
+					if (*target_resource_type == 2) {
 						if (max_gas_worker_count) {
-							if (!gas_worker_counts[*target_resource_type - 2]) {
-								*target_resource_type += 1;
-								if (*target_resource_type > 4) {
-									*target_resource_type = 1;
-								}
-							}
+							max_gas_worker_count--;
 						} else {
 							*target_resource_type = 1;
 						}
 					}
-
 					worker_ai->target_resource = *target_resource_type;
 					result = *target_resource_type;
-
-					if (*target_resource_type != 1) {
-						if (gas_worker_counts[*target_resource_type - 2]) {
-							assert(max_gas_worker_count);
-							--max_gas_worker_count;
-							--gas_worker_counts[*target_resource_type - 2];
-						}
-					}
 				}
 			}
 		}
@@ -2690,41 +2593,27 @@ namespace hooks {
 	//	  00435BD0 ai_panic_control (confirm we need this!)
 
 	// Hooked to remove gas building limits from AI. -Pr0nogo
-	AiTown* ai_remove_from_towns(Unit* unit) // 00432760
-	{
-		AiTown* result = 0;
-		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)
-		{
-			u32 player = 0;
-			do
-			{
-				for (result = g_ai_town_list[player].first; result; result = result->prev)
-				{
-					if (result->mineral == unit)
-					{
-						result->mineral = 0;
+	AiTown* ai_remove_from_towns(Unit* unit) { // 00432760
+		AiTown* town = 0;
+		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
+			for (u32 player = 0; player < PlayerLimit; ++player) {
+				for (town = g_ai_town_list[player].first; town; town = town->prev) {
+					AiTownExt* town_ext = get_town_ext(town);
+					if (town->mineral == unit) {
+						town->mineral = 0;
 					}
-					if (result->gas_buildings[0] == unit)
-					{
-						result->gas_buildings[0] = 0;
+					for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+						if (town_ext->gas_buildings[i] == unit) {
+							town_ext->gas_buildings[i] = town_ext->gas_buildings[--town_ext->gas_buildings_count];
+						}
 					}
-					if (result->gas_buildings[1] == unit)
-					{
-						result->gas_buildings[1] = 0;
-					}
-					if (result->gas_buildings[2] == unit)
-					{
-						result->gas_buildings[2] = 0;
-					}
-					if (result->resarea)
-					{
-						result->resource_units_not_set = 1;
+					if (town->resarea) {
+						town->resource_units_not_set = 1;
 					}
 				}
-				++player;
-			} while (player < PlayerLimit);
+			}
 		}
-		return result;
+		return town;
 	}
 
 	// Hooked to improve functionality, specifically picking closer workers. -Pr0nogo
@@ -2947,96 +2836,6 @@ namespace hooks {
 		result.pt.x = pos_x_1;
 		result.pt.y = pos_y_1;
 		result.unit = 0;
-		return result;
-	}
-
-	// Hooked to improve AI gas harvesting. -Pr0nogo
-	Unit* __stdcall get_resource_area_gas(u32 resarea, Unit** geyser_array, Unit** geyser_1, Unit** geyser_2) // 00444460
-	{
-		*geyser_array = 0;
-		*geyser_1 = 0;
-		*geyser_2 = 0;
-
-		ResourceArea* i = 0;
-		Unit* first_visible = *g_first_visible_unit;
-		for (i = &g_base_array[resarea]; first_visible; first_visible = first_visible->link.next)
-		{
-			if (first_visible->sprite)
-			{
-				if (first_visible->main_order_id)
-				{
-					if (units_dat::base_property[first_visible->id] & UnitProperty::ResourceContainer)
-					{
-						if (!unit_id_is_minerals(first_visible->id) && first_visible->building.resource.resarea == resarea)
-						{
-							if (*geyser_array)
-							{
-								if (*geyser_1)
-								{
-									*geyser_2 = first_visible;
-								} else {
-									*geyser_1 = first_visible;
-								}
-							} else {
-								*geyser_array = first_visible;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		u32 distance_1_final = 99999999;
-		u32 distance_2_final = 99999999;
-		u32 distance_3_final = 99999999;
-
-		if (geyser_array[0])
-		{
-			distance_1_final = helper::get_distance_fast(i->position.x, (*geyser_array)->sprite->position.x, i->position.y, geyser_array[0]->sprite->position.y);
-		} else {
-			distance_1_final = 99999999;
-		}
-
-		if (*geyser_1)
-		{
-			distance_2_final = helper::get_distance_fast(i->position.x, (*geyser_1)->sprite->position.x, i->position.y, (*geyser_1)->sprite->position.y);
-		} else {
-			distance_2_final = 99999999;
-		}
-
-		if (*geyser_2)
-		{
-			distance_3_final = helper::get_distance_fast(i->position.x, (*geyser_2)->sprite->position.x, i->position.y, (*geyser_2)->sprite->position.y);
-		} else {
-			distance_3_final = 99999999;
-		}
-
-		if (distance_1_final > distance_2_final)
-		{
-			u32 temp = distance_1_final;
-			distance_1_final = distance_2_final;
-			distance_2_final = temp;
-
-			Unit* geyser_array_unit = geyser_array[0];
-			*geyser_array = (Unit*)*geyser_1;
-			geyser_1 = geyser_1;
-			*geyser_1 = geyser_array_unit;
-		}
-
-		Unit* result = 0;
-		if (distance_2_final > distance_3_final)
-		{
-			distance_2_final = distance_3_final;
-			result = *geyser_1;
-			*geyser_1 = *geyser_2;
-			*geyser_2 = result;
-		}
-		if (distance_1_final > distance_2_final)
-		{
-			result = *geyser_array;
-			*geyser_array = (Unit*)*geyser_1;
-			*geyser_1 = result;
-		}
 		return result;
 	}
 }

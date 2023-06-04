@@ -630,9 +630,9 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 }
 
 bool is_basic_townhall(u32 unit_id) {
-	return unit_id == UnitId::TerranCommandCenter ||
-		unit_id == UnitId::ProtossNexus || 
-		unit_id == UnitId::ZergHachirosk;
+	return unit_id == UnitId::TerranCommandCenter
+		|| unit_id == UnitId::ProtossNexus
+		|| unit_id == UnitId::ZergHachirosk;
 }
 
 bool can_place_unit(u32 unit_id, Point16 position, u32 player) {

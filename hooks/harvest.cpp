@@ -14,11 +14,13 @@ u32 get_gas_tier(Unit* unit) {
 				return 2;
 
 			case UnitId::TerranReservoir:
-			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergEzigrisant:
 				return 3;
+
+			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
+				return 4;
 		}
 	}
 	return 0;

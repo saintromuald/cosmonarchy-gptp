@@ -1,10 +1,9 @@
 #pragma once
 #include "SCBW/api.h"
 
-// TODO: move unit ext handling here (from globals)
+// TODO: move unit ext handling here (from iquare_globals)
 
-enum ExtValueId
-{
+enum ExtValueId {
 	ValueUnitInit,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
@@ -131,6 +130,7 @@ enum ExtValueId
 	ValueMortothrokorStacks,
 	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
+	ValueAssignedAiGasHarvesters,
 	ValueActiveHarvesters,
 	ValueIsActiveHarvester,
 	ValueNoCorpse,
@@ -166,8 +166,7 @@ enum ExtValueId
 	ValueCount,
 };
 
-enum ExtTimerId
-{
+enum ExtTimerId {
 	TimerKaiserRampage,
 	TimerKaiserRampageTimeout,
 	TimerApollyoidAdhesive,
@@ -292,8 +291,7 @@ enum ExtTimerId
 	TimerCount,
 };
 
-enum ExtUnitId
-{
+enum ExtUnitId {
 	UnitBroodlingMother,			// is this still really used?
 	UnitDecaySavant,
 	UnitMindController,
@@ -316,15 +314,13 @@ enum ExtUnitId
 	UnitCount,
 };
 
-enum ExtValueVectorId
-{
+enum ExtValueVectorId {
 	ValueVectorPleaseDontUseVectors,
 
 	ValueVectorCount,
 };
 
-enum ExtUnitVectorId
-{
+enum ExtUnitVectorId {
 	UnitVectorCaptivatingClaws,
 	UnitVectorPhaseLink,
 	UnitVectorPhaseLinkClarions,
@@ -334,16 +330,14 @@ enum ExtUnitVectorId
 	UnitVectorCount,
 };
 
-enum ExtTimerVectorId
-{
+enum ExtTimerVectorId {
 	TimerVectorCyclopsFuse,
 	TimerVectorCorrupted, // last slot is always corrupted on some builds, fuck you visual studio
 
 	TimerVectorCount,
 };
 
-struct UnitExt
-{
+struct UnitExt {
 	bool					pause_timers;
 	u32						energy_regen_timer;
 	u32						shield_regen_timer;
@@ -416,6 +410,12 @@ struct ThingyExt {
 	u32 sight_range_before_death;
 };
 
+#define GasBuildingsCap 16
+struct AiTownExt {
+	u32 gas_buildings_count;
+	Unit* gas_buildings[GasBuildingsCap];
+};
+
 void init_ext_variables();
 void update_ext_variables();
 
@@ -439,5 +439,8 @@ void reset_image_ext(Image* image); // TODO: call on new image creation!!!
 
 ThingyExt* get_thingy_ext(Thingy* thingy);
 void reset_thingy_ext(Thingy* thingy); // TODO: call on new thingy creation!!!
+
+AiTownExt* get_town_ext(AiTown* town);
+void reset_town_ext(AiTown* town); // TODO: call on new town creation!!!
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player);

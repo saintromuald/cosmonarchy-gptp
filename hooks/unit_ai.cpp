@@ -231,9 +231,8 @@ namespace hooks {
 					if (!town->inited) {
 						town->inited = 1;
 						town->mineral = 0;
-						town->gas_buildings[0] = 0;
-						town->gas_buildings[1] = 0;
-						town->gas_buildings[2] = 0;
+						AiTownExt* town_ext = get_town_ext(town);
+						town_ext->gas_buildings_count = 0;
 
 						if (layouts_town && layouts_town->worker_maynard) {
 							layouts_town->worker_maynard--;
@@ -310,13 +309,11 @@ namespace hooks {
 					helper::ai_make_guard(town->player, unit);
 				}
 
-				if (!town->inited)
-				{
+				if (!town->inited) {
 					town->inited = 1;
 					town->mineral = 0;
-					town->gas_buildings[0] = 0;
-					town->gas_buildings[1] = 0;
-					town->gas_buildings[2] = 0;
+					AiTownExt* town_ext = get_town_ext(town);
+					town_ext->gas_buildings_count = 0;
 				}
 
 				u32 town_hall_id = UnitId::ZergHachirosk;
@@ -334,12 +331,10 @@ namespace hooks {
 				} else {
 					u32 refinery_id = helper::get_default_refinery_type(unit->player);
 					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	|| unit->id == UnitId::ResourceVespeneGeyser) {
-						for (u32 i = 0; i < 3; ++i) {
-							if (!town->gas_buildings[i]) {
-								town->gas_buildings[i] = unit;
-								sort_gas_buildings(town);
-								break;
-							}
+						AiTownExt* town_ext = get_town_ext(town);
+						if (town_ext->gas_buildings_count < GasBuildingsCap) {
+							town_ext->gas_buildings[town_ext->gas_buildings_count++] = unit;
+							sort_gas_buildings(town);
 						}
 						if (town->resarea) {
 							town->resource_units_not_set = 1;

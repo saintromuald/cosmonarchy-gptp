@@ -888,7 +888,7 @@ struct AiTown {
 	Unit* main_building;					//	0x24
 	Unit* building_scv;						//	0x28
 	Unit* mineral;							//	0x2c
-	Unit* gas_buildings[3];					//	0x30
+	Unit* old_gas_buildings[3];				//	0x30
 	TownReq requests[0x64];					//	0x3c
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
