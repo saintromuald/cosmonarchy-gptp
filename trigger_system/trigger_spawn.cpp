@@ -51,7 +51,7 @@ void update_spawn() {
 				u32 explo = SpriteId::ExplosionMedium;
 				if (units_dat::base_property[seq->unit_id] & UnitProperty::LargeOverlay) {
 					rubble = SpriteId::Terran_Building_Rubble_Large;
-					explo = SpriteId::Explosion_Large;
+					explo = SpriteId::Building_Explosion_Large;
 				}
 				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
 				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
