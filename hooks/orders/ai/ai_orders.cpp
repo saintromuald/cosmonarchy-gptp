@@ -954,9 +954,13 @@ namespace hooks {
 			}
 
 			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[ValueAssignedHarvesters] >= 2) {
+				continue;
+			}
+
 			u32 score = unit->building.resource.resource_yield;
 			if (unit_ext->values[ValueAssignedHarvesters]) {
-				score /= unit_ext->values[ValueAssignedHarvesters] + 1;
+				score /= 2;
 			}
 
 			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
@@ -984,9 +988,13 @@ namespace hooks {
 			}
 
 			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[ValueAssignedAiGasHarvesters] >= 2) {
+				continue;
+			}
+
 			u32 score = unit->building.resource.resource_yield;
-			if (unit_ext->values[ValueAssignedHarvesters]) {
-				score /= unit_ext->values[ValueAssignedHarvesters] + 1;
+			if (unit_ext->values[ValueAssignedAiGasHarvesters]) {
+				score /= 2;
 			}
 
 			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
@@ -998,12 +1006,6 @@ namespace hooks {
 		}
 		return best_gas_refinery;
 	}
-
-	enum {
-		TargetResource_Mineral = 1,
-		TargetResource_Gas     = 2,
-		// BW used to also use 3 and 4 for gas, but now we use automatic assignment
-	};
 
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void ai_worker_controller(Unit* worker) { // 00435210
@@ -1029,7 +1031,7 @@ namespace hooks {
 							town->mineral = best_mineral_field;
 						}
 
-						if (worker_ai->target_resource == TargetResource_Mineral) {
+						if (worker_ai->target_resource == AiTargetResource_Mineral) {
 							Unit* target_resource = worker->worker.target_resource.unit;
 							if (target_resource && helper::unit_is_mineral_field(target_resource)) {
 								helper::ai_auto_harvest(target_resource, worker, 0);
@@ -1047,7 +1049,7 @@ namespace hooks {
 								}
 								helper::ai_auto_harvest(town_mineral, worker, 0);
 							}
-						} else if (worker_ai->target_resource == TargetResource_Gas) {
+						} else if (worker_ai->target_resource == AiTargetResource_Gas) {
 							Unit* ai_refinery = get_best_gas_refinery(town);
 							helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 						}
@@ -1173,7 +1175,7 @@ namespace hooks {
 
 			AI_Main* ai_player = &g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->vespene_needed - ai_player->vespene_available;
-			u32 new_gas_count = gas_delta / 50 + worker_count / 5;
+			u32 new_gas_count = gas_delta / 150 + worker_count / 7;
 			if (gas_count < new_gas_count) {
 				gas_count = new_gas_count;
 			}

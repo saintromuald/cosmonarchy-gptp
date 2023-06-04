@@ -1396,3 +1396,9 @@ enum MovementType {
 	MovementType_Partial			= 0x1,
 	MovementType_Iscript			= 0x2,
 };
+
+enum AiTargetResource {
+	AiTargetResource_Mineral = 1,
+	AiTargetResource_Gas     = 2,
+	// BW used to also use 3 and 4 for gas, but now we use automatic assignment
+};

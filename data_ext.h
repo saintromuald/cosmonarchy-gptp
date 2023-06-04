@@ -130,6 +130,7 @@ enum ExtValueId {
 	ValueMortothrokorStacks,
 	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
+	ValueAssignedAiGasHarvesters,
 	ValueActiveHarvesters,
 	ValueIsActiveHarvester,
 	ValueNoCorpse,
