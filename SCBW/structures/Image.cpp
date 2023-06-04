@@ -374,13 +374,10 @@ namespace hooks
 			if (is_ground_weapon != 1)
 			{
 				weapon_id = units_dat::air_weapon[attacker->id];
-			}
-			else if (attacker->id != UnitId::ZergLakizilisk || (attacker->status & UnitStatus::Burrowed))
+			} else if (attacker->id != UnitId::ZergLakizilisk || (attacker->status & UnitStatus::Burrowed))
 			{
 				weapon_id = units_dat::ground_weapon[attacker->id];
-			}
-			else
-			{
+			} else {
 				weapon_id = WeaponId::None;
 			}
 			helper::iscript_fireweapon(attacker, weapon_id);
@@ -1410,7 +1407,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) iscript_attackwith_wrapper() { // 004D74C0
+	void __declspec(naked) iscript_attackwith_wrapper() { // 00479D60
 		static Unit* attacker;
 		static u8 is_ground_weapon;
 		__asm {
