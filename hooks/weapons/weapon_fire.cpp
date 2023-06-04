@@ -1811,4 +1811,21 @@ namespace hooks {
 		// Originally delayed the chasing using order timer. -Pr0nogo
 		helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
 	}
+
+	// Hooked to safeguard from nullsprites. -Pr0nogo
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior) // 0048AA80
+	{
+		Unit* target = bullet->attack_target.unit;
+		bullet->behavior_type = behavior;
+		if (target)
+		{
+			bullet->attack_target.pt.x = target->position.x; // Was sprite
+			bullet->attack_target.pt.y = target->position.y; // ^
+		} else {
+			bullet->attack_target.unit = 0;
+		}
+		bullet->main_order_state = 0;
+		bullet->order_unit_id = UnitId::None;
+		return bullet;
+	}
 }

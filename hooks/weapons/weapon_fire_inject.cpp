@@ -299,7 +299,25 @@ namespace
 		}
 	}
 
-	const u32 BulletDamageJmpBack = 0x0048B77A;
+	void __declspec(naked) assign_weapon_data_wrapper() // 0048AA80
+	{
+		static Bullet* bullet;
+		static char behavior;
+		static Bullet* result;
+		__asm {
+			MOV bullet, EAX
+			MOV behavior, DL
+			PUSHAD
+		}
+		result = hooks::assign_weapon_data(bullet, behavior);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	const u32 bullet_damage_jumpback = 0x0048B77A;
 	void __declspec(naked) bullet_damage_bullet_nullcheck()
 	{
 		static Bullet* bullet;
@@ -313,12 +331,12 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		if (bullet != nullptr)
+		if (bullet)
 		{
 			__asm
 			{
 				POPAD
-				JMP BulletDamageJmpBack
+				JMP bullet_damage_jumpback
 			}
 		}
 		__asm
@@ -364,6 +382,7 @@ namespace hooks
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
 	//	jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
+		jump_patch(assign_weapon_data_wrapper,				0x0048AA80, 0);
 		
 		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
 		call_patch(unit_id_is_melee_air_unit_wrapper,		0x00475A10, 3);
