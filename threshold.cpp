@@ -1168,7 +1168,7 @@ static void draw_fraud_ui() {
 		ui_text_pos.y += ui_text_height;
 
 		if (threshold.used_type_count[FraudClass_God] < 6) {
-			format_time(buffer, sizeof(buffer), "Next Hand: ", threshold.timer / 24);
+			format_time(buffer, sizeof(buffer), "Next Hand: ", threshold.timer / 24, false);
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		}
 		ui_text_pos.y += ui_text_height;
@@ -1178,7 +1178,7 @@ static void draw_fraud_ui() {
 		ui_text_pos.y += ui_text_height;
 
 		if (threshold.used_count < threshold_config.total_count) {
-			format_time(buffer, sizeof(buffer), "Next Fraud: ", threshold.timer / 24);
+			format_time(buffer, sizeof(buffer), "Next Fraud: ", threshold.timer / 24, false);
 			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 			ui_text_pos.y += ui_text_height;
 		}

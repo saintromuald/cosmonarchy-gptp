@@ -22,12 +22,16 @@ Point16 ui_text_pos;
 
 CmdBtnPalette new_cmdbtn_palette[tIconCount];
 
-void format_time(char* buffer, u32 size, char* prefix, u32 seconds) {
+void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short) {
 	u32 sec = seconds % 60;
 	u32 min = seconds / 60 % 60;
 	u32 hrs = seconds / 60 / 60;
 
-	sprintf_s(buffer, size, "%s%02u:%02u:%02u", prefix, hrs, min, sec);
+	if (allow_short && !hrs) {
+		sprintf_s(buffer, size, "%02u:%02u", prefix, min, sec);
+	} else {
+		sprintf_s(buffer, size, "%s%02u:%02u:%02u", prefix, hrs, min, sec);
+	}
 }
 
 namespace hooks {
@@ -81,6 +85,20 @@ namespace hooks {
 		}
 	}
 
+	void appendf(char** buffer_ptr, s32* size, const char* format, ...) {
+		if (*size <= 0) {
+			return;
+		}
+
+		va_list va;
+		va_start(va, format);
+		u32 chars_written = vsnprintf(*buffer_ptr, *size, format, va);
+		va_end(va);
+
+		*buffer_ptr += chars_written;
+		*size       -= chars_written;
+	}
+
 	void draw_ui_features() {
 		ui_text_pos = { 10, 3 };
 		if (*leaderboard_type) {
@@ -89,7 +107,7 @@ namespace hooks {
 
 		if (config.show_timer) {
 			char buffer[48] = {};
-			format_time(buffer, 48, "", *g_elapsed_time_frames / 24);
+			format_time(buffer, 48, "", *g_elapsed_time_frames / 24, false);
 			draw_ui_text(buffer, 7);
 		}
 
@@ -105,12 +123,20 @@ namespace hooks {
 			Objective* objective = &objectives[i];
 			if (objective->show) {
 				char buffer[256] = {};
+				char* pos = buffer;
+				s32 size = 256;
+
+				appendf(&pos, &size, "- ");
 				if (objective->max_score == 1) {
-					snprintf(buffer, 256, "- [%c] %s", objective->score ? 'X' : ' ', objective->text);
+					appendf(&pos, &size, "[%c] ", objective->score ? 'X' : ' ', objective->text);
 				} else if (objective->max_score) {
-					snprintf(buffer, 256, "- [%u/%u] %s", objective->score, objective->max_score, objective->text);
-				} else {
-					snprintf(buffer, 256, "- %s", objective->text);
+					appendf(&pos, &size, "[%u/%u] ", objective->score, objective->max_score);
+				}
+				appendf(&pos, &size, "%s", objective->text);
+				if (objective->timer) {
+					char time[256] = {};
+					format_time(time, 256, "", objective->timer / 24, true);
+					appendf(&pos, &size, " (%s)", time);
 				}
 				draw_ui_text(buffer, 7);
 			}

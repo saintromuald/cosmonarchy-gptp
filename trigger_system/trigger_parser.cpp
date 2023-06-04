@@ -263,10 +263,10 @@ f32 parser_get_time_seconds(Parser* parser) {
 			time = strtof(buffer, 0);
 			switch (time_type) {
 				case TimeType_Hours: {
-					total_time += time * 60 * 60 * 24;
+					total_time += time * 60 * 60;
 				} break;
 				case TimeType_Minutes: {
-					total_time += time * 60 * 24;
+					total_time += time * 60;
 				} break;
 				case TimeType_Seconds: {
 					total_time += time;

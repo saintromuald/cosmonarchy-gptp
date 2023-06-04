@@ -16,7 +16,7 @@ extern ApmCounter player_apm_counter[PlayerLimit];
 const u32 ui_text_height = 15;
 extern Point16 ui_text_pos;
 
-void format_time(char* buffer, u32 size, char* prefix, u32 seconds);
+void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short);
 
 namespace hooks {
 	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, char color = 2);

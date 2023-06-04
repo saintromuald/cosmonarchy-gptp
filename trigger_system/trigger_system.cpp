@@ -178,6 +178,7 @@ void update_trigger_system(bool in_game) {
 		update_recolors();
 		update_spawn();
 		update_trigger_vars();
+		tick_objectives();
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!unit_can_change_sprite(unit)) {
@@ -567,6 +568,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (objective->score > objective->max_score) {
 					objective->score = objective->max_score;
 				}
+			}
+		} else if (parser_eq(&parser, "objective_timer") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			u32 time = parser_get_time_ticks(&parser);
+
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				objective->timer = time;
 			}
 		} else if (parser_eq(&parser, "objective_remove") && is_local_player) {
 			s32 key = parser_get_s32(&parser);
