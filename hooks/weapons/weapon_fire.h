@@ -38,6 +38,7 @@ namespace hooks
 	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim);						// 00476C90
 	b32 should_stay_at_range(Unit* unit);																		// 00475A10
 	void move_for_melee_range(Unit* target, Unit* attacker);													// 00477F10
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior);													// 0048AA80
 
 	void inject_weapon_fire_hooks();
 }

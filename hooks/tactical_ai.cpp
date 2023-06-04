@@ -325,6 +325,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 			return KiterType_TargetingOnly;
 		} break;
 
+		case UnitId::TerranEidolon:
 		case UnitId::TerranSilvertongue:
 		case UnitId::TerranCataphract:
 		case UnitId::TerranPaladin:
@@ -338,7 +339,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 		case UnitId::ZergKeskathalor:
 		case UnitId::ZergGeszithalor:
 		case UnitId::ZergCherbrathalor:
-		case UnitId::ZergKethrostalor:{
+		case UnitId::ZergKethrostalor: {
 			// Stay back
 			return KiterType_Artillery;
 		} break;
