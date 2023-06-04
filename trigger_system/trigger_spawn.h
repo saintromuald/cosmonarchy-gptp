@@ -16,6 +16,7 @@ const char* spawn_type_names[SpawnType_Count] = {
 	"Augur",
 	"AugurDamage",
 	"Zerg",
+	"Terran",
 };
 
 struct SpawnSequence {
