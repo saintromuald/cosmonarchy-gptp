@@ -409,7 +409,7 @@ struct ThingyExt {
 	u32 sight_range_before_death;
 };
 
-#define GasBuildingsCap 8
+#define GasBuildingsCap 16
 struct AiTownExt {
 	u32 gas_buildings_count;
 	Unit* gas_buildings[GasBuildingsCap];

@@ -979,7 +979,7 @@ namespace hooks {
 			if (!(unit->status & UnitStatus::Completed)) {
 				continue;
 			}
-			if (unit->building.resource.resource_group != ai_town->resarea) {
+			if (unit->building.resource.resarea != ai_town->resarea) {
 				continue;
 			}
 
@@ -998,6 +998,12 @@ namespace hooks {
 		}
 		return best_gas_refinery;
 	}
+
+	enum {
+		TargetResource_Mineral = 1,
+		TargetResource_Gas     = 2,
+		// BW used to also use 3 and 4 for gas, but now we use automatic assignment
+	};
 
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void ai_worker_controller(Unit* worker) { // 00435210
@@ -1023,7 +1029,7 @@ namespace hooks {
 							town->mineral = best_mineral_field;
 						}
 
-						if (worker_ai->target_resource == 1) {
+						if (worker_ai->target_resource == TargetResource_Mineral) {
 							Unit* target_resource = worker->worker.target_resource.unit;
 							if (target_resource && helper::unit_is_mineral_field(target_resource)) {
 								helper::ai_auto_harvest(target_resource, worker, 0);
@@ -1041,7 +1047,7 @@ namespace hooks {
 								}
 								helper::ai_auto_harvest(town_mineral, worker, 0);
 							}
-						} else {
+						} else if (worker_ai->target_resource == TargetResource_Gas) {
 							Unit* ai_refinery = get_best_gas_refinery(town);
 							helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 						}
@@ -1075,11 +1081,24 @@ namespace hooks {
 		return false;
 	}
 
-	enum {
-		TargetResource_Mineral = 1,
-		TargetResource_Gas     = 2,
-		// BW used to also use 3 and 4 for gas, but now we use automatic assignment
-	};
+	// Hooked to improve AI gas harvesting. -Pr0nogo
+	Unit* get_resource_area_gas(u32 resarea_id, AiTown* town) { // based on 00444460
+		AiTownExt* town_ext = get_town_ext(town);
+		town_ext->gas_buildings_count = 0;
+
+		ResourceArea* resarea = &g_base_array[resarea_id];
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
+				if (!unit_id_is_minerals(unit->id) && unit->building.resource.resarea == resarea_id) {
+					if (town_ext->gas_buildings_count < GasBuildingsCap) {
+						town_ext->gas_buildings[town_ext->gas_buildings_count++] = unit;
+					}
+				}
+			}
+		}
+		sort_gas_buildings(town);
+		return 0;
+	}
 
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	char ai_reassign_worker_resources(AiTown* town) { // 00435900, unused int arg
@@ -1097,7 +1116,7 @@ namespace hooks {
 			u32 resarea = town->resarea;
 			if (town->resource_units_not_set) {
 				town->resource_units_not_set = 0;
-				helper::get_resource_area_gas(resarea, &town->gas_buildings[0], &town->gas_buildings[1], &town->gas_buildings[2]); // TODO: fix
+				get_resource_area_gas(resarea, town);
 				sort_gas_buildings(town);
 				for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
 					helper::ai_make_guard(town->player, town_ext->gas_buildings[i]);
@@ -2815,96 +2834,6 @@ namespace hooks {
 		result.pt.x = pos_x_1;
 		result.pt.y = pos_y_1;
 		result.unit = 0;
-		return result;
-	}
-
-	// Hooked to improve AI gas harvesting. -Pr0nogo
-	Unit* __stdcall get_resource_area_gas(u32 resarea, Unit** geyser_array, Unit** geyser_1, Unit** geyser_2) // 00444460
-	{
-		*geyser_array = 0;
-		*geyser_1 = 0;
-		*geyser_2 = 0;
-
-		ResourceArea* i = 0;
-		Unit* first_visible = *g_first_visible_unit;
-		for (i = &g_base_array[resarea]; first_visible; first_visible = first_visible->link.next)
-		{
-			if (first_visible->sprite)
-			{
-				if (first_visible->main_order_id)
-				{
-					if (units_dat::base_property[first_visible->id] & UnitProperty::ResourceContainer)
-					{
-						if (!unit_id_is_minerals(first_visible->id) && first_visible->building.resource.resarea == resarea)
-						{
-							if (*geyser_array)
-							{
-								if (*geyser_1)
-								{
-									*geyser_2 = first_visible;
-								} else {
-									*geyser_1 = first_visible;
-								}
-							} else {
-								*geyser_array = first_visible;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		u32 distance_1_final = 99999999;
-		u32 distance_2_final = 99999999;
-		u32 distance_3_final = 99999999;
-
-		if (geyser_array[0])
-		{
-			distance_1_final = helper::get_distance_fast(i->position.x, (*geyser_array)->sprite->position.x, i->position.y, geyser_array[0]->sprite->position.y);
-		} else {
-			distance_1_final = 99999999;
-		}
-
-		if (*geyser_1)
-		{
-			distance_2_final = helper::get_distance_fast(i->position.x, (*geyser_1)->sprite->position.x, i->position.y, (*geyser_1)->sprite->position.y);
-		} else {
-			distance_2_final = 99999999;
-		}
-
-		if (*geyser_2)
-		{
-			distance_3_final = helper::get_distance_fast(i->position.x, (*geyser_2)->sprite->position.x, i->position.y, (*geyser_2)->sprite->position.y);
-		} else {
-			distance_3_final = 99999999;
-		}
-
-		if (distance_1_final > distance_2_final)
-		{
-			u32 temp = distance_1_final;
-			distance_1_final = distance_2_final;
-			distance_2_final = temp;
-
-			Unit* geyser_array_unit = geyser_array[0];
-			*geyser_array = (Unit*)*geyser_1;
-			geyser_1 = geyser_1;
-			*geyser_1 = geyser_array_unit;
-		}
-
-		Unit* result = 0;
-		if (distance_2_final > distance_3_final)
-		{
-			distance_2_final = distance_3_final;
-			result = *geyser_1;
-			*geyser_1 = *geyser_2;
-			*geyser_2 = result;
-		}
-		if (distance_1_final > distance_2_final)
-		{
-			result = *geyser_array;
-			*geyser_array = (Unit*)*geyser_1;
-			*geyser_1 = result;
-		}
 		return result;
 	}
 }

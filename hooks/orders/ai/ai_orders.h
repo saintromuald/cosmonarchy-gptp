@@ -62,7 +62,5 @@ namespace hooks {
 	void ai_get_oldpeons(AiTown* town, u32 count);																		// 004355C0
 	Target ai_prepare_to_flee(Unit* unit, Unit* target);																// 00476A50
 
-	Unit* __stdcall get_resource_area_gas(u32 resarea, Unit** geyser_array, Unit** geyser_1, Unit** geyser_2);			// 00444460
-
 	void inject_ai_orders_hooks();
 }
