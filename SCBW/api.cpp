@@ -2565,13 +2565,13 @@ namespace scbw {
 		helper::delete_aiscripts_using_town(ai_town);
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
-				unit->building.resource.resource_group = 0;
+				unit->building.resource.resarea = 0;
 			}
 		}
 
-		u8 resource_area = ai_town->resarea;
-		if (resource_area) {
-			g_base_array[resource_area].flags &= ~0x2;
+		u8 resarea = ai_town->resarea;
+		if (resarea) {
+			g_base_array[resarea].flags &= ~0x2;
 		}
 
 		s32 player = ai_town->player;
