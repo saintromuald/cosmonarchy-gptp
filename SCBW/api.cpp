@@ -1242,7 +1242,9 @@ namespace scbw {
 		}
 		
 		// Value
-		unit_ext->timers[TimerHallucinating] = time;
+		if (unit_ext->timers[TimerHallucinating] < time) {
+			unit_ext->timers[TimerHallucinating] = time;
+		}
 	}
 
 	bool can_be_entered_by(Unit* transport, Unit* unit) {
