@@ -28,7 +28,7 @@ void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_s
 	u32 hrs = seconds / 60 / 60;
 
 	if (allow_short && !hrs) {
-		sprintf_s(buffer, size, "%02u:%02u", prefix, min, sec);
+		sprintf_s(buffer, size, "%s%02u:%02u", prefix, min, sec);
 	} else {
 		sprintf_s(buffer, size, "%s%02u:%02u:%02u", prefix, hrs, min, sec);
 	}
