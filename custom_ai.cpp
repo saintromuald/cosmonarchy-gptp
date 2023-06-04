@@ -39,8 +39,9 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			u32 total_gas = 0;
 			u32 harvestable_gas = 0;
 			u32 unupgradeable_gas = 0;
-			for (u32 i = 0; i < 3; ++i) {
-				Unit* unit = ai_town->gas_buildings[i];
+			AiTownExt* town_ext = get_town_ext(ai_town);
+			for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
+				Unit* unit = town_ext->gas_buildings[i];
 				if (unit) {
 					total_gas++;
 					if (unit->status & UnitStatus::Completed) {

@@ -1,11 +1,14 @@
 #include "data_ext.h"
 
+#define AiTownCap 100
+
 static UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
 static TileExt tile_ext_array[256][256];
 static BulletExt bullet_ext_array[BULLET_ARRAY_LENGTH];
 static SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
 static ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
 static ThingyExt thingy_ext_array[THINGY_ARRAY_LENGTH];
+static AiTownExt ai_town_ext_array[PlayerLimit][AiTownCap];
 
 void init_ext_variables() {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
@@ -217,6 +220,18 @@ ThingyExt* get_thingy_ext(Thingy* thingy) {
 void reset_thingy_ext(Thingy* thingy) {
 	ThingyExt* thingy_ext = get_thingy_ext(thingy);
 	*thingy_ext = {};
+}
+
+AiTownExt* get_town_ext(AiTown* town) {
+	s32 player = town->player;
+	s32 index = town - g_ai_town_list[player].array->towns;
+	assert(town && player >= 0 && player < PlayerLimit && index >= 0 && index < AiTownCap);
+	return &ai_town_ext_array[player][index];
+}
+
+void reset_town_ext(AiTown* town) {
+	AiTownExt* town_ext = get_town_ext(town);
+	*town_ext = {};
 }
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {
