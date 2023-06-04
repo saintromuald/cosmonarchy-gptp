@@ -118,7 +118,6 @@ namespace hooks
 			case UnitId::ZergOvileth:
 			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
-			case UnitId::ZergAlaszileth:
 			{
 				helper::ai_overlord_behavior(unit);
 			} break;

@@ -467,7 +467,6 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergGosvileth:
 			case UnitId::ZergIroleth:
-			case UnitId::ZergAlaszileth:
 			case UnitId::ZergVorvrokor:
 			case UnitId::ZergLiiralisk:
 			case UnitId::ZergKalkalisk:

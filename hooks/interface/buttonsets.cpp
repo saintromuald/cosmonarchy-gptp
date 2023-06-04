@@ -2654,11 +2654,6 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergAlaszileth &&		// Alaszileth Dermal Accelerant
-								current_button->icon_id == IconId::Consume)
-							{
-								current_button_state = Button_State::Enabled;
-							}
 							else if ((unit->id == UnitId::ZergCaphrolosk		// Caphrolosk, Gathtelosk Larval Gestation
 							||		  unit->id == UnitId::ZergGathtelosk)
 							&&		  current_button->icon_id == IconId::SuicideScourge)
