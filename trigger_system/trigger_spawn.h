@@ -5,6 +5,7 @@ enum SpawnType {
 	SpawnType_None,
 	SpawnType_Augur,
 	SpawnType_AugurDamage,
+	SpawnType_Terran,
 	SpawnType_Zerg,
 
 	SpawnType_Count,
