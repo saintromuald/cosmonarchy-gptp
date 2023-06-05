@@ -46,6 +46,16 @@ void update_spawn() {
 		}
 
 		switch (seq->type) {
+			case SpawnType_Terran: {
+				u32 rubble = SpriteId::Terran_Building_Rubble_Small;
+				u32 explo = SpriteId::ExplosionMedium;
+				if (units_dat::base_property[seq->unit_id] & UnitProperty::LargeOverlay) {
+					rubble = SpriteId::Terran_Building_Rubble_Large;
+					explo = SpriteId::Building_Explosion_Large;
+				}
+				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
+				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
+			} break;
 			case SpawnType_Zerg: {
 				u32 rubble = SpriteId::Zerg_Building_Rubble_Small;
 				u32 explo = SpriteId::ZergAirExplosionSmall;
