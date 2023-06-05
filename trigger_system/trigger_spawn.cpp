@@ -33,7 +33,7 @@ void update_spawn() {
 
 		Unit* unit = scbw::create_unit_in_game(seq->unit_id, seq->player, seq->source_pos.x, seq->source_pos.y);
 		if (unit) {
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && (seq->move_pos.x || seq->move_pos.y)) {
 				if (unit->unit_ai) {
 					unit->order_to(OrderId::AttackMoveComputer, seq->move_pos.x, seq->move_pos.y);
 				} else {
