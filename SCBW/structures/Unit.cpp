@@ -950,7 +950,7 @@ graphics::ColorId Unit::get_faction_color(Unit* unit) {
 		// for normal players, apply colors switching
 		if (unit->player < PLAYABLE_PLAYER_COUNT) {
 			// get the proper player in multiplayer game (don't break campaigns/UMS)
-			return_value = factionsColorsOrdering[return_value];
+			return_value = g_factions_colors_ordering[return_value];
 			// fix BROWN to GREEN color swap in Desert map
 			if (*g_current_tileset == TilesetType::Desert && return_value == 5) {
 				return_value = 8;

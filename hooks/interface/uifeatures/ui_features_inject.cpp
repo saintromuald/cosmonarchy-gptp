@@ -309,6 +309,7 @@ namespace
 		sprite->free();
 		__asm {
 			POPAD
+			MOV EAX, 0
 			RETN
 		}
 	}
