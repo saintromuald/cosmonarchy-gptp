@@ -1278,16 +1278,16 @@ void Unit::update_speed() {
 }
 
 u32 Unit::get_supply_provided() { // overwrites previous supply provided
-	UnitExt* unitExt = get_unit_ext(this);
-	if (unitExt->values[ValueSupplyProvidedSet]) {
-		if (unitExt->values[ValueSupplyProvidedId] == id) {
-			return unitExt->values[ValueSupplyProvided];
+	UnitExt* unit_ext = get_unit_ext(this);
+	if (unit_ext->values[ValueSupplyProvidedSet]) {
+		if (unit_ext->values[ValueSupplyProvidedId] == id) {
+			return unit_ext->values[ValueSupplyProvided];
 		} else {
-			g_race_supply[RaceId::Terran].provided[player] -= unitExt->values[ValueSupplyProvided];
-			g_race_supply[RaceId::Terran].provided[player] += units_dat::supply_provided[unitExt->values[ValueSupplyProvidedId]];
-			unitExt->values[ValueSupplyProvidedSet] = 0;
-			unitExt->values[ValueSupplyProvidedId] = 0;
-			unitExt->values[ValueSupplyProvided] = 0;
+			g_race_supply[RaceId::Terran].provided[player] -= unit_ext->values[ValueSupplyProvided];
+			g_race_supply[RaceId::Terran].provided[player] += units_dat::supply_provided[unit_ext->values[ValueSupplyProvidedId]];
+			unit_ext->values[ValueSupplyProvidedSet] = 0;
+			unit_ext->values[ValueSupplyProvidedId] = 0;
+			unit_ext->values[ValueSupplyProvided] = 0;
 		}
 	}
 
@@ -1302,20 +1302,20 @@ u32 Unit::get_supply_provided() { // overwrites previous supply provided
 }
 
 void Unit::set_supply_provided(u8 amount) { // overwrites previous supply provided
-	UnitExt* unitExt = get_unit_ext(this);
+	UnitExt* unit_ext = get_unit_ext(this);
 	g_race_supply[RaceId::Terran].provided[player] -= get_supply_provided();
 	g_race_supply[RaceId::Terran].provided[player] += amount;
-	unitExt->values[ValueSupplyProvidedSet] = 1;
-	unitExt->values[ValueSupplyProvidedId] = id;
-	unitExt->values[ValueSupplyProvided] = amount;
+	unit_ext->values[ValueSupplyProvidedSet] = 1;
+	unit_ext->values[ValueSupplyProvidedId] = id;
+	unit_ext->values[ValueSupplyProvided] = amount;
 }
 
 void Unit::reset_supply_provided() { // overwrites previous supply provided
-	UnitExt* unitExt = get_unit_ext(this);
+	UnitExt* unit_ext = get_unit_ext(this);
 	set_supply_provided(units_dat::supply_provided[id]);
-	unitExt->values[ValueSupplyProvidedSet] = 0;
-	unitExt->values[ValueSupplyProvidedId] = 0;
-	unitExt->values[ValueSupplyProvided] = 0;
+	unit_ext->values[ValueSupplyProvidedSet] = 0;
+	unit_ext->values[ValueSupplyProvidedId] = 0;
+	unit_ext->values[ValueSupplyProvided] = 0;
 }
 
 bool Unit::is_attempting_protoss_build() {

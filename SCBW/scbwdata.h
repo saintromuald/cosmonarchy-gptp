@@ -52,9 +52,9 @@ SCBW_DATA(Thingy*,			g_thingy_table,					ccmu_extender.thingy_table); // lone sp
 SCBW_DATA(Unit*,			g_unit_table,					ccmu_extender.unit_table);
 SCBW_DATA(Order*,			g_order_table,					ccmu_extender.order_table);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
-SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table); // 0x0064B2E8
+SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table);				// previously 0064B2E8
 SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
-SCBW_DATA(Sprite*,			g_sprite_table,					ccmu_extender.sprite_table);
+SCBW_DATA(Sprite*,			g_sprite_table,					ccmu_extender.sprite_table);	// previously 00629D98
 SCBW_DATA(u32*,				g_sprite_count,					0x006C4A2C);
 SCBW_DATA(Sprite**,			g_sprite_refs,					ccmu_extender.sprite_list_pointers);
 SCBW_DATA(Image*,			g_image_table,					ccmu_extender.image_table);
