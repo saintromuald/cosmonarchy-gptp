@@ -570,7 +570,6 @@ void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool not
 	damage_hp(damage, attacker, attackingPlayer, notify);
 }
 
-const u32 Func_DamageUnitHp = 0x004797B0;
 void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify) {
 	assert(this);
 
@@ -582,12 +581,9 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 			<< "), target (" << target_id << "), target_player_id (" << target_player_id << "))" << std::endl;
 	}
 
-	u32 notify_ = notify ? 1 : 0;
-
 	if (attacker) {
 		scbw::update_on_damage_dealt(attacker);
 	}
-
 	scbw::update_on_damage_receive(this);
 
 	if (attacker) {
@@ -607,14 +603,16 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		trigger_event_array_add(&combat_events, event);
 	}
 
+	u32 notify_xd = notify ? 1 : 0;
+	const u32 func_address = 0x004797B0;
 	__asm {
 		PUSHAD
-		PUSH notify_
+		PUSH notify_xd
 		PUSH attackingPlayer
 		PUSH attacker
 		MOV EAX, damage
 		MOV ECX, this
-		CALL Func_DamageUnitHp
+		CALL func_address
 		POPAD
 	}
 
@@ -666,68 +664,68 @@ void Unit::reduce_defensive_matrix_hp(s32 amount) {
 
 }
 
-const u32 Func_RemoveUnit = 0x00475710; // AKA orders_self_destructing()
 void Unit::remove() {
 	assert(this);
+	const u32 func_address = 0x00475710; // AKA orders_self_destructing()
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_RemoveUnit
+		CALL func_address
 		POPAD
 	}
 }
 
-const u32 Func_RemoveLockdown = 0x00454D90;
 void Unit::remove_lockdown() {
 	assert(this);
+	const u32 func_address = 0x00454D90;
 	__asm {
 		PUSHAD
 		MOV ESI, this
-		CALL Func_RemoveLockdown
+		CALL func_address
 		POPAD
 	}
 }
 
-const u32 Func_RemoveMaelstrom = 0x00454D20;
 void Unit::remove_maelstrom() {
 	assert(this);
+	const u32 func_address = 0x00454D20;
 	__asm {
 		PUSHAD
 		MOV ESI, this
-		CALL Func_RemoveMaelstrom
+		CALL func_address
 		POPAD
 	}
 }
 
-const u32 Func_FreezeUnit = 0x00492CC0;
 void Unit::freeze() {
 	assert(this);
+	const u32 func_address = 0x00492CC0;
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_FreezeUnit
+		CALL func_address
 		POPAD
 	}
 }
 
-const u32 Func_UnfreezeUnit = 0x004F62D0;
 void Unit::unfreeze() {
 	assert(this);
+	const u32 func_address = 0x004F62D0;
 	__asm {
 		PUSHAD
 		MOV ESI, this
-		CALL Func_UnfreezeUnit
+		CALL func_address
 		POPAD
 	}
 }
 
-const u32 Func_RemoveAcidSpores = 0x004F4160;
 void Unit::remove_acid_spores() {
 	assert(this);
+	const u32 func_address = 0x004F4160;
 	__asm {
 		PUSHAD
 		MOV EDX, this
-		CALL Func_RemoveAcidSpores
+		CALL func_address
 		POPAD
 	}
 }
@@ -737,8 +735,7 @@ void Unit::remove_acid_spores() {
 void Unit::spend_unit_energy(u32 energy_spent) {
 	if (this->energy > energy_spent) {
 		this->energy -= energy_spent;
-	}
-	else {
+	} else {
 		this->energy = 0;
 	}
 	UnitExt* unit_ext = get_unit_ext(this);
@@ -778,9 +775,10 @@ s32 Unit::is_unit_ai_non_building() {
 	MilitaryAi* mai = (MilitaryAi*)ai;
 	s32 result = 1;
 	if (!ai
-		|| ai->type != 4
-		|| mai->unit != this
-		|| units_dat::base_property[this->id] & UnitProperty::Building) {
+	||  ai->type != AiType::Military
+	||  mai->unit != this
+	||  units_dat::base_property[this->id] & UnitProperty::Building)
+	{
 		result = 0;
 	}
 	return result;
@@ -889,10 +887,10 @@ void Unit::set_secondary_order(u8 order_id) {
 	if (this->secondary_order_id == order_id) {
 		return;
 	}
-	this->secondary_order_id = order_id;
+	this->secondary_order_id	= order_id;
 	this->secondary_order_pos.x = 0;
 	this->secondary_order_pos.y = 0;
-	this->current_build_unit = nullptr;
+	this->current_build_unit	= 0;
 	this->secondary_order_state = 0;
 }
 
@@ -1265,14 +1263,13 @@ bool Unit::is_visible_to(u8 player) const {
 	return this->detection_status & (1 << player) && this->sprite && this->sprite->visibility_status & (1 << player);
 }
 
-const u32 Func_UpdateSpeed = 0x00454310;
 void Unit::update_speed() {
 	assert(this);
-
+	const u32 func_address = 0x00454310;
 	__asm {
 		PUSHAD
 		MOV EAX, this
-		CALL Func_UpdateSpeed
+		CALL func_address
 		POPAD
 	}
 }
