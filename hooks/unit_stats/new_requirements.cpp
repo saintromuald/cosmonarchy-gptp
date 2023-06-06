@@ -1802,6 +1802,7 @@ namespace hooks {
 							}
 							return TECH_ACTIVE;
 						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranSouthpaw:
 					{
@@ -1813,6 +1814,7 @@ namespace hooks {
 							}
 							return TECH_ACTIVE;
 						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranBlackjack:
 					case UnitId::TerranMatadorTankMode:
@@ -1936,6 +1938,7 @@ namespace hooks {
 							}
 							return TECH_ACTIVE;
 						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranWendigo:
 					{
@@ -1947,6 +1950,7 @@ namespace hooks {
 							}
 							return TECH_ACTIVE;
 						}
+						return TECH_HIDDEN;
 					}
 				}
 			}
