@@ -19,6 +19,7 @@ namespace hooks
 	void orders_carrier_idle(Unit* unit);											// 004666A0
 	Unit* release_fighter(Unit* unit);												// 00466440 | local only!
 	s32 order_attack_behavior(Unit* unit);											// 0047840
+	b32 attack_move_react_to_attack(Unit* unit, u32 order_id);						// 00478370
 
 	void inject_attack_orders_hooks();
 }

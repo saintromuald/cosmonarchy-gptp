@@ -1302,4 +1302,53 @@ namespace hooks
 		}
 		return 1;
 	}
+
+	// Hooked to nullcheck sprite (commonly crashed with Lakizilisks) -Pr0nogo
+	b32 attack_move_react_to_attack(Unit* unit, u32 order_id) // 00478370
+	{
+		if (!unit->main_order_state)
+		{
+			u32 pt_x = unit->order_target.pt.x;
+			u32 pt_y = unit->order_target.pt.y;
+			bool move_target_set = helper::set_move_target_xy(unit, pt_x, pt_y);
+			if (pt_x != unit->next_target_waypoint.x || pt_y != unit->next_target_waypoint.y)
+			{
+				unit->next_target_waypoint.x = pt_x;
+				unit->next_target_waypoint.y = pt_y;
+			}
+			if (!move_target_set)
+			{
+				return 0;
+			}
+			unit->main_order_state = 1;
+		}
+
+		Unit* auto_target = unit->auto_target_unit;
+		if (auto_target)
+		{
+			if (auto_target->is_dead()) return 0; // New
+
+			u8 target_player = auto_target->player == 11 ? auto_target->sprite->player : auto_target->player;
+			if (!scbw::is_allied_to(unit->player, target_player)
+			&& !(auto_target->sprite->flags & SpriteFlags::Hidden)
+			&& !(auto_target->status & UnitStatus::Invincible))
+			{
+				if (!helper::unit_can_see_cloaked_target(auto_target, unit))
+				{
+					if (unit->unit_ai)
+					{
+						return helper::ai_update_attack_target(unit, 0, 0, 0) == 0;
+					}
+					helper::set_resource_target(unit);
+					helper::prepend_order(unit, order_id, unit->order_target.pt, unit->order_target.unit);
+					helper::insert_order_targeting_unit_before(unit->auto_target_unit, units_dat::attack_unit_order[unit->id], unit->order_queue_head, unit);
+					unit->auto_target_unit = 0;
+					helper::force_order_done(unit);
+					helper::set_flag_attack_move(unit);
+					return 0;
+				}
+			}
+		}
+		return 1;
+	}
 }

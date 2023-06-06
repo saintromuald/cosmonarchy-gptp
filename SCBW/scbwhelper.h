@@ -1611,4 +1611,7 @@ namespace helper {
 	s32 get_fastest_distance(u32 angle);																										// 00494C10
 
 	void SC_sprintf_s_2(char* buffer, int buffer_size, const char* format_string, int value1, int value2);										// 0041F1B0
+
+	void insert_order_targeting_unit_before(Unit* target, u8 order_id, Order* order, Unit* unit);												// 004747E0
+	void set_flag_attack_move(Unit* unit);																									// 004026A0
 }

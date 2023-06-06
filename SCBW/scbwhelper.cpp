@@ -13696,4 +13696,29 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void insert_order_targeting_unit_before(Unit* target, u8 order_id, Order* order, Unit* unit)
+	{
+		const u32 func_address = 0x004747E0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			MOV EDI, order
+			MOVZX BL, order_id
+			MOV ECX, target
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void set_flag_attack_move(Unit* unit)
+	{
+		const u32 func_address = 0x004026A0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

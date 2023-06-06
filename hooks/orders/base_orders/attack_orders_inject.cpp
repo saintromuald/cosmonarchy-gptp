@@ -230,6 +230,32 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) attack_move_react_to_attack_wrapper() { // 00478370
+		static b32 result;
+		static Unit* unit;
+		static u32 order_id;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV order_id, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::attack_move_react_to_attack(unit, order_id);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks {
@@ -249,5 +275,6 @@ namespace hooks {
 	//	jump_patch(get_next_strafe_position_wrapper,	0x00465D30, 0);
 		jump_patch(orders_carrier_idle_wrapper,			0x004666A0, 0);
 		jump_patch(order_attack_behavior_wrapper,		0x00478540, 0);
+		jump_patch(attack_move_react_to_attack_wrapper,	0x00478370, 0);
 	}
 }
