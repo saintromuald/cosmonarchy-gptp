@@ -75,7 +75,7 @@ namespace hooks {
 		Unit* active = get_selected_unit();
 		active_button_set_id = active->current_buttonset;
 
-		for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (peons, cloakables...)
+		for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (workers, burrowers, etc)
 			Unit* selected = g_client_selection_group->unit[i];
 			if (selected) {
 				selected_button_set_id = selected->current_buttonset;
@@ -195,36 +195,28 @@ namespace hooks {
 			if (current_subunit_button_icon == 0xFFFF || current_unit_button_icon != IconId::Stop)
 			{
 				used_button_icon = current_unit_button_icon;
-			}
-			else
-			{
+			} else {
 				used_button_icon = current_subunit_button_icon;
 			}
-		}
-		else
-		{
+		} else {
 			used_button_icon = current_subunit_button_icon;
 		}
 
-		if (current_button_dialog != nullptr)
+		if (current_button_dialog)
 		{
 			bool bStopLooping = false;
 			do
 			{
-				// look for the button corresponding to the one used for the current mainOrder
+				// look for the button corresponding to the one used for the current main_order
 				if (current_button_dialog->flags & BinDlgFlags::Visible)
 				{
 					if (current_button_dialog->graphic != used_button_icon)
 					{
 						current_button_dialog = current_button_dialog->next;
-					}
-					else
-					{
+					} else {
 						bStopLooping = true;
 					}
-				}
-				else
-				{
+				} else {
 					current_button_dialog = current_button_dialog->next;
 				}
 			} while (!bStopLooping && current_button_dialog);
@@ -232,9 +224,7 @@ namespace hooks {
 		if (!current_button_dialog)
 		{
 			*g_highlighted_icon = 0xFFFF;
-		}
-		else
-		{
+		} else {
 			if (!(current_button_dialog->flags & BinDlgFlags::Highlighted))
 			{
 				current_button_dialog->flags |= BinDlgFlags::Highlighted;
@@ -262,21 +252,15 @@ namespace hooks {
 					{
 						*g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
 					}
-				}
-				else
-				{
+				} else {
 					*g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			if (*g_is_replay_paused != 0)
 			{
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPaused;
-			}
-			else
-			{
+			} else {
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPlaying;
 			}
 		}
@@ -319,7 +303,7 @@ namespace hooks {
 			{
 				if (!active_unit)
 				{
-					goto highlight;
+					goto BLOCK_highlight;
 				}
 				buttonset_id = active_unit->current_buttonset;
 			}
@@ -328,7 +312,7 @@ namespace hooks {
 		{
 			*g_active_portrait_buttonset_id = buttonset_id;
 			*g_force_button_refresh = true;
-		update_then_highlight:
+		BLOCK_update_then_highlight:
 			helper::update_command_card();
 			helper::refresh_button_tooltip();
 			if (active_unit)
@@ -356,10 +340,10 @@ namespace hooks {
 			*g_force_button_refresh = false;
 			return;
 		}
-	highlight:
+	BLOCK_highlight:
 		if (refresh)
 		{
-			goto update_then_highlight;
+			goto BLOCK_update_then_highlight;
 		}
 		if (active_unit)
 		{
@@ -431,7 +415,8 @@ namespace hooks {
 			||  buttonset_id == UnitId::Buttons_LarvaControl
 			||  buttonset_id == UnitId::Buttons_OcsalLarvaSwarm
 			||  buttonset_id == UnitId::Buttons_OcsalLarvaAssault
-			||  buttonset_id == UnitId::Buttons_OcsalLarvaControl) {
+			||  buttonset_id == UnitId::Buttons_OcsalLarvaControl)
+			{
 				helper::BTNSACT_ChangeButtons(UnitId::ZergEgg);
 				return;
 			}
@@ -514,13 +499,9 @@ namespace hooks {
 			if (current_dialog->index < 1)
 			{
 				stop_there = true;
-			}
-			else if (current_dialog->index > 9)
-			{
+			} else if (current_dialog->index > 9) {
 				jumpto5934E = true;
-			}
-			else
-			{ // loop to ignore the first unused/disabled buttons
+			} else { // loop to ignore the first unused/disabled buttons
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set))
 				{
@@ -552,28 +533,21 @@ namespace hooks {
 							if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation])
 							{
 								current_button_state = Button_State::Invisible;
-							}
-							else
-							{
+							} else {
 								current_button_state = Button_State::Enabled;
 							}
-						}
-						else if (current_button->requirement_var == TechId::EmergencyDetonation)							
-						{
+						} else if (current_button->requirement_var == TechId::EmergencyDetonation) {
 							if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation])
 							{
 								current_button_state = Button_State::Invisible;
-							}
-							else
-							{
+							} else {
 								current_button_state = Button_State::Enabled;
 							}
-						}
-						else if (current_button->requirement_var == TechId::HypnagogueThroughTheLookingGlass)
-						{
+						} else if (current_button->requirement_var == TechId::HypnagogueThroughTheLookingGlass) {
 							current_button_state = Button_State::Enabled;
-						}
-						else if (current_button->requirement_var == TechId::LarvalSubmenuSelectSwarm || current_button->requirement_var == TechId::LarvalSubmenuSelectAssault || current_button->requirement_var == TechId::LarvalSubmenuSelectControl)							
+						} else if (current_button->requirement_var == TechId::LarvalSubmenuSelectSwarm
+							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectAssault
+							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectControl)
 						{
 							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
 								current_button_state = Button_State::Enabled;
@@ -607,31 +581,6 @@ namespace hooks {
 							current_button_state = Button_State::Enabled;
 						}
 					}
-
-					/*
-					if (buttonset_id == UnitId::ProtossLanifect) {
-						if (current_button->icon_id == IconId::DisruptionWeb2) {
-							bool has_enabled = false;
-							bool has_disabled = false;
-
-							for (u32 i = 0; i < *g_client_selection_count; ++i) {
-								Unit* unit = g_client_selection_group->unit[i];
-								UnitExt* unit_ext = get_unit_ext(unit);
-								if (unit_ext->values[ValueDisruptionFieldOn]) {
-									has_enabled = true;
-								} else {
-									has_disabled = true;
-								}
-							}
-
-							if (has_disabled && !has_enabled) {
-								current_button_state = Button_State::Enabled;
-							} else {
-								current_button_state = Button_State::Invisible;
-							}
-						}
-					}
-					*/
 
 					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LurkerBurrow) {
 						bool has_burrowed = false;
