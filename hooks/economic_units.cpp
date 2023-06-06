@@ -32,7 +32,7 @@ namespace hooks
 		switch (race)
 		{
 			case RaceId::Terran:
-				id = UnitId::TerranCommandCenter;
+				id = UnitId::TerranMinistry;
 				break;
 			case RaceId::Protoss:
 				id = UnitId::ProtossNexus;
@@ -52,7 +52,7 @@ namespace hooks
 		//unit is unused. this is function is supposed to be used for custom faction worker
 		switch (unit_id)
 		{
-			case UnitId::TerranCommandCenter:
+			case UnitId::TerranMinistry:
 				//		case UnitId::KelmorianTacticalCenter:
 				//		case UnitId::UmojanGarrison:
 				//		case UnitId::KelmorianMiningStation:		
@@ -70,7 +70,7 @@ namespace hooks
 	{
 		switch (unit_id)
 		{
-			case UnitId::TerranCommandCenter:
+			case UnitId::TerranMinistry:
 			case UnitId::ProtossNexus:
 			case UnitId::ZergHachirosk://lairs and hives are not required
 				return true;

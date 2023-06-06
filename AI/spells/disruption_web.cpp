@@ -56,7 +56,7 @@ namespace AI
 				return true;
 			}
 			if (target->id == UnitId::TerranWatchdog
-			||  target->id == UnitId::TerranBunker
+			||  target->id == UnitId::TerranAnchor
 		//	||  target->id == UnitId::TerranTencendur
 			||  target->id == UnitId::ZergSpraithColony
 			||  target->id == UnitId::ZergSkortrithColony

@@ -296,7 +296,7 @@ namespace hooks {
 				if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
-				&&	  unit->id != UnitId::TerranBunker
+				&&	  unit->id != UnitId::TerranAnchor
 			//	&&	  unit->id != UnitId::TerranTencendur
 				&&	  unit->id != UnitId::ZergCagrantColony
 				&&	  unit->id != UnitId::ZergSpraithColony
@@ -318,7 +318,7 @@ namespace hooks {
 
 				u32 town_hall_id = UnitId::ZergHachirosk;
 				if (g_player_table[unit->player].race == RaceId::Terran) {
-					town_hall_id = UnitId::TerranCommandCenter;
+					town_hall_id = UnitId::TerranMinistry;
 				}
 				else if (g_player_table[unit->player].race == RaceId::Protoss) {
 					town_hall_id = UnitId::ProtossNexus;

@@ -2740,7 +2740,7 @@ namespace scbw {
 				image_id = ImageId::CovertOpsConnector;
 			} break;
 			case UnitId::TerranScrapyard:
-			case UnitId::TerranMachineShop:
+			case UnitId::TerranPaladium:
 			case UnitId::TerranMunitionsBay:
 			{
 				image_id = ImageId::MachineShopConnector;

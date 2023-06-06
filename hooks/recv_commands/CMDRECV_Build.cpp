@@ -74,7 +74,7 @@ namespace hooks
 		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, builtUnitId, 1, 0, 0, 0);
 		if (!can_build)
 		{
-			addonPlaceX = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranCommandCenter].x;
+			addonPlaceX = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranMinistry].x;
 			scbw::adjust_addon_x(builtUnitId, builder->id, &addonPlaceX);
 			if (addonPlaceX < 0)
 			{
@@ -82,7 +82,7 @@ namespace hooks
 			}
 			addonPlaceX /= 32;
 			addonPlaceX = x - addonPlaceX;
-			addonPlaceY = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranCommandCenter].y;
+			addonPlaceY = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranMinistry].y;
 			scbw::adjust_addon_y(builtUnitId, builder->id, &addonPlaceY);
 			if (addonPlaceY < 0)
 			{

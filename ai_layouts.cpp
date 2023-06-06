@@ -65,7 +65,7 @@ static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 t
 			if (townhall_index && hooks::create_unit_id_allowed(UnitId::TerranTreasury, player, true)) {
 				placeholder->unit_id = UnitId::TerranTreasury;
 			} else {
-				placeholder->unit_id = UnitId::TerranCommandCenter;
+				placeholder->unit_id = UnitId::TerranMinistry;
 			}
 		} break;
 		case RaceId::Protoss: {
@@ -630,7 +630,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 }
 
 bool is_basic_townhall(u32 unit_id) {
-	return unit_id == UnitId::TerranCommandCenter
+	return unit_id == UnitId::TerranMinistry
 		|| unit_id == UnitId::ProtossNexus
 		|| unit_id == UnitId::ZergHachirosk;
 }

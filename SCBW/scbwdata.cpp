@@ -88,7 +88,7 @@ namespace units_dat {
 	SCBW_DATA_DEF(u16*,			graphic,				unitsDat[0].address);	// 006644F8 -- DatExt changes this to u16 from u8
 	SCBW_DATA_DEF(u16*,			subunit,				unitsDat[1].address);	// 006607C0
 	SCBW_DATA_DEF(u16*,			subunit_2,				unitsDat[2].address);	// 00660C38
-	SCBW_DATA_DEF(u16*,			infested_unit_partial,	unitsDat[3].address);	// 00664980, (Id - UnitId::TerranCommandCenter) for it to work, last valid id is UnitId::Special_OvermindCocoon
+	SCBW_DATA_DEF(u16*,			infested_unit_partial,	unitsDat[3].address);	// 00664980, (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon
 	SCBW_DATA_DEF(u32*,			construction_graphic,	unitsDat[4].address);	// 006610B0
 	SCBW_DATA_DEF(u8*,			start_direction,		unitsDat[5].address);	// 006605F0  Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise).32 means random.
 	SCBW_DATA_DEF(u8*,			shields_enabled,		unitsDat[6].address);	// 006647B0

@@ -320,7 +320,7 @@ namespace hooks
 				buildPoint.y = y;
 				helper::unk_building_placement_related(1, &buildPoint);
 				if (*g_is_placing_addon) {
-					u32 unit_id = *g_place_building_unit_id - UnitId::TerranCommandCenter;
+					u32 unit_id = *g_place_building_unit_id - UnitId::TerranMinistry;
 					Point16 addon_point;
 					addon_point.x = units_dat::addon_placement[unit_id].x;
 					addon_point.y = units_dat::addon_placement[unit_id].y;

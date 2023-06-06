@@ -2062,7 +2062,7 @@ namespace hooks {
 					unit->secondary_order_state = 0;
 				}
 			} break;
-			case UnitId::TerranBunker:
+			case UnitId::TerranAnchor:
 			{
 				if (unit->status & UnitStatus::InAir) {
 					for (u32 i = 0; i < TransportCap; ++i) {
@@ -2654,7 +2654,7 @@ namespace hooks {
 				}
 				switch (target->id) {
 					case UnitId::TerranSupplyDepot:
-					case UnitId::TerranBunker:
+					case UnitId::TerranAnchor:
 					case UnitId::TerranReservoir: { // @Veeq7: What are these edge cases? -Pr0nogo
 						if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 							continue;

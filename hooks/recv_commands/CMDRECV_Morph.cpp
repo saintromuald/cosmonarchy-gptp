@@ -108,7 +108,7 @@ namespace hooks
 							*g_last_internal_error = 10;
 							continue;
 						}
-						if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::TerranCommandCenter) {
+						if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::TerranMinistry) {
 							*g_last_internal_error = 11;
 							continue;
 						}

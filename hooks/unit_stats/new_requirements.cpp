@@ -67,14 +67,14 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier3X] = true;
 
 		// TERRAN
-		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranCommandCenter)
+		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos))
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranCommandCenter:
+				case UnitId::TerranMinistry:
 				case UnitId::TerranWatchdog:
-				case UnitId::TerranBunker:
+				case UnitId::TerranAnchor:
 				case UnitId::TerranTreasury:
 				case UnitId::TerranAtlas:
 				case UnitId::TerranBarracks:
@@ -123,7 +123,7 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandCenter))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMinistry))
 		{
 			switch (unit_id)
 			{
@@ -308,7 +308,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranMachineShop:
+				case UnitId::TerranPaladium:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -333,7 +333,7 @@ namespace hooks {
 				case UnitId::TerranPhalanxTankMode:
 				case UnitId::TerranMadrigalImperiosoMode:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranMachineShop))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranPaladium))
 					{
 						return true;
 					}
@@ -1418,9 +1418,9 @@ namespace hooks {
 
 				switch (unit_id)
 				{
-					case UnitId::TerranCommandCenter:
+					case UnitId::TerranMinistry:
 					case UnitId::TerranWatchdog:
-					case UnitId::TerranBunker:
+					case UnitId::TerranAnchor:
 					case UnitId::TerranTreasury:
 					case UnitId::TerranAtlas:
 					case UnitId::TerranBarracks:
@@ -1471,7 +1471,7 @@ namespace hooks {
 					}
 				}
 			}
-			case UnitId::TerranCommandCenter:
+			case UnitId::TerranMinistry:
 			{
 				switch (unit_id)
 				{
@@ -1748,7 +1748,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranMachineShop:
+					case UnitId::TerranPaladium:
 					{
 						if (has_addon || is_training)
 						{
@@ -1834,7 +1834,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranMachineShop)
+						if (addon_id == UnitId::TerranPaladium)
 						{
 							return TECH_ACTIVE;
 						}

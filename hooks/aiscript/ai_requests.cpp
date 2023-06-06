@@ -802,7 +802,7 @@ namespace hooks
 		// TODO: Add support for custom races. -Pr0nogo
 		switch (race) {
 			case RaceId::Terran: {
-				main_building_id = UnitId::TerranCommandCenter;
+				main_building_id = UnitId::TerranMinistry;
 				builder_id = UnitId::TerranMason;
 			} break;
 			case RaceId::Protoss: {
@@ -990,7 +990,7 @@ namespace hooks
 			build_pos = gas->position;
 		} else {
 			switch (unit_id) {
-				case UnitId::TerranBunker:
+				case UnitId::TerranAnchor:
 			//	case UnitId::TerranTencendur:
 				{
 					if (!helper::get_bunker_position(player, &build_pos)) {

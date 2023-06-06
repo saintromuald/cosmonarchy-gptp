@@ -14,7 +14,7 @@ u32 get_racial_townhall(u32 raceId)
 	}
 	else if (raceId == RaceId::Terran)
 	{
-		return UnitId::TerranCommandCenter;
+		return UnitId::TerranMinistry;
 	}
 	else if (raceId == RaceId::Protoss)
 	{

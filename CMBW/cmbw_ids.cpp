@@ -21,7 +21,7 @@ bool unit_id_is_smaller_building(u16 unit_id) {
 		(unit_id != UnitId::TerranFountainhead && unit_id != UnitId::TerranAtelier && unit_id != UnitId::TerranParticleAccelerator))
 		|| unit_id == UnitId::TerranSupplyDepot
 		|| unit_id == UnitId::TerranWatchdog
-		|| unit_id == UnitId::TerranBunker
+		|| unit_id == UnitId::TerranAnchor
 		|| unit_id == UnitId::TerranSentinel
 		|| unit_id == UnitId::ProtossPylon
 		|| unit_id == UnitId::ProtossWarden
@@ -160,7 +160,7 @@ bool unit_id_is_stackable_building(u32 unit_id) {
 	return false; // Disabled to see if it improves AI base layouts. -Pr0nogo
 	switch (unit_id) {
 		case UnitId::TerranWatchdog:
-		case UnitId::TerranBunker:
+		case UnitId::TerranAnchor:
 		case UnitId::TerranSentinel:
 		case UnitId::ProtossPylon:
 		case UnitId::ProtossWarden:
@@ -184,7 +184,7 @@ bool unit_id_is_stackable_building(u32 unit_id) {
 
 bool unit_id_has_addon(u32 unit_id) {
 	switch (unit_id) {
-		case UnitId::TerranCommandCenter:
+		case UnitId::TerranMinistry:
 		case UnitId::TerranTreasury:
 		case UnitId::TerranBarracks:
 		case UnitId::TerranCaptaincy:
@@ -230,7 +230,7 @@ bool unit_id_is_vespene_node(u32 unit_id) {
 }
 
 bool unit_id_is_ground_bunker(u32 unit_id) {
-	return unit_id == UnitId::TerranBunker;
+	return unit_id == UnitId::TerranAnchor;
 	//	|| unit_id == UnitId::TerranTencendur;
 }
 
@@ -305,7 +305,7 @@ bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
 }
 
 bool unit_id_is_town_center(u16 unit_id) {
-	return unit_id == UnitId::TerranCommandCenter
+	return unit_id == UnitId::TerranMinistry
 		|| unit_id == UnitId::ProtossNexus
 		|| unit_id == UnitId::ZergHachirosk
 		|| unit_id == UnitId::ZergCaphrolosk

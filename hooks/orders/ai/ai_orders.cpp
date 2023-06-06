@@ -650,7 +650,7 @@ namespace hooks {
 			for (i = *first_player_unit[placement_id].unit; i; i = i->player_link.next) {
 				if (i->sprite) {
 					if (i->main_order_id) {
-						if (i->id == UnitId::TerranBunker || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony || i->id == UnitId::ZergSkortrithColony) {
+						if (i->id == UnitId::TerranAnchor || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony || i->id == UnitId::ZergSkortrithColony) {
 							u32 iterator2 = 0;
 							if (region_max) {
 								do { // Distance from unit to region position
@@ -714,7 +714,7 @@ namespace hooks {
 							helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							return;
 						}
-						case UnitId::TerranBunker:
+						case UnitId::TerranAnchor:
 					//	case UnitId::TerranTencendur:
 						{
 							if (!helper::get_bunker_placement_position(player, &max_range)) {
@@ -1793,7 +1793,7 @@ namespace hooks {
 												break;
 											}
 											// TODO: Add check to see if victim is already detected / if there's a detector in the box?
-											if (victim->id != UnitId::TerranBunker || !helper::is_unit_loaded(victim)) {
+											if (victim->id != UnitId::TerranAnchor || !helper::is_unit_loaded(victim)) {
 												if (!helper::ai_unit_can_attack(victim) || units_dat::base_property[victim->id] & UnitProperty::Worker) {
 													break;
 												}
@@ -2010,7 +2010,7 @@ namespace hooks {
 		player = 2500;
 		char* placement_data_2 = (char*)1;
 		switch (unit_id) {
-			case UnitId::TerranCommandCenter:
+			case UnitId::TerranMinistry:
 			case UnitId::ZergHachirosk:
 			case UnitId::ProtossNexus:
 			{
@@ -2019,7 +2019,7 @@ namespace hooks {
 			case UnitId::TerranComsatStation:
 			case UnitId::TerranMissileSilo:
 			{
-				unit_id = UnitId::TerranCommandCenter;
+				unit_id = UnitId::TerranMinistry;
 			} break;
 			case UnitId::TerranCommandment:
 			{
@@ -2030,11 +2030,11 @@ namespace hooks {
 			{
 				unit_id = UnitId::TerranDaedala;
 			} break;
-			case UnitId::TerranMachineShop:
+			case UnitId::TerranPaladium:
 			{
 				unit_id = UnitId::TerranFulcrum;
 			} break;
-			case UnitId::TerranBunker:
+			case UnitId::TerranAnchor:
 		//	case UnitId::TerranTencendur:
 			{
 				if (get_bunker_placement_position(player_var, (u32*)&player)) {

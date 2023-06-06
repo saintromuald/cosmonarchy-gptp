@@ -77,7 +77,7 @@ namespace hooks
 					}
 
 					// original code was *(u16*)(0x006648AC + 2*unitInfested->id);
-					infestedUnitNewId = units_dat::infested_unit_partial[unitInfested->id - UnitId::TerranCommandCenter];
+					infestedUnitNewId = units_dat::infested_unit_partial[unitInfested->id - UnitId::TerranMinistry];
 
 					// update number of kills/casualties for endgame score
 					helper::increment_unit_death_scores(unitInfested, unitInfesting->player);

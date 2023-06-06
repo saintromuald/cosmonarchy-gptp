@@ -103,7 +103,7 @@ namespace hooks {
 					count_hatches++;
 				}
 
-				if (selected->id == UnitId::TerranCommandCenter || selected->id == UnitId::TerranQuarry) {
+				if (selected->id == UnitId::TerranMinistry || selected->id == UnitId::TerranQuarry) {
 					count_mason_sources++;
 				}
 
@@ -772,7 +772,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranMadrigalImperiosoMode:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit))
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranPaladium) || scbw::unit_queue_full(unit))
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -790,7 +790,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranPhalanxTankMode:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit)
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranPaladium) || scbw::unit_queue_full(unit)
 										||	 globals.players[unit->player].faction == Faction_TerranNydusTrinity)
 										{
 											current_button_state = Button_State::Invisible;
@@ -810,7 +810,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranTarasque:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranMachineShop) || scbw::unit_queue_full(unit)
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranPaladium) || scbw::unit_queue_full(unit)
 										||  globals.players[unit->player].faction != Faction_TerranNydusTrinity)
 										{
 											current_button_state = Button_State::Invisible;
@@ -938,9 +938,9 @@ namespace hooks {
 								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
 									switch (current_button->requirement_var)
 									{
-										case UnitId::TerranCommandCenter:
+										case UnitId::TerranMinistry:
 										case UnitId::TerranWatchdog:
-										case UnitId::TerranBunker:
+										case UnitId::TerranAnchor:
 										case UnitId::TerranTreasury:
 										case UnitId::TerranAtlas:
 										case UnitId::TerranBarracks:
@@ -1938,7 +1938,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranDurendal:
 								{
-									if (current_button->icon_id == IconId::TerranShipWeapons) // Durendal - Forward March
+									if (current_button->icon_id == IconId::TerranShipWeapons // Durendal - Forward March
+									||  current_button->icon_id == IconId::FlyerAttack)		 // Durendal - Apollyoid Adhesive
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2631,7 +2632,7 @@ namespace hooks {
 					// Attack overrides
 					if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building)
 					{
-						if (unit->id == UnitId::TerranBunker) {
+						if (unit->id == UnitId::TerranAnchor) {
 							u32 loaded = 0;
 							for (u32 i = 0; i < 8; ++i) {								
 								Unit* bunker_unit = unit->get_loaded_unit(i);
