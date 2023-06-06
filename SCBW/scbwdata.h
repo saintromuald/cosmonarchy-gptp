@@ -52,9 +52,9 @@ SCBW_DATA(Thingy*,			g_thingy_table,					ccmu_extender.thingy_table); // lone sp
 SCBW_DATA(Unit*,			g_unit_table,					ccmu_extender.unit_table);
 SCBW_DATA(Order*,			g_order_table,					ccmu_extender.order_table);
 SCBW_DATA(u32*,				g_unit_count,					0x006283F0);
-SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table); // 0x0064B2E8
+SCBW_DATA(Bullet*,			g_bullet_table,					new_bullet_table);				// previously 0064B2E8
 SCBW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
-SCBW_DATA(Sprite*,			g_sprite_table,					ccmu_extender.sprite_table);
+SCBW_DATA(Sprite*,			g_sprite_table,					ccmu_extender.sprite_table);	// previously 00629D98
 SCBW_DATA(u32*,				g_sprite_count,					0x006C4A2C);
 SCBW_DATA(Sprite**,			g_sprite_refs,					ccmu_extender.sprite_list_pointers);
 SCBW_DATA(Image*,			g_image_table,					ccmu_extender.image_table);
@@ -856,7 +856,7 @@ static DrawGameProc const g_old_draw_game_proc = (DrawGameProc)0x004BD580;
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
-SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
+SCBW_DATA(s32*, g_factions_colors_ordering, 0x0057F21C);
 
 // Access to true player colors that differ from standard versions from graphics.h
 // This is PlayerColors from BWAPI
@@ -872,7 +872,7 @@ struct SpriteTileData {
 	Sprite* tails[256];
 	Sprite* heads[256];
 };
-SCBW_DATA(SpriteTileData*, spritesOnTileRow, 0x00629288);
+SCBW_DATA(SpriteTileData*, g_sprites_on_tile_row, 0x00629288);
 
 // Image-related
 struct ImagesDatExtraOverlayLO_Files {
@@ -892,18 +892,18 @@ template <typename T>
 struct PlayerFlags {
 	T flags[PLAYER_COUNT];
 };
-SCBW_DATA(PlayerFlags<u8>*,		player_alliance,	0x0058D634); // See scbw::is_allied_to()
-SCBW_DATA(PlayerFlags<u32>*,	player_vision,		0x0057F1EC);
+SCBW_DATA(PlayerFlags<u8>*,		player_alliance,			0x0058D634); // See scbw::is_allied_to()
+SCBW_DATA(PlayerFlags<u32>*,	player_vision,				0x0057F1EC);
 
-SCBW_DATA(Unit**,		g_active_portrait_unit,		0x00597248);
+SCBW_DATA(Unit**,				g_active_portrait_unit,		0x00597248);
 
-SCBW_DATA_REF(AI_Main*,		g_aiscript_controller,		0x0068FEE8);
-SCBW_DATA(AiRegion**,		g_ai_region_captains,		0x0069A604);
-SCBW_DATA(u32*,				g_ai_supply_reserved,		0x006CA4BC);
-SCBW_DATA(AiScript**,		g_first_active_aiscript,	0x0068C100);
-SCBW_DATA(AiScriptArray*,	g_aiscript_array,			0x0068C0FC);
+SCBW_DATA_REF(AI_Main*,			g_aiscript_controller,		0x0068FEE8);
+SCBW_DATA(AiRegion**,			g_ai_region_captains,		0x0069A604);
+SCBW_DATA(u32*,					g_ai_supply_reserved,		0x006CA4BC);
+SCBW_DATA(AiScript**,			g_first_active_aiscript,	0x0068C100);
+SCBW_DATA(AiScriptArray*,		g_aiscript_array,			0x0068C0FC);
 
-SCBW_DATA(ResourceAreaArray*, g_resource_areas,		0x00692688);
+SCBW_DATA(ResourceAreaArray*,	g_resource_areas,		0x00692688);
 
 //-------- Internal constants --------//
 

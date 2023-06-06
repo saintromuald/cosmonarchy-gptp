@@ -28,44 +28,40 @@ void Sprite::free()
 
 	Image* image = this->images.head;
 	s32 sprite_row_position;
-
-	while (image != nullptr)
+	while (image)
 	{
-		Image* nextImage = image->link.next;
+		Image* next_image = image->link.next;
 		image->free();
-		image = nextImage;
+		image = next_image;
 	}
 
-	if (((s32)this->position.y) < 0)
+	if (this->position.y < 0)
 	{
-		sprite_row_position = (this->position.y + 31) / 32;
-	}
-	else
-	{
-		sprite_row_position = (this->position.y) / 32;
+		sprite_row_position = this->position.y + 31 / 32;
+	} else {
+		sprite_row_position = this->position.y / 32;
 	}
 
 	if (sprite_row_position < 0)
 	{
 		sprite_row_position = 0;
-	}
-	else if (sprite_row_position >= g_map_tile_size->height)
+	} else if (sprite_row_position >= g_map_tile_size->height)
 	{
 		sprite_row_position = g_map_tile_size->height - 1;
 	}
 
-	// remove the sprite from the spritesOnTileRow list
-	if (spritesOnTileRow->heads[sprite_row_position] == this)
+	// remove the sprite from the g_sprites_on_tile_row list
+	if (g_sprites_on_tile_row->heads[sprite_row_position] == this)
 	{
-		spritesOnTileRow->heads[sprite_row_position] = this->link.next;
+		g_sprites_on_tile_row->heads[sprite_row_position] = this->link.next;
 	}
 
-	if (spritesOnTileRow->tails[sprite_row_position] == this)
+	if (g_sprites_on_tile_row->tails[sprite_row_position] == this)
 	{
-		spritesOnTileRow->tails[sprite_row_position] = this->link.prev;
+		g_sprites_on_tile_row->tails[sprite_row_position] = this->link.prev;
 	}
 
-	//untie the sprite from the previous and next one
+	// untie the sprite from the previous and next one
 	if (this->link.prev)
 	{
 		(this->link.prev)->link.next = this->link.next;
@@ -76,8 +72,8 @@ void Sprite::free()
 		(this->link.next)->link.prev = this->link.prev;
 	}
 
-	this->link.prev = nullptr;
-	this->link.next = nullptr;
+	this->link.prev = 0;
+	this->link.next = 0;
 
 	// perform identically to original code
 	g_free_sprites->insertAfterHead<&Sprite::link>(this);
@@ -101,10 +97,10 @@ void Sprite::set_position(u16 x, u16 y)
 	if (old_tile_y != new_tile_y)
 	{
 		const ListExtern<Sprite, &Sprite::link>
-			spritesOnOldTileRow(spritesOnTileRow->heads[old_tile_y],
-				spritesOnTileRow->tails[old_tile_y]),
-			spritesOnNewTileRow(spritesOnTileRow->heads[new_tile_y],
-				spritesOnTileRow->tails[new_tile_y]);
+			spritesOnOldTileRow(g_sprites_on_tile_row->heads[old_tile_y],
+				g_sprites_on_tile_row->tails[old_tile_y]),
+			spritesOnNewTileRow(g_sprites_on_tile_row->heads[new_tile_y],
+				g_sprites_on_tile_row->tails[new_tile_y]);
 
 		spritesOnOldTileRow.unlink(this);
 		spritesOnNewTileRow.insertAfterHead(this);

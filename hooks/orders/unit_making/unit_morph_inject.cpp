@@ -193,8 +193,8 @@ namespace
 				if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
-					unit->remove();
 				}
+				unit->remove();
 			} else if (unit->get_race() == RaceId::Terran) {
 				if (unit->id == UnitId::TerranNuclearMissile)
 				{
@@ -208,6 +208,8 @@ namespace
 				} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
 					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player); // TODO: Find working Terran-themed overlay
+					unit->remove();
+				} else {
 					unit->remove();
 				}
 			} else {

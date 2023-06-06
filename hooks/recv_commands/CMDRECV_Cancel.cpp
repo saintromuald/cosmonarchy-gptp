@@ -60,26 +60,24 @@ namespace hooks
 	}
 
 	// Hooked because the default code didn't allow for multiple units
-	void cmdrecv_cancel_train(u16 unit_id) {
+	void cmdrecv_cancel_train(u16 slot) // 004C0100
+	{
 		*unit_iterator_pos = 0;
-		while (Unit* unit = get_active_player_next_selection()) {
+		while (Unit* unit = get_active_player_next_selection())
+		{
 			if (unit->id != UnitId::ZergLarva
 			&&  unit->id != UnitId::ZergOcsalLarva
-			&&  unit->id != UnitId::ZergMutalisk
-			&&  unit->id != UnitId::ZergHydralisk
-			&&  unit->id != UnitId::ZergHachirosk
-			&&  unit->id != UnitId::ZergCaphrolosk
-			&&  unit->id != UnitId::ZergMuthrokSpire
-			&&  unit->id != UnitId::ZergCagrantColony
+			&& !scbw::is_conventional_unit_morph_source(unit->id)
 			&&  unit->status & UnitStatus::Completed
-			&&  unit->player == *g_active_nation_id) {
-				if (unit_id == 0xFE) {
+			&&  unit->player == *g_active_nation_id)
+			{
+				if (slot == 254) {
 					helper::cancel_last_training(unit);
 					scbw::refresh_console();
-				} else if (unit_id == 0xFF) {
+				} else if (slot == 255) {
 					scbw::refresh_console();
 				} else {
-					helper::refund_queue_slot(unit, unit_id);
+					helper::refund_queue_slot(unit, slot);
 					scbw::refresh_console();
 				}
 			}
