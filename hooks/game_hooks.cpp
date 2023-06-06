@@ -968,6 +968,10 @@ namespace hooks {
 			addon_ext->units[UnitAddonParent] = unit;
 		}
 
+		if (!(unit->movement_flags & MovementFlags::StartingAttack)) {
+			unit_ext->values[ValueProjectilePattern] = 0;
+		}
+
 		/*
 		if (scbw::unit_id_is_resource_node(unit->id, true)) {
 			bool show = GetAsyncKeyState(VK_MENU);

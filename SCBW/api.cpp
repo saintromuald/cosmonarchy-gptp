@@ -217,6 +217,7 @@ namespace scbw {
 	}
 
 	Unit* get_dark_swarm_unit(Unit* unit) {
+		if (unit->is_dead()) return 0;
 		static UnitFinder dark_swarm_finder;
 		dark_swarm_finder.search(unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom());
 		return dark_swarm_finder.get_first(is_dark_swarm);
