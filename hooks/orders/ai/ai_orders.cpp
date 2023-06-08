@@ -2030,7 +2030,7 @@ namespace hooks {
 			{
 				unit_id = UnitId::TerranDaedala;
 			} break;
-			case UnitId::TerranPaladium:
+			case UnitId::TerranPalladium:
 			{
 				unit_id = UnitId::TerranFulcrum;
 			} break;

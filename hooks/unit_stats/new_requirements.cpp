@@ -228,6 +228,7 @@ namespace hooks {
 				case UnitId::TerranMaverick:
 				case UnitId::TerranHarakan:
 				case UnitId::TerranCyprian:
+				case UnitId::TerranCohort:
 				{
 					return true;
 				} break;
@@ -308,7 +309,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranPaladium:
+				case UnitId::TerranPalladium:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -317,8 +318,10 @@ namespace hooks {
 				} break;
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranVulture:
-				case UnitId::TerranGoliath:
 				case UnitId::TerranCyclops:
+				case UnitId::TerranGoliath:
+				case UnitId::TerranAspirant:
+				case UnitId::TerranSouthpaw:
 				{
 					return true;
 				} break;
@@ -332,8 +335,9 @@ namespace hooks {
 				} break;
 				case UnitId::TerranPhalanxTankMode:
 				case UnitId::TerranMadrigalImperiosoMode:
+				case UnitId::TerranTarasque:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranPaladium))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
 					{
 						return true;
 					}
@@ -395,6 +399,8 @@ namespace hooks {
 				case UnitId::TerranWraith:
 				case UnitId::TerranAncile:
 				case UnitId::TerranTrojan:
+				case UnitId::TerranPhiloc:
+				case UnitId::TerranWendigo:
 				{
 					return true;
 				} break;
@@ -1624,13 +1630,24 @@ namespace hooks {
 					}
 					case UnitId::TerranMaverick:
 					case UnitId::TerranHarakan:
-					case UnitId::TerranCyprian:
 					{
-						if (in_air)
+						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranCyprian:
+					{
+						if (globals.players[player_id].faction != Faction_TerranNydusTrinity)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranCleric:
 					case UnitId::TerranShamanSupportMode:
@@ -1654,6 +1671,18 @@ namespace hooks {
 						}
 						if (addon_id == UnitId::TerranCovertOps)
 						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranCohort:
+					{
+						if (globals.players[player_id].faction == Faction_TerranNydusTrinity)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
@@ -1748,7 +1777,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranPaladium:
+					case UnitId::TerranPalladium:
 					{
 						if (has_addon || is_training)
 						{
@@ -1768,21 +1797,6 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranAspirant:
-					{
-						if (globals.players[player_id].faction == Faction_TerranGoldenRepublic)
-						{
-							if (in_air || is_adding_on)
-							{
-								return TECH_HIDDEN;
-							}
-							if (addon_id == UnitId::TerranScrapyard)
-							{
-								return TECH_ACTIVE;
-							}
-						}
-						return TECH_HIDDEN;
-					} break;
 					case UnitId::TerranVulture:
 					case UnitId::TerranCyclops:
 					{
@@ -1794,19 +1808,8 @@ namespace hooks {
 					}
 					case UnitId::TerranGoliath:
 					{
-						if (globals.players[player_id].faction != Faction_TerranUpstart)
-						{
-							if (in_air || is_adding_on)
-							{
-								return TECH_HIDDEN;
-							}
-							return TECH_ACTIVE;
-						}
-						return TECH_HIDDEN;
-					}
-					case UnitId::TerranSouthpaw:
-					{
-						if (globals.players[player_id].faction == Faction_TerranUpstart)
+						if (globals.players[player_id].faction != Faction_TerranUpstart
+						&&	globals.players[player_id].faction != Faction_TerranGoldenRepublic)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1830,15 +1833,68 @@ namespace hooks {
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranPhalanxTankMode:
+					{
+						if (globals.players[player_id].faction != Faction_TerranNydusTrinity)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							if (addon_id == UnitId::TerranPalladium)
+							{
+								return TECH_ACTIVE;
+							}
+						}
+						return TECH_HIDDEN;
+					}
 					case UnitId::TerranMadrigalImperiosoMode:
 					{
 						if (in_air || is_adding_on)
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranPaladium)
+						if (addon_id == UnitId::TerranPalladium)
 						{
 							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranAspirant:
+					{
+						if (globals.players[player_id].faction == Faction_TerranGoldenRepublic)
+						{
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranSouthpaw:
+					{
+						if (globals.players[player_id].faction == Faction_TerranUpstart)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranTarasque:
+					{
+						if (globals.players[player_id].faction == Faction_TerranNydusTrinity)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							if (addon_id == UnitId::TerranPalladium)
+							{
+								return TECH_ACTIVE;
+							}
 						}
 						return TECH_HIDDEN;
 					}
@@ -1920,6 +1976,17 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranWraith:
+					{
+						if (globals.players[player_id].faction != Faction_TerranFuturistFederation)
+						{
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
 					case UnitId::TerranTrojan:
 					{
 						if (in_air)
@@ -1931,6 +1998,18 @@ namespace hooks {
 					case UnitId::TerranAncile:
 					{
 						if (globals.players[player_id].faction != Faction_TerranUpstart)
+						{
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranPhiloc:
+					{
+						if (globals.players[player_id].faction == Faction_TerranFuturistFederation)
 						{
 							if (in_air)
 							{

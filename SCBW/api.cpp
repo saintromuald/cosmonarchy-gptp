@@ -1205,7 +1205,6 @@ namespace scbw {
 			|| id == UnitId::TerranVulture
 			|| id == UnitId::TerranCyclops
 			|| id == UnitId::TerranGoliath
-			|| id == UnitId::TerranSouthpaw
 			|| id == UnitId::TerranRamesses
 			|| id == UnitId::TerranDurendal
 			|| id == UnitId::TerranCataphract
@@ -1215,14 +1214,19 @@ namespace scbw {
 
 			|| id == UnitId::TerranWraith
 			|| id == UnitId::TerranAncile
-			|| id == UnitId::TerranWendigo
 			|| id == UnitId::TerranTrojan
 			|| id == UnitId::TerranGorgon
 			|| id == UnitId::TerranWyvern
 			|| id == UnitId::TerranValkyrie
 			|| id == UnitId::TerranCentaur
 			|| id == UnitId::TerranMinotaur
-			|| id == UnitId::TerranMagnetar;
+			|| id == UnitId::TerranMagnetar
+			
+			|| id == UnitId::TerranPhiloc
+			|| id == UnitId::TerranAspirant
+			|| id == UnitId::TerranCohort
+			|| id == UnitId::TerranSouthpaw
+			|| id == UnitId::TerranWendigo;
 	}
 
 	void apply_hallucinating(Unit* unit, u8 player, u32 time) {
@@ -2740,7 +2744,7 @@ namespace scbw {
 				image_id = ImageId::CovertOpsConnector;
 			} break;
 			case UnitId::TerranScrapyard:
-			case UnitId::TerranPaladium:
+			case UnitId::TerranPalladium:
 			case UnitId::TerranMunitionsBay:
 			{
 				image_id = ImageId::MachineShopConnector;

@@ -58,7 +58,7 @@ namespace hooks
 					helper::play_building_land_sound(unit);
 
 					if (unit->order_queue_head
-					&&	unit->order_queue_head->order_id != OrderId::PlaceAddon)
+					&&	unit->order_queue_head->order_id == OrderId::PlaceAddon)
 					{
 						helper::remove_order_from_unit_queue(unit->order_queue_head, unit);
 					}

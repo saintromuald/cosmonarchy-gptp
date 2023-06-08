@@ -772,7 +772,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranMadrigalImperiosoMode:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranPaladium) || scbw::unit_queue_full(unit))
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit))
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -790,7 +790,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranPhalanxTankMode:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranPaladium) || scbw::unit_queue_full(unit)
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)
 										||	 globals.players[unit->player].faction == Faction_TerranNydusTrinity)
 										{
 											current_button_state = Button_State::Invisible;
@@ -810,7 +810,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranTarasque:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranPaladium) || scbw::unit_queue_full(unit)
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)
 										||  globals.players[unit->player].faction != Faction_TerranNydusTrinity)
 										{
 											current_button_state = Button_State::Invisible;
@@ -864,6 +864,12 @@ namespace hooks {
 							{
 								switch (current_button->requirement_var)
 								{
+									case UnitId::TerranWraith:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranFuturistFederation) {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
 									case UnitId::TerranAncile:
 									{
 										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
