@@ -1071,7 +1071,7 @@ namespace hooks {
 									case UnitId::ProtossCrucible:
 									case UnitId::ProtossMatrix:
 									case UnitId::ProtossStridentStratum:
-								//	case UnitId::ProtossEngram:
+									case UnitId::ProtossEngram:
 									case UnitId::ProtossGateway:
 									case UnitId::ProtossCenotaph:
 									case UnitId::ProtossGrandLibrary:
