@@ -53,6 +53,19 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) orders_stay_in_range_wrapper() {
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_stay_in_range(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -61,5 +74,6 @@ namespace hooks {
 	//	jump_patch(secondary_orders_root_wrapper,	0x004EC170,	1);
 	//	jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
 		jump_patch(do_next_queued_order_wrapper,	0x00475000,	1);
+		jump_patch(orders_stay_in_range_wrapper,	0x0047C4F0,	0);
 	}
 }

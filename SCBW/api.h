@@ -757,4 +757,5 @@ namespace scbw
 	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay = false); // Does NOT calculate overlay offset!
 	void remove_unit_overlay(Unit* unit, u32 image_id);						// Does NOT calculate overlay offset!
 	void play_action_sound(u32 sound_id, Unit* unit);
+	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
 }

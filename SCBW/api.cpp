@@ -2996,4 +2996,20 @@ namespace scbw {
 		helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
 		helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
 	}
+
+	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target)
+	{
+		u32 weapon_id = WeaponId::None;
+		if (target->status & UnitStatus::InAir)
+		{
+			weapon_id = units_dat::air_weapon[attacker->id];
+		}
+		else {
+			if (attacker->id != UnitId::ZergLakizilisk || attacker->status & UnitStatus::Burrowed)
+			{
+				weapon_id = units_dat::ground_weapon[attacker->id];
+			}
+		}
+		return weapon_id;
+	}
 }
