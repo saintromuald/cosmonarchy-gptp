@@ -665,8 +665,8 @@ namespace helper {
 
 	s32 hpBarSurfaceBuffer2(s32 a1, s32 a2, u16 a3, s32 a4) {
 		const u32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
-		static u32 a3_xd = a3;
 		static s32 result;
+		u32 a3_xd = a3;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -838,7 +838,7 @@ namespace helper {
 
 	void play_image_iscript(Image* img, u8 iscript_anim) {
 		const u32 playImageIscript_function = 0x004D8470;
-		static u32 iscript_anim_xd = iscript_anim;
+		u32 iscript_anim_xd = iscript_anim;
 		_asm {
 			PUSHAD
 			PUSH iscript_anim_xd
@@ -985,7 +985,7 @@ namespace helper {
 	VectorHead* vectorTransfer(char a1, char a2) {
 		const u32 Func_vectorTransfer = 0x0045A010;
 		static VectorHead* result;
-		static s32 a2_xd = a2;
+		s32 a2_xd = a2;
 		__asm {
 			PUSHAD
 			PUSH a2_xd
@@ -1403,7 +1403,7 @@ namespace helper {
 	bool ai_cast_spell_behavior(Unit* unit, bool isAggro) {
 		const u32 Func_AI_CastSpellBehavior = 0x004A13C0;
 		static u32 result;
-		static b32 is_aggro_xd = isAggro;
+		b32 is_aggro_xd = isAggro;
 		__asm {
 			PUSHAD
 			PUSH is_aggro_xd
@@ -1543,8 +1543,8 @@ namespace helper {
 
 	void prepare_guard_ai(u16 y, u32 player, u16 unit_id, u16 x) {
 		const u32 func_address = 0x00462670;
-		static u32 x_xd = x;
-		static u32 unit_id_xd = unit_id;
+		u32 x_xd = x;
+		u32 unit_id_xd = unit_id;
 		__asm {
 			PUSHAD
 			PUSH x_xd
@@ -1576,8 +1576,8 @@ namespace helper {
 
 	u32 ai_add_cost_to_needs(u32 unit_id, u32 player, u32 type) {
 		const u32 func_address = 0x00447DC0;
-		static u32 type_xd = type;
 		static u32 result;
+		u32 type_xd = type;
 		__asm {
 			PUSHAD
 			PUSH type_xd
@@ -1592,9 +1592,9 @@ namespace helper {
 
 	u32 ai_add_spending_request(u16 unit_id, u32 player, u8 type, char priority, void* value) {
 		const u32 func_address = 0x00447980;
+		static u32 result;
 		u32 type_xd = type;
 		u32 priority_xd = priority;
-		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH value
