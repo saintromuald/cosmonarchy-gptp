@@ -109,7 +109,7 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 }
 
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
-	if (!unit->sprite) {
+	if (unit->is_dead()) {
 		return 0;
 	}
 
@@ -338,7 +338,7 @@ namespace hooks {
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) { // 00479C90
-		if (!unit) {
+		if (!unit || unit->is_dead()) {
 			return;
 		}
 

@@ -1647,8 +1647,8 @@ namespace hooks {
 					case IscriptAnimation::GndAttkRpt:
 					case IscriptAnimation::AirAttkInit:
 					case IscriptAnimation::AirAttkRpt: {
-						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance
-							&& !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown])
+						{
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
@@ -2677,7 +2677,8 @@ namespace hooks {
 
 		// Controlled Demolition - initial cast
 		if (scbw::get_generic_rust_value(unit, RustId::CastControlledDemolition)
-			&& !unit_ext->timers[TimerEmergencyDetonation] && !unit_ext->timers[TimerControlledDemolition]) {
+		&& !unit_ext->timers[TimerEmergencyDetonation] && !unit_ext->timers[TimerControlledDemolition])
+		{
 			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
 			unit_ext->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
 			unit->sprite->create_overlay(ImageId::ControlledDemolition);
@@ -3528,7 +3529,7 @@ namespace hooks {
 								u32 player = buffer[2];
 								for (u32 i = 0; i < SelectionCap; ++i) {
 									Unit* unit = players_selections->unit[player][i];
-									if (!unit || !unit->sprite || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
+									if (!unit || !unit->is_dead() || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
 										continue;
 									}
 									unit->order_to(OrderId::CTFCOP2, unit->position.x, unit->position.y);
