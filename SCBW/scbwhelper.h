@@ -115,7 +115,7 @@ namespace helper {
 
 	// For compile_health_bar
 	void update_image_data_draw(Image* result);
-	void play_image_iscript(Image* img, u8 iscriptAnim);
+	void play_image_iscript(Image* img, u8 iscript_anim);
 
 	// For AI_FindTransport
 	bool can_enter_transport(Unit* a1, Unit* a2);
@@ -184,9 +184,8 @@ namespace helper {
 	bool ai_has_no_defense_build(s32 player);
 	bool unit_can_see_cloaked_target(Unit* target, Unit* unit);
 	void ai_respond_to_cloaked_threat(Unit* threat, Unit* unit);
-	bool unit_can_attack_target(Unit* target, Unit* unit, s32 checkDetection);
+	bool unit_can_attack_target(Unit* target, Unit* unit, b32 check_detection);
 	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);
-	__int64 AI_PrepareToFlee(Unit* enemy, Unit* unit);
 
 	// for iterate_building_ai
 	u16 ai_remove_from_towns(Unit* worker);
@@ -221,12 +220,11 @@ namespace helper {
 	s32 ai_has_forces_moving_to_group(u32 player);
 
 	// for ai_attack_manager
-	u16 populate_regions_with_own(char* regionData, u32 player);
-	void populate_regions_with_enemy(u32 player, char* regionData);
-	s32 ai_get_neighboring_region_types(char* regionData);
-	void ai_finish_region_accessibility(char* regionData);
-	s32 ai_set_attack_grouping_region(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
+	u16 populate_regions_with_own(char* region_data, u32 player);
+	void populate_regions_with_enemy(u32 player, char* region_data);
+	s32 ai_get_neighboring_region_types(char* region_data);
+	void ai_finish_region_accessibility(char* region_data);
+	s32 ai_set_attack_grouping_region(u32 airAttack, u32 alsoVeryNear, u32 player, char* region_data, s32 x, s32 y, u32 alwaysOverwriteLastAttack);
 	char cancel_unit(Unit* structure);
 
 	bool unit_cant_see_cloaked_target(Unit* unit, Unit* target);											// 00401D60
@@ -999,7 +997,7 @@ namespace helper {
 
 	// AI utility
 	void give_ai(Unit* unit);																				// 00463040
-	void ai_training_simple_military(Unit* newUnit, Unit* source_unit);										// 0043E280
+	void ai_training_simple_military(Unit* new_unit, Unit* source_unit);									// 0043E280
 
 	// For delete_ai_town_if_needed
 	AiTown* try_begin_delete_town(AiTown* town);															// 00434330

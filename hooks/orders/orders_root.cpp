@@ -549,14 +549,13 @@ namespace hooks {
 	}
 
 	// Hooked to nullcheck target sprite. -Pr0nogo
-	void orders_stay_in_range(Unit* unit) // 00447C4F0
+	void orders_stay_in_range(Unit* unit) // 0047C4F0
 	{
 		Unit* target = unit->order_target.unit;
 		if (target && !target->is_dead()) // is_dead is new
 		{
-			unit->order_target.pt.x = target->position.x;
-			unit->order_target.pt.y = target->position.y;
-			if (!helper::unit_can_attack_target(target, unit, 1))
+			unit->order_target.pt = target->position;
+			if (!helper::unit_can_attack_target(target, unit, true))
 			{
 				if (!(unit->status & UnitStatus::AttackMove) && !unit->unit_ai)
 				{
@@ -570,11 +569,16 @@ namespace hooks {
 			{
 				if (!target)
 				{
-					goto LABEL_62;
+					helper::make_to_hold_position(unit);
+					goto turn_to_face_target;
 				}
 				if (!helper::is_target_visible(target, unit))
 				{
-					goto LABEL_63;
+					if (!helper::move_towards(unit->order_target.unit, unit))
+					{
+						return;
+					}
+					goto turn_to_face_target;
 				}
 				Unit* final_attacker = unit->subunit;
 				if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit))
@@ -589,20 +593,20 @@ namespace hooks {
 				||  min_range && helper::is_target_within_min_range(final_attacker, min_range, target)
 				|| !helper::is_target_within_min_movement_range(final_attacker, target, max_range))
 				{
-				LABEL_63:
 					if (!helper::move_towards(unit->order_target.unit, unit))
 					{
 						return;
 					}
 				} else {
-				LABEL_62:
 					helper::make_to_hold_position(unit);
 				}
-				goto LABEL_42;
+				goto turn_to_face_target;
 			}
+
 			if (!target)
 			{
-				goto LABEL_64;
+				unit->main_order_state = 1;
+				goto turn_to_face_target;
 			}
 
 			if (helper::is_target_visible(target, unit))
@@ -622,7 +626,8 @@ namespace hooks {
 						u32 max_range_2 = helper::get_unit_max_weapon_range(unit, weapon_id);
 						if (helper::is_target_within_min_movement_range(final_attacker_2, target, max_range_2))
 						{
-							goto LABEL_64;
+							unit->main_order_state = 1;
+							goto turn_to_face_target;
 						}
 					}
 				}
@@ -630,9 +635,8 @@ namespace hooks {
 
 			if (helper::move_to_target(unit->order_target.unit, unit))
 			{
-			LABEL_64:
 				unit->main_order_state = 1;
-			LABEL_42:
+			turn_to_face_target:
 				if (unit->id == UnitId::TerranGoliath && !(unit->movement_flags & UnitMovement::UnitMovement_Lump))
 				{
 					u32 pos_x = unit->order_target.pt.x;

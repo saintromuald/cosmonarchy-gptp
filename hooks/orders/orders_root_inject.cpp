@@ -41,7 +41,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) do_next_queued_order_wrapper() {
+	void __declspec(naked) do_next_queued_order_wrapper() { // 00475000
 		static Unit* unit;
 		__asm {
 			MOV unit, ECX
@@ -54,7 +54,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) orders_stay_in_range_wrapper() {
+	void __declspec(naked) orders_stay_in_range_wrapper() { // 0047C4F0
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX

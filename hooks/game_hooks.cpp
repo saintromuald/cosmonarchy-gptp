@@ -2190,7 +2190,7 @@ namespace hooks {
 		if (unit->status & UnitStatus::Unmovable
 		&&  unit->main_order_id == OrderId::AttackUnit
 		&& !unit->movement_flags
-		&&  unit->movement_state == 0x0A)
+		&&  unit->movement_state == UnitMovement::UnitMovement_Dormant)
 		{
 			unit->status ^= UnitStatus::Unmovable;
 		}
