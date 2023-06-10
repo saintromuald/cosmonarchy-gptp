@@ -572,9 +572,10 @@ namespace hooks {
 					helper::make_to_hold_position(unit);
 					goto turn_to_face_target;
 				}
-				if (!helper::is_target_visible(target, unit))
+
+				if (!helper::is_target_visible(unit, target))
 				{
-					if (!helper::move_towards(unit->order_target.unit, unit))
+					if (!helper::move_towards(unit, unit->order_target.unit))
 					{
 						return;
 					}
@@ -593,7 +594,7 @@ namespace hooks {
 				||  min_range && helper::is_target_within_min_range(final_attacker, min_range, target)
 				|| !helper::is_target_within_min_movement_range(final_attacker, target, max_range))
 				{
-					if (!helper::move_towards(unit->order_target.unit, unit))
+					if (!helper::move_towards(unit, unit->order_target.unit))
 					{
 						return;
 					}
@@ -609,7 +610,7 @@ namespace hooks {
 				goto turn_to_face_target;
 			}
 
-			if (helper::is_target_visible(target, unit))
+			if (helper::is_target_visible(unit, target))
 			{
 				Unit* final_attacker_2 = unit->subunit;
 				if (!final_attacker_2 || !(units_dat::base_property[final_attacker_2->id] & UnitProperty::Subunit))

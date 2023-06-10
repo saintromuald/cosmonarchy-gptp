@@ -504,7 +504,7 @@ namespace helper {
 	//// target_related
 
 	// for is_unit_target_out_of_max_range
-	s32 get_unit_max_weapon_range(Unit* a1, unsigned __int8 a2);
+	s32 get_unit_max_weapon_range(Unit* unit, u8 weapon_id);																		// 00475870
 
 	// for is_ready_to_attack
 	u32 get_distance_to_unit(Unit* a1, Unit* a2);
@@ -529,7 +529,7 @@ namespace helper {
 
 	// for generic_right_click_unit_proc_2
 	s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error);											// 00474D90
-	u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);																	// 00491E80
+	u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);																// 00491E80
 
 	// for cmdrecv_hold_position
 	Unit* get_active_player_next_selection();																						// 0049A850
@@ -547,7 +547,7 @@ namespace helper {
 	//// receive_command
 	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
 	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 bCommandType);												// 004756E0
-	u32 can_do_targeted_order(Unit* unit, u8 order_id);																					// 0049A410
+	u32 can_do_targeted_order(Unit* unit, u8 order_id);																				// 0049A410
 	bool can_target_self(Unit* unit, u8 order_id);																					// 0049A480
 	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
