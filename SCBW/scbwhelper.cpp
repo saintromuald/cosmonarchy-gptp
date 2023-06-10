@@ -1959,35 +1959,34 @@ namespace helper {
 	}
 
 	void get_weapon_begin_iscriptt(Unit* unit, IscriptAnimation::Enum anim) {
-		const u32 Func_getWeaponBeginIscript = 0x00476ED0;
+		const u32 func_address = 0x00476ED0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOVZX EDX, anim
-			CALL Func_getWeaponBeginIscript
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void pick_new_target_if_needed(Unit* unit) {
-		const u32 Func_Sub477510 = 0x00477510;
+		const u32 func_address = 0x00477510;
 		__asm {
 			PUSHAD
 			PUSH unit
-			CALL Func_Sub477510
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void attack_move_try_pick_target(Unit* unit, u8 order_id) {
-		const u32 Func_Sub477820 = 0x00477820;
-		static u32 order_id_xd;
-		order_id_xd = order_id;
+		const u32 func_address = 0x00477820;
+		u32 order_id_xd = order_id;
 		__asm {
 			PUSHAD
 			PUSH order_id_xd
 			MOV EAX, unit
-			CALL Func_Sub477820
+			CALL func_address
 			POPAD
 		}
 	}
@@ -1995,8 +1994,7 @@ namespace helper {
 	bool attack_move_react_to_attack(Unit* unit, u8 order_id) {
 		const u32 func_address = 0x00478370;
 		static b32 result;
-		static u32 order_id_xd;
-		order_id_xd = order_id;
+		u32 order_id_xd = order_id;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -12021,15 +12019,15 @@ namespace helper {
 		return result;
 	}
 
-	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player_id) {
+	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player) {
 		const u32 func_address = 0x00479930;
 		u32 weapon_id_xd = weapon_id;
-		s32 direction_xd = direction;
+		// We do not patch direction arg since it's gimmicked to work with aise. -Pr0nogo
 		__asm {
 			PUSHAD
-			PUSH attacking_player_id
+			PUSH attacking_player
 			PUSH attacker
-			PUSH direction_xd
+			PUSH direction
 			PUSH divisor
 			PUSH weapon_id_xd
 			MOV EDI, target

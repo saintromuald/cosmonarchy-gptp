@@ -1447,7 +1447,7 @@ namespace helper {
 
 	void fire_unit_weapon(Unit* unit, u8 weapon_id);																						// 00479C90
 	Thingy* ufl_unstable_randomize(Flingy* flingy);																							// 004955F0
-	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player_id);	// 00479930
+	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player);		// 00479930
 	Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above);										// 004D6D90
 	u32 iscript_use_lo_file(void* out_coords, Image* image, u8 a3, u8 frame_offset);														// 004D5770
 	void hide_image(Image* image);																											// 00401100
