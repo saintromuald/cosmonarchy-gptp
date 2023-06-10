@@ -218,6 +218,11 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		cost -= 50;
 	}
 
+	// Value deployed units slightly more
+	if (unit_id_is_siege_mode(target->id)) {
+		cost -= 15;
+	}
+
 	// Value big boys more
 	switch (target->id) {
 		case UnitId::ProtossAnthelion: {
