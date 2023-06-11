@@ -1828,4 +1828,31 @@ namespace hooks {
 		bullet->order_unit_id = UnitId::None;
 		return bullet;
 	}
+
+	// Hooked to nullcheck sprites. -Pr0nogo
+	void bullet_behavior_follow(Bullet* bullet) // 0048B500
+	{
+		Unit* target = bullet->attack_target.unit;
+		if (!target || target->is_dead())
+		{
+			bullet->behavior_type = 1;
+			bullet->attack_target.unit = 0;
+			bullet->main_order_state = 0;
+			bullet->order_unit_id = UnitId::None;
+			helper::bullet_behavior_fly(bullet);
+		} else {
+			if (!(bullet->hit_flags & 1)) // miss
+			{
+				Bullet* changed_bullet = helper::change_move_pos(bullet, target->sprite->position.y, target->sprite->position.x);
+				helper::bullet_behavior_fly(changed_bullet);
+			} else {
+				bullet->behavior_type = 1;
+				bullet->attack_target.pt.x = target->position.x;
+				bullet->attack_target.pt.y = target->position.y;
+				bullet->main_order_state = 0;
+				bullet->order_unit_id = UnitId::None;
+				helper::bullet_behavior_fly(bullet);
+			}
+		}
+	}
 }

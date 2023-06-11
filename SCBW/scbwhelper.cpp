@@ -5353,12 +5353,12 @@ namespace helper {
 	}
 
 	// For bulletBehavior_Bounce
-	Bullet* change_move_pos(Bullet* a1, s32 a2, s32 a3) {
+	Bullet* change_move_pos(Bullet* bullet, s32 a2, s32 a3) {
 		const u32 Func_changeMovePos = 0x00495240;
 		static Bullet* result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
+			MOV EAX, bullet
 			MOV ECX, a2
 			MOV ESI, a3
 			CALL Func_changeMovePos
@@ -7910,51 +7910,51 @@ namespace helper {
 
 	// For progressBulletFrame
 	void bullet_behavior_fly(Bullet* bullet) {
-		const u32 Func_bulletBehaviorFly = 0x0048B3B0;
+		const u32 func_address = 0x0048B3B0;
 		__asm {
 			PUSHAD
 			MOV EAX, bullet
-			CALL Func_bulletBehaviorFly
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void bullet_behavior_follow(Bullet* bullet) {
-		const u32 Func_bulletBehaviorFollow = 0x0048B500;
+		const u32 func_address = 0x0048B500;
 		__asm {
 			PUSHAD
 			MOV EAX, bullet
-			CALL Func_bulletBehaviorFollow
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void bullet_behavior_bounce(Bullet* bullet) {
-		const u32 Func_bulletBehaviorBounce = 0x0048B2D0;
+		const u32 func_address = 0x0048B2D0;
 		__asm {
 			PUSHAD
 			MOV EDI, bullet
-			CALL Func_bulletBehaviorBounce
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void bullet_behavior_persist(Bullet* bullet) {
-		const u32 Func_bulletBehaviorPersist = 0x0048BC70;
+		const u32 func_address = 0x0048BC70;
 		__asm {
 			PUSHAD
 			MOV ECX, bullet
-			CALL Func_bulletBehaviorPersist
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void bullet_behavior_instant(Bullet* bullet) {
-		const u32 Func_bulletBehaviorInstant = 0x0048A560;
+		const u32 func_address = 0x0048A560;
 		__asm {
 			PUSHAD
 			MOV EAX, bullet
-			CALL Func_bulletBehaviorInstant
+			CALL func_address
 			POPAD
 		}
 	}
