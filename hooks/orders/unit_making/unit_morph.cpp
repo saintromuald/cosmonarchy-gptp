@@ -64,13 +64,13 @@ namespace hooks {
 			bool no_two_units = false;
 			if (units_dat::base_property[unit->create_origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
 			||  unit_ext->values[ValueSpecialSovrolethBirth]
-			||  unit_ext->values[ValueCustomEggActive]) {
+			||  unit_ext->values[ValueCustomEggActive])
+			{
 				no_two_units = true;
 			}
 
 			bool offset_unit = true;
-			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg
-				|| unit->previous_unit_type == UnitId::ZergCocoon) {
+			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg || unit->previous_unit_type == UnitId::ZergCocoon) {
 				offset_unit = false;
 			}
 			if (unit_ext->values[ValueSpecialSovrolethBirth]) {
@@ -105,6 +105,8 @@ namespace hooks {
 				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
 				if (new_unit) {
 					new_unit->rally = unit->rally;
+					UnitExt* new_ext = get_unit_ext(new_unit);
+					new_ext->values[ValueOriginatedFromOcsalLarva] = unit_ext->values[ValueOriginatedFromOcsalLarva];
 					helper::order_new_unit_to_rally(new_unit, factory);
 					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
 						helper::select_new_unit(new_unit);
