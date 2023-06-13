@@ -1874,7 +1874,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranMissileSilo:
+			case UnitId::TerranAnvil:
 			{
 				// Light up yellow when missile is loaded. -Pr0nogo
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {

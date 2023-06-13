@@ -103,7 +103,7 @@ namespace hooks
 					if (!current_unit)
 					{
 						end_again_idiot = true;
-					} else if (current_unit->id == UnitId::TerranMissileSilo && current_unit->building.silo.is_ready) {
+					} else if (current_unit->id == UnitId::TerranAnvil && current_unit->building.silo.is_ready) {
 						end_again_idiot = true;
 					} else {
 						current_unit = current_unit->player_link.next;

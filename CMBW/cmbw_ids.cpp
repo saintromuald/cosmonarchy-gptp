@@ -18,7 +18,7 @@ bool unit_id_is_gas_structure(u16 unit_id) {
 
 bool unit_id_is_smaller_building(u16 unit_id) {
 	return (units_dat::base_property[unit_id] & UnitProperty::Addon &&
-		(unit_id != UnitId::TerranFountainhead && unit_id != UnitId::TerranAtelier && unit_id != UnitId::TerranParticleAccelerator))
+		(unit_id != UnitId::TerranFountainhead && unit_id != UnitId::TerranAtelier && unit_id != UnitId::TerranHadron))
 		|| unit_id == UnitId::TerranSupplyDepot
 		|| unit_id == UnitId::TerranWatchdog
 		|| unit_id == UnitId::TerranAnchor
@@ -41,7 +41,7 @@ b32 unit_id_is_tech(u32 unit_id) {
 	if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 		switch (unit_id) {
 			case UnitId::TerranComsatStation:
-			case UnitId::TerranMissileSilo:
+			case UnitId::TerranAnvil:
 			case UnitId::TerranQuarry:
 				return false;
 		}
@@ -186,7 +186,7 @@ bool unit_id_has_addon(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::TerranMinistry:
 		case UnitId::TerranTreasury:
-		case UnitId::TerranBarracks:
+		case UnitId::TerranStockade:
 		case UnitId::TerranCaptaincy:
 		case UnitId::TerranIronCouncil:
 		case UnitId::TerranFulcrum:

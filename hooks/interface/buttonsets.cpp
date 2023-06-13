@@ -687,14 +687,14 @@ namespace hooks {
 					{
 						switch (unit->id)
 						{
-							case UnitId::TerranBarracks:
+							case UnitId::TerranStockade:
 							{
 								switch (current_button->requirement_var)
 								{
 									case UnitId::TerranCleric:
 									case UnitId::TerranShamanSupportMode:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranMedbay) || scbw::unit_queue_full(unit))
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranVestry) || scbw::unit_queue_full(unit))
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -704,7 +704,7 @@ namespace hooks {
 									case UnitId::TerranEidolon:
 									case UnitId::TerranSavant:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranCovertOps) || scbw::unit_queue_full(unit))
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranCovenant) || scbw::unit_queue_full(unit))
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -885,7 +885,7 @@ namespace hooks {
 									case UnitId::TerranSalamander:
 									case UnitId::TerranSundog:
 									{
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranMunitionsBay) || scbw::unit_queue_full(unit))
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranRotary) || scbw::unit_queue_full(unit))
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -908,7 +908,7 @@ namespace hooks {
 							{
 								switch (current_button->requirement_var)
 								{
-									case UnitId::TerranParticleAccelerator:
+									case UnitId::TerranHadron:
 									{
 										if (!has_addon && !is_training && !is_adding_on)
 										{
@@ -923,7 +923,7 @@ namespace hooks {
 										if (scbw::unit_queue_full(unit) || is_adding_on)
 										{
 											current_button_state = Button_State::Invisible;
-										} else if (!scbw::all_selected_units_have_addon(UnitId::TerranParticleAccelerator))
+										} else if (!scbw::all_selected_units_have_addon(UnitId::TerranHadron))
 										{
 											current_button_state = Button_State::Disabled;
 										} else {
@@ -949,7 +949,7 @@ namespace hooks {
 										case UnitId::TerranAnchor:
 										case UnitId::TerranTreasury:
 										case UnitId::TerranAtlas:
-										case UnitId::TerranBarracks:
+										case UnitId::TerranStockade:
 										case UnitId::TerranFulcrum:
 										case UnitId::TerranStarpad:
 										{
@@ -2102,7 +2102,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranMissileSilo:
+								case UnitId::TerranAnvil:
 								{
 									if (current_button->icon_id == IconId::RadioactiveUnused2) // Missile Silo - Scorched Earth
 									{
@@ -2136,7 +2136,7 @@ namespace hooks {
 										}
 									}
 								} break;
-								case UnitId::TerranBarracks:
+								case UnitId::TerranStockade:
 								case UnitId::TerranCaptaincy:
 								case UnitId::TerranFulcrum:
 								case UnitId::TerranIronFoundry:

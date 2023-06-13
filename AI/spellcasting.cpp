@@ -341,7 +341,7 @@ namespace
 		Unit* current_unit = first_player_unit->unit[nuker->player];
 		while (current_unit && !silo)
 		{
-			if (current_unit->id == UnitId::TerranMissileSilo
+			if (current_unit->id == UnitId::TerranAnvil
 				&& current_unit->building.silo.is_ready)
 			{
 				if (!check_nuke_available_for_nuker)
@@ -349,7 +349,7 @@ namespace
 					Unit* nuke = current_unit->building.silo.nuke;
 					if (!nuke->connected_unit
 					||   nuke->connected_unit == nuker
-					||   nuke->connected_unit->id == UnitId::TerranMissileSilo)
+					||   nuke->connected_unit->id == UnitId::TerranAnvil)
 					{
 						silo = current_unit;
 					}

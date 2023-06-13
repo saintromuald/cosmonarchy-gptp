@@ -348,7 +348,7 @@ namespace hooks {
 
 	// Hooked to rule out AI crashes - Pr0nogo
 	void ai_create_nuke(Unit* silo, Unit* result) { // 0045B7A0 - originally had 3 args; last one was unused
-		if (silo->id == UnitId::TerranMissileSilo && !silo->building.silo.is_ready) {
+		if (silo->id == UnitId::TerranAnvil && !silo->building.silo.is_ready) {
 			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
 			if (nuke) {
 				helper::update_unit_stats_and_finish_building(nuke);

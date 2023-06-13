@@ -2735,17 +2735,17 @@ namespace scbw {
 	Image* get_addon_connector_image(Unit* unit) {
 		u16 image_id = 0;
 		switch (unit->id) {
-			case UnitId::TerranMedbay:
+			case UnitId::TerranVestry:
 			{
 				image_id = ImageId::MedbayConnector;
 			} break;
-			case UnitId::TerranCovertOps:
+			case UnitId::TerranCovenant:
 			{
 				image_id = ImageId::CovertOpsConnector;
 			} break;
 			case UnitId::TerranScrapyard:
 			case UnitId::TerranPalladium:
-			case UnitId::TerranMunitionsBay:
+			case UnitId::TerranRotary:
 			{
 				image_id = ImageId::MachineShopConnector;
 			} break;

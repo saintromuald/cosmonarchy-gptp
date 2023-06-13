@@ -228,7 +228,7 @@ namespace hooks
 				}
 			}
 			unit_id = helper::get_last_queue_slot_id(active_unit);
-			if (unit_id == UnitId::TerranMissileSilo)
+			if (unit_id == UnitId::TerranAnvil)
 			{
 				helper::stat_nuke_count(dialog, index);
 				index++;
@@ -377,7 +377,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (unit->id == UnitId::TerranMissileSilo) {
+		if (unit->id == UnitId::TerranAnvil) {
 			helper::draw_nuke_silo_info(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);

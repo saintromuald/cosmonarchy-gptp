@@ -225,8 +225,8 @@ namespace flingy_id
 		TerranPaladin = 215,
 		TerranMadrigalImperiosoMode = 216,
 		TerranSavant = 217,
-		TerranParticleAccelerator = 218,
-		TerranMunitionsBay = 219,
+		TerranHadron = 218,
+		TerranRotary = 219,
 		TerranDrydock = 220, // unused
 		TerranFutureStation = 221,
 		TerranGallery = 222, // unused
@@ -351,7 +351,7 @@ namespace flingy_id
 		Christmas_MineralField1 = 341,
 		Christmas_MineralField2 = 342,
 		Christmas_MineralField3 = 343,
-		TerranMedbay = 344,
+		TerranVestry = 344,
 		TerranHeracles = 345,
 		TerranPazuzu = 346,
 		EcclesiastImpact = 347,

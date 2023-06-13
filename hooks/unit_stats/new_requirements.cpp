@@ -47,6 +47,7 @@ namespace hooks {
 			Tier3X,
 		};
 		bool TierUnlocked[3][5];
+
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
 										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
@@ -77,7 +78,7 @@ namespace hooks {
 				case UnitId::TerranAnchor:
 				case UnitId::TerranTreasury:
 				case UnitId::TerranAtlas:
-				case UnitId::TerranBarracks:
+				case UnitId::TerranStockade:
 				case UnitId::TerranFulcrum:
 				case UnitId::TerranStarpad:
 				{
@@ -132,7 +133,7 @@ namespace hooks {
 				{
 					return true;
 				} break;
-				case UnitId::TerranMissileSilo:
+				case UnitId::TerranAnvil:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -153,7 +154,7 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMissileSilo))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranAnvil))
 		{
 			switch (unit_id)
 			{
@@ -181,7 +182,7 @@ namespace hooks {
 				{
 					return true;
 				} break;
-				case UnitId::TerranMissileSilo:
+				case UnitId::TerranAnvil:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -210,15 +211,15 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranBarracks))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStockade))
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranMedbay:
+				case UnitId::TerranVestry:
 				{
 					return true;
 				} break;
-				case UnitId::TerranCovertOps:
+				case UnitId::TerranCovenant:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
 					{
@@ -235,7 +236,7 @@ namespace hooks {
 				case UnitId::TerranCleric:
 				case UnitId::TerranShamanSupportMode:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranMedbay))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry))
 					{
 						return true;
 					}
@@ -243,7 +244,7 @@ namespace hooks {
 				case UnitId::TerranEidolon:
 				case UnitId::TerranSavant:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranCovertOps))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranCovenant))
 					{
 						return true;
 					}
@@ -410,7 +411,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranMunitionsBay:
+				case UnitId::TerranRotary:
 				case UnitId::TerranCommandment:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2X])
@@ -427,7 +428,7 @@ namespace hooks {
 				case UnitId::TerranSundog:
 				case UnitId::TerranSalamander:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranMunitionsBay))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranRotary))
 					{
 						return true;
 					}
@@ -446,7 +447,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranParticleAccelerator:
+				case UnitId::TerranHadron:
 				case UnitId::TerranCentaur:
 				case UnitId::TerranMinotaur:
 				case UnitId::TerranMagnetar:
@@ -456,7 +457,7 @@ namespace hooks {
 				case UnitId::TerranHippogriff:
 				case UnitId::TerranPhobos:
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranParticleAccelerator))
+					if (player_has_completed_unit_id(player_id, UnitId::TerranHadron))
 					{
 						return true;
 					}
@@ -1429,7 +1430,7 @@ namespace hooks {
 					case UnitId::TerranAnchor:
 					case UnitId::TerranTreasury:
 					case UnitId::TerranAtlas:
-					case UnitId::TerranBarracks:
+					case UnitId::TerranStockade:
 					case UnitId::TerranFulcrum:
 					case UnitId::TerranStarpad:
 					{
@@ -1497,7 +1498,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranMissileSilo:
+					case UnitId::TerranAnvil:
 					{
 						if (has_addon || is_training)
 						{
@@ -1511,7 +1512,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranMissileSilo:
+			case UnitId::TerranAnvil:
 			{
 				switch (unit_id)
 				{
@@ -1546,7 +1547,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranMissileSilo:
+					case UnitId::TerranAnvil:
 					{
 						if (has_addon || is_training)
 						{
@@ -1604,11 +1605,11 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranBarracks:
+			case UnitId::TerranStockade:
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranMedbay:
+					case UnitId::TerranVestry:
 					{
 						if (has_addon || is_training)
 						{
@@ -1616,7 +1617,7 @@ namespace hooks {
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranCovertOps:
+					case UnitId::TerranCovenant:
 					{
 						if (has_addon || is_training)
 						{
@@ -1656,7 +1657,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranMedbay)
+						if (addon_id == UnitId::TerranVestry)
 						{
 							return TECH_ACTIVE;
 						}
@@ -1669,7 +1670,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranCovertOps)
+						if (addon_id == UnitId::TerranCovenant)
 						{
 							return TECH_ACTIVE;
 						}
@@ -2037,7 +2038,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranMunitionsBay:
+					case UnitId::TerranRotary:
 					case UnitId::TerranCommandment:
 					{
 						if (has_addon || is_training)
@@ -2067,7 +2068,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranMunitionsBay)
+						if (addon_id == UnitId::TerranRotary)
 						{
 							return TECH_ACTIVE;
 						}
@@ -2092,7 +2093,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranParticleAccelerator:
+					case UnitId::TerranHadron:
 					{
 						if (has_addon || is_training)
 						{
@@ -2117,7 +2118,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranParticleAccelerator)
+						if (addon_id == UnitId::TerranHadron)
 						{
 							return TECH_ACTIVE;
 						}

@@ -532,8 +532,8 @@ namespace SpriteId
 		TerranPaladin = 522,
 		TerranMadrigalImperiosoMode = 523,
 		TerranSavant = 524,
-		TerranParticleAccelerator = 525,
-		TerranMunitionsBay = 526,
+		TerranHadron = 525,
+		TerranRotary = 526,
 		TerranDrydock = 527, // unused
 		TerranFutureStation = 528,
 		TerranGallery = 529, // unused
@@ -682,7 +682,7 @@ namespace SpriteId
 		Christmas_MineralField1 = 672,
 		Christmas_MineralField2 = 673,
 		Christmas_MineralField3 = 674,
-		TerranMedbay = 675,
+		TerranVestry = 675,
 		TerranHeracles = 676,
 		TerranPazuzu = 677,
 		EcclesiastWeaponImpact = 678,

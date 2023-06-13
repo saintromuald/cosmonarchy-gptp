@@ -157,12 +157,12 @@ void unit_destructor_special_cases(Unit* unit) {
 		} break;
 		case UnitId::TerranNuclearMissile:
 		{
-			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranMissileSilo) {
+			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranAnvil) {
 				unit->connected_unit->building.silo.nuke = 0;
 				unit->connected_unit->building.silo.is_ready = false;
 			}
 		} break;
-		case UnitId::TerranMissileSilo:
+		case UnitId::TerranAnvil:
 		{
 			if (unit->building.silo.nuke) {
 				unit->building.silo.nuke->remove();
@@ -210,7 +210,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	// These require the unit to be completed
 	if (unit->status & UnitStatus::Completed) {
 		switch (unit->id) {
-			case UnitId::TerranMissileSilo:
+			case UnitId::TerranAnvil:
 			{
 				// Missile Silo - death while armed
 				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {

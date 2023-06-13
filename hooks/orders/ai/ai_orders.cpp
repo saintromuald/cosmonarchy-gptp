@@ -2017,7 +2017,7 @@ namespace hooks {
 				placement_data_2 = 0;
 			} break;
 			case UnitId::TerranComsatStation:
-			case UnitId::TerranMissileSilo:
+			case UnitId::TerranAnvil:
 			{
 				unit_id = UnitId::TerranMinistry;
 			} break;
@@ -2025,7 +2025,7 @@ namespace hooks {
 			{
 				unit_id = UnitId::TerranStarport;
 			} break;
-			case UnitId::TerranCovertOps:
+			case UnitId::TerranCovenant:
 			case UnitId::TerranPhysicsLab:
 			{
 				unit_id = UnitId::TerranDaedala;

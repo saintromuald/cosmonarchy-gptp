@@ -5,6 +5,22 @@
 #include "logger.h"
 #include "ai_layouts.h"
 
+static bool player_has_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_units_of_id(player_id, unit_id);
+}
+
+static bool player_has_completed_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_units_of_id(player_id, unit_id);
+}
+
+static bool player_has_completed_landed_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_landed_units_of_id(player_id, unit_id);
+}
+
+static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
+}
+
 namespace hooks
 {
 	// Don't know what this was hooked for; tidied May 2021 - Pr0nogo
@@ -125,7 +141,7 @@ namespace hooks
 			{
 				helper::ai_cast_spell_behavior(unit, 0);
 			} break;
-			case UnitId::TerranMissileSilo:
+			case UnitId::TerranAnvil:
 			{
 				helper::ai_nuke_silo_behavior(unit);
 			} break;
@@ -560,9 +576,7 @@ namespace hooks
 				{
 					return player;
 				}
-			}
-			else
-			{
+			} else {
 				refinery = helper::get_ai_refinery(town, 1, 1);
 				if (!refinery)
 				{
@@ -570,20 +584,41 @@ namespace hooks
 				}
 				priority = 90;
 			}
-			u8 race = g_player_table[player].race;
-			// TODO: Add handling for custom races. -Pr0nogo
-			u16 refinery_id = UnitId::TerranReservoir;
-			if (race == RaceId::Zerg)
+
+			u16 refinery_id = UnitId::None;
+			u8 race = g_player_table[player].race; // TODO: Add handling for custom races. -Pr0nogo
+			switch (race)
 			{
-				refinery_id = UnitId::ZergExcisant;
+				case RaceId::Terran:
+				{
+					if (player_has_completed_landed_unit_id(player, UnitId::TerranAtlas)) {
+						refinery_id = UnitId::TerranReservoir;
+					}
+					if (player_has_completed_landed_unit_id(player, UnitId::TerranDaedala)) {
+						refinery_id = UnitId::TerranWellbore;
+					}
+				} break;
+				case RaceId::Protoss:
+				{
+					refinery_id = UnitId::ProtossAquifer;
+				} break;
+				case RaceId::Zerg:
+				{
+					if (player_has_unit_id(player, UnitId::ZergIrolIris)) {
+						refinery_id = UnitId::ZergExcisant;
+					}
+					if (player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
+						refinery_id = UnitId::ZergEzigrisant;
+					}
+				} break;
 			}
-			else if (race == RaceId::Protoss)
-			{
-				refinery_id = UnitId::ProtossAquifer;
+
+			result = 0;
+			if (refinery_id != UnitId::None) {
+				result = helper::ai_add_town_spending_request(player, priority, refinery_id, town);
 			}
-			result = helper::ai_add_town_spending_request(player, priority, refinery_id, town);
 		}
-		return result;
+		return result; // Actually unused
 	}
 
 	// Hooked to allow AI to train guards while under attack. -Pr0nogo

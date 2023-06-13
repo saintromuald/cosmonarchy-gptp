@@ -92,14 +92,14 @@ namespace UnitId
 		TerranZergMeleeHybrid								= 349,
 
 	// Terran-Building
-		TerranMedbay										= 119,		// Starbase / Terran Unused 1
-		TerranMunitionsBay									= 121,		// Repair Bay / Terran Unused 2
+		TerranVestry										= 119,		// Starbase / Terran Unused 1
+		TerranRotary										= 121,		// Repair Bay / Terran Unused 2
 		TerranDiadem										= 127,		// Ion Cannon
 		TerranGuildhall										= 147,		// Overmind (With Shell)
 		TerranFountainhead									= 163,		// Citadel of Adun
 		TerranQuarry										= 174,		// Protoss Temple
 		TerranTinkerersTower								= 175,		// Xel'Naga Temple
-		TerranParticleAccelerator							= 189,		// Warp Gate
+		TerranHadron										= 189,		// Warp Gate
 		TerranBioticBastion									= 190,		// Psi Disruptor
 		TerranIronFoundry									= 198,		// Terran Flag Beacon
 		TerranCaptaincy										= 199,		// Protoss Flag Beacon
@@ -393,16 +393,16 @@ namespace UnitId
 		Spell_DisruptionWeb									= 105,
 		TerranMinistry										= 106,
 		TerranComsatStation									= 107,
-		TerranMissileSilo									= 108,
+		TerranAnvil											= 108,
 		TerranSupplyDepot									= 109, // Threshold - unit origin
 		TerranReservoir										= 110,
-		TerranBarracks										= 111,
+		TerranStockade										= 111,
 		TerranAcademy										= 112,
 		TerranFulcrum										= 113,
 		TerranStarport										= 114,
 		TerranCommandment									= 115,
 		TerranDaedala										= 116,
-		TerranCovertOps										= 117,
+		TerranCovenant										= 117,
 		TerranPhysicsLab									= 118,
 		UnusedTerran1										= 119,
 		TerranPalladium										= 120,

@@ -354,7 +354,7 @@ namespace hooks
 	// Original functonality for pack/unpack, required to be able to read/save maps and saves properly. DO NOT CHANGE!!!
 	bool unit_can_have_rally_original(Unit* unit) {
 		return unit->id == UnitId::TerranMinistry
-			|| unit->id == UnitId::TerranBarracks
+			|| unit->id == UnitId::TerranStockade
 			|| unit->id == UnitId::TerranFulcrum
 			|| unit->id == UnitId::TerranStarport
 			|| unit->id == UnitId::ZergInfestedCommandCenter
