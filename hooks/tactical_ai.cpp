@@ -220,7 +220,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 
 	// Value deployed units slightly more
 	if (unit_id_is_siege_mode(target->id)) {
-		cost -= 15;
+		cost -= 10;
 	}
 
 	// Value big boys more
