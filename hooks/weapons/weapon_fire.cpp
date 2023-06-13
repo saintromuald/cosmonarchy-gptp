@@ -1075,9 +1075,9 @@ namespace hooks {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type = 5;
 			if (!despawn_bullet_special) {
-				if (target && target->sprite && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
-					bullet->attack_target.pt.x = target->sprite->position.x;
-					bullet->attack_target.pt.y = target->sprite->position.y;
+				if (target && !target->is_dead() && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
+					bullet->attack_target.pt.x = target->position.x;
+					bullet->attack_target.pt.y = target->position.y;
 				} else {
 					bullet->attack_target.unit = 0;
 				}
@@ -1094,9 +1094,9 @@ namespace hooks {
 
 	void bullet_behavior_bounce(Bullet* bullet) { // 0048B2D0
 		Unit* target_unit = bullet->attack_target.unit;
-		if (target_unit) {
+		if (target_unit && !target_unit->is_dead()) {
 			if (!(bullet->hit_flags & 1)) {
-				helper::change_move_pos(bullet, target_unit->sprite->position.y, target_unit->sprite->position.x);
+				helper::change_move_pos(bullet, target_unit->position.y, target_unit->position.x);
 			}
 		}
 
@@ -1138,8 +1138,8 @@ namespace hooks {
 				target_unit = bullet->attack_target.unit;
 				bullet->behavior_type = 5;
 				if (target_unit) {
-					bullet->attack_target.pt.x = target_unit->sprite->position.x;
-					bullet->attack_target.pt.y = target_unit->sprite->position.y;
+					bullet->attack_target.pt.x = target_unit->position.x;
+					bullet->attack_target.pt.y = target_unit->position.y;
 				} else {
 					bullet->attack_target.unit = 0;
 				}
