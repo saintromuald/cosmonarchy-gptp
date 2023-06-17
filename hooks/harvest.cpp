@@ -595,6 +595,7 @@ namespace hooks {
 					worker_ext->values[ValueIsActiveHarvester] = false;
 					current_node_ext->values[ValueActiveHarvesters] -= 1; // we don't want to count the current worker
 				}
+
 				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
 				worker->order_target.unit = new_node;
 				worker->order_target.pt.x = new_node->position.x;
@@ -603,6 +604,7 @@ namespace hooks {
 				worker->worker.target_resource.pt.x = new_node->position.x;
 				worker->worker.target_resource.pt.y = new_node->position.y;
 				helper::move_to_target(new_node, worker);
+				// TODO: remove from next worker head (in resource) and worker link
 				return;
 			}
 		}
