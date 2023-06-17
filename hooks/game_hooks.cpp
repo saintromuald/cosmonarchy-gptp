@@ -830,7 +830,6 @@ namespace hooks {
 			}
 			Unit* target = unit->worker.target_resource.unit;
 			if (target) {
-				unit_ext->values[ValueIsActiveHarvester] = true;
 				UnitExt* target_ext = get_unit_ext(target);
 				target_ext->values[ValueAssignedHarvesters] += 1;
 				if (unit->unit_ai && unit->unit_ai->type == AiType::Worker &&
@@ -838,6 +837,7 @@ namespace hooks {
 					target_ext->values[ValueAssignedAiGasHarvesters] += 1;
 				}
 				if (helper::is_target_within_min_range(unit, 10, target) || helper::is_unit_movable(unit)) {
+					unit_ext->values[ValueIsActiveHarvester] = true;
 					target_ext->values[ValueActiveHarvesters] += 1;
 				}
 			}

@@ -590,6 +590,11 @@ namespace hooks {
 			Unit* new_node = find_better_node(worker, current_node);
 			if (new_node && new_node != current_node) {
 				current_node_ext->values[ValueAssignedHarvesters] -= 1;
+				UnitExt* worker_ext = get_unit_ext(worker);
+				if (worker_ext->values[ValueIsActiveHarvester]) {
+					worker_ext->values[ValueIsActiveHarvester] = false;
+					current_node_ext->values[ValueActiveHarvesters] -= 1; // we don't want to count the current worker
+				}
 				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
 				worker->order_target.unit = new_node;
 				worker->order_target.pt.x = new_node->position.x;
