@@ -601,7 +601,7 @@ namespace hooks {
 				worker->order_target = new_target;
 				worker->worker.target_resource = new_target;
 				helper::move_to_target(new_node, worker);
-				// NOTE: Fixes an edge case where the unit will not move to a new node correctly if it's already in range,
+				// NOTE: Fixes an edge case where the unit would not move to a new node correctly if it's already in range,
 				//       since move_to_target wouldn't update the move_target in such case
 				worker->move_target = new_target;
 				return;
