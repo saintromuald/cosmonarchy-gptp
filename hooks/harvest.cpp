@@ -586,7 +586,7 @@ namespace hooks {
 			return;
 		}
 		UnitExt* current_node_ext = get_unit_ext(current_node);
-		if (current_node_ext->values[ValueActiveHarvesters]) {
+		if (current_node_ext->values[ValueActiveHarvesters] && !worker->worker.is_harvesting) {
 			Unit* new_node = find_better_node(worker, current_node);
 			if (new_node && new_node != current_node) {
 				current_node_ext->values[ValueAssignedHarvesters] -= 1;
@@ -595,16 +595,15 @@ namespace hooks {
 					worker_ext->values[ValueIsActiveHarvester] = false;
 					current_node_ext->values[ValueActiveHarvesters] -= 1; // we don't want to count the current worker
 				}
-
 				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
-				worker->order_target.unit = new_node;
-				worker->order_target.pt.x = new_node->position.x;
-				worker->order_target.pt.y = new_node->position.y;
-				worker->worker.target_resource.unit = new_node;
-				worker->worker.target_resource.pt.x = new_node->position.x;
-				worker->worker.target_resource.pt.y = new_node->position.y;
+
+				Target new_target = make_target(new_node);
+				worker->order_target = new_target;
+				worker->worker.target_resource = new_target;
 				helper::move_to_target(new_node, worker);
-				// TODO: remove from next worker head (in resource) and worker link
+				// NOTE: Fixes an edge case where the unit will not move to a new node correctly if it's already in range,
+				//       since move_to_target wouldn't update the move_target in such case
+				worker->move_target = new_target;
 				return;
 			}
 		}
@@ -615,7 +614,7 @@ namespace hooks {
 	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker) { // 00440FA0
 		if (helper::unit_is_active_resource_depot(depot)) {
 			if (depot->player == worker->player || scbw::are_mutual_allies(depot->player, worker->player)) {
-				if (!(worker->pathing_flags & PathingFlags::PathingFlags_ProvidesCollision) || helper::unit_has_path_to_destination(worker, depot->position.x, depot->position.y)) {
+				if (!(worker->pathing_flags & PathingFlags_ProvidesCollision) || helper::unit_has_path_to_destination(worker, depot->position.x, depot->position.y)) {
 					return true;
 				}
 			}
