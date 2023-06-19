@@ -35,14 +35,14 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			result = 6;
+			result = 4;
 		} break;
 		default: {
-			result = 2 + get_gas_tier(unit) * 2;
+			result = 1 + get_gas_tier(unit) * 1;
 		} break;
 	}
 	if (!unit->building.resource.resource_amount) {
-		result -= 2;
+		result -= 1;
 	}
 	return result;
 }
