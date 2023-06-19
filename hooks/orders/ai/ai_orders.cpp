@@ -1474,15 +1474,23 @@ namespace hooks {
 		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
+		f32 total_mineral_yield = 0;
+		f32 total_gas_yield = 0;
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (unit_id_is_minerals(unit->id)) {
+				total_mineral_yield += get_harvest_amount(unit);
+			}
+			if (unit_id_is_gas_structure(unit->id)) {
+				total_gas_yield += get_harvest_amount(unit); // should ignore capped (which can happen on an occupied base)
+			}
+		}
 		if (area->mineral_field_count) {
-			f32 average_yield = area->total_mineral_count / area->mineral_field_count;
-			f32 total_yield = area->total_mineral_count;
-			score += average_yield * total_yield * mineral_bias;
+			f32 average_yield = total_mineral_yield / area->mineral_field_count;
+			score += average_yield * total_mineral_yield * mineral_bias;
 		}
 		if (area->geyser_count) {
-			f32 average_yield = area->total_vespene_count / area->geyser_count;
-			f32 total_yield = area->total_vespene_count;
-			score += average_yield * total_yield * gas_bias;
+			f32 average_yield = total_gas_yield / area->geyser_count;
+			score += average_yield * total_gas_yield * gas_bias;
 		}
 
 		for (u32 j = 0; j < units->count; ++j) {
