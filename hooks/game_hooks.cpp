@@ -877,6 +877,15 @@ namespace hooks {
 			case UnitId::TerranSentinel: {
 				helper::turn_unit(unit, 96);
 			} break;
+			case UnitId::TerranWellbore:
+			case UnitId::ZergEzigrisant:
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExcisant:
+			case UnitId::ResourceVespeneGeyser:
+			case UnitId::ResourceVespeneRidge: {
+				unit->building.resource.resource_amount = get_harvest_amount(unit);
+			} break;
 		}
 	}
 

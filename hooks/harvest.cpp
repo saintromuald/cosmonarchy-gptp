@@ -35,16 +35,13 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			result = 4;
+			return unit->building.resource.resource_amount ? 4 : 3;
 		} break;
 		default: {
-			result = 1 + get_gas_tier(unit) * 1;
+			return 1 + get_gas_tier(unit) * 1;
 		} break;
 	}
-	if (!unit->building.resource.resource_amount) {
-		result -= 1;
-	}
-	return result;
+	return 0;
 }
 
 namespace hooks {
@@ -66,10 +63,12 @@ namespace hooks {
 
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
-		if (resource->building.resource.resource_amount >= harvest_amount) {
-			resource->building.resource.resource_amount -= harvest_amount;
-		} else {
-			resource->building.resource.resource_amount = 0;
+		if (is_mineral) {
+			if (resource->building.resource.resource_amount >= harvest_amount) {
+				resource->building.resource.resource_amount -= harvest_amount;
+			} else {
+				resource->building.resource.resource_amount = 0;
+			}
 		}
 		return harvest_amount;
 	}
