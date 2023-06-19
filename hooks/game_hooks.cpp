@@ -877,67 +877,6 @@ namespace hooks {
 			case UnitId::TerranSentinel: {
 				helper::turn_unit(unit, 96);
 			} break;
-			case UnitId::ResourceMineralField:
-			case UnitId::ResourceMineralFieldType2:
-			case UnitId::ResourceMineralFieldType3:
-			{
-				u16* yield = &unit->building.resource.resource_yield;
-				if (*yield >= 750) {
-					*yield = 8;
-				} else if (*yield >= 500) {
-					*yield = 6;
-				} else if (*yield >= 250) {
-					*yield = 4;
-				} else if (*yield > 8) {
-					*yield = 2;
-				} else if (*yield == 8) {
-					*yield = 8;
-				} else if (*yield >= 6) {
-					*yield = 6;
-				} else if (*yield >= 4) {
-					*yield = 4;
-				} else if (*yield >= 2) {
-					*yield = 2;
-				} else {
-					*yield = 1;
-				}
-				update_mineral_field_image(unit);
-			} break;
-			case UnitId::TerranWellbore:
-			case UnitId::ZergEzigrisant:
-			{
-				unit->building.resource.resource_yield = 10;
-				if (unit_ext->units[UnitPennant])
-				{
-					unit->building.resource.resource_yield += 2;
-				}
-			} break;
-			case UnitId::TerranReservoir:
-			case UnitId::ProtossAquifer:
-			case UnitId::ZergExcisant:
-			{
-				unit->building.resource.resource_yield = 8;
-				if (unit_ext->units[UnitPennant])
-				{
-					unit->building.resource.resource_yield += 2;
-				}
-			} break;
-			case UnitId::ResourceVespeneGeyser:
-			{
-				unit->building.resource.resource_yield = 6;
-				if (unit_ext->units[UnitPennant])
-				{
-					unit->building.resource.resource_yield += 2;
-				}
-			} break;
-			case UnitId::ResourceVespeneRidge:
-			{
-				unit->building.resource.resource_yield = 4;
-				if (unit_ext->units[UnitPennant])
-				{
-					unit->building.resource.resource_yield += 2;
-				}
-			} break;
 		}
 	}
 
@@ -2510,14 +2449,6 @@ namespace hooks {
 		if (unit_ext->timers[TimerCaptivatingClaws] == 1) {
 			unit_ext->unit_vectors[UnitVectorCaptivatingClaws] = {};
 			should_update_speed = true;
-		}
-
-		// Low-yield Mineral Fields - No collision
-		if (unit->id >= UnitId::ResourceMineralField
-		&&  unit->id <= UnitId::ResourceMineralFieldType3
-		&&  unit->building.resource.resource_yield <= 4) {
-			unit->status |= UnitStatus::NoCollide;
-			unit->sprite->elevation = 0;
 		}
 
 		// Terran traps - No collision

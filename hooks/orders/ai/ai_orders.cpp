@@ -887,7 +887,7 @@ namespace hooks {
 			return 1;
 		}
 		if (unit_id_is_vespene_node(unit->id)) {
-			return 2 + (unit->building.resource.resource_yield != 0);
+			return 2 + (unit->building.resource.resource_amount != 0);
 		}
 		return 0;
 	}
@@ -958,7 +958,7 @@ namespace hooks {
 				continue;
 			}
 
-			u32 score = unit->building.resource.resource_yield;
+			u32 score = get_harvest_amount(unit);
 			if (unit_ext->values[ValueAssignedHarvesters]) {
 				score /= 2;
 			}
@@ -992,7 +992,7 @@ namespace hooks {
 				continue;
 			}
 
-			u32 score = unit->building.resource.resource_yield;
+			u32 score = get_harvest_amount(unit);
 			if (unit_ext->values[ValueAssignedAiGasHarvesters]) {
 				score /= 2;
 			}

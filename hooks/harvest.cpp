@@ -27,7 +27,24 @@ u32 get_gas_tier(Unit* unit) {
 }
 
 u32 get_harvest_amount(Unit* unit) {
-	return unit ? unit->building.resource.resource_yield : 0; // We were able to simplify this function to reading resource yield field, for now. -Veeq7
+	if (!unit) {
+		return 0;
+	}
+	u32 result = 0;
+	switch (unit->id) {
+		case UnitId::ResourceMineralField:
+		case UnitId::ResourceMineralFieldType2:
+		case UnitId::ResourceMineralFieldType3: {
+			result = 6;
+		} break;
+		default: {
+			result = 2 + get_gas_tier(unit) * 2;
+		} break;
+	}
+	if (!unit->building.resource.resource_amount) {
+		result -= 2;
+	}
+	return result;
 }
 
 namespace hooks {
@@ -48,7 +65,13 @@ namespace hooks {
 	}
 
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
-		return get_harvest_amount(resource);
+		u32 harvest_amount = get_harvest_amount(resource);
+		if (resource->building.resource.resource_amount >= harvest_amount) {
+			resource->building.resource.resource_amount -= harvest_amount;
+		} else {
+			resource->building.resource.resource_amount = 0;
+		}
+		return harvest_amount;
 	}
 
 	void transfer_resource_to_worker(Unit* worker, Unit* resource) { // 004696D0
@@ -513,23 +536,14 @@ namespace hooks {
 	// Hooked to change the breakpoints for mineral images.
 	void update_mineral_field_image(Unit* unit) { // 00468830
 		IscriptAnimation::Enum anim = IscriptAnimation::Built;
-		switch (unit->building.resource.resource_yield) {
-			case 1:
-			{
-				anim = IscriptAnimation::Landing;
-			} break;
-			case 2:
-			{
-				anim = IscriptAnimation::SpecialState1;
-			} break;
-			case 4:
-			{
-				anim = IscriptAnimation::SpecialState2;
-			} break;
-			case 6:
-			{
-				anim = IscriptAnimation::AlmostBuilt;
-			} break;
+		if (unit->building.resource.resource_amount == 0) {
+			anim = IscriptAnimation::Landing;
+		} else if (unit->building.resource.resource_amount < 250) {
+			anim = IscriptAnimation::SpecialState1;
+		} else if (unit->building.resource.resource_amount < 500) {
+			anim = IscriptAnimation::SpecialState2;
+		} else if (unit->building.resource.resource_amount < 750) {
+			anim = IscriptAnimation::AlmostBuilt;
 		}
 
 		if (unit->building.resource.resource_iscript != anim) {
