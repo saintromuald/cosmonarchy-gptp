@@ -893,9 +893,28 @@ namespace hooks {
 										}
 									} break;
 									case UnitId::TerranAzazel:
-									case UnitId::TerranSeraph:
 									{
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit))
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::TerranSeraph:
+									{
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)
+										||	 globals.players[unit->player].faction == Faction_TerranGoldenRepublic)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::TerranLuminary:
+									{
+										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)
+										|| 	 globals.players[unit->player].faction != Faction_TerranGoldenRepublic)
 										{
 											current_button_state = Button_State::Invisible;
 										} else {

@@ -624,6 +624,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Show player slots in singleplayer UMS previews. Not working yet.
 //	memory_patch(0x004AAFD4, (u32)0x339001B2);
+
+	// Fix briefing transmission text duration.
+	memory_patch(0x0042816B, (u16)0x57001F0F); //dword ptr [EAX] (3-byte NOP); PUSH EDI;
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
