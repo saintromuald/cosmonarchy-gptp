@@ -30,7 +30,7 @@
 #define Max(a, b) ((a) > (b) ? a : b)
 #define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
-#define HarvestTimer 96
+#define HarvestTimer 36
 
 #define PlayerColorByte 0x0B
 struct PlayerColorCode {

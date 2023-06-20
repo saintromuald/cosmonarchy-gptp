@@ -1069,7 +1069,7 @@ namespace hooks
 					}
 					Point16 pt;
 					helper::iscript_use_lo_file(&pt, image, 2, offset);
-					u32 gas_id = offset + ((*g_active_iscript_unit)->building.resource.resource_yield != 0 ? 430 : 435);
+					u32 gas_id = offset + ((*g_active_iscript_unit)->building.resource.resource_amount != 0 ? 430 : 435);
 					if (Image* new_image = helper::get_empty_image())
 					{
 						helper::images_insert(new_image, image->parent_sprite->images.head, image);

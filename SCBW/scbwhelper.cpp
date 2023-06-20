@@ -6682,38 +6682,21 @@ namespace helper {
 		return return_value;
 	}
 
-	void update_mineral_patch_image(Unit* mineralPatch) {
-		IscriptAnimation::Enum anim;
-		switch (mineralPatch->building.resource.resource_yield)
-		{
-			case 1:
-			{
-				anim = IscriptAnimation::WorkingToIdle;
-			} break;
-			case 2:
-			case 3:
-			{
-				anim = IscriptAnimation::AlmostBuilt;
-			} break;
-			case 4:
-			case 5:
-			{
-				anim = IscriptAnimation::SpecialState2;
-			} break;
-			case 6:
-			case 7:
-			{
-				anim = IscriptAnimation::SpecialState1;
-			} break;
-			default:
-			{
-				anim = IscriptAnimation::Landing;
-			} break;
+	void update_mineral_patch_image(Unit* unit) {
+		IscriptAnimation::Enum anim = IscriptAnimation::Built;
+		if (unit->building.resource.resource_amount == 0) {
+			anim = IscriptAnimation::Landing;
+		} else if (unit->building.resource.resource_amount < 250) {
+			anim = IscriptAnimation::SpecialState1;
+		} else if (unit->building.resource.resource_amount < 500) {
+			anim = IscriptAnimation::SpecialState2;
+		} else if (unit->building.resource.resource_amount < 750) {
+			anim = IscriptAnimation::AlmostBuilt;
 		}
 
-		if (anim != mineralPatch->building.resource.resource_iscript) {
-			mineralPatch->building.resource.resource_iscript = anim;
-			mineralPatch->sprite->play_iscript_animation(anim);
+		if (unit->building.resource.resource_iscript != anim) {
+			unit->building.resource.resource_iscript = anim;
+			unit->sprite->play_iscript_animation(anim);
 		}
 	}
 

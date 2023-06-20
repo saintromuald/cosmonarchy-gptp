@@ -1,6 +1,7 @@
 #include "ai_layouts.h"
 #include "hooks/unit_stats/new_requirements.h"
 #include "hooks/orders/ai/ai_orders.h"
+#include "hooks/harvest.h"
 #include "data_ext.h"
 #include "trigger_system/trigger_parser.h"
 
@@ -490,7 +491,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 				continue;
 			}
 
-			u32 score = unit->building.resource.resource_yield * 512;
+			u32 score = get_harvest_amount(unit);
 			if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::ResourceVespeneRidge) {
 				score *= 3;
 			}

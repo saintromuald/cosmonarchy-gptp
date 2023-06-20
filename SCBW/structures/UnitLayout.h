@@ -349,7 +349,7 @@ struct UnitLayout
 			/*0x0CE*/     u16		_padding_0E;
 			/*0x0D0*/     union {
 				struct {
-					/*0x0D0*/		u16     resource_yield;			// Originally resource_amount
+					/*0x0D0*/		u16     resource_amount;		
 					/*0x0D2*/		u8      resource_iscript;
 					/*0x0D3*/		u8      is_mining;
 					/*0x0D4*/		Unit*	next_gatherer;			// pointer to the next worker unit waiting in line to gather
