@@ -2943,6 +2943,11 @@ namespace hooks {
 	bool game_end() {
 		end_threshold();
 		graphics::reset_stat_res_graphics();
+		for (u32 player = 0; player < PlayerLimit; player++)
+		{
+			g_factions_colors_ordering[player] = g_player_scorescreen_colors[player];
+			g_player_scorescreen_colors[player] = 0;
+		}
 		return true;
 	}
 
