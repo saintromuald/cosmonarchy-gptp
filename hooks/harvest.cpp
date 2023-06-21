@@ -38,7 +38,12 @@ u32 get_harvest_amount(Unit* unit) {
 			return unit->building.resource.resource_amount ? 4 : 3;
 		} break;
 		default: {
-			return 1 + get_gas_tier(unit) * 1;
+			switch (get_gas_tier(unit)) {
+				case 1: return 3;
+				case 2: return 4;
+				case 3: return 6;
+				case 4: return 8;
+			}
 		} break;
 	}
 	return 0;
