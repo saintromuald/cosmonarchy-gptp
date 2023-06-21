@@ -946,7 +946,7 @@ namespace hooks {
 		u32 best_distance = UINT_MAX;
 		Unit* best_mineral_field = 0;
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-			if (unit->id < UnitId::ResourceMineralField || unit->id > UnitId::ResourceMineralFieldType3) {
+			if (!unit_id_is_minerals(unit->id)) {
 				continue;
 			}
 			if (unit->building.resource.resarea != ai_town->resarea) {

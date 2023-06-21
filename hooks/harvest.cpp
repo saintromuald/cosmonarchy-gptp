@@ -35,14 +35,14 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			return unit->building.resource.resource_amount ? 4 : 3;
+			return unit->building.resource.resource_amount ? 4 : 2;
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
 				case 1: return 3;
 				case 2: return 4;
-				case 3: return 6;
-				case 4: return 8;
+				case 3: return 5;
+				case 4: return 6;
 			}
 		} break;
 	}
@@ -72,8 +72,10 @@ namespace hooks {
 			if (resource->building.resource.resource_amount >= harvest_amount) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
-				resource->building.resource.resource_amount = 0;
+				resource->building.resource.resource_amount = 2;
+				resource->status |= UnitStatus::NoCollide; // Not sure if we should |= every time this function is called? -Pr0nogo
 			}
+			update_mineral_field_image(resource);
 		}
 		return harvest_amount;
 	}
@@ -83,7 +85,7 @@ namespace hooks {
 		bool is_mineral = false;
 		bool no_chunk_image = false;
 
-		if (resource->id >= UnitId::ResourceMineralField && resource->id <= UnitId::ResourceMineralFieldType3) {
+		if (unit_id_is_minerals(resource->id)) {
 			chunk_image_id = ImageId::MineralChunkType1;
 			if (globals.celebration == Celebration_Christmas) {
 				chunk_image_id = ImageId::Christmas_MineralChunk1;
@@ -107,6 +109,7 @@ namespace hooks {
 					chunk_image_id = ImageId::Christmas_VespeneChunk1;
 				}
 			}
+
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
 			if (resource_amount <= 2) {
 				chunk_image_id += 1; // Use depleted resource image
@@ -290,7 +293,7 @@ namespace hooks {
 
 		u32 result;
 		char worker_resource_type;
-		if (node_id < UnitId::ResourceMineralField || node_id > UnitId::ResourceMineralFieldType3) { // is not mineral node
+		if (!unit_id_is_minerals(node_id)) {
 			bool ignore_completed = true;
 			if ((node->id == UnitId::TerranReservoir || node->id == UnitId::TerranWellbore)
 			&& !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
@@ -451,7 +454,7 @@ namespace hooks {
 				return;
 			}
 			u16 node_id = target->id;
-			if (node_id >= UnitId::ResourceMineralField && node_id <= UnitId::ResourceMineralFieldType3) {
+			if (unit_id_is_minerals(node_id)) {
 				helper::prepend_order(worker, OrderId::MoveToMinerals, worker->order_target.pt, worker->order_target.unit);
 				helper::to_idle(worker);
 			} else {
@@ -540,7 +543,7 @@ namespace hooks {
 	// Hooked to change the breakpoints for mineral images.
 	void update_mineral_field_image(Unit* unit) { // 00468830
 		IscriptAnimation::Enum anim = IscriptAnimation::Built;
-		if (unit->building.resource.resource_amount == 0) {
+		if (unit->building.resource.resource_amount < 4) {
 			anim = IscriptAnimation::Landing;
 		} else if (unit->building.resource.resource_amount < 250) {
 			anim = IscriptAnimation::SpecialState1;
@@ -572,7 +575,7 @@ namespace hooks {
 		unit_search_radial(&nodes, current_node->position, 8 * 32);
 		for (u32 i = 0; i < nodes.count; ++i) {
 			Unit* node = nodes.units[i];
-			if (node->id < UnitId::ResourceMineralField || node->id > UnitId::ResourceMineralFieldType3) {
+			if (!unit_id_is_minerals(node->id)) {
 				continue;
 			}
 			if (is_pathing) {
@@ -656,5 +659,29 @@ namespace hooks {
 			}
 		}
 		return best_depot;
+	}
+
+	// Hooked to investigate depleted mineral messages. -Pr0nogo
+	u8 mine_resources(Unit* node, bool is_minerals) // 00469650
+	{
+		u8 resources_returned = get_harvest_amount(node);
+		u32 node_resources = node->building.resource.resource_amount;
+		if (is_minerals)
+		{
+			if (node_resources <= 4) {
+				node->building.resource.resource_amount = 2;
+			} else {
+				node->building.resource.resource_amount -= resources_returned;
+			}
+			update_mineral_field_image(node);
+			/* // The code below handles messaging for depleted vespene nodes, which is not currently in spec. -Pr0nogo
+				if (node_resources_final < 8)
+				{
+					helper::display_error_message_id_with_sfx(node->player, 875, SoundId::Misc_OutOfGas_wav);
+				}
+				resources_returned = 8;
+			*/
+		}
+		return resources_returned;
 	}
 }

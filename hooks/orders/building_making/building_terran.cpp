@@ -201,8 +201,9 @@ namespace hooks
 			helper::play_building_completed_sound(unit);
 			helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
 
-			if ((built_unit->status & UnitStatus::Completed && unit_id_is_capped_gas_structure(built_unit->id) && built_unit->player == unit->player)
-				|| (built_unit->id >= UnitId::ResourceMineralField && built_unit->id <= UnitId::ResourceMineralFieldType3)) {
+			if ((built_unit->status & UnitStatus::Completed
+			&&   unit_id_is_capped_gas_structure(built_unit->id) && built_unit->player == unit->player) || unit_id_is_minerals(built_unit->id))
+			{
 				unit->order_to(OrderId::Harvest1, built_unit);
 				return;
 			}

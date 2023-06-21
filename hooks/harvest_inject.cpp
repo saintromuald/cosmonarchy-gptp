@@ -271,6 +271,23 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) mine_resources_wrapper() { // 0046950
+		static Unit* node;
+		static bool is_minerals;
+		static u8 result;
+		__asm {
+			MOV node, EAX
+			MOV is_minerals, CL
+			PUSHAD
+		}
+		result = hooks::mine_resources(node, is_minerals);
+		__asm {
+			POPAD
+			MOVZX AL, result
+			RETN
+		}
+	}
+
 	void __declspec(naked) death_geyser_check_wrapper() { // 0049F515
 		static b32 result;
 		static Unit* unit;
@@ -323,6 +340,7 @@ namespace hooks {
 		jump_patch(update_mineral_field_image_wrapper,						0x00468830,	6);
 		jump_patch(return_cargo_to_best_depot_proc_wrapper,					0x00440FA0,	1);
 		jump_patch(find_best_return_cargo_target_wrapper,					0x00441310,	2);
+		jump_patch(mine_resources_wrapper,									0x00469650,	0);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 		jump_patch(worker_wandering_wrapper,								0x00469393,	1);

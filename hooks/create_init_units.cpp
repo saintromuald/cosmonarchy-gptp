@@ -109,10 +109,8 @@ namespace hooks {
 		);
 		u8 cliff_level = scbw::get_active_tile_at_coords(startX, startY)->ground_height;
 		unit_finder.for_each([&](Unit* unit) {
-			if ((unit->id == UnitId::ResourceMineralField
-			|| unit->id == UnitId::ResourceMineralFieldType2
-			|| unit->id == UnitId::ResourceMineralFieldType3)
-			&& scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level) {
+			if (unit_id_is_minerals(unit->id) && scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
+			{
 				Point16 pos = unit->position;
 				sum_x += pos.x - startX;
 				sum_y += pos.y - startY;

@@ -347,11 +347,7 @@ namespace hooks
 		*g_redraw_transport_ui = helper::ui_needs_redraw();
 
 		helper::generic_status_update_drawn_values();
-		if (unit->id == UnitId::ResourceMineralField 
-		||  unit->id == UnitId::ResourceMineralFieldType2
-		||  unit->id == UnitId::ResourceMineralFieldType3
-		||  unit->id == UnitId::ResourceVespeneRidge
-		||  unit->id == UnitId::ResourceVespeneGeyser)
+		if (unit_id_is_resource_node(unit->id, false))
 		{
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);

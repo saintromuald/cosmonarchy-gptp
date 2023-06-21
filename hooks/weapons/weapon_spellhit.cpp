@@ -656,10 +656,7 @@ namespace hooks {
 			return 0;
 		}
 		s16 unit_id = unit->id;
-		if (unit_id == UnitId::ResourceMineralField
-		||  unit_id == UnitId::ResourceMineralFieldType2
-		||  unit_id == UnitId::ResourceMineralFieldType3
-		||  unit_id == UnitId::ResourceVespeneGeyser
+		if (unit_id_is_resource_node(unit_id, false)
 		||  unit_id == UnitId::ProtossSteward
 		||  unit_id == UnitId::ProtossPlasmaShell
 		||  units_dat::base_property[unit_id] & UnitProperty::Addon

@@ -4,6 +4,7 @@
 
 bool unit_id_is_capped_gas_structure(u16 unit_id);
 bool unit_id_is_gas_structure(u16 unit_id);
+bool unit_id_is_uncapped_gas_node(u16 unit_id);
 bool unit_id_is_smaller_building(u16 unit_id);
 b32 unit_id_is_tech(u32 unit_id);
 b32 unit_id_is_tech_tier_structure(u32 unit_id);

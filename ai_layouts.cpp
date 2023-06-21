@@ -483,8 +483,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 		unit_search_radial(&found, placeholder->position, 12 * 32);
 		for (u32 i = 0; i < found.count; ++i) {
 			Unit* unit = found.units[i];
-			if ((unit->id < UnitId::ResourceMineralField || unit->id > UnitId::ResourceMineralFieldType3) &&
-				unit->id != UnitId::ResourceVespeneGeyser && unit->id != UnitId::ResourceVespeneRidge) {
+			if (!unit_id_is_resource_node(unit->id, false)) {
 				continue;
 			}
 			if (unit->building.resource.resarea != resarea) {
@@ -492,7 +491,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 			}
 
 			u32 score = get_harvest_amount(unit);
-			if (unit->id == UnitId::ResourceVespeneGeyser || unit->id == UnitId::ResourceVespeneRidge) {
+			if (unit_id_is_uncapped_gas_node(unit->id)) {
 				score *= 3;
 			}
 			u32 distance = scbw::get_distance_fast(placeholder->position, unit->position) / 32;

@@ -886,6 +886,15 @@ namespace hooks {
 			case UnitId::ResourceVespeneRidge: {
 				unit->building.resource.resource_amount = get_harvest_amount(unit);
 			} break;
+			case UnitId::ResourceMineralField:
+			case UnitId::ResourceMineralFieldType2:
+			case UnitId::ResourceMineralFieldType3:
+			{
+				if (unit->building.resource.resource_amount < 4) {
+					unit->building.resource.resource_amount = 2;
+					unit->status |= UnitStatus::NoCollide;
+				}
+			} break;
 		}
 	}
 
