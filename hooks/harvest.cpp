@@ -39,7 +39,7 @@ u32 get_harvest_amount(Unit* unit) {
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
-				case 1: return 3;
+				case 1: return 2;
 				case 2: return 4;
 				case 3: return 5;
 				case 4: return 6;
@@ -661,7 +661,7 @@ namespace hooks {
 		return best_depot;
 	}
 
-	// Hooked to investigate depleted mineral messages. -Pr0nogo
+	// Hooked to investigate depleted mineral messages. Not currently called from anywhere. -Pr0nogo
 	u8 mine_resources(Unit* node, bool is_minerals) // 00469650
 	{
 		u8 resources_returned = get_harvest_amount(node);
