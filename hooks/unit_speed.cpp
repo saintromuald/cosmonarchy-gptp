@@ -250,7 +250,6 @@ namespace hooks
 			case UnitId::TerranStriga:
 			case UnitId::ProtossZealot:
 			case UnitId::ProtossSycophant:
-			case UnitId::ProtossManifold:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergAxitrilisk:
 			{

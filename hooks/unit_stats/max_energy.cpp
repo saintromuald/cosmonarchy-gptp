@@ -17,6 +17,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranHypnagogue:
 			case UnitId::TerranAncile:
+			case UnitId::TerranLuminary:
 			case UnitId::ProtossCantavis:
 			case UnitId::ProtossAnalogue:
 			{

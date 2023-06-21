@@ -130,9 +130,20 @@ namespace hooks
 					} else {
 						unit->current_buttonset = UnitId::Buttons_CancelNukeStrike;
 					}
-					u32 action_sound = helper::get_random_sfx_between(SoundId::Terran_GHOST_TGhPss00_wav, SoundId::Terran_GHOST_TGhPss01_wav);
-					helper::play_sound_from_unit(action_sound, *g_active_portrait_unit, g_options_list->flags & 1, 99);
-					helper::do_unit_event_notification(*g_active_portrait_unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+
+					u32 action_sound = SoundId::No_sound;
+					switch (unit->id)
+					{
+						case UnitId::TerranEidolon:
+						{
+							action_sound = helper::get_random_sfx_between(SoundId::Terran_GHOST_TGhPss00_wav, SoundId::Terran_GHOST_TGhPss01_wav);
+						} break;
+					}
+
+					if (action_sound) {
+						helper::play_sound_from_unit(action_sound, unit, g_options_list->flags & 1, 99);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+					}
 					scbw::refresh_console();
 				}
 			}

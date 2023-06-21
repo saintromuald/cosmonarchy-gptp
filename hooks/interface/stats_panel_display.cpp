@@ -872,15 +872,11 @@ namespace hooks
 			helper::set_spell_special_button_graphic(dialog);
 			helper::set_text_string(dialog);
 			helper::get_active_portrait_unit_name(dialog);
-		}
-		else
-		*/
+		} else */
 		if (active_unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::unit_stat_action_building(dialog);
-		}
-		else
-		{
+		} else {
 			helper::unit_stat_act_standard(dialog);
 		}
 	}

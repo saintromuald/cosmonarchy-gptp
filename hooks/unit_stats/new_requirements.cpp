@@ -435,6 +435,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranSeraph:
 				case UnitId::TerranAzazel:
+				case UnitId::TerranLuminary:
 				{
 					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 					{
@@ -2075,9 +2076,32 @@ namespace hooks {
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranAzazel:
-					case UnitId::TerranSeraph:
 					{
 						if (in_air || is_adding_on)
+						{
+							return TECH_HIDDEN;
+						}
+						if (addon_id == UnitId::TerranCommandment)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranSeraph:
+					{
+						if (in_air || is_adding_on || globals.players[player_id].faction == Faction_TerranGoldenRepublic)
+						{
+							return TECH_HIDDEN;
+						}
+						if (addon_id == UnitId::TerranCommandment)
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranLuminary:
+					{
+						if (in_air || is_adding_on || globals.players[player_id].faction != Faction_TerranGoldenRepublic)
 						{
 							return TECH_HIDDEN;
 						}
