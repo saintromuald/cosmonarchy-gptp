@@ -3,7 +3,7 @@
 
 #include "trigger_system/trigger_system.h"
 
-// Used for AI calcs (currently supported values: 3, 2, 1) -- TODO: Add support for 4
+// Used for AI calcs (currently supported values: 4, 3, 2, 1)
 u32 get_gas_tier(Unit* unit) {
 	if (unit) {
 		switch (unit->id) {
@@ -35,7 +35,7 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			return unit->building.resource.resource_amount ? 4 : 2;
+			return unit->building.resource.resource_amount > DepletedYield ? FullYield : DepletedYield;
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
@@ -69,10 +69,10 @@ namespace hooks {
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
 		if (is_mineral) {
-			if (resource->building.resource.resource_amount >= harvest_amount) {
+			if (resource->building.resource.resource_amount -  harvest_amount > DepletedYield) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
-				resource->building.resource.resource_amount = 2;
+				resource->building.resource.resource_amount = DepletedYield;
 				resource->status |= UnitStatus::NoCollide; // Not sure if we should |= every time this function is called? -Pr0nogo
 			}
 			update_mineral_field_image(resource);
