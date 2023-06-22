@@ -2945,8 +2945,8 @@ namespace hooks {
 		graphics::reset_stat_res_graphics();
 		for (u32 player = 0; player < PlayerLimit; player++)
 		{
-			g_factions_colors_ordering[player] = g_player_scorescreen_colors[player];
-			g_player_scorescreen_colors[player] = 0;
+			g_factions_colors_ordering[player] = g_player_color_ids[player];
+			g_player_color_ids[player] = 0;
 		}
 		return true;
 	}

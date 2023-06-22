@@ -194,7 +194,7 @@ void set_player_color(u32 player, u32 color) {
 	player_data.has_custom_color[player] = true;
 	player_data.player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
-	g_player_scorescreen_colors[player] = color;
+	g_player_color_ids[player] = color;
 	for (u32 i = 0; i < ColorSetSize; i++) {
 		g_player_in_game_colors[player * ColorSetSize + i] = tunit_colors[color * ColorSetSize + i];
 	}
