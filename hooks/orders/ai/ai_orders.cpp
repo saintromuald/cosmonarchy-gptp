@@ -1136,7 +1136,7 @@ namespace hooks {
 				ResourceArea* ai_resarea = &g_base_array[resarea];
 				u32 new_worker_limit = 0;
 				if (resarea && resarea < 250) {
-					new_worker_limit = 2.25 * ai_resarea->mineral_field_count + 2 * ai_resarea->geyser_count;
+					new_worker_limit = 2.5 * ai_resarea->mineral_field_count + 2.5 * ai_resarea->geyser_count;
 				}
 				town->worker_limit = new_worker_limit;
 			}

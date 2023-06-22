@@ -261,7 +261,7 @@ namespace hooks {
 				&&		(node->player == unit->player || scbw::are_mutual_allies(node->player, unit->player)))
 			{
 				valid_structure = true;
-			}
+			} 
 		}
 
 		if (node

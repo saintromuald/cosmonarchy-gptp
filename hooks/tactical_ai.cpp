@@ -607,7 +607,6 @@ static bool unit_could_kite(Unit* unit) {
 		&& !unit->is_frozen()
 		&& unit->status & UnitStatus::Completed
 		&& !(unit->movement_flags & MovementFlags::StartingAttack)	
-		&& !(units_dat::base_property[unit->id] & UnitProperty::Worker) // used to be supported, but it was really terrible for AI performance in general, disabled for now -Veeq7
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
