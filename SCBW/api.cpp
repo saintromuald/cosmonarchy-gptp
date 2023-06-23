@@ -1064,16 +1064,15 @@ namespace scbw {
 		&&		unit->id != UnitId::ZergLakizilisk; // LAME
 	}
 
-	// Identical to function order_is_spell @ 00436930 -- Pr0nogo
-	// We should update the lardcode for Cosmonarchy
+	// Replacement for order_is_spell @ 00436930 -- Pr0nogo
 	bool order_is_spell(s32 order_id) {
 		return order_id == OrderId::Plague
 			|| order_id == OrderId::CarapaceSwarm
 //			|| order_id == OrderId::Ensnare				// Land Grab
 			|| order_id == OrderId::Irradiate
 			|| order_id == OrderId::StasisField
-			|| order_id == OrderId::EMPShockwave		// Observance
-			|| order_id == OrderId::MagnaPulse			// Lobotomy Mine
+			|| order_id == OrderId::EMPShockwave		// Observance	 (unused)
+			|| order_id == OrderId::MagnaPulse			// Lobotomy Mine (unused)
 			|| order_id == OrderId::PsiStorm
 //			|| order_id == OrderId::SummonBroodlings	// unused
 			|| order_id == OrderId::FireYamatoGun1;
@@ -1081,12 +1080,17 @@ namespace scbw {
 
 	// Creates the Plasma Shield flickering effect.
 	// Identical to function @ 0x004E6140
-	void create_shield_overlay(Unit* unit, u32 attackDirection) {
+	void create_shield_overlay(Unit* unit, u32 attack_direction) {
 		const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
-		u32 frame_angle = (attackDirection - 124) / 8 % 32;
+		u32 frame_angle = (attack_direction - 124) / 8 % 32;
 
-		Point8 offset = shield_lo->get_offset(unit->sprite->main_graphic->direction, frame_angle);
-		unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);
+		s32 direction = unit->sprite->main_graphic->direction;
+		if (direction >= shield_lo->frame_count) {
+			scbw::printf("Unit id %u has the wrong shield overlay!", unit->id);
+		} else {
+			Point8 offset = shield_lo->get_offset(direction, frame_angle);
+			unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);
+		}
 	}
 
 	void decloak_proc(Unit* unit) {
