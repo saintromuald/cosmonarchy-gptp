@@ -13758,4 +13758,18 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	Unit* set_unit_movement_speed_ex(Unit* unit)
+	{
+		static Unit* result;
+		const u32 func_address = 0x00495100;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
