@@ -359,6 +359,19 @@ namespace
 		}
 	}
 
+	void __declspec(naked) change_direction_to_move_waypoint_wrapper() { // 00495840
+		static Unit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::change_direction_to_move_waypoint(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -421,6 +434,7 @@ namespace hooks
 	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1); // Crashes
 		jump_patch(fow_refinery_check_wrapper,						0x00474500, 5);
 		jump_patch(pick_new_target_if_needed_wrapper,				0x00477510, 1);
+		jump_patch(change_direction_to_move_waypoint_wrapper,		0x00495840, 3);
 
 		// Patches \\
 

@@ -645,7 +645,7 @@ namespace scbw
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
 	bool unit_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 order_id);
-	void create_shield_overlay(Unit* unit, u32 attackDirection);
+	void create_shield_overlay(Unit* unit, u32 attack_direction);
 	void decloak_proc(Unit* unit);
 	bool is_decloakable(Unit* unit);
 	bool unit_can_nuke(Unit* unit);

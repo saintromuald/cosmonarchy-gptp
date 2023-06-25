@@ -1043,4 +1043,31 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to make units like the Paladin not turn to face targets after starting their attacks. -Pr0nogo
+	void change_direction_to_move_waypoint(Unit* unit) // 00495840
+	{
+		u16 waypoint_x = unit->next_movement_waypoint.x;
+		u16 waypoint_y = unit->next_movement_waypoint.y;
+		u16 current_x = unit->position.x;
+		u16 current_y = unit->position.y;
+		u16 next_x = unit->next_target_waypoint.x;
+		u16 next_y = unit->next_target_waypoint.y;
+
+		if (waypoint_x == current_x && waypoint_y == current_y)
+		{
+			if (next_x == current_x && next_y == current_y)
+			{
+				unit->velocity_direction_2 = unit->current_direction_1;
+				helper::set_unit_movement_speed_ex(unit);
+			} else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags::StartingAttack))
+			{
+				unit->velocity_direction_2 = helper::get_direction_from_points(next_y, current_x, next_x, current_y);
+				helper::set_unit_movement_speed_ex(unit);
+			}
+		} else {
+			unit->velocity_direction_2 = helper::get_direction_from_points(next_y, current_x, waypoint_x, current_y);
+			helper::set_unit_movement_speed_ex(unit);
+		}
+	}
 }
