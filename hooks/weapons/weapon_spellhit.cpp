@@ -201,10 +201,10 @@ namespace hooks {
 			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
 
 			// Cloaked units - decloak
-			// Cabalist uses silent strike, so the check has to be in weapon_damage. -Veeq7
-			if (attacker->id != UnitId::ProtossCabalist) {
+			// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
+		//	if (unit->id != UnitId::ProtossCabalist) {
 				scbw::decloak_proc(attacker);
-			}
+		//	}
 			apply_weapon_cooldown(attacker, weapon_id);
 		}
 	}

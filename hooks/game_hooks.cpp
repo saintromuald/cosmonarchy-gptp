@@ -1518,8 +1518,10 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossLegionnaire:
+			case UnitId::ProtossCabalist:
 			{
 				// Legionnaire - Blade Vortex
+				// Cabalist - Silent Strides
 				// Striga was here - removed 7 February 2023. -Pr0nogo
 				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
 					Unit* target = unit->order_target.unit;
@@ -1534,6 +1536,12 @@ namespace hooks {
 						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
+						}
+					} else if (unit->id == UnitId::ProtossCabalist) {
+						if (unit_ext->timers[TimerDecloak] < 2 && distance > min_radius && distance <= max_radius) {
+							do_teleport = true;
+							image_id = ImageId::LegionnaireTeleportEffect;
+							scbw::decloak_proc(unit);
 						}
 					}
 

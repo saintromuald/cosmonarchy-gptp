@@ -362,18 +362,7 @@ namespace hooks
 		data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 
 		switch (data.weapon_id) {
-			case WeaponId::CabalistWarpBlades: {
-				// Cabalist - Toggle cloak with each attack
-				if (data.attacker) {
-					UnitExt* attacker_ext = get_unit_ext(data.attacker);
-					if (attacker_ext->timers[TimerDecloak] > 2) {
-						attacker_ext->timers[TimerDecloak] = 2;
-						data.damage /= 2;
-					} else {
-						scbw::decloak_proc(data.attacker);
-					}
-				}
-			} break;
+			// Cabalist was here
 		}
 
 		// Hallucinating targets - fire a phantom strike

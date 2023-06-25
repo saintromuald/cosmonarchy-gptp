@@ -368,10 +368,10 @@ namespace hooks {
 		}
 
 		// Cloaked units - decloak
-		// Cabalist has Silent Strikes, so the check has to be in weapon damage
-		if (unit->id != UnitId::ProtossCabalist) {
+		// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
+	//	if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
-		}
+	//	}
 		if (unit->id == UnitId::ProtossSteward && unit->hangar_unit.parent) {
 			scbw::decloak_proc(unit->hangar_unit.parent);
 		}
