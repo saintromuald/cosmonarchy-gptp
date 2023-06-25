@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "weapons/weapon_damage.h"
 #include "limits/ccmu.h"
+#include "cmbw/cmbw.h"
 
 namespace
 {
@@ -88,7 +89,7 @@ namespace hooks {
 		}
 
 		EntryArray units_in_splash = {};
-		unit_search_radial(&units_in_splash, pos, outer);
+		unit_search_rect(&units_in_splash, box32_rect(pos, 5 * 32, 4 * 32));
 		unit_search_filter(&units_in_splash, unit);
 		for (s32 i = 0; i < units_in_splash.count; i++) {
 			Unit* target = units_in_splash.units[i];

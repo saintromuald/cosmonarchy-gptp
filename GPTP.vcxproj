@@ -261,6 +261,7 @@
     <ClCompile Include="bullet_extender.cpp" />
     <ClCompile Include="CMBW\cmbw_behaviors.cpp" />
     <ClCompile Include="CMBW\cmbw_ids.cpp" />
+    <ClCompile Include="CMBW\cmbw_utils.cpp" />
     <ClCompile Include="color_palette.cpp" />
     <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
@@ -621,6 +622,7 @@
     <ClInclude Include="CMBW\cmbw.h" />
     <ClInclude Include="CMBW\cmbw_behaviors.h" />
     <ClInclude Include="CMBW\cmbw_ids.h" />
+    <ClInclude Include="CMBW\cmbw_utils.h" />
     <ClInclude Include="color_palette.h" />
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />
