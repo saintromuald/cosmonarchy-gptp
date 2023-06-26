@@ -93,12 +93,12 @@ namespace helper {
 		return result;
 	}
 
-	bool unit_hp_below_33_percent(Unit* a1) {
+	bool unit_hp_below_33_percent(Unit* unit) {
 		const u32 func_address = 0x004022C0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, unit
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -106,12 +106,12 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool unit_hp_between_33_66_percent(s32 a1, Unit* unit) {
+	bool unit_hp_between_33_66_percent(Unit* unit) {
 		const u32 func_address = 0x00402270;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, 0 // Unused arg
 			MOV EDX, unit
 			CALL func_address
 			MOV result, EAX
@@ -158,21 +158,21 @@ namespace helper {
 		}
 	}
 
-	void draw_energy(BinDlg* a1) {
+	void draw_energy(BinDlg* dialog) {
 		const u32 func_address = 0x00425A30;
 		__asm {
 			PUSHAD
-			MOV EBX, a1
+			MOV EBX, dialog
 			CALL func_address
 			POPAD
 		}
 	}
 
-	void hide_optional_status_screen_controls(BinDlg* a1) {
+	void hide_optional_status_screen_controls(BinDlg* dialog) {
 		const u32 func_address = 0x00457310;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
+			MOV EAX, dialog
 			CALL func_address
 			POPAD
 		}

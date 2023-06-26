@@ -10,7 +10,7 @@
 
 namespace hooks
 {
-	// Attempting to be true to the original result in unoptimized code
+	// Attempting to be true to the original results in unoptimized code
 	void stats_panel_display(BinDlg* dialog)
 	{
 		BinDlg* current_dialog;
@@ -34,6 +34,7 @@ namespace hooks
 				helper::stats_shield_level(dialog, index);
 				index++;
 			}
+
 			if (active_unit->id != UnitId::ZergLakizilisk || active_unit->status & UnitStatus::Burrowed)
 			{
 				UnitExt* unit_ext = get_unit_ext(active_unit);
@@ -53,14 +54,10 @@ namespace hooks
 					if (!active_unit->subunit)
 					{
 						no_ground_weapon_display = true;
-					}
-					else
-					{
+					} else {
 						ground_weapon_subunit = units_dat::ground_weapon[active_unit->subunit->id];
 					}
-				}
-				else
-				{
+				} else {
 					ground_weapon_subunit = ground_weapon_main_unit;
 				}
 
@@ -69,28 +66,20 @@ namespace hooks
 					if (ground_weapon_subunit == WeaponId::None)
 					{
 						no_ground_weapon_display = true;
-					}
-					else if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed))
-					{
+					} else if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed)) {
 						ground_weapon = WeaponId::None;
-					}
-					else if (ground_weapon_main_unit != WeaponId::None)
-					{
+					} else if (ground_weapon_main_unit != WeaponId::None) {
 						ground_weapon = ground_weapon_main_unit;
-					}
-					else if (!active_unit->subunit)
-					{
+					} else if (!active_unit->subunit) {
 						ground_weapon = WeaponId::None;
-					}
-					else
-					{
+					} else {
 						ground_weapon = units_dat::ground_weapon[active_unit->subunit->id];
 					}
+
 					if (!no_ground_weapon_display)
 					{
 						helper::stats_weapon_level(dialog, index, ground_weapon);
 						index++;
-
 						// Display additional weapons
 						switch (active_unit->id)
 						{
@@ -379,8 +368,7 @@ namespace hooks
 			helper::set_unit_status_string_text(dialog);
 			if (unit->main_order_id == OrderId::NukeTrain) {
 				helper::draw_armor(dialog, unit->id, 0);
-			}
-			else {
+			} else {
 				draw_new_building_info(dialog, unit);
 			}
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
@@ -438,13 +426,14 @@ namespace hooks
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
-			helper::draw_armor(dialog, unit->id, 0); // this was added -Veeq7
+			helper::draw_armor(dialog, unit->id, 0); // New. -Veeq7
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
 		if (units_dat::air_weapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
-			&& units_dat::ground_weapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
-			&& !units_dat::shields_enabled[unit->id]) {
+		&&  units_dat::ground_weapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
+		&& !units_dat::shields_enabled[unit->id])
+		{
 			if (*g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;

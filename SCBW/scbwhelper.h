@@ -33,13 +33,13 @@ namespace helper {
 	void* load_graphic(char* a1, u32 a2, u32 a3, char* log_filename, u32 log_line);
 
 	s32 rand_func();
-	bool unit_hp_below_33_percent(Unit* a1);
-	bool unit_hp_between_33_66_percent(s32 a1, Unit* unit);
+	bool unit_hp_below_33_percent(Unit* unit);
+	bool unit_hp_between_33_66_percent(Unit* unit);
 	s32 get_max_hp(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* unit);
 	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text);
-	void draw_energy(BinDlg* a1);
-	void hide_optional_status_screen_controls(BinDlg* a1);
+	void draw_energy(BinDlg* dialog);
+	void hide_optional_status_screen_controls(BinDlg* dialog);
 	void show_control_group(BinDlg* dialog, u16 firstId, u16 lastId);
 	void hide_dialog(BinDlg* dialog);
 
