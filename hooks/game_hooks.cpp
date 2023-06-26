@@ -3491,7 +3491,7 @@ namespace hooks {
 								u32 player = buffer[2];
 								for (u32 i = 0; i < SelectionCap; ++i) {
 									Unit* unit = players_selections->unit[player][i];
-									if (!unit || !unit->is_dead() || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
+									if (!unit || unit->is_dead() || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
 										continue;
 									}
 									unit->order_to(OrderId::CTFCOP2, unit->position.x, unit->position.y);
