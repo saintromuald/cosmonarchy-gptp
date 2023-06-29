@@ -13772,4 +13772,18 @@ namespace helper {
 		}
 		return result;
 	}
+
+	s32 remove_from_selections_2(Unit* unit, s32 index) {
+		static s32 result;
+		const u32 func_address = 0x0049A170;
+		__asm {
+			PUSHAD
+			PUSH index
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

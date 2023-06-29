@@ -1614,4 +1614,6 @@ namespace helper {
 	void set_flag_attack_move(Unit* unit);																										// 004026A0
 
 	Unit* set_unit_movement_speed_ex(Unit* unit);																								// 00495100
+
+	s32 remove_from_selections_2(Unit* unit, s32 index);																						// 0049A170
 }
