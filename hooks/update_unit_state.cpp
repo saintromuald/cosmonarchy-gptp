@@ -84,10 +84,12 @@ namespace hooks
 	}
 
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target) {
-		const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
-		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
-			&& unit->can_attack_target(target);
+		if (target->sprite) {
+			const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
+			return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
+				&& scbw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
+				&& unit->can_attack_target(target);
+		}
 	}
 
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
