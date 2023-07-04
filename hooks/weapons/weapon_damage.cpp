@@ -422,7 +422,9 @@ namespace hooks
 			} break;
 			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Incubate on damage taken
-				incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+				if (!scbw::is_allied_to(data.target->player, data.attacking_player_id)) {
+					incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+				}
 			} break;
 		}
 
@@ -1123,7 +1125,7 @@ namespace hooks
 					}
 				}
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
-				if (reveal) {
+				if (reveal && attacker->sprite) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
 						u32 flags = 1 << victim->player;
 						for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -1131,7 +1133,7 @@ namespace hooks
 								flags |= 1 << i;
 							}
 						}
-						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, attacker->status & UnitStatus::InAir);
+						helper::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
 					}
 				}
 				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo

@@ -867,7 +867,7 @@ namespace hooks {
 			if (weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
 				u32 armor = units_dat::armor_amount[target->unit->id] + hooks::get_armor_bonus(target->unit);
 				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
-				if (armor > armor_pen) {
+				if (armor >= armor_pen) {
 					bullet->attack_target.pt = target->cp;
 					bullet->attack_target.unit = target->unit;
 					return true;

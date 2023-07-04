@@ -90,6 +90,7 @@ namespace hooks
 				&& scbw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
 				&& unit->can_attack_target(target);
 		}
+		return false;
 	}
 
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
@@ -526,7 +527,7 @@ namespace hooks
 			if (unit->sprite) {
 				if (*g_vision_updated) {
 					if (g_player_table[unit->player].type == PlayerType::Human) {
-						helper::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir); // is air unit
+						helper::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
 					}
 				}
 				helper::update_visibility(unit);
