@@ -1347,7 +1347,7 @@ namespace hooks {
 				if (!unit_ext->timers[TimerStarSovereignInterventionMissiles]) {
 					auto radius = 5 * 32;
 					auto match_func = cosmonarchy_finder_match(unit, Flags::Enemy | Flags::FrontalArc, {});
-					// TODO: unit search, also wtf is the above aids? -Pr0nogo
+					// TODO: unit search -Pr0nogo
 					scbw::UnitFinder unit_finder(
 						unit->position.x - radius,
 						unit->position.y - radius,
@@ -1357,7 +1357,7 @@ namespace hooks {
 					bool enemies_detected = false;
 					for (s32 i = 0; i < unit_finder.get_unit_count(); i++) {
 						Unit* picked_unit = unit_finder.get_unit(i);
-						if (match_func(picked_unit)) {
+						if (match_func(picked_unit) && unit->can_attack_target(picked_unit)) {
 							enemies_detected = true;
 							break;
 						}
@@ -1371,14 +1371,14 @@ namespace hooks {
 							if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored) {
 								offset.x = -offset.x;
 							}
-							auto X = unit->get_x() + offset.x;
-							auto Y = unit->get_y() + offset.y;
+							auto X = unit->position.x + offset.x;
+							auto Y = unit->position.y + offset.y;
 							auto target_unit = unit->order_target.unit;
 							auto target_pos = unit->order_target.pt;
 							auto offset_direction = -40 + arc * 16;
 							auto max_range = weapons_dat::max_range[WeaponId::StarSovereignInterventionMissiles];
-							auto polar_x = unit->get_x() + scbw::get_polar_x(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
-							auto polar_y = unit->get_y() + scbw::get_polar_y(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto polar_x = unit->position.x + scbw::get_polar_x(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto polar_y = unit->position.y + scbw::get_polar_y(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							unit->order_target.unit = 0;
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;
