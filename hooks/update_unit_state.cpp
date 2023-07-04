@@ -468,7 +468,7 @@ namespace hooks
 					{
 						if (helper::unit_hp_is_in_redzone(unit))
 						{
-							unit->damage_hp(20, nullptr, unit->last_attacking_player, true);
+							unit->damage_hp(20, 0, unit->last_attacking_player, true);
 						}
 					}
 				}

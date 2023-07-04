@@ -366,7 +366,8 @@ namespace hooks
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (weapon_id_procs_phantom_strike(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
+		if (data.attacker && weapon_id_procs_phantom_strike(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player))
+		{
 			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {

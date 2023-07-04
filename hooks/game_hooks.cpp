@@ -2185,7 +2185,7 @@ namespace hooks {
 		}
 
 		// Azazel - Sublime Shepherd
-		{
+		if (!unit_id_is_resource_node(unit->id, false)) {
 			EntryArray azazels = {};
 			unit_search_radial(&azazels, unit->position, 4 * 32);
 			unit_search_filter(&azazels, unit, 0, {UnitId::TerranAzazel});
