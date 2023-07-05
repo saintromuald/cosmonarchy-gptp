@@ -298,11 +298,13 @@ namespace hooks {
 				&&	  unit->id != UnitId::TerranWatchdog
 				&&	  unit->id != UnitId::TerranAnchor
 			//	&&	  unit->id != UnitId::TerranTencendur
-				&&	  unit->id != UnitId::ZergCagrantColony
-				&&	  unit->id != UnitId::ZergSpraithColony
-				&&	  unit->id != UnitId::ZergSurkithColony
-				&&	  unit->id != UnitId::ZergSkortrithColony
-				&&	  unit->id != UnitId::ZergSpirtithColony
+				&&	  unit->id != UnitId::ZergCagrantCesiant
+				&&	  unit->id != UnitId::ZergSpraithCesiant
+				&&	  unit->id != UnitId::ZergSurkithCesiant
+				&&	  unit->id != UnitId::ZergSkortrithCesiant
+				&&	  unit->id != UnitId::ZergSpirtithCesiant
+				&&	  unit->id != UnitId::ZergNydusCesiant
+				&&	  unit->id != UnitId::ZergKazitrithCesiant
 				&&	  unit->id != UnitId::ProtossPylon
 				&&	  unit->id != UnitId::ProtossWarden)
 				{

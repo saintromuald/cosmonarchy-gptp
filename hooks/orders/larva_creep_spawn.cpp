@@ -95,8 +95,9 @@ namespace hooks
 		if (unit->id == UnitId::ZergHachirosk
 		||  unit->id == UnitId::ZergCaphrolosk
 		||  unit->id == UnitId::ZergGathtelosk
-		||  unit->id == UnitId::ZergLarvoskColony
-		||  unit->id == UnitId::ZergOcsalColony) {
+		||  unit->id == UnitId::ZergLarvoskCesiant
+		||  unit->id == UnitId::ZergOcsalCesiant)
+		{
 			secondary_order_spawning_larva(unit);
 		}
 		if (unit->building.creep_timer != 0) {
@@ -177,8 +178,8 @@ namespace hooks
 				bool can_spawn_larva = unit->id == UnitId::ZergHachirosk
 									|| unit->id == UnitId::ZergCaphrolosk
 									|| unit->id == UnitId::ZergGathtelosk
-									|| unit->id == UnitId::ZergLarvoskColony
-									|| unit->id == UnitId::ZergOcsalColony;
+									|| unit->id == UnitId::ZergLarvoskCesiant
+									|| unit->id == UnitId::ZergOcsalCesiant;
 
 				u8 order_id = can_spawn_larva ? OrderId::SpawningLarva : OrderId::Nothing2;
 				if (unit->secondary_order_id != order_id) {
@@ -241,18 +242,19 @@ namespace hooks
 	bool spreads_creep(u16 unit_id, bool is_complete) {
 		switch (unit_id) {
 			case UnitId::ZergHachirosk:
-			case UnitId::ZergCagrantColony: {
+			case UnitId::ZergCagrantCesiant: {
 				return is_complete;
 			}
 			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergGathtelosk:
-			case UnitId::ZergSpraithColony:
-			case UnitId::ZergSurkithColony:
-			case UnitId::ZergLarvoskColony:
-			case UnitId::ZergSkortrithColony:
-			case UnitId::ZergSpirtithColony:
-			case UnitId::ZergKazitrithColony:
-			case UnitId::ZergOcsalColony:
+			case UnitId::ZergSpraithCesiant:
+			case UnitId::ZergSurkithCesiant:
+			case UnitId::ZergLarvoskCesiant:
+			case UnitId::ZergSkortrithCesiant:
+			case UnitId::ZergSpirtithCesiant:
+			case UnitId::ZergNydusCesiant:
+			case UnitId::ZergKazitrithCesiant:
+			case UnitId::ZergOcsalCesiant:
 			{
 				return true;
 			}

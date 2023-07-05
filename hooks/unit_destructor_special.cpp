@@ -201,10 +201,14 @@ void unit_destructor_special_cases(Unit* unit) {
 			if (nydus_exit) {
 				unit->building.nydus_exit = 0;
 				nydus_exit->building.nydus_exit = 0;
-				nydus_exit->remove();
+
+				if (unit_ext->values[ValueIsNydusExit] == 1) {
+					scbw::regress(nydus_exit, UnitId::ZergCagrantCesiant); // Lame hardcode
+				} else {
+					nydus_exit->remove();
+				}
 			}
-			break;
-		}
+		} break;
 	}
 
 	// These require the unit to be completed
@@ -212,15 +216,15 @@ void unit_destructor_special_cases(Unit* unit) {
 		switch (unit->id) {
 			case UnitId::TerranAnvil:
 			{
-				// Missile Silo - death while armed
+				// Anvil - death while armed
 				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {
-					scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->get_x(), unit->get_y(), 11, 12);
-					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->get_x(), unit->get_y(), unit->player, 0);
+					scbw::create_and_init_thingy(SpriteId::Nuke_Hit,  unit->position.x, unit->position.y, 11, 12);
+					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
 				}
 			} break;
 			case UnitId::TerranAspirant:
 			{
-				iquare_globals.create_effect(EffectId_AspirantCriticality, 5 * 24, { unit->get_x(), unit->get_y() }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				iquare_globals.create_effect(EffectId_AspirantCriticality, 5 * 24, { unit->position.x, unit->position.y }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{

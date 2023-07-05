@@ -101,7 +101,7 @@ namespace hooks
 					result = orders_dat::req_offset[OrderId::RallyPointToTile];
 					if (orders_dat::req_offset[OrderId::RallyPointToTile])
 					{
-						if (unit->id == UnitId::ZergCagrantColony && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskColony) // lame
+						if (unit->id == UnitId::ZergCagrantCesiant && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskCesiant) // lame
 						{
 							result = 1;
 						}

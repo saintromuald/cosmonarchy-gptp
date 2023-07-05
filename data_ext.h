@@ -155,6 +155,7 @@ enum ExtValueId {
 	ValueGhitorokorRelentlessAggressionStacks,
 	ValueDecaying,
 	ValuePariahHitPlayer,
+	ValueIsNydusExit,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

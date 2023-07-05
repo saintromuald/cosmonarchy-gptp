@@ -6,15 +6,15 @@ namespace hooks
 	void orders_build5(Unit* nydus_canal) // 0045DC20
 	{
 		// Fix coordinates if off-map (wasn't present in original function)
-		s32 x, y;
-		x = units_dat::building_dimensions[UnitId::ZergNydusCesiant].x;
-		y = units_dat::building_dimensions[UnitId::ZergNydusCesiant].y;
+		s32 x = units_dat::building_dimensions[UnitId::ZergNydusCesiant].x;
+		s32 y = units_dat::building_dimensions[UnitId::ZergNydusCesiant].y;
 		if (x < 0) {
 			x++;
 		}
 		if (y < 0) {
 			y++;
 		}
+
 		x = nydus_canal->order_target.pt.x - (x / 2);
 		y = nydus_canal->order_target.pt.y - (y / 2);
 		if (x < 0)
@@ -41,11 +41,6 @@ namespace hooks
 			
 			if (!nydus_exit) {
 				helper::display_last_network_error_for_player(nydus_canal->player);
-			} else if (nydus_exit->id != UnitId::ZergNydusCesiant) {
-				// TODO: should probably remove, since we are already handling CCMU properly here
-				// we should test first though
-				helper::display_last_network_error_for_player(nydus_canal->player);
-				nydus_exit->remove();
 			} else {
 				helper::init_building(nydus_exit, 1);
 				// logically equivalent to a more complex original calculation
@@ -56,12 +51,15 @@ namespace hooks
 				nydus_canal->building.nydus_exit = nydus_exit;
 				nydus_exit->building.nydus_exit = nydus_canal;
 				nydus_exit->sprite->player = nydus_canal->sprite->player;
+
+				UnitExt* exit_ext = get_unit_ext(nydus_exit);
+				exit_ext->values[ValueIsNydusExit] = 1;
 			}
 			nydus_canal->order_to_idle();
 		}
 	}
 
 	u32 adjust_flags(u32 flags, u32 player) {
-		return 0xffffffff; // don't check any creep tile flags for nydus placement
+		return 0xffffffff; // don't check any creep tile flags for Nydus placement
 	}
 }

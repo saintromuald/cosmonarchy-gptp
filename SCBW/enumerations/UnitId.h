@@ -248,18 +248,18 @@ namespace UnitId
 		ZergVithrathHaunt									= 197,		// Zerg Flag Beacon
 		ZergLiivralPond										= 204,		// Floor Hatch
 		ZergAlkajChasm										= 212,		// Right Wall Missile Trap
-		ZergLarvoskColony									= 216,		// Young Chrysalis
+		ZergLarvoskCesiant									= 216,		// Young Chrysalis
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
-		ZergSpirtithColony									= 292,		// Morphed from Cagrant Colony
-		ZergSkortrithColony									= 293,		// Morphed from Surkith Colony
+		ZergSpirtithCesiant									= 292,		// Morphed from Cagrant Colony
+		ZergSkortrithCesiant									= 293,		// Morphed from Surkith Colony
 		ZergRakzogthRoost									= 303,		// Unused
 		ZergBegrozithBarrow									= 329,		// Unused
 		ZergChokralgantChazsal								= 330,		// Morphed from Izkag Iteth
 		ZergNephrilosk										= 350,		// Unused
-		ZergOcsalColony										= 354,		// Morphed from Cagrant Colony
-		ZergKazitrithColony									= 355,		// Morphed from Cagrant Colony
+		ZergOcsalCesiant										= 354,		// Morphed from Cagrant Colony
+		ZergKazitrithCesiant									= 355,		// Morphed from Cagrant Colony
 		ZergEzigrisant										= 364,		// Morphed from Cagrant Colony
 
 	// Special-Unit
@@ -428,10 +428,10 @@ namespace UnitId
 		ZergUltrokCavern									= 140,
 		ZergMuthrokSpire									= 141,
 		ZergQuazrokPool										= 142,
-		ZergCagrantColony									= 143,
-		ZergSpraithColony									= 144,
+		ZergCagrantCesiant									= 143,
+		ZergSpraithCesiant									= 144,
 		UnusedZerg1											= 145,
-		ZergSurkithColony									= 146,
+		ZergSurkithCesiant									= 146,
 		Special_OvermindWithShell							= 147,
 		Special_Overmind									= 148,
 		ZergExcisant										= 149,

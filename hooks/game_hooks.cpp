@@ -867,6 +867,7 @@ namespace hooks {
 			return;
 		}
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
+
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
@@ -896,6 +897,9 @@ namespace hooks {
 				}
 			} break;
 		}
+
+		// Fixes first attack from Paladin (and maybe other units) aiming upwards
+		unit->velocity_direction_2 = unit->velocity_direction_1;
 	}
 
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
@@ -2883,7 +2887,7 @@ namespace hooks {
 						image_id = ImageId::SantaHatLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 8;
 					} break;
-					case UnitId::ZergLarvoskColony:
+					case UnitId::ZergLarvoskCesiant:
 					{
 						image_id = ImageId::SantaHatLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 6;

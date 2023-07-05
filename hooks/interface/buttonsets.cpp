@@ -577,7 +577,7 @@ namespace hooks {
 						{
 							current_button_state = Button_State::Enabled;
 						}
-						if (unit->id == UnitId::ZergCagrantColony) {
+						if (unit->id == UnitId::ZergCagrantCesiant) {
 							current_button_state = Button_State::Enabled;
 						}
 					}
@@ -1697,9 +1697,9 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
-							case UnitId::ZergSurkithColony:
+							case UnitId::ZergSurkithCesiant:
 							{
-								if (current_button->requirement_var == UnitId::ZergSkortrithColony)
+								if (current_button->requirement_var == UnitId::ZergSkortrithCesiant)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
 									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
@@ -1712,9 +1712,9 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
-							case UnitId::ZergSpraithColony:
+							case UnitId::ZergSpraithCesiant:
 							{
-								if (current_button->requirement_var == UnitId::ZergSpirtithColony)
+								if (current_button->requirement_var == UnitId::ZergSpirtithCesiant)
 								{
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
 									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
@@ -2384,7 +2384,7 @@ namespace hooks {
 								case UnitId::ZergLiiralisk:
 								case UnitId::ZergMutalisk:
 								case UnitId::ZergTosgrilisk:
-								case UnitId::ZergSpirtithColony:
+								case UnitId::ZergSpirtithCesiant:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
 										current_button_state = Button_State::Enabled;
@@ -2480,7 +2480,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ZergSkortrithColony:
+								case UnitId::ZergSkortrithCesiant:
 								{
 									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Skortrith Colony - Tendril Amitosis
 										current_button_state = Button_State::Enabled;
@@ -2633,7 +2633,7 @@ namespace hooks {
 							{
 								current_button_state = Button_State::Enabled;
 							}
-							else if (unit->id == UnitId::ZergLarvoskColony &&	// Larvosk Colony Larval Gestation
+							else if (unit->id == UnitId::ZergLarvoskCesiant &&	// Larvosk Colony Larval Gestation
 								current_button->icon_id == IconId::MetasynapticNode)
 							{
 								current_button_state = Button_State::Enabled;

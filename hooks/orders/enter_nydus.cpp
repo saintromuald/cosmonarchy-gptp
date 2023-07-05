@@ -57,8 +57,7 @@ namespace hooks
 
 	void orders_enter_nydus(Unit* unit)
 	{
-		Unit* nydus;
-		nydus = unit->order_target.unit;
+		Unit* nydus = unit->order_target.unit;
 		if  (!nydus
 		||  !(nydus->status & UnitStatus::Completed)
 		||   !nydus->building.nydus_exit

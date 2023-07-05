@@ -241,16 +241,11 @@ namespace hooks
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
-						armor_total *= 1.5;
+						armor_total += 2;
 						shield_overlay = true;
 					}
 				}
 			}
-
-			// Autocrat Controlled Opposition
-			armor_total -= target_ext->values[ValueApollyoidAdhesiveStacks];
-			armor_total -= target_ext->values[ValueControlledOpposition];
-
 			armor_total = std::max(armor_total, 0);
 
 			// Observance armor reduction (can go to the negatives)
@@ -849,7 +844,7 @@ namespace hooks
 
 			// Remove connected larva
 			u16 larva_id = UnitId::ZergLarva;
-			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalColony)
+			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalCesiant)
 			{
 				larva_id = UnitId::ZergOcsalLarva;
 			}
@@ -1008,44 +1003,21 @@ namespace hooks
 
 			u32 regression_id = scbw::get_zerg_regression(data.target);
 			if (data.damage > 0 && regression_id != UnitId::None) {
-				helper::cancel_unit(data.target);
-				// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
-				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
-				if (data.target) {
-					bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
-					is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes
-					u32 regress_to = regression_id;
-					if (!is_building) {
-						regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
-					}
+				if (data.target->id != UnitId::ZergExcisant) {
+					fatal_deal_damage = false;
+				}
+				if (data.target->id == UnitId::ZergNydusCesiant) {
+					Unit* nydus_exit = data.target->building.nydus_exit;
+					if (nydus_exit) {
+						data.target->building.nydus_exit = 0;
+						nydus_exit->building.nydus_exit = 0;
 
-					Unit* new_unit = data.target;
-					if (data.target->id == UnitId::ZergExcisant) {
-						new_unit = scbw::create_unit_in_game(regress_to, data.target->player, data.target->position.x, data.target->position.y);
-					} else {
-						fatal_deal_damage = false;
-						helper::replace_unit_with_id(data.target, regress_to);
-						data.target->set_hitpoints(data.target->get_max_hp_raw());
-					}
-					if (new_unit) {
-						if (is_building) {
-							UnitExt* new_unit_ext = get_unit_ext(new_unit);
-							new_unit_ext->timers[TimerStun] = 1 * 24;
-							// TODO: Add stun audio visuals
-						} else {
-							set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+						if (!target_ext->values[ValueIsNydusExit] == 1) {
+							nydus_exit->remove();
 						}
 					}
-
-					u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-					if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
-						effect_image_id = ImageId::ZergBuildingExplosion;
-					} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
-						effect_image_id = ImageId::ZergAirDeathExplosion_Large;
-					}
-					data.target->sprite->create_overlay(effect_image_id);
-					helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
 				}
+				scbw::regress(data.target, regression_id);
 			}
 		}
 

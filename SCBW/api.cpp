@@ -544,11 +544,12 @@ namespace scbw {
 			case UnitId::ZergCaphrolosk:
 			case UnitId::ZergGathtelosk:
 			case UnitId::ZergEzigrisant:
-			case UnitId::ZergLarvoskColony:
-			case UnitId::ZergSpraithColony:
-			case UnitId::ZergSurkithColony:
-			case UnitId::ZergSkortrithColony:
-			case UnitId::ZergSpirtithColony:
+			case UnitId::ZergLarvoskCesiant:
+			case UnitId::ZergSpraithCesiant:
+			case UnitId::ZergSurkithCesiant:
+			case UnitId::ZergSkortrithCesiant:
+			case UnitId::ZergSpirtithCesiant:
+			case UnitId::ZergNydusCesiant:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
@@ -566,9 +567,9 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergHachirosk:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergCagrantColony:
-			case UnitId::ZergSurkithColony:
-			case UnitId::ZergSpraithColony:
+			case UnitId::ZergCagrantCesiant:
+			case UnitId::ZergSurkithCesiant:
+			case UnitId::ZergSpraithCesiant:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergQuazrokPool:
 			case UnitId::ZergHydrokDen:
@@ -1894,7 +1895,7 @@ namespace scbw {
 
 		// Remove connected larva
 		u16 larva_id = UnitId::ZergLarva;
-		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergOcsalColony)
+		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergOcsalCesiant)
 		{
 			larva_id = UnitId::ZergOcsalLarva;
 		}
@@ -2106,8 +2107,9 @@ namespace scbw {
 
 	u32 get_zerg_regression(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
-			// Ocsal Units
+		if (unit_ext->values[ValueOriginatedFromOcsalLarva]
+		||	unit_ext->values[ValueIsNydusExit]) {
+			// Ocsal units and Nydus exits don't regress
 			return UnitId::None;
 		}
 
@@ -2116,13 +2118,14 @@ namespace scbw {
 			case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
 			case UnitId::ZergEzigrisant:			return UnitId::ZergExcisant;
-			case UnitId::ZergSurkithColony:			return UnitId::ZergCagrantColony;
-			case UnitId::ZergSpraithColony:			return UnitId::ZergCagrantColony;
-			case UnitId::ZergLarvoskColony:			return UnitId::ZergCagrantColony;
-			case UnitId::ZergKazitrithColony:		return UnitId::ZergCagrantColony;
-			case UnitId::ZergOcsalColony:			return UnitId::ZergCagrantColony;
-			case UnitId::ZergSkortrithColony:		return UnitId::ZergSurkithColony;
-			case UnitId::ZergSpirtithColony:		return UnitId::ZergSpraithColony;
+			case UnitId::ZergSurkithCesiant:		return UnitId::ZergCagrantCesiant;
+			case UnitId::ZergSpraithCesiant:		return UnitId::ZergCagrantCesiant;
+			case UnitId::ZergLarvoskCesiant:		return UnitId::ZergCagrantCesiant;
+			case UnitId::ZergKazitrithCesiant:		return UnitId::ZergCagrantCesiant;
+			case UnitId::ZergOcsalCesiant:			return UnitId::ZergCagrantCesiant;
+			case UnitId::ZergNydusCesiant:			return UnitId::ZergCagrantCesiant;
+			case UnitId::ZergSkortrithCesiant:		return UnitId::ZergSurkithCesiant;
+			case UnitId::ZergSpirtithCesiant:		return UnitId::ZergSpraithCesiant;
 			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
 			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
 			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
@@ -2136,10 +2139,9 @@ namespace scbw {
 
 			// Base Structures
 			case UnitId::ZergHachirosk:
-			case UnitId::ZergCagrantColony:
+			case UnitId::ZergCagrantCesiant:
 			case UnitId::ZergExcisant:
 			case UnitId::ZergIrolIris:				
-			case UnitId::ZergNydusCesiant:			
 			case UnitId::ZergQuazrokPool:			
 			case UnitId::ZergMuthrokSpire:			
 			case UnitId::ZergAxtothAxis:			
@@ -3007,13 +3009,54 @@ namespace scbw {
 		if (target->status & UnitStatus::InAir)
 		{
 			weapon_id = units_dat::air_weapon[attacker->id];
-		}
-		else {
+		} else {
 			if (attacker->id != UnitId::ZergLakizilisk || attacker->status & UnitStatus::Burrowed)
 			{
 				weapon_id = units_dat::ground_weapon[attacker->id];
 			}
 		}
 		return weapon_id;
+	}
+
+	void regress(Unit* unit, u32 regression_id) {
+		bool fatal_deal_damage = true;
+		helper::cancel_unit(unit);
+		// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
+		// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
+		if (unit) {
+			bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
+			is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+			u32 regress_to = regression_id;
+			if (!is_building) {
+				regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
+			}
+
+			Unit* new_unit = unit;
+			if (unit->id == UnitId::ZergExcisant) {
+				new_unit = scbw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
+			} else {
+				helper::replace_unit_with_id(unit, regress_to);
+				unit->set_hitpoints(unit->get_max_hp_raw());
+			}
+			if (new_unit) {
+				if (is_building) {
+					UnitExt* new_unit_ext = get_unit_ext(new_unit);
+					new_unit_ext->timers[TimerStun] = 1 * 24;
+					// TODO: Add stun audio visuals
+				} else {
+					set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+				}
+			}
+
+			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+			if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
+				effect_image_id = ImageId::ZergBuildingExplosion;
+			}
+			else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+			}
+			unit->sprite->create_overlay(effect_image_id);
+			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+		}
 	}
 }
