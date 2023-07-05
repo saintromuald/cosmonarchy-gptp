@@ -1312,8 +1312,8 @@ namespace scbw
 			if (!clarion) {
 				continue;
 			}
-			UnitExt* clarionExt = get_unit_ext(clarion);
-			auto link = clarionExt->unit_vectors[UnitVectorPhaseLink];
+			UnitExt* clarion_ext = get_unit_ext(clarion);
+			auto link = clarion_ext->unit_vectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<Unit*>(links.begin(), links.end());

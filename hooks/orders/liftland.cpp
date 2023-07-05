@@ -91,7 +91,7 @@ namespace hooks
 				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!stop_there) {
-				unit->flingy_turn_rate = flingy_dat::turn_speed[unit->id]; // Fix turning structures having difficulty landing
+				unit->flingy_turn_rate = flingy_dat::turn_speed[unit->id]; // Reset flingy turn rate after setting it to 127 earlier
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
 				unit->main_order_state = 3;
 			}
