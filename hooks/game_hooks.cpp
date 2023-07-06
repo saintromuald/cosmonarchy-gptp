@@ -1804,8 +1804,7 @@ namespace hooks {
 							target_ext->timers[TimerObservanceDebuff] = 5 * 24 + 1;
 							target_ext->timers[TimerObservancePeriod] = 5 * 24 + 1;
 							if (!target_ext->values[ValueObservanceRend]) {
-								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id);
-								target->sprite->create_overlay(overlay);
+								scbw::add_unit_overlay(target, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id));
 							}
 							target_ext->values[ValueObservanceRend] += 1;
 						}
@@ -2466,7 +2465,9 @@ namespace hooks {
 				}
 			}
 		} else if (unit_ext->timers[TimerObservanceDebuff] == 1) {
-			scbw::add_unit_overlay(unit, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(unit->id));
+			scbw::remove_unit_overlay(unit, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(unit->id));
+			unit_ext->timers[TimerObservancePeriod] = 0;
+			unit_ext->values[ValueObservanceRend] = 0;
 		}
 
 		// Vithrilisk - Corrosive Touch clear
@@ -2816,7 +2817,9 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerAscend] == 1) {
+		// Generic speed timers
+		if (unit_ext->timers[TimerAscend] == 1
+		||	unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
 			should_update_speed = true;
 		}
 

@@ -2357,9 +2357,66 @@ namespace hooks {
 									}
 								}
 								break;
+								case UnitId::ProtossAurora:
+								{
+									if (current_button->icon_id == IconId::MojoScout) // Aurora - Last Orders
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossGladius:
+								{
+									if (current_button->icon_id == IconId::DracadinPhaseDisruptor) // Binding Plasma
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossMagister:
+								{
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Magister - Stellar Enforcement
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossDidact:
+								{
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) // Didact - Shroud of Adun
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossEmpyrean:
+								{
+									if (current_button->icon_id == IconId::StewardPulseCannon) // Empyrean - Heavenly Passage
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossSolarion:
+								{
+									if (current_button->icon_id == IconId::Interceptor) // Solarion - Robotic Fleet
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossSteward:
 								{
 									if (current_button->icon_id == IconId::AntimatterMissiles) // Steward - Evasive Maneuvers
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossStarSovereign:
+								{
+									if (current_button->icon_id == IconId::AntimatterMissiles) // Star Sovereign - Intervention
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossAnthelion:
+								{
+									if (current_button->icon_id == IconId::Recall		// Anthelion - False Light
+									||	current_button->icon_id == IconId::ArgusJewel)	// Anthelion - Gravity Well
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2381,6 +2438,25 @@ namespace hooks {
 
 								// ZERG \\
 								
+								case UnitId::ZergGosvileth:
+								{
+									if (current_button->icon_id == IconId::VentralSacs) { // Gosvileth - Plethoral Gestation
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergNathrokor:
+								{
+									if (current_button->icon_id == IconId::AdrenalGlands) { // Nathrokor - Adrenal Frenzy
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergVorvrokor:
+								{
+									if (current_button->icon_id == IconId::MetabolicBoost		// Vorvrokor - Adrenal Surge
+									||	current_button->icon_id == IconId::ZethrokorClaws) {	// Vorvrokor - Captivating Claws
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergLiiralisk:
 								case UnitId::ZergMutalisk:
 								case UnitId::ZergTosgrilisk:
@@ -2406,6 +2482,12 @@ namespace hooks {
 								case UnitId::ZergMortothrokor:
 								{
 									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Mortothrokor - Whetted Appetite
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergIzirokor:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Izirokor - Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2488,83 +2570,10 @@ namespace hooks {
 								} break;
 							}
 
-							// PROTOSS \\
-							
-							if (unit->id == UnitId::ProtossAurora &&  // Aurora Last Orders
-								current_button->icon_id == IconId::MojoScout)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossGladius &&  // Gladius Binding Plasma
-								current_button->icon_id == IconId::DracadinPhaseDisruptor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossMagister &&  // Magister Stellar Enforcement
-								current_button->icon_id == IconId::DidactPhaseDisruptorCannon)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossDidact &&  // Didact Shroud of Adun
-								current_button->icon_id == IconId::DidactPassiveShroudOfAdun)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossEmpyrean &&  // Empyrean Heavenly Blaze
-								current_button->icon_id == IconId::StewardPulseCannon)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossSolarion &&  // Solarion Robotic Fleet
-								current_button->icon_id == IconId::Interceptor)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossStarSovereign &&  // Star Sovereign Intervention
-								current_button->icon_id == IconId::AntimatterMissiles)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well
-								current_button->icon_id == IconId::Recall)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ProtossAnthelion &&  // Anthelion Gravity Well
-								current_button->icon_id == IconId::ArgusJewel)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-
 							// ZERG \\
-							
-							else if (unit->id == UnitId::ZergGosvileth &&  // Gosvileth Plethoral Gestation
-								current_button->icon_id == IconId::VentralSacs)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergVorvrokor && // Vorvrokor Adrenal Surge
-								current_button->icon_id == IconId::MetabolicBoost)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergVorvrokor && // Vorvrokor Captivating Claws
-								current_button->icon_id == IconId::ZethrokorClaws)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergQuazilisk && // Quazilisk Melting Points
-								current_button->icon_id == IconId::SuicideInfestedTerran)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergEvigrilisk && // Evigrilisk Lashing Limbs
+														
+							if (unit->id == UnitId::ZergEvigrilisk && // Evigrilisk Lashing Limbs
 								current_button->icon_id == IconId::RilirokorToxicSpores)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergIzirokor && // Izirokor Crushing Tide
-								current_button->icon_id == IconId::GeszithalorAcidSpore)
 							{
 								current_button_state = Button_State::Enabled;
 							}
@@ -2637,14 +2646,6 @@ namespace hooks {
 								current_button->icon_id == IconId::MetasynapticNode)
 							{
 								current_button_state = Button_State::Enabled;
-							}
-
-							// TODO: Find a way to colorize passive icons.
-							if  (current_button_state == Button_State::Enabled
-							&& !(current_dialog->flags & BinDlgFlags::AlternateStyleWC2))
-							{
-								current_dialog->flags |= BinDlgFlags::AlternateStyleWC2;
-								helper::update_dialog(current_dialog);
 							}
 
 							// Passive icons: END \\

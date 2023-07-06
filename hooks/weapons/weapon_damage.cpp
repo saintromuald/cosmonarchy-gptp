@@ -426,6 +426,11 @@ namespace hooks
 			// Ignore Carapace Swarm!
 			// START
 			switch (data.attacker->id) {
+				case UnitId::ZergNathrokor:
+				{
+					attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
+					data.attacker->update_speed();
+				} break;
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);

@@ -132,8 +132,10 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 		target.pt = launch_pos;
-		target.pt.x += diff.x * max_range;
-		target.pt.y += diff.y * max_range;
+		s32 safe_x = launch_pos.x + (diff.x * max_range);
+		s32 safe_y = launch_pos.y + (diff.y * max_range);
+		target.pt.x = safe_x >= 0 ? safe_x : 0;
+		target.pt.y = safe_y >= 0 ? safe_y : 0;
 	}
 	s32 angle = scbw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 
