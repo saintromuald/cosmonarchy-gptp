@@ -823,7 +823,7 @@ typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 
 // Contains various tile info.
-SCBW_DATA(ActiveTile**,		activeTileArray,		0x006D1260);
+SCBW_DATA(ActiveTile**,		g_active_tile_array,		0x006D1260);
 SCBW_DATA(u16**,			tileIdArray,			0x005993C4);
 SCBW_DATA(u16**,			megatileArray,			0x00628494);
 //SCBW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only

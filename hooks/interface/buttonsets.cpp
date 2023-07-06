@@ -2466,6 +2466,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergSovroleth:
+								{
+									if (current_button->icon_id == IconId::Ensnare								// Sovroleth - Writhing Web
+									||	current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) {	// Sovroleth - Corpse Cocoon
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergGhitorokor:
 								{
 									if (current_button->icon_id == IconId::SuicideScourge) { // Ghitorokor - Relentless Aggression
@@ -2562,6 +2569,20 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergHachirosk:
+								case UnitId::ZergLarvoskCesiant:
+								{
+									if (current_button->icon_id == IconId::MetasynapticNode) { // Larvosk Cesiant - Larval Gestation
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergCaphrolosk:
+								case UnitId::ZergGathtelosk:
+								{
+									if (current_button->icon_id == IconId::SuicideScourge) { // Caphrolosk, Gathtelosk - Ocsal Gestation, Swarmhold
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergSkortrithCesiant:
 								{
 									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Skortrith Colony - Tendril Amitosis
@@ -2618,32 +2639,6 @@ namespace hooks {
 							}
 							else if (unit->id == UnitId::ZergAlkajelisk &&  // Alkajelisk Parasitic Spores
 								current_button->icon_id == IconId::SpraithColonySeekerSpores)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergSovroleth &&		// Sovroleth Writhing Web
-								current_button->icon_id == IconId::Ensnare)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergSovroleth &&		// Sovroleth Corpse Cocoon
-								current_button->icon_id == IconId::SunkenColonySubterraneanTentacle)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergIroleth &&			// Iroleth Endomorphic Accelerant
-								current_button->icon_id == IconId::ZergBasicBuildings)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if ((unit->id == UnitId::ZergCaphrolosk		// Caphrolosk, Gathtelosk Larval Gestation
-							||		  unit->id == UnitId::ZergGathtelosk)
-							&&		  current_button->icon_id == IconId::SuicideScourge)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergLarvoskCesiant &&	// Larvosk Colony Larval Gestation
-								current_button->icon_id == IconId::MetasynapticNode)
 							{
 								current_button_state = Button_State::Enabled;
 							}

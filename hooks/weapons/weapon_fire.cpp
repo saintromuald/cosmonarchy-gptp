@@ -131,11 +131,18 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
-		target.pt = launch_pos;
-		s32 safe_x = launch_pos.x + (diff.x * max_range);
-		s32 safe_y = launch_pos.y + (diff.y * max_range);
-		target.pt.x = safe_x >= 0 ? safe_x : 0;
-		target.pt.y = safe_y >= 0 ? safe_y : 0;
+		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
+
+		if (target_pos.x < 0) {
+			target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target.pt.x))) * (target_pos.y - target.pt.y) + target.pt.y;
+			target_pos.x = 0;
+		}
+		if (target_pos.y < 0) {
+			target_pos.x = (1 - abs(target_pos.y / (target_pos.y - target.pt.y))) * (target_pos.x - target.pt.x) + target.pt.x;
+			target_pos.y = 0;
+		}
+		target.pt.x = target_pos.x;
+		target.pt.y = target_pos.y;
 	}
 	s32 angle = scbw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 
@@ -167,8 +174,8 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 	unit->air_weapon_cooldown = cooldown;
 }
 
-Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown) {
-	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
+Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown) {
+	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attacking_player, direction);
 	if (bullet) {
 		scbw::decloak_proc(source);
 		if (apply_cooldown) {
@@ -401,7 +408,7 @@ namespace hooks {
 				unit_ext->values[ValueSpineY] = unit_pos.y + scbw::get_polar_y(range, angle);
 				if (unit->order_target.unit)
 				{
-					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
+					unit_ext->values[ValueLakiziliskPickTarget] = (u32)unit->order_target.unit;
 				}
 				iquare_globals.clear_lakizilisk(unit);
 			}

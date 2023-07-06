@@ -251,10 +251,10 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		cost -= 100;
 	}
 
-	// Value splitting simulacra more
+	// Value splitting Simulacra more
 	UnitExt* target_ext = get_unit_ext(target);
 	if (target_ext->timers[TimerSimulacrumClone]) {
-		cost -= 5;
+		cost -= 15;
 	}
 
 	// Value hallucinating enemies more

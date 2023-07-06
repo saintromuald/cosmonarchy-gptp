@@ -21,7 +21,7 @@ namespace
 		result = hooks::is_unit_in_weapon_range(target, attacker);
 		__asm {
 			POPAD
-			MOVZX AL, result
+			MOVZX EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04

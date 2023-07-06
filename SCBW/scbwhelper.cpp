@@ -4620,22 +4620,22 @@ namespace helper {
 	}
 
 	void apply_spores(Unit* unit) {
-		const u32 Func_ApplySpores = 0x004F4480;
+		const u32 func_address = 0x004F4480;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
-			CALL Func_ApplySpores
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
-	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor) {
-		const u32 Helper_WeaponBulletShot = 0x00479AE0;
+	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor) {
+		const u32 func_address = 0x00479AE0;
 		if (bullet) {
 			BulletExt* bullet_ext = get_bullet_ext(bullet);
 			if (bullet_ext->divisor_overwrite) {
-				dmgDivisor *= bullet_ext->divisor_overwrite;
+				damage_divisor *= bullet_ext->divisor_overwrite;
 			}
 		}
 		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
@@ -4650,10 +4650,10 @@ namespace helper {
 		}
 		__asm {
 			PUSHAD
-			PUSH dmgDivisor
+			PUSH damage_divisor
 			MOV EAX, target
 			MOV EDX, bullet
-			CALL Helper_WeaponBulletShot
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4671,17 +4671,17 @@ namespace helper {
 		return result;
 	}
 
-	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 canShowErrorMessage) {
+	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 can_show_error_message) {
 		return 1; // Supply was removed
 
-		const u32 Func_hasSuppliesForUnit = 0x0042CF70;
+		const u32 func_address = 0x0042CF70;
 		static b32 result;
 		__asm {
 			PUSHAD
-			PUSH canShowErrorMessage
+			PUSH can_show_error_message
 			PUSH unit_id
 			PUSH player
-			CALL Func_hasSuppliesForUnit
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5314,13 +5314,13 @@ namespace helper {
 		return builtUnit;
 	}
 
-	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction) {
 		const u32 func_address = 0x0048C260;
 		static u32 attacking_player_xd;
 		static u32 direction_xd;
 		static s32 x_xd;
 		static s32 y_xd;
-		attacking_player_xd = attackingPlayer;
+		attacking_player_xd = attacking_player;
 		direction_xd = direction;
 		x_xd = x;
 		y_xd = y;

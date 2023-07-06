@@ -330,9 +330,9 @@ namespace hooks
 				{
 					do
 					{
-						if (!(*activeTileArray[(s16)v9 + g_map_tile_size->width * (s16)v6] & 0x20800000)
+						if (!(*g_active_tile_array[(s16)v9 + g_map_tile_size->width * (s16)v6] & 0x20800000)
 							&& ((s16)v6 + 1 == g_map_tile_size->height
-								|| !(*activeTileArray[(s16)v9 + g_map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
+								|| !(*g_active_tile_array[(s16)v9 + g_map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
 						{
 							modify_creep_state(
 								v9,

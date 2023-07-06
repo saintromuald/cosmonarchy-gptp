@@ -582,14 +582,14 @@ namespace helper {
 
 	//// api
 	void apply_spores(Unit* unit);
-	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
-	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
+	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction);
+	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor);
 	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
 	Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph
 	u8 set_archon_pathing(Unit* unit);																								// 0046A820
-	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 canShowErrorMessage);													// 0042CF70
+	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 can_show_error_message);												// 0042CF70
 	Unit* zerg_dual_birth(Unit* unit);																							    // 0045D910
 	void order_new_unit_to_rally(Unit* unit, Unit* factory);																		// 00466F50
 	void ai_training_unit(Unit* unit, Unit* creator);																				// 004A2830

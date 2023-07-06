@@ -448,7 +448,7 @@ namespace scbw
 
 	/// Returns the pointer to the active tile data at (x, y).
 	inline ActiveTile* get_active_tile_at_coords(u32 x, u32 y) {
-		return &(*activeTileArray)[(x / 32) + (y / 32) * g_map_tile_size->width];
+		return &(*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
 	}
 
 	inline ActiveTile* get_active_tile_at_coords(Point16 point) {
@@ -456,7 +456,7 @@ namespace scbw
 	}
 
 	inline ActiveTile* get_active_tile_at_tile(u32 tile_x, u32 tile_y) {
-		return &(*activeTileArray)[tile_x + tile_y * g_map_tile_size->width];
+		return &(*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
 	}
 
 	inline u16& getTileIdAt(s32 x, s32 y)
@@ -615,12 +615,12 @@ namespace scbw
 
 	/// Sets or clears the "is currently inside the game loop" property.
 	/// This must be called in next_frame() to use scbw::random() there.
-	inline bool set_ingame_loop_state(bool newState)
+	inline bool set_ingame_loop_state(bool new_state)
 	{
 		//Identical to function @ 0x004DC540
-		b32 previousState = *g_is_in_game_loop;
-		*g_is_in_game_loop = (newState ? 1 : 0);
-		return previousState != 0;
+		b32 previous_state = *g_is_in_game_loop;
+		*g_is_in_game_loop = (new_state ? 1 : 0);
+		return previous_state != 0;
 	}
 
 	//////////////////////////////////////////////////////////////// @}

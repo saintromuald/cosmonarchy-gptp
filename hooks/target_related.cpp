@@ -327,20 +327,17 @@ namespace hooks
 	// Hooked to help with cloak rewrite - Pr0nogo
 	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
-		s32 playerUnit;
-		playerUnit = 1 << unit->player;
+		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		u32 result;
-		if (target->status & 0x300 && !((1 << unit->player) & target->detection_status))
+		if (!(target->status & 0x300) && (1 << unit->player) & target->detection_status)
 		{
-			result = (u8)(playerUnit & target->sprite->visibility_status);
-		}
-		else
-		{
+			result = (u8)(player & target->sprite->visibility_status);
+		} else {
 			result = 0;
 		}
 		return result;
@@ -357,7 +354,7 @@ namespace hooks
 		playerUnit = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return playerUnit & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		if (unit->status & 0x300)

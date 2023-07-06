@@ -2246,6 +2246,19 @@ namespace hooks {
 			if (unit->subunit) {
 				unit->subunit->status &= ~UnitStatus::CanNotAttack;
 			}
+			if (unit_id_is_bunker(unit->id)) {
+				for (s32 i = 0; i < TransportCap; i++)
+				{
+					Unit* cargo_unit = unit->get_loaded_unit(i);
+					if (!cargo_unit) continue;
+					if (cargo_unit) {
+						cargo_unit->status &= ~UnitStatus::CanNotAttack;
+						if (cargo_unit->subunit) {
+							cargo_unit->subunit->status &= ~UnitStatus::CanNotAttack;
+						}
+					}
+				}
+			}
 		}
 
 		// Hierophant Signify Reset
