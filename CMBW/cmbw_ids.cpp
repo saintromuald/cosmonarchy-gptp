@@ -554,7 +554,7 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 	return ImageId::None;
 }
 
-bool weapon_id_procs_phantom_strike(u32 weapon_id) {
+bool weapon_id_procs_onhits(u32 weapon_id) {
 	return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
 		&& weapon_id != WeaponId::SpiderMines
 		&& weapon_id != WeaponId::LobotomyMineExplosion

@@ -58,5 +58,5 @@ bool tech_id_needs_target(u32 tech_id);
 
 bool image_id_is_powerup(u32 image_id);
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
-bool weapon_id_procs_phantom_strike(u32 weapon_id);
+bool weapon_id_procs_onhits(u32 weapon_id);
 WeaponOffsets get_weapon_offsets(u32 weapon_id);

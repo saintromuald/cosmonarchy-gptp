@@ -2768,13 +2768,6 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
-		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
-		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)
-		{
-			should_update_speed = true;
-		}
-
 		// Clear Power Siphon debuff
 		if (unit_ext->timers[TimerSavantPowerSiphonDebuff] == 1) {
 			unit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
@@ -2825,6 +2818,17 @@ namespace hooks {
 
 		if (unit_ext->timers[TimerAscend] == 1) {
 			should_update_speed = true;
+		}
+
+		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
+		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)
+		{
+			should_update_speed = false;
+			unit->update_speed(); // Have to do this here because of the Diadem bandage. -Pr0nogo
+			if (unit->id == UnitId::TerranDiadem) {
+				unit->flingy_turn_rate = 27;
+			}
 		}
 
 		if (should_update_speed) {
