@@ -14,6 +14,7 @@
 #include "DatExtend/datext.h"
 #include "weapon_fire.h"
 #include "trigger_system\trigger_system.h"
+#include "hooks/unit_stats/armor_bonus.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -231,8 +232,8 @@ namespace hooks
 		bool shield_overlay = false;
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
+			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
-			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
 				if (unit_has_fore_castle(data.target)) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
@@ -247,10 +248,6 @@ namespace hooks
 				}
 			}
 			armor_total = std::max(armor_total, 0);
-
-			// Observance armor reduction (can go to the negatives)
-			armor_total -= target_ext->values[ValueObservanceRend];
-
 			data.damage -= std::min(data.damage, armor_total * 256);
 		}
 
@@ -354,7 +351,7 @@ namespace hooks
 				}
 			}
 		}
-		data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+	//	data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 
 		switch (data.weapon_id) {
 			// Cabalist was here

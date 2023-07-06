@@ -9,7 +9,6 @@ namespace hooks
 	u8 get_armor_bonus(Unit* unit) // 00453FC0
 	{
 		s32 armor_modifier = scbw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
-		UnitExt* unit_ext = get_unit_ext(unit);
 		switch (unit->id) {
 			case UnitId::TerranMatadorCinderMode:
 			{
@@ -20,11 +19,23 @@ namespace hooks
 				armor_modifier += 4;
 			} break;
 		}
+		return armor_modifier;
+	}
 
-		// Negatives
-		armor_modifier -= unit_ext->values[ValueApollyoidAdhesiveStacks];
-		armor_modifier -= unit_ext->values[ValueControlledOpposition];
+	s32 get_armor_internal(Unit* unit)
+	{
+		s32 armor = units_dat::armor_amount[unit->id] + get_armor_bonus(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 
-		return (u8)std::max(armor_modifier, 0);
+		// Armor rends
+		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks];
+		armor -= unit_ext->values[ValueControlledOpposition];
+		armor -= unit_ext->values[ValueObservanceRend];
+		armor -= unit_ext->values[ValueCorrosiveTouchStacks];
+
+		if (armor < 0) {
+			armor = 0;
+		}
+		return armor;
 	}
 }

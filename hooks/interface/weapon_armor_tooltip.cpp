@@ -11,6 +11,7 @@
 #include <Utils/captivating_claws.h>
 #include <algorithm>
 #include "player_color.h"
+#include "hooks/unit_stats/armor_bonus.h"
 
 char buffer[256];
 
@@ -343,12 +344,10 @@ namespace hooks
 
 	s32 get_bonus_armor(Unit* unit, u8 base_armor) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		s32 bonus_armor = base_armor + unit->get_armor_bonus();
-		bonus_armor -= unit_ext->values[ValueControlledOpposition];
+		s32 bonus_armor = hooks::get_armor_internal(unit);
 		if (bonus_armor < 0) {
 			bonus_armor = 0;
 		}
-		bonus_armor -= unit_ext->values[ValueObservanceRend];
 		bonus_armor -= base_armor;
 		return bonus_armor;
 	}

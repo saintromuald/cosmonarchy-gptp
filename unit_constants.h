@@ -131,7 +131,7 @@ const f64 NathrokorAdrenalFrenzySpeedFactor = 0.01;
 const s32 VorvrokorCaptivatingClawsTimer = 24 + 1;
 
 // Vithrilisk
-const s32 VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
+const s32 VithriliskCorrosiveTouchTimer = 5 * 24 + 1;
 const f64 VithriliskCorrosiveTouchCooldownIncrease = 0.05;
 const f64 VithriliskCorrosiveTouchArmorReduction = 1 * 256;
 

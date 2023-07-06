@@ -1798,16 +1798,16 @@ namespace hooks {
 					unit->get_y() + radius
 				).for_each_in_match(match, [&](Unit* target) {
 					if ((!scbw::is_allied_to(unit->player, target->player))) {
-						UnitExt* targetExt = get_unit_ext(target);
-						if (!targetExt->timers[TimerObservanceDebuff]) {
+						UnitExt* target_ext = get_unit_ext(target);
+						if (!target_ext->timers[TimerObservanceDebuff]) {
 							unit_ext->timers[TimerObservanceOverlay] = 2;
-							targetExt->timers[TimerObservanceDebuff] = 5 * 24 + 1;
-							targetExt->timers[TimerObservancePeriod] = 5 * 24 + 1;
-							if (!targetExt->values[ValueObservanceRend]) {
+							target_ext->timers[TimerObservanceDebuff] = 5 * 24 + 1;
+							target_ext->timers[TimerObservancePeriod] = 5 * 24 + 1;
+							if (!target_ext->values[ValueObservanceRend]) {
 								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id);
 								target->sprite->create_overlay(overlay);
 							}
-							targetExt->values[ValueObservanceRend] += 1;
+							target_ext->values[ValueObservanceRend] += 1;
 						}
 					}
 				});

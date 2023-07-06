@@ -63,15 +63,7 @@ struct Unit : public UnitLayout
 
 	/// Returns the unit's air weapon ID. This is identical to reading the value
 	/// from units_dat::air_weapon[unit->id].
-	u8 get_air_weapon() const;
-
-	/// Returns the total armor amount of this unit (with upgrades).
-	/// To retrieve a unit's base armor amount, use units_dat::armor_amount[].
-	u8 get_armor() const;
-
-	/// Returns the bonus armor amount of this unit (from upgrades).
-	/// To retrieve a unit's base armor amount, use units_dat::armor_amount[].
-	u8 get_armor_bonus() const;
+	u8 get_air_weapon() const;\
 
 	/// Returns the maximum energy amount of this unit (with upgrades).
 	u16 get_max_energy() const;
