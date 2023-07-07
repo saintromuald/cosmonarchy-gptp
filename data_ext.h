@@ -63,7 +63,7 @@ enum ExtValueId {
 	ValuePreMorphEnergy,
 //	ValueGodsMadeFleshCast,
 //	ValueGodsMadeFleshActive,
-	ValueLurkerPickTarget,
+	ValueLakiziliskPickTarget,
 //	ValueKelvinMunitionsSlow,
 	ValueRaceSupplyType,
 	ValueExemplarLaunchPos,

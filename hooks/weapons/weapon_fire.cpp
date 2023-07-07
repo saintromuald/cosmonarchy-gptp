@@ -1403,7 +1403,7 @@ namespace hooks {
 		bullet->player = player;
 		bullet->order_unit_id = UnitId::None;
 		bullet->main_order_state = 0;
-		bullet->attack_target.unit = nullptr;
+		bullet->attack_target.unit = 0;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
 		bullet->main_order_timer = 0;
@@ -1414,7 +1414,7 @@ namespace hooks {
 		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
 		bullet->behavior_type = 0;
-		bullet->attack_target.unit = nullptr;
+		bullet->attack_target.unit = 0;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
 		bullet->main_order_state = 0;
