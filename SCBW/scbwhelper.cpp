@@ -8051,14 +8051,14 @@ namespace helper {
 		}
 	}
 
-	Bullet* assign_weapon_data(Bullet* bullet, char behaviorType) {
-		const u32 Func_assignWeaponData = 0x0048AA80;
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior_type) {
+		const u32 func_address = 0x0048AA80;
 		static Bullet* result;
 		__asm {
 			PUSHAD
-			MOVZX EDX, behaviorType
+			MOVZX EDX, behavior_type
 			MOV EAX, bullet
-			CALL Func_assignWeaponData
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

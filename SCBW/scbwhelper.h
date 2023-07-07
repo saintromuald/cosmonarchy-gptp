@@ -976,7 +976,7 @@ namespace helper {
 
 	// For bullet_behavior_reassign
 	void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
-	Bullet* assign_weapon_data(Bullet* bullet, char behaviorType);											// 0048AA80
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior_type);											// 0048AA80
 
 	// For ai_training_normal
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0

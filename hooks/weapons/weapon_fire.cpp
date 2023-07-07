@@ -1552,9 +1552,20 @@ namespace hooks {
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
-				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16);
-				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16);
-				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
+				Vector32 target_pos;
+				target_pos.x = (s32)(parent->sprite->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
+				target_pos.y = (s32)(parent->sprite->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
+				if (target_pos.x < 0) {
+					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target_unit->position.x))) * (target_pos.y - target_unit->position.y) + target_unit->position.y;
+					target_pos.x = 0;
+				}
+				if (target_pos.y < 0) {
+					target_pos.x = (1 - abs(target_pos.y / (target_pos.y - target_unit->position.y))) * (target_pos.x - target_unit->position.x) + target_unit->position.x;
+					target_pos.y = 0;
+				}
+				bullet->attack_target.pt.x = target_pos.x;
+				bullet->attack_target.pt.y = target_pos.y;
+				helper::attack_fly_to_target(bullet, target_pos.x, target_pos.y);
 				return 1;
 			}
 		}
@@ -1630,36 +1641,36 @@ namespace hooks {
 					case WeaponBehavior::AttackAndSelfDestruct:
 					{
 						bullet->behavior_type = WeaponBehavior::AppearOnAttacker;
-						if (bullet->attack_target.unit) {
-							bullet->attack_target.pt.x = bullet->attack_target.unit->sprite->position.x;
-							bullet->attack_target.pt.y = bullet->attack_target.unit->sprite->position.y;
+						if (bullet->attack_target.unit && bullet->attack_target.unit->sprite) {
+							bullet->attack_target.pt.x = bullet->attack_target.unit->position.x;
+							bullet->attack_target.pt.y = bullet->attack_target.unit->position.y;
 						} else {
 							bullet->attack_target.unit = 0;
 						}
 						bullet->main_order_state = 0;
-						bullet->order_unit_id = 228;
-						helper::play_sprite_iscript(bullet->sprite, 1, 1);
+						bullet->order_unit_id = UnitId::None;
+						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::Death, 1);
 					} break;
 					case WeaponBehavior::Fly_FollowTarget:
 					{
 						helper::assign_weapon_data(bullet, 2);
-						helper::play_sprite_iscript(bullet->sprite, 2, 1);
+						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
 					}  break;
 					case WeaponBehavior::Bounce:
 					{
 						helper::assign_weapon_data(bullet, 3);
-						helper::play_sprite_iscript(bullet->sprite, 2, 1);
+						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
 					}  break;
 					case WeaponBehavior::PersistOnTargetSite:
 					{
 						helper::assign_weapon_data(bullet, 4);
-						Image* bulletOverlay = nullptr;
-						bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay) {
+						Image* bullet_overlay = 0;
+						bullet_overlay = bullet->sprite->images.head;
+						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bulletOverlay, 14);
-								bulletOverlay = bulletOverlay->link.next;
-							} while (bulletOverlay);
+								helper::play_image_iscript(bullet_overlay, IscriptAnimation::SpecialState2);
+								bullet_overlay = bullet_overlay->link.next;
+							} while (bullet_overlay);
 						}
 					} break;
 					case WeaponBehavior::AttackNearbyArea:
@@ -1668,7 +1679,7 @@ namespace hooks {
 						Image* bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bullet_overlay, 2);
+								helper::play_image_iscript(bullet_overlay, IscriptAnimation::GndAttkInit);
 								bullet_overlay = bullet_overlay->link.next;
 							} while (bullet_overlay);
 						}
@@ -1679,7 +1690,7 @@ namespace hooks {
 						Image* bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bullet_overlay, 2);
+								helper::play_image_iscript(bullet_overlay, IscriptAnimation::GndAttkInit);
 								bullet_overlay = bullet_overlay->link.next;
 							}
 							while (bullet_overlay);
@@ -1864,4 +1875,6 @@ namespace hooks {
 			}
 		}
 	}
+
+
 }

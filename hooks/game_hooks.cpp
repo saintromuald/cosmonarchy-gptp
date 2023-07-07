@@ -1567,12 +1567,21 @@ namespace hooks {
 				// Lakizilisk - Seismic Spines
 				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerLakiziliskETA] == 1)
 				{
-					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
 					Point16 position = unit->position;
 					Point16 spr_position = unit->sprite->position;
-					Point16 pos = { unit_ext->values[ValueSpineX], unit_ext->values[ValueSpineY] };
-					unit->position = pos;
-					unit->sprite->position = pos;
+					Vector32 pos = { (s32)unit_ext->values[ValueSpineX], (s32)unit_ext->values[ValueSpineY] };
+					if (pos.x < 0) {
+						pos.y = (1 - abs(pos.x / (pos.x - (s32)position.x))) * (pos.y - (s32)position.y) + (s32)position.y;
+						pos.x = 0;
+					}
+					if (pos.y < 0) {
+						pos.x = (1 - abs(pos.y / (pos.y - (s32)position.y))) * (pos.x - (s32)position.x) + (s32)position.x;
+						pos.y = 0;
+					}
+					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
+					unit->position.x = (u16)pos.x;
+					unit->position.y = (u16)pos.y;
+					unit->sprite->position = unit->position;
 					scbw::artificial_bullet_from(WeaponId::LakiziliskSubterraneanSpines, unit->player, unit, 0, spr_position);
 					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
