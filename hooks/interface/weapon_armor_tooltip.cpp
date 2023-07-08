@@ -430,9 +430,7 @@ namespace hooks
 		{
 			add_status(statuses, "Cowardice", unit_ext->values[ValueSignifyStacks], 5,
 				unit_ext->timers[TimerSignify], TimerType::Gptp);
-		}
-		else
-		{
+		} else {
 			add_status(statuses, "Malice", unit_ext->values[ValueSignifyStacks], 1,
 				unit_ext->timers[TimerSignify], TimerType::Gptp);
 		}
