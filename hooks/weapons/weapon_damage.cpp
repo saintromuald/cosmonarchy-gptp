@@ -564,8 +564,8 @@ namespace hooks
 					case WeaponId::AutocratEminenceRifle:
 					{
 						// Apply Controlled Opposition
-						target_ext->values[ValueControlledOpposition]++;
-						target_ext->values[ValueControlledOppositionPlayer] = data.attacking_player_id;
+						target_ext->values[ValueAutocratControlledOppositionStacks]++;
+						target_ext->values[ValueAutocratControlledOppositionPlayer] = data.attacking_player_id;
 						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
@@ -665,9 +665,10 @@ namespace hooks
 					case WeaponId::EmpressFadingBioplasma:
 					{
 						// Empress - Anodyne Annex - add stack
-						target_ext->units[UnitEmpressSource] = data.attacker;
-						target_ext->values[ValueEmpressPassiveStacks]++;
-						target_ext->values[ValueEmpressSourcePlayer] = data.attacking_player_id;
+						target_ext->units[UnitEmpressAnodyneAnnexSource] = data.attacker;
+						target_ext->values[ValueEmpressAnodyneAnnexStacks]++;
+						target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = data.attacking_player_id;
+						target_ext->timers[TimerEmpressAnodyneAnnex] = 2 * 24 + 1;
 					} break;
 					case WeaponId::GhitorokorGnashingTendrils:
 					{
@@ -830,9 +831,9 @@ namespace hooks
 		}
 
 		// Empress - Anodyne Annex - zombify target
-		if (target_ext->values[ValueEmpressPassiveStacks] && !target_ext->values[ValueIsZombified]) {
+		if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
 			fatal_deal_damage = false;
-			scbw::empress_zombify(target_ext->values[ValueEmpressSourcePlayer], target_ext->units[UnitEmpressSource], data.target, target_ext->values[ValueEmpressPassiveStacks]);
+			scbw::empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
 		}
 
 		if (target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {

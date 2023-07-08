@@ -423,6 +423,8 @@ namespace hooks
 			unit_ext->timers[TimerMortothrokorPassive], TimerType::Gptp);
 		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
+		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
+			unit_ext->timers[TimerEmpressAnodyneAnnex], TimerType::Gptp);
 
 		if (unit_ext->values[ValueSignifyStacks] < 5)
 		{
@@ -460,8 +462,7 @@ namespace hooks
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
-		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueControlledOpposition], 0);
-		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressPassiveStacks], 0);
+		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueAutocratControlledOppositionStacks], 0);
 		add_status(statuses, "Fragmentary Shells", unit_ext->timer_vectors[TimerVectorCyclopsFuse].size(), 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);

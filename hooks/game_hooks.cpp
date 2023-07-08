@@ -2796,9 +2796,17 @@ namespace hooks {
 			unit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
 		}
 
-		// Clear Autocrat debuff
+		// Clear Autocrat - Controlled Opposition
 		if (unit_ext->timers[TimerAutocratControlledOpposition] == 1) {
-			unit_ext->values[ValueControlledOpposition] = 0;
+			unit_ext->values[ValueAutocratControlledOppositionStacks] = 0;
+			unit_ext->values[ValueAutocratControlledOppositionPlayer] = 0;
+		}
+
+		// Clear Empress - Anodyne Annex
+		if (unit_ext->timers[TimerEmpressAnodyneAnnex] == 1) {
+			unit_ext->units[UnitEmpressAnodyneAnnexSource] = 0;
+			unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
+			unit_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = 0;
 		}
 		
 		// Sevenstep - Mind Matter - Discharge projectile

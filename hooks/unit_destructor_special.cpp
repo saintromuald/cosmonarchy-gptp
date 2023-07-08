@@ -394,7 +394,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 
 				UnitExt* unit_ext = get_unit_ext(unit);
 				if (unit_ext->timers[TimerAutocratControlledOpposition]) {
-					reclaim_corpse(thingy, unit_ext->values[ValueControlledOppositionPlayer]);
+					reclaim_corpse(thingy, unit_ext->values[ValueAutocratControlledOppositionPlayer]);
 				}
 			}
 		}

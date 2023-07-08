@@ -1609,7 +1609,7 @@ namespace scbw {
 		target->remove_timer = 1 + stacks * 24 * 1;
 
 		target->give_to(player);
-		target_ext->values[ValueEmpressPassiveStacks] = 0;
+		target_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
 		target_ext->values[ValueIsZombified] = 1;
 		target_ext->values[ValueAlliedInvPlayer] = player;
 		target_ext->timers[TimerAlliedInvFrames] = 24;

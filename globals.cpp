@@ -967,10 +967,10 @@ namespace scbw
 		}
 
 		// Inherit Empress Passive Stacks
-		if (parent_ext->values[ValueEmpressPassiveStacks])
+		if (parent_ext->values[ValueEmpressAnodyneAnnexStacks])
 		{
-			child_ext->values[ValueEmpressPassiveStacks] = parent_ext->values[ValueEmpressPassiveStacks];
-			child_ext->values[ValueEmpressSourcePlayer] = parent_ext->values[ValueEmpressSourcePlayer];
+			child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
+			child_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = parent_ext->values[ValueEmpressAnodyneAnnexSourcePlayer];
 		}
 
 		// Inherit Hierophant Signify
@@ -1102,10 +1102,10 @@ namespace scbw
 		}
 
 		// Remove Controlled Opposition
-		unit_ext->values[ValueControlledOpposition] = 0;
+		unit_ext->values[ValueAutocratControlledOppositionStacks] = 0;
 
 		// Remove Empress stacks
-		unit_ext->values[ValueEmpressPassiveStacks] = 0;
+		unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
 
 		// Remove Lockdown
 		unit->remove_lockdown();
