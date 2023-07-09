@@ -65,21 +65,21 @@ struct UnitStatFuncArrayEntry {
 
 struct UnitPath
 {
-	Point16	start;					 // 0x00
-	s32		next;					 // 0x04
-	s32		finish;					 // 0x08
-	s32		time_started;			 // 0x0C
-	s32		unit_index;				 // 0x10
-	u32		x_y_speed;				 // 0x14
-	s8		is_calculating;			 // 0x18
-	s8		collision_recheck_timer; // 0x19
-	s8		direction;				 // 0x1A
-	s8		path_count;				 // 0x1B
-	s8		num_areas;				 // 0x1C
-	s8		cur_areas;				 // 0x1D
-	s8		num_segments;			 // 0x1E
-	s8		cur_segments;			 // 0x1F
-	s32		steps[24];				 // 0x20
+	Point16		start;					 // 0x00
+	s32			next;					 // 0x04
+	s32			finish;					 // 0x08
+	s32			time_started;			 // 0x0C
+	s32			unit_index;				 // 0x10
+	u32			x_y_speed;				 // 0x14
+	s8			is_calculating;			 // 0x18
+	s8			collision_recheck_timer; // 0x19
+	s8			direction;				 // 0x1A
+	s8			path_count;				 // 0x1B
+	s8			num_areas;				 // 0x1C
+	s8			cur_areas;				 // 0x1D
+	s8			num_segments;			 // 0x1E
+	s8			cur_segments;			 // 0x1F
+	s32			steps[24];				 // 0x20
 };
 
 struct CampaignMission

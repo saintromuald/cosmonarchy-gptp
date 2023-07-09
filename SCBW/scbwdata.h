@@ -1179,6 +1179,10 @@ SCBW_DATA(u32*,				unk_static,							0x0051ABFC);
 
 SCBW_DATA(char*,			g_text_buffer,						0x006CA76C);
 
+// For 
+SCBW_DATA(UnitPath**,		g_first_free_path,					0x006BEE84);
+SCBW_DATA(UnitPath**,		g_path_array_start,					0x006BEE8C);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

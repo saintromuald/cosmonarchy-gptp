@@ -93,6 +93,9 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 
 	f32 min_range = weapons_dat::min_range[weapon_id] / 32.0;
 	f32 range = weapons_dat::max_range[weapon_id] / 32.0;
+	if (weapon_id == WeaponId::OlympianTitansFist) {
+		range = 1;
+	}
 	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit) / 32.0 - range;
 	bonus_range -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id, false);
 
@@ -109,37 +112,6 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	bool has_splash = splash_inner || splash_medium || splash_outer;
 	s32 splash_type = weapons_dat::explosion_type[weapon_id];
 	std::string splash_type_value = "";
-
-	/*
-	const char* type_name = "";
-	switch (damage_type) {
-	case DamageType::Concussive: {
-	type_name = BWTC_TEAL "Concussive" BWTC_RESET;
-	damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "75" BWTC_RESET "/" BWTC_ORANGE "50" BWTC_RESET "/" BWTC_RED "25" BWTC_RESET;
-	} break;
-	case DamageType::Impact: {
-	type_name = BWTC_YELLOW "Impact" BWTC_RESET;
-	damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "100" BWTC_RESET "/" BWTC_ORANGE "75" BWTC_RESET "/" BWTC_RED "50" BWTC_RESET;
-	} break;
-	case DamageType::Explosive: {
-	type_name = BWTC_ORANGE "Explosive" BWTC_RESET;
-	damage_modifiers = BWTC_TEAL "50" BWTC_RESET "/" BWTC_YELLOW "75" BWTC_RESET "/" BWTC_ORANGE "100" BWTC_RESET "/" BWTC_RED "75" BWTC_RESET;
-	} break;
-	case DamageType::Chronal: {
-	type_name = BWTC_WHITE "Chronal" BWTC_RESET;
-	damage_modifiers = BWTC_TEAL "100" BWTC_RESET "/" BWTC_YELLOW "100" BWTC_RESET "/" BWTC_ORANGE "100" BWTC_RESET "/" BWTC_RED "100" BWTC_RESET;
-	} break;
-	case DamageType::Independent: {
-	type_name = BWTC_WHITE "Independent" BWTC_RESET;
-	} break;
-	case DamageType::IgnoreArmor: {
-	type_name = BWTC_WHITE "Ignores Armor" BWTC_RESET;
-	} break;
-	default: {
-	type_name = "None";
-	} break;
-	};
-	*/
 
 	switch (splash_type) {
 		case WeaponEffect::SplashRadial: {
@@ -172,21 +144,9 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	{
 		target_flags.push_back("Air");
 	}
-	if (weapons_dat::target_flags[weapon_id].mechanical || weapons_dat::target_flags[weapon_id].organic_or_mechanical)
-	{
-		target_flags.push_back("Mechanical");
-	}
-	if (weapons_dat::target_flags[weapon_id].organic || weapons_dat::target_flags[weapon_id].organic_or_mechanical)
-	{
-		target_flags.push_back("Organic");
-	}
 	if (weapons_dat::target_flags[weapon_id].non_building)
 	{
 		target_flags.push_back("Not Building");
-	}
-	if (weapons_dat::target_flags[weapon_id].non_robotic)
-	{
-		target_flags.push_back("Not Robotic");
 	}
 	if (weapons_dat::target_flags[weapon_id].terrain)
 	{

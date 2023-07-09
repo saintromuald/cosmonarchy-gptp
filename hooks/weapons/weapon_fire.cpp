@@ -306,7 +306,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		unit_search_rect(&targets, area);
 	}
 	unit_search_filter(&targets, unit, filters);
-	Point16 sort_center   = order_target_unit ? order_target_unit->position : unit->position;
+	Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
 	unit_search_sort_by_distance(&targets, sort_center);
 
 	u32 count = targets.count;

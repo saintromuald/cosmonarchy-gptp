@@ -156,6 +156,7 @@ enum ExtValueId {
 	ValueDecaying,
 	ValuePariahHitPlayer,
 	ValueIsNydusExit,
+	ValueIsNeutralNydus,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

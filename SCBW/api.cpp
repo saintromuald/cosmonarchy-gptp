@@ -2108,8 +2108,9 @@ namespace scbw {
 	u32 get_zerg_regression(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->values[ValueOriginatedFromOcsalLarva]
-		||	unit_ext->values[ValueIsNydusExit]) {
-			// Ocsal units and Nydus exits don't regress
+		||	unit_ext->values[ValueIsNydusExit]
+		||	unit_ext->values[ValueIsNeutralNydus]) {
+			// The above cases do not regress!
 			return UnitId::None;
 		}
 

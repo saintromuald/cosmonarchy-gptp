@@ -11,25 +11,12 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u8 bonus_amount = 0;
 
-		// Madrigal - Tempo Change
-		switch (unit->id) {
-			case UnitId::TerranMadrigalImperiosoMode: {
-				if (unit_ext->values[ValueMadrigalTempoDown]) {	
-					bonus_amount += 4;
-				}
-			} break;
-		}
-
-		// Repentant Chorus - Barghest behavior
-		bonus_amount += unit_ext->values[ValueRepententChorus] / 4;
-
 		// Stellar Enforcement - Magister behavior
 		if (!target || get_unit_ext(target)->timers[TimerStellarEnforcement]) {
 			bonus_amount += 2;
 		}
 
 		f32 scale = 1;
-
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];
@@ -60,20 +47,6 @@ namespace hooks
 			bonus_amount += 64;
 		}
 
-		// Madrigal - Tempo Change
-		switch (unit->id) {
-			case UnitId::TerranMadrigalImperiosoMode: {
-				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown]) {
-					bonus_amount += 4 * 32;
-				}
-			} break;
-		}
-
-		// Repentent Chorus - Barghest behavior
-		if (unit->id == UnitId::ProtossBarghest) {
-			bonus_amount += unit_ext->values[ValueRepententChorus] * 8;
-		}
-
 		// Stellar Enforcement - Magister behavior
 		if (target && weapons_dat::max_range[weapon_id] > 32) {
 			UnitExt* target_ext = get_unit_ext(target);
@@ -83,7 +56,6 @@ namespace hooks
 		}
 
 		f32 scale = 1;
-
 		// Sovroleth - Writhing Web
 		if (unit->id == UnitId::ZergSovroleth) {
 			scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];

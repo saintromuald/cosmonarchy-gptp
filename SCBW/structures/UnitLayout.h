@@ -20,6 +20,7 @@ struct Sprite;
 struct Order;
 struct Unit;
 struct UnitAi;
+struct UnitPath;
 
 namespace NewGameCommand
 {
@@ -395,9 +396,9 @@ struct UnitLayout
 		Target		rally;
 		Link<Unit>	psi_link;
 	};
-	/*0x100*/ void*		path;							// use BW::Path* in BWAPI
+	/*0x100*/ UnitPath*	path;
 	/*0x104*/ u8        pathing_collision_interval;		// unknown
-	/*0x105*/ u8        pathing_flags;					// 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
+	/*0x105*/ u8        pathing_flags;					// 0x01 = uses pathing; 0x02 = decolliding?; 0x04 = needs to decollide?
 	/*0x106*/ u8        unused_106;
 	/*0x107*/ b8		is_being_healed;				// 1 if a cleric is healing this unit
 	/*0x108*/ Box16     contour_bounds;					// A rect that specifies the closest contour (collision) points

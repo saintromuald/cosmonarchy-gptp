@@ -896,6 +896,13 @@ namespace hooks {
 					unit->status |= UnitStatus::NoCollide;
 				}
 			} break;
+			case UnitId::ZergNydusCesiant:
+			{
+				if (unit->player == 11)
+				{
+					unit_ext->values[ValueIsNeutralNydus] = 1;
+				}
+			} break;
 		}
 
 		// Fixes first attack from Paladin (and maybe other units) aiming upwards
@@ -2084,6 +2091,12 @@ namespace hooks {
 					unit->sprite->create_top_overlay(ImageId::ZergAirExplosionSmall_Reversed);
 					helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, unit, 1, 0);
 					helper::replace_unit_with_id(unit, UnitId::ZergAxitrilisk);
+				}
+			} break;
+			case UnitId::TerranVulture:
+			{
+				if (unit->mine_carrier.mine_count > 2) {
+					unit->mine_carrier.mine_count = 2;
 				}
 			} break;
 		}
