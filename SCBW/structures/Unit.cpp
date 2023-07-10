@@ -701,6 +701,8 @@ void Unit::unfreeze() {
 		POPAD
 	}
 	this->status &= ~UnitStatus::Frozen;
+	helper::change_unit_buttonset(this, this->id);
+	scbw::refresh_console();
 }
 
 void Unit::remove_acid_spores() {
