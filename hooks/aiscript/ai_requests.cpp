@@ -1078,7 +1078,7 @@ namespace hooks
 						building_placement = helper::ai_manage_building_placement(unit, UnitId::ZergHachirosk, build_pos, &build_pos, 64);
 					} else {
 						build_pos = town->position;
-						if (unit_id == UnitId::ZergCagrantColony || unit_id == UnitId::ProtossWarden) {
+						if (unit_id == UnitId::ZergCagrantCesiant || unit_id == UnitId::ProtossWarden) {
 							u32 region_id = helper::get_region_id(build_pos.x, build_pos.y);
 							helper::do_area_fixups_for_enemy(player, region_id, 4);
 						}

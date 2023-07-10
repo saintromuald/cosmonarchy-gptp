@@ -26,6 +26,11 @@ namespace hooks
 			}
 		}
 
+		// Zerg - Adrenal Frenzy - speed
+		if (unit_ext->timers[TimerZergAdrenalFrenzy] > 1) {
+			speed *= 1.25;
+		}
+
 		// Protoss Cornerstone: Avenge - speed
 		if (unit_ext->timers[TimerAvenge] > 1) {
 			speed *= 1.25;

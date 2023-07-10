@@ -32,14 +32,14 @@ bool unit_id_is_smaller_building(u16 unit_id) {
 		|| unit_id == UnitId::ProtossPylon
 		|| unit_id == UnitId::ProtossWarden
 		|| unit_id == UnitId::ProtossMatrix
-		|| unit_id == UnitId::ZergCagrantColony
-		|| unit_id == UnitId::ZergSurkithColony
-		|| unit_id == UnitId::ZergSpraithColony
-		|| unit_id == UnitId::ZergLarvoskColony
-		|| unit_id == UnitId::ZergSkortrithColony
-		|| unit_id == UnitId::ZergSpirtithColony
-		|| unit_id == UnitId::ZergKazitrithColony
-		|| unit_id == UnitId::ZergOcsalColony
+		|| unit_id == UnitId::ZergCagrantCesiant
+		|| unit_id == UnitId::ZergSurkithCesiant
+		|| unit_id == UnitId::ZergSpraithCesiant
+		|| unit_id == UnitId::ZergLarvoskCesiant
+		|| unit_id == UnitId::ZergSkortrithCesiant
+		|| unit_id == UnitId::ZergSpirtithCesiant
+		|| unit_id == UnitId::ZergKazitrithCesiant
+		|| unit_id == UnitId::ZergOcsalCesiant
 		|| unit_id == UnitId::ZergNydusCesiant;
 }
 
@@ -164,21 +164,22 @@ bool unit_id_can_regenerate_shields(u32 unit_id) {
 
 bool unit_id_is_stackable_building(u32 unit_id) {
 	return false; // Disabled to see if it improves AI base layouts. -Pr0nogo
-	switch (unit_id) {
+	switch (unit_id)
+	{
 		case UnitId::TerranWatchdog:
 		case UnitId::TerranAnchor:
 		case UnitId::TerranSentinel:
 		case UnitId::ProtossPylon:
 		case UnitId::ProtossWarden:
 		case UnitId::ProtossMatrix:
-			//	case UnitId::ZergCagrantColony: // Disabled to prevent spamming. -Pr0nogo
-		case UnitId::ZergSurkithColony:
-		case UnitId::ZergSpraithColony:
-		case UnitId::ZergLarvoskColony:
-		case UnitId::ZergSkortrithColony:
-		case UnitId::ZergSpirtithColony:
-		case UnitId::ZergKazitrithColony:
-		case UnitId::ZergOcsalColony:
+	//	case UnitId::ZergCagrantCesiant: // Disabled to prevent spamming. -Pr0nogo
+		case UnitId::ZergSurkithCesiant:
+		case UnitId::ZergSpraithCesiant:
+		case UnitId::ZergLarvoskCesiant:
+		case UnitId::ZergSkortrithCesiant:
+		case UnitId::ZergSpirtithCesiant:
+		case UnitId::ZergKazitrithCesiant:
+		case UnitId::ZergOcsalCesiant:
 		case UnitId::ZergIrolIris:
 		case UnitId::ZergOthstolOviform:
 		{
@@ -209,7 +210,7 @@ bool unit_id_has_addon(u32 unit_id) {
 u32 unit_id_get_larva_type(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::ZergCaphrolosk:
-		case UnitId::ZergOcsalColony:
+		case UnitId::ZergOcsalCesiant:
 		case UnitId::ZergOcsalLarva:
 		{
 			return UnitId::ZergOcsalLarva;
@@ -305,8 +306,8 @@ bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
 		return unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
 			|| unit_id == UnitId::ZergGathtelosk
-			|| unit_id == UnitId::ZergLarvoskColony
-			|| unit_id == UnitId::ZergOcsalColony;
+			|| unit_id == UnitId::ZergLarvoskCesiant
+			|| unit_id == UnitId::ZergOcsalCesiant;
 	}
 }
 
@@ -553,7 +554,7 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 	return ImageId::None;
 }
 
-bool weapon_id_procs_phantom_strike(u32 weapon_id) {
+bool weapon_id_procs_onhits(u32 weapon_id) {
 	return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
 		&& weapon_id != WeaponId::SpiderMines
 		&& weapon_id != WeaponId::LobotomyMineExplosion

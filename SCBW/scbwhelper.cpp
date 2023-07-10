@@ -93,12 +93,12 @@ namespace helper {
 		return result;
 	}
 
-	bool unit_hp_below_33_percent(Unit* a1) {
+	bool unit_hp_below_33_percent(Unit* unit) {
 		const u32 func_address = 0x004022C0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, unit
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -106,12 +106,12 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool unit_hp_between_33_66_percent(s32 a1, Unit* unit) {
+	bool unit_hp_between_33_66_percent(Unit* unit) {
 		const u32 func_address = 0x00402270;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, 0 // Unused arg
 			MOV EDX, unit
 			CALL func_address
 			MOV result, EAX
@@ -158,21 +158,21 @@ namespace helper {
 		}
 	}
 
-	void draw_energy(BinDlg* a1) {
+	void draw_energy(BinDlg* dialog) {
 		const u32 func_address = 0x00425A30;
 		__asm {
 			PUSHAD
-			MOV EBX, a1
+			MOV EBX, dialog
 			CALL func_address
 			POPAD
 		}
 	}
 
-	void hide_optional_status_screen_controls(BinDlg* a1) {
+	void hide_optional_status_screen_controls(BinDlg* dialog) {
 		const u32 func_address = 0x00457310;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
+			MOV EAX, dialog
 			CALL func_address
 			POPAD
 		}
@@ -4620,22 +4620,22 @@ namespace helper {
 	}
 
 	void apply_spores(Unit* unit) {
-		const u32 Func_ApplySpores = 0x004F4480;
+		const u32 func_address = 0x004F4480;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
-			CALL Func_ApplySpores
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
-	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor) {
-		const u32 Helper_WeaponBulletShot = 0x00479AE0;
+	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor) {
+		const u32 func_address = 0x00479AE0;
 		if (bullet) {
 			BulletExt* bullet_ext = get_bullet_ext(bullet);
 			if (bullet_ext->divisor_overwrite) {
-				dmgDivisor *= bullet_ext->divisor_overwrite;
+				damage_divisor *= bullet_ext->divisor_overwrite;
 			}
 		}
 		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
@@ -4650,10 +4650,10 @@ namespace helper {
 		}
 		__asm {
 			PUSHAD
-			PUSH dmgDivisor
+			PUSH damage_divisor
 			MOV EAX, target
 			MOV EDX, bullet
-			CALL Helper_WeaponBulletShot
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4671,17 +4671,17 @@ namespace helper {
 		return result;
 	}
 
-	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 canShowErrorMessage) {
+	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 can_show_error_message) {
 		return 1; // Supply was removed
 
-		const u32 Func_hasSuppliesForUnit = 0x0042CF70;
+		const u32 func_address = 0x0042CF70;
 		static b32 result;
 		__asm {
 			PUSHAD
-			PUSH canShowErrorMessage
+			PUSH can_show_error_message
 			PUSH unit_id
 			PUSH player
-			CALL Func_hasSuppliesForUnit
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4992,12 +4992,12 @@ namespace helper {
 		return return_value;
 	}
 
-	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2) {
+	void order_to_attack_target(Unit* unit, Unit* target, u32 process_subunit, u32 target_is_cloaked) {
 		const u32 func_address = 0x00476FC0;
 		__asm {
 			PUSHAD
-			PUSH unk2
-			PUSH unk1
+			PUSH target_is_cloaked
+			PUSH process_subunit
 			MOV EAX, target
 			MOV EDI, unit
 			CALL func_address
@@ -5314,13 +5314,13 @@ namespace helper {
 		return builtUnit;
 	}
 
-	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction) {
 		const u32 func_address = 0x0048C260;
 		static u32 attacking_player_xd;
 		static u32 direction_xd;
 		static s32 x_xd;
 		static s32 y_xd;
-		attacking_player_xd = attackingPlayer;
+		attacking_player_xd = attacking_player;
 		direction_xd = direction;
 		x_xd = x;
 		y_xd = y;
@@ -8051,14 +8051,14 @@ namespace helper {
 		}
 	}
 
-	Bullet* assign_weapon_data(Bullet* bullet, char behaviorType) {
-		const u32 Func_assignWeaponData = 0x0048AA80;
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior_type) {
+		const u32 func_address = 0x0048AA80;
 		static Bullet* result;
 		__asm {
 			PUSHAD
-			MOVZX EDX, behaviorType
+			MOVZX EDX, behavior_type
 			MOV EAX, bullet
-			CALL Func_assignWeaponData
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -13765,6 +13765,20 @@ namespace helper {
 		const u32 func_address = 0x00495100;
 		__asm {
 			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 remove_from_selections_2(Unit* unit, s32 index) {
+		static s32 result;
+		const u32 func_address = 0x0049A170;
+		__asm {
+			PUSHAD
+			PUSH index
 			MOV EAX, unit
 			CALL func_address
 			MOV result, EAX

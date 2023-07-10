@@ -9,6 +9,7 @@
 #include "trigger_system/trigger_events.h"
 #include <DatExtend/datext.h>
 #include "math_utils.h"
+#include "hooks/unit_stats/armor_bonus.h"
 
 //-------- Unit stats and properties --------//
 
@@ -68,25 +69,6 @@ u8 Unit::get_ground_weapon() const {
 u8 Unit::get_air_weapon() const {
 	assert(this);
 	return units_dat::air_weapon[this->id];
-}
-
-u8 Unit::get_armor() const {
-	assert(this);
-	return units_dat::armor_amount[this->id] + this->get_armor_bonus();
-}
-
-u8 Unit::get_armor_bonus() const {
-	static u32 func_address = 0x00453FC0;
-	assert(this);
-	static u8 armor_bonus;
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL func_address
-		MOV armor_bonus, AL
-		POPAD
-	}
-	return armor_bonus;
 }
 
 u16 Unit::get_max_energy() const {
@@ -706,6 +688,7 @@ void Unit::freeze() {
 		CALL func_address
 		POPAD
 	}
+	this->status |= UnitStatus::Frozen;
 }
 
 void Unit::unfreeze() {
@@ -717,6 +700,9 @@ void Unit::unfreeze() {
 		CALL func_address
 		POPAD
 	}
+	this->status &= ~UnitStatus::Frozen;
+	helper::change_unit_buttonset(this, this->id);
+	scbw::refresh_console();
 }
 
 void Unit::remove_acid_spores() {

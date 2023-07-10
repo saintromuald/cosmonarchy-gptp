@@ -77,49 +77,38 @@ namespace hooks
 		return v0;
 	}
 
-	void set_text_string(BinDlg* a1)
-	{ // 004263E0
-		Unit* v1; // esi
-		u16 v2; // edi
-		s32 v3; // eax
-		s32 v4; // ecx
-		u8 v5; // bl
-		s32 v6; // eax
-		s32 v7; // ST14_4
-		s32 v8; // ST10_4
-		u16 v9; // ax
-		const char* v10; // [esp-4h] [ebp-10h]
-
-		v1 = *g_active_portrait_unit;
-		v2 = v1->id;
-		v3 = units_dat::max_hitpoints[v2] >> 8;
-		if ((v3 || (v3 = (v1->hitpoints + 255) >> 8) != 0) && v3 > 9999
-			|| units_dat::max_shield_points[v2] > 0x270Fu
-			|| v1->status & UnitStatus::IsHallucination)
+	void set_text_string(BinDlg* dialog) // 004263E0
+	{
+		const char* string = "";
+		Unit* active_unit = *g_active_portrait_unit;
+		u32 active_id = active_unit->id;
+		s32 max_hp_real = units_dat::max_hitpoints[active_id] >> 8;
+		if ((max_hp_real || (max_hp_real = (active_unit->hitpoints + 255) >> 8) != 0) && max_hp_real > 9999
+		||   units_dat::max_shield_points[active_id] > 9999
+		||   active_unit->status & UnitStatus::IsHallucination)
 		{
-			v10 = 0;
-		}
-		else
-		{
+			string = 0;
+		} else {
+			s32 max_hp_raw = helper::get_max_hp(active_unit);
+			u8 hp_state = 0;
 			if (helper::unit_hp_below_33_percent(*g_active_portrait_unit))
-				v5 = 6;
-			else
-				v5 = helper::unit_hp_between_33_66_percent(v4, v1) != 0 ? 3 : 7;
-			if (units_dat::shields_enabled[v2])
 			{
-				v7 = helper::get_max_hp(v1);
-				v8 = (v1->hitpoints + 255) >> 8;
-				v9 = helper::get_last_queue_slot_id(v1);
-				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::max_shield_points[v9], v5, v8, v7);
+				hp_state = 6;
+			} else {
+				hp_state = helper::unit_hp_between_33_66_percent(active_unit) != 0 ? 3 : 7;
 			}
-			else
+
+			if (units_dat::shields_enabled[active_id])
 			{
-				v6 = helper::get_max_hp(v1);
-				sprintf_s("", 32, "%c%d/%d", v5, (v1->hitpoints + 255) >> 8, v6);
+				s32 hp_plus_1 = (active_unit->hitpoints + 255) >> 8;
+				u16 last_queue_id = helper::get_last_queue_slot_id(active_unit);
+				sprintf_s("", 32, "%d/%d %c%d/%d", active_unit->shields >> 8, units_dat::max_shield_points[last_queue_id], hp_state, hp_plus_1, max_hp_raw);
+			} else {
+				sprintf_s("", 32, "%c%d/%d", hp_state, (active_unit->hitpoints + 255) >> 8, max_hp_raw);
 			}
-			v10 = "";
+			string = "";
 		}
-		helper::add_text_to_dialog(a1, -7, v10);
-		helper::draw_energy(a1);
+		helper::add_text_to_dialog(dialog, -7, string);
+		helper::draw_energy(dialog);
 	}
 }

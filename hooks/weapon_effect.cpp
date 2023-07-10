@@ -155,7 +155,7 @@ namespace hooks {
 				bool lakizilisk_override = false;
 				if (bullet->source_unit) {
 					UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
-					if ((Unit*)bullet_source_ext->values[ValueLurkerPickTarget] == target) {
+					if ((Unit*)bullet_source_ext->values[ValueLakiziliskPickTarget] == target) {
 						lakizilisk_override = true;
 					}
 				}

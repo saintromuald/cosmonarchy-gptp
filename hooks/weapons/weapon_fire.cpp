@@ -13,27 +13,6 @@
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
 
-static bool madrigal_furia_match(Unit* madrigal, Unit* unit)
-{
-	if (unit == madrigal)
-	{
-		return false;
-	}
-	if (unit == madrigal->order_target.unit)
-	{
-		return false;
-	}
-	if (scbw::is_allied_to(madrigal->player, unit->player))
-	{
-		return false;
-	}
-	if (!madrigal->can_attack_target(unit))
-	{
-		return false;
-	}
-	return true;
-}
-
 static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 {
 	if (unit->status & UnitStatus::Invincible)
@@ -131,9 +110,18 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
-		target.pt = launch_pos;
-		target.pt.x += diff.x * max_range;
-		target.pt.y += diff.y * max_range;
+		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
+
+		if (target_pos.x < 0) {
+			target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target.pt.x))) * (target_pos.y - target.pt.y) + target.pt.y;
+			target_pos.x = 0;
+		}
+		if (target_pos.y < 0) {
+			target_pos.x = (1 - abs(target_pos.y / (target_pos.y - target.pt.y))) * (target_pos.x - target.pt.x) + target.pt.x;
+			target_pos.y = 0;
+		}
+		target.pt.x = target_pos.x;
+		target.pt.y = target_pos.y;
 	}
 	s32 angle = scbw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 
@@ -165,8 +153,8 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 	unit->air_weapon_cooldown = cooldown;
 }
 
-Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction, bool apply_cooldown) {
-	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attackingPlayer, direction);
+Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown) {
+	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attacking_player, direction);
 	if (bullet) {
 		scbw::decloak_proc(source);
 		if (apply_cooldown) {
@@ -264,11 +252,12 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 	bool fired = false;
 	Unit* order_target_unit = unit->order_target.unit;
 	if (!ignore_main
-		&& order_target_unit
-		&& unit->main_order_id != OrderId::Follow
-		&& unit->main_order_id != OrderId::Patrol
-		&& unit->is_target_within_min_range(order_target_unit, attack_range)
-		&& unit->can_attack_target(order_target_unit)) {
+	&&   order_target_unit
+	&&   unit->main_order_id != OrderId::Follow
+	&&   unit->main_order_id != OrderId::Patrol
+	&&   unit->is_target_within_min_range(order_target_unit, attack_range)
+	&&   unit->can_attack_target(order_target_unit))
+	{
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			for (u32 i = 0; i < factor; i++) {
 				Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), weapon_offsets, apply_cooldown);
@@ -297,7 +286,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		unit_search_rect(&targets, area);
 	}
 	unit_search_filter(&targets, unit, filters);
-	Point16 sort_center   = order_target_unit ? order_target_unit->position : unit->position;
+	Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
 	unit_search_sort_by_distance(&targets, sort_center);
 
 	u32 count = targets.count;
@@ -368,10 +357,10 @@ namespace hooks {
 		}
 
 		// Cloaked units - decloak
-		// Cabalist has Silent Strikes, so the check has to be in weapon damage
-		if (unit->id != UnitId::ProtossCabalist) {
+		// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
+	//	if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloak_proc(unit);
-		}
+	//	}
 		if (unit->id == UnitId::ProtossSteward && unit->hangar_unit.parent) {
 			scbw::decloak_proc(unit->hangar_unit.parent);
 		}
@@ -399,7 +388,7 @@ namespace hooks {
 				unit_ext->values[ValueSpineY] = unit_pos.y + scbw::get_polar_y(range, angle);
 				if (unit->order_target.unit)
 				{
-					unit_ext->values[ValueLurkerPickTarget] = (u32)unit->order_target.unit;
+					unit_ext->values[ValueLakiziliskPickTarget] = (u32)unit->order_target.unit;
 				}
 				iquare_globals.clear_lakizilisk(unit);
 			}
@@ -865,9 +854,9 @@ namespace hooks {
 		for (u32 i = 0; i < targets_count; ++i) {
 			UnitPiercingEntry* target = &targets[i];
 			if (weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
-				u32 armor = units_dat::armor_amount[target->unit->id] + hooks::get_armor_bonus(target->unit);
+				u32 armor = hooks::get_armor_internal(target->unit);
 				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
-				if (armor > armor_pen) {
+				if (armor >= armor_pen) {
 					bullet->attack_target.pt = target->cp;
 					bullet->attack_target.unit = target->unit;
 					return true;
@@ -1394,7 +1383,7 @@ namespace hooks {
 		bullet->player = player;
 		bullet->order_unit_id = UnitId::None;
 		bullet->main_order_state = 0;
-		bullet->attack_target.unit = nullptr;
+		bullet->attack_target.unit = 0;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
 		bullet->main_order_timer = 0;
@@ -1405,7 +1394,7 @@ namespace hooks {
 		bullet->hit_flags = 0;
 		bullet->movement_flags |= MovementFlags::StartingAttack;
 		bullet->behavior_type = 0;
-		bullet->attack_target.unit = nullptr;
+		bullet->attack_target.unit = 0;
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
 		bullet->main_order_state = 0;
@@ -1543,9 +1532,20 @@ namespace hooks {
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
-				bullet->attack_target.pt.x = parent->sprite->position.x + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16);
-				bullet->attack_target.pt.y = parent->sprite->position.y + ((u32)(max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16);
-				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
+				Vector32 target_pos;
+				target_pos.x = (s32)(parent->sprite->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
+				target_pos.y = (s32)(parent->sprite->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
+				if (target_pos.x < 0) {
+					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target_unit->position.x))) * (target_pos.y - target_unit->position.y) + target_unit->position.y;
+					target_pos.x = 0;
+				}
+				if (target_pos.y < 0) {
+					target_pos.x = (1 - abs(target_pos.y / (target_pos.y - target_unit->position.y))) * (target_pos.x - target_unit->position.x) + target_unit->position.x;
+					target_pos.y = 0;
+				}
+				bullet->attack_target.pt.x = target_pos.x;
+				bullet->attack_target.pt.y = target_pos.y;
+				helper::attack_fly_to_target(bullet, target_pos.x, target_pos.y);
 				return 1;
 			}
 		}
@@ -1621,36 +1621,36 @@ namespace hooks {
 					case WeaponBehavior::AttackAndSelfDestruct:
 					{
 						bullet->behavior_type = WeaponBehavior::AppearOnAttacker;
-						if (bullet->attack_target.unit) {
-							bullet->attack_target.pt.x = bullet->attack_target.unit->sprite->position.x;
-							bullet->attack_target.pt.y = bullet->attack_target.unit->sprite->position.y;
+						if (bullet->attack_target.unit && bullet->attack_target.unit->sprite) {
+							bullet->attack_target.pt.x = bullet->attack_target.unit->position.x;
+							bullet->attack_target.pt.y = bullet->attack_target.unit->position.y;
 						} else {
 							bullet->attack_target.unit = 0;
 						}
 						bullet->main_order_state = 0;
-						bullet->order_unit_id = 228;
-						helper::play_sprite_iscript(bullet->sprite, 1, 1);
+						bullet->order_unit_id = UnitId::None;
+						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::Death, 1);
 					} break;
 					case WeaponBehavior::Fly_FollowTarget:
 					{
 						helper::assign_weapon_data(bullet, 2);
-						helper::play_sprite_iscript(bullet->sprite, 2, 1);
+						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
 					}  break;
 					case WeaponBehavior::Bounce:
 					{
 						helper::assign_weapon_data(bullet, 3);
-						helper::play_sprite_iscript(bullet->sprite, 2, 1);
+						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
 					}  break;
 					case WeaponBehavior::PersistOnTargetSite:
 					{
 						helper::assign_weapon_data(bullet, 4);
-						Image* bulletOverlay = nullptr;
-						bulletOverlay = bullet->sprite->images.head;
-						if (bulletOverlay) {
+						Image* bullet_overlay = 0;
+						bullet_overlay = bullet->sprite->images.head;
+						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bulletOverlay, 14);
-								bulletOverlay = bulletOverlay->link.next;
-							} while (bulletOverlay);
+								helper::play_image_iscript(bullet_overlay, IscriptAnimation::SpecialState2);
+								bullet_overlay = bullet_overlay->link.next;
+							} while (bullet_overlay);
 						}
 					} break;
 					case WeaponBehavior::AttackNearbyArea:
@@ -1659,7 +1659,7 @@ namespace hooks {
 						Image* bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bullet_overlay, 2);
+								helper::play_image_iscript(bullet_overlay, IscriptAnimation::GndAttkInit);
 								bullet_overlay = bullet_overlay->link.next;
 							} while (bullet_overlay);
 						}
@@ -1670,7 +1670,7 @@ namespace hooks {
 						Image* bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
 							do {
-								helper::play_image_iscript(bullet_overlay, 2);
+								helper::play_image_iscript(bullet_overlay, IscriptAnimation::GndAttkInit);
 								bullet_overlay = bullet_overlay->link.next;
 							}
 							while (bullet_overlay);
@@ -1855,4 +1855,6 @@ namespace hooks {
 			}
 		}
 	}
+
+
 }

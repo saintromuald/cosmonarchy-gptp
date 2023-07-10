@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) get_armor_bonus_wrapper()
+	void __declspec(naked) get_armor_bonus_wrapper() // 00453FC0
 	{
 		static Unit* unit;
 		static u8 armor;

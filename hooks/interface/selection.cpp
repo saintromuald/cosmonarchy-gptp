@@ -806,4 +806,92 @@ namespace hooks
 		}
 		helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
 	}
+
+	// Hooked to protect from null sprites. -Pr0nogo
+	s32 remove_from_selections(Unit* unit) // 0049A7F0
+	{
+		s32 iterations = 0;
+		do
+		{
+			helper::remove_from_selections_2(unit, iterations++);
+		} while (iterations < 8);
+		
+		if (!unit->sprite) {
+			return 0;
+		}
+		Sprite* sprite = unit->sprite;
+		u32 sprite_flags = sprite->flags;
+		if (sprite_flags & 6)
+		{
+			Image* tail = sprite->images.tail;
+			sprite->flags = sprite_flags & 0xF9;
+			if (tail)
+			{
+				while (1)
+				{
+					u32 tail_id = tail->id;
+					if (tail_id >= ImageId::SelectionCircleDashed_22pixels && tail_id <= ImageId::SelectionCircleDashed_224pixels)
+					{
+						break;
+					}
+					tail = tail->link.prev;
+					if (!tail)
+					{
+						goto LABEL_11;
+					}
+				}
+				helper::remove_selection_circle_image(tail);
+			}
+		}
+	LABEL_11:
+		s32 result = 0;
+		while (local_selection_group_2[result])
+		{
+			if (!local_selection_group_2[result + 1])
+			{
+				++result;
+				break;
+			}
+			if (!local_selection_group_2[result + 2])
+			{
+				result += 2;
+				break;
+			}
+			if (!local_selection_group_2[result + 3])
+			{
+				result += 3;
+				break;
+			}
+			if (!local_selection_group_2[result + 4])
+			{
+				result += 4;
+				break;
+			}
+			if (!local_selection_group_2[result + 5])
+			{
+				result += 5;
+				break;
+			}
+			result += 6;
+			if (result >= 12)
+			{
+				break;
+			}
+		}
+		u32 selection_index = 0;
+		if (result > 0)
+		{
+			while (local_selection_group_2[selection_index] != unit)
+			{
+				if (++selection_index >= result)
+				{
+					return result;
+				}
+			}
+			Unit* unit_index = *(g_active_portrait_unit + result--);
+			local_selection_group_2[selection_index] = unit_index;
+			local_selection_group_2[result] = 0;
+		}
+		return result;
+	}
 }

@@ -14,6 +14,7 @@
 #include "DatExtend/datext.h"
 #include "weapon_fire.h"
 #include "trigger_system\trigger_system.h"
+#include "hooks/unit_stats/armor_bonus.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -231,8 +232,8 @@ namespace hooks
 		bool shield_overlay = false;
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
+			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
-			s32 armor_total = (data.target->get_armor() - armor_pen);
 			if (data.attacker) {
 				if (unit_has_fore_castle(data.target)) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
@@ -241,21 +242,12 @@ namespace hooks
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
-						armor_total *= 1.5;
+						armor_total += 2;
 						shield_overlay = true;
 					}
 				}
 			}
-
-			// Autocrat Controlled Opposition
-			armor_total -= target_ext->values[ValueApollyoidAdhesiveStacks];
-			armor_total -= target_ext->values[ValueControlledOpposition];
-
 			armor_total = std::max(armor_total, 0);
-
-			// Observance armor reduction (can go to the negatives)
-			armor_total -= target_ext->values[ValueObservanceRend];
-
 			data.damage -= std::min(data.damage, armor_total * 256);
 		}
 
@@ -359,25 +351,15 @@ namespace hooks
 				}
 			}
 		}
-		data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+	//	data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 
 		switch (data.weapon_id) {
-			case WeaponId::CabalistWarpBlades: {
-				// Cabalist - Toggle cloak with each attack
-				if (data.attacker) {
-					UnitExt* attacker_ext = get_unit_ext(data.attacker);
-					if (attacker_ext->timers[TimerDecloak] > 2) {
-						attacker_ext->timers[TimerDecloak] = 2;
-						data.damage /= 2;
-					} else {
-						scbw::decloak_proc(data.attacker);
-					}
-				}
-			} break;
+			// Cabalist was here
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (weapon_id_procs_phantom_strike(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player)) {
+		if (data.attacker && weapon_id_procs_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player))
+		{
 			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {
@@ -432,7 +414,9 @@ namespace hooks
 			} break;
 			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Incubate on damage taken
-				incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+				if (!scbw::is_allied_to(data.target->player, data.attacking_player_id)) {
+					incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+				}
 			} break;
 		}
 
@@ -442,6 +426,11 @@ namespace hooks
 			// Ignore Carapace Swarm!
 			// START
 			switch (data.attacker->id) {
+				case UnitId::ZergNathrokor:
+				{
+					attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
+					data.attacker->update_speed();
+				} break;
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack
 					data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
@@ -501,7 +490,7 @@ namespace hooks
 				case UnitId::ProtossAnalogue:
 				{
 					// Empathy Core - Analogue behavior
-					if (weapon_damage_is_lethal(data)) {
+					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
 						break;
 					}
 					if (data.target->energy >= data.damage + data.shield_reduce_amount) {
@@ -575,8 +564,8 @@ namespace hooks
 					case WeaponId::AutocratEminenceRifle:
 					{
 						// Apply Controlled Opposition
-						target_ext->values[ValueControlledOpposition]++;
-						target_ext->values[ValueControlledOppositionPlayer] = data.attacking_player_id;
+						target_ext->values[ValueAutocratControlledOppositionStacks]++;
+						target_ext->values[ValueAutocratControlledOppositionPlayer] = data.attacking_player_id;
 						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
@@ -676,9 +665,10 @@ namespace hooks
 					case WeaponId::EmpressFadingBioplasma:
 					{
 						// Empress - Anodyne Annex - add stack
-						target_ext->units[UnitEmpressSource] = data.attacker;
-						target_ext->values[ValueEmpressPassiveStacks]++;
-						target_ext->values[ValueEmpressSourcePlayer] = data.attacking_player_id;
+						target_ext->units[UnitEmpressAnodyneAnnexSource] = data.attacker;
+						target_ext->values[ValueEmpressAnodyneAnnexStacks]++;
+						target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = data.attacking_player_id;
+						target_ext->timers[TimerEmpressAnodyneAnnex] = 2 * 24 + 1;
 					} break;
 					case WeaponId::GhitorokorGnashingTendrils:
 					{
@@ -841,9 +831,9 @@ namespace hooks
 		}
 
 		// Empress - Anodyne Annex - zombify target
-		if (target_ext->values[ValueEmpressPassiveStacks] && !target_ext->values[ValueIsZombified]) {
+		if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
 			fatal_deal_damage = false;
-			scbw::empress_zombify(target_ext->values[ValueEmpressSourcePlayer], target_ext->units[UnitEmpressSource], data.target, target_ext->values[ValueEmpressPassiveStacks]);
+			scbw::empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
 		}
 
 		if (target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
@@ -857,7 +847,7 @@ namespace hooks
 
 			// Remove connected larva
 			u16 larva_id = UnitId::ZergLarva;
-			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalColony)
+			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalCesiant)
 			{
 				larva_id = UnitId::ZergOcsalLarva;
 			}
@@ -1016,44 +1006,21 @@ namespace hooks
 
 			u32 regression_id = scbw::get_zerg_regression(data.target);
 			if (data.damage > 0 && regression_id != UnitId::None) {
-				helper::cancel_unit(data.target);
-				// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
-				// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
-				if (data.target) {
-					bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
-					is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes
-					u32 regress_to = regression_id;
-					if (!is_building) {
-						regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
-					}
+				if (data.target->id != UnitId::ZergExcisant) {
+					fatal_deal_damage = false;
+				}
+				if (data.target->id == UnitId::ZergNydusCesiant) {
+					Unit* nydus_exit = data.target->building.nydus_exit;
+					if (nydus_exit) {
+						data.target->building.nydus_exit = 0;
+						nydus_exit->building.nydus_exit = 0;
 
-					Unit* new_unit = data.target;
-					if (data.target->id == UnitId::ZergExcisant) {
-						new_unit = scbw::create_unit_in_game(regress_to, data.target->player, data.target->position.x, data.target->position.y);
-					} else {
-						fatal_deal_damage = false;
-						helper::replace_unit_with_id(data.target, regress_to);
-						data.target->set_hitpoints(data.target->get_max_hp_raw());
-					}
-					if (new_unit) {
-						if (is_building) {
-							UnitExt* new_unit_ext = get_unit_ext(new_unit);
-							new_unit_ext->timers[TimerStun] = 1 * 24;
-							// TODO: Add stun audio visuals
-						} else {
-							set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+						if (!target_ext->values[ValueIsNydusExit] == 1) {
+							nydus_exit->remove();
 						}
 					}
-
-					u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-					if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
-						effect_image_id = ImageId::ZergBuildingExplosion;
-					} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
-						effect_image_id = ImageId::ZergAirDeathExplosion_Large;
-					}
-					data.target->sprite->create_overlay(effect_image_id);
-					helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
 				}
+				scbw::regress(data.target, regression_id);
 			}
 		}
 
@@ -1133,7 +1100,7 @@ namespace hooks
 					}
 				}
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
-				if (reveal) {
+				if (reveal && attacker->sprite) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
 						u32 flags = 1 << victim->player;
 						for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -1141,7 +1108,7 @@ namespace hooks
 								flags |= 1 << i;
 							}
 						}
-						helper::reveal_sight_at_location(1, flags, attacker->sprite->position.x, attacker->sprite->position.y, attacker->status & UnitStatus::InAir);
+						helper::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
 					}
 				}
 				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
@@ -1200,10 +1167,16 @@ namespace hooks
 					if (units_dat::base_property[victim->id] & UnitProperty::Subunit) {
 						victim = victim->subunit;
 					}
+
+					UnitExt* victim_ext = get_unit_ext(victim);
 					if (orders_dat::Unknown11[victim->main_order_id]
 					&&  victim->status & UnitStatus::Reacts
 					&&  helper::is_at_home(victim)
-					&&  helper::is_under_carapace_swarm(victim) != 255) {
+					&&  helper::is_under_carapace_swarm(victim) != 255
+					&& !victim_ext->values[ValueDisruptionFieldOn]
+					&&  victim->id == UnitId::ProtossClarion && victim_ext->unit_vectors[UnitVectorPhaseLink].size() <= 1
+					&&	victim->id != UnitId::ProtossAnalogue)
+					{
 						Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
 						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}

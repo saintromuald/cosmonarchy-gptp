@@ -650,7 +650,8 @@ namespace hooks {
 			for (i = *first_player_unit[placement_id].unit; i; i = i->player_link.next) {
 				if (i->sprite) {
 					if (i->main_order_id) {
-						if (i->id == UnitId::TerranAnchor || i->id == UnitId::ZergCagrantColony || i->id == UnitId::ZergSurkithColony || i->id == UnitId::ZergSkortrithColony) {
+						if (i->id == UnitId::TerranAnchor || i->id == UnitId::ZergCagrantCesiant || i->id == UnitId::ZergSurkithCesiant || i->id == UnitId::ZergSkortrithCesiant)
+						{
 							u32 iterator2 = 0;
 							if (region_max) {
 								do { // Distance from unit to region position
@@ -722,7 +723,7 @@ namespace hooks {
 								return;
 							}
 						}
-						case UnitId::ZergCagrantColony:
+						case UnitId::ZergCagrantCesiant:
 						{
 							if (!g_aiscript_controller[player].ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range)) {
 								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
@@ -2049,7 +2050,7 @@ namespace hooks {
 					placement_data_2 = 0;
 				}
 			} break;
-			case UnitId::ZergCagrantColony:
+			case UnitId::ZergCagrantCesiant:
 			{
 				if (g_aiscript_controller[player_var].ai_flags.spread_creep) {
 					if (get_bunker_placement_position(player_var, (u32*)&player)) {

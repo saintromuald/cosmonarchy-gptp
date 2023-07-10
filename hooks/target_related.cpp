@@ -7,6 +7,7 @@
 #include "byte_operations_utils.h"
 #include <limits.h>
 #include "hooks/audiovisuals/sfxhooks.h"
+#include "hooks/unit_stats/weapon_range.h"
 
 namespace hooks
 {
@@ -327,20 +328,17 @@ namespace hooks
 	// Hooked to help with cloak rewrite - Pr0nogo
 	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
-		s32 playerUnit;
-		playerUnit = 1 << unit->player;
+		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		u32 result;
-		if (target->status & 0x300 && !((1 << unit->player) & target->detection_status))
+		if (!(target->status & 0x300) && (1 << unit->player) & target->detection_status)
 		{
-			result = (u8)(playerUnit & target->sprite->visibility_status);
-		}
-		else
-		{
+			result = (u8)(player & target->sprite->visibility_status);
+		} else {
 			result = 0;
 		}
 		return result;
@@ -357,7 +355,7 @@ namespace hooks
 		playerUnit = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(activeTileArray[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return playerUnit & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		if (unit->status & 0x300)
@@ -1047,27 +1045,56 @@ namespace hooks
 	// Hooked to make units like the Paladin not turn to face targets after starting their attacks. -Pr0nogo
 	void change_direction_to_move_waypoint(Unit* unit) // 00495840
 	{
-		u16 waypoint_x = unit->next_movement_waypoint.x;
-		u16 waypoint_y = unit->next_movement_waypoint.y;
-		u16 current_x = unit->position.x;
-		u16 current_y = unit->position.y;
-		u16 next_x = unit->next_target_waypoint.x;
-		u16 next_y = unit->next_target_waypoint.y;
-
-		if (waypoint_x == current_x && waypoint_y == current_y)
+		if (unit->next_movement_waypoint.x == unit->position.x && unit->next_movement_waypoint.y == unit->position.y)
 		{
-			if (next_x == current_x && next_y == current_y)
+			if (unit->next_target_waypoint.x == unit->position.x && unit->next_target_waypoint.y == unit->position.y)
 			{
 				unit->velocity_direction_2 = unit->current_direction_1;
 				helper::set_unit_movement_speed_ex(unit);
 			} else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags::StartingAttack))
 			{
-				unit->velocity_direction_2 = helper::get_direction_from_points(next_y, current_x, next_x, current_y);
+				unit->velocity_direction_2 = helper::get_direction_from_points(unit->next_target_waypoint.y, unit->position.x, unit->next_target_waypoint.x, unit->position.y);
 				helper::set_unit_movement_speed_ex(unit);
 			}
 		} else {
-			unit->velocity_direction_2 = helper::get_direction_from_points(next_y, current_x, waypoint_x, current_y);
+			unit->velocity_direction_2 = helper::get_direction_from_points(unit->next_movement_waypoint.y, unit->position.x, unit->next_movement_waypoint.x, unit->position.y);
 			helper::set_unit_movement_speed_ex(unit);
+		}
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	void orders_turret_guard(Unit* unit) // 004777F0
+	{
+		Unit* subunit = unit->subunit;
+		u32 waypoint_y = subunit->next_target_waypoint.y;
+		u32 waypoint_x = subunit->next_target_waypoint.x;
+		if (waypoint_x != unit->next_target_waypoint.x || waypoint_y != unit->next_target_waypoint.y)
+		{
+			unit->next_target_waypoint.x = waypoint_x;
+			unit->next_target_waypoint.y = waypoint_y;
+		}
+		if (!helper::attack_recent_attacker(unit) && !unit->main_order_timer)
+		{
+			u32 unit_id = unit->id;
+			if (units_dat::base_property[unit_id] & UnitProperty::Subunit)
+			{
+				Unit* main_unit = unit->subunit;
+				u32 main_waypoint_y = main_unit->next_target_waypoint.y;
+				u32 main_waypoint_x = main_unit->next_target_waypoint.x;
+				if (main_waypoint_x != unit->next_target_waypoint.x || main_waypoint_y != unit->next_target_waypoint.y)
+				{
+					unit->next_target_waypoint.x = main_waypoint_x;
+					unit->next_target_waypoint.y = main_waypoint_y;
+				}
+			}
+			if (helper::get_target_acquisition_range_upgrade(unit))
+			{
+				Unit* target = helper::find_best_attack_target(unit);
+				if (target)
+				{
+					helper::order_to_attack_target(unit, target, 1, 0);
+				}
+			}
 		}
 	}
 }

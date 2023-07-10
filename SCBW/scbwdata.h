@@ -823,7 +823,7 @@ typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 
 // Contains various tile info.
-SCBW_DATA(ActiveTile**,		activeTileArray,		0x006D1260);
+SCBW_DATA(ActiveTile**,		g_active_tile_array,		0x006D1260);
 SCBW_DATA(u16**,			tileIdArray,			0x005993C4);
 SCBW_DATA(u16**,			megatileArray,			0x00628494);
 //SCBW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only
@@ -1178,6 +1178,10 @@ SCBW_DATA(char*,			aztp,								0x00512700);
 SCBW_DATA(u32*,				unk_static,							0x0051ABFC);
 
 SCBW_DATA(char*,			g_text_buffer,						0x006CA76C);
+
+// For 
+SCBW_DATA(UnitPath**,		g_first_free_path,					0x006BEE84);
+SCBW_DATA(UnitPath**,		g_path_array_start,					0x006BEE8C);
 
 // For initialize_provider_version
 SCBW_DATA(bool*,			g_is_expansion,						0x0058F440);

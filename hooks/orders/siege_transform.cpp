@@ -35,7 +35,7 @@ namespace hooks
 			unit->order_signal &= ~1;
 			++unit->main_order_state;
 
-			if (unit->player == *g_local_nation_id) {
+			if (unit->player == *g_local_nation_id && !*g_is_in_replay) {
 				u32 action_sound = 0;
 				switch (unit_id)
 				{
@@ -48,7 +48,7 @@ namespace hooks
 						action_sound = SoundId::Terran_TANK_TTaYes00_WAV;
 					} break;
 				}
-
+			
 				if (action_sound) {
 					scbw::play_action_sound(action_sound, unit);
 				}
@@ -58,6 +58,7 @@ namespace hooks
 		if (unit->main_order_state && unit->order_signal & 1) {
 			unit->order_signal &= ~1;
 
+			// Transform unit id
 			switch (unit_id)
 			{
 				case UnitId::TerranShamanVisionaryMode:
@@ -123,34 +124,51 @@ namespace hooks
 			}
 			case 2:
 			{
-				if (unit->player == *g_local_nation_id) {
+				if (unit->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = 0;
 					switch (unit_id)
 					{
 						case UnitId::TerranShamanSupportMode:
 						{
-							unit_id = UnitId::TerranShamanVisionaryMode;
 							action_sound = helper::get_random_sfx_between(SoundId::ShamanVisionary01, SoundId::ShamanVisionary02);
-							break;
-						}
+						} break;
 						case UnitId::TerranMatadorTankMode:
 						{
-							unit_id = UnitId::TerranMatadorCinderMode;
-							break;
-						}
+							// TODO: Unit responses
+						} break;
 						case UnitId::TerranPhalanxTankMode:
 						{
-							unit_id = UnitId::TerranPhalanxSiegeMode;
 							action_sound = SoundId::Terran_TANK_TTaPss00_WAV;
 						} break;
 						case UnitId::TerranMadrigalImperiosoMode:
 						{
-							unit_id = UnitId::TerranMadrigalFuriaMode;
+							// TODO: Unit responses
 						} break;
 					}
 					if (action_sound) {
 						scbw::play_action_sound(action_sound, unit);
 					}
+				}
+
+				// Transform unit ID
+				switch (unit_id)
+				{
+					case UnitId::TerranShamanSupportMode:
+					{
+						unit_id = UnitId::TerranShamanVisionaryMode;
+					} break;
+					case UnitId::TerranMatadorTankMode:
+					{
+						unit_id = UnitId::TerranMatadorCinderMode;
+					} break;
+					case UnitId::TerranPhalanxTankMode:
+					{
+						unit_id = UnitId::TerranPhalanxSiegeMode;
+					} break;
+					case UnitId::TerranMadrigalImperiosoMode:
+					{
+						unit_id = UnitId::TerranMadrigalFuriaMode;
+					} break;
 				}
 
 				scbw::transform_unit(unit, unit_id);

@@ -64,6 +64,8 @@ namespace hooks
 					}
 					unit->order_to_idle();
 				} else {
+					helper::turn_unit(unit, 128);
+
 					// Use an add_fog_mask() function after some coordinates calculations
 					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					unit->building.landing_timer = 1;
@@ -89,7 +91,6 @@ namespace hooks
 				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!stop_there) {
-				unit->flingy_turn_rate = 127; // Fix turning structures having difficulty landing
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
 				unit->main_order_state = 3;
 			}
@@ -99,6 +100,7 @@ namespace hooks
 		if (unit->main_order_state == 3) {
 			if ((unit->get_movable_state() != 0) && (unit->order_signal & 0x10)) {
 				unit->order_signal -= 0x10;
+				unit->flingy_turn_rate = flingy_dat::turn_speed[units_dat::graphic[unit->id]];
 
 				if (unit->order_target.pt.x >= 0 && unit->order_target.pt.x < g_map_tile_size->width * 32 && 
 					unit->order_target.pt.y >= 0 && unit->order_target.pt.y < g_map_tile_size->height * 32) { // New sanity check; Attempt on fixing clear tile flags
@@ -178,9 +180,9 @@ namespace hooks
 					{
 						Unit* cargo_unit = unit->get_loaded_unit(i);
 						if (!cargo_unit) continue;
-					//	scbw::set_unit_position(cargo_unit, unit->sprite->position.x, unit->sprite->position.y);
+					//	scbw::set_unit_position(cargo_unit, unit->position.x, unit->position.y);
 						if (cargo_unit->subunit) {
-							scbw::set_unit_position(cargo_unit->subunit, unit->sprite->position.x, unit->sprite->position.y);
+							scbw::set_unit_position(cargo_unit->subunit, unit->position.x, unit->position.y);
 						}
 					}
 				}
@@ -240,7 +242,7 @@ namespace hooks
 
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
-			unit->flingy_turn_rate = 127; // Fix turning structures having difficulty lifting
+			helper::turn_unit(unit, 0); // Fix turning structures having difficulty lifting
 		} else {
 			if (!unit->order_queue_head) {
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);

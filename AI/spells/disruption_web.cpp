@@ -58,9 +58,9 @@ namespace AI
 			if (target->id == UnitId::TerranWatchdog
 			||  target->id == UnitId::TerranAnchor
 		//	||  target->id == UnitId::TerranTencendur
-			||  target->id == UnitId::ZergSpraithColony
-			||  target->id == UnitId::ZergSkortrithColony
-			||  target->id == UnitId::ZergSpirtithColony
+			||  target->id == UnitId::ZergSpraithCesiant
+			||  target->id == UnitId::ZergSkortrithCesiant
+			||  target->id == UnitId::ZergSpirtithCesiant
 			||  target->id == UnitId::ProtossWarden
 			||  target->id == UnitId::ProtossMatrix)
 			{

@@ -14,15 +14,9 @@ namespace hooks {
 	}
 
 	void orders_zerg_build_self(Unit* building) {
+		UnitExt* building_ext = get_unit_ext(building);
 		u16 building_id = building->build_queue[building->build_queue_slot];
-		bool is_nydus = building->id == UnitId::ZergNydusCesiant && building->building.nydus_exit;
-		BuildingModifier modifier = get_building_modifier(building, 0, (helper::is_valid_building_morph(building->id) || is_nydus) ? false : true);
-
-		if (is_nydus) {
-			BuildingModifier nydus_modifier = get_building_modifier(building->building.nydus_exit, 0, false);
-			modifier.decrease += nydus_modifier.decrease;
-			modifier.multiplier *= nydus_modifier.multiplier;
-		}
+		BuildingModifier modifier = get_building_modifier(building, 0, helper::is_valid_building_morph(building->id) ? false : true);
 
 		if (!scbw::is_zerg_building_morph_result(building_id)) {
 			building_id = building->id;
@@ -33,23 +27,19 @@ namespace hooks {
 				// Remove statuses if the source Droleth had them before morphing
 				building->status &= ~UnitStatus::NoCollide;
 				building->status &= ~UnitStatus::IsGathering;
-
 				if (helper::is_valid_building_morph(building_id)) {
 					building->create_origin = building->id;
 				}
-
 				++building->main_order_state;
 			} // fall
 			case 1: {
 				if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
 					if (building->id == UnitId::ZergExcisant) {
 						Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
-
 						if (overlay) {
 							overlay->free();
 						}
 					}
-
 					building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
 					++building->main_order_state;
 				}
@@ -127,7 +117,7 @@ namespace hooks {
 			}
 		}
 
-		if (!scbw::is_zerg_building_morph_result(building_id)) {
+		if (!scbw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
 			building->set_hitpoints(building->hitpoints + hp_gain);
 		}
 	}
@@ -218,25 +208,26 @@ namespace hooks
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGathtelosk, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergCagrantColony:
+			case UnitId::ZergCagrantCesiant:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSurkithColony, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpraithColony, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskColony, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOcsalColony, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKazitrithColony, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithColony, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSurkithCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpraithCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLarvoskCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOcsalCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKazitrithCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithCesiant, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergNydusCesiant, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergSurkithColony:
+			case UnitId::ZergSurkithCesiant:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithCesiant, ignore_incomplete);
 			}
 
-			case UnitId::ZergSpraithColony:
+			case UnitId::ZergSpraithCesiant:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithColony, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithCesiant, ignore_incomplete);
 			}
 
 			case UnitId::ZergIrolIris:

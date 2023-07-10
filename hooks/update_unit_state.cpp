@@ -84,10 +84,13 @@ namespace hooks
 	}
 
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target) {
-		const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
-		return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-			&& scbw::get_distance_fast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
-			&& unit->can_attack_target(target);
+		if (target->sprite) {
+			const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
+			return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
+				&& scbw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
+				&& unit->can_attack_target(target);
+		}
+		return false;
 	}
 
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
@@ -468,7 +471,7 @@ namespace hooks
 					{
 						if (helper::unit_hp_is_in_redzone(unit))
 						{
-							unit->damage_hp(20, nullptr, unit->last_attacking_player, true);
+							unit->damage_hp(20, 0, unit->last_attacking_player, true);
 						}
 					}
 				}
@@ -524,7 +527,7 @@ namespace hooks
 			if (unit->sprite) {
 				if (*g_vision_updated) {
 					if (g_player_table[unit->player].type == PlayerType::Human) {
-						helper::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir); // is air unit
+						helper::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
 					}
 				}
 				helper::update_visibility(unit);

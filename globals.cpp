@@ -32,9 +32,9 @@ void IquareGlobals::aise_save()
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.write(reinterpret_cast<const char*>(&unitid_extender), sizeof(unitid_extender));
 
-	u32 effectsSize = effects.size();
-	stream.write(reinterpret_cast<const char*>(&effectsSize), sizeof(effectsSize));
-	for (s32 i = 0; i < effectsSize; i++)
+	u32 effects_size = effects.size();
+	stream.write(reinterpret_cast<const char*>(&effects_size), sizeof(effects_size));
+	for (s32 i = 0; i < effects_size; i++)
 	{
 		Effect* effect = &effects[i];
 		stream.write(reinterpret_cast<const char*>(&effect->id), sizeof(effect->id));
@@ -50,8 +50,8 @@ void IquareGlobals::aise_save()
 		//stream.write(reinterpret_cast<const char*>(&effect->thingy), sizeof(effect->thingy));
 	}
 
-	u32 pariahHitCount = line_attack_hits.size();
-	for (s32 i = 0; i < pariahHitCount; i++)
+	u32 pariah_hit_count = line_attack_hits.size();
+	for (s32 i = 0; i < pariah_hit_count; i++)
 	{
 		stream.write(reinterpret_cast<const char*>(&line_attack_hits[i].source), sizeof(line_attack_hits[i].source));
 		stream.write(reinterpret_cast<const char*>(&line_attack_hits[i].target), sizeof(line_attack_hits[i].target));
@@ -65,9 +65,9 @@ void IquareGlobals::aise_save()
 		}
 	}
 
-	u32 multihitCount = multihit_bullets.size();
-	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
-	for (s32 i = 0; i < multihitCount; i++)
+	u32 multihit_count = multihit_bullets.size();
+	stream.write(reinterpret_cast<char*>(&multihit_count), sizeof(multihit_count));
+	for (s32 i = 0; i < multihit_count; i++)
 	{
 		MultihitBullet bull = multihit_bullets[i];
 		stream.write(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
@@ -81,7 +81,7 @@ void IquareGlobals::aise_save()
 		}
 	}
 
-	u32 lurkerMapSize = lurker_spine_hits.size();
+	u32 lurker_map_size = lurker_spine_hits.size();
 	for (auto a : lurker_spine_hits)
 	{
 		Unit* key = a.first;
@@ -201,11 +201,11 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 		}
 	}
 
-	//u32 multihitCount = 0;
-	//stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
-	//scbw::printf("Hits: %d", multihitCount);
+	//u32 multihit_count = 0;
+	//stream.read(reinterpret_cast<char*>(&multihit_count), sizeof(multihit_count));
+	//scbw::printf("Hits: %d", multihit_count);
 	/*
-	for (s32 i = 0; i < multihitCount; i++) {
+	for (s32 i = 0; i < multihit_count; i++) {
 		MultihitBullet bull;
 		stream.read(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.read(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
@@ -219,9 +219,9 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 		multihit_bullets.push_back(bull);
 	}
 
-	u32 lurkerMapSize = 0;
-	stream.read(reinterpret_cast<char*>(&lurkerMapSize), sizeof(lurkerMapSize));
-	for (s32 i = 0; i < lurkerMapSize; i++) {
+	u32 lurker_map_size = 0;
+	stream.read(reinterpret_cast<char*>(&lurker_map_size), sizeof(lurker_map_size));
+	for (s32 i = 0; i < lurker_map_size; i++) {
 		Unit* key = nullptr;
 		stream.read(reinterpret_cast<char*>(&key), sizeof(key));
 		u32 valueCount = 0;
@@ -462,12 +462,25 @@ void tick_effect(Effect* effect) {
 					effect->position.y - 40,
 					effect->position.x + 60,
 					effect->position.y + 40
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
+				).for_each_in_match(cosmonarchy_finder_match(0, 0, {}), [&](Unit* unit) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit_ext->timers[TimerUnderDisruptionField] = 8;
 					unit->status |= UnitStatus::CanNotAttack;
 					if (unit->subunit) {
 						unit->subunit->status |= UnitStatus::CanNotAttack;
+					}
+					if (unit_id_is_bunker(unit->id)) {
+						for (s32 i = 0; i < TransportCap; i++)
+						{
+							Unit* cargo_unit = unit->get_loaded_unit(i);
+							if (!cargo_unit) continue;
+							if (cargo_unit) {
+								cargo_unit->status |= UnitStatus::CanNotAttack;
+								if (cargo_unit->subunit) {
+									cargo_unit->subunit->status |= UnitStatus::CanNotAttack;
+								}
+							}
+						}
 					}
 				});
 			} break;
@@ -954,10 +967,10 @@ namespace scbw
 		}
 
 		// Inherit Empress Passive Stacks
-		if (parent_ext->values[ValueEmpressPassiveStacks])
+		if (parent_ext->values[ValueEmpressAnodyneAnnexStacks])
 		{
-			child_ext->values[ValueEmpressPassiveStacks] = parent_ext->values[ValueEmpressPassiveStacks];
-			child_ext->values[ValueEmpressSourcePlayer] = parent_ext->values[ValueEmpressSourcePlayer];
+			child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
+			child_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = parent_ext->values[ValueEmpressAnodyneAnnexSourcePlayer];
 		}
 
 		// Inherit Hierophant Signify
@@ -965,6 +978,14 @@ namespace scbw
 		child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];
 		child_ext->values[ValueSignifyPlayer] = parent_ext->values[ValueSignifyPlayer];
 		scbw::update_signify_status(child, child_ext);
+
+		// Inherit domination
+		child_ext->timers[TimerDemiurgeWorship]				= parent_ext->timers[TimerDemiurgeWorship];
+		child_ext->units[UnitMindController]				= parent_ext->units[UnitMindController];
+		child_ext->units[UnitDemiurge]						= parent_ext->units[UnitDemiurge];
+		child_ext->values[ValueMindControlPlayer]			= parent_ext->values[ValueMindControlPlayer];
+		child_ext->values[ValueMindControlOriginalPlayer]	= parent_ext->values[ValueMindControlOriginalPlayer];
+		child_ext->timers[TimerMindControlRecede]			= parent_ext->timers[TimerMindControlRecede];
 
 		scbw::refresh_console();
 	}
@@ -1081,10 +1102,10 @@ namespace scbw
 		}
 
 		// Remove Controlled Opposition
-		unit_ext->values[ValueControlledOpposition] = 0;
+		unit_ext->values[ValueAutocratControlledOppositionStacks] = 0;
 
 		// Remove Empress stacks
-		unit_ext->values[ValueEmpressPassiveStacks] = 0;
+		unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
 
 		// Remove Lockdown
 		unit->remove_lockdown();
@@ -1312,8 +1333,8 @@ namespace scbw
 			if (!clarion) {
 				continue;
 			}
-			UnitExt* clarionExt = get_unit_ext(clarion);
-			auto link = clarionExt->unit_vectors[UnitVectorPhaseLink];
+			UnitExt* clarion_ext = get_unit_ext(clarion);
+			auto link = clarion_ext->unit_vectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<Unit*>(links.begin(), links.end());

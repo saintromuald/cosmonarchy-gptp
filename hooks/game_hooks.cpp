@@ -867,6 +867,7 @@ namespace hooks {
 			return;
 		}
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
+
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
@@ -895,7 +896,17 @@ namespace hooks {
 					unit->status |= UnitStatus::NoCollide;
 				}
 			} break;
+			case UnitId::ZergNydusCesiant:
+			{
+				if (unit->player == 11)
+				{
+					unit_ext->values[ValueIsNeutralNydus] = 1;
+				}
+			} break;
 		}
+
+		// Fixes first attack from Paladin (and maybe other units) aiming upwards
+		unit->velocity_direction_2 = unit->velocity_direction_1;
 	}
 
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
@@ -1190,7 +1201,7 @@ namespace hooks {
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
 							UnitExt* target_ext = get_unit_ext(target);
-							target_ext->timers[TimerSalvageStunTimer] = 2 * 24;
+							target_ext->timers[TimerSalvageStunTimer] = 2 * 24 + 1;
 							
 							u32 time = units_dat::time_cost[target->id] / 2;
 							target_ext->salvage_time += 1;
@@ -1347,7 +1358,7 @@ namespace hooks {
 				if (!unit_ext->timers[TimerStarSovereignInterventionMissiles]) {
 					auto radius = 5 * 32;
 					auto match_func = cosmonarchy_finder_match(unit, Flags::Enemy | Flags::FrontalArc, {});
-					// TODO: unit search, also wtf is the above aids? -Pr0nogo
+					// TODO: unit search -Pr0nogo
 					scbw::UnitFinder unit_finder(
 						unit->position.x - radius,
 						unit->position.y - radius,
@@ -1357,7 +1368,7 @@ namespace hooks {
 					bool enemies_detected = false;
 					for (s32 i = 0; i < unit_finder.get_unit_count(); i++) {
 						Unit* picked_unit = unit_finder.get_unit(i);
-						if (match_func(picked_unit)) {
+						if (match_func(picked_unit) && unit->can_attack_target(picked_unit)) {
 							enemies_detected = true;
 							break;
 						}
@@ -1371,14 +1382,14 @@ namespace hooks {
 							if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored) {
 								offset.x = -offset.x;
 							}
-							auto X = unit->get_x() + offset.x;
-							auto Y = unit->get_y() + offset.y;
+							auto X = unit->position.x + offset.x;
+							auto Y = unit->position.y + offset.y;
 							auto target_unit = unit->order_target.unit;
 							auto target_pos = unit->order_target.pt;
 							auto offset_direction = -40 + arc * 16;
 							auto max_range = weapons_dat::max_range[WeaponId::StarSovereignInterventionMissiles];
-							auto polar_x = unit->get_x() + scbw::get_polar_x(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
-							auto polar_y = unit->get_y() + scbw::get_polar_y(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto polar_x = unit->position.x + scbw::get_polar_x(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
+							auto polar_y = unit->position.y + scbw::get_polar_y(max_range, scbw::dir_saturate(unit->current_direction_1, offset_direction));
 							unit->order_target.unit = 0;
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;
@@ -1391,7 +1402,7 @@ namespace hooks {
 				}
 
 				// Star Sovereign - Grief of All Gods
-				if (unit_ext->timers[TimerPlanetCrackerChannel] == 1) {
+				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] == 1) {
 					iquare_globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation, unit->player, unit, unit);
 				}
 
@@ -1448,6 +1459,9 @@ namespace hooks {
 				} else if (unit->order_signal & 64) {
 					unit->order_signal &= ~64;
 				}
+
+				// Manually handle the reset if stunned during channel
+				scbw::unfreeze_channeling_unit(unit);
 			} break;
 			case UnitId::TerranApostle:
 			{
@@ -1518,8 +1532,10 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossLegionnaire:
+			case UnitId::ProtossCabalist:
 			{
 				// Legionnaire - Blade Vortex
+				// Cabalist - Silent Strides
 				// Striga was here - removed 7 February 2023. -Pr0nogo
 				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
 					Unit* target = unit->order_target.unit;
@@ -1534,6 +1550,12 @@ namespace hooks {
 						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
+						}
+					} else if (unit->id == UnitId::ProtossCabalist) {
+						if (unit_ext->timers[TimerDecloak] < 2 && distance > min_radius && distance <= max_radius) {
+							do_teleport = true;
+							image_id = ImageId::LegionnaireTeleportEffect;
+							scbw::decloak_proc(unit);
 						}
 					}
 
@@ -1555,12 +1577,21 @@ namespace hooks {
 				// Lakizilisk - Seismic Spines
 				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerLakiziliskETA] == 1)
 				{
-					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
 					Point16 position = unit->position;
 					Point16 spr_position = unit->sprite->position;
-					Point16 pos = { unit_ext->values[ValueSpineX], unit_ext->values[ValueSpineY] };
-					unit->position = pos;
-					unit->sprite->position = pos;
+					Vector32 pos = { (s32)unit_ext->values[ValueSpineX], (s32)unit_ext->values[ValueSpineY] };
+					if (pos.x < 0) {
+						pos.y = (1 - abs(pos.x / (pos.x - (s32)position.x))) * (pos.y - (s32)position.y) + (s32)position.y;
+						pos.x = 0;
+					}
+					if (pos.y < 0) {
+						pos.x = (1 - abs(pos.y / (pos.y - (s32)position.y))) * (pos.x - (s32)position.x) + (s32)position.x;
+						pos.y = 0;
+					}
+					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
+					unit->position.x = (u16)pos.x;
+					unit->position.y = (u16)pos.y;
+					unit->sprite->position = unit->position;
 					scbw::artificial_bullet_from(WeaponId::LakiziliskSubterraneanSpines, unit->player, unit, 0, spr_position);
 					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
@@ -1786,16 +1817,15 @@ namespace hooks {
 					unit->get_y() + radius
 				).for_each_in_match(match, [&](Unit* target) {
 					if ((!scbw::is_allied_to(unit->player, target->player))) {
-						UnitExt* targetExt = get_unit_ext(target);
-						if (!targetExt->timers[TimerObservanceDebuff]) {
+						UnitExt* target_ext = get_unit_ext(target);
+						if (!target_ext->timers[TimerObservanceDebuff]) {
 							unit_ext->timers[TimerObservanceOverlay] = 2;
-							targetExt->timers[TimerObservanceDebuff] = 5 * 24 + 1;
-							targetExt->timers[TimerObservancePeriod] = 5 * 24 + 1;
-							if (!targetExt->values[ValueObservanceRend]) {
-								s32 overlay = ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id);
-								target->sprite->create_overlay(overlay);
+							target_ext->timers[TimerObservanceDebuff] = 5 * 24 + 1;
+							target_ext->timers[TimerObservancePeriod] = 5 * 24 + 1;
+							if (!target_ext->values[ValueObservanceRend]) {
+								scbw::add_unit_overlay(target, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(target->id));
 							}
-							targetExt->values[ValueObservanceRend] += 1;
+							target_ext->values[ValueObservanceRend] += 1;
 						}
 					}
 				});
@@ -1845,7 +1875,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::TerranAncile: {
-				// Ancile - Providence
+				// Ancile - Providence - Projectile handling
 				if (unit->energy >= 1 * 256) {
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
 						scbw::add_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge);
@@ -1856,6 +1886,11 @@ namespace hooks {
 					bullet_search_radial(&bullets, unit->position, radius);
 					for (u32 i = 0; i < bullets.count; i++) {
 						Bullet* bullet = bullets.bullets[i];
+
+						// Check if the weapon should be interacted with
+						if (!weapon_id_procs_onhits(bullet->weapon_id)) {
+							continue;
+						}
 
 						// Check if the unit can be shielded
 						Unit* target = bullet->attack_target.unit;
@@ -2066,6 +2101,12 @@ namespace hooks {
 					helper::replace_unit_with_id(unit, UnitId::ZergAxitrilisk);
 				}
 			} break;
+			case UnitId::TerranVulture:
+			{
+				if (unit->mine_carrier.mine_count > 2) {
+					unit->mine_carrier.mine_count = 2;
+				}
+			} break;
 		}
 
 		// Protoss - Binding Plasma
@@ -2177,7 +2218,7 @@ namespace hooks {
 		}
 
 		// Azazel - Sublime Shepherd
-		{
+		if (!unit_id_is_resource_node(unit->id, false)) {
 			EntryArray azazels = {};
 			unit_search_radial(&azazels, unit->position, 4 * 32);
 			unit_search_filter(&azazels, unit, 0, {UnitId::TerranAzazel});
@@ -2234,6 +2275,19 @@ namespace hooks {
 			unit->status &= ~UnitStatus::CanNotAttack;
 			if (unit->subunit) {
 				unit->subunit->status &= ~UnitStatus::CanNotAttack;
+			}
+			if (unit_id_is_bunker(unit->id)) {
+				for (s32 i = 0; i < TransportCap; i++)
+				{
+					Unit* cargo_unit = unit->get_loaded_unit(i);
+					if (!cargo_unit) continue;
+					if (cargo_unit) {
+						cargo_unit->status &= ~UnitStatus::CanNotAttack;
+						if (cargo_unit->subunit) {
+							cargo_unit->subunit->status &= ~UnitStatus::CanNotAttack;
+						}
+					}
+				}
 			}
 		}
 
@@ -2454,7 +2508,9 @@ namespace hooks {
 				}
 			}
 		} else if (unit_ext->timers[TimerObservanceDebuff] == 1) {
-			scbw::add_unit_overlay(unit, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(unit->id));
+			scbw::remove_unit_overlay(unit, ImageId::ObservanceOverlaySmall - scbw::get_overlay_offset(unit->id));
+			unit_ext->timers[TimerObservancePeriod] = 0;
+			unit_ext->values[ValueObservanceRend] = 0;
 		}
 
 		// Vithrilisk - Corrosive Touch clear
@@ -2756,21 +2812,22 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
-		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
-		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)
-		{
-			should_update_speed = true;
-		}
-
 		// Clear Power Siphon debuff
 		if (unit_ext->timers[TimerSavantPowerSiphonDebuff] == 1) {
 			unit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
 		}
 
-		// Clear Autocrat debuff
+		// Clear Autocrat - Controlled Opposition
 		if (unit_ext->timers[TimerAutocratControlledOpposition] == 1) {
-			unit_ext->values[ValueControlledOpposition] = 0;
+			unit_ext->values[ValueAutocratControlledOppositionStacks] = 0;
+			unit_ext->values[ValueAutocratControlledOppositionPlayer] = 0;
+		}
+
+		// Clear Empress - Anodyne Annex
+		if (unit_ext->timers[TimerEmpressAnodyneAnnex] == 1) {
+			unit_ext->units[UnitEmpressAnodyneAnnexSource] = 0;
+			unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
+			unit_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = 0;
 		}
 		
 		// Sevenstep - Mind Matter - Discharge projectile
@@ -2811,8 +2868,21 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerAscend] == 1) {
+		// Generic speed timers
+		if (unit_ext->timers[TimerAscend] == 1
+		||	unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
 			should_update_speed = true;
+		}
+
+		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
+		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
+		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)
+		{
+			should_update_speed = false;
+			unit->update_speed(); // Have to do this here because of the Diadem bandage. -Pr0nogo
+			if (unit->id == UnitId::TerranDiadem) {
+				unit->flingy_turn_rate = 27;
+			}
 		}
 
 		if (should_update_speed) {
@@ -2875,7 +2945,7 @@ namespace hooks {
 						image_id = ImageId::SantaHatLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 8;
 					} break;
-					case UnitId::ZergLarvoskColony:
+					case UnitId::ZergLarvoskCesiant:
 					{
 						image_id = ImageId::SantaHatLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 6;
@@ -3483,7 +3553,7 @@ namespace hooks {
 								u32 player = buffer[2];
 								for (u32 i = 0; i < SelectionCap; ++i) {
 									Unit* unit = players_selections->unit[player][i];
-									if (!unit || !unit->is_dead() || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
+									if (!unit || unit->is_dead() || unit->id != UnitId::ProtossStarSovereign || unit->main_order_id == OrderId::CTFCOP2) {
 										continue;
 									}
 									unit->order_to(OrderId::CTFCOP2, unit->position.x, unit->position.y);

@@ -34,7 +34,7 @@ namespace
 	}
 
 	const u32 jmp_731C8 = 0x004731C8;
-	void __declspec(naked) nydus_palce_exit_tile_check_wrapper2()
+	void __declspec(naked) nydus_place_exit_tile_check_wrapper2()
 	{
 		static u32 tile_flags;
 		static u32 player_id;
@@ -62,6 +62,6 @@ namespace hooks
 	{
 		jump_patch(orders_build5_wrapper,					0x0045DC20, 2);
 //		jump_patch(nydus_place_exit_tile_check_wrapper1,	0x00473156, 1);
-//		jump_patch(nydus_palce_exit_tile_check_wrapper2,	0x004731C2, 1);
+//		jump_patch(nydus_place_exit_tile_check_wrapper2,	0x004731C2, 1);
 	}
 }

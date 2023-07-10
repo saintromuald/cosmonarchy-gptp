@@ -544,12 +544,13 @@ static u32 get_unit_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
-	if (unit_id == UnitId::ZergCagrantColony
-	||  unit_id == UnitId::ZergLarvoskColony
-	||  unit_id == UnitId::ZergSurkithColony
-	||  unit_id == UnitId::ZergSpraithColony
-	||  unit_id == UnitId::ZergSkortrithColony
-	||  unit_id == UnitId::ZergSpirtithColony) {
+	if (unit_id == UnitId::ZergCagrantCesiant
+	||  unit_id == UnitId::ZergLarvoskCesiant
+	||  unit_id == UnitId::ZergSurkithCesiant
+	||  unit_id == UnitId::ZergSpraithCesiant
+	||  unit_id == UnitId::ZergSkortrithCesiant
+	||  unit_id == UnitId::ZergSpirtithCesiant
+	||	unit_id == UnitId::ZergNydusCesiant) {
 		return 2;
 	}
 	if (units_dat::group_flags[unit_id].is_factory || unit_id_is_tech(unit_id)) {

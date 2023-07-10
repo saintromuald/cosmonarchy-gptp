@@ -33,13 +33,13 @@ namespace helper {
 	void* load_graphic(char* a1, u32 a2, u32 a3, char* log_filename, u32 log_line);
 
 	s32 rand_func();
-	bool unit_hp_below_33_percent(Unit* a1);
-	bool unit_hp_between_33_66_percent(s32 a1, Unit* unit);
+	bool unit_hp_below_33_percent(Unit* unit);
+	bool unit_hp_between_33_66_percent(Unit* unit);
 	s32 get_max_hp(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* unit);
 	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text);
-	void draw_energy(BinDlg* a1);
-	void hide_optional_status_screen_controls(BinDlg* a1);
+	void draw_energy(BinDlg* dialog);
+	void hide_optional_status_screen_controls(BinDlg* dialog);
 	void show_control_group(BinDlg* dialog, u16 firstId, u16 lastId);
 	void hide_dialog(BinDlg* dialog);
 
@@ -582,14 +582,14 @@ namespace helper {
 
 	//// api
 	void apply_spores(Unit* unit);
-	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
-	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 dmgDivisor);
+	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction);
+	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor);
 	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
 	Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph
 	u8 set_archon_pathing(Unit* unit);																								// 0046A820
-	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 canShowErrorMessage);													// 0042CF70
+	bool has_supplies_for_unit(u32 unit_id, u32 player, b32 can_show_error_message);												// 0042CF70
 	Unit* zerg_dual_birth(Unit* unit);																							    // 0045D910
 	void order_new_unit_to_rally(Unit* unit, Unit* factory);																		// 00466F50
 	void ai_training_unit(Unit* unit, Unit* creator);																				// 004A2830
@@ -643,7 +643,7 @@ namespace helper {
 	//// stopholdpos_orders
 	Unit* acquire_medic_heal_target(Unit* medic);																					// 004422A0
 	u32 do_medic_heal(Unit* unit, Unit* target);																					// 00463C40
-	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2);														// 00476FC0
+	void order_to_attack_target(Unit* unit, Unit* target, u32 process_subunit, u32 target_is_cloaked);								// 00476FC0
 	b32 attack_recent_attacker(Unit* unit);																							// 004770E0
 
 	//// medic_orders
@@ -976,7 +976,7 @@ namespace helper {
 
 	// For bullet_behavior_reassign
 	void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay);										// 00499D00
-	Bullet* assign_weapon_data(Bullet* bullet, char behaviorType);											// 0048AA80
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior_type);											// 0048AA80
 
 	// For ai_training_normal
 	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0
@@ -1614,6 +1614,8 @@ namespace helper {
 	void set_flag_attack_move(Unit* unit);																										// 004026A0
 
 	Unit* set_unit_movement_speed_ex(Unit* unit);																								// 00495100
+
+	s32 remove_from_selections_2(Unit* unit, s32 index);																						// 0049A170
 
 	u32* get_cd_key_info(char** owner, u32* key);																								// 004D9BF0
 	u32 local_get_lang();																														// 0041F1D0

@@ -135,7 +135,7 @@ namespace hooks
 	// NOT HOOKED (since most of the action happen in another function)
 	// Just here to show that the true code is in function_004774A0, though
 	// a few things happen before
-	void orders_turret_guard(Unit* unit) {
+	void orders_turret_guard_internal(Unit* unit) {
 		if (unit->subunit->next_target_waypoint.x != unit->next_target_waypoint.x ||
 			unit->subunit->next_target_waypoint.y != unit->next_target_waypoint.y) {
 			unit->next_target_waypoint.x = unit->subunit->next_target_waypoint.x;

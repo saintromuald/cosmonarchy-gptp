@@ -26,10 +26,7 @@ namespace hooks
 
 	void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
 	{
-		s32 counter = 0;
-		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
-		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
-
+		s32 counter = 0;		
 		UnitExt* transport_ext = get_unit_ext(transport);
 		if (units_dat::space_provided[transport->id] != 0) {
 			for (; counter < units_dat::space_provided[transport->id]; ++counter) {
@@ -87,9 +84,7 @@ namespace hooks
 		{
 			transport_ext->loaded_unit[counter].index = loaded_index;
 			transport_ext->loaded_unit[counter].unique_id = cargo_unit->unique_id;
-		}
-		else
-		{
+		} else {
 			transport_ext->loaded_unit[counter].index = 0;
 			transport_ext->loaded_unit[counter].unique_id = 0;
 		}
@@ -127,17 +122,15 @@ namespace hooks
 			}
 			if (cargo_unit->path)
 			{
-				u32* path_0x4 = (u32*)((u32)cargo_unit->path + 4);
-				*path_0x4 = ((u32)cargo_unit->path - *u32_0x006BEE8C) / 128 + 1;
-				if (*u32_0x006BEE84 == 0)
+				u32* path_0x4 = (u32*)((u32)cargo_unit->path->next);
+				*path_0x4 = (cargo_unit->path - *g_path_array_start) / 128 + 1;
+				if (*g_first_free_path == 0)
 				{
 					cargo_unit->path = 0;
+				} else {
+					cargo_unit->path = (UnitPath*)((*g_first_free_path - *g_path_array_start) / 128 + 1);
 				}
-				else
-				{
-					cargo_unit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
-				}
-				*u32_0x006BEE84 = (u32)cargo_unit->path;
+				*g_first_free_path = cargo_unit->path;
 				cargo_unit->path = 0;
 			}
 
@@ -145,11 +138,10 @@ namespace hooks
 			if (cargo_unit->sprite->elevation < 12)
 			{
 				cargo_unit->pathing_flags |= 1;
-			}
-			else
-			{
+			} else {
 				cargo_unit->pathing_flags &= ~1;
 			}
+
 			if (cargo_unit->subunit && units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
 			{
 				Unit* subunit = cargo_unit->subunit;
@@ -157,17 +149,15 @@ namespace hooks
 				subunit->status = (subunit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
 				if (subunit->path)
 				{
-					u32* path_0x4 = (u32*)((u32)subunit->path + 4);
-					*path_0x4 = ((u32)subunit->path - *u32_0x006BEE8C) / 128 + 1;
-					if (*u32_0x006BEE84 == 0)
+					u32* path_0x4 = (u32*)((u32)subunit->path->next);
+					*path_0x4 = (subunit->path - *g_path_array_start) / 128 + 1;
+					if (*g_first_free_path == 0)
 					{
 						subunit->path = 0;
+					} else {
+						subunit->path = (UnitPath*)((*g_first_free_path - *g_path_array_start) / 128 + 1);
 					}
-					else
-					{
-						subunit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
-					}
-					*u32_0x006BEE84 = (u32)subunit->path;
+					*g_first_free_path = subunit->path;
 					subunit->path = 0;
 				}
 
@@ -175,14 +165,10 @@ namespace hooks
 				if (subunit->sprite->elevation < 12)
 				{
 					subunit->pathing_flags |= 1;
-				}
-				else
-				{
+				} else {
 					subunit->pathing_flags &= ~1;
 				}
-			}
-			else
-			{
+			} else {
 				scbw::set_unit_position(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
 			}
 		}
@@ -205,9 +191,7 @@ namespace hooks
 					if (transport->id == UnitId::TerranTrojan)
 					{
 						transport->main_order_timer = 7;
-					}
-					else
-					{
+					} else {
 						transport->main_order_timer = 15;
 					}
 
@@ -227,9 +211,7 @@ namespace hooks
 						if (!unit->unit_ai)
 						{
 							unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-						}
-						else
-						{
+						} else {
 							unit->order_computer(OrderId::ComputerAI);
 						}
 					}
@@ -241,9 +223,7 @@ namespace hooks
 						{
 							transport->give_to(11);
 							transport->sprite->player = 11;
-						}
-						else
-						{
+						} else {
 							bool is_owner_valid = true;
 							for (u32 i = 0; i < 4; ++i)
 							{
@@ -277,9 +257,7 @@ namespace hooks
 								unit->air_weapon_cooldown = 2; // helper::get_weapon_cooldown(unit, weapon_id);
 							}
 							unit->spell_cooldown = 30;
-						}
-						else
-						{
+						} else {
 							unit->main_order_timer = 30;
 						}
 					}
@@ -330,9 +308,7 @@ namespace hooks
 						pathing = helper::toggle_unit_pathing_properties(cargo->subunit);
 					}
 				}
-			}
-			else
-			{
+			} else {
 				cargo->status = pathing & ~UnitStatus::InTransport;
 				helper::toggle_unit_pathing_properties(cargo);
 				if (cargo->subunit)

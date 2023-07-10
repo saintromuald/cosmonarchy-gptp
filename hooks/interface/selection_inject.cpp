@@ -232,6 +232,21 @@ namespace
 		}
 	}
 
+	void __declspec(naked) remove_from_selections_wrapper() { // 0049A7F0
+		static Unit* unit;
+		static s32 result;
+		__asm {
+			MOV unit, EDI
+			PUSHAD
+		}
+		result = hooks::remove_from_selections(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	void __declspec(naked) set_control_group_partial() { // 00496766
 		static const u32 continue_address = 0x0049676D;
 		static u8 slot;
@@ -273,6 +288,7 @@ namespace hooks
 		jump_patch(illegal_team_check_wrapper,						0x00485710, 0);
 		jump_patch(game_is_team_game_wrapper,						0x00484F50, 0);
 		jump_patch(create_dashed_selection_main_wrapper,			0x004E65C0, 1);
+		jump_patch(remove_from_selections_wrapper,					0x0049A7F0, 1);
 	//	jump_patch(set_control_group_partial,						0x00496766, 2); // Unfinished -Veeq7
 	}
 }
