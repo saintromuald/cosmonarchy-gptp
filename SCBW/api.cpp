@@ -3060,4 +3060,30 @@ namespace scbw {
 			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
 		}
 	}
+
+	void unfreeze_channeling_unit(Unit* unit)
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		switch (unit->id)
+		{
+			case UnitId::ProtossStarSovereign:
+			{
+				if (unit->is_frozen() && unit_ext->values[ValueProtossSwitchOrderState] && !unit_ext->values[ValueNeedsUnfreezing]) {
+					unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
+					unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 0;
+					unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] = 0;
+					unit->order_signal &= ~127;
+					unit_ext->values[ValueNeedsUnfreezing] = 1;
+				}
+				if (!unit->is_frozen() && unit_ext->values[ValueNeedsUnfreezing]) {
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+					unit->status &= ~UnitStatus::CanNotAttack;
+					unit_ext->values[ValueNeedsUnfreezing] = 0;
+					unit_ext->values[ValueProtossSwitchOrderState] = 0;
+					unit->unfreeze();
+					unit->order_to_idle();
+				}
+			} break;
+		}
+	}
 }

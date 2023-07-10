@@ -688,6 +688,7 @@ void Unit::freeze() {
 		CALL func_address
 		POPAD
 	}
+	this->status |= UnitStatus::Frozen;
 }
 
 void Unit::unfreeze() {
@@ -699,6 +700,7 @@ void Unit::unfreeze() {
 		CALL func_address
 		POPAD
 	}
+	this->status &= ~UnitStatus::Frozen;
 }
 
 void Unit::remove_acid_spores() {

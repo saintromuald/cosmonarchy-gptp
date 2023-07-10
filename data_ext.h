@@ -157,6 +157,7 @@ enum ExtValueId {
 	ValuePariahHitPlayer,
 	ValueIsNydusExit,
 	ValueIsNeutralNydus,
+	ValueNeedsUnfreezing,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -177,8 +178,8 @@ enum ExtTimerId {
 	TimerObservancePeriod,
 	TimerLakiziliskETA,
 	TimerLobotomySlow,							
-	TimerPlanetCrackerChannel,
-	TimerPlanetCrackerDelay,
+	TimerStarSovereignGriefOfAllGodsChannel,
+	TimerStarSovereignGriefOfAllGodsDelay,
 	TimerStarSovereignInterventionMissiles,
 	TimerQuaziliskCancel,
 	TimerCausticDischargeSpeed,

@@ -25,6 +25,7 @@ namespace hooks
 	b32 fow_refinery_check(Unit* self, u16 fow_id);																		// 00474500
 	void pick_new_target_if_needed(Unit* unit);																			// 00477510
 	void change_direction_to_move_waypoint(Unit* unit);																	// 00495840
+	void orders_turret_guard(Unit* unit);																				// 004777F0
 
 	void inject_target_related_hooks();
 }

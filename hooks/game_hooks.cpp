@@ -1201,7 +1201,7 @@ namespace hooks {
 					if (target) {
 						if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
 							UnitExt* target_ext = get_unit_ext(target);
-							target_ext->timers[TimerSalvageStunTimer] = 2 * 24;
+							target_ext->timers[TimerSalvageStunTimer] = 2 * 24 + 1;
 							
 							u32 time = units_dat::time_cost[target->id] / 2;
 							target_ext->salvage_time += 1;
@@ -1402,7 +1402,7 @@ namespace hooks {
 				}
 
 				// Star Sovereign - Grief of All Gods
-				if (unit_ext->timers[TimerPlanetCrackerChannel] == 1) {
+				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] == 1) {
 					iquare_globals.create_effect(EffectId_StarSovereignTheGriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevation, unit->player, unit, unit);
 				}
 
@@ -1459,6 +1459,9 @@ namespace hooks {
 				} else if (unit->order_signal & 64) {
 					unit->order_signal &= ~64;
 				}
+
+				// Manually handle the reset if stunned during channel
+				scbw::unfreeze_channeling_unit(unit);
 			} break;
 			case UnitId::TerranApostle:
 			{
@@ -1872,7 +1875,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::TerranAncile: {
-				// Ancile - Providence
+				// Ancile - Providence - Projectile handling
 				if (unit->energy >= 1 * 256) {
 					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
 						scbw::add_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge);
@@ -1883,6 +1886,11 @@ namespace hooks {
 					bullet_search_radial(&bullets, unit->position, radius);
 					for (u32 i = 0; i < bullets.count; i++) {
 						Bullet* bullet = bullets.bullets[i];
+
+						// Check if the weapon should be interacted with
+						if (!weapon_id_procs_onhits(bullet->weapon_id)) {
+							continue;
+						}
 
 						// Check if the unit can be shielded
 						Unit* target = bullet->attack_target.unit;

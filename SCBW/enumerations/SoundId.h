@@ -1181,6 +1181,7 @@ namespace SoundId
 		AugurDeath02						= 1236,
 		AugurDeath03						= 1237,
 		AugurDeath04						= 1238,
+		StarSovereignGriefOfAllGodsChannel	= 1246,
 		MindTyrantMindControlChannel		= 1276,
 		AkistrokorBlissfulEmbraceChannel	= 1277,
 		Simulacrum_Clone_01					= 1332,

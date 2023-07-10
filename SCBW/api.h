@@ -761,4 +761,5 @@ namespace scbw
 	void play_action_sound(u32 sound_id, Unit* unit);
 	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
 	void regress(Unit* unit, u32 regression_id);
+	void unfreeze_channeling_unit(Unit* unit);
 }

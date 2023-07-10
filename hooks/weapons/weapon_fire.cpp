@@ -13,27 +13,6 @@
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
 
-static bool madrigal_furia_match(Unit* madrigal, Unit* unit)
-{
-	if (unit == madrigal)
-	{
-		return false;
-	}
-	if (unit == madrigal->order_target.unit)
-	{
-		return false;
-	}
-	if (scbw::is_allied_to(madrigal->player, unit->player))
-	{
-		return false;
-	}
-	if (!madrigal->can_attack_target(unit))
-	{
-		return false;
-	}
-	return true;
-}
-
 static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 {
 	if (unit->status & UnitStatus::Invincible)
@@ -273,11 +252,12 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 	bool fired = false;
 	Unit* order_target_unit = unit->order_target.unit;
 	if (!ignore_main
-		&& order_target_unit
-		&& unit->main_order_id != OrderId::Follow
-		&& unit->main_order_id != OrderId::Patrol
-		&& unit->is_target_within_min_range(order_target_unit, attack_range)
-		&& unit->can_attack_target(order_target_unit)) {
+	&&   order_target_unit
+	&&   unit->main_order_id != OrderId::Follow
+	&&   unit->main_order_id != OrderId::Patrol
+	&&   unit->is_target_within_min_range(order_target_unit, attack_range)
+	&&   unit->can_attack_target(order_target_unit))
+	{
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			for (u32 i = 0; i < factor; i++) {
 				Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), weapon_offsets, apply_cooldown);

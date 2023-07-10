@@ -372,6 +372,19 @@ namespace
 		}
 	}
 
+	void __declspec(naked) orders_turret_guard_wrapper() { // 004777F0
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_turret_guard(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -435,6 +448,7 @@ namespace hooks
 		jump_patch(fow_refinery_check_wrapper,						0x00474500, 5);
 		jump_patch(pick_new_target_if_needed_wrapper,				0x00477510, 1);
 		jump_patch(change_direction_to_move_waypoint_wrapper,		0x00495840, 3);
+		jump_patch(orders_turret_guard_wrapper,						0x004777F0, 2);
 
 		// Patches \\
 

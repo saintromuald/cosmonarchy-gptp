@@ -4992,12 +4992,12 @@ namespace helper {
 		return return_value;
 	}
 
-	void order_to_attack_target(Unit* unit, Unit* target, u32 unk1, u32 unk2) {
+	void order_to_attack_target(Unit* unit, Unit* target, u32 process_subunit, u32 target_is_cloaked) {
 		const u32 func_address = 0x00476FC0;
 		__asm {
 			PUSHAD
-			PUSH unk2
-			PUSH unk1
+			PUSH target_is_cloaked
+			PUSH process_subunit
 			MOV EAX, target
 			MOV EDI, unit
 			CALL func_address
