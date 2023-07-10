@@ -3590,23 +3590,23 @@ namespace hooks {
 		}
 	}
 
+	u32 hash_string_to_u32(char* string) {
+		u32 result = 2166136261;
+		for (char* c = string; *c; ++c) {
+			result ^= *c;
+			result *= 16777619;
+		}
+		return result;
+	}
+
 	void initialize_provider_version(GameVersion* version) {
 		*version = {};
 		version->size = sizeof(*version);
-		/*
-		if (*g_is_expansion) {
-			version->game_id = 'SEXP';
-			version->game_title = "Brood War";
-		} else {
-			version->game_id = 'STAR';
-			version->game_title = "Starcraft";
-		}
-		*/
 		version->game_id = 'CMBW';
 		version->game_title = "Cosmonarchy: Broodwar";
 
 		version->game_description = "internal version unknown";
-		version->version_id = 333; // 211;
+		version->version_id = hash_string_to_u32(__TIMESTAMP__);
 		version->max_players = 8;
 		version->category_bits = 255;
 		helper::get_cd_key_info(&version->key_owner, &version->key);
