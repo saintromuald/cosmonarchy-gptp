@@ -305,6 +305,6 @@ namespace hooks {
 		jump_patch(mp_save_directory_wrapper,			0x0044CCF7, 1);
 		jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
 
-		jump_patch(initialize_provider_version_wrapper, 0x00472770, 1)
+		jump_patch(initialize_provider_version_wrapper, 0x00472770, 1);
 	}
 }
