@@ -13772,4 +13772,30 @@ namespace helper {
 		}
 		return result;
 	}
+
+	u32* get_cd_key_info(char** owner, u32* key) {
+		static u32* result;
+		const u32 func_address = 0x004D9BF0;
+		__asm {
+			PUSHAD
+			MOV EBX, owner
+			PUSH key
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 local_get_lang() {
+		static u32 result;
+		const u32 func_address = 0x0041F1D0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

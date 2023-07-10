@@ -1614,4 +1614,7 @@ namespace helper {
 	void set_flag_attack_move(Unit* unit);																										// 004026A0
 
 	Unit* set_unit_movement_speed_ex(Unit* unit);																								// 00495100
+
+	u32* get_cd_key_info(char** owner, u32* key);																								// 004D9BF0
+	u32 local_get_lang();																														// 0041F1D0
 }

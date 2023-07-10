@@ -271,6 +271,20 @@ bool isGameOn = false;
 		}
 	}
 
+	void __declspec(naked) initialize_provider_version_wrapper() {
+		static GameVersion* version;
+		__asm {
+			MOV version, ESI
+			PUSHAD
+		}
+		hooks::initialize_provider_version(version);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			RET
+		}
+	}
+
 //-------- Hook injector --------//
 
 namespace hooks {
@@ -290,5 +304,7 @@ namespace hooks {
 		jump_patch(sp_save_directory_wrapper,			0x004AE9E2, 0);
 		jump_patch(mp_save_directory_wrapper,			0x0044CCF7, 1);
 		jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
+
+		jump_patch(initialize_provider_version_wrapper, 0x00472770, 1)
 	}
 }

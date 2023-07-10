@@ -1,5 +1,7 @@
 #pragma once
 
+struct GameVersion;
+
 namespace hooks {
 	extern u8 quickcasting_timeout;
 	extern u8 quickbuilding_timeout;
@@ -21,4 +23,6 @@ namespace hooks {
 	void next_ui_frame();
 	bool next_frame();
 	void inject_game_hooks();
+
+	void initialize_provider_version(GameVersion* version);			// 00472770
 }

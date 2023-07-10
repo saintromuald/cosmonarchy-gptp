@@ -3519,4 +3519,23 @@ namespace hooks {
 			}
 		}
 	}
+
+	void initialize_provider_version(GameVersion* version) {
+		memset(version, 0, sizeof(*version));
+		version->size = 60;
+		if (*g_is_expansion) {
+			version->game_id = 'SEXP';
+			version->game_title = "Brood War";
+		} else {
+			version->game_id = 'STAR';
+			version->game_title = "Starcraft";
+		}
+		version->game_description = "internal version unknown";
+		version->version_id = 211;
+		version->max_players = 8;
+		version->category_bits = 255;
+		helper::get_cd_key_info(&version->key_owner, &version->key);
+		version->is_demo = *g_is_demo;
+		version->lang = helper::local_get_lang();
+	}
 }
