@@ -3591,8 +3591,9 @@ namespace hooks {
 	}
 
 	void initialize_provider_version(GameVersion* version) {
-		memset(version, 0, sizeof(*version));
-		version->size = 60;
+		*version = {};
+		version->size = sizeof(*version);
+		/*
 		if (*g_is_expansion) {
 			version->game_id = 'SEXP';
 			version->game_title = "Brood War";
@@ -3600,8 +3601,12 @@ namespace hooks {
 			version->game_id = 'STAR';
 			version->game_title = "Starcraft";
 		}
+		*/
+		version->game_id = 'CMBW';
+		version->game_title = "Cosmonarchy: Broodwar";
+
 		version->game_description = "internal version unknown";
-		version->version_id = 211;
+		version->version_id = 333; // 211;
 		version->max_players = 8;
 		version->category_bits = 255;
 		helper::get_cd_key_info(&version->key_owner, &version->key);

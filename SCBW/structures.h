@@ -1324,5 +1324,6 @@ struct GameVersion {
 	u32 is_demo;
 	u32 lang;
 };
+C_ASSERT(sizeof(GameVersion) == 60);
 
 #pragma pack()
