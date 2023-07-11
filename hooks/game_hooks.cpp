@@ -3603,7 +3603,7 @@ namespace hooks {
 		*version = {};
 		version->size = sizeof(*version);
 		version->game_id = 'CMBW';
-		version->game_title = "Cosmonarchy: Broodwar";
+		version->game_title = "Cosmonarchy Brood War";
 
 		version->game_description = "internal version unknown";
 		version->version_id = hash_string_to_u32(__TIMESTAMP__);
