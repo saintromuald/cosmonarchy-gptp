@@ -319,7 +319,7 @@ namespace hooks
 		{
 			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
 			*g_is_placing_addon = 1;
-		} else if (unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+		} else if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 			{
 				helper::place_building_normal_proc();
