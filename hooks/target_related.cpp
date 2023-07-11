@@ -345,24 +345,17 @@ namespace hooks
 	// Hooked to help with cloak rewrite - Pr0nogo
 	u32 is_unit_visible(Unit* unit) // 004E5DB0
 	{
-		Unit* target;
-		s32 playerUnit;
-		u32 result;
-
-		target = unit->order_target.unit;
-		playerUnit = 1 << unit->player;
+		Unit* target = unit->order_target.unit;
+		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return playerUnit & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
+		u32 result = 0;
 		if (unit->status & 0x300)
 		{
-			result = (u8)(playerUnit & target->sprite->visibility_status);
-		}
-		else
-		{
-			result = 0;
+			result = (u8)(player & target->sprite->visibility_status);
 		}
 		return result;
 	}
