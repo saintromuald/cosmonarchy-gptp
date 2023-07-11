@@ -47,7 +47,7 @@ namespace hooks
 	void unburrow(Unit* unit) // 004E97C0
 	{
 		if (unit->main_order_id == OrderId::Burrow || unit->main_order_id == OrderId::Burrowed
-		|| (unit->id == UnitId::ZergLakizilisk && unit->main_order_id == OrderId::PlayerGuard))
+		|| (unit->id == UnitId::ZergLakizilisk && unit->main_order_id != OrderId::Unburrow))
 		{
 			if (unit->id == UnitId::ZergLakizilisk)
 			{
