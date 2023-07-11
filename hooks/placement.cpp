@@ -240,9 +240,7 @@ namespace hooks
 			{
 				if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant)
 				{
-					b32 can_draw = helper::can_draw_placement_rect_maybe(id, geyser);
-					id = *g_place_building_unit_id; // lol looping
-					if (can_draw)
+					if (helper::can_draw_placement_rect_maybe(id, geyser))
 					{
 						*can_draw_placement_preview = 1;
 					}
@@ -267,9 +265,7 @@ namespace hooks
 					u16 id = *g_place_building_unit_id;
 					do {
 						if (parent->id == UnitId::ProtossGateway) {
-							b32 can_draw = helper::can_draw_placement_rect_maybe(id, parent);
-							id = *g_place_building_unit_id; // lol looping
-							if (can_draw)
+							if (helper::can_draw_placement_rect_maybe(id, parent))
 							{
 								*can_draw_placement_preview = 1;
 							}
@@ -291,9 +287,7 @@ namespace hooks
 				*can_draw_placement_preview = 0;
 			}
 
-			/*if (*g_place_building_unit_id == UnitId::ProtossPylon) {
-				place_custom_building_proc();
-			} else*/if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+			if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id) && *g_place_building_unit_id != UnitId::ZergEzigrisant) {
 				if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 				{
 					helper::place_building_normal_proc();
@@ -325,9 +319,7 @@ namespace hooks
 		{
 			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
 			*g_is_placing_addon = 1;
-		}/* else if (*g_place_building_unit_id == UnitId::ProtossPylon) {
-			place_custom_building_proc();
-		}*/ else if (unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+		} else if (unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 			{
 				helper::place_building_normal_proc();
@@ -336,46 +328,35 @@ namespace hooks
 			helper::place_building_refinery_proc();
 		}
 
-		const char* string;
+		char* string = "";
 		if (*g_network_table > 63)
 		{
-			string = (char*)g_network_table + g_network_table[64];
-		}
-		else
-		{
-			string = "";
+			string = (char*)g_network_table_DF->get_string(64);
 		}
 
-		char result;
 		helper::send_message_something(message_thing, string);
 		helper::set_ingame_input_procs();
 		Unit* active_unit = *g_active_portrait_unit;
-		u32 active_id = active_unit->id;
-		if (!active_unit) // wtf?
+		if (!active_unit)
 		{
 			*g_placing_player = -1;
 			*g_minimap_cursor = 0;
-			return helper::refresh_screen(active_id);
+			return helper::refresh_screen(UnitId::None); // Guessed
 		}
 
-		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi
-		||  unit_id_is_psi_provider(unit_id))
+		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id))
 		{
 			helper::create_pylon_aura();
 			active_unit = *g_active_portrait_unit;
 		}
 
+		char result = helper::refresh_screen(active_unit->id);
+		*g_minimap_cursor = 0;
 		if (active_unit)
 		{
 			*g_placing_player = active_unit->player;
-			result = helper::refresh_screen(active_id);
-			*g_minimap_cursor = 0;
-		}
-		else
-		{
+		} else {
 			*g_placing_player = -1;
-			result = helper::refresh_screen(active_id);
-			*g_minimap_cursor = 0;
 		}
 		return result;
 	}

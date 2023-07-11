@@ -10859,7 +10859,7 @@ namespace helper {
 		}
 	}
 
-	void send_message_something(u32 unused, const char* string) {
+	void send_message_something(u32 unused, char* string) {
 		const u32 func_address = 0x004F31D0;
 		__asm {
 			PUSHAD
