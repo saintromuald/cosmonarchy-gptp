@@ -334,12 +334,10 @@ namespace hooks
 			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
-		u32 result;
-		if (!(target->status & 0x300) && (1 << unit->player) & target->detection_status)
+		u32 result = 0;
+		if (!(target->status & 0x300) || (1 << unit->player) & target->detection_status)
 		{
 			result = (u8)(player & target->sprite->visibility_status);
-		} else {
-			result = 0;
 		}
 		return result;
 	}
