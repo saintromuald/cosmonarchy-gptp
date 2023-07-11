@@ -410,13 +410,13 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	if (units_dat::base_property[id] & UnitProperty::Subunit)
 	{
 		Unit* first_dying_unit = *g_first_dying_unit;
-		if (*g_first_dying_unit)
+		if (first_dying_unit)
 		{
-			if (*g_unknown_unit_ptr_related == *g_first_dying_unit)
+			if (*g_last_dying_unit == first_dying_unit)
 			{
-				*g_unknown_unit_ptr_related = unit;
+				*g_last_dying_unit = unit;
 			}
-			unit->link.prev = *g_first_dying_unit;
+			unit->link.prev = first_dying_unit;
 			unit->link.next = first_dying_unit->link.next;
 			Unit* next_dying_u = first_dying_unit->link.next;
 			if (next_dying_u)
@@ -425,7 +425,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 			}
 			first_dying_unit->link.next = unit;
 		} else {
-			*g_unknown_unit_ptr_related = unit;
+			*g_last_dying_unit = unit;
 			*g_first_dying_unit = unit;
 		}
 
