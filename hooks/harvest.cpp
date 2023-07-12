@@ -69,7 +69,10 @@ namespace hooks {
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
 		if (is_mineral) {
-			if (resource->building.resource.resource_amount -  harvest_amount > DepletedYield) {
+			if (resource->building.resource.resource_amount < 4) {
+				resource->building.resource.resource_amount = DepletedYield;
+				resource->status |= UnitStatus::NoCollide;
+			} else if (resource->building.resource.resource_amount -  harvest_amount > DepletedYield) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
 				resource->building.resource.resource_amount = DepletedYield;
