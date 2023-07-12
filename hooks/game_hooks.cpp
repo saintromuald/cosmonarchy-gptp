@@ -495,6 +495,41 @@ namespace hooks {
 			}
 			*/
 
+			// Show auras
+			if (config.show_aura_circles) {
+				switch (unit->id) {
+					case UnitId::TerranShamanSupportMode:
+					case UnitId::TerranShamanVisionaryMode:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::TerranAncile:
+					{
+						graphics::draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossClarion:
+					{
+						graphics::draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossCrucible:
+					{
+						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ZergSovroleth:
+					{
+						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ZergMatraleth:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ZergVilgoleth:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+				}
+			}
+
 			// Show connected Nyduses
 			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
 				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {

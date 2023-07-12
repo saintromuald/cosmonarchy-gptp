@@ -26,6 +26,7 @@ void load_config() {
 		load_field(config_node, "show-queued-order-lines", config.show_queued_order_lines);
 		load_field(config_node, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
 		load_field(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+		load_field(config_node, "show-aura-circles", config.show_aura_circles);
 
 		load_field(config_node, "witness-show-apm", config.witness_show_apm);
 		load_field(config_node, "witness-show-order-lines", config.witness_show_order_lines);
@@ -75,6 +76,7 @@ void save_config() {
 	write_field(out, "show-queued-order-lines", config.show_queued_order_lines);
 	write_field(out, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
 	write_field(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+	write_field(out, "show-aura-circles", config.show_aura_circles);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Witness UI");

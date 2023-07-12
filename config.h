@@ -16,6 +16,7 @@ struct Config {
 	bool show_queued_order_lines = false;
 	bool show_unique_gas_order_line_color = false;
 	bool always_show_extended_tooltips = false;
+	bool show_aura_circles = false;
 
 	bool witness_show_apm = true;
 	bool witness_show_order_lines = true;
