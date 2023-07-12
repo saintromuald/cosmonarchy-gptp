@@ -1240,16 +1240,15 @@ namespace hooks {
 		Unit* next_bounce = bullet->next_bounce_unit;
 		*g_bullet_bounce_missile_source = bullet->source_unit;
 		Unit* target = bullet->attack_target.unit;
-		Sprite* bullet_sprite = bullet->sprite;
 		*g_bullet_bounce_missile_target = target;
-		u16 posY = bullet_sprite->position.x;
-		u16 posX = bullet_sprite->position.y;
+		u16 pos_y = bullet->position.x;
+		u16 pos_x = bullet->position.y;
 		*g_bullet_bounce_missile_next = next_bounce;
 		Box16 coords;
-		coords.left = posX - 96;
-		coords.top = posX + 96;
-		coords.right = posY - 96;
-		coords.bottom = posY + 96;
+		coords.left = pos_x - 96;
+		coords.top = pos_x + 96;
+		coords.right = pos_y - 96;
+		coords.bottom = pos_y + 96;
 //		return (Unit*)helper::iterate_units_at_location_target_proc(&coords, find_next_bounce_target_proc, 0);
 	}
 
@@ -1790,9 +1789,8 @@ namespace hooks {
 			return;
 		}
 
-		Sprite* target_sprite = target->sprite;
-		s32 tgt_x = target_sprite->position.x;
-		s32 tgt_y = target_sprite->position.y;
+		s32 tgt_x = target->position.x;
+		s32 tgt_y = target->position.y;
 
 		s32 attacker_halt = helper::get_flingy_halt_distance(attacker);
 		s32 target_vel = target->velocity_direction_1;
@@ -1842,7 +1840,7 @@ namespace hooks {
 		} else {
 			if (!(bullet->hit_flags & 1)) // miss
 			{
-				Bullet* changed_bullet = helper::change_move_pos(bullet, target->sprite->position.y, target->sprite->position.x);
+				Bullet* changed_bullet = helper::change_move_pos(bullet, target->position.y, target->position.x);
 				helper::bullet_behavior_fly(changed_bullet);
 			} else {
 				bullet->behavior_type = 1;

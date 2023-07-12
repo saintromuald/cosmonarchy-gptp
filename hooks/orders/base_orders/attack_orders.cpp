@@ -398,8 +398,8 @@ namespace hooks
 		target = unit->order_target.unit;
 		if (target != nullptr)
 		{
-			unit->order_target.pt.x = target->sprite->position.x;
-			unit->order_target.pt.y = target->sprite->position.y;
+			unit->order_target.pt.x = target->position.x;
+			unit->order_target.pt.y = target->position.y;
 		}
 		if (unit->is_frozen()
 		||  target == nullptr
@@ -546,7 +546,7 @@ namespace hooks
 		{
 			if (!unit->can_attack_target(target, true))
 			{
-				unit->order_to(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
+				unit->order_to(OrderId::Move, target->position.x, target->position.y);
 			}
 			else
 			{
@@ -636,8 +636,8 @@ namespace hooks
 
 		if (!bStopThere && unit->main_order_state == 1)
 		{
-			if (unit->sprite->position.x != unit->move_target.pt.x
-				|| unit->sprite->position.y != unit->move_target.pt.y)
+			if (unit->position.x != unit->move_target.pt.x
+				|| unit->position.y != unit->move_target.pt.y)
 			{
 				bStopThere = true;
 			}
@@ -700,7 +700,7 @@ namespace hooks
 		&&  unit->main_order_timer == 0)
 		{
 			unit->main_order_timer = 0; // used to be 15
-			if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
+			if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
 			{
 				helper::make_to_hold_position(unit);
 				unit->order_to_idle();
@@ -709,7 +709,7 @@ namespace hooks
 			{
 				bool jump_to_78EAE = false;
 				if (unit->get_movable_state() != 0
-				&& (unit->order_target.pt.x != unit->sprite->position.x || unit->order_target.pt.y != unit->sprite->position.y))
+				&& (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y))
 				{
 
 					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
@@ -742,8 +742,8 @@ namespace hooks
 		&&  unit->main_order_timer == 0)
 		{
 			unit->main_order_timer = 0; // used to be 15
-			if (unit->move_target.pt.x != unit->sprite->position.x
-			||  unit->move_target.pt.y != unit->sprite->position.y)
+			if (unit->move_target.pt.x != unit->position.x
+			||  unit->move_target.pt.y != unit->position.y)
 			{
 				// Logically, this function would check one last time if a target is in distance, and attack it if that's the case, else AttackMove end here
 				helper::attack_move_try_pick_target(unit, unit->main_order_id);
@@ -836,8 +836,8 @@ namespace hooks
 				if (bNotEndThere)
 				{
 					Image* current_image;
-					unit->order_target.pt.x = unit->sprite->position.x;
-					unit->order_target.pt.y = unit->sprite->position.y;
+					unit->order_target.pt.x = unit->position.x;
+					unit->order_target.pt.y = unit->position.y;
 					current_image = unit->sprite->images.head;
 					while (current_image != NULL)
 					{
@@ -866,7 +866,7 @@ namespace hooks
 			u32 attack_order = units_dat::attack_unit_order[out_hangar_child->id];
 			out_hangar_child->user_action_flags |= 1u;
 			if (target) {
-				helper::order(1, out_hangar_child, attack_order, target->sprite->position, target, UnitId::None);
+				helper::order(1, out_hangar_child, attack_order, target->position, target, UnitId::None);
 			} else {
 				helper::order(1, out_hangar_child, attack_order, {}, 0, UnitId::None);
 			}
@@ -1011,7 +1011,7 @@ namespace hooks
 	}
 
 	// Ported from GPTP to change the Solarion-Steward launch timer. -Pr0nogo
-	// Used when unit->mainOrderId is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPosition1
+	// Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPosition1
 	void orders_carrier_idle(Unit* unit) // 004666A0
 	{
 		if (helper::order_hangar_unit(unit, 0, unit->get_seek_range() * 32))
@@ -1025,15 +1025,13 @@ namespace hooks
 				scbw::decloak_proc(unit);
 			}
 
-		}
-		else if (unit->unit_ai && unit->main_order_timer == 0)
-		{
+		} else if (unit->unit_ai && unit->main_order_timer == 0) {
 			unit->order_computer(OrderId::ComputerAI);
 		}
 	}
 
 	// Ported from GPTP as a dependency of orders_carrier_idle. -Pr0nogo
-	// Only used here, and making a modified copy could be useful,so hardcoded. Not using helpers, a copy should not reproduce that bad coding behavior. -GPTP
+	// Only used here, and making a modified copy could be useful, so hardcoded. Not using helpers, a copy should not reproduce that bad coding behavior. -GPTP
 	Unit* release_fighter(Unit* unit) // 00466440
 	{
 		Unit* launched_unit = unit->unit_with_hangar.in_hangar_child;
@@ -1068,15 +1066,15 @@ namespace hooks
 			}
 
 			if (launched_unit) {
-				const u32 Func_InitUnitTrapDoodad = 0x004E6490; //move to helpers if making a modified copy
+				const u32 Func_InitUnitTrapDoodad = 0x004E6490; // move to helpers if making a modified copy
 				u32 x, y;
 
 				if (launched_unit->id == UnitId::ProtossPlasmaShell) {
-					const u32 Func_turnGraphic = 0x00495F20;	//move to helpers if making a modified copy
+					const u32 Func_turnGraphic = 0x00495F20;	// move to helpers if making a modified copy
 					u8 direction = unit->current_direction_1;
 
-					x = unit->sprite->position.x + g_angle_distance[direction].x * 25 / 256;
-					y = unit->sprite->position.y + g_angle_distance[direction].y * 25 / 256;
+					x = unit->position.x + g_angle_distance[direction].x * 25 / 256;
+					y = unit->position.y + g_angle_distance[direction].y * 25 / 256;
 
 					//void turnGraphic(Unit* unit, u8 direction) @ 00495F20
 					__asm {
@@ -1087,11 +1085,9 @@ namespace hooks
 						POPAD
 					}
 
-				}
-				else
-				{
-					x = unit->sprite->position.x;
-					y = unit->sprite->position.y;
+				} else {
+					x = unit->position.x;
+					y = unit->position.y;
 				}
 
 				scbw::refresh_console();
