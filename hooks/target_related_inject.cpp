@@ -385,6 +385,28 @@ namespace
 		}
 	}
 
+	void __declspec(naked) get_closest_point_of_target_wrapper() { // 004762C0
+		static Unit* unit;
+		static s32* out_x;
+		static s32* out_y;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::get_closest_point_of_target(unit, out_x, out_y);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x0C
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -449,6 +471,7 @@ namespace hooks
 		jump_patch(pick_new_target_if_needed_wrapper,				0x00477510, 1);
 		jump_patch(change_direction_to_move_waypoint_wrapper,		0x00495840, 3);
 		jump_patch(orders_turret_guard_wrapper,						0x004777F0, 2);
+	//	jump_patch(get_closest_point_of_target_wrapper,				0x004762C0, 1); // Untested
 
 		// Patches \\
 

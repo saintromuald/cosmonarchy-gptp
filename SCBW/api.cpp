@@ -3086,4 +3086,37 @@ namespace scbw {
 			} break;
 		}
 	}
+
+	bool unit_can_flee(Unit* unit)
+	{
+		if (!orders_dat::Unknown11[unit->main_order_id]
+		|| !(unit->status & UnitStatus::Reacts)
+		||	!helper::is_at_home(unit)
+		||   helper::is_under_carapace_swarm(unit) == 255)
+		{
+			return false;
+		}
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		switch (unit->id) {
+			case UnitId::ProtossClarion:
+			{
+				if (unit_ext->unit_vectors[UnitVectorPhaseLink].size() <= 1) {
+					return false;
+				}
+			} break;
+			case UnitId::ProtossAnalogue:
+			{
+				return false;
+			} break;
+			case UnitId::ProtossLanifect:
+			{
+				if (unit_ext->values[ValueDisruptionFieldOn])
+				{
+					return false;
+				}
+			} break;
+		}
+		return true;
+	}
 }

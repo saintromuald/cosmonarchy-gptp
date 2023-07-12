@@ -1619,4 +1619,6 @@ namespace helper {
 
 	u32* get_cd_key_info(char** owner, u32* key);																								// 004D9BF0
 	u32 local_get_lang();																														// 0041F1D0
+
+	s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area);														// 0042A5C0
 }

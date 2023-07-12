@@ -1088,4 +1088,38 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to use non-sprite positions. -Pr0nogo
+	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y) // 004762C0
+	{
+		Unit* target = unit->order_target.unit;
+		u16 target_x = target->position.x;
+		u16 target_y = target->position.y;
+		Box16* target_dims = &units_dat::unit_bounds[target->id];
+
+		s32 new_x = target_x - target_dims->x;
+		s32 new_y = target_y - target_dims->y;
+		s32 new_w = target_x + target_dims->w;
+		s32 new_h = target_y + target_dims->h;
+
+		s32 shift_x = target_dims->x - new_x >> 2;
+		s32 shift_y = (new_h - new_y) >> 2;
+		s32 shift_w = new_w - shift_x;
+
+		Box16 acceptable_area = {};
+		acceptable_area.x = shift_x + new_x;
+		acceptable_area.y = shift_y + new_y;
+
+		s32 final_h = new_h - shift_y;
+		Point16 old_pos = { acceptable_area.x + (shift_w - acceptable_area.x) / 2, shift_y + new_y + (final_h - (shift_y + new_y)) / 2 };
+		Point16 new_pos = { unit->position.x, unit->position.y };
+		if (helper::make_valid_position(&old_pos, &new_pos, &acceptable_area))
+		{
+			*out_x = new_pos.x;
+			*out_y = new_pos.y;
+		} else {
+			*out_x = old_pos.x;
+			*out_y = old_pos.y;
+		}
+	}
 }

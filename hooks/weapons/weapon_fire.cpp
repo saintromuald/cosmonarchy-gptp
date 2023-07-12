@@ -379,7 +379,8 @@ namespace hooks {
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
 				unit_ext->timers[TimerLakiziliskETA] = 17;
-				u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
+				u32 range = weapons_dat::max_range[weapon_id] + 16;
+			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
 				Point16 unit_pos = { unit->position.x, unit->position.y };
 				Point16 target_pos = { unit->order_target.unit->position.x, unit->order_target.unit->position.y };
 				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
@@ -1529,7 +1530,8 @@ namespace hooks {
 			}
 			case WeaponBehavior::GoToMaxRange:
 			{
-				s32 max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
+				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
+			//	s32 max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
 				Vector32 target_pos = {};
 				target_pos.x = (s32)(parent->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
 				target_pos.y = (s32)(parent->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));

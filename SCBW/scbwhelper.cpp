@@ -13812,4 +13812,19 @@ namespace helper {
 		}
 		return result;
 	}
+
+	s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area) {
+		static s32 result;
+		const u32 func_address = 0x0042A5C0;
+		__asm {
+			PUSHAD
+			PUSH acceptable_area
+			PUSH new_pos
+			PUSH old_pos
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
