@@ -2088,7 +2088,9 @@ namespace scbw {
 	}
 
 	bool unit_is_stunned(Unit* unit) {
-		return unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		return  unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer
+		||		unit_ext->timers[TimerStun];
 	}
 
 	void dump_sync_data() {
@@ -2428,6 +2430,10 @@ namespace scbw {
 
 			if (scbw::unit_is_trap(unit)) {
 				unit->remove();
+			}
+
+			if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
+				helper::order_return_to_idle(unit);
 			}
 		}
 	}

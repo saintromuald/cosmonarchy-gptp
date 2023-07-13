@@ -3,21 +3,21 @@
 
 namespace
 {
-	void __declspec(naked) orders_MedicHeal2Wrapper()
+	void __declspec(naked) orders_medic_heal2_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_MedicHeal2(unit);
+		hooks::orders_medic_heal2(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) orders_HealMoveWrapper()
+	void __declspec(naked) orders_heal_move_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -27,16 +27,16 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_HealMove(unit);
+		hooks::orders_heal_move(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 
-	void __declspec(naked) orders_MedicWrapper()
+	void __declspec(naked) orders_medic_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -45,7 +45,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Medic(unit);
+		hooks::orders_medic(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -54,32 +54,32 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_MedicHeal1Wrapper()
+	void __declspec(naked) orders_medic_heal1_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_MedicHeal1(unit);
+		hooks::orders_medic_heal1(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) AI_AcquireHealTarget_Wrapper()
+	void __declspec(naked) ai_acquire_heal_target_wrapper()
 	{
-		static Unit* a1;
-		static Unit* a2;
+		static Unit* cleric;
+		static Unit* target;
 		static u32 result;
 		__asm
 		{
-			MOV a1, EBX
-			MOV a2, ESI
+			MOV cleric, EBX
+			MOV target, ESI
 			PUSHAD
 		}
-		result = hooks::AI_AcquireHealTarget(a1, a2);
+		result = hooks::ai_acquire_heal_target(cleric, target);
 		__asm
 		{
 			POPAD
@@ -88,7 +88,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) doMedicHeal_Wrapper()
+	void __declspec(naked) do_medic_heal_wrapper() // 00463C40
 	{
 		static Unit* medic;
 		static Unit* target;
@@ -104,14 +104,14 @@ namespace
 			MOV medic, EAX
 			PUSHAD
 		}
-		result = hooks::doMedicHeal_Func(medic, target);
+		result = hooks::do_medic_heal(medic, target);
 		__asm
 		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 }
@@ -120,11 +120,11 @@ namespace hooks
 {
 	void inject_medic_orders_hooks()
 	{
-		jump_patch(orders_MedicHeal2Wrapper,		0x00463740, 1);
-		jump_patch(orders_HealMoveWrapper,			0x004637B0, 1);
-		jump_patch(orders_MedicWrapper,				0x00463900, 1);
-		jump_patch(orders_MedicHeal1Wrapper,		0x00464180, 1);
-		jump_patch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
-		jump_patch(doMedicHeal_Wrapper,				0x00463C40, 1);
+		jump_patch(orders_medic_heal2_wrapper,		0x00463740, 1);
+		jump_patch(orders_heal_move_wrapper,		0x004637B0, 1);
+		jump_patch(orders_medic_wrapper,			0x00463900, 1);
+		jump_patch(orders_medic_heal1_wrapper,		0x00464180, 1);
+		jump_patch(ai_acquire_heal_target_wrapper,	0x00463530, 1);
+		jump_patch(do_medic_heal_wrapper,			0x00463C40, 1);
 	}
 }

@@ -60,3 +60,5 @@ bool image_id_is_powerup(u32 image_id);
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
 bool weapon_id_procs_onhits(u32 weapon_id);
 WeaponOffsets get_weapon_offsets(u32 weapon_id);
+
+bool unit_id_spawns_larva(u32 unit_id);

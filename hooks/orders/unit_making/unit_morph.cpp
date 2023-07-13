@@ -632,12 +632,17 @@ namespace hooks {
 	// Determine the type (unit ID) of the unit to revert to when cancelling an @p egg_unit while it is morphing.
 	u16 get_cancel_morph_revert_id(Unit* egg_unit)
 	{
-		auto source = egg_unit->create_origin;
+		u32 source = egg_unit->create_origin;
 		if (egg_unit->get_race() == RaceId::Zerg)
 		{
 			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building))
 			{
-				return source;
+				if (source != UnitId::ZergLarva
+				||	egg_unit->connected_unit->id != UnitId::ZergCaphrolosk) {
+					return source;
+				} else {
+					return UnitId::ZergOcsalLarva;
+				}
 			}
 		}
 		return UnitId::None;

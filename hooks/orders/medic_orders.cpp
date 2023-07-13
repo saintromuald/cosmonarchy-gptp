@@ -5,12 +5,12 @@
 
 namespace hooks
 {
-	void orders_MedicHeal2(Unit* unit)
+	void orders_medic_heal2(Unit* unit)
 	{
 		if (!(unit->movement_flags & MovementFlags::Accelerating))
 		{
 			Image* current_image = unit->sprite->images.head;
-			while (current_image != nullptr)
+			while (current_image)
 			{
 				current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
@@ -19,13 +19,17 @@ namespace hooks
 		helper::force_order_done(unit);
 	}
 
-	void orders_HealMove(Unit* unit)
+	void orders_heal_move(Unit* unit)
 	{
-		bool bStopThere = false;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueReviveStarted] || unit->is_frozen()) {
+			return;
+		}
+		bool stupid_stop = false;
 		Unit* target = unit->order_target.unit;
-		Unit* oldTarget = unit->order_target.unit;
+		Unit* old_target = unit->order_target.unit;
 
-		if (target != nullptr)
+		if (target)
 		{
 			if (target->id == UnitId::ZergNydusCesiant && target->building.nydus_exit)
 			{
@@ -37,56 +41,48 @@ namespace hooks
 			{
 				unit->order_computer(OrderId::MedicHeal1);
 				unit->order_target.unit = target;
-				unit->order_target.pt.x = target->sprite->position.x;
-				unit->order_target.pt.y = target->sprite->position.y;
+				unit->order_target.pt.x = target->position.x;
+				unit->order_target.pt.y = target->position.y;
 				helper::move_to_target(target, unit);
-				bStopThere = true;
-			}
-			else
-			{ // 00463801
-				unit->order_target.pt.x = target->sprite->position.x;
-				unit->order_target.pt.y = target->sprite->position.y;
+				stupid_stop = true;
+			} else {
+				unit->order_target.pt.x = target->position.x;
+				unit->order_target.pt.y = target->position.y;
 			}
 		}
 
-		if (!bStopThere)
-		{ // 00463817
+		if (!stupid_stop)
+		{
 			if (unit->recent_order_timer == 0)
 			{
 				if (!helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y))
 				{
-					bStopThere = true;
+					stupid_stop = true;
 				}
 			}
 
-			// 00463842
-			if (!bStopThere)
+			if (!stupid_stop)
 			{
-				if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y)
+				if (unit->move_target.pt.x == unit->position.x && unit->move_target.pt.y == unit->position.y)
 				{
 					unit->order_to_idle();
-				}
-				else if (unit->main_order_timer == 0)
-				{
-					Unit* newTarget;
-					Point16 oldPos;
+				} else if (unit->main_order_timer == 0) {
+					Point16 old_pos = {};
 					unit->main_order_timer = 15;
-					newTarget = helper::acquire_medic_heal_target(unit);
-					if (newTarget != nullptr)
+					Unit* new_target = helper::acquire_medic_heal_target(unit);
+					if (new_target)
 					{
-						oldPos.x = unit->order_target.pt.x;
-						oldPos.y = unit->order_target.pt.y;
+						old_pos.x = unit->order_target.pt.x;
+						old_pos.y = unit->order_target.pt.y;
 						helper::order_interrupt(unit, unit->order_target.unit, unit->order_target.pt.x, unit->order_target.pt.y, OrderId::MedicHeal1);
 
-						helper::move_to_target(newTarget, unit);
-						helper::unit_order_move_to_target_unit(unit, newTarget);
-						if (oldTarget != nullptr)
+						helper::move_to_target(new_target, unit);
+						helper::unit_order_move_to_target_unit(unit, new_target);
+						if (old_target)
 						{
-							helper::update_target_something(unit, oldTarget, OrderId::HealMove);
-						}
-						else
-						{
-							helper::function_4748E0(unit, oldPos.x, oldPos.y, OrderId::HealMove);
+							helper::update_target_something(unit, old_target, OrderId::HealMove);
+						} else {
+							helper::function_4748E0(unit, old_pos.x, old_pos.y, OrderId::HealMove);
 						}
 					}
 				}
@@ -95,60 +91,51 @@ namespace hooks
 	}
 
 	// Idle/AI order probably
-	void orders_Medic(Unit* unit)
+	void orders_medic(Unit* unit)
 	{
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueReviveStarted]) {
+		if (unit_ext->values[ValueReviveStarted] || unit->is_frozen()) {
 			return;
 		}
 
-		bool bStopThere = false;
-		if (unit->unit_ai != nullptr && helper::ai_cast_spell_behavior(unit, NULL) != 0)
-		{
-			bStopThere = true;
-		}
-		if (!bStopThere)
+		if (!unit->unit_ai && !helper::ai_cast_spell_behavior(unit, 0))
 		{
 			Unit* target = helper::acquire_medic_heal_target(unit);
-			if (target != nullptr)
+			if (target)
 			{
 				unit->user_action_flags |= 1;
 				if (unit->main_order_id != OrderId::Die)
 				{
-					bool bEndLoop = unit->order_queue_tail == nullptr;
-					while (!bEndLoop)
+					bool stupid_loop = !unit->order_queue_tail;
+					while (!stupid_loop)
 					{
 
 						if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
 							&& unit->order_queue_tail->order_id != OrderId::MedicHeal1)
 						{
-							bEndLoop = true;
-						}
-						else
-						{
+							stupid_loop = true;
+						} else {
 							helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
-							bEndLoop = (unit->order_queue_tail == nullptr);
+							stupid_loop = (!unit->order_queue_tail);
 						}
 					}
-					unit->perform_another_order(OrderId::MedicHeal1, 0, 0, nullptr, UnitId::None);
+					unit->perform_another_order(OrderId::MedicHeal1, 0, 0, 0, UnitId::None);
 				}
-				// 00463991
+
 				prepare_for_next_order(unit);
 				unit->order_target.unit = target;
 				unit->order_target.pt.x = target->sprite->position.x;
 				unit->order_target.pt.y = target->sprite->position.y;
 				helper::move_to_target(target, unit);
-			}
-			else
-			{ // 004639BD
-				if (unit->unit_ai != nullptr)
+			} else {
+				if (unit->unit_ai)
 				{
 					if (*(u8*)((u32)unit->unit_ai + 8) != 1)
 					{
 						unit->order_computer(OrderId::ComputerAI);
 					}
 					else if (unit->sprite->position.x != *(u16*)((u32)unit->unit_ai + 0x12)
-						|| unit->sprite->position.y != *(u16*)((u32)unit->unit_ai + 0x14))
+					||		 unit->sprite->position.y != *(u16*)((u32)unit->unit_ai + 0x14))
 					{
 						unit->order_to(OrderId::ComputerReturn, *(u16*)((u32)unit->unit_ai + 0x12), *(u16*)((u32)unit->unit_ai + 0x14));
 					}
@@ -157,11 +144,13 @@ namespace hooks
 		}
 	}
 
-	// void orders_MedicHoldPosition(Unit* unit)
-	// in base_orders/stopholdpos_orders.cpp
-
-	u32 doMedicHeal_Func(Unit* cleric, Unit* target) // 00463C40
+	u32 do_medic_heal(Unit* cleric, Unit* target) // 00463C40
 	{
+		UnitExt* unit_ext = get_unit_ext(cleric);
+		if (unit_ext->values[ValueReviveStarted] || cleric->is_frozen()) {
+			return 0;
+		}
+
 		if (cleric->can_use_tech(TechId::Healing, cleric->player))
 		{
 			if (target && helper::ai_order_heal(cleric, target))
@@ -176,7 +165,9 @@ namespace hooks
 					helper::unit_order_move_to_target_unit(cleric, acquired);
 					if (!cleric->is_target_within_min_range(acquired, 30))
 					{
-						helper::move_to_target(acquired, cleric);
+						if (!(cleric->status & UnitStatus::AttackMove)) {
+							helper::move_to_target(acquired, cleric);
+						}
 						return 3;
 					}
 					scbw::decloak_proc(cleric);
@@ -188,106 +179,85 @@ namespace hooks
 		return 0;
 	}
 
-	void orders_MedicHeal1(Unit* unit)
+	void orders_medic_heal1(Unit* unit)
 	{
 		Unit* target = unit->order_target.unit;
-		u32 doMedicHeal_result = helper::do_medic_heal(unit, target);
-		if (doMedicHeal_result == 0)
+		u32 can_do_medic_heal = do_medic_heal(unit, target);
+		if (!can_do_medic_heal)
 		{
 			helper::set_resource_target(unit);
-			if (unit->order_queue_head != nullptr)
+			if (unit->order_queue_head)
 			{
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
-			}
-			else if (unit->unit_ai != nullptr)
-			{
+			} else if (unit->unit_ai) {
 				unit->order_computer(OrderId::ComputerAI);
-			}
-			else
-			{
+			} else {
 				unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 			}
-		}
-		else // 004641D3
-		{
+		} else {
 			if (unit->main_order_state == 0)
 			{
-				if (target != nullptr
-					&& helper::move_towards(unit, target) != 0
-					&& unit->get_movable_state() != 2) // unit not unmovable
+				if (target && helper::move_towards(unit, target) && unit->get_movable_state() != MovableState::UnmovableAtDestination)
 				{
 					if (unit->is_target_within_min_range(target, 30))
 					{
 						helper::set_resource_target(unit);
 						unit->main_order_state = 1;
 					}
-				}
-				else // 00464216
-				{
+				} else {
 					unit->order_to_idle();
 				}
-			}
-			else // 0046421E
-			{
-				if (doMedicHeal_result == 1)
+			} else {
+				if (can_do_medic_heal == 1)
 				{
 					if (!(unit->order_signal & 1))
 					{
 						Image* current_image = unit->sprite->images.head;
-						while (current_image != nullptr)
+						while (current_image)
 						{
 							current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 							current_image = current_image->link.next;
 						}
-						if (unit->order_queue_head == nullptr
-							|| unit->order_queue_head->order_id != OrderId::MedicHeal2)
+						if (!unit->order_queue_head || unit->order_queue_head->order_id != OrderId::MedicHeal2)
 						{
 							helper::order_immediate(unit, OrderId::MedicHeal2);
 						}
 					}
 
-					// 0046425B
 					target = unit->order_target.unit;
-					if (target != nullptr
-						&& (target->position.x != unit->next_target_waypoint.x || target->position.y != unit->next_target_waypoint.y))
+					if (target && (target->position.x != unit->next_target_waypoint.x || target->position.y != unit->next_target_waypoint.y))
 					{
 						unit->next_target_waypoint.x = target->position.x;
 						unit->next_target_waypoint.y = target->position.y;
 					}
-				}
-				else // 00464283
-				{
+				} else {
 					unit->main_order_state = 0;
 				}
 			}
 		}
 	}
 
-	bool AI_AcquireHealTarget(Unit* medic, Unit* target)
+	bool ai_acquire_heal_target(Unit* cleric, Unit* target)
 	{
-		UnitExt* unit_ext = get_unit_ext(medic);
-		if (unit_ext->values[ValueReviveStarted]) {
+		UnitExt* unit_ext = get_unit_ext(cleric);
+		if (unit_ext->values[ValueReviveStarted] || cleric->is_frozen()) {
 			return 0;
 		}
 
-		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination)
+		if (!target || target == cleric || cleric->status & UnitStatus::IsHallucination)
 		{
 			return 0;
 		}
-		UnitExt* targetExt = get_unit_ext(target);
-		s32 type = target->id;
-		s32 abilityFlags = units_dat::base_property[type];
-		s32 enemyCheck;
-		bool result;
-		if (abilityFlags & UnitProperty::Building
-			|| target->status & UnitStatus::InAir
-			|| !scbw::is_allied_to(medic->player, target->player)
-			|| target->player >= 8
-			|| medic->player >= 8
-			|| target->hitpoints >= units_dat::max_hitpoints[type]
-			|| target->is_frozen()
-			|| targetExt->values[TimerReviveFlagClearMax])
+		UnitExt* target_ext = get_unit_ext(target);
+		if (units_dat::base_property[target->id] & UnitProperty::Building
+		||  target->status & UnitStatus::InAir
+		|| !scbw::is_allied_to(cleric->player, target->player)
+		||  target->player >= PlayerLimit
+		||  cleric->player >= PlayerLimit
+		||  target->hitpoints >= units_dat::max_hitpoints[target->id]
+		||  target->is_frozen()
+		||  target_ext->values[TimerReviveFlagClearMax])
 		{
 			return 0;
 		}

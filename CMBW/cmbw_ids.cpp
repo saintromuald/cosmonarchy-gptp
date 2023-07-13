@@ -747,3 +747,12 @@ WeaponOffsets get_weapon_offsets(u32 weapon_id)
 	}
 	return offsets;
 }
+
+bool unit_id_spawns_larva(u32 unit_id)
+{
+	return unit_id == UnitId::ZergHachirosk
+		|| unit_id == UnitId::ZergCaphrolosk
+		|| unit_id == UnitId::ZergGathtelosk
+		|| unit_id == UnitId::ZergLarvoskCesiant
+		|| unit_id == UnitId::ZergOcsalCesiant;
+}

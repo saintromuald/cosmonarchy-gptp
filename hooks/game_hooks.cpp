@@ -1582,15 +1582,16 @@ namespace hooks {
 					const u32 max_radius = 3 * 32;
 
 					if (unit->id == UnitId::ProtossLegionnaire) {
-						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
+						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0)
+						{
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
 						}
 					} else if (unit->id == UnitId::ProtossCabalist) {
-						if (unit_ext->timers[TimerDecloak] < 2 && distance > min_radius && distance <= max_radius) {
+						if (distance > min_radius && distance <= max_radius && unit_ext->timers[TimerDecloak] < 2)
+						{
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
-							scbw::decloak_proc(unit);
 						}
 					}
 

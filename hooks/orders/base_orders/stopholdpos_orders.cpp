@@ -3,12 +3,12 @@
 
 namespace hooks
 {
-	void orders_medic_hold_position(Unit* unit) {
+	void orders_medic_hold_position(Unit* unit) { // 00464050
 		if (unit->main_order_state == 0) {
-			// Change move target destination to current position
 			helper::set_resource_target(unit);
-			if (unit->next_target_waypoint.x != unit->move_target.pt.x ||
-				unit->next_target_waypoint.y != unit->move_target.pt.y) {
+			if (unit->next_target_waypoint.x != unit->move_target.pt.x
+			||  unit->next_target_waypoint.y != unit->move_target.pt.y)
+			{
 				unit->next_target_waypoint.x = unit->move_target.pt.x;
 				unit->next_target_waypoint.y = unit->move_target.pt.y;
 			}
@@ -20,27 +20,22 @@ namespace hooks
 			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 		}
 
-		// Try healing current target, return a value depending
-		// on what happened
-		u32 switch_value = helper::do_medic_heal(unit, unit->order_target.unit);
-		if (switch_value == 3) {
-			unit->order_target.unit = nullptr;
+		u32 medic_heal_state = helper::do_medic_heal(unit, unit->order_target.unit);
+		if (medic_heal_state == 3) {
+			unit->order_target.unit = 0;
 		}
 
-		if (switch_value == 0 || switch_value == 2 || switch_value == 3) {
+		if (medic_heal_state == 0 || medic_heal_state == 2 || medic_heal_state == 3) {
 			unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 		}
 
-		// 640D9, continued into for values 0,2,3, and jumped into for values
-		// above 3, thus only switchValue of 1 don't go through it
-		if (switch_value != 1) {
+		if (medic_heal_state != 1) {
 			// If timer is 0, seek a target in distance
 			if (unit->main_order_timer == 0) {
-				unit->main_order_timer = 15;
 				unit->order_target.unit = helper::acquire_medic_heal_target(unit);
 				if (unit->order_target.unit) {
-					unit->order_target.pt.x = unit->order_target.unit->sprite->position.x;
-					unit->order_target.pt.y = unit->order_target.unit->sprite->position.y;
+					unit->order_target.pt.x = unit->order_target.unit->position.x;
+					unit->order_target.pt.y = unit->order_target.unit->position.y;
 				}
 			}
 		} else {
@@ -56,10 +51,11 @@ namespace hooks
 				}
 			}
 
-			if (unit->order_target.unit->sprite->position.x != unit->next_target_waypoint.x ||
-				unit->order_target.unit->sprite->position.y != unit->next_target_waypoint.y ) {
-				unit->next_target_waypoint.x = (unit->order_target.unit)->sprite->position.x;
-				unit->next_target_waypoint.y = (unit->order_target.unit)->sprite->position.y;
+			if (unit->order_target.unit->position.x != unit->next_target_waypoint.x
+			||	unit->order_target.unit->position.y != unit->next_target_waypoint.y )
+			{
+				unit->next_target_waypoint.x = (unit->order_target.unit)->position.x;
+				unit->next_target_waypoint.y = (unit->order_target.unit)->position.y;
 			}
 		}
 	}
@@ -82,7 +78,8 @@ namespace hooks
 				while (out_hangar_child->order_queue_tail && !not_removable_order) {
 
 					if (!orders_dat::can_be_interrupted[out_hangar_child->order_queue_tail->order_id]
-					&&	 out_hangar_child->order_queue_tail->order_id != OrderId::SelfDestructing) {
+					&&	 out_hangar_child->order_queue_tail->order_id != OrderId::SelfDestructing)
+					{
 						not_removable_order = true;
 					} else {
 						helper::remove_order_from_unit_queue(out_hangar_child->order_queue_tail, out_hangar_child);
