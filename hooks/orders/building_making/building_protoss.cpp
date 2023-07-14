@@ -4,7 +4,7 @@
 #include <globals.h>
 
 namespace hooks {
-	void orders_probe_build(Unit* unit) { // 004E4D00
+	void orders_scribe_build(Unit* unit) { // 004E4D00
 		if (unit->unit_ai) {
 			unit->status |= UnitStatus::IsGathering;
 		}

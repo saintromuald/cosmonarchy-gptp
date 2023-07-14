@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_ProbeBuildWrapper()
+	void __declspec(naked) orders_scribe_build_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -11,7 +11,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_probe_build(unit);
+		hooks::orders_scribe_build(unit);
 		__asm
 		{
 			POPAD
@@ -19,7 +19,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_BuildSelf2Wrapper()
+	void __declspec(naked) orders_build_self_2_wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -44,7 +44,7 @@ namespace hooks
 {
 	void inject_building_protoss_hooks()
 	{
-		jump_patch(orders_ProbeBuildWrapper,	0x004E4D00, 1);
-		jump_patch(orders_BuildSelf2Wrapper,	0x004E4F40, 0);
+		jump_patch(orders_scribe_build_wrapper,	0x004E4D00, 1);
+		jump_patch(orders_build_self_2_wrapper,	0x004E4F40, 0);
 	}
 }

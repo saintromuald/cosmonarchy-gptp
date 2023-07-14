@@ -362,31 +362,53 @@ namespace hooks
 	}
 
 	// Hooked to add support for custom races. -Pr0nogo
-	void play_building_placement_sound(Unit* active_unit) // 0048F630
+	void play_building_placement_sound(Unit* unit) // 0048F630
 	{
-		Unit* active_unit_var = active_unit;
-		if (!(*g_is_in_replay) && active_unit->player == *g_local_nation_id)
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
 		{
-			GroupFlag group_flags = units_dat::group_flags[active_unit->id];
-			u8 race;
-			if (group_flags.is_zerg)
-			{
-				race = 0;
-			}
-			else if (group_flags.is_protoss)
-			{
-				race = 2;
-			}
-			else
-			{
-				race = (group_flags.is_terran) != 0 ? 1 : 4;
-			}
+			u8 race = unit->get_race();
 			u32 sound_id = race + 141;
-			if (helper::play_sound_from_unit(sound_id, active_unit_var, 1, 99))
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
 			{
-				helper::do_unit_event_notification(active_unit_var, 17,
-					sfx_dat::portrait_duration[sound_id] + 1000 * (*(u32*)&sfx_dat::sound_data[sound_id].duration_ms / 1000),
-					1, sound_id);
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
+		}
+	}
+
+	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
+	void set_worker_error(Unit* unit, u32 error_string) // 0048F7B0
+	{
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
+		{
+			u32 race = unit->get_race();
+			u32 sound_id = race + 159;
+			if (race == RaceId::Protoss) {
+				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+			}
+
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
+			{
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
+
+			if (error_string)
+			{
+				char* string = 0;
+				if ((u16*)(error_string - 1) < *g_stat_txt_buffer)
+				{
+					string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[error_string];
+					if (!string)
+					{
+						return;
+					}
+				} else {
+					string = "";
+				}
+
+				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+				{
+					helper::set_unit_stat_txt_error_message(string);
+				}
 			}
 		}
 	}
@@ -394,26 +416,23 @@ namespace hooks
 	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
 	void play_worker_error_sound(Unit* unit, u32 error_text_index) // 0048F6C0
 	{
-		if (!*g_is_in_replay)
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
 		{
-			if (unit->player == *g_local_nation_id)
+			u32 race = unit->get_race();
+			u32 sound_id = race + 162;
+			if (race == RaceId::Protoss) {
+				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+			}
+
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
 			{
-				u32 race = unit->get_race();
-				u32 sound_id = race + 162;
-				if (race == RaceId::Protoss) {
-					sound_id = SoundId::ProtossAdvisorErrorPlacement;
-				}
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
 
-				if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
-				{
-					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
-				}
-
-				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
-				{
-					char* string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[856];
-					helper::set_unit_stat_txt_error_message(string);
-				}
+			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+			{
+				char* string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[856];
+				helper::set_unit_stat_txt_error_message(string);
 			}
 		}
 	}
