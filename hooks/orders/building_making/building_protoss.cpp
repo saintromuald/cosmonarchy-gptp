@@ -17,7 +17,7 @@ namespace hooks {
 			} break;
 			case 1: {
 				u32 distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
-				u32 distance_wanted = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer ? 88 : 70;
+				u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 				if (distance / 256 > distance_wanted) {
 					if (unit->get_movable_state() != MovableState::NotReachedDestination) {
@@ -31,7 +31,7 @@ namespace hooks {
 			case 2: {
 				if (!(unit->movement_flags & MovementFlags::Accelerating)) {
 					bool is_building_aquifer = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer;
-					u32 distance_wanted = is_building_aquifer ? 88 : 70;
+					u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 					if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted)) {
 						if (unit->get_movable_state() != MovableState::NotReachedDestination) {

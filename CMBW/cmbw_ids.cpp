@@ -756,3 +756,25 @@ bool unit_id_spawns_larva(u32 unit_id)
 		|| unit_id == UnitId::ZergLarvoskCesiant
 		|| unit_id == UnitId::ZergOcsalCesiant;
 }
+
+u32 get_scribe_warp_distance(u32 unit_id) {
+	switch (unit_id)
+	{
+		case UnitId::ProtossAquifer:
+		case UnitId::ProtossArdentAuthority:
+		{
+			return 88;
+		}
+		case UnitId::ProtossGrandLibrary:
+		case UnitId::ProtossProstrationStage:
+		case UnitId::ProtossSyntheticSynod:
+		case UnitId::ProtossArgosy:
+		{
+			return 99;
+		}
+		default:
+		{
+			return 70;
+		}
+	}
+}

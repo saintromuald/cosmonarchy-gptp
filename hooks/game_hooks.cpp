@@ -1705,30 +1705,22 @@ namespace hooks {
 			case UnitId::InfestedKerriganExt:
 			{
 				// Matraleth - Ensnaring Brood
-				Point16 pos = unit->position;
-				s32 radius = 4 * 32;
-				// TODO: unit search
-				scbw::UnitFinder(
-					pos.x - radius,
-					pos.y - radius,
-					pos.x + radius,
-					pos.y + radius
-				).for_each([&](Unit* target) {
-					if (!(scbw::is_allied_to(target->player, unit->player))) {
-						return;
-					}
-					if  (units_dat::base_property[target->id] & UnitProperty::Building
-					|| !(target->status & UnitStatus::Completed)) {
-						return;
+				EntryArray unit_array = {};
+				unit_search_radial(&unit_array, unit->position, 4 * 32);
+				unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
+
+				for (u32 i = 0; i < unit_array.count; ++i) {
+					Unit* target = unit_array.units[i];
+					if (scbw::unit_is_pacifist(target)) {
+						continue;
 					}
 
-					// Overlays
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerEnsnaringBrood] = 3;
 					if (!target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
 						scbw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
 					}
-					});
+				}
 			} break;
 			case UnitId::ProtossClarion:
 			{

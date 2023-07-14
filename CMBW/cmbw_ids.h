@@ -62,3 +62,4 @@ bool weapon_id_procs_onhits(u32 weapon_id);
 WeaponOffsets get_weapon_offsets(u32 weapon_id);
 
 bool unit_id_spawns_larva(u32 unit_id);
+u32 get_scribe_warp_distance(u32 unit_id);
