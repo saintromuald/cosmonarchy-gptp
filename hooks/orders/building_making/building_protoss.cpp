@@ -148,6 +148,9 @@ namespace hooks {
 						u32 sound_id = SoundId::ProtossAdvisorUpdateStructure;
 						if (helper::play_sound_from_unit(sound_id, building, 1, 99)) {
 							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+						} else {
+							helper::minimap_ping(building->position.x, building->position.y, 17);
+							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[0] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, 0);
 						}
 					}
 				}
