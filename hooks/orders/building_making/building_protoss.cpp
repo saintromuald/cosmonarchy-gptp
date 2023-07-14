@@ -2,7 +2,7 @@
 #include "building_modifier.h"
 #include <SCBW/api.h>
 #include <globals.h>
-
+#include <hooks/limits/sfx_extender.h>
 namespace hooks {
 	void orders_scribe_build(Unit* unit) { // 004E4D00
 		if (unit->unit_ai) {
@@ -143,6 +143,13 @@ namespace hooks {
 					helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
 					helper::switch_to_warp_texture(building->sprite->main_graphic);
 					++building->main_order_state;
+
+					if (!(*g_is_in_replay) && building->player == *g_local_nation_id) {
+						u32 sound_id = SoundId::ProtossAdvisorUpdateStructure;
+						if (helper::play_sound_from_unit(sound_id, building, 1, 99)) {
+							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+						}
+					}
 				}
 			} break;
 			case 2: {

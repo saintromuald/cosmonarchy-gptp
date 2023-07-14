@@ -361,6 +361,7 @@ namespace hooks
 		return result;
 	}
 
+	// Not enabled.
 	// Hooked to add support for custom races. -Pr0nogo
 	void play_building_placement_sound(Unit* unit) // 0048F630
 	{
