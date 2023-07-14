@@ -3590,9 +3590,9 @@ namespace hooks {
 		}
 	}
 
-	u32 hash_string_to_u32(char* string) {
+	constexpr u32 hash_string_to_u32(const char* string) {
 		u32 result = 2166136261;
-		for (char* c = string; *c; ++c) {
+		for (const char* c = string; *c; ++c) {
 			result ^= *c;
 			result *= 16777619;
 		}
