@@ -1644,10 +1644,7 @@ namespace hooks {
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];
 				if (!timer) {
-					unit_ext->timers[TimerNaniteField] = 24;
-					if (unit->id == UnitId::TerranShamanVisionaryMode) {
-						unit_ext->timers[TimerNaniteField] = 12;
-					}
+					unit_ext->timers[TimerNaniteField] = unit->id == UnitId::TerranShamanVisionaryMode ? 12 : 24;
 					scbw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id));
 
 					EntryArray unit_array = {};

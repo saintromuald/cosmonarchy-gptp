@@ -32,7 +32,7 @@ namespace UnitId
 		TerranSalamander									= 22,		// Magellan
 		TerranGorgon										= 23,		// Edmund Duke Tank
 		TerranPhobos										= 24,		// Edmund Duke Tank Turret
-		TerranMadrigalImperiosoMode										= 27,		// Mengsk Battlecruiser
+		TerranMadrigalImperiosoMode							= 27,		// Mengsk Battlecruiser
 		TerranCentaur										= 28,		// Hyperion
 		TerranPazuzu										= 49,		// Matriarch Queen
 		TerranPenumbra										= 53,		// Hunter Killer
