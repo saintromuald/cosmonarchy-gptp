@@ -51,7 +51,7 @@ namespace hooks
 	}
 
 	void secondary_order_spawning_larva(Unit* unit) {
-		if (unit->status & UnitStatus::IsHallucination) {
+		if (unit->status & UnitStatus::IsHallucination || !unit_id_spawns_larva(unit->id)) {
 			return;
 		}
 		if (unit->order_queue_timer == 0 && unit->player != 11) {
@@ -92,14 +92,9 @@ namespace hooks
 	}
 
 	void secondary_order_spread_creep_spawning_larva(Unit* unit) {
-		if (unit->id == UnitId::ZergHachirosk
-		||  unit->id == UnitId::ZergCaphrolosk
-		||  unit->id == UnitId::ZergGathtelosk
-		||  unit->id == UnitId::ZergLarvoskCesiant
-		||  unit->id == UnitId::ZergOcsalCesiant)
-		{
-			secondary_order_spawning_larva(unit);
-		}
+		// No longer checks unit ids here because we check in the function itself,
+		// in order to prevent Cagrants regressed from Larvosks from spawning Larva. -Pr0nogo
+		secondary_order_spawning_larva(unit);
 		if (unit->building.creep_timer != 0) {
 			if (unit->building.creep_timer >= 2) {
 				unit->building.creep_timer -= 2;

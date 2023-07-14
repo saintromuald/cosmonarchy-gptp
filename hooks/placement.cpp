@@ -240,9 +240,7 @@ namespace hooks
 			{
 				if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant)
 				{
-					b32 can_draw = helper::can_draw_placement_rect_maybe(id, geyser);
-					id = *g_place_building_unit_id; // lol looping
-					if (can_draw)
+					if (helper::can_draw_placement_rect_maybe(id, geyser))
 					{
 						*can_draw_placement_preview = 1;
 					}
@@ -267,9 +265,7 @@ namespace hooks
 					u16 id = *g_place_building_unit_id;
 					do {
 						if (parent->id == UnitId::ProtossGateway) {
-							b32 can_draw = helper::can_draw_placement_rect_maybe(id, parent);
-							id = *g_place_building_unit_id; // lol looping
-							if (can_draw)
+							if (helper::can_draw_placement_rect_maybe(id, parent))
 							{
 								*can_draw_placement_preview = 1;
 							}
@@ -291,9 +287,7 @@ namespace hooks
 				*can_draw_placement_preview = 0;
 			}
 
-			/*if (*g_place_building_unit_id == UnitId::ProtossPylon) {
-				place_custom_building_proc();
-			} else*/if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+			if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id) && *g_place_building_unit_id != UnitId::ZergEzigrisant) {
 				if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 				{
 					helper::place_building_normal_proc();
@@ -325,9 +319,7 @@ namespace hooks
 		{
 			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
 			*g_is_placing_addon = 1;
-		}/* else if (*g_place_building_unit_id == UnitId::ProtossPylon) {
-			place_custom_building_proc();
-		}*/ else if (unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
+		} else if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
 			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
 			{
 				helper::place_building_normal_proc();
@@ -336,76 +328,112 @@ namespace hooks
 			helper::place_building_refinery_proc();
 		}
 
-		const char* string;
+		char* string = "";
 		if (*g_network_table > 63)
 		{
-			string = (char*)g_network_table + g_network_table[64];
-		}
-		else
-		{
-			string = "";
+			string = (char*)g_network_table_DF->get_string(64);
 		}
 
-		char result;
 		helper::send_message_something(message_thing, string);
 		helper::set_ingame_input_procs();
 		Unit* active_unit = *g_active_portrait_unit;
-		u32 active_id = active_unit->id;
-		if (!active_unit) // wtf?
+		if (!active_unit)
 		{
 			*g_placing_player = -1;
 			*g_minimap_cursor = 0;
-			return helper::refresh_screen(active_id);
+			return helper::refresh_screen(UnitId::None); // Guessed
 		}
 
-		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi
-		||  unit_id_is_psi_provider(unit_id))
+		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id))
 		{
 			helper::create_pylon_aura();
 			active_unit = *g_active_portrait_unit;
 		}
 
+		char result = helper::refresh_screen(active_unit->id);
+		*g_minimap_cursor = 0;
 		if (active_unit)
 		{
 			*g_placing_player = active_unit->player;
-			result = helper::refresh_screen(active_id);
-			*g_minimap_cursor = 0;
-		}
-		else
-		{
+		} else {
 			*g_placing_player = -1;
-			result = helper::refresh_screen(active_id);
-			*g_minimap_cursor = 0;
 		}
 		return result;
 	}
 
+	// Not enabled.
 	// Hooked to add support for custom races. -Pr0nogo
-	void play_building_placement_sound(Unit* active_unit) // 0048F630
+	void play_building_placement_sound(Unit* unit) // 0048F630
 	{
-		Unit* active_unit_var = active_unit;
-		if (!(*g_is_in_replay) && active_unit->player == *g_local_nation_id)
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
 		{
-			GroupFlag group_flags = units_dat::group_flags[active_unit->id];
-			u8 race;
-			if (group_flags.is_zerg)
-			{
-				race = 0;
-			}
-			else if (group_flags.is_protoss)
-			{
-				race = 2;
-			}
-			else
-			{
-				race = (group_flags.is_terran) != 0 ? 1 : 4;
-			}
+			u8 race = unit->get_race();
 			u32 sound_id = race + 141;
-			if (helper::play_sound_from_unit(sound_id, active_unit_var, 1, 99))
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
 			{
-				helper::do_unit_event_notification(active_unit_var, 17,
-					sfx_dat::portrait_duration[sound_id] + 1000 * (*(u32*)&sfx_dat::sound_data[sound_id].duration_ms / 1000),
-					1, sound_id);
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
+		}
+	}
+
+	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
+	void set_worker_error(Unit* unit, u32 error_string) // 0048F7B0
+	{
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
+		{
+			u32 race = unit->get_race();
+			u32 sound_id = race + 159;
+			if (race == RaceId::Protoss) {
+				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+			}
+
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
+			{
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
+
+			if (error_string)
+			{
+				char* string = 0;
+				if ((u16*)(error_string - 1) < *g_stat_txt_buffer)
+				{
+					string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[error_string];
+					if (!string)
+					{
+						return;
+					}
+				} else {
+					string = "";
+				}
+
+				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+				{
+					helper::set_unit_stat_txt_error_message(string);
+				}
+			}
+		}
+	}
+
+	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
+	void play_worker_error_sound(Unit* unit, u32 error_text_index) // 0048F6C0
+	{
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
+		{
+			u32 race = unit->get_race();
+			u32 sound_id = race + 162;
+			if (race == RaceId::Protoss) {
+				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+			}
+
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
+			{
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
+
+			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+			{
+				char* string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[856];
+				helper::set_unit_stat_txt_error_message(string);
 			}
 		}
 	}

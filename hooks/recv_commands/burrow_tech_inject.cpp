@@ -35,20 +35,16 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unburrow_proc_wrapper()
+	void __declspec(naked) unburrow_wrapper()
 	{
 		static Unit* unit;
 		__asm {
-			PUSH EBP
-			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::unburrow_proc(unit);
+		hooks::unburrow(unit);
 		__asm {
 			POPAD
-			MOV ESP, EBP
-			POP EBP
 			RETN
 		}
 	}
@@ -60,6 +56,6 @@ namespace hooks
 	{
 	//	jump_patch(cmdrecv_unburrow_wrapper,	0x004C1AC0, 3);
 	//	jump_patch(cmdrecv_burrow_wrapper,		0x004C1FA0, 6);
-	//	jump_patch(unburrow_proc_wrapper,		0x004E97C0, 1);
+		jump_patch(unburrow_wrapper,			0x004E97C0, 1);
 	}
 }

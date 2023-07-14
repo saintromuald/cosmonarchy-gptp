@@ -495,6 +495,41 @@ namespace hooks {
 			}
 			*/
 
+			// Show auras
+			if (config.show_aura_circles) {
+				switch (unit->id) {
+					case UnitId::TerranShamanSupportMode:
+					case UnitId::TerranShamanVisionaryMode:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::TerranAncile:
+					{
+						graphics::draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossClarion:
+					{
+						graphics::draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossCrucible:
+					{
+						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ZergSovroleth:
+					{
+						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ZergMatraleth:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ZergVilgoleth:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+				}
+			}
+
 			// Show connected Nyduses
 			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
 				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
@@ -1547,15 +1582,16 @@ namespace hooks {
 					const u32 max_radius = 3 * 32;
 
 					if (unit->id == UnitId::ProtossLegionnaire) {
-						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
+						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0)
+						{
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
 						}
 					} else if (unit->id == UnitId::ProtossCabalist) {
-						if (unit_ext->timers[TimerDecloak] < 2 && distance > min_radius && distance <= max_radius) {
+						if (distance > min_radius && distance <= max_radius && unit_ext->timers[TimerDecloak] < 2)
+						{
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
-							scbw::decloak_proc(unit);
 						}
 					}
 
@@ -3603,7 +3639,7 @@ namespace hooks {
 		*version = {};
 		version->size = sizeof(*version);
 		version->game_id = 'CMBW';
-		version->game_title = "Cosmonarchy: Broodwar";
+		version->game_title = "Cosmonarchy Brood War";
 
 		version->game_description = "internal version unknown";
 		version->version_id = hash_string_to_u32(__TIMESTAMP__);

@@ -283,7 +283,7 @@ namespace IconId
 		/*0115*/	Hallucination,
 		/*0116*/	Stasis_Field,
 		/*0117*/	Blank,
-		/*0118*/	Recall,
+		/*0118*/	DimensionalRecall,
 		/*0119*/	SingularityCharge,
 		/*011A*/	Liftoff,
 		/*011B*/	Land,

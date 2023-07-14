@@ -268,7 +268,7 @@ namespace helper {
 	void switch_to_warp_texture(Image* image);																// 004D8500
 	bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);		    								// 00488210
-	void set_unit_stat_txt_error_message(char* message);									                // 0048CCB0
+	const char* set_unit_stat_txt_error_message(char* message);									            // 0048CCB0
 	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords);					// 004E8280
@@ -479,7 +479,7 @@ namespace helper {
 	u32 get_unit_strength(Unit* a1, s32 a2, bool a3);																				// 00431800
 
 	//// make_nydus_exit
-	void play_worker_error_sound(Unit* unit, u32 errorTextIndex);																	// 0048F6C0
+	void play_worker_error_sound(Unit* unit, u32 error_text_index);																	// 0048F6C0
 
 	//// research_upgrade_orders
 	bool is_unit_upgrade_available(Unit* unit);																						// 004033D0
@@ -1319,7 +1319,7 @@ namespace helper {
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args);										// 004C7E20
 	void kill_powerup(Unit* unit);																			// 004F3C60
 
-	void send_message_something(u32 unused, const char* string);											// 004F31D0
+	void send_message_something(u32 unused, char* string);													// 004F31D0
 	u32 set_ingame_input_procs();																			// 00484CC0
 	void update_current_buttonset();																		// 004599A0
 	bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
@@ -1619,4 +1619,6 @@ namespace helper {
 
 	u32* get_cd_key_info(char** owner, u32* key);																								// 004D9BF0
 	u32 local_get_lang();																														// 0041F1D0
+
+	s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area);														// 0042A5C0
 }

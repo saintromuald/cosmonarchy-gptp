@@ -24,7 +24,8 @@ namespace hooks {
 
 		switch (building->main_order_state) {
 			case 0: {
-				// Remove statuses if the source Droleth had them before morphing
+				scbw::prepare_building_area(building->position, building_id);
+				// Remove statuses if the source worker had them before morphing
 				building->status &= ~UnitStatus::NoCollide;
 				building->status &= ~UnitStatus::IsGathering;
 				if (helper::is_valid_building_morph(building_id)) {
@@ -43,7 +44,6 @@ namespace hooks {
 					building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
 					++building->main_order_state;
 				}
-
 			} break;
 			case 2: {
 				if (building->remaining_build_time < units_dat::time_cost[building_id] >> 1) {
@@ -63,22 +63,19 @@ namespace hooks {
 					building->order_signal &= ~0x4;
 
 					if (helper::is_valid_building_morph(building_id)) {
-						// save hp before some functions modify them
 						s32 hp_after_morph = building->hitpoints;
 						u32 save_shields = building->shields;
-						// update score
+
 						building->status |= UnitStatus::Completed;
 						helper::increment_unit_scores_ex(building, -1, 0);
-						// do the building change
+
 						building->status &= ~UnitStatus::Completed;
 						helper::replace_unit_with_id(building, building_id);
-						// newHp = newHpMax - oldHpMax + oldHp
-						hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
 
+						hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
 						if (hp_after_morph < 256) {
 							hp_after_morph = 256;
 						}
-
 						building->set_hitpoints(hp_after_morph);
 						building->remaining_build_time = 0;
 					} else if (building->create_origin == UnitId::ZergGosvileth) {
@@ -454,11 +451,7 @@ namespace hooks
 									helper::refresh_sprite_data(unit->sprite);
 									helper::order_immediate(unit, OrderId::ResetCollision1);
 								}
-								*g_control_under_mouse = 0;
-								*g_control_under_mouse_value = 0;
-								*g_force_button_refresh = 1;
-								g_portrait_redraw[0] = 1;
-								*g_status_screen_redraw = 1;
+								scbw::refresh_console();
 								helper::force_order_done(unit);
 							}
 						}
@@ -496,7 +489,7 @@ namespace hooks
 							u32 builder_id = unit->id;
 							unit->status &= 0xFFEFFFFF;
 							unit->sprite->elevation = units_dat::elevation[builder_id] + 1;
-							helper::order_targeting_nothing(0x96u, unit, 0);
+							helper::order_targeting_nothing(OrderId::ResetCollision1, unit, 0);
 							helper::order_targeting_nothing(units_dat::return_to_idle_order[unit->id], unit, 0);
 							if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
 								u32 status = unit->status | UnitStatus::CanNotReceiveOrders;

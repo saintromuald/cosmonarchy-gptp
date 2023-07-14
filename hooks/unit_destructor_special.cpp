@@ -100,7 +100,6 @@ void kill_hangar_units(Unit* unit) {
 void free_resource_container(Unit* resource) {
 	resource->building.resource.is_mining = 0;
 	Unit* worker = resource->building.resource.next_gatherer;
-	Unit* nextWorker;
 	while (worker) {
 		if (worker->worker.harvest_link.prev) { // untie the previous worker from current worker (tie it to next)
 			worker->worker.harvest_link.prev->worker.harvest_link.next = worker->worker.harvest_link.next;
@@ -110,11 +109,11 @@ void free_resource_container(Unit* resource) {
 		if (worker->worker.harvest_link.next) { // untie the next worker from current worker (tie it to previous)
 			worker->worker.harvest_link.next->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 		}
-		nextWorker = worker->worker.harvest_link.next;
+		Unit* next_worker = worker->worker.harvest_link.next;
 		worker->worker.harvest_target = 0;
 		worker->worker.harvest_link.prev = 0;
 		worker->worker.harvest_link.next = 0;
-		worker = nextWorker;
+		worker = next_worker;
 	}
 }
 
@@ -410,25 +409,23 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	u32 id = unit->id;
 	if (units_dat::base_property[id] & UnitProperty::Subunit)
 	{
-		Unit* first_dying_u = *g_first_dying_unit;
-		if (*g_first_dying_unit)
+		Unit* first_dying_unit = *g_first_dying_unit;
+		if (first_dying_unit)
 		{
-			if (*g_unknown_unit_ptr_related == *g_first_dying_unit)
+			if (*g_last_dying_unit == first_dying_unit)
 			{
-				*g_unknown_unit_ptr_related = unit;
+				*g_last_dying_unit = unit;
 			}
-			unit->link.prev = *g_first_dying_unit;
-			unit->link.next = first_dying_u->link.next;
-			Unit* next_dying_u = first_dying_u->link.next;
+			unit->link.prev = first_dying_unit;
+			unit->link.next = first_dying_unit->link.next;
+			Unit* next_dying_u = first_dying_unit->link.next;
 			if (next_dying_u)
 			{
 				next_dying_u->link.prev = unit;
 			}
-			first_dying_u->link.next = unit;
-		}
-		else
-		{
-			*g_unknown_unit_ptr_related = unit;
+			first_dying_unit->link.next = unit;
+		} else {
+			*g_last_dying_unit = unit;
 			*g_first_dying_unit = unit;
 		}
 
@@ -460,14 +457,12 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	{
 		return 0;
 	}
-	if (id != UnitId::TerranReservoir)
+	if (id != UnitId::TerranReservoir && id != UnitId::TerranWellbore)
 	{
 		if (id == UnitId::ZergExcisant)
 		{
 			helper::remove_creep_at_unit(sprite->position.x, sprite->position.y, id);
-		}
-		else if (id != UnitId::ProtossAquifer)
-		{
+		} else if (id != UnitId::ProtossAquifer) {
 			return 0;
 		}
 	}
@@ -492,7 +487,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	unit->status |= 1u;
 	helper::increment_unit_scores_ex(unit, 1, 1);
 
-	if (g_is_placing_building)
+	if (*g_is_placing_building)
 	{
 		helper::place_building_refinery_check(unit);
 	}
@@ -628,7 +623,7 @@ namespace hooks {
 		jump_patch(unit_destructor_special_cases_wrapper,	0x0049F4A0, 2);
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
 		jump_patch(iscript_create_sprite_wrapper,			0x004D7120, 1);
-	//	jump_patch(remove_subunit_or_gas_container_wrapper,	0x004A0080, 3);
+		jump_patch(remove_subunit_or_gas_container_wrapper,	0x004A0080, 3);
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 		jump_patch(clear_bullet_targets_patch_8AACC,		0x0048AACC, 2); // DF: Fix bug where dying Lakizilisks sometimes deal double damage

@@ -1145,7 +1145,7 @@ SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);
 SCBW_DATA(Thingy**,			g_last_free_thingy,				0x0065487C);
 
 // For remove_subunit_or_gas_container
-SCBW_DATA(Unit**,			g_unknown_unit_ptr_related,		0x004A00AA);
+SCBW_DATA(Unit**,			g_last_dying_unit,				0x0059CC98);
 
 // For unit_selection_click
 SCBW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);

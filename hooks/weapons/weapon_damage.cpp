@@ -1169,13 +1169,7 @@ namespace hooks
 					}
 
 					UnitExt* victim_ext = get_unit_ext(victim);
-					if (orders_dat::Unknown11[victim->main_order_id]
-					&&  victim->status & UnitStatus::Reacts
-					&&  helper::is_at_home(victim)
-					&&  helper::is_under_carapace_swarm(victim) != 255
-					&& !victim_ext->values[ValueDisruptionFieldOn]
-					&&  victim->id == UnitId::ProtossClarion && victim_ext->unit_vectors[UnitVectorPhaseLink].size() <= 1
-					&&	victim->id != UnitId::ProtossAnalogue)
+					if (scbw::unit_can_flee(victim))
 					{
 						Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
 						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);

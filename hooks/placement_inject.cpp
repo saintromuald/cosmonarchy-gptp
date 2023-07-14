@@ -268,17 +268,64 @@ namespace
 	}
 
 	void __declspec(naked) play_building_placement_sound_wrapper() { // 0048F630
-		Unit* active_unit;
+		static Unit* unit;
 		__asm {
-			MOV active_unit, EAX
+			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::play_building_placement_sound(active_unit);
+		hooks::play_building_placement_sound(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
+
+	void __declspec(naked) set_worker_error_wrapper() { // 0048F7B0
+		static Unit* unit;
+		static u32 error_string;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV error_string, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::set_worker_error(unit, error_string);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) play_worker_error_sound_wrapper() { // 0048F630
+		static Unit* unit;
+		static u32 error_text_index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV error_text_index, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::play_worker_error_sound(unit, error_text_index);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+	
 
 	// Patches \\
 
@@ -343,8 +390,10 @@ namespace hooks
 		jump_patch(place_building_refinery_proc_wrapper,					0x0048E430, 2);
 		jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
 		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
-	//	jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
-	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Causes landing crash lol
+		jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
+	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Fine, but unnecessary at the moment.
+		jump_patch(set_worker_error_wrapper,								0x0048F7B0, 1);
+		jump_patch(play_worker_error_sound_wrapper,							0x0048F6C0, 1);
 
 		// DF - Fix Treasury being unable to claim addons
 	//	jump_patch(TTBaseUnitType_patch_6E1A6,								0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)

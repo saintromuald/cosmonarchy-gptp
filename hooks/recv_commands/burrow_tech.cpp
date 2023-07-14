@@ -43,33 +43,35 @@ namespace hooks
 		}
 	}
 
-	void unburrow_proc(Unit* unit)
+	// Hooked to fix Lakizilisks entering an unburrow loop. -Pr0nogo
+	void unburrow(Unit* unit) // 004E97C0
 	{
-		if (unit->main_order_id == OrderId::Burrow
-		||  unit->main_order_id == OrderId::Burrowed
-		||  unit->id == UnitId::ZergLakizilisk)
+		if (unit->main_order_id == OrderId::Burrow || unit->main_order_id == OrderId::Burrowed
+		|| (unit->id == UnitId::ZergLakizilisk && unit->main_order_id != OrderId::Unburrow))
 		{
 			if (unit->id == UnitId::ZergLakizilisk)
 			{
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 			}
-			unit->user_action_flags |= 1;
-			if (unit->main_order_id != OrderId::Die)
+			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
+			if (unit->main_order_id)
 			{
-				bool stop_loop = false;
-				while (unit->order_queue_tail && !stop_loop)
+				while (1)
 				{
-					if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
-						&& unit->order_queue_tail->order_id != OrderId::Unburrow)
+					Order* last_order = unit->order_queue_tail;
+					if (!last_order)
 					{
-						stop_loop = true;
-					} else {
-						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
+						break;
 					}
+					if (!orders_dat::can_be_interrupted[last_order->order_id] && last_order->order_id != OrderId::Burrow)
+					{
+						break;
+					}
+					helper::remove_order_from_unit_queue(last_order, unit);
 				}
-				unit->perform_another_order(OrderId::Unburrow, 0, 0, 0, UnitId::None);
+				helper::perform_another_order(OrderId::Unburrow, 0, unit, UnitId::None, {}, 0);
 			}
-			prepare_for_next_order(unit);
+			helper::do_next_queued_order(unit);
 			helper::force_order_done(unit);
 		}
 	}

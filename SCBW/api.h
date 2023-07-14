@@ -762,4 +762,5 @@ namespace scbw
 	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
 	void regress(Unit* unit, u32 regression_id);
 	void unfreeze_channeling_unit(Unit* unit);
+	bool unit_can_flee(Unit* unit);
 }

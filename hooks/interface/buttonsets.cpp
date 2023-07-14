@@ -2415,7 +2415,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossAnthelion:
 								{
-									if (current_button->icon_id == IconId::Recall		// Anthelion - False Light
+									if (current_button->icon_id == IconId::DimensionalRecall		// Anthelion - False Light
 									||	current_button->icon_id == IconId::ArgusJewel)	// Anthelion - Gravity Well
 									{
 										current_button_state = Button_State::Enabled;
@@ -2682,7 +2682,7 @@ namespace hooks {
 						}
 
 						// Hide recall, since cancel is the same slot
-						if (unit->id == UnitId::ProtossDidact && current_button->action_var == TechId::Recall) {
+						if (unit->id == UnitId::ProtossDidact && current_button->action_var == TechId::DimensionalRecall) {
 							if (unit_ext->values[ValueDidactRecalling]) {
 								current_button_state = Button_State::Invisible;
 							} else {

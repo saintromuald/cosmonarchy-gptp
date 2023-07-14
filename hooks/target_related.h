@@ -26,6 +26,7 @@ namespace hooks
 	void pick_new_target_if_needed(Unit* unit);																			// 00477510
 	void change_direction_to_move_waypoint(Unit* unit);																	// 00495840
 	void orders_turret_guard(Unit* unit);																				// 004777F0
+	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y);												// 004762C0
 
 	void inject_target_related_hooks();
 }

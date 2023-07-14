@@ -6,7 +6,7 @@ namespace hooks
 {
 
 	// Originally known as sub_4942D0
-	// Function performed on each target of Recall
+	// Function performed on each target of DimensionalRecall
 	// by iterate_units_at_location_target_proc_recall_targets
 	// that was validated throug spells_recall_action_on_target_in_range
 	// Do the actual unit movement
@@ -35,7 +35,7 @@ namespace hooks
 				target->order_computer(units_dat::return_to_idle_order[target->id]);
 			}
 
-			// Originally created a Recall thingy over the unit
+			// Originally created a DimensionalRecall thingy over the unit
 
 			// Disconnect a nuke from a nuker
 			if (scbw::unit_can_nuke(target)) {
@@ -48,8 +48,8 @@ namespace hooks
 		}
 	}
 
-	// Function performed on each target of Recall by iterate_units_at_location_target_proc_recall_targets
-	// to choose if the unit can have the Recall effect cast on it or no, and if yes, calling another function to do the Recall effect.
+	// Function performed on each target of DimensionalRecall by iterate_units_at_location_target_proc_recall_targets
+	// to choose if the unit can have the DimensionalRecall effect cast on it or no, and if yes, calling another function to do the DimensionalRecall effect.
 	void spells_recall_action_on_target_in_range(Unit* target, Unit* caster) {
 		if (target->sprite->flags & SpriteFlags::Hidden || !scbw::is_allied_to(target->player, caster->player) || target == caster) {
 			return;
@@ -103,7 +103,7 @@ namespace hooks
 	void orders_recall(Unit* unit) {
 		scbw::decloak_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
-		// Unit has started casting Recall (== went through the other condition)
+		// Unit has started casting DimensionalRecall (== went through the other condition)
 		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
 			if (unit->main_order_timer == 0) {
@@ -157,7 +157,7 @@ namespace hooks
 				tick_recall_channel_anim(unit);
 			}
 		} else {
-			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::Recall] * 256) {
+			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::DimensionalRecall] * 256) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
@@ -166,7 +166,7 @@ namespace hooks
 				unit->order_to_idle();
 			} else {
 				if (!scbw::is_cheat_enabled(CheatFlags::TheGathering)) {
-					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::Recall] * 256);
+					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::DimensionalRecall] * 256);
 				}
 
 				if (unit->order_target.unit) {

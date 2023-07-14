@@ -2320,14 +2320,17 @@ namespace helper {
 		return return_value;
 	}
 
-	void set_unit_stat_txt_error_message(char* message) {
+	const char* set_unit_stat_txt_error_message(char* message) {
+		static const char* result;
 		const u32 func_address = 0x0048CCB0;
 		__asm {
 			PUSHAD
 			MOV EAX, message
 			CALL func_address
+			MOV result, EAX
 			POPAD
 		}
+		return result;
 	}
 
 	void move_unit_duplicate(Unit* unit, s32 x, s32 y) {
@@ -3773,13 +3776,13 @@ namespace helper {
 		return result;
 	}
 
-	void play_worker_error_sound(Unit* unit, u32 errorTextIndex) {
-		const u32 Func_PlayWorkerErrorSound = 0x0048F6C0;
+	void play_worker_error_sound(Unit* unit, u32 error_text_index) {
+		const u32 func_address = 0x0048F6C0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			PUSH errorTextIndex
-			CALL Func_PlayWorkerErrorSound
+			PUSH error_text_index
+			CALL func_address
 			POPAD
 		}
 	}
@@ -10859,7 +10862,7 @@ namespace helper {
 		}
 	}
 
-	void send_message_something(u32 unused, const char* string) {
+	void send_message_something(u32 unused, char* string) {
 		const u32 func_address = 0x004F31D0;
 		__asm {
 			PUSHAD
@@ -13806,6 +13809,21 @@ namespace helper {
 		const u32 func_address = 0x0041F1D0;
 		__asm {
 			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area) {
+		static s32 result;
+		const u32 func_address = 0x0042A5C0;
+		__asm {
+			PUSHAD
+			PUSH acceptable_area
+			PUSH new_pos
+			PUSH old_pos
 			CALL func_address
 			MOV result, EAX
 			POPAD

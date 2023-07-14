@@ -58,7 +58,7 @@ namespace scbw {
 			unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 		}
 
-		// Create the Recall animation over the unit
+		// Create the DimensionalRecall animation over the unit
 		if (sprite_id) {
 			Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, target.x, target.y, 0);
 			if (recall_effect_sprite) {
@@ -742,7 +742,7 @@ namespace scbw {
 		Point16 actualPos = {};
 		Point16 prevPos = unit->sprite->position;
 
-		// Based on the code for Recall/Nydus Canal/Move Unit trigger
+		// Based on the code for DimensionalRecall/Nydus Canal/Move Unit trigger
 		set_unit_position(unit, x, y);
 
 		if (check_unit_collision_pos(unit, &targetPos, &actualPos)) {
@@ -2088,7 +2088,9 @@ namespace scbw {
 	}
 
 	bool unit_is_stunned(Unit* unit) {
-		return unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		return  unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer
+		||		unit_ext->timers[TimerStun];
 	}
 
 	void dump_sync_data() {
@@ -2428,6 +2430,10 @@ namespace scbw {
 
 			if (scbw::unit_is_trap(unit)) {
 				unit->remove();
+			}
+
+			if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
+				helper::order_return_to_idle(unit);
 			}
 		}
 	}
@@ -3085,5 +3091,38 @@ namespace scbw {
 				}
 			} break;
 		}
+	}
+
+	bool unit_can_flee(Unit* unit)
+	{
+		if (!orders_dat::Unknown11[unit->main_order_id]
+		|| !(unit->status & UnitStatus::Reacts)
+		||	!helper::is_at_home(unit)
+		||   helper::is_under_carapace_swarm(unit) == 255)
+		{
+			return false;
+		}
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		switch (unit->id) {
+			case UnitId::ProtossClarion:
+			{
+				if (unit_ext->unit_vectors[UnitVectorPhaseLink].size() <= 1) {
+					return false;
+				}
+			} break;
+			case UnitId::ProtossAnalogue:
+			{
+				return false;
+			} break;
+			case UnitId::ProtossLanifect:
+			{
+				if (unit_ext->values[ValueDisruptionFieldOn])
+				{
+					return false;
+				}
+			} break;
+		}
+		return true;
 	}
 }

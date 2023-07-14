@@ -50,9 +50,9 @@ namespace hooks
 
 		s16 order_string_index = default_order_string - 1;
 		char* final_string;
-		if ((u16) default_order_string) {
+		if (default_order_string) {
 			if (order_string_index < *g_stat_txt_tbl) {
-				final_string = (char*) g_stat_txt_tbl + g_stat_txt_tbl[order_string_index + 1];
+				final_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[order_string_index + 1];
 			} else {
 				final_string = "";
 			}
@@ -86,7 +86,7 @@ namespace hooks
 			case TechId::Ensnare:
 			case TechId::PsionicStorm:
 			case TechId::Hallucination: // New
-			case TechId::Recall:
+			case TechId::DimensionalRecall:
 			case TechId::StasisField:
 		//	case TechId::LanifectDisruptionField:
 			case TechId::MindTyrantMaelstrom:
@@ -370,10 +370,10 @@ namespace hooks
 		*g_order_id_unit = order_1;
 		*g_order_id_obstructed = order_2;
 		*g_order_id_ground = order_3;
-		const char* error = "";
+		char* error = "";
 		if (*g_network_table > 62)
 		{
-			error = (const char*)g_network_table + g_network_table[63];
+			error = (char*)g_network_table_DF->get_string(63);
 		}
 		helper::send_message_something(order_3, error);
 		helper::set_ingame_input_procs();

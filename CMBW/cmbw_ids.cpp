@@ -4,10 +4,10 @@
 
 bool unit_id_is_capped_gas_structure(u16 unit_id) {
 	return unit_id == UnitId::TerranReservoir
-		||	   unit_id == UnitId::TerranWellbore
-		||	   unit_id == UnitId::ProtossAquifer
-		||	   unit_id == UnitId::ZergExcisant
-		||	   unit_id == UnitId::ZergEzigrisant;
+		|| unit_id == UnitId::TerranWellbore
+		|| unit_id == UnitId::ProtossAquifer
+		|| unit_id == UnitId::ZergExcisant
+		|| unit_id == UnitId::ZergEzigrisant;
 }
 
 bool unit_id_is_gas_structure(u16 unit_id) {
@@ -746,4 +746,13 @@ WeaponOffsets get_weapon_offsets(u32 weapon_id)
 		}
 	}
 	return offsets;
+}
+
+bool unit_id_spawns_larva(u32 unit_id)
+{
+	return unit_id == UnitId::ZergHachirosk
+		|| unit_id == UnitId::ZergCaphrolosk
+		|| unit_id == UnitId::ZergGathtelosk
+		|| unit_id == UnitId::ZergLarvoskCesiant
+		|| unit_id == UnitId::ZergOcsalCesiant;
 }

@@ -187,7 +187,7 @@ namespace hooks
 			case TechId::LanifectDisruptionField: {
 				queue_toggle_ability(RustId::ToggleDisruptionField, unit);
 			} break;
-			case TechId::Recall: {
+			case TechId::DimensionalRecall: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = SoundId::Protoss_ARBITER_PAbPss00_WAV;
 					scbw::play_action_sound(action_sound, *g_active_portrait_unit);

@@ -885,7 +885,7 @@ LABEL_23:
 						case TechId::Plague:
 						case TechId::Ensnare:
 						case TechId::PsionicStorm:
-						case TechId::Recall:
+						case TechId::DimensionalRecall:
 						case TechId::StasisField:
 						case TechId::LanifectDisruptionField:
 						case TechId::MindTyrantMaelstrom:

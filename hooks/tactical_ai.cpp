@@ -50,7 +50,7 @@ the group and stay within distance while attempting to avoid damage.
 Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
 nearby_allies as possible.
 
-Didact Recall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
+Didact DimensionalRecall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
 one another. Attempt to group as many units as possible during the channel.
 */
 

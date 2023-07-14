@@ -198,6 +198,9 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 			text += builder.str();
 		}
 		append_tooltip_value(text, range, bonus_range, extended);
+		if (extended) {
+		//	graphics::draw_circle(unit->position.x, unit->position.y, (range + bonus_range) * 32, graphics::RED, graphics::ON_MAP);
+		}
 	}
 
 	// Target

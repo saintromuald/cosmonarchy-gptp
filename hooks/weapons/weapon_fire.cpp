@@ -1241,16 +1241,15 @@ namespace hooks {
 		Unit* next_bounce = bullet->next_bounce_unit;
 		*g_bullet_bounce_missile_source = bullet->source_unit;
 		Unit* target = bullet->attack_target.unit;
-		Sprite* bullet_sprite = bullet->sprite;
 		*g_bullet_bounce_missile_target = target;
-		u16 posY = bullet_sprite->position.x;
-		u16 posX = bullet_sprite->position.y;
+		u16 pos_y = bullet->position.x;
+		u16 pos_x = bullet->position.y;
 		*g_bullet_bounce_missile_next = next_bounce;
 		Box16 coords;
-		coords.left = posX - 96;
-		coords.top = posX + 96;
-		coords.right = posY - 96;
-		coords.bottom = posY + 96;
+		coords.left = pos_x - 96;
+		coords.top = pos_x + 96;
+		coords.right = pos_y - 96;
+		coords.bottom = pos_y + 96;
 //		return (Unit*)helper::iterate_units_at_location_target_proc(&coords, find_next_bounce_target_proc, 0);
 	}
 
@@ -1532,9 +1531,10 @@ namespace hooks {
 			case WeaponBehavior::GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
-				Vector32 target_pos;
-				target_pos.x = (s32)(parent->sprite->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
-				target_pos.y = (s32)(parent->sprite->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
+			//	s32 max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
+				Vector32 target_pos = {};
+				target_pos.x = (s32)(parent->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
+				target_pos.y = (s32)(parent->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
 				if (target_pos.x < 0) {
 					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target_unit->position.x))) * (target_pos.y - target_unit->position.y) + target_unit->position.y;
 					target_pos.x = 0;
@@ -1552,7 +1552,7 @@ namespace hooks {
 		return 0;
 	}
 
-	// Hooked to investigate weaponsdat extender crashes. Disabled! - Pr0nogo
+	// Hooked to investigate weapons.dat extender crashes. Disabled! - Pr0nogo
 	void progress_bullet_frames() { // 0048C3D0
 		Bullet* bullet = *first_bullet;
 		Bullet* next_bullet = *first_bullet;
@@ -1791,9 +1791,8 @@ namespace hooks {
 			return;
 		}
 
-		Sprite* target_sprite = target->sprite;
-		s32 tgt_x = target_sprite->position.x;
-		s32 tgt_y = target_sprite->position.y;
+		s32 tgt_x = target->position.x;
+		s32 tgt_y = target->position.y;
 
 		s32 attacker_halt = helper::get_flingy_halt_distance(attacker);
 		s32 target_vel = target->velocity_direction_1;
@@ -1843,7 +1842,7 @@ namespace hooks {
 		} else {
 			if (!(bullet->hit_flags & 1)) // miss
 			{
-				Bullet* changed_bullet = helper::change_move_pos(bullet, target->sprite->position.y, target->sprite->position.x);
+				Bullet* changed_bullet = helper::change_move_pos(bullet, target->position.y, target->position.x);
 				helper::bullet_behavior_fly(changed_bullet);
 			} else {
 				bullet->behavior_type = 1;

@@ -221,8 +221,8 @@ namespace AI
 					}
 				}
 
-				// Recall
-				if (can_cast_spell_order(unit, TechId::Recall, OrderId::Teleport))
+				// DimensionalRecall
+				if (can_cast_spell_order(unit, TechId::DimensionalRecall, OrderId::Teleport))
 				{
 					Unit* target = find_best_recall_target(unit, is_unit_being_attacked);
 					if (unit->main_order_id == OrderId::Teleport
