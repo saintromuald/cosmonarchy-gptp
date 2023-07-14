@@ -58,7 +58,7 @@ namespace scbw {
 			unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 		}
 
-		// Create the Recall animation over the unit
+		// Create the DimensionalRecall animation over the unit
 		if (sprite_id) {
 			Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, target.x, target.y, 0);
 			if (recall_effect_sprite) {
@@ -742,7 +742,7 @@ namespace scbw {
 		Point16 actualPos = {};
 		Point16 prevPos = unit->sprite->position;
 
-		// Based on the code for Recall/Nydus Canal/Move Unit trigger
+		// Based on the code for DimensionalRecall/Nydus Canal/Move Unit trigger
 		set_unit_position(unit, x, y);
 
 		if (check_unit_collision_pos(unit, &targetPos, &actualPos)) {

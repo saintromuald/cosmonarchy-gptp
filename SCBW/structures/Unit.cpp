@@ -331,14 +331,12 @@ u32 Unit::get_movable_state() {
 
 u16 Unit::get_x() const {
 	assert(this);
-	assert(this->sprite);
-	return this->sprite->position.x;
+	return this->position.x;
 };
 
 u16 Unit::get_y() const {
 	assert(this);
-	assert(this->sprite);
-	return this->sprite->position.y;
+	return this->position.y;
 };
 
 u16 Unit::get_tile_x() const {

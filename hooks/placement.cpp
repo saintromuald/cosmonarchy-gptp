@@ -390,4 +390,31 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
+	void play_worker_error_sound(Unit* unit, u32 error_text_index) // 0048F6C0
+	{
+		if (!*g_is_in_replay)
+		{
+			if (unit->player == *g_local_nation_id)
+			{
+				u32 race = unit->get_race();
+				u32 sound_id = race + 162;
+				if (race == RaceId::Protoss) {
+					sound_id = SoundId::ProtossAdvisorErrorPlacement;
+				}
+
+				if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
+				{
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+				}
+
+				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+				{
+					char* string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[856];
+					helper::set_unit_stat_txt_error_message(string);
+				}
+			}
+		}
+	}
 }

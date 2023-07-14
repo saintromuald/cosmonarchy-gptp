@@ -26,7 +26,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 	}
 	building_ext->building_tick_last_update = *g_elapsed_time_frames;
 
-	// Recall the value to calculate the new one and return properly
+	// DimensionalRecall the value to calculate the new one and return properly
 	building_ext->building_tick_progress = building_ext->building_tick_last_progress;
 	while (building_ext->building_tick_progress >= 1) {
 		building_ext->building_tick_progress -= 1;

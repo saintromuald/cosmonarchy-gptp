@@ -1537,5 +1537,7 @@ namespace SoundId
 		ShamanVisionary01					= 2473,
 		ShamanVisionary02					= 2474,
 		ShamanSupport01						= 2475,
+		ProtossAdvisorErrorPlacement		= 2476,
+		ProtossAdvisorUpdateStructure		= 2477,
 	};
 }

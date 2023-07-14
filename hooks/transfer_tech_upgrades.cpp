@@ -34,7 +34,7 @@ namespace {
 
 		// Protoss
 		{UnitId::ProtossCantavis, TechId::ArchonWarp, TechId::PsionicStorm, TechId::Hallucination, TechId::None},
-		{UnitId::ProtossDidact, TechId::Recall, TechId::StasisField, TechId::None},
+		{UnitId::ProtossDidact, TechId::DimensionalRecall, TechId::StasisField, TechId::None},
 		{UnitId::ProtossLanifect, TechId::LanifectDisruptionField, TechId::None},
 		{UnitId::ProtossCabalist, TechId::DarkArchonMeld, TechId::None},
 		{UnitId::ProtossMindTyrant, TechId::Tyranny, TechId::Feedback, TechId::MindTyrantMaelstrom, TechId::None},

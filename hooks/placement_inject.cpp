@@ -280,6 +280,30 @@ namespace
 		}
 	}
 
+	void __declspec(naked) play_worker_error_sound_wrapper() { // 0048F630
+		Unit* unit;
+		u32 error_text_index;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV error_text_index, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::play_worker_error_sound(unit, 856); // Second arg is pointless because it's always 856.
+		__asm {
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+	
+
 	// Patches \\
 
 	const u32 TTBaseUnitType_6E19A = 0x0046E19A;
@@ -345,6 +369,7 @@ namespace hooks
 		jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
 		jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
 	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Causes landing crash lol
+		jump_patch(play_worker_error_sound_wrapper,							0x0048F6C0, 1);
 
 		// DF - Fix Treasury being unable to claim addons
 	//	jump_patch(TTBaseUnitType_patch_6E1A6,								0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)

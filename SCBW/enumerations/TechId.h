@@ -7,7 +7,7 @@ namespace TechId {
 	// Shared
 		TargetGround						= 17, // Ensnare
 		UnusedAnticthonFailureMode			= 23, // Archon Warp
-		CancelNewAbility					= 26, // Unused Tech 26 | used for: Land Grab, Recall, Controlled Demolition
+		CancelNewAbility					= 26, // Unused Tech 26 | used for: Land Grab, DimensionalRecall, Controlled Demolition
 
 	// Terran
 		UnusedLobotomyMine					=  1, // Lockdown, unused
@@ -57,7 +57,7 @@ namespace TechId {
 		MatralethParasite				= 18, // (default)
 		PsionicStorm			= 19,
 		Hallucination			= 20,
-		Recall					= 21,
+		DimensionalRecall					= 21,
 		StasisField				= 22,
 		ArchonWarp				= 23, // (default)
 		Restoration				= 24,
@@ -111,7 +111,7 @@ namespace ScTech {
 		MatralethParasite          = 18,	// (default)
 		PsionicStorm      = 19,
 		Hallucination     = 20,
-		Recall            = 21,
+		DimensionalRecall            = 21,
 		StasisField       = 22,
 		ArchonWarp        = 23,	// (default)
 	};
