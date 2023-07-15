@@ -12,10 +12,12 @@ struct Config {
 	bool extended_camera_hotkeys = true;
 	bool show_timer = true;
 	bool show_apm = true;
+	bool always_show_extended_tooltips = false;
+
+	bool show_rally_lines = true;
 	bool show_order_lines = false;
 	bool show_queued_order_lines = false;
 	bool show_unique_gas_order_line_color = false;
-	bool always_show_extended_tooltips = false;
 	bool show_aura_circles = false;
 
 	bool witness_show_apm = true;

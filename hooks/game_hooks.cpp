@@ -537,6 +537,23 @@ namespace hooks {
 				}
 			}
 			bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
+			if (config.show_rally_lines
+			&& (scbw::is_allied_to(*g_local_nation_id, unit->player) || in_replay_or_witness))
+			{
+				// Rally points
+				Point16 target = get_target_point(unit->rally);
+				if (target.x == unit->position.x &&
+					target.y == unit->position.y) {
+					target.x = 0;
+					target.y = 0;
+				}
+				if (!unit_id_is_psi_provider(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
+					source = target;
+				} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
+					source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
+				}
+			}
+
 			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
 			||   (in_replay_or_witness && config.witness_show_order_lines)) {
 				Unit* ignore_resource_unit = 0;
@@ -552,21 +569,6 @@ namespace hooks {
 						}
 						draw_simple_line(source, target_resource->position, color);
 						ignore_resource_unit = target_resource;
-					}
-				}
-
-				// Rally points
-				{
-					Point16 target = get_target_point(unit->rally);
-					if (target.x == unit->position.x &&
-						target.y == unit->position.y) {
-						target.x = 0;
-						target.y = 0;
-					}
-					if (!unit_id_is_psi_provider(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
-						source = target;
-					} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
-						source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
 					}
 				}
 
