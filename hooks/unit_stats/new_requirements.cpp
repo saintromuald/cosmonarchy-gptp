@@ -752,35 +752,44 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-					case UnitId::ProtossNexus:
-					case UnitId::ProtossPylon:
-					case UnitId::ProtossAquifer:
-					case UnitId::ProtossWarden:
-					case UnitId::ProtossMatrix:
-					case UnitId::ProtossEmbassy:
-					case UnitId::ProtossCrucible:
-					case UnitId::ProtossStridentStratum:
-					case UnitId::ProtossEngram:
-					case UnitId::ProtossGateway:
-					case UnitId::ProtossCenotaph:
-					case UnitId::ProtossGrandLibrary:
-					case UnitId::ProtossRogueGallery:
-					case UnitId::ProtossProstrationStage:
-					case UnitId::ProtossSanctumOfSorrow:
-					case UnitId::ProtossAncestralArchives:
-					case UnitId::ProtossHallOfHeretics:
-					case UnitId::ProtossLattice:
-					case UnitId::ProtossAutomatonRegister:
-					case UnitId::ProtossArdentAuthority:
-					case UnitId::ProtossSequesteredIcon:
-					case UnitId::ProtossAuxiliaryOasis:
-					case UnitId::ProtossUnitaryUnion:
-					case UnitId::ProtossSyntheticSynod:
-					case UnitId::ProtossStargate:
-					case UnitId::ProtossAstralOmen:
-					case UnitId::ProtossArgosy:
-					case UnitId::ProtossFleetBeacon:
-					case UnitId::ProtossMonumentOfSin:
+				case UnitId::ProtossPylon:
+				{
+					return true;
+				} break;
+			}
+		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossPylon))
+		{
+			switch (unit_id)
+			{
+				case UnitId::ProtossNexus:
+				case UnitId::ProtossAquifer:
+				case UnitId::ProtossWarden:
+				case UnitId::ProtossMatrix:
+				case UnitId::ProtossEmbassy:
+				case UnitId::ProtossCrucible:
+				case UnitId::ProtossStridentStratum:
+				case UnitId::ProtossEngram:
+				case UnitId::ProtossGateway:
+				case UnitId::ProtossCenotaph:
+				case UnitId::ProtossGrandLibrary:
+				case UnitId::ProtossRogueGallery:
+				case UnitId::ProtossProstrationStage:
+				case UnitId::ProtossSanctumOfSorrow:
+				case UnitId::ProtossAncestralArchives:
+				case UnitId::ProtossHallOfHeretics:
+				case UnitId::ProtossLattice:
+				case UnitId::ProtossAutomatonRegister:
+				case UnitId::ProtossArdentAuthority:
+				case UnitId::ProtossSequesteredIcon:
+				case UnitId::ProtossAuxiliaryOasis:
+				case UnitId::ProtossUnitaryUnion:
+				case UnitId::ProtossSyntheticSynod:
+				case UnitId::ProtossStargate:
+				case UnitId::ProtossAstralOmen:
+				case UnitId::ProtossArgosy:
+				case UnitId::ProtossFleetBeacon:
+				case UnitId::ProtossMonumentOfSin:
 				{
 					return true;
 				} break;
@@ -2468,11 +2477,19 @@ namespace hooks {
 			// Structures
 			case UnitId::ProtossScribe:
 			case UnitId::ProtossArtisan:
+			switch (unit_id)
+			{
+				case UnitId::ProtossPylon:
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ProtossPylon:
 			{
 				switch (unit_id)
 				{
 					case UnitId::ProtossNexus:
-					case UnitId::ProtossPylon:
 					case UnitId::ProtossAquifer:
 					case UnitId::ProtossWarden:
 					case UnitId::ProtossEmbassy:

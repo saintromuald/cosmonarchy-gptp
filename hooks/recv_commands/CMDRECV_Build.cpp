@@ -3,9 +3,9 @@
 
 namespace hooks
 {
-	bool cmdrecv_place_building_allowed(Unit* builder, u8 order_id, u16 builtUnitId)
+	bool cmdrecv_place_building_allowed(Unit* builder, u8 order_id, u16 built_unit_id) // 0048DBD0
 	{
-		bool bReturnValue = false;
+		bool is_allowed = false;
 		if (order_id >= OrderId::DroneStartBuild && order_id <= OrderId::CTFCOP2)
 		{
 			if (order_id == OrderId::DroneStartBuild
@@ -14,76 +14,74 @@ namespace hooks
 			||	order_id == OrderId::BuildProtoss2
 			||	order_id == OrderId::PlaceAddon)
 			{
-				if (builder->can_make_unit(builtUnitId, *g_active_nation_id))
+				if (builder->can_make_unit(built_unit_id, *g_active_nation_id))
 				{
-					bReturnValue = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
+					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
-			}
-			else if (order_id == OrderId::Build5			// Build Nydus Exit
-			||		 order_id == OrderId::BuildingLand)
+			} else if (order_id == OrderId::Build5			// Build Nydus Exit
+			||		   order_id == OrderId::BuildingLand)
 			{
-				if (builder->id == builtUnitId)
+				if (builder->id == built_unit_id)
 				{
-					bReturnValue = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
+					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
-			}
-			else if (order_id == OrderId::CTFCOP2) // Create Flag Beacon
+			} else if (order_id == OrderId::CTFCOP2) // Create Flag Beacon
 			{
-				if (*g_elapsed_time_seconds <= 600 && builder->id == builtUnitId)
+				if (*g_elapsed_time_seconds <= 600 && builder->id == built_unit_id)
 				{
-					bReturnValue = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
+					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
 			}
 		}
-		return bReturnValue;
+		return is_allowed;
 	}
 
-	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 builtUnitId)
+	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 built_unit_id) // 0048E010
 	{
 		*unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
-		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, builtUnitId, 1, 0, 0, 0);
+		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 
 		if (helper::place_building_message(can_build))
 		{
 			s32 DimensionX, DimensionY;
-			DimensionX = (s16)units_dat::building_dimensions[builtUnitId].x;
+			DimensionX = (s16)units_dat::building_dimensions[built_unit_id].x;
 			if (DimensionX < 0)
 			{
 				DimensionX++;
 			}
 			DimensionX /= 2;
 			DimensionX += (x * 32);
-			DimensionY = (s16)units_dat::building_dimensions[builtUnitId].y;
+			DimensionY = (s16)units_dat::building_dimensions[built_unit_id].y;
 			if (DimensionY < 0)
 			{
 				DimensionY++;
 			}
 			DimensionY /= 2;
 			DimensionY += (y * 32);
-			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, builtUnitId);
+			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, built_unit_id);
 		}
 	}
 
-	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 builtUnitId)
+	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 built_unit_id) // 0048E0A0
 	{
 		u16 addonPlaceX = 0;
 		u16 addonPlaceY = 0;
 		*unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
-		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, builtUnitId, 1, 0, 0, 0);
+		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 		if (!can_build)
 		{
-			addonPlaceX = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranMinistry].x;
-			scbw::adjust_addon_x(builtUnitId, builder->id, &addonPlaceX);
+			addonPlaceX = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].x;
+			scbw::adjust_addon_x(built_unit_id, builder->id, &addonPlaceX);
 			if (addonPlaceX < 0)
 			{
 				addonPlaceX += 31;
 			}
 			addonPlaceX /= 32;
 			addonPlaceX = x - addonPlaceX;
-			addonPlaceY = (s16)units_dat::addon_placement[builtUnitId - UnitId::TerranMinistry].y;
-			scbw::adjust_addon_y(builtUnitId, builder->id, &addonPlaceY);
+			addonPlaceY = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].y;
+			scbw::adjust_addon_y(built_unit_id, builder->id, &addonPlaceY);
 			if (addonPlaceY < 0)
 			{
 				addonPlaceY += 31;
@@ -112,13 +110,13 @@ namespace hooks
 			DimensionY /= 2;
 			addonPlaceY *= 32;
 			DimensionY += addonPlaceY;
-			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, builtUnitId);
+			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, built_unit_id);
 		}
 	}
 
-	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 builtUnitId)
+	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 built_unit_id) // 004C23C0
 	{
-		Unit* builder = get_active_player_next_selection();
+		Unit* builder = helper::get_active_player_next_selection();
 		*unit_iterator_pos = 0;
 		if (builder)
 		{
@@ -126,9 +124,9 @@ namespace hooks
 			{
 				if (x < g_map_tile_size->width
 				&&	y < g_map_tile_size->height
-				&&	helper::CMDRECV_place_building_allowed(builder, order_id, builtUnitId))
+				&&	helper::CMDRECV_place_building_allowed(builder, order_id, built_unit_id))
 				{
-					helper::CMDRECV_place_building(x, y, order_id, builtUnitId);
+					helper::CMDRECV_place_building(x, y, order_id, built_unit_id);
 				}
 			}
 		}
@@ -153,7 +151,7 @@ namespace hooks
 						if (g_game_vespene[unit->player] >= g_ai_vespene_reserve[unit->player])
 						{
 							helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
-							if (units_dat::base_property[unit->id] & UnitProperty::Building && units_dat::base_property[target_unit_id] & UnitProperty::Building)
+							if (units_dat::base_property[unit->id] & UnitProperty::Building && units_dat::base_property[target_unit_id] & UnitProperty::Addon)
 							{
 								helper::refund_all_queue_slots(unit);
 								unit->building.addon_build_id = target_unit_id;

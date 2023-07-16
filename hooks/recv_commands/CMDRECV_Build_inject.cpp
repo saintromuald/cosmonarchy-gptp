@@ -7,15 +7,15 @@ namespace
 	{
 		static Unit* builder;
 		static u8 order_id;
-		static u16 builtUnitId;
+		static u16 built_unit_id;
 		static b32 bReturnValue;
 		__asm {
 			MOV builder, ECX
 			MOV order_id, DL
-			MOV builtUnitId, AX
+			MOV built_unit_id, AX
 			PUSHAD
 		}
-		bReturnValue = (hooks::cmdrecv_place_building_allowed(builder, order_id, builtUnitId)) ? 1 : 0;
+		bReturnValue = (hooks::cmdrecv_place_building_allowed(builder, order_id, built_unit_id)) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, bReturnValue
@@ -28,7 +28,7 @@ namespace
 		static s16 x;
 		static s16 y;
 		static u32 order_id;
-		static u32 builtUnitId;
+		static u32 built_unit_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -39,10 +39,10 @@ namespace
 			MOV EAX, [EBP + 0x0C]
 			MOV order_id, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV builtUnitId, EAX
+			MOV built_unit_id, EAX
 			PUSHAD
 		}
-		hooks::cmdrecv_place_building_normal(x, y, order_id, builtUnitId);
+		hooks::cmdrecv_place_building_normal(x, y, order_id, built_unit_id);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -56,7 +56,7 @@ namespace
 		static s16 x;
 		static s16 y;
 		static u32 order_id;
-		static u32 builtUnitId;
+		static u32 built_unit_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -67,10 +67,10 @@ namespace
 			MOV EAX, [EBP + 0x0C]
 			MOV order_id, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV builtUnitId, EAX
+			MOV built_unit_id, EAX
 			PUSHAD
 		}
-		hooks::cmdrecv_place_addon(x, y, order_id, builtUnitId);
+		hooks::cmdrecv_place_addon(x, y, order_id, built_unit_id);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -84,7 +84,7 @@ namespace
 		static u8 order_id;
 		static s16 x;
 		static s16 y;
-		static u16 builtUnitId;
+		static u16 built_unit_id;
 		__asm {
 			MOV AL, [ESI + 0x01]
 			MOV order_id, AL
@@ -93,10 +93,10 @@ namespace
 			MOV AX, [ESI + 0x04]
 			MOV y, AX
 			MOV AX, [ESI + 0x06]
-			MOV builtUnitId, AX
+			MOV built_unit_id, AX
 			PUSHAD
 		}
-		hooks::cmdrecv_build(order_id, x, y, builtUnitId);
+		hooks::cmdrecv_build(order_id, x, y, built_unit_id);
 		__asm {
 			POPAD
 			RETN

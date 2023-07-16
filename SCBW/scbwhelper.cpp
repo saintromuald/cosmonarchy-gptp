@@ -4186,11 +4186,11 @@ namespace helper {
 	// for cmdrecv_hold_position
 
 	Unit* get_active_player_next_selection() {
-		const u32 Func_getActivePlayerFirstSelection = 0x0049A850;
+		const u32 func_address = 0x0049A850;
 		static Unit* result;
 		__asm {
 			PUSHAD
-			CALL Func_getActivePlayerFirstSelection
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

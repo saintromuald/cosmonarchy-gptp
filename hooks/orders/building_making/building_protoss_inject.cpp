@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_scribe_build_wrapper()
+	void __declspec(naked) orders_scribe_build_wrapper() // 004E4D00
 	{
 		static Unit* unit;
 		__asm
@@ -19,7 +19,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_build_self_2_wrapper()
+	void __declspec(naked) orders_build_self_2_wrapper() // 004E4F40
 	{
 		static Unit* unit;
 		__asm

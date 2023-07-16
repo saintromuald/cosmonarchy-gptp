@@ -1079,11 +1079,18 @@ namespace hooks {
 							} break;
 							case UnitId::ProtossScribe:
 							case UnitId::ProtossArtisan:
+								switch (current_button->requirement_var)
+								{
+									case UnitId::ProtossPylon:
+									{
+										current_button_state = Button_State::Enabled;
+									} break;
+								}
+							case UnitId::ProtossPylon:
 							{
 								switch (current_button->requirement_var)
 								{
 									case UnitId::ProtossNexus:
-									case UnitId::ProtossPylon:
 									case UnitId::ProtossAquifer:
 									case UnitId::ProtossWarden:
 									case UnitId::ProtossEmbassy:
@@ -2417,6 +2424,13 @@ namespace hooks {
 								{
 									if (current_button->icon_id == IconId::DimensionalRecall		// Anthelion - False Light
 									||	current_button->icon_id == IconId::ArgusJewel)	// Anthelion - Gravity Well
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossPylon:
+								{
+									if (current_button->icon_id == IconId::KhaydarinCore) // Pylon - Warp Matrix
 									{
 										current_button_state = Button_State::Enabled;
 									}
