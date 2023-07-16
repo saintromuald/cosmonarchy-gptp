@@ -37,7 +37,6 @@ namespace hooks
 				}
 
 				helper::init_building(building, 0);
-
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
@@ -55,6 +54,7 @@ namespace hooks
 	void orders_scv_build_2(Unit* unit) { // 00467A70
 		Unit* built_unit = unit->order_target.unit;
 		BuildingModifier modifier = get_building_modifier(built_unit, unit, true);
+		UnitExt* builder_ext = get_unit_ext(unit);
 
 		if (built_unit && !(built_unit->status & UnitStatus::Completed)) {
 			switch (unit->main_order_state) {
@@ -73,16 +73,18 @@ namespace hooks
 
 						if (built_unit->connected_unit
 						&&  built_unit->connected_unit != unit
-						&&  (built_unit->connected_unit)->order_target.unit == built_unit) {
-							unit->order_to_idle(); //another worker is already on the job
+						&& (built_unit->connected_unit)->order_target.unit == built_unit)
+						{
+							unit->order_to_idle(); // another worker is already on the job
 						} else {
+							builder_ext->values[ValueTerranConstruction] = built_unit->id;
 							built_unit->connected_unit = unit;
-							unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
+							unit->status &= ~UnitStatus::IsNormal;
 							unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 							unit->order_simple(OrderId::ResetCollision1, false);
 							unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
 							unit->secondary_order_pos = unit->position;
-							// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the SCV to remain outside of the building's bounds if
+							// DF: Removed an unecessary delay for resuming construction progress. There might be a small chance for the worker to remain outside of the building's bounds if
 							//     the randomized order_target is very near the same spot the SCV resumed construction, but I think the helper::TerrainCollision_? condition in State 4 should handle it.
 							// if (helper::change_movement_target_move_target_2(unit, built_unit->sprite->position.x, built_unit->sprite->position.y))
 							++unit->main_order_state;
@@ -196,9 +198,11 @@ namespace hooks
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 			image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 		}
+
 		if (built_unit) {
 			built_unit->connected_unit = 0;
 			helper::play_building_completed_sound(unit);
+			builder_ext->values[ValueTerranConstruction] = UnitId::None;
 			helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
 
 			if ((built_unit->status & UnitStatus::Completed
@@ -230,12 +234,13 @@ namespace hooks
 				if (unit->sprite->position.x == unit->move_target.pt.x
 					&& unit->sprite->position.y == unit->move_target.pt.y) {
 					if (!(unit->status & UnitStatus::Unmovable)
-						&& helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
-						&& helper::begin_building(unit)) {
-						UnitExt* unit_ext = get_unit_ext(unit);
-						unit_ext->terran_build_pos = unit->position;
+					&&    helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
+					&&    helper::begin_building(unit))
+					{
+						UnitExt* builder_ext = get_unit_ext(unit);
+						builder_ext->terran_build_pos = unit->position;
 
-						Unit* built_unit;
+						Unit* built_unit = 0;
 						unit->status &= ~UnitStatus::IsNormal;
 						unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
 
@@ -258,9 +263,10 @@ namespace hooks
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 
 						if (built_unit) {
+							builder_ext->values[ValueTerranConstruction] = built_unit->id;
 							built_unit->create_origin = unit->id;
 							built_unit->connected_unit = unit;
-							built_unit->sprite->player = unit->sprite->player;//Pcolor inheritance.
+							built_unit->sprite->player = unit->sprite->player; // Player color inheritance.
 							unit->main_order_id = OrderId::ConstructingBuilding;
 							unit->main_order_state = 3;
 							unit->order_target.unit = built_unit;
@@ -392,26 +398,41 @@ namespace hooks
 			u32 race = unit->get_race();
 			switch (race) {
 				case RaceId::Zerg: {
+					u32 sound_id = unit_id_is_tech_tier_structure(unit->id) ? SoundId::Zerg_Advisor_ZAdUpd02_WAV : 0;
 					if (unit->create_origin == UnitId::ZergDroleth) {
-						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
+						if (sound_id) {
+							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
+						}
+						helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZChRdy00_WAV, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					}
-					else if (unit->create_origin == UnitId::ZergGosvileth) {
-						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
+					} else if (unit->create_origin == UnitId::ZergGosvileth) {
+						if (sound_id) {
+							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
+						}
+						helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZChRdy00_WAV, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					}
-					else {
-						// Nydus exit and morphs?
-						helper::play_sound_from_unit(135, unit, (*g_options_list).flags & 1, 99);
+					} else {
+						// Nydus exit and morphs
+						if (sound_id) {
+							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
+						}
+						helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZChRdy00_WAV, unit, (*g_options_list).flags & 1, 99);
 						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 					}
 				} break;
 				case RaceId::Terran: {
-					u32 sound_id = 126; // Addon complete
-					if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos)
-					{
-						sound_id = 136;
+					UnitExt* builder_ext = get_unit_ext(unit);
+					u32 sound_id = 0;
+					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+						sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV; // Addon complete
+					} else if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) {
+						sound_id = SoundId::Terran_SCV_TSCUpd00_WAV; // Job's finished
 					}
+
+					if (unit_id_is_tech_tier_structure(builder_ext->values[ValueTerranConstruction])) {
+						sound_id = SoundId::Terran_Advisor_TAdUpd02_WAV_2; // Upgrade complete
+					}
+
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 				} break;
@@ -424,6 +445,7 @@ namespace hooks
 	}
 
 	// Hooked to clear placement area. -Pr0nogo
+	// Not currently functional, so until we fix it, we won't have "tech center complete" for tech addons.
 	void orders_place_addon(u32 unused, Unit* unit) { // 004E6880
 		if (!unit->main_order_state) {
 			if (!(units_dat::base_property[unit->building.addon_build_id] & UnitProperty::Addon)) {
@@ -448,10 +470,9 @@ namespace hooks
 			return;
 		}
 	place_addon:
-		Sprite* unit_sprite = unit->sprite;
-		if (unit->move_target.pt.x == unit_sprite->position.x
-			&& unit->move_target.pt.y == unit_sprite->position.y
-			&& ((unit->status & UnitStatus::Unmovable) != 0) != -1)
+		if  (unit->move_target.pt.x == unit->position.x
+		&&   unit->move_target.pt.y == unit->position.y
+		&& ((unit->status & UnitStatus::Unmovable) != 0) != -1)
 		{
 			// Get addon position - this is probably wrong right now, the original IDA code was a disaster.
 			u32 addon_id = unit->building.addon_build_id;
@@ -474,16 +495,17 @@ namespace hooks
 				helper::to_idle(unit);
 				return;
 			}
+
 			if (helper::can_build_on_tile_location(unit, unit->player, unit->order_target.pt.x / 32 - dimensions.x / 32 / 2, unit->order_target.pt.y / 32 - dimensions.y / 32 / 2, unit->building.addon_build_id, 0, 0, 1, 0))
 			{
-				helper::play_worker_error_sound(unit, 856);
+				helper::play_worker_error_sound(unit, 856); // Can't build there
 				helper::to_idle(unit);
-			}
-			else
-			{
+			} else {
 				Unit* addon = helper::create_unit(unit->building.addon_build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 				if (addon)
 				{
+					UnitExt* builder_ext = get_unit_ext(unit);
+					builder_ext->values[ValueTerranConstruction] = unit->building.addon_build_id;
 					helper::subtract_queue_cost(unit->player);
 					helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
 					helper::set_secondary_order(unit, OrderId::BuildAddon);
@@ -492,9 +514,7 @@ namespace hooks
 					helper::ai_training_overlord(addon, unit);
 					addon->connected_unit = unit;
 					helper::set_unit_event_complete();
-				}
-				else
-				{
+				} else {
 					helper::display_last_network_error_for_player(unit->player);
 				}
 			}

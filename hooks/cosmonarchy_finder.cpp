@@ -12,7 +12,7 @@ bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 	return a != nullptr;
 }
 
-u32 cosmonarchyUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds)
+u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds)
 {
 	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,

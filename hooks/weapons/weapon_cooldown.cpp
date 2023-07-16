@@ -149,15 +149,15 @@ namespace hooks {
 		return get_modified_cooldown(unit, weapons_dat::cooldown[weapon_id], true);
 	}
 
-	f32 get_weapon_cooldwon_float(Unit* unit, u8 weapon_id) {
+	f32 get_weapon_cooldown_float(Unit* unit, u8 weapon_id) {
 		return get_modified_weapon_cooldown(unit, weapon_id) / 24.0f;
 	}
 
 	f32 get_current_dps(Unit* unit, u8 weapon_id) {
-		return weapons_dat::damage_amount[weapon_id] / get_weapon_cooldwon_float(unit, weapon_id);
+		return weapons_dat::damage_amount[weapon_id] / get_weapon_cooldown_float(unit, weapon_id);
 	}
 
 	f32 get_current_dps_from_damage(Unit* unit, u8 weapon_id, u32 damage) {
-		return damage / get_weapon_cooldwon_float(unit, weapon_id);
+		return damage / get_weapon_cooldown_float(unit, weapon_id);
 	}
 }

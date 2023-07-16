@@ -43,7 +43,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16> allowedIds);
-u32 cosmonarchyUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
+u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
 template<typename cosmonarchyLoop>
 inline void cosmonarchyFinderLoop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, cosmonarchyLoop l)
 {

@@ -135,7 +135,7 @@ namespace SoundId
 		Terran_Advisor_TAdUpd04_WAV			= 128,
 		Protoss_Advisor_PAdUpd04_WAV		= 129,
 		Terran_Advisor_TAdUpd05_WAV			= 130,
-		Terran_Advisor_TAdUpd06_WAV			= 131,
+		Terran_Advisor_TAdUpd06_WAV			= 131,	// Evolution complete
 		Terran_Advisor_TAdUpd02_WAV_2		= 132,
 		Protoss_Advisor_PAdUpd06_WAV		= 133,
 		Terran_Advisor_TAdUpd07_WAV			= 134,

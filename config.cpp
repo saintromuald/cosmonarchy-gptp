@@ -63,7 +63,7 @@ void save_config() {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 
-	out << YAML::Comment("Cosmonarchy Config");
+	out << YAML::Comment("Cosmonarchy BW Config");
 	out << YAML::Newline << YAML::Newline;
 	out << YAML::Comment("Launch");
 	write_field(out, "disable-wmode-prompt", config.disable_wmode_prompt);
@@ -117,9 +117,6 @@ void save_config() {
 		out << str;
 	}
 	out << YAML::EndSeq << YAML::EndMap;
-
-	out << YAML::Comment("Debug");
-	write_field(out, "verbose", config.verbose);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Maps");

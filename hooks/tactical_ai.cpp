@@ -108,8 +108,8 @@ static void adjust_vector(Vector32f* vector, Unit* unit, Point16 position, s32 v
 
 static bool unit_has_min_range(Unit* unit) {
 	if (unit->id == UnitId::ZergGeszithalor
-		|| unit->id == UnitId::ZergBactalisk
-		|| unit->id == UnitId::ProtossArchitect) {
+	||  unit->id == UnitId::ZergBactalisk
+	||  unit->id == UnitId::ProtossArchitect) {
 		return true;
 	} else {
 		Unit* context = unit;
@@ -171,9 +171,6 @@ static bool is_channeling(Unit* unit) {
 	if (unit->main_order_id == OrderId::FireYamatoGun1 && unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
-	if (unit->main_order_id == OrderId::PaladinSkyfall && unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
-		return true;
-	}
 	if (unit->id == UnitId::ProtossStarSovereign && unit->main_order_id == OrderId::CTFCOP2 && unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 		return true;
 	}
@@ -210,6 +207,14 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 	return 0;
 }
 
+f32 get_furia_damage_potential(Unit* unit) {
+	f32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
+	furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
+	if (unit->order_target.unit) {
+		UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
+	}
+}
+
 static s32 get_target_cost(Unit* source, Unit* target) {
 	// Value attacking wounded units first
 	s32 cost = target->get_current_life_ingame() / 10;
@@ -221,7 +226,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 
 	// Value deployed units slightly more
 	if (unit_id_is_siege_mode(target->id)) {
-		cost -= 10;
+		cost -= 20;
 	}
 
 	// Value big boys more
@@ -262,11 +267,6 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		cost -= 25;
 	}
 
-	// Value detected hallucinated enemies less
-	if (helper::get_detecting_players(target) & 1 << target->player && target->status & UnitStatus::IsHallucination) {
-		cost += 25;
-	}
-
 	// Value easy to kill units
 	cost -= get_dps_against(source, target);
 
@@ -298,7 +298,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 		Unit* context = source->subunit ? source->subunit : source;
 		u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
 
-		// Value dark swarm immune units way less
+		// Value Carapace Swarm immune units way less
 		if (carapace_swarm_blocks_damage(target, weapon_id, 1)) {
 			cost += 1000;
 		}
@@ -1024,8 +1024,6 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 			*/
-		} else if (unit->id == UnitId::TerranEidolon) {
-			// mines
 		} else if (unit->id == UnitId::TerranSavant) {
 			Unit* target = unit->order_target.unit;
 			if (target && target->energy > 5 * 256 && unit->energy < 190 * 256) {
@@ -1033,29 +1031,24 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			} else {
 				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
 			}
-		}/* else if (unit->id == UnitId::TerranMadrigalImperiosoMode) {
-			if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown]) {
-				f32 furiaDamagePotential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
-				furiaDamagePotential *= cosmonarchyUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
+		} else if (unit->id == UnitId::TerranMadrigalImperiosoMode) {
+			if (unit->main_order_id != OrderId::SiegeMode) {
+				f32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
+				furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
 				if (unit->order_target.unit) {
 					UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
-					furiaDamagePotential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
+					furia_damage_potential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 				}
-				f32 dirgeDamagePotential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles] + MadrigalDirgeDamage) / hooks::get_weapon_cooldwon_float(unit, WeaponId::MadrigalImperiosoMissiles);
+				f32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles]) / hooks::get_weapon_cooldown_float(unit, WeaponId::MadrigalImperiosoMissiles);
 
-				if (furiaDamagePotential > dirgeDamagePotential) {
-					if (unit_ext->values[ValueMadrigalTempoDown] != 0) {
-						scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 1);
-						unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
-					}
-				} else {
-					if (unit_ext->values[ValueMadrigalTempoDown] == 0) {
-						scbw::set_generic_rust_value(unit, RustId::CastToggleTempoChange, 1);
-						unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
-					}
+				if (furia_damage_potential > imperioso_damage_potential * 2) {
+					unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
+					unit->order(OrderId::SiegeMode, unit->position.x, unit->position.y, 0, UnitId::None, true);
 				}
 			}
-		}*/else if (unit->id == UnitId::ZergMatraleth) {
+		} else if (unit->id == UnitId::TerranMadrigalFuriaMode) {
+
+		} else if (unit->id == UnitId::ZergMatraleth) {
 			// Currently done in spellcasting, if that doesn't work copy the code from there here -Veeq7
 			/*
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {
@@ -1107,8 +1100,8 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			});
 
-			u32 allies = cosmonarchyUnitCount(unit, unit->position, AILanifectSeekRange, Flags::IncludingSelf | Flags::Ally, {});
-			u32 enemies = cosmonarchyUnitCount(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {});
+			u32 allies = cosmonarchy_unit_count(unit, unit->position, AILanifectSeekRange, Flags::IncludingSelf | Flags::Ally, {});
+			u32 enemies = cosmonarchy_unit_count(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {});
 			u32 threshold = std::min(std::min(ceilf(enemies / 4), ceilf(lanifects / 4)), ceilf(allies / 2));
 			if (web_state || webs < threshold) {
 				Unit* best_target = 0;
@@ -1121,8 +1114,8 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 						}
 					});
 					if (valid) {
-						s32 score = cosmonarchyUnitCount(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
-						score -= cosmonarchyUnitCount(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
+						s32 score = cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
+						score -= cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
 						score -= scbw::get_distance_fast(unit->position, target->position) / 128;
 						if (score > max_score) {
 							max_score = score;
