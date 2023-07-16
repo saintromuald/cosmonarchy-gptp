@@ -12,7 +12,8 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 	if (constructing) {
 		if ((builder &&  builder->id == UnitId::TerranTalos)
 		||   building->create_origin == UnitId::ProtossArtisan
-		||   building->create_origin == UnitId::ZergGosvileth) {
+		||   building->create_origin == UnitId::ZergGosvileth)
+		{
 			modifier.multiplier *= 1.5;
 		}
 	} else {

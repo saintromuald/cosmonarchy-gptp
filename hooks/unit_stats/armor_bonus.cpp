@@ -28,7 +28,7 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		// Armor rends
-		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks];
+		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks] / 2;
 		armor -= unit_ext->values[ValueAutocratControlledOppositionStacks];
 		armor -= unit_ext->values[ValueObservanceRend];
 		armor -= unit_ext->values[ValueCorrosiveTouchStacks];

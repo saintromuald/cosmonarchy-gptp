@@ -296,7 +296,7 @@ namespace helper {
 	//// building_morph
 	void refund_building_cost(u16 unit_id, u8 player);														// 0042CE70
 	void update_building_ai(Unit* unit);																	// 00433FE0
-	bool is_valid_building_morph(u16 buildingId);															// 0045CC60
+	bool is_valid_building_morph(u16 building_id);															// 0045CC60
 	void spread_initial_creep(u32 id, s32 x, s32 y);														// 0045CE90
 	void cancel_zerg_building_morph(Unit* unit);															// 0045D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 0047D770
@@ -1621,4 +1621,7 @@ namespace helper {
 	u32 local_get_lang();																														// 0041F1D0
 
 	s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area);														// 0042A5C0
+
+	void cancel_zerg_building(Unit* unit);																										// 0045DA40
+	void update_building_construct_shields_amount(Unit* unit);																					// 0047B6A0
 }

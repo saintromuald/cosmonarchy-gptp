@@ -194,7 +194,11 @@ namespace
 					helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
 				}
-				unit->remove();
+				if (unit->id == UnitId::ProtossPylon) {
+					helper::cancel_zerg_building(unit);
+				} else {
+					unit->remove();
+				}
 			} else if (unit->get_race() == RaceId::Terran) {
 				if (unit->id == UnitId::TerranNuclearMissile)
 				{

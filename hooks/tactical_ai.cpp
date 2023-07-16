@@ -209,10 +209,7 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 
 f32 get_furia_damage_potential(Unit* unit) {
 	f32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
-	furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
-	if (unit->order_target.unit) {
-		UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
-	}
+	return furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
 }
 
 static s32 get_target_cost(Unit* source, Unit* target) {
@@ -1032,13 +1029,8 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
 			}
 		} else if (unit->id == UnitId::TerranMadrigalImperiosoMode) {
-			if (unit->main_order_id != OrderId::SiegeMode) {
-				f32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
-				furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
-				if (unit->order_target.unit) {
-					UnitExt* target_ext = get_unit_ext(unit->order_target.unit);
-					furia_damage_potential += (f32)target_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage;
-				}
+			if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] && unit->main_order_id != OrderId::SiegeMode) {
+				f32 furia_damage_potential = get_furia_damage_potential(unit);
 				f32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles]) / hooks::get_weapon_cooldown_float(unit, WeaponId::MadrigalImperiosoMissiles);
 
 				if (furia_damage_potential > imperioso_damage_potential * 2) {
@@ -1047,7 +1039,15 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 		} else if (unit->id == UnitId::TerranMadrigalFuriaMode) {
+			if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] && unit->main_order_id != OrderId::TankMode) {
+				f32 furia_damage_potential = get_furia_damage_potential(unit);
+				f32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles]) / hooks::get_weapon_cooldown_float(unit, WeaponId::MadrigalImperiosoMissiles);
 
+				if (imperioso_damage_potential * 2 > furia_damage_potential) {
+					unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
+					unit->order(OrderId::TankMode, unit->position.x, unit->position.y, 0, UnitId::None, true);
+				}
+			}
 		} else if (unit->id == UnitId::ZergMatraleth) {
 			// Currently done in spellcasting, if that doesn't work copy the code from there here -Veeq7
 			/*

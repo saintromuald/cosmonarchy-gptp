@@ -438,7 +438,9 @@ namespace hooks
 				} break;
 				case RaceId::Protoss:
 				default: {
-					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
+					u32 sound_id = SoundId::ProtossAdvisorUpdateStructure;
+					helper::play_sound_from_unit(sound_id, unit, 1, 99);
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
 				} break;
 			}
 		}

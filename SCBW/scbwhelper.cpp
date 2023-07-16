@@ -2524,12 +2524,11 @@ namespace helper {
 	}
 
 	// is_valid_morph @ 0x0045CC60;
-	bool is_valid_building_morph(u16 buildingId) {
+	bool is_valid_building_morph(u16 building_id) {
 		bool result;
-		if (scbw::is_zerg_building_morph_result(buildingId)) {
+		if (scbw::is_zerg_building_morph_result(building_id)) {
 			result = true;
-		}
-		else {
+		} else {
 			result = false;
 		}
 		return result;
@@ -13829,5 +13828,27 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void cancel_zerg_building(Unit* unit)
+	{
+		const u32 func_address = 0x0045DA40;
+		__asm {
+			PUSHAD
+			PUSH unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void update_building_construct_shields_amount(Unit* unit)
+	{
+		const u32 func_address = 0x0047B6A0;
+		__asm {
+			PUSHAD
+			MOV EBX, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }
