@@ -125,7 +125,34 @@ namespace
 		hooks::process_building_placement(unit, order_id, pos, target_unit_id);
 		__asm {
 			POPAD
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x0C
+		}
+	}
+
+	void __declspec(naked) cmdrecv_place_building_wrapper() { // 0048E190
+		static u32 order_id;
+		static u16 built_unit_id;
+		static Point16 position;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV position, EAX
+			POP EAX
+			MOV built_unit_id, AX
+			MOV order_id, ECX
+			PUSHAD
+		}
+		hooks::cmdrecv_place_building(order_id, built_unit_id, position);
+		__asm {
+			POPAD
+			MOV EAX, 0 // always 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
 		}
 	}
 }
@@ -134,10 +161,11 @@ namespace hooks
 {
 	void inject_cmdrecv_build_hooks()
 	{
-	//	jump_patch(cmdrecv_place_building_allowed_wrapper,	0x0048DBD0, 1);
-	//	jump_patch(cmdrecv_place_building_normal_wrapper,	0x0048E010, 0);
-	//	jump_patch(cmdrecv_place_addon_wrapper,				0x0048E0A0, 0);
-	//	jump_patch(cmdrecv_build_wrapper,					0x004C23C0, 3);
-	//	jump_patch(process_building_placement_wrapper,		0x0048DE70, 0);
+		jump_patch(cmdrecv_place_building_allowed_wrapper,	0x0048DBD0, 1);
+		jump_patch(cmdrecv_place_building_normal_wrapper,	0x0048E010, 0);
+		jump_patch(cmdrecv_place_addon_wrapper,				0x0048E0A0, 0);
+		jump_patch(cmdrecv_build_wrapper,					0x004C23C0, 3);
+		jump_patch(process_building_placement_wrapper,		0x0048DE70, 0);
+		jump_patch(cmdrecv_place_building_wrapper,			0x0048E190, 1);
 	}
 }

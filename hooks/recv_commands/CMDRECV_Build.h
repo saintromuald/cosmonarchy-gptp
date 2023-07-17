@@ -8,6 +8,7 @@ namespace hooks
 	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 built_unit_id);					// 0048E0A0
 	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 built_unit_id);							// 004C23C0
 	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id);	// 0048DE70
+	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position);				// 0048E190
 
 	void inject_cmdrecv_build_hooks();
 }

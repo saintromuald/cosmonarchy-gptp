@@ -13851,4 +13851,30 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void cmdrecv_place_addon(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id) {
+		const u32 func_address = 0x0048E0A0;
+		__asm {
+			PUSHAD
+			PUSH built_unit_id
+			PUSH pos_y
+			PUSH pos_x
+			MOV ECX, order_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void cmdrecv_place_building_normal(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id) {
+		const u32 func_address = 0x0048E010;
+		__asm {
+			PUSHAD
+			PUSH built_unit_id
+			PUSH order_id
+			PUSH pos_y
+			PUSH pos_x
+			CALL func_address
+			POPAD
+		}
+	}
 }

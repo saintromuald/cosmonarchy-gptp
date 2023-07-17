@@ -116,8 +116,8 @@ namespace hooks
 
 	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 built_unit_id) // 004C23C0
 	{
-		Unit* builder = helper::get_active_player_next_selection();
 		*unit_iterator_pos = 0;
+		Unit* builder = get_active_player_next_selection();
 		if (builder)
 		{
 			if (!get_active_player_next_selection()) // multiple selection not allowed
@@ -170,5 +170,18 @@ namespace hooks
 				}
 			}
 		}
+	}
+
+	// Hooked to debug Pylon-based construction. -Pr0nogo
+	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position) // 0048E190
+	{
+		if (units_dat::base_property[built_unit_id] & UnitProperty::Addon)
+		{
+			cmdrecv_place_addon(position.x, position.y, order_id, built_unit_id);
+		} else {
+			cmdrecv_place_building_normal(position.x, position.y, order_id, built_unit_id);
+		}
+		scbw::refresh_console();
+		return 0;
 	}
 }

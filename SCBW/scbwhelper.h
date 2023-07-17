@@ -1624,4 +1624,6 @@ namespace helper {
 
 	void cancel_zerg_building(Unit* unit);																										// 0045DA40
 	void update_building_construct_shields_amount(Unit* unit);																					// 0047B6A0
+	void cmdrecv_place_addon(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id);															// 0048E0A0
+	void cmdrecv_place_building_normal(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id);													// 0048E0A0
 }
