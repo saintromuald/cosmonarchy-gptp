@@ -933,9 +933,7 @@ LABEL_15:
 		if (*g_is_in_replay)
 		{
 			n_u = 'n';
-		}
-		else
-		{
+		} else {
 			n_u = aztp[*g_console_index];
 		}
 
@@ -986,5 +984,30 @@ LABEL_15:
 		}
 		*g_buttonset_dialog = final_dialog;
 		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::statbtn_dialog_interact, final_dialog);
+	}
+
+	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update) // 004E52E0
+	{
+		helper::show_dialog(dialog);
+		s32 new_amount = resource_amount - *recent_spending;
+		if ((!dialog->text && new_amount) || new_amount) {
+			if (instant_update) {
+				*recent_spending = resource_amount;
+			} else {
+				*recent_spending += (2 * (new_amount > 0) - 1) + (new_amount >> 4);
+			}
+		}
+
+		if ((u8*)dialog->user != resource_amount || dialog->graphic != graphic) {
+			dialog->graphic = graphic;
+			dialog->user = (u32*)*recent_spending;
+			sprintf_s(g_countdown_timer_strings[32 * dialog->index + 4], 32, "%d", *recent_spending);
+			dialog->text = g_countdown_timer_strings[32 * dialog->index + 4];
+
+			if (!(dialog->flags & BinDlgFlags::Highlighted)) {
+				dialog->flags != BinDlgFlags::Highlighted;
+				helper::update_dialog(dialog);
+			}
+		}
 	}
 }

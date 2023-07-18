@@ -48,7 +48,17 @@ namespace hooks {
 							overlay->free();
 						}
 					}
-					building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
+					switch (building->get_race())
+					{
+						case RaceId::Zerg:
+						{
+							building->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
+						} break;
+						case RaceId::Protoss:
+						{
+							helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
+						} break;
+					}
 					++building->main_order_state;
 				}
 			} break;
@@ -68,7 +78,6 @@ namespace hooks {
 			case 4: {
 				if (building->order_signal & 0x4) {
 					building->order_signal &= ~0x4;
-
 					if (helper::is_valid_building_morph(building_id) || building_id == UnitId::ProtossPylon) {
 						s32 hp_after_morph = building->hitpoints;
 						s32 shields_after_morph = building->shields_enabled() ? building->shields : 0;
@@ -85,9 +94,6 @@ namespace hooks {
 						}
 						if (building->shields_enabled()) {
 							shields_after_morph += units_dat::max_shield_points[building_id] - units_dat::max_shield_points[building->previous_unit_type];
-							if (shields_after_morph < 256) {
-								shields_after_morph = 0;
-							}
 						}	
 						
 						building->set_hitpoints(hp_after_morph);
@@ -161,7 +167,6 @@ namespace hooks {
 
 			if (unit->id == UnitId::ZergExcisant) {
 				Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
-
 				if (worker) {
 					helper::update_unit_stats_and_finish_building(worker);
 					helper::update_unit_strength(worker);
@@ -171,7 +176,6 @@ namespace hooks {
 					helper::refund_unit_train_cost(unit->create_origin, unit->player);
 					helper::display_last_network_error_for_player(unit->player);
 				}
-
 				unit->remove();
 			} else {
 				Thingy* thingy = 0;
@@ -620,7 +624,7 @@ namespace hooks
 		}
 
 		g_game_minerals[player] -= g_ai_minerals_reserve[player];
-		g_game_vespene[player] -= g_ai_vespene_reserve[player];
+		g_game_vespene[player]  -= g_ai_vespene_reserve[player];
 		unit->status = unit->status & ~UnitStatus::Completed;
 		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building) {
 			unit->current_buttonset = UnitId::Buttons_HatcheryMorphing;

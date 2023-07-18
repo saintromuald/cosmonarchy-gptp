@@ -670,7 +670,9 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	void drone_build_execute(Unit* unit) { // 0045D2E0
-		helper::stop_creep_disappearing_at_building(unit);
+		if (unit->get_race() == RaceId::Zerg) {
+			helper::stop_creep_disappearing_at_building(unit);
+		}
 		u32 unit_status = unit->status;
 		if (!scbw::unit_is_stunned(unit) || units_dat::base_property[unit->id] & UnitProperty::Building) {
 			if (unit_can_have_rally(unit)) {

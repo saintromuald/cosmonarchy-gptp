@@ -1187,6 +1187,8 @@ SCBW_DATA(UnitPath**,		g_path_array_start,					0x006BEE8C);
 SCBW_DATA(bool*,			g_is_expansion,						0x0058F440);
 SCBW_DATA(u32*,				g_is_demo,							0x005124D0);
 
+SCBW_DATA(char**,			g_countdown_timer_strings,			0x0068C240);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

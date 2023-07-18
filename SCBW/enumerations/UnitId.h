@@ -253,13 +253,13 @@ namespace UnitId
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
 		ZergSpirtithCesiant									= 292,		// Morphed from Cagrant Colony
-		ZergSkortrithCesiant									= 293,		// Morphed from Surkith Colony
+		ZergSkortrithCesiant								= 293,		// Morphed from Surkith Colony
 		ZergRakzogthRoost									= 303,		// Unused
 		ZergBegrozithBarrow									= 329,		// Unused
 		ZergChokralgantChazsal								= 330,		// Morphed from Izkag Iteth
 		ZergNephrilosk										= 350,		// Unused
-		ZergOcsalCesiant										= 354,		// Morphed from Cagrant Colony
-		ZergKazitrithCesiant									= 355,		// Morphed from Cagrant Colony
+		ZergOcsalCesiant									= 354,		// Morphed from Cagrant Colony
+		ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Colony
 		ZergEzigrisant										= 364,		// Morphed from Cagrant Colony
 
 	// Special-Unit

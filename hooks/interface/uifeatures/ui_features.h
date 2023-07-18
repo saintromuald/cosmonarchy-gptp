@@ -28,18 +28,19 @@ namespace hooks {
 
 	b32 check_hotkey_char(BinDlg* dialog, char hotkey);
 	char create_upgrade_level_tooltip(char* text);
-	s32 trigact_transmission(TriggerAction* trigger, char* a2);													// 004C7890
-	void draw_minimap_unit_box(u32 player);																		// 004A4650
-	void draw_all_minimap_boxes();																				// 004A4AC0
-	u32 get_cursor_type();																						// 004D1460
-	void cmdact_right_click_minimap(DialogEvent* dlg_event);													// 004563A0
-	void draw_vertical_line(u16 size, u16 x, u16 y);															// 0041D7D0
-	void __fastcall centerview_unit_group(u8 slot);																// 004967E0
-	void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);							// 004EFD90
-	b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);								// 004EF590
-	void draw_stat_button_image(BinDlg* dialog);																// 00456C30
-	void statbtn_button_update(BinDlg* button);																	// 00458900
-	void load_statdata_bin();																					// 00459B90
+	s32 trigact_transmission(TriggerAction* trigger, char* a2);																// 004C7890
+	void draw_minimap_unit_box(u32 player);																					// 004A4650
+	void draw_all_minimap_boxes();																							// 004A4AC0
+	u32 get_cursor_type();																									// 004D1460
+	void cmdact_right_click_minimap(DialogEvent* dlg_event);																// 004563A0
+	void draw_vertical_line(u16 size, u16 x, u16 y);																		// 0041D7D0
+	void __fastcall centerview_unit_group(u8 slot);																			// 004967E0
+	void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);										// 004EFD90
+	b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);											// 004EF590
+	void draw_stat_button_image(BinDlg* dialog);																			// 00456C30
+	void statbtn_button_update(BinDlg* button);																				// 00458900
+	void load_statdata_bin();																								// 00459B90
+	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
 
 	void inject_ui_features_hooks();
 
