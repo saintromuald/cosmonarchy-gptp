@@ -434,6 +434,38 @@ namespace
 		}
 	}
 
+	void __declspec(naked) print_stat_res_info_wrapper() // 004E52E0
+	{
+		static BinDlg* dialog;
+		static u16 graphic;
+		static u8** recent_spending;
+		static u8* resource_amount;
+		static b32 instant_update;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV graphic, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV recent_spending, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV resource_amount, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV instant_update, EAX
+			POP EAX
+			MOV dialog, EBX
+			PUSHAD
+		}
+		hooks::print_stat_res_info(dialog, graphic, recent_spending, resource_amount, instant_update);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -484,6 +516,7 @@ namespace hooks
 		jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);
 		jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);
 	//	jump_patch(load_statdata_bin_wrapper,				0x00459B90, 4);
+	//	jump_patch(print_stat_res_info_wrapper,				0x004E52E0, 0); // Crashes
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 
