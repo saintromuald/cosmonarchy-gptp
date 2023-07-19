@@ -3,55 +3,90 @@
 #include <SCBW/api.h>
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
-
 namespace hooks {
 	void orders_scribe_build(Unit* unit) { // 004E4D00
+		if (unit->unit_ai) {
+			unit->status |= UnitStatus::IsGathering;
+		}
+
 		switch (unit->main_order_state) {
 			case 0: {
-				++unit->main_order_state;
+				if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
+					++unit->main_order_state;
+				}
 			} break;
 			case 1: {
-				++unit->main_order_state;
+				u32 distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+				u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
+
+				if (distance / 256 > distance_wanted) {
+					if (unit->get_movable_state() != MovableState::NotReachedDestination) {
+						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+					}
+				} else {
+					helper::make_to_hold_position(unit);
+					++unit->main_order_state;
+				}
 			} break;
 			case 2: {
-				bool is_building_aquifer = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer;
-				if (helper::begin_building(unit)) {
-					Unit* built_unit = 0;
-					if (is_building_aquifer) {
-						built_unit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
-					} else {
-						built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
-					}
+				if (!(unit->movement_flags & MovementFlags::Accelerating)) {
+					bool is_building_aquifer = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer;
+					u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
-					unit->build_queue[unit->build_queue_slot] = UnitId::None;
-					if (built_unit) {
-						if (units_dat::shields_enabled[built_unit->id]) {
-							built_unit->shields += 3 * 256;
+					if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted)) {
+						if (unit->get_movable_state() != MovableState::NotReachedDestination) {
+							helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+						}
+					} else {
+						if (helper::begin_building(unit)) {
+							Unit* built_unit;
+
+							if (is_building_aquifer) {
+								built_unit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
+							} else {
+								built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+							}
+
+							unit->build_queue[unit->build_queue_slot] = UnitId::None;
+
+							if (built_unit) {
+								if (units_dat::shields_enabled[built_unit->id]) {
+									built_unit->shields += 3 * 256;
+								}
+
+								built_unit->create_origin = unit->id;
+								built_unit->sprite->player = unit->sprite->player;
+								helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
+
+								if (is_building_aquifer) {
+									built_unit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
+								}
+
+								built_unit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
+								unit->order_target.unit = built_unit;
+								helper::ai_training_overlord(built_unit, unit);
+								built_unit->order_computer(OrderId::BuildSelf2);
+								helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
+								++unit->main_order_state;
+								return;
+							} else {
+								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
+								helper::display_last_network_error_for_player(unit->player);
+							}
 						}
 
-						built_unit->create_origin = unit->id;
-						built_unit->sprite->player = unit->sprite->player;
-						helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
-
-						if (is_building_aquifer) {
-							built_unit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
-						}
-
-						built_unit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
-						unit->order_target.unit = built_unit;
-						helper::ai_training_overlord(built_unit, unit);
-						built_unit->order_computer(OrderId::BuildSelf2);
-						helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
-						++unit->main_order_state;
-						return;
-					} else {
-						helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
-						helper::display_last_network_error_for_player(unit->player);
+						unit->order_to_idle();
 					}
 				}
-				unit->order_to_idle();
 			} break;
 			case 3: {
+				Unit* target = unit->order_target.unit;
+				if (!target || target->id != UnitId::ProtossAquifer || unit->order_queue_head) {
+					unit->order_to_idle();
+				} else {
+					unit->order_to(OrderId::CanEnterGasMine, target);
+				}
+
 				for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				}

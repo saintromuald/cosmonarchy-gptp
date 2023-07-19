@@ -193,9 +193,6 @@ namespace
 				if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
-				}
-				if (unit->id == UnitId::ProtossPylon) {
-					helper::cancel_zerg_building(unit);
 				} else {
 					unit->remove();
 				}

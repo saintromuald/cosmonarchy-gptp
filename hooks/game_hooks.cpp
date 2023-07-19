@@ -2911,29 +2911,6 @@ namespace hooks {
 			}
 		}
 
-		// Assign Protoss power tiers
-		if (units_dat::base_property[unit->id] & UnitProperty::RequiredPsi) {
-			Point16 dims = {};
-			dims.x = *psi_field_grp_width;
-			dims.y = *psi_field_grp_height;
-
-			Box32 rect = {};
-			rect.x = unit->position.x;
-			rect.y = unit->position.y;
-			rect.w = dims.x;
-			rect.h = dims.y;
-			rect.x -= dims.x / 2;
-			rect.y -= dims.y / 2;
-
-			EntryArray units = {};
-			unit_search_rect(&units, rect);
-			unit_search_filter(&units, unit, FilterAlly | FilterBuilding);
-			unit_search_filter(&units, unit, 0, {UnitId::ProtossPylon});
-			if (units.count) {
-				unit_ext->values[ValueProtossPowerTier] = 1;
-			}
-		}
-
 		if (should_update_speed) {
 			unit->update_speed();
 		}
