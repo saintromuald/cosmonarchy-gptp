@@ -1147,8 +1147,6 @@ namespace hooks {
 					unit->remove_timer = broodspawn_max_time;
 				}
 			} break;
-
-			// Masters
 		}
 
 		bool should_update_speed = false;
@@ -2760,6 +2758,7 @@ namespace hooks {
 
 		// Emergency Detonation - destroy structure
 		if (unit_ext->timers[TimerEmergencyDetonation] == 1) {
+			// TODO: search
 			auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 			const u32 radius = 3 * 32;
 			scbw::UnitFinder(
@@ -2909,6 +2908,29 @@ namespace hooks {
 			unit->update_speed(); // Have to do this here because of the Diadem bandage. -Pr0nogo
 			if (unit->id == UnitId::TerranDiadem) {
 				unit->flingy_turn_rate = 27;
+			}
+		}
+
+		// Assign Protoss power tiers
+		if (units_dat::base_property[unit->id] & UnitProperty::RequiredPsi) {
+			Point16 dims = {};
+			dims.x = *psi_field_grp_width;
+			dims.y = *psi_field_grp_height;
+
+			Box32 rect = {};
+			rect.x = unit->position.x;
+			rect.y = unit->position.y;
+			rect.w = dims.x;
+			rect.h = dims.y;
+			rect.x -= dims.x / 2;
+			rect.y -= dims.y / 2;
+
+			EntryArray units = {};
+			unit_search_rect(&units, rect);
+			unit_search_filter(&units, unit, FilterAlly | FilterBuilding);
+			unit_search_filter(&units, unit, 0, {UnitId::ProtossPylon});
+			if (units.count) {
+				unit_ext->values[ValueProtossPowerTier] = 1;
 			}
 		}
 

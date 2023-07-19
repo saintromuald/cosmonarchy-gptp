@@ -15,34 +15,34 @@ namespace hooks {
 
 	void orders_zerg_build_self(Unit* building) { // 0045D500
 		UnitExt* building_ext = get_unit_ext(building);
-		u16 building_id = building->build_queue[building->build_queue_slot];
+		u16 morph_id = building->build_queue[building->build_queue_slot];
 		bool not_constructing = true;
-		if (helper::is_valid_building_morph(building_id) || building_id == UnitId::ProtossPylon) {
+		if (helper::is_valid_building_morph(morph_id) || morph_id == UnitId::ProtossPylon) {
 			not_constructing = false;
 		}
 		BuildingModifier modifier = get_building_modifier(building, 0, not_constructing);
 
-		if (!scbw::is_zerg_building_morph_result(building_id)) {
-			building_id = building->id;
+		if (!scbw::is_zerg_building_morph_result(morph_id)) {
+			morph_id = building->id;
 		}
 
 		switch (building->main_order_state) {
 			case 0: {
-				scbw::prepare_building_area(building->position, building_id);
+				scbw::prepare_building_area(building->position, morph_id);
 				// Remove statuses if the source worker had them before morphing
 				building->status &= ~UnitStatus::NoCollide;
 				building->status &= ~UnitStatus::IsGathering;
-				if (helper::is_valid_building_morph(building_id)) {
+				if (helper::is_valid_building_morph(morph_id)) {
 					building->create_origin = building->id;
 				}
 				++building->main_order_state;
-				if (units_dat::shields_enabled[building_id]) {
+				if (units_dat::shields_enabled[morph_id]) {
 					building->shields = 3 * 256;
 				}
 			} // fall
 			case 1: {
-				if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
-					if (building->id == UnitId::ZergExcisant || building->id == UnitId::ZergEzigrisant) {
+				if (building->remaining_build_time < 3 * units_dat::time_cost[morph_id] >> 2) {
+					if (building->id == UnitId::ZergExcisant) {
 						Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
 						if (overlay) {
 							overlay->free();
@@ -63,7 +63,7 @@ namespace hooks {
 				}
 			} break;
 			case 2: {
-				if (building->remaining_build_time < units_dat::time_cost[building_id] >> 1) {
+				if (building->remaining_build_time < units_dat::time_cost[morph_id] >> 1) {
 					building->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
 					++building->main_order_state;
 				}
@@ -78,7 +78,7 @@ namespace hooks {
 			case 4: {
 				if (building->order_signal & 0x4) {
 					building->order_signal &= ~0x4;
-					if (helper::is_valid_building_morph(building_id) || building_id == UnitId::ProtossPylon) {
+					if (helper::is_valid_building_morph(morph_id) || (unit_id_is_pylon(morph_id) && morph_id != UnitId::ProtossPylon)) {
 						s32 hp_after_morph = building->hitpoints;
 						s32 shields_after_morph = building->shields_enabled() ? building->shields : 0;
 
@@ -86,19 +86,19 @@ namespace hooks {
 						helper::increment_unit_scores_ex(building, -1, 0);
 
 						building->status &= ~UnitStatus::Completed;
-						helper::replace_unit_with_id(building, building_id);
+						helper::replace_unit_with_id(building, morph_id);
 
-						hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
+						hp_after_morph += units_dat::max_hitpoints[morph_id] - units_dat::max_hitpoints[building->previous_unit_type];
 						if (hp_after_morph < 256) {
 							hp_after_morph = 256;
 						}
 						if (building->shields_enabled()) {
-							shields_after_morph += units_dat::max_shield_points[building_id] - units_dat::max_shield_points[building->previous_unit_type];
-						}	
+							shields_after_morph += units_dat::max_shield_points[morph_id] - units_dat::max_shield_points[building->previous_unit_type];
+						}
 						
 						building->set_hitpoints(hp_after_morph);
 						if (building->shields_enabled()) {
-							u32 max_shields = units_dat::max_shield_points[building->id] << 8;
+							u32 max_shields = units_dat::max_shield_points[morph_id] << 8;
 							building->shields = Min(shields_after_morph, max_shields);
 						}
 						building->remaining_build_time = 0;
@@ -117,7 +117,7 @@ namespace hooks {
 					}
 
 					if (building->get_race() == RaceId::Zerg) {
-						helper::spread_initial_creep(building_id, building->sprite->position.x, building->sprite->position.y);
+						helper::spread_initial_creep(morph_id, building->position.x, building->position.y);
 					}
 				}
 				return;
@@ -132,7 +132,7 @@ namespace hooks {
 		s32 max_shields = 0;
 		if (building->shields_enabled()) {
 			shield_gain = building->shield_gain * modifier.multiplier;
-			max_shields = units_dat::max_shield_points[building->id] << 8;
+			max_shields = units_dat::max_shield_points[morph_id] << 8;
 		}
 
 		if (building->remaining_build_time) {
@@ -147,7 +147,7 @@ namespace hooks {
 			}
 		}
 
-		if (!scbw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
+		if (!scbw::is_zerg_building_morph_result(morph_id) || building_ext->values[ValueIsNydusExit]) {
 			building->set_hitpoints(building->hitpoints + hp_gain);
 			if (shield_gain) {
 				if (building->shields + shield_gain >= max_shields) {

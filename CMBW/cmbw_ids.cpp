@@ -778,3 +778,8 @@ u32 get_scribe_warp_distance(u32 unit_id) {
 		}
 	}
 }
+
+bool unit_id_is_pylon(u32 unit_id)
+{
+	return unit_id == UnitId::ProtossPylon;
+}
