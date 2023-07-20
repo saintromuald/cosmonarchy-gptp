@@ -128,7 +128,7 @@ SCBW_DATA(const char*,		g_string_empty,		0x00501B7D);
 struct UnitsSel {
 	Unit* unit[SelectionCap];
 };
-SCBW_DATA(UnitsSel*,		g_client_selection_group,		0x00597208);
+SCBW_DATA(UnitsSel*,		g_client_selection_group,		new_client_selection_group);
 SCBW_DATA(Unit*,			g_client_selection_group_end,	0x00597238);
 SCBW_DATA(u8*,				g_client_selection_count,		0x0059723D);
 SCBW_DATA(Point16*,			g_selection_start,				0x0066FF4C);
@@ -349,7 +349,7 @@ SCBW_DATA(u8*,			off_50CE81,					0x0050CE81);
 SCBW_DATA(u8*,			off_50CE82,					0x0050CE82);
 
 // For draw_building_info
-SCBW_DATA(s32*,			g_selection_group_hp,		0x006CA94C);
+SCBW_DATA(s32*,			g_selection_group_hp,		new_selGroupHp);
 SCBW_DATA(s16*,			g_ui_energy,				0x006CAC0C);
 SCBW_DATA(s32*,			g_ui_shields,				0x006CA9EC);
 SCBW_DATA(char*,		g_redraw_transport_ui,		0x006CA9F0);
@@ -805,7 +805,7 @@ SCBW_DATA(u32*,		g_image_overlay_special,	0x00667B00);
 //////////////////////////////////////////////////////////////// @{
 
 SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
-SCBW_DATA(UnitsSel*, active_player_selection, 0x006284B8);
+SCBW_DATA(UnitsSel*, active_player_selection, new_active_selection);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);
 
@@ -813,11 +813,11 @@ SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x
 struct PlayersSel {
 	Unit* unit[PLAYABLE_PLAYER_COUNT][SelectionCap];
 };
-SCBW_DATA(PlayersSel*, players_selections, 0x006284E8);
+SCBW_DATA(PlayersSel*, players_selections, new_players_selections);
 struct PlayerSel {
 	Unit* unit[SelectionCap];
 };
-SCBW_DATA(const PlayerSel*, current_unit_selection, 0x006284B8);
+SCBW_DATA(const PlayerSel*, current_unit_selection, new_active_selection);
 
 typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
@@ -1008,7 +1008,7 @@ SCBW_DATA(u16*,			is_unit_in_point_x_pos,			0x006509CC);
 SCBW_DATA(u16*,			is_unit_in_point_y_pos,			0x006509CE);
 
 // For input_game_right_mouse_click
-SCBW_DATA(Unit**,		local_selection_group_2,		0x0059724C);
+SCBW_DATA(Unit**,		local_selection_group_2,		new_local_selection_group);
 
 // For init_damage_overlay_counts
 SCBW_DATA_REF(u8*,		g_building_overlay_state_max,	0x005240D0);
@@ -1099,7 +1099,7 @@ SCBW_DATA(u32*,			g_want_visibility_hash_update,		0x00629D90);
 SCBW_DATA(char*,		g_region_vision_hash,				0x0063FE38);
 SCBW_DATA(u32*,			g_current_hash_offset,				0x0063FD28);
 
-SCBW_DATA(ControlGroupPlayerArray*, control_group_array,	0x0057FE60);
+SCBW_DATA(ControlGroupPlayerArray*, control_group_array,	new_saved_selections);
 
 // For remove_healthbar
 SCBW_DATA(Layer*,		g_game_layer,						0x006CEFB4);

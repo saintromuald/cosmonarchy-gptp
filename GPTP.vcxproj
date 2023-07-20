@@ -290,6 +290,7 @@
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="SCBW\scbwdata.cpp" />
     <ClCompile Include="SCBW\Storm.cpp" />
+    <ClCompile Include="selection_extender_df.cpp" />
     <ClCompile Include="trigger_system\trigger_events.cpp" />
     <ClCompile Include="trigger_system\trigger_parser.cpp" />
     <ClCompile Include="threshold.cpp" />
@@ -639,6 +640,7 @@
     <ClInclude Include="SCBW\enumerations\PortraitId.h" />
     <ClInclude Include="SCBW\Storm.h" />
     <ClInclude Include="include\discord_game_sdk.h" />
+    <ClInclude Include="selection_extender_df.h" />
     <ClInclude Include="trigger_system\trigger_events.h" />
     <ClInclude Include="trigger_system\trigger_parser.h" />
     <ClInclude Include="threshold.h" />

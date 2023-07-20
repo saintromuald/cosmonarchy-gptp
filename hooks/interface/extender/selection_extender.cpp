@@ -1,5 +1,6 @@
 #include "selection_extender.h"
 #include "SCBW/api.h"
+#include "selection_extender_df.h"
 
 namespace hooks {
 	s32 select_dual_birth_units(Unit* unit) { // 0045D040
