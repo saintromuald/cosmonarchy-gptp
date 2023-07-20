@@ -193,9 +193,8 @@ namespace
 				if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
-				} else {
-					unit->remove();
 				}
+				unit->remove();
 			} else if (unit->get_race() == RaceId::Terran) {
 				if (unit->id == UnitId::TerranNuclearMissile)
 				{
