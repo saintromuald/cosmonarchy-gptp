@@ -289,7 +289,7 @@ SCBW_DATA(u16*,			next_sc_main_state,			0x0051CE90);
 SCBW_DATA(u32*,			replay_end_frame,			0x006D0F31);
 
 // For level_cheat_create
-SCBW_DATA(u32*,			level_cheat_unlocked,		0x006D11C0);
+SCBW_DATA(u32*,			g_ophelia_enabled,			0x006D11C0);
 SCBW_DATA(char*,		player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
@@ -1187,7 +1187,11 @@ SCBW_DATA(UnitPath**,		g_path_array_start,					0x006BEE8C);
 SCBW_DATA(bool*,			g_is_expansion,						0x0058F440);
 SCBW_DATA(u32*,				g_is_demo,							0x005124D0);
 
+// For print_stat_res_info
 SCBW_DATA(char**,			g_countdown_timer_strings,			0x0068C240);
+
+// For load_menu_glu_expcampaign
+SCBW_DATA(u32*,				g_gl_glues_mode,					0x006D11BC);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

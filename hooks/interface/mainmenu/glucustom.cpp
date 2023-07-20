@@ -742,4 +742,49 @@ namespace hooks
 			JMP		preview_minimap_patch_EF06B
 		}
 	}
+
+	void glu_expcampaign_custom_ctrl_id()
+	{
+		*g_ophelia_enabled = 0;
+		*g_multiplayer_mode = 0;
+		helper::load_campaign_progress();
+		BinDlg* campaign_dialog = 0; // helper::load_full_menu_dialog("rez\\gluExpCmpgn.bin");
+
+		switch (helper::glu_load_bin_dialog(campaign_dialog, helper::glu_expcampaign_custom_ctrl_id))
+		{
+			case 5:
+			{
+				*g_gl_glues_mode = 13; // GLUE_LOAD;
+			} break;
+			case 6:
+			{
+				*g_gl_glues_mode = 9; // GLUE_READY_P;
+			} break;
+			case 7:
+			{
+				*g_gl_glues_mode = 7; // GLUE_READY_T;
+			} break;
+			case 8:
+			{
+				*g_gl_glues_mode = 8; // GLUE_READY_Z;
+			} break;
+			case 9:
+			{
+				*g_gl_glues_mode = 5; // GLUE_LOGIN;
+			} break;
+			case 10:
+			{
+				*g_gl_glues_mode = 11; // GLUE_CREATE;
+			} break;
+			case 11:
+			{
+				*g_gl_glues_mode = 12; // GLUE_CREATE_MULTI;
+			} break;
+			default:
+			{
+				*g_gl_glues_mode = 0; // GLUE_MAIN_MENU;
+			} break;
+		}
+		helper::change_menu();
+	}
 }

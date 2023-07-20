@@ -13895,4 +13895,62 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void load_campaign_progress()
+	{
+		const u32 func_address = 0x004B5050;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
+
+	BinDlg* load_full_menu_dialog(u32 filename, void* default_value, char* unused, u32 read, char* log_filename, u32 log_line)
+	{
+		static BinDlg* result;
+		const u32 func_address = 0x004DDBE0;
+		__asm {
+			PUSHAD
+			PUSH log_line
+			PUSH log_filename
+			PUSH read
+			MOV ECX, filename
+			MOV EDX, default_value
+			MOV EDI, unused
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 glu_load_bin_dialog(BinDlg* dialog, void* proc)
+	{
+		static u32 result;
+		const u32 func_address = 0x0041A080;
+		__asm {
+			PUSHAD
+			PUSH proc
+			MOV EDI, 0 // unused
+			MOV EAX, dialog
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 change_menu()
+	{
+		static u32 result;
+		const u32 func_address = 0x004DCFA0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

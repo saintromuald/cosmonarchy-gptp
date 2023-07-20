@@ -100,9 +100,9 @@ namespace hooks
 		char v21; // [esp+194h] [ebp-40h]
 		char v22; // [esp+1B4h] [ebp-20h]
 
-		if ( !level_cheat_unlocked )
+		if ( !g_ophelia_enabled )
 		return 1;
-		level_cheat_unlocked = 0;
+		g_ophelia_enabled = 0;
 		if ( !player_name[0] )
 		{
 		if ( *g_network_table > 0x47u )

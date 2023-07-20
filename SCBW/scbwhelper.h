@@ -24,6 +24,7 @@ namespace helper {
 	SCBW_FUNC(0x004D27A0, void* __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, u32 buffer, u32 arg4, u32 arg5);
 	SCBW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
 	SCBW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, void* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
+	SCBW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
@@ -1628,4 +1629,9 @@ namespace helper {
 	void cmdrecv_place_building_normal(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id);													// 0048E0A0
 
 	u32 distance_from_box_corner(Unit* unit, u16 pos_x, u16 pos_y);																				// 00430E50
+
+	void load_campaign_progress();																												// 004B5050
+	BinDlg* load_full_menu_dialog(u32 filename, void* default_value, char* unused, u32 read, char* log_filename, u32 log_line);					// 004DDBE0
+	u32 glu_load_bin_dialog(BinDlg* dialog, void* proc);																						// 0041A080
+	u32 change_menu();																															// 004DCFA0
 }
