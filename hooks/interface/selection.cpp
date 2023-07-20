@@ -27,7 +27,7 @@ namespace hooks
 	}
 
 	// Function used by Ctrl+Click (select all units of same type)
-	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
+	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds) // 0046F0F0
 	{
 		sort_unit_selection(units_in_bounds);
 		Unit* current_unit;
@@ -94,7 +94,6 @@ namespace hooks
 						}
 						if (current_index_in_unit_list != 0)
 						{
-							// 0046F150
 							u32 index = current_index_in_unit_list;
 							do
 							{
@@ -104,15 +103,13 @@ namespace hooks
 								{
 									dont_add_to_list = true;
 								}
-							}
-							while (index != 0 && !dont_add_to_list);
+							} while (index != 0 && !dont_add_to_list);
 						}
 					}
 				}
 
 				if (!dont_add_to_list)
 				{
-					// 0046F161
 					// if the unit sprite is visible, perform additionnal visibility test, else skip the unit
 					if (current_unit->sprite->visibility_status & (u8)*g_player_visions)
 					{
@@ -124,49 +121,31 @@ namespace hooks
 								dont_add_to_list = true;
 							}
 						}
-					}
-					else
-					{
+					} else {
 						dont_add_to_list = true;
 					}
 
 					if (!dont_add_to_list)
 					{
-						// 0046F18C
 						if (helper::unit_is_unselectable(current_unit->id))
 						{
 							dont_add_to_list = true;
-						}
-						else if (!helper::unit_is_standard_and_movable(current_unit))
-						{
+						} else if (!helper::unit_is_standard_and_movable(current_unit)) {
 							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						}
-						else if (*g_is_in_replay)
-						{
-							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						}
-						else if (current_unit->player != *g_local_nation_id)
-						{
-							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						}
-						else
-						{
-							// 0046F1C5
+						} else if (*g_is_in_replay) {
+							keep_for_empty_list_case = true;
+						} else if (current_unit->player != *g_local_nation_id) {
+							keep_for_empty_list_case = true;
+						} else {
 							if (unit)
 							{
 								// all units should belong to the same player (the one owning the clicked unit)
 								if (unit->player != current_unit->player)
 								{
 									dont_add_to_list = true;
-								}
-								// select only units with same Id
-								else if (unit->id != current_unit->id)
-								{
-									dont_add_to_list = true;
-								}
-								else
-								{
-									// 0046F1D9
+								} else if (unit->id != current_unit->id) {
+									dont_add_to_list = true; // select only units with same id
+								} else {
 									// equivalent to "unit->status XOR current_unit->status"
 									// keep the flags appearing in only 1 of the variables
 									u32 mixed_flags = (~(unit->status) & current_unit->status) | (unit->status & ~(current_unit->status));
@@ -201,23 +180,17 @@ namespace hooks
 
 							if (!dont_add_to_list)
 							{
-								// 0046F203
-								// 0x0046F208 (use of SelectionCap)
-								if (current_index_in_unit_list >= SelectionCap) // action when unit_list is full
-								{
+								if (current_index_in_unit_list >= SelectionCap) { // action when unit_list is full 
 									stop_big_loop = true; // This was added, so sorting by cursor is respected, not sure what was the role of the original call
 
 									// helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
-								}
-								else
-								{
+								} else {
 									if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
 										has_buildings = true;
 									} else {
 										has_units = true;
 									}
 
-									// 0046F217
 									// Add current_unit to unit_list
 									unit_list[current_index_in_unit_list] = current_unit;
 									current_index_in_unit_list++;
@@ -233,7 +206,6 @@ namespace hooks
 				backup_current_unit = current_unit;
 			}
 
-			// 0046F226
 			// select next unit in bounds
 			units_in_bounds += 1; // this actually advance by 4 bytes
 			current_unit = *units_in_bounds;
@@ -247,45 +219,34 @@ namespace hooks
 			}
 		}
 
-		// 0046F242
 		if (current_index_in_unit_list == 0)
 		{
 			// if current_index_in_unit_list == 0, the list is empty and cannot be used, so another solution is found here
 			if (!backup_current_unit)
 			{
-				// 0046F24E
 				if (!unit)
 				{
 					current_index_in_unit_list = 0; // return 0 (no list)
-				}
-				else
-				{
-					// 0046F252
+				} else {
 					unit_list[0] = unit;
 					current_index_in_unit_list = 1; // return 1 (the clicked unit alone)
 				}
-			}
-			else
-			{
-				// 0046F264
+			} else {
 				if (unit)
 				{
 					unit_list[0] = unit;
 					current_index_in_unit_list = 1; // return 1 (the clicked unit alone)
-				}
-				else
-				{
+				} else {
 					unit_list[0] = backup_current_unit;
 					current_index_in_unit_list = 1; // return 1 (an unit preserved by keep_for_empty_list_case)
 				}
 			}
-		}	
-
+		}
 		return current_index_in_unit_list;
 	}
 
-	/// Function used by Click on unit (possibly with key pressed)
-	void unit_selection_click(Unit* clicked_unit)
+	// Function used by Click on unit (possibly with key pressed)
+	void unit_selection_click(Unit* clicked_unit) // 0046FB40
 	{
 		Unit* local_temp_array_1[SelectionCap];	// used instead of an array starting from [EBP-3C]
 		Unit* local_temp_array_2[SelectionCap];	// used instead of an array starting from [EBP-6C]

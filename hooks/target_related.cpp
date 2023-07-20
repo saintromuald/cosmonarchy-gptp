@@ -11,77 +11,64 @@
 
 namespace hooks
 {
-	bool is_unit_target_out_of_max_range(Unit* a1, Unit* a2) // 00476430
+	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) // 00476430
 	{
-		Unit* _unit;
-		Unit* finalUnit;
-		unsigned __int8 _wpn;
-		__int16 _id;
-		s32 _maxRange;
-		s32 v8;
-
-		_unit = a1;
-		if (!is_target_visible(a2, a1))
+		if (!helper::is_target_visible(unit, target))
 		{
 			return 1;
 		}
-		finalUnit = _unit->subunit;
-		if (!finalUnit || !(units_dat::group_flags[(unsigned __int16)finalUnit->id].is_building))
+		Unit* final_unit = unit->subunit;
+		if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit))
 		{
-			finalUnit = _unit;
+			final_unit = unit;
 		}
-		if (a2->status & UnitStatus::InAir)
+
+		u32 weapon_id = WeaponId::None;
+		if (target->status & UnitStatus::InAir)
 		{
-			_wpn = units_dat::air_weapon[(unsigned __int16)finalUnit->id];
-		}
-		else
+			weapon_id = units_dat::air_weapon[final_unit->id];
+		} else if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
 		{
-			_id = finalUnit->id;
-			if (_id != UnitId::ZergLakizilisk || finalUnit->status & 0x10)
-			{
-				_wpn = units_dat::ground_weapon[_id];
-			}
-			else
-			{
-				_wpn = -126;
-			}
+			weapon_id = units_dat::ground_weapon[final_unit->id];
 		}
-		if (_wpn == -126)
+
+		if (weapon_id == WeaponId::None)
 		{
 			return 0;
 		}
 
-		_maxRange = helper::get_unit_max_weapon_range(_unit, _wpn);
-		ByteOperations::SetLowByte(v8, helper::is_target_within_min_movement_range(a2, finalUnit, _maxRange));
-		return v8 == 0;
+		u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
+		return !helper::is_target_within_min_movement_range(final_unit, target, max_range);
 	}
 
-	s32 is_ready_to_attack(Unit* a1, unsigned __int8 a2) // 00476640
+	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) // 00476640
 	{
-		Unit* v2; // esi
-		Unit* v4; // ecx
-		u32 v5; // eax
-		u32 v6; // eax
-		u32 v7; // edi
-		__int16 v8; // cx
-
-		v2 = a1;
-		if (a1->movement_flags & 8)
-			return 0;
-		v4 = a1->order_target.unit;
-		if (v4)
-			v5 = helper::get_distance_to_unit(a1, v4);
-		else
-			v5 = helper::distance_from_dbox_corner(a1, a1->order_target.pt.x, a1->order_target.pt.y);
-		v7 = v5;
-		v6 = weapons_dat::min_range[a2];
-		if (v6 && v7 < v6 || v7 > helper::get_unit_max_weapon_range(v2, a2) || v2->pathing_flags & 2)
-			return 0;
-		v8 = v2->next_target_waypoint.x;
-		if ((v8 != v2->position.x || v2->next_target_waypoint.y != v2->position.y)
-			&& !helper::is_angle_in_attack_angle(v2->next_target_waypoint.y, v8, v2, a2))
+		if (unit->movement_flags & MovementFlags::StartingAttack)
 		{
-			v2->order_queue_timer = 0;
+			return 0;
+		}
+
+		u32 distance = 0;
+		Unit* target = unit->order_target.unit;
+		if (target && !target->is_dead())
+		{
+			distance = helper::get_distance_to_unit(unit, target);
+		} else {
+			distance = helper::distance_from_box_corner(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+		}
+
+		u32 min_range = weapons_dat::min_range[weapon_id];
+		if (min_range && distance < min_range
+		||  distance > helper::get_unit_max_weapon_range(unit, weapon_id)
+		||  unit->pathing_flags & PathingFlags_IsStacked)
+		{
+			return 0;
+		}
+
+		if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
+		&&  !helper::is_angle_in_attack_angle(unit->next_target_waypoint.y, unit->next_target_waypoint.x, unit, weapon_id))
+		{
+			unit->order_queue_timer = 0;
 			return 0;
 		}
 		return 1;
@@ -99,7 +86,7 @@ namespace hooks
 				return 1;
 			}
 		}
-		if (!is_target_visible(final_target, attacker))
+		if (!helper::is_target_visible(attacker, final_target))
 		{
 			return 0;
 		}
@@ -140,153 +127,6 @@ namespace hooks
 		return helper::is_target_within_min_movement_range(final_target, final_attacker, max_range);
 	}
 
-	char can_cast_ordered_spell_now(Unit* a1) // 00491DB0
-	{
-		Unit* v1; // esi
-		u32 v2; // eax
-		Unit* v3; // edi
-		s32 v4; // ebx
-		s32 v5; // eax
-		s32 v6; // edi
-		s32 v7; // ST14_4
-		s32 v8; // ebx
-		u32 v9; // ebx
-
-		v1 = a1;
-		v2 = is_unit_visible(a1);
-		if (v2)
-		{
-			v3 = v1->order_target.unit;
-			if (v3)
-			{
-				v4 = helper::get_unit_max_weapon_range(v1, orders_dat::order_weapon_id[(unsigned __int8)v1->main_order_id]);
-				if (v1->movement_flags & 2)
-				{
-					if (!(v3->movement_flags & 2))
-						goto LABEL_14;
-					v5 = (unsigned __int8)(v3->velocity_direction_1 - v1->velocity_direction_1);
-					if (v5 > 128)
-						v5 = 256 - v5;
-					if (v5 > 32)
-						LABEL_14:
-					v4 += helper::get_flingy_halt_distance(v1) >> 8;
-				}
-				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)is_target_within_min_range(v1, v4, v3)); // Needs fixing
-			}
-			else
-			{
-				v6 = v1->order_target.pt.y;
-				v7 = v1->order_target.pt.x;
-				v8 = helper::get_unit_max_weapon_range(v1, orders_dat::order_weapon_id[(unsigned __int8)v1->main_order_id]);
-				v9 = (helper::get_flingy_halt_distance(v1) >> 8) + v8;
-				v2 = v9 >= helper::get_distance_fast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
-			}
-		}
-		return v2;
-	}
-
-	void orders_watch_target(Unit* a1) // 0047BAB0
-	{
-		Unit* v1; // esi
-		Unit* v2; // ebx
-		s32 v3; // eax
-		Unit* v4; // ebx
-		Unit* v5; // edi
-		unsigned __int8 v6; // bl
-		unsigned __int16 v7; // ax
-		u32 v8; // eax
-		s32 v9; // eax
-		s32 v10; // eax
-		Unit* target; // [esp+Ch] [ebp-4h]
-
-		v1 = a1;
-		v2 = a1->order_target.unit;
-		if (!v2)
-		{
-			goto LABEL_22;
-		}
-		ByteOperations::SetLowByte(v3, helper::unit_can_attack_target(v2, a1, 1));
-		if (!v3)
-		{
-			goto LABEL_22;
-		}
-		v4 = v1->order_target.unit;
-		target = v1->order_target.unit;
-		if (v4)
-		{
-			if (!is_target_visible(v4, v1))
-			{
-				goto LABEL_23;
-			}
-			v5 = v1->subunit;
-			if (!v5 || !(units_dat::group_flags[(unsigned __int16)v5->id].is_building))
-			{
-				v5 = v1;
-			}
-			if (v4->status & 4)
-			{
-				v6 = units_dat::air_weapon[(unsigned __int16)v5->id];
-			}
-			else
-			{
-				v7 = v5->id;
-				if (v7 != 103 || v5->status & 0x10)
-				{
-					v6 = units_dat::ground_weapon[v7];
-				}
-				else
-				{
-					v6 = 0x82;
-				}
-			}
-			if (v6 >= (unsigned __int8)0x82
-				|| (v8 = weapons_dat::min_range[v6]) != 0 && helper::is_target_within_min_range(v5, v8, target)
-				|| (v9 = helper::get_unit_max_weapon_range(v1, v6), ByteOperations::SetLowByte(v10, (helper::is_target_within_min_movement_range(target, v5, v9), !v10))))
-			{
-			LABEL_23:
-				if (helper::get_right_click_action_order(v1) == 3)
-			LABEL_22:
-				{
-					helper::unknown_orders_func((s32)v1, v1->order_target.pt.x, v1->order_target.pt.y);
-				}
-			}
-		}
-	}
-
-	s32 generic_right_click_unit_proc_2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID) // 00455E00
-	{
-		s32 result = 0;
-		if (unit->status & UnitStatus::GroundedBuilding)
-		{
-			if (unit->is_factory())
-			{
-				result = OrderId::RallyPointToTile - (target != 0);
-			} else {
-				result = OrderId::Nothing2;
-			}
-			return result;
-		}
-		if (!target) {
-			return OrderId::Move;
-		}
-		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target, 0)) {
-			return OrderId::Pickup2;
-		}
-		if (helper::unit_is_active_transport(target) && helper::can_enter_transport(target, unit)) {
-			return OrderId::EnterTransport;
-		}
-		if (target->status & UnitStatus::Burrowed) {
-			return OrderId::Move;
-		}
-		if (target->status & UnitStatus::Invincible || helper::get_unit_ability_error_stat_string(target, unit->player, 12) != 0)
-		{
-			result = (unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
-		} else {
-			result = OrderId::InfestMine2;
-		}
-		return result;
-	}
-
 	Unit* cmdrecv_hold_position(s32 a1) // 004C20C0
 	{
 		*((s8*)&g_map_height_pixels + 2) = 0;
@@ -320,12 +160,13 @@ namespace hooks
 		return result;
 	}
 
-	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
+	// Hooked for the cloak rewrite. - Pr0nogo
+	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) // 00401D60
 	{
 		return target->status & 0x300 && !((1 << unit->player) & target->detection_status);
 	}
 
-	// Hooked to help with cloak rewrite - Pr0nogo
+	// Hooked to help with cloak rewrite. - Pr0nogo
 	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
 		s32 player = 1 << unit->player;
@@ -596,7 +437,7 @@ namespace hooks
 								}
 								return;
 							}
-							if (helper::is_target_visible(unit_target, unit))
+							if (helper::is_target_visible(unit, unit_target))
 							{
 								Unit* subunit = unit->subunit;
 								if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit))
@@ -663,15 +504,11 @@ namespace hooks
 			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, range * 32))
 			{
 				result = 1;
-			}
-			else
-			{
+			} else {
 				helper::issue_order_targeting_nothing(hangar_unit, OrderId::Return);
 				result = 0;
 			}
-		}
-		else
-		{
+		} else {
 			u8 steward_order_id = hangar_unit->main_order_id;
 			hangar_unit->user_action_flags |= 1u;
 			if (steward_order_id)
@@ -793,14 +630,10 @@ namespace hooks
 							if (fow_unit_id == UnitId::None)
 							{
 								helper::is_order_valid(order_id, unit, target, target, &error);
-							}
-							else
-							{
+							} else {
 								helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
 							}
-						}
-						else
-						{
+						} else {
 							scbw::print("can target spell");
 							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
 							{
@@ -854,7 +687,7 @@ namespace hooks
 		iterate_selection:
 			selected_units = selected_units_2 + 1;
 			selected_units_2++;
-			if (selected_units_2 >= &g_client_selection_group_end) {
+			if (selected_units_2 >= &new_client_selection_group[SelectionCap]) {
 				break;
 			}
 		}
@@ -880,9 +713,7 @@ namespace hooks
 				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, race + 156);
 				return;
 			}
-		}
-		else
-		{
+		} else {
 			if (energy_cost)
 			{
 				if (!can_target_spell)
@@ -898,9 +729,7 @@ namespace hooks
 						if (error_type_1 < *g_stat_txt_tbl)
 						{
 							error_string_2 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[error_type_1 + 1];
-						}
-						else
-						{
+						} else {
 							error_string_2 = "";
 						}
 					}
@@ -912,15 +741,14 @@ namespace hooks
 			}
 			error_type_2 = error;
 		}
+
 		if (error_type_2 == -1)
 		{
 			UnitExt* unit_ext = get_unit_ext(active_unit);
 			unit_ext->values[ValueUnitResponseOrder] = order_id;
 			hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
 			helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
-		}
-		else
-		{
+		} else {
 			u8 active_player = active_unit->player;
 			u16 error_string_id = error_type_2 - 1;
 			if (error_type_2)
@@ -928,14 +756,10 @@ namespace hooks
 				if (error_string_id < *g_stat_txt_tbl)
 				{
 					helper::get_stat_txt_string(active_unit, active_player, (char*)(g_stat_txt_tbl + g_stat_txt_tbl[error_string_id + 1]));
-				}
-				else
-				{
+				} else {
 					helper::get_stat_txt_string(active_unit, active_player, "");
 				}
-			}
-			else
-			{
+			} else {
 				helper::get_stat_txt_string(active_unit, active_player, 0);
 			}
 		}

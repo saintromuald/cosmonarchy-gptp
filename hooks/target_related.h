@@ -3,12 +3,7 @@
 #include "SCBW/scbwdata.h"
 namespace hooks
 {
-	//	s32 __fastcall setUnderDisruptionWeb(s32 a1);		
-	//	s32 setUnderDisruptionWeb(Unit* a1);
-	//	s32 update_disruption_web_status();
-
 	bool is_unit_in_weapon_range(Unit* target, Unit* attacker);															// 00476870
-	s32 generic_right_click_unit_proc_2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID);							// 00455E00
 	Unit* cmdrecv_hold_position(s32 a1);																				// 004C20C0
 	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit);															// 00401D60
 	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30

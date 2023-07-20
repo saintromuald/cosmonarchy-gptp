@@ -383,7 +383,7 @@ LABEL_15:
 		if (unit) {
 			u32 checksum = *g_minimap_box_checksum;
 			while (true) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Subunit || unit->id == UnitId::Spell_DarkSwarm) {
+				if (unit_id_ignored_on_minimap(unit->id)) {
 					goto next;
 				}
 
@@ -424,7 +424,6 @@ LABEL_15:
 			Point16 pos = unit->sprite->position;
 			Point16 dims = units_dat::building_dimensions[unit->id];
 			helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, units_dat::base_property[unit->id] & UnitProperty::Building);
-
 			goto next;
 		}
 	}

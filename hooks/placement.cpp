@@ -86,14 +86,16 @@ namespace hooks
 			||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
 			||   other_unit->id == UnitId::Spell_DarkSwarm
 			||   other_unit->id == UnitId::Spell_DisruptionWeb
-			||   other_unit->sprite->flags & SpriteFlags::Hidden) {
+			||   other_unit->sprite->flags & SpriteFlags::Hidden)
+			{
 				continue;
 			}
 
 			if (g_unit_ordering_x[other_unit->finder_index.left  ].position < 32 * x_tile + 32
 			&&  g_unit_ordering_x[other_unit->finder_index.right ].position > 32 * x_tile
 			&&  g_unit_ordering_y[other_unit->finder_index.top   ].position < 32 * y_tile + 32
-			&&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile) {
+			&&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile)
+			{
 				return needs_detection ? 1 : 4;
 			}
 		}

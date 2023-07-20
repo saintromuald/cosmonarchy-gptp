@@ -192,35 +192,31 @@ namespace AI
 
 	// Content based on	AI_NukeRequirementsProc @ 0x00441600 and
 	//					getEnemyClumpValueProc	@ 0x00440B20
-	// 0x00695798 would contains totalNukeTargetValue
-	// Optimized to stop when reaching totalNukeTargetValue == 800 since that's what matters
-	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster)
+	// 0x00695798 would contains total_nuke_target_value
+	// Optimized to stop when reaching total_nuke_target_value == 800 since that's what matters
+	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster)
 	{
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
-		s32 totalNukeTargetValue = 0;
-		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count() && totalNukeTargetValue < 800; ++i)
+		unitStatTotalFinder.search(x - search_bounds, y - search_bounds, x + search_bounds, y + search_bounds);
+		s32 total_nuke_target_value = 0;
+		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count() && total_nuke_target_value < 800; ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) &&
-				caster->is_target_enemy(target))
+			if (!(target->status & UnitStatus::Invincible) && caster->is_target_enemy(target))
 			{
-				if ((units_dat::base_property[target->id] & UnitProperty::Worker) ||
-					(!(target->status & UnitStatus::Reacts)))
+				if ((units_dat::base_property[target->id] & UnitProperty::Worker) || (!(target->status & UnitStatus::Reacts)))
 				{
-					totalNukeTargetValue += target->get_current_life_ingame();
+					total_nuke_target_value += target->get_current_life_ingame();
 				}
+
 				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
-					if (target->can_detect()
-					||  target->id == UnitId::ZergSurkithCesiant
-					||  target->id == UnitId::ZergLakizilisk)
+					if (target->can_detect() ||  target->id == UnitId::ZergSurkithCesiant ||  target->id == UnitId::ZergLakizilisk) // lmao
 					{
-						totalNukeTargetValue = 800; // 0x0320
+						total_nuke_target_value = 800;
 					}
 				}
 			}
 		}
-		return totalNukeTargetValue;
+		return total_nuke_target_value;
 	}
 }

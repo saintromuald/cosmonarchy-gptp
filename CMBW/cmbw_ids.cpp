@@ -778,3 +778,14 @@ u32 get_scribe_warp_distance(u32 unit_id) {
 		}
 	}
 }
+
+bool unit_id_ignored_on_minimap(u32 unit_id)
+{
+	switch (unit_id) {
+		case UnitId::Spell_DarkSwarm:
+		{
+			return true;
+		}
+	}
+	return units_dat::base_property[unit_id] & UnitProperty::Subunit;
+}

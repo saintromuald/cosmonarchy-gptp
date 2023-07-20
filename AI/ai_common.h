@@ -21,5 +21,5 @@ namespace AI
 	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weapon_id);
 	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, Unit* caster);
 	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, Unit* caster);
-	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster);
+	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster);
 }

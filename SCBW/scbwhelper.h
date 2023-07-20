@@ -507,7 +507,7 @@ namespace helper {
 	s32 get_unit_max_weapon_range(Unit* unit, u8 weapon_id);																		// 00475870
 
 	// for is_ready_to_attack
-	u32 get_distance_to_unit(Unit* a1, Unit* a2);
+	u32 get_distance_to_unit(Unit* unit_1, Unit* unit_2);																			// 00430D30
 	u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3);
 	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
 
@@ -553,7 +553,7 @@ namespace helper {
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
 	//// load_unload_proc
-	char ignore_iscript_go_to_idle(Unit* unit);																				// 00476550
+	char ignore_iscript_go_to_idle(Unit* unit);																						// 00476550
 	u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
 	void unload_unit_ext(Unit* unit, u32 unk);																						// 004E7E10
 
@@ -1626,4 +1626,6 @@ namespace helper {
 	void update_building_construct_shields_amount(Unit* unit);																					// 0047B6A0
 	void cmdrecv_place_addon(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id);															// 0048E0A0
 	void cmdrecv_place_building_normal(u32 pos_x, u32 pos_y, u32 order_id, u32 built_unit_id);													// 0048E0A0
+
+	u32 distance_from_box_corner(Unit* unit, u16 pos_x, u16 pos_y);																				// 00430E50
 }

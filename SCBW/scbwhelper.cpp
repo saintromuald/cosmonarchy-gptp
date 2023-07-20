@@ -3979,14 +3979,14 @@ namespace helper {
 	}
 
 	// for is_ready_to_attack
-	u32 get_distance_to_unit(Unit* a1, Unit* a2) {
-		const u32 Func_getDistanceToUnit = 0x00430D30;
+	u32 get_distance_to_unit(Unit* unit_1, Unit* unit_2) {
+		const u32 func_address = 0x00430D30;
 		static u32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_getDistanceToUnit
+			MOV EAX, unit_1
+			MOV ECX, unit_2
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -13876,5 +13876,23 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	u32 distance_from_box_corner(Unit* unit, u16 pos_x, u16 pos_y)
+	{
+		const u32 func_address = 0x00430E50;
+		static u32 pos_x_xd = pos_x;
+		static u32 pos_y_xd = pos_y;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH pos_y_xd
+			PUSH pos_x_xd
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
