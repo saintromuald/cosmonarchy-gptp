@@ -946,4 +946,22 @@ namespace hooks
 			*out_y = old_pos.y;
 		}
 	}
+
+	// Hooked to use non-sprite positions. -Pr0nogo
+	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, char order_id, Unit* target) // 00479FA0
+	{
+		unit->main_order_id = order_id;
+		unit->order_target.unit = target;
+		if (target)
+		{
+			unit->order_target.pt.x = target->position.x;
+			unit->order_target.pt.y = target->position.y;
+		} else {
+			unit->order_target.pt.y = 0;
+			unit->order_target.pt.x = 0;
+		}
+		unit->main_order_state = 0;
+		unit->order_unit_id = UnitId::None;
+		return unit;
+	}
 }

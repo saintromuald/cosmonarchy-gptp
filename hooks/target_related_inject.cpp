@@ -372,6 +372,25 @@ namespace
 		}
 	}
 
+	void __declspec(naked) unit_order_move_to_target_reset_order_state_wrapper() { // 00479FA0
+		static Unit* result;
+		static Unit* unit;
+		static u8 order_id;
+		static Unit* target;
+		__asm {
+			MOV unit, EAX
+			MOV order_id, DL
+			MOV target, ECX
+			PUSHAD
+		}
+		result = hooks::unit_order_move_to_target_reset_order_state(unit, order_id, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -418,24 +437,25 @@ namespace hooks
 	//	nops(0x004EB176, 8);
 	//	nops(0x004EB316, 2);
 
-		jump_patch(is_unit_in_weapon_range_wrapper,					0x00476870, 2);
-	//	jump_patch(cmdrecv_hold_position_wrapper,					0x004C20C0, 0);
-	//	jump_patch(unit_can_see_cloaked_target_wrapper,				0x00401D60, 4);
-	//	jump_patch(is_target_visible_wrapper,						0x004E5E30, 4);
-	//	jump_patch(is_unit_visible_wrapper,							0x004E5DB0, 1);
-		jump_patch(check_unit_visibility_wrapper,					0x00443390, 3);
-	//	jump_patch(is_unit_cloaking_wrapper,						0x004916E0, 0);
-		jump_patch(unit_can_attack_target_wrapper,					0x00476730, 5);
-		jump_patch(ai_attack_unit_wrapper,							0x0043FFD0, 1);
-		jump_patch(return_interceptor_if_cannot_attack_wrapper,		0x00465810, 1);
-		jump_patch(find_fow_target_wrapper,							0x00487A10, 5);
-		jump_patch(is_better_target_wrapper,						0x004769D0, 0);
-	//	jump_patch(do_targeted_order_wrapper,						0x0046F5B0, 1); // Crashes
-		jump_patch(fow_refinery_check_wrapper,						0x00474500, 5);
-		jump_patch(pick_new_target_if_needed_wrapper,				0x00477510, 1);
-		jump_patch(change_direction_to_move_waypoint_wrapper,		0x00495840, 3);
-		jump_patch(orders_turret_guard_wrapper,						0x004777F0, 2);
-	//	jump_patch(get_closest_point_of_target_wrapper,				0x004762C0, 1); // Untested
+		jump_patch(is_unit_in_weapon_range_wrapper,						0x00476870, 2);
+	//	jump_patch(cmdrecv_hold_position_wrapper,						0x004C20C0, 0);
+	//	jump_patch(unit_can_see_cloaked_target_wrapper,					0x00401D60, 4);
+	//	jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
+	//	jump_patch(is_unit_visible_wrapper,								0x004E5DB0, 1);
+		jump_patch(check_unit_visibility_wrapper,						0x00443390, 3);
+	//	jump_patch(is_unit_cloaking_wrapper,							0x004916E0, 0);
+		jump_patch(unit_can_attack_target_wrapper,						0x00476730, 5);
+		jump_patch(ai_attack_unit_wrapper,								0x0043FFD0, 1);
+		jump_patch(return_interceptor_if_cannot_attack_wrapper,			0x00465810, 1);
+		jump_patch(find_fow_target_wrapper,								0x00487A10, 5);
+		jump_patch(is_better_target_wrapper,							0x004769D0, 0);
+	//	jump_patch(do_targeted_order_wrapper,							0x0046F5B0, 1); // Crashes
+		jump_patch(fow_refinery_check_wrapper,							0x00474500, 5);
+		jump_patch(pick_new_target_if_needed_wrapper,					0x00477510, 1);
+		jump_patch(change_direction_to_move_waypoint_wrapper,			0x00495840, 3);
+		jump_patch(orders_turret_guard_wrapper,							0x004777F0, 2);
+	//	jump_patch(get_closest_point_of_target_wrapper,					0x004762C0, 1); // Untested
+		jump_patch(unit_order_move_to_target_reset_order_state_wrapper,	0x00479FA0, 0);
 
 		// Patches \\
 
