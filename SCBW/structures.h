@@ -1326,23 +1326,14 @@ struct GameVersion {
 C_ASSERT(sizeof(GameVersion) == 60);
 
 // Selection extender from DarkenedFantasies!
-#define SelectionLimit 192 // Currently is the largest supported value. Must be a multiple of 6.
+#define SelectionLimit 192															// As it currently stands, must be a multiple of 6, and is the largest supported value. Look into editing the cmdact/cmdrecv_select buffers to upgrade the selection byte to at least a word.
 #define SelectionLimit_word 2*SelectionLimit
 #define SelectionLimit_dword 4*SelectionLimit
 #define SelectionLimit_dword_2 2*SelectionLimit_dword
 #define newHotkeyGroupShift (u8)8
-#define newSrc SelectionLimit_dword+8
-#define newDestUnit SelectionLimit_dword+12
-#define newStackChar SelectionLimit_dword_2+12
-
-extern u32 new_saved_selections[PLAYABLE_PLAYER_COUNT * 18 * SelectionLimit];		// 0x0057FE60
-extern Unit* new_active_selection[SelectionLimit];									// 0x006284B8
-extern Unit* new_players_selections[PLAYABLE_PLAYER_COUNT * SelectionLimit];		// 0x006284E8
-extern Unit* new_client_selection_group[SelectionLimit];							// 0x00597208
-extern Unit* new_local_selection_group[SelectionLimit];								// 0x0059724C
-extern u16 new_selGroupType[SelectionLimit];										// 0x006CAD7C
-extern u32 new_selGroupHp[SelectionLimit];											// 0x006CA94C
-extern Image new_selection_hp_bars[SelectionLimit];									// 0x0057EB78
+#define newSrc 8-SelectionLimit_dword
+#define newDestUnit 12-SelectionLimit_dword
+#define newStackChar 12-SelectionLimit_dword_2
 
 const s32 SelectionCap = SelectionLimit; // Old const
 
