@@ -687,7 +687,7 @@ namespace hooks
 		iterate_selection:
 			selected_units = selected_units_2 + 1;
 			selected_units_2++;
-			if (selected_units_2 >= &new_client_selection_group[SelectionCap]) {
+			if (selected_units_2 >= &g_client_selection_group_end) {
 				break;
 			}
 		}
