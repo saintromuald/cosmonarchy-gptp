@@ -507,6 +507,10 @@ namespace hooks {
 					{
 						graphics::draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
+					case UnitId::TerranAzazel:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
 					case UnitId::ProtossClarion:
 					{
 						graphics::draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
