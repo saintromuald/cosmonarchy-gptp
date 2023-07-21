@@ -695,7 +695,7 @@ namespace helper {
 	bool unit_is_carrier(Unit* a1);																									// 00401470
 	bool unit_is_reaver(Unit* unit);																								// 00401490
 	bool unit_has_path_to_target(Unit* unit, Unit* target);																			// 0049CBB0
-	s32 can_be_infested(Unit* a1, Unit* a2);																						// 00402210
+	s32 can_be_infested(Unit* unit, Unit* target);																					// 00402210
 
 	// For find_next_bounce_target
 	Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);							// 004E8280
