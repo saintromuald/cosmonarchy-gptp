@@ -6,6 +6,9 @@
 //C++
 //Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
 
+static u32 tmp;
+//CTRL+F for "192-limit" for issues preventing a higher selection cap.
+
 const u32 BTNSCOND_TrainingFighter_28E52 = 0x00428E52;
 const u32 create_unit_allowed = 0x0046E1C0;
 void __declspec(naked) BTNSCOND_TrainingFighter_patch_28E20() {
@@ -193,7 +196,7 @@ void __declspec(naked) select_dual_birth_units_patch_5D041() {
 	}
 }
 
-*/const u32 sub_46F040 = 0x0046F040;/*
+const u32 sub_46F040 = 0x0046F040;
 const u32 sort_all_units_6F226 = 0x0046F226;
 void __declspec(naked) sort_all_units_patch_6F206() {
 	__asm {
@@ -231,6 +234,7 @@ void __declspec(naked) combine_lists_patch_6F2AD() {
 	}
 }
 
+const u32 sub_46F040 = 0x0046F040;
 void __declspec(naked) combine_lists_patch_6F320() {
 	__asm {
 		loc_46F320:
@@ -507,14 +511,50 @@ void __declspec(naked) get_selected_units_at_point_patch_6FE65() {
 	}
 }*/
 
-const u32 command_save_hotkey_group_966CC = 0x004966CC;
-void __declspec(naked) command_save_hotkey_group_patch_96660() {
+const u32 command_save_hotkey_group_96602 = 0x00496602;
+const u32 command_save_hotkey_group_966A4 = 0x004966A4;
+void __declspec(naked) command_save_hotkey_group_patch_965E1() {
+	u32 player;
+	u32 group;
+
 	__asm {
+		PUSH	EDI
+		MOVZX	EDX, AL
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EBX
+		MOV		group, EDX
+	}
+
+	tmp = (u32) &ccmu_extender.new_saved_selections[player][group];//[0];
+
+	__asm {
+		POPAD
+		TEST	ECX, ECX
+		JNE		loc_496695
+		MOV		EAX, tmp
+		MOV		ESI, EBX
+		JMP		command_save_hotkey_group_96602
+
+		loc_496695:
+		MOV		EDI, tmp
+		MOV		EAX, EBX
+		JMP		command_save_hotkey_group_966A4
+	}
+}
+
+const u32 command_save_hotkey_group_966CC = 0x004966CC;
+void __declspec(naked) command_save_hotkey_group_patch_96653() {
+	__asm {
+		MOV		EAX, tmp
+		ADD		EAX, 4
+		ALIGN 4
+
 		loc_496660:
 		MOV		ECX, [EAX - 4]
 		TEST	ECX, ECX
 		JE		offset loc_4966CC
-		CMP		[EAX], 0
+		CMP		dword ptr [EAX], 0
 		JE		offset loc_4966B7
 		MOV		ECX, [EAX + 4]
 		TEST	ECX, ECX
@@ -559,13 +599,28 @@ void __declspec(naked) command_save_hotkey_group_patch_96660() {
 }
 
 const u32 unit_is_standard_and_movable = 0x0047B770;
-void __declspec(naked) command_save_hotkey_group_patch_966E2() {
+void __declspec(naked) command_save_hotkey_group_patch_966CC() {
+	u32 player;
+
 	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EBX
+	}
+
+	tmp = (u32) &ccmu_extender.new_players_selections[player];//[0];
+
+	__asm {
+		POPAD
+		MOV		EBX, tmp
+		MOV		dword ptr [EBP - 0xC], 0
+		MOV		[EBP - 0x10], EBX
+
 		loc_4966E2:
 		MOV		ECX, [EBX]
 		TEST	ECX, ECX
 		JE		offset loc_496788
-		MOVZX	EAX, byte ptr [ECX + 0x4C]
+		MOVZX	EAX, byte ptr [ECX + 0x4C]//unit->player
 		CMP		EAX, ds:[0x00512678]//ACTIVE_NATION_ID
 		JNE		offset loc_496788
 		MOV		ESI, ECX
@@ -579,7 +634,7 @@ void __declspec(naked) command_save_hotkey_group_patch_966E2() {
 		INC		ESI
 		CMP		ESI, UnitLimit
 		JA		offset loc_49676F
-		MOVZX	EBX,  byte ptr [ECX + 0xA5]
+		MOVZX	EBX,  byte ptr [ECX + 0xA5]//unit->unique_id
 		SHL		EBX, 0xC//unit "unique identifier" bitshift
 		OR		EBX, ESI
 		JE		offset loc_49676F
@@ -608,12 +663,10 @@ void __declspec(naked) command_save_hotkey_group_patch_966E2() {
 		JE		offset loc_49676F
 
 		loc_496759:
-		MOV		EAX, [EBP - 8]
-		LEA		ECX, [EAX + EAX * 2]
-		LEA		EDX, [EDI + ECX * 8]
+		MOV		EAX, [EBP - 4]
+		MOV		[EAX + EDI * 4], EBX
 		INC		EDI
 		CMP		EDI, SelectionLimit
-		MOV		[EDX * 4 + ccmu_extender.new_saved_selections], EBX
 		JNL		offset loc_496788
 
 		loc_49676F:
@@ -637,8 +690,31 @@ void __declspec(naked) command_save_hotkey_group_patch_966E2() {
 }
 
 /*const u32 centerviewUnitGroup_96907 = 0x00496907;
-void __declspec(naked) centerviewUnitGroup_patch_96813() {
+void __declspec(naked) centerviewUnitGroup_patch_967F7() {
+	u32 player;
+	u32 group;
+
 	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EAX
+		MOV		group, ECX
+	}
+
+	tmp = (u32) &ccmu_extender.new_saved_selections[player][group];//[1];
+
+	__asm {
+		POPAD
+		MOV		EAX, tmp
+		ADD		EAX, 4
+		PUSH	EDI
+		XOR		EDX, EDX
+		XOR		EDI, EDI
+		PUSH	EBX
+		MOV		[EBP - 4], EDX
+		PUSH	ESI
+		ALIGN 4
+
 		loc_496813:
 		CMP		[EAX - 4], EDI
 		JE		offset loc_496852
@@ -679,7 +755,7 @@ void __declspec(naked) centerviewUnitGroup_patch_96813() {
 		JMP		offset loc_496852
 
 		loc_496852:
-		LEA		ECX, [ECX + ccmu_extender.new_saved_selections]
+		MOV		ECX, tmp
 		MOV		[EBP - 4], EDX
 		MOV		[EBP - 0xC], EDI
 		MOV		[EBP - 8], EDI
@@ -694,9 +770,9 @@ void __declspec(naked) centerviewUnitGroup_patch_96813() {
 		MOV		EDX, EAX
 		AND		EDX, UnitIDMask
 		IMUL	EDX, 0x150
-		MOV		ESI, [EDX + new_unit_table - 0x144]
+		MOV		ESI, [EDX + ccmu_extender.unit_table - 0x144]
 		TEST	ESI, ESI
-		LEA		ECX, [EDX + new_unit_table - 0x150]
+		LEA		ECX, [EDX + ccmu_extender.unit_table - 0x150]
 		JE		offset loc_4968EE
 		MOV		DL, [ECX + 0x4D]
 		TEST	DL, DL
@@ -751,13 +827,34 @@ void __declspec(naked) centerviewUnitGroup_patch_96813() {
 }*/
 
 const u32 add_to_control_group_969BA = 0x004969BA;
-void __declspec(naked) add_to_control_group_patch_96970() {
+void __declspec(naked) add_to_control_group_patch_96952() {
+	u32 player;
+	u32 group;
+
 	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, ESI
+		MOV		group, EBX
+	}
+
+	tmp = (u32)&ccmu_extender.new_saved_selections[player][group];//[1];
+
+	__asm {
+		POPAD
+		MOV		EAX, tmp
+		ADD		EAX, 4
+		PUSH	EDI
+		XOR		EDI, EDI
+		MOV		[EBP - 4], EDI//count
+		MOV		[EBP - 0x10], EBX//group
+		ALIGN 4
+
 		loc_496970:
 		MOV		ECX, [EAX - 4]
 		TEST	ECX, ECX
 		JE		offset loc_4969BA
-		CMP		[EAX], 0
+		CMP		dword ptr [EAX], 0
 		JE		offset loc_4969A5
 		MOV		ECX, [EAX + 4]
 		TEST	ECX, ECX
@@ -804,23 +901,36 @@ void __declspec(naked) add_to_control_group_patch_96970() {
 const u32 is_human_player_on_same_team = 0x0049A110;
 const u32 create_dashed_selection = 0x00499A10;
 const u32 add_to_control_group_96AEC = 0x00496AEC;
-void __declspec(naked) add_to_control_group_patch_969E0() {
+void __declspec(naked) add_to_control_group_patch_969D9() {
+	Unit* unit;
+	u32 player;
+	u32 group;
+	u32 slot;
+
 	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, ESI
+		MOV		group, EBX
+	}
+
+	tmp = (u32)&ccmu_extender.new_saved_selections[player][group];//[0];
+
+	__asm {
+		POPAD
+		XOR		EBX, EBX
+		
 		loc_4969E0:
-		LEA		EDX, [ESI + ESI * 8]
-		LEA		EAX, [EBX + EDX * 2]
-		LEA		EDI, [EAX + EAX * 2]
-		SHL		EDI, 6///////////
-		LEA		EBX, [EDI + ECX]
-		MOV		EAX, [EBX * 4 + ccmu_extender.new_saved_selections]
+		MOV		EAX, tmp
+		MOV		EAX, [EAX + EBX * 4]
 		TEST	EAX, EAX
 		JE		offset loc_496ABB
 		MOV		ECX, EAX
 		AND		ECX, UnitIDMask
 		IMUL	ECX, 0x150
-		MOV		EDX, [ECX + ccmu_extender.unit_table - 0x144]//new_unit_table[-1].sprite
+		MOV		EDX, [ECX + ccmu_extender.unit_table - 0x144]//ccmu_extender.unit_table[-1].sprite
 		TEST	EDX, EDX
-		LEA		ECX, [ECX + ccmu_extender.unit_table - 0x150]//new_unit_table[-1]
+		LEA		ECX, [ECX + ccmu_extender.unit_table - 0x150]//ccmu_extender.unit_table[-1]
 		MOV		[EBP - 0xC], EDX//sprite_xd
 		JE		offset loc_496ABB
 		MOV		DL, [ECX + 0x4D]
@@ -844,12 +954,12 @@ void __declspec(naked) add_to_control_group_patch_969E0() {
 		CALL	unit_is_standard_and_movable
 		TEST	EAX, EAX
 		JNE		offset loc_496A69
-		CMP		[EBP - 4], 1//selection_index_guess_2
+		CMP		dword ptr [EBP - 4], 1//count
 		JG		offset loc_496ABB
 
 		loc_496A69:
 		CMP		ESI, 8
-		MOV		EDI, [EBP - 8]//selection_slot_guess
+		MOV		EDI, [EBP - 8]//slot
 		JNL		offset loc_496AB5
 		CMP		EDI, SelectionLimit
 		JNL		offset loc_496AB5
@@ -860,9 +970,17 @@ void __declspec(naked) add_to_control_group_patch_969E0() {
 		JE		offset loc_496AB5
 
 		loc_496A83:
-		LEA		EDX, [ESI + ESI * 2]
-		LEA		EAX, [EDI + EDX * 4]
-		MOV		[EAX * 4 + ccmu_extender.new_players_selections], ECX
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		unit, ECX
+		MOV		player, ESI
+		MOV		slot, EDI
+	}
+	
+	ccmu_extender.new_players_selections[player][slot] = unit;
+
+	__asm {
+		POPAD
 		MOV		EAX, ESI
 		CALL	is_human_player_on_same_team
 		TEST	EAX, EAX
@@ -877,39 +995,53 @@ void __declspec(naked) add_to_control_group_patch_969E0() {
 
 		loc_496AB5:
 		INC		EDI
-		MOV		[EBP - 8], EDI//selection_slot_guess
+		MOV		[EBP - 8], EDI//slot
 		JMP		offset loc_496ADD
 
 		loc_496ABB:
-		MOV		EAX, [EBP - 4]//selection_index_guess_2
+		MOV		EAX, [EBP - 4]//count
 		DEC		EAX
-		MOV		[EBP - 4], EAX//selection_index_guess_2
-		ADD		EAX, EDI
-		MOV		ECX, [EAX * 4 + ccmu_extender.new_saved_selections]
-		MOV		[EBX * 4 + ccmu_extender.new_saved_selections], ECX
-		MOV		[EAX * 4 + ccmu_extender.new_saved_selections], 0
+		MOV		[EBP - 4], EAX//count
+		MOV		ECX, tmp
+		MOV		EDX, [ECX + EAX * 4]
+		MOV		[ECX + EBX * 4], EDX//ccmu_extender.new_saved_selections[player][group][slot] = ccmu_extender.new_saved_selections[player][group][count];
+		MOV		dword ptr [ECX + EAX * 4], 0//ccmu_extender.new_saved_selections[player][group][count] = NULL;
 
 		loc_496ADD:
-		MOV		ECX, [EBP - 8]//selection_slot_guess
-		CMP		ECX, [EBP - 4]//selection_index_guess_2
-		MOV		EBX, [EBP - 0x10]
+		MOV		EBX, [EBP - 8]//slot
+		CMP		EBX, [EBP - 4]//count
 		JL		offset loc_4969E0
+		MOV		EBX, [EBP - 0x10]//group
 		JMP		add_to_control_group_96AEC
 	}
 }
 
-const u32 selectUnitGroup_96B46 = 0x00496B46;
+const u32 selectUnitGroup_96B81 = 0x00496B81;
 void __declspec(naked) selectUnitGroup_patch_96B41() {
+	u32 player;
+	u32 group;
+
 	__asm {
 		MOV		EBP, ESP
-		SUB		ESP, SelectionLimit_dword + 8
-		JMP		selectUnitGroup_96B46
+		SUB		ESP, SelectionLimit_dword + 12
+		MOV		EAX, ds:[0x00512688]//g_local_human_id
+		MOVZX	ECX, [EBP + 8]
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EAX
+		MOV		group, ECX
 	}
-}
 
-const u32 selectUnitGroup_96B81 = 0x00496B81;
-void __declspec(naked) selectUnitGroup_patch_96B67() {
+	tmp = (u32) &ccmu_extender.new_saved_selections[player][group];//[0];
+
 	__asm {
+		POPAD
+		MOV		EDX, tmp
+		PUSH	ESI
+		XOR		ESI, ESI
+		PUSH	EDI
+		MOV		EAX, EDX
+
 		loc_496B67:
 		CMP		dword ptr [EAX], 0
 		JE		offset loc_496B75
@@ -1055,9 +1187,25 @@ void __declspec(naked) create_all_selection_circles_patch_99B23() {
 	}
 }
 
-const u32 remove_from_selection_2_9A20B = 0x0049A20B;
-void __declspec(naked) remove_from_selection_2_patch_9A197() {
+void __declspec(naked) remove_from_selection_2_patch_9A185() {
+	u32 player;
+	u32 slot;
+	
 	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EDI
+	}
+
+	tmp = (u32) &ccmu_extender.new_players_selections[player];//[1];
+
+	__asm {
+		POPAD
+		MOV		ECX, tmp
+		ADD		ECX, 4
+		PUSH	EBX
+		MOV		EBX, SelectionLimit
+
 		loc_49A197:
 		MOV		EDX, [ECX - 4]
 		TEST	EDX, EDX
@@ -1111,38 +1259,66 @@ void __declspec(naked) remove_from_selection_2_patch_9A197() {
 		ADD		ECX, 0x18
 		CMP		EAX, SelectionLimit
 		JL		offset loc_49A197
-
-		loc_49A20B:
-		JMP		remove_from_selection_2_9A20B
+		JMP		offset loc_49A20B
 
 		loc_49A1F6:
 		INC		EAX
-		JMP		remove_from_selection_2_9A20B
+		JMP		offset loc_49A20B
 
 		loc_49A1F9:
 		ADD		EAX, 2
-		JMP		remove_from_selection_2_9A20B
+		JMP		offset loc_49A20B
 
 		loc_49A1FE:
 		ADD		EAX, 3
-		JMP		remove_from_selection_2_9A20B
+		JMP		offset loc_49A20B
 
 		loc_49A203:
 		ADD		EAX, 4
-		JMP		remove_from_selection_2_9A20B
+		JMP		offset loc_49A20B
 
 		loc_49A208:
 		ADD		EAX, 5
-		JMP		remove_from_selection_2_9A20B
-	}
-}
+		JMP		offset loc_49A20B
 
-const u32 remove_from_selection_2_9A218 = 0x0049A218;
-void __declspec(naked) remove_from_selection_2_patch_9A213() {
-	__asm {
+		loc_49A20B:
+		TEST	ESI, ESI
+		JE		offset loc_49A24C
+		TEST	EAX, EAX
+		JE		offset loc_49A24C
 		CMP		EBX, SelectionLimit
 		JE		offset loc_49A24C
-		JMP		remove_from_selection_2_9A218
+		DEC		EAX
+		CMP		EBX, EAX
+		JGE		offset loc_49A23B
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EDI
+		MOV		slot, EBX
+	}
+
+	tmp = (u32)&ccmu_extender.new_players_selections[player][slot];
+
+	__asm {
+		POPAD
+		MOV		EDI, tmp
+		LEA		ESI, [EDI + 4]//&ccmu_extender.new_players_selections[player][slot + 1]
+		MOV		ECX, EAX
+		SUB		ECX, EBX
+		REPE MOVSD
+		MOV		EDI, [EBP + 8]
+
+		loc_49A23B:
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EDI
+		MOV		slot, EAX
+	}
+
+	ccmu_extender.new_players_selections[player][slot] = NULL;
+
+	__asm {
+		POPAD
 
 		loc_49A24C:
 		POP		EBX
@@ -1154,8 +1330,34 @@ void __declspec(naked) remove_from_selection_2_patch_9A213() {
 }
 
 const u32 remove_selection_circle_from_sprite = 0x00497590;
-void __declspec(naked) clear_selection_patch_9A776() {
+void __declspec(naked) clear_selection_patch_9A749() {
+	u32 player;
+
 	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, ESI
+	}
+
+	tmp = (u32)&ccmu_extender.new_players_selections[player];//[0];
+
+	__asm {
+		POPAD
+		CALL	is_human_player_on_same_team
+		TEST	EAX, EAX
+		JNE		loc_49A768
+		MOV		EDI, tmp
+		MOV		ECX, SelectionLimit
+		REPE STOSD
+		POP		EDI
+		POP		ESI
+		RET
+
+		loc_49A768:
+		MOV		ESI, tmp
+		XOR		EDI, EDI
+		ALIGN 4
+
 		loc_49A776:
 		MOV		EAX, [ESI]
 		TEST	EAX, EAX
@@ -1190,17 +1392,56 @@ void __declspec(naked) clear_selection_patch_9A776() {
 	}
 }
 
-const u32 get_active_player_first_selection_9A860 = 0x0049A860;
+const u32 removeFromSelections = 0x0049A7F0;
+const u32 get_active_player_first_selection_9A898 = 0x0049A898;
 void __declspec(naked) get_active_player_first_selection_patch_9A857() {
-	__asm {
-		CMP		BL, SelectionLimit////////////
-		JNB		offset loc_49A860
-		JMP		get_active_player_first_selection_9A860
+	u32 player;
+	u32 slot;
 
-		loc_49A860:
+	__asm {
+		CMP		BL, SelectionLimit//192-limit: unit_iterator_pos (0x006284B6) is a BYTE. Technically it appears to be a WORD, but is only referenced as a byte ptr thoughout the exe.
+		JB		offset loc_49A860
 		XOR		EAX, EAX
 		POP		EBX
 		RET
+
+		loc_49A860:
+		MOV		EAX, ds:[0x0051267C]//ACTIVE_PLAYER_ID
+		MOVZX	ECX, BL
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EAX
+		MOV		slot, ECX
+	}
+
+	tmp = (u32) &ccmu_extender.new_players_selections[player][slot];
+
+	__asm {
+		POPAD
+		PUSH	ESI
+		PUSH	EDI
+
+		loc_49A870:
+		MOV		EAX, tmp
+		MOV		EAX, [EAX]//unit
+		TEST	EAX, EAX
+		JE		offset loc_49A898
+		MOV		ECX, [EAX + 0xC]//unit->sprite
+		TEST	ECX, ECX
+		JE		offset loc_49A88F
+		MOV		CL, [EAX + 0x4D]//unit->main_order_id
+		TEST	CL, CL
+		JNE		offset loc_49A898
+		CMP		byte ptr [EAX + 0x4E], 1//unit->main_order_state
+		JNE		offset loc_49A898
+
+		loc_49A88F:
+		MOV		EDI, EAX
+		CALL	removeFromSelections
+		JMP		offset loc_49A870
+
+		loc_49A898:
+		JMP		get_active_player_first_selection_9A898
 	}
 }
 
@@ -1214,6 +1455,28 @@ void __declspec(naked) add_to_player_selection_patch_9AF89() {
 		loc_49AFB2:
 		XOR		EAX, EAX
 		RET
+	}
+}
+
+const u32 add_to_player_selection_patch_9AFC2 = 0x0049AFC2;
+void __declspec(naked) add_to_player_selection_patch_9AFB5() {
+	Unit* unit;
+	u32 player;
+	u32 slot;
+	
+	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		unit, ESI
+		MOV		player, EDI
+		MOV		slot, EBX
+	}
+	
+	ccmu_extender.new_players_selections[player][slot] = unit;
+
+	__asm {
+		POPAD
+		JMP		add_to_player_selection_patch_9AFC2
 	}
 }
 
@@ -1481,12 +1744,35 @@ void __declspec(naked) remove_from_client_selection_3_patch_9F7FB() {
 		MOV		EDX, [EAX * 4 + 0x00597248]//g_active_portrait_unit
 		DEC		EAX
 		MOV		[ECX * 4 + ccmu_extender.new_local_selection_group], EDX
-		MOV		[EAX * 4 + ccmu_extender.new_local_selection_group], 0
+		MOV		dword ptr [EAX * 4 + ccmu_extender.new_local_selection_group], 0
 
 		loc_4BF959:
 		RET
 	}
 }*/
+
+const u32 cmdact_select_C08C0 = 0x004C08C0;
+void __declspec(naked) cmdact_select_patch_C0863() {
+	__asm {
+		SUB		ESP, 3 * (SelectionLimit_word + 2) + 8
+		PUSH	EBX
+		PUSH	ESI
+		PUSH	EDI
+
+		MOV		ECX, 3 * (SelectionLimit + 1)
+		MOV		EAX, 0
+		LEA		EDI, [EBP - 0xA]
+		STD
+		REPE STOSW
+		CLD
+
+		MOV		EBX, [EBP + 8]//count
+		MOV		EDI, [EBP + 0xC]//units
+		XOR		EDX, EDX
+		TEST	EBX, EBX
+		JMP		cmdact_select_C08C0
+	}
+}
 
 const u32 cmdact_select_C0902 = 0x004C0902;
 const u32 cmdact_select_C08F7 = 0x004C08F7;
@@ -1510,19 +1796,107 @@ void __declspec(naked) cmdact_select_patch_C08E0() {
 	}
 }
 
-const u32 cmdrecv_shift_select_C2570 = 0x004C2570;
-void __declspec(naked) cmdrecv_shift_select_patch_C256A() {
+const u32 cmdact_select_C095E = 0x004C095E;
+void __declspec(naked) cmdact_select_patch_C0959() {
 	__asm {
-		MOV		DL, [ESI + 1]
-		CMP		DL, SelectionLimit
-		JMP		cmdrecv_shift_select_C2570
+		MOV		word ptr [EBP + ECX * 2 - buffer1_stack], AX
+		JMP		cmdact_select_C095E
+	}
+}
+
+const u32 cmdact_select_C09EB = 0x004C09EB;
+void __declspec(naked) cmdact_select_patch_C09E6() {
+	__asm {
+		MOV		word ptr [EBP + ECX * 2 - buffer2_stack], AX
+		JMP		cmdact_select_C09EB
+	}
+}
+
+const u32 cmdact_select_C0A6C = 0x004C0A6C;
+void __declspec(naked) cmdact_select_patch_C0A67() {
+	__asm {
+		MOV		word ptr [EBP + EDI * 2 - buffer3_stack], AX
+		JMP		cmdact_select_C0A6C
+	}
+}
+
+const u32 queue_game_command = 0x00485BD0;
+void __declspec(naked) cmdact_select_patch_C0A71() {
+	__asm {
+		LEA		ECX, [EBP - buffer3_type]
+		LEA		EDX, [EAX + EAX + 2]//size
+		MOV		byte ptr [EBP - buffer3_type], 0x9
+		MOV		byte ptr [EBP - buffer3_size], AL
+		CALL	queue_game_command
+		POP		EDI
+		POP		ESI
+		POP		EBX
+		MOV		ESP, EBP
+		POP		EBP
+		RETN	8
+	}
+}
+
+void __declspec(naked) cmdact_select_patch_C0A8D() {
+	__asm {
+		TEST	EDX, EDX
+		JE		offset loc_4C0AA4
+		MOV		byte ptr [EBP - buffer2_size], DL
+		LEA		EDX, [EAX + EAX + 2]//size
+		LEA		ECX, [EBP - buffer2_type]
+		MOV		byte ptr [EBP - buffer2_type], 0xB
+		CALL	queue_game_command
+
+		loc_4C0AA4:
+		MOV		EAX, [EBP - 4]
+		TEST	EAX, EAX
+		JE		offset loc_4C0ABE
+		LEA		ECX, [EBP - buffer1_type]
+		LEA		EDX, [EAX + EAX + 2]//size
+		MOV		byte ptr [EBP - buffer1_type], 0xA
+		MOV		byte ptr [EBP - buffer1_size], AL
+		CALL	queue_game_command
+
+		loc_4C0ABE:
+		POP		EDI
+		POP		ESI
+		POP		EBX
+		MOV		ESP, EBP
+		POP		EBP
+		RETN	8
 	}
 }
 
 const u32 cmdrecv_shift_select_C25E9 = 0x004C25E9;
 const u32 cmdrecv_shift_select_C2747 = 0x004C2747;
-void __declspec(naked) cmdrecv_shift_select_patch_C2590() {
+void __declspec(naked) cmdrecv_shift_select_patch_C256D() {
+	u32 player;
+
 	__asm {
+		CMP		DL, SelectionLimit//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
+		JNA		offset loc_4C2576
+		POP		ESI
+		MOV		ESP, EBP
+		POP		EBP
+		RETN	4
+
+		loc_4C2576:
+		MOV		EAX, ds:[0x0051267C]//ACTIVE_PLAYER_ID
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EAX
+	}
+
+	tmp = (u32) &ccmu_extender.new_players_selections[player];
+
+	__asm {
+		POPAD
+		MOV		EAX, tmp
+		ADD		EAX, 4
+		XOR		ECX, ECX
+		PUSH	EDI
+		ALIGN 4
+
 		loc_4C2590:
 		MOV		EDI, [EAX - 4]
 		TEST	EDI, EDI
@@ -1570,7 +1944,7 @@ void __declspec(naked) cmdrecv_shift_select_patch_C2590() {
 		MOVZX	EAX, DL
 		LEA		EDX, [EAX + ECX]
 		CMP		EDX, SelectionLimit
-		JG		offset loc_4C2747
+		JA		offset loc_4C2747//Changed from JG to JA for unsigned comparison.
 		JMP		cmdrecv_shift_select_C25E9
 
 		loc_4C2747:
@@ -1580,8 +1954,11 @@ void __declspec(naked) cmdrecv_shift_select_patch_C2590() {
 
 const u32 cmdrecv_shift_select_C267C = 0x004C267C;
 const u32 cmdrecv_shift_select_C26CE = 0x004C26CE;
-void __declspec(naked) cmdrecv_shift_select_patch_C2662() {
+void __declspec(naked) cmdrecv_shift_select_patch_C2650() {
 	__asm {
+		MOV		EAX, tmp
+		XOR		ECX, ECX
+
 		loc_4C2662:
 		MOV		EDX, [EAX + ECX * 4]
 		TEST	EDX, EDX
@@ -1607,7 +1984,7 @@ const u32 cmdrecv_shift_select_C268A = 0x004C268A;
 void __declspec(naked) cmdrecv_shift_select_patch_C2685() {
 	__asm {
 		CMP		EDI, SelectionLimit
-		JGE		offset loc_4C26CE
+		JAE		offset loc_4C26CE//Changed from JGE to JAE for unsigned comparison.
 		JMP		cmdrecv_shift_select_C268A
 
 		loc_4C26CE:
@@ -1615,19 +1992,59 @@ void __declspec(naked) cmdrecv_shift_select_patch_C2685() {
 	}
 }
 
-const u32 cmdrecv_shift_select_C275E = 0x004C275E;
-void __declspec(naked) cmdrecv_shift_select_patch_C2757() {
+const u32 cmdrecv_shift_select_C26BD = 0x004C26BD;
+void __declspec(naked) cmdrecv_shift_select_patch_C26AB() {
+	Unit* unit;
+	u32 player;
+	u32 slot;
+
 	__asm {
-		MOV		ESI, [EBP + 8]
-		CMP		byte ptr [ESI + 1], SelectionLimit/////////////
-		JMP		cmdrecv_shift_select_C275E
+		MOV		EAX, ds:[0x0051267C]//ACTIVE_PLAYER_ID
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		unit, ESI
+		MOV		player, EAX
+		MOV		slot, EDI
+	}
+
+	ccmu_extender.new_players_selections[player][slot] = unit;
+
+	__asm {
+		POPAD
+		MOV		EAX, tmp
+		ADD		EAX, 4
+		JMP		cmdrecv_shift_select_C26BD
 	}
 }
 
-const u32 cmdrecv_shift_select_C27FA = 0x004C27FA;
-const u32 cmdrecv_shift_select_C27F3 = 0x004C27F3;
-void __declspec(naked) cmdrecv_shift_select_patch_C27E0() {
+const u32 cmdrecv_select_C275E = 0x004C275E;
+void __declspec(naked) cmdrecv_select_patch_C2757() {
 	__asm {
+		MOV		ESI, [EBP + 8]
+		CMP		byte ptr [ESI + 1], SelectionLimit//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
+		JMP		cmdrecv_select_C275E
+	}
+}
+
+const u32 cmdrecv_select_C27FA = 0x004C27FA;
+const u32 cmdrecv_select_C27F3 = 0x004C27F3;
+void __declspec(naked) cmdrecv_select_patch_C27D3() {
+	u32 player;
+
+	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EDI
+	}
+
+	tmp = (u32) &ccmu_extender.new_players_selections[player];
+
+	__asm {
+		POPAD
+		MOV		EAX, tmp
+		XOR		ECX, ECX
+		ALIGN 4
+
 		loc_4C27E0:
 		MOV		EDX, [EAX + ECX * 4]
 		TEST	EDX, EDX
@@ -1639,10 +2056,10 @@ void __declspec(naked) cmdrecv_shift_select_patch_C27E0() {
 		JB		offset loc_4C27E0
 
 		loc_4C27FA:
-		JMP		cmdrecv_shift_select_C27FA
+		JMP		cmdrecv_select_C27FA
 
 		loc_4C27F3:
-		JMP		cmdrecv_shift_select_C27F3
+		JMP		cmdrecv_select_C27F3
 	}
 }
 
@@ -1702,6 +2119,26 @@ void __declspec(naked) InitializeImageArray_patch_D69A0() {
 		CMP		EDI, SelectionLimit
 		JB		offset loc_4D69A0
 		JMP		InitializeImageArray_D69E3
+	}
+}
+
+const u32 load_game_core_EEDDC = 0x004EEDDC;
+void __declspec(naked) load_game_core_patch_EEDCB() {
+	u32 player;
+
+	__asm {
+		PUSHAD
+		MOV		EBP, ESP
+		MOV		player, EAX
+	}
+
+	tmp = (u32) &ccmu_extender.new_players_selections[player];
+
+	__asm {
+		POPAD
+		MOV		ESI, tmp
+		MOV		ECX, SelectionLimit
+		JMP		load_game_core_EEDDC
 	}
 }
 
@@ -1973,32 +2410,20 @@ namespace hooks {
 		//jump_patch(get_selected_units_at_point_patch_6FE65, 0x0046FE65);
 
 		//command_save_hotkey_group (0x004965D0)
-		memory_patch(0x004965FB, newHotkeyGroupShift);
-		memory_patch(0x004965FE, &ccmu_extender.new_saved_selections);
-		memory_patch(0x00496655, &ccmu_extender.new_saved_selections[0][0][1]);
-		jump_patch(command_save_hotkey_group_patch_96660, 0x00496660);
-		memory_patch(0x0049669D, newHotkeyGroupShift);
-		memory_patch(0x004966A0, &ccmu_extender.new_saved_selections);
+		jump_patch(command_save_hotkey_group_patch_965E1, 0x004965E1, 1);
+		jump_patch(command_save_hotkey_group_patch_96653, 0x00496653, 1);
 		memory_patch(0x004966AD, SelectionLimit);
-		memory_patch(0x004966D1, newHotkeyGroupShift);
-		memory_patch(0x004966D4, &ccmu_extender.new_players_selections);
-		jump_patch(command_save_hotkey_group_patch_966E2, 0x004966E2, 5);
+		jump_patch(command_save_hotkey_group_patch_966CC, 0x004966CC, 1);
 
 		//centerviewUnitGroup (0x004967E0)
-		//memory_patch(0x0049680E, &ccmu_extender.new_saved_selections[0][0][1]);
-		//jump_patch(centerviewUnitGroup_patch_96813, 0x00496813);
+		//jump_patch(centerviewUnitGroup_patch_967F7, 0x004967F7, 1);
 
 		//add_to_control_group (0x00496940)
-		memory_patch(0x00496968, &ccmu_extender.new_saved_selections[0][0][1]);
-		jump_patch(add_to_control_group_patch_96970, 0x00496970);
-		memory_patch(0x004969F2, &ccmu_extender.new_saved_selections);
-		jump_patch(add_to_control_group_patch_969E0, 0x004969E0, 1);
+		jump_patch(add_to_control_group_patch_96952, 0x00496952, 1);
+		jump_patch(add_to_control_group_patch_969D9, 0x004969D9, 2);
 
 		//selectUnitGroup (0x00496B40)
 		jump_patch(selectUnitGroup_patch_96B41, 0x00496B41);
-		memory_patch(0x00496B5D, newHotkeyGroupShift);
-		memory_patch(0x00496B60, &ccmu_extender.new_saved_selections);
-		jump_patch(selectUnitGroup_patch_96B67, 0x00496B67);
 		jump_patch(selectUnitGroup_patch_96BFA, 0x00496BFA);
 		jump_patch(selectUnitGroup_patch_96CA3, 0x00496CA3, 3);
 		jump_patch(selectUnitGroup_patch_96CE6, 0x00496CE6);
@@ -2013,38 +2438,28 @@ namespace hooks {
 		jump_patch(create_all_selection_circles_patch_99B23, 0x00499B23, 1);
 
 		//remove_from_selection_2 (0x0049A170)
-		memory_patch(0x0049A18D, SelectionLimit);
-		memory_patch(0x0049A193, &ccmu_extender.new_players_selections[0][1]);
-		jump_patch(remove_from_selection_2_patch_9A197, 0x0049A197);
-		jump_patch(remove_from_selection_2_patch_9A213, 0x0049A213);
-		memory_patch(0x0049A228, &ccmu_extender.new_players_selections);
-		memory_patch(0x0049A22E, &ccmu_extender.new_players_selections[0][1]);
-		memory_patch(0x0049A244, &ccmu_extender.new_players_selections);
+		jump_patch(remove_from_selection_2_patch_9A185, 0x0049A185, 1);
 
 		//is_selected_unit_group_enabled (0x0049A2C0)
 		memory_patch(0x0049A2C7, &ccmu_extender.new_active_selection);
-		memory_patch(0x0049A305, &ccmu_extender.new_players_selections);
+		memory_patch(0x0049A305, &ccmu_extender.new_active_selection[SelectionLimit]);
 
 		//clear_selection (0x0049A740)
-		memory_patch(0x0049A75A, &ccmu_extender.new_players_selections);
-		memory_patch(0x0049A75F, SelectionLimit);
-		memory_patch(0x0049A772, &ccmu_extender.new_players_selections);
-		jump_patch(clear_selection_patch_9A776, 0x0049A776, 1);
+		jump_patch(clear_selection_patch_9A749, 0x0049A749);
 
 		//get_active_player_first_selection (0x0049A850)
 		jump_patch(get_active_player_first_selection_patch_9A857, 0x0049A857);
-		memory_patch(0x0049A873, &ccmu_extender.new_players_selections);
 
 		//create_new_unit_selections_from_list (0x0049AE40)
 		//memory_patch(0x0049AE49, &ccmu_extender.new_active_selection);
-		//memory_patch(0x0049AE77, &ccmu_extender.new_players_selections);
+		//memory_patch(0x0049AE77, &ccmu_extender.new_active_selection[SelectionLimit]);
 		//memory_patch(0x0049AE95, &ccmu_extender.new_active_selection);
 		//memory_patch(0x0049AEB9, &ccmu_extender.new_active_selection);
 		//memory_patch(0x0049AEC9, &ccmu_extender.new_active_selection);
 
 		//add_to_player_selection (0x0049AF80)
 		jump_patch(add_to_player_selection_patch_9AF89, 0x0049AF89);
-		memory_patch(0x0049AFBE, &ccmu_extender.new_players_selections);
+		jump_patch(add_to_player_selection_patch_9AFB5, 0x0049AFB5, 1);
 
 		//select_unit_initial (0x0049B690)
 		jump_patch(select_unit_initial_patch_9B6A0, 0x0049B6A0, 2);
@@ -2067,27 +2482,29 @@ namespace hooks {
 		memory_patch(0x004C07F4, &ccmu_extender.new_local_selection_group);
 
 		//cmdact_select (0x004C0860)
+		jump_patch(cmdact_select_patch_C0863, 0x004C0863);
 		jump_patch(cmdact_select_patch_C08E0, 0x004C08D8, 3);
 		memory_patch(0x004C08FA, &ccmu_extender.new_local_selection_group);
+		jump_patch(cmdact_select_patch_C0959, 0x004C0959);
 		memory_patch(0x004C096F, &ccmu_extender.new_local_selection_group);
 		memory_patch(0x004C0977, SelectionLimit);
+		jump_patch(cmdact_select_patch_C09E6, 0x004C09E6);
 		memory_patch(0x004C09FE, SelectionLimit);
 		memory_patch(0x004C0A03, &ccmu_extender.new_local_selection_group);
 		memory_patch(0x004C0A11, &ccmu_extender.new_local_selection_group);
+		jump_patch(cmdact_select_patch_C0A67, 0x004C0A67);
+		jump_patch(cmdact_select_patch_C0A71, 0x004C0A71, 2);
+		jump_patch(cmdact_select_patch_C0A8D, 0x004C0A8D, 2);
 
 		//cmdrecv_shift_select (0x004C2560)
-		jump_patch(cmdrecv_shift_select_patch_C256A, 0x004C256A, 1);
-		memory_patch(0x004C2584, &ccmu_extender.new_players_selections[0][1]);
-		jump_patch(cmdrecv_shift_select_patch_C2590, 0x004C2589, 2);
-		memory_patch(0x004C265C, &ccmu_extender.new_players_selections);
-		jump_patch(cmdrecv_shift_select_patch_C2662, 0x004C2662);
+		jump_patch(cmdrecv_shift_select_patch_C256D, 0x004C256D, 4);
+		jump_patch(cmdrecv_shift_select_patch_C2650, 0x004C2650);
 		jump_patch(cmdrecv_shift_select_patch_C2685, 0x004C2685);
-		memory_patch(0x004C26B9, &ccmu_extender.new_players_selections);
+		jump_patch(cmdrecv_shift_select_patch_C26AB, 0x004C26AB);
 
 		//cmdrecv_select (0x004C2750)
-		jump_patch(cmdrecv_shift_select_patch_C2757, 0x004C2757, 2);
-		memory_patch(0x004C27DA, &ccmu_extender.new_players_selections);
-		jump_patch(cmdrecv_shift_select_patch_C27E0, 0x004C27E0);
+		jump_patch(cmdrecv_select_patch_C2757, 0x004C2757, 2);
+		jump_patch(cmdrecv_select_patch_C27D3, 0x004C27D3, 1);
 
 		//cmdrecv_save_game (0x004C2910)
 		memory_patch(0x004C2D1E, sizeof(ccmu_extender.new_players_selections));
@@ -2106,7 +2523,7 @@ namespace hooks {
 		jump_patch(update_building_land_unit_selection_patch_C3B41, 0x004C3B41);
 		memory_patch(0x004C3B4A, &ccmu_extender.new_active_selection);
 		jump_patch(update_building_land_unit_selection_patch_C3B5A, 0x004C3B5A);
-		memory_patch(0x004C3B64, &ccmu_extender.new_players_selections);
+		memory_patch(0x004C3B64, &ccmu_extender.new_active_selection[SelectionLimit]);
 		jump_patch(update_building_land_unit_selection_patch_C3B6B, 0x004C3B6B, 3);
 
 		//setup_HUD (0x004C3BB0)
@@ -2128,12 +2545,24 @@ namespace hooks {
 		//compile_health_bar (0x004D6010)
 		memory_patch(0x004D603F, &ccmu_extender.new_active_selection);
 
+		//sub_4D68C0 (0x004D68C0)
+		memory_patch(0x004D68CA, &ccmu_extender.new_hp_bar_grps);
+
 		//InitializeImageArray (0x004D6930)
 		memory_patch(0x004D693F, &ccmu_extender.new_selection_hp_bars);
 		memory_patch(0x004D6952, sizeof(ccmu_extender.new_selection_hp_bars) / 4);
+		memory_patch(0x004D6959, sizeof(ccmu_extender.new_selection_circles) / 4);
+		memory_patch(0x004D695E, &ccmu_extender.new_selection_circles);
 		memory_patch(0x004D697D, &ccmu_extender.new_selection_hp_bars);
 		memory_patch(0x004D6998, &ccmu_extender.new_selection_hp_bars[1]);
 		jump_patch(InitializeImageArray_patch_D69A0, 0x004D69A0, 5);
+		memory_patch(0x004D69E4, &ccmu_extender.new_selection_circles);
+		memory_patch(0x004D69F3, &ccmu_extender.new_selection_circles[1]);
+		memory_patch(0x004D69F8, SelectionLimit - 1);
+		memory_patch(0x004D69FD, &ccmu_extender.new_selection_circles);
+		memory_patch(0x004D6A12, &ccmu_extender.new_selection_circles[0].link.next);
+		memory_patch(0x004D6A1B, &ccmu_extender.new_selection_circles[0].link.next);
+		memory_patch(0x004D6A26, &ccmu_extender.new_selection_circles[0].link.next);
 
 		//StatRes_MainProc (0x004E5640)
 		//memory_patch(0x004E5692, &ccmu_extender.new_client_selection_group);
@@ -2150,8 +2579,7 @@ namespace hooks {
 		memory_patch(0x004EED2C, &ccmu_extender.new_local_selection_group);
 		memory_patch(0x004EED31, &ccmu_extender.new_local_selection_group[1]);
 		memory_patch(0x004EED36, &ccmu_extender.new_local_selection_group[2]);
-		memory_patch(0x004EEDD3, &ccmu_extender.new_players_selections);
-		memory_patch(0x004EEDD8, SelectionLimit);
+		jump_patch(load_game_core_patch_EEDCB, 0x004EEDCB, 1);
 		memory_patch(0x004EEDDD, &ccmu_extender.new_active_selection);
 		memory_patch(0x004EEDE6, sizeof(ccmu_extender.new_players_selections) / 4);
 		memory_patch(0x004EEDEB, &ccmu_extender.new_players_selections);

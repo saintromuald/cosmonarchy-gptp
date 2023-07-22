@@ -1330,10 +1330,18 @@ C_ASSERT(sizeof(GameVersion) == 60);
 #define SelectionLimit_word 2*SelectionLimit
 #define SelectionLimit_dword 4*SelectionLimit
 #define SelectionLimit_dword_2 2*SelectionLimit_dword
-#define newHotkeyGroupShift (u8)8
 #define newSrc 8-SelectionLimit_dword
 #define newDestUnit 12-SelectionLimit_dword
 #define newStackChar 12-SelectionLimit_dword_2
+#define buffer3_stack 8-SelectionLimit_word
+#define buffer3_size 9-SelectionLimit_word
+#define buffer3_type 10-SelectionLimit_word
+#define buffer2_stack 10-SelectionLimit_dword
+#define buffer2_size 11-SelectionLimit_dword
+#define buffer2_type 12-SelectionLimit_dword
+#define buffer1_stack 12-SelectionLimit_word-SelectionLimit_dword
+#define buffer1_size 13-SelectionLimit_word-SelectionLimit_dword
+#define buffer1_type 14-SelectionLimit_word-SelectionLimit_dword
 
 const s32 SelectionCap = SelectionLimit; // Old const
 
