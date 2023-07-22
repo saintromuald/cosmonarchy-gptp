@@ -15,6 +15,11 @@ namespace hooks
 	b32 game_is_team_game();																						// 00484F50
 	void create_dashed_selection_main(Unit* unit, u32 player);														// 004E65C0
 	s32 remove_from_selections(Unit* unit);																			// 0049A7F0
+	s32 select_dual_birth_units(Unit* unit);																		// 0045D040
+	bool is_selected_unit_group_enabled();																			// 0049A2C0
+	char select_unit_initial();																						// 0049B690
+	char create_all_selection_circles();																			// 00499A60
+	void update_selected_unit_data();																				// 004C38B0
 
 	bool can_add_unit_to_active_selection(Unit* unit, u32 slot);													// partial helper
 

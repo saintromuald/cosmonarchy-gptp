@@ -27,7 +27,6 @@ const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100
 const s32 SPRITE_ARRAY_LENGTH = SpriteLimit; // 2500
 const s32 IMAGE_ARRAY_LENGTH = ImageLimit; // 5000
 const s32 THINGY_ARRAY_LENGTH = ThingyLimit; // 500;
-const s32 SelectionCap = 12;
 
 /*
 const s32 UNIT_TYPE_COUNT = 228;
@@ -1325,5 +1324,25 @@ struct GameVersion {
 	u32 lang;
 };
 C_ASSERT(sizeof(GameVersion) == 60);
+
+// Selection extender from DarkenedFantasies!
+#define SelectionLimit 192															// As it currently stands, must be a multiple of 6, and is the largest supported value. Look into editing the cmdact/cmdrecv_select buffers to upgrade the selection byte to at least a word.
+#define SelectionLimit_word 2*SelectionLimit
+#define SelectionLimit_dword 4*SelectionLimit
+#define SelectionLimit_dword_2 2*SelectionLimit_dword
+#define newSrc 8-SelectionLimit_dword
+#define newDestUnit 12-SelectionLimit_dword
+#define newStackChar 12-SelectionLimit_dword_2
+#define buffer3_stack 8-SelectionLimit_word
+#define buffer3_size 9-SelectionLimit_word
+#define buffer3_type 10-SelectionLimit_word
+#define buffer2_stack 10-SelectionLimit_dword
+#define buffer2_size 11-SelectionLimit_dword
+#define buffer2_type 12-SelectionLimit_dword
+#define buffer1_stack 12-SelectionLimit_word-SelectionLimit_dword
+#define buffer1_size 13-SelectionLimit_word-SelectionLimit_dword
+#define buffer1_type 14-SelectionLimit_word-SelectionLimit_dword
+
+const s32 SelectionCap = SelectionLimit; // Old const
 
 #pragma pack()

@@ -5418,14 +5418,14 @@ namespace helper {
 		return (bool)result;
 	}
 
-	s32 can_be_infested(Unit* a1, Unit* a2) {
-		const u32 Func_canBeInfested = 0x00402210;
+	s32 can_be_infested(Unit* unit, Unit* target) {
+		const u32 func_address = 0x00402210;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
-			CALL Func_canBeInfested
+			MOV ECX, unit
+			MOV EDX, target
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}

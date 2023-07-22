@@ -23,6 +23,17 @@ struct CCMU_Extender {
 
 	Thingy thingy_table[ThingyLimit]; // 0x006509D8
 	Thingy fow_sprite_table[FowSpriteLimit]; // 0x00652928
+
+	GrpHead new_hp_bar_grps[SelectionLimit];//0051F200
+	Image new_selection_circles[SelectionLimit];//0x0057D768
+	Image new_selection_hp_bars[SelectionLimit];//0x0057EB78
+	u32 new_saved_selections[PLAYABLE_PLAYER_COUNT][18][SelectionLimit];//0x0057FE60
+	Unit* new_client_selection_group[SelectionLimit];//0x00597208
+	Unit* new_local_selection_group[SelectionLimit];//0x0059724C
+	Unit* new_active_selection[SelectionLimit];//0x006284B8
+	Unit* new_players_selections[PLAYABLE_PLAYER_COUNT][SelectionLimit];//0x006284E8
+	u32 new_selGroupHp[SelectionLimit];//0x006CA94C
+	u16 new_selGroupType[SelectionLimit];//0x006CAD7C
 };
 
 extern CCMU_Extender ccmu_extender;
