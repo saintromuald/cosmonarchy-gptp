@@ -1751,12 +1751,12 @@ void __declspec(naked) remove_from_client_selection_3_patch_9F7FB() {
 	}
 }*/
 
-const u32 CMDRECV_ShiftDeselect_BFB4C = 0x004BFB4C;
+const u32 CMDRECV_ShiftDeselect_BFB4F = 0x004BFB4F;
 void __declspec(naked) CMDRECV_ShiftDeselect_patch_BFB49() {
 	__asm {
 		MOV		CL, [EDX + 1]//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
 		CMP		CL, SelectionLimit
-		JMP		CMDRECV_ShiftDeselect_BFB4C
+		JMP		CMDRECV_ShiftDeselect_BFB4F
 	}
 }
 
