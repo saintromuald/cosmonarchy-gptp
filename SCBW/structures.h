@@ -20,8 +20,13 @@
 #define AiTownLimit 100
 #define ResAreaLimit 250
 
+#define PlayerLimit 8
+#define FullPlayerLimit 12
+#define NeutralPlayer 11
+#define ScoutingPlayerLimit (PlayerLimit + 1)
+
 const s32 PLAYER_COUNT = 12;
-const s32 PLAYABLE_PLAYER_COUNT = 8;
+const s32 PLAYABLE_PLAYER_COUNT = PlayerLimit;
 const s32 UNIT_ARRAY_LENGTH = UnitLimit; // 1700
 const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100
 const s32 SPRITE_ARRAY_LENGTH = SpriteLimit; // 2500
@@ -1245,23 +1250,6 @@ union UnitIndex {
 
 C_ASSERT(sizeof(UnitIndex) == 0x4);
 
-struct ControlGroup {
-	UnitIndex unit_index[12];
-};
-
-#define TotalControlGroups 18	// Control groups + Recent selections
-#define UiControlGroups 10		// Control groups
-
-struct ControlGroupPlayer {
-	ControlGroup control_group[TotalControlGroups];
-};
-
-struct ControlGroupPlayerArray {
-	ControlGroupPlayer player[PlayerLimit];
-};
-
-C_ASSERT(sizeof(ControlGroupPlayerArray) == 0x1B00);
-
 struct ForceNamesEntry {
 	char name[30];
 };
@@ -1344,5 +1332,22 @@ C_ASSERT(sizeof(GameVersion) == 60);
 #define buffer1_type 14-SelectionLimit_word-SelectionLimit_dword
 
 const s32 SelectionCap = SelectionLimit; // Old const
+
+struct ControlGroup {
+	UnitIndex unit_index[SelectionCap];
+};
+
+#define TotalControlGroups 18	// Control groups + Recent selections
+#define UiControlGroups 10		// Control groups
+
+struct ControlGroupPlayer {
+	ControlGroup control_group[TotalControlGroups];
+};
+
+struct ControlGroupPlayerArray {
+	ControlGroupPlayer player[PlayerLimit];
+};
+
+C_ASSERT(sizeof(ControlGroupPlayerArray) == 4 * PLAYABLE_PLAYER_COUNT * 18 * SelectionCap);
 
 #pragma pack()

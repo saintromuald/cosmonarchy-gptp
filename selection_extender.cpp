@@ -1751,6 +1751,15 @@ void __declspec(naked) remove_from_client_selection_3_patch_9F7FB() {
 	}
 }*/
 
+const u32 CMDRECV_ShiftDeselect_BFB4C = 0x004BFB4C;
+void __declspec(naked) CMDRECV_ShiftDeselect_patch_BFB49() {
+	__asm {
+		MOV		CL, [EDX + 1]//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
+		CMP		CL, SelectionLimit
+		JMP		CMDRECV_ShiftDeselect_BFB4C
+	}
+}
+
 const u32 cmdact_select_C08C0 = 0x004C08C0;
 void __declspec(naked) cmdact_select_patch_C0863() {
 	__asm {
@@ -1842,7 +1851,7 @@ void __declspec(naked) cmdact_select_patch_C0A8D() {
 		TEST	EDX, EDX
 		JE		offset loc_4C0AA4
 		MOV		byte ptr [EBP - buffer2_size], DL
-		LEA		EDX, [EAX + EAX + 2]//size
+		LEA		EDX, [EDX + EDX + 2]//size
 		LEA		ECX, [EBP - buffer2_type]
 		MOV		byte ptr [EBP - buffer2_type], 0xB
 		CALL	queue_game_command
@@ -2475,6 +2484,9 @@ namespace hooks {
 		//removeFromSelections (0x0049A7F0)
 		//jump_patch(removeFromSelections_patch_BF8C0, 0x0049A839);
 		//jump_patch(removeFromSelections_patch_BF8C0, 0x0049A846);
+
+		//CMDRECV_ShiftDeselect (0x004BFB40)
+		jump_patch(CMDRECV_ShiftDeselect_patch_BFB49, 0x004BFB49, 1);
 
 		//CMDACT_HotkeyUnit (0x004C07B0)
 		memory_patch(0x004C07DC, SelectionLimit);

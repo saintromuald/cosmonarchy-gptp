@@ -8,11 +8,6 @@
 #include <unordered_map>
 #include "SCBW/enumerations/IconId.h"
 
-#define PlayerLimit 8
-#define FullPlayerLimit 12
-#define NeutralPlayer 11
-#define ScoutingPlayerLimit (PlayerLimit + 1)
-
 #pragma pack(1)
 
 struct Image;

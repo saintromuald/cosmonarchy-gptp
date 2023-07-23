@@ -1427,8 +1427,8 @@ namespace hooks {
 		const f32 ally_bias     = -0.5;
 		const f32 enemy_bias    =  0.5;
 		const f32 distance_bias = -5.0;
-		const f32 mineral_bias  =  0.5;
-		const f32 gas_bias      =  1.5;
+		const f32 mineral_bias  =  0.4;
+		const f32 gas_bias      =  1.0;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;

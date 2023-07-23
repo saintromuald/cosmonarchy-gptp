@@ -834,7 +834,7 @@ namespace hooks
 				break;
 			}
 			result += 6;
-			if (result >= 12)
+			if (result >= SelectionCap)
 			{
 				break;
 			}
@@ -869,7 +869,7 @@ namespace hooks
 				return result;
 			}
 		}
-		if (result < 12)
+		if (result < SelectionCap)
 		{
 			selection_index = result + 1;
 			selection_array[result] = unit;
@@ -1078,8 +1078,8 @@ namespace hooks
 								}
 								player_zeroed = iterations + 1;
 								++selection;
-								iterations_3 = helper::OFSUB(iterations + 1, 12);
-								iterations_2 = iterations++ - 11 < 0;
+								iterations_3 = helper::OFSUB(iterations + 1, SelectionCap);
+								iterations_2 = iterations++ - (SelectionCap - 1) < 0;
 							} while (iterations_2 ^ iterations_3);
 						}
 					}
