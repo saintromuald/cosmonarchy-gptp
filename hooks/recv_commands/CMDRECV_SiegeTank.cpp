@@ -4,7 +4,7 @@
 namespace hooks
 {
 	void CMDRECV_Siege(u8 is_queued) {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
 			if (unit_id_is_tank_mode(unit->id) && unit->main_order_id != OrderId::SiegeMode) {
@@ -21,7 +21,7 @@ namespace hooks
 	}
 
 	void CMDRECV_Unsiege(u8 is_queued) {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
 			if (unit_id_is_siege_mode(unit->id) && unit->main_order_id != OrderId::TankMode) {

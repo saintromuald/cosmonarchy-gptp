@@ -6,7 +6,7 @@ namespace hooks
 	void cmdrecv_unburrow()
 	{
 		Unit* selected_unit;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		selected_unit = get_active_player_next_selection();
 		while (selected_unit)
 		{
@@ -22,7 +22,7 @@ namespace hooks
 	void cmdrecv_burrow(u8 command_type)
 	{
 		Unit* selected_unit;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		selected_unit = get_active_player_next_selection();
 		while (selected_unit)
 		{
@@ -47,13 +47,13 @@ namespace hooks
 	void unburrow(Unit* unit) // 004E97C0
 	{
 		if (unit->main_order_id == OrderId::Burrow || unit->main_order_id == OrderId::Burrowed
-		|| (unit->id == UnitId::ZergLakizilisk && unit->main_order_id != OrderId::Unburrow))
+		|| (unit->id == UnitId::ZergLakizilisk && unit->main_order_id != OrderId::Unburrow && unit->status & UnitStatus::Burrowed))
 		{
 			if (unit->id == UnitId::ZergLakizilisk)
 			{
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 			}
-			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
+			unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 			if (unit->main_order_id)
 			{
 				while (1)

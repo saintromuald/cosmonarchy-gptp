@@ -85,14 +85,14 @@ namespace hooks
 	Unit* get_active_player_first_selection() // 0049A850
 	{
 		Unit* unit;
-		if (*unit_iterator_pos >= 12)
+		if (*g_unit_iterator_pos >= 12)
 		{
 			unit = nullptr;
 		}
 		else
 		{
 			s32 player = *g_active_player_id;
-			u8 index = *unit_iterator_pos;
+			u8 index = *g_unit_iterator_pos;
 			bool bStopLoop = false;
 			while (!bStopLoop)
 			{
@@ -118,7 +118,7 @@ namespace hooks
 					helper::remove_from_selections(unit);
 				}
 			}
-			*unit_iterator_pos = *unit_iterator_pos + 1;
+			*g_unit_iterator_pos = *g_unit_iterator_pos + 1;
 		}
 		return unit;
 	}

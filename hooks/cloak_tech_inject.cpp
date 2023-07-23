@@ -124,7 +124,7 @@ namespace
 
 	void __cdecl cloaking_tech_wrapper_cmdrecv_cloak()
 	{
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (unit->can_use_tech(hooks::get_cloaking_tech(unit), *g_active_nation_id) == 1)
@@ -167,7 +167,7 @@ namespace
 
 	void __cdecl cloaking_tech_wrapper_cmdrecv_decloak()
 	{
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (unit->can_use_tech(hooks::get_cloaking_tech(unit), *g_active_nation_id) == 1)

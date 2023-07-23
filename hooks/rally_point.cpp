@@ -222,7 +222,7 @@ namespace hooks
 				fow_unit_id = UnitId::None;
 			}
 		}
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* result = helper::get_next_commanded_unit();
 		u8 order_type;
 		for (Unit* unit = result; result; unit = result)

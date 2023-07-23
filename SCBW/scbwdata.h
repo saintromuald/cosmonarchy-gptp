@@ -804,7 +804,7 @@ SCBW_DATA(u32*,		g_image_overlay_special,	0x00667B00);
 /// Warning: The following section contains data reserved for internal use only.
 //////////////////////////////////////////////////////////////// @{
 
-SCBW_DATA(u8*, unit_iterator_pos, 0x006284B6);
+SCBW_DATA(u8*, g_unit_iterator_pos, 0x006284B6);
 SCBW_DATA(UnitsSel*, active_player_selection, ccmu_extender.new_active_selection);
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);

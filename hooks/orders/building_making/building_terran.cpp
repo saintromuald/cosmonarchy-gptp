@@ -357,7 +357,7 @@ namespace hooks
 	// Hooked to allow instant addon placement. -Pr0nogo
 	void btnsact_place_addon(u16 unit_id, char* buffer) { // 00423D10
 		bool errored = false;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_next_commanded_unit()) {
 			u8 player = unit->player;
 			g_ai_minerals_reserve[player] = units_dat::mineral_cost[unit_id];

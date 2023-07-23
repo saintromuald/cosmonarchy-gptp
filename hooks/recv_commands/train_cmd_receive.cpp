@@ -5,7 +5,7 @@ namespace hooks
 {
 	void cmdrecv_train_fighter() // 004C1800
 	{
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* current_selection = get_active_player_next_selection();
 		while (current_selection)
 		{
@@ -52,7 +52,7 @@ namespace hooks
 	void cmdrecv_train(u16 unit_id) // 004C1C20
 	{
 		Unit* builder;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		builder = get_active_player_next_selection();
 		if (builder && get_active_player_next_selection() == 0)
 		{

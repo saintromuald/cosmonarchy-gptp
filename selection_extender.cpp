@@ -1399,7 +1399,7 @@ void __declspec(naked) get_active_player_first_selection_patch_9A857() {
 	u32 slot;
 
 	__asm {
-		CMP		BL, SelectionLimit//192-limit: unit_iterator_pos (0x006284B6) is a BYTE. Technically it appears to be a WORD, but is only referenced as a byte ptr thoughout the exe.
+		CMP		BL, SelectionLimit//192-limit: g_unit_iterator_pos (0x006284B6) is a BYTE. Technically it appears to be a WORD, but is only referenced as a byte ptr thoughout the exe.
 		JB		offset loc_49A860
 		XOR		EAX, EAX
 		POP		EBX

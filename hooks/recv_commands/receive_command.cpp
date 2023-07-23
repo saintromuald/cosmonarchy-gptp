@@ -26,7 +26,7 @@ namespace hooks
 		{
 			Unit* current_unit;
 			u32 current_order = bActionOrder;
-			*unit_iterator_pos = 0;
+			*g_unit_iterator_pos = 0;
 			current_unit = get_active_player_next_selection();
 			*saved_unit = current_unit;
 			while (current_unit != nullptr)

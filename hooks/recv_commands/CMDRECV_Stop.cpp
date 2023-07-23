@@ -11,7 +11,7 @@ namespace hooks
 	void cmdrecv_reaver_stop()
 	{
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{
@@ -95,7 +95,7 @@ namespace hooks
 	void cmdrecv_carrier_stop()
 	{
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{
@@ -178,7 +178,7 @@ namespace hooks
 	void cmdrecv_stop(u8 bCommandType)
 	{
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* current_unit = get_active_player_next_selection();
 		while (current_unit != nullptr)
 		{

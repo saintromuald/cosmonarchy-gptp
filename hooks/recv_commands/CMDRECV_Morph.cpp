@@ -6,7 +6,7 @@
 namespace hooks
 {
 	void cmdrecv_building_morph(u16 unit_id) { // 004C1910
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (unit->id != UnitId::None
 			&&	unit->can_make_unit(unit_id, *g_active_nation_id) == 1
@@ -21,7 +21,7 @@ namespace hooks
 	}
 
 	void cmdrecv_unit_morph(u16 unit_id) {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* current_unit = helper::get_active_player_next_selection()) {
 			if (current_unit->can_make_unit(unit_id, *g_active_nation_id)
 				&& current_unit->main_order_id != OrderId::Morph1
@@ -87,7 +87,7 @@ namespace hooks
 
 	// Hooked for multi-building select. -Pr0nogo
 	void cmdrecv_liftoff(char* buffer) { // 004C1620
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (!helper::unit_is_training_or_morphing(unit) && unit->building.tech_id == TechId::None && unit->building.upgrade_id == UpgradeId::None) {
 				if (unit->status & UnitStatus::GroundedBuilding) {

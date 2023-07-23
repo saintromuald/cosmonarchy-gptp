@@ -31,7 +31,7 @@ namespace
 	void __stdcall unit_morph_wrapper_cmdrecv_unit_morph(u8* commandData)
 	{
 		const u16 morph_unit_id = *((u16*)&commandData[1]);
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (hooks::unit_can_morph(unit, morph_unit_id)

@@ -6,7 +6,7 @@ namespace hooks
 {
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_nuke() {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
 			Unit* nuke = unit->connected_unit;
@@ -20,7 +20,7 @@ namespace hooks
 
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_addon() {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->secondary_order_id == OrderId::BuildAddon
 				&& unit->status & UnitStatus::GroundedBuilding) {
@@ -37,7 +37,7 @@ namespace hooks
 
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_upgrade() {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->status & UnitStatus::Completed && unit->player == *g_active_nation_id) {
 				helper::cancel_upgrade_proc(unit);
@@ -48,7 +48,7 @@ namespace hooks
 
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_research() {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (units_dat::base_property[unit->id] & UnitProperty::Building
 			&&  unit->status & UnitStatus::Completed
@@ -62,7 +62,7 @@ namespace hooks
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_train(u16 slot) // 004C0100
 	{
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (unit->id != UnitId::ZergLarva
@@ -86,7 +86,7 @@ namespace hooks
 
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_unit_morph() {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->player == *g_active_nation_id) {
 				helper::cancel_unit(unit);
@@ -96,7 +96,7 @@ namespace hooks
 
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_construction() {
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->player == *g_active_nation_id) {
 				helper::cancel_unit(unit);

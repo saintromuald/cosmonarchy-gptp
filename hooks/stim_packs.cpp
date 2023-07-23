@@ -60,7 +60,7 @@ namespace hooks
 	void cmdrecv_stimpack() // 004C2F30
 	{
 		Unit* active_player_selection;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		active_player_selection = get_active_player_next_selection();
 		while (active_player_selection != nullptr)
 		{

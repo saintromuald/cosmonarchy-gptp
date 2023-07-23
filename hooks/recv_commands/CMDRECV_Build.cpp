@@ -38,7 +38,7 @@ namespace hooks
 
 	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 built_unit_id) // 0048E010
 	{
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
 		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 
@@ -67,7 +67,7 @@ namespace hooks
 	{
 		u16 addonPlaceX = 0;
 		u16 addonPlaceY = 0;
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
 		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 		if (!can_build)
@@ -116,7 +116,7 @@ namespace hooks
 
 	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 built_unit_id) // 004C23C0
 	{
-		*unit_iterator_pos = 0;
+		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
 		if (builder)
 		{
