@@ -1330,6 +1330,7 @@ C_ASSERT(sizeof(GameVersion) == 60);
 #define buffer1_stack 12-SelectionLimit_word-SelectionLimit_dword
 #define buffer1_size 13-SelectionLimit_word-SelectionLimit_dword
 #define buffer1_type 14-SelectionLimit_word-SelectionLimit_dword
+#define GroupWireframesCap 12//Change this number when the UI can support more group selection wireframes.
 
 const s32 SelectionCap = SelectionLimit; // Old const
 
