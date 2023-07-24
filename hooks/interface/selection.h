@@ -20,6 +20,7 @@ namespace hooks
 	char select_unit_initial();																						// 0049B690
 	char create_all_selection_circles();																			// 00499A60
 	void update_selected_unit_data();																				// 004C38B0
+	void status_screen_button(BinDlg* dialog);																		// 00458220
 
 	bool can_add_unit_to_active_selection(Unit* unit, u32 slot);													// partial helper
 

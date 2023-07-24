@@ -1193,6 +1193,9 @@ SCBW_DATA(char**,			g_countdown_timer_strings,			0x0068C240);
 // For load_menu_glu_expcampaign
 SCBW_DATA(u32*,				g_gl_glues_mode,					0x006D11BC);
 
+// For status_screen_button
+SCBW_DATA(u8*,				g_client_selection_changed,			0x0059723C);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

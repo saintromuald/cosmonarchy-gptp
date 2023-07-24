@@ -343,6 +343,22 @@ namespace
 			JMP continue_address
 		}
 	}
+
+	void __declspec(naked) status_screen_button_wrapper() { // 00458220
+		static BinDlg* dialog;//Originally took 2 args, but for some reason both are duplicates in the only use case of the function.
+		__asm {
+			PUSH	EBP
+			MOV		EBP, ESP
+			MOV		dialog, EDX
+			PUSHAD
+		}
+		hooks::status_screen_button(dialog);
+		__asm {
+			POPAD
+			POP		EBP
+			RET
+		}
+	}
 }
 
 namespace hooks
@@ -367,5 +383,6 @@ namespace hooks
 	//	jump_patch(create_all_selection_circles_wrapper,			0x00499A60, 1); // Not finished
 	//	jump_patch(update_selected_unit_data_wrapper,				0x004C38B0, 3); // Not working
 	//	jump_patch(set_control_group_partial,						0x00496766, 2); // Unfinished -Veeq7
+		call_patch(status_screen_button_wrapper,					0x00458450);	//There's only 1 reference to this function, so avoid the extra jump by hooking it with a direct call to the wrapper instead.
 	}
 }

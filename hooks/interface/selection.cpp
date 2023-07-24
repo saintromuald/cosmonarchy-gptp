@@ -849,7 +849,8 @@ namespace hooks
 					return result;
 				}
 			}
-			Unit* unit_index = *(g_active_portrait_unit + result--);
+			Unit* unit_index = local_selection_group_2[result - 1];
+			--result;
 			local_selection_group_2[selection_index] = unit_index;
 			local_selection_group_2[result] = 0;
 		}
@@ -1133,5 +1134,144 @@ namespace hooks
 			}
 		}
 		helper::update_buttonset();
+	}
+
+	// Hooked as part of the selection extender. -DF
+	void status_screen_button(BinDlg* dialog) { // 00458220
+		Unit* unit_list[SelectionLimit];
+		Unit* unit;
+		u32 index = 0;
+
+		if (*g_is_holding_shift) {
+			memset(&unit_list, 0, sizeof(unit_list));
+			BinDlg* current_dialog = dialog->parent;
+
+			if (current_dialog->control_type)
+			{
+				current_dialog = current_dialog->parent;
+			}
+			current_dialog = current_dialog->child_dialog;
+			if (current_dialog) {
+				while (current_dialog->index != 33) {
+					current_dialog = current_dialog->next;
+					if (!current_dialog)
+					{
+						return;
+					}
+				}
+
+				u32 count = GroupWireframesCap;
+				u32 selections = 0;
+
+				do {
+					if (current_dialog->flags & BinDlgFlags::Visible) {
+						++selections;
+						unit = (Unit*)*current_dialog->user;
+
+						if (unit && current_dialog != dialog) {
+							unit_list[index++] = unit;
+						}
+					}
+					current_dialog = current_dialog->next;
+				} while (--count);
+
+				if (selections == GroupWireframesCap) {
+					count = SelectionLimit - selections;
+					do {
+						unit = ccmu_extender.new_active_selection[selections++];
+						if (!unit)
+						{
+							break;
+						}
+						unit_list[index++] = unit;
+					} while (--count);
+				}
+			}
+		} else {
+			unit = (Unit*)*dialog->user;
+
+			if (*g_is_holding_ctrl) {
+				memset(&unit_list, 0, sizeof(unit_list));
+				BinDlg* current_dialog = dialog->parent;
+				if (current_dialog->control_type)
+				{
+					current_dialog = current_dialog->parent;
+				}
+				current_dialog = current_dialog->child_dialog;
+
+				if (current_dialog) {
+					while (current_dialog->index != 33) {
+						current_dialog = current_dialog->next;
+
+						if (!current_dialog)
+							return;
+					}
+
+					u16 unit_id = unit->id;
+					u32 count = GroupWireframesCap;
+					u32 selections = 0;
+					do {
+						if (current_dialog->flags & BinDlgFlags::Visible) {
+							++selections;
+							unit = (Unit*)*current_dialog->user;
+							if (unit->id == unit_id)
+							{
+								unit_list[index++] = unit;
+							}
+						}
+
+						current_dialog = current_dialog->next;
+					} while (--count);
+
+					if (selections == GroupWireframesCap) {
+						count = SelectionLimit - selections;
+						do {
+							unit = ccmu_extender.new_active_selection[selections++];
+							if (!unit)
+							{
+								break;
+							}
+							if (unit->id == unit_id)
+							{
+								unit_list[index++] = unit;
+							}
+						} while (--count);
+					}
+				}
+			} else {
+				if (!*g_is_holding_alt || helper::select_single_unit_from_id(helper::unit_to_unit_id(unit))) //wtf??? why???
+				{
+					helper::create_new_unit_selections_from_list(&unit, 1);
+					helper::cmdact_select(&unit, 1);
+					*g_client_selection_changed = 1; // client_selection_changed
+					scbw::refresh_console();
+				}
+				return;
+			}
+		}
+
+		if (index == 1 && *g_is_holding_alt) {
+			u32 unit_table_id;
+			if (unit_list[0]) {
+				u32 unit_index = unit_list[0]->get_unit_index();
+
+				if (unit_index <= UnitLimit) {
+					unit_table_id = unit_index | (unit_list[0]->unique_id << 12);
+				} else {
+					unit_table_id = 0;
+				}
+			} else {
+				unit_table_id = 0;
+			}
+
+			if (helper::select_single_unit_from_id(unit_table_id)) {
+				return;
+			}
+		}
+
+		helper::create_new_unit_selections_from_list(unit_list, index);
+		helper::cmdact_select(unit_list, index);
+		*g_client_selection_changed = 1; // client_selection_changed
+		scbw::refresh_console();
 	}
 }
