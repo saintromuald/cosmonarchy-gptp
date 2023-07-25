@@ -171,7 +171,7 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 		MOV		EAX, [EDI + 0x14]//dialog->pszText
 		TEST	EAX, EAX
 		JE		loc_457046
-		MOV		ECX, dword ptr ds : [0x006CE0FC]
+		MOV		ECX, dword ptr ds : [0x006CE0F8]
 		CALL	SetFontHandle
 		MOV		EAX, [EDI + 4]//dialog->bounds.left
 		MOVSX	EDX, word ptr[EDI + 6]//dialog->bounds.top

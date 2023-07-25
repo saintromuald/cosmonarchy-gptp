@@ -1314,7 +1314,9 @@ struct GameVersion {
 C_ASSERT(sizeof(GameVersion) == 60);
 
 // Selection extender from DarkenedFantasies!
-#define SelectionLimit 192															// As it currently stands, must be a multiple of 6, and is the largest supported value. Look into editing the cmdact/cmdrecv_select buffers to upgrade the selection byte to at least a word.
+// As it currently stands, SelectionLimit must be a multiple of 6, and 252 is the largest supported value.
+// Look into editing the cmdact/cmdrecv_select buffers to upgrade the selection byte to at least a word.
+#define SelectionLimit 252
 #define SelectionLimit_word 2*SelectionLimit
 #define SelectionLimit_dword 4*SelectionLimit
 #define SelectionLimit_dword_2 2*SelectionLimit_dword
@@ -1330,7 +1332,7 @@ C_ASSERT(sizeof(GameVersion) == 60);
 #define buffer1_stack 12-SelectionLimit_word-SelectionLimit_dword
 #define buffer1_size 13-SelectionLimit_word-SelectionLimit_dword
 #define buffer1_type 14-SelectionLimit_word-SelectionLimit_dword
-#define GroupWireframesCap 12//Change this number when the UI can support more group selection wireframes.
+#define GroupWireframesCap 12 //Change this number when the UI can support more group selection wireframes.
 
 const s32 SelectionCap = SelectionLimit; // Old const
 
