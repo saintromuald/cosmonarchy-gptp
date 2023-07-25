@@ -194,6 +194,31 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 	}
 }
 
+const u32 statdataMouseOverInteract_57D93 = 0x00457D93;
+void __declspec(naked) statdataMouseOverInteract_patch_57046() {
+	__asm {
+		MOV		EAX, GroupWireframesCap
+		CMP		byte ptr ds : [0x0059723D] , AL//clientSelectionCount
+		JBE		offset isSingleSelect
+		CMP		word ptr[ECX], 1765
+		JBE		offset stringDoesNotExist
+		MOVZX	EAX, word ptr[ECX + 2 * 1766]
+		ADD		EAX, ECX
+		JMP		statdataMouseOverInteract_57D93
+
+		isSingleSelect:
+		CMP		word ptr[ECX], 808
+			JBE		offset stringDoesNotExist
+			MOVZX	EAX, word ptr[ECX + 2 * 809]
+			ADD		EAX, ECX
+			JMP		statdataMouseOverInteract_57D93
+
+		stringDoesNotExist:
+		MOV		EAX, 0x00501B7D//"\x00"
+		JMP		statdataMouseOverInteract_57D93
+	}
+}
+
 /*
 const u32 select_dual_birth_units_5D079 = 0x0045D079;
 void __declspec(naked) select_dual_birth_units_patch_5D041() {
@@ -2410,6 +2435,9 @@ namespace hooks {
 
 		//stat_data_unit_wireframe_select (0x00456F50)
 		jump_patch(stat_data_unit_wireframe_select_update_patch_57046, 0x00457046, 4);
+
+		//statdataMouseOverInteract (0x00457CE0)
+		jump_patch(statdataMouseOverInteract_patch_57046, 0x00457D87);
 
 		//updateButtonSetEx (0x00458BC0)
 		//memory_patch(0x00458BD7, &ccmu_extender.new_client_selection_group);
