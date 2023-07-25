@@ -9,6 +9,7 @@
 //Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
 
 static u32 tmp;
+
 //CTRL+F for "192-limit" for issues preventing a higher selection cap.
 
 const u32 BTNSCOND_TrainingFighter_28E52 = 0x00428E52;
@@ -161,6 +162,37 @@ void __declspec(naked) input_game_right_mouse_click_patch_565C0() {
 		JMP		input_game_right_mouse_click_565E6
 	}
 }*/
+
+const u32 SetFontHandle = 0x0041FB30;
+const u32 bw_print_xy = 0x004202B0;
+const u32 stat_data_unit_wireframe_select_update_5704F = 0x0045704F;
+void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
+	__asm {
+		MOV		EAX, [EDI + 0x14]//dialog->pszText
+		TEST	EAX, EAX
+		JE		loc_457046
+		MOV		ECX, dword ptr ds : [0x006CE0FC]
+		CALL	SetFontHandle
+		MOV		EAX, [EDI + 4]//dialog->bounds.left
+		MOVSX	EDX, word ptr[EDI + 6]//dialog->bounds.top
+		MOV		ECX, [EDI + 8]//dialog->bounds.right; dialog->bounds.bottom
+		MOVSX	ESI, AX
+		MOV		dword ptr ds : [0x006CE0C8] , EAX//drawTextLeft; drawTextTop
+		MOV		EAX, [EDI + 0x14]//dialog->pszText
+		PUSH	EDX
+		MOV		byte ptr ds : [0x006CE110] , 0x11//printXYAlignment
+		MOV		dword ptr ds : [0x006CE0CC] , ECX//drawTextRight; drawTextBottom
+		CALL	bw_print_xy
+		XOR		ECX, ECX
+		CALL	SetFontHandle
+
+		loc_457046 :
+		POP		EDI
+			POP		ESI
+			MOV		byte ptr ds : [0x0050CE91] , 0xD0
+			JMP		stat_data_unit_wireframe_select_update_5704F
+	}
+}
 
 /*
 const u32 select_dual_birth_units_5D079 = 0x0045D079;
@@ -2209,9 +2241,9 @@ namespace hooks {
 		//UnitStatCond_overlord (0x00425900)
 		memory_patch(0x00425901, &ccmu_extender.new_selGroupHp);
 
-		//sub_425960 (0x00425960)
-		memory_patch(0x004259C3, &ccmu_extender.new_client_selection_group);
-		memory_patch(0x004259C9, &ccmu_extender.new_client_selection_group[GroupWireframesCap]);
+		//sub_425960 (0x00425960) -- hooked
+	//	memory_patch(0x004259C3, &ccmu_extender.new_client_selection_group);
+	//	memory_patch(0x004259C9, &ccmu_extender.new_client_selection_group[GroupWireframesCap]);
 
 		//UnitStatAct_Powerup (0x00426EE0)
 		memory_patch(0x00426F1E, &ccmu_extender.new_selGroupHp);
@@ -2375,6 +2407,9 @@ namespace hooks {
 		//memory_patch(0x004564FD, &ccmu_extender.new_local_selection_group);
 		//jump_patch(input_game_right_mouse_click_patch_56540, 0x00456540, 2);
 		//jump_patch(input_game_right_mouse_click_patch_565C0, 0x004565BB);
+
+		//stat_data_unit_wireframe_select (0x00456F50)
+		jump_patch(stat_data_unit_wireframe_select_update_patch_57046, 0x00457046, 4);
 
 		//updateButtonSetEx (0x00458BC0)
 		//memory_patch(0x00458BD7, &ccmu_extender.new_client_selection_group);

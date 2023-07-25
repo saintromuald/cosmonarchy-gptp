@@ -1,5 +1,8 @@
 #pragma once
 #include "../../SCBW/structures/Unit.h"
+#include "SCBW/structures.h"
+
+char grpWireBuffer[GroupWireframesCap][8];
 
 namespace hooks
 {
@@ -21,6 +24,7 @@ namespace hooks
 	char create_all_selection_circles();																			// 00499A60
 	void update_selected_unit_data();																				// 004C38B0
 	void status_screen_button(BinDlg* dialog);																		// 00458220
+	void generate_group_wireframes(BinDlg* dialog);																	// 00425960
 
 	bool can_add_unit_to_active_selection(Unit* unit, u32 slot);													// partial helper
 

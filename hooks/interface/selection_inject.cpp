@@ -359,6 +359,22 @@ namespace
 			RET
 		}
 	}
+
+	void __declspec(naked) generate_group_wireframes_wrapper() {
+		static BinDlg* dialog;
+		__asm {
+			PUSH	EBP
+			MOV		EBP, ESP
+			MOV		dialog, EAX
+			//PUSHAD
+		}
+		hooks::generate_group_wireframes(dialog);
+		__asm {
+			//POPAD
+			POP		EBP
+			RET
+		}
+	}
 }
 
 namespace hooks
@@ -384,5 +400,6 @@ namespace hooks
 	//	jump_patch(update_selected_unit_data_wrapper,				0x004C38B0, 3); // Not working
 	//	jump_patch(set_control_group_partial,						0x00496766, 2); // Unfinished -Veeq7
 		call_patch(status_screen_button_wrapper,					0x00458450);	//There's only 1 reference to this function, so avoid the extra jump by hooking it with a direct call to the wrapper instead.
+		call_patch(generate_group_wireframes_wrapper,				0x004581CE);
 	}
 }

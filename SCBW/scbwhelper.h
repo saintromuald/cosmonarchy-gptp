@@ -1634,4 +1634,5 @@ namespace helper {
 	BinDlg* load_full_menu_dialog(u32 filename, void* default_value, char* unused, u32 read, char* log_filename, u32 log_line);					// 004DDBE0
 	u32 glu_load_bin_dialog(BinDlg* dialog, void* proc);																						// 0041A080
 	u32 change_menu();																															// 004DCFA0
+	void store_selection_group_hp_and_type();																									// 004DCFA0
 }

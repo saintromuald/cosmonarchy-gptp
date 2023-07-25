@@ -1338,6 +1338,12 @@ struct ControlGroup {
 	UnitIndex unit_index[SelectionCap];
 };
 
+struct WireList {
+	u16 count;
+	u16 unit_id = UnitId::None;
+	Unit* unit;
+};
+
 #define TotalControlGroups 18	// Control groups + Recent selections
 #define UiControlGroups 10		// Control groups
 

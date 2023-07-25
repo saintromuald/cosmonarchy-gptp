@@ -13953,4 +13953,14 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void store_selection_group_hp_and_type()
+	{
+		const u32 func_address = 0x00424540;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
 }
