@@ -481,18 +481,18 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x00417B05, &tFontGame_ImageData[0x12]);
 	memory_patch(0x00417B61, &tFontGame_ImageData[0x13]);
 	memory_patch(0x0041FB41, &tFontGame_ImageData);					// ...for "SetFontHandle".
-	memory_patch(0x004BA127, (u32)0x140);							// ...for "get_tFontGam_PCX_0".
+	memory_patch(0x004BA127, sizeof(tFontGame_ImageData));			// ...for "get_tFontGam_PCX_0".
 	memory_patch(0x004BA12C, &tFontGame_ImageData);
 	memory_patch(0x004BA137, &tFontGame_ImageData);
-	memory_patch(0x004BA167, (u32)0x140);							// ...for "get_tFontGam_PCX".
+	memory_patch(0x004BA167, sizeof(tFontGame_ImageData));			// ...for "get_tFontGam_PCX".
 	memory_patch(0x004BA16C, &tFontGame_ImageData);
 	memory_patch(0x004BA177, &tFontGame_ImageData);
-	memory_patch(0x004D48C9, (u32)0x140);							// ...for "titleInit".
+	memory_patch(0x004D48C9, sizeof(tFontGame_ImageData));			// ...for "titleInit".
 	memory_patch(0x004D48CE, &tFontGame_ImageData);
 	memory_patch(0x004D48E0, &tFontGame_ImageData);
-	memory_patch(0x004D8A34, (u32)0x140);							// ...for "creditsSetFontColorFromFile".
+	memory_patch(0x004D8A34, sizeof(tFontGame_ImageData));			// ...for "creditsSetFontColorFromFile".
 	memory_patch(0x004D8A67, &tFontGame_ImageData);
-	memory_patch(0x004DD8C8, (u32)0x140);							// ...for "loadTFontPcx".
+	memory_patch(0x004DD8C8, sizeof(tFontGame_ImageData));			// ...for "loadTFontPcx".
 	memory_patch(0x004DDB71, &tFontGame_ImageData);					// ...for "registerMenuFunctions".
 
 	// Extend and add per-player support for font colors.
