@@ -60,7 +60,7 @@ namespace hooks
             return true;
         }
         if (unit->unit_ai
-        &&  unit->main_order_id != OrderId::Pickup4
+        &&  unit->main_order_id != OrderId::TransportLoad
         &&  helper::ai_prepare_moving_to(unit, new_target.x, new_target.y)) {
             return false;
         }

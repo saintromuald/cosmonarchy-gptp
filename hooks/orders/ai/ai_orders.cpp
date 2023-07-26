@@ -1200,7 +1200,7 @@ namespace hooks {
 				Unit* worker = worker_ai->parent;
 				u8 unit_order = worker->main_order_id;
 				if (unit_order == OrderId::ConstructingBuilding
-				|| unit_order == OrderId::Pickup4
+				|| unit_order == OrderId::TransportLoad
 				|| unit_order == OrderId::DroneBuild
 				|| worker->status & UnitStatus::InTransport) {
 					worker_ai->last_update_second = *g_elapsed_time_seconds;
@@ -2846,5 +2846,88 @@ namespace hooks {
 		result.pt.y = pos_y_1;
 		result.unit = 0;
 		return result;
+	}
+
+	// Hooked to resolve nullsprite crashes. -Pr0nogo
+	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y) // 004E7420
+	{
+		u32 main_order_id = unit->main_order_id;
+		if (main_order_id == OrderId::TransportLoad)
+		{
+			return 1;
+		}
+		if (unit->status & UnitStatus::InAir || units_dat::base_property[unit->id] & UnitProperty::Subunit)
+		{
+			return 0;
+		}
+		if (unit->position.x == x && unit->position.y == y)
+		{
+			return 0;
+		}
+		if (!(unit->status & UnitStatus::Reacts))
+		{
+			return 0;
+		}
+		if (unit_id_can_repair(unit->id) && main_order_id == OrderId::Repair1)
+		{
+			Unit* target = unit->order_target.unit;
+			if (target)
+			{
+				if (target->status & UnitStatus::InAir)
+				{
+					return 0;
+				}
+			}
+		}
+		if ((*g_sai_paths)->regions[helper::get_region_id(x, y)].accessibility_flags == 8189)
+		{
+			return 0;
+		}
+		if (helper::unit_has_path_to_destination(unit, x, y))
+		{
+			UnitAi* ai = unit->unit_ai;
+			if (ai)
+			{
+				if (ai->type == AiType::Military)
+				{
+					char state = ai->military_ai.region->state;
+					if (state == RegionState::ContinueAttackHere || state == RegionState::Attacking)
+					{
+						return 0;
+					}
+				}
+			}
+			if (helper::ai_are_on_connected_regions(unit, x, y)
+			&& (unit->id != UnitId::ProtossAccantorOld || helper::get_distance_fast(x, unit->position.x, y, unit->position.y) < 960))
+			{
+				return 0;
+			}
+		}
+		Unit* transport = 0;
+		if (!helper::ai_find_transport(unit, &transport))
+		{
+			return 0;
+		}
+		Order* order_head = unit->order_queue_head;
+		if (order_head)
+		{
+			helper::issue_order_before_2(main_order_id, order_head, unit, &unit->order_target.pt, unit->order_target.unit);
+		} else {
+			bool stop_previous = false;
+			if (unit->order_target.pt.x || unit->order_target.pt.y) {
+				stop_previous = true;
+			}
+			helper::order(stop_previous, unit, main_order_id, unit->order_target.pt, unit->order_target.unit, 0);
+		}
+
+		helper::insert_order_targeting_ground_before(OrderId::TransportLoad, unit->order_queue_head, unit, x, y);
+		Unit* subunit = unit->subunit;
+		if (helper::unit_is_subunit(unit->subunit))
+		{
+			helper::issue_order_targeting_nothing(subunit, OrderId::Nothing2);
+		}
+		helper::force_order_done(unit);
+		helper::set_flag_attack_move(unit);
+		return 1;
 	}
 }

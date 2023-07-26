@@ -108,7 +108,7 @@ namespace hooks
 		{
 			if (unit->unit_ai == nullptr
 				|| unitToLoad->unit_ai == nullptr
-				|| unitToLoad->main_order_id == OrderId::Pickup4)
+				|| unitToLoad->main_order_id == OrderId::TransportLoad)
 			{
 				if (unit->main_order_state == 0)
 				{
@@ -125,7 +125,7 @@ namespace hooks
 							{
 								helper::make_to_hold_position(unit);
 								if (unitToLoad->main_order_id != OrderId::EnterTransport
-									&& unitToLoad->main_order_id != OrderId::Pickup4)
+									&& unitToLoad->main_order_id != OrderId::TransportLoad)
 								{
 									unitToLoad->order_to(OrderId::EnterTransport, unit);
 								}

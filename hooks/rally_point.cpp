@@ -542,7 +542,7 @@ namespace hooks
 		&& (order_id == OrderId::RallyPointToVisibleUnit
 		||  order_id == OrderId::RallyPointToTile
 		||  order_id == OrderId::Rechargeshields2
-		||  order_id == OrderId::Pickup3)) {
+		||  order_id == OrderId::BunkerLoad)) {
 			return 1;
 		}
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {

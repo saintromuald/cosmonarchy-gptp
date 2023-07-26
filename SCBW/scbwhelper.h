@@ -1635,4 +1635,6 @@ namespace helper {
 	u32 glu_load_bin_dialog(BinDlg* dialog, void* proc);																						// 0041A080
 	u32 change_menu();																															// 004DCFA0
 	void store_selection_group_hp_and_type();																									// 004DCFA0
+
+	void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target);									// 004747C0
 }

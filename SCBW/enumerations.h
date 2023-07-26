@@ -590,7 +590,7 @@ namespace GameType
 		TopVsBottom = 15,
 
 		ScenarioMode = 31,
-		CompetetiveMode = 32,
+		CompetitiveMode = 32,
 	};
 }
 

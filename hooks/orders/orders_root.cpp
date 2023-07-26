@@ -113,8 +113,8 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004E7CF0,	/*OrderId::EnterTransport*/			Func_Type::EAX,	2},
 	{ 0x004E7300,	/*OrderId::Pickup1*/				Func_Type::EAX,	2},
 	{ 0x004E75D0,	/*OrderId::Pickup2*/				Func_Type::EDI,	2},
-	{ 0x004E73B0,	/*OrderId::Pickup3*/				Func_Type::EDI,	2},
-	{ 0x004E7B70,	/*OrderId::Pickup4*/				Func_Type::EAX,	2},
+	{ 0x004E73B0,	/*OrderId::BunkerLoad*/				Func_Type::EDI,	2},
+	{ 0x004E7B70,	/*OrderId::TransportLoad*/				Func_Type::EAX,	2},
 	{ 0x004F3E10,	/*OrderId::Powerup2*/				Func_Type::EAX,	2},
 	{ 0x00464BD0,	/*OrderId::SiegeMode*/				Func_Type::EDI,	1},
 	{ 0x00464AE0,	/*OrderId::TankMode*/				Func_Type::EAX,	1},
@@ -264,9 +264,9 @@ namespace hooks {
 					{
 						helper::EAX_order(unit, 0x004790A0);
 					}	
-					else if (unit->main_order_id == OrderId::Pickup4)
+					else if (unit->main_order_id == OrderId::TransportLoad)
 					{
-						helper::EAX_order(unit, mainOrder_func_offsets[OrderId::Pickup4][0]);
+						helper::EAX_order(unit, mainOrder_func_offsets[OrderId::TransportLoad][0]);
 					}
 					else if (unit->main_order_id == OrderId::ComputerAI)
 					{

@@ -52,7 +52,7 @@ enum InterceptType {
 enum GameKind {
 	GameKind_Unsupported,
 	GameKind_ScenarioMode,
-	GameKind_CompetetiveMode,
+	GameKind_CompetitiveMode,
 	GameKind_Count,
 };
 

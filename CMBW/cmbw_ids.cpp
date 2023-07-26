@@ -797,3 +797,10 @@ bool unit_is_combatant(Unit* unit) {
 	}
 	return unit->has_weapon();
 }
+
+bool unit_id_can_repair(u32 unit_id)
+{
+	return unit_id == UnitId::TerranMason
+		|| unit_id == UnitId::TerranTalos
+		|| unit_id == UnitId::DanielsMason;
+}

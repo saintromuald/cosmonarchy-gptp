@@ -3126,8 +3126,8 @@ namespace scbw {
 			case GameType::ScenarioMode:
 				return GameKind_ScenarioMode;
 
-			case GameType::CompetetiveMode:
-				return GameKind_CompetetiveMode;
+			case GameType::CompetitiveMode:
+				return GameKind_CompetitiveMode;
 		}
 		return GameKind_Unsupported;
 	}

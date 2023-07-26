@@ -62,7 +62,7 @@ namespace hooks
 
 		// Separate check for AI-controlled units
 		if (target->unit_ai) {
-			if (target->main_order_id == OrderId::RechargeShields1 || target->main_order_id == OrderId::Pickup4) {
+			if (target->main_order_id == OrderId::RechargeShields1 || target->main_order_id == OrderId::TransportLoad) {
 				return 0;
 			}
 
