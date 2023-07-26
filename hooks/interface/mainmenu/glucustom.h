@@ -1,7 +1,7 @@
 #pragma once
 #include "SCBW/structures.h"
 
-u8 tFontGame_ImageData[320];//Larger tfont.pcx buffer to fit the new colors.
+u8 tFontGame_ImageData[328];//Larger tfont.pcx buffer to fit the new colors.
 u16 display_text_color[11];
 namespace hooks
 {

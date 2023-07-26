@@ -6231,7 +6231,7 @@ namespace helper {
 	}
 
 	s32 snet_get_turns_in_transit(u32* turns) {
-		const u32 SNetGetTurnsInTransit_function = 0x00410275;
+		const u32 SNetGetTurnsInTransit_function = 0x00410274;
 		static s32 result;
 		_asm {
 			PUSHAD

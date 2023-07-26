@@ -10,7 +10,18 @@
 
 static u32 tmp;
 
-//CTRL+F for "192-limit" for issues preventing a higher selection cap.
+graphics::Font* grpWireFont;
+extern u8 tFontGame_ImageData[];
+void init_grpWireFont(char* font_name) {
+	const u32 load_font = 0x0041FD10;
+
+	__asm {
+		PUSH	0x004DAB00//AllocateFont
+		MOV		EAX, font_name
+		CALL	load_font
+		MOV		grpWireFont, EAX
+	}
+}
 
 const u32 BTNSCOND_TrainingFighter_28E52 = 0x00428E52;
 const u32 create_unit_allowed = 0x0046E1C0;
@@ -171,26 +182,31 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 		MOV		EAX, [EDI + 0x14]//dialog->pszText
 		TEST	EAX, EAX
 		JE		loc_457046
-		MOV		ECX, dword ptr ds : [0x006CE0F8]
+		MOV		ECX, grpWireFont
 		CALL	SetFontHandle
+
+		LEA		EAX, [tFontGame_ImageData + 0x140]//Special grpWireFont color.
+		MOV		ds:[0x006CE0C0], EAX//currentFontColor
+		MOV		byte ptr ds:[0x006CE0C4], 0//Set font spacing to 0.
+
 		MOV		EAX, [EDI + 4]//dialog->bounds.left
-		MOVSX	EDX, word ptr[EDI + 6]//dialog->bounds.top
+		MOVSX	EDX, word ptr [EDI + 6]//dialog->bounds.top
 		MOV		ECX, [EDI + 8]//dialog->bounds.right; dialog->bounds.bottom
 		MOVSX	ESI, AX
-		MOV		dword ptr ds : [0x006CE0C8] , EAX//drawTextLeft; drawTextTop
+		MOV		dword ptr ds:[0x006CE0C8], EAX//drawTextLeft; drawTextTop
 		MOV		EAX, [EDI + 0x14]//dialog->pszText
 		PUSH	EDX
-		MOV		byte ptr ds : [0x006CE110] , 0x11//printXYAlignment
-		MOV		dword ptr ds : [0x006CE0CC] , ECX//drawTextRight; drawTextBottom
+		MOV		byte ptr ds:[0x006CE110], 0x44//printXYAlignment
+		MOV		dword ptr ds:[0x006CE0CC], ECX//drawTextRight; drawTextBottom
 		CALL	bw_print_xy
 		XOR		ECX, ECX
 		CALL	SetFontHandle
 
-		loc_457046 :
+		loc_457046:
 		POP		EDI
-			POP		ESI
-			MOV		byte ptr ds : [0x0050CE91] , 0xD0
-			JMP		stat_data_unit_wireframe_select_update_5704F
+		POP		ESI
+		MOV		byte ptr ds:[0x0050CE91], 0xD0
+		JMP		stat_data_unit_wireframe_select_update_5704F
 	}
 }
 
