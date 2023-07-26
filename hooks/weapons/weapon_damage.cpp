@@ -440,7 +440,7 @@ namespace hooks
 
 			// Ensnaring Brood - Matraleth enchantment ability
 			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
-			&& !(scbw::unit_is_pacifist(data.target))
+			&&  unit_is_combatant(data.target)
 			&&  !scbw::is_under_dark_swarm(data.target))
 			{
 				 apply_ensnare(data.target);
@@ -552,7 +552,7 @@ namespace hooks
 					{
 						// Power Siphon
 						if  (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)
-						&&	!scbw::unit_is_pacifist(data.target))
+						&&	unit_is_combatant(data.target))
 						{
 							attacker_ext->values[ValueSavantPowerSiphonBuff]++;
 							attacker_ext->timers[TimerSavantPowerSiphonBuff] = 2 * 24 + 1;
@@ -589,7 +589,7 @@ namespace hooks
 					case WeaponId::PazuzuJupiterDriver:
 					{
 						// Deconstruction - Pazuzu behavior - apply stack
-						if (!scbw::unit_is_pacifist(data.target)) {
+						if (unit_is_combatant(data.target)) {
 							target_ext->values[ValueDeconstruction]++;
 							target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;

@@ -49,6 +49,13 @@ enum InterceptType {
 	InterceptType_Count,
 };
 
+enum GameKind {
+	GameKind_Unsupported,
+	GameKind_ScenarioMode,
+	GameKind_CompetetiveMode,
+	GameKind_Count,
+};
+
 namespace scbw
 {
 	bool is_any_morph_result(u16 id);
@@ -643,7 +650,6 @@ namespace scbw
 	s32 get_upgrade_type(Unit* unit);
 	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
-	bool unit_is_pacifist(Unit* unit);
 	bool order_is_spell(s32 order_id);
 	void create_shield_overlay(Unit* unit, u32 attack_direction);
 	void decloak_proc(Unit* unit);
@@ -763,4 +769,5 @@ namespace scbw
 	void regress(Unit* unit, u32 regression_id);
 	void unfreeze_channeling_unit(Unit* unit);
 	bool unit_can_flee(Unit* unit);
+	GameKind get_game_kind();
 }

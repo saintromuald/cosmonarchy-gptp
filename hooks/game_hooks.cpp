@@ -1712,7 +1712,7 @@ namespace hooks {
 
 				for (u32 i = 0; i < unit_array.count; ++i) {
 					Unit* target = unit_array.units[i];
-					if (scbw::unit_is_pacifist(target)) {
+					if (!unit_is_combatant(target)) {
 						continue;
 					}
 

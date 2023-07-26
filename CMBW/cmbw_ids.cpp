@@ -779,8 +779,7 @@ u32 get_scribe_warp_distance(u32 unit_id) {
 	}
 }
 
-bool unit_id_ignored_on_minimap(u32 unit_id)
-{
+bool unit_id_ignored_on_minimap(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::Spell_DarkSwarm:
 		{
@@ -788,4 +787,13 @@ bool unit_id_ignored_on_minimap(u32 unit_id)
 		}
 	}
 	return units_dat::base_property[unit_id] & UnitProperty::Subunit;
+}
+
+bool unit_is_combatant(Unit* unit) {
+	switch (unit->id) {
+		// TODO: add combat casters here
+		case UnitId::ZergLakizilisk:
+			return true;
+	}
+	return unit->has_weapon();
 }

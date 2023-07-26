@@ -281,42 +281,30 @@ namespace hooks
 
 	void draw_unit_kills_string(BinDlg* dialog) { // 00425DD0
 		Unit* unit = *g_active_portrait_unit;
-		if (unit->player < PlayerLimit) {
-			helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
-		}
-
-		/*
-		if  (unit->player == *g_local_nation_id && !*is_in_replay)
-		{
+		if (scbw::get_game_kind() != GameKind_CompetetiveMode) {
+			if (unit->player < PlayerLimit) {
+				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
+			}
+		} else if (unit->player == *g_local_nation_id && !*g_is_in_replay) {
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->child_dialog;
-			while (child && child->index != 65515)
-			{
+			while (child && child->index != 65515) {
 				child = child->next;
 			}
 			if (child) {
 				helper::hide_dialog(child);
 			}
-		}
-		else
-		{
-			if (helper::ai_unit_can_attack(unit) || unit->kill_count)
-			{
-				char* text = "";
-				if (**g_stat_txt_buffer > 0x2FBu)
-				{
-					text = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[764];
-				}
-				sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
-				helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
+		} else if (unit->kill_count) {
+			char* text = "";
+			if (**g_stat_txt_buffer > 0x2FBu) {
+				text = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[764];
 			}
-			else
-			{
-				BinDlg* other = helper::get_control_from_index(dialog, -21);
-				helper::hide_dialog(other);
-			}
+			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
+			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
+		} else {
+			BinDlg* other = helper::get_control_from_index(dialog, -21);
+			helper::hide_dialog(other);
 		}
-		*/
 	}
 
 	static void draw_new_building_info(BinDlg* dialog, Unit* unit) {

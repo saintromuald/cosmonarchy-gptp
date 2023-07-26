@@ -588,6 +588,9 @@ namespace GameType
 		TeamFreeForAll = 12,
 		TeamCTF = 13,
 		TopVsBottom = 15,
+
+		ScenarioMode = 31,
+		CompetetiveMode = 32,
 	};
 }
 

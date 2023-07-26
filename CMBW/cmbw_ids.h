@@ -64,3 +64,4 @@ WeaponOffsets get_weapon_offsets(u32 weapon_id);
 bool unit_id_spawns_larva(u32 unit_id);
 u32 get_scribe_warp_distance(u32 unit_id);
 bool unit_id_ignored_on_minimap(u32 unit_id);
+bool unit_is_combatant(Unit* unit);

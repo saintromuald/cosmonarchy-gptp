@@ -1059,12 +1059,6 @@ namespace scbw {
 		return final_damage;
 	}
 
-	// I may need to make this function more flexible later -- Pr0nogo
-	bool unit_is_pacifist(Unit* unit) {
-		return !unit->has_weapon()
-		&&		unit->id != UnitId::ZergLakizilisk; // LAME
-	}
-
 	// Replacement for order_is_spell @ 00436930 -- Pr0nogo
 	bool order_is_spell(s32 order_id) {
 		return order_id == OrderId::Plague
@@ -3124,5 +3118,17 @@ namespace scbw {
 			} break;
 		}
 		return true;
+	}
+
+	GameKind get_game_kind() {
+		switch (*g_game_type) {
+			case GameType::UseMapSettings:
+			case GameType::ScenarioMode:
+				return GameKind_ScenarioMode;
+
+			case GameType::CompetetiveMode:
+				return GameKind_CompetetiveMode;
+		}
+		return GameKind_Unsupported;
 	}
 }
