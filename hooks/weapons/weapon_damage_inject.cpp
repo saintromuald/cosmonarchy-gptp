@@ -149,6 +149,20 @@ namespace
 			RETN
 		}
 	}
+
+	const u32 kill_target_unit_check_7986A = 0x0047986A;
+	const u32 kill_target_unit_check_7986F = 0x0047986F;
+	void __declspec(naked) kill_target_unit_check_patch_79863() {
+		__asm {
+			MOV		dword ptr[EBX + 8], 0
+			CMP[EBX + 0x4D], 41//unit->main_order_id == OrderId::ZergBirth
+			JE		offset loc_47986F
+			JMP		kill_target_unit_check_7986A
+
+			loc_47986F :
+			JMP		kill_target_unit_check_7986F
+		}
+	}
 }
 
 namespace hooks
@@ -162,5 +176,7 @@ namespace hooks
 		jump_patch(unit_was_hit_wrapper,				0x004795D0, 1);
 		jump_patch(ask_for_help_wrapper,				0x00476E60, 2);
 		jump_patch(react_to_hit_wrapper,				0x004776C0, 1);
+
+		jump_patch(kill_target_unit_check_patch_79863,	0x00479863, 2);	// DF - fixes hatching eggs not having death animations
 	}
 }

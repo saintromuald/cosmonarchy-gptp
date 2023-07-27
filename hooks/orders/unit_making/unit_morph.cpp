@@ -45,6 +45,13 @@ namespace hooks {
 	}
 
 	void orders_zerg_birth(Unit* unit) {
+		// DF - Fixes hatching eggs not playing a death animation
+		if (unit->hitpoints == 0) {
+			helper::init_building(unit, 0);
+			helper::orders_self_destructing(unit);
+			return;
+		}
+
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (!(unit->order_signal & 4)) {
 			Image* current_image = unit->sprite->main_graphic;
