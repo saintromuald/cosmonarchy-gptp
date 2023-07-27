@@ -101,10 +101,30 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 };
 C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
 
+enum Advisor: u8 {
+	Advisor_Default,
+
+	Advisor_Terran,
+	Advisor_Protoss,
+	Advisor_Zerg,
+
+	Advisor_Count,
+};
+
+static const char* advisor_symbol_names[] = {
+	"default",
+
+	"terran",
+	"protoss",
+	"zerg",
+};
+C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == Advisor_Count);
+
 struct PlayerVars {
 	Point16 camera;
 	WitnessMode witness_mode;
 	Faction faction;
+	Advisor advisor;
 };
 
 struct AlertState {

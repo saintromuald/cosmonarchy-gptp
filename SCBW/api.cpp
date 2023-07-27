@@ -3131,4 +3131,33 @@ namespace scbw {
 		}
 		return GameKind_Unsupported;
 	}
+
+	u32 get_custom_advisor_sound(u32 player, u32 event_type)
+	{
+		Advisor advisor = globals.players[player].advisor;
+		switch (event_type) {
+			case AdvisorEvent_NoMinerals:
+			{
+				switch (advisor) {
+					case Advisor_Terran:
+					{
+						return SoundId::Terran_Advisor_tAdErr00_WAV;
+					}
+					case Advisor_Protoss:
+					{
+						return SoundId::Protoss_Advisor_PAdErr00_WAV;
+					}
+					case Advisor_Zerg:
+					{
+						return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+					}
+				}
+			} 
+
+			case AdvisorEvent_StructureComplete_T:
+			{
+
+			} 
+		}
+	}
 }

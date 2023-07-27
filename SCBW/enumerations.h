@@ -1444,3 +1444,29 @@ enum UnitMovement {
 	UnitMovement_FixTerrain			= 35,
 	UnitMovement_TerrainSlide		= 36,
 };
+
+enum AdvisorEvent {
+	AdvisorEvent_NoMinerals				= 0,
+	AdvisorEvent_NoVespene				= 1,
+	AdvisorEvent_NoEnergy				= 2,
+	AdvisorEvent_NoBuildTerran			= 3,
+	AdvisorEvent_NoBuildProtoss			= 4,
+	AdvisorEvent_NoBuildZerg			= 5,
+	AdvisorEvent_NoLanding				= 6,
+	AdvisorEvent_LandingInterrupted		= 7,
+	AdvisorEvent_PlacementInterrupted	= 8,
+
+	AdvisorEvent_StructureComplete_T	= 9,
+	AdvisorEvent_StructureComplete_P	= 10,
+	AdvisorEvent_StructureComplete_Z	= 11,
+	AdvisorEvent_AddonComplete			= 12,
+	AdvisorEvent_TechUpComplete			= 13,
+	AdvisorEvent_MissileComplete		= 14,
+
+	AdvisorEvent_UnitsUnderAttack		= 15,
+	AdvisorEvent_BaseUnderAttack		= 16,
+	AdvisorEvent_MissileLaunch			= 17,
+	AdvisorEvent_AllyUnderAttack_T		= 18,
+	AdvisorEvent_AllyUnderAttack_P		= 19,
+	AdvisorEvent_AllyUnderAttack_Z		= 20,
+};

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <array>
+#include "trigger_system/trigger_system.h"
 
 const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
@@ -30,7 +31,8 @@ struct Config {
 	bool show_team_ui_names = false;
 	bool show_team_ui_self = false;
 
-	// Visuals
+	// Audiovisuals
+	u8 advisor = 0;
 	bool celebrations_enabled = true;
 
 	// Hotkeys

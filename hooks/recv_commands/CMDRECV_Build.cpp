@@ -1,5 +1,7 @@
 #include "CMDRECV_Build.h"
 #include <SCBW/api.h>
+#include "trigger_system/trigger_system.h"
+#include "hooks\limits\sfx_extender.h"
 
 namespace hooks
 {
@@ -183,5 +185,92 @@ namespace hooks
 		}
 		scbw::refresh_console();
 		return 0;
+	}
+
+	// Hooked to enable custom advisor lines. -Pr0nogo
+	// Wound up going for a different attack, but this hook works, it's just not injected.
+	b32 check_resources_for_building(u32 notify, u8 player) // 0042D0C0
+	{
+		if (g_game_minerals[player] >= g_ai_minerals_reserve[player])
+		{
+			if (g_game_vespene[player] >= g_ai_vespene_reserve[player])
+			{
+				return 1;
+			} else {
+				if (notify)
+				{
+					u32 sound_id = *g_console_index + 150;
+					if (globals.players[player].advisor != Advisor_Default) {
+						sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoVespene);
+					}
+					helper::display_error_message_id_with_sfx(player, 851, sound_id);
+				}
+				return 0;
+			}
+		} else {
+			if (notify)
+			{
+				u32 sound_id = *g_console_index + 147;
+				if (globals.players[player].advisor != Advisor_Default) {
+					sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
+				}
+				helper::display_error_message_id_with_sfx(player, 850, sound_id);
+			}
+			return 0;
+		}
+	}
+
+	// Hooked to enable custom advisor lines. -Pr0nogo
+	void display_error_message_id_with_sfx(u32 player_id, u32 message_id, u32 sound_id) // 0048EE30
+	{
+		// TODO: Switch case for message_id, checking stat_txt entries, lol!
+		if (player_id == *g_local_nation_id && !*g_is_in_replay)
+		{
+			if (sound_id && (*g_options_list).sfx)
+			{
+				u32 volume = sfx_dat::volume[sound_id];
+				u32 max_volume = 99;
+				if (volume >= 99)
+				{
+					if (volume >= 0)
+					{
+						if (volume >= 99)
+						{
+							max_volume = sfx_dat::volume[sound_id];
+						}
+					} else {
+						max_volume = 0;
+					}
+				}
+				if (use_quiet_sounds)
+				{
+					max_volume /= 5;
+				}
+				if (max_volume > 10)
+				{
+					helper::play_transmission_from_location(sound_id, max_volume, 0, 0);
+				}
+			}
+
+			char* message_string;
+			u32 final_message_id = message_id - 1;
+			if (message_id)
+			{
+				if (final_message_id < *g_stat_txt_tbl)
+				{
+					message_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[final_message_id + 1]; // Access this correctly
+					if (!message_string)
+					{
+						return;
+					}
+				} else {
+					message_string = "";
+				}
+				if (player_id == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+				{
+					helper::set_unit_stat_txt_error_message(message_string);
+				}
+			}
+		}
 	}
 }
