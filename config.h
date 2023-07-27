@@ -32,7 +32,9 @@ struct Config {
 	bool show_team_ui_self = false;
 
 	// Audiovisuals
-	u8 advisor = 0;
+	std::string terran_advisor_string = "default";
+	std::string protoss_advisor_string = "default";
+	std::string zerg_advisor_string = "default";
 	bool celebrations_enabled = true;
 
 	// Hotkeys

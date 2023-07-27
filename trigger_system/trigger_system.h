@@ -138,6 +138,10 @@ struct Globals {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
 
+	Advisor terran_advisor;
+	Advisor protoss_advisor;
+	Advisor zerg_advisor;
+
 	AlertState alert;
 };
 

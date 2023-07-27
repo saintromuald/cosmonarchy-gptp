@@ -646,6 +646,10 @@ void Unit::reduce_defensive_matrix_hp(s32 amount) {
 
 void Unit::remove() {
 	assert(this);
+	if (this->main_order_id == OrderId::ZergBirth) {
+		return;
+	}
+
 	const u32 func_address = 0x00475710; // AKA orders_self_destructing()
 	__asm {
 		PUSHAD

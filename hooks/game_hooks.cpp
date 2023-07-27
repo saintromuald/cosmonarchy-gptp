@@ -49,6 +49,18 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	target->heal_hp(heal * 256, shaman);
 }
 
+static Advisor parse_advisor_name(std::string string)
+{
+	Parser parser = {};
+	parser.at = (char*)string.c_str();
+	Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
+	if (advisor == -1) {
+		// TODO: print error
+		advisor = Advisor_Default;
+	}
+	return advisor;
+}
+
 #pragma pack(push, 8)
 #include <discord_game_sdk.h>
 #pragma pack(pop)
@@ -3048,26 +3060,10 @@ namespace hooks {
 		if (!grpWireFont) {
 			init_grpWireFont("font_wire");
 		}
-		
-		if (config.advisor != 0) {
-			Advisor advisor_final = Advisor_Default;
-			switch (config.advisor)
-			{
-				case 49:
-				{
-					advisor_final = Advisor_Terran;
-				} break;
-				case 2:
-				{
-					advisor_final = Advisor_Protoss;
-				} break;
-				case 3:
-				{
-					advisor_final = Advisor_Zerg;
-				} break;
-			}
-			globals.players[*g_local_nation_id].advisor = advisor_final;
-		}
+
+		globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
+		globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
+		globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
 
 		return true;
 	}
