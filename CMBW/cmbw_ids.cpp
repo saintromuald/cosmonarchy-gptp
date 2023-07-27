@@ -797,3 +797,15 @@ bool unit_is_combatant(Unit* unit) {
 	}
 	return unit->has_weapon();
 }
+
+bool unit_id_can_repair(u32 unit_id) {
+	return unit_id == UnitId::TerranMason
+		|| unit_id == UnitId::TerranTalos
+		|| unit_id == UnitId::DanielsMason;
+}
+
+bool weapon_id_is_flamethrower(u32 weapon_id) {
+	return weapon_id == WeaponId::HarakanFlamethrower
+		|| weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
+		|| weapon_id == WeaponId::DurendalAbaddonFlamethrowers;
+}

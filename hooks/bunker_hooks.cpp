@@ -20,6 +20,10 @@ namespace hooks
 		u32 min_range = weapons_dat::min_range[weapon_id];
 		u32 range = hooks::get_max_weapon_range(attacker, weapon_id, target);
 
+		if (weapon_id == WeaponId::OlympianTitansFist) {
+			return false;
+		}
+
 		return !attacker->is_target_within_min_range(target, min_range)
 		&&		attacker->is_target_within_min_range(target, range);
 	}
@@ -51,8 +55,7 @@ namespace hooks
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
-			}
-			else if (!unit->main_order_timer) {
+			} else if (!unit->main_order_timer) {
 			//	unit->main_order_timer = 15;
 				Unit* target = unit->order_target.unit;
 				if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
@@ -92,13 +95,13 @@ namespace hooks
 
 	void create_bunker_attack_overlay(Unit* unit) { // 00477FD0
 		// Fixes units with subunits not attacking
-		Unit* unit_var = unit;
+		Unit* final_unit = unit;
 		if (unit->subunit) {
-			unit_var = unit->subunit;
+			final_unit = unit->subunit;
 		}
 
-		Image* bunker_image = unit_var->connected_unit->sprite->main_graphic;
-		u8 frame_direction = (unit_var->current_direction_1 + 16) / 32 % 8;
+		Image* bunker_image = final_unit->connected_unit->sprite->main_graphic;
+		u8 frame_direction = (unit->current_direction_1 + 16) / 32 % 8; // We use unit here instead of final_unit, because subunits were not turning correctly. -Pr0nogo
 		const LO_Header* attack_overlay = lo_files->attack_overlays[bunker_image->id];
 		Point8 offset = attack_overlay->get_offset(bunker_image->frame_index, frame_direction);
 
@@ -108,7 +111,7 @@ namespace hooks
 
 		u8 frame_angle = frame_direction * 32;
 		u16 sprite_id = SpriteId::BunkerAttackOverlay_Orange; // Bunker attack overlay
-		switch (unit_var->get_race())
+		switch (final_unit->get_race())
 		{
 			case RaceId::Zerg:
 			{
@@ -122,20 +125,20 @@ namespace hooks
 			{
 			} break;
 		}
-		if (unit_var->id == UnitId::TerranHarakan) {
-			frame_angle = ((unit_var->current_direction_1 + 8) / 16 % 16) * 16;
+		if (weapon_id_is_flamethrower(unit->get_ground_weapon())) { // TODO: Find a way to make this work with Durendal Philistine Autogun
+			frame_angle = ((final_unit->current_direction_1 + 8) / 16 % 16) * 16;
 			sprite_id = SpriteId::HarakanFlamethrower;
 		}
 
-		scbw::decloak_proc(unit_var->connected_unit);
+		scbw::decloak_proc(final_unit->connected_unit);
 
 		// TODO: Fix effect nonsense with subunits
-		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + unit_var->get_x(), offset.y + unit_var->get_y(), unit_var->player);
+		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + final_unit->get_x(), offset.y + final_unit->get_y(), final_unit->player);
 		if (!bunker_attack_effect) {
 			return;
 		}
 
-		bunker_attack_effect->sprite->elevation = unit_var->sprite->elevation + 1;
+		bunker_attack_effect->sprite->elevation = final_unit->sprite->elevation + 1;
 		for (Image* image = bunker_attack_effect->sprite->images.head; image; image = image->link.next) {
 			helper::set_image_direction(image, frame_angle);
 		}

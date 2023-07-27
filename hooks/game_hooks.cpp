@@ -3048,6 +3048,27 @@ namespace hooks {
 		if (!grpWireFont) {
 			init_grpWireFont("font_wire");
 		}
+		
+		if (config.advisor != 0) {
+			Advisor advisor_final = Advisor_Default;
+			switch (config.advisor)
+			{
+				case 49:
+				{
+					advisor_final = Advisor_Terran;
+				} break;
+				case 2:
+				{
+					advisor_final = Advisor_Protoss;
+				} break;
+				case 3:
+				{
+					advisor_final = Advisor_Zerg;
+				} break;
+			}
+			globals.players[*g_local_nation_id].advisor = advisor_final;
+		}
+
 		return true;
 	}
 

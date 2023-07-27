@@ -3126,12 +3126,13 @@ namespace scbw {
 			case GameType::ScenarioMode:
 				return GameKind_ScenarioMode;
 
-			case GameType::CompetetiveMode:
-				return GameKind_CompetetiveMode;
+			case GameType::CompetitiveMode:
+				return GameKind_CompetitiveMode;
 		}
 		return GameKind_Unsupported;
 	}
 
+<<<<<<< HEAD
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
 		u32 distance = scbw::get_distance_fast(unit->position, target);
 		if (!(unit->pathing_flags & 1)) {
@@ -3150,5 +3151,23 @@ namespace scbw {
 			}
 		}
 		return helper::get_path_distance_to(unit, target);
+	}	
+
+	u32 get_custom_advisor_sound(u32 player, u32 event_type) {
+		Advisor advisor = globals.players[player].advisor;
+		switch (event_type) {
+			case AdvisorEvent_NoMinerals: {
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
+					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+					
+				}
+			} break;
+
+			case AdvisorEvent_StructureComplete_T: {
+			
+			} break;
+		}
 	}
 }

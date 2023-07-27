@@ -155,6 +155,25 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) check_resources_for_building_wrapper() { // 0042D0C0
+		static b32 result;
+		static u32 notify;
+		static u8 player;
+		static u32 unused;
+		__asm {
+			MOV notify, EAX
+			MOV player, CL
+			MOV unused, ESI // dunno if this is necessary to clear the register lol
+			PUSHAD
+		}
+		result = hooks::check_resources_for_building(notify, player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -167,5 +186,6 @@ namespace hooks
 	//	jump_patch(cmdrecv_build_wrapper,					0x004C23C0, 3);
 	//	jump_patch(process_building_placement_wrapper,		0x0048DE70, 0);
 	//	jump_patch(cmdrecv_place_building_wrapper,			0x0048E190, 1);
+	//	jump_patch(check_resources_for_building_wrapper,	0x0042D0C0, 6);
 	}
 }

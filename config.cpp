@@ -43,7 +43,9 @@ void load_config() {
 		load_field(config_node, "quick-casting", config.quick_casting);
 		load_field(config_node, "quick-building", config.quick_building);
 
+		load_field(config_node, "advisor", config.advisor);
 		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
+
 		load_field(config_node, "verbose", config.verbose);
 		GPTP::doLogging = config.verbose;
 
@@ -99,7 +101,8 @@ void save_config() {
 	write_field(out, "show-team-ui-self", config.show_team_ui_self);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("Visuals");
+	out << YAML::Comment("Audiovisuals");
+	write_field(out, "advisor", config.advisor);
 	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 

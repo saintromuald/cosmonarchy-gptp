@@ -61,6 +61,7 @@ namespace hooks {
 	AiTown* ai_remove_from_towns(Unit* unit);																			// 00432760
 	void ai_get_oldpeons(AiTown* town, u32 count);																		// 004355C0
 	Target ai_prepare_to_flee(Unit* unit, Unit* target);																// 00476A50
+	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);																	// 004E7420
 
 	void inject_ai_orders_hooks();
 }

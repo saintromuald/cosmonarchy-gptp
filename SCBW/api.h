@@ -52,7 +52,7 @@ enum InterceptType {
 enum GameKind {
 	GameKind_Unsupported,
 	GameKind_ScenarioMode,
-	GameKind_CompetetiveMode,
+	GameKind_CompetitiveMode,
 	GameKind_Count,
 };
 
@@ -771,4 +771,5 @@ namespace scbw
 	bool unit_can_flee(Unit* unit);
 	GameKind get_game_kind();
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target);
+	u32 get_custom_advisor_sound(u32 player, u32 event_type);
 }

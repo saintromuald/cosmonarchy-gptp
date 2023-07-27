@@ -559,9 +559,7 @@ namespace scbw
 			temp.position = source_unit->get_y();
 			searchBottom = std::lower_bound(get_start_y(), get_end_y(), temp);
 			searchTop = searchBottom - 1;
-		}
-		else
-		{
+		} else {
 			searchLeft = get_start_x() + source_unit->finder_index.right - 1;
 			searchRight = get_start_x() + source_unit->finder_index.left + 1;
 			searchTop = get_start_y() + source_unit->finder_index.bottom - 1;

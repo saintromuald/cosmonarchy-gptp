@@ -192,9 +192,9 @@ enum Enum {
 					* Default Requirements: Unit must be Transport(Can carry units) or Zerg Overlord. */
 	Pickup2                = 0x5E, /**< Mobile Transport unit pickup.
 					* Default Requirements: Unit must be Transport(Can carry units). */
-	Pickup3                = 0x5F, /**< Building pickup.
+	BunkerLoad             = 0x5F, /**< Building pickup.
 					* Default Requirements: Unit must be Terran Bunker. */
-	Pickup4                = 0x60, /**< Unknown /B AI pickup?
+	TransportLoad          = 0x60, /**< Unknown /B AI pickup?
 					* Default Requirements: Unused. */
 	Powerup2               = 0x61, /**< Idle for powerups.
 					* Default Requirements: Unit must be a powerup. */

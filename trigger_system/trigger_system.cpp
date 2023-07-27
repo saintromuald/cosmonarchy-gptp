@@ -1167,6 +1167,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				globals.players[player].faction = faction;
 			}
+		} else if (parser_eq(&parser, "set_advisor")) {
+			u32 player = parser_get_player(&parser);
+			Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
+
+			if (player) {
+				player -= 1;
+				globals.players[player].advisor = advisor;
+			}
 		}
 	}
 	return true;

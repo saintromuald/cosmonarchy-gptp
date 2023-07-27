@@ -13963,4 +13963,19 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target)
+	{
+		const u32 func_address = 0x004747C0;
+		__asm {
+			PUSHAD
+			PUSH target
+			PUSH pos
+			MOV ESI, unit
+			MOV EDI, order_queue_head
+			MOV BL, order_id
+			CALL func_address
+			POPAD
+		}
+	}
 }
