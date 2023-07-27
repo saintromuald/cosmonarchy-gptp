@@ -593,7 +593,7 @@ namespace hooks {
 			}
 
 			u32 worker_count = get_unit_ext(node)->values[ValueAssignedHarvesters];
-			u32 distance = is_pathing ? helper::get_path_distance_to(worker, node->position) : scbw::get_distance_fast(worker->position, node->position);
+			u32 distance = scbw::get_worker_harvest_distance(worker, node->position);
 			if (worker_count < best_worker_count || (worker_count == best_worker_count && distance < best_distance)) {
 				best_node = node;
 				best_worker_count = worker_count;
@@ -655,7 +655,7 @@ namespace hooks {
 				continue;
 			}
 
-			u32 distance = worker->pathing_flags & 1 ? helper::get_path_distance_to(worker, depot->position) : scbw::get_distance_fast(worker->position, depot->position);
+			u32 distance = scbw::get_worker_harvest_distance(worker, depot->position);
 			if (distance < best_distance) {
 				best_depot = depot;
 				best_distance = distance;

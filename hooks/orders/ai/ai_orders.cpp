@@ -1427,8 +1427,8 @@ namespace hooks {
 		const f32 ally_bias     = -0.5;
 		const f32 enemy_bias    =  0.5;
 		const f32 distance_bias = -5.0;
-		const f32 mineral_bias  =  0.4;
-		const f32 gas_bias      =  1.0;
+		const f32 mineral_bias  =  0.5;
+		const f32 gas_bias      =  1.5;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;
@@ -1465,7 +1465,7 @@ namespace hooks {
 		}
 		if (ally_count) {
 			average_ally_distance /= ally_count;
-			score += average_ally_distance  * ally_bias;
+			score += average_ally_distance * ally_bias;
 		}
 		if (enemy_count) {
 			average_enemy_distance /= enemy_count;
@@ -1475,23 +1475,13 @@ namespace hooks {
 		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
-		f32 total_mineral_yield = 0;
-		f32 total_gas_yield = 0;
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit_id_is_minerals(unit->id)) {
-				total_mineral_yield += get_harvest_amount(unit);
+				score += get_harvest_amount(unit) * mineral_bias;
 			}
 			if (unit_id_is_gas_structure(unit->id)) {
-				total_gas_yield += get_harvest_amount(unit); // should ignore capped (which can happen on an occupied base)
+				score += get_harvest_amount(unit) * gas_bias; // should ignore capped (which can happen on an occupied base)
 			}
-		}
-		if (area->mineral_field_count) {
-			f32 average_yield = total_mineral_yield / area->mineral_field_count;
-			score += average_yield * total_mineral_yield * mineral_bias;
-		}
-		if (area->geyser_count) {
-			f32 average_yield = total_gas_yield / area->geyser_count;
-			score += average_yield * total_gas_yield * gas_bias;
 		}
 
 		for (u32 j = 0; j < units->count; ++j) {

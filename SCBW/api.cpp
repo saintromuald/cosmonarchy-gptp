@@ -1959,9 +1959,9 @@ namespace scbw {
 	AiScript* run_default_ai(u32 player, Point16 pos) {
 		u32 race = g_player_table[player].race;
 		switch (race) {
-			case RaceId::Terran:	return scbw::run_ai(player, pos, 'xCMT');
-			case RaceId::Protoss:	return scbw::run_ai(player, pos, 'xCMP');
-			case RaceId::Zerg:		return scbw::run_ai(player, pos, 'xCMZ');
+			case RaceId::Terran:	scbw::printf("Running Terran AI for player %u",  player + 1); return scbw::run_ai(player, pos, 'xCMT');
+			case RaceId::Protoss:	scbw::printf("Running Protoss AI for player %u", player + 1); return scbw::run_ai(player, pos, 'xCMP');
+			case RaceId::Zerg:		scbw::printf("Running Zerg AI for player %u",    player + 1); return scbw::run_ai(player, pos, 'xCMZ');
 		}
 		return 0;
 	}
@@ -3130,5 +3130,25 @@ namespace scbw {
 				return GameKind_CompetetiveMode;
 		}
 		return GameKind_Unsupported;
+	}
+
+	u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
+		u32 distance = scbw::get_distance_fast(unit->position, target);
+		if (!(unit->pathing_flags & 1)) {
+			return distance;
+		}
+		u32 original_group_id = scbw::get_region(unit->position)->group_index;
+		u32 group_id = scbw::get_region(target)->group_index;
+		if (group_id != original_group_id) {
+			return UINT_MAX;
+		}
+		if (distance <= 8 * 32) {
+			u32 original_height = scbw::get_active_tile_at_coords(unit->position)->ground_height;
+			u32 height = scbw::get_active_tile_at_coords(target)->ground_height;
+			if (height == original_height) {
+				return distance;
+			}
+		}
+		return helper::get_path_distance_to(unit, target);
 	}
 }

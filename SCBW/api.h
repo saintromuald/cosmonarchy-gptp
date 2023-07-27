@@ -770,4 +770,5 @@ namespace scbw
 	void unfreeze_channeling_unit(Unit* unit);
 	bool unit_can_flee(Unit* unit);
 	GameKind get_game_kind();
+	u32 get_worker_harvest_distance(Unit* unit, Point16 target);
 }

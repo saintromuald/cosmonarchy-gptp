@@ -1013,8 +1013,8 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				u32 townhall = UnitId::None;
 				switch (race) {
 					case RaceId::Terran:	townhall = UnitId::TerranMinistry; break;
-					case RaceId::Protoss:	townhall = UnitId::ProtossNexus;		break;
-					case RaceId::Zerg:		townhall = UnitId::ZergHachirosk;		break;
+					case RaceId::Protoss:	townhall = UnitId::ProtossNexus;   break;
+					case RaceId::Zerg:		townhall = UnitId::ZergHachirosk;  break;
 				}
 				if (townhall != UnitId::None) {
 					Unit* unit = helper::create_unit_at_pos(townhall, player, pos.x, pos.y);

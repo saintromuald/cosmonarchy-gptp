@@ -254,18 +254,23 @@ static u32 get_name_count(u32 race, u32 personality) {
 	return count;
 }
 
+void safe_strcpy(char* to, const char* from, size_t capacity) {
+	strncpy(to, from, capacity - 1);
+	to[capacity - 1] = 0;
+}
+
 void set_player_name(u32 player, char* name, bool prevent_overwrites) {
 	if (prevent_overwrites) {
 		player_data.has_custom_player_name[player] = true;
 	}
-	strncpy(g_player_table[player].name, name, 25);
-	strncpy(g_player_name_list->player[player].player_name, name, 25);
-	strncpy(player_data.full_player_names[player].data, name, FullNameCap);
+	safe_strcpy(g_player_table[player].name, name, 25);
+	safe_strcpy(g_player_name_list->player[player].player_name, name, 25);
+	safe_strcpy(player_data.full_player_names[player].data, name, FullNameCap);
 }
 
 void set_player_force_name(u32 player, char* name) {
-	strncpy(g_player_name_list->player[player].force_name, name, 30);
-	strncpy(player_data.full_force_names[player].data, name, FullNameCap);
+	safe_strcpy(g_player_name_list->player[player].force_name, name, 30);
+	safe_strcpy(player_data.full_force_names[player].data, name, FullNameCap);
 }
 
 static void update_player_name(u32 player) {
