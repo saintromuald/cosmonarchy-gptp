@@ -3132,7 +3132,6 @@ namespace scbw {
 		return GameKind_Unsupported;
 	}
 
-<<<<<<< HEAD
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
 		u32 distance = scbw::get_distance_fast(unit->position, target);
 		if (!(unit->pathing_flags & 1)) {
