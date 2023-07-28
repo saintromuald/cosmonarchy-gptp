@@ -272,8 +272,7 @@ namespace hooks {
 						helper::replace_unit_with_id(unit, egg_id); // morph into egg from source unit
 						if (egg_id == UnitId::ZergEgg) {
 							helper::add_worker_structure_ai(unit, town);
-						}
-						else {
+						} else {
 							scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
 						}
 					} else {
