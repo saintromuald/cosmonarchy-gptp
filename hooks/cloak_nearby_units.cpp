@@ -33,7 +33,7 @@ namespace hooks
 			UnitExt* unit_ext = get_unit_ext(current_unit);
 			if  (current_unit != cloaker															// Don't cloak self
 			&& !(units_dat::base_property[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
-			&&   current_unit->id != UnitId::TerranNuclearMissile									// Don't cloak nukes
+			&&   current_unit->id != UnitId::TerranMorningstar									// Don't cloak nukes
 			&&   current_unit->main_order_id != OrderId::Warpin										// Don't cloak warping units
 			&&   scbw::are_mutual_allies(current_unit->player, cloaker->player)						// Only cloak allied units
 			&&   current_unit->player != 11															// Don't cloak neutral units

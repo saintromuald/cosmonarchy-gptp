@@ -75,7 +75,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004F6FA0,	/*OrderId::CarrierAttack2*/			Func_Type::EAX,	2},
 	{ 0x00466720,	/*OrderId::CarrierIgnore2*/			Func_Type::EAX,	2},
 	{ 0x004666A0,	/*OrderId::CarrierFight*/			Func_Type::EDI,	2},
-	{ 0x004666A0,	/*OrderId::HoldPosition1*/			Func_Type::EDI,	2},
+	{ 0x004666A0,	/*OrderId::HoldPositionSolarion*/			Func_Type::EDI,	2},
 	{ 0x004665D0,	/*OrderId::Reaver*/					Func_Type::EDI,	2},
 	{ 0x00465690,	/*OrderId::ReaverAttack1*/			Func_Type::EAX,	2},
 	{ 0x004F6FA0,	/*OrderId::ReaverAttack2*/			Func_Type::EAX,	2},
@@ -125,8 +125,8 @@ static u32 mainOrder_func_offsets[][3] {
 	{ NOTVALID,		/*OrderId::GuardianAspect*/			Func_Type::EAX,	0},
 	{ 0x004948B0,	/*OrderId::WarpingArchon*/			Func_Type::EAX,	1},
 	{ 0x00493B10,	/*OrderId::CompletingArchonSummon*/	Func_Type::ESI,	1},
-	{ 0x00478D10,	/*OrderId::HoldPosition2*/			Func_Type::EAX,	2},
-	{ 0x004EB5B0,	/*OrderId::HoldPosition3*/			Func_Type::ESI,	2},
+	{ 0x00478D10,	/*OrderId::HoldPositionNormal*/			Func_Type::EAX,	2},
+	{ 0x004EB5B0,	/*OrderId::HoldPositionMatraleth*/			Func_Type::ESI,	2},
 	{ NOTVALID,		/*OrderId::Cloak*/					Func_Type::EAX,	0},
 	{ NOTVALID,		/*OrderId::Decloak*/				Func_Type::EAX,	0},
 	{ 0x004E80D0,	/*OrderId::Unload*/					Func_Type::EAX,	2},
@@ -154,7 +154,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004F6EF0,	/*OrderId::Rightclickaction*/		Func_Type::EAX,	2},
 	{ 0x004788E0,	/*OrderId::SapUnit*/				Func_Type::EAX,	2},
 	{ 0x00478A40,	/*OrderId::SapLocation*/			Func_Type::EAX,	2},
-	{ 0x004EB5B0,	/*OrderId::HoldPosition4*/			Func_Type::ESI,	2},
+	{ 0x004EB5B0,	/*OrderId::HoldPositionSuicide*/			Func_Type::ESI,	2},
 	{ 0x00494470,	/*OrderId::Teleport*/				Func_Type::PUSH,2},
 	{ NOTVALID,		/*OrderId::TeleporttoLocation*/		Func_Type::EAX,	0},
 	{ 0x00464E40,	/*OrderId::PlaceScanner*/			Func_Type::EAX,	2},
@@ -403,7 +403,7 @@ namespace hooks {
 				helper::EAX_order(unit, 0x0043FF90); //known as "getTargetSomething"
 				unit->ai_action_flags = 0;
 	
-				if (unit->main_order_id == OrderId::HoldPosition3 || unit->main_order_id == OrderId::HoldPosition4)
+				if (unit->main_order_id == OrderId::HoldPositionMatraleth || unit->main_order_id == OrderId::HoldPositionSuicide)
 				{	
 					if (unit->main_order_state == 0)
 					{

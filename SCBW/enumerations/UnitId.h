@@ -299,7 +299,7 @@ namespace UnitId
 		TerranTrojan										= 11,
 		TerranMinotaur										= 12,
 		TerranSpiderMine									= 13,
-		TerranNuclearMissile								= 14,
+		TerranMorningstar									= 14,
 		TerranCivilian										= 15,
 		Hero_SarahKerrigan									= 16,
 		Hero_AlanSchezar									= 17,

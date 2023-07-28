@@ -597,7 +597,7 @@ namespace hooks
 					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Spider Mines"
 				}
 			}
-			case UnitId::TerranNuclearMissile:
+			case UnitId::TerranMorningstar:
 			{
 				return g_stat_txt_tbl_new->get_string(793);									// "Missiles"
 			}

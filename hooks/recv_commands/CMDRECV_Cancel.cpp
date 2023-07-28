@@ -10,7 +10,7 @@ namespace hooks
 		Unit* unit = get_active_player_next_selection();
 		while (unit) {
 			Unit* nuke = unit->connected_unit;
-			if (nuke && nuke->id == UnitId::TerranNuclearMissile) {
+			if (nuke && nuke->id == UnitId::TerranMorningstar) {
 				unit->connected_unit = nullptr;
 				nuke->connected_unit = nullptr;
 			}

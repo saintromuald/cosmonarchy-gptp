@@ -116,7 +116,7 @@ enum Enum {
 					* Default Requirements: Unit must be Carrier/Gantrithor or Reaver/Warbringer. Allow on hallucinated units. */
 	CarrierFight           = 0x38, /**< Carrier Attack Unit.
 					* Default Requirements: Unit must be Carrier/Gantrithor. Allow on hallucinated units. */
-	HoldPosition1          = 0x39, /**< Carrier Hold Position.
+	HoldPositionSolarion   = 0x39, /**< Carrier Hold Position.
 					* Default Requirements: Unit must be Carrier/Gantrithor. Allow on hallucinated units. */
 	Reaver                 = 0x3A, /**< Reaver Idle order.
 					* Default Requirements: Unit must be Reaver/Warbringer. Allow on hallucinated units. */
@@ -216,9 +216,9 @@ enum Enum {
 					* Default Requirements: Unused. */
 	CompletingArchonSummon = 0x6A, /**< Archon build self order.
 					* Default Requirements: Unused. */
-	HoldPosition2          = 0x6B, /**< Attacking Unit hold position.
+	HoldPositionNormal          = 0x6B, /**< Attacking Unit hold position.
 					* Default Requirements: Unit is able to Hold Position. Allow on hallucinated units. */
-	HoldPosition3          = 0x6C, /**< Queen Hold position.
+	HoldPositionMatraleth  = 0x6C, /**< Queen Hold position.
 					* Default Requirements: Unit must be Zerg Queen/Matriarch. */
 	Cloak                  = 0x6D, /**< Cloak Unit.
 					* Default Requirements: Unused. */
@@ -274,7 +274,7 @@ enum Enum {
 					* Default Requirements: Unit must be Zerg infested Terran. Allow on Hallucinated units. */
 	SapLocation            = 0x87, /**< Suicide Attack tile.
 					* Default Requirements: Unit must be Zerg infested Terran. Allow on Hallucinated units. */
-	HoldPosition4          = 0x88, /**< Suicide Hold Position.
+	HoldPositionSuicide    = 0x88, /**< Suicide Hold Position.
 					* Default Requirements: Unit must be Zerg Infested Terran or Zerg Scourge. Allow on Hallucinated units. */
 	Teleport               = 0x89, /**< DimensionalRecall(units within distance of target position).
 					* Default Requirements: Unused. */

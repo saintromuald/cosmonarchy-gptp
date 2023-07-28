@@ -120,7 +120,7 @@ namespace hooks {
 				helper::add_military_ai(&g_ai_region_captains[newUnit->player][scbw::get_region_id(newUnit->sprite->position)], newUnit, 1);
 				return;
 			}
-			if (unit_id != UnitId::TerranNuclearMissile && unit_id != UnitId::ProtossWitness) {
+			if (unit_id != UnitId::TerranMorningstar && unit_id != UnitId::ProtossWitness) {
 				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->unit_ai;
 				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->unit_ai;
 				if (parentUnitAi) {
@@ -351,7 +351,7 @@ namespace hooks {
 	// Hooked to rule out AI crashes - Pr0nogo
 	void ai_create_nuke(Unit* silo, Unit* result) { // 0045B7A0 - originally had 3 args; last one was unused
 		if (silo->id == UnitId::TerranAnvil && !silo->building.silo.is_ready) {
-			Unit* nuke = helper::create_unit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
+			Unit* nuke = helper::create_unit(UnitId::TerranMorningstar, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
 			if (nuke) {
 				helper::update_unit_stats_and_finish_building(nuke);
 				helper::update_unit_strength_and_apply_default_orders(nuke);
