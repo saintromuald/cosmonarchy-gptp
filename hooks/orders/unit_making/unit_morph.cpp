@@ -630,9 +630,7 @@ namespace hooks {
 		if (units_dat::base_property[unit_id] & UnitProperty::Flyer)
 		{
 			return UnitId::ZergCocoon;
-		}
-		else
-		{
+		} else {
 			return UnitId::ZergEgg;
 		}
 		return UnitId::None;

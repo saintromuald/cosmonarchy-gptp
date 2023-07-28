@@ -2822,8 +2822,8 @@ namespace hooks {
 				scbw::add_unit_overlay(unit, overlay_id);
 			}
 
-			// Handle overlays after effect is cleansed
-			if (unit->get_overlay(overlay_id) && unit_ext->timers[TimerStellarEnforcement] >= 1) {
+			// Handle overlays after effect expires
+			if (unit->get_overlay(overlay_id) && unit_ext->timers[TimerStellarEnforcement] <= 1) {
 				scbw::remove_unit_overlay(unit, overlay_id);
 			}
 		}
