@@ -809,3 +809,7 @@ bool weapon_id_is_flamethrower(u32 weapon_id) {
 		|| weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
 		|| weapon_id == WeaponId::DurendalAbaddonFlamethrowers;
 }
+
+bool unit_id_is_larva(u32 unit_id) {
+	return unit_id == UnitId::ZergLarva || unit_id == UnitId::ZergOcsalLarva;
+}

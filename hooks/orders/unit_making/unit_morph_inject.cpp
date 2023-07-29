@@ -196,7 +196,7 @@ namespace
 				}
 				unit->remove();
 			} else if (unit->get_race() == RaceId::Terran) {
-				if (unit->id == UnitId::TerranNuclearMissile)
+				if (unit->id == UnitId::TerranMorningstar)
 				{
 					Unit* silo = unit->connected_unit;
 					if (silo)

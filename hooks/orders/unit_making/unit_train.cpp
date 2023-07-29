@@ -153,12 +153,10 @@ namespace hooks {
 										scbw::move_unit(new_unit, spawn_point.x, spawn_point.y);
 									}
 									helper::ai_training_unit(new_unit, unit);
-									if (built_unit->id == UnitId::TerranNuclearMissile)
+									if (built_unit->id == UnitId::TerranMorningstar)
 									{
 										helper::hide_and_disable_unit(new_unit);
-									}
-									else
-									{
+									} else {
 										helper::order_new_unit_to_rally(new_unit, unit);
 									}
 								}
@@ -182,7 +180,7 @@ namespace hooks {
 							do {
 								counter--;
 								unit->build_queue[unit->build_queue_slot] = unit->build_queue[(unit->build_queue_slot + 1) % 5];
-								if (unit->unit_ai != nullptr && *(u8*)((u32)unit->unit_ai + 8) == 3)
+								if (unit->unit_ai && *(u8*)((u32)unit->unit_ai + 8) == 3)
 								{
 									*(u8*)((u32)unit->unit_ai + unit->build_queue_slot + 9) = *(u8*)((u32)unit->unit_ai + (unit->build_queue_slot + 1) % 5 + 9);
 									*(u32*)((u32)unit->unit_ai + unit->build_queue_slot * 4 + 0x18) = *(u32*)((u32)unit->unit_ai + ((unit->build_queue_slot + 1) % 5) * 4 + 0x18);
@@ -201,7 +199,7 @@ namespace hooks {
 						scbw::create_hangar_units(built_unit, 12, UnitId::ProtossSteward);
 					}
 					scbw::refresh_console();
-					unit->current_build_unit = nullptr;
+					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
 			}

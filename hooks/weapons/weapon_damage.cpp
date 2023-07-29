@@ -756,7 +756,7 @@ namespace hooks
 						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->values[TimerStellarEnforcement]) {
 							target_ext->timers[TimerStellarEnforcement] = 3 * 24 + 1;
 							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
-							data.target->sprite->create_top_overlay(ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true)); // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
+							scbw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
 				}
@@ -1114,7 +1114,7 @@ namespace hooks
 				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
 					attacker = attacker->connected_unit;
 				}
-				if (helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
+				if (victim->main_order_id != OrderId::HoldPositionNormal && helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
 					helper::react_to_hit(attacker, victim);
 				}
 				if (!victim->unit_ai) {
@@ -1153,7 +1153,7 @@ namespace hooks
 
 	// Hooked to stop damage from forcing units to unburrow. -Pr0nogo
 	void react_to_hit(Unit* attacker, Unit* victim) { // 004776C0
-		if (victim->id != UnitId::ZergLarva && victim->id != UnitId::ZergOcsalLarva) {
+		if (!unit_id_is_larva(victim->id)) {
 			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || victim->id == UnitId::ZergLakizilisk) {
 				if  (units_dat::base_property[victim->id] & UnitProperty::Building || helper::unit_can_attack_target(attacker, victim, 1)
 				&& !(units_dat::base_property[victim->id] & UnitProperty::Worker)) {
@@ -1175,10 +1175,9 @@ namespace hooks
 						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}
 				}
-			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable
-					&& g_player_table[victim->player].type == PlayerType::Computer) // For now, we unburrow AI units only. -Pr0nogo
+			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable && g_player_table[victim->player].type == PlayerType::Computer)
 			{
-				helper::unburrow(victim);
+				helper::unburrow(victim); // For now, we unburrow AI units only. -Pr0nogo
 			}
 		}
 	}

@@ -608,7 +608,7 @@ static bool unit_could_kite(Unit* unit) {
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
-		&& unit->id != UnitId::TerranNuclearMissile
+		&& unit->id != UnitId::TerranMorningstar
 		&& unit->id != UnitId::ProtossAnthelion
 		// Other rules
 		&& unit->main_order_id != OrderId::BuildTerran

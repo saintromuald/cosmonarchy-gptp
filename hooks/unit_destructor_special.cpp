@@ -154,7 +154,7 @@ void unit_destructor_special_cases(Unit* unit) {
 				unit->building.nuke_missile = 0;
 			}
 		} break;
-		case UnitId::TerranNuclearMissile:
+		case UnitId::TerranMorningstar:
 		{
 			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranAnvil) {
 				unit->connected_unit->building.silo.nuke = 0;

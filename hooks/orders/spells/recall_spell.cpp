@@ -39,7 +39,7 @@ namespace hooks
 
 			// Disconnect a nuke from a nuker
 			if (scbw::unit_can_nuke(target)) {
-				if (target->connected_unit && target->connected_unit->id == UnitId::TerranNuclearMissile) {
+				if (target->connected_unit && target->connected_unit->id == UnitId::TerranMorningstar) {
 					target->connected_unit->connected_unit = 0;
 					target->connected_unit = 0;
 				}

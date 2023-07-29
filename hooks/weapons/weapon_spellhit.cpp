@@ -46,7 +46,7 @@ namespace hooks {
 		if (scbw::unit_can_nuke(unit)) {
 			Unit* nuke = unit->connected_unit;
 			if (nuke) {
-				if (nuke->id == UnitId::TerranNuclearMissile) {
+				if (nuke->id == UnitId::TerranMorningstar) {
 					unit->connected_unit = 0;
 					nuke->connected_unit = 0;
 				}

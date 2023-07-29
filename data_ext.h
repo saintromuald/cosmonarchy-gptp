@@ -159,6 +159,7 @@ enum ExtValueId {
 	ValueIsNeutralNydus,
 	ValueNeedsUnfreezing,
 	ValueTerranConstruction,
+	ValueMorphConnectedUnitId,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

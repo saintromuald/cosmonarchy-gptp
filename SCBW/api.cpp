@@ -69,7 +69,7 @@ namespace scbw {
 
 		// Disconnect a nuke from a unit using it
 		if (scbw::unit_can_nuke(unit)) {
-			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranNuclearMissile) {
+			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranMorningstar) {
 				unit->connected_unit->connected_unit = 0;
 				unit->connected_unit = 0;
 			}

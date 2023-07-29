@@ -158,7 +158,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranNuclearMissile:
+				case UnitId::TerranMorningstar:
 				{
 					return true;
 				} break;
@@ -1522,7 +1522,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranNuclearMissile:
+					case UnitId::TerranMorningstar:
 					{
 						if (!unit->building.silo.nuke && unit->build_queue[unit->build_queue_slot] == UnitId::None)
 						{

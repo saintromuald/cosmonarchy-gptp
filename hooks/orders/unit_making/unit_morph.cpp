@@ -45,6 +45,13 @@ namespace hooks {
 	}
 
 	void orders_zerg_birth(Unit* unit) {
+		// DF - Fixes hatching eggs not playing a death animation
+		if (unit->hitpoints == 0) {
+			helper::init_building(unit, 0);
+			helper::orders_self_destructing(unit);
+			return;
+		}
+
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (!(unit->order_signal & 4)) {
 			Image* current_image = unit->sprite->main_graphic;
@@ -173,7 +180,7 @@ namespace hooks {
 
 	void orders_morph_1(Unit* unit)
 	{
-		UnitExt* unitExt = get_unit_ext(unit);
+		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->main_order_state == 0)
 		{
 			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))
@@ -182,10 +189,8 @@ namespace hooks {
 				{
 					helper::refund_all_queue_slots(unit);
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-				}
-				else
-				{
-					u16 eggId = UnitId::None;
+				} else {
+					u16 egg_id = UnitId::None;
 					switch (unit->id)
 					{
 						case UnitId::ZergOvileth:
@@ -204,6 +209,7 @@ namespace hooks {
 					{
 						unit->status -= UnitStatus::Completed;
 					}
+
 					switch (unit->id)
 					{
 						case UnitId::ZergLarva:
@@ -227,7 +233,7 @@ namespace hooks {
 						case UnitId::ZergIsthrathaleth:
 						case UnitId::ZergElthrazalisk:
 						{
-							eggId = UnitId::ZergEgg;
+							egg_id = UnitId::ZergEgg;
 						} break;
 						case UnitId::ZergOvileth:
 						case UnitId::ZergOthstoleth:
@@ -239,7 +245,7 @@ namespace hooks {
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergMatraleth:
 						{
-							eggId = UnitId::ZergCocoon;
+							egg_id = UnitId::ZergCocoon;
 						} break;
 						default:
 						{
@@ -248,26 +254,29 @@ namespace hooks {
 					}
 					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 					{
-						unitExt->values[ValuePreMorphEnergy] = unit->energy;
-					} else
-					{
-						unitExt->values[ValuePreMorphEnergy] = hooks::get_unit_max_energy(unit); // New starting amount
+						unit_ext->values[ValuePreMorphEnergy] = unit->energy;
+					} else {
+						unit_ext->values[ValuePreMorphEnergy] = hooks::get_unit_max_energy(unit); // New starting amount
 					}
 					unit->create_origin = unit->id;
-					unitExt->units[UnitMorphConnectedUnit] = 0;
+					unit_ext->units[UnitMorphConnectedUnit] = 0;
+					if (unit->connected_unit) {
+						unit_ext->values[ValueMorphConnectedUnitId] = unit->connected_unit->id;
+					} else { 
+						unit_ext->values[ValueMorphConnectedUnitId] = UnitId::ZergHachirosk; // Dunno if this will ever be true at this time. -Pr0nogo
+					}
+
 					if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
 						AiTown* town = unit->unit_ai->worker_ai.town;
 						helper::remove_worker_or_building_ai(unit, false);
-						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
-						if (eggId == UnitId::ZergEgg) {
+						helper::replace_unit_with_id(unit, egg_id); // morph into egg from source unit
+						if (egg_id == UnitId::ZergEgg) {
 							helper::add_worker_structure_ai(unit, town);
-						}
-						else {
+						} else {
 							scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
 						}
-					}
-					else {
-						helper::replace_unit_with_id(unit, eggId); // morph into egg from source unit
+					} else {
+						helper::replace_unit_with_id(unit, egg_id); // morph into egg from source unit
 					}
 					helper::change_unit_buttonset(unit, unit->id);
 					
@@ -344,7 +353,7 @@ namespace hooks {
 				unit->order_signal &= ~4;
 				helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
 				if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
-					unit->energy = unitExt->values[ValuePreMorphEnergy];
+					unit->energy = unit_ext->values[ValuePreMorphEnergy];
 				} else {
 					unit->energy = 0;
 				}
@@ -360,7 +369,7 @@ namespace hooks {
 					Image* current_image;
 					helper::init_building(unit, 1);
 					current_image = unit->sprite->images.head;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						auto anim = IscriptAnimation::SpecialState1;
 						current_image->play_iscript_animation(anim);
@@ -621,9 +630,7 @@ namespace hooks {
 		if (units_dat::base_property[unit_id] & UnitProperty::Flyer)
 		{
 			return UnitId::ZergCocoon;
-		}
-		else
-		{
+		} else {
 			return UnitId::ZergEgg;
 		}
 		return UnitId::None;
@@ -637,8 +644,8 @@ namespace hooks {
 		{
 			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building))
 			{
-				if (source != UnitId::ZergLarva
-				||	egg_unit->connected_unit->id != UnitId::ZergCaphrolosk) {
+				UnitExt* unit_ext = get_unit_ext(egg_unit);
+				if (source != UnitId::ZergLarva || unit_ext->values[ValueMorphConnectedUnitId] != UnitId::ZergCaphrolosk) {
 					return source;
 				} else {
 					return UnitId::ZergOcsalLarva;

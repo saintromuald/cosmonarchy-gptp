@@ -295,7 +295,7 @@ namespace hooks {
 				if (unit->sprite) {
 					if (unit->main_order_id) {
 						if (!unit->is_subunit()
-							&& unit->id != UnitId::TerranNuclearMissile
+							&& unit->id != UnitId::TerranMorningstar
 							&& unit->id != UnitId::ZergLarva
 							&& unit->id != UnitId::ZergOcsalLarva
 							&& !(units_dat::base_property[unit->id] & UnitProperty::Worker)

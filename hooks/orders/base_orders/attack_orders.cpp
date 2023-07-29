@@ -44,9 +44,9 @@ namespace hooks
 					}
 				}
 				else {
-					if (unit->main_order_id == OrderId::HoldPosition1)
+					if (unit->main_order_id == OrderId::HoldPositionSolarion)
 					{
-						new_order_id = OrderId::HoldPosition1;
+						new_order_id = OrderId::HoldPositionSolarion;
 					} else
 					{
 						new_order_id = OrderId::CarrierFight;
@@ -82,8 +82,8 @@ namespace hooks
 						new_order_id = OrderId::ReaverFight;
 					}
 				} else {
-					if (unit->main_order_id == OrderId::HoldPosition1) {
-						new_order_id = OrderId::HoldPosition1;
+					if (unit->main_order_id == OrderId::HoldPositionSolarion) {
+						new_order_id = OrderId::HoldPositionSolarion;
 					} else {
 						new_order_id = OrderId::CarrierFight;
 					}
@@ -912,7 +912,7 @@ namespace hooks
 	}
 
 	// Ported from GPTP to change the Solarion-Steward launch timer. -Pr0nogo
-	// Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPosition1
+	// Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPositionSolarion
 	void orders_carrier_idle(Unit* unit) // 004666A0
 	{
 		if (helper::order_hangar_unit(unit, 0, unit->get_seek_range() * 32))

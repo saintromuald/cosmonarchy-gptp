@@ -143,13 +143,13 @@ namespace hooks
 					{
 						order_id = OrderId::MedicHoldPosition;
 					} else {
-						order_id = OrderId::HoldPosition4;
+						order_id = OrderId::HoldPositionSuicide;
 					}
 				} else {
 					order_id = OrderId::ReaverHold;
 				}
 			} else {
-				order_id = OrderId::HoldPosition1;
+				order_id = OrderId::HoldPositionSolarion;
 			}
 			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1)
 			{
@@ -569,7 +569,7 @@ namespace hooks
 				if (!auto_target
 				||  !helper::unit_can_attack_target(auto_target, self, 1)
 				||  !helper::is_unit_enemy(self, auto_target)
-				||   helper::is_unit_in_weapon_range(compare_unit, self) && !helper::is_unit_in_weapon_range(auto_target, self))
+				||   helper::is_unit_in_weapon_range(self, compare_unit) && !helper::is_unit_in_weapon_range(self, auto_target))
 				{
 					result = 1;
 				}
@@ -806,7 +806,7 @@ namespace hooks
 						best_target = order_target;
 						best_score = helper::get_target_priority(unit, order_target);
 						if (!best_score) {
-							if (helper::is_unit_in_weapon_range(order_target, unit)) {
+							if (helper::is_unit_in_weapon_range(unit, order_target)) {
 								return;
 							}
 							best_score = 1;
@@ -821,7 +821,7 @@ namespace hooks
 				&&  helper::is_unit_enemy(unit, unit->auto_target_unit)
 				&& !helper::is_ai_target_related(unit, auto_target)) {
 					s32 auto_target_score = helper::get_target_priority(unit, unit->auto_target_unit);
-					if (!auto_target_score && !helper::is_unit_in_weapon_range(unit->auto_target_unit, unit)) {
+					if (!auto_target_score && !helper::is_unit_in_weapon_range(unit, unit->auto_target_unit)) {
 						auto_target_score = 1;
 					}
 					if (auto_target_score < best_score) {
@@ -849,7 +849,7 @@ namespace hooks
 				unit->order_target.unit = best_target;
 				Unit* subunit = unit->subunit;
 				if (subunit) {
-					if (subunit->main_order_id == units_dat::attack_unit_order[subunit->id] || subunit->main_order_id == OrderId::HoldPosition2) {
+					if (subunit->main_order_id == units_dat::attack_unit_order[subunit->id] || subunit->main_order_id == OrderId::HoldPositionNormal) {
 						subunit->order_target.unit = best_target;
 					}
 				}
