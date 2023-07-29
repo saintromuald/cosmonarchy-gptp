@@ -70,18 +70,26 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 	return true;
 }
 
+static bool should_check_color_overlap(u32 player, u32 other_player) {
+	if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
+		return false;
+	}
+	return other_player != player && !globals.players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player));
+}
+
 static bool can_use_player_color(u32 color, u32 player) {
 	for (u32 player_tint : get_player_tints_from_color(color)) {
 		if (!can_use_player_tint(player_tint, player)) {
 			return false;
 		}
 	}
+	for (u32 banned_color : banned_colors) {
+		if (color == banned_color) {
+			return false;
+		}
+	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-		if (other_player != player && !globals.players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player))) {
-			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
-				continue;
-			}
-
+		if (should_check_color_overlap(player, other_player)) {
 			if (color == player_data.player_color_list[other_player]) {
 				return false;
 			}
@@ -90,39 +98,64 @@ static bool can_use_player_color(u32 color, u32 player) {
 	return true;
 }
 
-static u32 get_color_delta(u32 a, u32 b) {
+#define Square(X) ((X) * (X))
+
+static u32 get_color_delta_srgb(u32 a, u32 b) {
 	RGBA a_rgba = init_palette->colors[tminimap_colors[a + ColorSetCount * *g_current_tileset]];
 	RGBA b_rgba = init_palette->colors[tminimap_colors[b + ColorSetCount * *g_current_tileset]];
 
+	RGBA delta_rgba = {};
+	delta_rgba.a = abs(a_rgba.r - b_rgba.r);
+	delta_rgba.g = abs(a_rgba.g - b_rgba.g);
+	delta_rgba.b = abs(a_rgba.b - b_rgba.b);
+
 	u32 delta = 0;
-	delta += abs(a_rgba.r - b_rgba.r);
-	delta += abs(a_rgba.g - b_rgba.g);
-	delta += abs(a_rgba.b - b_rgba.b);
+	u32 avg_r = (a_rgba.r + b_rgba.r) / 2;
+	if (avg_r < 128) {
+		delta = 2 * Square(delta_rgba.r) + 4 * Square(delta_rgba.g) + 3 * Square(delta_rgba.b);
+	} else {
+		delta = 3 * Square(delta_rgba.r) + 4 * Square(delta_rgba.g) + 2 * Square(delta_rgba.b);
+	}
 	return delta;
 }
 
 static u32 get_next_best_color(u32 player) {
-	u32 best_color = 0;
-	u32 best_distance = 0;
+	struct ColorMatch {
+		u32 color;
+		u32 distance;
+	};
 
+	bool any_distance = false;
+	std::vector<ColorMatch> matches; // Auch, use of std is gross. Can we do better?
 	for (u32 color = 0; color < PlayerColor::Count; ++color) {
 		if (!can_use_player_color(color, player)) continue;
-		u32 distance = 0;
-		for (u32 other = 0; other < PlayerColor::Count; ++other) {
-			if (color == other) continue;
-			distance += get_color_delta(color, other);
+		ColorMatch match = {color};
+		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+			if (!should_check_color_overlap(player, other_player)) {
+				continue;
+			}
+			u32 other_color = player_data.player_color_list[other_player];
+			match.distance += get_color_delta_srgb(color, other_color);
 		}
-		if (distance > best_distance) {
-			best_distance = distance;
-			best_color = color;
+		if (match.distance) {
+			any_distance = true;
 		}
+		matches.push_back(match);
 	}
+	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.distance > b.distance; });
 
-	if (best_distance == 0) {
-		return scbw::random() % PlayerColor::Count;
+
+	if (matches.size()) {
+		// We are only interested in the better quarter of the colors, unless we have no distance data (e.g. first melee randomization)
+		u32 cap = any_distance ? matches.size() / 4 : matches.size();
+		if (!cap) {
+			cap = 1;
+		}
+		return matches[scbw::random() % cap].color;
 	}
 	
-	return best_color;
+	scbw::printf("Something went wrong when randomizing colors...");
+	return PlayerColor::Red;
 }
 
 static u32 get_color_for_personality(u32 player) {

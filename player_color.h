@@ -1,8 +1,7 @@
 #pragma once
 #include "SCBW\api.h"
 
-enum
-{
+enum {
 	PlayerTintInvalid = -1,
 
 	// Can be rolled
@@ -30,8 +29,7 @@ enum
 
 // TODO: Remove std::vector
 
-const std::vector<std::vector<u32>> player_tints =
-{
+const std::vector<std::vector<u32>> player_tints = {
 	{	// Dark Red
 		PlayerColor::Maroon,
 		PlayerColor::Blood,
@@ -175,8 +173,7 @@ const std::vector<std::vector<u32>> player_tints =
 	},
 };
 
-const std::vector<std::vector<u32>> banned_tileset_tints =
-{
+const std::vector<std::vector<u32>> banned_tileset_tints = {
 	{ // Badlands
 		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
@@ -211,8 +208,7 @@ const std::vector<std::vector<u32>> banned_tileset_tints =
 	},
 };
 
-const std::vector<std::vector<u32>> banned_race_tints =
-{
+const std::vector<std::vector<u32>> banned_race_tints = {
 	{ // Zerg
 		PlayerTintDarkBlue,
 		PlayerTintLightBlue,
@@ -225,8 +221,16 @@ const std::vector<std::vector<u32>> banned_race_tints =
 	},
 };
 
-const std::vector<std::vector<std::vector<u32>>> personality_colors =
-{
+const std::vector<u32> banned_colors = {
+	PlayerColor::Harlequin,
+	PlayerColor::Rainbow,
+	PlayerColor::IridescentBlue,
+	PlayerColor::IridescentGreen,
+	PlayerColor::IridescentViolet,
+	PlayerColor::IridescentYellow,
+};
+
+const std::vector<std::vector<std::vector<u32>>> personality_colors = {
 	{ // Zerg
 		{ // Assault
 			PlayerColor::Red,
