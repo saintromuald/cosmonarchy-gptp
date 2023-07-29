@@ -89,10 +89,11 @@ static bool can_use_player_color(u32 color, u32 player) {
 		}
 	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-		if (should_check_color_overlap(player, other_player)) {
-			if (color == player_data.player_color_list[other_player]) {
-				return false;
-			}
+		if (!should_check_color_overlap(player, other_player)) {
+			continue;
+		}
+		if (color == player_data.player_color_list[other_player]) {
+			return false;
 		}
 	}
 	return true;
@@ -119,44 +120,65 @@ static u32 get_color_delta_srgb(u32 a, u32 b) {
 	return delta;
 }
 
-static u32 get_next_best_color(u32 player) {
-	struct ColorMatch {
-		u32 color;
-		u32 min_distance;
-	};
+struct ColorMatch {
+	u32 color;
+	u32 min_distance;
+};
 
+static ColorMatch make_color_match(u32 player, u32 color) {
+	ColorMatch match = {color, UINT_MAX};
+	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
+		if (!should_check_color_overlap(player, other_player)) {
+			continue;
+		}
+		u32 other_color = player_data.player_color_list[other_player];
+		u32 distance = get_color_delta_srgb(color, other_color);
+		if (distance < match.min_distance) {
+			match.min_distance = distance;
+		}
+	}
+	return match;
+}
+
+static u32 get_best_color(std::vector<ColorMatch>& matches, bool return_backup_color) {
+	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.min_distance > b.min_distance; });
+	// Try filtering out colors that obviously don't work
 	bool any_distance = false;
+	ColorMatch best_match = ColorMatch{(u32)PlayerColor::Invalid};
+	if (matches.size() && return_backup_color) {
+		best_match = matches[0];
+	}
+	for (auto it = matches.begin(); it != matches.end();) {
+		if (it->min_distance != UINT_MAX) {
+			any_distance = true;
+		}
+		if (it->min_distance < Square(160)) {
+			it = matches.erase(it);
+		} else {
+			it++;
+		}
+	}
+	if (matches.size()) {
+		// We are only interested in the better portion of the colors, unless we have no distance data (e.g. first melee randomization)
+		u32 cap = any_distance ? Max(matches.size() / 4, 1) : matches.size();
+		best_match = matches[scbw::random() % cap];
+	}
+	// scbw::printf("Returning color match %s with min distance %u", player_color_names[best_match.color], best_match.min_distance);
+	return best_match.color;
+}
+
+static u32 get_next_best_color(u32 player) {
 	std::vector<ColorMatch> matches; // Auch, use of std is gross. Can we do better?
 	for (u32 color = 0; color < PlayerColor::Count; ++color) {
 		if (!can_use_player_color(color, player)) continue;
-		ColorMatch match = {color, UINT_MAX};
-		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-			if (!should_check_color_overlap(player, other_player)) {
-				continue;
-			}
-			u32 other_color = player_data.player_color_list[other_player];
-			u32 distance = get_color_delta_srgb(color, other_color);
-			if (distance < match.min_distance) {
-				match.min_distance = distance;
-				any_distance = true;
-			}
-		}
-		matches.push_back(match);
+		matches.push_back(make_color_match(player, color));
 	}
-	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.min_distance > b.min_distance; });
-
-
-	if (matches.size()) {
-		// We are only interested in the better portion of the colors, unless we have no distance data (e.g. first melee randomization)
-		u32 cap = any_distance ? matches.size() / 8 : matches.size();
-		if (!cap) {
-			cap = 1;
-		}
-		return matches[scbw::random() % cap].color;
+	u32 color = get_best_color(matches, true);
+	if (color == PlayerColor::Invalid) {
+		scbw::printf("Something went wrong when randomizing colors!");
+		return PlayerColor::Red;
 	}
-	
-	scbw::printf("Something went wrong when randomizing colors...");
-	return PlayerColor::Red;
+	return color;
 }
 
 static u32 get_color_for_personality(u32 player) {
@@ -165,15 +187,12 @@ static u32 get_color_for_personality(u32 player) {
 	if (build >= 0
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build) {
-		u32 size = personality_colors[race][build].size();
-		u32 start_index = scbw::random() % size;
-		u32 index = start_index;
-		do {
-			if (can_use_player_color(personality_colors[race][build][index], player)) {
-				return personality_colors[race][build][index];
-			}
-			index = (index + 1) % size;
-		} while (index != start_index);
+		std::vector<ColorMatch> matches; // Auch, use of std is gross. Can we do better?
+		for (u32 color : personality_colors[race][build]) {
+			if (!can_use_player_color(color, player)) continue;
+			matches.push_back(make_color_match(player, color));
+		}
+		return get_best_color(matches, false);
 	}
 	return PlayerColor::Invalid;
 }
