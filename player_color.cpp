@@ -122,32 +122,33 @@ static u32 get_color_delta_srgb(u32 a, u32 b) {
 static u32 get_next_best_color(u32 player) {
 	struct ColorMatch {
 		u32 color;
-		u32 distance;
+		u32 min_distance;
 	};
 
 	bool any_distance = false;
 	std::vector<ColorMatch> matches; // Auch, use of std is gross. Can we do better?
 	for (u32 color = 0; color < PlayerColor::Count; ++color) {
 		if (!can_use_player_color(color, player)) continue;
-		ColorMatch match = {color};
+		ColorMatch match = {color, UINT_MAX};
 		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 			if (!should_check_color_overlap(player, other_player)) {
 				continue;
 			}
 			u32 other_color = player_data.player_color_list[other_player];
-			match.distance += get_color_delta_srgb(color, other_color);
-		}
-		if (match.distance) {
-			any_distance = true;
+			u32 distance = get_color_delta_srgb(color, other_color);
+			if (distance < match.min_distance) {
+				match.min_distance = distance;
+				any_distance = true;
+			}
 		}
 		matches.push_back(match);
 	}
-	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.distance > b.distance; });
+	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.min_distance > b.min_distance; });
 
 
 	if (matches.size()) {
-		// We are only interested in the better quarter of the colors, unless we have no distance data (e.g. first melee randomization)
-		u32 cap = any_distance ? matches.size() / 4 : matches.size();
+		// We are only interested in the better portion of the colors, unless we have no distance data (e.g. first melee randomization)
+		u32 cap = any_distance ? matches.size() / 8 : matches.size();
 		if (!cap) {
 			cap = 1;
 		}
