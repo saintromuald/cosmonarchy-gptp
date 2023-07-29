@@ -11,8 +11,6 @@ PlayerData player_data;
 static std::vector<u32> get_player_tints_from_color(u32 color);
 static bool can_use_player_color(u32 color, u32 last_player);
 static bool can_use_player_tint(u32 color_tint, u32 last_player);
-static u32 get_random_tint();
-static u32 get_random_color_from_tint(u32 tint);
 static u32 get_color_for_personality(u32 player);
 
 static bool player_wants_to_randomize(u32 player) {
@@ -72,17 +70,6 @@ static bool can_use_player_tint(u32 color_tint, u32 player) {
 	return true;
 }
 
-static u32 get_color_delta(u32 a, u32 b) {
-	RGBA a_rgba = init_palette->colors[tminimap_colors[a + ColorSetCount * *g_current_tileset]];
-	RGBA b_rgba = init_palette->colors[tminimap_colors[b + ColorSetCount * *g_current_tileset]];
-
-	u32 delta = 0;
-	delta += abs(a_rgba.r - b_rgba.r);
-	delta += abs(a_rgba.g - b_rgba.g);
-	delta += abs(a_rgba.b - b_rgba.b);
-	return delta;
-}
-
 static bool can_use_player_color(u32 color, u32 player) {
 	for (u32 player_tint : get_player_tints_from_color(color)) {
 		if (!can_use_player_tint(player_tint, player)) {
@@ -94,9 +81,8 @@ static bool can_use_player_color(u32 color, u32 player) {
 			if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
 				continue;
 			}
-			u32 delta = get_color_delta(color, player_data.player_color_list[other_player]);
-			u32 threshold = g_player_table[player].race == g_player_table[other_player].race ? 192 : 128;
-			if (delta < threshold) {
+
+			if (color == player_data.player_color_list[other_player]) {
 				return false;
 			}
 		}
@@ -104,12 +90,39 @@ static bool can_use_player_color(u32 color, u32 player) {
 	return true;
 }
 
-static u32 get_random_tint() {
-	return scbw::random() % PlayerTintRollCount;
+static u32 get_color_delta(u32 a, u32 b) {
+	RGBA a_rgba = init_palette->colors[tminimap_colors[a + ColorSetCount * *g_current_tileset]];
+	RGBA b_rgba = init_palette->colors[tminimap_colors[b + ColorSetCount * *g_current_tileset]];
+
+	u32 delta = 0;
+	delta += abs(a_rgba.r - b_rgba.r);
+	delta += abs(a_rgba.g - b_rgba.g);
+	delta += abs(a_rgba.b - b_rgba.b);
+	return delta;
 }
 
-static u32 get_random_color_from_tint(u32 tint) {
-	return player_tints[tint][scbw::random() % player_tints[tint].size()];
+static u32 get_next_best_color(u32 player) {
+	u32 best_color = 0;
+	u32 best_distance = 0;
+
+	for (u32 color = 0; color < PlayerColor::Count; ++color) {
+		if (!can_use_player_color(color, player)) continue;
+		u32 distance = 0;
+		for (u32 other = 0; other < PlayerColor::Count; ++other) {
+			if (color == other) continue;
+			distance += get_color_delta(color, other);
+		}
+		if (distance > best_distance) {
+			best_distance = distance;
+			best_color = color;
+		}
+	}
+
+	if (best_distance == 0) {
+		return scbw::random() % PlayerColor::Count;
+	}
+	
+	return best_color;
 }
 
 static u32 get_color_for_personality(u32 player) {
@@ -152,20 +165,7 @@ static void randomize_player_color(u32 player) {
 			return;
 		}
 	}
-	u32 color = 0;
-	u32 color_attempts = 0;
-	do {
-		u32 tint = 0;
-		u32 tint_attempts = 0;
-		do {
-			tint = get_random_tint();
-			tint_attempts += 1;
-		} while (!can_use_player_tint(tint, player) && tint_attempts < 300);
-
-		color = get_random_color_from_tint(tint);
-		color_attempts += 1;
-	} while (!can_use_player_color(color, player) && color_attempts < 300);
-	set_player_color(player, color);
+	set_player_color(player, get_next_best_color(player));
 }
 
 static void match_color_of(u32 player) {

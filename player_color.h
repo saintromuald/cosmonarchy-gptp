@@ -610,6 +610,7 @@ struct PlayerData {
 	bool can_randomize_player_colors;
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
+	bool color_used[PlayerColor::Count];
 	u8 player_color_list[PLAYABLE_PLAYER_COUNT];
 
 	FullName full_player_names[PlayerLimit];
