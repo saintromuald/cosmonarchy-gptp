@@ -2919,7 +2919,7 @@ namespace hooks {
 		}
 
 		// Generic speed timers
-		if (unit_ext->timers[TimerAscend] == 1
+		if (unit_ext->timers[TimerAvenge] == 1
 		||	unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
 			should_update_speed = true;
 		}
