@@ -100,6 +100,10 @@ namespace hooks
 			final_unit = unit->subunit;
 		}
 
+		if (!final_unit->connected_unit) { // Protect against a crash when a garrisoned unit attacks at the same time as a garrison dies. -Pr0nogo
+			return;
+		}
+
 		Image* bunker_image = final_unit->connected_unit->sprite->main_graphic;
 		u8 frame_direction = (unit->current_direction_1 + 16) / 32 % 8; // We use unit here instead of final_unit, because subunits were not turning correctly. -Pr0nogo
 		const LO_Header* attack_overlay = lo_files->attack_overlays[bunker_image->id];

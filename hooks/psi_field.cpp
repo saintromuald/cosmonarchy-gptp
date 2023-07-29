@@ -55,7 +55,7 @@ namespace hooks
 			return false;
 		}
 		sprite->elevation = 1;
-		if (*g_is_in_replay || !unit_can_show_power_for(unit, *g_local_nation_id)) {
+		if (!unit_can_show_power_for(unit, *g_local_nation_id)) {
 			unit->building.pylon_aura->flags |= SpriteFlags::Hidden;
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, 0);
 			return true;

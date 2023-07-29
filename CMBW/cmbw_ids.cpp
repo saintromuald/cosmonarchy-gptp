@@ -813,3 +813,17 @@ bool weapon_id_is_flamethrower(u32 weapon_id) {
 bool unit_id_is_larva(u32 unit_id) {
 	return unit_id == UnitId::ZergLarva || unit_id == UnitId::ZergOcsalLarva;
 }
+
+u32 get_mutate_image_id(u32 unit_id) {
+	switch (unit_id)
+	{
+		case UnitId::ZergQuazilisk:
+		{
+			return ImageId::QuaziliskMutate;
+		}
+		default:
+		{
+			return 0;
+		}
+	}
+}

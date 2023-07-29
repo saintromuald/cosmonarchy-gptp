@@ -1379,10 +1379,11 @@ namespace hooks {
 			{
 				// Gimmick to allow morph cancellation animations to play correctly
 				if (unit_ext->timers[TimerQuaziliskCancel]) {
-					if (unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell) {
-						unit->play_iscript_animation(IscriptAnimation::CastSpell);
+					if (unit->sprite->main_graphic->animation != IscriptAnimation::Unused2) {
+						unit->sprite->play_iscript_animation(IscriptAnimation::Unused2, true);
 					}
 				}
+
 				if (unit_ext->timers[TimerCustomEggHatch]) {
 					u32 morph_unit_id = unit->build_queue[unit->build_queue_slot];
 					f32 time_factor = unit_ext->timers[TimerCustomEggHatch] / (f32)unit_ext->values[ValueCustomEggHatchMax];
@@ -1402,6 +1403,12 @@ namespace hooks {
 						unit_ext->values[ValueSpecialSovrolethBirth] = morph_unit_id == UnitId::ZergSovroleth;
 						unit->order_computer(OrderId::ZergBirth);
 					}
+				}
+
+				if (unit->id == UnitId::ZergEgg && unit->order_signal & 0x8) {
+					unit->order_signal &= ~0x8;
+					helper::replace_sprite_images(unit->sprite, ImageId::Egg, 0);
+					unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
 				}
 			} break;
 			case UnitId::ProtossStarSovereign:

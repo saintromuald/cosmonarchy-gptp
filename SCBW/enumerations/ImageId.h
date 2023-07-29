@@ -1197,6 +1197,8 @@ namespace ImageId {
 
 		TerranCancelStructure						= 1740,
 
+		QuaziliskMutate								= 1751,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

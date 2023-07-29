@@ -190,7 +190,6 @@ namespace hooks {
 					helper::refund_all_queue_slots(unit);
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				} else {
-					u16 egg_id = UnitId::None;
 					switch (unit->id)
 					{
 						case UnitId::ZergOvileth:
@@ -210,6 +209,7 @@ namespace hooks {
 						unit->status -= UnitStatus::Completed;
 					}
 
+					u16 egg_id = UnitId::None;
 					switch (unit->id)
 					{
 						case UnitId::ZergLarva:
@@ -252,6 +252,7 @@ namespace hooks {
 							return;
 						}  break;
 					}
+
 					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 					{
 						unit_ext->values[ValuePreMorphEnergy] = unit->energy;
@@ -279,10 +280,17 @@ namespace hooks {
 						helper::replace_unit_with_id(unit, egg_id); // morph into egg from source unit
 					}
 					helper::change_unit_buttonset(unit, unit->id);
-					
 					unit->remaining_build_time = units_dat::time_cost[unit->build_queue[unit->build_queue_slot]];
 					unit->main_order_state = 1;
-					auto origin = unit->create_origin;
+
+					u32 origin = unit->create_origin;
+					if (egg_id == UnitId::ZergEgg) {
+						u32 egg_image_id = get_mutate_image_id(origin);
+						if (egg_image_id) {
+							helper::replace_sprite_images(unit->sprite, egg_image_id, 0);
+						}
+					}
+
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
 					switch (origin) {
 						case UnitId::ZergLarva:
@@ -299,9 +307,9 @@ namespace hooks {
 						{
 							animation = IscriptAnimation::Unused1;
 						} break;
-						case UnitId::ZergQuazilisk:
+						case UnitId::ZergQuazilisk: // New mutation handling
 						{
-							animation = IscriptAnimation::GndAttkToIdle;
+							animation = IscriptAnimation::SpecialState1;
 						} break;
 						case UnitId::ZergZoryusthaleth:
 						{
@@ -328,9 +336,7 @@ namespace hooks {
 					unit->sprite->play_iscript_animation(animation, true);
 				}
 			}
-		}
-		else if (unit->main_order_state == 1)
-		{
+		} else if (unit->main_order_state == 1) {
 			if (unit->id == UnitId::ZergEgg && unit->remaining_build_time < 19)
 			{
 				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
@@ -345,9 +351,7 @@ namespace hooks {
 			{
 				unit->main_order_state = 2;
 			}
-		}
-		else if (unit->main_order_state == 2)
-		{
+		} else if (unit->main_order_state == 2) {
 			if (unit->order_signal & 4)
 			{
 				unit->order_signal &= ~4;
@@ -376,12 +380,11 @@ namespace hooks {
 						current_image = current_image->link.next;
 					}
 					unit->order_computer(OrderId::ZergBirth);
-				}
-				else
-				{
+				} else {
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					if (unit->id == UnitId::ZergEgg && (unit->create_origin == UnitId::ZergLarva || unit->create_origin == UnitId::ZergOcsalLarva)) {
+					if (unit->id == UnitId::ZergEgg && (unit->create_origin == UnitId::ZergLarva || unit->create_origin == UnitId::ZergOcsalLarva))
+					{
 						helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					}
 				}

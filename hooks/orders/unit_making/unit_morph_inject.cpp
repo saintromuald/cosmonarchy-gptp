@@ -230,12 +230,12 @@ namespace
 			||  unit->id == UnitId::ZergVorvrokor
 			||  unit->id == UnitId::ZergNathrokor)
 			{
-				unit->play_iscript_animation(IscriptAnimation::Unused2);
+				unit->sprite->play_iscript_animation(IscriptAnimation::Unused2, true);
 			} else if (unit->id == UnitId::ZergQuazilisk) {
-				unit->play_iscript_animation(IscriptAnimation::CastSpell);
+				unit->sprite->play_iscript_animation(IscriptAnimation::Unused2, true);
 				unit_ext->timers[TimerQuaziliskCancel] = 4;
 			} else {
-				unit->play_iscript_animation(IscriptAnimation::SpecialState2);
+				unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
 			}
 			unit->rally.pt = unit->position;
 			unit->rally.unit = 0;
