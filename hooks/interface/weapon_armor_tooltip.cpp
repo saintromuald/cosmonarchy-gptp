@@ -96,8 +96,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	if (weapon_id == WeaponId::OlympianTitansFist) {
 		range = 1;
 	}
-	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit) / 32.0 - range;
-	bonus_range -= scbw::get_cliff_advantage(unit, unit->order_target.unit, weapon_id, false);
+	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit, true) / 32.0 - range;
 
 	std::string damage_modifiers = "";
 	f64 attack_cooldown = (f64)weapons_dat::cooldown[weapon_id] / 24;

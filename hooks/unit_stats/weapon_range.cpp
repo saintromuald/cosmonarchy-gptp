@@ -38,7 +38,7 @@ namespace hooks
 	// Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 	// This hook affects the behavior of Unit::get_max_weapon_range().
 	// Note: Weapon ranges are measured in pixels.
-	u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target) {
+	u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 bonus_amount = 0;
 
@@ -62,7 +62,9 @@ namespace hooks
 		}
 
 		// Height advantage
-		bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id, false) * 32;
+		if (!ignore_cliff_advantage) {
+			bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id, false) * 32;
+		}
 
 		// Ignore bonus distance for melee units
 		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
