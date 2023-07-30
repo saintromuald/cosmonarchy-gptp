@@ -2197,8 +2197,8 @@ namespace hooks {
 			EntryArray masters = {};
 			unit_search_radial(&masters, unit->position, 8 * 32);
 			unit_search_filter(&masters, unit, 0, {UnitId::ProtossMindTyrant, UnitId::ProtossDemiurge, UnitId::ProtossEmpress});
-			unit_search_custom_filter(&masters, [=](Unit* mind_tyrant) {
-				if (scbw::is_allied_to(mind_tyrant->player, unit_ext->values[ValueMindControlPlayer] - 1)) {
+			unit_search_custom_filter(&masters, [=](Unit* master) {
+				if (scbw::is_allied_to(master->player, unit_ext->values[ValueMindControlPlayer] - 1)) {
 					return true;
 				}
 				return false;
@@ -2225,6 +2225,25 @@ namespace hooks {
 				scbw::remove_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
 				scbw::recede_mind_control(unit);
 				unit_ext->values[ValueMindControlPlayer] = 0;
+			}
+		}
+
+		// Crisis of Faith (precursor to Worship)
+		if (unit_ext->timers[TimerDemiurgeWorship]) {
+			EntryArray masters = {};
+			unit_search_radial(&masters, unit->position, 8 * 32);
+			unit_search_filter(&masters, unit, 0, { UnitId::ProtossDemiurge });
+			unit_search_custom_filter(&masters, [=](Unit* master) {
+				Unit* demiurge = unit_ext->units[UnitDemiurge];
+				if (scbw::is_allied_to(master->player, demiurge->player)) {
+					return true;
+				}
+				return false;
+			});
+
+			if (!masters.count) {
+				unit_ext->timers[TimerDemiurgeWorship] = 0;
+				unit_ext->units[UnitDemiurge] = 0;
 			}
 		}
 

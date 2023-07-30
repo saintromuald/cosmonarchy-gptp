@@ -51,12 +51,12 @@ namespace hooks
 			}
 			if (helper::attack_apply_cooldown(unit)) {
 				if (unit->order_target.pt.x != unit->next_target_waypoint.x
-				||  unit->order_target.pt.y != unit->next_target_waypoint.y) {
+				||  unit->order_target.pt.y != unit->next_target_waypoint.y)
+				{
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
 			} else if (!unit->main_order_timer) {
-			//	unit->main_order_timer = 15;
 				Unit* target = unit->order_target.unit;
 				if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 					if (unit->connected_unit) {
@@ -85,7 +85,6 @@ namespace hooks
 						});
 					}
 				}
-
 				if (target) {
 					unit->order_queue_timer = 0;
 				}

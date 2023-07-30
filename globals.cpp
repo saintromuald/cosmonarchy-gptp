@@ -1298,8 +1298,8 @@ namespace scbw
 		if (links.size() == 0 || unit->shields < 256) {
 			link_damage(unit, damage, data);
 		} else {
-			links.erase(std::remove_if(links.begin(), links.end(), [](Unit* linkUnit) {
-				return linkUnit->shields < 256;
+			links.erase(std::remove_if(links.begin(), links.end(), [](Unit* link_unit) {
+				return link_unit->shields < 256;
 			}), links.end());
 			if (links.size()) {
 				s32 divided = damage / links.size();

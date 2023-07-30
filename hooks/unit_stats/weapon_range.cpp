@@ -42,11 +42,6 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 bonus_amount = 0;
 
-		// Give bonus distance to units inside Bunkers
-		if (unit->status & UnitStatus::InBuilding) {
-			bonus_amount += 64;
-		}
-
 		// Stellar Enforcement - Magister behavior
 		if (target && weapons_dat::max_range[weapon_id] > 32) {
 			UnitExt* target_ext = get_unit_ext(target);
@@ -70,6 +65,11 @@ namespace hooks
 		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
 			scale = 1;
 			bonus_amount = 0;
+		}
+
+		// Give bonus distance to garrisoned units - after melee unit calcs so flamethrower units can attack
+		if (unit->status & UnitStatus::InBuilding) {
+			bonus_amount += 64;
 		}
 
 		return weapons_dat::max_range[weapon_id] * scale + bonus_amount;
