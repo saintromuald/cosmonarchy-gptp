@@ -44,7 +44,7 @@ enum Enum {
 					* Default Requirements: Unit must be either Photon Cannon, Missile Turret, Sunken Colony, Spore Colony, Floor Gun Trap, Left Wall Missile Trap, Left Wall Flame Trap, Right Wall Flame Trap, Right Wall Missile Trap, */
 	VultureMine            = 0x14, /**< Spidermine idle order.
 					* Default Requirements: Unit must be Vulture Spider Mine. */
-	StayinRange            = 0x15, /**< Mobile unit base attack.
+	StayInRange            = 0x15, /**< Mobile unit base attack.
 					* Default Requirements: Unit is able to move. Allow on hallucinated units. */
 	TurretAttack           = 0x16, /**< Mobile Unit Turret attack.
 					* Default Requirements: Must be subunit. Allow on hallucinated units. */

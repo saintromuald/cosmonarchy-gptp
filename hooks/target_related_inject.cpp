@@ -360,6 +360,10 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV out_x, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV out_y, EAX
 			POP EAX
 			PUSHAD
 		}
@@ -454,7 +458,7 @@ namespace hooks
 		jump_patch(pick_new_target_if_needed_wrapper,					0x00477510, 1);
 		jump_patch(change_direction_to_move_waypoint_wrapper,			0x00495840, 3);
 		jump_patch(orders_turret_guard_wrapper,							0x004777F0, 2);
-	//	jump_patch(get_closest_point_of_target_wrapper,					0x004762C0, 1); // Untested
+		jump_patch(get_closest_point_of_target_wrapper,					0x004762C0, 1);
 		jump_patch(unit_order_move_to_target_reset_order_state_wrapper,	0x00479FA0, 0);
 
 		// Patches \\

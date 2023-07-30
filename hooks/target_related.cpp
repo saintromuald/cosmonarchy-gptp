@@ -926,7 +926,7 @@ namespace hooks
 		s32 new_w = target_x + target_dims->w;
 		s32 new_h = target_y + target_dims->h;
 
-		s32 shift_x = target_dims->x - new_x >> 2;
+		s32 shift_x = (new_w - new_x) >> 2;
 		s32 shift_y = (new_h - new_y) >> 2;
 		s32 shift_w = new_w - shift_x;
 
@@ -935,7 +935,7 @@ namespace hooks
 		acceptable_area.y = shift_y + new_y;
 
 		s32 final_h = new_h - shift_y;
-		Point16 old_pos = { acceptable_area.x + (shift_w - acceptable_area.x) / 2, shift_y + new_y + (final_h - (shift_y + new_y)) / 2 };
+		Point16 old_pos = { acceptable_area.x + ((shift_w - (s32)acceptable_area.x) / 2), acceptable_area.y + ((final_h - (s32)acceptable_area.y) / 2) };
 		Point16 new_pos = { unit->position.x, unit->position.y };
 		if (helper::make_valid_position(&old_pos, &new_pos, &acceptable_area))
 		{

@@ -618,6 +618,10 @@ namespace hooks {
 						case OrderId::AttackTile:
 						case OrderId::TowerGuard:
 						case OrderId::TowerAttack:
+						case OrderId::TurretAttack:
+						case OrderId::TurretGuard:
+						case OrderId::PlayerGuard:
+						case OrderId::StayInRange:
 							// TODO: Add more aggressive orders
 						{
 							color = graphics::RED;

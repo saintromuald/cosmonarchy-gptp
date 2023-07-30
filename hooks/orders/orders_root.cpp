@@ -39,7 +39,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x00476F50,	/*OrderId::TowerGuard*/				Func_Type::EAX,	2},
 	{ 0x00479150,	/*OrderId::TowerAttack*/			Func_Type::EAX,	2},
 	{ 0x00463DF0,	/*OrderId::VultureMine*/			Func_Type::EAX,	2},
-	{ 0x0047C4F0,	/*OrderId::StayinRange*/			Func_Type::EAX,	2},
+	{ 0x0047C4F0,	/*OrderId::StayInRange*/			Func_Type::EAX,	2},
 	{ 0x00477980,	/*OrderId::TurretAttack*/			Func_Type::EAX,	1},
 	{ 0x00475000,	/*OrderId::Nothing2*/				Func_Type::ECX,	2},
 	{ NOTVALID,		/*OrderId::Nothing3*/				Func_Type::EAX,	0},
@@ -229,7 +229,7 @@ namespace hooks {
 			} break;
 			case OrderId::PlayerGuard:
 			case OrderId::TurretGuard:
-			case OrderId::StayinRange:
+			case OrderId::StayInRange:
 			case OrderId::EnterTransport:
 			{
 				if (unit->status & UnitStatus::InBuilding)
