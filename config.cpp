@@ -43,9 +43,9 @@ void load_config() {
 		load_field(config_node, "quick-casting", config.quick_casting);
 		load_field(config_node, "quick-building", config.quick_building);
 
-		load_field(config_node, "terran-advisor", config.terran_advisor_string);
-		load_field(config_node, "protoss-advisor", config.protoss_advisor_string);
-		load_field(config_node, "zerg-advisor", config.zerg_advisor_string);
+	//	load_field(config_node, "terran-advisor", config.terran_advisor_string);
+	//	load_field(config_node, "protoss-advisor", config.protoss_advisor_string);
+	//	load_field(config_node, "zerg-advisor", config.zerg_advisor_string);
 		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
 
 		load_field(config_node, "verbose", config.verbose);
@@ -104,9 +104,9 @@ void save_config() {
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Audiovisuals");
-	write_field(out, "terran-advisor", config.terran_advisor_string);
-	write_field(out, "protoss-advisor", config.protoss_advisor_string);
-	write_field(out, "zerg-advisor", config.zerg_advisor_string);
+//	write_field(out, "terran-advisor", config.terran_advisor_string);
+//	write_field(out, "protoss-advisor", config.protoss_advisor_string);
+//	write_field(out, "zerg-advisor", config.zerg_advisor_string);
 	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 

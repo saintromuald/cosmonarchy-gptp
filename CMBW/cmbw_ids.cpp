@@ -488,6 +488,7 @@ bool weapon_id_piercing_stops_on_armor(u32 weapon_id) {
 bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
 	if (bullet && bullet->source_unit) {
 		switch (weapon_id) {
+			case WeaponId::SycophantSparringSaber:
 			case WeaponId::GolemBloodlessAssault:
 			case WeaponId::NathrokorPlasmidBreath:
 			case WeaponId::MortothrokorWickedIncisors:
