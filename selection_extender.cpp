@@ -214,7 +214,7 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 const u32 statdataMouseOverInteract_57D93 = 0x00457D93;
 void __declspec(naked) statdataMouseOverInteract_patch_57046() {
 	__asm {
-		MOVZX	EAX, dword ptr config.always_show_condensed_selection
+		MOVZX	EAX, byte ptr config.always_show_condensed_selection
 		TEST	EAX, EAX
 		JNE		offset isMultiSelect
 		MOV		EAX, GroupWireframesCap
