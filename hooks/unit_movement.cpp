@@ -83,6 +83,11 @@ namespace hooks
 			return false;
 		}
 
+		if (unit_id == UnitId::ZergRilirokor && collider_id != UnitId::ZergRilirokor && !(collider_status & UnitStatus::GroundedBuilding)
+		||	collider_id == UnitId::ZergRilirokor && unit_id != UnitId::ZergRilirokor) {
+			return false;
+		}
+
 		if (!(unit->status & UnitStatus::IsGathering) || collider_status & UnitStatus::GroundedBuilding) {
 			return true;
 		}

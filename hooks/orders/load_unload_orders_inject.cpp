@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_Pickup1Wrapper()
+	void __declspec(naked) orders_pickup_1_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -12,7 +12,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_pickup1(unit);
+		hooks::orders_pickup_1(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -21,35 +21,35 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_Pickup3_0Wrapper()
+	void __declspec(naked) orders_pickup_3_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_pickup3_0(unit);
+		hooks::orders_pickup_3(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) orders_Pickup2Wrapper()
+	void __declspec(naked) orders_pickup_2_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_pickup2(unit);
+		hooks::orders_pickup_2(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) orders_MoveUnloadWrapper()
+	void __declspec(naked) orders_move_unload_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -68,21 +68,21 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_Pickup4_0Wrapper()
+	void __declspec(naked) orders_pickup4_wrapper()
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_pickup4_0(unit);
+		hooks::orders_pickup_4(unit);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) orders_EnterTransportWrapper()
+	void __declspec(naked) orders_enter_transport_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -96,7 +96,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_UnloadWrapper()
+	void __declspec(naked) orders_unload_wrapper()
 	{
 		static Unit* unit;
 		__asm {
@@ -114,7 +114,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) canEnterTransport_Wrapper()
+	void __declspec(naked) can_enter_transport_wrapper()
 	{
 		static Unit* transport;
 		static Unit* unit;
@@ -144,13 +144,13 @@ namespace hooks
 {
 	void inject_load_unload_orders_hooks()
 	{
-		jump_patch(orders_Pickup1Wrapper,			0x004E7300, 1);
-		jump_patch(orders_Pickup3_0Wrapper,			0x004E73B0, 1);
-		jump_patch(orders_Pickup2Wrapper,			0x004E75D0, 1);
-		jump_patch(orders_MoveUnloadWrapper,		0x004E7700, 1);
-	//	jump_patch(orders_Pickup4_0Wrapper,			0x004E7B70, 1);
-		jump_patch(orders_EnterTransportWrapper,	0x004E7CF0, 0);
-		jump_patch(orders_UnloadWrapper,			0x004E80D0, 1);
-		jump_patch(canEnterTransport_Wrapper,		0x004E6E00, 1);
+		jump_patch(orders_pickup_1_wrapper,			0x004E7300, 1);
+		jump_patch(orders_pickup_3_wrapper,			0x004E73B0, 1);
+		jump_patch(orders_pickup_2_wrapper,			0x004E75D0, 1);
+		jump_patch(orders_move_unload_wrapper,		0x004E7700, 1);
+	//	jump_patch(orders_pickup4_wrapper,			0x004E7B70, 1);
+		jump_patch(orders_enter_transport_wrapper,	0x004E7CF0, 0);
+		jump_patch(orders_unload_wrapper,			0x004E80D0, 1);
+		jump_patch(can_enter_transport_wrapper,		0x004E6E00, 1);
 	}
 }
