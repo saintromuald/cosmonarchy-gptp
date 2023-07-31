@@ -2954,6 +2954,10 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
+		if (unit_is_tower(unit) && unit->main_order_id == OrderId::Nothing2) {
+			unit->main_order_id = OrderId::TowerGuard;
+		}
+
 		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
 		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
 		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)

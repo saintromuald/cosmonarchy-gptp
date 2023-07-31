@@ -827,3 +827,11 @@ u32 get_mutate_image_id(u32 unit_id) {
 		}
 	}
 }
+
+bool unit_is_tower(Unit* unit)
+{
+	if (units_dat::base_property[unit->id] & UnitProperty::Building && unit_is_combatant(unit)) {
+		return true;
+	}
+	return false;
+}
