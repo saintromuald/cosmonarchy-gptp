@@ -432,11 +432,15 @@ bool weapon_id_accelerates(u32 weapon_id) {
 }
 
 bool weapon_id_is_melee_aoe(u32 weapon_id) {
-	return weapon_id == WeaponId::NathrokorPlasmidBreath
+	return weapon_id == WeaponId::SycophantSparringSaber
+		|| weapon_id == WeaponId::GolemBloodlessAssault
+		|| weapon_id == WeaponId::NathrokorPlasmidBreath
+		|| weapon_id == WeaponId::MortothrokorWickedIncisors
 		|| weapon_id == WeaponId::GorgrokorSerratedCleavers
 		|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
 		|| weapon_id == WeaponId::TethzorokorSaberArray
 		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
+
 }
 
 u32 weapon_id_intercepts(u32 weapon_id) {
