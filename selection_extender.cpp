@@ -4,6 +4,7 @@
 #include "scbw/structures.h"
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
+#include "config.h"
 
 //C++
 //Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
@@ -213,9 +214,14 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 const u32 statdataMouseOverInteract_57D93 = 0x00457D93;
 void __declspec(naked) statdataMouseOverInteract_patch_57046() {
 	__asm {
+		MOVZX	EAX, dword ptr config.always_show_condensed_selection
+		TEST	EAX, EAX
+		JNE		offset isMultiSelect
 		MOV		EAX, GroupWireframesCap
-		CMP		byte ptr ds : [0x0059723D] , AL//clientSelectionCount
+		CMP		byte ptr ds : [0x0059723D], AL//clientSelectionCount
 		JBE		offset isSingleSelect
+
+		isMultiSelect:
 		CMP		word ptr[ECX], 1765
 		JBE		offset stringDoesNotExist
 		MOVZX	EAX, word ptr[ECX + 2 * 1766]
@@ -224,10 +230,10 @@ void __declspec(naked) statdataMouseOverInteract_patch_57046() {
 
 		isSingleSelect:
 		CMP		word ptr[ECX], 808
-			JBE		offset stringDoesNotExist
-			MOVZX	EAX, word ptr[ECX + 2 * 809]
-			ADD		EAX, ECX
-			JMP		statdataMouseOverInteract_57D93
+		JBE		offset stringDoesNotExist
+		MOVZX	EAX, word ptr[ECX + 2 * 809]
+		ADD		EAX, ECX
+		JMP		statdataMouseOverInteract_57D93
 
 		stringDoesNotExist:
 		MOV		EAX, 0x00501B7D//"\x00"

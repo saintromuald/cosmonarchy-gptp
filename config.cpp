@@ -16,49 +16,58 @@ void load_config() {
 	if (file_exists(CONFIG_FILENAME)) {
 		YAML::Node config_node = YAML::LoadFile(CONFIG_FILENAME);
 
+		// Launch settings
 		load_field(config_node, "disable-wmode-prompt", config.disable_wmode_prompt);
 		load_field(config_node, "prefer-wmode", config.prefer_wmode);
 
+		// General UI
 		load_field(config_node, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 		load_field(config_node, "show-timer", config.show_timer);
 		load_field(config_node, "show-apm", config.show_apm);
 		load_field(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 
+		// Selection UI
 		load_field(config_node, "show-rally-lines", config.show_rally_lines);
 		load_field(config_node, "show-order-lines", config.show_order_lines);
 		load_field(config_node, "show-queued-order-lines", config.show_queued_order_lines);
 		load_field(config_node, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
 		load_field(config_node, "show-aura-circles", config.show_aura_circles);
+		load_field(config_node, "always-show-condensed-selection", config.always_show_condensed_selection);
 
+		// Witness and replay UI
 		load_field(config_node, "witness-show-apm", config.witness_show_apm);
 		load_field(config_node, "witness-show-order-lines", config.witness_show_order_lines);
 		load_field(config_node, "show-replay-progress-bar", config.show_replay_progress_bar);
 
+		// Team UI
 		load_field(config_node, "show-team-camera", config.show_team_camera);
 		load_field(config_node, "show-team-ui", config.show_team_ui);
 		load_field(config_node, "show-team-ui-apm", config.show_team_ui_apm);
 		load_field(config_node, "show-team-ui-names", config.show_team_ui_names);
 		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
-		load_field(config_node, "quick-casting", config.quick_casting);
-		load_field(config_node, "quick-building", config.quick_building);
-
+		// Audiovisuals
 	//	load_field(config_node, "terran-advisor", config.terran_advisor_string);
 	//	load_field(config_node, "protoss-advisor", config.protoss_advisor_string);
 	//	load_field(config_node, "zerg-advisor", config.zerg_advisor_string);
 		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
 
-		load_field(config_node, "verbose", config.verbose);
-		GPTP::doLogging = config.verbose;
-
-		load_field(config_node, "default-map-directory", config.default_map_directory);
-		load_field(config_node, "auto-save-replays", config.auto_save_replays);
-
+		// Hotkeys
+		load_field(config_node, "quick-casting", config.quick_casting);
+		load_field(config_node, "quick-building", config.quick_building);
 		auto grid_node = config_node["grid-hotkeys"];
 		if (grid_node) {
 			load_field(grid_node, "enabled", config.grid_hotkeys);
 			load_field(grid_node, "layout", config.layout);
 		}
+
+		// Debug
+		load_field(config_node, "verbose", config.verbose);
+		GPTP::doLogging = config.verbose;
+
+		// Map directory
+		load_field(config_node, "default-map-directory", config.default_map_directory);
+		load_field(config_node, "auto-save-replays", config.auto_save_replays);
 	}
 	save_config();
 }
@@ -69,12 +78,12 @@ void save_config() {
 
 	out << YAML::Comment("Cosmonarchy BW Config");
 	out << YAML::Newline << YAML::Newline;
-	out << YAML::Comment("Launch");
+	out << YAML::Comment("Launch settings");
 	write_field(out, "disable-wmode-prompt", config.disable_wmode_prompt);
 	write_field(out, "prefer-wmode", config.prefer_wmode);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("In-Game UI");
+	out << YAML::Comment("General UI");
 	write_field(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 	write_field(out, "show-timer", config.show_timer);
 	write_field(out, "show-apm", config.show_apm);
@@ -87,9 +96,10 @@ void save_config() {
 	write_field(out, "show-queued-order-lines", config.show_queued_order_lines);
 	write_field(out, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
 	write_field(out, "show-aura-circles", config.show_aura_circles);
+	write_field(out, "always-show-condensed-selection", config.always_show_condensed_selection);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("Witness UI");
+	out << YAML::Comment("Witness and replay UI");
 	write_field(out, "witness-show-apm", config.witness_show_apm);
 	write_field(out, "witness-show-order-lines", config.witness_show_order_lines);
 	write_field(out, "show-replay-progress-bar", config.show_replay_progress_bar);
@@ -110,10 +120,6 @@ void save_config() {
 	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("Debug");
-	write_field(out, "verbose", config.verbose);
-	out << YAML::Newline << YAML::Newline;
-
 	out << YAML::Comment("Hotkeys");
 	write_field(out, "quick-casting", config.quick_casting);
 	write_field(out, "quick-building", config.quick_building);
@@ -124,6 +130,10 @@ void save_config() {
 		out << str;
 	}
 	out << YAML::EndSeq << YAML::EndMap;
+	out << YAML::Newline << YAML::Newline;
+
+	out << YAML::Comment("Debug");
+	write_field(out, "verbose", config.verbose);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Maps");

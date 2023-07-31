@@ -5,26 +5,30 @@
 
 const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
-	// Launch Settings
+	// Launch settings
 	bool disable_wmode_prompt = false;
 	bool prefer_wmode = true;
 
-	// UI
+	// General UI
 	bool extended_camera_hotkeys = true;
 	bool show_timer = true;
 	bool show_apm = true;
 	bool always_show_extended_tooltips = false;
 
+	// Selection UI
 	bool show_rally_lines = true;
 	bool show_order_lines = false;
 	bool show_queued_order_lines = false;
 	bool show_unique_gas_order_line_color = false;
 	bool show_aura_circles = false;
+	bool always_show_condensed_selection = false;
 
+	// Witness and replay UI
 	bool witness_show_apm = true;
 	bool witness_show_order_lines = true;
 	bool show_replay_progress_bar = true;
 
+	// Team UI
 	bool show_team_camera = true;
 	bool show_team_ui = true;
 	bool show_team_ui_apm = true;
@@ -32,9 +36,9 @@ struct Config {
 	bool show_team_ui_self = false;
 
 	// Audiovisuals
-	std::string terran_advisor_string = "default";
-	std::string protoss_advisor_string = "default";
-	std::string zerg_advisor_string = "default";
+//	std::string terran_advisor_string = "default";
+//	std::string protoss_advisor_string = "default";
+//	std::string zerg_advisor_string = "default";
 	bool celebrations_enabled = true;
 
 	// Hotkeys

@@ -3095,9 +3095,9 @@ namespace hooks {
 			init_grpWireFont("font_wire");
 		}
 
-		globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
-		globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
-		globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
+	//	globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
+	//	globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
+	//	globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
 
 		return true;
 	}

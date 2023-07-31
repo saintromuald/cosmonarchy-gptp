@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include "hooks/rally_point.h"
 #include "trigger_system/trigger_system.h"
+#include "config.h"
 
 namespace hooks
 {
@@ -1147,7 +1148,7 @@ namespace hooks
 			BinDlg* current_dialog;
 			u32 count = *g_client_selection_count;
 
-			if (count > GroupWireframesCap) {
+			if (count > GroupWireframesCap || config.always_show_condensed_selection) {
 				current_dialog = dialog;
 
 				if (current_dialog->flags & BinDlgFlags::Visible) {
@@ -1349,7 +1350,7 @@ namespace hooks
 			u32 selection_count = *g_client_selection_count;
 			u8 i_0 = 0;
 
-			if (selection_count > grpWire_count) {
+			if (selection_count > grpWire_count || config.always_show_condensed_selection) {
 				WireList wire_list[GroupWireframesCap]{};
 				u32 i_1 = 0;
 				grpWire_count = 0;
