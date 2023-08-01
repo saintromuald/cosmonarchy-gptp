@@ -585,12 +585,6 @@ namespace hooks
 							target_ext->units[UnitSevenstepMindMatterSource] = data.attacker;
 						}
 					} break;
-					case WeaponId::CyclopsFlakCannons:
-					{
-						// Cyclops - Flak Cannons
-						target_ext->timer_vectors[TimerVectorCyclopsFuse].push_back(1 * 24 + 1);
-						scbw::add_unit_overlay(data.target, ImageId::CyclopsFragmentaryArming);
-					} break;
 					case WeaponId::PazuzuJupiterDriver:
 					{
 						// Deconstruction - Pazuzu behavior - apply stack

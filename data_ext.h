@@ -338,7 +338,6 @@ enum ExtUnitVectorId {
 };
 
 enum ExtTimerVectorId {
-	TimerVectorCyclopsFuse,
 	TimerVectorCorrupted, // last slot is always corrupted on some builds, fuck you visual studio
 
 	TimerVectorCount,
