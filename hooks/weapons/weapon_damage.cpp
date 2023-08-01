@@ -525,6 +525,11 @@ namespace hooks
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
 				} break;
+				case WeaponId::CyclopsFlakCannons:
+				{
+					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 24, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
+												 data.target->sprite->elevation + 1, data.target->player, data.attacker);
+				} break;
 				case WeaponId::VorvalClaws:
 				{
 					// Captivating Claws - Vorvrokor behavior

@@ -382,7 +382,7 @@ void tick_effect(Effect* effect) {
 					unit_ext->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 				});
 			} break;
-			case EffectId_IonCannonIonField: {
+			case EffectId_DiademIonField: {
 				scbw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
@@ -423,7 +423,7 @@ void tick_effect(Effect* effect) {
 					apply_irradiate(unit, effect->player, 15);
 				});
 			} break;
-			case EffectId_NuclearMissileGroundZero: {
+			case EffectId_MorningstarGroundZero: {
 				const u32 delta = effect->max_time - effect->current_time;
 				const u32 stage = delta / effect_period;
 
@@ -510,6 +510,23 @@ void tick_effect(Effect* effect) {
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
 					target->heal_hp(10 * tick_scalar);
+				}
+			} break;
+			case EffectId_CyclopsRecusionRound: {
+				if (!effect->current_time) {
+					EntryArray unit_array = {};
+					unit_search_radial(&unit_array, effect->position, effect->radius);
+					unit_search_filter(&unit_array, effect->source, FilterEnemy);
+					for (u32 j = 0; j < unit_array.count; j++) {
+						Unit* target = unit_array.units[j];
+						if (scbw::is_allied_to(effect->player, target->player)) {
+							continue;
+						}
+						target->damage_with_custom(10 * 256, 0);
+						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
+					}
+					helper::play_sound_at_pos(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect->position, 1, 0);
+					helper::create_thingy(SpriteId::FragmentaryExplosion, effect->position.x, effect->position.y, effect->player);
 				}
 			} break;
 		}

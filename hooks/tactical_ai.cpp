@@ -388,7 +388,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 				value -= 1000;
 			}
 		} break;
-		case EffectId_IonCannonIonField: {
+		case EffectId_DiademIonField: {
 			if (!flyer) {
 				if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldAttackSpeed] < 1 * 24) {
 					value += 100;
@@ -417,7 +417,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 		case EffectId_HallucinatingField: {
 			value -= 100;
 		} break;
-		case EffectId_NuclearMissileGroundZero: {
+		case EffectId_MorningstarGroundZero: {
 			value -= 100;
 		} break;
 		case EffectId_LanifectDisruptionField: {

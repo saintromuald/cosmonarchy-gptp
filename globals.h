@@ -27,8 +27,8 @@ struct SaveState
 };
 
 enum EffectId {
-	EffectId_NuclearMissileGroundZero,
-	EffectId_IonCannonIonField,
+	EffectId_MorningstarGroundZero,
+	EffectId_DiademIonField,
 	EffectId_SalamanderFire,
 	EffectId_Irradiate,
 	EffectId_AspirantCriticality,
@@ -39,6 +39,7 @@ enum EffectId {
 	EffectId_IsthrathalethPlagueField,
 	EffectId_AionReclamationField,
 	EffectId_VilgolethHeal,
+	EffectId_CyclopsRecusionRound,
 
 	EffectId_Count,
 };

@@ -2477,22 +2477,6 @@ namespace hooks {
 			}
 		}
 
-		// Cyclops - Fragmentary Shells fuse
-		for (u32 fuse_timer : unit_ext->timer_vectors[TimerVectorCyclopsFuse]) {
-			if (fuse_timer == 1) {
-				helper::create_thingy(SpriteId::FragmentaryExplosion, unit->get_x(), unit->get_y(), 11);
-				helper::play_sound_from_unit(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), unit, 1, 0);
-
-				EntryArray units = {};
-				unit_search_radial(&units, unit->position, 2 * 32);
-				for (u32 i = 0; i < units.count; ++i) {
-					Unit* target = units.units[i];
-					target->damage_with_custom(4 * 256, 0);
-					target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
-				}
-			}
-		}
-
 		// Gorgon - Petrification - clear stacks
 		if (unit_ext->timers[TimerPetrification] == 1) {
 			unit_ext->values[ValuePetrificationStacks] = 0;

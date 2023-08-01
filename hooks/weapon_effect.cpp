@@ -58,7 +58,7 @@ namespace hooks {
 			// Create effect fields
 			switch (weapon_id) {
 				case WeaponId::DiademIonCannon: {
-					iquare_globals.create_effect(EffectId_IonCannonIonField, 10 * 24, {pos.x, pos.y}, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
+					iquare_globals.create_effect(EffectId_DiademIonField, 10 * 24, {pos.x, pos.y}, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
 				} break;
 				case WeaponId::AionLazarusSalvo: {
 					iquare_globals.create_effect(EffectId_AionReclamationField, 5 * 24, {pos.x, pos.y}, 2 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
@@ -319,7 +319,7 @@ namespace hooks {
 	}
 
 	void nuke(Bullet* bullet, u32 weapon_id) {
-		iquare_globals.create_effect(EffectId_NuclearMissileGroundZero, 24, bullet->position, 0, -1, 5, bullet->player, bullet->source_unit);
+		iquare_globals.create_effect(EffectId_MorningstarGroundZero, 24, bullet->position, 0, -1, 5, bullet->player, bullet->source_unit);
 
 		splash(bullet, weapon_id, SplashType::Radial);
 	}

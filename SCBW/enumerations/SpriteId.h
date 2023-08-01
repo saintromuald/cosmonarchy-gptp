@@ -787,7 +787,9 @@ namespace SpriteId
 
 		BurstLasersImpactRed_Damageless = 858,
 
-		TerranCancelStructure	= 870,
+		TerranCancelStructure		= 870,
+
+		CyclopsPassiveArmingOverlay = 877,
 
 		// CORPSE \\
 			
