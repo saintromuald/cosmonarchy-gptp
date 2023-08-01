@@ -190,8 +190,9 @@ namespace hooks
 			WorkerAi* ai = (WorkerAi*)data.target->unit_ai;
 			if (ai->type == AiType::Worker || ai->type == AiType::Building) {
 				if (!ai->town) {
-					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
-																   data.attacker->id, data.attacker->player, data.target->id, data.target->player);
+					u32 attacker_id = data.attacker ? data.attacker->id : UnitId::None;
+					scbw::printf("Ai_ReactToHit crash prevention - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
+																              attacker_id, data.attacker->player, data.target->id, data.target->player);
 					can_damage = false;
 				}
 			}
@@ -528,7 +529,7 @@ namespace hooks
 				case WeaponId::CyclopsFlakCannons:
 				{
 					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
-												 data.target->sprite->elevation + 1, data.target->player, data.attacker);
+												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
 				case WeaponId::VorvalClaws:
 				{

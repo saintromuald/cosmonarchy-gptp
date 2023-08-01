@@ -522,7 +522,7 @@ void tick_effect(Effect* effect) {
 						if (scbw::is_allied_to(effect->player, target->player)) {
 							continue;
 						}
-						target->damage_with_custom(10 * 256, 0);
+						target->damage_with_custom(8 * 256, 0, effect->source, effect->player);
 						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 					}
 					helper::play_sound_at_pos(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect->position, 1, 0);
