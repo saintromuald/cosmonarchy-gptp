@@ -36,6 +36,7 @@ Target make_target(Unit* unit, Point16 pos) {
 Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 rotate = unit_ext->values[weapon_offsets->value_id];
+
 	Image* image = unit->sprite->main_graphic;
 	switch (unit->id) {
 		case UnitId::TerranWatchdog:
@@ -101,13 +102,13 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	}
 
 	Point16 launch_pos = unit->position;
-	if (weapons_dat::behavior[weapon_id] == WeaponBehavior::AppearOnTargetUnit) {
+	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_AppearOnTargetUnit) {
 		launch_pos = target.pt;
 	}
 	if (weapon_offsets) {
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
-	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
+	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
@@ -130,7 +131,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, apply_cooldown);
 	unit->order_target = original_target;
 	if (bullet) {
-		if (dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior::GoToMaxRange) {
+		if (dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 			scbw::set_bullet_target_absolute(bullet, target);
 		} else {
 			scbw::set_bullet_target_follow(bullet, target);
@@ -343,14 +344,14 @@ namespace hooks {
 		s32 y = 0;
 		u8 behavior = weapons_dat::behavior[weapon_id];
 		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
-			behavior = WeaponBehavior::AppearOnTargetSite;
+			behavior = WeaponBehavior_AppearOnTargetSite;
 		}
-		if (behavior == WeaponBehavior::AppearOnTargetUnit) {
+		if (behavior == WeaponBehavior_AppearOnTargetUnit) {
 			if (!unit->order_target.unit) {
 				return;
 			}
 			get_weapon_hit_pos(unit, &x, &y);
-		} else if (behavior == WeaponBehavior::AppearOnTargetSite) {
+		} else if (behavior == WeaponBehavior_AppearOnTargetSite) {
 			x = unit->order_target.pt.x;
 			y = unit->order_target.pt.y;
 		} else {
@@ -1067,7 +1068,7 @@ namespace hooks {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type = 5;
 			if (!despawn_bullet_special) {
-				if (target && !target->is_dead() && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior::GoToMaxRange) {
+				if (target && !target->is_dead() && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior_GoToMaxRange) {
 					bullet->attack_target.pt.x = target->position.x;
 					bullet->attack_target.pt.y = target->position.y;
 				} else {
@@ -1449,8 +1450,8 @@ namespace hooks {
 		}
 
 		switch (weapons_dat::behavior[weapon_id]) {
-			case WeaponBehavior::Fly_DoNotFollowTarget:
-			case WeaponBehavior::Fly_FollowTarget:
+			case WeaponBehavior_FlyDoNotFollowTarget:
+			case WeaponBehavior_FlyFollowTarget:
 			{
 				if (target_unit) {
 					if (parent) {
@@ -1460,8 +1461,8 @@ namespace hooks {
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
-			case WeaponBehavior::AppearOnTargetUnit:
-			case WeaponBehavior::AppearOnTargetSite:
+			case WeaponBehavior_AppearOnTargetUnit:
+			case WeaponBehavior_AppearOnTargetSite:
 			{
 				if (!target_unit) {
 					return 1;
@@ -1472,16 +1473,16 @@ namespace hooks {
 				helper::weapon_behavior_can_hit_target_check(target_unit, bullet->source_unit);
 				return 1;
 			}
-			case WeaponBehavior::PersistOnTargetSite:
+			case WeaponBehavior_PersistOnTargetSite:
 			{
 				helper::appear_on_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
-			case WeaponBehavior::AppearOnAttacker:
+			case WeaponBehavior_AppearOnAttacker:
 			{
 				return 1;
 			}
-			case WeaponBehavior::AttackAndSelfDestruct:
+			case WeaponBehavior_AttackAndSelfDestruct:
 			{
 				if (!bullet->source_unit) {
 					return 1;
@@ -1491,7 +1492,7 @@ namespace hooks {
 				helper::orders_self_destructing(bullet->source_unit);
 				return 1;
 			}
-			case WeaponBehavior::Bounce:
+			case WeaponBehavior_Bounce:
 			{
 				switch (weapon_id) {
 					case WeaponId::BactaliskCorrosiveAcid:
@@ -1515,7 +1516,7 @@ namespace hooks {
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
-			case WeaponBehavior::AttackNearbyArea:
+			case WeaponBehavior_AttackNearbyArea:
 			{
 				bullet->cyclic_missile_index = parent->offset_index_3_by_3;
 				bullet->attack_target.pt.x -= (s16)g_attack_curve[parent->offset_index_3_by_3].x;
@@ -1529,7 +1530,7 @@ namespace hooks {
 				parent->offset_index_3_by_3 = final_offset;
 				return 1;
 			}
-			case WeaponBehavior::GoToMaxRange:
+			case WeaponBehavior_GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
 			//	s32 max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
@@ -1609,19 +1610,19 @@ namespace hooks {
 		*g_active_iscript_bullet = 0;
 	}
 
-	// Hooked to investigate first_free_bullet nonsense. Disabled! - Pr0nogo
+	// Hooked to investigate first_free_bullet nonsense. - Pr0nogo
 	void bullet_behavior_reassign(Bullet* bullet) { // 0048BD50
-		while (2) { // xd
-			if (bullet->main_order_state & 1) {
-				bullet->main_order_state = bullet->main_order_state & 0xFE;
+		while (2) {
+			if (bullet->order_signal & 1) {
+				bullet->order_signal = bullet->order_signal & 254;
 				Image* bullet_overlay = 0;
 				switch (weapons_dat::behavior[bullet->weapon_id]) {
-					case WeaponBehavior::AppearOnTargetUnit:
-					case WeaponBehavior::AppearOnTargetSite:
-					case WeaponBehavior::AppearOnAttacker:
-					case WeaponBehavior::AttackAndSelfDestruct:
+					case WeaponBehavior_AppearOnTargetUnit:
+					case WeaponBehavior_AppearOnTargetSite:
+					case WeaponBehavior_AppearOnAttacker:
+					case WeaponBehavior_AttackAndSelfDestruct:
 					{
-						bullet->behavior_type = WeaponBehavior::AppearOnAttacker;
+						bullet->behavior_type = WeaponBehavior_AppearOnAttacker;
 						if (bullet->attack_target.unit && bullet->attack_target.unit->sprite) {
 							bullet->attack_target.pt.x = bullet->attack_target.unit->position.x;
 							bullet->attack_target.pt.y = bullet->attack_target.unit->position.y;
@@ -1632,19 +1633,19 @@ namespace hooks {
 						bullet->order_unit_id = UnitId::None;
 						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::Death, 1);
 					} break;
-					case WeaponBehavior::Fly_FollowTarget:
+					case WeaponBehavior_FlyFollowTarget:
 					{
-						helper::assign_weapon_data(bullet, 2);
+						helper::assign_weapon_data(bullet, WeaponBehavior_AppearOnTargetUnit);
 						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
 					}  break;
-					case WeaponBehavior::Bounce:
+					case WeaponBehavior_Bounce:
 					{
-						helper::assign_weapon_data(bullet, 3);
+						helper::assign_weapon_data(bullet, WeaponBehavior_PersistOnTargetSite);
 						helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
 					}  break;
-					case WeaponBehavior::PersistOnTargetSite:
+					case WeaponBehavior_PersistOnTargetSite:
 					{
-						helper::assign_weapon_data(bullet, 4);
+						helper::assign_weapon_data(bullet, WeaponBehavior_AppearOnTargetSite);
 						Image* bullet_overlay = 0;
 						bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
@@ -1654,9 +1655,9 @@ namespace hooks {
 							} while (bullet_overlay);
 						}
 					} break;
-					case WeaponBehavior::AttackNearbyArea:
+					case WeaponBehavior_AttackNearbyArea:
 					{
-						helper::assign_weapon_data(bullet, 6);
+						helper::assign_weapon_data(bullet, WeaponBehavior_AttackAndSelfDestruct);
 						Image* bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
 							do {
@@ -1667,7 +1668,7 @@ namespace hooks {
 					} break;
 					default:
 					{
-						helper::assign_weapon_data(bullet, 1);
+						helper::assign_weapon_data(bullet, WeaponBehavior_FlyFollowTarget);
 						Image* bullet_overlay = bullet->sprite->images.head;
 						if (bullet_overlay) {
 							do {

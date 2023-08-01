@@ -27,11 +27,11 @@ namespace scbw {
 		source->order_target.unit = target;
 		source->order_target.pt = target_pt;
 		if (target && target_unit) {
-			source->order_target.pt = target_unit->sprite->position;
+			source->order_target.pt = target_unit->position;
 		} else {
 			source->order_target.pt = target_pt;
 		}
-		helper::create_bullet(weapon_id, source, source->sprite->position.x, source->sprite->position.y, player,
+		helper::create_bullet(weapon_id, source, source->position.x, source->position.y, player,
 			get_angle(source->position.x, source->position.y, source->order_target.pt.x, source->order_target.pt.y));
 		source->order_target.unit = target_unit;
 		source->order_target.pt = target_pos;
@@ -58,7 +58,7 @@ namespace scbw {
 			unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 		}
 
-		// Create the DimensionalRecall animation over the unit
+		// Create the Dimensional Recall animation over the unit
 		if (sprite_id) {
 			Thingy* recall_effect_sprite = helper::create_thingy(sprite_id, target.x, target.y, 0);
 			if (recall_effect_sprite) {

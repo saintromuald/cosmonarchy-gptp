@@ -163,9 +163,9 @@ namespace hooks
 
 		// Ancile - Providence - Hitscan handling
 		switch (weapons_dat::behavior[data.weapon_id]) {
-			case WeaponBehavior::AppearOnAttacker:
-			case WeaponBehavior::AppearOnTargetSite:
-			case WeaponBehavior::AppearOnTargetUnit:
+			case WeaponBehavior_AppearOnAttacker:
+			case WeaponBehavior_AppearOnTargetSite:
+			case WeaponBehavior_AppearOnTargetUnit:
 			{
 				EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checkign for it later? Is that more or less performant? -Pr0nogo
 				unit_search_radial(&units, data.target->position, 2 * 32);

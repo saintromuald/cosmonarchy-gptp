@@ -203,14 +203,12 @@ namespace
 
 	void __declspec(naked) bullet_behavior_reassign_wrapper() // 0048BD50
 	{
-		static u32 unused1;
 		static Bullet* bullet;
-		static u32 unused2;
 		__asm
 		{
-			MOV unused1, EAX
+		//	MOV unused1, EAX
 			MOV bullet, ECX
-			MOV unused2, EDI
+		//	MOV unused2, EDI
 			PUSHAD
 		}
 		hooks::bullet_behavior_reassign(bullet);
@@ -397,7 +395,7 @@ namespace hooks
 		jump_patch(initialize_bullet_wrapper,				0x0048BEC0, 0);
 	//	jump_patch(progress_bullet_frames_wrapper,			0x0048C3D0, 2);
 	//	jump_patch(find_next_bounce_target_wrapper,			0x0048B1E0, 1);
-		jump_patch(bullet_behavior_reassign_wrapper,		0x00488D50, 1);
+		jump_patch(bullet_behavior_reassign_wrapper,		0x0048BD50, 1);
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);

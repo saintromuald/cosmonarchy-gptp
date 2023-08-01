@@ -1960,9 +1960,9 @@ namespace hooks {
 
 						// Redirect the hitscan bullet, hitscan attacks themselves are handled in weapon damage
 						switch (weapons_dat::behavior[bullet->weapon_id]) {
-							case WeaponBehavior::AppearOnAttacker:
-							case WeaponBehavior::AppearOnTargetSite:
-							case WeaponBehavior::AppearOnTargetUnit:
+							case WeaponBehavior_AppearOnAttacker:
+							case WeaponBehavior_AppearOnTargetSite:
+							case WeaponBehavior_AppearOnTargetUnit:
 							{
 								bullet->position = unit->position;
 								if (bullet->sprite) {
@@ -2915,6 +2915,7 @@ namespace hooks {
 			Unit* sevenstep = unit_ext->units[UnitSevenstepMindMatterSource];
 			if (sevenstep && unit_ext->timers[TimerSevenstepMindMatter] == 1) {
 				scbw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, sevenstep->player, unit, 0, sevenstep->position);
+				unit_ext->units[UnitSevenstepMindMatterSource] = 0;
 			}
 		}
 
@@ -2954,7 +2955,7 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
-		if (unit_is_tower(unit) && unit->main_order_id == OrderId::Nothing2) {
+		if (unit_is_tower(unit) && unit->status & UnitStatus::Completed && unit->main_order_id == OrderId::Nothing2) {
 			unit->main_order_id = OrderId::TowerGuard;
 		}
 

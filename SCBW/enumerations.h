@@ -537,22 +537,19 @@ namespace WeaponEffect
 }
 
 // Use with weapons_dat::behavior[]
-namespace WeaponBehavior
+enum Enum
 {
-	enum Enum
-	{
-		Fly_DoNotFollowTarget = 0,
-		Fly_FollowTarget = 1,
-		AppearOnTargetUnit = 2,
-		PersistOnTargetSite = 3,
-		AppearOnTargetSite = 4,
-		AppearOnAttacker = 5,
-		AttackAndSelfDestruct = 6,
-		Bounce = 7,
-		AttackNearbyArea = 8,
-		GoToMaxRange = 9
-	};
-}
+	WeaponBehavior_FlyDoNotFollowTarget = 0,
+	WeaponBehavior_FlyFollowTarget = 1,
+	WeaponBehavior_AppearOnTargetUnit = 2,
+	WeaponBehavior_PersistOnTargetSite = 3,
+	WeaponBehavior_AppearOnTargetSite = 4,
+	WeaponBehavior_AppearOnAttacker = 5,
+	WeaponBehavior_AttackAndSelfDestruct = 6,
+	WeaponBehavior_Bounce = 7,
+	WeaponBehavior_AttackNearbyArea = 8,
+	WeaponBehavior_GoToMaxRange = 9
+};
 
 // Use with g_color_shift
 namespace ColorRemapping

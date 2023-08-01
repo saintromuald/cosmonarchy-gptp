@@ -227,7 +227,7 @@ namespace hooks {
 			helper::do_weapon_hit(target, bullet->source_unit, divisor);
 			return;
 		} else {
-			if (weapons_dat::behavior[weapon_id] == WeaponBehavior::Bounce) {
+			if (weapons_dat::behavior[weapon_id] == WeaponBehavior_Bounce) {
 				if (bullet) {
 					if (bullet->source_unit && bullet->weapon_id == WeaponId::BactaliskCorrosiveAcid) {
 						divisor = 1;
