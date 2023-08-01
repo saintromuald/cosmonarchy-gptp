@@ -527,7 +527,7 @@ namespace hooks
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
-					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 24, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
+					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.target->player, data.attacker);
 				} break;
 				case WeaponId::VorvalClaws:
