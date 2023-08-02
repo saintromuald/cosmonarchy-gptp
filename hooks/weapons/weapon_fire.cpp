@@ -1399,7 +1399,7 @@ namespace hooks {
 		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
 		bullet->main_order_state = 0;
-		hooks::bullet_behavior_reassign(bullet);
+		helper::bullet_behavior_reassign(bullet);
 		reset_bullet_ext(bullet);
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 		bullet_ext->bullet_source = bullet->position;
@@ -1577,7 +1577,7 @@ namespace hooks {
 			{
 				case 0:
 				{
-					hooks::bullet_behavior_reassign(bullet);
+					helper::bullet_behavior_reassign(bullet);
 				} break;
 				case 1:
 				{
