@@ -1385,8 +1385,9 @@ namespace hooks {
 		bullet->order_unit_id = UnitId::None;
 		bullet->main_order_state = 0;
 		bullet->attack_target.unit = 0;
-		bullet->attack_target.pt.y = 0;
 		bullet->attack_target.pt.x = 0;
+		bullet->attack_target.pt.y = 0;
+		bullet->order_signal = 0;
 		bullet->main_order_timer = 0;
 		bullet->weapon_id = weapon_id;
 		bullet->remove_timer = weapons_dat::remove_after[weapon_id];
