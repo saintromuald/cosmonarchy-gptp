@@ -75,6 +75,7 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex)
 {
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
+	bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 	// Get game strings
 	const char* entry_name = g_stat_txt_tbl_new->get_string(entryStrIndex);
@@ -197,8 +198,8 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 			text += builder.str();
 		}
 		append_tooltip_value(text, range, bonus_range, extended);
-		if (extended) {
-		//	graphics::draw_circle(unit->position.x, unit->position.y, (range + bonus_range) * 32, graphics::RED, graphics::ON_MAP);
+		if (extended && (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+			graphics::draw_circle(unit->position.x, unit->position.y, (range + bonus_range) * 32, graphics::RED, graphics::ON_MAP);
 		}
 	}
 

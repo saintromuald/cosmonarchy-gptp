@@ -469,9 +469,7 @@ namespace hooks
 					break;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			child = 0;
 		}
 
@@ -526,9 +524,7 @@ namespace hooks
 					break;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			child = 0;
 		}
 
@@ -556,7 +552,8 @@ namespace hooks
 	void stats_shield_level(BinDlg* dialog, u16 status_screen_index) // 00425510
 	{
 		BinDlg* dialog_var = dialog;
-		u32 armor_value = units_dat::armor_amount[(*g_active_portrait_unit)->id]; // TODO: calculate current shield armor using g_active_portrait_unit
+		Unit* portrait_unit = *g_active_portrait_unit;
+		u32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
 		if (dialog_var->control_type)
@@ -575,9 +572,7 @@ namespace hooks
 					break;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			child = 0;
 		}
 

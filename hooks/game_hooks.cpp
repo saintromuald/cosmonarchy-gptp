@@ -508,8 +508,11 @@ namespace hooks {
 			}
 			*/
 
+			bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
+
 			// Show auras
-			if (config.show_aura_circles) {
+			if (config.show_aura_circles
+			&& (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode:
 					case UnitId::TerranShamanVisionaryMode:
@@ -553,11 +556,11 @@ namespace hooks {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}
-			bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
+
+			// Rally points
 			if (config.show_rally_lines
 			&& (scbw::is_allied_to(*g_local_nation_id, unit->player) || in_replay_or_witness))
 			{
-				// Rally points
 				Point16 target = get_target_point(unit->rally);
 				if (target.x == unit->position.x &&
 					target.y == unit->position.y) {
@@ -1942,6 +1945,14 @@ namespace hooks {
 
 						// Check if the weapon should be interacted with
 						if (!weapon_id_procs_onhits(bullet->weapon_id)) {
+							continue;
+						}
+
+						// Check if the bullet is friendly
+						if (scbw::are_mutual_allies(unit->player, bullet->player)
+						&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashRadial
+						&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashAir)
+						{
 							continue;
 						}
 

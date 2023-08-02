@@ -137,7 +137,6 @@ namespace hooks {
 					helper::refund_unit_train_cost(unit->create_origin, unit->player);
 					helper::display_last_network_error_for_player(unit->player);
 				}
-
 				unit->remove();
 			} else {
 				Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
@@ -155,14 +154,19 @@ namespace hooks {
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
 
-				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW && unit->sprite->images.tail->vertical_offset != 7) {
+				u32 vertical_offset = 7;
+				if (unit->id == UnitId::ZergGosvileth) {
+					vertical_offset = 42;
+				}
+
+				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW && unit->sprite->images.tail->vertical_offset != vertical_offset) {
 					unit->sprite->images.tail->flags |= ImageFlags::Redraw;
-					unit->sprite->images.tail->vertical_offset = 7;
+					unit->sprite->images.tail->vertical_offset = vertical_offset;
 				}
 
 				helper::refresh_sprite_data(unit->sprite);
 				unit->order_computer(OrderId::ResetCollision1);
-				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, false);
+				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, false);
 				unit->set_hitpoints(previous_hitpoints);
 				helper::update_creep_disappearance_unit_id(previous_unit_id, unit->get_x(), unit->get_y(), false);
 			}
@@ -322,14 +326,22 @@ namespace hooks
 	void orders_drone_build(Unit* builder) { // 0045E090
 		Sprite* builder_sprite = builder->sprite;
 		Image* underlay = builder_sprite->images.tail;
+
+		u32 vertical_offset = 7;
+		if (builder->id == UnitId::ZergGosvileth) {
+			vertical_offset = 42;
+		}
+
 		if (builder_sprite->position.x != builder->order_target.pt.x
-		||  builder_sprite->position.y != builder->order_target.pt.y) {
+		||  builder_sprite->position.y != builder->order_target.pt.y)
+		{
 			// Change shadow pos
-			if (underlay->palette_type == 10 && underlay->vertical_offset != 7) {
+			if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
 				underlay->flags |= ImageFlags::Redraw;
-				underlay->vertical_offset = 7;
+				underlay->vertical_offset = vertical_offset;
 			}
 			helper::refresh_sprite_data(builder->sprite);
+
 			Order* order_head = builder->order_queue_head;
 			if (order_head) {
 				helper::insert_order_before(builder, order_head, OrderId::ResetCollision1, 0, 0, 0, 228);
@@ -349,9 +361,9 @@ namespace hooks
 			|| builder_sprite->position.y != builder->order_target.pt.y)
 			{
 				helper::play_worker_error_sound(builder, 856);
-				if (underlay->palette_type == 10 && underlay->vertical_offset != 7) {
+				if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
 					underlay->flags |= ImageFlags::Redraw;
-					underlay->vertical_offset = 7;
+					underlay->vertical_offset = vertical_offset;
 				}
 				helper::refresh_sprite_data(builder->sprite);
 				helper::order_immediate(builder, OrderId::ResetCollision1);
@@ -419,6 +431,12 @@ namespace hooks
 							if (unit->sprite->images.tail->palette_type == 10) { // Deliberately not using underlay var
 								unit->sprite->images.tail->flags &= 0xFBu;
 							}
+
+							u32 vertical_offset = 7;
+							if (unit->id == UnitId::ZergGosvileth) {
+								vertical_offset = 42;
+							}
+
 							if (unmovable == 2) {
 								helper::play_building_land_sound(unit);
 								Order* order_queue = unit->order_queue_head;
@@ -430,9 +448,9 @@ namespace hooks
 									}
 								}
 								underlay = unit->sprite->images.tail;
-								if (underlay->palette_type == 10 && underlay->vertical_offset != 7) {
+								if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
 									underlay->flags |= ImageFlags::Redraw;
-									underlay->vertical_offset = 7;
+									underlay->vertical_offset = vertical_offset;
 								}
 								helper::refresh_sprite_data(unit->sprite);
 								helper::order_immediate(unit, OrderId::ResetCollision1);
@@ -443,10 +461,10 @@ namespace hooks
 									helper::move_unit(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 								} else {
 									underlay = unit->sprite->images.tail;
-									if (underlay->palette_type == 10 && underlay->vertical_offset != 7)
+									if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset)
 									{
 										underlay->flags |= ImageFlags::Redraw;
-										underlay->vertical_offset = 7;
+										underlay->vertical_offset = vertical_offset;
 									}
 									helper::refresh_sprite_data(unit->sprite);
 									helper::order_immediate(unit, OrderId::ResetCollision1);
