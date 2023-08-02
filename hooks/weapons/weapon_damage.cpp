@@ -167,7 +167,7 @@ namespace hooks
 			case WeaponBehavior_AppearOnTargetSite:
 			case WeaponBehavior_AppearOnTargetUnit:
 			{
-				EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checkign for it later? Is that more or less performant? -Pr0nogo
+				EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checking for it later? Is that more or less performant? -Pr0nogo
 				unit_search_radial(&units, data.target->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* unit = units.units[i];

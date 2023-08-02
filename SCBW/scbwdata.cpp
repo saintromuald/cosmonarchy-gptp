@@ -177,7 +177,7 @@ namespace weapons_dat {
 	SCBW_DATA_DEF(u32*,			max_range,				weaponsDat[5].address);		// 00657470
 	SCBW_DATA_DEF(u8*,			damage_upgrade,			weaponsDat[6].address);		// 006571D0
 	SCBW_DATA_DEF(u8*,			damage_type,			weaponsDat[7].address);		// 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
-	SCBW_DATA_DEF(u8*,			behavior,				weaponsDat[8].address);		// 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
+	SCBW_DATA_DEF(u8*,			behavior,				weaponsDat[8].address);		// 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior enum.
 	SCBW_DATA_DEF(u8*,			remove_after,			weaponsDat[9].address);		// 00657040
 	SCBW_DATA_DEF(u8*,			explosion_type,			weaponsDat[10].address);	// 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
 	SCBW_DATA_DEF(u16*,			inner_splash_radius,	weaponsDat[11].address);	// 00656888

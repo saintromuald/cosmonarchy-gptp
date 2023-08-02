@@ -395,7 +395,7 @@ namespace hooks
 		jump_patch(initialize_bullet_wrapper,				0x0048BEC0, 0);
 	//	jump_patch(progress_bullet_frames_wrapper,			0x0048C3D0, 2);
 	//	jump_patch(find_next_bounce_target_wrapper,			0x0048B1E0, 1);
-	//	jump_patch(bullet_behavior_reassign_wrapper,		0x0048BD50, 1); // Not fully functional
+		jump_patch(bullet_behavior_reassign_wrapper,		0x0048BD50, 1); // Not fully functional
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);

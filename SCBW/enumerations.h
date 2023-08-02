@@ -539,16 +539,16 @@ namespace WeaponEffect
 // Use with weapons_dat::behavior[]
 enum Enum
 {
-	WeaponBehavior_FlyDoNotFollowTarget = 0,
-	WeaponBehavior_FlyFollowTarget = 1,
-	WeaponBehavior_AppearOnTargetUnit = 2,
-	WeaponBehavior_PersistOnTargetSite = 3,
-	WeaponBehavior_AppearOnTargetSite = 4,
-	WeaponBehavior_AppearOnAttacker = 5,
-	WeaponBehavior_AttackAndSelfDestruct = 6,
-	WeaponBehavior_Bounce = 7,
-	WeaponBehavior_AttackNearbyArea = 8,
-	WeaponBehavior_GoToMaxRange = 9
+	WeaponBehavior_FlyDoNotFollowTarget		= 0,
+	WeaponBehavior_FlyFollowTarget			= 1,
+	WeaponBehavior_AppearOnTargetUnit		= 2,
+	WeaponBehavior_PersistOnTargetSite		= 3,
+	WeaponBehavior_AppearOnTargetSite		= 4,
+	WeaponBehavior_AppearOnAttacker			= 5,
+	WeaponBehavior_AttackAndSelfDestruct	= 6,
+	WeaponBehavior_Bounce					= 7,
+	WeaponBehavior_AttackNearbyArea			= 8,
+	WeaponBehavior_GoToMaxRange				= 9
 };
 
 // Use with g_color_shift
@@ -556,14 +556,14 @@ namespace ColorRemapping
 {
 	enum Enum
 	{
-		None = 0,
-		OFire = 1,
-		GFire = 2,
-		BFire = 3,
-		BExpl = 4,
-		Trans50 = 5,  // Special - OwnCloak
-		Red_Crash = 6,
-		Green_Crash = 7,
+		None			= 0,
+		OFire			= 1,
+		GFire			= 2,
+		BFire			= 3,
+		BExpl			= 4,
+		Trans50			= 5,  // Special - OwnCloak
+		Red_Crash		= 6,
+		Green_Crash		= 7,
 	};
 }
 

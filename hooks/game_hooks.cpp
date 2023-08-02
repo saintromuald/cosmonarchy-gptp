@@ -2899,7 +2899,6 @@ namespace hooks {
 			Unit* sevenstep = unit_ext->units[UnitSevenstepMindMatterSource];
 			if (sevenstep && unit_ext->timers[TimerSevenstepMindMatter] == 1) {
 				scbw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, sevenstep->player, unit, 0, sevenstep->position);
-				unit_ext->units[UnitSevenstepMindMatterSource] = 0;
 			}
 		}
 

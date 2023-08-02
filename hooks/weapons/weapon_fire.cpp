@@ -1614,7 +1614,7 @@ namespace hooks {
 	void bullet_behavior_reassign(Bullet* bullet) { // 0048BD50
 		while (2) {
 			if (bullet->order_signal & 1) {
-				bullet->order_signal = bullet->order_signal & 254;
+				bullet->order_signal = bullet->order_signal & 0xFE;
 				Image* bullet_overlay = 0;
 				switch (weapons_dat::behavior[bullet->weapon_id]) {
 					case WeaponBehavior_AppearOnTargetUnit:

@@ -10,7 +10,7 @@ u32*,		min_range,			weaponsDat[4].address);  // 00656A18
 u32*,		max_range,			weaponsDat[5].address);  // 00657470
 u8*,		DamageUpgrade,		weaponsDat[6].address);  // 006571D0
 u8*,		damage_type,			weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
-u8*,		Behavior,			weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
+u8*,		Behavior,			weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior enum.
 u8*,		RemoveAfter,		weaponsDat[9].address);  // 00657040
 u8*,		ExplosionType,		weaponsDat[10].address); // 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
 u16*,		InnerSplashRadius,	weaponsDat[11].address); // 00656888
