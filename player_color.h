@@ -224,6 +224,7 @@ const std::vector<std::vector<u32>> banned_race_tints = {
 const std::vector<u32> banned_colors = {
 	PlayerColor::Harlequin,
 	PlayerColor::Rainbow,
+	PlayerColor::Magenta,
 	PlayerColor::IridescentBlue,
 	PlayerColor::IridescentGreen,
 	PlayerColor::IridescentViolet,
