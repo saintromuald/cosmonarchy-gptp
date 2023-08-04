@@ -443,13 +443,13 @@ namespace hooks
 	// Hooked to add Vespene Ridge handling. -Pr0nogo
 	Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius) // 00487B00
 	{
-		Thingy* fow_sprite_1 = *g_first_fow_sprite;
-		Thingy* fow_sprite_2 = *g_first_fow_sprite;
 		if (!*g_first_fow_sprite)
 		{
 			return 0;
 		}
 
+		Thingy* fow_sprite_1 = *g_first_fow_sprite;
+		Thingy* fow_sprite_2 = *g_first_fow_sprite;
 		while (2)
 		{
 			u32 unit_id = UnitId::None;
