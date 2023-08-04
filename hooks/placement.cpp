@@ -440,7 +440,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to add Vespene Ridge handling. -Pr0nogo
+	// Hooked to add handling for new gas nodes. -Pr0nogo
 	Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius) // 00487B00
 	{
 		if (!*g_first_fow_sprite)

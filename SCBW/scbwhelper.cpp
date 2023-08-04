@@ -5279,13 +5279,13 @@ namespace helper {
 		}
 	}
 
-	void function_00432430(Unit* unit, u32 build_queue_slot) {
-		const u32 Func_Sub432430 = 0x00432430;
+	void clear_building_ai_queue_slot(Unit* unit, u32 build_queue_slot) {
+		const u32 func_address = 0x00432430;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOV ECX, build_queue_slot
-			CALL Func_Sub432430
+			CALL func_address
 			POPAD
 		}
 	}

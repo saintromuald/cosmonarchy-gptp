@@ -677,7 +677,7 @@ namespace helper {
 	//// unit_train
 	u32 get_hp_gain_for_repair(Unit* unit);																							// 00402C40
 	void refund_unit_train_cost(u32 unit_id, u8 player);																			// 0042CEC0
-	void function_00432430(Unit* unit, u32 build_queue_slot);																		// 00432430
+	void clear_building_ai_queue_slot(Unit* unit, u32 build_queue_slot);																		// 00432430
 	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																		// 00466300
 	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag);														// 00468200
 

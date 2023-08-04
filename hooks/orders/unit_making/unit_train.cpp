@@ -126,7 +126,7 @@ namespace hooks {
 							bool spawn_point_set = false;
 							Point16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Point16 new_spawn_point = scbw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[built_unit->id], unit->rally.pt);
+								Point16 new_spawn_point = scbw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
 								if (new_spawn_point != unit->rally.pt) {
 									if (scbw::get_active_tile_at_coords(spawn_point)->ground_height == scbw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
 										spawn_point_set = true;
@@ -150,7 +150,7 @@ namespace hooks {
 									}
 								}
 							}
-							helper::function_00432430(unit, unit->build_queue_slot);
+							helper::clear_building_ai_queue_slot(unit, unit->build_queue_slot);
 							unit->build_queue[unit->build_queue_slot] = UnitId::None;
 							unit->build_queue_slot = (unit->build_queue_slot + 1) % 5;
 							jump_to_685D8 = true;
