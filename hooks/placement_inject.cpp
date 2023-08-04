@@ -394,6 +394,7 @@ namespace hooks
 	//	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Fine, but unnecessary at the moment.
 		jump_patch(set_worker_error_wrapper,								0x0048F7B0, 1);
 		jump_patch(play_worker_error_sound_wrapper,							0x0048F6C0, 1);
+		jump_patch(get_placement_restrictions_from_sprite_id,				0x00487B00, 1);
 
 		// DF - Fix Treasury being unable to claim addons
 	//	jump_patch(TTBaseUnitType_patch_6E1A6,								0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)

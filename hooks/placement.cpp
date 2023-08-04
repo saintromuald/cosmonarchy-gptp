@@ -439,4 +439,61 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to add Vespene Ridge handling. -Pr0nogo
+	Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius) // 00487B00
+	{
+		Thingy* fow_sprite_1 = *g_first_fow_sprite;
+		Thingy* fow_sprite_2 = *g_first_fow_sprite;
+		if (!*g_first_fow_sprite)
+		{
+			return 0;
+		}
+
+		while (2)
+		{
+			u32 unit_id = UnitId::None;
+			u32 sprite_id = fow_sprite_1->sprite->id;
+			switch (sprite_id)
+			{
+				case SpriteId::Extractor:
+				case SpriteId::Assimilator:
+				case SpriteId::Refinery:
+				case SpriteId::VespeneGeyser:
+				{
+					unit_id = UnitId::ResourceVespeneGeyser;
+				} break;
+				case SpriteId::MineralFieldType1:
+				case SpriteId::MineralFieldType2:
+				case SpriteId::MineralFieldType3:
+				{
+					unit_id = sprite_id - 103;
+				} break;
+				case SpriteId::VespeneRidge:
+				{
+					unit_id = UnitId::ResourceVespeneRidge;
+				} break;
+				default: 
+				{
+					goto LABEL_8;
+				} break;
+			}
+
+			Sprite* sprite = fow_sprite_1->sprite;
+			if (radius + tile_x - (sprite->position.x - units_dat::building_dimensions[unit_id].x / 2) / 32 >= (2 * radius + units_dat::building_dimensions[unit_id].x / 32)
+			||  radius + tile_y - (sprite->position.y - units_dat::building_dimensions[unit_id].y / 2) / 32 >= (2 * radius + units_dat::building_dimensions[unit_id].y / 32))
+			{
+				fow_sprite_1 = fow_sprite_2;
+			LABEL_8:
+				fow_sprite_1 = fow_sprite_1->next;
+				fow_sprite_2 = fow_sprite_1;
+				if (!fow_sprite_1)
+				{
+					return 0;
+				}
+				continue;
+			}
+			return fow_sprite_2;
+		}
+	}
 }

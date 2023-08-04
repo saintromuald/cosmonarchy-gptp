@@ -10,14 +10,15 @@ namespace hooks
 	int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size_wh, u32 placement_state_entry, u32 check_vision, u32 check_vision_2); // 00473010
 	u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep);	// 00473A10
 	s32 start_building(Unit* builder);																																// 00467030
-	void place_building_refinery_check(Unit* result);							// 0048E1E0
-	void place_building_refinery_proc();										// 0048E430
-	void place_building_proc();													// 0048E6E0
-	b32 unit_id_is_refinery(u16 unit_id);										// 0047AFE0
-	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id);	// 0048E730
-	void play_building_placement_sound(Unit* unit);								// 0048F630
-	void set_worker_error(Unit* unit, u32 error_string);						// 0048F7B0
-	void play_worker_error_sound(Unit* unit, u32 error_text_index);				// 0048F6C0
+	void place_building_refinery_check(Unit* result);													// 0048E1E0
+	void place_building_refinery_proc();																// 0048E430
+	void place_building_proc();																			// 0048E6E0
+	b32 unit_id_is_refinery(u16 unit_id);																// 0047AFE0
+	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id);							// 0048E730
+	void play_building_placement_sound(Unit* unit);														// 0048F630
+	void set_worker_error(Unit* unit, u32 error_string);												// 0048F7B0
+	void play_worker_error_sound(Unit* unit, u32 error_text_index);										// 0048F6C0
+	Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius);	// 00487B00
 
 	void inject_placement_hooks();
 }
