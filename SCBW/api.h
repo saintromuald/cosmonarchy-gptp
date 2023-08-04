@@ -752,7 +752,7 @@ namespace scbw
 	bool is_team_game_map(const char* filename);
 	Image* get_powerup_overlay(Sprite* sprite);
 	Image* get_addon_connector_image(Unit* unit);
-	PlayerColorCode get_player_color_code(u32 player);
+	PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self);
 	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
 	void move_camera(Point16 pos);
 	bool are_mutual_allies(u32 player1, u32 player2);

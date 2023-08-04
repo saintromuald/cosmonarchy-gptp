@@ -432,7 +432,7 @@ namespace hooks {
 			{
 				Token short_unit_name = get_short_unit_name(transport->id);
 				char unit_name[MaxToken] = {};
-				snprintf(unit_name, MaxToken, "%s%s [%u/%u]:", scbw::get_player_color_code(transport->player).data, short_unit_name.data, space_used, units_dat::space_provided[transport->id]);
+				snprintf(unit_name, MaxToken, "%s%s [%u/%u]:", scbw::get_player_color_code(transport->player, true).data, short_unit_name.data, space_used, units_dat::space_provided[transport->id]);
 				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
 				local_pos.y += 13;
 			}
@@ -448,9 +448,9 @@ namespace hooks {
 				}
 				char unit_name[MaxToken] = {};
 				if (cargo_slot.count > 1) {
-					snprintf(unit_name, MaxToken, "%s%s (%u)", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data, cargo_slot.count);
+					snprintf(unit_name, MaxToken, "%s%s (%u)", scbw::get_player_color_code(cargo_slot.unit->player, true).data, short_unit_name.data, cargo_slot.count);
 				} else {
-					snprintf(unit_name, MaxToken, "%s%s", scbw::get_player_color_code(cargo_slot.unit->player).data, short_unit_name.data);
+					snprintf(unit_name, MaxToken, "%s%s", scbw::get_player_color_code(cargo_slot.unit->player, true).data, short_unit_name.data);
 				}
 				u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
 

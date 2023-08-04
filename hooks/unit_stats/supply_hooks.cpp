@@ -466,7 +466,7 @@ namespace hooks
 				if (globals.players[player].witness_mode) {
 					continue;
 				}
-				draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player).data, config.witness_show_apm, true, true);
+				draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player, false).data, config.witness_show_apm, true, true);
 			}
 
 			while (dialog && dialog->index <= 32) {
@@ -497,7 +497,7 @@ namespace hooks
 					if (player == local_player || !scbw::is_allied_to(player, local_player)) {
 						continue;
 					}
-					draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player).data, config.show_team_ui_apm, config.show_team_ui_names, true);
+					draw_player_stats(&dialog, &pos, player, scbw::get_player_color_code(player, true).data, config.show_team_ui_apm, config.show_team_ui_names, true);
 				}
 			}
 
