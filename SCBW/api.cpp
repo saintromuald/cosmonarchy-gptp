@@ -3179,8 +3179,8 @@ namespace scbw {
             u32 w = shift.x < 0 ? (rect.left + rect.right)  : (rect.right  + rect.left);
             u32 h = shift.y < 0 ? (rect.top  + rect.bottom) : (rect.bottom + rect.top);
             
-            pos.x += shift.x * w;
-            pos.y += shift.y * h;
+            pos.x += shift.x * w / 2;
+            pos.y += shift.y * h / 2;
         }
 		return pos;
 	}

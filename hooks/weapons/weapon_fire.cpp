@@ -90,7 +90,7 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 
 u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
 	Point16 edge_point = scbw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
-	return scbw::get_distance_fast(source_pos, edge_point) / 2;
+	return scbw::get_distance_fast(source_pos, edge_point);
 }
 
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
