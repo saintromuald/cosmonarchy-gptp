@@ -202,7 +202,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergMortothrokor:
 			{
-				speed *= 1.3; // Hardcoded ideal
+				speed *= 1.3; // Hardcoded ideal movement speed
 				if (unit_ext->values[ValueMortothrokorStacks])
 				{
 					speed *= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);
@@ -246,6 +246,7 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergQuazilisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:
 			case UnitId::ZergZoryusthaleth:
