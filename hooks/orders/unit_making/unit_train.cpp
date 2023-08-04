@@ -23,12 +23,7 @@ namespace hooks {
 					unit->secondary_order_state = 3;
 					unit->current_build_unit = 0;
 				} else {
-					Unit* built_unit = 0;
-					if (unit->secondary_order_state == 0) {
-						built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 1);
-					} else {
-						built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], 0);
-					}
+					Unit* built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], unit->secondary_order_state == 0 ? 1 : 0);
 					unit->current_build_unit = built_unit;
 					if (!built_unit) {
 						unit->secondary_order_state = 1;
@@ -131,18 +126,10 @@ namespace hooks {
 							bool spawn_point_set = false;
 							Point16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Vector32f rally_shift = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, unit->rally.pt));
-								f32 max_distance = std::max(abs(rally_shift.x), abs(rally_shift.y));
-								if (max_distance) {
-									rally_shift.x /= max_distance;
-									rally_shift.y /= max_distance;
-
-									u32 w = rally_shift.x < 0 ? (units_dat::unit_bounds[unit->id].left + units_dat::unit_bounds[built_unit->id].right)  : (units_dat::unit_bounds[unit->id].right  + units_dat::unit_bounds[built_unit->id].left);
-									u32 h = rally_shift.y < 0 ? (units_dat::unit_bounds[unit->id].top  + units_dat::unit_bounds[built_unit->id].bottom) : (units_dat::unit_bounds[unit->id].bottom + units_dat::unit_bounds[built_unit->id].top);
-
+								Point16 new_spawn_point = scbw::get_point_on_rect_edge_towards(unit->position, units_dat::unit_bounds[built_unit->id], unit->rally.pt);
+								if (new_spawn_point != unit->rally.pt) {
+									spawn_point = new_spawn_point;
 									spawn_point_set = true;
-									spawn_point.x += rally_shift.x * w;
-									spawn_point.y += rally_shift.y * h;
 								}
 							}
 
@@ -150,7 +137,18 @@ namespace hooks {
 								Unit* new_unit = built_units[i];
 								if (new_unit) {
 									if (spawn_point_set) {
-										scbw::move_unit(new_unit, spawn_point.x, spawn_point.y);
+										const u32 radius = 32;
+										Box16 move_area  = {};
+										move_area.left   = unit->get_left()   - radius;
+										move_area.top    = unit->get_top()    - radius;
+										move_area.right  = unit->get_right()  + radius;
+										move_area.bottom = unit->get_bottom() + radius;
+										move_area = scbw::clamp_box16(move_area);
+
+										Point16 new_pos = {};
+										if (scbw::check_unit_collision_pos(new_unit, &spawn_point, &new_pos, &move_area, false, 0)) {
+											scbw::move_unit(new_unit, new_pos.x, new_pos.y);
+										}
 									}
 									helper::ai_training_unit(new_unit, unit);
 									if (built_unit->id == UnitId::TerranMorningstar)

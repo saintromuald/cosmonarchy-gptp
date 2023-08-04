@@ -3155,18 +3155,33 @@ namespace scbw {
 	u32 get_custom_advisor_sound(u32 player, u32 event_type) {
 		Advisor advisor = globals.players[player].advisor;
 		switch (event_type) {
-		case AdvisorEvent_NoMinerals: {
-			switch (advisor) {
-			case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
-			case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
-			case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+			case AdvisorEvent_NoMinerals: {
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
+					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+				}
+			} break;
+			case AdvisorEvent_StructureComplete_T: {
 
-			}
-		} break;
-
-		case AdvisorEvent_StructureComplete_T: {
-
-		} break;
+			} break;
 		}
+		return SoundId::No_sound;
+	}
+
+	Point16 get_point_on_rect_edge_towards(Point16 pos, Box16 rect, Point16 target) {
+        Vector32f shift = scbw::get_normalized_vector(scbw::get_vector_between(pos, target));
+        f32 max_distance = std::max(abs(shift.x), abs(shift.y));
+        if (max_distance) {
+            shift.x /= max_distance;
+            shift.y /= max_distance;
+
+            u32 w = shift.x < 0 ? (rect.left + rect.right)  : (rect.right  + rect.left);
+            u32 h = shift.y < 0 ? (rect.top  + rect.bottom) : (rect.bottom + rect.top);
+            
+            pos.x += shift.x * w;
+            pos.y += shift.y * h;
+        }
+		return pos;
 	}
 }
