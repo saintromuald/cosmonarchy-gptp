@@ -781,6 +781,8 @@ namespace SpriteId
 		PlagueField = 773,
 		ZealotDeath = 810,
 		AntiMatterMissileHit = 829,
+		Ezigrisant = 835,
+		Wellbore = 836,
 		CuirassStonewallProtocolOverlay = 839,
 		BunkerAttackOverlay_Green = 842,
 		BunkerAttackOverlay_Blue = 843,

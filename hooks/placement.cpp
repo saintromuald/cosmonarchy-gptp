@@ -457,8 +457,10 @@ namespace hooks
 			switch (sprite_id)
 			{
 				case SpriteId::Extractor:
+				case SpriteId::Ezigrisant:
 				case SpriteId::Assimilator:
 				case SpriteId::Refinery:
+				case SpriteId::Wellbore:
 				case SpriteId::VespeneGeyser:
 				{
 					unit_id = UnitId::ResourceVespeneGeyser;
