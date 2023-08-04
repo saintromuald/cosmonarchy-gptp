@@ -575,182 +575,239 @@ bool weapon_id_procs_onhits(u32 weapon_id) {
 		&& weapon_id != WeaponId::Custom;
 }
 
-WeaponOffsets get_weapon_offsets(u32 weapon_id)
-{
-	WeaponOffsets offsets = {};
-	switch (weapon_id)
-	{
-		case WeaponId::CyprianTwinRailguns:
-		{
+WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
+	// NOTE: using per case static so we can return a pointer to valid memory, since stack memory is invalidated after return
+	// TODO: rework to using a weapon_id WeaponOffsets table, with some sort of optionality check (maybe a bool?)
+	switch (weapon_id) {
+		case WeaponId::CyprianTwinRailguns: {
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueCyprianLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
-		case WeaponId::GoliathContenderMissiles:
-		{
+		case WeaponId::GoliathContenderMissiles: {
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueGoliathLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
 		case WeaponId::PhalanxArcliteShockCannon:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValuePhalanxSiegeModeLaunchPos;
 			offsets.count = 1;
 			offsets.use_special_overlay = true;
+			return &offsets;
 		} break;
 		case WeaponId::RamessesPharoahCannons:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueRamessesLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
 		case WeaponId::ClaymoreHarpoonRailgun:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueClaymoreLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::PenumbraErebolShockCannon:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValuePenumbraLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::WraithBurstLasers:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueWraithLaunchPos;
 			offsets.count = 2;
 			offsets.fake_count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::SundogBlindsideRockets:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSundogLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
 		case WeaponId::CentaurSunchaserMissiles:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueCentaurLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
 		case WeaponId::PhobosArgosLaserBatteries:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValuePhobosLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
 		case WeaponId::SentinelCerberusRailgun:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSentinelLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::DiademIonCannon:
 		case WeaponId::DiademHammerfallBeacon:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueIonCannonLaunchPos;
 			offsets.count = 1;
 			offsets.use_special_overlay = true;
+			return &offsets;
 		} break;
 		case WeaponId::WardenPrismaticCannon:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueWardenLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::CharlatanFerventBlaster:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueCharlatanLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::OptectonSunsplitBeam:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueOptectonLaunchPos1;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::PositronAntimatterMissile:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValuePositronLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::AccantorPlasmaShell:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueAccantorLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::PanoptusPlasmaMissiles:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValuePanoptusLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
 		case WeaponId::ExemplarPlasmaTorpedo:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueExemplarLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::EpigraphLitanyCannons:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueEpigraphLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
 		case WeaponId::EmpyreanPlasmaBarrage:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueEmpyreanLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
 		case WeaponId::StarSovereignCelestialCannon:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSovereignLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
 		case WeaponId::SpraithColonySeekerSpores:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSpraithColonyLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::LiiraliskHollowedSpores:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueLiiraliskLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
 		case WeaponId::KalkaliskViscousAcid:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueKalkaliskLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::AxitriliskSearingVenom:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueAxitriliskLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::SkithrokorSkitteringSpores:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSkithrokorLaunchPos;
 			offsets.count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::BactaliskCorrosiveAcid:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueBactaliskLaunchPos;
 			offsets.count = 2;
+			return &offsets;
 		} break;
 		case WeaponId::KeskathalorScreamingVenom:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueKeskathalorLaunchPos;
 			offsets.count = 2;
 			offsets.fake_count = 1;
+			return &offsets;
 		} break;
 		case WeaponId::CataphractLonginiusCannons:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueCataphractLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
 		case WeaponId::PaladinCrusaderMissiles:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValuePaladinLaunchPos;
 			offsets.count = 5;
+			return &offsets;
 		} break;
 		case WeaponId::MatrixKhaydarinRay:
 		{
+			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueWardenLaunchPos;
 			offsets.count = 4;
+			return &offsets;
 		} break;
-		default:
-		{
-			return {};
-		}
 	}
-	return offsets;
+	return 0;
 }
 
 bool unit_id_spawns_larva(u32 unit_id)

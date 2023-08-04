@@ -126,7 +126,7 @@ namespace hooks {
 							bool spawn_point_set = false;
 							Point16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Point16 new_spawn_point = scbw::get_point_on_rect_edge_towards(unit->position, units_dat::unit_bounds[built_unit->id], unit->rally.pt);
+								Point16 new_spawn_point = scbw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[built_unit->id], unit->rally.pt);
 								if (new_spawn_point != unit->rally.pt) {
 									spawn_point = new_spawn_point;
 									spawn_point_set = true;

@@ -88,6 +88,11 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 	return unit_position;
 }
 
+u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
+	Point16 edge_point = scbw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
+	return scbw::get_distance_fast(source_pos, edge_point);
+}
+
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
 	if (!unit->sprite) {
 		return 0;
@@ -110,7 +115,13 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
-		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit);
+		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
+		if (target.unit) {
+			max_range += get_correction_distance(target.unit->position, target.unit->id, target.pt, launch_pos);
+		} else {
+			max_range += 16; // if no target we just assume some sort off small offset for now 
+		}
 		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
 
 		if (target_pos.x < 0) {
@@ -448,9 +459,9 @@ namespace hooks {
 					case WeaponId::SkithrokorSkitteringSpores:
 					case WeaponId::BactaliskCorrosiveAcid:
 					case WeaponId::KeskathalorScreamingVenom:
+					case WeaponId::HippogriffChimeraCannons:
 					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
+						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;
 					case WeaponId::PhobosArgosLaserBatteries:
 					{
@@ -465,8 +476,7 @@ namespace hooks {
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
+						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
@@ -477,13 +487,11 @@ namespace hooks {
 								unit->spend_unit_energy(energy);
 								helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
 								fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
-							}
-							else {
+							} else {
 								unit_ext->energy_regen_timer = 0;
 								fire_bullet(unit, weapon_id, unit->order_target);
 							}
-						}
-						else {
+						} else {
 							fire_bullet(unit, weapon_id, unit->order_target);
 						}
 					} break;
@@ -495,14 +503,12 @@ namespace hooks {
 					case WeaponId::CataphractLonginiusCannons:
 					{
 						// Multi-Attack IV
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, &offsets);
+						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, get_weapon_offsets(weapon_id));
 					} break;
 					case WeaponId::PaladinCrusaderMissiles:
 					{
 						// Paladin - Offset: Linear
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_line(unit, weapon_id, 10, 32, 2, 16, &offsets);
+						fire_line(unit, weapon_id, 10, 32, 2, 16, get_weapon_offsets(weapon_id));
 					} break;
 					case WeaponId::AnticthonEncirclingMirror:
 					{
@@ -542,8 +548,7 @@ namespace hooks {
 					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Multi-Attack IV
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_multiple(unit, weapon_id, 4, FilterEnemy, false, false, true, &offsets);
+						fire_multiple(unit, weapon_id, 4, FilterEnemy, false, false, true, get_weapon_offsets(weapon_id));
 					} break;
 					case WeaponId::BarghestRayOfAgony:
 					{

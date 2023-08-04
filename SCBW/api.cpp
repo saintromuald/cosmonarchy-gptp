@@ -3169,8 +3169,8 @@ namespace scbw {
 		return SoundId::No_sound;
 	}
 
-	Point16 get_point_on_rect_edge_towards(Point16 pos, Box16 rect, Point16 target) {
-        Vector32f shift = scbw::get_normalized_vector(scbw::get_vector_between(pos, target));
+	Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
+		Vector32f shift = scbw::get_normalized_vector(scbw::get_vector_between(pos, target));
         f32 max_distance = std::max(abs(shift.x), abs(shift.y));
         if (max_distance) {
             shift.x /= max_distance;
@@ -3179,8 +3179,8 @@ namespace scbw {
             u32 w = shift.x < 0 ? (rect.left + rect.right)  : (rect.right  + rect.left);
             u32 h = shift.y < 0 ? (rect.top  + rect.bottom) : (rect.bottom + rect.top);
             
-            pos.x += shift.x * w;
-            pos.y += shift.y * h;
+            pos.x += shift.x * w / 2;
+            pos.y += shift.y * h / 2;
         }
 		return pos;
 	}

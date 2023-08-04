@@ -772,5 +772,5 @@ namespace scbw
 	GameKind get_game_kind();
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target);
 	u32 get_custom_advisor_sound(u32 player, u32 event_type);
-	Point16 get_point_on_rect_edge_towards(Point16 pos, Box16 rect, Point16 target);
+	Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target);
 }
