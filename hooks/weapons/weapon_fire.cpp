@@ -420,46 +420,34 @@ namespace hooks {
 				Target weapon_target = make_target(unit->order_target.unit);
 				switch (weapon_id) {
 					case WeaponId::CyprianTwinRailguns:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::GoliathContenderMissiles:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::PhalanxArcliteShockCannon:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::RamessesPharoahCannons:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::ClaymoreHarpoonRailgun:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::PenumbraErebolShockCannon:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::WraithBurstLasers:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::SundogBlindsideRockets:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
 					case WeaponId::CentaurSunchaserMissiles:
+					case WeaponId::SentinelCerberusRailgun:
+					case WeaponId::DiademIonCannon:
+					case WeaponId::DiademHammerfallBeacon:
+					case WeaponId::WardenPrismaticCannon:
+					case WeaponId::CharlatanFerventBlaster:
+					case WeaponId::OptectonSunsplitBeam:
+					case WeaponId::PositronAntimatterMissile:
+					case WeaponId::AccantorPlasmaShell:
+					case WeaponId::PanoptusPlasmaMissiles:
+					case WeaponId::ExemplarPlasmaTorpedo:
+					case WeaponId::EpigraphLitanyCannons:
+					case WeaponId::EmpyreanPlasmaBarrage:
+					case WeaponId::StarSovereignCelestialCannon:
+					case WeaponId::SpraithColonySeekerSpores:
+					case WeaponId::LiiraliskHollowedSpores:
+					case WeaponId::KalkaliskViscousAcid:
+					case WeaponId::AxitriliskSearingVenom:
+					case WeaponId::SkithrokorSkitteringSpores:
+					case WeaponId::BactaliskCorrosiveAcid:
+					case WeaponId::KeskathalorScreamingVenom:
 					{
 						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
@@ -477,102 +465,6 @@ namespace hooks {
 								unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
 							}
 						}
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::SentinelCerberusRailgun:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::DiademIonCannon:
-					case WeaponId::DiademHammerfallBeacon:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::WardenPrismaticCannon:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::CharlatanFerventBlaster:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::OptectonSunsplitBeam:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::PositronAntimatterMissile:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::AccantorPlasmaShell:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::PanoptusPlasmaMissiles:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::ExemplarPlasmaTorpedo:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::EpigraphLitanyCannons:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::EmpyreanPlasmaBarrage:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::StarSovereignCelestialCannon:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::SpraithColonySeekerSpores:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::LiiraliskHollowedSpores:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::KalkaliskViscousAcid:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::AxitriliskSearingVenom:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::SkithrokorSkitteringSpores:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::BactaliskCorrosiveAcid:
-					{
-						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
-						fire_bullet(unit, weapon_id, weapon_target, &offsets);
-					} break;
-					case WeaponId::KeskathalorScreamingVenom:
-					{
 						WeaponOffsets offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, &offsets);
 					} break;
