@@ -184,6 +184,47 @@ void stop_sounds_partial() {
 	}
 }
 
+u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
+{
+	if (!unit) {
+		return 0;
+	}
+
+	bool is_ground = (unit->status & UnitStatus::InAir) == 0;
+	u32 ground_height = helper::get_ground_height_at_px(unit->position.y, unit->position.x);
+	u32 ground_height_zeroed = ground_height--;
+	u32 result = 0;
+
+	if (is_ground) {
+		if (ground_height) {
+			if (ground_height_zeroed) {
+				if (ground_height_zeroed != 1) {
+					return 0;
+				}
+				result = height & 4;
+			} else {
+				result = height & 2;
+			}
+		} else {
+			result = height & 1;
+		}
+	} else {
+		if (ground_height) {
+			if (ground_height_zeroed) {
+				if (ground_height_zeroed != 1) {
+					return 0;
+				}
+				result = height & 0x20;
+			} else {
+				result = height & 0x10;
+			}
+		} else {
+			result = height & 8;
+		}
+	}
+	return result;
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -327,6 +368,23 @@ void __declspec(naked) team_game_check_wrapper() {
 	}
 }
 
+void __declspec(naked) is_unit_at_height_wrapper() { // 0045F8D0
+	static Unit* unit;
+	static u32 height;
+	static u32 result;
+	__asm {
+		MOV unit, EAX
+		MOV height, ESI
+		PUSHAD
+	}
+	result = is_unit_at_height(unit, height);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
@@ -334,4 +392,5 @@ void inject_trigger_system_hooks() {
 	call_patch(stop_sounds_partial_wrapper,					0x004BBF5C, 0);
 //	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
+	jump_patch(is_unit_at_height_wrapper,					0x0045F8D0, 2);
 }
