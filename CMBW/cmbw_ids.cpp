@@ -440,7 +440,6 @@ bool weapon_id_is_melee_aoe(u32 weapon_id) {
 		|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
 		|| weapon_id == WeaponId::TethzorokorSaberArray
 		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
-
 }
 
 u32 weapon_id_intercepts(u32 weapon_id) {
@@ -449,7 +448,6 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 		case WeaponId::AccantorPlasmaShell:
 			return InterceptType_GroundOnly;
 
-		case WeaponId::ValkyrieHaloRockets:
 		case WeaponId::EmpyreanPlasmaBarrage:
 			return InterceptType_AirOnly;
 
