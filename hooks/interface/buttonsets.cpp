@@ -2065,7 +2065,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranValkyrie:
 								{
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) // Valkyrie - Prolonged Arms
+									if (current_button->icon_id == IconId::PsiAssault) // Valkyrie - Offset: Cone
 									{
 										current_button_state = Button_State::Enabled;
 									}
