@@ -284,7 +284,7 @@ namespace hooks {
 					unit->main_order_state = 1;
 
 					u32 origin = unit->create_origin;
-					if (egg_id == UnitId::ZergEgg) {
+					if (egg_id == UnitId::ZergEgg || egg_id == UnitId::ZergCocoon) {
 						u32 egg_image_id = get_mutate_image_id(origin);
 						if (egg_image_id) {
 							helper::replace_sprite_images(unit->sprite, egg_image_id, 0);
@@ -303,11 +303,11 @@ namespace hooks {
 							animation = IscriptAnimation::AirAttkInit;
 						} break;
 						case UnitId::ZergZethrokor:
-						case UnitId::ZergNathrokor:
 						{
 							animation = IscriptAnimation::Unused1;
 						} break;
 						case UnitId::ZergQuazilisk: // New mutation handling
+						case UnitId::ZergNathrokor: // New mutation handling
 						{
 							animation = IscriptAnimation::SpecialState1;
 						} break;

@@ -883,6 +883,10 @@ u32 get_mutate_image_id(u32 unit_id) {
 		{
 			return ImageId::QuaziliskMutate;
 		}
+		case UnitId::ZergNathrokor:
+		{
+			return ImageId::NathrokorMutate;
+		}
 		default:
 		{
 			return 0;

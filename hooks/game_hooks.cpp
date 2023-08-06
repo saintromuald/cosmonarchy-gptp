@@ -1383,6 +1383,7 @@ namespace hooks {
 			case UnitId::ZergEgg:
 			case UnitId::ZergCocoon:
 			case UnitId::ZergQuazilisk:
+			case UnitId::ZergNathrokor:
 			{
 				// Gimmick to allow morph cancellation animations to play correctly
 				if (unit_ext->timers[TimerQuaziliskCancel]) {
@@ -1411,10 +1412,10 @@ namespace hooks {
 						unit->order_computer(OrderId::ZergBirth);
 					}
 				}
-
-				if (unit->id == UnitId::ZergEgg && unit->order_signal & 0x8) {
+				
+				if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 0x8) {
 					unit->order_signal &= ~0x8;
-					helper::replace_sprite_images(unit->sprite, ImageId::Egg, 0);
+					helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
 					unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
 				}
 			} break;
