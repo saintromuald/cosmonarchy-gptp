@@ -64,6 +64,7 @@ namespace hooks {
 		u8 count_hatches = 0;
 		u8 count_zergs = 0;
 		u8 count_mason_sources = 0;
+		u8 count_scribe_sources = 0;
 		u8 count_buildings = 0;
 		u8 count_attacking_buildings = 0;
 		u8 count_lifted_buildings = 0;
@@ -105,6 +106,10 @@ namespace hooks {
 
 				if (selected->id == UnitId::TerranMinistry || selected->id == UnitId::TerranQuarry) {
 					count_mason_sources++;
+				}
+
+				if (selected->id == UnitId::ProtossNexus || selected->id == UnitId::ProtossEmbassy) {
+					count_scribe_sources++;
 				}
 
 				if (units_dat::group_flags[selected->id].is_zerg) {
@@ -161,6 +166,8 @@ namespace hooks {
 				*g_current_buttonset_id = UnitId::ZergHachirosk;
 			} else if (count_mason_sources == *g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_MixedMasonTraining;
+			} else if (count_scribe_sources == *g_client_selection_count) {
+				*g_current_buttonset_id = UnitId::Buttons_MixedScribeTraining;
 			} else if (count_lifted_buildings) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {

@@ -2237,7 +2237,6 @@ namespace scbw {
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaSwarm
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaAssault
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaControl
-			|| buttonset_id == UnitId::Buttons_BasicPoliceStructures
 			|| buttonset_id == UnitId::Buttons_AdvancedPoliceStructures;
 	}
 

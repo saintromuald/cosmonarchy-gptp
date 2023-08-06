@@ -1804,7 +1804,7 @@ namespace hooks {
 					for (u32 i = 0; i < targets.count; ++i) {
 						Unit* target = targets.units[i];
 						u32 dist = scbw::get_distance_fast(unit->position, target->position);
-						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon]) {
+						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
 								target_ext->timers[TimerAnthelionGravityWell] = 24;
