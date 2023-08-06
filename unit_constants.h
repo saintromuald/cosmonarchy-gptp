@@ -31,7 +31,7 @@ const s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 // TERRAN \\
 
 // Cleric
-const s32 ClericHealValue = 128; // 12 HP per second
+const s32 ClericHealValue = 96; // 9 HP per second
 
 // Shaman
 const s32 ShamanHeal = 4;

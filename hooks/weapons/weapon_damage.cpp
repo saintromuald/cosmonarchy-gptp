@@ -440,9 +440,9 @@ namespace hooks
 			}
 
 			// Ensnaring Brood - Matraleth enchantment ability
-			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
-			&&  unit_is_combatant(data.target)
-			&&  !scbw::is_under_dark_swarm(data.target))
+			if   (attacker_ext->timers[TimerEnsnaringBrood] > 0
+			&& (!(units_dat::base_property[data.target->id] & UnitProperty::Building) || data.target->status & UnitStatus::InAir)
+			&&   !scbw::is_under_dark_swarm(data.target))
 			{
 				 apply_ensnare(data.target);
 			}
