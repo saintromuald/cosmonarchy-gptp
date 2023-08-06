@@ -2526,6 +2526,7 @@ namespace scbw {
 			case WeaponId::MatadorTwinstrikeFlamethrowers:
 			case WeaponId::DurendalAbaddonFlamethrowers:
 			case WeaponId::PazuzuJupiterDriver:
+			case WeaponId::SundogBlindsideRockets:
 			case WeaponId::ZealotPhaseBlades:
 			case WeaponId::LegionnairePhaseSpear:
 			case WeaponId::AmaranthPsiCleaver:
@@ -2542,6 +2543,7 @@ namespace scbw {
 				return 2;
 			}
 			case WeaponId::OptectonSkybondRay:
+			case WeaponId::StarSovereignInterventionMissiles:
 			{
 				return 1;
 			}

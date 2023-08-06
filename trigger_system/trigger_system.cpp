@@ -1175,6 +1175,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				globals.players[player].advisor = advisor;
 			}
+		} else if (parser_eq(&parser, "neutral_hostile")) {
+			bool neutral_hostile = (bool)parser_get_s32(&parser);
+			PlayerVars* player_vars = &globals.players[trigger_player];
+			if (player_vars->neutral_hostile != neutral_hostile) {
+				player_vars->neutral_hostile = (bool)neutral_hostile;
+			}
 		}
 	}
 	return true;

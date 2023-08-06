@@ -630,7 +630,7 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 		{
 			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSundogLaunchPos;
-			offsets.count = 4;
+			offsets.count = 2;
 			return &offsets;
 		} break;
 		case WeaponId::CentaurSunchaserMissiles:

@@ -225,10 +225,11 @@ const std::vector<u32> banned_colors = {
 	PlayerColor::Harlequin,
 	PlayerColor::Rainbow,
 	PlayerColor::Magenta,
-	PlayerColor::IridescentBlue,
-	PlayerColor::IridescentGreen,
-	PlayerColor::IridescentViolet,
 	PlayerColor::IridescentYellow,
+	PlayerColor::IridescentGreen,
+	PlayerColor::IridescentBlue,
+	PlayerColor::IridescentViolet,
+	PlayerColor::RainbowNew,
 	PlayerColor::PatrioticFreedom,
 };
 
