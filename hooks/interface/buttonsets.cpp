@@ -1893,13 +1893,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								}
-								case UnitId::TerranSilvertongue:
-								{
-									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) // Silvertongue - Plot Twist
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								}
 								case UnitId::TerranLobotomyMine:
 								{
 									if (current_button->icon_id == IconId::UseSpiderMines) // Lobotomy Mine - Dazing Detonation

@@ -434,7 +434,6 @@ bool weapon_id_accelerates(u32 weapon_id) {
 bool weapon_id_is_melee_aoe(u32 weapon_id) {
 	return weapon_id == WeaponId::SycophantSparringSaber
 		|| weapon_id == WeaponId::GolemBloodlessAssault
-		|| weapon_id == WeaponId::NathrokorPlasmidBreath
 		|| weapon_id == WeaponId::MortothrokorWickedIncisors
 		|| weapon_id == WeaponId::GorgrokorSerratedCleavers
 		|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
@@ -492,7 +491,6 @@ bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
 		switch (weapon_id) {
 			case WeaponId::SycophantSparringSaber:
 			case WeaponId::GolemBloodlessAssault:
-			case WeaponId::NathrokorPlasmidBreath:
 			case WeaponId::MortothrokorWickedIncisors:
 			case WeaponId::GorgrokorSerratedCleavers:
 			case WeaponId::ZarcavrokorBisectingBlades:

@@ -258,7 +258,7 @@ namespace WeaponId {
 					
 		ZoryusthalethMonstrousMaw			= 28,
 		VorvalClaws							= 36,
-		NathrokorPlasmidBreath				= 37,
+		NathrokorVestigialStrike			= 37,
 		KeskathalorScreamingVenom			= 41,
 		AlkajeliskPlasmidSpores				= 45,
 		GorgrokorSerratedCleavers			= 47,
@@ -292,5 +292,6 @@ namespace WeaponId {
 		MortothrokorWickedIncisors			= 192,
 		SpirtithColonySpirtilSpores			= 178,
 		SkortrithColonySkortraTendril		= 180,
+		NathrokorNathrokClaws				= 204,
 	};
 }

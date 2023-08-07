@@ -49,6 +49,7 @@ enum WitnessMode: u8 {
 
 enum Celebration: u8 {
 	Celebration_None,
+	Celebration_AprilFools,
 	Celebration_Christmas,
 
 	Celebration_Count,

@@ -2519,7 +2519,6 @@ namespace scbw {
 	{
 		switch (weapon_id)
 		{
-			case WeaponId::CohortGaussPistols:
 			case WeaponId::HarakanFlamethrower:
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
@@ -2527,12 +2526,14 @@ namespace scbw {
 			case WeaponId::DurendalAbaddonFlamethrowers:
 			case WeaponId::PazuzuJupiterDriver:
 			case WeaponId::SundogBlindsideRockets:
+			case WeaponId::CohortGaussPistols:
 			case WeaponId::ZealotPhaseBlades:
 			case WeaponId::LegionnairePhaseSpear:
 			case WeaponId::AmaranthPsiCleaver:
 			case WeaponId::GolemBloodlessAssault:
 			case WeaponId::PariahIconoclastBlades:
 			case WeaponId::StarSovereignCelestialCannon:
+			case WeaponId::NathrokorNathrokClaws:
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::CikraliskAcidSalvo:
 			case WeaponId::MortothrokorWickedIncisors:

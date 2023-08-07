@@ -41,10 +41,19 @@ static void init_auto_celebration() {
 	tm* ltm = localtime(&now);
 	u32 month = ltm->tm_mon + 1;
 
-	if (month == 12) {
-		globals.celebration = Celebration_Christmas;
-	} else {
-		globals.celebration = Celebration_None;
+	switch (month)
+	{
+		case 4: {
+			globals.celebration = Celebration_AprilFools;
+		} break;
+		case 12:
+		{
+			globals.celebration = Celebration_Christmas;
+		} break;
+		default:
+		{
+			globals.celebration = Celebration_None;
+		} break;
 	}
 }
 
@@ -101,17 +110,34 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		return sprite_replacement->sprite_id;
 	}
 
-	if (globals.celebration == Celebration_Christmas) {
-		switch (unit->id) {
-			case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
-			case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
-			case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
-			case UnitId::TerranMinistry:			return SpriteId::Christmas_CommandCenter;
-			case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
-			case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
-			case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
-			case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
-		}
+	switch (globals.celebration) {
+		case Celebration_AprilFools:
+		{
+			switch (unit->id) {
+				case UnitId::ZergQuazilisk:					return SpriteId::AprilFools_Quazilisk;
+			}
+
+			// TODO: Sounds
+			{
+			//	SoundReplacement sound_replacement = {};
+			//	sound_replacement.any_animation = true;
+			//	sound_replacement.any_sound = true;
+			//	sound_replacement.replace = false;
+			}
+		} break;
+		case Celebration_Christmas:
+		{
+			switch (unit->id) {
+				case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
+				case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
+				case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
+				case UnitId::TerranMinistry:			return SpriteId::Christmas_CommandCenter;
+				case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
+				case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
+				case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
+				case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
+			}
+		} break;
 	}
 
 	u32 flingy_id = units_dat::graphic[unit->id];
@@ -1076,6 +1102,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				init_auto_celebration();
 			} else if (parser_eqi(&parser, "none")) {
 				globals.celebration = Celebration_None;
+			} else if (parser_eqi(&parser, "april_fools")) {
+				globals.celebration = Celebration_AprilFools;
 			} else if (parser_eqi(&parser, "christmas")) {
 				globals.celebration = Celebration_Christmas;
 			}
