@@ -389,19 +389,6 @@ bool unit_collides_with_titanic(Unit* unit) {
 		|| unit->id == UnitId::ZergUltrokor;
 }
 
-bool unit_has_fore_castle(Unit* unit) {
-	switch (unit->id) {
-		case UnitId::TerranMinotaur: {
-			return true;
-		}
-	}
-	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueHasSublimeShepherd]) {
-		return true;
-	}
-	return false;
-}
-
 bool weapon_id_is_for_harvesting(u32 weapon_id) {
 	return weapon_id == WeaponId::MasonFusionCutterHarvest
 		|| weapon_id == WeaponId::ScribeParticleBeamHarvest

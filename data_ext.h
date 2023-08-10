@@ -160,6 +160,7 @@ enum ExtValueId {
 	ValueNeedsUnfreezing,
 	ValueTerranConstruction,
 	ValueMorphConnectedUnitId,
+	ValueEnsnareFactor,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

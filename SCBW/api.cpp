@@ -3190,4 +3190,33 @@ namespace scbw {
         }
 		return pos;
 	}
+
+	u32 get_fore_castle_factor(Unit* unit) {
+		u32 factor = 0;
+		switch (unit->id) {
+			case UnitId::TerranMinotaur: {
+				factor += 2;
+			}
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueHasSublimeShepherd]) {
+			factor += 2;
+		}
+		return factor;
+	}
+
+	u32 get_ensnare_factor(Unit* unit) {
+		u32 factor = 0;
+		switch (unit->id) {
+			case UnitId::ZergVorvrokor:
+			{
+				factor++;
+			}
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->timers[TimerEnsnaringBrood] > 0) {
+			factor++;
+		}
+		return factor;
+	}
 }

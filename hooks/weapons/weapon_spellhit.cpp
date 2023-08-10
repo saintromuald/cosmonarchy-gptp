@@ -327,11 +327,12 @@ namespace hooks {
 	}
 
 	s32 ensnare_proc(Unit* target, Unit* attacker) {
-		if (target != attacker
-			&& !(units_dat::base_property[target->id] & UnitProperty::Building)
-			&& target->id != UnitId::ZergInfestedTerran) {
-			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed)) {
-				helper::create_ensnare_overlay(target);
+		if (target != attacker)
+		{
+			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
+			{
+				UnitExt* unit_ext = get_unit_ext(target);
+				helper::apply_ensnare(target, unit_ext->values[ValueEnsnareFactor]);
 			}
 		}
 		return 0;
@@ -484,7 +485,7 @@ namespace hooks {
 		} else {
 			if (target != source && !(unit_status & UnitStatus::Invincible)) {
 				if (!(unit_status & UnitStatus::Burrowed)) {
-					helper::set_maelstrom_timer(target, 4 * 24);
+					helper::apply_maelstrom(target, 4 * 24);
 				}
 			}
 		}

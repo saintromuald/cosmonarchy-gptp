@@ -39,7 +39,6 @@ bool unit_id_is_zerg_supply(u16 unit_id);
 bool unit_regens_in_combat(Unit* unit);
 bool unit_paths_over_small_units(Unit* unit);
 bool unit_collides_with_titanic(Unit* unit);
-bool unit_has_fore_castle(Unit* unit);
 
 bool weapon_id_is_for_harvesting(u32 weapon_id);
 bool weapon_id_is_standard_weapon(u32 weapon_id);

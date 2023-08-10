@@ -274,7 +274,7 @@ namespace hooks {
 		s32 result;
 		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 		{
-			// airSplashProc
+			// air_splash_proc
 			s8 weaponIdLoop;
 			s32 listCount;
 			Unit* target = unitsInSplash.get_unit(i);
@@ -314,7 +314,7 @@ namespace hooks {
 			}
 			helper::weapon_bullet_shot(target, bullet, (s32)g_air_splash_list[list]);
 		}
-		// airSplashProc2
+		// air_splash_proc_2
 		splash(bullet, weapon_id, SplashType::FriendlyNew);
 	}
 

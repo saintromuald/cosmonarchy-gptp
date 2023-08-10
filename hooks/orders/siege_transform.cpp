@@ -198,4 +198,19 @@ namespace hooks
 			}
 		}
 	}
+
+	// Hooked to make invalid Phalanxes undeploy instead of self-destructing. -Pr0nogo
+	s32 __fastcall siege_tank_self_destruct_proc(Unit* other, Unit* self) // 00463F90
+	{
+		if (other == self)
+		{
+			return 0;
+		}
+		if (!(other->status & UnitStatus::GroundedBuilding) || other->status & UnitStatus::NoCollide)
+		{
+			return 0;
+		}
+		self->order_to(OrderId::TankMode);
+		return 1;
+	}
 }

@@ -730,7 +730,7 @@ namespace helper {
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void iterate_units_at_location_target_proc_maelstrom(Unit* attacker, Box16* coords);							// 004E8280
 	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);							// 004E8280
-	void create_ensnare_overlay(Unit* unit);																		// 004F45E0
+	void apply_ensnare(Unit* unit, u32 ensnare_factor);																// 004F45E0
 
 	// For create_scanner
 	s32 play_sound_from_unit(s32 sound_id, Unit* unit, s32 play = 1, s32 min_volume = 0);							// 0048ED50
@@ -738,14 +738,14 @@ namespace helper {
 
 	// For maelstrom_proc
 	void orders_self_destructing(Unit* unit);																		// 00475710
-	char set_maelstrom_timer(Unit* unit, u8 time);																	// 004553F0
+	char apply_maelstrom(Unit* unit, u8 time);																		// 004553F0
 
 	// For CBulletDamage
-	s32 _fastcall lurkerSplashProc(Unit* target, Bullet* bullet);													// 0048B680
-	s32 _fastcall groundSplashProc(Unit* target, Bullet* bullet);													// 0048B750
-	s32 _fastcall airSplashProc(Unit* unit, Bullet* bullet);														// 0048B150
-	s32 _fastcall airSplashProc2(Unit* unit, Bullet* bullet);														// 0048B730
-	bool unitHasNoMainOrderType(Unit* unit);																		// 00475A50
+	s32 _fastcall lakizilisk_splash_proc(Unit* target, Bullet* bullet);												// 0048B680
+	s32 _fastcall ground_splash_proc(Unit* target, Bullet* bullet);													// 0048B750
+	s32 _fastcall air_splash_proc(Unit* unit, Bullet* bullet);														// 0048B150
+	s32 _fastcall air_splash_proc_2(Unit* unit, Bullet* bullet);													// 0048B730
+	bool unit_has_no_main_order_type(Unit* unit);																	// 00475A50
 	s32 set_unit_event_complete();																					// 004C36C0
 
 	// For find_best_unit
@@ -967,7 +967,7 @@ namespace helper {
 	// For give_unit_to_player
 	void give_all_unit_properties_to_player(Unit* unit, s8 player);											// 0047C9F0
 	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
-	bool unit_has_hangar(Unit* unit);																			// identical to 004014B0
+	bool unit_has_hangar(Unit* unit);																		// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
 
@@ -1406,7 +1406,7 @@ namespace helper {
 	s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
 	s32 get_sfx_pan_from_screen_distance(u32 x);															// 0048E850
 
-	void syswarn_file_not_found(u32 code, const char* filename);												// 004212C0
+	void syswarn_file_not_found(u32 code, const char* filename);											// 004212C0
 
 	void EAX_order(Unit* unit, u32 order_func_offset);
 	void EBX_order(Unit* unit, u32 order_func_offset);
@@ -1446,161 +1446,161 @@ namespace helper {
 	Image* update_image_frame_index(Image* image);															// 004D5940
 	u32 get_path_distance_to(Unit* unit, Point16 position);													// 0042FA30
 
-	void fire_unit_weapon(Unit* unit, u8 weapon_id);																						// 00479C90
-	Thingy* ufl_unstable_randomize(Flingy* flingy);																							// 004955F0
-	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player);		// 00479930
-	Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above);										// 004D6D90
-	u32 iscript_use_lo_file(void* out_coords, Image* image, u8 a3, u8 frame_offset);														// 004D5770
-	void hide_image(Image* image);																											// 00401100
-	u16 show_image(Image* image);																											// 00401120
-	Image* image_destructor(Image* image);																									// 004D4CE0
-	void flip_image(Image* image, char direction);																							// 004D5F30
-	void iscript_play_sound(Image* image, u32 sound_id);																					// 004D6610
-	void turn_unit_left(Unit* unit, char amount);																							// 00496170
-	u32 get_difference_between_points(char point_1, char point_2);																			// 00494BD0
-	u32 get_modified_unit_speed(u32 speed, Unit* unit);																						// 0047B5F0
-	Image* get_empty_image();																												// 004D4E30
-	Image* images_insert(Image* image, Image* next, Image* prev);																			// 0047A070
-	void some_play_image_crap_that_crashes(char x_pos, char y_pos, Image* image, Sprite* sprite, u32 image_id);								// 004010E0
-	u32 get_closest_point_of_target(Unit* unit, u32 out_x, u32 out_y);																		// 004762C0
+	void fire_unit_weapon(Unit* unit, u8 weapon_id);																					// 00479C90
+	Thingy* ufl_unstable_randomize(Flingy* flingy);																						// 004955F0
+	void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player);	// 00479930
+	Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above);									// 004D6D90
+	u32 iscript_use_lo_file(void* out_coords, Image* image, u8 a3, u8 frame_offset);													// 004D5770
+	void hide_image(Image* image);																										// 00401100
+	u16 show_image(Image* image);																										// 00401120
+	Image* image_destructor(Image* image);																								// 004D4CE0
+	void flip_image(Image* image, char direction);																						// 004D5F30
+	void iscript_play_sound(Image* image, u32 sound_id);																				// 004D6610
+	void turn_unit_left(Unit* unit, char amount);																						// 00496170
+	u32 get_difference_between_points(char point_1, char point_2);																		// 00494BD0
+	u32 get_modified_unit_speed(u32 speed, Unit* unit);																					// 0047B5F0
+	Image* get_empty_image();																											// 004D4E30
+	Image* images_insert(Image* image, Image* next, Image* prev);																		// 0047A070
+	void some_play_image_crap_that_crashes(char x_pos, char y_pos, Image* image, Sprite* sprite, u32 image_id);							// 004010E0
+	u32 get_closest_point_of_target(Unit* unit, u32 out_x, u32 out_y);																	// 004762C0
 
-	bool unit_has_path_to_destination(Unit* unit, s32 pos_x, s32 pos_y);																	// 0049CB60
-	Unit** get_all_units_in_region(u16 region_id);																							// 00430B50
+	bool unit_has_path_to_destination(Unit* unit, s32 pos_x, s32 pos_y);																// 0049CB60
+	Unit** get_all_units_in_region(u16 region_id);																						// 00430B50
 
-	void subtract_queue_cost(u8 player);																									// 0042CE40
-	Unit* get_unit_powerup(Unit* unit);																										// 004014E0
-	void droleth_build_excisant(Unit* unit);																								// 0045D790
+	void subtract_queue_cost(u8 player);																								// 0042CE40
+	Unit* get_unit_powerup(Unit* unit);																									// 004014E0
+	void droleth_build_excisant(Unit* unit);																							// 0045D790
 
-	void cancel_queued_trains(AiTown* town);																								// 004326A0
-	u32 get_upgrade_count(AiTown* town, u32 upgrade_id);																					// 004325A0
-	u32 get_tech_count(AiTown* town, u32 tech_id);																							// 00432530
-	u16 ai_build_bunker(AiTown* town, u32 player);																							// 0043EBB0
-	u32 ai_build_turret(AiTown* town, u32 player);																							// 0043AAE0
+	void cancel_queued_trains(AiTown* town);																							// 004326A0
+	u32 get_upgrade_count(AiTown* town, u32 upgrade_id);																				// 004325A0
+	u32 get_tech_count(AiTown* town, u32 tech_id);																						// 00432530
+	u16 ai_build_bunker(AiTown* town, u32 player);																						// 0043EBB0
+	u32 ai_build_turret(AiTown* town, u32 player);																						// 0043AAE0
 
-	s32 get_bunker_position(u32 player, Point16* return_pos);																				// 004376F0
-	void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations);																// 00444EB0
-	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles);						// 004465C0
-	u32 ai_finish_unit(Unit* unit);																											// 00433640
-	s32 get_turret_position(u32 player, Point16* out_pos);																					// 00437670
-	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);														// 00444630
+	s32 get_bunker_position(u32 player, Point16* return_pos);																			// 004376F0
+	void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations);															// 00444EB0
+	s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles);					// 004465C0
+	u32 ai_finish_unit(Unit* unit);																										// 00433640
+	s32 get_turret_position(u32 player, Point16* out_pos);																				// 00437670
+	void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);													// 00444630
 
-	char update_buttonset();																												// 00458DE0
+	char update_buttonset();																											// 00458DE0
 
-	void refresh_image(Image* image);																										// 004970A0
-	void compile_healthbar(Image* image, Sprite* sprite);																					// 004D6010
-	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id);												// 004D6810
+	void refresh_image(Image* image);																									// 004970A0
+	void compile_healthbar(Image* image, Sprite* sprite);																				// 004D6010
+	void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id);											// 004D6810
 
-	b32 return_interceptor_if_cannot_attack(Unit* steward);																					// 00465810
-	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos);																	// 00465D30
-	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation);																// 00476ED0
+	b32 return_interceptor_if_cannot_attack(Unit* steward);																				// 00465810
+	u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos);																// 00465D30
+	void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation);															// 00476ED0
 
-	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation);																		// 0042D600
+	b32 set_temp_iscript_animation(IscriptAnimation::Enum animation);																	// 0042D600
 
-	u32 get_visibility_mask_from_position_and_size(u32 y_pos, u32 height, u32 width, u32 x_pos);											// 00402570
+	u32 get_visibility_mask_from_position_and_size(u32 y_pos, u32 height, u32 width, u32 x_pos);										// 00402570
 
-	Image* copy_image_palette_type(Image* image, Image* from);																				// 004D5E40
+	Image* copy_image_palette_type(Image* image, Image* from);																			// 004D5E40
 
-	bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);																				// 00465A60
-	b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit);																				// 00436A10
-	Image* prepare_placement_preview();																										// 004D5B60
-	void place_building_normal_proc();																										// 0048E490
-	void place_building_refinery_proc();																									// 0048E430
-	u32 prepare_placement_box(b32 is_addon, u32 unit_id);																					// 0048DAF0
-	char refresh_screen(u32 placement_box);																									// 0048DDC0
+	bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);																			// 00465A60
+	b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit);																			// 00436A10
+	Image* prepare_placement_preview();																									// 004D5B60
+	void place_building_normal_proc();																									// 0048E490
+	void place_building_refinery_proc();																								// 0048E430
+	u32 prepare_placement_box(b32 is_addon, u32 unit_id);																				// 0048DAF0
+	char refresh_screen(u32 placement_box);																								// 0048DDC0
 
-	void update_unit_damage_overlay(Unit* unit);																							// 004E6090
+	void update_unit_damage_overlay(Unit* unit);																						// 004E6090
 
-	s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type);											// 00485980
-	void CMDRECV_save_game(char* buffer);																									// 004C2910
-	FILE* CMDRECV_load_game(char* buffer);																									// 004CF950
-	s8 CMDRECV_restart_game();																												// 004BFB10
-	void CMDRECV_select(char* buffer);																										// 004C2750
-	void CMDRECV_shift_select(char* buffer);																								// 004C2560
-	void CMDRECV_shift_deselect(char* buffer);																								// 004BFB40
-	u16 CMDRECV_build(s8* buffer);																											// 004C23C0
-	s8* CMDRECV_vision(s8* buffer);																											// 004BF9C0
-	void CMDRECV_ally(char* buffer);																										// 004C28A0
-	void CMDRECV_pause_game();																												// 004C0BC0
-	void CMDRECV_resume_game();																												// 004C0B00
-	s32 CMDRECV_use_cheat(char* buffer, char* cheat);																						// 004C0AD0
-	u8 CMDRECV_hotkey(char* buffer);																										// 004C2870
-	Unit* CMDRECV_right_click(Unit* unit);																									// 004C2370
-	void CMDRECV_target_command(char* buffer);																								// 004C2320
-	char CMDRECV_cancel_construction();																										// 004C2EF0
-	Unit* CMDRECV_cancel_unit_morph();																										// 004C2EC0
-	Unit* CMDRECV_stop(s8* buffer);																											// 004C2190
-	Unit* CMDRECV_carrier_stop();																											// 004C1430
-	Unit* CMDRECV_reaver_stop();																											// 004C1240
-	Unit* CMDRECV_nothing();																												// 004C1050
-	Unit* CMDRECV_return_cargo(char* buffer);																								// 004C2040
-	s16 CMDRECV_train(char* buffer);																										// 004C1C20
-	s16 CMDRECV_cancel_train(s8* buffer);																									// 004C0100
-	Unit* CMDRECV_cloak();																													// 004C0720
-	Unit* CMDRECV_decloak();																												// 004C0660
-	s32 CMDRECV_unit_morph(char* buffer);																									// 004C1990
-	Unit* CMDRECV_unsiege(char* buffer);																									// 004C1F10
-	Unit* CMDRECV_siege(char* buffer);																										// 004C1E80
-	Unit* CMDRECV_train_fighter();																											// 004C1800
-	Unit* CMDRECV_unload_all(s8* buffer);																									// 004C1CC0
-	char CMDRECV_unload(Unit* unit);																										// 004C24F0
-	Unit* CMDRECV_merge_archon();																											// 004C0E90
-	Unit* CMDRECV_hold_position(char* buffer);																								// 004C20C0
-	Unit* CMDRECV_burrow(char* buffer);																										// 004C1FA0
-	Unit* CMDRECV_unburrow();																												// 004C1AC0
-	Unit* CMDRECV_cancel_nuke();																											// 004BFCD0
-	void CMDRECV_liftoff(s8* buffer);																										// 004C1620
-	Unit* CMDRECV_research(char* buffer);																									// 004C1BA0
-	Unit* CMDRECV_cancel_research();																										// 004C0070
-	Unit* CMDRECV_upgrade(char* buffer);																									// 004C1B20
-	void CMDRECV_cancel_upgrade();																											// 004BFFC0
-	Unit* CMDRECV_cancel_addon();																											// 004BFF30
-	char CMDRECV_building_morph(char* buffer);																								// 004C1910
-	Unit* CMDRECV_stim_pack();																												// 004C2F30
-	b32 CMD_game_hash(HashPacket* packet);																									// 0047CDD0
-	void CMDRECV_voice_enable(s8* buffer);																									// 004BF820
-	s32 CMDRECV_set_latency(char* buffer, s32 unused);																						// 00485E60
-	s32 CMDRECV_set_replay_speed(s32 speed, u8 is_paused, u32 modifier);																	// 004DEB90
-	char CMDRECV_leave_game(char* buffer);																									// 004C2E90
-	char CMDRECV_minimap_ping(char* buffer);																								// 004BF7A0
-	Unit* CMDRECV_merge_dark_archon();																										// 004C0CD0
-	void bwfxn_display_text(s32 player, s32 text, s32 is_replay);																			// 0048D1C0
-	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player);												// 004CDE70
+	s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type);			// 00485980
+	void CMDRECV_save_game(char* buffer);																	// 004C2910
+	FILE* CMDRECV_load_game(char* buffer);																	// 004CF950
+	s8 CMDRECV_restart_game();																				// 004BFB10
+	void CMDRECV_select(char* buffer);																		// 004C2750
+	void CMDRECV_shift_select(char* buffer);																// 004C2560
+	void CMDRECV_shift_deselect(char* buffer);																// 004BFB40
+	u16 CMDRECV_build(s8* buffer);																			// 004C23C0
+	s8* CMDRECV_vision(s8* buffer);																			// 004BF9C0
+	void CMDRECV_ally(char* buffer);																		// 004C28A0
+	void CMDRECV_pause_game();																				// 004C0BC0
+	void CMDRECV_resume_game();																				// 004C0B00
+	s32 CMDRECV_use_cheat(char* buffer, char* cheat);														// 004C0AD0
+	u8 CMDRECV_hotkey(char* buffer);																		// 004C2870
+	Unit* CMDRECV_right_click(Unit* unit);																	// 004C2370
+	void CMDRECV_target_command(char* buffer);																// 004C2320
+	char CMDRECV_cancel_construction();																		// 004C2EF0
+	Unit* CMDRECV_cancel_unit_morph();																		// 004C2EC0
+	Unit* CMDRECV_stop(s8* buffer);																			// 004C2190
+	Unit* CMDRECV_carrier_stop();																			// 004C1430
+	Unit* CMDRECV_reaver_stop();																			// 004C1240
+	Unit* CMDRECV_nothing();																				// 004C1050
+	Unit* CMDRECV_return_cargo(char* buffer);																// 004C2040
+	s16 CMDRECV_train(char* buffer);																		// 004C1C20
+	s16 CMDRECV_cancel_train(s8* buffer);																	// 004C0100
+	Unit* CMDRECV_cloak();																					// 004C0720
+	Unit* CMDRECV_decloak();																				// 004C0660
+	s32 CMDRECV_unit_morph(char* buffer);																	// 004C1990
+	Unit* CMDRECV_unsiege(char* buffer);																	// 004C1F10
+	Unit* CMDRECV_siege(char* buffer);																		// 004C1E80
+	Unit* CMDRECV_train_fighter();																			// 004C1800
+	Unit* CMDRECV_unload_all(s8* buffer);																	// 004C1CC0
+	char CMDRECV_unload(Unit* unit);																		// 004C24F0
+	Unit* CMDRECV_merge_archon();																			// 004C0E90
+	Unit* CMDRECV_hold_position(char* buffer);																// 004C20C0
+	Unit* CMDRECV_burrow(char* buffer);																		// 004C1FA0
+	Unit* CMDRECV_unburrow();																				// 004C1AC0
+	Unit* CMDRECV_cancel_nuke();																			// 004BFCD0
+	void CMDRECV_liftoff(s8* buffer);																		// 004C1620
+	Unit* CMDRECV_research(char* buffer);																	// 004C1BA0
+	Unit* CMDRECV_cancel_research();																		// 004C0070
+	Unit* CMDRECV_upgrade(char* buffer);																	// 004C1B20
+	void CMDRECV_cancel_upgrade();																			// 004BFFC0
+	Unit* CMDRECV_cancel_addon();																			// 004BFF30
+	char CMDRECV_building_morph(char* buffer);																// 004C1910
+	Unit* CMDRECV_stim_pack();																				// 004C2F30
+	b32 CMD_game_hash(HashPacket* packet);																	// 0047CDD0
+	void CMDRECV_voice_enable(s8* buffer);																	// 004BF820
+	s32 CMDRECV_set_latency(char* buffer, s32 unused);														// 00485E60
+	s32 CMDRECV_set_replay_speed(s32 speed, u8 is_paused, u32 modifier);									// 004DEB90
+	char CMDRECV_leave_game(char* buffer);																	// 004C2E90
+	char CMDRECV_minimap_ping(char* buffer);																// 004BF7A0
+	Unit* CMDRECV_merge_dark_archon();																		// 004C0CD0
+	void bwfxn_display_text(s32 player, s32 text, s32 is_replay);											// 0048D1C0
+	void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player);				// 004CDE70
 
-	char create_dashed_selection(u32 player, Sprite* sprite, char color);																	// 00499A10
+	char create_dashed_selection(u32 player, Sprite* sprite, char color);									// 00499A10
 
-	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2);																// 004AAFA0
-	Player* randomize_player_slot();																										// 004A9A30
+	b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2);								// 004AAFA0
+	Player* randomize_player_slot();																		// 004A9A30
 
-	void place_building_refinery_check(Unit* unit);																							// 0048E1E0
+	void place_building_refinery_check(Unit* unit);															// 0048E1E0
 
-	void move_screen(Point16 pos);																											// 0049C440
+	void move_screen(Point16 pos);																			// 0049C440
 
-	b32 is_at_home(Unit* unit);																												// 00462930
-	u32 is_under_carapace_swarm(Unit* unit);																								// 00476210
+	b32 is_at_home(Unit* unit);																				// 00462930
+	u32 is_under_carapace_swarm(Unit* unit);																// 00476210
 
-	void iscript_fireweapon(Unit* unit, u8 weapon_id);																						// 00479D40
-	void iscript_useweapon(Unit* unit, u16 weapon_id);																						// 00479C30
+	void iscript_fireweapon(Unit* unit, u8 weapon_id);														// 00479D40
+	void iscript_useweapon(Unit* unit, u16 weapon_id);														// 00479C30
 
-	void draw_button_graphic(BinDlg* dialog, void* dest);																					// 004F0050
-	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFEB0
-	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);														// 004EFD90
-	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);									// 004E8740
+	void draw_button_graphic(BinDlg* dialog, void* dest);													// 004F0050
+	void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);						// 004EFEB0
+	void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);						// 004EFD90
+	Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);	// 004E8740
 
-	u32 draw_box(u32 x, u32 y, u32 w, u32 h);																								// 004E1D20
-	s32 save_replay(char* name);																											// 004DFAB0
-	s32 copy_last_replay(char* name);																										// 004DED30
+	u32 draw_box(u32 x, u32 y, u32 w, u32 h);																// 004E1D20
+	s32 save_replay(char* name);																			// 004DFAB0
+	s32 copy_last_replay(char* name);																		// 004DED30
 
-	void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y);									// 00474790
-	void unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target);												// 00479FA0
-	void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 fow_unit_id, u16 pos_x, u16 pos_y);											// 00474FB0
+	void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y);	// 00474790
+	void unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target);				// 00479FA0
+	void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 fow_unit_id, u16 pos_x, u16 pos_y);			// 00474FB0
 
-	b32 draw_clamped_dialog_image(BinDlg* dest, u32 veeqtism, u32 pos_x, u32 pos_y, u32 flags);												// 004EF600
-	u8* bw_draw(u16 x_pos, u32 y_pos, u32 x_clamp, u16 y_clamp);																			// 004E1C70
-	void dialog_draw_text(void* arg, BinDlg* button, u32 flag1, u32 flag2);																	// 004EF870
+	b32 draw_clamped_dialog_image(BinDlg* dest, u32 veeqtism, u32 pos_x, u32 pos_y, u32 flags);				// 004EF600
+	u8* bw_draw(u16 x_pos, u32 y_pos, u32 x_clamp, u16 y_clamp);											// 004E1C70
+	void dialog_draw_text(void* arg, BinDlg* button, u32 flag1, u32 flag2);									// 004EF870
 
-	b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags);														// 004EF440
+	b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags);						// 004EF440
 
-	void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);									// 0040ABBE
+	void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);	// 0040ABBE
 
 	void file_fatal(HANDLE* file, u32 something);																								// 004D2880
 	void alloc_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line);	// 004194E0
@@ -1637,4 +1637,10 @@ namespace helper {
 	void store_selection_group_hp_and_type();																									// 004DCFA0
 
 	void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target);									// 004747C0
+
+	u8 apply_defensive_matrix(Unit* unit);				// 00455010
+	u8 apply_lockdown(Unit* unit, u32 duration);		// 00455380
+	u8 apply_irradiate(Unit* unit);						// 00454E80
+	u8 apply_stasis_field(Unit* unit, u32 duration);	// 004F67B0
+	u8 apply_plague(Unit* unit);						// 004F4550
 }

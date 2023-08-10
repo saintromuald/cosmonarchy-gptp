@@ -236,14 +236,15 @@ namespace hooks
 			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
 			if (data.attacker) {
-				if (unit_has_fore_castle(data.target)) {
+				u32 fore_castle_factor = scbw::get_fore_castle_factor(data.target);
+				if (fore_castle_factor) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
-						armor_total += 2;
+						armor_total += fore_castle_factor;
 						shield_overlay = true;
 					}
 				}
@@ -442,7 +443,7 @@ namespace hooks
 			// Ensnaring Brood - Matraleth enchantment ability
 			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target))
 			{
-				 apply_ensnare(data.target);
+				 apply_ensnare(data.target, scbw::get_ensnare_factor(data.attacker));
 			}
 
 			if (data.weapon_id == WeaponId::MindTyrantTyranny) {
@@ -1020,13 +1021,15 @@ namespace hooks
 		return fatal_deal_damage;
 	}
 
-	void apply_ensnare(Unit* unit) { // 004F45E0
+	void apply_ensnare(Unit* unit, u32 ensnare_factor) { // 004F45E0
 		// Overlay
 		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
 			scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Effect
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueEnsnareFactor] = ensnare_factor;
 		unit->ensnare_timer = 5;
 		unit->update_speed();
 	}
