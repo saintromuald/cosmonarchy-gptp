@@ -1734,7 +1734,7 @@ namespace hooks {
 
 				for (u32 i = 0; i < unit_array.count; ++i) {
 					Unit* target = unit_array.units[i];
-					if (!unit_is_combatant(target)) {
+					if (!unit_is_combatant(target) || target->id == UnitId::ZergVorvrokor) {
 						continue;
 					}
 
@@ -2296,7 +2296,7 @@ namespace hooks {
 		}
 
 		// Azazel - Sublime Shepherd
-		if (!unit_id_is_resource_node(unit->id, false)) {
+		if (!unit_id_is_resource_node(unit->id, false) && unit->id != UnitId::TerranMinotaur) {
 			EntryArray azazels = {};
 			unit_search_radial(&azazels, unit->position, 4 * 32);
 			unit_search_filter(&azazels, unit, 0, {UnitId::TerranAzazel});

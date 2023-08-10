@@ -2452,8 +2452,8 @@ namespace hooks {
 								} break;
 								case UnitId::ZergVorvrokor:
 								{
-									if (current_button->icon_id == IconId::MetabolicBoost		// Vorvrokor - Adrenal Surge
-									||	current_button->icon_id == IconId::ZethrokorClaws) {	// Vorvrokor - Captivating Claws
+									if (current_button->icon_id == IconId::MetabolicBoost	// Vorvrokor - Adrenal Surge
+									||	current_button->icon_id == IconId::Ensnare) {		// Vorvrokor - Captivating Claws
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
