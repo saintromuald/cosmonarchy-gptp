@@ -733,7 +733,7 @@ namespace hooks
 					}
 					bNotEndThere = unit->is_target_within_min_range(target, weapons_dat::inner_splash_radius[units_dat::ground_weapon[unit->id]]);
 				} else {
-					bNotEndThere = (unit->get_movable_state() != MovableState::NotReachedDestination);
+					bNotEndThere = (unit->get_movable_state() != MovableState_NotReachedDestination);
 				}
 
 				if (bNotEndThere)

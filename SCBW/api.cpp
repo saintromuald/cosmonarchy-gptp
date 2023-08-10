@@ -208,7 +208,7 @@ namespace scbw {
 		return true;
 	}
 
-	bool is_under_dark_swarm(Unit* unit) {
+	bool is_under_carapace_swarm(Unit* unit) {
 		return !(unit->status & UnitStatus::InAir) && get_dark_swarm_unit(unit) != nullptr;
 	}
 

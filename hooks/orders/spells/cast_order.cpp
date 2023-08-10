@@ -252,7 +252,7 @@ namespace hooks
 					}
 					if (progress_moving == 0)
 					{
-						if (unit->get_movable_state() == MovableState::UnmovableAtDestination)
+						if (unit->get_movable_state() == MovableState_UnmovableAtDestination)
 						{
 							unit->order_to_idle();
 						}

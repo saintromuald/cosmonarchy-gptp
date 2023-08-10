@@ -21,7 +21,7 @@
 Bullet* weapon_damage_current_bullet;
 
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
-	return scbw::is_under_dark_swarm(target)
+	return scbw::is_under_carapace_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
 		&& weapon_id != WeaponId::HarakanFlamethrower
@@ -440,9 +440,7 @@ namespace hooks
 			}
 
 			// Ensnaring Brood - Matraleth enchantment ability
-			if   (attacker_ext->timers[TimerEnsnaringBrood] > 0
-			&& (!(units_dat::base_property[data.target->id] & UnitProperty::Building) || data.target->status & UnitStatus::InAir)
-			&&   !scbw::is_under_dark_swarm(data.target))
+			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target))
 			{
 				 apply_ensnare(data.target);
 			}
@@ -459,7 +457,7 @@ namespace hooks
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
 					&&	!(data.attacker->status & UnitStatus::Burrowed)
-					&&   !scbw::is_under_dark_swarm(data.target))
+					&&   !scbw::is_under_carapace_swarm(data.target))
 					{
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
@@ -478,7 +476,7 @@ namespace hooks
 				{
 					// Autovitality - Simulacrum behavior
 					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
-					&&  !scbw::is_under_dark_swarm(data.target)
+					&&  !scbw::is_under_carapace_swarm(data.target)
 					&&   data.shield_reduce_amount >= data.target->shields
 					&&   data.damage
 					&&   target_ext->timers[TimerSimulacrumClone] == 0)
@@ -531,14 +529,9 @@ namespace hooks
 					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
-				case WeaponId::VorvalClaws:
-				{
-					// Captivating Claws - Vorvrokor behavior
-					captivating_claws_apply(data.attacker, data.target);
-				} break;
 			}
 
-			if (!scbw::is_under_dark_swarm(data.target)) {
+			if (!scbw::is_under_carapace_swarm(data.target)) {
 				// Astral Rule - Patriarch behavior
 				if (target_ext->timers[TimerPatriarchAstralRule] > 1
 				&&  units_dat::shields_enabled[data.attacker->id]
@@ -1030,11 +1023,7 @@ namespace hooks
 	void apply_ensnare(Unit* unit) { // 004F45E0
 		// Overlay
 		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
-			Unit* victim = unit;
-			if (unit->subunit) {
-				victim = unit->subunit;
-			}
-			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(victim->id));
+			scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Effect

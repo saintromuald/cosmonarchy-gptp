@@ -1,6 +1,7 @@
 #include "larva_creep_spawn.h"
 #include <SCBW/api.h>
 #include "globals.h"
+#include "hooks\unit_speed.h"
 
 namespace hooks
 {
@@ -64,7 +65,7 @@ namespace hooks
 					}
 					unit->order_to_idle();
 				} else {
-					helper::turn_unit(unit, 128);
+				//	helper::turn_unit(unit, 128); -- Causes teleportation when landing diagonally while slowed! -Pr0nogo
 
 					// Use an add_fog_mask() function after some coordinates calculations
 					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
@@ -88,7 +89,7 @@ namespace hooks
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 			bool stop_there = false;
 			if (!helper::is_unit_positions_2_equal(unit)) {
-				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
+				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->position.x, unit->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!stop_there) {
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
@@ -98,9 +99,9 @@ namespace hooks
 
 		// There's no "else" here, main_order_state = 2 can continue directly into main_order_state = 3 if main_order_state was updated
 		if (unit->main_order_state == 3) {
-			if ((unit->get_movable_state() != 0) && (unit->order_signal & 0x10)) {
-				unit->order_signal -= 0x10;
-				unit->flingy_turn_rate = flingy_dat::turn_speed[units_dat::graphic[unit->id]];
+			if ((unit->get_movable_state() != MovableState_NotReachedDestination) && (unit->order_signal & 0x10)) {
+				unit->order_signal &= ~0x10;
+				unit->flingy_turn_rate = get_modified_unit_turn_speed(unit);
 
 				if (unit->order_target.pt.x >= 0 && unit->order_target.pt.x < g_map_tile_size->width * 32 && 
 					unit->order_target.pt.y >= 0 && unit->order_target.pt.y < g_map_tile_size->height * 32) { // New sanity check; Attempt on fixing clear tile flags
@@ -129,7 +130,6 @@ namespace hooks
 				}
 				helper::create_landing_dust(unit->sprite);
 				scbw::refresh_console();
-			//	helper::crush_immobile_units(unit);
 				scbw::prepare_building_area(unit->position, unit->id);
 
 				if (units_dat::base_property[unit->id] & UnitProperty::Attack) {

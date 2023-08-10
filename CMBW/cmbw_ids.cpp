@@ -890,10 +890,41 @@ u32 get_mutate_image_id(u32 unit_id) {
 	}
 }
 
-bool unit_is_tower(Unit* unit)
-{
+bool unit_is_tower(Unit* unit) {
 	if (units_dat::base_property[unit->id] & UnitProperty::Building && unit_is_combatant(unit)) {
 		return true;
 	}
 	return false;
+}
+
+bool unit_applies_ensnare(Unit* unit) {
+	switch (unit->id)
+	{
+		case UnitId::ZergVorvrokor:
+		{
+			return true;
+		} break;
+		default:
+		{
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->timers[TimerEnsnaringBrood] > 0) {
+				return true;
+			}
+		} break;
+	}
+	return false;
+}
+
+bool unit_can_be_ensnared(Unit* unit) {
+	if (scbw::is_under_carapace_swarm(unit)) {
+		return false;
+	}
+	if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding || unit_is_tower(unit))
+	{
+		return true;
+	}
+	if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+		return false;
+	}
+	return true;
 }

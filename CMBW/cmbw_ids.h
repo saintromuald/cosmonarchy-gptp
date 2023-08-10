@@ -71,3 +71,6 @@ bool unit_id_is_larva(u32 unit_id);
 u32 get_mutate_image_id(u32 unit_id);
 
 bool unit_is_tower(Unit* unit);
+
+bool unit_applies_ensnare(Unit* unit);
+bool unit_can_be_ensnared(Unit* unit);
