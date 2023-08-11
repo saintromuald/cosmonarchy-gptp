@@ -96,6 +96,7 @@ namespace hooks
 			{
 				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->update_speed();
+				unit_ext->values[ValueEnsnareFactor] = 0;
 			}
 		}
 

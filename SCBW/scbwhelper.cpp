@@ -4640,7 +4640,7 @@ namespace helper {
 				damage_divisor *= bullet_ext->divisor_overwrite;
 			}
 		}
-		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
+		if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(bullet->weapon_id)) {
 			if (!iquare_globals.was_hit_by_line_attack(bullet->source_unit, target)) {
 				iquare_globals.register_line_attack_hit(bullet->source_unit, target);
 			} else {

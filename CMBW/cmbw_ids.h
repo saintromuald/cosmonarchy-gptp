@@ -73,3 +73,5 @@ bool unit_is_tower(Unit* unit);
 
 bool unit_applies_ensnare(Unit* unit);
 bool unit_can_be_ensnared(Unit* unit);
+
+bool weapon_id_is_line_attack(u32 weapon_id);

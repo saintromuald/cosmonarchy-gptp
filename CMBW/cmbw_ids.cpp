@@ -915,3 +915,8 @@ bool unit_can_be_ensnared(Unit* unit) {
 	}
 	return true;
 }
+
+bool weapon_id_is_line_attack(u32 weapon_id) {
+	return weapon_id == WeaponId::StrigaPhaseSaber
+		|| weapon_id == WeaponId::PariahIconoclastBlades;
+}

@@ -2233,6 +2233,34 @@ void __declspec(naked) load_game_core_patch_EEDCB() {
 	}
 }
 
+void __declspec(naked) unit_is_owned_by_current_player_new() {
+	__asm {
+		PUSH	EBP
+		MOV		EBP, ESP
+		MOV		EAX, ds:[0x006D0F14]//g_is_in_replay
+		TEST	EAX, EAX
+		MOV		EAX, [EBP + 8]//pUnit
+		MOVZX	ECX, byte ptr [EAX + 0x4C]//unit->player
+		JNE		offset is_in_replay
+		CMP		ECX, ds:[0x00512684]//g_local_nation_id
+		JNE		offset loc_401194
+
+		is_same_player:
+		MOV		EAX, 1
+		POP		EBP
+		RETN	4
+
+		is_in_replay:
+		CMP		[EBX + 0x4C], CL
+		JE		offset is_same_player
+
+		loc_401194:
+		XOR		EAX, EAX
+		POP		EBP
+		RETN	4
+	}
+}
+
 namespace hooks {
 	void inject_selection_extender() {
 		//CMDACT_Stimpack (0x004234D0)
@@ -2470,10 +2498,13 @@ namespace hooks {
 
 		//sort_all_units (0x0046F0F0)
 		//jump_patch(sort_all_units_patch_6F206, 0x0046F206);
+		//memory_patch(0x0046F1B3, (u32)0x754C468A);//MOV AL, [ESI + 0x4C]
+		//memory_patch(0x0046F1B7, (u8)0x0D);//JNE 0x0046F1C5
 
 		//combine_lists (0x0046F290)
 		jump_patch(combine_lists_patch_6F2AD, 0x0046F2AD);
 		jump_patch(combine_lists_patch_6F320, 0x0046F320);
+		memory_patch(0x0046F2D9, (u8)0x2D);//JNE 0x0046F307
 
 		//do_targeted_order (0x0046F5B0)
 		memory_patch(0x0046F657, &ccmu_extender.new_client_selection_group);
@@ -2505,6 +2536,8 @@ namespace hooks {
 		//jump_patch(get_selected_units_at_point_patch_6FDC3, 0x0046FDC3, 3);
 		//jump_patch(get_selected_units_at_point_patch_6FE3C, 0x0046FE3C);
 		//jump_patch(get_selected_units_at_point_patch_6FE65, 0x0046FE65);
+		//call_patch(unit_is_owned_by_current_player_new, 0x0046FD35);
+		//call_patch(unit_is_owned_by_current_player_new, 0x0046FD52);
 
 		//command_save_hotkey_group (0x004965D0)
 		jump_patch(command_save_hotkey_group_patch_965E1, 0x004965E1, 1);

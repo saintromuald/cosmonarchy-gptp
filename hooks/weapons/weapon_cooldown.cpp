@@ -32,7 +32,7 @@ namespace hooks {
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
-		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? 1 : 0)
+		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? unit_ext->values[ValueEnsnareFactor] : 0)
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 		f32 cooldown = cooldown_param;
