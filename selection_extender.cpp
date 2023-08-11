@@ -5,6 +5,7 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
 #include "config.h"
+#include "trigger_system/trigger_system.h"
 
 //C++
 //Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
@@ -2258,6 +2259,20 @@ void __declspec(naked) unit_is_owned_by_current_player_new() {
 		XOR		EAX, EAX
 		POP		EBP
 		RETN	4
+	}
+}
+
+const u32 combine_lists_6F2D6 = 0x0046F2D6;
+void __declspec(naked) combine_lists_patch_6F2D1() {
+	static b32 is_witness_or_in_replay;
+	__asm {
+		PUSHAD
+	}
+	is_witness_or_in_replay = globals.players[*g_local_human_id].witness_mode | *g_is_in_replay;
+	__asm {
+		POPAD
+		MOV	EAX, is_witness_or_in_replay
+		JMP	combine_lists_6F2D6
 	}
 }
 

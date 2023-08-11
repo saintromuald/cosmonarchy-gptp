@@ -31,11 +31,14 @@ namespace hooks {
 	u32 get_modified_cooldown(Unit* unit, u32 cooldown_param, bool clamp) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 
-		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
-		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) - (unit->ensnare_timer ? unit_ext->values[ValueEnsnareFactor] : 0)
-			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
-
+		// Set modifier based on Stim (increase) and attackspeed upgrades (increase)
+		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 		f32 cooldown = cooldown_param;
+
+		// Ensnare
+		if (unit->ensnare_timer) {
+			cooldown *= 1 + unit_ext->values[ValueEnsnareFactor] * 0.33;
+		}
 
 		// Crucible Aura
 		cooldown /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();

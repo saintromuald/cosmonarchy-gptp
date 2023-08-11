@@ -5,7 +5,7 @@
 #include "config.h"
 
 bool unit_is_owned_by_current_player_new(Unit* unit) {
-	if (!*g_is_in_replay) {
+	if (!*g_is_in_replay && !globals.players[*g_local_nation_id].witness_mode) {
 		return unit->player == *g_local_nation_id;
 	}
 	return unit->player == active_player_selection->unit[0]->player;
@@ -135,7 +135,7 @@ namespace hooks
 							dont_add_to_list = true;
 						} else if (!helper::unit_is_standard_and_movable(current_unit)) {
 							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						} else if (*g_is_in_replay) {
+						} else if (*g_is_in_replay || globals.players[*g_local_nation_id].witness_mode) {
 							goto new_replay_logic; // New from DF
 						} else if (current_unit->player != *g_local_nation_id) {
 							keep_for_empty_list_case = true;
