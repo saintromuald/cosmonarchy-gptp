@@ -30,14 +30,26 @@ namespace hooks {
 
 	u32 get_modified_cooldown(Unit* unit, u32 cooldown_param, bool clamp) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-
-		// Set modifier based on Stim (increase) and attackspeed upgrades (increase)
-		s32 cooldown_modifier = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 		f32 cooldown = cooldown_param;
+
+		// Stimpack
+		if (unit->stim_timer) {
+			cooldown /= 2;
+		}
 
 		// Ensnare
 		if (unit->ensnare_timer) {
-			cooldown *= 1 + unit_ext->values[ValueEnsnareFactor] * 0.33;
+			switch (unit_ext->values[ValueEnsnareFactor])
+			{
+				case 1:
+				{
+					cooldown += cooldown / 4;
+				} break;
+				case 2:
+				{
+					cooldown += cooldown / 2;
+				} break;
+			}
 		}
 
 		// Crucible Aura
@@ -46,12 +58,7 @@ namespace hooks {
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 
-		// Vassal Terminal Surge
-		if (unit_ext->timers[TimerTerminalSurge] > 1) {
-			cooldown /= 1.25;
-		}
-
-		// Protoss Cornerstone: Ascend - speed
+		// Protoss Cornerstone: Ascend - attack cooldown
 		if (unit_ext->timers[TimerAscend]) {
 			cooldown /= 1.25;
 		}
@@ -113,14 +120,6 @@ namespace hooks {
 		// Hierophant Signify: Malice
 		if (unit_ext->values[ValueSignifyStacks] >= 5) {
 			cooldown /= 0.6666;
-		}
-
-		if (cooldown_modifier > 0) { // Lame hardcode for attackspeed upgrades
-			cooldown /= 2;
-		} else {
-			if (cooldown_modifier < 0) { // Presumably, lame hardcode for some slow
-				cooldown += cooldown / 4;
-			}
 		}
 
 		if (unit->stim_timer) { // Fixes aice-related Stimpack issue
