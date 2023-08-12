@@ -58,6 +58,23 @@ static Advisor parse_advisor_name(std::string string)
 		// TODO: print error
 		advisor = Advisor_Default;
 	}
+	if (advisor == Advisor_Default) {
+		switch (g_player_table[*g_local_nation_id].race)
+		{
+			case RaceId::Terran:
+			{
+				advisor = Advisor_Terran;
+			}
+			case RaceId::Protoss:
+			{
+				advisor = Advisor_Protoss;
+			}
+			case RaceId::Zerg:
+			{
+				advisor = Advisor_Zerg;
+			}
+		}
+	}
 	return advisor;
 }
 
@@ -3085,9 +3102,9 @@ namespace hooks {
 			init_grpWireFont("font_wire");
 		}
 
-	//	globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
-	//	globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
-	//	globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
+		globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
+		globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
+		globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
 
 		return true;
 	}

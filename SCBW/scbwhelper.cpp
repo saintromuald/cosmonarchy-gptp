@@ -7711,28 +7711,28 @@ namespace helper {
 	}
 
 	Bullet* attack_fly_to_target(Bullet* bullet, s32 x, s32 y) {
-		const u32 Func_attackFlyToTarget = 0x00494B70;
+		const u32 func_address = 0x00494B70;
 		static Bullet* result;
 		__asm {
 			PUSHAD
 			MOV ECX, y
 			MOV EDX, x
 			MOV EAX, bullet
-			CALL Func_attackFlyToTarget
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId) {
-		const u32 Func_displayErrorMessageIDWithSFX = 0x0048EE30;
+	void display_error_message_id_with_sfx(s32 player, s32 message_id, s32 sound_id) {
+		const u32 func_address = 0x0048EE30;
 		__asm {
 			PUSHAD
-			MOV ESI, soundId
-			MOV EDI, messageId
+			MOV ESI, sound_id
+			MOV EDI, message_id
 			MOV EBX, player
-			CALL Func_displayErrorMessageIDWithSFX
+			CALL func_address
 			POPAD
 		}
 	}

@@ -932,7 +932,7 @@ namespace helper {
 	Bullet* attack_fly_to_target(Bullet* bullet, s32 x, s32 y);												// 00494B70
 
 	// For ai_progress_build
-	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId);							// 0048EE30
+	void display_error_message_id_with_sfx(s32 player, s32 message_id, s32 sound_id);						// 0048EE30
 
 	// For ai_manage_building_placement
 	s32 get_bunker_placement_position(s32 placement_id, s32* region_id);									// 004442E0

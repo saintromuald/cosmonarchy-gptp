@@ -221,34 +221,36 @@ namespace hooks
 	}
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
-	void display_error_message_id_with_sfx(u32 player_id, u32 message_id, u32 sound_id) // 0048EE30
+	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) // 0048EE30
 	{
-		// TODO: Switch case for message_id, checking stat_txt entries, lol!
-		if (player_id == *g_local_nation_id && !*g_is_in_replay)
+		if (player == *g_local_nation_id && !*g_is_in_replay)
 		{
+			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx)
 			{
-				u32 volume = sfx_dat::volume[sound_id];
+				u32 sound_id_final = scbw::parse_advisor_sound_by_message_id(player, message_id);
+				if (!sound_id_final) {
+					sound_id_final = sound_id;
+				}
+
+				u32 volume = sfx_dat::volume[sound_id_final];
 				u32 max_volume = 99;
 				if (volume >= 99)
 				{
 					if (volume >= 0)
 					{
-						if (volume >= 99)
-						{
-							max_volume = sfx_dat::volume[sound_id];
-						}
+						max_volume = sfx_dat::volume[sound_id_final];
 					} else {
 						max_volume = 0;
 					}
 				}
-				if (use_quiet_sounds)
+				if (*use_quiet_sounds)
 				{
 					max_volume /= 5;
 				}
 				if (max_volume > 10)
 				{
-					helper::play_transmission_from_location(sound_id, max_volume, 0, 0);
+					helper::play_transmission_from_location(sound_id_final, max_volume, 0, 0);
 				}
 			}
 
@@ -258,15 +260,14 @@ namespace hooks
 			{
 				if (final_message_id < *g_stat_txt_tbl)
 				{
-					message_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[final_message_id + 1]; // Access this correctly
-					if (!message_string)
-					{
+					message_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[final_message_id + 1];
+					if (!message_string) {
 						return;
 					}
 				} else {
 					message_string = "";
 				}
-				if (player_id == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
+				if (player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
 				{
 					helper::set_unit_stat_txt_error_message(message_string);
 				}

@@ -10,7 +10,7 @@ namespace hooks
 	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id);	// 0048DE70
 	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position);				// 0048E190
 	b32 check_resources_for_building(u32 notify, u8 player);									// 0042D0C0
-	void display_error_message_id_with_sfx(u32 player_id, u32 message_id, u32 sound_id);		// 0048EE30
+	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id);			// 0048EE30
 
 	void inject_cmdrecv_build_hooks();
 }

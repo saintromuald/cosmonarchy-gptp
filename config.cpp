@@ -47,9 +47,9 @@ void load_config() {
 		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
 		// Audiovisuals
-	//	load_field(config_node, "terran-advisor", config.terran_advisor_string);
-	//	load_field(config_node, "protoss-advisor", config.protoss_advisor_string);
-	//	load_field(config_node, "zerg-advisor", config.zerg_advisor_string);
+		load_field(config_node, "terran-advisor", config.terran_advisor_string);
+		load_field(config_node, "protoss-advisor", config.protoss_advisor_string);
+		load_field(config_node, "zerg-advisor", config.zerg_advisor_string);
 		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
 
 		// Hotkeys
@@ -114,9 +114,9 @@ void save_config() {
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Audiovisuals");
-//	write_field(out, "terran-advisor", config.terran_advisor_string);
-//	write_field(out, "protoss-advisor", config.protoss_advisor_string);
-//	write_field(out, "zerg-advisor", config.zerg_advisor_string);
+	write_field(out, "terran-advisor", config.terran_advisor_string);
+	write_field(out, "protoss-advisor", config.protoss_advisor_string);
+	write_field(out, "zerg-advisor", config.zerg_advisor_string);
 	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 

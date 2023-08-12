@@ -1264,18 +1264,6 @@ namespace scbw {
 		return result != 0;
 	}
 
-	void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId) {
-		const u32 func_address = 0x0048EE30;
-		__asm {
-			PUSHAD
-			MOV ESI, sfxId
-			MOV EDI, statTxtId
-			MOV EBX, player
-			CALL func_address
-			POPAD
-		}
-	}
-
 	u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId) {
 		const u32 func_address = 0x00491E80;
 		static u32 tech_id_xd;
@@ -3158,23 +3146,6 @@ namespace scbw {
 		return helper::get_path_distance_to(unit, target);
 	}
 
-	u32 get_custom_advisor_sound(u32 player, u32 event_type) {
-		Advisor advisor = globals.players[player].advisor;
-		switch (event_type) {
-			case AdvisorEvent_NoMinerals: {
-				switch (advisor) {
-					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
-					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
-					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
-				}
-			} break;
-			case AdvisorEvent_StructureComplete_T: {
-
-			} break;
-		}
-		return SoundId::No_sound;
-	}
-
 	Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
 		Vector32f shift = scbw::get_normalized_vector(scbw::get_vector_between(pos, target));
         f32 max_distance = std::max(abs(shift.x), abs(shift.y));
@@ -3218,5 +3189,79 @@ namespace scbw {
 			factor++;
 		}
 		return factor;
+	}
+
+	Advisor get_custom_advisor(u32 player) {
+		switch (g_player_table[player].race) {
+			case RaceId::Terran:
+			{
+				return globals.terran_advisor;
+			}
+			case RaceId::Protoss:
+			{
+				return globals.protoss_advisor;
+			}
+			case RaceId::Zerg:
+			{
+				return globals.zerg_advisor;
+			}
+		}
+		return Advisor_Default;
+	}
+
+	u32 get_custom_advisor_sound(u32 player, u32 event_type) {
+		Advisor advisor = get_custom_advisor(player);
+		switch (event_type) {
+			case AdvisorEvent_NoMinerals: {
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
+					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+				}
+			} break;
+			case AdvisorEvent_StructureComplete_T: {
+
+			} break;
+		}
+		return SoundId::No_sound;
+	}
+
+	u32 parse_advisor_sound_by_message_id(u32 player, u32 message_id) {
+		bool custom_advisor = scbw::has_custom_advisor(player);
+		u32 sound_id = SoundId::No_sound;
+
+		if (custom_advisor) {
+			switch (message_id) {
+				case AdvisorMessageId_NoMinerals:
+				{
+					sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
+				} break;
+			}
+		}
+		return sound_id;
+	}
+
+	bool has_custom_advisor(u32 player) {
+		switch (g_player_table[player].race) {
+			case RaceId::Terran:
+			{
+				if (globals.terran_advisor != Advisor_Terran) {
+					return true;
+				}
+			} break;
+			case RaceId::Protoss:
+			{
+				if (globals.protoss_advisor != Advisor_Protoss) {
+					return true;
+				}
+			} break;
+			case RaceId::Zerg:
+			{
+				if (globals.zerg_advisor != Advisor_Zerg) {
+					return true;
+				}
+			} break;
+		}
+		return false;
 	}
 }

@@ -109,6 +109,8 @@ enum Advisor: u8 {
 	Advisor_Protoss,
 	Advisor_Zerg,
 
+	Advisor_Mesk,
+
 	Advisor_Count,
 };
 
@@ -118,6 +120,8 @@ static const char* advisor_symbol_names[] = {
 	"terran",
 	"protoss",
 	"zerg",
+
+	"mesk",
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == Advisor_Count);
 
