@@ -61,6 +61,7 @@ namespace
 		hooks::apply_ensnare(unit, ensnare_factor);
 		__asm {
 			POPAD
+			MOV ESP, EBP
 			POP EBP
 			RETN 0x04
 		}

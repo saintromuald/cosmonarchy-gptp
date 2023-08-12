@@ -2520,6 +2520,7 @@ namespace hooks {
 		jump_patch(combine_lists_patch_6F2AD, 0x0046F2AD);
 		jump_patch(combine_lists_patch_6F320, 0x0046F320);
 		memory_patch(0x0046F2D9, (u8)0x2D);//JNE 0x0046F307
+		jump_patch(combine_lists_patch_6F2D1, 0x0046F2D1);
 
 		//do_targeted_order (0x0046F5B0)
 		memory_patch(0x0046F657, &ccmu_extender.new_client_selection_group);
