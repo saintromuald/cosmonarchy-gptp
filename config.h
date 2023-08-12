@@ -36,9 +36,9 @@ struct Config {
 	bool show_team_ui_self = false;
 
 	// Audiovisuals
-	std::string terran_advisor_string = "default";
-	std::string protoss_advisor_string = "default";
-	std::string zerg_advisor_string = "default";
+	std::string terran_advisor_string = "terran";
+	std::string protoss_advisor_string = "protoss";
+	std::string zerg_advisor_string = "zerg";
 	bool celebrations_enabled = true;
 
 	// Hotkeys
