@@ -41,11 +41,55 @@ static void init_auto_celebration() {
 	tm* ltm = localtime(&now);
 	u32 month = ltm->tm_mon + 1;
 
-	if (month == 12) {
-		globals.celebration = Celebration_Christmas;
-	} else {
-		globals.celebration = Celebration_None;
+	switch (month)
+	{
+		case 4: {
+			globals.celebration = Celebration_AprilFools;
+		} break;
+		case 12:
+		{
+			globals.celebration = Celebration_Christmas;
+		} break;
+		default:
+		{
+			globals.celebration = Celebration_None;
+		} break;
 	}
+}
+
+static Advisor parse_advisor_name(std::string string)
+{
+	Parser parser = {};
+	parser.at = (char*)string.c_str();
+	Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
+	if (advisor == -1) {
+		// TODO: print error
+		advisor = Advisor_Default;
+	}
+	if (advisor == Advisor_Default) {
+		switch (g_player_table[*g_local_nation_id].race)
+		{
+			case RaceId::Terran:
+			{
+				advisor = Advisor_Terran;
+			}
+			case RaceId::Protoss:
+			{
+				advisor = Advisor_Protoss;
+			}
+			case RaceId::Zerg:
+			{
+				advisor = Advisor_Zerg;
+			}
+		}
+	}
+	return advisor;
+}
+
+void init_advisor() {
+	globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
+	globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
+	globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
 }
 
 void init_trigger_system() {
@@ -69,6 +113,7 @@ void init_trigger_system() {
 	init_spawn();
 	init_trigger_vars();
 	init_trigger_events();
+	init_advisor();
 }
 
 static bool unit_can_change_sprite(Unit* unit) {
@@ -101,17 +146,34 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		return sprite_replacement->sprite_id;
 	}
 
-	if (globals.celebration == Celebration_Christmas) {
-		switch (unit->id) {
-			case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
-			case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
-			case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
-			case UnitId::TerranMinistry:			return SpriteId::Christmas_CommandCenter;
-			case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
-			case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
-			case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
-			case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
-		}
+	switch (globals.celebration) {
+		case Celebration_AprilFools:
+		{
+			switch (unit->id) {
+				case UnitId::ZergQuazilisk:					return SpriteId::AprilFools_Quazilisk;
+			}
+
+			// TODO: Sounds
+			{
+			//	SoundReplacement sound_replacement = {};
+			//	sound_replacement.any_animation = true;
+			//	sound_replacement.any_sound = true;
+			//	sound_replacement.replace = false;
+			}
+		} break;
+		case Celebration_Christmas:
+		{
+			switch (unit->id) {
+				case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
+				case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
+				case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
+				case UnitId::TerranMinistry:			return SpriteId::Christmas_CommandCenter;
+				case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
+				case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
+				case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
+				case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
+			}
+		} break;
 	}
 
 	u32 flingy_id = units_dat::graphic[unit->id];
@@ -1076,6 +1138,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				init_auto_celebration();
 			} else if (parser_eqi(&parser, "none")) {
 				globals.celebration = Celebration_None;
+			} else if (parser_eqi(&parser, "april_fools")) {
+				globals.celebration = Celebration_AprilFools;
 			} else if (parser_eqi(&parser, "christmas")) {
 				globals.celebration = Celebration_Christmas;
 			}
@@ -1174,6 +1238,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				globals.players[player].advisor = advisor;
+			}
+		} else if (parser_eq(&parser, "neutral_hostile")) {
+			bool neutral_hostile = (bool)parser_get_s32(&parser);
+			PlayerVars* player_vars = &globals.players[trigger_player];
+			if (player_vars->neutral_hostile != neutral_hostile) {
+				player_vars->neutral_hostile = (bool)neutral_hostile;
 			}
 		}
 	}

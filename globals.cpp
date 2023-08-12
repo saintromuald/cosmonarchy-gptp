@@ -50,8 +50,8 @@ void IquareGlobals::aise_save()
 		//stream.write(reinterpret_cast<const char*>(&effect->thingy), sizeof(effect->thingy));
 	}
 
-	u32 pariah_hit_count = line_attack_hits.size();
-	for (s32 i = 0; i < pariah_hit_count; i++)
+	u32 line_attack_hit_count = line_attack_hits.size();
+	for (s32 i = 0; i < line_attack_hit_count; i++)
 	{
 		stream.write(reinterpret_cast<const char*>(&line_attack_hits[i].source), sizeof(line_attack_hits[i].source));
 		stream.write(reinterpret_cast<const char*>(&line_attack_hits[i].target), sizeof(line_attack_hits[i].target));
@@ -81,8 +81,8 @@ void IquareGlobals::aise_save()
 		}
 	}
 
-	u32 lurker_map_size = lurker_spine_hits.size();
-	for (auto a : lurker_spine_hits)
+	u32 lurker_map_size = lakizilisk_spine_hits.size();
+	for (auto a : lakizilisk_spine_hits)
 	{
 		Unit* key = a.first;
 		stream.write(reinterpret_cast<char*>(&key), sizeof(key));
@@ -183,11 +183,11 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 		effects.push_back(effect);
 	}
 
-	u32 pariahHitsCount = 0;
-	stream.read(reinterpret_cast<char*>(&pariahHitsCount), sizeof(pariahHitsCount));
-	for (s32 i = 0; i < pariahHitsCount; i++)
+	u32 line_attack_hits_count = 0;
+	stream.read(reinterpret_cast<char*>(&line_attack_hits_count), sizeof(line_attack_hits_count));
+	for (s32 i = 0; i < line_attack_hits_count; i++)
 	{
-		PariahHit hit;
+		LineAttackHit hit;
 		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
 		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
 		line_attack_hits.push_back(hit);
@@ -229,7 +229,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 		for (s32 j = 0; j < valueCount; j++) {
 			Unit* value = nullptr;
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
-			lurker_spine_hits[key].push_back(value);
+			lakizilisk_spine_hits[key].push_back(value);
 		}
 	}*/
 
@@ -242,8 +242,8 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 
 		for (auto vec : unit_ext_array[i].value_vectors)
 		{
-			auto vecSize = vec.size();
-			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			auto vec_size = vec.size();
+			stream.read(reinterpret_cast<char*>(&vec_size), sizeof(vec_size));
 			for (auto elem : vec)
 			{
 				stream.read(reinterpret_cast<char*>(&elem), sizeof(elem));
@@ -252,8 +252,8 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 
 		for (auto vec : unit_ext_array[i].timer_vectors)
 		{
-			auto vecSize = vec.size();
-			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			auto vec_size = vec.size();
+			stream.read(reinterpret_cast<char*>(&vec_size), sizeof(vec_size));
 			for (auto elem : vec)
 			{
 				stream.read(reinterpret_cast<char*>(&elem), sizeof(elem));
@@ -262,8 +262,8 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 
 		for (auto vec : unit_ext_array[i].unit_vectors)
 		{
-			auto vecSize = vec.size();
-			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			auto vec_size = vec.size();
+			stream.read(reinterpret_cast<char*>(&vec_size), sizeof(vec_size));
 			for (auto elem : vec)
 			{
 				stream.read(reinterpret_cast<char*>(&elem), sizeof(elem));
@@ -276,7 +276,7 @@ void IquareGlobals::reset() {
 	effects.clear();
 	line_attack_hits.clear();
 	multihit_bullets.clear();
-	lurker_spine_hits.clear();
+	lakizilisk_spine_hits.clear();
 }
 
 void IquareGlobals::unit_death(Unit* unit) {
@@ -290,8 +290,8 @@ void IquareGlobals::unit_death(Unit* unit) {
 		}
 	}
 
-	lurker_spine_hits[unit].clear();
-	for (auto& a : lurker_spine_hits) {
+	lakizilisk_spine_hits[unit].clear();
+	for (auto& a : lakizilisk_spine_hits) {
 		for (s32 b = 0; b < a.second.size(); b++) {
 			if (a.second[b] == unit) {
 				a.second.erase(a.second.begin() + b);
@@ -613,7 +613,7 @@ bool IquareGlobals::was_hit_by_line_attack(Unit* source, Unit* target)
 
 void IquareGlobals::register_line_attack_hit(Unit* source, Unit* target)
 {
-	PariahHit hit;
+	LineAttackHit hit;
 	hit.source = source;
 	hit.target = target;
 	line_attack_hits.push_back(hit);
@@ -696,15 +696,15 @@ void IquareGlobals::add_multihit_empty_bullet(Bullet* bullet, s32 divider) {
 }
 
 void IquareGlobals::clear_lakizilisk(Unit* lakizilisk) {
-	lurker_spine_hits[lakizilisk].clear();
+	lakizilisk_spine_hits[lakizilisk].clear();
 }
 
 void IquareGlobals::add_lakizilisk_spine_pair(Unit* lakizilisk, Unit* target) {
-	lurker_spine_hits[lakizilisk].push_back(target);
+	lakizilisk_spine_hits[lakizilisk].push_back(target);
 }
 
 bool IquareGlobals::spine_pair_exists(Unit* lakizilisk, Unit* target) {
-	for (auto a : lurker_spine_hits) {
+	for (auto a : lakizilisk_spine_hits) {
 		for (auto b : a.second) {
 			if (a.first == lakizilisk && b == target) {
 				return true;

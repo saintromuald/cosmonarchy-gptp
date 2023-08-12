@@ -96,6 +96,7 @@ namespace hooks
 			{
 				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->update_speed();
+				unit_ext->values[ValueEnsnareFactor] = 0;
 			}
 		}
 
@@ -303,6 +304,53 @@ namespace hooks
 			{
 				overlay->flags = overlay->flags & 0xFFBF | 1;
 			}
+		}
+	}
+
+	// Hooked to update apply_ensnare argument amount. -Pr0nogo
+	void apply_unit_effects(Unit* unit) // 00492DA0
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit->defensive_matrix_timer)
+		{
+			helper::apply_defensive_matrix(unit);
+		}
+		if (unit->lockdown_timer)
+		{
+			u32 timer = unit->lockdown_timer;
+			unit->lockdown_timer = 0;
+			helper::apply_lockdown(unit, timer);
+		}
+		if (unit->maelstrom_timer)
+		{
+			u32 timer = unit->maelstrom_timer;
+			unit->maelstrom_timer = 0;
+			helper::apply_maelstrom(unit, timer);
+		}
+		if (unit->irradiate_timer)
+		{
+			helper::apply_irradiate(unit);
+		}
+		if (unit->ensnare_timer)
+		{
+			u32 factor = unit_ext->values[ValueEnsnareFactor];
+			u32 timer = unit->ensnare_timer;
+			unit->ensnare_timer = 0;
+			helper::apply_ensnare(unit, factor);
+			unit->ensnare_timer = timer;
+		}
+		if (unit->stasis_timer)
+		{
+			u32 timer = unit->stasis_timer;
+			unit->stasis_timer = 0;
+			helper::apply_stasis_field (unit, timer);
+		}
+		if (unit->plague_timer)
+		{
+			u32 timer = unit->plague_timer;
+			unit->plague_timer = 0;
+			helper::apply_plague(unit);
+			unit->plague_timer = timer;
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace hooks {
 				u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 				if (distance / 256 > distance_wanted) {
-					if (unit->get_movable_state() != MovableState::NotReachedDestination) {
+					if (unit->get_movable_state() != MovableState_NotReachedDestination) {
 						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					}
 				} else {
@@ -34,7 +34,7 @@ namespace hooks {
 					u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 					if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted)) {
-						if (unit->get_movable_state() != MovableState::NotReachedDestination) {
+						if (unit->get_movable_state() != MovableState_NotReachedDestination) {
 							helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 						}
 					} else {

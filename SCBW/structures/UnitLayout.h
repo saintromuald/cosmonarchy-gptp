@@ -205,8 +205,7 @@ union CargoUnit {
 struct UnitLayout
 {
 	/*0x000*/ Link<Unit> link;
-	/*0x008*/ s32       hitpoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256)
-														// Officially called "xLife"
+	/*0x008*/ s32       hitpoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256). Officially called "xLife"
 	/*0x00C*/ Sprite*	sprite;
 	/*0x010*/ Target    move_target;					// The position or unit to move to. It is NOT an order target.
 	/*0x018*/ Point16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.

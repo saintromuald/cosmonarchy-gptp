@@ -127,7 +127,7 @@ namespace scbw
 
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 	/// unit is a ground unit or a building.
-	bool is_under_dark_swarm(Unit* unit);
+	bool is_under_carapace_swarm(Unit* unit);
 	Unit* get_dark_swarm_unit(Unit* unit);
 	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius);
 	//Checks if the @p target can be targeted by player @p castingPlayer with
@@ -771,6 +771,10 @@ namespace scbw
 	bool unit_can_flee(Unit* unit);
 	GameKind get_game_kind();
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target);
-	u32 get_custom_advisor_sound(u32 player, u32 event_type);
 	Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target);
+	u32 get_fore_castle_factor(Unit* unit);
+	u32 get_ensnare_factor(Unit* unit);
+	u32 get_custom_advisor_sound(u32 player, u32 event_type);
+	u32 parse_advisor_sound_by_message_id(u32 player, u32 message_id);
+	bool has_custom_advisor(u32 player);
 }

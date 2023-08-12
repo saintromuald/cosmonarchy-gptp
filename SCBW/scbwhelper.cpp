@@ -4640,7 +4640,7 @@ namespace helper {
 				damage_divisor *= bullet_ext->divisor_overwrite;
 			}
 		}
-		if (bullet && target && bullet->source_unit && (bullet->weapon_id == WeaponId::PariahIconoclastBlades || bullet->weapon_id == WeaponId::StrigaPhaseSaber)) {
+		if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(bullet->weapon_id)) {
 			if (!iquare_globals.was_hit_by_line_attack(bullet->source_unit, target)) {
 				iquare_globals.register_line_attack_hit(bullet->source_unit, target);
 			} else {
@@ -4906,7 +4906,7 @@ namespace helper {
 		return return_value;
 	}
 
-	// For updateCorrosiveSpores
+	// For update_corrosive_spores
 	u32 get_corrosive_spores_image(Unit* unit) {
 		const u32 func_address = 0x004F41F0;
 		static u32 result;
@@ -5683,10 +5683,11 @@ namespace helper {
 		}
 	}	
 
-	void create_ensnare_overlay(Unit* unit) {
+	void apply_ensnare(Unit* unit, u32 ensnare_factor) {
 		const u32 func_address = 0x004F45E0;
 		__asm {
 			PUSHAD
+			PUSH ensnare_factor
 			MOV EDI, unit
 			CALL func_address
 			POPAD
@@ -6858,12 +6859,12 @@ namespace helper {
 
 	// For is_order_valid
 	bool unit_is_resource(Unit* unit) {
-		const u32 Func_unitIsResource = 0x004688E0;
+		const u32 func_address = 0x004688E0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_unitIsResource
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -6871,104 +6872,104 @@ namespace helper {
 	}
 
 	void return_all_interceptors(Unit* unit) {
-		const u32 Func_returnAllInterceptors = 0x004655F0;
+		const u32 func_address = 0x004655F0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_returnAllInterceptors
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void orders_self_destructing(Unit* unit) {
-		const u32 Func_orders_SelfDestructing = 0x00475710;
+		const u32 func_address = 0x00475710;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_orders_SelfDestructing
+			CALL func_address
 			POPAD
 		}
 	}
 
-	char set_maelstrom_timer(Unit* unit, u8 time) {
-		const u32 Func_setMaelstromTimer = 0x004553F0;
+	char apply_maelstrom(Unit* unit, u8 time) {
+		const u32 func_address = 0x004553F0;
 		static s32 result;
 		u32 time_xd = time;
 		__asm {
 			PUSHAD
 			PUSH time_xd
 			MOV EDI, unit
-			CALL Func_setMaelstromTimer
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return (char)result;
 	}
 
-	// For CBulletDamage
-	s32 _fastcall lurkerSplashProc(Unit* target, Bullet* bullet) {
-		const u32 Func_lurkerSplashProc = 0x0048B680;
+	// For bullet_damage
+	s32 _fastcall lakizilisk_splash_proc(Unit* target, Bullet* bullet) {
+		const u32 func_address = 0x0048B680;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, bullet
 			MOV ECX, target
-			CALL Func_lurkerSplashProc
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	s32 _fastcall groundSplashProc(Unit* target, Bullet* bullet) {
-		const u32 Func_groundSplashProc = 0x0048B750;
+	s32 _fastcall ground_splash_proc(Unit* target, Bullet* bullet) {
+		const u32 func_address = 0x0048B750;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, bullet
 			MOV ECX, target
-			CALL Func_groundSplashProc
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	s32 _fastcall airSplashProc(Unit* unit, Bullet* bullet) {
-		const u32 Func_airSplashProc = 0x0048B150;
+	s32 _fastcall air_splash_proc(Unit* unit, Bullet* bullet) {
+		const u32 func_address = 0x0048B150;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, result
 			MOV ECX, unit
-			CALL Func_airSplashProc
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	s32 _fastcall airSplashProc2(Unit* unit, Bullet* bullet) {
-		const u32 Func_airSplashProc2 = 0x0048B730;
+	s32 _fastcall air_splash_proc_2(Unit* unit, Bullet* bullet) {
+		const u32 func_address = 0x0048B730;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, result
 			MOV ECX, unit
-			CALL Func_airSplashProc2
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	bool unitHasNoMainOrderType(Unit* unit) {
-		const u32 Func_unitHasNoMainOrderType = 0x00475A50;
+	bool unit_has_no_main_order_type(Unit* unit) {
+		const u32 func_address = 0x00475A50;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_unitHasNoMainOrderType
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -7710,28 +7711,28 @@ namespace helper {
 	}
 
 	Bullet* attack_fly_to_target(Bullet* bullet, s32 x, s32 y) {
-		const u32 Func_attackFlyToTarget = 0x00494B70;
+		const u32 func_address = 0x00494B70;
 		static Bullet* result;
 		__asm {
 			PUSHAD
 			MOV ECX, y
 			MOV EDX, x
 			MOV EAX, bullet
-			CALL Func_attackFlyToTarget
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	void display_error_message_id_with_sfx(s32 player, s32 messageId, s32 soundId) {
-		const u32 Func_displayErrorMessageIDWithSFX = 0x0048EE30;
+	void display_error_message_id_with_sfx(s32 player, s32 message_id, s32 sound_id) {
+		const u32 func_address = 0x0048EE30;
 		__asm {
 			PUSHAD
-			MOV ESI, soundId
-			MOV EDI, messageId
+			MOV ESI, sound_id
+			MOV EDI, message_id
 			MOV EBX, player
-			CALL Func_displayErrorMessageIDWithSFX
+			CALL func_address
 			POPAD
 		}
 	}
@@ -13977,5 +13978,76 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	u8 apply_defensive_matrix(Unit* unit) // 00455010
+	{
+		static u8 result;
+		const u32 func_address = 0x00455010;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u8 apply_lockdown(Unit* unit, u32 duration) // 00455380
+	{
+		static u8 result;
+		const u32 func_address = 0x00455380;
+		__asm {
+			PUSHAD
+			PUSH duration
+			MOV EDI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+	}
+
+	u8 apply_irradiate(Unit* unit) // 00454E80
+	{
+		static u8 result;
+		const u32 func_address = 0x00454E80;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u8 apply_stasis_field(Unit* unit, u32 duration) // 004F67B0
+	{
+		static u8 result;
+		const u32 func_address = 0x004F67B0;
+		__asm {
+			PUSHAD
+			PUSH duration
+			MOV EDI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	u8 apply_plague(Unit* unit) // 004F4550
+	{
+		static u8 result;
+		const u32 func_address = 0x004F4550;
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
 	}
 }

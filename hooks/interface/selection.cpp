@@ -4,6 +4,13 @@
 #include "trigger_system/trigger_system.h"
 #include "config.h"
 
+bool unit_is_owned_by_current_player_new(Unit* unit) {
+	if (!*g_is_in_replay && !globals.players[*g_local_nation_id].witness_mode) {
+		return unit->player == *g_local_nation_id;
+	}
+	return unit->player == active_player_selection->unit[0]->player;
+}
+
 namespace hooks
 {
 	static s32 compare_selection_unit(const void* a, const void* b) {
@@ -31,19 +38,16 @@ namespace hooks
 	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds) // 0046F0F0
 	{
 		sort_unit_selection(units_in_bounds);
-		Unit* current_unit;
 		Unit* backup_current_unit = 0;
-		u32 current_index_in_unit_list;
 		bool stop_big_loop = false;
 		bool keep_for_empty_list_case = false;
 		bool dont_add_to_list = false;
 		
 		// if unit not null, become first entry of unit_list
+		u32 current_index_in_unit_list = 0;
 		if (unit) {
 			unit_list[0] = unit;
 			current_index_in_unit_list = 1;
-		} else {
-			current_index_in_unit_list = 0;
 		}
 
 		bool has_units = false;
@@ -63,7 +67,7 @@ namespace hooks
 		}
 
 		// work with the first unit from units_in_bounds
-		current_unit = *units_in_bounds;
+		Unit* current_unit = *units_in_bounds;
 		if (!current_unit)
 		{
 			stop_big_loop = true;
@@ -83,12 +87,10 @@ namespace hooks
 				}
 
 				if (!dont_add_to_list) {
-					// if current_unit == unit, then it's already in
-					// unit_list
+					// if current_unit == unit, then it's already in unit_list
 					if (current_unit->subunit)
 					{
-						// if what got it is the turret or another subunit, swap
-						// the unit and the subunit as current_unit
+						// if what got it is the turret or another subunit, swap the unit and the subunit as current_unit
 						if (units_dat::base_property[current_unit->id] & UnitProperty::Subunit)
 						{
 							current_unit = current_unit->subunit;
@@ -133,11 +135,12 @@ namespace hooks
 							dont_add_to_list = true;
 						} else if (!helper::unit_is_standard_and_movable(current_unit)) {
 							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						} else if (*g_is_in_replay) {
-							keep_for_empty_list_case = true;
+						} else if (*g_is_in_replay || globals.players[*g_local_nation_id].witness_mode) {
+							goto new_replay_logic; // New from DF
 						} else if (current_unit->player != *g_local_nation_id) {
 							keep_for_empty_list_case = true;
 						} else {
+						new_replay_logic:
 							if (unit)
 							{
 								// all units should belong to the same player (the one owning the clicked unit)
@@ -151,9 +154,8 @@ namespace hooks
 									// keep the flags appearing in only 1 of the variables
 									u32 mixed_flags = (~(unit->status) & current_unit->status) | (unit->status & ~(current_unit->status));
 
-									// Only select all burrowed OR all unburrowed
-									// units.The test exclude current_unit if the
-									// burrowed state differ from the one of unit.
+									// Only select all burrowed OR all unburrowed units.
+									// The test exclude current_unit if the burrowed state differ from the one of unit.
 									if (mixed_flags & UnitStatus::Burrowed)
 									{
 										dont_add_to_list = true;
@@ -165,13 +167,13 @@ namespace hooks
 										dont_add_to_list = true;
 									}
 
-									// Same thing for completed
+									// Same thing for completed units
 									if (mixed_flags & UnitStatus::Completed)
 									{
 										dont_add_to_list = true;
 									}
 
-									// Same thing for lifted
+									// Same thing for lifted structures
 									if (mixed_flags & UnitStatus::InAir)
 									{
 										dont_add_to_list = true;
@@ -181,8 +183,8 @@ namespace hooks
 
 							if (!dont_add_to_list)
 							{
-								if (current_index_in_unit_list >= SelectionCap) { // action when unit_list is full 
-									stop_big_loop = true; // This was added, so sorting by cursor is respected, not sure what was the role of the original call
+								if (current_index_in_unit_list >= SelectionCap) { // action when unit_list is full
+									stop_big_loop = true; // This was added, so sorting by cursor is respected, not sure about the role of the original call
 
 									// helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 								} else {
@@ -206,14 +208,10 @@ namespace hooks
 			{
 				backup_current_unit = current_unit;
 			}
-
-			// select next unit in bounds
-			units_in_bounds += 1; // this actually advance by 4 bytes
+			units_in_bounds += 1; // this actually advances by 4 bytes
 			current_unit = *units_in_bounds;
 			keep_for_empty_list_case = false;
 			dont_add_to_list = false;
-
-			// continue until current_unit is nullptr
 			if (!current_unit)
 			{
 				stop_big_loop = true;
@@ -298,9 +296,7 @@ namespace hooks
 						}
 					}
 				}
-			}
-			else
-			{
+			} else {
 				// holding SHIFT (if not holding CTRL, then there's an active unit_list too)
 				if (holding_ctrl_or_double_clicking)
 				{
@@ -340,9 +336,7 @@ namespace hooks
 						// turn local_temp_array_2 as the newly applied unit_list
 						helper::select_units_if_alt_not_held(local_temp_array_2, list_remixed_length, 1, 1);
 					}
-				}
-				else
-				{
+				} else {
 					// 0046FCF6
 
 					// Shift + click while there's an existing unit_list (because hold on CTRL case was already dealt with so there's an existing unit_list at this point) add/remove unit from unit_list
@@ -358,10 +352,10 @@ namespace hooks
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
 						// unit not it, so it's added to current unit_list if valid
 						if (array_index < SelectionCap
-							&& helper::unit_is_standard_and_movable(local_temp_array_1[0])
-							&& helper::unit_is_owned_by_current_player(local_temp_array_1[0])
-							&& helper::unit_is_standard_and_movable(clicked_unit)
-							&& helper::unit_is_owned_by_current_player(clicked_unit))
+						&&  helper::unit_is_standard_and_movable(local_temp_array_1[0])
+						&&  unit_is_owned_by_current_player_new(local_temp_array_1[0])
+						&&  helper::unit_is_standard_and_movable(clicked_unit)
+						&&  unit_is_owned_by_current_player_new(clicked_unit))
 						{
 							// new unit is added at end of array, and the index is increased to be used as new array length
 							local_temp_array_1[array_index] = clicked_unit;
@@ -370,14 +364,10 @@ namespace hooks
 							// turn local_temp_array_1 as the newly applied unit_list
 							helper::select_units_if_alt_not_held(local_temp_array_1, array_index, 1, 1);
 						}
-					}
-					else
-					{
-						// 0046FD77
+					} else {
 						// unit already it, remove it from unit_list
 						u32 memcpy_size;
 						bool bUpdateSelection = true;
-
 						// decrease it so it's equal to the index of last element
 						array_index--;
 						// each element is 4 bytes, multiply it by the number of elements after the one to remove
@@ -388,7 +378,6 @@ namespace hooks
 
 						// either erase the element to delete or one that was repeated after memcpy
 						local_temp_array_1[array_index] = 0;
-
 						if (array_index == 1)
 						{
 							if (*g_is_holding_alt)
@@ -622,7 +611,8 @@ namespace hooks
 
 			if (sorted_units != 1
 			|| !g_is_keycode_used[18]
-			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0]))) {
+			|| !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0])))
+			{
 				helper::select_multiple_units_from_unit_list((u32)sorted_units, new_units, 1, 1);
 				if (sorted_units != 1) {
 					return;

@@ -389,19 +389,6 @@ bool unit_collides_with_titanic(Unit* unit) {
 		|| unit->id == UnitId::ZergUltrokor;
 }
 
-bool unit_has_fore_castle(Unit* unit) {
-	switch (unit->id) {
-		case UnitId::TerranMinotaur: {
-			return true;
-		}
-	}
-	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueHasSublimeShepherd]) {
-		return true;
-	}
-	return false;
-}
-
 bool weapon_id_is_for_harvesting(u32 weapon_id) {
 	return weapon_id == WeaponId::MasonFusionCutterHarvest
 		|| weapon_id == WeaponId::ScribeParticleBeamHarvest
@@ -434,13 +421,11 @@ bool weapon_id_accelerates(u32 weapon_id) {
 bool weapon_id_is_melee_aoe(u32 weapon_id) {
 	return weapon_id == WeaponId::SycophantSparringSaber
 		|| weapon_id == WeaponId::GolemBloodlessAssault
-		|| weapon_id == WeaponId::NathrokorPlasmidBreath
 		|| weapon_id == WeaponId::MortothrokorWickedIncisors
 		|| weapon_id == WeaponId::GorgrokorSerratedCleavers
 		|| weapon_id == WeaponId::ZarcavrokorBisectingBlades
 		|| weapon_id == WeaponId::TethzorokorSaberArray
 		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
-
 }
 
 u32 weapon_id_intercepts(u32 weapon_id) {
@@ -449,7 +434,6 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 		case WeaponId::AccantorPlasmaShell:
 			return InterceptType_GroundOnly;
 
-		case WeaponId::ValkyrieHaloRockets:
 		case WeaponId::EmpyreanPlasmaBarrage:
 			return InterceptType_AirOnly;
 
@@ -494,7 +478,6 @@ bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
 		switch (weapon_id) {
 			case WeaponId::SycophantSparringSaber:
 			case WeaponId::GolemBloodlessAssault:
-			case WeaponId::NathrokorPlasmidBreath:
 			case WeaponId::MortothrokorWickedIncisors:
 			case WeaponId::GorgrokorSerratedCleavers:
 			case WeaponId::ZarcavrokorBisectingBlades:
@@ -632,7 +615,7 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 		{
 			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueSundogLaunchPos;
-			offsets.count = 4;
+			offsets.count = 2;
 			return &offsets;
 		} break;
 		case WeaponId::CentaurSunchaserMissiles:
@@ -883,6 +866,10 @@ u32 get_mutate_image_id(u32 unit_id) {
 		{
 			return ImageId::QuaziliskMutate;
 		}
+		case UnitId::ZergNathrokor:
+		{
+			return ImageId::NathrokorMutate;
+		}
 		default:
 		{
 			return 0;
@@ -890,10 +877,46 @@ u32 get_mutate_image_id(u32 unit_id) {
 	}
 }
 
-bool unit_is_tower(Unit* unit)
-{
+bool unit_is_tower(Unit* unit) {
 	if (units_dat::base_property[unit->id] & UnitProperty::Building && unit_is_combatant(unit)) {
 		return true;
 	}
 	return false;
+}
+
+bool unit_applies_ensnare(Unit* unit) {
+	switch (unit->id)
+	{
+		case UnitId::ZergVorvrokor:
+		{
+			return true;
+		} break;
+		default:
+		{
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->timers[TimerEnsnaringBrood] > 0) {
+				return true;
+			}
+		} break;
+	}
+	return false;
+}
+
+bool unit_can_be_ensnared(Unit* unit) {
+	if (scbw::is_under_carapace_swarm(unit)) {
+		return false;
+	}
+	if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding || unit_is_tower(unit))
+	{
+		return true;
+	}
+	if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+		return false;
+	}
+	return true;
+}
+
+bool weapon_id_is_line_attack(u32 weapon_id) {
+	return weapon_id == WeaponId::StrigaPhaseSaber
+		|| weapon_id == WeaponId::PariahIconoclastBlades;
 }

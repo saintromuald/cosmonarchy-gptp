@@ -178,13 +178,17 @@ namespace hooks {
 		UnitExt* attacker_ext = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
 		if (target) {
-			u8 weapon_id;
+			u32 weapon_id;
 			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code.
 			if (attacker->id != UnitId::ZergLakizilisk
 			|| (attacker->status & UnitStatus::Burrowed
 			||  attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers. Didn't work, but may still be part of the solution. -Pr0nogo
 			{
-				weapon_id = units_dat::ground_weapon[attacker->id];
+				if (target->status & UnitStatus::InAir && units_dat::air_weapon[attacker->id] != WeaponId::None) {
+					weapon_id = units_dat::air_weapon[attacker->id];
+				} else {
+					weapon_id = units_dat::ground_weapon[attacker->id];
+				}
 			} else {
 				weapon_id = WeaponId::None;
 			}
@@ -323,11 +327,12 @@ namespace hooks {
 	}
 
 	s32 ensnare_proc(Unit* target, Unit* attacker) {
-		if (target != attacker
-			&& !(units_dat::base_property[target->id] & UnitProperty::Building)
-			&& target->id != UnitId::ZergInfestedTerran) {
-			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed)) {
-				helper::create_ensnare_overlay(target);
+		if (target != attacker)
+		{
+			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
+			{
+				UnitExt* unit_ext = get_unit_ext(target);
+				helper::apply_ensnare(target, unit_ext->values[ValueEnsnareFactor]);
 			}
 		}
 		return 0;
@@ -480,7 +485,7 @@ namespace hooks {
 		} else {
 			if (target != source && !(unit_status & UnitStatus::Invincible)) {
 				if (!(unit_status & UnitStatus::Burrowed)) {
-					helper::set_maelstrom_timer(target, 4 * 24);
+					helper::apply_maelstrom(target, 4 * 24);
 				}
 			}
 		}

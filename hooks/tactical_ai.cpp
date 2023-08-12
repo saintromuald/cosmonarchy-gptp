@@ -1143,25 +1143,25 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 		} else if (unit->id == UnitId::ProtossStarSovereign && unit_ext->timers[TimerAI_GriefOfAllGods] == 0) {
-			auto enemyUnitsHealth = 0;
-			auto alliedUnitsHealth = 0;
-			bool alliedTownHalls = false;
+			u32 enemy_units_health = 0;
+			u32 allied_units_health = 0;
+			bool allied_town_centers = false;
 			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange, Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u) {
 				if (!scbw::is_allied_to(unit->player, u->player))
 				{
-					enemyUnitsHealth += (u->hitpoints + u->shields) / 256;
+					enemy_units_health += (u->hitpoints + u->shields) / 256;
 				}
 				if (scbw::is_allied_to(unit->player, u->player))
 				{
 					if (units_dat::base_property[u->id] & UnitProperty::ResourceDepot)
 					{
-						alliedTownHalls = true;
+						allied_town_centers = true;
 						return;
 					}
-					alliedUnitsHealth += (u->hitpoints + u->shields) / 256;
+					allied_units_health += (u->hitpoints + u->shields) / 256;
 				}
 			});
-			if (!alliedTownHalls && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000
+			if (!allied_town_centers && enemy_units_health >= 2000 && allied_units_health < 2000
 				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
 				unit_ext->timers[TimerAI_GriefOfAllGods] = 612;
 				unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;

@@ -793,6 +793,8 @@ namespace SpriteId
 
 		CyclopsPassiveArmingOverlay = 877,
 
+		AprilFools_Quazilisk		= 879,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

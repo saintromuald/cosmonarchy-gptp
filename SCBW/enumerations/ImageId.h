@@ -1198,6 +1198,7 @@ namespace ImageId {
 		TerranCancelStructure						= 1740,
 
 		QuaziliskMutate								= 1751,
+		NathrokorMutate								= 1754,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

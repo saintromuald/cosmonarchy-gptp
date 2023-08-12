@@ -21,7 +21,7 @@
 Bullet* weapon_damage_current_bullet;
 
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
-	return scbw::is_under_dark_swarm(target)
+	return scbw::is_under_carapace_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
 		&& weapon_id != WeaponId::HarakanFlamethrower
@@ -44,7 +44,7 @@ namespace hooks
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
 		globals.alert.sound_id = sound_id;
-		globals.alert.play_timer = 12; 
+		globals.alert.play_timer = 12;
 	}
 
 
@@ -53,7 +53,7 @@ namespace hooks
 		unit_search_radial(&units, unit->position, 11 * 32);
 		for (u32 i = 0; i < units.count; ++i) {
 			Unit* other = units.units[i];
-			other->attack_notify_timer = other->player == unit->player ? 100 : 200;
+			other->attack_notify_timer = other->player == unit->player ? 100 : 1000;
 		}
 	}
 
@@ -94,7 +94,7 @@ namespace hooks
 			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.ally_cooldown = 300;
+					globals.alert.ally_cooldown = 1000;
 
 					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
 					play_alert(unit, sound_id);
@@ -236,14 +236,15 @@ namespace hooks
 			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
 			if (data.attacker) {
-				if (unit_has_fore_castle(data.target)) {
+				u32 fore_castle_factor = scbw::get_fore_castle_factor(data.target);
+				if (fore_castle_factor) {
 					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
-						armor_total += 2;
+						armor_total += fore_castle_factor;
 						shield_overlay = true;
 					}
 				}
@@ -440,11 +441,9 @@ namespace hooks
 			}
 
 			// Ensnaring Brood - Matraleth enchantment ability
-			if  (attacker_ext->timers[TimerEnsnaringBrood] > 0
-			&&  unit_is_combatant(data.target)
-			&&  !scbw::is_under_dark_swarm(data.target))
+			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target))
 			{
-				 apply_ensnare(data.target);
+				 apply_ensnare(data.target, scbw::get_ensnare_factor(data.attacker));
 			}
 
 			if (data.weapon_id == WeaponId::MindTyrantTyranny) {
@@ -459,7 +458,7 @@ namespace hooks
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
 					&&	!(data.attacker->status & UnitStatus::Burrowed)
-					&&   !scbw::is_under_dark_swarm(data.target))
+					&&   !scbw::is_under_carapace_swarm(data.target))
 					{
 						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
@@ -478,7 +477,7 @@ namespace hooks
 				{
 					// Autovitality - Simulacrum behavior
 					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
-					&&  !scbw::is_under_dark_swarm(data.target)
+					&&  !scbw::is_under_carapace_swarm(data.target)
 					&&   data.shield_reduce_amount >= data.target->shields
 					&&   data.damage
 					&&   target_ext->timers[TimerSimulacrumClone] == 0)
@@ -531,14 +530,9 @@ namespace hooks
 					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
-				case WeaponId::VorvalClaws:
-				{
-					// Captivating Claws - Vorvrokor behavior
-					captivating_claws_apply(data.attacker, data.target);
-				} break;
 			}
 
-			if (!scbw::is_under_dark_swarm(data.target)) {
+			if (!scbw::is_under_carapace_swarm(data.target)) {
 				// Astral Rule - Patriarch behavior
 				if (target_ext->timers[TimerPatriarchAstralRule] > 1
 				&&  units_dat::shields_enabled[data.attacker->id]
@@ -1027,17 +1021,15 @@ namespace hooks
 		return fatal_deal_damage;
 	}
 
-	void apply_ensnare(Unit* unit) { // 004F45E0
+	void apply_ensnare(Unit* unit, u32 ensnare_factor) { // 004F45E0
 		// Overlay
 		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
-			Unit* victim = unit;
-			if (unit->subunit) {
-				victim = unit->subunit;
-			}
-			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(victim->id));
+			scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Effect
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueEnsnareFactor] = ensnare_factor;
 		unit->ensnare_timer = 5;
 		unit->update_speed();
 	}

@@ -564,7 +564,7 @@ namespace UnitId
 
 		Buttons_MixedMasonTraining							= 361,
 
-		Buttons_BasicPoliceStructures						= 368,	// unused
+		Buttons_MixedScribeTraining							= 368,
 		Buttons_AdvancedPoliceStructures					= 369,	// unused
 	};
 }

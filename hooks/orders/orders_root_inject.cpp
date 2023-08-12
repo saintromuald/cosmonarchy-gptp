@@ -66,6 +66,18 @@ namespace {
 			RETN
 		}
 	}
+
+	// PATCHES \\
+
+	const u32 perform_orders_E9E67 = 0x004E9E67;
+	void __declspec(naked) perform_orders_patch_E9E61() {
+		__asm {
+			MOV		ESI, EAX
+			MOV		byte ptr[ESI + 0x85], 0
+			MOVZX	EAX, byte ptr[ESI + 0x4E]//unit->main_order_state
+			JMP		perform_orders_E9E67
+		}
+	}
 }
 
 namespace hooks {
@@ -75,5 +87,7 @@ namespace hooks {
 	//	jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
 		jump_patch(do_next_queued_order_wrapper,	0x00475000,	1);
 		jump_patch(orders_stay_in_range_wrapper,	0x0047C4F0,	0);
+
+		jump_patch(perform_orders_patch_E9E61,		0x004E9E61, 1);
 	}
 }

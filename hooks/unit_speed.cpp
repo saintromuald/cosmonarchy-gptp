@@ -18,7 +18,7 @@ namespace hooks
 		f64 speed = 1;
 		// Set additives based on status effects
 		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
-		s32 decrease = (unit->ensnare_timer ? 1 : 0);
+		s32 decrease = (unit->ensnare_timer ? unit_ext->values[ValueEnsnareFactor] : 0);
 
 		if (decrease > 0) {
 			for (s32 i = 0; i < decrease; i++) {
@@ -202,7 +202,7 @@ namespace hooks
 			} break;
 			case UnitId::ZergMortothrokor:
 			{
-				speed *= 1.3; // Hardcoded ideal
+				speed *= 1.3; // Hardcoded ideal movement speed
 				if (unit_ext->values[ValueMortothrokorStacks])
 				{
 					speed *= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);
@@ -246,6 +246,7 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergQuazilisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:
 			case UnitId::ZergZoryusthaleth:

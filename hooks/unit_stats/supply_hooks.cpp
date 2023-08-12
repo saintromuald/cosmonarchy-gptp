@@ -360,14 +360,14 @@ namespace hooks
         // Must construct additional pylons
         if (supply_used + supply_cost > g_race_supply[RaceId::Terran].max[player]) {
             if (can_show_error) {
-                scbw::show_error_message_with_sfx(player, 847 + race, 1 + race);
+                helper::display_error_message_id_with_sfx(player, 847 + race, 1 + race);
             }
             return false;
         }
         // Supply limit exceeded
         if (supply_cost > scbw::get_supply_remaining(player, RaceId::Terran)) {
             if (can_show_error) {
-                scbw::show_error_message_with_sfx(player, 844 + race, 153 + race);
+				helper::display_error_message_id_with_sfx(player, 844 + race, 153 + race);
             }
             return false;
         }

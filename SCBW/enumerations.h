@@ -609,15 +609,12 @@ namespace TilesetType
 	};
 }
 
-namespace MovableState
+enum MovableState
 {
-	enum Enum
-	{
-		NotReachedDestination = 0,
-		ReachedDestination = 1,
-		UnmovableAtDestination = 2
-	};
-}
+	MovableState_NotReachedDestination = 0,
+	MovableState_ReachedDestination = 1,
+	MovableState_UnmovableAtDestination = 2
+};
 
 namespace BinDlgFlags
 {
@@ -1466,4 +1463,22 @@ enum AdvisorEvent {
 	AdvisorEvent_AllyUnderAttack_T		= 18,
 	AdvisorEvent_AllyUnderAttack_P		= 19,
 	AdvisorEvent_AllyUnderAttack_Z		= 20,
+};
+
+enum AdvisorMessageId {
+	AdvisorMessageId_NoMinerals				= 850,
+	AdvisorMessageId_NoVespene				= 851,
+	AdvisorMessageId_NoEnergy				= 864,
+	AdvisorMessageId_NoEnergy2				= 865,
+	AdvisorMessageId_NoEnergy3				= 866,
+	AdvisorMessageId_NoBuildResources		= 852,
+	AdvisorMessageId_NoBuildOffMap			= 854,
+	AdvisorMessageId_NoBuildMapEdge			= 855,
+	AdvisorMessageId_NoBuildStandard		= 856,
+	AdvisorMessageId_NoBuildExplore			= 857,
+	AdvisorMessageId_NoBuildGeyser			= 859,
+	AdvisorMessageId_NoBuildZerg			= 860,
+	AdvisorMessageId_NoBuildProtoss			= 861,
+	AdvisorMessageId_NoBuildCouldntReach	= 862,
+	AdvisorMessageId_NoLanding				= 863,
 };

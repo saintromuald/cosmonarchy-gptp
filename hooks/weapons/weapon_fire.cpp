@@ -220,7 +220,11 @@ void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u
 
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
 	Target target = unit->order_target;
-	u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
+
+	u32 max_range = scbw::get_distance_fast(unit->position, target.pt);
+	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
+	}
 	{
 		Point16 launch_pos = unit->position;
 		if (weapon_offsets) {
@@ -527,13 +531,18 @@ namespace hooks {
 					} break;
 					case WeaponId::SirenCharybdalRifle:
 					{
-						// Discovered Attacks - Siren
+						// Offset: Cone
 						fire_shotgun(unit, weapon_id, 2, 5, 10);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles:
 					{
 						// Madrigal Furia Salvo
 						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy);
+					} break;
+					case WeaponId::ValkyrieHaloRockets:
+					{
+						// Offset: Cone
+						fire_shotgun(unit, weapon_id, 1, 3, 10);
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
 					{
@@ -1187,9 +1196,7 @@ namespace hooks {
 				}
 				next_bounce_bullet->next = bullet;
 				*bullet_count -= 1;
-			}
-			else
-			{
+			} else {
 				*last_free_bullet = bullet;
 				*first_free_bullet = bullet;
 				*bullet_count -= 1;

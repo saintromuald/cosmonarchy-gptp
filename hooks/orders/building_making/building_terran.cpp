@@ -66,9 +66,9 @@ namespace hooks
 				} break;
 				case 2: {
 					u32 movable_state = unit->get_movable_state();
-					if (movable_state == MovableState::UnmovableAtDestination) {
+					if (movable_state == MovableState_UnmovableAtDestination) {
 						unit->order_to_idle();
-					} else if (movable_state != MovableState::NotReachedDestination) {
+					} else if (movable_state != MovableState_NotReachedDestination) {
 						scbw::refresh_console();
 
 						if (built_unit->connected_unit
@@ -93,7 +93,7 @@ namespace hooks
 					return;
 				} break;
 				case 3: {
-					if (unit->get_movable_state() != MovableState::NotReachedDestination) {
+					if (unit->get_movable_state() != MovableState_NotReachedDestination) {
 						++unit->main_order_state;
 					}
 					return;

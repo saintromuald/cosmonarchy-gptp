@@ -49,18 +49,6 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	target->heal_hp(heal * 256, shaman);
 }
 
-static Advisor parse_advisor_name(std::string string)
-{
-	Parser parser = {};
-	parser.at = (char*)string.c_str();
-	Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
-	if (advisor == -1) {
-		// TODO: print error
-		advisor = Advisor_Default;
-	}
-	return advisor;
-}
-
 #pragma pack(push, 8)
 #include <discord_game_sdk.h>
 #pragma pack(pop)
@@ -1237,12 +1225,6 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranSilvertongue:
-			{
-				if (!unit_ext->timers[TimerSilvertonguePlotTwist]) {
-					scbw::decloak_proc(unit);
-				}
-			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;
@@ -1383,6 +1365,7 @@ namespace hooks {
 			case UnitId::ZergEgg:
 			case UnitId::ZergCocoon:
 			case UnitId::ZergQuazilisk:
+			case UnitId::ZergNathrokor:
 			{
 				// Gimmick to allow morph cancellation animations to play correctly
 				if (unit_ext->timers[TimerQuaziliskCancel]) {
@@ -1411,10 +1394,10 @@ namespace hooks {
 						unit->order_computer(OrderId::ZergBirth);
 					}
 				}
-
-				if (unit->id == UnitId::ZergEgg && unit->order_signal & 0x8) {
+				
+				if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 0x8) {
 					unit->order_signal &= ~0x8;
-					helper::replace_sprite_images(unit->sprite, ImageId::Egg, 0);
+					helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
 					unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
 				}
 			} break;
@@ -1804,7 +1787,7 @@ namespace hooks {
 					for (u32 i = 0; i < targets.count; ++i) {
 						Unit* target = targets.units[i];
 						u32 dist = scbw::get_distance_fast(unit->position, target->position);
-						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon]) {
+						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
 								target_ext->timers[TimerAnthelionGravityWell] = 24;
@@ -3086,13 +3069,9 @@ namespace hooks {
 		weapon_damage_current_bullet = 0;
 
 		init_threshold();
-		if (!grpWireFont) {
-			init_grpWireFont("font_wire");
+		if (!grp_wire_Font) {
+			init_grp_wire_font("font_wire");
 		}
-
-	//	globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
-	//	globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
-	//	globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
 
 		return true;
 	}

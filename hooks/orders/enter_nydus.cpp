@@ -86,7 +86,7 @@ namespace hooks
 				}
 			} else if (unit->main_order_state == 1) {
 					u8 movable_state = unit->get_movable_state();
-					if (movable_state == MovableState::ReachedDestination)
+					if (movable_state == MovableState_ReachedDestination)
 					{
 						unit->main_order_state = 2;
 					} else if (movable_state != 0) { // (value is probably 2 == unmovable)

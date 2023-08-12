@@ -365,8 +365,8 @@ namespace hooks
 			unit_ext->timers[TimerPetrification], TimerType::Gptp);
 		add_status(statuses, "Observance", unit_ext->values[ValueObservanceRend], 0,
 			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
-		add_status(statuses, "Captivating Claws", captivating_claws_get_stacks(unit), 4,
-			captivating_claws_get_timer(unit), TimerType::Gptp);
+		add_status(statuses, "Ensnared", unit_ext->values[ValueEnsnareFactor], 0,
+			unit->ensnare_timer, TimerType::Vanilla);
 		add_status(statuses, "Whetted Appetite", unit_ext->values[ValueMortothrokorStacks], 0,
 			unit_ext->timers[TimerMortothrokorPassive], TimerType::Gptp);
 		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
@@ -446,7 +446,6 @@ namespace hooks
 		// Vanilla Timers
 		add_status(statuses, "Stimpack", -1, 1, unit->stim_timer);
 		add_status(statuses, "Irradiated", -1, 1, unit->irradiate_timer);
-		add_status(statuses, "Ensnared", -1, 1, unit->ensnare_timer);
 		add_status(statuses, "Lobotomized", -1, 1, unit->lockdown_timer);
 		add_status(statuses, "Maelstromed", -1, 1, unit->maelstrom_timer);
 		add_status(statuses, "Plagued", -1, 1, unit->plague_timer);
@@ -460,7 +459,7 @@ namespace hooks
 
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
-		if (scbw::is_under_dark_swarm(unit)) {
+		if (scbw::is_under_carapace_swarm(unit)) {
 			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}

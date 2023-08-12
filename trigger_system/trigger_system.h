@@ -49,6 +49,7 @@ enum WitnessMode: u8 {
 
 enum Celebration: u8 {
 	Celebration_None,
+	Celebration_AprilFools,
 	Celebration_Christmas,
 
 	Celebration_Count,
@@ -108,6 +109,8 @@ enum Advisor: u8 {
 	Advisor_Protoss,
 	Advisor_Zerg,
 
+	Advisor_Mesk,
+
 	Advisor_Count,
 };
 
@@ -117,6 +120,8 @@ static const char* advisor_symbol_names[] = {
 	"terran",
 	"protoss",
 	"zerg",
+
+	"mesk",
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == Advisor_Count);
 
@@ -125,6 +130,7 @@ struct PlayerVars {
 	WitnessMode witness_mode;
 	Faction faction;
 	Advisor advisor;
+	bool neutral_hostile;
 };
 
 struct AlertState {

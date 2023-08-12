@@ -198,7 +198,7 @@ namespace hooks
 		} else {
 			if (unit->main_order_state == 0)
 			{
-				if (target && helper::move_towards(unit, target) && unit->get_movable_state() != MovableState::UnmovableAtDestination)
+				if (target && helper::move_towards(unit, target) && unit->get_movable_state() != MovableState_UnmovableAtDestination)
 				{
 					if (unit->is_target_within_min_range(target, 30))
 					{

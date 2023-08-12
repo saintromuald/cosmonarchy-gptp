@@ -5,15 +5,15 @@ namespace AI
 {
 	b32 weapon_behavior_can_hit_target_check(Unit* caster, Unit* attacker, Unit* target)
 	{
-		// code equivalent to is_under_dark_swarm @ 0x00476210:
-		// a function different from scbw::is_under_dark_swarm(target) that just seeks a nearby Carapace Swarm active spell and is used in here.
+		// code equivalent to is_under_carapace_swarm @ 0x00476210:
+		// a function different from scbw::is_under_carapace_swarm(target) that just seeks a nearby Carapace Swarm active spell and is used in here.
 
 		b32 return_value;
 		u8 is_under_swarm_status;
 		if (target->status & UnitStatus::InAir)
 		{
 			is_under_swarm_status = 0;
-		} else if ((units_dat::base_property[target->id] & UnitProperty::Building) || (*g_neutral_carapace_swarm == 0) || !scbw::is_under_dark_swarm(target)) {
+		} else if ((units_dat::base_property[target->id] & UnitProperty::Building) || (*g_neutral_carapace_swarm == 0) || !scbw::is_under_carapace_swarm(target)) {
 			s32 target_x = target->get_x();
 			s32 target_y = target->get_y();
 

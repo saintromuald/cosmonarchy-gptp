@@ -174,18 +174,36 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) display_error_message_id_with_sfx_wrapper() { // 0048EE30
+		static u32 player_id;
+		static u32 message_id;
+		static u32 sound_id;
+		__asm {
+			MOV sound_id, ESI
+			MOV message_id, EDI
+			MOV player_id, EBX
+			PUSHAD
+		}
+		hooks::display_error_message_id_with_sfx(player_id, message_id, sound_id);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_cmdrecv_build_hooks()
 	{
-	//	jump_patch(cmdrecv_place_building_allowed_wrapper,	0x0048DBD0, 1);
-	//	jump_patch(cmdrecv_place_building_normal_wrapper,	0x0048E010, 0);
-	//	jump_patch(cmdrecv_place_addon_wrapper,				0x0048E0A0, 0);
-	//	jump_patch(cmdrecv_build_wrapper,					0x004C23C0, 3);
-	//	jump_patch(process_building_placement_wrapper,		0x0048DE70, 0);
-	//	jump_patch(cmdrecv_place_building_wrapper,			0x0048E190, 1);
-	//	jump_patch(check_resources_for_building_wrapper,	0x0042D0C0, 6);
+	//	jump_patch(cmdrecv_place_building_allowed_wrapper,		0x0048DBD0, 1);
+	//	jump_patch(cmdrecv_place_building_normal_wrapper,		0x0048E010, 0);
+	//	jump_patch(cmdrecv_place_addon_wrapper,					0x0048E0A0, 0);
+	//	jump_patch(cmdrecv_build_wrapper,						0x004C23C0, 3);
+	//	jump_patch(process_building_placement_wrapper,			0x0048DE70, 0);
+	//	jump_patch(cmdrecv_place_building_wrapper,				0x0048E190, 1);
+	//	jump_patch(check_resources_for_building_wrapper,		0x0042D0C0, 6);
+		jump_patch(display_error_message_id_with_sfx_wrapper,	0x0048EE30, 1);
 	}
 }
