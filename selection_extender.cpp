@@ -12,16 +12,16 @@
 
 static u32 tmp;
 
-graphics::Font* grpWireFont;
+graphics::Font* grp_wire_Font;
 extern u8 tFontGame_ImageData[];
-void init_grpWireFont(char* font_name) {
+void init_grp_wire_font(char* font_name) {
 	const u32 load_font = 0x0041FD10;
 
 	__asm {
 		PUSH	0x004DAB00//AllocateFont
 		MOV		EAX, font_name
 		CALL	load_font
-		MOV		grpWireFont, EAX
+		MOV		grp_wire_Font, EAX
 	}
 }
 
@@ -184,10 +184,10 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 		MOV		EAX, [EDI + 0x14]//dialog->pszText
 		TEST	EAX, EAX
 		JE		loc_457046
-		MOV		ECX, grpWireFont
+		MOV		ECX, grp_wire_Font
 		CALL	SetFontHandle
 
-		LEA		EAX, [tFontGame_ImageData + 0x140]//Special grpWireFont color.
+		LEA		EAX, [tFontGame_ImageData + 0x140]//Special grp_wire_Font color.
 		MOV		ds:[0x006CE0C0], EAX//currentFontColor
 		MOV		byte ptr ds:[0x006CE0C4], 0//Set font spacing to 0.
 

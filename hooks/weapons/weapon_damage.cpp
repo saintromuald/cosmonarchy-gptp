@@ -44,7 +44,7 @@ namespace hooks
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
 		globals.alert.sound_id = sound_id;
-		globals.alert.play_timer = 12; 
+		globals.alert.play_timer = 12;
 	}
 
 

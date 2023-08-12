@@ -1469,6 +1469,8 @@ enum AdvisorMessageId {
 	AdvisorMessageId_NoMinerals				= 850,
 	AdvisorMessageId_NoVespene				= 851,
 	AdvisorMessageId_NoEnergy				= 864,
+	AdvisorMessageId_NoEnergy2				= 865,
+	AdvisorMessageId_NoEnergy3				= 866,
 	AdvisorMessageId_NoBuildResources		= 852,
 	AdvisorMessageId_NoBuildOffMap			= 854,
 	AdvisorMessageId_NoBuildMapEdge			= 855,

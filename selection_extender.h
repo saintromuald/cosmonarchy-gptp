@@ -4,8 +4,8 @@
 #include "hooks/limits/ccmu.h"
 #include "graphics/Font.h"
 
-extern graphics::Font* grpWireFont;
-void init_grpWireFont(char* font_name);
+extern graphics::Font* grp_wire_Font;
+void init_grp_wire_font(char* font_name);
 
 namespace hooks {
 	void inject_selection_extender();

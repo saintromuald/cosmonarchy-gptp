@@ -3217,28 +3217,89 @@ namespace scbw {
 					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
 					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
 					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+					case Advisor_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
 				}
-			} break;
+			}
+			case AdvisorEvent_NoVespene: {
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
+					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
+					case Advisor_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
+				}
+			}
+			case AdvisorEvent_NoEnergy:
+			{
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr06_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
+					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdErr06_WAV;
+					case Advisor_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
+				}
+			}
+			case AdvisorEvent_NoBuildTerran:
+			{
+			}
 			case AdvisorEvent_StructureComplete_T: {
-
-			} break;
+			}
 		}
 		return SoundId::No_sound;
 	}
 
 	u32 parse_advisor_sound_by_message_id(u32 player, u32 message_id) {
 		bool custom_advisor = scbw::has_custom_advisor(player);
-		u32 sound_id = SoundId::No_sound;
-
 		if (custom_advisor) {
 			switch (message_id) {
 				case AdvisorMessageId_NoMinerals:
 				{
-					sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
-				} break;
+					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
+				}
+				case AdvisorMessageId_NoVespene:
+				{
+					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoVespene);
+				}
+				case AdvisorMessageId_NoEnergy:
+				case AdvisorMessageId_NoEnergy2:
+				case AdvisorMessageId_NoEnergy3:
+				{
+					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoEnergy);
+				}
+				case AdvisorMessageId_NoBuildResources:
+				case AdvisorMessageId_NoBuildOffMap:
+				case AdvisorMessageId_NoBuildMapEdge:
+				case AdvisorMessageId_NoBuildStandard:
+				case AdvisorMessageId_NoBuildExplore:
+				case AdvisorMessageId_NoBuildGeyser:
+				case AdvisorMessageId_NoBuildCouldntReach:
+				{
+					u32 adv_event = AdvisorEvent_NoBuildTerran;
+					switch (g_player_table[player].race) {
+						case RaceId::Protoss:
+						{
+							adv_event = AdvisorEvent_NoBuildProtoss;
+						}
+						case RaceId::Zerg:
+						{
+							adv_event = AdvisorEvent_NoBuildZerg;
+						}
+					}
+					return scbw::get_custom_advisor_sound(player, adv_event);
+				}
+				case AdvisorMessageId_NoBuildZerg:
+				{
+					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildZerg);
+				}
+				case AdvisorMessageId_NoBuildProtoss:
+				{
+					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildProtoss);
+				}
+				case AdvisorMessageId_NoLanding:
+				{
+					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoLanding);
+				}
 			}
 		}
-		return sound_id;
+		return SoundId::No_sound;
 	}
 
 	bool has_custom_advisor(u32 player) {
@@ -3248,19 +3309,19 @@ namespace scbw {
 				if (globals.terran_advisor != Advisor_Terran) {
 					return true;
 				}
-			} break;
+			}
 			case RaceId::Protoss:
 			{
 				if (globals.protoss_advisor != Advisor_Protoss) {
 					return true;
 				}
-			} break;
+			}
 			case RaceId::Zerg:
 			{
 				if (globals.zerg_advisor != Advisor_Zerg) {
 					return true;
 				}
-			} break;
+			}
 		}
 		return false;
 	}

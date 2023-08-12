@@ -250,13 +250,17 @@ namespace hooks
 				}
 				if (max_volume > 10)
 				{
-					helper::play_transmission_from_location(sound_id_final, max_volume, 0, 0);
+					u32 error_id = SoundId::ErrorZerg - *g_console_index;
+					if (error_id == SoundId::ErrorTerran) {
+						helper::play_sound_global(error_id); // TODO: Confirm this helper doesn't play for other players
+					}
+					helper::play_transmission_from_location(sound_id_final, max_volume, 0, 0); // TODO: Delay this sound by 12 frames
 				}
 			}
 
 			char* message_string;
 			u32 final_message_id = message_id - 1;
-			if (message_id)
+			if ((u16)message_id)
 			{
 				if (final_message_id < *g_stat_txt_tbl)
 				{

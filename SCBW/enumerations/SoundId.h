@@ -1539,5 +1539,23 @@ namespace SoundId
 		ShamanSupport01						= 2475,
 		ProtossAdvisorErrorPlacement		= 2476,
 		ProtossAdvisorUpdateStructure		= 2477,
+
+		MeskAdvisor_NoMinerals01			= 2494,
+		MeskAdvisor_NoMinerals02			= 2495,
+		MeskAdvisor_NoMinerals03			= 2496,
+		MeskAdvisor_NoMinerals04			= 2497,
+		ErrorProtoss						= 2498,
+		ErrorTerran							= 2499,
+		ErrorZerg							= 2500,
+		MeskAdvisor_NoVespene01				= 2501,
+		MeskAdvisor_NoVespene02				= 2502,
+		MeskAdvisor_NoVespene03				= 2503,
+		MeskAdvisor_NoVespene04				= 2504,
+		MeskAdvisor_NoVespene05				= 2505,
+		MeskAdvisor_NoEnergy01				= 2506,
+		MeskAdvisor_NoEnergy02				= 2507,
+		MeskAdvisor_NoEnergy03				= 2508,
+		MeskAdvisor_NoEnergy04				= 2509,
+		MeskAdvisor_NoEnergy05				= 2510,
 	};
 }

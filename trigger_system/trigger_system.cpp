@@ -57,6 +57,41 @@ static void init_auto_celebration() {
 	}
 }
 
+static Advisor parse_advisor_name(std::string string)
+{
+	Parser parser = {};
+	parser.at = (char*)string.c_str();
+	Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
+	if (advisor == -1) {
+		// TODO: print error
+		advisor = Advisor_Default;
+	}
+	if (advisor == Advisor_Default) {
+		switch (g_player_table[*g_local_nation_id].race)
+		{
+			case RaceId::Terran:
+			{
+				advisor = Advisor_Terran;
+			}
+			case RaceId::Protoss:
+			{
+				advisor = Advisor_Protoss;
+			}
+			case RaceId::Zerg:
+			{
+				advisor = Advisor_Zerg;
+			}
+		}
+	}
+	return advisor;
+}
+
+void init_advisor() {
+	globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
+	globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
+	globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
+}
+
 void init_trigger_system() {
 	trigger_system_init = true;
 	trigger_game_paused = false;
@@ -78,6 +113,7 @@ void init_trigger_system() {
 	init_spawn();
 	init_trigger_vars();
 	init_trigger_events();
+	init_advisor();
 }
 
 static bool unit_can_change_sprite(Unit* unit) {
