@@ -52,6 +52,7 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV ensnare_factor, EAX
 			POP EAX
@@ -88,6 +89,7 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			POP EAX
@@ -109,6 +111,7 @@ namespace
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV attacker, EAX
 			MOV EAX, [EBP + 0x0C]
