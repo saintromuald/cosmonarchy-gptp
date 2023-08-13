@@ -3197,71 +3197,73 @@ namespace scbw {
 		return factor;
 	}
 
-	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
-		AdvisorType advisor = globals.current_advisor;
-		switch (event_type) {
-			case AdvisorEvent_NoMinerals: {
-				switch (advisor) {
-					case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
-					case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
-					case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
-					case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
-				}
-			} break;
-			case AdvisorEvent_NoVespene: {
-				switch (advisor) {
-					case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
-					case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
-					case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
-					case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
-				}
-			} break;
-			case AdvisorEvent_NoEnergy: {
-				switch (advisor) {
-					case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr06_WAV;
-					case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
-					case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr06_WAV;
-					case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
-				}
-			} break;
-			case AdvisorEvent_NoBuildTerran: {
-				// TODO: fill in
-			} break;
-			case AdvisorEvent_MissileLaunch: {
-				switch (advisor) {
-					case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
-					case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
-					case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
-					case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
-				}
-			} break;
-			case AdvisorEvent_StructureComplete_T: {
-				// TODO: fill in
-			} break;
-			case AdvisorEvent_StructureComplete_P: {
-				switch (advisor) {
-				//	case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
-					case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
-				//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
-					case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
-				} 
-			} break;
-			case AdvisorEvent_AddonComplete: {
-				switch (advisor) {
-					case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
-				//	case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
-				//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
-					case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
-				}
-			} break;
-			case AdvisorEvent_TechUpComplete: {
-				switch (advisor) {
-					case AdvisorType_Terran:	return SoundId::Terran_Advisor_ZAdUpd06_WAV;
-					case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
-					case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd06_WAV;
-					case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
-				} 
-			} break;
+	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) { 
+		if (scbw::has_custom_advisor(player)) {
+			AdvisorType advisor = globals.current_advisor;
+			switch (event_type) {
+				case AdvisorEvent_NoMinerals: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
+						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
+					}
+				} break;
+				case AdvisorEvent_NoVespene: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
+						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
+						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
+					}
+				} break;
+				case AdvisorEvent_NoEnergy: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr06_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
+						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr06_WAV;
+						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
+					}
+				} break;
+				case AdvisorEvent_NoBuildTerran: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_MissileLaunch: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
+						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
+					}
+				} break;
+				case AdvisorEvent_StructureComplete_T: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_StructureComplete_P: {
+					switch (advisor) {
+					//	case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
+					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
+					} 
+				} break;
+				case AdvisorEvent_AddonComplete: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
+					//	case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
+					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
+					}
+				} break;
+				case AdvisorEvent_TechUpComplete: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_ZAdUpd06_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
+						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd06_WAV;
+						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
+					} 
+				} break;
+			}
 		}
 		return 0; // This actually means reverting to original, instead of no sound
 	}
@@ -3300,6 +3302,9 @@ namespace scbw {
 	}
 
 	bool has_custom_advisor(u32 player) {
+		if (player != *g_local_nation_id) {
+			return false;
+		}
 		return globals.current_advisor != AdvisorType_Default;
 	}
 }
