@@ -197,7 +197,7 @@ namespace hooks
 				if (notify) {
 					u32 sound_id = *g_console_index + 150;
 					if (scbw::has_custom_advisor(player)) {
-						sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoVespene);
+						sound_id = scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
 					}
 					helper::display_error_message_id_with_sfx(player, 851, sound_id);
 				}
@@ -207,7 +207,7 @@ namespace hooks
 			if (notify) {
 				u32 sound_id = *g_console_index + 147;
 				if (scbw::has_custom_advisor(player)) {
-					sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
+					sound_id = scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
 				}
 				helper::display_error_message_id_with_sfx(player, 850, sound_id);
 			}
@@ -220,7 +220,7 @@ namespace hooks
 		if (player == *g_local_nation_id && !*g_is_in_replay) {
 			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx) {
-				u32 new_sound_id = scbw::parse_advisor_sound_by_message_id(player, message_id);
+				u32 new_sound_id = scbw::get_advisor_sound_from_message_id(player, message_id);
 				if (new_sound_id) {
 					sound_id = new_sound_id;
 				}

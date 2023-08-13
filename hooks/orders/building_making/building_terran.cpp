@@ -430,7 +430,7 @@ namespace hooks
 					}
 
 					if (unit_id_is_tech_tier_structure(builder_ext->values[ValueTerranConstruction])) {
-						sound_id = scbw::get_custom_advisor_sound(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);

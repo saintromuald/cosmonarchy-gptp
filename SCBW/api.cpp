@@ -3197,7 +3197,7 @@ namespace scbw {
 		return factor;
 	}
 
-	u32 get_custom_advisor_sound(u32 player, u32 event_type) {
+	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
 		AdvisorType advisor = globals.current_advisor;
 		switch (event_type) {
 			case AdvisorEvent_NoMinerals: {
@@ -3266,19 +3266,19 @@ namespace scbw {
 		return 0; // This actually means reverting to original, instead of no sound
 	}
 
-	u32 parse_advisor_sound_by_message_id(u32 player, u32 message_id) {
+	u32 get_advisor_sound_from_message_id(u32 player, u32 message_id) {
 		if (scbw::has_custom_advisor(player)) {
 			switch (message_id) {
-				case AdvisorMessageId_NoMinerals:     return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
-				case AdvisorMessageId_NoVespene:      return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoVespene);
-				case AdvisorMessageId_NoBuildZerg:    return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildZerg);
-				case AdvisorMessageId_NoBuildProtoss: return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildProtoss);
-				case AdvisorMessageId_NoLanding:      return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoLanding);
+				case AdvisorMessageId_NoMinerals:     return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
+				case AdvisorMessageId_NoVespene:      return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
+				case AdvisorMessageId_NoBuildZerg:    return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
+				case AdvisorMessageId_NoBuildProtoss: return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
+				case AdvisorMessageId_NoLanding:      return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoLanding);
 
 				case AdvisorMessageId_NoEnergy:
 				case AdvisorMessageId_NoEnergy2:
 				case AdvisorMessageId_NoEnergy3:
-					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoEnergy);
+					return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoEnergy);
 
 				case AdvisorMessageId_NoBuildResources:
 				case AdvisorMessageId_NoBuildOffMap:
@@ -3288,11 +3288,11 @@ namespace scbw {
 				case AdvisorMessageId_NoBuildGeyser:
 				case AdvisorMessageId_NoBuildCouldntReach: {
 					switch (g_player_table[player].race) {
-						case RaceId::Terran:  return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildTerran);
-						case RaceId::Protoss: return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildProtoss);
-						case RaceId::Zerg:    return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildZerg);
+						case RaceId::Terran:  return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
+						case RaceId::Protoss: return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
+						case RaceId::Zerg:    return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
 					}
-					return scbw::get_custom_advisor_sound(player, AdvisorEvent_NoBuildTerran);
+					return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
 				} break;
 			}
 		}

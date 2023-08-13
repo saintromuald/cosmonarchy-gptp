@@ -734,7 +734,7 @@ namespace hooks {
 						{
 							if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit))
 							{
-								u32 sound_id = scbw::get_custom_advisor_sound(*g_local_nation_id, AdvisorEvent_MissileLaunch);
+								u32 sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_MissileLaunch);
 								helper::play_sound_from_unit(sound_id, 0, 1, 0);
 								if (*g_stat_txt_tbl > 1046)
 								{
