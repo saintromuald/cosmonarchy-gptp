@@ -12,23 +12,27 @@ bool file_exists(std::string file) {
 	return std::ifstream(file).good();
 }
 
-static AdvisorType parse_advisor_name(const char* name, AdvisorType default_type) {
+static AdvisorType parse_advisor_name(const char* name) {
 	Parser parser = {};
 	parser.at = (char*)name;
 	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
 	if (advisor == -1) {
 		// TODO: print error
-		return default_type;
-	}
-	if (advisor == AdvisorType_Default) {
-		return default_type;
+		return (AdvisorType) -1;
 	}
 	return advisor;
 }
 
-static void load_advisor(const YAML::Node& config_node, const char* name, AdvisorSetting* advisor, AdvisorType default_type) {
-	load_field(config_node, name, advisor->string);
-	advisor->type = parse_advisor_name(name, default_type);
+static void load_advisors(const YAML::Node& config_node, const char* name, AdvisorSetting* advisor) {
+	load_field(config_node, name, advisor->strings);
+	advisor->types.clear();
+	for (const std::string& name : advisor->strings) {
+		AdvisorType type = parse_advisor_name(name.c_str());
+		if (type == -1) {
+			continue;
+		}
+		advisor->types.push_back(type);
+	}
 }
 
 void load_config() {
@@ -66,9 +70,10 @@ void load_config() {
 		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
 		// Audiovisuals
-		load_advisor(config_node, "terran-advisor", &config.terran_advisor, AdvisorType_Terran);
-		load_advisor(config_node, "protoss-advisor", &config.protoss_advisor, AdvisorType_Protoss);
-		load_advisor(config_node, "zerg-advisor", &config.zerg_advisor, AdvisorType_Zerg);
+		load_advisors(config_node, "common-advisors", &config.common_advisors);
+		load_advisors(config_node, "terran-advisors", &config.terran_advisors);
+		load_advisors(config_node, "protoss-advisors", &config.protoss_advisors);
+		load_advisors(config_node, "zerg-advisors", &config.zerg_advisors);
 		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
 
 		// Hotkeys
@@ -133,9 +138,23 @@ void save_config() {
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Audiovisuals");
-	write_field(out, "terran-advisor", config.terran_advisor.string);
-	write_field(out, "protoss-advisor", config.protoss_advisor.string);
-	write_field(out, "zerg-advisor", config.zerg_advisor.string);
+	std::stringstream available_advisors;
+	available_advisors << "Available Advisors are: ";
+	for (u32 i = 0; i < AdvisorType_Count; ++i) {
+		available_advisors << advisor_symbol_names[i];
+		if (i != AdvisorType_Count - 1) {
+			available_advisors << ", ";
+		}
+	}
+	out << YAML::Newline << YAML::Comment("Advisors will be randomized from the common list combined with the list of the race you are playing.");
+	out << YAML::Newline << YAML::Comment("You can use [] to make a list empty. e.g. terran-advisors: []");
+	out << YAML::Newline << YAML::Comment("Which is probably what you will want to do, if you want to just use common-advisors.");
+	out << YAML::Newline << YAML::Comment(available_advisors.str());
+	write_field(out, "common-advisors", config.common_advisors.strings);
+	write_field(out, "terran-advisors", config.terran_advisors.strings);
+	write_field(out, "protoss-advisors", config.protoss_advisors.strings);
+	write_field(out, "zerg-advisors", config.zerg_advisors.strings);
+	out << YAML::Newline << YAML::Newline;
 	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 

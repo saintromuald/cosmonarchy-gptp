@@ -114,14 +114,15 @@ enum AdvisorType : u8 {
 	AdvisorType_Count,
 };
 
+// NOTE: This is case insensitive for parsing
 static const char* advisor_symbol_names[] = {
-	"default",
+	"Default",
 
-	"terran",
-	"protoss",
-	"zerg",
+	"Terran",
+	"Protoss",
+	"Zerg",
 
-	"mesk",
+	"Mesk",
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
 

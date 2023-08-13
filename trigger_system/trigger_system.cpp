@@ -54,11 +54,23 @@ static void init_auto_celebration() {
 }
 
 AdvisorType get_advisor_type_from_config(u32 race) {
+	std::vector<AdvisorType> advisors = config.common_advisors.types; // Note this is a copy
 	switch (race) {
-		case RaceId::Terran:  return config.terran_advisor.type;
-		case RaceId::Protoss: return config.protoss_advisor.type;
-		case RaceId::Zerg:    return config.zerg_advisor.type;
+		case RaceId::Terran: {
+			advisors.insert(advisors.end(), config.terran_advisors.types.begin(), config.terran_advisors.types.end());
+		} break;
+		case RaceId::Protoss: {
+			advisors.insert(advisors.end(), config.protoss_advisors.types.begin(), config.protoss_advisors.types.end());
+		} break;
+		case RaceId::Zerg: {
+			advisors.insert(advisors.end(), config.zerg_advisors.types.begin(), config.zerg_advisors.types.end());
+		} break;
 	}
+	if (advisors.size()) {
+		u32 index = scbw::rand_between_local(0, advisors.size() - 1);
+		return advisors[index];
+	}
+	return AdvisorType_Default;
 }
 
 void init_trigger_system() {

@@ -220,16 +220,16 @@ namespace hooks
 		if (player == *g_local_nation_id && !*g_is_in_replay) {
 			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx) {
-				u32 sound_id_final = scbw::parse_advisor_sound_by_message_id(player, message_id);
-				if (!sound_id_final) {
-					sound_id_final = sound_id;
+				u32 new_sound_id = scbw::parse_advisor_sound_by_message_id(player, message_id);
+				if (new_sound_id) {
+					sound_id = new_sound_id;
 				}
 
-				u32 volume = sfx_dat::volume[sound_id_final];
+				u32 volume = sfx_dat::volume[sound_id];
 				u32 max_volume = 99;
 				if (volume >= 99) {
 					if (volume >= 0) {
-						max_volume = sfx_dat::volume[sound_id_final];
+						max_volume = sfx_dat::volume[sound_id];
 					} else {
 						max_volume = 0;
 					}
@@ -242,7 +242,7 @@ namespace hooks
 					if (error_id == SoundId::ErrorTerran) {
 						helper::play_sound_global(error_id); // TODO: Confirm this helper doesn't play for other players
 					}
-					helper::play_transmission_from_location(sound_id_final, max_volume, 0, 0); // TODO: Delay this sound by 12 frames
+					helper::play_transmission_from_location(sound_id, max_volume, 0, 0); // TODO: Delay this sound by 12 frames
 				}
 			}
 

@@ -4,8 +4,8 @@
 #include "trigger_system/trigger_system.h"
 
 struct AdvisorSetting {
-	std::string string;
-	AdvisorType type;
+	std::vector<std::string> strings;
+	std::vector<AdvisorType> types;
 };
 
 const std::string CONFIG_FILENAME = "config.yml";
@@ -41,9 +41,18 @@ struct Config {
 	bool show_team_ui_self = false;
 
 	// Audiovisuals
-	AdvisorSetting terran_advisor;
-	AdvisorSetting protoss_advisor;
-	AdvisorSetting zerg_advisor;
+	AdvisorSetting common_advisors = {
+		{ advisor_symbol_names[AdvisorType_Default] },
+	};
+	AdvisorSetting terran_advisors = {
+		{ advisor_symbol_names[AdvisorType_Terran] },
+	};
+	AdvisorSetting protoss_advisors = {
+		{ advisor_symbol_names[AdvisorType_Protoss] },
+	};
+	AdvisorSetting zerg_advisors = {
+		{ advisor_symbol_names[AdvisorType_Zerg] },
+	};
 	bool celebrations_enabled = true;
 
 	// Hotkeys
