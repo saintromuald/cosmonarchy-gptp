@@ -985,7 +985,7 @@ namespace hooks {
 			addon_ext->units[UnitAddonParent] = unit;
 		}
 
-		if (!(unit->movement_flags & MovementFlags::StartingAttack)) {
+		if (!(unit->movement_flags & MovementFlags_StartingAttack)) {
 			unit_ext->values[ValueProjectilePattern] = 0;
 		}
 
@@ -1226,7 +1226,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ZergEvigrilisk: {
-				bool is_moving = unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving;
+				bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;
 				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
@@ -1265,7 +1265,7 @@ namespace hooks {
 								target->remove();
 							}
 
-							if (!(unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving)
+							if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving)
 								&& !unit_ext->timers[TimerTalosAnimationSubtimer]) {
 
 								u32 width  = units_dat::building_dimensions[target->id].x * 0.75;
@@ -1556,7 +1556,7 @@ namespace hooks {
 			case UnitId::TerranMadcap:
 			{
 				// Madcap Cabeirus Feeders - subtract stacks while moving
-				if (unit->movement_flags & MovementFlags::Accelerating || unit->movement_flags & MovementFlags::Moving) {
+				if (unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) {
 					if (unit_ext->values[ValueMadcapStacks] > 0) {
 						unit_ext->values[ValueMadcapStacks]--;
 					}
@@ -2243,11 +2243,11 @@ namespace hooks {
 
 		// Fix animation bug with acceleration movement flag
 		if (!(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
-		&&    unit->movement_flags & MovementFlags::Accelerating
+		&&    unit->movement_flags & MovementFlags_Accelerating
 		&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
 		&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle)
 		{
-			unit->movement_flags &= ~MovementFlags::Accelerating;
+			unit->movement_flags &= ~MovementFlags_Accelerating;
 		}
 
 		// Fix AI melee units freezing - DarkenedFantasies
@@ -2263,9 +2263,9 @@ namespace hooks {
 		if ((unit->id == UnitId::TerranMason || unit->id == UnitId::ProtossScribe || unit->id == UnitId::ZergDroleth)
 		&&	unit->current_speed_1 == 0
 		&&	unit->current_speed_2 == 0
-		&&	unit->movement_flags & MovementFlags::Accelerating)
+		&&	unit->movement_flags & MovementFlags_Accelerating)
 		{
-			unit->movement_flags &= ~MovementFlags::Accelerating;
+			unit->movement_flags &= ~MovementFlags_Accelerating;
 		}
 
 		// Zoryusthaleth - Swarming Omen marking

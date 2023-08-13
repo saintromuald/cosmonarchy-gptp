@@ -216,7 +216,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	CompletingArchonSummon = 0x6A, /**< Archon build self order.
 					* Default Requirements: Unused. */
-	HoldPositionNormal          = 0x6B, /**< Attacking Unit hold position.
+	HoldPositionNormal     = 0x6B, /**< Attacking Unit hold position.
 					* Default Requirements: Unit is able to Hold Position. Allow on hallucinated units. */
 	HoldPositionMatraleth  = 0x6C, /**< Queen Hold position.
 					* Default Requirements: Unit must be Zerg Queen/Matriarch. */

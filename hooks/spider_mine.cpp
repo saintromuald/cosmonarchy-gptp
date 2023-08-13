@@ -34,7 +34,7 @@ namespace hooks
 				return false;
 			}
 			// Don't attack hovering units
-			if (units_dat::movement_flags[target->id] == MovementFlags::HoverUnit) {
+			if (units_dat::movement_flags[target->id] == MovementFlags_HoverUnit) {
 				return false;
 			}
 			if (!target->is_visible_to(mine->player)) {

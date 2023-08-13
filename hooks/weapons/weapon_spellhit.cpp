@@ -8,6 +8,7 @@
 #include <cassert>
 #include "weapon_fire.h"
 #include "hooks/weapons/weapon_spellhit.h"
+#include "hooks/weapons/weapon_damage.h"
 
 namespace hooks {
 	// Hooked to allow for replacing proc functions - Pr0nogo
@@ -332,7 +333,7 @@ namespace hooks {
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
 			{
 				UnitExt* unit_ext = get_unit_ext(target);
-				helper::apply_ensnare(target, unit_ext->values[ValueEnsnareFactor]);
+				apply_ensnare_internal(target, unit_ext->values[ValueEnsnareFactor]);
 			}
 		}
 		return 0;

@@ -141,7 +141,7 @@ namespace hooks {
 			pos.x = unit->sprite->position.x;
 			pos.y = unit->sprite->position.y;
 			if (offset_unit) {
-				if (units_dat::movement_flags[unit->id] == MovementFlags::HoverUnit) {
+				if (units_dat::movement_flags[unit->id] == MovementFlags_HoverUnit) {
 					pos.y -= 7;
 				} else if (unit->status & UnitStatus::InAir) {
 					pos.y -= 42;
@@ -672,7 +672,7 @@ namespace hooks {
 			return 0;
 		}
 		// Hovering units (?) f32 7 pixels above ground
-		if (units_dat::movement_flags[unit->id] == MovementFlags::HoverUnit)
+		if (units_dat::movement_flags[unit->id] == MovementFlags_HoverUnit)
 		{
 			return -7;
 		}

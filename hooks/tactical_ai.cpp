@@ -609,7 +609,7 @@ static bool unit_could_kite(Unit* unit) {
 		&& unit->has_weapon()
 		&& !unit->is_frozen()
 		&& unit->status & UnitStatus::Completed
-		&& !(unit->movement_flags & MovementFlags::StartingAttack)	
+		&& !(unit->movement_flags & MovementFlags_StartingAttack)	
 		// Special units
 		&& unit->id != UnitId::ProtossSteward
 		&& unit->id != UnitId::ProtossPlasmaShell
@@ -643,7 +643,7 @@ static bool unit_kiting_can_attack(Unit* unit) {
 	if (unit->id == UnitId::ProtossSolarion) {
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
 	}
-	if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_rate < 35) {
+	if (unit->movement_flags & MovementFlags_Accelerating || unit->flingy_turn_rate < 35) {
 		return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.75;
 	}
 	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
@@ -827,7 +827,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 				if (unit->id == UnitId::ProtossSolarion) {
 					unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
-				} else if (unit->movement_flags & MovementFlags::Accelerating || unit->flingy_turn_rate < 35) {
+				} else if (unit->movement_flags & MovementFlags_Accelerating || unit->flingy_turn_rate < 35) {
 					unit_ext->timers[TimerAI_KitingCooldown] = 2;
 				} else {
 					unit_ext->timers[TimerAI_KitingCooldown] = 6;

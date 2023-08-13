@@ -4,6 +4,7 @@
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
+#include "weapons/weapon_damage.h"
 	
 namespace hooks
 {
@@ -336,7 +337,7 @@ namespace hooks
 			u32 factor = unit_ext->values[ValueEnsnareFactor];
 			u32 timer = unit->ensnare_timer;
 			unit->ensnare_timer = 0;
-			helper::apply_ensnare(unit, factor);
+			apply_ensnare_internal(unit, factor);
 			unit->ensnare_timer = timer;
 		}
 		if (unit->stasis_timer)

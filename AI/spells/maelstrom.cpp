@@ -3,20 +3,15 @@
 
 namespace AI
 {
-
 	Unit* find_best_maelstrom_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)
 		{
 			bounds = 32 * 9;
-		}
-		else if (is_campaign_ai(caster->player))
-		{
+		} else if (is_campaign_ai(caster->player)) {
 			bounds = 32 * 64;
-		}
-		else
-		{
+		} else {
 			bounds = 32 * 32;
 		}
 
@@ -40,9 +35,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (target->id == UnitId::ZergOvileth
-				&& target->movement_flags & MovementFlags::Accelerating
-				&& target->has_loaded_unit())
+			if (target->id == UnitId::ZergOvileth && target->movement_flags & MovementFlags_Accelerating && target->has_loaded_unit())
 			{
 				return true;
 			}
@@ -64,12 +57,9 @@ namespace AI
 					return false;
 				}
 				return true;
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		});
 	}
-
 }

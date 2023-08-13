@@ -675,4 +675,219 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked to add custom advisor handling for missile launches. -Pr0nogo
+	void partial_order_handling(Unit* unit) // 004EBED0
+	{
+		switch (unit->main_order_id)
+		{
+			case OrderId::Die:
+			{
+				helper::orders_die(unit);
+			} break;
+			case OrderId::PlayerGuard:
+			case OrderId::TurretGuard:
+			case OrderId::TurretAttack:
+			case OrderId::EnterTransport:
+			{
+				helper::issue_order_targeting_nothing(unit, (unit->status & UnitStatus::InBuilding) != 0 ? OrderId::BunkerGuard : OrderId::Nothing2);
+			} break;
+			case OrderId::Powerup1:
+			{
+				helper::orders_powerup_1(unit);
+			} break;
+			case OrderId::Nothing2:
+			case OrderId::Nothing3:
+			case OrderId::Neutral:
+			case OrderId::Medic:
+			case OrderId::MedicHeal1:
+			{
+				return;
+			}
+			case OrderId::InfestMine4:
+			{
+				helper::orders_infest_mine_4(unit);
+			} break;
+			case OrderId::HarvestGas3:
+			{
+				helper::orders_enter_exit_gas(unit);
+			} break;
+			case OrderId::Powerup2:
+			{
+				helper::orders_powerup_2(unit);
+			} break;
+			case OrderId::NukeLaunch:
+			{
+				u32 order_state = unit->main_order_state;
+				if (order_state >= 5 || unit->connected_unit)
+				{
+					switch (order_state)
+					{
+						case 0:
+						{
+							helper::play_sound_from_unit(SoundId::Bullet_TNsFir00_wav_2, unit, 1, 0);
+							helper::change_movement_target_move_target_2(unit, unit->position.x, units_dat::unit_bounds[UnitId::TerranMorningstar].y);
+							unit->main_order_timer = 90;
+							unit->main_order_state = 1;
+						} break;
+						case 1:
+						{
+							if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit))
+							{
+								u32 sound_id = scbw::get_custom_advisor_sound(*g_local_nation_id, AdvisorEvent_MissileLaunch);
+								helper::play_sound_from_unit(sound_id, 0, 1, 0);
+								if (*g_stat_txt_tbl > 1046)
+								{
+									helper::show_stat_txt_to_player((s32)g_stat_txt_tbl + g_stat_txt_tbl[1047], *g_local_nation_id);
+								} else {
+									helper::show_stat_txt_to_player((s32)"", *g_local_nation_id);
+								}
+								unit->main_order_state = 2;
+							}
+						} break;
+						case 2:
+						{
+							if (!unit->main_order_timer || helper::is_unit_movable(unit))
+							{
+								helper::hide_unit(unit);
+								unit->connected_unit->connected_unit = unit;
+								helper::set_resource_target(unit);
+								unit->main_order_state = 3;
+							}
+						} break;
+						case 3:
+						{
+							if (!(unit->movement_flags & MovementFlags_Accelerating))
+							{
+								helper::play_sprite_iscript(unit->sprite, 21, 1);
+								unit->main_order_state = 4;
+							}
+						} break;
+						case 4:
+						{
+							u32 order_signal = unit->order_signal;
+							if (order_signal & 2)
+							{
+								unit->order_signal = order_signal & 0xFD;
+
+								u32 bounds_x = unit->order_target.pt.x;
+								if (units_dat::unit_bounds[UnitId::TerranMorningstar].x > bounds_x)
+								{
+									bounds_x = units_dat::unit_bounds[14].x;
+								}
+								u32 bounds_y = units_dat::unit_bounds[UnitId::TerranMorningstar].y;
+								if (units_dat::unit_bounds[UnitId::TerranMorningstar].y <= unit->order_target.pt.y - 320)
+								{
+									bounds_y = unit->order_target.pt.y - 320;
+								}
+
+								helper::move_unit(unit, bounds_x, bounds_y);
+								helper::turn_unit(unit, 128);
+								helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+								helper::show_and_enable_unit(unit);
+								unit->main_order_state = 5;
+							}
+						} break;
+						case 5:
+						{
+							if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 10))
+							{
+								unit->order_target.unit = unit;
+								for (Image* image = unit->sprite->images.head; image; image = image->link.next)
+								{
+									play_image_iscript(image, IscriptAnimation::SpecialState1);
+								}
+								unit->main_order_state = 6;
+							}
+						} break;
+						case 6:
+						{
+							u32 order_signal_2 = unit->order_signal;
+							if (order_signal_2 & 1)
+							{
+								unit->order_signal = order_signal_2 & 0xFE;
+								unit->user_action_flags |= 4;
+								helper::orders_self_destructing(unit);
+							}
+						} break;
+						default:
+						{
+							return;
+						}
+					}
+				} else {
+					helper::orders_self_destructing(unit);
+				}
+			} break;
+			case OrderId::ResetCollision1:
+			{
+				helper::orders_reset_collision_1(unit);
+			} break;
+			case OrderId::ResetCollision2:
+			{
+				helper::orders_reset_collision_2(unit); 
+			} break;
+			default:
+			{
+				u32 timer = unit->order_queue_timer;
+				unit->order_queue_timer = timer - 1;
+				if (!timer)
+				{
+					unit->order_queue_timer = 8;
+					switch (unit->main_order_id)
+					{
+						case OrderId::BunkerGuard:
+						case OrderId::ComputerAI:
+						{
+							if (unit->main_order_id == OrderId::BunkerGuard || unit->status & UnitStatus::InBuilding) // This seems tautolougus but it's to omit a stupid jump. -Pr0nogo
+							{
+								Unit* garrisoned_unit = unit;
+								u32 garrisoned_unit_id = unit->id;
+								if (scbw::unit_is_ranged_attacker(garrisoned_unit))
+								{
+									garrisoned_unit->status |= UnitStatus::AttackMove;
+									Unit* subunit_in_bunker = garrisoned_unit->subunit;
+									if (subunit_in_bunker)
+									{
+										subunit_in_bunker->status |= UnitStatus::AttackMove;
+									}
+									if (helper::attack_apply_cooldown(garrisoned_unit))
+									{
+										u32 bunker_x_pos = garrisoned_unit->order_target.pt.x;
+										u32 bunker_y_pos = garrisoned_unit->order_target.pt.y;
+										if (bunker_x_pos != garrisoned_unit->next_target_waypoint.x
+										||  bunker_y_pos != garrisoned_unit->next_target_waypoint.y)
+										{
+											garrisoned_unit->next_target_waypoint.x = bunker_x_pos;
+											garrisoned_unit->next_target_waypoint.y = bunker_y_pos;
+										}
+									} else if (!garrisoned_unit->main_order_timer) {
+										garrisoned_unit->main_order_timer = 15;
+										Unit* target = helper::find_random_attack_target(garrisoned_unit);
+										garrisoned_unit->order_target.unit = target;
+										if (target)
+										{
+											garrisoned_unit->order_queue_timer = 0;
+										}
+									}
+								}
+							}
+						} break;
+						case OrderId::TransportLoad:
+						{
+							helper::orders_pickup_4(unit);
+						} break;
+						case OrderId::RescuePassive:
+						{
+							helper::orders_rescue_passive(unit);
+						} break;
+						default:
+						{
+							return;
+						}
+					}
+				}
+			} break;
+		}
+	}
 }

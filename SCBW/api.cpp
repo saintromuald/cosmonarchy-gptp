@@ -3240,7 +3240,44 @@ namespace scbw {
 			case AdvisorEvent_NoBuildTerran:
 			{
 			}
-			case AdvisorEvent_StructureComplete_T: {
+			case AdvisorEvent_MissileLaunch:
+			{
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
+					case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+					case Advisor_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
+				}
+			}
+			case AdvisorEvent_StructureComplete_T:
+			{
+			}
+			case AdvisorEvent_StructureComplete_P:
+			{
+				switch (advisor) {
+				//	case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+					case Advisor_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
+				//	case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+					case Advisor_Mesk:		return SoundId::MeskAdvisor_Warp01;
+				}
+			}
+			case AdvisorEvent_AddonComplete:
+			{
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
+				//	case Advisor_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
+				//	case Advisor_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+					case Advisor_Mesk:		return SoundId::MeskAdvisor_Addon01;
+				}
+			}
+			case AdvisorEvent_TechUpComplete:
+			{
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::Terran_Advisor_ZAdUpd06_WAV;
+					case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
+					case Advisor_Zerg:		return SoundId::Terran_Advisor_TAdUpd06_WAV;
+					case Advisor_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
+				}
 			}
 		}
 		return SoundId::No_sound;

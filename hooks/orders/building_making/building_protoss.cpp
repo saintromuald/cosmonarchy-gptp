@@ -29,7 +29,7 @@ namespace hooks {
 				}
 			} break;
 			case 2: {
-				if (!(unit->movement_flags & MovementFlags::Accelerating)) {
+				if (!(unit->movement_flags & MovementFlags_Accelerating)) {
 					bool is_building_aquifer = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer;
 					u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 

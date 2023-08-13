@@ -1293,7 +1293,7 @@ namespace hooks {
 		bullet->order_unit_id = UnitId::None;
 		bullet->remaining_bounces = 0;
 		bullet->hit_flags = 0;
-		bullet->movement_flags |= MovementFlags::StartingAttack;
+		bullet->movement_flags |= MovementFlags_StartingAttack;
 		bullet->behavior_type = 0;
 		bullet->attack_target.unit = 0;
 		bullet->attack_target.pt.y = 0;
@@ -1657,7 +1657,7 @@ namespace hooks {
 			return false;
 		}
 
-		unit->movement_flags |= MovementFlags::StartingAttack;
+		unit->movement_flags |= MovementFlags_StartingAttack;
 
 		// Previously had randomized values and cooldown handling.
 		// Now applied in fire bullet and attack melee.
@@ -1687,7 +1687,7 @@ namespace hooks {
 	// Hooked to fix melee air unit performance. -Pr0nogo
 	void move_for_melee_range(Unit* target, Unit* attacker) // 00477F10
 	{
-		if (!helper::is_target_visible(attacker, target) || !(target->movement_flags & MovementFlags::Accelerating))
+		if (!helper::is_target_visible(attacker, target) || !(target->movement_flags & MovementFlags_Accelerating))
 		{
 			helper::move_towards(attacker, target);
 			return;

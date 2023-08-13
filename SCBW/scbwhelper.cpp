@@ -4584,12 +4584,12 @@ namespace helper {
 	}
 
 	Unit* find_random_attack_target(Unit* unit) {
-		const u32 Func_findRandomAttackTarget = 0x00442FC0;
+		const u32 func_address = 0x00442FC0;
 		static Unit* target;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_findRandomAttackTarget
+			CALL func_address
 			MOV target, EAX
 			POPAD
 		}
@@ -5683,11 +5683,10 @@ namespace helper {
 		}
 	}	
 
-	void apply_ensnare(Unit* unit, u32 ensnare_factor) {
+	void apply_ensnare(Unit* unit) {
 		const u32 func_address = 0x004F45E0;
 		__asm {
 			PUSHAD
-			PUSH ensnare_factor
 			MOV EDI, unit
 			CALL func_address
 			POPAD
@@ -14049,5 +14048,107 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	Unit* orders_die(Unit* unit)
+	{
+		static Unit* result;
+		const u32 func_address = 0x00479480;
+		__asm {
+			PUSHAD
+			PUSH unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void orders_powerup_1(Unit* unit)
+	{
+		const u32 func_address = 0x004F3EA0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_infest_mine_4(Unit* unit)
+	{
+		const u32 func_address = 0x004EA290;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_enter_exit_gas(Unit* unit)
+	{
+		const u32 func_address = 0x00469980;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Sprite* orders_powerup_2(Unit* unit)
+	{
+		const u32 func_address = 0x004F3E10;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_reset_collision_1(Unit* unit)
+	{
+		const u32 func_address = 0x004671B0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_reset_collision_2(Unit* unit)
+	{
+		const u32 func_address = 0x0042E320;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_pickup_4(Unit* unit)
+	{
+		const u32 func_address = 0x004E7B70;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_rescue_passive(Unit* unit)
+	{
+		const u32 func_address = 0x004A1EF0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

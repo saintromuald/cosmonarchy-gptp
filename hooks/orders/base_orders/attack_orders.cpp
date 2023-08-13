@@ -328,7 +328,7 @@ namespace hooks
 								unit->next_target_waypoint.x = unit->order_target.pt.x;
 								unit->next_target_waypoint.y = unit->order_target.pt.y;
 							}
-							if (!((unit->subunit)->movement_flags & MovementFlags::Accelerating))
+							if (!((unit->subunit)->movement_flags & MovementFlags_Accelerating))
 							{
 								helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
 							}
@@ -500,7 +500,7 @@ namespace hooks
 						&& unit->get_movable_state() != 2)
 					{
 						if (unit->is_target_within_min_range(target, 256)
-							&& target->movement_flags & MovementFlags::Accelerating)							
+							&& target->movement_flags & MovementFlags_Accelerating)							
 						{
 							// maybe trigger the acceleration of the infested terran, or something else related to distances?
 							helper::move_to_collide(unit, target);
@@ -723,7 +723,7 @@ namespace hooks
 				if (target)
 				{
 					if (unit->is_target_within_min_range(target, 256)
-					&&  target->movement_flags & MovementFlags::Accelerating)
+					&&  target->movement_flags & MovementFlags_Accelerating)
 					{
 						helper::move_to_collide(unit, target);
 					}

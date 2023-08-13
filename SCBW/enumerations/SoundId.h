@@ -135,8 +135,8 @@ namespace SoundId
 		Terran_Advisor_TAdUpd04_WAV			= 128,
 		Protoss_Advisor_PAdUpd04_WAV		= 129,
 		Terran_Advisor_TAdUpd05_WAV			= 130,
-		Terran_Advisor_TAdUpd06_WAV			= 131,	// Evolution complete
-		Terran_Advisor_TAdUpd02_WAV_2		= 132,
+		Terran_Advisor_ZAdUpd06_WAV			= 131,	// Evolution complete
+		Terran_Advisor_TAdUpd06_WAV			= 132,	// Upgrade complete
 		Protoss_Advisor_PAdUpd06_WAV		= 133,
 		Terran_Advisor_TAdUpd07_WAV			= 134,
 		Zerg_Bldg_ZChRdy00_WAV				= 135,
@@ -1557,5 +1557,11 @@ namespace SoundId
 		MeskAdvisor_NoEnergy03				= 2508,
 		MeskAdvisor_NoEnergy04				= 2509,
 		MeskAdvisor_NoEnergy05				= 2510,
+		MeskAdvisor_MissileLaunch01			= 2511,
+		MeskAdvisor_MissileLaunch02			= 2512,
+		MeskAdvisor_Addon01					= 2513,
+		MeskAdvisor_Tech01					= 2514,
+		MeskAdvisor_Tech02					= 2515,
+		MeskAdvisor_Warp01					= 2516,
 	};
 }

@@ -10,15 +10,13 @@ namespace hooks
 		{
 			if (unit->main_order_state == 6)
 			{
-				if (unit->connected_unit == nullptr
-				||	unit->connected_unit->main_order_state == 5)
+				if (!unit->connected_unit || unit->connected_unit->main_order_state == 5)
 				{
 					Image* current_image = unit->sprite->images.head;
-					if (unit->order_queue_head == nullptr)
+					if (!unit->order_queue_head)
 					{
 						unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
 					}
-
 					helper::force_order_done(unit);
 					helper::change_unit_buttonset(unit, unit->id);
 					scbw::refresh_console();

@@ -7,7 +7,7 @@ namespace hooks
 {
 	void orders_medic_heal2(Unit* unit)
 	{
-		if (!(unit->movement_flags & MovementFlags::Accelerating))
+		if (!(unit->movement_flags & MovementFlags_Accelerating))
 		{
 			Image* current_image = unit->sprite->images.head;
 			while (current_image)

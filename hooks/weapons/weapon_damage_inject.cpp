@@ -48,23 +48,14 @@ namespace
 	void __declspec(naked) apply_ensnare_wrapper()
 	{
 		static Unit* unit;
-		static u32 ensnare_factor;
 		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV ensnare_factor, EAX
-			POP EAX
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::apply_ensnare(unit, ensnare_factor);
+		hooks::apply_ensnare(unit);
 		__asm {
 			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 0x04
+			RETN
 		}
 	}
 

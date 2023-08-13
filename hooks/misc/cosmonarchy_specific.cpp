@@ -216,13 +216,13 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
 			case 0: {
-				if (unit->movement_flags & MovementFlags::Accelerating) {
+				if (unit->movement_flags & MovementFlags_Accelerating) {
 					scbw::make_to_hold_position(unit);
 				}
 				unit_ext->values[ValueProtossSwitchOrderState] = 1;
 			} break;
 			case 1: {
-				if (!(unit->movement_flags & MovementFlags::Accelerating)
+				if (!(unit->movement_flags & MovementFlags_Accelerating)
 				&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
 				&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle
 				&&    unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0)
@@ -484,7 +484,7 @@ namespace hooks
 		helper::play_idle_iscript(unit->sprite);
 		*g_active_iscript_unit = active_subunit;
 		*g_active_iscript_entity = active_entity;
-		unit->movement_flags &= ~MovementFlags::StartingAttack;
+		unit->movement_flags &= ~MovementFlags_StartingAttack;
 		return unit->movement_flags;
 	}
 

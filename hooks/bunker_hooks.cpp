@@ -180,7 +180,7 @@ namespace hooks
 			return true;
 		} 
 		
-		if (unit->movement_flags & MovementFlags::StartingAttack) {
+		if (unit->movement_flags & MovementFlags_StartingAttack) {
 			return true;
 		}
 
@@ -221,7 +221,7 @@ namespace hooks
 		if (unit->status & UnitStatus::InBuilding) {
 			helper::create_bunker_attack_overlay(unit);
 		}
-		unit->movement_flags |= MovementFlags::StartingAttack;
+		unit->movement_flags |= MovementFlags_StartingAttack;
 		*g_last_bullet_creator = 0;
 
 		// Previously had random delays here.

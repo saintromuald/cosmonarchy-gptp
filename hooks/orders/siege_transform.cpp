@@ -98,18 +98,18 @@ namespace hooks
 					unit->order_to_idle();
 					return;
 				}
-				if (unit->movement_flags & MovementFlags::Accelerating) {
+				if (unit->movement_flags & MovementFlags_Accelerating) {
 					helper::make_to_hold_position(unit);
 				}
 				++unit->main_order_state;
 			}
 			case 1:
 			{
-				if (unit->movement_flags & MovementFlags::Accelerating) {
+				if (unit->movement_flags & MovementFlags_Accelerating) {
 					return;
 				}
 				Unit* subunit = unit->subunit;
-				if (subunit && (subunit->movement_flags & MovementFlags::Accelerating || subunit->status & UnitStatus::NoBrkCodeStart))
+				if (subunit && (subunit->movement_flags & MovementFlags_Accelerating || subunit->status & UnitStatus::NoBrkCodeStart))
 				{
 					return;
 				}

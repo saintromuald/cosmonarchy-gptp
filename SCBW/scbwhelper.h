@@ -730,7 +730,7 @@ namespace helper {
 	void plague_proc(Unit* unit, Unit* attacker);																	// 004F4AF0
 	void iterate_units_at_location_target_proc_maelstrom(Unit* attacker, Box16* coords);							// 004E8280
 	void iterate_units_at_location_target_proc_stasis_field(Unit* attacker, Box16* coords);							// 004E8280
-	void apply_ensnare(Unit* unit, u32 ensnare_factor);																// 004F45E0
+	void apply_ensnare(Unit* unit);																					// 004F45E0
 
 	// For create_scanner
 	s32 play_sound_from_unit(s32 sound_id, Unit* unit, s32 play = 1, s32 min_volume = 0);							// 0048ED50
@@ -1643,4 +1643,14 @@ namespace helper {
 	u8 apply_irradiate(Unit* unit);						// 00454E80
 	u8 apply_stasis_field(Unit* unit, u32 duration);	// 004F67B0
 	u8 apply_plague(Unit* unit);						// 004F4550
+
+	Unit* orders_die(Unit* unit);						// 00479480
+	void orders_powerup_1(Unit* unit);					// 004F3EA0
+	void orders_infest_mine_4(Unit* unit);				// 004EA290
+	void orders_enter_exit_gas(Unit* unit);				// 00469980
+	Sprite* orders_powerup_2(Unit* unit);				// 004F3E10
+	void orders_reset_collision_1(Unit* unit);			// 004671B0
+	void orders_reset_collision_2(Unit* unit);			// 0042E320
+	void orders_pickup_4(Unit* unit);					// 004E7B70
+	void orders_rescue_passive(Unit* unit);				// 004A1EF0
 }

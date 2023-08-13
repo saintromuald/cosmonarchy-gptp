@@ -260,7 +260,7 @@ namespace hooks
 						if (unit->get_spell_countdown() == 0
 						&&	gcd_condition // new
 						&&	helper::is_ready_to_attack(unit, order_weapon_id) // is ready to fire weapon (angle, distance...) maybe?
-						&&	!(unit->movement_flags & MovementFlags::Accelerating)
+						&&	!(unit->movement_flags & MovementFlags_Accelerating)
 						&&	unit->get_movable_state() != 0)
 						{
 							bool idiot = false;
@@ -322,7 +322,7 @@ namespace hooks
 
 								// disable flag 2 if enabled, else has no effect
 								unit->order_signal &= ~2; //&= -3
-								unit->movement_flags |= MovementFlags::StartingAttack;
+								unit->movement_flags |= MovementFlags_StartingAttack;
 								if (unit->sprite->images.head)
 								{
 									Image* current_image = unit->sprite->images.head;

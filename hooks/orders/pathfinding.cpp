@@ -74,16 +74,16 @@ namespace hooks
             unit->move_target.unit = target;
             unit->move_target.pt = new_target;
             unit->next_movement_waypoint = new_target;
-            unit->movement_flags &= ~MovementFlags::Braking;
-            unit->movement_flags |= MovementFlags::OrderedAtLeastOnce;
+            unit->movement_flags &= ~MovementFlags_Braking;
+            unit->movement_flags |= MovementFlags_OrderedAtLeastOnce;
         }
         unit->recent_order_timer = 15;
         unit->status &= ~UnitStatus::Unmovable;
         Order* next_order = unit->order_queue_head;
         if (!next_order || orders_dat::Unknown7[next_order->order_id]) {
-            unit->movement_flags &= ~MovementFlags::Lifted;
+            unit->movement_flags &= ~MovementFlags_Lifted;
         } else {
-            unit->movement_flags |= MovementFlags::Lifted;
+            unit->movement_flags |= MovementFlags_Lifted;
         }
         return true;
     }

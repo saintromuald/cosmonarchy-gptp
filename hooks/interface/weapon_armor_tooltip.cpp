@@ -338,7 +338,7 @@ namespace hooks
 		builder << std::setprecision(4);
 
 		f32 speed_calc = (unit->flingy_top_speed / 256.0) / 24.0 / 32.0;
-		if (unit->movement_flags & MovementFlags::Moving && !(unit->movement_flags & MovementFlags::Accelerating)) {
+		if (unit->movement_flags & MovementFlags_Moving && !(unit->movement_flags & MovementFlags_Accelerating)) {
 			speed_calc = (unit->current_speed_2 / 256.0) / 24.0 / 32.0;
 		}
 		else if (unit->stim_timer) {

@@ -3,6 +3,7 @@
 
 extern Bullet* weapon_damage_current_bullet;
 
+void apply_ensnare_internal(Unit* unit, u32 ensnare_factor);
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
 
 namespace hooks {
@@ -45,7 +46,7 @@ namespace hooks {
 
 	void weapon_damage_root(WeaponDamageData& data);
 
-	void apply_ensnare(Unit* unit, u32 ensnare_factor);				// 004F45E0
+	void apply_ensnare(Unit* unit);									// 004F45E0
 	u16 get_spores_overlay_id(Unit* target);
 	s32 apply_spores_hook(Unit* target);							// 004F4480
 	void unit_attack_notify(Unit* unit);							// 0048F230

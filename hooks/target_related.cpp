@@ -43,7 +43,7 @@ namespace hooks
 
 	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) // 00476640
 	{
-		if (unit->movement_flags & MovementFlags::StartingAttack)
+		if (unit->movement_flags & MovementFlags_StartingAttack)
 		{
 			return 0;
 		}
@@ -866,7 +866,7 @@ namespace hooks
 			{
 				unit->velocity_direction_2 = unit->current_direction_1;
 				helper::set_unit_movement_speed_ex(unit);
-			} else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags::StartingAttack))
+			} else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags_StartingAttack))
 			{
 				unit->velocity_direction_2 = helper::get_direction_from_points(unit->next_target_waypoint.y, unit->position.x, unit->next_target_waypoint.x, unit->position.y);
 				helper::set_unit_movement_speed_ex(unit);

@@ -20,6 +20,19 @@
 
 Bullet* weapon_damage_current_bullet;
 
+void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
+	// Overlay
+	if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
+		scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
+	}
+
+	// Effect
+	UnitExt* unit_ext = get_unit_ext(unit);
+	unit_ext->values[ValueEnsnareFactor] = ensnare_factor;
+	unit->ensnare_timer = 5;
+	unit->update_speed();
+}
+
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
 	return scbw::is_under_carapace_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
@@ -443,7 +456,7 @@ namespace hooks
 			// Ensnaring Brood - Matraleth enchantment ability
 			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target))
 			{
-				 apply_ensnare(data.target, scbw::get_ensnare_factor(data.attacker));
+				 apply_ensnare_internal(data.target, scbw::get_ensnare_factor(data.attacker));
 			}
 
 			if (data.weapon_id == WeaponId::MindTyrantTyranny) {
@@ -1021,15 +1034,13 @@ namespace hooks
 		return fatal_deal_damage;
 	}
 
-	void apply_ensnare(Unit* unit, u32 ensnare_factor) { // 004F45E0
+	void apply_ensnare(Unit* unit) { // 004F45E0
 		// Overlay
 		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
 			scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
 		}
 
 		// Effect
-		UnitExt* unit_ext = get_unit_ext(unit);
-		unit_ext->values[ValueEnsnareFactor] = ensnare_factor;
 		unit->ensnare_timer = 5;
 		unit->update_speed();
 	}
