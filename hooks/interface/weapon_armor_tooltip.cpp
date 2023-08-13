@@ -21,19 +21,15 @@ char buffer[256];
 #include "SCBW/stat_txt_spec.h"
 #include <iomanip>
 
-static std::string format_string_vector(std::vector<std::string> strings)
-{
+static std::string format_string_vector(std::vector<std::string> strings) {
 	std::string result = "";
-	if (strings.size() == 0)
-	{
+	if (strings.size() == 0) {
 		strings.push_back("None");
 	}
 	s32 i = 0;
-	for (const std::string& str : strings)
-	{
+	for (const std::string& str : strings) {
 		result += str;
-		if (++i != strings.size())
-		{
+		if (++i != strings.size()) {
 			result += ", ";
 		}
 	}
@@ -72,8 +68,7 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 	text += BWTC_RESET;
 }
 
-const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex)
-{
+const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex) {
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 	bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
@@ -136,20 +131,16 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	};
 
 	std::vector<std::string> target_flags;
-	if (weapons_dat::target_flags[weapon_id].ground)
-	{
+	if (weapons_dat::target_flags[weapon_id].ground) {
 		target_flags.push_back("Ground");
 	}
-	if (weapons_dat::target_flags[weapon_id].air)
-	{
+	if (weapons_dat::target_flags[weapon_id].air) {
 		target_flags.push_back("Air");
 	}
-	if (weapons_dat::target_flags[weapon_id].non_building)
-	{
+	if (weapons_dat::target_flags[weapon_id].non_building) {
 		target_flags.push_back("Not Building");
 	}
-	if (weapons_dat::target_flags[weapon_id].terrain)
-	{
+	if (weapons_dat::target_flags[weapon_id].terrain) {
 		target_flags.push_back("Terrain");
 	}
 	std::string target_flags_text = format_string_vector(target_flags);
@@ -216,14 +207,12 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 	*/
 
 	// Splash
-	if (has_splash)
-	{
+	if (has_splash) {
 		text += "\nSplash Radius: " + std::to_string(splash_inner) + "/" + std::to_string(splash_medium) + "/" + std::to_string(splash_outer);
 		text += "\nSplash Type: " + splash_type_value;
 	}
 
-	if (!extended)
-	{
+	if (!extended) {
 		text += "\n-- Hold \003Shift\002 for more details --";
 	}
 
@@ -340,8 +329,7 @@ namespace hooks
 		f32 speed_calc = (unit->flingy_top_speed / 256.0) / 24.0 / 32.0;
 		if (unit->movement_flags & MovementFlags_Moving && !(unit->movement_flags & MovementFlags_Accelerating)) {
 			speed_calc = (unit->current_speed_2 / 256.0) / 24.0 / 32.0;
-		}
-		else if (unit->stim_timer) {
+		} else if (unit->stim_timer) {
 			speed_calc /= 2;
 		}
 		builder << speed_calc << " tiles/sec";
@@ -360,12 +348,9 @@ namespace hooks
 		std::string plane = unit->status & UnitStatus::InAir ? "Air" : "Ground";
 
 		std::vector<std::string> statuses;
-		if (unit->status & UnitStatus::Burrowed)
-		{
+		if (unit->status & UnitStatus::Burrowed) {
 			statuses.push_back("Burrowed");
-		}
-		else if (unit->status & UnitStatus::Cloaked)
-		{
+		} else if (unit->status & UnitStatus::Cloaked) {
 			statuses.push_back("Cloaked");
 		}
 
@@ -389,8 +374,7 @@ namespace hooks
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
 			unit_ext->timers[TimerEmpressAnodyneAnnex], TimerType::Gptp);
 
-		if (unit_ext->values[ValueSignifyStacks] < 5)
-		{
+		if (unit_ext->values[ValueSignifyStacks] < 5) {
 			add_status(statuses, "Cowardice", unit_ext->values[ValueSignifyStacks], 5,
 				unit_ext->timers[TimerSignify], TimerType::Gptp);
 		} else {
@@ -475,8 +459,7 @@ namespace hooks
 
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
-		if (scbw::is_under_carapace_swarm(unit))
-		{
+		if (scbw::is_under_carapace_swarm(unit)) {
 			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
@@ -488,32 +471,25 @@ namespace hooks
 		// color code source player if possible
 
 		std::vector<std::string> flags; // TODO: replace with something not gay
-		if (units_dat::base_property[unit->id] & UnitProperty::Building)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 			flags.push_back("Structure");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::ProducesUnits)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::ProducesUnits) {
 			flags.push_back("Factory");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Addon)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
 			flags.push_back("Addon");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 			flags.push_back("Worker");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Hero)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Hero) {
 			flags.push_back("Hero");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Invincible)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
 			flags.push_back("Invincible");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Detector)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Detector) {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
 			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)))
 			{
@@ -523,8 +499,7 @@ namespace hooks
 				flags.push_back("Detector (disabled)");
 			}
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
 			flags.push_back("Spreads creep");
 		}
 
@@ -548,8 +523,7 @@ namespace hooks
 			}
 			text += "\nTurn Rate: " + turn_rate;
 			text += "\nSight Range: " + std::to_string(sight_range);
-			if (transport_space != 255)
-			{
+			if (transport_space != 255) {
 				text += "\nTransport Space: " + std::to_string(transport_space);
 			}
 		} else {
@@ -582,25 +556,20 @@ namespace hooks
 	}
 
 	// Returns the string for the tooltip text of various special cases.
-	const char* get_special_tooltip_string(u16 icon_unit_id, Unit* unit)
-	{
-		switch (icon_unit_id)
-		{
+	const char* get_special_tooltip_string(u16 icon_unit_id, Unit* unit) {
+		switch (icon_unit_id) {
 			case UnitId::TerranSpiderMine:
-			case UnitId::TerranLobotomyMine:
-			{
+			case UnitId::TerranLobotomyMine: {
 				if (unit->id == UnitId::TerranVulture) {
 					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363);		// "Lobotomy Mines"
 				} else {
 					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Spider Mines"
 				}
 			}
-			case UnitId::TerranMorningstar:
-			{
+			case UnitId::TerranMorningstar: {
 				return g_stat_txt_tbl_new->get_string(793);									// "Missiles"
 			}
-			case UnitId::ProtossSteward:
-			{
+			case UnitId::ProtossSteward: {
 				return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);	// "Stewards"
 			}
 			default: {
