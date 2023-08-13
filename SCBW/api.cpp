@@ -998,6 +998,8 @@ namespace scbw {
 		s32 source_height = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height / 2;
 		if (!target_unit) {
 			return source_height * 2;
+		} else if (target_unit->status & UnitStatus::InAir) {
+			return 0;
 		}
 		s32 target_height = scbw::get_active_tile_at_coords(target_unit->position.x, target_unit->position.y)->ground_height / 2;
 		return std::max(source_height - target_height, 0) * 2;

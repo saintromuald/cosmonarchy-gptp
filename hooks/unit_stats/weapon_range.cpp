@@ -57,7 +57,7 @@ namespace hooks
 		}
 
 		// Height advantage
-		if (!ignore_cliff_advantage && !(target->status & UnitStatus::InAir)) {
+		if (!ignore_cliff_advantage) {
 			bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id, false) * 32;
 		}
 
