@@ -1,6 +1,7 @@
 #pragma once
 #include "SCBW/api.h"
 #include "SCBW/scbwdata.h"
+
 namespace hooks
 {
 	bool is_unit_in_weapon_range(Unit* target, Unit* attacker);															// 00476870
@@ -23,6 +24,7 @@ namespace hooks
 	void orders_turret_guard(Unit* unit);																				// 004777F0
 	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y);												// 004762C0
 	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, char order_id, Unit* target);							// 00479FA0
+	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);											// 00430F10
 
 	void inject_target_related_hooks();
 }

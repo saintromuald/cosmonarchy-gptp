@@ -492,10 +492,8 @@ namespace hooks
 		{
 			Unit* unit_with_hangar = hangar_unit->hangar_unit.parent;
 			steward_target = hangar_unit->order_target.unit;
-			if (steward_target->sprite) {
-				hangar_unit->order_target.pt.x = steward_target->sprite->position.x;
-				hangar_unit->order_target.pt.y = steward_target->sprite->position.y;
-			}
+			hangar_unit->order_target.pt.x = steward_target->position.x;
+			hangar_unit->order_target.pt.y = steward_target->position.y;
 			if (!unit_with_hangar)
 			{
 				unit_with_hangar = hangar_unit;
@@ -510,7 +508,7 @@ namespace hooks
 			}
 		} else {
 			u8 steward_order_id = hangar_unit->main_order_id;
-			hangar_unit->user_action_flags |= 1u;
+			hangar_unit->user_action_flags |= 1;
 			if (steward_order_id)
 			{
 				while (1)
@@ -963,5 +961,79 @@ namespace hooks
 		unit->main_order_state = 0;
 		unit->order_unit_id = UnitId::None;
 		return unit;
+	}
+
+	// Hooked to use non-sprite positions. -Pr0nogo
+	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target) // 00430F10
+	{
+		// TODO: Cleanup
+		__int16 width; // ax
+		__int16 bounds_left; // cx
+		__int16 bounds_bot; // si
+		Box16* bounds; // eax
+		__int16 x_1; // ax
+		int x2; // ecx
+		__int16 targ_bottom; // di
+		__int16 bottom_fin; // si
+		__int16 y_bot; // si
+		__int16 x_width; // ax
+		__int16 targ_pos_y; // di
+		__int16 targ_pos_x; // bx
+		Box16* target_bounds; // edx
+		int y2; // eax
+		__int16 bounds_top; // [esp+Ah] [ebp-16h]
+		__int16 targ_left; // [esp+10h] [ebp-10h]
+		__int16 targ_top; // [esp+12h] [ebp-Eh]
+
+		u32 pos_x = 0;
+		u32 pos_y = 0;
+		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
+		{
+			Unit* subunit = unit->subunit;
+			pos_x = subunit->position.x;
+			pos_y = subunit->position.y;
+			bounds_bot = units_dat::unit_bounds[subunit->id].h;
+			bounds = &units_dat::unit_bounds[subunit->id];
+			bounds_top = subunit->position.y - bounds->y;
+			bounds_left = pos_x - bounds->x;
+			width = bounds->w;
+		} else {
+			pos_x = unit->position.x;
+			pos_y = unit->position.y;
+			bounds_bot = units_dat::unit_bounds[unit->id].h;
+			bounds_top = unit->position.y - units_dat::unit_bounds[unit->id].y;
+			bounds_left = pos_x - units_dat::unit_bounds[unit->id].x;
+			width = units_dat::unit_bounds[unit->id].w;
+		}
+
+		bottom_fin = pos_y + bounds_bot;
+		x_width = pos_x + width;
+		targ_pos_y = target->position.y;
+		targ_pos_x = target->position.x;
+		target_bounds = &units_dat::unit_bounds[target->id];
+		targ_top = targ_pos_y - target_bounds->y;
+		x_1 = x_width + 1;
+		y_bot = bottom_fin + 1;
+		targ_left = targ_pos_x - target_bounds->x;
+		targ_bottom = targ_pos_y + target_bounds->h + 1;
+		x2 = bounds_left - (signed __int16)(targ_pos_x + target_bounds->w + 1);
+		if (x2 < 0)
+		{
+			x2 = targ_left - x_1;
+			if (x2 < 0)
+			{
+				x2 = 0;
+			}
+		}
+		y2 = bounds_top - targ_bottom;
+		if (y2 < 0)
+		{
+			y2 = targ_top - y_bot;
+			if (y2 < 0)
+			{
+				y2 = 0;
+			}
+		}
+		return min_range >= helper::get_distance_fast(0, x2, 0, y2);
 	}
 }

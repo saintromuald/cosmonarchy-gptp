@@ -1128,6 +1128,10 @@ namespace scbw {
 	}
 
 	bool unit_is_ranged_attacker(Unit* unit) {
+		if (unit->connected_unit && unit->connected_unit->status & UnitStatus::InAir) {
+			return false;
+		}
+
 		// Would be nice to somehow avoid ID hardcode
 		switch (unit->id)
 		{

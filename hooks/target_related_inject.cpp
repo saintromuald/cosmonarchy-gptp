@@ -395,6 +395,33 @@ namespace
 		}
 	}
 
+	void __declspec(naked) is_target_within_min_range_wrapper() { // 00430F10
+		static b32 result;
+		static Unit* unit;
+		static u32 min_range;
+		static Unit* target;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV min_range, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV target, EAX
+			POP EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::is_target_within_min_range(unit, min_range, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -460,6 +487,7 @@ namespace hooks
 		jump_patch(orders_turret_guard_wrapper,							0x004777F0, 2);
 		jump_patch(get_closest_point_of_target_wrapper,					0x004762C0, 1);
 		jump_patch(unit_order_move_to_target_reset_order_state_wrapper,	0x00479FA0, 0);
+		jump_patch(is_target_within_min_range_wrapper,					0x00430F10, 1);
 
 		// Patches \\
 
