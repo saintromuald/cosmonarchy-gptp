@@ -40,56 +40,25 @@ static void init_auto_celebration() {
 	time_t now = time(0);
 	tm* ltm = localtime(&now);
 	u32 month = ltm->tm_mon + 1;
-
-	switch (month)
-	{
+	switch (month) {
 		case 4: {
 			globals.celebration = Celebration_AprilFools;
 		} break;
-		case 12:
-		{
+		case 12: {
 			globals.celebration = Celebration_Christmas;
 		} break;
-		default:
-		{
+		default: {
 			globals.celebration = Celebration_None;
 		} break;
 	}
 }
 
-static Advisor parse_advisor_name(std::string string)
-{
-	Parser parser = {};
-	parser.at = (char*)string.c_str();
-	Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
-	if (advisor == -1) {
-		// TODO: print error
-		advisor = Advisor_Default;
+AdvisorType get_advisor_type_from_config(u32 race) {
+	switch (race) {
+		case RaceId::Terran:  return config.terran_advisor.type;
+		case RaceId::Protoss: return config.protoss_advisor.type;
+		case RaceId::Zerg:    return config.zerg_advisor.type;
 	}
-	if (advisor == Advisor_Default) {
-		switch (g_player_table[*g_local_nation_id].race)
-		{
-			case RaceId::Terran:
-			{
-				advisor = Advisor_Terran;
-			}
-			case RaceId::Protoss:
-			{
-				advisor = Advisor_Protoss;
-			}
-			case RaceId::Zerg:
-			{
-				advisor = Advisor_Zerg;
-			}
-		}
-	}
-	return advisor;
-}
-
-void init_advisor() {
-	globals.terran_advisor = parse_advisor_name(config.terran_advisor_string);
-	globals.protoss_advisor = parse_advisor_name(config.protoss_advisor_string);
-	globals.zerg_advisor = parse_advisor_name(config.zerg_advisor_string);
 }
 
 void init_trigger_system() {
@@ -113,7 +82,8 @@ void init_trigger_system() {
 	init_spawn();
 	init_trigger_vars();
 	init_trigger_events();
-	init_advisor();
+	
+	globals.current_advisor = get_advisor_type_from_config(g_player_table[*g_local_nation_id].race);
 }
 
 static bool unit_can_change_sprite(Unit* unit) {
@@ -1003,6 +973,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				g_player_table[player].race = race;
+				if (player == *g_local_nation_id) {
+					globals.current_advisor = get_advisor_type_from_config(race);
+				}
 			}
 		} else if (parser_eq(&parser, "set_player_color")) {
 			u32 player = parser_get_player(&parser);
@@ -1233,11 +1206,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "set_advisor")) {
 			u32 player = parser_get_player(&parser);
-			Advisor advisor = (Advisor)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
+			AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
 
 			if (player) {
 				player -= 1;
-				globals.players[player].advisor = advisor;
+				if (player == *g_local_nation_id) {
+					globals.current_advisor = advisor;
+				}
 			}
 		} else if (parser_eq(&parser, "neutral_hostile")) {
 			bool neutral_hostile = (bool)parser_get_s32(&parser);

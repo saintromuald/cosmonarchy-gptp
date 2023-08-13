@@ -189,18 +189,14 @@ namespace hooks
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
 	// Wound up going for a different attack, but this hook works, it's just not injected.
-	b32 check_resources_for_building(u32 notify, u8 player) // 0042D0C0
-	{
-		if (g_game_minerals[player] >= g_ai_minerals_reserve[player])
-		{
-			if (g_game_vespene[player] >= g_ai_vespene_reserve[player])
-			{
+	b32 check_resources_for_building(u32 notify, u8 player) { // 0042D0C0 
+		if (g_game_minerals[player] >= g_ai_minerals_reserve[player]) {
+			if (g_game_vespene[player] >= g_ai_vespene_reserve[player]) {
 				return 1;
 			} else {
-				if (notify)
-				{
+				if (notify) {
 					u32 sound_id = *g_console_index + 150;
-					if (globals.players[player].advisor != Advisor_Default) {
+					if (scbw::has_custom_advisor(player)) {
 						sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoVespene);
 					}
 					helper::display_error_message_id_with_sfx(player, 851, sound_id);
@@ -208,10 +204,9 @@ namespace hooks
 				return 0;
 			}
 		} else {
-			if (notify)
-			{
+			if (notify) {
 				u32 sound_id = *g_console_index + 147;
-				if (globals.players[player].advisor != Advisor_Default) {
+				if (scbw::has_custom_advisor(player)) {
 					sound_id = scbw::get_custom_advisor_sound(player, AdvisorEvent_NoMinerals);
 				}
 				helper::display_error_message_id_with_sfx(player, 850, sound_id);
@@ -221,13 +216,10 @@ namespace hooks
 	}
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
-	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) // 0048EE30
-	{
-		if (player == *g_local_nation_id && !*g_is_in_replay)
-		{
+	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) { // 0048EE30 
+		if (player == *g_local_nation_id && !*g_is_in_replay) {
 			sound_id = (u16)sound_id;
-			if (sound_id && (*g_options_list).sfx)
-			{
+			if (sound_id && (*g_options_list).sfx) {
 				u32 sound_id_final = scbw::parse_advisor_sound_by_message_id(player, message_id);
 				if (!sound_id_final) {
 					sound_id_final = sound_id;
@@ -235,21 +227,17 @@ namespace hooks
 
 				u32 volume = sfx_dat::volume[sound_id_final];
 				u32 max_volume = 99;
-				if (volume >= 99)
-				{
-					if (volume >= 0)
-					{
+				if (volume >= 99) {
+					if (volume >= 0) {
 						max_volume = sfx_dat::volume[sound_id_final];
 					} else {
 						max_volume = 0;
 					}
 				}
-				if (*use_quiet_sounds)
-				{
+				if (*use_quiet_sounds) {
 					max_volume /= 5;
 				}
-				if (max_volume > 10)
-				{
+				if (max_volume > 10) {
 					u32 error_id = SoundId::ErrorZerg - *g_console_index;
 					if (error_id == SoundId::ErrorTerran) {
 						helper::play_sound_global(error_id); // TODO: Confirm this helper doesn't play for other players
@@ -260,10 +248,8 @@ namespace hooks
 
 			char* message_string;
 			u32 final_message_id = message_id - 1;
-			if ((u16)message_id)
-			{
-				if (final_message_id < *g_stat_txt_tbl)
-				{
+			if ((u16)message_id) {
+				if (final_message_id < *g_stat_txt_tbl) {
 					message_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[final_message_id + 1];
 					if (!message_string) {
 						return;
@@ -271,8 +257,7 @@ namespace hooks
 				} else {
 					message_string = "";
 				}
-				if (player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
-				{
+				if (player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message_string);
 				}
 			}

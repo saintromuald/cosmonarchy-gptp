@@ -12,6 +12,25 @@ bool file_exists(std::string file) {
 	return std::ifstream(file).good();
 }
 
+static AdvisorType parse_advisor_name(const char* name, AdvisorType default_type) {
+	Parser parser = {};
+	parser.at = (char*)name;
+	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
+	if (advisor == -1) {
+		// TODO: print error
+		return default_type;
+	}
+	if (advisor == AdvisorType_Default) {
+		return default_type;
+	}
+	return advisor;
+}
+
+static void load_advisor(const YAML::Node& config_node, const char* name, AdvisorSetting* advisor, AdvisorType default_type) {
+	load_field(config_node, name, advisor->string);
+	advisor->type = parse_advisor_name(name, default_type);
+}
+
 void load_config() {
 	if (file_exists(CONFIG_FILENAME)) {
 		YAML::Node config_node = YAML::LoadFile(CONFIG_FILENAME);
@@ -47,9 +66,9 @@ void load_config() {
 		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
 		// Audiovisuals
-		load_field(config_node, "terran-advisor", config.terran_advisor_string);
-		load_field(config_node, "protoss-advisor", config.protoss_advisor_string);
-		load_field(config_node, "zerg-advisor", config.zerg_advisor_string);
+		load_advisor(config_node, "terran-advisor", &config.terran_advisor, AdvisorType_Terran);
+		load_advisor(config_node, "protoss-advisor", &config.protoss_advisor, AdvisorType_Protoss);
+		load_advisor(config_node, "zerg-advisor", &config.zerg_advisor, AdvisorType_Zerg);
 		load_field(config_node, "celebrations-enabled", config.celebrations_enabled);
 
 		// Hotkeys
@@ -114,9 +133,9 @@ void save_config() {
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Audiovisuals");
-	write_field(out, "terran-advisor", config.terran_advisor_string);
-	write_field(out, "protoss-advisor", config.protoss_advisor_string);
-	write_field(out, "zerg-advisor", config.zerg_advisor_string);
+	write_field(out, "terran-advisor", config.terran_advisor.string);
+	write_field(out, "protoss-advisor", config.protoss_advisor.string);
+	write_field(out, "zerg-advisor", config.zerg_advisor.string);
 	write_field(out, "celebrations-enabled", config.celebrations_enabled);
 	out << YAML::Newline << YAML::Newline;
 

@@ -3,6 +3,11 @@
 #include <array>
 #include "trigger_system/trigger_system.h"
 
+struct AdvisorSetting {
+	std::string string;
+	AdvisorType type;
+};
+
 const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
 	// Launch settings
@@ -36,9 +41,9 @@ struct Config {
 	bool show_team_ui_self = false;
 
 	// Audiovisuals
-	std::string terran_advisor_string = "terran";
-	std::string protoss_advisor_string = "protoss";
-	std::string zerg_advisor_string = "zerg";
+	AdvisorSetting terran_advisor;
+	AdvisorSetting protoss_advisor;
+	AdvisorSetting zerg_advisor;
 	bool celebrations_enabled = true;
 
 	// Hotkeys

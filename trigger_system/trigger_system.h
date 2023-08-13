@@ -102,16 +102,16 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 };
 C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
 
-enum Advisor: u8 {
-	Advisor_Default,
+enum AdvisorType : u8 {
+	AdvisorType_Default,
 
-	Advisor_Terran,
-	Advisor_Protoss,
-	Advisor_Zerg,
+	AdvisorType_Terran,
+	AdvisorType_Protoss,
+	AdvisorType_Zerg,
 
-	Advisor_Mesk,
+	AdvisorType_Mesk,
 
-	Advisor_Count,
+	AdvisorType_Count,
 };
 
 static const char* advisor_symbol_names[] = {
@@ -123,13 +123,12 @@ static const char* advisor_symbol_names[] = {
 
 	"mesk",
 };
-C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == Advisor_Count);
+C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
 
 struct PlayerVars {
 	Point16 camera;
 	WitnessMode witness_mode;
 	Faction faction;
-	Advisor advisor;
 	bool neutral_hostile;
 };
 
@@ -144,9 +143,7 @@ struct Globals {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
 
-	Advisor terran_advisor;
-	Advisor protoss_advisor;
-	Advisor zerg_advisor;
+	AdvisorType current_advisor;
 
 	AlertState alert;
 };
