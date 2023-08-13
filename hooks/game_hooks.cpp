@@ -1230,7 +1230,10 @@ namespace hooks {
 				bool can_fire = !unit->ground_weapon_cooldown;
 				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, true, false, true)) {
+					FireMultipleOptions options = {};
+					options.ignore_main = true;
+					options.use_weapon_factor = false;
+					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, options)) {
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
 					}
 				}
@@ -1758,7 +1761,9 @@ namespace hooks {
 			{
 				// Forward March
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, false, true, false)) {
+					FireMultipleOptions options = {};
+					options.apply_cooldown = false;
+					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, options)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
@@ -1992,7 +1997,9 @@ namespace hooks {
 			{
 				// Durendal - Forward March
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, false, true, false)) {
+					FireMultipleOptions options = {};
+					options.apply_cooldown = false;
+					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
 						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03), unit, 1, 0);
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
@@ -2044,7 +2051,10 @@ namespace hooks {
 			{
 				// Optecton - Forward March
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, FilterEnemy | FilterNoGround, false, false, false)) {
+					FireMultipleOptions options = {};
+					options.use_weapon_factor = false;
+					options.apply_cooldown = false;
+					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, FilterEnemy | FilterNoGround, options)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::OptectonWeaponfireSecondary01, SoundId::OptectonWeaponfireSecondary03), unit, 1, 0);
 					} else {

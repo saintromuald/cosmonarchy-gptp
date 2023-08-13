@@ -256,13 +256,13 @@ void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u
 	}
 }
 
-bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool ignore_main, bool use_weapon_factor, bool apply_cooldown, WeaponOffsets* weapon_offsets, bool center_on_target, u32 range_overwrite, u32 divisor_overwrite) {
-	u32 attack_range = range_overwrite ? range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
-	u32 factor = use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
+bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, FireMultipleOptions options) {
+	u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
+	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
 	bool fired = false;
 	Unit* order_target_unit = unit->order_target.unit;
-	if (!ignore_main
+	if (!options.ignore_main
 	&&   order_target_unit
 	&&   unit->main_order_id != OrderId::Follow
 	&&   unit->main_order_id != OrderId::Patrol
@@ -274,22 +274,22 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			for (u32 i = 0; i < factor; i++) {
-				Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), weapon_offsets, apply_cooldown);
+				Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
 				if (bullet) {
 					fired = true;
 					BulletExt* bullet_ext = get_bullet_ext(bullet);
-					bullet_ext->divisor_overwrite = divisor_overwrite;
+					bullet_ext->divisor_overwrite = options.divisor_overwrite;
 				}
 			}
 		}
 	}
 
 	EntryArray targets = {};
-	if (center_on_target) {
+	if (options.center_on_target) {
 		if (!order_target_unit) {
 			return fired;
 		}
-		unit_search_radial(&targets, order_target_unit->position, attack_range);
+		unit_search_radial(&targets, order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : attack_range);
 	} else {
 		Box32 area = {
 			unit->get_left()   - attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
@@ -319,11 +319,11 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, bool
 		}
 
 		for (u32 i = 0; i < factor; i++) {
-			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), weapon_offsets, apply_cooldown);
+			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), options.weapon_offsets, options.apply_cooldown);
 			if (bullet) {
 				fired = true;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
-				bullet_ext->divisor_overwrite = divisor_overwrite;
+				bullet_ext->divisor_overwrite = options.divisor_overwrite;
 			}
 		}
 	}
@@ -477,8 +477,7 @@ namespace hooks {
 						}
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;
-					case WeaponId::SavantDiscoidRailgun:
-					{
+					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
 						if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 							u32 energy = 10 * 256;
@@ -494,78 +493,83 @@ namespace hooks {
 							fire_bullet(unit, weapon_id, unit->order_target);
 						}
 					} break;
-					case WeaponId::SouthpawKnockoutDrivers:
-					{
+					case WeaponId::SouthpawKnockoutDrivers: {
 						// Southpaw - Offset: Linear
 						fire_line(unit, weapon_id, 3, 24, 1, 0);
 					} break;
-					case WeaponId::CataphractLonginiusCannons:
-					{
+					case WeaponId::CataphractLonginiusCannons: {
+						FireMultipleOptions options = {};
+						options.weapon_offsets = get_weapon_offsets(weapon_id);
+
 						// Multi-Attack IV
-						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, false, true, true, get_weapon_offsets(weapon_id));
+						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, options);
 					} break;
-					case WeaponId::PaladinCrusaderMissiles:
-					{
+					case WeaponId::PaladinCrusaderMissiles: {
 						// Paladin - Offset: Linear
 						fire_line(unit, weapon_id, 10, 32, 2, 16, get_weapon_offsets(weapon_id));
 					} break;
-					case WeaponId::AnticthonEncirclingMirror:
-					{
+					case WeaponId::AnticthonEncirclingMirror: {
 						// Multi-Attack V
-						fire_multiple(unit, weapon_id, 5, FilterEnemy);
+						fire_multiple(unit, weapon_id, 5, FilterEnemy, {});
 					} break;
-					case WeaponId::AionLazarusSalvo:
-					{
+					case WeaponId::AionLazarusSalvo: {
 						// Aion - Offset: Linear
 						fire_line(unit, weapon_id, 4, 32, 1, 0);
 					} break;
-					case WeaponId::SalamanderPerditionBarrage:
-					{
+					case WeaponId::SalamanderPerditionBarrage: {
 						// Salamander - Offset: Linear
 						fire_line(unit, weapon_id, 3, 32, 1, 0);
 					} break;
-					case WeaponId::MinotaurAsterionLaserBattery:
-					{
+					case WeaponId::MinotaurAsterionLaserBattery: {
 						// Monoceros Targeting - Minotaur
-						fire_multiple(unit, weapon_id, 5, FilterEnemy | FilterFrontalArc);
+						fire_multiple(unit, weapon_id, 5, FilterEnemy | FilterFrontalArc, {});
 					} break;
-					case WeaponId::SirenCharybdalRifle:
-					{
+					case WeaponId::SirenCharybdalRifle: {
 						// Offset: Cone
 						fire_shotgun(unit, weapon_id, 2, 5, 10);
 					} break;
-					case WeaponId::MadrigalFuriaMissiles:
-					{
+					case WeaponId::MadrigalFuriaMissiles: {
 						// Madrigal Furia Salvo
-						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy);
+						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, {});
 					} break;
-					case WeaponId::ValkyrieHaloRockets:
-					{
+					case WeaponId::ValkyrieHaloRockets: {
 						// Offset: Cone
 						fire_shotgun(unit, weapon_id, 1, 3, 10);
 					} break;
-					case WeaponId::IzirokorEnergizedBioplasma:
-					{
+					case WeaponId::IzirokorEnergizedBioplasma: {
 						// Crushing Tide - Izirokor
-						fire_multiple(unit, weapon_id, 3, FilterEnemy);
+						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
 					} break;
-					case WeaponId::MatrixKhaydarinRay:
-					{
+					case WeaponId::MatrixKhaydarinRay: {
+						FireMultipleOptions options = {};
+						options.use_weapon_factor = false;
+						options.weapon_offsets = get_weapon_offsets(weapon_id);
+
 						// Multi-Attack IV
-						fire_multiple(unit, weapon_id, 4, FilterEnemy, false, false, true, get_weapon_offsets(weapon_id));
+						fire_multiple(unit, weapon_id, 4, FilterEnemy,  options);
 					} break;
-					case WeaponId::BarghestRayOfAgony:
-					{
+					case WeaponId::BarghestRayOfAgony: {
+						FireMultipleOptions options = {};
+						options.use_weapon_factor = false;
+						options.weapon_offsets = get_weapon_offsets(weapon_id);
+
 						// Multi-Attack III
-						fire_multiple(unit, weapon_id, 3, FilterEnemy | FilterFrontalArc, false, false);
+						fire_multiple(unit, weapon_id, 3, FilterEnemy | FilterFrontalArc, options);
 					} break;
-					case WeaponId::SkortrithColonySkortraTendril:
-					{
+					case WeaponId::SkortrithColonySkortraTendril: {
+						FireMultipleOptions options = {};
+						options.weapon_offsets = get_weapon_offsets(weapon_id);
+						options.ignore_main = true;
+						options.use_weapon_factor = false;
+						options.apply_cooldown = false;
+						options.center_on_target = true;
+						options.center_on_target_range_overwrite = 2 * 32;
+						options.divisor_overwrite = 2;
+
 						fire_bullet(unit, weapon_id, unit->order_target);
-						fire_multiple(unit, weapon_id, 2, FilterEnemy, true, false, false, 0, true, 2 * 32, 2);
+						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);
 					} break;
-					default:
-					{
+					default: {
 						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
