@@ -1179,7 +1179,7 @@ namespace hooks {
 			case UnitId::ZergVilgoleth: {
 				if (!unit_ext->timers[TimerVilgolethSpawn]) {
 					Thingy* corpse = get_closest_active_corpse(unit->position, 5 * 32);
-					if (corpse) {
+					if (corpse && corpse->sprite->id != SpriteId::Corpse_Rilirokor) {
 						unit_ext->timers[TimerVilgolethSpawn] = 24;
 						Point16 pos = corpse->sprite->position;
 						scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, pos);

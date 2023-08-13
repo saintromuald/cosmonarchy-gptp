@@ -276,6 +276,7 @@ enum ExtTimerId {
 	TimerHeraldAvenge,
 	TimerZergAdrenalFrenzy,
 	TimerEmpressAnodyneAnnex,
+	TimerZarcavrokorSecondaryFire,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

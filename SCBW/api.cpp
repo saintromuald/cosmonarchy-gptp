@@ -987,7 +987,8 @@ namespace scbw {
 			&& unit->id != UnitId::TerranHarakan
 			&& unit->id != UnitId::TerranMatadorCinderMode
 			&& unit->id != UnitId::TerranMatadorTurretCinderMode
-			&& weapon != WeaponId::DurendalAbaddonFlamethrowers;
+			&& weapon   != WeaponId::DurendalAbaddonFlamethrowers
+			&& unit->id != UnitId::ZergIzirokor;
 	}
 
 	s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {

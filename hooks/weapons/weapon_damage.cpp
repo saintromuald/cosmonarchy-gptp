@@ -525,7 +525,10 @@ namespace hooks
 				case UnitId::ZergZarcavrokor:
 				{
 					// Fan of Teeth - Zarcavrokor behavior
-					fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), 0, false);
+					if (data.target != data.attacker && !target_ext->timers[TimerZarcavrokorSecondaryFire]) {
+						fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), 0, false);
+						target_ext->timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZarcavrokorBonesofReflection] - 1;
+					}
 				} break;
 			}
 
