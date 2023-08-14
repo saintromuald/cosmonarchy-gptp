@@ -986,7 +986,7 @@ SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
 SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
 
 // For btnsact_rally_point
-SCBW_DATA(char*,	g_order_id_ground,					0x00641691);
+SCBW_DATA(u8*,		g_order_id_ground,					0x00641691);
 SCBW_DATA(char*,	g_order_id_obstructed,				0x00641693);
 SCBW_DATA(char*,	g_order_id_unit,					0x00641692);
 SCBW_DATA(u16*,		g_buttonset_special_buttonset_id,	0x0068C1C8);
