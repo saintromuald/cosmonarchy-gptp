@@ -777,4 +777,7 @@ namespace scbw
 	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type);
 	u32 get_advisor_sound_from_message_id(u32 player, u32 message_id);
 	bool has_custom_advisor(u32 player);
+	void draw_shape (u32 i_0, float scale, Point32* offset, u8 color);
+	void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color);
+	void draw_aura_range(Unit* unit, u16 radius, u8 color);
 }
