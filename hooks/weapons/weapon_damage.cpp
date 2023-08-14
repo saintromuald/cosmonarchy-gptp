@@ -367,6 +367,12 @@ namespace hooks
 			}
 		}
 	//	data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+		if (weapon_damage_current_bullet) {
+			BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+			if (current_bullet_ext->is_phantom) {
+				data.damage /= 2;
+			}
+		}
 
 		switch (data.weapon_id) {
 			// Cabalist was here
