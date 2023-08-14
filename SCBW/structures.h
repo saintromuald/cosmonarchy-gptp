@@ -1356,7 +1356,11 @@ struct ControlGroupPlayer {
 struct ControlGroupPlayerArray {
 	ControlGroupPlayer player[PlayerLimit];
 };
-
 C_ASSERT(sizeof(ControlGroupPlayerArray) == 4 * PLAYABLE_PLAYER_COUNT * 18 * SelectionCap);
+
+struct Point32 {
+	u32 x;
+	u32 y;
+};
 
 #pragma pack()

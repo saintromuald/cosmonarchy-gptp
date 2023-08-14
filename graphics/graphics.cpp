@@ -5,7 +5,6 @@
 #include "Shape.h"
 
 namespace graphics {
-
 	const s32 MAX_SHAPES  = 5 * 10000; // Increase original limits by 5 times to allow more drawing on screen
 	const s32 MAX_STRINGS = 5 * 2000;  //																	-Veeq7
 	const s32 MAX_STAT_RES = 100;
