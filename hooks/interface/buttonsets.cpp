@@ -2539,7 +2539,7 @@ namespace hooks {
 								} break;
 								case UnitId::ZergVilgorokor:
 								{
-									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Vilgorokor - Autophagy
+									if (current_button->icon_id == IconId::Radioactive_Zerg_Egg) { // Vilgorokor - Autophagy
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
