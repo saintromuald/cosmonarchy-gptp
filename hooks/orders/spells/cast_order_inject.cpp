@@ -218,8 +218,5 @@ namespace hooks
 		jump_patch(can_target_spell_wrapper,					0x00492020, 1);
 		jump_patch(issue_order_targeting_ground_wrapper,		0x00475260, 1);
 		jump_patch(issue_tri_target_order_wrapper,				0x0048CAF0, 0);
-
-		jump_patch(can_cast_ordered_spell_now_patch_91E64,		0x00491E64);	// DF - Fix ability cast ranges to take into account caster collision,
-		memory_patch(0x00491E73, (u8)0x0);										//		like weapon ranges do.
 	}
 }

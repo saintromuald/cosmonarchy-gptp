@@ -967,23 +967,23 @@ SCBW_DATA(u32*,			g_dying_unit_creep_disappearance_count, 0x00658AE4);
 SCBW_DATA(u32**,		g_current_tiles,						0x006D0E84);
 
 // For draw_tooltip_with_icon
-SCBW_DATA(char*,		grp_stat_res_icon_mapping,	0x00515228); // sizeof 8
-SCBW_DATA(GrpHead*,		icons_grp,					0x0068C238);
-SCBW_DATA(Box16*,		tooltip_required_area,		0x006CE0D8);
+SCBW_DATA(char*,		grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
+SCBW_DATA(GrpHead*,		icons_grp,						0x0068C238);
+SCBW_DATA(Box16*,		tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit
-SCBW_DATA(char*,		g_palette_index_reference,	0x006CEB20); // sizeof at least 20
-SCBW_DATA(u32*,			notify_cooldown,			0x00640870);
-//SCBW_DATA(SoundData*,	g_sound_data,				0x006D1270); // THIS IS NOT EXTENDED!!!
+SCBW_DATA(char*,		g_palette_index_reference,		0x006CEB20); // sizeof at least 20
+SCBW_DATA(u32*,			notify_cooldown,				0x00640870);
+//SCBW_DATA(SoundData*,	g_sound_data,					0x006D1270); // THIS IS NOT EXTENDED!!!
 
 // For stat_data_unit_wireframe_select_update
-SCBW_DATA(char**,	off_68C1FC,						0x0068C1FC);
-SCBW_DATA(char*,	g_palette_remap,				0x0050CDC1);
+SCBW_DATA(char**,	off_68C1FC,							0x0068C1FC);
+SCBW_DATA(char*,	g_palette_remap,					0x0050CDC1);
 
 // For kill_units_at_location_proc
-SCBW_DATA(u32*,		trig_remove_unit_active,		0x005971DC);
-SCBW_DATA(u32*,		trig_killing_additional_unit,	0x00596CD4);
-SCBW_DATA(u32*,		trig_kill_unit_count,			0x005971E0);
+SCBW_DATA(u32*,		trig_remove_unit_active,			0x005971DC);
+SCBW_DATA(u32*,		trig_killing_additional_unit,		0x00596CD4);
+SCBW_DATA(u32*,		trig_kill_unit_count,				0x005971E0);
 
 // For btnsact_rally_point
 SCBW_DATA(u8*,		g_order_id_ground,					0x00641691);

@@ -110,7 +110,6 @@ namespace hooks
 			} else {
 				unit->building.creep_timer = 0;
 			}
-
 		} else {
 			u8 result_00414680;
 			unit->building.creep_timer = 15;
@@ -282,79 +281,13 @@ namespace hooks
 	}
 
 	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) { // 00429740
-		if (unit_id_is_zerg_production(unit->id)
-			|| unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot])) {
+		if (unit_id_is_zerg_production(unit->id) || unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot]))
+		{
 			return helper::btnscond_rally(unused, player, unit);
 		} else {
 			return 0;
 		}
 	}
-
-	/*
-	char apply_creep_at_location_from_unit_id(s16 a1, s32 a2, s32 a3) // 004148F0
-	{
-		u32 v3; // ecx
-		u32 v4; // ebx
-		s32 v5; // edi
-		u32 v6; // esi
-		Point16 building_dimensions; // eax
-		u32 v8; // eax
-		s32 v9; // edi
-		char result; // al
-		u32 v11; // [esp+Ch] [ebp-10h]
-		s32 v12; // [esp+10h] [ebp-Ch]
-		u32 v13; // [esp+14h] [ebp-8h]
-		s32 v14; // [esp+18h] [ebp-4h]
-
-		building_dimensions = units_dat::building_dimensions[a1];
-		v5 = (s16)v7 / 32;
-		v4 = a2 / 32 - v5 / 2;
-		v6 = a3 / 32 - (v7 >> 16) / 32 / 2;
-		v3 = v6 + (v7 >> 16) / 32;
-		v12 = a2 / 32 - v5 / 2;
-		v11 = v3;
-		if (v6 < v3)
-		{
-			v8 = v5 + v4;
-			v13 = v5 + v4;
-			do
-			{
-				v9 = v4;
-				v14 = v4;
-				if (v4 < v8)
-				{
-					do
-					{
-						if (!(*g_active_tile_array[(s16)v9 + g_map_tile_size->width * (s16)v6] & 0x20800000)
-							&& ((s16)v6 + 1 == g_map_tile_size->height
-								|| !(*g_active_tile_array[(s16)v9 + g_map_tile_size->width * (s16)(v6 + 1)] & 0x800000)))
-						{
-							modify_creep_state(
-								v9,
-								v6,
-								(s32(__stdcall*)(s32, s32, s32, s32, s32))run_creep_randomizer,
-								0);
-							if (!(*(u32*)0x006D0C78) || !unkCreepBorders(v9, v6))
-							{
-								forEachAdjacentTile(unkCreepTile, 0, v9, v6);
-								v9 = v14;
-							}
-						}
-						v8 = v13;
-						v14 = ++v9;
-					} while (v9 < v13);
-					v4 = v12;
-					v3 = v11;
-				}
-				++v6;
-			} while (v6 < v3);
-		}
-		do {
-			result = unkSpreadCreep(a3, a2, a1);
-		} while (result == 1);
-		return result;
-	}
-	*/
 
 	s32 update_creep_disappearance_unit(Unit* unit) {
 		Box32 rect = {};
@@ -380,10 +313,11 @@ namespace hooks
 				}
 			}
 			while (((*g_current_tiles)[rect_left + rect_top * *g_map_creep_width] & 0x7FF0) != 16
-				|| does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
-				|| tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
-				|| helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
-				|| helper::mark_creep_to_disappear(rect_left, rect_top)) {
+			||		  does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
+			||		  tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
+			||		  helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
+			||		  helper::mark_creep_to_disappear(rect_left, rect_top))
+			{
 				++rect_left;
 				pos_x += 32;
 				if (rect_left > rect.right) {
