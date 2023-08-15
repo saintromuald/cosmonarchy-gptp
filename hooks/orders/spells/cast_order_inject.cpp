@@ -151,6 +151,62 @@ namespace
 			RETN
 		}
 	}
+
+	// Patches \\
+
+	const u32 sub_491DB0_91E6C = 0x00491E6C;
+	void __declspec(naked) can_cast_ordered_spell_now_patch_91E64() {
+	    __asm {
+	        SAR		EAX, 8//y_halt
+	        SAR		ECX, 8//x_halt
+	        PUSH	0
+	        PUSH	EBX//halt_distance + weapon_range
+	        PUSH	ESI//unit
+	        PUSH	EDI//order_target_pos.y
+	        PUSH	EDX//order_target_pos.x
+	        MOV		EDX, EAX
+	        MOV		EBX, ECX
+	        MOVZX	EAX, word ptr [ESI + 0x64]//unit->id
+	        MOV		SI, [EAX * 8 + 0x006617CE]//units_dat::unit_bounds[unit->id].bottom
+	        MOV		DI, DX
+	        SUB		DI, [EAX * 8 + 0x006617CA]//units_dat::unit_bounds[unit->id].top
+	        SUB		CX, [EAX * 8 + 0x006617C8]//units_dat::unit_bounds[unit->id].left
+	        MOV		AX, [EAX * 8 + 0x006617CC]//units_dat::unit_bounds[unit->id].right
+	        ADD		SI, DX
+	        INC		SI
+	        ADD		AX, BX
+	        INC		AX
+	        POP		EBX//order_target_pos.x (x2)
+	        MOVSX	EDX, CX
+	        SUB		EDX, EBX
+	        JNS		offset loc_430EE9
+	        MOVSX	EAX, AX
+	        SUB		EBX, EAX
+	        MOV		EDX, EBX
+	        JNS		offset loc_430EE9
+	        XOR		EDX, EDX
+	
+	        loc_430EE9:
+	        POP		ECX//order_target_pos.y
+	        MOVSX	EAX, DI
+	        SUB		EAX, ECX
+	        JNS		offset loc_430EFF
+	        MOVSX	EAX, SI
+	        SUB		ECX, EAX
+	        MOV		EAX, ECX
+	        JNS		offset loc_430EFF
+	        XOR		EAX, EAX
+	
+	        loc_430EFF:
+	        MOV		EDI, EAX
+	        POP		ESI//unit
+	        POP		EBX//halt_distance + weapon_range
+	        POP		ECX//x1 (0)
+	        PUSH	EDI//y2 (order_target_pos.y)
+	        PUSH	ECX//y1 (0)
+	        JMP		sub_491DB0_91E6C
+	    }
+	}
 }
 
 namespace hooks
@@ -162,5 +218,8 @@ namespace hooks
 		jump_patch(can_target_spell_wrapper,					0x00492020, 1);
 		jump_patch(issue_order_targeting_ground_wrapper,		0x00475260, 1);
 		jump_patch(issue_tri_target_order_wrapper,				0x0048CAF0, 0);
+
+		jump_patch(can_cast_ordered_spell_now_patch_91E64,		0x00491E64);	// DF - Fix ability cast ranges to take into account caster collision,
+		memory_patch(0x00491E73, (u8)0x0);										//		like weapon ranges do.
 	}
 }

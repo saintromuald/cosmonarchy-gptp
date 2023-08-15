@@ -674,6 +674,7 @@ namespace hooks {
 						} break;
 						case OrderId::DefensiveMatrix:
 						case OrderId::Hallucination1:
+						case OrderId::NukePaint:
 						{
 							scbw::draw_aura_range(unit, units_dat::sight_range[unit->id], 164); //#88409C
 						} break;
