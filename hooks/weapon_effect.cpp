@@ -89,7 +89,7 @@ namespace hooks {
 		}
 
 		EntryArray units_in_splash = {};
-		unit_search_rect(&units_in_splash, box32_rect(pos, 5 * 32, 4 * 32));
+		unit_search_rect(&units_in_splash, box32_rect(pos, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id)));
 		unit_search_filter(&units_in_splash, unit);
 		for (s32 i = 0; i < units_in_splash.count; i++) {
 			Unit* target = units_in_splash.units[i];
@@ -97,7 +97,7 @@ namespace hooks {
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
 
-			// Units can't splash themselves -- except psi storm
+			// Units can't splash themselves -- except Psi Storm
 			if (unit == target && bullet->weapon_id != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
