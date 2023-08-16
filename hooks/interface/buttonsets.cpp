@@ -2498,6 +2498,45 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergBactalisk:
+								case UnitId::ZergAlkajelisk:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Caustic Fission
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergVithrilisk:
+								{
+									if (current_button->icon_id == IconId::VenomUnused				// Vithrilisk - Corrosive Touch
+									||  current_button->icon_id == IconId::SuicideInfestedTerran)	// Vithrilisk - Critical Mass
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergKagralisk:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Kalkalisk - Ablative Spores
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergEvigrilisk:
+								{
+									if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Evigrilisk - Lashing Limbs
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergGeszithalor:
+								{
+									if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Geszithalor - Searing Acid
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergKeskathalor:
+								{
+									if (current_button->icon_id == IconId::VenomUnused) { // Keskathalor - Caustic Discharge
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergZoryusthaleth:
 								{
 									if (current_button->icon_id == IconId::Rilirokor		// Zoryusthaleth - Mitosis
@@ -2520,13 +2559,10 @@ namespace hooks {
 										if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow)
 										{
 											current_button_state = Button_State::Invisible;
-										}
-										else {
+										} else {
 											current_button_state = Button_State::Disabled;
 										}
-									}
-									else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) // Lakizilisk - Seismic Spines
-									{
+									} else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Lakizilisk - Seismic Spines
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2554,6 +2590,14 @@ namespace hooks {
 								case UnitId::ZergMatraleth:
 								{
 									if (current_button->icon_id == IconId::Ensnare) { // Matraleth - Ensnaring Brood
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergUltrokor:
+								{
+									if (current_button->icon_id == IconId::UltrokorKaiserBlades // Ultrokor - Saber Siphon
+									||  current_button->icon_id == IconId::AnabolicSynthesis)	// Ultrokor - Kaiser Rampage
+									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2589,58 +2633,6 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-							}
-
-							// ZERG \\
-														
-							if (unit->id == UnitId::ZergEvigrilisk && // Evigrilisk Lashing Limbs
-								current_button->icon_id == IconId::RilirokorToxicSpores)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergKalkalisk && // Kalkalisk - Ablative Spores
-								current_button->icon_id == IconId::GeszithalorAcidSpore)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergBactalisk && // Bactalisk Caustic Fission
-								current_button->icon_id == IconId::GeszithalorAcidSpore) {
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergVithrilisk &&  // Vithrlisk Corrosive Touch
-								current_button->icon_id == IconId::VenomUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergVithrilisk &&  // Vithrlisk Critical Mass
-								current_button->icon_id == IconId::SuicideInfestedTerran)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergGeszithalor &&  // Geszithalor Searing Acid
-								current_button->icon_id == IconId::ZergFlyerAttacks)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergUltrokor &&  // Ultrakor Saber Siphon
-								current_button->icon_id == IconId::UltrokorKaiserBlades)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergUltrokor &&  // Ultrakor Kaiser Rampage
-								current_button->icon_id == IconId::AnabolicSynthesis)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergKeskathalor &&  // Keskathalor Caustic Discharge
-								current_button->icon_id == IconId::VenomUnused)
-							{
-								current_button_state = Button_State::Enabled;
-							}
-							else if (unit->id == UnitId::ZergAlkajelisk &&  // Alkajelisk Parasitic Spores
-								current_button->icon_id == IconId::SpraithColonySeekerSpores)
-							{
-								current_button_state = Button_State::Enabled;
 							}
 
 							// Passive icons: END \\

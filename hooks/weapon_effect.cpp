@@ -229,7 +229,7 @@ namespace hooks {
 		} else {
 			if (weapons_dat::behavior[weapon_id] == WeaponBehavior_Bounce) {
 				if (bullet) {
-					if (bullet->source_unit && bullet->weapon_id == WeaponId::BactaliskCorrosiveAcid) {
+					if (bullet->source_unit && weapon_id_bounces_caustic_fission(bullet->weapon_id)) {
 						divisor = 1;
 					} else {
 						const s32 bounce_count = 2;

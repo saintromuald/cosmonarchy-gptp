@@ -1004,13 +1004,7 @@ namespace hooks
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 			switch (data.weapon_id) {
-				case WeaponId::AlkajeliskPlasmidSpores:
-				case WeaponId::AlkajeliskParasiticSpores:
-				{
-					// Alkajelisk - Spores
-					target_ext->values[ValueAlkajeliskSpores] = 1;
-					target_ext->values[ValueAlkajeliskSporesPlayer] = data.attacker->player;
-				} break;
+				// Alkajelisk Parasitic Spores were here
 			}
 
 			// Mind Control - energy restore

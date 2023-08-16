@@ -954,3 +954,8 @@ u32 get_splash_height_from_weapon_id(u32 weapon_id) {
 		}
 	}
 }
+
+bool weapon_id_bounces_caustic_fission(u32 weapon_id) {
+	return weapon_id == WeaponId::BactaliskCorrosiveAcid
+		|| weapon_id == WeaponId::AlkajeliskPlasmidSpores;
+}
