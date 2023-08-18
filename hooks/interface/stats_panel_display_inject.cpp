@@ -495,6 +495,20 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) unit_stat_act_default_wrapper() // 00425EE0
+	{
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::unit_stat_act_default(dialog);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -531,6 +545,7 @@ namespace hooks
 	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
 
 		jump_patch(stats_text_energy_timer_wrapper,					0x00425A30, 2);
+		jump_patch(unit_stat_act_default_wrapper,					0x00425EE0, 4);
 
 		// Disable player checks for progress bar functions
 		nops(0x0042690C, 2);

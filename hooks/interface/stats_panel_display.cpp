@@ -1423,4 +1423,22 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, TEXTLABELINDEX_ENERGY_TIMER, g_text_buffer);
 		}
 	}
+
+	// Hooked for 1/256 chance of BETTER unit names. -Pr0nogo
+	void unit_stat_act_default(BinDlg* dialog) // 00425EE0
+	{
+		*g_status_screen_func = 0;
+		BinDlg* final_dialog = dialog;
+		if (dialog->control_type == 0)
+		{
+			final_dialog = *(BinDlg**)&dialog->child_dialog;
+		}
+
+		for (; final_dialog; final_dialog = final_dialog->next)
+		{
+			helper::hide_dialog(final_dialog);
+		}
+		char* name = (char*)(*g_active_portrait_unit)->get_name();
+		helper::add_text_to_dialog(dialog, -5, name);
+	}
 }
