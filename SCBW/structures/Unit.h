@@ -84,7 +84,7 @@ struct Unit : public UnitLayout
 
 	/// Retrieves the in-game name of this unit. In UMS maps, this returns custom
 	/// names (if they exist).
-	const char* get_name() const;
+	const char* get_name();
 
 	/// Retrieves the in-game name of the unit with @p unit_id. In UMS maps, this
 	/// returns custom unit names (if they exist).

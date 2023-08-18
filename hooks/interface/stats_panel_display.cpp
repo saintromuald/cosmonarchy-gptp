@@ -324,8 +324,7 @@ namespace hooks
 		*g_redraw_transport_ui = helper::ui_needs_redraw();
 
 		helper::generic_status_update_drawn_values();
-		if (unit_id_is_resource_node(unit->id, false))
-		{
+		if (unit_id_is_resource_node(unit->id, false)) {
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);

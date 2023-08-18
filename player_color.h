@@ -1,6 +1,8 @@
 #pragma once
 #include "SCBW\api.h"
 
+// TODO: rename this file to something more accurate, we have all kinds of player customization here, not only color
+
 enum {
 	PlayerTintInvalid = -1,
 
@@ -628,9 +630,11 @@ extern u8 tminimap_colors[MinimapColorCount];
 extern u8 tunit_colors[UnitColorCount];
 
 extern PlayerData player_data;
+extern std::vector<const char*> easter_egg_unit_names[UnitsIdLimit];
+
+const char* get_random_easter_egg_unit_name(u16 unit_id);
 
 u8 get_player_color_index(u32 player, u32 index);
-
 void set_player_color(u32 player, u32 color);
 void init_player_colors();
 void load_player_colors();

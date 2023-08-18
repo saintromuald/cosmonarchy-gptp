@@ -961,6 +961,15 @@ namespace hooks {
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
 		init_unit(unit);
 
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueUnitIdName] != unit->id + 1) {
+			unit_ext->values[ValueUnitIdName] = unit->id + 1;
+
+			if (true || scbw::rand_between(1, 256) == 1) {
+				unit_ext->custom_name = get_random_easter_egg_unit_name(unit->id);
+			}
+		}
+
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
 			Unit* transport = unit->connected_unit;
@@ -979,7 +988,6 @@ namespace hooks {
 			sprite_ext->owner = unit;
 		}
 
-		UnitExt* unit_ext = get_unit_ext(unit);
 		if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon) {
 			UnitExt* addon_ext = get_unit_ext(unit->building.addon);
 			addon_ext->units[UnitAddonParent] = unit;
