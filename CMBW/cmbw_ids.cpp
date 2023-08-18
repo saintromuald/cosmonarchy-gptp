@@ -933,7 +933,8 @@ u32 get_splash_width_from_weapon_id(u32 weapon_id) {
 		}
 		default: 
 		{
-			return weapons_dat::outer_splash_radius[weapon_id];
+			return 5 * 32;
+		//	return weapons_dat::outer_splash_radius[weapon_id];
 		}
 	}
 }
@@ -950,7 +951,8 @@ u32 get_splash_height_from_weapon_id(u32 weapon_id) {
 		}
 		default: 
 		{
-			return weapons_dat::outer_splash_radius[weapon_id];
+			return 5 * 32;
+		//	return weapons_dat::outer_splash_radius[weapon_id];
 		}
 	}
 }

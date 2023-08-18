@@ -629,8 +629,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0042816B, (u32)0x57001F0F);//dword ptr [EAX] (3-byte NOP); PUSH EDI;
 
 	// Fix ability cast ranges to take into account caster collision, like weapon ranges do.
-	jump_patch(can_cast_ordered_spell_now_patch_91E64, 0x00491E64);
-	memory_patch(0x00491E73, (u8)0x0);
+//	jump_patch(can_cast_ordered_spell_now_patch_91E64, 0x00491E64);
+//	memory_patch(0x00491E73, (u8)0x0);
+
+	// Fix Droleth teleportation bug
+	memory_patch(0x004E9D99, (u32)0x20);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

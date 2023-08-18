@@ -167,11 +167,13 @@ namespace
 	        MOV		EDX, EAX
 	        MOV		EBX, ECX
 	        MOVZX	EAX, word ptr [ESI + 0x64]//unit->id
-	        MOV		SI, [EAX * 8 + 0x006617CE]//units_dat::unit_bounds[unit->id].bottom
-	        MOV		DI, DX
-	        SUB		DI, [EAX * 8 + 0x006617CA]//units_dat::unit_bounds[unit->id].top
-	        SUB		CX, [EAX * 8 + 0x006617C8]//units_dat::unit_bounds[unit->id].left
-	        MOV		AX, [EAX * 8 + 0x006617CC]//units_dat::unit_bounds[unit->id].right
+			SHL		EAX, 3
+			ADD		EAX, units_dat::unit_bounds
+			MOV		SI, [EAX + 6]//units_dat::unit_bounds[unit->id].bottom
+			MOV		DI, DX
+			SUB		DI, [EAX + 2]//units_dat::unit_bounds[unit->id].top
+			SUB		CX, [EAX]//units_dat::unit_bounds[unit->id].left
+			MOV		AX, [EAX + 4]//units_dat::unit_bounds[unit->id].right
 	        ADD		SI, DX
 	        INC		SI
 	        ADD		AX, BX
