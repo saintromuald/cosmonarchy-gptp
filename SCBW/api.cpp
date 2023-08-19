@@ -3307,4 +3307,64 @@ namespace scbw {
 		}
 		return globals.current_advisor != AdvisorType_Default;
 	}
+
+	const Vector32f perimeter[] = {
+		{64, -258}, {64, -252}, {198, -198}, {250, -66}, {258, -66},
+		{258, 66}, {250, 66}, {198, 198}, {64, 252}, {64, 258},
+		{-64, 258}, {-64, 252}, {-198, 198}, {-250, 66}, {-258, 66},
+		{-258, -66}, {-250, -66}, {-198, -198}, {-64, -252}, {-64, -258},
+		{64, -258}
+	};
+	
+	void draw_shape(u32 i_0, float scale, Point32* offset, u8 color) {
+		do {
+			Point32 line_head = { (s32)(perimeter[i_0].x * scale) + offset[i_0].x, (s32)(perimeter[i_0].y * scale) + offset[i_0].y };
+			Point32 line_tail = { (s32)(perimeter[--i_0].x * scale) + offset[i_0].x, (s32)(perimeter[i_0].y * scale) + offset[i_0].y };
+			graphics::draw_line(line_head.x, line_head.y, line_tail.x, line_tail.y, color, graphics::ON_MAP);
+		} while (i_0);
+	}
+	
+	void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color) {
+		Point16 pos = unit->sprite->position;
+		Box16 bounds = units_dat::unit_bounds[unit->id];
+		Point32 bounds_wy = { bounds.right + pos.x, -bounds.top + pos.y };
+		Point32 bounds_wh = { bounds.right + pos.x, bounds.bottom + pos.y };
+		Point32 bounds_xh = { -bounds.left + pos.x, bounds.bottom + pos.y };
+		Point32 bounds_xy = { -bounds.left + pos.x, -bounds.top + pos.y };
+		Point32 offset[] = {
+			bounds_wy, bounds_wy, bounds_wy, bounds_wy, bounds_wy,
+			bounds_wh, bounds_wh, bounds_wh, bounds_wh, bounds_wh,
+			bounds_xh, bounds_xh, bounds_xh, bounds_xh, bounds_xh,
+			bounds_xy, bounds_xy, bounds_xy, bounds_xy, bounds_xy,
+			bounds_wy
+		};
+	
+		if (weapon_id != WeaponId::LobotomyMineExplosion) {
+			draw_shape(20, ((float)weapons_dat::max_range[weapon_id]) / 256.0F, offset, color);
+	
+			if (weapons_dat::min_range[weapon_id]) {
+				draw_shape(20, ((float)weapons_dat::min_range[weapon_id]) / 256.0F, offset, 71);
+			}
+		} else {
+			draw_shape(20, ((float)(units_dat::seek_range[unit->id] << 5)) / 256.0F, offset, color);
+		}
+	}
+
+	void draw_aura_range(Unit* unit, u16 radius, u8 color) {
+		Point16 pos = unit->sprite->position;
+		Box16 bounds = units_dat::unit_bounds[unit->id];
+		Point32 bounds_wy = { bounds.right + pos.x, -bounds.top + pos.y };
+		Point32 bounds_wh = { bounds.right + pos.x, bounds.bottom + pos.y };
+		Point32 bounds_xh = { -bounds.left + pos.x, bounds.bottom + pos.y };
+		Point32 bounds_xy = { -bounds.left + pos.x, -bounds.top + pos.y };
+		Point32 offset[] = {
+			bounds_wy, bounds_wy, bounds_wy, bounds_wy, bounds_wy,
+			bounds_wh, bounds_wh, bounds_wh, bounds_wh, bounds_wh,
+			bounds_xh, bounds_xh, bounds_xh, bounds_xh, bounds_xh,
+			bounds_xy, bounds_xy, bounds_xy, bounds_xy, bounds_xy,
+			bounds_wy
+		};
+
+		scbw::draw_shape(20, ((float)(radius << 5)) / 256.0F, offset, color);
+	}
 }

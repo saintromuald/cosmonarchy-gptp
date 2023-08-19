@@ -920,3 +920,44 @@ bool weapon_id_is_line_attack(u32 weapon_id) {
 	return weapon_id == WeaponId::StrigaPhaseSaber
 		|| weapon_id == WeaponId::PariahIconoclastBlades;
 }
+
+u32 get_splash_width_from_weapon_id(u32 weapon_id) {
+	switch (weapon_id) {
+		case WeaponId::PsiStorm:
+		{
+			return 5 * 32;
+		}
+		case WeaponId::NuclearMissile:
+		{
+			return 8 * 32;
+		}
+		default: 
+		{
+			return 5 * 32;
+		//	return weapons_dat::outer_splash_radius[weapon_id];
+		}
+	}
+}
+
+u32 get_splash_height_from_weapon_id(u32 weapon_id) {
+	switch (weapon_id) {
+		case WeaponId::PsiStorm:
+		{
+			return 4 * 32;
+		}
+		case WeaponId::NuclearMissile:
+		{
+			return 7 * 32;
+		}
+		default: 
+		{
+			return 5 * 32;
+		//	return weapons_dat::outer_splash_radius[weapon_id];
+		}
+	}
+}
+
+bool weapon_id_bounces_caustic_fission(u32 weapon_id) {
+	return weapon_id == WeaponId::BactaliskCorrosiveAcid
+		|| weapon_id == WeaponId::AlkajeliskPlasmidSpores;
+}

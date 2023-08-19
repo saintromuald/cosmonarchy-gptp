@@ -26,6 +26,7 @@ struct Config {
 	bool show_queued_order_lines = false;
 	bool show_unique_gas_order_line_color = false;
 	bool show_aura_circles = false;
+	bool show_ability_ranges = true;
 	bool always_show_condensed_selection = false;
 
 	// Witness and replay UI

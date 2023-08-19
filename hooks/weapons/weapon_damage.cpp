@@ -367,6 +367,12 @@ namespace hooks
 			}
 		}
 	//	data.damage += target_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
+		if (weapon_damage_current_bullet) {
+			BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+			if (current_bullet_ext->is_phantom) {
+				data.damage /= 2;
+			}
+		}
 
 		switch (data.weapon_id) {
 			// Cabalist was here
@@ -998,13 +1004,7 @@ namespace hooks
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 			switch (data.weapon_id) {
-				case WeaponId::AlkajeliskPlasmidSpores:
-				case WeaponId::AlkajeliskParasiticSpores:
-				{
-					// Alkajelisk - Spores
-					target_ext->values[ValueAlkajeliskSpores] = 1;
-					target_ext->values[ValueAlkajeliskSporesPlayer] = data.attacker->player;
-				} break;
+				// Alkajelisk Parasitic Spores were here
 			}
 
 			// Mind Control - energy restore

@@ -460,12 +460,12 @@ namespace hooks {
 
 	bool get_best_worker_for_repair_proc(Unit* repairman, Unit* repair_target) { // 004402B0
 		WorkerAi* repairman_ai = (WorkerAi*)repairman->unit_ai;
-		if (repairman->player == repair_target->player
-			&& units_dat::base_property[repairman->id] & UnitProperty::Worker
-			&& !(repairman->status & UnitStatus::InTransport)
-			&& !(repairman->status & UnitStatus::InBuilding) // new
-			&& repairman_ai && repairman_ai->town
-			&& repairman_ai->town->building_scv) { // new
+		if  (repairman->player == repair_target->player
+		&&   units_dat::base_property[repairman->id] & UnitProperty::Worker
+		&& !(repairman->status & (UnitStatus::InTransport | UnitStatus::InBuilding)) // InBuilding is new
+		&&   repairman_ai && repairman_ai->town										 // new
+		&&   repairman_ai->town->building_scv)										 // new
+		{
 			return repairman_ai->town->building_scv == repairman;
 		}
 		return false;

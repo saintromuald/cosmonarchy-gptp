@@ -28,6 +28,7 @@ namespace hooks
 	void stats_nuke_silo(BinDlg* dialog);																											// 00426FF0
 	void unit_stat_act_archon(BinDlg* dialog);																										// 004273E0
 	void stats_text_energy_timer(BinDlg* dialog);																									// 00425A30
+	void unit_stat_act_default(BinDlg* dialog);																										// 00425EE0
 
 	void inject_stats_panel_display_hooks();
 }

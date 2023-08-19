@@ -151,6 +151,64 @@ namespace
 			RETN
 		}
 	}
+
+	// Patches \\
+
+	const u32 sub_491DB0_91E6C = 0x00491E6C;
+	void __declspec(naked) can_cast_ordered_spell_now_patch_91E64() {
+	    __asm {
+	        SAR		EAX, 8//y_halt
+	        SAR		ECX, 8//x_halt
+	        PUSH	0
+	        PUSH	EBX//halt_distance + weapon_range
+	        PUSH	ESI//unit
+	        PUSH	EDI//order_target_pos.y
+	        PUSH	EDX//order_target_pos.x
+	        MOV		EDX, EAX
+	        MOV		EBX, ECX
+	        MOVZX	EAX, word ptr [ESI + 0x64]//unit->id
+			SHL		EAX, 3
+			ADD		EAX, units_dat::unit_bounds
+			MOV		SI, [EAX + 6]//units_dat::unit_bounds[unit->id].bottom
+			MOV		DI, DX
+			SUB		DI, [EAX + 2]//units_dat::unit_bounds[unit->id].top
+			SUB		CX, [EAX]//units_dat::unit_bounds[unit->id].left
+			MOV		AX, [EAX + 4]//units_dat::unit_bounds[unit->id].right
+	        ADD		SI, DX
+	        INC		SI
+	        ADD		AX, BX
+	        INC		AX
+	        POP		EBX//order_target_pos.x (x2)
+	        MOVSX	EDX, CX
+	        SUB		EDX, EBX
+	        JNS		offset loc_430EE9
+	        MOVSX	EAX, AX
+	        SUB		EBX, EAX
+	        MOV		EDX, EBX
+	        JNS		offset loc_430EE9
+	        XOR		EDX, EDX
+	
+	        loc_430EE9:
+	        POP		ECX//order_target_pos.y
+	        MOVSX	EAX, DI
+	        SUB		EAX, ECX
+	        JNS		offset loc_430EFF
+	        MOVSX	EAX, SI
+	        SUB		ECX, EAX
+	        MOV		EAX, ECX
+	        JNS		offset loc_430EFF
+	        XOR		EAX, EAX
+	
+	        loc_430EFF:
+	        MOV		EDI, EAX
+	        POP		ESI//unit
+	        POP		EBX//halt_distance + weapon_range
+	        POP		ECX//x1 (0)
+	        PUSH	EDI//y2 (order_target_pos.y)
+	        PUSH	ECX//y1 (0)
+	        JMP		sub_491DB0_91E6C
+	    }
+	}
 }
 
 namespace hooks

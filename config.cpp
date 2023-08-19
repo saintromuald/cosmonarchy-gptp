@@ -55,6 +55,7 @@ void load_config() {
 		load_field(config_node, "show-queued-order-lines", config.show_queued_order_lines);
 		load_field(config_node, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
 		load_field(config_node, "show-aura-circles", config.show_aura_circles);
+		load_field(config_node, "show-ability-ranges", config.show_ability_ranges);
 		load_field(config_node, "always-show-condensed-selection", config.always_show_condensed_selection);
 
 		// Witness and replay UI
@@ -120,6 +121,7 @@ void save_config() {
 	write_field(out, "show-queued-order-lines", config.show_queued_order_lines);
 	write_field(out, "show-unique-gas-order-line-color", config.show_unique_gas_order_line_color);
 	write_field(out, "show-aura-circles", config.show_aura_circles);
+	write_field(out, "show-ability-ranges", config.show_ability_ranges);
 	write_field(out, "always-show-condensed-selection", config.always_show_condensed_selection);
 	out << YAML::Newline << YAML::Newline;
 

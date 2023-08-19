@@ -1005,7 +1005,7 @@ namespace hooks {
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
 		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
-		if (bullet->weapon_id == WeaponId::BactaliskCorrosiveAcid && !bullet_ext->bounced) {
+		if (weapon_id_bounces_caustic_fission(bullet->weapon_id) && !bullet_ext->bounced) {
 			u32 period = 4 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
 				bullet->remaining_bounces += 1;
@@ -1400,6 +1400,7 @@ namespace hooks {
 			{
 				switch (weapon_id) {
 					case WeaponId::BactaliskCorrosiveAcid:
+					case WeaponId::AlkajeliskPlasmidSpores:
 					{
 						bullet->remaining_bounces = 1; // Additional bounces added later. -Veeq7
 					} break;

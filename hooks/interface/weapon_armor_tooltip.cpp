@@ -190,10 +190,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 		}
 		append_tooltip_value(text, range, bonus_range, extended);
 		if (extended && (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
-			graphics::draw_circle(unit->position.x, unit->position.y, (range + bonus_range) * 32, graphics::RED, graphics::ON_MAP);
-			if (min_range > 0) {
-				graphics::draw_circle(unit->position.x, unit->position.y, (min_range) * 32, graphics::GREY, graphics::ON_MAP);
-			}
+			scbw::draw_weapon_range(unit, weapon_id, 174);
 		}
 	}
 
