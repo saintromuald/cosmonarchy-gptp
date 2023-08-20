@@ -260,7 +260,17 @@ static void init_player_colors() {
 		helper::SBmpLoadImage("game\\tminimap.pcx", 0, tminimap_colors, MinimapColorCount, 0, 0, 0);
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, tunit_colors, UnitColorCount, 0, 0, 0);
 
-		easter_egg_unit_names[UnitId::ProtossAccantor].push_back("iquare");
+		easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
+		easter_egg_unit_names[UnitId::TerranHarakan].push_back("Terran Ackmed");
+		easter_egg_unit_names[UnitId::TerranHarakan].push_back("Terran BBQ");
+		easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglehead Raptor");
+		easter_egg_unit_names[UnitId::ZergIzirokor].push_back("Zerg Chad");
+
+		// NOTE: having 4 Nekron (3 in melee) units might be excess, but I couldn't help myself -Veeq7
+		easter_egg_unit_names[UnitId::ZergRililisk].push_back("Zerg Nekron");
+		easter_egg_unit_names[UnitId::ZergRilirokor].push_back("Zerg Nekron");
+		easter_egg_unit_names[UnitId::ZergMatraleth].push_back("Zerg Nekron");
+		easter_egg_unit_names[UnitId::TerranCohort].push_back("Terran Nekron");
 	}
 	memset(&player_data, 0, sizeof(player_data));
 }

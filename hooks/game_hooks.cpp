@@ -1022,7 +1022,7 @@ namespace hooks {
 		if (unit_ext->values[ValueUnitIdName] != unit->id + 1) {
 			unit_ext->values[ValueUnitIdName] = unit->id + 1;
 
-			if (true || scbw::rand_between(1, 256) == 1) {
+			if (scbw::rand_between(1, 256) == 1) {
 				unit_ext->custom_name = get_random_easter_egg_unit_name(unit->id);
 			}
 		}
