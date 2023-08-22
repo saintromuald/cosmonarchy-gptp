@@ -19,6 +19,9 @@ namespace UnitId
 	//	Campaign mission player								= 6,		// Phalanx Turret (Tank Mode)
 	//	Campaign mission dialogue event						= 207,		// Left Pit Door
 
+	// Special
+		Omnivale											= 383,
+
 	// Neutral
 		TownCenterMarker									= 192,		// Terran Marker
 		ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2

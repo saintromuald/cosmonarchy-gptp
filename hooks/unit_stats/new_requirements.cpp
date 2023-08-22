@@ -3300,6 +3300,19 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
+
+			// Gamemodes \\ 
+
+			case UnitId::Omnivale:
+			{
+				if (unit_id == UnitId::TerranMason
+				||	unit_id == UnitId::ProtossScribe
+				||	unit_id == UnitId::ZergDroleth)
+				{
+					return TECH_ACTIVE;
+				}
+				return TECH_HIDDEN;
+			}
 		}
 		return TECH_HIDDEN;
 	}
