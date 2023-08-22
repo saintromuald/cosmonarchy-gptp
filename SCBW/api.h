@@ -53,6 +53,7 @@ enum GameKind {
 	GameKind_Unsupported,
 	GameKind_ScenarioMode,
 	GameKind_CompetitiveMode,
+	GameKind_Omnipresence,
 	GameKind_Count,
 };
 

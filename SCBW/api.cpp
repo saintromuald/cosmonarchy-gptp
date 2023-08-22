@@ -3129,6 +3129,9 @@ namespace scbw {
 
 			case GameType::CompetitiveMode:
 				return GameKind_CompetitiveMode;
+
+			case GameType::Omnipresence:
+				return GameKind_Omnipresence;
 		}
 		return GameKind_Unsupported;
 	}

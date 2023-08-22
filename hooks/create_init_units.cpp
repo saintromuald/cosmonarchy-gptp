@@ -5,23 +5,16 @@
 #include "threshold.h"
 #include "hooks/game_hooks.h"
 
-u32 get_racial_townhall(u32 raceId)
+u32 get_racial_townhall(u32 race_id)
 {
 	// TODO: Add support for custom races. -Pr0nogo
-	if (raceId == RaceId::Zerg)
-	{
+	if (race_id == RaceId::Zerg) {
 		return UnitId::ZergHachirosk;
-	}
-	else if (raceId == RaceId::Terran)
-	{
+	} else if (race_id == RaceId::Terran) {
 		return UnitId::TerranMinistry;
-	}
-	else if (raceId == RaceId::Protoss)
-	{
+	} else if (race_id == RaceId::Protoss) {
 		return UnitId::ProtossNexus;
-	}
-	else
-	{
+	} else {
 		return UnitId::None;
 	}
 }
@@ -29,52 +22,52 @@ u32 get_racial_townhall(u32 raceId)
 u32 get_racial_worker(u32 raceId)
 {
 	// TODO: Add support for custom races. -Pr0nogo
-	if (raceId == RaceId::Zerg)
-	{
+	if (raceId == RaceId::Zerg) {
 		return UnitId::ZergDroleth;
-	}
-	else if (raceId == RaceId::Terran)
-	{
+	} else if (raceId == RaceId::Terran) {
 		return UnitId::TerranMason;
-	}
-	else if (raceId == RaceId::Protoss)
-	{
+	} else if (raceId == RaceId::Protoss) {
 		return UnitId::ProtossScribe;
-	}
-	else
-	{
+	} else {
 		return UnitId::None;
 	}
 }
 
 namespace hooks {
-	void create_initial_melee_buildings(u8 raceId, u32 player) {
-		u32 buildingId = get_racial_townhall(raceId);
-		s32 buildingSizeX, buildingSizeY;
-		Box16 searchBox;
+	void create_initial_melee_buildings(u8 race_id, u32 player) {
+		u32 building_id = get_racial_townhall(race_id);
+		bool is_omni = scbw::get_game_kind() == GameKind_Omnipresence
+			&& g_player_table[player].type != PlayerType::Computer
+			&& g_player_table[player].type != PlayerType::ComputerSlot;
+
+		if (is_omni) {
+			building_id = UnitId::TerranMinistry; // Replace with new structure
+		}
+		s32 building_size_x, building_size_y;
+		Box16 search_box;
 		Unit* created_unit;
 
-		buildingSizeX = units_dat::building_dimensions[buildingId].x;
-		buildingSizeY = units_dat::building_dimensions[buildingId].y;
-		if (buildingSizeX < 0)
+		building_size_x = units_dat::building_dimensions[building_id].x;
+		building_size_y = units_dat::building_dimensions[building_id].y;
+		if (building_size_x < 0)
 		{
-			buildingSizeX++;
+			building_size_x++;
 		}
-		if (buildingSizeY < 0)
+		if (building_size_y < 0)
 		{
-			buildingSizeY++;
+			building_size_y++;
 		}
 
-		searchBox.left = (g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0xFFE0;
-		searchBox.top = (g_start_positions[player].y - (s16)(buildingSizeY / 2)) & 0xFFE0;
-		searchBox.bottom = buildingSizeY / 2 + ((g_start_positions[player].y - (s16)(buildingSizeY / 2)) & 0xFFE0) + buildingSizeY / 2 - 1;
-		searchBox.right = buildingSizeX / 2 + ((g_start_positions[player].x - (s16)(buildingSizeX / 2)) & 0xFFE0) + buildingSizeX / 2 - 1;
+		search_box.left = (g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0;
+		search_box.top = (g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0;
+		search_box.bottom = building_size_y / 2 + ((g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0) + building_size_y / 2 - 1;
+		search_box.right = building_size_x / 2 + ((g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0) + building_size_x / 2 - 1;
 
 		// yes, the return value is unused for some reason
-		helper::find_best_unit(&searchBox, 0x0049D640);
-		created_unit = helper::create_unit(buildingId,
-				((g_start_positions[player].x - (buildingSizeX / 2)) & 0xFFE0) + buildingSizeX / 2,
-				((g_start_positions[player].y - (buildingSizeY / 2)) & 0xFFE0) + buildingSizeY / 2,
+		helper::find_best_unit(&search_box, 0x0049D640);
+		created_unit = helper::create_unit(building_id,
+				((g_start_positions[player].x - (building_size_x / 2)) & 0xFFE0) + building_size_x / 2,
+				((g_start_positions[player].y - (building_size_y / 2)) & 0xFFE0) + building_size_y / 2,
 				player);
 
 		if (created_unit) {
@@ -173,54 +166,84 @@ namespace hooks {
 
 	void create_initial_melee_units() {
 		u32 player = 8;
-		u8* raceIdOffset = (u8*)0x0057F009;
+		u8* race_id_offset = (u8*)0x0057F009;
 
-		while (raceIdOffset != (u8*)0x0057EEE9) {
-			raceIdOffset -= 0x24;
+		while (race_id_offset != (u8*)0x0057EEE9) {
+			race_id_offset -= 0x24;
 			player--;
 
-			if (*(raceIdOffset - 1) == 2 || *(raceIdOffset - 1) == 1) {
+			if (*(race_id_offset - 1) == 2 || *(race_id_offset - 1) == 1) {
 				// 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
 				u8 starting_units = (u8)(*(u16*)(0x00596871));
 				static u8* victory_conditions = (u8*)0x0059686D;
 				static u8* tournament_mode = (u8*)0x00596877;
 				static u8* user_select_slots = (u8*)0x0059BDA8;
 
-				if (*victory_conditions == 0					// check triggers for conditions
-					&& starting_units == 0 						// use map units
-					&& *tournament_mode == 0					// tournament mode off
-					&& player < 8
-					&& (user_select_slots[player]) != 0		// race selected instead of using map settings?
-					) {
+				if (*victory_conditions == 0				// check triggers for conditions
+				&&   starting_units == 0 					// use map units
+				&&  *tournament_mode == 0					// tournament mode off
+				&&   player < PlayerLimit
+				&&  (user_select_slots[player]) != 0)		// race selected instead of using map settings?
+				{
 					starting_units = 2;
 				}
 
 				if (starting_units == 2) {
-					create_initial_melee_buildings(*raceIdOffset, player);
-					if (*raceIdOffset == RaceId::Zerg) {
+					create_initial_melee_buildings(*race_id_offset, player);
+					if (*race_id_offset == RaceId::Zerg) {
 						create_initial_ovileth(player);
 					}
 				}
 
 				if (starting_units == 1 || starting_units == 2) {
-					u32 unit_id = get_racial_worker(*raceIdOffset);
-					u8 townhall_id = get_racial_townhall(*raceIdOffset);
+					bool is_omni = scbw::get_game_kind() == GameKind_Omnipresence
+								&& g_player_table[player].type != PlayerType::Computer
+								&& g_player_table[player].type != PlayerType::ComputerSlot;
 
-					if (unit_id != UnitId::None) {
+					u32 worker_id = get_racial_worker(*race_id_offset);
+					u8 townhall_id = get_racial_townhall(*race_id_offset);
+					if (is_omni) {
+						townhall_id = UnitId::TerranMinistry; // Replace with new structure
+					}
+
+					if (worker_id != UnitId::None) {
 						Point16 start_pos = g_start_positions[player];
 						bool horizontal = true;
 						Point16 pos = find_worker_spawn_positions(townhall_id, start_pos.x, start_pos.y, horizontal);
 
 						s32 dx = 0;
 						s32 dy = 0;
-						if (horizontal) dx = units_dat::unit_bounds[unit_id].left   + units_dat::unit_bounds[unit_id].right + 1;
-						else            dy = units_dat::unit_bounds[unit_id].bottom + units_dat::unit_bounds[unit_id].top   + 1;
+						if (horizontal) {
+							dx = units_dat::unit_bounds[worker_id].left + units_dat::unit_bounds[worker_id].right + 1;
+						} else {
+							dy = units_dat::unit_bounds[worker_id].bottom + units_dat::unit_bounds[worker_id].top + 1;
+						}
 
 						for (s32 i = 0; i < 6; i++) {
 							pos.x += dx;
 							pos.y -= dy;
 
-							Unit* created_unit = helper::create_unit(unit_id, pos.x, pos.y, player);
+							if (is_omni) {
+								switch (i) {
+									case 0:
+									case 1:
+									{
+										worker_id = UnitId::TerranMason;
+									} break;
+									case 2:
+									case 3:
+									{
+										worker_id = UnitId::ProtossScribe;
+									} break;
+									case 4:
+									case 5:
+									{
+										worker_id = UnitId::ZergDroleth;
+									} break;
+								}
+							}
+
+							Unit* created_unit = helper::create_unit(worker_id, pos.x, pos.y, player);
 							if (created_unit) {
 								scbw::teleport_to_point(created_unit, pos);
 								helper::update_unit_stats_and_finish_building(created_unit);
@@ -240,30 +263,26 @@ namespace hooks {
 	{
 		return; // Ovileth no longer spawns
 
-		static u16* const maxBoxRightValue = (u16*)0x00628450;
-		static u16* const maxBoxBottomValue = (u16*)0x006284B4;
-		s32 overlordStartX, overlordStartY;
+		static u16* const max_box_right_value = (u16*)0x00628450;
+		static u16* const max_box_bottom_value = (u16*)0x006284B4;
+		s32 ovileth_start_x, ovileth_start_y;
 		Unit* created_unit;
-		if (g_start_positions[player].x < *maxBoxRightValue / 2)
+		if (g_start_positions[player].x < *max_box_right_value / 2)
 		{
-			overlordStartX = g_start_positions[player].x + units_dat::unit_bounds[UnitId::ZergHachirosk].right + units_dat::unit_bounds[UnitId::ZergHachirosk].left + 1;
-		}
-		else
-		{
-			overlordStartX = g_start_positions[player].x - (units_dat::unit_bounds[UnitId::ZergHachirosk].right + units_dat::unit_bounds[UnitId::ZergHachirosk].left + 1);
+			ovileth_start_x = g_start_positions[player].x + units_dat::unit_bounds[UnitId::ZergHachirosk].right + units_dat::unit_bounds[UnitId::ZergHachirosk].left + 1;
+		} else {
+			ovileth_start_x = g_start_positions[player].x - (units_dat::unit_bounds[UnitId::ZergHachirosk].right + units_dat::unit_bounds[UnitId::ZergHachirosk].left + 1);
 		}
 
-		if (g_start_positions[player].y < *maxBoxBottomValue / 2)
+		if (g_start_positions[player].y < *max_box_bottom_value / 2)
 		{
-			overlordStartY = g_start_positions[player].y + units_dat::unit_bounds[UnitId::ZergHachirosk].bottom + units_dat::unit_bounds[UnitId::ZergHachirosk].top + 1;
-		}
-		else
-		{
-			overlordStartY = g_start_positions[player].y - (units_dat::unit_bounds[UnitId::ZergHachirosk].bottom + units_dat::unit_bounds[UnitId::ZergHachirosk].top + 1);
+			ovileth_start_y = g_start_positions[player].y + units_dat::unit_bounds[UnitId::ZergHachirosk].bottom + units_dat::unit_bounds[UnitId::ZergHachirosk].top + 1;
+		} else {
+			ovileth_start_y = g_start_positions[player].y - (units_dat::unit_bounds[UnitId::ZergHachirosk].bottom + units_dat::unit_bounds[UnitId::ZergHachirosk].top + 1);
 		}
 
-		created_unit = helper::create_unit(UnitId::ZergOvileth, overlordStartX, overlordStartY, player);
-		if (created_unit != nullptr)
+		created_unit = helper::create_unit(UnitId::ZergOvileth, ovileth_start_x, ovileth_start_y, player);
+		if (created_unit)
 		{
 			helper::update_unit_stats_and_finish_building(created_unit);
 			if (helper::show_finished_unit(created_unit) != 0)

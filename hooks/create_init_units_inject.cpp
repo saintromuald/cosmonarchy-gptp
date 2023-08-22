@@ -6,16 +6,16 @@
 namespace {
 	void __declspec(naked) create_initial_melee_buildings_wrapper() {
 		static u32 player;
-		static u8 raceId;
+		static u8 race_id;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV raceId, AL
+			MOV race_id, AL
 			MOV EAX, [EBP + 0x08]
 			MOV player, EAX
 			PUSHAD
 		}
-		hooks::create_initial_melee_buildings(raceId, player);
+		hooks::create_initial_melee_buildings(race_id, player);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -86,15 +86,15 @@ namespace {
 	}
 
 	void __declspec(naked) create_preplaced_unit_wrapper() { // 004CD740
-		static CHKUnit* chkunit;
+		static CHKUnit* chk_unit;
 		static Unit* result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV chkunit, ESI
+			MOV chk_unit, ESI
 			PUSHAD
 		}
-		result = hooks::create_preplaced_unit(chkunit);
+		result = hooks::create_preplaced_unit(chk_unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP

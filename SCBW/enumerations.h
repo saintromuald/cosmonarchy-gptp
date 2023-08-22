@@ -586,8 +586,9 @@ namespace GameType
 		TeamCTF = 13,
 		TopVsBottom = 15,
 
-		ScenarioMode = 31,
-		CompetitiveMode = 32,
+		ScenarioMode = 30,
+		CompetitiveMode = 31,
+		Omnipresence = 32,
 	};
 }
 
