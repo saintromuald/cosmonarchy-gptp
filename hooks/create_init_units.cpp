@@ -41,7 +41,7 @@ namespace hooks {
 			&& g_player_table[player].type != PlayerType::ComputerSlot;
 
 		if (is_omni) {
-			building_id = UnitId::TerranMinistry; // Replace with new structure
+			building_id = UnitId::Omnivale;
 		}
 		s32 building_size_x, building_size_y;
 		Box16 search_box;
@@ -203,7 +203,7 @@ namespace hooks {
 					u32 worker_id = get_racial_worker(*race_id_offset);
 					u8 townhall_id = get_racial_townhall(*race_id_offset);
 					if (is_omni) {
-						townhall_id = UnitId::TerranMinistry; // Replace with new structure
+						townhall_id = UnitId::Omnivale;
 					}
 
 					if (worker_id != UnitId::None) {

@@ -1041,7 +1041,7 @@ namespace hooks {
 								Unit* town_mineral = town->mineral;
 								if (!town_mineral || town_mineral->building.resource.resource_belongs_to_ai) {
 									worker_pos = worker->sprite->position;
-									town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 0xCu, worker, worker_pos);
+									town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 12, worker, worker_pos);
 									if (best_mineral_field) { // New -Veeq7
 										town_mineral = best_mineral_field;
 									}
@@ -1138,7 +1138,7 @@ namespace hooks {
 				ResourceArea* ai_resarea = &g_base_array[resarea];
 				u32 new_worker_limit = 0;
 				if (resarea && resarea < 250) {
-					new_worker_limit = 2.5 * ai_resarea->mineral_field_count + 2.5 * ai_resarea->geyser_count;
+					new_worker_limit = 2.5 * ai_resarea->mineral_field_count + 3 * ai_resarea->geyser_count;
 				}
 				town->worker_limit = new_worker_limit;
 			}
@@ -1190,7 +1190,7 @@ namespace hooks {
 			for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
 				Unit* gas = town_ext->gas_buildings[i];
 				if (gas->status & UnitStatus::Completed) {
-					max_gas_worker_count += 2;
+					max_gas_worker_count += 3;
 				}
 			}
 			if (gas_count > max_gas_worker_count) {
@@ -1264,7 +1264,7 @@ namespace hooks {
 	// Hooked as part of the vespene overhaul. -Pr0nogo
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback) { // 00433B90
 		if (worker->resource_type & ResourceType::Minerals) {
-			worker->user_action_flags |= 1u;
+			worker->user_action_flags |= 1;
 			if (worker->main_order_id) {
 				while (1) {
 					if (!worker->order_queue_tail) {
@@ -1276,7 +1276,7 @@ namespace hooks {
 					}
 					helper::remove_order_from_unit_queue(worker->order_queue_tail, worker);
 				}
-				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, 228, {}, 0);
+				helper::perform_another_order(OrderId::ReturnMinerals, 0, worker, UnitId::None, {}, 0);
 			}
 			helper::do_next_queued_order(worker);
 		} else if (worker->resource_type & ResourceType::VespeneGas) {
@@ -1429,7 +1429,7 @@ namespace hooks {
 		const f32 enemy_bias    =  0.5;
 		const f32 distance_bias = -5.0;
 		const f32 mineral_bias  =  0.5;
-		const f32 gas_bias      =  1.5;
+		const f32 gas_bias      =  1.0;
 
 		u32 own_count = 0;
 		u32 ally_count = 0;

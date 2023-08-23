@@ -634,6 +634,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Fix Droleth teleportation bug
 	memory_patch(0x004E9D99, (u32)0x20);
+
+	// Fix speed calc tooltip
+	memory_patch(0x0042D92C, (u16)0x3D89);//MOV EDI, ...
+	memory_patch(0x0042D92E, (u32)0x006D11FC);//...active_iscript_unit;
+	memory_patch(0x0042D935, (u16)0x36EB);//JMP 0x0042D96D
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
