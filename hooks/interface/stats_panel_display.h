@@ -29,6 +29,7 @@ namespace hooks
 	void unit_stat_act_archon(BinDlg* dialog);																										// 004273E0
 	void stats_text_energy_timer(BinDlg* dialog);																									// 00425A30
 	void unit_stat_act_default(BinDlg* dialog);																										// 00425EE0
+	void unit_stat_act_standard(BinDlg* dialog);																									// 00426F50
 
 	void inject_stats_panel_display_hooks();
 }

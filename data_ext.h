@@ -5,6 +5,7 @@
 
 enum ExtValueId {
 	ValueUnitInit,
+	ValueUnitIdName,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
 //	ValueSublimeShepherd,
@@ -358,6 +359,7 @@ struct UnitExt {
 	Target                  projectile_pattern_target;
 	Vector32f				last_repulsion;
 //	Target					rally;
+	const char*				custom_name;
 
 	u8						seen_by_flags;
 	Point16					last_seen_position[PlayerLimit];

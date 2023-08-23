@@ -1653,4 +1653,5 @@ namespace helper {
 	void orders_reset_collision_2(Unit* unit);			// 0042E320
 	void orders_pickup_4(Unit* unit);					// 004E7B70
 	void orders_rescue_passive(Unit* unit);				// 004A1EF0
+	void set_kills_string_text(BinDlg* dialog);         // 00425DD0
 }

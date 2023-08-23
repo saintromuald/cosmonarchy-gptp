@@ -14151,4 +14151,14 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void set_kills_string_text(BinDlg* dialog) {
+		const u32 func_address = 0x00425DD0;
+		__asm {
+			PUSHAD
+			MOV EBX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
 }

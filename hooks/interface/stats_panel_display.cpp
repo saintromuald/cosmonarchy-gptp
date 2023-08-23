@@ -324,8 +324,7 @@ namespace hooks
 		*g_redraw_transport_ui = helper::ui_needs_redraw();
 
 		helper::generic_status_update_drawn_values();
-		if (unit_id_is_resource_node(unit->id, false))
-		{
+		if (unit_id_is_resource_node(unit->id, false)) {
 			helper::draw_gas_quantity(dialog);
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
@@ -1425,20 +1424,38 @@ namespace hooks
 	}
 
 	// Hooked for 1/256 chance of BETTER unit names. -Pr0nogo
-	void unit_stat_act_default(BinDlg* dialog) // 00425EE0
-	{
+	void unit_stat_act_default(BinDlg* dialog) { // 00425EE0
 		*g_status_screen_func = 0;
+
 		BinDlg* final_dialog = dialog;
-		if (dialog->control_type == 0)
-		{
+		if (dialog->control_type == 0) {
 			final_dialog = *(BinDlg**)&dialog->child_dialog;
 		}
-
-		for (; final_dialog; final_dialog = final_dialog->next)
-		{
+		for (; final_dialog; final_dialog = final_dialog->next) {
 			helper::hide_dialog(final_dialog);
 		}
-		char* name = (char*)(*g_active_portrait_unit)->get_name();
-		helper::add_text_to_dialog(dialog, -5, name);
+
+		Unit* unit = *g_active_portrait_unit;
+		helper::add_text_to_dialog(dialog, -5, unit->get_name());
+	}
+
+	// Hooked for 1/256 chance of BETTER unit names. -Veeq7
+	void unit_stat_act_standard(BinDlg* dialog) { // 00426F50
+		Unit* unit = *g_active_portrait_unit;
+		g_selection_group_hp[0] = unit->hitpoints;
+		*g_ui_shields = unit->shields >> 8;
+		*g_ui_energy = unit->energy >> 8;
+		helper::generic_status_update_drawn_values();
+		if (*g_status_screen_func != 2) {
+			helper::hide_optional_status_screen_controls(dialog);
+			helper::show_control_group(dialog, -20, 12);
+			*g_status_screen_func = 2;
+		}
+		*g_unk_upgrade_count = 1;
+		helper::draw_display_buttons(dialog);
+		helper::set_unit_status_string_text(dialog);
+		helper::set_kills_string_text(dialog);
+		helper::set_text_string(dialog);
+		helper::add_text_to_dialog(dialog, -5, unit->get_name());
 	}
 }

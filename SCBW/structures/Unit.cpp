@@ -161,8 +161,12 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const {
 	return max_weapon_range;
 }
 
-const char* Unit::get_name() const {
+const char* Unit::get_name() {
 	assert(this);
+	UnitExt* unit_ext = get_unit_ext(this);
+	if (unit_ext->custom_name) {
+		return unit_ext->custom_name;
+	}
 	return get_name(this->id);
 }
 
