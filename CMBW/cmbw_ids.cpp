@@ -96,7 +96,7 @@ b32 unit_id_is_tech_tier_structure(u32 unit_id) {
 		case UnitId::TerranDaedala:
 		case UnitId::TerranAtelier:
 
-			// Zerg
+		// Zerg
 		case UnitId::ZergIrolIris:
 		case UnitId::ZergOthstolOviform:
 			return true;

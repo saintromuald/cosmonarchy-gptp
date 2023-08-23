@@ -398,7 +398,10 @@ namespace hooks
 			u32 race = unit->get_race();
 			switch (race) {
 				case RaceId::Zerg: {
-					u32 sound_id = unit_id_is_tech_tier_structure(unit->id) ? SoundId::Zerg_Advisor_ZAdUpd02_WAV : 0;
+					u32 sound_id = 0;
+					if (unit_id_is_tech_tier_structure(unit->id)) {
+						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+					}
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						if (sound_id) {
 							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
@@ -424,7 +427,7 @@ namespace hooks
 					UnitExt* builder_ext = get_unit_ext(unit);
 					u32 sound_id = 0;
 					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-						sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV; // Addon complete
+						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
 					} else if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) {
 						sound_id = SoundId::Terran_SCV_TSCUpd00_WAV; // Job's finished
 					}
@@ -438,7 +441,7 @@ namespace hooks
 				} break;
 				case RaceId::Protoss:
 				default: {
-					u32 sound_id = SoundId::ProtossAdvisorUpdateStructure;
+					u32 sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_StructureComplete_P);
 					helper::play_sound_from_unit(sound_id, unit, 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
 				} break;

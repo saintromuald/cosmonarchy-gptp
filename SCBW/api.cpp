@@ -3231,13 +3231,20 @@ namespace scbw {
 				case AdvisorEvent_NoBuildTerran: {
 					// TODO: fill in
 				} break;
-				case AdvisorEvent_MissileLaunch: {
-					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
-						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
-						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
-					}
+				case AdvisorEvent_NoBuildProtoss: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_NoBuildZerg: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_NoLanding: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_LandingInterrupted: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_PlacementInterrupted: {
+					// TODO: fill in
 				} break;
 				case AdvisorEvent_StructureComplete_T: {
 					// TODO: fill in
@@ -3249,6 +3256,9 @@ namespace scbw {
 					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
 					} 
+				} break;
+				case AdvisorEvent_StructureComplete_Z: {
+					// TODO: fill in
 				} break;
 				case AdvisorEvent_AddonComplete: {
 					switch (advisor) {
@@ -3265,6 +3275,32 @@ namespace scbw {
 						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd06_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
 					} 
+				} break;
+				case AdvisorEvent_MissileComplete: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_UnitsUnderAttack: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_BaseUnderAttack: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_MissileLaunch: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
+						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
+					}
+				} break;
+				case AdvisorEvent_AllyUnderAttack_T: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_AllyUnderAttack_P: {
+					// TODO: fill in
+				} break;
+				case AdvisorEvent_AllyUnderAttack_Z: {
+					// TODO: fill in
 				} break;
 			}
 		}
