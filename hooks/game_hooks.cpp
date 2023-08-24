@@ -483,7 +483,7 @@ namespace hooks {
 			Point16 source = unit->position;
 
 			// For checking cargo-related elements.
-			// This helped me solve a Bunker issue on 3 February 2023, please leave it here for the future. -Pr0nogo
+			// This helped me solve an Anchor issue on 3 February 2023, please leave it here for the future. -Pr0nogo
 			/*
 			if (unit) {
 				for (u32 i = 0; i < TransportCap; ++i) {

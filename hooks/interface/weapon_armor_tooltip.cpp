@@ -326,13 +326,8 @@ namespace hooks
 		std::stringstream builder;
 		builder << std::setprecision(4);
 
-		f32 speed_calc = (unit->flingy_top_speed / 256.0) / 24.0 / 32.0;
-		if (unit->movement_flags & MovementFlags_Moving && !(unit->movement_flags & MovementFlags_Accelerating)) {
-			speed_calc = (unit->current_speed_2 / 256.0) / 24.0 / 32.0;
-		} else if (unit->stim_timer) {
-			speed_calc /= 2;
-		}
-		builder << speed_calc << " tiles/sec";
+		f32 speed_calc = unit->flingy_top_speed;
+		builder << (double)speed_calc / 256.0;
 		std::string movement_speed = builder.str();
 		builder.str("");
 
@@ -494,13 +489,12 @@ namespace hooks
 			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)))
 			{
 				flags.push_back("Detector");
-			}
-			else {
+			} else {
 				flags.push_back("Detector (disabled)");
 			}
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
-			flags.push_back("Spreads creep");
+			flags.push_back("Spreads cagra");
 		}
 
 		std::string flag = format_string_vector(flags);
@@ -510,7 +504,10 @@ namespace hooks
 		append_tooltip_value(text, base_armor, bonus_armor, extended);
 
 		text += "\nPlane: " + plane;
-	//	text += "\nMove Speed: " + movement_speed;
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || unit->status & UnitStatus::InAir)
+		{
+			text += "\nMovespeed: " + movement_speed;
+		}
 		text += "\nStatus: " + status;
 
 		if (extended) {
