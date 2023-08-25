@@ -43,6 +43,7 @@ bool unit_collides_with_titanic(Unit* unit);
 bool weapon_id_is_for_harvesting(u32 weapon_id);
 bool weapon_id_is_standard_weapon(u32 weapon_id);
 bool weapon_id_bounces_lithe_organelle(u32 weapon_id);
+bool weapon_id_bounces_crushing_tide(u32 weapon_id);
 bool weapon_id_accelerates(u32 weapon_id);
 bool weapon_id_is_melee_aoe(u32 weapon_id);
 u32 weapon_id_intercepts(u32 weapon_id);

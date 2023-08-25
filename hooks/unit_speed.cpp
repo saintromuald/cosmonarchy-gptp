@@ -222,7 +222,6 @@ namespace hooks
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranClaymore:
 			case UnitId::ProtossOptecton:
-			case UnitId::ProtossSimulacrum:
 			{
 				speed *= 0.9;
 			} break;
@@ -232,7 +231,8 @@ namespace hooks
 			case UnitId::TerranSavant:
 			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
-			case UnitId::ProtossIdol:
+			case UnitId::ProtossSimulacrum:
+			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.1;
 			} break;
@@ -249,7 +249,6 @@ namespace hooks
 			case UnitId::ZergQuazilisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:
-			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.2;
 			} break;

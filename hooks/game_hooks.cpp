@@ -504,9 +504,12 @@ namespace hooks {
 			&& (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode:
+					{
+						graphics::draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
 					case UnitId::TerranShamanVisionaryMode:
 					{
-						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+						graphics::draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAncile:
 					{
@@ -1726,11 +1729,12 @@ namespace hooks {
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];
 				if (!timer) {
-					unit_ext->timers[TimerNaniteField] = unit->id == UnitId::TerranShamanVisionaryMode ? 12 : 24;
+					unit_ext->timers[TimerNaniteField] = 24;
 					scbw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id));
 
 					EntryArray unit_array = {};
-					unit_search_radial(&unit_array, unit->position, 4 * 32);
+					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 6 : 3;
+					unit_search_radial(&unit_array, unit->position, range * 32);
 					unit_search_add_units_from_connected_transport(&unit_array, unit);
 					unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding);
 

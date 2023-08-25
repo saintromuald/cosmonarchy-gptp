@@ -392,7 +392,7 @@ namespace hooks {
 			// Lakizilisk Seismic Spines behavior
 			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
 			{
-				unit_ext->timers[TimerLakiziliskETA] = 17;
+				unit_ext->timers[TimerLakiziliskETA] = 21;
 				u32 range = weapons_dat::max_range[weapon_id] + 16;
 			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
 				Point16 unit_pos = { unit->position.x, unit->position.y };
@@ -536,8 +536,9 @@ namespace hooks {
 						// Offset: Cone
 						fire_shotgun(unit, weapon_id, 1, 3, 10);
 					} break;
-					case WeaponId::IzirokorEnergizedBioplasma: {
-						// Crushing Tide - Izirokor
+					case WeaponId::IzirokorEnergizedBioplasma:
+					case WeaponId::TosgriliskExplosiveSpores: {
+						// Crushing Tide - Izirokor, Tosgrilisk
 						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
 					} break;
 					case WeaponId::MatrixKhaydarinRay: {
@@ -1014,7 +1015,7 @@ namespace hooks {
 
 		if (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y) {
 			bullet_ext->bounced = true;
-			char next_bounce = bullet->remaining_bounces - 1;
+			u8 next_bounce = bullet->remaining_bounces - 1;
 			// Gladius infinite bouncing
 			if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
 				next_bounce = 1;
@@ -1405,6 +1406,7 @@ namespace hooks {
 						bullet->remaining_bounces = 1; // Additional bounces added later. -Veeq7
 					} break;
 					case WeaponId::IzirokorEnergizedBioplasma:
+					case WeaponId::TosgriliskExplosiveSpores:
 					{
 						bullet->remaining_bounces = 2;
 					} break;

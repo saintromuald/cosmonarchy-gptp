@@ -2314,6 +2314,15 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossIdol:
+								case UnitId::ProtossAccantor:
+								case UnitId::ProtossEngram:
+								{
+									if (current_button->icon_id == IconId::AntimatterMissiles) // Interception
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossPositron:
 								{
 									if (current_button->icon_id == IconId::ScarabDamage) // Positron - Particle Annihilation
@@ -2324,13 +2333,6 @@ namespace hooks {
 								case UnitId::ProtossAnalogue:
 								{
 									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) // Analogue - Empathy Core
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::ProtossAccantor:
-								{
-									if (current_button->icon_id == IconId::AntimatterMissiles) // Accantor - Interception
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2459,10 +2461,15 @@ namespace hooks {
 								} break;
 								case UnitId::ZergLiiralisk:
 								case UnitId::ZergMutalisk:
-								case UnitId::ZergTosgrilisk:
 								case UnitId::ZergSpirtithCesiant:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergGhitorokor:
+								{
+									if (current_button->icon_id == IconId::SuicideScourge) { // Ghitorokor - Relentless Aggression
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2473,9 +2480,10 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ZergGhitorokor:
+								case UnitId::ZergTosgrilisk:
+								case UnitId::ZergIzirokor:
 								{
-									if (current_button->icon_id == IconId::SuicideScourge) { // Ghitorokor - Relentless Aggression
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Izirokor - Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2492,16 +2500,16 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ZergIzirokor:
-								{
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Izirokor - Crushing Tide
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
 								case UnitId::ZergBactalisk:
 								case UnitId::ZergAlkajelisk:
 								{
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Caustic Fission
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergTethzorokor:
+								{
+									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Ultrokor - Saber Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

@@ -410,8 +410,12 @@ bool weapon_id_is_standard_weapon(u32 weapon_id) {
 bool weapon_id_bounces_lithe_organelle(u32 weapon_id) {
 	return weapon_id == WeaponId::MutaliskGlaveWurm
 		|| weapon_id == WeaponId::LiiraliskHollowedSpores
-		|| weapon_id == WeaponId::TosgriliskExplosiveSpores
 		|| weapon_id == WeaponId::SpirtithColonySpirtilSpores;
+}
+
+bool weapon_id_bounces_crushing_tide(u32 weapon_id) {
+	return weapon_id == WeaponId::IzirokorEnergizedBioplasma
+		|| weapon_id == WeaponId::TosgriliskExplosiveSpores;
 }
 
 bool weapon_id_accelerates(u32 weapon_id) {
@@ -439,6 +443,8 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 
 		case WeaponId::SirenCharybdalRifle:
 		case WeaponId::PatriarchIronhandWeaver:
+		case WeaponId::EngramKhaydarinPlasmaLaser:
+		case WeaponId::IdolPrismaticBlaster:
 		case WeaponId::StarSovereignInterventionMissiles:
 			return InterceptType_Any;
 	}

@@ -252,6 +252,7 @@ namespace WeaponId {
 		ServitorRecycledBlaster				= 193,
 		PositronAntimatterMissile			= 194,
 		SycophantSparringSaber				= 195,
+		EngramKhaydarinPlasmaLaser			= 197,
 		AnalogueCylindricalBlaster			= 202,
 
 		// Zerg \\
@@ -293,5 +294,10 @@ namespace WeaponId {
 		SpirtithColonySpirtilSpores			= 178,
 		SkortrithColonySkortraTendril		= 180,
 		NathrokorNathrokClaws				= 204,
+		GorgrokorCalcification				= 205,
+
+		// Misc \\
+
+		SmoochieBoyKissingEmoji				= 196,
 	};
 }

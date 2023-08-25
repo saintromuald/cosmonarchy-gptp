@@ -355,7 +355,8 @@ namespace hooks
 			} break;
 			default:
 			{
-				if (weapon_id_bounces_lithe_organelle(data.weapon_id)) {
+				if (weapon_id_bounces_lithe_organelle(data.weapon_id))
+				{
 					data.damage *= 1 - data.damage_divisor * 0.33;
 					if (data.damage < 0) {
 						data.damage = 0;
@@ -783,31 +784,18 @@ namespace hooks
 	static void weapon_damage_lifesteal(const WeaponDamageData& data) {
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
 		switch (data.weapon_id) {
-			case WeaponId::UltrokorKaiserBlades:
+			case WeaponId::TethzorokorSaberArray:
 			case WeaponId::RililiskSwarmingSpores:
+			case WeaponId::UltrokorKaiserBlades:
 			case WeaponId::RilirokorToxicSpores:
 			{
-				// Broodspawn lifesteal
-				// Ultrokor Saber Siphon passive
+				// Broodspawn Death Cycle, Ultrokor / Tethzorokor Saber Siphon
 				data.attacker->heal_hp(damage_dealt, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
 				data.attacker->heal_shields(damage_dealt, data.attacker);
-			} break;
-			case WeaponId::AxitriliskSearingVenom:
-			{
-				// Axitrilisk passive
-				const s32 shields = data.attacker->get_current_shields_ingame();
-				const s32 max_shields = data.attacker->get_max_shields_in_game();
-				u32 life_heal = damage_dealt * MathUtils::map(shields, 0, max_shields, 1.0, 0.0, true);
-				data.attacker->heal_hp(life_heal, data.attacker);
-
-				const s32 hp = data.attacker->get_current_hp_ingame();
-				const s32 maxHp = data.attacker->get_max_hp_ingame();
-				u32 shields_heal = damage_dealt * MathUtils::map(hp, 0, maxHp, 1.0, 0.0, true);
-				data.attacker->heal_shields(shields_heal, data.attacker);
 			} break;
 		}
 	}

@@ -1193,7 +1193,9 @@ namespace hooks
 		}
 		if (unit_id_is_melee_air_unit(unit->id))
 		{
-			helper::move_for_melee_range(unit->order_target.unit, unit);
+			if (unit->id != UnitId::ZergGorgrokor || !(target_unit->status & UnitStatus::InAir)) {
+				helper::move_for_melee_range(unit->order_target.unit, unit);
+			}
 		} else {
 			helper::set_resource_target(unit);
 		}

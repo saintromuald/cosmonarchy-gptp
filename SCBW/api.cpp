@@ -2531,6 +2531,7 @@ namespace scbw {
 			case WeaponId::NathrokorNathrokClaws:
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::CikraliskAcidSalvo:
+			case WeaponId::TosgriliskExplosiveSpores:
 			case WeaponId::MortothrokorWickedIncisors:
 			case WeaponId::BactaliskCorrosiveAcid:
 			case WeaponId::AlmaksaliskPiercingSpines:
