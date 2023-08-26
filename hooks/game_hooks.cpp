@@ -527,6 +527,10 @@ namespace hooks {
 					{
 						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
+					case UnitId::ProtossDidact:
+					{
+						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
 					case UnitId::ZergSovroleth:
 					{
 						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);

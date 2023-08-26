@@ -129,10 +129,10 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranMason:
-				case UnitId::TerranQuarry:
 				{
 					return true;
 				} break;
+				case UnitId::TerranQuarry:
 				case UnitId::TerranAnvil:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
@@ -179,9 +179,6 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranQuarry:
-				{
-					return true;
-				} break;
 				case UnitId::TerranAnvil:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
@@ -1182,12 +1179,12 @@ namespace hooks {
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCagrantCesiant))
 		{
 			if (unit_id == UnitId::ZergSurkithCesiant
-			||  unit_id == UnitId::ZergSpraithCesiant
-			||  unit_id == UnitId::ZergLarvoskCesiant)
+			||  unit_id == UnitId::ZergSpraithCesiant)
 			{
 				return true;
 			}
-			if (unit_id == UnitId::ZergNydusCesiant) {
+			if (unit_id == UnitId::ZergLarvoskCesiant
+			||  unit_id == UnitId::ZergNydusCesiant) {
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
 					return true;
@@ -1487,13 +1484,6 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranQuarry:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_ACTIVE;
-					}
 					case UnitId::TerranAnvil:
 					{
 						if (has_addon || is_training)
@@ -1536,13 +1526,6 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranQuarry:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_ACTIVE;
-					}
 					case UnitId::TerranAnvil:
 					{
 						if (has_addon || is_training)
@@ -3150,12 +3133,12 @@ namespace hooks {
 			case UnitId::ZergCagrantCesiant:
 			{
 				if (unit_id == UnitId::ZergSurkithCesiant
-				||  unit_id == UnitId::ZergSpraithCesiant
-				||  unit_id == UnitId::ZergLarvoskCesiant)
+				||  unit_id == UnitId::ZergSpraithCesiant)
 				{
 					return TECH_ACTIVE;
 				}
-				if (unit_id == UnitId::ZergNydusCesiant) {
+				if (unit_id == UnitId::ZergLarvoskCesiant
+				||  unit_id == UnitId::ZergNydusCesiant) {
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
 						return TECH_ACTIVE;
