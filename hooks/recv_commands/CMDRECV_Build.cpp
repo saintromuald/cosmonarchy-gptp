@@ -216,7 +216,7 @@ namespace hooks
 	}
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
-	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) { // 0048EE30 
+	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) { // 0048EE30
 		if (player == *g_local_nation_id && !*g_is_in_replay) {
 			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx) {
@@ -249,14 +249,8 @@ namespace hooks
 			char* message_string;
 			u32 final_message_id = message_id - 1;
 			if ((u16)message_id) {
-				if (final_message_id < *g_stat_txt_tbl) {
-					message_string = (char*)g_stat_txt_tbl + g_stat_txt_tbl[final_message_id + 1];
-					if (!message_string) {
-						return;
-					}
-				} else {
-					message_string = "";
-				}
+				message_string = (char*)g_stat_txt_buffer->get_string(message_id);
+
 				if (player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message_string);
 				}

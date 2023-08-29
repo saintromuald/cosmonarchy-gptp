@@ -324,8 +324,8 @@ SCBW_DATA(u32*,		g_place_building_message_id,	0x00640958);
 SCBW_DATA(u32*,		g_order_count,					0x00641698);
 
 // For create_upgrade_level_tooltip
-SCBW_DATA(u16*,		g_upgrade_level_tooltip,		0x0068C1CC);
-SCBW_DATA(u16**,	g_stat_txt_buffer,				0x006D1238);
+SCBW_DATA(u16*,			g_upgrade_level_tooltip,	0x0068C1CC);
+SCBW_DATA(StringTbl*,	g_stat_txt_buffer,			0x006D1238);
 
 struct BufferStr {
 	char buf[260];

@@ -189,16 +189,16 @@ namespace hooks {
 							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
 						} else {
 							u8 v11 = a3->player;
-							if (*g_stat_txt_tbl > 0x368u) {
-								helper::show_stat_txt_to_player(*g_stat_txt_tbl + g_stat_txt_tbl[873], v11);
+							if (g_stat_txt_buffer->get_string_count() > 872) {
+								helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(873), v11);
 							} else {
 								helper::show_stat_txt_to_player((s32)"", v11);
 							}
 						}
 					} else {
 						u8 v10 = a3->player;
-						if (*g_stat_txt_tbl > 0x366u) {
-							helper::show_stat_txt_to_player(*g_stat_txt_tbl + g_stat_txt_tbl[871], v10);
+						if (g_stat_txt_buffer->get_string_count() > 870) {
+							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(871), v10);
 						} else {
 							helper::show_stat_txt_to_player((s32)"", v10);
 						}
@@ -255,8 +255,8 @@ LABEL_15:
 			return helper::refresh_selection_screen();
 		}
 		const char* description;
-		if (**g_stat_txt_buffer > 794u) {
-			description = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[795];
+		if (g_stat_txt_buffer->get_string_count() > 794) {
+			description = (char*)g_stat_txt_buffer->get_string(795);
 		} else {
 			description = "";
 		}

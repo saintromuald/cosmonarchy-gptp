@@ -246,13 +246,9 @@ LABEL_26:
 			if (v21 == -815)
 			{
 				v9 = 0;
-			}
-			else if (v8 < *g_stat_txt_tbl)
-			{
+			} else if (v8 < *g_stat_txt_tbl) {
 				v9 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v8 + 1];
-			}
-			else
-			{
+			} else {
 				v9 = "";
 			}
 			v10 = helper::get_last_queue_slot_id((*g_active_portrait_unit));
@@ -261,14 +257,10 @@ LABEL_26:
 			if (v21 == -818)
 			{
 				v12 = 0;
-			}
-			else if ((u16)v11 < *g_stat_txt_tbl)
-			{
+			} else if ((u16)v11 < g_stat_txt_buffer->get_string_count()) {
 				v11 = (u16)v11;
-				v12 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[(u16)v11 + 1];
-			}
-			else
-			{
+				v12 = (char*)g_stat_txt_buffer->get_string(v11 + 1);
+			} else {
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);

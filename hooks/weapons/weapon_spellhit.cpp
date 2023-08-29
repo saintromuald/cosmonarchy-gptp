@@ -589,7 +589,7 @@ namespace hooks {
 		if (!(*g_cheat_state & 0x800)) {
 			v2 = techdata_dat::energy_cost[4] * 256;
 			v3 = v1->energy >= v2;
-			//			a2 = (Point32)(v1->energy < v2);		// check this out
+		//	a2 = (Point32)(v1->energy < v2);		// check this out
 			if (!v3) {
 				targetsFound2 = units_dat::group_flags[(u16)v1->id];
 				if (targetsFound2.is_zerg) {
@@ -604,8 +604,8 @@ namespace hooks {
 				if (!v6) {
 					goto LABEL_15;
 				}
-				if (v7 < *g_stat_txt_tbl) {
-					v8 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v7 + 1];
+				if (v7 < g_stat_txt_buffer->get_string_count()) {
+					v8 = (char*)g_stat_txt_buffer->get_string(v7 + 1);
 					if (!v8) {
 				LABEL_15:
 						if (v1->order_queue_head) {

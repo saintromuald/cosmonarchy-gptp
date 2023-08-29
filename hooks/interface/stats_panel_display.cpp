@@ -296,8 +296,8 @@ namespace hooks
 			}
 		} else if (unit->kill_count) {
 			char* text = "";
-			if (**g_stat_txt_buffer > 0x2FBu) {
-				text = (char *)*g_stat_txt_buffer + (*g_stat_txt_buffer)[764];
+			if (*g_stat_txt_tbl > 763) {
+				text = (char*)g_stat_txt_buffer->get_string(764);
 			}
 			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
@@ -889,8 +889,8 @@ namespace hooks
 			u32 race_string_2 = race + 770;
 			char* text = "";
 			if (race_string_1) {
-				if (race_string_2 < **g_stat_txt_buffer) {
-					text = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[race_string_2 + 1];
+				if (race_string_2 < g_stat_txt_buffer->get_string_count()) {
+					text = (char*)g_stat_txt_buffer->get_string(race_string_2 + 1);
 				} else {
 					text = "";
 				}

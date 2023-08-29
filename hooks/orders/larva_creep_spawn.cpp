@@ -173,7 +173,8 @@ namespace hooks
 									|| unit->id == UnitId::ZergCaphrolosk
 									|| unit->id == UnitId::ZergGathtelosk
 									|| unit->id == UnitId::ZergLarvoskCesiant
-									|| unit->id == UnitId::ZergOcsalCesiant;
+									|| unit->id == UnitId::ZergOcsalCesiant
+									|| unit->id == UnitId::Omnivale;
 
 				u8 order_id = can_spawn_larva ? OrderId::SpawningLarva : OrderId::Nothing2;
 				if (unit->secondary_order_id != order_id) {

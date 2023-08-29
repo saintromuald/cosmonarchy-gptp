@@ -397,9 +397,9 @@ namespace hooks
 			if (error_string)
 			{
 				char* string = 0;
-				if ((u16*)(error_string - 1) < *g_stat_txt_buffer)
+				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count())
 				{
-					string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[error_string];
+					string = (char*)g_stat_txt_buffer->get_string(error_string);
 					if (!string)
 					{
 						return;
@@ -434,7 +434,7 @@ namespace hooks
 
 			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
 			{
-				char* string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[856];
+				char* string = (char*)g_stat_txt_buffer->get_string(856);
 				helper::set_unit_stat_txt_error_message(string);
 			}
 		}
