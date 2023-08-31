@@ -95,7 +95,7 @@ namespace hooks {
 			extra_count += unit->id == UnitId::ZergLarva ? 0 : unit_ext->values[ValueSwarmhold]; // Done this way to prevent double Larvae on Egg cancel. -Pr0nogo
 			unit_ext->values[ValueSwarmhold] = 0;
 			if (unit_id_is_morphed_from_double_unit(unit->id) && unit->create_origin == UnitId::ZergOcsalLarva) { // Kinda stupid. -Pr0nogo
-				extra_count++;
+			//	extra_count++;
 			}
 
 			Unit* twin_unit = 0;

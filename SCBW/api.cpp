@@ -550,6 +550,7 @@ namespace scbw {
 			case UnitId::ZergSkortrithCesiant:
 			case UnitId::ZergSpirtithCesiant:
 			case UnitId::ZergNydusCesiant:
+			case UnitId::ZergOcsalCesiant:
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergLiivralPond:
 			case UnitId::ZergVithrathHaunt:
@@ -2114,10 +2115,10 @@ namespace scbw {
 			case UnitId::ZergSpraithCesiant:		return UnitId::ZergCagrantCesiant;
 			case UnitId::ZergLarvoskCesiant:		return UnitId::ZergCagrantCesiant;
 			case UnitId::ZergKazitrithCesiant:		return UnitId::ZergCagrantCesiant;
-			case UnitId::ZergOcsalCesiant:			return UnitId::ZergCagrantCesiant;
 			case UnitId::ZergNydusCesiant:			return UnitId::ZergCagrantCesiant;
 			case UnitId::ZergSkortrithCesiant:		return UnitId::ZergSurkithCesiant;
 			case UnitId::ZergSpirtithCesiant:		return UnitId::ZergSpraithCesiant;
+			case UnitId::ZergOcsalCesiant:			return UnitId::ZergLarvoskCesiant;
 			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
 			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
 			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;

@@ -39,8 +39,8 @@ bool unit_id_is_smaller_building(u16 unit_id) {
 		|| unit_id == UnitId::ZergSkortrithCesiant
 		|| unit_id == UnitId::ZergSpirtithCesiant
 		|| unit_id == UnitId::ZergKazitrithCesiant
-		|| unit_id == UnitId::ZergOcsalCesiant
-		|| unit_id == UnitId::ZergNydusCesiant;
+		|| unit_id == UnitId::ZergNydusCesiant
+		|| unit_id == UnitId::ZergOcsalCesiant;
 }
 
 b32 unit_id_is_tech(u32 unit_id) {

@@ -1219,6 +1219,16 @@ namespace hooks {
 				}
 			}
 		}
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLarvoskCesiant))
+		{
+			if (unit_id == UnitId::ZergOcsalCesiant)
+			{
+				if (TierUnlocked[RaceId::Zerg][Tier3])
+				{
+					return true;
+				}
+			}
+		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHachirosk))
 		{
 			if (unit_id == UnitId::ZergCaphrolosk)
@@ -3188,6 +3198,18 @@ namespace hooks {
 				if (unit_id == UnitId::ZergSpirtithCesiant)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergLarvoskCesiant:
+			{
+				if (unit_id == UnitId::ZergOcsalCesiant)
+				{
+					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{
 						return TECH_ACTIVE;
 					}

@@ -2693,6 +2693,7 @@ namespace hooks {
 								} break;
 								case UnitId::ZergCaphrolosk:
 								case UnitId::ZergGathtelosk:
+								case UnitId::ZergOcsalCesiant:
 								{
 									if (current_button->icon_id == IconId::SuicideScourge) { // Caphrolosk, Gathtelosk - Ocsal Gestation, Swarmhold
 										current_button_state = Button_State::Enabled;
