@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include "globals.h"
 #include "hooks\unit_speed.h"
+#include "hooks/load_unload_proc.h"
 
 namespace hooks
 {
@@ -208,7 +209,19 @@ namespace hooks
 		}
 		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
 		{
-			if (unit->building.addon) {
+			Unit* addon = unit->building.addon;
+			if (addon) {
+				if (addon->id == UnitId::TerranLodestone) {
+					UnitExt* addon_ext = get_unit_ext(addon);
+					for (u32 i = 0; i < TransportCap; ++i) {
+						Unit* unit = get_loaded_unit_from_index(addon, i);
+						if (unit) {
+							addon->main_order_timer = 0;
+							helper::unload_unit_proc(unit);
+						}
+						addon_ext->loaded_unit[i].value = 0;
+					}
+				}
 				helper::disconnect_from_addon(unit);
 			}
 			if (unit->is_factory()) {

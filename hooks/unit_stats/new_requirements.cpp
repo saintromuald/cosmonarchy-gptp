@@ -1541,6 +1541,14 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
+					case UnitId::TerranLodestone:
+					{
+						if (has_addon || is_training)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
 					case UnitId::TerranQuarry:
 					case UnitId::TerranAnvil:
 					{

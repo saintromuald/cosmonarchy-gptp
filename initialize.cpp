@@ -518,7 +518,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004D3EE9, (u32)1);
 
 	// Prevent pause triggers from indefinitely freezing replays.
-	memory_patch(0x0048885C, (u16)0x90C3);
+	memory_patch(0x00488855, (u8)0xC3);//RET;
+	memory_patch(0x00488856, (u32)0x90909090);
 
 	// Pick appropriate icon size for hangar counts. Weapons, armor, shields, and spider mine counts are handled in stats_panel_display.
 	jump_patch(hooks::StatHangarCount_patch_25471, 0x00425471, 1);
