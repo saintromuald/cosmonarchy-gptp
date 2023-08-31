@@ -132,6 +132,10 @@ namespace hooks {
 				{
 					return true;
 				} break;
+				case UnitId::TerranLodestone:
+				{
+					return true;
+				} break;
 				case UnitId::TerranQuarry:
 				case UnitId::TerranAnvil:
 				{
@@ -178,6 +182,10 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
+				case UnitId::TerranLodestone:
+				{
+					return true;
+				} break;
 				case UnitId::TerranQuarry:
 				case UnitId::TerranAnvil:
 				{
@@ -1478,6 +1486,14 @@ namespace hooks {
 					case UnitId::TerranMason:
 					{
 						if (in_air)
+						{
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
+					case UnitId::TerranLodestone:
+					{
+						if (has_addon || is_training)
 						{
 							return TECH_HIDDEN;
 						}

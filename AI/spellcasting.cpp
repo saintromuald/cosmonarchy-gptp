@@ -319,9 +319,7 @@ namespace
 		if (orders_dat::tech_used[order_id] != TechId::None)
 		{
 			return techdata_dat::energy_cost[orders_dat::tech_used[order_id]] * 256;
-		}
-		else
-		{
+		} else {
 			return 0;
 		}
 	}
@@ -341,8 +339,7 @@ namespace
 		Unit* current_unit = first_player_unit->unit[nuker->player];
 		while (current_unit && !silo)
 		{
-			if (current_unit->id == UnitId::TerranAnvil
-				&& current_unit->building.silo.is_ready)
+			if (current_unit->id == UnitId::TerranAnvil && current_unit->building.silo.is_ready)
 			{
 				if (!check_nuke_available_for_nuker)
 				{
@@ -353,9 +350,7 @@ namespace
 					{
 						silo = current_unit;
 					}
-				}
-				else
-				{
+				} else {
 					silo = current_unit;
 				}
 			}

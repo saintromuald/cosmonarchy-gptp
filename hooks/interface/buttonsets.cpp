@@ -453,7 +453,7 @@ namespace hooks {
 		for (u32 i = 0; i < current_buttonset->buttons_in_set; ++i) {
 			Button* button = &current_buttonset->first_button[i];
 			if (button->icon_id == IconId::Cancel) {
-				if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
+				if (unit_id_is_larva(buttonset_id) || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
 					|| units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
 					button->position = 6;
 				} else if (buttonset_id == UnitId::ProtossLanifect || buttonset_id == UnitId::ProtossDidact) {
@@ -556,7 +556,7 @@ namespace hooks {
 							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectAssault
 							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectControl)
 						{
-							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
+							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit_id_is_larva(unit->id) || unit->id == UnitId::Omnivale) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -580,7 +580,7 @@ namespace hooks {
 					}
 					
 					if (current_button->icon_id == IconId::SetRallyPoint) {
-						if ((unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg)
+						if ((unit_id_is_larva(unit->id) || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && has_egg)
 						{
 							current_button_state = Button_State::Enabled;
 						}
@@ -630,7 +630,7 @@ namespace hooks {
 					}
 
 					if (current_button->icon_id == IconId::Larva) {
-						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit->id == UnitId::ZergLarva) {
+						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit_id_is_larva(unit->id) || unit->id == UnitId::Omnivale) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -687,7 +687,7 @@ namespace hooks {
 						in_air = unit->status & UnitStatus::InAir;
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
-						is_adding_on = unit->building.addon_build_id && unit->main_order_id == OrderId::BuildAddon;
+						is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding)
@@ -1030,6 +1030,69 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										} break;
 									}
+								}
+							} break;
+							case UnitId::TerranMinistry:
+							{
+								switch (current_button->requirement_var)
+								{
+									case UnitId::TerranMason:
+									{
+										if (unit->status & UnitStatus::GroundedBuilding)
+										{
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranLodestone:
+									{
+										if (has_addon || is_training || is_adding_on)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::TerranQuarry:
+									case UnitId::TerranAnvil:
+									{
+										if (has_addon || is_training || is_adding_on)
+										{
+											current_button_state = Button_State::Invisible;
+										} else if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtlas)) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+								}
+							} break;
+							case UnitId::TerranTreasury:
+							{
+								switch (current_button->requirement_var)
+								{
+									case UnitId::TerranLodestone:
+									{
+										if (has_addon || is_training || is_adding_on)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::TerranQuarry:
+									case UnitId::TerranAnvil:
+									{
+										if (has_addon || is_training || is_adding_on)
+										{
+											current_button_state = Button_State::Invisible;
+										} else if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtlas)) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
 								}
 							} break;
 							case UnitId::TerranParthenon:

@@ -169,19 +169,12 @@ namespace hooks
 				}
 			}
 			if (result_00414680 == 0) {
-				bool can_spawn_larva = unit->id == UnitId::ZergHachirosk
-									|| unit->id == UnitId::ZergCaphrolosk
-									|| unit->id == UnitId::ZergGathtelosk
-									|| unit->id == UnitId::ZergLarvoskCesiant
-									|| unit->id == UnitId::ZergOcsalCesiant
-									|| unit->id == UnitId::Omnivale;
-
-				u8 order_id = can_spawn_larva ? OrderId::SpawningLarva : OrderId::Nothing2;
+				u8 order_id = unit_id_spawns_larva(unit->id) ? OrderId::SpawningLarva : OrderId::Nothing2;
 				if (unit->secondary_order_id != order_id) {
 					unit->secondary_order_id = order_id;
 					unit->secondary_order_pos.y = 0;
 					unit->secondary_order_pos.x = 0;
-					unit->current_build_unit = nullptr;
+					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
 			}

@@ -122,6 +122,7 @@ namespace UnitId
 		TerranAmphitheater									= 296,
 		TerranThroneroom									= 299,
 		TerranWellbore										= 365,
+		TerranLodestone										= 384,
 
 	// Protoss-Unit
 		ProtossManifold										= 16,		// Sarah Kerrigan
