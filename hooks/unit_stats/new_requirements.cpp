@@ -511,15 +511,6 @@ namespace hooks {
 				case UnitId::ProtossZealot:
 				case UnitId::ProtossDracadin:
 				case UnitId::ProtossEcclesiast:
-				{
-					return true;
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossCenotaph))
-		{
-			switch (unit_id)
-			{
 				case UnitId::ProtossLegionnaire:
 				case UnitId::ProtossHierophant:
 				{
@@ -544,35 +535,26 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-			case UnitId::ProtossVagrant:
-			case UnitId::ProtossCabalist:
-			case UnitId::ProtossBarghest:
-			{
-				return true;
-			} break;
+				case UnitId::ProtossVagrant:
+				case UnitId::ProtossCabalist:
+				case UnitId::ProtossCharlatan:
+				case UnitId::ProtossBarghest:
+				{
+					return true;
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage))
 		{
 			switch (unit_id)
 			{
-			case UnitId::ProtossPariah:
-			case UnitId::ProtossPotentate:
-			case UnitId::ProtossSycophant:
-			{
-				return true;
-			} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSanctumOfSorrow))
-		{
-			switch (unit_id)
-			{
-			case UnitId::ProtossCharlatan:
-			case UnitId::ProtossMindTyrant:
-			{
-				return true;
-			} break;
+				case UnitId::ProtossPariah:
+				case UnitId::ProtossPotentate:
+				case UnitId::ProtossSycophant:
+				case UnitId::ProtossMindTyrant:
+				{
+					return true;
+				} break;
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAncestralArchives))
@@ -605,15 +587,6 @@ namespace hooks {
 				case UnitId::ProtossVassal:
 				case UnitId::ProtossSimulacrum:
 				case UnitId::ProtossManifold:
-				{
-					return true;
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAutomatonRegister))
-		{
-			switch (unit_id)
-			{
 				case UnitId::ProtossGolem:
 				case UnitId::ProtossIdol:
 				{
@@ -628,15 +601,6 @@ namespace hooks {
 				case UnitId::ProtossServitor:
 				case UnitId::ProtossPositron:
 				case UnitId::ProtossAnalogue:
-				{
-					return true;
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSequesteredIcon))
-		{
-			switch (unit_id)
-			{
 				case UnitId::ProtossAccantor:
 				case UnitId::ProtossArchitect:
 				{
@@ -651,15 +615,6 @@ namespace hooks {
 				case UnitId::ProtossMainstay:
 				case UnitId::ProtossMaven:
 				case UnitId::ProtossCloudform:
-				{
-					return true;
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossUnitaryUnion))
-		{
-			switch (unit_id)
-			{
 				case UnitId::ProtossVibrance:
 				case UnitId::ProtossOscilliant:
 				{
@@ -685,15 +640,6 @@ namespace hooks {
 				case UnitId::ProtossAurora:
 				case UnitId::ProtossPanoptus:
 				case UnitId::ProtossLanifect:
-				{
-					return true;
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAstralOmen))
-		{
-			switch (unit_id)
-			{
 				case UnitId::ProtossGladius:
 				case UnitId::ProtossExemplar:
 				{
@@ -708,15 +654,6 @@ namespace hooks {
 				case UnitId::ProtossMagister:
 				case UnitId::ProtossEpigraph:
 				case UnitId::ProtossDidact:
-				{
-					return true;
-				} break;
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossFleetBeacon))
-		{
-			switch (unit_id)
-			{
 				case UnitId::ProtossEmpyrean:
 				case UnitId::ProtossSolarion:
 				{
@@ -2208,16 +2145,6 @@ namespace hooks {
 					case UnitId::ProtossZealot:
 					case UnitId::ProtossDracadin:
 					case UnitId::ProtossEcclesiast:
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossCenotaph:
-			{
-				switch (unit_id)
-				{
 					case UnitId::ProtossLegionnaire:
 					case UnitId::ProtossHierophant:
 					{
@@ -2244,38 +2171,28 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-				case UnitId::ProtossVagrant:
-				case UnitId::ProtossCabalist:
-				case UnitId::ProtossBarghest:
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
+					case UnitId::ProtossVagrant:
+					case UnitId::ProtossCabalist:
+					case UnitId::ProtossCharlatan:
+					case UnitId::ProtossBarghest:
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
 				}
 			}
 			case UnitId::ProtossProstrationStage:
 			{
 				switch (unit_id)
 				{
-				case UnitId::ProtossPariah:
-				case UnitId::ProtossPotentate:
-				case UnitId::ProtossSycophant:
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossSanctumOfSorrow:
-			{
-				switch (unit_id)
-				{
-				case UnitId::ProtossCharlatan:
-				case UnitId::ProtossMindTyrant:
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
+					case UnitId::ProtossPariah:
+					case UnitId::ProtossPotentate:
+					case UnitId::ProtossSycophant:
+					case UnitId::ProtossMindTyrant:
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
 				}
 			}
 			case UnitId::ProtossAncestralArchives:
@@ -2295,8 +2212,8 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-				case UnitId::ProtossApostate:
-				case UnitId::ProtossAugur:
+					case UnitId::ProtossApostate:
+					case UnitId::ProtossAugur:
 					{
 						return TECH_ACTIVE;
 					}
@@ -2310,16 +2227,6 @@ namespace hooks {
 					case UnitId::ProtossVassal:
 					case UnitId::ProtossSimulacrum:
 					case UnitId::ProtossManifold:
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossAutomatonRegister:
-			{
-				switch (unit_id)
-				{
 					case UnitId::ProtossGolem:
 					case UnitId::ProtossIdol:
 					{
@@ -2335,16 +2242,6 @@ namespace hooks {
 					case UnitId::ProtossServitor:
 					case UnitId::ProtossPositron:
 					case UnitId::ProtossAnalogue:
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossSequesteredIcon:
-			{
-				switch (unit_id)
-				{
 					case UnitId::ProtossAccantor:
 					case UnitId::ProtossArchitect:
 					{
@@ -2357,25 +2254,15 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-				case UnitId::ProtossMainstay:
-				case UnitId::ProtossMaven:
-				case UnitId::ProtossCloudform:
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossUnitaryUnion:
-			{
-				switch (unit_id)
-				{
-				case UnitId::ProtossVibrance:
-				case UnitId::ProtossOscilliant:
-				{
-					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
+					case UnitId::ProtossMainstay:
+					case UnitId::ProtossMaven:
+					case UnitId::ProtossCloudform:
+					case UnitId::ProtossVibrance:
+					case UnitId::ProtossOscilliant:
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_HIDDEN;
 				}
 			}
 			case UnitId::ProtossSyntheticSynod:
@@ -2397,16 +2284,6 @@ namespace hooks {
 					case UnitId::ProtossAurora:
 					case UnitId::ProtossPanoptus:
 					case UnitId::ProtossLanifect:
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossAstralOmen:
-			{
-				switch (unit_id)
-				{
 					case UnitId::ProtossGladius:
 					case UnitId::ProtossExemplar:
 					{
@@ -2422,16 +2299,6 @@ namespace hooks {
 					case UnitId::ProtossMagister:
 					case UnitId::ProtossEpigraph:
 					case UnitId::ProtossDidact:
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_HIDDEN;
-				}
-			}
-			case UnitId::ProtossFleetBeacon:
-			{
-				switch (unit_id)
-				{
 					case UnitId::ProtossEmpyrean:
 					case UnitId::ProtossSolarion:
 					{
