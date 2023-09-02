@@ -784,12 +784,13 @@ namespace hooks
 	static void weapon_damage_lifesteal(const WeaponDamageData& data) {
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
 		switch (data.weapon_id) {
+			case WeaponId::GhitorokorGnashingTendrils:
 			case WeaponId::TethzorokorSaberArray:
+			case WeaponId::RilirokorToxicSpores:
 			case WeaponId::RililiskSwarmingSpores:
 			case WeaponId::UltrokorKaiserBlades:
-			case WeaponId::RilirokorToxicSpores:
 			{
-				// Broodspawn Death Cycle, Ultrokor / Tethzorokor Saber Siphon
+				// Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
 				data.attacker->heal_hp(damage_dealt, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:

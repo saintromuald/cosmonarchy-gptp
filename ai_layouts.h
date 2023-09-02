@@ -60,13 +60,13 @@ const AiUnitEquivalent equivalents[] = {
 
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
 
-	{UnitId::ZergQuazrokPool, UnitId::ZergLiivralPond, 1},
-	{UnitId::ZergMuthrokSpire, UnitId::ZergVithrathHaunt, 1},
+	{UnitId::ZergQuazethPool, UnitId::ZergKalkiirPond, 1},
+	{UnitId::ZergMutathSpire, UnitId::ZergTosvrolHaunt, 1},
 	{UnitId::ZergAxtothAxis, UnitId::ZergBegrozithBarrow, 1},
-	{UnitId::ZergHydrokDen, UnitId::ZergGorgralSwamp, 1},
-	{UnitId::ZergIzkagIteth, UnitId::ZergChokralgantChazsal, 1},
+	{UnitId::ZergHydrithDen, UnitId::ZergBactithSwamp, 1},
+	{UnitId::ZergAlkagIteth, UnitId::ZergChokralgantChazsal, 1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
-	{UnitId::ZergZorkizShroud, UnitId::ZergUltrokCavern, 1},
+	{UnitId::ZergZorkizShroud, UnitId::ZergUltravCavern, 1},
 	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},
 	{UnitId::ZergElthisthMound, UnitId::ZergRakzogthRoost, 1},
 

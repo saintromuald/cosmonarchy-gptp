@@ -236,19 +236,19 @@ namespace hooks
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergOthstolOviform, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergQuazrokPool:
+			case UnitId::ZergQuazethPool:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergLiivralPond, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirPond, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergHydrokDen:
+			case UnitId::ZergHydrithDen:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergGorgralSwamp, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergBactithSwamp, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergMuthrokSpire:
+			case UnitId::ZergMutathSpire:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergVithrathHaunt, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergTosvrolHaunt, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergMatravilNest:
@@ -263,7 +263,7 @@ namespace hooks
 
 			case UnitId::ZergZorkizShroud:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUltrokCavern, ignore_incomplete); 
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUltravCavern, ignore_incomplete); 
 			} break;
 		}
 		return unit_count;

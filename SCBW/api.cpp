@@ -552,12 +552,12 @@ namespace scbw {
 			case UnitId::ZergNydusCesiant:
 			case UnitId::ZergOcsalCesiant:
 			case UnitId::ZergOthstolOviform:
-			case UnitId::ZergLiivralPond:
-			case UnitId::ZergVithrathHaunt:
-			case UnitId::ZergGorgralSwamp:
+			case UnitId::ZergKalkiirPond:
+			case UnitId::ZergTosvrolHaunt:
+			case UnitId::ZergBactithSwamp:
 			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergAlkajChasm:
-			case UnitId::ZergUltrokCavern: {
+			case UnitId::ZergUltravCavern: {
 				return true;
 			}
 		}
@@ -572,9 +572,9 @@ namespace scbw {
 			case UnitId::ZergSurkithCesiant:
 			case UnitId::ZergSpraithCesiant:
 			case UnitId::ZergIrolIris:
-			case UnitId::ZergQuazrokPool:
-			case UnitId::ZergHydrokDen:
-			case UnitId::ZergMuthrokSpire:
+			case UnitId::ZergQuazethPool:
+			case UnitId::ZergHydrithDen:
+			case UnitId::ZergMutathSpire:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
 			case UnitId::ZergGeszkathGrotto: {
@@ -2120,13 +2120,13 @@ namespace scbw {
 			case UnitId::ZergSpirtithCesiant:		return UnitId::ZergSpraithCesiant;
 			case UnitId::ZergOcsalCesiant:			return UnitId::ZergLarvoskCesiant;
 			case UnitId::ZergOthstolOviform:		return UnitId::ZergIrolIris;
-			case UnitId::ZergLiivralPond:			return UnitId::ZergQuazrokPool;
-			case UnitId::ZergVithrathHaunt:			return UnitId::ZergMuthrokSpire;
-			case UnitId::ZergGorgralSwamp:			return UnitId::ZergHydrokDen;
+			case UnitId::ZergKalkiirPond:			return UnitId::ZergQuazethPool;
+			case UnitId::ZergTosvrolHaunt:			return UnitId::ZergMutathSpire;
+			case UnitId::ZergBactithSwamp:			return UnitId::ZergHydrithDen;
 			case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
 			case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
-			case UnitId::ZergChokralgantChazsal:	return UnitId::ZergIzkagIteth;
-			case UnitId::ZergUltrokCavern:			return UnitId::ZergZorkizShroud;
+			case UnitId::ZergChokralgantChazsal:	return UnitId::ZergAlkagIteth;
+			case UnitId::ZergUltravCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
 
@@ -2135,11 +2135,11 @@ namespace scbw {
 			case UnitId::ZergCagrantCesiant:
 			case UnitId::ZergExcisant:
 			case UnitId::ZergIrolIris:				
-			case UnitId::ZergQuazrokPool:			
-			case UnitId::ZergMuthrokSpire:			
+			case UnitId::ZergQuazethPool:			
+			case UnitId::ZergMutathSpire:			
 			case UnitId::ZergAxtothAxis:			
-			case UnitId::ZergHydrokDen:				
-			case UnitId::ZergIzkagIteth:			
+			case UnitId::ZergHydrithDen:				
+			case UnitId::ZergAlkagIteth:			
 			case UnitId::ZergGeszkathGrotto:		
 			case UnitId::ZergZorkizShroud:			
 			case UnitId::ZergMatravilNest:			
@@ -3191,7 +3191,8 @@ namespace scbw {
 	u32 get_ensnare_factor(Unit* unit) {
 		u32 factor = 0;
 		switch (unit->id) {
-			case UnitId::ZergVorvrokor: {
+			case UnitId::ZergVorvrokor:
+			case UnitId::ZergAkistrokor: {
 				factor++;
 			}
 		}

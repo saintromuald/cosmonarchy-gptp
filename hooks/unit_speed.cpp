@@ -217,6 +217,13 @@ namespace hooks
 					speed *= 2;
 				}
 			} break;
+			case UnitId::ProtossZealot:
+			{
+				speed *= 1.25;
+				if (unit->shields > 256) {
+					speed *= 1.25;
+				}
+			} break;
 			// Hardcode ideal movement speeds
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
@@ -253,7 +260,6 @@ namespace hooks
 				speed *= 1.2;
 			} break;
 			case UnitId::TerranStriga:
-			case UnitId::ProtossZealot:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergAxitrilisk:

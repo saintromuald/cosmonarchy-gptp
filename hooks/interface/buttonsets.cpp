@@ -1350,8 +1350,8 @@ namespace hooks {
 									case UnitId::ZergQuazilisk:
 									case UnitId::ZergNathrokor:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazrokPool)
-										||  player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
+										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirPond))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1362,8 +1362,8 @@ namespace hooks {
 									case UnitId::ZergIzirokor:
 									case UnitId::ZergSkithrokor:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrokDen)
-										||  player_has_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
+										||  player_has_unit_id(unit->player, UnitId::ZergBactithSwamp))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1375,7 +1375,7 @@ namespace hooks {
 									case UnitId::ZergGorgrokor:
 									{
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
-										||  player_has_unit_id(unit->player, UnitId::ZergUltrokCavern))
+										||  player_has_unit_id(unit->player, UnitId::ZergUltravCavern))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1386,8 +1386,8 @@ namespace hooks {
 									case UnitId::ZergProtathalor:
 									case UnitId::ZergCikralisk:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergMuthrokSpire)
-										||  player_has_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergMutathSpire)
+										||  player_has_unit_id(unit->player, UnitId::ZergTosvrolHaunt))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1398,7 +1398,7 @@ namespace hooks {
 									case UnitId::ZergEvigrilisk:
 									case UnitId::ZergAlmaksalisk:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergIzkagIteth)
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlkagIteth)
 										||  player_has_unit_id(unit->player, UnitId::ZergChokralgantChazsal))
 										{
 											current_button_state = Button_State::Enabled;
@@ -1481,8 +1481,8 @@ namespace hooks {
 									} break;
 									case UnitId::ZergVorvrokor:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazrokPool)
-										||  player_has_unit_id(unit->player, UnitId::ZergLiivralPond))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
+										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirPond))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1492,7 +1492,7 @@ namespace hooks {
 									case UnitId::ZergLiiralisk:
 									case UnitId::ZergKalkalisk:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergLiivralPond))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergKalkiirPond))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1503,7 +1503,7 @@ namespace hooks {
 									case UnitId::ZergTethzorokor:
 									case UnitId::ZergVithrilisk:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergBactithSwamp))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1514,7 +1514,7 @@ namespace hooks {
 									case UnitId::ZergZobriolisk:
 									case UnitId::ZergZarcavrokor:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1525,7 +1525,7 @@ namespace hooks {
 									case UnitId::ZergSovroleth:
 									case UnitId::ZergTosgrilisk:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergTosvrolHaunt))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -1584,7 +1584,7 @@ namespace hooks {
 							{
 								if (current_button->requirement_var == UnitId::ZergTosgrilisk)
 								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergTosvrolHaunt))
 									{
 										current_button_state = Button_State::Enabled;
 									} else {
@@ -1598,7 +1598,7 @@ namespace hooks {
 							{
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergGhitorokor)
 								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergVithrathHaunt))
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergTosvrolHaunt))
 									{
 										current_button_state = Button_State::Enabled;
 									} else {
@@ -1612,7 +1612,7 @@ namespace hooks {
 							{
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergTethzorokor)
 								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergGorgralSwamp))
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergBactithSwamp))
 									{
 										current_button_state = Button_State::Enabled;
 									} else {
@@ -1626,7 +1626,7 @@ namespace hooks {
 							{
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergZobriolisk)
 								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern))
 									{
 										current_button_state = Button_State::Enabled;
 									} else {
@@ -1640,7 +1640,7 @@ namespace hooks {
 							{
 								if (current_button->requirement_var == UnitId::ZergZarcavrokor)
 								{
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltrokCavern))
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern))
 									{
 										current_button_state = Button_State::Enabled;
 									} else {
@@ -2147,6 +2147,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossZealot:
+								{
+									if (current_button->icon_id == IconId::LegEnhancements) // Zealot - Deathless Procession
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossEcclesiast:
 								{
 									if (current_button->icon_id == IconId::ProtossGroundWeapons	// Ecclesiast - Astral Blessing
@@ -2429,7 +2436,8 @@ namespace hooks {
 								} break;
 								case UnitId::ZergGhitorokor:
 								{
-									if (current_button->icon_id == IconId::SuicideScourge) { // Ghitorokor - Relentless Aggression
+									if (current_button->icon_id == IconId::SuicideScourge			// Ghitorokor - Relentless Aggression
+									||  current_button->icon_id == IconId::UltrokorKaiserBlades) {  // Ghitorokor - Saber Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2469,7 +2477,7 @@ namespace hooks {
 								} break;
 								case UnitId::ZergTethzorokor:
 								{
-									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Ultrokor - Saber Siphon
+									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Tethzorokor - Saber Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2578,6 +2586,12 @@ namespace hooks {
 								case UnitId::ZergTetcaerokor:
 								{
 									if (current_button->icon_id == IconId::RoarUnused) { // Tetcaerokor - Virile Coating
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergAkistrokor:
+								{
+									if (current_button->icon_id == IconId::Ensnare) { // Akistrokor - Captivating Claws
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

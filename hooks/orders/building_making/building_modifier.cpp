@@ -10,12 +10,14 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 
 	UnitExt* building_ext = get_unit_ext(building);
 	if (constructing) {
+		/*
 		if ((builder &&  builder->id == UnitId::TerranTalos)
 		||   building->create_origin == UnitId::ProtossArtisan
 		||   building->create_origin == UnitId::ZergGosvileth)
 		{
 			modifier.multiplier *= 1.5;
 		}
+		*/
 	} else {
 		modifier.multiplier *= 1 + 0.25 * building_ext->unit_vectors[UnitVectorCrucibles].size();
 	}

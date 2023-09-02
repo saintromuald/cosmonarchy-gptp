@@ -65,20 +65,20 @@ b32 unit_id_is_tech(u32 unit_id) {
 		case UnitId::ZergIrolIris:
 		case UnitId::ZergIrulentIvoa:
 		case UnitId::ZergOthstolOviform:
-		case UnitId::ZergQuazrokPool:
-		case UnitId::ZergLiivralPond:
-		case UnitId::ZergMuthrokSpire:
-		case UnitId::ZergVithrathHaunt:
+		case UnitId::ZergQuazethPool:
+		case UnitId::ZergKalkiirPond:
+		case UnitId::ZergMutathSpire:
+		case UnitId::ZergTosvrolHaunt:
 		case UnitId::ZergAxtothAxis:
 		case UnitId::ZergBegrozithBarrow:
-		case UnitId::ZergHydrokDen:
-		case UnitId::ZergGorgralSwamp:
-		case UnitId::ZergIzkagIteth:
+		case UnitId::ZergHydrithDen:
+		case UnitId::ZergBactithSwamp:
+		case UnitId::ZergAlkagIteth:
 		case UnitId::ZergChokralgantChazsal:
 		case UnitId::ZergGeszkathGrotto:
 		case UnitId::ZergAlkajChasm:
 		case UnitId::ZergZorkizShroud:
-		case UnitId::ZergUltrokCavern:
+		case UnitId::ZergUltravCavern:
 		case UnitId::ZergMatravilNest:
 		case UnitId::ZergAlmakisAntre:
 		case UnitId::ZergElthisthMound:
@@ -899,6 +899,7 @@ bool unit_applies_ensnare(Unit* unit) {
 	switch (unit->id)
 	{
 		case UnitId::ZergVorvrokor:
+		case UnitId::ZergAkistrokor:
 		{
 			return true;
 		} break;

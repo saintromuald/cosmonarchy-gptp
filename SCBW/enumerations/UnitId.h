@@ -245,26 +245,26 @@ namespace UnitId
 	// Zerg-Building
 		ZergAxtothAxis										= 130,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
-		ZergGorgralSwamp									= 153,		// Unused Zerg 2
-		ZergIzkagIteth										= 170,		// Arbiter Tribunal
+		ZergBactithSwamp									= 153,		// Unused Zerg 2
+		ZergAlkagIteth										= 170,		// Arbiter Tribunal
 		ZergIrulentIvoa										= 181,		// Cantina
 		ZergZorkizShroud									= 193,		// Protoss Marker
-		ZergVithrathHaunt									= 197,		// Zerg Flag Beacon
-		ZergLiivralPond										= 204,		// Floor Hatch
+		ZergTosvrolHaunt									= 197,		// Zerg Flag Beacon
+		ZergKalkiirPond										= 204,		// Floor Hatch
 		ZergAlkajChasm										= 212,		// Right Wall Missile Trap
 		ZergLarvoskCesiant									= 216,		// Young Chrysalis
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
 		ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
 		ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
-		ZergSpirtithCesiant									= 292,		// Morphed from Cagrant Colony
-		ZergSkortrithCesiant								= 293,		// Morphed from Surkith Colony
+		ZergSpirtithCesiant									= 292,		// Morphed from Cagrant Cesiant
+		ZergSkortrithCesiant								= 293,		// Morphed from Surkith Cesiant
 		ZergRakzogthRoost									= 303,		// Unused
 		ZergBegrozithBarrow									= 329,		// Unused
-		ZergChokralgantChazsal								= 330,		// Morphed from Izkag Iteth
+		ZergChokralgantChazsal								= 330,		// Morphed from Alkag Iteth
 		ZergNephrilosk										= 350,		// Unused
-		ZergOcsalCesiant									= 354,		// Morphed from Cagrant Colony
-		ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Colony
-		ZergEzigrisant										= 364,		// Morphed from Cagrant Colony
+		ZergOcsalCesiant									= 354,		// Morphed from Larvosk Cesiant
+		ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Cesiant
+		ZergEzigrisant										= 364,		// Morphed from Cagrant Cesiant
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
@@ -424,14 +424,14 @@ namespace UnitId
 		ZergCaphrolosk										= 132,	// Was Lair, morphed from Hachirosk
 		ZergGathtelosk										= 133,	// Was Hive, morphed from Hachirosk
 		ZergNydusCesiant									= 134,
-		ZergHydrokDen										= 135,
+		ZergHydrithDen										= 135,
 		ZergElthisthMound									= 136,
 		ZergGeszithRoost									= 137,
 		ZergMatravilNest									= 138,
 		ZergAlmakisAntre									= 139,
-		ZergUltrokCavern									= 140,
-		ZergMuthrokSpire									= 141,
-		ZergQuazrokPool										= 142,
+		ZergUltravCavern									= 140,
+		ZergMutathSpire										= 141,
+		ZergQuazethPool										= 142,
 		ZergCagrantCesiant									= 143,
 		ZergSpraithCesiant									= 144,
 		UnusedZerg1											= 145,
