@@ -640,6 +640,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0042D92C, (u16)0x3D89);//MOV EDI, ...
 	memory_patch(0x0042D92E, (u32)0x006D11FC);//...active_iscript_unit;
 	memory_patch(0x0042D935, (u16)0x36EB);//JMP 0x0042D96D
+
+	// Fix dual-birth unit's facing direction being overridden by units.dat facing direction
+	memory_patch(0x0045D9DB, (u32)0x00042811);//Change CALL address from turn_unit to update_unit_stats_finish_building.
+	memory_patch(0x0045D9E2, (u32)0x0003853A);//Inverse of above.
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
