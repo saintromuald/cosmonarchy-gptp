@@ -510,21 +510,26 @@ namespace hooks
 				case UnitId::ProtossAnalogue:
 				{
 					// Empathy Core - Analogue behavior
-					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
+					BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data) || current_bullet_ext->is_phantom) {
 						break;
 					}
-					if (data.target->energy >= data.damage + data.shield_reduce_amount) {
-						data.target->spend_unit_energy(data.damage + data.shield_reduce_amount);
+					if (data.target->energy >= 10 * 256) {
+						data.target->spend_unit_energy(10 * 256);
 
 						u32 image_id = analogue_image_id_overwrite(data.weapon_id);
 						if (image_id == ImageId::None) {
-							fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+							Bullet* phantom = fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+							if (phantom) {
+								BulletExt* phantom_ext = get_bullet_ext(phantom);
+								phantom_ext->is_phantom = true;
+							}
 						} else {
 							u32 inv_direction = 255 - data.direction;
 							// attkshiftproj probably does something specific that avoids the iscript errors. -Pr0nogo
 						//	data.target->sprite->create_overlay(image_id, 0, 0, inv_direction);
 							if (data.attacker) {
-								data.attacker->damage_with(data.weapon_id, -1, data.attacker, data.attacking_player_id, inv_direction, data.damage_divisor);
+								data.attacker->damage_with(data.weapon_id, -1, data.attacker, data.attacking_player_id, inv_direction, 2);
 							}
 						}
 					}
