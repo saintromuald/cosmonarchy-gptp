@@ -126,7 +126,7 @@ UnitExt* get_unit_ext(Unit* unit) {
 void reset_unit_ext(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	*unit_ext = {};
-	// every unit will starts being out of combat
+	// every unit will start being out of combat
 	unit_ext->shield_regen_timer = UINT_MAX;
 	unit_ext->damage_taken_timer = UINT_MAX;
 	unit_ext->damage_dealt_timer = UINT_MAX;

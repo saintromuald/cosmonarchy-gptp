@@ -2150,11 +2150,16 @@ namespace hooks {
 					} 
 					for (u32 i = 0; i < unit_array.count; ++i) {
 						Unit* target = unit_array.units[i];
+						UnitExt* target_ext = get_unit_ext(target);
+						if (target_ext->shield_regen_timer > 2 * 24 || target->id == UnitId::ProtossSycophant) {
+							continue;
+						}
+
 						if (target->shields < unit->shields && target->shields != target->get_max_shields_raw()) {
 							shields -= target->heal_shields(shields, unit, false, false);
 							unit->shields -= shields;
 							unit->set_hitpoints(unit->hitpoints);
-							unit_ext->shield_regen_timer = 2 * 24;
+							scbw::update_on_damage_receive(unit);
 							break;
 						}
 					}
