@@ -788,6 +788,7 @@ namespace hooks
 
 	static void weapon_damage_lifesteal(const WeaponDamageData& data) {
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
+		UnitExt* attacker_ext = get_unit_ext(data.attacker);
 		switch (data.weapon_id) {
 			case WeaponId::GhitorokorGnashingTendrils:
 			case WeaponId::TethzorokorSaberArray:
@@ -797,6 +798,12 @@ namespace hooks
 			{
 				// Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
 				data.attacker->heal_hp(damage_dealt, data.attacker);
+			} break;
+			case WeaponId::MortothrokorWickedIncisors:
+			{
+				// Mortothrokor Whetted Appetite
+				u32 percentage = attacker_ext->values[ValueMortothrokorStacks] * 0.05;
+				data.attacker->heal_hp(damage_dealt * percentage, data.attacker);
 			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{

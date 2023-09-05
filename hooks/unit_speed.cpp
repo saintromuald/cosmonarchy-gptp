@@ -200,14 +200,6 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergMortothrokor:
-			{
-				speed *= 1.3; // Hardcoded ideal movement speed
-				if (unit_ext->values[ValueMortothrokorStacks])
-				{
-					speed *= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);
-				}
-			} break;
 			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
@@ -267,6 +259,7 @@ namespace hooks
 				speed *= 1.25;
 			} break;
 			case UnitId::ProtossAmaranth:
+			case UnitId::ZergMortothrokor:
 			{
 				speed *= 1.4;
 			} break;
