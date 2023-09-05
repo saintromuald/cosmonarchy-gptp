@@ -321,8 +321,7 @@ namespace hooks {
 				u32 town_hall_id = UnitId::ZergHachirosk;
 				if (g_player_table[unit->player].race == RaceId::Terran) {
 					town_hall_id = UnitId::TerranMinistry;
-				}
-				else if (g_player_table[unit->player].race == RaceId::Protoss) {
+				} else if (g_player_table[unit->player].race == RaceId::Protoss) {
 					town_hall_id = UnitId::ProtossNexus;
 				}
 

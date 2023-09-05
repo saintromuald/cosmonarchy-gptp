@@ -306,8 +306,9 @@ namespace hooks {
 						{
 							animation = IscriptAnimation::Unused1;
 						} break;
-						case UnitId::ZergQuazilisk: // New mutation handling
-						case UnitId::ZergNathrokor: // New mutation handling
+						// New mutation handling! Everything will eventually use this. -Pr0nogo
+						case UnitId::ZergQuazilisk:
+						case UnitId::ZergNathrokor:
 						{
 							animation = IscriptAnimation::SpecialState1;
 						} break;
@@ -361,11 +362,13 @@ namespace hooks {
 				} else {
 					unit->energy = 0;
 				}
+
 				if (unit->id == UnitId::ZergDroleth
 				||  unit->id == UnitId::ZergOvileth)
 				{
 					helper::ai_training_unit(unit, unit);
 				}
+
 				helper::play_morphing_complete_sound(unit);
 				unit->build_queue[unit->build_queue_slot] = UnitId::None;
 				if (units_dat::construction_graphic[unit->id] != 0)

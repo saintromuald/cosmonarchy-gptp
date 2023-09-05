@@ -5,6 +5,7 @@
 #include "../SCBW/scbwdata.h"
 #include <algorithm>
 #include <cassert>
+#include "CMBW/cmbw_ids.h"
 
 // NOT FULLY REVALIDATED BY UNDEADSTAR
 
@@ -36,9 +37,7 @@ bool is_valid_psi_provider_type(u16 unit_id)
 	if (unit_id == UnitId::TerranEidolon
 	||  unit_id == UnitId::ZergNydusCesiant
 	||  unit_id == UnitId::TerranAnvil
-	||  unit_id == UnitId::ZergHachirosk
-	||  unit_id == UnitId::ZergCaphrolosk
-	||  unit_id == UnitId::ZergGathtelosk)
+	||  unit_id_is_zerg_production(unit_id))
 	{
 		return false;
 	}

@@ -76,8 +76,7 @@ namespace hooks {
 			{
 				helper::update_unit_strength(created_unit);
 			}
-			if (helper::spreads_creep(created_unit->id, 1)
-				|| units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding)
+			if (helper::spreads_creep(created_unit->id, 1) || units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding)
 			{
 				helper::apply_creep_at_location_from_unit_id(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
 			}
@@ -308,14 +307,14 @@ namespace hooks {
 				return unit;
 			} else {
 				const char* text  = "";
-				if ( *g_network_table > 0x11u ) {
+				if ( *g_network_table > 17 ) {
 					text = (char *)g_network_table + g_network_table[18];
 				}
 				const char* text2 = helper::get_unit_name_stat_string(unit->id);
 				char buffer[256] = {};
 				sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
 				helper::unit_placement_error(buffer, 3);
-				unit->user_action_flags |= 4u;
+				unit->user_action_flags |= UserActionFlags_HideUnit;
 				helper::orders_self_destructing(unit);
 			}
 		} else {

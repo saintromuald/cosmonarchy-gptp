@@ -1859,7 +1859,7 @@ namespace scbw {
 
 	void update_custom_creep_disappearance(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+		if (unit->id == UnitId::Omnivale || unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			helper::update_creep_disappearance_unit_id(UnitId::ZergGathtelosk, unit->position.x, unit->position.y, true);
 		}
 	}

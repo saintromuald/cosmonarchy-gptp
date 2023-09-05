@@ -72,7 +72,7 @@ namespace hooks
 		{
 			case UnitId::TerranMinistry:
 			case UnitId::ProtossNexus:
-			case UnitId::ZergHachirosk://lairs and hives are not required
+			case UnitId::ZergHachirosk: // advanced mutations are not required
 				return true;
 			default:
 				break;
@@ -82,7 +82,7 @@ namespace hooks
 
 	bool is_terran_supply(u16 unit_id, Unit* worker)
 	{
-		//worker is not used originally in regards of supply, but may be required for custom race support
+		// worker is not used originally in regards of supply, but may be required for custom race support
 		if (unit_id == UnitId::TerranSupplyDepot)
 		{
 			return true;
