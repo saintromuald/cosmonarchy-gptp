@@ -2318,7 +2318,7 @@ namespace hooks {
 			unit_search_filter(&masters, unit, 0, { UnitId::ProtossDemiurge });
 			unit_search_custom_filter(&masters, [=](Unit* master) {
 				Unit* demiurge = unit_ext->units[UnitDemiurge];
-				if (scbw::is_allied_to(master->player, demiurge->player)) {
+				if (demiurge && scbw::is_allied_to(master->player, demiurge->player)) {
 					return true;
 				}
 				return false;
