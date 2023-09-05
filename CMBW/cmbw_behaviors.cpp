@@ -137,21 +137,24 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 
 	Point16 pos = corpse->sprite->position;
 	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
-	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, pos);
+	ascend_in_area(player, pos, corpse_ext->sight_range_before_death);
+	consume_corpse(corpse);
+}
+
+void ascend_in_area(u32 player, Point16 position, u32 range) {
+	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, position);
 
 	EntryArray units = {};
-	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
+	unit_search_radial(&units, position, range);
 	for (u32 i = 0; i < units.count; ++i) {
 		Unit* unit = units.units[i];
-		if (scbw::is_allied_to(player, unit->player)) {
+		if (!scbw::is_allied_to(player, unit->player)) {
 			continue;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAscend] = 3 * 24;
 		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 	}
-
-	consume_corpse(corpse);
 }
 
 void avenge_or_ascend_corpse(Thingy* corpse, u32 player) {
@@ -256,4 +259,14 @@ void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
 	egg_ext->timers[TimerCustomEggHatch]    = time;
 	egg_ext->values[ValueCustomEggHatchMax] = time;
 	egg_ext->values[ValueCustomEggHpMax]    = hp;
+}
+
+void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
+	Unit* target = unit->order_target.unit;
+	if (unit->order_signal & 0x20 && unit->ground_weapon_cooldown <= 1) {
+		unit->order_signal &= ~0x20;
+		if (target && !(units_dat::base_property[target->id] & UnitProperty::Flyer) && unit->get_distance_to_target(target) <= 30) {
+			unit->play_iscript_animation(IscriptAnimation::SpecialState1);
+		}
+	}
 }

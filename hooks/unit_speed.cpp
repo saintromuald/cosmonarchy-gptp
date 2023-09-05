@@ -259,13 +259,13 @@ namespace hooks
 				speed *= 1.25;
 			} break;
 			case UnitId::ProtossAmaranth:
-			case UnitId::ZergMortothrokor:
 			{
 				speed *= 1.4;
 			} break;
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ProtossVagrantShade:
 			case UnitId::ZergAxitriliskWeaponless:
+			case UnitId::ZergMortothrokor:
 			case UnitId::ZergHydralisk:
 			{
 				speed *= 1.5;

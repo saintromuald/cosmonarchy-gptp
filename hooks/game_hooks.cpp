@@ -1780,13 +1780,11 @@ namespace hooks {
 			} break;
 			case UnitId::TerranOlympian:
 			{
-				Unit* target = unit->order_target.unit;
-				if (unit->order_signal & 0x20 && unit->ground_weapon_cooldown <= 1) {
-					unit->order_signal &= ~0x20;
-					if (target && !(units_dat::base_property[target->id] & UnitProperty::Flyer) && unit->get_distance_to_target(target) <= OlympianMeleeDistance) {
-						unit->play_iscript_animation(IscriptAnimation::SpecialState1);
-					}
-				}
+				fire_secondary_melee_weapon_if_needed(unit, WeaponId::OlympianTitansFist);
+			} break;
+			case UnitId::ProtossPotentate:
+			{
+				fire_secondary_melee_weapon_if_needed(unit, WeaponId::PotentatePhaseSaber);
 			} break;
 			case UnitId::ZergMatraleth:
 			case UnitId::InfestedKerriganExt:

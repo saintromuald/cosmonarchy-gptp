@@ -2228,6 +2228,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossPotentate:
+								{
+									if (current_button->icon_id == IconId::RechargeShields) // Potentate - Transcendent Tide
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossSycophant:
 								{
 									if (current_button->icon_id == IconId::RechargeShields) // Sycophant - Idolatry

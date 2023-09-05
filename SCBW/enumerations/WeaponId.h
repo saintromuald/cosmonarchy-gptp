@@ -254,6 +254,8 @@ namespace WeaponId {
 		SycophantSparringSaber				= 195,
 		EngramKhaydarinPlasmaLaser			= 197,
 		AnalogueCylindricalBlaster			= 202,
+		PotentateTalismanicWeaver			= 206,
+		PotentatePhaseSaber					= 207,
 
 		// Zerg \\
 					

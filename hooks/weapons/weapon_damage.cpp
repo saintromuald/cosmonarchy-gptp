@@ -466,8 +466,17 @@ namespace hooks
 				 apply_ensnare_internal(data.target, scbw::get_ensnare_factor(data.attacker));
 			}
 
-			if (data.weapon_id == WeaponId::MindTyrantTyranny) {
-				helper::mind_control_hit(data.attacker, data.target);
+			switch (data.weapon_id) {
+				case WeaponId::PotentatePhaseSaber:
+				{
+					if (!scbw::is_allied_to(data.target->player, data.attacker->player)) {
+						ascend_in_area(data.attacker->player, data.attacker->position, 4 * 32);
+					}
+				} break;
+				case WeaponId::MindTyrantTyranny:
+				{
+					helper::mind_control_hit(data.attacker, data.target);
+				} break;
 			}
 			// Ignore Carapace Swarm!
 			// END
