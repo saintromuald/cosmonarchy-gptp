@@ -2288,6 +2288,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossAtreus:
 								case UnitId::ProtossIdol:
 								case UnitId::ProtossAccantor:
 								case UnitId::ProtossEngram:

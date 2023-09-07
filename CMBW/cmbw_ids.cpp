@@ -446,6 +446,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 			return InterceptType_AirOnly;
 
 		case WeaponId::SirenCharybdalRifle:
+		case WeaponId::AtreusDauntlessDisruptorCannon:
 		case WeaponId::PatriarchIronhandWeaver:
 		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::IdolPrismaticBlaster:
