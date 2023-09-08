@@ -285,6 +285,13 @@ namespace hooks
 			if (unit->player < PlayerLimit) {
 				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
 			}
+		} else if (unit->kill_count) {
+			char* text = "";
+			if (g_stat_txt_buffer->get_string_count() > 763) {
+				text = (char*)g_stat_txt_buffer->get_string(764);
+			}
+			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
+			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
 		} else if (unit->player == *g_local_nation_id && !*g_is_in_replay) {
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->child_dialog;
@@ -294,13 +301,6 @@ namespace hooks
 			if (child) {
 				helper::hide_dialog(child);
 			}
-		} else if (unit->kill_count) {
-			char* text = "";
-			if (*g_stat_txt_tbl > 763) {
-				text = (char*)g_stat_txt_buffer->get_string(764);
-			}
-			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
-			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
 		} else {
 			BinDlg* other = helper::get_control_from_index(dialog, -21);
 			helper::hide_dialog(other);
