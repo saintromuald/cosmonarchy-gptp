@@ -103,7 +103,6 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::TerranParthenon:
 				case UnitId::TerranDiadem:
 				case UnitId::TerranWellbore:
 				case UnitId::TerranAtelier:
@@ -150,9 +149,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranTalos:
 				case UnitId::TerranArmistice:
-				case UnitId::TerranPythean:
 				{
 					return true;
 				} break;
@@ -172,6 +169,7 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
+				case UnitId::TerranTalos:
 				case UnitId::TerranMason:
 				{
 					return true;
@@ -457,6 +455,7 @@ namespace hooks {
 				case UnitId::TerranCentaur:
 				case UnitId::TerranMinotaur:
 				case UnitId::TerranMagnetar:
+				case UnitId::TerranPythean:
 				{
 					return true;
 				} break;
@@ -485,6 +484,7 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::ProtossScribe:
+				case UnitId::ProtossArtisan:
 				case UnitId::ProtossEnvoy:
 				case UnitId::ProtossWitness:
 				{
@@ -496,8 +496,6 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::ProtossArtisan:
-				case UnitId::ProtossClarion:
 				case UnitId::ProtossMonogram:
 				{
 					return true;
@@ -628,6 +626,7 @@ namespace hooks {
 			{
 				case UnitId::ProtossDemiurge:
 				case UnitId::ProtossEmpress:
+				case UnitId::ProtossClarion:
 				{
 					return true;
 				} break;
@@ -701,7 +700,6 @@ namespace hooks {
 					case UnitId::ProtossMatrix:
 					case UnitId::ProtossEmbassy:
 					case UnitId::ProtossCrucible:
-					case UnitId::ProtossStridentStratum:
 					case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:
@@ -840,7 +838,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergGosvileth)
 			{
-				if (TierUnlocked[RaceId::Zerg][Tier3])
+				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
 					return true;
 				}
@@ -1404,7 +1402,6 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::TerranParthenon:
 					case UnitId::TerranDiadem:
 					case UnitId::TerranWellbore:
 					case UnitId::TerranApothecary:
@@ -1479,6 +1476,7 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranMason:
+					case UnitId::TerranTalos:
 					{
 						return TECH_ACTIVE;
 					}
@@ -1543,9 +1541,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranTalos:
 					case UnitId::TerranArmistice:
-					case UnitId::TerranPythean:
 					{
 						if (in_air)
 						{
@@ -2077,6 +2073,7 @@ namespace hooks {
 					case UnitId::TerranCentaur:
 					case UnitId::TerranMinotaur:
 					case UnitId::TerranMagnetar:
+					case UnitId::TerranPythean:
 					{
 						if (in_air || is_adding_on)
 						{
@@ -2115,6 +2112,7 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::ProtossScribe:
+					case UnitId::ProtossArtisan:
 					case UnitId::ProtossEnvoy:
 					case UnitId::ProtossWitness:
 					{
@@ -2128,8 +2126,6 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ProtossArtisan:
-					case UnitId::ProtossClarion:
 					case UnitId::ProtossMonogram:
 					{
 						return TECH_ACTIVE;
@@ -2271,6 +2267,7 @@ namespace hooks {
 				{
 					case UnitId::ProtossDemiurge:
 					case UnitId::ProtossEmpress:
+					case UnitId::ProtossClarion:
 					{
 						return TECH_ACTIVE;
 					}
@@ -2352,7 +2349,6 @@ namespace hooks {
 					case UnitId::ProtossEmbassy:
 					case UnitId::ProtossMatrix:
 					case UnitId::ProtossCrucible:
-					case UnitId::ProtossStridentStratum:
 					case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
 					case UnitId::ProtossCenotaph:
@@ -2836,7 +2832,7 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ZergIroleth:
+					case UnitId::ZergGosvileth:
 					{
 						if (TierUnlocked[RaceId::Zerg][Tier2])
 						{
@@ -2844,9 +2840,9 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::ZergGosvileth:
+					case UnitId::ZergIroleth:
 					{
-						if (TierUnlocked[RaceId::Zerg][Tier3])
+						if (TierUnlocked[RaceId::Zerg][Tier2])
 						{
 							return TECH_ACTIVE;
 						}
@@ -2982,7 +2978,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Zerg][Tier3])
+						if (TierUnlocked[RaceId::Zerg][Tier2])
 						{
 							return TECH_ACTIVE;
 						}

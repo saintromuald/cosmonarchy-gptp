@@ -943,6 +943,18 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
+									case UnitId::TerranCentaur:
+									case UnitId::TerranMinotaur:
+									case UnitId::TerranMagnetar:
+									case UnitId::TerranPythean:
+									{
+										if (scbw::unit_queue_full(unit) || is_adding_on)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 									case UnitId::TerranHippogriff:
 									case UnitId::TerranPhobos:
 									{
@@ -1003,7 +1015,6 @@ namespace hooks {
 												current_button_state = Button_State::Disabled;
 											}
 										} break;
-										case UnitId::TerranParthenon:
 										case UnitId::TerranDiadem:
 										case UnitId::TerranWellbore:
 										case UnitId::TerranApothecary:
@@ -1099,9 +1110,7 @@ namespace hooks {
 							{
 								switch (current_button->requirement_var)
 								{
-									case UnitId::TerranTalos:
 									case UnitId::TerranArmistice:
-									case UnitId::TerranPythean:
 									{
 										if (unit->status & UnitStatus::GroundedBuilding)
 										{
@@ -1159,7 +1168,6 @@ namespace hooks {
 									case UnitId::ProtossEmbassy:
 									case UnitId::ProtossCrucible:
 									case UnitId::ProtossMatrix:
-									case UnitId::ProtossStridentStratum:
 									case UnitId::ProtossEngram:
 									case UnitId::ProtossGateway:
 									case UnitId::ProtossCenotaph:
@@ -1186,6 +1194,7 @@ namespace hooks {
 							case UnitId::ProtossEmbassy:
 							{
 								if (current_button->requirement_var == UnitId::ProtossScribe
+								||	current_button->requirement_var == UnitId::ProtossArtisan
 								||  current_button->requirement_var == UnitId::ProtossEnvoy
 								||  current_button->requirement_var == UnitId::ProtossWitness)
 								{
@@ -1196,9 +1205,7 @@ namespace hooks {
 							} break;
 							case UnitId::ProtossStridentStratum:
 							{
-								if (current_button->requirement_var == UnitId::ProtossArtisan
-								||  current_button->requirement_var == UnitId::ProtossClarion
-								||  current_button->requirement_var == UnitId::ProtossMonogram)
+								if (current_button->requirement_var == UnitId::ProtossMonogram)
 								{
 									current_button_state = Button_State::Enabled;
 								} else {
@@ -1460,19 +1467,19 @@ namespace hooks {
 							{
 								switch (current_button->requirement_var)
 								{
-									case UnitId::ZergIroleth:
+									case UnitId::ZergGosvileth:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
-										||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
-									case UnitId::ZergGosvileth:
+									case UnitId::ZergIroleth:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+										||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
