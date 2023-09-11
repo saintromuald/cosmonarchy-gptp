@@ -1469,7 +1469,8 @@ namespace hooks {
 								{
 									case UnitId::ZergGosvileth:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+										||	player_has_unit_id(unit->player, UnitId::ZergOthstolOviform))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {
