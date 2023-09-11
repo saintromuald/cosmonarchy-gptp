@@ -948,7 +948,7 @@ namespace hooks {
 									case UnitId::TerranMagnetar:
 									case UnitId::TerranPythean:
 									{
-										if (scbw::unit_queue_full(unit) || is_adding_on)
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air)
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -958,7 +958,7 @@ namespace hooks {
 									case UnitId::TerranHippogriff:
 									case UnitId::TerranPhobos:
 									{
-										if (scbw::unit_queue_full(unit) || is_adding_on)
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air)
 										{
 											current_button_state = Button_State::Invisible;
 										} else if (!scbw::all_selected_units_have_addon(UnitId::TerranHadron))
