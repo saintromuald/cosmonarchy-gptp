@@ -738,7 +738,7 @@ namespace hooks {
 			iquare_globals.reset();
 			init_ext_variables();
 
-			for (s32 i = 0; i < 8; i++) {
+			for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
 				scbw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
 			}
 
@@ -764,6 +764,15 @@ namespace hooks {
 			scbw::set_ingame_loop_state(true);
 			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
 			scbw::set_ingame_loop_state(false);
+
+			if (scbw::get_game_kind() == GameKind_Debug) {
+				for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+					g_game_minerals[i] = 999999;
+					g_total_minerals[i] = 999999;
+					g_game_vespene[i] = 999999;
+					g_total_vespene[i] = 999999;
+				}
+			}
 		}
 
 		if (!scbw::is_game_paused()) { // If the game is not paused

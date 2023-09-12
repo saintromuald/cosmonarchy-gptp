@@ -295,7 +295,7 @@ namespace hooks {
 		}
 
 		u32 result;
-		char worker_resource_type;
+		u8 worker_resource_type;
 		if (!unit_id_is_minerals(node_id)) {
 			bool ignore_completed = true;
 			if ((node->id == UnitId::TerranReservoir || node->id == UnitId::TerranWellbore)

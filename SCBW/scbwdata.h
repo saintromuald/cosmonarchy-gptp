@@ -458,7 +458,9 @@ SCBW_DATA(Point16*, g_attack_curve,					0x00513650);
 
 // For ai_progress_build
 SCBW_DATA(s32*,		g_game_minerals,				0x0057F0F0);
+SCBW_DATA(s32*,		g_total_minerals,				0x0057F180);
 SCBW_DATA(s32*,		g_game_vespene,					0x0057F120);
+SCBW_DATA(s32*,		g_total_vespene,				0x0057F150);
 SCBW_DATA(s32*,		g_ai_minerals_reserve,			0x006CA51C);
 SCBW_DATA(s32*,		g_ai_vespene_reserve,			0x006CA4EC);
 

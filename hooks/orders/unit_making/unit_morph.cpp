@@ -167,8 +167,8 @@ namespace hooks {
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (*g_cheat_state & CheatFlags::OperationCwal) {
-			unit->remaining_build_time -= 16;
+		if (scbw::get_game_kind() == GameKind_Debug) {
+			unit->remaining_build_time -= 32;
 		} else {
 			unit->remaining_build_time -= 1;
 		}

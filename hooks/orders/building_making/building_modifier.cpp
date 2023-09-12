@@ -22,6 +22,10 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 		modifier.multiplier *= 1 + 0.25 * building_ext->unit_vectors[UnitVectorCrucibles].size();
 	}
 
+	if (scbw::get_game_kind() == GameKind_Debug) {
+		modifier.multiplier *= 32;
+	}
+
 	// First time this is called in a frame, update the value
 	if (building_ext->building_tick_last_update != *g_elapsed_time_frames) {
 		building_ext->building_tick_progress += (modifier.multiplier - 1);
@@ -29,7 +33,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 	}
 	building_ext->building_tick_last_update = *g_elapsed_time_frames;
 
-	// DimensionalRecall the value to calculate the new one and return properly
+	// Recall the value to calculate the new one and return properly
 	building_ext->building_tick_progress = building_ext->building_tick_last_progress;
 	while (building_ext->building_tick_progress >= 1) {
 		building_ext->building_tick_progress -= 1;

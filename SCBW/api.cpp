@@ -3134,6 +3134,9 @@ namespace scbw {
 
 			case GameType::Omnipresence:
 				return GameKind_Omnipresence;
+
+			case GameType::Debug:
+				return GameKind_Debug;
 		}
 		return GameKind_Unsupported;
 	}

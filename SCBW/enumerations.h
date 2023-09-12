@@ -589,6 +589,7 @@ namespace GameType
 		CompetitiveMode = 30,
 		ScenarioMode = 31,
 		Omnipresence = 32,
+		Debug = 33,
 	};
 }
 

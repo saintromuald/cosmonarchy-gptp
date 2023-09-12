@@ -54,6 +54,7 @@ enum GameKind {
 	GameKind_CompetitiveMode,
 	GameKind_ScenarioMode,
 	GameKind_Omnipresence,
+	GameKind_Debug,
 	GameKind_Count,
 };
 
