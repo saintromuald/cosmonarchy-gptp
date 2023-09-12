@@ -493,7 +493,7 @@ namespace helper {
 	bool advance_remaining_build_time(Unit* unit);																					// 00466940
 	u8 delete_pathing(Unit* unit);																									// 0046A820
 	void order_immediate(Unit* unit, u8 order);																						// 00474B40
-	void play_morphing_complete_sound(Unit* unit);																					// 0048F440
+	void play_unit_ready_sound(Unit* unit);																					// 0048F440
 	void merge_status_into_unit(Unit* unit_dst, Unit* unit_src);																	// 00493180
 	void end_cloak(Unit* unit, u32 sound_id);			 																			// 0049B440
 	bool delayed_set_move_target_xy(Unit* unit, u16 x, u16 y);																		// 004EB960
@@ -1654,4 +1654,6 @@ namespace helper {
 	void orders_pickup_4(Unit* unit);					// 004E7B70
 	void orders_rescue_passive(Unit* unit);				// 004A1EF0
 	void set_kills_string_text(BinDlg* dialog);         // 00425DD0
+
+	void set_unit_hp(Unit* unit, u32 amount);			// 00467340
 }

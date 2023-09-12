@@ -1471,7 +1471,7 @@ namespace hooks {
 						helper::replace_unit_with_id(unit, morph_unit_id);
 						unit->set_hitpoints(units_dat::max_hitpoints[morph_unit_id] * hp_factor);
 						scbw::give_ai_ex(unit);
-						helper::play_morphing_complete_sound(unit);
+						helper::play_unit_ready_sound(unit);
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 						helper::init_building(unit, 1);
 						unit_ext->values[ValueSpecialSovrolethBirth] = morph_unit_id == UnitId::ZergSovroleth;

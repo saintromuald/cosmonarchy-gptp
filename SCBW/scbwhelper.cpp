@@ -1103,11 +1103,11 @@ namespace helper {
 	}
 
 	void update_unit_stats_and_finish_building(Unit* unit) {
-		const u32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
+		const u32 func_address = 0x004A01F0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_updateUnitStatsFinishBuilding
+			CALL func_address
 			POPAD
 		}
 	}
@@ -3880,12 +3880,12 @@ namespace helper {
 		}
 	}
 
-	void play_morphing_complete_sound(Unit* unit) {
-		const u32 Func_PlayMorphingCompleteSound = 0x0048F440;
+	void play_unit_ready_sound(Unit* unit) {
+		const u32 func_address = 0x0048F440;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_PlayMorphingCompleteSound
+			CALL func_address
 			POPAD
 		}
 	}
@@ -14157,6 +14157,18 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV EBX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void set_unit_hp(Unit* unit, u32 amount)
+	{
+		const u32 func_address = 0x00467340;
+		__asm {
+			PUSHAD
+			MOV ECX, amount
+			MOV EAX, unit
 			CALL func_address
 			POPAD
 		}

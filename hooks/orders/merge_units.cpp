@@ -114,7 +114,7 @@ namespace hooks
 				*someDialogUnknown = nullptr;
 				*someDialogUnknownUser = nullptr;
 
-				helper::play_morphing_complete_sound(unit);
+				helper::play_unit_ready_sound(unit);
 				unit->order(units_dat::human_idle_order[unit->id], 0, 0, nullptr, UnitId::None, 0);
 				helper::force_order_done(unit);
 				if (unit->id == UnitId::ProtossAugur)

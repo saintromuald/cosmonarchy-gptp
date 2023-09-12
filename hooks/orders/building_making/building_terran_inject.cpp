@@ -159,6 +159,32 @@ namespace
 		}
 	}
 
+	void __declspec(naked) building_addon_wrapper() { // 004679A0
+		static b32 result;
+		static Unit* unit;
+		static u32 hp_gain;
+		static b32 is_incomplete;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV is_incomplete, EAX
+			POP EAX
+			MOV hp_gain, EDX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::building_addon(unit, hp_gain, is_incomplete);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	const u32 orders_place_addon_E6891 = 0x004E6B91;
 	void __declspec(naked) orders_place_addon_patch() {
 		__asm {
@@ -222,6 +248,7 @@ namespace hooks
 	//	jump_patch(orders_place_addon_wrapper,				0x004E6880, 1); // bugged, patched instead
 		jump_patch(unit_is_geyser_wrapper,					0x004688B0, 2);
 	//	jump_patch(is_constructing_addon_wrapper,			0x004E66B0, 2); // Probably fine, but not necessary
+		jump_patch(building_addon_wrapper,					0x004679A0,	1);
 
 		jump_patch(orders_place_addon_patch,				0x004E6B8B, 1);
 		call_patch(complete_addon_patch,					0x00463D69, 0);

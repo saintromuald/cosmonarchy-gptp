@@ -168,7 +168,11 @@ namespace hooks {
 			return 1;
 		}
 		if (scbw::get_game_kind() == GameKind_Debug) {
-			unit->remaining_build_time -= 32;
+			if (unit->remaining_build_time < 32) {
+				unit->remaining_build_time = 0;
+			} else {
+				unit->remaining_build_time -= 32;
+			}
 		} else {
 			unit->remaining_build_time -= 1;
 		}
@@ -369,7 +373,7 @@ namespace hooks {
 					helper::ai_training_unit(unit, unit);
 				}
 
-				helper::play_morphing_complete_sound(unit);
+				helper::play_unit_ready_sound(unit);
 				unit->build_queue[unit->build_queue_slot] = UnitId::None;
 				if (units_dat::construction_graphic[unit->id] != 0)
 				{

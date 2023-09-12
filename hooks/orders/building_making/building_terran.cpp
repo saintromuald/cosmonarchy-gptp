@@ -559,4 +559,52 @@ namespace hooks
 		}
 		return result;
 	}
+
+	// Hooked to modify addon construction speed based on building modifier (for e.g. Crucible speed boosts) -Pr0nogo
+	b32 building_addon(Unit* unit, u32 hp_gain, b32 is_incomplete) // 004679A0
+	{
+		helper::set_unit_hp(unit, hp_gain + unit->hitpoints);
+		u32 build_time = unit->remaining_build_time;
+		if (build_time)
+		{
+			BuildingModifier modifier = get_building_modifier(unit, unit->connected_unit, true);
+			if (modifier.decrease) {
+				if (unit->remaining_build_time > modifier.decrease) {
+					unit->remaining_build_time -= modifier.decrease;
+				} else {
+					unit->remaining_build_time = 0;
+				}
+			}
+			return 1;
+		}
+
+		if (!is_incomplete)
+		{
+			helper::update_unit_stats_and_finish_building(unit);
+			goto finish;
+		}
+		helper::update_unit_stats_and_finish_building(unit);
+
+		b32 result = helper::show_finished_unit(unit);
+		if (result)
+		{
+		finish:
+			helper::update_unit_strength_and_apply_default_orders(unit);
+			if (!(unit->status & UnitStatus::GroundedBuilding))
+			{
+				helper::play_unit_ready_sound(unit);
+				return 1;
+			}
+			if (units_dat::group_flags[unit->id].is_terran)
+			{
+				Unit* parent = helper::connect_addon_check(unit);
+				if (parent)
+				{
+					helper::complete_addon(parent, unit);
+				}
+			}
+			return 1;
+		}
+		return result;
+	}
 }

@@ -3276,9 +3276,9 @@ namespace scbw {
 				} break;
 				case AdvisorEvent_TechUpComplete: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_ZAdUpd06_WAV;
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd06_WAV;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd06_WAV;
+						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_ZAdUpd06_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
 					} 
 				} break;
