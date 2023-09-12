@@ -42,6 +42,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "selection_extender.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/weapons/weapon_damage.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -2063,6 +2064,10 @@ namespace hooks {
 							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
 						}
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						hooks::unit_attack_notify(unit);
+						if (bullet->source_unit) {
+							scbw::reveal_attacker(bullet->source_unit, unit);
+						}
 
 						if (unit->energy < 1 * 256) {
 							break;

@@ -1049,7 +1049,7 @@ namespace hooks {
 								{
 									case UnitId::TerranMason:
 									{
-										if (unit->status & UnitStatus::GroundedBuilding)
+										if (unit->status & UnitStatus::GroundedBuilding && !is_adding_on)
 										{
 											current_button_state = Button_State::Enabled;
 										} else {

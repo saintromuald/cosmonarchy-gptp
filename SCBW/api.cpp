@@ -3412,4 +3412,15 @@ namespace scbw {
 
 		scbw::draw_shape(20, ((float)(radius << 5)) / 256.0F, offset, color);
 	}
+
+	void reveal_attacker(Unit* attacker, Unit* victim)
+	{
+		u32 flags = 1 << victim->player;
+		for (u32 i = 0; i < PlayerLimit; ++i) {
+			if (scbw::is_vision_allied_to(victim->player, i)) {
+				flags |= 1 << i;
+			}
+		}
+		helper::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
+	}
 }

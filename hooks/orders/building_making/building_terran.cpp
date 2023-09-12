@@ -186,6 +186,7 @@ namespace hooks
 					built_unit->remaining_build_time -= modifier.decrease;
 				} else {
 					built_unit->remaining_build_time = 0;
+					helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
 				}
 			}
 
@@ -573,7 +574,12 @@ namespace hooks
 					unit->remaining_build_time -= modifier.decrease;
 				} else {
 					unit->remaining_build_time = 0;
+					if (scbw::get_game_kind() == GameKind_Debug) {
+						helper::set_unit_hp(unit, unit->get_max_hp_raw());
+					}
 				}
+			} else {
+				unit->remaining_build_time -= 1;
 			}
 			return 1;
 		}

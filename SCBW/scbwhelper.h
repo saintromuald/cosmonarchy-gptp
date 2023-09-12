@@ -1655,5 +1655,6 @@ namespace helper {
 	void orders_rescue_passive(Unit* unit);				// 004A1EF0
 	void set_kills_string_text(BinDlg* dialog);         // 00425DD0
 
-	void set_unit_hp(Unit* unit, u32 amount);			// 00467340
+	void set_unit_hp(Unit* unit, u32 amount);					// 00467340
+	s32 unit_movement_another_path(Unit* unit, Point16 dest);	// 0042FE00
 }

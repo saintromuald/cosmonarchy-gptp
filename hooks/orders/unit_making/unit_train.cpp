@@ -112,9 +112,12 @@ namespace hooks {
 							built_unit->remaining_build_time -= modifier.decrease;
 						} else {
 							built_unit->remaining_build_time = 0;
+							if (scbw::get_game_kind() == GameKind_Debug) {
+								helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
+							}
 						}
 					}
-					if (extra_build || helper::progress_build(built_unit, hp_gain, TRUE)) {
+					if (extra_build || helper::progress_build(built_unit, hp_gain, true)) {
 						if (built_unit->status & UnitStatus::Completed) {
 							u32 count = 1;
 							Unit* built_units[2] = {built_unit, 0};

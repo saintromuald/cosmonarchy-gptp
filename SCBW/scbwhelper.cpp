@@ -14173,4 +14173,19 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	s32 unit_movement_another_path(Unit* unit, Point16 dest)
+	{
+		const u32 func_address = 0x0042FE00;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH dest
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

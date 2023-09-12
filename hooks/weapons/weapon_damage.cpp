@@ -188,6 +188,8 @@ namespace hooks
 						scbw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						unit_attack_notify(unit);
+						scbw::reveal_attacker(data.attacker, unit);
 						return;
 					}
 				}
@@ -1118,13 +1120,7 @@ namespace hooks
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
 				if (reveal && attacker->sprite) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
-						u32 flags = 1 << victim->player;
-						for (u32 i = 0; i < PlayerLimit; ++i) {
-							if (scbw::is_vision_allied_to(victim->player, i)) {
-								flags |= 1 << i;
-							}
-						}
-						helper::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
+						scbw::reveal_attacker(attacker, victim);
 					}
 				}
 				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo

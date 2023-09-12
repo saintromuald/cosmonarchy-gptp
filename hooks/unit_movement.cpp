@@ -98,4 +98,30 @@ namespace hooks
 
 		return colliding_unit->main_order_id == OrderId::CanEnterGasMine;
 	}
+
+	// Hooked to investigate crashes -Pr0nogo
+	s32 unit_movement_start_path(Unit* unit) // 0046BD90
+	{
+		if (!unit) {
+			return 0;
+		}
+		s32 result = helper::unit_movement_another_path(unit, unit->move_target.pt);
+		if (result)
+		{
+			u8 action_flags = unit->user_action_flags;
+			if (action_flags & UserActionFlags_UMStartPath
+			&& (unit->user_action_flags = action_flags & 0xFD, unit->flingy_movement_type == MovementType_Iscript))
+			{
+				unit->path->collision_recheck_timer = 2;
+				unit->movement_state = UnitMovement_UIOrderDelay;
+				result = 1;
+			} else {
+				unit->movement_state = UnitMovement_FollowPath;
+				result = 1;
+			}
+		} else {
+			unit->movement_state = UnitMovement_FailedPath;
+		}
+		return result;
+	}
 }

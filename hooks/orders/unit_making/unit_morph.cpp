@@ -170,6 +170,7 @@ namespace hooks {
 		if (scbw::get_game_kind() == GameKind_Debug) {
 			if (unit->remaining_build_time < 32) {
 				unit->remaining_build_time = 0;
+				helper::set_unit_hp(unit, unit->get_max_hp_raw());
 			} else {
 				unit->remaining_build_time -= 32;
 			}

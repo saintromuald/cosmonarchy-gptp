@@ -782,4 +782,5 @@ namespace scbw
 	void draw_shape (u32 i_0, float scale, Point32* offset, u8 color);
 	void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color);
 	void draw_aura_range(Unit* unit, u16 radius, u8 color);
+	void reveal_attacker(Unit* attacker, Unit* victim);
 }
