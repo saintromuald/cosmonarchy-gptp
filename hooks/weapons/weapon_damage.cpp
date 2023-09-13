@@ -70,8 +70,6 @@ namespace hooks
 		}
 	}
 
-	static bool ignore_alert;
-
 	// Hooked to fix one-shots not notifying owners. -Pr0nogo
 	void unit_attack_notify(Unit* unit) { // 0048F230
 		if (!ignore_alert) {
@@ -188,7 +186,9 @@ namespace hooks
 						scbw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						ignore_alert = true;
 						unit_attack_notify(unit);
+						ignore_alert = false;
 						scbw::reveal_attacker(data.attacker, unit);
 						return;
 					}

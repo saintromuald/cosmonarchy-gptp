@@ -2055,6 +2055,13 @@ namespace hooks {
 						}
 
 						// Redirect
+						ignore_alert = true;
+						hooks::unit_attack_notify(unit);
+						ignore_alert = false;
+						if (bullet->source_unit) {
+							scbw::reveal_attacker(bullet->source_unit, unit);
+						}
+
 						if (target) {
 							scbw::create_shield_overlay(target, bullet->current_direction_1);
 						}
@@ -2065,10 +2072,6 @@ namespace hooks {
 							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
 						}
 						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
-						hooks::unit_attack_notify(unit);
-						if (bullet->source_unit) {
-							scbw::reveal_attacker(bullet->source_unit, unit);
-						}
 
 						if (unit->energy < 1 * 256) {
 							break;

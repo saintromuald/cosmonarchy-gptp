@@ -308,6 +308,7 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
+		bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 		const u16 label_id = upgrades_dat::label[units_dat::armor_upgrade[unit->id]];
 		const char* armor_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);
@@ -520,6 +521,9 @@ namespace hooks
 			}
 			text += "\nTurn Rate: " + turn_rate;
 			text += "\nSight Range: " + std::to_string(sight_range);
+		//	if ((scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+		//		scbw::draw_weapon_range(unit, sight_range, 255);
+		//	}
 			if (transport_space != 255) {
 				text += "\nTransport Space: " + std::to_string(transport_space);
 			}
