@@ -559,8 +559,9 @@ namespace hooks {
 			&& (scbw::is_allied_to(*g_local_nation_id, unit->player) || in_replay_or_witness))
 			{
 				Point16 target = get_target_point(unit->rally);
-				if (target.x == unit->position.x &&
-					target.y == unit->position.y) {
+				if (target.x == unit->position.x && target.y == unit->position.y
+				||	(unit->rally.unit && !helper::is_target_visible(unit, unit->rally.unit)))
+				{
 					target.x = 0;
 					target.y = 0;
 				}
