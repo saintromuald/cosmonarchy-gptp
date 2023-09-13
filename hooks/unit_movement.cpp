@@ -102,9 +102,6 @@ namespace hooks
 	// Hooked to investigate crashes -Pr0nogo
 	s32 unit_movement_start_path(Unit* unit) // 0046BD90
 	{
-		if (!unit) {
-			return 0;
-		}
 		s32 result = helper::unit_movement_another_path(unit, unit->move_target.pt);
 		if (result)
 		{
@@ -112,6 +109,9 @@ namespace hooks
 			if (action_flags & UserActionFlags_UMStartPath
 			&& (unit->user_action_flags = action_flags & 0xFD, unit->flingy_movement_type == MovementType_Iscript))
 			{
+				if (!unit->path) {
+					return 0;
+				}
 				unit->path->collision_recheck_timer = 2;
 				unit->movement_state = UnitMovement_UIOrderDelay;
 				result = 1;
