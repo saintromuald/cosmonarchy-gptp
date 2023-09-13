@@ -12,7 +12,6 @@ namespace hooks
 		{
 			case UnitId::TerranSavant:
 			case UnitId::TerranPhobos:
-			case UnitId::ProtossAnalogue:
 			{
 				energy = 100;
 			} break;
@@ -20,6 +19,7 @@ namespace hooks
 			case UnitId::TerranAncile:
 			case UnitId::TerranLuminary:
 			case UnitId::ProtossCantavis:
+			case UnitId::ProtossAnalogue:
 			{
 				energy = 150;
 			} break;
