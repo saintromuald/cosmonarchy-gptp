@@ -1563,5 +1563,8 @@ namespace SoundId
 		MeskAdvisor_Tech01					= 2514,
 		MeskAdvisor_Tech02					= 2515,
 		MeskAdvisor_Warp01					= 2516,
+
+		ClaymoreWeaponHit01					= 2521,
+		ClaymoreWeaponHit02					= 2522,
 	};
 }

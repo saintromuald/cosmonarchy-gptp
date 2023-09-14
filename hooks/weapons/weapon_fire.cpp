@@ -671,6 +671,7 @@ namespace hooks {
 				// pierce targets
 				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				helper::play_sound_from_unit(scbw::rand_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02), target, 1, 0);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 
 				// slow pierced targets
