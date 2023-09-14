@@ -1274,7 +1274,7 @@ namespace hooks {
 				if (!unit_ext->timers[TimerVilgolethTimedLife]) {
 					unit_ext->timers[TimerVilgolethTimedLife] = 10 * 24;
 				} else if (unit_ext->timers[TimerVilgolethTimedLife] == 1) {
-					iquare_globals.create_effect(EffectId_VilgolethHeal, 5 * 24, unit->position, 3 * 32, SpriteId::KeskathalorMissileImpact, unit->sprite->elevation + 1, unit->player, unit);
+				//	iquare_globals.create_effect(EffectId_VilgolethHeal, 5 * 24, unit->position, 3 * 32, SpriteId::KeskathalorMissileImpact, unit->sprite->elevation + 1, unit->player, unit);
 					unit->remove();
 				}
 			} break;
