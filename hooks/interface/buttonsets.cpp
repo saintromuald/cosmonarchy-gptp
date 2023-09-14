@@ -2573,8 +2573,7 @@ namespace hooks {
 								} break;
 								case UnitId::ZergVilgoleth:
 								{
-									if (current_button->icon_id == IconId::SuicideScourge		// Vilgoleth - Host Autophagy
-									||	current_button->icon_id == IconId::PneumatizedCaparace)	// Vilgoleth - Corpse Autophagy
+									if (current_button->icon_id == IconId::PneumatizedCaparace)	// Vilgoleth - Corpse Autophagy
 									{
 										current_button_state = Button_State::Enabled;
 									}
