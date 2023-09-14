@@ -91,6 +91,20 @@ namespace {
 			JMP		perform_orders_E9E67
 		}
 	}
+
+	const u32 setUnitStatTxtErrorMsg_8CCB9 = 0x0048CCB9;
+	void __declspec(naked) set_unit_stat_txt_error_message_patch_8CCB4() {
+		__asm {
+			MOV        ECX, ds: [0x006D0F14]//g_is_in_replay
+			TEST    ECX, ECX
+			JNE        offset is_in_replay
+			PUSH    218
+			JMP        setUnitStatTxtErrorMsg_8CCB9
+
+			is_in_replay :
+			RET
+		}
+	}
 }
 
 namespace hooks {
@@ -102,6 +116,7 @@ namespace hooks {
 		jump_patch(orders_stay_in_range_wrapper,	0x0047C4F0,	0);
 		jump_patch(partial_order_handling_wrapper,	0x004EBED0,	5);
 
-		jump_patch(perform_orders_patch_E9E61,		0x004E9E61, 1);
+		jump_patch(perform_orders_patch_E9E61,					0x004E9E61, 1);	
+		jump_patch(set_unit_stat_txt_error_message_patch_8CCB4,	0x0048CCB4);	// Prevents "unit's waypoint list is full" in replays. -DF
 	}
 }
