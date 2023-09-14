@@ -3025,11 +3025,12 @@ namespace scbw {
 	void regress(Unit* unit, u32 regression_id) {
 		bool fatal_deal_damage = true;
 		helper::cancel_unit(unit);
-		// We first cancel any on-going morphs, that could technically delete the unit, but that shound't happen for current unit id cases
+		// We first cancel any on-going morphs, that could technically delete the unit, but that shouldn't happen for current unit id cases
 		// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 		if (unit) {
 			bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
 			is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+			u32 old_id = unit->id;
 			u32 regress_to = regression_id;
 			if (!is_building) {
 				regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
@@ -3060,7 +3061,11 @@ namespace scbw {
 				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
 			unit->sprite->create_overlay(effect_image_id);
-			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+			u32 sound_id = get_death_sfx_id(old_id);
+			if (!sound_id) {
+				sound_id = SoundId::Zerg_Bldg_ZBldgDth_WAV;
+			}
+			helper::play_sound_from_unit(sound_id, unit, true, 0);
 		}
 	}
 

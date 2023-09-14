@@ -974,3 +974,26 @@ bool weapon_id_bounces_caustic_fission(u32 weapon_id) {
 	return weapon_id == WeaponId::BactaliskCorrosiveAcid
 		|| weapon_id == WeaponId::AlkajeliskPlasmidSpores;
 }
+
+u32 get_death_sfx_id(u32 unit_id)
+{
+	switch (unit_id) {
+		case UnitId::ZergGosvileth:		return SoundId::Zerg_DRONE_ZDrDth00_WAV;
+		case UnitId::ZergIroleth:		return SoundId::Zerg_OVERLORD_ZOvDth00_WAV;
+		case UnitId::ZergVorvrokor:		return SoundId::VorvrokorDeath01;
+		case UnitId::ZergLiiralisk:		return SoundId::Zerg_Hydra_ZHyDth00_WAV;
+		case UnitId::ZergKalkalisk:		return SoundId::Zerg_Mutalid_ZMuDth00_WAV;
+		case UnitId::ZergGhitorokor:	return SoundId::Zerg_Hydra_ZHyDth00_WAV;
+		case UnitId::ZergTosgrilisk:	return SoundId::Zerg_Mutalid_ZMuDth00_WAV;
+		case UnitId::ZergBactalisk:		return SoundId::BactaliskDeath01;
+		case UnitId::ZergTethzorokor:	return SoundId::Zerg_Ultra_ZUlDth00_WAV;
+		case UnitId::ZergVithrilisk:	return SoundId::Zerg_Devourer_ZDvDth00_WAV;
+		case UnitId::ZergAlkajelisk:	return SoundId::Zerg_Guardian_ZGuDth00_WAV;
+		case UnitId::ZergUltrokor:		return SoundId::Zerg_Ultra_ZUlDth00_WAV;
+		case UnitId::ZergZarcavrokor:	return SoundId::Zerg_Guardian_ZGuDth00_WAV;
+		case UnitId::ZergTetcaerokor:	return SoundId::Zerg_Hydra_ZHyDth00_WAV;
+		case UnitId::ZergAkistrokor:	return SoundId::Zerg_Queen_ZQuDth00_WAV;
+
+		default:						return SoundId::No_sound;
+	}
+}

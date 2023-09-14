@@ -79,3 +79,4 @@ bool weapon_id_is_line_attack(u32 weapon_id);
 u32 get_splash_width_from_weapon_id(u32 weapon_id);
 u32 get_splash_height_from_weapon_id(u32 weapon_id);
 bool weapon_id_bounces_caustic_fission(u32 weapon_id);
+u32 get_death_sfx_id(u32 unit_id);

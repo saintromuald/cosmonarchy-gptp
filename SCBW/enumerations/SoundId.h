@@ -1166,6 +1166,8 @@ namespace SoundId
 		AncilePassiveProc02					= 1155,
 		AncilePassiveProc03					= 1156,
 
+		VorvrokorDeath01					= 1160,
+
 		ZealotRevive01						= 1187,
 
 		CentaurSunchaserMissilesFire01		= 1204,
@@ -1200,6 +1202,11 @@ namespace SoundId
 		ArchitectWeaponSplit01				= 1416,
 		DemiurgeWorship01					= 1417,
 		SirenTertiaryEyesCast01				= 1459,
+
+		IzirokorDeath01						= 1506,
+
+		SkithrokorDeath01					= 1536,
+
 		OlympianMythicalMight01				= 1576,
 		AnthelionMoveCharge01				= 1589,
 		AnthelionMoveCharge02				= 1590,
@@ -1566,5 +1573,8 @@ namespace SoundId
 
 		ClaymoreWeaponHit01					= 2521,
 		ClaymoreWeaponHit02					= 2522,
+
+		BactaliskDeath01					= 2539,
+
 	};
 }
