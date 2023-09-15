@@ -265,7 +265,9 @@ namespace hooks
 				}
 			}
 			armor_total = std::max(armor_total, 0);
-			data.damage -= std::min(data.damage, armor_total * 256);
+			if (data.weapon_id != WeaponId::PsiStorm) {
+				data.damage -= std::min(data.damage, armor_total * 256);
+			}
 		}
 
 		// Reduce shields

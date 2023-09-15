@@ -140,10 +140,10 @@ namespace hooks {
 		s16 r = weapons_dat::outer_splash_radius[weapon_id];
 
 		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 
-		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++) {
-			Unit* target = unitsInSplash.get_unit(i);
+		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
+			Unit* target = units_in_splash.get_unit(i);
 
 			// Units can't splash themselves
 			if (target == bullet->source_unit) continue;
