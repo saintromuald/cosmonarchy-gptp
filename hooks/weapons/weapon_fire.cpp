@@ -1058,7 +1058,6 @@ namespace hooks {
 	{
 		Unit* bounce_source = *g_bullet_bounce_missile_source;
 		s32 bounce_source_status = (*g_bullet_bounce_missile_source)->status;
-		Unit* target_var = target;
 
 		// Previously disallowed bouncing if unit was disabled
 		if (!target)
@@ -1079,47 +1078,45 @@ namespace hooks {
 		}
 
 		Unit* bounce_source_unit = bounce_source;
-		if (!bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
+		if (bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
 		{
 			bounce_source_unit = bounce_source->subunit;
 		}
 		if (!(helper::unit_is_carrier(bounce_source)))
 		{
-			bool misc;
+			bool is_valid = true;
 			if (helper::unit_is_reaver(bounce_source))
 			{
-				if (target_var->status & UnitStatus::InAir)
+				if (target->status & UnitStatus::InAir)
 				{
 					return 0;
 				}
-				misc = helper::unit_has_path_to_target(bounce_source, target_var);
+				is_valid = helper::unit_has_path_to_target(bounce_source, target);
 			} else {
 				if (helper::unit_can_infest(bounce_source))
 				{
-					misc = helper::can_be_infested(0, target_var) != 0; // First arg is stupid?
+					is_valid = helper::can_be_infested(0, target) != 0; // First arg is stupid?
 				} else {
-					if (target_var->status & UnitStatus::InAir)
+					if (target->status & UnitStatus::InAir)
 					{
-						misc = units_dat::air_weapon[(u16)bounce_source_unit->id] != WeaponId::None;
+						is_valid = units_dat::air_weapon[bounce_source_unit->id] != WeaponId::None;
 					} else {
-						misc = units_dat::ground_weapon[(u16)bounce_source_unit->id] != WeaponId::None;
+						is_valid = units_dat::ground_weapon[bounce_source_unit->id] != WeaponId::None;
 					}
 				}
 			}
-			if (!misc)
+			if (!is_valid)
 			{
 				return 0;
 			}
 		}
 
-		s32 status = target_var->status;
-		if (status & 0x300 && !((1 << bounce_source->player) & target_var->detection_status))
-		{
+		if (helper::unit_can_see_cloaked_target(target, bounce_source)) {
 			return 0;
 		}
 
-		s8 player = target_var->player == 11 ? target_var->sprite->player : target_var->player;
-		if (player_alliance[bounce_source->player].flags[player] || *g_bullet_bounce_missile_target == target_var)
+		u8 target_player = target->player == 11 ? target->sprite->player : target->player;
+		if (scbw::is_allied_to(bounce_source->player, target_player) || *g_bullet_bounce_missile_target == target)
 		{
 			return 0;
 		}
@@ -1127,18 +1124,18 @@ namespace hooks {
 		// Gladius Binding Plasma behavior
 		if (iquare_globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
-			if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target_var->sprite)
+			if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite)
 			{
-				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target_var))
+				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target))
 				{
 					return false;
 				} else {
-					iquare_globals.add_bullet_multihit(iquare_globals.bounce_bullet, target_var);
-					return *g_bullet_bounce_missile_next != target_var;
+					iquare_globals.add_bullet_multihit(iquare_globals.bounce_bullet, target);
+					return *g_bullet_bounce_missile_next != target;
 				}
 			}
 		}
-		return *g_bullet_bounce_missile_next != target_var;
+		return *g_bullet_bounce_missile_next != target;
 	}
 
 	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
