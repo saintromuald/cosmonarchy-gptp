@@ -159,7 +159,7 @@ namespace
 			return;
 		}
 
-		if (scbw::is_conventional_unit_morph_source(unit->id, false, false)
+		if (scbw::is_conventional_unit_morph_source(unit->id, false)
 		||	scbw::is_conventional_unit_morph_result(unit->id))
 		{
 			return;

@@ -62,7 +62,7 @@ namespace scbw
 {
 	bool is_any_morph_result(u16 id);
 	bool is_conventional_unit_morph_result(u16 id);
-	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false, bool allow_high_templar = false);
+	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false);
 	bool is_zerg_building_morph_result(u16 id);
 	bool is_zerg_building_morph_source(u16 id);
 	bool is_larval_egg(Unit* unit);

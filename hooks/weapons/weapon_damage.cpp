@@ -834,28 +834,6 @@ namespace hooks
 				fatal_deal_damage = false;
 				data.target->set_hitpoints(256);
 			} break;
-			case WeaponId::PsiStorm: {
-				// Cantavis - Ascendancy
-				if (data.attacker && (data.attacker->status & UnitStatus::IsHallucination)) {
-					scbw::UnitFinder(
-						data.target->get_x() - 288,
-						data.target->get_y() - 288,
-						data.target->get_x() + 288,
-						data.target->get_y() + 288
-					).for_each([&](Unit* unit) {
-						if (unit->id != UnitId::ProtossCantavis) {
-							return;
-						}
-						if (unit->is_frozen()) {
-							return;
-						}
-						if (unit->energy != unit->get_max_energy()) {
-							unit->heal_energy(5 * 256);
-							helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-						}
-					});
-				}
-			} break;
 		}
 
 		// Empress - Anodyne Annex - zombify target

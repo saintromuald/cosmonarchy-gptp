@@ -497,7 +497,7 @@ namespace scbw {
 		return false;
 	}
 
-	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae, bool allow_high_templar) {
+	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
 		switch (id) {
 			case UnitId::ZergDroleth:
 			case UnitId::ZergOvileth:
@@ -529,9 +529,6 @@ namespace scbw {
 			{
 				return true; 
 			}
-		}
-		if (id == UnitId::ProtossCantavis && allow_high_templar) {
-			return true;
 		}
 		if ((id == UnitId::ZergLarva || id == UnitId::ZergOcsalLarva) && allow_larvae) {
 			return true;

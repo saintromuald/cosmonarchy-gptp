@@ -188,7 +188,7 @@ namespace hooks {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->main_order_state == 0)
 		{
-			if (scbw::is_conventional_unit_morph_source(unit->id, true, true))
+			if (scbw::is_conventional_unit_morph_source(unit->id, true))
 			{
 				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1))
 				{
