@@ -395,10 +395,11 @@ struct BulletExt {
 	Point16 bullet_source;
 	u32 distance_traveled;
 	u32 time_traveled;
-	u32 divisor_overwrite;
+	u32 divisor_multiplier = 1;
 	u32 current_z_displacement;
 	bool bounced;
 	bool is_phantom;
+	bool did_pierce;
 };
 
 struct SpriteExt {
