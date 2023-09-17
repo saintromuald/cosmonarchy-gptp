@@ -3173,6 +3173,9 @@ namespace hooks {
 
 		weapon_damage_current_bullet = 0;
 
+		graphics::reset_all_graphics();
+		graphics::reset_stat_res_graphics();
+
 		init_threshold();
 		if (!grp_wire_Font) {
 			init_grp_wire_font("font_wire");
