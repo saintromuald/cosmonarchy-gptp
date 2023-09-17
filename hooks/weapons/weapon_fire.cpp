@@ -611,6 +611,9 @@ namespace hooks {
 				if (unit->status & UnitStatus::InAir) {
 					continue;
 				}
+				if (unit->status & UnitStatus::Burrowed && !helper::unit_can_see_cloaked_target(unit, bullet->source_unit)) {
+			//		continue;
+				}
 			} else if (intercept_type == InterceptType_AirOnly) {
 				if (!(unit->status & UnitStatus::InAir)) {
 					continue;
@@ -1123,8 +1126,8 @@ namespace hooks {
 			return 0;
 		}
 
-		u8 target_player = target->player == 11 ? target->sprite->player : target->player;
-		if (scbw::is_allied_to(bounce_source->player, target_player) || *g_bullet_bounce_missile_target == target)
+		u8 player = target->player == 11 ? target->sprite->player : target->player;
+		if (scbw::is_allied_to(bounce_source->player, player) || *g_bullet_bounce_missile_target == target)
 		{
 			return 0;
 		}
