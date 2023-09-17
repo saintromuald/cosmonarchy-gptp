@@ -483,16 +483,16 @@ namespace hooks
 		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
 		if (active_unit->status & UnitStatus::Completed || scbw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
 		{
-			final_unit_id = active_unit->id;
+			final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
 		}
 		state->grp_frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
 		state->type = 1;
 		state->id = units_dat::armor_upgrade[final_unit_id];
 		child->text = g_status_screen_info_button_unk[status_screen_index];
 		u32 flags = child->flags;
-		if (!(flags & UnitStatus::Completed))
+		if (!(child->flags & BinDlgFlags::Highlighted))
 		{
-			child->flags = flags | 1;
+			child->flags = flags | BinDlgFlags::Highlighted;
 			helper::update_dialog(child);
 		}
 	//	*g_unk_upgrade_count += armor_value;
