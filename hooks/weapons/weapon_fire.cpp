@@ -278,7 +278,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 				if (bullet) {
 					fired = true;
 					BulletExt* bullet_ext = get_bullet_ext(bullet);
-					bullet_ext->divisor_overwrite = options.divisor_overwrite;
+					bullet_ext->divisor_multiplier = options.divisor_multiplier;
 				}
 			}
 		}
@@ -323,7 +323,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 			if (bullet) {
 				fired = true;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
-				bullet_ext->divisor_overwrite = options.divisor_overwrite;
+				bullet_ext->divisor_multiplier = options.divisor_multiplier;
 			}
 		}
 	}
@@ -565,7 +565,7 @@ namespace hooks {
 						options.apply_cooldown = false;
 						options.center_on_target = true;
 						options.center_on_target_range_overwrite = 2 * 32;
-						options.divisor_overwrite = 2;
+						options.divisor_multiplier = 2;
 
 						fire_bullet(unit, weapon_id, unit->order_target);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);
@@ -774,6 +774,14 @@ namespace hooks {
 				}
 			}
 			apply_bullet_effect(bullet, target->cp, target->unit);
+			
+			if (weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
+				BulletExt* bullet_ext = get_bullet_ext(bullet);
+				if (!bullet_ext->did_pierce) {
+					bullet_ext->did_pierce = true;
+					bullet_ext->divisor_multiplier *= 2;
+				}
+			}
 		}
 		return false;
 	}

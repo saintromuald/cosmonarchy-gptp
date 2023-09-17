@@ -4636,9 +4636,7 @@ namespace helper {
 		const u32 func_address = 0x00479AE0;
 		if (bullet) {
 			BulletExt* bullet_ext = get_bullet_ext(bullet);
-			if (bullet_ext->divisor_overwrite) {
-				damage_divisor *= bullet_ext->divisor_overwrite;
-			}
+			damage_divisor *= bullet_ext->divisor_multiplier;
 		}
 		if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(bullet->weapon_id)) {
 			if (!iquare_globals.was_hit_by_line_attack(bullet->source_unit, target)) {

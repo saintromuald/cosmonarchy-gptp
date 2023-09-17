@@ -18,7 +18,7 @@ struct FireMultipleOptions {
 	WeaponOffsets* weapon_offsets = 0;
 
 	u32 range_overwrite = 0;
-	u32 divisor_overwrite = 0;
+	u32 divisor_multiplier = 1;
 
 	bool center_on_target = false;
 	u32 center_on_target_range_overwrite = 0;
