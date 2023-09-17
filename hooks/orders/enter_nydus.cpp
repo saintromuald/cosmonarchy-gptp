@@ -7,16 +7,22 @@ namespace hooks
 	bool can_enter_nydus(Unit* unit, Unit* nydus)
 	{
 		Unit* const nydus_exit = nydus->building.nydus_exit;
-		if  (nydus->status & UnitStatus::Completed
-		&&	 nydus_exit && nydus_exit->status & UnitStatus::Completed
-		&&	(unit->player == nydus->player || scbw::is_allied_to(unit->player, nydus->player))
-		&& !(units_dat::base_property[unit->id] & UnitProperty::Flyer)) {
-			return true;
+		if (!(nydus->status & UnitStatus::Completed) || !(nydus_exit->status & UnitStatus::Completed)) {
+			return false;
 		}
-		return false;
+		if (nydus->status & UnitStatus::InTransport || nydus_exit->status & UnitStatus::InTransport) {
+			return false;
+		}
+		if (!scbw::is_allied_to(unit->player, nydus->player)) {
+			return false;
+		}
+		if ((units_dat::base_property[unit->id] & UnitProperty::Flyer)) {
+			return false;
+		}
+		return true;
 	}
 
-	// Perform the Nydus Canal teleport effect on an unit that validated the conditions within the orders_enter_nydus function
+	// Perform the Nydus Cesiant teleport effect on an unit that validated the conditions within the orders_enter_nydus function
 	void enter_nydus_effect(Unit* unit, Unit* nydus)
 	{
 		if (!nydus->building.nydus_exit->sprite)
