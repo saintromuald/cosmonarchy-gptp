@@ -4634,10 +4634,6 @@ namespace helper {
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor) {
 		const u32 func_address = 0x00479AE0;
-		if (bullet) {
-			BulletExt* bullet_ext = get_bullet_ext(bullet);
-			damage_divisor *= bullet_ext->divisor_multiplier;
-		}
 		if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(bullet->weapon_id)) {
 			if (!iquare_globals.was_hit_by_line_attack(bullet->source_unit, target)) {
 				iquare_globals.register_line_attack_hit(bullet->source_unit, target);
