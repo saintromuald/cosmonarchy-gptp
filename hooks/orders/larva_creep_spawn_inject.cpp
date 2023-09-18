@@ -29,15 +29,15 @@ namespace
 	{
 		static Unit* main_building;
 		static Unit* unit;
-		static bool bResult;
+		static bool result;
 		__asm
 		{
 			MOV unit, ECX
 			MOV main_building, EDX
 			PUSHAD
 		}
-		bResult = hooks::iterate_units_at_location_target_proc_larva_count(unit, main_building);
-		if (bResult)
+		result = hooks::iterate_units_at_location_target_proc_larva_count(unit, main_building);
+		if (result)
 		{
 			__asm
 			{
@@ -45,9 +45,7 @@ namespace
 				MOV EAX, 0x00000001
 				RET
 			}
-		}
-		else
-		{
+		} else {
 			__asm
 			{
 				POPAD
@@ -121,7 +119,7 @@ namespace
 			POPAD
 			MOV EAX, result
 			POP EBP
-			RETN 8
+			RETN 0x08
 		}
 	}
 
@@ -145,14 +143,14 @@ namespace
 			POPAD
 			MOV EAX, result
 			POP EBP
-			RETN 4
+			RETN 0x04
 		}
 	}
 
 	void __declspec(naked) run_creep_randomizer_wrapper() // 0x004140A0
 	{
-		static u16* tileBackup;
-		static u8* creepOverlay;
+		static u16* tile_backup;
+		static u8* creep_overlay_value;
 		static u32* retval;
 		static u16* tile;
 		static u32 arg;
@@ -162,9 +160,9 @@ namespace
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
-			MOV tileBackup, EAX
+			MOV tile_backup, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV creepOverlay, EAX
+			MOV creep_overlay_value, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV retval, EAX
 			MOV EAX, [EBP + 0x14]
@@ -173,7 +171,7 @@ namespace
 			MOV arg, EAX
 			PUSHAD
 		}
-		result = hooks::run_creep_randomizer(tileBackup, creepOverlay, retval, tile, arg);
+		result = hooks::run_creep_randomizer(tile_backup, creep_overlay_value, retval, tile, arg);
 		__asm
 		{
 			POPAD
@@ -207,23 +205,21 @@ namespace
 	const u32 func_cont = 0x0047DCD3;
 	void __declspec(naked) bug_wrapper()
 	{
-		static void* disappearingCreepPtr;
+		static void* disappearing_creep;
 		__asm
 		{
 			CALL func_call
-			MOV disappearingCreepPtr, ESI
+			MOV disappearing_creep, ESI
 			PUSHAD
 		}
-		if (disappearingCreepPtr == nullptr)
+		if (!disappearing_creep)
 		{
 			__asm
 			{
 				POPAD
 				JMP func_ret
 			}
-		}
-		else
-		{
+		} else {
 			__asm
 			{
 				POPAD
