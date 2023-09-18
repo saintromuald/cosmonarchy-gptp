@@ -472,7 +472,7 @@ namespace hooks {
 		jump_patch(ai_update_guard_needs_wrapper,					0x004630C0, 1);
 		jump_patch(ai_add_spending_request_from_towns_wrapper,		0x00436320, 1);
 		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
-	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1); // This hooks is faulty; Enabling it makes AI build unit "Reserved"
+	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1); // This hook is faulty; Enabling it makes AI build unit "Reserved"
 		jump_patch(ai_add_spending_request_wrapper,					0x00447980, 1);
 	//	jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
 		jump_patch(has_resources_for_unit_wrapper,					0x004487B0, 1);

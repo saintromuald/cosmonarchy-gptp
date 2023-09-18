@@ -546,9 +546,9 @@ namespace hooks
 	}
 
 	// Hooked to improve logic. -Pr0nogo
-	char ai_build_refinery(AiTown* town) // 00433660
+	u8 ai_build_refinery(AiTown* town) // 00433660
 	{
-		char result = 0;
+		u8 result = 0;
 		u32 player = town->player;
 		u8 mineral_percent;
 		u8 gas_percent;
@@ -559,7 +559,7 @@ namespace hooks
 			u32 priority;
 			if (helper::get_ai_refinery(town, 3, 1))
 			{
-				priority = 80;
+				priority = 90;
 				refinery = helper::get_ai_refinery(town, 1, 1);
 				if (!refinery)
 				{
@@ -582,7 +582,7 @@ namespace hooks
 				{
 					return 0;
 				}
-				priority = 90;
+				priority = 100;
 			}
 
 			u16 refinery_id = UnitId::None;
@@ -937,8 +937,8 @@ namespace hooks
 			}
 			if (town) {
 				// Originally called ai_build_supplies
-				helper::ai_build_bunker(town, player);
-				helper::ai_build_turret(town, player);
+			//	helper::ai_build_bunker(town, player);
+			//	helper::ai_build_turret(town, player);
 			}
 			return;
 		}
@@ -1228,7 +1228,7 @@ namespace hooks
 		||	 unit_id_is_zerg_production(unit->id, true)
 		||   unit->id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit))
 		&&   unit->status & UnitStatus::GroundedBuilding && (units_dat::base_property[unit->id] & UnitProperty::ResourceDepot)
-		||	 unit_id_is_town_center(unit->id)) { // Originally checked for race, so Terran would only accept Command Center, etc
+		||	 unit_id_is_town_center(unit->id)) { // Originally checked for race, so Terran would only accept Ministry, etc
 			if (g_aiscript_controller[player].ai_flags.is_use_map_settings) {
 				ai_region->ground_strength_needed = 6 * g_aiscript_controller[player].default_min;
 				ai_region->air_strength_needed = 6 * g_aiscript_controller[player].default_min;

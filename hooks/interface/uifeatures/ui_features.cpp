@@ -815,12 +815,12 @@ LABEL_15:
 		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
 		u16 frame_index = state->grp_frame;
-		if (frame_index >= grp->frame_count) {//Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
+		if (frame_index >= grp->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
 			frame_index = 0;
 		}
 
 		GrpFrame* frame = &grp->frames[frame_index];
-		void* image_data = (char*)grp + frame->data_offset;//I believe it's necessary for image_data to be assigned immediately after frame, to get the correct address offset for image_render_fxn_0_0 (including in the second hook).
+		void* image_data = (char*)grp + frame->data_offset; // I believe it's necessary for image_data to be assigned immediately after frame, to get the correct address offset for image_render_fxn_0_0 (including in the second hook).
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 		helper::image_render_fxn_0_0(
