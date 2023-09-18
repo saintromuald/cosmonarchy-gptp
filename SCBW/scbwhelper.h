@@ -1242,7 +1242,7 @@ namespace helper {
 	typedef s32 ClipCreepAreaInBounds_Callback(u32, u32, u32, u32, u32, u32, u32);
 	s32 clip_creep_area_in_bounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback);		// 00413D10
 
-	s32 mark_creep_to_disappear(u32 tile_x, u32 tile_y);													// 0047DD60
+	s32 update_creep_disappearance_unit(u32 tile_x, u32 tile_y);													// 0047DD60
 
 	void* process_options_change(BinDlg* control);															// 004C9780
 	void load_dialog(char* filename, void* function);														// 004F57A0

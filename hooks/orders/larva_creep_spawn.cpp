@@ -264,11 +264,10 @@ namespace hooks
 		}
 
 		u16 creep_tile = 0;
-		// use of std::rand() can cause desyncs
-		if ((std::rand() % 100) >= 4) {
-			creep_tile = std::rand() % 6; // normal tiles
+		if ((scbw::random() % 100) >= 4) {
+			creep_tile = scbw::random() % 6; // normal tiles
 		} else {
-			creep_tile = (std::rand() % 7) + 6; // clutter tiles
+			creep_tile = (scbw::random() % 7) + 6;
 		}
 		*tile = creep_tile + 0x10; // tile in creep group
 		*return_value = 0;
@@ -311,7 +310,7 @@ namespace hooks
 			||		  does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
 			||		  tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
 			||		  helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
-			||		  helper::mark_creep_to_disappear(rect_left, rect_top))
+			||		  helper::update_creep_disappearance_unit(rect_left, rect_top))
 			{
 				++rect_left;
 				pos_x += 32;

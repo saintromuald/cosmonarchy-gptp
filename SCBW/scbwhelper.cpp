@@ -10242,7 +10242,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 mark_creep_to_disappear(u32 tile_x, u32 tile_y) {
+	s32 update_creep_disappearance_unit(u32 tile_x, u32 tile_y) {
 		static s32 result;
 		const u32 func_address = 0x0047DD60;
 		__asm {
