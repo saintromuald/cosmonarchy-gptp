@@ -41,7 +41,7 @@ void update_spawn() {
 				}
 			}
 			if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding || unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
-				helper::spread_initial_creep(unit->id, unit->position.x, unit->position.y);
+				helper::update_new_unit_vision(unit->id, unit->position.x, unit->position.y);
 			}
 		}
 

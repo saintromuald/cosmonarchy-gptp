@@ -2534,7 +2534,7 @@ namespace helper {
 		return result;
 	}
 
-	void spread_initial_creep(u32 id, s32 x, s32 y) {
+	void update_new_unit_vision(u32 id, s32 x, s32 y) {
 		const u32 func_address = 0x0045CE90;
 		__asm {
 			PUSHAD

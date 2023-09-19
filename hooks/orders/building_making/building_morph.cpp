@@ -92,7 +92,7 @@ namespace hooks {
 						image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 					}
 
-					helper::spread_initial_creep(building_id, building->sprite->position.x, building->sprite->position.y);
+					helper::update_new_unit_vision(building_id, building->sprite->position.x, building->sprite->position.y);
 				}
 				return;
 			} break;
@@ -122,7 +122,7 @@ namespace hooks {
 	void cancel_zerg_building(Unit* unit) { // 0045DA40
 		if (unit->status & UnitStatus::Completed || !helper::is_valid_building_morph(unit->build_queue[unit->build_queue_slot])) {
 			helper::refund_building_cost(unit->id, unit->player);
-			unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth];
+			unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth]; // TODO: Check if a Gosvileth is the builder and do nothing to score
 			--units_owned[unit->player];
 
 			if (unit->id == UnitId::ZergExcisant) {

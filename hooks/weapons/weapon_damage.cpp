@@ -1101,6 +1101,9 @@ namespace hooks
 				if (reveal && attacker->sprite) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
 						scbw::reveal_attacker(attacker, victim);
+						if (attacker->id == UnitId::ProtossSteward && attacker->hangar_unit.parent) {
+							scbw::reveal_attacker(attacker->hangar_unit.parent, victim);
+						}
 					}
 				}
 				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo

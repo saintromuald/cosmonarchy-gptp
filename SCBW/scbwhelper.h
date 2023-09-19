@@ -298,7 +298,7 @@ namespace helper {
 	void refund_building_cost(u16 unit_id, u8 player);														// 0042CE70
 	void update_building_ai(Unit* unit);																	// 00433FE0
 	bool is_valid_building_morph(u16 building_id);															// 0045CC60
-	void spread_initial_creep(u32 id, s32 x, s32 y);														// 0045CE90
+	void update_new_unit_vision(u32 id, s32 x, s32 y);														// 0045CE90
 	void cancel_zerg_building_morph(Unit* unit);															// 0045D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 0047D770
 	void increment_unit_scores_ex(Unit* unit, s32 count, b32 update_morph_merge_unit_score);				// 00488D50
