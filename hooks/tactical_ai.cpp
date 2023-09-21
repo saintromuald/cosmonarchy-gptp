@@ -315,8 +315,13 @@ enum KiterType {
 };
 
 static KiterType get_kiter_type(u32 unit_id) {
-	if (units_dat::base_property[unit_id] & UnitProperty::Building) {
+	if (units_dat::base_property[unit_id] & UnitProperty::Building
+	|| (units_dat::ground_weapon[unit_id]	!= WeaponId::None && weapons_dat::max_range[units_dat::ground_weapon[unit_id]]	< 3 * 32)
+	|| (units_dat::air_weapon[unit_id]		!= WeaponId::None && weapons_dat::max_range[units_dat::air_weapon[unit_id]]		< 3 * 32)
+	||	unit_id == UnitId::TerranMadcap) // For passive efficiency
+	{
 		// No kiting; Just smart targeting
+		// Currently overrides KiterType_Melee; results in improved AI performance! -Pr0nogo 21 Sep 2023
 		return KiterType_TargetingOnly;
 	}
 
