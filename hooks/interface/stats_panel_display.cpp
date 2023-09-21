@@ -483,7 +483,11 @@ namespace hooks
 		{
 			final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
 		}
-		state->grp_frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
+		u16 frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
+		if (final_unit_id == UnitId::None) {
+			frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[active_unit->id]];
+		}
+		state->grp_frame = frame;
 		state->type = 1;
 		state->id = units_dat::armor_upgrade[final_unit_id];
 		child->text = g_status_screen_info_button_unk[status_screen_index];

@@ -266,7 +266,9 @@ static void init_player_colors() {
 		easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
 
 		easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglehead Raptor");
+		easter_egg_unit_names[UnitId::ZergProtathalor].push_back("Zerg Potatothalor");
 		easter_egg_unit_names[UnitId::ZergIzirokor].push_back("Zerg Chadrokor");
+		easter_egg_unit_names[UnitId::ZergGorgrokor].push_back("Zerg Dadthrokor");
 		easter_egg_unit_names[UnitId::ZergRililisk].push_back("Zerg Nekrilisk");
 		easter_egg_unit_names[UnitId::ZergRilirokor].push_back("Zerg Nekrirokor");
 		easter_egg_unit_names[UnitId::ZergMatraleth].push_back("Zerg Nekrathaleth");

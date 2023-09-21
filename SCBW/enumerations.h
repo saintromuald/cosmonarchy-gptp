@@ -285,38 +285,38 @@ namespace UnitStatus
 {
 	enum Enum : u32
 	{
-		Completed = 0x00000001,
-		GroundedBuilding = 0x00000002,
-		InAir = 0x00000004,
-		Disabled = 0x00000008,
-		Burrowed = 0x00000010,
-		InBuilding = 0x00000020,
-		InTransport = 0x00000040,
-		CanBeChased = 0x00000080,
-		RequiresDetection = 0x00000100,
-		Cloaked = 0x00000200,
-		Frozen = 0x00000400,					// Protoss unpowered buildings have this flag set
-		CloakingForFree = 0x00000800,			// Requires no energy to cloak
-		CanNotReceiveOrders = 0x00001000,
-		NoBrkCodeStart = 0x00002000,			// Unbreakable code section in iscript
-		UNKNOWN2 = 0x00004000,
-		CanNotAttack = 0x00008000,
-		CanTurnAroundToAttack = 0x00010000,		// IsAUnit in IDA
-		Reacts = 0x00020000,
-		IgnoreTileCollision = 0x00040000,
-		Unmovable = 0x00080000,
-		IsNormal = 0x00100000,					// 1 for "normal" units, 0 for hallucinated units
-		NoCollide = 0x00200000,					// If set, other units wont collide with the unit (like burrowed units)
-		UNKNOWN5 = 0x00400000,
-		IsGathering = 0x00800000,				// If set, the unit wont collide with other units (like worker gathering)
-		UNKNOWN6 = 0x01000000,
-		UNKNOWN7 = 0x02000000,					// Turret related
-		Invincible = 0x04000000,
-		AttackMove = 0x08000000,
-		SpeedUpgrade = 0x10000000,
-		CooldownUpgrade = 0x20000000,
-		IsHallucination = 0x40000000,			// 1 for hallucinated units, 0 for "normal" units
-		IsSelfDestructing = 0x80000000			// Set for when the unit is self-destructing (scarab, scourge, infested terran)
+		Completed				= 0x00000001,
+		GroundedBuilding		= 0x00000002,
+		InAir					= 0x00000004,
+		Disabled				= 0x00000008,
+		Burrowed				= 0x00000010,
+		InBuilding				= 0x00000020,
+		InTransport				= 0x00000040,
+		CanBeChased				= 0x00000080,
+		RequiresDetection		= 0x00000100,
+		Cloaked					= 0x00000200,
+		Frozen					= 0x00000400,	// Protoss unpowered buildings have this flag set
+		CloakingForFree			= 0x00000800,	// Requires no energy to cloak
+		CanNotReceiveOrders		= 0x00001000,
+		NoBrkCodeStart			= 0x00002000,	// Unbreakable code section in iscript
+		UNKNOWN2				= 0x00004000,
+		CanNotAttack			= 0x00008000,
+		CanTurnAroundToAttack	= 0x00010000,	// IsAUnit in IDA
+		Reacts					= 0x00020000,
+		IgnoreTileCollision		= 0x00040000,
+		Unmovable				= 0x00080000,
+		IsNormal				= 0x00100000,	// 1 for "normal" units, 0 for hallucinated units
+		NoCollide				= 0x00200000,	// If set, other units wont collide with the unit (like burrowed units)
+		UNKNOWN5				= 0x00400000,
+		IsGathering				= 0x00800000,	// If set, the unit wont collide with other units (like worker gathering)
+		UNKNOWN6				= 0x01000000,
+		UNKNOWN7				= 0x02000000,	// Turret related
+		Invincible				= 0x04000000,
+		AttackMove				= 0x08000000,
+		SpeedUpgrade			= 0x10000000,
+		CooldownUpgrade			= 0x20000000,
+		IsHallucination			= 0x40000000,	// 1 for hallucinated units, 0 for "normal" units
+		IsSelfDestructing		= 0x80000000	// Set for when the unit is self-destructing (scarab, scourge, infested terran)
 	};
 }
 

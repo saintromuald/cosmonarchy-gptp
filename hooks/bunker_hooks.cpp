@@ -218,7 +218,6 @@ namespace hooks
 			unit_ext->values[ValueIonCannonTargetPosY] = target->position.y;
 			unit->order_target.unit = 0;
 		}
-
 		if (unit->status & UnitStatus::InBuilding) {
 			if (unit->subunit && unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InAir) {
 				return false;
