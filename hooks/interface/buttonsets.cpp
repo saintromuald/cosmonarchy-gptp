@@ -61,7 +61,7 @@ namespace hooks {
 		u8 count_larva = 0;
 		u8 count_ocsal_larva = 0;
 		u8 count_eggs  = 0;
-		u8 count_hatches = 0;
+		u8 count_zerg_production = 0;
 		u8 count_zergs = 0;
 		u8 count_mason_sources = 0;
 		u8 count_scribe_sources = 0;
@@ -101,7 +101,7 @@ namespace hooks {
 				}
 
 				if (unit_id_is_zerg_production(selected->id)) {
-					count_hatches++;
+					count_zerg_production++;
 				}
 
 				if (selected->id == UnitId::TerranMinistry || selected->id == UnitId::TerranQuarry) {
@@ -159,10 +159,10 @@ namespace hooks {
 		}
 		if (*g_current_buttonset_id != UnitId::Buttons_Blank) {
 			if (count_workers == *g_client_selection_count) {
-				*g_current_buttonset_id = UnitId::Buttons_GroupPeons;
+				*g_current_buttonset_id = UnitId::Buttons_GroupWorkers;
 			} else if (count_burrowables) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
-			} else if (count_hatches == *g_client_selection_count) {
+			} else if (count_zerg_production == *g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::ZergHachirosk;
 			} else if (count_mason_sources == *g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_MixedMasonTraining;
@@ -211,7 +211,7 @@ namespace hooks {
 
 		if (current_button_dialog)
 		{
-			bool bStopLooping = false;
+			bool stop_looping = false;
 			do
 			{
 				// look for the button corresponding to the one used for the current main_order
@@ -221,12 +221,12 @@ namespace hooks {
 					{
 						current_button_dialog = current_button_dialog->next;
 					} else {
-						bStopLooping = true;
+						stop_looping = true;
 					}
 				} else {
 					current_button_dialog = current_button_dialog->next;
 				}
-			} while (!bStopLooping && current_button_dialog);
+			} while (!stop_looping && current_button_dialog);
 		}
 		if (!current_button_dialog)
 		{
@@ -288,7 +288,7 @@ namespace hooks {
 	// Main update_buttonset function; calls update_buttonset() and others
 	void update_current_buttonset() // 004599A0
 	{
-		// Quick casting post handling
+		// Quick targeting post-handling
 		if (hooks::quickcasting_signal) {
 			hooks::quickcasting_signal = false;
 			*g_buttonset_special_buttonset_id = hooks::quickcasting_command_card;
@@ -589,7 +589,7 @@ namespace hooks {
 						}
 					}
 
-					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LurkerBurrow) {
+					if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LakiziliskBurrow) {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
@@ -609,7 +609,7 @@ namespace hooks {
 						}
 					}
 
-					if (current_button->icon_id == IconId::Unburrow || current_button->icon_id == IconId::LurkerUnburrow) {
+					if (current_button->icon_id == IconId::Unburrow || current_button->icon_id == IconId::LakiziliskUnburrow) {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 

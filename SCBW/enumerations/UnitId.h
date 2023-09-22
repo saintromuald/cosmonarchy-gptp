@@ -543,7 +543,7 @@ namespace UnitId
 		Buttons_AdvancedTerranBuildings						= 242,
 		Buttons_AdvancedProtossBuildings					= 243,
 		Buttons_GroupMixed									= 244,
-		Buttons_GroupPeons									= 245,
+		Buttons_GroupWorkers									= 245,
 		Buttons_GroupCloaker								= 246,
 		Buttons_GroupBurrower								= 247,
 		Buttons_ReplayPaused								= 248,
