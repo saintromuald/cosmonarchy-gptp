@@ -404,7 +404,7 @@ namespace IconId
 		DidactPassiveShroudOfAdun,
 		PaladinActiveSkyfall,
 
-		LurkerBurrow = 377,
-		LurkerUnburrow = 398,
+		LakiziliskBurrow = 377,
+		LakiziliskUnburrow = 398,
 	};
 }

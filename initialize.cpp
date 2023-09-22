@@ -644,6 +644,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Fix dual-birth unit's facing direction being overridden by units.dat facing direction
 	memory_patch(0x0045D9DB, (u32)0x00042811);//Change CALL address from turn_unit to update_unit_stats_finish_building.
 	memory_patch(0x0045D9E2, (u32)0x0003853A);//Inverse of above.
+
+	memory_patch(0x004EB8C4, (u8)8); // Improve melee air performance
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

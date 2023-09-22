@@ -411,7 +411,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to investigate melee air unit perforamnce. -Pr0nogo
+	// Hooked to investigate melee air unit performance. -Pr0nogo
 	s32 get_flingy_halt_distance(Unit* unit) // 00494F90
 	{
 		s32 result = 0;
@@ -424,10 +424,8 @@ namespace hooks
 		if (speed != flingy_dat::top_speed[flingy_id] || unit->flingy_acceleration != flingy_dat::acceleration[flingy_id])
 		{
 			result = speed * speed / (2 * unit->flingy_acceleration);
-		}
-		else
-		{
-			result = flingy_dat::halt_distance[flingy_id];
+		} else {
+			result = flingy_dat::halt_distance[flingy_id] >> 2;
 		}
 		return result;
 	}
