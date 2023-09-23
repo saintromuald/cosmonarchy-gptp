@@ -100,7 +100,7 @@ namespace hooks
 		jump_patch(unit_movement_dormant_wrapper,		0x0046A8D0, 1);
 	//	jump_patch(move_unit_wrapper,					0x004EB9F0, 1); // breaks sprite sorting
 		jump_patch(can_collide_with_wrapper,			0x0042DEE0, 2);
-		jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
+	//	jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
 
 	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}
