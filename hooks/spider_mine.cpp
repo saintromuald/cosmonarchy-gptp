@@ -9,13 +9,13 @@ namespace hooks
 	// Return the best target for the mine. If there is no suitable target, return 0 instead.
 	Unit* find_best_mine_target(Unit* mine) // 00441270
 	{
-		s32 range;
 		// Don't search for a target if the mine is under a Disruption Field
 		if (mine->status & UnitStatus::CanNotAttack)
 		{
 			return 0;
 		}
-		range = 32 * mine->get_seek_range();
+
+		u32 range = 32 * mine->get_seek_range();
 		return scbw::UnitFinder::get_nearest_target(
 				mine->get_x() - range, mine->get_y() - range,
 				mine->get_x() + range, mine->get_y() + range,

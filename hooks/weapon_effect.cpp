@@ -90,7 +90,7 @@ namespace hooks {
 
 		EntryArray units_in_splash = {};
 		unit_search_rect(&units_in_splash, box32_rect(pos, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id)));
-		unit_search_filter(&units_in_splash, unit);
+		unit_search_filter(&units_in_splash, unit, FilterIncludingSelf);
 		for (s32 i = 0; i < units_in_splash.count; i++) {
 			Unit* target = units_in_splash.units[i];
 			if (guaranteed_hit && target == guaranteed_hit) { // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
