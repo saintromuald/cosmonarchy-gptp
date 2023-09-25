@@ -162,6 +162,7 @@ enum ExtValueId {
 	ValueTerranConstruction,
 	ValueMorphConnectedUnitId,
 	ValueEnsnareFactor,
+	ValueVultureLaunchPos,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

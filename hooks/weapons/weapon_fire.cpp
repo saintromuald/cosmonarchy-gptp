@@ -430,6 +430,7 @@ namespace hooks {
 				Target weapon_target = make_target(unit->order_target.unit);
 				switch (weapon_id) {
 					case WeaponId::CyprianTwinRailguns:
+					case WeaponId::VultureFragmentationGrenade:
 					case WeaponId::GoliathContenderMissiles:
 					case WeaponId::PhalanxArcliteShockCannon:
 					case WeaponId::RamessesPharoahCannons:

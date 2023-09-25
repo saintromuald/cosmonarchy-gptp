@@ -57,6 +57,7 @@ namespace
 		hooks::burrow_generic(unit);
 		__asm {
 			POPAD
+			MOV EAX, 0 // Unused return value
 			RETN
 		}
 	}
