@@ -117,28 +117,8 @@ void free_resource_container(Unit* resource) {
 	}
 }
 
-void unit_destructor_special_cases(Unit* unit) {
+void unit_on_death_behaviors(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	unit->reset_supply_provided();
-
-	// Cancel units that required an addon
-	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
-		Unit* parent = unit_ext->units[UnitAddonParent];
-		if (parent) {
-			u32 offset = 0;
-			for (u32 i = 1; i < 5; ++i) {
-				u32 slot = i + parent->build_queue_slot - offset;
-				u32 unit_id = parent->build_queue[slot];
-				if (unit_id == UnitId::None) {
-					continue;
-				}
-				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
-					helper::refund_queue_slot(parent, slot);
-					offset++;
-				}
-			}
-		}
-	}
 
 	// These do not require the unit to be completed
 	switch (unit->id) {
@@ -337,6 +317,33 @@ void unit_destructor_special_cases(Unit* unit) {
 		scbw::binding_plasma_proc(unit);
 		// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
 	}
+}
+
+void unit_destructor_special_cases(Unit* unit) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	unit->reset_supply_provided();
+
+	// Cancel units that required an addon
+	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
+		Unit* parent = unit_ext->units[UnitAddonParent];
+		if (parent) {
+			u32 offset = 0;
+			for (u32 i = 1; i < 5; ++i) {
+				u32 slot = i + parent->build_queue_slot - offset;
+				u32 unit_id = parent->build_queue[slot];
+				if (unit_id == UnitId::None) {
+					continue;
+				}
+				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
+					helper::refund_queue_slot(parent, slot);
+					offset++;
+				}
+			}
+		}
+	}
+
+	// Proc on death behaviors
+	unit_on_death_behaviors(unit);
 
 	// Update custom creep disappearance
 	scbw::update_custom_creep_disappearance(unit);

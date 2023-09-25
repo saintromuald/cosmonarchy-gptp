@@ -512,7 +512,7 @@ void tick_effect(Effect* effect) {
 					target->heal_hp(10 * tick_scalar);
 				}
 			} break;
-			case EffectId_CyclopsRecusionRound: {
+			case EffectId_CyclopsRecursionRound: {
 				if (!effect->current_time) {
 					EntryArray unit_array = {};
 					unit_search_radial(&unit_array, effect->position, effect->radius);
