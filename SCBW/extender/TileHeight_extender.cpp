@@ -1,5 +1,6 @@
 #include <SCBW/extender/TileHeight_extender.h>
 
+s32 base_height;
 s8 xHeight_table[256*256];
 
 namespace scbw {
@@ -15,6 +16,7 @@ namespace scbw {
 
 	void weapon_tile_heights() {
 		u32 map_size = g_map_tile_size->width * g_map_tile_size->height;
+		base_height = 127;
 
 		for (u32 tile = 0; tile < map_size; ++tile) {
 			vf4* minitile = get_minitile(tile);
@@ -27,7 +29,11 @@ namespace scbw {
 				}
 			} while (++i_0 < 16);
 
-			xHeight_table[tile] = (height + (i_0 >> 1)) / i_0;
+			height = (height + (i_0 >> 1)) / i_0;
+			xHeight_table[tile] = height;
+
+			if (height < base_height)
+				base_height = height;
 		}
 	}
 

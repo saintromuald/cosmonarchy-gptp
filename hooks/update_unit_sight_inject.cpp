@@ -80,11 +80,11 @@ namespace {
 			MOV EBP, ESP
 			MOV sightRange, EAX
 			MOV visionFlags, ECX
-			MOV ptY, EDX
+		//	MOV ptY, EDX
 			MOV EAX, [EBP + 0x08]
 			MOV ptX, EAX
-			//MOV EAX, [EBP + 0x0C]
-			//MOV ptY, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV ptY, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV isAirUnit, EAX
 			PUSHAD
@@ -99,7 +99,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) get_ground_height_at_px_wrapper() {
+	void __declspec(naked) getGroundHeightAtPx_wrapper() {
 		static u32 offsetX;
 		static u32 offsetY;
 
@@ -126,6 +126,6 @@ namespace hooks {
 		jump_patch(gndSightCB_Edge_wrapper, 0x00480110, 1);
 		jump_patch(gndSightCB_Inside_wrapper, 0x00480200, 1);
 		jump_patch(reveal_sight_at_location_wrapper, 0x004806F0, 1);
-		jump_patch(get_ground_height_at_px_wrapper, 0x004BD0F0, 6);
+		jump_patch(getGroundHeightAtPx_wrapper, 0x004BD0F0, 6);
 	}
 }

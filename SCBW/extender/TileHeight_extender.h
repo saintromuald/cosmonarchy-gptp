@@ -1,6 +1,7 @@
 #pragma once
 #include <SCBW/api.h>
 
+extern s32 base_height;
 extern s8 xHeight_table[];
 
 namespace scbw {
