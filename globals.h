@@ -39,7 +39,7 @@ enum EffectId {
 	EffectId_IsthrathalethPlagueField,
 	EffectId_AionReclamationField,
 	EffectId_VilgolethHeal,
-	EffectId_CyclopsRecusionRound,
+	EffectId_CyclopsRecursionRound,
 
 	EffectId_Count,
 };

@@ -388,7 +388,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 				value -= 50;
 			}
 		} break;
-		case EffectId_CyclopsRecusionRound: {
+		case EffectId_CyclopsRecursionRound: {
 			if (!scbw::is_allied_to(unit->player, effect->player) && effect->current_time < 25) {
 				value -= 100;
 			}

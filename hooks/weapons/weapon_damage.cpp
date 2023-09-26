@@ -15,6 +15,7 @@
 #include "weapon_fire.h"
 #include "trigger_system\trigger_system.h"
 #include "hooks/unit_stats/armor_bonus.h"
+#include "hooks/unit_destructor_special.h"
 
 #include "SCBW\UnitFinder.h"
 
@@ -568,7 +569,7 @@ namespace hooks
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
-					iquare_globals.create_effect(EffectId_CyclopsRecusionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
+					iquare_globals.create_effect(EffectId_CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
 			}
@@ -1023,6 +1024,9 @@ namespace hooks
 					}
 				}
 				scbw::regress(data.target, regression_id);
+				if (data.target) {
+					unit_on_death_behaviors(data.target);
+				}
 			}
 		}
 

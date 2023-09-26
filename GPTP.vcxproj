@@ -291,6 +291,7 @@
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="SCBW\extender\TileHeight_extender.cpp" />
+    <ClCompile Include="SCBW\ExtendSightLimit.cpp" />
     <ClCompile Include="SCBW\scbwdata.cpp" />
     <ClCompile Include="SCBW\Storm.cpp" />
     <ClCompile Include="selection_extender.cpp" />
