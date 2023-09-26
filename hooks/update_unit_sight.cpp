@@ -1,4 +1,5 @@
 #include "update_unit_sight.h"
+#include "SCBW/ExtendSightLimit.h"
 
 namespace hooks {
 	s32 tmpHeight;
@@ -89,7 +90,7 @@ namespace hooks {
 
 	void reveal_sight_at_location(u32 sightRange, u32 vision_flags, s32 ptX, s32 ptY, bool isAirUnit) {
 		if (vision_flags <= 0xFF) {
-			SightRange* sight_vals = &g_sight_values[sightRange];
+			SightRange* sight_vals = &g_sight_ranges[sightRange];
 			u32 new_vision_flags = ~vision_flags & ~(vision_flags << 8);
 			sight_callback_t** callback = g_sight_callbacks->ground;
 
