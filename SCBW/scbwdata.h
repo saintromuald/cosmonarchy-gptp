@@ -96,26 +96,6 @@ struct Resources {
 };
 SCBW_DATA(Resources*, resources, 0x0057F0F0);
 
-struct cv5 {
-	u16 index;
-	/*
-	u8 unk : 4;
-	u8 flags : 4;
-	u8 ground_height_old : 4;
-	u8 unk2 : 4;
-	*/
-	u16 flags;
-	u16 left_edge;
-	u16 top_edge;
-	u16 right_edge;
-	u16 bottom_edge;
-	u16 unk3;
-	u16 unk4;
-	u16 unk5;
-	u16 unk6;
-	u16 megatiles[16];
-};
-
 SCBW_DATA(cv5**, tileGroup, 0x006D5EC8);
 
 /// TBL files
@@ -1141,6 +1121,7 @@ SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
 // For reveal_sight_at_location
 SCBW_DATA(SightRange*,		g_sight_values,					0x00513A18);
 SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
+SCBW_DATA(SightCallbacksDF*,g_sight_callbacks_df,			0x00504524);
 
 // For create_thingy
 SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);
@@ -1208,6 +1189,12 @@ SCBW_DATA(const char*, FORMATSTRING_COLOR_CURRENTVALUE_MAXVALUE, 0x00505724); //
 SCBW_DATA(const char*, FORMATSTRING_COLORWHITE_CURRENTVALUE_MAXVALUE, 0x0050572C); //"\x04%d/%d"
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE_IN_PARENTHESIS, 0x00505734); //"%s (%d)"
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE, 0x0050573C); //"%s %d"
+
+SCBW_DATA(ActiveTile**, activeTileArray, 0x006D1260);
+SCBW_DATA(const MTXM**, zergCreepTileData, 0x005993A8);
+SCBW_DATA(const MTXM**, MTXMHandle, 0x005993C4);
+SCBW_DATA(const VF4**, vf4FileHandle, 0x005993D0);
+SCBW_DATA(const CV5**, cv5FileHandle, 0x006D5EC8);
 
 //////////////////////////////////////////////////////////////// @}
 

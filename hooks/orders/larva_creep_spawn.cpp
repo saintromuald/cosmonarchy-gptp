@@ -152,7 +152,7 @@ namespace hooks
 
 						if (in_range) {
 							ActiveTile* a = scbw::get_active_tile_at_coords(i * 32, j * 32);
-							if (a->has_creep || a->temporary_creep || a->creep_receding) {
+							if (a->has_cagra || a->temporary_cagra || a->cagra_receding) {
 								// why is there nothing here LMAO
 							} else {
 								// can spread

@@ -604,7 +604,7 @@ bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {
 		for (u32 yy = 0; yy < area.h / 32; ++yy) {
 			ActiveTile* tile = scbw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
-			if (!tile->has_creep) {
+			if (!tile->has_cagra) {
 				return false;
 			}
 		}
@@ -622,7 +622,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 		for (u32 yy = 0; yy < area.h / 32; ++yy) {
 			ActiveTile* tile = scbw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
 			TileExt* tile_ext = get_tile_ext_at_coords(area.x + xx * 32, area.y + yy * 32);
-			if (tile->has_creep && !can_place_on_creep_tile(tile_ext, player)) {
+			if (tile->has_cagra && !can_place_on_creep_tile(tile_ext, player)) {
 				return false;
 			}
 		}

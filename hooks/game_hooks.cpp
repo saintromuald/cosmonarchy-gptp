@@ -728,6 +728,7 @@ namespace hooks {
 			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
+			scbw::weapon_tile_heights();
 			if (game_data->teams_enabled) {
 				scbw::print("Teams are enabled.");
 			}
@@ -832,7 +833,7 @@ namespace hooks {
 				for (u32 x = 0; x < g_map_tile_size->width; x++) {
 					for (u32 y = 0; y < g_map_tile_size->height; y++) {
 						ActiveTile& tile = scbw::get_active_tile_at(x * 32, y * 32);
-						tile.exploredFlags &= ~reveal_flag;
+						tile.explored_flags &= ~reveal_flag;
 					}
 				}
 				*/
@@ -1165,7 +1166,7 @@ namespace hooks {
 					s32 delta_y = unit->position.y - (y * 32 + 16);
 					if (delta_x * delta_x * 100 + delta_y * delta_y * 256 <= 10240000) {
 						ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
-						if (tile->has_creep || tile->temporary_creep) {
+						if (tile->has_cagra || tile->temporary_cagra) {
 							TileExt* tile_ext = get_tile_ext_at_tile(x, y);
 							tile_ext->creep_owners |= 1 << unit->player;
 						}

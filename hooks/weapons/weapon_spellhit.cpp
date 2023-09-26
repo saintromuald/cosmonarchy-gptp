@@ -368,7 +368,7 @@ namespace hooks {
 	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet) {
 		u32 broodlings_to_spawn = 3;
 		ActiveTile* tile = scbw::get_active_tile_at_coords(bullet->sprite->position.x, bullet->sprite->position.y);
-		if (tile->has_creep || tile->creep_receding) {
+		if (tile->has_cagra|| tile->cagra_receding) {
 			broodlings_to_spawn = 5;
 		}
 		Point16 current = bullet->sprite->position;

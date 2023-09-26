@@ -483,27 +483,27 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 //-------- Flag structures --------//
 
 // Based on BWAPI's Offsets.h
-union ActiveTile
-{
-	u32 value;
-	struct
-	{
-	/*00*/  u8 visibility_flags;			// 0x000000ff
-	/*01*/  u8 explored_flags;				// 0x0000ff00
-	/*02*/  u8 is_walkable : 1;				// 0x00010000 Set on tiles that can be walked on
-			u8 unknown1 : 1;				// 0x00020000 Unused?
-			u8 is_unwalkable : 1;			// 0x00040000 Set on tiles that can't be walked on
-			u8 unknown2 : 1;				// 0x00080000 Unused?
-			u8 has_doodad_cover : 1;		// 0x00100000 Set when a doodad cover (trees) occupies the box
-			u8 unknown3 : 1;				// 0x00200000 Unused?
-			u8 has_creep : 1;				// 0x00400000 Set when creep occupies the box
-			u8 always_unbuildable : 1;		// 0x00800000 always unbuildable, like water
-	/*03*/  u8 ground_height : 3;			// 0x07000000 ground height; 1 for low ground, 2 for middle ground and 4 for high ground
-			u8 currently_occupied : 1;		// 0x08000000 unbuildable but can be made buildable
-			u8 creep_receding : 1;			// 0x10000000 Set when the nearby structure supporting the creep is destroyed
-			u8 cliff_edge : 1;				// 0x20000000 Set if the tile is a cliff edge
-			u8 temporary_creep : 1;			// 0x40000000 Set when the creep occupying the box was created. Not set if creep tiles were preplaced. Used in drawing routine.
-			u8 unknown4 : 1;				// 0x80000000 Unused?
+struct ActiveTile {
+	union {
+		u32 vision_flags;
+		struct {
+			u8 visibility_flags;
+			u8 explored_flags;
+			u8 is_walkable : 1; // Set on tiles that can be walked on
+			u8 unknown1 : 1; // Unused?
+			u8 is_unwalkable : 1; // Set on tiles that can't be walked on
+			u8 unknown2 : 1; // Unused?
+			u8 has_doodad_cover : 1; // Set when a doodad cover (trees) occupies the area
+			u8 unknown3 : 1; // Unused?
+			u8 has_cagra : 1; // Set when creep occupies the area
+			u8 always_unbuildable : 1; // always unbuildable, like water
+			u8 ground_height : 3; // ground height; 1 for low ground, 2 for middle ground and 4 for high ground
+			u8 currently_occupied : 1; // unbuildable but can be made buildable
+			u8 cagra_receding : 1; // Set when the nearby structure supporting the creep is destroyed
+			u8 cliff_edge : 1; // Set if the tile is a cliff edge
+			u8 temporary_cagra : 1; // Set when the creep occupying the area was created. Not set if creep tiles were preplaced. Used in drawing routine.
+			u8 unknown4 : 1; // Unused?
+		};
 	};
 };
 C_ASSERT(sizeof(ActiveTile) == 4);
@@ -1269,19 +1269,23 @@ struct HashPacket {
 };
 
 struct SightTile { // From neiv's list
-	u32 unk_00;
-	u32 unk_04;
-	u32 relative_tile;
+	/*00*/	SightTile* tiles[2];
+	/*08*/	s32 relative_tile;
+	/*0C*/	u32 visibility_mask;
+	/*10*/	s8 w;
+	/*11*/	s8 h;
+	/*12*/	u8 count;
+	/*13*/	u8 unk_13;
 };
 
-struct SightRange { // From IDA and neiv's list
-	u32 tile_sight_width;
-	u32 tile_sight_height;
-	u32 unk_08;
-	u32 unk_0C;
-	u32 unk_10;
-	u32 tile_count;
-	SightTile* tiles;
+struct SightRange {
+	/*00*/	u32		tile_sight_width;
+	/*04*/	u32		tile_sight_height;
+	/*08*/	u32		field_8;
+	/*0C*/	u32		field_C;
+	/*10*/	u32		always9;
+	/*14*/	u32		tile_count;
+	/*18*/	SightTile* tile;
 };
 
 typedef void __fastcall sight_callback_t(u32 tile_x, u32 tile_y, SightRange* sight_range, u32 active_tile_int, u32 relative_flags, u32 new_flags);
@@ -1361,6 +1365,37 @@ C_ASSERT(sizeof(ControlGroupPlayerArray) == 4 * PLAYABLE_PLAYER_COUNT * 18 * Sel
 struct Point32 {
 	u32 x;
 	u32 y;
+};
+
+struct MTXM {
+	u16 tile[1];
+};
+
+struct cv5 {
+	/*00*/	u16 terrain_type;
+	/*02*/	u16 flags;
+	/*04*/	Box16 edge_types;
+	/*0C*/	Box16 edge_pieces;//left and right are unused; always 0.
+	/*14*/	u16 tiles[16];
+};
+
+struct CV5 {
+	cv5 group[1];
+};
+
+struct vf4 {
+	u8 flags;
+	s8 xHeight;
+};
+
+struct VF4 {
+	vf4 tile[1][16];
+};
+
+typedef void __fastcall sight_callback_t_df(u32 tile_x, u32 tile_y, SightRange* sight_range, ActiveTile* active_tile_int, u32 relative_flags, u32 new_flags);
+struct SightCallbacksDF {
+	sight_callback_t_df* inside[2];
+	sight_callback_t_df* edge[2];
 };
 
 #pragma pack()

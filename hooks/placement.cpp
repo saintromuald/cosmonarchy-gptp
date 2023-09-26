@@ -119,9 +119,9 @@ namespace hooks
 					state  = 10;
 					result = 10;
 				}
-				bool creep = !tile->has_creep;
+				bool creep = !tile->has_cagra;
 				if (check_temporary_creep) {
-					creep  = !tile->temporary_creep;
+					creep  = !tile->temporary_cagra;
 				}
 				if ((check_temporary_creep || check_creep || !(tile->visibility_flags & human_only_player_bit)) && creep) {
 					state = 5;
@@ -155,9 +155,8 @@ namespace hooks
 				}
 
 				bool buildable = false;
-				if (!check_creep && tile->visibility_flags & human_only_player_bit
-					|| !(tile->value & flags)
-					|| tile->value < 0) {
+				if (!check_creep && tile->visibility_flags & human_only_player_bit || !(tile->vision_flags & flags) || tile->vision_flags < 0)
+				{
 					buildable = true;
 				}
 

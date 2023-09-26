@@ -17,8 +17,8 @@ namespace offsets
 
 struct SightStruct
 {
-    u32 tileSightWidth;
-    u32 tileSightHeight;
+    u32 tile_sight_width;
+    u32 tile_sight_height;
     u32 unknown1;
     u32 unknown2;
     u32 unknown3;
@@ -36,8 +36,8 @@ void set_max_sight_range()
     static SightStruct sightData[MAX_SIGHT_RANGE + 1] = {};
 
     for (u32 x = 0; x <= MAX_SIGHT_RANGE; ++x) {
-        sightData[x].tileSightWidth   = x * 2 + 3;
-        sightData[x].tileSightHeight  = x * 2 + 3;
+        sightData[x].tile_sight_width   = x * 2 + 3;
+        sightData[x].tile_sight_height  = x * 2 + 3;
         sightData[x].unknown1 = 3;
         sightData[x].unknown2 = 3;
     }
