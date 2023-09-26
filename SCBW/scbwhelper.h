@@ -779,7 +779,7 @@ namespace helper {
 	void cancel_target_order();																						// 0048CA10
 	s32 update_disruption_web_status();																				// 004EB2F0
 	Unit* progress_dying_unit_frame(Unit* unit);																	// 004EB5E0
-	void reveal_sight_at_location(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit);				// 004806F0
+	void reveal_sight_at_location(s32 sight_range, u32 vision_flags, s32 pt_x, s32 pt_y, bool is_air);				// 004806F0
 	void update_visibility(Unit* unit);																				// 004EBE10
 	void progress_active_unit_frame(Unit* unit);																	// 004EBC30
 	void check_unit_visibility(Unit* unit);																			// 00443390

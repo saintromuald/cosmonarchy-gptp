@@ -13,6 +13,7 @@
 #include "config.h"
 #include <string>
 #include <hooks/limits/sfx_extender.h>
+#include "hooks/update_unit_sight.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -3424,6 +3425,6 @@ namespace scbw {
 				flags |= 1 << i;
 			}
 		}
-		helper::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
+		hooks::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
 	}
 }

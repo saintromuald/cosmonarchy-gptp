@@ -5963,16 +5963,16 @@ namespace helper {
 		return result;
 	}
 
-	void reveal_sight_at_location(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit) {
+	void reveal_sight_at_location(s32 sight_range, u32 vision_flags, s32 pt_x, s32 pt_y, bool is_air) {
 		const u32 Func_revealSightAtLocation = 0x004806F0;
-		b32 is_air_unit_xd = isAirUnit;
+		b32 is_air_unit_xd = is_air;
 		__asm {
 			PUSHAD
 			PUSH is_air_unit_xd
-			PUSH ptY
-			PUSH ptX
-			MOV ECX, visionFlags
-			MOV EAX, sightRange
+			PUSH pt_y
+			PUSH pt_x
+			MOV ECX, vision_flags
+			MOV EAX, sight_range
 			CALL Func_revealSightAtLocation
 			POPAD
 		}

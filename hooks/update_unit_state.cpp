@@ -9,6 +9,7 @@
 #include "SCBW\UnitFinder.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/unit_destructor_special.h"
+#include "hooks/update_unit_sight.h"
 
 namespace hooks
 {
@@ -527,7 +528,7 @@ namespace hooks
 			if (unit->sprite) {
 				if (*g_vision_updated) {
 					if (g_player_table[unit->player].type == PlayerType::Human) {
-						helper::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
+						hooks::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
 					}
 				}
 				helper::update_visibility(unit);

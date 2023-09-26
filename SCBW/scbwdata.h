@@ -1121,7 +1121,6 @@ SCBW_DATA(s32*,			g_array_player_status,				0x006552A8);
 // For reveal_sight_at_location
 SCBW_DATA(SightRange*,		g_sight_values,					0x00513A18);
 SCBW_DATA(SightCallbacks*,	g_sight_callbacks,				0x00504524);
-SCBW_DATA(SightCallbacksDF*,g_sight_callbacks_df,			0x00504524);
 
 // For create_thingy
 SCBW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);

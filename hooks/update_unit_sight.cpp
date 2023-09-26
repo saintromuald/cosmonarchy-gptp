@@ -91,7 +91,7 @@ namespace hooks {
 		if (vision_flags <= 0xFF) {
 			SightRange* sight_vals = &g_sight_values[sightRange];
 			u32 new_vision_flags = ~vision_flags & ~(vision_flags << 8);
-			sight_callback_t_df** callback = g_sight_callbacks_df->inside;
+			sight_callback_t** callback = g_sight_callbacks->ground;
 
 			if (isAirUnit) {
 				++callback;

@@ -1269,26 +1269,26 @@ struct HashPacket {
 };
 
 struct SightTile { // From neiv's list
-	/*00*/	SightTile* tiles[2];
-	/*08*/	s32 relative_tile;
-	/*0C*/	u32 visibility_mask;
-	/*10*/	s8 w;
-	/*11*/	s8 h;
-	/*12*/	u8 count;
-	/*13*/	u8 unk_13;
+	/*00*/	SightTile*	tiles[2];
+	/*08*/	s32			relative_tile;
+	/*0C*/	u32			visibility_mask;
+	/*10*/	s8			w;
+	/*11*/	s8			h;
+	/*12*/	u8			count;
+	/*13*/	u8			unk_13;
 };
 
 struct SightRange {
-	/*00*/	u32		tile_sight_width;
-	/*04*/	u32		tile_sight_height;
-	/*08*/	u32		field_8;
-	/*0C*/	u32		field_C;
-	/*10*/	u32		always9;
-	/*14*/	u32		tile_count;
-	/*18*/	SightTile* tile;
+	/*00*/	u32			tile_sight_width;
+	/*04*/	u32			tile_sight_height;
+	/*08*/	u32			field_8;
+	/*0C*/	u32			field_C;
+	/*10*/	u32			always9;
+	/*14*/	u32			tile_count;
+	/*18*/	SightTile*	tile;
 };
 
-typedef void __fastcall sight_callback_t(u32 tile_x, u32 tile_y, SightRange* sight_range, u32 active_tile_int, u32 relative_flags, u32 new_flags);
+typedef void __fastcall sight_callback_t(u32 tile_x, u32 tile_y, SightRange* sight_range, ActiveTile* active_tile_int, u32 relative_flags, u32 new_flags);
 struct SightCallbacks { // From IDA
 	sight_callback_t* ground[2];
 	sight_callback_t* air[2];
@@ -1390,12 +1390,6 @@ struct vf4 {
 
 struct VF4 {
 	vf4 tile[1][16];
-};
-
-typedef void __fastcall sight_callback_t_df(u32 tile_x, u32 tile_y, SightRange* sight_range, ActiveTile* active_tile_int, u32 relative_flags, u32 new_flags);
-struct SightCallbacksDF {
-	sight_callback_t_df* inside[2];
-	sight_callback_t_df* edge[2];
 };
 
 #pragma pack()

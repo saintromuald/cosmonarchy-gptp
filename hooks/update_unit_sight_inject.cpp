@@ -80,11 +80,11 @@ namespace {
 			MOV EBP, ESP
 			MOV sightRange, EAX
 			MOV visionFlags, ECX
-		//	MOV ptY, EDX
+			MOV ptY, EDX
 			MOV EAX, [EBP + 0x08]
 			MOV ptX, EAX
-			MOV EAX, [EBP + 0x0C]
-			MOV ptY, EAX
+		//	MOV EAX, [EBP + 0x0C]
+		//	MOV ptY, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV isAirUnit, EAX
 			PUSHAD
