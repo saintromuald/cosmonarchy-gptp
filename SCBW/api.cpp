@@ -994,13 +994,13 @@ namespace scbw {
 		if (!can_use_cliff_advantage(unit, weapon)) {
 			return 0;
 		}
-		s32 source_height = xHeight_table[g_map_tile_size->width * (unit->position.y >> 5) + (unit->position.x >> 5)] / 2;
+		s32 source_height = xHeight_table[g_map_tile_size->width * (unit->position.y >> 5) + (unit->position.x >> 5)];
 		if (!target_unit) {
 			return source_height * 2;
 		} else if (target_unit->status & UnitStatus::InAir) {
 			return 0;
 		}
-		s32 target_height = xHeight_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)] / 2;
+		s32 target_height = xHeight_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
 		return std::max(source_height - target_height, 0) * 2;
 	}
 

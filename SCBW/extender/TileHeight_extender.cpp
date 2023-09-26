@@ -24,7 +24,8 @@ namespace scbw {
 			s32 height = 0;
 
 			do {
-				if (--minitile->flags & 1) {
+				--minitile;
+				if (minitile->flags & 1) {
 					height += ((minitile->flags >> 1) & 0x3) + minitile->xHeight;
 				}
 			} while (++i_0 < 16);
