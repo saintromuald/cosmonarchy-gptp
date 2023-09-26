@@ -11,47 +11,33 @@
 
 namespace offsets
 {
-    const u32 SightStructArrayRef   = 0x00480709; //The pointer to the SightStruct array must be injected here
-    const u32 InitializeSightValues = 0x0042AD60; //The internal function responsible for setting up the array
+    const u32 SightStructArrayRef   = 0x00480709; // The pointer to the SightStruct array must be injected here
+    const u32 InitializeSightValues = 0x0042AD60; // The internal function responsible for setting up the array
 }
-
-struct SightStruct
-{
-    u32 tileSightWidth;
-    u32 tileSightHeight;
-    u32 unknown1;
-    u32 unknown2;
-    u32 unknown3;
-    u32 unknown4;
-    u32 unknown5;
-};
-
-C_ASSERT(sizeof(SightStruct) == 28);
-//static_assert(sizeof(SightStruct) == 28, "The count of the SightStruct structure is invalid");
 
 //Sight distance varies between 0 and MAX_SIGHT_RANGE, inclusive
 template <u32 MAX_SIGHT_RANGE>
 void set_max_sight_range()
 {
-    static SightStruct sightData[MAX_SIGHT_RANGE + 1] = {};
+    static SightRange sight_data[MAX_SIGHT_RANGE + 1] = {};
 
     for (u32 x = 0; x <= MAX_SIGHT_RANGE; ++x) {
-        sightData[x].tileSightWidth   = x * 2 + 3;
-        sightData[x].tileSightHeight  = x * 2 + 3;
-        sightData[x].unknown1 = 3;
-        sightData[x].unknown2 = 3;
+        sight_data[x].tile_sight_width   = x * 2 + 3;
+        sight_data[x].tile_sight_height  = x * 2 + 3;
+        sight_data[x].unk_08 = 3;
+        sight_data[x].unk_0C = 3;
     }
 
-    memory_patch(offsets::SightStructArrayRef, &sightData);
+    memory_patch(offsets::SightStructArrayRef, &sight_data);
 
-    const u16 mapTileWidth = g_map_tile_size->width;
-    const u32 sightRangeParam = MAX_SIGHT_RANGE + 1;
+    const u16 map_tile_width = g_map_tile_size->width;
+    const u32 sight_range_param = MAX_SIGHT_RANGE + 1;
     __asm {
         PUSHAD
-        MOVZX EAX, mapTileWidth
+        MOVZX EAX, map_tile_width
         PUSH EAX
-        MOV EAX, sightRangeParam
-        LEA ECX, sightData
+        MOV EAX, sight_range_param
+        LEA ECX, sight_data
         CALL [offsets::InitializeSightValues]
         POPAD
   }
