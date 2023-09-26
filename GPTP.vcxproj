@@ -288,6 +288,7 @@
     <ClCompile Include="hooks\orders\orders_root.cpp" />
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="req_table.cpp" />
+    <ClCompile Include="SCBW\ExtendSightLimit.cpp" />
     <ClCompile Include="SCBW\scbwdata.cpp" />
     <ClCompile Include="SCBW\Storm.cpp" />
     <ClCompile Include="selection_extender.cpp" />

@@ -1,22 +1,11 @@
-/// This header file contains the structures and functions that allow you to
-/// change the maximum sight distance limit in StarCraft.
-
-/// To use, add the following code to the game_on() function in hooks/game_hooks.cpp:
-///    set_max_sight_range<20>();  //Sets maximum sight distance to 20
-
 #pragma once
 #include "../definitions.h"
 #include "../hook_tools.h"
+
+#define MAX_SIGHT_RANGE 20
+
 #pragma pack(1)
-
-namespace offsets
-{
-    const u32 SightStructArrayRef   = 0x00480709; //The pointer to the SightStruct array must be injected here
-    const u32 InitializeSightValues = 0x0042AD60; //The internal function responsible for setting up the array
-}
-
-struct SightStruct
-{
+struct SightStruct {
     u32 tileSightWidth;
     u32 tileSightHeight;
     u32 unknown1;
@@ -25,36 +14,10 @@ struct SightStruct
     u32 unknown4;
     u32 unknown5;
 };
-
-C_ASSERT(sizeof(SightStruct) == 28);
-//static_assert(sizeof(SightStruct) == 28, "The count of the SightStruct structure is invalid");
-
-//Sight distance varies between 0 and MAX_SIGHT_RANGE, inclusive
-template <u32 MAX_SIGHT_RANGE>
-void set_max_sight_range()
-{
-    static SightStruct sightData[MAX_SIGHT_RANGE + 1] = {};
-
-    for (u32 x = 0; x <= MAX_SIGHT_RANGE; ++x) {
-        sightData[x].tileSightWidth   = x * 2 + 3;
-        sightData[x].tileSightHeight  = x * 2 + 3;
-        sightData[x].unknown1 = 3;
-        sightData[x].unknown2 = 3;
-    }
-
-    memory_patch(offsets::SightStructArrayRef, &sightData);
-
-    const u16 mapTileWidth = g_map_tile_size->width;
-    const u32 sightRangeParam = MAX_SIGHT_RANGE + 1;
-    __asm {
-        PUSHAD
-        MOVZX EAX, mapTileWidth
-        PUSH EAX
-        MOV EAX, sightRangeParam
-        LEA ECX, sightData
-        CALL [offsets::InitializeSightValues]
-        POPAD
-  }
-}
-
 #pragma pack()
+C_ASSERT(sizeof(SightStruct) == 28);
+
+extern SightStruct g_sight_ranges[MAX_SIGHT_RANGE + 1];
+
+void set_max_sight_range();
+

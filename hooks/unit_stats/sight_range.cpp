@@ -3,7 +3,6 @@
 
 const s32 DEFAULT_SIGHT_RANGE = 4;
 const s32 BLIND_SIGHT_RANGE = 2;
-const s32 MAX_SIGHT_RANGE = 11;
 
 namespace hooks
 {
