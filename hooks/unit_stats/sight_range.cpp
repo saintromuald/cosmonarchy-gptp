@@ -1,9 +1,6 @@
 #include "sight_range.h"
 #include <SCBW/api.h>
 
-const s32 DEFAULT_SIGHT_RANGE = 4;
-const s32 BLIND_SIGHT_RANGE = 2;
-
 namespace hooks
 {
 	/// Returns the modified sight distance of the unit, measured in matrices.

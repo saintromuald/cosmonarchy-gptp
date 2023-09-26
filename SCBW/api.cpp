@@ -2145,7 +2145,7 @@ namespace scbw {
 			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 			// Unit Morphs
-			case UnitId::ZergIroleth:				return UnitId::;
+			case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
 			case UnitId::ZergKalkalisk:				return UnitId::ZergNathrokor;
