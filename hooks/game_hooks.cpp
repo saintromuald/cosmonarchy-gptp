@@ -729,9 +729,6 @@ namespace hooks {
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
 			scbw::weapon_tile_heights();
-			if (game_data->teams_enabled) {
-				scbw::print("Teams are enabled.");
-			}
 			init_screen_locations();
 			hooks::init_actions();
 			iquare_globals.reset();
