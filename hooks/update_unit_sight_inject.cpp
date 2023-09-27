@@ -105,8 +105,8 @@ namespace {
 
 		__asm {
 			PUSHAD
-			MOV offsetX, EAX
-			MOV offsetY, ECX
+			MOV offsetY, EAX
+			MOV offsetX, ECX
 		}
 
 		offsetX = hooks::get_ground_height_at_px(offsetY, offsetX);
