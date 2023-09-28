@@ -24,16 +24,18 @@ namespace scbw {
 			s32 height = 0;
 
 			do {
-				--minitile;
-				if (minitile->flags & 1) {
+				if ((--minitile)->flags & 1) {
 					height += ((minitile->flags >> 1) & 0x3) + minitile->xHeight;
 				}
 			} while (++i_0 < 16);
 
-			height = (height + (i_0 >> 1)) / i_0;
+			s32 i_1 = height < 0 ? -i_0 : i_0;
+			height = (height + (i_1 >> 1)) / i_0;
+
 			if (height > 127) {
 				height = 127;
 			}
+
 			xHeight_table[tile] = height;
 
 			if (height < base_height)

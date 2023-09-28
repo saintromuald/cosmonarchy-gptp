@@ -603,10 +603,10 @@ namespace hooks
 			}
 			if (units_dat::group_flags[unit->id].is_terran)
 			{
-				Unit* parent = helper::connect_addon_check(unit);
-				if (parent)
+				Unit* addon = helper::connect_addon_check(unit);
+				if (addon)
 				{
-					helper::complete_addon(parent, unit);
+					helper::complete_addon(unit, addon);
 				}
 			}
 			return 1;
