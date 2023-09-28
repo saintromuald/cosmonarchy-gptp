@@ -3419,6 +3419,9 @@ namespace scbw {
 
 	void reveal_attacker(Unit* attacker, Unit* victim)
 	{
+		if (!attacker) {
+			return;
+		}
 		u32 flags = 1 << victim->player;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (scbw::is_vision_allied_to(victim->player, i)) {

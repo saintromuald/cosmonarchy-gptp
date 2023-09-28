@@ -2547,9 +2547,17 @@ namespace hooks {
 								} break;
 								case UnitId::ZergLakizilisk:
 								{
+									bool is_mixed = false;
+									for (u32 i = 0; i < *g_client_selection_count; ++i) {
+										Unit* selected = g_client_selection_group->unit[i];
+										if (selected->id != unit->id) {
+											is_mixed = true;
+										}
+									}
 									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed attacker
-										if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow)
-										{
+										if (is_mixed) {
+											current_button_state = Button_State::Enabled;
+										} else if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Disabled;

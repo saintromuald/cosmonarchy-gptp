@@ -124,7 +124,7 @@ namespace hooks {
 		if (!tile_id)
 			tile_id = (u16)(*MTXMHandle)->tile[grid_pos];
 
-		u32 megatile_id = (u16)((*cv5FileHandle)->group[(tile_id >> 4) & 0x7FF].tiles[tile_id & 0xF]);
+		u32 megatile_id = (u16)((*cv5FileHandle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
 		vf4 minitile = (*vf4FileHandle)->tile[megatile_id][4 * ((offsetY >> 3) & 3) + ((offsetX >> 3) & 3)];
 		return ((minitile.flags >> 1) & 0x3) + minitile.xHeight;
 	}

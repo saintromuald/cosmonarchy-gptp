@@ -10,7 +10,7 @@ namespace scbw {
 		if (!tile_id)
 			tile_id = (u16)(*MTXMHandle)->tile[gridPos];
 
-		u32 megatile_id = (u16)((*cv5FileHandle)->group[(tile_id >> 4) & 0x7FF].tiles[tile_id & 0xF]);
+		u32 megatile_id = (u16)((*cv5FileHandle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
 		return (vf4*)(*vf4FileHandle)->tile[megatile_id + 1];
 	}
 
@@ -20,7 +20,7 @@ namespace scbw {
 
 		for (u32 tile = 0; tile < map_size; ++tile) {
 			vf4* minitile = get_minitile(tile);
-			u32 i_0 = 0;
+			s32 i_0 = 0;
 			s32 height = 0;
 
 			do {

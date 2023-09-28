@@ -346,8 +346,8 @@ namespace hooks
 			{
 				u32 direction = unit->current_direction_2;
 				unit->current_speed_1 = speed;
-				unit->current_velocity.x = (speed * g_angle_distance[direction].x) >> 8;
-				unit->current_velocity.y = (speed * g_angle_distance[direction].y) >> 8;
+				unit->current_velocity.x = (s32)(speed * g_angle_distance[direction].x) >> 8;
+				unit->current_velocity.y = (s32)(speed * g_angle_distance[direction].y) >> 8;
 			}
 			return unit;
 		}
