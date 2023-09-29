@@ -39,7 +39,6 @@ const s32 ShamanHeal = 4;
 // Madcap
 const s32 MadcapPassiveDecayTime = 0.5 * 24;
 const s32 MadcapMaxStacks = 10;
-const f64 MadcapAttackSpeedPerStack = 0.05;
 
 // Apostle
 const s32 ApostleLastBreathEnergyGain = 5 * 256;
@@ -70,8 +69,8 @@ const s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
 const s32 SeraphIrradiateTimer = 10;
 
 // Azazel
-const s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
-const s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
+const s32 AzazelDefensiveMatrixTimer = 30; // roughly 10 seconds
+const s32 AzazelDefensiveMatrixHeal = 107; // ~10 HP per second | 256 * 5 / 24
 
 // Centaur
 const s32 CentaurMissileDistance = 4 * 32;

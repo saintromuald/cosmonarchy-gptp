@@ -68,7 +68,7 @@ namespace hooks {
 				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary
 				u32 stacks = ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime);
 				if (stacks > 0) {
-					f64 new_cooldown = (f64)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
+					f64 new_cooldown = (f64)cooldown / (1 + stacks * 0.15);
 					cooldown = new_cooldown;
 				}
 			} break;
