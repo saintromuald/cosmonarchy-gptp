@@ -70,6 +70,10 @@ void load_config() {
 		load_field(config_node, "show-team-ui-names", config.show_team_ui_names);
 		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
+		// Scrolling
+		load_field(config_node, "use-pan-scrolling", config.use_pan_scrolling);
+		load_field(config_node, "scroll-sensitivity", config.scroll_sensitivity);
+
 		// Audiovisuals
 		load_advisors(config_node, "common-advisors", &config.common_advisors);
 		load_advisors(config_node, "terran-advisors", &config.terran_advisors);
@@ -137,6 +141,11 @@ void save_config() {
 	write_field(out, "show-team-ui-apm", config.show_team_ui_apm);
 	write_field(out, "show-team-ui-names", config.show_team_ui_names);
 	write_field(out, "show-team-ui-self", config.show_team_ui_self);
+	out << YAML::Newline << YAML::Newline;
+
+	out << YAML::Comment("Scrolling");
+	write_field(out, "use-pan-scrolling", config.use_pan_scrolling);
+	write_field(out, "scroll-sensitivity", config.scroll_sensitivity);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Audiovisuals");

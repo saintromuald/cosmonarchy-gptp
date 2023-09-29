@@ -10,11 +10,13 @@ struct ApmCounter {
 	u32 action_time[MaxActions];
 };
 
+const u32 ui_text_height = 15;
+extern Point16 ui_text_pos;
+
 extern ApmCounter local_apm_counter;
 extern ApmCounter player_apm_counter[PlayerLimit];
 
-const u32 ui_text_height = 15;
-extern Point16 ui_text_pos;
+extern bool disable_mouse_scroll;
 
 void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short);
 
@@ -48,6 +50,10 @@ namespace hooks {
 	void init_actions();
 	void update_actions();
 	void draw_ui_features();
+
+	char input_mmb_down(DialogEvent* event);																				// 00484520
+	int __cdecl input_mmb_up();																								// 004843A0
+	void __cdecl input_mmb_move();																							// 00484460
 }
 
 #define tIconCount 7

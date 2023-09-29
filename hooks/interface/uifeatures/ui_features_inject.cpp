@@ -466,6 +466,21 @@ namespace
 		}
 	}
 
+	void __declspec(naked) input_mmb_down_wrapper() { // 00484520
+		static char result;
+		static DialogEvent* event;
+		__asm {
+			MOV event, ECX
+			PUSHAD
+		}
+		result = hooks::input_mmb_down(event);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -483,6 +498,19 @@ namespace
 			MOV		byte ptr[EBP - 3], 0
 			MOV		byte ptr[EBP - 4], 3
 			JMP		replayStatBtns_27AE4
+		}
+	}
+
+	void __declspec(naked) get_scroll_directions_partial() { // 0047F155
+		static const u32 jmp_back = 0x004D12A0;
+		if (disable_mouse_scroll) {
+			__asm {
+				MOV EAX, 0
+				RET
+			}
+		}
+		__asm {
+			JMP jmp_back
 		}
 	}
 }
@@ -517,6 +545,10 @@ namespace hooks
 		jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);
 	//	jump_patch(load_statdata_bin_wrapper,				0x00459B90, 4);
 	//	jump_patch(print_stat_res_info_wrapper,				0x004E52E0, 0); // Crashes
+		jump_patch(input_mmb_down_wrapper,					0x00484520, 0);
+		jump_patch(input_mmb_up,							0x004843A0, 0);
+		jump_patch(input_mmb_move,							0x00484460, 1);
+		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 

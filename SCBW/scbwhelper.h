@@ -25,6 +25,8 @@ namespace helper {
 	SCBW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
 	SCBW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, void* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
 	SCBW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
+	SCBW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
+	SCBW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
@@ -1657,4 +1659,9 @@ namespace helper {
 
 	void set_unit_hp(Unit* unit, u32 amount);					// 00467340
 	s32 unit_movement_another_path(Unit* unit, Point16 dest);	// 0042FE00
+
+	void scroll_screen_left(u32 x_diff);						// 0049C1A0 
+	void scroll_screen_right(u32 x_diff);						// 0049C0C0 
+	void scroll_screen_down(u32 y_diff);						// 0049C280 
+	void scroll_screen_up(u32 y_diff);							// 0049C360 
 }

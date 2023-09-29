@@ -14182,4 +14182,44 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void scroll_screen_left(u32 x_diff) { // 0049C1A0 
+		const u32 func_address = 0x0049C1A0;
+		__asm {
+			PUSHAD
+			MOV EAX, x_diff
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void scroll_screen_right(u32 x_diff) { // 0049C0C0 
+		const u32 func_address = 0x0049C0C0;
+		__asm {
+			PUSHAD
+			MOV EDX, x_diff
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void scroll_screen_down(u32 y_diff) { // 0049C280 
+		const u32 func_address = 0x0049C280;
+		__asm {
+			PUSHAD
+			MOV EDX, y_diff
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void scroll_screen_up(u32 y_diff) { // 0049C360 
+		const u32 func_address = 0x0049C360;
+		__asm {
+			PUSHAD
+			MOV EAX, y_diff
+			CALL func_address
+			POPAD
+		}
+	}
 }

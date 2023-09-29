@@ -22,6 +22,8 @@ Point16 ui_text_pos;
 
 CmdBtnPalette new_cmdbtn_palette[tIconCount];
 
+bool disable_mouse_scroll;
+
 void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short) {
 	u32 sec = seconds % 60;
 	u32 min = seconds / 60 % 60;
@@ -1008,5 +1010,48 @@ LABEL_15:
 				helper::update_dialog(dialog);
 			}
 		}
+	}
+
+	char input_mmb_down(DialogEvent* event) {
+		disable_mouse_scroll = true;
+		*g_mmb_pos_x = g_mouse->x;
+		*g_mmb_pos_y = g_mouse->y;
+		g_input_procs->funcs[3] = (InputProcsFunc*) 0x00484460;
+		return helper::refresh_cursor_0();
+	}
+
+	int __cdecl input_mmb_up() {
+		disable_mouse_scroll = false;
+		g_input_procs->funcs[3] = (InputProcsFunc*) 0;
+		return helper::cursor_refresh();
+	}
+
+	static void scroll_screen(s32 dx, s32 dy) {
+		if (dx < 0) {
+			helper::scroll_screen_left(-dx);
+		} else if (dx > 0) {
+			helper::scroll_screen_right(dx);
+		}
+		if (dy < 0) {
+			helper::scroll_screen_up(-dy);
+		} else if (dy > 0) {
+			helper::scroll_screen_down(dy);
+		}
+	}
+
+	void __cdecl input_mmb_move() {
+		s32 dx = (s32)g_mouse->x - (s32)*g_mmb_pos_x;
+		s32 dy = (s32)g_mouse->y - (s32)*g_mmb_pos_y;
+
+		s32 sens = config.scroll_sensitivity;
+		s32 sdx = dx * sens;
+		s32 sdy = dy * sens;
+		if (config.use_pan_scrolling) {
+			scroll_screen(sdx, sdy);
+		} else {
+			scroll_screen(-sdx, -sdy);
+		}
+
+		SetCursorPos(*g_mmb_pos_x, *g_mmb_pos_y);
 	}
 }

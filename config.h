@@ -41,6 +41,10 @@ struct Config {
 	bool show_team_ui_names = false;
 	bool show_team_ui_self = false;
 
+	// Scrolling
+	bool use_pan_scrolling = false;
+	u32 scroll_sensitivity = 1;
+
 	// Audiovisuals
 	AdvisorSetting common_advisors = {
 		{ advisor_symbol_names[AdvisorType_Default] },
