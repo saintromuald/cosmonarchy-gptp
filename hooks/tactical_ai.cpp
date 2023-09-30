@@ -1032,12 +1032,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			}
 			*/
 		} else if (unit->id == UnitId::TerranSavant) {
-			Unit* target = unit->order_target.unit;
-			if (target && target->energy > 5 * 256 && unit->energy < 190 * 256) {
-				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 1);
-			} else {
-				scbw::set_generic_rust_value(unit, RustId::ToggleSavantOnhit, 0);
-			}
+			// AI toggle was here, but it was checking for target energy, which is super old. -Pr0nogo
 		} else if (unit->id == UnitId::TerranMadrigalImperiosoMode) {
 			if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] && unit->main_order_id != OrderId::SiegeMode) {
 				f32 furia_damage_potential = get_furia_damage_potential(unit);

@@ -437,7 +437,7 @@ namespace hooks
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
 
 		// Vanilla Timer + Value
-		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 200, unit->defensive_matrix_timer);
+		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 100, unit->defensive_matrix_timer);
 
 		// Vanilla Timers
 		add_status(statuses, "Stimpack", -1, 1, unit->stim_timer);

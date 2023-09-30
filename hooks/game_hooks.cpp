@@ -1694,6 +1694,7 @@ namespace hooks {
 						if (!unit->get_overlay(image_id) && teleport) {
 							scbw::add_unit_overlay(unit, image_id);
 						}
+						scbw::decloak_proc(unit);
 					}
 				}
 			} break;
@@ -2520,6 +2521,9 @@ namespace hooks {
 		if (unit->plague_timer > IsthrathalethPlagueTimer) {
 			unit->plague_timer = IsthrathalethPlagueTimer;
 		}
+		if (unit->defensive_matrix_hp > 100 * 256) {
+			unit->defensive_matrix_hp = 100 * 256;
+		}
 
 		// Striga - Fleeting Focus
 		if (unit_ext->timers[TimerStrigaRepulsion]) {
@@ -2573,6 +2577,8 @@ namespace hooks {
 		// Gorgon - Petrification - clear stacks
 		if (unit_ext->timers[TimerPetrification] == 1) {
 			unit_ext->values[ValuePetrificationStacks] = 0;
+			should_update_speed = true;
+		} else if (unit_ext->timers[TimerPetrification] > 1) {
 			should_update_speed = true;
 		}
 
@@ -2996,24 +3002,27 @@ namespace hooks {
 		}
 
 		// Claymore - Kelvin Munitions - Create overlays
-		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1) // Piggybacking overlay from Claymore, for now. -Pr0nogo
-		&& !unit_ext->timers[TimerClaymoreKelvinMunitionsZap])
+		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1)) // Piggybacking overlay from Claymore, for now. -Pr0nogo
 		{
-			u32 width = units_dat::unit_bounds[unit->id].x * 0.75;
-			u32 height = units_dat::unit_bounds[unit->id].y * 0.75;
+			should_update_speed = true;
+			if (!unit_ext->timers[TimerClaymoreKelvinMunitionsZap])
+			{
+				u32 width = units_dat::unit_bounds[unit->id].x * 0.75;
+				u32 height = units_dat::unit_bounds[unit->id].y * 0.75;
 
-			s32 x_offset = scbw::random() % width - width / 2;
-			s32 y_offset = scbw::random() % height - height / 2;
+				s32 x_offset = scbw::random() % width - width / 2;
+				s32 y_offset = scbw::random() % height - height / 2;
 
-			x_offset = MathUtils::clamp(x_offset, -127, 128);
-			y_offset = MathUtils::clamp(y_offset, -127, 128);
+				x_offset = MathUtils::clamp(x_offset, -127, 128);
+				y_offset = MathUtils::clamp(y_offset, -127, 128);
 
-			Unit* final_unit = unit;
-			if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-				final_unit = unit->subunit;
+				Unit* final_unit = unit;
+				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+					final_unit = unit->subunit;
+				}
+				final_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+				unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 			}
-			final_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
-			unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 		}
 
 		// Remove Maelstrom overlays

@@ -451,6 +451,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 		case WeaponId::PatriarchIronhandWeaver:
 		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::IdolPrismaticBlaster:
+		case WeaponId::PositronAntimatterMissile:
 		case WeaponId::StarSovereignInterventionMissiles:
 			return InterceptType_Any;
 	}

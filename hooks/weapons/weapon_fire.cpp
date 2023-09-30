@@ -481,15 +481,8 @@ namespace hooks {
 					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
 						if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-							u32 energy = 10 * 256;
-							if (unit->energy >= energy) {
-								unit->spend_unit_energy(energy);
-								helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
-								fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
-							} else {
-								unit_ext->energy_regen_timer = 0;
-								fire_bullet(unit, weapon_id, unit->order_target);
-							}
+							helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
+							fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
 						} else {
 							fire_bullet(unit, weapon_id, unit->order_target);
 						}

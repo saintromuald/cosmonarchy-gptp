@@ -1120,6 +1120,10 @@ void __declspec(naked) add_to_control_group_patch_969D9() {
 		MOV		EDX, [ECX + EAX * 4]
 		MOV[ECX + EBX * 4], EDX//ccmu_extender.new_saved_selections[player][group][slot] = ccmu_extender.new_saved_selections[player][group][count];
 		MOV		dword ptr[ECX + EAX * 4], 0//ccmu_extender.new_saved_selections[player][group][count] = NULL;
+		CMP		EBX, EAX
+		JL		offset loc_4969E0
+		MOV		EBX, [EBP - 0x10]//group
+		JMP		add_to_control_group_96AEC
 
 	loc_496ADD:
 		INC		EBX
