@@ -1694,6 +1694,7 @@ namespace hooks {
 						if (!unit->get_overlay(image_id) && teleport) {
 							scbw::add_unit_overlay(unit, image_id);
 						}
+						scbw::decloak_proc(unit);
 					}
 				}
 			} break;
