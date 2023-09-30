@@ -27,6 +27,7 @@ namespace helper {
 	SCBW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
 	SCBW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
 	SCBW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
+	SCBW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 

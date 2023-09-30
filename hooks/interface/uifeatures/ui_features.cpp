@@ -1027,31 +1027,37 @@ LABEL_15:
 	}
 
 	static void scroll_screen(s32 dx, s32 dy) {
-		if (dx < 0) {
-			helper::scroll_screen_left(-dx);
-		} else if (dx > 0) {
-			helper::scroll_screen_right(dx);
-		}
-		if (dy < 0) {
-			helper::scroll_screen_up(-dy);
-		} else if (dy > 0) {
-			helper::scroll_screen_down(dy);
-		}
+		*g_move_to_x = Clamp((s32)*g_move_to_x + dx, 0, *g_map_width_pixels);
+		*g_move_to_y = Clamp((s32)*g_move_to_y + dy, 0, *g_map_height_pixels - 480);
+
+		*g_move_to_tile_x = *g_move_to_x >> 5;
+		*g_move_to_tile_y = *g_move_to_y >> 5;
+
+		helper::update_screen_position();
 	}
 
-	void __cdecl input_mmb_move() {
-		s32 dx = (s32)g_mouse->x - (s32)*g_mmb_pos_x;
-		s32 dy = (s32)g_mouse->y - (s32)*g_mmb_pos_y;
+	static Vector32f mouse_error;
 
-		s32 sens = config.scroll_sensitivity;
-		s32 sdx = dx * sens;
-		s32 sdy = dy * sens;
+	void __cdecl input_mmb_move() {
+		POINT mouse = {};
+		GetCursorPos(&mouse);
+		s32 dx = (s32)mouse.x - (s32)*g_mmb_pos_x;
+		s32 dy = (s32)mouse.y - (s32)*g_mmb_pos_y;
+		scbw::printf("%i %i", dx, dy);
+
+		f32 sens = config.scroll_sensitivity;
+		f32 sdx = dx * sens + mouse_error.x;
+		f32 sdy = dy * sens + mouse_error.y;
 		if (config.use_pan_scrolling) {
 			scroll_screen(sdx, sdy);
 		} else {
 			scroll_screen(-sdx, -sdy);
 		}
+		mouse_error.x = sdx - (s32)sdx;
+		mouse_error.y = sdy - (s32)sdy;
 
-		SetCursorPos(*g_mmb_pos_x, *g_mmb_pos_y);
+		if (dx || dy) {
+			SetCursorPos(*g_mmb_pos_x, *g_mmb_pos_y);
+		}
 	}
 }

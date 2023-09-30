@@ -43,7 +43,7 @@ struct Config {
 
 	// Scrolling
 	bool use_pan_scrolling = false;
-	u32 scroll_sensitivity = 1;
+	f32 scroll_sensitivity = 1.0;
 
 	// Audiovisuals
 	AdvisorSetting common_advisors = {
