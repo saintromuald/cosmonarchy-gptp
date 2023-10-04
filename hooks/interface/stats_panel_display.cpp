@@ -1040,17 +1040,13 @@ namespace hooks
 				if (queueSlot >= 5)
 				{
 					current_dialog = 0;
-				}
-				else
-				{
+				} else {
 					u32 slotUnitId = unit->build_queue[(unit->build_queue_slot + queueSlot) % 5];
 					char* slot_text;
 					if (queueSlot == 0)
 					{
 						slot_text = (char*)FORMATSTRING_COLORYELLOW_VALUE_COLORCYAN_SPACE;	// queued slot number display (yellow)
-					}
-					else
-					{
+					} else {
 						slot_text = (char*)FORMATSTRING_VALUE_SPACE;						// active slot number display (cyan)
 					}
 
@@ -1058,9 +1054,7 @@ namespace hooks
 					if (queueSlot == 0 || queueSlot >= 4)
 					{
 						current_dialog->graphic = 2;
-					}
-					else
-					{
+					} else {
 						current_dialog->graphic = 4;
 					}
 
@@ -1072,9 +1066,7 @@ namespace hooks
 						current_dialog->stat_button_user->id = slotUnitId;
 						helper::enable_control(current_dialog);
 						current_dialog->text = g_queues_buffers[queueSlot];
-					}
-					else
-					{
+					} else {
 						current_dialog->stat_button_user->button_grp = *g_cmdbtns_handle; // This global was previously defined as void**. -Pr0nogo
 						current_dialog->stat_button_user->grp_frame = queueSlot + 6;
 						current_dialog->stat_button_user->type = 6;
@@ -1095,9 +1087,7 @@ namespace hooks
 			if (unit->status & UnitStatus::GroundedBuilding && unit->is_frozen())
 			{
 				progress_string_id = 0x33C; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
-			}
-			else
-			{
+			} else {
 				u32 unit_id = unit->id;
 				if (!(unit->status & UnitStatus::Completed))
 				{
@@ -1112,9 +1102,7 @@ namespace hooks
 				if (unit_id_is_protoss_warp_factory(unit_id)) // TODO: Revisit this, probably a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
 				{
 					progress_string_id = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
-				}
-				else
-				{
+				} else {
 					progress_string_id = 0x306; //"Morphing" ("Building" for Terran and Protoss)
 				}
 
@@ -1125,9 +1113,7 @@ namespace hooks
 			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 			{
 				current_dialog = dialog->child_dialog;
-			}
-			else
-			{
+			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
@@ -1195,8 +1181,7 @@ namespace hooks
 		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 		{
 			current_dialog = dialog->child_dialog;
-		}
-		else {
+		} else {
 			current_dialog = dialog->parent->child_dialog;
 		}
 
@@ -1238,9 +1223,7 @@ namespace hooks
 			if (current_dialog->index == unk)
 			{
 				current_dialog = 0;
-			}
-			else
-			{
+			} else {
 				current_dialog = current_dialog->next;
 			}
 		}
@@ -1264,8 +1247,7 @@ namespace hooks
 			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 			{
 				current_dialog = dialog->child_dialog;
-			}
-			else {
+			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
@@ -1277,9 +1259,7 @@ namespace hooks
 			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 			{
 				current_dialog = dialog->child_dialog;
-			}
-			else
-			{
+			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
@@ -1288,14 +1268,11 @@ namespace hooks
 				current_dialog = current_dialog->next;
 			}
 			helper::hide_dialog(current_dialog);
-		}
-		else // TODO: Something in this half of the hook is cucko. -Pr0nogo
-		{
+		} else { // TODO: Something in this half of the hook is cucko. -Pr0nogo
 			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 			{
 				current_dialog = dialog->child_dialog;
-			}
-			else {
+			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 			while (current_dialog && current_dialog->index != 2)
@@ -1317,10 +1294,9 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				target = unit->order_target.unit;
-			}
-			else if (unit->secondary_order_id == OrderId::Train
-			||		 unit->secondary_order_id == OrderId::TrainFighter
-			||		 helper::is_constructing_addon(unit))
+			} else if (unit->secondary_order_id == OrderId::Train
+			||		   unit->secondary_order_id == OrderId::TrainFighter
+			||		   helper::is_constructing_addon(unit))
 			{
 				target = unit->current_build_unit;
 			}
@@ -1362,9 +1338,7 @@ namespace hooks
 		||	unit->main_order_id != OrderId::CompletingArchonSummon)
 		{
 			helper::unit_stat_act_standard(dialog);
-		}
-		else
-		{
+		} else {
 			helper::show_control_group(dialog, -30, 13);
 			if (*g_status_screen_func != 6)
 			{

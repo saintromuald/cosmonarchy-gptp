@@ -545,15 +545,15 @@ namespace hooks
 		jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);
 	//	jump_patch(load_statdata_bin_wrapper,				0x00459B90, 4);
 	//	jump_patch(print_stat_res_info_wrapper,				0x004E52E0, 0); // Crashes
-		jump_patch(input_mmb_down_wrapper,					0x00484520, 0);
-		jump_patch(input_mmb_up,							0x004843A0, 0);
-		jump_patch(input_mmb_move,							0x00484460, 1);
-		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
+	//	jump_patch(input_mmb_down_wrapper,					0x00484520, 0);
+	//	jump_patch(input_mmb_up,							0x004843A0, 0);
+	//	jump_patch(input_mmb_move,							0x00484460, 1);
+	//	call_patch(get_scroll_directions_partial,			0x0047F155, 0);
 
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 
 		// Passive icon colorization -- extension of color remaps. -DF
-		memory_patch(0x00459C1D, (u8)0x70);//Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.
+		memory_patch(0x00459C1D, (u8)0x70); // Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.
 		memory_patch(0x00456C59, &new_cmdbtn_palette);
 		memory_patch(0x004589D5, &new_cmdbtn_palette);
 		memory_patch(0x00459C1F, &new_cmdbtn_palette);

@@ -233,6 +233,7 @@ const std::vector<u32> banned_colors = {
 	PlayerColor::IridescentViolet,
 	PlayerColor::RainbowNew,
 	PlayerColor::PatrioticFreedom,
+	PlayerColor::MetzenicProzac,
 };
 
 const std::vector<std::vector<std::vector<u32>>> personality_colors = {

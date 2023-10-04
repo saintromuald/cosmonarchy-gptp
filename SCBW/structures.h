@@ -1027,13 +1027,11 @@ struct StringTbl
 	const char* get_string(u16 index) const
 	{
 		//Based on function @ 0x004C36F0
-		if (index == 0) return nullptr;
-		else if (index <= get_string_count())
-		{
+		if (index == 0) {
+			return nullptr; 
+		} else if (index <= get_string_count()) {
 			return (const char*)(buffer)+buffer[index];
-		}
-		else
-		{
+		} else {
 			return (const char*)0x00501B7D;	//g_string_empty in scbwdata.h, SC default empty string
 		}
 	}

@@ -8109,7 +8109,7 @@ namespace helper {
 			PUSH height
 			PUSH width
 			PUSH buffersize
-			PUSH buffer
+			PUSH player_name
 			PUSH palette
 			PUSH filename
 			CALL Func_SBmpLoadImage
@@ -11909,7 +11909,7 @@ namespace helper {
 			PUSH value
 			PUSH format_string
 			MOV ESI, buffer_size
-			MOV EDI, buffer
+			MOV EDI, player_name
 			CALL func_address
 			ADD ESP, 0x08
 			POPAD
@@ -12645,7 +12645,7 @@ namespace helper {
 			PUSHAD
 			PUSH string_type
 			PUSH string
-			MOV EBX, buffer
+			MOV EBX, player_name
 			MOV ECX, data_len
 			MOV EAX, string_id
 			CALL func_address
@@ -12659,7 +12659,7 @@ namespace helper {
 		const u32 func_address = 0x004C2910;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			POPAD
 		}
@@ -12670,7 +12670,7 @@ namespace helper {
 		const u32 func_address = 0x004CF950;
 		__asm {
 			PUSHAD
-			MOV EBX, buffer
+			MOV EBX, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12694,7 +12694,7 @@ namespace helper {
 		const u32 func_address = 0x004C2750;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			POPAD
 		}
@@ -12704,7 +12704,7 @@ namespace helper {
 		const u32 func_address = 0x004C2560;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			POPAD
 		}
@@ -12714,7 +12714,7 @@ namespace helper {
 		const u32 func_address = 0x004BFB40;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			POPAD
 		}
@@ -12725,7 +12725,7 @@ namespace helper {
 		const u32 func_address = 0x004C23C0;
 		__asm {
 			PUSHAD
-			MOV ESI, buffer
+			MOV ESI, player_name
 			CALL func_address
 			MOV result, AX
 			POPAD
@@ -12738,7 +12738,7 @@ namespace helper {
 		const u32 func_address = 0x004BF9C0;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12750,7 +12750,7 @@ namespace helper {
 		const u32 func_address = 0x004C28A0;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			POPAD
 		}
@@ -12780,7 +12780,7 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV EDI, cheat
-			MOV EDX, buffer
+			MOV EDX, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12793,7 +12793,7 @@ namespace helper {
 		const u32 func_address = 0x004C2870;
 		__asm {
 			PUSHAD
-			MOV ECX, buffer
+			MOV ECX, player_name
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -12818,7 +12818,7 @@ namespace helper {
 		const u32 func_address = 0x004C2320;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			POPAD
 		}
@@ -12853,7 +12853,7 @@ namespace helper {
 		const u32 func_address = 0x004C2190;
 		__asm {
 			PUSHAD
-			MOV EDI, buffer
+			MOV EDI, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12902,7 +12902,7 @@ namespace helper {
 		const u32 func_address = 0x004C2040;
 		__asm {
 			PUSHAD
-			MOV EDI, buffer
+			MOV EDI, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12915,7 +12915,7 @@ namespace helper {
 		const u32 func_address = 0x004C1C20;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			MOV result, AX
 			POPAD
@@ -12928,7 +12928,7 @@ namespace helper {
 		const u32 func_address = 0x004C0100;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, AX
 			POPAD
@@ -12965,7 +12965,7 @@ namespace helper {
 		const u32 func_address = 0x004C1990;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12978,7 +12978,7 @@ namespace helper {
 		const u32 func_address = 0x004C1F10;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -12991,7 +12991,7 @@ namespace helper {
 		const u32 func_address = 0x004C1E80;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13016,7 +13016,7 @@ namespace helper {
 		const u32 func_address = 0x004C1CC0;
 		__asm {
 			PUSHAD
-			MOV EDI, buffer
+			MOV EDI, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13054,7 +13054,7 @@ namespace helper {
 		const u32 func_address = 0x004C20C0;
 		__asm {
 			PUSHAD
-			MOV EDI, buffer
+			MOV EDI, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13067,7 +13067,7 @@ namespace helper {
 		const u32 func_address = 0x004C1FA0;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13103,7 +13103,7 @@ namespace helper {
 		const u32 func_address = 0x004C1620;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			POPAD
 		}
@@ -13114,7 +13114,7 @@ namespace helper {
 		const u32 func_address = 0x004C1BA0;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13139,7 +13139,7 @@ namespace helper {
 		const u32 func_address = 0x004C1B20;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13173,7 +13173,7 @@ namespace helper {
 		const u32 func_address = 0x004C1910;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -13210,7 +13210,7 @@ namespace helper {
 		const u32 func_address = 0x004BF820;
 		__asm {
 			PUSHAD
-			MOV EDX, buffer
+			MOV EDX, player_name
 			CALL func_address
 			POPAD
 		}
@@ -13222,7 +13222,7 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV ESI, unused
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -13250,7 +13250,7 @@ namespace helper {
 		const u32 func_address = 0x004C2E90;
 		__asm {
 			PUSHAD
-			PUSH buffer
+			PUSH player_name
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -13263,7 +13263,7 @@ namespace helper {
 		const u32 func_address = 0x004BF7A0;
 		__asm {
 			PUSHAD
-			MOV EAX, buffer
+			MOV EAX, player_name
 			CALL func_address
 			MOV result, AL
 			POPAD
@@ -13302,7 +13302,7 @@ namespace helper {
 			PUSHAD
 			PUSH player_xd
 			MOV EDI, action_size
-			MOV EBX, buffer
+			MOV EBX, player_name
 			MOV EAX, game_actions
 			CALL func_address
 			POPAD
@@ -13723,7 +13723,7 @@ namespace helper {
 			PUSH value1
 			PUSH format_string
 			MOV ESI, buffer_size
-			MOV EDI, buffer
+			MOV EDI, player_name
 			CALL func_address
 			ADD ESP, 0x0C
 			POPAD
@@ -14221,5 +14221,77 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	void update_carryable_sprite_flags(Sprite* sprite)
+	{
+		const u32 func_address = 0x004981B0;
+		__asm {
+			PUSHAD
+			MOV EAX, sprite
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u32 snet_get_player_name(u32 player_id, int player_name, s32 some_index)
+	{
+		const u32 func_address = 0x00410184;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH some_index
+			PUSH player_name
+			PUSH player_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void print_lobby_string(u32 player_id, int string)
+	{
+		const u32 func_address = 0x004B91C0;
+		__asm {
+			PUSHAD
+			PUSH string
+			MOV EAX, player_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	b32 is_multiplayer_mode_bnet()
+	{
+		return *g_multiplayer_mode && *g_current_network_mode == 'BNET';
+	}
+
+	u32 snet_send_server_chat_command(char string)
+	{
+		const u32 func_address = 0x00410280;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH string
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 battlenet_play_sound(char unk1, u32 event_type, char unk2)
+	{
+		const u32 func_address = 0x004AD0B0;
+		__asm {
+			PUSHAD
+			PUSH unk2
+			PUSH event_type
+			PUSH unk1
+			CALL func_address
+			POPAD
+		}
+		return 0;
 	}
 }

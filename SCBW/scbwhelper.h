@@ -1665,4 +1665,12 @@ namespace helper {
 	void scroll_screen_right(u32 x_diff);						// 0049C0C0 
 	void scroll_screen_down(u32 y_diff);						// 0049C280 
 	void scroll_screen_up(u32 y_diff);							// 0049C360 
+
+	void update_carryable_sprite_flags(Sprite* sprite);			// 004981B0
+
+	u32 snet_get_player_name(u32 player_id, int player_name, s32 some_index);	// 00410184
+	void print_lobby_string(u32 player_id, int string);							// 004B91C0
+	b32 is_multiplayer_mode_bnet();												// 004C4200
+	u32 snet_send_server_chat_command(char string);								// 00410280
+	u32 battlenet_play_sound(char unk1, u32 event_type, char unk2);				// 004AD0B0
 }

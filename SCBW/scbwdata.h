@@ -1181,6 +1181,17 @@ SCBW_DATA(u32*,				g_gl_glues_mode,					0x006D11BC);
 // For weapon_behavior_can_hit_target_check
 SCBW_DATA(u32*,				g_neutral_carapace_swarm,			0x005873F0);
 
+// For tile height extension
+SCBW_DATA(ActiveTile**,		activeTileArray,					0x006D1260);
+SCBW_DATA(const MTXM**,		zergCreepTileData,					0x005993A8);
+SCBW_DATA(const MTXM**,		MTXMHandle,							0x005993C4);
+SCBW_DATA(const VF4**,		vf4FileHandle,						0x005993D0);
+SCBW_DATA(const CV5**,		cv5FileHandle,						0x006D5EC8);
+
+// For on_player_join
+SCBW_DATA(u32*,				g_local_storm_id,					0x0051268C);
+SCBW_DATA(u32*,				g_current_network_mode,				0x0059688C);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
@@ -1191,12 +1202,6 @@ SCBW_DATA(const char*, FORMATSTRING_COLOR_CURRENTVALUE_MAXVALUE, 0x00505724); //
 SCBW_DATA(const char*, FORMATSTRING_COLORWHITE_CURRENTVALUE_MAXVALUE, 0x0050572C); //"\x04%d/%d"
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE_IN_PARENTHESIS, 0x00505734); //"%s (%d)"
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE, 0x0050573C); //"%s %d"
-
-SCBW_DATA(ActiveTile**, activeTileArray, 0x006D1260);
-SCBW_DATA(const MTXM**, zergCreepTileData, 0x005993A8);
-SCBW_DATA(const MTXM**, MTXMHandle, 0x005993C4);
-SCBW_DATA(const VF4**, vf4FileHandle, 0x005993D0);
-SCBW_DATA(const CV5**, cv5FileHandle, 0x006D5EC8);
 
 //////////////////////////////////////////////////////////////// @}
 

@@ -936,6 +936,7 @@ namespace PlayerColor
 		ZinnwalditeBrown,
 		NeonCarrot,
 		Aquamarine,
+		MetzenicProzac,
 
 		Count,
 	};
@@ -1053,6 +1054,7 @@ static const char* player_color_names[] =
 	"Zinnwaldite Brown",
 	"Neon Carrot",
 	"Aquamarine",
+	"Metzenic Prozac",
 };
 
 enum VespeneDeaths

@@ -129,10 +129,7 @@ namespace hooks
 				}
 			}
 			dropdown = child_dlg;
-		}
-		else
-		{
-			// originally label 6
+		} else { // originally label 6
 			dropdown = 0;
 		}
 		Player* result = (Player*)helper::is_melee_game(*g_selected_game_type, *g_selected_game_type_param, *g_selected_game_type); // first arg was SBYTE1(*g_selected_game_type)
@@ -168,18 +165,14 @@ namespace hooks
 					result = (Player*)result->id;
 				} while (result);
 			}
-		}
-		else if (dropdown->flags & 8)
-		{
+		} else if (dropdown->flags & 8) {
 			if (dropdown->initial_version_0x46.text_pos.x && dropdown->initial_version_0x46.text_pos.y != -1)
 			{
 				g_player_table[*g_local_nation_id].race = dropdown->child_dialog->bounds.x * dropdown->initial_version_0x46.text_pos.y; // I don't think this is correct
 				*g_is_in_game_loop = 1;
 				result = helper::randomize_player_slot();
 				*g_is_in_game_loop = 0;
-			}
-			else
-			{
+			} else {
 				g_player_table[*g_local_nation_id].race = 6;
 				*g_is_in_game_loop = 1;
 				result = helper::randomize_player_slot();
@@ -187,5 +180,38 @@ namespace hooks
 			}
 		}
 		return result;
+	}
+
+	// Hooked to play a sound on player join. -Pr0nogo
+	void on_player_join(u32 player_id, BinDlg* dialog, u32 data_1, u32 data_2) // 00470720
+	{
+		if (!player_id)
+		{
+			player_id = *(u32*)(data_2 + 1);
+			if (player_id < PLAYABLE_PLAYER_COUNT && player_id != *g_local_storm_id)
+			{
+				helper::play_sound_global(SoundId::Lobby_PlayerJoin);
+
+				char player_name[28];
+				player_id = helper::snet_get_player_name(player_id, (int)player_name, 25);
+				if (player_id)
+				{
+					player_id = player_name[0];
+					if (player_name[0])
+					{
+						const char* string = g_network_table_DF->get_string(74);
+						char final_string[148];
+						sprintf_s(final_string, 145, string, player_name);
+						helper::print_lobby_string(8, (int)final_string);
+						player_id = helper::is_multiplayer_mode_bnet();
+						if (player_id)
+						{
+							sprintf_s(final_string, 145, "/astat %s", player_name);
+							player_id = helper::snet_send_server_chat_command((u32)final_string);
+						}
+					}
+				}
+			}
+		}
 	}
 }
