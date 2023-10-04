@@ -1014,8 +1014,10 @@ LABEL_15:
 
 	char input_mmb_down(DialogEvent* event) {
 		disable_mouse_scroll = true;
-		*g_mmb_pos_x = g_mouse->x;
-		*g_mmb_pos_y = g_mouse->y;
+		POINT mouse = {};
+		GetCursorPos(&mouse);
+		*g_mmb_pos_x = mouse.x;
+		*g_mmb_pos_y = mouse.y;
 		g_input_procs->funcs[3] = (InputProcsFunc*) 0x00484460;
 		return helper::refresh_cursor_0();
 	}
@@ -1043,7 +1045,6 @@ LABEL_15:
 		GetCursorPos(&mouse);
 		s32 dx = (s32)mouse.x - (s32)*g_mmb_pos_x;
 		s32 dy = (s32)mouse.y - (s32)*g_mmb_pos_y;
-		scbw::printf("%i %i", dx, dy);
 
 		f32 sens = config.scroll_sensitivity;
 		f32 sdx = dx * sens + mouse_error.x;
