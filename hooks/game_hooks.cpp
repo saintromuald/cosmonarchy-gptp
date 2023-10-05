@@ -2387,7 +2387,7 @@ namespace hooks {
 		if (!unit_id_is_resource_node(unit->id, false)) {
 			EntryArray azazels = {};
 			unit_search_radial(&azazels, unit->position, 4 * 32);
-			unit_search_filter(&azazels, unit, 0, {UnitId::TerranAzazel});
+			unit_search_filter(&azazels, unit, FilterAlly, {UnitId::TerranAzazel});
 			if (!azazels.count) {
 				if (unit_ext->values[ValueHasSublimeShepherd]) {
 					unit_ext->values[ValueHasSublimeShepherd] = 0;
