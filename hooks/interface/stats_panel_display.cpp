@@ -369,6 +369,7 @@ namespace hooks
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
 			draw_new_building_info(dialog, unit); // For now we show this, but later when we have the real transport UI, we won't. -Veeq7
+			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
 		if (helper::is_queue_slot_active(unit, 0)) {
