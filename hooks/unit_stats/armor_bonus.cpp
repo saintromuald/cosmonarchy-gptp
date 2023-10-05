@@ -12,7 +12,7 @@ namespace hooks
 		switch (unit->id) {
 			case UnitId::TerranMatadorCinderMode:
 			{
-				armor_modifier += 1;
+				armor_modifier += 2;
 			} break;
 			case UnitId::TerranPhalanxTankMode:
 			{
