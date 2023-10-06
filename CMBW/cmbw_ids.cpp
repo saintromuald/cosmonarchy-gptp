@@ -446,10 +446,10 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 			return InterceptType_AirOnly;
 
 		case WeaponId::SirenCharybdalRifle:
+		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::AtreusDauntlessDisruptorCannon:
 		case WeaponId::CantavisHallucinationCast:
 		case WeaponId::PatriarchIronhandWeaver:
-		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::IdolPrismaticBlaster:
 		case WeaponId::PositronAntimatterMissile:
 		case WeaponId::StarSovereignInterventionMissiles:
@@ -860,7 +860,11 @@ bool unit_is_combatant(Unit* unit) {
 		case UnitId::ZergLakizilisk:
 			return true;
 	}
-	return unit->has_weapon();
+	if (unit->subunit && unit->subunit->is_subunit()) {
+		return unit->subunit->has_weapon();
+	} else {
+		return unit->has_weapon();
+	}
 }
 
 bool unit_id_can_repair(u32 unit_id) {

@@ -1726,7 +1726,7 @@ namespace hooks {
 					{
 						// Conditional hiding of custom ability icons
 						if (current_button->icon_id == IconId::MasonFusionCutter
-						&&  unit->main_order_id == OrderId::ConstructingBuilding) // Talos Salvage ability
+						&&  unit->main_order_id == OrderId::ConstructingBuilding) // Talos Fusion Sealers
 						{
 							current_button_state = Button_State::Invisible;
 						}
@@ -1782,7 +1782,7 @@ namespace hooks {
 
 								case UnitId::TerranTalos:
 								{
-									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Talos - Fusion Sealers
+									if (current_button->icon_id == IconId::MasonFusionCutter) { // Talos - Fusion Sealers
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

@@ -3024,6 +3024,15 @@ namespace hooks {
 				unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 			}
 		}
+		
+		if (unit_ext->timers[TimerKelvinMunitions] == 1) {
+			unit_ext->timers[TimerKelvinMunitions] = 0;
+			should_update_speed = true;
+		}
+
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1) {
+			should_update_speed = true;
+		}
 
 		// Remove Maelstrom overlays
 		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] == 1)
@@ -3032,6 +3041,8 @@ namespace hooks {
 			if (unit->subunit) {
 				unit->subunit->sprite->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 			}
+			unit_ext->timers[TimerMindTyrantMaelstromSlow] = 0;
+			should_update_speed = true;
 		}
 
 		// Generic speed timers

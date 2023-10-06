@@ -598,8 +598,18 @@ namespace hooks
 						{
 							attacker_ext->values[ValueSavantPowerSiphonBuff]++;
 							attacker_ext->timers[TimerSavantPowerSiphonBuff] = 2 * 24 + 1;
-							target_ext->values[ValueSavantPowerSiphonDebuff]++;
-							target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
+
+							Unit* final_target = data.target;
+							if (final_target->subunit && final_target->subunit->is_subunit()) {
+								final_target = final_target->subunit;
+							}
+							UnitExt* final_target_ext = get_unit_ext(final_target);
+							final_target_ext->values[ValueSavantPowerSiphonDebuff]++;
+							final_target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
+							if (final_target != data.target) { // For tooltips. -Pr0nogo
+								target_ext->values[ValueSavantPowerSiphonDebuff]++;
+								target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
+							}
 							helper::create_thingy(SpriteId::Feedback_Hit_Small + scbw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
 						}
 					} break;
