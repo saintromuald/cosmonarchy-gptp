@@ -379,10 +379,11 @@ namespace hooks
 		u32 workers = 0;
 		u32 men = 0;
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-			if (unit->status & UnitStatus::Completed) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			if (!*g_is_holding_alt || unit->status & UnitStatus::Completed) {
+				u32 unit_id = scbw::is_zerg_egg(unit->id, true, false) ? unit->build_queue[unit->build_queue_slot] : unit->id;
+				if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
 					workers += 2;
-				} else if (units_dat::group_flags[unit->id].is_men && !scbw::unit_is_trap(unit) && unit->id != UnitId::ProtossSteward) {
+				} else if (units_dat::group_flags[unit_id].is_men && !scbw::unit_is_trap(unit) && unit_id != UnitId::ProtossSteward && !(units_dat::base_property[unit_id] & UnitProperty::Subunit)) {
 					men += 2;
 				}
 			}
