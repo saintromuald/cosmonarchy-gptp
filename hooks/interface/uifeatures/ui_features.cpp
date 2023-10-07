@@ -1024,13 +1024,15 @@ LABEL_15:
 
 	int __cdecl input_mmb_up() {
 		disable_mouse_scroll = false;
+		*g_move_to_x = Clamp(round(*g_move_to_x / 4.0) * 4, 0, *g_map_width_pixels  - 640);
+		*g_move_to_y = Clamp(round(*g_move_to_y / 4.0) * 4, 0, *g_map_height_pixels - 376);
 		g_input_procs->funcs[3] = (InputProcsFunc*) 0;
 		return helper::cursor_refresh();
 	}
 
 	static void scroll_screen(s32 dx, s32 dy) {
-		*g_move_to_x = Clamp((s32)*g_move_to_x + dx, 0, *g_map_width_pixels);
-		*g_move_to_y = Clamp((s32)*g_move_to_y + dy, 0, *g_map_height_pixels - 480);
+		*g_move_to_x = Clamp((s32)*g_move_to_x + dx, 0, *g_map_width_pixels  - 640);
+		*g_move_to_y = Clamp((s32)*g_move_to_y + dy, 0, *g_map_height_pixels - 376);
 
 		*g_move_to_tile_x = *g_move_to_x >> 5;
 		*g_move_to_tile_y = *g_move_to_y >> 5;
