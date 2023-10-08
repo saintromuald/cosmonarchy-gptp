@@ -48,7 +48,7 @@ void Image::free()
 void Image::set_remapping(ColorRemapping::Enum remapping)
 {
 	assert(this);
-	this->draw_func_param = g_color_shift[remapping].data;
+	this->standard.draw_func_param = g_color_shift[remapping].data;
 }
 
 // Identical to function @ 0x004D5A50
@@ -101,7 +101,7 @@ namespace hooks
 		image->horizontal_offset = horizontal_offset;
 		image->vertical_offset = vertical_offset;
 		image->grp_size = Box16();
-		image->draw_func_param = 0;
+		image->standard.draw_func_param = 0;
 
 		// Initialize iscript data
 		image->iscript_header_offset = 0;
@@ -111,10 +111,10 @@ namespace hooks
 		image->wait = 0;
 
 		if (images_dat::rle_function[image_id] == PaletteType::RLE_PLAYER_SIDE) {
-			*(u32*)(&image->draw_func_param) = parent->player;
+			*(u32*)(&image->standard.draw_func_param) = parent->player;
 		}
 		if (images_dat::rle_function[image_id] == PaletteType::RLE_EFFECT) {
-			image->draw_func_param = g_color_shift[images_dat::remapping[image_id]].data;
+			image->standard.draw_func_param = g_color_shift[images_dat::remapping[image_id]].data;
 		}
 	}
 
@@ -275,28 +275,29 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	// TODO: Fix an error where warp in overlay doesn't disappear, when this hook is enabled -Veeq7
-	void iscript_something_death(Image* image) { // 004D8590
-		u8* param = (u8*)&image->draw_func_param + 1;
-		if (*param) {
-			*param -= 1;
-		} else if (*param >= 63u) {
-			*param = 2;
-			if (image->animation != IscriptAnimation::Death) { // IscriptAnimation::Cuckdeath
-				u16 header = image->iscript_header_offset;
-				image->animation = IscriptAnimation::Death;
-				char* data = *g_iscript_data;
-				header = *(u16*)&data[header + 10];
-				image->wait = 0;
-				image->return_address = 0;
-				image->iscript_offset = header;
-				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
-			}
-			(*g_active_iscript_entity)->order_signal |= 1u;
-			image->flags |= ImageFlags::Redraw;
+	void image_update_warp_flash(Image* image) { // 004D8590
+		u8 param = image->warp.param;
+		if (image->warp.param) {
+			--image->warp.param;
 		} else {
-			*param += 1;
-			image->flags |= ImageFlags::Redraw;
+			image->warp.param = 2;
+			if (image->warp.timer >= 63) {
+				if (image->animation != IscriptAnimation::Death) { // IscriptAnimation::Cuckdeath
+					u16 header = image->iscript_header_offset;
+					image->animation = IscriptAnimation::Death;
+					char* data = *g_iscript_data;
+					header = *(u16*)&data[header + 10];
+					image->wait = 0;
+					image->return_address = 0;
+					image->iscript_offset = header;
+					helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+				}
+				(*g_active_iscript_entity)->order_signal |= 1;
+				image->flags |= ImageFlags::Redraw;
+			} else {
+				++image->warp.timer;
+				image->flags |= ImageFlags::Redraw;
+			}
 		}
 	}
 
@@ -1176,7 +1177,7 @@ namespace hooks
 						break;
 					}
 					image->flags |= ImageFlags::Redraw;
-					image->draw_func_param = (void*)arg;
+					image->standard.draw_func_param = (void*)arg;
 					break;
 				}
 				case IscriptOpcodes::opc_orderdone:
@@ -1349,13 +1350,13 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) iscript_something_death_wrapper() { // 004D8590
+	void __declspec(naked) image_update_warp_flash_wrapper() { // 004D8590
 		static Image* image;
 		__asm {
 			MOV image, ECX
 			PUSHAD
 		}
-		hooks::iscript_something_death(image);
+		hooks::image_update_warp_flash(image);
 		__asm {
 			POPAD
 			RETN
@@ -1472,7 +1473,7 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-	//	jump_patch(iscript_something_death_wrapper,	0x004D8590, 1);
+		jump_patch(image_update_warp_flash_wrapper,	0x004D8590, 1);
 	//	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
 		jump_patch(iscript_fireweapon_wrapper,		0x00479D40, 4);
 		jump_patch(iscript_attackwith_wrapper,		0x00479D60, 1);

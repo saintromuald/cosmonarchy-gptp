@@ -146,12 +146,13 @@ void update_image_direction(Image* image, u32 direction)
 static void inherit_image_palette(Unit* unit, Image* image, Image* main_image) {
 	if (!image->palette_type && unit) {
 		if (unit->status & UnitStatus::IsHallucination
-			&& (unit->player == *g_local_nation_id || *g_is_in_replay)) {
+		&& (unit->player == *g_local_nation_id || *g_is_in_replay))
+		{
 			image->palette_type = PaletteType::RLE_SHIFT;
 			image->update_fxn = g_sg_update_funcs[PaletteType::RLE_SHIFT].function;
 			image->render_fxn = image->flags & 2 ? g_sg_draw_funcs[PaletteType::RLE_SHIFT].function_2 : g_sg_draw_funcs[PaletteType::RLE_SHIFT].function_1;
 			image->flags |= 1;
-			image->draw_func_param = 0;
+			image->standard.draw_func_param = 0;
 		}
 		if (unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
 			helper::copy_image_palette_type(image, main_image);

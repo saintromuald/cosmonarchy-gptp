@@ -102,7 +102,15 @@ struct Image
 	/*0x20*/  Point16					screen_pos;
 	/*0x24*/  Box16						grp_size;					// Bounds for GRP frame, only different from normal when part of graphic is out of bounds.
 	/*0x2C*/  GrpHead*					grp_file;
-	/*0x30*/  void*						draw_func_param;
+	/*0x30*/  union {
+		struct {
+	/*0x30*/  void* draw_func_param;
+		} standard;
+		struct {
+	/*0x30*/  u8 timer;
+	/*0x31*/  u8 param;
+		} warp;
+	};
 	/*0x34*/  void*						render_fxn;
 	/*0x38*/  void*						update_fxn;
 	/*0x3C*/  Sprite*					parent_sprite;
@@ -120,7 +128,7 @@ namespace hooks
 	void play_image_iscript(Image* image, u8 animation);																// 004D8470
 	void ground_attack_init(u16 pos_x, u16 pos_y);																		// 00488660
 	void play_warp_in_overlay(Image* image, u32 unused);																// 004D8500
-	void iscript_something_death(Image* image);																			// 004D8590
+	void image_update_warp_flash(Image* image);																			// 004D8590
 	void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved);				// 004D74C0
 
 	void inject_image_hooks();

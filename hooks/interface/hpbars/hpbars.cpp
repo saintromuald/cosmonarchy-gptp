@@ -59,7 +59,7 @@ namespace hooks
 		Box16 grp_size = image->grp_size; // This seems wrong
 		grp_size.w = 0;
 		grp_size.h = 0;
-		image->draw_func_param = selection;
+		image->standard.draw_func_param = selection;
 		helper::update_image_data_draw(image);
 		image->flags |= ImageFlags::Redraw;
 		helper::play_image_iscript(image, 0);
