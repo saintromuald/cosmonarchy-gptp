@@ -3,12 +3,11 @@
 
 namespace
 {
-	void __declspec(naked) giveUnit_Wrapper()
+	void __declspec(naked) give_unit_wrapper()
 	{
 		static Unit* unit;
 		static u32 player;
-		static u32 unkScore;
-
+		static u32 count_as_completed;
 		__asm
 		{
 			PUSH EBP
@@ -20,11 +19,11 @@ namespace
 			MOV ESP, EBP
 			POP EAX
 			POP EBP
-			MOV unkScore, EAX
+			MOV count_as_completed, EAX
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::giveUnit(unit, player, unkScore);
+		hooks::give_unit(unit, player, count_as_completed);
 		__asm
 		{
 			POPAD
@@ -34,7 +33,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) giveAI_Wrapper() // 00463040
+	void __declspec(naked) give_ai_wrapper() // 00463040
 	{
 		static Unit* unit;
 		__asm
@@ -55,7 +54,7 @@ namespace hooks
 {
 	void inject_give_unit_hooks()
 	{
-	//	jump_patch(giveUnit_Wrapper,	0x0049EFA0, 1);
-		jump_patch(giveAI_Wrapper,		0x00463040,	1);
+	//	jump_patch(give_unit_wrapper,	0x0049EFA0, 1);
+		jump_patch(give_ai_wrapper,		0x00463040,	1);
 	}
 }

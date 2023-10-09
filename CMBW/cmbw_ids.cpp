@@ -644,6 +644,13 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 4;
 			return &offsets;
 		} break;
+		case WeaponId::MagnetarNewtonianShockCannon:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueMagnetarLaunchPos;
+			offsets.count = 4;
+			return &offsets;
+		} break;
 		case WeaponId::PhobosArgosLaserBatteries:
 		{
 			static WeaponOffsets offsets = {};

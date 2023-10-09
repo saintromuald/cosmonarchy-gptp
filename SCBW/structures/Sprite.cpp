@@ -328,3 +328,40 @@ bool Sprite::is_visible_to(u8 player) const
 	assert(this);
 	return (this->visibility_status & (1 << player)) != 0;
 }
+
+namespace hooks {
+	// Hooked to investigate crashes and desyncs. -Pr0nogo
+	void update_visibility_hash(Sprite* sprite) // 00497C30
+	{
+		memset(g_current_visibility_hash, 0, sizeof(g_current_visibility_hash));
+		u32 sprite_hash = *g_current_visibility_hash;
+		u32 hor_line = 0;
+		do
+		{
+			for (Sprite* i = g_horizontal_sprite_lines_begin[hor_line]; i; i = i->link.next)
+			{
+				if (g_is_valid_sprite[(unsigned __int16)i->id])
+				{
+					sprite_hash ^= i->visibility_status;
+				}
+			}
+			++hor_line;
+			++sprite_hash;
+		} while (hor_line < 256);
+
+		u32 elevation = sprite->elevation;
+		if (sprite->elevation >= 256)
+		{
+			elevation = 255;
+		}
+
+		u32 filter = 0;
+		for (u32 j = (u32)sprite; j <= elevation; ++j)
+		{
+			filter = ((g_region_vision_filter[j] ^ filter) >> 31) | 2 * (g_region_vision_filter[j] ^ filter);
+		}
+		s32 vision = (filter >> 16) ^ filter;
+		*g_region_vision_hash = vision ^ vision + 1;
+		*g_current_hash_offset = (u32)sprite;
+	}
+}

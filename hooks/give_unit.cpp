@@ -7,7 +7,7 @@ namespace hooks
 {
 	// used in itself, complete_addon, begin_gas_building, GiveAllUnitPropertiesToPlayerAndMakeIdle, removeSubunitOrGasContainer, ai_create_unit, orders_RescuePassive, orders_InfestMine1
 	// Changes would affect all those functions and maybe more
-	void giveUnit(Unit* unit, u32 player, u32 bCountAsCompleted)
+	void give_unit(Unit* unit, u32 player, u32 count_as_completed)
 	{
 		if (unit->player != player)
 		{
@@ -69,7 +69,7 @@ namespace hooks
 			helper::increment_unit_scores(unit, 1);
 			if (unit->status & UnitStatus::Completed)
 			{
-				helper::increment_unit_scores_ex(unit, bCountAsCompleted, 1);
+				helper::increment_unit_scores_ex(unit, count_as_completed, 1);
 			}
 			if (is_morphing)
 			{
@@ -88,7 +88,7 @@ namespace hooks
 			helper::give_ai(unit);
 			if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
 			{
-				giveUnit(unit->subunit, player, bCountAsCompleted);
+				give_unit(unit->subunit, player, count_as_completed);
 			}
 
 			helper::apply_speed_upgrade_from_unit_type(unit);

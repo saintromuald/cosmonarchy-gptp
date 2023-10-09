@@ -40,7 +40,7 @@ enum ExtValueId {
 	ValueIncubationPlayer,
 	ValueCentaurLaunchPos,
 	ValueRepententChorus,
-//	ValueStellarEnforcement,
+	ValueMagnetarLaunchPos,
 	ValueAlkajeliskSpores,
 	ValueAlkajeliskSporesPlayer,
 	ValueSovereignLaunchPos,

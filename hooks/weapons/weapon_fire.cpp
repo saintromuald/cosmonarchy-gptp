@@ -439,6 +439,7 @@ namespace hooks {
 					case WeaponId::WraithBurstLasers:
 					case WeaponId::SundogBlindsideRockets:
 					case WeaponId::CentaurSunchaserMissiles:
+					case WeaponId::MagnetarNewtonianShockCannon:
 					case WeaponId::SentinelCerberusRailgun:
 					case WeaponId::DiademIonCannon:
 					case WeaponId::DiademHammerfallBeacon:
@@ -964,6 +965,7 @@ namespace hooks {
 					line_width = 32;
 				} break;
 				case WeaponId::PenumbraErebolShockCannon:
+				case WeaponId::MagnetarNewtonianShockCannon:
 				case WeaponId::HippogriffChimeraCannons:
 				{
 					line_width = 48;
