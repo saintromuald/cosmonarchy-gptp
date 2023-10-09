@@ -1016,27 +1016,26 @@ namespace hooks
 				mind_controller->add_unit_energy(MindControlEnergyGain);
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
+		}
+		u32 regression_id = scbw::get_zerg_regression(data.target);
+		if (data.damage > 0 && regression_id != UnitId::None) {
+			if (data.target->id != UnitId::ZergExcisant) {
+				fatal_deal_damage = false;
+			}
+			if (data.target->id == UnitId::ZergNydusCesiant) {
+				Unit* nydus_exit = data.target->building.nydus_exit;
+				if (nydus_exit) {
+					data.target->building.nydus_exit = 0;
+					nydus_exit->building.nydus_exit = 0;
 
-			u32 regression_id = scbw::get_zerg_regression(data.target);
-			if (data.damage > 0 && regression_id != UnitId::None) {
-				if (data.target->id != UnitId::ZergExcisant) {
-					fatal_deal_damage = false;
-				}
-				if (data.target->id == UnitId::ZergNydusCesiant) {
-					Unit* nydus_exit = data.target->building.nydus_exit;
-					if (nydus_exit) {
-						data.target->building.nydus_exit = 0;
-						nydus_exit->building.nydus_exit = 0;
-
-						if (!target_ext->values[ValueIsNydusExit] == 1) {
-							nydus_exit->remove();
-						}
+					if (!target_ext->values[ValueIsNydusExit] == 1) {
+						nydus_exit->remove();
 					}
 				}
-				scbw::regress(data.target, regression_id);
-				if (data.target) {
-					unit_on_death_behaviors(data.target);
-				}
+			}
+			scbw::regress(data.target, regression_id);
+			if (data.target) {
+				unit_on_death_behaviors(data.target);
 			}
 		}
 

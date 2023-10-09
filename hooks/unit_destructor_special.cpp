@@ -197,7 +197,7 @@ void unit_on_death_behaviors(Unit* unit) {
 			{
 				// Anvil - death while armed
 				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {
-					scbw::create_and_init_thingy(SpriteId::Nuke_Hit,  unit->position.x, unit->position.y, 11, 12);
+					scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
 				}
 			} break;

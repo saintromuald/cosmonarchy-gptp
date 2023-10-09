@@ -3021,7 +3021,7 @@ namespace scbw {
 	}
 
 	void regress(Unit* unit, u32 regression_id) {
-		bool fatal_deal_damage = true;
+		bool fatal_deal_damage = true; // Seems to be unused.
 		helper::cancel_unit(unit);
 		// We first cancel any on-going morphs, that could technically delete the unit, but that shouldn't happen for current unit id cases
 		// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
@@ -3054,8 +3054,7 @@ namespace scbw {
 			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
 			if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
 				effect_image_id = ImageId::ZergBuildingExplosion;
-			}
-			else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+			} else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
 				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 			}
 			unit->sprite->create_overlay(effect_image_id);
