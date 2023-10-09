@@ -2960,7 +2960,6 @@ namespace scbw {
 
 		helper::replace_unit_with_id(unit, unit_id);
 		u8 direction = unit->current_direction_1 = unit->velocity_direction_1 = unit->current_direction_2;
-		helper::set_image_direction(unit->sprite->main_graphic, direction);
 		subunit = unit->subunit;
 
 		if (subunit) {

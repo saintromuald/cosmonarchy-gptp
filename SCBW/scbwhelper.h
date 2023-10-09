@@ -1673,4 +1673,12 @@ namespace helper {
 	b32 is_multiplayer_mode_bnet();												// 004C4200
 	u32 snet_send_server_chat_command(char string);								// 00410280
 	u32 battlenet_play_sound(char unk1, u32 event_type, char unk2);				// 004AD0B0
+
+	Unit* remove_repulse_tile(Unit* unit);										// 004533D0
+	u8 transform_unit_sprite(Unit* unit, u32 new_sprite_id);					// 0049F860
+	void remove_from_client_selection_3(Unit* unit);							// 0049F7A0
+	void update_unit_order_finder(Unit* unit);									// 0046A3A0
+	void set_repulse_angle(Unit* unit);											// 00453300
+	void transform_subunit(Unit* unit, u32 new_unit_id);						// 0049F6A0
+	u8 apply_unit_effects(Unit* unit);											// 00492DA0
 }

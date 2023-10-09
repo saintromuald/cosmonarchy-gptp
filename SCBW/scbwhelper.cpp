@@ -14294,4 +14294,92 @@ namespace helper {
 		}
 		return 0;
 	}
+
+	Unit* remove_repulse_tile(Unit* unit)
+	{
+		const u32 func_address = 0x004533D0;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u8 transform_unit_sprite(Unit* unit, u32 new_sprite_id)
+	{
+		const u32 func_address = 0x0049F860;
+		static u8 result;
+		__asm {
+			PUSHAD
+			PUSH new_sprite_id
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void remove_from_client_selection_3(Unit* unit)
+	{
+		const u32 func_address = 0x0049F7A0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void update_unit_order_finder(Unit* unit)
+	{
+		const u32 func_address = 0x0046A3A0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void set_repulse_angle(Unit* unit)
+	{
+		const u32 func_address = 0x00453300;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void transform_subunit(Unit* unit, u32 new_unit_id)
+	{
+		const u32 func_address = 0x0049F6A0;
+		__asm {
+			PUSHAD
+			PUSH new_unit_id
+			MOV EDI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u8 apply_unit_effects(Unit* unit)
+	{
+		const u32 func_address = 0x00492DA0;
+		static u8 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

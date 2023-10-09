@@ -791,4 +791,82 @@ namespace hooks
 			} while (next_image);
 		}
 	}
+
+	// Hooked to improve functionality. -Pr0nogo
+	u8 replace_unit_with_id(Unit* unit, u32 new_id) // 0049FED0
+	{
+		if (!unit->sprite) {
+			return 0;
+		}
+
+		if (!(unit->sprite->flags & SpriteFlags::Hidden))
+		{
+			helper::sort_unit(unit);
+			if (unit->status & UnitStatus::GroundedBuilding)
+			{
+				helper::clear_building_from_tile_flag(unit, unit->position.x, unit->position.y);
+			}
+			if (unit->status & UnitStatus::InAir)
+			{
+				helper::remove_repulse_tile(unit);
+			}
+		}
+		helper::transform_unit_sprite(unit, new_id);
+
+		if (units_dat::base_property[unit->id] & UnitProperty::Building)
+		{
+			if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection))
+			{
+				if (unit->secondary_order_id != OrderId::Nothing2)
+				{
+					unit->secondary_order_id = OrderId::Nothing2;
+					unit->secondary_order_pos = { 0, 0 };
+					unit->current_build_unit = 0;
+					unit->secondary_order_state = 0;
+				}
+				unit->status &= ~(UnitStatus::Cloaked | UnitStatus::RequiresDetection);
+			}
+		} else {
+			u8 direction = unit->current_direction_1 = unit->velocity_direction_1 = unit->current_direction_2;
+			helper::set_image_direction(unit->sprite->main_graphic, direction);
+		}
+
+		if (unit->sprite->flags & SpriteFlags::Selected)
+		{
+			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg)
+			{
+				helper::update_building_land_unit_selection(0, unit);
+				helper::remove_from_client_selection_3(unit);
+			}
+		}
+		scbw::refresh_console();
+		u32 pos_x = unit->position.x;
+		u32 pos_y = unit->position.y;
+		Point16 position = {pos_x, pos_y};
+		helper::fix_target_location(&position, new_id);
+		if (pos_x != position.x || pos_y != position.y)
+		{
+			helper::move_unit(unit, position.x, position.y);
+		}
+		if (!(unit->sprite->flags & SpriteFlags::Hidden))
+		{
+			helper::update_unit_order_finder(unit);
+			if (unit->status & UnitStatus::GroundedBuilding)
+			{
+				helper::set_building_tile_flag(unit, unit->position.x, unit->position.y);
+			}
+			helper::check_unstack(unit);
+			if (unit->status & UnitStatus::InAir)
+			{
+				helper::set_repulse_angle(unit);
+			}
+		}
+
+		Unit* subunit = unit->subunit;
+		if (subunit)
+		{
+			helper::transform_subunit(subunit, units_dat::subunit[new_id]);
+		}
+		return helper::apply_unit_effects(unit);
+	}
 }

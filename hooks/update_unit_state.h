@@ -9,6 +9,7 @@ namespace hooks {
 	void do_cloak(Unit* unit, s32 sound_id);										// 0049B440
 	void progress_unit_frame(Unit* unit);											// 004ECF70
 	void sprite_to_iscript_loop(Sprite* sprite);									// 00497920
+	u8 replace_unit_with_id(Unit* unit, u32 new_id);								// 0049FED0
 
 	void inject_update_unit_state_hooks();
 }

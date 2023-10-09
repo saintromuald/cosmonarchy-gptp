@@ -102,6 +102,33 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) replace_unit_with_id_wrapper() // 0049FED0
+	{
+		static Unit* unit;
+		static u32 new_id;
+		static u8 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV new_id, EAX
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::replace_unit_with_id(unit, new_id);
+		__asm
+		{
+			POPAD
+			MOVZX AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks
@@ -115,5 +142,6 @@ namespace hooks
 	//	jump_patch(do_cloak_wrapper,						0x0049B440, 5);
 		jump_patch(progress_unit_frame_wrapper,				0x004ECF70, 3);
 		jump_patch(sprite_to_iscript_loop_wrapper,			0x00497920, 0);
+		jump_patch(replace_unit_with_id_wrapper,			0x0049FED0, 1);
 	}
 }
