@@ -1089,7 +1089,7 @@ enum AiPersonality // disruption_web_unit
 	AiPersonality_AnyCount = std::max(std::max(AiPersonality_TerranCount, AiPersonality_ProtossCount), AiPersonality_ZergCount),
 };
 
-enum AiBuildType // plasma_shell
+enum AiBuildType // plasma_shell, does not include combos
 {
 	AiBuildType_None = 0,
 	AiBuildType_Timing = 1,

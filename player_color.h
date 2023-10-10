@@ -433,7 +433,7 @@ const std::vector<std::vector<std::vector<u32>>> personality_colors = {
 
 // Feel free to modify this to suit your needed amount of names per personality
 // (you can also specify less names than this maximum)
-#define PlayerPesonalityMaxNames 12 // btw
+#define PlayerPesonalityMaxNames 20
 char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
 	// Zerg
 	{
@@ -463,6 +463,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"The Dank Swarm",
 			"N's Miracle Workers",
 			"Nfinitodny",
+			"The Pocket Tech Node",
 		},
 		// Sunblot
 		{
@@ -475,6 +476,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Flyq7",
 			"The Decollider",
 			":endofallthings:",
+			"Cosmonarchy Nathwar",
 		},
 		// General
 		{
@@ -489,6 +491,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Spooky Idiots",
 			"Stenchmongers",
 			"Trees and Then",
+			"Competitive Cagrants",
 		},
 	},
 	// Terran
@@ -519,6 +522,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Edgemin Division",
 			"The Man, Now, Dawg",
 			"Vacuum Hitler Busboys",
+			"Benno's Brawlers",
 		},
 		// Orbital
 		{
@@ -531,6 +535,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Ghosts of Veeqiv",
 			"DuhDuhDooooDoo...",
 			"Exotic Mixplay Purchase",
+			"Wraithcifirius",
 		},
 		// General
 		{
@@ -576,6 +581,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Male Gender Symbol",
 			"The Action-Voiders",
 			"Shadowcloak Skullcrushers",
+			"Impending Scribe-Pull",
 		},
 		// Skylord
 		{
@@ -602,6 +608,7 @@ char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPeso
 			"Metzen's Matriarchs",
 			"A Vile Voidspeaker",
 			"nullptr",
+			"Little Timmy's Nexus-First",
 		},
 	},
 };

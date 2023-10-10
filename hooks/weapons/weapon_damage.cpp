@@ -307,9 +307,7 @@ namespace hooks
 			ignore_alert = true;
 			data.target->damage_hp(data.damage, data.attacker, data.attacking_player_id, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 			ignore_alert = false;
-			if (data.weapon_id != WeaponId::Irradiate) {
-				unit_attack_notify(data.target);
-			}
+			unit_attack_notify(data.target); // Previously excluded WeaponId::Irradiate
 		}
 
 		// New AI defense logic -Veeq7

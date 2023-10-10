@@ -27,30 +27,29 @@ namespace hooks
 	void ai_build_tech_upgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need) // 00431F90
 	{
 		s32 iterate = 0;
-		constexpr s32 BuildCountFlag = 0xF8;
+		constexpr s32 build_count_flag = 0xF8;
 		TownReq* town_units;
 		if (g_player_table[(u8)town->player].type == PlayerType::Computer)
 		{
 			town_units = town->requests;
-			bool setNeed = false;
-			if (town->requests[0].flags_and_count & BuildCountFlag) // if build
+			bool set_need = false;
+			if (town->requests[0].flags_and_count & build_count_flag) // if build
 			{
 				for (s32 i = 0; i < 100; i++)
 				{
 					++town_units;
-					if (!(town_units->flags_and_count & BuildCountFlag)) // if not build
+					if (!(town_units->flags_and_count & build_count_flag)) // if not build
 					{
-						setNeed = true;
+						set_need = true;
 						iterate = i;
 						break;
 					}
 				}
+			} else {
+				set_need = true;
 			}
-			else
-			{
-				setNeed = true;
-			}
-			if (setNeed)
+
+			if (set_need)
 			{
 				town->requests[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
 				town->requests[iterate].id = id;
@@ -555,11 +554,11 @@ namespace hooks
 		helper::ai_resource_need_split(&gas_percent, player, &mineral_percent);
 		if (gas_percent || town->mineral)
 		{
-			Unit* refinery;
-			u32 priority;
+			Unit* refinery = 0;
+			u32 priority = 0;
 			if (helper::get_ai_refinery(town, 3, 1))
 			{
-				priority = 90;
+				priority = 100;
 				refinery = helper::get_ai_refinery(town, 1, 1);
 				if (!refinery)
 				{
@@ -582,7 +581,7 @@ namespace hooks
 				{
 					return 0;
 				}
-				priority = 100;
+				priority = 120;
 			}
 
 			u16 refinery_id = UnitId::None;

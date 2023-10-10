@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <Utils/captivating_claws.h>
+#include "hooks/weapons/weapon_damage.h"
 IquareGlobals iquare_globals;
 
 void IquareGlobals::refresh_debugging_info()
@@ -314,6 +315,9 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	unit->irradiate_caster = 0;
 	unit->irradiate_player_id = player;
 	unit->irradiate_timer = time;
+	ignore_alert = true;
+	hooks::unit_attack_notify(unit);
+	ignore_alert = false;
 }
 
 void tick_effect(Effect* effect) {
