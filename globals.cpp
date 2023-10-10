@@ -499,11 +499,13 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_AionReclamationField: {
-				Thingy* corpse = get_closest_active_corpse(effect->position, effect->radius);
-				if (corpse) {
-					reclaim_corpse(corpse, effect->player);
-					effect->current_time = 0;
-					break;
+				if (effect->current_time > 1) {
+					Thingy* corpse = get_closest_active_corpse(effect->position, effect->radius);
+					if (corpse) {
+						reclaim_corpse(corpse, effect->player);
+						effect->current_time = 1;
+						break;
+					}
 				}
 			} break;
 			case EffectId_VilgolethHeal: {
