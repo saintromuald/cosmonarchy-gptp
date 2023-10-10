@@ -1545,7 +1545,7 @@ namespace hooks {
 									case UnitId::ZergKethrostalor:
 									case UnitId::ZergAlkajelisk:
 									{
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlkajChasm))
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergGeszkathGrotto))
 										{
 											current_button_state = Button_State::Enabled;
 										} else {

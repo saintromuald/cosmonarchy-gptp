@@ -880,6 +880,8 @@ namespace hooks
 				}
 			}
 
+			scbw::unload_or_kill_loaded_units(data.target);
+
 			// Recede control
 			data.target->give_to(target_ext->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
 			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = 0;

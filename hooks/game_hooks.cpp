@@ -2585,7 +2585,7 @@ namespace hooks {
 		// Blissful Embrace - Creep spread and Larva spawn
 		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 			if (!units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
-				helper::secondary_order_spawning_larva(unit);
+			//	helper::secondary_order_spawning_larva(unit); // Doesn't work currently, as spawning larva is a secondary order, just like train
 			}
 
 			if (*g_elapsed_time_frames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {

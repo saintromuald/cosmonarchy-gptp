@@ -353,7 +353,7 @@ namespace hooks
 		||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon
 		||	scbw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
 		{
-			bool bStopHere = false;
+			bool stop_here = false;
 
 			// remove units with timed lives
 			if (unit->remove_timer != 0)
@@ -362,7 +362,7 @@ namespace hooks
 				if (unit->remove_timer == 0)
 				{
 					unit->remove();
-					bStopHere = true;
+					stop_here = true;
 				}
 			}
 
@@ -378,13 +378,7 @@ namespace hooks
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0)
 			{
 				augur_sacrifice(unit);
-				bStopHere = true;
-			}
-
-			// Cleanse debuffs on initial Defensive Matrix application
-			if (unit->defensive_matrix_timer == AzazelDefensiveMatrixTimer)
-			{
-				scbw::restore_func(unit);
+				stop_here = true;
 			}
 
 			// HP regeneration
@@ -457,13 +451,13 @@ namespace hooks
 						});
 						unit->remove();
 						avenge_or_ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
-						bStopHere = true;
+						stop_here = true;
 					}
 				}
 			}
 
 			// Terran building burn-down
-			if (!bStopHere && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
+			if (!stop_here && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
 			{
 				if (unit->get_race() == RaceId::Terran)
 				{

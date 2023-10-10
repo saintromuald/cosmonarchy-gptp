@@ -1863,17 +1863,20 @@ namespace scbw {
 	}
 
 	void blissful_embrace(Unit* unit, u32 player) {
-		// Sanity check. Spawning creep wouldn't work properly on units. Spawning creep on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
+		// Sanity check.
+		// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || units_dat::base_property[unit->id] & UnitProperty::Addon) {
 			return;
 		}
 
-		UnitExt* targetExt = get_unit_ext(unit);
+		// Eject loaded units if possible, kill them otherwise
+		scbw::unload_or_kill_loaded_units(unit);
+		UnitExt* target_ext = get_unit_ext(unit);
 
 		// Obtain control
-		if (!targetExt->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			targetExt->values[ValueBlissfulEmbraceOriginalPlayer] = unit->player + 1;
-			targetExt->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitpoints;
+		if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = unit->player + 1;
+			target_ext->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitpoints;
 		}
 		unit->give_to(player);
 
@@ -3432,5 +3435,21 @@ namespace scbw {
 			}
 		}
 		hooks::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
+	}
+
+	void unload_or_kill_loaded_units(Unit* transport)
+	{
+		if (helper::unit_is_active_transport(transport)) {
+			for (u32 i = 0; i < TransportCap; ++i) {
+				Unit* cargo_unit = transport->get_loaded_unit(i);
+				if (!cargo_unit) {
+					continue;
+				}
+				helper::unload_unit_proc(cargo_unit);
+			}
+			if (transport->get_loaded_unit(0)) {
+				helper::kill_all_loaded_units(transport);
+			}
+		}
 	}
 }

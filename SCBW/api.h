@@ -783,4 +783,5 @@ namespace scbw
 	void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color);
 	void draw_aura_range(Unit* unit, u16 radius, u8 color);
 	void reveal_attacker(Unit* attacker, Unit* victim);
+	void unload_or_kill_loaded_units(Unit* transport);
 }
