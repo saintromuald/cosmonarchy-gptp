@@ -627,7 +627,6 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			static WeaponOffsets offsets = {};
 			offsets.value_id = ValueWraithLaunchPos;
 			offsets.count = 2;
-			offsets.fake_count = 1;
 			return &offsets;
 		} break;
 		case WeaponId::SundogBlindsideRockets:

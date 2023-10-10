@@ -836,11 +836,7 @@ namespace hooks {
 									{
 										if (!has_addon && !is_training && !is_adding_on)
 										{
-											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtelier)) {
-												current_button_state = Button_State::Enabled;
-											} else {
-												current_button_state = Button_State::Disabled;
-											}
+											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
 										}
@@ -997,18 +993,10 @@ namespace hooks {
 										case UnitId::TerranSentinel:
 										case UnitId::TerranDaedala:
 										case UnitId::TerranCaptaincy:
+										case UnitId::TerranMantle:
 										case UnitId::TerranStarport:
 										{
 											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
-												current_button_state = Button_State::Enabled;
-											}
-											else {
-												current_button_state = Button_State::Disabled;
-											}
-										} break;
-										case UnitId::TerranMantle:
-										{
-											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranFountainhead)) {
 												current_button_state = Button_State::Enabled;
 											}
 											else {
@@ -1019,17 +1007,9 @@ namespace hooks {
 										case UnitId::TerranWellbore:
 										case UnitId::TerranApothecary:
 										case UnitId::TerranIronFoundry:
-										{
-											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranDaedala)) {
-												current_button_state = Button_State::Enabled;
-											}
-											else {
-												current_button_state = Button_State::Disabled;
-											}
-										} break;
 										case UnitId::TerranNaniteAssembly:
 										{
-											if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtelier)) {
+											if (player_has_completed_landed_unit_id(unit->player, UnitId::TerranDaedala)) {
 												current_button_state = Button_State::Enabled;
 											}
 											else {

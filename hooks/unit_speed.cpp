@@ -216,9 +216,11 @@ namespace hooks
 					speed *= 1.25;
 				}
 			} break;
+
 			// Hardcode ideal movement speeds
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
+			case UnitId::TerranRamesses:
 			case UnitId::TerranClaymore:
 			case UnitId::ProtossOptecton:
 			{

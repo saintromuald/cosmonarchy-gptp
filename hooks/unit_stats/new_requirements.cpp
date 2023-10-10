@@ -42,30 +42,22 @@ namespace hooks {
 		{
 			Tier1 = 0,
 			Tier2,
-			Tier2X,
 			Tier3,
-			Tier3X,
 		};
 		bool TierUnlocked[3][5];
 
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
 										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
-		TierUnlocked[RaceId::Zerg][Tier2X] = false;
 		TierUnlocked[RaceId::Zerg][Tier3] = player_has_completed_unit_id(player_id, UnitId::ZergOthstolOviform);
-		TierUnlocked[RaceId::Zerg][Tier3X] = false;
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranAtlas);
-		TierUnlocked[RaceId::Terran][Tier2X] = player_has_completed_addon_unit_id(player_id, UnitId::TerranFountainhead);
 		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_landed_unit_id(player_id, UnitId::TerranDaedala);
-		TierUnlocked[RaceId::Terran][Tier3X] = player_has_completed_addon_unit_id(player_id, UnitId::TerranAtelier);
 
 		TierUnlocked[RaceId::Protoss][Tier1] = true;
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
-		TierUnlocked[RaceId::Protoss][Tier2X] = true;
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
-		TierUnlocked[RaceId::Protoss][Tier3X] = true;
 
 		// TERRAN
 		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
@@ -89,6 +81,7 @@ namespace hooks {
 				case UnitId::TerranDaedala:
 				case UnitId::TerranFountainhead:
 				case UnitId::TerranCaptaincy:
+				case UnitId::TerranMantle:
 				case UnitId::TerranStarport:
 				{
 					if (TierUnlocked[RaceId::Terran][Tier2])
@@ -96,27 +89,13 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::TerranMantle:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier2X])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranDiadem:
 				case UnitId::TerranWellbore:
-				case UnitId::TerranAtelier:
 				case UnitId::TerranApothecary:
 				case UnitId::TerranIronFoundry:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranNaniteAssembly:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier3X])
+					if (TierUnlocked[RaceId::Terran][Tier3])
 					{
 						return true;
 					}
@@ -265,16 +244,10 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::TerranTinkerersTower:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier2X])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranMadcap:
 				case UnitId::TerranHeracles:
 				case UnitId::TerranApostle:
+				case UnitId::TerranTinkerersTower:
 				{
 					return true;
 				} break;
@@ -364,17 +337,11 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranBioticBastion:
-				case UnitId::TerranFutureStation:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier3X])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranPaladin:
 				case UnitId::TerranCuirassTankMode:
 				case UnitId::TerranPazuzu:
+				case UnitId::TerranBioticBastion:
+				case UnitId::TerranFutureStation:
 				{
 					return true;
 				} break;
@@ -414,17 +381,11 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranRotary:
-				case UnitId::TerranCommandment:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier2X])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranWyvern:
 				case UnitId::TerranGorgon:
 				case UnitId::TerranValkyrie:
+				case UnitId::TerranRotary:
+				case UnitId::TerranCommandment:
 				{
 					return true;
 				} break;
@@ -1317,9 +1278,7 @@ namespace hooks {
 		{
 			Tier1 = 0,
 			Tier2,
-			Tier2X,
 			Tier3,
-			Tier3X
 		};
 
 		bool TierUnlocked[3][5];
@@ -1330,15 +1289,11 @@ namespace hooks {
 
 		TierUnlocked[RaceId::Terran][Tier1] = true;
 		TierUnlocked[RaceId::Terran][Tier2] = player_has_completed_landed_unit_id(player_id, UnitId::TerranAtlas);
-		TierUnlocked[RaceId::Terran][Tier2X] = player_has_completed_addon_unit_id(player_id, UnitId::TerranFountainhead);
 		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_landed_unit_id(player_id, UnitId::TerranDaedala);
-		TierUnlocked[RaceId::Terran][Tier3X] = player_has_completed_addon_unit_id(player_id, UnitId::TerranAtelier);
 
 		TierUnlocked[RaceId::Protoss][Tier1] = true;
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
-		TierUnlocked[RaceId::Protoss][Tier2X] = true;
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
-		TierUnlocked[RaceId::Protoss][Tier3X] = true;
 
 		if (helper::is_constructing_addon(unit))
 		{
@@ -1386,17 +1341,10 @@ namespace hooks {
 					case UnitId::TerranSentinel:
 					case UnitId::TerranDaedala:
 					case UnitId::TerranCaptaincy:
+					case UnitId::TerranMantle:
 					case UnitId::TerranStarport:
 					{
 						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranMantle:
-					{
-						if (TierUnlocked[RaceId::Terran][Tier2X])
 						{
 							return TECH_ACTIVE;
 						}
@@ -1406,16 +1354,9 @@ namespace hooks {
 					case UnitId::TerranWellbore:
 					case UnitId::TerranApothecary:
 					case UnitId::TerranIronFoundry:
-					{
-						if (TierUnlocked[RaceId::Terran][Tier3])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 					case UnitId::TerranNaniteAssembly:
 					{
-						if (TierUnlocked[RaceId::Terran][Tier3X])
+						if (TierUnlocked[RaceId::Terran][Tier3])
 						{
 							return TECH_ACTIVE;
 						}
@@ -1659,10 +1600,6 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier2X])
-						{
-							return TECH_ACTIVE;
-						}
 						return TECH_LOCKED;
 					}
 					case UnitId::TerranMadcap:
@@ -1874,11 +1811,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier3X])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					case UnitId::TerranPaladin:
 					case UnitId::TerranCuirassTankMode:
@@ -1991,11 +1924,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier2X])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					case UnitId::TerranGorgon:
 					case UnitId::TerranWyvern:

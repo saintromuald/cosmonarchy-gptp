@@ -559,6 +559,7 @@ namespace hooks
 			// These bypass Carapace Swarm
 			switch (data.weapon_id) {
 				case WeaponId::HarakanFlamethrower:
+				case WeaponId::StrigaPhaseSaber:
 				case WeaponId::MatadorTwinstrikeFlamethrowers:
 				case WeaponId::DurendalAbaddonFlamethrowers:
 				{

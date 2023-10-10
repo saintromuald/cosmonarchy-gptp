@@ -2514,12 +2514,17 @@ namespace scbw {
 	{
 		switch (weapon_id)
 		{
+			case WeaponId::SirenCharybdalRifle:
+			{
+				return 5;
+			}
 			case WeaponId::HarakanFlamethrower:
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
 			case WeaponId::MatadorTwinstrikeFlamethrowers:
 			case WeaponId::DurendalAbaddonFlamethrowers:
 			case WeaponId::PazuzuJupiterDriver:
+			case WeaponId::WraithBurstLasers:
 			case WeaponId::SundogBlindsideRockets:
 			case WeaponId::CohortGaussPistols:
 			case WeaponId::ZealotPhaseBlades:
