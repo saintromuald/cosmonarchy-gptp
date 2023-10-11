@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
+#include "time.h"
 
 namespace hooks
 {
@@ -15,9 +16,9 @@ namespace hooks
 		{
 			if (game_data->victory_condition || game_data->starting_units || game_data->use_standard_unit_stats)
 			{
-			//	*g_initial_random_seed = GetSystemTime(0);
-			//	*g_last_random_number = *g_initial_random_seed;
-			//	srand(*g_initial_random_seed);
+				*g_initial_random_seed = time(0);
+				*g_last_random_number = *g_initial_random_seed;
+				srand(*g_initial_random_seed);
 
 				helper::switch_all_available_computer_slots_to_open();
 				g_player_table[*g_local_nation_id].race = g_selected_singleplayer_race[0];

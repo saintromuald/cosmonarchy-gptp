@@ -14382,18 +14382,4 @@ namespace helper {
 		}
 		return result;
 	}
-
-	u32 get_system_time(LPSYSTEMTIME time)
-	{
-		const u32 func_address = 0x0040C7DF;
-		static u32 result;
-		__asm {
-			PUSHAD
-			PUSH time
-			CALL func_address
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
 }
