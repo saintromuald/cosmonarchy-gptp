@@ -1113,9 +1113,11 @@ namespace hooks {
 		// Reclamation
 		{
 			// Decaying
-			if (unit_ext->values[ValueDecaying] && !(unit->status & UnitStatus::Cloaked)) {
-				if (!unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
-					unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+			if (unit_ext->values[ValueDecaying]) {
+				if (!(unit->status & UnitStatus::Cloaked)) {
+					if (!unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
+						unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+					}
 				}
 
 				if (!unit_ext->timers[TimerDecaySafe]) {

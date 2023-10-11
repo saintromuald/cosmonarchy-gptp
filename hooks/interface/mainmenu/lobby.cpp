@@ -11,11 +11,14 @@ namespace hooks
 		{
 			return 0;
 		}
-
 		if (*g_custom_singleplayer)
 		{
-			if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
+			if (game_data->victory_condition || game_data->starting_units || game_data->use_standard_unit_stats)
 			{
+			//	*g_initial_random_seed = GetSystemTime(0);
+			//	*g_last_random_number = *g_initial_random_seed;
+			//	srand(*g_initial_random_seed);
+
 				helper::switch_all_available_computer_slots_to_open();
 				g_player_table[*g_local_nation_id].race = g_selected_singleplayer_race[0];
 				for (s32 player = 0; player < 8; player++)

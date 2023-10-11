@@ -290,16 +290,6 @@ void unit_on_death_behaviors(Unit* unit) {
 		}
 	}
 
-	// Alkajelisk Parasitic Spores
-	if (unit_ext->values[ValueAlkajeliskSpores] == 1) {
-		unit->order_target.pt.x = unit->position.x + 1;
-		unit->order_target.pt.y = unit->position.y;
-		auto bullet = helper::create_bullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unit_ext->values[ValueAlkajeliskSporesPlayer], 0);
-		if (bullet) {
-			bullet->remove_timer = 255;
-		}
-	}
-
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plague_timer) {
 		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);
