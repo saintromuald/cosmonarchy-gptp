@@ -160,10 +160,23 @@ void __declspec(naked) show_power_sprite_wrapper() { // 00493BF0
 	}
 }
 
+inline int esi() { __asm MOV EAX, ESI }
+b32 is_repowered_building_working() {
+	Unit* unit = (Unit*)esi();
+
+	if (unit->status & UnitStatus::GroundedBuilding) {
+		return unit->secondary_order_id == OrderId::Train || unit->building.tech_id != TechId::None || unit->building.upgrade_id != UpgradeId::None;
+	}
+
+	return false;
+}
+
 namespace hooks
 {
 	void inject_psi_field_hooks()
 	{
+		// Hooks \\
+
 		jump_patch(show_all_psi_fields_on_select_wrapper,		0x004E6224, 0);
 		jump_patch(hide_all_psi_fields_on_unselect_wrapper,		0x004E62BE, 0);
 	//	jump_patch(pack_unit_data_psi_provider,					0x004E3935, 0);
@@ -171,5 +184,10 @@ namespace hooks
 		jump_patch(unit_has_power_wrapper,						0x004936B0, 1);
 		jump_patch(show_power_sprite_wrapper,					0x00493BF0, 1);
 		jump_patch(create_pylon_aura,							0x00493640, 2);
+
+		// Patches \\
+
+		call_patch(is_repowered_building_working, 0x00493892);
+		memory_patch(0x00493897, (u16)0xC085);//TEST EAX, EAX;
 	}
 }

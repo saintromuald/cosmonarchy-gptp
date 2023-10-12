@@ -217,7 +217,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	nops(0x0047CCB0, 22);				// Allows for silent desyncs
 
 	// Update vision update timer to happen faster
-//	memory_patch(0x004D94D0 + 6, 1);	// Breaks death animations for hostile units
+	memory_patch(0x004D94D0 + 6, 2);
 
 	// Remove mouse/keyboard conflict
 	nops(0x004D21A3, 2);
@@ -647,6 +647,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x004EB8C4, (u8)8); // Improve melee air performance
 
 	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive mode and so on by reading Unit Stats game mode field
+	memory_patch(0x004AAFD6, (u8)0xA);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

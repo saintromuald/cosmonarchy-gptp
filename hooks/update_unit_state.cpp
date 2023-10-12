@@ -525,7 +525,7 @@ namespace hooks
 						hooks::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
 					}
 				}
-				helper::update_visibility(unit);
+			//	helper::update_visibility(unit);
 			} else {
 				unit_death_end(unit);
 			}

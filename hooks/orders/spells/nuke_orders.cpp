@@ -46,7 +46,7 @@ namespace hooks
 			unit->building.nuke_missile = (Unit*)nuke_dot;
 			if (nuke_dot)
 			{
-				nuke_dot->sprite->elevation = unit->sprite->elevation + 1;
+				nuke_dot->sprite->elevation = 19;
 				helper::set_thingy_visibility_flags(nuke_dot);
 			}
 			unit->main_order_state = 6;

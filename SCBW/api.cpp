@@ -1638,6 +1638,21 @@ namespace scbw {
 		}
 		target_ext->unit_vectors[UnitVectorMindControlling].clear();
 
+		// Cancel in-progress units
+		if (units_dat::group_flags[target->id].is_factory) {
+			u32 offset = 0;
+			for (u32 i = 1; i < 5; ++i) {
+				u32 slot = i + target->build_queue_slot - offset;
+				u32 unit_id = target->build_queue[slot];
+				if (unit_id == UnitId::None) {
+					continue;
+				}
+				helper::refund_queue_slot(target, slot);
+				offset++;
+			}
+			helper::cancel_last_training(target);
+		}
+
 		// Global recede timer for all control abilities
 		target_ext->values[ValueMindControlPlayer] = source->player + 1;
 		target_ext->timers[TimerMindControlRecede] = 5 * 24;

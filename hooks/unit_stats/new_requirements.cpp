@@ -1600,7 +1600,7 @@ namespace hooks {
 						{
 							return TECH_HIDDEN;
 						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 					case UnitId::TerranMadcap:
 					case UnitId::TerranHeracles:

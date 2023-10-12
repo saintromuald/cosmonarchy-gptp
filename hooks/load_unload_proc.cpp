@@ -338,7 +338,7 @@ namespace hooks
 					if (unit) {
 						transport->main_order_timer = 0;
 						if (helper::unload_unit_proc(unit)) {
-							if (!unit_id_is_bunker(transport->id)) {
+							if (!unit_id_is_bunker(transport->id) || transport_ext->timers[TimerEmergencyDetonation] == 1) {
 								helper::orders_self_destructing(unit); // Just kill it! -Veeq7
 							}
 						} else {

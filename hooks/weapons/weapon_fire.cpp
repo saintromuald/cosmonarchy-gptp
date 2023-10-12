@@ -606,7 +606,7 @@ namespace hooks {
 				if (unit->status & UnitStatus::InAir) {
 					continue;
 				}
-				if (unit->status & UnitStatus::Burrowed && !helper::unit_can_see_cloaked_target(unit, bullet->source_unit)) {
+				if (unit->status & UnitStatus::Burrowed && bullet->source_unit && !helper::unit_can_see_cloaked_target(unit, bullet->source_unit)) {
 			//		continue;
 				}
 			} else if (intercept_type == InterceptType_AirOnly) {
@@ -762,7 +762,8 @@ namespace hooks {
 
 		for (u32 i = 0; i < targets_count; ++i) {
 			UnitPiercingEntry* target = &targets[i];
-			if (weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
+			bool stops_on_armor = weapon_id_piercing_stops_on_armor(bullet->weapon_id);
+			if (stops_on_armor) {
 				u32 armor = hooks::get_armor_internal(target->unit);
 				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
 				if (armor >= armor_pen) {
@@ -773,7 +774,7 @@ namespace hooks {
 			}
 			apply_bullet_effect(bullet, target->cp, target->unit);
 			
-			if (weapon_id_piercing_stops_on_armor(bullet->weapon_id)) {
+			if (stops_on_armor) {
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
 				if (!bullet_ext->did_pierce) {
 					bullet_ext->did_pierce = true;
@@ -989,11 +990,10 @@ namespace hooks {
 					bullet->attack_target.unit = 0;
 				}
 			}
-			Sprite* bullet_sprite = bullet->sprite;
 			bullet->order_signal |= 0x80; // new
 			bullet->main_order_state = 0;
 			bullet->order_unit_id = 228;
-			for (Image* image = bullet_sprite->images.head; image; image = image->link.next) {
+			for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
 				helper::play_image_iscript(image, IscriptAnimation::Death);
 			}
 		}
@@ -1064,7 +1064,6 @@ namespace hooks {
 	bool find_next_bounce_target_proc(Unit* target) // 0048AFD0
 	{
 		Unit* bounce_source = *g_bullet_bounce_missile_source;
-		s32 bounce_source_status = (*g_bullet_bounce_missile_source)->status;
 
 		// Previously disallowed bouncing if unit was disabled
 		if (!target)
@@ -1079,13 +1078,13 @@ namespace hooks {
 		{
 			return 0;
 		}
-		if (helper::unit_can_see_cloaked_target(target, (*g_bullet_bounce_missile_source)))
+		if (*g_bullet_bounce_missile_source && helper::unit_can_see_cloaked_target(target, (*g_bullet_bounce_missile_source)))
 		{
 			return 0;
 		}
 
 		Unit* bounce_source_unit = bounce_source;
-		if (bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
+		if (bounce_source && bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
 		{
 			bounce_source_unit = bounce_source->subunit;
 		}
