@@ -2980,6 +2980,10 @@ namespace hooks {
 		// Clear Power Siphon debuff
 		if (unit_ext->timers[TimerSavantPowerSiphonDebuff] == 1) {
 			unit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
+			if (unit->subunit && unit->subunit->is_subunit()) {
+				UnitExt* subunit_ext = get_unit_ext(unit->subunit);
+				subunit_ext->values[ValueSavantPowerSiphonDebuff] = 0;
+			}
 		}
 
 		// Clear Autocrat - Controlled Opposition
