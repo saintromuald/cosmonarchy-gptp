@@ -1138,7 +1138,7 @@ namespace hooks {
 				ResourceArea* ai_resarea = &g_base_array[resarea];
 				u32 new_worker_limit = 0;
 				if (resarea && resarea < 250) {
-					new_worker_limit = 2.5 * ai_resarea->mineral_field_count + 3 * ai_resarea->geyser_count;
+					new_worker_limit = 3 * ai_resarea->mineral_field_count + 3 * ai_resarea->geyser_count;
 				}
 				town->worker_limit = new_worker_limit;
 			}
@@ -1177,7 +1177,7 @@ namespace hooks {
 
 			AI_Main* ai_player = &g_aiscript_controller[town_player];
 			s32 gas_delta = ai_player->vespene_needed - ai_player->vespene_available;
-			u32 new_gas_count = gas_delta / 150 + worker_count / 7;
+			u32 new_gas_count = gas_delta / 150 + worker_count / 10;
 			if (gas_count < new_gas_count) {
 				gas_count = new_gas_count;
 			}

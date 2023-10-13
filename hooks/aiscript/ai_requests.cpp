@@ -410,9 +410,7 @@ namespace hooks
 					if (v3 == 8)
 					{
 						helper::ai_region_train_attack_force(military_region);
-					}
-					else
-					{
+					} else {
 						if (v3 == 5 || v3 == 4)
 						{
 							v33 = military_region;
@@ -420,9 +418,7 @@ namespace hooks
 						if (v3 < 7u)
 						{
 							defense_region_id = military_region->region;
-						}
-						else
-						{
+						} else {
 							defense_region_id = military_region->target_region;
 						}
 						region_air_strength = military_region->air_strength_full;
@@ -473,9 +469,7 @@ namespace hooks
 				}
 				transport_unit_id_1 = UnitId::TerranTrojan;
 				transport_unit_id_2 = UnitId::TerranTrojan;
-			}
-			else
-			{
+			} else {
 				if (player_race != RaceId::Protoss)
 				{
 					return;
@@ -566,7 +560,7 @@ namespace hooks
 				}
 
 				u8 worker_count = town->worker_count;
-				if (worker_count < town->worker_limit && worker_count < 0xFu)
+				if (worker_count < town->worker_limit && worker_count < 15)
 				{
 					return worker_count;
 				}
@@ -1194,7 +1188,8 @@ namespace hooks
 			return false;
 		}
 		if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player]
-			|| g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player]) {
+		||  g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player])
+		{
 			return false;
 		}
 		return true;
