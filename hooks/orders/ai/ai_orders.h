@@ -63,5 +63,7 @@ namespace hooks {
 	Target ai_prepare_to_flee(Unit* unit, Unit* target);																// 00476A50
 	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);																	// 004E7420
 
+	b32 is_unreachable(Unit* target, Unit* unit);																		// 00476C50
+
 	void inject_ai_orders_hooks();
 }

@@ -2653,8 +2653,10 @@ namespace hooks {
 								if (current_button->action_var == toggle_abilities[i]) {
 									if (scbw::get_generic_rust_value(unit, toggle_values[i]) == 1) {
 										current_button->icon_id = button_toggle_off[i];
+										current_button->requirement_string_id = string_toggle_off[i];
 									} else {
 										current_button->icon_id = button_toggle_on[i];
+										current_button->requirement_string_id = string_toggle_on[i];
 									}
 								}
 							}

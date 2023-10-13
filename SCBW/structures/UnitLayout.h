@@ -146,10 +146,10 @@ namespace RustId
 }
 
 #include "SCBW\enumerations\TechId.h"
-const u32 string_toggle_on[] = {1265, 1232, 1355};
-const u32 string_toggle_off[] = {1270, 1233, 1351};
-const u32 button_toggle_on[] = {IconId::DisruptionWeb2, IconId::AfterburnersOnUnused, IconId::RechargeShields};
-const u32 button_toggle_off[] = {IconId::Cancel, IconId::AfterburnersOffUnused, IconId::Feedback};
+const u32 string_toggle_on[] = {1265, 1355};
+const u32 string_toggle_off[] = {1270, 1351};
+const u32 button_toggle_on[] = {IconId::DisruptionWeb2, IconId::RechargeShields};
+const u32 button_toggle_off[] = {IconId::Cancel, IconId::Feedback};
 const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleSavantOnhit};
 const u32 toggle_abilities[] = {TechId::LanifectDisruptionField, TechId::SavantOnhitToggle};
 const u32 generictoggles = ARRAY_SIZE(toggle_values);

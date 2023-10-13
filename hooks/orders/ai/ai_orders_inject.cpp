@@ -879,6 +879,23 @@ namespace
 			RETN 0x0C
 		}
 	}
+
+	void __declspec(naked) is_unreachable_wrapper() { // 00476C50
+		static b32 result;
+		static Unit* target;
+		static Unit* unit;
+		__asm {
+			MOV target, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::is_unreachable(target, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -937,6 +954,8 @@ namespace hooks
 
 	//	jump_patch(ai_prepare_to_flee_wrapper,					0x00476A50, 1);
 		jump_patch(ai_prepare_moving_to_wrapper,				0x004E7420, 0);
+		
+		jump_patch(is_unreachable_wrapper,						0x00476C50, 3);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 

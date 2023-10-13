@@ -2921,4 +2921,19 @@ namespace hooks {
 		helper::set_flag_attack_move(unit);
 		return 1;
 	}
+
+	// Hooked to use unit positions. -Pr0nogo
+	b32 is_unreachable(Unit* target, Unit* unit) // 00476C50
+	{
+		s32 pos_x = target->position.x; // Previously used sprite positions.
+		s32 pos_y = target->position.y;
+		if (unit->pathing_flags & 1)
+		{
+			if (!helper::unit_has_path_to_destination(unit, pos_x, pos_y) || !helper::ai_are_on_connected_regions(unit, pos_x, pos_y))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
