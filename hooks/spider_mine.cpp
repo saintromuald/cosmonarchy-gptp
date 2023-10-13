@@ -175,6 +175,11 @@ namespace hooks
 	// Not tested yet. -Pr0nogo
 	void orders_place_mine(Unit* unit) // 00464FD0
 	{
+		if (!unit->mine_carrier.mine_count) {
+			helper::order_return_to_idle(unit);
+			return;
+		}
+
 		if (unit->main_order_state)
 		{
 			Sprite* unit_sprite = unit->sprite;
