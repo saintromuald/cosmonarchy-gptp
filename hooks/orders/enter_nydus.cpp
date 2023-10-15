@@ -4,9 +4,12 @@
 namespace hooks
 {
 	// Necessary to assign the Enter Nydus order to units that normally can't use it
-	bool can_enter_nydus(Unit* unit, Unit* nydus)
+	bool can_enter_nydus(Unit* unit, Unit* nydus) // 004E8C20
 	{
-		Unit* const nydus_exit = nydus->building.nydus_exit;
+		Unit* nydus_exit = nydus->building.nydus_exit;
+		if (!nydus_exit) {
+			return false;
+		}
 		if (!(nydus->status & UnitStatus::Completed) || !(nydus_exit->status & UnitStatus::Completed)) {
 			return false;
 		}
@@ -23,7 +26,7 @@ namespace hooks
 	}
 
 	// Perform the Nydus Cesiant teleport effect on an unit that validated the conditions within the orders_enter_nydus function
-	void enter_nydus_effect(Unit* unit, Unit* nydus)
+	void enter_nydus_effect(Unit* unit, Unit* nydus) // 004EA180
 	{
 		if (!nydus->building.nydus_exit->sprite)
 		{
@@ -61,7 +64,7 @@ namespace hooks
 		}
 	}
 
-	void orders_enter_nydus(Unit* unit)
+	void orders_enter_nydus(Unit* unit) // 004EA3E0
 	{
 		Unit* nydus = unit->order_target.unit;
 		if  (!nydus
