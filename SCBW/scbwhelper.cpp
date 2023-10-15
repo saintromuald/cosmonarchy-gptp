@@ -14382,4 +14382,13 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void refresh_layer_5() {
+		const u32 function = 0x004BD350;
+		__asm {
+			PUSHAD
+			CALL function
+			POPAD
+		}
+	}
 }

@@ -43,6 +43,7 @@
 #include "selection_extender.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/weapons/weapon_damage.h"
+#include "hooks/update_unit_sight.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -3200,6 +3201,8 @@ namespace hooks {
 		if (!grp_wire_Font) {
 			init_grp_wire_font("font_wire");
 		}
+
+		memset(vision_timers, 0, 8*256*256);
 
 		return true;
 	}

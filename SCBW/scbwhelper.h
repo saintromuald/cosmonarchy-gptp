@@ -1681,4 +1681,6 @@ namespace helper {
 	void set_repulse_angle(Unit* unit);											// 00453300
 	void transform_subunit(Unit* unit, u32 new_unit_id);						// 0049F6A0
 	u8 apply_unit_effects(Unit* unit);											// 00492DA0
+
+	void refresh_layer_5();														// 004BD350
 }

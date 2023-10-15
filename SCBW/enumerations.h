@@ -309,8 +309,8 @@ namespace UnitStatus
 		NoCollide				= 0x00200000,	// If set, other units wont collide with the unit (like burrowed units)
 		UNKNOWN5				= 0x00400000,
 		IsGathering				= 0x00800000,	// If set, the unit wont collide with other units (like worker gathering)
-		UNKNOWN6				= 0x01000000,
-		UNKNOWN7				= 0x02000000,	// Turret related
+		SubunitWalking			= 0x01000000,
+		SubunitFollow			= 0x02000000,	// Turret related
 		Invincible				= 0x04000000,
 		AttackMove				= 0x08000000,
 		SpeedUpgrade			= 0x10000000,

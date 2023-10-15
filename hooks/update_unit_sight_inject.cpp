@@ -121,10 +121,8 @@ namespace {
 
 namespace hooks {
 	void inject_sight_update_hooks() {
-		//memory_patch(0x00504524, &gndSightCB_Inside);
-		//memory_patch(0x0050452C, &gndSightCB_Edge);
-		jump_patch(gndSightCB_Edge_wrapper, 0x00480110, 1);
-		jump_patch(gndSightCB_Inside_wrapper, 0x00480200, 1);
+		memory_patch(0x004D94D6, (u32)10); // Fog Update Counter
+		call_patch(update_fog, 0x004D9500);
 		jump_patch(reveal_sight_at_location_wrapper, 0x004806F0, 1);
 		jump_patch(getGroundHeightAtPx_wrapper, 0x004BD0F0, 6);
 	}
