@@ -1481,6 +1481,8 @@ void __declspec(naked) clear_selection_patch_9A749() {
 		TEST	EAX, EAX
 		JE		offset loc_49A7B2
 		MOV		EAX, [EAX + 0xC]
+		TEST	EAX, EAX
+		JE		offset loc_49A7B2
 		MOV		DL, [EAX + 0xE]
 		MOV		CL, DL
 		SHR		CL, 1

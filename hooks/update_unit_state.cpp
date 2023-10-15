@@ -513,6 +513,7 @@ namespace hooks
 		// Now handled in global effect
 	//	helper::update_disruption_web_status();
 
+		// TODO: Try nullchecking sprite here and in first visible unit loops for the sake of preventing nullsprite crashes. -Pr0nogo
 		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next (especially when the unit dies or gets hidden etc)
 		for (Unit* unit = *g_first_dying_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;

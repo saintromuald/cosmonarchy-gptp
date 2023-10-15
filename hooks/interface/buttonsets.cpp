@@ -1947,7 +1947,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranPenumbra:
 								{
-									if (current_button->icon_id == IconId::WraithBurstLasers) // Penumbra - Shroud Piercer
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Penumbra - Kinetic Penetration
+									||	current_button->icon_id == IconId::LegEnhancements)					// Penumbra - Phantasmal Passage
 									{
 										current_button_state = Button_State::Enabled;
 									}
