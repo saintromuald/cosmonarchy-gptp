@@ -53,15 +53,15 @@ void augur_sacrifice(Unit* augur, s32 radius) {
 void kill_hangar_units(Unit* unit) {
 	u32 random_value;
 	while (unit->unit_with_hangar.in_hangar_count != 0) {
-		Unit* childInside = unit->unit_with_hangar.in_hangar_child;
-		unit->unit_with_hangar.in_hangar_child = childInside->hangar_unit.hangar_link.prev;
-		childInside->hangar_unit.parent = nullptr;
-		childInside->remove();
+		Unit* child_inside = unit->unit_with_hangar.in_hangar_child;
+		unit->unit_with_hangar.in_hangar_child = child_inside->hangar_unit.hangar_link.prev;
+		child_inside->hangar_unit.parent = 0;
+		child_inside->remove();
 		unit->unit_with_hangar.in_hangar_count--;
 	}
+	Unit* child_outside = unit->unit_with_hangar.out_hangar_child;
 	while (unit->unit_with_hangar.out_hangar_count != 0) {
-		Unit* child_outside = unit->unit_with_hangar.out_hangar_child;
-		child_outside->hangar_unit.parent = nullptr;
+		child_outside->hangar_unit.parent = 0;
 
 		// Kill Stewards only (Plasma Shells will defuse anyway)
 		if (child_outside->id != UnitId::ProtossPlasmaShell) {
@@ -76,21 +76,23 @@ void kill_hangar_units(Unit* unit) {
 				*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
 				// number between 0 and 32766
 				random_value = (*g_last_random_number / 65536) & 0x7FFF;
-			} else {
+			}
+			else {
 				random_value = 0;
 			}
 			// should produce a number between 15 and 45 (or maybe 46)
 			random_death_timer = ((random_value * 31) / 32768) + 15;
 			if (child_outside->remove_timer == 0
-			||  random_death_timer < child_outside->remove_timer) {
+				|| random_death_timer < child_outside->remove_timer) {
 				child_outside->remove_timer = random_death_timer;
 			}
 		}
 		// 00466239
-		unit->unit_with_hangar.out_hangar_child = child_outside->hangar_unit.hangar_link.prev;
-		child_outside->hangar_unit.hangar_link.prev = 0;
-		child_outside->hangar_unit.hangar_link.next = 0;
-		unit->unit_with_hangar.out_hangar_count--;
+		Unit* child_outside_old = child_outside;
+		child_outside = child_outside->hangar_unit.hangar_link.prev;
+		child_outside_old->hangar_unit.hangar_link.prev = 0;
+		child_outside_old->hangar_unit.hangar_link.next = 0;
+		--unit->unit_with_hangar.out_hangar_count;
 	}
 	unit->unit_with_hangar.out_hangar_child = 0;
 }
