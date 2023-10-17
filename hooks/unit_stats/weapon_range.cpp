@@ -31,7 +31,6 @@ namespace hooks
 			bonus_amount = 0;
 		}
 
-		// Compile variable for use in height advantage calculations
 		return units_dat::seek_range[unit->id] * scale + bonus_amount;
 	};
 

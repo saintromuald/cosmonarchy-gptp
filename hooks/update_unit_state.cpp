@@ -726,6 +726,9 @@ namespace hooks
 		if (image) {
 			do {
 				next_image = image->link.next;
+				if (!image->update_fxn) { // Resolve null crash, presumably
+					return;
+				}
 				((void(__thiscall*)(Image*))image->update_fxn)(image);
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 				if (!sprite->images.head)

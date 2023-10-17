@@ -269,7 +269,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	&&   unit->is_target_within_min_range(order_target_unit, attack_range)
 	&&   unit->can_attack_target(order_target_unit))
 	{
-		if (weapon_id == WeaponId::DurendalPhilistineAutogun && scbw::is_allied_to(unit->player, order_target_unit->player)) {
+		if (weapon_id_is_secondary(weapon_id) && scbw::is_allied_to(unit->player, order_target_unit->player)) {
 			return fired; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags

@@ -1015,3 +1015,10 @@ u32 get_death_sfx_id(u32 unit_id)
 		default:						return SoundId::No_sound;
 	}
 }
+
+u32 weapon_id_is_secondary(u32 weapon_id)
+{
+	return weapon_id == WeaponId::DurendalPhilistineAutogun
+		|| WeaponId::TarasqueAcceleratedPlasmid
+		|| WeaponId::OptectonSkybondRay;
+}
