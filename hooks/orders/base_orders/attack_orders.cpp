@@ -330,7 +330,7 @@ namespace hooks
 							}
 							if (!((unit->subunit)->movement_flags & MovementFlags_Accelerating))
 							{
-								helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
+								helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
 							}
 						}
 						jump_to_77CA1 = false;
@@ -452,7 +452,7 @@ namespace hooks
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
-				helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
+				helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
 			} else if (!unit->unit_ai) {
 				unit->order_to_idle();
 			} else {
@@ -611,10 +611,8 @@ namespace hooks
 
 	void orders_attack_move_ep(Unit* unit)
 	{
-		u8 saved_mainOrderId = unit->main_order_id; //[EBP-0x14]
-		// attack_move_react_to_attack: probably perform checks to see if the order can be done
-		if (helper::attack_move_react_to_attack(unit, unit->main_order_id)
-		&&  unit->main_order_timer == 0)
+		u8 previous_main_order_id = unit->main_order_id;
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) && unit->main_order_timer == 0)
 		{
 			unit->main_order_timer = 0; // used to be 15
 			if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
@@ -639,7 +637,7 @@ namespace hooks
 
 				if (jump_to_78EAE)
 				{
-					helper::attack_move_try_pick_target(unit, saved_mainOrderId);
+					helper::attack_move_try_pick_target(unit, previous_main_order_id);
 				}
 			}
 		}
@@ -647,16 +645,15 @@ namespace hooks
 
 	void orders_attack_move(Unit* unit)
 	{
-		// attack_move_react_to_attack:
-		// Logically, would check if a target is in distance, and if that's the case (not returning 0), stop the "move" part that follow to attack the unit met
-		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0
-		&&  unit->main_order_timer == 0)
+		// Logically, would check if a target is in distance, and if that's the case (not returning 0),
+		// stop the "move" part that follow to attack the unit met
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0)
 		{
 			unit->main_order_timer = 0; // used to be 15
 			if (unit->move_target.pt.x != unit->position.x
 			||  unit->move_target.pt.y != unit->position.y)
 			{
-				// Logically, this function would check one last time if a target is in distance, and attack it if that's the case, else AttackMove end here
+				// This function would check one last time if a target is in distance, and attack it if that's the case, else AttackMove end here
 				helper::attack_move_try_pick_target(unit, unit->main_order_id);
 			} else {
 				unit->order_to_idle();
@@ -680,7 +677,7 @@ namespace hooks
 				{
 					helper::ai_attack_unit(unit);
 				}
-				helper::get_weapon_begin_iscriptt(unit, IscriptAnimation::GndAttkRpt);
+				helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
 			}
 		}
 	}

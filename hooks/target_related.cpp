@@ -342,7 +342,7 @@ namespace hooks
 			return false;
 		}
 
-		// Originally had code related to infestation, and to disable AI Didact attacks
+		// Originally had code related to old infestation, and to disable AI Didact attacks
 
 		// GAME RULE: Ground titanic units can be targeted by air-only weapons
 		// Doesn't work currently.
@@ -353,7 +353,7 @@ namespace hooks
 		}
 		*/
 
-		if (unit_id_is_bunker(attacker->id)) {
+		if (unit_id_is_garrison(attacker->id)) {
 			u32 max_range = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
 				Unit* cargo_unit = attacker->get_loaded_unit(i);
@@ -377,11 +377,14 @@ namespace hooks
 		if (air_unit && scbw::unit_id_has_custom_air_weapon(attacker->id)) {
 			weapon = scbw::get_custom_secondary_weapon_from_unit_id(attacker->id);
 		}
-		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || attacker->id == UnitId::TerranPhalanxSiegeMode) {
+
+		// For stationary attackers
+		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || unit_id_is_siege_mode(attacker->id)) {
 			if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
 				return false;
 			}
 		}
+
 		return weapon != WeaponId::None;
 	}
 

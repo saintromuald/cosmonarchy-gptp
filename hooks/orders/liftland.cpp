@@ -175,7 +175,7 @@ namespace hooks
 					helper::complete_addon(unit, addon);
 				}
 
-				if (unit_id_is_bunker(unit->id))
+				if (unit_id_is_garrison(unit->id))
 				{
 					for (s32 i = 0; i < TransportCap; i++)
 					{

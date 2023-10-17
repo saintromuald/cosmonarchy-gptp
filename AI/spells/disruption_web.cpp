@@ -26,7 +26,7 @@ namespace AI
 				return false;
 			}
 			Unit* targetOfTarget;
-			if (unit_id_is_bunker(target->id) && target->has_loaded_unit())
+			if (unit_id_is_garrison(target->id) && target->has_loaded_unit())
 			{
 				targetOfTarget = target->get_first_loaded_unit()->order_target.unit;
 			}

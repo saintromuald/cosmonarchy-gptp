@@ -236,14 +236,14 @@ bool unit_id_is_vespene_node(u32 unit_id) {
 		|| unit_id == UnitId::ZergEzigrisant;
 }
 
-bool unit_id_is_ground_bunker(u32 unit_id) {
+bool unit_id_is_ground_garrison(u32 unit_id) {
 	return unit_id == UnitId::TerranAnchor
 		|| unit_id == UnitId::TerranLodestone;
 	//	|| unit_id == UnitId::TerranTencendur;
 }
 
-bool unit_id_is_bunker(u32 unit_id) {
-	return unit_id_is_ground_bunker(unit_id); // Will add more bunker types later. -Pr0nogo
+bool unit_id_is_garrison(u32 unit_id) {
+	return unit_id_is_ground_garrison(unit_id); // Will add more bunker types later. -Pr0nogo
 }
 
 bool unit_id_is_melee_air_unit(u32 unit_id) {

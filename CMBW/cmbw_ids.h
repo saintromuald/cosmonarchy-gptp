@@ -17,8 +17,8 @@ bool unit_id_has_addon(u32 unit_id); // Allows the AI to reserve space for addon
 u32 unit_id_get_larva_type(u32 unit_id);
 u32 unit_id_swarmhold_value(u32 unit_id);
 bool unit_id_is_vespene_node(u32 unit_id);
-bool unit_id_is_ground_bunker(u32 unit_id);
-bool unit_id_is_bunker(u32 unit_id);
+bool unit_id_is_ground_garrison(u32 unit_id);
+bool unit_id_is_garrison(u32 unit_id);
 bool unit_id_is_melee_air_unit(u32 unit_id);
 bool unit_id_is_morphed_from_double_unit(u32 unit_id);
 bool unit_id_is_power_generator(u32 unit_id);

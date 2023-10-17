@@ -118,7 +118,7 @@ namespace hooks
 	{
 		Unit* actual_target = target;
 
-		if (unit_id_is_bunker(target->id))
+		if (unit_id_is_garrison(target->id))
 		{
 			Unit* first_loaded_unit = target->get_first_loaded_unit();
 			if (first_loaded_unit)

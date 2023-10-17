@@ -242,7 +242,7 @@ namespace helper {
 	bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range);							// 004763D0
 	bool ai_is_unreachable_position(Unit* unit, s32 x, s32 y);												// 00476610
 	bool is_unit_in_weapon_range(Unit* unit, Unit* target);													// 00476870
-	void get_weapon_begin_iscriptt(Unit* unit, IscriptAnimation::Enum anim);								// 00476ED0
+	void get_weapon_begin_iscript(Unit* unit, IscriptAnimation::Enum anim);								// 00476ED0
 	void pick_new_target_if_needed(Unit* unit);																// 00477510
 	void attack_move_try_pick_target(Unit* unit, u8 order_id);												// 00477820
 	bool attack_move_react_to_attack(Unit* unit, u8 order_id);												// 00478370

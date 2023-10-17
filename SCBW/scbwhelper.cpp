@@ -1958,7 +1958,7 @@ namespace helper {
 		return (result != 0);
 	}
 
-	void get_weapon_begin_iscriptt(Unit* unit, IscriptAnimation::Enum anim) {
+	void get_weapon_begin_iscript(Unit* unit, IscriptAnimation::Enum anim) {
 		const u32 func_address = 0x00476ED0;
 		__asm {
 			PUSHAD

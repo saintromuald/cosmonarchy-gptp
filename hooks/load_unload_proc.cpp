@@ -96,7 +96,7 @@ namespace hooks
 		}
 		special_load_unit(cargo_unit, transport);
 
-		if (unit_id_is_bunker(transport->id))
+		if (unit_id_is_garrison(transport->id))
 		{
 			for (s32 i = 0; i < TransportCap; i++)
 			{
@@ -114,7 +114,7 @@ namespace hooks
 		}		
 
 		scbw::refresh_console();
-		if (unit_id_is_bunker(transport->id))
+		if (unit_id_is_garrison(transport->id))
 		{
 			cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
 			if (cargo_unit->subunit) {
@@ -338,7 +338,7 @@ namespace hooks
 					if (unit) {
 						transport->main_order_timer = 0;
 						if (helper::unload_unit_proc(unit)) {
-							if (!unit_id_is_bunker(transport->id) || transport_ext->timers[TimerEmergencyDetonation] == 1) {
+							if (!unit_id_is_garrison(transport->id) || transport_ext->timers[TimerEmergencyDetonation] == 1) {
 								helper::orders_self_destructing(unit); // Just kill it! -Veeq7
 							}
 						} else {

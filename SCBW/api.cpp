@@ -996,7 +996,7 @@ namespace scbw {
 		}
 		s32 source_height = xHeight_table[g_map_tile_size->width * (unit->position.y >> 5) + (unit->position.x >> 5)];
 		if (!target_unit) {
-			return source_height * 2;
+			return std::max(source_height, 0) * 2;
 		} else if (target_unit->status & UnitStatus::InAir) {
 			return 0;
 		}

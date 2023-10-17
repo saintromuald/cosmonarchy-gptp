@@ -30,14 +30,14 @@ namespace hooks
 
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
-		if (unit->connected_unit && unit_id_is_ground_bunker(unit->connected_unit->id)
+		if (unit->connected_unit && unit_id_is_ground_garrison(unit->connected_unit->id)
 		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
 		{
 			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
 		}
 		if (unit->subunit)
 		{
-			if (unit->subunit->connected_unit && unit_id_is_ground_bunker(unit->subunit->connected_unit->id)
+			if (unit->subunit->connected_unit && unit_id_is_ground_garrison(unit->subunit->connected_unit->id)
 			&&	unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
 			{
 				return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.

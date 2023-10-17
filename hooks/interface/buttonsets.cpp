@@ -2630,7 +2630,7 @@ namespace hooks {
 					// Attack overrides
 					if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building)
 					{
-						if (unit_id_is_ground_bunker(unit->id)) {
+						if (unit_id_is_ground_garrison(unit->id)) {
 							u32 loaded = 0;
 							for (u32 i = 0; i < 8; ++i) {								
 								Unit* bunker_unit = unit->get_loaded_unit(i);

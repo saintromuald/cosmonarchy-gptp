@@ -932,7 +932,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	if (target->id == UnitId::ProtossPylon) {
 		cost -= 25;
 	}
-	if (unit_id_is_bunker(target->id) && target->has_loaded_unit()) {
+	if (unit_id_is_garrison(target->id) && target->has_loaded_unit()) {
 		cost -= 15;
 	}
 
@@ -940,7 +940,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 }
 
 void tactical_ai(Unit* unit, UnitExt* unit_ext) {
-	if (unit_id_is_bunker(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
+	if (unit_id_is_garrison(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
 		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
 		EntryArray allies = {};
