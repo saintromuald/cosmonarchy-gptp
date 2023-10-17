@@ -1019,6 +1019,6 @@ u32 get_death_sfx_id(u32 unit_id)
 u32 weapon_id_is_secondary(u32 weapon_id)
 {
 	return weapon_id == WeaponId::DurendalPhilistineAutogun
-		|| WeaponId::TarasqueAcceleratedPlasmid
-		|| WeaponId::OptectonSkybondRay;
+		|| weapon_id == WeaponId::TarasqueAcceleratedPlasmid
+		|| weapon_id == WeaponId::OptectonSkybondRay;
 }
