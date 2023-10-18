@@ -1083,7 +1083,7 @@ namespace scbw {
 
 		s32 direction = unit->sprite->main_graphic->direction;
 		if (direction >= shield_lo->frame_count) {
-			scbw::printf("Unit id %u has the wrong shield overlay!", unit->id);
+			scbw::printf("Unit id %u has an invalid shield overlay!", unit->id);
 		} else {
 			Point8 offset = shield_lo->get_offset(direction, frame_angle);
 			unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);

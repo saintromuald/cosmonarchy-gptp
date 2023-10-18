@@ -431,12 +431,6 @@ namespace hooks
 		}
 
 		switch (data.target->id) {
-			case UnitId::TerranSilvertongue: {
-				target_ext->timers[TimerSilvertonguePlotTwist] = 2 * 24;
-				if (target_ext->timers[TimerDecloak] > 2) {
-					target_ext->timers[TimerDecloak] = 2;
-				}
-			} break;
 			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Incubate on damage taken
 				if (!scbw::is_allied_to(data.target->player, data.attacking_player_id)) {

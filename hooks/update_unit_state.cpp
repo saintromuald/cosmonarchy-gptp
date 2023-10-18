@@ -540,7 +540,7 @@ namespace hooks
 		}
 
 		if (*g_vision_updated) {
-			for (Unit* unit = *first_scanner_sweep; unit; unit = next_unit) {
+			for (Unit* unit = *g_first_scanner_sweep; unit; unit = next_unit) {
 				next_unit = unit->link.next;
 				*g_active_iscript_entity = unit;
 				*g_active_iscript_unit = unit;
@@ -585,7 +585,7 @@ namespace hooks
 		memset(&g_lurker_splash_list[32 * lurker_splash_index], 0, 0x80u);
 		*g_last_bullet_index = 0;
 
-		for (Unit* unit = *first_scanner_sweep; unit; unit = next_unit) {
+		for (Unit* unit = *g_first_scanner_sweep; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit = unit;
@@ -866,5 +866,130 @@ namespace hooks
 			helper::transform_subunit(subunit, units_dat::subunit[new_id]);
 		}
 		return helper::apply_unit_effects(unit);
+	}
+
+	// Hooked to change the sound id for permacloaked units on initial creation. -Pr0nogo
+	u32 update_unit_strength_and_apply_default_orders(Unit* unit) // 0049FA40
+	{
+		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg)
+		{
+			helper::increment_unit_scores(unit, -1);
+			unit->status |= UnitStatus::Completed;
+			helper::increment_unit_scores(unit, 1);
+		} else {
+			unit->status |= UnitStatus::Completed;
+		}
+		helper::increment_unit_scores_ex(unit, 1, 1);
+		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak)
+		{
+			u32 sound_id = scbw::get_cloak_sound_id(unit);
+			helper::begin_cloak(unit, sound_id);
+		}
+		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer)
+		{
+			if (*g_first_hidden_unit == unit)
+			{
+				*g_first_hidden_unit = unit->link.next;
+			}
+			if (*g_last_hidden_unit == unit)
+			{
+				*g_last_hidden_unit = unit->link.prev;
+			}
+			if (unit->link.prev)
+			{
+				unit->link.prev->link.next = unit->link.next;
+			}
+			Unit* next_unit = unit->link.next;
+			if (next_unit)
+			{
+				next_unit->link.prev = unit->link.prev;
+			}
+			unit->link.prev = 0;
+			unit->link.next = 0;
+			Unit* first_scanner = *g_first_scanner_sweep;
+			if (*g_first_scanner_sweep)
+			{
+				if (*g_last_scanner_sweep == *g_first_scanner_sweep)
+				{
+					*g_last_scanner_sweep = unit;
+				}
+				unit->link.prev = *g_first_scanner_sweep;
+				unit->link.next = first_scanner->link.next;
+				Unit* next_scanner = first_scanner->link.next;
+				if (next_scanner)
+				{
+					next_scanner->link.prev = unit;
+				}
+				first_scanner->link.next = unit;
+				helper::refresh_unit_vision(unit);
+			} else {
+				*g_last_scanner_sweep = unit;
+				*g_first_scanner_sweep = unit;
+				helper::refresh_unit_vision(unit);
+			}
+		} else if (unit->sprite->flags & SpriteFlags::Hidden && unit->id != UnitId::ProtossSteward && unit->id != UnitId::ProtossPlasmaShell) {
+			helper::show_and_enable_unit(unit);
+		}
+		if (unit->id == UnitId::Special_FloorMissileTrap
+		||  unit->id == UnitId::Special_FloorGunTrap
+		||  unit->id == UnitId::Special_WallMissileTrap
+		||  unit->id == UnitId::Special_WallFlameTrap
+		||  unit->id == UnitId::Special_RightWallMissileTrap
+		||  unit->id == UnitId::Special_RightWallFlameTrap)
+		{
+			unit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
+			unit->detection_status = 0x80000000;
+			unit->secondary_order_timer = 0;
+		}
+		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
+		if (player_type == PlayerType::Rescuable)
+		{
+			u32 main_order_id = unit->main_order_id;
+			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
+			if (main_order_id)
+			{
+				while (1)
+				{
+					Order* tail = unit->order_queue_tail;
+					if (!tail)
+					{
+						break;
+					}
+					u32 tail_order_id = tail->order_id;
+					if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::RescuePassive)
+					{
+						break;
+					}
+					helper::remove_order_from_unit_queue(tail, unit);
+				}
+				helper::perform_another_order(OrderId::RescuePassive, 0, unit, UnitId::None, {}, 0);
+			}
+			helper::do_next_queued_order(unit);
+		} else {
+			u32 new_order_id;
+			if (player_type == PlayerType::Neutral)
+			{
+				new_order_id = OrderId::Neutral;
+			} else if (player_type == PlayerType::Computer) {
+				new_order_id = units_dat::computer_idle_order[unit->id];
+			} else {
+				new_order_id = units_dat::human_idle_order[unit->id];
+			}
+			helper::issue_order_targeting_nothing(unit, new_order_id);
+		}
+		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories)
+		{
+			Sprite* sprite = unit->sprite;
+			unit->powerup_origin.x = sprite->position.x;
+			unit->powerup_origin.y = sprite->position.y;
+			u32 idle_order = units_dat::human_idle_order[unit->id];
+			unit->user_action_flags |= 1u;
+			helper::order(1, unit, idle_order, {}, 0, 228);
+			helper::do_next_queued_order(unit);
+		}
+		unit->air_strength = helper::get_unit_strength(unit, unit->id, 0);
+		u32 strength = helper::get_unit_strength(unit, 1);
+		unit->ground_strength = strength;
+		return strength;
 	}
 }

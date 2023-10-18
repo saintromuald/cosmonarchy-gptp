@@ -129,19 +129,38 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) update_unit_strength_and_apply_default_orders_wrapper() // 0049FA40
+	{
+		static Unit* unit;
+		static u32 result;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::update_unit_strength_and_apply_default_orders(unit);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
 {
 	void inject_update_unit_state_hooks()
 	{
-		jump_patch(update_unit_energy_wrapper,				0x004EB4B0, 0);
-		jump_patch(update_unit_state_wrapper,				0x004EC290, 1);
-		jump_patch(update_units_wrapper,					0x004ED000, 5);
-	//	jump_patch(update_burrowing_cloaking_units_wrapper,	0x00492EB0, 3);
-	//	jump_patch(do_cloak_wrapper,						0x0049B440, 5);
-		jump_patch(progress_unit_frame_wrapper,				0x004ECF70, 3);
-		jump_patch(sprite_to_iscript_loop_wrapper,			0x00497920, 0);
-		jump_patch(replace_unit_with_id_wrapper,			0x0049FED0, 1);
+		jump_patch(update_unit_energy_wrapper,								0x004EB4B0, 0);
+		jump_patch(update_unit_state_wrapper,								0x004EC290, 1);
+		jump_patch(update_units_wrapper,									0x004ED000, 5);
+	//	jump_patch(update_burrowing_cloaking_units_wrapper,					0x00492EB0, 3);
+	//	jump_patch(do_cloak_wrapper,										0x0049B440, 5);
+		jump_patch(progress_unit_frame_wrapper,								0x004ECF70, 3);
+		jump_patch(sprite_to_iscript_loop_wrapper,							0x00497920, 0);
+		jump_patch(replace_unit_with_id_wrapper,							0x0049FED0, 1);
+		jump_patch(update_unit_strength_and_apply_default_orders_wrapper,	0x0049FA40, 1);
 	}
 }

@@ -2772,7 +2772,8 @@ namespace hooks {
 		// Cloaked units recloak after 2 seconds of being out of combat
 		if (unit_ext->timers[TimerDecloak] == 1) {
 			if (scbw::is_decloakable(unit)) {
-				helper::begin_cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+				u32 sound_id = scbw::get_cloak_sound_id(unit);
+				helper::begin_cloak(unit, sound_id);
 			}
 		}
 

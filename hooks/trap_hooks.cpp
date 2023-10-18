@@ -123,12 +123,12 @@ namespace hooks
 				v9->link.prev = v1->link.prev;
 			v1->link.prev = 0;
 			v1->link.next = 0;
-			v10 = *first_scanner_sweep;
-			if (first_scanner_sweep)
+			v10 = *g_first_scanner_sweep;
+			if (g_first_scanner_sweep)
 			{
-				if (*last_scanner_sweep == *first_scanner_sweep)
-					*last_scanner_sweep = v1;
-				v1->link.prev = *first_scanner_sweep;
+				if (*g_last_scanner_sweep == *g_first_scanner_sweep)
+					*g_last_scanner_sweep = v1;
+				v1->link.prev = *g_first_scanner_sweep;
 				v1->link.next = v10->link.next;
 				v11 = v10->link.next;
 				if (v11)
@@ -138,8 +138,8 @@ namespace hooks
 			}
 			else
 			{
-				*last_scanner_sweep = v1;
-				*first_scanner_sweep = v1;
+				*g_last_scanner_sweep = v1;
+				*g_first_scanner_sweep = v1;
 				helper::refresh_unit_vision(v1);
 			}
 		}
