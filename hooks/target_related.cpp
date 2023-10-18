@@ -324,9 +324,9 @@ namespace hooks
 			}
 		}
 
-		Unit* context = attacker;
+		Unit* final_attacker = attacker;
 		if (helper::unit_is_subunit(attacker->subunit)) {
-			context = attacker->subunit;
+			final_attacker = attacker->subunit;
 		}
 
 		if (helper::unit_is_carrier(attacker)) {
@@ -373,8 +373,8 @@ namespace hooks
 		}
 
 		bool air_unit = target->status & UnitStatus::InAir;
-		u32 weapon = air_unit ? context->get_air_weapon() : context->get_ground_weapon();
-		if (air_unit && scbw::unit_id_has_custom_air_weapon(attacker->id)) {
+		u32 weapon = air_unit ? final_attacker->get_air_weapon() : final_attacker->get_ground_weapon();
+		if (air_unit && unit_id_has_custom_air_weapon(attacker->id)) {
 			weapon = scbw::get_custom_secondary_weapon_from_unit_id(attacker->id);
 		}
 

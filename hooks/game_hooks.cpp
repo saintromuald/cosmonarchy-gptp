@@ -568,6 +568,59 @@ namespace hooks {
 					source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
 				}
 			}
+			
+			// Ability ranges - DF
+			if (config.show_ability_ranges && *g_is_targeting && units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
+				u32 weapon = WeaponId::None;
+				switch (*g_order_id_ground)
+				{
+					case OrderId::FireYamatoGun1:
+					{
+						weapon = WeaponId::YamatoGun;
+					} break;
+					case OrderId::CarapaceSwarm:
+					{
+						weapon = WeaponId::CarapaceSwarm;
+					} break;
+					case OrderId::CastParasite:
+					{
+						weapon = WeaponId::MatralethParasite;
+					} break;
+					case OrderId::PsiStorm:
+					{
+						weapon = WeaponId::PsiStorm;
+					} break;
+					case OrderId::Irradiate:
+					{
+						weapon = WeaponId::Irradiate;
+					} break;
+					case OrderId::Plague:
+					{
+						weapon = WeaponId::Plague;
+					} break;
+					case OrderId::StasisField:
+					{
+						weapon = WeaponId::StasisField; 
+					} break;
+					case OrderId::CastMaelstrom:
+					{
+						weapon = WeaponId::MindTyrantMaelstrom; 
+					} break;
+					case OrderId::DefensiveMatrix:
+					case OrderId::Hallucination1:
+					case OrderId::NukePaint:
+					case OrderId::CastTyranny:
+					{
+						scbw::draw_aura_range(unit, units_dat::sight_range[unit->id], 164); //#88409C
+					} break;
+					default:
+					{
+					} break;
+				}
+				if (weapon != WeaponId::None) {
+					scbw::draw_weapon_range(*g_active_portrait_unit, weapon, 164); //#88409C
+				}
+			}
 
 			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
 			||   (in_replay_or_witness && config.witness_show_order_lines)) {
@@ -634,62 +687,6 @@ namespace hooks {
 				&&  !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
 					for (Order* order = unit->order_queue_head; order; order = order->next) {
 						source = draw_order_line(source, order->target, graphics::GREY);
-					}
-				}
-
-				// Ability ranges - DF
-				if (config.show_ability_ranges && *g_is_targeting && units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
-					u32 weapon = WeaponId::None;
-					switch (*g_order_id_ground)
-					{
-						case OrderId::FireYamatoGun1:
-						{
-							weapon = WeaponId::YamatoGun;
-						} break;
-						case OrderId::CarapaceSwarm:
-						{
-							weapon = WeaponId::CarapaceSwarm;
-						} break;
-						case OrderId::CastParasite:
-						{
-							weapon = WeaponId::MatralethParasite;
-						} break;
-						case OrderId::PsiStorm:
-						{
-							weapon = WeaponId::PsiStorm;
-						} break;
-						case OrderId::Irradiate:
-						{
-							weapon = WeaponId::Irradiate;
-						} break;
-						case OrderId::Plague:
-						{
-							weapon = WeaponId::Plague;
-						} break;
-						case OrderId::StasisField:
-						{
-							weapon = WeaponId::StasisField; 
-						} break;
-						case OrderId::CastTyranny:
-						{
-							weapon = WeaponId::MindTyrantTyranny; 
-						} break;
-						case OrderId::CastMaelstrom:
-						{
-							weapon = WeaponId::MindTyrantMaelstrom; 
-						} break;
-						case OrderId::DefensiveMatrix:
-						case OrderId::Hallucination1:
-						case OrderId::NukePaint:
-						{
-							scbw::draw_aura_range(unit, units_dat::sight_range[unit->id], 164); //#88409C
-						} break;
-						default:
-						{
-						} break;
-					}
-					if (weapon != WeaponId::None) {
-						scbw::draw_weapon_range(*g_active_portrait_unit, weapon, 164); //#88409C
 					}
 				}
 			}

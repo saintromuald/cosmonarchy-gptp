@@ -1022,3 +1022,8 @@ u32 weapon_id_is_secondary(u32 weapon_id)
 		|| weapon_id == WeaponId::TarasqueAcceleratedPlasmid
 		|| weapon_id == WeaponId::OptectonSkybondRay;
 }
+
+bool unit_id_has_custom_air_weapon(u32 unit_id) {
+	return unit_id == UnitId::TerranDurendal
+		|| unit_id == UnitId::ProtossOptecton;
+}

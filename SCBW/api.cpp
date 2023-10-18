@@ -2254,11 +2254,6 @@ namespace scbw {
 			|| buttonset_id == UnitId::Buttons_AdvancedPoliceStructures;
 	}
 
-	bool unit_id_has_custom_air_weapon(u32 unit_id) {
-		return unit_id == UnitId::TerranDurendal
-			|| unit_id == UnitId::ProtossOptecton;
-	}
-
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
 		switch (unit_id) {
 			case UnitId::TerranTarasque: {

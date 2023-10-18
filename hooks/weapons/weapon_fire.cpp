@@ -310,11 +310,11 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 
 	for (u32 i = 0; i < count; ++i) {
 		Unit* target = targets.units[i];
-		if (target == unit
-		||  target == order_target_unit
-		||  scbw::is_allied_to(unit->player, target->player)
-		|| !unit->can_attack_target(target)
-		|| !unit->is_target_within_min_range(target, attack_range)) {
+		if  (target == unit
+		||   target == order_target_unit
+		||   scbw::is_allied_to(unit->player, target->player)
+		||  !unit->can_attack_target(target)
+		||  !unit->is_target_within_min_range(target, attack_range)) {
 			continue;
 		}
 

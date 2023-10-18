@@ -1026,7 +1026,7 @@ namespace hooks
 	}
 
 	// Hooked to fix null sprite crash. -Pr0nogo
-	s32 order_attack_behavior(Unit* unit) // 0047840
+	s32 order_attack_behavior(Unit* unit) // 00478540
 	{
 		u32 status = unit->status;
 		Unit* target_unit = unit->order_target.unit;
@@ -1246,5 +1246,37 @@ namespace hooks
 			}
 		}
 		return 1;
+	}
+
+	// Hooked to fix Optectons when they have air targets! -Pr0nogo
+	void order_attack_move_try_pick_target(Unit* unit, u8 order_id) // 00477820
+	{
+		if (helper::get_target_acquisition_range_upgrade(unit))
+		{
+			if (unit->unit_ai)
+			{
+				helper::ai_update_attack_target(unit, 0, 0, 0);
+			} else {
+				Unit* target = helper::find_best_attack_target(unit);
+				if (target)
+				{
+					if (unit->id == UnitId::ProtossOptecton && target->status & UnitStatus::InAir) {
+						return;
+					}
+					helper::set_resource_target(unit);
+					helper::prepend_order(unit, order_id, unit->order_target.pt, unit->order_target.unit);
+					helper::insert_order_before(unit, unit->order_queue_head, units_dat::attack_unit_order[unit->id],
+											    target->position.x, target->position.y, target, UnitId::None);
+					helper::force_order_done(unit);
+					target = 0;
+					unit->status |= UnitStatus::AttackMove;
+					Unit* subunit = unit->subunit;
+					if (subunit)
+					{
+						subunit->status |= UnitStatus::AttackMove;
+					}
+				}
+			}
+		}
 	}
 }

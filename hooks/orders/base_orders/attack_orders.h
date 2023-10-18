@@ -18,8 +18,9 @@ namespace hooks
 	void get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 position);	// 00465D30
 	void orders_carrier_idle(Unit* unit);											// 004666A0
 	Unit* release_fighter(Unit* unit);												// 00466440 | local only!
-	s32 order_attack_behavior(Unit* unit);											// 0047840
+	s32 order_attack_behavior(Unit* unit);											// 00478540
 	b32 attack_move_react_to_attack(Unit* unit, u32 order_id);						// 00478370
+	void order_attack_move_try_pick_target(Unit* unit, u8 order_id);				// 00477820
 
 	void inject_attack_orders_hooks();
 }
