@@ -784,4 +784,5 @@ namespace scbw
 	void reveal_attacker(Unit* attacker, Unit* victim);
 	void unload_or_kill_loaded_units(Unit* transport);
 	u32 get_cloak_sound_id(Unit* unit);
+	u32 get_decloak_sound_id(Unit* unit);
 }

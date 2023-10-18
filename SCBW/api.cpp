@@ -1094,7 +1094,7 @@ namespace scbw {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (is_decloakable(unit)) {
 			if (unit_ext->timers[TimerDecloak] == 0) {
-				u32 sound_id = get_cloak_sound_id(unit);
+				u32 sound_id = get_decloak_sound_id(unit);
 				helper::end_cloak(unit, sound_id);
 			}
 			if (unit_ext->timers[TimerDecloak] != 1) {
@@ -3473,13 +3473,33 @@ namespace scbw {
 		switch (unit->get_race())
 		{
 			case RaceId::Terran: {
-				return SoundId::Terran_PHOENIX_TPhClo01_WAV;
+				return SoundId::CloakTerranOn;
 			}
 			case RaceId::Protoss: {
 				return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 			}
 			default: {
 				return SoundId::Terran_PHOENIX_TPhClo01_WAV;
+			}
+		}
+	}
+
+	u32 get_decloak_sound_id(Unit* unit)
+	{
+		if (unit->status & UnitStatus::CloakingForFree) {
+			return SoundId::Terran_PHOENIX_TPhClo00_WAV;
+		}
+
+		switch (unit->get_race())
+		{
+			case RaceId::Terran: {
+				return SoundId::CloakTerranOff;
+			}
+			case RaceId::Protoss: {
+				return SoundId::Terran_PHOENIX_TPhClo00_WAV;
+			}
+			default: {
+				return SoundId::Terran_PHOENIX_TPhClo00_WAV;
 			}
 		}
 	}

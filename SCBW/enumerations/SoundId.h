@@ -1578,7 +1578,7 @@ namespace SoundId
 		BactaliskDeath01					= 2539,
 
 		Lobby_PlayerJoin					= 2557,
-
-
+		CloakTerranOn						= 2558,
+		CloakTerranOff						= 2559,
 	};
 }
