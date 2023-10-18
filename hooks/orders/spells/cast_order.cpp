@@ -76,7 +76,7 @@ namespace hooks
 	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
 		switch (tech_id) {
-			// Targeting ground
+			// Targeting ground; added many new cases
 			case TechId::Irradiate:
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
@@ -84,10 +84,9 @@ namespace hooks
 			case TechId::Plague:
 			case TechId::Ensnare:
 			case TechId::PsionicStorm:
-			case TechId::Hallucination: // New
+			case TechId::Hallucination:
 			case TechId::DimensionalRecall:
 			case TechId::StasisField:
-		//	case TechId::LanifectDisruptionField:
 			case TechId::MindTyrantMaelstrom:
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
@@ -107,9 +106,7 @@ namespace hooks
 							if (fow_unit_id == UnitId::None)
 							{
 								error_stat_string = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, tech_id);
-							}
-							else
-							{
+							} else {
 								error_stat_string = helper::can_target_spell_on_fow_unit((s32)tech_id, fow_unit_id);
 							}
 							
@@ -123,9 +120,7 @@ namespace hooks
 							return error_stat_string == 0;
 						}
 						has_target = fow_unit_id != UnitId::None;
-					}
-					else
-					{
+					} else {
 						has_target = fow_unit_id != UnitId::None;
 						if (fow_unit_id == UnitId::None)
 						{
@@ -146,10 +141,12 @@ namespace hooks
 					}
 					goto LABEL_20;
 				}
+
 				if (hooks::get_active_tile_flag(y, x, 0x410000, 0))
 				{
 					return 1;
 				}
+
 				if (error)
 				{
 					*error = 902; // Must target passable terrain.

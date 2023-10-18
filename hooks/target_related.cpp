@@ -172,7 +172,7 @@ namespace hooks
 		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->revealed_mask);
 		}
 
 		u32 result = 0;
@@ -190,7 +190,7 @@ namespace hooks
 		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->revealed_mask);
 		}
 
 		u32 result = 0;
@@ -600,7 +600,7 @@ namespace hooks
 			order_id = *g_order_id_ground;
 		}
 
-		char use_weapon = orders_dat::use_weapon_targeting[order_id];
+		u8 use_weapon = orders_dat::use_weapon_targeting[order_id];
 		u8 weapon_id = orders_dat::order_weapon_id[order_id];
 		u8 tech_id = orders_dat::tech_used[order_id];
 		u32 energy_cost = 0;
@@ -613,9 +613,9 @@ namespace hooks
 			fow_unit_id = UnitId::None;
 		}
 
-		char can_attack_final = 0;
-		char not_enough_energy = 0;
-		char can_target_spell = 0;
+		u8 can_attack_final = 0;
+		u8 not_enough_energy = 0;
+		u8 can_target_spell = 0;
 		Unit** selected_units = &g_client_selection_group->unit[11];
 		Unit** selected_units_2 = &g_client_selection_group->unit[11];
 		while (1) {
@@ -635,13 +635,10 @@ namespace hooks
 								helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
 							}
 						} else {
-							scbw::print("can target spell");
 							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
 							{
-								scbw::print("can target spell pass");
 								if (!unit->has_energy(energy_cost))
 								{
-									scbw::print("no energy");
 									not_enough_energy = 1;
 								}
 								can_target_spell = 1;
