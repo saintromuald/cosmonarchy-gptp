@@ -269,7 +269,7 @@ namespace hooks
 		if ((units_dat::base_property[unit->id] & UnitProperty::Detector) && unit->status & UnitStatus::Completed)
 		{
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir))) // is not a building OR is a building and is not in air
+			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir))) // is not a building OR is a building and is not in edge
 			{
 				if (!unit->is_frozen() && !unit->is_blind)
 				{

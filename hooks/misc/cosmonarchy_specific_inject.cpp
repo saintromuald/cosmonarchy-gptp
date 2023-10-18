@@ -367,7 +367,7 @@ namespace hooks
 	{
 		// can_attack_target - end
 		// jump_patch(can_attack_target_tail_wrapper, 0x0047682C, 1);
-		// tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
+		// tail wrapper disabled, without edge weapon it don't have sense anywhere, will be reworked w/ edge target functionality
 		jump_patch(get_ground_weapon_hook_wrapper, 0x00475AD0);
 	}
 

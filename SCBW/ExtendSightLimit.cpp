@@ -9,8 +9,8 @@ void set_max_sight_range() {
     for (u32 x = 0; x <= MAX_SIGHT_RANGE; ++x) {
         g_sight_ranges[x].tile_sight_width   = x * 2 + 3;
         g_sight_ranges[x].tile_sight_height  = x * 2 + 3;
-        g_sight_ranges[x].field_8 = 3;
-        g_sight_ranges[x].field_C = 3;
+        g_sight_ranges[x].revealed_width = 3;
+        g_sight_ranges[x].revealed_height = 3;
     }
 
     memory_patch(SightStructArrayRef, &g_sight_ranges);

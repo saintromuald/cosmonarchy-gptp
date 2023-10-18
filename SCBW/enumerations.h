@@ -70,10 +70,10 @@ namespace UnitsDatEntries
 		1, //return to idle order
 		1, //attack unit order
 		1, //attack move order
-		1, //ground weapon
-		1, //max ground hits
-		1, //air weapon
-		1, //max air hits
+		1, //inside weapon
+		1, //max inside hits
+		1, //edge weapon
+		1, //max edge hits
 		1, //computer ai unit type
 		4, //flags
 		1, //seek distance

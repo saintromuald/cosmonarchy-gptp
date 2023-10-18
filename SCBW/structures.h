@@ -497,7 +497,7 @@ struct ActiveTile {
 			u8 unknown3 : 1; // Unused?
 			u8 has_cagra : 1; // Set when creep occupies the area
 			u8 always_unbuildable : 1; // always unbuildable, like water
-			u8 ground_height : 3; // ground height; 1 for low ground, 2 for middle ground and 4 for high ground
+			u8 ground_height : 3; // inside height; 1 for low inside, 2 for middle inside and 4 for high inside
 			u8 currently_occupied : 1; // unbuildable but can be made buildable
 			u8 cagra_receding : 1; // Set when the nearby structure supporting the creep is destroyed
 			u8 cliff_edge : 1; // Set if the tile is a cliff edge
@@ -523,7 +523,7 @@ struct ActiveTileDF {
 			u8 hasCreep : 1; // Set when creep occupies the area
 			u8 alwaysUnbuildable : 1; // always unbuildable, like water
 	/*03*/	u8 blocksSight : 1;
-			u8 groundHeight : 2; // ground height; 1 for low ground, 2 for middle ground and 4 for high ground
+			u8 groundHeight : 2; // inside height; 1 for low inside, 2 for middle inside and 4 for high inside
 			u8 currentlyOccupied : 1; // unbuildable but can be made buildable
 			u8 creepReceeding : 1; // Set when the nearby structure supporting the creep is destroyed
 			u8 cliffEdge : 1; // Set if the tile is a cliff edge
@@ -969,7 +969,7 @@ struct AI_Main {
 		u16 flag_0x40 : 1;					/*0040*/
 		u16 spread_creep : 1;				/*0080*/
 		u16 flag_0x100 : 1;					/*0100*/
-		u16 has_strongest_ground_army : 1;	/*0200*/ // Set if the AI's ground army is stronger than the total strength of the strongest enemy force
+		u16 has_strongest_ground_army : 1;	/*0200*/ // Set if the AI's inside army is stronger than the total strength of the strongest enemy force
 		u16 upgrades_finished : 1;			/*0400*/
 		u16 target_expansion : 1;			/*0800*/
 	} ai_flags;
@@ -1292,7 +1292,7 @@ struct HashPacket {
 	u8 minimap_box_count;
 };
 
-struct SightTile { // From neiv's list
+struct SightTile {
 	/*00*/	SightTile*	tiles[2];
 	/*08*/	s32			relative_tile;
 	/*0C*/	u32			visibility_mask;
@@ -1305,21 +1305,17 @@ struct SightTile { // From neiv's list
 struct SightRange {
 	/*00*/	u32			tile_sight_width;
 	/*04*/	u32			tile_sight_height;
-	/*08*/	u32			field_8;
-	/*0C*/	u32			field_C;
-	/*10*/	u32			always9;
-	/*14*/	u32			tile_count;
+	/*08*/	u32			revealed_width;
+	/*0C*/	u32			revealed_height;
+	/*10*/	u32			revealed_count;
+	/*14*/	u32			masked_count;
 	/*18*/	SightTile*	tile;
 };
 
-typedef void __fastcall sight_callback_t(u32 tile_x, u32 tile_y, SightRange* sight_range, ActiveTile* active_tile_int, u32 relative_flags, u32 new_flags);
-struct SightCallbacks { // From IDA
-	sight_callback_t* ground[2];
-	sight_callback_t* air[2];
-};
-struct SightCallbacksDF {
-	sight_callback_t* inside[2];
-	sight_callback_t* edge[2];
+typedef void __fastcall sight_callback_t(u32 tile_x, u32 tile_y, SightRange* sight_range, ActiveTile* cur_active_tile, u32 relative_flags, u32 new_flags);
+struct SightCallbacks {
+	sight_callback_t* inside[3];
+	sight_callback_t* edge[3];
 };
 
 struct CmdBtnPalette {
@@ -1395,20 +1391,49 @@ struct Point32 {
 	u32 y;
 };
 
-struct MTXM {
-	u16 tile[1];
+struct TILE {
+	/*00*/	u16		terrain_type;
+	/*02*/	u8		buildability;// < 8th bit should sign not buildable.
+	/*03*/	u8		ground_height;// < Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
+	/*04*/	Box16	edge_types;
+	/*0C*/	Box16	edge_pieces;/* left and right are unused; always 0.
+						top and bottom states:
+							1 = Basic edge piece
+							2 = Right edge piece
+							3 = Left edge piece.*/
+	/*14*/	u16		tiles[16];// MegaTile References (VF4/VX4)
 };
 
+struct DOODAD {
+	/*00*/	u16		index;
+	/*02*/	u8		buildability;// < 8th bit should sign not buildable.
+	/*03*/	u8		ground_height_and_overlay_flags;/* < Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
+						Overlay Flags:
+							0x0 - None
+							0x1 - Sprites.dat Reference
+							0x2 - Units.dat Reference (unit sprite)
+							0x4 - Overlay is Flipped*/
+	/*04*/	u16		overlayID;
+	/*06*/	u16		_1;
+	/*08*/	u16		doodad_group_string;
+	/*0A*/	u16		_2;
+	/*0C*/	u16		data_bin_index;
+	/*0E*/	u16		doodad_height;
+	/*10*/	u16		doodad_width;
+	/*12*/	u16		_3;
+	/*14*/	u16		tiles[16];// MegaTile References (VF4/VX4)
+};	//size 34
+
 struct cv5 {
-	/*00*/	u16 terrain_type;
-	/*02*/	u16 flags;
-	/*04*/	Box16 edge_types;
-	/*0C*/	Box16 edge_pieces;//left and right are unused; always 0.
-	/*14*/	u16 tiles[16];
+	/*00*/	u16		terrain_type;
+	/*02*/	u16		flags;
+	/*04*/	Box16	edge_types;
+	/*0C*/	Box16	edge_pieces;//left and right are unused; always 0.
+	/*14*/	u16		tiles[16];
 };
 
 struct CV5 {
-	cv5 group[1];
+	TILE group[1];
 };
 
 struct vf4 {
@@ -1418,6 +1443,10 @@ struct vf4 {
 
 struct VF4 {
 	vf4 tile[1][16];
+};
+
+struct MTXM {
+	u16 tile[1];
 };
 
 #pragma pack()

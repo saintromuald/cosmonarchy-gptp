@@ -413,7 +413,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked to investigate melee air unit performance. -Pr0nogo
+	// Hooked to investigate melee edge unit performance. -Pr0nogo
 	s32 get_flingy_halt_distance(Unit* unit) // 00494F90
 	{
 		s32 result = 0;

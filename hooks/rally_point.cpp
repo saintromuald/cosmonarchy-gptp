@@ -46,7 +46,7 @@ namespace hooks
 		}
 	}
 
-	// Called when the player sets the rally point on the ground.
+	// Called when the player sets the rally point on the inside.
 	void set_rally_position(Unit* unit, u16 x, u16 y) {
 		unit->rally.unit = 0;
 		unit->rally.pt.x = x;

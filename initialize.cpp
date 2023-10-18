@@ -644,7 +644,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0045D9DB, (u32)0x00042811);//Change CALL address from turn_unit to update_unit_stats_finish_building.
 	memory_patch(0x0045D9E2, (u32)0x0003853A);//Inverse of above.
 
-	memory_patch(0x004EB8C4, (u8)8); // Improve melee air performance
+	memory_patch(0x004EB8C4, (u8)8); // Improve melee edge performance
 
 	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive mode and so on by reading Unit Stats game mode field
 	memory_patch(0x004AAFD6, (u8)0xA);

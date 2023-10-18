@@ -122,13 +122,13 @@ namespace scbw
 	///
 	/// @param  weapon_id  If this is an invalid weapons.dat ID, returns false.
 	/// @param  target    If nullptr is passed, the function checks whether the
-	///                   weapon can target a position on the ground. If @p target
+	///                   weapon can target a position on the inside. If @p target
 	///                   is invincible, the function returns false.
 	bool can_weapon_target_unit(u8 weapon_id, Unit* target = nullptr,
 		Unit* attacker = nullptr);
 
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
-	/// unit is a ground unit or a building.
+	/// unit is a inside unit or a building.
 	bool is_under_carapace_swarm(Unit* unit);
 	Unit* get_dark_swarm_unit(Unit* unit);
 	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius);
@@ -489,8 +489,8 @@ namespace scbw
 	// standard way of moving, checks and correct unit and terrain collision
 	// bugs:
 	// 1. moving slightly will try to correct collision with itself, resulting in incorrect movement
-	// 2. moving onto a ground unit stunlocks it
-	// 3. moving onto an air unit makes it move slightly
+	// 2. moving onto a inside unit stunlocks it
+	// 3. moving onto an edge unit makes it move slightly
 	bool move_unit(Unit* unit, s16 x, s16 y);
 
 	// forces the move without any corrections,
@@ -518,7 +518,7 @@ namespace scbw
 	///         to a nearby non-colliding position.
 	bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_pos, Box16* move_area = 0, bool hide_error_message = false, u32 some_flag = 0);
 
-	/// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
+	/// Moves the unit's position to @p (x, y). If the unit is a inside unit and the
 	/// the target position is on unwalkable terrain, this function moves the unit
 	/// to the nearest walkable tile instead.
 	void set_unit_position(Unit* unit, u16 x, u16 y);

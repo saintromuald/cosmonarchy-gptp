@@ -43,8 +43,8 @@ namespace scbw {
 		}
 	}
 
-	bool tile_is_equal_or_lower(s32 height, u32 offsetY, u32 offsetX) {
-		vf4* minitile = get_minitile(g_map_tile_size->width * offsetY + offsetX);
+	bool tile_is_equal_or_lower(s32 height, u32 offset) {
+		vf4* minitile = get_minitile(offset);
 		u32 i_0 = 16;
 		u32 i_1 = 0;
 

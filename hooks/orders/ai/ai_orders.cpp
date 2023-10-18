@@ -2556,7 +2556,7 @@ namespace hooks {
 		}
 
 		/*
-		bool air_only_attack = false; // TODO: figure out if we have only air units
+		bool air_only_attack = false; // TODO: figure out if we have only edge units
 		AiRegion* new_target_region = get_best_target_region(player, air_only_attack, ai_region);
 		if (new_target_region) {
 			ai_region->target_region = new_target_region->region;

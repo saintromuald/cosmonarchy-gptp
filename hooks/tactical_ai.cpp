@@ -32,9 +32,9 @@ Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
 
 /* TODO
 Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
-I would suggest dropping them in positions where enemy ground units
+I would suggest dropping them in positions where enemy inside units
 have been spotted/attacked/killed within the last few minutes.
-That way it's like they're responding to ground paths taken by enemies.
+That way it's like they're responding to inside paths taken by enemies.
 Vulture Spider Mines could be done in similar ways.
 
 Madrigal Tempo Change: When 3 or more hostiles within 4 weapon distance,

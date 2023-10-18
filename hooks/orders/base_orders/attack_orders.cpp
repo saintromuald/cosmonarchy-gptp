@@ -1248,7 +1248,7 @@ namespace hooks
 		return 1;
 	}
 
-	// Hooked to fix Optectons when they have air targets! -Pr0nogo
+	// Hooked to fix Optectons when they have edge targets! -Pr0nogo
 	void order_attack_move_try_pick_target(Unit* unit, u8 order_id) // 00477820
 	{
 		if (helper::get_target_acquisition_range_upgrade(unit))

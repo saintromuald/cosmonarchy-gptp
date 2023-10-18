@@ -31,7 +31,7 @@ namespace
 {
 	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id);
 	bool cannot_chase_target(Unit* unit, Unit* target);
-	// Returns the minimum air/ground weapon distance of the @p unit, whichever is smaller.
+	// Returns the minimum edge/inside weapon distance of the @p unit, whichever is smaller.
 	u32 get_minimum_range(Unit* unit);
 
 	// Checks whether the @p target should be added to the attack priority group.
@@ -101,7 +101,7 @@ namespace
 			}
 		}
 
-		// If the target cannot be chased (i.e. ground vs air, is out of distance), don't bother
+		// If the target cannot be chased (i.e. inside vs edge, is out of distance), don't bother
 		if (cannot_chase_target(unit, target))
 		{
 			return false;

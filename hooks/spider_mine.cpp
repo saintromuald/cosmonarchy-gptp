@@ -29,7 +29,7 @@ namespace hooks
 			if (target->status & UnitStatus::Invincible) {
 				return false;
 			}
-			// Don't attack air units / buildings
+			// Don't attack edge units / buildings
 			if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding)) {
 				return false;
 			}

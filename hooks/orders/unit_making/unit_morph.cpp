@@ -679,17 +679,17 @@ namespace hooks {
 		{
 			return 0;
 		}
-		// Hovering units (?) f32 7 pixels above ground
+		// Hovering units (?) f32 7 pixels above inside
 		if (units_dat::movement_flags[unit->id] == MovementFlags_HoverUnit)
 		{
 			return -7;
 		}
-		// Air units f32 42 pixels above ground
+		// Air units f32 42 pixels above inside
 		if (unit->status & UnitStatus::InAir)
 		{
 			return -42;
 		}
-		// Default for ground units
+		// Default for inside units
 		return 0;
 	}
 

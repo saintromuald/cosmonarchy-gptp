@@ -131,7 +131,7 @@ namespace hooks
 	}
 
 	// Unit is a transport
-	// A big part of the code could not be tested since different ground height test never occured during testing
+	// A big part of the code could not be tested since different inside height test never occured during testing
 	void orders_move_unload(Unit* unit)
 	{
 		u32 distance;

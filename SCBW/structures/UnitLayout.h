@@ -206,7 +206,7 @@ struct UnitLayout
 	/*0x00C*/ Sprite*	sprite;
 	/*0x010*/ Target    move_target;					// The position or unit to move to. It is NOT an order target.
 	/*0x018*/ Point16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
-														// Equal to moveToPos for air units since they don't need to navigate around buildings.
+														// Equal to moveToPos for edge units since they don't need to navigate around buildings.
 	/*0x01C*/ Point16   next_target_waypoint;			// The desired position
 	/*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, MovementFlags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
@@ -431,7 +431,7 @@ struct UnitLayout
 		u32 left, right, top, bottom;
 	} finder_index;										// Ordering for unit boundries in unit finder for binary search
 	/*0x14C*/ u8        repulse_unk;
-	/*0x14D*/ u8        repulse_angle;					// updated only when air unit is being pushed
+	/*0x14D*/ u8        repulse_angle;					// updated only when edge unit is being pushed
 	/*0x14E*/ Point8    drift_pos;						// (mapsizex / 1.5 max)
 };
 C_ASSERT(sizeof(UnitLayout) == 336);

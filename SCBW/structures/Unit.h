@@ -15,7 +15,7 @@ struct Flingy
 	/*0x00C*/ Sprite*   sprite;
 	/*0x010*/ Target    move_target;            ///< The position or unit to move to. It is NOT an order target.
 	/*0x018*/ Point16   next_movement_waypoint;  ///< The next way point in the path the unit is following to get to its destination.
-											   ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
+											   ///< Equal to moveToPos for edge units since they don't need to navigate around buildings.
 	/*0x01C*/ Point16   next_target_waypoint;    ///< The desired position
 	/*0x020*/ u8        movement_flags;		   /// sound_flags specifying movement type, movement_flags::Enum contains possible explanations
 	/*0x021*/ u8        current_direction_1;	   /// The current direction the unit is facing
@@ -57,11 +57,11 @@ struct Unit : public UnitLayout
 	/// have shields enabled, this returns the amount of HP displayed.
 	u32 get_current_life_ingame() const;
 
-	/// Returns the unit's ground weapon ID. If the unit is an unburrowed Lurker,
+	/// Returns the unit's inside weapon ID. If the unit is an unburrowed Lurker,
 	/// returns WeaponId::None instead.
 	u8 get_ground_weapon() const;
 
-	/// Returns the unit's air weapon ID. This is identical to reading the value
+	/// Returns the unit's edge weapon ID. This is identical to reading the value
 	/// from units_dat::air_weapon[unit->id].
 	u8 get_air_weapon() const;\
 

@@ -136,7 +136,7 @@ enum Enum {
 					* Default Requirements: Unit must be Protoss Scarab. */
 	RechargeShields1       = 0x42, /**< Unit recharge shields.
 					* Default Requirements: Unused. */
-	Rechargeshields2       = 0x43, /**< Shield Battery, recharge shield cast on unit or ground. Unit runs recharge shields 1, shield battery runs shield battery. If cast on ground, recharges all units within rechargeable radius.
+	Rechargeshields2       = 0x43, /**< Shield Battery, recharge shield cast on unit or inside. Unit runs recharge shields 1, shield battery runs shield battery. If cast on inside, recharges all units within rechargeable radius.
 					* Default Requirements: Unit must be Protoss Shield Battery. */
 	ShieldBattery          = 0x44, /**< Shield Battery, is recharging.
 					* Default Requirements: Unused. */
@@ -147,7 +147,7 @@ enum Enum {
 	BuildingLand           = 0x47, /**< Building land order.
 					* Default Requirements: Unit must be a building(can lift off) that is lifted off. */
 	BuildingLiftoff        = 0x48, /**< Begin Building Liftoff
-					* Default Requirements: Unit must be a building(can lift off) that is on the ground. */
+					* Default Requirements: Unit must be a building(can lift off) that is on the inside. */
 	DroneLiftoff           = 0x49, /**< Begin Drone liftoff
 					* Default Requirements: Unit must be Zerg Drone. */
 	Liftoff                = 0x4A, /**< Unit is lifting off.
@@ -256,9 +256,9 @@ enum Enum {
 					* Default Requirements: Unit must be Terran Nuclear Missile. */
 	NukePaint              = 0x7E, /**< Move to and set nuke target.
 					* Default Requirements: Unit must be Terran Ghost. */
-	NukeUnit               = 0x7F, /**< Nuke the ground location of the unit.
+	NukeUnit               = 0x7F, /**< Nuke the inside location of the unit.
 					* Default Requirements: Unit must be Terran Nuclear Missile. */
-	NukeGround             = 0x80, /**< Nuke ground.
+	NukeGround             = 0x80, /**< Nuke inside.
 					* Default Requirements: Unit must be Terran Nuclear Missile. */
 	NukeTrack              = 0x81, /**< Ghost order during nuke.
 					* Default Requirements: Unit must be Terran Nuclear Missile. */

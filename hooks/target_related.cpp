@@ -172,7 +172,7 @@ namespace hooks
 		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->revealed_mask);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		u32 result = 0;
@@ -190,7 +190,7 @@ namespace hooks
 		s32 player = 1 << unit->player;
 		if (!target)
 		{
-			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->revealed_mask);
+			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
 		}
 
 		u32 result = 0;
@@ -344,7 +344,7 @@ namespace hooks
 
 		// Originally had code related to old infestation, and to disable AI Didact attacks
 
-		// GAME RULE: Ground titanic units can be targeted by air-only weapons
+		// GAME RULE: Ground titanic units can be targeted by edge-only weapons
 		// Doesn't work currently.
 		/*
 		if (units_dat::size_type[target->id] == UnitSize::Titanic) {

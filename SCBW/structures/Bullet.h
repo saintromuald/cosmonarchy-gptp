@@ -47,7 +47,7 @@ struct Bullet // With several 2023 contributions by DarkenedFantasies
 	/*0x63*/ u8           remaining_bounces;		// Bounce count for mutalisk weapon
 	/*0x64*/ Unit*		  source_unit;
 	/*0x68*/ Unit*		  next_bounce_unit;			// Next unit for bounce, temporary
-	/*0x6C*/ u32          cyclic_missile_index;		// Some sort of cyclic burst counter (used by valkyries, goliath air attack)
+	/*0x6C*/ u32          cyclic_missile_index;		// Some sort of cyclic burst counter (used by valkyries, goliath edge attack)
 };
 
 C_ASSERT(sizeof(Bullet) == 112);

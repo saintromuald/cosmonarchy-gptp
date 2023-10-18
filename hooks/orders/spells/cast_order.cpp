@@ -76,7 +76,7 @@ namespace hooks
 	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
 		switch (tech_id) {
-			// Targeting ground; added many new cases
+			// Targeting inside; added many new cases
 			case TechId::Irradiate:
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
