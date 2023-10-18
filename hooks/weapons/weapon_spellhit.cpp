@@ -66,8 +66,8 @@ namespace hooks {
 		char result;
 		result = helper::ignore_iscript_go_to_idle(unit);
 		Sprite* sprite = unit->sprite;
-		if (sprite->flags & 8) {
-			if (*g_client_selection_count > 1u) {
+		if (sprite->flags & SpriteFlags::Selected) {
+			if (*g_client_selection_count > 1) {
 				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
 		}
@@ -98,8 +98,8 @@ namespace hooks {
 			bullet->position.x + radius,
 			bullet->position.y + radius
 		).for_each([&](Unit* target) {
-			UnitExt* targetExt = get_unit_ext(target);
-			targetExt->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+			UnitExt* target_ext = get_unit_ext(target);
+			target_ext->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
 		});
 	}
 

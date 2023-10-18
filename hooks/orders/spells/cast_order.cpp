@@ -35,8 +35,6 @@ namespace hooks
 				return helper::spell_order_move_towards_target(caster, range);
 			}
 
-			GroupFlag caster_group_flags = units_dat::group_flags[caster->id];
-			char caster_player = caster->player;
 			u8 caster_race = caster->get_race();
 			char* string = helper::get_stat_txt_string(caster_race + 864);
 			if (string) {
@@ -62,7 +60,7 @@ namespace hooks
 		helper::get_stat_txt_string(caster, caster->player, final_string);
 
 		if (caster->order_queue_head) {
-			caster->user_action_flags |= 1;
+			caster->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 			helper::do_next_queued_order(caster);
 		} else {
 			if (caster->unit_ai) {
@@ -79,6 +77,7 @@ namespace hooks
 	{
 		switch (tech_id) {
 			// Targeting ground
+			case TechId::Irradiate:
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
 			case TechId::CarapaceSwarm:
@@ -220,13 +219,12 @@ namespace hooks
 					spell_cost = techdata_dat::energy_cost[tech_used] * 256;
 				}
 
-				if (!(*g_cheat_state & CheatFlags::TheGathering) && unit->energy < spell_cost)
+				if (unit->energy < spell_cost)
 				{
 					u8 race_id = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 					if (message) {
-						if (*g_local_nation_id == unit->player
-						&&	*g_active_player_id == *g_local_human_id)
+						if (*g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id)
 						{
 							helper::set_unit_stat_txt_error_message(message); // display an error message only for the owner of the unit
 						}
@@ -266,7 +264,7 @@ namespace hooks
 							bool idiot = false;
 							// in case it was modified by a previous function, relinking
 							target = unit->order_target.unit;
-							if (unit->unit_ai != nullptr && target != nullptr)
+							if (unit->unit_ai && target)
 							{
 								if (order_weapon_id <= WeaponId::MindTyrantMaelstrom
 								||  order_weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) // Maelstrom is the last spell-related weapon, by default
