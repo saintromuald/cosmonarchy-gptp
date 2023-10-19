@@ -136,6 +136,16 @@ void unit_on_death_behaviors(Unit* unit) {
 				unit->building.nuke_missile = 0;
 			}
 		} break;
+		case UnitId::TerranLobotomyMine:
+		{
+			EntryArray targets = {};
+			unit_search_radial(&targets, unit->position, 2 * 32);
+			for (u32 i = 0; i < targets.count; ++i) {
+				Unit* victim = targets.units[i];
+				UnitExt* victim_ext = get_unit_ext(victim);
+				victim_ext->timers[TimerLobotomySlow] = 3 * 24 + 1;
+			}
+		} break;
 		case UnitId::TerranMorningstar:
 		{
 			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranAnvil) {
