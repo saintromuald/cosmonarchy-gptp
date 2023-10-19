@@ -8,7 +8,7 @@
 extern u8 vision_timers[256*256][8];
 
 namespace hooks {
-	inline void refresh_vision_timers(u32 testTilePos, u8 visionFlags);
+	inline void refresh_vision_timers(u32 testTilePos, u8 visionFlags, u8 timer);
 	void __fastcall gndSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
 	void __fastcall gndSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
 	void __fastcall airSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);

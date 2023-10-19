@@ -930,17 +930,7 @@ namespace hooks
 		} else if (unit->sprite->flags & SpriteFlags::Hidden && unit->id != UnitId::ProtossSteward && unit->id != UnitId::ProtossPlasmaShell) {
 			helper::show_and_enable_unit(unit);
 		}
-		if (unit->id == UnitId::Special_FloorMissileTrap
-		||  unit->id == UnitId::Special_FloorGunTrap
-		||  unit->id == UnitId::Special_WallMissileTrap
-		||  unit->id == UnitId::Special_WallFlameTrap
-		||  unit->id == UnitId::Special_RightWallMissileTrap
-		||  unit->id == UnitId::Special_RightWallFlameTrap)
-		{
-			unit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
-			unit->detection_status = 0x80000000;
-			unit->secondary_order_timer = 0;
-		}
+		// Originally had trap code
 		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
 		if (player_type == PlayerType::Rescuable)
 		{

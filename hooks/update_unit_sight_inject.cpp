@@ -89,7 +89,7 @@ namespace hooks {
 		//jump_patch(airSightCB_Edge_wrapper, 0x004802A0, 1);
 		//jump_patch(airSightCB_Inside_wrapper, 0x00480310, 1);
 		memory_patch(0x00479679, (u32)0);//unit_was_hit->reveal_sight_at_location: Change sightRange from 1 to 0.
-		memory_patch(0x004D94D6, (u32)36);//Fog Update Counter
+		memory_patch(0x004D94D6, (u32)2);//Fog Update Counter
 		call_patch(update_fog, 0x004D9500);
 		jump_patch(reveal_sight_at_location_wrapper, 0x004806F0, 1);
 		jump_patch(getGroundHeightAtPx_wrapper, 0x004BD0F0, 6);
