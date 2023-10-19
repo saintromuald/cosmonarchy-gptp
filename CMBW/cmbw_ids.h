@@ -84,3 +84,4 @@ u32 weapon_id_is_secondary(u32 weapon_id);
 bool unit_id_has_custom_air_weapon(u32 unit_id);
 bool weapon_id_returns_to_attacker(u32 weapon_id);
 bool weapon_id_is_incremental(u32 weapon_id);
+bool unit_id_has_proximity_cloak(u32 unit_id);

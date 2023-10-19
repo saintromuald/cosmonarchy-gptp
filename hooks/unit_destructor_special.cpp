@@ -143,7 +143,9 @@ void unit_on_death_behaviors(Unit* unit) {
 			for (u32 i = 0; i < targets.count; ++i) {
 				Unit* victim = targets.units[i];
 				UnitExt* victim_ext = get_unit_ext(victim);
-				victim_ext->timers[TimerLobotomySlow] = 3 * 24 + 1;
+				if (victim_ext->timers[TimerLobotomySlow] < 3 * 24 + 1) {
+					victim_ext->timers[TimerLobotomySlow] = 3 * 24 + 1;
+				}
 			}
 		} break;
 		case UnitId::TerranMorningstar:

@@ -21,7 +21,6 @@
 #include <hooks\unit_movement.h>
 
 namespace scbw {
-
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
 		Unit* target_unit = source->order_target.unit;
 		Point16 target_pos = source->order_target.pt;
@@ -1123,15 +1122,26 @@ namespace scbw {
 	}
 
 	bool is_passive_decloakable(Unit* unit) {
-		return ((units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit->get_race() == RaceId::Protoss) || unit->status & UnitStatus::CloakingForFree)
-		   &&  !(unit->status & UnitStatus::Burrowed);
+		if (unit->status & UnitStatus::Burrowed || unit_id_has_proximity_cloak(unit->id)) {
+			return false;
+		}
+		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
+			return true;
+		}
+		return unit->status & UnitStatus::CloakingForFree; // Didact
 	}
 
 	bool is_proximity_decloakable(Unit* unit) {
-		return (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit->get_race() == RaceId::Terran) && !(unit->status & UnitStatus::Burrowed);
+		if (unit->status & UnitStatus::Burrowed) {
+			return false;
+		}
+		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit_id_has_proximity_cloak(unit->id)) {
+			return true;
+		}
+		return false;
 	}
 
-	// Replacement for isUnitGhost
+	// Replacement for unit_is_ghost
 	bool unit_can_nuke(Unit* unit) {
 		return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
 	}
@@ -3486,7 +3496,7 @@ namespace scbw {
 
 	u32 get_cloak_sound_id(Unit* unit)
 	{
-		if (unit->status & UnitStatus::CloakingForFree) {
+		if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
 			return SoundId::Terran_PHOENIX_TPhClo00_WAV;
 		}
 
@@ -3506,7 +3516,7 @@ namespace scbw {
 
 	u32 get_decloak_sound_id(Unit* unit)
 	{
-		if (unit->status & UnitStatus::CloakingForFree) {
+		if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
 			return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 		}
 

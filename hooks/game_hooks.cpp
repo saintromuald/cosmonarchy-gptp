@@ -570,7 +570,7 @@ namespace hooks {
 			}
 			
 			// Ability ranges - DF
-			if (config.show_ability_ranges && *g_is_targeting && units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
+			if (config.show_ability_ranges && *g_is_targeting) {
 				u32 weapon = WeaponId::None;
 				switch (*g_order_id_ground)
 				{
