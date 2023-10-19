@@ -51,7 +51,7 @@ const s32 OlympianMeleeDistance = 30;
 const s32 MineBurrowTime = 72;
 const s32 MineSeekRange = 576;
 const s32 MineDetonateRange = 30;
-const s32 LobotomyMineLockdownTimer = 6; // 2 seconds
+const s32 LobotomyMineLockdownTimer = 9; // 3 seconds
 
 // Cuirass
 const u32 CuirassSelfReviveHP = 50 * 256;
