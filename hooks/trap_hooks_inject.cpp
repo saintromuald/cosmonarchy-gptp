@@ -4,25 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) unitIsInstallationAsset_Wrapper()
-	{
-		static u32 id;
-		static u32 result;
-		__asm
-		{
-			MOV id, EAX
-			PUSHAD
-		}
-		result = hooks::unitIsInstallationAsset(id);
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-
-	void __declspec(naked) unitIsFloorTrap_Wrapper()
+	void __declspec(naked) unit_is_floor_trap_wrapper() // 0047B070
 	{
 		static Unit* unit;
 		static u32 result;
@@ -31,7 +13,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::unitIsFloorTrap(unit);
+		result = hooks::unit_is_floor_trap(unit);
 		__asm
 		{
 			POPAD
@@ -40,7 +22,25 @@ namespace
 		}
 	}
 
-	void __declspec(naked) disableTrap_Wrapper()
+	void __declspec(naked) unit_is_installation_asset_wrapper() // 00401430
+	{
+		static u32 id;
+		static u32 result;
+		__asm
+		{
+			MOV id, EAX
+			PUSHAD
+		}
+		result = hooks::unit_is_installation_asset(id);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) disable_trap_wrapper()
 	{
 		static Unit* unit;
 		static u32 result;
@@ -49,25 +49,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		result = hooks::disableTrap(unit);
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-
-	void __declspec(naked) updateUnitStrengthAndApplyDefaultOrders_Wrapper()
-	{
-		static Unit* a1;
-		static u32 result;
-		__asm
-		{
-			MOV a1, EAX
-			PUSHAD
-		}
-		result = hooks::updateUnitStrengthAndApplyDefaultOrdersHook(a1);
+		result = hooks::disable_trap(unit);
 		__asm
 		{
 			POPAD
@@ -81,7 +63,7 @@ namespace hooks
 {
 	void inject_trap_hooks()
 	{
-		jump_patch(unitIsInstallationAsset_Wrapper, 0x00401430, 3);
-		jump_patch(unitIsFloorTrap_Wrapper,			0x0047B070, 3);
+		jump_patch(unit_is_floor_trap_wrapper,			0x0047B070, 3);
+		jump_patch(unit_is_installation_asset_wrapper,	0x00401430, 3);
 	}
 }

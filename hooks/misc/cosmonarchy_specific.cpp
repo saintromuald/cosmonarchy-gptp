@@ -210,7 +210,7 @@ namespace hooks
 		if (unit->id != UnitId::ProtossStarSovereign) {
 			return;
 		}
-		scbw::decloak_proc(unit);
+		scbw::decloak_passive_proc(unit);
 		unit->order_target.pt = unit->position;
 
 		UnitExt* unit_ext = get_unit_ext(unit);

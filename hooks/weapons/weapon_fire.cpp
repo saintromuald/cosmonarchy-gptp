@@ -163,7 +163,7 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attacking_player, direction);
 	if (bullet) {
-		scbw::decloak_proc(source);
+		scbw::decloak_passive_proc(source);
 		if (apply_cooldown) {
 			apply_weapon_cooldown(source, weapon_id);
 		}
@@ -373,10 +373,10 @@ namespace hooks {
 		// Cloaked units - decloak
 		// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
 	//	if (unit->id != UnitId::ProtossCabalist) {
-			scbw::decloak_proc(unit);
+			scbw::decloak_passive_proc(unit);
 	//	}
 		if (unit->id == UnitId::ProtossSteward && unit->hangar_unit.parent) {
-			scbw::decloak_proc(unit->hangar_unit.parent);
+			scbw::decloak_passive_proc(unit->hangar_unit.parent);
 		}
 
 		if (weapons_dat::flingy_id[weapon_id] != 0)

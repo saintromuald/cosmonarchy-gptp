@@ -133,7 +133,7 @@ namespace hooks
 			sprite_id = SpriteId::HarakanFlamethrower;
 		}
 
-		scbw::decloak_proc(final_unit->connected_unit);
+		scbw::decloak_passive_proc(final_unit->connected_unit);
 
 		// TODO: Fix effect nonsense with subunits
 		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + final_unit->get_x(), offset.y + final_unit->get_y(), final_unit->player);

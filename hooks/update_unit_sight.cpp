@@ -10,9 +10,12 @@ namespace hooks {
 	inline void refresh_vision_timers(u32 testTilePos, u8 visionFlags, u8 timer) {
 		s32 player = 7;
 		u8 player_flag = 0x80;
+		u8* cur_vision_timers = &vision_timers[testTilePos][0];
 
 		do {
-			vision_timers[testTilePos][player] = timer * ((visionFlags & player_flag) != 0);
+			if (visionFlags & player_flag && *(cur_vision_timers + player) < timer) {
+				*(cur_vision_timers + player) = timer;
+			}
 			player_flag >>= 1;
 		} while (--player >= 0);
 	}

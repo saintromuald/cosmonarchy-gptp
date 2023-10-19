@@ -163,7 +163,7 @@ namespace hooks
 
 		// Paladin Skyfall
 		if (unit->id == UnitId::TerranPaladin) {
-			scbw::decloak_proc(unit);
+			scbw::decloak_passive_proc(unit);
 			if (unit->order_signal & 0x20) {
 				unit->order_signal &= ~0x20;
 				unit_ext->timers[TimerSkyfall] = 3;

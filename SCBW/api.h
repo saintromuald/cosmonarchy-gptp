@@ -654,8 +654,11 @@ namespace scbw
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
 	bool order_is_spell(s32 order_id);
 	void create_shield_overlay(Unit* unit, u32 attack_direction);
-	void decloak_proc(Unit* unit);
-	bool is_decloakable(Unit* unit);
+	void decloak_proc(Unit* unit, u32 timer);
+	void decloak_passive_proc(Unit* unit);
+	void decloak_proximity_proc(Unit* unit);
+	bool is_passive_decloakable(Unit* unit);
+	bool is_proximity_decloakable(Unit* unit);
 	bool unit_can_nuke(Unit* unit);
 	bool unit_is_trap(Unit* unit);
 	u32 get_trap_id(Unit* unit);

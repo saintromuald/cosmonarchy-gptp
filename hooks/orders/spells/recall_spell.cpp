@@ -101,7 +101,7 @@ namespace hooks
 	}
 
 	void orders_recall(Unit* unit) {
-		scbw::decloak_proc(unit);
+		scbw::decloak_passive_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 		// Unit has started casting DimensionalRecall (== went through the other condition)
 		if (unit->main_order_state == 1) {

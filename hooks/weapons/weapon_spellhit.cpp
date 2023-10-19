@@ -210,7 +210,7 @@ namespace hooks {
 			// Cloaked units - decloak
 			// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
 		//	if (unit->id != UnitId::ProtossCabalist) {
-				scbw::decloak_proc(attacker);
+				scbw::decloak_passive_proc(attacker);
 		//	}
 			apply_weapon_cooldown(attacker, weapon_id);
 		}
@@ -457,7 +457,7 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
 		if (attacker) {
-			scbw::decloak_proc(attacker);
+			scbw::decloak_passive_proc(attacker);
 		}
 
 		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
@@ -497,7 +497,7 @@ namespace hooks {
 
 	// No bullet because this function is called in another context without the bullet.
 	void mind_control_hit(Unit* attacker, Unit* target) { // 004F6910
-		scbw::decloak_proc(attacker);
+		scbw::decloak_passive_proc(attacker);
 		if (target->status & UnitStatus::IsHallucination) {
 			target->remove();
 		} else {

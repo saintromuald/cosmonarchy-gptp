@@ -15,7 +15,7 @@ namespace hooks
 				return;
 			}
 
-			scbw::decloak_proc(unit);
+			scbw::decloak_passive_proc(unit);
 			Unit* subunit = unit->subunit;
 			if (unit->status & UnitStatus::NoBrkCodeStart || (subunit && subunit->status & UnitStatus::NoBrkCodeStart)) {
 				return;
@@ -24,7 +24,7 @@ namespace hooks
 			if (subunit) {
 				subunit->order_to(OrderId::Nothing3, unit);
 				helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
-				scbw::decloak_proc(subunit);
+				scbw::decloak_passive_proc(subunit);
 			}
 			for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 				image->play_iscript_animation(IscriptAnimation::SpecialState2);

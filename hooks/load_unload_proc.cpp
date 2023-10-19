@@ -38,8 +38,8 @@ namespace hooks
 		}
 		
 		u8 unit_race_id = transport->get_race();
-		scbw::decloak_proc(transport);
-		scbw::decloak_proc(cargo_unit);
+		scbw::decloak_passive_proc(transport);
+		scbw::decloak_passive_proc(cargo_unit);
 		helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
 		if (cargo_unit->id == UnitId::TerranMason || cargo_unit->id == UnitId::TerranTalos) {
 			if (cargo_unit->unit_ai) {
@@ -195,8 +195,8 @@ namespace hooks
 						transport->main_order_timer = 15;
 					}
 
-					scbw::decloak_proc(unit);
-					scbw::decloak_proc(transport);
+					scbw::decloak_passive_proc(unit);
+					scbw::decloak_passive_proc(transport);
 
 					special_unload_unit(unit, transport, &pos);
 					scbw::set_unit_position(unit, pos.x, pos.y);

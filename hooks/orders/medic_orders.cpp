@@ -170,7 +170,7 @@ namespace hooks
 						}
 						return 3;
 					}
-					scbw::decloak_proc(cleric);
+					scbw::decloak_passive_proc(cleric);
 					target->heal_hp(ClericHealValue, cleric);
 					return 1;
 				}

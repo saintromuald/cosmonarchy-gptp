@@ -920,7 +920,7 @@ namespace hooks
 				out_unit->sprite->elevation = unit->sprite->elevation- 1;
 				out_unit->order_to(units_dat::attack_unit_order[UnitId::ProtossSteward], unit->order_target.unit);
 				unit->order_queue_timer = 4; // Originally unit->main_order_timer = 7;
-				scbw::decloak_proc(unit);
+				scbw::decloak_passive_proc(unit);
 			}
 
 		} else if (unit->unit_ai && unit->main_order_timer == 0) {

@@ -792,7 +792,6 @@ namespace helper {
 
 	// For update_burrowing_cloaking_units
 	s32 is_unit_cloaking(Unit* unit);																				// 004916E0
-	void play_sound_from_direction(Unit* unit, s32 soundId);														// 0049B5B0
 
 	// For do_cloak
 	void update_sprite_flag_on_palette(Sprite* sprite);																// 00497E80

@@ -50,7 +50,7 @@ namespace hooks
 				helper::set_thingy_visibility_flags(nuke_dot);
 			}
 			unit->main_order_state = 6;
-			scbw::decloak_proc(unit);
+			scbw::decloak_passive_proc(unit);
 		}
 	}
 

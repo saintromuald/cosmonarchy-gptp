@@ -633,7 +633,7 @@ namespace hooks
 					v5 = v0->status;
 					if (v5 & 0x100)
 						goto LABEL_13;
-					helper::play_sound_from_direction(v0, 273);
+					helper::begin_cloak(v0, 273);
 				}
 				v1 = 1;
 		LABEL_13:

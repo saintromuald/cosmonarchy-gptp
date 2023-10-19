@@ -6,7 +6,7 @@
 namespace hooks
 {
 	void orders_cast_tyranny(Unit* unit) {
-		scbw::decloak_proc(unit);
+		scbw::decloak_passive_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 		Unit* target = unit->order_target.unit;
 		if (!target || unit->player == target->player || scbw::is_allied_to(unit->player, target->player)) {

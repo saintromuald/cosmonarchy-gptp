@@ -1600,7 +1600,7 @@ namespace hooks {
 					if (unit->has_energy(energy)) {
 						if (!unit_ext->timers[TimerReclaimInterval]) {
 							unit_ext->timers[TimerReclaimInterval] = 24;
-							scbw::decloak_proc(unit);
+							scbw::decloak_passive_proc(unit);
 							unit->spend_unit_energy(energy);
 							unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 							helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0); // TODO: Use Start and End when applicable
@@ -1630,7 +1630,7 @@ namespace hooks {
 					unit_ext->values[ValueDisruptionFieldOn] = 0;
 				}
 				if (unit_ext->values[ValueDisruptionFieldOn]) {
-					scbw::decloak_proc(unit);
+					scbw::decloak_passive_proc(unit);
 				}
 			} break;
 			case UnitId::TerranMadcap:
@@ -1694,7 +1694,7 @@ namespace hooks {
 						if (!unit->get_overlay(image_id) && teleport) {
 							scbw::add_unit_overlay(unit, image_id);
 						}
-						scbw::decloak_proc(unit);
+						scbw::decloak_passive_proc(unit);
 					}
 				}
 			} break;
@@ -1803,7 +1803,7 @@ namespace hooks {
 			{
 				// Decloak on Stimpack activation
 				if (unit->stim_timer == StimpackTimer) {
-					scbw::decloak_proc(unit);
+					scbw::decloak_passive_proc(unit);
 				}
 			} break;
 			case UnitId::TerranWyvern:
@@ -2075,7 +2075,7 @@ namespace hooks {
 			{
 				// Hypnagogue - Through the Looking Glass
 				if (unit->main_order_id == OrderId::CastThroughTheLookingGlass) {
-					scbw::decloak_proc(unit);
+					scbw::decloak_passive_proc(unit);
 					Point16 target_pos = {};
 					if (unit->order_target.pt.x && unit->order_target.pt.y) {
 						target_pos = unit->order_target.pt;
@@ -2452,7 +2452,7 @@ namespace hooks {
 
 		// Decloak on stun
 		if (unit->is_frozen() || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerAnthelionGravityWell]) {
-			scbw::decloak_proc(unit);
+			scbw::decloak_passive_proc(unit);
 		}
 
 		// Play addon work animations when related units are being trained by parent structure
@@ -2754,11 +2754,29 @@ namespace hooks {
 			}
 		}
 
-		// Cloaked units recloak after 2 seconds of being out of combat
-		if (unit_ext->timers[TimerDecloak] == 1) {
-			if (scbw::is_decloakable(unit)) {
-				u32 sound_id = scbw::get_cloak_sound_id(unit);
-				helper::begin_cloak(unit, sound_id);
+		// Proximity cloaking - recloak after 2 seconds of no nearby enemies
+		if (scbw::is_proximity_decloakable(unit)) {
+			EntryArray units = {};
+			unit_search_radial(&units, unit->position, 3 * 32);
+			unit_search_filter(&units, unit, FilterEnemy);
+
+			if (units.count) {
+				if (unit_ext->timers[TimerDecloak] < 2) {
+					scbw::decloak_proximity_proc(unit);
+				} else {
+					unit_ext->timers[TimerDecloak] = 48 + 1;
+				}
+			} else {
+				if (unit_ext->timers[TimerDecloak] == 1) {
+					helper::begin_cloak(unit, scbw::get_cloak_sound_id(unit));
+				}
+			}
+		}
+
+		// Passive cloaking - recloak after 2 seconds of no combat
+		if (scbw::is_passive_decloakable(unit)) {
+			if (unit_ext->timers[TimerDecloak] == 1) {
+				helper::begin_cloak(unit, scbw::get_cloak_sound_id(unit));
 			}
 		}
 

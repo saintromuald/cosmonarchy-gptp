@@ -13,7 +13,7 @@ namespace hooks
 				hit = {target->get_x(), target->get_y()};
 			}
 			
-			scbw::decloak_proc(unit);
+			scbw::decloak_passive_proc(unit);
 
 			unit->play_iscript_animation(IscriptAnimation::Unused2);
 			helper::create_bullet(WeaponId::CantavisHallucinationCast, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
