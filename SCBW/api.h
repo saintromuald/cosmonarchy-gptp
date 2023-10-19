@@ -785,4 +785,6 @@ namespace scbw
 	void unload_or_kill_loaded_units(Unit* transport);
 	u32 get_cloak_sound_id(Unit* unit);
 	u32 get_decloak_sound_id(Unit* unit);
+	void launch_return_missile(Unit* unit, u32 weapon_id);
+	void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position);
 }

@@ -3503,4 +3503,55 @@ namespace scbw {
 			}
 		}
 	}
+
+	void launch_return_missile(Unit* unit, u32 weapon_id)
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		Point16 position = unit->position;
+		Point16 spr_position = unit->sprite->position;
+		Vector32 pos = { (s32)unit_ext->values[ValueMissileReturnX], (s32)unit_ext->values[ValueMissileReturnY] };
+		if (pos.x < 0) {
+			pos.y = (1 - abs(pos.x / (pos.x - (s32)position.x))) * (pos.y - (s32)position.y) + (s32)position.y;
+			pos.x = 0;
+		}
+		if (pos.y < 0) {
+			pos.x = (1 - abs(pos.y / (pos.y - (s32)position.y))) * (pos.x - (s32)position.x) + (s32)position.x;
+			pos.y = 0;
+		}
+		// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
+		unit->position.x = (u16)pos.x;
+		unit->position.y = (u16)pos.y;
+		unit->sprite->position = unit->position;
+		scbw::artificial_bullet_from(weapon_id, unit->player, unit, 0, spr_position);
+		u32 sound_id = SoundId::LakiziliskProjectileReturn;
+		if (weapon_id == WeaponId::SkithrokorSkitteringSpores) {
+			sound_id = SoundId::SkithrokorWeaponfire01;
+		}
+		helper::play_sound_from_unit(sound_id, unit, 1, 0);
+		unit->position = position;
+		unit->sprite->position = spr_position;
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
+			iquare_globals.clear_lakizilisk(unit);
+		}
+	}
+
+	void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position)
+	{
+		iquare_globals.add_incremental_bullet_multihit(bullet, target);
+		u32 count = iquare_globals.get_multihit_count(bullet);
+		scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
+		target->damage_with(weapon_id, (weapons_dat::damage_amount[weapon_id] - count) * 256, bullet->source_unit, bullet->player);
+
+		if (count >= 4) {
+			bullet->remove_timer = 0;
+			return;
+		}
+		else {
+			bullet->move_target.unit = bullet->attack_target.unit;
+			if (bullet->move_target.unit) {
+				bullet->target_position_1 = bullet->move_target.unit->position;
+				bullet->target_position_2 = bullet->move_target.unit->position;
+			}
+		}
+	}
 }

@@ -2431,6 +2431,12 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergKalkalisk:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Kalkalisk - Ablative Spores
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergGhitorokor:
 								{
 									if (current_button->icon_id == IconId::SuicideScourge			// Ghitorokor - Relentless Aggression
@@ -2465,6 +2471,12 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergSkithrokor:
+								{
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Skithrokor - Ablative Return
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergBactalisk:
 								case UnitId::ZergAlkajelisk:
 								{
@@ -2483,12 +2495,6 @@ namespace hooks {
 									if (current_button->icon_id == IconId::VenomUnused				// Vithrilisk - Corrosive Touch
 									||  current_button->icon_id == IconId::SuicideInfestedTerran)	// Vithrilisk - Critical Mass
 									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::ZergKagralisk:
-								{
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Kalkalisk - Ablative Spores
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

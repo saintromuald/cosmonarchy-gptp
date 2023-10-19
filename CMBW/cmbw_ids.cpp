@@ -468,10 +468,12 @@ bool weapon_id_pierces(u32 weapon_id) {
 		case WeaponId::RamessesPharoahCannons:
 		case WeaponId::ClaymoreHarpoonRailgun:
 		case WeaponId::PenumbraErebolShockCannon:
+		case WeaponId::WyvernJacksonCannon:
 		case WeaponId::MagnetarNewtonianShockCannon:
 		case WeaponId::HippogriffChimeraCannons:
 		case WeaponId::SentinelCerberusRailgun:
 		case WeaponId::KalkaliskViscousAcid:
+		case WeaponId::SkithrokorSkitteringSpores:
 		case WeaponId::ZarcavrokorBonesofReflection:
 			return true;
 	}
@@ -479,9 +481,8 @@ bool weapon_id_pierces(u32 weapon_id) {
 }
 
 bool weapon_id_piercing_stops_on_armor(u32 weapon_id) {
-	switch (weapon_id) {
-		case WeaponId::PenumbraErebolShockCannon:
-			return false;
+	if (weapon_id_is_incremental(weapon_id)) {
+		return false;
 	}
 	return true;
 }
@@ -1026,4 +1027,16 @@ u32 weapon_id_is_secondary(u32 weapon_id)
 bool unit_id_has_custom_air_weapon(u32 unit_id) {
 	return unit_id == UnitId::TerranDurendal
 		|| unit_id == UnitId::ProtossOptecton;
+}
+
+bool weapon_id_returns_to_attacker(u32 weapon_id)
+{
+	return weapon_id == WeaponId::SkithrokorSkitteringSpores
+		|| weapon_id == WeaponId::LakiziliskSubterraneanSpines;
+}
+
+bool weapon_id_is_incremental(u32 weapon_id)
+{
+	return weapon_id == WeaponId::KalkaliskViscousAcid
+		|| weapon_id == WeaponId::SkithrokorSkitteringSpores;
 }

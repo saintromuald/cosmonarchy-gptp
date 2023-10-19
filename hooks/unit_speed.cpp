@@ -229,6 +229,7 @@ namespace hooks
 			case UnitId::TerranMason:
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth:
+			case UnitId::ZergQuazilisk:
 			case UnitId::TerranSavant:
 			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
@@ -247,7 +248,6 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
-			case UnitId::ZergQuazilisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:
 			{

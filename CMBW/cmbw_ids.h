@@ -82,3 +82,5 @@ bool weapon_id_bounces_caustic_fission(u32 weapon_id);
 u32 get_death_sfx_id(u32 unit_id);
 u32 weapon_id_is_secondary(u32 weapon_id);
 bool unit_id_has_custom_air_weapon(u32 unit_id);
+bool weapon_id_returns_to_attacker(u32 weapon_id);
+bool weapon_id_is_incremental(u32 weapon_id);

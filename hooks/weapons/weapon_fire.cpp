@@ -390,21 +390,28 @@ namespace hooks {
 			}
 
 			// Lakizilisk Seismic Spines behavior
-			if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
+			// Skithrokor behavior
+			if (weapon_id_returns_to_attacker(weapon_id))
 			{
-				unit_ext->timers[TimerLakiziliskETA] = 21;
+				u32 timer = 21;
+				if (weapon_id == WeaponId::SkithrokorSkitteringSpores) {
+					timer = 9;
+				}
+				unit_ext->timers[TimerMissileReturnETA] = timer;
 				u32 range = weapons_dat::max_range[weapon_id] + 16;
 			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
 				Point16 unit_pos = { unit->position.x, unit->position.y };
 				Point16 target_pos = { unit->order_target.unit->position.x, unit->order_target.unit->position.y };
 				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
-				unit_ext->values[ValueSpineX] = unit_pos.x + scbw::get_polar_x(range, angle);
-				unit_ext->values[ValueSpineY] = unit_pos.y + scbw::get_polar_y(range, angle);
+				unit_ext->values[ValueMissileReturnX] = unit_pos.x + scbw::get_polar_x(range, angle);
+				unit_ext->values[ValueMissileReturnY] = unit_pos.y + scbw::get_polar_y(range, angle);
 				if (unit->order_target.unit)
 				{
-					unit_ext->values[ValueLakiziliskPickTarget] = (u32)unit->order_target.unit;
+					unit_ext->values[ValueMissileReturnTarget] = (u32)unit->order_target.unit;
 				}
-				iquare_globals.clear_lakizilisk(unit);
+				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
+					iquare_globals.clear_lakizilisk(unit);
+				}
 			}
 
 			if (unit->id != UnitId::TerranWyvern
@@ -642,6 +649,7 @@ namespace hooks {
 			case WeaponId::AutocratEminenceRifle:
 			case WeaponId::MadrigalImperiosoMissiles:
 			case WeaponId::RamessesPharoahCannons:
+			case WeaponId::WyvernJacksonCannon:
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons:
 			{
@@ -681,21 +689,12 @@ namespace hooks {
 			case WeaponId::KalkaliskViscousAcid:
 			{
 				// Kalkalisk - Ablative Spores
-				iquare_globals.add_incremental_bullet_multihit(bullet, target);
-				auto count = iquare_globals.get_multihit_count(bullet);
-				scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
-				target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
-
-				if (count >= 4) {
-					bullet->remove_timer = 0;
-					return;
-				} else {
-					bullet->move_target.unit = bullet->attack_target.unit;
-					if (bullet->move_target.unit) {
-						bullet->target_position_1 = bullet->move_target.unit->position;
-						bullet->target_position_2 = bullet->move_target.unit->position;
-					}
-				}
+				scbw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
+			} break;
+			case WeaponId::SkithrokorSkitteringSpores:
+			{
+				// Kalkalisk - Ablative Spores
+				scbw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
 			case WeaponId::ZarcavrokorBonesofReflection:
 			{
@@ -959,6 +958,10 @@ namespace hooks {
 		} else if (weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
+				case WeaponId::WyvernJacksonCannon:
+				{
+					line_width = 24;
+				} break;
 				case WeaponId::SavantDiscoidRailgunPiercing:
 				case WeaponId::ClaymoreHarpoonRailgun:
 				case WeaponId::SentinelCerberusRailgun:

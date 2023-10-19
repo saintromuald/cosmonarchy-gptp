@@ -892,7 +892,7 @@ namespace hooks {
 
 		// Loop through bullets
 		for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next) {
-			if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
+			if (weapon_id_is_incremental(bullet->weapon_id)) {
 				if (bullet->order_signal & 0x80) {
 					bullet->order_signal &= ~0x80;
 					iquare_globals.remove_multihit_bullet(bullet);
@@ -1705,29 +1705,8 @@ namespace hooks {
 					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
-				// Lakizilisk - Seismic Spines
-				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerLakiziliskETA] == 1)
-				{
-					Point16 position = unit->position;
-					Point16 spr_position = unit->sprite->position;
-					Vector32 pos = { (s32)unit_ext->values[ValueSpineX], (s32)unit_ext->values[ValueSpineY] };
-					if (pos.x < 0) {
-						pos.y = (1 - abs(pos.x / (pos.x - (s32)position.x))) * (pos.y - (s32)position.y) + (s32)position.y;
-						pos.x = 0;
-					}
-					if (pos.y < 0) {
-						pos.x = (1 - abs(pos.y / (pos.y - (s32)position.y))) * (pos.x - (s32)position.x) + (s32)position.x;
-						pos.y = 0;
-					}
-					// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
-					unit->position.x = (u16)pos.x;
-					unit->position.y = (u16)pos.y;
-					unit->sprite->position = unit->position;
-					scbw::artificial_bullet_from(WeaponId::LakiziliskSubterraneanSpines, unit->player, unit, 0, spr_position);
-					helper::play_sound_from_unit(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
-					unit->position = position;
-					unit->sprite->position = spr_position;
-					iquare_globals.clear_lakizilisk(unit);
+				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerMissileReturnETA] == 1) {
+					scbw::launch_return_missile(unit, WeaponId::LakiziliskSubterraneanSpines);
 				}
 			} break;
 			case UnitId::TerranShamanSupportMode:
@@ -2254,6 +2233,12 @@ namespace hooks {
 					unit->mine_carrier.mine_count = 2;
 				}
 			} break;
+			case UnitId::ZergSkithrokor:
+			{
+				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerMissileReturnETA] == 1) {
+					scbw::launch_return_missile(unit, WeaponId::SkithrokorSkitteringSpores);
+				}
+			}
 		}
 
 		// Protoss - Binding Plasma

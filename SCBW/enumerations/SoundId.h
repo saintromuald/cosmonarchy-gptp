@@ -1203,6 +1203,11 @@ namespace SoundId
 		DemiurgeWorship01					= 1417,
 		SirenTertiaryEyesCast01				= 1459,
 
+		SkithrokorWeaponfire01				= 1488,
+		SkithrokorWeaponfire02				= 1489,
+		BlackjackDeath01					= 1490,
+		BlackjackDeath02					= 1491,
+
 		IzirokorDeath01						= 1506,
 
 		SkithrokorDeath01					= 1536,

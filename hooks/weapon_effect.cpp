@@ -155,7 +155,7 @@ namespace hooks {
 				bool lakizilisk_override = false;
 				if (bullet->source_unit) {
 					UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
-					if ((Unit*)bullet_source_ext->values[ValueLakiziliskPickTarget] == target) {
+					if ((Unit*)bullet_source_ext->values[ValueMissileReturnTarget] == target) {
 						lakizilisk_override = true;
 					}
 				}
@@ -201,10 +201,10 @@ namespace hooks {
 		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
 
 		// Kalkalisk behavior
-		if (bullet->weapon_id == WeaponId::KalkaliskViscousAcid) {
+		if (weapon_id_is_incremental(bullet->weapon_id)) {
 			iquare_globals.add_incremental_bullet_multihit(bullet, target);
 			auto count = iquare_globals.get_multihit_count(bullet);
-			target->damage_with(WeaponId::KalkaliskViscousAcid, (weapons_dat::damage_amount[WeaponId::KalkaliskViscousAcid] - count) * 256, bullet->source_unit, bullet->player);
+			target->damage_with(bullet->weapon_id, (weapons_dat::damage_amount[bullet->weapon_id] - count) * 256, bullet->source_unit, bullet->player);
 			return;
 		}
 
