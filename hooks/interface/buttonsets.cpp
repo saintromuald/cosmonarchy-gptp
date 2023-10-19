@@ -1722,9 +1722,15 @@ namespace hooks {
 								case UnitId::TerranEidolon:
 								case UnitId::TerranWraith:
 								case UnitId::TerranSundog:
+								{
+									if (current_button->icon_id == IconId::SensorArray) // Proximity Cloak
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossWitness:
 								{
-									if (current_button->icon_id == IconId::Cloak) // Permanent Cloak
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) // Steady Shroud
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2191,16 +2197,16 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossCabalist:
 								{
-									if (current_button->icon_id == IconId::Cloak				 // Permanent Cloak
-									||	current_button->icon_id == IconId::ProtossGroundWeapons) // Cabalist - Silent Strides
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
+									||	current_button->icon_id == IconId::ProtossGroundWeapons)		// Cabalist - Silent Strides
 									{
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossBarghest:
 								{
-									if (current_button->icon_id == IconId::Cloak			// Permanent Cloak
-									||	current_button->icon_id == IconId::ApialSensors)	// Barghest - Multi-Attack III
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
+									||	current_button->icon_id == IconId::ApialSensors)				// Barghest - Multi-Attack III
 									{
 										current_button_state = Button_State::Enabled;
 									}
