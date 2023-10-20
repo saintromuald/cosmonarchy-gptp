@@ -2006,7 +2006,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranWyvern:
 								{
-									if (current_button->icon_id == IconId::AfterburnersOnUnused) // Wyvern - Reverse Thrust
+									if (current_button->icon_id == IconId::AfterburnersOnUnused				// Wyvern - Reverse Thrust
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)	// Kinetic Penetration
 									{
 										current_button_state = Button_State::Enabled;
 									}

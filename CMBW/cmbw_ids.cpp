@@ -383,10 +383,13 @@ bool unit_collides_with_titanic(Unit* unit) {
 	if (unit->status & UnitStatus::GroundedBuilding) {
 		return unit->id != UnitId::ProtossPylon && !unit_id_is_minerals(unit->id);
 	}
-	return unit->id == UnitId::TerranClaymore
+	return unit->id == UnitId::TerranCataphract
+		|| unit->id == UnitId::TerranPaladin
+		|| unit->id == UnitId::TerranClaymore
 		|| unit->id == UnitId::TerranPenumbra
 		|| unit->id == UnitId::TerranAion
 		|| unit->id == UnitId::ProtossOptecton
+		|| unit->id == UnitId::ProtossArchitect
 		|| unit->id == UnitId::ProtossDemiurge
 		|| unit->id == UnitId::ZergKeskathalor
 		|| unit->id == UnitId::ZergKethrostalor
