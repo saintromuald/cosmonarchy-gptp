@@ -441,7 +441,7 @@ namespace hooks
 							unit->get_y() + radius
 						).for_each_in_match(match, [&](Unit* target) {
 							u32 dist = scbw::get_distance_fast(unit->position, target->position);
-							u32 damage = 20 * 256;
+							u32 damage = 25 * 256;
 							if (dist > 48) {
 								damage /= 4;
 							} else if (dist > 32) {
