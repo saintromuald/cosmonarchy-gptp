@@ -27,7 +27,7 @@ namespace hooks
 						current_image = current_image->link.next;
 					}
 
-					if (unit->building.nuke_missile)
+					if (unit->building.nuke_missile && unit->building.nuke_missile->sprite)
 					{
 						current_image = (unit->building.nuke_missile)->sprite->images.head;
 						while (current_image)
