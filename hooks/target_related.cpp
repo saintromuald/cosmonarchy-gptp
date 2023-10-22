@@ -227,10 +227,10 @@ namespace hooks
 		u32 detecting_players = helper::get_detecting_players(unit);
 		if (unit->status & UnitStatus::Burrowed) {
 			Box32 rect = {};
-			rect.left	= unit->get_left()	 - 16;
-			rect.right	= unit->get_right()	 + 16;
-			rect.top	= unit->get_top()	 - 16;
-			rect.bottom = unit->get_bottom() + 16;
+			rect.left	= unit->get_left()	 - 20;
+			rect.right	= unit->get_right()	 + 20;
+			rect.top	= unit->get_top()	 - 20;
+			rect.bottom = unit->get_bottom() + 20;
 
 			EntryArray units = {};
 			unit_search_rect(&units, rect);
