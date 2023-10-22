@@ -2757,7 +2757,6 @@ namespace hooks {
 		// Proximity cloaking - recloak after 2 seconds of no nearby enemies
 		if (scbw::is_proximity_decloakable(unit)) {
 			EntryArray units = {};
-
 			u32 search_margin = 4 * 32;
 			Box32 search_area = {};
 			search_area.left = unit->position.x - search_margin;

@@ -2284,6 +2284,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossGolem:
+								{
+									if (current_button->icon_id == IconId::PlasmaShields) // Golem - Tranquility Array
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossAtreus:
 								case UnitId::ProtossIdol:
 								case UnitId::ProtossAccantor:

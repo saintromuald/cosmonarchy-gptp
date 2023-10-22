@@ -2382,6 +2382,7 @@ namespace scbw {
 		}
 		return false;
 	}
+
 	void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
 		u32 heal_amount = 2;
 		u32 range = 64;
@@ -2399,29 +2400,39 @@ namespace scbw {
 				range = 96;
 			} break;
 		}
-		scbw::UnitFinder(
-			victim->get_x() - range,
-			victim->get_y() - range,
-			victim->get_x() + range,
-			victim->get_y() + range
-		).for_each([&](Unit* unit) {
-			if (attacking_player_id != unit->player && !scbw::is_allied_to(attacking_player_id, unit->player)) {
-				// Ally check
+		shield_heal_proc(victim, attacking_player_id, range, heal_amount);
+	}
+
+	void shield_heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 heal_amount) {
+		EntryArray units = {};
+		Box32 search_area = {};
+		search_area.left = heal_source->position.x - range;
+		search_area.top = heal_source->position.y - range;
+		search_area.right = heal_source->position.x + range;
+		search_area.bottom = heal_source->position.y + range;
+		unit_search_rect(&units, search_area);
+		unit_search_filter(&units, heal_source);
+		for (u32 i = 0; i < units.count; ++i)
+		{
+			Unit* unit = units.units[i];
+			if (heal_source_player != unit->player && !is_allied_to(heal_source_player, unit->player)) {
 				return;
 			}
+
 			if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
 				// Shield check for default behavior
 				helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-				helper::add_overlay_below_main(victim->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+				helper::add_overlay_below_main(heal_source->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 			} else {
 				// Return if both checks failed
 				return;
 			}
+
 			if (units_dat::shields_enabled[unit->id]) {
 				// Shield heal
-				unit->heal_shields(heal_amount * 256, victim);
+				unit->heal_shields(heal_amount * 256, heal_source);
 			}
-		});
+		}
 	}
 
 	bool is_attack_region(AiRegion* ai_region) {

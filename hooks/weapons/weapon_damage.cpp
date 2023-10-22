@@ -431,6 +431,12 @@ namespace hooks
 		}
 
 		switch (data.target->id) {
+			case UnitId::ProtossGolem: {
+				// Golem - Tranquility Array
+				if (data.target->shields >= 128) {
+					scbw::shield_heal_proc(data.target, data.target->player, 64, 2);
+				}
+			} break;
 			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Incubate on damage taken
 				if (!scbw::is_allied_to(data.target->player, data.attacking_player_id)) {
