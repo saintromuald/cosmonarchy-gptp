@@ -229,7 +229,6 @@ namespace hooks
 			case UnitId::TerranMason:
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth:
-			case UnitId::ZergQuazilisk:
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSavant:
 			case UnitId::TerranApostle:
