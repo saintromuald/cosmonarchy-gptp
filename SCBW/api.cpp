@@ -2452,7 +2452,9 @@ namespace scbw {
 				continue;
 			}
 
-			if (unit->id == UnitId::TerranPhalanxSiegeMode || unit->main_order_id == OrderId::SiegeMode) {
+			if (unit_id_is_siege_mode(unit->id) && unit->main_order_id != OrderId::TankMode
+			||  unit->main_order_id == OrderId::SiegeMode)
+			{
 				unit->order_to(OrderId::TankMode);
 			}
 
