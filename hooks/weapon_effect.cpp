@@ -355,10 +355,9 @@ namespace hooks {
 
 	void lockdown(Bullet* bullet, u32 weapon_id)
 	{
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
+		s16 x = bullet->sprite->position.x;
+		s16 y = bullet->sprite->position.y;
+		s16 r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
 		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
 		{

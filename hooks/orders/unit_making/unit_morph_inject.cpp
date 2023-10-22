@@ -170,6 +170,10 @@ namespace
 			if (unit->get_race() == RaceId::Zerg)
 			{
 				cancel_zerg_building(unit);
+				if (unit->rally.pt.x || unit->rally.pt.y) {
+					unit->rally.pt.x = 0;
+					unit->rally.pt.y = 0;
+				}
 				return;
 			}
 			resources->minerals[unit->player] += units_dat::mineral_cost[unit->id] * 3 / 4;
