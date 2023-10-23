@@ -397,17 +397,10 @@ namespace helper {
 	void set_creep_relational_data(u32 x, u32 y, SetCreepRelationalData_callback callback, u32 arg);								// 00413FA0
 	u32 iterate_directional_creep_data(u32 x, u32 y, u32 callback, u32 arg);														// 00413B30
 
-	// TODO: add helpers for these functions
 	// for apply_creep_at_location_from_unit_id
 	
 	typedef s32 __stdcall CreepChange(s32, s32, s32, s32, s32);
-
 	s32 modify_creep_state(s32 x_tile, s32 y_tile, CreepChange* creepChange, u32 param);											// 00413FA0
-	s32 run_creep_randomizer(s16* originalTile, s32 creepTileBorders, s32* outCreepStatus, s16* currentTile, s32 unused);			// 004140A0 // "note possible desync"
-	s32 unkCreepBorders(s32 a1, s32 a2);																							// 006D0C78
-	u32 forEachAdjacentTile(s32(__stdcall* callback)(s32, s32, s32, s32, void*), void* param, s32 x_tile, s32 y_tile);				// 00413B30
-	s32 unkCreepTile(s32 pos, s32 originalTile, s32 x_tile, s32 y_tile, void* param);												// 00414440
-	char unkSpreadCreep(s32 a1, s32 a2, s16 a3);																					// 00414680
 
 	//// burrow_tech
 	void force_order_done(Unit* unit);																								// 00475420
@@ -476,8 +469,8 @@ namespace helper {
 	//// trap_hooks
 	// For update_unit_strength_and_apply_default_orders
 	void begin_cloak(Unit* unit, s32 sound_id);																						// 0049B5B0
-	void refresh_unit_vision(Unit* a1);																								// 004E5F30
-	void init_unit_trap_doodad(Unit* a1);																							// 004E6490
+	void refresh_unit_vision(Unit* unit);																								// 004E5F30
+	void init_unit_trap_doodad(Unit* unit);																							// 004E6490
 	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
 	void order(s32 some_bool, Unit* unit, s8 order_id, Point16 pos, Unit* target_unit, u32 fow_unit_id);							// 00474810
 	u32 get_unit_strength(Unit* a1, s32 a2, bool a3);																				// 00431800
@@ -686,13 +679,12 @@ namespace helper {
 
 	//// weapon_fire
 	// For progress_bullet_flight
-	void progress_bullet_movement(Bullet* a1);																						// 0048B250
 	void do_missile_damage(Bullet* bullet);																							// 0048B770
 
 	// For bulletBehavior_Bounce
 	Bullet* change_move_pos(Bullet* bullet, s32 a2, s32 a3);																		// 00495240
-	void progress_bullet_movement(Bullet* a1);																						// 0048B250
-	Unit* find_next_bounce_target(Bullet* a1);																						// 0048B1E0
+	void progress_bullet_movement(Bullet* bullet);																						// 0048B250
+	Unit* find_next_bounce_target(Bullet* bullet);																						// 0048B1E0
 
 	// For find_next_bounce_target_proc
 	bool unit_is_subunit(Unit* a1);																									// 00401D40
@@ -1244,7 +1236,7 @@ namespace helper {
 	typedef s32 ClipCreepAreaInBounds_Callback(u32, u32, u32, u32, u32, u32, u32);
 	s32 clip_creep_area_in_bounds(u32 tile_x, u32 tile_y, ClipCreepAreaInBounds_Callback* callback);		// 00413D10
 
-	s32 update_creep_disappearance_unit(u32 tile_x, u32 tile_y);													// 0047DD60
+	s32 mark_cagra_to_disappear(u32 tile_x, u32 tile_y);													// 0047DD60
 
 	void* process_options_change(BinDlg* control);															// 004C9780
 	void load_dialog(char* filename, void* function);														// 004F57A0
@@ -1682,4 +1674,6 @@ namespace helper {
 	u8 apply_unit_effects(Unit* unit);											// 00492DA0
 
 	void refresh_layer_5();														// 004BD350
+
+	void manage_vision_references(s32 vision_filter, Unit* unit);				// 0049E8A0
 }

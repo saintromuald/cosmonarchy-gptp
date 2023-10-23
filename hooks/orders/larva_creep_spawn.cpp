@@ -283,7 +283,7 @@ namespace hooks
 		}
 	}
 
-	s32 update_creep_disappearance_unit(Unit* unit) {
+	s32 update_creep_disappearance_unit(Unit* unit) { // 0047DD60
 		Box32 rect = {};
 		bool does_spread = helper::get_creep_spread_area(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
 		u32 pos_x = 32 * rect.left - unit->position.x + 16;
@@ -310,7 +310,7 @@ namespace hooks
 			||		  does_spread && 100 * pos_x * pos_x + (pos_y * pos_y << 8) > 10240000
 			||		  tile_flags & (*g_active_tile_array_int)[rect_left + rect_top * g_map_tile_size->width]
 			||		  helper::clip_creep_area_in_bounds(rect_left, rect_top, (helper::ClipCreepAreaInBounds_Callback*)0x0047D860)
-			||		  helper::update_creep_disappearance_unit(rect_left, rect_top))
+			||		  helper::mark_cagra_to_disappear(rect_left, rect_top))
 			{
 				++rect_left;
 				pos_x += 32;

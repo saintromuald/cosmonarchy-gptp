@@ -1,5 +1,3 @@
-// All functions in this file are heavily involved with memory management.
-
 #include "unit_destructor_special.h"
 #include "../SCBW/api.h"
 #include "../hook_tools.h"
@@ -419,7 +417,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	return thingy;
 }
 
-// Hooked to make new refineries regress correctly. -Pr0nogo
+// Hooked to make new refineries revert to their previous node type. -Pr0nogo
 s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 {
 	u32 id = unit->id;
@@ -489,18 +487,22 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	}
 
 	unit->status &= ~UnitStatus::Completed;
-	helper::replace_unit_with_id(unit, UnitId::ResourceVespeneGeyser);
+	u32 node_id = UnitId::ResourceVespeneGeyser;
+	if (unit_id_is_ridge_refinery(unit->id)) {
+		node_id = UnitId::ResourceVespeneRidge;
+	}
+	helper::replace_unit_with_id(unit, node_id);
 	id = unit->id;
 	unit->main_order_id = units_dat::human_idle_order[id];
 	unit->order_target.unit = 0;
 	unit->order_target.pt.y = 0;
 	unit->order_target.pt.x = 0;
 	unit->main_order_state = 0;
-	unit->order_unit_id = UnitId::None; // Was LOWORD(order_unit_id) = UnitId::None
+	unit->order_unit_id = UnitId::None;
 	unit->hitpoints = units_dat::max_hitpoints[id];
 	helper::give_unit(unit, 11, 0);
 	helper::give_sprite(unit, 11);
-	unit->status |= 1u;
+	unit->status |= UnitStatus::Completed;
 	helper::increment_unit_scores_ex(unit, 1, 1);
 
 	if (*g_is_placing_building)

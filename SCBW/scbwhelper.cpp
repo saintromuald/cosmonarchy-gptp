@@ -3706,21 +3706,21 @@ namespace helper {
 		}
 	}
 
-	void refresh_unit_vision(Unit* a1) {
+	void refresh_unit_vision(Unit* unit) {
 		const u32 func_address = 0x004E5F30;
 		__asm {
 			PUSHAD
-			PUSH a1
+			PUSH unit
 			CALL func_address
 			POPAD
 		}
 	}
 
-	void init_unit_trap_doodad(Unit* a1) {
+	void init_unit_trap_doodad(Unit* unit) {
 		const u32 func_address = 0x004E6490;
 		__asm {
 			PUSHAD
-			MOV EDI, a1
+			MOV EDI, unit
 			CALL func_address
 			POPAD
 		}
@@ -4136,14 +4136,14 @@ namespace helper {
 	}
 	
 	void set_secondary_waypoint(Unit* unit, s32 x, s32 y) {
-		const u32 Func_setSecondaryWaypoint = 0x00494BB0;
+		const u32 func_address = 0x00494BB0;
 		static Unit* result;
 		__asm {
 			PUSHAD
 			MOV ECX, y
 			MOV EDX, x
 			MOV EAX, unit
-			CALL Func_setSecondaryWaypoint
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4152,7 +4152,7 @@ namespace helper {
 	// For generic_right_click_unit_proc_2
 	// Not sure if unused is actually unused. -Pr0nogo
 	s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error) {
-		const u32 Func_isOrderValid = 0x00474D90;
+		const u32 func_address = 0x00474D90;
 		static s32 result;
 		__asm {
 			PUSHAD
@@ -4161,7 +4161,7 @@ namespace helper {
 			MOV EDI, unused
 			MOV EBX, self
 			MOVZX AL, order_id
-			CALL Func_isOrderValid
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4169,14 +4169,14 @@ namespace helper {
 	}
 
 	u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3) {
-		const u32 Func_getUnitAbilityErrorStatString = 0x00491E80;
+		const u32 func_address = 0x00491E80;
 		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
 			MOVZX BL, a2
 			MOV EAX, a1
-			CALL Func_getUnitAbilityErrorStatString
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4198,14 +4198,14 @@ namespace helper {
 	}
 
 	s32 order_allowed(Unit* a1, u16 a2, s32 a3) {
-		const u32 Func_orderAllowed = 0x0046DC20;
+		const u32 func_address = 0x0046DC20;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
 			MOVZX BX, a2
 			MOV EAX, a1
-			CALL Func_orderAllowed
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4213,7 +4213,7 @@ namespace helper {
 	}
 
 	void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10) {
-		const u32 Func_targetedOrder = 0x004754F0;
+		const u32 func_address = 0x004754F0;
 		s32 a7_xd = a7;
 		__asm {
 			PUSHAD
@@ -4227,19 +4227,19 @@ namespace helper {
 			MOV ESI, a3
 			MOV EBX, a2
 			MOVZX DX, a1
-			CALL Func_targetedOrder
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// For check_unit_visibility
 	u32 get_detecting_players(Unit* unit) {
-		const u32 Func_getDetectingPlayers = 0x00441130;
+		const u32 func_address = 0x00441130;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_getDetectingPlayers
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4247,13 +4247,13 @@ namespace helper {
 	}
 
 	u32 iterate_player_units_something(u32 aResult, Unit* unit) {
-		const u32 Func_iteratePlayerUnitsSomething = 0x0049E8A0;
+		const u32 func_address = 0x0049E8A0;
 		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, aResult
-			CALL Func_iteratePlayerUnitsSomething
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4261,23 +4261,23 @@ namespace helper {
 	}
 
 	void make_sprite_visible(Sprite* sprite) {
-		const u32 Func_makeSpriteVisible = 0x00497ED0;
+		const u32 func_address = 0x00497ED0;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
-			CALL Func_makeSpriteVisible
+			CALL func_address
 			POPAD
 		}
 	}
 
 	s32 update_building_land_unit_selection(u32 detection_status, Unit* selection) {
-		const u32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
+		const u32 func_address = 0x004C3B40;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, detection_status
 			MOV EDX, selection
-			CALL Func_updateBuildingLandUnitSelection
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4285,12 +4285,12 @@ namespace helper {
 	}
 
 	char remove_selection_circle(Sprite* sprite) {
-		const u32 Func_removeSelectionCircle = 0x004975D0;
+		const u32 func_address = 0x004975D0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, sprite
-			CALL Func_removeSelectionCircle
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4298,12 +4298,12 @@ namespace helper {
 	}
 
 	Image* make_sprite_invisible(Sprite* sprite) {
-		const u32 Func_makeUndetected = 0x00498A10;
+		const u32 func_address = 0x00498A10;
 		static Image* result;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
-			CALL Func_makeUndetected
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4325,14 +4325,14 @@ namespace helper {
 	}
 
 	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 bCommandType) {
-		const u32 Func_Sub4756E0 = 0x004756E0;
+		const u32 func_address = 0x004756E0;
 		__asm {
 			PUSHAD
 			MOV EDX, target
 			MOV ESI, unit
 			PUSH order_id
 			PUSH bCommandType
-			CALL Func_Sub4756E0
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4376,34 +4376,34 @@ namespace helper {
 	}
 
 	void function_0049A500(Unit* unit, u8* array_of_data) {
-		const u32 Func_Sub49A500 = 0x0049A500;
+		const u32 func_address = 0x0049A500;
 		__asm {
 			PUSHAD
 			PUSH array_of_data
 			PUSH unit
-			CALL Func_Sub49A500
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed) {
-		const u32 Func_Sub49A8C0 = 0x0049A8C0;
+		const u32 func_address = 0x0049A8C0;
 		__asm {
 			PUSHAD
 			PUSH bCanBeObstructed
 			MOV EDI, array_of_data
-			CALL Func_Sub49A8C0
+			CALL func_address
 			POPAD
 		}
 	}
 
 	char ignore_iscript_go_to_idle(Unit* unit) {
 		static char result;
-		const u32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
+		const u32 func_address = 0x00476550;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_IgnoreAllScriptAndGotoIdle
+			CALL func_address
 			MOV result, AL
 			POPAD
 		}
@@ -4411,14 +4411,14 @@ namespace helper {
 	}
 
 	u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos) {
-		const u32 Func_canUnload = 0x004E76C0;
+		const u32 func_address = 0x004E76C0;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, transport
 			MOV ESI, loaded_unit
 			PUSH pos
-			CALL Func_canUnload
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4426,80 +4426,80 @@ namespace helper {
 	}
 
 	void unload_unit_ext(Unit* unit, u32 unk) {
-		const u32 Func_Sub4E7E10 = 0x004E7E10;
+		const u32 func_address = 0x004E7E10;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			PUSH unk
-			CALL Func_Sub4E7E10
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void stat_nuke_count(BinDlg* dialog, u32 index) {
-		const u32 Func_Sub425310 = 0x00425310;
+		const u32 func_address = 0x00425310;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			PUSH index
-			CALL Func_Sub425310
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void stats_hangar_count(BinDlg* dialog, u32 index) {
-		const u32 Func_StatHangerCount = 0x004253D0;
+		const u32 func_address = 0x004253D0;
 		__asm {
 			PUSHAD
 			MOV EBX, dialog
 			PUSH index
-			CALL Func_StatHangerCount
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void stats_shield_level(BinDlg* dialog, u32 index) {
-		const u32 Func_Sub425510 = 0x00425510;
+		const u32 func_address = 0x00425510;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			PUSH index
-			CALL Func_Sub425510
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void stats_armor_level(BinDlg* dialog, u32 index) {
-		const u32 Func_Sub425600 = 0x00425600;
+		const u32 func_address = 0x00425600;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			PUSH index
-			CALL Func_Sub425600
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void stats_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id) {
-		const u32 Func_Sub425790 = 0x00425790;
+		const u32 func_address = 0x00425790;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			PUSH weapon_id
 			PUSH index
-			CALL Func_Sub425790
+			CALL func_address
 			POPAD
 		}
 	}
 
 	bool stat_spidermine_count(BinDlg* dialog, u32 index) {
-		const u32 Func_StatSpidermineCount = 0x00426300;
+		const u32 func_address = 0x00426300;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
 			PUSH index
-			CALL Func_StatSpidermineCount
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4509,12 +4509,12 @@ namespace helper {
 	// For get_unit_rank_string
 
 	__int8 unitGetRace(Unit* a1) {
-		const u32 Func_unitGetRace = 0x0047B150;
+		const u32 func_address = 0x0047B150;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
-			CALL Func_unitGetRace
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4522,12 +4522,12 @@ namespace helper {
 	}
 
 	char* get_stat_txt_string(u16 a1) {
-		const u32 Func_getStatTxtString = 0x004C36F0;
+		const u32 func_address = 0x004C36F0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOVZX CX, a1
-			CALL Func_getStatTxtString
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4537,13 +4537,13 @@ namespace helper {
 	// For stats_weapon_level / stats_armor_level
 
 	char getArmorCount(Unit* unit, s32 unused) {
-		const u32 Func_getArmorCount = 0x00453FC0;
+		const u32 func_address = 0x00453FC0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unused
 			MOV EAX, unit
-			CALL Func_getArmorCount
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4551,22 +4551,22 @@ namespace helper {
 	}
 
 	void show_dialog(BinDlg* dialog) {
-		const u32 Func_showDialog = 0x004186A0;
+		const u32 func_address = 0x004186A0;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
-			CALL Func_showDialog
+			CALL func_address
 			POPAD
 		}
 	}
 
 	s32 disable_dialog(BinDlg* dialog) {
-		const u32 Func_disableDialog = 0x00418640;
+		const u32 func_address = 0x00418640;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
-			CALL Func_disableDialog
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4574,11 +4574,11 @@ namespace helper {
 	}
 
 	void update_dialog(BinDlg* dialog) {
-		const u32 Func_updateDialog = 0x0041C400;
+		const u32 func_address = 0x0041C400;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
-			CALL Func_updateDialog
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4597,12 +4597,12 @@ namespace helper {
 	}
 
 	b32 attack_apply_cooldown(Unit* unit) {
-		const u32 Func_attackApplyCooldown = 0x00478B40;
+		const u32 func_address = 0x00478B40;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_attackApplyCooldown
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4610,13 +4610,13 @@ namespace helper {
 	}
 
 	void set_image_direction(Image* image, s8 direction) {
-		const u32 Func_SetImageDirection = 0x004D5F80;
+		const u32 func_address = 0x004D5F80;
 		u32 direction_xd = direction;
 		__asm {
 			PUSHAD
 			PUSH direction_xd
 			MOV ESI, image
-			CALL Func_SetImageDirection
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4721,7 +4721,7 @@ namespace helper {
 
 	// for orders_Hallucination1
 	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
-		const u32 Func_spellOrder = 0x004926D0;
+		const u32 func_address = 0x004926D0;
 		static b32 result;
 		__asm {
 			PUSHAD
@@ -4730,7 +4730,7 @@ namespace helper {
 			PUSH techId
 			MOV EAX, error_message_index
 			MOV EBX, unit
-			CALL Func_spellOrder
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4738,12 +4738,12 @@ namespace helper {
 	}
 
 	bool place_hallucination(Unit* unit) {
-		const u32 Func_placeHallucination = 0x004F66D0;
+		const u32 func_address = 0x004F66D0;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_placeHallucination
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4752,23 +4752,23 @@ namespace helper {
 
 	// for create_hallucination
 	void apply_hallucination_stats(Unit* halUnit) {
-		const u32 Func_applyHallucinationStats = 0x004F6180;
+		const u32 func_address = 0x004F6180;
 		__asm {
 			PUSHAD
 			MOV EAX, halUnit
-			CALL Func_applyHallucinationStats
+			CALL func_address
 			POPAD
 		}
 	}
 
 	s32 hallucinate_scarabs(Unit* a1, Unit* a2) {
-		const u32 Func_hallucinateScarabs = 0x004F65B0;
+		const u32 func_address = 0x004F65B0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
 			MOV ESI, a1
-			CALL Func_hallucinateScarabs
+			CALL func_address
 			MOV EAX, result
 			POPAD
 		}
@@ -4776,39 +4776,39 @@ namespace helper {
 	}
 
 	void replace_feedback_sprite(Unit* unit, u32 spriteId) {
-		const u32 Func_replaceFeedbackSprite = 0x004F6350;
+		const u32 func_address = 0x004F6350;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
 			PUSH spriteId
-			CALL Func_replaceFeedbackSprite
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void ai_unit_was_hit(Unit* self, Unit* attacker, u32 main_target_reactions, u32 dont_call_help) {
-		const u32 Func_Ai_UnitWasHit = 0x0043F320;
+		const u32 func_address = 0x0043F320;
 		__asm {
 			PUSHAD
 			PUSH dont_call_help
 			PUSH main_target_reactions
 			MOV EDX, attacker
 			MOV ECX, self
-			CALL Func_Ai_UnitWasHit
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// checks if the distance between target and bullet's positions is < radius
 	bool is_unit_distance_within(Unit* target, Bullet* bullet, u32 radius) {
-		const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
+		const u32 func_address = 0x0048ADB0;
 		u32 result;
 		__asm {
 			PUSHAD
 			PUSH radius;
 			PUSH bullet;
 			MOV ECX, target
-			CALL Helper_IsUnitDistanceWithin
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -4915,24 +4915,24 @@ namespace helper {
 	}
 
 	void insert_first_order(Unit* unit, u8 order_id) {
-		const u32 Helper_InsertFirstOrder = 0x004749D0;
+		const u32 func_address = 0x004749D0;
 		__asm {
 			PUSHAD
 			MOVZX EAX, order_id
 			MOV ECX, unit
-			CALL Helper_InsertFirstOrder
+			CALL func_address
 			POPAD
 		}
 	}
 
 	/// Return the count of overlays
 	u8 has_overlay(Unit* unit) {
-		const u32 Func_hasOverlay = 0x0047B720;
+		const u32 func_address = 0x0047B720;
 		static u8 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_hasOverlay
+			CALL func_address
 			MOV result, AL
 			POPAD
 		}
@@ -4940,12 +4940,12 @@ namespace helper {
 	}
 
 	void function_004934B0(Unit* unit, Unit* battery) {
-		const u32 Func_Sub4934B0 = 0x004934B0;
+		const u32 func_address = 0x004934B0;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
 			MOV EBX, battery
-			CALL Func_Sub4934B0
+			CALL func_address
 			POPAD
 		}
 	}
@@ -4962,12 +4962,12 @@ namespace helper {
 	}
 
 	Unit* acquire_medic_heal_target(Unit* medic) {
-		const u32 Func_MedicHeal_TargetAcquire = 0x004422A0;
+		const u32 func_address = 0x004422A0;
 		static Unit* target;
 		__asm {
 			PUSHAD
 			PUSH medic
-			CALL Func_MedicHeal_TargetAcquire
+			CALL func_address
 			MOV target, EAX
 			POPAD
 		}
@@ -4975,13 +4975,13 @@ namespace helper {
 	}
 
 	u32 do_medic_heal(Unit* unit, Unit* target) {
-		const u32 Func_doMedicHeal = 0x00463C40;
+		const u32 func_address = 0x00463C40;
 		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			PUSH target
-			CALL Func_doMedicHeal
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
@@ -5002,12 +5002,12 @@ namespace helper {
 	}
 
 	b32 attack_recent_attacker(Unit* unit) {
-		const u32 Func_Sub4770E0 = 0x004770E0;
+		const u32 func_address = 0x004770E0;
 		static b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub4770E0
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
@@ -5015,13 +5015,13 @@ namespace helper {
 	}
 
 	b32 ai_order_heal(Unit* unit, Unit* target) {
-		const u32 Func_AI_OrderHeal = 0x00463530;
+		const u32 func_address = 0x00463530;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, target
 			MOV EBX, unit
-			CALL Func_AI_OrderHeal
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5029,7 +5029,7 @@ namespace helper {
 	}
 
 	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id) {
-		const u32 Func_sub4748E0 = 0x004748E0;
+		const u32 func_address = 0x004748E0;
 		__asm {
 			PUSHAD
 			MOVZX EBX, order_id
@@ -5037,33 +5037,33 @@ namespace helper {
 			XOR EDI, EDI
 			PUSH y
 			PUSH x
-			CALL Func_sub4748E0
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void update_target_something(Unit* unit, Unit* target, u8 order_id) {
-		const u32 Func_sub474940 = 0x00474940;
+		const u32 func_address = 0x00474940;
 		__asm {
 			PUSHAD
 			MOVZX EBX, order_id
 			MOV ESI, unit
 			MOV EAX, target
 			XOR EDI, EDI
-			CALL Func_sub474940
+			CALL func_address
 			POPAD
 		}
 	}
 
 	b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y) {
-		const u32 Func_Ai_AreOnConnectedRegions = 0x00438E70;
+		const u32 func_address = 0x00438E70;
 		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH y
 			PUSH x
 			MOV EAX, unit
-			CALL Func_Ai_AreOnConnectedRegions
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5071,19 +5071,19 @@ namespace helper {
 	}
 
 	void ai_unload_failure(Unit* unit) {
-		const u32 Func_Sub43DF30 = 0x0043DF30;
+		const u32 func_address = 0x0043DF30;
 		__asm {
 			PUSHAD
 			PUSH unit
-			CALL Func_Sub43DF30
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId) {
+		const u32 func_address = 0x00474540;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
-		const u32 Func_insert_order_before = 0x00474540;
 		__asm {
 			PUSHAD
 			PUSH target
@@ -5092,13 +5092,13 @@ namespace helper {
 			MOVZX EDX, targetUnitId
 			MOV ESI, unit
 			MOV EDI, order
-			CALL Func_insert_order_before
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders) {
-		const u32 Func__doOrder = 0x00474C70;
+		const u32 func_address = 0x00474C70;
 		b32 stop_previous_orders_xd = stopPreviousOrders ? 1 : 0;
 		__asm {
 			PUSHAD
@@ -5107,32 +5107,32 @@ namespace helper {
 			PUSH x
 			PUSH order_id
 			PUSH unit
-			CALL Func__doOrder
+			CALL func_address
 			POPAD
 		}
 	}
 
 	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3) {
-		const u32 Func_Ai_UpdateAttackTarget = 0x00477160;
+		const u32 func_address = 0x00477160;
 		__asm {
 			PUSHAD
 			PUSH unk1
 			PUSH unk2
 			PUSH unk3
 			MOV ECX, unit
-			CALL Func_Ai_UpdateAttackTarget
+			CALL func_address
 			POPAD
 		}
 	}
 
 	Unit* get_loaded_unit_from_index(Unit* transport, s32 index) {
-		const u32 Func_getLoadedUnitFromIndex = 0x004E6C40;
+		const u32 func_address = 0x004E6C40;
 		static Unit* return_value;
 		__asm {
 			PUSHAD
 			MOV ECX, index
 			MOV EAX, transport
-			CALL Func_getLoadedUnitFromIndex
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
@@ -5140,12 +5140,12 @@ namespace helper {
 	}
 
 	b32 get_first_loaded_worker(Unit* transport) {
-		const u32 Func_getFirstLoadedWorker = 0x004E6D90;
+		const u32 func_address = 0x004E6D90;
 		static b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, transport
-			CALL Func_getFirstLoadedWorker
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
@@ -5153,13 +5153,13 @@ namespace helper {
 	}
 
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset) {
-		const u32 Func_Ai_FindTransport = 0x004E6EF0;
+		const u32 func_address = 0x004E6EF0;
 		b32 result;
 		__asm {
 			PUSHAD
 			PUSH unitTargetOffset
 			MOV EBX, unit
-			CALL Func_Ai_FindTransport
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5167,12 +5167,12 @@ namespace helper {
 	}
 
 	void load_unit_proc(Unit* unit, Unit* unitToLoad) {
-		const u32 Func_Sub4E78E0 = 0x004E78E0;
+		const u32 func_address = 0x004E78E0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			MOV ECX, unitToLoad
-			CALL Func_Sub4E78E0
+			CALL func_address
 			POPAD
 		}
 	}
@@ -5227,12 +5227,12 @@ namespace helper {
 	}
 
 	bool check_for_close_unit(Unit* unit) {
-		const u32 Func_Sub464290_CheckForCloseUnit = 0x00464290;
+		const u32 func_address = 0x00464290;
 		static b32 bResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub464290_CheckForCloseUnit
+			CALL func_address
 			MOV bResult, EAX
 			POPAD
 		}
@@ -5240,14 +5240,14 @@ namespace helper {
 	}
 
 	void play_subunit_iscript(Unit* unit, IscriptAnimation::Enum anim) {
-		const u32 Func_PlaySubunitIscript = 0x00474380;
+		const u32 func_address = 0x00474380;
 		u32 anim_xd = anim;
 		assert(unit->subunit);
 		__asm {
 			PUSHAD
 			MOV EBX, unit
 			PUSH anim_xd
-			CALL Func_PlaySubunitIscript
+			CALL func_address
 			POPAD
 		}
 	}
@@ -5263,12 +5263,12 @@ namespace helper {
 	}
 
 	void refund_unit_train_cost(u32 unit_id, u8 player) {
-		const u32 Func_refundUnitTrainCost = 0x0042CEC0;
+		const u32 func_address = 0x0042CEC0;
 		__asm {
 			PUSHAD
 			MOV ECX, unit_id
 			MOVZX EAX, player
-			CALL Func_refundUnitTrainCost
+			CALL func_address
 			POPAD
 		}
 	}
@@ -5285,25 +5285,25 @@ namespace helper {
 	}
 
 	void add_hangar_unit(Unit* main_unit, Unit* added_unit) {
-		const u32 Func_addHangerUnit = 0x00466300;
+		const u32 func_address = 0x00466300;
 		__asm {
 			PUSHAD
 			MOV EDI, main_unit
 			MOV ESI, added_unit
-			CALL Func_addHangerUnit
+			CALL func_address
 			POPAD
 		}
 	}
 
 	Unit* attempt_train_hatch_unit(Unit* trainer, u32 builtUnitID, u32 flag) {
-		const u32 Func_attemptTrainHatchUnit = 0x00468200;
+		const u32 func_address = 0x00468200;
 		static Unit* builtUnit;
 		__asm {
 			PUSHAD
 			MOV ESI, trainer
 			MOV EDI, builtUnitID
 			PUSH flag
-			CALL Func_attemptTrainHatchUnit
+			CALL func_address
 			MOV builtUnit, EAX
 			POPAD
 		}
@@ -5338,39 +5338,39 @@ namespace helper {
 	}
 
 	// For progress_bullet_movement
-	void progress_bullet_movement(Bullet* a1) {
-		const u32 Func_progressBulletMovement = 0x0048B250;
+	void progress_bullet_movement(Bullet* bullet) {
+		const u32 func_address = 0x0048B250;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			CALL Func_progressBulletMovement
+			MOV EAX, bullet
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// For bulletBehavior_Bounce
 	Bullet* change_move_pos(Bullet* bullet, s32 a2, s32 a3) {
-		const u32 Func_changeMovePos = 0x00495240;
+		const u32 func_address = 0x00495240;
 		static Bullet* result;
 		__asm {
 			PUSHAD
 			MOV EAX, bullet
 			MOV ECX, a2
 			MOV ESI, a3
-			CALL Func_changeMovePos
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	Unit* find_next_bounce_target(Bullet* a1) {
-		const u32 Func_findNextBounceTarget = 0x0048B1E0;
+	Unit* find_next_bounce_target(Bullet* bullet) {
+		const u32 func_address = 0x0048B1E0;
 		static Unit* result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			CALL Func_findNextBounceTarget
+			MOV EAX, bullet
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5378,12 +5378,12 @@ namespace helper {
 	}
 
 	bool unit_is_subunit(Unit* a1) {
-		const u32 Func_unitIsSubunit = 0x00401D40;
+		const u32 func_address = 0x00401D40;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
-			CALL Func_unitIsSubunit
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5862,19 +5862,15 @@ namespace helper {
 
 	// Equivalent to secondaryOrd_Cloak @ 0x00491790
 	void secondary_order_cloak(Unit* unit) {
-		static Unit** const firstBurrowedUnit = (Unit**)0x0063FF5C;
 		unit->is_cloaked++;
-		if (
-			unit->is_cloaked == 1 &&
-			!(unit->status & UnitStatus::RequiresDetection) &&
-			unit->burrow_link.next == nullptr
-			) {
-			unit->burrow_link.next = *firstBurrowedUnit;
-			unit->burrow_link.prev = nullptr;
-			if (*firstBurrowedUnit != nullptr) {
-				(*firstBurrowedUnit)->burrow_link.prev = unit;
+		if (unit->is_cloaked == 1 && !(unit->status & UnitStatus::RequiresDetection) && !unit->invisible_link.next)
+		{
+			unit->invisible_link.next = *g_first_invisible_unit;
+			unit->invisible_link.prev = 0;
+			if (*g_first_invisible_unit) {
+				(*g_first_invisible_unit)->invisible_link.prev = unit;
 			}
-			*firstBurrowedUnit = unit;
+			*g_first_invisible_unit = unit;
 			scbw::refresh_console();
 		}
 	}
@@ -5918,11 +5914,11 @@ namespace helper {
 	// For update_units
 
 	bool is_selected_unit_group_enabled() {
-		const u32 Func_isSelectedUnitGroupEnabled = 0x0049A2C0;
+		const u32 func_address = 0x0049A2C0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			CALL Func_isSelectedUnitGroupEnabled
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5930,20 +5926,20 @@ namespace helper {
 	}
 
 	void cancel_target_order() {
-		const u32 Func_cancelTargetOrder = 0x0048CA10;
+		const u32 func_address = 0x0048CA10;
 		__asm {
 			PUSHAD
-			CALL Func_cancelTargetOrder
+			CALL func_address
 			POPAD
 		}
 	}
 
 	s32 update_disruption_web_status() {
-		const u32 Func_UpdateDisruptionWebStatus = 0x004EB2F0;
+		const u32 func_address = 0x004EB2F0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			CALL Func_UpdateDisruptionWebStatus
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5951,12 +5947,12 @@ namespace helper {
 	}
 
 	Unit* progress_dying_unit_frame(Unit* unit) {
-		const u32 Func_progressDyingUnitFrame = 0x004EB5E0;
+		const u32 func_address = 0x004EB5E0;
 		static Unit* result;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
-			CALL Func_progressDyingUnitFrame
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -5964,7 +5960,7 @@ namespace helper {
 	}
 
 	void reveal_sight_at_location(s32 sight_range, u32 vision_flags, s32 pt_x, s32 pt_y, bool is_air) {
-		const u32 Func_revealSightAtLocation = 0x004806F0;
+		const u32 func_address = 0x004806F0;
 		b32 is_air_unit_xd = is_air;
 		__asm {
 			PUSHAD
@@ -5973,78 +5969,78 @@ namespace helper {
 			PUSH pt_x
 			MOV ECX, vision_flags
 			MOV EAX, sight_range
-			CALL Func_revealSightAtLocation
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void update_visibility(Unit* unit) {
-		const u32 Func_updateVisibility = 0x004EBE10;
+		const u32 func_address = 0x004EBE10;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
-			CALL Func_updateVisibility
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void progress_active_unit_frame(Unit* unit) {
-		const u32 Func_progressActiveUnitFrame = 0x004EBC30;
+		const u32 func_address = 0x004EBC30;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_progressActiveUnitFrame
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void check_unit_visibility(Unit* unit) {
-		const u32 Func_checkUnitVisibility = 0x00443390;
+		const u32 func_address = 0x00443390;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_checkUnitVisibility
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void progress_unit_frame(Unit* unit) {
-		const u32 Func_progressUnitFrame = 0x004ECF70;
+		const u32 func_address = 0x004ECF70;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_progressUnitFrame
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void unit_update(Unit* unit) {
-		const u32 Func_unitUpdate = 0x004EC420;
+		const u32 func_address = 0x004EC420;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_unitUpdate
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void update_unit_power() {
-		const u32 Func_updateUnitPower = 0x00493790;
+		const u32 func_address = 0x00493790;
 		__asm {
 			PUSHAD
-			CALL Func_updateUnitPower
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// For update_burrowing_cloaking_units
 	s32 is_unit_cloaking(Unit* unit) {
-		const u32 Func_isUnitCloaking = 0x004916E0;
+		const u32 func_address = 0x004916E0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_isUnitCloaking
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -10230,7 +10226,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 update_creep_disappearance_unit(u32 tile_x, u32 tile_y) {
+	s32 mark_cagra_to_disappear(u32 tile_x, u32 tile_y) {
 		static s32 result;
 		const u32 func_address = 0x0047DD60;
 		__asm {
@@ -14372,10 +14368,22 @@ namespace helper {
 	}
 
 	void refresh_layer_5() {
-		const u32 function = 0x004BD350;
+		const u32 func_address = 0x004BD350;
 		__asm {
 			PUSHAD
-			CALL function
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void manage_vision_references(s32 vision_filter, Unit* unit)
+	{
+		const u32 func_address = 0x0049E8A0;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV EAX, vision_filter
+			CALL func_address
 			POPAD
 		}
 	}

@@ -381,7 +381,7 @@ struct UnitLayout
 	/*0x0E4*/ s32       detection_status;				// sound_flags specifying which players can detect this unit (cloaked/burrowed)
 	/*0x0E8*/ Point16   secondary_order_pos;			// Unused according to BWAPI
 	/*0x0EC*/ Unit*		current_build_unit;				// tied to secondary order according to BWAPI
-	/*0x0F0*/ Link<Unit>burrow_link;
+	/*0x0F0*/ Link<Unit>invisible_link;
 	/*0x0F8*/ union
 	{
 		Target		rally;

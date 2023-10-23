@@ -195,20 +195,6 @@ namespace hooks
 		// Clear Cleric healing field every tick
 		unit->is_being_healed = 0;
 
-		// Accantor Plasma Shells - gain shields equal to the source Accantor
-		if (unit->id == UnitId::ProtossAccantorOld)
-		{
-			Unit* plasma_shell = unit->unit_with_hangar.in_hangar_child;
-			while (plasma_shell)
-			{
-				if (plasma_shell->id == UnitId::ProtossPlasmaShell)
-				{
-					plasma_shell->shields = unit->shields;
-				}
-				plasma_shell = plasma_shell->hangar_unit.hangar_link.prev;
-			}
-		}
-		
 		// Cowardice slow flag
 		if (unit->new_flags_3 & 0x10)
 		{
@@ -222,62 +208,6 @@ namespace hooks
 			unit->new_flags_3 &= ~0x20;
 			scbw::refresh_console();
 		}
-
-		// Add mining status, decrease the regeneration rate
-		/*
-		if (unit->main_order_id == OrderId::MiningMinerals
-		||	unit->main_order_id == OrderId::HarvestGas3)
-		{
-			if (unit->order_target.unit)
-			{
-				unit->order_target.unit->cmbw_resource_regen_mining_delay = 5 * 24;
-			}
-		}
-		*/
-
-		/*
-		// Resource regeneration
-		if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)
-		{
-			// Decrement resource regen timers
-			if (unit->cmbw_resource_regen_mining_delay > 0)
-			{
-				unit->cmbw_resource_regen_mining_delay--;
-			}
-			if (!unit->cmbw_resource_regen_mining_delay || unit_ext->timers[TimerResourceBoostedRegen]) {
-				if (unit->cmbw_resource_regen_cooldown > 0)
-				{
-					unit->cmbw_resource_regen_cooldown--;
-				}
-				else
-				{
-					// Set regen timers
-					unit->cmbw_resource_regen_cooldown = 36;
-					if (unit_ext->timers[TimerResourceBoostedRegen]) {
-						unit->cmbw_resource_regen_cooldown /= 3;
-					}
-
-					// Actual resource regeneration
-					bool update_image = true;
-					if (unit->id == UnitId::ResourceVespeneGeyser || (scbw::unit_id_is_capped_gas_structure(unit->id) && unit_ext->timers[TimerResourceBoostedRegen]))
-					{
-						if (unit->building.resource.resource_amount < 7500) {
-							unit->building.resource.resource_amount++;
-							scbw::refresh_console();
-						}
-					}
-					else if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
-					{
-						if (unit->building.resource.resource_amount < 2500) {
-							unit->building.resource.resource_amount++;
-							helper::update_mineral_patch_image(unit);
-							scbw::refresh_console();
-						}
-					}
-				}
-			}
-		}
-		*/
 
 		// Flash shielding (regeneration)
 		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && unit_id_can_regenerate_shields(unit->id)) {
@@ -302,7 +232,6 @@ namespace hooks
 					if (unit->shields > max_shields) {
 						unit->shields = max_shields;
 					}
-
 					if (unit->sprite->flags & SpriteFlags::Selected) { // If the unit is currently selected, redraw its graphics
 						helper::set_all_image_group_flags_palette_11(unit->sprite);
 					}
@@ -488,39 +417,16 @@ namespace hooks
 			}
 		}
 
-	//	if (!--(*g_order_timer_reassign_count)) {
-	//		char visible_timer = 0;
-	//		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-	//			unit->order_queue_timer = visible_timer++;
-	//			if (visible_timer == 8) {
-	//				visible_timer = 0;
-	//			}
-	//		}
-	//		*g_order_timer_reassign_count = 150;
-	//	}
+		// Originally had code related to order timers and Disruption Web; removed former, handled latter in globals
 
-	//	if (!--(*g_secondary_order_timer_reassign_count)) {
-	//		u32 i = 0;
-	//		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-	//			unit->secondary_order_timer = i;
-	//			if (++i == 30) {
-	//				i = 0;
-	//			}
-	//		}
-	//		*g_secondary_order_timer_reassign_count = 300;
-	//	}
-
-		// Now handled in global effect
-	//	helper::update_disruption_web_status();
-
-		// TODO: Try nullchecking sprite here and in first visible unit loops for the sake of preventing nullsprite crashes. -Pr0nogo
-		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next (especially when the unit dies or gets hidden etc)
+		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next
+						 // (especially when the unit dies or gets hidden etc)
 		for (Unit* unit = *g_first_dying_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit   = unit;
+			helper::progress_dying_unit_frame(unit);
 			if (unit->sprite) {
-				helper::progress_dying_unit_frame(unit);
 				if (*g_vision_updated) {
 					if (g_player_table[unit->player].type == PlayerType::Human) {
 						hooks::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
@@ -596,57 +502,44 @@ namespace hooks
 		*g_active_iscript_unit = 0;
 	}
 
-	// Hooked to help with the cloak rewrite - Pr0nogo
+	// Originally meant to help with the cloak rewrite. Hooked 22 Oct 2023. -Pr0nogo
 	void update_burrowing_cloaking_units() // 00492EB0
 	{
-		Unit* v0;
-		s32 v1;
-		Unit* v2;
-		s32 v3;
-		s32 v4;
-		s32 v5;
-
-		v0 = *g_first_invisible_unit;
-		v1 = 0;
+		Unit* invisible_unit = *g_first_invisible_unit;
+		bool redraw = 0;
 		if (*g_first_invisible_unit)
 		{
 			while (1)
 			{
-				v2 = v0->burrow_link.next;
-				if (helper::is_unit_cloaking(v0))
+				Unit* next_burrowed = invisible_unit->invisible_link.next;
+				if (helper::is_unit_cloaking(invisible_unit))
 				{
-					do_cloak(v0, SoundId::Terran_PHOENIX_TPhClo01_WAV);
-				}
-				else
-				{
-					v3 = v0->status;
-					if (v3 & UnitStatus::Burrowed || v0->secondary_order_id != OrderId::Cloak || v0->is_cloaked != 1 || !(v3 & 0x800))
+					do_cloak(invisible_unit, scbw::get_cloak_sound_id(invisible_unit));
+				} else {
+					u32 status_1 = invisible_unit->status;
+					bool cloak_or_burrow;
+					if (status_1 & UnitStatus::Burrowed || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree))
 					{
-						v4 = 0;
+						cloak_or_burrow = 0;
+					} else {
+						invisible_unit->status = status_1 & 0xFFFFF7FF;
+						cloak_or_burrow = 1;
 					}
-					else
+					redraw |= cloak_or_burrow;
+					if (invisible_unit->status & UnitStatus::RequiresDetection)
 					{
-						v0->status = v3 & 0xFFFFF7FF;
-						v4 = 1;
+						goto Next_Or_Redraw;
 					}
-					v1 |= v4;
-					v5 = v0->status;
-					if (v5 & 0x100)
-						goto LABEL_13;
-					helper::begin_cloak(v0, 273);
+					helper::begin_cloak(invisible_unit, scbw::get_cloak_sound_id(invisible_unit));
 				}
-				v1 = 1;
-		LABEL_13:
-				v0 = v2;
-				if (!v2)
+				redraw = 1;
+			Next_Or_Redraw:
+				invisible_unit = next_burrowed;
+				if (!next_burrowed)
 				{
-					if (v1)
+					if (redraw)
 					{
-						*g_force_button_refresh = 1;
-						g_portrait_redraw[0] = 1;
-						*g_status_screen_redraw = 1;
-						*g_control_under_mouse = 0;
-						*g_control_under_mouse_value = 0;
+						scbw::refresh_console();
 					}
 					return;
 				}

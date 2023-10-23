@@ -156,7 +156,7 @@ namespace hooks
 		jump_patch(update_unit_energy_wrapper,								0x004EB4B0, 0);
 		jump_patch(update_unit_state_wrapper,								0x004EC290, 1);
 		jump_patch(update_units_wrapper,									0x004ED000, 5);
-	//	jump_patch(update_burrowing_cloaking_units_wrapper,					0x00492EB0, 3);
+		jump_patch(update_burrowing_cloaking_units_wrapper,					0x00492EB0, 3);
 	//	jump_patch(do_cloak_wrapper,										0x0049B440, 5);
 		jump_patch(progress_unit_frame_wrapper,								0x004ECF70, 3);
 		jump_patch(sprite_to_iscript_loop_wrapper,							0x00497920, 0);

@@ -272,27 +272,27 @@ namespace hooks
 		s32 redraw = 0;
 		if (*g_first_invisible_unit == unit)
 		{
-			*g_first_invisible_unit = unit->burrow_link.next;
+			*g_first_invisible_unit = unit->invisible_link.next;
 			redraw = 1;
 		}
 
-		Unit* previousInvisibleUnit = unit->burrow_link.prev;
+		Unit* previousInvisibleUnit = unit->invisible_link.prev;
 		if (previousInvisibleUnit)
 		{
-			previousInvisibleUnit->burrow_link.next = unit->burrow_link.next;
+			previousInvisibleUnit->invisible_link.next = unit->invisible_link.next;
 			redraw = 1;
 		}
 
-		Unit* nextInvisibleUnit = unit->burrow_link.next;
+		Unit* nextInvisibleUnit = unit->invisible_link.next;
 		if (nextInvisibleUnit)
 		{
-			nextInvisibleUnit->burrow_link.prev = unit->burrow_link.prev;
+			nextInvisibleUnit->invisible_link.prev = unit->invisible_link.prev;
 			redraw = 1;
 		}
 
 		unit->status &= 0xFFFFF7FF;
-		unit->burrow_link.prev = 0;
-		unit->burrow_link.next = 0;
+		unit->invisible_link.prev = 0;
+		unit->invisible_link.next = 0;
 
 		if (redraw)
 		{

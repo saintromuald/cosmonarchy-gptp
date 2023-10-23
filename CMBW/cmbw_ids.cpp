@@ -1049,3 +1049,7 @@ bool unit_id_has_proximity_cloak(u32 unit_id)
 		|| unit_id == UnitId::TerranWraith
 		|| unit_id == UnitId::TerranSundog;
 }
+
+bool unit_id_is_ridge_refinery(u32 unit_id) {
+	return false; // Will add new IDs later. -Pr0nogo
+}

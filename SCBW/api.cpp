@@ -3105,11 +3105,12 @@ namespace scbw {
 			}
 			if (new_unit) {
 				if (is_building) {
+					// TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
 					UnitExt* new_unit_ext = get_unit_ext(new_unit);
 					new_unit_ext->timers[TimerStun] = 1 * 24;
-					// TODO: Add stun audio visuals
+					// TODO: Add stun audio visuals. -Veeq7
 				} else {
-					set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+					set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes -Veeq7
 				}
 			}
 
