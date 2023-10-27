@@ -1835,7 +1835,8 @@ namespace hooks {
 								} break;
 								case UnitId::TerranAutocrat:
 								{
-									if (current_button->icon_id == IconId::OcularImplants) // Autocrat - Controlled Opposition
+									if (current_button->icon_id == IconId::OcularImplants					// Autocrat - Controlled Opposition
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)	// Autocrat - Kinetic Penetration
 									{
 										current_button_state = Button_State::Enabled;
 									}

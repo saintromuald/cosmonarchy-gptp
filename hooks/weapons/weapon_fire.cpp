@@ -447,6 +447,7 @@ namespace hooks {
 					case WeaponId::SundogBlindsideRockets:
 					case WeaponId::CentaurSunchaserMissiles:
 					case WeaponId::MagnetarNewtonianShockCannon:
+					case WeaponId::HippogriffChimeraCannons:
 					case WeaponId::SentinelCerberusRailgun:
 					case WeaponId::DiademIonCannon:
 					case WeaponId::DiademHammerfallBeacon:
@@ -467,7 +468,6 @@ namespace hooks {
 					case WeaponId::SkithrokorSkitteringSpores:
 					case WeaponId::BactaliskCorrosiveAcid:
 					case WeaponId::KeskathalorScreamingVenom:
-					case WeaponId::HippogriffChimeraCannons:
 					{
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;

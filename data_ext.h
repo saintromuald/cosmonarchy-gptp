@@ -35,6 +35,7 @@ enum ExtValueId {
 	ValueSalamanderLaunchPos,
 	ValueNaniteField,
 	ValuePhobosLaunchPos,
+	ValueHippogriffLaunchPos,
 	ValueIncubationCount,
 	ValueIncubationUnitId,
 	ValueIncubationPlayer,

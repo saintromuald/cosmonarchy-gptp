@@ -1676,4 +1676,8 @@ namespace helper {
 	void refresh_layer_5();														// 004BD350
 
 	void manage_vision_references(s32 vision_filter, Unit* unit);				// 0049E8A0
+	u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting);			// 004E5B40
+	u8 create_defensive_matrix(Unit* unit);										// 00454F90
+
+	Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction); // 00498E00
 }

@@ -14387,4 +14387,55 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting)
+	{
+		const u32 func_address = 0x004E5B40;
+		static u32 is_for_spellcasting_xd = is_for_spellcasting;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH is_for_spellcasting_xd
+			MOV EDX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u8 create_defensive_matrix(Unit* unit)
+	{
+		const u32 func_address = 0x00454F90;
+		static u8 result;
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction)
+	{
+		const u32 func_address = 0x00498E00;
+		static u32 x_offset_xd = x_offset;
+		static u32 y_offset_xd = y_offset;
+		static u32 direction_xd = direction;
+		static Image* result;
+		__asm {
+			PUSHAD
+			PUSH direction
+			PUSH y_offset
+			PUSH x_offset
+			MOV ESI, image_id
+			MOV EAX, sprite
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

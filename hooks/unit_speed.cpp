@@ -37,7 +37,7 @@ namespace hooks
 		}
 
 		// Lobotomy Mine - slow
-		if (unit_ext->timers[TimerLobotomySlow] >= 1)
+		if (unit_ext->timers[TimerLobotomySlow] > 1)
 		{
 			speed *= 0.666;
 		}

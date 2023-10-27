@@ -376,4 +376,27 @@ namespace hooks
 		*g_buttonset_special_buttonset_id = 229;
 		helper::update_current_buttonset();
 	}
+
+	// Hooked to delard energy expenditure. -Pr0nogo
+	void orders_defensive_matrix(Unit* caster) // 004550A0
+	{
+		u16 energy_cost;
+		u32 sight_range = helper::get_updated_sight_range(caster, 1);
+		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, sight_range, 880))
+		{
+			caster->spend_unit_energy(energy_cost);
+			helper::create_defensive_matrix(caster->order_target.unit);
+			helper::play_sound_from_unit(349, caster, 1, 0);
+			caster->sprite->create_top_overlay(ImageId::ScienceVesselOverlay_Part2);
+			if (caster->order_queue_head)
+			{
+				caster->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+				helper::do_next_queued_order(caster);
+			} else if (caster->unit_ai) {
+				helper::issue_order_targeting_nothing(caster, OrderId::ComputerAI);
+			} else {
+				helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
+			}
+		}
+	}
 }

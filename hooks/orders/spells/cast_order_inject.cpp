@@ -152,6 +152,27 @@ namespace
 		}
 	}
 
+	void __declspec(naked) orders_defensive_matrix_wrapper() // 004550A0
+	{
+		static Unit* caster;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV caster, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::orders_defensive_matrix(caster);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 sub_491DB0_91E6C = 0x00491E6C;
@@ -220,5 +241,6 @@ namespace hooks
 		jump_patch(can_target_spell_wrapper,					0x00492020, 1);
 		jump_patch(issue_order_targeting_ground_wrapper,		0x00475260, 1);
 		jump_patch(issue_tri_target_order_wrapper,				0x0048CAF0, 0);
+		jump_patch(orders_defensive_matrix_wrapper,				0x004550A0, 0);
 	}
 }
