@@ -660,7 +660,6 @@ namespace scbw
 	bool is_passive_decloakable(Unit* unit);
 	bool is_proximity_decloakable(Unit* unit);
 	bool unit_can_nuke(Unit* unit);
-	bool unit_is_trap(Unit* unit);
 	u32 get_trap_id(Unit* unit);
 	bool unit_is_ranged_attacker(Unit* unit);
 	void play_work_animation(Unit* unit);

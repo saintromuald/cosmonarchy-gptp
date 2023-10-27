@@ -86,3 +86,5 @@ bool weapon_id_returns_to_attacker(u32 weapon_id);
 bool weapon_id_is_incremental(u32 weapon_id);
 bool unit_id_has_proximity_cloak(u32 unit_id);
 bool unit_id_is_ridge_refinery(u32 unit_id);
+bool skip_military_tracking_by_unit_id(u32 unit_id);
+bool unit_id_is_trap(u32 unit_id);

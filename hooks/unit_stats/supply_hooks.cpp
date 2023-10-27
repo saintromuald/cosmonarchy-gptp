@@ -383,7 +383,7 @@ namespace hooks
 				u32 unit_id = scbw::is_zerg_egg(unit->id, true, false) ? unit->build_queue[unit->build_queue_slot] : unit->id;
 				if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
 					workers += 2;
-				} else if (units_dat::group_flags[unit_id].is_men && !scbw::unit_is_trap(unit) && unit_id != UnitId::ProtossSteward && !(units_dat::base_property[unit_id] & UnitProperty::Subunit)) {
+				} else if (units_dat::group_flags[unit_id].is_men && !skip_military_tracking_by_unit_id(unit_id) && !(units_dat::base_property[unit_id] & UnitProperty::Subunit)) {
 					men += 2;
 				}
 			}

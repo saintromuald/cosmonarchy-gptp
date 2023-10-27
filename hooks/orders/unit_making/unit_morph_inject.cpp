@@ -208,6 +208,7 @@ namespace
 						silo->building.silo.nuke = 0;
 						silo->main_order_state = 0;
 					}
+					unit->remove();
 					scbw::refresh_console();
 				} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);

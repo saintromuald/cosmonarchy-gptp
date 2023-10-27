@@ -575,7 +575,7 @@ namespace hooks {
 		u32 best_distance = 0; // we don't want to change the current node on distance alone
 
 		EntryArray nodes = {};
-		unit_search_radial(&nodes, current_node->position, 8 * 32);
+		unit_search_radial(&nodes, current_node->position, 5 * 32);
 		for (u32 i = 0; i < nodes.count; ++i) {
 			Unit* node = nodes.units[i];
 			if (!unit_id_is_minerals(node->id)) {

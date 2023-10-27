@@ -121,7 +121,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		}
 		if (context & Flags::NoTrap)
 		{
-			if (scbw::unit_is_trap(target))
+			if (unit_id_is_trap(target->id))
 			{
 				return false;
 			}

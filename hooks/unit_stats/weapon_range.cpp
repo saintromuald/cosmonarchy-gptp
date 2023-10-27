@@ -26,7 +26,7 @@ namespace hooks
 		bonus_amount += scbw::get_cliff_advantage(unit, target, 0, true);
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit_id_is_trap(unit->id)) {
 			scale = 1;
 			bonus_amount = 0;
 		}
@@ -72,7 +72,7 @@ namespace hooks
 		}
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || scbw::unit_is_trap(unit)) {
+		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit_id_is_trap(unit->id)) {
 			scale = 1;
 			bonus_amount = 0;
 		}

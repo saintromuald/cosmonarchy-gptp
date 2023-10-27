@@ -2666,7 +2666,7 @@ namespace hooks {
 		}
 
 		// Terran traps - No collision
-		if (scbw::unit_is_trap(unit)) {
+		if (unit_id_is_trap(unit->id)) {
 			unit->status |= UnitStatus::NoCollide;
 		}
 

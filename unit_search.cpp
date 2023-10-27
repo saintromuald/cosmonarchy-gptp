@@ -405,7 +405,7 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 		}
 	}
 	if (flags & FilterNoTrap) {
-		if (scbw::unit_is_trap(target)) {
+		if (unit_id_is_trap(target->id)) {
 			return false;
 		}
 	}

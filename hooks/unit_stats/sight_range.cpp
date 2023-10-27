@@ -18,7 +18,7 @@ namespace hooks
 			return BLIND_SIGHT_RANGE;
 		}
 		u32 sight_range = units_dat::sight_range[unit->id];
-		if (unit->status & UnitStatus::Burrowed && !scbw::unit_is_trap(unit)) {
+		if (unit->status & UnitStatus::Burrowed && !unit_id_is_trap(unit->id)) {
 			sight_range /= 2;
 		}
 		return sight_range;

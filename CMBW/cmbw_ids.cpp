@@ -1053,3 +1053,15 @@ bool unit_id_has_proximity_cloak(u32 unit_id)
 bool unit_id_is_ridge_refinery(u32 unit_id) {
 	return false; // Will add new IDs later. -Pr0nogo
 }
+
+bool skip_military_tracking_by_unit_id(u32 unit_id)
+{
+	return unit_id == UnitId::TerranMorningstar
+		|| unit_id == UnitId::ProtossSteward
+		|| unit_id_is_trap(unit_id);
+}
+
+bool unit_id_is_trap(u32 unit_id) {
+	return unit_id == UnitId::TerranSpiderMine
+		|| unit_id == UnitId::TerranLobotomyMine;
+}

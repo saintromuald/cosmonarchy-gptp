@@ -1146,11 +1146,6 @@ namespace scbw {
 		return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
 	}
 
-	bool unit_is_trap(Unit* unit) {
-		return unit->id == UnitId::TerranSpiderMine
-			|| unit->id == UnitId::TerranLobotomyMine;
-	}
-
 	u32 get_trap_id(Unit* unit)
 	{
 		u32 id = UnitId::TerranSpiderMine;
@@ -2473,7 +2468,7 @@ namespace scbw {
 				helper::unburrow(unit);
 			}
 
-			if (scbw::unit_is_trap(unit)) {
+			if (unit_id_is_trap(unit->id)) {
 				unit->remove();
 			}
 

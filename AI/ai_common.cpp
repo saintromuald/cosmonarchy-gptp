@@ -24,7 +24,7 @@ namespace AI
 		{
 			return false;
 		}
-		if (scbw::unit_is_trap(target)
+		if (unit_id_is_trap(target->id)
 		||  target->id == UnitId::ProtossSteward)
 		{
 			return false;
