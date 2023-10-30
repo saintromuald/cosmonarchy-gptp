@@ -668,6 +668,14 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 4;
 			return &offsets;
 		} break;
+		case WeaponId::HippogriffPegasusMissiles:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueHippogriffLaunchPos2;
+			offsets.count = 6;
+			offsets.use_special_overlay = true;
+			return &offsets;
+		} break;
 		case WeaponId::SentinelCerberusRailgun:
 		{
 			static WeaponOffsets offsets = {};

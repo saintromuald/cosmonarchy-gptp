@@ -448,6 +448,7 @@ namespace hooks {
 					case WeaponId::CentaurSunchaserMissiles:
 					case WeaponId::MagnetarNewtonianShockCannon:
 					case WeaponId::HippogriffChimeraCannons:
+					case WeaponId::HippogriffPegasusMissiles:
 					case WeaponId::SentinelCerberusRailgun:
 					case WeaponId::DiademIonCannon:
 					case WeaponId::DiademHammerfallBeacon:

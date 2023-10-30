@@ -190,7 +190,7 @@ namespace WeaponId {
 		PegasusLancetMissiles				= 155,
 		HippogriffChimeraCannons			= 156,
 		OberonAxisDrivers					= 157,
-		OberonAcheronMissiles				= 158,
+		HippogriffPegasusMissiles			= 158,
 		AionLazarusSalvo					= 159,
 		RamessesPharoahCannons				= 170,
 		DurendalAbaddonFlamethrowers		= 171,
