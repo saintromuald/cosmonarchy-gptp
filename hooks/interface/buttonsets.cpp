@@ -68,6 +68,7 @@ namespace hooks {
 		u8 count_buildings = 0;
 		u8 count_attacking_buildings = 0;
 		u8 count_lifted_buildings = 0;
+		u8 count_repairmen = 0;
 		u16 active_button_set_id;
 		u16 selected_button_set_id;
 		u32 selected_properties;
@@ -127,6 +128,10 @@ namespace hooks {
 				if (selected->id == UnitId::ZergEgg) {
 					count_eggs++;
 				}
+
+				if (unit_id_can_repair(selected->id)) {
+					count_repairmen++;
+				}
 			}
 		}
 
@@ -158,7 +163,9 @@ namespace hooks {
 			*g_current_buttonset_id = UnitId::ZergOcsalLarva;
 		}
 		if (*g_current_buttonset_id != UnitId::Buttons_Blank) {
-			if (count_workers == *g_client_selection_count) {
+			if (count_repairmen == *g_client_selection_count) {
+				*g_current_buttonset_id = UnitId::Buttons_MixedRepairmen;
+			} else if (count_workers == *g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupWorkers;
 			} else if (count_burrowables) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupBurrower;

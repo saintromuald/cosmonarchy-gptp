@@ -21,6 +21,7 @@ namespace UnitId
 
 	// Special
 		Omnivale											= 383,
+		TerranLodestoneStandalone							= 387,
 
 	// Neutral
 		TownCenterMarker									= 192,		// Terran Marker
@@ -569,6 +570,6 @@ namespace UnitId
 		Buttons_MixedMasonTraining							= 361,
 
 		Buttons_MixedScribeTraining							= 368,
-		Buttons_AdvancedPoliceStructures					= 369,	// unused
+		Buttons_MixedRepairmen								= 369,
 	};
 }

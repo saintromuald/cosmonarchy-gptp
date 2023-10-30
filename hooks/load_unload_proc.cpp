@@ -179,15 +179,23 @@ namespace hooks
 		b32 return_value = 0;
 		if (unit->connected_unit)
 		{
+			bool cargo_is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
 			Unit* transport = unit->connected_unit;
 			if ((transport->main_order_timer == 0
 			|| (units_dat::base_property[transport->id] & UnitProperty::Building && !(transport->status & UnitStatus::InAir))) // For Bunkers
 			&& !transport->is_frozen())
 			{
 				Point16 pos = {0, 0};
-				// probably check where unit can be spawned
-				if (helper::can_unload(transport, unit, &pos) != 0)
+				if (helper::can_unload(transport, unit, &pos))
 				{
+					if (cargo_is_building && !units_dat::group_flags[unit->id].is_zerg != RaceId::Zerg) {
+						ActiveTile* tile = scbw::get_active_tile_at_coords(pos);
+						TileExt* tile_ext = get_tile_ext_at_tile(pos.x, pos.y);
+						if (tile->has_cagra)// && !can_place_on_creep_tile(tile_ext, unit->player)) {
+						{
+							return 0;
+						}
+					}
 					if (transport->id == UnitId::TerranTrojan)
 					{
 						transport->main_order_timer = 7;

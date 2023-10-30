@@ -33,14 +33,14 @@ namespace hooks
 		if (unit->connected_unit && unit_id_is_ground_garrison(unit->connected_unit->id)
 		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
 		{
-			return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
+			return; // Disallow units in garrisons from firing while Bunker is lifted or in a transport.
 		}
 		if (unit->subunit)
 		{
 			if (unit->subunit->connected_unit && unit_id_is_ground_garrison(unit->subunit->connected_unit->id)
 			&&	unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
 			{
-				return; // Disallow units in Bunkers from firing while Bunker is lifted or in a transport.
+				return; // Disallow units in garrisons from firing while garrisons is lifted or in a transport.
 			}
 		}
 

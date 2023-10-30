@@ -2275,8 +2275,7 @@ namespace scbw {
 			|| buttonset_id == UnitId::Buttons_LarvaControl
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaSwarm
 			|| buttonset_id == UnitId::Buttons_OcsalLarvaAssault
-			|| buttonset_id == UnitId::Buttons_OcsalLarvaControl
-			|| buttonset_id == UnitId::Buttons_AdvancedPoliceStructures;
+			|| buttonset_id == UnitId::Buttons_OcsalLarvaControl;
 	}
 
 	u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
@@ -2289,12 +2288,6 @@ namespace scbw {
 			}
 			case UnitId::TerranCentaur: {
 				return WeaponId::CentaurSunchaserMissiles;
-			}
-			case UnitId::TerranPegasus: {
-				return WeaponId::PegasusLancetMissiles;
-			}
-			case UnitId::TerranOberon: {
-				return WeaponId::OberonAcheronMissiles;
 			}
 			case UnitId::ProtossOptecton: {
 				return WeaponId::OptectonSkybondRay;
