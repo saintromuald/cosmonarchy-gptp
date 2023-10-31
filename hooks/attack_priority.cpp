@@ -83,7 +83,7 @@ namespace
 			}
 		}
 
-		Unit* actualUnit = unit->subunit->is_subunit() ? unit->subunit : unit;
+		Unit* final_unit = unit->subunit->is_subunit() ? unit->subunit : unit;
 
 		// Check if the target is within the seek distance
 		if (!(unit->get_distance_to_target(target) <= seekRange))
@@ -91,11 +91,15 @@ namespace
 			return false;
 		}
 
+		if (unit->id == UnitId::ProtossOptecton && target->status & UnitStatus::InAir) {
+			return false;
+		}
+
 		// If the unit can't turn around, check if the target is within the attack angle.
-		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack))
+		if (!(final_unit->status & UnitStatus::CanTurnAroundToAttack))
 		{
 			if (!is_target_pos_within_attack_angle(target->get_x(), target->get_y(),
-				actualUnit, units_dat::ground_weapon[actualUnit->id]))
+				final_unit, units_dat::ground_weapon[final_unit->id]))
 			{
 				return false;
 			}
@@ -140,22 +144,11 @@ namespace hooks
 		if (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
 		{
 			attack_priority = 2;
-		}
-
-		// Units that can fight back
-		else if (actual_target->can_attack_target(attacker))
-		{
+		} else if (actual_target->can_attack_target(attacker)) {
 			attack_priority = 0;
-		}
-
-		// Active combat units
-		else if (actual_target->has_weapon())
-		{
+		} else if (actual_target->has_weapon()) {
 			attack_priority = 2;
-		}
-
-		else if (actual_target->status & UnitStatus::Reacts)
-		{
+		} else if (actual_target->status & UnitStatus::Reacts) {
 			attack_priority = 3;
 		}
 
@@ -183,7 +176,7 @@ namespace hooks
 		attackPriorityData.reset();
 		s32 seek_range = unit->get_seek_range() * 32;
 
-		// Bunker bonus
+		// Garrison bonus
 		s32 offset = 0;
 		if (unit->status & UnitStatus::InBuilding)
 		{

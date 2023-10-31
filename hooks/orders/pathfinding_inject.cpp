@@ -145,6 +145,23 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	const u32 setRepulseAngle_53310 = 0x00453310;
+	void __declspec(naked) setRepulseAngle_patch_53300() {
+		__asm {
+			MOV AL, [ESI + 0xDE]//unit->status >> 16
+			TEST AL, 0x2//UnitStatus::CanBeRepulsed
+			JE offset locret
+			TEST AL, 0x80//UnitStatus::IsGathering
+			JNE offset locret
+			CMP byte ptr[ESI + 0x4D], 33//unit->main_order_id != OrderId::ConstructingBuilding
+			JE locret
+			JMP setRepulseAngle_53310
+
+			locret:
+			RET
+		}
+	}
 }
 
 namespace hooks
@@ -158,5 +175,7 @@ namespace hooks
 		jump_patch(unit_has_path_to_unit_wrapper,	0x0049CBB0, 0);
 	//	jump_patch(set_repulse_angle_wrapper,		0x00453300, 5);
 	//	jump_patch(repulse_unit_wrapper,			0x004535A0, 1);
+
+		jump_patch(setRepulseAngle_patch_53300,		0x00453300, 5);
 	}
 }
