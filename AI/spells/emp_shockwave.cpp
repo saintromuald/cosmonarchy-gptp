@@ -33,7 +33,7 @@ namespace AI
 			if (!scbw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
 				return false;
 
-			const s32 totalEnemyShields = getTotalEnemyShieldsInArea(target->get_x(), target->get_y(), 160, caster);
+			const s32 totalEnemyShields = get_total_enemy_shields_in_area(target->get_x(), target->get_y(), 160, caster);
 			if (totalEnemyShields >= 200)
 				return true;
 
@@ -60,7 +60,7 @@ namespace AI
 			if (!scbw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
 				return false;
 
-			const s32 totalEnemyEnergy = getTotalEnemyEnergyInArea(target->get_x(), target->get_y(), 160, caster);
+			const s32 totalEnemyEnergy = get_total_enemy_energy_in_area(target->get_x(), target->get_y(), 160, caster);
 			if (totalEnemyEnergy >= 200)
 				return true;
 

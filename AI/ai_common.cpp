@@ -68,15 +68,12 @@ namespace AI
 		return result;
 	}
 
-	//Based on code @ 0x00440BB0 (not a real independant function)
+	// Based on code @ 0x00440BB0 (not a real independant function)
 	bool unit_is_in_unsafe_region(Unit* unit)
 	{
 		u16 current_region = get_region_at_position_exact(unit->get_x(), unit->get_y());
 		AiRegion* current_ai_region = &g_ai_region_captains[unit->player][current_region];
-		return current_ai_region->state == 3
-			|| current_ai_region->air_target
-			|| current_ai_region->ground_target
-			|| current_ai_region->flags & 0x20;
+		return current_ai_region->state == 3 || current_ai_region->air_target || current_ai_region->ground_target || current_ai_region->flags & 0x20;
 	}
 
 	//-------- Get total unit stats in box --------//
@@ -94,35 +91,27 @@ namespace AI
 	// In original functions:
 	// 0x00695604 would contains weapon_id
 	// 0x00695798 would contains total_enemy_life
-	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weapon_id)
+	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster, u8 weapon_id)
 	{
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+		unitStatTotalFinder.search(x - search_bounds, y - search_bounds, x + search_bounds, y + search_bounds);
 		s32 total_enemy_life = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if ((target != caster) &&
-				!(target->status & UnitStatus::Invincible) &&
-				scbw::can_weapon_target_unit(weapon_id, target, caster) &&
-				caster->is_target_enemy(target))
+			if ((target != caster) && !(target->status & UnitStatus::Invincible)
+			&&   scbw::can_weapon_target_unit(weapon_id, target, caster) && caster->is_target_enemy(target))
 			{
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weapon_id == WeaponId::Plague)
 				{
 					total_enemy_life += target->get_current_hp_ingame();
-				}
-				else
-				// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom
-				if (weapon_id == WeaponId::MindTyrantMaelstrom)
-				{
+				} else if (weapon_id == WeaponId::MindTyrantMaelstrom) {
+					// specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0 - used only by Maelstrom
 					if (target->maelstrom_timer == 0)
 					{
 						total_enemy_life += target->get_current_life_ingame();
 					}
-				}
-				else
-				{
+				} else {
 					total_enemy_life += target->get_current_life_ingame();
 				}
 			}
@@ -131,31 +120,28 @@ namespace AI
 	}
 
 	// Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
-	// 0x00695798 would contains totalAllyLife
-	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weapon_id)
+	// 0x00695798 would contain total_ally_life
+	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster, u8 weapon_id)
 	{
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
-		s32 totalAllyLife = 0;
+		unitStatTotalFinder.search(x - search_bounds, y - search_bounds, x + search_bounds, y + search_bounds);
+		s32 total_ally_life = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) &&
-				scbw::can_weapon_target_unit(weapon_id, target, caster) &&
-				!caster->is_target_enemy(target))
+			if (!(target->status & UnitStatus::Invincible) && scbw::can_weapon_target_unit(weapon_id, target, caster) && !caster->is_target_enemy(target))
 			{
-				totalAllyLife += target->get_current_life_ingame();
+				total_ally_life += target->get_current_life_ingame();
 			}
 		}
-		return totalAllyLife;
+		return total_ally_life;
 	}
 
 	// Loop content based on unit_shields_clump_in_area_accumulator_proc @ 0x00440A60
 	// 0x00695798 would contains totalEnemyShields
-	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
+	s32 get_total_enemy_shields_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster)
 	{
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+		unitStatTotalFinder.search(x - search_bounds, y - search_bounds,
+			x + search_bounds, y + search_bounds);
 		s32 totalEnemyShields = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
@@ -172,10 +158,10 @@ namespace AI
 
 	// Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0
 	// 0x00695798 would contains totalEnemyEnergy
-	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
+	s32 get_total_enemy_energy_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster)
 	{
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+		unitStatTotalFinder.search(x - search_bounds, y - search_bounds,
+			x + search_bounds, y + search_bounds);
 		s32 totalEnemyEnergy = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
@@ -190,8 +176,7 @@ namespace AI
 		return totalEnemyEnergy;
 	}
 
-	// Content based on	AI_NukeRequirementsProc @ 0x00441600 and
-	//					getEnemyClumpValueProc	@ 0x00440B20
+	// Content based on	AI_NukeRequirementsProc @ 0x00441600 and getEnemyClumpValueProc	@ 0x00440B20
 	// 0x00695798 would contains total_nuke_target_value
 	// Optimized to stop when reaching total_nuke_target_value == 800 since that's what matters
 	s32 get_total_enemy_nuke_value_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster)
