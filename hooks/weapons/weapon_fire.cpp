@@ -261,8 +261,9 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
 	UnitExt* unit_ext = get_unit_ext(unit);
+	bool has_stagger = options.stagger >= 0;
 	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
-	if (options.stagger) {
+	if (has_stagger) {
 		options.apply_cooldown = false;
 	}
 
@@ -278,14 +279,14 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
-			if (!(options.stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
+			if (!(has_stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
 				for (u32 i = 0; i < factor; i++) {
 					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
 					if (bullet) {
 						fired_at = order_target_unit;
 						BulletExt* bullet_ext = get_bullet_ext(bullet);
 						bullet_ext->divisor_multiplier = options.divisor_multiplier;
-						if (options.stagger) {
+						if (has_stagger) {
 							goto fired;
 						}
 					}
@@ -328,7 +329,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 			continue;
 		}
 
-		if (options.stagger && std::find(blacklist.begin(), blacklist.end(), target) != blacklist.end()) {
+		if (has_stagger && std::find(blacklist.begin(), blacklist.end(), target) != blacklist.end()) {
 			continue;
 		}
 
@@ -338,20 +339,20 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 				fired_at = target;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
 				bullet_ext->divisor_multiplier = options.divisor_multiplier;
-				if (options.stagger) {
+				if (has_stagger) {
 					goto fired;
 				}
 			}
 		}
 	}
 
-	if (options.stagger) {
+	if (has_stagger) {
 		if (fired_at) {
 		fired:
 			blacklist.push_back(fired_at);
 			unit->ground_weapon_cooldown = options.stagger;
 			unit->air_weapon_cooldown = options.stagger;
-			unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger * 2 + 1;
+			unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
 			unit_ext->values[ValueStaggerWeaponId] = weapon_id;
 		} else {
 			blacklist.clear();

@@ -19,7 +19,7 @@ struct FireMultipleOptions {
 
 	u32 range_overwrite = 0;
 	u32 divisor_multiplier = 1;
-	u32 stagger = 0;
+	s32 stagger = -1; // -1 = no stagger, 0 = animation stagger, 3 = animation stagger + 3 extra frames
 
 	bool center_on_target = false;
 	u32 center_on_target_range_overwrite = 0;
