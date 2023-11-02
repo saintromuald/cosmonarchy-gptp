@@ -2696,10 +2696,13 @@ namespace scbw {
 
 		EntryArray targets = {};
 		unit_search_radial(&targets, victim->position, 3 * 32);
-		unit_search_filter(&targets, victim, FilterNotSelf | FilterNotSubunit | FilterVisible);
+		unit_search_filter(&targets, victim, FilterNotSelf | FilterNotSubunit);
 		for (u32 i = 0; i < targets.count; ++i) {
 			Unit* target = targets.units[i];
 			if (scbw::is_allied_to(player, target->player)) {
+				entry_array_remove(&targets, i--);
+			}
+			if (!target->is_visible_to(player)) {
 				entry_array_remove(&targets, i--);
 			}
 		}

@@ -156,6 +156,8 @@ namespace
 			JNE offset locret
 			CMP byte ptr[ESI + 0x4D], 33//unit->main_order_id != OrderId::ConstructingBuilding
 			JE locret
+			CMP byte ptr[ESI + 0x4D], 34//unit->main_order_id != OrderId::Repair1
+			JE locret
 			JMP setRepulseAngle_53310
 
 			locret:

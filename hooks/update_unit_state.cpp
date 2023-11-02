@@ -566,12 +566,16 @@ namespace hooks
 			unit->status &= 0xFFFFFCFF;
 		} else {
 			helper::update_sprite_images_for_cloak(unit->sprite);
-			unit->status = unit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
-			Unit* unitSubunit = unit->subunit;
-			if (unitSubunit)
+			if (unit->sprite->main_graphic->id != ImageId::WarpAnchor) {
+				unit->status = unit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+			}
+			Unit* subunit = unit->subunit;
+			if (subunit)
 			{
-				helper::update_sprite_images_for_cloak(unitSubunit->sprite);
-				unitSubunit->status = unitSubunit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+				helper::update_sprite_images_for_cloak(subunit->sprite);
+				if (subunit->sprite->main_graphic->id != ImageId::WarpAnchor) {
+					subunit->status = subunit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+				}
 			}
 		}
 	}
