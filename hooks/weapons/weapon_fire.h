@@ -19,6 +19,7 @@ struct FireMultipleOptions {
 
 	u32 range_overwrite = 0;
 	u32 divisor_multiplier = 1;
+	u32 stagger = 0;
 
 	bool center_on_target = false;
 	u32 center_on_target_range_overwrite = 0;

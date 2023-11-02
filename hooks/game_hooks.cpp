@@ -1172,6 +1172,12 @@ namespace hooks {
 			}
 		}
 
+		// Clear Stagger Blacklist
+		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
+			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
+			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
+		}
+
 		// Handle custom line attacks
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20) {
 			unit->order_signal &= ~0x20;
