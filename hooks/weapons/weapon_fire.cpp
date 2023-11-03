@@ -694,7 +694,7 @@ namespace hooks {
 			} break;
 			case WeaponId::SkithrokorSkitteringSpores:
 			{
-				// Kalkalisk - Ablative Spores
+				// Skithrokor - Ablative Whiplash
 				scbw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
 			case WeaponId::ZarcavrokorBonesofReflection:

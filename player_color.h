@@ -203,6 +203,7 @@ const std::vector<std::vector<u32>> banned_tileset_tints = {
 		PlayerTintCycleDependent,
 		PlayerTintAchromatic,
 		PlayerTintDarkAchromatic,
+		PlayerTintLightBlue,
 	},
 	{ // Twilight
 		PlayerTintCycleDependent,

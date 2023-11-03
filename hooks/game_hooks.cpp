@@ -2258,7 +2258,7 @@ namespace hooks {
 
 			if (has_source) {
 				if (unit_ext->timers[TimerBindingPlasma] % 12 == 11) {
-					scbw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio					
+					scbw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerBindingPlasma] == 1) {
 					scbw::binding_plasma_proc(unit);

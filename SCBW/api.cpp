@@ -3573,15 +3573,14 @@ namespace scbw {
 	void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position)
 	{
 		iquare_globals.add_incremental_bullet_multihit(bullet, target);
-		u32 count = iquare_globals.get_multihit_count(bullet);
+		s32 count = iquare_globals.get_multihit_count(bullet) - 1;
 		scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
 		target->damage_with(weapon_id, (weapons_dat::damage_amount[weapon_id] - count) * 256, bullet->source_unit, bullet->player);
 
-		if (count >= 4) {
+		if (count >= weapons_dat::damage_amount[weapon_id]) {
 			bullet->remove_timer = 0;
 			return;
-		}
-		else {
+		} else {
 			bullet->move_target.unit = bullet->attack_target.unit;
 			if (bullet->move_target.unit) {
 				bullet->target_position_1 = bullet->move_target.unit->position;
