@@ -260,25 +260,36 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
-	bool fired = false;
+	UnitExt* unit_ext = get_unit_ext(unit);
+	bool has_stagger = options.stagger >= 0;
+	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
+	if (has_stagger) {
+		options.apply_cooldown = false;
+	}
+
+	Unit* fired_at = 0;
 	Unit* order_target_unit = unit->order_target.unit;
 	if (!options.ignore_main
 	&&   order_target_unit
 	&&   unit->main_order_id != OrderId::Follow
 	&&   unit->main_order_id != OrderId::Patrol
 	&&   unit->is_target_within_min_range(order_target_unit, attack_range)
-	&&   unit->can_attack_target(order_target_unit))
-	{
+	&&   unit->can_attack_target(order_target_unit)) {
 		if (weapon_id_is_secondary(weapon_id) && scbw::is_allied_to(unit->player, order_target_unit->player)) {
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
-			for (u32 i = 0; i < factor; i++) {
-				Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
-				if (bullet) {
-					fired = true;
-					BulletExt* bullet_ext = get_bullet_ext(bullet);
-					bullet_ext->divisor_multiplier = options.divisor_multiplier;
+			if (!(has_stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
+				for (u32 i = 0; i < factor; i++) {
+					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
+					if (bullet) {
+						fired_at = order_target_unit;
+						BulletExt* bullet_ext = get_bullet_ext(bullet);
+						bullet_ext->divisor_multiplier = options.divisor_multiplier;
+						if (has_stagger) {
+							goto fired;
+						}
+					}
 				}
 			}
 		}
@@ -287,7 +298,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	EntryArray targets = {};
 	if (options.center_on_target) {
 		if (!order_target_unit) {
-			return fired;
+			return fired_at != 0;
 		}
 		unit_search_radial(&targets, order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : attack_range);
 	} else {
@@ -318,17 +329,38 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 			continue;
 		}
 
+		if (has_stagger && std::find(blacklist.begin(), blacklist.end(), target) != blacklist.end()) {
+			continue;
+		}
+
 		for (u32 i = 0; i < factor; i++) {
 			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), options.weapon_offsets, options.apply_cooldown);
 			if (bullet) {
-				fired = true;
+				fired_at = target;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
 				bullet_ext->divisor_multiplier = options.divisor_multiplier;
+				if (has_stagger) {
+					goto fired;
+				}
 			}
 		}
 	}
 
-	return fired;
+	if (has_stagger) {
+		if (fired_at) {
+		fired:
+			blacklist.push_back(fired_at);
+			unit->ground_weapon_cooldown = options.stagger;
+			unit->air_weapon_cooldown = options.stagger;
+			unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
+			unit_ext->values[ValueStaggerWeaponId] = weapon_id;
+		} else {
+			blacklist.clear();
+			unit_ext->timers[TimerClearStaggerBlacklist] = 0;
+			apply_weapon_cooldown(unit, weapon_id);
+		}
+	}
+	return fired_at != 0;
 }
 
 namespace
@@ -533,7 +565,9 @@ namespace hooks {
 					} break;
 					case WeaponId::MadrigalFuriaMissiles: {
 						// Madrigal Furia Salvo
-						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, {});
+						FireMultipleOptions options = {};
+						options.stagger = 3;
+						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, options);
 					} break;
 					case WeaponId::ValkyrieHaloRockets: {
 						// Offset: Cone
