@@ -1828,7 +1828,8 @@ namespace hooks {
 								case UnitId::TerranStriga:
 								{
 									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Striga - Projection
-									||	current_button->icon_id == IconId::PsiAssault)				// Striga - Fleeting Focus
+									||	current_button->icon_id == IconId::PsiAssault				// Striga - Fleeting Focus
+									||	current_button->icon_id == IconId::FlyerAttack)				// Striga - Apollyoid Adhesive
 									{
 										current_button_state = Button_State::Enabled;
 									}
