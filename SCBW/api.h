@@ -790,4 +790,9 @@ namespace scbw
 	u32 get_decloak_sound_id(Unit* unit);
 	void launch_return_missile(Unit* unit, u32 weapon_id);
 	void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position);
+	bool client_selection_id_check(u32 unit_id);
+	u32 client_selection_count();
+	u32 client_selection_unit_id_count(u32 unit_id);
+	u32 player_selection_count(u32 player);
+	u32 player_selection_unit_id_count(u32 player, u32 unit_id);
 }

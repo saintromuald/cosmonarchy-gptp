@@ -542,10 +542,7 @@ bool image_id_is_powerup(u32 image_id) {
 		|| image_id == ImageId::Flag
 		|| image_id == ImageId::KhaydarinCrystal
 		|| image_id == ImageId::PsiEmitter
-		|| image_id == ImageId::YoungChrysalis
-		|| image_id == ImageId::DataDisc
-		|| image_id == ImageId::Uraj
-		|| image_id == ImageId::Khalis;
+		|| image_id == ImageId::DataDisc;
 }
 
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
