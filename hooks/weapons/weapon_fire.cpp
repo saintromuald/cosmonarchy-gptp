@@ -566,7 +566,7 @@ namespace hooks {
 					case WeaponId::MadrigalFuriaMissiles: {
 						// Madrigal Furia Salvo
 						FireMultipleOptions options = {};
-						options.stagger = 3;
+						options.stagger = 2;
 						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, options);
 					} break;
 					case WeaponId::ValkyrieHaloRockets: {
