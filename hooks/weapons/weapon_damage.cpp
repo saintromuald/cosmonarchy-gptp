@@ -904,7 +904,7 @@ namespace hooks
 			if (unit_id_is_smaller_building(data.target->id)) {
 				infested_image_id = ImageId::InfestedOverlay_Small;
 			}
-			scbw::add_unit_overlay(data.target, infested_image_id);
+			scbw::remove_unit_overlay(data.target, infested_image_id);
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT

@@ -126,26 +126,26 @@ namespace hooks
 
 		Image* next_free_healthbar = (*g_last_free_healthbar)->link.next;
 		*g_last_free_healthbar = (*g_last_free_healthbar)->link.next;
-		if (*g_first_free_healthbar == last_free_healthbar)
+		if ((*g_first_free_healthbar) == last_free_healthbar)
 		{
 			*g_first_free_healthbar = last_free_healthbar->link.prev;
 		}
 
 		if (last_free_healthbar->link.prev)
 		{
-			last_free_healthbar->link.prev->link.next = next_free_healthbar;
+			last_free_healthbar->link.prev->link.next = next_free_healthbar->link.prev;
 		}
-		if (next_free_healthbar)
+		if (next_free_healthbar->link.prev)
 		{
 			next_free_healthbar->link.prev = last_free_healthbar->link.prev;
 		}
 
 		last_free_healthbar->link.prev = 0;
-		next_free_healthbar = 0;
+		next_free_healthbar->link.prev = 0;
 		Image* image = sprite->images.head;
 		sprite->images.head = last_free_healthbar;
 		last_free_healthbar->link.prev = image->link.prev;
-		next_free_healthbar = image;
+		next_free_healthbar->link.prev = image;
 		if (image->link.prev)
 		{
 			image->link.prev->link.next = last_free_healthbar;
