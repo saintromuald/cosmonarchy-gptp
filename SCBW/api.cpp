@@ -3588,4 +3588,60 @@ namespace scbw {
 			}
 		}
 	}
+
+	bool client_selection_id_check(u32 unit_id)
+	{
+		for (u32 i = 0; i < SelectionLimit; i++)
+		{
+			Unit* unit = g_client_selection_group->unit[i];
+			if (unit->id != unit_id) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	u32 client_selection_count() {
+		u32 count = 0;
+		for (u32 i = 0; i < SelectionLimit; i++) {
+			Unit* unit = g_client_selection_group->unit[i];
+			if (unit) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	u32 client_selection_unit_id_count(u32 unit_id) {
+		u32 count = 0;
+		for (u32 i = 0; i < SelectionLimit; i++) {
+			Unit* unit = g_client_selection_group->unit[i];
+			if (unit && unit->id == unit_id) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	u32 player_selection_count(u32 player) {
+		u32 count = 0;
+		for (u32 i = 0; i < SelectionLimit; i++) {
+			Unit* unit = players_selections->unit[player][i];
+			if (unit) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	u32 player_selection_unit_id_count(u32 player, u32 unit_id) {
+		u32 count = 0;
+		for (u32 i = 0; i < SelectionLimit; i++) {
+			Unit* unit = players_selections->unit[player][i];
+			if (unit && unit->id == unit_id) {
+				count++;
+			}
+		}
+		return count;
+	}
 }

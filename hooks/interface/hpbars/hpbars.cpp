@@ -137,7 +137,7 @@ namespace hooks
 		}
 		if (next_free_healthbar->link.prev)
 		{
-			next_free_healthbar->link.prev = last_free_healthbar->link.prev;
+			next_free_healthbar->link.prev->link.prev = last_free_healthbar->link.prev;
 		}
 
 		last_free_healthbar->link.prev = 0;

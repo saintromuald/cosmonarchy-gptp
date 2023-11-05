@@ -530,7 +530,7 @@ namespace hooks {
 						{
 							if (unit->main_order_id != OrderId::ConstructingBuilding)
 							{
-								if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit))
+								if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && *g_client_selection_count == 1)
 								{
 									current_button_state = Button_State::Enabled;
 								}
@@ -1722,6 +1722,9 @@ namespace hooks {
 						if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal)
 						{
 							current_button_state = Button_State::Disabled;
+							if (scbw::client_selection_unit_id_count(unit->id) != *g_client_selection_count) {
+								current_button_state = Button_State::Invisible;
+							}
 							switch (unit->id)
 							{
 								// GLOBAL \\
