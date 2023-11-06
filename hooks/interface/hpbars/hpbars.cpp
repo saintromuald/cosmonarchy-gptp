@@ -119,38 +119,35 @@ namespace hooks
 	Image* create_healthbar(u32 unused, Sprite* sprite) // 004D6420
 	{
 		Image* last_free_healthbar = *g_last_free_healthbar;
-		if (*g_last_free_healthbar == 0)
+		if (!last_free_healthbar)
 		{
 			return 0;
 		}
 
-		Image* next_free_healthbar = (*g_last_free_healthbar)->link.next;
-		*g_last_free_healthbar = (*g_last_free_healthbar)->link.next;
-		if ((*g_first_free_healthbar) == last_free_healthbar)
+		Image** next_free_healthbar = &last_free_healthbar->link.next;
+		*g_last_free_healthbar = last_free_healthbar->link.next;
+		if (*g_first_free_healthbar == last_free_healthbar)
 		{
 			*g_first_free_healthbar = last_free_healthbar->link.prev;
 		}
-
 		if (last_free_healthbar->link.prev)
 		{
-			last_free_healthbar->link.prev->link.next = next_free_healthbar->link.prev;
+			last_free_healthbar->link.prev->link.next = *next_free_healthbar;
 		}
-		if (next_free_healthbar->link.prev)
+		if (*next_free_healthbar)
 		{
-			next_free_healthbar->link.prev->link.prev = last_free_healthbar->link.prev;
+			(*next_free_healthbar)->link.prev = last_free_healthbar->link.prev;
 		}
 
-		last_free_healthbar->link.prev = 0;
-		next_free_healthbar->link.prev = 0;
 		Image* image = sprite->images.head;
 		sprite->images.head = last_free_healthbar;
 		last_free_healthbar->link.prev = image->link.prev;
-		next_free_healthbar->link.prev = image;
+		*next_free_healthbar = image;
+
 		if (image->link.prev)
 		{
 			image->link.prev->link.next = last_free_healthbar;
 		}
-
 		image->link.prev = last_free_healthbar;
 		helper::compile_healthbar(last_free_healthbar, sprite);
 		return last_free_healthbar;

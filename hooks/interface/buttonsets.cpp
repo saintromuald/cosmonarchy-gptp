@@ -523,17 +523,15 @@ namespace hooks {
 					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons)
 					{
-						if (buttonset_id == UnitId::ZergLarva
-						||  buttonset_id == UnitId::ZergOcsalLarva
-						||  buttonset_id == UnitId::TerranMason
-						||  buttonset_id == UnitId::TerranTalos)
+						if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva)
 						{
-							if (unit->main_order_id != OrderId::ConstructingBuilding)
+							current_button_state = Button_State::Enabled;
+						}
+						if ((buttonset_id == UnitId::TerranMason || buttonset_id == UnitId::TerranTalos) && (unit->main_order_id != OrderId::ConstructingBuilding))
+						{
+							if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && *g_client_selection_count == 1)
 							{
-								if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && *g_client_selection_count == 1)
-								{
-									current_button_state = Button_State::Enabled;
-								}
+								current_button_state = Button_State::Enabled;
 							}
 						}
 					}
