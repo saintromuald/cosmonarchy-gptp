@@ -380,6 +380,7 @@ struct UnitLayout
 	/*0x0E3*/ u8        recent_order_timer;				// Counts down from 15 to 0 when most orders are given, or when the unit moves after reaching a patrol location
 	/*0x0E4*/ s32       detection_status;				// sound_flags specifying which players can detect this unit (cloaked/burrowed)
 	/*0x0E8*/ Point16   secondary_order_pos;			// Unused according to BWAPI
+//	/*0x0EA*/ u32		secondary_order_unk;			// From neiv's list
 	/*0x0EC*/ Unit*		current_build_unit;				// tied to secondary order according to BWAPI
 	/*0x0F0*/ Link<Unit>invisible_link;
 	/*0x0F8*/ union

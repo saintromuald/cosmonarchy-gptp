@@ -210,8 +210,8 @@ SCBW_DATA(FILE*,		load_game_file_handle,		0x006D1218);
 SCBW_DATA(u8*,			g_multiplayer_mode,			0x0057F0B4);
 SCBW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);
 SCBW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
-SCBW_DATA(u32*,			random_counts,				0x0051C610); // count of 0x400
-SCBW_DATA(u32*,			random_counts_total,		0x0051CA18);
+SCBW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
+SCBW_DATA(u32*,			g_total_random_counts,		0x0051CA18);
 SCBW_DATA(u16*,			campaign_index,				0x0057F244);
 SCBW_DATA(void**,		map_archive_handle,			0x00596BC4);
 SCBW_DATA(GameData*,	game_data,					0x005967F8);

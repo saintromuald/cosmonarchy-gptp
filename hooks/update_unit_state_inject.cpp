@@ -147,6 +147,41 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) initialize_unit_base_wrapper() // 004A0320
+	{
+		static Unit* unit;
+		static u32 unit_id;
+		static u32 pos_x;
+		static u32 pos_y;
+		static u32 player;
+		static u32 result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV pos_x, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV pos_y, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV player, EAX
+			POP EAX
+			MOV unit, ECX
+			MOV unit_id, EAX
+			PUSHAD
+		}
+		result = hooks::initialize_unit_base(unit, unit_id, pos_x, pos_y, player);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks
@@ -162,5 +197,6 @@ namespace hooks
 		jump_patch(sprite_to_iscript_loop_wrapper,							0x00497920, 0);
 		jump_patch(replace_unit_with_id_wrapper,							0x0049FED0, 1);
 		jump_patch(update_unit_strength_and_apply_default_orders_wrapper,	0x0049FA40, 1);
+	//	jump_patch(initialize_unit_base_wrapper,							0x004A0320, 0);
 	}
 }

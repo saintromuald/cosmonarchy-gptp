@@ -870,7 +870,7 @@ namespace hooks
 			unit->powerup_origin.x = sprite->position.x;
 			unit->powerup_origin.y = sprite->position.y;
 			u32 idle_order = units_dat::human_idle_order[unit->id];
-			unit->user_action_flags |= 1u;
+			unit->user_action_flags |= 1;
 			helper::order(1, unit, idle_order, {}, 0, 228);
 			helper::do_next_queued_order(unit);
 		}
@@ -878,5 +878,158 @@ namespace hooks
 		u32 strength = helper::get_unit_strength(unit, 1);
 		unit->ground_strength = strength;
 		return strength;
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	// Not tested yet. Low-priority, because the only time it crashes is when you spawn units for a player that has no start location.
+	u32 initialize_unit_base(Unit* unit, u32 unit_id, u32 pos_x, u32 pos_y, u32 player) // 004A0320
+	{
+		unit->powerup_origin.x = 0;
+		unit->powerup_origin.y = 0;
+		unit->rally.pt.x = 0;
+		unit->rally.pt.y = 0;
+		unit->rally.unit = 0;
+		unit->invisible_link.prev = 0;
+		unit->invisible_link.next = 0;
+		unit->order_queue_head = 0;
+		unit->order_queue_tail = 0;
+		unit->unused_86 = 0;
+		unit->remove_timer = 0;
+		unit->defensive_matrix_hp = 0;
+		unit->defensive_matrix_timer = 0;
+		unit->stim_timer = 0;
+		unit->ensnare_timer = 0;
+		unit->lockdown_timer = 0;
+		unit->irradiate_timer = 0;
+		unit->stasis_timer = 0;
+		unit->plague_timer = 0;
+		unit->status = 0;
+		unit->user_action_flags = 0;
+		unit->pathing_flags = 0;
+		unit->previous_hitpoints = 1;
+		unit->unit_ai = 0;
+
+		u32 initialized = helper::initialize_unit(unit, pos_y, unit_id, pos_x, player);
+		if (initialized)
+		{
+			*(u32*)unit->build_queue = 0xE400E4;
+			*(u32*)&unit->build_queue[2] = 0xE400E4;
+			unit->build_queue[4] = UnitId::None;
+			u8 unique_id_something = unit->secondary_order_id & OrderId::BuildProtoss1;// secondary_order_special
+			unit->build_queue_slot = 0;
+			unit->unique_id = unique_id_something;
+			if (!units_dat::group_flags[unit->id].is_factory)
+			{
+				if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building)
+				{
+					unit->current_buttonset = UnitId::Buildings;
+				}
+			} else {
+				if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building)
+				{
+					unit->current_buttonset = UnitId::Factories;
+				}
+			}
+
+			u32 random;
+			if (*g_is_in_game_loop)
+			{
+				++g_random_counts[15];
+				random = (22695477 * *g_last_random_number + 1) >> 16;
+				++(*g_total_random_counts);
+				*g_last_random_number = 22695477 * *g_last_random_number + 1;
+			} else {
+				random = 0;
+			}
+
+			s32 current_hp;
+			unit->wireframe_randomizer = random;
+			if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
+			{
+				current_hp = 1;
+			} else {
+				current_hp = units_dat::max_hitpoints[unit_id] / 10;
+			}
+			unit->hitpoints = current_hp;
+
+			u32 main_order_id;
+			if ((unit->status & UnitStatus::GroundedBuilding) == 0)
+			{
+				main_order_id = OrderId::Nothing2;
+			} else {
+				main_order_id = units_dat::human_idle_order[unit_id];
+			}
+
+			unit->main_order_id = main_order_id;
+			unit->order_target.unit = 0;
+			unit->order_target.pt.y = 0;
+			unit->order_target.pt.x = 0;
+			unit->main_order_state = 0;
+			unit->order_unit_id = UnitId::None;
+			if (unit->secondary_order_id != OrderId::Nothing2)
+			{
+				unit->secondary_order_id = OrderId::Nothing2;
+				*(u32*)(unit+0xEA) = 0; // secondary_order_unk in Neiv's list
+				unit->secondary_order_pos.x = 0;
+				unit->secondary_order_pos.y = 0;
+				unit->current_build_unit = 0;
+				unit->secondary_order_state = 0;
+			}
+			unit->finder_index.left = -1;
+			unit->finder_index.right = -1;
+			unit->finder_index.top = -1;
+			unit->finder_index.bottom = -1;
+			unit->player_link.prev = 0;
+			unit->player_link.next = first_player_unit->unit[player];
+
+			Unit* first_unit = first_player_unit->unit[player];
+			if (first_unit)
+			{
+				first_unit->player_link.prev = unit;
+			}
+			first_player_unit->unit[player] = unit;
+			helper::increment_unit_scores(unit, 1);
+
+			if (unit->status & UnitStatus::GroundedBuilding)
+			{
+				helper::update_unit_order_finder(unit);
+				if (unit->status & UnitStatus::GroundedBuilding)
+				{
+					helper::set_building_tile_flag(unit, unit->sprite->position.x, unit->sprite->position.y);
+				}
+				helper::check_unstack(unit);
+				if (unit->status & UnitStatus::InAir)
+				{
+					helper::set_repulse_angle(unit);
+				}
+				helper::init_building(unit, 1);
+				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
+				if (*g_is_placing_building)
+				{
+					helper::place_building_proc();
+				}
+			} else {
+				if (unit->id == UnitId::TerranVulture)
+				{
+					unit->mine_carrier.mine_count = 2;
+				}
+				unit->sprite->flags |= SpriteFlags::Hidden;
+				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
+			}
+
+			unit->detection_status = -1;
+			if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
+			{
+				unit->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+				return 1;
+			} else {
+				if (!(unit->sprite->flags & SpriteFlags::Hidden))
+				{
+					helper::refresh_unit_vision(unit);
+				}
+				return 1;
+			}
+		}
+		return initialized;
 	}
 }
