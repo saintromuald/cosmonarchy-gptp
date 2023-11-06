@@ -4720,14 +4720,14 @@ namespace helper {
 	}
 
 	// for orders_Hallucination1
-	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
+	bool spell_order(Unit* unit, u32 tech_id, u16* energy_cost, u32 sight_range, u32 error_message_index) {
 		const u32 func_address = 0x004926D0;
 		static b32 result;
 		__asm {
 			PUSHAD
-			PUSH techEnergyCost
-			PUSH sightRange
-			PUSH techId
+			PUSH energy_cost
+			PUSH sight_range
+			PUSH tech_id
 			MOV EAX, error_message_index
 			MOV EBX, unit
 			CALL func_address
@@ -14391,7 +14391,7 @@ namespace helper {
 	u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting)
 	{
 		const u32 func_address = 0x004E5B40;
-		static u32 is_for_spellcasting_xd = is_for_spellcasting;
+		static b32 is_for_spellcasting_xd = is_for_spellcasting;
 		static u32 result;
 		__asm {
 			PUSHAD

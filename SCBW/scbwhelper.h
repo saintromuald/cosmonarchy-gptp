@@ -598,7 +598,7 @@ namespace helper {
 
 	//// hallucination_spell
 	// for orders_Hallucination1
-	bool spell_order(Unit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index);							// 004926D0
+	bool spell_order(Unit* unit, u32 tech_id, u16* energy_cost, u32 sight_range, u32 error_message_index);							// 004926D0
 
 	void remove_unit(Unit* unit);
 	bool place_hallucination(Unit* unit);																							// 004F66D0

@@ -169,7 +169,9 @@ namespace
 		__asm
 		{
 			POPAD
-			RETN
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
 		}
 	}
 

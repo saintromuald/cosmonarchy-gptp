@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include "SCBW/stat_txt_spec.h"
 #include "hooks/orders/pathfinding.h"
+#include "hooks/unit_stats/sight_range.h"
 
 namespace hooks
 {
@@ -381,13 +382,11 @@ namespace hooks
 	void orders_defensive_matrix(Unit* caster) // 004550A0
 	{
 		u16 energy_cost;
-		u32 sight_range = helper::get_updated_sight_range(caster, 1);
-		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, sight_range, 880))
+		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880))
 		{
 			caster->spend_unit_energy(energy_cost);
 			helper::create_defensive_matrix(caster->order_target.unit);
 			helper::play_sound_from_unit(349, caster, 1, 0);
-			caster->sprite->create_top_overlay(ImageId::ScienceVesselOverlay_Part2);
 			if (caster->order_queue_head)
 			{
 				caster->user_action_flags |= UserActionFlags_IscriptGoToIdle;
