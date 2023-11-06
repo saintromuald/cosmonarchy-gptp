@@ -1022,6 +1022,13 @@ namespace hooks {
 					unit_ext->values[ValueIsNeutralNydus] = 1;
 				}
 			} break;
+			case UnitId::ProtossSolarion:
+			{
+				u32 missing_count = 12 - (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count);
+				if (missing_count) {
+					scbw::create_hangar_units(unit, missing_count, UnitId::ProtossSteward);
+				}
+			} break;
 		}
 
 		// Fixes first attack from Paladin (and maybe other units) aiming upwards

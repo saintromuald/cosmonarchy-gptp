@@ -780,6 +780,9 @@ namespace hooks {
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
 				continue;
 			}
+			if (bullet->hit_flags & 1) {
+				continue;
+			}
 
 			f32 t = 0;
 			Point16 cp = {};
