@@ -218,11 +218,14 @@ namespace hooks
 			} break;
 
 			// Hardcode ideal movement speeds
+			case UnitId::ProtossOptecton:
+			{
+				speed *= 0.7;
+			}
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranRamesses:
 			case UnitId::TerranClaymore:
-			case UnitId::ProtossOptecton:
 			{
 				speed *= 0.9;
 			} break;

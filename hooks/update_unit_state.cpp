@@ -334,17 +334,12 @@ namespace hooks
 					tick_heal += 11 * 5;
 				}
 
-				// Azazel Innervating Matrices - heal over time
+				// Azazel Defensive Matrix Matrices - heal over time
 				if (unit->defensive_matrix_hp != 0)
 				{
-					if (unit->hitpoints > 0
-					&&  unit->hitpoints / 256 != unit->get_max_hp_ingame())
+					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame())
 					{
-						auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
-						if (caster < 8)
-						{
-							tick_heal += AzazelDefensiveMatrixHeal;
-						}
+						tick_heal += AzazelDefensiveMatrixHeal;
 					}
 				}
 

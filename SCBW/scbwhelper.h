@@ -162,7 +162,7 @@ namespace helper {
 	// For AI_AddUnitAI
 	BuildingAi* create_building_ai(BuildingAiList* buildingAI);
 	void issue_order_targeting_nothing(Unit* unit, u8 order_id);
-	Unit* set_secondary_order(Unit* result, char order_id);
+	Unit* set_secondary_order(Unit* result, u8 order_id);
 	void ai_make_guard(s32 player, Unit* unit);
 	bool unit_is_active_resource_depot(Unit* unit);
 	u32 get_default_refinery_type(u32 player);

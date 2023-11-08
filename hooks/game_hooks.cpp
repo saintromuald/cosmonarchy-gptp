@@ -1539,7 +1539,7 @@ namespace hooks {
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;
 							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, scbw::dir_saturate(unit->current_direction_1, offset_direction));
-							helper::play_sound_from_unit(80, unit, 1, 0);
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03), unit, 1, 0);
 							unit->order_target.unit = target_unit;
 							unit->order_target.pt = target_pos;
 						}

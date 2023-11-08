@@ -1585,5 +1585,8 @@ namespace SoundId
 		Lobby_PlayerJoin					= 2557,
 		CloakTerranOn						= 2558,
 		CloakTerranOff						= 2559,
+		StarSovereignMissileFire01			= 2560,
+		StarSovereignMissileFire02			= 2561,
+		StarSovereignMissileFire03			= 2562,
 	};
 }

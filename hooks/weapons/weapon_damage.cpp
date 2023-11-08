@@ -1018,6 +1018,13 @@ namespace hooks
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 		}
+
+		if (data.target->status & (UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree))
+		{
+			data.target->status &= ~(UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree | UnitStatus::NoCollide);
+			helper::set_secondary_order(data.target, OrderId::Nothing2);
+		}
+
 		u32 regression_id = scbw::get_zerg_regression(data.target);
 		if (data.damage > 0 && regression_id != UnitId::None) {
 			if (data.target->id != UnitId::ZergExcisant) {

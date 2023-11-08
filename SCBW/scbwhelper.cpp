@@ -1148,25 +1148,25 @@ namespace helper {
 	}
 
 	void add_military_ai(AiRegion* region, Unit* unit, s32 always_this_region) {
-		const u32 Func_AI_AddMilitary = 0x0043DA20;
+		const u32 func_address = 0x0043DA20;
 		__asm {
 			PUSHAD
 			PUSH always_this_region
 			MOV EAX, region
 			MOV EBX, unit
-			CALL Func_AI_AddMilitary
+			CALL func_address
 			POPAD
 		}
 	}
 
 	// for AI_AddUnitAI
 	BuildingAi* create_building_ai(BuildingAiList* buildingAI) {
-		const u32 Func_AI_CreateBuildingAi = 0x004044C0;
+		const u32 func_address = 0x004044C0;
 		static BuildingAi* result;
 		__asm {
 			PUSHAD
 			MOV ESI, buildingAI
-			CALL Func_AI_CreateBuildingAi
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1174,24 +1174,24 @@ namespace helper {
 	}
 
 	void issue_order_targeting_nothing(Unit* unit, u8 order_id) {
-		const u32 Func_orderComputerClear = 0x00475310;
+		const u32 func_address = 0x00475310;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOVZX CL, order_id
-			CALL Func_orderComputerClear
+			CALL func_address
 			POPAD
 		}
 	}
 
-	Unit* set_secondary_order(Unit* result, char order_id) {
-		const u32 Func_setSecondaryOrder = 0x004743D0;
+	Unit* set_secondary_order(Unit* result, u8 order_id) {
+		const u32 func_address = 0x004743D0;
 		static Unit* result2;
 		__asm {
 			PUSHAD
 			MOV EAX, result
 			MOVZX CL, order_id
-			CALL Func_setSecondaryOrder
+			CALL func_address
 			MOV result2, EAX
 			POPAD
 		}
@@ -1199,23 +1199,23 @@ namespace helper {
 	}
 
 	void ai_make_guard(s32 player, Unit* unit) {
-		const u32 Func_AI_MakeGuard = 0x0043A010;
+		const u32 func_address = 0x0043A010;
 		__asm {
 			PUSHAD
 			PUSH unit
 			PUSH player
-			CALL Func_AI_MakeGuard
+			CALL func_address
 			POPAD
 		}
 	}
 
 	bool unit_is_active_resource_depot(Unit* unit) {
-		const u32 Func_unitIsActiveResourceDepot = 0x00401CF0;
+		const u32 func_address = 0x00401CF0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
-			CALL Func_unitIsActiveResourceDepot
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1223,12 +1223,12 @@ namespace helper {
 	}
 
 	u32 get_default_refinery_type(u32 player) {
-		const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
+		const u32 func_address = 0x004320D0;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
-			CALL Func_getPlayerDefaultRefineryUnitType
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1238,12 +1238,12 @@ namespace helper {
 	// For ai_unit_was_hit
 	// Some of these should probably be methods in api/etc
 	char cancel_unit(Unit* structure) {
-		const u32 Func_AI_cancel_structure = 0x00468280;
+		const u32 func_address = 0x00468280;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, structure
-			CALL Func_AI_cancel_structure
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1251,13 +1251,13 @@ namespace helper {
 	}
 
 	Unit* ai_get_actual_target(Unit* attacker, Unit* target) {
-		const u32 Func_AI_GetActualTarget = 0x0043AD60;
+		const u32 func_address = 0x0043AD60;
 		static Unit* result;
 		__asm {
 			PUSHAD
 			MOV EDI, attacker
 			MOV ESI, target
-			CALL Func_AI_GetActualTarget
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1280,23 +1280,23 @@ namespace helper {
 	}
 
 	void ai_order_lurker_burrow(Unit* unit) {
-		const u32 Func_AI_OrderLurkerBurrow = 0x0043C230;
+		const u32 func_address = 0x0043C230;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_AI_OrderLurkerBurrow
+			CALL func_address
 			POPAD
 		}
 	}
 
 	bool unit_is_in_attack_group(Unit* unit, b32 exclude_grouping_regions) {
-		const u32 Func_AI_IsUnderAttack = 0x00436E70;
+		const u32 func_address = 0x00436E70;
 		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH exclude_grouping_regions
 			MOV EAX, unit
-			CALL Func_AI_IsUnderAttack
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1304,12 +1304,12 @@ namespace helper {
 	}
 
 	s32 is_unit_loaded(Unit* unit) {
-		const u32 Func_isUnitLoaded = 0x004E7110;
+		const u32 func_address = 0x004E7110;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_isUnitLoaded
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1317,13 +1317,13 @@ namespace helper {
 	}
 
 	s32 ai_try_return_home(Unit* unit, s32 dontIssueOrder) {
-		const u32 Func_AI_TryReturnHome = 0x00462EA0;
+		const u32 func_address = 0x00462EA0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH dontIssueOrder
 			MOV EAX, unit
-			CALL Func_AI_TryReturnHome
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1331,14 +1331,14 @@ namespace helper {
 	}
 
 	s32 ai_ask_for_help(Unit* self, Unit* attacker, s32 onlyNearbyGuards) {
-		const u32 Func_AI_AskForHelp = 0x0043ADA0;
+		const u32 func_address = 0x0043ADA0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH onlyNearbyGuards
 			PUSH attacker
 			PUSH self
-			CALL Func_AI_AskForHelp
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1346,12 +1346,12 @@ namespace helper {
 	}
 
 	s16 get_region_id_from_unit(Unit* unit) {
-		const u32 Func_getregion_idFromUnit = 0x0049CB40;
+		const u32 func_address = 0x0049CB40;
 		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_getregion_idFromUnit
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1359,13 +1359,13 @@ namespace helper {
 	}
 
 	s32 get_enemy_air_strength_in_region(u16 region_id, s32 player) {
-		const u32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
+		const u32 func_address = 0x00431D00;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH player
 			MOVZX AX, region_id
-			CALL Func_getEnemyAirStrengthInRegion
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1373,14 +1373,14 @@ namespace helper {
 	}
 
 	s32 get_enemy_strength_in_region(u16 region_id, s32 player, s32 includeAir) {
-		const u32 Func_getEnemyStrengthInRegion = 0x004318E0;
+		const u32 func_address = 0x004318E0;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH includeAir
 			PUSH player
 			MOVZX AX, region_id
-			CALL Func_getEnemyStrengthInRegion
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1388,12 +1388,12 @@ namespace helper {
 	}
 
 	bool unit_is_performing_unbreakable_code(Unit* unit) {
-		const u32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
+		const u32 func_address = 0x00402310;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_unitIsPerformingUnbreakableCode
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1401,14 +1401,14 @@ namespace helper {
 	}
 
 	bool ai_cast_spell_behavior(Unit* unit, bool isAggro) {
-		const u32 Func_AI_CastSpellBehavior = 0x004A13C0;
+		const u32 func_address = 0x004A13C0;
 		static u32 result;
 		b32 is_aggro_xd = isAggro;
 		__asm {
 			PUSHAD
 			PUSH is_aggro_xd
 			MOV EAX, unit
-			CALL Func_AI_CastSpellBehavior
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1416,13 +1416,13 @@ namespace helper {
 	}
 
 	s32 ai_flee(Unit* unit, Unit* enemy) {
-		const u32 Func_AI_Flee = 0x0043E400;
+		const u32 func_address = 0x0043E400;
 		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH enemy
 			MOV EAX, unit
-			CALL Func_AI_Flee
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1430,7 +1430,7 @@ namespace helper {
 	}
 
 	bool unit_has_ground_path(Unit* unit, s16 x, s16 y) {
-		const u32 Func_unitHasGroundPath = 0x0042FA00;
+		const u32 func_address = 0x0042FA00;
 		static u32 result;
 		u32 y_xd = y;
 		__asm {
@@ -1438,7 +1438,7 @@ namespace helper {
 			PUSH y_xd
 			MOVZX EDX, x
 			MOV EAX, unit
-			CALL Func_unitHasGroundPath
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1446,12 +1446,12 @@ namespace helper {
 	}
 
 	bool ai_has_no_defense_build(s32 player) {
-		const u32 Func_AI_HasNoDefenseBuild = 0x00447370;
+		const u32 func_address = 0x00447370;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
-			CALL Func_AI_HasNoDefenseBuild
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1459,13 +1459,13 @@ namespace helper {
 	}
 
 	bool unit_can_see_cloaked_target(Unit* target, Unit* unit) {
-		const u32 Func_unitCanSeeCloakedTarget = 0x00401D60;
+		const u32 func_address = 0x00401D60;
 		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, target
-			CALL Func_unitCanSeeCloakedTarget
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1473,18 +1473,18 @@ namespace helper {
 	}
 
 	void ai_respond_to_cloaked_threat(Unit* threat, Unit* unit) {
-		const u32 Func_AI_RespondToCloakedThreat = 0x0043C580;
+		const u32 func_address = 0x0043C580;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, threat
-			CALL Func_AI_RespondToCloakedThreat
+			CALL func_address
 			POPAD
 		}
 	}
 
 	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach) {
-		const u32 Func_AI_UpdateAttackTarget = 0x00477160;
+		const u32 func_address = 0x00477160;
 		static s32 result;
 		__asm {
 			PUSHAD
@@ -1492,7 +1492,7 @@ namespace helper {
 			PUSH acceptCritters
 			PUSH acceptIfSieged
 			MOV ECX, unit
-			CALL Func_AI_UpdateAttackTarget
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1500,7 +1500,7 @@ namespace helper {
 	}
 
 	void order_interrupt(Unit* unit, u8 order_id, Vector32* pos, Unit* target) {
-		const u32 Func_orderInterrupt = 0x00474C30;
+		const u32 func_address = 0x00474C30;
 		static u32 order_id_xd = order_id;
 		__asm {
 			PUSHAD
@@ -1508,7 +1508,7 @@ namespace helper {
 			PUSH pos
 			PUSH order_id_xd
 			MOV ESI, unit
-			CALL Func_orderInterrupt
+			CALL func_address
 			POPAD
 		}
 	}
@@ -6435,7 +6435,7 @@ namespace helper {
 	}
 
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id) {
-		const u32 Func_orderInterrupt = 0x00474C30;
+		const u32 func_address = 0x00474C30;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
 		__asm {
@@ -6444,7 +6444,7 @@ namespace helper {
 			PUSH target
 			PUSH pos
 			PUSH order_id
-			CALL Func_orderInterrupt
+			CALL func_address
 			POPAD
 		}
 	}
