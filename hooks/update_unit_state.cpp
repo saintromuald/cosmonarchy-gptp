@@ -334,7 +334,7 @@ namespace hooks
 					tick_heal += 11 * 5;
 				}
 
-				// Azazel Innervating Matrices - heal over time
+				// Azazel Defensive Matrix - heal over time
 				if (unit->defensive_matrix_hp != 0)
 				{
 					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame())
