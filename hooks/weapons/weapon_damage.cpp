@@ -1019,10 +1019,12 @@ namespace hooks
 			}
 		}
 
-		if (data.target->status & (UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree))
+		// Fix burrowed regression / transforms, for now. -DF
+		if (data.target->status & UnitStatus::Burrowed)
 		{
 			data.target->status &= ~(UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree | UnitStatus::NoCollide);
 			helper::set_secondary_order(data.target, OrderId::Nothing2);
+			data.target->movement_state = 9;
 		}
 
 		u32 regression_id = scbw::get_zerg_regression(data.target);
