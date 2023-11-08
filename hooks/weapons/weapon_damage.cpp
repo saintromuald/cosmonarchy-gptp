@@ -1018,6 +1018,14 @@ namespace hooks
 				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
 		}
+
+		// Fix burrowed regression / transforms. -DF
+		if (data.target->status & UnitStatus::Burrowed)
+		{
+			data.target->main_order_id = OrderId::Unburrow;
+		}
+
+
 		u32 regression_id = scbw::get_zerg_regression(data.target);
 		if (data.damage > 0 && regression_id != UnitId::None) {
 			if (data.target->id != UnitId::ZergExcisant) {
