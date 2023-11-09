@@ -524,14 +524,13 @@ namespace hooks
 		if (hashList[hashStructIndex].hash != *(u16*)(data + 2) && !warningOnce03_00)
 		{
 			isSucceeded = false;
-			sprintf_s(buffer, "Invalid Hash!\nhashStructIndex: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u\nCommand: %u",
+			sprintf_s(buffer, "Invalid Hash!\nhashStructIndex: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
 				hashStructIndex,
 				hashList[hashStructIndex].hashType,
 				hashList[hashStructIndex].hash,
 				hashType & 0x0F,
 				*(u16*)(data + 2),
-				*g_elapsed_time_frames,
-				*(u8*)data);
+				*g_elapsed_time_frames);
 			scbw::print(buffer, GameTextColor::Yellow);
 			warningOnce03_00 = true;
 		}
