@@ -30,19 +30,31 @@ namespace hooks
 
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
-		if (unit->connected_unit && unit_id_is_ground_garrison(unit->connected_unit->id)
-		&&  unit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
+		Unit* garrison = unit->connected_unit;
+		if (garrison)
 		{
-			return; // Disallow units in garrisons from firing while Bunker is lifted or in a transport.
-		}
-		if (unit->subunit)
-		{
-			if (unit->subunit->connected_unit && unit_id_is_ground_garrison(unit->subunit->connected_unit->id)
-			&&	unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport))
-			{
-				return; // Disallow units in garrisons from firing while garrisons is lifted or in a transport.
+			if (unit_id_is_ground_garrison(garrison->id) && garrison->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
+				return; // Disallow units in garrisons from firing while garrison is lifted or in a transport.
+			}
+			if (!unit_id_is_garrison(garrison->id)) {
+				return; // Disallow units in transports from firing under any circumstances.
 			}
 		}
+
+		if (unit->subunit)
+		{
+			Unit* subunit_garrison = unit->subunit->connected_unit;
+			if (subunit_garrison) {
+				if (unit_id_is_ground_garrison(subunit_garrison->id) && subunit_garrison->status & (UnitStatus::InAir | UnitStatus::InTransport))
+				{
+					return; // Disallow units in garrisons from firing while garrisons is lifted or in a transport.
+				}
+				if (!unit_id_is_garrison(subunit_garrison->id)) {
+					return; // Disallow units in transports from firing under any circumstances.
+				}
+			}
+		}
+
 
 		if (scbw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::AttackMove;
@@ -219,7 +231,16 @@ namespace hooks
 			unit->order_target.unit = 0;
 		}
 		if (unit->status & UnitStatus::InBuilding) {
-			if (unit->subunit && unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InAir) {
+			if (unit->subunit)
+			{
+				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InAir) {
+					return false;
+				}
+				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InTransport) {
+					return false;
+				}
+			}
+			if (unit->connected_unit && unit->connected_unit->status & UnitStatus::InTransport) {
 				return false;
 			}
 			helper::create_bunker_attack_overlay(unit);
