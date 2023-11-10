@@ -465,6 +465,8 @@ namespace hooks {
 					button->position = 6;
 				} else if (buttonset_id == UnitId::ProtossLanifect || buttonset_id == UnitId::ProtossDidact) {
 					button->position = 7;
+				} else if (buttonset_id == UnitId::TerranApostle) {
+					button->position = 8;
 				} else {
 					button->position = 9;
 				}
@@ -1813,7 +1815,14 @@ namespace hooks {
 								} break;
 								case UnitId::TerranMadcap:
 								{
-									if (current_button->icon_id == IconId::GoliathTwinAutocannons) // Madcap Maverick Feeders passive
+									if (current_button->icon_id == IconId::GoliathTwinAutocannons) // Madcap Maverick Feeders
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranApostle:
+								{
+									if (current_button->icon_id == IconId::Reclamation) // Apostle - Reclamation
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1845,7 +1854,8 @@ namespace hooks {
 								case UnitId::TerranAutocrat:
 								{
 									if (current_button->icon_id == IconId::OcularImplants					// Autocrat - Controlled Opposition
-									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)	// Autocrat - Kinetic Penetration
+									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Autocrat - Kinetic Penetration
+									|| current_button->icon_id == IconId::Reclamation)						// Autocrat - Reclamation
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1980,7 +1990,8 @@ namespace hooks {
 								case UnitId::TerranAnticthon:
 								{
 									if (current_button->icon_id == IconId::RilirokorToxicSpores // Anticthon - Counter-Proposal
-									||	current_button->icon_id == IconId::ApialSensors)		// Anticthon - Multi-Attack V
+									||	current_button->icon_id == IconId::ApialSensors			// Anticthon - Multi-Attack V
+									||	current_button->icon_id == IconId::Reclamation)			// Anticthon - Reclamation
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -1988,7 +1999,8 @@ namespace hooks {
 								case UnitId::TerranAion:
 								{
 									if (current_button->icon_id == IconId::RechargeShields		// Aion - Reclamation Fields
-									||	current_button->icon_id == IconId::StewardPulseCannon)	// Aion - Offset: Linear
+									||	current_button->icon_id == IconId::StewardPulseCannon	// Aion - Offset: Linear
+									||	current_button->icon_id == IconId::Reclamation)			// Aion - Reclamation
 									{
 										current_button_state = Button_State::Enabled;
 									}

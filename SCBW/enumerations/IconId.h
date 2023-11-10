@@ -400,7 +400,7 @@ namespace IconId
 		AtreusDauntlessDisruptionCannon,
 		DemiurgePassiveWorship,
 		UnusedTaunt,
-		UnusedGhost,
+		Reclamation,
 		DidactPassiveShroudOfAdun,
 		PaladinActiveSkyfall,
 

@@ -501,8 +501,7 @@ namespace hooks
 			{
 				unit_with_hangar = hangar_unit;
 			}
-			u32 range = helper::get_target_acquisition_range_upgrade(unit_with_hangar) + 2;
-			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, range * 32))
+			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, 8 * 32))
 			{
 				result = 1;
 			} else {

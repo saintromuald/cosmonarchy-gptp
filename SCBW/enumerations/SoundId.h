@@ -1588,5 +1588,27 @@ namespace SoundId
 		StarSovereignMissileFire01			= 2560,
 		StarSovereignMissileFire02			= 2561,
 		StarSovereignMissileFire03			= 2562,
+		AncileReady01						= 2563,
+		AncileReady02						= 2564,
+		AncileReady03						= 2565,
+
+		VagrantReady01						= 2578,
+		VagrantReady02						= 2579,
+		VagrantReady03						= 2580,
+
+		VagrantOrderAggressive01			= 2589,
+		VagrantOrderAggressive02			= 2590,
+		VagrantOrderAggressive03			= 2591,
+		VagrantOrderAggressive04			= 2692,
+
+		VagrantShadeReady01					= 2597,
+		VagrantShadeReady02					= 2598,
+		VagrantShadeReady03					= 2599,
+		VagrantShadeReady04					= 2600,
+
+		VagrantShadeOrderAggressive01		= 2609,
+		VagrantShadeOrderAggressive02		= 2610,
+		VagrantShadeOrderAggressive03		= 2611,
+		VagrantShadeOrderAggressive04		= 2612,
 	};
 }

@@ -934,6 +934,10 @@ namespace hooks
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
+
+				u32 sound = helper::get_random_sfx_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
+				helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
 				fatal_deal_damage = false;
 			} break;
 			case UnitId::ProtossArchon:
