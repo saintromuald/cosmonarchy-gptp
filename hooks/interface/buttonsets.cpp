@@ -2238,6 +2238,14 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossCharlatan:
+								{
+									if (current_button->icon_id == IconId::AntimatterMissiles		// Charlatan - Interception
+									||  current_button->icon_id == IconId::DemiurgePassiveWorship)	// Charlatan - Leading the Blind
+									{
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossPariah:
 								{
 									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Pariah - Projection
@@ -2280,13 +2288,6 @@ namespace hooks {
 								{
 									if (current_button->icon_id == IconId::ProtossGroundWeapons // Patriarch - Astral Rule
 									||	current_button->icon_id == IconId::AntimatterMissiles)	// Patriarch - Interception
-									{
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::ProtossCharlatan:
-								{
-									if (current_button->icon_id == IconId::DemiurgePassiveWorship) // Charlatan - Leading the Blind
 									{
 										current_button_state = Button_State::Enabled;
 									}
@@ -2591,7 +2592,8 @@ namespace hooks {
 								} break;
 								case UnitId::ZergKonvilisk:
 								{
-									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) // Konvilisk - Fertile Spines
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle // Konvilisk - Fertile Spines
+									||	current_button->icon_id == IconId::GeszithalorAcidSpore)			// Konvilisk - Crushing Tide
 									{
 										current_button_state = Button_State::Enabled;
 									}

@@ -452,6 +452,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 		case WeaponId::SirenCharybdalRifle:
 		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::AtreusDauntlessDisruptorCannon:
+		case WeaponId::CharlatanFerventBlaster:
 		case WeaponId::CantavisHallucinationCast:
 		case WeaponId::PatriarchIronhandWeaver:
 		case WeaponId::IdolPrismaticBlaster:

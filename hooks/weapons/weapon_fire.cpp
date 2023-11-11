@@ -573,9 +573,10 @@ namespace hooks {
 						// Offset: Cone
 						fire_shotgun(unit, weapon_id, 1, 3, 10);
 					} break;
+					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
-					case WeaponId::TosgriliskExplosiveSpores: {
-						// Crushing Tide - Izirokor, Tosgrilisk
+					case WeaponId::KonviliskSowingSpines: {
+						// Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
 						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
 					} break;
 					case WeaponId::MatrixKhaydarinRay: {
