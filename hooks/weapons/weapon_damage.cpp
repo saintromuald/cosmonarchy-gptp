@@ -522,8 +522,13 @@ namespace hooks
 				case UnitId::ProtossAnalogue:
 				{
 					// Empathy Core - Analogue behavior
-					BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
-					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data) || current_bullet_ext->is_phantom) {
+					if (weapon_damage_current_bullet) {
+						BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+						if (current_bullet_ext->is_phantom) {
+							break;
+						}
+					}
+					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
 						break;
 					}
 					if (data.target->energy >= 10 * 256) {

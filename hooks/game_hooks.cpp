@@ -1682,35 +1682,34 @@ namespace hooks {
 				// Legionnaire - Blade Vortex
 				// Cabalist - Silent Strides
 				// Striga was here - removed 7 February 2023. -Pr0nogo
-				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
-					Unit* target = unit->order_target.unit;
+				Unit* target = unit->order_target.unit;
+				if (target && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
+					u32 weapon_id = target->status & UnitStatus::InAir ? unit->get_air_weapon() : unit->get_ground_weapon();
+					u32 min_radius = weapons_dat::max_range[weapon_id];
+					u32 max_radius = 3 * 32;
+
 					u32 distance = unit->get_distance_to_target(target);
 					bool do_teleport = false;
 					u32 image_id = 0;
-
-					const u32 min_radius = 0.75 * 32;
-					const u32 max_radius = 3 * 32;
-
 					if (unit->id == UnitId::ProtossLegionnaire) {
-						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0)
-						{
+						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
 						}
 					} else if (unit->id == UnitId::ProtossCabalist) {
-						if (distance > min_radius && distance <= max_radius && unit_ext->timers[TimerDecloak] < 2)
-						{
+						if (distance > min_radius && distance <= max_radius && unit_ext->timers[TimerDecloak] < 2) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
 						}
 					}
 
 					if (do_teleport) {
-						bool teleport = scbw::teleport_to_unit(unit, target, min_radius, 0, true);
-						if (!unit->get_overlay(image_id) && teleport) {
-							scbw::add_unit_overlay(unit, image_id);
+						if (scbw::teleport_to_unit(unit, target, min_radius, 0, true)) {
+							if (!unit->get_overlay(image_id)) {
+								scbw::add_unit_overlay(unit, image_id);
+							}
+							scbw::decloak_passive_proc(unit);
 						}
-						scbw::decloak_passive_proc(unit);
 					}
 				}
 			} break;

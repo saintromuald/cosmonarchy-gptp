@@ -98,6 +98,9 @@ namespace scbw {
 		if (!scbw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
 			return false;
 		}
+		if (target->get_distance_to_point(new_pos) > radius * 1.5) {
+			return false;
+		}
 
 		teleport_internal(unit, new_pos, sprite_id, preserve_order);
 		return true;
