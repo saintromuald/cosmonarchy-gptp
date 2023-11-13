@@ -1599,7 +1599,7 @@ namespace SoundId
 		VagrantOrderAggressive01			= 2589,
 		VagrantOrderAggressive02			= 2590,
 		VagrantOrderAggressive03			= 2591,
-		VagrantOrderAggressive04			= 2692,
+		VagrantOrderAggressive04			= 2592,
 
 		VagrantShadeReady01					= 2597,
 		VagrantShadeReady02					= 2598,
