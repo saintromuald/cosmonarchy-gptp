@@ -1031,15 +1031,13 @@ namespace hooks
 	// Hooked to investigate crashes. -Pr0nogo
 	b32 set_thingy_visibility_flags(Thingy* thingy) // 004878F0
 	{
-		if (!thingy) {
-			return;
-		}
 		Sprite* thingy_sprite = thingy->sprite;
 		if (thingy_sprite)
 		{
 			if (!(thingy_sprite->flags & SpriteFlags::Hidden))
 			{
-			//	u8 status = ~(g_active_tile_array_int[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]);
+				/*
+				u8 status = ~(g_active_tile_array_int[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]);
 				if (thingy_sprite->visibility_status != status)
 				{
 					helper::refresh_all_visible_images_at_screen_pos(thingy_sprite, status);
@@ -1051,6 +1049,7 @@ namespace hooks
 						}
 					}
 				}
+				*/
 			}
 		}
 		return 0;
