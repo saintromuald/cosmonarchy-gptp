@@ -1,5 +1,6 @@
 #pragma once
 #include <SCBW/structures/Unit.h>
+#include <SCBW/structures.h>
 
 namespace hooks {
 	void update_unit_energy(Unit* unit);													// 004EB4B0
@@ -12,6 +13,7 @@ namespace hooks {
 	u8 replace_unit_with_id(Unit* unit, u32 new_id);										// 0049FED0
 	u32 update_unit_strength_and_apply_default_orders(Unit* unit);							// 0049FA40
 	u32 initialize_unit_base(Unit* unit, u32 unit_id, u32 pos_x, u32 pos_y, u32 player);	// 004A0320
+	b32 set_thingy_visibility_flags(Thingy* thingy);										// 004878F0
 
 	void inject_update_unit_state_hooks();
 }
