@@ -87,6 +87,7 @@ enum ExtValueId {
 	ValueEmpressAnodyneAnnexSourcePlayer,
 	ValueAxitriliskLaunchPos,
 	ValueBactaliskLaunchPos,
+	ValueDracadinLaunchPos,
 	ValueCharlatanLaunchPos,
 	ValueIsNeutralBunker,
 	ValueIsZombified,

@@ -697,6 +697,13 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 1;
 			return &offsets;
 		} break;
+		case WeaponId::DracadinPhaseDisruptor:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueDracadinLaunchPos;
+			offsets.count = 1;
+			return &offsets;
+		} break;
 		case WeaponId::CharlatanFerventBlaster:
 		{
 			static WeaponOffsets offsets = {};

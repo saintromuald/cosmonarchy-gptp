@@ -485,6 +485,7 @@ namespace hooks {
 					case WeaponId::DiademIonCannon:
 					case WeaponId::DiademHammerfallBeacon:
 					case WeaponId::WardenPrismaticCannon:
+					case WeaponId::DracadinPhaseDisruptor:
 					case WeaponId::CharlatanFerventBlaster:
 					case WeaponId::OptectonSunsplitBeam:
 					case WeaponId::PositronAntimatterMissile:
