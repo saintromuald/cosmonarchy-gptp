@@ -1036,12 +1036,11 @@ namespace hooks
 		{
 			if (!(thingy_sprite->flags & SpriteFlags::Hidden))
 			{
-				/*
-				u8 status = ~(g_active_tile_array_int[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]);
+				u8 status = ~(g_active_tile_array[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]->visibility_flags);
 				if (thingy_sprite->visibility_status != status)
 				{
 					helper::refresh_all_visible_images_at_screen_pos(thingy_sprite, status);
-					if (*g_player_visions & thingy_sprite->visibility_status)
+					if ((u8)*g_player_visions & thingy_sprite->visibility_status)
 					{
 						if (!(*g_player_visions & thingy->sprite->visibility_status))
 						{
@@ -1049,7 +1048,6 @@ namespace hooks
 						}
 					}
 				}
-				*/
 			}
 		}
 		return 0;
