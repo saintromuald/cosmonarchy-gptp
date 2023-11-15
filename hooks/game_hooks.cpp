@@ -546,7 +546,7 @@ namespace hooks {
 
 			// Show connected Nyduses
 			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
-				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
+				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id) || in_replay_or_witness) {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}

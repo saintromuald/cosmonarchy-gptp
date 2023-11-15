@@ -58,8 +58,8 @@ enum Celebration: u8 {
 enum Faction: u8 {
 	Faction_None,
 
-	Faction_TerranHecatonCoalition,
 	Faction_TerranOrionImperium,
+	Faction_TerranHecatonCoalition,
 	Faction_TerranFuturistFederation,
 	Faction_TerranGoldenRepublic,
 	Faction_TerranNydusTrinity,
@@ -70,10 +70,10 @@ enum Faction: u8 {
 	Faction_ProtossKhalendricKnights,
 	Faction_ProtossStarbound,
 
+	Faction_ZergAtaltrethTendril,
 	Faction_ZergImicrenTendril,
 	Faction_ZergOrkotiTendril,
 	Faction_ZergGoszirithTendril,
-	Faction_ZergAtaltrethTendril,
 	Faction_ZergZorthosTendril,
 
 	Faction_Count,
@@ -82,8 +82,8 @@ enum Faction: u8 {
 static const char* faction_symbol_names[] = { // This array needs to the same size and order as Faction enum
 	"none",
 
-	"hecaton_coalition",
 	"orion_imperium",
+	"hecaton_coalition",
 	"futurist_federation",
 	"golden_republic",
 	"nydus_trinity",
@@ -94,10 +94,10 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 	"khalendric_knights",
 	"starbound",
 
-	"imicren",
-	"orkoti",
-	"goszirith",
 	"ataltreth",
+	"imicren",
+	"goszirith",
+	"orkoti",
 	"zorthos",
 };
 C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
