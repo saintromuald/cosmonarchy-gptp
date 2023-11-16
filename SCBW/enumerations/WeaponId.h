@@ -192,6 +192,7 @@ namespace WeaponId {
 		OberonAxisDrivers					= 157,
 		HippogriffPegasusMissiles			= 158,
 		AionLazarusSalvo					= 159,
+		WendigoFusionSaw					= 168,
 		RamessesPharoahCannons				= 170,
 		DurendalAbaddonFlamethrowers		= 171,
 		DurendalPhilistineAutogun			= 172,

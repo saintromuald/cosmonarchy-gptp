@@ -82,6 +82,10 @@ namespace hooks
 			bonus_amount += 64;
 		}
 
+		if (unit_ext->timers[TimerAuralAssaultBlind] > 1) {
+			return std::min((s32)weapons_dat::max_range[weapon_id], 64);
+		}
+
 		return weapons_dat::max_range[weapon_id] * scale + bonus_amount;
 	}
 }

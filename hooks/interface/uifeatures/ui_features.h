@@ -54,6 +54,8 @@ namespace hooks {
 	char input_mmb_down(DialogEvent* event);																				// 00484520
 	int __cdecl input_mmb_up();																								// 004843A0
 	void __cdecl input_mmb_move();																							// 00484460
+
+	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);														// 0045F290
 }
 
 #define tIconCount 7

@@ -409,6 +409,11 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
+			case WeaponId::WendigoFusionSaw:
+			{
+				target_ext->values[ValueArmorRend]++;
+				target_ext->timers[TimerArmorRend] = 2 * 24 + 1;
+			} break;
 			case WeaponId::LegionnairePhaseSpear: {
 				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
@@ -914,7 +919,7 @@ namespace hooks
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
 			case UnitId::ZergVilgorokor: {
-				// Vilgorokor - On Death behavior
+				// Vilgorokor - On Death behaviorw
 				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
 				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
 				data.target->set_hitpoints(data.target->get_max_hp_raw());

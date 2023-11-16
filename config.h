@@ -42,6 +42,7 @@ struct Config {
 	bool show_team_ui_self = false;
 
 	// Scrolling
+	bool use_spacebar_for_scrolling = false;
 	bool use_pan_scrolling = false;
 	f32 scroll_sensitivity = 1.0;
 

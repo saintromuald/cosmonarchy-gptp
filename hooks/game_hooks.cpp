@@ -1205,6 +1205,10 @@ namespace hooks {
 			}
 		}
 
+		if (unit_ext->timers[TimerArmorRend] == 1) {
+			unit_ext->values[ValueArmorRend] = 0;
+		}
+
 		if (unit_ext->timers[TimerStun] > 1) {
 			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		} else if (unit_ext->timers[TimerStun] == 1) {
@@ -2705,46 +2709,13 @@ namespace hooks {
 			}
 		}
 
-		// Luminary - Aural Assault
+		// Luminary - Aural Assault - overlays
 		if (unit_ext->timers[TimerAuralAssaultBlind] > 1) {
 			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
 			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 			if (!overlay_unit->get_overlay(overlay)) {
 				overlay_unit->sprite->create_top_overlay(overlay, 0, 0, 0);
 			}
-			if (unit->main_order_id != OrderId::AttackUnit) {
-				// TODO: Unit search
-				const u32 radius = unit->get_seek_range() * 32 + 4 * 32;
-				auto match = cosmonarchy_finder_match(unit, 0, {});
-				Unit* best_target = scbw::UnitFinder::get_nearest_target(
-					unit->get_x() - radius,
-					unit->get_y() - radius,
-					unit->get_x() + radius,
-					unit->get_y() + radius,
-					unit, [&](Unit* target) {
-					if (!match(target) || !unit->can_attack_target(target) || !helper::is_unit_in_weapon_range(unit, target)) {
-						return false;
-					}
-					return true;
-				});
-				if (best_target) {
-					unit->order_to(OrderId::AttackUnit, best_target);
-					if (unit->subunit) {
-						unit->subunit->order_to(OrderId::AttackUnit, best_target);
-					}
-				}
-			}
-			unit->status |= UnitStatus::CanNotReceiveOrders;
-		}
-		if (unit_ext->timers[TimerAuralAssaultBlind] == 1) {
-			Unit* target = unit->order_target.unit;
-			if (unit->main_order_id == OrderId::AttackUnit && target && scbw::is_allied_to(unit->player, target->player)) {
-				unit->order_to_idle();
-				if (unit->subunit) {
-					unit->subunit->order_to_idle();
-				}
-			}
-			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 		}
 
 		// Talos - Salvage stun

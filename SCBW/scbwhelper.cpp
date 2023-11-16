@@ -14438,4 +14438,47 @@ namespace helper {
 		}
 		return result;
 	}
+
+	bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2)
+	{
+		const u32 func_address = 0x0045F0B0;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog_1
+			MOV EDI, dialog_2
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	BYTE* statport_alloc()
+	{
+		const u32 func_address = 0x0045E360;
+		static BYTE* result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event)
+	{
+		const u32 func_address = 0x00418EB0;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			MOV EDX, dlg_event
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
 }

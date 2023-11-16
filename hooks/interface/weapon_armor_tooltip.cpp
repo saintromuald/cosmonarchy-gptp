@@ -369,6 +369,8 @@ namespace hooks
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
 			unit_ext->timers[TimerEmpressAnodyneAnnex], TimerType::Gptp);
+		add_status(statuses, "Shattered", unit_ext->values[ValueArmorRend], 0,
+			unit_ext->timers[TimerArmorRend], TimerType::Gptp);
 
 		if (unit_ext->values[ValueSignifyStacks] < 5) {
 			add_status(statuses, "Cowardice", unit_ext->values[ValueSignifyStacks], 5,
@@ -395,6 +397,7 @@ namespace hooks
 		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
+		add_status(statuses, "Blinded", -1, 1, unit_ext->timers[TimerAuralAssaultBlind], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);

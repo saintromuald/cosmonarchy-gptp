@@ -481,6 +481,23 @@ namespace
 		}
 	}
 
+	void __declspec(naked) statport_dlg_interact_wrapper() { // 0045F290
+		static bool result;
+		static BinDlg* dialog;
+		static DialogEvent* dlg_event;
+		__asm {
+			MOV dialog, ECX
+			MOV dlg_event, EDX
+			PUSHAD
+		}
+		result = hooks::statport_dlg_interact(dialog, dlg_event);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -548,8 +565,9 @@ namespace hooks
 		jump_patch(input_mmb_down_wrapper,					0x00484520, 0);
 		jump_patch(input_mmb_up,							0x004843A0, 0);
 		jump_patch(input_mmb_move,							0x00484460, 1);
-		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
+		jump_patch(statport_dlg_interact_wrapper,			0x0045F290, 2);
 
+		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 
 		// Passive icon colorization -- extension of color remaps. -DF

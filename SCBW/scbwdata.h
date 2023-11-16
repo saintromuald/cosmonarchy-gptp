@@ -561,6 +561,10 @@ SCBW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
 SCBW_DATA(char*,	bin_interact,				0x006D1224);
 SCBW_DATA(void**,	last_bindlg_menu_function,	0x006D1234);
 
+// For statport_dlg_interact
+SCBW_DATA(s8**,		g_dialog_key,				0x0068AC88);
+SCBW_DATA(Point32*,	g_last_event_position,		0x0057FD34);
+
 //////////////////////////////////////////////////////////////// @}
 /// @name *.DAT File Data
 //////////////////////////////////////////////////////////////// @{

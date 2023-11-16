@@ -210,11 +210,12 @@ namespace hooks
 		}
 
 		// Flash shielding (regeneration)
-		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed && unit_id_can_regenerate_shields(unit->id)) {
-			s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
+		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed) {
+			if (unit_id_can_regenerate_shields(unit->id)) {
+				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
-			u32 overlay_id = ImageId::RechargeShields_Small;
-			switch (scbw::get_overlay_offset(unit->id, true)) {
+				u32 overlay_id = ImageId::RechargeShields_Small;
+				switch (scbw::get_overlay_offset(unit->id, true)) {
 				case 1: {
 					overlay_id = ImageId::RechargeShieldsCustom_Medium;
 				} break;
@@ -224,29 +225,37 @@ namespace hooks
 				case 3: {
 					overlay_id = ImageId::RechargeShieldsCustom_XLarge;
 				} break;
-			}
+				}
 
-			if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
-				unit->heal_shields((10 * 256 / 24) * (1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), unit, false);
-				if (unit->shields > max_shields) {
+				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
+					unit->heal_shields((10 * 256 / 24) * (1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), unit, false);
 					if (unit->shields > max_shields) {
-						unit->shields = max_shields;
+						if (unit->shields > max_shields) {
+							unit->shields = max_shields;
+						}
+						if (unit->sprite->flags & SpriteFlags::Selected) { // If the unit is currently selected, redraw its graphics
+							helper::set_all_image_group_flags_palette_11(unit->sprite);
+						}
 					}
-					if (unit->sprite->flags & SpriteFlags::Selected) { // If the unit is currently selected, redraw its graphics
-						helper::set_all_image_group_flags_palette_11(unit->sprite);
-					}
-				}
 
-				if (!unit->get_overlay(overlay_id)) {
-					scbw::add_unit_overlay(unit, overlay_id);
-					helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+					if (!unit->get_overlay(overlay_id)) {
+						scbw::add_unit_overlay(unit, overlay_id);
+						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+					}
 				}
-			} else if (unit->sprite->get_overlay(overlay_id)) {
-				scbw::remove_unit_overlay(unit, overlay_id);
-				if (unit->shields >= max_shields) {
-					helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-				} else {
-					helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
+				else if (unit->sprite->get_overlay(overlay_id)) {
+					scbw::remove_unit_overlay(unit, overlay_id);
+					if (unit->shields >= max_shields) {
+						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
+					}
+					else {
+						helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
+					}
+				}
+			} else if (unit->id == UnitId::TerranAspirant) {
+				if (unit_ext->damage_taken_timer > 2 * 24) {
+					s32 regen = 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
+					unit->heal_shields(regen, 0, false, false);
 				}
 			}
 		}
@@ -276,7 +285,7 @@ namespace hooks
 			}
 		}
 
-		// only for fully-constructed units and buildings
+		// Only for fully-constructed units and buildings. -GPTP
 		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
 		if (unit->status & UnitStatus::Completed
 		||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon

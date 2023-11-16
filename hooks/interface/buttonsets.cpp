@@ -1951,6 +1951,12 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranWendigo:
+								{
+									if (current_button->icon_id == IconId::ParticleBeamHarvest) { // Wendigo - Shattering Winds
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 
 								// TERRAN \\
 

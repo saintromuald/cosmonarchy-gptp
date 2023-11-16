@@ -1487,3 +1487,25 @@ enum AdvisorMessageId {
 	AdvisorMessageId_NoBuildCouldntReach	= 862,
 	AdvisorMessageId_NoLanding				= 863,
 };
+
+enum DialogEventType {
+	DialogEventType_KeyDown					= 0,
+	DialogEventType_KeyRepeat				= 1,
+	DialogEventType_KeyUp					= 2,
+	DialogEventType_MouseMove				= 3,
+	DialogEventType_LButtonDown				= 4,
+	DialogEventType_LButtonUp				= 5,
+	DialogEventType_LButtonDouble			= 6,
+	DialogEventType_RButtonDown				= 7,
+	DialogEventType_RButtonUp				= 8,
+	DialogEventType_RButtonDouble			= 9,
+	DialogEventType_MButtonDown				= 10,
+	DialogEventType_MButtonUp				= 11,
+	DialogEventType_MButtonDouble			= 12,
+	DialogEventType_Idle					= 13,
+	DialogEventType_Dialog					= 14,
+	DialogEventType_Spacebar				= 15,
+	DialogEventType_SystemKey				= 16,
+	DialogEventType_MWheelUp				= 17,
+	DialogEventType_MWheelDown				= 18,
+};

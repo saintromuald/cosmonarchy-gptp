@@ -414,11 +414,6 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 		return value;
 	}
 
-	// Cohort - Servile Vigor
-	if (id == UnitId::TerranCohort) {
-		hitpoints *= 2;
-	}
-
 	set_hitpoints(cap_value(this->hitpoints + value, this->get_max_hp_raw(), &value));
 
 	// If heals to full clear debuffs

@@ -159,7 +159,8 @@ bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 }
 
 bool unit_id_can_regenerate_shields(u32 unit_id) {
-	return unit_id != UnitId::ProtossVagrantShade;
+	return unit_id != UnitId::ProtossVagrantShade
+		&& unit_id != UnitId::TerranAspirant;
 }
 
 bool unit_id_is_stackable_building(u32 unit_id) {
@@ -252,7 +253,9 @@ bool unit_id_is_melee_air_unit(u32 unit_id) {
 		|| unit_id == UnitId::ZergGorgrokor
 		|| unit_id == UnitId::ZergTetcaerokor
 		|| unit_id == UnitId::ZergAkistrokor
-		|| unit_id == UnitId::ZergZarcavrokor;
+		|| unit_id == UnitId::ZergZarcavrokor
+		|| unit_id == UnitId::TerranTalos
+		|| unit_id == UnitId::TerranWendigo;
 }
 
 bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
@@ -328,7 +331,9 @@ bool unit_id_is_factional(u16 unit_id) {
 	return unit_id == UnitId::TerranAspirant
 		|| unit_id == UnitId::TerranCohort
 		|| unit_id == UnitId::TerranLuminary
-		|| unit_id == UnitId::TerranTarasque;
+		|| unit_id == UnitId::TerranTarasque
+		|| unit_id == UnitId::TerranSouthpaw
+		|| unit_id == UnitId::TerranWendigo;
 }
 
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {

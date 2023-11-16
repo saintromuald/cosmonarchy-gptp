@@ -1680,4 +1680,8 @@ namespace helper {
 	u8 create_defensive_matrix(Unit* unit);										// 00454F90
 
 	Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction); // 00498E00
+
+	bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2);				// 0045F0B0
+	BYTE* statport_alloc();														// 0045E360
+	bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418EB0
 }
