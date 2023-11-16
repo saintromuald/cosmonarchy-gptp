@@ -544,7 +544,7 @@ namespace UnitId
 		Buttons_AdvancedTerranBuildings						= 242,
 		Buttons_AdvancedProtossBuildings					= 243,
 		Buttons_GroupMixed									= 244,
-		Buttons_GroupWorkers									= 245,
+		Buttons_GroupWorkers								= 245,
 		Buttons_GroupCloaker								= 246,
 		Buttons_GroupBurrower								= 247,
 		Buttons_ReplayPaused								= 248,
@@ -571,5 +571,13 @@ namespace UnitId
 
 		Buttons_MixedScribeTraining							= 368,
 		Buttons_MixedRepairmen								= 369,
+
+		Buttons_FactionSelect								= 388,
+		Buttons_FactionSelect1								= 389,
+		Buttons_FactionSelect2								= 390,
+		Buttons_FactionSelect3								= 391,
+		Buttons_FactionSelect4								= 392,
+		Buttons_FactionSelect5								= 393,
+		Buttons_FactionSelect6								= 394,
 	};
 }

@@ -51,9 +51,10 @@ enum InterceptType {
 
 enum GameKind {
 	GameKind_Unsupported,
-	GameKind_CompetitiveMode,
-	GameKind_ScenarioMode,
+	GameKind_Competitive,
+	GameKind_Scenario,
 	GameKind_Omnipresence,
+	GameKind_FactionWars,
 	GameKind_Debug,
 	GameKind_Count,
 };

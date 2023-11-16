@@ -586,10 +586,11 @@ namespace GameType
 		TeamCTF = 13,
 		TopVsBottom = 15,
 
-		CompetitiveMode = 30,
-		ScenarioMode = 31,
+		Competitive = 30,
+		Scenario = 31,
 		Omnipresence = 32,
-		Debug = 33,
+		FactionWars = 33,
+		Debug = 34,
 	};
 }
 

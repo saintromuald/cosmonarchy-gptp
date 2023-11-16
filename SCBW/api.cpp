@@ -3185,17 +3185,17 @@ namespace scbw {
 	GameKind get_game_kind() {
 		switch (*g_game_type) {
 			case GameType::UseMapSettings:
-			case GameType::ScenarioMode:
-				return GameKind_ScenarioMode;
+			case GameType::Scenario:
+				return GameKind_Scenario;
 
-			case GameType::CompetitiveMode:
-				return GameKind_CompetitiveMode;
+			case GameType::Competitive:
+				return GameKind_Competitive;
 
 			case GameType::Omnipresence:
 				return GameKind_Omnipresence;
 
 			case GameType::Debug:
-				return GameKind_CompetitiveMode;
+				return GameKind_Competitive;
 		}
 		return GameKind_Unsupported;
 	}

@@ -358,8 +358,8 @@ namespace hooks {
 			// update various stuff (set hp, set shield...) not finished on create_unit
 			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
 			helper::update_unit_strength(dark_swarm_unit);
-			if (dark_swarm_unit->remove_timer == 0 || dark_swarm_unit->remove_timer > 900) {
-				dark_swarm_unit->remove_timer = 900;
+			if (dark_swarm_unit->remove_timer == 0 || dark_swarm_unit->remove_timer > 570) {
+				dark_swarm_unit->remove_timer = 565;
 			}
 		}
 	}

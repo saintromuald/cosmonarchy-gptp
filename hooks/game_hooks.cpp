@@ -227,7 +227,7 @@ namespace hooks {
 		return 0;
 	}
 
-	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
+	// Hooked to remove the 1-frame delay from quick-targeting. -Pr0nogo
 	u32 __cdecl set_ingame_input_procs() { // 00484CC0
 		helper::initialize_input_procs();
 

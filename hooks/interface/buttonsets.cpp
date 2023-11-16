@@ -397,6 +397,122 @@ namespace hooks {
 		init_req_table();
 
 		auto buttonset_id = *g_active_portrait_buttonset_id;
+		u32 local_player = *g_local_nation_id;
+		if (scbw::get_game_kind() == GameKind_FactionWars && globals.players[local_player].faction != Faction_None) {
+			if (buttonset_id == UnitId::None) {
+				buttonset_id = UnitId::Buttons_FactionSelect;
+			} else {
+				if (buttonset_id == UnitId::Buttons_FactionSelect1)
+				{
+					switch (g_player_table[local_player].race)
+					{
+						case RaceId::Terran:
+						{
+							globals.players[local_player].faction = Faction_TerranOrionImperium;
+						} break;
+						case RaceId::Protoss:
+						{
+							globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
+						} break;
+						case RaceId::Zerg:
+						{
+							globals.players[local_player].faction = Faction_ZergAtaltrethTendril;
+						} break;
+					}
+				} else if (buttonset_id == UnitId::Buttons_FactionSelect2)
+				{
+					switch (g_player_table[local_player].race)
+					{
+						case RaceId::Terran:
+						{
+							globals.players[local_player].faction = Faction_TerranHecatonCoalition;
+						} break;
+						case RaceId::Protoss:
+						{
+							globals.players[local_player].faction = Faction_ProtossOrderOfTheSacredTemplar;
+						} break;
+						case RaceId::Zerg:
+						{
+							globals.players[local_player].faction = Faction_ZergImicrenTendril;
+						} break;
+					}
+				}
+				else if (buttonset_id == UnitId::Buttons_FactionSelect3)
+				{
+					switch (g_player_table[local_player].race)
+					{
+						case RaceId::Terran:
+						{
+							globals.players[local_player].faction = Faction_TerranFuturistFederation;
+						} break;
+						case RaceId::Protoss:
+						{
+							globals.players[local_player].faction = Faction_ProtossKhalendricKnights;
+						} break;
+						case RaceId::Zerg:
+						{
+							globals.players[local_player].faction = Faction_ZergOrkotiTendril;
+						} break;
+					}
+				}
+				else if (buttonset_id == UnitId::Buttons_FactionSelect4)
+				{
+					switch (g_player_table[local_player].race)
+					{
+						case RaceId::Terran:
+						{
+							globals.players[local_player].faction = Faction_TerranGoldenRepublic;
+						} break;
+						case RaceId::Protoss:
+						{
+							globals.players[local_player].faction = Faction_ProtossStarbound;
+						} break;
+						case RaceId::Zerg:
+						{
+							globals.players[local_player].faction = Faction_ZergGoszirithTendril;
+						} break;
+					}
+				}
+				else if (buttonset_id == UnitId::Buttons_FactionSelect5)
+				{
+					switch (g_player_table[local_player].race)
+					{
+						case RaceId::Terran:
+						{
+							globals.players[local_player].faction = Faction_TerranOrionImperium;
+						} break;
+					//	case RaceId::Protoss:
+					//	{
+					//		globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
+					//	} break;
+						case RaceId::Zerg:
+						{
+							globals.players[local_player].faction = Faction_ZergZorthosTendril;
+						} break;
+					}
+				}
+				else if (buttonset_id == UnitId::Buttons_FactionSelect6)
+				{
+					switch (g_player_table[local_player].race)
+					{
+						case RaceId::Terran:
+						{
+							globals.players[local_player].faction = Faction_TerranUpstart;
+						} break;
+					//	case RaceId::Protoss:
+					//	{
+					//		globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
+					//	} break;
+					//	case RaceId::Zerg:
+					//	{
+					//		globals.players[local_player].faction = Faction_ZergAtaltrethTendril;
+					//	} break;
+					}
+				}
+				buttonset_id == UnitId::None;
+			}
+		}
+
 		// Custom buttonset overrides
 		if (buttonset_id == UnitId::TerranTreasury)
 		{
