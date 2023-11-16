@@ -3194,6 +3194,9 @@ namespace scbw {
 			case GameType::Omnipresence:
 				return GameKind_Omnipresence;
 
+			case GameType::FactionWars:
+				return GameKind_FactionWars;
+
 			case GameType::Debug:
 				return GameKind_Competitive;
 		}

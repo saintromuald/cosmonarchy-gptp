@@ -131,6 +131,7 @@ struct PlayerVars {
 	WitnessMode witness_mode;
 	Faction faction;
 	bool neutral_hostile;
+	bool faction_was_set;
 };
 
 struct AlertState {
