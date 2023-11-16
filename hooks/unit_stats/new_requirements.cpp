@@ -210,10 +210,20 @@ namespace hooks {
 				} break;
 				case UnitId::TerranMaverick:
 				case UnitId::TerranHarakan:
-				case UnitId::TerranCyprian:
-				case UnitId::TerranCohort:
 				{
 					return true;
+				}
+				case UnitId::TerranCyprian:
+				{
+					if (globals.players[player_id].faction != Faction_TerranNydusTrinity) {
+						return true;
+					}
+				}
+				case UnitId::TerranCohort:
+				{
+					if (globals.players[player_id].faction == Faction_TerranNydusTrinity) {
+						return true;
+					}
 				} break;
 				case UnitId::TerranCleric:
 				case UnitId::TerranShamanSupportMode:
@@ -296,11 +306,27 @@ namespace hooks {
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranVulture:
 				case UnitId::TerranCyclops:
-				case UnitId::TerranGoliath:
-				case UnitId::TerranAspirant:
-				case UnitId::TerranSouthpaw:
 				{
 					return true;
+				} break;
+				case UnitId::TerranGoliath:
+				{
+					if (globals.players[player_id].faction != Faction_TerranUpstart
+					&&  globals.players[player_id].faction != Faction_TerranGoldenRepublic) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranAspirant:
+				{
+					if (globals.players[player_id].faction == Faction_TerranGoldenRepublic) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranSouthpaw:
+				{
+					if (globals.players[player_id].faction == Faction_TerranUpstart) {
+						return true;
+					}
 				} break;
 				case UnitId::TerranBlackjack:
 				case UnitId::TerranMatadorTankMode:
@@ -311,12 +337,26 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranPhalanxTankMode:
+					if (globals.players[player_id].faction != Faction_TerranNydusTrinity) {
+						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
+						{
+							return true;
+						}
+					}
 				case UnitId::TerranMadrigalImperiosoMode:
-				case UnitId::TerranTarasque:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
 					{
 						return true;
+					}
+				}
+				case UnitId::TerranTarasque:
+				{
+					if (globals.players[player_id].faction == Faction_TerranNydusTrinity) {
+						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
+						{
+							return true;
+						}
 					}
 				} break;
 			}
@@ -368,12 +408,33 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranWraith:
+				{
+					if (globals.players[player_id].faction != Faction_TerranFuturistFederation) {
+						return true;
+					}
+					return false;
+				}
 				case UnitId::TerranAncile:
+				{
+					if (globals.players[player_id].faction != Faction_TerranUpstart) {
+						return true;
+					}
+				}
 				case UnitId::TerranTrojan:
-				case UnitId::TerranPhiloc:
-				case UnitId::TerranWendigo:
 				{
 					return true;
+				}
+				case UnitId::TerranPhiloc:
+				{
+					if (globals.players[player_id].faction == Faction_TerranFuturistFederation) {
+						return true;
+					}
+				}
+				case UnitId::TerranWendigo:
+				{
+					if (globals.players[player_id].faction == Faction_TerranUpstart) {
+						return true;
+					}
 				} break;
 			}
 		}
@@ -398,12 +459,28 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranSeraph:
+				{
+					if (globals.players[player_id].faction != Faction_TerranGoldenRepublic) {
+						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
+						{
+							return true;
+						}
+					}
+				}
 				case UnitId::TerranAzazel:
-				case UnitId::TerranLuminary:
 				{
 					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 					{
 						return true;
+					}
+				}
+				case UnitId::TerranLuminary:
+				{
+					if (globals.players[player_id].faction == Faction_TerranGoldenRepublic) {
+						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
+						{
+							return true;
+						}
 					}
 				} break;
 			}
