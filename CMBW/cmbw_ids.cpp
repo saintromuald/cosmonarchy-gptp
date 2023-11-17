@@ -158,9 +158,16 @@ bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 		|| unit_id == UnitId::ProtossMonumentOfSin;
 }
 
-bool unit_id_can_regenerate_shields(u32 unit_id) {
+bool unit_id_has_flash_shielding(u32 unit_id) {
 	return unit_id != UnitId::ProtossVagrantShade
-		&& unit_id != UnitId::TerranAspirant;
+		&& unit_id != UnitId::TerranAspirant
+		&& unit_id != UnitId::TerranLuminary;
+}
+
+bool unit_id_has_shield_regeneration(u32 unit_id)
+{
+	return unit_id == UnitId::TerranAspirant
+		|| unit_id == UnitId::TerranLuminary;
 }
 
 bool unit_id_is_stackable_building(u32 unit_id) {

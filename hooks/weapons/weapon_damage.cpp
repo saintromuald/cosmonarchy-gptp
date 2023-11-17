@@ -411,8 +411,8 @@ namespace hooks
 		switch (data.weapon_id) {
 			case WeaponId::WendigoFusionSaw:
 			{
-				target_ext->values[ValueArmorRend]++;
-				target_ext->timers[TimerArmorRend] = 2 * 24 + 1;
+				target_ext->values[ValueWendigoShatteredWindsStacks]++;
+				target_ext->timers[TimerWendigoShatteredWinds] = 2 * 24 + 1;
 			} break;
 			case WeaponId::LegionnairePhaseSpear: {
 				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo

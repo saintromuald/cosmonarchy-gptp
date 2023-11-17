@@ -369,8 +369,8 @@ namespace hooks
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
 			unit_ext->timers[TimerEmpressAnodyneAnnex], TimerType::Gptp);
-		add_status(statuses, "Shattered", unit_ext->values[ValueArmorRend], 0,
-			unit_ext->timers[TimerArmorRend], TimerType::Gptp);
+		add_status(statuses, "Shattered", unit_ext->values[ValueWendigoShatteredWindsStacks], 0,
+			unit_ext->timers[TimerWendigoShatteredWinds], TimerType::Gptp);
 
 		if (unit_ext->values[ValueSignifyStacks] < 5) {
 			add_status(statuses, "Cowardice", unit_ext->values[ValueSignifyStacks], 5,

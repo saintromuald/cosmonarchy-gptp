@@ -913,7 +913,7 @@ namespace hooks {
 
 									case UnitId::TerranCohort:
 									{
-										if (scbw::unit_queue_full(unit) || globals.players[unit->player].faction != Faction_TerranNydusTrinity)
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranNydusTrinity)
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -991,9 +991,18 @@ namespace hooks {
 										}
 									} break;
 
+									case UnitId::TerranSouthpaw:
+									{
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranUpstart)
+										{
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 									case UnitId::TerranAspirant:
 									{
-										if (scbw::unit_queue_full(unit) || globals.players[unit->player].faction != Faction_TerranGoldenRepublic)
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranGoldenRepublic)
 										{
 											current_button_state = Button_State::Invisible;
 										} else {

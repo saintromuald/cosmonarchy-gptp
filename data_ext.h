@@ -64,7 +64,7 @@ enum ExtValueId {
 	ValueDeconstructionPlayer,
 	ValueMindControlOriginalPlayer,
 	ValuePreMorphEnergy,
-	ValueArmorRend,
+	ValueWendigoShatteredWindsStacks,
 //	ValueGodsMadeFleshActive,
 	ValueMissileReturnTarget, // unit
 //	ValueKelvinMunitionsSlow,
@@ -195,7 +195,7 @@ enum ExtTimerId {
 	TimerIonFieldAttackSpeed,
 	TimerReconstitutionCooldown,
 	TimerBindingGrip,							// unused
-	TimerArmorRend,
+	TimerWendigoShatteredWinds,
 	TimerControlledDemolition,
 	TimerEmergencyDetonation,
 	TimerNemeanReactors,

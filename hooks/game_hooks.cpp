@@ -1205,8 +1205,8 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerArmorRend] == 1) {
-			unit_ext->values[ValueArmorRend] = 0;
+		if (unit_ext->timers[TimerWendigoShatteredWinds] == 1) {
+			unit_ext->values[ValueWendigoShatteredWindsStacks] = 0;
 		}
 
 		if (unit_ext->timers[TimerStun] > 1) {

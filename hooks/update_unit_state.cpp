@@ -211,7 +211,7 @@ namespace hooks
 
 		// Flash shielding (regeneration)
 		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed) {
-			if (unit_id_can_regenerate_shields(unit->id)) {
+			if (unit_id_has_flash_shielding(unit->id)) {
 				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
@@ -252,7 +252,7 @@ namespace hooks
 						helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 					}
 				}
-			} else if (unit->id == UnitId::TerranAspirant) {
+			} else if (unit_id_has_shield_regeneration(unit->id)) {
 				if (unit_ext->damage_taken_timer > 2 * 24) {
 					s32 regen = 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
 					unit->heal_shields(regen, 0, false, false);
