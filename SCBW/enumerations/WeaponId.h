@@ -109,7 +109,7 @@ namespace WeaponId {
 		VithriliskCorrosiveSpores = 0x68,
 		MindTyrantTyranny = 0x69,
 		Feedback = 0x6A,
-		LuminaryAuralAssault = 0x6B,
+		OpticalFlare = 0x6B,
 		MindTyrantMaelstrom = 0x6C,
 		LakiziliskSubterraneanSpines = 0x6D,
 		GaussRifle0_Unused = 0x6E,
@@ -173,6 +173,7 @@ namespace WeaponId {
 		SirenCharybdalRifle					= 96,
 		AutocratEminenceRifle				= 116,
 		ClaymoreHarpoonRailgun				= 120,
+		LuminaryAuralAssault				= 121,
 		UnusedSeraphObservance				= 122,	// Was Seraph ability targeting
 		OlympianTitansFist					= 123,
 		OlympianMountainGun					= 124,

@@ -98,8 +98,10 @@ namespace hooks {
 			bullet->position.x + radius,
 			bullet->position.y + radius
 		).for_each([&](Unit* target) {
-			UnitExt* target_ext = get_unit_ext(target);
-			target_ext->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+			if (!unit_id_is_resource_node(target->id, false)) {
+				UnitExt* target_ext = get_unit_ext(target);
+				target_ext->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+			}
 		});
 	}
 

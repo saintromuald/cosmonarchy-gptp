@@ -606,6 +606,10 @@ namespace hooks {
 					{
 						weapon = WeaponId::MindTyrantMaelstrom; 
 					} break;
+					case OrderId::CastOpticalFlare:
+					{
+						weapon = WeaponId::LuminaryAuralAssault; 
+					} break;
 					case OrderId::Hallucination1:
 					case OrderId::NukePaint:
 					case OrderId::CastTyranny:

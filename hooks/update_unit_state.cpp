@@ -254,8 +254,7 @@ namespace hooks
 				}
 			} else if (unit_id_has_shield_regeneration(unit->id)) {
 				if (unit_ext->damage_taken_timer > 2 * 24) {
-					s32 regen = 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
-					unit->heal_shields(regen, 0, false, false);
+					unit->heal_shields(21, 0, false, false);
 				}
 			}
 		}
