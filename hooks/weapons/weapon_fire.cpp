@@ -882,7 +882,8 @@ namespace hooks {
 
 		// Create explosions mid-flight
 		if (bullet->weapon_id == WeaponId::PositronAntimatterMissile) {
-			u32 period = 2 * 32;
+			// Positron - Particle Annihilation
+			u32 period = 1 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
 				scbw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
 				helper::play_sound_at_pos(scbw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
@@ -891,7 +892,7 @@ namespace hooks {
 				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not
 				for (u32 i = 0; i < targets.count; ++i) {
 					Unit* target = targets.units[i];
-					if (scbw::is_allied_to(bullet->player, target->player)) {
+					if (scbw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
 						continue;
 					}
 					u32 distance = scbw::get_distance_fast(bullet->position, target->position);
