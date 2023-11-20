@@ -652,7 +652,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// Remove cursor centering after singleplayer center view and do not break drag-selection.
 	memory_patch(0x0047F109, (u16)0x28EB);//JMP 0x47F133
 	memory_patch_df(0x0047F10B, (u8)0x90, 3);
-	memory_patch_df(0x004C6E9C, (u8)0x90, 5);
+	memory_patch(0x0047EB39, (u32)0x8AC005C6);//MOV byte ptr [0x00658AC0], ...
+	memory_patch(0x0047EB3D, (u32)0xC3000065);//...0; RETN;
+	memory_patch_df(0x0047EB41, (u8)0x90, 2);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
