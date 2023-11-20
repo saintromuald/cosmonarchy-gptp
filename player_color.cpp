@@ -204,7 +204,7 @@ static bool has_enough_colors() {
 			banned_race_tints_count = race.size();
 		}
 	}
-	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PlayerLimit) {
+	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PlayerLimit - scbw::get_witness_count()) {
 		return false;
 	}
 	return true;

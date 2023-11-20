@@ -3650,4 +3650,14 @@ namespace scbw {
 		}
 		return count;
 	}
+
+	u32 get_witness_count() {
+		u32 count = 0;
+		for (u32 i = 0; i < PlayerLimit; i++) {
+			if (globals.players[i].witness_mode) {
+				count++;
+			}
+		}
+		return count;
+	}
 }
