@@ -1260,10 +1260,11 @@ namespace scbw {
 			|| id == UnitId::TerranMinotaur
 			|| id == UnitId::TerranMagnetar
 			
-			|| id == UnitId::TerranPhiloc
-			|| id == UnitId::TerranAspirant
+			|| id == UnitId::TerranHotshot
 			|| id == UnitId::TerranCohort
+			|| id == UnitId::TerranAspirant
 			|| id == UnitId::TerranSouthpaw
+			|| id == UnitId::TerranPhiloc
 			|| id == UnitId::TerranWendigo;
 	}
 

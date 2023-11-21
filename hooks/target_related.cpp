@@ -224,6 +224,9 @@ namespace hooks
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void check_unit_visibility(Unit* unit) { // 00443390
+		if (unit->is_dead() || !unit->sprite) {
+			return;
+		}
 		u32 detecting_players = helper::get_detecting_players(unit);
 		if (unit->status & UnitStatus::Burrowed) {
 			Box32 rect = {};

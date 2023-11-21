@@ -335,12 +335,14 @@ bool unit_id_is_town_center(u16 unit_id) {
 }
 
 bool unit_id_is_factional(u16 unit_id) {
-	return unit_id == UnitId::TerranAspirant
+	return unit_id == UnitId::TerranHotshot
 		|| unit_id == UnitId::TerranCohort
-		|| unit_id == UnitId::TerranLuminary
-		|| unit_id == UnitId::TerranTarasque
+		|| unit_id == UnitId::TerranAspirant
 		|| unit_id == UnitId::TerranSouthpaw
-		|| unit_id == UnitId::TerranWendigo;
+		|| unit_id == UnitId::TerranTarasque
+		|| unit_id == UnitId::TerranPhiloc
+		|| unit_id == UnitId::TerranWendigo
+		|| unit_id == UnitId::TerranLuminary;
 }
 
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
