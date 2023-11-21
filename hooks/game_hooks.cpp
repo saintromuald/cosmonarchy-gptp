@@ -2082,7 +2082,7 @@ namespace hooks {
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if ((!(unit->status & UnitStatus::InTransport) || unit->status & UnitStatus::InBuilding) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					FireMultipleOptions options = {};
 					options.apply_cooldown = false;
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {

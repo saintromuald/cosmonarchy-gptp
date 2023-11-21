@@ -461,6 +461,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 		case WeaponId::EmpyreanPlasmaBarrage:
 			return InterceptType_AirOnly;
 
+		case WeaponId::HotshotDispatchShotgun:
 		case WeaponId::SirenCharybdalRifle:
 		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::AtreusDauntlessDisruptorCannon:

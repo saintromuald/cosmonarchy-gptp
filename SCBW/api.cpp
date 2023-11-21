@@ -1176,14 +1176,18 @@ namespace scbw {
 			// Allowed IDs
 			case UnitId::TerranHarakan:
 			case UnitId::TerranGoliathTurret:
-			case UnitId::TerranPhalanxTankMode:
-			case UnitId::TerranPhalanxSiegeMode:
-			case UnitId::TerranPhalanxTankModeTurret:
-			case UnitId::TerranPhalanxSiegeModeTurret:
 			case UnitId::TerranMatadorTankMode:
 			case UnitId::TerranMatadorCinderMode:
 			case UnitId::TerranMatadorTurretTankMode:
 			case UnitId::TerranMatadorTurretCinderMode:
+			case UnitId::TerranPhalanxTankMode:
+			case UnitId::TerranPhalanxSiegeMode:
+			case UnitId::TerranPhalanxTankModeTurret:
+			case UnitId::TerranPhalanxSiegeModeTurret:
+			case UnitId::TerranMadrigalImperiosoMode:
+			case UnitId::TerranMadrigalFuriaMode:
+			case UnitId::TerranMadrigalTurretImperiosoMode:
+			case UnitId::TerranMadrigalTurretFuriaMode:
 			{
 				return true;
 			} break;
@@ -2562,6 +2566,10 @@ namespace scbw {
 	{
 		switch (weapon_id)
 		{
+			case WeaponId::HotshotDispatchShotgun:
+			{
+				return 3;
+			}
 			case WeaponId::SirenCharybdalRifle:
 			{
 				return 5;

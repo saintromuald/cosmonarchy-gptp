@@ -146,6 +146,7 @@ namespace WeaponId {
 		TarasqueHedonCannon					= 135,
 		TarasqueAcceleratedPlasmid			= 136,	// Tarasque mobile weapon
 		SouthpawKnockoutDrivers				= 169,
+		HotshotDispatchShotgun				= 208,
 
 		// Terran \\
 			

@@ -2020,6 +2020,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranHotshot:
 								case UnitId::TerranSiren:
 								{
 									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Siren - Prolonged Arms

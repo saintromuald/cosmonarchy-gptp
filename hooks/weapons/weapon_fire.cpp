@@ -520,6 +520,10 @@ namespace hooks {
 						}
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;
+					case WeaponId::HotshotDispatchShotgun: {
+						// Offset: Cone
+						fire_shotgun(unit, weapon_id, 1, 10, 10);
+					} break;
 					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
 						if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {

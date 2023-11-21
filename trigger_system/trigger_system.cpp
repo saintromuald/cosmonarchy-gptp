@@ -1215,6 +1215,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				globals.players[player].faction = faction;
+				globals.players[player].faction_was_set = true;
 			}
 		} else if (parser_eq(&parser, "set_advisor")) {
 			u32 player = parser_get_player(&parser);
