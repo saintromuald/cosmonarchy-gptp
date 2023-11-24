@@ -71,7 +71,7 @@ void load_config() {
 		load_field(config_node, "show-team-ui-self", config.show_team_ui_self);
 
 		// Scrolling
-		load_field(config_node, "use-spacebar-for-scrolling", config.use_spacebar_for_scrolling);
+	//	load_field(config_node, "use-spacebar-for-scrolling", config.use_spacebar_for_scrolling);
 		load_field(config_node, "use-pan-scrolling", config.use_pan_scrolling);
 		load_field(config_node, "scroll-sensitivity", config.scroll_sensitivity);
 
@@ -145,7 +145,7 @@ void save_config() {
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Scrolling");
-	write_field(out, "use-spacebar-for-scrolling", config.use_spacebar_for_scrolling);
+//	write_field(out, "use-spacebar-for-scrolling", config.use_spacebar_for_scrolling);
 	write_field(out, "use-pan-scrolling", config.use_pan_scrolling);
 	write_field(out, "scroll-sensitivity", config.scroll_sensitivity);
 	out << YAML::Newline << YAML::Newline;

@@ -1101,14 +1101,16 @@ LABEL_15:
 			} break;
 			case DialogEventType_Spacebar:
 			{
-				if (config.use_spacebar_for_scrolling) {
+				//if (config.use_spacebar_for_scrolling) {
+				{
 					goto LABEL_15;
 				}
 				goto RespondToPortraitEvent;
 			} break;
 			case DialogEventType_MWheelDown:
 			{
-				if (!config.use_spacebar_for_scrolling) {
+				//if (!config.use_spacebar_for_scrolling) {
+				{
 				RespondToPortraitEvent:
 					s8* key_pressed = *g_dialog_key;
 					s8 virtual_key = *(*g_dialog_key);

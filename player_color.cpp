@@ -19,7 +19,7 @@ static bool player_wants_to_randomize(u32 player) {
 		return false;
 	}
 	if (player_data.can_randomize_player_colors) {
-		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
+		bool randomize = g_player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
 		if (g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
 			randomize = !randomize;
 		}

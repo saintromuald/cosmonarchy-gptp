@@ -203,9 +203,9 @@ SCBW_DATA(GrpHead**,	g_cmdicons_grp,						0x0068C1E0);
 
 // For init_game_load
 SCBW_DATA(void*,		scenario_chk,				0x006D0F24);
-SCBW_DATA(ForceFlags*,	player_force_flags,			0x0058D5B8); // array of 0x4
-SCBW_DATA(u8*,			player_force,				0x0059BDA8); // array of 0x8
-SCBW_DATA(u8*,			player_force_replay_sth,	0x006D11A1); // array of 0x8
+SCBW_DATA(ForceFlags*,	g_player_force_flags,		0x0058D5B8); // array of 0x4
+SCBW_DATA(u8*,			g_player_force,				0x0059BDA8); // array of 0x8
+SCBW_DATA(u8*,			g_player_force_replay_sth,	0x006D11A1); // array of 0x8
 SCBW_DATA(FILE*,		load_game_file_handle,		0x006D1218);
 SCBW_DATA(u8*,			g_multiplayer_mode,			0x0057F0B4);
 SCBW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);

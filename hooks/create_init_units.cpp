@@ -176,13 +176,9 @@ namespace hooks {
 				u8 starting_units = (u8)(*(u16*)(0x00596871));
 				static u8* victory_conditions = (u8*)0x0059686D;
 				static u8* tournament_mode = (u8*)0x00596877;
-				static u8* user_select_slots = (u8*)0x0059BDA8;
 
-				if (*victory_conditions == 0				// check triggers for conditions
-				&&   starting_units == 0 					// use map units
-				&&  *tournament_mode == 0					// tournament mode off
-				&&   player < PlayerLimit
-				&&  (user_select_slots[player]) != 0)		// race selected instead of using map settings?
+				if (*victory_conditions == 0 && starting_units == 0 && *tournament_mode == 0 && player < PlayerLimit
+				&&  (g_player_force[player]) != 0) // race selected instead of using map settings?
 				{
 					starting_units = 2;
 				}
