@@ -625,6 +625,20 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 2;
 			return &offsets;
 		} break;
+		case WeaponId::CataphractLonginiusCannons:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueCataphractLaunchPos;
+			offsets.count = 4;
+			return &offsets;
+		} break;
+		case WeaponId::PaladinCrusaderMissiles:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValuePaladinLaunchPos;
+			offsets.count = 5;
+			return &offsets;
+		} break;
 		case WeaponId::ClaymoreHarpoonRailgun:
 		{
 			static WeaponOffsets offsets = {};
@@ -782,6 +796,13 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 2;
 			return &offsets;
 		} break;
+		case WeaponId::MatrixKhaydarinRay:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueWardenLaunchPos;
+			offsets.count = 4;
+			return &offsets;
+		} break;
 		case WeaponId::SpraithColonySeekerSpores:
 		{
 			static WeaponOffsets offsets = {};
@@ -830,27 +851,6 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.value_id = ValueKeskathalorLaunchPos;
 			offsets.count = 2;
 			offsets.fake_count = 1;
-			return &offsets;
-		} break;
-		case WeaponId::CataphractLonginiusCannons:
-		{
-			static WeaponOffsets offsets = {};
-			offsets.value_id = ValueCataphractLaunchPos;
-			offsets.count = 4;
-			return &offsets;
-		} break;
-		case WeaponId::PaladinCrusaderMissiles:
-		{
-			static WeaponOffsets offsets = {};
-			offsets.value_id = ValuePaladinLaunchPos;
-			offsets.count = 5;
-			return &offsets;
-		} break;
-		case WeaponId::MatrixKhaydarinRay:
-		{
-			static WeaponOffsets offsets = {};
-			offsets.value_id = ValueWardenLaunchPos;
-			offsets.count = 4;
 			return &offsets;
 		} break;
 	}

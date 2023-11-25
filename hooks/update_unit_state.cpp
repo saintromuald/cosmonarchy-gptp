@@ -424,6 +424,13 @@ namespace hooks
 
 		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next
 						 // (especially when the unit dies or gets hidden etc)
+		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+			next_unit = unit->link.next;
+			*g_active_iscript_entity = unit;
+			*g_active_iscript_unit = unit;
+			helper::progress_active_unit_frame(unit);
+		}
+
 		for (Unit* unit = *g_first_dying_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
@@ -435,17 +442,10 @@ namespace hooks
 						hooks::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
 					}
 				}
-			//	helper::update_visibility(unit);
+				helper::update_visibility(unit);
 			} else {
 				unit_death_end(unit);
 			}
-		}
-
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
-			next_unit = unit->link.next;
-			*g_active_iscript_entity = unit;
-			*g_active_iscript_unit = unit;
-			helper::progress_active_unit_frame(unit);
 		}
 
 		if (*g_vision_updated) {

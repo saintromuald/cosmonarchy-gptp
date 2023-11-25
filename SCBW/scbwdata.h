@@ -229,7 +229,7 @@ SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
 SCBW_DATA(u32*,			g_replay_reveal_all,		0x006D0F1C);
 SCBW_DATA(u32*,			next_replay_command_frame,	0x005136C8);
-SCBW_DATA(u32*,			player_explored_visions,	0x0057EEB8);
+SCBW_DATA(u32*,			g_player_explored_visions,	0x0057EEB8);
 SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
 enum MinimapColor {

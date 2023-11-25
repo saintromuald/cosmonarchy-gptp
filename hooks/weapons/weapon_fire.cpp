@@ -274,7 +274,8 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	&&   unit->main_order_id != OrderId::Follow
 	&&   unit->main_order_id != OrderId::Patrol
 	&&   unit->is_target_within_min_range(order_target_unit, attack_range)
-	&&   unit->can_attack_target(order_target_unit)) {
+	&&   unit->can_attack_target(order_target_unit))
+	{
 		if (weapon_id_is_secondary(weapon_id) && scbw::is_allied_to(unit->player, order_target_unit->player)) {
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
@@ -287,7 +288,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 						BulletExt* bullet_ext = get_bullet_ext(bullet);
 						bullet_ext->divisor_multiplier = options.divisor_multiplier;
 						if (has_stagger) {
-							goto fired;
+							goto fired_stagger;
 						}
 					}
 				}
@@ -340,7 +341,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
 				bullet_ext->divisor_multiplier = options.divisor_multiplier;
 				if (has_stagger) {
-					goto fired;
+					goto fired_stagger;
 				}
 			}
 		}
@@ -348,7 +349,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 
 	if (has_stagger) {
 		if (fired_at) {
-		fired:
+		fired_stagger:
 			blacklist.push_back(fired_at);
 			unit->ground_weapon_cooldown = options.stagger;
 			unit->air_weapon_cooldown = options.stagger;
@@ -540,6 +541,7 @@ namespace hooks {
 					case WeaponId::CataphractLonginiusCannons: {
 						FireMultipleOptions options = {};
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
+						options.stagger = -1;
 
 						// Multi-Attack IV
 						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, options);
@@ -587,6 +589,7 @@ namespace hooks {
 					case WeaponId::MatrixKhaydarinRay: {
 						FireMultipleOptions options = {};
 						options.use_weapon_factor = false;
+						options.stagger = -1;
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
 
 						// Multi-Attack IV
@@ -595,6 +598,7 @@ namespace hooks {
 					case WeaponId::BarghestRayOfAgony: {
 						FireMultipleOptions options = {};
 						options.use_weapon_factor = false;
+						options.stagger = -1;
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
 
 						// Multi-Attack III
@@ -609,6 +613,7 @@ namespace hooks {
 						options.center_on_target = true;
 						options.center_on_target_range_overwrite = 2 * 32;
 						options.divisor_multiplier = 2;
+						options.stagger = -1;
 
 						fire_bullet(unit, weapon_id, unit->order_target);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);

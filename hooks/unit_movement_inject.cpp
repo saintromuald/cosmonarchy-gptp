@@ -78,6 +78,24 @@ namespace
 		}
 	}
 
+	void __declspec(naked) move_towards_wrapper() {
+		static Unit* target;
+		static Unit* unit;
+		static b32 result;
+
+		__asm {
+			MOV target, EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::move_towards(target, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 playIdleIscript_978D8 = 0x004978D8;
@@ -101,6 +119,7 @@ namespace hooks
 	//	jump_patch(move_unit_wrapper,					0x004EB9F0, 1); // breaks sprite sorting
 		jump_patch(can_collide_with_wrapper,			0x0042DEE0, 2);
 	//	jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
+		jump_patch(move_towards_wrapper,				0x004EB900, 1)
 
 	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}

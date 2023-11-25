@@ -419,7 +419,7 @@ namespace hooks
 		}
 		if (!warningOnce00)
 		{
-			sprintf_s(buffer, "Invalid hashStructIndex!!\nhashStructIndex: %u", hashStructIndex);
+			sprintf_s(buffer, "Invalid hash_struct_index!!\nhashStructIndex: %u", hashStructIndex);
 			scbw::print(buffer, GameTextColor::Red);
 			warningOnce00 = true;
 		}
@@ -436,17 +436,17 @@ namespace hooks
 	void __declspec(naked) drop_debugging_01()
 	{
 		static char buffer[256];
-		static u32 activeNationID;
+		static u32 active_nation_id;
 
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
-			MOV activeNationID, EBX
+			MOV active_nation_id, EBX
 		}
 
 		if (!warningOnce01)
 		{
-			sprintf_s(buffer, "Invalid PlayerFlag!!\nactiveNationID: %u", activeNationID);
+			sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u", active_nation_id);
 			scbw::print(buffer, GameTextColor::Red);
 			warningOnce01 = true;
 		}
@@ -461,28 +461,28 @@ namespace hooks
 		}
 	}
 
-	static bool warningOnce02 = false;
+	static bool warning_once_02 = false;
 	const u32 Hook_DropDebugging02 = 0x0047CD63;
 	void __declspec(naked) drop_debugging_02()
 	{
 //		static char buffer[256];
-		static bool isSucceeded;
-		static u8 visibilityHash;
-		static u8 nationHash;
+		static bool succeeded;
+		static u8 visibility_hash;
+		static u8 nation_hash;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
-			MOV isSucceeded, AL
-			MOV visibilityHash, CL
-			MOV nationHash, DL
+			MOV succeeded, AL
+			MOV visibility_hash, CL
+			MOV nation_hash, DL
 		}
-		if (!isSucceeded && !warningOnce02)
+		if (!succeeded && !warning_once_02)
 		{
 //			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *g_active_nation_id);
 //			scbw::print(buffer, GameTextColor::Red);
-			scbw::printf("Invalid SpriteVisibility!!\nactiveNationID: % u", *g_active_nation_id);
-			scbw::printf("SpriteVisHash (from VisionSync) %d =/= visionHash (from CMD) %d", nationHash, visibilityHash);
-			warningOnce02 = true;
+			scbw::printf("Invalid SpriteVisibility!\nactive_nation_id: % u", *g_active_nation_id);
+			scbw::printf("SpriteVisHash (from VisionSync) %d =/= vision_hash (from CMD) %d", nation_hash, visibility_hash);
+			warning_once_02 = true;
 		}
 		__asm {
 			POPAD
@@ -493,55 +493,66 @@ namespace hooks
 		}
 	}
 
-	struct hashStruct
+	struct HashStruct
 	{
 		u16 hash;
-		u8 hashType;
+		u8 hash_type;
 		u8 byte[0x109];
 	};
 
-	static_assert(sizeof(hashStruct) == 0x10C, "Invalid hashStruct Size");
-	hashStruct* hashList = (hashStruct*)0x0065EB30;
+	static_assert(sizeof(HashStruct) == 0x10C, "Invalid HashStruct Size");
+	HashStruct* g_hash_list = (HashStruct*)0x0065EB30;
 	
-	static bool warningOnce03_00 = false;
-	static bool warningOnce03_01 = false;
+	static bool warning_once_03_00 = false;
+	static bool warning_once_03_01 = false;
 	const u32 Hook_DropDebugging03 = 0x0047CDF1;
 	void __declspec(naked) drop_debugging_03()
 	{
 		static char buffer[256];
 		static u8* data;
-		static u32 hashStructIndex;
-		static u8 hashType;
-		static bool isSucceeded;
+		static u32 hash_struct_index;
+		static u8 hash_type;
+		static bool succeeded;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV data, EDI
-			MOV hashStructIndex, ESI
-			MOV hashType, BL
+			MOV hash_struct_index, ESI
+			MOV hash_type, BL
 		}
-		isSucceeded = true;
-		if (hashList[hashStructIndex].hash != *(u16*)(data + 2) && !warningOnce03_00)
+		succeeded = true;
+		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2) && !warning_once_03_00)
 		{
-			isSucceeded = false;
-			sprintf_s(buffer, "Invalid Hash!\nhashStructIndex: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
-				hashStructIndex,
-				hashList[hashStructIndex].hashType,
-				hashList[hashStructIndex].hash,
-				hashType & 0x0F,
-				*(u16*)(data + 2),
-				*g_elapsed_time_frames);
-			scbw::print(buffer, GameTextColor::Yellow);
-			warningOnce03_00 = true;
+			succeeded = false;
+			if (g_hash_list[hash_struct_index].hash_type == 1) {
+				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nHash 1: 0x%04x | Hash 2: 0x%04x\nP1 resources: %u | %u | %u\nP2 resources: %u | %u | %u\nElapsed time: %u | Last random number: %u\nActive visions: %u\nExplored visions 2: %u",
+					*g_local_nation_id,
+					g_hash_list[hash_struct_index].hash, *(u16*)(data + 2),
+					g_total_vespene[0], g_total_minerals[0], g_game_vespene[0],
+					g_total_vespene[1], g_total_minerals[1], g_game_vespene[1],
+					*g_elapsed_time_frames, *g_last_random_number, *g_player_visions, *g_player_explored_visions);
+				scbw::print(buffer, GameTextColor::Yellow);
+			} else {
+				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
+					hash_struct_index,
+					g_hash_list[hash_struct_index].hash_type,
+					g_hash_list[hash_struct_index].hash,
+					hash_type & 0x0F,
+					*(u16*)(data + 2),
+					*g_elapsed_time_frames);
+				scbw::print(buffer, GameTextColor::Yellow);
+			}
+			warning_once_03_00 = true;
 		}
-		if (hashList[hashStructIndex].hashType != (hashType & 0x0F) && warningOnce03_01)
+
+		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_01)
 		{
-			isSucceeded = false;
-			sprintf_s(buffer, "Invalid HashType!!\nhashStructIndex: %u\nHashType = %u", hashStructIndex, hashList[hashStructIndex].hashType);
+			succeeded = false;
+			sprintf_s(buffer, "Invalid HashType!\hash_struct_index: %u\nHashType = %u", hash_struct_index, g_hash_list[hash_struct_index].hash_type);
 			scbw::print(buffer, GameTextColor::Red);
-			warningOnce03_01 = true;
+			warning_once_03_01 = true;
 		}
-		if (isSucceeded)
+		if (succeeded)
 		{
 			__asm {
 				POPAD
@@ -550,9 +561,7 @@ namespace hooks
 				POP EBX
 				RETN
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				POP ESI
