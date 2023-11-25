@@ -1,5 +1,6 @@
 #include "hooks/misc/cosmonarchy_specific.h"
 #include "globals.h"
+#include "logger.h"
 
 namespace hooks
 {
@@ -533,6 +534,8 @@ namespace hooks
 					*g_elapsed_time_frames, *g_last_random_number, *g_player_visions, *g_player_explored_visions,
 					g_map_tile_size->width, g_map_tile_size->height);
 				scbw::print(buffer, GameTextColor::Yellow);
+				GPTP::logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << "| Hash 2: 0x" << *(u16*)(data + 2) << "\nP1 resources: " << g_total_vespene[0] << " | " << g_total_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_total_vespene[0] << " | " << g_total_minerals[0] << " | " << g_game_vespene[0] << "\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number << "\nActive visions: " << *g_player_visions << "\nExplored visions: " << *g_player_explored_visions << "\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height << "\n",
+				GPTP::logger << "Active tile array: " << *g_active_tile_array << "\n";
 			} else {
 				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
 					hash_struct_index,

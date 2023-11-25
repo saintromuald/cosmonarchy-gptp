@@ -1,6 +1,4 @@
-/// Basic logging to text file supported by GPTP.
-/// Note: If you build the plugin in Release mode, all logging will be disabled.
-/// Made by pastelmind
+// Basic logging to text file supported by GPTP. Made by pastelmind
 
 #pragma once
 
@@ -11,37 +9,37 @@ namespace GPTP
 {
 	struct GameLogger
 	{
-			/// Writes a "game start" message to the log file and resets the internal
-		/// frame timer.
+		// Writes a "game start" message to the log file and resets the internal frame timer.
 		bool start_game();
-		/// Writes a "game end" message to the log file.
-		bool endGame();
+		// Writes a "game end" message to the log file.
+		bool end_game();
 		template <typename T>
 		GameLogger& operator<<(const T& t);
 		GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
-			bool checkLogFile();
-		bool updateFrame();
-		std::ofstream logFile;
-		s32 lastUpdatedFrame;
+		bool check_log_file();
+		bool update_frame();
+		std::ofstream log_file;
+		s32 last_updated_frame;
 	};
-	extern bool doLogging;
+	extern bool logging_enabled;
 	extern GameLogger logger;
 }
-
-//-------- Template member function definitions --------//
 
 namespace GPTP
 {
 	template <typename T>
 	GameLogger& GameLogger::operator<<(const T& t)
 	{
-		if (doLogging)
+		if (logging_enabled)
 		{
-			if (checkLogFile())
-				if (updateFrame())
-					logFile << t;
+			if (check_log_file())
+			{
+				if (update_frame())
+				{
+					log_file << t;
+				}
+			}
 		}
 		return *this;
 	}
 }
-

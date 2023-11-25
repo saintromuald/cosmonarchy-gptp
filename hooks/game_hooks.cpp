@@ -3207,6 +3207,7 @@ namespace hooks {
 
 		memset(vision_timers, 0, 8*256*256);
 
+		GPTP::logger << "Started a match!\n";
 		return true;
 	}
 
