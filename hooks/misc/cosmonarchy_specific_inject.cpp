@@ -525,12 +525,13 @@ namespace hooks
 		{
 			succeeded = false;
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
-				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nHash 1: 0x%04x | Hash 2: 0x%04x\nP1 resources: %u | %u | %u\nP2 resources: %u | %u | %u\nElapsed time: %u | Last random number: %u\nActive visions: %u\nExplored visions 2: %u",
+				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nHash 1: 0x%04x | Hash 2: 0x%04x\nP1 resources: %u | %u | %u\nP2 resources: %u | %u | %u\nElapsed time: %u | Last random number: %u\nActive visions: %u\nExplored visions 2: %u\nMap dimensions: %u x %u",
 					*g_local_nation_id,
 					g_hash_list[hash_struct_index].hash, *(u16*)(data + 2),
 					g_total_vespene[0], g_total_minerals[0], g_game_vespene[0],
 					g_total_vespene[1], g_total_minerals[1], g_game_vespene[1],
-					*g_elapsed_time_frames, *g_last_random_number, *g_player_visions, *g_player_explored_visions);
+					*g_elapsed_time_frames, *g_last_random_number, *g_player_visions, *g_player_explored_visions,
+					g_map_tile_size->width, g_map_tile_size->height);
 				scbw::print(buffer, GameTextColor::Yellow);
 			} else {
 				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
