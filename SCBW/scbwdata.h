@@ -1199,6 +1199,9 @@ SCBW_DATA(u32*,				g_current_network_mode,				0x0059688C);
 // For update_visibility_hash
 SCBW_DATA(u8*,				g_region_vision_filter,				0x00629C90);
 
+// For desync debugging
+SCBW_DATA(u8*,				g_player_flag,						0x0065FC10);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

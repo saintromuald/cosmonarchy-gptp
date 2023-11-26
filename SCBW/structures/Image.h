@@ -47,7 +47,7 @@ namespace ImageFlags
 		Mirrored = 0x0002,				// flag 1   : 0x0002
 		DontUpdate = 0x0004,			// flag 2   : 0x0004
 		HasRotationFrames = 0x0008,		// flag 3   : 0x0008
-		Flag04 = 0x0010,				// flag 4   : 0x0010
+		UseFullIscript = 0x0010,		// flag 4   : 0x0010
 		Clickable = 0x0020,				// flag 5   : 0x0020
 		Invisible = 0x0040,				// flag 6   : 0x0040
 		UsesSpecialOffset = 0x0080,		// flag 7   : 0x0080
