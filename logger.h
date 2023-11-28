@@ -8,21 +8,23 @@
 #include "config.h"
 
 namespace GPTP {
-	struct GameLogger {
+	class GameLogger {
+	public:
 		GameLogger(bool critical) : enabled(critical), critical(critical) {}
 
-		// Writes a "game start" message to the log file and resets the internal frame timer.
 		void start_game();
-
-		// Writes a "game end" message to the log file.
 		void end_game();
 
 		template <typename T>
 		GameLogger& operator<<(const T& t);
 		GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
+		inline void set_enabled(bool enabled) { this->enabled = enabled; }
+
+	private:
 		bool try_open_log_file();
 		void print_frame();
 		
+	private:
 		bool enabled;
 		bool critical;
 		std::ofstream log_file;
