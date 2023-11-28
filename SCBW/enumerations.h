@@ -695,8 +695,8 @@ namespace DialogControlTypes
 		VerticalScrollBar = 0x00000007,
 		TextBox = 0x00000008,
 		LabelLeftAlign = 0x00000009,
-		LabelRightAlign = 0x0000000A,
-		LabelCenterAlign = 0x0000000B,
+		LabelCenterAlign = 0x0000000A,
+		LabelRightAlign = 0x0000000B,
 		ListBox = 0x0000000C,
 		ComboBox = 0x0000000D,
 		LightUpButton = 0x0000000E
