@@ -528,7 +528,7 @@ namespace hooks
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
 				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
 				scbw::print(buffer, GameTextColor::Yellow);
-				GPTP::logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << *g_player_flag <<
+				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << *g_player_flag <<
 					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << "| Hash 2: 0x" << *(u16*)(data + 2) <<
 					"\nP1 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] <<
 					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
@@ -536,7 +536,7 @@ namespace hooks
 					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<
 					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << *g_region_vision_hash << 
 					"\n";
-				GPTP::logger << "Active tile array: " << *g_active_tile_array << "\n";
+				GPTP::critical_logger << "Active tile array: " << *g_active_tile_array << "\n";
 			} else {
 				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
 					hash_struct_index,

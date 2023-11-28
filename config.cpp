@@ -93,7 +93,7 @@ void load_config() {
 
 		// Debug
 		load_field(config_node, "verbose", config.verbose);
-		GPTP::logging_enabled = config.verbose;
+		GPTP::logger.enabled = config.verbose;
 
 		// Map directory
 		load_field(config_node, "default-map-directory", config.default_map_directory);

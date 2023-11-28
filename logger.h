@@ -2,43 +2,41 @@
 
 #pragma once
 
-#include "types.h"
 #include <fstream>
 
-namespace GPTP
-{
-	struct GameLogger
-	{
+#include "SCBW/scbwdata.h"
+#include "config.h"
+
+namespace GPTP {
+	struct GameLogger {
+		GameLogger(bool critical) : enabled(critical), critical(critical) {}
+
 		// Writes a "game start" message to the log file and resets the internal frame timer.
-		bool start_game();
+		void start_game();
+
 		// Writes a "game end" message to the log file.
-		bool end_game();
+		void end_game();
+
 		template <typename T>
 		GameLogger& operator<<(const T& t);
 		GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
-		bool check_log_file();
-		bool update_frame();
+		bool try_open_log_file();
+		void print_frame();
+		
+		bool enabled;
+		bool critical;
 		std::ofstream log_file;
 		s32 last_updated_frame;
 	};
-	extern bool logging_enabled;
-	extern GameLogger logger;
-}
 
-namespace GPTP
-{
+	extern GameLogger logger;
+	extern GameLogger critical_logger;
+
 	template <typename T>
-	GameLogger& GameLogger::operator<<(const T& t)
-	{
-		if (logging_enabled)
-		{
-			if (check_log_file())
-			{
-				if (update_frame())
-				{
-					log_file << t;
-				}
-			}
+	GameLogger& GameLogger::operator<<(const T& t) {
+		if (try_open_log_file()) {
+			print_frame();
+			log_file << t;
 		}
 		return *this;
 	}
