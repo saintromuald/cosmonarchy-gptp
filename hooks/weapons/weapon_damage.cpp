@@ -197,9 +197,6 @@ namespace hooks
 			} break;
 		}
 
-		// TODO: remove this
-		bool can_damage = true; // debug only!
-
 		// Ai_ReactToHit crash - null town
 		if (data.target->unit_ai) {
 			// Ai_ReactToHit crash - null town
@@ -209,7 +206,7 @@ namespace hooks
 					u32 attacker_id = data.attacker ? data.attacker->id : UnitId::None;
 					scbw::printf("Ai_ReactToHit crash prevention - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 																              attacker_id, data.attacker->player, data.target->id, data.target->player);
-					can_damage = false;
+					return; // Don't think this ever happens anymore, removed can_damage bool 11/27/2023 -Pr0nogo
 				}
 			}
 		}
@@ -300,7 +297,7 @@ namespace hooks
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && can_damage) {
+		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0) {
 			if (data.target->status & UnitStatus::IsHallucination) {
 				data.damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
 			}
@@ -314,7 +311,7 @@ namespace hooks
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
 		// Reduce shields
-		if (data.shield_reduce_amount && can_damage) {
+		if (data.shield_reduce_amount) {
 			data.target->shields -= data.shield_reduce_amount;
 			if (data.damage_type != DamageType::Independent && data.target->shields != 0) {
 				shield_overlay = true;

@@ -81,7 +81,12 @@ namespace hooks {
 	}
 
 	void irradiate_hit(Unit* attacker, Point16 target, u8 attacking_player_id) {
-		iquare_globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
+	//	iquare_globals.create_effect(EffectId_Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
+	}
+
+	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id)
+	{
+		iquare_globals.create_effect(EffectId_Irradiate, 10 * 24, { target.x, target.y }, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
@@ -518,14 +523,19 @@ namespace hooks {
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
-		scbw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, x, y, 11, 17);
-		Point16 position = {x, y};
+		Point16 position = { x, y };
+		stasis_field_hit_internal(attacker, position, bullet);
+	}
+
+	void stasis_field_hit_internal(Unit* attacker, Point16 position, Bullet* bullet)
+	{
+		scbw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, position.x, position.y, 11, 17);
 		helper::play_sound_at_pos(SoundId::Protoss_ARBITER_PAbCag00_WAV, position, 1, 0);
 		Box16 coords = {};
-		coords.left = x - 48;
-		coords.top = y - 48;
-		coords.right = x + 48;
-		coords.bottom = y + 48;
+		coords.left = position.x - 48;
+		coords.top = position.y - 48;
+		coords.right = position.x + 48;
+		coords.bottom = position.y + 48;
 		helper::iterate_units_at_location_target_proc_stasis_field(attacker, &coords);
 	}
 

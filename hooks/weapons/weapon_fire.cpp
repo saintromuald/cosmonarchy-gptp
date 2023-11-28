@@ -1049,6 +1049,17 @@ namespace hooks {
 			for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
 				helper::play_image_iscript(image, IscriptAnimation::Death);
 			}
+
+			switch (bullet->weapon_id) {
+				case WeaponId::Irradiate:
+				{
+					hooks::irradiate_hit_internal(bullet->source_unit, bullet->position, bullet->player);
+				} break;
+				case WeaponId::StasisField:
+				{
+					hooks::stasis_field_hit_internal(bullet->source_unit, bullet->position, bullet);
+				} break;
+			}
 		}
 	}
 
