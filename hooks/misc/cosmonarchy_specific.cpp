@@ -315,7 +315,7 @@ namespace hooks
 		helper::update_thingies();
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
-		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
+	//	GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
 		return scbw::set_ingame_loop_state(0);
 	}
 
