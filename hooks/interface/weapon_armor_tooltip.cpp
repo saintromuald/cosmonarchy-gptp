@@ -507,23 +507,23 @@ namespace hooks
 		text += "\n" + std::string(armor_text) + " ";
 		append_tooltip_value(text, base_armor, bonus_armor, extended);
 
-		text += "\nPlane: " + plane;
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || unit->status & UnitStatus::InAir)
 		{
 			text += "\nMovespeed: " + movement_speed;
 		}
+		text += "\nSight Range: " + std::to_string(sight_range);
 		text += "\nStatus: " + status;
 
 		if (extended) {
 			if (unit->player < PlayerLimit) {
 				text += "\nColor: " + std::string(scbw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
 			}
+			text += "\nPlane: " + plane;
 			text += "\nFlags: " + flag;
 			if (accel != 1) {
 				text += "\nAcceleration: " + acceleration;
 			}
 			text += "\nTurn Rate: " + turn_rate;
-			text += "\nSight Range: " + std::to_string(sight_range);
 		//	if ((scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
 		//		scbw::draw_weapon_range(unit, sight_range, 255);
 		//	}

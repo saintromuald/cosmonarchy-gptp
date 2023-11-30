@@ -261,6 +261,8 @@ static void init_player_colors() {
 
 		easter_egg_unit_names[UnitId::TerranHarakan].push_back("Terran Ackmed Clone");
 		easter_egg_unit_names[UnitId::TerranCohort].push_back("Terran Nekron");
+		easter_egg_unit_names[UnitId::TerranCataphract].push_back("Terran Catfact");
+		easter_egg_unit_names[UnitId::TerranHadron].push_back("Terran Hardon");
 
 		easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
 		easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
