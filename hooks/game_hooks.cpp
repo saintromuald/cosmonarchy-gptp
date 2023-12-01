@@ -1118,17 +1118,31 @@ namespace hooks {
 		}
 
 		// Overlay for units which do not leave behind corpses
-		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
-			unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
+			unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
 		}
+		
+		// Overlay for units which do not regress on death
+		if (unit_ext->values[ValueOriginatedFromOcsalLarva] && !unit->sprite->get_overlay(ImageId::OcsalRegressionOverlay)) {
+			if (unit->id != UnitId::ZergOcsalLarva && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
+				scbw::add_unit_overlay(unit, ImageId::OcsalRegressionOverlay);
+			}
+		}
+		
+		// Overlay for units which are mind-controlled
+		if ((unit_ext->values[ValueMindControlPlayer] || unit_ext->timers[TimerEmpressAnodyneAnnex]) && !unit->sprite->get_overlay(ImageId::TyrannyOverlay)) {
+			scbw::add_unit_overlay(unit, ImageId::TyrannyOverlay);
+		}
+
+		// Overlay for units 
 
 		// Reclamation
 		{
 			// Decaying
 			if (unit_ext->values[ValueDecaying]) {
 				if (!(unit->status & UnitStatus::Cloaked)) {
-					if (!unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
-						unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+					if (!unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
+						unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
 					}
 				}
 
