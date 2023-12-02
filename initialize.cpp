@@ -564,15 +564,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// genericBtnInteract (0x004E1C20)
 	memory_patch(0x004E1C38, (u16)0x73FC);
 
-	// For new replay UI
-	memory_patch(0x004E5363, &StatResTextBuffer);	// printStatResInfo
-	memory_patch(0x004E537D, &StatResTextBuffer);
-	memory_patch(0x004E541F, &StatResTextBuffer);	// showSupplyInfo
-	memory_patch(0x004E5436, &StatResTextBuffer);
-	memory_patch(0x004E5509, (u8)0x20);				// statRes_Text_Update
-	memory_patch(0x004E5864, (u8)0x20);				// StatRes_CustomCtrl
-	memory_patch(0x004E58DE, &StatRes_fxnInteract);	// StatRes_RegisterCustomProcs
-
 	// Use new pcolor system for player messages.
 	call_patch(hooks::getColourID_new, 0x0048D2EC);
 	// BWFXN_DisplayText (0x0048D1C0)

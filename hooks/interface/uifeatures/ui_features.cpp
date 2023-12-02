@@ -985,7 +985,7 @@ LABEL_15:
 		}
 		*g_buttonset_dialog = final_dialog;
 		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::statbtn_dialog_interact, final_dialog);
-	}
+	}/*
 
 	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update) // 004E52E0
 	{
@@ -1010,7 +1010,7 @@ LABEL_15:
 				helper::update_dialog(dialog);
 			}
 		}
-	}
+	}*/
 
 	char input_mmb_down(DialogEvent* event) {
 		disable_mouse_scroll = true;

@@ -432,7 +432,7 @@ namespace
 			POPAD
 			RETN
 		}
-	}
+	}/*
 
 	void __declspec(naked) print_stat_res_info_wrapper() // 004E52E0
 	{
@@ -464,7 +464,7 @@ namespace
 			POP EBP
 			RETN 0x10
 		}
-	}
+	}*/
 
 	void __declspec(naked) input_mmb_down_wrapper() { // 00484520
 		static char result;

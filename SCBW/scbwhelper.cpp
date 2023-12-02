@@ -6107,17 +6107,25 @@ namespace helper {
 		return result;
 	}
 
-	s32 get_color_handle(u8 color) {
-		const u32 GetColorHandle_function = 0x0041F610;
-		static s32 result;
+	void get_color_handle(u8 color) {
+		const u32 func_address = 0x0041F610;
 		_asm {
 			PUSHAD
-			MOVZX EAX, color
-			CALL GetColorHandle_function
-			MOV result, EAX
+			MOV AL, color
+			CALL func_address
 			POPAD
 		}
-		return result;
+	}
+
+	void set_font_handle(u32* font) {
+		const u32 func_address = 0x0041FB30;
+
+		__asm {
+			PUSHAD
+			MOV ECX, font
+			CALL func_address
+			POPAD
+		}
 	}
 
 	// For targeted_order
@@ -7802,7 +7810,7 @@ namespace helper {
 	}
 
 	// For stat_res_main_proc
-	void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB) {
+	/*void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB) {
 		const u32 Func_showSupplyInfo = 0x004E53B0;
 		s32 graphic_xd = graphic;
 		s32 mathA_xd = mathA;
@@ -7830,7 +7838,7 @@ namespace helper {
 			CALL Func_printStatResInfo
 			POPAD
 		}
-	}
+	}*/
 
 	// For redraw_supply_info
 	bool unit_stat_cond_standard() {
@@ -10624,35 +10632,29 @@ namespace helper {
 		}
 	}
 
-	s32 bw_print_icon(Bounds* bounds, FxnDrawIconData* data, u32 width, u32 height) {
-		static s32 result;
+	void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y) {
 		const u32 func_address = 0x0041D090;
 		__asm {
 			PUSHAD
-			PUSH height
-			PUSH width
+			PUSH pos_y
+			PUSH pos_x
 			MOV EDI, data
 			MOV EAX, bounds
 			CALL func_address
-			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
-	u32 bw_print_xy(char* dest, s32 width, s32 height) {
-		static u32 result;
+	void bw_print_xy(char* text, s32 pos_x, s32 pos_y) {
 		const u32 func_address = 0x004202B0;
 		__asm {
 			PUSHAD
-			PUSH height
-			MOV ESI, width
-			MOV EAX, dest
+			PUSH pos_y
+			MOV ESI, pos_x
+			MOV EAX, text
 			CALL func_address
-			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
 	bool unit_is_in_notify_range(Unit* unit) {
@@ -14475,6 +14477,21 @@ namespace helper {
 			PUSHAD
 			MOV ECX, dialog
 			MOV EDX, dlg_event
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event)
+	{
+		const u32 func_address = 0x00418C40;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			MOV EAX, dlg_event
 			CALL func_address
 			MOV result, EAX
 			POPAD

@@ -841,6 +841,14 @@ SCBW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 640 x 480 divided into 12
 SCBW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
 static DrawGameProc const g_old_draw_game_proc = (DrawGameProc)0x004BD580;
+SCBW_DATA(u32*,					g_current_font_color,	0x006CE0C0);
+SCBW_DATA(u8*,					g_font_spacing,			0x006CE0C4);
+SCBW_DATA(Box16*,				g_draw_text,			0x006CE0C8);/*
+SCBW_DATA(u16*,					g_draw_text_left,		0x006CE0C8);
+SCBW_DATA(u16*,					g_draw_text_top,		0x006CE0CA);
+SCBW_DATA(u16*,					g_draw_text_right,		0x006CE0CC);
+SCBW_DATA(u16*,					g_draw_text_bottom,		0x006CE0CE);*/
+SCBW_DATA(u32*,					g_saved_font_color,		0x006CE0E8);
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
@@ -957,7 +965,8 @@ SCBW_DATA(u32**,		g_current_tiles,						0x006D0E84);
 
 // For draw_tooltip_with_icon
 SCBW_DATA(char*,		grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
-SCBW_DATA(GrpHead*,		icons_grp,						0x0068C238);
+SCBW_DATA(GrpHead*,		icons_grp,						0x0068C238); // This is wrong. -DF
+SCBW_DATA(GrpHead**,	g_icons_grp,					0x0068C238);
 SCBW_DATA(Box16*,		tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit

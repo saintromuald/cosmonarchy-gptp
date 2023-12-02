@@ -34,11 +34,8 @@ namespace
 		//  if ( numShapes )
 		//    want_refresh = true;
 		//}
-		if (graphics::draw_all_shapes() > 0)
+		if (graphics::draw_all_shapes() + graphics::draw_stat_res_shapes() > 0)
 		{
-			want_refresh = true;
-		}
-		if (graphics::draw_stat_res_shapes() > 0) {
 			want_refresh = true;
 		}
 	}

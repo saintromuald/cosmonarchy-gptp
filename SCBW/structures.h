@@ -433,10 +433,10 @@ typedef b32(__fastcall* ActionPointer)(Action*);
 //GRP frame header
 struct GrpFrame
 {
-	s8  x;
-	s8  y;
-	s8  w;
-	s8  h;
+	u8  x;
+	u8  y;
+	u8  w;
+	u8  h;
 	u32 data_offset; // might be u16* (but as a pointer, would still fit in u32)
 };
 C_ASSERT(sizeof(GrpFrame) == 8);
