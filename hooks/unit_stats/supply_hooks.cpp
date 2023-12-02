@@ -948,6 +948,8 @@ namespace hooks
 			SHL		EBX, 16
 			MOVZX	ECX, byte ptr [EDI + 0xA4]
 			MOV		BX, [EDI + ECX + 0x98]		//	u16 unit_id = unit->build_queue[unit->build_queue_slot];
+			CMP		BX, 73						//	if (unit_id == UnitId::ProtossSteward)
+			JE		offset _ret					//		return;
 			CMP		BX, 228
 			JNE		offset _hasqueue			//	if (unit_id == UnitId::None) {
 			MOV		CL, [EDI + 0x4D]
