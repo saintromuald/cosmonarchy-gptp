@@ -10,6 +10,7 @@
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/unit_destructor_special.h"
 #include "hooks/update_unit_sight.h"
+#include <hooks\unit_stats\supply_hooks.h>
 
 namespace hooks
 {
@@ -421,6 +422,7 @@ namespace hooks
 		}
 
 		// Originally had code related to order timers and Disruption Web; removed former, handled latter in globals
+		stat_res_refresh_production_arrays();
 
 		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next
 						 // (especially when the unit dies or gets hidden etc)
@@ -429,6 +431,7 @@ namespace hooks
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit = unit;
 			helper::progress_active_unit_frame(unit);
+			stat_res_get_production(unit);
 		}
 
 		for (Unit* unit = *g_first_dying_unit; unit; unit = next_unit) {

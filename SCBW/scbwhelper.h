@@ -804,7 +804,8 @@ namespace helper {
 	//// uifeatures
 
 	s32 bwfxn_print_xy(const char* text, s32 x, s32 y);
-	s32 get_color_handle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+	void get_color_handle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+	void set_font_handle(u32* font);																				// 0041FB30
 
 	// For targeted_order
 	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9);		// 00474B90
@@ -940,8 +941,8 @@ namespace helper {
 	char team_game_count_races(char force, char* bIsLegal, char race);										// 004857B0
 
 	// For stat_res_main_proc
-	void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);								// 004E53B0
-	void print_stat_res_info(BinDlg* dialog, u32 icon_graphic, u32* accrued_value, u32 resource_count, b32 do_not_accrue);	// 004E52E0
+	//void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);								// 004E53B0
+	//void print_stat_res_info(BinDlg* dialog, u32 icon_graphic, u32* accrued_value, u32 resource_count, b32 do_not_accrue);	// 004E52E0
 
 	// For redraw_supply_info
 	bool unit_stat_cond_standard();																			// 00424980
@@ -1292,8 +1293,8 @@ namespace helper {
 
 	void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 
-	s32 bw_print_icon(Bounds* bounds, FxnDrawIconData* data, u32 right, u32 bottom);						// 0041D090
-	u32 bw_print_xy(char* dest, s32 width, s32 height);														// 004202B0
+	void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y);						// 0041D090
+	void bw_print_xy(char* text, s32 pos_x, s32 pos_y);														// 004202B0
 
 	bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0
 	u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit);											// 0048EAE0
@@ -1684,4 +1685,5 @@ namespace helper {
 	bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2);				// 0045F0B0
 	BYTE* statport_alloc();														// 0045E360
 	bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418EB0
+	bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418C40
 }

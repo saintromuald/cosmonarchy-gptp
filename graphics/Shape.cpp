@@ -116,7 +116,7 @@ namespace graphics
 
 	//-------- Drawing --------//
 
-	void Shape::draw(bool is_statres) const
+	void Shape::draw(/*bool is_statres*/) const
 	{
 		Vector32 p1 = this->p1, p2 = this->p2;
 		switch (this->coordType)
@@ -145,9 +145,8 @@ namespace graphics
 
 			case Text: {
 				// TODO: Add ability to change font count
-				const char* string = is_statres ? get_statres_string_from_index(this->stringIndex).c_str() : get_string_from_index(this->stringIndex).c_str();
-				g_game_screen_buffer->blitString(
-					string, p1.x, p1.y, this->fontSize);
+				const char* string = /*is_statres ? get_statres_string_from_index(this->stringIndex).c_str() : */get_string_from_index(this->stringIndex).c_str();
+				g_game_screen_buffer->blitString(string, p1.x, p1.y, this->fontSize);
 			} break;
 
 			case DOT:
