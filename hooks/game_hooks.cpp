@@ -1203,6 +1203,7 @@ namespace hooks {
 		// Clear Stagger Blacklist
 		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
 			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
+			unit_ext->values[ValueStaggerCount] = 0;
 			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
 		}
 

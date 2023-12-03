@@ -167,6 +167,7 @@ enum ExtValueId {
 	ValueEnsnareFactor,
 	ValueVultureLaunchPos,
 	ValueStaggerWeaponId,
+	ValueStaggerCount,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
