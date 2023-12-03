@@ -227,7 +227,7 @@ namespace hooks {
 		return 0;
 	}
 
-	// Hooked to remove the 1-frame delay from quick-casting. -Pr0nogo
+	// Hooked to remove the 1-frame delay from quick-targeting. -Pr0nogo
 	u32 __cdecl set_ingame_input_procs() { // 00484CC0
 		helper::initialize_input_procs();
 
@@ -546,7 +546,7 @@ namespace hooks {
 
 			// Show connected Nyduses
 			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
-				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
+				if (scbw::unit_is_allied_or_detected(unit, *g_local_nation_id) || in_replay_or_witness) {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}
@@ -605,6 +605,10 @@ namespace hooks {
 					case OrderId::CastMaelstrom:
 					{
 						weapon = WeaponId::MindTyrantMaelstrom; 
+					} break;
+					case OrderId::CastOpticalFlare:
+					{
+						weapon = WeaponId::LuminaryAuralAssault; 
 					} break;
 					case OrderId::Hallucination1:
 					case OrderId::NukePaint:
@@ -1022,6 +1026,13 @@ namespace hooks {
 					unit_ext->values[ValueIsNeutralNydus] = 1;
 				}
 			} break;
+			case UnitId::ProtossSolarion:
+			{
+				u32 missing_count = 12 - (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count);
+				if (missing_count) {
+					scbw::create_hangar_units(unit, missing_count, UnitId::ProtossSteward);
+				}
+			} break;
 		}
 
 		// Fixes first attack from Paladin (and maybe other units) aiming upwards
@@ -1107,17 +1118,31 @@ namespace hooks {
 		}
 
 		// Overlay for units which do not leave behind corpses
-		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
-			unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
+			unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
 		}
+		
+		// Overlay for units which do not regress on death
+		if (unit_ext->values[ValueOriginatedFromOcsalLarva] && !unit->sprite->get_overlay(ImageId::OcsalRegressionOverlay)) {
+			if (unit->id != UnitId::ZergOcsalLarva && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
+				scbw::add_unit_overlay(unit, ImageId::OcsalRegressionOverlay);
+			}
+		}
+		
+		// Overlay for units which are mind-controlled
+		if ((unit_ext->values[ValueMindControlPlayer] || unit_ext->timers[TimerEmpressAnodyneAnnex]) && !unit->sprite->get_overlay(ImageId::TyrannyOverlay)) {
+			scbw::add_unit_overlay(unit, ImageId::TyrannyOverlay);
+		}
+
+		// Overlay for units 
 
 		// Reclamation
 		{
 			// Decaying
 			if (unit_ext->values[ValueDecaying]) {
 				if (!(unit->status & UnitStatus::Cloaked)) {
-					if (!unit->sprite->get_overlay(ImageId::CreepMorphOverlay)) {
-						unit->sprite->create_overlay(ImageId::CreepMorphOverlay);
+					if (!unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
+						unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
 					}
 				}
 
@@ -1175,6 +1200,12 @@ namespace hooks {
 			}
 		}
 
+		// Clear Stagger Blacklist
+		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
+			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
+			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
+		}
+
 		// Handle custom line attacks
 		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20) {
 			unit->order_signal &= ~0x20;
@@ -1190,6 +1221,10 @@ namespace hooks {
 					} break;
 				}
 			}
+		}
+
+		if (unit_ext->timers[TimerWendigoShatteredWinds] == 1) {
+			unit_ext->values[ValueWendigoShatteredWindsStacks] = 0;
 		}
 
 		if (unit_ext->timers[TimerStun] > 1) {
@@ -1526,7 +1561,7 @@ namespace hooks {
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;
 							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, scbw::dir_saturate(unit->current_direction_1, offset_direction));
-							helper::play_sound_from_unit(80, unit, 1, 0);
+							helper::play_sound_from_unit(scbw::rand_between(SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03), unit, 1, 0);
 							unit->order_target.unit = target_unit;
 							unit->order_target.pt = target_pos;
 						}
@@ -1669,35 +1704,34 @@ namespace hooks {
 				// Legionnaire - Blade Vortex
 				// Cabalist - Silent Strides
 				// Striga was here - removed 7 February 2023. -Pr0nogo
-				if (unit->order_target.unit && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
-					Unit* target = unit->order_target.unit;
+				Unit* target = unit->order_target.unit;
+				if (target && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
+					u32 weapon_id = target->status & UnitStatus::InAir ? unit->get_air_weapon() : unit->get_ground_weapon();
+					u32 min_radius = weapons_dat::max_range[weapon_id];
+					u32 max_radius = 3 * 32;
+
 					u32 distance = unit->get_distance_to_target(target);
 					bool do_teleport = false;
 					u32 image_id = 0;
-
-					const u32 min_radius = 0.75 * 32;
-					const u32 max_radius = 3 * 32;
-
 					if (unit->id == UnitId::ProtossLegionnaire) {
-						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0)
-						{
+						if (distance > min_radius && distance <= max_radius && scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
 						}
 					} else if (unit->id == UnitId::ProtossCabalist) {
-						if (distance > min_radius && distance <= max_radius && unit_ext->timers[TimerDecloak] < 2)
-						{
+						if (distance > min_radius && distance <= max_radius && unit_ext->timers[TimerDecloak] < 2) {
 							do_teleport = true;
 							image_id = ImageId::LegionnaireTeleportEffect;
 						}
 					}
 
 					if (do_teleport) {
-						bool teleport = scbw::teleport_to_unit(unit, target, min_radius, 0, true);
-						if (!unit->get_overlay(image_id) && teleport) {
-							scbw::add_unit_overlay(unit, image_id);
+						if (scbw::teleport_to_unit(unit, target, min_radius, 0, true)) {
+							if (!unit->get_overlay(image_id)) {
+								scbw::add_unit_overlay(unit, image_id);
+							}
+							scbw::decloak_passive_proc(unit);
 						}
-						scbw::decloak_passive_proc(unit);
 					}
 				}
 			} break;
@@ -2062,7 +2096,7 @@ namespace hooks {
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if ((!(unit->status & UnitStatus::InTransport) || unit->status & UnitStatus::InBuilding) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					FireMultipleOptions options = {};
 					options.apply_cooldown = false;
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
@@ -2693,46 +2727,13 @@ namespace hooks {
 			}
 		}
 
-		// Luminary - Aural Assault
+		// Luminary - Aural Assault - overlays
 		if (unit_ext->timers[TimerAuralAssaultBlind] > 1) {
 			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
 			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 			if (!overlay_unit->get_overlay(overlay)) {
 				overlay_unit->sprite->create_top_overlay(overlay, 0, 0, 0);
 			}
-			if (unit->main_order_id != OrderId::AttackUnit) {
-				// TODO: Unit search
-				const u32 radius = unit->get_seek_range() * 32 + 4 * 32;
-				auto match = cosmonarchy_finder_match(unit, 0, {});
-				Unit* best_target = scbw::UnitFinder::get_nearest_target(
-					unit->get_x() - radius,
-					unit->get_y() - radius,
-					unit->get_x() + radius,
-					unit->get_y() + radius,
-					unit, [&](Unit* target) {
-					if (!match(target) || !unit->can_attack_target(target) || !helper::is_unit_in_weapon_range(unit, target)) {
-						return false;
-					}
-					return true;
-				});
-				if (best_target) {
-					unit->order_to(OrderId::AttackUnit, best_target);
-					if (unit->subunit) {
-						unit->subunit->order_to(OrderId::AttackUnit, best_target);
-					}
-				}
-			}
-			unit->status |= UnitStatus::CanNotReceiveOrders;
-		}
-		if (unit_ext->timers[TimerAuralAssaultBlind] == 1) {
-			Unit* target = unit->order_target.unit;
-			if (unit->main_order_id == OrderId::AttackUnit && target && scbw::is_allied_to(unit->player, target->player)) {
-				unit->order_to_idle();
-				if (unit->subunit) {
-					unit->subunit->order_to_idle();
-				}
-			}
-			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 		}
 
 		// Talos - Salvage stun
@@ -3220,6 +3221,7 @@ namespace hooks {
 
 		memset(vision_timers, 0, 8*256*256);
 
+		GPTP::logger << "Started a match!\n";
 		return true;
 	}
 

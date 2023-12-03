@@ -64,7 +64,7 @@ enum ExtValueId {
 	ValueDeconstructionPlayer,
 	ValueMindControlOriginalPlayer,
 	ValuePreMorphEnergy,
-//	ValueGodsMadeFleshCast,
+	ValueWendigoShatteredWindsStacks,
 //	ValueGodsMadeFleshActive,
 	ValueMissileReturnTarget, // unit
 //	ValueKelvinMunitionsSlow,
@@ -87,6 +87,7 @@ enum ExtValueId {
 	ValueEmpressAnodyneAnnexSourcePlayer,
 	ValueAxitriliskLaunchPos,
 	ValueBactaliskLaunchPos,
+	ValueDracadinLaunchPos,
 	ValueCharlatanLaunchPos,
 	ValueIsNeutralBunker,
 	ValueIsZombified,
@@ -165,6 +166,7 @@ enum ExtValueId {
 	ValueMorphConnectedUnitId,
 	ValueEnsnareFactor,
 	ValueVultureLaunchPos,
+	ValueStaggerWeaponId,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -193,7 +195,7 @@ enum ExtTimerId {
 	TimerIonFieldAttackSpeed,
 	TimerReconstitutionCooldown,
 	TimerBindingGrip,							// unused
-//	TimerGodsMadeFlesh,
+	TimerWendigoShatteredWinds,
 	TimerControlledDemolition,
 	TimerEmergencyDetonation,
 	TimerNemeanReactors,
@@ -281,6 +283,7 @@ enum ExtTimerId {
 	TimerZergAdrenalFrenzy,
 	TimerEmpressAnodyneAnnex,
 	TimerZarcavrokorSecondaryFire,
+	TimerClearStaggerBlacklist,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -339,6 +342,7 @@ enum ExtUnitVectorId {
 	UnitVectorPhaseLinkClarions,
 	UnitVectorCrucibles,
 	UnitVectorMindControlling,
+	UnitVectorStaggerBlacklist,
 
 	UnitVectorCount,
 };

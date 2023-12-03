@@ -98,6 +98,9 @@ namespace scbw {
 		if (!scbw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
 			return false;
 		}
+		if (target->get_distance_to_point(new_pos) > radius * 1.5) {
+			return false;
+		}
 
 		teleport_internal(unit, new_pos, sprite_id, preserve_order);
 		return true;
@@ -1173,14 +1176,18 @@ namespace scbw {
 			// Allowed IDs
 			case UnitId::TerranHarakan:
 			case UnitId::TerranGoliathTurret:
-			case UnitId::TerranPhalanxTankMode:
-			case UnitId::TerranPhalanxSiegeMode:
-			case UnitId::TerranPhalanxTankModeTurret:
-			case UnitId::TerranPhalanxSiegeModeTurret:
 			case UnitId::TerranMatadorTankMode:
 			case UnitId::TerranMatadorCinderMode:
 			case UnitId::TerranMatadorTurretTankMode:
 			case UnitId::TerranMatadorTurretCinderMode:
+			case UnitId::TerranPhalanxTankMode:
+			case UnitId::TerranPhalanxSiegeMode:
+			case UnitId::TerranPhalanxTankModeTurret:
+			case UnitId::TerranPhalanxSiegeModeTurret:
+			case UnitId::TerranMadrigalImperiosoMode:
+			case UnitId::TerranMadrigalFuriaMode:
+			case UnitId::TerranMadrigalTurretImperiosoMode:
+			case UnitId::TerranMadrigalTurretFuriaMode:
 			{
 				return true;
 			} break;
@@ -1253,10 +1260,11 @@ namespace scbw {
 			|| id == UnitId::TerranMinotaur
 			|| id == UnitId::TerranMagnetar
 			
-			|| id == UnitId::TerranPhiloc
-			|| id == UnitId::TerranAspirant
+			|| id == UnitId::TerranHotshot
 			|| id == UnitId::TerranCohort
+			|| id == UnitId::TerranAspirant
 			|| id == UnitId::TerranSouthpaw
+			|| id == UnitId::TerranPhiloc
 			|| id == UnitId::TerranWendigo;
 	}
 
@@ -2559,6 +2567,10 @@ namespace scbw {
 	{
 		switch (weapon_id)
 		{
+			case WeaponId::HotshotDispatchShotgun:
+			{
+				return 3;
+			}
 			case WeaponId::SirenCharybdalRifle:
 			{
 				return 5;
@@ -3182,17 +3194,20 @@ namespace scbw {
 	GameKind get_game_kind() {
 		switch (*g_game_type) {
 			case GameType::UseMapSettings:
-			case GameType::ScenarioMode:
-				return GameKind_ScenarioMode;
+			case GameType::Scenario:
+				return GameKind_Scenario;
 
-			case GameType::CompetitiveMode:
-				return GameKind_CompetitiveMode;
+			case GameType::Competitive:
+				return GameKind_Competitive;
 
 			case GameType::Omnipresence:
 				return GameKind_Omnipresence;
 
+			case GameType::FactionWars:
+				return GameKind_FactionWars;
+
 			case GameType::Debug:
-				return GameKind_CompetitiveMode;
+				return GameKind_Competitive;
 		}
 		return GameKind_Unsupported;
 	}
@@ -3639,6 +3654,16 @@ namespace scbw {
 		for (u32 i = 0; i < SelectionLimit; i++) {
 			Unit* unit = players_selections->unit[player][i];
 			if (unit && unit->id == unit_id) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	u32 get_witness_count() {
+		u32 count = 0;
+		for (u32 i = 0; i < PlayerLimit; i++) {
+			if (globals.players[i].witness_mode) {
 				count++;
 			}
 		}

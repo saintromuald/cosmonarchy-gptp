@@ -564,15 +564,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	// genericBtnInteract (0x004E1C20)
 	memory_patch(0x004E1C38, (u16)0x73FC);
 
-	// For new replay UI
-	memory_patch(0x004E5363, &StatResTextBuffer);	// printStatResInfo
-	memory_patch(0x004E537D, &StatResTextBuffer);
-	memory_patch(0x004E541F, &StatResTextBuffer);	// showSupplyInfo
-	memory_patch(0x004E5436, &StatResTextBuffer);
-	memory_patch(0x004E5509, (u8)0x20);				// statRes_Text_Update
-	memory_patch(0x004E5864, (u8)0x20);				// StatRes_CustomCtrl
-	memory_patch(0x004E58DE, &StatRes_fxnInteract);	// StatRes_RegisterCustomProcs
-
 	// Use new pcolor system for player messages.
 	call_patch(hooks::getColourID_new, 0x0048D2EC);
 	// BWFXN_DisplayText (0x0048D1C0)
@@ -648,6 +639,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive mode and so on by reading Unit Stats game mode field
 	memory_patch(0x004AAFD6, (u8)0xA);
+
+	// Remove cursor centering after singleplayer center view and do not break drag-selection.
+	memory_patch(0x0047F109, (u16)0x28EB);//JMP 0x47F133
+	memory_patch_df(0x0047F10B, (u8)0x90, 3);
+	memory_patch(0x0047EB39, (u32)0x8AC005C6);//MOV byte ptr [0x00658AC0], ...
+	memory_patch(0x0047EB3D, (u32)0xC3000065);//...0; RETN;
+	memory_patch_df(0x0047EB41, (u8)0x90, 2);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

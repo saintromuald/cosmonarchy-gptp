@@ -912,7 +912,7 @@ namespace hooks
 	// Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPositionSolarion
 	void orders_carrier_idle(Unit* unit) // 004666A0
 	{
-		if (helper::order_hangar_unit(unit, 0, unit->get_seek_range() * 32))
+		if (helper::order_hangar_unit(unit, 0, 6 * 32))
 		{
 			Unit* out_unit = release_fighter(unit);
 			if (out_unit) {

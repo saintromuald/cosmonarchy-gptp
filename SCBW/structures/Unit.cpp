@@ -414,11 +414,6 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 		return value;
 	}
 
-	// Cohort - Servile Vigor
-	if (id == UnitId::TerranCohort) {
-		hitpoints *= 2;
-	}
-
 	set_hitpoints(cap_value(this->hitpoints + value, this->get_max_hp_raw(), &value));
 
 	// If heals to full clear debuffs
@@ -558,12 +553,14 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	assert(this);
 
 	// Logging
-	auto target_id = this->id;
-	auto target_player_id = this->player;
+	/*
+	u32 target_id = this->id;
+	u32  target_player_id = this->player;
 	if (attacker) {
 		GPTP::logger << "damage_hp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attacking_player_id (" << attackingPlayer << "), notify (" << notify
 			<< "), target (" << target_id << "), target_player_id (" << target_player_id << "))" << std::endl;
 	}
+	*/
 
 	if (attacker) {
 		scbw::update_on_damage_dealt(attacker);

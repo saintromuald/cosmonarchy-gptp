@@ -158,8 +158,16 @@ bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 		|| unit_id == UnitId::ProtossMonumentOfSin;
 }
 
-bool unit_id_can_regenerate_shields(u32 unit_id) {
-	return unit_id != UnitId::ProtossVagrantShade;
+bool unit_id_has_flash_shielding(u32 unit_id) {
+	return unit_id != UnitId::ProtossVagrantShade
+		&& unit_id != UnitId::TerranAspirant
+		&& unit_id != UnitId::TerranLuminary;
+}
+
+bool unit_id_has_shield_regeneration(u32 unit_id)
+{
+	return unit_id == UnitId::TerranAspirant
+		|| unit_id == UnitId::TerranLuminary;
 }
 
 bool unit_id_is_stackable_building(u32 unit_id) {
@@ -252,7 +260,9 @@ bool unit_id_is_melee_air_unit(u32 unit_id) {
 		|| unit_id == UnitId::ZergGorgrokor
 		|| unit_id == UnitId::ZergTetcaerokor
 		|| unit_id == UnitId::ZergAkistrokor
-		|| unit_id == UnitId::ZergZarcavrokor;
+		|| unit_id == UnitId::ZergZarcavrokor
+		|| unit_id == UnitId::TerranTalos
+		|| unit_id == UnitId::TerranWendigo;
 }
 
 bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
@@ -325,10 +335,14 @@ bool unit_id_is_town_center(u16 unit_id) {
 }
 
 bool unit_id_is_factional(u16 unit_id) {
-	return unit_id == UnitId::TerranAspirant
+	return unit_id == UnitId::TerranHotshot
 		|| unit_id == UnitId::TerranCohort
-		|| unit_id == UnitId::TerranLuminary
-		|| unit_id == UnitId::TerranTarasque;
+		|| unit_id == UnitId::TerranAspirant
+		|| unit_id == UnitId::TerranSouthpaw
+		|| unit_id == UnitId::TerranTarasque
+		|| unit_id == UnitId::TerranPhiloc
+		|| unit_id == UnitId::TerranWendigo
+		|| unit_id == UnitId::TerranLuminary;
 }
 
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
@@ -449,9 +463,11 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 		case WeaponId::EmpyreanPlasmaBarrage:
 			return InterceptType_AirOnly;
 
+		case WeaponId::HotshotDispatchShotgun:
 		case WeaponId::SirenCharybdalRifle:
 		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::AtreusDauntlessDisruptorCannon:
+		case WeaponId::CharlatanFerventBlaster:
 		case WeaponId::CantavisHallucinationCast:
 		case WeaponId::PatriarchIronhandWeaver:
 		case WeaponId::IdolPrismaticBlaster:
@@ -609,6 +625,20 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 2;
 			return &offsets;
 		} break;
+		case WeaponId::CataphractLonginiusCannons:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueCataphractLaunchPos;
+			offsets.count = 4;
+			return &offsets;
+		} break;
+		case WeaponId::PaladinCrusaderMissiles:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValuePaladinLaunchPos;
+			offsets.count = 5;
+			return &offsets;
+		} break;
 		case WeaponId::ClaymoreHarpoonRailgun:
 		{
 			static WeaponOffsets offsets = {};
@@ -696,6 +726,13 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 1;
 			return &offsets;
 		} break;
+		case WeaponId::DracadinPhaseDisruptor:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueDracadinLaunchPos;
+			offsets.count = 1;
+			return &offsets;
+		} break;
 		case WeaponId::CharlatanFerventBlaster:
 		{
 			static WeaponOffsets offsets = {};
@@ -759,6 +796,13 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 2;
 			return &offsets;
 		} break;
+		case WeaponId::MatrixKhaydarinRay:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueWardenLaunchPos;
+			offsets.count = 4;
+			return &offsets;
+		} break;
 		case WeaponId::SpraithColonySeekerSpores:
 		{
 			static WeaponOffsets offsets = {};
@@ -807,27 +851,6 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.value_id = ValueKeskathalorLaunchPos;
 			offsets.count = 2;
 			offsets.fake_count = 1;
-			return &offsets;
-		} break;
-		case WeaponId::CataphractLonginiusCannons:
-		{
-			static WeaponOffsets offsets = {};
-			offsets.value_id = ValueCataphractLaunchPos;
-			offsets.count = 4;
-			return &offsets;
-		} break;
-		case WeaponId::PaladinCrusaderMissiles:
-		{
-			static WeaponOffsets offsets = {};
-			offsets.value_id = ValuePaladinLaunchPos;
-			offsets.count = 5;
-			return &offsets;
-		} break;
-		case WeaponId::MatrixKhaydarinRay:
-		{
-			static WeaponOffsets offsets = {};
-			offsets.value_id = ValueWardenLaunchPos;
-			offsets.count = 4;
 			return &offsets;
 		} break;
 	}

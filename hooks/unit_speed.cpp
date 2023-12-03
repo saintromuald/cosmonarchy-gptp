@@ -218,19 +218,29 @@ namespace hooks
 			} break;
 
 			// Hardcode ideal movement speeds
+			case UnitId::ProtossOptecton:
+			{
+				speed *= 0.7;
+			} break;
+			case UnitId::TerranRamesses:
+			{
+				speed *= 0.8;
+			} break;
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
-			case UnitId::TerranRamesses:
+			case UnitId::TerranDurendal:
 			case UnitId::TerranClaymore:
-			case UnitId::ProtossOptecton:
 			{
 				speed *= 0.9;
 			} break;
 			case UnitId::TerranMason:
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth:
+			case UnitId::TerranMaverick:
+			case UnitId::TerranCleric:
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSavant:
+			case UnitId::TerranMadcap:
 			case UnitId::TerranApostle:
 			case UnitId::TerranCataphract:
 			case UnitId::ProtossSimulacrum:
@@ -239,7 +249,6 @@ namespace hooks
 				speed *= 1.1;
 			} break;
 			case UnitId::TerranCyclops:
-			case UnitId::TerranHeracles:
 			{
 				speed *= 1.15;
 			} break;
@@ -252,12 +261,16 @@ namespace hooks
 			{
 				speed *= 1.2;
 			} break;
-			case UnitId::TerranStriga:
+			case UnitId::TerranHeracles:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergAxitrilisk:
 			{
 				speed *= 1.25;
+			} break;
+			case UnitId::TerranStriga:
+			{
+				speed *= 1.35;
 			} break;
 			case UnitId::ProtossAmaranth:
 			{

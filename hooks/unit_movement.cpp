@@ -124,4 +124,26 @@ namespace hooks
 		}
 		return result;
 	}
+
+	// Hooked to resolve a nullsprite crash. -Pr0nogo
+	b32 move_towards(Unit* target, Unit* unit) // 004EB900
+	{
+		if (!unit->sprite) { // New
+			return 0;
+		}
+		if (unit->recent_order_timer)
+		{
+			return 1;
+		}
+		if (!((1 << unit->player) & target->sprite->visibility_status) && !helper::is_target_within_min_range(unit, 448, target))
+		{
+			if (helper::is_unit_movable(unit) == 1)
+			{
+				helper::to_idle(unit);
+				return 0;
+			}
+			return 1;
+		}
+		return helper::move_to_target(target, unit);
+	}
 }

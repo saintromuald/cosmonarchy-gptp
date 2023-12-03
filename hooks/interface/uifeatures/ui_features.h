@@ -42,7 +42,7 @@ namespace hooks {
 	void draw_stat_button_image(BinDlg* dialog);																			// 00456C30
 	void statbtn_button_update(BinDlg* button);																				// 00458900
 	void load_statdata_bin();																								// 00459B90
-	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
+	//void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
 
 	void inject_ui_features_hooks();
 
@@ -54,6 +54,8 @@ namespace hooks {
 	char input_mmb_down(DialogEvent* event);																				// 00484520
 	int __cdecl input_mmb_up();																								// 004843A0
 	void __cdecl input_mmb_move();																							// 00484460
+
+	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);														// 0045F290
 }
 
 #define tIconCount 7

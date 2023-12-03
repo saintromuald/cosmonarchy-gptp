@@ -197,9 +197,6 @@ namespace hooks
 			} break;
 		}
 
-		// TODO: remove this
-		bool can_damage = true; // debug only!
-
 		// Ai_ReactToHit crash - null town
 		if (data.target->unit_ai) {
 			// Ai_ReactToHit crash - null town
@@ -209,7 +206,7 @@ namespace hooks
 					u32 attacker_id = data.attacker ? data.attacker->id : UnitId::None;
 					scbw::printf("Ai_ReactToHit crash prevention - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 																              attacker_id, data.attacker->player, data.target->id, data.target->player);
-					can_damage = false;
+					return; // Don't think this ever happens anymore, removed can_damage bool 11/27/2023 -Pr0nogo
 				}
 			}
 		}
@@ -300,7 +297,7 @@ namespace hooks
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0 && can_damage) {
+		if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0) {
 			if (data.target->status & UnitStatus::IsHallucination) {
 				data.damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
 			}
@@ -314,7 +311,7 @@ namespace hooks
 		scbw::ask_for_ai_help(data.target, data.attacker);
 
 		// Reduce shields
-		if (data.shield_reduce_amount && can_damage) {
+		if (data.shield_reduce_amount) {
 			data.target->shields -= data.shield_reduce_amount;
 			if (data.damage_type != DamageType::Independent && data.target->shields != 0) {
 				shield_overlay = true;
@@ -409,6 +406,11 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
+			case WeaponId::WendigoFusionSaw:
+			{
+				target_ext->values[ValueWendigoShatteredWindsStacks]++;
+				target_ext->timers[TimerWendigoShatteredWinds] = 2 * 24 + 1;
+			} break;
 			case WeaponId::LegionnairePhaseSpear: {
 				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
 			} break;
@@ -522,8 +524,13 @@ namespace hooks
 				case UnitId::ProtossAnalogue:
 				{
 					// Empathy Core - Analogue behavior
-					BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
-					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data) || current_bullet_ext->is_phantom) {
+					if (weapon_damage_current_bullet) {
+						BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+						if (current_bullet_ext->is_phantom) {
+							break;
+						}
+					}
+					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
 						break;
 					}
 					if (data.target->energy >= 10 * 256) {
@@ -909,7 +916,7 @@ namespace hooks
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
 			case UnitId::ZergVilgorokor: {
-				// Vilgorokor - On Death behavior
+				// Vilgorokor - On Death behaviorw
 				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
 				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
 				data.target->set_hitpoints(data.target->get_max_hp_raw());
@@ -934,6 +941,10 @@ namespace hooks
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
+
+				u32 sound = helper::get_random_sfx_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
+				helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99);
+				helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
 				fatal_deal_damage = false;
 			} break;
 			case UnitId::ProtossArchon:
@@ -1024,7 +1035,6 @@ namespace hooks
 		{
 			data.target->main_order_id = OrderId::Unburrow;
 		}
-
 
 		u32 regression_id = scbw::get_zerg_regression(data.target);
 		if (data.damage > 0 && regression_id != UnitId::None) {

@@ -332,7 +332,7 @@ namespace hooks {
 			return;
 		}
 		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
-		helper::weapon_bullet_shot(bullet->attack_target.unit, bullet, 1);
+		splash(bullet, weapon_id, SplashType::Radial);
 	}
 
 	void parasite(Bullet* bullet, u32 weapon_id) {

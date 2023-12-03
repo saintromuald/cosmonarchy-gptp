@@ -586,10 +586,11 @@ namespace GameType
 		TeamCTF = 13,
 		TopVsBottom = 15,
 
-		CompetitiveMode = 30,
-		ScenarioMode = 31,
+		Competitive = 30,
+		Scenario = 31,
 		Omnipresence = 32,
-		Debug = 33,
+		FactionWars = 33,
+		Debug = 34,
 	};
 }
 
@@ -694,8 +695,8 @@ namespace DialogControlTypes
 		VerticalScrollBar = 0x00000007,
 		TextBox = 0x00000008,
 		LabelLeftAlign = 0x00000009,
-		LabelRightAlign = 0x0000000A,
-		LabelCenterAlign = 0x0000000B,
+		LabelCenterAlign = 0x0000000A,
+		LabelRightAlign = 0x0000000B,
 		ListBox = 0x0000000C,
 		ComboBox = 0x0000000D,
 		LightUpButton = 0x0000000E
@@ -1485,4 +1486,26 @@ enum AdvisorMessageId {
 	AdvisorMessageId_NoBuildProtoss			= 861,
 	AdvisorMessageId_NoBuildCouldntReach	= 862,
 	AdvisorMessageId_NoLanding				= 863,
+};
+
+enum DialogEventType {
+	DialogEventType_KeyDown					= 0,
+	DialogEventType_KeyRepeat				= 1,
+	DialogEventType_KeyUp					= 2,
+	DialogEventType_MouseMove				= 3,
+	DialogEventType_LButtonDown				= 4,
+	DialogEventType_LButtonUp				= 5,
+	DialogEventType_LButtonDouble			= 6,
+	DialogEventType_RButtonDown				= 7,
+	DialogEventType_RButtonUp				= 8,
+	DialogEventType_RButtonDouble			= 9,
+	DialogEventType_MButtonDown				= 10,
+	DialogEventType_MButtonUp				= 11,
+	DialogEventType_MButtonDouble			= 12,
+	DialogEventType_Idle					= 13,
+	DialogEventType_Dialog					= 14,
+	DialogEventType_Spacebar				= 15,
+	DialogEventType_SystemKey				= 16,
+	DialogEventType_MWheelUp				= 17,
+	DialogEventType_MWheelDown				= 18,
 };

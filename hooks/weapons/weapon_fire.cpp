@@ -260,7 +260,14 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
-	bool fired = false;
+	UnitExt* unit_ext = get_unit_ext(unit);
+	bool has_stagger = options.stagger >= 0;
+	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
+	if (has_stagger) {
+		options.apply_cooldown = false;
+	}
+
+	Unit* fired_at = 0;
 	Unit* order_target_unit = unit->order_target.unit;
 	if (!options.ignore_main
 	&&   order_target_unit
@@ -273,12 +280,17 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
-			for (u32 i = 0; i < factor; i++) {
-				Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
-				if (bullet) {
-					fired = true;
-					BulletExt* bullet_ext = get_bullet_ext(bullet);
-					bullet_ext->divisor_multiplier = options.divisor_multiplier;
+			if (!(has_stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
+				for (u32 i = 0; i < factor; i++) {
+					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
+					if (bullet) {
+						fired_at = order_target_unit;
+						BulletExt* bullet_ext = get_bullet_ext(bullet);
+						bullet_ext->divisor_multiplier = options.divisor_multiplier;
+						if (has_stagger) {
+							goto fired_stagger;
+						}
+					}
 				}
 			}
 		}
@@ -287,7 +299,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	EntryArray targets = {};
 	if (options.center_on_target) {
 		if (!order_target_unit) {
-			return fired;
+			return fired_at != 0;
 		}
 		unit_search_radial(&targets, order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : attack_range);
 	} else {
@@ -318,17 +330,38 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 			continue;
 		}
 
+		if (has_stagger && std::find(blacklist.begin(), blacklist.end(), target) != blacklist.end()) {
+			continue;
+		}
+
 		for (u32 i = 0; i < factor; i++) {
 			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), options.weapon_offsets, options.apply_cooldown);
 			if (bullet) {
-				fired = true;
+				fired_at = target;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
 				bullet_ext->divisor_multiplier = options.divisor_multiplier;
+				if (has_stagger) {
+					goto fired_stagger;
+				}
 			}
 		}
 	}
 
-	return fired;
+	if (has_stagger) {
+		if (fired_at) {
+		fired_stagger:
+			blacklist.push_back(fired_at);
+			unit->ground_weapon_cooldown = options.stagger;
+			unit->air_weapon_cooldown = options.stagger;
+			unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
+			unit_ext->values[ValueStaggerWeaponId] = weapon_id;
+		} else {
+			blacklist.clear();
+			unit_ext->timers[TimerClearStaggerBlacklist] = 0;
+			apply_weapon_cooldown(unit, weapon_id);
+		}
+	}
+	return fired_at != 0;
 }
 
 namespace
@@ -453,6 +486,7 @@ namespace hooks {
 					case WeaponId::DiademIonCannon:
 					case WeaponId::DiademHammerfallBeacon:
 					case WeaponId::WardenPrismaticCannon:
+					case WeaponId::DracadinPhaseDisruptor:
 					case WeaponId::CharlatanFerventBlaster:
 					case WeaponId::OptectonSunsplitBeam:
 					case WeaponId::PositronAntimatterMissile:
@@ -487,6 +521,10 @@ namespace hooks {
 						}
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;
+					case WeaponId::HotshotDispatchShotgun: {
+						// Offset: Cone
+						fire_shotgun(unit, weapon_id, 1, 10, 10);
+					} break;
 					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
 						if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
@@ -503,6 +541,7 @@ namespace hooks {
 					case WeaponId::CataphractLonginiusCannons: {
 						FireMultipleOptions options = {};
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
+						options.stagger = -1;
 
 						// Multi-Attack IV
 						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, options);
@@ -533,20 +572,24 @@ namespace hooks {
 					} break;
 					case WeaponId::MadrigalFuriaMissiles: {
 						// Madrigal Furia Salvo
-						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, {});
+						FireMultipleOptions options = {};
+						options.stagger = 2;
+						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, options);
 					} break;
 					case WeaponId::ValkyrieHaloRockets: {
 						// Offset: Cone
 						fire_shotgun(unit, weapon_id, 1, 3, 10);
 					} break;
+					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
-					case WeaponId::TosgriliskExplosiveSpores: {
-						// Crushing Tide - Izirokor, Tosgrilisk
+					case WeaponId::KonviliskSowingSpines: {
+						// Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
 						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
 					} break;
 					case WeaponId::MatrixKhaydarinRay: {
 						FireMultipleOptions options = {};
 						options.use_weapon_factor = false;
+						options.stagger = -1;
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
 
 						// Multi-Attack IV
@@ -555,6 +598,7 @@ namespace hooks {
 					case WeaponId::BarghestRayOfAgony: {
 						FireMultipleOptions options = {};
 						options.use_weapon_factor = false;
+						options.stagger = -1;
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
 
 						// Multi-Attack III
@@ -569,6 +613,7 @@ namespace hooks {
 						options.center_on_target = true;
 						options.center_on_target_range_overwrite = 2 * 32;
 						options.divisor_multiplier = 2;
+						options.stagger = -1;
 
 						fire_bullet(unit, weapon_id, unit->order_target);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);
@@ -746,6 +791,9 @@ namespace hooks {
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
 				continue;
 			}
+			if (bullet->hit_flags & 1) {
+				continue;
+			}
 
 			f32 t = 0;
 			Point16 cp = {};
@@ -843,7 +891,8 @@ namespace hooks {
 
 		// Create explosions mid-flight
 		if (bullet->weapon_id == WeaponId::PositronAntimatterMissile) {
-			u32 period = 2 * 32;
+			// Positron - Particle Annihilation
+			u32 period = 1 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
 				scbw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
 				helper::play_sound_at_pos(scbw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
@@ -852,7 +901,7 @@ namespace hooks {
 				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not
 				for (u32 i = 0; i < targets.count; ++i) {
 					Unit* target = targets.units[i];
-					if (scbw::is_allied_to(bullet->player, target->player)) {
+					if (scbw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
 						continue;
 					}
 					u32 distance = scbw::get_distance_fast(bullet->position, target->position);
@@ -999,6 +1048,17 @@ namespace hooks {
 			bullet->order_unit_id = 228;
 			for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
 				helper::play_image_iscript(image, IscriptAnimation::Death);
+			}
+
+			switch (bullet->weapon_id) {
+				case WeaponId::Irradiate:
+				{
+					hooks::irradiate_hit_internal(bullet->source_unit, bullet->position, bullet->player);
+				} break;
+				case WeaponId::StasisField:
+				{
+					hooks::stasis_field_hit_internal(bullet->source_unit, bullet->position, bullet);
+				} break;
 			}
 		}
 	}

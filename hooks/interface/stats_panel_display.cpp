@@ -281,7 +281,7 @@ namespace hooks
 
 	void draw_unit_kills_string(BinDlg* dialog) { // 00425DD0
 		Unit* unit = *g_active_portrait_unit;
-		if (scbw::get_game_kind() != GameKind_CompetitiveMode) {
+		if (scbw::get_game_kind() != GameKind_Competitive) {
 			if (unit->player < PlayerLimit) {
 				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
 			}

@@ -985,7 +985,7 @@ LABEL_15:
 		}
 		*g_buttonset_dialog = final_dialog;
 		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::statbtn_dialog_interact, final_dialog);
-	}
+	}/*
 
 	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update) // 004E52E0
 	{
@@ -1010,7 +1010,7 @@ LABEL_15:
 				helper::update_dialog(dialog);
 			}
 		}
-	}
+	}*/
 
 	char input_mmb_down(DialogEvent* event) {
 		disable_mouse_scroll = true;
@@ -1062,5 +1062,85 @@ LABEL_15:
 		if (dx || dy) {
 			SetCursorPos(*g_mmb_pos_x, *g_mmb_pos_y);
 		}
+	}
+
+	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event) // 0045F290
+	{
+		bool result = 0;
+		switch (dlg_event->number_order)
+		{
+			case DialogEventType_KeyDown:
+			case DialogEventType_KeyRepeat:
+			case DialogEventType_MouseMove:
+			{
+				result = 0;
+			} break;
+			case DialogEventType_Dialog:
+			{
+				switch (dlg_event->user)
+				{
+					case 0:
+					{
+						helper::statport_button_press(dialog, dialog);
+						goto LABEL_10;
+					}
+					case 1:
+					{
+						helper::statport_alloc();
+						result = helper::generic_dialog_interact(dialog, dlg_event);
+					} break;
+					case 4:
+					{
+						result = 1;
+					} break;
+					default:
+					{
+						goto LABEL_10;
+					}
+				}
+			} break;
+			case DialogEventType_Spacebar:
+			{
+				//if (config.use_spacebar_for_scrolling) {
+				{
+					goto LABEL_15;
+				}
+				goto RespondToPortraitEvent;
+			} break;
+			case DialogEventType_MWheelDown:
+			{
+				//if (!config.use_spacebar_for_scrolling) {
+				{
+				RespondToPortraitEvent:
+					s8* key_pressed = *g_dialog_key;
+					s8 virtual_key = *(*g_dialog_key);
+					if (*g_dialog_key)
+					{
+						while (virtual_key != dlg_event->virtual_key)
+						{
+							virtual_key = (key_pressed++)[1];
+							if (!virtual_key)
+							{
+								goto LABEL_15;
+							}
+						}
+						Point16 event_position = { g_last_event_position->x, g_last_event_position->y };
+						helper::move_screen(event_position);
+						result = 1;
+					}
+					else {
+					LABEL_15:
+						result = 0;
+					}
+				}
+			} break;
+			default:
+			{
+			LABEL_10:
+				result = helper::generic_dialog_interact(dialog, dlg_event);
+				break;
+			}
+		}
+		return result;
 	}
 }

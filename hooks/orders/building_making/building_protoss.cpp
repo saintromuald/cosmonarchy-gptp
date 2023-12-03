@@ -100,7 +100,7 @@ namespace hooks {
 			case 0: {
 				if (!building->remaining_build_time) {
 					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
-						if (image->flags & ImageFlags::Flag04) {
+						if (image->flags & ImageFlags::UseFullIscript) {
 							image->animation = IscriptAnimation::SpecialState1;
 							image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x22);
 							image->wait = 0;
@@ -165,7 +165,7 @@ namespace hooks {
 					helper::check_unstack(building);
 					
 					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
-						if (image->flags & ImageFlags::Flag04) {
+						if (image->flags & ImageFlags::UseFullIscript) {
 							image->animation = IscriptAnimation::WarpIn;
 							image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x32);
 							image->wait = 0;
@@ -176,7 +176,7 @@ namespace hooks {
 
 					if (building->status & UnitStatus::Frozen) {
 						for (Image* image = building->sprite->images.head; image; image = image->link.next) {
-							if (image->flags & ImageFlags::Flag04) {
+							if (image->flags & ImageFlags::UseFullIscript) {
 								image->animation = IscriptAnimation::Disable;
 								image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x38);
 								image->wait = 0;

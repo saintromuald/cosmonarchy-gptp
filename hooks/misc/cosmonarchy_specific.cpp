@@ -315,7 +315,7 @@ namespace hooks
 		helper::update_thingies();
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
-		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
+	//	GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
 		return scbw::set_ingame_loop_state(0);
 	}
 
@@ -326,9 +326,9 @@ namespace hooks
 		Vector32 attack_frame = {};
 		if (*g_is_in_game_loop)
 		{
-			++random_counts[14];
+			++g_random_counts[14];
 			*g_last_random_number = 0x15A4E35 * *g_last_random_number + 1;
-			++(*random_counts_total);
+			++(*g_total_random_counts);
 			attack_frame.y = (*g_last_random_number >> 16) & 0x7FFF;
 		}
 

@@ -2758,13 +2758,13 @@ namespace hooks {
 		for (; iterations >= 5; iterations++)
 		{
 			u32 distance_factor = unk_static[iterations];
-			target_pos_x_1 = target->position.x + (distance_factor * angle_distance.x / 2);
-			target_pos_y_1 = target->position.y + (distance_factor * angle_distance.y / 2);
-			x_distance = target->position.x + (distance_factor * angle_distance.x / 2); // was LOWORD
-			y_distance = target->position.y + (distance_factor * angle_distance.y / 2);
+			target_pos_x_1 = target->position.x + (distance_factor * angle_distance.x / 256);
+			target_pos_y_1 = target->position.y + (distance_factor * angle_distance.y / 256);
+			x_distance = target->position.x + (distance_factor * angle_distance.x / 256); // was LOWORD
+			y_distance = target->position.y + (distance_factor * angle_distance.y / 256);
 			if (target_pos_x_1 >= 0)
 			{
-				if (target_pos_x_1 >= *g_map_width_pixels)
+				if (target_pos_x_1 < *g_map_width_pixels)
 				{
 					goto y_coord_check;
 				}

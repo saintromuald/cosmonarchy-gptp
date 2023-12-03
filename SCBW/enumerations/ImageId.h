@@ -1106,7 +1106,7 @@ namespace ImageId {
 		IzirokorProjectile							= 1476,
 		StonewallProtocolOverlay					= 1477,
 		CyclopsFragmentaryExplosion					= 1478,
-		CreepMorphOverlay							= 1479,
+		RevivedDecayingOverlay						= 1479,
 		SalvagePeriodicZap							= 1480,
 		SalvageDisableSmall							= 1481,
 		SalvageDisableMedium						= 1482,
@@ -1199,6 +1199,9 @@ namespace ImageId {
 
 		QuaziliskMutate								= 1751,
 		NathrokorMutate								= 1754,
+
+		OcsalRegressionOverlay						= 1778,
+		TyrannyOverlay								= 1779,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

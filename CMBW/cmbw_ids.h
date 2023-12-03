@@ -11,7 +11,8 @@ b32 unit_id_is_tech_tier_structure(u32 unit_id);
 bool unit_id_is_transport(u32 unit_id);
 bool unit_id_race_check(u32 unit_id, u32 race);
 bool unit_id_is_protoss_warp_factory(u32 unit_id);
-bool unit_id_can_regenerate_shields(u32 unit_id);
+bool unit_id_has_flash_shielding(u32 unit_id);
+bool unit_id_has_shield_regeneration(u32 unit_id);
 bool unit_id_is_stackable_building(u32 unit_id); // Allows the AI to place the building to be placed more closely
 bool unit_id_has_addon(u32 unit_id); // Allows the AI to reserve space for addon
 u32 unit_id_get_larva_type(u32 unit_id);

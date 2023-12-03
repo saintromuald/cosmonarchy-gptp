@@ -204,7 +204,7 @@ namespace hooks
 	void play_image_iscript(Image* image, u8 animation) { // 004D8470
 		char final_anim = animation;
 		if ((animation != IscriptAnimation::Death || image->animation != IscriptAnimation::Death)
-		&&  (image->flags & ImageFlags::Flag04 || !animation || animation == IscriptAnimation::Death))
+		&&  (image->flags & ImageFlags::UseFullIscript || !animation || animation == IscriptAnimation::Death))
 		{
 			char image_anim = image->animation;
 			if (animation != image_anim || animation != IscriptAnimation::Walking && animation != IscriptAnimation::IsWorking) {
@@ -237,7 +237,7 @@ namespace hooks
 		*g_can_draw_thingy = 0;
 		helper::move_sprite(thingy_sprite, pos_x + 1, pos_y + 1);
 		for (Image* i = thingy->sprite->images.head; i; i = i->link.next) {
-			if (i->flags & ImageFlags::Flag04) {
+			if (i->flags & ImageFlags::UseFullIscript) {
 				u32 header = i->iscript_header_offset;
 				char* data = *g_iscript_data;
 				i->animation = 2;

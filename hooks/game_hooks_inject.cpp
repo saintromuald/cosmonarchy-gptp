@@ -37,7 +37,7 @@ bool isGameOn = false;
 		{
 			isGameOn = false;
 			hooks::game_end();
-			GPTP::logger.endGame();
+			GPTP::logger.end_game();
 		}
 		__asm {
 			POPAD

@@ -1,89 +1,70 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "logger.h"
-#include <ctime>
-#include <SCBW/scbwdata.h>
 
-namespace GPTP
-{
+#include <time.h>
 
-	GameLogger logger;
-	bool doLogging = false; // Now handled by 'verbose' config option in config.yml
+namespace GPTP {
+	GameLogger logger(false);
+	GameLogger critical_logger(true);
 
-	bool GameLogger::start_game()
-	{
-		if (doLogging)
-		{
-			if (checkLogFile())
-			{
-				time_t currentTime;
-				time(&currentTime);
-				logFile << "Game started on " << ctime(&currentTime) << std::endl;
+	void GameLogger::start_game() {
+		if (!critical) {
+			if (try_open_log_file()) {
+				time_t current_time = 0;
+				time(&current_time);
+				log_file << "Game started on " << ctime(&current_time) << std::endl;
 			}
-			lastUpdatedFrame = -1;  // So logging is possible on frame 0
+			last_updated_frame = -1;  // So logging is possible on frame 0
 		}
-		return true;
 	}
 
-	bool GameLogger::endGame()
-	{
-		if (doLogging)
-		{
-			if (checkLogFile())
-			{
-				time_t currentTime;
-				time(&currentTime);
-				logFile << "Game ended on " << ctime(&currentTime) << std::endl;
+	void GameLogger::end_game() {
+		if (!critical) {
+			if (try_open_log_file()) {
+				time_t current_time = 0;
+				time(&current_time);
+				log_file << "Game ended on " << ctime(&current_time) << std::endl;
 			}
 		}
-		return true;
 	}
 
-	GameLogger& GameLogger::operator<<(std::ostream& (*func)(std::ostream&))
-	{
-		if (doLogging)
-		{
-			if (checkLogFile())
-				if (updateFrame())
-					logFile << func;
+	GameLogger& GameLogger::operator<<(std::ostream& (*func)(std::ostream&)) {
+		if (try_open_log_file()) {
+			print_frame();
+			log_file << func;
 		}
 		return *this;
 	}
 
-	bool GameLogger::checkLogFile()
-	{
-		if (doLogging)
-		{
-			if (logFile.is_open())
-				return true;
-			time_t currentTime;
-			time(&currentTime);
-
-			char buffer[100];
-			strftime(buffer, sizeof(buffer), "Game %Y-%m-%d %Hh %Mm %Ss.log",
-				localtime(&currentTime));
-
-			logFile.open(buffer);
-			return !logFile.fail();
+	bool GameLogger::try_open_log_file() {
+		if (!enabled) {
+			return false;
 		}
-		else
-		{
+		if (log_file.is_open()) {
 			return true;
 		}
+
+		time_t current_time = 0;
+		time(&current_time);
+		char buffer[100] = {};
+		if (critical) {
+			strftime(buffer, sizeof(buffer), "Critical %Y-%m-%d %Hh %Mm %Ss.log", localtime(&current_time));
+		} else {
+			strftime(buffer, sizeof(buffer), "Game %Y-%m-%d %Hh %Mm %Ss.log", localtime(&current_time));
+		}
+
+		log_file.open(buffer);
+		return log_file.is_open();
 	}
 
-	bool GameLogger::updateFrame()
-	{
-		if (doLogging)
-		{
-			const s32 currentFrame = *g_elapsed_time_frames;
-			if (currentFrame > lastUpdatedFrame)
-			{
-				lastUpdatedFrame = currentFrame;
-				logFile << "Frame " << currentFrame << ":\n";
+	void GameLogger::print_frame() {
+		if (enabled) {
+			const u32 current_frame = *g_elapsed_time_frames;
+			if (current_frame > last_updated_frame) {
+				last_updated_frame = current_frame;
+				log_file << "Frame " << current_frame << ":\n";
 			}
 		}
-		return true;
 	}
-
 }

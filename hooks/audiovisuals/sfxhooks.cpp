@@ -133,6 +133,12 @@ namespace hooks {
 				case UnitId::ProtossHierophant: {
 					return helper::get_random_sfx_between(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
 				} break;
+				case UnitId::ProtossVagrant: {
+					return helper::get_random_sfx_between(SoundId::VagrantOrderAggressive01, SoundId::VagrantOrderAggressive04);
+				} break;
+				case UnitId::ProtossVagrantShade: {
+					return helper::get_random_sfx_between(SoundId::VagrantShadeOrderAggressive01, SoundId::VagrantShadeOrderAggressive04);
+				} break;
 				case UnitId::ProtossPariah: {
 					return helper::get_random_sfx_between(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
 				} break;
@@ -237,6 +243,9 @@ namespace hooks {
 					case UnitId::TerranAion: {
 						ready_sound = helper::get_random_sfx_between(SoundId::AionReady01, SoundId::AionReady03);
 					} break;
+					case UnitId::TerranAncile: {
+						ready_sound = helper::get_random_sfx_between(SoundId::AncileReady01, SoundId::AncileReady01);
+					} break;
 					case UnitId::TerranWyvern: {
 						ready_sound = helper::get_random_sfx_between(SoundId::WyvernReady01, SoundId::WyvernReady03);
 					} break;
@@ -246,7 +255,6 @@ namespace hooks {
 					case UnitId::TerranSalamander: {
 						ready_sound = helper::get_random_sfx_between(SoundId::SalamanderReady01, SoundId::SalamanderReady03);
 					} break;
-					case UnitId::TerranAncile: // TODO: Own lines
 					case UnitId::TerranAzazel: {
 						ready_sound = helper::get_random_sfx_between(SoundId::AzazelReady01, SoundId::AzazelReady03);
 					} break;
@@ -271,6 +279,12 @@ namespace hooks {
 					} break;
 					case UnitId::ProtossHierophant: {
 						ready_sound = helper::get_random_sfx_between(SoundId::HierophantReady01, SoundId::HierophantReady03);
+					} break;
+					case UnitId::ProtossVagrant: {
+						ready_sound = helper::get_random_sfx_between(SoundId::VagrantReady01, SoundId::VagrantReady03);
+					} break;
+					case UnitId::ProtossVagrantShade: {
+						ready_sound = helper::get_random_sfx_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
 					} break;
 					case UnitId::ProtossPariah: {
 						ready_sound = helper::get_random_sfx_between(SoundId::PariahReady01, SoundId::PariahReady03);

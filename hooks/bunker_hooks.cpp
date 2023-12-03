@@ -55,7 +55,6 @@ namespace hooks
 			}
 		}
 
-
 		if (scbw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::AttackMove;
 			if (unit->subunit) {

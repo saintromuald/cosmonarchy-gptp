@@ -224,6 +224,9 @@ namespace hooks
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void check_unit_visibility(Unit* unit) { // 00443390
+		if (unit->is_dead() || !unit->sprite) {
+			return;
+		}
 		u32 detecting_players = helper::get_detecting_players(unit);
 		if (unit->status & UnitStatus::Burrowed) {
 			Box32 rect = {};
@@ -501,8 +504,7 @@ namespace hooks
 			{
 				unit_with_hangar = hangar_unit;
 			}
-			u32 range = helper::get_target_acquisition_range_upgrade(unit_with_hangar) + 2;
-			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, range * 32))
+			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, 8 * 32))
 			{
 				result = 1;
 			} else {
@@ -815,11 +817,11 @@ namespace hooks
 
 			Unit* auto_target = unit->auto_target_unit;
 			if (auto_target) {
-				if (helper::unit_can_attack_target(auto_target, unit, 1)
-				&&  helper::is_unit_enemy(unit, unit->auto_target_unit)
-				&& !helper::is_ai_target_related(unit, auto_target)) {
+				if (helper::unit_can_attack_target(auto_target, unit, 1) && helper::is_unit_enemy(unit, unit->auto_target_unit)
+				&& !helper::is_ai_target_related(unit, auto_target) && helper::is_unit_in_weapon_range(unit, unit->auto_target_unit))
+				{
 					s32 auto_target_score = helper::get_target_priority(unit, unit->auto_target_unit);
-					if (!auto_target_score && !helper::is_unit_in_weapon_range(unit, unit->auto_target_unit)) {
+					if (!auto_target_score) {
 						auto_target_score = 1;
 					}
 					if (auto_target_score < best_score) {

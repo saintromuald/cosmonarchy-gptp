@@ -57,7 +57,7 @@ s32 Extender::get_file_entry_count(char* name, u32 entries)
 	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	//GPTP::logger << "log2...\n";
 
-	GPTP::logger << "Read samase file: " << (u32)buf << " " << length << '\n';
+	//GPTP::logger << "Read samase file: " << (u32)buf << " " << length << '\n';
 
 	std::string str;
 	str = std::string(buf, length);
@@ -67,7 +67,7 @@ s32 Extender::get_file_entry_count(char* name, u32 entries)
 
 
 	std::vector<std::string> lines = split_by(str, '\n');
-	GPTP::logger << "Str size: " << str.size() << ", Line size: " << lines.size() << '\n';
+	//GPTP::logger << "Str size: " << str.size() << ", Line size: " << lines.size() << '\n';
 	/*
 	if (str.count() > 0) {
 		GPTP::logger << str << '\n';
@@ -141,7 +141,7 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries)
 	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
 	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	//GPTP::logger << "log2...\n";
-	GPTP::logger << "Read samase file2: " << (u32)buf << " " << length << '\n';
+	//GPTP::logger << "Read samase file2: " << (u32)buf << " " << length << '\n';
 	std::string str;
 	str = std::string(buf, length);
 
@@ -150,7 +150,7 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries)
 	std::vector<std::string> lines = split_by(str, '\n');
 	u32 entry_count = 0;
 	u32 current_entry = default_max_limit;
-	GPTP::logger << "parse set reader2: " << lines.size() << '\n';
+	//GPTP::logger << "parse set reader2: " << lines.size() << '\n';
 	for (auto line : lines)
 	{
 		if (starts_with(line, '#') || starts_with(line, ';') || line.length() == 0)
@@ -162,7 +162,7 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries)
 		{
 			continue;
 		}
-		GPTP::logger << "Next line, cmds = 2" << '\n';
+		//GPTP::logger << "Next line, cmds = 2" << '\n';
 		auto entry_name = command_list[0];
 		auto value_string = command_list[1];
 		trim(entry_name);
@@ -173,12 +173,10 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries)
 
 			if (is_string_id(id))
 			{
-				GPTP::logger << "Is string id\n";
+				//GPTP::logger << "Is string id\n";
 				set_value(current_entry, id, value_string);
-			}
-			else
-			{
-				GPTP::logger << "Is integer id\n";
+			} else {
+				//GPTP::logger << "Is integer id\n";
 				u32 val = parse_entry_value(value_string, id);
 				set_value(current_entry, id, val);
 			}

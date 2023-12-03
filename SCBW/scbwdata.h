@@ -203,15 +203,15 @@ SCBW_DATA(GrpHead**,	g_cmdicons_grp,						0x0068C1E0);
 
 // For init_game_load
 SCBW_DATA(void*,		scenario_chk,				0x006D0F24);
-SCBW_DATA(ForceFlags*,	player_force_flags,			0x0058D5B8); // array of 0x4
-SCBW_DATA(u8*,			player_force,				0x0059BDA8); // array of 0x8
-SCBW_DATA(u8*,			player_force_replay_sth,	0x006D11A1); // array of 0x8
+SCBW_DATA(ForceFlags*,	g_player_force_flags,		0x0058D5B8); // array of 0x4
+SCBW_DATA(u8*,			g_player_force,				0x0059BDA8); // array of 0x8
+SCBW_DATA(u8*,			g_player_force_replay_sth,	0x006D11A1); // array of 0x8
 SCBW_DATA(FILE*,		load_game_file_handle,		0x006D1218);
 SCBW_DATA(u8*,			g_multiplayer_mode,			0x0057F0B4);
 SCBW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);
 SCBW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
-SCBW_DATA(u32*,			random_counts,				0x0051C610); // count of 0x400
-SCBW_DATA(u32*,			random_counts_total,		0x0051CA18);
+SCBW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
+SCBW_DATA(u32*,			g_total_random_counts,		0x0051CA18);
 SCBW_DATA(u16*,			campaign_index,				0x0057F244);
 SCBW_DATA(void**,		map_archive_handle,			0x00596BC4);
 SCBW_DATA(GameData*,	game_data,					0x005967F8);
@@ -229,7 +229,7 @@ SCBW_DATA(u32*,			g_replay_visions,			0x006D0F18);
 SCBW_DATA(u32*,			player_visions,				0x0057F0B0);
 SCBW_DATA(u32*,			g_replay_reveal_all,		0x006D0F1C);
 SCBW_DATA(u32*,			next_replay_command_frame,	0x005136C8);
-SCBW_DATA(u32*,			player_explored_visions,	0x0057EEB8);
+SCBW_DATA(u32*,			g_player_explored_visions,	0x0057EEB8);
 SCBW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
 enum MinimapColor {
@@ -561,6 +561,10 @@ SCBW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
 SCBW_DATA(char*,	bin_interact,				0x006D1224);
 SCBW_DATA(void**,	last_bindlg_menu_function,	0x006D1234);
 
+// For statport_dlg_interact
+SCBW_DATA(s8**,		g_dialog_key,				0x0068AC88);
+SCBW_DATA(Point32*,	g_last_event_position,		0x0057FD34);
+
 //////////////////////////////////////////////////////////////// @}
 /// @name *.DAT File Data
 //////////////////////////////////////////////////////////////// @{
@@ -837,6 +841,14 @@ SCBW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 640 x 480 divided into 12
 SCBW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
 static DrawGameProc const g_old_draw_game_proc = (DrawGameProc)0x004BD580;
+SCBW_DATA(u32*,					g_current_font_color,	0x006CE0C0);
+SCBW_DATA(u8*,					g_font_spacing,			0x006CE0C4);
+SCBW_DATA(Box16*,				g_draw_text,			0x006CE0C8);/*
+SCBW_DATA(u16*,					g_draw_text_left,		0x006CE0C8);
+SCBW_DATA(u16*,					g_draw_text_top,		0x006CE0CA);
+SCBW_DATA(u16*,					g_draw_text_right,		0x006CE0CC);
+SCBW_DATA(u16*,					g_draw_text_bottom,		0x006CE0CE);*/
+SCBW_DATA(u32*,					g_saved_font_color,		0x006CE0E8);
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
@@ -953,7 +965,8 @@ SCBW_DATA(u32**,		g_current_tiles,						0x006D0E84);
 
 // For draw_tooltip_with_icon
 SCBW_DATA(char*,		grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
-SCBW_DATA(GrpHead*,		icons_grp,						0x0068C238);
+SCBW_DATA(GrpHead*,		icons_grp,						0x0068C238); // This is wrong. -DF
+SCBW_DATA(GrpHead**,	g_icons_grp,					0x0068C238);
 SCBW_DATA(Box16*,		tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit
@@ -1194,6 +1207,9 @@ SCBW_DATA(u32*,				g_current_network_mode,				0x0059688C);
 
 // For update_visibility_hash
 SCBW_DATA(u8*,				g_region_vision_filter,				0x00629C90);
+
+// For desync debugging
+SCBW_DATA(u8*,				g_player_flag,						0x0065FC10);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

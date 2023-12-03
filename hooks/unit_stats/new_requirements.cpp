@@ -59,6 +59,8 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 
+		Faction faction = globals.players[player_id].faction;
+
 		// TERRAN
 		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos))
@@ -209,11 +211,32 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranMaverick:
+				{
+					if (faction != Faction_TerranHecatonCoalition) {
+						return true;
+					}
+				}
+				case UnitId::TerranHotshot:
+				{
+					if (faction == Faction_TerranHecatonCoalition) {
+						return true;
+					}
+				}
 				case UnitId::TerranHarakan:
-				case UnitId::TerranCyprian:
-				case UnitId::TerranCohort:
 				{
 					return true;
+				}
+				case UnitId::TerranCyprian:
+				{
+					if (faction != Faction_TerranNydusTrinity) {
+						return true;
+					}
+				}
+				case UnitId::TerranCohort:
+				{
+					if (faction == Faction_TerranNydusTrinity) {
+						return true;
+					}
 				} break;
 				case UnitId::TerranCleric:
 				case UnitId::TerranShamanSupportMode:
@@ -296,11 +319,26 @@ namespace hooks {
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranVulture:
 				case UnitId::TerranCyclops:
-				case UnitId::TerranGoliath:
-				case UnitId::TerranAspirant:
-				case UnitId::TerranSouthpaw:
 				{
 					return true;
+				} break;
+				case UnitId::TerranGoliath:
+				{
+					if (faction != Faction_TerranUpstart && faction != Faction_TerranGoldenRepublic) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranAspirant:
+				{
+					if (faction == Faction_TerranGoldenRepublic) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranSouthpaw:
+				{
+					if (faction == Faction_TerranUpstart) {
+						return true;
+					}
 				} break;
 				case UnitId::TerranBlackjack:
 				case UnitId::TerranMatadorTankMode:
@@ -311,12 +349,26 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranPhalanxTankMode:
+					if (faction != Faction_TerranNydusTrinity) {
+						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
+						{
+							return true;
+						}
+					}
 				case UnitId::TerranMadrigalImperiosoMode:
-				case UnitId::TerranTarasque:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
 					{
 						return true;
+					}
+				}
+				case UnitId::TerranTarasque:
+				{
+					if (faction == Faction_TerranNydusTrinity) {
+						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
+						{
+							return true;
+						}
 					}
 				} break;
 			}
@@ -368,12 +420,33 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranWraith:
+				{
+					if (faction != Faction_TerranFuturistFederation) {
+						return true;
+					}
+					return false;
+				}
 				case UnitId::TerranAncile:
+				{
+					if (faction != Faction_TerranUpstart) {
+						return true;
+					}
+				}
 				case UnitId::TerranTrojan:
-				case UnitId::TerranPhiloc:
-				case UnitId::TerranWendigo:
 				{
 					return true;
+				}
+				case UnitId::TerranPhiloc:
+				{
+					if (faction == Faction_TerranFuturistFederation) {
+						return true;
+					}
+				}
+				case UnitId::TerranWendigo:
+				{
+					if (faction == Faction_TerranUpstart) {
+						return true;
+					}
 				} break;
 			}
 		}
@@ -398,12 +471,28 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranSeraph:
+				{
+					if (faction != Faction_TerranGoldenRepublic) {
+						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
+						{
+							return true;
+						}
+					}
+				}
 				case UnitId::TerranAzazel:
-				case UnitId::TerranLuminary:
 				{
 					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 					{
 						return true;
+					}
+				}
+				case UnitId::TerranLuminary:
+				{
+					if (faction == Faction_TerranGoldenRepublic) {
+						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
+						{
+							return true;
+						}
 					}
 				} break;
 			}
@@ -1295,6 +1384,8 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 
+		Faction faction = globals.players[player_id].faction;
+
 		if (helper::is_constructing_addon(unit))
 		{
 			return TECH_HIDDEN;
@@ -1517,6 +1608,17 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::TerranMaverick:
+					{
+						if (faction != Faction_TerranHecatonCoalition)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
 					case UnitId::TerranHarakan:
 					{
 						if (in_air || is_adding_on)
@@ -1527,7 +1629,7 @@ namespace hooks {
 					}
 					case UnitId::TerranCyprian:
 					{
-						if (globals.players[player_id].faction != Faction_TerranNydusTrinity)
+						if (faction != Faction_TerranNydusTrinity)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1563,9 +1665,21 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
+					case UnitId::TerranHotshot:
+					{
+						if (faction == Faction_TerranHecatonCoalition)
+						{
+							if (in_air || is_adding_on)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
 					case UnitId::TerranCohort:
 					{
-						if (globals.players[player_id].faction == Faction_TerranNydusTrinity)
+						if (faction == Faction_TerranNydusTrinity)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1692,8 +1806,7 @@ namespace hooks {
 					}
 					case UnitId::TerranGoliath:
 					{
-						if (globals.players[player_id].faction != Faction_TerranUpstart
-						&&	globals.players[player_id].faction != Faction_TerranGoldenRepublic)
+						if (faction != Faction_TerranUpstart && faction != Faction_TerranGoldenRepublic)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1718,7 +1831,7 @@ namespace hooks {
 					}
 					case UnitId::TerranPhalanxTankMode:
 					{
-						if (globals.players[player_id].faction != Faction_TerranNydusTrinity)
+						if (faction != Faction_TerranNydusTrinity)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1745,7 +1858,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAspirant:
 					{
-						if (globals.players[player_id].faction == Faction_TerranGoldenRepublic)
+						if (faction == Faction_TerranGoldenRepublic)
 						{
 							if (in_air)
 							{
@@ -1757,7 +1870,7 @@ namespace hooks {
 					}
 					case UnitId::TerranSouthpaw:
 					{
-						if (globals.players[player_id].faction == Faction_TerranUpstart)
+						if (faction == Faction_TerranUpstart)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1769,7 +1882,7 @@ namespace hooks {
 					}
 					case UnitId::TerranTarasque:
 					{
-						if (globals.players[player_id].faction == Faction_TerranNydusTrinity)
+						if (faction == Faction_TerranNydusTrinity)
 						{
 							if (in_air || is_adding_on)
 							{
@@ -1857,7 +1970,7 @@ namespace hooks {
 				{
 					case UnitId::TerranWraith:
 					{
-						if (globals.players[player_id].faction != Faction_TerranFuturistFederation)
+						if (faction != Faction_TerranFuturistFederation)
 						{
 							if (in_air)
 							{
@@ -1877,7 +1990,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAncile:
 					{
-						if (globals.players[player_id].faction != Faction_TerranUpstart)
+						if (faction != Faction_TerranUpstart)
 						{
 							if (in_air)
 							{
@@ -1889,7 +2002,7 @@ namespace hooks {
 					}
 					case UnitId::TerranPhiloc:
 					{
-						if (globals.players[player_id].faction == Faction_TerranFuturistFederation)
+						if (faction == Faction_TerranFuturistFederation)
 						{
 							if (in_air)
 							{
@@ -1901,7 +2014,7 @@ namespace hooks {
 					}
 					case UnitId::TerranWendigo:
 					{
-						if (globals.players[player_id].faction == Faction_TerranUpstart)
+						if (faction == Faction_TerranUpstart)
 						{
 							if (in_air)
 							{
@@ -1963,7 +2076,7 @@ namespace hooks {
 					}
 					case UnitId::TerranSeraph:
 					{
-						if (in_air || is_adding_on || globals.players[player_id].faction == Faction_TerranGoldenRepublic)
+						if (in_air || is_adding_on || faction == Faction_TerranGoldenRepublic)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1975,7 +2088,7 @@ namespace hooks {
 					}
 					case UnitId::TerranLuminary:
 					{
-						if (in_air || is_adding_on || globals.players[player_id].faction != Faction_TerranGoldenRepublic)
+						if (in_air || is_adding_on || faction != Faction_TerranGoldenRepublic)
 						{
 							return TECH_HIDDEN;
 						}

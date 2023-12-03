@@ -19,7 +19,7 @@ static bool player_wants_to_randomize(u32 player) {
 		return false;
 	}
 	if (player_data.can_randomize_player_colors) {
-		bool randomize = player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
+		bool randomize = g_player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
 		if (g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
 			randomize = !randomize;
 		}
@@ -204,7 +204,7 @@ static bool has_enough_colors() {
 			banned_race_tints_count = race.size();
 		}
 	}
-	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PlayerLimit) {
+	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PlayerLimit - scbw::get_witness_count()) {
 		return false;
 	}
 	return true;
@@ -261,12 +261,14 @@ static void init_player_colors() {
 
 		easter_egg_unit_names[UnitId::TerranHarakan].push_back("Terran Ackmed Clone");
 		easter_egg_unit_names[UnitId::TerranCohort].push_back("Terran Nekron");
+		easter_egg_unit_names[UnitId::TerranCataphract].push_back("Terran Catfact");
+		easter_egg_unit_names[UnitId::TerranHadron].push_back("Terran Hardon");
 
 		easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
 		easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
 
 		easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglehead Raptor");
-		easter_egg_unit_names[UnitId::ZergProtathalor].push_back("Zerg Potatothalor");
+		easter_egg_unit_names[UnitId::ZergProtathalor].push_back("Zerg Pr0tathalor");
 		easter_egg_unit_names[UnitId::ZergIzirokor].push_back("Zerg Chadrokor");
 		easter_egg_unit_names[UnitId::ZergGorgrokor].push_back("Zerg Dadthrokor");
 		easter_egg_unit_names[UnitId::ZergRililisk].push_back("Zerg Nekrilisk");

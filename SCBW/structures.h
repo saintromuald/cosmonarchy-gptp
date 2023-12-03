@@ -150,8 +150,8 @@ struct DialogEvent
 	u32		user;					// 0x0
 	u16		field_4;				// 0x4
 	u16		field_6;				// 0x6
-	u16		w_virtual_key;			// 0x8
-	u16		w_virtual_key_modifier;	// 0xA
+	u16		virtual_key;			// 0x8
+	u16		virtual_key_modifier;	// 0xA
 	u16		number_order;			// 0xC
 	Point16	current;				// 0xE
 	u16		field_12;				// 0x12
@@ -433,10 +433,10 @@ typedef b32(__fastcall* ActionPointer)(Action*);
 //GRP frame header
 struct GrpFrame
 {
-	s8  x;
-	s8  y;
-	s8  w;
-	s8  h;
+	u8  x;
+	u8  y;
+	u8  w;
+	u8  h;
 	u32 data_offset; // might be u16* (but as a pointer, would still fit in u32)
 };
 C_ASSERT(sizeof(GrpFrame) == 8);

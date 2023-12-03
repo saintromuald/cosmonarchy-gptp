@@ -186,10 +186,6 @@ namespace hooks {
 					jump_to_685D8 = true;
 				}
 				if (jump_to_685D8) {
-					// Solarion - start with 12 interceptors
-					if (built_unit && built_unit->id == UnitId::ProtossSolarion) {
-						scbw::create_hangar_units(built_unit, 12, UnitId::ProtossSteward);
-					}
 					scbw::refresh_console();
 					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
