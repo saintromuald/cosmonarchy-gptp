@@ -1101,3 +1101,12 @@ bool unit_id_is_trap(u32 unit_id) {
 	return unit_id == UnitId::TerranSpiderMine
 		|| unit_id == UnitId::TerranLobotomyMine;
 }
+
+bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id) {
+	return unit_id != UnitId::ProtossSteward
+		&& unit_id != UnitId::ZergLarva
+		&& unit_id != UnitId::ZergOcsalLarva
+		&& unit_id != UnitId::ZergEgg
+		&& unit_id != UnitId::ZergCocoon
+		&& unit_id != UnitId::Special_MapRevealer;
+}

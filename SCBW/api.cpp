@@ -3206,6 +3206,9 @@ namespace scbw {
 			case GameType::FactionWars:
 				return GameKind_FactionWars;
 
+			case GameType::Massacre:
+				return GameKind_Massacre;
+
 			case GameType::Debug:
 				return GameKind_Competitive;
 		}

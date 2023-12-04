@@ -991,6 +991,16 @@ namespace hooks {
 		}
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
 
+		if (scbw::get_game_kind() == GameKind_Massacre) {
+			if (unit_id_is_vespene_node(unit->id)) {
+				unit->remove();
+				return;
+			} else if (unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+				g_game_vespene[unit->player]++;
+				g_total_vespene[unit->player]++;
+			}
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
@@ -1203,7 +1213,6 @@ namespace hooks {
 		// Clear Stagger Blacklist
 		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
 			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
-			unit_ext->values[ValueStaggerCount] = 0;
 			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
 		}
 
@@ -3815,7 +3824,7 @@ namespace hooks {
 		return result;
 	}
 
-	void initialize_provider_version(GameVersion* version) {
+	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
 		version->game_id = 'CMBW';
