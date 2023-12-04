@@ -863,8 +863,8 @@ bool unit_id_spawns_larva(u32 unit_id)
 		|| unit_id == UnitId::ZergCaphrolosk
 		|| unit_id == UnitId::ZergGathtelosk
 		|| unit_id == UnitId::ZergLarvoskCesiant
-		|| unit_id == UnitId::ZergOcsalCesiant;
-	//	|| unit_id == UnitId::Omnivale;
+		|| unit_id == UnitId::ZergOcsalCesiant
+		|| unit_id == UnitId::Omnivale;
 }
 
 u32 get_scribe_warp_distance(u32 unit_id) {
@@ -1032,8 +1032,7 @@ bool weapon_id_bounces_caustic_fission(u32 weapon_id) {
 		|| weapon_id == WeaponId::AlkajeliskPlasmidSpores;
 }
 
-u32 get_death_sfx_id(u32 unit_id)
-{
+u32 get_death_sfx_id(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::ZergGosvileth:		return SoundId::Zerg_DRONE_ZDrDth00_WAV;
 		case UnitId::ZergIroleth:		return SoundId::Zerg_OVERLORD_ZOvDth00_WAV;
@@ -1055,8 +1054,7 @@ u32 get_death_sfx_id(u32 unit_id)
 	}
 }
 
-u32 weapon_id_is_secondary(u32 weapon_id)
-{
+u32 weapon_id_is_secondary(u32 weapon_id) {
 	return weapon_id == WeaponId::DurendalPhilistineAutogun
 		|| weapon_id == WeaponId::TarasqueAcceleratedPlasmid
 		|| weapon_id == WeaponId::OptectonSkybondRay;
@@ -1067,20 +1065,17 @@ bool unit_id_has_custom_air_weapon(u32 unit_id) {
 		|| unit_id == UnitId::ProtossOptecton;
 }
 
-bool weapon_id_returns_to_attacker(u32 weapon_id)
-{
+bool weapon_id_returns_to_attacker(u32 weapon_id) {
 	return weapon_id == WeaponId::SkithrokorSkitteringSpores
 		|| weapon_id == WeaponId::LakiziliskSubterraneanSpines;
 }
 
-bool weapon_id_is_incremental(u32 weapon_id)
-{
+bool weapon_id_is_incremental(u32 weapon_id) {
 	return weapon_id == WeaponId::KalkaliskViscousAcid
 		|| weapon_id == WeaponId::SkithrokorSkitteringSpores;
 }
 
-bool unit_id_has_proximity_cloak(u32 unit_id)
-{
+bool unit_id_has_proximity_cloak(u32 unit_id) {
 	return unit_id == UnitId::TerranEidolon
 		|| unit_id == UnitId::TerranWraith
 		|| unit_id == UnitId::TerranSundog;
@@ -1090,8 +1085,7 @@ bool unit_id_is_ridge_refinery(u32 unit_id) {
 	return false; // Will add new IDs later. -Pr0nogo
 }
 
-bool skip_military_tracking_by_unit_id(u32 unit_id)
-{
+bool skip_military_tracking_by_unit_id(u32 unit_id) {
 	return unit_id == UnitId::TerranMorningstar
 		|| unit_id == UnitId::ProtossSteward
 		|| unit_id_is_trap(unit_id);
@@ -1100,6 +1094,21 @@ bool skip_military_tracking_by_unit_id(u32 unit_id)
 bool unit_id_is_trap(u32 unit_id) {
 	return unit_id == UnitId::TerranSpiderMine
 		|| unit_id == UnitId::TerranLobotomyMine;
+}
+
+bool unit_spawns_larva(Unit* unit) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+		if (!units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
+			return true;
+		}
+	}
+
+	if (unit_id_spawns_larva(unit->id)) {
+		return true;
+	}
+
+	return false;
 }
 
 bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id) {
