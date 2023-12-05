@@ -392,10 +392,13 @@ namespace hooks
 			dialog->non_user_value = user_value;
 			dialog->graphic = graphic;
 			char* buffer = &stat_res_resources_buffer[dialog->index - 1][0];
-			sprintf_s(buffer, 16, "%d / %d",
+			sprintf_s(buffer, 16, "%d/%d",
 				workers,
 				men);
 			dialog->text = buffer;
+			u32 len = 0;
+			while (buffer[++len]);
+			dialog->unk_1c = (u32)font_base[len < 8 ? 1 : 0];
 
 			if (!(dialog->flags & 1)) {
 				dialog->flags |= 1;
@@ -437,6 +440,9 @@ namespace hooks
 		char* buffer = &stat_res_resources_buffer[dialog->index - 1][0];
 		sprintf_s(buffer, 16, "%d", *display_amount);
 		dialog->text = buffer;
+		u32 len = 0;
+		while (buffer[++len]);
+		dialog->unk_1c = (u32)font_base[len < 8 ? 1 : 0];
 
 		if (!(dialog->flags & 1)) {
 			dialog->flags |= 1;
@@ -459,6 +465,9 @@ namespace hooks
 			}
 
 			dialog->text = buffer;
+			u32 len = 0;
+			while (buffer[++len]);
+			dialog->unk_1c = (u32)font_base[len < 5 ? 1 : 0];
 
 			if (!(dialog->flags & 1)) {
 				dialog->flags |= 1;
@@ -769,7 +778,7 @@ namespace hooks
 
 		if (dialog->text) {
 			if (dialog->index < 64) {
-				helper::set_font_handle((u32*)font_base[1]);
+				helper::set_font_handle((u32*)dialog->unk_1c);
 				*g_print_xy_alignment = 0x21;
 				helper::get_color_handle(GameTextColor::Green);
 				dialog_left += graphic_width + 2;
@@ -788,7 +797,7 @@ namespace hooks
 
 	void __fastcall stat_res_colortext_update(BinDlg* dialog, int dummy0, int dummy1, int dummy2) {
 		if (dialog->text) {
-			helper::set_font_handle((u32*)font_base[1]);
+			helper::set_font_handle((u32*)dialog->unk_1c);
 			*g_draw_text = { dialog->bounds.left, dialog->bounds.top, dialog->bounds.right, dialog->bounds.bottom };
 			*g_print_xy_alignment = (s16)dialog->index < 0 ? 0x24 : 0x21;
 			*g_font_spacing = 1;
@@ -880,6 +889,7 @@ namespace hooks
 
 						if (child_index) {
 							dialog->initialVersion0x36.unk_3e = child_index + parent_offset;
+							dialog->initialVersion0x36.unk_3e->unk_1c = (u32)font_base[1];
 							dialog->initialVersion0x36.unk_3e->fxn_update = &stat_res_colortext_update;
 							dialog->child_dialog = (RowSize * --child_index) + parent_offset + PlayerLimit + 1;
 						}
