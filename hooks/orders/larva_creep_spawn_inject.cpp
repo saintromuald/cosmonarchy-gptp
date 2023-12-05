@@ -66,7 +66,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::secondary_order_spawning_larva(unit);
+		hooks::secondary_order_spawning_larva(unit, false);
 		__asm
 		{
 			POPAD

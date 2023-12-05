@@ -857,33 +857,27 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 	return 0;
 }
 
-bool unit_id_spawns_larva(u32 unit_id)
-{
+bool unit_id_spawns_larva_by_order(u32 unit_id) {
 	return unit_id == UnitId::ZergHachirosk
 		|| unit_id == UnitId::ZergCaphrolosk
 		|| unit_id == UnitId::ZergGathtelosk
 		|| unit_id == UnitId::ZergLarvoskCesiant
-		|| unit_id == UnitId::ZergOcsalCesiant
-		|| unit_id == UnitId::Omnivale;
+		|| unit_id == UnitId::ZergOcsalCesiant;
 }
 
 u32 get_scribe_warp_distance(u32 unit_id) {
-	switch (unit_id)
-	{
+	switch (unit_id) {
 		case UnitId::ProtossAquifer:
-		case UnitId::ProtossArdentAuthority:
-		{
+		case UnitId::ProtossArdentAuthority: {
 			return 88;
 		}
 		case UnitId::ProtossGrandLibrary:
 		case UnitId::ProtossProstrationStage:
 		case UnitId::ProtossSyntheticSynod:
-		case UnitId::ProtossArgosy:
-		{
+		case UnitId::ProtossArgosy: {
 			return 99;
 		}
-		default:
-		{
+		default: {
 			return 70;
 		}
 	}
@@ -891,8 +885,7 @@ u32 get_scribe_warp_distance(u32 unit_id) {
 
 bool unit_id_ignored_on_minimap(u32 unit_id) {
 	switch (unit_id) {
-		case UnitId::Spell_DarkSwarm:
-		{
+		case UnitId::Spell_DarkSwarm: {
 			return true;
 		}
 	}
@@ -1096,15 +1089,46 @@ bool unit_id_is_trap(u32 unit_id) {
 		|| unit_id == UnitId::TerranLobotomyMine;
 }
 
-bool unit_spawns_larva(Unit* unit) {
-	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-		if (!units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
-			return true;
-		}
+bool unit_building_can_act(Unit* unit) {
+	if (unit->status & UnitStatus::InAir ||
+		unit->status & UnitStatus::IsHallucination ||
+		!(unit->status & UnitStatus::Completed)) {
+		return false;
+	}
+	return true;
+}
+
+bool unit_spawns_custom_larva(Unit* unit) {
+	if (unit_id_spawns_larva_by_order(unit->id)) {
+		return false;
 	}
 
-	if (unit_id_spawns_larva(unit->id)) {
+	switch (unit->id) {
+		case UnitId::Omnivale: return true;
+	}
+
+	UnitExt* unit_ext = get_unit_ext(unit);
+	if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] && units_dat::group_flags[unit->id].is_factory) {
+		return true;
+	}
+
+	return false;
+}
+
+bool unit_spreads_custom_creep(Unit* unit) {
+	if (helper::spreads_creep(unit->id, true)) {
+		return false;
+	}
+	if (unit->status & UnitStatus::InAir || !(unit->status & UnitStatus::Completed)) {
+		return false;
+	}
+
+	switch (unit->id) {
+		case UnitId::Omnivale: return true;
+	}
+	
+	UnitExt* unit_ext = get_unit_ext(unit);
+	if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
 		return true;
 	}
 
@@ -1120,8 +1144,7 @@ bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id) {
 		&& unit_id != UnitId::Special_MapRevealer;
 }
 
-bool rapid_rendezvous_can_target_unit_id(u32 unit_id) // Does not prohibit air units, must be done separately
-{
+bool rapid_rendezvous_can_target_unit_id(u32 unit_id) { // Does not prohibit air units, must be done separately
 	return !unit_id_is_resource_node(unit_id, false)
 		&&	unit_id != UnitId::ZergLarva
 		&&	unit_id != UnitId::ZergOcsalLarva

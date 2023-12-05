@@ -44,6 +44,7 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/update_unit_sight.h"
+#include "hooks/orders/larva_creep_spawn.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -2615,13 +2616,15 @@ namespace hooks {
 		}
 
 		// Custom Larva Spawn
-		if (unit->secondary_order_id != OrderId::SpawningLarva && unit_spawns_larva(unit)) {
-		//	helper::secondary_order_spawning_larva(unit);
+		if (unit_spawns_custom_larva(unit)) {
+			if (unit->secondary_order_id != OrderId::SpawningLarva) { // let's not duplicate the order
+				hooks::secondary_order_spawning_larva(unit, true);
+			}
 		}
 
 		// Blissful Embrace - Creep spread and Larva spawn
-		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			if (*g_elapsed_time_frames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
+		if (unit_spreads_custom_creep(unit)) {
+			if (*g_elapsed_time_frames % 15 == 0) {
 				scbw::spread_custom_creep(unit);
 			}
 		}

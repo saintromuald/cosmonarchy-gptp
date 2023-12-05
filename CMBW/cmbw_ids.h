@@ -62,7 +62,7 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);
 bool weapon_id_procs_onhits(u32 weapon_id);
 WeaponOffsets* get_weapon_offsets(u32 weapon_id);
 
-bool unit_id_spawns_larva(u32 unit_id);
+bool unit_id_spawns_larva_by_order(u32 unit_id);
 u32 get_scribe_warp_distance(u32 unit_id);
 bool unit_id_ignored_on_minimap(u32 unit_id);
 bool unit_is_combatant(Unit* unit);
@@ -89,6 +89,8 @@ bool unit_id_has_proximity_cloak(u32 unit_id);
 bool unit_id_is_ridge_refinery(u32 unit_id);
 bool skip_military_tracking_by_unit_id(u32 unit_id);
 bool unit_id_is_trap(u32 unit_id);
-bool unit_spawns_larva(Unit* unit);
+bool unit_building_can_act(Unit* unit);
+bool unit_spawns_custom_larva(Unit* unit);
+bool unit_spreads_custom_creep(Unit* unit);
 bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id);
 bool rapid_rendezvous_can_target_unit_id(u32 unit_id);
