@@ -996,8 +996,7 @@ namespace hooks {
 				unit->remove();
 				return;
 			} else if (unit_id_should_give_gas_in_massacre_mode(unit->id)) {
-				g_game_vespene[unit->player]++;
-				g_total_vespene[unit->player]++;
+				scbw::add_massacre_resource(unit->player);
 			}
 		}
 

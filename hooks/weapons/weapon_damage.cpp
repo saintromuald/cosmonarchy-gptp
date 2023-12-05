@@ -291,8 +291,7 @@ namespace hooks
 		}
 		if (weapon_damage_is_lethal(data)) {
 			if (scbw::get_game_kind() == GameKind_Massacre) {
-				g_game_vespene[data.attacking_player_id]++;
-				g_total_vespene[data.attacking_player_id]++;
+				scbw::add_massacre_resource(data.attacking_player_id);
 			}
 			if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
 				data.damage = 0;

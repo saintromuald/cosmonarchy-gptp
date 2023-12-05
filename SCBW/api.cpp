@@ -3672,4 +3672,10 @@ namespace scbw {
 		}
 		return count;
 	}
+
+	void add_massacre_resource(u32 player_id)
+	{
+		g_game_vespene[player_id] += 3;
+		g_total_vespene[player_id] += 3;
+	}
 }

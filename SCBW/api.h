@@ -798,4 +798,5 @@ namespace scbw
 	u32 player_selection_count(u32 player);
 	u32 player_selection_unit_id_count(u32 player, u32 unit_id);
 	u32 get_witness_count();
+	void add_massacre_resource(u32 player_id);
 }
