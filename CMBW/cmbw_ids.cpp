@@ -313,15 +313,15 @@ bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
 	if (town_center_only) {
 		return unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
-			|| unit_id == UnitId::ZergGathtelosk;
-		//	|| unit_id == UnitId::Omnivale;
+			|| unit_id == UnitId::ZergGathtelosk
+			|| unit_id == UnitId::Omnivale;
 	} else {
 		return unit_id == UnitId::ZergHachirosk
 			|| unit_id == UnitId::ZergCaphrolosk
 			|| unit_id == UnitId::ZergGathtelosk
 			|| unit_id == UnitId::ZergLarvoskCesiant
-			|| unit_id == UnitId::ZergOcsalCesiant;
-		//	|| unit_id == UnitId::Omnivale;
+			|| unit_id == UnitId::ZergOcsalCesiant
+			|| unit_id == UnitId::Omnivale;
 	}
 }
 
