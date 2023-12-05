@@ -52,7 +52,10 @@ namespace hooks
 
 	void secondary_order_spawning_larva(Unit* unit) {
 		if (unit->status & UnitStatus::IsHallucination || !unit_id_spawns_larva(unit->id)) {
-			return;
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (!unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+				return;
+			}
 		}
 		if (unit->order_queue_timer == 0 && unit->player != 11) {
 			*g_larva_counter = 0;
@@ -91,7 +94,7 @@ namespace hooks
 		}
 	}
 
-	void secondary_order_spread_creep_spawning_larva(Unit* unit) {
+	void secondary_order_spread_creep_spawning_larva(Unit* unit) { // 004EA880
 		// No longer checks unit ids here because we check in the function itself,
 		// in order to prevent Cagrants regressed from Larvosks from spawning Larva. -Pr0nogo
 		secondary_order_spawning_larva(unit);

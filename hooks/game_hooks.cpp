@@ -2617,7 +2617,7 @@ namespace hooks {
 
 		// Custom Larva Spawn
 		if (unit->secondary_order_id != OrderId::SpawningLarva && unit_spawns_larva(unit)) {
-			helper::secondary_order_spawning_larva(unit);
+		//	helper::secondary_order_spawning_larva(unit);
 		}
 
 		// Blissful Embrace - Creep spread and Larva spawn

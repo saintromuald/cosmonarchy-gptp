@@ -3022,9 +3022,7 @@ namespace hooks {
 								current_button++;	// select next button (advance by sizeof(Button)
 								buttons_count++;
 								jumpto5934E = true;
-							}
-							else
-							{
+							} else {
 								jumpto59336 = true;
 							}
 						}
