@@ -38,6 +38,8 @@ ButtonSet* get_custom_buttonset() {
 	return &custom_buttonset;
 }
 
+ButtonsetContext buttonset_context;
+
 namespace hooks {
 	static Unit* get_selected_unit() {
 		Unit* active = *g_active_portrait_unit;
@@ -228,8 +230,7 @@ namespace hooks {
 		if (!current_button_dialog) {
 			*g_highlighted_icon = 0xFFFF;
 		} else {
-			if (!(current_button_dialog->flags & BinDlgFlags::Highlighted))
-			{
+			if (!(current_button_dialog->flags & BinDlgFlags::Highlighted)) {
 				current_button_dialog->flags |= BinDlgFlags::Highlighted;
 				scbw::update_dialog(current_button_dialog);
 			}

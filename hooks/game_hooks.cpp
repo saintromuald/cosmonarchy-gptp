@@ -3228,6 +3228,8 @@ namespace hooks {
 		graphics::reset_all_graphics();
 		graphics::reset_stat_res_graphics();
 
+		buttonset_context.reset();
+
 		init_threshold();
 		if (!grp_wire_Font) {
 			init_grp_wire_font("font_wire");
