@@ -1119,3 +1119,11 @@ bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id) {
 		&& unit_id != UnitId::ZergCocoon
 		&& unit_id != UnitId::Special_MapRevealer;
 }
+
+bool rapid_rendezvous_can_target_unit_id(u32 unit_id) // Does not prohibit air units, must be done separately
+{
+	return !unit_id_is_resource_node(unit_id, false)
+		&&	unit_id != UnitId::ZergLarva
+		&&	unit_id != UnitId::ZergOcsalLarva
+		&&	unit_id != UnitId::ZergEgg;
+}
