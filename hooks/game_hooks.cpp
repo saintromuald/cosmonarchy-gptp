@@ -754,7 +754,7 @@ namespace hooks {
 				}
 			}
 			
-			// Init Extended Features
+			// Init extended features
 			reset_search_index();
 			update_search_index();
 			init_player_colors();
@@ -762,7 +762,7 @@ namespace hooks {
 			init_layouts();
 			init_custom_ai();
 
-			// Execute Triggers before frame 0
+			// Execute triggers before frame 0
 			scbw::set_ingame_loop_state(true);
 			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
 			scbw::set_ingame_loop_state(false);
