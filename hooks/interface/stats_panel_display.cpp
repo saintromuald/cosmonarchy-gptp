@@ -991,8 +991,7 @@ namespace hooks
 		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 		{
 			current_dialog = dialog->child_dialog;
-		}
-		else {
+		} else {
 			current_dialog = dialog->parent->child_dialog;
 		}
 		while (current_dialog && current_dialog->index != 2)
@@ -1016,15 +1015,9 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				built_unit = unit->order_target.unit;
-			}
-			else if (unit->secondary_order_id == OrderId::Train
-			||		 unit->secondary_order_id == OrderId::TrainFighter
-			||		 helper::is_constructing_addon(unit))
-			{
+			} else if (unit->secondary_order_id == OrderId::Train || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
 				built_unit = unit->current_build_unit;
-			}
-			else
-			{
+			} else {
 				built_unit = 0;
 			}
 
@@ -1035,41 +1028,41 @@ namespace hooks
 			}
 
 			helper::dialog_set_progress_bar_value(dialog, 7, progress);
-			u32 queueSlot = 0;
+			u32 queue_slot = 0;
 			while (current_dialog)
 			{
-				if (queueSlot >= 5)
+				if (queue_slot >= 5)
 				{
 					current_dialog = 0;
 				} else {
-					u32 slotUnitId = unit->build_queue[(unit->build_queue_slot + queueSlot) % 5];
+					u32 slot_unit_id = unit->build_queue[(unit->build_queue_slot + queue_slot) % 5];
 					char* slot_text;
-					if (queueSlot == 0)
+					if (queue_slot == 0)
 					{
 						slot_text = (char*)FORMATSTRING_COLORYELLOW_VALUE_COLORCYAN_SPACE;	// queued slot number display (yellow)
 					} else {
 						slot_text = (char*)FORMATSTRING_VALUE_SPACE;						// active slot number display (cyan)
 					}
 
-					helper::bw_sprintf_s(g_queues_buffers[queueSlot], 8, slot_text, queueSlot + 1);
-					if (queueSlot == 0 || queueSlot >= 4)
+					helper::bw_sprintf_s(g_queues_buffers[queue_slot], 8, slot_text, queue_slot + 1);
+					if (queue_slot == 0 || queue_slot >= 4)
 					{
 						current_dialog->graphic = 2;
 					} else {
 						current_dialog->graphic = 4;
 					}
 
-					if (slotUnitId != UnitId::None)
+					if (slot_unit_id != UnitId::None)
 					{
 						current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
-						current_dialog->stat_button_user->grp_frame = slotUnitId;
+						current_dialog->stat_button_user->grp_frame = slot_unit_id;
 						current_dialog->stat_button_user->type = 3;
-						current_dialog->stat_button_user->id = slotUnitId;
+						current_dialog->stat_button_user->id = slot_unit_id;
 						helper::enable_control(current_dialog);
-						current_dialog->text = g_queues_buffers[queueSlot];
+						current_dialog->text = g_queues_buffers[queue_slot];
 					} else {
 						current_dialog->stat_button_user->button_grp = *g_cmdbtns_handle; // This global was previously defined as void**. -Pr0nogo
-						current_dialog->stat_button_user->grp_frame = queueSlot + 6;
+						current_dialog->stat_button_user->grp_frame = queue_slot + 6;
 						current_dialog->stat_button_user->type = 6;
 						helper::disable_dialog(current_dialog);
 						current_dialog->text = 0;
@@ -1080,7 +1073,7 @@ namespace hooks
 						helper::update_dialog(current_dialog);
 					}
 					current_dialog = current_dialog->next;
-					queueSlot += 1;
+					queue_slot++;
 				}
 			}
 
@@ -1126,6 +1119,7 @@ namespace hooks
 			if (current_dialog) { // This nullcheck wasn't in the original code. Currently we crash if this is removed, and text status_text is not written to any visible dialog. IDA was not helpful. -Pr0nogo
 				current_dialog->text = status_text;
 			}
+
 			while (current_dialog)
 			{
 				if (!(current_dialog->flags & BinDlgFlags::Visible))
@@ -1295,10 +1289,7 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				target = unit->order_target.unit;
-			} else if (unit->secondary_order_id == OrderId::Train
-			||		   unit->secondary_order_id == OrderId::TrainFighter
-			||		   helper::is_constructing_addon(unit))
-			{
+			} else if (unit->secondary_order_id == OrderId::Train || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
 				target = unit->current_build_unit;
 			}
 
@@ -1335,8 +1326,7 @@ namespace hooks
 	void unit_stat_act_archon(BinDlg* dialog) // 004273E0
 	{
 		Unit* unit = *g_active_portrait_unit;
-		if ((*g_is_in_replay == 0 && unit->player != *g_local_nation_id)
-		||	unit->main_order_id != OrderId::CompletingArchonSummon)
+		if ((*g_is_in_replay == 0 && unit->player != *g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon)
 		{
 			helper::unit_stat_act_standard(dialog);
 		} else {
@@ -1347,7 +1337,8 @@ namespace hooks
 				*g_status_screen_func = 6;
 			}
 			helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
-			// Skipping hardcoded use of statTxtTbl. -GPTP			
+
+			// Skipping hardcoded use of stat_txt_tbl. -GPTP			
 			helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl_new->get_string(0x316)); // Text: "Summoning"
 			helper::set_text_string(dialog);
 			helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));

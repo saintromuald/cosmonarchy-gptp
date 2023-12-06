@@ -777,7 +777,7 @@ namespace hooks {
 			}
 		}
 
-		if (!scbw::is_game_paused()) { // If the game is not paused
+		if (!scbw::is_game_paused()) {
 			graphics::reset_all_graphics();
 		}
 
