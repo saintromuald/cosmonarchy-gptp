@@ -929,11 +929,7 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				built_unit = unit->order_target.unit;
-			}
-			else if (unit->secondary_order_id == OrderId::Train
-			||		 unit->secondary_order_id == OrderId::TrainFighter
-			||		 helper::is_constructing_addon(unit))
-			{
+			} else if (unit->secondary_order_id == OrderId::Train || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
 				built_unit = unit->current_build_unit;
 			}
 
@@ -942,13 +938,11 @@ namespace hooks
 			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
 			{
 				current_dialog = dialog->child_dialog;
-			}
-			else
-			{
+			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && current_dialog->index != 17)
+			while (current_dialog && (s16)current_dialog->index != 17)
 			{
 				current_dialog = current_dialog->next;
 			}
@@ -962,8 +956,8 @@ namespace hooks
 				current_dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(current_dialog);
 			}
-			u32 textId = 0x313 + built_unit->get_race(); // "Mutating", "Adding On", "Opening Warp Rift"
-			helper::add_text_to_dialog(dialog, -40, (char*)g_stat_txt_tbl_new->get_string(textId));
+			u32 text_id = 0x313 + built_unit->get_race(); // "Mutating", "Adding On", "Opening Warp Rift"
+			helper::add_text_to_dialog(dialog, -40, (char*)g_stat_txt_tbl_new->get_string(text_id));
 		}
 	}
 
@@ -1111,7 +1105,7 @@ namespace hooks
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && current_dialog->index != -15)
+			while (current_dialog && (s16)current_dialog->index != -15)
 			{
 				current_dialog = current_dialog->next;
 			}
@@ -1180,7 +1174,7 @@ namespace hooks
 			current_dialog = dialog->parent->child_dialog;
 		}
 
-		while (current_dialog && current_dialog->index != index)
+		while (current_dialog && current_dialog->index != (u16)index)
 		{
 			current_dialog = current_dialog->next; 
 		}
@@ -1246,7 +1240,7 @@ namespace hooks
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && current_dialog->index != -20)
+			while (current_dialog && (s16)current_dialog->index != -20)
 			{
 				current_dialog = current_dialog->next;
 			}
@@ -1258,7 +1252,7 @@ namespace hooks
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && current_dialog->index != -21)
+			while (current_dialog && (s16)current_dialog->index != -21)
 			{
 				current_dialog = current_dialog->next;
 			}
@@ -1270,7 +1264,7 @@ namespace hooks
 			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
-			while (current_dialog && current_dialog->index != 2)
+			while (current_dialog && (s16)current_dialog->index != 2)
 			{
 				current_dialog = current_dialog->next;
 			}
