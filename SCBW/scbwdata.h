@@ -1094,7 +1094,7 @@ SCBW_DATA(char*,		cbullet_damage,						0x0050434C);
 // For create_unit_building_sprite_validity_array
 SCBW_DATA(u32*,			g_current_visibility_hash,			0x0063FD30);
 SCBW_DATA(u32*,			g_want_visibility_hash_update,		0x00629D90);
-SCBW_DATA(char*,		g_region_vision_hash,				0x0063FE38);
+SCBW_DATA(u8*,			g_region_vision_hash,				0x0063FE38);
 SCBW_DATA(u32*,			g_current_hash_offset,				0x0063FD28);
 
 SCBW_DATA(ControlGroupPlayerArray*, control_group_array,	ccmu_extender.new_saved_selections);

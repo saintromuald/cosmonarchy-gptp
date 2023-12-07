@@ -745,7 +745,7 @@ namespace hooks
 	void __fastcall stat_res_text_update(BinDlg* dialog, int dummy0, int dummy1, int dummy2) {
 		Bounds icon_area = {};
 		FxnDrawIconData icon_data = {};
-		GrpHead* icons_grp = *g_icons_grp;// For some reason, this exact order of initialization is critical for bw_print_icon() to work.
+		GrpHead* icons_grp = *g_icons_grp;// For some reason, this exact order of initialization is critical for bw_print_icon() to work. -DF
 
 		if (dialog->graphic >= icons_grp->frame_count) {
 			dialog->graphic = 0;
@@ -862,8 +862,8 @@ namespace hooks
 
 	inline int esi() { __asm MOV EAX, ESI }
 
-	void stat_res_register_user_dialog_action(BinDlg* dialog) {
-		dialog = (BinDlg*)esi();
+	void stat_res_register_user_dialog_action(/*BinDlg* dialog*/) {
+		BinDlg* dialog = (BinDlg*)esi();// Define "dialog" as a variable instead of parameter, to fix issues with Debug config. -DF
 
 		if (dialog) {
 			BinDlg* parent_offset = dialog + ResSize;
@@ -884,7 +884,7 @@ namespace hooks
 
 						//Custom pointers to that row's player name and production dialogs, written to the bin file manually ("unknown3" in PyBIN's text export).
 						//It's not necessary to do it this way, but it's faster instead of stepping through the dialog->next pointers to get to them.
-						//It's however unconventional for control types 1+ to have BinDlg pointers, hence the need to initialize it here.
+						//It's however unconventional for control types 1+ to have BinDlg pointers, hence the need to initialize it here. -DF
 						u32 child_index = dialog->non_user_value;
 
 						if (child_index) {
