@@ -650,6 +650,12 @@ struct BinDlg
 			/*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
 			/*0x3F*/  unk_t     unk3f[3];				// unverified filler
 		} textDialog0x36;								// seems to apply to some text related dialogs
+		struct
+		{
+			/*0x36*/  u32		unused;
+			/*0x3A*/  u32*		font_handle;
+			/*0x3E*/  BinDlg*	player_name;
+		} statRes;
 	};
 
 	union {
