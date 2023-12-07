@@ -398,7 +398,7 @@ namespace hooks
 			dialog->text = buffer;
 			u32 len = 0;
 			while (buffer[++len]);
-			dialog->unk_1c = (u32)font_base[len < 8 ? 1 : 0];
+			dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
 
 			if (!(dialog->flags & 1)) {
 				dialog->flags |= 1;
@@ -442,7 +442,7 @@ namespace hooks
 		dialog->text = buffer;
 		u32 len = 0;
 		while (buffer[++len]);
-		dialog->unk_1c = (u32)font_base[len < 8 ? 1 : 0];
+		dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
 
 		if (!(dialog->flags & 1)) {
 			dialog->flags |= 1;
@@ -467,7 +467,7 @@ namespace hooks
 			dialog->text = buffer;
 			u32 len = 0;
 			while (buffer[++len]);
-			dialog->unk_1c = (u32)font_base[len < 5 ? 1 : 0];
+			dialog->statRes.font_handle = (u32*)font_base[len < 5 ? 1 : 0];
 
 			if (!(dialog->flags & 1)) {
 				dialog->flags |= 1;
@@ -576,7 +576,7 @@ namespace hooks
 		}
 
 		BinDlg* dialog = *dialog_ptr;
-		BinDlg* dialog_name = dialog->initialVersion0x36.unk_3e;
+		BinDlg* dialog_name = dialog->statRes.player_name;
 		BinDlg* dialog_production = dialog->child_dialog;
 
 		show_supply_info(dialog, g_player_table[player].race + 4, workers, men);
@@ -703,7 +703,7 @@ namespace hooks
 		while (dialog->index <= ResSize) {
 			if (dialog->flags & BinDlgFlags::Visible) {
 				helper::hide_dialog(dialog);
-				BinDlg* child = dialog->initialVersion0x36.unk_3e;//dialog_name
+				BinDlg* child = dialog->statRes.player_name;//dialog_name
 
 				if (child && child->flags & BinDlgFlags::Visible)
 					helper::hide_dialog(child);
@@ -778,7 +778,7 @@ namespace hooks
 
 		if (dialog->text) {
 			if (dialog->index < 64) {
-				helper::set_font_handle((u32*)dialog->unk_1c);
+				helper::set_font_handle((u32*)dialog->statRes.font_handle);
 				*g_print_xy_alignment = 0x21;
 				helper::get_color_handle(GameTextColor::Green);
 				dialog_left += graphic_width + 2;
@@ -797,7 +797,7 @@ namespace hooks
 
 	void __fastcall stat_res_colortext_update(BinDlg* dialog, int dummy0, int dummy1, int dummy2) {
 		if (dialog->text) {
-			helper::set_font_handle((u32*)dialog->unk_1c);
+			helper::set_font_handle((u32*)dialog->statRes.font_handle);
 			*g_draw_text = { dialog->bounds.left, dialog->bounds.top, dialog->bounds.right, dialog->bounds.bottom };
 			*g_print_xy_alignment = (s16)dialog->index < 0 ? 0x24 : 0x21;
 			*g_font_spacing = 1;
@@ -888,9 +888,9 @@ namespace hooks
 						u32 child_index = dialog->non_user_value;
 
 						if (child_index) {
-							dialog->initialVersion0x36.unk_3e = child_index + parent_offset;
-							dialog->initialVersion0x36.unk_3e->unk_1c = (u32)font_base[1];
-							dialog->initialVersion0x36.unk_3e->fxn_update = &stat_res_colortext_update;
+							dialog->statRes.player_name = child_index + parent_offset;
+							dialog->statRes.player_name->statRes.font_handle = (u32*)font_base[1];
+							dialog->statRes.player_name->fxn_update = &stat_res_colortext_update;
 							dialog->child_dialog = (RowSize * --child_index) + parent_offset + PlayerLimit + 1;
 						}
 					} else {
