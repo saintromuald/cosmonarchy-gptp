@@ -11,8 +11,8 @@
 
 char stat_res_resources_buffer[ResSize][16];
 char stat_res_production_buffer[PlayerLimit][RowSize][4];
-u32 stat_res_displayed_gas[PlayerLimit];
-u32 stat_res_displayed_minerals[PlayerLimit];
+s32 stat_res_displayed_gas[PlayerLimit];
+s32 stat_res_displayed_minerals[PlayerLimit];
 ProductionArrays production;
 graphics::Font* font_stat_res;
 extern u8 tFontGame_ImageData[];
@@ -383,8 +383,9 @@ namespace hooks
     }
 
 	void show_supply_info(BinDlg* dialog, u16 graphic, u16 workers, u16 men) {
-		if (!(dialog->flags & BinDlgFlags::Visible))
+		if (!(dialog->flags & BinDlgFlags::Visible)) {
 			helper::show_dialog(dialog);
+		}
 
 		u32 user_value = (men << 16) | workers;
 
@@ -400,61 +401,47 @@ namespace hooks
 			while (buffer[++len]);
 			dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
 
-			if (!(dialog->flags & 1)) {
-				dialog->flags |= 1;
+			if (!(dialog->flags & BinDlgFlags::Highlighted)) {
+				dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(dialog);
 			}
 		}
 	}
 
-	void print_stat_res_info(BinDlg* dialog, u16 graphic, u32* display_amount, u32 resource_amount, bool no_step_animation) {
-		if (!(dialog->flags & BinDlgFlags::Visible))
+	void print_stat_res_info(BinDlg* dialog, u16 graphic, s32* display_amount, s32 resource_amount) {
+		if (!(dialog->flags & BinDlgFlags::Visible)) {
 			helper::show_dialog(dialog);
-
-		if (!dialog->text)
-			goto text_needs_update;
-
-		if (resource_amount != *display_amount)
-			goto uservalue_needs_update;
-
-		if (dialog->non_user_value != resource_amount || dialog->graphic != graphic)
-			goto dialog_needs_update;
-
-		return;
-
-	text_needs_update:
-		if (resource_amount != *display_amount) {
-		uservalue_needs_update:
-			s32 difference = resource_amount - *display_amount;
-
-			if (no_step_animation) {
-				*display_amount += difference;
-			} else {
-				*display_amount += (((difference > 0) * 2) - 1) + (difference / 16);
-			}
 		}
 
-	dialog_needs_update:
-		dialog->non_user_value = *display_amount;
-		dialog->graphic = graphic;
-		char* buffer = &stat_res_resources_buffer[dialog->index - 1][0];
-		sprintf_s(buffer, 16, "%d", *display_amount);
-		dialog->text = buffer;
-		u32 len = 0;
-		while (buffer[++len]);
-		dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
+		s32 difference = resource_amount - *display_amount;
 
-		if (!(dialog->flags & 1)) {
-			dialog->flags |= 1;
-			helper::update_dialog(dialog);
+		if (difference) {
+			*display_amount += *g_elapsed_time_frames > 1 ? (((difference > 0) * 2) - 1) + (difference / 16) : difference;
+		}
+
+		if (dialog->non_user_value != difference || dialog->graphic != graphic || !dialog->text) {
+			dialog->non_user_value = difference;
+			dialog->graphic = graphic;
+			char* buffer = &stat_res_resources_buffer[dialog->index - 1][0];
+			sprintf_s(buffer, 16, "%d", *display_amount);
+			dialog->text = buffer;
+			u32 len = 0;
+			while (buffer[++len]);
+			dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
+
+			if (!(dialog->flags & BinDlgFlags::Highlighted)) {
+				dialog->flags |= BinDlgFlags::Highlighted;
+				helper::update_dialog(dialog);
+			}
 		}
 	}
 
 	void print_player_apm(BinDlg* dialog, u32 user_value) {
-		if (!(dialog->flags & BinDlgFlags::Visible))
+		if (!(dialog->flags & BinDlgFlags::Visible)) {
 			helper::show_dialog(dialog);
+		}
 
-		if (!dialog->text || dialog->non_user_value != user_value) {
+		if (dialog->non_user_value != user_value || !dialog->text) {
 			dialog->non_user_value = user_value;
 			char* buffer = &stat_res_resources_buffer[dialog->index - 1][0];
 
@@ -469,16 +456,17 @@ namespace hooks
 			while (buffer[++len]);
 			dialog->statRes.font_handle = (u32*)font_base[len < 5 ? 1 : 0];
 
-			if (!(dialog->flags & 1)) {
-				dialog->flags |= 1;
+			if (!(dialog->flags & BinDlgFlags::Highlighted)) {
+				dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(dialog);
 			}
 		}
 	}
 
 	u32 show_production_info(BinDlg* dialog, u8 player, u16 x_offset) {
-		if (!dialog)
+		if (!dialog) {
 			return 0;
+		}
 
 		u16 row_size = dialog->index | RowSize;
 		u32 user_offset = x_offset << 8;
@@ -487,33 +475,36 @@ namespace hooks
 		for (i_0 = 0; i_0 < RowSize; ++i_0) {
 			u32 remaining_time = (u16)production.timers[player][i_0];
 
-			if (remaining_time == 65535)
+			if (remaining_time == 65535) {
 				break;
+			}
 
-			if (!(dialog->flags & BinDlgFlags::Visible))
+			if (!(dialog->flags & BinDlgFlags::Visible)) {
 				helper::show_dialog(dialog);
+			}
 
 			x_offset -= 15;
-			u16 icon_graphic = production.types[player][i_0] + 12;
+			u16 user_type = production.types[player][i_0];
 			u8 user_count = production.counts[player][i_0];
-			u32 user_value = user_offset | user_count;
+			u32 user_value = (user_type << 20) | user_offset | user_count;
 
-			if (dialog->non_user_value != user_value || dialog->graphic != icon_graphic) {
+			if (dialog->non_user_value != user_value) {
 				dialog->non_user_value = user_value;
-				dialog->graphic = icon_graphic;
+				dialog->statRes.time_cost = (u16)units_dat::time_cost[user_type];
+				dialog->graphic = user_type + 12;
 				char* buffer = &stat_res_production_buffer[player][i_0][0];
 				sprintf_s(buffer, 4, "%d", user_count);
 				dialog->text = buffer;
 				dialog->bounds.left = x_offset;
 				dialog->bounds.right = x_offset + 14;
 
-				if (!(dialog->flags & 1)) {
-					dialog->flags |= 1;
+				if (!(dialog->flags & BinDlgFlags::Highlighted)) {
+					dialog->flags |= BinDlgFlags::Highlighted;
 					helper::update_dialog(dialog);
 				}
 			}
 
-			u32 time_cost = (u16)units_dat::time_cost[production.types[player][i_0]];
+			u32 time_cost = dialog->statRes.time_cost;
 
 			if (time_cost) {
 				u32 x = (u16)dialog->bounds.left;
@@ -527,13 +518,15 @@ namespace hooks
 			
 			dialog = dialog->next;
 
-			if (!dialog)
+			if (!dialog) {
 				goto loc_ret;
+			}
 		}
 
 		do {
-			if (dialog->flags & BinDlgFlags::Visible)
+			if (dialog->flags & BinDlgFlags::Visible) {
 				helper::hide_dialog(dialog);
+			}
 
 			dialog = dialog->next;
 		} while (dialog && dialog->index < row_size);
@@ -543,16 +536,17 @@ namespace hooks
 	}
 
 	void print_player_name(BinDlg* dialog, u32 user_value) {
-		if (!(dialog->flags & BinDlgFlags::Visible))
+		if (!(dialog->flags & BinDlgFlags::Visible)) {
 			helper::show_dialog(dialog);
+		}
 
-		if (!dialog->text || dialog->non_user_value != user_value) {
+		if (dialog->non_user_value != user_value || !dialog->text) {
 			dialog->non_user_value = user_value;
 			dialog->bounds.right = (u16)user_value;
 			dialog->text = player_data.full_player_names[user_value >> 24].data;
 
-			if (!(dialog->flags & 1)) {
-				dialog->flags |= 1;
+			if (!(dialog->flags & BinDlgFlags::Highlighted)) {
+				dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(dialog);
 			}
 		}
@@ -581,9 +575,9 @@ namespace hooks
 
 		show_supply_info(dialog, g_player_table[player].race + 4, workers, men);
 		dialog = dialog->next;
-		print_stat_res_info(dialog, g_player_table[player].race + 1, &stat_res_displayed_gas[player], resources->gas[player], FALSE);
+		print_stat_res_info(dialog, g_player_table[player].race + 1, &stat_res_displayed_gas[player], resources->gas[player]);
 		dialog = dialog->next;
-		print_stat_res_info(dialog, 0, &stat_res_displayed_minerals[player], resources->minerals[player], FALSE);
+		print_stat_res_info(dialog, 0, &stat_res_displayed_minerals[player], resources->minerals[player]);
 		dialog = dialog->next;
 		Point16 local_pos = *pos;
 
@@ -625,8 +619,9 @@ namespace hooks
 		dialog = dialog->child_dialog;
 
 		do {// This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
-			if (!dialog)
+			if (!dialog) {
 				return;// The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
+			}
 
 			if (dialog->index != 1) {
 				dialog = dialog->next;
@@ -705,15 +700,17 @@ namespace hooks
 				helper::hide_dialog(dialog);
 				BinDlg* child = dialog->statRes.player_name;//dialog_name
 
-				if (child && child->flags & BinDlgFlags::Visible)
-					helper::hide_dialog(child);
-
-				child = dialog->child_dialog;//dialog_production
-
 				if (child) {
+					if (child->flags & BinDlgFlags::Visible) {
+						helper::hide_dialog(child);
+					}
+
+					child = dialog->child_dialog;//dialog_production
+
 					for (u32 i_0 = RowSize; i_0; --i_0) {
-						if (child->flags & BinDlgFlags::Visible)
+						if (child->flags & BinDlgFlags::Visible) {
 							helper::hide_dialog(child);
+						}
 
 						child = child->next;
 					}
@@ -725,20 +722,20 @@ namespace hooks
 	}/*
 
 	bool __fastcall stat_res_text_interact(BinDlg* dialog, DialogEvent* dlg_event) {
-		if (dlg_event->number_order != 14) {
+		if (dlg_event->number_order != DialogEventType_Dialog) {
 			return false;
 		}
 
-		switch (dialog->non_user_value) {
-			case 0:
-			case 6:
-			case 8:
-			case 10:
-			case 13:
-			case 14:
-				return helper::generic_common_interact(dialog, dlg_event);
-			default:
-				return false;
+		switch (dlg_event->user) {
+		case DialogUserType_Create:
+		case DialogUserType_SelectNext:
+		case DialogUserType_InitSelf:
+		case DialogUserType_InitChildren:
+		case DialogUserType_Show:
+		case DialogUserType_Hide:
+			return helper::generic_common_interact(dialog, dlg_event);
+		default:
+			return false;
 		}
 	}*/
 
@@ -832,7 +829,7 @@ namespace hooks
 	}
 	
 	bool __fastcall stat_res_custom_ctrl(BinDlg* dialog, DialogEvent* dlg_event) {
-		if (dlg_event->number_order != 14) {
+		if (dlg_event->number_order != DialogEventType_Dialog) {
 			return false;
 		}
 
@@ -843,17 +840,17 @@ namespace hooks
 			dialog->fxn_update = &stat_res_text_update;
 		}
 
-		if (dlg_event->number_order != 14) {
+		if (dlg_event->number_order != DialogEventType_Dialog) {
 			return false;
 		}
 
 		switch (dlg_event->user) {
-		case 0:
-		case 6:
-		case 8:
-		case 10:
-		case 13:
-		case 14:
+		case DialogUserType_Create:
+		case DialogUserType_SelectNext:
+		case DialogUserType_InitSelf:
+		case DialogUserType_InitChildren:
+		case DialogUserType_Show:
+		case DialogUserType_Hide:
 			return helper::generic_common_interact(dialog, dlg_event);
 		default:
 			return false;
