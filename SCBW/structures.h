@@ -652,7 +652,7 @@ struct BinDlg
 		} textDialog0x36;								// seems to apply to some text related dialogs
 		struct
 		{
-			/*0x36*/  u32		unused;
+			/*0x36*/  u32		time_cost;
 			/*0x3A*/  u32*		font_handle;
 			/*0x3E*/  BinDlg*	player_name;
 		} statRes;

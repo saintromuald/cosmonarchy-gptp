@@ -7,8 +7,8 @@
 
 extern char stat_res_resources_buffer[ResSize][16];
 extern char stat_res_production_buffer[PlayerLimit][RowSize][4];
-extern u32 stat_res_displayed_gas[PlayerLimit];						// Reformat of "unknown_68C22C"
-extern u32 stat_res_displayed_minerals[PlayerLimit];				// Reformat of "unknown_68C230"
+extern s32 stat_res_displayed_gas[PlayerLimit];						// Reformat of "unknown_68C22C"
+extern s32 stat_res_displayed_minerals[PlayerLimit];				// Reformat of "unknown_68C230"
 struct ProductionArrays {
 	u16 types[PlayerLimit][RowSize];
 	u16 timers[PlayerLimit][RowSize];
