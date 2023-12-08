@@ -1350,6 +1350,10 @@ namespace hooks {
 						unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 					}
 				}
+
+				if (unit->main_order_id == OrderId::DroneLand) {
+					// TODO: check if it collides with a building, and order it to decollide, without the conditionals being too expensive or naive. -Pr0nogo
+				}
 			} break;
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
