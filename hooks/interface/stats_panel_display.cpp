@@ -1178,43 +1178,40 @@ namespace hooks
 		{
 			current_dialog = current_dialog->next; 
 		}
-		while (current_dialog)
+		if (!(current_dialog->flags & BinDlgFlags::Visible))
 		{
-			if (!(current_dialog->flags & BinDlgFlags::Visible))
+			struct
 			{
-				struct
-				{
-					u32 unknown_value;		// [EBP-0x14]	[00]
-					u32 always_zero_here;	// [EBP-0x10]	[04]
-					u32 not_allocated_2;	// [EBP-0x0C]	[08]
-					u16 always_14_here;		// [EBP-0x08]	[0C]
-					s16 mouse_x;			// [EBP-0x06]	[0E]
-					s16 mouse_y;			// [EBP-0x04]	[10]
-					u16 not_allocated_1;	// [EBP-0x02]	[12]
-				} stack_placeholder;
+				u32 unknown_value;		// [EBP-0x14]	[00]
+				u32 always_zero_here;	// [EBP-0x10]	[04]
+				u32 not_allocated_2;	// [EBP-0x0C]	[08]
+				u16 always_14_here;		// [EBP-0x08]	[0C]
+				s16 mouse_x;			// [EBP-0x06]	[0E]
+				s16 mouse_y;			// [EBP-0x04]	[10]
+				u16 not_allocated_1;	// [EBP-0x02]	[12]
+			} stack_placeholder;
 
-				// Not allocated on original code, but result is probably more true to the original like this. -GPTP
-				stack_placeholder.not_allocated_1 = 0;
-				stack_placeholder.not_allocated_2 = 0;
+			// Not allocated on original code, but result is probably more true to the original like this. -GPTP
+			stack_placeholder.not_allocated_1 = 0;
+			stack_placeholder.not_allocated_2 = 0;
 
-				stack_placeholder.mouse_y = g_mouse->y;
-				stack_placeholder.always_14_here = 14;
-				stack_placeholder.unknown_value = 13;
-				stack_placeholder.always_zero_here = 0;
-				stack_placeholder.mouse_x = g_mouse->x;
+			stack_placeholder.mouse_y = g_mouse->y;
+			stack_placeholder.always_14_here = 14;
+			stack_placeholder.unknown_value = 13;
+			stack_placeholder.always_zero_here = 0;
+			stack_placeholder.mouse_x = g_mouse->x;
 
-				if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted))
-				{
-					current_dialog->flags |= BinDlgFlags::Highlighted;
-					helper::update_dialog(current_dialog);
-				}
-			}
-			if (current_dialog->index == unk)
+			if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted))
 			{
-				current_dialog = 0;
-			} else {
-				current_dialog = current_dialog->next;
+				current_dialog->flags |= BinDlgFlags::Highlighted;
+				helper::update_dialog(current_dialog);
 			}
+		}
+		if (current_dialog->index == unk)
+		{
+			current_dialog = 0;
+		} else {
+			current_dialog = current_dialog->next;
 		}
 	}
 
