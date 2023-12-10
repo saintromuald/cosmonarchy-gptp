@@ -3799,6 +3799,64 @@ namespace hooks {
 								Point16 pos = *(Point16*)(buffer + 3);
 								globals.players[player].camera = pos;
 							} break;
+							case NewGameCommand::SelectFaction:
+							{
+								u32 player = buffer[2];
+								Faction faction = (Faction)buffer[3];
+								globals.players[player].faction = faction;
+								globals.players[player].faction_was_set = true;
+								switch (g_player_table[player].race) {
+									case RaceId::Terran:
+									{
+										switch (faction) {
+											case Faction_TerranOrionImperium:
+											{
+												scbw::printf("\tPlayer %u has selected the Orion Imperium.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranHecatonCoalition:
+											{
+												scbw::printf("\tPlayer %u has selected the Hecaton Coalition.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranFuturistFederation:
+											{
+												scbw::printf("\tPlayer %u has selected the Futurist Federation.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranGoldenRepublic:
+											{
+												scbw::printf("\tPlayer %u has selected the Golden Republic.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranNydusTrinity:
+											{
+												scbw::printf("\tPlayer %u has selected the Nydus Trinity.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranUpstart:
+											{
+												scbw::printf("\tPlayer %u has selected the Terran Upstarts.", player + 1, GameTextColor::White);
+											} break;
+										}
+									} break;
+									case RaceId::Protoss:
+									{
+										switch (faction) {
+											case Faction_ProtossDivinePrimacy:
+											{
+												scbw::printf("\tPlayer %u has selected the Divine Primacy.", player + 1, GameTextColor::White);
+											} break;
+										}
+									} break;
+									case RaceId::Zerg:
+									{
+										switch (faction)
+										{
+											case Faction_ZergAtaltrethTendril:
+											{
+												scbw::printf("\tPlayer %u has selected the Ataltreth Tendril.", player + 1, GameTextColor::White);
+											} break;
+										}
+									} break;
+								}
+								helper::play_sound_global(SoundId::Misc_button_wav);
+							} break;
 						}
 						goto next_command;
 					}

@@ -363,6 +363,20 @@ namespace hooks {
 	void update_command_card() {
 		init_req_table();
 
+		struct SelectFactionCommand {
+			u8 type;
+			u8 subtype;
+			u8 player;
+			u8 faction;
+			u8 padding[6];
+		};
+		assert(sizeof(SelectFactionCommand) == 0xc);
+
+		SelectFactionCommand command = {};
+		command.type = GameCommand_Custom;
+		command.subtype = NewGameCommand::SelectFaction;
+		command.player = *g_local_human_id;
+		command.faction = 1; // Default case
 		auto buttonset_id = *g_active_portrait_buttonset_id;
 		u32 local_player = *g_local_human_id;
 		if (scbw::get_game_kind() == GameKind_FactionWars && !globals.players[local_player].faction_was_set) {
@@ -372,17 +386,16 @@ namespace hooks {
 						buttonset_id = UnitId::Buttons_FactionSelect;
 					} break;
 					case RaceId::Protoss: {
-						globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
-						globals.players[local_player].faction_was_set = true;
-						helper::play_sound_global(SoundId::Misc_button_wav);
-						scbw::print("\tYou are the Divine Primacy.", GameTextColor::White);
+						// TODO: Make this like Terran when the Protoss factions are actually implemented.
+						command.faction = Faction_ProtossDivinePrimacy;
+						helper::queue_game_command((u8*)&command, 0xc);
 					} break;
 					case RaceId::Zerg: {
-						globals.players[local_player].faction = Faction_ZergAtaltrethTendril;
-						globals.players[local_player].faction_was_set = true;
-						helper::play_sound_global(SoundId::Misc_button_wav);
-						scbw::print("\tYou are the Ataltreth Tendril.", GameTextColor::White);
+						// TODO: Make this like Terran when the Zerg factions are actually implemented.
+						command.faction = Faction_ZergAtaltrethTendril;
+						helper::queue_game_command((u8*)&command, 0xc);
 					} break;
+						// TODO: Add Askosi case
 				}
 			} else if (buttonset_id == UnitId::Buttons_FactionSelect) {
 				switch (g_player_table[local_player].race) {
@@ -400,108 +413,96 @@ namespace hooks {
 				if (buttonset_id == UnitId::Buttons_FactionSelect1) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
-							globals.players[local_player].faction = Faction_TerranOrionImperium;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Orion Imperium.", GameTextColor::White);
+							command.faction = Faction_TerranOrionImperium;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Protoss: {
-							globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
-						//	helper::play_sound_global(SoundId::Misc_button_wav);
-						//	scbw::print("\tYou are the Divine Primacy.", GameTextColor::White);
+							command.faction = Faction_ProtossDivinePrimacy;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Zerg: {
-							globals.players[local_player].faction = Faction_ZergAtaltrethTendril;
-						//	helper::play_sound_global(SoundId::Misc_button_wav);
-						//	scbw::print("\tYou are the Ataltreth Tendril.", GameTextColor::White);
+							command.faction = Faction_ZergAtaltrethTendril;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
 					globals.players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect2) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
-							globals.players[local_player].faction = Faction_TerranHecatonCoalition;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Hecaton Coalition.", GameTextColor::White);
+							command.faction = Faction_TerranHecatonCoalition;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Protoss: {
-							globals.players[local_player].faction = Faction_ProtossOrderOfTheSacredTemplar;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Order of the Sacred Templar.", GameTextColor::White);
+							command.faction = Faction_ProtossOrderOfTheSacredTemplar;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Zerg: {
-							globals.players[local_player].faction = Faction_ZergImicrenTendril;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Imicren Tendril.", GameTextColor::White);
+							command.faction = Faction_ZergImicrenTendril;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
 					globals.players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect3) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
-							globals.players[local_player].faction = Faction_TerranFuturistFederation;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Futurist Federation.", GameTextColor::White);
+							command.faction = Faction_TerranFuturistFederation;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Protoss: {
-							globals.players[local_player].faction = Faction_ProtossKhalendricKnights;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Khalendric Knights.", GameTextColor::White);
+							command.faction = Faction_ProtossKhalendricKnights;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Zerg: {
-							globals.players[local_player].faction = Faction_ZergOrkotiTendril;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Orkoti Tendril.", GameTextColor::White);
+							command.faction = Faction_ZergOrkotiTendril;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
 					globals.players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect4) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
-							globals.players[local_player].faction = Faction_TerranGoldenRepublic;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Golden Republic.", GameTextColor::White);
+							command.faction = Faction_TerranGoldenRepublic;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Protoss: {
-							globals.players[local_player].faction = Faction_ProtossStarbound;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Starbound.", GameTextColor::White);
+							command.faction = Faction_ProtossStarbound;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Zerg: {
-							globals.players[local_player].faction = Faction_ZergGoszirithTendril;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Goszirith Tendril.", GameTextColor::White);
+							command.faction = Faction_ZergGoszirithTendril;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
 					globals.players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect5) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
-							globals.players[local_player].faction = Faction_TerranNydusTrinity;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Nydus Trinity.", GameTextColor::White);
+							command.faction = Faction_TerranNydusTrinity;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					//	case RaceId::Protoss: {
-					//		globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
+						//	command.faction = Faction_Protoss5;
+						//	helper::queue_game_command((u8*)&command, 0xc);
 					//	} break;
 						case RaceId::Zerg: {
-							globals.players[local_player].faction = Faction_ZergZorthosTendril;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Zorthos Tendril.", GameTextColor::White);
+							command.faction = Faction_ZergZorthosTendril;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
 					globals.players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect6) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
-							globals.players[local_player].faction = Faction_TerranUpstart;
-							helper::play_sound_global(SoundId::Misc_button_wav);
-							scbw::print("\tYou are the Upstarts.", GameTextColor::White);
+							command.faction = Faction_TerranUpstart;
+							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					//	case RaceId::Protoss: {
-					//		globals.players[local_player].faction = Faction_ProtossDivinePrimacy;
+						//	command.faction = Faction_Protoss6;
+						//	helper::queue_game_command((u8*)&command, 0xc);
 					//	} break;
 					//	case RaceId::Zerg: {
-					//		globals.players[local_player].faction = Faction_ZergAtaltrethTendril;
+						//	command.faction = Faction_Zerg6;
+						//	helper::queue_game_command((u8*)&command, 0xc);
 					//	} break;
 					}
 					globals.players[local_player].faction_was_set = true;
