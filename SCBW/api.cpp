@@ -2060,6 +2060,7 @@ namespace scbw {
 			case SpriteId::Corpse_Dracadin:
 			case SpriteId::Corpse_Ecclesiast:
 			case SpriteId::Corpse_Legionnaire:
+			case SpriteId::Corpse_Lanifect:
 			case SpriteId::Corpse_Larva:
 			case SpriteId::Corpse_Egg:
 			case SpriteId::Corpse_Droleth:
@@ -2475,6 +2476,13 @@ namespace scbw {
 
 			if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
 				helper::order_return_to_idle(unit);
+			}
+
+			// Fix AI workers getting stuck
+			if (unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) {
+				if (unit->main_order_id == OrderId::DroneLand) {
+					helper::order_return_to_idle(unit);
+				}
 			}
 		}
 	}
