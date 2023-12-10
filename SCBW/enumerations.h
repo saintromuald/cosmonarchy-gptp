@@ -1509,3 +1509,23 @@ enum DialogEventType {
 	DialogEventType_MWheelUp				= 17,
 	DialogEventType_MWheelDown				= 18,
 };
+
+enum DialogUserType {
+	DialogUserType_Create = 0,
+	DialogUserType_Destroy = 1,
+	DialogUserType_Activate = 2,
+	DialogUserType_Hotkey = 3,
+	DialogUserType_MouseOver = 4,
+	DialogUserType_SelectPrev = 5,
+	DialogUserType_SelectNext = 6,
+	DialogUserType_Generic = 7,
+	DialogUserType_InitSelf = 8,
+	DialogUserType_MouseEnter = 9,
+	DialogUserType_InitChildren = 10,
+	DialogUserType_SetSelectionIndex = 11,
+	DialogUserType_Unknown = 12,
+	DialogUserType_Show = 13,
+	DialogUserType_Hide = 14,
+	DialogUserType_ScrollUp = 15,
+	DialogUserType_ScrollDown = 16,
+};

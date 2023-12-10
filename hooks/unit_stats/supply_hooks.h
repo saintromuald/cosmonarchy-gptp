@@ -7,8 +7,8 @@
 
 extern char stat_res_resources_buffer[ResSize][16];
 extern char stat_res_production_buffer[PlayerLimit][RowSize][4];
-extern u32 stat_res_displayed_gas[PlayerLimit];						// Reformat of "unknown_68C22C"
-extern u32 stat_res_displayed_minerals[PlayerLimit];				// Reformat of "unknown_68C230"
+extern s32 stat_res_displayed_gas[PlayerLimit];						// Reformat of "unknown_68C22C"
+extern s32 stat_res_displayed_minerals[PlayerLimit];				// Reformat of "unknown_68C230"
 struct ProductionArrays {
 	u16 types[PlayerLimit][RowSize];
 	u16 timers[PlayerLimit][RowSize];
@@ -37,7 +37,7 @@ namespace hooks
 	void __fastcall stat_res_text_update(BinDlg* dialog, int dummy0, int dummy1, int dummy2);	// 004E5460
 	void __fastcall stat_res_colortext_update(BinDlg* dialog, int dummy0, int dummy1, int dummy2);// Version of stat_res_text_update without graphic display.
 	bool __fastcall stat_res_custom_ctrl(BinDlg* dialog, DialogEvent* dlg_event);				// 004E5850
-	void stat_res_register_user_dialog_action(BinDlg* dialog);// Version of register_user_dialog_action tailored to statres.
+	void stat_res_register_user_dialog_action(/*BinDlg* dialog*/);// Version of register_user_dialog_action tailored to statres.
 	void stat_res_refresh_production_arrays();
 	void __fastcall stat_res_get_production(Unit* unit);
 
