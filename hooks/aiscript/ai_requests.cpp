@@ -552,7 +552,7 @@ namespace hooks
 			u32 priority = 0;
 			if (helper::get_ai_refinery(town, 3, 1))
 			{
-				priority = 100;
+				priority = 140;
 				refinery = helper::get_ai_refinery(town, 1, 1);
 				if (!refinery)
 				{
@@ -575,7 +575,7 @@ namespace hooks
 				{
 					return 0;
 				}
-				priority = 120;
+				priority = 140; // Testing identical priorities no matter what. -Pr0nogo
 			}
 
 			u16 refinery_id = UnitId::None;
