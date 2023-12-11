@@ -368,7 +368,7 @@ namespace hooks {
 			u8 subtype;
 			u8 player;
 			u8 faction;
-			u8 padding[6];
+			u8 padding[8];
 		};
 		assert(sizeof(SelectFactionCommand) == 0xc);
 

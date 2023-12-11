@@ -7,7 +7,6 @@ namespace hooks
 	bool is_unit_in_weapon_range(Unit* target, Unit* attacker);															// 00476870
 	Unit* cmdrecv_hold_position(s32 a1);																				// 004C20C0
 	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit);															// 00401D60
-	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 	u32 is_unit_visible(Unit* unit);																					// 004E5DB0
 	void check_unit_visibility(Unit* unit);																				// 00443390
 	s32 is_unit_cloaking(Unit* unit);																					// 004916E0
@@ -25,6 +24,7 @@ namespace hooks
 	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y);												// 004762C0
 	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, char order_id, Unit* target);							// 00479FA0
 	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);											// 00430F10
+	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 
 	void inject_target_related_hooks();
 }
