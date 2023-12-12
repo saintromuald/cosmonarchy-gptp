@@ -1268,7 +1268,6 @@ namespace hooks
 
 			if (*g_status_screen_func != 14)
 			{
-				scbw::print("Status screen func != 14");
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 14;
 			}

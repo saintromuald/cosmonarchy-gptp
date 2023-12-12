@@ -239,10 +239,24 @@ namespace hooks
 				}
 				if (max_volume > 10) {
 					u32 error_id = SoundId::ErrorZerg - *g_console_index;
-					if (error_id == SoundId::ErrorTerran) {
-						helper::play_sound_global(error_id); // TODO: Confirm this helper doesn't play for other players
+					helper::play_sound_global(error_id);
+					if (!scbw::has_custom_advisor(player) || !globals.advisor_state.cooldown) {
+						if (!globals.advisor_state.play_timer) {
+							u32 timer = 6;
+							switch (g_player_table[player].race) {
+								case RaceId::Protoss:
+								case RaceId::Zerg:
+								{
+									timer = 4;
+								}
+							}
+							globals.advisor_state.play_timer = timer;
+							globals.advisor_state.sound_id = sound_id;
+							if (scbw::has_custom_advisor(player)) {
+								globals.advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
+							}
+						}
 					}
-					helper::play_transmission_from_location(sound_id, max_volume, 0, 0); // TODO: Delay this sound by 12 frames
 				}
 			}
 
@@ -250,7 +264,6 @@ namespace hooks
 			u32 final_message_id = message_id - 1;
 			if ((u16)message_id) {
 				message_string = (char*)g_stat_txt_buffer->get_string(message_id);
-
 				if (player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message_string);
 				}
