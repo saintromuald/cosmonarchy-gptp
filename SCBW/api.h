@@ -753,8 +753,8 @@ namespace scbw
 	void binding_plasma_proc(Unit* victim);
 	bool player_has_transport(u32 player);
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);
-	void update_on_damage_dealt(Unit* unit);
-	void update_on_damage_receive(Unit* unit);
+	void update_on_damage_dealt(Unit* unit, u32 damage);
+	void update_on_damage_taken(Unit* unit, u32 damage);
 	bool is_team_game_map(const char* filename);
 	Image* get_powerup_overlay(Sprite* sprite);
 	Image* get_addon_connector_image(Unit* unit);

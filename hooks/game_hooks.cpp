@@ -2201,7 +2201,7 @@ namespace hooks {
 							shields -= target->heal_shields(shields, unit, false, false);
 							unit->shields -= shields;
 							unit->set_hitpoints(unit->hitpoints);
-							scbw::update_on_damage_receive(unit);
+							scbw::update_on_damage_taken(unit, 0);
 							break;
 						}
 					}

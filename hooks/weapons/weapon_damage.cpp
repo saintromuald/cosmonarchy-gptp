@@ -316,6 +316,10 @@ namespace hooks
 		// Reduce shields
 		if (data.shield_reduce_amount) {
 			data.target->shields -= data.shield_reduce_amount;
+			if (data.attacker) {
+				scbw::update_on_damage_dealt(data.attacker, data.shield_reduce_amount);
+			}
+			scbw::update_on_damage_taken(data.target, data.shield_reduce_amount);
 			if (data.damage_type != DamageType::Independent && data.target->shields != 0) {
 				shield_overlay = true;
 			}
