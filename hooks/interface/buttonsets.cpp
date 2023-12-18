@@ -2020,7 +2020,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossZealot: {
-									if (current_button->icon_id == IconId::LegEnhancements) { // Zealot - Deathless Procession
+									if (current_button->icon_id == IconId::PlasmaShields) { // Zealot - Imperious March
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
