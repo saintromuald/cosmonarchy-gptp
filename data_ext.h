@@ -360,6 +360,8 @@ struct UnitExt {
 	u32						shield_regen_timer;
 	u32						damage_taken_timer;
 	u32						damage_dealt_timer;
+	u32                     total_damage_taken;
+	u32                     total_damage_dealt;
 	Point16					anthelion_last_move_target;
 	Vector32f				repulsion_vector;
 	Point16					last_bullet_launch_position;

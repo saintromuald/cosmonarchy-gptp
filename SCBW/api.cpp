@@ -2776,9 +2776,10 @@ namespace scbw {
 		return true;
 	}
 
-	void update_on_damage_dealt(Unit* unit) {
+	void update_on_damage_dealt(Unit* unit, u32 damage) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->damage_dealt_timer = 0;
+		unit_ext->total_damage_dealt += damage;
 		switch (unit->id) {
 			case UnitId::ZergMortothrokor: {
 				if (unit_ext->timers[TimerMortothrokorPassive]) {
@@ -2788,10 +2789,11 @@ namespace scbw {
 		}
 	}
 
-	void update_on_damage_receive(Unit* unit) {
+	void update_on_damage_taken(Unit* unit, u32 damage) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->shield_regen_timer = 0;
 		unit_ext->damage_taken_timer = 0;
+		unit_ext->total_damage_taken += damage;
 		switch (unit->id) {
 			case UnitId::ZergMortothrokor: {
 				if (unit_ext->timers[TimerMortothrokorPassive]) {

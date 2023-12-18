@@ -563,9 +563,9 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	*/
 
 	if (attacker) {
-		scbw::update_on_damage_dealt(attacker);
+		scbw::update_on_damage_dealt(attacker, damage);
 	}
-	scbw::update_on_damage_receive(this);
+	scbw::update_on_damage_taken(this, damage);
 
 	if (attacker) {
 		TriggerEvent event = {};
