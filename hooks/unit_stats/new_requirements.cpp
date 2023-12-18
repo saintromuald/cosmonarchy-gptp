@@ -918,7 +918,10 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergVorvrokor)
 			{
-				return true;
+				if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+				{
+					return true;
+				}
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazilisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva))
@@ -2926,7 +2929,11 @@ namespace hooks {
 					}
 					case UnitId::ZergVorvrokor:
 					{
-						return TECH_ACTIVE;
+						if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 					case UnitId::ZergLiiralisk:
 					case UnitId::ZergKalkalisk:

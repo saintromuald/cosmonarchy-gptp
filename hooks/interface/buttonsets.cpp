@@ -1527,6 +1527,18 @@ namespace hooks {
 									} break;
 								}
 							} break;
+							case UnitId::ZergZethrokor: {
+								if (current_button->requirement_var == UnitId::ZergVorvrokor) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergNathrokLake)
+									||  player_has_unit_id(unit->player, UnitId::ZergKalkiirPond)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								} break;
+							} break;
 							case UnitId::ZergMutalisk: {
 								if (current_button->requirement_var == UnitId::ZergTosgrilisk) {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergTosvrolHaunt)) {
@@ -2221,8 +2233,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergVorvrokor: {
-									if (current_button->icon_id == IconId::MetabolicBoost	// Vorvrokor - Adrenal Surge
-									||	current_button->icon_id == IconId::Ensnare) {		// Vorvrokor - Captivating Claws
+									if (current_button->icon_id == IconId::Ensnare) {		// Vorvrokor - Captivating Claws
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

@@ -3698,4 +3698,12 @@ namespace scbw {
 	//	g_total_vespene[player_id] += 3;
 	//	g_aiscript_controller[player_id].vespene_available += 3;
 	}
+
+	bool game_kind_supports_kills(GameKind game_kind)
+	{
+		return game_kind == GameKind_Competitive
+			|| game_kind == GameKind_Omnipresence
+			|| game_kind == GameKind_FactionWars
+			|| game_kind == GameKind_Massacre;
+	}
 }
