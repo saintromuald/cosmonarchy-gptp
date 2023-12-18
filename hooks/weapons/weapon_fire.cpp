@@ -662,6 +662,9 @@ namespace hooks {
 			if (unit->status & UnitStatus::Invincible) {
 				continue;
 			}
+			if (unit_id_ignores_ground_collision(unit->id)) {
+				continue;
+			}
 			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}

@@ -79,7 +79,7 @@ namespace hooks
 
 		u16 unit_id = unit->id;
 		u16 collider_id = colliding_unit->id;
-		if ((unit_id == UnitId::ZergLarva && !(collider_status & UnitStatus::GroundedBuilding)) || collider_id == UnitId::ZergLarva) {
+		if ((unit_id_is_larva(unit_id) && !(collider_status & UnitStatus::GroundedBuilding)) || unit_id_is_larva(collider_id)) {
 			return false;
 		}
 

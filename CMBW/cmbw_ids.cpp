@@ -1150,3 +1150,8 @@ bool rapid_rendezvous_can_target_unit_id(u32 unit_id) { // Does not prohibit air
 		&&	unit_id != UnitId::ZergOcsalLarva
 		&&	unit_id != UnitId::ZergEgg;
 }
+
+bool unit_id_ignores_ground_collision(u32 unit_id)
+{
+	return unit_id_is_larva(unit_id) || unit_id == UnitId::ZergRilirokor;
+}

@@ -18,6 +18,12 @@ namespace hooks
 			{
 				armor_modifier += 4;
 			} break;
+			case UnitId::ProtossZealot:
+			{
+				if (unit->shields > 256) {
+					armor_modifier += 1;
+				}
+			} break;
 		}
 		return armor_modifier;
 	}

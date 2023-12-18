@@ -22,7 +22,7 @@
 // General
 const s32 HealthMultiplier = 256;
 const s32 StimpackOffset = 5 * 256;
-const s32 StimpackTimer = 37;
+const s32 StimpackTimer = 14;
 const s32 MindControlEnergyGain = 5 * 256;
 
 // Factional

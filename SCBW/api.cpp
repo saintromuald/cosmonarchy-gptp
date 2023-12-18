@@ -552,8 +552,10 @@ namespace scbw {
 			case UnitId::ZergNydusCesiant:
 			case UnitId::ZergOcsalCesiant:
 			case UnitId::ZergOthstolOviform:
+			case UnitId::ZergNathrokLake:
 			case UnitId::ZergKalkiirPond:
 			case UnitId::ZergTosvrolHaunt:
+			case UnitId::ZergSkithrokScab:
 			case UnitId::ZergBactithSwamp:
 			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergAlkajChasm:
@@ -573,7 +575,9 @@ namespace scbw {
 			case UnitId::ZergSpraithCesiant:
 			case UnitId::ZergIrolIris:
 			case UnitId::ZergQuazethPool:
+			case UnitId::ZergNathrokLake:
 			case UnitId::ZergHydrithDen:
+			case UnitId::ZergSkithrokScab:
 			case UnitId::ZergMutathSpire:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
@@ -3691,6 +3695,7 @@ namespace scbw {
 	void add_massacre_resource(u32 player_id)
 	{
 		g_game_vespene[player_id] += 3;
-		g_total_vespene[player_id] += 3;
+	//	g_total_vespene[player_id] += 3;
+	//	g_aiscript_controller[player_id].vespene_available += 3;
 	}
 }

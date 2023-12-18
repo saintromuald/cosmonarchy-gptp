@@ -43,11 +43,11 @@ namespace hooks {
 			{
 				case 1:
 				{
-					cooldown += cooldown / 4;
+					cooldown += cooldown / 3;
 				} break;
 				case 2:
 				{
-					cooldown += cooldown / 2;
+					cooldown += cooldown / 1.5;
 				} break;
 			}
 		}

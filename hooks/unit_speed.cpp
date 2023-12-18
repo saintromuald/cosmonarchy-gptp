@@ -17,12 +17,11 @@ namespace hooks
 
 		f64 speed = 1;
 		// Set additives based on status effects
-		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		s32 decrease = (unit->ensnare_timer ? unit_ext->values[ValueEnsnareFactor] : 0);
 
 		if (decrease > 0) {
 			for (s32 i = 0; i < decrease; i++) {
-				speed *= 0.5;
+				speed *= 0.666;
 			}
 		}
 
@@ -158,48 +157,6 @@ namespace hooks
 				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
 				speed *= 1.0 + fraction / 2;
 			} break;
-			case UnitId::ZergVorvrokor:
-			{
-				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
-				if (unit->id == UnitId::ZergVorvrokor)
-				{
-					u32 range = unit->get_sight_range(false) * 32;
-					scbw::UnitFinder unit_finder(
-						unit->get_x() - range,
-						unit->get_y() - range,
-						unit->get_x() + range,
-						unit->get_y() + range
-					);
-					unit_finder.for_each([&](Unit* target)
-						{
-							if (scbw::is_allied_to(unit->player, target->player)
-								|| units_dat::base_property[target->id] & UnitProperty::Flyer)
-							{
-								return;
-							}
-							u16 angle = scbw::get_angle(unit->position.x, unit->position.y,
-								target->position.x, target->position.y);
-							u16 unit_angle = unit->velocity_direction_1;
-							s32 arc = (f64)60 / 1.40625;
-							// 120 degrees
-							s32 delta = unit_angle - angle;
-							delta = abs((delta + 128) % 256 - 128);
-							if (delta <= arc)
-							{
-								unit->new_flags_3 |= 0x2;
-							}
-						});
-					if (unit->new_flags_3 & 0x2)
-					{
-						speed *= 2;
-						unit->new_flags_3 &= ~0x2;
-					}
-					else
-					{
-						speed * 1.2;
-					}
-				}
-			} break;
 			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
@@ -207,13 +164,6 @@ namespace hooks
 				if (unit_ext->timers[TimerKaiserRampage])
 				{
 					speed *= 2;
-				}
-			} break;
-			case UnitId::ProtossZealot:
-			{
-				speed *= 1.25;
-				if (unit->shields > 256) {
-					speed *= 1.25;
 				}
 			} break;
 
@@ -229,7 +179,6 @@ namespace hooks
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranDurendal:
-			case UnitId::TerranClaymore:
 			{
 				speed *= 0.9;
 			} break;
@@ -237,6 +186,7 @@ namespace hooks
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth:
 			case UnitId::TerranMaverick:
+			case UnitId::TerranHarakan:
 			case UnitId::TerranCleric:
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSavant:
@@ -252,7 +202,6 @@ namespace hooks
 			{
 				speed *= 1.15;
 			} break;
-			case UnitId::TerranHarakan:
 			case UnitId::TerranCyprian:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
@@ -264,11 +213,13 @@ namespace hooks
 			case UnitId::TerranHeracles:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:
+			case UnitId::ZergVorvrokor:
 			case UnitId::ZergAxitrilisk:
 			{
 				speed *= 1.25;
 			} break;
 			case UnitId::TerranStriga:
+			case UnitId::ProtossZealot:
 			{
 				speed *= 1.35;
 			} break;

@@ -266,7 +266,9 @@ namespace UnitId
 		ZergNephrilosk										= 350,		// Unused
 		ZergOcsalCesiant									= 354,		// Morphed from Larvosk Cesiant
 		ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Cesiant
-		ZergEzigrisant										= 364,		// Morphed from Cagrant Cesiant
+		ZergEzigrisant										= 364,		// Morphed from Excisant
+		ZergNathrokLake										= 396,		// Morphed from Quazeth Pool
+		ZergSkithrokScab									= 397,		// Morphed from Hydrith Den
 
 	// Special-Unit
 		TerranCivilianExt									= 332,
